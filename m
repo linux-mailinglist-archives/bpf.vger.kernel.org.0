@@ -1,155 +1,318 @@
-Return-Path: <bpf+bounces-47157-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47158-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C80EC9F5BE7
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 01:54:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 864289F5BFA
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 02:00:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0895188D77B
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 00:54:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 629A47A1A81
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 01:00:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5341B2628D;
-	Wed, 18 Dec 2024 00:54:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FC7735941;
+	Wed, 18 Dec 2024 00:58:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="G2lrcLtH"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="W35aPu4P"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 548DC2572
-	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 00:54:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9288528691
+	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 00:58:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734483273; cv=none; b=kjuIOmgOttUBPVnvW01Eiplvzrdg8NvxrXpvT4BU6wx2OQ8NwMS2J//muyVl8oa1ai5RNDF/P1uhKxnOhAlHtQs0glwb+qVyJX9PLzqEzeQQPTXfeISk/QyhpEkG4zw8bbeHdhHZOZ+2HKqTMcACjNtLg6O9V7zOXZ5fuxlgfUA=
+	t=1734483505; cv=none; b=Y3Sk014whKhenBphRrFJg+2qruI+RBe3EbE3A32S5rUDvuY6mkM6kULlCkmztUkk99zepA31vYoBps2fv9jen7HTmjFWRCwEdAXLseLUwGpiY2h3v8AHF19AHrP+TNa6kvAS8LpxI5bMT9R0eR2bfSbG7MCJ+VPWolb16Y9s3qE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734483273; c=relaxed/simple;
-	bh=qFEUHjYFyVbDhNvjgUDJOz711mZJCKiTyV+OT2JsO2I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tNsUjPMNgH3ExlWWRqWrROGZ9/0/P5WSy88mZdIEnBaH5NzzmKsy2E8WZgwM3zM2ny8rFNuBHi2u0H6pclooaJ07j6gjDlbgn6Vv6m4iw4nvx+A2cuevqqMGn5TKTmT0DEDB8kvciXX7ZRQiY6ywzXcroZYxuu4z72MMWMCsZCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=G2lrcLtH; arc=none smtp.client-ip=209.85.166.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-3a9d0c28589so52265ab.0
-        for <bpf@vger.kernel.org>; Tue, 17 Dec 2024 16:54:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1734483271; x=1735088071; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vvpdmlnbvNyjwHZf76pbDfjmJncAJiI50qIYmlkFWhs=;
-        b=G2lrcLtHoNxdC0KsVOv46UDh5pfwEJgMdLPc72rj5COGyH1pJ/9J9VkG8j9qL9cSbO
-         QdsLMwo2H9yKWyy25jgDSGInmL6Kird+QWaXRGJs11RLPjqsLfoVsBLtZIFrahHks5ze
-         v3HABMVCkDbpAviAXLu2ENr5eaE2/dTG68ckChb4e60htzU47X0fwW0Sh4ryeM6psKcZ
-         Q9rkMTDp5qhNAxOYl3VtUT0tcdYpKnuThzsl7i073HSb74qTo7X519Sx1rOMrrWt2M7k
-         yzsE/qNMss1JkhHaVGZRcQBujTJdYj0NxxoRMandQPTPk9QEyux1H+ajxYYfP1i/LRIc
-         Meig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734483271; x=1735088071;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vvpdmlnbvNyjwHZf76pbDfjmJncAJiI50qIYmlkFWhs=;
-        b=Y8LYmUnbMtcSCwJ88YyvfTptQGN4zXl2kpAGJ/Nt8oB7YncXYY4KkxqGgnDTOhyUxp
-         /kXqIw+dKS+wUT8qxLIIvIAv6PrReaqcqtYjukZGWbpKZvsFW2VTyvbWO8AQ/2gqgLNm
-         uJnYqgdfFThyd/5dBfJaO1voeZAIGz+wBjdJ2Z2wV/kSpY+zPvwzHw9pLuQX3gNg3vbH
-         Ao2TCGdAZofhrbPCLiVChK7ve9Q9GilMu9Mxxhod+enhFoQrqAV8u9KWj6Ms9CrnUFlR
-         c2uwAc8fuK/ToQ9NJcILMjZBuSkQCzR2UpxxXn6k2/uWjzb1YoKcXbCn3hHMdxr+o8Rq
-         2Mbg==
-X-Forwarded-Encrypted: i=1; AJvYcCWoBVPu96rcuOajKmq4CtlRYODbe4CdAo1JNQwWosy/MidF+BWwWjurgZlMEc3yqdi+xv4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6dx5+NnItCHdT0g2h3Y3Uajlfq+hUqdNkHVbGHnZBoyERLB2O
-	CjPZSfh2W/6vnWMQKNHkta0CQQojzaD/0is9jkbTMJIbjLEJnTWwagy7PWvXLRvxmf/55bYdvj9
-	u6oF8AqUfRshv6QEgijIftz7aGmAJuPJ0yEot
-X-Gm-Gg: ASbGncujne5v1zhIJ+HtnpbGGy8D9WWX67rZTOt6//FYxEj0N3VAqAmICqlmJ5gBqUX
-	iefLjc2nhXAe4YOxDMALvgEvaAy0AANs5nyyLrUQ=
-X-Google-Smtp-Source: AGHT+IEoTRmSrfTLob8bBnU0BLl9Mr4cn15d1XMTSUV5F1B2wnA9XXGqLTQNrwEm5b7QOJKp0qMAP56nopgrXwZmSjc=
-X-Received: by 2002:a05:6e02:3c88:b0:3a7:c962:95d1 with SMTP id
- e9e14a558f8ab-3be34c58afamr427125ab.5.1734483271260; Tue, 17 Dec 2024
- 16:54:31 -0800 (PST)
+	s=arc-20240116; t=1734483505; c=relaxed/simple;
+	bh=ojGfl5SHibUvpLfRcRApihK5waB7qEav9L64FtsMlA4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Sv9ZdiNfgTyfEzhkjA8ZTy/bWxwOwjon+wYv2e138irjEImbISi6PsYz9kAus2z4G3Snbwk9mOgZwLROrqnnipIOucPwISgrW++/js4dLOKRJbTXdRHp8OztjzLfDcftFptAZMajAGtobQkcEUaJWD4w7q0xoGIuohOkXhmHnxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=W35aPu4P; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <65399ffd-da8a-436a-81fd-b5bd3e4b8a54@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1734483500;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6mc4ji3tVzdyWxvyeLwYeLMPx8IVQdD8BScnBye2t3o=;
+	b=W35aPu4PAjAPkqF+Y8dQS4DlJ1ZykeUx4dLhI6s7kcawgmBgDji2YW3IjK+VIaH2j8eBdq
+	jDNE3MMQvDzMGKtfZKDU63Wr0TXxIEUSCMyT16KVNowMb6TUPPG6pJSXrjhFH1E93U4TC1
+	LoA1LXFSx6dXgp1PnBj0LqNEde/Z4yM=
+Date: Tue, 17 Dec 2024 16:58:11 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241217115610.371755-1-james.clark@linaro.org> <20241217115610.371755-6-james.clark@linaro.org>
-In-Reply-To: <20241217115610.371755-6-james.clark@linaro.org>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 17 Dec 2024 16:54:19 -0800
-Message-ID: <CAP-5=fU7RNzvzxBcAQy3RT9Ge3YtqPhDonupNWS7Wgb8HGQkGg@mail.gmail.com>
-Subject: Re: [PATCH 5/5] perf docs: arm_spe: Document new discard mode
-To: James Clark <james.clark@linaro.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-perf-users@vger.kernel.org, 
-	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, "Liang, Kan" <kan.liang@linux.intel.com>, 
-	John Garry <john.g.garry@oracle.com>, Mike Leach <mike.leach@linaro.org>, 
-	Leo Yan <leo.yan@linux.dev>, Graham Woodward <graham.woodward@arm.com>, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v1 01/13] bpf: Support getting referenced kptr
+ from struct_ops argument
+To: Amery Hung <amery.hung@bytedance.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, alexei.starovoitov@gmail.com, martin.lau@kernel.org,
+ sinquersw@gmail.com, toke@redhat.com, jhs@mojatatu.com, jiri@resnulli.us,
+ stfomichev@gmail.com, ekarani.silvestre@ccc.ufcg.edu.br,
+ yangpeihao@sjtu.edu.cn, xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com,
+ ameryhung@gmail.com
+References: <20241213232958.2388301-1-amery.hung@bytedance.com>
+ <20241213232958.2388301-2-amery.hung@bytedance.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <20241213232958.2388301-2-amery.hung@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Dec 17, 2024 at 3:56=E2=80=AFAM James Clark <james.clark@linaro.org=
-> wrote:
->
-> Document the flag, hint what it's used for and give an example with
-> other useful options to get minimal output.
->
-> Signed-off-by: James Clark <james.clark@linaro.org>
+On 12/13/24 3:29 PM, Amery Hung wrote:
+> Allows struct_ops programs to acqurie referenced kptrs from arguments
+> by directly reading the argument.
+> 
+> The verifier will acquire a reference for struct_ops a argument tagged
+> with "__ref" in the stub function in the beginning of the main program.
+> The user will be able to access the referenced kptr directly by reading
+> the context as long as it has not been released by the program.
+> 
+> This new mechanism to acquire referenced kptr (compared to the existing
+> "kfunc with KF_ACQUIRE") is introduced for ergonomic and semantic reasons.
+> In the first use case, Qdisc_ops, an skb is passed to .enqueue in the
+> first argument. This mechanism provides a natural way for users to get a
+> referenced kptr in the .enqueue struct_ops programs and makes sure that a
+> qdisc will always enqueue or drop the skb.
+> 
+> Signed-off-by: Amery Hung <amery.hung@bytedance.com>
 > ---
->  tools/perf/Documentation/perf-arm-spe.txt | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/tools/perf/Documentation/perf-arm-spe.txt b/tools/perf/Docum=
-entation/perf-arm-spe.txt
-> index de2b0b479249..588eead438bc 100644
-> --- a/tools/perf/Documentation/perf-arm-spe.txt
-> +++ b/tools/perf/Documentation/perf-arm-spe.txt
-> @@ -150,6 +150,7 @@ arm_spe/load_filter=3D1,min_latency=3D10/'
->    pct_enable=3D1        - collect physical timestamp instead of virtual =
-timestamp (PMSCR.PCT) - requires privilege
->    store_filter=3D1      - collect stores only (PMSFCR.ST)
->    ts_enable=3D1         - enable timestamping with value of generic time=
-r (PMSCR.TS)
-> +  discard=3D1           - enable SPE PMU events but don't collect sample=
- data - see 'Discard mode' (PMBLIMITR.FM =3D DISCARD)
->
->  +++*+++ Latency is the total latency from the point at which sampling st=
-arted on that instruction, rather
->  than only the execution latency.
-> @@ -220,6 +221,16 @@ Common errors
->
->     Increase sampling interval (see above)
->
-> +Discard mode
-> +~~~~~~~~~~~~
+>   include/linux/bpf.h         |  3 +++
+>   kernel/bpf/bpf_struct_ops.c | 26 ++++++++++++++++++++------
+>   kernel/bpf/btf.c            |  1 +
+>   kernel/bpf/verifier.c       | 35 ++++++++++++++++++++++++++++++++---
+>   4 files changed, 56 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 1b84613b10ac..72bf941d1daf 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -968,6 +968,7 @@ struct bpf_insn_access_aux {
+>   		struct {
+>   			struct btf *btf;
+>   			u32 btf_id;
+> +			u32 ref_obj_id;
+>   		};
+>   	};
+>   	struct bpf_verifier_log *log; /* for verbose logs */
+> @@ -1480,6 +1481,8 @@ struct bpf_ctx_arg_aux {
+>   	enum bpf_reg_type reg_type;
+>   	struct btf *btf;
+>   	u32 btf_id;
+> +	u32 ref_obj_id;
+> +	bool refcounted;
+>   };
+>   
+>   struct btf_mod_pair {
+> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+> index fda3dd2ee984..6e7795744f6a 100644
+> --- a/kernel/bpf/bpf_struct_ops.c
+> +++ b/kernel/bpf/bpf_struct_ops.c
+> @@ -145,6 +145,7 @@ void bpf_struct_ops_image_free(void *image)
+>   }
+>   
+>   #define MAYBE_NULL_SUFFIX "__nullable"
+> +#define REFCOUNTED_SUFFIX "__ref"
+>   #define MAX_STUB_NAME 128
+>   
+>   /* Return the type info of a stub function, if it exists.
+> @@ -206,9 +207,11 @@ static int prepare_arg_info(struct btf *btf,
+>   			    struct bpf_struct_ops_arg_info *arg_info)
+>   {
+>   	const struct btf_type *stub_func_proto, *pointed_type;
+> +	bool is_nullable = false, is_refcounted = false;
+>   	const struct btf_param *stub_args, *args;
+>   	struct bpf_ctx_arg_aux *info, *info_buf;
+>   	u32 nargs, arg_no, info_cnt = 0;
+> +	const char *suffix;
+>   	u32 arg_btf_id;
+>   	int offset;
+>   
+> @@ -240,12 +243,19 @@ static int prepare_arg_info(struct btf *btf,
+>   	info = info_buf;
+>   	for (arg_no = 0; arg_no < nargs; arg_no++) {
+>   		/* Skip arguments that is not suffixed with
+> -		 * "__nullable".
+> +		 * "__nullable or __ref".
+>   		 */
+> -		if (!btf_param_match_suffix(btf, &stub_args[arg_no],
+> -					    MAYBE_NULL_SUFFIX))
+> +		is_nullable = btf_param_match_suffix(btf, &stub_args[arg_no],
+> +						     MAYBE_NULL_SUFFIX);
+> +		is_refcounted = btf_param_match_suffix(btf, &stub_args[arg_no],
+> +						       REFCOUNTED_SUFFIX);
+> +		if (!is_nullable && !is_refcounted)
+>   			continue;
+>   
+> +		if (is_nullable)
+> +			suffix = MAYBE_NULL_SUFFIX;
+> +		else if (is_refcounted)
+> +			suffix = REFCOUNTED_SUFFIX;
+>   		/* Should be a pointer to struct */
+>   		pointed_type = btf_type_resolve_ptr(btf,
+>   						    args[arg_no].type,
+> @@ -253,7 +263,7 @@ static int prepare_arg_info(struct btf *btf,
+>   		if (!pointed_type ||
+>   		    !btf_type_is_struct(pointed_type)) {
+>   			pr_warn("stub function %s__%s has %s tagging to an unsupported type\n",
+> -				st_ops_name, member_name, MAYBE_NULL_SUFFIX);
+> +				st_ops_name, member_name, suffix);
+>   			goto err_out;
+>   		}
+>   
+> @@ -271,11 +281,15 @@ static int prepare_arg_info(struct btf *btf,
+>   		}
+>   
+>   		/* Fill the information of the new argument */
+> -		info->reg_type =
+> -			PTR_TRUSTED | PTR_TO_BTF_ID | PTR_MAYBE_NULL;
+>   		info->btf_id = arg_btf_id;
+>   		info->btf = btf;
+>   		info->offset = offset;
+> +		if (is_nullable) {
+> +			info->reg_type = PTR_TRUSTED | PTR_TO_BTF_ID | PTR_MAYBE_NULL;
+> +		} else if (is_refcounted) {
+> +			info->reg_type = PTR_TRUSTED | PTR_TO_BTF_ID;
+> +			info->refcounted = true;
+> +		}
+>   
+>   		info++;
+>   		info_cnt++;
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index e7a59e6462a9..a05ccf9ee032 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -6580,6 +6580,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+>   			info->reg_type = ctx_arg_info->reg_type;
+>   			info->btf = ctx_arg_info->btf ? : btf_vmlinux;
+>   			info->btf_id = ctx_arg_info->btf_id;
+> +			info->ref_obj_id = ctx_arg_info->ref_obj_id;
+>   			return true;
+>   		}
+>   	}
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 9f5de8d4fbd0..69753096075f 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -1402,6 +1402,17 @@ static int release_reference_state(struct bpf_func_state *state, int ptr_id)
+>   	return -EINVAL;
+>   }
+>   
+> +static bool find_reference_state(struct bpf_func_state *state, int ptr_id)
+> +{
+> +	int i;
 > +
-> +SPE PMU events can be used without the overhead of collecting sample dat=
-a if
-> +discard mode is supported (optional from Armv8.6). First run a system wi=
-de SPE
-> +session (or on the core of interest) using options to minimize output. T=
-hen run
-> +perf stat:
+> +	for (i = 0; i < state->acquired_refs; i++)
+> +		if (state->refs[i].id == ptr_id)
+> +			return true;
 > +
-> +  perf record -e arm_spe/discard/ -a -N -B --no-bpf-event -o - > /dev/nu=
-ll &
-> +  perf stat -e SAMPLE_FEED_LD
+> +	return false;
+> +}
+> +
+>   static int release_lock_state(struct bpf_func_state *state, int type, int id, void *ptr)
+>   {
+>   	int i, last_idx;
+> @@ -5798,7 +5809,8 @@ static int check_packet_access(struct bpf_verifier_env *env, u32 regno, int off,
+>   /* check access to 'struct bpf_context' fields.  Supports fixed offsets only */
+>   static int check_ctx_access(struct bpf_verifier_env *env, int insn_idx, int off, int size,
+>   			    enum bpf_access_type t, enum bpf_reg_type *reg_type,
+> -			    struct btf **btf, u32 *btf_id, bool *is_retval, bool is_ldsx)
+> +			    struct btf **btf, u32 *btf_id, bool *is_retval, bool is_ldsx,
+> +			    u32 *ref_obj_id)
+>   {
+>   	struct bpf_insn_access_aux info = {
+>   		.reg_type = *reg_type,
+> @@ -5820,8 +5832,16 @@ static int check_ctx_access(struct bpf_verifier_env *env, int insn_idx, int off,
+>   		*is_retval = info.is_retval;
+>   
+>   		if (base_type(*reg_type) == PTR_TO_BTF_ID) {
+> +			if (info.ref_obj_id &&
+> +			    !find_reference_state(cur_func(env), info.ref_obj_id)) {
+> +				verbose(env, "invalid bpf_context access off=%d. Reference may already be released\n",
+> +					off);
+> +				return -EACCES;
+> +			}
+> +
+>   			*btf = info.btf;
+>   			*btf_id = info.btf_id;
+> +			*ref_obj_id = info.ref_obj_id;
+>   		} else {
+>   			env->insn_aux_data[insn_idx].ctx_field_size = info.ctx_field_size;
+>   		}
+> @@ -7135,7 +7155,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+>   		struct bpf_retval_range range;
+>   		enum bpf_reg_type reg_type = SCALAR_VALUE;
+>   		struct btf *btf = NULL;
+> -		u32 btf_id = 0;
+> +		u32 btf_id = 0, ref_obj_id = 0;
+>   
+>   		if (t == BPF_WRITE && value_regno >= 0 &&
+>   		    is_pointer_value(env, value_regno)) {
+> @@ -7148,7 +7168,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+>   			return err;
+>   
+>   		err = check_ctx_access(env, insn_idx, off, size, t, &reg_type, &btf,
+> -				       &btf_id, &is_retval, is_ldsx);
+> +				       &btf_id, &is_retval, is_ldsx, &ref_obj_id);
+>   		if (err)
+>   			verbose_linfo(env, insn_idx, "; ");
+>   		if (!err && t == BPF_READ && value_regno >= 0) {
+> @@ -7179,6 +7199,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+>   				if (base_type(reg_type) == PTR_TO_BTF_ID) {
+>   					regs[value_regno].btf = btf;
+>   					regs[value_regno].btf_id = btf_id;
+> +					regs[value_regno].ref_obj_id = ref_obj_id;
+>   				}
+>   			}
+>   			regs[value_regno].type = reg_type;
+> @@ -21662,6 +21683,7 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
+>   {
+>   	bool pop_log = !(env->log.level & BPF_LOG_LEVEL2);
+>   	struct bpf_subprog_info *sub = subprog_info(env, subprog);
+> +	struct bpf_ctx_arg_aux *ctx_arg_info;
+>   	struct bpf_verifier_state *state;
+>   	struct bpf_reg_state *regs;
+>   	int ret, i;
+> @@ -21769,6 +21791,13 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
+>   		mark_reg_known_zero(env, regs, BPF_REG_1);
+>   	}
+>   
+> +	if (!subprog && env->prog->type == BPF_PROG_TYPE_STRUCT_OPS) {
+> +		ctx_arg_info = (struct bpf_ctx_arg_aux *)env->prog->aux->ctx_arg_info;
+> +		for (i = 0; i < env->prog->aux->ctx_arg_info_size; i++)
+> +			if (ctx_arg_info[i].refcounted)
+> +				ctx_arg_info[i].ref_obj_id = acquire_reference_state(env, 0);
 
-Perhaps clarify this should be an ARM SPE event? It seems strange to
-have one perf command affect a later one, the purpose of things like
-event multiplexing is to hide the hardware limits. I'd prefer if the
-last bit was like:
-```
-Then run perf stat with an SPE event on the same PMU:
+There is a conflict in the bpf-next/master. acquire_reference_state has been 
+refactored in commit 769b0f1c8214. From looking at the net/sched/sch_*.c 
+changes, they should not have conflict with the net-next/main. I would suggest 
+to rebase this set on bpf-next/master.
 
-perf record -e arm_spe/discard/ -a -N -B --no-bpf-event -o - > /dev/null &
-perf stat -e arm_spe/SAMPLE_FEED_LD/
-``
+At the first glance, the ref_obj_id assignment looks racy because ctx_arg_info 
+is shared by different bpf progs that may be verified in parallel. After another 
+thought, this should be fine because it should always end up having the same 
+ref_obj_id for the same arg-no, right? Not sure if UBSAN can understand this 
+without using the READ/WRITE_ONCE. but adding READ/WRITE_ONCE when using 
+ref_obj_id will be quite puzzling when reading the verifier code. Any better idea?
 
-Thanks,
-Ian
+Other than the subprog, afaik, the bpf prog triggered by the bpf_tail_call can 
+also take the 'u64 *ctx' array. May be disallow using tailcall in all ops in the 
+bpf qdisc. env->subprog_info[i].has_tail_call has already tracked whether the 
+tail_call is used.
+
+> +	}
+> +
+>   	ret = do_check(env);
+>   out:
+>   	/* check for NULL is necessary, since cur_state can be freed inside
+
 
