@@ -1,75 +1,75 @@
-Return-Path: <bpf+bounces-47175-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47176-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46D3F9F5D3B
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F4E29F5D3A
 	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 04:07:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C39E91888D77
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B963164ED3
 	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 03:07:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBA5913C807;
-	Wed, 18 Dec 2024 03:07:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3777213D638;
+	Wed, 18 Dec 2024 03:07:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X6+Ywhc7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I0HEmzvy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A70C7082E
-	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 03:07:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02A3A7082E
+	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 03:07:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734491253; cv=none; b=TSCoUJyGYabj6AdNKh5S4hO3e7g7CGgXbYZ8kaBRjYi+t4f3DIFflzsqDObcrdv+u1x40oi1yrOVIxv/PSACNRQeyaUt4slkjm/qPbQLGodfJI4Tao2BtPJzd2vuFvd7+YaalgML4QGFrOKe+zLvXO/h6cy2nCXCuq3A6jYFfus=
+	t=1734491257; cv=none; b=LoBnealD8ek/8EmYvgaRMTeH9OCUUN9f2EvHzy4HGlMhgCJ2Mapt2yDtGcL89YInhq14SOJdC4v07WNTBAz9jjFhyY2vevWLyHJI7rKa2pvZ7M+3/Gzzp1Eq1iLBXkOKvJhFob25qiYedoVME1chRZ1NVxftcBlyiY53b/KWhh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734491253; c=relaxed/simple;
-	bh=yOXNtMlw7xJqRPDHrzCdGHPavK39hoNe5hsDOx4/73A=;
+	s=arc-20240116; t=1734491257; c=relaxed/simple;
+	bh=7U4RQR257f4iYZJPPw0P6oyJlt1ll7MxTT5kfFwF/HA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dl6t4xGD/i1FEsqj7N3cRJzfbcJIDI5KKChIQB6Z1rhxDL0s254oteoa2ySs2kFk5OllvmsPOlykgXVxkLOKdkMNtipiJwSTMWt+GHVtuiMJbyQ+a1Qne6HcWjk+WeeYr1aatTfvaJXbpQ4KEsKJZNHytkeoQCQeuTEcihRX+eM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X6+Ywhc7; arc=none smtp.client-ip=209.85.210.50
+	 MIME-Version; b=icCpcCUnzdRr22MOSA2ph72czc44umaKg0ijYIHbL0rHceh7HIIwRmt1VRfbCsB2VZGlNuZxYTyVpFFBO6RzbsnAQql/zSbyeGbZ1KsdHUKe/UXH8Z6IcZtlke1Jdca+ezZNmPIdPEjbYuXkw6haAfkz9KgT9wubrQt+8FaMwcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I0HEmzvy; arc=none smtp.client-ip=209.85.161.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-71e1d7130a5so2899380a34.0
-        for <bpf@vger.kernel.org>; Tue, 17 Dec 2024 19:07:31 -0800 (PST)
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5f2d8f62290so2953787eaf.2
+        for <bpf@vger.kernel.org>; Tue, 17 Dec 2024 19:07:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734491250; x=1735096050; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1734491255; x=1735096055; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OGzoMP4pz94E3iZ2ZVAY+FjoyH+9uJ8+ltaU5mTC/cc=;
-        b=X6+Ywhc78m4p+kT6qqIPjgvJ3Zx3Z0hS0CHB5DYmQBZ7PR6nSC5XtL0k1eAqgW+T2A
-         arIOEvoTh0PawnNADBx4cfzjPh+LMZt4/6YT2a0xQZNNGMbu+JUTvn4QDS7u6qB/XFpb
-         m8SRCFLPOi6t1ZxmB0VFSq0Y8QpwVUx+xwFgRzx9oCuW7jpJM4RCtv65LngavoRIi/nu
-         Fpjyo8GiSpAwjgnqm+y+Jaz7nhMibEDnke6jnbNvfyItlFLAyMzxlwgb8wPxGPHe7TJv
-         LuU75L9/cnAwCuDFPuzb72wG2hRaX5KXpU3jfvw/fOd6ZlgGQfBTkoT3me94H4hRNG2u
-         Z0iQ==
+        bh=tgdU2JbWztEEEhB3TtDMib8w6jV6+vZNMAAIDtQqMFA=;
+        b=I0HEmzvykuDrn/kERZb+B0YKDCAl6VsvvazmaMNEbWrsmLoxB4D5F8EX+mwEwnN5Rt
+         cH0f27Bo6HmwubCW2V1aWHfQoanxhwI8fYlfahv9PAzTWUCeUNusQTS2avxpIj4WL3UF
+         yUYz6Ad1N+mvdojU9inEqqKD/Z8qaaVyJ2aDxJB76gHA0FLmStjsTRGDDWDPPHSvj8t6
+         zOe5YUXfdElvlWA++c8K1Q9DqG1twEfStO+AH2SsCvZyMS5iOCvEtka9BFKqD0zeIEOw
+         9eXXB4pBZ3Mpq5Rg6w70l4HRIicCSq0mkMkgNHIICSaeP+l2qQseDwjg4XZNL/VvNpUm
+         OnQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734491250; x=1735096050;
+        d=1e100.net; s=20230601; t=1734491255; x=1735096055;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OGzoMP4pz94E3iZ2ZVAY+FjoyH+9uJ8+ltaU5mTC/cc=;
-        b=f/O3gXP8+A7MhMddNvduBXR8NnIuKTjXwQgtCI7GXxhOAEEItRJVbqsMcXu/05B2E4
-         bTBEoqA1UutODjz00nUrw2YdLI3EdYgvIfPrPuNKELWjF7iceV4jy6xkTpXLgWdK/13h
-         c//o7ZIlv5e91xRhU+qbykARtbn68THfxJTqz0YF9Cvf2DPrA2sfedhqgjC0SQkO7zO6
-         4ewzYm4fP6ovC6WwZYlnZaOfDTpUFPk3Mu/oiVeW2h46kCzZ4gUWdSmj0I0VuILYHhFO
-         tBzWDbsc+o7Vt+P3m/qG/gERTosXGz4WwxrYQTeFHSxV5i88xcf4Fm9fBO01QVIzjAAC
-         kVpg==
-X-Gm-Message-State: AOJu0YxcTymRyQj3+nz9wTa3oVfMkNmQg0LZm/jZH9aYhVoGBpXwM4HL
-	Zy2f3tgKvYvN1fDyA4dqx0skR4S33YFH3N4R1Rdd4T+j4MDsq21mBHDGwg==
-X-Gm-Gg: ASbGncvX/FgOkIeFBgpFDJ0yOfbIJD/BE2LhF8X2euzh+ATydjihmQ4pWxV8Bl2mQFu
-	JqJYHW1lCpJxh/7BhK1cYNmPQai4yaZb9WOcVIrG1wHHogN3ROFJ3QV64NeiZl2Rc5v0e01bkmy
-	1zA7dGjl2fF2DYRv62mWsEperusNL/LwUX8fwiPl8J+EbDDYk6uLZ+l2TmogzzwTJ/pzZ+jfrbI
-	ed9Czh7aKM4HCUrG8J+f6pSDVTu609E85p2nHFKn1wf3zAL8yQnN1ThsRUUlw==
-X-Google-Smtp-Source: AGHT+IHS1I5BEwtWaQWxY8nR9/3Gb5s3FBDzligOvFHMM+1wBgrv8C56AV9pKBLPsNZs5Vq+R7EbDg==
-X-Received: by 2002:a05:6830:4391:b0:71d:eee3:fd26 with SMTP id 46e09a7af769-71fb75611a4mr755835a34.4.1734491249808;
-        Tue, 17 Dec 2024 19:07:29 -0800 (PST)
-Received: from localhost ([2a03:2880:12ff:4::])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-71e48307e07sm2482972a34.1.2024.12.17.19.07.27
+        bh=tgdU2JbWztEEEhB3TtDMib8w6jV6+vZNMAAIDtQqMFA=;
+        b=nT/QeosJiEVznTH4ZeBMXTVxt/y3ylPpE1ZEPh5+pVISaHlfEiECNpefk5ohntkQSm
+         k15EG4uLMKyQu0cvZEoADnflWGZnTX3qNiIbXAiECmWgyVVLvyL/XWzqX6tkgkNZVRM8
+         +kzj+YUqxcR9fRjapyQH0kjqq3z2WhIxR1T9CNa4rAGTCy10PvvIuUF6fLZ6NNBCO6Cr
+         ooPyJsr/u1NQ+htPx5q2Bj0nAiwysefs/Oe46GsyoFp9H7rJ3g4i16nv2m5lgcjuzoJc
+         TB8rsEWzLQrun3tiP5el5QStaTB/6AdwT2YPIk+4OvpXdkHI0G5cfIzUmZPskqfuf7So
+         ERMw==
+X-Gm-Message-State: AOJu0YwtzC8hpDFnF5DxNNKjemOBO+ts1lJ3wj+KZ7RHKXGHAN8Beo9P
+	qgMlzlWsZ/3TqWJ3WuUUnsed5QK7Ck2SF7Podg6x1dHEm50BL41FSho9cw==
+X-Gm-Gg: ASbGncvfzKKK4W3HdUACCEq+IyPqCEzx0kVSk6bb5bgn423KpXb8Hvhr9KvatVtcOf9
+	km6SdFr6nEIVDDyczuWBbFJ7U/8O6yhAchlkUv9puSawovSs6C019o6claJUbJpXjMPMX5nrLtU
+	/80Z93kY3fFmLqjQHT51K6vL/A5oafeR/X6jbr5bqPFZ1vAL90dCwE8c9LIhqNTZIrgC2OQ4gI6
+	KOaptOtsQdd/3R+nxGhR1aW52BQ1vsPDQlmo3FJmUMOs/wGUnT+9Rcp1ndC1Q4=
+X-Google-Smtp-Source: AGHT+IFncZAcAnWxKKV09ycgYCqm0lYNyvdm4XJIXodyQo0lsEwlel1FnkF3rC4Igm8LoVETXeQkKQ==
+X-Received: by 2002:a05:6871:650:b0:288:2906:6882 with SMTP id 586e51a60fabf-2a7b32cc1b1mr802178fac.29.1734491254754;
+        Tue, 17 Dec 2024 19:07:34 -0800 (PST)
+Received: from localhost ([2a03:2880:12ff:72::])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-2a3d25473acsm3311761fac.13.2024.12.17.19.07.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Dec 2024 19:07:28 -0800 (PST)
+        Tue, 17 Dec 2024 19:07:33 -0800 (PST)
 From: alexei.starovoitov@gmail.com
 To: bpf@vger.kernel.org
 Cc: andrii@kernel.org,
@@ -89,9 +89,9 @@ Cc: andrii@kernel.org,
 	tj@kernel.org,
 	linux-mm@kvack.org,
 	kernel-team@fb.com
-Subject: [PATCH bpf-next v3 1/6] mm, bpf: Introduce try_alloc_pages() for opportunistic page allocation
-Date: Tue, 17 Dec 2024 19:07:14 -0800
-Message-ID: <20241218030720.1602449-2-alexei.starovoitov@gmail.com>
+Subject: [PATCH bpf-next v3 2/6] mm, bpf: Introduce free_pages_nolock()
+Date: Tue, 17 Dec 2024 19:07:15 -0800
+Message-ID: <20241218030720.1602449-3-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20241218030720.1602449-1-alexei.starovoitov@gmail.com>
 References: <20241218030720.1602449-1-alexei.starovoitov@gmail.com>
@@ -105,190 +105,228 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Tracing BPF programs execute from tracepoints and kprobes where
-running context is unknown, but they need to request additional
-memory. The prior workarounds were using pre-allocated memory and
-BPF specific freelists to satisfy such allocation requests.
-Instead, introduce internal __GFP_TRYLOCK flag that makes page
-allocator accessible from any context. It relies on percpu free
-list of pages that rmqueue_pcplist() should be able to pop the
-page from. If it fails (due to IRQ re-entrancy or list being
-empty) then try_alloc_pages() attempts to spin_trylock zone->lock
-and refill percpu freelist as normal.
-BPF program may execute with IRQs disabled and zone->lock is
-sleeping in RT, so trylock is the only option. In theory we can
-introduce percpu reentrance counter and increment it every time
-spin_lock_irqsave(&zone->lock, flags) is used, but we cannot rely
-on it. Even if this cpu is not in page_alloc path the
-spin_lock_irqsave() is not safe, since BPF prog might be called
-from tracepoint where preemption is disabled. So trylock only.
-
-Note, free_page and memcg are not taught about __GFP_TRYLOCK yet.
-The support comes in the next patches.
-
-This is a first step towards supporting BPF requirements in SLUB
-and getting rid of bpf_mem_alloc.
-That goal was discussed at LSFMM: https://lwn.net/Articles/974138/
+Introduce free_pages_nolock() that can free pages without taking locks.
+It relies on trylock and can be called from any context.
+Since spin_trylock() cannot be used in RT from hard IRQ or NMI
+it uses lockless link list to stash the pages which will be freed
+by subsequent free_pages() from good context.
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- include/linux/gfp.h       |  3 ++
- include/linux/gfp_types.h |  1 +
- mm/internal.h             |  2 ++
- mm/page_alloc.c           | 69 ++++++++++++++++++++++++++++++++++++---
- 4 files changed, 71 insertions(+), 4 deletions(-)
+ include/linux/gfp.h      |  1 +
+ include/linux/mm_types.h |  4 ++
+ include/linux/mmzone.h   |  3 ++
+ mm/page_alloc.c          | 79 ++++++++++++++++++++++++++++++++++++----
+ 4 files changed, 79 insertions(+), 8 deletions(-)
 
 diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index b0fe9f62d15b..65b8df1db26a 100644
+index 65b8df1db26a..ff9060af6295 100644
 --- a/include/linux/gfp.h
 +++ b/include/linux/gfp.h
-@@ -347,6 +347,9 @@ static inline struct page *alloc_page_vma_noprof(gfp_t gfp,
- }
- #define alloc_page_vma(...)			alloc_hooks(alloc_page_vma_noprof(__VA_ARGS__))
+@@ -372,6 +372,7 @@ __meminit void *alloc_pages_exact_nid_noprof(int nid, size_t size, gfp_t gfp_mas
+ 	__get_free_pages((gfp_mask) | GFP_DMA, (order))
  
-+struct page *try_alloc_pages_noprof(int nid, unsigned int order);
-+#define try_alloc_pages(...)			alloc_hooks(try_alloc_pages_noprof(__VA_ARGS__))
+ extern void __free_pages(struct page *page, unsigned int order);
++extern void free_pages_nolock(struct page *page, unsigned int order);
+ extern void free_pages(unsigned long addr, unsigned int order);
+ 
+ #define __free_page(page) __free_pages((page), 0)
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 7361a8f3ab68..52547b3e5fd8 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -99,6 +99,10 @@ struct page {
+ 				/* Or, free page */
+ 				struct list_head buddy_list;
+ 				struct list_head pcp_list;
++				struct {
++					struct llist_node pcp_llist;
++					unsigned int order;
++				};
+ 			};
+ 			/* See page-flags.h for PAGE_MAPPING_FLAGS */
+ 			struct address_space *mapping;
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index b36124145a16..1a854e0a9e3b 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -953,6 +953,9 @@ struct zone {
+ 	/* Primarily protects free_area */
+ 	spinlock_t		lock;
+ 
++	/* Pages to be freed when next trylock succeeds */
++	struct llist_head	trylock_free_pages;
 +
- extern unsigned long get_free_pages_noprof(gfp_t gfp_mask, unsigned int order);
- #define __get_free_pages(...)			alloc_hooks(get_free_pages_noprof(__VA_ARGS__))
+ 	/* Write-intensive fields used by compaction and vmstats. */
+ 	CACHELINE_PADDING(_pad2_);
  
-diff --git a/include/linux/gfp_types.h b/include/linux/gfp_types.h
-index 65db9349f905..65b148ec86eb 100644
---- a/include/linux/gfp_types.h
-+++ b/include/linux/gfp_types.h
-@@ -48,6 +48,7 @@ enum {
- 	___GFP_THISNODE_BIT,
- 	___GFP_ACCOUNT_BIT,
- 	___GFP_ZEROTAGS_BIT,
-+	___GFP_TRYLOCK_BIT,
- #ifdef CONFIG_KASAN_HW_TAGS
- 	___GFP_SKIP_ZERO_BIT,
- 	___GFP_SKIP_KASAN_BIT,
-diff --git a/mm/internal.h b/mm/internal.h
-index cb8d8e8e3ffa..122fce7e1a9e 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -1175,6 +1175,8 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
- #endif
- #define ALLOC_HIGHATOMIC	0x200 /* Allows access to MIGRATE_HIGHATOMIC */
- #define ALLOC_KSWAPD		0x800 /* allow waking of kswapd, __GFP_KSWAPD_RECLAIM set */
-+#define __GFP_TRYLOCK		((__force gfp_t)BIT(___GFP_TRYLOCK_BIT))
-+#define ALLOC_TRYLOCK		0x1000000 /* Only use spin_trylock in allocation path */
- 
- /* Flags that allow allocations below the min watermark. */
- #define ALLOC_RESERVES (ALLOC_NON_BLOCK|ALLOC_MIN_RESERVE|ALLOC_HIGHATOMIC|ALLOC_OOM)
 diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 1cb4b8c8886d..d23545057b6e 100644
+index d23545057b6e..10918bfc6734 100644
 --- a/mm/page_alloc.c
 +++ b/mm/page_alloc.c
-@@ -2304,7 +2304,11 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
+@@ -88,6 +88,9 @@ typedef int __bitwise fpi_t;
+  */
+ #define FPI_TO_TAIL		((__force fpi_t)BIT(1))
+ 
++/* Free the page without taking locks. Rely on trylock only. */
++#define FPI_TRYLOCK		((__force fpi_t)BIT(2))
++
+ /* prevent >1 _updater_ of zone percpu pageset ->high and ->batch fields */
+ static DEFINE_MUTEX(pcp_batch_high_lock);
+ #define MIN_PERCPU_PAGELIST_HIGH_FRACTION (8)
+@@ -1247,13 +1250,44 @@ static void split_large_buddy(struct zone *zone, struct page *page,
+ 	}
+ }
+ 
++static void add_page_to_zone_llist(struct zone *zone, struct page *page,
++				   unsigned int order)
++{
++	/* Remember the order */
++	page->order = order;
++	/* Add the page to the free list */
++	llist_add(&page->pcp_llist, &zone->trylock_free_pages);
++}
++
+ static void free_one_page(struct zone *zone, struct page *page,
+ 			  unsigned long pfn, unsigned int order,
+ 			  fpi_t fpi_flags)
+ {
++	struct llist_head *llhead;
  	unsigned long flags;
- 	int i;
  
 -	spin_lock_irqsave(&zone->lock, flags);
 +	if (!spin_trylock_irqsave(&zone->lock, flags)) {
-+		if (unlikely(alloc_flags & ALLOC_TRYLOCK))
-+			return 0;
++		if (unlikely(fpi_flags & FPI_TRYLOCK)) {
++			add_page_to_zone_llist(zone, page, order);
++			return;
++		}
 +		spin_lock_irqsave(&zone->lock, flags);
 +	}
- 	for (i = 0; i < count; ++i) {
- 		struct page *page = __rmqueue(zone, order, migratetype,
- 								alloc_flags);
-@@ -2904,7 +2908,11 @@ struct page *rmqueue_buddy(struct zone *preferred_zone, struct zone *zone,
- 
- 	do {
- 		page = NULL;
--		spin_lock_irqsave(&zone->lock, flags);
-+		if (!spin_trylock_irqsave(&zone->lock, flags)) {
-+			if (unlikely(alloc_flags & ALLOC_TRYLOCK))
-+				return NULL;
-+			spin_lock_irqsave(&zone->lock, flags);
++
++	/* The lock succeeded. Process deferred pages. */
++	llhead = &zone->trylock_free_pages;
++	if (unlikely(!llist_empty(llhead) && !(fpi_flags & FPI_TRYLOCK))) {
++		struct llist_node *llnode;
++		struct page *p, *tmp;
++
++		llnode = llist_del_all(llhead);
++		llist_for_each_entry_safe(p, tmp, llnode, pcp_llist) {
++			unsigned int p_order = p->order;
++
++			split_large_buddy(zone, p, page_to_pfn(p), p_order, fpi_flags);
++			__count_vm_events(PGFREE, 1 << p_order);
 +		}
- 		if (alloc_flags & ALLOC_HIGHATOMIC)
- 			page = __rmqueue_smallest(zone, order, MIGRATE_HIGHATOMIC);
- 		if (!page) {
-@@ -4001,6 +4009,7 @@ gfp_to_alloc_flags(gfp_t gfp_mask, unsigned int order)
- 	 */
- 	BUILD_BUG_ON(__GFP_HIGH != (__force gfp_t) ALLOC_MIN_RESERVE);
- 	BUILD_BUG_ON(__GFP_KSWAPD_RECLAIM != (__force gfp_t) ALLOC_KSWAPD);
-+	BUILD_BUG_ON(__GFP_TRYLOCK != (__force gfp_t) ALLOC_TRYLOCK);
++	}
+ 	split_large_buddy(zone, page, pfn, order, fpi_flags);
+ 	spin_unlock_irqrestore(&zone->lock, flags);
  
- 	/*
- 	 * The caller may dip into page reserves a bit more if the caller
-@@ -4009,7 +4018,7 @@ gfp_to_alloc_flags(gfp_t gfp_mask, unsigned int order)
- 	 * set both ALLOC_NON_BLOCK and ALLOC_MIN_RESERVE(__GFP_HIGH).
- 	 */
- 	alloc_flags |= (__force int)
--		(gfp_mask & (__GFP_HIGH | __GFP_KSWAPD_RECLAIM));
-+		(gfp_mask & (__GFP_HIGH | __GFP_KSWAPD_RECLAIM | __GFP_TRYLOCK));
+@@ -2596,7 +2630,7 @@ static int nr_pcp_high(struct per_cpu_pages *pcp, struct zone *zone,
  
- 	if (!(gfp_mask & __GFP_DIRECT_RECLAIM)) {
- 		/*
-@@ -4509,7 +4518,8 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
+ static void free_unref_page_commit(struct zone *zone, struct per_cpu_pages *pcp,
+ 				   struct page *page, int migratetype,
+-				   unsigned int order)
++				   unsigned int order, fpi_t fpi_flags)
+ {
+ 	int high, batch;
+ 	int pindex;
+@@ -2631,6 +2665,14 @@ static void free_unref_page_commit(struct zone *zone, struct per_cpu_pages *pcp,
+ 	}
+ 	if (pcp->free_count < (batch << CONFIG_PCP_BATCH_SCALE_MAX))
+ 		pcp->free_count += (1 << order);
++
++	if (unlikely(fpi_flags & FPI_TRYLOCK)) {
++		/*
++		 * Do not attempt to take a zone lock. Let pcp->count get
++		 * over high mark temporarily.
++		 */
++		return;
++	}
+ 	high = nr_pcp_high(pcp, zone, batch, free_high);
+ 	if (pcp->count >= high) {
+ 		free_pcppages_bulk(zone, nr_pcp_free(pcp, batch, high, free_high),
+@@ -2645,7 +2687,8 @@ static void free_unref_page_commit(struct zone *zone, struct per_cpu_pages *pcp,
+ /*
+  * Free a pcp page
+  */
+-void free_unref_page(struct page *page, unsigned int order)
++static void __free_unref_page(struct page *page, unsigned int order,
++			      fpi_t fpi_flags)
+ {
+ 	unsigned long __maybe_unused UP_flags;
+ 	struct per_cpu_pages *pcp;
+@@ -2654,7 +2697,7 @@ void free_unref_page(struct page *page, unsigned int order)
+ 	int migratetype;
  
- 	might_alloc(gfp_mask);
+ 	if (!pcp_allowed_order(order)) {
+-		__free_pages_ok(page, order, FPI_NONE);
++		__free_pages_ok(page, order, fpi_flags);
+ 		return;
+ 	}
  
--	if (should_fail_alloc_page(gfp_mask, order))
-+	if (!(*alloc_flags & ALLOC_TRYLOCK) &&
-+	    should_fail_alloc_page(gfp_mask, order))
- 		return false;
+@@ -2671,24 +2714,33 @@ void free_unref_page(struct page *page, unsigned int order)
+ 	migratetype = get_pfnblock_migratetype(page, pfn);
+ 	if (unlikely(migratetype >= MIGRATE_PCPTYPES)) {
+ 		if (unlikely(is_migrate_isolate(migratetype))) {
+-			free_one_page(page_zone(page), page, pfn, order, FPI_NONE);
++			free_one_page(page_zone(page), page, pfn, order, fpi_flags);
+ 			return;
+ 		}
+ 		migratetype = MIGRATE_MOVABLE;
+ 	}
  
- 	*alloc_flags = gfp_to_alloc_flags_cma(gfp_mask, *alloc_flags);
-@@ -7023,3 +7033,54 @@ static bool __free_unaccepted(struct page *page)
+ 	zone = page_zone(page);
++	if (IS_ENABLED(CONFIG_PREEMPT_RT) && (in_nmi() || in_hardirq())) {
++		add_page_to_zone_llist(zone, page, order);
++		return;
++	}
+ 	pcp_trylock_prepare(UP_flags);
+ 	pcp = pcp_spin_trylock(zone->per_cpu_pageset);
+ 	if (pcp) {
+-		free_unref_page_commit(zone, pcp, page, migratetype, order);
++		free_unref_page_commit(zone, pcp, page, migratetype, order, fpi_flags);
+ 		pcp_spin_unlock(pcp);
+ 	} else {
+-		free_one_page(zone, page, pfn, order, FPI_NONE);
++		free_one_page(zone, page, pfn, order, fpi_flags);
+ 	}
+ 	pcp_trylock_finish(UP_flags);
  }
  
- #endif /* CONFIG_UNACCEPTED_MEMORY */
-+
-+struct page *try_alloc_pages_noprof(int nid, unsigned int order)
++void free_unref_page(struct page *page, unsigned int order)
 +{
-+	gfp_t alloc_gfp = __GFP_NOWARN | __GFP_ZERO |
-+			  __GFP_NOMEMALLOC | __GFP_TRYLOCK;
-+	unsigned int alloc_flags = ALLOC_TRYLOCK;
-+	struct alloc_context ac = { };
-+	struct page *page;
-+
-+	/*
-+	 * In RT spin_trylock() may call raw_spin_lock() which is unsafe in NMI.
-+	 * If spin_trylock() is called from hard IRQ the current task may be
-+	 * waiting for one rt_spin_lock, but rt_spin_trylock() will mark the
-+	 * task as the owner of another rt_spin_lock which will confuse PI
-+	 * logic, so return immediately if called form hard IRQ or NMI.
-+	 *
-+	 * Note, irqs_disabled() case is ok. This function can be called
-+	 * from raw_spin_lock_irqsave region.
-+	 */
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT) && (in_nmi() || in_hardirq()))
-+		return NULL;
-+	if (!pcp_allowed_order(order))
-+		return NULL;
-+
-+#ifdef CONFIG_UNACCEPTED_MEMORY
-+	if (has_unaccepted_memory() && !list_empty(&zone->unaccepted_pages))
-+		return NULL;
-+#endif
-+
-+	if (nid == NUMA_NO_NODE)
-+		nid = numa_node_id();
-+
-+	prepare_alloc_pages(alloc_gfp, order, nid, NULL, &ac,
-+			    &alloc_gfp, &alloc_flags);
-+
-+	/*
-+	 * Best effort allocation from percpu free list.
-+	 * If it's empty attempt to spin_trylock zone->lock.
-+	 * Do not specify __GFP_KSWAPD_RECLAIM to avoid wakeup_kswapd
-+	 * that may need to grab a lock.
-+	 * Do not specify __GFP_ACCOUNT to avoid local_lock.
-+	 * Do not warn either.
-+	 */
-+	page = get_page_from_freelist(alloc_gfp, order, alloc_flags, &ac);
-+
-+	/* Unlike regular alloc_pages() there is no __alloc_pages_slowpath(). */
-+
-+	trace_mm_page_alloc(page, order, alloc_gfp & ~__GFP_TRYLOCK, ac.migratetype);
-+	kmsan_alloc_page(page, order, alloc_gfp);
-+	return page;
++	__free_unref_page(page, order, FPI_NONE);
 +}
++
+ /*
+  * Free a batch of folios
+  */
+@@ -2777,7 +2829,7 @@ void free_unref_folios(struct folio_batch *folios)
+ 
+ 		trace_mm_page_free_batched(&folio->page);
+ 		free_unref_page_commit(zone, pcp, &folio->page, migratetype,
+-				order);
++				       order, FPI_NONE);
+ 	}
+ 
+ 	if (pcp) {
+@@ -4854,6 +4906,17 @@ void __free_pages(struct page *page, unsigned int order)
+ }
+ EXPORT_SYMBOL(__free_pages);
+ 
++/*
++ * Can be called while holding raw_spin_lock or from IRQ and NMI,
++ * but only for pages that came from try_alloc_pages():
++ * order <= 3, !folio, etc
++ */
++void free_pages_nolock(struct page *page, unsigned int order)
++{
++	if (put_page_testzero(page))
++		__free_unref_page(page, order, FPI_TRYLOCK);
++}
++
+ void free_pages(unsigned long addr, unsigned int order)
+ {
+ 	if (addr != 0) {
 -- 
 2.43.5
 
