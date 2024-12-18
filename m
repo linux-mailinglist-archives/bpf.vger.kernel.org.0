@@ -1,398 +1,356 @@
-Return-Path: <bpf+bounces-47191-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47192-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E67F89F5DF1
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 05:49:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC1649F5DF7
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 05:59:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13B30166CC1
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 04:49:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92ACB18888C6
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 04:59:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AB41156F21;
-	Wed, 18 Dec 2024 04:48:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 836DA15250F;
+	Wed, 18 Dec 2024 04:59:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oGdtZTTR"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EktDwS8u"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 168401547F3;
-	Wed, 18 Dec 2024 04:48:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F6B135974
+	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 04:59:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734497287; cv=none; b=S3XbWZvR8m5L8Qm25hjYVBvq7J3kiBelJ8GEAtniG+9SlsKXIHC1XBJqfVPLYonv9cUKS5s+uWI6sKc0Y6euximu+3se/B/e8v5rlZbsL711uCaq5pxw+v6xaPTv7stD0CZ2P2BGSCv9dMfmkPqp3XMVoVP2wzHb0bicLNsHpf4=
+	t=1734497963; cv=none; b=WVWS+gdyoXFNrdglu+DFHBbLz5mHrnr4fCD824nJIqk7M4l8H2GN5SR98kxS3y6hUQy+MgleUG5trWPf80Q+g/mR1D75i8SS35SsaTuo53rgxH7JVoh7jDUUplMIGLdVNLj5dc4XXt+cl+u0MuqHI4cDC2roLfOmZcJ7O87YLEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734497287; c=relaxed/simple;
-	bh=FQmK/zjfrxygp/Pf6guBS6Z2EkiYTrDZoPCVgsbDZ0g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jNaF8R8YDubypkhGvDE4hhzm7zcPMLUTtja0BJ/yL61b6x13Vx6baC3gxtnpL9VXMcheCpIHIdhRDC3sfUFCXpap7cu9H83xl9Jsfennti5juLP9//bQKOTpXiLqQxMXClvLsUSu6V8j9whOk3+sj8QGomuidUfEtE2GHtLmOmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oGdtZTTR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34E8CC4CECE;
-	Wed, 18 Dec 2024 04:48:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734497286;
-	bh=FQmK/zjfrxygp/Pf6guBS6Z2EkiYTrDZoPCVgsbDZ0g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oGdtZTTRrO1/QFF+0bjFrW1QUntt8xTylhfnF6Md9NdfjHcKa6PusjMf7L+MwieGz
-	 2AbA0ckOzUxm6GlWpApziIsVtTenrn23XigC5jJvPkDr2PPgxQ3QUAC/quFBwyQ1s0
-	 H9jdwErpjyMYFkXfj2mQ+kRC7lfFT5fCIEL+C15uSzfc+0dt831T7UXLaP2dYwtSXf
-	 wEr4n/pW2kHfd0eNPuMeFRXWSAP6SYA15KeI9Inyv/ZGRLZNgT3i4+GklRw1PJeYLa
-	 tOqBa0C7+K4HaGwGIh7L7RWv38uoqXsNKRHZmvGxe0ZhtSb2MuW9i/UJzkxCr/X9LS
-	 29PuwdtcGAWZA==
-From: Song Liu <song@kernel.org>
-To: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org
-Cc: kernel-team@meta.com,
-	andrii@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	kpsingh@kernel.org,
-	mattbobrowski@google.com,
-	paul@paul-moore.com,
-	jmorris@namei.org,
-	serge@hallyn.com,
-	memxor@gmail.com,
-	Song Liu <song@kernel.org>
-Subject: [PATCH v5 bpf-next 5/5] selftests/bpf: Test kfuncs that set and remove xattr from BPF programs
-Date: Tue, 17 Dec 2024 20:47:11 -0800
-Message-ID: <20241218044711.1723221-6-song@kernel.org>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20241218044711.1723221-1-song@kernel.org>
-References: <20241218044711.1723221-1-song@kernel.org>
+	s=arc-20240116; t=1734497963; c=relaxed/simple;
+	bh=PuF702OMKBO3vBs6+Ps2RuKOd/mxzfHnb1UDPh4Kivk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Lxd6Yq2E1LncGDIQ1cgzXzprmya9hY/KSvORS+sOKar2gcj/DEuCiZTiPt90IsIqbUur4y/f/0lvYzixPeZwg/u2dWt7IIu+UlbrsOCl9x85Ctpm9D/LYb0q9j55tWa5XuceoQr6r7Buiq+QtxB6mANgq7p7xKJTBOWuTZB9Kzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EktDwS8u; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6d91653e9d7so56878496d6.1
+        for <bpf@vger.kernel.org>; Tue, 17 Dec 2024 20:59:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1734497960; x=1735102760; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tM9aAIzem3SfKVAWA4VaTEk++v35HrnlAHqCNLRzXMk=;
+        b=EktDwS8uDztJkFsEXKvzgMh14tstbJR2klu7aynKQwLfPr3+IeX8mTIYqOq3PJz64v
+         XrP4KHfba48m0KboVhamHQcH0Gp3y19oNpeo8XpriuGrWcWCzvllAKUBBk7Yl/1ALYqX
+         MpfMUuNr90fANR+kQxyQgfe19DiSqIdGq23W1/CJfavTJr5fH6p9NupLtL2Yzfs0RWUF
+         tRW8L+iL4gWEiR6469JdAYp8RJTITncmEbup3rDdBh9Rhj/nzQ31vzcLLE9sTJfsh3zR
+         Xa1O22ssegZlz8IanhO1UevkBUczkQqhetvFmRPgm/WeiF2eXEe0wTmg5wZTccNqu43h
+         OwKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734497960; x=1735102760;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tM9aAIzem3SfKVAWA4VaTEk++v35HrnlAHqCNLRzXMk=;
+        b=M4Xwh1H2ZOoaq1Ytp+1mwTEmjfng/oAkeEYac3ZhAFtqlsMpPTxA4/CaeCwJbPEH2k
+         jeVikVhXiEMkq4Aw26QjvFTynMHEDTelOuUg3imSzmENYh0sjkxWHi1kvRhx3MPcSOaR
+         hLLYAEtR1SmOOTYhoqzHLVGJ9dY6r0K73xugl90Io4f13xjZErOAIzjkI+v3JM3fZnmL
+         1RvPuYjfGEqMzkuF46ojk1MvwjEIIWLIGj/dG/TdmI6Z2OMVVwFsrK6CzHyBuuvLLUYP
+         tbfa7EQ4rKZZoJTWrDgy0dcotaUVEjFR3S5nszdUhWsMOzfzcj1k/qxTOyQJDi3Tn7O8
+         CcCA==
+X-Gm-Message-State: AOJu0YwRB+rGR7Ya3qURsqWSZBEcZKvtzIBRKfIAqI8CU1vlKI9SG6Dc
+	5R9psRa/16ohSHwK5tBksW7s+JQvJTS2vn/z0S+lybZ5XCjiszOF6IVb+1JZau0y0ZBOktr+dv8
+	0DJ/j7SHSQfA3edHhiMUcObNMXw4a3M1Km30O
+X-Gm-Gg: ASbGncsC1xF1FnZPg+0rx/SlhvJcVbEHSHlP8pktQhlKeQxez5+xwyEgsmqIjw3F4yF
+	9hlUGDgYVHwYKfSYcw1q4JHCPMMyw2nAoIW8=
+X-Google-Smtp-Source: AGHT+IGGee0Jhlf7uun5NkaJLNERwoodBYYu5MEU02cNCdKeTSuAt+mlVLQw7SdIS8zsgM1D1cZNHs3S5Qbc20myLIs=
+X-Received: by 2002:ad4:4eac:0:b0:6dc:d29a:b18e with SMTP id
+ 6a1803df08f44-6dd0925cc7amr31279036d6.47.1734497959872; Tue, 17 Dec 2024
+ 20:59:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20241218030720.1602449-1-alexei.starovoitov@gmail.com> <20241218030720.1602449-3-alexei.starovoitov@gmail.com>
+In-Reply-To: <20241218030720.1602449-3-alexei.starovoitov@gmail.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Tue, 17 Dec 2024 20:58:43 -0800
+X-Gm-Features: AbW1kvYrgEsUSkvjR1lm0Dsfqg2WP9ABQhR90_xAulHmJGik8KXpYq8q3U9F9-0
+Message-ID: <CAJD7tkYOfBepXDeUFj6mM1evRoDdaS_THwmhp9a4pHeM4bgsFA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/6] mm, bpf: Introduce free_pages_nolock()
+To: alexei.starovoitov@gmail.com
+Cc: bpf@vger.kernel.org, andrii@kernel.org, memxor@gmail.com, 
+	akpm@linux-foundation.org, peterz@infradead.org, vbabka@suse.cz, 
+	bigeasy@linutronix.de, rostedt@goodmis.org, houtao1@huawei.com, 
+	hannes@cmpxchg.org, shakeel.butt@linux.dev, mhocko@suse.com, 
+	willy@infradead.org, tglx@linutronix.de, jannh@google.com, tj@kernel.org, 
+	linux-mm@kvack.org, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Two sets of tests are added to exercise the not _locked and _locked
-version of the kfuncs. For both tests, user space accesses xattr
-security.bpf.foo on a testfile. The BPF program is triggered by user
-space access (on LSM hook inode_[set|get]_xattr) and sets or removes
-xattr security.bpf.bar. Then user space then validates that xattr
-security.bpf.bar is set or removed as expected.
+On Tue, Dec 17, 2024 at 7:07=E2=80=AFPM <alexei.starovoitov@gmail.com> wrot=
+e:
+>
+> From: Alexei Starovoitov <ast@kernel.org>
+>
+> Introduce free_pages_nolock() that can free pages without taking locks.
+> It relies on trylock and can be called from any context.
+> Since spin_trylock() cannot be used in RT from hard IRQ or NMI
+> it uses lockless link list to stash the pages which will be freed
+> by subsequent free_pages() from good context.
+>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+>  include/linux/gfp.h      |  1 +
+>  include/linux/mm_types.h |  4 ++
+>  include/linux/mmzone.h   |  3 ++
+>  mm/page_alloc.c          | 79 ++++++++++++++++++++++++++++++++++++----
+>  4 files changed, 79 insertions(+), 8 deletions(-)
+>
+> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+> index 65b8df1db26a..ff9060af6295 100644
+> --- a/include/linux/gfp.h
+> +++ b/include/linux/gfp.h
+> @@ -372,6 +372,7 @@ __meminit void *alloc_pages_exact_nid_noprof(int nid,=
+ size_t size, gfp_t gfp_mas
+>         __get_free_pages((gfp_mask) | GFP_DMA, (order))
+>
+>  extern void __free_pages(struct page *page, unsigned int order);
+> +extern void free_pages_nolock(struct page *page, unsigned int order);
+>  extern void free_pages(unsigned long addr, unsigned int order);
+>
+>  #define __free_page(page) __free_pages((page), 0)
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 7361a8f3ab68..52547b3e5fd8 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -99,6 +99,10 @@ struct page {
+>                                 /* Or, free page */
+>                                 struct list_head buddy_list;
+>                                 struct list_head pcp_list;
+> +                               struct {
+> +                                       struct llist_node pcp_llist;
+> +                                       unsigned int order;
+> +                               };
+>                         };
+>                         /* See page-flags.h for PAGE_MAPPING_FLAGS */
+>                         struct address_space *mapping;
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index b36124145a16..1a854e0a9e3b 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -953,6 +953,9 @@ struct zone {
+>         /* Primarily protects free_area */
+>         spinlock_t              lock;
+>
+> +       /* Pages to be freed when next trylock succeeds */
+> +       struct llist_head       trylock_free_pages;
+> +
+>         /* Write-intensive fields used by compaction and vmstats. */
+>         CACHELINE_PADDING(_pad2_);
+>
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index d23545057b6e..10918bfc6734 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -88,6 +88,9 @@ typedef int __bitwise fpi_t;
+>   */
+>  #define FPI_TO_TAIL            ((__force fpi_t)BIT(1))
+>
+> +/* Free the page without taking locks. Rely on trylock only. */
+> +#define FPI_TRYLOCK            ((__force fpi_t)BIT(2))
+> +
 
-Note that, in both tests, the BPF programs use the not _locked kfuncs.
-The verifier picks the proper kfuncs based on the calling context.
+The comment above the definition of fpi_t mentions that it's for
+non-pcp variants of free_pages(), so I guess that needs to be updated
+in this patch.
 
-Signed-off-by: Song Liu <song@kernel.org>
----
- tools/testing/selftests/bpf/bpf_kfuncs.h      |   5 +
- .../selftests/bpf/prog_tests/fs_kfuncs.c      | 125 ++++++++++++++++
- .../bpf/progs/test_set_remove_xattr.c         | 133 ++++++++++++++++++
- 3 files changed, 263 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/test_set_remove_xattr.c
+More importantly, I think the comment states this mainly because the
+existing flags won't be properly handled when freeing pages to the
+pcplist. The flags will be lost once the pages are added to the
+pcplist, and won't be propagated when the pages are eventually freed
+to the buddy allocator (e.g. through free_pcppages_bulk()).
 
-diff --git a/tools/testing/selftests/bpf/bpf_kfuncs.h b/tools/testing/selftests/bpf/bpf_kfuncs.h
-index 2eb3483f2fb0..8215c9b3115e 100644
---- a/tools/testing/selftests/bpf/bpf_kfuncs.h
-+++ b/tools/testing/selftests/bpf/bpf_kfuncs.h
-@@ -87,4 +87,9 @@ struct dentry;
-  */
- extern int bpf_get_dentry_xattr(struct dentry *dentry, const char *name,
- 			      struct bpf_dynptr *value_ptr) __ksym __weak;
-+
-+extern int bpf_set_dentry_xattr(struct dentry *dentry, const char *name__str,
-+				const struct bpf_dynptr *value_p, int flags) __ksym __weak;
-+extern int bpf_remove_dentry_xattr(struct dentry *dentry, const char *name__str) __ksym __weak;
-+
- #endif
-diff --git a/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c b/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
-index 419f45b56472..43a26ec69a8e 100644
---- a/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
-@@ -8,6 +8,7 @@
- #include <unistd.h>
- #include <test_progs.h>
- #include "test_get_xattr.skel.h"
-+#include "test_set_remove_xattr.skel.h"
- #include "test_fsverity.skel.h"
- 
- static const char testfile[] = "/tmp/test_progs_fs_kfuncs";
-@@ -72,6 +73,127 @@ static void test_get_xattr(const char *name, const char *value, bool allow_acces
- 	remove(testfile);
- }
- 
-+/* xattr value we will set to security.bpf.foo */
-+static const char value_foo[] = "hello";
-+
-+static void read_and_validate_foo(struct test_set_remove_xattr *skel)
-+{
-+	char value_out[32];
-+	int err;
-+
-+	err = getxattr(testfile, skel->rodata->xattr_foo, value_out, sizeof(value_out));
-+	ASSERT_EQ(err, sizeof(value_foo), "getxattr size foo");
-+	ASSERT_EQ(strncmp(value_out, value_foo, sizeof(value_foo)), 0, "strncmp value_foo");
-+}
-+
-+static void set_foo(struct test_set_remove_xattr *skel)
-+{
-+	ASSERT_OK(setxattr(testfile, skel->rodata->xattr_foo, value_foo, strlen(value_foo) + 1, 0),
-+		  "setxattr foo");
-+}
-+
-+static void validate_bar_match(struct test_set_remove_xattr *skel)
-+{
-+	char value_out[32];
-+	int err;
-+
-+	err = getxattr(testfile, skel->rodata->xattr_bar, value_out, sizeof(value_out));
-+	ASSERT_EQ(err, sizeof(skel->data->value_bar), "getxattr size bar");
-+	ASSERT_EQ(strncmp(value_out, skel->data->value_bar, sizeof(skel->data->value_bar)), 0,
-+		  "strncmp value_bar");
-+}
-+
-+static void validate_bar_removed(struct test_set_remove_xattr *skel)
-+{
-+	char value_out[32];
-+	int err;
-+
-+	err = getxattr(testfile, skel->rodata->xattr_bar, value_out, sizeof(value_out));
-+	ASSERT_LT(err, 0, "getxattr size bar should fail");
-+}
-+
-+static void test_set_remove_xattr(void)
-+{
-+	struct test_set_remove_xattr *skel = NULL;
-+	int fd = -1, err;
-+
-+	fd = open(testfile, O_CREAT | O_RDONLY, 0644);
-+	if (!ASSERT_GE(fd, 0, "create_file"))
-+		return;
-+
-+	close(fd);
-+	fd = -1;
-+
-+	skel = test_set_remove_xattr__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_set_remove_xattr__open_and_load"))
-+		return;
-+
-+	/* Set security.bpf.foo to "hello" */
-+	err = setxattr(testfile, skel->rodata->xattr_foo, value_foo, strlen(value_foo) + 1, 0);
-+	if (err && errno == EOPNOTSUPP) {
-+		printf("%s:SKIP:local fs doesn't support xattr (%d)\n"
-+		       "To run this test, make sure /tmp filesystem supports xattr.\n",
-+		       __func__, errno);
-+		test__skip();
-+		goto out;
-+	}
-+
-+	if (!ASSERT_OK(err, "setxattr"))
-+		goto out;
-+
-+	skel->bss->monitored_pid = getpid();
-+	err = test_set_remove_xattr__attach(skel);
-+	if (!ASSERT_OK(err, "test_set_remove_xattr__attach"))
-+		goto out;
-+
-+	/* First, test not _locked version of the kfuncs with getxattr. */
-+
-+	/* Read security.bpf.foo and trigger test_inode_getxattr. This
-+	 * bpf program will set security.bpf.bar to "world".
-+	 */
-+	read_and_validate_foo(skel);
-+	validate_bar_match(skel);
-+
-+	/* Read security.bpf.foo and trigger test_inode_getxattr again.
-+	 * This will remove xattr security.bpf.bar.
-+	 */
-+	read_and_validate_foo(skel);
-+	validate_bar_removed(skel);
-+
-+	ASSERT_TRUE(skel->bss->set_security_bpf_bar_success, "set_security_bpf_bar_success");
-+	ASSERT_TRUE(skel->bss->remove_security_bpf_bar_success, "remove_security_bpf_bar_success");
-+	ASSERT_TRUE(skel->bss->set_security_selinux_fail, "set_security_selinux_fail");
-+	ASSERT_TRUE(skel->bss->remove_security_selinux_fail, "remove_security_selinux_fail");
-+
-+	/* Second, test _locked version of the kfuncs, with setxattr */
-+
-+	/* Set security.bpf.foo and trigger test_inode_setxattr. This
-+	 * bpf program will set security.bpf.bar to "world".
-+	 */
-+	set_foo(skel);
-+	validate_bar_match(skel);
-+
-+	/* Set security.bpf.foo and trigger test_inode_setxattr again.
-+	 * This will remove xattr security.bpf.bar.
-+	 */
-+	set_foo(skel);
-+	validate_bar_removed(skel);
-+
-+	ASSERT_TRUE(skel->bss->locked_set_security_bpf_bar_success,
-+		    "locked_set_security_bpf_bar_success");
-+	ASSERT_TRUE(skel->bss->locked_remove_security_bpf_bar_success,
-+		    "locked_remove_security_bpf_bar_success");
-+	ASSERT_TRUE(skel->bss->locked_set_security_selinux_fail,
-+		    "locked_set_security_selinux_fail");
-+	ASSERT_TRUE(skel->bss->locked_remove_security_selinux_fail,
-+		    "locked_remove_security_selinux_fail");
-+
-+out:
-+	close(fd);
-+	test_set_remove_xattr__destroy(skel);
-+	remove(testfile);
-+}
-+
- #ifndef SHA256_DIGEST_SIZE
- #define SHA256_DIGEST_SIZE      32
- #endif
-@@ -161,6 +283,9 @@ void test_fs_kfuncs(void)
- 	if (test__start_subtest("security_selinux_xattr_error"))
- 		test_get_xattr("security.selinux", "hello", false);
- 
-+	if (test__start_subtest("set_remove_xattr"))
-+		test_set_remove_xattr();
-+
- 	if (test__start_subtest("fsverity"))
- 		test_fsverity();
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_set_remove_xattr.c b/tools/testing/selftests/bpf/progs/test_set_remove_xattr.c
-new file mode 100644
-index 000000000000..e49be3cc4a33
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_set_remove_xattr.c
-@@ -0,0 +1,133 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include <errno.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_kfuncs.h"
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+__u32 monitored_pid;
-+
-+const char xattr_foo[] = "security.bpf.foo";
-+const char xattr_bar[] = "security.bpf.bar";
-+const char xattr_linux[] = "security.selinux";
-+char value_bar[] = "world";
-+char read_value[32];
-+
-+bool set_security_bpf_bar_success;
-+bool remove_security_bpf_bar_success;
-+bool set_security_selinux_fail;
-+bool remove_security_selinux_fail;
-+
-+char name_buf[32];
-+
-+static inline bool name_match_foo(const char *name)
-+{
-+	bpf_probe_read_kernel(name_buf, sizeof(name_buf), name);
-+
-+	return !bpf_strncmp(name_buf, sizeof(xattr_foo), xattr_foo);
-+}
-+
-+/* Test bpf_set_dentry_xattr and bpf_remove_dentry_xattr */
-+SEC("lsm.s/inode_getxattr")
-+int BPF_PROG(test_inode_getxattr, struct dentry *dentry, char *name)
-+{
-+	struct bpf_dynptr value_ptr;
-+	__u32 pid;
-+	int ret;
-+
-+	pid = bpf_get_current_pid_tgid() >> 32;
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	/* Only do the following for security.bpf.foo */
-+	if (!name_match_foo(name))
-+		return 0;
-+
-+	bpf_dynptr_from_mem(read_value, sizeof(read_value), 0, &value_ptr);
-+
-+	/* read security.bpf.bar */
-+	ret = bpf_get_dentry_xattr(dentry, xattr_bar, &value_ptr);
-+
-+	if (ret < 0) {
-+		/* If security.bpf.bar doesn't exist, set it */
-+		bpf_dynptr_from_mem(value_bar, sizeof(value_bar), 0, &value_ptr);
-+
-+		ret = bpf_set_dentry_xattr(dentry, xattr_bar, &value_ptr, 0);
-+		if (!ret)
-+			set_security_bpf_bar_success = true;
-+		ret = bpf_set_dentry_xattr(dentry, xattr_linux, &value_ptr, 0);
-+		if (ret)
-+			set_security_selinux_fail = true;
-+	} else {
-+		/* If security.bpf.bar exists, remove it */
-+		ret = bpf_remove_dentry_xattr(dentry, xattr_bar);
-+		if (!ret)
-+			remove_security_bpf_bar_success = true;
-+
-+		ret = bpf_remove_dentry_xattr(dentry, xattr_linux);
-+		if (ret)
-+			remove_security_selinux_fail = true;
-+	}
-+
-+	return 0;
-+}
-+
-+bool locked_set_security_bpf_bar_success;
-+bool locked_remove_security_bpf_bar_success;
-+bool locked_set_security_selinux_fail;
-+bool locked_remove_security_selinux_fail;
-+
-+/* Test bpf_set_dentry_xattr_locked and bpf_remove_dentry_xattr_locked.
-+ * It not necessary to differentiate the _locked version and the
-+ * not-_locked version in the BPF program. The verifier will fix them up
-+ * properly.
-+ */
-+SEC("lsm.s/inode_setxattr")
-+int BPF_PROG(test_inode_setxattr, struct mnt_idmap *idmap,
-+	     struct dentry *dentry, const char *name,
-+	     const void *value, size_t size, int flags)
-+{
-+	struct bpf_dynptr value_ptr;
-+	__u32 pid;
-+	int ret;
-+
-+	pid = bpf_get_current_pid_tgid() >> 32;
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	/* Only do the following for security.bpf.foo */
-+	if (!name_match_foo(name))
-+		return 0;
-+
-+	bpf_dynptr_from_mem(read_value, sizeof(read_value), 0, &value_ptr);
-+
-+	/* read security.bpf.bar */
-+	ret = bpf_get_dentry_xattr(dentry, xattr_bar, &value_ptr);
-+
-+	if (ret < 0) {
-+		/* If security.bpf.bar doesn't exist, set it */
-+		bpf_dynptr_from_mem(value_bar, sizeof(value_bar), 0, &value_ptr);
-+
-+		ret = bpf_set_dentry_xattr(dentry, xattr_bar, &value_ptr, 0);
-+		if (!ret)
-+			locked_set_security_bpf_bar_success = true;
-+		ret = bpf_set_dentry_xattr(dentry, xattr_linux, &value_ptr, 0);
-+		if (ret)
-+			locked_set_security_selinux_fail = true;
-+	} else {
-+		/* If security.bpf.bar exists, remove it */
-+		ret = bpf_remove_dentry_xattr(dentry, xattr_bar);
-+		if (!ret)
-+			locked_remove_security_bpf_bar_success = true;
-+
-+		ret = bpf_remove_dentry_xattr(dentry, xattr_linux);
-+		if (ret)
-+			locked_remove_security_selinux_fail = true;
-+	}
-+
-+	return 0;
-+}
--- 
-2.43.5
+So I think we need to at least explicitly check which flags are
+allowed when freeing pages to the pcplists or something similar.
 
+>  /* prevent >1 _updater_ of zone percpu pageset ->high and ->batch fields=
+ */
+>  static DEFINE_MUTEX(pcp_batch_high_lock);
+>  #define MIN_PERCPU_PAGELIST_HIGH_FRACTION (8)
+> @@ -1247,13 +1250,44 @@ static void split_large_buddy(struct zone *zone, =
+struct page *page,
+>         }
+>  }
+>
+> +static void add_page_to_zone_llist(struct zone *zone, struct page *page,
+> +                                  unsigned int order)
+> +{
+> +       /* Remember the order */
+> +       page->order =3D order;
+> +       /* Add the page to the free list */
+> +       llist_add(&page->pcp_llist, &zone->trylock_free_pages);
+> +}
+> +
+>  static void free_one_page(struct zone *zone, struct page *page,
+>                           unsigned long pfn, unsigned int order,
+>                           fpi_t fpi_flags)
+>  {
+> +       struct llist_head *llhead;
+>         unsigned long flags;
+>
+> -       spin_lock_irqsave(&zone->lock, flags);
+> +       if (!spin_trylock_irqsave(&zone->lock, flags)) {
+> +               if (unlikely(fpi_flags & FPI_TRYLOCK)) {
+> +                       add_page_to_zone_llist(zone, page, order);
+> +                       return;
+> +               }
+> +               spin_lock_irqsave(&zone->lock, flags);
+> +       }
+> +
+> +       /* The lock succeeded. Process deferred pages. */
+> +       llhead =3D &zone->trylock_free_pages;
+> +       if (unlikely(!llist_empty(llhead) && !(fpi_flags & FPI_TRYLOCK)))=
+ {
+> +               struct llist_node *llnode;
+> +               struct page *p, *tmp;
+> +
+> +               llnode =3D llist_del_all(llhead);
+> +               llist_for_each_entry_safe(p, tmp, llnode, pcp_llist) {
+> +                       unsigned int p_order =3D p->order;
+> +
+> +                       split_large_buddy(zone, p, page_to_pfn(p), p_orde=
+r, fpi_flags);
+> +                       __count_vm_events(PGFREE, 1 << p_order);
+> +               }
+> +       }
+>         split_large_buddy(zone, page, pfn, order, fpi_flags);
+>         spin_unlock_irqrestore(&zone->lock, flags);
+>
+> @@ -2596,7 +2630,7 @@ static int nr_pcp_high(struct per_cpu_pages *pcp, s=
+truct zone *zone,
+>
+>  static void free_unref_page_commit(struct zone *zone, struct per_cpu_pag=
+es *pcp,
+>                                    struct page *page, int migratetype,
+> -                                  unsigned int order)
+> +                                  unsigned int order, fpi_t fpi_flags)
+>  {
+>         int high, batch;
+>         int pindex;
+> @@ -2631,6 +2665,14 @@ static void free_unref_page_commit(struct zone *zo=
+ne, struct per_cpu_pages *pcp,
+>         }
+>         if (pcp->free_count < (batch << CONFIG_PCP_BATCH_SCALE_MAX))
+>                 pcp->free_count +=3D (1 << order);
+> +
+> +       if (unlikely(fpi_flags & FPI_TRYLOCK)) {
+> +               /*
+> +                * Do not attempt to take a zone lock. Let pcp->count get
+> +                * over high mark temporarily.
+> +                */
+> +               return;
+> +       }
+>         high =3D nr_pcp_high(pcp, zone, batch, free_high);
+>         if (pcp->count >=3D high) {
+>                 free_pcppages_bulk(zone, nr_pcp_free(pcp, batch, high, fr=
+ee_high),
+> @@ -2645,7 +2687,8 @@ static void free_unref_page_commit(struct zone *zon=
+e, struct per_cpu_pages *pcp,
+>  /*
+>   * Free a pcp page
+>   */
+> -void free_unref_page(struct page *page, unsigned int order)
+> +static void __free_unref_page(struct page *page, unsigned int order,
+> +                             fpi_t fpi_flags)
+>  {
+>         unsigned long __maybe_unused UP_flags;
+>         struct per_cpu_pages *pcp;
+> @@ -2654,7 +2697,7 @@ void free_unref_page(struct page *page, unsigned in=
+t order)
+>         int migratetype;
+>
+>         if (!pcp_allowed_order(order)) {
+> -               __free_pages_ok(page, order, FPI_NONE);
+> +               __free_pages_ok(page, order, fpi_flags);
+>                 return;
+>         }
+>
+> @@ -2671,24 +2714,33 @@ void free_unref_page(struct page *page, unsigned =
+int order)
+>         migratetype =3D get_pfnblock_migratetype(page, pfn);
+>         if (unlikely(migratetype >=3D MIGRATE_PCPTYPES)) {
+>                 if (unlikely(is_migrate_isolate(migratetype))) {
+> -                       free_one_page(page_zone(page), page, pfn, order, =
+FPI_NONE);
+> +                       free_one_page(page_zone(page), page, pfn, order, =
+fpi_flags);
+>                         return;
+>                 }
+>                 migratetype =3D MIGRATE_MOVABLE;
+>         }
+>
+>         zone =3D page_zone(page);
+> +       if (IS_ENABLED(CONFIG_PREEMPT_RT) && (in_nmi() || in_hardirq())) =
+{
+> +               add_page_to_zone_llist(zone, page, order);
+> +               return;
+> +       }
+>         pcp_trylock_prepare(UP_flags);
+>         pcp =3D pcp_spin_trylock(zone->per_cpu_pageset);
+>         if (pcp) {
+> -               free_unref_page_commit(zone, pcp, page, migratetype, orde=
+r);
+> +               free_unref_page_commit(zone, pcp, page, migratetype, orde=
+r, fpi_flags);
+>                 pcp_spin_unlock(pcp);
+>         } else {
+> -               free_one_page(zone, page, pfn, order, FPI_NONE);
+> +               free_one_page(zone, page, pfn, order, fpi_flags);
+>         }
+>         pcp_trylock_finish(UP_flags);
+>  }
+>
+> +void free_unref_page(struct page *page, unsigned int order)
+> +{
+> +       __free_unref_page(page, order, FPI_NONE);
+> +}
+> +
+>  /*
+>   * Free a batch of folios
+>   */
+> @@ -2777,7 +2829,7 @@ void free_unref_folios(struct folio_batch *folios)
+>
+>                 trace_mm_page_free_batched(&folio->page);
+>                 free_unref_page_commit(zone, pcp, &folio->page, migratety=
+pe,
+> -                               order);
+> +                                      order, FPI_NONE);
+>         }
+>
+>         if (pcp) {
+> @@ -4854,6 +4906,17 @@ void __free_pages(struct page *page, unsigned int =
+order)
+>  }
+>  EXPORT_SYMBOL(__free_pages);
+>
+> +/*
+> + * Can be called while holding raw_spin_lock or from IRQ and NMI,
+> + * but only for pages that came from try_alloc_pages():
+> + * order <=3D 3, !folio, etc
+> + */
+> +void free_pages_nolock(struct page *page, unsigned int order)
+> +{
+> +       if (put_page_testzero(page))
+> +               __free_unref_page(page, order, FPI_TRYLOCK);
+> +}
+> +
+>  void free_pages(unsigned long addr, unsigned int order)
+>  {
+>         if (addr !=3D 0) {
+> --
+> 2.43.5
+>
+>
 
