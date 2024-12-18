@@ -1,163 +1,189 @@
-Return-Path: <bpf+bounces-47193-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47194-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 276159F5E2F
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 06:06:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 327459F5E4E
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 06:33:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9126E1890ECB
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 05:06:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A679D7A364E
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 05:33:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7F36155330;
-	Wed, 18 Dec 2024 05:05:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAB8514AD3A;
+	Wed, 18 Dec 2024 05:33:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Am+H1u+U"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vx+wv7mX"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.2])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A39FB153824;
-	Wed, 18 Dec 2024 05:05:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.2
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF5E135956
+	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 05:33:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734498317; cv=none; b=k2RVE7Lm7dIArugjVVzfkbQhHrIJTP+Up6bJMNFNp1W7bhHz/zo/z0rbYyWF4yAXu0DIw8Gy1p4EkBfnagA1cDPc7a1QN1q4iBZVO4dkra+ilOL+hoI1kjyUt40z6LPynv5ErfCJVtspupCXrQIpFhXQN4zn9DJiTnDEZE4cjbU=
+	t=1734500003; cv=none; b=MwrXnooEFbfudDc26BIOrIvhmNdudsVYDW/af1/I+bc1tGphGcl/dzn4mDnJQwX3t5CuIATf2cCK1Ri6q8HV72o1UrzsaxEJFojHywOsB/GWs8qjoevqDNqCs3LuZOj8DSKXRrAkm0Ow0Dp4cZ7ECVQsJhsBZCkS1wwEtCkWfps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734498317; c=relaxed/simple;
-	bh=ZvzL8w3cps5gLtpUCtsRfTTODfRUtfOmFSgDTVUBhLA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TxBSECW/8bUYqNyazXtO84ibV8j11zm8y9x/Lmi/gbrCYwqV/sm3IrD+k9VDvQOHjC/4EcCHSwn2av3gT1qH4eJSzElGjF/fT+qTf3yq2iaVjHW5IbzWgLPPVCiEHwEl4g0YMLlujG+5VeN6lB9R26Bg2VMIQjI/ozch9H4B2zI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Am+H1u+U; arc=none smtp.client-ip=117.135.210.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=zasN1dYdbLx3vfULJvVHCDlAh4jtvi119Mhrz18Dc8E=;
-	b=Am+H1u+Unn2mluR2xXUHc5pOtEd6uoHOlSkbqBHpHPTSBhukcJmeM4lOtpfOsn
-	kdmD+F/2RVr1Sr95+EPrGjdBO9JVGByaEAzOdF4ecC6/quKw8Rb3Ss+ughCS275v
-	wpSemm4UN2UmY8Dmr/wMEb2/Cll0K63uZQEFnvQMeepVQ=
-Received: from osx (unknown [])
-	by gzga-smtp-mtada-g1-3 (Coremail) with SMTP id _____wD3f7M1V2JnUMhFBQ--.28991S2;
-	Wed, 18 Dec 2024 13:01:42 +0800 (CST)
-Date: Wed, 18 Dec 2024 13:01:41 +0800
-From: Jiayuan Chen <mrpre@163.com>
-To: John Fastabend <john.fastabend@gmail.com>
-Cc: bpf@vger.kernel.org, martin.lau@linux.dev, ast@kernel.org, 
-	edumazet@google.com, jakub@cloudflare.com, davem@davemloft.net, dsahern@kernel.org, 
-	kuba@kernel.org, pabeni@redhat.com, linux-kernel@vger.kernel.org, song@kernel.org, 
-	andrii@kernel.org, mhal@rbox.co, yonghong.song@linux.dev, daniel@iogearbox.net, 
-	xiyou.wangcong@gmail.com, horms@kernel.org
-Subject: Re: [PATCH bpf v2 1/2] bpf: fix wrong copied_seq calculation
-Message-ID: <luget5z5ep2ikuwnkpddbdwl2yueb34nhqqms2hhij25guut4l@qm56ut744lz5>
-References: <20241209152740.281125-1-mrpre@163.com>
- <20241209152740.281125-2-mrpre@163.com>
- <6758f4ce604d5_4e1720871@john.notmuch>
- <f2pur5raimm5y3phmtwubf6yf3sniphwgql4c4k7md25lxcehm@3qwyp4zibnrd>
- <675b8f8f65e28_ff0720890@john.notmuch>
- <xtsolkbkdecvlbqx4zjtvd74c45lg5kqx2ojgdvovxrjgaghij@ld4wjwi7imvy>
- <675f9f3184dfe_159ba20815@john.notmuch>
+	s=arc-20240116; t=1734500003; c=relaxed/simple;
+	bh=Bdo6Rr8LT5IQqWFmfYK0S0PGliPhL4YGzMr0R9PWiU8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=N7zJrcSC2J6w177G9IMT+FfnDoAl3ajys1722a0f0Fw2H6MIbsKuWXdsJyXgpXmEwDc9fpzCscI+sUyycIYD/gxHYTfgl5uQJJWgdiknRYY1t6g4rd9HYTO9KkZlBCqsQJx6TomsEd2iFnVnAw3UWjzDiSq+cu/bkjjd1HFIK6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vx+wv7mX; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-43635796b48so2195165e9.0
+        for <bpf@vger.kernel.org>; Tue, 17 Dec 2024 21:33:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734500000; x=1735104800; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FvHy4KOpgBZf/IJf46ySixTP0NFggSNEF5TfM2rS5wY=;
+        b=Vx+wv7mXZkx9skkY1mOZuei2E9niBPnYB/3Yyr8bIAvSXvhnrZ93NyrwPd4Wm/0tpL
+         ZJ9YE8kxjFcuAHnmuw3h+29+R7WkmBvr0UftZBR2/TeRXQq5QyjxjDNCLBWMLD4XNK4k
+         BPHS3+0HsVeG41MahWYl/7cDQV8WvNaop+jWL8uNcnwV49SkFUtJhsQ/NQPWFKb0NZDV
+         EhO80kKqq9s538rlLD+uoADbHngbT9BxEvv+Zf9owG2hia6hHi4xLt64Sp49A4G8EKSK
+         162qDSouh7+E4IKaiU3ef9xvbjLgZLRgrRNFPiAGHwbTGwfazrm+Sg2BJpqRJeEwFV2d
+         kmBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734500000; x=1735104800;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FvHy4KOpgBZf/IJf46ySixTP0NFggSNEF5TfM2rS5wY=;
+        b=c3LgO/l+oOS5HpPYRRuhK71Yhd4cNvZwPgC/ffjAIDxqAUu/+qkFjDTuJy/DcZX2nv
+         07ZTi2tvFTdvYNkqKUQm2K5Q2dcBUZzGQwOR8ySeiLZVv2br192mKElg+nmWGIaLd90w
+         IBKNZp8QcKblOAlKCmAn90Q/9p219pZE1Fofhng52CZI5Nw4Z52A2qvuR7xTnd6g2UhL
+         xU9fglukUlZQuL5sPqquLfCe1rkRIQYLvDFTqF9HzpDL4rxs36lC/9512dGSWlA1Juoi
+         X05sEIUd94adj2HzEDy+nKGhK05k2jy873n8sc+KaS5Tdy0W/CV1HGqqRtGobUKr+jPM
+         I6sQ==
+X-Gm-Message-State: AOJu0YzhDKFydr88u47HLiUCL/ljeiFCBMsJZIszND1Om4A3MxLFkl0G
+	TUq4JMRsCxtrOnIFh53eh3W0PmZc/Vax/ATNeKQGZa9zbTdaUCJB6+VwYBcorKTvB6wXbqe4a9R
+	5pMLX0kvoIeQbdFcY8KN8Y02rFBM=
+X-Gm-Gg: ASbGncsOv7/e3yJrGJX73vxe9gGN96QcM2ctCcGFADsJrwBxgse33kgmC2TBAO1G1EM
+	1Mj7jHtDRBDhVlpzXahA5hH5GEjlWB7lo27UffzzUZuhrv74oKhqOJQ==
+X-Google-Smtp-Source: AGHT+IFW2gOk9eqtLmZgNmnjhSTCmOtziWxFq5eH20ukbKr+4HxiISRwwVya156Yu3IE0InO1ES5H9am6yo1yrUdlWM=
+X-Received: by 2002:a05:600c:1909:b0:42c:b8c9:16c8 with SMTP id
+ 5b1f17b1804b1-4365537668dmr9420465e9.10.1734499999773; Tue, 17 Dec 2024
+ 21:33:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <675f9f3184dfe_159ba20815@john.notmuch>
-X-CM-TRANSID:_____wD3f7M1V2JnUMhFBQ--.28991S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxWFWrGrW5uFW5Ar45Kr17KFg_yoW5Gw4rpa
-	9rJay7tr4kJry5A3s2vr4IqFy09w1rCr1fXFyfWFyayrn0qrn3tryrGr429FsFgrs5Ca1v
-	y3yDXFZrXwn8CaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07Uc2-nUUUUU=
-X-CM-SenderInfo: xpus2vi6rwjhhfrp/xtbBDwa5p2diUPaUYgAAsC
+References: <20241218030720.1602449-1-alexei.starovoitov@gmail.com>
+ <20241218030720.1602449-3-alexei.starovoitov@gmail.com> <CAJD7tkYOfBepXDeUFj6mM1evRoDdaS_THwmhp9a4pHeM4bgsFA@mail.gmail.com>
+In-Reply-To: <CAJD7tkYOfBepXDeUFj6mM1evRoDdaS_THwmhp9a4pHeM4bgsFA@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 17 Dec 2024 21:33:08 -0800
+Message-ID: <CAADnVQKmMaybRQJDyC9sbtmxod6S8kgcrk4FerWt9ve0vR9U1w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/6] mm, bpf: Introduce free_pages_nolock()
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Vlastimil Babka <vbabka@suse.cz>, 
+	Sebastian Sewior <bigeasy@linutronix.de>, Steven Rostedt <rostedt@goodmis.org>, 
+	Hou Tao <houtao1@huawei.com>, Johannes Weiner <hannes@cmpxchg.org>, shakeel.butt@linux.dev, 
+	Michal Hocko <mhocko@suse.com>, Matthew Wilcox <willy@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>, Tejun Heo <tj@kernel.org>, 
+	linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Dec 15, 2024 at 07:32:01PM +0800, John Fastabend wrote:
-> Jiayuan Chen wrote:
-[...]
-> > On Thu, Dec 12, 2024 at 05:36:15PM -0800, John Fastabend wrote:
-> > [...]
-> > > 
-> > > 
-> > > So here is what I believe the flow is,
-> > > 
-> > > sk_psock_strp_data_ready
-> > >   -> str_data_ready
-> > >      -> strp_read_sock
-> > >         -> sock->ops->read_sock(.., strp_recv)
-> > > 
-> > > 
-> > > We both have the same idea up to here. But then the proposed data_ready()
-> > > call
-> > > 
-> > > +	while ((skb = skb_peek(&sk->sk_receive_queue)) != NULL) {
-> > > +		u8 tcp_flags;
-> > > +		int used;
-> > > +
-> > > +		WARN_ON_ONCE(!skb_set_owner_sk_safe(skb, sk));
-> > > +		tcp_flags = TCP_SKB_CB(skb)->tcp_flags;
-> > > +		used = recv_actor(desc, skb, 0, skb->len);
-> > > 
-> > > The recv_actor here is strp_recv() all good so far. But, because
-> > > that skb is still on the sk_receive_queue() the TCP stack may
-> > > at the same time do
-> > > 
-> > >  tcp_data_queue
-> > >   -> tcp_queue_rcv
-> > >      -> tail = skb_peek_tail(&sk->sk_receive_queue);
-> > >         tcp_try_coalesce(sk, tail, skb, fragstolen)
-> > >          -> skb_try_coalesce()
-> > >             ... skb->len += len
-> > > 
-> > > So among other things you will have changed the skb->len and added some
-> > > data to it. If this happens while you are running the recv actor we will
-> > > eat the data by calling tcp_eat_recv_skb(). Any data added from the
-> > > try_coalesce will just be dropped and never handled? The clone() from
-> > > the strparser side doesn't help you the tcp_eat_recv_skb call will
-> > > unlik the skb from the sk_receive_queue.
-> > > 
-> > > I don't think you have any way to protect this at the moment.
-> > 
-> > Thanks John Fastabend.
-> > 
-> > It seems sk was always locked whenever data_ready called.
-> > 
-> > '''
-> > bh_lock_sock_nested(sk)
-> > tcp_v4_do_rcv(sk)
-> >    |
-> >    |-> tcp_rcv_established
-> >    	|-> tcp_queue_rcv 
-> >    		|-> tcp_try_coalesce
-> >    |
-> >    |-> tcp_rcv_state_process
-> >    	|-> tcp_queue_rcv
-> >    		|-> tcp_try_coalesce
-> >    |
-> >    |-> sk->sk_data_ready()
-> > 
-> > bh_unlock_sock(sk)
-> > '''
-> > 
-> > other data_ready path:
-> > '''
-> > lock_sk(sk)
-> > sk->sk_data_ready()
-> > release_sock(sk)
-> > '''
-> > 
-> > I can not find any concurrency there. 
-> 
-> OK thanks, one more concern though. What if strp_recv thorws an ENOMEM
-> error on the clone? Would we just drop the data then? This is problem
-> not the expected behavior its already been ACKed.
-> 
-> Thanks,
-> John
-Thank, I did miss ENOMEM error. I also realized that when an ENOMEM error
-occurs, the strparser framework will replay the skb, so it is necessary to
-record the offset read from the skb to avoid data duplication or loss.
+On Tue, Dec 17, 2024 at 8:59=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
+>
+> On Tue, Dec 17, 2024 at 7:07=E2=80=AFPM <alexei.starovoitov@gmail.com> wr=
+ote:
+> >
+> > From: Alexei Starovoitov <ast@kernel.org>
+> >
+> > Introduce free_pages_nolock() that can free pages without taking locks.
+> > It relies on trylock and can be called from any context.
+> > Since spin_trylock() cannot be used in RT from hard IRQ or NMI
+> > it uses lockless link list to stash the pages which will be freed
+> > by subsequent free_pages() from good context.
+> >
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > ---
+> >  include/linux/gfp.h      |  1 +
+> >  include/linux/mm_types.h |  4 ++
+> >  include/linux/mmzone.h   |  3 ++
+> >  mm/page_alloc.c          | 79 ++++++++++++++++++++++++++++++++++++----
+> >  4 files changed, 79 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+> > index 65b8df1db26a..ff9060af6295 100644
+> > --- a/include/linux/gfp.h
+> > +++ b/include/linux/gfp.h
+> > @@ -372,6 +372,7 @@ __meminit void *alloc_pages_exact_nid_noprof(int ni=
+d, size_t size, gfp_t gfp_mas
+> >         __get_free_pages((gfp_mask) | GFP_DMA, (order))
+> >
+> >  extern void __free_pages(struct page *page, unsigned int order);
+> > +extern void free_pages_nolock(struct page *page, unsigned int order);
+> >  extern void free_pages(unsigned long addr, unsigned int order);
+> >
+> >  #define __free_page(page) __free_pages((page), 0)
+> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> > index 7361a8f3ab68..52547b3e5fd8 100644
+> > --- a/include/linux/mm_types.h
+> > +++ b/include/linux/mm_types.h
+> > @@ -99,6 +99,10 @@ struct page {
+> >                                 /* Or, free page */
+> >                                 struct list_head buddy_list;
+> >                                 struct list_head pcp_list;
+> > +                               struct {
+> > +                                       struct llist_node pcp_llist;
+> > +                                       unsigned int order;
+> > +                               };
+> >                         };
+> >                         /* See page-flags.h for PAGE_MAPPING_FLAGS */
+> >                         struct address_space *mapping;
+> > diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> > index b36124145a16..1a854e0a9e3b 100644
+> > --- a/include/linux/mmzone.h
+> > +++ b/include/linux/mmzone.h
+> > @@ -953,6 +953,9 @@ struct zone {
+> >         /* Primarily protects free_area */
+> >         spinlock_t              lock;
+> >
+> > +       /* Pages to be freed when next trylock succeeds */
+> > +       struct llist_head       trylock_free_pages;
+> > +
+> >         /* Write-intensive fields used by compaction and vmstats. */
+> >         CACHELINE_PADDING(_pad2_);
+> >
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index d23545057b6e..10918bfc6734 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -88,6 +88,9 @@ typedef int __bitwise fpi_t;
+> >   */
+> >  #define FPI_TO_TAIL            ((__force fpi_t)BIT(1))
+> >
+> > +/* Free the page without taking locks. Rely on trylock only. */
+> > +#define FPI_TRYLOCK            ((__force fpi_t)BIT(2))
+> > +
+>
+> The comment above the definition of fpi_t mentions that it's for
+> non-pcp variants of free_pages(), so I guess that needs to be updated
+> in this patch.
 
-Sorry for the slow response; it took quite some time to write test cases
-and set up an environment to simulate ENOMEM. I will send the v3 patch.
+No. The comment:
+/* Free Page Internal flags: for internal, non-pcp variants of free_pages()=
+. */
+typedef int __bitwise fpi_t;
 
+is still valid.
+Most of the objective of the FPI_TRYLOCK flag is used after pcp is over.
+
+> More importantly, I think the comment states this mainly because the
+> existing flags won't be properly handled when freeing pages to the
+> pcplist. The flags will be lost once the pages are added to the
+> pcplist, and won't be propagated when the pages are eventually freed
+> to the buddy allocator (e.g. through free_pcppages_bulk()).
+
+Correct. fpi_t flags have a local effect. Nothing new here.
 
