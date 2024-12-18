@@ -1,93 +1,92 @@
-Return-Path: <bpf+bounces-47284-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47285-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3487A9F710F
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 00:42:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99CB49F7112
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 00:42:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B434E1623B7
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 23:42:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 038771890463
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 23:42:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D30CA207DF2;
-	Wed, 18 Dec 2024 23:38:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B79F1FCFE2;
+	Wed, 18 Dec 2024 23:40:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SMB95StF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MTmpocen"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2947E19CCEC;
-	Wed, 18 Dec 2024 23:38:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 011D11FAC55
+	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 23:40:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734565081; cv=none; b=I4mObAh5Uz/8WJHj4fjezexar8bkfSG4/kZoQ+f0y0L/MUpbsLoBnAKBL853s4VsCm5SgpVGeFewh36EbxNTcUuQE6U1DUb7tB9OXlyNtKpuDs5zW+IaQryuy7SXUS1dN3HpuiN7qPEilzqFJGcef71bpu8+ofCFhceOVm3XJog=
+	t=1734565215; cv=none; b=ST4nFwBio1VlK0ZXpoGoD93K8CUbCwLunWuI79xCpORuKdGj7kfB2XxdX3XBw92P2GGtFLm1fVo+mqUkoxWsfhvyW67jVUQ8D8wr9MRQTZA7Gr1RhBr26dgb5MaLFT9I9idQoE1BeQBPKcJHIDlF5IxcJ5jQiuaJ64IBSyu0irA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734565081; c=relaxed/simple;
-	bh=TE9MeQggFrUNHk7GnpsPc1qOO621qZHYt6YKXQvYGUs=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uUFcnQ9HasVvhYRx6bQG2VCh7AJ68uSHy46mgS2LED2hmIDRPkWAPwVaNSwabrwBXmtSU+Qqqou6Rg17Nu7bet9yj1m2Qy1qc0VAkmUVavJN578pEdKt6/4cp4yk1Fsjo890fdj230dO6+dCzD6bI57uKadixfKK0u624IgY7rM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SMB95StF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9872C4CECD;
-	Wed, 18 Dec 2024 23:37:59 +0000 (UTC)
+	s=arc-20240116; t=1734565215; c=relaxed/simple;
+	bh=w64uaUiPWtO0fz+g2KFQWaUWtTUMmdqEJQJIqkYaxPA=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=CpWY3dGjiDjgoN2dHogS0L341If49cPAmDxjqEPhaNbB2IoVmVJkOBRM3dqkfo/LNFhllVCg40e1kgpZDeWueYerUTO0NJ0hzH0N8l4OKOQP0BKNAXZTYVKFqs4igZ/8ye6Vxe+k3dWBsLET+Gicp7H48V/NyICB/9cKrrukYzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MTmpocen; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BB98C4CECD;
+	Wed, 18 Dec 2024 23:40:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734565080;
-	bh=TE9MeQggFrUNHk7GnpsPc1qOO621qZHYt6YKXQvYGUs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=SMB95StF87lMswBTmoy5w+GFfz3iCmebU4gbeFCJK7sk9+I16C9cplpIYLf0W9Qul
-	 QxmbLpIR7/E6R0kf5eKkyEYZx8mBxxIidhrnHdr7M4IeFwaA3J5y2wWv4oQmfmxORv
-	 D1j6lmCsAMuKx+jWknHgUh8GEb58788JfHfg1N+UuccR+d6b8ALbB6vzMOTnfrbNpk
-	 nrbFqHQ3vUtoVAGtl14Lhqr/MD+oEcAwxAPHEo6k2fp/JS6ZLbq87qH4FknN0j6i1c
-	 yDKA9jZ2UNpUbRlqHX4gnIrK03GFSOZ91dNOO2mqCDLBVJi/w2/4kNnX7grOmVIZvb
-	 15jS4zu2mRPLw==
-Date: Wed, 18 Dec 2024 15:37:59 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Xiao Liang <shaw.leon@gmail.com>
-Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, Kuniyuki
- Iwashima <kuniyu@amazon.com>, Donald Hunter <donald.hunter@gmail.com>,
- Paolo Abeni <pabeni@redhat.com>, "David S. Miller" <davem@davemloft.net>,
- David Ahern <dsahern@kernel.org>, Eric Dumazet <edumazet@google.com>, Ido
- Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Simon
- Horman <horms@kernel.org>, Shuah Khan <shuah@kernel.org>, Jiri Pirko
- <jiri@resnulli.us>, Hangbin Liu <liuhangbin@gmail.com>,
- linux-rdma@vger.kernel.org, linux-can@vger.kernel.org,
- osmocom-net-gprs@lists.osmocom.org, bpf@vger.kernel.org,
- linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
- linux-wireless@vger.kernel.org, b.a.t.m.a.n@lists.open-mesh.org,
- bridge@lists.linux.dev, linux-wpan@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v6 11/11] selftests: net: Add test cases for
- link and peer netns
-Message-ID: <20241218153759.672b7014@kernel.org>
-In-Reply-To: <20241218130909.2173-12-shaw.leon@gmail.com>
-References: <20241218130909.2173-1-shaw.leon@gmail.com>
-	<20241218130909.2173-12-shaw.leon@gmail.com>
+	s=k20201202; t=1734565214;
+	bh=w64uaUiPWtO0fz+g2KFQWaUWtTUMmdqEJQJIqkYaxPA=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=MTmpocen9Gcic/IcW/iNUA8TklGZ8lg5KGOBtyREsksPoYnEBwhHSTiTjJi/OGUnq
+	 DQiy1oUR8+ul47XEwAs/QUBvSXza8IK0TqaYIhuk2wOyUWNKlT4FL6gcwddiD8vCjX
+	 gQUE+975wdkoXAn7MTkteQumakXwoeTRY+pyBETff3UCO3L9YXaIg8kap8087RO0/1
+	 8jCNPbIX3951sbhr0ZXwMggt16koQlmXwrf6VEZ70Agw7JFWj1hAnenFMfZSUrlNE5
+	 4gae0BMCn+pEai9/Css8RLbSBFDJMsA9lWfJ0bOumywmEUYUWcetewztVV05Ub4C3z
+	 BPCRdZxWKaRLw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33BDE3805DB1;
+	Wed, 18 Dec 2024 23:40:33 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] bpf: bpf_local_storage: Always use bpf_mem_alloc in
+ PREEMPT_RT
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <173456523200.1761517.2036940592472471840.git-patchwork-notify@kernel.org>
+Date: Wed, 18 Dec 2024 23:40:32 +0000
+References: <20241218193000.2084281-1-martin.lau@linux.dev>
+In-Reply-To: <20241218193000.2084281-1-martin.lau@linux.dev>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kernel-team@meta.com
 
-On Wed, 18 Dec 2024 21:09:09 +0800 Xiao Liang wrote:
->  - Add test for creating link in another netns when a link of the same
->    name and ifindex exists in current netns.
->  - Add test to verify that link is created in target netns directly -
->    no link new/del events should be generated in link netns or current
->    netns.
->  - Add test cases to verify that link-netns is set as expected for
->    various drivers and combination of namespace-related parameters.
+Hello:
 
-Nice work!
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-You need to make sure all the drivers the test is using are enabled by
-the selftest kernel config: tools/testing/selftests/net/config
+On Wed, 18 Dec 2024 11:30:00 -0800 you wrote:
+> From: Martin KaFai Lau <martin.lau@kernel.org>
+> 
+> In PREEMPT_RT, kmalloc(GFP_ATOMIC) is still not safe in non preemptible
+> context. bpf_mem_alloc must be used in PREEMPT_RT. This patch is
+> to enforce bpf_mem_alloc in the bpf_local_storage when CONFIG_PREEMPT_RT
+> is enabled.
+> 
+> [...]
 
-This may be helpful:
-https://github.com/linux-netdev/nipa/wiki/How-to-run-netdev-selftests-CI-style#how-to-build
+Here is the summary with links:
+  - [bpf-next] bpf: bpf_local_storage: Always use bpf_mem_alloc in PREEMPT_RT
+    https://git.kernel.org/bpf/bpf-next/c/8eef6ac4d70e
+
+You are awesome, thank you!
 -- 
-pw-bot: cr
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
