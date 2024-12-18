@@ -1,168 +1,138 @@
-Return-Path: <bpf+bounces-47279-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47280-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C143B9F7005
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 23:30:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A63EA9F7054
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 23:53:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90BDC16B27E
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 22:29:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CE2618943D8
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 22:53:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C417A1FC11C;
-	Wed, 18 Dec 2024 22:29:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="D53o4+xX"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC1CF1FC102;
+	Wed, 18 Dec 2024 22:53:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE47B17A586
-	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 22:29:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEE3F1BDC3
+	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 22:52:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734560993; cv=none; b=nsPOf/3CYVUsn0U6MIR04xuIPt2RdgWVFE2opz3HAGd6BGBxZYbhwLsFq9X/qRvjGJdegf3UqcobcKpgMYPlQczAjEQFhF8oC02yksXsI0XPtu5TKNB6foWmxWPCK6CsRymuxLn+MOiduSSH1OllbzrHYaaWic5K4RWELeIGxBg=
+	t=1734562385; cv=none; b=epbcCrkCwRbrcTaZ/UjAwolYWaPRTNfN26uTESk9P2/3HCP+QEZkwGH/yFA+uplcFzqsgEwS5oHxz4BvmYl1fHZcSfglZTcAkgYZdl+9bXl8SI3+M+oP8xvqEUWQlUhA09kgxfCS39RuQRDRzemrsHdfSsUVoGbfPRRJjx7BDEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734560993; c=relaxed/simple;
-	bh=JFR8+kseyLJhd//6WbvbJrjsSIRftpdG948dnZ4pFhI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iJT9WYfdYf682pa5DxsJjAycx28dzeIqbPvJjkw9M39OgcJ4U5eBKxgnTslCLJgjabJtZD9sv2Sad/gF6O3jGqzTO5WzfK8rYRxd2xSqUePG0LpsP9UtCifMlaryqKCVaGk5vgd3qz/dXp7hsVblxeqz4dH7Zua74mI+J4wCYgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=D53o4+xX; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6f857105-3f75-47ea-934c-129289b475e1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1734560988;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/fp3yqO3IL8VYELA0A+BT5pptYQygYQEOLe1XbCoS9I=;
-	b=D53o4+xXIbwbguaCU59Nssxarqhw7xwkizHCRrBCTGmRl3FOy0jbEzn0WHsqi1eD/qE/if
-	dq81R2M9R4A22XfxWovEm1oqYj+NW/gIH3sz/qXRqtpJ+Ytndho5rzQ0dr9k4xKqQQCjBU
-	kPq4bbAo5IqW3JwGTNenRjhO4CeryVY=
-Date: Wed, 18 Dec 2024 14:29:41 -0800
+	s=arc-20240116; t=1734562385; c=relaxed/simple;
+	bh=CtQQ/MyIgXV859VB3hLsJHAElLDX6UHrPtcmvjMcMSo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EVp7tjdTF/+lsokQXOBdj79gOZj7+k+GniIlYJENOoWUnychW0jBHEki5fY6tizmUNdh5c5aW1j+PI03TGe+6Tx4Y39WaEiYJB4kIGcmtuouutW7XtbCv9tlzmnRInDkZ+1KU7m6DRoc2kR9Br0rfIefM003d0M709VwviReT24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id 276B6C2A69C6; Wed, 18 Dec 2024 14:52:46 -0800 (PST)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Jordan Rome <linux@jordanrome.com>
+Subject: [PATCH bpf-next 1/2] libbpf: Add unique_match option for multi kprobe
+Date: Wed, 18 Dec 2024 14:52:46 -0800
+Message-ID: <20241218225246.3170300-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v1 03/13] bpf: Allow struct_ops prog to return
- referenced kptr
-To: Amery Hung <amery.hung@bytedance.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, alexei.starovoitov@gmail.com, martin.lau@kernel.org,
- sinquersw@gmail.com, toke@redhat.com, jhs@mojatatu.com, jiri@resnulli.us,
- stfomichev@gmail.com, ekarani.silvestre@ccc.ufcg.edu.br,
- yangpeihao@sjtu.edu.cn, xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com,
- ameryhung@gmail.com
-References: <20241213232958.2388301-1-amery.hung@bytedance.com>
- <20241213232958.2388301-4-amery.hung@bytedance.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20241213232958.2388301-4-amery.hung@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: quoted-printable
 
-On 12/13/24 3:29 PM, Amery Hung wrote:
-> @@ -15993,13 +16001,15 @@ static int check_return_code(struct bpf_verifier_env *env, int regno, const char
->   	const char *exit_ctx = "At program exit";
->   	struct tnum enforce_attach_type_range = tnum_unknown;
->   	const struct bpf_prog *prog = env->prog;
-> -	struct bpf_reg_state *reg;
-> +	struct bpf_reg_state *reg = reg_state(env, regno);
->   	struct bpf_retval_range range = retval_range(0, 1);
->   	enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
->   	int err;
->   	struct bpf_func_state *frame = env->cur_state->frame[0];
->   	const bool is_subprog = frame->subprogno;
->   	bool return_32bit = false;
-> +	struct btf *btf = bpf_prog_get_target_btf(prog);
-> +	const struct btf_type *ret_type = NULL;
->   
->   	/* LSM and struct_ops func-ptr's return type could be "void" */
->   	if (!is_subprog || frame->in_exception_callback_fn) {
-> @@ -16008,10 +16018,31 @@ static int check_return_code(struct bpf_verifier_env *env, int regno, const char
->   			if (prog->expected_attach_type == BPF_LSM_CGROUP)
->   				/* See below, can be 0 or 0-1 depending on hook. */
->   				break;
-> -			fallthrough;
-> +			if (!prog->aux->attach_func_proto->type)
-> +				return 0;
-> +			break;
->   		case BPF_PROG_TYPE_STRUCT_OPS:
->   			if (!prog->aux->attach_func_proto->type)
->   				return 0;
-> +
-> +			if (frame->in_exception_callback_fn)
-> +				break;
-> +
-> +			/* Allow a struct_ops program to return a referenced kptr if it
-> +			 * matches the operator's return type and is in its unmodified
-> +			 * form. A scalar zero (i.e., a null pointer) is also allowed.
-> +			 */
-> +			ret_type = btf_type_by_id(btf, prog->aux->attach_func_proto->type);
-> +			if (btf_type_is_ptr(ret_type) && reg->type & PTR_TO_BTF_ID &&
+Jordan reported an issue in Meta production environment where func
+try_to_wake_up() is renamed to try_to_wake_up.llvm.<hash>() by clang
+compiler at lto mode. The original 'kprobe/try_to_wake_up' does not
+work any more since try_to_wake_up() does not match the actual func
+name in /proc/kallsyms.
 
-The "reg->type & PTR_TO_BTF_ID" does not look right. It should be 
-"base_type(reg->type) == PTR_TO_BTF_ID".
+There are a couple of ways to resolve this issue. For example, in
+attach_kprobe(), we could do lookup in /proc/kallsyms so try_to_wake_up()
+can be replaced by try_to_wake_up.llvm.<hach>(). Or we can force users
+to use bpf_program__attach_kprobe() where they need to lookup
+/proc/kallsyms to find out try_to_wake_up.llvm.<hach>(). But these two
+approaches requires extra work by either libbpf or user.
 
-> +			    reg->ref_obj_id) {
-> +				if (reg->btf_id != ret_type->type) {
+Luckily, suggested by Andrii, multi kprobe already supports wildcard ('*'=
+)
+for symbol matching. In the above example, 'try_to_wake_up*' can match
+to try_to_wake_up() or try_to_wake_up.llvm.<hash>() and this allows
+bpf prog works for different kernels as some kernels may have
+try_to_wake_up() and some others may have try_to_wake_up.llvm.<hash>().
 
-reg->btf could be a bpf prog's btf (i.e. prog->aux->btf) instead of the kernel 
-btf, so only comparing btf_id here is not very correct.
+The original intention is to kprobe try_to_wake_up() only, so an optional
+field unique_match is added to struct bpf_kprobe_multi_opts. If the
+field is set to true, the number of matched functions must be one.
+Otherwise, the attachment will fail. In the above case, multi kprobe
+with 'try_to_wake_up*' and unique_match preserves user functionality.
 
-One way could be to first compare the reg->btf == prog->aux->attach_btf.
-prog->aux->attach_btf here must be a kernel btf.
+Reported-by: Jordan Rome <linux@jordanrome.com>
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ tools/lib/bpf/libbpf.c | 10 +++++++++-
+ tools/lib/bpf/libbpf.h |  4 +++-
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-Another way is, btf_type_resolve_ptr() should be a better helper than 
-btf_type_by_id() here. It only returns non NULL if the type is a pointer and 
-also skips the modifiers like "const" before returning. Then it can directly
-compare the "struct btf_type *" returned by 
-'btf_type_resolve_ptr(prog->aux->attach_btf, prog->aux->attach_func_proto->type, 
-NULL)' and 'btf_type_resolve_ptr(reg->btf, reg->btf_id, NULL)'
-
-May as well enforce the pointer returned by an "ops" must be a struct (i.e. 
-__btf_type_is_struct(t) == true). This enforcement can be done in 
-bpf_struct_ops_desc_init().
-
-
-
-> +					verbose(env, "Return kptr type, struct %s, doesn't match function prototype, struct %s\n",
-> +						btf_type_name(reg->btf, reg->btf_id),
-> +						btf_type_name(btf, ret_type->type));
-> +					return -EINVAL;
-> +				}
-> +				return __check_ptr_off_reg(env, reg, regno, false);
-> +			}
->   			break;
->   		default:
->   			break;
-> @@ -16033,8 +16064,6 @@ static int check_return_code(struct bpf_verifier_env *env, int regno, const char
->   		return -EACCES;
->   	}
->   
-> -	reg = cur_regs(env) + regno;
-> -
->   	if (frame->in_async_callback_fn) {
->   		/* enforce return zero from async callbacks like timer */
->   		exit_ctx = "At async callback return";
-> @@ -16133,6 +16162,11 @@ static int check_return_code(struct bpf_verifier_env *env, int regno, const char
->   	case BPF_PROG_TYPE_NETFILTER:
->   		range = retval_range(NF_DROP, NF_ACCEPT);
->   		break;
-> +	case BPF_PROG_TYPE_STRUCT_OPS:
-> +		if (!ret_type || !btf_type_is_ptr(ret_type))
-> +			return 0;
-> +		range = retval_range(0, 0);
-> +		break;
->   	case BPF_PROG_TYPE_EXT:
->   		/* freplace program can return anything as its return value
->   		 * depends on the to-be-replaced kernel func or bpf program.
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 66173ddb5a2d..649c6e92972a 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -11522,7 +11522,7 @@ bpf_program__attach_kprobe_multi_opts(const struc=
+t bpf_program *prog,
+ 	struct bpf_link *link =3D NULL;
+ 	const unsigned long *addrs;
+ 	int err, link_fd, prog_fd;
+-	bool retprobe, session;
++	bool retprobe, session, unique_match;
+ 	const __u64 *cookies;
+ 	const char **syms;
+ 	size_t cnt;
+@@ -11558,6 +11558,14 @@ bpf_program__attach_kprobe_multi_opts(const stru=
+ct bpf_program *prog,
+ 			err =3D libbpf_available_kallsyms_parse(&res);
+ 		if (err)
+ 			goto error;
++
++		unique_match =3D OPTS_GET(opts, unique_match, false);
++		if (unique_match && res.cnt !=3D 1) {
++			pr_warn("prog '%s': failed to find unique match: cnt %lu\n",
++				prog->name, res.cnt);
++			return libbpf_err_ptr(-EINVAL);
++		}
++
+ 		addrs =3D res.addrs;
+ 		cnt =3D res.cnt;
+ 	}
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index d45807103565..3020ee45303a 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -552,10 +552,12 @@ struct bpf_kprobe_multi_opts {
+ 	bool retprobe;
+ 	/* create session kprobes */
+ 	bool session;
++	/* enforce unique match */
++	bool unique_match;
+ 	size_t :0;
+ };
+=20
+-#define bpf_kprobe_multi_opts__last_field session
++#define bpf_kprobe_multi_opts__last_field unique_match
+=20
+ LIBBPF_API struct bpf_link *
+ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+--=20
+2.43.5
 
 
