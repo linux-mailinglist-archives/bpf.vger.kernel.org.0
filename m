@@ -1,171 +1,274 @@
-Return-Path: <bpf+bounces-47152-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47153-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C33B9F5B1A
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 01:08:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 011639F5B18
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 01:08:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08E641892080
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 00:08:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C9AF162F73
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 00:08:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 759C71487DC;
-	Wed, 18 Dec 2024 00:03:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6414614EC5B;
+	Wed, 18 Dec 2024 00:03:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J21EcWU1"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BUvbpiCj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6ACB46B8;
-	Wed, 18 Dec 2024 00:03:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D448014AD3A
+	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 00:03:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734480219; cv=none; b=FwRdY5AoufgBLuGI1Iv8PGsjxY4q2Q7FJ6FJf6EP07WqvYf24JztiebDUS1pxUN32+QrxgYasjVGzhuU779EtAfn38WDL0cE4WWlisNVZaDinPCKRt9rp9zd7zJZ6dt9EGGPPKY72l9VD2BWmJaXjDv4/5UKFOLnQcnzj26Dfno=
+	t=1734480224; cv=none; b=l+6+FOojKljy39ELYGsHJeEt8oavtAOx+xhJFu6CKAeUzI2HuTLLIwaAtzKjH1hU+lB6dCj02mR/eFFv1NzBSOsMgHD++O8CcfivAJJ/o8H2OkZ8QScf5ltl6bDGmOI0R4nUoSWtLKE9IgmLG0pSIvnH95Ws1NfKrA/G7nrmQco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734480219; c=relaxed/simple;
-	bh=EWN8HzaCcVGiN6zESp1IAzLmb9kUlts7STcl2xcNnmE=;
+	s=arc-20240116; t=1734480224; c=relaxed/simple;
+	bh=ab5P5dfu0/ODb3IOwRUA+yGDFd6NKW4L+YI7Mw4/4cE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ILiUmj0Kk6zI4vj64o6B+WGf/bJqqkqin17x9EjqB0JapqFLGEnGLkzGSlC9ExWc6hFroJbPp7FdJQ7XZplp9kSRdGXY4RfaoMeeKYgulyb6eG/BMxrh0YaA7UyJEDH/jR+YXC9Ff7ddWAcWjoc1sGmCQiDyhseXMWu+JOjP018=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J21EcWU1; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-7f4325168c8so2643014a12.1;
-        Tue, 17 Dec 2024 16:03:36 -0800 (PST)
+	 To:Cc:Content-Type; b=W2ZWIphYisbeUCw485hbu2eG4/bN/Mu43C6bTlrOIMZSvQKsiGpik1HdA3e0A4g9s0BZC038Jf41dBHML/25zueDLncWON/KIxeV/A6CkkPEexglv5fOvk+hMyFq5ux2ub2yrPagpabODlKY9tX4Yg3kfg7ImOHpNgRYgIFJt9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BUvbpiCj; arc=none smtp.client-ip=209.85.166.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-3a815a5fb60so58195ab.0
+        for <bpf@vger.kernel.org>; Tue, 17 Dec 2024 16:03:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734480216; x=1735085016; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1734480221; x=1735085021; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EWN8HzaCcVGiN6zESp1IAzLmb9kUlts7STcl2xcNnmE=;
-        b=J21EcWU1QnUxDQ9TnGTxJNaVTAW8IzpsZnaZvycuRehRIidjWok11SqOo5Jmme1/Ol
-         hUjz1CrYc4bMBbY0qFXsROydKckkAFVZZNv+MPnx3MZ3c62E1VSGcY/Rc57SKKugS389
-         Hjw0ADbXbHoLZBt2TfOxBRrqll8lnQB3pzQ/FA9G6MyzGVjSX7u/A+qEErNtgnKy9jby
-         AclLIo862Fq+Y6rNB7sM/x1r6tGlmM8efZQVjSEkI0cynEiCciob9uhw31tyzZ0bhqJ9
-         xFTBcA6hWJ91CMeQQHgQdIE6jj2J44vMauIXfl4kVGPRKReeU73lINpuYvAU11S9RBDk
-         QPEw==
+        bh=YEDn5fC5f5FID4pLAuv6PhQJ2F5QWxiGvS7quO68Zpo=;
+        b=BUvbpiCjyJkfEN1BsIhzpg9K58G9cb17oArOoBtyeaXS+0MqyYorsdSgzYhk16W6wZ
+         /sotxsXSvbxaUFWxuw0l0gR5v8aOZJMGeMzBhCNM/S9TThIZ3LaiX1hGwltCQR3IEbS7
+         L8Pf0+Gxbw4iXUBhoCTcCQ4K6AqQ7xeJ30tYomTBkKZZC/KahrIX9Y6iU2wFusiF4a8a
+         P7tQpWK2Pg42B/NG47Njm9bQHn2V0JyPPk4E/kPndJDvErkPHMSI86cE7PnIeWVBRUO8
+         gRPjDQUc1D0Kwxh7kJ0MmZR8OSNlfQ2eZNq3oKYzLOlfe4KVkYqYfoY0SSybjPYEZte0
+         sFpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734480216; x=1735085016;
+        d=1e100.net; s=20230601; t=1734480221; x=1735085021;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EWN8HzaCcVGiN6zESp1IAzLmb9kUlts7STcl2xcNnmE=;
-        b=iCDpbSb289K/kHrMIHeJnjuxrE6QLg6D9o8xaVI0yIGEwZjrOF6Fi6FSZIcTntF5GS
-         r1mZs3AVMkrMWenWWYyUwLIJZMbN0tU3u15xGsBqa2b3ZPKt8mUgMSrnxAztlAXxESoT
-         fV0gl4EnpraEiussNfKyteTf8+RkLZCrsKoyyvVH9RwJLkh1c7vZMBSfloZAcGtfiDqu
-         RRjVILHV4sgb1IEbbKQvfNZuDv0vfJ98z7NXwPM7ZV5NXqT+ewr9Q/f7jCEUsB8gpVVC
-         9c+IIL1Wg+k4DPZKovhrYUfr33z3ShrnMgFITiQ1F2XOFxAMSoV5XFob5PIRtZoi75AJ
-         YCCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVdZJotreQS4EYNispZU2zXOHCSl3pxLZYHkykVYWeX0UPNsmZSucWJ2B9rWJvnBS9EhRdTGio5qg==@vger.kernel.org, AJvYcCWsQtvoLxu24bLELjhUFpg1Awo7D8Lg/MdAlWasjk8max8FMLuAzQ8VhUySlRqui2ihzj4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz7WSFSXJ5eEL5v8as8HdWKbDLnx2TEq+2wEjr/+9pz3cUGdf5m
-	g8tm5SAM4Scox7EPCWnsuWzca0SVWu3OK7W1YlG/WCqadV95DzWXpoW77acJiGCBHoTvlvZqDp4
-	iRmfJcXfwtNLiLGk78shyn6XlmOc=
-X-Gm-Gg: ASbGncsr2rtVsa6m3RqqJ2kLR7uQd/VQ4+ym4YgzRXfLHcAk25wEEEadBOOiNdjyBHN
-	Uv/gwY2519nVD4BAx38sr6sB0DHI+xYnMmboJ7mM5sNHRMyIV/46jWw==
-X-Google-Smtp-Source: AGHT+IEOkPwYwTFIVyYy1Led+KFM3xqFIeFci9I21joi8fE+JYYc9crGaKwgD7ZoZewH4VXhcVQQg24JZJC7QpvlP7A=
-X-Received: by 2002:a17:90b:4f:b0:2ee:889b:b11e with SMTP id
- 98e67ed59e1d1-2f2e937836bmr1126852a91.30.1734480215970; Tue, 17 Dec 2024
- 16:03:35 -0800 (PST)
+        bh=YEDn5fC5f5FID4pLAuv6PhQJ2F5QWxiGvS7quO68Zpo=;
+        b=ovhZ0soWtVuq+LOncnJuPIHua7k6CcEttMLFaVD+2dgxjun2xmxaOTkfCzkhM/9Qzz
+         Nu0n+yi+Ao+DOfpVw3qpvT/PNsFhIvarw/IKdDcD0soHnvC0/I/o2FU8UHtNdr2vcgrL
+         Q3m41rUFSDjnOq860+L8WkvhPKlUw851s2phMSDRg9k5x1iavN0TrTJbMMr9mxUjgiG9
+         rQWLzDU1vcAzskQPxSFRWGWojKLcG5kw7A4KLtNWGIITNXObZVJVziXuxY2kIh1sSaJP
+         /YNByWZzHkj2w75BSxMTETg4AP9oVhAecDnsDMkwXm27DxF1f+GbmHv3av3olVhrypEy
+         zfDA==
+X-Forwarded-Encrypted: i=1; AJvYcCVC0ercBqJyn1QxXVpxuRT4m/PVWuqEdAWNEEZyEVTMpiKRSOz9n9V1eJacRvP6g7VkU+o=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyroS9GwgDN315ef7djcB6RYQAkVV6Y/uytU+CVeK6Zp+woNGZm
+	6aB88VhUsBnOAjuw2lbw5eg2Cbrc7tMR27HXdtjzZKiKFFz6IwTTgLCpkV6sE6BIlujxwFigl1u
+	a34lDYgTxsn5ET8FcJ4/r/r+igG59gxw63l2a
+X-Gm-Gg: ASbGnctTPo2FgCNMJTk4nArdV2V95fN5xW3JiPtJCluoHfsWaYPMQ1QCi6cyqkMQEon
+	JuL2eSuUXj062HrMcfYjF/iAMURMDYRoOYOTMxOI=
+X-Google-Smtp-Source: AGHT+IEM2kfEZmBeZubQwYjUig3tCBFRSkoM/XjhRJzYKmzSCoR/iSXHPJ7Y3tTrfS19f2rLkSTJnLWDPAr0FzYHDQo=
+X-Received: by 2002:a05:6e02:1529:b0:3a7:c997:efdb with SMTP id
+ e9e14a558f8ab-3be372be692mr214265ab.17.1734480220635; Tue, 17 Dec 2024
+ 16:03:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241213223641.564002-1-ihor.solodrai@pm.me> <20241213223641.564002-8-ihor.solodrai@pm.me>
- <09f6bc335380ca73d365566de7af8f2e73ac9cfd.camel@gmail.com>
- <735014fda88330d2124f4956cc9a0507f47176db.camel@gmail.com> <yKpaq5zO0TcrAm1v3p4yd2D9ic0jGUQM0CUSg6CU_31_S1mX7SDljMf36ayteEV2O_MTE2eJkUuu3JoJWPQyIxHibe2zz1W3Uq_RzqiyPVY=@pm.me>
-In-Reply-To: <yKpaq5zO0TcrAm1v3p4yd2D9ic0jGUQM0CUSg6CU_31_S1mX7SDljMf36ayteEV2O_MTE2eJkUuu3JoJWPQyIxHibe2zz1W3Uq_RzqiyPVY=@pm.me>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 17 Dec 2024 16:03:24 -0800
-Message-ID: <CAEf4BzZ-chyzJzCdW0AwjaxhO+yfUCO=Dcu+7=m96Ccyq94Y8g@mail.gmail.com>
-Subject: Re: [PATCH dwarves v2 07/10] btf_encoder: introduce btf_encoding_context
-To: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, dwarves@vger.kernel.org, acme@kernel.org, 
-	alan.maguire@oracle.com, andrii@kernel.org, mykolal@fb.com, 
-	bpf@vger.kernel.org
+References: <20241216-perf_syscalltbl-v3-0-239f032481d5@rivosinc.com>
+In-Reply-To: <20241216-perf_syscalltbl-v3-0-239f032481d5@rivosinc.com>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 17 Dec 2024 16:03:29 -0800
+Message-ID: <CAP-5=fWEUq_nLx7PUx96ixMrX0NqqF8W0EmXV9Zvc449zj0Z7A@mail.gmail.com>
+Subject: Re: [PATCH v3 00/16] perf tools: Use generic syscall scripts for all archs
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
+	Christian Brauner <brauner@kernel.org>, Guo Ren <guoren@kernel.org>, 
+	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>, 
+	James Clark <james.clark@linaro.org>, Mike Leach <mike.leach@linaro.org>, 
+	Leo Yan <leo.yan@linux.dev>, Jonathan Corbet <corbet@lwn.net>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
+	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-csky@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-doc@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 17, 2024 at 10:06=E2=80=AFAM Ihor Solodrai <ihor.solodrai@pm.me=
-> wrote:
+On Mon, Dec 16, 2024 at 10:39=E2=80=AFPM Charlie Jenkins <charlie@rivosinc.=
+com> wrote:
 >
-> On Monday, December 16th, 2024 at 7:15 PM, Eduard Zingerman <eddyz87@gmai=
-l.com> wrote:
+> Standardize the generation of syscall headers around syscall tables.
+> Previously each architecture independently selected how syscall headers
+> would be generated, or would not define a way and fallback onto
+> libaudit. Convert all architectures to use a standard syscall header
+> generation script and allow each architecture to override the syscall
+> table to use if they do not use the generic table.
 >
-> >
-> > On Mon, 2024-12-16 at 18:39 -0800, Eduard Zingerman wrote:
-> >
-> > > On Fri, 2024-12-13 at 22:37 +0000, Ihor Solodrai wrote:
-> > >
-> > > > Introduce a static struct holding global data necessary for BTF
-> > > > encoding: elf_functions tables and btf_encoder structs.
-> > [...]
-> > >
-> > > After patch #10 "dwarf_loader: multithreading with a job/worker model=
-"
-> > > from this series I do not understand why this patch is necessary.
-> > > After patch #10 there is only one BTF encoder, thus:
-> > > - there is no need to track btf_encoder_list;
-> > > - elf_functions_list can now be a part of the encoder;
-> > > - it should be possible to forgo global variable for encoder
-> > > and pass it as a parameter for each btf_encoder__* func.
-> > >
-> > > So it seems that this patch should be dropped and replaced by one tha=
-t
-> > > follows patch #10 and applies the above simplifications.
-> > > Wdyt?
-> >
-> >
-> > Meaning that patch #6 "btf_encoder: switch to shared elf_functions tabl=
-e"
-> > is not necessary. Strictly speaking, patches 1,2,4 might not be necessa=
-ry
-> > as well, but could be viewed as a refactoring.
-> > Switch to single-threaded BTF encoder significantly changes this patch-=
-set.
+> As a result of these changes, no architecture will require libaudit, and
+> so the fallback case of using libaudit is removed by this series.
 >
-> Eduard, thanks for the review again.
+> Testing:
 >
-> You are correct: if we focus on the multithreading changes in
-> dwarf_loader.c and make a decision that there is always a single
-> btf_encoder, then much of this series can be discarded.
+> I have tested that the syscall mappings of id to name generation works
+> as expected for every architecture, but I have only validated that perf
+> trace compiles and runs as expected on riscv, arm64, and x86_64.
 >
-> At the same time I think most of the patches are useful. At the very
-> least they enabled experiments that in the end lead me to the
-> dwarf_loader changes.
->
-> The changes making ELF functions table shared were beneficial in
-> isolation, because they eliminated unnecessary duplication of
-> information between encoders, leading to reduced memory usage.
->
-> The changes splitting ELF and BTF function information in
-> btf_encoder.c and simplifying function processing are also good in
-> isolation.
->
-> In my opinion, it's not wise to discard all of that, because it turned
-> out that a single btf_encoder works better in the use-case we care
-> about now. Later we might want to revisit parallel BTF encoding. Then
-> some version of the refactoring changes here will have to be re-done.
->
-> So I think it makes sense to land most of this series without
-> significant re-work. But of course I am biased here, as I wrote most
-> of the patches, and it's always painful to "throw away" effort.
->
-> Let's see what others think.
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 
-I agree with Ihor. I think he invested a lot of time into these
-improvements, and asking him to re-do the series just to shuffle a few
-patches around is just an unnecessary overhead (which also delays the
-ultimate outcome: faster BTF generation with pahole). And as Ihor
-mentioned, we might improve upon this series by parallelizing encoders
-to gain some further improvements, so I think all the internal
-refactoring and preparations are setting up a good base for further
-work.
+This is really great, thanks for taking the time for a substantial
+clean up. I had difficulty applying the patches to the perf-tools-next
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/lo=
+g/?h=3Dperf-tools-next
+using patch and dealing with rejects I was able to test.
 
-Let's try to finalize patch #10's implementation and land this. It's a
-nice improvement both performance-wise. It's also good that we don't
-need to care about reproducible or not and can effectively deprecate
-that short-lived feature we added not so long ago.
+Reviewed-by: Ian Rogers <irogers@google.com>
+On x86-64:
+Tested-by: Ian Rogers <irogers@google.com>
+
+I think there are follow up patches that clean up the ABI, allow >1
+table at a time, .. but those things are best saved for a follow up.
+
+Thanks,
+Ian
+
+> ---
+> Changes in v3:
+> - Fix compiliation when OUTPUT is empty
+> - Correct unused headers to be .h instead of .c  (Namhyung)
+> - Make variable definition of supported archs (Namhyung)
+> - Convert +=3D into :=3D for syscalls headers (Namhyung)
+> - Link to v2: https://lore.kernel.org/r/20241212-perf_syscalltbl-v2-0-f8c=
+a984ffe40@rivosinc.com
+>
+> Changes in v2:
+> - Rebase onto 6.13-rc2
+> - Fix output path so it generates to /tools/perf/arch properly
+> - Link to v1: https://lore.kernel.org/r/20241104-perf_syscalltbl-v1-0-9ad=
+ae5c761ef@rivosinc.com
+>
+> ---
+> Charlie Jenkins (16):
+>       perf tools: Create generic syscall table support
+>       perf tools: arc: Support generic syscall headers
+>       perf tools: csky: Support generic syscall headers
+>       perf tools: arm: Support syscall headers
+>       perf tools: sh: Support syscall headers
+>       perf tools: sparc: Support syscall headers
+>       perf tools: xtensa: Support syscall header
+>       perf tools: x86: Use generic syscall scripts
+>       perf tools: alpha: Support syscall header
+>       perf tools: parisc: Support syscall header
+>       perf tools: arm64: Use syscall table
+>       perf tools: loongarch: Use syscall table
+>       perf tools: mips: Use generic syscall scripts
+>       perf tools: powerpc: Use generic syscall table scripts
+>       perf tools: s390: Use generic syscall table scripts
+>       perf tools: Remove dependency on libaudit
+>
+>  Documentation/admin-guide/workload-tracing.rst     |   2 +-
+>  tools/build/feature/Makefile                       |   4 -
+>  tools/build/feature/test-libaudit.c                |  11 -
+>  tools/perf/Documentation/perf-check.txt            |   1 -
+>  tools/perf/Makefile.config                         |  39 +-
+>  tools/perf/Makefile.perf                           |  12 +-
+>  tools/perf/arch/alpha/entry/syscalls/Kbuild        |   2 +
+>  .../arch/alpha/entry/syscalls/Makefile.syscalls    |   5 +
+>  tools/perf/arch/alpha/entry/syscalls/syscall.tbl   | 504 +++++++++++++++=
++++++
+>  tools/perf/arch/alpha/include/syscall_table.h      |   2 +
+>  tools/perf/arch/arc/entry/syscalls/Kbuild          |   2 +
+>  .../perf/arch/arc/entry/syscalls/Makefile.syscalls |   3 +
+>  tools/perf/arch/arc/include/syscall_table.h        |   2 +
+>  tools/perf/arch/arm/entry/syscalls/Kbuild          |   4 +
+>  .../perf/arch/arm/entry/syscalls/Makefile.syscalls |   2 +
+>  tools/perf/arch/arm/entry/syscalls/syscall.tbl     | 483 +++++++++++++++=
+++++
+>  tools/perf/arch/arm/include/syscall_table.h        |   2 +
+>  tools/perf/arch/arm64/Makefile                     |  22 -
+>  tools/perf/arch/arm64/entry/syscalls/Kbuild        |   3 +
+>  .../arch/arm64/entry/syscalls/Makefile.syscalls    |   6 +
+>  tools/perf/arch/arm64/entry/syscalls/mksyscalltbl  |  46 --
+>  .../perf/arch/arm64/entry/syscalls/syscall_32.tbl  | 476 +++++++++++++++=
+++++
+>  .../perf/arch/arm64/entry/syscalls/syscall_64.tbl  |   1 +
+>  tools/perf/arch/arm64/include/syscall_table.h      |   8 +
+>  tools/perf/arch/csky/entry/syscalls/Kbuild         |   2 +
+>  .../arch/csky/entry/syscalls/Makefile.syscalls     |   3 +
+>  tools/perf/arch/csky/include/syscall_table.h       |   2 +
+>  tools/perf/arch/loongarch/Makefile                 |  22 -
+>  tools/perf/arch/loongarch/entry/syscalls/Kbuild    |   2 +
+>  .../loongarch/entry/syscalls/Makefile.syscalls     |   3 +
+>  .../arch/loongarch/entry/syscalls/mksyscalltbl     |  45 --
+>  tools/perf/arch/loongarch/include/syscall_table.h  |   2 +
+>  tools/perf/arch/mips/entry/syscalls/Kbuild         |   2 +
+>  .../arch/mips/entry/syscalls/Makefile.syscalls     |   5 +
+>  tools/perf/arch/mips/entry/syscalls/mksyscalltbl   |  32 --
+>  tools/perf/arch/mips/include/syscall_table.h       |   2 +
+>  tools/perf/arch/parisc/entry/syscalls/Kbuild       |   3 +
+>  .../arch/parisc/entry/syscalls/Makefile.syscalls   |   6 +
+>  tools/perf/arch/parisc/entry/syscalls/syscall.tbl  | 463 +++++++++++++++=
+++++
+>  tools/perf/arch/parisc/include/syscall_table.h     |   8 +
+>  tools/perf/arch/powerpc/Makefile                   |  25 -
+>  tools/perf/arch/powerpc/entry/syscalls/Kbuild      |   3 +
+>  .../arch/powerpc/entry/syscalls/Makefile.syscalls  |   6 +
+>  .../perf/arch/powerpc/entry/syscalls/mksyscalltbl  |  39 --
+>  tools/perf/arch/powerpc/include/syscall_table.h    |   8 +
+>  tools/perf/arch/riscv/Makefile                     |  22 -
+>  tools/perf/arch/riscv/entry/syscalls/Kbuild        |   2 +
+>  .../arch/riscv/entry/syscalls/Makefile.syscalls    |   4 +
+>  tools/perf/arch/riscv/entry/syscalls/mksyscalltbl  |  47 --
+>  tools/perf/arch/riscv/include/syscall_table.h      |   8 +
+>  tools/perf/arch/s390/Makefile                      |  21 -
+>  tools/perf/arch/s390/entry/syscalls/Kbuild         |   2 +
+>  .../arch/s390/entry/syscalls/Makefile.syscalls     |   5 +
+>  tools/perf/arch/s390/entry/syscalls/mksyscalltbl   |  32 --
+>  tools/perf/arch/s390/include/syscall_table.h       |   2 +
+>  tools/perf/arch/sh/entry/syscalls/Kbuild           |   2 +
+>  .../perf/arch/sh/entry/syscalls/Makefile.syscalls  |   4 +
+>  tools/perf/arch/sh/entry/syscalls/syscall.tbl      | 472 +++++++++++++++=
+++++
+>  tools/perf/arch/sh/include/syscall_table.h         |   2 +
+>  tools/perf/arch/sparc/entry/syscalls/Kbuild        |   3 +
+>  .../arch/sparc/entry/syscalls/Makefile.syscalls    |   5 +
+>  tools/perf/arch/sparc/entry/syscalls/syscall.tbl   | 514 +++++++++++++++=
+++++++
+>  tools/perf/arch/sparc/include/syscall_table.h      |   8 +
+>  tools/perf/arch/x86/Build                          |   1 -
+>  tools/perf/arch/x86/Makefile                       |  25 -
+>  tools/perf/arch/x86/entry/syscalls/Kbuild          |   3 +
+>  .../perf/arch/x86/entry/syscalls/Makefile.syscalls |   6 +
+>  tools/perf/arch/x86/entry/syscalls/syscalltbl.sh   |  42 --
+>  tools/perf/arch/x86/include/syscall_table.h        |   8 +
+>  tools/perf/arch/xtensa/entry/syscalls/Kbuild       |   2 +
+>  .../arch/xtensa/entry/syscalls/Makefile.syscalls   |   4 +
+>  tools/perf/arch/xtensa/entry/syscalls/syscall.tbl  | 439 +++++++++++++++=
++++
+>  tools/perf/arch/xtensa/include/syscall_table.h     |   2 +
+>  tools/perf/builtin-check.c                         |   1 -
+>  tools/perf/builtin-help.c                          |   2 -
+>  tools/perf/builtin-trace.c                         |  30 --
+>  tools/perf/check-headers.sh                        |   9 +
+>  tools/perf/perf.c                                  |   6 +-
+>  tools/perf/scripts/Makefile.syscalls               |  61 +++
+>  tools/perf/scripts/syscalltbl.sh                   |  86 ++++
+>  tools/perf/tests/make                              |   7 +-
+>  tools/perf/util/env.c                              |   4 +-
+>  tools/perf/util/generate-cmdlist.sh                |   4 +-
+>  tools/perf/util/syscalltbl.c                       |  90 +---
+>  tools/scripts/syscall.tbl                          | 409 +++++++++++++++=
++
+>  85 files changed, 4102 insertions(+), 619 deletions(-)
+> ---
+> base-commit: fac04efc5c793dccbd07e2d59af9f90b7fc0dca4
+> change-id: 20240913-perf_syscalltbl-6f98defcc6f5
+> --
+> - Charlie
+>
 
