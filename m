@@ -1,91 +1,70 @@
-Return-Path: <bpf+bounces-47267-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47268-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 771CF9F6C9F
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 18:49:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4C899F6CC3
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 18:58:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D70E16E700
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 17:48:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 380EB169992
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 17:58:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC5141FDE15;
-	Wed, 18 Dec 2024 17:45:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 117091FBE8F;
+	Wed, 18 Dec 2024 17:57:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="G27KAmJD"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OGLv6Vdz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABC7C1FDE04;
-	Wed, 18 Dec 2024 17:45:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F0DA1FAC50
+	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 17:57:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734543954; cv=none; b=koatchYi9Tm4Tt6QQfAlzjP3QCfnm7XSh9jgLAmSQGMoWIEIIW2CcNqEBQ5aDebEhNh69b/2WD35yghPAwgBlITv4Z53u0gETN+64fPuL8V/3hivgzpGIamDzxyGJPHhhftpTLvzrVz9IT3LniYbMmBEQYgvzMENq8Au7zac7ec=
+	t=1734544657; cv=none; b=QezQDjMpdK9co5673salVx8Gvz4oowb5Ut3VrT1qEg7RQ+QztvWpZN4krt7XrncXWv803vjg/5tepvlF0NB/FnppCYD3SVZIQOK9D3ogZQYN9NBEoGF8FK9o6LliwrsEoijPSLb3PD+NX8kWq3kJLe/DpN2v6oziAUvf9OAVnk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734543954; c=relaxed/simple;
-	bh=UGK9PXGjTDILxlx3M92s+knR+V9YBUJZmeVx8m1Tmbs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OAwW8RpZLbS0oyjNxQxeL9itFJWyqRnxECxl/xkDh/fQe9zt2ATj7SaLD626LVc36LRwK+Fhu6yge1NvZ3BcJm9wpSZnQ2a3UYPNNcZvFWoZCfJZ0OwgxF2D0tuYOl+Rhylyfvc7unvNihpcOKyR3k+IcSSp/ZDc3yzG4+qjV1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=G27KAmJD; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1734543953; x=1766079953;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=UGK9PXGjTDILxlx3M92s+knR+V9YBUJZmeVx8m1Tmbs=;
-  b=G27KAmJDTIrZCOYd0NAsW4D84Tdu/1bBEd1IZCSyve8/rmvZMFMtm27x
-   V2qpgupOyldck41edqYIO8R6k2g2W0CLxHP1ka3+cAPQqHYpUeFVbF3QC
-   R5eUxHZ1CnooTHarwXaB5SALev0x8tJrhZx9mVSPt8VhJjV8xwmFqBc1a
-   r4lPWYB4WoWz/8jtEYIIVsV9O2GwxWFZbs4tz8hUduJV1ZDTHG7gHM4Nj
-   F4b8EiRsPrDkO+CYUu7QmfHv+0I0E+0Qdr6fMcETkmJoFV5RZw9qN9kO4
-   h0pRhXSscoRnuKs+FGQWZyjO+f/CqBp5YyFAIW7vYHh4GYDyoAYSyr/2O
-   w==;
-X-CSE-ConnectionGUID: 12uYQKD7T26E093mMskSvA==
-X-CSE-MsgGUID: 48VmCRj9SOOyKAvgh2f4VQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11290"; a="22621050"
-X-IronPort-AV: E=Sophos;i="6.12,245,1728975600"; 
-   d="scan'208";a="22621050"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2024 09:45:52 -0800
-X-CSE-ConnectionGUID: j1MjQuvATR+tvTDQv4MMrw==
-X-CSE-MsgGUID: IAjujpsBQwO1IMCJR3dSPA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="121192364"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmviesa002.fm.intel.com with ESMTP; 18 Dec 2024 09:45:48 -0800
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-To: Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	"Jose E. Marchesi" <jose.marchesi@oracle.com>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Jason Baron <jbaron@akamai.com>,
-	Casey Schaufler <casey@schaufler-ca.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 7/7] unroll: add generic loop unroll helpers
-Date: Wed, 18 Dec 2024 18:44:35 +0100
-Message-ID: <20241218174435.1445282-8-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20241218174435.1445282-1-aleksander.lobakin@intel.com>
-References: <20241218174435.1445282-1-aleksander.lobakin@intel.com>
+	s=arc-20240116; t=1734544657; c=relaxed/simple;
+	bh=fdB0svn2IykAVnwwywBw2gz//mi+2KF+JcQcZEIPz2Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MM1XZhevRowU71MY2oSbCU1RZTO9MF7KsAYqcqRaFGxb4e+e7oFvezco3RylWt3CQtNNVDiGw3NrtT+ey5EHAgdvKJ52gdNblF65zyegkOJ96DFBECNbZgAzDVzLUnSFwYXvNhkWHnS8vve+QN/ul2ohGJTT2SLiKHys1nHwo18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OGLv6Vdz; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1734544653;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=oDVTgihxonMnUGQyldRP1JnTHpETqeFjIwyXoZkQt3M=;
+	b=OGLv6Vdziy3FwPXQ0qRgnnKFiQ0V6PJnfho5mvk4brEphGRJ1r9llDtzzbjHOTRpt+B7ZH
+	LRywA3brzqjTnw1fi3YFjwWgGgOxkBUIbzLibnmcimMxipBrwPRM7M7hbYPeUa/o4sIIZs
+	0TFSxtyBmYOrB/9rZS4eaO+5B9dXRMg=
+Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-99-G-cnryS1MnCiJpU55YnotQ-1; Wed,
+ 18 Dec 2024 12:57:28 -0500
+X-MC-Unique: G-cnryS1MnCiJpU55YnotQ-1
+X-Mimecast-MFC-AGG-ID: G-cnryS1MnCiJpU55YnotQ
+Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id CA66E1955F34;
+	Wed, 18 Dec 2024 17:57:27 +0000 (UTC)
+Received: from fedora (unknown [10.43.17.16])
+	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 63D81195608A;
+	Wed, 18 Dec 2024 17:57:25 +0000 (UTC)
+Received: by fedora (sSMTP sendmail emulation); Wed, 18 Dec 2024 18:57:24 +0100
+From: "Jerome Marchand" <jmarchan@redhat.com>
+To: bpf@vger.kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Jerome Marchand <jmarchan@redhat.com>
+Subject: [PATCH] selftests/bpf: Fix compilation error in get_uprobe_offset()
+Date: Wed, 18 Dec 2024 18:57:24 +0100
+Message-ID: <20241218175724.578884-1-jmarchan@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -93,89 +72,33 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
 
-There are cases when we need to explicitly unroll loops. For example,
-cache operations, filling DMA descriptors on very high speeds etc.
-Add compiler-specific attribute macros to give the compiler a hint
-that we'd like to unroll a loop.
-Example usage:
+In get_uprobe_offset(), the call to procmap_query() use the constant
+PROCMAP_QUERY_VMA_EXECUTABLE, even if PROCMAP_QUERY is not defined.
 
- #define UNROLL_BATCH 8
+Define PROCMAP_QUERY_VMA_EXECUTABLE when PROCMAP_QUERY isn't.
 
-	unrolled_count(UNROLL_BATCH)
-	for (u32 i = 0; i < UNROLL_BATCH; i++)
-		op(priv, i);
-
-Note that sometimes the compilers won't unroll loops if they think this
-would have worse optimization and perf than without unrolling, and that
-unroll attributes are available only starting GCC 8. For older compiler
-versions, no hints/attributes will be applied.
-For better unrolling/parallelization, don't have any variables that
-interfere between iterations except for the iterator itself.
-
-Co-developed-by: Jose E. Marchesi <jose.marchesi@oracle.com> # pragmas
-Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
-Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+Fixes: 4e9e07603ecd ("selftests/bpf: make use of PROCMAP_QUERY ioctl if available")
+Signed-off-by: Jerome Marchand <jmarchan@redhat.com>
 ---
- include/linux/unroll.h | 44 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
+ tools/testing/selftests/bpf/trace_helpers.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/linux/unroll.h b/include/linux/unroll.h
-index d42fd6366373..863fb69f6a7e 100644
---- a/include/linux/unroll.h
-+++ b/include/linux/unroll.h
-@@ -9,6 +9,50 @@
- 
- #include <linux/args.h>
- 
-+#ifdef CONFIG_CC_IS_CLANG
-+#define __pick_unrolled(x, y)		_Pragma(#x)
-+#elif CONFIG_GCC_VERSION >= 80000
-+#define __pick_unrolled(x, y)		_Pragma(#y)
-+#else
-+#define __pick_unrolled(x, y)		/* not supported */
-+#endif
+diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
+index 2d742fdac6b9..51fa29e0e083 100644
+--- a/tools/testing/selftests/bpf/trace_helpers.c
++++ b/tools/testing/selftests/bpf/trace_helpers.c
+@@ -293,6 +293,9 @@ static int procmap_query(int fd, const void *addr, __u32 query_flags, size_t *st
+ 	return 0;
+ }
+ #else
 +
-+/**
-+ * unrolled - loop attributes to ask the compiler to unroll it
-+ *
-+ * Usage:
-+ *
-+ * #define BATCH 8
-+ *
-+ *	unrolled_count(BATCH)
-+ *	for (u32 i = 0; i < BATCH; i++)
-+ *		// loop body without cross-iteration dependencies
-+ *
-+ * This is only a hint and the compiler is free to disable unrolling if it
-+ * thinks the count is suboptimal and may hurt performance and/or hugely
-+ * increase object code size.
-+ * Not having any cross-iteration dependencies (i.e. when iter x + 1 depends
-+ * on what iter x will do with variables) is not a strict requirement, but
-+ * provides best performance and object code size.
-+ * Available only on Clang and GCC 8.x onwards.
-+ */
++#define PROCMAP_QUERY_VMA_EXECUTABLE 0x04
 +
-+/* Ask the compiler to pick an optimal unroll count, Clang only */
-+#define unrolled							\
-+	__pick_unrolled(clang loop unroll(enable), /* nothing */)
-+
-+/* Unroll each @n iterations of the loop */
-+#define unrolled_count(n)						\
-+	__pick_unrolled(clang loop unroll_count(n), GCC unroll n)
-+
-+/* Unroll the whole loop */
-+#define unrolled_full							\
-+	__pick_unrolled(clang loop unroll(full), GCC unroll 65534)
-+
-+/* Never unroll the loop */
-+#define unrolled_none							\
-+	__pick_unrolled(clang loop unroll(disable), GCC unroll 1)
-+
- #define UNROLL(N, MACRO, args...) CONCATENATE(__UNROLL_, N)(MACRO, args)
- 
- #define __UNROLL_0(MACRO, args...)
+ static int procmap_query(int fd, const void *addr, __u32 query_flags, size_t *start, size_t *offset, int *flags)
+ {
+ 	return -EOPNOTSUPP;
 -- 
 2.47.1
 
