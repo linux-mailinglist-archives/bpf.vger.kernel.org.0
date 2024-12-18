@@ -1,159 +1,134 @@
-Return-Path: <bpf+bounces-47227-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47228-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D25D19F641C
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 11:57:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63BD99F64E7
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 12:32:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CC1B1886FBE
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 10:56:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE56216C6D6
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 11:32:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F2261B4234;
-	Wed, 18 Dec 2024 10:54:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2707E19CC20;
+	Wed, 18 Dec 2024 11:32:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="WKf4BDVf"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="GdBPYOLt"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 302C11ACEC5;
-	Wed, 18 Dec 2024 10:54:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.3
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C01F5195385
+	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 11:32:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734519268; cv=none; b=G6HBXUoMo7Zb6TZEwBarhAtw+qnr1ovhHlCifj+MD4HM4bWyiKL5MMxkGkrlOhLSg9C3IFnoRAaj56qbx+42SQnOZfO0Chju0WjBmA8+rED7FJFCgUht+XgIONWeEJxHVOtcX1kH8Fv50wS/IN/w+eqGGOI+caUJzr9j/1XfBUE=
+	t=1734521545; cv=none; b=NaS0UkyGA/LHBisg9490nqmc12VK527TCteCFHzv/9h+Sd1YLyvckZCvduCp4/xYMcAKfSlghq5YJKWCNgm3bh9l6XtfyF33xdr6sWNwKK08LziCFLElPhjZ0nM1c5up80jLg3qDd/jApMAaO5fCM11TKeVhXG3XXgqamkcwt5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734519268; c=relaxed/simple;
-	bh=9cD/qRaX+N/PM5TkKF7XPWCDKrNFi+a4Ia2jzBM4qLE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dJJPxZYlB7Qq+6BVoUeogjQifVmxkPuq+ojdxN80zU2VOpy/Lfo4BTXWcWVOWfUztGfzr/xaRdN3cJnzRRKQtMLWVpZhctK6PuJ/qlDBBXzgU1OzQO5XZ9thsKtz/uExncZ8YAJme9WwBB/iN+Drq8AaFzyBroRgo1+lR9SCVj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=WKf4BDVf; arc=none smtp.client-ip=117.135.210.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-ID:MIME-Version; bh=mqEOq
-	80EgXPg5j44EKuiTiSK93GjhC/NcrgmRSuMMy4=; b=WKf4BDVfpGMzyec56NMMV
-	LtuxLsXDr7JhwrBTwLu5zFGJEYYsR0ON2L0PqNi9IFWPRifiMWl/X5ZiB1Ij5oRh
-	HdJl+MYbTQ4flkEUnOYtva1biIgFS0B3rapxxhiiQYBmdOvend7yiVGJVN/8db9p
-	tDGq+fbMs0lTvqoCNaRHxg=
-Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g0-1 (Coremail) with SMTP id _____wB396t5qWJnjyoDAA--.461S2;
-	Wed, 18 Dec 2024 18:52:50 +0800 (CST)
-From: Jiayuan Chen <mrpre@163.com>
-To: bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Cc: martin.lau@linux.dev,
-	ast@kernel.org,
-	edumazet@google.com,
-	jakub@cloudflare.com,
-	davem@davemloft.net,
-	dsahern@kernel.org,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	linux-kernel@vger.kernel.org,
-	song@kernel.org,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	mhal@rbox.co,
-	yonghong.song@linux.dev,
-	daniel@iogearbox.net,
-	xiyou.wangcong@gmail.com,
-	horms@kernel.org,
-	eddyz87@gmail.com,
-	mykolal@fb.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	shuah@kernel.org,
-	Jiayuan Chen <mrpre@163.com>
-Subject: [PATCH bpf-next v1] selftests/bpf: avoid generating untracked files when running bpf selftests
-Date: Wed, 18 Dec 2024 18:52:20 +0800
-Message-ID: <20241218105220.855128-1-mrpre@163.com>
-X-Mailer: git-send-email 2.43.5
+	s=arc-20240116; t=1734521545; c=relaxed/simple;
+	bh=g7MD1ao0rMDOIVaI+rYkIEslv/AedL95ohwgwWfHVRs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dbp5G43+yIrfcuWf1tAkreqg20sdPlTKINIgROLcXLCFQcg6AUiaJ+gcoQgF3Y2YPIYLzwHgfsfLfSK56liMmd04oI4Y8XcTsdBKxdEIFThem8HRisTwzcvhOWH88VFBCqYKCS+jVwSaniQN8JyN6SRXLSYVwAVglAWaVkIUG4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=GdBPYOLt; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-aabfb33aff8so64726766b.0
+        for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 03:32:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1734521542; x=1735126342; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fnQWqaCjqBtW62hSVEa2zhH4lywtPn54oTc9oEo9iq8=;
+        b=GdBPYOLtjdKWKRQdYRoBL33T4Jy4G8rssecr6jbCtikKGP2S/iFKzeEyOR5CZTG+u4
+         /uK4LRRKUAkypwauIBBclgjvdOw5JRsuw/B+FSpcE443b/2CDZZy9PAiDRHBHCDE9X71
+         efTQ4Af/k/de4GpaxZaSLDN8HAzU6DgJeHGKWszmGobycTb046/WvevY+H8GqwvnCcnN
+         zrHiPDAb3z9vF0XdrIh9Xo0gylA7goJGzpdwm72EiUDDg3XpBlrxv8QnuoUrWo84PFEe
+         VPwfLXflQl5mfQWstRIFHCNqHkEkTpPjjOqkBh+gogH4DsCRLxLeoZNDTz+xFkM5jXnE
+         yz5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734521542; x=1735126342;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fnQWqaCjqBtW62hSVEa2zhH4lywtPn54oTc9oEo9iq8=;
+        b=nTMAgo7P72MEt3XsdppnRGkGVntue2lqJTXsuRrv5e17Y7hyHv44iKC5yAI+aySjNm
+         Pi/hvKoBTtLV63f4r8wxaWrKoOl6Fxw6EU0S9+y3C/bNxMcOhdBMKL0M2F+Be8zLNY3h
+         bznjroFdUo0GER9CVihMSSVPdEKyfAOyC9VP6e/0rtj8PZfNkU25FFTq8CcXzGRxiuSn
+         KYp2AyOHNeyeNyB1T2ONEhdgsayX+SVdD96WtnPtFUYT0P9aClqpD4P6u85TawpoyioP
+         hAyPsRIQ/fGAyPLbl0+kxS++apd6H8kqJ87SWZiq/JnxlTmW7s1GVNIV9+aannl5GxLj
+         Mniw==
+X-Gm-Message-State: AOJu0YwKhdGEIqbaUQn2uLm9osEdKyBJn6SrXE4szar3n6103X7rjsjI
+	xgL05W7iq14J3cJq4zf0RQ/VhAgODstZZNmjAxVXxvwWWNb650Eo0hOW7iEcnu0=
+X-Gm-Gg: ASbGncvcv1K9iHbZVMdd9gqKBe3bTSK13Z2L/GQFiJQCJjIJn3HYnySKXQABrsRwe1T
+	xMELINBWA2gNBwkf7l8av1V/jnqhab/sW9XiX67g929jR4A0avMH20LQCjNBUohzUX5qsq0JOW+
+	ae2ULbnOyUs/Uya4zdtaixsu4aIfdXAQfYegnq+s/NiXleMf4VT+Ch9FxoBrhZ6+qjTV5X7F4U5
+	W+Bw2n5BS/G254UMvwRk7u0iSFt+/O2pe9oAHyZzADZl86Yo8TyGBUbOiOLxiXBqoE=
+X-Google-Smtp-Source: AGHT+IEq9wnIESLmBVjyloaj2K7ZGM8pEepkcYNy7DpY/9QMzrt5l4lU7LiVeEPEXPuazvcO/CaAmA==
+X-Received: by 2002:a17:906:ef0e:b0:aa6:bedc:2e4c with SMTP id a640c23a62f3a-aabdc833a77mr769119766b.3.1734521542051;
+        Wed, 18 Dec 2024 03:32:22 -0800 (PST)
+Received: from localhost (109-81-89-64.rct.o2.cz. [109.81.89.64])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aab9600628asm554534566b.20.2024.12.18.03.32.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Dec 2024 03:32:21 -0800 (PST)
+Date: Wed, 18 Dec 2024 12:32:20 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: alexei.starovoitov@gmail.com
+Cc: bpf@vger.kernel.org, andrii@kernel.org, memxor@gmail.com,
+	akpm@linux-foundation.org, peterz@infradead.org, vbabka@suse.cz,
+	bigeasy@linutronix.de, rostedt@goodmis.org, houtao1@huawei.com,
+	hannes@cmpxchg.org, shakeel.butt@linux.dev, willy@infradead.org,
+	tglx@linutronix.de, jannh@google.com, tj@kernel.org,
+	linux-mm@kvack.org, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next v3 1/6] mm, bpf: Introduce try_alloc_pages() for
+ opportunistic page allocation
+Message-ID: <Z2KyxEHA8NCNGF6u@tiehlicka>
+References: <20241218030720.1602449-1-alexei.starovoitov@gmail.com>
+ <20241218030720.1602449-2-alexei.starovoitov@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wB396t5qWJnjyoDAA--.461S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Kw17Cry7Xw13AryDAFWfAFb_yoW5JFy7p3
-	yrJw1jkrZaqFWUt3Z7ZrW3ur1rJr4DZFW0va1UZryDZwn8JFykWF4IyFy5Za43urZYqrZI
-	v3yIgF9xAFW8A3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0z_dgA7UUUUU=
-X-CM-SenderInfo: xpus2vi6rwjhhfrp/1tbiDxa5p2dinVv9AwAAs6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241218030720.1602449-2-alexei.starovoitov@gmail.com>
 
-Currently, when we run the BPF selftests with the following command:
+I like this proposal better. I am still not convinced that we really
+need internal __GFP_TRYLOCK though. 
 
-'make -C tools/testing/selftests TARGETS=bpf SKIP_TARGETS=""'
+If we reduce try_alloc_pages to the gfp usage we are at the following
 
-The command generates untracked files and directories:
-'''
-Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-	tools/testing/selftests/bpfFEATURE-DUMP.selftests
-	tools/testing/selftests/bpffeature/
-'''
+On Tue 17-12-24 19:07:14, alexei.starovoitov@gmail.com wrote:
+[...]
+> +struct page *try_alloc_pages_noprof(int nid, unsigned int order)
+> +{
+> +	gfp_t alloc_gfp = __GFP_NOWARN | __GFP_ZERO |
+> +			  __GFP_NOMEMALLOC | __GFP_TRYLOCK;
+> +	unsigned int alloc_flags = ALLOC_TRYLOCK;
+[...]
+> +	prepare_alloc_pages(alloc_gfp, order, nid, NULL, &ac,
+> +			    &alloc_gfp, &alloc_flags);
+[...]
+> +	page = get_page_from_freelist(alloc_gfp, order, alloc_flags, &ac);
+> +
+> +	/* Unlike regular alloc_pages() there is no __alloc_pages_slowpath(). */
+> +
+> +	trace_mm_page_alloc(page, order, alloc_gfp & ~__GFP_TRYLOCK, ac.migratetype);
+> +	kmsan_alloc_page(page, order, alloc_gfp);
+[...]
 
-The core reason is our Makefile(tools/testing/selftests/bpf/Makefile)
-was written like this:
-'''
-OUTPUT := $(OUTPUT)/
-$(eval include ../../../build/Makefile.feature)
-OUTPUT := $(patsubst %/,%,$(OUTPUT))
-'''
+From those that care about __GFP_TRYLOCK only kmsan_alloc_page doesn't
+have alloc_flags. Those could make the locking decision based on
+ALLOC_TRYLOCK.
 
-This way of assigning values to OUTPUT will never be effective for the
-variable OUTPUT provided via the command argument and sub makefile called
-like this(tools/testing/selftests/Makefile):
-'''
-all:
-    ...
-	$(MAKE) OUTPUT=$$BUILD_TARGET -C $$TARGET
-'''
-
-As stated in the GNU make documentation:
-'''
-An argument that contains '=' specifies the value of a variable: 'v=x'
-sets the value of the variable v to x. If you specify a value in this way,
-all ordinary assignments of the same variable in the makefile are ignored;
-we say they have been overridden by the command line argument.
-'''
-
-According to GNU make, we use override Directive to fix this issue:
-'''
-If you want to set the variable in the makefile even though it was set
-with a command argument, you can use an override directive, which is a
-line that looks like this:
-override variable := value
-
-Link: https://www.gnu.org/software/make/manual/make.html#Override-Directive
-Fixes: dc3a8804d790 ("selftests/bpf: Adapt OUTPUT appending logic to lower versions of Make")
-
-Signed-off-by: Jiayuan Chen <mrpre@163.com>
----
- tools/testing/selftests/bpf/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 9e870e519c30..eb4d21651aa7 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -202,9 +202,9 @@ ifeq ($(shell expr $(MAKE_VERSION) \>= 4.4), 1)
- $(let OUTPUT,$(OUTPUT)/,\
- 	$(eval include ../../../build/Makefile.feature))
- else
--OUTPUT := $(OUTPUT)/
-+override OUTPUT := $(OUTPUT)/
- $(eval include ../../../build/Makefile.feature)
--OUTPUT := $(patsubst %/,%,$(OUTPUT))
-+override OUTPUT := $(patsubst %/,%,$(OUTPUT))
- endif
- endif
- 
-
-base-commit: a7c205120d339b6ad2557fe3f33fdf20394f1a0f
+I am not familiar with kmsan internals and my main question is whether
+this specific usecase really needs a dedicated reentrant
+kmsan_alloc_page rather than rely on gfp flag to be sufficient.
+Currently kmsan_in_runtime bails out early in some contexts. The
+associated comment about hooks is not completely clear to me though.
+Memory allocation down the road is one of those but it is not really
+clear to me whether this is the only one.
 -- 
-2.43.5
-
+Michal Hocko
+SUSE Labs
 
