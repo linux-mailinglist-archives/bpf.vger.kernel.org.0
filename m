@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-47249-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47250-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5748C9F6770
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 14:37:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BBFE9F676B
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 14:36:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBD29189457E
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 13:36:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E2341630BD
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 13:36:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDF5B1F0E21;
-	Wed, 18 Dec 2024 13:34:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60DB01F37C6;
+	Wed, 18 Dec 2024 13:34:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MPxc0dho"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xfz5QjC+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94BCA1D9A48
-	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 13:34:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B58E1E9B39
+	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 13:34:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734528874; cv=none; b=JHdOt1MW30WPH1Kifg/RJi0bBFgQjx//jfZT1QuWoCl2d/P18Ky1IcLBDnO0KgJfoLxEZdIrn8ABVlXOPcV3XmGesHy9YO2Xi6kKvst1D8yTIJK9kKlXmIvEYWbHcfNLJtEkGX2AhGyGBPCNdExVmhs06fv8sVe2+BaDADFfhdE=
+	t=1734528875; cv=none; b=FmCDrm4DKuac8JSUP93vmuVX9M2hqtAB73FjxzoMc8Ah5308rYlMYgAYI14at9o3iw/hSg4nfSkonfycOpmVdBRl7dxoxeQzqpIq33MHDTUN/KA8Ks/PuLQY14UBY5Xp6np7dFoWFBj4ZWBIlTl+67ktNC9cqKluapB7eyHgp94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734528874; c=relaxed/simple;
-	bh=u3ksI8X3LHlmnWlWNsr7oSVKMPEqKsRuUTAg+bTe+00=;
+	s=arc-20240116; t=1734528875; c=relaxed/simple;
+	bh=5nW61vOKeFgt2Ca3diR0gPzoG2D8KLy0Ubznq3j8i3w=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=hdsPTiDSgmZJxvZVT9HOLWnZJWDZm71Oq2xBJ3mfezZzp9zIepm1MdRZKGVjQPLpywHNf1B6o/wGRpg28bIISnov8TekAVu951OALWy1ZiDl2Ss6kl/5rzUwPuqFgGD1aRde3Rts1yQMlKVwFasvCovm3tWUUw2sJqIdQjs/NJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--pkaligineedi.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MPxc0dho; arc=none smtp.client-ip=209.85.214.202
+	 To:Cc:Content-Type; b=pxFIm17VAhl4aoUZX+u7tsL+PLphrCBV2w7V76rFyCZ58NUb45sdcJWvTIEEPHPL88zUD4UHheHZ+fclLFntg2r1iMaAtC3b9fXCe/erpG+qknw7FfxVXVzJPcW1F2CbSqdbsL9nbsPAxJ268GpKR7hAgeG3kjzdcX/6lBVbit0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--pkaligineedi.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xfz5QjC+; arc=none smtp.client-ip=209.85.215.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--pkaligineedi.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-2164861e1feso57039325ad.1
-        for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 05:34:32 -0800 (PST)
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-7fcd2430636so4424428a12.2
+        for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 05:34:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1734528872; x=1735133672; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1734528873; x=1735133673; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YwlRUX1jaF5zrf3pwivF6X+hM80Z5phrYRTqYk/3DoI=;
-        b=MPxc0dhofPFnXcILg06kG+YRGWPh4xf2Jay20u120zc0dKqN9UxHQ7AMA81rLhgXmb
-         ZVqMkn/rIzJH0nSIiQQ3z+EjssO0gXN7iV27NaPDEAJCFAuRmo/JRJqgBG9KLyoExo/J
-         zfXhn4kVlf4usRO89FOZIN7PrUnA0Ef20z6MIkhYvZFnQ/OutucxOUuFF1ilYZXAxC34
-         lOzOXJIZHHK6HRghsVoS79wZ4NEyWdcvCla3Bi3YeSb4PjzpTZslTx3cvvuIbCnWzR0c
-         Y0pOr28Q+UKFULWe+0RbB/OS42OZ9BYI/7vy6OIBWu27DNVF2zOg8iZpVEGPpDiH1wVJ
-         X1Ug==
+        bh=T5p6vlUBAsmQyOt8BuyoWsG+1hipC/LRRSVT0CsAjCw=;
+        b=xfz5QjC+/jESiv2uFvLF7rUuOSlvdU5UBtL8Zkt4O0ZXCoAZdgPaXDdijcxVsWITru
+         HcmSIsWy80R71wgIMCGdjrJeeDRX++FLMrlmeZLjS4oHGnjYypKkni4/blLGJxCEInth
+         eip0fZuoxqh/nDopdSQzPsdp6RGkqFaFCbft0UsNrXDW2rUIlNhg+a93nXNc22tB0WcE
+         9UGJI/u/6mLWyg61qAA0Zv256zRIRNQtCTVHbg7/A6Gh0mtZ0KikFiDRi5++rsZC1SfX
+         hsF4gs0h/yhycSJtQEg/bIWRs/ljOomEIPdn+IAuNv7FMUwJyP37DFdSwcBRpyd0FkU+
+         LgFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734528872; x=1735133672;
+        d=1e100.net; s=20230601; t=1734528873; x=1735133673;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YwlRUX1jaF5zrf3pwivF6X+hM80Z5phrYRTqYk/3DoI=;
-        b=BcqKLikDuuANFYR5qMpXs0FUIb1baI+5ZvjybFh64ZODbrp/pud4r2mK9h1SLon8Zq
-         VTrGet5zPQErUuUcX0gK0wM9aY1USsIcYMFW4Fp/THMF3PcnXBXHEfH/KVQhfi+HBm42
-         fpNIITEvx0QWdGRjzW3jy6oJ2kcB1mODo4hAEbZ16MmJHT83MrvkuYEqE6JoYJ65jkTU
-         9EiuU1x/PqlP+E0P7QCp3yd/gU8eOzMtU/iIhrKteR5UvNTnHqhYR0H/FiMrnyN4n77/
-         NDKzlxiIHgPoKfZ9EScjDWxr7VmoaONPY8qOdesHQqXJBXvIc6KmZ6yqlc8DYPJO7aDp
-         faPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXZ68jxbSFNjpvb01+Hb2frzdOjsiqVJCOnNJwV062WALfcoVp57Jr4jlhNulPQHexTc7U=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxEcJ3EdEZhfsAW59iY8LkxrluhuAKuQk6hM/2WIGgNcfTadn2I
-	cUf3KkeWTkKrs+AkEVszuOiZ1ow64DG+XbGJi+Et0PYmK74vwezbQfiWFnGKORc9z4nhOPRQfOA
-	wEEkEvIhw4mz8wr5UKC7uCGrfxQ==
-X-Google-Smtp-Source: AGHT+IGoZ3BfldQRegdOBvsvUntzPVMpURPuoWRCP2EtNiBtWfT4ejOfM4mqohMkYW+FU9E8z71bR23/h0c1KA2OAKc=
-X-Received: from pgid5.prod.google.com ([2002:a63:ed05:0:b0:7fd:5437:9912])
+        bh=T5p6vlUBAsmQyOt8BuyoWsG+1hipC/LRRSVT0CsAjCw=;
+        b=jY0WdKhOBQ4BPHxxgjJURg93dS6MFVq8Jeli4YAiQuHIwxOPqp9SPbXYhgm2u8F+3G
+         +eA9tLA2MZR6J/soeISKQSnOgozrRfpuWngFttiXzFjP7+yU5qZNhe20Epu5wWBIsSPP
+         B6FXqOEykwMP7XktKuC+lie5Jlz7wPnfztiHzraYeoSd6Qp4Zvmjsin7vR6aqvUkACzg
+         Jl7EVIUkj0Wa/BNHB+nFwX+lUmy5WVuZ9jud/txjyRbF5B28IOV3oVGpMRKdH/plJLTO
+         1CJGO9hoK158oB0EaJhaFHA/I8LXmGLLSdS2iL8fbQh4YTAIHya+vOIOrw7U/CWep7bD
+         Sikg==
+X-Forwarded-Encrypted: i=1; AJvYcCWEfsdINyjwF6Ayv2yFNd2+LJaE2OxecmJxAsEcRTPNJsM3alKP6cyov5ElMqtYob99v2s=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw4ZDfZUu/wfVW52uMdo4mgOqnOgDDA9nhkmoh3tFdEIbAE25E6
+	JcF50vAAhba3AVGBdtXWcM4a5h+PCVs4dgPYo4MZd+XnCszs252RhfTCrd8XnM5iDiKMujI8Oy/
+	y1JUbEbYFC48gc1fQ3JGQowaT0A==
+X-Google-Smtp-Source: AGHT+IESNBKLCTm0uqLX+DRFxTtWjk+95d5i9mTaDJzn1eicqwfkpRcGBjtCrRCjQo4wMO7Q8jBDvY0A+fhe0GGi+qI=
+X-Received: from pjbqx3.prod.google.com ([2002:a17:90b:3e43:b0:2ee:4b69:50e1])
  (user=pkaligineedi job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:902:dac6:b0:216:1ec6:9888 with SMTP id d9443c01a7336-218d72368afmr37261205ad.33.1734528871967;
- Wed, 18 Dec 2024 05:34:31 -0800 (PST)
-Date: Wed, 18 Dec 2024 05:34:14 -0800
+ 2002:a17:90b:2b8f:b0:2ee:df57:b194 with SMTP id 98e67ed59e1d1-2f2e91fef48mr3520473a91.21.1734528873500;
+ Wed, 18 Dec 2024 05:34:33 -0800 (PST)
+Date: Wed, 18 Dec 2024 05:34:15 -0800
 In-Reply-To: <20241218133415.3759501-1-pkaligineedi@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,8 +74,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20241218133415.3759501-1-pkaligineedi@google.com>
 X-Mailer: git-send-email 2.47.1.613.gc27f4b7a9f-goog
-Message-ID: <20241218133415.3759501-5-pkaligineedi@google.com>
-Subject: [PATCH net 4/5] gve: process XSK TX descriptors as part of RX NAPI
+Message-ID: <20241218133415.3759501-6-pkaligineedi@google.com>
+Subject: [PATCH net 5/5] gve: fix XDP allocation path in edge cases
 From: Praveen Kaligineedi <pkaligineedi@google.com>
 To: netdev@vger.kernel.org
 Cc: jeroendb@google.com, shailend@google.com, willemb@google.com, 
@@ -89,120 +89,95 @@ Content-Type: text/plain; charset="UTF-8"
 
 From: Joshua Washington <joshwash@google.com>
 
-When busy polling is enabled, xsk_sendmsg for AF_XDP zero copy marks
-the NAPI ID corresponding to the memory pool allocated for the socket.
-In GVE, this NAPI ID will never correspond to a NAPI ID of one of the
-dedicated XDP TX queues registered with the umem because XDP TX is not
-set up to share a NAPI with a corresponding RX queue.
+This patch fixes a number of consistency issues in the queue allocation
+path related to XDP.
 
-This patch moves XSK TX descriptor processing from the TX NAPI to the RX
-NAPI, and the gve_xsk_wakeup callback is updated to use the RX NAPI
-instead of the TX NAPI, accordingly. The branch on if the wakeup is for
-TX is removed, as the NAPI poll should be invoked whether the wakeup is
-for TX or for RX.
+As it stands, the number of allocated XDP queues changes in three
+different scenarios.
+1) Adding an XDP program while the interface is up via
+   gve_add_xdp_queues
+2) Removing an XDP program while the interface is up via
+   gve_remove_xdp_queues
+3) After queues have been allocated and the old queue memory has been
+   removed in gve_queues_start.
 
-Fixes: fd8e40321a12 ("gve: Add AF_XDP zero-copy support for GQI-QPL format")
+However, the requirement for the interface to be up for
+gve_(add|remove)_xdp_queues to be called, in conjunction with the fact
+that the number of queues stored in priv isn't updated until _after_ XDP
+queues have been allocated in the normal queue allocation path means
+that if an XDP program is added while the interface is down, XDP queues
+won't be added until the _second_ if_up, not the first.
+
+Given the expectation that the number of XDP queues is equal to the
+number of RX queues, scenario (3) has another problematic implication.
+When changing the number of queues while an XDP program is loaded, the
+number of XDP queues must be updated as well, as there is logic in the
+driver (gve_xdp_tx_queue_id()) which relies on every RX queue having a
+corresponding XDP TX queue. However, the number of XDP queues stored in
+priv would not be updated until _after_ a close/open leading to a
+mismatch in the number of XDP queues reported vs the number of XDP
+queues which actually exist after the queue count update completes.
+
+This patch remedies these issues by doing the following:
+1) The allocation config getter function is set up to retrieve the
+   _expected_ number of XDP queues to allocate instead of relying
+   on the value stored in `priv` which is only updated once the queues
+   have been allocated.
+2) When adjusting queues, XDP queues are adjusted to match the number of
+   RX queues when XDP is enabled. This only works in the case when
+   queues are live, so part (1) of the fix must still be available in
+   the case that queues are adjusted when there is an XDP program and
+   the interface is down.
+
+Fixes: 5f08cd3d6423 ("gve: Alloc before freeing when adjusting queues")
 Cc: stable@vger.kernel.org
-Signed-off-by: Praveen Kaligineedi <pkaligineedi@google.com>
 Signed-off-by: Joshua Washington <joshwash@google.com>
+Signed-off-by: Praveen Kaligineedi <pkaligineedi@google.com>
+Reviewed-by: Praveen Kaligineedi <pkaligineedi@google.com>
+Reviewed-by: Shailend Chand <shailend@google.com>
 Reviewed-by: Willem de Bruijn <willemb@google.com>
 ---
- drivers/net/ethernet/google/gve/gve.h      |  1 +
- drivers/net/ethernet/google/gve/gve_main.c |  8 +++++
- drivers/net/ethernet/google/gve/gve_tx.c   | 36 +++++++++++++---------
- 3 files changed, 31 insertions(+), 14 deletions(-)
+ drivers/net/ethernet/google/gve/gve_main.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/google/gve/gve.h b/drivers/net/ethernet/google/gve/gve.h
-index dd92949bb214..8167cc5fb0df 100644
---- a/drivers/net/ethernet/google/gve/gve.h
-+++ b/drivers/net/ethernet/google/gve/gve.h
-@@ -1140,6 +1140,7 @@ int gve_xdp_xmit_one(struct gve_priv *priv, struct gve_tx_ring *tx,
- void gve_xdp_tx_flush(struct gve_priv *priv, u32 xdp_qid);
- bool gve_tx_poll(struct gve_notify_block *block, int budget);
- bool gve_xdp_poll(struct gve_notify_block *block, int budget);
-+int gve_xsk_tx_poll(struct gve_notify_block *block, int budget);
- int gve_tx_alloc_rings_gqi(struct gve_priv *priv,
- 			   struct gve_tx_alloc_rings_cfg *cfg);
- void gve_tx_free_rings_gqi(struct gve_priv *priv,
 diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
-index e4e8ff4f9f80..5cab7b88610f 100644
+index 5cab7b88610f..09fb7f16f73e 100644
 --- a/drivers/net/ethernet/google/gve/gve_main.c
 +++ b/drivers/net/ethernet/google/gve/gve_main.c
-@@ -333,6 +333,14 @@ int gve_napi_poll(struct napi_struct *napi, int budget)
- 
- 	if (block->rx) {
- 		work_done = gve_rx_poll(block, budget);
-+
-+		/* Poll XSK TX as part of RX NAPI. Setup re-poll based on max of
-+		 * TX and RX work done.
-+		 */
-+		if (priv->xdp_prog)
-+			work_done = max_t(int, work_done,
-+					  gve_xsk_tx_poll(block, budget));
-+
- 		reschedule |= work_done == budget;
- 	}
- 
-diff --git a/drivers/net/ethernet/google/gve/gve_tx.c b/drivers/net/ethernet/google/gve/gve_tx.c
-index 852f8c7e39d2..4350ebd9c2bd 100644
---- a/drivers/net/ethernet/google/gve/gve_tx.c
-+++ b/drivers/net/ethernet/google/gve/gve_tx.c
-@@ -981,33 +981,41 @@ static int gve_xsk_tx(struct gve_priv *priv, struct gve_tx_ring *tx,
- 	return sent;
- }
- 
-+int gve_xsk_tx_poll(struct gve_notify_block *rx_block, int budget)
-+{
-+	struct gve_rx_ring *rx = rx_block->rx;
-+	struct gve_priv *priv = rx->gve;
-+	struct gve_tx_ring *tx;
-+	int sent = 0;
-+
-+	tx = &priv->tx[gve_xdp_tx_queue_id(priv, rx->q_num)];
-+	if (tx->xsk_pool) {
-+		sent = gve_xsk_tx(priv, tx, budget);
-+
-+		u64_stats_update_begin(&tx->statss);
-+		tx->xdp_xsk_sent += sent;
-+		u64_stats_update_end(&tx->statss);
-+		if (xsk_uses_need_wakeup(tx->xsk_pool))
-+			xsk_set_tx_need_wakeup(tx->xsk_pool);
-+	}
-+
-+	return sent;
-+}
-+
- bool gve_xdp_poll(struct gve_notify_block *block, int budget)
+@@ -930,11 +930,13 @@ static void gve_init_sync_stats(struct gve_priv *priv)
+ static void gve_tx_get_curr_alloc_cfg(struct gve_priv *priv,
+ 				      struct gve_tx_alloc_rings_cfg *cfg)
  {
- 	struct gve_priv *priv = block->priv;
- 	struct gve_tx_ring *tx = block->tx;
- 	u32 nic_done;
--	bool repoll;
- 	u32 to_do;
- 
- 	/* Find out how much work there is to be done */
- 	nic_done = gve_tx_load_event_counter(priv, tx);
- 	to_do = min_t(u32, (nic_done - tx->done), budget);
- 	gve_clean_xdp_done(priv, tx, to_do);
--	repoll = nic_done != tx->done;
--
--	if (tx->xsk_pool) {
--		int sent = gve_xsk_tx(priv, tx, budget);
--
--		u64_stats_update_begin(&tx->statss);
--		tx->xdp_xsk_sent += sent;
--		u64_stats_update_end(&tx->statss);
--		repoll |= (sent == budget);
--		if (xsk_uses_need_wakeup(tx->xsk_pool))
--			xsk_set_tx_need_wakeup(tx->xsk_pool);
--	}
- 
- 	/* If we still have work we want to repoll */
--	return repoll;
-+	return nic_done != tx->done;
++	int num_xdp_queues = priv->xdp_prog ? priv->rx_cfg.num_queues : 0;
++
+ 	cfg->qcfg = &priv->tx_cfg;
+ 	cfg->raw_addressing = !gve_is_qpl(priv);
+ 	cfg->ring_size = priv->tx_desc_cnt;
+ 	cfg->start_idx = 0;
+-	cfg->num_rings = gve_num_tx_queues(priv);
++	cfg->num_rings = priv->tx_cfg.num_queues + num_xdp_queues;
+ 	cfg->tx = priv->tx;
  }
  
- bool gve_tx_poll(struct gve_notify_block *block, int budget)
+@@ -1843,6 +1845,7 @@ int gve_adjust_queues(struct gve_priv *priv,
+ {
+ 	struct gve_tx_alloc_rings_cfg tx_alloc_cfg = {0};
+ 	struct gve_rx_alloc_rings_cfg rx_alloc_cfg = {0};
++	int num_xdp_queues;
+ 	int err;
+ 
+ 	gve_get_curr_alloc_cfgs(priv, &tx_alloc_cfg, &rx_alloc_cfg);
+@@ -1853,6 +1856,10 @@ int gve_adjust_queues(struct gve_priv *priv,
+ 	rx_alloc_cfg.qcfg = &new_rx_config;
+ 	tx_alloc_cfg.num_rings = new_tx_config.num_queues;
+ 
++	/* Add dedicated XDP TX queues if enabled. */
++	num_xdp_queues = priv->xdp_prog ? new_rx_config.num_queues : 0;
++	tx_alloc_cfg.num_rings += num_xdp_queues;
++
+ 	if (netif_running(priv->dev)) {
+ 		err = gve_adjust_config(priv, &tx_alloc_cfg, &rx_alloc_cfg);
+ 		return err;
 -- 
 2.47.1.613.gc27f4b7a9f-goog
 
