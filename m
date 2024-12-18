@@ -1,130 +1,93 @@
-Return-Path: <bpf+bounces-47283-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47284-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 631399F70EE
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 00:39:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3487A9F710F
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 00:42:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 186341881DDC
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 23:38:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B434E1623B7
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 23:42:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF9EE1FECC3;
-	Wed, 18 Dec 2024 23:37:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D30CA207DF2;
+	Wed, 18 Dec 2024 23:38:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mw7c/xTQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SMB95StF"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89D4E1FDE31
-	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 23:37:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2947E19CCEC;
+	Wed, 18 Dec 2024 23:38:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734565047; cv=none; b=mCN13n8k1JuP0CXeISBHMnKfbygb8p+pZ4kYLYatOpYUUAvAU1Swczg3kCwfy7SfT09WY1VFUUA/4rgs1iMPv7F0m2PZF8K1wwsluYCtxHwtVqkUwpU2AZrHNAo1GIXP2tDOg+SRk8wACRtLQR2S6aHJ7fZ9VUajiL+Nh91cGr8=
+	t=1734565081; cv=none; b=I4mObAh5Uz/8WJHj4fjezexar8bkfSG4/kZoQ+f0y0L/MUpbsLoBnAKBL853s4VsCm5SgpVGeFewh36EbxNTcUuQE6U1DUb7tB9OXlyNtKpuDs5zW+IaQryuy7SXUS1dN3HpuiN7qPEilzqFJGcef71bpu8+ofCFhceOVm3XJog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734565047; c=relaxed/simple;
-	bh=sFAoi3ZSBj2JOlSyrlGOJ2lIbd3TrtoGMgGcLp0OJxs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lG1nNtQdmTdmcpIkXQ9dTt4q3/qgjeXyEVa3+UQaaQSrzv4tof1R3gXoICYWLWevjgmjhgQApB6BUTZCx6il2ggD7vtvPulkNUdkLpfK4q7s04KRb0NE8mCCN7AoWhuHnU0q3BGtCr2nGno1RIx98GDw2OqicpIp4UvA0MsZfJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mw7c/xTQ; arc=none smtp.client-ip=95.215.58.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d0cbaf41-7632-4430-a228-d56c70dd6aed@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1734565042;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ng7nsfRRx/pLmf09Sdjvv0KjhEGPPLEJnoqOlj8GtbU=;
-	b=mw7c/xTQ4lGBXNKFq56pfGPu6HV7ml1l4ahKaYi5ZlSI+cOD5aarzyIbtFcMYC5Cp9cJi0
-	MybYYIU55ZyLB49qxaceYJT65FAnc4MaiyEdr27k+MfiNjYtDwoyGJrCt8wXA7hQR7QUeT
-	Nv+CpmJFxBAWGTN9O11qxwqGTPjDpWc=
-Date: Wed, 18 Dec 2024 15:37:14 -0800
+	s=arc-20240116; t=1734565081; c=relaxed/simple;
+	bh=TE9MeQggFrUNHk7GnpsPc1qOO621qZHYt6YKXQvYGUs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=uUFcnQ9HasVvhYRx6bQG2VCh7AJ68uSHy46mgS2LED2hmIDRPkWAPwVaNSwabrwBXmtSU+Qqqou6Rg17Nu7bet9yj1m2Qy1qc0VAkmUVavJN578pEdKt6/4cp4yk1Fsjo890fdj230dO6+dCzD6bI57uKadixfKK0u624IgY7rM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SMB95StF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9872C4CECD;
+	Wed, 18 Dec 2024 23:37:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734565080;
+	bh=TE9MeQggFrUNHk7GnpsPc1qOO621qZHYt6YKXQvYGUs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=SMB95StF87lMswBTmoy5w+GFfz3iCmebU4gbeFCJK7sk9+I16C9cplpIYLf0W9Qul
+	 QxmbLpIR7/E6R0kf5eKkyEYZx8mBxxIidhrnHdr7M4IeFwaA3J5y2wWv4oQmfmxORv
+	 D1j6lmCsAMuKx+jWknHgUh8GEb58788JfHfg1N+UuccR+d6b8ALbB6vzMOTnfrbNpk
+	 nrbFqHQ3vUtoVAGtl14Lhqr/MD+oEcAwxAPHEo6k2fp/JS6ZLbq87qH4FknN0j6i1c
+	 yDKA9jZ2UNpUbRlqHX4gnIrK03GFSOZ91dNOO2mqCDLBVJi/w2/4kNnX7grOmVIZvb
+	 15jS4zu2mRPLw==
+Date: Wed, 18 Dec 2024 15:37:59 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Xiao Liang <shaw.leon@gmail.com>
+Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, Kuniyuki
+ Iwashima <kuniyu@amazon.com>, Donald Hunter <donald.hunter@gmail.com>,
+ Paolo Abeni <pabeni@redhat.com>, "David S. Miller" <davem@davemloft.net>,
+ David Ahern <dsahern@kernel.org>, Eric Dumazet <edumazet@google.com>, Ido
+ Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Simon
+ Horman <horms@kernel.org>, Shuah Khan <shuah@kernel.org>, Jiri Pirko
+ <jiri@resnulli.us>, Hangbin Liu <liuhangbin@gmail.com>,
+ linux-rdma@vger.kernel.org, linux-can@vger.kernel.org,
+ osmocom-net-gprs@lists.osmocom.org, bpf@vger.kernel.org,
+ linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
+ linux-wireless@vger.kernel.org, b.a.t.m.a.n@lists.open-mesh.org,
+ bridge@lists.linux.dev, linux-wpan@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v6 11/11] selftests: net: Add test cases for
+ link and peer netns
+Message-ID: <20241218153759.672b7014@kernel.org>
+In-Reply-To: <20241218130909.2173-12-shaw.leon@gmail.com>
+References: <20241218130909.2173-1-shaw.leon@gmail.com>
+	<20241218130909.2173-12-shaw.leon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v1 05/13] bpf: net_sched: Support implementation
- of Qdisc_ops in bpf
-To: Amery Hung <amery.hung@bytedance.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, alexei.starovoitov@gmail.com, martin.lau@kernel.org,
- sinquersw@gmail.com, toke@redhat.com, jhs@mojatatu.com, jiri@resnulli.us,
- stfomichev@gmail.com, ekarani.silvestre@ccc.ufcg.edu.br,
- yangpeihao@sjtu.edu.cn, xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com,
- ameryhung@gmail.com
-References: <20241213232958.2388301-1-amery.hung@bytedance.com>
- <20241213232958.2388301-6-amery.hung@bytedance.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Content-Language: en-US
-In-Reply-To: <20241213232958.2388301-6-amery.hung@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-On 12/13/24 3:29 PM, Amery Hung wrote:
-> +static int bpf_qdisc_init_member(const struct btf_type *t,
-> +				 const struct btf_member *member,
-> +				 void *kdata, const void *udata)
-> +{
-> +	const struct Qdisc_ops *uqdisc_ops;
-> +	struct Qdisc_ops *qdisc_ops;
-> +	u32 moff;
-> +
-> +	uqdisc_ops = (const struct Qdisc_ops *)udata;
-> +	qdisc_ops = (struct Qdisc_ops *)kdata;
-> +
-> +	moff = __btf_member_bit_offset(t, member) / 8;
-> +	switch (moff) {
-> +	case offsetof(struct Qdisc_ops, priv_size):
-> +		if (uqdisc_ops->priv_size)
+On Wed, 18 Dec 2024 21:09:09 +0800 Xiao Liang wrote:
+>  - Add test for creating link in another netns when a link of the same
+>    name and ifindex exists in current netns.
+>  - Add test to verify that link is created in target netns directly -
+>    no link new/del events should be generated in link netns or current
+>    netns.
+>  - Add test cases to verify that link-netns is set as expected for
+>    various drivers and combination of namespace-related parameters.
 
-bpf_struct_ops_map_update_elem() has enforced non function pointer member must 
-be zero if ->init_member() returns 0, so this check is unnecessary.
+Nice work!
 
-> +			return -EINVAL;
-> +		return 1;
-> +	case offsetof(struct Qdisc_ops, static_flags):
-> +		if (uqdisc_ops->static_flags)
+You need to make sure all the drivers the test is using are enabled by
+the selftest kernel config: tools/testing/selftests/net/config
 
-Same here.
-
-case priv_size and static_flags should be not needed, just return 0.
-
-> +			return -EINVAL;
-> +		return 1;
-> +	case offsetof(struct Qdisc_ops, peek):
-> +		if (!uqdisc_ops->peek)
-
-bpf_struct_ops_map_update_elem() will assign the trampoline (that will call the 
-bpf prog) to qdisc_ops->peek if the "u"qdisc_ops->peek has the prog fd.
-
-This test is not necessary also.
-
-> +			qdisc_ops->peek = qdisc_peek_dequeued;
-
-Always do this assignment
-
-
-
-> +		return 1;
-
-and return 0 here. Allow the bpf_struct_ops_map_update_elem() to do the needed 
-fd testing instead and reassign the qdisc_ops->peek with the trampoline if needed.
-
-> +	case offsetof(struct Qdisc_ops, id):
-> +		if (bpf_obj_name_cpy(qdisc_ops->id, uqdisc_ops->id,
-> +				     sizeof(qdisc_ops->id)) <= 0)
-> +			return -EINVAL;
-> +		return 1;
-> +	}
-> +
-> +	return 0;
-> +}
+This may be helpful:
+https://github.com/linux-netdev/nipa/wiki/How-to-run-netdev-selftests-CI-style#how-to-build
+-- 
+pw-bot: cr
 
