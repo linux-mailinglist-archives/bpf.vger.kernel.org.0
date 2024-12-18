@@ -1,141 +1,98 @@
-Return-Path: <bpf+bounces-47202-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47203-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D7D09F5F3C
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 08:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B50A69F5F48
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 08:28:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D5EF188C22D
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 07:25:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CCD4188C625
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 07:28:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D63D1581E1;
-	Wed, 18 Dec 2024 07:25:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D718165F16;
+	Wed, 18 Dec 2024 07:27:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HNCTa5yl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q/24TD2F"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EFE214B077
-	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 07:25:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495F515E5BB;
+	Wed, 18 Dec 2024 07:27:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734506731; cv=none; b=op+DoiZyzP4f55ac4okqD0T290qEbAkXe9NyaSJSudWzgANH67BInhLtHcW2uoADd6BDui3lLNI1OGzYoMuLac589OesnyfA+tI50vUN+0v3f65iP+NdjBGAQaMUdHwF6R0Q4vxpvlJSf81UuiUXi0slOpbiuk2TGnfBZQU73CM=
+	t=1734506868; cv=none; b=TNwiUxwsaYjHv6T3NwGJFGqzpizrlT1DqXxtKyf5Sm1wZOBirf4IcCuXU37p9ZDpJhvxZqYX9ZN0NiuUfziiTY26EY4EnBMe4f6lQ0H/6esJbFGKhgl9YoReMDtCtLMIWoAZo4xwzBAS3/LABqcb0RmowtCFug6yrQoJQYeTEfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734506731; c=relaxed/simple;
-	bh=NexonXHCdgEyg5usR8nRCaBcc/CF5+jjNDqZOrb9Z9Q=;
+	s=arc-20240116; t=1734506868; c=relaxed/simple;
+	bh=PmiB2jVs4zNHVOPQ6aZNIWnq+/9oepP9P098lzS+iCE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ilok6w+PK2Xabn2SGwXKUoUYzVPlS8LmjBdh09dxkGKfbJj2/vPwZBbZZCs1D4TvunKvhOjwzx4MQALES9xM63VEMQimpwCXe7TnihvPWBD/8KmBpqUXNQUqhmrbsJHv6eVt9hklysso8Nbsg4PXzmQnxTPj5L7efeu/x1TRr4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HNCTa5yl; arc=none smtp.client-ip=209.85.128.43
+	 To:Cc:Content-Type; b=E3lnpxyL1aGomi/YGjOMw+CNtBiHLWHwoj8Da+sW8y9x0WEn6DemIim8xYrhLAV4aoUXNq1VfggmLPUNNThVuRXx6nuB98s1mFOPzOXSU5kNFX8j49cWjtG/Lix9jHIc1RIgeFt4i0O65zR5eywrxPBYhvY6sak305qc2VsnVW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q/24TD2F; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4363ae65100so37501855e9.0
-        for <bpf@vger.kernel.org>; Tue, 17 Dec 2024 23:25:29 -0800 (PST)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-385f07cd1a4so4175771f8f.1;
+        Tue, 17 Dec 2024 23:27:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734506728; x=1735111528; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1734506865; x=1735111665; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NexonXHCdgEyg5usR8nRCaBcc/CF5+jjNDqZOrb9Z9Q=;
-        b=HNCTa5yl9nmAgbF3et9X6v8vYVxmgSZsKvRdNGM4v3Aymw5QxU/B5+OABku7VEOvvB
-         8n3CYzee3NtlGnwJqF4UVoiCvjP6DVDmVqwhCbGZ/69llKl42V/pI22Fwbk0aiLlti3/
-         jlpHK2SlRvK4e5K5S/Wo4VEaO6/PIyh05RNftNNDI/TFndyLKUdPvMlYgBd2TlxQK/4I
-         yKwUBSTo2KvN3d6SRLxxyJBxMrWMycQdOG68U6CeJ+UyrdUBxQQkxcMSVLWEAQYwEZB+
-         RvBjRjWpmIsST0jFF3YwdjQMoABu2VIOBAWpTBgg/4cV9CgdhsFT/a9MLC8452FhdoaQ
-         3hiw==
+        bh=PmiB2jVs4zNHVOPQ6aZNIWnq+/9oepP9P098lzS+iCE=;
+        b=Q/24TD2Ff1VbJNe5SLjg7mjG2dtAXd27YmF2FgsGAd18aW8oIVFFmp00tWg7cLjstu
+         0no9W60C4CoPsaY1SBsXI96GniLyGsz3DD4sXGBvp6MEPsFAhc/iZ1/WE1jzuxVsYdAg
+         eIkM6YaYxRyT1fvvo5BskYra34Pt65pNvzZmuBrqR5lh/B0Hbi2AmLXm+Ka7O124hc0X
+         dE6iudr7Tv5zyswz7wt6I06Mn4iMeMeel0J0oTNlSxG+vEhSsRCGySmkJQTk77logOp9
+         SO5LS8o9JY53PUpOqHks1SqevcQNcV8tau98Et4QQDpMfZU3IGL9FvtRm6e7blQj0GoT
+         4B1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734506728; x=1735111528;
+        d=1e100.net; s=20230601; t=1734506865; x=1735111665;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NexonXHCdgEyg5usR8nRCaBcc/CF5+jjNDqZOrb9Z9Q=;
-        b=BWl6SO7h2jsir46YcmXdStcKh2IAvlKybvrwc7WzCohBfovRZyFARr8okr4G5x1y0K
-         7e/2vUuWvsvR7jq3fFI5VYDZMyO6Vpk2sLOIVL5VHN1TAK3Neufesl13xXxGfQorLG86
-         BGF5jXkEMHI1pmC02vmrIFLNssqVOikIBfM8fnwfH7iK7+hNSiu3Ybf64+pnOBuYSm0S
-         ObF3NPKvpB2qJ7LI8Wj+LKjcsaSFyQ8QkEGYAyxTbxQTfZtWtGwbkVKlmryfCsK7dM+L
-         swHecSMt1xaEA/8kw6fib7PKw8TiAzT8xadIJF5Qd0uBX1B0XQU/i007S7/+pFagHeUb
-         rYjA==
-X-Gm-Message-State: AOJu0YwsXx8jnbny33+z8B/m5lk5tDQHcC2h8jL9BmfK9rd2dY31+c2l
-	yjgnuN05t6jNooiHw7p0BarnxKhwUKU/kL8QCagZTeJSGXD8a4lNLY/R/lfJgh6MHLDQP+R6DBR
-	3kt+OANZzynAykSwUt0pYjHkhgng=
-X-Gm-Gg: ASbGncsJ+DAn9nwco7MS9GtzDwikdAP8Rl88wPSB22tJvQsyTMA4k8Vu4/UVm00e/ko
-	Rqajf4KGAZ4gmiBC6CmjhR7z/slFT/T2v7AQzWQ==
-X-Google-Smtp-Source: AGHT+IEdLUMqloqI1IlrJVK67PP8kElwYcGmKTgTFQ2kAOuCpjkyw1z7K+gTq6haCfRr78So5SF1E2NJxkSqg9cKeRk=
-X-Received: by 2002:a05:600c:4fd1:b0:434:a706:c0fb with SMTP id
- 5b1f17b1804b1-4365535c40dmr15719335e9.10.1734506728142; Tue, 17 Dec 2024
- 23:25:28 -0800 (PST)
+        bh=PmiB2jVs4zNHVOPQ6aZNIWnq+/9oepP9P098lzS+iCE=;
+        b=JTNAp5wLLXKheT3fsuB5Iuj/2tDxJYqXqYhau6hvXDvFM5A/1bV6kDjYEnwCZjpm8G
+         G4nHKvpXqwseRHJw+iGPdd7tOfvrYpyCiW3Tg21nQifKvXDdBGQvuGEa4PemcymoPtn8
+         TeHPstJsA5j0eI/1znjb1J/QAu18Wf1YZ5M2ogQdZWOEVfoWNHWhM6fQPtSfyaLR+e9R
+         5BD9PUJdOQPPP+/mVDGMarBuQim5ofhr1SAk6SDqqzzUPPz3MdUQq6B7FCrMPwPiIrK+
+         HHdOyeG5e5Pu9sD80tRsF/5XNwp64V586sPUXVciZesb1Pa5E35iVPeBltCg/H1pgLkg
+         PMLg==
+X-Forwarded-Encrypted: i=1; AJvYcCVR5rakiq/0zSc1wrm0j6UYCL5b/56kEFpKhYS5CQcVIHzUY/XUI1J4KYPmk/3AjY87ZgQk3/U=@vger.kernel.org
+X-Gm-Message-State: AOJu0YypKqYlHZ4qlIiCUqT4vIwiP1AQSANNDjlIAGyz6a8Frk7/InK+
+	vGsIb98qoy6gAfDgyJChQrvUkbaiXV1pmcXNSsc+QpyadwtBHD5/KSSrxS6HxSl91QjLjq8ayWZ
+	NKI1XjJgm38Om0zz/CBxunBa5H9qk7Q==
+X-Gm-Gg: ASbGnctPsXId6dzjQKOdg728LisCj54R5fz9mtJg+/a5h8yTQiXzYvAZ6I8WIe3YbVg
+	xPu7rFc2EA6vxKed/zJx+qaIeIXs6NLUXDk4mCw==
+X-Google-Smtp-Source: AGHT+IHsFDtU4ndn8JgqApZlkcUJ7PVZCQoLpOIAu6Ie5v6zTMXKtYOVmuiPDRtptlAQbimxh4F9JCj8kDWVKj7p6KM=
+X-Received: by 2002:a05:6000:1446:b0:385:fd31:ca31 with SMTP id
+ ffacd0b85a97d-388e4d96b6fmr1556682f8f.53.1734506864489; Tue, 17 Dec 2024
+ 23:27:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241218030720.1602449-1-alexei.starovoitov@gmail.com>
- <20241218030720.1602449-3-alexei.starovoitov@gmail.com> <CAJD7tkYOfBepXDeUFj6mM1evRoDdaS_THwmhp9a4pHeM4bgsFA@mail.gmail.com>
- <CAADnVQKmMaybRQJDyC9sbtmxod6S8kgcrk4FerWt9ve0vR9U1w@mail.gmail.com>
- <CAJD7tkaP40Tde1KHr2t8O9dHyiRSx8Q02=EmPtROyRpS+_qPDg@mail.gmail.com>
- <CAADnVQJwcd=PsdxcipiN8VeJh2UhSv3uzHkX5E5RuLK2vfdSHA@mail.gmail.com> <CAJD7tkYkhojXE0wwOxEMV1uWb-9hxyqbjD5Uj9ji3+GdZmZnKg@mail.gmail.com>
-In-Reply-To: <CAJD7tkYkhojXE0wwOxEMV1uWb-9hxyqbjD5Uj9ji3+GdZmZnKg@mail.gmail.com>
+References: <ffsmmoqcc7yru7yc6sykdwfnad5phgddl5wysq4bw3mwdaiixx@znzt4ucmf37g>
+In-Reply-To: <ffsmmoqcc7yru7yc6sykdwfnad5phgddl5wysq4bw3mwdaiixx@znzt4ucmf37g>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 17 Dec 2024 23:25:17 -0800
-Message-ID: <CAADnVQKwOg0D291ndr_m=RZqTBxW8tbPV39BHPHYMmPif3kbRw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/6] mm, bpf: Introduce free_pages_nolock()
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Vlastimil Babka <vbabka@suse.cz>, 
-	Sebastian Sewior <bigeasy@linutronix.de>, Steven Rostedt <rostedt@goodmis.org>, 
-	Hou Tao <houtao1@huawei.com>, Johannes Weiner <hannes@cmpxchg.org>, shakeel.butt@linux.dev, 
-	Michal Hocko <mhocko@suse.com>, Matthew Wilcox <willy@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>, Tejun Heo <tj@kernel.org>, 
-	linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
+Date: Tue, 17 Dec 2024 23:27:33 -0800
+Message-ID: <CAADnVQJXEmy4v6z8eYYPtgApWvv4LGgYExsFvbVPBe6BN9xAeQ@mail.gmail.com>
+Subject: Re: [BUG stable 6.6] kernel crash in BPF selftests dummy_st_ops
+To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc: bpf <bpf@vger.kernel.org>, stable <stable@vger.kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Kui-Feng Lee <thinker.li@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 17, 2024 at 10:49=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com=
-> wrote:
+On Tue, Dec 17, 2024 at 11:02=E2=80=AFPM Shung-Hsi Yu <shung-hsi.yu@suse.co=
+m> wrote:
 >
-> On Tue, Dec 17, 2024 at 10:37=E2=80=AFPM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Tue, Dec 17, 2024 at 9:58=E2=80=AFPM Yosry Ahmed <yosryahmed@google.=
-com> wrote:
-> > >
-> > > What I mean is, functions like __free_unref_page() and
-> > > free_unref_page_commit() now accept fpi_flags, but any flags other
-> > > than FPI_TRYLOCK are essentially ignored, also not very clear.
-> >
-> > They're not ignored. They are just not useful in this context.
+> (Maybe a good first-timer bug if anyone wants to try contributing during
+> the holiday seasons)
 >
-> I think they are. For example, if you pass FPI_SKIP_REPORT_NOTIFY to
-> __free_unref_page(), page_reporting_notify_free() will still be called
-> when the page is eventually freed to the buddy allocator. Same goes
-> for FPI_NO_TAIL.
+> The stable v6.6 kernel currently runs into kernel panic when running the
 
-free_pcppages_bulk()->page_reporting_notify_free() will _not_ be called
-when FPI_TRYLOCK is specified.
-They are internal flags. The callers cannot make try_alloc_pages()
-pass these extra flags.
-The flags are more or less exclusive.
-
-> > The code rules over comment. If you have a concrete suggestion on
-> > how to improve the comment please say so.
->
-> What I had in mind is adding a WARN in the pcp freeing functions if
-> any FPI flag but FPI_TRYLOCK is passed, and/or explicitly calling out
-> that other flags should not be passed as they have no effect in this
-> context (whether at the function definition, above the WARN, or at the
-> flag definitions).
-
-pcp freeing functions?
-In particular?
-tbh this sounds like defensive programming...
-BUILD_BUG_ON is a good thing when api is misused,
-but WARN will be wasting run-time cycles on something that should
-have been caught during code review.
-free_unref_page_commit() is a shallow function when FPI_TRYLOCK is used.
-There is no need to propagate fpi_flags further into free_pcppages_bulk
-just to issue a WARN.
+Does it repro with the latest kernel?
+If not, please make an effort and figure out which patch is missing in 6.6.
 
