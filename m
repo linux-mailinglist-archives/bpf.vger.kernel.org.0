@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-47246-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47247-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C8159F675A
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 14:35:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D79759F675D
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 14:35:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14915164CC4
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 13:35:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC6A116548A
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 13:35:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E98391BEF9C;
-	Wed, 18 Dec 2024 13:34:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93E311D63D1;
+	Wed, 18 Dec 2024 13:34:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ItRufYRn"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0/JaCxdu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E116F1B424C
-	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 13:34:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72E341BEF84
+	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 13:34:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734528869; cv=none; b=MMh2+nbpQgUdNxhUTZUqLyeIKyTtvgx4cPDs3zMSJrIq6Cnmj2kv68zEK63sDW9sCey8BN2cj51VNQV4YJZdrdx42Wir5PKT6h7IslJT+px+Lyt3LBlhHnDySDddu79bal5yTE3Hf/tCTqTc5jwzYEsA+VOnrVgIigNTzvgQDHo=
+	t=1734528872; cv=none; b=hUGYl+B6t7ul6BqjWJ3o5v8NcQ9k0nXmE++1IlJIcML6/XyE83w9NhH4O23j+1qJi5s6i/OV9Bzb7Av0ElHBMR0EFsDhnh23gIXA5417HOZDaeSS+ihRWzoKLtbTPDfSRGNqCpQT0hE14ZucVUU81E+jQphELqNUy1c4zy/WHPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734528869; c=relaxed/simple;
-	bh=OriOUj3M1nI27Avpba3wIze2vFUhMiy7qxk7DOa3psI=;
+	s=arc-20240116; t=1734528872; c=relaxed/simple;
+	bh=CvjpZzap2JTZv3aoX0brnCAcyXx3Af2l9Bmavz1WSA4=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=oWGT86x+KPk1lZztcswFuFEWqPjz6f0RcM4PYl3hAHYhZo4zZJu1A5m4BtJne8RK2r+loEOtGpMK8ZmuSOCxS5LmceZnKgn47z8o4EvB4J12Ur2EjiUOnCA00lzlNoVmln4TnzbUuj7OjYkt2vVIfzsTxrWF5DHC0LdtEYA1YNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--pkaligineedi.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ItRufYRn; arc=none smtp.client-ip=209.85.214.202
+	 To:Cc:Content-Type; b=q+qoDrPgZZUDmzYBQFmk7DSuNEtmKoAwHSaYVBTPTihm9oa2qUDRQPAVrE5wloxqTJ47XIbLJhCLcosmp7dGuYFJiBrM1jS79kyIdHGRAPReEtvh/O+OcMf3WDxQlXxjIDmY3wqhdKMWjrXrtFUVSD3vBQyKMcSbLEmT375l8a0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--pkaligineedi.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0/JaCxdu; arc=none smtp.client-ip=209.85.210.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--pkaligineedi.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-2163dc0f689so97542335ad.1
-        for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 05:34:27 -0800 (PST)
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-725cf25d47bso5536418b3a.2
+        for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 05:34:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1734528867; x=1735133667; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1734528869; x=1735133669; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eAFTBo7ivhTuc59SVtnRzpksnEHu505WEYyIklRMIGY=;
-        b=ItRufYRn/73cAfP6i7/w4xR+14kfugMij8ku+JWTbkQf+FHOFKda45OGjyvTo5TEhL
-         +wB+F5azOSCleL5sHELza2tqeF8gcUObN7PZEWvILq5qKxVhunwm1YqFbIqy704UtMfR
-         5MS0FLYK5P8Kv9Bmjt8//yK/RxGOdQObI5AC1cj7Fi5znnLYktJcBIRVdFWH5zxcErpK
-         pFHC4EQFXNqjvIX82zmRlW89H4ylAd1KXuvlfnQzEu8HnBAVp2OY+Q4lUp4FAp5i5Tb3
-         VJRlWt4MLSqUlKNb46LC4qXBFWXo4EU+6OH/AZxQ46NwJl3gQgfzt6web5aRGNyUDNVG
-         Rjhg==
+        bh=NRgIGaGDm4cvXXtjC5u8gCurbHYhRvv9RGqvrTy9ue8=;
+        b=0/JaCxduaU21L5RaQx1ihJQkMX1AE95D59KPUyoGVH8hJltOXiXJqNS3vX4009WxH7
+         rjpAASdQXLKI/+jO1QdHUfThNL8htyOBJzRrXOoN8z13/4tprvTc1bF+j5iAerBkM/9C
+         vDuF04wu1F32nO8QvX/5a6TnWttMCrImbvkysgqaj8VF9dM7SdZVy8EatBls/34C/KTi
+         LOCh/CRcBkWUuYrGSuLCdwgT5ImdZYYv3b98OHWzvq6hpkgjZ3vrDkjD0EFDEoC9h+Ov
+         f2WchjMngQRtdwc457HC6V/svmX+Vqay5lFNygRpNw4Pg+O9VNyKDEQbx8ODPbox863J
+         7SzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734528867; x=1735133667;
+        d=1e100.net; s=20230601; t=1734528869; x=1735133669;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eAFTBo7ivhTuc59SVtnRzpksnEHu505WEYyIklRMIGY=;
-        b=Gw/iOi7+4ywv/nBRHlsZ8xiLrryQLUjt1g8zpfBtAGVOpsqNi0kVb/gzzkyn52Vkwa
-         nEdTlncskV0ZrIUMtOE3rDbyqCI66bCH8TYPG46oORAmVKk9vP89i8Ld7F/TuCwHiyU9
-         2cFheH1F9xU9r2LNVz2ul51LkrSNM3qq7vXA9bEeBwjI19eNTEa9OoEZcyQnJBH39PVL
-         epTVZdN503A5RnsnAvkQVVlvr6e+K1WCNJfgRrB+5yHvK/5wXRTpEzRquiHBDcLrLqiy
-         1ktc60UOfHxLY5XYzvmMHjrdmlb6lowWdoSbkQvcgXcpwvw9jTgPSzy5ZMYOjlMLycgx
-         04tQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUVZWX5E+CLsTebJNSDuZ3gXneE1o6bkJDJLr6GRO2dfIm3BBHxc1f49O5DjxCStugSwQo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw4/sB9xbpz60xs6vtWZO3I9z8CttuzBTMomCag34P5DBzoduBl
-	TPfZw0fdt9yql3qbACgexxnlIQdZCtY8ZCtduw9xF6ZSkh3pD6zllSCS2v9NNgywV5W4d8z309p
-	CG7ViGGsXEEvC7y5n6aH43MKEKA==
-X-Google-Smtp-Source: AGHT+IFY1SuAyxxaS/Chpz8wp/cqmlqOOaKMj+QKltDNe140ZmyzZdNe/qSR+a8+kqBKh2wehr1iKLZ6ofMLYYyTL+M=
-X-Received: from plbmf12.prod.google.com ([2002:a17:902:fc8c:b0:215:3fc5:cd3f])
+        bh=NRgIGaGDm4cvXXtjC5u8gCurbHYhRvv9RGqvrTy9ue8=;
+        b=V8UPWPTtOki+OCTQuoBeXu4g2VWYLnlnD31HiZ8joSahpyTLKOVlsLbwaI3mUK58+b
+         3XzzlThYHNGdCKxFAXf5d6cVbidN/tHL5hZualZe9MENYZzE4C+dLOnhk5bx+EPjYT8c
+         6Jt3//FMWjOQNUI1YIN1cuuqKoNF4/ojIiGv0Sv2Ic4Nx9CfHFslslcuQFJorDw8NWbA
+         TsZ4lu9wR7n8H01Ev8ofMkdQErr9DUIlQDJZ5OXl7F6Rz7UrGkfXsUH4Y29lrmOTqzkA
+         GxqepeoQ3P2IpSPbRuifRusl0hbS1HJ+ZGDNNIjBhoRXarLKonRtJ/2llxpcRLfRNWXw
+         kzDA==
+X-Forwarded-Encrypted: i=1; AJvYcCUbJgPD6Yx+9fsNmhFsJn4FLL02gRpc8cLgj5ZO1pkqux+U9/TtkRUsyznKA9djwojw/ao=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwKc4OqMUZ8Q8EPod14VnII5CsCtOVboZQ8Cy+tO/uKO34vZq/x
+	cLaA++erUqt/O08dtecVqM/bdLy7jdm/133L1rKmA97wFPEXOqDk1mJ8+BuiPrMdpsOSYjrm27r
+	4RAVxTEGPKrMRzbXrb/0BTONvdg==
+X-Google-Smtp-Source: AGHT+IELVRUurFW8tfDDC0iUwFPiFsqYStc2zOYCPV3iXlkA6nU0se344US+p9bexkbh23hUu3k2oyF3UnV/97X3x9c=
+X-Received: from pgeu9.prod.google.com ([2002:a63:a909:0:b0:7ff:d6:4f28])
  (user=pkaligineedi job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:902:f70a:b0:215:b9a7:526d with SMTP id d9443c01a7336-218d7223339mr44408425ad.32.1734528867093;
- Wed, 18 Dec 2024 05:34:27 -0800 (PST)
-Date: Wed, 18 Dec 2024 05:34:11 -0800
+ 2002:a05:6a21:1013:b0:1e1:e2d9:307 with SMTP id adf61e73a8af0-1e5b487e6e8mr4675360637.33.1734528868845;
+ Wed, 18 Dec 2024 05:34:28 -0800 (PST)
+Date: Wed, 18 Dec 2024 05:34:12 -0800
 In-Reply-To: <20241218133415.3759501-1-pkaligineedi@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,8 +74,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20241218133415.3759501-1-pkaligineedi@google.com>
 X-Mailer: git-send-email 2.47.1.613.gc27f4b7a9f-goog
-Message-ID: <20241218133415.3759501-2-pkaligineedi@google.com>
-Subject: [PATCH net 1/5] gve: clean XDP queues in gve_tx_stop_ring_gqi
+Message-ID: <20241218133415.3759501-3-pkaligineedi@google.com>
+Subject: [PATCH net 2/5] gve: guard XDP xmit NDO on existence of xdp queues
 From: Praveen Kaligineedi <pkaligineedi@google.com>
 To: netdev@vger.kernel.org
 Cc: jeroendb@google.com, shailend@google.com, willemb@google.com, 
@@ -89,37 +89,64 @@ Content-Type: text/plain; charset="UTF-8"
 
 From: Joshua Washington <joshwash@google.com>
 
-When stopping XDP TX rings, the XDP clean function needs to be called to
-clean out the entire queue, similar to what happens in the normal TX
-queue case. Otherwise, the FIFO won't be cleared correctly, and
-xsk_tx_completed won't be reported.
+In GVE, dedicated XDP queues only exist when an XDP program is installed
+and the interface is up. As such, the NDO XDP XMIT callback should
+return early if either of these conditions are false.
 
-Fixes: 75eaae158b1b ("gve: Add XDP DROP and TX support for GQI-QPL format")
+In the case of no loaded XDP program, priv->num_xdp_queues=0 which can
+cause a divide-by-zero error, and in the case of interface down,
+num_xdp_queues remains untouched to persist XDP queue count for the next
+interface up, but the TX pointer itself would be NULL.
+
+The XDP xmit callback also needs to synchronize with a device
+transitioning from open to close. This synchronization will happen via
+the GVE_PRIV_FLAGS_NAPI_ENABLED bit along with a synchronize_net() call,
+which waits for any RCU critical sections at call-time to complete.
+
+Fixes: 39a7f4aa3e4a ("gve: Add XDP REDIRECT support for GQI-QPL format")
 Cc: stable@vger.kernel.org
 Signed-off-by: Joshua Washington <joshwash@google.com>
 Signed-off-by: Praveen Kaligineedi <pkaligineedi@google.com>
 Reviewed-by: Praveen Kaligineedi <pkaligineedi@google.com>
+Reviewed-by: Shailend Chand <shailend@google.com>
 Reviewed-by: Willem de Bruijn <willemb@google.com>
 ---
- drivers/net/ethernet/google/gve/gve_tx.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/google/gve/gve_main.c | 3 +++
+ drivers/net/ethernet/google/gve/gve_tx.c   | 5 ++++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
+index e171ca248f9a..5d7b0cc59959 100644
+--- a/drivers/net/ethernet/google/gve/gve_main.c
++++ b/drivers/net/ethernet/google/gve/gve_main.c
+@@ -1899,6 +1899,9 @@ static void gve_turndown(struct gve_priv *priv)
+ 
+ 	gve_clear_napi_enabled(priv);
+ 	gve_clear_report_stats(priv);
++
++	/* Make sure that all traffic is finished processing. */
++	synchronize_net();
+ }
+ 
+ static void gve_turnup(struct gve_priv *priv)
 diff --git a/drivers/net/ethernet/google/gve/gve_tx.c b/drivers/net/ethernet/google/gve/gve_tx.c
-index e7fb7d6d283d..83ad278ec91f 100644
+index 83ad278ec91f..852f8c7e39d2 100644
 --- a/drivers/net/ethernet/google/gve/gve_tx.c
 +++ b/drivers/net/ethernet/google/gve/gve_tx.c
-@@ -206,7 +206,10 @@ void gve_tx_stop_ring_gqi(struct gve_priv *priv, int idx)
- 		return;
+@@ -837,9 +837,12 @@ int gve_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
+ 	struct gve_tx_ring *tx;
+ 	int i, err = 0, qid;
  
- 	gve_remove_napi(priv, ntfy_idx);
--	gve_clean_tx_done(priv, tx, priv->tx_desc_cnt, false);
-+	if (tx->q_num < priv->tx_cfg.num_queues)
-+		gve_clean_tx_done(priv, tx, priv->tx_desc_cnt, false);
-+	else
-+		gve_clean_xdp_done(priv, tx, priv->tx_desc_cnt);
- 	netdev_tx_reset_queue(tx->netdev_txq);
- 	gve_tx_remove_from_block(priv, idx);
- }
+-	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
++	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK) || !priv->xdp_prog)
+ 		return -EINVAL;
+ 
++	if (!gve_get_napi_enabled(priv))
++		return -ENETDOWN;
++
+ 	qid = gve_xdp_tx_queue_id(priv,
+ 				  smp_processor_id() % priv->num_xdp_queues);
+ 
 -- 
 2.47.1.613.gc27f4b7a9f-goog
 
