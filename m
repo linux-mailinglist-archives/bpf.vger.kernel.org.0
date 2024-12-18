@@ -1,268 +1,171 @@
-Return-Path: <bpf+bounces-47183-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47184-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D92759F5D6A
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 04:25:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 536E59F5D9D
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 04:51:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 807C8188A4F7
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 03:25:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C23E41890D23
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 03:51:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1703315383A;
-	Wed, 18 Dec 2024 03:24:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E1EA14AD38;
+	Wed, 18 Dec 2024 03:51:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TaQAKisi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CnSDd7wE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+Received: from mail-yw1-f193.google.com (mail-yw1-f193.google.com [209.85.128.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC62D15250F;
-	Wed, 18 Dec 2024 03:24:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12D94142903
+	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 03:51:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734492262; cv=none; b=ZEn0OZCKENEpWaqUbL5bV6COK6eiws+5zstTrP2XC1kUnNp259m3bz4O1DpYlgNjA1RlvUH+nVfvz1Fh42jPuC47xT9g9BF/KfCKgIYnzn6pxV+ex/WSGNiU2oeBoZq+40zxJRgu84oNd6z9UTdB3tYUNDOMlPDXFRgP4Cqx2Xk=
+	t=1734493878; cv=none; b=YQFAtdrqx3ef9TmCwq6jDiM3qAIXaQpp2ku26aAVWMSouRMNignVOTOm8xAAw1+60tKvdbzV1z26GFlkUCYLwwsi1dEmi45L2BZcP3Uoo9+czksco9GrsGgHMrFxvwPpFR68Z16I8d7NL6foPV5CaqRp0Kzc4JlJoUbK5QuDrfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734492262; c=relaxed/simple;
-	bh=EpIiynsjnozVqw/0x3LVUCzOWJ6olzjgv5hUvkC7X1U=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dYF5zJJ99lgzkwrNuKVGBGoWY6VVSbkrRi4LROFH84nrC3FA9uKuriuLrPngnOCjpOVEnIv6eVG8TdxQ25uCbzMS6T7miLoi60rqR6zvytAS4LLA5P6/v7UbPlHNR+PM+9DW7S7y+VWRR3BK4gmlxzKBJefPMPmSUdGIw1pDFFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TaQAKisi; arc=none smtp.client-ip=209.85.222.172
+	s=arc-20240116; t=1734493878; c=relaxed/simple;
+	bh=vewWQW7umR7UdMMuwwVTH81WLZQ7UdR872dko4OWrgg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=skqzsKNERkytxd2dKm2Y5CStgUnR8xGtA0FjCZ6+T0OWEV5QtyLYLZ08JFpg6Nn83v+3CBjk6Tpxo6X+Kh2kC603f0FU5n9LNV8K+plQcHOfoAY/+pu06KDHt7nMNM/MD7OCqgmHHk1HisT3hssM6ihHX6Y9Liims5BfC2KZr6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CnSDd7wE; arc=none smtp.client-ip=209.85.128.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-7b6ff72ba5aso356417685a.1;
-        Tue, 17 Dec 2024 19:24:20 -0800 (PST)
+Received: by mail-yw1-f193.google.com with SMTP id 00721157ae682-6f27bbe8fc3so35319537b3.2
+        for <bpf@vger.kernel.org>; Tue, 17 Dec 2024 19:51:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734492260; x=1735097060; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1734493874; x=1735098674; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vU1DPjWTLJX1jYc4OU+MA5rIh9EYQGoOHy6NRrQN9LI=;
-        b=TaQAKisiyxhxs+d2lAuXWXqV3OOrIgrfaGIh08Dl6A756JLAvDx64+/41hJaoWlagU
-         XbFdCuqxSrBDnVHlW5EkMNMwAytnKQTkc0Z2eIw5zUIHA3NcV66rEVIcFzvil2Mc1WuO
-         FKR55cJ/gzXOqZ0rzS3IJWaf7gtbKWhrbmxjlYBBocVErNLVfvF4aX2vJmJ1YbY6L0/y
-         ctugGRmTjuEBMkJHHCT6s8Zup7PEZHBHEIKwthk37xek0wh9oovW16MriTVZb/KeM3YB
-         1m3gxi4arK0eJRVDAkgyE76Z4GTxUMp7R5BSVFSCH8P7efbeq3T6MfsTcFQu4X4Er3k6
-         8ezQ==
+        bh=tfNlVeuYBdN5H+RIZhW1yZASAmeUw/u2SM0DIGO8/lw=;
+        b=CnSDd7wEDvM8goXwHX+jxRfEk6UVT7xCVigwxATvmTEU3EMLcQuirEp+SPj9TyTf6+
+         hZDz30xtfRCFdw5MS1nvdHiiD2yStlRSDPMcbnAoy2z/AFMsQyq5kfFTdoOBLmiazuSV
+         ZdTeb2LzDeZgf1PnfNgzcFsPhotp63cL+IlnIvpw321BpC5c04BSeUKJ0LvuF0/S7hVd
+         ryjtwZKvpJ1lQUBvl8XWPq1bBmBhNWLidVQBMZijV3LFvNc8y2wrW15brU91MSU0guSi
+         ibPLGPtebKUGin7bts/Tpvo6mK3QHu94WwwZXbo+WjwrnADEflMrok/HyntRyv/r8Hkw
+         k98w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734492260; x=1735097060;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1734493874; x=1735098674;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vU1DPjWTLJX1jYc4OU+MA5rIh9EYQGoOHy6NRrQN9LI=;
-        b=w3f7LZj4xyIpZrfJFDL4fn1BV+0Sos+i0MTLEPxJmpCCnH1YFd7hTamfBJG1j6FuQQ
-         K1OAiDJUZZpxuD/vlh+1LoX9g/6akh2H4RfoO2Ktxzn8WMQGLMXvGSrcGnGh5XF46EWW
-         slpit7lrpq169EUdj7yOhaivzJt5Q0+TPhEYZxDwhcm+LLzUgwYxpe05WX+9G/ASfSs3
-         qvHMTUP8MssbynAfZ4HgphzeqHL0SfROgD94OFE7EK0MJU5QMaLDZBXKFMlySQ4KObSp
-         Tu3H4IOQwHtNcSkuhxvOgkGiMf5v/Z8QIet8FeWROsqG6yOWwMwPLCd2oOhp86hZ8eeU
-         /krg==
-X-Forwarded-Encrypted: i=1; AJvYcCUmDp2ac3U6vfRentna9ldBvQC3drsqUCIDzLUjfmeG6CganI5nTAVzAvCGz76Mj0+Tptqj39pHcA5VFR5j@vger.kernel.org, AJvYcCXbsPS/KJbNa6hfuJ10/MKJ6xIRFByBln+DMMGITFYEQZbnUfPavgGfxfJozwahmYvFjcA=@vger.kernel.org, AJvYcCXgbbKuVzBTGoXu6Na/XQFuqYpJvcKx9betqQf+dsurzKsc/wRItfBjbQtW9byqdpnUS/ZDJC0GpcJvimTXPErC@vger.kernel.org
-X-Gm-Message-State: AOJu0YwJE2tCrj5S/fDFVxF+vPzWEFAfqkwBYkpFTNRq6ABYn++0a+Kv
-	AQ1YvH0Gnu1H++clENHenhGZ2doo9CRq5aZPplIsOSrVlxDChL56
-X-Gm-Gg: ASbGnctvEkp09sTGaGmkZggMR2W1FhA3nFs9bEuOuccTA4cKlv8kne8geqNYAfZJGrV
-	pC3MQdguLDLYTrB28t9QaH1jPskHet9GBEf99ZkR6cNFLn+K6nxwrdv+VwtCTbAsMLPybhVRHvT
-	qcbtACiZgelY04gszbBm4OkFMpEdE+hc1bY6MAVGd2G5HcFu27zsgufFubRX954r2AYbKV2oiKT
-	ZC6CplqSedkwInVYmrxCEMIGn6NgFjC7mDXogqGng49zyf/4yaEcUh92Ld5p9GzbRkTJI481K2/
-	K2BA6UooL8A8PDgKgRYMd5bFKVIeqJ4=
-X-Google-Smtp-Source: AGHT+IG5vxfsDUp+PMTN1rdUWhcZAKT9Ky2wjbLSfXxt0fmilRdnxS2teb8kS6i6n4M0BkjCuiICDA==
-X-Received: by 2002:a05:620a:4714:b0:7a9:c333:c559 with SMTP id af79cd13be357-7b8637b167amr237291685a.48.1734492259898;
-        Tue, 17 Dec 2024 19:24:19 -0800 (PST)
-Received: from Matan-Desktop.localdomain (ool-457a37de.dyn.optonline.net. [69.122.55.222])
-        by smtp.googlemail.com with ESMTPSA id af79cd13be357-7b7047aa6bbsm381977985a.3.2024.12.17.19.24.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Dec 2024 19:24:18 -0800 (PST)
-From: Matan Shachnai <m.shachnai@gmail.com>
-To: ast@kernel.org
-Cc: harishankar.vishwanathan@gmail.com,
-	srinivas.narayana@rutgers.edu,
-	santosh.nagarakatte@rutgers.edu,
-	m.shachnai@rutgers.edu,
-	Matan Shachnai <m.shachnai@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Cupertino Miranda <cupertino.miranda@oracle.com>,
-	Menglong Dong <menglong8.dong@gmail.com>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v4 2/2] selftests/bpf: Add testcases for BPF_MUL
-Date: Tue, 17 Dec 2024 22:23:35 -0500
-Message-Id: <20241218032337.12214-3-m.shachnai@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20241218032337.12214-1-m.shachnai@gmail.com>
-References: <20241218032337.12214-1-m.shachnai@gmail.com>
+        bh=tfNlVeuYBdN5H+RIZhW1yZASAmeUw/u2SM0DIGO8/lw=;
+        b=sWHKg6p4oZflHgaUcCvirfk0Ie5D11b4uE96vaJtv+J6loDKkt4FGH/S5LdX+OuV17
+         gypsQT8MwIMAzKykm43OfdQ2RgnUmC1+joeWLhZvfDcMofXpnVhGQH6jOQQzQ/Bjipik
+         O6saLxBXDFuBUuA71p9cB+v4gnD3Py0POSsiNF111RK7WLEjZCwKTm4HT9Pyr0cAMwZw
+         DJRc+xog1VxuaFaWM2zlY0+BblVZorwBC35+EAnd6Q7PoYgOeeYE38ttDR11n77cwUvX
+         aDsesyaaIYZLEhlzhGz+B8WjRDNQJcOWGgTxjr19/EYTCympCVmqmge7brXiQUmd09e9
+         r68g==
+X-Forwarded-Encrypted: i=1; AJvYcCUPuu1cKbjlbS8nO9S/cXpU7JDxpsimfIc4BomBzSbE853QI1np+93c8Eo9zshPGgEzoGE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxJqeNy6MgBwFqn/dQCQWWGA/23KnxJ0tTEmhb9jzX2XImSnFz8
+	GAU0y5w5YJ4AcPIli8XrEf3x04nfznV+SVV1ECgFr8hX17+sCGjCiqy02Cyfx4IWu7TjQvsLBlA
+	Z/6MjHC/lJbJfR8elVZ/SasMwOjg=
+X-Gm-Gg: ASbGncuK82NG+dtkO/bfiOctUmxEQPugmgio9NU1Al9TVLOxZDzE7SpIrDwZFjg0M9l
+	EkfeHAAVoK07twl9DFSx3mtY1PWBiQ901ZM3xDg==
+X-Google-Smtp-Source: AGHT+IGdJ/vHd1r0xSoa93Roj0jIOGqG+mbEsCtSywzLx9qmIdLBbXykuK/R8IP9mq0UYUvrw/dsnWsacow5lxorQ8Q=
+X-Received: by 2002:a05:690c:74c3:b0:6f0:23da:49a3 with SMTP id
+ 00721157ae682-6f3ccc28993mr10304467b3.8.1734493873977; Tue, 17 Dec 2024
+ 19:51:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CADxym3Yop==sWx2q8448kYkDWcK=P7+fqeZLzyzk8D0GwZEV-A@mail.gmail.com>
+ <CAADnVQ+1mSHwUK4rZ_mJP7W72iSXgsVfazurYPRGi=3p5aBVdQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+1mSHwUK4rZ_mJP7W72iSXgsVfazurYPRGi=3p5aBVdQ@mail.gmail.com>
+From: Menglong Dong <menglong8.dong@gmail.com>
+Date: Wed, 18 Dec 2024 11:52:03 +0800
+Message-ID: <CADxym3ZfHv_VdgopE5TBQxhO7RrPTVm83VW07c8bAywp404QPw@mail.gmail.com>
+Subject: Re: Idea for "function meta"
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The previous commit improves precision of BPF_MUL.
-Add tests to exercise updated BPF_MUL.
+On Tue, Dec 17, 2024 at 2:46=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Dec 12, 2024 at 6:17=E2=80=AFAM Menglong Dong <menglong8.dong@gma=
+il.com> wrote:
+> >
+> > Hello, Alexei.
+> >
+> > After the series of "bpf: make tracing program support multi-link", I'm
+> > keeping think about the method to make tracing support multi-link.
+> > The previous discuss is here:
+> >
+> > https://lore.kernel.org/netdev/20240311093526.1010158-1-dongmenglong.8@=
+bytedance.com/
+> >
+> > Now, I have a idea. How about we introduce a "function meta", which
+> > will reserve some space (such as 16-bytes) before function, just like
+> > what fentry do, except that the space we reserve for fentry is after th=
+e
+> > function. For example, we have a function "do_test", the layout is just
+> > like this:
+> >
+> > -------------> 16-bytes
+> > -------------> do_test
+> > -------------> __fentry__(nop)
+> >
+> > (Of curse, this need the suuport of the compiler, which is not availabl=
+e
+> > for now.)
+> >
+> > Then, we create a global trampoline for BPF. When we need to attach
+> > a BPF program to the function do_test(), we can allocate a
+> > "progs" of type struct tracing_progs, which is defined like this:
+> >
+> > struct tracing_progs {
+> >     struct bpf_prog *fentry_progs;
+> >     int fentry_count;
+> >     struct bpf_prog *fexit_progs;
+> >     int fexit_count;
+> >     struct bpf_prog *fret_progs;
+> >     int fret_count;
+> > };
+> >
+> > Then, we store the address of the bpf program to "progs", and
+> > store the "progs" to "do_test - 8". And we make the __fentry__
+> > of do_test() a call to the global bpf trampoline.
+> >
+> > In the global bpf trampoline, we can get the "progs" by "ip - 8",
+> > and call the bpf progs in it.
+> >
+> > The function meta can be used in more general way. For example,
+> > ftrace can alse use it. Then, we don't need to lookup the filter hash
+> > table.
+> >
+> > (Hope I'm disturbing you)
+>
+> Not at all. Sorry for the delay.
+> It's best to email the mailing list all the time.
+> Plenty of eyes there that can help evaluate and refine the idea.
+>
+> Overall, I think, it makes sense and there is a compiler
+> support already.
+> See -fpatchable-function-entry.
 
-Signed-off-by: Matan Shachnai <m.shachnai@gmail.com>
----
- .../selftests/bpf/progs/verifier_bounds.c     | 134 ++++++++++++++++++
- 1 file changed, 134 insertions(+)
+Awesome! This makes it possible for me to implement
+such idea in the kernel right now~
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds.c b/tools/testing/selftests/bpf/progs/verifier_bounds.c
-index a0bb7fb40ea5..0eb33bb801b5 100644
---- a/tools/testing/selftests/bpf/progs/verifier_bounds.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_bounds.c
-@@ -1200,4 +1200,138 @@ l0_%=:	r0 = 0;						\
- 	: __clobber_all);
- }
- 
-+SEC("tc")
-+__description("multiply mixed sign bounds. test 1")
-+__success __log_level(2)
-+__msg("r6 *= r7 {{.*}}; R6_w=scalar(smin=umin=0x1bc16d5cd4927ee1,smax=umax=0x1bc16d674ec80000,smax32=0x7ffffeff,umax32=0xfffffeff,var_off=(0x1bc16d4000000000; 0x3ffffffeff))")
-+__naked void mult_mixed0_sign(void)
-+{
-+	asm volatile (
-+	"call %[bpf_get_prandom_u32];"
-+	"r6 = r0;"
-+	"call %[bpf_get_prandom_u32];"
-+	"r7 = r0;"
-+	"r6 &= 0xf;"
-+	"r6 -= 1000000000;"
-+	"r7 &= 0xf;"
-+	"r7 -= 2000000000;"
-+	"r6 *= r7;"
-+	"exit"
-+	:
-+	: __imm(bpf_get_prandom_u32),
-+	  __imm(bpf_skb_store_bytes)
-+	: __clobber_all);
-+}
-+
-+SEC("tc")
-+__description("multiply mixed sign bounds. test 2")
-+__success __log_level(2)
-+__msg("r6 *= r7 {{.*}}; R6_w=scalar(smin=smin32=-100,smax=smax32=200)")
-+__naked void mult_mixed1_sign(void)
-+{
-+	asm volatile (
-+	"call %[bpf_get_prandom_u32];"
-+	"r6 = r0;"
-+	"call %[bpf_get_prandom_u32];"
-+	"r7 = r0;"
-+	"r6 &= 0xf;"
-+	"r6 -= 0xa;"
-+	"r7 &= 0xf;"
-+	"r7 -= 0x14;"
-+	"r6 *= r7;"
-+	"exit"
-+	:
-+	: __imm(bpf_get_prandom_u32),
-+	  __imm(bpf_skb_store_bytes)
-+	: __clobber_all);
-+}
-+
-+SEC("tc")
-+__description("multiply negative bounds")
-+__success __log_level(2)
-+__msg("r6 *= r7 {{.*}}; R6_w=scalar(smin=umin=smin32=umin32=0x3ff280b0,smax=umax=smax32=umax32=0x3fff0001,var_off=(0x3ff00000; 0xf81ff))")
-+__naked void mult_sign_bounds(void)
-+{
-+	asm volatile (
-+	"r8 = 0x7fff;"
-+	"call %[bpf_get_prandom_u32];"
-+	"r6 = r0;"
-+	"call %[bpf_get_prandom_u32];"
-+	"r7 = r0;"
-+	"r6 &= 0xa;"
-+	"r6 -= r8;"
-+	"r7 &= 0xf;"
-+	"r7 -= r8;"
-+	"r6 *= r7;"
-+	"exit"
-+	:
-+	: __imm(bpf_get_prandom_u32),
-+	  __imm(bpf_skb_store_bytes)
-+	: __clobber_all);
-+}
-+
-+SEC("tc")
-+__description("multiply bounds that don't cross signed boundary")
-+__success __log_level(2)
-+__msg("r8 *= r6 {{.*}}; R6_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=11,var_off=(0x0; 0xb)) R8_w=scalar(smin=0,smax=umax=0x7b96bb0a94a3a7cd,var_off=(0x0; 0x7fffffffffffffff))")
-+__naked void mult_no_sign_crossing(void)
-+{
-+	asm volatile (
-+	"r6 = 0xb;"
-+	"r8 = 0xb3c3f8c99262687 ll;"
-+	"call %[bpf_get_prandom_u32];"
-+	"r7 = r0;"
-+	"r6 &= r7;"
-+	"r8 *= r6;"
-+	"exit"
-+	:
-+	: __imm(bpf_get_prandom_u32),
-+	  __imm(bpf_skb_store_bytes)
-+	: __clobber_all);
-+}
-+
-+SEC("tc")
-+__description("multiplication overflow, result in unbounded reg. test 1")
-+__success __log_level(2)
-+__msg("r6 *= r7 {{.*}}; R6_w=scalar()")
-+__naked void mult_unsign_ovf(void)
-+{
-+	asm volatile (
-+	"r8 = 0x7ffffffffff ll;"
-+	"call %[bpf_get_prandom_u32];"
-+	"r6 = r0;"
-+	"call %[bpf_get_prandom_u32];"
-+	"r7 = r0;"
-+	"r6 &= 0x7fffffff;"
-+	"r7 &= r8;"
-+	"r6 *= r7;"
-+	"exit"
-+	:
-+	: __imm(bpf_get_prandom_u32),
-+	  __imm(bpf_skb_store_bytes)
-+	: __clobber_all);
-+}
-+
-+SEC("tc")
-+__description("multiplication overflow, result in unbounded reg. test 2")
-+__success __log_level(2)
-+__msg("r6 *= r7 {{.*}}; R6_w=scalar()")
-+__naked void mult_sign_ovf(void)
-+{
-+	asm volatile (
-+	"r8 = 0x7ffffffff ll;"
-+	"call %[bpf_get_prandom_u32];"
-+	"r6 = r0;"
-+	"call %[bpf_get_prandom_u32];"
-+	"r7 = r0;"
-+	"r6 &= 0xa;"
-+	"r6 -= r8;"
-+	"r7 &= 0x7fffffff;"
-+	"r6 *= r7;"
-+	"exit"
-+	:
-+	: __imm(bpf_get_prandom_u32),
-+	  __imm(bpf_skb_store_bytes)
-+	: __clobber_all);
-+}
- char _license[] SEC("license") = "GPL";
--- 
-2.25.1
+>
+> But it's probably a hard sell to unconditionally add 8 or 16 bytes
+> to all functions in the kernel for x86,
+> though arm64 is already using -fpatchable-function-entry=3D4,2
+> to support jumping to full 64-bit offsets (if I recall correctly).
+>
+> If it's only 8 extra bytes for x86 in front of the function
+> then please measure vmlinux text before/after.
+> Then we can decide.
 
+Okay, I'm testing on this pointer, and I'll send the result
+out to the list after I finish it.
+
+> Let's discuss this on the list.
+
+Thanks for the replying :/
+Menglong Dong
 
