@@ -1,195 +1,125 @@
-Return-Path: <bpf+bounces-47306-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47307-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0659C9F755E
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 08:25:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB6669F7565
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 08:26:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64D3A188ADE6
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 07:24:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 179DA189573D
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 07:25:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5307F216E39;
-	Thu, 19 Dec 2024 07:24:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 783A3217708;
+	Thu, 19 Dec 2024 07:24:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="mw+6XVRm"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IgTK/ZXq"
 X-Original-To: bpf@vger.kernel.org
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E038E524F;
-	Thu, 19 Dec 2024 07:24:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63FA3217673;
+	Thu, 19 Dec 2024 07:24:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734593081; cv=none; b=uDDAYntznMOllko0Wd/QGhJxXPkKllAr2mR3oABei5UujzMaeaqBX4p3Kj28ivSGBqDLoRUeOVewHak6ydXX+AfIdQOwIJQ8MEGfrOzpCfxfuT4cY4YUX8r7muXD2ujiQr9gVEl9uvVeIf6o5NvB84EZxfjvm0yXjvVohorpgS8=
+	t=1734593090; cv=none; b=YHB6H3SPSkuU9OQoA4DburBHn0f2neBu1poFxS6wwLKkrwkwQyv1SrowM8UeXOKHZ6qRTVU9Mg7eN/tTOQftpx8WvMr02ygfl6uX7V5NEkwlRs3MOpLjT7W9lwtNhcm0oS2dcVsZJfX84b0WTHcB/K9jh1my1D5RmsHHXgvShsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734593081; c=relaxed/simple;
-	bh=MZ56Gk24lso758TZZGrga25F7eajp0AXtFgCuXVL4EY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=TTv7kAcChZsJRPj6IB8dRi3RnRlYDNX1jc8fss6VLyxq+0uvdd64L4pcd5GOfjdGUpLkTwT+YtKmJTjkPo9GNFeb9OnyinAEo9IjZzWM3r4DHP9s49ynhAjw/CLKgc6gFt7mf8gdvg+ztwFWsVZdNfUk2r99dDUIm1V496NSNcs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=mw+6XVRm; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1734593073;
-	bh=MZ56Gk24lso758TZZGrga25F7eajp0AXtFgCuXVL4EY=;
-	h=From:Date:Subject:To:Cc:From;
-	b=mw+6XVRmktGF2ySJzZBhU7eaFhFMdjMWFG1GSKwUMgtsY8mZvf2qcyt7ML1TQ1sWP
-	 A6aVq1BNqgg2V+RowPXxq9CzYWLp4vyq8RwG+iTweakVwxg96D7PDsT9A9oHwZZXqT
-	 jsaJ2Nw+Ly+KYOQewNrKr3gVYbHKjo6eeu/q9ZPA=
-From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Thu, 19 Dec 2024 08:24:28 +0100
-Subject: [PATCH bpf v2] bpf: fix configuration-dependent BTF function
- references
+	s=arc-20240116; t=1734593090; c=relaxed/simple;
+	bh=oZqFuW7QFS4Vc/TSp3AxQi8Ft5gm5pNg6tJATdW+lY0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u5EJvq+ewLYOqR3LA86L3TCpIfNads1NPRElFUwwxXcGmoP5dHcZPP2KsFT4cKrmh06EFTBZvLJ11zT81q0vJw2HTSeIcRusf9EAdSzQbY4V+XYBQ7zPfuJaIUosKgx7DIQolQmoE5UefgcnsAFW2r3J3a+Yd+0PpZW+17WWKvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IgTK/ZXq; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1734593087; x=1766129087;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=oZqFuW7QFS4Vc/TSp3AxQi8Ft5gm5pNg6tJATdW+lY0=;
+  b=IgTK/ZXqwLmzHFjyZeJciYszJLMkacb69QA4oAAf8m8gRa/JYKPyZWq5
+   i5tgKgelct9jIFWUvgVUZCFk3XToBBNLaJTyiNdYgRBu4rQysh39e7x1X
+   zZd27+Evm78M3vhFqq5D8L3/Ad/8xByhifOZwgnIRoIOJNzGNKf+/Cpla
+   lzLL0NObvClR3F8d3mI2y+Qbllhpsvf83kBcMITlCqqJTX1Y10qHGdVo0
+   AK6+soIj+SOkT119JdySdaTwITgPIEq2+YbUnbtzh2ppcoLAi0sdN3pdX
+   AsBi4Ecu04nng32eKQ2o+0n0y4NgvR+kDEzOOP/mQHU90DrUg14DM/wIy
+   w==;
+X-CSE-ConnectionGUID: b5YJGz8OQiOp+0TCp7v5jg==
+X-CSE-MsgGUID: OYDniWguS82TG4t2pANRXg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11290"; a="35120986"
+X-IronPort-AV: E=Sophos;i="6.12,247,1728975600"; 
+   d="scan'208";a="35120986"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2024 23:24:46 -0800
+X-CSE-ConnectionGUID: XiIO2PtrQJSFbBfzd+zw4Q==
+X-CSE-MsgGUID: c207iclTSYiTooKVnU97ig==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,247,1728975600"; 
+   d="scan'208";a="98013114"
+Received: from choongyo-mobl.gar.corp.intel.com (HELO [10.247.82.175]) ([10.247.82.175])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2024 23:24:43 -0800
+Message-ID: <1bc573ec-1f69-4fc6-9bb4-c0a4c38c10aa@linux.intel.com>
+Date: Thu, 19 Dec 2024 15:24:40 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20241219-bpf-cond-ids-v2-1-8f121cae5374@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIACvKY2cC/1WNTQ7CIBCFr9LMWoyDxBZXvYfpQmAqs6ENU6um6
- d0lxI3L9/e9DYQyk8C12SDTysJTKkIfGvDxnh6kOBQN+qQNatTKzaPyUwrFF2Xd6PzFhNC2Dsp
- kzjTyu+JuUJowFDOyLFP+1IsVa/Sjnf9pKypUXYedsda2Gm3/IhYRH5/xmGiBYd/3LxMI4j6yA
- AAA
-X-Change-ID: 20241212-bpf-cond-ids-9bfbc64dd77b
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
- Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
- netdev@vger.kernel.org, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1734593072; l=4129;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=MZ56Gk24lso758TZZGrga25F7eajp0AXtFgCuXVL4EY=;
- b=z2K9l+WIlFYVMd0/pvMGRnrWKjzPn6JGxv8baJYB+1odyIhgHX38udxrhThvGNDbBKxQqi0Ep
- MeYjiHT1F5wBnVSg1W6SFfZQKq08NaBytQz5unRjDDoOAFF5xYy/9At
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH iwl-next 6/9] igc: Add support for frame preemption
+ verification
+To: Furong Xu <0x1207@gmail.com>, Vladimir Oltean <olteanv@gmail.com>
+Cc: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S . Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+ intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20241216064720.931522-1-faizal.abdul.rahim@linux.intel.com>
+ <20241216064720.931522-1-faizal.abdul.rahim@linux.intel.com>
+ <20241216064720.931522-7-faizal.abdul.rahim@linux.intel.com>
+ <20241216064720.931522-7-faizal.abdul.rahim@linux.intel.com>
+ <20241217002254.lyakuia32jbnva46@skbuf> <20241217200952.000059f2@gmail.com>
+Content-Language: en-US
+From: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+In-Reply-To: <20241217200952.000059f2@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-These BTF functions are not available unconditionally,
-only reference them when they are available.
 
-Avoid the following build warnings:
 
-  BTF     .tmp_vmlinux1.btf.o
-btf_encoder__tag_kfunc: failed to find kfunc 'bpf_send_signal_task' in BTF
-btf_encoder__tag_kfuncs: failed to tag kfunc 'bpf_send_signal_task'
-  NM      .tmp_vmlinux1.syms
-  KSYMS   .tmp_vmlinux1.kallsyms.S
-  AS      .tmp_vmlinux1.kallsyms.o
-  LD      .tmp_vmlinux2
-  NM      .tmp_vmlinux2.syms
-  KSYMS   .tmp_vmlinux2.kallsyms.S
-  AS      .tmp_vmlinux2.kallsyms.o
-  LD      vmlinux
-  BTFIDS  vmlinux
-WARN: resolve_btfids: unresolved symbol prog_test_ref_kfunc
-WARN: resolve_btfids: unresolved symbol bpf_crypto_ctx
-WARN: resolve_btfids: unresolved symbol bpf_send_signal_task
-WARN: resolve_btfids: unresolved symbol bpf_modify_return_test_tp
-WARN: resolve_btfids: unresolved symbol bpf_dynptr_from_xdp
-WARN: resolve_btfids: unresolved symbol bpf_dynptr_from_skb
+On 17/12/2024 8:09 pm, Furong Xu wrote:
+> On Tue, 17 Dec 2024 02:22:54 +0200, Vladimir Oltean <olteanv@gmail.com> wrote:
+> 
+>> Anyway, while browsing through this software implementation of a
+>> verification process, I cannot help but think we'd be making a huge
+>> mistake to allow each driver to reimplement it on its own. We just
+>> recently got stmmac to do something fairly clean, with the help and
+>> great perseverence of Furong Xu (now copied).
+>>
+>> I spent a bit of time extracting stmmac's core logic and putting it in
+>> ethtool. If Furong had such good will so as to regression-test the
+>> attached patch, do you think you could use this as a starting place
+>> instead, and implement some ops and call some library methods, instead
+>> of writing the entire logic yourself?
+>>
+> 
+> I am quiet busy these days, especially near the end of the year :)
+> 
+> Maybe I can help testing the attached patch when the next time net-next opens.
+> 
+> Thanks.
+> 
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
-Changes in v2:
-- Properly use BTF_ID_UNUSED in special_kfunc_list()
-- Link to v1: https://lore.kernel.org/r/20241213-bpf-cond-ids-v1-1-881849997219@weissschuh.net
----
- kernel/bpf/helpers.c  |  4 ++++
- kernel/bpf/verifier.c | 11 +++++++++++
- 2 files changed, 15 insertions(+)
-
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 751c150f9e1cd7f56e6a2b68a7ebb4ae89a30d2d..5edf5436a7804816b7dcf1bbef2624d71a985f20 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -3089,7 +3089,9 @@ BTF_ID_FLAGS(func, bpf_task_get_cgroup1, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_task_from_pid, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_task_from_vpid, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_throw)
-+#ifdef CONFIG_BPF_EVENTS
- BTF_ID_FLAGS(func, bpf_send_signal_task, KF_TRUSTED_ARGS)
-+#endif
- BTF_KFUNCS_END(generic_btf_ids)
- 
- static const struct btf_kfunc_id_set generic_kfunc_set = {
-@@ -3135,7 +3137,9 @@ BTF_ID_FLAGS(func, bpf_dynptr_is_null)
- BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
- BTF_ID_FLAGS(func, bpf_dynptr_size)
- BTF_ID_FLAGS(func, bpf_dynptr_clone)
-+#ifdef CONFIG_NET
- BTF_ID_FLAGS(func, bpf_modify_return_test_tp)
-+#endif
- BTF_ID_FLAGS(func, bpf_wq_init)
- BTF_ID_FLAGS(func, bpf_wq_set_callback_impl)
- BTF_ID_FLAGS(func, bpf_wq_start)
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 77f56674aaa99a0b88ced5100ba57409e255fd29..2704fa4477ee2504897c82f0416aa7d61fb086ed 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5507,7 +5507,9 @@ static bool in_rcu_cs(struct bpf_verifier_env *env)
- 
- /* Once GCC supports btf_type_tag the following mechanism will be replaced with tag check */
- BTF_SET_START(rcu_protected_types)
-+#ifdef CONFIG_NET
- BTF_ID(struct, prog_test_ref_kfunc)
-+#endif
- #ifdef CONFIG_CGROUPS
- BTF_ID(struct, cgroup)
- #endif
-@@ -5515,7 +5517,9 @@ BTF_ID(struct, cgroup)
- BTF_ID(struct, bpf_cpumask)
- #endif
- BTF_ID(struct, task_struct)
-+#ifdef CONFIG_CRYPTO
- BTF_ID(struct, bpf_crypto_ctx)
-+#endif
- BTF_SET_END(rcu_protected_types)
- 
- static bool rcu_protected_object(const struct btf *btf, u32 btf_id)
-@@ -11486,8 +11490,10 @@ BTF_ID(func, bpf_rdonly_cast)
- BTF_ID(func, bpf_rbtree_remove)
- BTF_ID(func, bpf_rbtree_add_impl)
- BTF_ID(func, bpf_rbtree_first)
-+#ifdef CONFIG_NET
- BTF_ID(func, bpf_dynptr_from_skb)
- BTF_ID(func, bpf_dynptr_from_xdp)
-+#endif
- BTF_ID(func, bpf_dynptr_slice)
- BTF_ID(func, bpf_dynptr_slice_rdwr)
- BTF_ID(func, bpf_dynptr_clone)
-@@ -11515,8 +11521,13 @@ BTF_ID(func, bpf_rcu_read_unlock)
- BTF_ID(func, bpf_rbtree_remove)
- BTF_ID(func, bpf_rbtree_add_impl)
- BTF_ID(func, bpf_rbtree_first)
-+#ifdef CONFIG_NET
- BTF_ID(func, bpf_dynptr_from_skb)
- BTF_ID(func, bpf_dynptr_from_xdp)
-+#else
-+BTF_ID_UNUSED
-+BTF_ID_UNUSED
-+#endif
- BTF_ID(func, bpf_dynptr_slice)
- BTF_ID(func, bpf_dynptr_slice_rdwr)
- BTF_ID(func, bpf_dynptr_clone)
-
----
-base-commit: d9df5df183eede1041cbd5ff1d776e94757e338b
-change-id: 20241212-bpf-cond-ids-9bfbc64dd77b
-
-Best regards,
--- 
-Thomas Weißschuh <linux@weissschuh.net>
-
+I'm a colleague of Faizal and I'd be happy to help out with testing the 
+patch. I'll take care of testing it on the stmmac side and will sort out 
+any issues that come up. If there are any necessary fixes or improvements, 
+I'll handle those and provide feedback accordingly.
 
