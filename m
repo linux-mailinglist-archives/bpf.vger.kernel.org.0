@@ -1,131 +1,104 @@
-Return-Path: <bpf+bounces-47373-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47374-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C88869F8819
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 23:52:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BC079F8832
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 23:59:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D80718986FA
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 22:51:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10E7716BE46
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 22:59:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE1A41F1913;
-	Thu, 19 Dec 2024 22:51:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FF891DC9B2;
+	Thu, 19 Dec 2024 22:59:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="mUcMiJsB"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pTHkA93C"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B1851EE7C6
-	for <bpf@vger.kernel.org>; Thu, 19 Dec 2024 22:51:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF6CC155743
+	for <bpf@vger.kernel.org>; Thu, 19 Dec 2024 22:59:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734648675; cv=none; b=DbxEqQfgo+lpIV1qsRRtoAmbY9RXYc9d69Y4U7YhaJuOiHV/VskVA+Ad6zxGZkJ/mCW4cXsrTuPDlOWC1snSrIP0EKxlUdaYGHDp4aAhSa6d3OpICvVYQow1VZV7JS6tyKr6JhG0PnqSClSU6Jg+CIVO7/bKFNrb09Ha/AjxrLY=
+	t=1734649171; cv=none; b=ZV3E4uTTB4HSfwCsmB9/Z4Ax4SYpxDzkU48LfrRjQ1mXvgqiAlLYRpA0b1OWtJi8WnTCThEPNnSjs+wE8VC0QvOS99jj2Yj13ZDNPlAQXES3CZHfywox6ZYbR+RcZaw/88U6crLD4uoxEPqYCAEv6yYr+ezXk/isrTrWUfbQHwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734648675; c=relaxed/simple;
-	bh=DZo1jpv43AeHt4bHpd/kDFTFa+DfkIQceBcD9hkI9bc=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Yyz62ZijiBrEil0oUtJWfTbk61nNUk3wTBpN+a9ND/besvLnGuPBW8+PIqjrMtJuE3W7rN+RQRyCr5o2DJEMG9RkqYyGc9BYprS7MnnPefLsxAHOi6mehWlZbByRn09jlVQ3HU5fxNhbS4pTvP3zZBtRfQGnZwEDpQaTEnI0U6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=mUcMiJsB; arc=none smtp.client-ip=185.70.40.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1734648665; x=1734907865;
-	bh=DZo1jpv43AeHt4bHpd/kDFTFa+DfkIQceBcD9hkI9bc=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
-	b=mUcMiJsBF44jkbHOgVpzOZgQmqVTJMyDQ8+G4Ua5bEDEKLXX85hCQZziTd+jEJDRT
-	 RZQawJtaTNbCkPDDGQ81ZV4cuUdeAbndUNMsFmLP39jxqcfrd/onmKy3DRTYpdaDoc
-	 LMXFzDvmNtcohXggIM669xEkYnfTryTiXW9KJBaLeaWOh4HxdO17fFYiKelircyjMX
-	 KcUHAybKAmjkKtwuGtWqKzaFgLcfif7f1+Qf7biXueY5GFWcYcQNIM6cA0CTWzIOl8
-	 ucLDtJadJeEECdL3TzD2SKvaZtftFmM3frWXKwRk0czCLuNpBH4L0Wft3fENapl9A9
-	 URfO1TJGcsI0A==
-Date: Thu, 19 Dec 2024 22:51:01 +0000
-To: Tejun Heo <tj@kernel.org>
-From: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: David Vernet <void@manifault.com>, sched-ext@meta.com, kernel-team@meta.com, linux-kernel@vger.kernel.org, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH sched_ext/for-6.13-fixes] sched_ext: Fix invalid irq restore in scx_ops_bypass()
-Message-ID: <ouIylyHgXTVZ9RiyVeHZ26YXQLKMEKHoOVPWIgpWRDD2FL2RDwwUEocaj4LMpMR3PjbwpPuxEnJAjMeD4e7LnWIAYvIbGC5BPvPGtzyumYk=@pm.me>
-In-Reply-To: <Z2MV001RfiG7DNqj@slm.duckdns.org>
-References: <20241209152924.4508-1-void@manifault.com> <qC39k3UsonrBYD_SmuxHnZIQLsuuccoCrkiqb_BT7DvH945A1_LZwE4g-5Pu9FcCtqZt4lY1HhIPi0homRuNWxkgo1rgP3bkxa0donw8kV4=@pm.me> <Z1n9v7Z6iNJ-wKmq@slm.duckdns.org> <SJEarr1ol1z7N83mqHJjBmpXcXgHNnnuORHfziWINcHBQCJzY0RczexPKxdq_vE5cDYPeO3bx1RdsNhLqw5UYI40HSX9cPZ9rdmebYwwAP8=@pm.me> <HdoCQccNk3GZdnPx5w1vuAfOMMgtWeUgrUhn_e8B-hyRrWoOPakTGcoI3Q4-QmK_44msuvivoRUykxxeB82uR-S3enkmFaQl2t6Zgu-Nq6Y=@pm.me> <Z2MV001RfiG7DNqj@slm.duckdns.org>
-Feedback-ID: 27520582:user:proton
-X-Pm-Message-ID: 7c3519267b14410bd28f11c413ad7d18e518bf30
+	s=arc-20240116; t=1734649171; c=relaxed/simple;
+	bh=hlg8xwkylNI5eAv8KQzJt8kXxJW9Zb549XA7kLLl+i0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pdy0jlYorYt4rXJq1Gl+hpuu9Z33uafXDAIi4tMnrl6DWLHcLK/Y8N4H12GlvsE0EwRVYM23gYP2JzHtJoXT1deJ5eUZDzXmPn1qpXfRT4lRvBCVUIdr5GlyMlKjjZfgAfq3rsQb4cAkXVcxfSbTG6mOu4ZIo+tomog87rLxCT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pTHkA93C; arc=none smtp.client-ip=95.215.58.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <e3bf6bf6-5e81-4b6b-a9cd-40476cff67df@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1734649164;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IhXQOLtk7dKTmN52PYjr4l//xRRdGTGNVljbAp+LMuQ=;
+	b=pTHkA93CLNr7gPLJS8+OkIAh4fP5+3TQ0a8bkD3WTAtQci6/BqQkCHjE69xFVEtEcRRqhD
+	57YQiXJGXm9z29MWyLwektE+NnbKNsndiBzCOImSMyQSekGIdwQzgLm9rZPioo9IP/AiS2
+	oikpjouDIbPjUilemOqugGqetV4nfPI=
+Date: Thu, 19 Dec 2024 14:59:15 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v3 5/5] bpf/selftests: add selftest for
+ bpf_smc_ops
+To: "D. Wythe" <alibuda@linux.alibaba.com>
+Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+ ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, pabeni@redhat.com,
+ song@kernel.org, sdf@google.com, haoluo@google.com, yhs@fb.com,
+ edumazet@google.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+ jolsa@kernel.org, guwen@linux.alibaba.com, kuba@kernel.org,
+ davem@davemloft.net, netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+ linux-rdma@vger.kernel.org, bpf@vger.kernel.org
+References: <20241218024422.23423-1-alibuda@linux.alibaba.com>
+ <20241218024422.23423-6-alibuda@linux.alibaba.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20241218024422.23423-6-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wednesday, December 18th, 2024 at 10:34 AM, Tejun Heo <tj@kernel.org> wr=
-ote:
+On 12/17/24 6:44 PM, D. Wythe wrote:
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include "vmlinux.h"
+> +
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +#include "bpf_tracing_net.h"
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +struct smc_sock {
 
->=20
->=20
-> Hello,
->=20
-> On Tue, Dec 17, 2024 at 11:44:08PM +0000, Ihor Solodrai wrote:
->=20
-> > I re-enabled selftests/sched_ext on BPF CI today. The kernel on CI
-> > includes this patch. Sometimes there is a failure on attempt to attach
-> > a dsp_local_on scheduler.
-> >=20
-> > Examples of failed jobs:
-> >=20
-> > * https://github.com/kernel-patches/bpf/actions/runs/12379720791/job/34=
-555104994
-> > * https://github.com/kernel-patches/bpf/actions/runs/12382862660/job/34=
-564648924
-> > * https://github.com/kernel-patches/bpf/actions/runs/12381361846/job/34=
-560047798
-> >=20
-> > Here is a piece of log that is present in failed run, but not in
-> > a successful run:
-> >=20
-> > 2024-12-17T19:30:12.9010943Z [ 5.285022] sched_ext: BPF scheduler "dsp_=
-local_on" enabled
-> > 2024-12-17T19:30:13.9022892Z ERR: dsp_local_on.c:37
-> > 2024-12-17T19:30:13.9025841Z Expected skel->data->uei.kind =3D=3D EXIT_=
-KIND(SCX_EXIT_ERROR) (0 =3D=3D 1024)
-> > 2024-12-17T19:30:13.9256108Z ERR: exit.c:30
-> > 2024-12-17T19:30:13.9256641Z Failed to attach scheduler
-> > 2024-12-17T19:30:13.9611443Z [ 6.345087] smpboot: CPU 1 is now offline
-> >=20
-> > Could you please investigate?
->=20
->=20
-> The test prog is wrong in assuming all possible CPUs to be consecutive an=
-d
-> online but I'm not sure whether that's what's making the test flaky. Do y=
-ou
-> have dmesg from a failed run?
+I suspect this should be "smc_sock___local". Otherwise, it can't compile if the 
+same type is found in vmlinux.h.
 
-Tejun, can you elaborate on what you're looking for in the logs?
-My understanding is that QEMU prints some of the dmesg messages.
-QEMU output is available in raw logs.
+I only looked at the high level of prog_tests/test_bpf_smc.c. A few comments,
 
-Here is a link (you have to login to github to open):
+Try to reuse the helpers in network_helpers.c and test_progs.c, e.g. netns 
+creation helpers, start_server, ...etc. There are many examples in 
+selftests/bpf/prog_tests using them.
 
-https://productionresultssa1.blob.core.windows.net/actions-results/99cd995e=
--679f-4180-872b-d31e1f564837/workflow-job-run-7216a7c9-5129-5959-a45a-28d6f=
-9b737e2/logs/job/job-logs.txt?rsct=3Dtext%2Fplain&se=3D2024-12-19T22%3A57%3=
-A01Z&sig=3Dz%2B%2FUtIIhli4VG%2FCCVxawBnubNwfIIsl9Q2FlTVvM8q0%3D&ske=3D2024-=
-12-20T07%3A00%3A35Z&skoid=3Dca7593d4-ee42-46cd-af88-8b886a2f84eb&sks=3Db&sk=
-t=3D2024-12-19T19%3A00%3A35Z&sktid=3D398a6654-997b-47e9-b12b-9515b896b4de&s=
-kv=3D2024-11-04&sp=3Dr&spr=3Dhttps&sr=3Db&st=3D2024-12-19T22%3A46%3A56Z&sv=
-=3D2024-11-04
+I see 1s timeout everywhere. BPF CI could be slow some time. Please consider how 
+reliable the multi-thread test is. If the test is too flaky, it will be put in 
+the selftests/bpf/DENYLIST.
 
-Generally, you can access raw logs by going to the job, and=20
-clicking the gear on the topright -> "View raw logs".
+> +	struct sock sk;
+> +	struct smc_sock *listen_smc;
+> +	bool use_fallback;
+> +} __attribute__((preserve_access_index));
+> +
 
->=20
-> Thanks.
->=20
-> --
-> tejun
 
