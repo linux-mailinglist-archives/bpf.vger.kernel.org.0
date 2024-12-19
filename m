@@ -1,182 +1,201 @@
-Return-Path: <bpf+bounces-47289-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47290-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93B6C9F714A
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 01:18:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F5C99F7197
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 02:16:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEC8916AC63
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 00:18:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDB23168CB7
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 01:16:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8935C8BEE;
-	Thu, 19 Dec 2024 00:18:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4242339A1;
+	Thu, 19 Dec 2024 01:16:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BqUoI83P"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="l7BXrkjo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55FD517C;
-	Thu, 19 Dec 2024 00:18:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0B33AD5A
+	for <bpf@vger.kernel.org>; Thu, 19 Dec 2024 01:16:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734567490; cv=none; b=kg3Y26H7yIMR17vLxtE8V9J+pX4qYdVyHazgVNFzD314b5sTOR9oKhh+O0JPs4tbD0ern4MHOKUVYTOSR9mimiwS2KBQM40vw/syCnHuJD4bwb3s+/ltefrdLJCx5DBZos26bfbDibuy3c8Kfftwo7ZrNe3zA2W3fAsa2ocAXwA=
+	t=1734571000; cv=none; b=g5IqzjnIquD9GhvjAVTU7WHtZdAlQ50SqH9LzwXWS/KxF20UZiE1U0246NFFk8LypWE+cqwfw+DSCcUGqrUhmcc2X7JM9CeEzfn/jhcUd1FZZE5N3ngXdVuS/H9DDBmdwuqYXuQHjSZxXtjmfs65qzRjJx3JKvl54IuKFW33SX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734567490; c=relaxed/simple;
-	bh=3nMMzhab8rGgGn1eCpiUJHnKpt5lb5dLBY/jaiTRmAU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gAFtv7vpL9h3/TU4XheT5tHc4Q5jN+nIHrBLeMl3spgqUS1koIzLX5Syg4mZD3KgICsulEDQ+ckzYDYLniaHLG2GLOmym5a0PUPkId/6g3LqTob5f1nV4R4zZWgP+GLd/z9dFDJssKQp4EiqMg8UixK7LQDvbB/LgvlE8cXrjt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BqUoI83P; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-385eed29d17so132711f8f.0;
-        Wed, 18 Dec 2024 16:18:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734567486; x=1735172286; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ocjGNIZOXTAe/187ptT/PLf4c0wni1IvAs8DZOiJ7g4=;
-        b=BqUoI83PnxzUiTd7IKsnCrBw03+sl45VcGdMAKtKJqxRKAO4Zk6Hhj+W2OG6g6AKsY
-         XPXgAdyGPLZQ3EscoMHtFhuNcE5jxqZOCXrgSsCIYWC19syonT8hR7yksSlwGazWF1P7
-         L4h/97p6hzwLsu6CurF0SUEPYRZU0Qn8tvD9UJnJOjfaYof8BGTa3tVxVGYnhyEWshMQ
-         zOEHfXu5eanxFUwDDngKG9ZNKsIJPKVkZ35+cqz8lT82eDzr+AIGry9Up4MzTocPtUKT
-         BBrjrY8XlO6osNgSV2+TWwP+68sloLHSJeAJ74BHXSzkKSXwvuxbJ5pBwagMx3R4X4t0
-         SH0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734567486; x=1735172286;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ocjGNIZOXTAe/187ptT/PLf4c0wni1IvAs8DZOiJ7g4=;
-        b=N3DVbcZvTK8xu3J+M4xY8DQb6FUDcdG/xGyVWHsHh+IIOI5THksQWLXm1W8Lj2La2F
-         TzrmcwrCzKKLJ4rNqxnus86iIhVv/gJf9X0xUgSWzIFkcG/2+Gzlk/d16awvUjlvILo1
-         RsTrUJVAUYmLHi0ulBrpmsfhoU/cY1diwSvp4OnkAFN9X0XLEYiaQbV7YxLAwpJcIE/w
-         Yz2jN0ZOejYl6GpO67LFVHtAvdtoCjCoyJGoZ1DerpaID8Sezk63qJB69r+aD/KnyaE6
-         0HyuZ1H7DB4bOGGG5BnFXYE7C9TMXNZX4QYRCd4mZ0KLqLYo2bi59QrIf3byJ3e+Zquo
-         C84Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUqS7x8vetLpF+23zdGWhYcZEb+uHxnR7jx/DPNugOamPhTfXqYhuanL2JoKgqJXmpduM4jNMWsXqXf/yTvGEDcyMgTNdlp@vger.kernel.org, AJvYcCVjAB0+izeUl5Sr1h8XGRAHu+YWpHyqTU2Wa6eUa6vuJ/RKmWPRIhZlEi6L3gXMV0ly86s=@vger.kernel.org, AJvYcCVnpP8RBeZM5lTOx18KrKjdGqeEO/PCS6q6IsY3+tQv31EqFBlL+hsSC76b8v29XiLDRDOCrYoi0PmdQTqg@vger.kernel.org
-X-Gm-Message-State: AOJu0YwDbXSf7nffYyxv9ik0swYnr08Yn5MOR+AvvdIkYf0iwie5Z+zE
-	Hv1JSit1S5MV0cTTiH5ltVOtlX/4ILDdMy9GbmzKbSTXpQqH5+DwuskBbUdiBDygy6HYNNFlnPB
-	W5uJIHkn1NfnrLeFrZfrg+n46n80=
-X-Gm-Gg: ASbGncszYRqDstTI/34laZs5PVlrsbQPK3JSWDGmaD/+LuycKwM7bzYBZDwK533gJAQ
-	mCqjW56sw0DyrAPV0r2cVS4OCr/GHNVvcZAtQgA==
-X-Google-Smtp-Source: AGHT+IE7zrIRkEdfBtKKDqD0ZtdqypQLYrkus+P+4ue1HEXEgpnGcTL+NsYBTMNoDCXxwWLno8+ZBpk3i5xFbbZE7MM=
-X-Received: by 2002:a05:6000:1b8b:b0:388:da2a:653d with SMTP id
- ffacd0b85a97d-388e4dadd2fmr3911916f8f.56.1734567486335; Wed, 18 Dec 2024
- 16:18:06 -0800 (PST)
+	s=arc-20240116; t=1734571000; c=relaxed/simple;
+	bh=ywjyRX0wFDmT3x6BXZ5aEoPG06dNitHbPnWy2rAW4jk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=o77WCIETmE5Fi/829b56bVzX8vvhBsUaUwTXRhR8EMnt0vbZHrBDtcd+b0KFpH6m58KuaIcrBjJ5hvzhn8Gy+UIOPcvJ1/8/kru3xpoRgteTuySlGq9iHW/dmiG2htUPdbbNNIFqdM+uzUnyh1UU8JfWB1LcIuU2zTnPGU0bmo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=l7BXrkjo; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <f57ee5de-bf8b-40ce-8883-904653c422b5@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1734570994;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DC46yMvTlgzEmr0S66jR2jZbGeEUYCTIBmtIkpXV5Ro=;
+	b=l7BXrkjozgkPNpas5+kAiX+q2j98MYIoZlW5dBlq+gXOj6hofb+SlBfFPHhtMwlLDY4X+d
+	LQcQtoP1FybyUSCN3Q1OG+rrFIYHoVtgbHMOKC+xBNCc8XXmuRaE/8u4qgYVg0jBQKt60d
+	IMlmtNaS168kuLe0k+lSeADE4Pt3zz4=
+Date: Wed, 18 Dec 2024 17:16:27 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241218044711.1723221-1-song@kernel.org> <20241218044711.1723221-5-song@kernel.org>
- <CAADnVQK2chjFr8EwpzbnsqLwGRfoxjRs6yXDXmUuBRFo-iwV_A@mail.gmail.com> <BF2BF0EC-90C2-4BFC-B1F3-D842AE1B7761@fb.com>
-In-Reply-To: <BF2BF0EC-90C2-4BFC-B1F3-D842AE1B7761@fb.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 18 Dec 2024 16:17:55 -0800
-Message-ID: <CAADnVQ+vgt=LV+3srtGQUtKKc3ohZkaMdHyouXThNmYG2qGoYg@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 4/5] bpf: fs/xattr: Add BPF kfuncs to set and
- remove xattrs
-To: Song Liu <songliubraving@meta.com>
-Cc: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	KP Singh <kpsingh@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
-	"Serge E . Hallyn" <serge@hallyn.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v1 07/13] bpf: net_sched: Add a qdisc watchdog
+ timer
+To: Amery Hung <amery.hung@bytedance.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, alexei.starovoitov@gmail.com, martin.lau@kernel.org,
+ sinquersw@gmail.com, toke@redhat.com, jhs@mojatatu.com, jiri@resnulli.us,
+ stfomichev@gmail.com, ekarani.silvestre@ccc.ufcg.edu.br,
+ yangpeihao@sjtu.edu.cn, xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com,
+ ameryhung@gmail.com
+References: <20241213232958.2388301-1-amery.hung@bytedance.com>
+ <20241213232958.2388301-8-amery.hung@bytedance.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20241213232958.2388301-8-amery.hung@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Dec 18, 2024 at 1:47=E2=80=AFPM Song Liu <songliubraving@meta.com> =
-wrote:
->
-> Hi Alexei,
->
-> Thanks for the review!
->
-> > On Dec 18, 2024, at 1:20=E2=80=AFPM, Alexei Starovoitov <alexei.starovo=
-itov@gmail.com> wrote:
-> >
-> > On Tue, Dec 17, 2024 at 8:48=E2=80=AFPM Song Liu <song@kernel.org> wrot=
-e:
-> >>
-> >>
-> >> BTF_KFUNCS_START(bpf_fs_kfunc_set_ids)
-> >> @@ -170,6 +330,10 @@ BTF_ID_FLAGS(func, bpf_put_file, KF_RELEASE)
-> >> BTF_ID_FLAGS(func, bpf_path_d_path, KF_TRUSTED_ARGS)
-> >> BTF_ID_FLAGS(func, bpf_get_dentry_xattr, KF_SLEEPABLE | KF_TRUSTED_ARG=
-S)
-> >> BTF_ID_FLAGS(func, bpf_get_file_xattr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
-> >> +BTF_ID_FLAGS(func, bpf_set_dentry_xattr, KF_SLEEPABLE | KF_TRUSTED_AR=
-GS)
-> >> +BTF_ID_FLAGS(func, bpf_remove_dentry_xattr, KF_SLEEPABLE | KF_TRUSTED=
-_ARGS)
-> >> +BTF_ID_FLAGS(func, bpf_set_dentry_xattr_locked, KF_SLEEPABLE | KF_TRU=
-STED_ARGS)
-> >> +BTF_ID_FLAGS(func, bpf_remove_dentry_xattr_locked, KF_SLEEPABLE | KF_=
-TRUSTED_ARGS)
-> >> BTF_KFUNCS_END(bpf_fs_kfunc_set_ids)
-> >
-> > The _locked() versions shouldn't be exposed to bpf prog.
-> > Don't add them to the above set.
-> >
-> > Also we need to somehow exclude them from being dumped into vmlinux.h
-> >
-> >> static int bpf_fs_kfuncs_filter(const struct bpf_prog *prog, u32 kfunc=
-_id)
-> >> @@ -186,6 +350,37 @@ static const struct btf_kfunc_id_set bpf_fs_kfunc=
-_set =3D {
-> >>        .filter =3D bpf_fs_kfuncs_filter,
-> >> };
->
-> [...]
->
-> >> + */
-> >> +static void remap_kfunc_locked_func_id(struct bpf_verifier_env *env, =
-struct bpf_insn *insn)
-> >> +{
-> >> +       u32 func_id =3D insn->imm;
-> >> +
-> >> +       if (bpf_lsm_has_d_inode_locked(env->prog)) {
-> >> +               if (func_id =3D=3D special_kfunc_list[KF_bpf_set_dentr=
-y_xattr])
-> >> +                       insn->imm =3D  special_kfunc_list[KF_bpf_set_d=
-entry_xattr_locked];
-> >> +               else if (func_id =3D=3D special_kfunc_list[KF_bpf_remo=
-ve_dentry_xattr])
-> >> +                       insn->imm =3D special_kfunc_list[KF_bpf_remove=
-_dentry_xattr_locked];
-> >> +       } else {
-> >> +               if (func_id =3D=3D special_kfunc_list[KF_bpf_set_dentr=
-y_xattr_locked])
-> >> +                       insn->imm =3D  special_kfunc_list[KF_bpf_set_d=
-entry_xattr];
-> >
-> > This part is not necessary.
-> > _locked() shouldn't be exposed and it should be an error
-> > if bpf prog attempts to use invalid kfunc.
->
-> I was implementing this in different way than the solution you and Kumar
-> suggested. Instead of updating this in add_kfunc_call, check_kfunc_call,
-> and fixup_kfunc_call, remap_kfunc_locked_func_id happens before
-> add_kfunc_call. Then, for the rest of the process, the verifier handles
-> _locked version and not _locked version as two different kfuncs. This is
-> why we need the _locked version in bpf_fs_kfunc_set_ids. I personally
-> think this approach is a lot cleaner.
+On 12/13/24 3:29 PM, Amery Hung wrote:
+> Add a watchdog timer to bpf qdisc. The watchdog can be used to schedule
+> the execution of qdisc through kfunc, bpf_qdisc_schedule(). It can be
+> useful for building traffic shaping scheduling algorithm, where the time
+> the next packet will be dequeued is known.
+> 
+> Signed-off-by: Amery Hung <amery.hung@bytedance.com>
+> ---
+>   include/net/sch_generic.h |  4 +++
+>   net/sched/bpf_qdisc.c     | 51 ++++++++++++++++++++++++++++++++++++++-
+>   net/sched/sch_api.c       | 11 +++++++++
+>   net/sched/sch_generic.c   |  8 ++++++
+>   4 files changed, 73 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+> index 5d74fa7e694c..6a252b1b0680 100644
+> --- a/include/net/sch_generic.h
+> +++ b/include/net/sch_generic.h
+> @@ -1357,4 +1357,8 @@ static inline void qdisc_synchronize(const struct Qdisc *q)
+>   		msleep(1);
+>   }
+>   
+> +int bpf_qdisc_init_pre_op(struct Qdisc *sch, struct nlattr *opt, struct netlink_ext_ack *extack);
+> +void bpf_qdisc_destroy_post_op(struct Qdisc *sch);
+> +void bpf_qdisc_reset_post_op(struct Qdisc *sch);
+> +
+>   #endif
+> diff --git a/net/sched/bpf_qdisc.c b/net/sched/bpf_qdisc.c
+> index 28959424eab0..7c155207fe1e 100644
+> --- a/net/sched/bpf_qdisc.c
+> +++ b/net/sched/bpf_qdisc.c
+> @@ -8,6 +8,10 @@
+>   
+>   static struct bpf_struct_ops bpf_Qdisc_ops;
+>   
+> +struct bpf_sched_data {
+> +	struct qdisc_watchdog watchdog;
+> +};
+> +
+>   struct bpf_sk_buff_ptr {
+>   	struct sk_buff *skb;
+>   };
+> @@ -17,6 +21,32 @@ static int bpf_qdisc_init(struct btf *btf)
+>   	return 0;
+>   }
+>   
+> +int bpf_qdisc_init_pre_op(struct Qdisc *sch, struct nlattr *opt,
+> +			  struct netlink_ext_ack *extack)
+> +{
+> +	struct bpf_sched_data *q = qdisc_priv(sch);
+> +
+> +	qdisc_watchdog_init(&q->watchdog, sch);
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(bpf_qdisc_init_pre_op);
+> +
+> +void bpf_qdisc_reset_post_op(struct Qdisc *sch)
+> +{
+> +	struct bpf_sched_data *q = qdisc_priv(sch);
+> +
+> +	qdisc_watchdog_cancel(&q->watchdog);
+> +}
+> +EXPORT_SYMBOL(bpf_qdisc_reset_post_op);
+> +
+> +void bpf_qdisc_destroy_post_op(struct Qdisc *sch)
+> +{
+> +	struct bpf_sched_data *q = qdisc_priv(sch);
+> +
+> +	qdisc_watchdog_cancel(&q->watchdog);
+> +}
+> +EXPORT_SYMBOL(bpf_qdisc_destroy_post_op);
 
-I see. Blind rewrite in add_kfunc_call() looks simpler,
-but allowing progs call _locked() version directly is not clean.
+These feel like the candidates for the ".gen_prologue" and ".gen_epilogue". Then 
+the changes to sch_api.c is not needed.
 
-See specialize_kfunc() as an existing approach that does polymorphism.
+> +
+>   static const struct bpf_func_proto *
+>   bpf_qdisc_get_func_proto(enum bpf_func_id func_id,
+>   			 const struct bpf_prog *prog)
+> @@ -134,12 +164,25 @@ __bpf_kfunc void bpf_qdisc_skb_drop(struct sk_buff *skb,
+>   	__qdisc_drop(skb, (struct sk_buff **)to_free_list);
+>   }
+>   
+> +/* bpf_qdisc_watchdog_schedule - Schedule a qdisc to a later time using a timer.
+> + * @sch: The qdisc to be scheduled.
+> + * @expire: The expiry time of the timer.
+> + * @delta_ns: The slack range of the timer.
+> + */
+> +__bpf_kfunc void bpf_qdisc_watchdog_schedule(struct Qdisc *sch, u64 expire, u64 delta_ns)
+> +{
+> +	struct bpf_sched_data *q = qdisc_priv(sch);
+> +
+> +	qdisc_watchdog_schedule_range_ns(&q->watchdog, expire, delta_ns);
+> +}
+> +
+>   __bpf_kfunc_end_defs();
+>   
+>   #define BPF_QDISC_KFUNC_xxx \
+>   	BPF_QDISC_KFUNC(bpf_skb_get_hash, KF_TRUSTED_ARGS) \
+>   	BPF_QDISC_KFUNC(bpf_kfree_skb, KF_RELEASE) \
+>   	BPF_QDISC_KFUNC(bpf_qdisc_skb_drop, KF_RELEASE) \
+> +	BPF_QDISC_KFUNC(bpf_qdisc_watchdog_schedule, KF_TRUSTED_ARGS) \
+>   
+>   BTF_KFUNCS_START(bpf_qdisc_kfunc_ids)
+>   #define BPF_QDISC_KFUNC(name, flag) BTF_ID_FLAGS(func, name, flag)
+> @@ -154,9 +197,14 @@ BPF_QDISC_KFUNC_xxx
+>   
+>   static int bpf_qdisc_kfunc_filter(const struct bpf_prog *prog, u32 kfunc_id)
+>   {
+> -	if (kfunc_id == bpf_qdisc_skb_drop_ids[0])
+> +	if (kfunc_id == bpf_qdisc_skb_drop_ids[0]) {
+>   		if (strcmp(prog->aux->attach_func_name, "enqueue"))
+>   			return -EACCES;
+> +	} else if (kfunc_id == bpf_qdisc_watchdog_schedule_ids[0]) {
+> +		if (strcmp(prog->aux->attach_func_name, "enqueue") &&
+> +		    strcmp(prog->aux->attach_func_name, "dequeue"))
+> +			return -EACCES;
+> +	}
+>   
+>   	return 0;
+>   }
+> @@ -189,6 +237,7 @@ static int bpf_qdisc_init_member(const struct btf_type *t,
+>   	case offsetof(struct Qdisc_ops, priv_size):
+>   		if (uqdisc_ops->priv_size)
+>   			return -EINVAL;
+> +		qdisc_ops->priv_size = sizeof(struct bpf_sched_data);
 
-_locked() doesn't need to be __bpf_kfunc annotated.
-It can be just like bpf_dynptr_from_skb_rdonly.
+ah. ok. The priv_size case is still needed.
 
-There will be no issue with vmlinux.h as well.
+
 
