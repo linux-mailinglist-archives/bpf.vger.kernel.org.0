@@ -1,121 +1,141 @@
-Return-Path: <bpf+bounces-47295-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47296-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B22FE9F7260
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 03:00:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCEA89F72F7
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 03:49:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDFB6188067E
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 01:58:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11EF61891A14
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 02:49:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14E4F78F39;
-	Thu, 19 Dec 2024 01:54:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A90F1A08C5;
+	Thu, 19 Dec 2024 02:45:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HXDxl2W3"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="T4K/LGYu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6DFA4D8DA
-	for <bpf@vger.kernel.org>; Thu, 19 Dec 2024 01:54:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B094619E7F7
+	for <bpf@vger.kernel.org>; Thu, 19 Dec 2024 02:45:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734573244; cv=none; b=fXnxTW8mIcMIX49MKD7LzEG1nrEd8m1GGvSNB4d9QlfelppvRpRG+DQy3cXOSkz8RF5HmRZAJF4LuNcDQgdNnsmRXVRoFp0/4TEUM9bBdeDxrOXxls+lDvEyu3HZS40np43PFNR5DUEnzBODGdu2GTfFA9veL2ZwgyLLvJmFJDY=
+	t=1734576354; cv=none; b=NdXB0tp0GvKd/i83oVywchpxl6mp2B1z6WI2zJCew27abmRVJxP5Pme0YS3uh6mWhkvoAMKd9NXX9DBXFQ62jDS/IwVyTR4KMAosLJNUM21LkuCvSh8wCvnqXX4qGAMaqIWXtyMB7JJBxo07jhAFXF+Nn17uK2+NeGFLv5ZKkuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734573244; c=relaxed/simple;
-	bh=10XeDIZaJRKZ2vO6XMwcEnLLR+kxNMCc7bgQ1pNV0gQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VTo5YDcrL04yqwtrKOpAc79vHVl5BpK4ATBKSQYCTEiE4akuxofKEBDHxmA7sGLzABgI/MUBfgdP55pzoA3OAdoXW3nKVvfEmV95de12zn6/x+m0pZmx1GFZZmShDVWmuqq+Br6LkekI2vJHpjv1hUW7iQAMVNnFrd5S71hvIk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HXDxl2W3; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-385e3621518so138228f8f.1
-        for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 17:54:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734573241; x=1735178041; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=10XeDIZaJRKZ2vO6XMwcEnLLR+kxNMCc7bgQ1pNV0gQ=;
-        b=HXDxl2W3e1kWxxrS/oYn227oPAKTiDpg9eUr1QnNBd204HhXMw2owm1MkYMy0gAqU5
-         HCply5/azBUBhmxHe8IEvKa8J5KCiMPHkLWs0Dl1/NESqvZeS0nH6qVModiMrLZyIEv3
-         lQHFgNi13W/39/1n3O2t67Jjom/AdDJsIMB3FsP3lBlfU+FzTvh7upkAJ5v+Oo0u0nNN
-         nk1spMjiaWbdYAxC20b7KgdBO/PIJ8sgtcvDSUTJj0RvvuOS9kRW5lFRH9Lvn6xJesYw
-         RzUJDBNBa8Wr3lCm+x3mD1ynNcLbzyJvrRDGvglhnqyab4/x22j0djqZHLsD4GuVA47o
-         7jeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734573241; x=1735178041;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=10XeDIZaJRKZ2vO6XMwcEnLLR+kxNMCc7bgQ1pNV0gQ=;
-        b=gQPXwP+3f25LD11G78+X5sArGj9OtKWJuF+/8kq4SEZbJzm8ib2aUtbuup+JgqkI6w
-         WCazkIXf8y92feXVNhQ2g1GD8bkD/ctf0cOk04S+QZtlTAHzW2VEXE8t4cV/qd7IM9p7
-         0091NpaRKNEORwkYsTF9Fk82pUmQSntrO5k/rSfnSt8QgjnsMhS3XjevhAWYEjoTuSzB
-         xNF23Cg8XUWc6pk6Hl8vF5VbZZIDvw3o78YPjZjvL5cuJMEb5fUZ7/6f1Qgrm01PU5Mg
-         RH9C4iaSinH3GBsHNLtY24fJ8bP5tsPvM1iieT2Lh9mrwTR6qwPg0xrm08QX8fn+Wdyk
-         QwSw==
-X-Gm-Message-State: AOJu0YxPZaz0SUl2Uj5gefMAzr5Dp4NhPOtphx4tcmAGDHUN9/b5UbY4
-	Ltfrp+vsu3rYzhxbx1Bev47XOqwyXJw2UY5yCfciTCo70ZQD0mCcq2aegV2kLaDQ8oSLy25+y6c
-	V+hq03L6Mhkc6WSXtgLpLAAbdKJ0=
-X-Gm-Gg: ASbGncvp/ETz8kUHF+scfQRXlCVG9+vSf//uLOAbO803NXblyBxli0znBYVyQVgHz5i
-	Xl5yZCoHqGjN6c7kaJ0KHV2PyR6qaasNIXD5hMg==
-X-Google-Smtp-Source: AGHT+IG+f2j+y3YOgHpx9wDxFrrsaRiwjUKBCYEbw+eq9iotxVmhsKe/xHF38k7skEGWq0fCX8lcnRM3c4wstSisGEA=
-X-Received: by 2002:a05:6000:18ac:b0:385:df19:cbf with SMTP id
- ffacd0b85a97d-388e4d794a7mr4682001f8f.28.1734573241070; Wed, 18 Dec 2024
- 17:54:01 -0800 (PST)
+	s=arc-20240116; t=1734576354; c=relaxed/simple;
+	bh=2nPmr55spPv3F842Zd7uAsiUa4imHnh5oPaeWnF/WNI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Q/68NenmOO3iCe3Ra/mTKw8PhV++PgOBPwqJee65kLaiulMIX2IEe44M/8qxQihDO5FARgYfn53/d9xou+NKt4In5eD6VDdwGFLdrHvkZd5m34rVrrI6f6ra/QgB2iVjONLgAFO9AU2j2rjO7aax6sfgkd2JWf9OrJp7B+7oKt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=T4K/LGYu; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <eb9d4609-970e-4760-af94-8e48cca7ec23@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1734576339;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OAMyW4oZEHUM3nFgztJTzHyHr7HEd39GcX9IeUZWofc=;
+	b=T4K/LGYuQiRxY8XE21+BJJVOy+SoWILpMQNVxH96I7yKG253mn3ZByzMMgxIZqZUSMmhJv
+	JI8Qete7n9drcnGg2EC3Lrhd33h6IZM+GGPELtDwIqmc2tML8TyqhlpkNX2FWuzMBpdr4E
+	HBFZqILwccwTEUFmSb/B6Vni25U+oG0=
+Date: Wed, 18 Dec 2024 18:45:32 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241218030720.1602449-1-alexei.starovoitov@gmail.com>
- <20241218030720.1602449-5-alexei.starovoitov@gmail.com> <Z2Ky2idzyPn08JE-@tiehlicka>
-In-Reply-To: <Z2Ky2idzyPn08JE-@tiehlicka>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 18 Dec 2024 17:53:50 -0800
-Message-ID: <CAADnVQKv_J-8CdSZsJh3uMz2XFh_g+fHZVGCmq6KTaAkupqi5w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 4/6] memcg: Use trylock to access memcg stock_lock.
-To: Michal Hocko <mhocko@suse.com>
-Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Vlastimil Babka <vbabka@suse.cz>, 
-	Sebastian Sewior <bigeasy@linutronix.de>, Steven Rostedt <rostedt@goodmis.org>, 
-	Hou Tao <houtao1@huawei.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Matthew Wilcox <willy@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>, Tejun Heo <tj@kernel.org>, 
-	linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf] bpf: Fix deadlock when freeing cgroup storage
+Content-Language: en-GB
+To: Abel Wu <wuyun.abel@bytedance.com>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ David Vernet <void@manifault.com>
+Cc: "open list:BPF [STORAGE & CGROUPS]" <bpf@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20241218092149.42339-1-wuyun.abel@bytedance.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20241218092149.42339-1-wuyun.abel@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Dec 18, 2024 at 3:32=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
-e:
->
-> On Tue 17-12-24 19:07:17, alexei.starovoitov@gmail.com wrote:
-> > From: Alexei Starovoitov <ast@kernel.org>
-> >
-> > Teach memcg to operate under trylock conditions when
-> > spinning locks cannot be used.
->
-> Can we make this trylock unconditional? I hope I am not really missing
-> anything important but if the local_lock is just IRQ disabling on !RT.
-> For RT this is more involved but does it make sense to spin/sleep on the
-> cache if we can go ahead and charge directly to counters? I mean doesn't
-> this defeat the purpose of the cache in the first place?
 
-memcg folks please correct me.
-My understanding is that memcg_stock is a batching mechanism.
-Not really a cache. If we keep charging the counters directly
-the performance will suffer due to atomic operations and hierarchy walk.
-Hence I had to make sure consume_stock() is functioning as designed
-and fallback when unlucky.
-In !RT case the unlucky part can only happen in_nmi which should be
-very rare.
-In RT the unlucky part is in_hardirq or in_nmi, since spin_trylock
-doesn't really work in those conditions as Steven explained.
-Sebastian mentioned that he's working on removing preempt_disable()
-from tracepoints. That should help bpf greatly too.
+
+
+On 12/18/24 1:21 AM, Abel Wu wrote:
+> The following commit
+> bc235cdb423a ("bpf: Prevent deadlock from recursive bpf_task_storage_[get|delete]")
+> first introduced deadlock prevention for fentry/fexit programs attaching
+> on bpf_task_storage helpers. That commit also employed the logic in map
+> free path in its v6 version.
+>
+> Later bpf_cgrp_storage was first introduced in
+> c4bcfb38a95e ("bpf: Implement cgroup storage available to non-cgroup-attached bpf progs")
+> which faces the same issue as bpf_task_storage, instead of its busy
+> counter, NULL was passed to bpf_local_storage_map_free() which opened
+> a window to cause deadlock:
+>
+> 	<TASK>
+> 	_raw_spin_lock_irqsave+0x3d/0x50
+> 	bpf_local_storage_update+0xd1/0x460
+> 	bpf_cgrp_storage_get+0x109/0x130
+> 	bpf_prog_72026450ec387477_cgrp_ptr+0x38/0x5e
+> 	bpf_trace_run1+0x84/0x100
+> 	cgroup_storage_ptr+0x4c/0x60
+> 	bpf_selem_unlink_storage_nolock.constprop.0+0x135/0x160
+> 	bpf_selem_unlink_storage+0x6f/0x110
+> 	bpf_local_storage_map_free+0xa2/0x110
+> 	bpf_map_free_deferred+0x5b/0x90
+> 	process_one_work+0x17c/0x390
+> 	worker_thread+0x251/0x360
+> 	kthread+0xd2/0x100
+> 	ret_from_fork+0x34/0x50
+> 	ret_from_fork_asm+0x1a/0x30
+> 	</TASK>
+>
+> 	[ Since the verifier treats 'void *' as scalar which
+> 	  prevents me from getting a pointer to 'struct cgroup *',
+> 	  I added a raw tracepoint in cgroup_storage_ptr() to
+> 	  help reproducing this issue. ]
+>
+> Although it is tricky to reproduce, the risk of deadlock exists and
+> worthy of a fix, by passing its busy counter to the free procedure so
+> it can be properly incremented before storage/smap locking.
+
+The above stack trace and explanation does not show that we will have
+a potential dead lock here. You mentioned that it is tricky to reproduce,
+does it mean that you have done some analysis or coding to reproduce it?
+Could you share the details on why you think we may have deadlock here?
+
+>
+> Fixes: c4bcfb38a95e ("bpf: Implement cgroup storage available to non-cgroup-attached bpf progs")
+> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
+> ---
+>   kernel/bpf/bpf_cgrp_storage.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/bpf_cgrp_storage.c b/kernel/bpf/bpf_cgrp_storage.c
+> index 20f05de92e9c..7996fcea3755 100644
+> --- a/kernel/bpf/bpf_cgrp_storage.c
+> +++ b/kernel/bpf/bpf_cgrp_storage.c
+> @@ -154,7 +154,7 @@ static struct bpf_map *cgroup_storage_map_alloc(union bpf_attr *attr)
+>   
+>   static void cgroup_storage_map_free(struct bpf_map *map)
+>   {
+> -	bpf_local_storage_map_free(map, &cgroup_cache, NULL);
+> +	bpf_local_storage_map_free(map, &cgroup_cache, &bpf_cgrp_storage_busy);
+>   }
+>   
+>   /* *gfp_flags* is a hidden argument provided by the verifier */
+
 
