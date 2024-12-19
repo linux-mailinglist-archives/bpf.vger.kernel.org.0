@@ -1,166 +1,112 @@
-Return-Path: <bpf+bounces-47360-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47361-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 230539F873B
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 22:41:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8C6A9F873D
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 22:42:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70056165533
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 21:41:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D32A17A25F0
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 21:42:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60BBE1C5CA8;
-	Thu, 19 Dec 2024 21:41:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D2301C5CA8;
+	Thu, 19 Dec 2024 21:42:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="aXqnkQNR";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="gni1hwxs"
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="LFEo2N3+"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-b6-smtp.messagingengine.com (fhigh-b6-smtp.messagingengine.com [202.12.124.157])
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7B6817E00E;
-	Thu, 19 Dec 2024 21:41:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 098E31B9835;
+	Thu, 19 Dec 2024 21:41:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734644496; cv=none; b=tEdWkNyLf3g3ToneVXA0MPWtHN7zeJAvuS49n92IXQyC2nZIDnecr8Vomnv+21ImweymfKVjwIUOb6FGjD7jn9F4a4V0O6uuOfJXiZ/6Zsncfxk7iEoCBUEjGA1Tevo0WKhYe8aCxNH8eXpHIpI3CL6u422nJ7kQcx4KnvZMniI=
+	t=1734644521; cv=none; b=f0D66sMB9g8uwiy1b+UXGJdYE9p4um9p31Pt2a86K6lbiyl828VOmJQAD8PcxIDq/tC4a+LDnLCQgm6wp7UlJo6BVJTm3FMsMfPqdj1nBVLe5jFT5wFqJdfmhPzRzDYvBaDnfhZQ9VjtAX4JEBMs9PGBMjHEoHEAczZiGVVOOhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734644496; c=relaxed/simple;
-	bh=8UmFB3ctcuiDHHQgssQ2wpXNJtLZB9VRdpGjPoqc53c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SoWvEIJWHEcGn6UBTf6LCxNpNk6Ir1bI+bMtUkIagvRX+pZoM27hlLeVmn/zIBjk5vFqSvokqzcz0xYvCOlKgBgKggG7bPG76hnzr51+VbFv8RkyPIniak75SCW2OK9+41DeTvXDKoDwX0VHLWXlpLekzDtmfGDn2FdI8I2wH6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=aXqnkQNR; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=gni1hwxs; arc=none smtp.client-ip=202.12.124.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 3D1292540182;
-	Thu, 19 Dec 2024 16:41:33 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Thu, 19 Dec 2024 16:41:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1734644493;
-	 x=1734730893; bh=7HNi+Oxo7O1Ju2DD7K0mOmaR80xjOw6PNJN1e+KhpbM=; b=
-	aXqnkQNR3d4MgNYa6yjoWsP6xiRkRsdBfyzbaBPfFgYL2p9cOD4pg+6UxHFcLC5k
-	J50kpE5mXr8qXwcQKQxoAhXjiy9l6ouEOkkHiEFMlfSWgn/7tlbvs7ye8YFfDj4R
-	SnQmEPepYRlfLbK2keSzfro7v8jrCJHlhsikDsCIRCXvJuEoa+fESE5v6BlLod5d
-	wrLvRIhuUQVwIxKzB1k2lz1Xzk/leKfdRp9Pi0L8eoRV/QayGR7RAvgEfMaJJ9z6
-	KCzY20R86edRUjXKR2HiVqQ4B2N3x7c/7rDaGgBdxbiw54ekvmHOG/XGC1B0VIg4
-	Uf9jImKEdTafcxvKWZRfjg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1734644493; x=
-	1734730893; bh=7HNi+Oxo7O1Ju2DD7K0mOmaR80xjOw6PNJN1e+KhpbM=; b=g
-	ni1hwxsdt4SNB0gY+1IgszsJ9zAT+MxNl/2jLMy2SlPZpWPQ3yeuPthjsgn4xY6E
-	t+RK7s85SZR6vpxTK9asl0vMe9Sx6ChpE01Xdrb7jf+5mj3HwNo+QeiQqRmLh8gf
-	81hyCYql5vNYWMtgf4OvAHC7kAOiih0oovOIsWgiILNbH73sYeo+lj1pePstwP5L
-	4cG9Jg1TAeKz1fjT7H9SD+evrOoMbDz6iZ4+5joXf2gyalPrn1HIzVfuZg1W8HAe
-	TBmpQ6pG2aH2uPIZl+sxwTNxoWQbEOezw/8QlSlaOcxa1aVtMQkqK/zX3DQD9jpH
-	WwCDo22CRv5mVu+0pdtmw==
-X-ME-Sender: <xms:DJNkZ4MfS_mMLK-6pgjkj4iNJcdBe1MCEG_nYiLSROzlMYvu6f1rvQ>
-    <xme:DJNkZ-84BpKcm-vbdCGMBYvx51fgjjdVMtcA1xJBb46mxjomyLpmdGZC3WmtaykXm
-    7Juoay2cdGNPVE3dA>
-X-ME-Received: <xmr:DJNkZ_RPgXleWpRlpYjgkVgZwxXJHl7_pVayffhAJAPPy6aayesmVu-r0ZGHU_Qy16_w4HH4TLX1J-4nr4ltjL4wKFPX8z2yLJY1obBS1K1q7g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddruddttddgudehtdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenfghrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffk
-    fhggtggugfgjsehtkefstddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguh
-    esugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueek
-    ffelteekkeekgeegffevtddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihiidpnhgspghr
-    tghpthhtohepudelpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopegrnhgurhhiih
-    drnhgrkhhrhihikhhosehgmhgrihhlrdgtohhmpdhrtghpthhtohepvgguugihiiekjees
-    ghhmrghilhdrtghomhdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhgpd
-    hrtghpthhtoheprghstheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhhuhgrhhes
-    khgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlsehiohhgvggrrhgsohigrd
-    hnvghtpdhrtghpthhtohepjhhohhhnrdhfrghsthgrsggvnhgusehgmhgrihhlrdgtohhm
-    pdhrtghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghvpdhrtghpthhtoh
-    epshhonhhgsehkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:DJNkZwuvt3tnYN54Eq1uCnYDL2NlcgftMQqLbPS3hCicaEnlK-C9RQ>
-    <xmx:DJNkZwcu4dgkXVG_TC3yvX_tQUw50WSvlFrwejV8-9ZTU2yDULRqCw>
-    <xmx:DJNkZ01_lajFu88kt7VPEYaTOYbNua-CPngYe30YRiAe3pQzO4D1gg>
-    <xmx:DJNkZ0_zn6tANlSHMEmNp7rv9Qo5dDBHnLCG03IrUQZQd5i-__UpSQ>
-    <xmx:DZNkZ1CNOK4IR9-6Dou635QXItOGMbuJqTvu-3T0UnBwzn7Hc6e7U4hZ>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 19 Dec 2024 16:41:30 -0500 (EST)
-Date: Thu, 19 Dec 2024 14:41:28 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, andrii@kernel.org, 
-	ast@kernel.org, shuah@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v5 4/5] bpf: verifier: Support eliding map
- lookup nullness
-Message-ID: <kghvgxu5wdkupssnq7dy5upuf2wscsxgsnwl2yoam4mwk3h5pn@wjjsliwg6fzl>
-References: <cover.1734045451.git.dxu@dxuuu.xyz>
- <92065ca054beccd6d0f35efe9715ef965e8d379f.1734045451.git.dxu@dxuuu.xyz>
- <CAEf4BzaqCgW9keiT+tJUBQWT6Q+jMwuvn4O2ZghO0c+ZvACNrw@mail.gmail.com>
- <zow3q3nhlz6vedbni3upag5yr7zzrhyiqysl5nwyubebmbwojk@th7kbm62x36g>
- <31b0c85dbf85486df116ade20caf8685843899b4.camel@gmail.com>
- <CAEf4BzaEOBtrSWZTx40AdT=SQY6Qaia405KWgU-NowaqNdmpkA@mail.gmail.com>
+	s=arc-20240116; t=1734644521; c=relaxed/simple;
+	bh=N7zV5DkWHia7sGpJsVWCCVm57p6Exu7y9drwz1qt3gc=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=jJefJq1P0SWTNxxZkCJ2KfQyPqnyxU8gGuok08vUL2IhPxGoH0vAqOofjx84YofphI3KyMcrGa3XWHqDUU/+1EdBWx5ERY+NqE6fPflYsHiXbrPHfI6/rDHm/dqjXhndFo9l3EKsZ5EvenJ9VXiTyyd6ke0rzjKcPful37wG/U8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=LFEo2N3+; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1734644507;
+	bh=N7zV5DkWHia7sGpJsVWCCVm57p6Exu7y9drwz1qt3gc=;
+	h=From:Date:Subject:To:Cc:From;
+	b=LFEo2N3+luM1YsgF48hDz2mZ2DVOe0xDDbAv1SK4X6DEh2qBzDa1v47lDKDO8OKKF
+	 0jYJxSsVNT08lA9n3eqjgHfAVjaEbh9HaYEanq/4QBVoIo9e0CBpW4r1DltMBObo5y
+	 T1bUyIyDoQzTHfulA5NSvKqMhOOJkz80VBm2lRn8=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date: Thu, 19 Dec 2024 22:41:41 +0100
+Subject: [PATCH] bpf: Fix holes in special_kfunc_list if !CONFIG_NET
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzaEOBtrSWZTx40AdT=SQY6Qaia405KWgU-NowaqNdmpkA@mail.gmail.com>
+Message-Id: <20241219-bpf-fix-special_kfunc_list-v1-1-d9d50dd61505@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIABSTZGcC/x3M0QqDMAxA0V+RPBuwZRu4XxGRNk1nmNTSqAjiv
+ 6/s8cDlXqBchBXezQWFD1FZU4VpG6DZpQ+jhGqwnX0Ya3r0OWKUEzUziVumb9wTTYvohhQCxc6
+ 7pzUvqINcuJb/+TDe9w9/r9EXbAAAAA==
+X-Change-ID: 20241219-bpf-fix-special_kfunc_list-cddcf0ba5216
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
+ Alexei Starovoitov <ast@kernel.org>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1734644507; l=1201;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=N7zV5DkWHia7sGpJsVWCCVm57p6Exu7y9drwz1qt3gc=;
+ b=a9MvAkf6zdk7yLL/tKIQON4suaDXbNvR7+hkdIqWCu6MjC9U05t0kgMVv/mCkrrHTdP5CVQ2q
+ 1H4AHRHkWkODEQmLOdCrwSbKoPAceiM+04bW98+smLTkrk6OQhBpTTx
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-On Mon, Dec 16, 2024 at 03:24:01PM -0800, Andrii Nakryiko wrote:
-> On Fri, Dec 13, 2024 at 7:13 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
-> >
-> > On Fri, 2024-12-13 at 19:44 -0700, Daniel Xu wrote:
-> >
-> > [...]
-> >
-> > > > > +       /* First handle precisely tracked STACK_ZERO, up to BPF_REG_SIZE */
-> > > > > +       stype = state->stack[spi].slot_type;
-> > > > > +       for (i = 0; i < BPF_REG_SIZE && stype[i] == STACK_ZERO; i++)
-> > > >
-> > > > it's Friday and I'm lazy, but please double-check that this works for
-> > > > both big-endian and little-endian :)
-> > >
-> > > Any tips? Are the existing tests running thru s390x hosts in CI
-> > > sufficient or should I add some tests writen in C (and not BPF
-> > > assembler)? I can never think about endianness correctly...
-> >
-> > I think that if test operates on a key like:
-> >
-> >       valid key 15
-> >              v
-> >       0000000f   <-- written to stack as a single u64 value
-> >       ^^^^^^^
-> >     stack zero marks
-> >
-> > and is executed (e.g. using __retval annotation),
-> > then CI passing for s390 should be enough.
-> 
-> +1, something like that where for big-endian it will be all zero while
-> for little endian it would be 0xf (and then make sure that the test
-> should *fail* by making sure that 0xf is not a valid index, so NULL
-> check is necessary)
+If the function is not available its entry has to be replaced with
+BTF_ID_UNUSED instead of skipped.
+Otherwise the list doesn't work correctly.
 
-How would it work for LE to be 0xF but BE to be 0x0?
+Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Closes: https://lore.kernel.org/lkml/CAADnVQJQpVziHzrPCCpGE5=8uzw2OkxP8gqe1FkJ6_XVVyVbNw@mail.gmail.com/
+Fixes: 00a5acdbf398 ("bpf: Fix configuration-dependent BTF function references")
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ kernel/bpf/verifier.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-The prog passes a pointer to the beginning of the u32 to
-bpf_map_lookup_elem(). The kernel does a 4 byte read starting from that
-address. On both BE and LE all 4 bytes will be interpreted. So set bits
-cannot just go away.
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index f27274e933e55342dcefa482a9ac75313d0d3469..44616b492f87cf4e1dc354e34d9158f13079dda7 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -11739,6 +11739,9 @@ BTF_ID(func, bpf_rbtree_first)
+ #ifdef CONFIG_NET
+ BTF_ID(func, bpf_dynptr_from_skb)
+ BTF_ID(func, bpf_dynptr_from_xdp)
++#else
++BTF_ID_UNUSED
++BTF_ID_UNUSED
+ #endif
+ BTF_ID(func, bpf_dynptr_slice)
+ BTF_ID(func, bpf_dynptr_slice_rdwr)
 
-Am I missing something?
+---
+base-commit: c2ce3bb13ae7f4445a5e8fb12254b2dacefd309c
+change-id: 20241219-bpf-fix-special_kfunc_list-cddcf0ba5216
 
-Thanks,
-Daniel
+Best regards,
+-- 
+Thomas Weißschuh <linux@weissschuh.net>
+
 
