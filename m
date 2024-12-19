@@ -1,114 +1,166 @@
-Return-Path: <bpf+bounces-47359-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47360-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0D2C9F8737
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 22:40:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 230539F873B
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 22:41:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6BBF7A03E5
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 21:40:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70056165533
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 21:41:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 027D61C07F4;
-	Thu, 19 Dec 2024 21:40:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60BBE1C5CA8;
+	Thu, 19 Dec 2024 21:41:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="aXqnkQNR";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="gni1hwxs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-b6-smtp.messagingengine.com (fhigh-b6-smtp.messagingengine.com [202.12.124.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 440161B4237
-	for <bpf@vger.kernel.org>; Thu, 19 Dec 2024 21:40:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7B6817E00E;
+	Thu, 19 Dec 2024 21:41:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734644426; cv=none; b=K76e2mV+gNzVvnQYdxQODdWsyalaj+0rTGUg95k718P6SkRLVtWqJS33HPpOBjiI4VYtaF7eV40qhmumcMbZcj8ppeXnFOtPSf7H3kaRJl4hetLOCZyPfZ1lV6j6EPFY3lHJxT9dXojm9TXFqUukfBU6vkw2FcTfj/pR/BO7l54=
+	t=1734644496; cv=none; b=tEdWkNyLf3g3ToneVXA0MPWtHN7zeJAvuS49n92IXQyC2nZIDnecr8Vomnv+21ImweymfKVjwIUOb6FGjD7jn9F4a4V0O6uuOfJXiZ/6Zsncfxk7iEoCBUEjGA1Tevo0WKhYe8aCxNH8eXpHIpI3CL6u422nJ7kQcx4KnvZMniI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734644426; c=relaxed/simple;
-	bh=tlPQ6jk73FVbnwEyew4I2Rz3ta1EpU+dBKSFL1iAIeY=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=OKvWwaoEKS5KZz4IoquETs2z1xf0pCBIOiOmnaWd3RmLZ367m5VJTSHOSsyRjj7BmIR+onIiVrw7DVFq1nG6Ep5QKBR1gCUxfAA5DZ2FZutRL5g2PQ3xE1D3RueX8R/vUZPwgQtGnA1tBq8z8XKd3eUQM1M+u5haDXCxp3mwEl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a814406be9so22172165ab.1
-        for <bpf@vger.kernel.org>; Thu, 19 Dec 2024 13:40:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734644424; x=1735249224;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UahJp0F0PzB0a4TVG9iDL+Q7fTP19o9BWG6lsar/2lc=;
-        b=c1lqupwex+mxHeAojWMKQgsTGRWugCfT0C8AdGlXNm0PksWtyU2CEPyM5y8stXhBa4
-         1SJvStqwaGHAkFojsY3r74Jc/ZDyV+v44aLQ1x3+ADMX8S+9SqxKEvgLxS9s7d/6jsT5
-         i2ETpWB/C64xEZU6QSzU/X+g+2sUOzr4mneOpS2djcmC7LltXKiiiRVokOld/32BO3n8
-         DA+GYv5bK1Ys/mLMs97o5HTzpRp0Pbtc25cybd3UC8SK9qVo5OE1WKl7qLM7hE8MqMfm
-         qm5PtzzYP7RuXOSOBEqt/OT5rJM8jy2tq2g0Jop674n9iqtyFmFtGEtOdNC/w36MespA
-         P86w==
-X-Forwarded-Encrypted: i=1; AJvYcCXfiH4XE7t3wJfEF+JJWewX9sSrKOV+Kh9s+5IpjrioXLTWI60ADRfCnjiFOipGaWXjV2A=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywm7v+LoMVjjcmwgDcx/3E0hxhrQE8HmWbPMKtbSJFJaJjBBOeb
-	2I9fOK16I1O82MYgXxaD3fOY4j325WmSBzY8G1CUk6+bfiwmrnNRWPOgGcdeQCA0RodP5sHMvqE
-	srs1DhkU39q3272p6pS1eiHdq7otRzWt/pJdXLF/O3gw0sVpdNPFAbqE=
-X-Google-Smtp-Source: AGHT+IHUp0tpG46g+bOUGtgfs4ba4xrjstzzDDfxMzkepkGsvmYVFVWTpqDKkFdcmyBmiH28RYXw6PQrXDyNsME9QTnRzXJ+i1Er
+	s=arc-20240116; t=1734644496; c=relaxed/simple;
+	bh=8UmFB3ctcuiDHHQgssQ2wpXNJtLZB9VRdpGjPoqc53c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SoWvEIJWHEcGn6UBTf6LCxNpNk6Ir1bI+bMtUkIagvRX+pZoM27hlLeVmn/zIBjk5vFqSvokqzcz0xYvCOlKgBgKggG7bPG76hnzr51+VbFv8RkyPIniak75SCW2OK9+41DeTvXDKoDwX0VHLWXlpLekzDtmfGDn2FdI8I2wH6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=aXqnkQNR; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=gni1hwxs; arc=none smtp.client-ip=202.12.124.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 3D1292540182;
+	Thu, 19 Dec 2024 16:41:33 -0500 (EST)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-04.internal (MEProxy); Thu, 19 Dec 2024 16:41:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1734644493;
+	 x=1734730893; bh=7HNi+Oxo7O1Ju2DD7K0mOmaR80xjOw6PNJN1e+KhpbM=; b=
+	aXqnkQNR3d4MgNYa6yjoWsP6xiRkRsdBfyzbaBPfFgYL2p9cOD4pg+6UxHFcLC5k
+	J50kpE5mXr8qXwcQKQxoAhXjiy9l6ouEOkkHiEFMlfSWgn/7tlbvs7ye8YFfDj4R
+	SnQmEPepYRlfLbK2keSzfro7v8jrCJHlhsikDsCIRCXvJuEoa+fESE5v6BlLod5d
+	wrLvRIhuUQVwIxKzB1k2lz1Xzk/leKfdRp9Pi0L8eoRV/QayGR7RAvgEfMaJJ9z6
+	KCzY20R86edRUjXKR2HiVqQ4B2N3x7c/7rDaGgBdxbiw54ekvmHOG/XGC1B0VIg4
+	Uf9jImKEdTafcxvKWZRfjg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1734644493; x=
+	1734730893; bh=7HNi+Oxo7O1Ju2DD7K0mOmaR80xjOw6PNJN1e+KhpbM=; b=g
+	ni1hwxsdt4SNB0gY+1IgszsJ9zAT+MxNl/2jLMy2SlPZpWPQ3yeuPthjsgn4xY6E
+	t+RK7s85SZR6vpxTK9asl0vMe9Sx6ChpE01Xdrb7jf+5mj3HwNo+QeiQqRmLh8gf
+	81hyCYql5vNYWMtgf4OvAHC7kAOiih0oovOIsWgiILNbH73sYeo+lj1pePstwP5L
+	4cG9Jg1TAeKz1fjT7H9SD+evrOoMbDz6iZ4+5joXf2gyalPrn1HIzVfuZg1W8HAe
+	TBmpQ6pG2aH2uPIZl+sxwTNxoWQbEOezw/8QlSlaOcxa1aVtMQkqK/zX3DQD9jpH
+	WwCDo22CRv5mVu+0pdtmw==
+X-ME-Sender: <xms:DJNkZ4MfS_mMLK-6pgjkj4iNJcdBe1MCEG_nYiLSROzlMYvu6f1rvQ>
+    <xme:DJNkZ-84BpKcm-vbdCGMBYvx51fgjjdVMtcA1xJBb46mxjomyLpmdGZC3WmtaykXm
+    7Juoay2cdGNPVE3dA>
+X-ME-Received: <xmr:DJNkZ_RPgXleWpRlpYjgkVgZwxXJHl7_pVayffhAJAPPy6aayesmVu-r0ZGHU_Qy16_w4HH4TLX1J-4nr4ltjL4wKFPX8z2yLJY1obBS1K1q7g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddruddttddgudehtdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenfghrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffk
+    fhggtggugfgjsehtkefstddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguh
+    esugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueek
+    ffelteekkeekgeegffevtddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihiidpnhgspghr
+    tghpthhtohepudelpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopegrnhgurhhiih
+    drnhgrkhhrhihikhhosehgmhgrihhlrdgtohhmpdhrtghpthhtohepvgguugihiiekjees
+    ghhmrghilhdrtghomhdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhgpd
+    hrtghpthhtoheprghstheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhhuhgrhhes
+    khgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlsehiohhgvggrrhgsohigrd
+    hnvghtpdhrtghpthhtohepjhhohhhnrdhfrghsthgrsggvnhgusehgmhgrihhlrdgtohhm
+    pdhrtghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghvpdhrtghpthhtoh
+    epshhonhhgsehkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:DJNkZwuvt3tnYN54Eq1uCnYDL2NlcgftMQqLbPS3hCicaEnlK-C9RQ>
+    <xmx:DJNkZwcu4dgkXVG_TC3yvX_tQUw50WSvlFrwejV8-9ZTU2yDULRqCw>
+    <xmx:DJNkZ01_lajFu88kt7VPEYaTOYbNua-CPngYe30YRiAe3pQzO4D1gg>
+    <xmx:DJNkZ0_zn6tANlSHMEmNp7rv9Qo5dDBHnLCG03IrUQZQd5i-__UpSQ>
+    <xmx:DZNkZ1CNOK4IR9-6Dou635QXItOGMbuJqTvu-3T0UnBwzn7Hc6e7U4hZ>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 19 Dec 2024 16:41:30 -0500 (EST)
+Date: Thu, 19 Dec 2024 14:41:28 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, andrii@kernel.org, 
+	ast@kernel.org, shuah@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v5 4/5] bpf: verifier: Support eliding map
+ lookup nullness
+Message-ID: <kghvgxu5wdkupssnq7dy5upuf2wscsxgsnwl2yoam4mwk3h5pn@wjjsliwg6fzl>
+References: <cover.1734045451.git.dxu@dxuuu.xyz>
+ <92065ca054beccd6d0f35efe9715ef965e8d379f.1734045451.git.dxu@dxuuu.xyz>
+ <CAEf4BzaqCgW9keiT+tJUBQWT6Q+jMwuvn4O2ZghO0c+ZvACNrw@mail.gmail.com>
+ <zow3q3nhlz6vedbni3upag5yr7zzrhyiqysl5nwyubebmbwojk@th7kbm62x36g>
+ <31b0c85dbf85486df116ade20caf8685843899b4.camel@gmail.com>
+ <CAEf4BzaEOBtrSWZTx40AdT=SQY6Qaia405KWgU-NowaqNdmpkA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1aa7:b0:3a0:8c5f:90c0 with SMTP id
- e9e14a558f8ab-3c2d257fa37mr5814095ab.10.1734644424520; Thu, 19 Dec 2024
- 13:40:24 -0800 (PST)
-Date: Thu, 19 Dec 2024 13:40:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <676492c8.050a0220.1dcc64.003a.GAE@google.com>
-Subject: [syzbot] Monthly bpf report (Dec 2024)
-From: syzbot <syzbot+list632c08477db437fb3a68@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzaEOBtrSWZTx40AdT=SQY6Qaia405KWgU-NowaqNdmpkA@mail.gmail.com>
 
-Hello bpf maintainers/developers,
+On Mon, Dec 16, 2024 at 03:24:01PM -0800, Andrii Nakryiko wrote:
+> On Fri, Dec 13, 2024 at 7:13 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
+> >
+> > On Fri, 2024-12-13 at 19:44 -0700, Daniel Xu wrote:
+> >
+> > [...]
+> >
+> > > > > +       /* First handle precisely tracked STACK_ZERO, up to BPF_REG_SIZE */
+> > > > > +       stype = state->stack[spi].slot_type;
+> > > > > +       for (i = 0; i < BPF_REG_SIZE && stype[i] == STACK_ZERO; i++)
+> > > >
+> > > > it's Friday and I'm lazy, but please double-check that this works for
+> > > > both big-endian and little-endian :)
+> > >
+> > > Any tips? Are the existing tests running thru s390x hosts in CI
+> > > sufficient or should I add some tests writen in C (and not BPF
+> > > assembler)? I can never think about endianness correctly...
+> >
+> > I think that if test operates on a key like:
+> >
+> >       valid key 15
+> >              v
+> >       0000000f   <-- written to stack as a single u64 value
+> >       ^^^^^^^
+> >     stack zero marks
+> >
+> > and is executed (e.g. using __retval annotation),
+> > then CI passing for s390 should be enough.
+> 
+> +1, something like that where for big-endian it will be all zero while
+> for little endian it would be 0xf (and then make sure that the test
+> should *fail* by making sure that 0xf is not a valid index, so NULL
+> check is necessary)
 
-This is a 31-day syzbot report for the bpf subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/bpf
+How would it work for LE to be 0xF but BE to be 0x0?
 
-During the period, 3 new issues were detected and 3 were fixed.
-In total, 42 issues are still open and 279 have already been fixed.
+The prog passes a pointer to the beginning of the u32 to
+bpf_map_lookup_elem(). The kernel does a 4 byte read starting from that
+address. On both BE and LE all 4 bytes will be interpreted. So set bits
+cannot just go away.
 
-Some of the still happening issues:
+Am I missing something?
 
-Ref  Crashes Repro Title
-<1>  23132   Yes   WARNING: locking bug in trie_delete_elem
-                   https://syzkaller.appspot.com/bug?extid=b506de56cbbb63148c33
-<2>  21422   Yes   possible deadlock in trie_delete_elem
-                   https://syzkaller.appspot.com/bug?extid=9d95beb2a3c260622518
-<3>  2116    Yes   WARNING in bpf_map_lookup_percpu_elem
-                   https://syzkaller.appspot.com/bug?extid=dce5aae19ae4d6399986
-<4>  1710    Yes   possible deadlock in __bpf_ringbuf_reserve
-                   https://syzkaller.appspot.com/bug?extid=850aaf14624dc0c6d366
-<5>  1352    Yes   WARNING in format_decode (3)
-                   https://syzkaller.appspot.com/bug?extid=e2c932aec5c8a6e1d31c
-<6>  311     Yes   KMSAN: uninit-value in ___bpf_prog_run (4)
-                   https://syzkaller.appspot.com/bug?extid=853242d9c9917165d791
-<7>  182     Yes   INFO: rcu detected stall in sys_clone (8)
-                   https://syzkaller.appspot.com/bug?extid=c4c6c3dc10cc96bcf723
-<8>  173     Yes   UBSAN: array-index-out-of-bounds in bpf_prog_select_runtime
-                   https://syzkaller.appspot.com/bug?extid=d2a2c639d03ac200a4f1
-<9>  166     Yes   possible deadlock in __queue_map_get
-                   https://syzkaller.appspot.com/bug?extid=8bdfc2c53fb2b63e1871
-<10> 92      Yes   WARNING in bpf_get_stack_raw_tp
-                   https://syzkaller.appspot.com/bug?extid=ce35de20ed6652f60652
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Thanks,
+Daniel
 
