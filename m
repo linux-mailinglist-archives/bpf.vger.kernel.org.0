@@ -1,221 +1,153 @@
-Return-Path: <bpf+bounces-47348-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47349-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B04A69F844F
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 20:32:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A43A9F85CF
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 21:26:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F04F7A1394
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 19:31:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A69A188ABA7
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 20:26:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E63A1B4240;
-	Thu, 19 Dec 2024 19:31:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 488901B4F25;
+	Thu, 19 Dec 2024 20:25:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="NS4MIZ3p"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fHEmC3OW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EC9F1B4147;
-	Thu, 19 Dec 2024 19:31:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B78825383;
+	Thu, 19 Dec 2024 20:25:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734636711; cv=none; b=TAAyiXGOSp4CYBecaU+IHC0ezImaIHzDFjfhtwNJqrPJqWuPPEhKyQg+X4y0AGHFO1HQal2M4aMZWUsqfLQ5eN54aT0/uIA64s0XXXcpi8NDt8rFGVoE28ulPN8tHnQchfVbM3e5rgBNRzta0oUNZ8cxULefMQOzECK5tNN/BoA=
+	t=1734639952; cv=none; b=jcxvqvhbDDJSzY1m+5MVslQiBWb+Yl7k5Iy497cbplRE0uYeH3ZyjuMnTIKuoTTOkpJUorQmRr+8B/ImxMjcQUojc+mX7okIrxBoWyKtSe10Oy0/biro7ctImdU7EiorT4Xgtsi3EunSw31GP3lx9omBj/u/mYG9ddgAGBQ0sok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734636711; c=relaxed/simple;
-	bh=zMDGKqDHNRRsp8eposPaHOyDg/J5j+nmpksjxm+fgpE=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IY2fm/pFaHaG4mQu21F2fxOOxMpvFx3JD18G+J6xroOn+cU2HpDJOkWO8/Lu+7hKVrjHYYZm9nFQHWjRmKM7gBcssbYZY1Bq2QvqoPZpW7tDoCb+xbO2ALRpQBIVVyiJVEUrYmKZaQaBarysb5pVwxxCyNcW0MEAcSP/ezi7WNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=NS4MIZ3p; arc=none smtp.client-ip=185.70.40.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1734636700; x=1734895900;
-	bh=zMDGKqDHNRRsp8eposPaHOyDg/J5j+nmpksjxm+fgpE=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
-	b=NS4MIZ3pB6jWBiPnA6wlXpwNqZKXZlP5XjWTB8ErZsFVp0X+aCRFM6szipQHEg9zf
-	 VI1wbx+yrT3wVbXO12CAqGTJBjb6Y6X4jFn24M6a6NZIvW51aFHdzFAYgkmYpg+sSp
-	 NimMWLLidNXENUaNiWCcrQ+LtrilMhAmG3HkH3MyWa22O1J1i/vl7O1qYc4syLo5/3
-	 K2s3zj9wGJOPldDqUp532ypvVb+d8VIsgF4PvS+55hT7M4L3cV+mC7Zb5b5B+eCN1s
-	 uNfrTpkY6vvFPo1a0QpOL0uLYiVELYT9vg1Mg0QKmrNNyiGEoqMlJkD6xs3/I4PiRI
-	 N+t6kXesvkyUA==
-Date: Thu, 19 Dec 2024 19:31:35 +0000
-To: Jiri Olsa <olsajiri@gmail.com>
-From: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: dwarves@vger.kernel.org, acme@kernel.org, alan.maguire@oracle.com, eddyz87@gmail.com, andrii@kernel.org, mykolal@fb.com, bpf@vger.kernel.org
-Subject: Re: [PATCH dwarves v2 10/10] dwarf_loader: multithreading with a job/worker model
-Message-ID: <Gk0nTkIuEA2FQD6WzNeIq1Hsoj5V2zwmar99_nB5a_Yc96sJLMi3W57sBAr84aUJjUepJkLgVqkOAeXVPvx7B7P0WIgl6qJib2Kw-iGRwaM=@pm.me>
-In-Reply-To: <Z2Q0wU_AOOF0c_NF@krava>
-References: <20241213223641.564002-1-ihor.solodrai@pm.me> <20241213223641.564002-11-ihor.solodrai@pm.me> <Z2Q0wU_AOOF0c_NF@krava>
-Feedback-ID: 27520582:user:proton
-X-Pm-Message-ID: 18bdf95cecd8a8fa8c62be658f9e50117b496816
+	s=arc-20240116; t=1734639952; c=relaxed/simple;
+	bh=6OGXRRjINT19AQYlKYtCq2FAWsMDwPe9DbTgnysiKGk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kqzm9T7kdwyOVV13Fq0X6pZlkYG3zCG1Ee4Pl+KoIqyLX/qS4YtG6X4GSqEPQLX0niARnQYfvtdAyUkBbeN+P/QpdocS+sYolJHsRgPTOo9Q7TLL28JCJCy/s52yh6qgl57v0FI9L0SCb7uHjGBRtv0qvS4lv8EIDT3yGuY8+hc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fHEmC3OW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E512BC4CED4;
+	Thu, 19 Dec 2024 20:25:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734639952;
+	bh=6OGXRRjINT19AQYlKYtCq2FAWsMDwPe9DbTgnysiKGk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=fHEmC3OW0jC2jP8/9GQaJa47XpN941hzqu1nuIUDKodDVGARA8VVqlp5YX/RIp0uw
+	 0/cfGc95vRwKpLDjHWAI44uoRL4re1ocnrFg+YsFTCZQCF9iNRWvGj0gVEDN2l+LES
+	 1LC/qjULLyeagd1/9md5shyhXCVZ0EXaq3cigrjTow8dhkAzVV0U/uAMCu8S3Hxg7+
+	 zjzuViwCuthSIaMlX4Qz9CgV9mYtIlotnKPmJV5Regrwjgu2X7oQYjE7FoNdwJS+xf
+	 StqVwuzgYZ5ZzPAx9zanIDRPeOVl7DN4l+hGU93JFF5YTnOCdh4uttJkRxZj2DMpNt
+	 kAjDPK814TI4Q==
+From: Song Liu <song@kernel.org>
+To: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-security-module@vger.kernel.org
+Cc: kernel-team@meta.com,
+	andrii@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	kpsingh@kernel.org,
+	mattbobrowski@google.com,
+	paul@paul-moore.com,
+	jmorris@namei.org,
+	serge@hallyn.com,
+	memxor@gmail.com,
+	Song Liu <song@kernel.org>
+Subject: [PATCH v6 bpf-next 0/7] Enable writing xattr from BPF programs
+Date: Thu, 19 Dec 2024 12:25:29 -0800
+Message-ID: <20241219202536.1625216-1-song@kernel.org>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thursday, December 19th, 2024 at 6:59 AM, Jiri Olsa <olsajiri@gmail.com>=
- wrote:
+Add support to set and remove xattr from BPF program. Also add
+security.bpf. xattr name prefix.
 
->=20
->=20
-> On Fri, Dec 13, 2024 at 10:37:34PM +0000, Ihor Solodrai wrote:
->=20
-> SNIP
->=20
-> > +static void *dwarf_loader__worker_thread(void *arg)
-> > +{
-> > + struct cu_processing_job *job;
-> > + struct dwarf_cus *dcus =3D arg;
-> > + bool stop =3D false;
-> > + struct cu cu;
-> > +
-> > + while (!stop) {
-> > + job =3D cus_queue__dequeue_job();
-> > +
-> > + switch (job->type) {
-> > +
-> > + case JOB_DECODE:
-> > + cu =3D dwarf_loader__decode_next_cu(dcus);
-> > +
-> > + if (cu =3D=3D NULL) {
-> > + free(job);
-> > + stop =3D true;
-> > + break;
-> > + }
-> > +
-> > + / Create and enqueue a new JOB_STEAL for this decoded CU */
-> > + struct cu_processing_job *steal_job =3D calloc(1, sizeof(*steal_job))=
-;
->=20
->=20
-> missing steal_job !=3D NULL check
+kfuncs are added to set and remove xattrs with security.bpf. name
+prefix. Update kfuncs bpf_get_[file|dentry]_xattr to read xattrs
+with security.bpf. name prefix. Note that BPF programs can read
+user. xattrs, but not write and remove them.
 
-In the next version, job objects are allocated only by the main thread
-and are reused when enqueued [1].
+To pick the right version of kfunc to use, a remap logic is added to
+btf_kfunc_id_set. This helps move some kfunc specific logic off the
+verifier core code. Also use this remap logic to select
+bpf_dynptr_from_skb or bpf_dynptr_from_skb_rdonly.
 
->=20
-> SNIP
->=20
-> > -static int dwarf_cus__threaded_process_cus(struct dwarf_cus *dcus)
-> > +static int dwarf_cus__process_cus(struct dwarf_cus *dcus)
-> > {
-> > - pthread_t threads[dcus->conf->nr_jobs];
-> > - struct dwarf_thread dthr[dcus->conf->nr_jobs];
-> > - void *thread_data[dcus->conf->nr_jobs];
-> > - int res;
-> > - int i;
-> > + int nr_workers =3D dcus->conf->nr_jobs > 0 ? dcus->conf->nr_jobs : 1;
-> > + pthread_t workers[nr_workers];
-> > + struct cu_processing_job *job;
-> >=20
-> > - if (dcus->conf->threads_prepare) {
-> > - res =3D dcus->conf->threads_prepare(dcus->conf, dcus->conf->nr_jobs, =
-thread_data);
-> > - if (res !=3D 0)
-> > - return res;
-> > - } else {
-> > - memset(thread_data, 0, sizeof(void *) * dcus->conf->nr_jobs);
-> > + cus_queue__init(nr_workers * 4);
->=20
->=20
-> why '* 4' ?
 
-This is an arbitrary limit, described in comments.
+Cover letter of v1 and v2:
 
-If we allow the workers to pick up next cu for decoding as soon as
-it's ready, then the memory usage may greatly increase, if the stealer
-can't keep up with incoming work.
+Follow up discussion in LPC 2024 [1], that we need security.bpf xattr
+prefix. This set adds "security.bpf." xattr name prefix, and allows
+bpf kfuncs bpf_get_[file|dentry]_xattr() to read these xattrs.
 
-If we want to avoid this there needs to be a limit on how many
-decoded, but not yet stolen, CUs we allow to hold in memory. When
-this limit is reached the workers will wait for more CUs to get
-stolen.
+[1] https://lpc.events/event/18/contributions/1940/
 
-N x 4 is a number I picked after trying various values and looking at
-the resulting memory usage.
+Changes v5 => v6
+1. Hide _locked version of the kfuncs from vmlinux.h (Alexei)
+2. Add remap logic to btf_kfunc_id_set and use that to pick the correct
+   version of kfuncs to use.
+3. Also use the remap logic for bpf_dynptr_from_skb[|_rdonly].
 
-We could make it configurable, but this value doesn't look to me as a
-reasonable user-facing option. Maybe we could add "I don't care about
-memory usage" flag to pahole? wdyt?
+v5: https://lore.kernel.org/bpf/20241218044711.1723221-1-song@kernel.org/
 
->=20
-> > +
-> > + /* fill up the queue with nr_workers JOB_DECODE jobs */
-> > + for (int i =3D 0; i < nr_workers; i++) {
-> > + job =3D calloc(1, sizeof(*job));
->=20
->=20
-> missing job !=3D NULL check
->=20
-> > + job->type =3D JOB_DECODE;
-> > + /* no need for locks, workers were not started yet */
-> > + list_add(&job->node, &cus_processing_queue.jobs);
-> > }
-> >=20
-> > - for (i =3D 0; i < dcus->conf->nr_jobs; ++i) {
-> > - dthr[i].dcus =3D dcus;
-> > - dthr[i].data =3D thread_data[i];
-> > + if (dcus->error)
-> > + return dcus->error;
-> >=20
-> > - dcus->error =3D pthread_create(&threads[i], NULL,
-> > - dwarf_cus__process_cu_thread,
-> > - &dthr[i]);
-> > + for (int i =3D 0; i < nr_workers; ++i) {
-> > + dcus->error =3D pthread_create(&workers[i], NULL,
-> > + dwarf_loader__worker_thread,
-> > + dcus);
-> > if (dcus->error)
-> > goto out_join;
-> > }
-> > @@ -3596,54 +3766,19 @@ static int dwarf_cus__threaded_process_cus(stru=
-ct dwarf_cus *dcus)
-> > dcus->error =3D 0;
-> >=20
-> > out_join:
-> > - while (--i >=3D 0) {
-> > + for (int i =3D 0; i < nr_workers; ++i) {
->=20
->=20
-> I think you should keep the original while loop to cleanup/wait only for
-> threads that we actually created
+Changes v4 => v5
+1. Let verifier pick proper kfunc (_locked or not _locked)  based on the
+   calling context. (Alexei)
+2. Remove the __failure test (6/6 of v4).
 
-Do you mean in case of an error from pthread_create? Ok.
+v4: https://lore.kernel.org/bpf/20241217063821.482857-1-song@kernel.org/
 
->=20
-> > void *res;
-> > - int err =3D pthread_join(threads[i], &res);
-> > + int err =3D pthread_join(workers[i], &res);
-> >=20
-> > if (err =3D=3D 0 && res !=3D NULL)
-> > dcus->error =3D (long)res;
-> > }
-> >=20
-> > - if (dcus->conf->threads_collect) {
-> > - res =3D dcus->conf->threads_collect(dcus->conf, dcus->conf->nr_jobs,
-> > - thread_data, dcus->error);
-> > - if (dcus->error =3D=3D 0)
-> > - dcus->error =3D res;
-> > - }
-> > + cus_queue__destroy();
-> >=20
-> > return dcus->error;
-> > }
->=20
->=20
-> SNIP
+Changes v3 => v4
+1. Do write permission check with inode locked. (Jan Kara)
+2. Fix some source_inline warnings.
 
-[1] https://github.com/acmel/dwarves/commit/5278adbe5cb796c7baafb110d8c5cda=
-107ec9d68#diff-77fe7eedce76594a6c71363b22832723fc086a8e72debd0370763e419370=
-4b1eR3706-R3708
+v3: https://lore.kernel.org/bpf/20241210220627.2800362-1-song@kernel.org/
 
+Changes v2 => v3
+1. Add kfuncs to set and remove xattr from BPF programs.
+
+v2: https://lore.kernel.org/bpf/20241016070955.375923-1-song@kernel.org/
+
+Changes v1 => v2
+1. Update comment of bpf_get_[file|dentry]_xattr. (Jiri Olsa)
+2. Fix comment for return value of bpf_get_[file|dentry]_xattr.
+
+v1: https://lore.kernel.org/bpf/20241002214637.3625277-1-song@kernel.org/
+
+Song Liu (7):
+  fs/xattr: bpf: Introduce security.bpf. xattr name prefix
+  selftests/bpf: Extend test fs_kfuncs to cover security.bpf. xattr
+    names
+  bpf: lsm: Add two more sleepable hooks
+  bpf: Extend btf_kfunc_id_set to handle kfunc polymorphism
+  bpf: Use btf_kfunc_id_set.remap logic for bpf_dynptr_from_skb
+  bpf: fs/xattr: Add BPF kfuncs to set and remove xattrs
+  selftests/bpf: Test kfuncs that set and remove xattr from BPF programs
+
+ fs/bpf_fs_kfuncs.c                            | 247 +++++++++++++++++-
+ include/linux/bpf_lsm.h                       |   2 +
+ include/linux/btf.h                           |  20 ++
+ include/linux/btf_ids.h                       |   3 +
+ include/uapi/linux/xattr.h                    |   4 +
+ kernel/bpf/bpf_lsm.c                          |   2 +
+ kernel/bpf/btf.c                              | 117 +++++++--
+ kernel/bpf/verifier.c                         |  39 ++-
+ net/core/filter.c                             |  49 +++-
+ tools/testing/selftests/bpf/bpf_kfuncs.h      |   5 +
+ .../selftests/bpf/prog_tests/fs_kfuncs.c      | 162 +++++++++++-
+ .../selftests/bpf/progs/test_get_xattr.c      |  28 +-
+ .../bpf/progs/test_set_remove_xattr.c         | 133 ++++++++++
+ 13 files changed, 748 insertions(+), 63 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_set_remove_xattr.c
+
+--
+2.43.5
 
