@@ -1,251 +1,208 @@
-Return-Path: <bpf+bounces-47312-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47313-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD3679F7896
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 10:32:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D0FF9F7943
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 11:11:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 897B37A4952
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 09:32:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3BFC1896DF7
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 10:11:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 887812206B1;
-	Thu, 19 Dec 2024 09:32:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A082C222582;
+	Thu, 19 Dec 2024 10:11:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="TFaGhtxj"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="f2o6FXGQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E2DA23B0;
-	Thu, 19 Dec 2024 09:32:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E742D433A4
+	for <bpf@vger.kernel.org>; Thu, 19 Dec 2024 10:11:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734600740; cv=none; b=E2kQELzbc3R+YUJZvl+jqf2ujSfkA+NJcmhHqqsQlKSyH6YhHi9U75ajbgQ3Oy8LUUbA3H0xN4ZiaGOOBBE6jchtYJMsQy7GGgIVZi1k3hC3untBeYTNLX5tLdwe35JCDP1G9WQ4fGtUI/DoUdyS29n0I3qWTPP/iU7oc5KmTYA=
+	t=1734603066; cv=none; b=F+hdW6xWkCfRULT/8CxR54iEv4RHsISIHsoBfVSdq4G3A2RfhFmfb4o4zBpEqxU9Me8Gwd1NthSyr7WASczHyi0823ZTXEYobBVFbGDFpshzxCG0RM8FRdyUN3n4ULfflThbxkWuVCa6/GqylxJVKr6YmdZxJmY6o5LIxmqsAzE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734600740; c=relaxed/simple;
-	bh=sVU+wRPX6XgdtGLLWfzDqNDcEAlCA1QYvIWI5zOUGfs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wb4QEAr7/7U6wkLwj16vwdQxYx2OagUUmcHGH7A612QXcnWrYt/xMDt2lBRIlM2ZGXuiiNqAV8EqnZE6xyM6720a1GssphAmd/2HmLWturSp1m1GwkLmq8M6/D5DxYWQa7HfrDyHVE4M8jhxRVw7YLOI2fgp+ACbXT2SaU9dJMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=TFaGhtxj; arc=none smtp.client-ip=220.197.31.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=1hJmEkXkHLf73pKLKD5N7Cmoz4MXGDElEZfQ+ZKcKao=;
-	b=TFaGhtxjzAbw6MnGoiUZ8IsHcfign+Wl9cUnjXaYAJigpWyrpFw0lgSMCPpAK0
-	jFfytX0bjnhbNVc+O0i04Z5fUmwyVgb+Nc9eAQHgFW6ZT1HFRvXEsGJOUbwIFcmx
-	1kFNtuwrb0XrWp81YEwo+l9A2h8tI1h4EanLMTvO1jxMc=
-Received: from osx (unknown [])
-	by gzga-smtp-mtada-g0-0 (Coremail) with SMTP id _____wC3_iTO52NnpU3tAA--.26627S2;
-	Thu, 19 Dec 2024 17:30:55 +0800 (CST)
-Date: Thu, 19 Dec 2024 17:30:53 +0800
-From: Jiayuan Chen <mrpre@163.com>
-To: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: bpf@vger.kernel.org, martin.lau@linux.dev, ast@kernel.org, 
-	edumazet@google.com, davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org, 
-	pabeni@redhat.com, linux-kernel@vger.kernel.org, song@kernel.org, 
-	john.fastabend@gmail.com, andrii@kernel.org, mhal@rbox.co, yonghong.song@linux.dev, 
-	daniel@iogearbox.net, xiyou.wangcong@gmail.com, horms@kernel.org
-Subject: Re: [PATCH bpf v3 1/2] bpf: fix wrong copied_seq calculation
-Message-ID: <ojwjcubviyjxpucryc3ypi4b77h5f5g6ouv7ovaljah5harfyj@jue7hqit2t5n>
-References: <20241218053408.437295-1-mrpre@163.com>
- <20241218053408.437295-2-mrpre@163.com>
- <87jzbxvw9y.fsf@cloudflare.com>
+	s=arc-20240116; t=1734603066; c=relaxed/simple;
+	bh=U2uamB7nvDggxJyjYA4InvO7fuIdtfjFlCEbaOFWfT0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OXteXHLcKRZofZnEvnneErfMiQVRjs0j0sBmCFOle2NH2CuPlcW0I1Nq+LM9W0oDfthOwJ11zHNS828cSZIWWpFF0k2y+f29gw3ss9pqnUMNVPB75KiQcgkshiS0M2nV6Q32SPlE87i0dZsoE3dxe/n0JXOLDOxeJXB8M7jLeKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=f2o6FXGQ; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-432d86a3085so3916885e9.2
+        for <bpf@vger.kernel.org>; Thu, 19 Dec 2024 02:11:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1734603061; x=1735207861; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9u8s/FXYIijQ9RtDony/lgbfJqNEodPUwkBuIae3j3U=;
+        b=f2o6FXGQyU7Vr0tjU5WTJUm6RFmMl4S2Di4qRcpW6tfl4gV6jVxLUUbtLVtwB0cGGg
+         JJ2NpfsuVtK2HI6HKuXFIutcceeTR8rozCn/IA/xAbPRvv6u85Px1KcMiVUAFZJpDvfE
+         BPtR9v+D2taW0lAGsw8wFWPlqseYrPYCN9HZ1Pr7j2JlIVhrMFWTMlHtKs4XEx3+qMH1
+         zvWvjJElNRXKtKtU/mR7VNfy2l6smU6NP+0EWLVRcvxI36HDZESOJ57HxwhWdJYnCviO
+         QXZ8yARme3hB9ueM1ev2M6TvxsIUbdjCpnjfri73HEIA0uGy9EN8l+kOL66oo9veUXja
+         xhjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734603061; x=1735207861;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9u8s/FXYIijQ9RtDony/lgbfJqNEodPUwkBuIae3j3U=;
+        b=DjR3TushTjmZxwBMhU8mRQMP4U9gGkvwjdQW9rGyH69/vSkKAQI41tq2cwcWwAycrB
+         PICj/RaNVTX/CHQuoU6jdvZY8xymo0qsKOTBpl2OFfg3Ewg9bLy+752tIrDslIK6xtjx
+         yAYh41kUeGkI5hznYwlxI71Xy09AlIDsLLkP3KJiRsrSlysYtQ+iNWyjVgMQZDuHeOqa
+         DNBjogAglScHWFFe6PIts4Mb0CEl2npHf0mit9XTgVFB7JtnjUK/Xm5JzOxzWiGu/RBt
+         kV0LrGH9NESTSolaRA3Ohyv0gw5IRWOkSxWdWZcSqPJ8VjR1RP9qUe5eFYySq/BHrQCX
+         rMGg==
+X-Forwarded-Encrypted: i=1; AJvYcCXxNgIzLd2OmCsscBLGc/xVbLvXe61aQjvdX3LcWp+7ae73f3kWzkb/DMvWimk2gMFVESo=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzw6lHNO2FooVpvGzflQMUrkMOlo/tP8xmKFHaUrvuLdcIH5Eki
+	VV6ZFX2PqwFu51SBt/XJGAgU2gSFwiuSelP8I3E3V39Wkfo7ycFHUVxX2hFVwcw=
+X-Gm-Gg: ASbGncvQA6egmCmSZECg3QhreL5EJf3nkkPnY07bNyLvZcl+Zo2mZ681GkWELodnYFf
+	V9qfiI6LmnPTjFz0SgHnCh5QfHRZC/iiC0HHpi0xIp3f7xxJ3dNt1W3pQSRWpFcp2DOwNj6Tmcx
+	L5Hnme57F418CYHge1LLUbUad3qY1Lcg+HkkJgGqFiT8lFSuYWACs5cfw2VaML3MrlPap60x87S
+	BU9jqW42x0YvEGq+nPfYmkiidt5jy2lxtjjXoWEuo1AzFundNDdriPvISxviSfgQQU=
+X-Google-Smtp-Source: AGHT+IHleph6k9/mQwCrpZsyxPVz/5yDa2XHM6jxz3peZNrApOtdEHBZH0tR130iLzOcT4cQ/NPTfg==
+X-Received: by 2002:a05:600c:1c97:b0:42a:a6d2:3270 with SMTP id 5b1f17b1804b1-4365c7c8344mr21521065e9.21.1734603061157;
+        Thu, 19 Dec 2024 02:11:01 -0800 (PST)
+Received: from [192.168.68.163] ([145.224.66.247])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4364b14f241sm68213505e9.1.2024.12.19.02.10.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Dec 2024 02:11:00 -0800 (PST)
+Message-ID: <4f0bcc19-807c-40b0-a30c-309ba775693b@linaro.org>
+Date: Thu, 19 Dec 2024 10:10:59 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87jzbxvw9y.fsf@cloudflare.com>
-X-CM-TRANSID:_____wC3_iTO52NnpU3tAA--.26627S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW3GFy8Cr4UGFWUWr4kAFyfCrg_yoW7ZFyrpF
-	1DC3W5WrsrtFy8Z3Z5JF9ayF4Fg34rtFW8CryrW3yayrs7Kr95XFy8Kr1ayr1UGrs5ZFWU
-	urWDuwsxuw1DXaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07Uc2-nUUUUU=
-X-CM-SenderInfo: xpus2vi6rwjhhfrp/xtbBDwC6p2dj3XbSdgABsY
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/5] perf docs: arm_spe: Document new discard mode
+To: Ian Rogers <irogers@google.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-perf-users@vger.kernel.org,
+ Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
+ "Liang, Kan" <kan.liang@linux.intel.com>,
+ John Garry <john.g.garry@oracle.com>, Mike Leach <mike.leach@linaro.org>,
+ Leo Yan <leo.yan@linux.dev>, Graham Woodward <graham.woodward@arm.com>,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20241217115610.371755-1-james.clark@linaro.org>
+ <20241217115610.371755-6-james.clark@linaro.org>
+ <CAP-5=fU7RNzvzxBcAQy3RT9Ge3YtqPhDonupNWS7Wgb8HGQkGg@mail.gmail.com>
+ <8c15786c-47b6-47ff-b1dc-ecbf32d582fb@linaro.org>
+ <CAP-5=fXV6LXrUtvgRKuyurmu5SoSZLTf6MN=+BBXkqv7drvOjg@mail.gmail.com>
+Content-Language: en-US
+From: James Clark <james.clark@linaro.org>
+In-Reply-To: <CAP-5=fXV6LXrUtvgRKuyurmu5SoSZLTf6MN=+BBXkqv7drvOjg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 18, 2024 at 04:35:53PM +0800, Jakub Sitnicki wrote:
-[...]
-> On Wed, Dec 18, 2024 at 01:34 PM +08, Jiayuan Chen wrote:
-> > +		if (tcp_flags & TCPHDR_FIN)
-> > +			break;
-> > +	}
-> > +
-> > +	WRITE_ONCE(psock->strp_offset, offset);
-> > +	return copied;
-> > +}
-> > +
-> >  enum {
-> >  	TCP_BPF_IPV4,
-> >  	TCP_BPF_IPV6,
+
+
+On 18/12/2024 7:47 pm, Ian Rogers wrote:
+> On Wed, Dec 18, 2024 at 2:07 AM James Clark <james.clark@linaro.org> wrote:
+>>
+>> On 18/12/2024 12:54 am, Ian Rogers wrote:
+>>> On Tue, Dec 17, 2024 at 3:56 AM James Clark <james.clark@linaro.org> wrote:
+>>>>
+>>>> Document the flag, hint what it's used for and give an example with
+>>>> other useful options to get minimal output.
+>>>>
+>>>> Signed-off-by: James Clark <james.clark@linaro.org>
+>>>> ---
+>>>>    tools/perf/Documentation/perf-arm-spe.txt | 11 +++++++++++
+>>>>    1 file changed, 11 insertions(+)
+>>>>
+>>>> diff --git a/tools/perf/Documentation/perf-arm-spe.txt b/tools/perf/Documentation/perf-arm-spe.txt
+>>>> index de2b0b479249..588eead438bc 100644
+>>>> --- a/tools/perf/Documentation/perf-arm-spe.txt
+>>>> +++ b/tools/perf/Documentation/perf-arm-spe.txt
+>>>> @@ -150,6 +150,7 @@ arm_spe/load_filter=1,min_latency=10/'
+>>>>      pct_enable=1        - collect physical timestamp instead of virtual timestamp (PMSCR.PCT) - requires privilege
+>>>>      store_filter=1      - collect stores only (PMSFCR.ST)
+>>>>      ts_enable=1         - enable timestamping with value of generic timer (PMSCR.TS)
+>>>> +  discard=1           - enable SPE PMU events but don't collect sample data - see 'Discard mode' (PMBLIMITR.FM = DISCARD)
+>>>>
+>>>>    +++*+++ Latency is the total latency from the point at which sampling started on that instruction, rather
+>>>>    than only the execution latency.
+>>>> @@ -220,6 +221,16 @@ Common errors
+>>>>
+>>>>       Increase sampling interval (see above)
+>>>>
+>>>> +Discard mode
+>>>> +~~~~~~~~~~~~
+>>>> +
+>>>> +SPE PMU events can be used without the overhead of collecting sample data if
+>>>> +discard mode is supported (optional from Armv8.6). First run a system wide SPE
+>>>> +session (or on the core of interest) using options to minimize output. Then run
+>>>> +perf stat:
+>>>> +
+>>>> +  perf record -e arm_spe/discard/ -a -N -B --no-bpf-event -o - > /dev/null &
+>>>> +  perf stat -e SAMPLE_FEED_LD
+>>>
+>>> Perhaps clarify this should be an ARM SPE event? It seems strange to
+>>> have one perf command affect a later one, the purpose of things like
+>>> event multiplexing is to hide the hardware limits. I'd prefer if the
+>>> last bit was like:
+>>> ```
+>>> Then run perf stat with an SPE event on the same PMU:
+>>>
+>>> perf record -e arm_spe/discard/ -a -N -B --no-bpf-event -o - > /dev/null &
+>>> perf stat -e arm_spe/SAMPLE_FEED_LD/
+>>> ``
+>>>
+>>> Thanks,
+>>> Ian
+>>
+>> Hi Ian,
+>>
+>> Confusingly this isn't an SPE event, it is a normal PMU event. The fact
+>> that one Perf command affects the other is because these events only
+>> count when SPE is enabled. When it's enabled it has an effect on a
+>> per-core level which is why in the example I made it simpler by enabling
+>> SPE system wide.
+>>
+>> SPE is an exclusive PMU like Coresight and some others so it can't be
+>> affected by multiplexing or anything like that. The SAMPLE_FEED_LD PMU
+>> would be, but as long as SPE stays enabled it will count the right thing
+>> regardless of multiplexing.
 > 
-> [...]
+> Thanks James, sorry for my SPE ignorance. I'm smiling about the use of
+> the word exclusive. When I was trying to make the tests run in
+> parallel I used a file lock - so shared and exclusive. There were a
+> lot of issues with that, hence switching to 2 phases in the test,
+> parallel then sequential but I kept the "exclusive" tag for want of a
+> better word. Perhaps the notion of an exclusive PMU existed previously
+
+Yeah, see PERF_PMU_CAP_EXCLUSIVE. Hopefully it doesn't cause too much 
+confusion, the context of test vs PMU should make it clear.
+
+> but maybe I've accidentally invented the term by way of a failed file
+> lock experiment :-)
 > 
-> To reiterate my earlier question / suggestion [1] - it would be great if
-> we can avoid duplicating what tcp_read_skb / tcp_read_sock already do.
+> Presumably the two PMUs side-effecting each other is a known thing. I
+> wonder if we can capture this in the documentation. When you say
+> "normal PMU event" you mean core PMU events?
 > 
-> Keeping extra state in sk_psock / strparser seems to be the key. I think
-> you should be able to switch strp_data_ready / str_read_sock to
-> ->read_skb and make an adapter around strp_recv.
-> 
-> Rough code below is what I have in mind. Not tested, compiled
-> only. Don't expect it to work. And I haven't even looked how to address
-> the kTLS path. But you get the idea.
-> 
-> [1] https://msgid.link/87o71bx1l4.fsf@cloudflare.com
-> 
-> ---8<---
-> 
-> diff --git a/include/net/strparser.h b/include/net/strparser.h
-> index 41e2ce9e9e10..0dd48c1bc23b 100644
-> --- a/include/net/strparser.h
-> +++ b/include/net/strparser.h
-> @@ -95,9 +95,14 @@ struct strparser {
->  	u32 interrupted : 1;
->  	u32 unrecov_intr : 1;
->  
-> +	unsigned int need_bytes;
-> +
->  	struct sk_buff **skb_nextp;
->  	struct sk_buff *skb_head;
-> -	unsigned int need_bytes;
-> +
-> +	int rcv_err;
-> +	unsigned int rcv_off;
-> +
->  	struct delayed_work msg_timer_work;
->  	struct work_struct work;
->  	struct strp_stats stats;
-> diff --git a/net/strparser/strparser.c b/net/strparser/strparser.c
-> index 8299ceb3e373..8a08996429d3 100644
-> --- a/net/strparser/strparser.c
-> +++ b/net/strparser/strparser.c
-> @@ -18,6 +18,7 @@
->  #include <linux/poll.h>
->  #include <linux/rculist.h>
->  #include <linux/skbuff.h>
-> +#include <linux/skmsg.h>
->  #include <linux/socket.h>
->  #include <linux/uaccess.h>
->  #include <linux/workqueue.h>
-> @@ -327,13 +328,39 @@ int strp_process(struct strparser *strp, struct sk_buff *orig_skb,
->  }
->  EXPORT_SYMBOL_GPL(strp_process);
->  
-> -static int strp_recv(read_descriptor_t *desc, struct sk_buff *orig_skb,
-> -		     unsigned int orig_offset, size_t orig_len)
-> +static int strp_read_skb(struct sock *sk, struct sk_buff *skb)
->  {
-> -	struct strparser *strp = (struct strparser *)desc->arg.data;
-> -
-> -	return __strp_recv(desc, orig_skb, orig_offset, orig_len,
-> -			   strp->sk->sk_rcvbuf, strp->sk->sk_rcvtimeo);
-> +	struct sk_psock *psock = sk_psock_get(sk);
-> +	struct strparser *strp = &psock->strp;
-> +	read_descriptor_t desc = {
-> +		.arg.data = strp,
-> +		.count = 1,
-> +		.error = 0,
-> +	};
-> +	unsigned int off;
-> +	size_t len;
-> +	int used;
-> +
-> +	off = strp->rcv_off;
-> +	len = skb->len - off;
-> +	used = __strp_recv(&desc, skb, off, len,
-> +			   sk->sk_rcvbuf, sk->sk_rcvtimeo);
-> +	/* skb not consumed */
-> +	if (used <= 0) {
-> +		strp->rcv_err = used;
-> +		return used;
-> +	}
-> +	/* skb partially consumed */
-> +	if (used < len) {
-> +		strp->rcv_err = 0;
-> +		strp->rcv_off += used;
-> +		return -EPIPE;	/* stop reading */
-> +	}
-> +	/* skb fully consumed */
-> +	strp->rcv_err = 0;
-> +	strp->rcv_off = 0;
-> +	tcp_eat_recv_skb(sk, skb);
-> +	return used;
->  }
->  
->  static int default_read_sock_done(struct strparser *strp, int err)
-> @@ -345,21 +372,14 @@ static int default_read_sock_done(struct strparser *strp, int err)
->  static int strp_read_sock(struct strparser *strp)
->  {
->  	struct socket *sock = strp->sk->sk_socket;
-> -	read_descriptor_t desc;
->  
-> -	if (unlikely(!sock || !sock->ops || !sock->ops->read_sock))
-> +	if (unlikely(!sock || !sock->ops || !sock->ops->read_skb))
->  		return -EBUSY;
->  
-> -	desc.arg.data = strp;
-> -	desc.error = 0;
-> -	desc.count = 1; /* give more than one skb per call */
-> -
->  	/* sk should be locked here, so okay to do read_sock */
-> -	sock->ops->read_sock(strp->sk, &desc, strp_recv);
-> -
-> -	desc.error = strp->cb.read_sock_done(strp, desc.error);
-> +	sock->ops->read_skb(strp->sk, strp_read_skb);
->  
-> -	return desc.error;
-> +	return strp->cb.read_sock_done(strp, strp->rcv_err);
->  }
->  
->  /* Lower sock lock held */
+> Thanks,
+> Ian
 
-Thanks Jakub Sitnicki.
+It should be a known thing yes, discard mode doesn't change this 
+behavior anyway but just makes one use case of it better. I can add 
+another section to this SPE manpage about it in a v2, that's probably 
+the best place for it.
 
-I understand your point about using tcp_read_skb to replace
-tcp_read_sock, avoiding code duplication and reducing the number of
-interfaces.
+And yes, I meant core PMU event. I can clarify that the second example 
+command is for a core PMU to avoid any doubt.
 
-Currently, not all modules using strparser have issues with
-copied_seq miscalculation. The issue exists mainly with
-bpf::sockmap + strparser because bpf::sockmap implements a
-proprietary read interface for user-land: tcp_bpf_recvmsg_parser().
-
-Both this and strp_recv->tcp_read_sock update copied_seq, leading
-to errors.
-
-This is why I rewrote the tcp_read_sock() interface specifically for
-bpf::sockmap.
-
-So far, I found two other modules that use the standard strparser module:
-
-1.kcmsock.c
-2.espintcp.c (ESP over TCP implementation)
-(Interesting, these two don't have self-tests)
-
-Take kcm as an example: its custom read interface kcm_recvmsg()
-does not conflict with copied_seq updates in tcp_read_sock().
-
-Therefore, for kcmsock, updating copied_seq in tcp_read_sock is
-necessary and aligns with the read semantics. espintcp is similar.
-
-In summary, different modules using strp_recv have different needs
-for copied_seq. I still insist on implementing tcp_bpf_read_sock()
-specifically for bpf::sockmap without affecting others.
-
-Otherwise, we may need tcp_read_skb() to determine whether
-to update copied_seq according to the different needs of each module.
-
-
-Additionally,
-I've found that KTLS has its own read_sock() and
-a strparser-like implementation (in tls_strp.c), separate from the
-standard strparser module. Therefore, even with your proposed
-solution, KTLS may be not affected.
-
-regards
+Thanks
+James
 
 
