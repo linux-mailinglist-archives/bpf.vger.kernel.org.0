@@ -1,114 +1,137 @@
-Return-Path: <bpf+bounces-47315-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47316-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D08689F7AF5
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 13:08:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65D2D9F7B49
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 13:29:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 912B5188E300
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 12:08:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58FE27A58ED
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 12:28:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C0BF224882;
-	Thu, 19 Dec 2024 12:07:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ACA522371E;
+	Thu, 19 Dec 2024 12:28:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EKPhY/bK"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="XUDRHwL3"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BD8A221DAE;
-	Thu, 19 Dec 2024 12:07:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 223C52248A0;
+	Thu, 19 Dec 2024 12:28:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734610072; cv=none; b=o+l1q2U64JSSH2qe7dmRxGesNJ5oa2biE2A5oxvAsqIivVTEFxjGlSSQpN/ENo+xC5LdTCa8C54u6u6xe/JYHMJ3OiGaINm0+RTqxsCiEM8w/qhAu8M41bYOAUrabTAN7oztAtgt+dGAGgFIP8OZ+YkOc6CEOMSWxwugknxYwAM=
+	t=1734611292; cv=none; b=oEGF18JeMPviVYr2IXlM35spI5SOPbd+eophUUc2BWkbBnSZp+ii6Otmf1Jf94NllcB6E3NzT+7J5W2ZXGN/8bXpuyPdJ7o4XBdlkWGaCgSC5oySoxqzn3MYu8dghZiP57RGeQuWJCDDVKwyE2K6gJbRl1YxJbKY15feiwXJ4gA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734610072; c=relaxed/simple;
-	bh=vOgntCS18pN5Q5QIsU2FV4aSF2+wHhDktIW3xR3Sw0A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Td9b4uRk2hIckIMvK6bO04z7zY+5v/w9iyBzJYEWTxfrBDviDsEcDxJwB9IHcrC5hFaJWAEfVFMblB5rbJ86dW2OQImKNyA8f0ZXmOQ82GjlP8GgphXzr6CxQ9VrBNV7TYPMcKemHcj68e8WE1RyM82MxfaBXP1huLuyKIsMZE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EKPhY/bK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 143D1C4CECE;
-	Thu, 19 Dec 2024 12:07:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734610072;
-	bh=vOgntCS18pN5Q5QIsU2FV4aSF2+wHhDktIW3xR3Sw0A=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=EKPhY/bK+AEMpHpgX9AHJ8AkM2dqufCwS8MmLj6H1SB0LdorXmnWS+AgQ2X9V3+tC
-	 caPzSiBCTBpF1iB0AVVWcU9IV3GckBrIcK6a+LGR6mb+at1cdBYTK2jCMUiIq194uz
-	 HqluTOJvahtyoTP5y6nBbEFr8EZusj45dwsklvcGI0CXVpSXM3Bv0RdkIujG5FCdnk
-	 Whfyo1gxNS5aGQFjMNTFezh7NJTY2j71r8YVupNa3hAQaTOXkV8TKhR4v6lZToRoU9
-	 B4+Q+Adkp9z+FWNHBLMPSfwC2l0GLAG9xtQU7NwbkX7BndZyZEScRbMEjnI0XQnNL8
-	 00LXbOEc7wTdA==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-aa689a37dd4so142597666b.3;
-        Thu, 19 Dec 2024 04:07:51 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUSkE/qMH4jwSJuu5E3djzIYgY5BLJxHORSLJ9W7WpTW4bLkIcMKlaaPGTY8yljL6CmDtFot+WUmslVULyf@vger.kernel.org, AJvYcCWnXUiTRX8lF+NOtJQNM+TLkiCPSNNnvml4IEYlobnpIHwdADYkFgfe0AneJ1SvSrF2jnw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxYbx/HA5FSVb7wTLJUWTbDE/4ycAGRBUEUBvTOc9VlF/khJYzi
-	1k0VfGYrMI/3FJVLkCIdcUFgUbPp1WDAZmkN0Bs8C/dZ6tXmHatvzxmKMyGYm2SL+XmH8vTltZo
-	CcJIxiNtC/C2GC5278pFbhkFQ1EQ=
-X-Google-Smtp-Source: AGHT+IGWH2Fgy2bZcZQHKfbjlmi9TCd2UyCSQowbjzSildlYHuAaxq/5FR4Nb8FMZ/y9DnrdcJyRQZx/oeMFlNq8sB0=
-X-Received: by 2002:a17:907:7719:b0:aa6:8186:5cab with SMTP id
- a640c23a62f3a-aac07b02132mr237409066b.54.1734610070657; Thu, 19 Dec 2024
- 04:07:50 -0800 (PST)
+	s=arc-20240116; t=1734611292; c=relaxed/simple;
+	bh=FCTPIybH7gGn7ZB9Nu38SUkN8Ryag6rpBVNiR0FskZo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YvpjuC1Z5rMAT/nK3H5LBobt4knN1ptDryffeJneJPNdYXCr9OdrXEAgO07WXPVgNghv/9kNO10zF2cuRg8091T2UpigwpxaiDeLpZ9zHI5gGtq/xL+bsLjI8hXWjO2zxIJMmhkqJLr06ZLKEWGrKe7XZDWQ5txXrgWgR+1ZzRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=XUDRHwL3; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=XHgeCfD5EM5bNxSLV85im9Yq4BlkRy5I75wY3shqOu0=; b=XUDRHwL32TjA0Jp6H2wbEbyOrJ
+	Jlq/X8lMW25XGTiMSjmB7OLZ/73hEFfVpoGDsfYswTttX5CPfFqo9dFqV9yaPIzb+VcOPY5Hs/UP9
+	8QAsd3NLcI6ydRE4uoinZrsgbp9PsZaC2rpulwmqR7gFsIhmRHkS5hnDKLg9tCsPnOrgKFQ/cA9G1
+	TUac2bh40FTuDjT4uBpKdI9fd9whsIw+sBz5c/WIez0qDoH8QROjI+zKKbXIw6rhxz5ZEUa3lUELM
+	BeXKiVjjk7k83J48cKeDJ5++uoJanqriSnE+LrYC2FVGG4JjA29nebFM376PN3RxeU2a6wGR8u8bW
+	pqYs6qvg==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1tOFdI-000Pim-W7; Thu, 19 Dec 2024 13:28:01 +0100
+Received: from [85.1.206.226] (helo=[192.168.1.114])
+	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1tOFdI-000EHx-1p;
+	Thu, 19 Dec 2024 13:28:00 +0100
+Message-ID: <975c7d53-bbca-4ed7-9635-53f5741ee2ff@iogearbox.net>
+Date: Thu, 19 Dec 2024 13:27:59 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241219111506.20643-1-yangtiezhu@loongson.cn>
-In-Reply-To: <20241219111506.20643-1-yangtiezhu@loongson.cn>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Thu, 19 Dec 2024 20:07:39 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H7PYgiu-JtnVMkyH6-WCYU3D1HN13ESpawoT=xT_ftoVQ@mail.gmail.com>
-Message-ID: <CAAhV-H7PYgiu-JtnVMkyH6-WCYU3D1HN13ESpawoT=xT_ftoVQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] selftests/bpf: Use asm constraint "m" for LoongArch
-To: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Nathan Chancellor <nathan@kernel.org>, bpf@vger.kernel.org, 
-	llvm@lists.linux.dev, loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests/bpf: Fix compilation error in
+ get_uprobe_offset()
+To: Yonghong Song <yonghong.song@linux.dev>,
+ Jerome Marchand <jmarchan@redhat.com>, bpf@vger.kernel.org,
+ Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20241218175724.578884-1-jmarchan@redhat.com>
+ <2397f348-9d7f-4ea4-bf95-ed1452fa2156@linux.dev>
+Content-Language: en-US
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <2397f348-9d7f-4ea4-bf95-ed1452fa2156@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 1.0.7/27492/Thu Dec 19 10:44:32 2024)
 
-Reviewed-by: Huacai Chen <chenhuacai@loongson.cn>
+On 12/19/24 2:28 AM, Yonghong Song wrote:
+> On 12/18/24 9:57 AM, Jerome Marchand wrote:
+>> In get_uprobe_offset(), the call to procmap_query() use the constant
+>> PROCMAP_QUERY_VMA_EXECUTABLE, even if PROCMAP_QUERY is not defined.
+>>
+>> Define PROCMAP_QUERY_VMA_EXECUTABLE when PROCMAP_QUERY isn't.
+>>
+>> Fixes: 4e9e07603ecd ("selftests/bpf: make use of PROCMAP_QUERY ioctl if available")
+>> Signed-off-by: Jerome Marchand <jmarchan@redhat.com>
+> 
+> Acked-by: Yonghong Song <yonghong.song@linux.dev>
 
-On Thu, Dec 19, 2024 at 7:15=E2=80=AFPM Tiezhu Yang <yangtiezhu@loongson.cn=
-> wrote:
->
-> Currently, LoongArch LLVM does not support the constraint "o" and no plan
-> to support it, it only supports the similar constraint "m", so change the
-> constraints from "nor" in the "else" case to arch-specific "nmr" to avoid
-> the build error such as "unexpected asm memory constraint" for LoongArch.
->
-> Cc: stable@vger.kernel.org
-> Fixes: 630301b0d59d ("selftests/bpf: Add basic USDT selftests")
-> Link: https://llvm.org/docs/LangRef.html#supported-constraint-code-list
-> Link: https://github.com/llvm/llvm-project/blob/main/llvm/lib/Target/Loon=
-gArch/LoongArchISelDAGToDAG.cpp#L172
-> Suggested-by: Weining Lu <luweining@loongson.cn>
-> Suggested-by: Li Chen <chenli@loongson.cn>
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  tools/testing/selftests/bpf/sdt.h | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/sdt.h b/tools/testing/selftests/=
-bpf/sdt.h
-> index ca0162b4dc57..1fcfa5160231 100644
-> --- a/tools/testing/selftests/bpf/sdt.h
-> +++ b/tools/testing/selftests/bpf/sdt.h
-> @@ -102,6 +102,8 @@
->  # define STAP_SDT_ARG_CONSTRAINT        nZr
->  # elif defined __arm__
->  # define STAP_SDT_ARG_CONSTRAINT        g
-> +# elif defined __loongarch__
-> +# define STAP_SDT_ARG_CONSTRAINT        nmr
->  # else
->  # define STAP_SDT_ARG_CONSTRAINT        nor
->  # endif
-> --
-> 2.42.0
->
->
+lgtm, I've wrapped this in an ifndef while applying.
 
