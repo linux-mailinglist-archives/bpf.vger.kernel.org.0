@@ -1,199 +1,163 @@
-Return-Path: <bpf+bounces-47346-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47347-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D0569F8397
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 19:57:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2D629F83C1
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 20:06:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30E92188C50C
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 18:57:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFB08169244
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 19:06:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDFE21A0AFE;
-	Thu, 19 Dec 2024 18:57:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E33E31A706F;
+	Thu, 19 Dec 2024 19:06:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CxPK1kI0"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="qZIWZakc"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EBC71A01C6
-	for <bpf@vger.kernel.org>; Thu, 19 Dec 2024 18:57:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FCEC1A255C;
+	Thu, 19 Dec 2024 19:06:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734634654; cv=none; b=t05Ln4Wj6SbKMlbin2XhNtshd9p+OkB73gbNRXc64TGDAevWDQaChPHeFapzj0RPeE937zB2ibzd4/sjgjs3ajSbhBcakwCJo+ElHjLYpH1vZ2YfNFimUne20MOBHr6/J4T3yw5jZiltDMbkw4BscQ43pgKc7LplwXHLESncE6s=
+	t=1734635200; cv=none; b=JS3Cld0Jbhu1lHc7O3Gqpn+1dNScyODKYrsFyMdUyzMiN7prjp9B6bErsGaGWhC2QKhGTM4ZZkJ3Ndy8m496rux03QSX7qH+L3XY/Rs4Tn0VJY1jEzvzIWuIKhhKVyIvqjgx7jlvA/H6Xsf+0z7EOWgQG11/DZWRlV/Th6El58Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734634654; c=relaxed/simple;
-	bh=O3opGiqfhTZ3phf0UYyLVkCr+oiHCKc+zog34vEW3s8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aaG2sftsqfpVCuqfArA4pYjlvZrDK+rTff2E1Gz0L6A11saOiyM8ISvXYr3pDW6GR2joCRCohT7dJWPzDG2CeQsvI3h8U/X2E+/wHdFbA/9fwEkzB0N7K3WDAydUsLXBy6Min4XYaSQo92a7oztB4g/SSpruXMwjNuL4csLrnCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CxPK1kI0; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <00fa1c00-9b14-47d6-917f-17fcb3d5b18a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1734634649;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YyNJHsVsvSpxGTLzQLMspgIT1c49wT/WX00qfpUdvKc=;
-	b=CxPK1kI0N+huILa4YkJDTT8zQWzlwNnLhA0N1IcH8PGlJM/W/glvTzQESn2t5pZ1O5b1KF
-	7LCEqqSX3tGJMI2Co+ErCt/5xSvdJeC8m3I1oDBIC4nNVnp4D6TEvT0lU/Uvx/hkUG/m8x
-	zUUvpFfSacBhNBSkVVcIz9nAgf2HSiE=
-Date: Thu, 19 Dec 2024 10:57:21 -0800
+	s=arc-20240116; t=1734635200; c=relaxed/simple;
+	bh=uZXBpaUPnIs0v17kOvIODa1c2ZgMXfUTNoWXsLQrrhY=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=X6XKgsZqIXAYan+haD1VzZjt3zNMcL5CQeZVZa6zyIIwdLrZvA2RRNMYwftruj+e5482ozG2yll+WPYkI4eFUZX3j0Snquv1gH7af1Qs6hPbiLM52gbe5xdN1vWSPmr4jL/vM1GOKv/g/yE/pX85qkFdF7k5ngLREQDSuDwS7vQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=qZIWZakc; arc=none smtp.client-ip=185.70.40.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1734635190; x=1734894390;
+	bh=uZXBpaUPnIs0v17kOvIODa1c2ZgMXfUTNoWXsLQrrhY=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
+	b=qZIWZakcvSkA19JP3kAfH5LPsG2StVqxtauNXZ24R9qJG6QhwAzzylc5uRIp5kDxO
+	 Ddes/M/lWhd2zIPSfymFKJp913QdyYJPuaOPsze5z9REfQwAE0ddqurg8Ws0tsWt0X
+	 6P4sqBtc6/MdI9Le75sTi7/PrcGuMpBjUBwB+EOGQ6gfHT+VEUwn06eKq71PdUd18o
+	 SWzQAv46/Gn2+1GDnKTtSIg8xncEcwbFcjlMqtsvaL0Fmqw7r9/L2PTq5Zq+vZtkaY
+	 0WriXCJ5h1k99Ejs3cuPyzeZ5dwy1UJg2f1Cd2eXAJ5iqCAP0tKxNwSITP95agsv/l
+	 wqrGHBhAS0r3Q==
+Date: Thu, 19 Dec 2024 19:06:25 +0000
+To: Jiri Olsa <olsajiri@gmail.com>
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: dwarves@vger.kernel.org, acme@kernel.org, alan.maguire@oracle.com, eddyz87@gmail.com, andrii@kernel.org, mykolal@fb.com, bpf@vger.kernel.org
+Subject: Re: [PATCH dwarves v2 06/10] btf_encoder: switch to shared elf_functions table
+Message-ID: <K5et08J-yxHY85mfgEBd6GAJNjmpSDmhhcL5JiZYRA6YfVoAtrQTHHa4opWX0vrRrimoCzyWxVMz2x-NJ5P4BXGdBzF-zVbZrpFhBoKfqWU=@pm.me>
+In-Reply-To: <Z2Q0kBEHvLV11Fne@krava>
+References: <20241213223641.564002-1-ihor.solodrai@pm.me> <20241213223641.564002-7-ihor.solodrai@pm.me> <Z2Q0kBEHvLV11Fne@krava>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: 97ec71539eb61d0b41bf7429c9c8bc4634e0c68e
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf] bpf: Fix deadlock when freeing cgroup storage
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Abel Wu <wuyun.abel@bytedance.com>,
- Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- David Vernet <void@manifault.com>,
- "open list:BPF [STORAGE & CGROUPS]" <bpf@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <20241218092149.42339-1-wuyun.abel@bytedance.com>
- <eb9d4609-970e-4760-af94-8e48cca7ec23@linux.dev>
- <9c53734d-9185-46b7-b07d-bf24ac06e688@bytedance.com>
- <8ae5a9ec-33b1-4228-bde1-f155fd639c84@linux.dev>
- <CAADnVQ+pYevQ9QsRB-oLu1ONtzZ31J=3ANqB+aFLLiU4VcGgNA@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQ+pYevQ9QsRB-oLu1ONtzZ31J=3ANqB+aFLLiU4VcGgNA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+On Thursday, December 19th, 2024 at 6:58 AM, Jiri Olsa <olsajiri@gmail.com>=
+ wrote:
 
+>=20
+>=20
+> On Fri, Dec 13, 2024 at 10:37:13PM +0000, Ihor Solodrai wrote:
+>=20
+> SNIP
+>=20
+> > @@ -2116,9 +2128,6 @@ int btf_encoder__encode(struct btf_encoder *encod=
+er)
+> > int err;
+> > size_t shndx;
+> >=20
+> > - /* for single-threaded case, saved funcs are added here */
+> > - btf_encoder__add_saved_funcs(encoder);
+> > -
+> > for (shndx =3D 1; shndx < encoder->seccnt; shndx++)
+> > if (gobuffer__size(&encoder->secinfo[shndx].secinfo))
+> > btf_encoder__add_datasec(encoder, shndx);
+> > @@ -2477,14 +2486,13 @@ struct btf_encoder *btf_encoder__new(struct cu =
+*cu, const char *detached_filenam
+> > goto out_delete;
+> > }
+> >=20
+> > - encoder->symtab =3D elf_symtab__new(NULL, cu->elf);
+> > + encoder->functions =3D elf_functions__get(cu->elf);
+>=20
+>=20
+> elf_functions__get should always return !=3D NULL right? should we add as=
+sert call for that?
+>=20
+> SNIP
+>=20
+> > diff --git a/pahole.c b/pahole.c
+> > index 17af0b4..eb2e71a 100644
+> > --- a/pahole.c
+> > +++ b/pahole.c
+> > @@ -3185,13 +3185,16 @@ static int pahole_threads_collect(struct conf_l=
+oad *conf, int nr_threads, void *
+> > if (error)
+> > goto out;
+> >=20
+> > - btf_encoder__add_saved_funcs(btf_encoder);
+> > + err =3D btf_encoder__add_saved_funcs(btf_encoder);
+> > + if (err < 0)
+> > + goto out;
+> > +
+> > for (i =3D 0; i < nr_threads; i++) {
+> > /*
+> > * Merge content of the btf instances of worker threads to the btf
+> > * instance of the primary btf_encoder.
+> > */
+> > - if (!threads[i]->btf)
+> > + if (!threads[i]->encoder || !threads[i]->btf)
+>=20
+>=20
+> is this related to this change? seems like separate fix
+>=20
+> > continue;
+> > err =3D btf_encoder__add_encoder(btf_encoder, threads[i]->encoder);
+> > if (err < 0)
+> > @@ -3846,6 +3849,9 @@ try_sole_arg_as_class_names:
+> > exit(1);
+> > }
+> >=20
+> > + if (conf_load.nr_jobs <=3D 1 || conf_load.reproducible_build)
+> > + btf_encoder__add_saved_funcs(btf_encoder);
+>=20
+>=20
+> should we check the return value here as well?
+>=20
+> thanks,
+> jirka
 
+Jiri, thanks for review.
 
-On 12/19/24 10:43 AM, Alexei Starovoitov wrote:
-> On Thu, Dec 19, 2024 at 10:39 AM Yonghong Song <yonghong.song@linux.dev> wrote:
->>
->>
->>
->> On 12/19/24 4:38 AM, Abel Wu wrote:
->>> Hi Yonghong,
->>>
->>> On 12/19/24 10:45 AM, Yonghong Song Wrote:
->>>>
->>>>
->>>> On 12/18/24 1:21 AM, Abel Wu wrote:
->>>>> The following commit
->>>>> bc235cdb423a ("bpf: Prevent deadlock from recursive
->>>>> bpf_task_storage_[get|delete]")
->>>>> first introduced deadlock prevention for fentry/fexit programs
->>>>> attaching
->>>>> on bpf_task_storage helpers. That commit also employed the logic in map
->>>>> free path in its v6 version.
->>>>>
->>>>> Later bpf_cgrp_storage was first introduced in
->>>>> c4bcfb38a95e ("bpf: Implement cgroup storage available to
->>>>> non-cgroup-attached bpf progs")
->>>>> which faces the same issue as bpf_task_storage, instead of its busy
->>>>> counter, NULL was passed to bpf_local_storage_map_free() which opened
->>>>> a window to cause deadlock:
->>>>>
->>>>>      <TASK>
->>>>>      _raw_spin_lock_irqsave+0x3d/0x50
->>>>>      bpf_local_storage_update+0xd1/0x460
->>>>>      bpf_cgrp_storage_get+0x109/0x130
->>>>>      bpf_prog_72026450ec387477_cgrp_ptr+0x38/0x5e
->>>>>      bpf_trace_run1+0x84/0x100
->>>>>      cgroup_storage_ptr+0x4c/0x60
->>>>>      bpf_selem_unlink_storage_nolock.constprop.0+0x135/0x160
->>>>>      bpf_selem_unlink_storage+0x6f/0x110
->>>>>      bpf_local_storage_map_free+0xa2/0x110
->>>>>      bpf_map_free_deferred+0x5b/0x90
->>>>>      process_one_work+0x17c/0x390
->>>>>      worker_thread+0x251/0x360
->>>>>      kthread+0xd2/0x100
->>>>>      ret_from_fork+0x34/0x50
->>>>>      ret_from_fork_asm+0x1a/0x30
->>>>>      </TASK>
->>>>>
->>>>>      [ Since the verifier treats 'void *' as scalar which
->>>>>        prevents me from getting a pointer to 'struct cgroup *',
->>>>>        I added a raw tracepoint in cgroup_storage_ptr() to
->>>>>        help reproducing this issue. ]
->>>>>
->>>>> Although it is tricky to reproduce, the risk of deadlock exists and
->>>>> worthy of a fix, by passing its busy counter to the free procedure so
->>>>> it can be properly incremented before storage/smap locking.
->>>> The above stack trace and explanation does not show that we will have
->>>> a potential dead lock here. You mentioned that it is tricky to
->>>> reproduce,
->>>> does it mean that you have done some analysis or coding to reproduce it?
->>>> Could you share the details on why you think we may have deadlock here?
->>> The stack is A-A deadlocked: cgroup_storage_ptr() is called with
->>> storage->lock held, while the bpf_prog attaching on this function
->>> also tries to acquire the same lock by calling bpf_cgrp_storage_get()
->>> thus leading to a AA deadlock.
->>>
->>> The tricky part is, instead of attaching on cgroup_storage_ptr()
->>> directly, I added a tracepoint inside it to hook:
->>>
->>> ------
->>> diff --git a/kernel/bpf/bpf_cgrp_storage.c
->>> b/kernel/bpf/bpf_cgrp_storage.c
->>> index 20f05de92e9c..679209d4f88f 100644
->>> --- a/kernel/bpf/bpf_cgrp_storage.c
->>> +++ b/kernel/bpf/bpf_cgrp_storage.c
->>> @@ -40,6 +40,8 @@ static struct bpf_local_storage __rcu
->>> **cgroup_storage_ptr(void *owner)
->>>   {
->>>          struct cgroup *cg = owner;
->>>
->>> +       trace_cgroup_ptr(cg);
->>> +
->>>          return &cg->bpf_cgrp_storage;
->>>   }
->>>
->>> ------
->>>
->>> The reason doing so is that typecasting from 'void *owner' to
->>> 'struct cgroup *' will be rejected by the verifier. But there
->>> could be other ways to obtain a pointer to the @owner cgroup
->>> too, making the deadlock possible.
->> I checked the callstack and what you described indeed the case.
->> In function bpf_selem_unlink_storage(), local_storage->lock is
->> held before calling bpf_selem_unlink_storage_nolock/cgroup_storage_ptr.
->> If there is a fentry/tracepoint on the cgroup_storage_ptr and then we could
->> have a deadlock as you described in the above.
->>
->> As you mentioned, it is tricky to reproduce. fentry on cgroup_storage_ptr
->> does not work due to func signature:
->>     struct bpf_local_storage __rcu **cgroup_storage_ptr(void *owner)
->> Even say we support 'void *' for fentry and we do bpf_rdonly_cast()
->> to cast 'void *owner' to 'struct cgroup *owner', and owner cannot be
->> passed to helper/kfunc.
->>
->> Your fix looks good but it would be great to have a reproducer.
->> One possibility is to find a function which can be fentried within
->> local_storage->lock. If you know the cgroup id, in bpf program you
->> can use bpf_cgroup_from_id() to get a trusted cgroup ptr from the id.
->> and then you can use that cgroup ptr to do bpf_cgrp_storage_get() etc.
->> which should be able to triger deadlock. Could you give a try?
-> I'd rather mark a set of functions as notrace to avoid this situation
-> or add:
-> CFLAGS_REMOVE_bpf_cgrp_storage.o = $(CC_FLAGS_FTRACE)
+This patch is going to be removed in the next version of the series,
+following a discussion with Eduard and Andrii [1].
 
-If we go through CFLAGS_REMOVE path, we need to do
+If you're interested you can inspect WIP v3 branch on github [2].
 
-CFLAGS_REMOVE_bpf_local_storage.o = $(CC_FLAGS_FTRACE)
+I am still testing it, and plan to add a patch removing global
+btf_encoders list. Other than that it's close to what I am going to
+submit.
 
-as well since bpf_selem_unlink_storage_nolock() calls a few functions
-which, if fentry traced, could trigger similar issue (with bpf_cgroup_from_id() approach).
+[1] https://lore.kernel.org/dwarves/C82bYTvJaV4bfT15o25EsBiUvFsj5eTlm17933H=
+vva76CXjIcu3gvpaOCWPgeZ8g3cZ-RMa8Vp0y1o_QMR2LhPB-LEUYfZCGuCfR_HvkIP8=3D@pm.=
+me/
+[2] https://github.com/theihor/dwarves/tree/v3.workers
 
-
+>=20
+> > +
+> > err =3D btf_encoder__encode(btf_encoder);
+> > btf_encoder__delete(btf_encoder);
+> > if (err) {
+> > --
+> > 2.47.1
 
