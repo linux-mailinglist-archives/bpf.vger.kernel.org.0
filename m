@@ -1,147 +1,195 @@
-Return-Path: <bpf+bounces-47305-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47306-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8940B9F753A
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 08:18:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0659C9F755E
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 08:25:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72DBB7A3C01
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 07:18:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64D3A188ADE6
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 07:24:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80569216E0F;
-	Thu, 19 Dec 2024 07:18:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5307F216E39;
+	Thu, 19 Dec 2024 07:24:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="c8fzfWUV"
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="mw+6XVRm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C7398BE7
-	for <bpf@vger.kernel.org>; Thu, 19 Dec 2024 07:18:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E038E524F;
+	Thu, 19 Dec 2024 07:24:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734592706; cv=none; b=qmCZlFEfnZVvyixp1kCPULiRGNABX194ZUUQpWr8FVBKsNQx1iA86Axc3xuOoQ9vVwsjP1KB7vI+CUrVY9P2uiIJZAirmv22Us6Ol71MQsgmAFDXQNvJz+CeLdU75yLQHkzlX1HOCB3rH0HtHR7uTA2bHfFwL67lYbjrUyoNC80=
+	t=1734593081; cv=none; b=uDDAYntznMOllko0Wd/QGhJxXPkKllAr2mR3oABei5UujzMaeaqBX4p3Kj28ivSGBqDLoRUeOVewHak6ydXX+AfIdQOwIJQ8MEGfrOzpCfxfuT4cY4YUX8r7muXD2ujiQr9gVEl9uvVeIf6o5NvB84EZxfjvm0yXjvVohorpgS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734592706; c=relaxed/simple;
-	bh=X25t5Hh9nWKlMB85Fq3P5bTyEp15jNVswWpg3cEU2m0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Es+2iObbtLGdpU3p3pLOk9vmhdgF2Ik2QZGduNPbrOMzbyZydqlPCJC1f94BAG2h6nBCqaDpmj1+Oj0KOqfqouKfX0Qe1qdN/diBgAyoei+XcDtylJFwB2kiCsds46675KyzbLuHn/eT4Iyl7dA0VCEreOy7EMRLDsKQvhvXRso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=c8fzfWUV; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-385e2880606so319719f8f.3
-        for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 23:18:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1734592702; x=1735197502; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kws6F4aGXDE2zQGbUn1q8E6/DvmEpDpQpDP0JLhajdM=;
-        b=c8fzfWUVirdGIn5rsTuiQBacu4EBfaUI0aeTNUIiVu9dMAb6FGgsYicGXJIvZog98h
-         98x6x3z11rrARZfML2A6LEcnE1eXotNSxnHPKduq6iZj1n4NRJ+0oPBL/hTy0XwhN0GG
-         NdQTyVFHeioChbz/VEVPuo+lBpUNuw7pAg9vuRX3RkzaBM7RLZCzEDcREvb4p0MqCk9e
-         wHRudWNgkFUoBAcXYnGAd/bhZyWisqQkrFkHuidA2dsuXvNTQhTb8aTeysD+7yorqji0
-         IOXklOW3qjdPW4FqFpRkNgWKmJnejWGPy3mDDe2Z27CMGxF6oIretmgKh9LBhlK+Vsbz
-         FSBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734592702; x=1735197502;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kws6F4aGXDE2zQGbUn1q8E6/DvmEpDpQpDP0JLhajdM=;
-        b=oYZbgQBV16geRoD8vnOBn1OHOUX7Qf3XBfebeRtTIwZRowxN7/9tlpxh1hDrWQnZDz
-         3vfcyC92xQBWSx/t5F+QYwwVgmRMlxM02BaE+R7cvE+duq1HIrIYdgGRqVP+pFyEFrHN
-         igIeP/W53BtbHRDTFXslYEW2xBlAnUfZNyrQ7xlSlvSee9rGteaa+yIaZgSGMen2k41E
-         8k55U0gFXpdmzXaMGZV7bsA7OhBF5fg+7Kts3d1WbfcbAOsl/LDdwyK3qVLRA024ugD0
-         09NhVKzRXOdzqE8xw2d5NkgkI/KDJtM3fQnMUIDInZk6kCpUVFL26E57OhBLcbMhmNiE
-         3/lg==
-X-Forwarded-Encrypted: i=1; AJvYcCXugixlvPHIbxU5huG3ewHmwiGCeZUisWBsBkZuk6sEndLXszchTcoUcOc4ZpNPbKQsLX8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzzbpFgXfRved2yQUrEZwl9Ng2D1vczvozsdQbztEKKUIIktq/Y
-	HE6AoyjlB8nlm90Q74deMoANMenqZhHw4acgJoOJObIcLs2080LnWzigpW7+6UY=
-X-Gm-Gg: ASbGncsm82eS89jOwZ61wqjuqmVUxxr5m9iuSnA7KTO38Cbi1esvKu1DSLn4SlyayQj
-	nkk2jtENo6u3helCqbVHMGwEdBJbQeh0Xn0jyYGYTDK7F0BKx/edZOH1W+Ina3OHDRXTfUyJ05E
-	repMtHJrUsznFbeX11m/+lD+UBfG75TgQtFay9pQGHuS8WUA7dy/fvuec5S8eWnOxqlEAbwOULQ
-	r2urpu4UsT5GvchOnOOVDlcUkauJGmb+ACaoosJaCfxpPGi6dKQjK4ogO2yJfZ+
-X-Google-Smtp-Source: AGHT+IFoaJwkmK5fLiU8iusoSRP2x655MlL86kCImDrAnz+sbhdizEPk0PkRzRaNgqHEocZ3EndW+g==
-X-Received: by 2002:a05:6000:1a8b:b0:386:3903:86eb with SMTP id ffacd0b85a97d-38a19b05278mr2083037f8f.23.1734592702217;
-        Wed, 18 Dec 2024 23:18:22 -0800 (PST)
-Received: from localhost (109-81-88-1.rct.o2.cz. [109.81.88.1])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aac0e82eb6asm34457066b.27.2024.12.18.23.18.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Dec 2024 23:18:21 -0800 (PST)
-Date: Thu, 19 Dec 2024 08:18:21 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: alexei.starovoitov@gmail.com, bpf@vger.kernel.org, andrii@kernel.org,
-	memxor@gmail.com, akpm@linux-foundation.org, peterz@infradead.org,
-	vbabka@suse.cz, bigeasy@linutronix.de, rostedt@goodmis.org,
-	houtao1@huawei.com, hannes@cmpxchg.org, willy@infradead.org,
-	tglx@linutronix.de, jannh@google.com, tj@kernel.org,
-	linux-mm@kvack.org, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next v3 1/6] mm, bpf: Introduce try_alloc_pages() for
- opportunistic page allocation
-Message-ID: <Z2PIva9w8OKW9yYv@tiehlicka>
-References: <20241218030720.1602449-1-alexei.starovoitov@gmail.com>
- <20241218030720.1602449-2-alexei.starovoitov@gmail.com>
- <Z2KyxEHA8NCNGF6u@tiehlicka>
- <mnvsu2v4tnhhbzmebzg6mdmglcs3kq2nxqj2kz3v6p2eigcy6l@c5amf2pgd4zq>
+	s=arc-20240116; t=1734593081; c=relaxed/simple;
+	bh=MZ56Gk24lso758TZZGrga25F7eajp0AXtFgCuXVL4EY=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=TTv7kAcChZsJRPj6IB8dRi3RnRlYDNX1jc8fss6VLyxq+0uvdd64L4pcd5GOfjdGUpLkTwT+YtKmJTjkPo9GNFeb9OnyinAEo9IjZzWM3r4DHP9s49ynhAjw/CLKgc6gFt7mf8gdvg+ztwFWsVZdNfUk2r99dDUIm1V496NSNcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=mw+6XVRm; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1734593073;
+	bh=MZ56Gk24lso758TZZGrga25F7eajp0AXtFgCuXVL4EY=;
+	h=From:Date:Subject:To:Cc:From;
+	b=mw+6XVRmktGF2ySJzZBhU7eaFhFMdjMWFG1GSKwUMgtsY8mZvf2qcyt7ML1TQ1sWP
+	 A6aVq1BNqgg2V+RowPXxq9CzYWLp4vyq8RwG+iTweakVwxg96D7PDsT9A9oHwZZXqT
+	 jsaJ2Nw+Ly+KYOQewNrKr3gVYbHKjo6eeu/q9ZPA=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date: Thu, 19 Dec 2024 08:24:28 +0100
+Subject: [PATCH bpf v2] bpf: fix configuration-dependent BTF function
+ references
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <mnvsu2v4tnhhbzmebzg6mdmglcs3kq2nxqj2kz3v6p2eigcy6l@c5amf2pgd4zq>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20241219-bpf-cond-ids-v2-1-8f121cae5374@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIACvKY2cC/1WNTQ7CIBCFr9LMWoyDxBZXvYfpQmAqs6ENU6um6
+ d0lxI3L9/e9DYQyk8C12SDTysJTKkIfGvDxnh6kOBQN+qQNatTKzaPyUwrFF2Xd6PzFhNC2Dsp
+ kzjTyu+JuUJowFDOyLFP+1IsVa/Sjnf9pKypUXYedsda2Gm3/IhYRH5/xmGiBYd/3LxMI4j6yA
+ AAA
+X-Change-ID: 20241212-bpf-cond-ids-9bfbc64dd77b
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+ Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1734593072; l=4129;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=MZ56Gk24lso758TZZGrga25F7eajp0AXtFgCuXVL4EY=;
+ b=z2K9l+WIlFYVMd0/pvMGRnrWKjzPn6JGxv8baJYB+1odyIhgHX38udxrhThvGNDbBKxQqi0Ep
+ MeYjiHT1F5wBnVSg1W6SFfZQKq08NaBytQz5unRjDDoOAFF5xYy/9At
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-On Wed 18-12-24 16:05:25, Shakeel Butt wrote:
-> On Wed, Dec 18, 2024 at 12:32:20PM +0100, Michal Hocko wrote:
-> > I like this proposal better. I am still not convinced that we really
-> > need internal __GFP_TRYLOCK though. 
-> > 
-> > If we reduce try_alloc_pages to the gfp usage we are at the following
-> > 
-> > On Tue 17-12-24 19:07:14, alexei.starovoitov@gmail.com wrote:
-> > [...]
-> > > +struct page *try_alloc_pages_noprof(int nid, unsigned int order)
-> > > +{
-> > > +	gfp_t alloc_gfp = __GFP_NOWARN | __GFP_ZERO |
-> > > +			  __GFP_NOMEMALLOC | __GFP_TRYLOCK;
-> > > +	unsigned int alloc_flags = ALLOC_TRYLOCK;
-> > [...]
-> > > +	prepare_alloc_pages(alloc_gfp, order, nid, NULL, &ac,
-> > > +			    &alloc_gfp, &alloc_flags);
-> > [...]
-> > > +	page = get_page_from_freelist(alloc_gfp, order, alloc_flags, &ac);
-> > > +
-> > > +	/* Unlike regular alloc_pages() there is no __alloc_pages_slowpath(). */
-> > > +
-> > > +	trace_mm_page_alloc(page, order, alloc_gfp & ~__GFP_TRYLOCK, ac.migratetype);
-> > > +	kmsan_alloc_page(page, order, alloc_gfp);
-> > [...]
-> > 
-> > From those that care about __GFP_TRYLOCK only kmsan_alloc_page doesn't
-> > have alloc_flags. Those could make the locking decision based on
-> > ALLOC_TRYLOCK.
-> > 
-> > I am not familiar with kmsan internals and my main question is whether
-> > this specific usecase really needs a dedicated reentrant
-> > kmsan_alloc_page rather than rely on gfp flag to be sufficient.
-> > Currently kmsan_in_runtime bails out early in some contexts. The
-> > associated comment about hooks is not completely clear to me though.
-> > Memory allocation down the road is one of those but it is not really
-> > clear to me whether this is the only one.
-> 
-> Is the suggestion that just introduce and use ALLOC_TRYLOCK without the
-> need of __GFP_TRYLOCK?
+These BTF functions are not available unconditionally,
+only reference them when they are available.
 
-Exactly! Because ALLOC_$FOO is strictly internal allocator flag that
-cannot leak out to external users by design. __GFP_TRYLOCK in this
-implementation tries to achieve the same by hiding it which would work
-but it is both ugly and likely unnecessary.
+Avoid the following build warnings:
+
+  BTF     .tmp_vmlinux1.btf.o
+btf_encoder__tag_kfunc: failed to find kfunc 'bpf_send_signal_task' in BTF
+btf_encoder__tag_kfuncs: failed to tag kfunc 'bpf_send_signal_task'
+  NM      .tmp_vmlinux1.syms
+  KSYMS   .tmp_vmlinux1.kallsyms.S
+  AS      .tmp_vmlinux1.kallsyms.o
+  LD      .tmp_vmlinux2
+  NM      .tmp_vmlinux2.syms
+  KSYMS   .tmp_vmlinux2.kallsyms.S
+  AS      .tmp_vmlinux2.kallsyms.o
+  LD      vmlinux
+  BTFIDS  vmlinux
+WARN: resolve_btfids: unresolved symbol prog_test_ref_kfunc
+WARN: resolve_btfids: unresolved symbol bpf_crypto_ctx
+WARN: resolve_btfids: unresolved symbol bpf_send_signal_task
+WARN: resolve_btfids: unresolved symbol bpf_modify_return_test_tp
+WARN: resolve_btfids: unresolved symbol bpf_dynptr_from_xdp
+WARN: resolve_btfids: unresolved symbol bpf_dynptr_from_skb
+
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+Changes in v2:
+- Properly use BTF_ID_UNUSED in special_kfunc_list()
+- Link to v1: https://lore.kernel.org/r/20241213-bpf-cond-ids-v1-1-881849997219@weissschuh.net
+---
+ kernel/bpf/helpers.c  |  4 ++++
+ kernel/bpf/verifier.c | 11 +++++++++++
+ 2 files changed, 15 insertions(+)
+
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 751c150f9e1cd7f56e6a2b68a7ebb4ae89a30d2d..5edf5436a7804816b7dcf1bbef2624d71a985f20 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -3089,7 +3089,9 @@ BTF_ID_FLAGS(func, bpf_task_get_cgroup1, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_task_from_pid, KF_ACQUIRE | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_task_from_vpid, KF_ACQUIRE | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_throw)
++#ifdef CONFIG_BPF_EVENTS
+ BTF_ID_FLAGS(func, bpf_send_signal_task, KF_TRUSTED_ARGS)
++#endif
+ BTF_KFUNCS_END(generic_btf_ids)
+ 
+ static const struct btf_kfunc_id_set generic_kfunc_set = {
+@@ -3135,7 +3137,9 @@ BTF_ID_FLAGS(func, bpf_dynptr_is_null)
+ BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
+ BTF_ID_FLAGS(func, bpf_dynptr_size)
+ BTF_ID_FLAGS(func, bpf_dynptr_clone)
++#ifdef CONFIG_NET
+ BTF_ID_FLAGS(func, bpf_modify_return_test_tp)
++#endif
+ BTF_ID_FLAGS(func, bpf_wq_init)
+ BTF_ID_FLAGS(func, bpf_wq_set_callback_impl)
+ BTF_ID_FLAGS(func, bpf_wq_start)
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 77f56674aaa99a0b88ced5100ba57409e255fd29..2704fa4477ee2504897c82f0416aa7d61fb086ed 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5507,7 +5507,9 @@ static bool in_rcu_cs(struct bpf_verifier_env *env)
+ 
+ /* Once GCC supports btf_type_tag the following mechanism will be replaced with tag check */
+ BTF_SET_START(rcu_protected_types)
++#ifdef CONFIG_NET
+ BTF_ID(struct, prog_test_ref_kfunc)
++#endif
+ #ifdef CONFIG_CGROUPS
+ BTF_ID(struct, cgroup)
+ #endif
+@@ -5515,7 +5517,9 @@ BTF_ID(struct, cgroup)
+ BTF_ID(struct, bpf_cpumask)
+ #endif
+ BTF_ID(struct, task_struct)
++#ifdef CONFIG_CRYPTO
+ BTF_ID(struct, bpf_crypto_ctx)
++#endif
+ BTF_SET_END(rcu_protected_types)
+ 
+ static bool rcu_protected_object(const struct btf *btf, u32 btf_id)
+@@ -11486,8 +11490,10 @@ BTF_ID(func, bpf_rdonly_cast)
+ BTF_ID(func, bpf_rbtree_remove)
+ BTF_ID(func, bpf_rbtree_add_impl)
+ BTF_ID(func, bpf_rbtree_first)
++#ifdef CONFIG_NET
+ BTF_ID(func, bpf_dynptr_from_skb)
+ BTF_ID(func, bpf_dynptr_from_xdp)
++#endif
+ BTF_ID(func, bpf_dynptr_slice)
+ BTF_ID(func, bpf_dynptr_slice_rdwr)
+ BTF_ID(func, bpf_dynptr_clone)
+@@ -11515,8 +11521,13 @@ BTF_ID(func, bpf_rcu_read_unlock)
+ BTF_ID(func, bpf_rbtree_remove)
+ BTF_ID(func, bpf_rbtree_add_impl)
+ BTF_ID(func, bpf_rbtree_first)
++#ifdef CONFIG_NET
+ BTF_ID(func, bpf_dynptr_from_skb)
+ BTF_ID(func, bpf_dynptr_from_xdp)
++#else
++BTF_ID_UNUSED
++BTF_ID_UNUSED
++#endif
+ BTF_ID(func, bpf_dynptr_slice)
+ BTF_ID(func, bpf_dynptr_slice_rdwr)
+ BTF_ID(func, bpf_dynptr_clone)
+
+---
+base-commit: d9df5df183eede1041cbd5ff1d776e94757e338b
+change-id: 20241212-bpf-cond-ids-9bfbc64dd77b
+
+Best regards,
 -- 
-Michal Hocko
-SUSE Labs
+Thomas Weißschuh <linux@weissschuh.net>
+
 
