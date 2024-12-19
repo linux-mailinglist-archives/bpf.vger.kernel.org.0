@@ -1,56 +1,56 @@
-Return-Path: <bpf+bounces-47335-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47336-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9ED79F7F3D
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 17:19:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E137D9F7FED
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 17:35:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F06D416217C
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 16:19:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27B3818885E6
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 16:35:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59463225A3B;
-	Thu, 19 Dec 2024 16:19:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E2D226874;
+	Thu, 19 Dec 2024 16:35:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MxTEy8hy"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Bfcdyczw"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDDF23D3B8
-	for <bpf@vger.kernel.org>; Thu, 19 Dec 2024 16:19:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82D4986345
+	for <bpf@vger.kernel.org>; Thu, 19 Dec 2024 16:35:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734625189; cv=none; b=J/Un8GWpXy2yXYab3SIgM4Ufl0/wCg7+EUn9XYw5DeH3LjJyKTz/L4nfCHS4yO+fhywYCDBE9C0pX+PXSGukH22KJXUviZDS8mb3pCHFbDr0a2N/PU3gbZLTpjeiyvac4/Ik7wSBAkywRnxaKKVYPUsbYva+O6I5Pc42aqOhqqs=
+	t=1734626122; cv=none; b=aClPKIbypVJEHcoVwfuuNabiCRxRgUjYX/3gJYrlxHQaCIayoXAQQuHBHyvTFIsZar+RrNaRXyLYFn7vnNirlcqqJ7QChgzupqESNYUx/EXmdIdNkqTaPqSNmm5tAZmWw19WvbXHLgdMQotuHW3Mgg+1XTVVS+AzDxecSdnqXPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734625189; c=relaxed/simple;
-	bh=RC/9mN8nAlNkQtQPodIEHtHnBwegDrotGV0lG6F6U4k=;
+	s=arc-20240116; t=1734626122; c=relaxed/simple;
+	bh=VY2LhPE7qpJ+JS19W9F427RdYKWAi0StXFYID6wxOL4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=u11jSnJBL5DgFbi05LuRq3ULqsDuoQd0VD6vcdhbr65pKiEpMTr4jDLYPU4Doblh9alAuqRntgTF50lTthKwMHEAMO9EckpUI39MtjMsRAveRvOT5EhndsN+qP5qtHEwnrYs3WjRe7TMy169IvcshbGqn1ak9FodnRUJaT4kJNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MxTEy8hy; arc=none smtp.client-ip=95.215.58.187
+	 In-Reply-To:Content-Type; b=EcDw0gAtl138gKGUGr+EvbwCW69fuz1a1zUaeTTJaPSPLC8ok04GIVIjPllcypA38JJu1J9EZk3g31sT/05USZRQsH/wxGwr8d35jRNt1Yz4QJoYPgt5v6RQ2C0GAsWfOrwnma9mjjBhBtDHJgBBpTD8KPBiRBA+m4gJNdkY3CM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Bfcdyczw; arc=none smtp.client-ip=91.218.175.184
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e8249b41-c96f-4d0d-a12f-a698c76f34b6@linux.dev>
+Message-ID: <2d389258-ad08-4d28-a347-667909b0e190@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1734625185;
+	t=1734626116;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+X4PXBuSAYtgPxGtRLP9sTcjWrwUEmvye0BtXKHCW1s=;
-	b=MxTEy8hyMbtvdpp/fKDY1bjJv99r7jU4alQ1NtXSA+iyoWfvfJWZMEIBCJV8vhV0/hiZ+t
-	M/gw2Y/MqnEdozV/y10hRPlbYJXOwFGNiqy9btBsoDdjgtCL/fRtdPGxBMzUlKAMxORZvf
-	+KmZJWveBILQPHVznupw/viJpKV7cY8=
-Date: Thu, 19 Dec 2024 08:19:38 -0800
+	bh=wE4woTuzO5Vn0u1/80asGZMkatsiSe7DQQ29k/o5eNg=;
+	b=BfcdyczwxmRq/ZVq/xD0sGno/3/0z0YfutKqZVLTvuhjkJ+4K+V7xdKw/42Wu3cw15dAKX
+	kK34zptABIKzyaHLYhwtImTstb7iBJvbWiFny61fyiwoX4c8KOiWfFsc4ku4Bjssgfg+oC
+	tuwb06Vgol5AGpZsUJ0vq0UmJ6kjIfU=
+Date: Thu, 19 Dec 2024 08:35:09 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v6 1/5] bpf: Introduce task_file open-coded
- iterator kfuncs
+Subject: Re: [PATCH bpf-next v6 2/5] selftests/bpf: Add tests for open-coded
+ style process file iterator
 Content-Language: en-GB
 To: Juntong Deng <juntong.deng@outlook.com>, ast@kernel.org,
  daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
@@ -60,10 +60,10 @@ To: Juntong Deng <juntong.deng@outlook.com>, ast@kernel.org,
 Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-fsdevel@vger.kernel.org
 References: <AM6PR03MB5080DC63013560E26507079E99042@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <AM6PR03MB50807D3E0975E184C4D1D0FB99042@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <AM6PR03MB508014EBAC89D14D0C3ADA6899042@AM6PR03MB5080.eurprd03.prod.outlook.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <AM6PR03MB50807D3E0975E184C4D1D0FB99042@AM6PR03MB5080.eurprd03.prod.outlook.com>
+In-Reply-To: <AM6PR03MB508014EBAC89D14D0C3ADA6899042@AM6PR03MB5080.eurprd03.prod.outlook.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
@@ -72,153 +72,258 @@ X-Migadu-Flow: FLOW_OUT
 
 
 On 12/17/24 3:37 PM, Juntong Deng wrote:
-> This patch adds the open-coded iterator style process file iterator
-> kfuncs bpf_iter_task_file_{new,next,destroy} that iterates over all
-> files opened by the specified process.
+> This patch adds test cases for open-coded style process file iterator.
 >
-> bpf_iter_task_file_next returns a pointer to bpf_iter_task_file_item,
-> which currently contains *task, *file, fd. This is an extensible
-> structure that enables compatibility with different versions
-> through CO-RE.
+> Test cases related to process files are run in the newly created child
+> process. Close all opened files inherited from the parent process in
+> the child process to avoid the files opened by the parent process
+> affecting the test results.
 >
-> The reference to struct file acquired by the previous
-> bpf_iter_task_file_next() is released in the next
-> bpf_iter_task_file_next(), and the last reference is released in the
-> last bpf_iter_task_file_next() that returns NULL.
->
-> In the bpf_iter_task_file_destroy(), if the iterator does not iterate to
-> the end, then the last struct file reference is released at this time.
+> In addition, this patch adds failure test cases where bpf programs
+> cannot pass the verifier due to uninitialized or untrusted
+> arguments, etc.
 >
 > Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
 > ---
->   kernel/bpf/helpers.c   |  3 ++
->   kernel/bpf/task_iter.c | 91 ++++++++++++++++++++++++++++++++++++++++++
->   2 files changed, 94 insertions(+)
+>   .../testing/selftests/bpf/bpf_experimental.h  |  7 ++
+>   .../testing/selftests/bpf/prog_tests/iters.c  | 79 ++++++++++++++++
+>   .../selftests/bpf/progs/iters_task_file.c     | 86 ++++++++++++++++++
+>   .../bpf/progs/iters_task_file_failure.c       | 91 +++++++++++++++++++
+>   4 files changed, 263 insertions(+)
+>   create mode 100644 tools/testing/selftests/bpf/progs/iters_task_file.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/iters_task_file_failure.c
 >
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index cd5f9884d85b..61a652bea0ba 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -3147,6 +3147,9 @@ BTF_ID_FLAGS(func, bpf_iter_css_destroy, KF_ITER_DESTROY)
->   BTF_ID_FLAGS(func, bpf_iter_task_new, KF_ITER_NEW | KF_TRUSTED_ARGS | KF_RCU_PROTECTED)
->   BTF_ID_FLAGS(func, bpf_iter_task_next, KF_ITER_NEXT | KF_RET_NULL)
->   BTF_ID_FLAGS(func, bpf_iter_task_destroy, KF_ITER_DESTROY)
-> +BTF_ID_FLAGS(func, bpf_iter_task_file_new, KF_ITER_NEW | KF_TRUSTED_ARGS)
-> +BTF_ID_FLAGS(func, bpf_iter_task_file_next, KF_ITER_NEXT | KF_RET_NULL)
-> +BTF_ID_FLAGS(func, bpf_iter_task_file_destroy, KF_ITER_DESTROY)
->   BTF_ID_FLAGS(func, bpf_dynptr_adjust)
->   BTF_ID_FLAGS(func, bpf_dynptr_is_null)
->   BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
-> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> index 98d9b4c0daff..149a95762f68 100644
-> --- a/kernel/bpf/task_iter.c
-> +++ b/kernel/bpf/task_iter.c
-> @@ -1027,6 +1027,97 @@ __bpf_kfunc void bpf_iter_task_destroy(struct bpf_iter_task *it)
+> diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
+> index cd8ecd39c3f3..ce1520c56b55 100644
+> --- a/tools/testing/selftests/bpf/bpf_experimental.h
+> +++ b/tools/testing/selftests/bpf/bpf_experimental.h
+> @@ -588,4 +588,11 @@ extern int bpf_iter_kmem_cache_new(struct bpf_iter_kmem_cache *it) __weak __ksym
+>   extern struct kmem_cache *bpf_iter_kmem_cache_next(struct bpf_iter_kmem_cache *it) __weak __ksym;
+>   extern void bpf_iter_kmem_cache_destroy(struct bpf_iter_kmem_cache *it) __weak __ksym;
+>   
+> +struct bpf_iter_task_file;
+> +struct bpf_iter_task_file_item;
+> +extern int bpf_iter_task_file_new(struct bpf_iter_task_file *it, struct task_struct *task) __ksym;
+> +extern struct bpf_iter_task_file_item *
+> +bpf_iter_task_file_next(struct bpf_iter_task_file *it) __ksym;
+> +extern void bpf_iter_task_file_destroy(struct bpf_iter_task_file *it) __ksym;
+
+All the above declarations should be in vmlinux.h already and I see your below bpf prog already
+included vmlinux.h, there is no need to put them here.
+
+> +
+>   #endif
+> diff --git a/tools/testing/selftests/bpf/prog_tests/iters.c b/tools/testing/selftests/bpf/prog_tests/iters.c
+> index 3cea71f9c500..cfe5b56cc027 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/iters.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/iters.c
+> @@ -1,6 +1,8 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   /* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
+>   
+> +#define _GNU_SOURCE
+> +#include <sys/socket.h>
+>   #include <sys/syscall.h>
+>   #include <sys/mman.h>
+>   #include <sys/wait.h>
+> @@ -16,11 +18,13 @@
+>   #include "iters_num.skel.h"
+>   #include "iters_testmod.skel.h"
+>   #include "iters_testmod_seq.skel.h"
+> +#include "iters_task_file.skel.h"
+>   #include "iters_task_vma.skel.h"
+>   #include "iters_task.skel.h"
+>   #include "iters_css_task.skel.h"
+>   #include "iters_css.skel.h"
+>   #include "iters_task_failure.skel.h"
+> +#include "iters_task_file_failure.skel.h"
+>   
+>   static void subtest_num_iters(void)
 >   {
+> @@ -291,6 +295,78 @@ static void subtest_css_iters(void)
+>   	iters_css__destroy(skel);
 >   }
 >   
-> +struct bpf_iter_task_file_item {
-> +	struct task_struct *task;
-> +	struct file *file;
-> +	unsigned int fd;
-> +} __aligned(8);
-
-We probably do not __aligned(8) here as alignment has been
-guaranteed in struct bpf_iter_task_file_kern.
-
-> +
-> +struct bpf_iter_task_file {
-> +	__u64 __opaque[4];
-> +} __aligned(8);
-> +
-> +struct bpf_iter_task_file_kern {
-> +	struct bpf_iter_task_file_item item;
-> +	unsigned int next_fd;
-> +} __aligned(8);
-> +
-> +/**
-> + * bpf_iter_task_file_new() - Initialize a new task file iterator for a task,
-> + * used to iterate over all files opened by a specified task
-> + *
-> + * @it: the new bpf_iter_task_file to be created
-> + * @task: a pointer pointing to a task to be iterated over
-> + */
-> +__bpf_kfunc int bpf_iter_task_file_new(struct bpf_iter_task_file *it, struct task_struct *task)
+> +static int task_file_test_process(void *args)
 > +{
-> +	struct bpf_iter_task_file_kern *kit = (void *)it;
-> +	struct bpf_iter_task_file_item *item = &kit->item;
+> +	int pipefd[2], sockfd, err = 0;
 > +
-> +	BUILD_BUG_ON(sizeof(struct bpf_iter_task_file_kern) > sizeof(struct bpf_iter_task_file));
-> +	BUILD_BUG_ON(__alignof__(struct bpf_iter_task_file_kern) !=
-> +		     __alignof__(struct bpf_iter_task_file));
+> +	/* Create a clean file descriptor table for the test process */
+> +	close_range(0, ~0U, 0);
 > +
-> +	item->task = get_task_struct(task);
-> +	item->file = NULL;
-> +	item->fd = 0;
-> +	kit->next_fd = 0;
+> +	if (pipe(pipefd) < 0)
+> +		return 1;
 > +
+> +	sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+> +	if (sockfd < 0) {
+> +		err = 2;
+> +		goto cleanup_pipe;
+> +	}
+> +
+> +	usleep(1);
+> +
+> +	close(sockfd);
+> +cleanup_pipe:
+> +	close(pipefd[0]);
+> +	close(pipefd[1]);
+> +	return err;
+> +}
+> +
+> +static void subtest_task_file_iters(void)
+> +{
+> +	const int stack_size = 1024 * 1024;
+> +	struct iters_task_file *skel;
+> +	int child_pid, wstatus, err;
+> +	char *stack;
+> +
+> +	skel = iters_task_file__open_and_load();
+> +	if (!ASSERT_OK_PTR(skel, "open_and_load"))
+> +		return;
+> +
+> +	if (!ASSERT_OK(skel->bss->err, "pre_test_err"))
+> +		goto cleanup_skel;
+> +
+> +	skel->bss->parent_pid = getpid();
+> +	skel->bss->count = 0;
+> +
+> +	err = iters_task_file__attach(skel);
+> +	if (!ASSERT_OK(err, "skel_attach"))
+> +		goto cleanup_skel;
+> +
+> +	stack = (char *)malloc(stack_size);
+> +	if (!ASSERT_OK_PTR(stack, "clone_stack"))
+> +		goto cleanup_attach;
+> +
+> +	/* Note that there is no CLONE_FILES */
+> +	child_pid = clone(task_file_test_process, stack + stack_size, CLONE_VM | SIGCHLD, NULL);
+> +	if (!ASSERT_GT(child_pid, -1, "child_pid"))
+> +		goto cleanup_stack;
+> +
+> +	if (!ASSERT_GT(waitpid(child_pid, &wstatus, 0), -1, "waitpid"))
+> +		goto cleanup_stack;
+> +
+> +	if (!ASSERT_OK(WEXITSTATUS(wstatus), "run_task_file_iters_test_err"))
+> +		goto cleanup_stack;
+> +
+> +	ASSERT_EQ(skel->bss->count, 1, "run_task_file_iters_test_count_err");
+> +	ASSERT_OK(skel->bss->err, "run_task_file_iters_test_failure");
+> +
+> +cleanup_stack:
+> +	free(stack);
+> +cleanup_attach:
+> +	iters_task_file__detach(skel);
+> +cleanup_skel:
+> +	iters_task_file__destroy(skel);
+> +}
+> +
+>   void test_iters(void)
+>   {
+>   	RUN_TESTS(iters_state_safety);
+> @@ -315,5 +391,8 @@ void test_iters(void)
+>   		subtest_css_task_iters();
+>   	if (test__start_subtest("css"))
+>   		subtest_css_iters();
+> +	if (test__start_subtest("task_file"))
+> +		subtest_task_file_iters();
+>   	RUN_TESTS(iters_task_failure);
+> +	RUN_TESTS(iters_task_file_failure);
+>   }
+> diff --git a/tools/testing/selftests/bpf/progs/iters_task_file.c b/tools/testing/selftests/bpf/progs/iters_task_file.c
+> new file mode 100644
+> index 000000000000..47941530e51b
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/iters_task_file.c
+> @@ -0,0 +1,86 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_tracing.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include "bpf_misc.h"
+> +#include "bpf_experimental.h"
+> +#include "task_kfunc_common.h"
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +int err, parent_pid, count;
+> +
+> +extern const void pipefifo_fops __ksym;
+> +extern const void socket_file_ops __ksym;
+
+There is no need to have 'const' in the above two extern declarations.
+
+> +
+> +SEC("fentry/" SYS_PREFIX "sys_nanosleep")
+> +int test_bpf_iter_task_file(void *ctx)
+> +{
+> +	struct bpf_iter_task_file task_file_it;
+> +	struct bpf_iter_task_file_item *item;
+> +	struct task_struct *task;
+> +
+> +	task = bpf_get_current_task_btf();
+> +	if (task->parent->pid != parent_pid)
+> +		return 0;
+> +
+> +	count++;
+> +
+> +	bpf_iter_task_file_new(&task_file_it, task);
+> +
+> +	item = bpf_iter_task_file_next(&task_file_it);
+> +	if (item == NULL) {
+> +		err = 1;
+> +		goto cleanup;
+> +	}
+> +
+> +	if (item->fd != 0) {
+> +		err = 2;
+> +		goto cleanup;
+> +	}
+> +
+> +	if (item->file->f_op != &pipefifo_fops) {
+> +		err = 3;
+> +		goto cleanup;
+> +	}
+> +
+> +	item = bpf_iter_task_file_next(&task_file_it);
+> +	if (item == NULL) {
+> +		err = 4;
+> +		goto cleanup;
+> +	}
+> +
+> +	if (item->fd != 1) {
+> +		err = 5;
+> +		goto cleanup;
+> +	}
+> +
+> +	if (item->file->f_op != &pipefifo_fops) {
+> +		err = 6;
+> +		goto cleanup;
+> +	}
+> +
+> +	item = bpf_iter_task_file_next(&task_file_it);
+> +	if (item == NULL) {
+> +		err = 7;
+> +		goto cleanup;
+> +	}
+> +
+> +	if (item->fd != 2) {
+> +		err = 8;
+> +		goto cleanup;
+> +	}
+> +
+> +	if (item->file->f_op != &socket_file_ops) {
+> +		err = 9;
+> +		goto cleanup;
+> +	}
+> +
+> +	item = bpf_iter_task_file_next(&task_file_it);
+> +	if (item != NULL)
+> +		err = 10;
+> +cleanup:
+> +	bpf_iter_task_file_destroy(&task_file_it);
 > +	return 0;
 > +}
-> +
-> +/**
-> + * bpf_iter_task_file_next() - Get the next file in bpf_iter_task_file
-> + *
-> + * bpf_iter_task_file_next acquires a reference to the struct file.
-> + *
-> + * The reference to struct file acquired by the previous
-> + * bpf_iter_task_file_next() is released in the next bpf_iter_task_file_next(),
-> + * and the last reference is released in the last bpf_iter_task_file_next()
-> + * that returns NULL.
-> + *
-> + * @it: the bpf_iter_task_file to be checked
-> + *
-> + * @returns a pointer to bpf_iter_task_file_item
-> + */
-> +__bpf_kfunc struct bpf_iter_task_file_item *bpf_iter_task_file_next(struct bpf_iter_task_file *it)
-> +{
-> +	struct bpf_iter_task_file_kern *kit = (void *)it;
-> +	struct bpf_iter_task_file_item *item = &kit->item;
-> +
-> +	if (item->file)
-> +		fput(item->file);
-> +
-> +	item->file = fget_task_next(item->task, &kit->next_fd);
-> +	item->fd = kit->next_fd;
-> +
-> +	kit->next_fd++;
-> +
-> +	if (!item->file)
-> +		return NULL;
 
-Maybe move the above if statement right after
-	iterm->file = fget_task_next(item->task, &kit->next_fd);
-to make code more coherent?
-
-> +
-> +	return item;
-> +}
-> +
-> +/**
-> + * bpf_iter_task_file_destroy() - Destroy a bpf_iter_task_file
-> + *
-> + * If the iterator does not iterate to the end, then the last
-> + * struct file reference is released at this time.
-> + *
-> + * @it: the bpf_iter_task_file to be destroyed
-> + */
-> +__bpf_kfunc void bpf_iter_task_file_destroy(struct bpf_iter_task_file *it)
-> +{
-> +	struct bpf_iter_task_file_kern *kit = (void *)it;
-> +	struct bpf_iter_task_file_item *item = &kit->item;
-> +
-> +	if (item->file)
-> +		fput(item->file);
-> +
-> +	put_task_struct(item->task);
-> +}
-> +
->   __bpf_kfunc_end_defs();
->   
->   DEFINE_PER_CPU(struct mmap_unlock_irq_work, mmap_unlock_work);
+[...]
 
 
