@@ -1,125 +1,119 @@
-Return-Path: <bpf+bounces-47307-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47308-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB6669F7565
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 08:26:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19CEA9F757E
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 08:29:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 179DA189573D
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 07:25:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 595FB1897C05
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 07:28:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 783A3217708;
-	Thu, 19 Dec 2024 07:24:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72E7C217649;
+	Thu, 19 Dec 2024 07:27:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IgTK/ZXq"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="SWx839Io"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63FA3217673;
-	Thu, 19 Dec 2024 07:24:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3DE87082A
+	for <bpf@vger.kernel.org>; Thu, 19 Dec 2024 07:27:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734593090; cv=none; b=YHB6H3SPSkuU9OQoA4DburBHn0f2neBu1poFxS6wwLKkrwkwQyv1SrowM8UeXOKHZ6qRTVU9Mg7eN/tTOQftpx8WvMr02ygfl6uX7V5NEkwlRs3MOpLjT7W9lwtNhcm0oS2dcVsZJfX84b0WTHcB/K9jh1my1D5RmsHHXgvShsU=
+	t=1734593230; cv=none; b=IWVzUVbKwKNQQbtd63IptGeUx9JzhKBqSFFJCV5Vf8LvuIEQwocOTNLuI5wpqv3F4SVjltIe2ke6YHzJNCBaEPBd7Mjcbi3awMn/wVsFo2qsKlqKumefeuB6LlEmRM52u/hhkj0qsBroUyD/oPUfXEu/VHxQCjF+GBce2/b+zws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734593090; c=relaxed/simple;
-	bh=oZqFuW7QFS4Vc/TSp3AxQi8Ft5gm5pNg6tJATdW+lY0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=u5EJvq+ewLYOqR3LA86L3TCpIfNads1NPRElFUwwxXcGmoP5dHcZPP2KsFT4cKrmh06EFTBZvLJ11zT81q0vJw2HTSeIcRusf9EAdSzQbY4V+XYBQ7zPfuJaIUosKgx7DIQolQmoE5UefgcnsAFW2r3J3a+Yd+0PpZW+17WWKvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IgTK/ZXq; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1734593087; x=1766129087;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=oZqFuW7QFS4Vc/TSp3AxQi8Ft5gm5pNg6tJATdW+lY0=;
-  b=IgTK/ZXqwLmzHFjyZeJciYszJLMkacb69QA4oAAf8m8gRa/JYKPyZWq5
-   i5tgKgelct9jIFWUvgVUZCFk3XToBBNLaJTyiNdYgRBu4rQysh39e7x1X
-   zZd27+Evm78M3vhFqq5D8L3/Ad/8xByhifOZwgnIRoIOJNzGNKf+/Cpla
-   lzLL0NObvClR3F8d3mI2y+Qbllhpsvf83kBcMITlCqqJTX1Y10qHGdVo0
-   AK6+soIj+SOkT119JdySdaTwITgPIEq2+YbUnbtzh2ppcoLAi0sdN3pdX
-   AsBi4Ecu04nng32eKQ2o+0n0y4NgvR+kDEzOOP/mQHU90DrUg14DM/wIy
-   w==;
-X-CSE-ConnectionGUID: b5YJGz8OQiOp+0TCp7v5jg==
-X-CSE-MsgGUID: OYDniWguS82TG4t2pANRXg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11290"; a="35120986"
-X-IronPort-AV: E=Sophos;i="6.12,247,1728975600"; 
-   d="scan'208";a="35120986"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2024 23:24:46 -0800
-X-CSE-ConnectionGUID: XiIO2PtrQJSFbBfzd+zw4Q==
-X-CSE-MsgGUID: c207iclTSYiTooKVnU97ig==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,247,1728975600"; 
-   d="scan'208";a="98013114"
-Received: from choongyo-mobl.gar.corp.intel.com (HELO [10.247.82.175]) ([10.247.82.175])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2024 23:24:43 -0800
-Message-ID: <1bc573ec-1f69-4fc6-9bb4-c0a4c38c10aa@linux.intel.com>
-Date: Thu, 19 Dec 2024 15:24:40 +0800
+	s=arc-20240116; t=1734593230; c=relaxed/simple;
+	bh=Od18z0ts5rbdzAMXA8q7vzb70Zt2A4EjCQMXzlAm/LU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mp3OEgJO54XzgQskcw7gu+tJbSzu7E0gn8RqdrqwGl+dCHGQ56039SH14DwnhMuwLEkkcjwyLBOk7AbUlxXAz0Q+LQHYQx42uLOHiMTNS2MBsbjm7bOSWCpWSvCvFzjqOYfjF8mw02HRcTaJzbIizdGqs32fyqTXUB/z/1bFw0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=SWx839Io; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a9a0ec0a94fso65766466b.1
+        for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 23:27:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1734593226; x=1735198026; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=97dtlVcyBw25M5fzaFmvtmyL554Hmq/m5IYqP4Pg62U=;
+        b=SWx839IoV8/Z+0EGBR+MaZmuLuylHpbmsYz5WSXqyNOvCwU77Ao0fz74KaJnAm5s6O
+         ZbkFb7FcrGVkLRyYDicT9qP+Xl9jwqRtdYRSCEcJh1Swv5Sy+E86pnVzNP1XoCrWgPuW
+         3Q8qS53Zr/YzFN+lTBuPlYp+adFHxcpJ7cNjl25QJ59/TE2mGUUX5zaAoERVtMmZyQC0
+         iyRSaK2RpO+rl/5GpkhPFViqYWvTXbPDNPcVgfpty5E81MLvwLwjkfK5oLfZdRd3evOL
+         7shk58GUODjBt9Xv4gEFmFnf2MZo8L5mHUG3FCPIpRvOPr6yLOHB6Lv8A0bOmR6imXaX
+         O/eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734593226; x=1735198026;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=97dtlVcyBw25M5fzaFmvtmyL554Hmq/m5IYqP4Pg62U=;
+        b=EpoP0LeAFu46csW3hrD2ZTzPXCn+5IRsLT7R7Jf9+wEgYGfvpVzRLxr9UQD3ogyehI
+         gdj23/U5WJhedEFVtwncJqFTt7hgkjWPu84L2tYwCOXJ50JZ9h3+VVLd2MY2Rb11Pf/X
+         PHPMzms1mlLdUkWjPEKVWOSk2np+Rcjoijh+q4RaSjC2/gmOMGjO7BoiKUogxhOviXar
+         eGpzdQid/RLyEYRKYGewpzfBIicDKoBkzhBpcfq0Urc7MXvQ29Mgq2hqzWMM0CyqVTlx
+         NylbScaOcpoN5foC27HmrcIf86tfESJVzGKA4mFbtyIDP24llQNTtKY2jDYH7KRvfmk8
+         Ei+Q==
+X-Gm-Message-State: AOJu0Yz3DQLt/HkwYfCehO5jux9dw/XjL581U2EHiWMm5PXpd6lPpDNy
+	kYZYuwecIkihE3KcU9D9r25BE8TdGnvkc8r/j1Jiq4x7HBraOJMhc+7bssNO3Ag=
+X-Gm-Gg: ASbGncu7TnKikqvFXlevwfU0VOlG86mdFSBbNK5GD6T47atCT9pAkCKDJQLbeS5Lfnj
+	OW9ExXZ6mcz00hGC4LBtX/ImdqTfhD2bKar9Lvi6/yaoAkDzlvFVQTlc5WfUmflXV5O6H7X0aOu
+	bkiEGK/TL1gJ7FlAqi++XdT7zFlYOH8hjGXQLoOusEqcqF6oCSSXUkZqF6yLsaCyi/Dk0WrH7DL
+	nUJ4okuYjY2bTon+Y3kOvHz8ivASHt9m1lzMV+/mw7x9UrXVffQmXlrIRaI2uEN
+X-Google-Smtp-Source: AGHT+IEn6oeRbRI4AbH6fhvhNNVfLJ+Ai5mr0MHcTIXEZVTgpNmYy1QyMV2EdVWreRq6xsw1gNbabw==
+X-Received: by 2002:a17:906:7ad5:b0:aab:73c5:836 with SMTP id a640c23a62f3a-aabf47baa3amr478289066b.32.1734593226110;
+        Wed, 18 Dec 2024 23:27:06 -0800 (PST)
+Received: from localhost (109-81-88-1.rct.o2.cz. [109.81.88.1])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aac0e82f15dsm35600466b.23.2024.12.18.23.27.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Dec 2024 23:27:05 -0800 (PST)
+Date: Thu, 19 Dec 2024 08:27:05 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Sebastian Sewior <bigeasy@linutronix.de>,
+	Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Matthew Wilcox <willy@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>,
+	Tejun Heo <tj@kernel.org>, linux-mm <linux-mm@kvack.org>,
+	Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next v3 4/6] memcg: Use trylock to access memcg
+ stock_lock.
+Message-ID: <Z2PKyU3hJY5e0DUE@tiehlicka>
+References: <20241218030720.1602449-1-alexei.starovoitov@gmail.com>
+ <20241218030720.1602449-5-alexei.starovoitov@gmail.com>
+ <Z2Ky2idzyPn08JE-@tiehlicka>
+ <CAADnVQKv_J-8CdSZsJh3uMz2XFh_g+fHZVGCmq6KTaAkupqi5w@mail.gmail.com>
+ <Z2PGetahl-7EcoIi@tiehlicka>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH iwl-next 6/9] igc: Add support for frame preemption
- verification
-To: Furong Xu <0x1207@gmail.com>, Vladimir Oltean <olteanv@gmail.com>
-Cc: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S . Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Vinicius Costa Gomes <vinicius.gomes@intel.com>,
- intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-References: <20241216064720.931522-1-faizal.abdul.rahim@linux.intel.com>
- <20241216064720.931522-1-faizal.abdul.rahim@linux.intel.com>
- <20241216064720.931522-7-faizal.abdul.rahim@linux.intel.com>
- <20241216064720.931522-7-faizal.abdul.rahim@linux.intel.com>
- <20241217002254.lyakuia32jbnva46@skbuf> <20241217200952.000059f2@gmail.com>
-Content-Language: en-US
-From: Choong Yong Liang <yong.liang.choong@linux.intel.com>
-In-Reply-To: <20241217200952.000059f2@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z2PGetahl-7EcoIi@tiehlicka>
 
+On Thu 19-12-24 08:08:44, Michal Hocko wrote:
+> All that being said, the message I wanted to get through is that atomic
+> (NOWAIT) charges could be trully reentrant if the stock local lock uses
+> trylock. We do not need a dedicated gfp flag for that now.
 
-
-On 17/12/2024 8:09 pm, Furong Xu wrote:
-> On Tue, 17 Dec 2024 02:22:54 +0200, Vladimir Oltean <olteanv@gmail.com> wrote:
-> 
->> Anyway, while browsing through this software implementation of a
->> verification process, I cannot help but think we'd be making a huge
->> mistake to allow each driver to reimplement it on its own. We just
->> recently got stmmac to do something fairly clean, with the help and
->> great perseverence of Furong Xu (now copied).
->>
->> I spent a bit of time extracting stmmac's core logic and putting it in
->> ethtool. If Furong had such good will so as to regression-test the
->> attached patch, do you think you could use this as a starting place
->> instead, and implement some ops and call some library methods, instead
->> of writing the entire logic yourself?
->>
-> 
-> I am quiet busy these days, especially near the end of the year :)
-> 
-> Maybe I can help testing the attached patch when the next time net-next opens.
-> 
-> Thanks.
-> 
-
-I'm a colleague of Faizal and I'd be happy to help out with testing the 
-patch. I'll take care of testing it on the stmmac side and will sort out 
-any issues that come up. If there are any necessary fixes or improvements, 
-I'll handle those and provide feedback accordingly.
+And I want to add. Not only we can achieve that, I also think this is
+desirable because for !RT this will be no functional change and for RT
+it makes more sense to simply do deterministic (albeit more costly
+page_counter update) than spin over a lock to use the batch (or learn
+the batch cannot be used).
+-- 
+Michal Hocko
+SUSE Labs
 
