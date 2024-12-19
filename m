@@ -1,329 +1,160 @@
-Return-Path: <bpf+bounces-47336-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47337-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E137D9F7FED
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 17:35:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 158869F8020
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 17:42:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27B3818885E6
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 16:35:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F84F1653D8
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2024 16:42:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E2D226874;
-	Thu, 19 Dec 2024 16:35:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5423D227585;
+	Thu, 19 Dec 2024 16:41:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Bfcdyczw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GGS2uemq"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82D4986345
-	for <bpf@vger.kernel.org>; Thu, 19 Dec 2024 16:35:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1775B223E64;
+	Thu, 19 Dec 2024 16:41:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734626122; cv=none; b=aClPKIbypVJEHcoVwfuuNabiCRxRgUjYX/3gJYrlxHQaCIayoXAQQuHBHyvTFIsZar+RrNaRXyLYFn7vnNirlcqqJ7QChgzupqESNYUx/EXmdIdNkqTaPqSNmm5tAZmWw19WvbXHLgdMQotuHW3Mgg+1XTVVS+AzDxecSdnqXPA=
+	t=1734626515; cv=none; b=e50KNFtoEA5VJSjbSHXLZpJ2f/TGY08EFv/Zky+ZT741J4H/b475hJfTd2fTsrXcWaV8Q/F6v1CMRUCqwKFXli1Z+jmLOvTBFXMIzjoDTSwxcFHG2+Rh9rvo3qb8GihsQihwtkgRZoZo/nMVwpaFFjUvPwsvKRiypllU4VQN1GA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734626122; c=relaxed/simple;
-	bh=VY2LhPE7qpJ+JS19W9F427RdYKWAi0StXFYID6wxOL4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EcDw0gAtl138gKGUGr+EvbwCW69fuz1a1zUaeTTJaPSPLC8ok04GIVIjPllcypA38JJu1J9EZk3g31sT/05USZRQsH/wxGwr8d35jRNt1Yz4QJoYPgt5v6RQ2C0GAsWfOrwnma9mjjBhBtDHJgBBpTD8KPBiRBA+m4gJNdkY3CM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Bfcdyczw; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2d389258-ad08-4d28-a347-667909b0e190@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1734626116;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wE4woTuzO5Vn0u1/80asGZMkatsiSe7DQQ29k/o5eNg=;
-	b=BfcdyczwxmRq/ZVq/xD0sGno/3/0z0YfutKqZVLTvuhjkJ+4K+V7xdKw/42Wu3cw15dAKX
-	kK34zptABIKzyaHLYhwtImTstb7iBJvbWiFny61fyiwoX4c8KOiWfFsc4ku4Bjssgfg+oC
-	tuwb06Vgol5AGpZsUJ0vq0UmJ6kjIfU=
-Date: Thu, 19 Dec 2024 08:35:09 -0800
+	s=arc-20240116; t=1734626515; c=relaxed/simple;
+	bh=FjsnUKfks9U0N82oHq5v3AkcFRCDT1236DGZJGpNZcE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=t5ARlFvO9/Cwrn30aqCR8SZtgMSD/a3j+7moh8g+k3uoHU34cnYf6/A4EtAvtFafNWJ1vup+yvQuUXaROBcop7xRzFZ0dLJl+f3RBysXV1UjGI61U1mNBcnYWNRfvp7QU1bazs82Lx4rVd7rLBNJkR7vo2LOxMNggu/4Mn1d7dQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GGS2uemq; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-385e3621518so542008f8f.1;
+        Thu, 19 Dec 2024 08:41:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734626512; x=1735231312; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lXsllVaoeoWh6730B25Ivn5lUpttsv8hfymuwDTfqqk=;
+        b=GGS2uemqgJVS83SL1dtPSHORjREE+jRro+O2L+8rLld6TVLECpejntj5490fY/wdHT
+         W2DQoxQ2JP3vsAO3U5+Tej25irCySDa+Ck3Lq3GuSKMnUb8z0viTfR4wXxVD3MYglRpL
+         vrSuW6b0jFf686L6mVdUWuvYauP1A38SX4MfYvHWHVz3mNGNpgkgU1i6F4z4zjarkG5U
+         mNNxuBoQCPLJovO5ODdhmyfT0u73tgFUNmEkbmH6nLWX1i0ySnku7ag8R8G8KlLLgslS
+         XU8JEi4pkNtk2qhIR2RsIp8xq2KTLoHuHu7/XUq98yySeijNvjy+LPaVwtpxC8vIQ2YO
+         ZzFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734626512; x=1735231312;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lXsllVaoeoWh6730B25Ivn5lUpttsv8hfymuwDTfqqk=;
+        b=hVYUyoO/K3O/EowT+a12iMskJ7qgtGoWSMpYdZWE5Nr53mU3XxiWFOgrDOfgeL2QSQ
+         goq1reUY2l+qfiG4DGTpsecoJt33wKf8+rccBzo3GUb6dGlpZqVZ2ZsF+lFWGkcbPwF5
+         9CiCQmsdOnN/bNUjxfOYQca31nPBkU/cI8wGhHYv6sy6ME2t9+hZM5GEBRvm4u8wNBWC
+         lSwIhjmBZcYqYuNgwi3kDyjWUwk/7UmcOzSn9Cf5rus9p8x+2fqlaGENbNuwVkRvT97V
+         JFFxQZAkJf1DNQPBrm31q5B7Ph0cWX/D9GO/XF0ASNHdEa2zOR0JXhu+F0jmLLhvg4+H
+         Aedg==
+X-Forwarded-Encrypted: i=1; AJvYcCWVoDizm26LlNuV2CEkqlj9fCf3NM8t5FLUa7E80b1mKS5yHmd6e6dnpb1a7bh2j/dxVc+xFY7ms02dv+EyQQ==@vger.kernel.org, AJvYcCWdklB2EGaZOAwfHZOSflTWPm0Y2kjKVlUCAdR1H/dz+jOfaCBhUb3kSP20mhz/rvhN22A575bV5MGRvqnW@vger.kernel.org, AJvYcCWpUih1x6n5ZnfogTLYkf5Tb+dWZPXbMhQYLfBNtuPUVlzg+qsJ16L1E8ueTF7NPBu43Vw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzs2VUynpv3eYMbflt92nIqlToUOcOQpuYUrptgZOwslpyu2dsa
+	0B6ILE9xWk+rDPW7cc9LQqnNtAJvhsHvED240xxVx4468DKX2nW282T/WWm5sPDHDjQjhUVaHcu
+	WtnvCyEanmACUvxzx7odCHeWsn2k=
+X-Gm-Gg: ASbGncusvsUuQ7S99bncu+IoqWjP30Az/Nyc1PiJv2vagEAsiaQeSvYsF3kuIt8m/mG
+	vv0f4pvS6uEL2LS+WKKnfvfXKMqqoFQamG1tmZFpn
+X-Google-Smtp-Source: AGHT+IG632GnjuZiL2mrFEEMWXlT/cCnaAZz0QMpK3AEB+tsUZM/pv6qlctcyE2W6m0x+mKInM/g7aEZHDfioCFAm74=
+X-Received: by 2002:a5d:6c63:0:b0:386:1c13:30d5 with SMTP id
+ ffacd0b85a97d-388e4d4a602mr8391806f8f.7.1734626512200; Thu, 19 Dec 2024
+ 08:41:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v6 2/5] selftests/bpf: Add tests for open-coded
- style process file iterator
-Content-Language: en-GB
-To: Juntong Deng <juntong.deng@outlook.com>, ast@kernel.org,
- daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- memxor@gmail.com, snorcht@gmail.com, brauner@kernel.org
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org
 References: <AM6PR03MB5080DC63013560E26507079E99042@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <AM6PR03MB508014EBAC89D14D0C3ADA6899042@AM6PR03MB5080.eurprd03.prod.outlook.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <AM6PR03MB508014EBAC89D14D0C3ADA6899042@AM6PR03MB5080.eurprd03.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+ <AM6PR03MB5080E0DFE4F9BAFFDB9D113B99042@AM6PR03MB5080.eurprd03.prod.outlook.com>
+In-Reply-To: <AM6PR03MB5080E0DFE4F9BAFFDB9D113B99042@AM6PR03MB5080.eurprd03.prod.outlook.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 19 Dec 2024 08:41:41 -0800
+Message-ID: <CAADnVQLU=W7fuEQommfDYrxr9A2ESV7E3uUAm4VUbEugKEZbkQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 4/5] bpf: Make fs kfuncs available for SYSCALL
+ program type
+To: Juntong Deng <juntong.deng@outlook.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, snorcht@gmail.com, 
+	Christian Brauner <brauner@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-
-On 12/17/24 3:37 PM, Juntong Deng wrote:
-> This patch adds test cases for open-coded style process file iterator.
+On Tue, Dec 17, 2024 at 3:45=E2=80=AFPM Juntong Deng <juntong.deng@outlook.=
+com> wrote:
 >
-> Test cases related to process files are run in the newly created child
-> process. Close all opened files inherited from the parent process in
-> the child process to avoid the files opened by the parent process
-> affecting the test results.
+> -static int bpf_fs_kfuncs_filter(const struct bpf_prog *prog, u32 kfunc_i=
+d)
+> -{
+> -       if (!btf_id_set8_contains(&bpf_fs_kfunc_set_ids, kfunc_id) ||
+> -           prog->type =3D=3D BPF_PROG_TYPE_LSM)
+> -               return 0;
+> -       return -EACCES;
+> -}
+> -
+>  static const struct btf_kfunc_id_set bpf_fs_kfunc_set =3D {
+>         .owner =3D THIS_MODULE,
+>         .set =3D &bpf_fs_kfunc_set_ids,
+> -       .filter =3D bpf_fs_kfuncs_filter,
+>  };
 >
-> In addition, this patch adds failure test cases where bpf programs
-> cannot pass the verifier due to uninitialized or untrusted
-> arguments, etc.
+>  static int __init bpf_fs_kfuncs_init(void)
+>  {
+> -       return register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM, &bpf_fs_kfunc=
+_set);
+> +       int ret;
+> +
+> +       ret =3D register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM, &bpf_fs_kfun=
+c_set);
+> +       return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &b=
+pf_fs_kfunc_set);
+>  }
 >
-> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
-> ---
->   .../testing/selftests/bpf/bpf_experimental.h  |  7 ++
->   .../testing/selftests/bpf/prog_tests/iters.c  | 79 ++++++++++++++++
->   .../selftests/bpf/progs/iters_task_file.c     | 86 ++++++++++++++++++
->   .../bpf/progs/iters_task_file_failure.c       | 91 +++++++++++++++++++
->   4 files changed, 263 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/progs/iters_task_file.c
->   create mode 100644 tools/testing/selftests/bpf/progs/iters_task_file_failure.c
+>  late_initcall(bpf_fs_kfuncs_init);
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_vfs_reject.c b/to=
+ols/testing/selftests/bpf/progs/verifier_vfs_reject.c
+> index d6d3f4fcb24c..5aab75fd2fa5 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_vfs_reject.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_vfs_reject.c
+> @@ -148,14 +148,4 @@ int BPF_PROG(path_d_path_kfunc_invalid_buf_sz, struc=
+t file *file)
+>         return 0;
+>  }
 >
-> diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
-> index cd8ecd39c3f3..ce1520c56b55 100644
-> --- a/tools/testing/selftests/bpf/bpf_experimental.h
-> +++ b/tools/testing/selftests/bpf/bpf_experimental.h
-> @@ -588,4 +588,11 @@ extern int bpf_iter_kmem_cache_new(struct bpf_iter_kmem_cache *it) __weak __ksym
->   extern struct kmem_cache *bpf_iter_kmem_cache_next(struct bpf_iter_kmem_cache *it) __weak __ksym;
->   extern void bpf_iter_kmem_cache_destroy(struct bpf_iter_kmem_cache *it) __weak __ksym;
->   
-> +struct bpf_iter_task_file;
-> +struct bpf_iter_task_file_item;
-> +extern int bpf_iter_task_file_new(struct bpf_iter_task_file *it, struct task_struct *task) __ksym;
-> +extern struct bpf_iter_task_file_item *
-> +bpf_iter_task_file_next(struct bpf_iter_task_file *it) __ksym;
-> +extern void bpf_iter_task_file_destroy(struct bpf_iter_task_file *it) __ksym;
+> -SEC("fentry/vfs_open")
+> -__failure __msg("calling kernel function bpf_path_d_path is not allowed"=
+)
 
-All the above declarations should be in vmlinux.h already and I see your below bpf prog already
-included vmlinux.h, there is no need to put them here.
+This is incorrect.
+You have to keep bpf_fs_kfuncs_filter() and prog->type =3D=3D BPF_PROG_TYPE=
+_LSM
+check because bpf_prog_type_to_kfunc_hook() aliases LSM and fentry
+into BTF_KFUNC_HOOK_TRACING category. It's been an annoying quirk.
+We're figuring out details for significant refactoring of
+register_btf_kfunc_id_set() and the whole registration process.
 
-> +
->   #endif
-> diff --git a/tools/testing/selftests/bpf/prog_tests/iters.c b/tools/testing/selftests/bpf/prog_tests/iters.c
-> index 3cea71f9c500..cfe5b56cc027 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/iters.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/iters.c
-> @@ -1,6 +1,8 @@
->   // SPDX-License-Identifier: GPL-2.0
->   /* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
->   
-> +#define _GNU_SOURCE
-> +#include <sys/socket.h>
->   #include <sys/syscall.h>
->   #include <sys/mman.h>
->   #include <sys/wait.h>
-> @@ -16,11 +18,13 @@
->   #include "iters_num.skel.h"
->   #include "iters_testmod.skel.h"
->   #include "iters_testmod_seq.skel.h"
-> +#include "iters_task_file.skel.h"
->   #include "iters_task_vma.skel.h"
->   #include "iters_task.skel.h"
->   #include "iters_css_task.skel.h"
->   #include "iters_css.skel.h"
->   #include "iters_task_failure.skel.h"
-> +#include "iters_task_file_failure.skel.h"
->   
->   static void subtest_num_iters(void)
->   {
-> @@ -291,6 +295,78 @@ static void subtest_css_iters(void)
->   	iters_css__destroy(skel);
->   }
->   
-> +static int task_file_test_process(void *args)
-> +{
-> +	int pipefd[2], sockfd, err = 0;
-> +
-> +	/* Create a clean file descriptor table for the test process */
-> +	close_range(0, ~0U, 0);
-> +
-> +	if (pipe(pipefd) < 0)
-> +		return 1;
-> +
-> +	sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-> +	if (sockfd < 0) {
-> +		err = 2;
-> +		goto cleanup_pipe;
-> +	}
-> +
-> +	usleep(1);
-> +
-> +	close(sockfd);
-> +cleanup_pipe:
-> +	close(pipefd[0]);
-> +	close(pipefd[1]);
-> +	return err;
-> +}
-> +
-> +static void subtest_task_file_iters(void)
-> +{
-> +	const int stack_size = 1024 * 1024;
-> +	struct iters_task_file *skel;
-> +	int child_pid, wstatus, err;
-> +	char *stack;
-> +
-> +	skel = iters_task_file__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-> +		return;
-> +
-> +	if (!ASSERT_OK(skel->bss->err, "pre_test_err"))
-> +		goto cleanup_skel;
-> +
-> +	skel->bss->parent_pid = getpid();
-> +	skel->bss->count = 0;
-> +
-> +	err = iters_task_file__attach(skel);
-> +	if (!ASSERT_OK(err, "skel_attach"))
-> +		goto cleanup_skel;
-> +
-> +	stack = (char *)malloc(stack_size);
-> +	if (!ASSERT_OK_PTR(stack, "clone_stack"))
-> +		goto cleanup_attach;
-> +
-> +	/* Note that there is no CLONE_FILES */
-> +	child_pid = clone(task_file_test_process, stack + stack_size, CLONE_VM | SIGCHLD, NULL);
-> +	if (!ASSERT_GT(child_pid, -1, "child_pid"))
-> +		goto cleanup_stack;
-> +
-> +	if (!ASSERT_GT(waitpid(child_pid, &wstatus, 0), -1, "waitpid"))
-> +		goto cleanup_stack;
-> +
-> +	if (!ASSERT_OK(WEXITSTATUS(wstatus), "run_task_file_iters_test_err"))
-> +		goto cleanup_stack;
-> +
-> +	ASSERT_EQ(skel->bss->count, 1, "run_task_file_iters_test_count_err");
-> +	ASSERT_OK(skel->bss->err, "run_task_file_iters_test_failure");
-> +
-> +cleanup_stack:
-> +	free(stack);
-> +cleanup_attach:
-> +	iters_task_file__detach(skel);
-> +cleanup_skel:
-> +	iters_task_file__destroy(skel);
-> +}
-> +
->   void test_iters(void)
->   {
->   	RUN_TESTS(iters_state_safety);
-> @@ -315,5 +391,8 @@ void test_iters(void)
->   		subtest_css_task_iters();
->   	if (test__start_subtest("css"))
->   		subtest_css_iters();
-> +	if (test__start_subtest("task_file"))
-> +		subtest_task_file_iters();
->   	RUN_TESTS(iters_task_failure);
-> +	RUN_TESTS(iters_task_file_failure);
->   }
-> diff --git a/tools/testing/selftests/bpf/progs/iters_task_file.c b/tools/testing/selftests/bpf/progs/iters_task_file.c
-> new file mode 100644
-> index 000000000000..47941530e51b
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/iters_task_file.c
-> @@ -0,0 +1,86 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_tracing.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include "bpf_misc.h"
-> +#include "bpf_experimental.h"
-> +#include "task_kfunc_common.h"
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +int err, parent_pid, count;
-> +
-> +extern const void pipefifo_fops __ksym;
-> +extern const void socket_file_ops __ksym;
+Maybe you would be interested in working on it?
 
-There is no need to have 'const' in the above two extern declarations.
-
-> +
-> +SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-> +int test_bpf_iter_task_file(void *ctx)
-> +{
-> +	struct bpf_iter_task_file task_file_it;
-> +	struct bpf_iter_task_file_item *item;
-> +	struct task_struct *task;
-> +
-> +	task = bpf_get_current_task_btf();
-> +	if (task->parent->pid != parent_pid)
-> +		return 0;
-> +
-> +	count++;
-> +
-> +	bpf_iter_task_file_new(&task_file_it, task);
-> +
-> +	item = bpf_iter_task_file_next(&task_file_it);
-> +	if (item == NULL) {
-> +		err = 1;
-> +		goto cleanup;
-> +	}
-> +
-> +	if (item->fd != 0) {
-> +		err = 2;
-> +		goto cleanup;
-> +	}
-> +
-> +	if (item->file->f_op != &pipefifo_fops) {
-> +		err = 3;
-> +		goto cleanup;
-> +	}
-> +
-> +	item = bpf_iter_task_file_next(&task_file_it);
-> +	if (item == NULL) {
-> +		err = 4;
-> +		goto cleanup;
-> +	}
-> +
-> +	if (item->fd != 1) {
-> +		err = 5;
-> +		goto cleanup;
-> +	}
-> +
-> +	if (item->file->f_op != &pipefifo_fops) {
-> +		err = 6;
-> +		goto cleanup;
-> +	}
-> +
-> +	item = bpf_iter_task_file_next(&task_file_it);
-> +	if (item == NULL) {
-> +		err = 7;
-> +		goto cleanup;
-> +	}
-> +
-> +	if (item->fd != 2) {
-> +		err = 8;
-> +		goto cleanup;
-> +	}
-> +
-> +	if (item->file->f_op != &socket_file_ops) {
-> +		err = 9;
-> +		goto cleanup;
-> +	}
-> +
-> +	item = bpf_iter_task_file_next(&task_file_it);
-> +	if (item != NULL)
-> +		err = 10;
-> +cleanup:
-> +	bpf_iter_task_file_destroy(&task_file_it);
-> +	return 0;
-> +}
-
-[...]
-
+The main goal is to get rid of run-time mask check in SCX_CALL_OP() and
+make it static by the verifier. To make that happen scx_kf_mask flags
+would need to become KF_* flags while each struct-ops callback will
+specify the expected mask.
+Then at struct-ops prog attach time the verifier will see the expected mask
+and can check that all kfuncs calls of this particular program
+satisfy the mask. Then all of the runtime overhead of
+current->scx.kf_mask and scx_kf_allowed() will go away.
 
