@@ -1,100 +1,155 @@
-Return-Path: <bpf+bounces-47418-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47419-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 208859F94D7
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 15:48:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7933F9F94E8
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 15:53:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 399C41893C2F
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 14:48:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81B73162641
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 14:52:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85D1B218AD4;
-	Fri, 20 Dec 2024 14:47:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99C77218ABA;
+	Fri, 20 Dec 2024 14:52:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="BA8OJcge"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="eDSwEVQ5"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A471A208AD;
-	Fri, 20 Dec 2024 14:47:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98561A31;
+	Fri, 20 Dec 2024 14:52:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734706024; cv=none; b=PB/UOcKSO4QIBtSfrLe5A1If6e+GNF4cVbNxMcoTkq64RKCGpiRbZIDL7WhG3cIUzxEipTRG8MtpYKtX5gdULDybAjuvODNEeRptXYk3WHI/3gYeBbp5NN2FSQaeadCCsfnS6T/0qhTgUcUF1WIVkxdRn5zti1UY6sBD3LC0SIM=
+	t=1734706351; cv=none; b=i5GkT2b3ZU3dxkFnSSVKWg/hczkzSYXwanH/zIysEqtMsgruNp9KR+HWmWvrjygRSevw1GOMMCuaXHsMcfF3IKxGQPU+fYq/WfW0WYjOtq/5V7UlnekSY3RWkvB2r+x8Ic1sgtyH/kuvXvxhOqk52Rk/8U0uX2UXRTbtWJ7kpiY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734706024; c=relaxed/simple;
-	bh=HCrEAAyotKxKRWLBaBxhQwY17aOJ/YM4MOqrqDIB0AQ=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Cc:Content-Type; b=K5Opqtc6FpSfof3OTKGY1dfWeZqE9Dxwhasb2/jOU+jdwozLWETmYspiqXJIlw/cafzHrVstzoF81CMdK7Kwsww46YZZ2YhXcrJJlS5yvSxUxNf5HW4fjBaxxsyXl8LCc92ErAF1KDxsHauAzfi73k5U7XpqRQ+gQJozLeoO98c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=BA8OJcge; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3AC231C0002;
-	Fri, 20 Dec 2024 14:46:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1734706014;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=24pEqrf3AtOU4unFt++SFGFTIhLGoaZLEbxNJKCl+R8=;
-	b=BA8OJcgeH3pw47BeyGLyPP7bKXKACC+R3qH3qX36+fw8ojUVr/KB7eSnMKJ85QunWJeR1Z
-	2sjUUjlYbItSXjiDF/UTos4wE3vhF3Veq2QDhN+7h+q+ls/0+jBfFA7ktRzSzREHY6KL+w
-	6K9RkDAea6xuh1Ayq8/yN8Ae/X0zrX3fJdLNO7hsZCY94ypWhKHSjyEDlH6dAHD+UZJ6Oo
-	Jc9J2M5OQWDtTMoA3LcDXy/ZKimx4zKXFXKb/+Ip5h587p0zRUcm9hXhPSRxc7PuFeZBki
-	GYRFyfl4oKZa1j14i0SppIM+9ozlM3zFdJy02xuQ5P+X2EGwp82i1hNx6dZUOg==
-Message-ID: <e3d0bd36-c074-4cda-b6e1-5f873453ad30@bootlin.com>
-Date: Fri, 20 Dec 2024 15:46:52 +0100
+	s=arc-20240116; t=1734706351; c=relaxed/simple;
+	bh=ZJ5/0AjtwEVJhSAe2QiMxUUTnv/SLWtSjiviGvRk79k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AOk2Mqz5oOfUIV+jhhiBQL167mUEakoYqb2FFV0gx7CRSaPiQ83HnenXtckwfEBHNslUMOkC2DbijMGzUckTcYxkQHBZ8PECQctNODsGxJMhGJKP6ReGPkUGcK/SmHmCOR5zmgcKKwTphp5he8Hg+hBtG/P6E53MrMyGDNIswwg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=eDSwEVQ5; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BKDCLVp002618;
+	Fri, 20 Dec 2024 14:52:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=mKPrT1JelCj+eZ9nHFa7ke5vVUTVXA
+	p3dlHcoxg1Dxg=; b=eDSwEVQ5yCFtlmrAYF/SiyrhJIpx9uIfQsq3y2ujHPg1QN
+	zgMoCaEZLqxSPEcBol35h5WPMr9t/1X6E8kP+2JasCj7JNHY5+NF1AV2E0hhxWKF
+	5PfhymWbzwh+2RMlV4pJxJprD2KugJWXeHt4p5vSuerXejCEED9hd+DmpmQo1VHX
+	KQv6aB8eOC3jmkaAGZ6YnOJ3eP20t4sjrVrBZIQi1hv91ECkoFis6UG9KXEqAumJ
+	KFiNqGJWNQKDz0L+uUuZKn3g11DgCOy24QpPaaxMFDvSbRFvl9UahaRpdX7m/80e
+	xhY6y2GX3sudthVrGtN/y7UbA44A2jz/1HVUuodg==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43mwmhkedu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 20 Dec 2024 14:52:05 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4BKEn46u001174;
+	Fri, 20 Dec 2024 14:52:04 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43mwmhkedh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 20 Dec 2024 14:52:04 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4BKC2BLA014412;
+	Fri, 20 Dec 2024 14:52:03 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 43hq2226nc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 20 Dec 2024 14:52:02 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4BKEpxRK55378300
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 20 Dec 2024 14:51:59 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7890820043;
+	Fri, 20 Dec 2024 14:51:59 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0FA7E20040;
+	Fri, 20 Dec 2024 14:51:58 +0000 (GMT)
+Received: from osiris (unknown [9.171.21.133])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri, 20 Dec 2024 14:51:57 +0000 (GMT)
+Date: Fri, 20 Dec 2024 15:51:56 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Florent Revest <revest@chromium.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>, linux-arch@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH v21 03/20] fgraph: Replace fgraph_ret_regs with
+ ftrace_regs
+Message-ID: <20241220145156.12646-B-hca@linux.ibm.com>
+References: <173379652547.973433.2311391879173461183.stgit@devnote2>
+ <173379656618.973433.13429645373226409113.stgit@devnote2>
+ <20241219163448.7fe08f79@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: bpf@vger.kernel.org
-Content-Language: en-US
-From: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-Subject: Question about test_xsk.sh
-Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
- Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Martin KaFai Lau <martin.lau@linux.dev>,
- Bastien Curutchet <bastien.curutchet@bootlin.com>,
- Stanislav Fomichev <sdf@fomichev.me>, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alexis.lothore@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241219163448.7fe08f79@gandalf.local.home>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: HrynHg9cz6mMkipmk1AxHMwVIG6LuECb
+X-Proofpoint-GUID: noteq2OLo4fWPoG6xjEDGLY8ZX2H4bwU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
+ priorityscore=1501 mlxscore=0 phishscore=0 lowpriorityscore=0
+ suspectscore=0 clxscore=1015 malwarescore=0 adultscore=0 mlxlogscore=383
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2411120000 definitions=main-2412200119
 
-Hello all,
+On Thu, Dec 19, 2024 at 04:34:48PM -0500, Steven Rostedt wrote:
+> On Tue, 10 Dec 2024 11:09:26 +0900
+> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+> 
+> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > 
+> > Use ftrace_regs instead of fgraph_ret_regs for tracing return value
+> > on function_graph tracer because of simplifying the callback interface.
+> > 
+> > The CONFIG_HAVE_FUNCTION_GRAPH_RETVAL is also replaced by
+> > CONFIG_HAVE_FUNCTION_GRAPH_FREGS.
+> > 
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > Acked-by: Heiko Carstens <hca@linux.ibm.com>
+> 
+> Did Heiko ack this? I don't see it in my inbox.
 
-I was looking  at other test candidates for conversion to bpf test_progs
-framework (to increase automatic testing scope) and found test_xsk.sh, which
-does not seem to have coverage yet in test_progs. This test validates the AF_XDP
-socket behavior with different XDP modes (SKB, DRV, zero copy) and socket
-configuration (normal, busy polling).
+Yes, I did:
+https://lore.kernel.org/lkml/20240916121656.20933-B-hca@linux.ibm.com/
 
-The testing program looks pretty big, considering all files involved
-(test_xsk.sh, xskxceiver.c, xsk.c, the different XDP programs) and the matrix of
-tests it runs. So before really diving into it, I would like to ask:
-- is it indeed a good/relevant target for integration in test_progs (all tests
-look like functional tests, so I guess it is) ?
-- if so, is there anyone already working on this ?
-- multiple commits on xskxceiver.c hint that the program is also used for
-testing on real hardware, could someone confirm that it is still the case
-(similar need has been seen with test_xdp_features.sh for example) ? If so, it
-means that the current form must be preserved, and it would be an additional
-integration into test_progs rather a conversion (then most of the code should be
-shared between the non-test_progs and the test_progs version)
+> Heiko,
+> 
+> Does the above look OK to you?
 
-Thanks,
-
-Alexis
-
--- 
-Alexis Lothoré, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+Looks still good to me.
 
