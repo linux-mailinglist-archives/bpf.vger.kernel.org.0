@@ -1,111 +1,120 @@
-Return-Path: <bpf+bounces-47392-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47393-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EB779F8AE1
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 05:10:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE36B9F8AE4
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 05:10:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26F09188D8FB
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 04:10:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 667B7188E880
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 04:10:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78BFF15ADA6;
-	Fri, 20 Dec 2024 04:10:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF4B186E54;
+	Fri, 20 Dec 2024 04:10:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="NjWWMGF2";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="r4mPumX3"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="j/ElAzTs";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="eeww0wge"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-b2-smtp.messagingengine.com (fhigh-b2-smtp.messagingengine.com [202.12.124.153])
+Received: from flow-b2-smtp.messagingengine.com (flow-b2-smtp.messagingengine.com [202.12.124.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3549813C8E8;
-	Fri, 20 Dec 2024 04:10:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E2C016EB42;
+	Fri, 20 Dec 2024 04:10:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.137
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734667807; cv=none; b=NzqP8rxvCwBqF69WIqTcZLUAbiZT60C8FNJhC7zJzF3lv0jOIZy+Xcj/SYmvy5kQO2HSDrBm3VRJ0/tJhScgIHKP9qKSFX4jBFS5DUdeMMc2YRd2uShkK/h42mLcRBXHE93ykL3kvX9Qyxskq2APdBwfbjwweKqbNSLbswxNtMY=
+	t=1734667810; cv=none; b=CuFssYNbaSXmfnDxvgCWClNUQpg/wDEhuA0JL298yoFKog0fkbt/Gxa/rsjKP2nUBoFQ651mcTJvfjy6TYblqPt0KWBVDveR3DYAusVHxn5z3/UVyRmX/TdNzF25wpl2/Hug2j2+65cgDOPBUiMw5lUbITAoX66tlHngX0F+1y8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734667807; c=relaxed/simple;
-	bh=i/WFYcyw8bKaFwYR289SWLCraGpkA721LEQkMAEXxcs=;
+	s=arc-20240116; t=1734667810; c=relaxed/simple;
+	bh=M3sPUnOlMOUEjIyxNXS7N0GciZ/ZSrap+cHlJvyandE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WHrv/bwjpQCc/f67SyuxxopKZuIqprDYREu7d58aepCF/3i9onk4t12lcFZeT9XGjRc56yIDloV05dX+eYvQR87I6hJvMkC+ycwWnzPdk3VH5YjlAhiem59kDU0Uq8BEXpufhuLv9vsgqOmvC3JQJJQ56cl5pfFMUvnh9275Zmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=NjWWMGF2; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=r4mPumX3; arc=none smtp.client-ip=202.12.124.153
+	 MIME-Version; b=VqGHLqhNKBd8TYf0FHYoiNBFSROkQJfWYORFoYZzvcsWzGo90H7vc2uN0kiBC4xHQgFWRe1rLiBpZTqD+hw2stZVNYucPpzWrX4fYhBp2GF7PkaQceTD+7u3eyF5pY1oC2GAXzTUTyqLpxcy+qCCDRSfXGJxJ00+KOUhmCUn35g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=j/ElAzTs; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=eeww0wge; arc=none smtp.client-ip=202.12.124.137
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id ECFC1254015D;
-	Thu, 19 Dec 2024 23:10:03 -0500 (EST)
+Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
+	by mailflow.stl.internal (Postfix) with ESMTP id 5C1E91D40601;
+	Thu, 19 Dec 2024 23:10:07 -0500 (EST)
 Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-03.internal (MEProxy); Thu, 19 Dec 2024 23:10:04 -0500
+  by phl-compute-06.internal (MEProxy); Thu, 19 Dec 2024 23:10:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
 	:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1734667803; x=
-	1734754203; bh=dX2LDURcWUjkbE3j8vdY2N7db67PorPWhmDWzCc1jcs=; b=N
-	jWWMGF2QzfuR/QhixL4RnxlYUXobdXhbEw0jvDiNbA9i92y5UefHrEEs/ugGKGKs
-	NPPaIM295XkKpc2w85DmmCoVtzk2cma1ODtjGcMHn7xH+ZeEshuNbsubG+4Sc6tr
-	IQ9bdZIkB7RGRwSPdHwdlyyyOW2OqDXFcj4KF7qrKXMsrgYNDsPXKHBgmjd8NRXr
-	ArUE8yQ1abr0ovVGB7jbMc6Tb7k9tl0U8aB0Ti3URXckURmxrJY1GmxeF0VqTBE0
-	p2chmxQrICn8EZjZOxlb28Pod2dYeq+rClbzA1AtDhJe0Ej/YDy/cHjNGcG3/EHV
-	KBYgH9mclqF3kS3EonRXw==
+	:reply-to:subject:subject:to:to; s=fm3; t=1734667807; x=
+	1734675007; bh=YxyPwDN5jF3WrYeLfnPg62rlODl4h0Cotdz5rtDrqTA=; b=j
+	/ElAzTsR5AjBK08HUxWQDRnilSdQGhKqR9kxVt3CMEWkpKOeQHD/FLNPAq8bIq9J
+	xGScCmKOqOIk5w4fCu6K6GrEmCxif6vSu9sl06h/s9OFYet8zKi1LuW7GVCe3gNG
+	q2NBB1pzSYlw4HioCQjMaseeQaoSmJHlNDwR2j7b2iB4z4NpV1sFRhbHJe2el238
+	dqipradcBYtnHFm8FIaWRPpCQ6sslQZ5m0O0YVSX2RCUw1REqzl3JrTeKX1hoBMC
+	WUP5XDMEYEPIGbkNyOfbsb/v259NFMEUq3DjPeV2k5Jnbl365w1fPaqSqQQe6T3E
+	+NoWRe26ChJT8ZyGPMytw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm1; t=1734667803; x=1734754203; bh=d
-	X2LDURcWUjkbE3j8vdY2N7db67PorPWhmDWzCc1jcs=; b=r4mPumX3UkTYpxI27
-	Gke7pPCTYrMJ8xxLUgLGrzNitDm8c+gvVPsOpxBbPOXthGyd46SdUASpCUrCR7lo
-	LSXcDK0nfrV3DrXx7HO0cViGD4Mnm3BSd836nxDiEblWbuospFSLNREw1gJkE1ri
-	L2DqAnxgADE5ZcFOmmdZO3gGVq7uc1PLGOVt+rmmW0aT8Cy8oXyd1VY/K4/ASWor
-	0VGxIrPZXnR1mAdGsjRkao1YkwHTAPCT3aeiO3og3Xxpqd+z2nMkFnDe5ByM862K
-	WxMUzse5mDvYa7E7za3moIBywbsR/llcJo3BRglbZ0UgbDE00xWtsvDjzQhipV2N
-	B5qdw==
-X-ME-Sender: <xms:G-5kZ-RV8m9lh8vtkybw1i6cARASPiD63cGcPkaMfC3YyhxltBsIIg>
-    <xme:G-5kZzyGf5GdJd0Yn7Rp7ZA3M0UGphrzltM8jxi9GNXYd7_Lf5M46PZw16LyZI376
-    Qkh1XyzbuEW1Q5n3g>
-X-ME-Received: <xmr:G-5kZ71nlkQL6gq5-_M-eT4psLUBWnrPoZebFcEed8UbrDf9DSwDnhoKioErYVbsHUT0uJovY1zlI8J1Vv8W_RjTx-xP7p0tqchXMkZtllA8Hr9PDErA>
+	:x-me-sender:x-sasl-enc; s=fm1; t=1734667807; x=1734675007; bh=Y
+	xyPwDN5jF3WrYeLfnPg62rlODl4h0Cotdz5rtDrqTA=; b=eeww0wgegHHfTrSiQ
+	x5+7ykElNshtpAo5u3SpYhzrbnXw/cAjMU3iiPQ/hxmPQKB0MBiO9g1qk+8O5O+E
+	bbDK1hNVQNKiBsHqAntg8M7jXoNjTNKnby7W49s166dh4EKljYCFtW0WqvRlHeV0
+	RNLYrgCG1cMqz9RHm/WLzKssz73bmh9ti4luuaKfpWReBHgzlOTB8xKz0e/dUUXu
+	ofzWfvK80+iN8d/FWFRJEr+xGrGpkE+IZ6xv1Xc+yeH6efSXm65HwBfZ4kCsXq0X
+	x9H1nLpAyQT+YXCjs3/cirpY+KHh9v5n95CSqwwmVNZW00TlGkCwFGvhE5F4o7Ic
+	HXM4A==
+X-ME-Sender: <xms:Hu5kZ20JO209uO6Vj9j3U-MR8sCbmymOqQj2SRr7IDL8tkL5K_UF6A>
+    <xme:Hu5kZ5ENDQsQME9es5G0jYfzb2urdzyRtX2Kw5k4Jk8RhLPEItNwaZXWW28Ktktzq
+    _nX11iYRHzazVqE8g>
+X-ME-Received: <xmr:Hu5kZ-5ky6XijPafz-52HIe3ddaLkmqqlZr7MlDJdbVjHjhHLgvSokAG-3lDDlk8q5ox61aLJMcjPvfd6qBH_dwGLdlak-1-eqOcWqjZdBSgM5eqFtDh>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddruddtuddgieeiucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlje
-    dtmdenucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeff
-    rghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnh
-    epgfefgfegjefhudeikedvueetffelieefuedvhfehjeeljeejkefgffeghfdttdetnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesug
-    iguhhuuhdrgiihiidpnhgspghrtghpthhtohepudegpdhmohguvgepshhmthhpohhuthdp
-    rhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnh
-    hivghlsehiohhgvggrrhgsohigrdhnvghtpdhrtghpthhtoheprghstheskhgvrhhnvghl
-    rdhorhhgpdhrtghpthhtohepvgguugihiiekjeesghhmrghilhdrtghomhdprhgtphhtth
-    hopehjohhhnhdrfhgrshhtrggsvghnugesghhmrghilhdrtghomhdprhgtphhtthhopehm
-    rghrthhinhdrlhgruheslhhinhhugidruggvvhdprhgtphhtthhopehsohhngheskhgvrh
-    hnvghlrdhorhhgpdhrtghpthhtohephihonhhghhhonhhgrdhsohhngheslhhinhhugidr
-    uggvvhdprhgtphhtthhopehkphhsihhnghhhsehkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:G-5kZ6BlXSJGZFzQi8yI_qYdyEB5xZw0YXknDNsbKdxNlB9QqUVFOg>
-    <xmx:G-5kZ3jJ1TbXc6tz9R0dAoPmGdJ1f0dDMlF3otJaulfQoFkRuaS6-Q>
-    <xmx:G-5kZ2o0j7f4Fs5dr7Cy205zz3cXJ6ItCRW9xuDSAQ-gqgKBKM8OEQ>
-    <xmx:G-5kZ6geZoEa_eDzuwG91gpTzI4FPgzDOlW45oLNullTUxkfXs6LCQ>
-    <xmx:G-5kZ35j96w1HgHGKVCElYgE8pY6KITI8VcFPG4J3s_c9DTnLFUuDJy2>
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnegfrhhlucfvnfffucdljedtmdenucfjughrpefhvfevufffkffo
+    jghfggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesug
+    iguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfefgfegjefhudeikedvueetffel
+    ieefuedvhfehjeeljeejkefgffeghfdttdetnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihiidpnhgspghrtghp
+    thhtohepvddvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopegurghvvghmsegurg
+    hvvghmlhhofhhtrdhnvghtpdhrtghpthhtohepvgguuhhmrgiivghtsehgohhoghhlvgdr
+    tghomhdprhgtphhtthhopehkuhgsrgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprg
+    hnughrihhisehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrshhtsehkvghrnhgvlhdr
+    ohhrghdprhgtphhtthhopegurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtph
+    htthhopehmrghrthhinhdrlhgruheslhhinhhugidruggvvhdprhgtphhtthhopehmvghm
+    gihorhesghhmrghilhdrtghomhdprhgtphhtthhopehprggsvghnihesrhgvughhrghtrd
+    gtohhm
+X-ME-Proxy: <xmx:Hu5kZ305kwgwTCWzlUL8qPvYG7Rpewdiuhh-1ievnfeHEhjeZ71Ncw>
+    <xmx:Hu5kZ5GM1Y2S8dNiWsXIYaabz6-r-87Q-ruKk-XbwVxjjGWZQw1Yzw>
+    <xmx:Hu5kZw-8yRQWXZ2gORHKnqBmaL6RXDcsxyB1nZ0hjCjuNVJIBP7iwg>
+    <xmx:Hu5kZ-kdTOvG1ZHkF-lsceT6Fv2nnU7uiqzmNlE50UtPBwwwatTnZw>
+    <xmx:H-5kZ9Kk3VrdMScD7LKn0AdY9qSKGv9d3inJIJPjpH0zFQMK8UIAbdF7>
 Feedback-ID: i6a694271:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 19 Dec 2024 23:10:01 -0500 (EST)
+ 19 Dec 2024 23:10:04 -0500 (EST)
 From: Daniel Xu <dxu@dxuuu.xyz>
-To: andrii@kernel.org,
-	daniel@iogearbox.net,
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	andrii@kernel.org,
 	ast@kernel.org,
-	eddyz87@gmail.com
-Cc: john.fastabend@gmail.com,
+	daniel@iogearbox.net,
 	martin.lau@linux.dev,
-	song@kernel.org,
+	memxor@gmail.com,
+	pabeni@redhat.com,
+	eddyz87@gmail.com
+Cc: song@kernel.org,
 	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
 	kpsingh@kernel.org,
 	sdf@fomichev.me,
 	haoluo@google.com,
 	jolsa@kernel.org,
+	horms@kernel.org,
 	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v6 1/5] bpf: verifier: Add missing newline on verbose() call
-Date: Thu, 19 Dec 2024 21:09:43 -0700
-Message-ID: <17ecda4dcfc07c14bad0b2ed867ef8efbee8e1fb.1734667691.git.dxu@dxuuu.xyz>
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v6 2/5] bpf: tcp: Mark bpf_load_hdr_opt() arg2 as read-write
+Date: Thu, 19 Dec 2024 21:09:44 -0700
+Message-ID: <766c01238ae028c27fe0661bd29eeb8f7386cf70.1734667691.git.dxu@dxuuu.xyz>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <cover.1734667691.git.dxu@dxuuu.xyz>
 References: <cover.1734667691.git.dxu@dxuuu.xyz>
@@ -117,26 +126,35 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The print was missing a newline.
+MEM_WRITE attribute is defined as: "Non-presence of MEM_WRITE means that
+MEM is only being read". bpf_load_hdr_opt() both reads and writes from
+its arg2 - void *search_res.
 
+This matters a lot for the next commit where we more precisely track
+stack accesses. Without this annotation, the verifier will make false
+assumptions about the contents of memory written to by helpers and
+possibly prune valid branches.
+
+Fixes: 6fad274f06f0 ("bpf: Add MEM_WRITE attribute")
+Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
 Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 ---
- kernel/bpf/verifier.c | 2 +-
+ net/core/filter.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index f27274e933e5..4383653764e8 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -7739,7 +7739,7 @@ static int check_stack_range_initialized(
- 		slot = -i - 1;
- 		spi = slot / BPF_REG_SIZE;
- 		if (state->allocated_stack <= slot) {
--			verbose(env, "verifier bug: allocated_stack too small");
-+			verbose(env, "verifier bug: allocated_stack too small\n");
- 			return -EFAULT;
- 		}
- 
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 21131ec25f24..713d6f454df3 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -7643,7 +7643,7 @@ static const struct bpf_func_proto bpf_sock_ops_load_hdr_opt_proto = {
+ 	.gpl_only	= false,
+ 	.ret_type	= RET_INTEGER,
+ 	.arg1_type	= ARG_PTR_TO_CTX,
+-	.arg2_type	= ARG_PTR_TO_MEM,
++	.arg2_type	= ARG_PTR_TO_MEM | MEM_WRITE,
+ 	.arg3_type	= ARG_CONST_SIZE,
+ 	.arg4_type	= ARG_ANYTHING,
+ };
 -- 
 2.47.1
 
