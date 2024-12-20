@@ -1,192 +1,186 @@
-Return-Path: <bpf+bounces-47378-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47379-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5F319F8905
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 01:40:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EB0329F8909
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 01:40:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BADD188F323
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 00:40:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0418F1895C83
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 00:40:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F0A12594A8;
-	Fri, 20 Dec 2024 00:39:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 415AF566A;
+	Fri, 20 Dec 2024 00:40:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dk5xk8do"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="YVu904Hw";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="CO+DZSik"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-b8-smtp.messagingengine.com (fhigh-b8-smtp.messagingengine.com [202.12.124.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3BBC1CAA4
-	for <bpf@vger.kernel.org>; Fri, 20 Dec 2024 00:39:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67594800;
+	Fri, 20 Dec 2024 00:40:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734655198; cv=none; b=cZnnfg721cp3GRWQgs+uR/C4xJLD29EN6Pb/6Kk743HbOYfhRQsrY17y98Pj+a6YiHlJmVnVeH4j+owxwwcBGlKofgpYJpX2KHEfIkzuwZN03MbLuvM19zeOqlcGQaNvxV29Se0V2c4WbArb1rTsbfifThkzIdguTX23nxFf1PU=
+	t=1734655238; cv=none; b=YgXcxLHsxUtPccoByVWcwaaFGlCcUVphXYEFLV+b1B4jBH4HtJurvtyIT7qF6sRFEz+ypcXepFPE6cycLYIWYVAAj3VLxqAuKlZ0h/n2Y7N71fk4EW4wTl7by26gYkpz+A2cLi/FbCJJI0A9NLjFNS8H2LUOxzAkyJy2yhGKOSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734655198; c=relaxed/simple;
-	bh=rnqGl7X3esX6zT9fLvXAZ2pTe86bX6I23CyIodwOCo4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oLDCljTtcJiRmfDycKL5X5889JmUyjuPdvQ3MN+Rc7KUzFCbGR8wrV1tS086wQoVxNuTopP0Lr6krK0ai8FvNXSqAy+ybos71KJogddUXb4xgCPUdSS+AK7Kx2iLllLIjpaRMTtRT5psy6K9EcQSAaiqsZoN9cPlUCi9GSwYw1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dk5xk8do; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-38632b8ae71so1045484f8f.0
-        for <bpf@vger.kernel.org>; Thu, 19 Dec 2024 16:39:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734655195; x=1735259995; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=04DMK2CBlaYgVmHyWh5D3Gtkvb9UdRG0+YSphVQgFvw=;
-        b=Dk5xk8dorkhGKFVwMAHgPL70E0BKdzMJ4tTD/f9MBb943kXbDUkXl2z9GDuLhSbRny
-         NcT2w5ouYS1p2BKG+bpuFVwXATX/Ib51FUdNHl1fO21+uTM2LzfxyTKrccTHeXH6hhRc
-         2Xgkv4+o51ngBQKWIQl7YTKScs09z0fuHknEpmsgS1JQ+PAM+zgTw1/iqHnuXkdm8OHC
-         Vlt1WukR7SOliFHUbmEgrpqAH1gw6fkGK4ij6Nzb2NWpf1ztwM9Y2tOCLZR6OXyVsvO1
-         sD2sZqHK4oj2L2LlHMNfY/ab3C7dMUQeJOzmYkXiQ9WzE+CgJMtrMjzKrNBQPOhabt9I
-         OAjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734655195; x=1735259995;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=04DMK2CBlaYgVmHyWh5D3Gtkvb9UdRG0+YSphVQgFvw=;
-        b=WbIWW4RT72vLU0IFa1wAr49uA6WwRPK3jNP+BuZnRXGEYCS3PzdqM7Q2QpmXBhDrc1
-         5a7oJXjqHgUq4TdwaELPVEp8EJYDUNLB2ECvMvpkUQ47oz7jMt1yhKI93Ti+tf+JEm/X
-         r/tMfMzPhwzpGczjzKOEJITK16VHbdf359RKAdDepFRmy403j96p7Q0NrieYJtblD3OI
-         AEKYbJLmU5ccK/s7WXJ14WqwurRCFLDr/2aJRxcgsvItiGRWj7FL5Pz7VBJ4/edCSegL
-         eUx2XsnGGhysHhMmlFPCLvMfHo/FJ0fAIB8Ler0UimfMzRx0jdTA6vtLLCkPO5d0hp+E
-         5ccw==
-X-Gm-Message-State: AOJu0YwtYBeyv8nMymZDPobmjFFV+8vcPdhtidGWCOyYaEdmNcu8P9On
-	xMr63qLTSnwUoOl6r2A91RDTf3R8hfj+0XT5QlE4KgaYr2U5hWEhFjnY1tBd83EgGX0OIzi869n
-	NVYht3vnIC8dRzknPgBY560ACtqc=
-X-Gm-Gg: ASbGncs0/rTRMeO6lwdZtMhyFlLQ0/e0f+ON8I5qMzoD+USSWH6+Uu7AgZ1dsAQcoLK
-	YEYGFc2yCsoT67nxLD6iPMbjdV7/3PfvN/r8VUQ==
-X-Google-Smtp-Source: AGHT+IFDryDjaUKXZCODMa0NSyOxFIrLFC1sf5j4TOLkzW4dPJsrH5UZoPI/WEYgmMzo2wmrfC0Ri/2Yxfd+h7Ydi3U=
-X-Received: by 2002:a5d:6d09:0:b0:385:e43a:4ded with SMTP id
- ffacd0b85a97d-38a223ff460mr742092f8f.57.1734655195080; Thu, 19 Dec 2024
- 16:39:55 -0800 (PST)
+	s=arc-20240116; t=1734655238; c=relaxed/simple;
+	bh=13wJenR/mQ9s96VRt2lf8g8bCxoH2vnPVKeXG18STug=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e3uhucQaBb4JSI1EcKPb21NVS0v5CzzvWXWN0OY0XlXo8GWL11dvBU12C0iA2ub8y/P9TpaZN7ocJjW7ogMee5wN/WkiIyq4fMGg0TnUDdAXlzN5/m7howHjIk8chzWpcwCv6gvo1IItPIPM1hAulgeJcoj1xBE3f/6zByG7T9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=YVu904Hw; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=CO+DZSik; arc=none smtp.client-ip=202.12.124.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id EE66425401B3;
+	Thu, 19 Dec 2024 19:40:34 -0500 (EST)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-11.internal (MEProxy); Thu, 19 Dec 2024 19:40:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1734655234; x=1734741634; bh=Ktg3pBXvwq
+	rACo60Nz+FZ0dP2d3kQw9ZPLTVaSGME6c=; b=YVu904HwsvcD+iMamYb0DtCwTR
+	KE4zxYU8qnGj/aCb+Dz45swpg0xrVGz6HGKcz0DQbVA10XLi3GO8HKzGIFdCdef2
+	CTMy2oAquLubCysfeBlet0T4LxsI9SL0CG/Kgtm0BOkiFQAMoeol7FbdtJ4ppqjk
+	Dv5rUk9dwJsjw8B3VX02CADDvvbgN2cb8hBIWfFpNCxpndFR2Hsc4uCkqYcN1Fx3
+	nuDI2gzncgwCt5HPnzbih5PIWyqJM7T2KTCuTfpCbTFzhHZ2IlzasRN2hz3+uCdx
+	WAwxVe4fy4q7XkfMrOLiQBGWh0/AhUrOPPjeXbTMJkSALEtw1EAIUtu1GfFw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1734655234; x=1734741634; bh=Ktg3pBXvwqrACo60Nz+FZ0dP2d3kQw9ZPLT
+	VaSGME6c=; b=CO+DZSikI6zeNipBcfQCeYvgUIsnUbbGg43oQc1em2WeefdYVMy
+	8sx6TJbv0Cwgb4+wTRlWfuwPL7lQCCusq9cZCDc0NuFBtoP1f+3NLb97LTxH74OP
+	aLzYfPJ0jw1XAw/cFwFjN99m4ePBVY7pssBOKvbzO2lJF6+aLNSbSNf9PlcB05Wc
+	tSwGI5jUAB4pod7t0So4YWWEAJnuGikdRmql+NQT5uJNiNSsIATm4FYkFQGtrlUG
+	hS7l9vbj7Ti5WQSz8/v4Y8PbCmStG4QKBbGAiAkjrHHY0Rpg0SB8OmAYXbntSMwb
+	NkUGC0ngtOk7ZnfjRQCTF/9iamoM+7td8Mg==
+X-ME-Sender: <xms:Ar1kZ_gTFOWiRtl934rMJnpvJ-zQYTDKEWe8wvTD2WyNstdAr1Ha5A>
+    <xme:Ar1kZ8BsE1Sjv995-kkLxUvIOGWDjtbByoPXilVjSlUfxyXztaWeD7AavUNbsccrV
+    vNVYqltFXJS755bGA>
+X-ME-Received: <xmr:Ar1kZ_ElWviMBKPGNhDEun6DGZZ4dM-yfZDw3xecGUr3M9dibu0nPYZQXiC-HMEPG0BqBE4Q_0lTXRBqigUEf5SQD-Zoq12WhUU_86vsMGaxMg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddruddtuddgvdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnegfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhf
+    gggtuggjsehttdfstddttddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesug
+    iguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffek
+    uedukeehudffudfffffggeeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihiidpnhgspghrtghp
+    thhtohepudelpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopegvugguhiiikeejse
+    hgmhgrihhlrdgtohhmpdhrtghpthhtoheprghnughrihhirdhnrghkrhihihhkohesghhm
+    rghilhdrtghomhdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhgpdhrtg
+    hpthhtoheprghstheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhhuhgrhheskhgv
+    rhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlsehiohhgvggrrhgsohigrdhnvg
+    htpdhrtghpthhtohepjhhohhhnrdhfrghsthgrsggvnhgusehgmhgrihhlrdgtohhmpdhr
+    tghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghvpdhrtghpthhtohepsh
+    honhhgsehkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:Ar1kZ8QZiPlQNIXCdPRdzFuMBfqWBnTKV3nqINDls8dj2BePfpd_uA>
+    <xmx:Ar1kZ8zUDHuZjuKE5TTVdzDcwI7cKF6gWnVuZldfo2M6Sn3G4k5u6g>
+    <xmx:Ar1kZy5_nICnCcMA3-SqMlf4GO4gl0O5QzO673cSgM6YgAqPBLrvEA>
+    <xmx:Ar1kZxwM6_HX1mMRX1NTbR0wU_EYC4wUg4_DASC2ow04GM8bbVoSPg>
+    <xmx:Ar1kZ5EKqn7ysuS1lzn323HtK0ElfxqdCNsBOXzBDY8amWWfIRnXb0Rs>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 19 Dec 2024 19:40:32 -0500 (EST)
+Date: Thu, 19 Dec 2024 17:40:30 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, andrii@kernel.org, 
+	ast@kernel.org, shuah@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v5 4/5] bpf: verifier: Support eliding map
+ lookup nullness
+Message-ID: <f7taicw6c3f3yae4d6lrdagv26jiuihumklo4tkmqduvauargi@ld4bcmsbbiqn>
+References: <cover.1734045451.git.dxu@dxuuu.xyz>
+ <92065ca054beccd6d0f35efe9715ef965e8d379f.1734045451.git.dxu@dxuuu.xyz>
+ <CAEf4BzaqCgW9keiT+tJUBQWT6Q+jMwuvn4O2ZghO0c+ZvACNrw@mail.gmail.com>
+ <zow3q3nhlz6vedbni3upag5yr7zzrhyiqysl5nwyubebmbwojk@th7kbm62x36g>
+ <31b0c85dbf85486df116ade20caf8685843899b4.camel@gmail.com>
+ <CAEf4BzaEOBtrSWZTx40AdT=SQY6Qaia405KWgU-NowaqNdmpkA@mail.gmail.com>
+ <kghvgxu5wdkupssnq7dy5upuf2wscsxgsnwl2yoam4mwk3h5pn@wjjsliwg6fzl>
+ <a2999d8b4827516fe4bfd17646d2284580712d08.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241218030720.1602449-1-alexei.starovoitov@gmail.com>
- <20241218030720.1602449-5-alexei.starovoitov@gmail.com> <Z2Ky2idzyPn08JE-@tiehlicka>
- <CAADnVQKv_J-8CdSZsJh3uMz2XFh_g+fHZVGCmq6KTaAkupqi5w@mail.gmail.com>
- <Z2PGetahl-7EcoIi@tiehlicka> <Z2PKyU3hJY5e0DUE@tiehlicka> <Z2PQv8dVNBopIiYN@tiehlicka>
-In-Reply-To: <Z2PQv8dVNBopIiYN@tiehlicka>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 19 Dec 2024 16:39:43 -0800
-Message-ID: <CAADnVQLm=gSAh2u3iF4HoGmLEqa-AV0FAEnDqcoFYDgZ06d+gQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 4/6] memcg: Use trylock to access memcg stock_lock.
-To: Michal Hocko <mhocko@suse.com>
-Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Vlastimil Babka <vbabka@suse.cz>, 
-	Sebastian Sewior <bigeasy@linutronix.de>, Steven Rostedt <rostedt@goodmis.org>, 
-	Hou Tao <houtao1@huawei.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Matthew Wilcox <willy@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>, Tejun Heo <tj@kernel.org>, 
-	linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a2999d8b4827516fe4bfd17646d2284580712d08.camel@gmail.com>
 
-On Wed, Dec 18, 2024 at 11:52=E2=80=AFPM Michal Hocko <mhocko@suse.com> wro=
-te:
->
-> On Thu 19-12-24 08:27:06, Michal Hocko wrote:
-> > On Thu 19-12-24 08:08:44, Michal Hocko wrote:
-> > > All that being said, the message I wanted to get through is that atom=
-ic
-> > > (NOWAIT) charges could be trully reentrant if the stock local lock us=
-es
-> > > trylock. We do not need a dedicated gfp flag for that now.
-> >
-> > And I want to add. Not only we can achieve that, I also think this is
-> > desirable because for !RT this will be no functional change and for RT
-> > it makes more sense to simply do deterministic (albeit more costly
-> > page_counter update) than spin over a lock to use the batch (or learn
-> > the batch cannot be used).
->
-> So effectively this on top of yours
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index f168d223375f..29a831f6109c 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1768,7 +1768,7 @@ static bool consume_stock(struct mem_cgroup *memcg,=
- unsigned int nr_pages,
->                 return ret;
->
->         if (!local_trylock_irqsave(&memcg_stock.stock_lock, flags)) {
-> -               if (gfp_mask & __GFP_TRYLOCK)
-> +               if (!gfpflags_allow_blockingk(gfp_mask))
->                         return ret;
->                 local_lock_irqsave(&memcg_stock.stock_lock, flags);
+On Thu, Dec 19, 2024 at 04:04:43PM -0800, Eduard Zingerman wrote:
+> On Thu, 2024-12-19 at 14:41 -0700, Daniel Xu wrote:
+> 
+> [...]
+> 
+> > > > I think that if test operates on a key like:
+> > > > 
+> > > >       valid key 15
+> > > >              v
+> > > >       0000000f   <-- written to stack as a single u64 value
+> > > >       ^^^^^^^
+> > > >     stack zero marks
+> > > > 
+> > > > and is executed (e.g. using __retval annotation),
+> > > > then CI passing for s390 should be enough.
+> > > 
+> > > +1, something like that where for big-endian it will be all zero while
+> > > for little endian it would be 0xf (and then make sure that the test
+> > > should *fail* by making sure that 0xf is not a valid index, so NULL
+> > > check is necessary)
+> > 
+> > How would it work for LE to be 0xF but BE to be 0x0?
+> > 
+> > The prog passes a pointer to the beginning of the u32 to
+> > bpf_map_lookup_elem(). The kernel does a 4 byte read starting from that
+> > address. On both BE and LE all 4 bytes will be interpreted. So set bits
+> > cannot just go away.
+> > 
+> > Am I missing something?
+> 
+> Ok, thinking a bit more, the best test I can come up with is:
+> 
+>   u8 vals[8];
+>   vals[0] = 0;
+>   ...
+>   vals[6] = 0;
+>   vals[7] = 0xf;
+>   p = bpf_map_lookup_elem(... vals ...);
+>   *p = 42;
+> 
+> For LE vals as u32 should be 0x0f;
+> For BE vals as u32 should be 0xf000_0000.
+> Hence, it is not safe to remove null check for this program.
+> What would verifier think about the value of such key?
+> As far as I understand, there would be stack zero for for vals[0-6]
+> and u8 stack spill for vals[7].
 
-I don't quite understand such a strong desire to avoid the new GFP flag
-especially when it's in mm/internal.h. There are lots of bits left.
-It's not like PF_* flags that are limited, but fine
-let's try to avoid GFP_TRYLOCK_BIT.
+Right. By checking that spill size is same as key size, we stay endian
+neutral, as constant values are tracked in native endianness.
 
-You're correct that in !RT the above will work, but in RT
-spin_trylock vs spin_lock might cause spurious direct page_counter
-charge instead of batching. It's still correct and unlikely to
-cause performance issues, so probably fine, but in other
-places like slub.c gfpflags_allow_blocking() is too coarse.
-All of GFP_NOWAIT will fall into such 'trylock' category,
-more slub bits will be trylock-ing and potentially returning ENOMEM
-for existing GPF_NOWAIT users which is not great.
+However, if we were to start interpreting combinations of STACK_ZERO,
+STACK_MISC, and STACK_SPILL, the verifier would have to be endian aware
+(IIUC). Which makes it a somewhat interesting problem but also requires
+some thought to correctly handle the state space.
 
-I think we can do better, though it's a bit odd to indicate
-trylock gfp mode by _absence_ of flags instead of presence
-of __GFP_TRYLOCK bit.
+> You were going to add a check for the spill size, which should help here.
+> So, a negative test like above that checks that verifier complains
+> that 'p' should be checked for nullness first?
+> 
+> If anyone has better test in mind, please speak-up.
 
-How about the following:
+I think this case reduces down to a spill_size != key_size test. As long
+as the sizes match, we don't have to worry about endianness.
 
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index ff9060af6295..f06131d5234f 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -39,6 +39,17 @@ static inline bool gfpflags_allow_blocking(const
-gfp_t gfp_flags)
-        return !!(gfp_flags & __GFP_DIRECT_RECLAIM);
- }
-
-+static inline bool gfpflags_allow_spinning(const gfp_t gfp_flags)
-+{
-+       /*
-+        * !__GFP_DIRECT_RECLAIM -> direct claim is not allowed.
-+        * !__GFP_KSWAPD_RECLAIM -> it's not safe to wake up kswapd.
-+        * All GFP_* flags including GFP_NOWAIT use one or both flags.
-+        * try_alloc_pages() is the only API that doesn't specify either fl=
-ag.
-+        */
-+       return !(gfp_flags & __GFP_RECLAIM);
-+}
-+
- #ifdef CONFIG_HIGHMEM
- #define OPT_ZONE_HIGHMEM ZONE_HIGHMEM
- #else
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index f168d223375f..545d345c22de 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1768,7 +1768,7 @@ static bool consume_stock(struct mem_cgroup
-*memcg, unsigned int nr_pages,
-                return ret;
-
-        if (!local_trylock_irqsave(&memcg_stock.stock_lock, flags)) {
--               if (gfp_mask & __GFP_TRYLOCK)
-+               if (!gfpflags_allow_spinning(gfp_mask))
-                        return ret;
-                local_lock_irqsave(&memcg_stock.stock_lock, flags);
-        }
-
-If that's acceptable then such an approach will work for
-my slub.c reentrance changes too.
-GPF_NOWAIT users will not be affected.
-The slub's trylock mode will be only for my upcoming try_kmalloc()
-that won't use either gfp_*_reclaim flag.
+Thanks,
+Daniel
 
