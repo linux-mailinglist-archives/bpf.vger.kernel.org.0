@@ -1,71 +1,62 @@
-Return-Path: <bpf+bounces-47448-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47449-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFEC59F97E5
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 18:27:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 832269F980C
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 18:32:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11941189DB18
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 17:22:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36BB0189BA00
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 17:25:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C802622ACFA;
-	Fri, 20 Dec 2024 17:12:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23A6022E410;
+	Fri, 20 Dec 2024 17:13:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tErzRYkh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NDCCTQQU"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E2C121C9FD;
-	Fri, 20 Dec 2024 17:12:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D70022E3FF;
+	Fri, 20 Dec 2024 17:13:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734714760; cv=none; b=dBhJRfOyTG0LJbUfgO+EOat5Q5ZkSN4sA+u5iLdxTaqRSnWwq7gwbH+eVbcjCCS5CJx0xnefBNHABJnu4gHhL1Ok5OgvbpkHVLmnD5mZX7aCn1YORnQevoNkFv9wetkhvPpCbajgAHvRb7T5Poovh7ZvYnKjnrBURI6/1XmmjDA=
+	t=1734714784; cv=none; b=s4SlgmhSaa4c0TBW2c+McXY86uVIX4RBMrarIXexHkh/gFHHVPKzZoNB6FIZPJ7VlSXOhOCOM5MRLf2H+v5P5M1FTozg9TuiWavKhVmzt0V4jX9qrePmZG2V9l1YmtltG4NpOuyrM77/FTrRHJVPEWI3DDD7NjjfJuCHgStrjzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734714760; c=relaxed/simple;
-	bh=/PFeFh6y0Sc/gSAjY8li4ftQqcEtlJf8W6ZfdfyquI8=;
+	s=arc-20240116; t=1734714784; c=relaxed/simple;
+	bh=xICDyWUVmS8BBSbGPY10PTvwGXgx88LAFq4dytI1puw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Mq9G21iL/KaexBmozmvKgZ0TsTBZcZ5mhOkUomcY9MBAAvV4X/Q2F4BQiHQFnlxt5mDewf0Q963FgAcGEjydM7ohEJutfdyjE9gkoF9UmWTWJ5r84yTFN1NOaGkOPeehBhSZ/l41r7YqF9/gYdrDtl8H6GpGCSF8uqEDk5zROJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tErzRYkh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32DFBC4CECD;
-	Fri, 20 Dec 2024 17:12:38 +0000 (UTC)
+	 MIME-Version; b=gfCNm3Wln+wnTH+rc1lLXUpXnnoRyqt5O0EGDbYcI2Y+Bjv/OBLN3fi7kyPnCkwUlLm1f99iyDWOjpNdIX73lZOqKM4qsHkSg70hBh7lR1rUTDQKqXVrv3NcSY0HO+RZfwYGUC8lcR935owVsMwxNG+8WRFJbLWj9YRmRrJ0Sz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NDCCTQQU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 131CFC4CED7;
+	Fri, 20 Dec 2024 17:13:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734714760;
-	bh=/PFeFh6y0Sc/gSAjY8li4ftQqcEtlJf8W6ZfdfyquI8=;
+	s=k20201202; t=1734714784;
+	bh=xICDyWUVmS8BBSbGPY10PTvwGXgx88LAFq4dytI1puw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tErzRYkhTKCRYI+mCVWDu9vpMlItDzorNzOXbLyHaSvaQEv3YzckMQqpJhXeKexuU
-	 zo4FgWxxo3JfhWo8LHIbCK9iSNY0aVmherjZR534+YlH0Bu5Q7P4zBJs/wkbiAw5B2
-	 15f4A4XUpkMEfaYQ96sPO6frU1dOfTKsZD5kH8lew78IuxD269yduzH11ihWQdmvIl
-	 ivZL0gbbX7DSCkSDQ51/XXvHw3+YrFD6UfBpYtRoSd4osQnUO33+l9SI1CQELZYIw4
-	 hhfsW98oqIGgXkwOeKHt6ENbB4x+geSxrj4MmioO848MiSA0BHWC/XtmZfqyU+alXb
-	 lrjVKv0Hoctiw==
+	b=NDCCTQQUpLlXMk2mlBjt8Rq6h2VQmc9OvNS1Gs6vPeSF57aPn9wl8xoPMMGIKf6lW
+	 I+U8bgLQMXMaw8m8xHinOuXN0VHkpYzqRIbiUu5MYiYFP1RtF33xYNE6Rz/t4zejiK
+	 o/KtQ17bfSZSahB+TeMZPLFpSqGPZXCIrDzQr3QqqAbNCLzD9Ev1Wlb/NZuMgRPEKE
+	 nY7YkNaOSSwoqp8QFBxu6LnnPPwxvDxZHJ1nPpilOlHbKh1KDGzFGeoRjZu4cK9FkQ
+	 8KCx47J2iJ/Sc8Pmg+XOElwkVBvCaKp0QKyPstqiW69p++9nOrr3pGjqcu8TYa5qYY
+	 TlQIxO9cm0soA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Eduard Zingerman <eddyz87@gmail.com>,
+Cc: Anton Protopopov <aspsk@isovalent.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	shuah@kernel.org,
-	leon.hwang@linux.dev,
-	yonghong.song@linux.dev,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 29/29] bpf: consider that tail calls invalidate packet pointers
-Date: Fri, 20 Dec 2024 12:11:30 -0500
-Message-Id: <20241220171130.511389-29-sashal@kernel.org>
+	bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 09/16] bpf: fix potential error return
+Date: Fri, 20 Dec 2024 12:12:33 -0500
+Message-Id: <20241220171240.511904-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20241220171130.511389-1-sashal@kernel.org>
-References: <20241220171130.511389-1-sashal@kernel.org>
+In-Reply-To: <20241220171240.511904-1-sashal@kernel.org>
+References: <20241220171240.511904-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,77 +65,53 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.12.6
+X-stable-base: Linux 6.6.67
 Content-Transfer-Encoding: 8bit
 
-From: Eduard Zingerman <eddyz87@gmail.com>
+From: Anton Protopopov <aspsk@isovalent.com>
 
-[ Upstream commit 1a4607ffba35bf2a630aab299e34dd3f6e658d70 ]
+[ Upstream commit c4441ca86afe4814039ee1b32c39d833c1a16bbc ]
 
-Tail-called programs could execute any of the helpers that invalidate
-packet pointers. Hence, conservatively assume that each tail call
-invalidates packet pointers.
+The bpf_remove_insns() function returns WARN_ON_ONCE(error), where
+error is a result of bpf_adj_branches(), and thus should be always 0
+However, if for any reason it is not 0, then it will be converted to
+boolean by WARN_ON_ONCE and returned to user space as 1, not an actual
+error value. Fix this by returning the original err after the WARN check.
 
-Making the change in bpf_helper_changes_pkt_data() automatically makes
-use of check_cfg() logic that computes 'changes_pkt_data' effect for
-global sub-programs, such that the following program could be
-rejected:
-
-    int tail_call(struct __sk_buff *sk)
-    {
-    	bpf_tail_call_static(sk, &jmp_table, 0);
-    	return 0;
-    }
-
-    SEC("tc")
-    int not_safe(struct __sk_buff *sk)
-    {
-    	int *p = (void *)(long)sk->data;
-    	... make p valid ...
-    	tail_call(sk);
-    	*p = 42; /* this is unsafe */
-    	...
-    }
-
-The tc_bpf2bpf.c:subprog_tc() needs change: mark it as a function that
-can invalidate packet pointers. Otherwise, it can't be freplaced with
-tailcall_freplace.c:entry_freplace() that does a tail call.
-
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-Link: https://lore.kernel.org/r/20241210041100.1898468-8-eddyz87@gmail.com
+Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/r/20241210114245.836164-1-aspsk@isovalent.com
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/filter.c                              | 2 ++
- tools/testing/selftests/bpf/progs/tc_bpf2bpf.c | 2 ++
- 2 files changed, 4 insertions(+)
+ kernel/bpf/core.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 33125317994e..bbd0c08072cb 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -7934,6 +7934,8 @@ bool bpf_helper_changes_pkt_data(enum bpf_func_id func_id)
- 	case BPF_FUNC_xdp_adjust_head:
- 	case BPF_FUNC_xdp_adjust_meta:
- 	case BPF_FUNC_xdp_adjust_tail:
-+	/* tail-called program could call any of the above */
-+	case BPF_FUNC_tail_call:
- 		return true;
- 	default:
- 		return false;
-diff --git a/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c b/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
-index 8a0632c37839..79f5087dade2 100644
---- a/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
-+++ b/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
-@@ -10,6 +10,8 @@ int subprog(struct __sk_buff *skb)
- 	int ret = 1;
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 58ee17f429a3..02f327f05fd6 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -529,6 +529,8 @@ struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
  
- 	__sink(ret);
-+	/* let verifier know that 'subprog_tc' can change pointers to skb->data */
-+	bpf_skb_change_proto(skb, 0, 0);
- 	return ret;
+ int bpf_remove_insns(struct bpf_prog *prog, u32 off, u32 cnt)
+ {
++	int err;
++
+ 	/* Branch offsets can't overflow when program is shrinking, no need
+ 	 * to call bpf_adj_branches(..., true) here
+ 	 */
+@@ -536,7 +538,9 @@ int bpf_remove_insns(struct bpf_prog *prog, u32 off, u32 cnt)
+ 		sizeof(struct bpf_insn) * (prog->len - off - cnt));
+ 	prog->len -= cnt;
+ 
+-	return WARN_ON_ONCE(bpf_adj_branches(prog, off, off + cnt, off, false));
++	err = bpf_adj_branches(prog, off, off + cnt, off, false);
++	WARN_ON_ONCE(err);
++	return err;
  }
  
+ static void bpf_prog_kallsyms_del_subprogs(struct bpf_prog *fp)
 -- 
 2.39.5
 
