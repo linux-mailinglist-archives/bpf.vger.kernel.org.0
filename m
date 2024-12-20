@@ -1,104 +1,101 @@
-Return-Path: <bpf+bounces-47404-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47405-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C987F9F8D0F
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 08:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D52ED9F8D7F
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 08:56:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1769C168AF6
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 07:06:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 277EE16440E
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 07:56:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4098319DF47;
-	Fri, 20 Dec 2024 07:06:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C965919FA93;
+	Fri, 20 Dec 2024 07:56:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nmbr3g4h"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BC0A9s8n"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CFAB143895;
-	Fri, 20 Dec 2024 07:06:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9D9141C6A;
+	Fri, 20 Dec 2024 07:56:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734678405; cv=none; b=nXKGPigWL2tcqzlLzCCnewnNtb1IEcNHkwJ51570jAw7eOnI3ZzJoiVzZhiPh3f4iI9EOn8YImh2fBXXQ1aKAhWT8scQtCW1Dgw/wU+cY6b5HHGyMrmhkt03vVk5GVPd/99E9yaGzkvJKM0N2RL+rK/fopJNaA9J0r6D7PqbWVs=
+	t=1734681377; cv=none; b=qP2i/McH244K/LVbqdB/5Dt2e8FgO2zcNsWmjwhw1cRrCO70vxrs4cz6Qu15rjdtf9dy9Zf6TS5X5urxAn4CUOy+xfqu0rvajVai9TUz2zrh42ptnFVvoBgm3xZ2ckP/mb3qssgS+vjTA7svsajmgnc2LakEYz0n9kv1QccHOrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734678405; c=relaxed/simple;
-	bh=nuxXMTlPUc5jc/AIemBhkoNdMFmXojiybIWn1boL6E4=;
+	s=arc-20240116; t=1734681377; c=relaxed/simple;
+	bh=e4F2m1FFUSwO/OMiUHzHsOW54aum4mUteR+BHX5RlOM=;
 	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=brHXNsJPg9xwnknJV1hR2/RGwWQ1ESGidInaTogodQG0RSNfx7v4Y9tNZ3FljgX7ieAFgXASt19LYriHqQNDG342yqzNIM9qZl1ObIO2hWDDV6o+7668IsgixUlUeIutvd7fPIC2QwdRujyNZAOpQwJZGhC8iakF3WEEv1WX2Qs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nmbr3g4h; arc=none smtp.client-ip=209.85.214.175
+	 Mime-Version:Content-Type; b=WftDfdcDgQgnLSMyaJ/pSXpQAjBRh1H3fltqPdgCl41L5njucok6zLccEFErLN4TYtv/9QpADf2/oM5g6+DIkr+ypMv/A0bOoTjLlcswOxCVn5BdMd2MF+EMD/lcG71biT8qIykenLfdm4E3G6GvSdiPWT5w7eEKkCn3T05oqpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BC0A9s8n; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2163bd70069so14677495ad.0;
-        Thu, 19 Dec 2024 23:06:43 -0800 (PST)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-801c081a652so2145340a12.0;
+        Thu, 19 Dec 2024 23:56:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734678403; x=1735283203; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1734681375; x=1735286175; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JFd2678B4719Hkfdn31bd9iVBYUOVkAjA8Fjx6Hdqco=;
-        b=nmbr3g4hwY4GkK2xIGmqDetgGWB9uHfGY+h2vDUn4UH3FdOE55g3QXEamo9T0sbC4A
-         BRWQ3fv2gtJaYXPen9lskyV4accrwEMVvCHPJRMTT/Ya4AcLEH62d8DaPnwkhOWq0Vcv
-         7JegonkQu88OmBsanPQywZb1uqmjDfQptA7Lm2+w6mjxj523YlAM50wwbcuwsElsBKff
-         sbfHDjl4qy4oaoYPBVep4xcZSncajtgq4j0pJRlue53aRZ79HIWIpFo5e7UOtrn3Wq8S
-         fff4/dxom3zc5w63j+A1leXV5kQQVTFk6jGVsxz3fBpab//irYW4hQR97ZzPlDCw+xtg
-         VdQA==
+        bh=Cwv6cGXBMSPsqiQk43DsTTbOsw6YSE/MxSGSYva2uIA=;
+        b=BC0A9s8nmJno7LRtdgtAGd3ezqlAnTLUIKXvhJv/Ezacw2J+PLGB0RZpTs2LLmDrYA
+         WTPEItFQgJauEEBx9Muuz5OGurBi0ChZMUhsbBODNZ7xfIDJSPdnhBoXUBWk112Hq3DM
+         22lhd4TR3tPIHDVzk43Yzl9MF1MrNNVsktS+7vFCmtyKgucIOFkNe/smDr0SX26+aWpw
+         WTnVz/gP9PnKpajKi8L290i8+PASaW9gNpAxP+UcNGkU1XXBG3CLFJDvjkznyAt6+QZj
+         rb6VELRQuHw8d4hBGOIuEeZnNSB0TUBhhoml6DJ+W6GNaNw6olhUgilXX4zWepAlY92i
+         JuVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734678403; x=1735283203;
+        d=1e100.net; s=20230601; t=1734681375; x=1735286175;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=JFd2678B4719Hkfdn31bd9iVBYUOVkAjA8Fjx6Hdqco=;
-        b=sznI0jHvH85g2Fy4jpjsIyDP2LgPYlEZdqppUEXn5zKtG8FJcjg3jtG1chFhTtzWvk
-         h4YaenugvgCz4vS6iwk55eRYJVovHU8fP3uyGSu3xVgxttDWzjnmqcVbVz6dtlbktAyg
-         uAS/Wo0hhLgZ+iFT+lQzgT2D1/LX2yEb61bpUcpkqLr396iuUoST6kE+5WtIHkJY9jAO
-         tEhIa5uOZpHzbGi+HHbVV2r6a3UOtoLDAK908IsRCMq+e19SHDMrDOBwsSe8pCLq42jy
-         K6Ws+loynymIDDj0XoxEGia+TZ8/0YK/VacC2lkTcPgytc9IjtHKerwzTLUWn3opEXHW
-         6w1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVaryxvfxcqDANOG7TeGLD3dZh0dJIK8YYoJmzrrowOxsVSTgtGQOBhlcEgDHwMGbwUCXEdYrBK7iL66VM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxcuX7jAqe1MxJRRBAXbDKM22qSBPuH0BOirsO/t2VJ/ORkqr+U
-	Fjb4n/q72x+y0HDeD0TalPTtZy4rPqIoch6yGhJC8OqHC9rw6U0A
-X-Gm-Gg: ASbGncuiPIJiyv2QjI4ydNWHjkTkihmSb7F1xwj6RX5bVhjwU3kiAjOEVyvzI73ZlLz
-	sSl3fQeMBHkue0LRcmGhgxkwMGAuXJ9Kx8CBlc4KzODsT5Se+RaKY6iAsEItAexdCFHihtr1MZT
-	bG3ogfg8gRHIkK7PRYAMhXxqbD4JymjPUYkvlqGs/C3Q2ct7JH0+NIc1NMDn5LKbBMY6Oivlz/R
-	rMXuIo18u5tGWEx5giqbn92/lSBJPIqj/Kbcsz6oCuGCAJ0YIHo+YJnpg==
-X-Google-Smtp-Source: AGHT+IF55TXa60gpIAb58xF4UZwz78ABU7J7Vd2RQl5UPyFBPBaTi+Euu4rqt5okUyD2VJcCPLHaJg==
-X-Received: by 2002:a17:902:ef07:b0:216:5e6e:68c7 with SMTP id d9443c01a7336-219e6f3802bmr22269125ad.57.1734678403306;
-        Thu, 19 Dec 2024 23:06:43 -0800 (PST)
+        bh=Cwv6cGXBMSPsqiQk43DsTTbOsw6YSE/MxSGSYva2uIA=;
+        b=CENjqLJZhJt6n4AR8GKOLo0Vfz1fhdfwZ/RQ/ZXIfNYB46tET8UljLCRAfx88Lck1Q
+         emk1LDCxW87ZZUZWmvhznrQx4Wa6QZ2rtvVOHu1icVuRI8CPhg2DXfTT19VIXrZu8Qon
+         WIgaVGH908yB5UCN9JaTXle1SYrmwSCsX4kgTqYia5Lltm7w8EGF3P2vpH8LJRIgguRF
+         ZXbtwA/W5C/gqmqZheap0Cm7Ab3rmIKzuywvMlyg8XWcPwOl+5xuGKbwLC0cWyKf4n4r
+         fIQBXY0WV+eCwL6bHrs2k+uCijq+5xvmf9BaCtZMIXgP/67FUiXzcRpQYshrrGMaqLq+
+         n87w==
+X-Forwarded-Encrypted: i=1; AJvYcCU4zkPKIAjgLe2LKzXSh5Uw/7N8GL0hDTX1RpR7FKVULDuDGVisvaLy8buYR/qfEcrrLFgTfKzW@vger.kernel.org, AJvYcCVY+VutI1UgALsVpYiZMgNRzfajLMNYG8rXX//20ZpCrVVhymTLZ7OjFxRzegiSkizh1ZEghxELpWD/TYKw@vger.kernel.org, AJvYcCWXFmmlDbZ4xexltSVZcVPFOs/QGydL1+IhfHbHxI1otNqFfzo2Vi4QUI92g+1snxKUKEI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz9VTxHvseVHbMWeQTMkptbRS0pR1fO9gbASezRhQKHGuKbUmip
+	Eabx4bxD7SQPLjcFzp+v2aJBx6+uFgHFycpjhyi0hE/o1YbKo0Vb
+X-Gm-Gg: ASbGncuxF2MvovX5yjL2JxsulhshnLMezH0Ptlp2xz9cZouL3yS03HTkZnC3h+vwMte
+	UlzCR//a340jUWQ+l02Ca9ko6ifhqqm4RzjGwadAHkTDwuFHgHs12UYHkqmvhH5YEevCX8hCxrP
+	7V2u9iSIe8Gj78mUB3GSOtnZtZjBR3l9ZkEcu4wZX+n9N0PeUWaQwNBSsW+cMq0CAEsBluCIn89
+	kvYREculo/7V6ZicIc39RIGje8/SUTUeQAhA0jaw8TN7P2Jzz51smQYkw==
+X-Google-Smtp-Source: AGHT+IE6a7wsKwBZ5rvYFGHEGlJeEvek2IxDmYvcsUFoxAsXTenhTxST4UptIvwhBmlczsoynJyy7Q==
+X-Received: by 2002:a17:90b:2d4e:b0:2ea:61c4:a443 with SMTP id 98e67ed59e1d1-2f44353f053mr9578296a91.4.1734681375038;
+        Thu, 19 Dec 2024 23:56:15 -0800 (PST)
 Received: from localhost ([98.97.40.162])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dca02e3dsm22175575ad.282.2024.12.19.23.06.42
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f2ed82d273sm4574772a91.30.2024.12.19.23.56.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Dec 2024 23:06:42 -0800 (PST)
-Date: Thu, 19 Dec 2024 23:06:41 -0800
+        Thu, 19 Dec 2024 23:56:14 -0800 (PST)
+Date: Thu, 19 Dec 2024 23:56:12 -0800
 From: John Fastabend <john.fastabend@gmail.com>
-To: Jiayuan Chen <mrpre@163.com>, 
- Jakub Sitnicki <jakub@cloudflare.com>
-Cc: bpf@vger.kernel.org, 
- martin.lau@linux.dev, 
- ast@kernel.org, 
- edumazet@google.com, 
- davem@davemloft.net, 
- dsahern@kernel.org, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- linux-kernel@vger.kernel.org, 
- song@kernel.org, 
- john.fastabend@gmail.com, 
- andrii@kernel.org, 
- mhal@rbox.co, 
- yonghong.song@linux.dev, 
- daniel@iogearbox.net, 
- xiyou.wangcong@gmail.com, 
- horms@kernel.org
-Message-ID: <67651781a0ec7_1f295208c8@john.notmuch>
-In-Reply-To: <ojwjcubviyjxpucryc3ypi4b77h5f5g6ouv7ovaljah5harfyj@jue7hqit2t5n>
-References: <20241218053408.437295-1-mrpre@163.com>
- <20241218053408.437295-2-mrpre@163.com>
- <87jzbxvw9y.fsf@cloudflare.com>
- <ojwjcubviyjxpucryc3ypi4b77h5f5g6ouv7ovaljah5harfyj@jue7hqit2t5n>
-Subject: Re: [PATCH bpf v3 1/2] bpf: fix wrong copied_seq calculation
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+ Levi Zim <rsworktech@outlook.com>, 
+ Cong Wang <xiyou.wangcong@gmail.com>, 
+ John Fastabend <john.fastabend@gmail.com>
+Cc: Jakub Sitnicki <jakub@cloudflare.com>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ Simon Horman <horms@kernel.org>, 
+ David Ahern <dsahern@kernel.org>, 
+ netdev@vger.kernel.org, 
+ bpf@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+Message-ID: <6765231ce87bd_4e17208be@john.notmuch>
+In-Reply-To: <87msgs9gmp.fsf@all.your.base.are.belong.to.us>
+References: <20241130-tcp-bpf-sendmsg-v1-0-bae583d014f3@outlook.com>
+ <MEYP282MB23129373641D74DE831E07E9C6342@MEYP282MB2312.AUSP282.PROD.OUTLOOK.COM>
+ <Z0+qA4Lym/TWOoSh@pop-os.localdomain>
+ <MEYP282MB2312EE60BC5A38AEB4D77BA9C6372@MEYP282MB2312.AUSP282.PROD.OUTLOOK.COM>
+ <87y10e1fij.fsf@all.your.base.are.belong.to.us>
+ <87msgs9gmp.fsf@all.your.base.are.belong.to.us>
+Subject: Re: [PATCH net 0/2] Fix NPE discovered by running bpf kselftest
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -107,199 +104,198 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-Jiayuan Chen wrote:
-> On Wed, Dec 18, 2024 at 04:35:53PM +0800, Jakub Sitnicki wrote:
-> [...]
-> > On Wed, Dec 18, 2024 at 01:34 PM +08, Jiayuan Chen wrote:
-> > > +		if (tcp_flags & TCPHDR_FIN)
-> > > +			break;
-> > > +	}
-> > > +
-> > > +	WRITE_ONCE(psock->strp_offset, offset);
-> > > +	return copied;
-> > > +}
-> > > +
-> > >  enum {
-> > >  	TCP_BPF_IPV4,
-> > >  	TCP_BPF_IPV6,
-> > 
-> > [...]
-> > 
-> > To reiterate my earlier question / suggestion [1] - it would be great if
-> > we can avoid duplicating what tcp_read_skb / tcp_read_sock already do.
-> > 
-> > Keeping extra state in sk_psock / strparser seems to be the key. I think
-> > you should be able to switch strp_data_ready / str_read_sock to
-> > ->read_skb and make an adapter around strp_recv.
-> > 
-> > Rough code below is what I have in mind. Not tested, compiled
-> > only. Don't expect it to work. And I haven't even looked how to address
-> > the kTLS path. But you get the idea.
-> > 
-> > [1] https://msgid.link/87o71bx1l4.fsf@cloudflare.com
-> > 
-> > ---8<---
-> > 
-> > diff --git a/include/net/strparser.h b/include/net/strparser.h
-> > index 41e2ce9e9e10..0dd48c1bc23b 100644
-> > --- a/include/net/strparser.h
-> > +++ b/include/net/strparser.h
-> > @@ -95,9 +95,14 @@ struct strparser {
-> >  	u32 interrupted : 1;
-> >  	u32 unrecov_intr : 1;
-> >  
-> > +	unsigned int need_bytes;
-> > +
-> >  	struct sk_buff **skb_nextp;
-> >  	struct sk_buff *skb_head;
-> > -	unsigned int need_bytes;
-> > +
-> > +	int rcv_err;
-> > +	unsigned int rcv_off;
-> > +
-> >  	struct delayed_work msg_timer_work;
-> >  	struct work_struct work;
-> >  	struct strp_stats stats;
-> > diff --git a/net/strparser/strparser.c b/net/strparser/strparser.c
-> > index 8299ceb3e373..8a08996429d3 100644
-> > --- a/net/strparser/strparser.c
-> > +++ b/net/strparser/strparser.c
-> > @@ -18,6 +18,7 @@
-> >  #include <linux/poll.h>
-> >  #include <linux/rculist.h>
-> >  #include <linux/skbuff.h>
-> > +#include <linux/skmsg.h>
-> >  #include <linux/socket.h>
-> >  #include <linux/uaccess.h>
-> >  #include <linux/workqueue.h>
-> > @@ -327,13 +328,39 @@ int strp_process(struct strparser *strp, struct sk_buff *orig_skb,
-> >  }
-> >  EXPORT_SYMBOL_GPL(strp_process);
-> >  
-> > -static int strp_recv(read_descriptor_t *desc, struct sk_buff *orig_skb,
-> > -		     unsigned int orig_offset, size_t orig_len)
-> > +static int strp_read_skb(struct sock *sk, struct sk_buff *skb)
-> >  {
-> > -	struct strparser *strp = (struct strparser *)desc->arg.data;
-> > -
-> > -	return __strp_recv(desc, orig_skb, orig_offset, orig_len,
-> > -			   strp->sk->sk_rcvbuf, strp->sk->sk_rcvtimeo);
-> > +	struct sk_psock *psock = sk_psock_get(sk);
-> > +	struct strparser *strp = &psock->strp;
-> > +	read_descriptor_t desc = {
-> > +		.arg.data = strp,
-> > +		.count = 1,
-> > +		.error = 0,
-> > +	};
-> > +	unsigned int off;
-> > +	size_t len;
-> > +	int used;
-> > +
-> > +	off = strp->rcv_off;
-> > +	len = skb->len - off;
-> > +	used = __strp_recv(&desc, skb, off, len,
-> > +			   sk->sk_rcvbuf, sk->sk_rcvtimeo);
+Bj=C3=B6rn T=C3=B6pel wrote:
+> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
+> =
 
-I guess the main complication here is read_skb has already unlinked
-the skb so we would lose the skb entirely in some cases here? Easy
-example would be ENOMEM on __strp_recv clone.
+> > Levi Zim <rsworktech@outlook.com> writes:
+> >
+> >> On 2024-12-04 09:01, Cong Wang wrote:
+> >>> On Sun, Dec 01, 2024 at 09:42:08AM +0800, Levi Zim wrote:
+> >>>> On 2024-11-30 21:38, Levi Zim via B4 Relay wrote:
+> >>>>> I found that bpf kselftest sockhash::test_txmsg_cork_hangs in
+> >>>>> test_sockmap.c triggers a kernel NULL pointer dereference:
+> >>> Interesting, I also ran this test recently and I didn't see such a
+> >>> crash.
+> >>
+> >> I am also curious about why other people or the CI didn't hit such c=
+rash.
+> >
+> > FWIW, I'm hitting it on RISC-V:
+> >
+> >   |  Unable to handle kernel access to user memory without uaccess ro=
+utines at virtual address 0000000000000008
+> >   |  Oops [#1]
+> >   |  Modules linked in: sch_fq_codel drm fuse drm_panel_orientation_q=
+uirks backlight
+> >   |  CPU: 7 UID: 0 PID: 732 Comm: test_sockmap Not tainted 6.13.0-rc3=
+-00017-gf44d154d6e3d #1
+> >   |  Hardware name: riscv-virtio qemu/qemu, BIOS 2025.01-rc3-00042-ga=
+cab6e78aca7 01/01/2025
+> >   |  epc : splice_to_socket+0x376/0x49a
+> >   |   ra : splice_to_socket+0x37c/0x49a
+> >   |  epc : ffffffff803d9ffc ra : ffffffff803da002 sp : ff20000001c3b8=
+b0
+> >   |   gp : ffffffff827aefa8 tp : ff60000083450040 t0 : ff6000008a12d0=
+01
+> >   |   t1 : 0000100100001001 t2 : 0000000000000000 s0 : ff20000001c3ba=
+e0
+> >   |   s1 : ffffffffffffefff a0 : ff6000008245e200 a1 : ff60000087dd04=
+50
+> >   |   a2 : 0000000000000000 a3 : 0000000000000000 a4 : 00000000000000=
+00
+> >   |   a5 : 0000000000000000 a6 : ff20000001c3b450 a7 : ff6000008a12c0=
+04
+> >   |   s2 : 000000000000000f s3 : ff6000008245e2d0 s4 : ff6000008245e2=
+80
+> >   |   s5 : 0000000000000000 s6 : 0000000000000002 s7 : 00000000000010=
+01
+> >   |   s8 : 0000000000003001 s9 : 0000000000000002 s10: 00000000000000=
+02
+> >   |   s11: ff6000008245e200 t3 : ffffffff8001e78c t4 : 00000000000000=
+00
+> >   |   t5 : 0000000000000000 t6 : ff6000008869f230
+> >   |  status: 0000000200000120 badaddr: 0000000000000008 cause: 000000=
+000000000d
+> >   |  [<ffffffff803d9ffc>] splice_to_socket+0x376/0x49a
+> >   |  [<ffffffff803d8bc0>] direct_splice_actor+0x44/0x216
+> >   |  [<ffffffff803d8532>] splice_direct_to_actor+0xb6/0x1e8
+> >   |  [<ffffffff803d8780>] do_splice_direct+0x70/0xa2
+> >   |  [<ffffffff80392e40>] do_sendfile+0x26e/0x2d4
+> >   |  [<ffffffff803939d4>] __riscv_sys_sendfile64+0xf2/0x10e
+> >   |  [<ffffffff80fdfb64>] do_trap_ecall_u+0x1f8/0x26c
+> >   |  [<ffffffff80fedaee>] _new_vmalloc_restore_context_a0+0xc6/0xd2
+> >   |  Code: c5d8 9e35 c590 8bb3 40db eb01 6998 b823 0005 856e (6718) 2=
+d05 =
 
-OTOH you could likely optimize __strp_recv a fair amount for the
-good case (if it happens to be true in your case) where all data
-is in the skb normally and skip the clone or something. Although
-not clear to me how common case that is.
+> >   |  ---[ end trace 0000000000000000 ]---
+> >   |  Kernel panic - not syncing: Fatal exception
+> >   |  SMP: stopping secondary CPUs
+> >   |  ---[ end Kernel panic - not syncing: Fatal exception ]---
+> >
+> > This is commit f44d154d6e3d ("Merge tag 'soc-fixes-6.13' of
+> > git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc").
+> >
+> > (Yet to bisect!)
+> =
 
-> > +	/* skb not consumed */
-> > +	if (used <= 0) {
-> > +		strp->rcv_err = used;
-> > +		return used;
-> > +	}
-> > +	/* skb partially consumed */
-> > +	if (used < len) {
-> > +		strp->rcv_err = 0;
-> > +		strp->rcv_off += used;
-> > +		return -EPIPE;	/* stop reading */
-> > +	}
-> > +	/* skb fully consumed */
-> > +	strp->rcv_err = 0;
-> > +	strp->rcv_off = 0;
-> > +	tcp_eat_recv_skb(sk, skb);
-> > +	return used;
-> >  }
-> >  
-> >  static int default_read_sock_done(struct strparser *strp, int err)
-> > @@ -345,21 +372,14 @@ static int default_read_sock_done(struct strparser *strp, int err)
-> >  static int strp_read_sock(struct strparser *strp)
-> >  {
-> >  	struct socket *sock = strp->sk->sk_socket;
-> > -	read_descriptor_t desc;
-> >  
-> > -	if (unlikely(!sock || !sock->ops || !sock->ops->read_sock))
-> > +	if (unlikely(!sock || !sock->ops || !sock->ops->read_skb))
-> >  		return -EBUSY;
-> >  
-> > -	desc.arg.data = strp;
-> > -	desc.error = 0;
-> > -	desc.count = 1; /* give more than one skb per call */
-> > -
-> >  	/* sk should be locked here, so okay to do read_sock */
-> > -	sock->ops->read_sock(strp->sk, &desc, strp_recv);
-> > -
-> > -	desc.error = strp->cb.read_sock_done(strp, desc.error);
-> > +	sock->ops->read_skb(strp->sk, strp_read_skb);
-> >  
-> > -	return desc.error;
-> > +	return strp->cb.read_sock_done(strp, strp->rcv_err);
-> >  }
-> >  
-> >  /* Lower sock lock held */
-> 
-> Thanks Jakub Sitnicki.
-> 
-> I understand your point about using tcp_read_skb to replace
-> tcp_read_sock, avoiding code duplication and reducing the number of
-> interfaces.
-> 
-> Currently, not all modules using strparser have issues with
-> copied_seq miscalculation. The issue exists mainly with
-> bpf::sockmap + strparser because bpf::sockmap implements a
-> proprietary read interface for user-land: tcp_bpf_recvmsg_parser().
-> 
-> Both this and strp_recv->tcp_read_sock update copied_seq, leading
-> to errors.
-> 
-> This is why I rewrote the tcp_read_sock() interface specifically for
-> bpf::sockmap.
-> 
-> So far, I found two other modules that use the standard strparser module:
-> 
-> 1.kcmsock.c
-> 2.espintcp.c (ESP over TCP implementation)
-> (Interesting, these two don't have self-tests)
-> 
-> Take kcm as an example: its custom read interface kcm_recvmsg()
-> does not conflict with copied_seq updates in tcp_read_sock().
-> 
-> Therefore, for kcmsock, updating copied_seq in tcp_read_sock is
-> necessary and aligns with the read semantics. espintcp is similar.
-> 
-> In summary, different modules using strp_recv have different needs
-> for copied_seq. I still insist on implementing tcp_bpf_read_sock()
-> specifically for bpf::sockmap without affecting others.
-> 
-> Otherwise, we may need tcp_read_skb() to determine whether
-> to update copied_seq according to the different needs of each module.
-> 
-> 
-> Additionally,
-> I've found that KTLS has its own read_sock() and
-> a strparser-like implementation (in tls_strp.c), separate from the
-> standard strparser module. Therefore, even with your proposed
-> solution, KTLS may be not affected.
-> 
-> regards
-> 
-> 
+> Took the series for a run, and it does solve crash, but I'm getting
+> additional failures:
+
+Hi Bjorn,
+
+Thanks! I'm guessing those tests were failing even without the patch
+though right?
+
+Thanks,
+John
+
+> =
+
+>   |  [TEST 298]: (512, 1, 3, sendpage, pass,pop (1,3),ktls,): socket(pe=
+er2) kTLS enabled                               =
+
+>   | socket(client1) kTLS enabled                                       =
+                                                =
+
+>   | recv failed(): Invalid argument                                    =
+                                                =
+
+>   | rx thread exited with err 1.                                       =
+                                                =
+
+>   |  FAILED                                                            =
+                                                =
+
+>   |  [TEST 299]: (100, 1, 5, sendpage, pass,pop (1,3),ktls,): socket(pe=
+er2) kTLS enabled                               =
+
+>   | socket(client1) kTLS enabled                                       =
+                                                =
+
+>   | recv failed(): Invalid argument                                    =
+                                                =
+
+>   | rx thread exited with err 1.                                       =
+                                                                         =
+                                                                         =
+                 =
+
+>   |  FAILED                                                            =
+                                                =
+
+>   |  [TEST 300]: (2, 32, 8192, sendpage, pass,pop (4096,8192),ktls,): s=
+ocket(peer2) kTLS enabled                                                =
+                                                                         =
+                 =
+
+>   | socket(client1) kTLS enabled                                       =
+                                                =
+
+>   | recv failed(): Bad message                                         =
+                                                                         =
+                                                                         =
+                 =
+
+>   | rx thread exited with err 1.                                       =
+                                                =
+
+>   |  FAILED                                                            =
+                                                                         =
+                                                                         =
+                 =
+
+>   |  ...
+>   | #42/ 9 sockhash:ktls:txmsg test pop-data:FAIL                      =
+                                                =
+
+>   | ...
+>   |  [TEST 308]: (2, 32, 8192, sendpage, pass,pop (5,21),ktls,): socket=
+(peer2) kTLS enabled                            =
+
+>   | socket(client1) kTLS enabled                                       =
+                                                                         =
+                                                                         =
+                 =
+
+>   | recv failed(): Bad message                                         =
+                                                                         =
+                                                                         =
+                 =
+
+>   | rx thread exited with err 1.                                       =
+                                                =
+
+>   |  FAILED                                                            =
+                                                                         =
+                                                                         =
+                 =
+
+>   |  [TEST 309]: (2, 32, 8192, sendpage, pass,pop (1,11),ktls,): socket=
+(peer2) kTLS enabled                            =
+
+>   | socket(client1) kTLS enabled                                       =
+                                                =
+
+>   | recv failed(): Bad message                                         =
+                                                                         =
+                                                                         =
+                 =
+
+>   | rx thread exited with err 1.                                       =
+                                                =
+
+>   |  FAILED
+>   | ...
+>   | #43/ 6 sockhash:ktls:txmsg test push/pop data:FAIL                 =
+                                                                         =
+                                                                         =
+                 =
+
+> =
+
+
+
 
