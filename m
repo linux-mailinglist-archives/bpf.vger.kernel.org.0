@@ -1,174 +1,134 @@
-Return-Path: <bpf+bounces-47439-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47441-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DF039F9695
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 17:29:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B23489F9716
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 17:58:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F6DF16CC85
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 16:28:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C8CA189926B
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 16:55:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B30FD219E82;
-	Fri, 20 Dec 2024 16:28:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AA84223C60;
+	Fri, 20 Dec 2024 16:51:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=eurecom.fr header.i=@eurecom.fr header.b="ylScyeoc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C+9lL9f8"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.eurecom.fr (smtp.eurecom.fr [193.55.113.210])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E0C533062;
-	Fri, 20 Dec 2024 16:28:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.55.113.210
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 663F522332B;
+	Fri, 20 Dec 2024 16:51:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734712123; cv=none; b=h+Ysk9JTCUmOucB1iUt2NXLArpsAqpKlPTV91AgPM9NTtv68QXcnObTk0mkHdxoodXBnXj9eby/B1J0GD6XAQ91BZQTZDRZHE5haDFxOGpUPzSo3nRLUFJFvTqcpMPf1PNaqHrjiKjUYr7kg+tysKV15vF83NjeghoYaIlaKwgM=
+	t=1734713497; cv=none; b=qxsNNTDEaNT7Fs39wwoCsjOhfwi0OulAX/nO8T1+cB9Ufnloh0TmgLXZA4BA13gYpfb01ROGkEhlMLKkS3gf0i3k1DD8f6E8RtLSnKkHIVMYE1U3vKTATKtpy77K4xfHc3aAZU4bDuWbHh7F5Yo3caqfIu/uVFAgBTTUGmsmhWQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734712123; c=relaxed/simple;
-	bh=PA3ZJkqXu9pMasVcAutpfftrCDpDHcnMzzbP4VgFp2Y=;
-	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
-	 Message-ID:Subject; b=P51t/pAiVBO1C8yqX7nzUa25biqQqe44ihR86enzYSfusQ44/s45/8RaRtdWAOTJhm1qqHsrb69+ZPrf5DNxC9T4AFcvdMT63fmWRyryF3RsCk0+1fi16obSW6EFOu9WxzBJIll9akHqBnynJg1piCpYM79TGeKh4LmraY6hgQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=eurecom.fr; spf=pass smtp.mailfrom=eurecom.fr; dkim=pass (1024-bit key) header.d=eurecom.fr header.i=@eurecom.fr header.b=ylScyeoc; arc=none smtp.client-ip=193.55.113.210
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=eurecom.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=eurecom.fr
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=eurecom.fr; i=@eurecom.fr; q=dns/txt; s=default;
-  t=1734712119; x=1766248119;
-  h=from:in-reply-to:references:date:cc:to:mime-version:
-   message-id:subject:content-transfer-encoding;
-  bh=PA3ZJkqXu9pMasVcAutpfftrCDpDHcnMzzbP4VgFp2Y=;
-  b=ylScyeoc7TopQS528imsICvl/8a/LIR+ttftQbil+HmvhLebkB2LDCM+
-   FczVDsPDmlWHFCV+7kOtxE+JGjRbrr/eeVoOOJfEYmhPub+0mXLsDBbP+
-   ERlEEIAxwTAqBfWOgOsZmC+xzY8PnJxqo7mcHIvibGMcsc0RMSVikC238
-   c=;
-X-CSE-ConnectionGUID: XVGw9OvtQ/2b0OoQkojBwQ==
-X-CSE-MsgGUID: VmnHP89GQbu75PBmc1IH9Q==
-X-IronPort-AV: E=Sophos;i="6.12,251,1728943200"; 
-   d="scan'208";a="28280029"
-Received: from quovadis.eurecom.fr ([10.3.2.233])
-  by drago1i.eurecom.fr with ESMTP; 20 Dec 2024 17:28:36 +0100
-From: "Ariel Otilibili-Anieli" <Ariel.Otilibili-Anieli@eurecom.fr>
-In-Reply-To: <26180f2e-1ef7-45de-8e9e-f08a4e6a6d36@qmon.net>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 88.183.119.157
-References: <20241211220012.714055-1-ariel.otilibili-anieli@eurecom.fr>
- <20241211220012.714055-2-ariel.otilibili-anieli@eurecom.fr> <26180f2e-1ef7-45de-8e9e-f08a4e6a6d36@qmon.net>
-Date: Fri, 20 Dec 2024 17:28:36 +0100
-Cc: bpf@vger.kernel.org, "Alexei Starovoitov" <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>, "Andrii Nakryiko" <andrii@kernel.org>, "Shuah Khan" <shuah@kernel.org>, linux-kernel@vger.kernel.org
-To: "Quentin Monnet" <qmo@qmon.net>
+	s=arc-20240116; t=1734713497; c=relaxed/simple;
+	bh=HPkhIBw/4uEx84HWtKiBxCfbApwv+OS0b7/QpplHQec=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=t6+vIOhIwAcx6bUjxoQ3VJs9Qs0oD9IciKhYMzkJOxKBhfUVJqKuh3aRQNnZ7mp3CHIFGh65rMTpOd1EsudYfLXZcoqZvlx+dxjvyP0CET42w7pCMnHTNUMGIT7DvJfOdmK4lHy1WO4Mh1IiNhkOrLDJWXosgisRKPVS7b8j9fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C+9lL9f8; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2161eb94cceso15288595ad.2;
+        Fri, 20 Dec 2024 08:51:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734713495; x=1735318295; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lEud0HpUzW8AGsAHXsgRgKAN5zSUNFNJtoYvN7JgreE=;
+        b=C+9lL9f8eEuT2GqFtYwxpZvSR6lK/5RCR/ZyH8H7T65h8Ipc+StMnCsS99V2Hh87VX
+         AjrVNwVb9MBIjvYSkai6/GgYTNmZvAIpzP7waQBez/1UnBQBd82zsD7Es4f8rDtqmVR7
+         H9OsFt3uLGLUZkmZOmQw/WxSTc8b8LxmrIT2gryg5BCel+507GtKgujyxjBBCzgbz3Gi
+         sZJ2iZ7uklqdooOj/vigpt1MBcMPP8poYAYcDXVWz7Xn4K+xIvn9sIYcvvdEyILK2VHu
+         SbPF3Vg7xhuEMAaT2/5PmSIUjNHSLj9pVS1HURMAlH4N4UStURDIjjgE2d0g6N79COpM
+         y89Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734713495; x=1735318295;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=lEud0HpUzW8AGsAHXsgRgKAN5zSUNFNJtoYvN7JgreE=;
+        b=I3/J/W0qHtuoSSVtJYufJsB7pgMMFiWphRFo1TxaxnpuUGj70BMLytnNg792h9KVnS
+         SP03GioVFV+d2bkudMY1a2AEdNjskek/V/l+vSyrFnsDXPJPsGv/Ue61R2CGKwpLM79/
+         hVvMl9LkuOrjfHlGt8VwLVGtdDnDzgeG0hcyWsjQPbBoEwD9PwYpS+UzNne+MbHdUpIF
+         GLPQOCc8PFFHipR5c+DAjbQGnZ7xH1dJ/heo0Qw4V40S4j9WZm/P/OtMDCemQIkwRSd7
+         h0n/rVQz5vT5xyi7xF68EGPVv6VHA+WWDytVIRlq+nCihFvgr+N1gt9ii/hDpxKcjjBD
+         erTg==
+X-Forwarded-Encrypted: i=1; AJvYcCW65AAhUukDgEC5IIlZiXszxcjtXi18xVGvwH83NgAXhaUliV6Vf7rN6EjW+A8h1VZP7fgOrpy5@vger.kernel.org, AJvYcCX+hE0H3HVkKYSF7x5X/AJEmtFZ+u3F/M/vrril/4cSTq0WjatpDQWclUJ63IC+eFe5SDk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzm2PGT1D9PzaquI4MfIES8gl/w0wKrtqf8bS6EDOWdhNfp9nGf
+	SZQeHXqE9MAkgobB8XGXLFPsX9zRUZAMJkCef9Cn69AFuXeyx2gPrR/9Fw==
+X-Gm-Gg: ASbGncub8nEsRAyQ8dEutodADUwUG4+JSMeIOJZ1l/fi6kGNoz1BroSLs6aslC8Kg3N
+	2B7zJ5PYh5yKXKqKDeJ7iBVoSYaGMq1qHokmKKVLkoAnnzPXWYhbkC4YSzYzFUTiZX+QpTX5Lgn
+	kYb1KUJIptUTIOJA1imXoJYIrSfxnUKvvkuMrmUqcn+g8jIGlWB9co1u+oaD4Z+N8AcK+z7xqPf
+	35N+9iYDEhHxBOJzuUvVdQHuJ6e26u/yRntNOCyaHS2GpnPqUL5V0s=
+X-Google-Smtp-Source: AGHT+IH6hncF/IXzQqsfRxzRQS3FjeB5XNGzIaaBFZ6mk/sB7K7m1zCBlM90qhx2V3qOr/jvkYfJYw==
+X-Received: by 2002:a17:902:e54e:b0:216:45eb:5e4d with SMTP id d9443c01a7336-219e6e8c529mr52391405ad.6.1734713495643;
+        Fri, 20 Dec 2024 08:51:35 -0800 (PST)
+Received: from localhost ([98.97.44.4])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dca006fasm31240115ad.227.2024.12.20.08.51.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Dec 2024 08:51:35 -0800 (PST)
+Date: Fri, 20 Dec 2024 08:51:32 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: zijianzhang@bytedance.com, 
+ bpf@vger.kernel.org
+Cc: john.fastabend@gmail.com, 
+ jakub@cloudflare.com, 
+ davem@davemloft.net, 
+ edumazet@google.com, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ dsahern@kernel.org, 
+ horms@kernel.org, 
+ ast@kernel.org, 
+ daniel@iogearbox.net, 
+ netdev@vger.kernel.org, 
+ Zijian Zhang <zijianzhang@bytedance.com>
+Message-ID: <6765a094c9db5_21de2208d9@john.notmuch>
+In-Reply-To: <20241210012039.1669389-1-zijianzhang@bytedance.com>
+References: <20241210012039.1669389-1-zijianzhang@bytedance.com>
+Subject: RE: [PATCH v2 bpf 0/2] tcp_bpf: update the rmem scheduling for
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Message-ID: <2f7a83-67659b00-a301-5cf12280@99585095>
-Subject: =?utf-8?q?Re=3A?= [PATCH 1/1] =?utf-8?q?selftests/bpf=3A?= clear out Python 
- syntax warnings
-User-Agent: SOGoMail 5.11.1
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Friday, December 20, 2024 17:24 CET, Quentin Monnet <qmo@qmon.net> w=
-rote:
+zijianzhang@ wrote:
+> From: Zijian Zhang <zijianzhang@bytedance.com>
+> 
+> We should do sk_rmem_schedule instead of sk_wmem_schedule in function
+> bpf_tcp_ingress. We also need to update sk_rmem_alloc in bpf_tcp_ingress
+> accordingly to account for the rmem.
+> 
+> v2:
+>   - Update the commit message to indicate the reason for msg->skb check
+> 
+> Cong Wang (1):
+>   tcp_bpf: charge receive socket buffer in bpf_tcp_ingress()
+> 
+> Zijian Zhang (1):
+>   tcp_bpf: add sk_rmem_alloc related logic for tcp_bpf ingress
+>     redirection
+> 
+>  include/linux/skmsg.h | 11 ++++++++---
+>  include/net/sock.h    | 10 ++++++++--
+>  net/core/skmsg.c      |  6 +++++-
+>  net/ipv4/tcp_bpf.c    |  6 ++++--
+>  4 files changed, 25 insertions(+), 8 deletions(-)
+> 
+> -- 
+> 2.20.1
+> 
 
-> 2024-12-11 22:57 UTC+0100 ~ Ariel Otilibili
-> <ariel.otilibili-anieli@eurecom.fr>
-> > Invalid escape sequences are used, and produced syntax warnings:
-> >=20
-> > ```
-> > $ test=5Fbpftool=5Fsynctypes.py
-> > test=5Fbpftool=5Fsynctypes.py:69: SyntaxWarning: invalid escape seq=
-uence '\['
-> >   self.start=5Fmarker =3D re.compile(f'(static )?const bool {self.a=
-rray=5Fname}\[.*\] =3D {{\n')
-> > test=5Fbpftool=5Fsynctypes.py:83: SyntaxWarning: invalid escape seq=
-uence '\['
-> >   pattern =3D re.compile('\[(BPF=5F\w*)\]\s*=3D (true|false),?$')
-> > test=5Fbpftool=5Fsynctypes.py:181: SyntaxWarning: invalid escape se=
-quence '\s'
-> >   pattern =3D re.compile('^\s*(BPF=5F\w+),?(\s+/\*.*\*/)?$')
-> > test=5Fbpftool=5Fsynctypes.py:229: SyntaxWarning: invalid escape se=
-quence '\*'
-> >   start=5Fmarker =3D re.compile(f'\*{block=5Fname}\* :=3D {{')
-> > test=5Fbpftool=5Fsynctypes.py:229: SyntaxWarning: invalid escape se=
-quence '\*'
-> >   start=5Fmarker =3D re.compile(f'\*{block=5Fname}\* :=3D {{')
-> > test=5Fbpftool=5Fsynctypes.py:230: SyntaxWarning: invalid escape se=
-quence '\*'
-> >   pattern =3D re.compile('\*\*([\w/-]+)\*\*')
-> > test=5Fbpftool=5Fsynctypes.py:248: SyntaxWarning: invalid escape se=
-quence '\s'
-> >   start=5Fmarker =3D re.compile(f'"\s*{block=5Fname} :=3D {{')
-> > test=5Fbpftool=5Fsynctypes.py:249: SyntaxWarning: invalid escape se=
-quence '\w'
-> >   pattern =3D re.compile('([\w/]+) [|}]')
-> > test=5Fbpftool=5Fsynctypes.py:267: SyntaxWarning: invalid escape se=
-quence '\s'
-> >   start=5Fmarker =3D re.compile(f'"\s*{macro}\s*" [|}}]')
-> > test=5Fbpftool=5Fsynctypes.py:267: SyntaxWarning: invalid escape se=
-quence '\s'
-> >   start=5Fmarker =3D re.compile(f'"\s*{macro}\s*" [|}}]')
-> > test=5Fbpftool=5Fsynctypes.py:268: SyntaxWarning: invalid escape se=
-quence '\w'
-> >   pattern =3D re.compile('([\w-]+) ?(?:\||}[ }\]])')
-> > test=5Fbpftool=5Fsynctypes.py:287: SyntaxWarning: invalid escape se=
-quence '\w'
-> >   pattern =3D re.compile('(?:.*=3D\')?([\w/]+)')
-> > test=5Fbpftool=5Fsynctypes.py:319: SyntaxWarning: invalid escape se=
-quence '\w'
-> >   pattern =3D re.compile('([\w-]+) ?(?:\||}[ }\]"])')
-> > test=5Fbpftool=5Fsynctypes.py:341: SyntaxWarning: invalid escape se=
-quence '\|'
-> >   start=5Fmarker =3D re.compile('\|COMMON=5FOPTIONS\| replace:: {')
-> > test=5Fbpftool=5Fsynctypes.py:342: SyntaxWarning: invalid escape se=
-quence '\*'
-> >   pattern =3D re.compile('\*\*([\w/-]+)\*\*')
-> > ```
-> >=20
-> > Escaping them clears out the warnings.
-> >=20
-> > ```
-> > $ tools/testing/selftests/bpf/test=5Fbpftool=5Fsynctypes.py; echo $=
-?
-> > 0
-> > ```
-> >=20
-> > Link: https://docs.python.org/fr/3/library/re.html
->=20
->=20
-> En version anglaise : https://docs.python.org/3/library/re.html
+Thanks. Sorry fo rthe delay I thought this had an ACK already. My fault.
 
-Merci!
->=20
->=20
-> > CC: Alexei Starovoitov <ast@kernel.org>
-> > CC: Daniel Borkmann <daniel@iogearbox.net>
-> > CC: Andrii Nakryiko <andrii@kernel.org>
-> > CC: Shuah Khan <shuah@kernel.org>
-> > Signed-off-by: Ariel Otilibili <ariel.otilibili-anieli@eurecom.fr>
->=20
-> Right, this seems to be a change in Python 3.12 [0][1]:
->=20
-> 'A backslash-character pair that is not a valid escape sequence now
-> generates a SyntaxWarning, instead of DeprecationWarning. For example=
-,
-> re.compile("\d+\.\d+") now emits a SyntaxWarning ("\d" is an invalid
-> escape sequence, use raw strings for regular expression:
-> re.compile(r"\d+\.\d+")).'
->=20
-> although I can't remember seeing any DeprecationWarning before.
->=20
-> Anyway, the fix makes sense, and does address the warnings. Thank you
-> for this!
->=20
-> Tested-by: Quentin Monnet <qmo@kernel.org>
-> Reviewed-by: Quentin Monnet <qmo@kernel.org>
-
-Awesome, Quentin! Thanks for the feedback!
->=20
->=20
-> [0] https://docs.python.org/3.12/whatsnew/3.12.html#other-language-ch=
-anges
-> [1] https://github.com/python/cpython/issues/98401
-
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
 
