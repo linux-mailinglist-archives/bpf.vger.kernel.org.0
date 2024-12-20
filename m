@@ -1,55 +1,50 @@
-Return-Path: <bpf+bounces-47483-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47484-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 065E99F9B14
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 21:20:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8002B9F9CB3
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 23:20:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C49A1898A9D
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 20:19:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A278E7A26DA
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 22:20:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0292921C180;
-	Fri, 20 Dec 2024 20:18:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E12AE227567;
+	Fri, 20 Dec 2024 22:20:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Q6Rm3AU+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k9CYA8TQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87B7638DEC
-	for <bpf@vger.kernel.org>; Fri, 20 Dec 2024 20:18:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CEE4155342;
+	Fri, 20 Dec 2024 22:20:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734725915; cv=none; b=ZDs/bx+ZkaTHBmsiO+RGhsijwe/kJldu4kV+SS2eprHRgNk+2njnkFM9dOAqI6J4GCxbTxHVZ4RAR+yR1mA+GjX1EhJhTt3QKnlssVZANnSP7tEz4Mfpn9IOTXcZEuUuZ9/As6Ysh4vrw3v9dQCG7bPwgf/3gTTxMdj+k+fMhPw=
+	t=1734733216; cv=none; b=U/jF+ipBwG23PcTtVrRbv3e7DLEI7PcrLrCGDsa4d1pPzlgDFDMn5LrZthS3F2w39BejYHTsxD4dQDYF2ILQiwTsYLNpe2KJLhHpTfMAA1+aYSeA2RyC6rXU8sIYGvXO6/xG6r52r7ipGqtM+bKLgaKSPm/KXEI4WqMl0D0ciHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734725915; c=relaxed/simple;
-	bh=ctZAaWBWTTNYRziwj6wiNjReyeuvQuEq/xEaMdb55io=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q2/dFQqlOwwzryt4cl+Mj+p4yTWnQOyPq+Ri2ZJKmhydZcqBxONG4p0tTi8W/7gm4wniefgVBzVfx/hy+YDxhsQHgSUkiWyqHdsWX/XiBXOwpkdLQaVpqj5kcKP3bajYtjyopx5z5V87hEhTmXt00qPgiWi+aAWBwoyvLHkRQPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Q6Rm3AU+; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1734725910;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=LMP4KKSwTNYOP90oGmJqp0m8f48t4ywQmgh7oUrcPu8=;
-	b=Q6Rm3AU+P5prAIbEBaLQRyafGlYhCoM5ha14PwhKMJDJ3/mSWmGC7iVtok+RpROQ2BwoNe
-	DBOtuGsfBWmq7AgCAuy287xpoBGlAmDp26QnXK8fFyl56ls3NnBK4hGrXugK8urTSYwOEs
-	KLi3xq1cNgsr3x8eeHANNNk0l5xzWGM=
-From: Martin KaFai Lau <martin.lau@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@meta.com,
-	Robert Morris <rtm@csail.mit.edu>
-Subject: [PATCH bpf-next] bpf: Reject struct_ops registration that uses module ptr and the module btf_id is missing
-Date: Fri, 20 Dec 2024 12:18:18 -0800
-Message-ID: <20241220201818.127152-1-martin.lau@linux.dev>
+	s=arc-20240116; t=1734733216; c=relaxed/simple;
+	bh=SRrrMI3Ve0fnBt8s85Tlk4Gjw+jfFYv0pPQ/7O2oxD8=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=mw+PuKz1wpq0b8bsvkR9sGj6+3gmlw95r2EBj0MvUywDJFcUqcUgzjVkmdzt9x8tlqKv04ecJP041DmzoHfn1TDNOgSG0XP5d60mZWtKUXCbM7IDKVTghU4n9T5NDqbQeVpNMlFCQX8Xh41ebb10lQszmCZUpetjWyzpWv69aNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k9CYA8TQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8159C4CECD;
+	Fri, 20 Dec 2024 22:20:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734733215;
+	bh=SRrrMI3Ve0fnBt8s85Tlk4Gjw+jfFYv0pPQ/7O2oxD8=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=k9CYA8TQtF/hoEuGL96h9QZVQzCsmV7r+PX7FHVt098nsyXtMB3Anuxf3MIEivaHP
+	 TjmPb2HmVJtnTGSXP5tb7kl0qOEqyLprmQS/r+751Wls/KEZ0nZiekJAQIC+SG2hwa
+	 5/pHpD/Y0ZW/q9j5EbBOen8mnZ8z+Jhyh7/ykvo9LcakHfYt9TaESxDLRXf1pvyKAi
+	 55s37wh2aG1UjRULP/w1S5t4bZyKrBVFjRJjnQE6osXDjTRnux/16PqyxDXZfDStmh
+	 nsbUlfn5KBfM1iCapPMuOp6SG9e7PbbqZDzkeYmB+0FSjmL9thZLc69L785SqOqUtZ
+	 OMrxuhcDcWh+A==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAE283806656;
+	Fri, 20 Dec 2024 22:20:34 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -57,120 +52,68 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Subject: Re: [PATCH net 0/2] Fix NPE discovered by running bpf kselftest
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <173473323379.3037384.4089610194127923528.git-patchwork-notify@kernel.org>
+Date: Fri, 20 Dec 2024 22:20:33 +0000
+References: <20241130-tcp-bpf-sendmsg-v1-0-bae583d014f3@outlook.com>
+In-Reply-To: <20241130-tcp-bpf-sendmsg-v1-0-bae583d014f3@outlook.com>
+To: Levi Zim via B4 Relay <devnull+rsworktech.outlook.com@kernel.org>
+Cc: john.fastabend@gmail.com, jakub@cloudflare.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
+ dsahern@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, rsworktech@outlook.com
 
-From: Martin KaFai Lau <martin.lau@kernel.org>
+Hello:
 
-There is a UAF report in the bpf_struct_ops when CONFIG_MODULES=n.
-In particular, the report is on tcp_congestion_ops that has
-a "struct module *owner" member.
+This series was applied to bpf/bpf.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-For struct_ops that has a "struct module *owner" member,
-it can be extended either by the regular kernel module or
-by the bpf_struct_ops. bpf_try_module_get() will be used
-to do the refcounting and different refcount is done
-based on the owner pointer. When CONFIG_MODULES=n,
-the btf_id of the "struct module" is missing:
+On Sat, 30 Nov 2024 21:38:21 +0800 you wrote:
+> I found that bpf kselftest sockhash::test_txmsg_cork_hangs in
+> test_sockmap.c triggers a kernel NULL pointer dereference:
+> 
+> BUG: kernel NULL pointer dereference, address: 0000000000000008
+>  ? __die_body+0x6e/0xb0
+>  ? __die+0x8b/0xa0
+>  ? page_fault_oops+0x358/0x3c0
+>  ? local_clock+0x19/0x30
+>  ? lock_release+0x11b/0x440
+>  ? kernelmode_fixup_or_oops+0x54/0x60
+>  ? __bad_area_nosemaphore+0x4f/0x210
+>  ? mmap_read_unlock+0x13/0x30
+>  ? bad_area_nosemaphore+0x16/0x20
+>  ? do_user_addr_fault+0x6fd/0x740
+>  ? prb_read_valid+0x1d/0x30
+>  ? exc_page_fault+0x55/0xd0
+>  ? asm_exc_page_fault+0x2b/0x30
+>  ? splice_to_socket+0x52e/0x630
+>  ? shmem_file_splice_read+0x2b1/0x310
+>  direct_splice_actor+0x47/0x70
+>  splice_direct_to_actor+0x133/0x300
+>  ? do_splice_direct+0x90/0x90
+>  do_splice_direct+0x64/0x90
+>  ? __ia32_sys_tee+0x30/0x30
+>  do_sendfile+0x214/0x300
+>  __se_sys_sendfile64+0x8e/0xb0
+>  __x64_sys_sendfile64+0x25/0x30
+>  x64_sys_call+0xb82/0x2840
+>  do_syscall_64+0x75/0x110
+>  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+> 
+> [...]
 
-WARN: resolve_btfids: unresolved symbol module
+Here is the summary with links:
+  - [net,1/2] skmsg: return copied bytes in sk_msg_memcopy_from_iter
+    https://git.kernel.org/bpf/bpf/c/fdf478d236dc
+  - [net,2/2] tcp_bpf: fix copied value in tcp_bpf_sendmsg
+    https://git.kernel.org/bpf/bpf/c/5153a75ef34b
 
-Thus, the bpf_try_module_get() cannot do the correct refcounting.
-
-Not all subsystem's struct_ops requires the "struct module *owner" member.
-e.g. the recent sched_ext_ops.
-
-This patch is to disable bpf_struct_ops registration if
-the struct_ops has the "struct module *" member and the
-"struct module" btf_id is missing. The btf_type_is_fwd() helper
-is moved to the btf.h header file for this test.
-
-This has happened since the beginning of bpf_struct_ops which has gone
-through many changes. The Fixes tag is set to a recent commit that this
-patch can apply cleanly. Considering CONFIG_MODULES=n is not
-common and the age of the issue, targeting for bpf-next also.
-
-Fixes: 1611603537a4 ("bpf: Create argument information for nullable arguments.")
-Reported-by: Robert Morris <rtm@csail.mit.edu>
-Closes: https://lore.kernel.org/bpf/74665.1733669976@localhost/
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
----
- include/linux/btf.h         |  5 +++++
- kernel/bpf/bpf_struct_ops.c | 21 +++++++++++++++++++++
- kernel/bpf/btf.c            |  5 -----
- 3 files changed, 26 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index 4214e76c9168..2a08a2b55592 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -353,6 +353,11 @@ static inline bool btf_type_is_scalar(const struct btf_type *t)
- 	return btf_type_is_int(t) || btf_type_is_enum(t);
- }
- 
-+static inline bool btf_type_is_fwd(const struct btf_type *t)
-+{
-+	return BTF_INFO_KIND(t->info) == BTF_KIND_FWD;
-+}
-+
- static inline bool btf_type_is_typedef(const struct btf_type *t)
- {
- 	return BTF_INFO_KIND(t->info) == BTF_KIND_TYPEDEF;
-diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index 606efe32485a..040fb1cd840b 100644
---- a/kernel/bpf/bpf_struct_ops.c
-+++ b/kernel/bpf/bpf_struct_ops.c
-@@ -310,6 +310,20 @@ void bpf_struct_ops_desc_release(struct bpf_struct_ops_desc *st_ops_desc)
- 	kfree(arg_info);
- }
- 
-+static bool is_module_member(const struct btf *btf, u32 id)
-+{
-+	const struct btf_type *t;
-+
-+	t = btf_type_resolve_ptr(btf, id, NULL);
-+	if (!t)
-+		return false;
-+
-+	if (!__btf_type_is_struct(t) && !btf_type_is_fwd(t))
-+		return false;
-+
-+	return !strcmp(btf_name_by_offset(btf, t->name_off), "module");
-+}
-+
- int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
- 			     struct btf *btf,
- 			     struct bpf_verifier_log *log)
-@@ -389,6 +403,13 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
- 			goto errout;
- 		}
- 
-+		if (!st_ops_ids[IDX_MODULE_ID] && is_module_member(btf, member->type)) {
-+			pr_warn("'struct module' btf id not found. Is CONFIG_MODULES enabled? bpf_struct_ops '%s' needs module support.\n",
-+				st_ops->name);
-+			err = -EOPNOTSUPP;
-+			goto errout;
-+		}
-+
- 		func_proto = btf_type_resolve_func_ptr(btf,
- 						       member->type,
- 						       NULL);
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 28246c59e12e..8396ce1d0fba 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -498,11 +498,6 @@ bool btf_type_is_void(const struct btf_type *t)
- 	return t == &btf_void;
- }
- 
--static bool btf_type_is_fwd(const struct btf_type *t)
--{
--	return BTF_INFO_KIND(t->info) == BTF_KIND_FWD;
--}
--
- static bool btf_type_is_datasec(const struct btf_type *t)
- {
- 	return BTF_INFO_KIND(t->info) == BTF_KIND_DATASEC;
+You are awesome, thank you!
 -- 
-2.43.5
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
