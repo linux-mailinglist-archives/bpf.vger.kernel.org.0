@@ -1,138 +1,104 @@
-Return-Path: <bpf+bounces-47413-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47414-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 508A39F923D
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 13:31:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9C9A9F92BA
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 14:00:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C85A1895B6B
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 12:31:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15F0D16DE62
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 13:00:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 699A020DD7A;
-	Fri, 20 Dec 2024 12:31:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2582A215769;
+	Fri, 20 Dec 2024 13:00:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hWMuLYfH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cg6v9eLn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A457720D4E4;
-	Fri, 20 Dec 2024 12:31:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E9C42156F3;
+	Fri, 20 Dec 2024 13:00:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734697869; cv=none; b=JTrwUz0oj03MFKTEAh9vWcdPfPlVK9NQEG1cm4Uo7HLaytQvV5pe1PWDYlDKsPwDckxrexEewdv7kretZFbIIemZbPOT1lilNN5LQABLI1YplV9k5VONK+ipCB32S8LdK+howgBv395mrAnGnMOFO/dEjjypIZwGUmRwuQSuDZk=
+	t=1734699618; cv=none; b=eMNLxkKNnk4yXdGhH5HvX6B5XEw1e3dXC+v5wW4o4cDb/bVp7u1mJGBewi4CTp4MEobYFLbK2da/12nsttGOg6ol6XgeD0QTAV7uQ6q1okU4YgqmlKS6vUlaaLmtgA0NVfAIOUOWtI6BKxgP01rsOZ+kg3BQojQ7POV7JpcKYPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734697869; c=relaxed/simple;
-	bh=+eF1HArLPehq0X3xogX3R/QwmI0tpYmU783rhb9q7zw=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JjNukpuTEpsUgVYh9zh0hkhYVyshImW+I/5vYorxML7uPW+f+u7PtuZ20eUe6SRVx46vRaivfNWbQH49mkqe3N3F2ZDlwqpNpeCsB/eIKdUGK/Z3gZVWAcx85UhZ76cdrINu3npd7ezTSRDxGkS85VFd52o9r1OhcZ6A833f+BU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hWMuLYfH; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-aa684b6d9c7so338290366b.2;
-        Fri, 20 Dec 2024 04:31:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734697864; x=1735302664; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=P7lOBblMD1Z+3nNWjzfDIGzNN4URNdmpackdxaxd5mI=;
-        b=hWMuLYfHb2PobHOQtMbEJ35mGfuogPzkuTnjCEDXPRTAzwGyvDaGrrMz60o/m2Rf8v
-         zObwymP441dwBuWK5HokaX0B4g+I0UmRo1dS2aanxTA2aEpWRYeQ8Ye0rM4w0X/rJUmw
-         ZcPXSAZOUkIzyjx6cc+hDHXdyK842Qq3/dLKVJLUFK9qPnWShhMOvEKoOZoTj4FXBJh0
-         8NMOpqame4ngVvjeuQ+TX9MPE5s2tDKPpbBStr1TtKIRV4J/8ZwkJV6ugitSDW+lQU5+
-         pzJ6k0ttMi8OkbaCpcCy03RcicCjQ6X+zjQkkSLApVH2rsRFA2LnOtxs+M9wCpUHcQmr
-         VzvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734697864; x=1735302664;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P7lOBblMD1Z+3nNWjzfDIGzNN4URNdmpackdxaxd5mI=;
-        b=XstNo6XS1JB2QqY6A5Wp8rAUIeeAwfEN05ByZilv0+DawqyQh1Aopaaz8oxAZqI8Df
-         xClYg/GHJJixU90u5YuEk0FWE9iHCSsbmF8FPCy4U6neVp63Y55pKQcllqFPGBkHWu6B
-         vlwvQsXSlnMCUKYqT8ZZ0BKFve9yf89nzFRI6hvvpyyYXRDBSZpRPGxeC+Snp17hrObw
-         GnN2e4dPi9qdYpQjkscf5+wwhdYUXg4cXFcfSZSOBIiUp6lNoOIT52ybpVQ+k7OtRAs5
-         SLjTVpil0qA2Aw1aQq3o/lvYJifHFxnG2QnljDba4Uwy+RlfOITUFiKHVKe2LWesmauH
-         JO2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUUNcQsOntE5ilypVbLsx168/8RmbI8/QaJoVE2deB9n7wPCxsZ7SFV1qgfVE2i3NJYObU=@vger.kernel.org, AJvYcCXhyTkAa6MgzfWpJlxXgyw31mOczfLs7vZIkanGvY3GmUrc5N8FmJ9PxuZmAy8yWDYMMvVCNczDew==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzrwDlKASyliKph0DtqpO9MeumuiA82Zny0sZhQDxuLLI3ooRUA
-	s491z6o/xY9qsCGgZnrn9W8xiM7pjZGoyZvztL6c8BqfP59PwO3i
-X-Gm-Gg: ASbGnctHrozOpwRTxSRI+ixlDDQQ2ip1VKkXwyveNhrfBRDIb7Sk9nf8Q+97ZTulUEL
-	CHsYASlD6UMxWi+DvvLqNn4whx6+h9a91dp/qPz7srQGDZ/aaoT/SIJs6co5WwVYkQCj5oDkHjM
-	+x4I3PYtHCKMizyvetmKrTMn0B2qsjAKxVO57oFTnGtP+xKGDK17ahOWQDjm1OLceH29n0rLSil
-	K1vmvBicxr522/seDdsIdA1iogq/bax3V2Mld8I8jWRZm++07e1XlxJe0LAxbTrheMkJAhkf+Ze
-	Y5Z12homcBkbcLCtaDQpJhmT+ABskw==
-X-Google-Smtp-Source: AGHT+IHnSKuKHvji39kaVGbO9ZOWQVHQebT3WYfJBroORoXmPCLc2Ogd3bzYDPr3T52XxBiEQmzsKg==
-X-Received: by 2002:a17:907:7da5:b0:aa6:8781:9909 with SMTP id a640c23a62f3a-aac2d32837amr212270666b.29.1734697863656;
-        Fri, 20 Dec 2024 04:31:03 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aac0e89490dsm172877266b.45.2024.12.20.04.31.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Dec 2024 04:31:03 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 20 Dec 2024 13:31:01 +0100
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Ihor Solodrai <ihor.solodrai@pm.me>, dwarves@vger.kernel.org,
-	acme@kernel.org, alan.maguire@oracle.com, andrii@kernel.org,
-	mykolal@fb.com, bpf@vger.kernel.org
-Subject: Re: [PATCH dwarves v2 00/10] pahole: shared ELF and faster
- reproducible BTF encoding
-Message-ID: <Z2VjhVlagkpjDzvq@krava>
-References: <20241213223641.564002-1-ihor.solodrai@pm.me>
- <1b1b094ce1e0592c6185c292b2a7692c35dc7e56.camel@gmail.com>
+	s=arc-20240116; t=1734699618; c=relaxed/simple;
+	bh=3JQ9ZfN5ioufoK7K0DrG50y58gPQcrUNsg7oXkjbzU8=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Jo+dH2ZljAPWvJAinzGd3NItl3Hsvi0NiGxMdYjHCCvdJentxsr5RZsRQmRk5RNADRt8QXjCPryT9XnfRti6bzrlB59+Zw0W7DPAfovAoHOjWGNz5WwjYHq6J3U69ptfBHEJ8k9tgYJm57mEIPLibaOsKHGmiXn+xtU/z/z/nIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cg6v9eLn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFBCDC4CECD;
+	Fri, 20 Dec 2024 13:00:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734699617;
+	bh=3JQ9ZfN5ioufoK7K0DrG50y58gPQcrUNsg7oXkjbzU8=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Cg6v9eLnE/rvSiFzFe69ZEJcawLij5y/1Gfi8P8hJ1ox10Ktvk9/zEE7iq00mVEwD
+	 gml2BguUBxb6e72JuGw0ozhHQS4B6EGGtenN2DWFy54SA0W9HK2mgRTHScow9NF2gb
+	 18oTfXsNpo/5u5HYUeuiHdDZTMdb5kTO8KSDhDytZW1EfjfOlBbXSl54mHs8FQkzpr
+	 9TLV6hhq4Bsr4RxD3KVG6MbgetokZOREqcjSEA6ilm4VOCujkgQZZffD/c6pN/wDja
+	 iZWJekDDkpWOBReF+C2F7TifYYDlOFgDQeK52f3ByHxaiD8Wlh+oM1uxeLPaChsOGF
+	 gN5U0H98VoW7A==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EC82A3806656;
+	Fri, 20 Dec 2024 13:00:35 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1b1b094ce1e0592c6185c292b2a7692c35dc7e56.camel@gmail.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 0/5] gve: various XDP fixes
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <173469963470.2895973.2113580557517865563.git-patchwork-notify@kernel.org>
+Date: Fri, 20 Dec 2024 13:00:34 +0000
+References: <20241218133415.3759501-1-pkaligineedi@google.com>
+In-Reply-To: <20241218133415.3759501-1-pkaligineedi@google.com>
+To: Praveen Kaligineedi <pkaligineedi@google.com>
+Cc: netdev@vger.kernel.org, jeroendb@google.com, shailend@google.com,
+ willemb@google.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
+ daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+ horms@kernel.org, hramamurthy@google.com, joshwash@google.com,
+ ziweixiao@google.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 
-On Mon, Dec 16, 2024 at 11:00:08PM -0800, Eduard Zingerman wrote:
-> On Fri, 2024-12-13 at 22:36 +0000, Ihor Solodrai wrote:
+Hello:
+
+This series was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Wed, 18 Dec 2024 05:34:10 -0800 you wrote:
+> From: Joshua Washington <joshwash@google.com>
 > 
-> for allyesconfig, with your patch-set I get the following stats:
+> This patch series contains the following XDP fixes:
+>  - clean up XDP tx queue when stopping rings
+>  - use RCU synchronization to guard existence of XDP queues
+>  - perform XSK TX as part of RX NAPI to fix busy polling
+>  - fix XDP allocation issues when non-XDP configurations occur
 > 
-> jobs 1, mem 7080048 Kb, time 97.24 sec
-> jobs 3, mem 7091360 Kb, time 60.10 sec
-> jobs 6, mem 7153848 Kb, time 49.73 sec
-> jobs 12, mem 7264036 Kb, time 54.67 sec
-> 
-> w/o your patch-set, using current pahole 'next', I get out memory both
-> with and without reproducible_build flag.
-> 
-> The vmlinux size is 7.6G.
-> 
-> 
+> [...]
 
-I did quick test with vmlinux size 11.8G and it looks great
+Here is the summary with links:
+  - [net,1/5] gve: clean XDP queues in gve_tx_stop_ring_gqi
+    https://git.kernel.org/netdev/net/c/6321f5fb70d5
+  - [net,2/5] gve: guard XDP xmit NDO on existence of xdp queues
+    https://git.kernel.org/netdev/net/c/ff7c2dea9dd1
+  - [net,3/5] gve: guard XSK operations on the existence of queues
+    https://git.kernel.org/netdev/net/c/40338d7987d8
+  - [net,4/5] gve: process XSK TX descriptors as part of RX NAPI
+    https://git.kernel.org/netdev/net/c/ba0925c34e0f
+  - [net,5/5] gve: fix XDP allocation path in edge cases
+    https://git.kernel.org/netdev/net/c/de63ac44a527
 
-current pahole (v1.28 tag):
-
-	 Performance counter stats for '/home/jolsa/kernel/pahole/build/pahole -J -j17 --btf_features=encode_force,
-	 var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs --lang_exclude=rust vmlinux':
-
-	     178.081877484 seconds time elapsed
-
-	     479.529725000 seconds user
-	      26.583607000 seconds sys
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-new pahole:
-
-	 Performance counter stats for '/home/jolsa/kernel/pahole/build/pahole -J -j17 --btf_features=encode_force,
-	 var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs --lang_exclude=rust vmlinux':
-
-	     111.976182062 seconds time elapsed
-
-	     242.342891000 seconds user
-	      24.254289000 seconds sys
-
-thanks,
-jirka
 
