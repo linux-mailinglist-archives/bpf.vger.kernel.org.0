@@ -1,186 +1,114 @@
-Return-Path: <bpf+bounces-47379-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47380-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB0329F8909
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 01:40:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB1A89F890F
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 01:42:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0418F1895C83
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 00:40:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6B7B1895319
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 00:42:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 415AF566A;
-	Fri, 20 Dec 2024 00:40:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C5DA2594AE;
+	Fri, 20 Dec 2024 00:42:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="YVu904Hw";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="CO+DZSik"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KKiqNVsk"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-b8-smtp.messagingengine.com (fhigh-b8-smtp.messagingengine.com [202.12.124.159])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67594800;
-	Fri, 20 Dec 2024 00:40:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66513800
+	for <bpf@vger.kernel.org>; Fri, 20 Dec 2024 00:42:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734655238; cv=none; b=YgXcxLHsxUtPccoByVWcwaaFGlCcUVphXYEFLV+b1B4jBH4HtJurvtyIT7qF6sRFEz+ypcXepFPE6cycLYIWYVAAj3VLxqAuKlZ0h/n2Y7N71fk4EW4wTl7by26gYkpz+A2cLi/FbCJJI0A9NLjFNS8H2LUOxzAkyJy2yhGKOSQ=
+	t=1734655332; cv=none; b=hHC2JRG2PAt8KJ2e7ZMKS1jJ0HM4RYPBZ4fWGxt8zHIQPHGDPl6tpnQFy7KX62ZZDlkRXqVVPNSjwjt1YRO863OAWrek9PRzyRIngPkTS2LOv4XtKtI6C0Iwa7B3hGLYQKzBDL6dI4ybAyzcmsiPAXlxSclbOILRGmVTeE0zXlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734655238; c=relaxed/simple;
-	bh=13wJenR/mQ9s96VRt2lf8g8bCxoH2vnPVKeXG18STug=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e3uhucQaBb4JSI1EcKPb21NVS0v5CzzvWXWN0OY0XlXo8GWL11dvBU12C0iA2ub8y/P9TpaZN7ocJjW7ogMee5wN/WkiIyq4fMGg0TnUDdAXlzN5/m7howHjIk8chzWpcwCv6gvo1IItPIPM1hAulgeJcoj1xBE3f/6zByG7T9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=YVu904Hw; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=CO+DZSik; arc=none smtp.client-ip=202.12.124.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id EE66425401B3;
-	Thu, 19 Dec 2024 19:40:34 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-11.internal (MEProxy); Thu, 19 Dec 2024 19:40:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1734655234; x=1734741634; bh=Ktg3pBXvwq
-	rACo60Nz+FZ0dP2d3kQw9ZPLTVaSGME6c=; b=YVu904HwsvcD+iMamYb0DtCwTR
-	KE4zxYU8qnGj/aCb+Dz45swpg0xrVGz6HGKcz0DQbVA10XLi3GO8HKzGIFdCdef2
-	CTMy2oAquLubCysfeBlet0T4LxsI9SL0CG/Kgtm0BOkiFQAMoeol7FbdtJ4ppqjk
-	Dv5rUk9dwJsjw8B3VX02CADDvvbgN2cb8hBIWfFpNCxpndFR2Hsc4uCkqYcN1Fx3
-	nuDI2gzncgwCt5HPnzbih5PIWyqJM7T2KTCuTfpCbTFzhHZ2IlzasRN2hz3+uCdx
-	WAwxVe4fy4q7XkfMrOLiQBGWh0/AhUrOPPjeXbTMJkSALEtw1EAIUtu1GfFw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1734655234; x=1734741634; bh=Ktg3pBXvwqrACo60Nz+FZ0dP2d3kQw9ZPLT
-	VaSGME6c=; b=CO+DZSikI6zeNipBcfQCeYvgUIsnUbbGg43oQc1em2WeefdYVMy
-	8sx6TJbv0Cwgb4+wTRlWfuwPL7lQCCusq9cZCDc0NuFBtoP1f+3NLb97LTxH74OP
-	aLzYfPJ0jw1XAw/cFwFjN99m4ePBVY7pssBOKvbzO2lJF6+aLNSbSNf9PlcB05Wc
-	tSwGI5jUAB4pod7t0So4YWWEAJnuGikdRmql+NQT5uJNiNSsIATm4FYkFQGtrlUG
-	hS7l9vbj7Ti5WQSz8/v4Y8PbCmStG4QKBbGAiAkjrHHY0Rpg0SB8OmAYXbntSMwb
-	NkUGC0ngtOk7ZnfjRQCTF/9iamoM+7td8Mg==
-X-ME-Sender: <xms:Ar1kZ_gTFOWiRtl934rMJnpvJ-zQYTDKEWe8wvTD2WyNstdAr1Ha5A>
-    <xme:Ar1kZ8BsE1Sjv995-kkLxUvIOGWDjtbByoPXilVjSlUfxyXztaWeD7AavUNbsccrV
-    vNVYqltFXJS755bGA>
-X-ME-Received: <xmr:Ar1kZ_ElWviMBKPGNhDEun6DGZZ4dM-yfZDw3xecGUr3M9dibu0nPYZQXiC-HMEPG0BqBE4Q_0lTXRBqigUEf5SQD-Zoq12WhUU_86vsMGaxMg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddruddtuddgvdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnegfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhf
-    gggtuggjsehttdfstddttddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesug
-    iguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffek
-    uedukeehudffudfffffggeeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihiidpnhgspghrtghp
-    thhtohepudelpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopegvugguhiiikeejse
-    hgmhgrihhlrdgtohhmpdhrtghpthhtoheprghnughrihhirdhnrghkrhihihhkohesghhm
-    rghilhdrtghomhdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhgpdhrtg
-    hpthhtoheprghstheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhhuhgrhheskhgv
-    rhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlsehiohhgvggrrhgsohigrdhnvg
-    htpdhrtghpthhtohepjhhohhhnrdhfrghsthgrsggvnhgusehgmhgrihhlrdgtohhmpdhr
-    tghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghvpdhrtghpthhtohepsh
-    honhhgsehkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:Ar1kZ8QZiPlQNIXCdPRdzFuMBfqWBnTKV3nqINDls8dj2BePfpd_uA>
-    <xmx:Ar1kZ8zUDHuZjuKE5TTVdzDcwI7cKF6gWnVuZldfo2M6Sn3G4k5u6g>
-    <xmx:Ar1kZy5_nICnCcMA3-SqMlf4GO4gl0O5QzO673cSgM6YgAqPBLrvEA>
-    <xmx:Ar1kZxwM6_HX1mMRX1NTbR0wU_EYC4wUg4_DASC2ow04GM8bbVoSPg>
-    <xmx:Ar1kZ5EKqn7ysuS1lzn323HtK0ElfxqdCNsBOXzBDY8amWWfIRnXb0Rs>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 19 Dec 2024 19:40:32 -0500 (EST)
-Date: Thu, 19 Dec 2024 17:40:30 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, andrii@kernel.org, 
-	ast@kernel.org, shuah@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v5 4/5] bpf: verifier: Support eliding map
- lookup nullness
-Message-ID: <f7taicw6c3f3yae4d6lrdagv26jiuihumklo4tkmqduvauargi@ld4bcmsbbiqn>
-References: <cover.1734045451.git.dxu@dxuuu.xyz>
- <92065ca054beccd6d0f35efe9715ef965e8d379f.1734045451.git.dxu@dxuuu.xyz>
- <CAEf4BzaqCgW9keiT+tJUBQWT6Q+jMwuvn4O2ZghO0c+ZvACNrw@mail.gmail.com>
- <zow3q3nhlz6vedbni3upag5yr7zzrhyiqysl5nwyubebmbwojk@th7kbm62x36g>
- <31b0c85dbf85486df116ade20caf8685843899b4.camel@gmail.com>
- <CAEf4BzaEOBtrSWZTx40AdT=SQY6Qaia405KWgU-NowaqNdmpkA@mail.gmail.com>
- <kghvgxu5wdkupssnq7dy5upuf2wscsxgsnwl2yoam4mwk3h5pn@wjjsliwg6fzl>
- <a2999d8b4827516fe4bfd17646d2284580712d08.camel@gmail.com>
+	s=arc-20240116; t=1734655332; c=relaxed/simple;
+	bh=bHhmf9XVLXmKXvlBWDnvJ/nk1pYg5VVHIGvLzJQcejQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Y8PvmdXlUWAWTC7LiU0csyK4JrdFA3s9o2ixGUuxw7+zJgyXBkcJk47lTOZecNTkyqqUeuLY74apKm2KNXvpq4V39jrT3sN2DeBCj52Wvrmy7OdsQFAL0c9vqLrowv7k+0ZmJbz/C9JBg1vJNwxgmSVDV1AiU1BoUO+1w+q61mo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KKiqNVsk; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-43625c4a50dso9739915e9.0
+        for <bpf@vger.kernel.org>; Thu, 19 Dec 2024 16:42:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734655329; x=1735260129; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bHhmf9XVLXmKXvlBWDnvJ/nk1pYg5VVHIGvLzJQcejQ=;
+        b=KKiqNVsktqM2/CQlGUzJEH8E5aJ9oJfEK7o1robo4Pp3gAzhSEGC/NXRxd4LwlRRSe
+         CQw6CbKsg76UXl4MdGcZhso4VCuDXd1Jb5UVwWCxBmOcqu859j34Xl+U8CXsSO3dxIqK
+         oxLf4ccOSCDmJDtThHwwfkgQvU7M/lYT0rJNSzjhO/U/vP74TT4lJIet5Z/8ofJp/VM7
+         CY4tWFiSJiWT9zmBFLLMAREHkHtrag63zMq51M7kERbGSF5ytQg81LAyR/MwrFpFsH2K
+         6DmE573DLsohv2JWhDdbg5C7ZqUXCU9TjN24ccmtJ6/UEi/fDVavPezymkRfyYh4R/H9
+         xKng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734655329; x=1735260129;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bHhmf9XVLXmKXvlBWDnvJ/nk1pYg5VVHIGvLzJQcejQ=;
+        b=T1PGtDvZ9QJM5KslTIRPL07AdH+qnJBgCQl2r5p4ZFzpNGb4aQWWYvSaZsbrKGT3Uc
+         Gkfh0OtefTX80EXOQ8Fo7ZxPVvf6cppyggW5//eEn7zaMd16wfWWMAOBLDwAcEtqwJmw
+         v1CUQM4SuddrncQURPyGAWj2/G45HB2m1qJUZK54RG7odOybHOnIcIlFis3Ounb+UXHV
+         pMc30+FV8Zjxhr/2pV3ghqGuyvqRonj45zSwH0Tx43fzT/N3XZ/089H9m4/rZVLHNaQ7
+         8gsXIkKOTjSZTLj4RW2/h/J1vkdh1lnrraC8/J6d+I50qpzkfrEBm+KUOKqZkGDKNd3C
+         Z0+A==
+X-Gm-Message-State: AOJu0YzDj15teqm8Ix5lu/q6BpCrMFhHykHrC7yjdmhpesQvQ0EBfs/g
+	s7Xl9kOROPJh8DPf6uQ51Qrz1TJ+pWS8dhYmZ94UJvJiSUV9uLqEJiw8ETsnefP9sr4mgnMGeGk
+	3QFXAv7lMoBxYfATpLO6Yib5mdBVi0n6r
+X-Gm-Gg: ASbGncsLJR5Soeto7VbmwFD5Wba5WESgcXVhljW9eBOEh3OBOu4nTTdkS8zsxM03T3n
+	hPy5inXBHV9J+gp/7JpTMkjRLN/7P3KH04rwx3g==
+X-Google-Smtp-Source: AGHT+IHUD+JTXe0nVUd0lrS/9fxN31nBybiiYbiKwmE7v8jMPU8wOAR0acoMLQ50lfVXK8BRPXNVGZZ1sgjqS2WlxeA=
+X-Received: by 2002:a05:600c:4f51:b0:436:1b7a:c0b4 with SMTP id
+ 5b1f17b1804b1-4366854850emr4860785e9.1.1734655328726; Thu, 19 Dec 2024
+ 16:42:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a2999d8b4827516fe4bfd17646d2284580712d08.camel@gmail.com>
+References: <20241218030720.1602449-1-alexei.starovoitov@gmail.com>
+ <20241218030720.1602449-2-alexei.starovoitov@gmail.com> <Z2KyxEHA8NCNGF6u@tiehlicka>
+ <CAADnVQJDTjKJXzFm80UwFpV1gJHgboQ72eJ5hOai3seJ6Jf-iA@mail.gmail.com> <Z2PHt6-rdkC3f_tQ@tiehlicka>
+In-Reply-To: <Z2PHt6-rdkC3f_tQ@tiehlicka>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 19 Dec 2024 16:41:57 -0800
+Message-ID: <CAADnVQJUZVqWcqVvCikKxAhiSsyWJ0D5ALa_Yz=gtiS0F=QTYw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/6] mm, bpf: Introduce try_alloc_pages() for
+ opportunistic page allocation
+To: Michal Hocko <mhocko@suse.com>
+Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Vlastimil Babka <vbabka@suse.cz>, 
+	Sebastian Sewior <bigeasy@linutronix.de>, Steven Rostedt <rostedt@goodmis.org>, 
+	Hou Tao <houtao1@huawei.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Matthew Wilcox <willy@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>, Tejun Heo <tj@kernel.org>, 
+	linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 19, 2024 at 04:04:43PM -0800, Eduard Zingerman wrote:
-> On Thu, 2024-12-19 at 14:41 -0700, Daniel Xu wrote:
-> 
-> [...]
-> 
-> > > > I think that if test operates on a key like:
-> > > > 
-> > > >       valid key 15
-> > > >              v
-> > > >       0000000f   <-- written to stack as a single u64 value
-> > > >       ^^^^^^^
-> > > >     stack zero marks
-> > > > 
-> > > > and is executed (e.g. using __retval annotation),
-> > > > then CI passing for s390 should be enough.
-> > > 
-> > > +1, something like that where for big-endian it will be all zero while
-> > > for little endian it would be 0xf (and then make sure that the test
-> > > should *fail* by making sure that 0xf is not a valid index, so NULL
-> > > check is necessary)
-> > 
-> > How would it work for LE to be 0xF but BE to be 0x0?
-> > 
-> > The prog passes a pointer to the beginning of the u32 to
-> > bpf_map_lookup_elem(). The kernel does a 4 byte read starting from that
-> > address. On both BE and LE all 4 bytes will be interpreted. So set bits
-> > cannot just go away.
-> > 
-> > Am I missing something?
-> 
-> Ok, thinking a bit more, the best test I can come up with is:
-> 
->   u8 vals[8];
->   vals[0] = 0;
->   ...
->   vals[6] = 0;
->   vals[7] = 0xf;
->   p = bpf_map_lookup_elem(... vals ...);
->   *p = 42;
-> 
-> For LE vals as u32 should be 0x0f;
-> For BE vals as u32 should be 0xf000_0000.
-> Hence, it is not safe to remove null check for this program.
-> What would verifier think about the value of such key?
-> As far as I understand, there would be stack zero for for vals[0-6]
-> and u8 stack spill for vals[7].
+On Wed, Dec 18, 2024 at 11:14=E2=80=AFPM Michal Hocko <mhocko@suse.com> wro=
+te:
+>
+> > As I mentioned in giant v2 thread I'm not touching kasan/kmsan
+> > in this patch set, since it needs its own eyes
+> > from experts in those bits,
+> > but when it happens gfp & __GFP_TRYLOCK would be the way
+> > to adjust whatever is necessary in kasan/kmsan internals.
+> >
+> > As Shakeel mentioned, currently kmsan_alloc_page() is gutted,
+> > since I'm using __GFP_ZERO unconditionally here.
+> > We don't even get to kmsan_in_runtime() check.
+>
+> I have missed that part! That means that you can drop kmsan_alloc_page
+> altogether no?
 
-Right. By checking that spill size is same as key size, we stay endian
-neutral, as constant values are tracked in native endianness.
-
-However, if we were to start interpreting combinations of STACK_ZERO,
-STACK_MISC, and STACK_SPILL, the verifier would have to be endian aware
-(IIUC). Which makes it a somewhat interesting problem but also requires
-some thought to correctly handle the state space.
-
-> You were going to add a check for the spill size, which should help here.
-> So, a negative test like above that checks that verifier complains
-> that 'p' should be checked for nullness first?
-> 
-> If anyone has better test in mind, please speak-up.
-
-I think this case reduces down to a spill_size != key_size test. As long
-as the sizes match, we don't have to worry about endianness.
-
-Thanks,
-Daniel
+I think it's still necessary.
+kmsan_alloc_page() still needs to do the zero-ing.
 
