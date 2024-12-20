@@ -1,104 +1,132 @@
-Return-Path: <bpf+bounces-47455-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47456-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 834189F98B6
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 18:53:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C85489F98C7
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 18:56:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC5A81899AE7
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 17:48:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07E9E7A4BAC
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 17:51:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDDB722A1D5;
-	Fri, 20 Dec 2024 17:26:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0379322D4E9;
+	Fri, 20 Dec 2024 17:30:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K804B67s"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Udq2h3wk"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B2FF215F74;
-	Fri, 20 Dec 2024 17:26:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E675E21D5A8;
+	Fri, 20 Dec 2024 17:30:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734715609; cv=none; b=cnsaSEetzimkbaxAgY5QDzTdE0dgdUNtpW07HzmeF060+cONmMkkFlj6ca/a9W9G20MHvvh2WR6OfIKC+Eygdw7XirncqD/Qv7rY9NOV/5uaSB0gmi6bKbkzMkF6qr9g9BGUi1Jg9ILoXvHpWOuDxLY87Y+wAYc87Q1aRjXSalM=
+	t=1734715855; cv=none; b=aC7u1gMxjqoOpcvlIZkatxLxEC6HPT/fvc/WNlrTVAJffVOt/P2JGPZYNLEfZDtuyDILp+ibxDVDtaePHkz2+Owu/41zbfx9aaILCZEd23CpMkMWb/k14McP/LPJAXgitKoIbZc43SCNkhqmZ3VIxZjG1aPZ4UugVCUMwvTT49w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734715609; c=relaxed/simple;
-	bh=7NyLAA1WEljU+qXEHmkJUnhhHGok3Qw1EqYfD/FkVTY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=q9qhDEV1bysrPzaXAb13xsXz1qAUyVp5hAdto2B+pDtNCmMOZbTiOFd8D5PCq9XsJS0UZlH9ewIfBPz93mjmqiU0eN+qID1xwBBjndat5H31BfBmDrEAd1yYxrHTDd8aeuSptl1R94n5a8SO3YfCwUnMAH76oWZoJXSk9eqM9U4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K804B67s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37272C4CED3;
-	Fri, 20 Dec 2024 17:26:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734715608;
-	bh=7NyLAA1WEljU+qXEHmkJUnhhHGok3Qw1EqYfD/FkVTY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=K804B67s4c1BZNjrrI24TwYCA4Z51ti2bcDvEVkSrvOGQaY8oN7oi50wogqcXQg+T
-	 KI5flG9Bh84mHKpT41GjoAnRfP1BswylwspzL1ml/WkyOXDK1cqFtVmSa5lxrk7T6S
-	 ck4C1xrWRi7/tD9jE/j7VCW4hp+JEvp4Ys14qbsGvQgUQXxNZeyI7qd+cE/e9bAW4s
-	 rkR7fkTpr/Itv6IVvHGuGw3N8MnIavm5kWsmkdedNlGqanePwvqZUtPg8uBdDkjfoP
-	 Z2pTDrmuArm+HS+tLh0oTm0xqYjD9pwyLKMjTHWcSxK+vh1+D+/J5dLiO/UPZto5gb
-	 u2tEPWiUjtA3A==
-Date: Fri, 20 Dec 2024 09:26:47 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, "Andrii
- Nakryiko" <andrii@kernel.org>, "Jose E. Marchesi"
- <jose.marchesi@oracle.com>, Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?=
- <toke@redhat.com>, "Magnus Karlsson" <magnus.karlsson@intel.com>, Maciej
- Fijalkowski <maciej.fijalkowski@intel.com>, Przemek Kitszel
- <przemyslaw.kitszel@intel.com>, Jason Baron <jbaron@akamai.com>, "Casey
- Schaufler" <casey@schaufler-ca.com>, Nathan Chancellor <nathan@kernel.org>,
- <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 6/7] xsk: add helper to get &xdp_desc's DMA and
- meta pointer in one go
-Message-ID: <20241220092647.63affabc@kernel.org>
-In-Reply-To: <388fe411-d06f-4cb4-b58a-a2b9b5eb08ce@intel.com>
-References: <20241218174435.1445282-1-aleksander.lobakin@intel.com>
-	<20241218174435.1445282-7-aleksander.lobakin@intel.com>
-	<20241219195058.7910c10a@kernel.org>
-	<388fe411-d06f-4cb4-b58a-a2b9b5eb08ce@intel.com>
+	s=arc-20240116; t=1734715855; c=relaxed/simple;
+	bh=NN200lURRhYPC7rka0Y2j208pGeTsvwM7b8QG/SfXv4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PKz1ozvLJxiAayLiV0S4waORqdzdTFm9cdeglv3EWMvW3oiozrDWbJR5aW9ciPOHtEq454oLyOtYWCyBjRyS0zYZFLdU/wYUNOU1oIbuxCLXIf/yNlKs/1Dx3tP/1KTGo833ApAzTwLMol5A9OR+lSWwXXLNOmXHm8YUV6Ofrbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Udq2h3wk; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4361a50e337so15311395e9.0;
+        Fri, 20 Dec 2024 09:30:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734715852; x=1735320652; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Wcd5p2PmG3eB0cJIFL5HcNsDmqfOUuQDLffSjTK4uDA=;
+        b=Udq2h3wk+9gGhkcTuZOlMyBrHgejdpLur/zH2/mB2q8sc9LEO+QLsvDvCBc+FcX3cE
+         raiGgbEBcFHKnJbb+Ts1f6RWZWoPmHw85CBJSEBJaewpWQ7PQXAaUm+2HigsA7CSjt7R
+         ZtQ5xRYStqe+joBVfKiqwhIlfK8Xepgc/1JYg/bPPHbp8KpK0m5d3STOBk+9CeyxglKj
+         EOjKNsVTalyt44mUMadyh8HtZ82CKw1KPh5K9TumyMIb+cHXohuR5umrTgRS8Ma0tzAn
+         /AGbIzq2L+ZEJKLNyYtJCOH2UbrEhH6mVgl5hWjZcBz0Fqi68h7iatvicViW+RCfFS1E
+         PkcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734715852; x=1735320652;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Wcd5p2PmG3eB0cJIFL5HcNsDmqfOUuQDLffSjTK4uDA=;
+        b=HhYzAD/61hpNrDFq/6wYWVWlAuxQhPovINM0OLIjIh/NlzoqIwj8a3XsQGjwUBM2RY
+         BSVOwN3yu2Y5bPXo3LWpYnW5TRq0+3i/Axjh0GEwVDFHpJzr27lSJYMxiJGNQn6aqVZS
+         xHCw/8deuv0yH4XZwqALYx8wFCxOsKgDFiYAcMynlBZZdt+fFNnFWFyrqIn+22K2Pkqy
+         G2Lo6BYwPVqMa1OLWGvOVt/MJs4Ymh2+A8kbIuGccXN8RiUFAt0zRcvf4l4sbM9EMkER
+         aaOIBq3nMzd3awZwKZOcpzYlBf80kv9uurAnOLCKSS+LAbXgaG9fy44GJtppLKPpoEHU
+         zauQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV4u9FY9XjUdwLvwOmaO4xfU09g/SqSzyoaOsqAP5HajMuG6th55mXyM6fLQMEI3FxX9ns=@vger.kernel.org, AJvYcCV6Vmo30UvNVM5GgAdfP4wc8u4N8dtKBeo3uNw3m4loTcTm1znXFzLuKOvgXqATN+7ZwBp3FbiQcRxb2wa+@vger.kernel.org, AJvYcCVLadigAqzYCifdH1KA8bcUtDiQoLkawAHs+pBqF/LpYXqZ17WRiSJeoIY1xJ4piiYYXXKm9sKBh4meZZn2/BnMbKVg@vger.kernel.org
+X-Gm-Message-State: AOJu0YzEUFL3xuU/WmaiC5M8/Ztu9OjypaY1BS3uje7hzpOcAC1ujgLu
+	OHyzqfPMrsrptT/qwEVqmO7NpR3rbv+LxT2/ATsxvgnmNdn8QUFa4e4/IQPIieQTYwbH4sl4IHL
+	EWgS6P+VG0QE0tUJMSfkvo7DPgtM=
+X-Gm-Gg: ASbGncs9JONe8UJrHhcOQ2tJUS0a8cE8uv9hhXy9cGmdDgoAExUaaVSnhwn8AnexQrH
+	T8z79CxwFDsGmVsHDr5wGug8HMIYNtCplwVTv+g==
+X-Google-Smtp-Source: AGHT+IE3bXiqh8lJ6aIUKGCc2P1PBYU+ot7zRyuzP1NngmZMYUqHu/qNwE67Wj0vEOkFRiYDXBwD7l5jaZbDCt6TzyA=
+X-Received: by 2002:a05:6000:1446:b0:385:fae4:424e with SMTP id
+ ffacd0b85a97d-38a22408624mr3278945f8f.52.1734715851945; Fri, 20 Dec 2024
+ 09:30:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <67486b09.050a0220.253251.0084.GAE@google.com> <CAADnVQKdRWA1zG6X4XNwOWtKiUHN-SRREYN_DCNU59LsK8S5LA@mail.gmail.com>
+ <mb61p8qsymf3i.fsf@kernel.org> <CAADnVQ+_TUjJ6Ytn96QqtHnBB--muefbbOoAsRw4z=40Pf1+tA@mail.gmail.com>
+In-Reply-To: <CAADnVQ+_TUjJ6Ytn96QqtHnBB--muefbbOoAsRw4z=40Pf1+tA@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 20 Dec 2024 09:30:40 -0800
+Message-ID: <CAADnVQL=_6n+yJfs+TPxtBEVcpYV6nPEgjfRmacCdm7qLCSj0g@mail.gmail.com>
+Subject: Re: [syzbot] [bpf?] [trace?] WARNING: locking bug in __lock_task_sighand
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: syzbot <syzbot+97da3d7e0112d59971de@syzkaller.appspotmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Eddy Z <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Matt Bobrowski <mattbobrowski@google.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Stanislav Fomichev <sdf@fomichev.me>, Song Liu <song@kernel.org>, 
+	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, Yonghong Song <yonghong.song@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 20 Dec 2024 16:58:57 +0100 Alexander Lobakin wrote:
-> > On Wed, 18 Dec 2024 18:44:34 +0100 Alexander Lobakin wrote:  
-> >> +	ret = (typeof(ret)){
-> >> +		/* Same logic as in xp_raw_get_dma() */
-> >> +		.dma	= (pool->dma_pages[addr >> PAGE_SHIFT] &
-> >> +			   ~XSK_NEXT_PG_CONTIG_MASK) + (addr & ~PAGE_MASK),
-> >> +	};  
-> > 
-> > This is quite ugly IMHO  
-> 
-> What exactly: that the logic is copied or how that code (>> & ~ + & ~)
-> looks like?
-> 
-> If the former, I already thought of making a couple internal defs to
-> avoid copying.
-> If the latter, I also thought of this, just wanted to be clear that it's
-> the same as in xp_raw_get_dma(). But it can be refactored to look more
-> fancy anyway.
-> 
-> Or the compound return looks ugly? Or the struct initialization?
+On Tue, Dec 17, 2024 at 3:49=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Dec 2, 2024 at 4:42=E2=80=AFAM Puranjay Mohan <puranjay@kernel.or=
+g> wrote:
+> >
+> > Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+> >
+> > > Puranjay, Andrii and All,
+> > >
+> > > looks like if (irqs_disabled()) is not enough.
+> > > Should we change it to preemptible() ?
+> > >
+> > > It will likely make it async all the time,
+> > > but in this it's an ok trade off?
+> > >
+> >
+> > Yes, as BPF programs can run in all kinds of contexts.
+> >
+> > We should replace 'if (irqs_disabled())' with 'if (!preemptible())'
+> >
+> > because the definition is:
+> >
+> > #define preemptible()   (preempt_count() =3D=3D 0 && !irqs_disabled())
+> >
+> > and we need if ((preempt_count() !=3D 0) || irqs_disabled()), in both
+> > these cases we want to make it async.
+> >
+> > I will try to test the fix as Syzbot has now found a reproducer.
+>
+> Puranjay,
+>
+> Any progress on a patch ?
 
-Compound using typeof() and the fact it's multi line.
-
-It's a two member struct, which you return by value,
-so unlikely to grow. Why not init the members manually?
-
-And you could save the intermediate computations to a temp variable
-(addr >> PAGE_SHIFT, addr & ~PAGE_MASK) to make the line shorter.
+ping.
 
