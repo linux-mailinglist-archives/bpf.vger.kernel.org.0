@@ -1,160 +1,199 @@
-Return-Path: <bpf+bounces-47383-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47384-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 486599F891F
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 01:49:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34C929F89AB
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 02:44:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B2C916C859
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 00:49:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BEEDB7A5FD4
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 01:43:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E44579EA;
-	Fri, 20 Dec 2024 00:49:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nqw1nXeN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36AF51F957;
+	Fri, 20 Dec 2024 01:41:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B81F5383;
-	Fri, 20 Dec 2024 00:49:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EAD11DFF8;
+	Fri, 20 Dec 2024 01:41:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734655767; cv=none; b=Blq/nWLAc9EAdYTPpn7r7KuULt0ZtrAxSiPKOQQwfT6j8z6a/O3QlrGO5z4e6toKx00/gnPWFzrq5k/eImL4luSwfMjps/b2JQtaHab6XWCw0cO6SUdIfK16lpsx+49m13OIXbeXp770qbGR3aD0aST6OITCA3ZXVX/Ou2m1zJc=
+	t=1734658874; cv=none; b=PlUpaKjOFvwFjwYF+lsxAN7P2Rq4AVWu35plmIA8vRI/XPprXxpkECQIWgHBnHtYvJvX1GmwgDVPmmDjkVI9sQZaNQp0G/V6OQAcyk8jlijMiFOTwuhZQpGL2p8/hrJQscCPLX6nrqN2wtgZEdOSzDKZv/lP/U3D8dIswzcWAaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734655767; c=relaxed/simple;
-	bh=EsNchNsgLi9NKgKgusMJtQOj3Mvxvz/inQM29tynq+M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ud6mN8De4vWEBm+uF1yO4JNBaz6mqFKR30vcHIPmZgBARja4kGeEyc9lZvY2F3k++9wL7Dkl+GABJJkw8z82x2C2hEE8qhh/L4j7wq24sZ+CdlncWUtzGdHgWIRKaUWnRLdzV9yYyw6WbLZUF83gt18gEI+ZExBDTCWQoh2YG5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nqw1nXeN; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43625c4a50dso9756085e9.0;
-        Thu, 19 Dec 2024 16:49:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734655764; x=1735260564; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xuZI3ulWjAFi2AzZ0aYmiv3guuJ9AjC0a+kRD8wMWjM=;
-        b=nqw1nXeNplCrFdg4AIpIlo4GCmh7OVPcOcHrzN9t61R8jNlDhfrddBnNhQ5dHiPv4v
-         6H+WFmvGPwQysf5pG+eKfLDILiiIiIqvzYuvquXoKChfFdhaXdUQPuRZYxMVAIfZBNCu
-         GZsEyaXoKhrYlwABbCLDuPRrU9Rg8WxS97cSjBH628Uxg3ZWK1QiOCFmC4yU1vEGfR7U
-         xhd5z3jHEpDcGABxRxCJ4ULXLAYyM9/2sclteZ7q243senFx0IZh8EzmqnX7UMZAyNXn
-         QSlOFvd+87mrxU0F/2QED+sh8zJG9sWPhSYkQSfTrXF2b+02yuJA9ZWtOEVFO3nx1ali
-         WLzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734655764; x=1735260564;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xuZI3ulWjAFi2AzZ0aYmiv3guuJ9AjC0a+kRD8wMWjM=;
-        b=XOvInE2/rxMod+2MB+st4k+xzE1IT5BMkX4jkJanoXnBqkvLcjRLOT54GLDoWbDYX0
-         refhWW1MYXFqc5EioqJxpHh6hB4lv6LQ1BmPV9xKPtT3ePNhYyXVUU6u5qSNIveC1nO8
-         n+0vJj2SgwdFxHZCXuzQG3uaQdfLn2W/y3l9bNXkGu52p14oWAiad8D4gTrV+nlKkJbK
-         e8azD/pJFCq5i6G0YkEtX1iKg1gc6qDyiL7XGM+Du22sMWyZMhnyhfcJpGCgVEfWMNEA
-         baIpXlDeQ9a74NNzUGqEjc+F6xWHphkMP48O5xwa5CSEevWhkhoVGpEargJ8Jq72J8zK
-         O7tA==
-X-Forwarded-Encrypted: i=1; AJvYcCU+EPApGPNZqWjjXltSrjrLY3uFsyUneimulvHgGwAspHSYZKm/8X8j2nhqO8UMAkaCeWxR4oxFTigREZuc@vger.kernel.org, AJvYcCUFSMev0wqwr5G8TxhedHSdjk5LAV4L/qd4xpUEjYK6DSg+LtIVHTKAJj87/CuiGdTFww/SYAZD@vger.kernel.org, AJvYcCV7qdERt3iAkxm8KPEx6m+Shqd2ZY5V6SMPCB7LgnQczD4Mx4EDcTikpvlrY2ezAICIqrY=@vger.kernel.org, AJvYcCXGNyzOOQi9boTNMAYI+5X5G25fu//q0nY5lVj5YgPexZw2yg3Hx1ckrQcpHqtMRIGS6FrHjmkQ22HFWmLXbhtB@vger.kernel.org
-X-Gm-Message-State: AOJu0YxwU0/NVBflpbpdSUh9CbCTxzbboPTin/pgfnPCY8ALU2TnLarC
-	9LY3bReuuOR20/PZOaudEzhi8GIV/DEKarSexZpTGrWdsTXA/B0J3SHjRYtLEIz5DjZZBoaAc3N
-	lp6WC7TKgsGJrzIrgGmbuT5Bq3LE=
-X-Gm-Gg: ASbGncvfMLXBoceA6uNJN0IB4eh/L/xGa8ydB+mqDBqUadS3+opIDY+Rahntiklpxpw
-	Bp4Fj5ETiGz4ZK4lW70rzoWXERWn6wuty2GPEGw==
-X-Google-Smtp-Source: AGHT+IHS89C4V0R9V1vvBTgYx7sd3REU/1ybhwNYHIIy6pt0wl7aYGhtsODhSc67kX9JJcFRGhh690qG1vduF+r673I=
-X-Received: by 2002:a05:600c:511d:b0:436:5fc9:309d with SMTP id
- 5b1f17b1804b1-43668b78383mr6470205e9.30.1734655763974; Thu, 19 Dec 2024
- 16:49:23 -0800 (PST)
+	s=arc-20240116; t=1734658874; c=relaxed/simple;
+	bh=cAtkpaDubJzwXHyDSAiKRXfgZ0+JdCkvoX29uraEaFc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DxEDFsMmIKvxg+0KOzw7uz+taJ5iMa5BWriI78Ctf8MhioijzU4/XDSab25Gp955RtD8hRPD7onibaD72fVcYGQllvHsdj63W5+jwWis1XVfSYl/NPAz5KKsUK+VEr7BUt318DiOfZwG66fuV/4IcBmigrW3jgVmRoboYhSb2no=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YDqqz264Kz4f3lDG;
+	Fri, 20 Dec 2024 09:40:47 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id DC94B1A018D;
+	Fri, 20 Dec 2024 09:41:07 +0800 (CST)
+Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
+	by APP4 (Coremail) with SMTP id gCh0CgDXsYUoy2Rn+5BgFA--.16396S2;
+	Fri, 20 Dec 2024 09:41:07 +0800 (CST)
+From: Chen Ridong <chenridong@huaweicloud.com>
+To: tj@kernel.org,
+	hannes@cmpxchg.org,
+	longman@redhat.com,
+	mkoutny@suse.com,
+	roman.gushchin@linux.dev
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	chenridong@huawei.com,
+	wangweiyang2@huawei.com
+Subject: [PATCH v1] cgroup/cpuset: remove kernfs active break
+Date: Fri, 20 Dec 2024 01:31:06 +0000
+Message-Id: <20241220013106.3603227-1-chenridong@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1734045451.git.dxu@dxuuu.xyz> <92065ca054beccd6d0f35efe9715ef965e8d379f.1734045451.git.dxu@dxuuu.xyz>
- <CAEf4BzaqCgW9keiT+tJUBQWT6Q+jMwuvn4O2ZghO0c+ZvACNrw@mail.gmail.com>
- <zow3q3nhlz6vedbni3upag5yr7zzrhyiqysl5nwyubebmbwojk@th7kbm62x36g>
- <31b0c85dbf85486df116ade20caf8685843899b4.camel@gmail.com>
- <CAEf4BzaEOBtrSWZTx40AdT=SQY6Qaia405KWgU-NowaqNdmpkA@mail.gmail.com>
- <kghvgxu5wdkupssnq7dy5upuf2wscsxgsnwl2yoam4mwk3h5pn@wjjsliwg6fzl>
- <a2999d8b4827516fe4bfd17646d2284580712d08.camel@gmail.com>
- <f7taicw6c3f3yae4d6lrdagv26jiuihumklo4tkmqduvauargi@ld4bcmsbbiqn> <d0b5e424445f498fdedca04fd4b0f138fbb6ae36.camel@gmail.com>
-In-Reply-To: <d0b5e424445f498fdedca04fd4b0f138fbb6ae36.camel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 19 Dec 2024 16:49:13 -0800
-Message-ID: <CAADnVQKs3=pEea7VeTfxpuB7uxzZRCjikPGu17uusTpGdqLxDA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/5] bpf: verifier: Support eliding map lookup nullness
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Daniel Xu <dxu@dxuuu.xyz>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Shuah Khan <shuah@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgDXsYUoy2Rn+5BgFA--.16396S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAryrXrW5Zw1xuF1xtFyDtrb_yoWrtw18pF
+	nxGry7Gr48Gr1UCw4DJr18Zw18t39rAFW7Jwn7Xr10va4Uuw1vyryUWrs5WrWUJry3t342
+	yFnxXw48tw1UAw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
+	n4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
+	0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
+	tVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
+	CY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+	7IU17KsUUUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On Thu, Dec 19, 2024 at 4:43=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Thu, 2024-12-19 at 17:40 -0700, Daniel Xu wrote:
->
-> [...]
->
-> > > Ok, thinking a bit more, the best test I can come up with is:
-> > >
-> > >   u8 vals[8];
-> > >   vals[0] =3D 0;
-> > >   ...
-> > >   vals[6] =3D 0;
-> > >   vals[7] =3D 0xf;
-> > >   p =3D bpf_map_lookup_elem(... vals ...);
-> > >   *p =3D 42;
-> > >
-> > > For LE vals as u32 should be 0x0f;
-> > > For BE vals as u32 should be 0xf000_0000.
-> > > Hence, it is not safe to remove null check for this program.
-> > > What would verifier think about the value of such key?
-> > > As far as I understand, there would be stack zero for for vals[0-6]
-> > > and u8 stack spill for vals[7].
-> >
-> > Right. By checking that spill size is same as key size, we stay endian
-> > neutral, as constant values are tracked in native endianness.
-> >
-> > However, if we were to start interpreting combinations of STACK_ZERO,
-> > STACK_MISC, and STACK_SPILL, the verifier would have to be endian aware
-> > (IIUC). Which makes it a somewhat interesting problem but also requires
-> > some thought to correctly handle the state space.
->
-> Right.
->
-> > > You were going to add a check for the spill size, which should help h=
-ere.
-> > > So, a negative test like above that checks that verifier complains
-> > > that 'p' should be checked for nullness first?
-> > >
-> > > If anyone has better test in mind, please speak-up.
-> >
-> > I think this case reduces down to a spill_size !=3D key_size test. As l=
-ong
-> > as the sizes match, we don't have to worry about endianness.
->
-> Agree.
+From: Chen Ridong <chenridong@huawei.com>
 
-Earlier I suggested to generalize this zero/misc/spill counting
-into a helper and reuse here and in check_stack_read_fixed_off().
+A warning was found:
 
-We do very similar checks there with a similar purpose.
+WARNING: CPU: 10 PID: 3486953 at fs/kernfs/file.c:828
+CPU: 10 PID: 3486953 Comm: rmdir Kdump: loaded Tainted: G
+RIP: 0010:kernfs_should_drain_open_files+0x1a1/0x1b0
+RSP: 0018:ffff8881107ef9e0 EFLAGS: 00010202
+RAX: 0000000080000002 RBX: ffff888154738c00 RCX: dffffc0000000000
+RDX: 0000000000000007 RSI: 0000000000000004 RDI: ffff888154738c04
+RBP: ffff888154738c04 R08: ffffffffaf27fa15 R09: ffffed102a8e7180
+R10: ffff888154738c07 R11: 0000000000000000 R12: ffff888154738c08
+R13: ffff888750f8c000 R14: ffff888750f8c0e8 R15: ffff888154738ca0
+FS:  00007f84cd0be740(0000) GS:ffff8887ddc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000555f9fbe00c8 CR3: 0000000153eec001 CR4: 0000000000370ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ kernfs_drain+0x15e/0x2f0
+ __kernfs_remove+0x165/0x300
+ kernfs_remove_by_name_ns+0x7b/0xc0
+ cgroup_rm_file+0x154/0x1c0
+ cgroup_addrm_files+0x1c2/0x1f0
+ css_clear_dir+0x77/0x110
+ kill_css+0x4c/0x1b0
+ cgroup_destroy_locked+0x194/0x380
+ cgroup_rmdir+0x2a/0x140
 
-It sounds there are ideas to make this particular feature smarter
-than what we have in check_stack_read_fixed_off().
-Let's not overdo it.
-Even if a common helper is not possible, keep things consistent.
-The simpler the better.
+It can be explained by:
+rmdir 				echo 1 > cpuset.cpus
+				kernfs_fop_write_iter // active=0
+cgroup_rm_file
+kernfs_remove_by_name_ns	kernfs_get_active // active=1
+__kernfs_remove					  // active=0x80000002
+kernfs_drain			cpuset_write_resmask
+wait_event
+//waiting (active == 0x80000001)
+				kernfs_break_active_protection
+				// active = 0x80000001
+// continue
+				kernfs_unbreak_active_protection
+				// active = 0x80000002
+...
+kernfs_should_drain_open_files
+// warning occurs
+				kernfs_put_active
+
+This warning is caused by 'kernfs_break_active_protection' when it is
+writing to cpuset.cpus, and the cgroup is removed concurrently.
+
+The commit 3a5a6d0c2b03 ("cpuset: don't nest cgroup_mutex inside
+get_online_cpus()") made cpuset_hotplug_workfn asynchronous, which grabs
+the cgroup_mutex. To avoid deadlock. the commit 76bb5ab8f6e3 ("cpuset:
+break kernfs active protection in cpuset_write_resmask()") added
+'kernfs_break_active_protection' in the cpuset_write_resmask. This could
+lead to this warning.
+
+After the commit 2125c0034c5d ("cgroup/cpuset: Make cpuset hotplug
+processing synchronous"), the cpuset_write_resmask no longer needs to
+wait the hotplug to finish, which means that cpuset_write_resmask won't
+grab the cgroup_mutex. So the deadlock doesn't exist anymore. Therefore,
+remove kernfs_break_active_protection operation in the
+'cpuset_write_resmask'
+
+Fixes: 76bb5ab8f6e3 ("cpuset: break kernfs active protection in cpuset_write_resmask()")
+Reported-by: Ji Fa <jifa@huawei.com>
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
+---
+ kernel/cgroup/cpuset.c | 25 -------------------------
+ 1 file changed, 25 deletions(-)
+
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 7ea559fb0cbf..0f910c828973 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -3124,29 +3124,6 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
+ 	int retval = -ENODEV;
+ 
+ 	buf = strstrip(buf);
+-
+-	/*
+-	 * CPU or memory hotunplug may leave @cs w/o any execution
+-	 * resources, in which case the hotplug code asynchronously updates
+-	 * configuration and transfers all tasks to the nearest ancestor
+-	 * which can execute.
+-	 *
+-	 * As writes to "cpus" or "mems" may restore @cs's execution
+-	 * resources, wait for the previously scheduled operations before
+-	 * proceeding, so that we don't end up keep removing tasks added
+-	 * after execution capability is restored.
+-	 *
+-	 * cpuset_handle_hotplug may call back into cgroup core asynchronously
+-	 * via cgroup_transfer_tasks() and waiting for it from a cgroupfs
+-	 * operation like this one can lead to a deadlock through kernfs
+-	 * active_ref protection.  Let's break the protection.  Losing the
+-	 * protection is okay as we check whether @cs is online after
+-	 * grabbing cpuset_mutex anyway.  This only happens on the legacy
+-	 * hierarchies.
+-	 */
+-	css_get(&cs->css);
+-	kernfs_break_active_protection(of->kn);
+-
+ 	cpus_read_lock();
+ 	mutex_lock(&cpuset_mutex);
+ 	if (!is_cpuset_online(cs))
+@@ -3179,8 +3156,6 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
+ out_unlock:
+ 	mutex_unlock(&cpuset_mutex);
+ 	cpus_read_unlock();
+-	kernfs_unbreak_active_protection(of->kn);
+-	css_put(&cs->css);
+ 	flush_workqueue(cpuset_migrate_mm_wq);
+ 	return retval ?: nbytes;
+ }
+-- 
+2.34.1
+
 
