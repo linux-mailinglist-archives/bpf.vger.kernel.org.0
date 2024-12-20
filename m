@@ -1,326 +1,197 @@
-Return-Path: <bpf+bounces-47402-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47403-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEDC19F8C4A
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 07:02:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 666729F8C69
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 07:12:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B99B71896A6E
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 06:02:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6A2616A123
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 06:11:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1A031BD00A;
-	Fri, 20 Dec 2024 06:00:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l0mX5n0D"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9024917ADF8;
+	Fri, 20 Dec 2024 06:11:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDC361ACECC;
-	Fri, 20 Dec 2024 06:00:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 364DC7DA6C;
+	Fri, 20 Dec 2024 06:11:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734674414; cv=none; b=r6ROEQ0o8HkvhRySKW4tqJnWbFWVzPXv+A7VxIyf+eCR8pse1dBktHeeCJXJf5qADkJcfN83cbEAE3X3eMAikWcU0+EH8houy9NdxMigSvFrVelcQqe4CeTBc/bHQG1sGqF4YfiMCh8g6LkgrWLsyGzIC3/IjsS95rzUPzb3TRM=
+	t=1734675108; cv=none; b=EKhxcqxp87uxlUuoQRHI+b/zDPS3tNBnh+EuQLW8GNFkA2sfwcgHPVkoXQFyOyOGf4OETMD5plneknmUNPpwsEp/1QaDO7qvjF+Bfk/S6JEcBGgXRQbewzUnnyP9b37yyhYjqYL2BewiDgmlwfkSCuAWNZ3R6TevDc8ZlYYUW2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734674414; c=relaxed/simple;
-	bh=uh5tUXshVpXpiclsKqI9+nLz5ONf5ED1fQDla3DobhM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bidFIMmBMRghXxYbg6U4FGRpwPQzSK4FAcrLpaTpeDp4zC3cCeTUV+ITCqBfWmirYk5LbaAtGFvj91XK7BHBVzpebLxCt+LibaepDREvbyrMNvFNxUn0wWUu/Q9NlwTXb5VaC1NcGtUGORivGbitbsFJYjK90lHTV3lM9mFW99g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l0mX5n0D; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF8D0C4AF0E;
-	Fri, 20 Dec 2024 06:00:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734674414;
-	bh=uh5tUXshVpXpiclsKqI9+nLz5ONf5ED1fQDla3DobhM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=l0mX5n0DNxmK6aBQSBczcweu+cgPi7ZKt/sF0tEsRYhjjqTQ+8df9/tw69j6S6CJ7
-	 mu0XxZrnrlXDfvs1TPAhoEzWePU+9xGo/pYPSiMgSXh9kQ132aBBEoNcILN6vjqvyc
-	 GRK0gp1vR27IEUUl+ud0XDel4p1cKHTSLHvZ1ksPM80t7mnoXnaatG8TJRsg2GDaHG
-	 b9TqAGbOWKfvBAkJ08bK5kc22UHohYaWXVHNHM6eN6sQqkIkM3jgIpHWWWgc8xTkuI
-	 B4ni/A3sJDmClJZx9tw3e/Vj9kKBmH1xNu7lsx5oK6b6Yxp9ibA6/L0pMwDnYsxCaB
-	 7mJyf5zuD7c1Q==
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Kan Liang <kan.liang@linux.intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org,
-	Stephane Eranian <eranian@google.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Kees Cook <kees@kernel.org>,
-	Chun-Tse Shao <ctshao@google.com>
-Subject: [PATCH v3 4/4] perf lock contention: Handle slab objects in -L/--lock-filter option
-Date: Thu, 19 Dec 2024 22:00:09 -0800
-Message-ID: <20241220060009.507297-5-namhyung@kernel.org>
-X-Mailer: git-send-email 2.47.1.613.gc27f4b7a9f-goog
-In-Reply-To: <20241220060009.507297-1-namhyung@kernel.org>
-References: <20241220060009.507297-1-namhyung@kernel.org>
+	s=arc-20240116; t=1734675108; c=relaxed/simple;
+	bh=Fv2gys9ZC4Pto+OlyfNw+l5oawLiEtZBVsfDx0Io+Wg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=k8d2YodPOIB/iwycDp7EWtb0fhM8rzCNWPEkoyRgu2Q50LvQfJohnUmandvROvtv6+TAVEFuAUspH6cR+H3clbAP6XBxetcmAVb13bpuT/ofVUoDgTRvsfhAOC7ILE5YIrfKGeR0uVhtG1qrQyifuQ9F7n5sacfkDkCVKFPFpb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YDxrG1KPxz4f3jqF;
+	Fri, 20 Dec 2024 14:11:26 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id A95371A0359;
+	Fri, 20 Dec 2024 14:11:40 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP4 (Coremail) with SMTP id gCh0CgD304ebCmVn3SNyFA--.40298S2;
+	Fri, 20 Dec 2024 14:11:40 +0800 (CST)
+Message-ID: <d3ebff6a-9866-40e2-a1ff-07bd77d20187@huaweicloud.com>
+Date: Fri, 20 Dec 2024 14:11:39 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] cgroup/cpuset: remove kernfs active break
+To: Waiman Long <llong@redhat.com>, chenridong <chenridong@huawei.com>,
+ tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, roman.gushchin@linux.dev
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, wangweiyang2@huawei.com
+References: <20241220013106.3603227-1-chenridong@huaweicloud.com>
+ <5c48f188-0059-46a2-9ccd-aad6721d96bb@redhat.com>
+ <cafb38a5-0832-4af4-a3b2-cca32ce63d10@huawei.com>
+ <61b5749b-3e75-4cf6-9acb-23b63f78d859@redhat.com>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <61b5749b-3e75-4cf6-9acb-23b63f78d859@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgD304ebCmVn3SNyFA--.40298S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Xr48Aw1fCr1rWF18Gr1kuFg_yoW7GFW5pF
+	n5CFyUKrWrGr18Cr4Utr1UXry8tw47AayUJrn7JF10va9Fkr1qvr1UWr4qgryDXrs3Jw12
+	yF15J342vr1UAw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-This is to filter lock contention from specific slab objects only.
-Like in the lock symbol output, we can use '&' prefix to filter slab
-object names.
 
-  root@virtme-ng:/home/namhyung/project/linux# tools/perf/perf lock con -abl sleep 1
-   contended   total wait     max wait     avg wait            address   symbol
 
-           3     14.99 us     14.44 us      5.00 us   ffffffff851c0940   pack_mutex (mutex)
-           2      2.75 us      2.56 us      1.38 us   ffff98d7031fb498   &task_struct (mutex)
-           4      1.42 us       557 ns       355 ns   ffff98d706311400   &kmalloc-cg-512 (mutex)
-           2       953 ns       714 ns       476 ns   ffffffff851c3620   delayed_uprobe_lock (mutex)
-           1       929 ns       929 ns       929 ns   ffff98d7031fb538   &task_struct (mutex)
-           3       561 ns       210 ns       187 ns   ffffffff84a8b3a0   text_mutex (mutex)
-           1       479 ns       479 ns       479 ns   ffffffff851b4cf8   tracepoint_srcu_srcu_usage (mutex)
-           2       320 ns       195 ns       160 ns   ffffffff851cf840   pcpu_alloc_mutex (mutex)
-           1       212 ns       212 ns       212 ns   ffff98d7031784d8   &signal_cache (mutex)
-           1       177 ns       177 ns       177 ns   ffffffff851b4c28   tracepoint_srcu_srcu_usage (mutex)
+On 2024/12/20 12:16, Waiman Long wrote:
+> On 12/19/24 11:07 PM, chenridong wrote:
+>>
+>> On 2024/12/20 10:55, Waiman Long wrote:
+>>> On 12/19/24 8:31 PM, Chen Ridong wrote:
+>>>> From: Chen Ridong <chenridong@huawei.com>
+>>>>
+>>>> A warning was found:
+>>>>
+>>>> WARNING: CPU: 10 PID: 3486953 at fs/kernfs/file.c:828
+>>>> CPU: 10 PID: 3486953 Comm: rmdir Kdump: loaded Tainted: G
+>>>> RIP: 0010:kernfs_should_drain_open_files+0x1a1/0x1b0
+>>>> RSP: 0018:ffff8881107ef9e0 EFLAGS: 00010202
+>>>> RAX: 0000000080000002 RBX: ffff888154738c00 RCX: dffffc0000000000
+>>>> RDX: 0000000000000007 RSI: 0000000000000004 RDI: ffff888154738c04
+>>>> RBP: ffff888154738c04 R08: ffffffffaf27fa15 R09: ffffed102a8e7180
+>>>> R10: ffff888154738c07 R11: 0000000000000000 R12: ffff888154738c08
+>>>> R13: ffff888750f8c000 R14: ffff888750f8c0e8 R15: ffff888154738ca0
+>>>> FS:  00007f84cd0be740(0000) GS:ffff8887ddc00000(0000)
+>>>> knlGS:0000000000000000
+>>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>> CR2: 0000555f9fbe00c8 CR3: 0000000153eec001 CR4: 0000000000370ee0
+>>>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>>>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>>> Call Trace:
+>>>>    kernfs_drain+0x15e/0x2f0
+>>>>    __kernfs_remove+0x165/0x300
+>>>>    kernfs_remove_by_name_ns+0x7b/0xc0
+>>>>    cgroup_rm_file+0x154/0x1c0
+>>>>    cgroup_addrm_files+0x1c2/0x1f0
+>>>>    css_clear_dir+0x77/0x110
+>>>>    kill_css+0x4c/0x1b0
+>>>>    cgroup_destroy_locked+0x194/0x380
+>>>>    cgroup_rmdir+0x2a/0x140
+>>> Were you using cgroup v1 or v2 when this warning happened?
+>> I was using cgroup v1.
+> Thanks for the confirmation.
+>>
+>>>> It can be explained by:
+>>>> rmdir                 echo 1 > cpuset.cpus
+>>>>                  kernfs_fop_write_iter // active=0
+>>>> cgroup_rm_file
+>>>> kernfs_remove_by_name_ns    kernfs_get_active // active=1
+>>>> __kernfs_remove                      // active=0x80000002
+>>>> kernfs_drain            cpuset_write_resmask
+>>>> wait_event
+>>>> //waiting (active == 0x80000001)
+>>>>                  kernfs_break_active_protection
+>>>>                  // active = 0x80000001
+>>>> // continue
+>>>>                  kernfs_unbreak_active_protection
+>>>>                  // active = 0x80000002
+>>>> ...
+>>>> kernfs_should_drain_open_files
+>>>> // warning occurs
+>>>>                  kernfs_put_active
+>>>>
+>>>> This warning is caused by 'kernfs_break_active_protection' when it is
+>>>> writing to cpuset.cpus, and the cgroup is removed concurrently.
+>>>>
+>>>> The commit 3a5a6d0c2b03 ("cpuset: don't nest cgroup_mutex inside
+>>>> get_online_cpus()") made cpuset_hotplug_workfn asynchronous, which
+>>>> grabs
+>>>> the cgroup_mutex. To avoid deadlock. the commit 76bb5ab8f6e3 ("cpuset:
+>>>> break kernfs active protection in cpuset_write_resmask()") added
+>>>> 'kernfs_break_active_protection' in the cpuset_write_resmask. This
+>>>> could
+>>>> lead to this warning.
+>>>>
+>>>> After the commit 2125c0034c5d ("cgroup/cpuset: Make cpuset hotplug
+>>>> processing synchronous"), the cpuset_write_resmask no longer needs to
+>>>> wait the hotplug to finish, which means that cpuset_write_resmask won't
+>>>> grab the cgroup_mutex. So the deadlock doesn't exist anymore.
+>>>> Therefore,
+>>>> remove kernfs_break_active_protection operation in the
+>>>> 'cpuset_write_resmask'
+>>> The hotplug operation itself is now being done synchronously, but task
+>>> transfer (cgroup_transfer_tasks()) because of lacking online CPUs is
+>>> still being done asynchronously. So kernfs_break_active_protection()
+>>> will still be needed for cgroup v1.
+>>>
+>>> Cheers,
+>>> Longman
+>>>
+>>>
+>> Thank you, Longman.
+>> IIUC, The commit 2125c0034c5d ("cgroup/cpuset: Make cpuset hotplug
+>> processing synchronous") deleted the 'flush_work(&cpuset_hotplug_work)'
+>> in the cpuset_write_resmask. And I do not see any process within the
+>> cpuset_write_resmask that will grab cgroup_mutex, except for
+>> 'flush_work(&cpuset_hotplug_work)'.
+>>
+>> Although cgroup_transfer_tasks() is asynchronous, the
+>> cpuset_write_resmask will not wait any work that will grab cgroup_mutex.
+>> Consequently, the deadlock does not exist anymore.
+>>
+>> Did I miss something?
+> 
+> Right. The flush_work() call is still needed for a different work
+> function. cpuset_write_resmask() will not need to grab cgroup_mutex, but
+> the asynchronously executed cgroup_transfer_tasks() will. I will work on
+> a patch to fix that issue.
+> 
+> Cheers,
+> Longman
 
-With the filter, it can show contentions from the task_struct only.
+If flush_work() is added back, this warning still exists. Do you have a
+idea to fix this warning?
 
-  root@virtme-ng:/home/namhyung/project/linux# tools/perf/perf lock con -abl -L '&task_struct' sleep 1
-   contended   total wait     max wait     avg wait            address   symbol
-
-           2      1.97 us      1.71 us       987 ns   ffff98d7032fd658   &task_struct (mutex)
-           1      1.20 us      1.20 us      1.20 us   ffff98d7032fd6f8   &task_struct (mutex)
-
-It can work with other aggregation mode:
-
-  root@virtme-ng:/home/namhyung/project/linux# tools/perf/perf lock con -ab -L '&task_struct' sleep 1
-   contended   total wait     max wait     avg wait         type   caller
-
-           1     25.10 us     25.10 us     25.10 us        mutex   perf_event_exit_task+0x39
-           1     21.60 us     21.60 us     21.60 us        mutex   futex_exit_release+0x21
-           1      5.56 us      5.56 us      5.56 us        mutex   futex_exec_release+0x21
-
-Acked-by: Ian Rogers <irogers@google.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/builtin-lock.c                     | 35 ++++++++++++++++
- tools/perf/util/bpf_lock_contention.c         | 40 ++++++++++++++++++-
- .../perf/util/bpf_skel/lock_contention.bpf.c  | 21 +++++++++-
- tools/perf/util/lock-contention.h             |  2 +
- 4 files changed, 95 insertions(+), 3 deletions(-)
-
-diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-index d9f3477d2b02b612..208c482daa56ef93 100644
---- a/tools/perf/builtin-lock.c
-+++ b/tools/perf/builtin-lock.c
-@@ -1539,6 +1539,12 @@ static void lock_filter_finish(void)
- 
- 	zfree(&filters.cgrps);
- 	filters.nr_cgrps = 0;
-+
-+	for (int i = 0; i < filters.nr_slabs; i++)
-+		free(filters.slabs[i]);
-+
-+	zfree(&filters.slabs);
-+	filters.nr_slabs = 0;
- }
- 
- static void sort_contention_result(void)
-@@ -2305,6 +2311,27 @@ static bool add_lock_sym(char *name)
- 	return true;
- }
- 
-+static bool add_lock_slab(char *name)
-+{
-+	char **tmp;
-+	char *sym = strdup(name);
-+
-+	if (sym == NULL) {
-+		pr_err("Memory allocation failure\n");
-+		return false;
-+	}
-+
-+	tmp = realloc(filters.slabs, (filters.nr_slabs + 1) * sizeof(*filters.slabs));
-+	if (tmp == NULL) {
-+		pr_err("Memory allocation failure\n");
-+		return false;
-+	}
-+
-+	tmp[filters.nr_slabs++] = sym;
-+	filters.slabs = tmp;
-+	return true;
-+}
-+
- static int parse_lock_addr(const struct option *opt __maybe_unused, const char *str,
- 			   int unset __maybe_unused)
- {
-@@ -2328,6 +2355,14 @@ static int parse_lock_addr(const struct option *opt __maybe_unused, const char *
- 			continue;
- 		}
- 
-+		if (*tok == '&') {
-+			if (!add_lock_slab(tok + 1)) {
-+				ret = -1;
-+				break;
-+			}
-+			continue;
-+		}
-+
- 		/*
- 		 * At this moment, we don't have kernel symbols.  Save the symbols
- 		 * in a separate list and resolve them to addresses later.
-diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
-index a31ace04cb5e7a8f..fc8666222399c995 100644
---- a/tools/perf/util/bpf_lock_contention.c
-+++ b/tools/perf/util/bpf_lock_contention.c
-@@ -112,7 +112,7 @@ static void exit_slab_cache_iter(void)
- int lock_contention_prepare(struct lock_contention *con)
- {
- 	int i, fd;
--	int ncpus = 1, ntasks = 1, ntypes = 1, naddrs = 1, ncgrps = 1;
-+	int ncpus = 1, ntasks = 1, ntypes = 1, naddrs = 1, ncgrps = 1, nslabs = 1;
- 	struct evlist *evlist = con->evlist;
- 	struct target *target = con->target;
- 
-@@ -201,6 +201,13 @@ int lock_contention_prepare(struct lock_contention *con)
- 
- 	check_slab_cache_iter(con);
- 
-+	if (con->filters->nr_slabs && has_slab_iter) {
-+		skel->rodata->has_slab = 1;
-+		nslabs = con->filters->nr_slabs;
-+	}
-+
-+	bpf_map__set_max_entries(skel->maps.slab_filter, nslabs);
-+
- 	if (lock_contention_bpf__load(skel) < 0) {
- 		pr_err("Failed to load lock-contention BPF skeleton\n");
- 		return -1;
-@@ -271,6 +278,36 @@ int lock_contention_prepare(struct lock_contention *con)
- 	bpf_program__set_autoload(skel->progs.collect_lock_syms, false);
- 
- 	lock_contention_bpf__attach(skel);
-+
-+	/* run the slab iterator after attaching */
-+	run_slab_cache_iter();
-+
-+	if (con->filters->nr_slabs) {
-+		u8 val = 1;
-+		int cache_fd;
-+		long key, *prev_key;
-+
-+		fd = bpf_map__fd(skel->maps.slab_filter);
-+
-+		/* Read the slab cache map and build a hash with its address */
-+		cache_fd = bpf_map__fd(skel->maps.slab_caches);
-+		prev_key = NULL;
-+		while (!bpf_map_get_next_key(cache_fd, prev_key, &key)) {
-+			struct slab_cache_data data;
-+
-+			if (bpf_map_lookup_elem(cache_fd, &key, &data) < 0)
-+				break;
-+
-+			for (i = 0; i < con->filters->nr_slabs; i++) {
-+				if (!strcmp(con->filters->slabs[i], data.name)) {
-+					bpf_map_update_elem(fd, &key, &val, BPF_ANY);
-+					break;
-+				}
-+			}
-+			prev_key = &key;
-+		}
-+	}
-+
- 	return 0;
- }
- 
-@@ -396,7 +433,6 @@ static void account_end_timestamp(struct lock_contention *con)
- 
- int lock_contention_start(void)
- {
--	run_slab_cache_iter();
- 	skel->bss->enabled = 1;
- 	return 0;
- }
-diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-index 7182eb559496e34e..6c771ef751d83b43 100644
---- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-+++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-@@ -100,6 +100,13 @@ struct {
- 	__uint(max_entries, 1);
- } cgroup_filter SEC(".maps");
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(key_size, sizeof(long));
-+	__uint(value_size, sizeof(__u8));
-+	__uint(max_entries, 1);
-+} slab_filter SEC(".maps");
-+
- struct {
- 	__uint(type, BPF_MAP_TYPE_HASH);
- 	__uint(key_size, sizeof(long));
-@@ -131,6 +138,7 @@ const volatile int has_task;
- const volatile int has_type;
- const volatile int has_addr;
- const volatile int has_cgroup;
-+const volatile int has_slab;
- const volatile int needs_callstack;
- const volatile int stack_skip;
- const volatile int lock_owner;
-@@ -213,7 +221,7 @@ static inline int can_record(u64 *ctx)
- 		__u64 addr = ctx[0];
- 
- 		ok = bpf_map_lookup_elem(&addr_filter, &addr);
--		if (!ok)
-+		if (!ok && !has_slab)
- 			return 0;
- 	}
- 
-@@ -226,6 +234,17 @@ static inline int can_record(u64 *ctx)
- 			return 0;
- 	}
- 
-+	if (has_slab && bpf_get_kmem_cache) {
-+		__u8 *ok;
-+		__u64 addr = ctx[0];
-+		long kmem_cache_addr;
-+
-+		kmem_cache_addr = (long)bpf_get_kmem_cache(addr);
-+		ok = bpf_map_lookup_elem(&slab_filter, &kmem_cache_addr);
-+		if (!ok)
-+			return 0;
-+	}
-+
- 	return 1;
- }
- 
-diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-contention.h
-index bd71fb73825aa8e1..a09f7fe877df8184 100644
---- a/tools/perf/util/lock-contention.h
-+++ b/tools/perf/util/lock-contention.h
-@@ -10,10 +10,12 @@ struct lock_filter {
- 	int			nr_addrs;
- 	int			nr_syms;
- 	int			nr_cgrps;
-+	int			nr_slabs;
- 	unsigned int		*types;
- 	unsigned long		*addrs;
- 	char			**syms;
- 	u64			*cgrps;
-+	char			**slabs;
- };
- 
- struct lock_stat {
--- 
-2.47.1.613.gc27f4b7a9f-goog
+Best regards
+Ridong
 
 
