@@ -1,289 +1,158 @@
-Return-Path: <bpf+bounces-47463-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47464-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0069B9F9A0A
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 20:13:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B24339F9A5E
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 20:25:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53DCA1885E59
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 19:11:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3430B189330D
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 19:23:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B84FE2206AE;
-	Fri, 20 Dec 2024 19:11:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 463262288C4;
+	Fri, 20 Dec 2024 19:20:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="CC4DnTE1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H++3vzxz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.197])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E435621E087
-	for <bpf@vger.kernel.org>; Fri, 20 Dec 2024 19:11:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B70552210C0;
+	Fri, 20 Dec 2024 19:20:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734721901; cv=none; b=CXqE6dLIgNRSBAmRHVsilCHUgfBIXEFFvS9wypWKwNacFtMlXEfz+vm7BsL+uXt71mDUV+CHcnGmQgTZEeEbD8oeqJiya5oo9dYZpMC4Shnhguh8kGG1cfPGfFbrQC6uiDjUUi8e58pCkawUVx3f0Sjw+DIQDr8HIGYzVWtGU5Y=
+	t=1734722440; cv=none; b=kyw6Z3GOU3i0RiSFEtHtoWr4Q+DnS473ElPAdK4xXgyT+veKr5DbX0vG9TcldinvLLQYdN9UjtIYhKtscuiOTt4dM9FQGXPw6Ldwt5/kh+H56eNm1NBq5vRtMAyhsgXmVOMng8v5X4kPPMDO6dH3Xu0X+TX8wUSpsyTQ03KL32c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734721901; c=relaxed/simple;
-	bh=ZDx92FCNvaaNTqkZp0+dbn9tgRERr2CZHcmu8V5PG4s=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Vn9/faW9xMdBKHZW2MB5mUEoFDi/vbn/R9jKhP26YZX80UgJRZnT8Zes74tzL4EM7XfpW2WjywyCJwUL6njv/5O0mOcJKfg6WqeK+Oym53ZRbhUOOVA9cE2qwLFODwOqT3lHgbxoiPNuuiig4oGbHIax+bhfmfGuyJaPhMGfHGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=CC4DnTE1; arc=none smtp.client-ip=74.208.4.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
-	s=s1-ionos; t=1734721867; x=1735326667; i=linux@jordanrome.com;
-	bh=bFV8AAWE7WB5PNv7bnDePrI5cbphl4Nbhj6dGOr7osY=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=CC4DnTE1mM2LbQBIQhERFew8CVlNAxULDVF+pQaFgIZryJhuemZrhYMqHDa3tMY0
-	 9z3HLZ9fCM2ktP16slBwbFMHReL7+6kqofQrWiWThmL8wBexYRpiWiC/xQcTfC8Qj
-	 SeytwB1a+wGEW4eDj2TpFURu+TqLS8DCtiGt5cMbTYOLpjDVcGz9URm38NyvzBQ5F
-	 PK6c5FcS3hXR0j9/FoFaUrTdUmF0/vUimctiO0PeG22ymmITr9V3GRt+qg5y7FK3o
-	 wxJeTwXO+HE3VAt+NlrVu3Zu8/J80uTCt3j/ziLsHTNUNz5raRs6ZVxsLYhhfvnhF
-	 Eiaug/a8krf1K2qTGA==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from localhost ([69.171.251.17]) by mrelay.perfora.net (mreueus004
- [74.208.5.2]) with ESMTPSA (Nemesis) id 1Ma1LU-1t1bUV2Q0S-00RY6U; Fri, 20 Dec
- 2024 20:11:07 +0100
-From: Jordan Rome <linux@jordanrome.com>
-To: bpf@vger.kernel.org
-Cc: linux-mm@kvack.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Kernel Team <kernel-team@fb.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>
-Subject: [bpf-next v1 2/2] selftests/bpf: Add tests for bpf_copy_from_user_task_str
-Date: Fri, 20 Dec 2024 11:10:52 -0800
-Message-ID: <20241220191052.1066250-2-linux@jordanrome.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20241220191052.1066250-1-linux@jordanrome.com>
-References: <20241220191052.1066250-1-linux@jordanrome.com>
+	s=arc-20240116; t=1734722440; c=relaxed/simple;
+	bh=8XbdBcK3RoQ29Q3VwBSaVOI51Tab2e3sofg0RlarLnk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YcFwd/tx6KKF9Ds1CDdUtoqyjfW39R2iB1K0qxx4p+xM7Yfbrfwz3nOY6yol31Uxg5MQ/kw5xZ4Mcp17LHQVhvbOA2ggHXlC086725AThTaG0E/bQ50vJY3Xcbnug5aDgwTuonqE9Js7veSot+W2lK66TZgnI3lSb4iSJZx9bLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H++3vzxz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 384F5C4CECD;
+	Fri, 20 Dec 2024 19:20:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734722440;
+	bh=8XbdBcK3RoQ29Q3VwBSaVOI51Tab2e3sofg0RlarLnk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=H++3vzxzY6lrc9JZ87oEZGsCSBoH2fPiwmDg/zOlK1d3G6zDy2tXm/wiNw5myOerx
+	 NvEEzKA6zbeZvNy9hXwePCGVHjR0B5uAW2K/tZ7ccwXsRxuzXSfnQWeomH7rY+Cs0U
+	 RomiXeA4uGcoCPLbeXbuhvZ2Sqboov9dBjeh4zy5P/EAdzZ9ezyG/zSG3nMiki+747
+	 E5tSrKx+mYBjCfWBNz96lxv6HNOzTgwHguvASpWnpDUKEcr3lJxDZj8C3JbAWMyPYm
+	 WpA46tlvK5HIOnQrNKBT2RbqdlBa9AxKiacP61E4vDpxv2u0oBlYaQ8kSmIOjy1DLM
+	 2n2mgFCIQ43+w==
+Date: Fri, 20 Dec 2024 16:20:37 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+	bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, Kees Cook <kees@kernel.org>,
+	Chun-Tse Shao <ctshao@google.com>
+Subject: Re: [PATCH v3 0/4] perf lock contention: Symbolize locks using slab
+ cache names
+Message-ID: <Z2XDhXZsfUVtU7MY@x1>
+References: <20241220060009.507297-1-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:3YPzK3zH6uRLIxMDY+gj/1+UrBpP5upetgT6hfo4xmcWEzocgo/
- tslmhoR9p1bjy2bffimY5c2GKXLEGscp8XhmjJ+IyxDjCO0i2D7pz//XtQ9i6IpaFG5Dhzr
- vehsUzjvzHlX+e1ALeAaiB47s+NP8BDb4OetI10lpBEw8iOtvb2Sk/JatRB6gn/3FjpB8Us
- ZPy46vdJE8hDZ6q7Tv7KQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:sdbn4NDl3Bc=;BI4Ci9PneXHWXw40oIXSJlsmzmF
- oiJC9L4yCxSEVlTvUJ42fVmANeyRZdfI/qmtHdFNbTrFDKna4QKhOn98E8ijN86yeL7bEZs5j
- YXVuCe65pywYtxBf2oWKyznDJD++1FCmB6JjDAnB1Tmueiu6DvFV2YFFeu+x5eY7gZLfgD5fP
- 38lh5idbTWwLjRJ75s37rSdjZcIcdyg7A83RmAIwQYaEquFRU6L/jCycCb+V41tYwEj+QDcM/
- XAzV1HK6wNJN+h5VK7+RotKVn0H8T8Kb93w4g8BvIMOz0yoe/nmUM0/yYpjnkW8BZj+b2d4ze
- JhT7cgUs0XcjopZfK/RBErTWDbFRIcUFsCtrpgzJQP8Gf8R1dtlwaSg38CN5RSVy4psEMw3RV
- MFGEsIgxbXYfy4AptS3NCTGcyzAieM6yPXiDXLlmeEg3KhNyIHVfuXEKecW14yQVZKC+/HtzJ
- rqp6a9QQPpQzh6XqX+SIbMdJzCQ/H0Rf2B8dOQ20hby9uunOqu7c1tPyPMzK5y0Tsq9gB9dz1
- 7kZgOJhLfOqxD36bJX2sQX+QU/P3AsYomkpYd6pvPd4NMMw3jsYlBvre73Mg7EhkN3yvuiJBg
- a9E7TOZdxrLlygBj6iPWVOEH1JSuHClCG2a8EKTLJT1jMTOYF+b9CByRuBUZpElR1YRD0t4Px
- OMQ0lZyNl9/1sfCURcumh8PiKOaxS0ncZHFQC/PlTNYvLD9wwgUQzjuqcMW8YacAR18fsSvhP
- s9IBpsl1NVa2BHf4dxhf/hKBW4+DKKCWCGEag5UKyTwIBkrMkWXamm439EYtjV9WiRnJTubXz
- 0v3dDABBFjpIFgR23gMAhjEX2fFbN49A+8aYFBYOtRNdM6AjHzsgDePa0LqG/MBb4+TfrqqUT
- bMAyZmqGNkKUfk9CxiDEgwAKQrglS7mhhqGLIf61KxAjBFMsJ1Mo9QQI3OGR2GifqeXye6rOu
- QufN0RtuMMU6VCGvyGobsQgZT0Z6r3V1GD/XZWBFhhxBBafIO0s8bukTzAOZiqwyTo0aq3NmG
- /0/tWnKUzRFK+WjeIZg00zxJ9Gp7VT8WSeRhX1X
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241220060009.507297-1-namhyung@kernel.org>
 
-This adds tests for both the happy path and the
-error path (with and without the BPF_F_PAD_ZEROS flag).
+On Thu, Dec 19, 2024 at 10:00:05PM -0800, Namhyung Kim wrote:
+> Hello,
+> 
+> This is to support symbolization of dynamic locks using slab
+> allocator's metadata.  The kernel support is merged to v6.13.
+> 
+> It provides the new "kmem_cache" BPF iterator and "bpf_get_kmem_cache"
+> kfunc to get the information from an address.  The feature detection is
+> done using BTF type info and it won't have any effect on old kernels.
+> 
+> v3 changes)
+> 
+>  * fix build error with GEN_VMLINUX_H=1  (Arnaldo)
 
-Signed-off-by: Jordan Rome <linux@jordanrome.com>
-=2D--
- .../selftests/bpf/prog_tests/bpf_iter.c       |  7 +++
- .../selftests/bpf/prog_tests/read_vsyscall.c  |  1 +
- .../selftests/bpf/progs/bpf_iter_tasks.c      | 55 +++++++++++++++++++
- .../selftests/bpf/progs/read_vsyscall.c       |  6 +-
- 4 files changed, 67 insertions(+), 2 deletions(-)
+Thanks, applied to perf-tools-next,
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/tes=
-ting/selftests/bpf/prog_tests/bpf_iter.c
-index 6f1bfacd7375..8ed864793bd1 100644
-=2D-- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -34,6 +34,8 @@
- #include "bpf_iter_ksym.skel.h"
- #include "bpf_iter_sockmap.skel.h"
+- Arnaldo
 
-+static char test_data[] =3D "test_data";
-+
- static void test_btf_id_or_null(void)
- {
- 	struct bpf_iter_test_kern3 *skel;
-@@ -328,12 +330,17 @@ static void test_task_sleepable(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_tasks__open_and_load"))
- 		return;
-
-+	skel->bss->user_ptr =3D test_data;
- 	do_dummy_read(skel->progs.dump_task_sleepable);
-
- 	ASSERT_GT(skel->bss->num_expected_failure_copy_from_user_task, 0,
- 		  "num_expected_failure_copy_from_user_task");
- 	ASSERT_GT(skel->bss->num_success_copy_from_user_task, 0,
- 		  "num_success_copy_from_user_task");
-+	ASSERT_GT(skel->bss->num_expected_failure_copy_from_user_task_str, 0,
-+		  "num_expected_failure_copy_from_user_task_str");
-+	ASSERT_GT(skel->bss->num_success_copy_from_user_task_str, 0,
-+		  "num_success_copy_from_user_task_str");
-
- 	bpf_iter_tasks__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c b/tool=
-s/testing/selftests/bpf/prog_tests/read_vsyscall.c
-index c7b9ba8b1d06..a8d1eaa67020 100644
-=2D-- a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-+++ b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-@@ -24,6 +24,7 @@ struct read_ret_desc {
- 	{ .name =3D "copy_from_user", .ret =3D -EFAULT },
- 	{ .name =3D "copy_from_user_task", .ret =3D -EFAULT },
- 	{ .name =3D "copy_from_user_str", .ret =3D -EFAULT },
-+	{ .name =3D "copy_from_user_task_str", .ret =3D -EFAULT },
- };
-
- void test_read_vsyscall(void)
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_tasks.c b/tools/te=
-sting/selftests/bpf/progs/bpf_iter_tasks.c
-index bc10c4e4b4fa..90691e34b915 100644
-=2D-- a/tools/testing/selftests/bpf/progs/bpf_iter_tasks.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_tasks.c
-@@ -9,6 +9,7 @@ char _license[] SEC("license") =3D "GPL";
- uint32_t tid =3D 0;
- int num_unknown_tid =3D 0;
- int num_known_tid =3D 0;
-+void *user_ptr =3D 0;
-
- SEC("iter/task")
- int dump_task(struct bpf_iter__task *ctx)
-@@ -35,7 +36,9 @@ int dump_task(struct bpf_iter__task *ctx)
- }
-
- int num_expected_failure_copy_from_user_task =3D 0;
-+int num_expected_failure_copy_from_user_task_str =3D 0;
- int num_success_copy_from_user_task =3D 0;
-+int num_success_copy_from_user_task_str =3D 0;
-
- SEC("iter.s/task")
- int dump_task_sleepable(struct bpf_iter__task *ctx)
-@@ -44,6 +47,9 @@ int dump_task_sleepable(struct bpf_iter__task *ctx)
- 	struct task_struct *task =3D ctx->task;
- 	static const char info[] =3D "    =3D=3D=3D END =3D=3D=3D";
- 	struct pt_regs *regs;
-+	char task_str1[10] =3D "aaaaaaaaaa";
-+	char task_str2[10], task_str3[10];
-+	char task_str4[20] =3D "aaaaaaaaaaaaaaaaaaaa";
- 	void *ptr;
- 	uint32_t user_data =3D 0;
- 	int ret;
-@@ -78,8 +84,57 @@ int dump_task_sleepable(struct bpf_iter__task *ctx)
- 		BPF_SEQ_PRINTF(seq, "%s\n", info);
- 		return 0;
- 	}
-+
- 	++num_success_copy_from_user_task;
-
-+	/* Read an invalid pointer and ensure we get an error */
-+	ptr =3D NULL;
-+	ret =3D bpf_copy_from_user_task_str((char *)task_str1, sizeof(task_str1)=
-, ptr, task, 0);
-+	if (ret >=3D 0 || task_str1[9] !=3D 'a') {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	/* Read an invalid pointer and ensure we get error with pad zeros flag *=
-/
-+	ptr =3D NULL;
-+	ret =3D bpf_copy_from_user_task_str((char *)task_str1, sizeof(task_str1)=
-, ptr, task, BPF_F_PAD_ZEROS);
-+	if (ret >=3D 0 || task_str1[9] !=3D '\0') {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	++num_expected_failure_copy_from_user_task_str;
-+
-+	/* Same length as the string */
-+	ret =3D bpf_copy_from_user_task_str((char *)task_str2, 10, user_ptr, tas=
-k, 0);
-+	if (bpf_strncmp(task_str2, 10, "test_data\0") !=3D 0 || ret !=3D 10) {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	/* Shorter length than the string */
-+	ret =3D bpf_copy_from_user_task_str((char *)task_str3, 9, user_ptr, task=
-, 0);
-+	if (bpf_strncmp(task_str3, 9, "test_dat\0") !=3D 0 || ret !=3D 9) {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	/* Longer length than the string */
-+	ret =3D bpf_copy_from_user_task_str((char *)task_str4, 20, user_ptr, tas=
-k, 0);
-+	if (bpf_strncmp(task_str4, 10, "test_data\0") !=3D 0 || ret !=3D 10 || t=
-ask_str4[sizeof(task_str4) - 1] !=3D 'a') {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	/* Longer length than the string with pad zeros flag */
-+	ret =3D bpf_copy_from_user_task_str((char *)task_str4, 20, user_ptr, tas=
-k, BPF_F_PAD_ZEROS);
-+	if (bpf_strncmp(task_str4, 10, "test_data\0") !=3D 0 || ret !=3D 10 || t=
-ask_str4[sizeof(task_str4) - 1] !=3D '\0') {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	++num_success_copy_from_user_task_str;
-+
- 	if (ctx->meta->seq_num =3D=3D 0)
- 		BPF_SEQ_PRINTF(seq, "    tgid      gid     data\n");
-
-diff --git a/tools/testing/selftests/bpf/progs/read_vsyscall.c b/tools/tes=
-ting/selftests/bpf/progs/read_vsyscall.c
-index 39ebef430059..623c1c5bd2d0 100644
-=2D-- a/tools/testing/selftests/bpf/progs/read_vsyscall.c
-+++ b/tools/testing/selftests/bpf/progs/read_vsyscall.c
-@@ -8,14 +8,15 @@
-
- int target_pid =3D 0;
- void *user_ptr =3D 0;
--int read_ret[9];
-+int read_ret[10];
-
- char _license[] SEC("license") =3D "GPL";
-
- /*
-- * This is the only kfunc, the others are helpers
-+ * These are the kfuncs, the others are helpers
-  */
- int bpf_copy_from_user_str(void *dst, u32, const void *, u64) __weak __ks=
-ym;
-+int bpf_copy_from_user_task_str(void *dst, u32, const void *, struct task=
-_struct *, u64) __weak __ksym;
-
- SEC("fentry/" SYS_PREFIX "sys_nanosleep")
- int do_probe_read(void *ctx)
-@@ -47,6 +48,7 @@ int do_copy_from_user(void *ctx)
- 	read_ret[7] =3D bpf_copy_from_user_task(buf, sizeof(buf), user_ptr,
- 					      bpf_get_current_task_btf(), 0);
- 	read_ret[8] =3D bpf_copy_from_user_str((char *)buf, sizeof(buf), user_pt=
-r, 0);
-+	read_ret[9] =3D bpf_copy_from_user_task_str((char *)buf, sizeof(buf), us=
-er_ptr, bpf_get_current_task_btf(), 0);
-
- 	return 0;
- }
-=2D-
-2.43.5
-
+>  * update comment to explain slab cache ID  (Vlastimil)
+>  * add Ian's Acked-by
+> 
+> v2) https://lore.kernel.org/linux-perf-users/20241108061500.2698340-1-namhyung@kernel.org
+> 
+>  * don't use libbpf_get_error()  (Andrii)
+> 
+> v1) https://lore.kernel.org/linux-perf-users/20241105172635.2463800-1-namhyung@kernel.org
+> 
+> With this change, it can show locks in a slab object like below.  I
+> added "&" sign to distinguish them from global locks.
+> 
+>     # perf lock con -abl sleep 1
+>      contended   total wait     max wait     avg wait            address   symbol
+> 
+>              2      1.95 us      1.77 us       975 ns   ffff9d5e852d3498   &task_struct (mutex)
+>              1      1.18 us      1.18 us      1.18 us   ffff9d5e852d3538   &task_struct (mutex)
+>              4      1.12 us       354 ns       279 ns   ffff9d5e841ca800   &kmalloc-cg-512 (mutex)
+>              2       859 ns       617 ns       429 ns   ffffffffa41c3620   delayed_uprobe_lock (mutex)
+>              3       691 ns       388 ns       230 ns   ffffffffa41c0940   pack_mutex (mutex)
+>              3       421 ns       164 ns       140 ns   ffffffffa3a8b3a0   text_mutex (mutex)
+>              1       409 ns       409 ns       409 ns   ffffffffa41b4cf8   tracepoint_srcu_srcu_usage (mutex)
+>              2       362 ns       239 ns       181 ns   ffffffffa41cf840   pcpu_alloc_mutex (mutex)
+>              1       220 ns       220 ns       220 ns   ffff9d5e82b534d8   &signal_cache (mutex)
+>              1       215 ns       215 ns       215 ns   ffffffffa41b4c28   tracepoint_srcu_srcu_usage (mutex)
+> 
+> The first two were from "task_struct" slab cache.  It happened to
+> match with the type name of object but there's no guarantee.  We need
+> to add type info to slab cache to resolve the lock inside the object.
+> Anyway, the third one has no dedicated slab cache and was allocated by
+> kmalloc.
+> 
+> Those slab objects can be used to filter specific locks using -L or
+>  --lock-filter option.  (It needs quotes to avoid special handling in
+> the shell).
+> 
+>     # perf lock con -ab -L '&task_struct' sleep 1
+>        contended   total wait     max wait     avg wait         type   caller
+> 
+>                1     25.10 us     25.10 us     25.10 us        mutex   perf_event_exit_task+0x39
+>                1     21.60 us     21.60 us     21.60 us        mutex   futex_exit_release+0x21
+>                1      5.56 us      5.56 us      5.56 us        mutex   futex_exec_release+0x21
+> 
+> The code is available at 'perf/lock-slab-v3' branch in my tree
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+> 
+> Thanks,
+> Namhyung
+> 
+> 
+> Namhyung Kim (4):
+>   perf lock contention: Add and use LCB_F_TYPE_MASK
+>   perf lock contention: Run BPF slab cache iterator
+>   perf lock contention: Resolve slab object name using BPF
+>   perf lock contention: Handle slab objects in -L/--lock-filter option
+> 
+>  tools/perf/builtin-lock.c                     |  39 ++++-
+>  tools/perf/util/bpf_lock_contention.c         | 140 +++++++++++++++++-
+>  .../perf/util/bpf_skel/lock_contention.bpf.c  |  95 +++++++++++-
+>  tools/perf/util/bpf_skel/lock_data.h          |  15 +-
+>  tools/perf/util/bpf_skel/vmlinux/vmlinux.h    |   8 +
+>  tools/perf/util/lock-contention.h             |   2 +
+>  6 files changed, 292 insertions(+), 7 deletions(-)
+> 
+> -- 
+> 2.47.1.613.gc27f4b7a9f-goog
 
