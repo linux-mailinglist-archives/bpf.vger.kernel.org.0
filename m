@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-47472-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47473-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C4589F9ACB
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 20:57:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C35DB9F9AD1
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 20:58:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FA5916677F
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 19:57:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED9C87A499F
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 19:57:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4915222571;
-	Fri, 20 Dec 2024 19:56:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5BD6227585;
+	Fri, 20 Dec 2024 19:56:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fRF2yFF0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mWPa9i+Y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 728EE225A5A;
-	Fri, 20 Dec 2024 19:56:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C1B9222565;
+	Fri, 20 Dec 2024 19:56:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734724595; cv=none; b=JP/H9CWjIfa5ND3NDFrNs5ggLygok1QG3i2G64Cb7mW7kv3YSCjyRWR/5TRQt2ySoXB0dNnH2vBLs/J211JXFNhVlSrrUoLo8/yKqzfS1a+zmXVtlWm+5wnqSC0EkueeBb/6QZWyB0w9lFwToSS1XABO84UvbvIHun7glsBPIpE=
+	t=1734724596; cv=none; b=ORQ9w9YlIKdB+TsCHRD9ocJ3318fiheTAM35HcgnB5rGunJTojsa/NB8GearXrskgyrUXbUpnccDqRZ9MGdEW68tM9gk4WelPA2NkD8P/BOWfg9OVObzCU6qg34kCndpnvhZ5tdD+boF9BlaNqANJ6ISxbrP8/j/PXA/anvD0NA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734724595; c=relaxed/simple;
-	bh=n5icmZkxkP3FtQtKKyziYzt+JyJhdO3osQV6HrLB17o=;
+	s=arc-20240116; t=1734724596; c=relaxed/simple;
+	bh=Dgs9P/JLEy2ZTvn1E7VqQyDuZMHik+0vWvpBnlOarJY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TS+UeAlrVCQ+/eG2UisCEkUcgnvo78KLY09AKx6o4o35DhqiMdka7yF7p3tWxGf8aaGSBm+6MoLDpucJey7ELykCaR5cnD66YXFRwb/GD/TC/eA/VA/dtPVfFo3B7Ex+vXx3l0jPnXNys94nlWpIjtwOr9D8mRrLEy8n86OvYk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fRF2yFF0; arc=none smtp.client-ip=209.85.210.169
+	 MIME-Version; b=klvj37iXLjdcaFJQEUBmUe+Rqsjy7rHM16PPGlhLQWvSKd/E4QGTaR8kXH/vvJCinp3wb4945RSS9zUXHhlhDlHlkz7DKVl71x/aHf5tvSgMyg/ltjIyJo6i3DgydJiUlfAs3Lq4PkNzFNnhIXgRBvLe9KpVAyGTx4pPdrMPUtc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mWPa9i+Y; arc=none smtp.client-ip=209.85.210.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-725d9f57d90so1805466b3a.1;
-        Fri, 20 Dec 2024 11:56:33 -0800 (PST)
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-725d9f57d90so1805482b3a.1;
+        Fri, 20 Dec 2024 11:56:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734724592; x=1735329392; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1734724593; x=1735329393; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AY5SYRjy7PKianvBBFp4ljQ5nK+6RTkJRG7kXPaZpVY=;
-        b=fRF2yFF0q4IaU2eX+DyrhKmFab4WllPCdHIR9/9S1hQ6UkuOB4ut0w1a238fnuy0iv
-         bnHIkZm0yFdYUkw7DjFM+w+8xHcCNUBeI0yZ9ae9yYsNeqEa0rZcIZVu7QJWWJ7sJ/ca
-         t3exR7BaAfhw5/n58IYsAEL+mu3xKRwfsAfRvS6WJfcOQ/79YK//e9gf/lG+pMrKKemG
-         cSC1IxTDUm18ape9FdqDCm8468fnY047w3lCZ0iWyCcCWh98unB/mxycBSAG6sublsjS
-         31VZXgHWQjDwKcfJ1Ix4zAiUQoeJPbzkawcQBL2zkKDU0xMum8vhUrCMQCW8vczlUXwl
-         ZLDg==
+        bh=LzEMwE7P5SeUCPP2ZtV5l+tofBVvoh8yKJDgFDQD9Uk=;
+        b=mWPa9i+YCbRdLjxWd1mGZ/8CBpjGqN35y+QdpTDQipa58db+vDrz6zm73QyUh7x8AY
+         xhxNF1K8odTu6Wo9ba0ScMubr7vzv9iF03NMizsFMXTeq0cEOqsDlOmyyf7FWheSp7mW
+         gYjucx1frU1pKm+NtAr7+/BA0A7iOQ00BwVNOh5oUi/SRuuyUPnYx/f2IQuvteidPbUs
+         8Cd2+dwJFlFqvP0YI+qeF7ogCwzOl3MG/v6OtjEuAfmvbMVqjWeEB1NiqQZFvd1jSd3o
+         El6aJdf4xK0YHYJKjMSukAxFP+derXrLD16+HagZKkiusgRzjHIY5edQTMzafja2Ena4
+         RMwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734724592; x=1735329392;
+        d=1e100.net; s=20230601; t=1734724593; x=1735329393;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AY5SYRjy7PKianvBBFp4ljQ5nK+6RTkJRG7kXPaZpVY=;
-        b=LO3oROxdhOkObPfubg+2dSIAN0XiRQxErfyQcF4Vz0EaJFIQgMAIgwGUPdZ7C31nKp
-         zTCZfo3qKqriV2CI3HEu7oDaMZw1ugB5+yi3In2ONwIUZz0LLcp8dPnBoUgSo8JunNmh
-         eG9IqvXDxGb/NFevjICCyPn9AiAJsF6ZAp9BImhTUVBM0flTB8EA7dCj4AouXixNK6cK
-         /Rc5qkWQFsftF9B2vnrNUSfvh1PPJ2tuE/U3/VP1YPsEOergThinRr98eiTGQkaO8p1j
-         gCrqYOd1KHxP1Oh/v1T7w8cqmtIsWgcE7OXtvfy+oegw1imTraawuE9RAvcYj36Ofww9
-         F1Kg==
-X-Gm-Message-State: AOJu0Yz9Vb5hjkG5AsKzq6pm83+WN9cDjZvS1EIvzTN6bPDIOpE8ofV2
-	tlo5FFRi+B8mvoyeexIA+uFmA/t/bYFWEjjoXtvWG+J3kYa9yMUag4bkFQ==
-X-Gm-Gg: ASbGncvO6DJpHJVdY6l1YAdQtSphQgr1NtxR2EBxviYHEh75IQh1HC19U7kxTDARIgD
-	hVF1hoK9hSUWxK+Qf8DUCwex+UrlgQRzzEQLx2h+UPvWrWdfrN7ImOS/GU0OuThWKyETCj+dBlY
-	Dq3NrtokNKyGLXYYJCA8B5/3JOBo5AhUwBYOi524z1KaIn4p45iGv3etOhRfJefA1zz3oYkOcRc
-	4E8BX2m+0uLxI9/gKIj81gjUXNpKgQsyzNbHpL9REuyhgVy6eao/iaZNh0hk18tN2+EHM8HaRNe
-	+BpLQdZBVSFkkTMvnr8IBzz3h94CEtbg
-X-Google-Smtp-Source: AGHT+IE3aeY4WSqKHsR4EdxpsldksdQNPop3DR0ggg+53K9BinNxVUQPmeJegExa4dFYOb+aDM80kg==
-X-Received: by 2002:a05:6a00:244c:b0:724:bf30:3030 with SMTP id d2e1a72fcca58-72abdbe59f6mr5098491b3a.0.1734724592478;
-        Fri, 20 Dec 2024 11:56:32 -0800 (PST)
+        bh=LzEMwE7P5SeUCPP2ZtV5l+tofBVvoh8yKJDgFDQD9Uk=;
+        b=d1FsaRFtOsnzZL5HdU7skQrcP3L0lw4xMVRFbzEXB77rDCfkXQCv31OCN/8YMob89p
+         VceLUemDlOuQ0SMwumQ0a4ujtVDw5J2r4abOmF9R4Giu3S64w/e31uW1OK/klFoqI0Fj
+         a0svnxaPYkNaiMefBGkcABlxXrLF7Xszt7xp27rHe6fTKKoUulRt1/TB9yoReyzXx0rL
+         BJoJDSHBD/95NlHt2rcb3DOiEP8PqvrKC41cxqD4qHwqd2plKANwrsIfcBP55xaaKP0c
+         bEhov7yBNyxUpJxqCoEpF5MZRZz8Y/Xjm5wCawV8ao0sikjEFzRL3KZhv6Vr3tqaPPp4
+         WTlQ==
+X-Gm-Message-State: AOJu0YwPRyLdQMeq8tdUdB5WWL1VygCRbB3jz/eDuOf6+vEA02SysGzc
+	Q66ETEITlWqnS4QeCQMt7D5knlaSAzTtD8HKDqVctF5GaB+mYT7Tyc+srQ==
+X-Gm-Gg: ASbGncuLG3/ManyZeM51V8PSdxWZTTGJyfSIqbsfIdWdfqv56unqRV2VLhlpUyKS9w1
+	ox+l6IUOduAGlYc5R90MTC6NmjNRFlWTf8Dv2Y/bh6Tn6r6jcmnn5mzqOYfmcLlFEr0kuKzznvr
+	w7wCItqQ9Dq+Zkt0bC3zkDqkC+8o8cV14QKNyBpjGE5nO9TvkNi4e3fwdYOxGLMRV5Is2ydVoeK
+	zZGqLxYIvTi5pGqBoLXlXK2nTF0sLgTp4awYL5j4RRmgbouoYpUlMyCukoLEwSnXzeVPskW38E1
+	Fl58QT8nJvl3X8jcEchGRM1gn2wEU/Qq
+X-Google-Smtp-Source: AGHT+IGNdVB0KABJWJyGlmIKg8EjwPpnwfm7M8AyxbjJXEO6QjkHDLYIb4wFLWxzSsE0WKqnPVQ9ng==
+X-Received: by 2002:a05:6a21:6da3:b0:1e1:a68b:104a with SMTP id adf61e73a8af0-1e5e083f026mr6224476637.42.1734724593460;
+        Fri, 20 Dec 2024 11:56:33 -0800 (PST)
 Received: from localhost.localdomain (c-76-146-13-146.hsd1.wa.comcast.net. [76.146.13.146])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-842b17273dasm3240342a12.19.2024.12.20.11.56.31
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-842b17273dasm3240342a12.19.2024.12.20.11.56.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Dec 2024 11:56:32 -0800 (PST)
+        Fri, 20 Dec 2024 11:56:33 -0800 (PST)
 From: Amery Hung <ameryhung@gmail.com>
 X-Google-Original-From: Amery Hung <amery.hung@gmail.com>
 To: netdev@vger.kernel.org
@@ -90,9 +90,9 @@ Cc: bpf@vger.kernel.org,
 	yepeilin.cs@gmail.com,
 	ameryhung@gmail.com,
 	amery.hung@bytedance.com
-Subject: [PATCH bpf-next v2 04/14] selftests/bpf: Test returning referenced kptr from struct_ops programs
-Date: Fri, 20 Dec 2024 11:55:30 -0800
-Message-ID: <20241220195619.2022866-5-amery.hung@gmail.com>
+Subject: [PATCH bpf-next v2 05/14] bpf: net_sched: Support implementation of Qdisc_ops in bpf
+Date: Fri, 20 Dec 2024 11:55:31 -0800
+Message-ID: <20241220195619.2022866-6-amery.hung@gmail.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241220195619.2022866-1-amery.hung@gmail.com>
 References: <20241220195619.2022866-1-amery.hung@gmail.com>
@@ -106,272 +106,365 @@ Content-Transfer-Encoding: 8bit
 
 From: Amery Hung <amery.hung@bytedance.com>
 
-Test struct_ops programs returning referenced kptr. When the return type
-of a struct_ops operator is pointer to struct, the verifier should
-only allow programs that return a scalar NULL or a non-local kptr with the
-correct type in its unmodified form.
+Enable users to implement a classless qdisc using bpf. The last few
+patches in this series has prepared struct_ops to support core operators
+in Qdisc_ops. The recent advancement in bpf such as allocated
+objects, bpf list and bpf rbtree has also provided powerful and flexible
+building blocks to realize sophisticated scheduling algorithms. Therefore,
+in this patch, we start allowing qdisc to be implemented using bpf
+struct_ops. Users can implement Qdisc_ops.{enqueue, dequeue, init, reset,
+and .destroy in Qdisc_ops in bpf and register the qdisc dynamically into
+the kernel.
 
+Co-developed-by: Cong Wang <cong.wang@bytedance.com>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
 Signed-off-by: Amery Hung <amery.hung@bytedance.com>
 ---
- .../prog_tests/test_struct_ops_kptr_return.c  | 16 +++++++++
- .../bpf/progs/struct_ops_kptr_return.c        | 30 ++++++++++++++++
- ...uct_ops_kptr_return_fail__invalid_scalar.c | 26 ++++++++++++++
- .../struct_ops_kptr_return_fail__local_kptr.c | 34 +++++++++++++++++++
- ...uct_ops_kptr_return_fail__nonzero_offset.c | 25 ++++++++++++++
- .../struct_ops_kptr_return_fail__wrong_type.c | 30 ++++++++++++++++
- .../selftests/bpf/test_kmods/bpf_testmod.c    |  8 +++++
- .../selftests/bpf/test_kmods/bpf_testmod.h    |  4 +++
- 8 files changed, 173 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_kptr_return.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__invalid_scalar.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__local_kptr.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__nonzero_offset.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__wrong_type.c
+ include/linux/btf.h     |   1 +
+ kernel/bpf/btf.c        |   4 +-
+ net/sched/Kconfig       |  12 +++
+ net/sched/Makefile      |   1 +
+ net/sched/bpf_qdisc.c   | 207 ++++++++++++++++++++++++++++++++++++++++
+ net/sched/sch_api.c     |   7 +-
+ net/sched/sch_generic.c |   3 +-
+ 7 files changed, 229 insertions(+), 6 deletions(-)
+ create mode 100644 net/sched/bpf_qdisc.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_kptr_return.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_kptr_return.c
-new file mode 100644
-index 000000000000..467cc72a3588
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_kptr_return.c
-@@ -0,0 +1,16 @@
-+#include <test_progs.h>
-+
-+#include "struct_ops_kptr_return.skel.h"
-+#include "struct_ops_kptr_return_fail__wrong_type.skel.h"
-+#include "struct_ops_kptr_return_fail__invalid_scalar.skel.h"
-+#include "struct_ops_kptr_return_fail__nonzero_offset.skel.h"
-+#include "struct_ops_kptr_return_fail__local_kptr.skel.h"
-+
-+void test_struct_ops_kptr_return(void)
-+{
-+	RUN_TESTS(struct_ops_kptr_return);
-+	RUN_TESTS(struct_ops_kptr_return_fail__wrong_type);
-+	RUN_TESTS(struct_ops_kptr_return_fail__invalid_scalar);
-+	RUN_TESTS(struct_ops_kptr_return_fail__nonzero_offset);
-+	RUN_TESTS(struct_ops_kptr_return_fail__local_kptr);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_kptr_return.c b/tools/testing/selftests/bpf/progs/struct_ops_kptr_return.c
-new file mode 100644
-index 000000000000..36386b3c23a1
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_kptr_return.c
-@@ -0,0 +1,30 @@
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include "../test_kmods/bpf_testmod.h"
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+void bpf_task_release(struct task_struct *p) __ksym;
-+
-+/* This test struct_ops BPF programs returning referenced kptr. The verifier should
-+ * allow a referenced kptr or a NULL pointer to be returned. A referenced kptr to task
-+ * here is acquried automatically as the task argument is tagged with "__ref".
-+ */
-+SEC("struct_ops/test_return_ref_kptr")
-+struct task_struct *BPF_PROG(kptr_return, int dummy,
-+			     struct task_struct *task, struct cgroup *cgrp)
-+{
-+	if (dummy % 2) {
-+		bpf_task_release(task);
-+		return NULL;
-+	}
-+	return task;
-+}
-+
-+SEC(".struct_ops.link")
-+struct bpf_testmod_ops testmod_kptr_return = {
-+	.test_return_ref_kptr = (void *)kptr_return,
-+};
-+
-+
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__invalid_scalar.c b/tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__invalid_scalar.c
-new file mode 100644
-index 000000000000..caeea158ef69
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__invalid_scalar.c
-@@ -0,0 +1,26 @@
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include "../test_kmods/bpf_testmod.h"
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct cgroup *bpf_cgroup_acquire(struct cgroup *p) __ksym;
-+void bpf_task_release(struct task_struct *p) __ksym;
-+
-+/* This test struct_ops BPF programs returning referenced kptr. The verifier should
-+ * reject programs returning a non-zero scalar value.
-+ */
-+SEC("struct_ops/test_return_ref_kptr")
-+__failure __msg("At program exit the register R0 has smin=1 smax=1 should have been in [0, 0]")
-+struct task_struct *BPF_PROG(kptr_return_fail__invalid_scalar, int dummy,
-+			     struct task_struct *task, struct cgroup *cgrp)
-+{
-+	bpf_task_release(task);
-+	return (struct task_struct *)1;
-+}
-+
-+SEC(".struct_ops.link")
-+struct bpf_testmod_ops testmod_kptr_return = {
-+	.test_return_ref_kptr = (void *)kptr_return_fail__invalid_scalar,
-+};
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__local_kptr.c b/tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__local_kptr.c
-new file mode 100644
-index 000000000000..b8b4f05c3d7f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__local_kptr.c
-@@ -0,0 +1,34 @@
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include "../test_kmods/bpf_testmod.h"
-+#include "bpf_experimental.h"
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct cgroup *bpf_cgroup_acquire(struct cgroup *p) __ksym;
-+void bpf_task_release(struct task_struct *p) __ksym;
-+
-+/* This test struct_ops BPF programs returning referenced kptr. The verifier should
-+ * reject programs returning a local kptr.
-+ */
-+SEC("struct_ops/test_return_ref_kptr")
-+__failure __msg("At program exit the register R0 is not a known value (ptr_or_null_)")
-+struct task_struct *BPF_PROG(kptr_return_fail__local_kptr, int dummy,
-+			     struct task_struct *task, struct cgroup *cgrp)
-+{
-+	struct task_struct *t;
-+
-+	bpf_task_release(task);
-+
-+	t = bpf_obj_new(typeof(*task));
-+	if (!t)
-+		return NULL;
-+
-+	return t;
-+}
-+
-+SEC(".struct_ops.link")
-+struct bpf_testmod_ops testmod_kptr_return = {
-+	.test_return_ref_kptr = (void *)kptr_return_fail__local_kptr,
-+};
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__nonzero_offset.c b/tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__nonzero_offset.c
-new file mode 100644
-index 000000000000..7ddeb28c2329
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__nonzero_offset.c
-@@ -0,0 +1,25 @@
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include "../test_kmods/bpf_testmod.h"
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct cgroup *bpf_cgroup_acquire(struct cgroup *p) __ksym;
-+void bpf_task_release(struct task_struct *p) __ksym;
-+
-+/* This test struct_ops BPF programs returning referenced kptr. The verifier should
-+ * reject programs returning a modified referenced kptr.
-+ */
-+SEC("struct_ops/test_return_ref_kptr")
-+__failure __msg("dereference of modified trusted_ptr_ ptr R0 off={{[0-9]+}} disallowed")
-+struct task_struct *BPF_PROG(kptr_return_fail__nonzero_offset, int dummy,
-+			     struct task_struct *task, struct cgroup *cgrp)
-+{
-+	return (struct task_struct *)&task->jobctl;
-+}
-+
-+SEC(".struct_ops.link")
-+struct bpf_testmod_ops testmod_kptr_return = {
-+	.test_return_ref_kptr = (void *)kptr_return_fail__nonzero_offset,
-+};
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__wrong_type.c b/tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__wrong_type.c
-new file mode 100644
-index 000000000000..6a2dd5367802
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__wrong_type.c
-@@ -0,0 +1,30 @@
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include "../test_kmods/bpf_testmod.h"
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct cgroup *bpf_cgroup_acquire(struct cgroup *p) __ksym;
-+void bpf_task_release(struct task_struct *p) __ksym;
-+
-+/* This test struct_ops BPF programs returning referenced kptr. The verifier should
-+ * reject programs returning a referenced kptr of the wrong type.
-+ */
-+SEC("struct_ops/test_return_ref_kptr")
-+__failure __msg("At program exit the register R0 is not a known value (ptr_or_null_)")
-+struct task_struct *BPF_PROG(kptr_return_fail__wrong_type, int dummy,
-+			     struct task_struct *task, struct cgroup *cgrp)
-+{
-+	struct task_struct *ret;
-+
-+	ret = (struct task_struct *)bpf_cgroup_acquire(cgrp);
-+	bpf_task_release(task);
-+
-+	return ret;
-+}
-+
-+SEC(".struct_ops.link")
-+struct bpf_testmod_ops testmod_kptr_return = {
-+	.test_return_ref_kptr = (void *)kptr_return_fail__wrong_type,
-+};
-diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-index 802cbd871035..89dc502de9d4 100644
---- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-@@ -1182,11 +1182,19 @@ static int bpf_testmod_ops__test_refcounted(int dummy,
- 	return 0;
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index 4214e76c9168..eb16218fdf52 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -563,6 +563,7 @@ const char *btf_name_by_offset(const struct btf *btf, u32 offset);
+ const char *btf_str_by_offset(const struct btf *btf, u32 offset);
+ struct btf *btf_parse_vmlinux(void);
+ struct btf *bpf_prog_get_target_btf(const struct bpf_prog *prog);
++u32 get_ctx_arg_idx(struct btf *btf, const struct btf_type *func_proto, int off);
+ u32 *btf_kfunc_id_set_contains(const struct btf *btf, u32 kfunc_btf_id,
+ 			       const struct bpf_prog *prog);
+ u32 *btf_kfunc_is_modify_return(const struct btf *btf, u32 kfunc_btf_id,
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index c2f4f84e539d..78476cebefe3 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -6375,8 +6375,8 @@ static bool is_int_ptr(struct btf *btf, const struct btf_type *t)
+ 	return btf_type_is_int(t);
  }
  
-+static struct task_struct *
-+bpf_testmod_ops__test_return_ref_kptr(int dummy, struct task_struct *task__ref,
-+				      struct cgroup *cgrp)
+-static u32 get_ctx_arg_idx(struct btf *btf, const struct btf_type *func_proto,
+-			   int off)
++u32 get_ctx_arg_idx(struct btf *btf, const struct btf_type *func_proto,
++		    int off)
+ {
+ 	const struct btf_param *args;
+ 	const struct btf_type *t;
+diff --git a/net/sched/Kconfig b/net/sched/Kconfig
+index 8180d0c12fce..ccd0255da5a5 100644
+--- a/net/sched/Kconfig
++++ b/net/sched/Kconfig
+@@ -403,6 +403,18 @@ config NET_SCH_ETS
+ 
+ 	  If unsure, say N.
+ 
++config NET_SCH_BPF
++	bool "BPF-based Qdisc"
++	depends on BPF_SYSCALL && BPF_JIT && DEBUG_INFO_BTF
++	help
++	  This option allows BPF-based queueing disiplines. With BPF struct_ops,
++	  users can implement supported operators in Qdisc_ops using BPF programs.
++	  The queue holding skb can be built with BPF maps or graphs.
++
++	  Say Y here if you want to use BPF-based Qdisc.
++
++	  If unsure, say N.
++
+ menuconfig NET_SCH_DEFAULT
+ 	bool "Allow override default queue discipline"
+ 	help
+diff --git a/net/sched/Makefile b/net/sched/Makefile
+index 82c3f78ca486..904d784902d1 100644
+--- a/net/sched/Makefile
++++ b/net/sched/Makefile
+@@ -62,6 +62,7 @@ obj-$(CONFIG_NET_SCH_FQ_PIE)	+= sch_fq_pie.o
+ obj-$(CONFIG_NET_SCH_CBS)	+= sch_cbs.o
+ obj-$(CONFIG_NET_SCH_ETF)	+= sch_etf.o
+ obj-$(CONFIG_NET_SCH_TAPRIO)	+= sch_taprio.o
++obj-$(CONFIG_NET_SCH_BPF)	+= bpf_qdisc.o
+ 
+ obj-$(CONFIG_NET_CLS_U32)	+= cls_u32.o
+ obj-$(CONFIG_NET_CLS_ROUTE4)	+= cls_route.o
+diff --git a/net/sched/bpf_qdisc.c b/net/sched/bpf_qdisc.c
+new file mode 100644
+index 000000000000..4b7d013f4f5c
+--- /dev/null
++++ b/net/sched/bpf_qdisc.c
+@@ -0,0 +1,207 @@
++#include <linux/types.h>
++#include <linux/bpf_verifier.h>
++#include <linux/bpf.h>
++#include <linux/btf.h>
++#include <linux/filter.h>
++#include <net/pkt_sched.h>
++#include <net/pkt_cls.h>
++
++static struct bpf_struct_ops bpf_Qdisc_ops;
++
++struct bpf_sk_buff_ptr {
++	struct sk_buff *skb;
++};
++
++static int bpf_qdisc_init(struct btf *btf)
++{
++	return 0;
++}
++
++static const struct bpf_func_proto *
++bpf_qdisc_get_func_proto(enum bpf_func_id func_id,
++			 const struct bpf_prog *prog)
++{
++	switch (func_id) {
++	case BPF_FUNC_tail_call:
++		return NULL;
++	default:
++		return bpf_base_func_proto(func_id, prog);
++	}
++}
++
++BTF_ID_LIST_SINGLE(bpf_sk_buff_ids, struct, sk_buff)
++BTF_ID_LIST_SINGLE(bpf_sk_buff_ptr_ids, struct, bpf_sk_buff_ptr)
++
++static bool bpf_qdisc_is_valid_access(int off, int size,
++				      enum bpf_access_type type,
++				      const struct bpf_prog *prog,
++				      struct bpf_insn_access_aux *info)
++{
++	struct btf *btf = prog->aux->attach_btf;
++	u32 arg;
++
++	arg = get_ctx_arg_idx(btf, prog->aux->attach_func_proto, off);
++	if (!strcmp(prog->aux->attach_func_name, "enqueue")) {
++		if (arg == 2 && type == BPF_READ) {
++			info->reg_type = PTR_TO_BTF_ID | PTR_TRUSTED;
++			info->btf = btf;
++			info->btf_id = bpf_sk_buff_ptr_ids[0];
++			return true;
++		}
++	}
++
++	return bpf_tracing_btf_ctx_access(off, size, type, prog, info);
++}
++
++static int bpf_qdisc_btf_struct_access(struct bpf_verifier_log *log,
++					const struct bpf_reg_state *reg,
++					int off, int size)
++{
++	const struct btf_type *t, *skbt;
++	size_t end;
++
++	skbt = btf_type_by_id(reg->btf, bpf_sk_buff_ids[0]);
++	t = btf_type_by_id(reg->btf, reg->btf_id);
++	if (t != skbt) {
++		bpf_log(log, "only read is supported\n");
++		return -EACCES;
++	}
++
++	switch (off) {
++	case offsetof(struct sk_buff, tstamp):
++		end = offsetofend(struct sk_buff, tstamp);
++		break;
++	case offsetof(struct sk_buff, priority):
++		end = offsetofend(struct sk_buff, priority);
++		break;
++	case offsetof(struct sk_buff, mark):
++		end = offsetofend(struct sk_buff, mark);
++		break;
++	case offsetof(struct sk_buff, queue_mapping):
++		end = offsetofend(struct sk_buff, queue_mapping);
++		break;
++	case offsetof(struct sk_buff, cb) + offsetof(struct qdisc_skb_cb, tc_classid):
++		end = offsetof(struct sk_buff, cb) +
++		      offsetofend(struct qdisc_skb_cb, tc_classid);
++		break;
++	case offsetof(struct sk_buff, cb) + offsetof(struct qdisc_skb_cb, data[0]) ...
++	     offsetof(struct sk_buff, cb) + offsetof(struct qdisc_skb_cb,
++						     data[QDISC_CB_PRIV_LEN - 1]):
++		end = offsetof(struct sk_buff, cb) +
++		      offsetofend(struct qdisc_skb_cb, data[QDISC_CB_PRIV_LEN - 1]);
++		break;
++	case offsetof(struct sk_buff, tc_index):
++		end = offsetofend(struct sk_buff, tc_index);
++		break;
++	default:
++		bpf_log(log, "no write support to sk_buff at off %d\n", off);
++		return -EACCES;
++	}
++
++	if (off + size > end) {
++		bpf_log(log,
++			"write access at off %d with size %d beyond the member of sk_buff ended at %zu\n",
++			off, size, end);
++		return -EACCES;
++	}
++
++	return 0;
++}
++
++static const struct bpf_verifier_ops bpf_qdisc_verifier_ops = {
++	.get_func_proto		= bpf_qdisc_get_func_proto,
++	.is_valid_access	= bpf_qdisc_is_valid_access,
++	.btf_struct_access	= bpf_qdisc_btf_struct_access,
++};
++
++static int bpf_qdisc_init_member(const struct btf_type *t,
++				 const struct btf_member *member,
++				 void *kdata, const void *udata)
++{
++	const struct Qdisc_ops *uqdisc_ops;
++	struct Qdisc_ops *qdisc_ops;
++	u32 moff;
++
++	uqdisc_ops = (const struct Qdisc_ops *)udata;
++	qdisc_ops = (struct Qdisc_ops *)kdata;
++
++	moff = __btf_member_bit_offset(t, member) / 8;
++	switch (moff) {
++	case offsetof(struct Qdisc_ops, peek):
++		qdisc_ops->peek = qdisc_peek_dequeued;
++		return 0;
++	case offsetof(struct Qdisc_ops, id):
++		if (bpf_obj_name_cpy(qdisc_ops->id, uqdisc_ops->id,
++				     sizeof(qdisc_ops->id)) <= 0)
++			return -EINVAL;
++		return 1;
++	}
++
++	return 0;
++}
++
++static int bpf_qdisc_reg(void *kdata, struct bpf_link *link)
++{
++	return register_qdisc(kdata);
++}
++
++static void bpf_qdisc_unreg(void *kdata, struct bpf_link *link)
++{
++	return unregister_qdisc(kdata);
++}
++
++static int Qdisc_ops__enqueue(struct sk_buff *skb__ref, struct Qdisc *sch,
++			      struct sk_buff **to_free)
++{
++	return 0;
++}
++
++static struct sk_buff *Qdisc_ops__dequeue(struct Qdisc *sch)
 +{
 +	return NULL;
 +}
 +
- static struct bpf_testmod_ops __bpf_testmod_ops = {
- 	.test_1 = bpf_testmod_test_1,
- 	.test_2 = bpf_testmod_test_2,
- 	.test_maybe_null = bpf_testmod_ops__test_maybe_null,
- 	.test_refcounted = bpf_testmod_ops__test_refcounted,
-+	.test_return_ref_kptr = bpf_testmod_ops__test_return_ref_kptr,
- };
++static struct sk_buff *Qdisc_ops__peek(struct Qdisc *sch)
++{
++	return NULL;
++}
++
++static int Qdisc_ops__init(struct Qdisc *sch, struct nlattr *arg,
++			   struct netlink_ext_ack *extack)
++{
++	return 0;
++}
++
++static void Qdisc_ops__reset(struct Qdisc *sch)
++{
++}
++
++static void Qdisc_ops__destroy(struct Qdisc *sch)
++{
++}
++
++static struct Qdisc_ops __bpf_ops_qdisc_ops = {
++	.enqueue = Qdisc_ops__enqueue,
++	.dequeue = Qdisc_ops__dequeue,
++	.peek = Qdisc_ops__peek,
++	.init = Qdisc_ops__init,
++	.reset = Qdisc_ops__reset,
++	.destroy = Qdisc_ops__destroy,
++};
++
++static struct bpf_struct_ops bpf_Qdisc_ops = {
++	.verifier_ops = &bpf_qdisc_verifier_ops,
++	.reg = bpf_qdisc_reg,
++	.unreg = bpf_qdisc_unreg,
++	.init_member = bpf_qdisc_init_member,
++	.init = bpf_qdisc_init,
++	.name = "Qdisc_ops",
++	.cfi_stubs = &__bpf_ops_qdisc_ops,
++	.owner = THIS_MODULE,
++};
++
++static int __init bpf_qdisc_kfunc_init(void)
++{
++	return register_bpf_struct_ops(&bpf_Qdisc_ops, Qdisc_ops);
++}
++late_initcall(bpf_qdisc_kfunc_init);
+diff --git a/net/sched/sch_api.c b/net/sched/sch_api.c
+index 300430b8c4d2..b35c73c82342 100644
+--- a/net/sched/sch_api.c
++++ b/net/sched/sch_api.c
+@@ -25,6 +25,7 @@
+ #include <linux/hrtimer.h>
+ #include <linux/slab.h>
+ #include <linux/hashtable.h>
++#include <linux/bpf.h>
  
- struct bpf_struct_ops bpf_bpf_testmod_ops = {
-diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.h b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.h
-index c57b2f9dab10..c9fab51f16e2 100644
---- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.h
-+++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.h
-@@ -6,6 +6,7 @@
- #include <linux/types.h>
+ #include <net/net_namespace.h>
+ #include <net/sock.h>
+@@ -358,7 +359,7 @@ static struct Qdisc_ops *qdisc_lookup_ops(struct nlattr *kind)
+ 		read_lock(&qdisc_mod_lock);
+ 		for (q = qdisc_base; q; q = q->next) {
+ 			if (nla_strcmp(kind, q->id) == 0) {
+-				if (!try_module_get(q->owner))
++				if (!bpf_try_module_get(q, q->owner))
+ 					q = NULL;
+ 				break;
+ 			}
+@@ -1287,7 +1288,7 @@ static struct Qdisc *qdisc_create(struct net_device *dev,
+ 				/* We will try again qdisc_lookup_ops,
+ 				 * so don't keep a reference.
+ 				 */
+-				module_put(ops->owner);
++				bpf_module_put(ops, ops->owner);
+ 				err = -EAGAIN;
+ 				goto err_out;
+ 			}
+@@ -1398,7 +1399,7 @@ static struct Qdisc *qdisc_create(struct net_device *dev,
+ 	netdev_put(dev, &sch->dev_tracker);
+ 	qdisc_free(sch);
+ err_out2:
+-	module_put(ops->owner);
++	bpf_module_put(ops, ops->owner);
+ err_out:
+ 	*errp = err;
+ 	return NULL;
+diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+index 38ec18f73de4..1e770ec251a0 100644
+--- a/net/sched/sch_generic.c
++++ b/net/sched/sch_generic.c
+@@ -24,6 +24,7 @@
+ #include <linux/if_vlan.h>
+ #include <linux/skb_array.h>
+ #include <linux/if_macvlan.h>
++#include <linux/bpf.h>
+ #include <net/sch_generic.h>
+ #include <net/pkt_sched.h>
+ #include <net/dst.h>
+@@ -1083,7 +1084,7 @@ static void __qdisc_destroy(struct Qdisc *qdisc)
+ 		ops->destroy(qdisc);
  
- struct task_struct;
-+struct cgroup;
+ 	lockdep_unregister_key(&qdisc->root_lock_key);
+-	module_put(ops->owner);
++	bpf_module_put(ops, ops->owner);
+ 	netdev_put(dev, &qdisc->dev_tracker);
  
- struct bpf_testmod_test_read_ctx {
- 	char *buf;
-@@ -38,6 +39,9 @@ struct bpf_testmod_ops {
- 	int (*unsupported_ops)(void);
- 	/* Used to test ref_acquired arguments. */
- 	int (*test_refcounted)(int dummy, struct task_struct *task);
-+	/* Used to test returning referenced kptr. */
-+	struct task_struct *(*test_return_ref_kptr)(int dummy, struct task_struct *task,
-+						    struct cgroup *cgrp);
- 
- 	/* The following fields are used to test shadow copies. */
- 	char onebyte;
+ 	trace_qdisc_destroy(qdisc);
 -- 
 2.47.0
 
