@@ -1,294 +1,182 @@
-Return-Path: <bpf+bounces-47501-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47502-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4607F9F9DB9
-	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 02:24:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFF8D9F9DBA
+	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 02:24:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C9B31883FE4
-	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 01:24:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 810D4188C282
+	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 01:24:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACDC82AE8C;
-	Sat, 21 Dec 2024 01:23:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBDC62D613;
+	Sat, 21 Dec 2024 01:24:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="XYA+SoSa"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VWXxyRsF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-10628.protonmail.ch (mail-10628.protonmail.ch [79.135.106.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BDEC1BF37;
-	Sat, 21 Dec 2024 01:23:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F6A1DA3D
+	for <bpf@vger.kernel.org>; Sat, 21 Dec 2024 01:24:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734744236; cv=none; b=IDi8vvwqq5LV0+3m4cDofiBu/9w41no5GD7+aV1XA1ID0JYNCPrMPSsHW8TaYoAvzNXAC/9vOKlbvd2lHK+83YVHrnRfEgs312cAyAb38GmdXlK+1tq1j2osYVQUbAQkxwiDxTwjM5n84B7ECoydnOFHgnG/vyxjzm+5NIMbVR0=
+	t=1734744263; cv=none; b=bRTaMJB4BnZeiwf6O9BMQ/AR5ZI1Lfv4TdHySrbxaHZ4w8fhNN3V+rFegdlokiVo235Mom9ZeabcWmZrV7mvMo5Pcw3OUA/b5fUcfS/esQHtrxAV0JDMPg0ZA/Ybf55DR7p9EeQdv9kWTqOsgnwscWI0T3kpPB6DmzqS+jUhbPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734744236; c=relaxed/simple;
-	bh=KSSdXmtfzYajZw4qih4NRTECtFQ6oqSR8n4/XZVpEFw=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PcQBwYxXrwxp51aN+24wYSOksrTByT9Mt22KskEu9XaCjswN1RXPM6OtCzgzdxgnKou6PiffVhM7I+1fdVR6Oa1jlrNzaf3Yz8ccZzoArWcPfeWO3UPDC591vkZjKKAVWGLtnqg8mHKbpG1OulK+SJHfPbaUOdQnNOh5S15NYgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=XYA+SoSa; arc=none smtp.client-ip=79.135.106.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1734744232; x=1735003432;
-	bh=Ny/6YZ1iIK837U/U3ch6VU4EDb2Pi2hXvZfadV22vLE=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
-	b=XYA+SoSa8/dzMn13AMY2E+GWdQkObVjw7h8IdebvPSSEmyqH1hr+FG3+QmS9CMbEg
-	 sOo1WxNQ26vU/rPFiuI9Yv6krP9Y2Xky4wUEyYzsgfPc9SAGV6OG81uOmN+yIQeQmU
-	 bjo+1Alx6bInfS08vtIA4gxxSHr/MMg0wJVtlzwRsRo21DRm2dypuOIOfm42UXH2N6
-	 O9AI/IsLrR1xebIv3+zz3ffdB5rGKRoQbyKZJbtufr1o1ai+WQhprcNk9M6/hFme3+
-	 gbFq27qzjCe9romGiqw24S2htqaf/yoChuae+p13Rf8M0qCvAA1QBKMgWQJrYFtQyl
-	 jKFrCXiAKtMMw==
-Date: Sat, 21 Dec 2024 01:23:45 +0000
-To: dwarves@vger.kernel.org
-From: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: acme@kernel.org, alan.maguire@oracle.com, eddyz87@gmail.com, andrii@kernel.org, mykolal@fb.com, bpf@vger.kernel.org
-Subject: [PATCH dwarves v3 8/8] btf_encoder: clean up global encoders list
-Message-ID: <20241221012245.243845-9-ihor.solodrai@pm.me>
-In-Reply-To: <20241221012245.243845-1-ihor.solodrai@pm.me>
-References: <20241221012245.243845-1-ihor.solodrai@pm.me>
-Feedback-ID: 27520582:user:proton
-X-Pm-Message-ID: 96da67071566f230b425a7233e7d0eebb2407ac5
+	s=arc-20240116; t=1734744263; c=relaxed/simple;
+	bh=rBG+AsI9uSAETmCL6GbWWVsOK3Oe1VshvCQ+iEEvVBU=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=ER7brHc3IJKzic1IkduDbWDKcz4orZB8W5hU84uIYAtyrwfBdZ9LQAu0HXO41iW0dHWUSC+0W7INAYTAuMVzsCapeWM3/0fRf9GF36qIMb/3RC9Xpl75RRohODTgBUUUum6Za3diVXW0/j0YYaPY2l8oJxWoILgpnuPyGZQ+afI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VWXxyRsF; arc=none smtp.client-ip=209.85.210.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-72907f58023so2859813b3a.3
+        for <bpf@vger.kernel.org>; Fri, 20 Dec 2024 17:24:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1734744261; x=1735349061; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zrn35WjRTAXV/q0fGp4quX7tww+ddKAXEAGON/HplnE=;
+        b=VWXxyRsFQ77P63rS6FmD6NH8FYe8roC65o/wMR6g7XlLtvZWq6yIK9blP9G3h7oB8Q
+         DLk+dR+bLaY/QKHLwcLSE6GungHX7qC0GYyLYHm8XfIlbI/oe+Ri2CvAGx9OaS+jJnVp
+         9Jx39KbAHOOVHRaMXtVyETrpSFAJ3fVmQ/ydPaCMq1lsif6qCIeN15K0UcYvUbOreg7u
+         ULcrE052dkSE0X4GbVNsq5ks2wjr83XnFqTCyRw5429Kje+TRD5pPbfWg1zf+7ZqWTU8
+         v+J7FnZwrcRFV4c7LQtyxupW4dr49k7H2amt1yVQa4b24gticCs1wwSIWJEu+KD8m+z4
+         UQ3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734744261; x=1735349061;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zrn35WjRTAXV/q0fGp4quX7tww+ddKAXEAGON/HplnE=;
+        b=mGodENB/BDmXR0dkM9A/ly9+GqySTA5t1R1nQ8NjQ1M1+9gb6NCV/2LY7ghAgYn0As
+         NgjOKZiOPkEgfRYqEhSkOszt9GCC91VpjRsyYypAKckwk3lksL6bwh4ZoTkM+IGauLAB
+         UHGrQk6ZWu1BU8rYqNCDvr2MTbCnOJxcqNVkERH/ZeEtkYuF9+KaTSeeDYHTVMbD7gvw
+         K1x529KGvu/Kln/Xx9TJUvSozaYL2JJAwGVvcpvkbfCk+wNDcsoF3k9zXI6vWQhGQ2XZ
+         XbndUZ2pn7O6k+VgnyT9EP+m0iXHkC/HaISV5jMt/ALpuyTXQ60SNAHzK3lKfVpheFC8
+         pmhw==
+X-Gm-Message-State: AOJu0Yyv/ipyx6oPfK5DPK5xYWwxdN43neO9h909+ApDkHt/0tawXTri
+	Slg42o53/LDYAHpvbBQ/2cEiMpdU1iynr9BFOR1T8CbUxiPnYgrOUNaxLHGSppzuApZzYg1/w/Z
+	zNLVAChdISXfrlaYzuk7k7en85zNhIvYTLv0VlKB7dX3/sLgi3M7pcG7Sa6YV+l2ALGXa8G69gO
+	y/+yXpBMP2AK+qB7lPfWhSgXXmlxUlerm5zQ6vq7w=
+X-Google-Smtp-Source: AGHT+IFbscAq9apWLBUd7Erh+ffNiilAXLjwg3/pHWhedK7m5HIwODQAO6Bo6uwHyxt7qauW6JqF+Y3GDmamXA==
+X-Received: from pgum3.prod.google.com ([2002:a65:6a03:0:b0:7fd:4497:f282])
+ (user=yepeilin job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6a20:d80d:b0:1e0:d848:9e8f with SMTP id adf61e73a8af0-1e5e046decbmr9957435637.13.1734744261235;
+ Fri, 20 Dec 2024 17:24:21 -0800 (PST)
+Date: Sat, 21 Dec 2024 01:24:04 +0000
+In-Reply-To: <cover.1734742802.git.yepeilin@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+References: <cover.1734742802.git.yepeilin@google.com>
+X-Mailer: git-send-email 2.47.1.613.gc27f4b7a9f-goog
+Message-ID: <44fd0483ebdb9f84e6d069fdf890bc5801e0d130.1734742802.git.yepeilin@google.com>
+Subject: [PATCH RFC bpf-next v1 1/4] bpf/verifier: Factor out check_load()
+From: Peilin Ye <yepeilin@google.com>
+To: bpf@vger.kernel.org
+Cc: Peilin Ye <yepeilin@google.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
+	Xu Kuohai <xukuohai@huaweicloud.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Quentin Monnet <qmo@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
+	Shuah Khan <shuah@kernel.org>, Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>, 
+	Neel Natu <neelnatu@google.com>, Benjamin Segall <bsegall@google.com>, 
+	David Vernet <dvernet@meta.com>, Dave Marchevsky <davemarchevsky@meta.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-With multithreading moved entirely to the dwarf_loader, now there is
-only one btf_encoder. Hence there is no need to maintain a global list
-of encoders anymore.
+No functional changes intended.  While we are here, make that comment
+about "reserved fields" more specific.
 
-Signed-off-by: Ihor Solodrai <ihor.solodrai@pm.me>
+Reviewed-by: Josh Don <joshdon@google.com>
+Signed-off-by: Peilin Ye <yepeilin@google.com>
 ---
- btf_encoder.c | 106 ++++++++------------------------------------------
- btf_encoder.h |   4 --
- 2 files changed, 17 insertions(+), 93 deletions(-)
+ kernel/bpf/verifier.c | 56 +++++++++++++++++++++++++------------------
+ 1 file changed, 33 insertions(+), 23 deletions(-)
 
-diff --git a/btf_encoder.c b/btf_encoder.c
-index 7e03ba4..88e32e4 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -218,39 +218,6 @@ static struct elf_functions *elf_functions__find(const=
- Elf *elf, const struct li
- =09return NULL;
- }
-=20
--
--static LIST_HEAD(encoders);
--static pthread_mutex_t encoders__lock =3D PTHREAD_MUTEX_INITIALIZER;
--
--/* mutex only needed for add/delete, as this can happen in multiple encodi=
-ng
-- * threads.  Traversal of the list is currently confined to thread collect=
-ion.
-- */
--
--#define btf_encoders__for_each_encoder(encoder)=09=09\
--=09list_for_each_entry(encoder, &encoders, node)
--
--static void btf_encoders__add(struct btf_encoder *encoder)
--{
--=09pthread_mutex_lock(&encoders__lock);
--=09list_add_tail(&encoder->node, &encoders);
--=09pthread_mutex_unlock(&encoders__lock);
--}
--
--static void btf_encoders__delete(struct btf_encoder *encoder)
--{
--=09struct btf_encoder *existing =3D NULL;
--
--=09pthread_mutex_lock(&encoders__lock);
--=09/* encoder may not have been added to list yet; check. */
--=09btf_encoders__for_each_encoder(existing) {
--=09=09if (encoder =3D=3D existing)
--=09=09=09break;
--=09}
--=09if (encoder =3D=3D existing)
--=09=09list_del(&encoder->node);
--=09pthread_mutex_unlock(&encoders__lock);
--}
--
- #define PERCPU_SECTION ".data..percpu"
-=20
- /*
-@@ -868,39 +835,6 @@ static int32_t btf_encoder__add_var_secinfo(struct btf=
-_encoder *encoder, size_t
- =09return gobuffer__add(&encoder->secinfo[shndx].secinfo, &si, sizeof(si))=
-;
- }
-=20
--int32_t btf_encoder__add_encoder(struct btf_encoder *encoder, struct btf_e=
-ncoder *other)
--{
--=09size_t shndx;
--=09if (encoder =3D=3D other)
--=09=09return 0;
--
--=09for (shndx =3D 1; shndx < other->seccnt; shndx++) {
--=09=09struct gobuffer *var_secinfo_buf =3D &other->secinfo[shndx].secinfo;
--=09=09size_t sz =3D gobuffer__size(var_secinfo_buf);
--=09=09uint16_t nr_var_secinfo =3D sz / sizeof(struct btf_var_secinfo);
--=09=09uint32_t type_id;
--=09=09uint32_t next_type_id =3D btf__type_cnt(encoder->btf);
--=09=09int32_t i, id;
--=09=09struct btf_var_secinfo *vsi;
--
--=09=09if (strcmp(encoder->secinfo[shndx].name, other->secinfo[shndx].name)=
-) {
--=09=09=09fprintf(stderr, "mismatched ELF sections at index %zu: \"%s\", \"=
-%s\"\n",
--=09=09=09=09shndx, encoder->secinfo[shndx].name, other->secinfo[shndx].nam=
-e);
--=09=09=09return -1;
--=09=09}
--
--=09=09for (i =3D 0; i < nr_var_secinfo; i++) {
--=09=09=09vsi =3D (struct btf_var_secinfo *)var_secinfo_buf->entries + i;
--=09=09=09type_id =3D next_type_id + vsi->type - 1; /* Type ID starts from =
-1 */
--=09=09=09id =3D btf_encoder__add_var_secinfo(encoder, shndx, type_id, vsi-=
->offset, vsi->size);
--=09=09=09if (id < 0)
--=09=09=09=09return id;
--=09=09}
--=09}
--
--=09return btf__add_btf(encoder->btf, other->btf);
--}
--
- static int32_t btf_encoder__add_datasec(struct btf_encoder *encoder, size_=
-t shndx)
- {
- =09struct gobuffer *var_secinfo_buf =3D &encoder->secinfo[shndx].secinfo;
-@@ -1326,27 +1260,29 @@ static void btf_encoder__delete_saved_funcs(struct =
-btf_encoder *encoder)
- =09}
- }
-=20
--static int btf_encoder__add_saved_funcs(bool skip_encoding_inconsistent_pr=
-oto)
-+static int btf_encoder__add_saved_funcs(struct btf_encoder *encoder, bool =
-skip_encoding_inconsistent_proto)
- {
- =09struct btf_encoder_func_state **saved_fns, *s;
--=09struct btf_encoder *e =3D NULL;
--=09int i =3D 0, j, nr_saved_fns =3D 0;
-+=09int err =3D 0, i =3D 0, j, nr_saved_fns =3D 0;
-=20
--=09/* Retrieve function states from each encoder, combine them
-+=09/* Retrieve function states from the encoder, combine them
- =09 * and sort by name, addr.
- =09 */
--=09btf_encoders__for_each_encoder(e) {
--=09=09list_for_each_entry(s, &e->func_states, node)
--=09=09=09nr_saved_fns++;
-+=09list_for_each_entry(s, &encoder->func_states, node) {
-+=09=09nr_saved_fns++;
- =09}
-=20
- =09if (nr_saved_fns =3D=3D 0)
--=09=09return 0;
-+=09=09goto out;
-=20
- =09saved_fns =3D calloc(nr_saved_fns, sizeof(*saved_fns));
--=09btf_encoders__for_each_encoder(e) {
--=09=09list_for_each_entry(s, &e->func_states, node)
--=09=09=09saved_fns[i++] =3D s;
-+=09if (!saved_fns) {
-+=09=09err =3D -ENOMEM;
-+=09=09goto out;
-+=09}
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index f27274e933e5..fa40a0440590 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7518,6 +7518,36 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ static int save_aux_ptr_type(struct bpf_verifier_env *env, enum bpf_reg_type type,
+ 			     bool allow_trust_mismatch);
+ 
++static int check_load(struct bpf_verifier_env *env, struct bpf_insn *insn, const char *ctx)
++{
++	struct bpf_reg_state *regs = cur_regs(env);
++	enum bpf_reg_type src_reg_type;
++	int err;
 +
-+=09list_for_each_entry(s, &encoder->func_states, node) {
-+=09=09saved_fns[i++] =3D s;
- =09}
- =09qsort(saved_fns, nr_saved_fns, sizeof(*saved_fns), saved_functions_cmp)=
-;
-=20
-@@ -1377,11 +1313,10 @@ static int btf_encoder__add_saved_funcs(bool skip_e=
-ncoding_inconsistent_proto)
-=20
- =09/* Now that we are done with function states, free them. */
- =09free(saved_fns);
--=09btf_encoders__for_each_encoder(e) {
--=09=09btf_encoder__delete_saved_funcs(e);
--=09}
-+=09btf_encoder__delete_saved_funcs(encoder);
-=20
--=09return 0;
-+out:
-+=09return err;
- }
-=20
- static void elf_functions__collect_function(struct elf_functions *function=
-s, GElf_Sym *sym)
-@@ -2134,7 +2069,7 @@ int btf_encoder__encode(struct btf_encoder *encoder, =
-struct conf_load *conf)
- =09int err;
- =09size_t shndx;
-=20
--=09btf_encoder__add_saved_funcs(conf->skip_encoding_btf_inconsistent_proto=
-);
-+=09btf_encoder__add_saved_funcs(encoder, conf->skip_encoding_btf_inconsist=
-ent_proto);
-=20
- =09for (shndx =3D 1; shndx < encoder->seccnt; shndx++)
- =09=09if (gobuffer__size(&encoder->secinfo[shndx].secinfo))
-@@ -2541,7 +2476,6 @@ struct btf_encoder *btf_encoder__new(struct cu *cu, c=
-onst char *detached_filenam
-=20
- =09=09if (encoder->verbose)
- =09=09=09printf("File %s:\n", cu->filename);
--=09=09btf_encoders__add(encoder);
- =09}
-=20
- =09return encoder;
-@@ -2558,7 +2492,6 @@ void btf_encoder__delete(struct btf_encoder *encoder)
- =09if (encoder =3D=3D NULL)
- =09=09return;
-=20
--=09btf_encoders__delete(encoder);
- =09for (shndx =3D 0; shndx < encoder->seccnt; shndx++)
- =09=09__gobuffer__delete(&encoder->secinfo[shndx].secinfo);
- =09free(encoder->secinfo);
-@@ -2727,8 +2660,3 @@ out:
- =09encoder->cu =3D NULL;
- =09return err;
- }
++	/* check src operand */
++	err = check_reg_arg(env, insn->src_reg, SRC_OP);
++	if (err)
++		return err;
++
++	err = check_reg_arg(env, insn->dst_reg, DST_OP_NO_MARK);
++	if (err)
++		return err;
++
++	src_reg_type = regs[insn->src_reg].type;
++
++	/* check that memory (src_reg + off) is readable,
++	 * the state of dst_reg will be updated by this func
++	 */
++	err = check_mem_access(env, env->insn_idx, insn->src_reg,
++			       insn->off, BPF_SIZE(insn->code),
++			       BPF_READ, insn->dst_reg, false,
++			       BPF_MODE(insn->code) == BPF_MEMSX);
++	err = err ?: save_aux_ptr_type(env, src_reg_type, true);
++	err = err ?: reg_bounds_sanity_check(env, &regs[insn->dst_reg], ctx);
++
++	return err;
++}
++
+ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_insn *insn)
+ {
+ 	int load_reg;
+@@ -18945,30 +18975,10 @@ static int do_check(struct bpf_verifier_env *env)
+ 				return err;
+ 
+ 		} else if (class == BPF_LDX) {
+-			enum bpf_reg_type src_reg_type;
 -
--struct btf *btf_encoder__btf(struct btf_encoder *encoder)
--{
--=09return encoder->btf;
--}
-diff --git a/btf_encoder.h b/btf_encoder.h
-index 0081a99..0f345e2 100644
---- a/btf_encoder.h
-+++ b/btf_encoder.h
-@@ -27,10 +27,6 @@ struct btf_encoder *btf_encoder__new(struct cu *cu, cons=
-t char *detached_filenam
- void btf_encoder__delete(struct btf_encoder *encoder);
-=20
- int btf_encoder__encode(struct btf_encoder *encoder, struct conf_load *con=
-f);
+-			/* check for reserved fields is already done */
 -
- int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, str=
-uct conf_load *conf_load);
-=20
--struct btf *btf_encoder__btf(struct btf_encoder *encoder);
+-			/* check src operand */
+-			err = check_reg_arg(env, insn->src_reg, SRC_OP);
+-			if (err)
+-				return err;
 -
--int btf_encoder__add_encoder(struct btf_encoder *encoder, struct btf_encod=
-er *other);
- #endif /* _BTF_ENCODER_H_ */
---=20
-2.47.1
-
+-			err = check_reg_arg(env, insn->dst_reg, DST_OP_NO_MARK);
+-			if (err)
+-				return err;
+-
+-			src_reg_type = regs[insn->src_reg].type;
+-
+-			/* check that memory (src_reg + off) is readable,
+-			 * the state of dst_reg will be updated by this func
++			/* Check for reserved fields is already done in
++			 * resolve_pseudo_ldimm64().
+ 			 */
+-			err = check_mem_access(env, env->insn_idx, insn->src_reg,
+-					       insn->off, BPF_SIZE(insn->code),
+-					       BPF_READ, insn->dst_reg, false,
+-					       BPF_MODE(insn->code) == BPF_MEMSX);
+-			err = err ?: save_aux_ptr_type(env, src_reg_type, true);
+-			err = err ?: reg_bounds_sanity_check(env, &regs[insn->dst_reg], "ldx");
++			err = check_load(env, insn, "ldx");
+ 			if (err)
+ 				return err;
+ 		} else if (class == BPF_STX) {
+-- 
+2.47.1.613.gc27f4b7a9f-goog
 
 
