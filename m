@@ -1,147 +1,174 @@
-Return-Path: <bpf+bounces-47511-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47512-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE32D9F9E12
-	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 04:28:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 404489F9E1A
+	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 04:42:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D1147A27F5
-	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 03:28:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5405516A042
+	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 03:42:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1CA41A83E3;
-	Sat, 21 Dec 2024 03:28:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 119E61DA0FC;
+	Sat, 21 Dec 2024 03:42:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="m7A2HeCO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HQN/eqnk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEC861A841A
-	for <bpf@vger.kernel.org>; Sat, 21 Dec 2024 03:28:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71F79191F88;
+	Sat, 21 Dec 2024 03:41:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734751697; cv=none; b=tNKcH0hfxM8SK3gw/WeZ7+MALAqXjDUG317WWd4VdGoTco/a4LEWs7ZBCL4L4yh7L2F7Vb8/E57DFo+dNgBfjp6U98S5haMYttMc/UKyH0fSg63RmdU+9aLHdN6rBLmC59IWsq27Rh7W0sBByTCh7e3rhh0bwHkHZs4I4ImURzA=
+	t=1734752519; cv=none; b=Kgabjel8b0SmPrGSXvcsy5nMNiJsKfKCZc2Yjq+qYVlpBSmuAAVzfS/qG/XP7LaYz5xU11rJFLCYBTwlwk4KLY/OUsRl5ypi1OHWn4u5KJbSsMwIj1uPxjjkL2LiT3GMtp22BtgVTTfwxxy6HlQBii3bcOXdCxhDFZ1fE4iqEk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734751697; c=relaxed/simple;
-	bh=0r9RPzLueo071by/j66yGqEyUFdzbXHoDDfi7ICnaRk=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=rIWdk2GnkpShiaS/t6F+xcZNietAQCTzWhK4b6uG/Sl1XRD99bpdb6CYC/1SYdH+pEYBLngRhJ7vAgoZE1vnPE/WisVHAFeGVM3QGA+ctTOocIgX12Ps6IBlctxP/Q3xkdqtMrojKMwuNRvAlQdQVHimGFnerhSsbQhlDyRHUQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--pkaligineedi.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=m7A2HeCO; arc=none smtp.client-ip=209.85.215.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--pkaligineedi.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-7eaac1e95ffso1690264a12.2
-        for <bpf@vger.kernel.org>; Fri, 20 Dec 2024 19:28:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1734751695; x=1735356495; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=tcxNSCs1RfdUrDoDnyiQQzL3U3m813D09LyracgP52g=;
-        b=m7A2HeCOW4zfP+RrqV5i19ia/uV4/pn/5ClCKI7yn4hZqrH3LOs6EChdTFMCO65Jwh
-         ipffk91FEN0tXgcBd7ShgatYKCkrwc3HkLVdKVCEAHYh+a5fvymbHClKW7h9xdHvvN1r
-         v8EkWFeOB5GauAQqzI3OtzxAYGXEoQ7ksktb7We8fw96IF7fWHsmBCvSDXtLEQjbGvjN
-         QTuBLgYjqRj2ZNLYcKlTEtOF9fRBz3WhyLyROEqB+TSNAOeUOGYWe3wtGKjtN3fl9Xq5
-         2HBGJb+duryoiOW9K4zIJLYFwsNTm+0CcrqCTe/+fFF98fBi+tCu1RX1iNP08a9cSZS3
-         ilcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734751695; x=1735356495;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tcxNSCs1RfdUrDoDnyiQQzL3U3m813D09LyracgP52g=;
-        b=ZdD7WuClz2u5kOvhfw5j1/iBVutASUg4oIeC3Yaq7G/5Zm3VZv21fgAc6Rd1kcPI1F
-         RRC117EMfkXRulkU0wrSPan021uZpR6lUIbumrH9CdM8Hjrq3oc+W5U9en2N7QWm/Ufv
-         gpgnce8MalusgUlYQVJZAifjs7KRxk/RHYMuSFN1cx7AZbPiRSbaKDIwo4RQoOHJ63F7
-         O6Cr959R38L9lXoq8ev8TRqk64Lz9CqkFG2getfwzsvWMgTR96boTqnlmnIP4envBfIr
-         bh06BOtguSQuXzN0MJHFQAiXWuD4f6FLCop83JwrVNRTkAXyfzjJcy2to+LFET+plciR
-         bu5g==
-X-Forwarded-Encrypted: i=1; AJvYcCVooxhGSsK+53xWswH5OvCCR5CHNYeCMuuWU9yL4/cRSGnAVBq8XPOZLiAsrYyDuZWw+as=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwUhKezzl6Rca3TfQfMEwzFS71sz/ybqufKdcp1OH3VSmwMTwve
-	iu3LsncfjTpdGKnfQgj+vqf65AH9ZGizl12gka/ZmcrarOcYEZlBGEjxeiLXrWVSFIaqlEG8CmG
-	bTDOw2lyVesYf52ok3Zxy+ELmgw==
-X-Google-Smtp-Source: AGHT+IGeFqQj5dJOTAyGRmtAIXY2OUqiW0yrJQ0AXC6Y1dhP3iTemr82Ra1Fyo9FOmb1VKzWtqJ5Zjnbt2sbi9XtRN0=
-X-Received: from pfxa4.prod.google.com ([2002:a05:6a00:1d04:b0:725:e05b:5150])
- (user=pkaligineedi job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6a20:2d21:b0:1e0:bf98:42dc with SMTP id adf61e73a8af0-1e5e07f98d0mr9277145637.28.1734751695309;
- Fri, 20 Dec 2024 19:28:15 -0800 (PST)
-Date: Fri, 20 Dec 2024 19:28:06 -0800
+	s=arc-20240116; t=1734752519; c=relaxed/simple;
+	bh=yG9MP6/1nDTaMeFSwhjRT+j3EwObKL+mO76ZF2tLz3w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=o5YJCrn5d9sxeTeu+/uTMwKmEw5Sj6IHOBRt/RikLQ4CGWHaXS44PmTvZq7NfQJwjGQTxHJXCk12Q4RY2AAI6wEThxIlLqAvsB4zqTr+r6XGqkUYzeWFxgOLaC6PMFH6tzXM0dwTBnvHmCG7TWCy37zP8oqU7VpdpsKxPNoMrY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HQN/eqnk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1BF4C4CEDC;
+	Sat, 21 Dec 2024 03:41:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734752518;
+	bh=yG9MP6/1nDTaMeFSwhjRT+j3EwObKL+mO76ZF2tLz3w=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=HQN/eqnkhplQgwaYqx6q/aYlGAAK3XbLp2SEXTYmh4ODuWAOhYYbhRgPEPov2Sr/6
+	 aeddXVi0PCLkolnEQ0OOfYPW8iRgtmA04BMZz4rEEMopWfpMVn5O5N8lzzBmxoTM59
+	 hAcKGIMI8f8jBbZcliMw6ZKRkCytJqoyuwbu/SEjRzLNq7RvGFdz79ZDQkuw53YTu+
+	 UfCoOCOC+8iYC243Vzc9mpJ01tovi7gtZL4IgXYvf1FjKrCz/h2arxGFKuCOfyrXRV
+	 4erL78nkO88U/+wiuXx5qA5oYKMSkqG/YZ7PyHTtlFNfmGLB0h3B4XemvMa4xZk+cZ
+	 3HeejBGaly6Qg==
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-53e3c47434eso2650973e87.3;
+        Fri, 20 Dec 2024 19:41:58 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUMCwau5LA8QOc7VLcXzBoK9GVYsNf20WX1tBKP1FU2DMMJcpTt+9Ra6FXuhxTuTXnxyQNT8vCsBzgHFkRG@vger.kernel.org, AJvYcCUtaGK008EQvVgn184xWeKF09VKJxZQWjUHXSh4WfPfUD8kgoC2DWayXIg/vGky+hgZtb7/uhJxN0zgJkWNvhfq@vger.kernel.org, AJvYcCV4Cot6HWo0gMdrdH2t/j+3Nxs4bp2zD85Yih4yc3umO8I/zIIdPfLE8/MtUs9gBeVy+5g=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwgyhYrzsq3Cq5mRILGzqNsAa5hvrh8AA5Di9BD3Nn0xrHKLeLD
+	yKkT9lCrEpWBL0k1KHz6bg6mQ79ksZCdbvbZLacQhmSQmRKdLNpY+RgOrFV7JHPah5D/keeXa1T
+	UhYJOL0Qy1QEq59Aq9Yig1I9qeqU=
+X-Google-Smtp-Source: AGHT+IHIP6YEkUj/lGilUyhY5zs38Ycs0bicoiYQQh+9XbXFMhOFib18iKHw3u5M4pvLfqhkO62vVO5dxMj4pGpnNzc=
+X-Received: by 2002:a05:6512:230a:b0:53e:28e0:cde3 with SMTP id
+ 2adb3069b0e04-54229540697mr1491984e87.30.1734752517474; Fri, 20 Dec 2024
+ 19:41:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.47.1.613.gc27f4b7a9f-goog
-Message-ID: <20241221032807.302244-1-pkaligineedi@google.com>
-Subject: [PATCH net] gve: trigger RX NAPI instead of TX NAPI in gve_xsk_wakeup
-From: Praveen Kaligineedi <pkaligineedi@google.com>
-To: netdev@vger.kernel.org
-Cc: jeroendb@google.com, shailend@google.com, willemb@google.com, 
-	andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net, 
-	hawk@kernel.org, john.fastabend@gmail.com, hramamurthy@google.com, 
-	joshwash@google.com, ziweixiao@google.com, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, stable@vger.kernel.org, 
-	Praveen Kaligineedi <pkaligineedi@google.com>
+MIME-Version: 1.0
+References: <20241217031052.69744-1-lizhijian@fujitsu.com>
+In-Reply-To: <20241217031052.69744-1-lizhijian@fujitsu.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sat, 21 Dec 2024 12:41:21 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS4yrEvvDOFdHyNxBp9Yzi9=eGRsO+2R-t+NNTOfp=gHg@mail.gmail.com>
+Message-ID: <CAK7LNAS4yrEvvDOFdHyNxBp9Yzi9=eGRsO+2R-t+NNTOfp=gHg@mail.gmail.com>
+Subject: Re: [PATCH RFC] Makefile: Export absolute srctree path for
+ out-of-tree builds
+To: Li Zhijian <lizhijian@fujitsu.com>
+Cc: linux-kbuild@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>, 
+	Nicolas Schier <nicolas@fjasle.eu>, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Joshua Washington <joshwash@google.com>
+On Tue, Dec 17, 2024 at 12:10=E2=80=AFPM Li Zhijian <lizhijian@fujitsu.com>=
+ wrote:
+>
+> Fixes an issue where out-of-tree kselftest builds fail when building
+> the BPF and bpftools components. The failure occurs because the top-level
+> Makefile passes a relative srctree path ('..') to its sub-Makefiles, whic=
+h
+> leads to errors in locating necessary files.
+>
+> For example, the following error is encountered:
+>
+> ```
+> $ make V=3D1 O=3D$build/ TARGETS=3Dhid kselftest-all
+> ...
+> make -C ../tools/testing/selftests all
+> make[4]: Entering directory '/path/to/linux/tools/testing/selftests/hid'
+> make  -C /path/to/linux/tools/testing/selftests/../../../tools/lib/bpf OU=
+TPUT=3D/path/to/linux/O/kselftest/hid/tools/build/libbpf/ \
+>             EXTRA_CFLAGS=3D'-g -O0'                                      =
+\
+>             DESTDIR=3D/path/to/linux/O/kselftest/hid/tools prefix=3D all =
+install_headers
+> make[5]: Entering directory '/path/to/linux/tools/lib/bpf'
+> ...
+> make[5]: Entering directory '/path/to/linux/tools/bpf/bpftool'
+> Makefile:127: ../tools/build/Makefile.feature: No such file or directory
+> make[5]: *** No rule to make target '../tools/build/Makefile.feature'.  S=
+top.
+> ```
+>
+> To resolve this, the srctree is exported as an absolute path (abs_srctree=
+)
+> when performing an out-of-tree build. This ensures that all sub-Makefiles
+> have the correct path to the source tree, preventing directory resolution
+> errors.
 
-Commit ba0925c34e0f ("gve: process XSK TX descriptors as part of RX NAPI")
-moved XSK TX processing to be part of the RX NAPI. However, that commit
-did not include triggering the RX NAPI in gve_xsk_wakeup. This is
-necessary because the TX NAPI only processes TX completions, meaning
-that a TX wakeup would not actually trigger XSK descriptor processing.
-Also, the branch on XDP_WAKEUP_TX was supposed to have been removed, as
-the NAPI should be scheduled whether the wakeup is for RX or TX.
+NACK.
+This negates 9da0763bdd82572be243fcf5161734f11568960f
 
-Fixes: ba0925c34e0f ("gve: process XSK TX descriptors as part of RX NAPI")
-Cc: stable@vger.kernel.org
-Signed-off-by: Joshua Washington <joshwash@google.com>
-Signed-off-by: Praveen Kaligineedi <pkaligineedi@google.com>
----
- drivers/net/ethernet/google/gve/gve_main.c | 21 +++++++--------------
- 1 file changed, 7 insertions(+), 14 deletions(-)
+This is a recurring topic [1] because kselftest adopts a completely
+different build system.
+If kselftest cannot do this correctly, please do not hook it to the
+top-Makefile.
 
-diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
-index 09fb7f16f73e..8a8f6ab12a98 100644
---- a/drivers/net/ethernet/google/gve/gve_main.c
-+++ b/drivers/net/ethernet/google/gve/gve_main.c
-@@ -1714,7 +1714,7 @@ static int gve_xsk_pool_disable(struct net_device *dev,
- static int gve_xsk_wakeup(struct net_device *dev, u32 queue_id, u32 flags)
- {
- 	struct gve_priv *priv = netdev_priv(dev);
--	int tx_queue_id = gve_xdp_tx_queue_id(priv, queue_id);
-+	struct napi_struct *napi;
- 
- 	if (!gve_get_napi_enabled(priv))
- 		return -ENETDOWN;
-@@ -1722,19 +1722,12 @@ static int gve_xsk_wakeup(struct net_device *dev, u32 queue_id, u32 flags)
- 	if (queue_id >= priv->rx_cfg.num_queues || !priv->xdp_prog)
- 		return -EINVAL;
- 
--	if (flags & XDP_WAKEUP_TX) {
--		struct gve_tx_ring *tx = &priv->tx[tx_queue_id];
--		struct napi_struct *napi =
--			&priv->ntfy_blocks[tx->ntfy_id].napi;
--
--		if (!napi_if_scheduled_mark_missed(napi)) {
--			/* Call local_bh_enable to trigger SoftIRQ processing */
--			local_bh_disable();
--			napi_schedule(napi);
--			local_bh_enable();
--		}
--
--		tx->xdp_xsk_wakeup++;
-+	napi = &priv->ntfy_blocks[gve_rx_idx_to_ntfy(priv, queue_id)].napi;
-+	if (!napi_if_scheduled_mark_missed(napi)) {
-+		/* Call local_bh_enable to trigger SoftIRQ processing */
-+		local_bh_disable();
-+		napi_schedule(napi);
-+		local_bh_enable();
- 	}
- 
- 	return 0;
--- 
-2.47.1.613.gc27f4b7a9f-goog
+[1] https://lore.kernel.org/linux-kbuild/cover.1657614127.git.guillaume.tuc=
+ker@collabora.com/
 
+
+
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> ---
+> Request for Additional Testing
+>
+> We welcome all contributors and CI systems to test this change thoroughly=
+.
+
+This is NACKed. I recommend not wasting CI system resources.
+
+
+
+
+
+
+> In theory, this change should not affect in-tree builds. However, to ensu=
+re
+> stability and compatibility, we encourage testing across different
+> configurations.
+>
+> What has been tested?
+> - out-of-tree kernel build
+> - out-of-tree kselftest-all
+> ---
+>  Makefile | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/Makefile b/Makefile
+> index e5b8a8832c0c..36e65806bb5e 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -275,7 +275,8 @@ else ifeq ($(srcroot)/,$(dir $(CURDIR)))
+>      srcroot :=3D ..
+>  endif
+>
+> -export srctree :=3D $(if $(KBUILD_EXTMOD),$(abs_srctree),$(srcroot))
+> +srctree :=3D $(if $(KBUILD_EXTMOD),$(abs_srctree),$(srcroot))
+> +export srctree :=3D $(if $(building_out_of_srctree),$(abs_srctree),$(src=
+tree))
+>
+>  ifdef building_out_of_srctree
+>  export VPATH :=3D $(srcroot)
+> --
+> 2.44.0
+>
+>
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
