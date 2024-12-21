@@ -1,116 +1,146 @@
-Return-Path: <bpf+bounces-47522-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47523-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC6C69FA22A
-	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 20:24:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39F799FA232
+	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 20:27:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34FB71645D3
-	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 19:24:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B73F188C8A4
+	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 19:27:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 410731885B3;
-	Sat, 21 Dec 2024 19:24:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C38A4189F2F;
+	Sat, 21 Dec 2024 19:27:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="H5QUcRJH"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="duvjJAKM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E235D63B9
-	for <bpf@vger.kernel.org>; Sat, 21 Dec 2024 19:24:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D04E15B554
+	for <bpf@vger.kernel.org>; Sat, 21 Dec 2024 19:26:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734809052; cv=none; b=YgJz5LlSMEbk/GCiT0sn29a2OgyTYvbxbFT2rf0XHDcGPgvblujlh+6FXgNlKAjttQYMTQKBRasyoAMHD6lfxPjjkJB2gI5M7pBpPNwkAXEQLaT0+K3fR7rkXtVevzypDUacKNTWomriEwjgsllNvfHa1ANQ2bj7pKAgP+mAslQ=
+	t=1734809222; cv=none; b=fbKIuakawtJ5l97uzFd2hVi76hoI83qQIoSJN97CnYS465DGa1J25E8cznA5gEjGlC9iXGZDygru4P9hQ9ZzmoJDU2uOaSFiTiIHxhQYIhztAalt5Gb2GGNVy+qHRfs12btu6GuVjZqNh1IokIjEOiZVRUFdcjZpvSCs9Zwf3/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734809052; c=relaxed/simple;
-	bh=3b+zHvea9cKHj6T++qmfvZlWCPqBD6A42wajl14DSAg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XeFsl/3d7M3h28fe7kTlTlGn98nWyR2ZGkb89N/bRe/rHMepTzG7ToIAYawAsg138o12cKTd3gEw++HTQHjKneuJBtjXMe5Zi1ptkGv06Vapaqgmh3F3v4dNCT8wyOxVHUyKlaCdV4nRdYMUdRb3oFhcKmp5mOt3Z6nWZ+CTwAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=H5QUcRJH; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-aab9e281bc0so552655966b.3
-        for <bpf@vger.kernel.org>; Sat, 21 Dec 2024 11:24:10 -0800 (PST)
+	s=arc-20240116; t=1734809222; c=relaxed/simple;
+	bh=CYhbP77Y+itdUk9EZRAHbUqOOAzcfzJ5Z6fc96Q2VVY=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=QSNenOfqGEIn5Qt+JjFAgURoOLhlESqXxNEQPqU5nHZZM8B8uqWmC7j6PZjny9TG8Xx46wljdMvUIjoFPh3MnVLxaHLEIAKo+DVQU2jsZxbpCIRuz585iNs5gJ4r+C3VrLNIEBnBNdjz2erCv29+ceg4XRdSregHPQBShj7s1uA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=duvjJAKM; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6f28f5f2c5eso36135797b3.0
+        for <bpf@vger.kernel.org>; Sat, 21 Dec 2024 11:26:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1734809049; x=1735413849; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FgRY31V4J3YXxNtclTUESjesGeOmptqFSuTQWyZWZNI=;
-        b=H5QUcRJHPt6zVsn3lcG2ckOSdL3fkAd++7uzabqPJeCcagKU2palC24Ie1C7MI85QT
-         1QFwGRO21TQMMcrPZ5gyYdizMYVCdXdOVwSToAyxUqxnJMNL35nXzbhLTSgotvWKHi6k
-         SoTNjaeA+ygVnEGkl5wE+9RgEEjnwaxYGYcCw=
+        d=google.com; s=20230601; t=1734809218; x=1735414018; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=khbaf3YPAMV9CfglLchWYjPoJjw6OVX8mcR2dtFxUQs=;
+        b=duvjJAKMAkFPP1NGKT7xZBCbLR866WvazlZE6pwjDxP06WiaLVCI/YUUEo2BMiqzJg
+         AiFDjvNpE/6v7EOthlyIHhDb3B0BbYx2HUHX+tFJ0nwmqvCAXZ7fWoxjWuXnKOdsTXkb
+         MgwDor7YLBhdZ6DFPiRuWbieLNM6W/HMtd47AxL7qvbMJJoR+Rz61sUNBgoNoSoFAoGr
+         WKg9PMCdoSPO3mJ0AXQBG9MbfljBcAx7M+x9ic1ZHkOOGfnaNB8bWRxqTJ9xa9GiKST2
+         hq9J2P6nAoNh3OELqMt1KW3UGwEe51KBEZQ1QBtnKF9gdofvXa9E538lTgVlTOb4B/7o
+         k8cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734809049; x=1735413849;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FgRY31V4J3YXxNtclTUESjesGeOmptqFSuTQWyZWZNI=;
-        b=ttRsethR46GB6V5D71HF33O4kzGkK1MJzZwmwAC/qn/zxmW+eqijbIFq+jTbeyHfo5
-         +R1snkww94GGCkWaDxFXhtsP1J+LOHjBqYC9S60M43SIHUBsnn3iMlBgqbxR58f1qvqp
-         H1nOJcUVIK3Om0KTYNe2FKClyPFrsjP9usIs6dYrYqgzxviapjF0l2VfEiNO1ORuDuff
-         1+ubLNYnwaaeqQA82BiTnWPKl0P2cnpatTP40MCLMowdNykHnrSVfb87mOIIsAk8kzRb
-         oVH42CtgjyD/seDbteLmIeH7ZkWuobiPc658je8Z0IO74VUEhyQ6d3lT5lO+ihYyGHy9
-         IskQ==
-X-Gm-Message-State: AOJu0Yyo7XVvLf0ybQGy391O8BV82BdBgYSBcbvrsqfpSwvyp69zPigJ
-	H709cR3JmDa7m1Ard/Eg9ddUMsnU0J/iUAG+D18+VFks5FEKtLCoINhkvvY4nWydLLEWfgKeTj2
-	JbAg=
-X-Gm-Gg: ASbGncup5SQcGlUmx4SyvYeFdIPAel/JawrhbewlFMVp16uAy26ELCokr+5JpSXaTUI
-	97oGzUuQsMTbuIsX1EMqC8enmvLLYmcWiYz52iWRJRIHefCmuzO9EhnNpPWVFSM/lj7FEHyIr2T
-	J4sganiq06od0VFPM6ZFDOw41P07mvqPs7cqr7vNrKqKZNYLI/oA12C4a3fGI+9lFRHtFy0b4AW
-	BAolIU6nu1VhTNR4cBW2FxFy7gS8sAeX49mC03rEvdpwteMfZW+Bu5o+LlcZ+jAjQxb8Zgcxf+s
-	pDL/wnU1XPq8zUuluqkit8FUrlLlk6w=
-X-Google-Smtp-Source: AGHT+IGLBVOb7UgdUXXZSu+Ti6uOqxSmQ7X3Y2V00u67Rah7rWey+fd4wDvM00VHKm2aTt8uZQbQjg==
-X-Received: by 2002:a17:907:97cf:b0:aa6:7091:1e91 with SMTP id a640c23a62f3a-aac2702670bmr690779966b.11.1734809049029;
-        Sat, 21 Dec 2024 11:24:09 -0800 (PST)
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com. [209.85.218.49])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aac0f065391sm309411966b.178.2024.12.21.11.24.08
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 21 Dec 2024 11:24:08 -0800 (PST)
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-aa69107179cso511554566b.0
-        for <bpf@vger.kernel.org>; Sat, 21 Dec 2024 11:24:08 -0800 (PST)
-X-Received: by 2002:a17:907:9728:b0:aa6:82e8:e896 with SMTP id
- a640c23a62f3a-aac26958bc8mr590576866b.0.1734809047907; Sat, 21 Dec 2024
- 11:24:07 -0800 (PST)
+        d=1e100.net; s=20230601; t=1734809218; x=1735414018;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=khbaf3YPAMV9CfglLchWYjPoJjw6OVX8mcR2dtFxUQs=;
+        b=O3Va/zHYkdB+w1pTsiriiZchjeK0JOUpw3AvfbVXIm+kK3j8H4s/QXK2+Yly5av/Tn
+         yeidHeGuTqwVqkdtDApM9jw47VXrunsnNZiPgbK6639qcrtDCRRosy+DwEiteXKdWeGf
+         OLLzg3UG9/2dO89Dt5ZpTJ46LOj20tsPw4MXOFqtZ+uiJ031gkE3Yi6/QG4x6BdOcehq
+         9HAAZq92Fbj2dM7WjTDyOcVJrKoS66tQ19REuc022AsM3PKtPofH6hYFA+Szmlt9uwYz
+         Wr9M5jzvcwj3ozd8GvjOz55F9eszpFGKkZo2A8OKDZ78B0rUTAyUc1OQvyGK0V2FdsE5
+         dDAA==
+X-Forwarded-Encrypted: i=1; AJvYcCX4oXQMBIByZX//l+cU0XsQrVT1dT5ujELPZmnYDyqWXcLS5i58zNGmDq0y++nf2l8g9oo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxWlCdlEqX3B3Inkh/YRLlHesSN1z/tlpMhxKRTkcNNULFJywve
+	8tPI8Tlxc/Aj3Vtka0R5IYLEJxRwBsxhyLfGg7df73Uq3GPVECdUPy9j2xwVLd5job9rZWY65lW
+	3SU336w==
+X-Google-Smtp-Source: AGHT+IEUPVSq8lBgYTPQFcTqPnjauWVaFibsYrI1AVzY9v9JhHQtrgLP0tfvy5Nuebxp1GkuuHWp20EUvSdz
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2c5:11:a2bc:ec03:1143:41ab])
+ (user=irogers job=sendgmr) by 2002:a05:690c:2502:b0:6ef:7372:10f8 with SMTP
+ id 00721157ae682-6f3f822b63emr238087b3.5.1734809218491; Sat, 21 Dec 2024
+ 11:26:58 -0800 (PST)
+Date: Sat, 21 Dec 2024 11:26:50 -0800
+Message-Id: <20241221192654.94344-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20241221002123.491623-1-daniel@iogearbox.net>
-In-Reply-To: <20241221002123.491623-1-daniel@iogearbox.net>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sat, 21 Dec 2024 11:23:51 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whmQSiZzQuUMLHf7jn5eS1=PEhpPdTNVq8LX0qBk31w0A@mail.gmail.com>
-Message-ID: <CAHk-=whmQSiZzQuUMLHf7jn5eS1=PEhpPdTNVq8LX0qBk31w0A@mail.gmail.com>
-Subject: Re: [GIT PULL] bpf for v6.13-rc4
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	alexei.starovoitov@gmail.com, andrii@kernel.org, martin.lau@kernel.org
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.47.1.613.gc27f4b7a9f-goog
+Subject: [PATCH v3 0/4] Prefer sysfs/JSON events also when no PMU is provided
+From: Ian Rogers <irogers@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, James Clark <james.clark@linaro.org>, 
+	Ze Gao <zegao2021@gmail.com>, Weilin Wang <weilin.wang@intel.com>, 
+	Dominique Martinet <asmadeus@codewreck.org>, 
+	Jean-Philippe Romain <jean-philippe.romain@foss.st.com>, Junhao He <hejunhao3@huawei.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, Aditya Bodkhe <Aditya.Bodkhe1@ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 20 Dec 2024 at 16:21, Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> - Fix inlining of bpf_get_smp_processor_id helper for !CONFIG_SMP
->   systems (Andrea Righi)
+At the RISC-V summit the topic of avoiding event data being in the
+RISC-V PMU kernel driver came up. There is a preference for sysfs/JSON
+events being the priority when no PMU is provided so that legacy
+events maybe supported via json. Originally Mark Rutland also
+expressed at LPC 2023 that doing this would resolve bugs on ARM Apple
+M? processors, but James Clark more recently tested this and believes
+the driver issues there may not have existed or have been resolved. In
+any case, it is inconsistent that with a PMU event names avoid legacy
+encodings, but when wildcarding PMUs (ie without a PMU with the event
+name) the legacy encodings have priority.
 
-LOL.
+The patch doing this work was reverted in a v6.10 release candidate
+as, even though the patch was posted for weeks and had been on
+linux-next for weeks without issue, Linus was in the habit of using
+explicit legacy events with unsupported precision options on his
+Neoverse-N1. This machine has SLC PMU events for bus and CPU cycles
+where ARM decided to call the events bus_cycles and cycles, the latter
+being also a legacy event name. ARM haven't renamed the cycles event
+to a more consistent cpu_cycles and avoided the problem. With these
+changes the problematic event will now be skipped, a large warning
+produced, and perf record will continue for the other PMU events. This
+solution was proposed by Arnaldo.
 
-However, it strikes me that this only handles the x86-64 case.
+Two minor changes have been added to help with the error message and
+to work around issues occurring with "perf stat metrics (shadow stat)
+test".
 
-The other cases (arm64, RISC-V) may not have the pcpu_hot crash, but
-they still generate silly code to load off the thread pointer. Does
-that even exist (or get initialized) in UP?
+The patches have only been tested on my x86 non-hybrid laptop.
 
-End result: I think you should have done the UP case separately and
-outside the CONFIG_X86_64.. And why do this only for the
-"verifier_inlines_helper_call()" case rather than just do it
-unconditionally?
+v3: Make no events opening for perf record a failure as suggested by
+    James Clark and Aditya Bodkhe <Aditya.Bodkhe1@ibm.com>. Also,
+    rebase.
+v2: Rebase and add tested-by tags from James Clark, Leo Yan and Atish
+    Patra who have tested on RISC-V and ARM CPUs, including the
+    problem case from before.
 
-Anyway, I obviously pulled this, but it does seem silly.
+Ian Rogers (4):
+  perf evsel: Add pmu_name helper
+  perf stat: Fix find_stat for mixed legacy/non-legacy events
+  perf record: Skip don't fail for events that don't open
+  perf parse-events: Reapply "Prefer sysfs/JSON hardware events over
+    legacy"
 
-          Linus
+ tools/perf/builtin-record.c    | 34 ++++++++++++---
+ tools/perf/util/evsel.c        | 10 +++++
+ tools/perf/util/evsel.h        |  1 +
+ tools/perf/util/parse-events.c | 26 +++++++++---
+ tools/perf/util/parse-events.l | 76 +++++++++++++++++-----------------
+ tools/perf/util/parse-events.y | 60 ++++++++++++++++++---------
+ tools/perf/util/pmus.c         | 20 +++++++--
+ tools/perf/util/stat-shadow.c  |  3 +-
+ 8 files changed, 156 insertions(+), 74 deletions(-)
+
+-- 
+2.47.1.613.gc27f4b7a9f-goog
+
 
