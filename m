@@ -1,126 +1,153 @@
-Return-Path: <bpf+bounces-47489-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47490-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F39C89F9D4C
-	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 00:53:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01B429F9D54
+	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 01:05:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BEBA1893C27
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2024 23:53:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8734D7A370F
+	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 00:05:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18970228389;
-	Fri, 20 Dec 2024 23:52:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F043D817;
+	Sat, 21 Dec 2024 00:04:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="niYJeKV0"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="Achgq6l9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BEFA21E08B;
-	Fri, 20 Dec 2024 23:52:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E87F173;
+	Sat, 21 Dec 2024 00:04:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734738770; cv=none; b=iJZKTRt+1COup3hvrWinX23Ix5dQvCxWCLjba5Xgo8HX411JkV698NjA5SzJTqZDHK2z9hlWxQf6v+rqzUDvLL1aDdSatTuApcgBvfsaLTZuguzD/alpzqtt9MKK7uHNFuUD5pFUmipP0r+EVdkL49Bxqi1V0NvATsoKHdB6IkQ=
+	t=1734739497; cv=none; b=UfF7bvGGUiH1bFGVaqECKIb3dM5vIvzdx0ALR4/aYbK2OCHWPtpyi4CPUhL037VnFAb8qISF4dz8c/HYB9lRaCMnjypubX2QnOdbRoBV68r2XXiIA0n2vVgGKW2J4hO5fEyWjvIpzkLiooRC3QFs9bLCUJWZMRmgEMQovgfO8lQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734738770; c=relaxed/simple;
-	bh=cXfcHP5SW4yroZlKoj1Xm/uTFEqMwOi/nin0avz1lpY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=V7seHZniEbTkbRZiSZH5z8S9ufRwbMqTk2Z9cCzr/nUJiZPVS9wpE6DL/bc1KYw7eCGQe5cdxzR4VKYKcxuXPW19ldni6qV4Aty6lsfmG9oH8hSc8jKaOaPIsHM4MoEk1VAV31otHpDH0wczqcgZheRj/pTvAasqokK57ylc9bU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=niYJeKV0; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-388cae9eb9fso1455762f8f.3;
-        Fri, 20 Dec 2024 15:52:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734738767; x=1735343567; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fNbLrUpTmLaYe6WGl4NPiqJ5KZ+0Ux4naErLTW5UEGQ=;
-        b=niYJeKV0LXKh2yZRUXmYQGGHoi9DuGUmmfK7h0PiLI8qstRTcGFG1taoFgFxaC9r4B
-         /nTQyjGf8C6HwDgi3Ebf/iJD0L31WXadc7EiowLsc89tLorc+3mEwZWRZRQvooqlmadV
-         O5niO9h3FzJMgu8K1i2/YLjkK09Qx5s/vuZbqhTxHqWjxxOyiyJVK3I4OhsMd1hBOKTE
-         4EKRGFc8VrrTrP8eaJEvd6Gc+fAMEalH4gHwL64/ALDLw+eTKr2ZwaTG+1DfldF3QjNp
-         HQoJq371RkaT0horpjUPF1AgFqlubuJbD5KOmv+s9GhA5VlVqioElPNKWrHHI8Kf+Vj5
-         Im3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734738767; x=1735343567;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fNbLrUpTmLaYe6WGl4NPiqJ5KZ+0Ux4naErLTW5UEGQ=;
-        b=greb1eGNHrEUzm1c3SJdprKJMp7vxtI/2+MPPx5jXvfH7KiXEey8HUouxtUPsL23aj
-         TsgU+9h7SHoAFgYhZs6KMZkiNZksy4FhuS6xfOWfelJ1EWYRmAXAqQwNTZHMMDXwMxPc
-         wOrKV5LyRW7LoDXYILRgFUOxaiDEA1LzTPphlu7se02QGFPuF1lqDs5go3BLZruJQ+nj
-         q4KLD9ERAbW+6roJyx3btuIKJp/hrc8fviTheDZJdbfgQLr+Hv1xBNzvSsYirCo0WLCy
-         jBH1IZQXLrUbph8jGZRECZX55KJuN4V1ex+pdH1+rFXV9c0q7FrRO5VW3LPjswj4eA6J
-         xD2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUbSP2yCrxx78sfJyPJLMnuB3TJnRjpgLNpfZOnS3WUotJE35gYxhnVZFLNpoIU5QrNCm7vDJCclCKsa+8x@vger.kernel.org, AJvYcCWaNzEzyuq6Tb6e4EpuuXyyJxgsgML8yeWJpV8QV1cFZyqpu79SkyStXQ8UUIm9dhmou8RO9JbP5KbCj6uIKWhQGQ==@vger.kernel.org, AJvYcCXP+r75PPBWc4aXu0KRAjW27HfeuV02ctTBdNUaenbNNOecbjhXnFJsNTTZgtWDYIEVvSc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwAsW4QA7nWuR7FZOIZ7lCa2gbbntpUs1YIK7ZjbrluiJ2z3EeA
-	45xyOVhC068SOxEhV3iuqs6VlUJ2CPFVc1jcss/M8NHHIaoYmYnu3x1CjV98Z6391dPC4CPV9oG
-	dS9LRsO1F8TiKqxNSnEwlUoXDVB4=
-X-Gm-Gg: ASbGnctS6rHvPzq+SjhxjgK7Tmxc2cVgOcaIAL2yphHF8nS1vqmHBtE0MXNi6ulT6pZ
-	46YdHIr6iyhfDB/HutV30v6cwtO/Xik+GjvWVpg==
-X-Google-Smtp-Source: AGHT+IHtK+jwCyCmdnWbscFnkJU/WJOqcL2I6L8jnkBsSdpFlrD8UvO757XWICdMk5LLHh6fpgONs2/8H53VbLxDAVo=
-X-Received: by 2002:a05:6000:4a03:b0:386:3d16:9609 with SMTP id
- ffacd0b85a97d-38a221fa9f2mr4381091f8f.17.1734738767185; Fri, 20 Dec 2024
- 15:52:47 -0800 (PST)
+	s=arc-20240116; t=1734739497; c=relaxed/simple;
+	bh=EJtpds71Jav8cDcwPNbcUvrO6fSVwCIQOulhReOlYuE=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=AYD2G0p3WfHkvpikvAqpfHXc2G7cDZ5EWuFmcMCv2pSeVXOnO/RAt4NlQbZ6mk0Nt0oiCvpcuUqhVYloHeAI1zXS+De8PbmFcn0n0Wt/+qnrXE8klygHK3od7oj7GwwpBwLMQ4EQ4jZvONz/oRfnsKsNY25wcvd2t/MmwqX2H9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=Achgq6l9; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=nQN28esCIoKBQOmWqZCij3ByTu+jxi/BTUyBXv40SWA=; b=Achgq6l9N/SQ5KUsu+30jw/s2L
+	KFfAj+td8mIplrG8NTPTKSJ8iPCL+BYVIYqy9cUOq2W8/w8VpZJJRZxOBYI9o4OB4QEy8wpUdUBCT
+	zgL4iHGHow8KThmiGOybp3EoSuXlzi4fVVoT6WJ4acyPf6Stqw/kFzh0ri8tCxT6oL+Pmdk9PhRod
+	NqyqpnOYi42aG+K/cP/tUY+YbX3WA/wR0ycZiB0yqSCbZMSTGp+KwVR4X097pC5NrHfDZRi2k9gOX
+	/qJ824iC1g2mdPQrk9Wze+DC4/IOxs4X7r9u4oWL30botBdc6iWHa9A9R8TTywYnhRd5QhRkrG3nZ
+	01mqfUdw==;
+Received: from sslproxy07.your-server.de ([78.47.199.104])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1tOmzF-000Jta-Hm; Sat, 21 Dec 2024 01:04:53 +0100
+Received: from [85.1.206.226] (helo=[192.168.1.114])
+	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1tOmzF-0004BG-0T;
+	Sat, 21 Dec 2024 01:04:53 +0100
+Message-ID: <7c6fab5a-8925-4be6-8c1c-2d0a4fcc3585@iogearbox.net>
+Date: Sat, 21 Dec 2024 01:04:52 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241220060009.507297-1-namhyung@kernel.org> <20241220060009.507297-3-namhyung@kernel.org>
-In-Reply-To: <20241220060009.507297-3-namhyung@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 20 Dec 2024 15:52:36 -0800
-Message-ID: <CAADnVQLm-jA5-39-LUKybO2oGbDRr2RgPtJH5iXoeKnYqdJUuw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] perf lock contention: Run BPF slab cache iterator
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	"linux-perf-use." <linux-perf-users@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Stephane Eranian <eranian@google.com>, Vlastimil Babka <vbabka@suse.cz>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-	Kees Cook <kees@kernel.org>, Chun-Tse Shao <ctshao@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 1/3] netkit: Allow for configuring
+ needed_{head,tail}room
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: martin.lau@linux.dev, razor@blackwall.org, pabeni@redhat.com,
+ bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20241219173928.464437-1-daniel@iogearbox.net>
+ <20241219182324.4707e425@kernel.org>
+ <c0abbe9e-edad-4860-a2f2-9cd32e19a6a1@iogearbox.net>
+Content-Language: en-US
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <c0abbe9e-edad-4860-a2f2-9cd32e19a6a1@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 1.0.7/27493/Fri Dec 20 10:46:49 2024)
 
-On Thu, Dec 19, 2024 at 10:01=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
- wrote:
-> +struct bpf_iter__kmem_cache___new {
-> +       struct kmem_cache *s;
-> +} __attribute__((preserve_access_index));
-> +
-> +SEC("iter/kmem_cache")
-> +int slab_cache_iter(void *ctx)
-> +{
-> +       struct kmem_cache *s =3D NULL;
-> +       struct slab_cache_data d;
-> +       const char *nameptr;
-> +
-> +       if (bpf_core_type_exists(struct bpf_iter__kmem_cache)) {
-> +               struct bpf_iter__kmem_cache___new *iter =3D ctx;
-> +
-> +               s =3D BPF_CORE_READ(iter, s);
-> +       }
-> +
-> +       if (s =3D=3D NULL)
-> +               return 0;
-> +
-> +       nameptr =3D BPF_CORE_READ(s, name);
+On 12/20/24 10:06 AM, Daniel Borkmann wrote:
+> On 12/20/24 3:23 AM, Jakub Kicinski wrote:
+>> On Thu, 19 Dec 2024 18:39:26 +0100 Daniel Borkmann wrote:
+>>> +    if (headroom) {
+>>> +        peer->needed_headroom = headroom;
+>>> +        dev->needed_headroom = headroom;
+>>> +    }
+>>> +    if (tailroom) {
+>>> +        peer->needed_tailroom = tailroom;
+>>> +        dev->needed_tailroom = tailroom;
+>>> +    }
+>>
+>> Since you use the same one for main dev and peer should there be
+>> something rejecting the use of the new attr in the peer attrs?
+>> (IFLA_NETKIT_PEER_INFO)
+> 
+> The peer info is parsed via rtnl_nla_parse_ifinfomsg() which internally
+> uses ifla_policy filter where IFLA_INFO_DATA is not part of, but to be
+> sure I can add one more selftest case to confirm.
 
-since the feature depends on the latest kernel please use
-direct access. There is no need to use BPF_CORE_READ() to
-be compatible with old kernels.
-Just iter->s and s->name will work and will be much faster.
-Underneath these loads will be marked with PROBE_MEM flag and
-will be equivalent to probe_read_kernel calls, but faster
-since the whole thing will be inlined by JITs.
+Looks like we don't bail out anymore after the conversion in fefd5d082172
+("netkit: Set IFLA_NETKIT_PEER_INFO to netkit_link_ops.peer_type."), so I
+left it out for now from the series.. need to experiment some more whether
+fefd5d082172 dropping the error has any unintended side-effects. But I'm
+currently not seeing how it would be much different to, for example, the
+preceding netif_inherit_tso_max() call.
+
+Thanks,
+Daniel
 
