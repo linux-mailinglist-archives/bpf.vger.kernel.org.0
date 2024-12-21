@@ -1,174 +1,184 @@
-Return-Path: <bpf+bounces-47512-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47513-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 404489F9E1A
-	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 04:42:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE6389F9EB6
+	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 07:10:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5405516A042
-	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 03:42:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD844188E612
+	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 06:10:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 119E61DA0FC;
-	Sat, 21 Dec 2024 03:42:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5CD41DF27A;
+	Sat, 21 Dec 2024 06:10:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HQN/eqnk"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="RiUumem9"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71F79191F88;
-	Sat, 21 Dec 2024 03:41:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 505AD86AE3
+	for <bpf@vger.kernel.org>; Sat, 21 Dec 2024 06:10:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734752519; cv=none; b=Kgabjel8b0SmPrGSXvcsy5nMNiJsKfKCZc2Yjq+qYVlpBSmuAAVzfS/qG/XP7LaYz5xU11rJFLCYBTwlwk4KLY/OUsRl5ypi1OHWn4u5KJbSsMwIj1uPxjjkL2LiT3GMtp22BtgVTTfwxxy6HlQBii3bcOXdCxhDFZ1fE4iqEk4=
+	t=1734761444; cv=none; b=hHeKyMZk9BDgZhTt1lwCO8YfpFP1fyXcJPgNLmFGVxM6lPTrX4Z7XXHGHdYfZZ1XL/sn14CoJr82/CvRBmPr07cI/SP694dZgYtq58KYkDeMMfB8+pgxIPBiApSp9tsO/QenVNF02IQSbn7ziN5ycEJPkF2OcaMJtaMhiqgLb1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734752519; c=relaxed/simple;
-	bh=yG9MP6/1nDTaMeFSwhjRT+j3EwObKL+mO76ZF2tLz3w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o5YJCrn5d9sxeTeu+/uTMwKmEw5Sj6IHOBRt/RikLQ4CGWHaXS44PmTvZq7NfQJwjGQTxHJXCk12Q4RY2AAI6wEThxIlLqAvsB4zqTr+r6XGqkUYzeWFxgOLaC6PMFH6tzXM0dwTBnvHmCG7TWCy37zP8oqU7VpdpsKxPNoMrY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HQN/eqnk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1BF4C4CEDC;
-	Sat, 21 Dec 2024 03:41:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734752518;
-	bh=yG9MP6/1nDTaMeFSwhjRT+j3EwObKL+mO76ZF2tLz3w=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=HQN/eqnkhplQgwaYqx6q/aYlGAAK3XbLp2SEXTYmh4ODuWAOhYYbhRgPEPov2Sr/6
-	 aeddXVi0PCLkolnEQ0OOfYPW8iRgtmA04BMZz4rEEMopWfpMVn5O5N8lzzBmxoTM59
-	 hAcKGIMI8f8jBbZcliMw6ZKRkCytJqoyuwbu/SEjRzLNq7RvGFdz79ZDQkuw53YTu+
-	 UfCoOCOC+8iYC243Vzc9mpJ01tovi7gtZL4IgXYvf1FjKrCz/h2arxGFKuCOfyrXRV
-	 4erL78nkO88U/+wiuXx5qA5oYKMSkqG/YZ7PyHTtlFNfmGLB0h3B4XemvMa4xZk+cZ
-	 3HeejBGaly6Qg==
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-53e3c47434eso2650973e87.3;
-        Fri, 20 Dec 2024 19:41:58 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUMCwau5LA8QOc7VLcXzBoK9GVYsNf20WX1tBKP1FU2DMMJcpTt+9Ra6FXuhxTuTXnxyQNT8vCsBzgHFkRG@vger.kernel.org, AJvYcCUtaGK008EQvVgn184xWeKF09VKJxZQWjUHXSh4WfPfUD8kgoC2DWayXIg/vGky+hgZtb7/uhJxN0zgJkWNvhfq@vger.kernel.org, AJvYcCV4Cot6HWo0gMdrdH2t/j+3Nxs4bp2zD85Yih4yc3umO8I/zIIdPfLE8/MtUs9gBeVy+5g=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwgyhYrzsq3Cq5mRILGzqNsAa5hvrh8AA5Di9BD3Nn0xrHKLeLD
-	yKkT9lCrEpWBL0k1KHz6bg6mQ79ksZCdbvbZLacQhmSQmRKdLNpY+RgOrFV7JHPah5D/keeXa1T
-	UhYJOL0Qy1QEq59Aq9Yig1I9qeqU=
-X-Google-Smtp-Source: AGHT+IHIP6YEkUj/lGilUyhY5zs38Ycs0bicoiYQQh+9XbXFMhOFib18iKHw3u5M4pvLfqhkO62vVO5dxMj4pGpnNzc=
-X-Received: by 2002:a05:6512:230a:b0:53e:28e0:cde3 with SMTP id
- 2adb3069b0e04-54229540697mr1491984e87.30.1734752517474; Fri, 20 Dec 2024
- 19:41:57 -0800 (PST)
+	s=arc-20240116; t=1734761444; c=relaxed/simple;
+	bh=PN6V9tT+jUJNcrg2/IifXhf5UUd8c1DCmYD9pBGAcpo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OacHCrYQVaDkz0yMKiZ1DFRR1qe9LmzhZ3hgv/SE0oNhJ3NEYvPTQLZVWgz2jqnenivGEfVijitEJTwMaa4jdBa4Ue1aFZeKKZPEOZd9PWTw/tPQ0wbD5O3kjbTbxCNYV06weZ5xUUXAyoXVeCbjbyo2EcDZIrPI1AWE/cNxWzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=RiUumem9; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2161a4f86a3so3162535ad.1
+        for <bpf@vger.kernel.org>; Fri, 20 Dec 2024 22:10:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1734761441; x=1735366241; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0MUN4Uw+ym76sEm1sJgHgtu0fyPy5FHyQ5TXTAPskQw=;
+        b=RiUumem9U/bc/3gMigSyflmW1Gv58XZV+g2R8yjeJwnDCExFrK/XDgdHZUO43+/Hyl
+         qCzcG2KMHoPDnRJken+u8taDjHH36kUC6b0T7DRk4vi3eaKXM/3ELXRLTjzHPCntDT/S
+         ipBhwSw3pbcnPJkrn9ZBmhx3B6YUkU3AAaMx/T+HuWJ9m22uWehjZSKVh0RXJs0hdIK7
+         vjMEDMsH+ZlKau6w5MeebIKkpgCk6mIB3JLe8TC3qyypcnE4FOXnqibphhtIRKBDaWqG
+         tiQVjx9rh7f3W/WCza4angWbYDr6ykW9Z+ITnkV2lZyR8zoxZMvHzUp/bvvY2/IHGBTl
+         5e0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734761441; x=1735366241;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0MUN4Uw+ym76sEm1sJgHgtu0fyPy5FHyQ5TXTAPskQw=;
+        b=qOGXkb8Ltmnvtgt0iPRXGm0CcOKfMWYqRvV7KVBwpDLzLsiHQSPSD3pGPQDEuBJ3Zn
+         SpkJgnmtdKhUV8mpJPhVx3xDwvl4P7ZE1a84JcJv4bssUV4UF+4Ugr7912nb+DqjBenn
+         Kr8CXXsfVPTsCsMYA/R4fyeit74XqkAebAkfysiymfdchyYctCRzYsoq2MguR9EaW8p8
+         Frpax9xnjjl7AAy2RFERcOdcKthl8BDxzxQ0w6fNobyzlD6CC1WOzagXMcpY154ZHcTe
+         /o063etnB/LQ3wVqvBNjcamuCBgq6vfYCV1rvz0INmuYh/KAX1KMxJh2XJivstfz2Yyv
+         iX/w==
+X-Forwarded-Encrypted: i=1; AJvYcCWfrcCLzKcMJRupKxGGPuBwJid93JhAbW5AnmN9SH8XfAcH+nL1B90+aW56b4s9xLC3yQI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyIw1wbiMSpFy7VSV+lhA3YgBzI73Cq18UEfeuS/jsX5smHUCP/
+	RSu6C1ElTidFyoGevmC6sx/hFyBfPtfFV4fmKoqzzOGgqKSVmZiFOvcXGcsGm0w=
+X-Gm-Gg: ASbGncu/+vIlfKv3Vt6OJULPUjpB2BWF2m2KlFHZ5C0c8f7V4oYw0HtC54xP6iuuhWU
+	zkOsJgv2KMj7a2u5apmlP3o19OLgNttusHjjGEZ66pd39q07/6Ko6FQMa0eMh7MAHtseSlcoCor
+	wvF/N/7CyH1YTYp/0QDe3AZsDr6YF+uVz0UDz5K/tKA5EUtwSa43rYuuSwit2ivmxVLr0DoiA8G
+	Wa+lMp7wTYycN3TFcX6o6E/05bRTBF9Sds692TDVTnyz1uiz8oVwaYtzXOE0owsUxFT923eo3UT
+	KpFOYlhVzisOH1mIIYE=
+X-Google-Smtp-Source: AGHT+IH5nR5nisAREPuE59xSMd/Jd77yqnRaPq0stclmZn8R/ib/DK7nVCd3VKnc2yo9CrnKmZ3TyA==
+X-Received: by 2002:a17:902:d510:b0:216:2e45:f6e1 with SMTP id d9443c01a7336-219e6f2739dmr27660845ad.15.1734761441601;
+        Fri, 20 Dec 2024 22:10:41 -0800 (PST)
+Received: from C02DV8HUMD6R.bytedance.net ([139.177.225.251])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dc9629d0sm38292615ad.41.2024.12.20.22.10.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Dec 2024 22:10:41 -0800 (PST)
+From: Abel Wu <wuyun.abel@bytedance.com>
+To: Martin KaFai Lau <martin.lau@linux.dev>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	David Vernet <void@manifault.com>
+Cc: Abel Wu <wuyun.abel@bytedance.com>,
+	bpf@vger.kernel.org (open list:BPF [STORAGE & CGROUPS]),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH bpf v2] bpf: Fix deadlock when freeing cgroup storage
+Date: Sat, 21 Dec 2024 14:10:16 +0800
+Message-Id: <20241221061018.37717-1-wuyun.abel@bytedance.com>
+X-Mailer: git-send-email 2.37.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241217031052.69744-1-lizhijian@fujitsu.com>
-In-Reply-To: <20241217031052.69744-1-lizhijian@fujitsu.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Sat, 21 Dec 2024 12:41:21 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAS4yrEvvDOFdHyNxBp9Yzi9=eGRsO+2R-t+NNTOfp=gHg@mail.gmail.com>
-Message-ID: <CAK7LNAS4yrEvvDOFdHyNxBp9Yzi9=eGRsO+2R-t+NNTOfp=gHg@mail.gmail.com>
-Subject: Re: [PATCH RFC] Makefile: Export absolute srctree path for
- out-of-tree builds
-To: Li Zhijian <lizhijian@fujitsu.com>
-Cc: linux-kbuild@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>, 
-	Nicolas Schier <nicolas@fjasle.eu>, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Dec 17, 2024 at 12:10=E2=80=AFPM Li Zhijian <lizhijian@fujitsu.com>=
- wrote:
->
-> Fixes an issue where out-of-tree kselftest builds fail when building
-> the BPF and bpftools components. The failure occurs because the top-level
-> Makefile passes a relative srctree path ('..') to its sub-Makefiles, whic=
-h
-> leads to errors in locating necessary files.
->
-> For example, the following error is encountered:
->
-> ```
-> $ make V=3D1 O=3D$build/ TARGETS=3Dhid kselftest-all
-> ...
-> make -C ../tools/testing/selftests all
-> make[4]: Entering directory '/path/to/linux/tools/testing/selftests/hid'
-> make  -C /path/to/linux/tools/testing/selftests/../../../tools/lib/bpf OU=
-TPUT=3D/path/to/linux/O/kselftest/hid/tools/build/libbpf/ \
->             EXTRA_CFLAGS=3D'-g -O0'                                      =
-\
->             DESTDIR=3D/path/to/linux/O/kselftest/hid/tools prefix=3D all =
-install_headers
-> make[5]: Entering directory '/path/to/linux/tools/lib/bpf'
-> ...
-> make[5]: Entering directory '/path/to/linux/tools/bpf/bpftool'
-> Makefile:127: ../tools/build/Makefile.feature: No such file or directory
-> make[5]: *** No rule to make target '../tools/build/Makefile.feature'.  S=
-top.
-> ```
->
-> To resolve this, the srctree is exported as an absolute path (abs_srctree=
-)
-> when performing an out-of-tree build. This ensures that all sub-Makefiles
-> have the correct path to the source tree, preventing directory resolution
-> errors.
+The following commit
+bc235cdb423a ("bpf: Prevent deadlock from recursive bpf_task_storage_[get|delete]")
+first introduced deadlock prevention for fentry/fexit programs attaching
+on bpf_task_storage helpers. That commit also employed the logic in map
+free path in its v6 version.
 
-NACK.
-This negates 9da0763bdd82572be243fcf5161734f11568960f
+Later bpf_cgrp_storage was first introduced in
+c4bcfb38a95e ("bpf: Implement cgroup storage available to non-cgroup-attached bpf progs")
+which faces the same issue as bpf_task_storage, instead of its busy
+counter, NULL was passed to bpf_local_storage_map_free() which opened
+a window to cause deadlock:
 
-This is a recurring topic [1] because kselftest adopts a completely
-different build system.
-If kselftest cannot do this correctly, please do not hook it to the
-top-Makefile.
+	<TASK>
+		(acquiring local_storage->lock)
+	_raw_spin_lock_irqsave+0x3d/0x50
+	bpf_local_storage_update+0xd1/0x460
+	bpf_cgrp_storage_get+0x109/0x130
+	bpf_prog_a4d4a370ba857314_cgrp_ptr+0x139/0x170
+	? __bpf_prog_enter_recur+0x16/0x80
+	bpf_trampoline_6442485186+0x43/0xa4
+	cgroup_storage_ptr+0x9/0x20
+		(holding local_storage->lock)
+	bpf_selem_unlink_storage_nolock.constprop.0+0x135/0x160
+	bpf_selem_unlink_storage+0x6f/0x110
+	bpf_local_storage_map_free+0xa2/0x110
+	bpf_map_free_deferred+0x5b/0x90
+	process_one_work+0x17c/0x390
+	worker_thread+0x251/0x360
+	kthread+0xd2/0x100
+	ret_from_fork+0x34/0x50
+	ret_from_fork_asm+0x1a/0x30
+	</TASK>
 
-[1] https://lore.kernel.org/linux-kbuild/cover.1657614127.git.guillaume.tuc=
-ker@collabora.com/
+Progs:
+ - A: SEC("fentry/cgroup_storage_ptr")
+   - cgid (BPF_MAP_TYPE_HASH)
+	Record the id of the cgroup the current task belonging
+	to in this hash map, using the address of the cgroup
+	as the map key.
+   - cgrpa (BPF_MAP_TYPE_CGRP_STORAGE)
+	If current task is a kworker, lookup the above hash
+	map using function parameter @owner as the key to get
+	its corresponding cgroup id which is then used to get
+	a trusted pointer to the cgroup through
+	bpf_cgroup_from_id(). This trusted pointer can then
+	be passed to bpf_cgrp_storage_get() to finally trigger
+	the deadlock issue.
+ - B: SEC("tp_btf/sys_enter")
+   - cgrpb (BPF_MAP_TYPE_CGRP_STORAGE)
+	The only purpose of this prog is to fill Prog A's
+	hash map by calling bpf_cgrp_storage_get() for as
+	many userspace tasks as possible.
 
+Steps to reproduce:
+ - Run A;
+ - while (true) { Run B; Destroy B; }
 
+Fix this issue by passing its busy counter to the free procedure so
+it can be properly incremented before storage/smap locking.
 
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-> ---
-> Request for Additional Testing
->
-> We welcome all contributors and CI systems to test this change thoroughly=
-.
+Fixes: c4bcfb38a95e ("bpf: Implement cgroup storage available to non-cgroup-attached bpf progs")
+Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
+---
+ kernel/bpf/bpf_cgrp_storage.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This is NACKed. I recommend not wasting CI system resources.
+diff --git a/kernel/bpf/bpf_cgrp_storage.c b/kernel/bpf/bpf_cgrp_storage.c
+index 20f05de92e9c..7996fcea3755 100644
+--- a/kernel/bpf/bpf_cgrp_storage.c
++++ b/kernel/bpf/bpf_cgrp_storage.c
+@@ -154,7 +154,7 @@ static struct bpf_map *cgroup_storage_map_alloc(union bpf_attr *attr)
+ 
+ static void cgroup_storage_map_free(struct bpf_map *map)
+ {
+-	bpf_local_storage_map_free(map, &cgroup_cache, NULL);
++	bpf_local_storage_map_free(map, &cgroup_cache, &bpf_cgrp_storage_busy);
+ }
+ 
+ /* *gfp_flags* is a hidden argument provided by the verifier */
+-- 
+2.37.3
 
-
-
-
-
-
-> In theory, this change should not affect in-tree builds. However, to ensu=
-re
-> stability and compatibility, we encourage testing across different
-> configurations.
->
-> What has been tested?
-> - out-of-tree kernel build
-> - out-of-tree kselftest-all
-> ---
->  Makefile | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/Makefile b/Makefile
-> index e5b8a8832c0c..36e65806bb5e 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -275,7 +275,8 @@ else ifeq ($(srcroot)/,$(dir $(CURDIR)))
->      srcroot :=3D ..
->  endif
->
-> -export srctree :=3D $(if $(KBUILD_EXTMOD),$(abs_srctree),$(srcroot))
-> +srctree :=3D $(if $(KBUILD_EXTMOD),$(abs_srctree),$(srcroot))
-> +export srctree :=3D $(if $(building_out_of_srctree),$(abs_srctree),$(src=
-tree))
->
->  ifdef building_out_of_srctree
->  export VPATH :=3D $(srcroot)
-> --
-> 2.44.0
->
->
-
-
---=20
-Best Regards
-Masahiro Yamada
 
