@@ -1,104 +1,140 @@
-Return-Path: <bpf+bounces-47530-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47531-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA6549FA2F3
-	for <lists+bpf@lfdr.de>; Sun, 22 Dec 2024 00:47:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EFA09FA2FA
+	for <lists+bpf@lfdr.de>; Sun, 22 Dec 2024 00:55:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3B951888FE2
-	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 23:47:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDC161889EA4
+	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 23:55:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 875F51DDA3D;
-	Sat, 21 Dec 2024 23:47:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9C0E1DE4C2;
+	Sat, 21 Dec 2024 23:55:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AaGyV0WC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b3+UX8c3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F0DD1CF8B;
-	Sat, 21 Dec 2024 23:47:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2439B1CF8B;
+	Sat, 21 Dec 2024 23:55:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734824823; cv=none; b=PdnCYkaVxXg5DIHqVlS8CI2K6cwHutjquY00XwatSY4EtaZwgLlP/VabRL+es8+DUWazmahxA7zDKxfBhKpWXJoN9m702f03x3YIqH8+p9+V8c5bRqa/9PZk+Z7w2jh/HEAaRTIsPzCRkMRAgM7MW2PF2WNRt57CaKf3E209HxQ=
+	t=1734825336; cv=none; b=henF1cuBN0rlOI1pnMdVZgljpVR7yf8thvrB0Kti8UchbtL4IY4QVKvCNxbBcF1XSUFt3RcDt4aZCFQonfXL0tCEf5TRRd7C6X31v/4pi4C3ZtJIMnDcpysY0ZOnaSLeb3uPwtBYMwwwR0edB4zKjjCd5t0fYurKYpf9hn76dZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734824823; c=relaxed/simple;
-	bh=0ouUObuOCyKTSOBpY6GhrsRN0OZbudti8B9DK5ph4gU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J9n0HLbNfMCDbSnESPS5C1S/oO8XOURlHBxZcynfrWRA0q8hHoODDS0W+DIOzqu61uBnBApgTUIFmHVH9FRsdAn0q2Db8gamInnwW9pvni7/H67b0Deu/u+VLyYAxepa+E9OQGs9UMwE9/fHHYe+BImfy5xEKpbz1pps3g0KvEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AaGyV0WC; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43625c4a50dso21102045e9.0;
-        Sat, 21 Dec 2024 15:47:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734824820; x=1735429620; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OgEBPO6P/SwRrVDOmP09vsqVWyj+vIvyC6hhF1Fkrc8=;
-        b=AaGyV0WC9sep8XMg+/BAytRXsJ516is3I2P6jN8O19EyLOW/KGzYO+WDKgABIo9oUR
-         u8pUVMvg5oEGz0gK3HiVnbCIxw/U/+v0luhrgo3ZjgKsv5Q7dCtrT5sssXHkCtvqENdc
-         ZR4vWIC05OzxVyTbMiNQqqvmqR6Nz0e/K16ixL5Q7Y6pgWun0FKQsStwHVE69Ihfh+LC
-         ni98NqTzsIYh7i1yDjkDOkNAbh7LcSACd+xKMIZ/jPdhx2uzYUm9kkQjuBgEQGwgsDOn
-         eH2FEm8XMuY5m8wyMewaF7byuUCnyLPavRIEQUJNIO6+bJGCoDGXJxgN4BIJX+UVnw26
-         y2hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734824820; x=1735429620;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OgEBPO6P/SwRrVDOmP09vsqVWyj+vIvyC6hhF1Fkrc8=;
-        b=IgWb1F/wE9Oe+s0MShGxD06dMSC6HutG6EUtRzgpMQBbFNSoomg8estoKehE+ntsxY
-         M0N2gJPNdgjXoUpNtkzsohy+/b+Mog46yEJtu2Iey46KEhh45irFBMVp5aYLERuecFQR
-         QD/UvHha9a3qW9GGVpm5IQ650pilCn+rNtPzxXn+ArJ05TWkBjK0xLCRGWs4QryiMf5n
-         5qAdzegiUjTvpiYRLNqReiy3uAv2yq0CFAiYWF1Pacn6HKM5jOFinZo2AmGaqfXAvYtP
-         4k3/RxOMitXtk/ZFEBLgzpWdB8SroXjNC4y++oSu845UP07DObEKMD8o+IuBvV3OWaq0
-         2RNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUQQIfyJp9xP2WAfO46BmgCuJIbeEG84uBLA0VV1g4u7mVy/BzsW+pvbdu7YmLkIeEFMsg=@vger.kernel.org, AJvYcCXm7onI2TOHKLcFjJB/xalQhwvArkTSJ3fOPiZZ3cdnZWrc9G5hDclRLM9QJC0rYOPbViEzI8N1QX8F2d3g@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxde8H+ug7uAZHsUFbzPn1WFYFqlIrBSFvv/FDoegU9VYPz4BdB
-	SdyI/OdLQaSVMRQ72VvFvyXhTvpuKGX0G1uloBo9HoMgzZoNbGbg8BJwTUTs+RT9kDuNFBKUQEq
-	xv3TclMCbLj2E3vZ6N8a64HqEHSI=
-X-Gm-Gg: ASbGnctElGAdENg7bJfbhOIFzQcZh9g/5nilHRTcKiUqYHrbT605BAgS4MX751WnJ5x
-	m78WlZFsorZUO3MA37I15f0+ngAQxxwKoUuFQSiK9PKqAugl+mLFFh97+ef8T+bmXfbwWQlk=
-X-Google-Smtp-Source: AGHT+IE+p5G/Ht6xSevMFWyC8Yg7OD7Us10wpQ7lg1nboyXUsp5gERCrYU3vL6Yceo7+wYvMqsXVLoSDxIX2z/s/pWk=
-X-Received: by 2002:a05:600c:4ec9:b0:436:51bb:7a43 with SMTP id
- 5b1f17b1804b1-4366854852dmr64562755e9.5.1734824819675; Sat, 21 Dec 2024
- 15:46:59 -0800 (PST)
+	s=arc-20240116; t=1734825336; c=relaxed/simple;
+	bh=jE4sDUPRqABCV6IyyDL4ZlWY5L0sgZddlRag2s0wQaE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NdSZvJZB2S0Xca2DxnYhEbLdgC/t0pWmxfwfbFJlvh+aHpv6CXIibnQYA1ktPLYIcb2i815PYX6gF3DusaWuN4Iohfo0reSnfHViQpFH7VCZLM5l+Jhjggg7A+lRrMOUoJ5bEeoANBFbY9SJtmRlomDGmebRHM5HcsemrhuBsYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b3+UX8c3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 042D9C4CECE;
+	Sat, 21 Dec 2024 23:55:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734825335;
+	bh=jE4sDUPRqABCV6IyyDL4ZlWY5L0sgZddlRag2s0wQaE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=b3+UX8c3o7hSE44jiOWg1t176J45ykcQspnhpma+if24wQ6UMkhnuppAl1k1NeaX4
+	 cBsl9qi6+4qyPQudSBjjqh180MNloVS+7J6RpbN9Tb11YoknZAZvL5iQS7nMB+bfWT
+	 MWNb7Oa9dKWa4F21MDxppInhos2tfhYnaD/myfslyFUCk8dPrymuKL7Xy3Ec48p0hW
+	 JBr1mjuLYEnA7R9QRIGyQdIhuqUqa8bREqbxXvWtKfuT/ati1qsk0liOP6/xsTgfyg
+	 O8idMv10Z2U627egd7/odS6XVeJL4H/AqJ8z/PtORfVQ0vFL1xcaebVYYao1que2BG
+	 QnhGLWSYL6MAA==
+Date: Sat, 21 Dec 2024 15:55:32 -0800
+From: Namhyung Kim <namhyung@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	"linux-perf-use." <linux-perf-users@vger.kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+	bpf <bpf@vger.kernel.org>, Stephane Eranian <eranian@google.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, Kees Cook <kees@kernel.org>,
+	Chun-Tse Shao <ctshao@google.com>
+Subject: Re: [PATCH v3 2/4] perf lock contention: Run BPF slab cache iterator
+Message-ID: <Z2dVdH3o5iF-KrWj@google.com>
+References: <20241220060009.507297-1-namhyung@kernel.org>
+ <20241220060009.507297-3-namhyung@kernel.org>
+ <CAADnVQLm-jA5-39-LUKybO2oGbDRr2RgPtJH5iXoeKnYqdJUuw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241221210926.24848-1-pvkumar5749404@gmail.com>
-In-Reply-To: <20241221210926.24848-1-pvkumar5749404@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sat, 21 Dec 2024 13:46:48 -1000
-Message-ID: <CAADnVQLC0hNpg_M_54netES5Q2ugSSULcSMzFPGcPG2aLCH8=g@mail.gmail.com>
-Subject: Re: [RESEND PATCH bpf-next] BPF-Helpers : Correct spelling mistake
-To: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQLm-jA5-39-LUKybO2oGbDRr2RgPtJH5iXoeKnYqdJUuw@mail.gmail.com>
 
-On Sat, Dec 21, 2024 at 11:09=E2=80=AFAM Prabhav Kumar Vaish
-<pvkumar5749404@gmail.com> wrote:
->
-> Changes :
->         - "unsinged" is spelled correctly to "unsigned"
->
-> Signed-off-by: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+Hi Alexei,
 
-Are you trying to land a trivial patch to get on the record?
-Please focus your efforts on something better than typo fixes.
+On Fri, Dec 20, 2024 at 03:52:36PM -0800, Alexei Starovoitov wrote:
+> On Thu, Dec 19, 2024 at 10:01 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> > +struct bpf_iter__kmem_cache___new {
+> > +       struct kmem_cache *s;
+> > +} __attribute__((preserve_access_index));
+> > +
+> > +SEC("iter/kmem_cache")
+> > +int slab_cache_iter(void *ctx)
+> > +{
+> > +       struct kmem_cache *s = NULL;
+> > +       struct slab_cache_data d;
+> > +       const char *nameptr;
+> > +
+> > +       if (bpf_core_type_exists(struct bpf_iter__kmem_cache)) {
+> > +               struct bpf_iter__kmem_cache___new *iter = ctx;
+> > +
+> > +               s = BPF_CORE_READ(iter, s);
+> > +       }
+> > +
+> > +       if (s == NULL)
+> > +               return 0;
+> > +
+> > +       nameptr = BPF_CORE_READ(s, name);
+> 
+> since the feature depends on the latest kernel please use
+> direct access. There is no need to use BPF_CORE_READ() to
+> be compatible with old kernels.
+> Just iter->s and s->name will work and will be much faster.
+> Underneath these loads will be marked with PROBE_MEM flag and
+> will be equivalent to probe_read_kernel calls, but faster
+> since the whole thing will be inlined by JITs.
 
-pw-bot: cr
+Oh, thanks for your review.  I thought it was requried, but it'd
+be definitely better if we can access them directly.  I'll fold
+the below to v4, unless Arnaldo does it first. :)
+
+Thanks,
+Namhyung
+
+
+---8<---
+diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+index 6c771ef751d83b43..6533ea9b044c71d1 100644
+--- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
++++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+@@ -635,13 +635,13 @@ int slab_cache_iter(void *ctx)
+        if (bpf_core_type_exists(struct bpf_iter__kmem_cache)) {
+                struct bpf_iter__kmem_cache___new *iter = ctx;
+ 
+-               s = BPF_CORE_READ(iter, s);
++               s = iter->s;
+        }
+ 
+        if (s == NULL)
+                return 0;
+ 
+-       nameptr = BPF_CORE_READ(s, name);
++       nameptr = s->name;
+        bpf_probe_read_kernel_str(d.name, sizeof(d.name), nameptr);
+ 
+        d.id = ++slab_cache_id << LCB_F_SLAB_ID_SHIFT;
+
 
