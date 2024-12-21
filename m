@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-47518-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47519-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE8EA9F9F08
-	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 08:22:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DCF39F9F0A
+	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 08:23:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FE5E16BAF0
-	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 07:22:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A200188A63C
+	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2024 07:23:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87F001EBFF8;
-	Sat, 21 Dec 2024 07:22:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F7CC1EC4CC;
+	Sat, 21 Dec 2024 07:23:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="Ibav1y8J"
+	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="YBvk2BXs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 914371DF986
-	for <bpf@vger.kernel.org>; Sat, 21 Dec 2024 07:22:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64F761E9B35
+	for <bpf@vger.kernel.org>; Sat, 21 Dec 2024 07:23:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734765766; cv=none; b=NqQzg5Sw72SDT6ZHWQ2hYK1JnmErHNk1vZ//ZI7os+C5z+9LxwjxaWfI0Evc/yd7gygC4/0pPakYyKDuQ9DpV7Ac+FqAbph1+ZhuxZ+mhcKoJNGYA0OeSketUds5junJ0+f00pSQW8aYbsop3dzTy9Vn1aXKz2IdYLA3NWQDJ7o=
+	t=1734765819; cv=none; b=T9sJXuogjrsZy9bg34yGXMivZd2WJZeG/Oy/yymDaOhtTb0/IjcUeSRGGBjJ45eRt8CXpcSTfNUkPnLKKSXCx6wjeJ57bJ/s0b3RcyWERlWs7zyaLRoBvCBjluRFtJS/GzeA+K3tY+nuf5cJs1DBnOUYds206YchOATPWCxLR9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734765766; c=relaxed/simple;
-	bh=0rAosgF3Ztuz5d8Yvh86KvdnQ2ufSZRKMNHOv7KYSTE=;
+	s=arc-20240116; t=1734765819; c=relaxed/simple;
+	bh=aqb8+RHJ6WxTEsAzfR/cFGlypEucYWaD7igL/fV/Qgw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rfM6y6B6IDyQzMdDqDp+prWAtHO8EFdSO3AGu8hCJEmtLIxjW/zltqLZvwaQAaswjtm9EqHalPKtevHwUT/kkq+77YtJNfS7xRrXQsRRXF3NDzj5SX2KE0WEDVSQ1naw5D3aFuqKdWhiWkqBQLgJxjIkIVRU7Ey414gKHCl67EY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=Ibav1y8J; arc=none smtp.client-ip=209.85.221.51
+	 In-Reply-To:Content-Type; b=ICbcHUAkPAxO3fvdSGzpqTzyqxf2MSdC2Ptu9QdBrHkmXEuIy0L+8UAGE6FmSYxWUFne+piuJGGbfMjuIJnfmTuA9o5Q8d/65i/zEmVUrjN4dvyGjbXgNDzPPfrbsp2YOP3aFjyZa4MtGmpSHTi0GZj6W1JRZtKVF7EXoDqveH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=YBvk2BXs; arc=none smtp.client-ip=209.85.128.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-385f06d0c8eso1566135f8f.0
-        for <bpf@vger.kernel.org>; Fri, 20 Dec 2024 23:22:44 -0800 (PST)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4361b6f9faeso16518015e9.1
+        for <bpf@vger.kernel.org>; Fri, 20 Dec 2024 23:23:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1734765763; x=1735370563; darn=vger.kernel.org;
+        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1734765816; x=1735370616; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=2EUlBe1ti783aJq8oYTzxxJuGG7AnBX8HC1zASLsrUg=;
-        b=Ibav1y8Jf0i4VecL5JpNV3A72I3nXExj45em048cNfQN10o2pkTskbx5HFiZe57UfR
-         AROUZLNPjXVKYBvNVa7JaL4yhH50/rM4v+9pu2ovYmm5nqIG52SfoqXzfuMlGhuvZFqM
-         vtMoR63Mb5CptFh/T65Jf3PJXlkfwsOqc5SzfntXMAbx7285o7SPVzgjH5cGLeWOmO61
-         QfD+XXCSWRhwFGmlg1b22VRqwM6EoWyyCWV0pA27I2p7Xjpm7e3vR6Gd24A05Rp/98WU
-         YkwpzwCjPofyRpxTqhpXl9iFSU19rm+82Bvl4Zh4hsLb0n2WSBj5rUB+hcbveo+kuN56
-         Au5w==
+        bh=L9mtmPZIi+Kyt6bE6scI5p+7PdJbZWOLUW810rPO8q4=;
+        b=YBvk2BXsFvMSBVA6BY8dpzRv82OYXAWvZcB76EKcCSjb1WvS7MN/D1MoJoCzIFMkVU
+         j1W9TBqCa7ewtspHMKvKYhnFGgMEo7EzSpJ6FogRcHkvabXzUX3HROgYkM2QDtvtEtjJ
+         YXC5jVlMLucKmeNXfbr6JR1p49Nzn6HcxnX6Th6eMKKn+qeKsOjVmfIqAf7m/sNOgbAP
+         EajR3CAE219NV9JaN6HBO5ejajS3bKQATpAug3BPDw7jVx7MetxNpJj7GZMQ9+JeOUfu
+         luH9pcPN2NfC6a8EZwownK0DMtKztTbwZPuOS0fc09X3s2AvyETA7s8YAVom+xgDPOkj
+         G7Kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734765763; x=1735370563;
+        d=1e100.net; s=20230601; t=1734765816; x=1735370616;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2EUlBe1ti783aJq8oYTzxxJuGG7AnBX8HC1zASLsrUg=;
-        b=qvAnF97dWKxCdGxTou1cTJKW6wAfDrXSLo2iKNSI9+lFsfH53A436O1ATHz1HLV/66
-         grWw0yiKmKRhzUKGQWHyxq6lWase2qfLwVeN7BbspkRpOP+yf7fBfcmQ4/w8+aC0aVRu
-         XhGdMqeyLwtHHzSC3+7fBmBLXOYgAcRZ02FzfQQP3mxYHnqKS+xSWowlAurJCvkrj1Vq
-         Sl5sxsyZxBq+ceDoCIQo1ekM6BjYJhvyPv2IFz2iOGiMMqYIVm4Bs/JCv73fCtjwFnhU
-         4uL6RngND4qHWysFAiJKAjJbPC88cZ0trBqbLLARf7mOkp46/ud6p8oPlaNkrtd3N3ak
-         bQwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVPTtQwr3o+AlWad268cZInyRrTX+f7S66xXUDPts2hKf9NV3lKnmkqxI+Dj1oAKB/6nOU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzigFaXXWETb3kmE9VC9rmOW8YW/uUx2LuMC+vZh6iXBh412GPv
-	Y0rX6ZS52ivXyNTLlUrLzZJmvkn52F6xFs3xfVBoY1obFr4dEuYSdUjA7aXwUpU=
-X-Gm-Gg: ASbGncuJ5bz94qw4s3jaMI3FUxfM/acNrKkA0ts6zXNDuMeWX1yBGe1B6F49QfGSJIe
-	S7IEyfL77RfXahZZqQSZ+VzLMXnS9h7zQKrQ3hSxDlTNaxE043s8s1oWul5s9XD2S9+nF+FevPJ
-	EZXVZ8pDuT2JCLpDLEgpxtW7+uShfSsEUp0vZkw2tsga6aHjZ212b/i2S7UeCpYwYKJC6kQXelb
-	8Q3G5Zks6OYQC4KAZCrzpkgGEqUPVSqFWYYMSRjDy2juDHm+oW3WXbhI9o6Fvco9Bx/mv5TpVAw
-	R5l5DUxrcABj
-X-Google-Smtp-Source: AGHT+IEb7LQUNtCxYlO/uzup8sRen9gVLF0bzI6pmzmw36NSidzZZ11gwIBnl8/npx6c01D8spL8yA==
-X-Received: by 2002:a5d:5f95:0:b0:385:dc45:ea06 with SMTP id ffacd0b85a97d-38a221fab2dmr4994638f8f.13.1734765762909;
-        Fri, 20 Dec 2024 23:22:42 -0800 (PST)
+        bh=L9mtmPZIi+Kyt6bE6scI5p+7PdJbZWOLUW810rPO8q4=;
+        b=iyhW3xoYvzkGjHIytt9YVUov5BZPXhGZMrC2NFh2l2r5+27mduyJw7887lbPR2aXOH
+         C0OvUSs9PldNywGBy7QjsRAZnEBFTnuewAVzgAq8AJwzYnxlUtfui5MlavzUtZt/jSLm
+         0MIgjQC/TG8BSxlsVvAaIKjUCZYVRJp5BzYINU8B4PxTUZ8uqfMqbj0eIgfH/69wUhhY
+         ++TUHxK6nrJyuvjrV96p3Yuh32pw/kxdVGI4L4TaF59fjez3PuX33rDDFl51RB3Pxh+z
+         WsxbzxHU4IT3UB1tEJh9igiK7OvCyXrR83Rk4HgeTyqWQCA4Kgu6PCR65NJmSAKlMVct
+         A3RQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVJqy/hH8N3q6u4TUQCjoTLBLwf6u1HxFZBuJJgaxd13M0nZnGCcpRVM7kzAuuTawUifhc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzYne5G5ykvaPeZYWQn5+C8rcVq0tAsT83AGAYNuyqELXkhiC3o
+	Yj3y8415l35+q6NowywizbJKQUKoxayLQ3Kb8R7slB7ZvXNpd8AhNunK6IkWy48=
+X-Gm-Gg: ASbGncs2p85YUvaErJAvm77xxjdGs3XBnSKxUgHoTqYWrvkgsgZC6wKW1tgjyTFMhMg
+	T5gCazL8/5pIU/13fisaWyRruGz7TyWWHP1Qsufs9mXRTXQ8KQE7x9U7sCNrHbCMeGVknKwhozQ
+	pig/hHIThHijNxL11C5WdDNhqFX5FyQpEczXh/nV/5g0H2TBDFnk/D9vnjOK541s/RPx/HW5QgT
+	Ef0hmzI4GKsOul6teRYxX/mLQG1Wg8kDsBkFY+W4oLL5BnbAQUIBEsjyUj0+bOCHXHXyN7xr45v
+	sbnIDxW52Zms
+X-Google-Smtp-Source: AGHT+IFzR+b0dJ8cXMxJaFZxa/uj8LNvR4GrBhtZTQrt4Y4gAjYydHlqcDBVhcZM8706zr0B7e7dvQ==
+X-Received: by 2002:a05:600c:1c02:b0:434:f2af:6e74 with SMTP id 5b1f17b1804b1-43669a28ea7mr46560595e9.15.1734765815604;
+        Fri, 20 Dec 2024 23:23:35 -0800 (PST)
 Received: from [192.168.0.123] (78-154-15-142.ip.btc-net.bg. [78.154.15.142])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a1c8acb85sm5752647f8f.103.2024.12.20.23.22.42
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-436611ea3d5sm68529405e9.5.2024.12.20.23.23.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Dec 2024 23:22:42 -0800 (PST)
-Message-ID: <960da366-baf5-4b27-9583-579534e5ee00@blackwall.org>
-Date: Sat, 21 Dec 2024 09:22:41 +0200
+        Fri, 20 Dec 2024 23:23:35 -0800 (PST)
+Message-ID: <e08ccd22-6537-41fc-9934-84b8fdc0dc3e@blackwall.org>
+Date: Sat, 21 Dec 2024 09:23:34 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -81,47 +81,49 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: Extend netkit tests to
- validate set {head,tail}room
+Subject: Re: [PATCH bpf-next v2 1/3] netkit: Allow for configuring
+ needed_{head,tail}room
 To: Daniel Borkmann <daniel@iogearbox.net>, martin.lau@linux.dev
-Cc: pabeni@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20241219173928.464437-1-daniel@iogearbox.net>
- <20241219173928.464437-3-daniel@iogearbox.net>
+Cc: pabeni@redhat.com, kuba@kernel.org, bpf@vger.kernel.org,
+ netdev@vger.kernel.org
+References: <20241220234658.490686-1-daniel@iogearbox.net>
 Content-Language: en-US
 From: Nikolay Aleksandrov <razor@blackwall.org>
-In-Reply-To: <20241219173928.464437-3-daniel@iogearbox.net>
+In-Reply-To: <20241220234658.490686-1-daniel@iogearbox.net>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 12/19/24 19:39, Daniel Borkmann wrote:
-> Extend the netkit selftests to specify and validate the {head,tail}room
-> on the netdevice:
+On 12/21/24 01:46, Daniel Borkmann wrote:
+> Allow the user to configure needed_{head,tail}room for both netkit
+> devices. The idea is similar to 163e529200af ("veth: implement
+> ndo_set_rx_headroom") with the difference that the two parameters
+> can be specified upon device creation. By default the current behavior
+> stays as is which is needed_{head,tail}room is 0.
 > 
->   # ./vmtest.sh -- ./test_progs -t netkit
->   [...]
->   ./test_progs -t netkit
->   [    1.174147] bpf_testmod: loading out-of-tree module taints kernel.
->   [    1.174585] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
->   [    1.422307] tsc: Refined TSC clocksource calibration: 3407.983 MHz
->   [    1.424511] clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x311fc3e5084, max_idle_ns: 440795359833 ns
->   [    1.428092] clocksource: Switched to clocksource tsc
->   #363     tc_netkit_basic:OK
->   #364     tc_netkit_device:OK
->   #365     tc_netkit_multi_links:OK
->   #366     tc_netkit_multi_opts:OK
->   #367     tc_netkit_neigh_links:OK
->   #368     tc_netkit_pkt_type:OK
->   #369     tc_netkit_scrub:OK
->   Summary: 7/0 PASSED, 0 SKIPPED, 0 FAILED
+> In case of Cilium, for example, the netkit devices are not enslaved
+> into a bridge or openvswitch device (rather, BPF-based redirection
+> is used out of tcx), and as such these parameters are not propagated
+> into the Pod's netns via peer device.
+> 
+> Given Cilium can run in vxlan/geneve tunneling mode (needed_headroom)
+> and/or be used in combination with WireGuard (needed_{head,tail}room),
+> allow the Cilium CNI plugin to specify these two upon netkit device
+> creation.
 > 
 > Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Paolo Abeni <pabeni@redhat.com>
 > Cc: Nikolay Aleksandrov <razor@blackwall.org>
 > ---
->  .../selftests/bpf/prog_tests/tc_netkit.c      | 31 ++++++++++++-------
->  .../selftests/bpf/progs/test_tc_link.c        | 15 +++++++++
->  2 files changed, 35 insertions(+), 11 deletions(-)
+>  v2:
+>   - static struct (Jakub)
+> 
+>  drivers/net/netkit.c               | 66 +++++++++++++++++++-----------
+>  include/uapi/linux/if_link.h       |  2 +
+>  tools/include/uapi/linux/if_link.h |  2 +
+>  3 files changed, 47 insertions(+), 23 deletions(-)
 > 
 
-Acked-by: Nikolay Aleksandrov <razor@blackwall.org>
+need coffee, just acked v1 and was looking at v2.. 
 
+Acked-by: Nikolay Aleksandrov <razor@blackwall.org>
 
