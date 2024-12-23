@@ -1,365 +1,134 @@
-Return-Path: <bpf+bounces-47558-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47559-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F413C9FB514
-	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2024 21:17:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EA8F9FB51B
+	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2024 21:18:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1C001635F8
-	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2024 20:16:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C004168279
+	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2024 20:18:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97AB51D95AA;
-	Mon, 23 Dec 2024 20:14:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8277E1C5F20;
+	Mon, 23 Dec 2024 20:18:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QBZp4BQ0"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F3431D61A1;
-	Mon, 23 Dec 2024 20:14:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E9E1B0F16
+	for <bpf@vger.kernel.org>; Mon, 23 Dec 2024 20:18:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734984891; cv=none; b=FlCxwvqASoVJr2VucWPcxDG1vD4/ssYRLi6Y5dJgkJimCrUnYIb+qFBv70dJmr+4azq3gdNedIB/Df9UeTETomsuDaU9zjWbVS5p8ELIKkkIeImYIf9auq0C0VB0s4r4T1JdRx+HqAEyAR7rCeKKgESiyzxz01GojRmHhqgY/Oc=
+	t=1734985095; cv=none; b=tJDzCylBZIB0y4vycRxeRpdQmAuxBxSmXuIorWydthth0pZCwleV4GF7A84OYep4kH/kvT6BUUFN0F0al3apvhDS25NFsXA+aUxW+6SM6mRkNiKbFowt4Tw2CTUS3MNRXH2PhK49gMIt0TtaqBHyQfwomRv0Pny9JHIWtQJYRiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734984891; c=relaxed/simple;
-	bh=0M2lr+6IyG3LoFuMz5Y0fLijMdkVPMlwzx5ah9pOBeQ=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=HKnx9ciQTdPFVRGlYpRhXRHBpTD3qISdWn7WBVpKno5WicXJTr+jBZV2lsGvyUgx0s5pH/OfkSCaGKHOAtxXCyyGxFyedYlOIU+6HVx+0wwBivuwSTFw2vyTihNJVtZx8FQDDLnTXN6xcXmx3CdkaWUuA9crzuOSzjMuLVi08Q0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B172FC4CED4;
-	Mon, 23 Dec 2024 20:14:50 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.98)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1tPoq6-0000000DgAJ-2MFj;
-	Mon, 23 Dec 2024 15:15:42 -0500
-Message-ID: <20241223201542.415861522@goodmis.org>
-User-Agent: quilt/0.68
-Date: Mon, 23 Dec 2024 15:13:51 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Sven Schnelle <svens@linux.ibm.com>,
- Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>,
- Guo Ren <guoren@kernel.org>,
- Donglin Peng <dolinux.peng@gmail.com>,
- Zheng Yejian <zhengyejian@huaweicloud.com>,
- bpf@vger.kernel.org
-Subject: [PATCH v2 4/4] ftrace: Add arguments to function tracer
-References: <20241223201347.609298489@goodmis.org>
+	s=arc-20240116; t=1734985095; c=relaxed/simple;
+	bh=wrEVLh5NeGYoGui5ocbgaJyr9K02aRsPK7qoZ68wF18=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KJrjVisvZMpfW1rOBRJ2h+Z6mEj2AYNyzGyTMTkPh34pYL6w+JhwzFAbzBZiOxRO9ND/pSC63825zONNAlHrZj2nWZ3C7lF8ETjoq3gfDM08wn64KlMCczeg/+b82q2I5jpJPbt8LNWfQk8exwGOtdlprFKNhb65mL+6JiLSC5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QBZp4BQ0; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2163affd184so452555ad.1
+        for <bpf@vger.kernel.org>; Mon, 23 Dec 2024 12:18:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1734985093; x=1735589893; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/md9RH+lZJRhxwWxoUhNdQcDiOG8BAv89i51DptP/5I=;
+        b=QBZp4BQ09ajvvj1bvSf7Ti4JGYldc98sebSGWrp2HqTIyx5q3QBpl9Qdepray6gI95
+         RgwAOk6Duj81V02L+w0SzR4xvrXqO4U51CI5HTXu4xnBljdGwa7pQJSAPi9UoWDu+KZ/
+         3SLFwKOYcSbQpUrJJPA3HBm35174Eai6lfHkAz1WYwFFtGzoLCpf0IN/v0nhEc80yUzt
+         OYlKOnRd0kCiPIVVRitlEfcXwg3UbqRecZZnJHIuHi1ivNGZjJYwxRPuBDsKsydTacZ+
+         uCpm51FTwc/qZw/6NP929qY1U3YCGgwJZ07gnrSoJCES/246iywQurhWyCfIBeMj+rNA
+         e6Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734985093; x=1735589893;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/md9RH+lZJRhxwWxoUhNdQcDiOG8BAv89i51DptP/5I=;
+        b=MGs6E1+mAaVOtAD+JhwlvxtzzZrSXG9D7khoEp45vSmCRgs+QQ4ndV71lOceKgCa8x
+         spCPFLRlxX1CC4FyG2Tn6iQbEScJBalYtI/E8dhtQXjnUXDdn5K83EAnyV99eTtA6Tds
+         7nNDMWRpCc6SffW0JiV+xXF6bL35u2jmsJMlICCOkcdVyUNTLt8cWiBmkemzkEnxHA/x
+         e3Z/pCmOGbtQ+/5/ELSAzAEi76S4kMUFfAspNox7bEkuiP2zC8cMijTEVl1Np3X9yeYk
+         tMrgkliMTSK+1U00lw2BWnOEcDo8P0x+Yvsp5zIPjOVSzpY/LPdg8shgbUj/18Lwb30f
+         KEiA==
+X-Gm-Message-State: AOJu0YywSNjKkNP6PQUafvnIlVNBxk902eCLvW+u32rIb+8+Epz/OXcC
+	FAJjz77Dew6eFn6DFTZifh3qLw0h6VSuSZRAbFOWkYzYIP/Ux43PyGfHqdMCAZwtQrves6omMNg
+	hHRDO
+X-Gm-Gg: ASbGncunlHHpg9GR2ZaXtS5QfL7pv5DadvSwkt8LPuhLxM4NJ/S8h82lYsaNDOcPE86
+	JKFHv77ExWShWFt0jakDy5kwNKoj6KFHzA5Zl70xawDoiXg2EaK2CKBFTtTeOXPCcbH8BEgZziJ
+	zSs3rBdNjdqA5OA4Dlf9YOeAeQXiTjBbHg6W2IwOIaYwh3sMDX+CPHYWKKHcQlS//nINIiC3IP5
+	FRGFi4eZGjzLf99aJdsCy8ZW5t5CNsFR47KuziUguducJkU45M02klbl5wXaT0SC6XloLqhRhjL
+	F1V67dsHU+iyViH3DVU=
+X-Google-Smtp-Source: AGHT+IGhY7nMTrXZAk0yGOvrUlQg3Qt4CxYqiCr3gnrdLKSbnhKzPwbfO7ySItkpYbBhTvR9iNWffQ==
+X-Received: by 2002:a17:902:db03:b0:216:5e53:d055 with SMTP id d9443c01a7336-219e770d02amr6111235ad.9.1734985092625;
+        Mon, 23 Dec 2024 12:18:12 -0800 (PST)
+Received: from google.com (40.155.125.34.bc.googleusercontent.com. [34.125.155.40])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dc972251sm77654385ad.96.2024.12.23.12.18.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Dec 2024 12:18:12 -0800 (PST)
+Date: Mon, 23 Dec 2024 20:18:08 +0000
+From: Peilin Ye <yepeilin@google.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Puranjay Mohan <puranjay@kernel.org>,
+	Xu Kuohai <xukuohai@huaweicloud.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Quentin Monnet <qmo@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>,
+	Neel Natu <neelnatu@google.com>,
+	Benjamin Segall <bsegall@google.com>,
+	David Vernet <dvernet@meta.com>,
+	Dave Marchevsky <davemarchevsky@meta.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC bpf-next v1 4/4] selftests/bpf: Add selftests for
+ load-acquire and store-release instructions
+Message-ID: <Z2nFgHqT5zaNd64C@google.com>
+References: <cover.1734742802.git.yepeilin@google.com>
+ <114f23ac20d73eeb624a9677e39a87b766f4bcc2.1734742802.git.yepeilin@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <114f23ac20d73eeb624a9677e39a87b766f4bcc2.1734742802.git.yepeilin@google.com>
 
-From: Sven Schnelle <svens@linux.ibm.com>
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/verifier/atomic_load.c
+> @@ -0,0 +1,71 @@
+> +{
+> +	"BPF_ATOMIC load-acquire, 8-bit",
+> +	.insns = {
+> +		BPF_MOV64_IMM(BPF_REG_0, 0),
+> +		/* Write 1 to stack. */
+                         ~
+                /* Write 0x12 to stack. */
+                         ~~~~
+> +		BPF_ST_MEM(BPF_B, BPF_REG_10, -1, 0x12),
+> +		/* Load-acquire it from stack to R1. */
+> +		BPF_ATOMIC_OP(BPF_B, BPF_LOAD_ACQ, BPF_REG_1, BPF_REG_10, -1),
+> +		/* Check loaded value is 0x12. */
 
-Wire up the code to print function arguments in the function tracer.
-This functionality can be enabled/disabled during runtime with
-options/func-args.
+Will be fixed in the next version.
 
-        ping-689     [004] b....    77.170220: dummy_xmit(skb = 0x82904800, dev = 0x882d0000) <-dev_hard_start_xmit
-
-Co-developed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since v1: https://lore.kernel.org/20240904065908.1009086-8-svens@linux.ibm.com
-
- - Save only the arguments into the ring buffer and not the ftrace_regs
-   as the ftrace_regs should be opaque from generic code.
-
- - Have the function tracer event be dynamic so that it can hold an array
-   of arguments after the entry.
-
- kernel/trace/trace.c              | 12 ++++++--
- kernel/trace/trace.h              |  3 +-
- kernel/trace/trace_entries.h      |  5 ++--
- kernel/trace/trace_functions.c    | 46 +++++++++++++++++++++++++++----
- kernel/trace/trace_irqsoff.c      |  4 +--
- kernel/trace/trace_output.c       | 18 ++++++++++--
- kernel/trace/trace_sched_wakeup.c |  4 +--
- 7 files changed, 75 insertions(+), 17 deletions(-)
-
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index be62f0ea1814..3c0ffdcdcb7e 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2897,13 +2897,16 @@ trace_buffer_unlock_commit_nostack(struct trace_buffer *buffer,
- 
- void
- trace_function(struct trace_array *tr, unsigned long ip, unsigned long
--	       parent_ip, unsigned int trace_ctx)
-+	       parent_ip, unsigned int trace_ctx, struct ftrace_regs *fregs)
- {
- 	struct trace_buffer *buffer = tr->array_buffer.buffer;
- 	struct ring_buffer_event *event;
- 	struct ftrace_entry *entry;
-+	int size = sizeof(*entry);
- 
--	event = __trace_buffer_lock_reserve(buffer, TRACE_FN, sizeof(*entry),
-+	size += FTRACE_REGS_MAX_ARGS * !!fregs * sizeof(long);
-+
-+	event = __trace_buffer_lock_reserve(buffer, TRACE_FN, size,
- 					    trace_ctx);
- 	if (!event)
- 		return;
-@@ -2911,6 +2914,11 @@ trace_function(struct trace_array *tr, unsigned long ip, unsigned long
- 	entry->ip			= ip;
- 	entry->parent_ip		= parent_ip;
- 
-+	if (fregs) {
-+		for (int i = 0; i < FTRACE_REGS_MAX_ARGS; i++)
-+			entry->args[i] = ftrace_regs_get_argument(fregs, i);
-+	}
-+
- 	if (static_branch_unlikely(&trace_function_exports_enabled))
- 		ftrace_exports(event, TRACE_EXPORT_FUNCTION);
- 	__buffer_unlock_commit(buffer, event);
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 6f67bbc17bed..3d4a5ec9ee55 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -685,7 +685,8 @@ unsigned long trace_total_entries(struct trace_array *tr);
- void trace_function(struct trace_array *tr,
- 		    unsigned long ip,
- 		    unsigned long parent_ip,
--		    unsigned int trace_ctx);
-+		    unsigned int trace_ctx,
-+		    struct ftrace_regs *regs);
- void trace_graph_function(struct trace_array *tr,
- 		    unsigned long ip,
- 		    unsigned long parent_ip,
-diff --git a/kernel/trace/trace_entries.h b/kernel/trace/trace_entries.h
-index 254491b545c3..11288dc4f59b 100644
---- a/kernel/trace/trace_entries.h
-+++ b/kernel/trace/trace_entries.h
-@@ -61,8 +61,9 @@ FTRACE_ENTRY_REG(function, ftrace_entry,
- 	TRACE_FN,
- 
- 	F_STRUCT(
--		__field_fn(	unsigned long,	ip		)
--		__field_fn(	unsigned long,	parent_ip	)
-+		__field_fn(	unsigned long,		ip		)
-+		__field_fn(	unsigned long,		parent_ip	)
-+		__dynamic_array( unsigned long,		args		)
- 	),
- 
- 	F_printk(" %ps <-- %ps",
-diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
-index d358c9935164..1f4f02df6f8c 100644
---- a/kernel/trace/trace_functions.c
-+++ b/kernel/trace/trace_functions.c
-@@ -25,6 +25,9 @@ static void
- function_trace_call(unsigned long ip, unsigned long parent_ip,
- 		    struct ftrace_ops *op, struct ftrace_regs *fregs);
- static void
-+function_args_trace_call(unsigned long ip, unsigned long parent_ip,
-+			 struct ftrace_ops *op, struct ftrace_regs *fregs);
-+static void
- function_stack_trace_call(unsigned long ip, unsigned long parent_ip,
- 			  struct ftrace_ops *op, struct ftrace_regs *fregs);
- static void
-@@ -42,9 +45,10 @@ enum {
- 	TRACE_FUNC_NO_OPTS		= 0x0, /* No flags set. */
- 	TRACE_FUNC_OPT_STACK		= 0x1,
- 	TRACE_FUNC_OPT_NO_REPEATS	= 0x2,
-+	TRACE_FUNC_OPT_ARGS		= 0x4,
- 
- 	/* Update this to next highest bit. */
--	TRACE_FUNC_OPT_HIGHEST_BIT	= 0x4
-+	TRACE_FUNC_OPT_HIGHEST_BIT	= 0x8
- };
- 
- #define TRACE_FUNC_OPT_MASK	(TRACE_FUNC_OPT_HIGHEST_BIT - 1)
-@@ -114,6 +118,8 @@ static ftrace_func_t select_trace_function(u32 flags_val)
- 	switch (flags_val & TRACE_FUNC_OPT_MASK) {
- 	case TRACE_FUNC_NO_OPTS:
- 		return function_trace_call;
-+	case TRACE_FUNC_OPT_ARGS:
-+		return function_args_trace_call;
- 	case TRACE_FUNC_OPT_STACK:
- 		return function_stack_trace_call;
- 	case TRACE_FUNC_OPT_NO_REPEATS:
-@@ -220,7 +226,34 @@ function_trace_call(unsigned long ip, unsigned long parent_ip,
- 
- 	data = this_cpu_ptr(tr->array_buffer.data);
- 	if (!atomic_read(&data->disabled))
--		trace_function(tr, ip, parent_ip, trace_ctx);
-+		trace_function(tr, ip, parent_ip, trace_ctx, NULL);
-+
-+	ftrace_test_recursion_unlock(bit);
-+}
-+
-+static void
-+function_args_trace_call(unsigned long ip, unsigned long parent_ip,
-+			 struct ftrace_ops *op, struct ftrace_regs *fregs)
-+{
-+	struct trace_array *tr = op->private;
-+	struct trace_array_cpu *data;
-+	unsigned int trace_ctx;
-+	int bit;
-+	int cpu;
-+
-+	if (unlikely(!tr->function_enabled))
-+		return;
-+
-+	bit = ftrace_test_recursion_trylock(ip, parent_ip);
-+	if (bit < 0)
-+		return;
-+
-+	trace_ctx = tracing_gen_ctx();
-+
-+	cpu = smp_processor_id();
-+	data = per_cpu_ptr(tr->array_buffer.data, cpu);
-+	if (!atomic_read(&data->disabled))
-+		trace_function(tr, ip, parent_ip, trace_ctx, fregs);
- 
- 	ftrace_test_recursion_unlock(bit);
- }
-@@ -270,7 +303,7 @@ function_stack_trace_call(unsigned long ip, unsigned long parent_ip,
- 
- 	if (likely(disabled == 1)) {
- 		trace_ctx = tracing_gen_ctx_flags(flags);
--		trace_function(tr, ip, parent_ip, trace_ctx);
-+		trace_function(tr, ip, parent_ip, trace_ctx, NULL);
- #ifdef CONFIG_UNWINDER_FRAME_POINTER
- 		if (ftrace_pids_enabled(op))
- 			skip++;
-@@ -351,7 +384,7 @@ function_no_repeats_trace_call(unsigned long ip, unsigned long parent_ip,
- 	trace_ctx = tracing_gen_ctx_flags(flags);
- 	process_repeats(tr, ip, parent_ip, last_info, trace_ctx);
- 
--	trace_function(tr, ip, parent_ip, trace_ctx);
-+	trace_function(tr, ip, parent_ip, trace_ctx, NULL);
- 
- out:
- 	ftrace_test_recursion_unlock(bit);
-@@ -391,7 +424,7 @@ function_stack_no_repeats_trace_call(unsigned long ip, unsigned long parent_ip,
- 		trace_ctx = tracing_gen_ctx_flags(flags);
- 		process_repeats(tr, ip, parent_ip, last_info, trace_ctx);
- 
--		trace_function(tr, ip, parent_ip, trace_ctx);
-+		trace_function(tr, ip, parent_ip, trace_ctx, NULL);
- 		__trace_stack(tr, trace_ctx, STACK_SKIP);
- 	}
- 
-@@ -405,6 +438,9 @@ static struct tracer_opt func_opts[] = {
- 	{ TRACER_OPT(func_stack_trace, TRACE_FUNC_OPT_STACK) },
- #endif
- 	{ TRACER_OPT(func-no-repeats, TRACE_FUNC_OPT_NO_REPEATS) },
-+#ifdef CONFIG_FUNCTION_TRACE_ARGS
-+	{ TRACER_OPT(func-args, TRACE_FUNC_OPT_ARGS) },
-+#endif
- 	{ } /* Always set a last empty entry */
- };
- 
-diff --git a/kernel/trace/trace_irqsoff.c b/kernel/trace/trace_irqsoff.c
-index 504de7a05498..68ce152dbb8c 100644
---- a/kernel/trace/trace_irqsoff.c
-+++ b/kernel/trace/trace_irqsoff.c
-@@ -150,7 +150,7 @@ irqsoff_tracer_call(unsigned long ip, unsigned long parent_ip,
- 
- 	trace_ctx = tracing_gen_ctx_flags(flags);
- 
--	trace_function(tr, ip, parent_ip, trace_ctx);
-+	trace_function(tr, ip, parent_ip, trace_ctx, fregs);
- 
- 	atomic_dec(&data->disabled);
- }
-@@ -280,7 +280,7 @@ __trace_function(struct trace_array *tr,
- 	if (is_graph(tr))
- 		trace_graph_function(tr, ip, parent_ip, trace_ctx);
- 	else
--		trace_function(tr, ip, parent_ip, trace_ctx);
-+		trace_function(tr, ip, parent_ip, trace_ctx, NULL);
- }
- 
- #else
-diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
-index 40d6c7a9e0c4..aed6758416a0 100644
---- a/kernel/trace/trace_output.c
-+++ b/kernel/trace/trace_output.c
-@@ -1079,12 +1079,15 @@ enum print_line_t trace_nop_print(struct trace_iterator *iter, int flags,
- }
- 
- static void print_fn_trace(struct trace_seq *s, unsigned long ip,
--			   unsigned long parent_ip, long delta, int flags)
-+			   unsigned long parent_ip, long delta,
-+			   unsigned long *args, int flags)
- {
- 	ip += delta;
- 	parent_ip += delta;
- 
- 	seq_print_ip_sym(s, ip, flags);
-+	if (args)
-+		print_function_args(s, args, ip);
- 
- 	if ((flags & TRACE_ITER_PRINT_PARENT) && parent_ip) {
- 		trace_seq_puts(s, " <-");
-@@ -1098,10 +1101,19 @@ static enum print_line_t trace_fn_trace(struct trace_iterator *iter, int flags,
- {
- 	struct ftrace_entry *field;
- 	struct trace_seq *s = &iter->seq;
-+	unsigned long *args;
-+	int args_size;
- 
- 	trace_assign_type(field, iter->ent);
- 
--	print_fn_trace(s, field->ip, field->parent_ip, iter->tr->text_delta, flags);
-+	args_size = iter->ent_size - offsetof(struct ftrace_entry, args);
-+	if (args_size >= FTRACE_REGS_MAX_ARGS * sizeof(long))
-+		args = field->args;
-+	else
-+		args = NULL;
-+
-+	print_fn_trace(s, field->ip, field->parent_ip, iter->tr->text_delta,
-+		       args, flags);
- 	trace_seq_putc(s, '\n');
- 
- 	return trace_handle_return(s);
-@@ -1774,7 +1786,7 @@ trace_func_repeats_print(struct trace_iterator *iter, int flags,
- 
- 	trace_assign_type(field, iter->ent);
- 
--	print_fn_trace(s, field->ip, field->parent_ip, iter->tr->text_delta, flags);
-+	print_fn_trace(s, field->ip, field->parent_ip, iter->tr->text_delta, NULL, flags);
- 	trace_seq_printf(s, " (repeats: %u, last_ts:", field->count);
- 	trace_print_time(s, iter,
- 			 iter->ts - FUNC_REPEATS_GET_DELTA_TS(field));
-diff --git a/kernel/trace/trace_sched_wakeup.c b/kernel/trace/trace_sched_wakeup.c
-index 8165382a174a..19b0205b91dd 100644
---- a/kernel/trace/trace_sched_wakeup.c
-+++ b/kernel/trace/trace_sched_wakeup.c
-@@ -226,7 +226,7 @@ wakeup_tracer_call(unsigned long ip, unsigned long parent_ip,
- 		return;
- 
- 	local_irq_save(flags);
--	trace_function(tr, ip, parent_ip, trace_ctx);
-+	trace_function(tr, ip, parent_ip, trace_ctx, fregs);
- 	local_irq_restore(flags);
- 
- 	atomic_dec(&data->disabled);
-@@ -311,7 +311,7 @@ __trace_function(struct trace_array *tr,
- 	if (is_graph(tr))
- 		trace_graph_function(tr, ip, parent_ip, trace_ctx);
- 	else
--		trace_function(tr, ip, parent_ip, trace_ctx);
-+		trace_function(tr, ip, parent_ip, trace_ctx, NULL);
- }
- 
- static int wakeup_flag_changed(struct trace_array *tr, u32 mask, int set)
--- 
-2.45.2
-
+Thanks,
+Peilin Ye
 
 
