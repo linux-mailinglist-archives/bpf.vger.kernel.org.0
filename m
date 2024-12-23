@@ -1,182 +1,133 @@
-Return-Path: <bpf+bounces-47565-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47566-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CF6B9FB654
-	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2024 22:44:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8FF79FB72A
+	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2024 23:27:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F22E165F3C
-	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2024 21:44:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D40977A16BC
+	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2024 22:26:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7F9A1D6DA9;
-	Mon, 23 Dec 2024 21:43:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14D731CEAAC;
+	Mon, 23 Dec 2024 22:26:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ACfWoK1M"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f6BGfmrY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B650D1C4A34;
-	Mon, 23 Dec 2024 21:43:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E835433D5;
+	Mon, 23 Dec 2024 22:26:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734990231; cv=none; b=jpgDloBEKmX0/D4NNniclhce7bK1cAhNgcGwczh/S8LTUFOUpxnAy2xecF4CZlruDzVYukntEndtaGRzEjRCi6EPvY1WK/YZcxItUk9SntFgdhIaW79uOq1O9tm+tPsgK6gU9/wYlMpSPQJVXySeLFzDyt6FzBmA0K79dTM3FCk=
+	t=1734992812; cv=none; b=Ejc9we7HpT/edRqOGGcBj7vcFoDAEnWjdmKQOxNldvWf96Fqj687Gjngqq7vuVIbNHRHN7XPVRIpxExJobzDPbMDc6Oujw4OmhLiZ7y7kfchsNRUUcv4c8aUwd0rcezFPSIwSwsfvnY/IRViX9ZZpK0tJ8tvuL79QiFkwC/eC94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734990231; c=relaxed/simple;
-	bh=s0CNqzqT8bmHy3bAfm+RcQX0YZ7PY72wrxELCw1lowk=;
+	s=arc-20240116; t=1734992812; c=relaxed/simple;
+	bh=fUypFC6HphtaPlfD0FEXlmjWj12raqixs8ILrIpMRKM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aYITCK+r2kv0PkqpSTuUFln2PtRK22quqgfmFi8JP1Hq1anqhiWOWf+W4mvAot/j71lV3jYbzx/rXHAhmKG42DPBXLnGJKOivVJLPISm85xdx2uvPE0As6MwsasDFRP08GzegM4FwgR31Ap9K7PC0kOeS4F2kHzXgHDrJ6cSxts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ACfWoK1M; arc=none smtp.client-ip=209.85.221.47
+	 Content-Type:Content-Disposition:In-Reply-To; b=oLnBGq4kt9MQT3Encf2Jbnbtj94wLdFkGOHUiVi+4qiYsxzKPKkLBboEe5BmF9Woraw5HuyaXsHEQp2Cjr6fz5hlcLTY0y7lwMpMlXkcJe9ggxZfYsLO3ZrwbVnr/pQ88ovuqBXcW+t4M7ru745KLbVy2K2YQ1RpsAJATck6kYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f6BGfmrY; arc=none smtp.client-ip=209.85.219.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-387897fae5dso310065f8f.2;
-        Mon, 23 Dec 2024 13:43:49 -0800 (PST)
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-e479e529ebcso3705838276.3;
+        Mon, 23 Dec 2024 14:26:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734990228; x=1735595028; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=eJINGdpDwCDG3ewzWN9k9REq0fQ7Kv+5EsDRsZO4yDQ=;
-        b=ACfWoK1M+7OlPNls1bpYCS2X82UfbXF27DbznxaKT+vD/VL6INUChJvOwtW4wUd/FU
-         4wVQyBVcfe5vdbFLLcXbPVMrjzw3Wv/09ssPwH2ymgph2r/IKdO4Smi9s42zgMU7+ZfM
-         uD29R9MYK4uCn+8QUi1/NNOTrgtxGG5NRaZYgdteNtK5VAKZTfyGhO3ZltPkTjtIX8np
-         gLMmr7PghpfdrAfjemJE6Lx+nI6b3+uhU8NGQwWLE+L/aPxsWEWHhcpf3Yz0ZxRuCRJN
-         fHKOyt2PMYn9vsjCYwOmdVPTV74NKyR3bpRv3b4YBozZIE8eZ5E7pgMsvGM9gJivpwv6
-         xBBQ==
+        d=gmail.com; s=20230601; t=1734992810; x=1735597610; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=tUaXpDk1Sgww0OqyHi1MAHDK4v28U9v9Mw3DUD7/7B8=;
+        b=f6BGfmrYPV+lrcDoiJii5PaR6IsYebr/YM20kwhvtq49BtG9wkpajymM8qBCWVFd8B
+         JTX7xw/r+HLofY8SBOi08r0S7j0VuYMyhVCmBcS/QBIK6s5jyjr6oq4+T+Hqg81D9cwO
+         EVA1uPGdyvdcidqu9PXskjnG9fJ099oqKwSfZDbmVRfOn2ZJbmYBiitZCC1nxpyaAXco
+         1WB9g3siWCBLWXHXLuW2g7GqBpFo2S0sjjeZdSyWiCPn6f9RjrrWW0l3KIRAT8vGlneL
+         +Ql35nGysXtbkV7EGQU4jnWyNscctlNEYw7fYxaCsVUBVIEDWtoA9PGG1c/Vp1Qk0jvl
+         adkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734990228; x=1735595028;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eJINGdpDwCDG3ewzWN9k9REq0fQ7Kv+5EsDRsZO4yDQ=;
-        b=JjiemA37gN7JI1GuX1i6NH7JfUaaTQBkEcFRd7LWIj+fdlaFj9cEseK3r6MELO6GJ7
-         LFAZMpettWZNLjIYqlV18Tt4rt2nYrkJ2VquSwfrPom7hu5keIomgEOE0KP4Zj9Ivn0V
-         WrB3XmuoYNn7Ia0obNmUZ5G9x2lmPvh19/5blxJQHv0YAdQZRRFQ5xvzmVvMh5F2+F4W
-         JfHXEwnUp0WTGm8i+FfbI+Ya6ZFyu+42hoo5ZsPoBAhLbsRKqlqBOePmNiJd9mluy165
-         AY6zzzc3W4KmRFeAS1aLlK/iLB0lTmAp+CtnlPniPuKxLbXpqLnHDtUH0u48zJ46NPzi
-         gz5A==
-X-Forwarded-Encrypted: i=1; AJvYcCVCh96V991yxeL75bWnIGuWCct++vLVtL70EGLK10CaXVbI8fqykFYH4FbSvBFkbVO2CE0rGJSybix7Drhx@vger.kernel.org, AJvYcCWKAc9wt85jz6GOoiJt/nv6+j78/vhWQZwjn7zHDuE/tBwGemHQaykq2VjnLzzEe/Hn+qDkJ02q@vger.kernel.org, AJvYcCX4NhgSBd0PI978x6R5bE2p1lL2RbH6pNlLhjhQA24G5ZcrhjgpY6YHQEtJZvbSY6n14H8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwYWFl2q8WmR9UyY5VyFWSuQHQeXltYRuo4/3/Q2CB76XUCaqyc
-	7ACeXje4pP4IWymdnh/4BzmxlqfBpSYLcBZqcGOLriptmP5jM2qC
-X-Gm-Gg: ASbGncvSQIWxs8B7MN/lM5gMaRNOBnZx1pSp38cd6nsdU8lqqQtzsUeo90ucFlj7nPv
-	OqPMIVNwPaxYf4NrIJhLuDls3yom7KqFWwpo7Kh0Ka659uOQz0HsmxAOCUXZDjXc9XOqotbWkkp
-	cYf4EoR0TGGP9BBFSjmad6HJeqBhajCWfnEQghWrEjIoEPid3xijOzGHiS9nXJ/btLNfx68ZpaS
-	8TK63EhqnF8VR51fErBPt5rqClJooaY3vOXHlPrFIyZ
-X-Google-Smtp-Source: AGHT+IHL4I7TGBfT9Dfs3U2q5y6UKuVcMOivINOhCJ4rodXMGa1Ob/wIQjBOw7XqflRGuJN4X3cDbA==
-X-Received: by 2002:a05:6000:70a:b0:385:faaa:9cfe with SMTP id ffacd0b85a97d-38a223f82e8mr5051691f8f.12.1734990227688;
-        Mon, 23 Dec 2024 13:43:47 -0800 (PST)
-Received: from skbuf ([86.127.124.81])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a1c8330d4sm12226921f8f.29.2024.12.23.13.43.45
+        d=1e100.net; s=20230601; t=1734992810; x=1735597610;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tUaXpDk1Sgww0OqyHi1MAHDK4v28U9v9Mw3DUD7/7B8=;
+        b=UH7ayZuLpV5+9OHFTd4klk1xUrLX8zMtrDihTGHhGRLzyb3lalgZFUKbe4yxQYRG49
+         GdIVEKU+UX3Is3PXSEnZ9MgDgAD4QrGV8tpiNMn/kaVjOHYT2jAfUA+iEcz1lNKF/xjV
+         FLLIc8YgSRkN2IMx4NRGoik2/oPJSBO4rQzaJiwXPDyL0PDGn5iu19tTyW1+CMnme6ss
+         UGVrDWl5q5icZuGwOEYV0JbMbJ4dlA3/0yjt//ZLsfqz9WeB4uhsbj902IVl1n85wKfD
+         iu+JuLqaylLf3uMNRZHrIZQx91gtyeXNSmfioNv5zFDubJOpd9DwcDOu6FCYF1tYBKIC
+         quCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVEKeJ6jNPrxmYWNEYRjrH+hic/jubaQmsY7BuQMpm+cbTaym93DM5X7QWdrVSGDJZSwZY=@vger.kernel.org, AJvYcCWMwknTFr8X3l1ceniSdJNU7B3aaVaiiOPrYS4ApHEsSZJ8GWjAOQcTDZlr68WSYvtKbIiiwR2CVFpIrHQK@vger.kernel.org
+X-Gm-Message-State: AOJu0YxzXwFYX5G1WClHOLbvDMU/hZLS7rGZ9vYzMVCkARj0JNb6u710
+	9RaQXqtTBCpZUb+hDAPMBeBNhpbg4e/oLiCUJzxnfftPoHvwWd6l
+X-Gm-Gg: ASbGncvXsof/YX4TMI0rI2rxMnk2qxJ4RKS6CgxMslAwKBjJS9sJnva2eTFX8X8C+zn
+	9wy0YrSQaUR8sJK8PxyuZKho8Serj5ncViueCzXEjixTViBEL1bpbrYw2xvK3wZggAm/CAD6tp6
+	y34ff2eu9VePgD3gbDiH1eJwjQy3reY7UcrBEJl78tJfKnfgAlVWZET8tgwD0bi/FsIqet6Yhw/
+	UKMhHoQMAXtfv3VdZi6vUr9JrOZJ/SD8qhqx4m76YBDX8F7Sn/eTmZ2mQeak1sYy/kobO+XIaWz
+	sYEm6kM99jVspg+2
+X-Google-Smtp-Source: AGHT+IHU5ELfdHjF5RjV9H5/QeELZxdVcLRUacsn5eOK9wiJVnl4ObMEJ8EWCECkF6p9SZdRgra5fQ==
+X-Received: by 2002:a05:690c:7405:b0:6ee:7797:672 with SMTP id 00721157ae682-6f3f80d6caemr108866657b3.7.1734992810048;
+        Mon, 23 Dec 2024 14:26:50 -0800 (PST)
+Received: from localhost (c-24-129-28-254.hsd1.fl.comcast.net. [24.129.28.254])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6f3e7477596sm25159527b3.54.2024.12.23.14.26.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Dec 2024 13:43:46 -0800 (PST)
-Date: Mon, 23 Dec 2024 23:43:43 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: "Abdul Rahim, Faizal" <faizal.abdul.rahim@linux.intel.com>
-Cc: Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH iwl-next 5/9] igc: Add support to set MAC Merge data via
- ethtool
-Message-ID: <20241223214343.dbmhbj7cr7pfbeub@skbuf>
-References: <20241216064720.931522-1-faizal.abdul.rahim@linux.intel.com>
- <20241216064720.931522-1-faizal.abdul.rahim@linux.intel.com>
- <20241216064720.931522-6-faizal.abdul.rahim@linux.intel.com>
- <20241216064720.931522-6-faizal.abdul.rahim@linux.intel.com>
- <20241216181339.zcnnqna2nc73sdgh@skbuf>
- <ef07ba7e-eb61-495b-8abc-a46d675302d4@linux.intel.com>
+        Mon, 23 Dec 2024 14:26:49 -0800 (PST)
+Date: Mon, 23 Dec 2024 14:26:48 -0800
+From: Yury Norov <yury.norov@gmail.com>
+To: Andrea Righi <arighi@nvidia.com>
+Cc: Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>,
+	Changwoo Min <changwoo@igalia.com>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 04/10] sched_ext: idle: use assign_cpu() to update the
+ idle cpumask
+Message-ID: <Z2njqApQccTHU_aN@yury-ThinkPad>
+References: <20241220154107.287478-1-arighi@nvidia.com>
+ <20241220154107.287478-5-arighi@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ef07ba7e-eb61-495b-8abc-a46d675302d4@linux.intel.com>
+In-Reply-To: <20241220154107.287478-5-arighi@nvidia.com>
 
-Hi Faizal,
+On Fri, Dec 20, 2024 at 04:11:36PM +0100, Andrea Righi wrote:
+> Use the assign_cpu() helper to set or clear the CPU in the idle mask,
+> based on the idle condition.
+> 
+> Cc: Yury Norov <yury.norov@gmail.com>
+> Signed-off-by: Andrea Righi <arighi@nvidia.com>
 
-On Mon, Dec 23, 2024 at 05:23:27PM +0800, Abdul Rahim, Faizal wrote:
-> To recap:
-> 
-> Standard range: 60, 124, 188, 252 (without mCRC).
-> i226 range: 64, 128, 192, 256 (without mCRC).
-> 
-> The current IGC_TX_MIN_FRAG_SIZE is incorrectly set to 68 due to our
-> misinterpretation of the i226 documentation:
-> "The minimum size for non-final preempted fragments is 64 * (1 + MIN_FRAG) +
-> 4 (mCRC)."
-> 
-> The calculation above is for the fragment size on the wire, including mCRC.
-> For the TX preemption point and pure fragment size, mCRC should not be
-> included, as confirmed by the hardware owner.
-> 
-> On RX, i226 can handle any size, even the standard minimum of 60 octets
-> (without mCRC).
-> 
-> What would be ideal for i226:
-> Min frag user set 60:64 → Multiplier = 0.
-> Min frag user set 65:128 → Multiplier = 1.
-> (And so on)
-> 
-> To make this work and reuse the existing code, we’d need to tweak these two
-> functions:
-> ethtool_mm_frag_size_add_to_min(val_min, xxx)
-> ethtool_mm_frag_size_min_to_add(xx)
-> 
-> With the current code, if I pass 64 octets as val_min to
-> ethtool_mm_frag_size_add_to_min(), it returns error.
-> 
-> Proposed modification:
-> Add a new parameter to ethtool_mm_frag_size_min_to_add() - maybe let's call
-> it dev_min_tx_frag_len.
-> 
-> Set dev_min_tx_frag_len = 64 for i226, 60 for other drivers.
-> This field will be used to:
-> (1) modify the calculation in ethtool_mm_frag_size_min_to_add()
-> (2) as a warning prompt to user when the value is not standard, done in
-> ethtool_mm_frag_size_add_to_min()
-> 
-> I was thinking (1) would modify the existing:
-> u32 ethtool_mm_frag_size_add_to_min(u32 val_add)
-> {
-> 	return (ETH_ZLEN + ETH_FCS_LEN) * (1 + val_add) - ETH_FCS_LEN;
-> }
-> 
-> To something like:
-> u32 ethtool_mm_frag_size_add_to_min(u32 val_add, u32 dev_min_tx_frag_len)
-> {
->     return dev_min_tx_frag_len + (val_add * 64);
-> }
-> 
-> So this will yield:
-> Standard range (dev_min_tx_frag_len = 60): 60, 124, 188, 252
-> i226 range (dev_min_tx_frag_len = 64): 64, 128, 192, 256
-> 
-> But what's not so nice is, the rest of other drivers have to set this new
-> param when calling ethtool_mm_frag_size_add_to_min().
-> 
-> Is something like this okay ? I'm open to better suggestion.
+Acked-by: Yury Norov <yury.norov@gmail.com>
 
-I'm taking a break probably for the rest of the year, and spending time
-for the Christmas holidays mostly off lists.
-
-I didn't look through all your replies. Just regarding the one quoted
-above: just don't use the ethtool_mm_frag_size_add_to_min() and
-ethtool_mm_frag_size_min_to_add() helpers if they aren't useful as-is.
-They are designed for a standardized NIC implementation. They are opt-in
-from driver code for a reason.
+> ---
+>  kernel/sched/ext_idle.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/kernel/sched/ext_idle.c b/kernel/sched/ext_idle.c
+> index 0e57830072e4..dedd39febc88 100644
+> --- a/kernel/sched/ext_idle.c
+> +++ b/kernel/sched/ext_idle.c
+> @@ -460,10 +460,7 @@ void __scx_update_idle(struct rq *rq, bool idle)
+>  			return;
+>  	}
+>  
+> -	if (idle)
+> -		cpumask_set_cpu(cpu, idle_masks.cpu);
+> -	else
+> -		cpumask_clear_cpu(cpu, idle_masks.cpu);
+> +	assign_cpu(cpu, idle_masks.cpu, idle);
+>  
+>  #ifdef CONFIG_SCHED_SMT
+>  	if (sched_smt_active()) {
+> -- 
+> 2.47.1
 
