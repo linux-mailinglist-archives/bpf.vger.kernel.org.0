@@ -1,153 +1,168 @@
-Return-Path: <bpf+bounces-47553-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47554-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F2799FB4E3
-	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2024 21:12:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 045F59FB50D
+	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2024 21:16:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3655B1884E3F
-	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2024 20:12:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95761188507A
+	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2024 20:16:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67E8A1C5F31;
-	Mon, 23 Dec 2024 20:11:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="NZpE61Jm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06F6C1D5AB7;
+	Mon, 23 Dec 2024 20:14:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA3921B87CC
-	for <bpf@vger.kernel.org>; Mon, 23 Dec 2024 20:11:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1DBE1CCEE9;
+	Mon, 23 Dec 2024 20:14:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734984714; cv=none; b=MEsHyAKFXpupfASakh3hZmz4MB1alcUA5FII9/9mMVF/SjT3co6is/5X203AVKNcNtYqKmgfltlqW97W1O+NMX0kOtmrivUhh07VRWmBLLh315w04bnBaSlstwVbYqVYpNbxL1rp0ddvtJgc1hwgyQDpi/x0PFme5q5K+rHjyvM=
+	t=1734984890; cv=none; b=DNVt7xvEW5gg1GEQjISoZhqeZSWdJhM8/ZvvT2CGFwGyYd1Xh1WwW/79nZhEuMLmhwuga0DIH9U/FbQQX2yGxxz4XGr7kn7tOoSVZC70X/emwCGjPvcSEzsKOIMJppogNCl2gxc/l9gBifc9N9plJc7EfQwmMGKxYcnb72BCvX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734984714; c=relaxed/simple;
-	bh=nlSIYEIcTIXr6W+qfbaXuISKl9s5T1ah4gvEeeqCsq8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uGpx1/QdwdY60ICLQfZscxQw6Ia/rADvUxr35isF1GtYbraYGoWH/3t4bhE60339+LJsIFVltMRnHc/rOHvA+22jfinHMl47l7mdnEW3gKUNdnUDyNIpV1v3Is/p1k2otOrndMlbSXXXTsdn6xKXnDxBTbfHfmU6enlWPvJDj3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=NZpE61Jm; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-aa6a92f863cso561276066b.1
-        for <bpf@vger.kernel.org>; Mon, 23 Dec 2024 12:11:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1734984711; x=1735589511; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4ChF3RaNo25Rqn5QFZZMj4eA40qXMb5oBarGxFKM6HU=;
-        b=NZpE61Jm7noH5OJKOWPF6m5sj7WPMfLrdvP+S2FhetTCb1XQHsn46V1S0ElGa9Rqph
-         FRPvdgyRK7QgVWNo+CNlKO9T2++dujjm8u8HMB+JCJX8GKPv2SB8+XvxmTO5ecaIohuo
-         R9037Q64XIMuWjnDzJh4ziT49obgzAqTsm8uU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734984711; x=1735589511;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4ChF3RaNo25Rqn5QFZZMj4eA40qXMb5oBarGxFKM6HU=;
-        b=DqIFv8MklNp+RbxKna9yZeBnXe1POPKYxy1smUrFfs8LcynL1gfLZvoRScnugG8cJE
-         QjvqQoSexp6/Lq9Vdrbm0YsLtovALdtPZzibNtQ92r5ysvfsgp6Cu6Hn5C8LpCteZbY1
-         M024LSj81M2EubAaR+/m4DO/2k/fnhAdR8DyWoBIGtllFq71GW2gXBl35qyN+mUu8kwT
-         jTE2aAWqWg8UYcVqTwWw/90P1URTqdjbWDRb+7o8TNUYbzvo6Kwh8jf05vCozkJ3Ami+
-         wo1a3HnLfvvjY7s7nQfdBuaoCcg8A/sYgKAaApArqDb2RwWQM6lR6CxKAGiTKl0OUtH9
-         cISg==
-X-Forwarded-Encrypted: i=1; AJvYcCV7/lHm1/iGv+NjawnVQB6tHS1/XEMaYRfyL9BQyYQHevaID/5yaQiUcllNu0q1yrXa+OU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw9goDRSvCKMC4u0KGFsQWxwSaBdozdeBn8K0ix6ZPRrzZi66vd
-	OHTX56+V8+33x9UN5BD40K1exW18cFLnyKUn3VJpmP3gYKv33jAs9wFpA7VTtZYdGhtKb0viT2O
-	zJY0=
-X-Gm-Gg: ASbGncu118mW7WW2xCxn5s61PWFWIjEDh85XA8EWH4Y24i2S7QxCdd6csRHhvit038l
-	hY07vM6PQhMQZHG05+966o9h5nGanhrp4ckDJTlLlwpWJ21aovYXDET9uU3ugm6rWSKSOjGvQPJ
-	yHzOHuzGQGWllN7/LbZ+AT49w2YlNlyfuV9jkLgiJ4kXfaUdniCIwa1Cvz3iSLrmRiBbw/zVl7x
-	nxU2MGUxRu4qMFJJ4wFVFOGw5lnLqx8be3BJXQetCgkc+MwFC87srdYtopBnizbODiWryXRAhRc
-	KbPpdy4BGGfaa2WCVz664HptUJrRG7o=
-X-Google-Smtp-Source: AGHT+IHxW588SY1v3QLXtYP+oKMwDvc27TfR1OiRi744hIRg+DP8N2KXbJIukgP3iHUXCSESsmWPJA==
-X-Received: by 2002:a17:907:1b81:b0:aae:869f:c4ad with SMTP id a640c23a62f3a-aae869fc58emr748473866b.7.1734984710802;
-        Mon, 23 Dec 2024 12:11:50 -0800 (PST)
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com. [209.85.218.42])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aac0efe3bc2sm563967266b.105.2024.12.23.12.11.49
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Dec 2024 12:11:50 -0800 (PST)
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-aa66e4d1d5aso726230766b.2
-        for <bpf@vger.kernel.org>; Mon, 23 Dec 2024 12:11:49 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUNHri+ZrL8IMucuWrmmz88lg4L+u7OORgW1U0/PCYwnCD82F7cbUrTvfYfdf5alQ27nFw=@vger.kernel.org
-X-Received: by 2002:a17:907:d92:b0:aa6:7c8e:8087 with SMTP id
- a640c23a62f3a-aac27026fdfmr1355001466b.12.1734984709650; Mon, 23 Dec 2024
- 12:11:49 -0800 (PST)
+	s=arc-20240116; t=1734984890; c=relaxed/simple;
+	bh=Y/OVOGLj/U7XpM5vt6i89G1/XYPs/UUvpfRYJtJdfKI=;
+	h=Message-ID:Date:From:To:Cc:Subject; b=TMFafTZBbH8IcERW3RV7uM7Ag8QOFkvEbs9TdUJAhEboCyTYmz43GZjon8ug7q0XOu/LUYMrqCQ4KmscETEO7Fm3eIzYjv+RDBdxc7r9uFP9icyVf5bh+Jk7w8EswkrFKUhMecL1RLo7/pEzWpfdNpGwM4dc4C8v++Cmis5NcTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37D44C4CED3;
+	Mon, 23 Dec 2024 20:14:50 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.98)
+	(envelope-from <rostedt@goodmis.org>)
+	id 1tPoq5-0000000Dg85-3eSC;
+	Mon, 23 Dec 2024 15:15:41 -0500
+Message-ID: <20241223201347.609298489@goodmis.org>
+User-Agent: quilt/0.68
+Date: Mon, 23 Dec 2024 15:13:47 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Sven Schnelle <svens@linux.ibm.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>,
+ Guo Ren <guoren@kernel.org>,
+ Donglin Peng <dolinux.peng@gmail.com>,
+ Zheng Yejian <zhengyejian@huaweicloud.com>,
+ bpf@vger.kernel.org
+Subject: [PATCH v2 0/4] ftrace: Add function arguments to function tracers
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <CAHk-=whOM+D1D4wb5M_SGQeiDSQbmUTrpjghy2+ivo6s1aXwFQ@mail.gmail.com>
- <20241218013620.1679088-1-torvalds@linux-foundation.org>
-In-Reply-To: <20241218013620.1679088-1-torvalds@linux-foundation.org>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 23 Dec 2024 12:11:33 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgMLh=v9dQ5vzjJ8K7PWR6eeohapMy=Apmm+QET=rn1xg@mail.gmail.com>
-Message-ID: <CAHk-=wgMLh=v9dQ5vzjJ8K7PWR6eeohapMy=Apmm+QET=rn1xg@mail.gmail.com>
-Subject: Re: [PATCH] vsprintf: simplify number handling
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Florent Revest <revest@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc: LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 
-So I pushed out the whole series of vsprintf cleanups into the
-'vsnprintf' branch.
 
-It's rebased on top of 6.13-rc4, and if it works for people, I'll keep
-it stable.
+These patches add support for printing function arguments in ftrace.
 
-But note that last commit, which makes the 'binary' version pack
-numerical arguments (but not '%c') with the traditional and simpler C
-type expansion (ie 'at least int sized').
+Example usage:
 
-Everything else is *supposed* to be a complete no-op, and only clean
-up code (and make it generate a lot better code, btw).
+function tracer:
 
-The main objective having been to make it possibly easier to do fairly
-straightforward printf code with
+ ~# cd /sys/kernel/tracing/
+ ~# echo icmp_rcv >set_ftrace_filter
+ ~# echo function >current_tracer
+ ~# echo 1 >options/func-args
+ ~# ping -c 10 127.0.0.1
+[..]
+ ~# cat trace
+[..]
+            ping-1277    [030] ..s1.    39.120939: icmp_rcv(skb=0xa0ecab00) <-ip_protocol_deliver_rcu
+            ping-1277    [030] ..s1.    39.120946: icmp_rcv(skb=0xa0ecac00) <-ip_protocol_deliver_rcu
+            ping-1277    [030] ..s1.    40.179724: icmp_rcv(skb=0xa0ecab00) <-ip_protocol_deliver_rcu
+            ping-1277    [030] ..s1.    40.179730: icmp_rcv(skb=0xa0ecac00) <-ip_protocol_deliver_rcu
+            ping-1277    [030] ..s1.    41.219700: icmp_rcv(skb=0xa0ecab00) <-ip_protocol_deliver_rcu
+            ping-1277    [030] ..s1.    41.219706: icmp_rcv(skb=0xa0ecac00) <-ip_protocol_deliver_rcu
+            ping-1277    [030] ..s1.    42.259717: icmp_rcv(skb=0xa0ecab00) <-ip_protocol_deliver_rcu
+            ping-1277    [030] ..s1.    42.259725: icmp_rcv(skb=0xa0ecac00) <-ip_protocol_deliver_rcu
+            ping-1277    [030] ..s1.    43.299735: icmp_rcv(skb=0xa0ecab00) <-ip_protocol_deliver_rcu
+            ping-1277    [030] ..s1.    43.299742: icmp_rcv(skb=0xa0ecac00) <-ip_protocol_deliver_rcu
 
-        while (*fmt.str) {
-                fmt = format_decode(fmt, &spec);
+function graph:
 
-                switch (fmt.state) {
-                case FORMAT_STATE_NONE:
-                        ...
-                }
-        }
+ ~# cd /sys/kernel/tracing
+ ~# echo icmp_rcv >set_graph_function
+ ~# echo function_graph >current_tracer
+ ~# echo 1 >options/funcgraph-args
 
-with a lot fewer case statements (particularly cutting down the number
-handling to the point where you *really* don't need to worry about all
-the special cases).
+ ~# ping -c 1 127.0.0.1
 
-It's still obviously not usable from outside the vsprintf.c code
-itself (none of these interfaces are exported to modules, and are in
-fact still 'static'). But it's at the point where maybe it's clean
-enough that some day it *could* be exposed.
+ ~# cat trace
 
-Anyway, comments? Particularly any of the strange vbin_printf /
-bstr_printf users, because that last commit does change the encoding
-of %hd / %hhd in the binary buffer. It does look like bpf can't care,
-and tracing hopefully always pairs up vbin_printf with bstr_printf,
-but maybe some horrid thing exposes the raw buffer to user space.
+ 30)               |  icmp_rcv(skb=0xa0ecab00) {
+ 30)               |    __skb_checksum_complete(skb=0xa0ecab00) {
+ 30)               |      skb_checksum(skb=0xa0ecab00, offset=0, len=64, csum=0) {
+ 30)               |        __skb_checksum(skb=0xa0ecab00, offset=0, len=64, csum=0, ops=0x232e0327a88) {
+ 30)   0.418 us    |          csum_partial(buff=0xa0d20924, len=64, sum=0)
+ 30)   0.985 us    |        }
+ 30)   1.463 us    |      }
+ 30)   2.039 us    |    }
+[..]
 
-From Steven's email and the "[FAILED TO PARSE]" output from 'trace-cmd
-report', I suspect that the raw buffer is indeed exposed to user
-space, but was already handled wrong by the tracing tools. I might
-even have unintentionally fixed it, because the new binary buffer
-format is not only simplerr, but a hell of a lot more logical too.
+This was last posted by Sven Schnelle here:
 
-But hey - while the other commits aren't *supposed* to have any
-semantic differences and only simplify the code and make for better
-code generation, mistakes happen.
+  https://lore.kernel.org/all/20240904065908.1009086-1-svens@linux.ibm.com/
 
-It WorksForMe(tm), and I've been running most of this for about a week
-now (ore-rebase), so it's presumably not *completely* broken.
+As Sven hasn't worked on it since, I decided to continue to push it
+through. I'm keeping Sven as original author and added myself as
+"Co-developed-by".
 
-            Linus
+The main changes are:
+
+- Made the kconfig option unconditional if all the dependencies are set.
+
+- Not save ftrace_regs in the ring buffer, as that is an abstract
+  descriptor defined by the architectures and should remain opaque from
+  generic code. Instead, the args are read at the time they are recorded
+  (with the ftrace_regs passed to the callback function), and saved into
+  the ring buffer. Then the print function only takes an array of elements.
+
+  This could allow archs to retrieve arguments that are on the stack where
+  as, post processing ftrace_regs could cause undesirable results.
+
+- Made the function and function graph entry events dynamically sized
+  to allow the arguments to be appended to the event in the ring buffer.
+  The print function only looks to see if the event saved in the ring
+  buffer is big enough to hold all the arguments defined by the new
+  FTRACE_REGS_MAX_ARGS macro and if so, it will assume there are arguments
+  there and print them. This also means user space will not break on
+  reading these events as arguments will simply be ignored.
+
+- The printing of the arguments has some more data when things are not
+  processed by BPF. Any unsupported argument will have the type printed
+  out in the ring buffer. 
+
+- Also removed the spaces around the '=' as that's more in line to how
+  trace events show their fields.
+
+- One new patch I added to convert function graph tracing over to using
+  args as soon as the user sets the option even if function graph tracing
+  is enabled. Function tracer did this already by default.
+
+Steven Rostedt (1):
+      ftrace: Have funcgraph-args take affect during tracing
+
+Sven Schnelle (3):
+      ftrace: Add print_function_args()
+      ftrace: Add support for function argument to graph tracer
+      ftrace: Add arguments to function tracer
+
+----
+ include/linux/ftrace_regs.h          |   5 +
+ kernel/trace/Kconfig                 |  12 +++
+ kernel/trace/trace.c                 |  12 ++-
+ kernel/trace/trace.h                 |   4 +-
+ kernel/trace/trace_entries.h         |  12 ++-
+ kernel/trace/trace_functions.c       |  46 ++++++++-
+ kernel/trace/trace_functions_graph.c | 174 ++++++++++++++++++++++++++++-------
+ kernel/trace/trace_irqsoff.c         |   4 +-
+ kernel/trace/trace_output.c          |  96 ++++++++++++++++++-
+ kernel/trace/trace_output.h          |   9 ++
+ kernel/trace/trace_sched_wakeup.c    |   4 +-
+ 11 files changed, 324 insertions(+), 54 deletions(-)
 
