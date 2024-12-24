@@ -1,151 +1,123 @@
-Return-Path: <bpf+bounces-47594-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47595-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 250119FBEC0
-	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2024 14:39:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 872EF9FC109
+	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2024 18:33:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 562F07A1FBE
-	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2024 13:39:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DBED07A1D1B
+	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2024 17:33:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2772E1D9688;
-	Tue, 24 Dec 2024 13:38:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6589A212B35;
+	Tue, 24 Dec 2024 17:33:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="k8l3k7jp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kjgHajkx"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B59E11C5F3D;
-	Tue, 24 Dec 2024 13:38:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DE8B149C51;
+	Tue, 24 Dec 2024 17:33:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735047504; cv=none; b=Y7lffC6o5JS+kj5t0DxKE+MqPkObMLiy6z/dRw0QB8cQyGjQFA59lGJAIwMDpJa8QdoC3sY+q2NMK5ixEcGoGU0WS5QWBBiA65fLxoCOI1h0L5WnLqccCzuQi45XAS6b51LSuBPiyVuHtmtaN6KI1+7//66E9mIoqFXspqUFZds=
+	t=1735061600; cv=none; b=u3uCS8mCAeQ+xF9Q5aqbVOMLVn+IvHBdDxGQwIJlQGyHAHzMz3zRP9/8X+WyanQPol0H+x2ZyPaja+1zXMxBkF2Td6OPiuJ4E0qWwOs4Ovlbq7jzZisdvQkQmVqnzmdjE0DCtfhVXHf6xPPPl66xv7wFlEW7FN3uTAG9FF/WF8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735047504; c=relaxed/simple;
-	bh=Np9DxG6lhp5f+BD4bT9ivbfljPDJZWbA0YKs51oy7tA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ulKMBIXCim23HiUh+EkDX7TBT3EPACvwe1vKZEQ1XIZkA8OLOMxIpMTWWqHLVH1+1gWtqnSgfplUsHXw+QUP0GKuvJpnFGY444ecMJIDU1LMqVUGfLL9itQWxTglAxRnan61lxWtn9riWXihRccuqI4bq/wzITyFW8UdL9RpYZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=k8l3k7jp; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=MHnOFXXSXIdENXt5HTUAoLwLeJZTiiq+wvPscmOY3b8=; b=k8l3k7jpBE9PzGG4UmjN9g+Rvt
-	WJPzZlvPRgIVkVdIEi49UMoblb14R8ITJAiF/A8YcDLjFTfZCoPZI3/MfvM48SBB+kpQcks+O21++
-	w5lhUBV/89JFrRITbCBWBGE58W9Aa2l2HzDPXIgXqCCKmbcubVFYhVzvyhJncNgbICuoC5nT0fVWO
-	+VEr3gGapOGGSdjRSM+1KfteB7GDGXScC0rGNIfd6qMvzmqpeSq4127Fec0lg3dFBxo0RVAVSV8+H
-	/cO1ncqkzwkewLlW17NbYxRaDfILeQ2ZCKYOyYteiwVol/9WoqYoTxnQ+DEJ3iPp1SbGGmHuFcDRB
-	kH+0Ytzw==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1tQ56z-000FSg-ON; Tue, 24 Dec 2024 14:38:13 +0100
-Received: from [194.230.160.170] (helo=[172.20.10.7])
-	by sslproxy06.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1tQ56z-000Pe3-0S;
-	Tue, 24 Dec 2024 14:38:13 +0100
-Message-ID: <2224e5ac-4b9d-4ffc-bc36-27a4f0b20a65@iogearbox.net>
-Date: Tue, 24 Dec 2024 14:38:09 +0100
+	s=arc-20240116; t=1735061600; c=relaxed/simple;
+	bh=/snrGP+ljyyESNAw+z48HKXTRQfHkm1Xx1PHQ+IHS18=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VVQqxdsXAx0el0vgdsSO8z/aJ1EmAH90dOUVx/784MQjX3/mKilPAQttb4v/ZRadhs7/cYNrvPcnhuWCBsFUnKNtHvSbWYhyJXqVDHJBwvzr8jXGbk2O7VB7AxPh+SkKeTmMmwsjLif/0Uqypb2D1vEl7hv6y2XbURjevq4Obzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kjgHajkx; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-21649a7bcdcso56146255ad.1;
+        Tue, 24 Dec 2024 09:33:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1735061598; x=1735666398; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TUjb/Vf/+7BERE1Vbq2MVyWvD2wcMcLAENxGIoIAZzo=;
+        b=kjgHajkxS7/JjEin+1SlvXkYOG3/WIucqNaXo2MlBCL9ctlGIQtIT9GvEMw45d6R5C
+         8vhnPEXPQNdFqz2dUfFkSi4OmjybWPkbpZW3PyE8dJCeY5/BnBB+S1DPu8a2r21iNZm0
+         98+CXX6WcRBTXe8sk9FAkQpIJJoEs5MSli7aceeT6cMnzzGx38Nk5v+TW2o2puWXCyeg
+         5jUd61diYVcmTgOHKb/PdJgUG2jx+5fSjLLDpFWcj3xlujMB9nNdQc4XT7UXuwZUx9c/
+         loIvqrpqBuTMO21Wl7miNfUVcH9Hu8azZy9m4faxuSgfAerQYso4nBwQaXp/8DBlf7B8
+         W8iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735061598; x=1735666398;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TUjb/Vf/+7BERE1Vbq2MVyWvD2wcMcLAENxGIoIAZzo=;
+        b=UI6BPqxYW826w8GO7Ou/jO2Z3cwlzbmPtiiVJtfR7p+R+wR2d2ZoY2sS/A2uJ8t5Ev
+         7S8R3Hr2SuuC1u20W/2OYTqzU4kLNUcheuRQv8r2c9UmLlhmE+vGK5PSHzEuXmkXoD5f
+         BUR4yREgbseuDSoKwAy/w6kGVXMm/ZEuC289jTVBUEz6BrwM55Sq246/O5zMV1Ml+P/7
+         NwoJijvSKrVADdejXikVyLwZRgk9N/gjGPOx3+llpDj5P/BV2zKdmZhZbNl6g7RiHcXD
+         JqJFMTSbioBZuG9RBkvci0yw3j9Rtr7tDYlten5196DclEllwEeROdkBeIAdtVqS6Bfx
+         IrxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVkZkntXUCZ/WSaGi4Zz0TNuxR0HsbLungAaOUPeeiGIhsg9MAQilF+rjbIBDu7taA6S+s6pk8c6BX3q6G1@vger.kernel.org, AJvYcCXqm0Zar9e7sQrm6Oan1z8Uu0Mo4/zzlIlzRSVi+rbk+YyQdt1tZCeQjM1VO+7fAX/ESs0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyNLzf2BrP2shZ/gUO2eQZvEttA+IJfDw4g6SeibiusGrvX/vb5
+	sGLrw0jRcqvralZ7S5FlIOUEf4M9HblJ/xC+YVtSzfvXP6LnLqs0aw3emw==
+X-Gm-Gg: ASbGncvC/3sCbDRvF0TJPiBm4inWK92NuRSh0qLv9DfZzDUC8eA/rdPfDEt9EEV2Wyy
+	fLMfw/7m+eA7bLj9Ja5/BkN1NvaTOjzRtqBBm5+5YK8BKL9MGET/8o2HQQmAaotlX5t0WEqE6wM
+	E5ztsRYHeKz1CX2IXqh44iMC9BWXQsY3+ub9C0NoOLzFsPyI6tX9twtkdYZzOwtZBUfOkffJVjN
+	vOPBgwr/6iYcpw1/gLK0vgrxzgi6HRp/AQ1M8zrif8qpXSLsIdj5b/8
+X-Google-Smtp-Source: AGHT+IEw+tLzX88TucEceIPG20P6ylXm/8RKmNPsl8vCHkKLGsnRhWUNaYfAtzlCuALrA+fH1J8xxA==
+X-Received: by 2002:a17:902:e5cc:b0:212:4c82:e3d4 with SMTP id d9443c01a7336-219e70bf156mr210978605ad.46.1735061597680;
+        Tue, 24 Dec 2024 09:33:17 -0800 (PST)
+Received: from localhost ([216.228.125.131])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dc9f6285sm92386665ad.215.2024.12.24.09.33.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Dec 2024 09:33:17 -0800 (PST)
+Date: Tue, 24 Dec 2024 09:33:15 -0800
+From: Yury Norov <yury.norov@gmail.com>
+To: Andrea Righi <arighi@nvidia.com>
+Cc: Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>,
+	Changwoo Min <changwoo@igalia.com>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/10] sched/topology: introduce for_each_numa_hop_node()
+ / sched_numa_hop_node()
+Message-ID: <Z2rwW_6idRAKp6nJ@yury-ThinkPad>
+References: <20241220154107.287478-1-arighi@nvidia.com>
+ <20241220154107.287478-2-arighi@nvidia.com>
+ <Z2nTkshW2sUmNLVA@yury-ThinkPad>
+ <Z2powPXbWlZqzU6r@gpd3>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] bpf for v6.13-rc4
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
- andrii@kernel.org, martin.lau@kernel.org
-References: <20241221002123.491623-1-daniel@iogearbox.net>
- <CAHk-=whmQSiZzQuUMLHf7jn5eS1=PEhpPdTNVq8LX0qBk31w0A@mail.gmail.com>
-Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <CAHk-=whmQSiZzQuUMLHf7jn5eS1=PEhpPdTNVq8LX0qBk31w0A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 1.0.7/27497/Tue Dec 24 10:44:06 2024)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z2powPXbWlZqzU6r@gpd3>
 
-Hi Linus,
-
-On 12/21/24 8:23 PM, Linus Torvalds wrote:
-> On Fri, 20 Dec 2024 at 16:21, Daniel Borkmann <daniel@iogearbox.net> wrote:
->>
->> - Fix inlining of bpf_get_smp_processor_id helper for !CONFIG_SMP
->>    systems (Andrea Righi)
+> > > + */
+> > > +int sched_numa_hop_node(nodemask_t *hop_nodes, int start, unsigned int state)
+> > > +{
+> > > +	int dist, n, min_node, min_dist;
+> > > +
+> > > +	if (state >= NR_NODE_STATES)
+> > > +		return NUMA_NO_NODE;
+> > 
+> >  -EINVAL. But, do we need to check the parameter at all?
 > 
-> LOL.
-> 
-> However, it strikes me that this only handles the x86-64 case.
-> 
-> The other cases (arm64, RISC-V) may not have the pcpu_hot crash, but
-> they still generate silly code to load off the thread pointer. Does
-> that even exist (or get initialized) in UP?
-> 
-> End result: I think you should have done the UP case separately and
-> outside the CONFIG_X86_64.. And why do this only for the
-> "verifier_inlines_helper_call()" case rather than just do it
-> unconditionally?
+> numa_nearest_node() has the same check (returning -EINVAL), it seems sane
+> to do this check here as well to prevent out-of-bounds access to
+> node_states[state].
 
-All makes sense, I'll look into following up on your above suggestion
-once back from travel!
+And I don't think we need to check state in there.
 
-> Anyway, I obviously pulled this, but it does seem silly.
+numa_nearest_node() can probably explain it because it's an exported
+function. But your sched_numa_hop_node() is an entirely in-kernel thing.
+Kernel functions don't check parameters.
 
-Thanks & Merry Xmas,
-Daniel
 
