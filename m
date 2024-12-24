@@ -1,204 +1,229 @@
-Return-Path: <bpf+bounces-47597-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47598-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2760C9FC134
-	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2024 19:15:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF3819FC1BA
+	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2024 20:38:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C24B1884A19
-	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2024 18:15:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42B62162412
+	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2024 19:38:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26C9821322A;
-	Tue, 24 Dec 2024 18:15:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lKTUYwJZ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2CFB21322C;
+	Tue, 24 Dec 2024 19:38:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20199212D9D;
-	Tue, 24 Dec 2024 18:15:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92BF4212FB0;
+	Tue, 24 Dec 2024 19:38:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735064106; cv=none; b=SIB7OnEcsrxkJFmsjiD3d9Ujac2V9dyJJdxAOof6WysehxqNZOIP/N3YMWWizhmj/VXcTUOxEUJD8o6pV18AwkWHTppYpnAO4WC5slo1Am+C1h30X4rlpPyAtGxtQ/rZhLiVCHr+LAGI98v6IF9Va3MM0t27zDU5GzTwFDe2BVA=
+	t=1735069087; cv=none; b=OyUMrFROCSyDRuYk5VwzE9Vo2eroe397+kxlIkEueBPMFXpE8mvU+pP48WVz5i63YqvKeRp1IEUaUYfOY7ZXsYOudMk+Z1sNwmM/nmbUZ8MYUMnWTQ4My2DXL7e31qM+nbOyyj0xZ5vGUzfOVzbOQLjhQiBn0YJXI9CNEQVWr3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735064106; c=relaxed/simple;
-	bh=1rxJSxi0U+p9Q9WWCeT+auP4PlVkfVdLame+lW9JyjY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SXbQDLO8dNs/F92+rDQVEDgR8ZFCSbXbGDWVeCvTaCH8o7C1U/d2wUAo2E4YIRrgDfrGR1Jiw7prOUHcrrPKf1t4pGMHG2TKgibHSgCxXmpX2QTl234OA5KEqtqE1do5J4FPGV3PU1HHHqx8PAeVoyBEe3+0g4sX5W0R84q2N3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lKTUYwJZ; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-216401de828so53971145ad.3;
-        Tue, 24 Dec 2024 10:15:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735064104; x=1735668904; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=D6AUQDEIKDktSz5K+GUl20kkeuhWstxptNLX0Y/BQMI=;
-        b=lKTUYwJZ0dnuEz3nmdPVRdMPYTbk6v9zztgsBVeexK9ZS+KQtz6xenzmNpDxYHrPlC
-         Sc2UDvt2a4jVGpnsweAu/l3cBlDBYYdQM99ssH8tTn8+DYei8kjNOwrhm053984v58sN
-         mVW4Dn04JkdXJplpeck+9irOteSPP6IurrgxjhX4P7lce2RnMrkcjLTcd7q8iEhOnqCx
-         TfCrqrrPtvFjQvFu8c91uR1F1kzRDIzjk3Es3AtHSzJDaopVSdLx8WKn1vLz9prnRaf9
-         7w9aP5hDQ7cbzyvoYMoCUzRB5FU71jLgQsOxnKJ3Hn7/lGOAYPsTx/L+Cy8afciG19S5
-         5YYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735064104; x=1735668904;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D6AUQDEIKDktSz5K+GUl20kkeuhWstxptNLX0Y/BQMI=;
-        b=R30BYWZFyWcdSmka4oA+qLeMFdCrkS+1re7M3U5zQ2bT2rBNtUgz4YOKlUwdQvNv39
-         qz5T5h0IkZcPl1KRDSWO0lQ/X1GXGhbSoHGL0zqqtRwK9++1hftSzp5RCwJ2v0WJlkrl
-         K0Up24HVnOZ+UmoSQKyiPsDXNiAXsa5wFsEnUGDAwWn4CMVgkbIsHSkNU4tnR5juNHzV
-         K0QzUp5XV6v3tPz8IgF7SiomqhG8l9EzujK+n8LlwJeeTqCCC/Fjj90kx/DVIPeYDaTW
-         1+y890qzMZ9pYb0xmSWAgIuhVIz8A69vAXngmDw1uDA2NTTV4HwJIZpsE2uswNmLUhZn
-         /1ZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVoNXBXFlBcDsDh8gI8R0HQCLp8hFjGMGEGyxISue9+B6A9gFNAhkNmVWuPbnkgAzKqSaHoLUR8ienKdtbh@vger.kernel.org, AJvYcCWlb9jCzxPJO3EFqJeKFtp4nl+xiY9LaTtPzJ/9+tQEsm97PNWiP2qoenNmvajJ+rOZc/s=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx3DFiaCvPFssNNaGYID2fvwfK1i4RWHUMs9RfbPV2PQGJdu0P2
-	ah2svgAiZFBMldixdLm9GelfZHIPd66zcg48XGEi5BVkvE8hPY+I
-X-Gm-Gg: ASbGnctcasgUh60rmJid74YFy2Tn+LddaYvox37jugfyJDzPUz5Bl73Ocax3UHhHO+w
-	QdQi3kfES5eExmd90kebfI88/UzcDCTm1W3qiMDFxVDJDzRVbcPBL61g1Ug+/H6N2xx87+DuZDZ
-	THBiS35N9Kl+DwRybI6r0D+J4OdnGPFVllSsTE+j4OUpxPBliwrQTQRL+yMS/7410eyA+u5uZ6q
-	fzEuzwux67ezTQ4vNJljEzakUr6cqVUH0vqLLpzhjEIZjZsUKd6Q7Az
-X-Google-Smtp-Source: AGHT+IFX/U/e+IWDrfiz98oP0ISlCou7n3JrQQWIyyDv0D0em+PR7dp0ItGcVLVPseIOxlQQ8milVw==
-X-Received: by 2002:a05:6a20:7f8b:b0:1e0:dc06:4f4d with SMTP id adf61e73a8af0-1e5e04958f8mr26863387637.19.1735064104378;
-        Tue, 24 Dec 2024 10:15:04 -0800 (PST)
-Received: from localhost ([216.228.125.131])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-842aba7310bsm7774075a12.1.2024.12.24.10.15.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Dec 2024 10:15:03 -0800 (PST)
-Date: Tue, 24 Dec 2024 10:15:01 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Andrea Righi <arighi@nvidia.com>
-Cc: Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>,
-	Changwoo Min <changwoo@igalia.com>, Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/10] sched_ext: idle: introduce SCX_PICK_IDLE_NODE
-Message-ID: <Z2r6Jdbl7ekbH-OM@yury-ThinkPad>
-References: <20241220154107.287478-1-arighi@nvidia.com>
- <20241220154107.287478-9-arighi@nvidia.com>
- <Z2ohDX-F6bvBO3bx@yury-ThinkPad>
- <Z2owJmy22Tk-bl4A@yury-ThinkPad>
- <Z2pyzzmrbcVJ14TI@gpd3>
+	s=arc-20240116; t=1735069087; c=relaxed/simple;
+	bh=SCpIyQbj0fJ1XZeODbcJGD9LztMw8yE4rbUHoxdFwHM=;
+	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type; b=fG10ctWjEGr5jr+IKYNKA3ef1pPl+ggqUvkt+3QV/NNSUMMB+S9Z4qlZbXqLvTSeVTG9jUh5xdG2ENRVB6aV1rZQ1sy0EkJ8LOL+1iE4XXOKAiTuxucg0ZJC/ORgAaM2+70s3oW1use0AgIBc0pUan+SQf/yk1Dzi94O0rbcmUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4222FC4CED0;
+	Tue, 24 Dec 2024 19:38:07 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.98)
+	(envelope-from <rostedt@goodmis.org>)
+	id 1tQAk9-0000000EVHd-2H5G;
+	Tue, 24 Dec 2024 14:39:01 -0500
+Message-ID: <20241224193901.391549751@goodmis.org>
+User-Agent: quilt/0.68
+Date: Tue, 24 Dec 2024 14:38:41 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linux-kernel@vger.kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Florent Revest <revest@chromium.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>,
+ Jiri Olsa <jolsa@kernel.org>,
+ Alan Maguire <alan.maguire@oracle.com>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Naveen N Rao <naveen@kernel.org>,
+ Madhavan Srinivasan <maddy@linux.ibm.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>
+Subject: [for-next][PATCH 5/5] fgraph: Get ftrace recursion lock in function_graph_enter
+References: <20241224193836.812390655@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Z2pyzzmrbcVJ14TI@gpd3>
+Content-Type: text/plain; charset=UTF-8
 
-On Tue, Dec 24, 2024 at 09:37:35AM +0100, Andrea Righi wrote:
-> On Mon, Dec 23, 2024 at 07:53:21PM -0800, Yury Norov wrote:
-> > On Mon, Dec 23, 2024 at 06:48:48PM -0800, Yury Norov wrote:
-> > > On Fri, Dec 20, 2024 at 04:11:40PM +0100, Andrea Righi wrote:
-> > > > Introduce a flag to restrict the selection of an idle CPU to a specific
-> > > > NUMA node.
-> > > > 
-> > > > Signed-off-by: Andrea Righi <arighi@nvidia.com>
-> > > > ---
-> > > >  kernel/sched/ext.c      |  1 +
-> > > >  kernel/sched/ext_idle.c | 11 +++++++++--
-> > > >  2 files changed, 10 insertions(+), 2 deletions(-)
-> > > > 
-> > > > diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-> > > > index 143938e935f1..da5c15bd3c56 100644
-> > > > --- a/kernel/sched/ext.c
-> > > > +++ b/kernel/sched/ext.c
-> > > > @@ -773,6 +773,7 @@ enum scx_deq_flags {
-> > > >  
-> > > >  enum scx_pick_idle_cpu_flags {
-> > > >  	SCX_PICK_IDLE_CORE	= 1LLU << 0,	/* pick a CPU whose SMT siblings are also idle */
-> > > > +	SCX_PICK_IDLE_NODE	= 1LLU << 1,	/* pick a CPU in the same target NUMA node */
-> > > 
-> > > SCX_FORCE_NODE or SCX_FIX_NODE?
-> > > 
-> > > >  };
-> > > >  
-> > > >  enum scx_kick_flags {
-> > > > diff --git a/kernel/sched/ext_idle.c b/kernel/sched/ext_idle.c
-> > > > index 444f2a15f1d4..013deaa08f12 100644
-> > > > --- a/kernel/sched/ext_idle.c
-> > > > +++ b/kernel/sched/ext_idle.c
-> > > > @@ -199,6 +199,12 @@ static s32 scx_pick_idle_cpu(const struct cpumask *cpus_allowed, int node, u64 f
-> > 
-> > This function begins with:
-> > 
-> >  static s32 scx_pick_idle_cpu(const struct cpumask *cpus_allowed, int node, u64 flags)
-> >  {
-> >       nodemask_t hop_nodes = NODE_MASK_NONE;
-> >       s32 cpu = -EBUSY;
-> >  
-> >       if (!static_branch_maybe(CONFIG_NUMA, &scx_builtin_idle_per_node))
-> >               return pick_idle_cpu_from_node(cpus_allowed, NUMA_FLAT_NODE, flags);
-> > 
-> >       ...
-> >  
-> > So if I disable scx_builtin_idle_per_node and then call:
-> > 
-> >         scx_pick_idle_cpu(some_cpus, numa_node_id(), SCX_PICK_IDLE_NODE)
-> > 
-> > I may get a CPU from any non-local node, right? I think we need to honor user's
-> > request:  
-> > 
-> >       if (!static_branch_maybe(CONFIG_NUMA, &scx_builtin_idle_per_node))
-> >               return pick_idle_cpu_from_node(cpus_allowed,
-> >                      flags & SCX_PICK_IDLE_NODE ? node :  NUMA_FLAT_NODE, flags);
-> > 
-> > That way the code will be coherent: if you enable idle cpumasks, you
-> > will be able to follow all the NUMA hierarchy. If you disable them, at
-> > least you honor user's request to return a CPU from a given node, if
-> > he's very explicit about his intention.
-> > 
-> > You can be even nicer:
-> > 
-> >       if (!static_branch_maybe(CONFIG_NUMA, &scx_builtin_idle_per_node)) {
-> >                 node = pick_idle_cpu_from_node(cpus, node, flags);
-> >                 if (node == MAX_NUM_NODES && flags & SCX_PICK_IDLE_NODE == 0)
-> >                         node = pick_idle_cpu_from_node(cpus, NUMA_FLAT_NODE, flags);
-> > 
-> >                 return node;
-> >       }
-> > 
-> 
-> Sorry, I'm not following, if scx_builtin_idle_per_node is disabled, we’re
-> only tracking idle CPUs in a single NUMA_FLAT_NODE (which is node 0). All
-> the other cpumasks are just empty, and we would always return -EBUSY if we
-> honor the user request.
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 
-You're right. We can still do that like this:
+Get the ftrace recursion lock in the generic function_graph_enter()
+instead of each architecture code.
+This changes all function_graph tracer callbacks running in
+non-preemptive state. On x86 and powerpc, this is by default, but
+on the other architecutres, this will be new.
 
-       if (!static_branch_maybe(CONFIG_NUMA, &scx_builtin_idle_per_node)) {
-                 cpumask_and(tmp, cpus, cpumask_of_node(node));
-                 node = pick_idle_cpu_from_node(tmp, NUMA_FLAT_NODE, flags);
-                 if (node == MAX_NUM_NODES && flags & SCX_PICK_IDLE_NODE == 0)
-                         node = pick_idle_cpu_from_node(cpus, NUMA_FLAT_NODE, flags);
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Florent Revest <revest@chromium.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Alan Maguire <alan.maguire@oracle.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Naveen N Rao <naveen@kernel.org>
+Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: x86@kernel.org
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Link: https://lore.kernel.org/173379653720.973433.18438622234884980494.stgit@devnote2
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ arch/powerpc/kernel/trace/ftrace.c       | 6 ------
+ arch/powerpc/kernel/trace/ftrace_64_pg.c | 6 ------
+ arch/x86/kernel/ftrace.c                 | 7 -------
+ kernel/trace/fgraph.c                    | 8 +++++++-
+ 4 files changed, 7 insertions(+), 20 deletions(-)
+
+diff --git a/arch/powerpc/kernel/trace/ftrace.c b/arch/powerpc/kernel/trace/ftrace.c
+index 5ccd791761e8..e41daf2c4a31 100644
+--- a/arch/powerpc/kernel/trace/ftrace.c
++++ b/arch/powerpc/kernel/trace/ftrace.c
+@@ -658,7 +658,6 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
+ 		       struct ftrace_ops *op, struct ftrace_regs *fregs)
+ {
+ 	unsigned long sp = arch_ftrace_regs(fregs)->regs.gpr[1];
+-	int bit;
  
-                 return node;
-       }
+ 	if (unlikely(ftrace_graph_is_dead()))
+ 		goto out;
+@@ -666,14 +665,9 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
+ 	if (unlikely(atomic_read(&current->tracing_graph_pause)))
+ 		goto out;
+ 
+-	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+-	if (bit < 0)
+-		goto out;
+-
+ 	if (!function_graph_enter(parent_ip, ip, 0, (unsigned long *)sp))
+ 		parent_ip = ppc_function_entry(return_to_handler);
+ 
+-	ftrace_test_recursion_unlock(bit);
+ out:
+ 	arch_ftrace_regs(fregs)->regs.link = parent_ip;
+ }
+diff --git a/arch/powerpc/kernel/trace/ftrace_64_pg.c b/arch/powerpc/kernel/trace/ftrace_64_pg.c
+index 98787376eb87..8fb860b90ae1 100644
+--- a/arch/powerpc/kernel/trace/ftrace_64_pg.c
++++ b/arch/powerpc/kernel/trace/ftrace_64_pg.c
+@@ -790,7 +790,6 @@ static unsigned long
+ __prepare_ftrace_return(unsigned long parent, unsigned long ip, unsigned long sp)
+ {
+ 	unsigned long return_hooker;
+-	int bit;
+ 
+ 	if (unlikely(ftrace_graph_is_dead()))
+ 		goto out;
+@@ -798,16 +797,11 @@ __prepare_ftrace_return(unsigned long parent, unsigned long ip, unsigned long sp
+ 	if (unlikely(atomic_read(&current->tracing_graph_pause)))
+ 		goto out;
+ 
+-	bit = ftrace_test_recursion_trylock(ip, parent);
+-	if (bit < 0)
+-		goto out;
+-
+ 	return_hooker = ppc_function_entry(return_to_handler);
+ 
+ 	if (!function_graph_enter(parent, ip, 0, (unsigned long *)sp))
+ 		parent = return_hooker;
+ 
+-	ftrace_test_recursion_unlock(bit);
+ out:
+ 	return parent;
+ }
+diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
+index 4dd0ad6c94d6..33f50c80f481 100644
+--- a/arch/x86/kernel/ftrace.c
++++ b/arch/x86/kernel/ftrace.c
+@@ -615,7 +615,6 @@ void prepare_ftrace_return(unsigned long ip, unsigned long *parent,
+ 			   unsigned long frame_pointer)
+ {
+ 	unsigned long return_hooker = (unsigned long)&return_to_handler;
+-	int bit;
+ 
+ 	/*
+ 	 * When resuming from suspend-to-ram, this function can be indirectly
+@@ -635,14 +634,8 @@ void prepare_ftrace_return(unsigned long ip, unsigned long *parent,
+ 	if (unlikely(atomic_read(&current->tracing_graph_pause)))
+ 		return;
+ 
+-	bit = ftrace_test_recursion_trylock(ip, *parent);
+-	if (bit < 0)
+-		return;
+-
+ 	if (!function_graph_enter(*parent, ip, frame_pointer, parent))
+ 		*parent = return_hooker;
+-
+-	ftrace_test_recursion_unlock(bit);
+ }
+ 
+ #ifdef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
+diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+index ddedcb50917f..5c68d6109119 100644
+--- a/kernel/trace/fgraph.c
++++ b/kernel/trace/fgraph.c
+@@ -650,8 +650,13 @@ int function_graph_enter(unsigned long ret, unsigned long func,
+ 	struct ftrace_graph_ent trace;
+ 	unsigned long bitmap = 0;
+ 	int offset;
++	int bit;
+ 	int i;
+ 
++	bit = ftrace_test_recursion_trylock(func, ret);
++	if (bit < 0)
++		return -EBUSY;
++
+ 	trace.func = func;
+ 	trace.depth = ++current->curr_ret_depth;
+ 
+@@ -697,12 +702,13 @@ int function_graph_enter(unsigned long ret, unsigned long func,
+ 	 * flag, set that bit always.
+ 	 */
+ 	set_bitmap(current, offset, bitmap | BIT(0));
+-
++	ftrace_test_recursion_unlock(bit);
+ 	return 0;
+  out_ret:
+ 	current->curr_ret_stack -= FGRAPH_FRAME_OFFSET + 1;
+  out:
+ 	current->curr_ret_depth--;
++	ftrace_test_recursion_unlock(bit);
+ 	return -EBUSY;
+ }
+ 
+-- 
+2.45.2
 
-But I'm not sure we need this complication. Maybe later...
 
-> 
-> Maybe we should just return an error if scx_builtin_idle_per_node is
-> disabled and the user is requesting an idle CPU in a specific node?
-
-The problem is that NUMA_FLAT_NODE is 0, and you can't distinguish it
-from node #0. You can drop NUMA_FLAT_NODE and ask users to always
-provide NUMA_NO_NODE if idle_per_node is disabled, or you can ignore
-the node entirely. You just need to describe it explicitly.
 
