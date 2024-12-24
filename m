@@ -1,330 +1,325 @@
-Return-Path: <bpf+bounces-47569-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47570-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D07BD9FB7E7
-	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2024 00:40:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BD529FB807
+	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2024 01:42:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06F221884D4A
-	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2024 23:40:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93F891884BD6
+	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2024 00:42:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68A791D5ADD;
-	Mon, 23 Dec 2024 23:40:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D45E14689;
+	Tue, 24 Dec 2024 00:42:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hivpoa0M"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="d6w8TgXh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05olkn2029.outbound.protection.outlook.com [40.92.89.29])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CB601BEF8D;
-	Mon, 23 Dec 2024 23:39:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734997200; cv=none; b=nhM1XvGxYBg12528SWrGtGTO2bMGJscBjYf2wnmBbcvtQYn2o8waB0Ds/p5ouZGW6Hwt0BXvOlId7l2PgDz+D427yW0Zp/TTum1Y17EtT2DzhgrBavHPoP/fnQMiVxMk32EVUD1O6nWAzxBvk93OeUNGmMiJivbFSiSkXMwVb4o=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734997200; c=relaxed/simple;
-	bh=BJJoB2GVr5/U6FOowmaWSxTOi5ulXf0Vvc1OAviWblM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NdtpW/QP9Qwy8TsxBCa1R6xFjRm3ib36Wxjj4FbuCL76MBwmu+/qneYnK+j7x0PotHekyR8hhVZ+i+At5KU649hqFtJs5aDlONxIlfKCxYybdHcO8HenRgp2gZk1vFn7VdE1uhbHAjKUvPS/fx/nd83IApxstIa8Gs+HwADX56E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hivpoa0M; arc=none smtp.client-ip=209.85.219.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-e3a0acba5feso3447201276.2;
-        Mon, 23 Dec 2024 15:39:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734997198; x=1735601998; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gboCmrYc4y9C+m5UllNwthZJeltAhJlp6q/SUaUiyvE=;
-        b=hivpoa0MiRS7kLTMS1KL/Aq3cD5RJtGT1Pah0XDXa/GKFaqGzhwlPB2aUciezC09dP
-         Cra/5+r8QVPZPgb4lIKoxbnnc03pgEhPN53/SHAn9uNeeD66MYpOe+KCMokXdQTQTDJP
-         Yh6fmzyxWlHyjgEEuTNONLW+nqDy0nP1RIg4m0d3v7LLyh9jYOgIqly2NUqW9wtZfyY2
-         6NM1oVhrRs/e83XuPy8YIj/tk0FoRRfmN3ldKes4ystOujGuz54He3Xa9MoLpl7lZE2L
-         QIATypm6WV9xD+ZcTDi5otVAZJcPaQnqtgDVfm7pGR0qKh62U/BWyK+773DkR2kTKSKX
-         /R3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734997198; x=1735601998;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gboCmrYc4y9C+m5UllNwthZJeltAhJlp6q/SUaUiyvE=;
-        b=fjIW32ntIpCROK+3EQmDCaV9cMbrQ/cmgFC8rK6h1lA4IG03p+xyrMkhPogPPsj51o
-         IyhdKhv4ABjixgQNruts+8fAI5bd9Qjz9nCWcRY7c6pOM8TiD7Yqjbd2kXVwsX7TbkKv
-         2xhDTw5PesNPSSUraW40AKe27ST3A42a6InmMzRllQkT5zs4VnFGMyGXfbMAONosAYZC
-         pTI0JD90x6FpdRT1viY7MQPB63xRBOc9QZW9ulqhLbJMAHhPedKG5uJvb7QjXzMO21ji
-         cg1qVkaXjQvUlpBBxb54545kxhrHAceP2iy9a6BRGxY8LeXUdzkNjp8uUmNhVxaUA0uO
-         YdKA==
-X-Forwarded-Encrypted: i=1; AJvYcCWwH+Nm7elfcct+lM94QoJknbDB3v+AYy4u1FKnKFBhNq61XG7wxA8ap7n8BY7AMNtzW60=@vger.kernel.org, AJvYcCXP2+Q8CtDzz356cJzBJ0O/P4gclP0G5EI0VD66/M5lj4uKaT3LULBmNp2aViDnDzCrsWAT4/Ee8DqaoYio@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw9PRDUI/LsQPu7qDCgNqWbGrujA+d9sntVKmnyuE6jo+BE2K5S
-	h0PWBBz2EeKoOTf8n8U2TVcmH10gBPHdKsvvYkGxL/r/cYgmea/Q
-X-Gm-Gg: ASbGncs3KqEwP1va9tIamji6NNyQ/hyq4p7G0/75dK4fFmhRyiNlXAmbR4iq4bIzcYT
-	An+o+O2MjG4hXeO33U1YEBf2GYxUhU2igU6wXyLFV0H86h39jgRAnkTc4fifJ2+TF8BuLcunMet
-	5BOSKE0/pzwspFA+WLVFKesLQdhq4vjQnCuUkLu3fzcGt5FXKUb49axs4W3KIIO2kCtYa9GuVdz
-	NCoBBOq6dFmJ7zrv3shsOwk54KUxJu6r+7eRoGC/qYK1jFxHFMZmgJPoQNGEVqFXPLvwP2l9W8A
-	CPx14x8lKuhSHVjS
-X-Google-Smtp-Source: AGHT+IHWzo/nD4jGKcj64he7ETneiRLQO3vMPLLxAPVYJTRwjb1JnwQLQVG3rma/LrAfvXsRfor+Sg==
-X-Received: by 2002:a05:690c:6088:b0:6ef:641a:2a7b with SMTP id 00721157ae682-6f3f80d908fmr122443077b3.2.1734997198079;
-        Mon, 23 Dec 2024 15:39:58 -0800 (PST)
-Received: from localhost (c-24-129-28-254.hsd1.fl.comcast.net. [24.129.28.254])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6f3e77ed139sm26056157b3.85.2024.12.23.15.39.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Dec 2024 15:39:57 -0800 (PST)
-Date: Mon, 23 Dec 2024 15:39:56 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Andrea Righi <arighi@nvidia.com>
-Cc: Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>,
-	Changwoo Min <changwoo@igalia.com>, Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/10] sched_ext: idle: Get rid of the
- scx_selcpu_topo_numa logic
-Message-ID: <Z2n0xDaP7Ulq1DSg@yury-ThinkPad>
-References: <20241220154107.287478-1-arighi@nvidia.com>
- <20241220154107.287478-10-arighi@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45F50367;
+	Tue, 24 Dec 2024 00:42:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.89.29
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1735000952; cv=fail; b=j4Iiti1m5ngMujNc6BYM6qfhR4zg3XtU5Vd/3K0WiN5y94JjcbjRaoB/HjMWhLGgOYf+kWc85zW+WJfPx+u2Z6MrnVe2ccvJfWWJlraLArxBU75Og2stGzBBoISXO/DUqMKPYKSbNZOzWQz0mWi9JGGdv3CDsZDSBFx8US19Rjo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1735000952; c=relaxed/simple;
+	bh=cPf/5c6cpS3B0k68Wm+rbv7h0KLvV7egt6kPYGBh010=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=gPD1Z5COfz+2+yvBPHtSAkhoX/38dD04k67WV4Up5CTJffGdNsRjLNHDSKScd8PaTCnxrIFci7dtTl51v6Q+Ziv44tN5b9eHyQECkRMonCvzQDGEcOGErj7dY58qhAVIJr1kLh7vgPVs0VbjfaNdl3KlAYlxvRBaSGlXFlWXqHo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=d6w8TgXh; arc=fail smtp.client-ip=40.92.89.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=xJtCi4IGwRNSmWJmylY0x/9y0JPNqKEMLlQ3zwvO2kPAWeFiSWQ65NJMbhTLmaX74zQmFTycFQ3tk+hfP9R4YNyJYCa2dZFXrNtTicPeG86KsZJdwdxM+Rj24HWYkTeeS60mhHqxhRMhs7jcydnGQ1cZ3xsDbdPYzvPOb7ivFjdft5uCUL4z+8xrLGDRmG+Xtf24KqzK1yst+2ThJ0S3EUeejX1PnkgjVxgDGhMH0qEOaampF0ff2JeG2S5Jfa7J3uv1q/myhmWhTJLa3lQv8GukPJwAbyYgWsFPK37sr05IVP+ISzJnhf0m5PqRwI4tFjA/ONaESX2SenLYysAHjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Vth8wAETOZ1SGSvcliIf6Kt/cR0a7mGL2Ob32GZfaxM=;
+ b=Ls+KfyqAqqOQkSO5Hf1bWhUqLlnXZbEMChFm0JWEblcilQSdrlcpgdmLx2/0qSf8zdD/FBIEdViUMqfL2bSIimLKySORz89bQm/TVN+y11NL6vpFlAShILHoTN6w5j8kIpZ2cgR/6tgukCS9St/OBaZBsITEGCvziC/tTw5fKsho9n4XasWjGgflh87XaeI4OSKUDoq16Ptm4PAhVgM954sQ9AHdovhyIR2MoX0f4fjiIFTmzn262fwW3qbhA2/bcBiGWYa95zaJxIrz91Dh5VORM46hCZ73qxKgI3FT3PZUHLoTyQf+Q8X3ITRyjX9dASSzQXJgK8SXgX5qo50P6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Vth8wAETOZ1SGSvcliIf6Kt/cR0a7mGL2Ob32GZfaxM=;
+ b=d6w8TgXh081/rkCettF2dgiQ6JKKtxAI1OkwxRNF4TyseWy848eCfKAJ+pq0KJkR9il6+29CIW8tgu6OGRlfoqgSR2HONlJyqcjD+6u66JHPqxosuA+/2jKVIjfEOsUIBC1lCRWGPb6zT4FlhWy89upWEU/6qi/ccR/vkOP6u2AsBLUvrKZjnRfcaOIL9IxWMIGWmCP9tcup22rCns8LSsaOvYJNvJr/5RtDxcMaTbb1Ea9nomZmjapypxu4iKK4Km7R/mAU5FQDOXc2OKkFwQb15/Du10128F1dGpAgRCgglUbNSydheb9nbFkWaoQPjRTLU2AusoLJ1yfqAAET/A==
+Received: from AM6PR03MB5080.eurprd03.prod.outlook.com (2603:10a6:20b:90::20)
+ by DB9PR03MB7322.eurprd03.prod.outlook.com (2603:10a6:10:220::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8272.18; Tue, 24 Dec
+ 2024 00:42:27 +0000
+Received: from AM6PR03MB5080.eurprd03.prod.outlook.com
+ ([fe80::a16:9eb8:6868:f6d8]) by AM6PR03MB5080.eurprd03.prod.outlook.com
+ ([fe80::a16:9eb8:6868:f6d8%5]) with mapi id 15.20.8272.013; Tue, 24 Dec 2024
+ 00:42:26 +0000
+Message-ID:
+ <AM6PR03MB5080C4BE4FDD7144E588671499032@AM6PR03MB5080.eurprd03.prod.outlook.com>
+Date: Tue, 24 Dec 2024 00:42:26 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v6 0/5] bpf: Add open-coded style process file
+ iterator and bpf_fget_task() kfunc
+To: Yonghong Song <yonghong.song@linux.dev>, ast@kernel.org,
+ daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ memxor@gmail.com, snorcht@gmail.com, brauner@kernel.org
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org
+References: <AM6PR03MB5080DC63013560E26507079E99042@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <09256acb-9b23-4a25-a260-a4063d219899@linux.dev>
+Content-Language: en-US
+From: Juntong Deng <juntong.deng@outlook.com>
+In-Reply-To: <09256acb-9b23-4a25-a260-a4063d219899@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: LO4P265CA0297.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:38f::6) To AM6PR03MB5080.eurprd03.prod.outlook.com
+ (2603:10a6:20b:90::20)
+X-Microsoft-Original-Message-ID:
+ <cfd023f1-1591-4574-9fda-2d1947a2e02d@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241220154107.287478-10-arighi@nvidia.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR03MB5080:EE_|DB9PR03MB7322:EE_
+X-MS-Office365-Filtering-Correlation-Id: afc40c16-7687-4d26-6b68-08dd23b3d6b8
+X-Microsoft-Antispam:
+	BCL:0;ARA:14566002|19110799003|5072599009|8060799006|15080799006|461199028|6090799003|1602099012|440099028|4302099013|3412199025|10035399004;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?aFJYTTVhczQraUJ0bGtOUitNZzZYYWwrUmlhYUVLRlQ3dzRydlpCRXFIODly?=
+ =?utf-8?B?L0VsaDFyUzB6c3pSbDZxV1lTdUNzZDV5ZkNyNlVoWkdtaDRxZDFSSXdyRFRS?=
+ =?utf-8?B?V0hReGkrbENCY0VXeDUvazl0cFpBL3RNOVd4UzNBak1keFZoTitCbEUvWm5U?=
+ =?utf-8?B?Y0lMUEdsOGtGejB2ZW1ldjJvallic0lCZEY5cTVtcWRoUC90eDdIOEhsQ295?=
+ =?utf-8?B?SS9TKzNIUHBHeGZjbVRhS1ZqM09EUHFHQWFGUTJxd01TK2tSVEx3RnZMbC92?=
+ =?utf-8?B?Wkl1aWNRcVgxbUVxTzk1anl1QjA2QzNpWjlaUE4veXowS3ZWQXh0cWZOZ0NF?=
+ =?utf-8?B?WWZQNEppVmFJTEgvME9QbUc2U1QxRklEUXp5V3Uwd3dDOWRjRnEzWFA2R2tF?=
+ =?utf-8?B?cW5WVkwxQnk4NDdCVzZPdlRhQm4zQ1lCVEUrVGovRnB6Q2M4TEkzZW9hNGg5?=
+ =?utf-8?B?bjhrNHNvR1ptNUpEMnlJSVo0TExOOW9IWUJUekY1N3QxWU1iQ0YzdzV3MFBM?=
+ =?utf-8?B?UlRpY1YwUm01SnVZRVAzcGxjVHFqMTh6MjVCZnhIWlVmbFBySkJ1VlNSMlRu?=
+ =?utf-8?B?UUxLN1pMTTRENlEzMVlHUmNBVDVib3hlWkkvdkpVRWo0M2dPQ0dYdGM0Y2Iy?=
+ =?utf-8?B?WGZHc1Y3K2JGWldBdU5ya0duczNjNFIrUWdkRFliaHFNZ0V0QjFlWnJWaXFM?=
+ =?utf-8?B?dkRkTllhVzJlZS9WVm54cW9wcTZqN1pJZnd0bXduMHJ5TjA4S2V3Uytnd0Jt?=
+ =?utf-8?B?OXBVVTU4aUpoTk9ZV0E5ZWJSTXhId21FSFpyb1BNYi9iTVJtZXY4SkhsL0RB?=
+ =?utf-8?B?T2RvcVUzR000b0pDU3BZUno0TXJpT2hqWmhQdVlhcjFXaUdOUWRjUTQySW0z?=
+ =?utf-8?B?VkFaaityNVgrd0psVmJZMVpVNVJnN3VvQ2RNazl6S3FZK25oaGxjS2FESlZN?=
+ =?utf-8?B?eHY4ZDJ5dWgrdzFQUnJkZ2RQa0tuc0dSR1lhQVZIRk8vY3ZwR3ZNSUc3UFFB?=
+ =?utf-8?B?YUVaSmx0VGo4ck1QazRGUkQ2NGc0S0lWZzNFamZWSjhHaU9mYkVQb2lackNn?=
+ =?utf-8?B?MFMwMytvUGdaaUluOFNjY0ZXZXhwSk1MOTcyN2lhUjJoZWo2ZzBQcUxGaFdj?=
+ =?utf-8?B?dllpNGlDWkFPak1NTm1PdXBucGRLQlJRQSs5UUFDdUpEQlNIbjh5OGJkY2Rk?=
+ =?utf-8?B?b2hhekxlVENxVzRVYkFUd1FvSDhJblhaQVBFbllsSnJvTG5uOGltRG5rNkxu?=
+ =?utf-8?B?bFlVMjFWL1UxYytoVmlrR0tjaUpmZUYwd29DcWpQVHZGUk5FdkM2Z1JvSWpE?=
+ =?utf-8?B?eHFiYjRpc3F2b2hCU1pCVnBEckJMSzB0SWFtMzg4OU90Rmt5V0VFeEF3aVRu?=
+ =?utf-8?B?bG1nYTZGU0lablJIb2hNeEJVQ3hhbTAxUTE5OUVQY25qYTh6dHZRRk5EWjll?=
+ =?utf-8?B?YUhMTU80V0JybjMvaU41N2lyb0o5NDNpRVNxSDIrTE9kTjhtNi8wckZaeEVr?=
+ =?utf-8?B?RWNHT1lkZFBkMC9hZGR4KzBBYzJrcDR0bHFkKy9NUmIwdlNuZElvOU5tNTJ6?=
+ =?utf-8?B?ZjVFckNkZVZlb0Z3VFUwOHRGOFlhV2U2VXFwdFBWSWhEV3MrcEQrMlZhc2pR?=
+ =?utf-8?B?c2M3WUQ0b1d3TWVleDlHekt4cE4xUFE9PQ==?=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?dnQ5bGxpTmhTbm4zbEtsQzdWUUhjMUtGVlBCR2N5ZnZmdlZXL1Y3NnY4bm9Q?=
+ =?utf-8?B?TjFhNFNOTnlYZ1FGZmJBQmxwMGNEMDJSN2UyOFZvZmN5WUQ5ZHlaMC9haDVS?=
+ =?utf-8?B?M1JSQnpFbmtlVS9RanNzOXFQWHMzancrb1lJR2s2akpwM3pGNXdXN3RzM2hl?=
+ =?utf-8?B?SnpXSnRZUWhaZHVONjVyUHd4VVZxUmhvNkYwNEtvUlJBSjY0ZFRTZlhtUzJr?=
+ =?utf-8?B?eEJuQzJiQmVkNS8zM0NJd1NGTVFSNXI5RVdQLzhITHBFM29oTDlKbnZVNnk5?=
+ =?utf-8?B?d04ydklFb1YrWlZnalh2V01pNjFiTXozV2Z5K3NRK3BOL3YwUlJrZktIRTBj?=
+ =?utf-8?B?Z2lGNFV0dldmWWFDbTlFRCtIWVhsbDRMZU9rb2xlSHJ5MzRhTVI4YXc4N2Vo?=
+ =?utf-8?B?c3JxOTgwdkh6dDVGYkhtckhDQmx0MW9mNWVpQ2JTeUdHSVdXTk1INDJyZlcy?=
+ =?utf-8?B?NXVFNHd6WWVDSkRtRDJLODlOcTJHRHFJMElROVBncEZKOGhpM2xIVExHQnR5?=
+ =?utf-8?B?azJVM3FoMzNQOVhjVTBjU3JBM3hYUldvbFhDdUdlczdxZnhYQjFPZDRYbVFI?=
+ =?utf-8?B?eUhTcXF2Wnhqd1d0ZFNYVUREQWhnUUtjVlNGU0tpeWdoS25Wc3RxYjF2Sm1r?=
+ =?utf-8?B?aTdYa0V1LzFqS0F1QUpKNW1sUTZZR2N2c0JJUnVKMVk2RXlRekhVaEJYclRo?=
+ =?utf-8?B?c3BIYmZONk0zVnI0T1IxUmk5NC9mNmFTOFJtb1hLOTVPMENRRHpBN3FReGE4?=
+ =?utf-8?B?YmJlaldnMGpQUDZQTktEenVKSEhGWXhXNXhKYVVXdWtybjlUNVdMWEw0L1dB?=
+ =?utf-8?B?S1pRZE91cDhnUGQ1RDREOTUzNG5Ka1MxT0V3V0c4emlhaXdsbllxOWd1M2x6?=
+ =?utf-8?B?RkNNb29RSUJQVEdXQ1g2WjY1WHlYSytsWXIwcDNrOStTNVl1Zk1pcVRWTmpj?=
+ =?utf-8?B?WDR4dUFyU2NJaUJPeDRZWXJaZ1A0WjRHczdHaUovL2RWZkR1bWYySTRUNFA5?=
+ =?utf-8?B?TmhZRTlORCt4cFpIL1l4a0tIOUZ4LzUvK2JvT1g3c0k1eFVMMzI3MDF2ZEQ5?=
+ =?utf-8?B?NUFmRUNIUXV0MUpKWHNBYU42Vjc1Y3BiVm9pY2g4UlRIUjNvTlROeStHQlVI?=
+ =?utf-8?B?UDltSVJzeHdSdFVhenZTbS9RQ1pnOTl0NVpPeHJSc1E3MlNUcEFwMTJzajVW?=
+ =?utf-8?B?SHZuQmZRcWN0cFZXYXQ1Q282LzBMNTlwcWo5ZGpzbWthMndnMURZSTFmSXp6?=
+ =?utf-8?B?OE9lQStieGFHbEZualR3YnN3MGgwR2syUGViRE9KcU9NVnA0ZjRXMCtIZGJx?=
+ =?utf-8?B?OTlRdE9FVUpHU1pkQStMQUpmNGtONVI5RmkrbjN0WW5MaURHN0JueXczS01J?=
+ =?utf-8?B?VmFqWU5KWUxqS2xHQlN4eG1mRllOeWZMRDVYYm96WjJ4ZmlFRi9NbTFJZWs3?=
+ =?utf-8?B?cVBnWnYyVEdIeWRyS1VFaTdJUnBoYnZHek03bjc1b3BFei92KzBIeE9sMkFV?=
+ =?utf-8?B?ZjNuSHBHOVJOTzI3TjZtVWV4UUlRbHB0V2lIL2ZMMlA3OVZEMnRaUjJMdkJy?=
+ =?utf-8?B?SFNXa0dESmthc1lFTlVGVm11b3VicDM1N2lVall0ajltL0FHWmpjeFdQZ3A3?=
+ =?utf-8?B?d0NMV1hxbUVyTk5MMkJCVHErcmRvekUrcjZnUmJJOHR4L3YxN29UZ3JUbmh6?=
+ =?utf-8?Q?9R/JbGvtujohFux8I/Wo?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: afc40c16-7687-4d26-6b68-08dd23b3d6b8
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5080.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Dec 2024 00:42:26.8819
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR03MB7322
 
-On Fri, Dec 20, 2024 at 04:11:41PM +0100, Andrea Righi wrote:
-> With the introduction of separate per-NUMA node cpumasks, we
-> automatically track idle CPUs within each NUMA node.
+On 2024/12/19 16:11, Yonghong Song wrote:
 > 
-> This makes the special logic for determining idle CPUs in each NUMA node
-> redundant and unnecessary, so we can get rid of it.
-
-But it looks like you do more than that... 
-
-> Signed-off-by: Andrea Righi <arighi@nvidia.com>
-> ---
->  kernel/sched/ext_idle.c | 93 ++++++++++-------------------------------
->  1 file changed, 23 insertions(+), 70 deletions(-)
 > 
-> diff --git a/kernel/sched/ext_idle.c b/kernel/sched/ext_idle.c
-> index 013deaa08f12..b36e93da1b75 100644
-> --- a/kernel/sched/ext_idle.c
-> +++ b/kernel/sched/ext_idle.c
-> @@ -82,7 +82,6 @@ static void idle_masks_init(void)
->  }
->  
->  static DEFINE_STATIC_KEY_FALSE(scx_selcpu_topo_llc);
-> -static DEFINE_STATIC_KEY_FALSE(scx_selcpu_topo_numa);
->  
->  /*
->   * Return the node id associated to a target idle CPU (used to determine
-> @@ -259,25 +258,6 @@ static unsigned int numa_weight(s32 cpu)
->  	return sg->group_weight;
->  }
->  
-> -/*
-> - * Return the cpumask representing the NUMA domain of @cpu (or NULL if the NUMA
-> - * domain is not defined).
-> - */
-> -static struct cpumask *numa_span(s32 cpu)
-> -{
-> -	struct sched_domain *sd;
-> -	struct sched_group *sg;
-> -
-> -	sd = rcu_dereference(per_cpu(sd_numa, cpu));
-> -	if (!sd)
-> -		return NULL;
-> -	sg = sd->groups;
-> -	if (!sg)
-> -		return NULL;
-> -
-> -	return sched_group_span(sg);
+> 
+> On 12/17/24 3:34 PM, Juntong Deng wrote:
+>> This patch series adds open-coded style process file iterator
+>> bpf_iter_task_file and bpf_fget_task() kfunc, and corresponding
+>> selftests test cases.
+>>
+>> In addition, since fs kfuncs is generic and useful for scenarios
+>> other than LSM, this patch makes fs kfuncs available for SYSCALL
+>> program type.
+>>
+>> Although iter/task_file already exists, for CRIB we still need the
+>> open-coded iterator style process file iterator, and the same is true
+>> for other bpf iterators such as iter/tcp, iter/udp, etc.
+>>
+>> The traditional bpf iterator is more like a bpf version of procfs, but
+>> similar to procfs, it is not suitable for CRIB scenarios that need to
+>> obtain large amounts of complex, multi-level in-kernel information.
+>>
+>> The following is from previous discussions [1].
+>>
+>> [1]: https://lore.kernel.org/bpf/ 
+>> AM6PR03MB5848CA34B5B68C90F210285E99B12@AM6PR03MB5848.eurprd03.prod.outlook.com/
+>>
+>> This is because the context of bpf iterators is fixed and bpf iterators
+>> cannot be nested. This means that a bpf iterator program can only
+>> complete a specific small iterative dump task, and cannot dump
+>> multi-level data.
+>>
+>> An example, when we need to dump all the sockets of a process, we need
+>> to iterate over all the files (sockets) of the process, and iterate over
+>> the all packets in the queue of each socket, and iterate over all data
+>> in each packet.
+>>
+>> If we use bpf iterator, since the iterator can not be nested, we need to
+>> use socket iterator program to get all the basic information of all
+>> sockets (pass pid as filter), and then use packet iterator program to
+>> get the basic information of all packets of a specific socket (pass pid,
+>> fd as filter), and then use packet data iterator program to get all the
+>> data of a specific packet (pass pid, fd, packet index as filter).
+>>
+>> This would be complicated and require a lot of (each iteration)
+>> bpf program startup and exit (leading to poor performance).
+>>
+>> By comparison, open coded iterator is much more flexible, we can iterate
+>> in any context, at any time, and iteration can be nested, so we can
+>> achieve more flexible and more elegant dumping through open coded
+>> iterators.
+>>
+>> With open coded iterators, all of the above can be done in a single
+>> bpf program, and with nested iterators, everything becomes compact
+>> and simple.
+>>
+>> Also, bpf iterators transmit data to user space through seq_file,
+>> which involves a lot of open (bpf_iter_create), read, close syscalls,
+>> context switching, memory copying, and cannot achieve the performance
+>> of using ringbuf.
+>>
+>> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+>> ---
+>> v5 -> v6:
+>> * Remove local variable in bpf_fget_task.
+>>
+>> * Remove KF_RCU_PROTECTED from bpf_iter_task_file_new.
+>>
+>> * Remove bpf_fs_kfunc_set from being available for TRACING.
+>>
+>> * Use get_task_struct in bpf_iter_task_file_new.
+>>
+>> * Use put_task_struct in bpf_iter_task_file_destroy.
+>>
+>> v4 -> v5:
+>> * Add file type checks in test cases for process file iterator
+>>    and bpf_fget_task().
+>>
+>> * Use fentry to synchronize tests instead of waiting in a loop.
+>>
+>> * Remove path_d_path_kfunc_non_lsm test case.
+>>
+>> * Replace task_lookup_next_fdget_rcu() with fget_task_next().
+>>
+>> * Remove future merge conflict section in cover letter (resolved).
+>>
+>> v3 -> v4:
+>> * Make all kfuncs generic, not CRIB specific.
+>>
+>> * Move bpf_fget_task to fs/bpf_fs_kfuncs.c.
+>>
+>> * Remove bpf_iter_task_file_get_fd and bpf_get_file_ops_type.
+>>
+>> * Use struct bpf_iter_task_file_item * as the return value of
+>>    bpf_iter_task_file_next.
+>>
+>> * Change fd to unsigned int type and add next_fd.
+>>
+>> * Add KF_RCU_PROTECTED to bpf_iter_task_file_new.
+>>
+>> * Make fs kfuncs available to SYSCALL and TRACING program types.
+>>
+>> * Update all relevant test cases.
+>>
+>> * Remove the discussion section from cover letter.
+>>
+>> v2 -> v3:
+>> * Move task_file open-coded iterator to kernel/bpf/helpers.c.
+>>
+>> * Fix duplicate error code 7 in test_bpf_iter_task_file().
+>>
+>> * Add comment for case when bpf_iter_task_file_get_fd() returns -1.
+>>
+>> * Add future plans in commit message of "Add struct file related
+>>    CRIB kfuncs".
+>>
+>> * Add Discussion section to cover letter.
+>>
+>> v1 -> v2:
+>> * Fix a type definition error in the fd parameter of
+>>    bpf_fget_task() at crib_common.h.
+>>
+>> Juntong Deng (5):
+>>    bpf: Introduce task_file open-coded iterator kfuncs
+>>    selftests/bpf: Add tests for open-coded style process file iterator
+>>    bpf: Add bpf_fget_task() kfunc
+>>    bpf: Make fs kfuncs available for SYSCALL program type
+>>    selftests/bpf: Add tests for bpf_fget_task() kfunc
+>>
+>>   fs/bpf_fs_kfuncs.c                            | 38 ++++----
+>>   kernel/bpf/helpers.c                          |  3 +
+>>   kernel/bpf/task_iter.c                        | 91 +++++++++++++++++++
+>>   .../testing/selftests/bpf/bpf_experimental.h  | 15 +++
+>>   .../selftests/bpf/prog_tests/fs_kfuncs.c      | 46 ++++++++++
+>>   .../testing/selftests/bpf/prog_tests/iters.c  | 79 ++++++++++++++++
+>>   .../selftests/bpf/progs/fs_kfuncs_failure.c   | 33 +++++++
+>>   .../selftests/bpf/progs/iters_task_file.c     | 86 ++++++++++++++++++
+>>   .../bpf/progs/iters_task_file_failure.c       | 91 +++++++++++++++++++
+>>   .../selftests/bpf/progs/test_fget_task.c      | 63 +++++++++++++
+>>   .../selftests/bpf/progs/verifier_vfs_reject.c | 10 --
+>>   11 files changed, 529 insertions(+), 26 deletions(-)
+>>   create mode 100644 tools/testing/selftests/bpf/progs/ 
+>> fs_kfuncs_failure.c
+>>   create mode 100644 tools/testing/selftests/bpf/progs/iters_task_file.c
+>>   create mode 100644 tools/testing/selftests/bpf/progs/ 
+>> iters_task_file_failure.c
+>>   create mode 100644 tools/testing/selftests/bpf/progs/test_fget_task.c
+> 
+> There are quite some CI failures.
+> 
+>     https://github.com/kernel-patches/bpf/actions/runs/12403224240/ 
+> job/34626610882?pr=8266
+> 
+> Please investigate.
+> 
+> 
 
-I didn't find llc_span() and node_span() in vanilla kernel. Does this series
-have prerequisites?
+Thanks for your reply.
 
-> -}
-> -
->  /*
->   * Return true if the LLC domains do not perfectly overlap with the NUMA
->   * domains, false otherwise.
-> @@ -329,7 +309,7 @@ static bool llc_numa_mismatch(void)
->   */
->  static void update_selcpu_topology(struct sched_ext_ops *ops)
->  {
-> -	bool enable_llc = false, enable_numa = false;
-> +	bool enable_llc = false;
->  	unsigned int nr_cpus;
->  	s32 cpu = cpumask_first(cpu_online_mask);
->  
-> @@ -348,41 +328,34 @@ static void update_selcpu_topology(struct sched_ext_ops *ops)
->  	if (nr_cpus > 0) {
->  		if (nr_cpus < num_online_cpus())
->  			enable_llc = true;
-> +		/*
-> +		 * No need to enable LLC optimization if the LLC domains are
-> +		 * perfectly overlapping with the NUMA domains when per-node
-> +		 * cpumasks are enabled.
-> +		 */
-> +		if ((ops->flags & SCX_OPS_BUILTIN_IDLE_PER_NODE) &&
-> +		    !llc_numa_mismatch())
-> +			enable_llc = false;
-
-This doesn't sound like redundancy removal. I may be wrong, but this
-looks like a sort of optimization. If so, it deserves to be a separate
-patch.
-
->  		pr_debug("sched_ext: LLC=%*pb weight=%u\n",
->  			 cpumask_pr_args(llc_span(cpu)), llc_weight(cpu));
->  	}
-> -
-> -	/*
-> -	 * Enable NUMA optimization only when there are multiple NUMA domains
-> -	 * among the online CPUs and the NUMA domains don't perfectly overlaps
-> -	 * with the LLC domains.
-> -	 *
-> -	 * If all CPUs belong to the same NUMA node and the same LLC domain,
-> -	 * enabling both NUMA and LLC optimizations is unnecessary, as checking
-> -	 * for an idle CPU in the same domain twice is redundant.
-> -	 */
-> -	nr_cpus = numa_weight(cpu);
-
-Neither I found numa_weight()...
-
-> -	if (nr_cpus > 0) {
-> -		if (nr_cpus < num_online_cpus() && llc_numa_mismatch())
-> -			enable_numa = true;
-> -		pr_debug("sched_ext: NUMA=%*pb weight=%u\n",
-> -			 cpumask_pr_args(numa_span(cpu)), numa_weight(cpu));
-> -	}
-
-This calls numa_weight() twice. Get rid of it for good.
-
->  	rcu_read_unlock();
->  
->  	pr_debug("sched_ext: LLC idle selection %s\n",
->  		 enable_llc ? "enabled" : "disabled");
-> -	pr_debug("sched_ext: NUMA idle selection %s\n",
-> -		 enable_numa ? "enabled" : "disabled");
->  
->  	if (enable_llc)
->  		static_branch_enable_cpuslocked(&scx_selcpu_topo_llc);
->  	else
->  		static_branch_disable_cpuslocked(&scx_selcpu_topo_llc);
-> -	if (enable_numa)
-> -		static_branch_enable_cpuslocked(&scx_selcpu_topo_numa);
-> +
-> +	/*
-> +	 * Check if we need to enable per-node cpumasks.
-> +	 */
-> +	if (ops->flags & SCX_OPS_BUILTIN_IDLE_PER_NODE)
-> +		static_branch_enable_cpuslocked(&scx_builtin_idle_per_node);
-
-This is the key from the whole series!
-
->  	else
-> -		static_branch_disable_cpuslocked(&scx_selcpu_topo_numa);
-> +		static_branch_disable_cpuslocked(&scx_builtin_idle_per_node);
->  }
-
-This knob enables the whole new machinery, and it definitely deserves to
-be a separate, very last patch. Now it looks like a sneaky replacement of
-scx_selcpu_topo_numa with scx_builtin_idle_per_node, and this is wrong. 
-
-Are you sure you need a comment on top of it? To me, the code is quite
-self-explaining...
-
->  
->  /*
-> @@ -405,9 +378,8 @@ static void update_selcpu_topology(struct sched_ext_ops *ops)
->   *
->   * 5. Pick any idle CPU usable by the task.
->   *
-> - * Step 3 and 4 are performed only if the system has, respectively, multiple
-> - * LLC domains / multiple NUMA nodes (see scx_selcpu_topo_llc and
-> - * scx_selcpu_topo_numa).
-> + * Step 3 is performed only if the system has multiple LLC domains that are not
-> + * perfectly overlapping with the NUMA domains (see scx_selcpu_topo_llc).
->   *
->   * NOTE: tasks that can only run on 1 CPU are excluded by this logic, because
->   * we never call ops.select_cpu() for them, see select_task_rq().
-> @@ -416,7 +388,6 @@ static s32 scx_select_cpu_dfl(struct task_struct *p, s32 prev_cpu,
->  			      u64 wake_flags, bool *found)
->  {
->  	const struct cpumask *llc_cpus = NULL;
-> -	const struct cpumask *numa_cpus = NULL;
->  	int node = idle_cpu_to_node(prev_cpu);
->  	s32 cpu;
->  
-> @@ -438,13 +409,9 @@ static s32 scx_select_cpu_dfl(struct task_struct *p, s32 prev_cpu,
->  	 * CPU affinity), the task will simply use the flat scheduling domain
->  	 * defined by user-space.
->  	 */
-> -	if (p->nr_cpus_allowed >= num_possible_cpus()) {
-> -		if (static_branch_maybe(CONFIG_NUMA, &scx_selcpu_topo_numa))
-> -			numa_cpus = numa_span(prev_cpu);
-> -
-> +	if (p->nr_cpus_allowed >= num_possible_cpus())
->  		if (static_branch_maybe(CONFIG_SCHED_MC, &scx_selcpu_topo_llc))
->  			llc_cpus = llc_span(prev_cpu);
-> -	}
-
-I'd keep the curve braces. That would minimize your patch and preserve
-more history.
-
->  
->  	/*
->  	 * If WAKE_SYNC, try to migrate the wakee to the waker's CPU.
-> @@ -507,15 +474,6 @@ static s32 scx_select_cpu_dfl(struct task_struct *p, s32 prev_cpu,
->  				goto cpu_found;
->  		}
->  
-> -		/*
-> -		 * Search for any fully idle core in the same NUMA node.
-> -		 */
-> -		if (numa_cpus) {
-> -			cpu = scx_pick_idle_cpu(numa_cpus, node, SCX_PICK_IDLE_CORE);
-> -			if (cpu >= 0)
-> -				goto cpu_found;
-> -		}
-> -
->  		/*
->  		 * Search for any full idle core usable by the task.
->  		 *
-> @@ -545,17 +503,12 @@ static s32 scx_select_cpu_dfl(struct task_struct *p, s32 prev_cpu,
->  			goto cpu_found;
->  	}
->  
-> -	/*
-> -	 * Search for any idle CPU in the same NUMA node.
-> -	 */
-> -	if (numa_cpus) {
-> -		cpu = pick_idle_cpu_from_node(numa_cpus, node, 0);
-> -		if (cpu >= 0)
-> -			goto cpu_found;
-> -	}
-> -
->  	/*
->  	 * Search for any idle CPU usable by the task.
-> +	 *
-> +	 * If NUMA aware idle selection is enabled, the search will begin
-> +	 * in prev_cpu's node and proceed to other nodes in order of
-> +	 * increasing distance.
-
-Again, this definitely not a redundancy removal. This is a description
-of new behavior, and should go with the implementation of that
-behavior.
-
->  	 */
->  	cpu = scx_pick_idle_cpu(p->cpus_ptr, node, 0);
->  	if (cpu >= 0)
-> -- 
-> 2.47.1
+I noticed it, I will fix it in the next version.
 
