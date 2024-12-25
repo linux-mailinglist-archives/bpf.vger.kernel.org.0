@@ -1,65 +1,61 @@
-Return-Path: <bpf+bounces-47600-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47601-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E52D69FC28B
-	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2024 22:29:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 442CC9FC2E7
+	for <lists+bpf@lfdr.de>; Wed, 25 Dec 2024 01:09:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D6E8164D3C
-	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2024 21:29:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B8A97A1981
+	for <lists+bpf@lfdr.de>; Wed, 25 Dec 2024 00:09:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E812F19F49E;
-	Tue, 24 Dec 2024 21:29:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9310520E6;
+	Wed, 25 Dec 2024 00:09:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dpGftYVK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ezCGfQiq"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B9CC14A099;
-	Tue, 24 Dec 2024 21:29:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F18B838B;
+	Wed, 25 Dec 2024 00:09:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735075744; cv=none; b=XNgFLsONzoxZrnqdNYQZIXiO5zwSU47MA8q7ZbGSnFBrehq9QENq0N5fny186Gg+hMxBGK4AMJdX1s2OL96gb53CjZ63vIuOQmMVvU4M3T49lYxacaSxKc26dZN8NTgOQf0vvVWagpkBBqyqzeahh0OfbkKHjeWiQGMrDPn3l3Q=
+	t=1735085357; cv=none; b=tMTuvAMuxXz7dbN13A3BvPFscG3UWCiPzgwTR6DpBd4Ag1RTcai4e88yL88b8GmXOYNnaXcUcOWzTrx0Wx94YM/UFlUjQgOJauMUae6Rh5BWHfdXt22qJ0ZfnvdttMEFR5k/bwtBEj7PKlIk/dIvz6rDW2NIOo/ooz1m6+Uq4rQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735075744; c=relaxed/simple;
-	bh=5+NxKNw1ro8ezob6iU7PBoaUmScg7SvQzfMoCsnHTNc=;
+	s=arc-20240116; t=1735085357; c=relaxed/simple;
+	bh=GK5VEoZ6iWvG1OSIhekXapEioZs+guohK0mpEjfLISA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nKPmMi4LJ5N90rOLwyjI82Bo0cTMQ5irJrChFTPf3HEb/4ah6ItI2dBOBLm6sAzn1iGWkS3ZX2NX2eDHHcLujhPsdPRR3GGbqw3mQhs6NuZlfmwDdMRFiziOS4kXmcWrbz9TQe9HNtedty+N3EH60gpyxfwE6avYPnFK0Lcdzt0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dpGftYVK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4096C4CED0;
-	Tue, 24 Dec 2024 21:29:03 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=QqJzzYVg6+yPtunrPgy9SCwTFMxBkGsJ0PcPrBIkVALHRprV5lB+aual5Uo+FfnHxc+pNAPZfIvzmZxyyhBHB4tvyW+2bNtSgZ2d3jP5/VvYCZz/OXn0mGHIg5awiYDaeaYxa0aEmofCv3FHduh/IRakoPmw43L5s4CP4y74560=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ezCGfQiq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56827C4CED0;
+	Wed, 25 Dec 2024 00:09:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1735075743;
-	bh=5+NxKNw1ro8ezob6iU7PBoaUmScg7SvQzfMoCsnHTNc=;
+	s=k20201202; t=1735085356;
+	bh=GK5VEoZ6iWvG1OSIhekXapEioZs+guohK0mpEjfLISA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dpGftYVKRap4lp5SyX8iuRC80HJym40pkphxJ+1d8vYsk0MwT5Sd0rKNd3sOk7Eqv
-	 Ksy7UGkNLsCWc1Xbq5L4YZscwqysVCpVzuVa1yxlYLQDYs3XIwRMhoz7qB0AvT+FfU
-	 gRz6eocVOpewgV6pAVweQpJN1AlUA13VBg6lCSMAxskLZDiA69X45Z77870lT8cQ5i
-	 VGm+IQZlB8O8gHHUR4YwQDjnMSDe2oprTyBpgRnm9ZcfgLj+k7p0iw/sNVz7Pxk3u0
-	 6LldAFz/UAC1lXV56yVvk3ox6HEbc+HkboFJT4wv+fU4hfvQ9ghHUPkpE3QEoUcswc
-	 nvMyhuGh4e2Bg==
-Date: Tue, 24 Dec 2024 11:29:02 -1000
+	b=ezCGfQiqTE/en1RiCEc7R5OY+XjVsFllB9Bpi2xvVzDWueh6eQAIqo3iMbOe2/dN/
+	 IAkvu0d7Uqwzlt3xEoXc2vXSfo7te/Fq7JgtwdO5iqYsJvkafsfQPWvrKLJQqW4X9B
+	 I0fBBjJRHPcQY0JLe+4WAVbwNEL0lEAGIGAJXtegg4KQPhOWULLcnMmvXx/o1KPmiH
+	 YvRr16RWvstYfnP8Lf+4eToa1y7NwP5XutQRUVqFQjltX0ib4vYU6Vda9CRduErJ2O
+	 PdBbpSUUcOYwSY2zP792OyhPReNQoEzgmv3oXFR/DZhkKjRlRIMs9uln0AOTf/1AOd
+	 DvDaPHpwFj0og==
+Date: Tue, 24 Dec 2024 14:09:15 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Andrea Righi <arighi@nvidia.com>
-Cc: Yury Norov <yury.norov@gmail.com>, David Vernet <void@manifault.com>,
-	Changwoo Min <changwoo@igalia.com>, Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/10] sched_ext: idle: introduce SCX_PICK_IDLE_NODE
-Message-ID: <Z2snntl5Eze68O6B@slm.duckdns.org>
-References: <20241220154107.287478-1-arighi@nvidia.com>
- <20241220154107.287478-9-arighi@nvidia.com>
- <Z2ohDX-F6bvBO3bx@yury-ThinkPad>
- <Z2pvWdwLr86tj_8Q@gpd3>
+To: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: David Vernet <void@manifault.com>, sched-ext@meta.com,
+	kernel-team@meta.com, linux-kernel@vger.kernel.org,
+	bpf <bpf@vger.kernel.org>
+Subject: [PATCH sched_ext/for-6.13-fixes] sched_ext: Fix dsq_local_on selftest
+Message-ID: <Z2tNK2oFDX1OPp8C@slm.duckdns.org>
+References: <20241209152924.4508-1-void@manifault.com>
+ <qC39k3UsonrBYD_SmuxHnZIQLsuuccoCrkiqb_BT7DvH945A1_LZwE4g-5Pu9FcCtqZt4lY1HhIPi0homRuNWxkgo1rgP3bkxa0donw8kV4=@pm.me>
+ <Z1n9v7Z6iNJ-wKmq@slm.duckdns.org>
+ <SJEarr1ol1z7N83mqHJjBmpXcXgHNnnuORHfziWINcHBQCJzY0RczexPKxdq_vE5cDYPeO3bx1RdsNhLqw5UYI40HSX9cPZ9rdmebYwwAP8=@pm.me>
+ <HdoCQccNk3GZdnPx5w1vuAfOMMgtWeUgrUhn_e8B-hyRrWoOPakTGcoI3Q4-QmK_44msuvivoRUykxxeB82uR-S3enkmFaQl2t6Zgu-Nq6Y=@pm.me>
+ <Z2MV001RfiG7DNqj@slm.duckdns.org>
+ <ouIylyHgXTVZ9RiyVeHZ26YXQLKMEKHoOVPWIgpWRDD2FL2RDwwUEocaj4LMpMR3PjbwpPuxEnJAjMeD4e7LnWIAYvIbGC5BPvPGtzyumYk=@pm.me>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -68,21 +64,66 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Z2pvWdwLr86tj_8Q@gpd3>
+In-Reply-To: <ouIylyHgXTVZ9RiyVeHZ26YXQLKMEKHoOVPWIgpWRDD2FL2RDwwUEocaj4LMpMR3PjbwpPuxEnJAjMeD4e7LnWIAYvIbGC5BPvPGtzyumYk=@pm.me>
 
-On Tue, Dec 24, 2024 at 09:22:49AM +0100, Andrea Righi wrote:
-> > >  enum scx_pick_idle_cpu_flags {
-> > >  	SCX_PICK_IDLE_CORE	= 1LLU << 0,	/* pick a CPU whose SMT siblings are also idle */
-> > > +	SCX_PICK_IDLE_NODE	= 1LLU << 1,	/* pick a CPU in the same target NUMA node */
-> > 
-> > SCX_FORCE_NODE or SCX_FIX_NODE?
-> 
-> Ok, I like SCX_FORCE_NODE.
+The dsp_local_on selftest expects the scheduler to fail by trying to
+schedule an e.g. CPU-affine task to the wrong CPU. However, this isn't
+guaranteed to happen in the 1 second window that the test is running.
+Besides, it's odd to have this particular exception path tested when there
+are no other tests that verify that the interface is working at all - e.g.
+the test would pass if dsp_local_on interface is completely broken and fails
+on any attempt.
 
-How about SCX_PICK_IDLE_IN_NODE?
+Flip the test so that it verifies that the feature works. While at it, fix a
+typo in the info message.
 
-Thanks.
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Reported-by: Ihor Solodrai <ihor.solodrai@pm.me>
+Link: http://lkml.kernel.org/r/Z1n9v7Z6iNJ-wKmq@slm.duckdns.org
+---
+ tools/testing/selftests/sched_ext/dsp_local_on.bpf.c |    5 ++++-
+ tools/testing/selftests/sched_ext/dsp_local_on.c     |    5 +++--
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
--- 
-tejun
+diff --git a/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c b/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c
+index 6325bf76f47e..fbda6bf54671 100644
+--- a/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c
++++ b/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c
+@@ -43,7 +43,10 @@ void BPF_STRUCT_OPS(dsp_local_on_dispatch, s32 cpu, struct task_struct *prev)
+ 	if (!p)
+ 		return;
+ 
+-	target = bpf_get_prandom_u32() % nr_cpus;
++	if (p->nr_cpus_allowed == nr_cpus)
++		target = bpf_get_prandom_u32() % nr_cpus;
++	else
++		target = scx_bpf_task_cpu(p);
+ 
+ 	scx_bpf_dsq_insert(p, SCX_DSQ_LOCAL_ON | target, SCX_SLICE_DFL, 0);
+ 	bpf_task_release(p);
+diff --git a/tools/testing/selftests/sched_ext/dsp_local_on.c b/tools/testing/selftests/sched_ext/dsp_local_on.c
+index 472851b56854..0ff27e57fe43 100644
+--- a/tools/testing/selftests/sched_ext/dsp_local_on.c
++++ b/tools/testing/selftests/sched_ext/dsp_local_on.c
+@@ -34,9 +34,10 @@ static enum scx_test_status run(void *ctx)
+ 	/* Just sleeping is fine, plenty of scheduling events happening */
+ 	sleep(1);
+ 
+-	SCX_EQ(skel->data->uei.kind, EXIT_KIND(SCX_EXIT_ERROR));
+ 	bpf_link__destroy(link);
+ 
++	SCX_EQ(skel->data->uei.kind, EXIT_KIND(SCX_EXIT_UNREG));
++
+ 	return SCX_TEST_PASS;
+ }
+ 
+@@ -50,7 +51,7 @@ static void cleanup(void *ctx)
+ struct scx_test dsp_local_on = {
+ 	.name = "dsp_local_on",
+ 	.description = "Verify we can directly dispatch tasks to a local DSQs "
+-		       "from osp.dispatch()",
++		       "from ops.dispatch()",
+ 	.setup = setup,
+ 	.run = run,
+ 	.cleanup = cleanup,
 
