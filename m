@@ -1,336 +1,220 @@
-Return-Path: <bpf+bounces-47610-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47611-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B41C9FC5ED
-	for <lists+bpf@lfdr.de>; Wed, 25 Dec 2024 16:42:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45A149FC69C
+	for <lists+bpf@lfdr.de>; Wed, 25 Dec 2024 22:41:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C3C93163597
-	for <lists+bpf@lfdr.de>; Wed, 25 Dec 2024 15:42:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35A827A139A
+	for <lists+bpf@lfdr.de>; Wed, 25 Dec 2024 21:41:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C28718E361;
-	Wed, 25 Dec 2024 15:41:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72EE41B87C9;
+	Wed, 25 Dec 2024 21:41:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="osUJ3xhO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jFnsDV5X"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABB8B2AD2C;
-	Wed, 25 Dec 2024 15:41:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E123156F53;
+	Wed, 25 Dec 2024 21:41:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735141318; cv=none; b=ASUnWOvL32Bei5pMSw/+Jz4sGfU5DfLY9AIPdl2rYCz/a8pulVtUFfZWeHlj8QK/hbSWlKPhdb+hdrh6TVrWlY80pCxOG2JWdYGoA6H+MWbkT1rmvbqFmvkPrQa6aI3SGj4eybfkmU2JYqBvWCGfCE+xzNY3gpPzC1HSksDdajI=
+	t=1735162865; cv=none; b=bXZ/cVL/dVKeH8/Z0+R0lKPoytpWZUmtKRNcvnKb3ATxbN6/qXXcsF9Z7sR8pZXCwJ0FZZTZIkm9AZrWyCvgkjTH9YOcLavqFQbVlex4qMO6WyieYfqCuS/rKl0XukX9WnoGeL/5nq95jwMdKyuHAwZvYXtm2km1w+6OPM59ILc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735141318; c=relaxed/simple;
-	bh=aOYw3ZFJxmQw04fuGTqFXGviBsSwoPK4N79grPBtUkE=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=qOELwi42ENti7RSHWCH34o0n5kdKzSQeEnnEvh13jSOJ4q+S6Bd9zaF624QgWB+uR/isdDsARGm/tsKIxcUpiOv00uYAFW2OAFpdlOgFqb2z2f0/piyCBEhgNDyrVupzrMPJU5pEGdyx0WovZ9E6tEM6fQgoe47Xz73iqoeAsPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=osUJ3xhO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07D0FC4CECD;
-	Wed, 25 Dec 2024 15:41:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1735141318;
-	bh=aOYw3ZFJxmQw04fuGTqFXGviBsSwoPK4N79grPBtUkE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=osUJ3xhONMC+ypq6XENWiHc+L6X7cLZW8jCwu+PPRv3kgAC5TzosWtMR/EH4IhT1g
-	 40kV6tZNC7O98HHklqwrrHdnpNcRHLvvkKPfmWED3kxPJjiYHZUxbf+tllSrbnVvlg
-	 LnM6kjbvjYFqaTQqkCOsdbj1CnStWTzfN/+k13xdyjO0wcmu3G1PrBPoCEOZuEsNp0
-	 wVGxRFS+f5RI3y2UWR5Qf+y8I9JAMQa9AMMs30fFTXZeSLEHy3uV8GLvgZpK0r+Da4
-	 +XE52Gseka7X4sIuVcLdRUWoiXa5DIWRhQV/UedGneVtR0QNAcXuw3bVMDvMUOstn0
-	 OYvYOrL7MFpRA==
-Date: Thu, 26 Dec 2024 00:41:52 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+	s=arc-20240116; t=1735162865; c=relaxed/simple;
+	bh=WjPx4zThxC5TM6oy+sYo5WxM3maQGGvkczyjtl61UXg=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uCneDBQsZajW5Z3h7JxF/PjCyVcGVQ10obUYjtIA0yqky+e14rm8Qa4cCanDOPs/VqWnTQDD9hj0lkkuYTHMf8z9ITzbBejYkg8jlKDY6RKfJCMCi++pvTKD/EvhydvD0N0X1lgXW+3z0PjuQsKZidAp2wovZrKJReI1jVOscmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jFnsDV5X; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-aaee2c5ee6eso367193666b.1;
+        Wed, 25 Dec 2024 13:41:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1735162861; x=1735767661; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=H/OTOqSE4rPhYMOMkXY7FoWqYZro7fZ2HTAGSi1fUGk=;
+        b=jFnsDV5XNY5DsSNlz1ly+Ap07z5revyZZd1cD2aqqvSYrOHTp5n3Wr9ESCqnoWkmwv
+         zYUe+IMiFG4lRB8xTEM9CW5O4oEis6S/SfPSr20aFH599u5TxXATYXkhxP6bNT0JbiLe
+         xYSKDptEJeusXQ3EdreCHkwTcCXzUouAjaSt/BppVjitKvIT6xJORPYU5wvo+mfeX9QX
+         UgRPSqMCGlFOgS84dz4BmvLKImN1yewtpbsqMoVYzAnEz3ushmrJIp3ceWQz9koE75d2
+         073C/+G4/9iR0mL15XG3514OB8h5enorNimu4R/0ql6+exC7/dLr4H9HD1fywUEphZle
+         ehIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735162861; x=1735767661;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H/OTOqSE4rPhYMOMkXY7FoWqYZro7fZ2HTAGSi1fUGk=;
+        b=breqJHfPUGEhUpuYO0IH9YHOA1ItEprsMs3xW+lOE3u2g2emzjD2QXCCkCS+tArHCd
+         68d4g/F08DpMH53SgET0sFPSk8uoKjJV6Gjcra23jMy1co9G3rRLkyYzQBXze2JP4CBL
+         7OUbyCgITc7fsRKOqYU9q1toqpjdUCCg/vNxc+K/mvSb27hqTNlSGAjNNricRTDb9tY2
+         4LAN6iFjUMyyx8LNYYwnNH6Lke46l4RlQC/S1T8Ga2Uj0WN66LskeBQIcnix8rzYSCpl
+         dHibQo+AJjw29ObF1BHQJlcNITyXV4Rcv//irYfpmAi0jj26DL6FfNkKszzeud4fT5bf
+         JZmw==
+X-Forwarded-Encrypted: i=1; AJvYcCX6Uve+qWc06JkL8gK3exu5rB+wUwN5FPZov76yz5E37oLISEeS/xdcCQyHHEjhDgXelRudne4zrl6wtk1CDcbc/9rZ@vger.kernel.org, AJvYcCXp3A+7Qxq7hs5hfCigrdIYFu00BAfm1+6XGn2ad3NKr8iCYfgJDVPQansJ+73VQP/HmW8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzJlB2wYSYuhon3Pd3MPWQjZW2b2S7fi5WdaslyvCsmb1a1d6ly
+	HYLhByf9CnX+q/quK/XbA/9o9CFzLLzeeNRvuf11N0V91edUR50S
+X-Gm-Gg: ASbGncslCzyrngTZGc2UkJt8zlAutRs2gSax4/wdirmDf1TnFJNBb767v7vPvcazPkr
+	Pe0c8O0UfXQnnVbi/a8KLSOYpir83Dbue6M4PQirIOnlWeG8tgFLblnyBN4hzynLio//Bk7n/iI
+	4ZKkJIQQKG9N3uelaqQ1u+Qm1dCmPUPGQMqrG3flSd0cMYr0OyzgVwFX92R4MBSxV6mq9AKURqz
+	qKti3Tz2CqxDJ2tSzBm4PO5NUevBYuRrMRZQ87dVDcbbmmPnSDgmTZszYR/dQuTPMdnmRIIqlXH
+	8g==
+X-Google-Smtp-Source: AGHT+IGHdNiMW2jaHiQ0isEVB9fUDdY2DquksCOBVs3Nrz56IoGV9ofnLjeEOiXWOWvfMByGhJGoIw==
+X-Received: by 2002:a17:907:6e90:b0:aa6:5d30:d974 with SMTP id a640c23a62f3a-aac2d3286bfmr2294089166b.28.1735162861113;
+        Wed, 25 Dec 2024 13:41:01 -0800 (PST)
+Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aac0efe4b85sm844078966b.118.2024.12.25.13.40.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Dec 2024 13:41:00 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 25 Dec 2024 22:40:53 +0100
 To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Masami
- Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, Sven Schnelle <svens@linux.ibm.com>, Paul
- Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>, Donglin
- Peng <dolinux.peng@gmail.com>, Zheng Yejian <zhengyejian@huaweicloud.com>,
- bpf@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] ftrace: Add support for function argument to
- graph tracer
-Message-Id: <20241226004152.0bddb524aed8bb0de4eeb43c@kernel.org>
-In-Reply-To: <20241223201542.067076254@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Donglin Peng <dolinux.peng@gmail.com>,
+	Zheng Yejian <zhengyejian@huaweicloud.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 0/4] ftrace: Add function arguments to function tracers
+Message-ID: <Z2x75Yumj1TKYce0@krava>
 References: <20241223201347.609298489@goodmis.org>
-	<20241223201542.067076254@goodmis.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241223201347.609298489@goodmis.org>
 
-On Mon, 23 Dec 2024 15:13:49 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> From: Sven Schnelle <svens@linux.ibm.com>
+On Mon, Dec 23, 2024 at 03:13:47PM -0500, Steven Rostedt wrote:
 > 
-> Wire up the code to print function arguments in the function graph
-> tracer. This functionality can be enabled/disabled during runtime with
-> options/funcgraph-args.
+> These patches add support for printing function arguments in ftrace.
 > 
 > Example usage:
 > 
-> 6)              | dummy_xmit [dummy](skb = 0x8887c100, dev = 0x872ca000) {
-> 6)              |   consume_skb(skb = 0x8887c100) {
-> 6)              |     skb_release_head_state(skb = 0x8887c100) {
-> 6)  0.178 us    |       sock_wfree(skb = 0x8887c100)
-> 6)  0.627 us    |     }
+> function tracer:
 > 
-
-
-
-> Co-developed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
-> Changes since v1: https://lore.kernel.org/20240904065908.1009086-7-svens@linux.ibm.com
->  
->  - Record just FTRACE_REGS_MAX_ARGS into the ring buffer and not the
->    entire ftrace_regs structure, as that structure should be opaque
->    from generic code.
+>  ~# cd /sys/kernel/tracing/
+>  ~# echo icmp_rcv >set_ftrace_filter
+>  ~# echo function >current_tracer
+>  ~# echo 1 >options/func-args
+>  ~# ping -c 10 127.0.0.1
+> [..]
+>  ~# cat trace
+> [..]
+>             ping-1277    [030] ..s1.    39.120939: icmp_rcv(skb=0xa0ecab00) <-ip_protocol_deliver_rcu
+>             ping-1277    [030] ..s1.    39.120946: icmp_rcv(skb=0xa0ecac00) <-ip_protocol_deliver_rcu
+>             ping-1277    [030] ..s1.    40.179724: icmp_rcv(skb=0xa0ecab00) <-ip_protocol_deliver_rcu
+>             ping-1277    [030] ..s1.    40.179730: icmp_rcv(skb=0xa0ecac00) <-ip_protocol_deliver_rcu
+>             ping-1277    [030] ..s1.    41.219700: icmp_rcv(skb=0xa0ecab00) <-ip_protocol_deliver_rcu
+>             ping-1277    [030] ..s1.    41.219706: icmp_rcv(skb=0xa0ecac00) <-ip_protocol_deliver_rcu
+>             ping-1277    [030] ..s1.    42.259717: icmp_rcv(skb=0xa0ecab00) <-ip_protocol_deliver_rcu
+>             ping-1277    [030] ..s1.    42.259725: icmp_rcv(skb=0xa0ecac00) <-ip_protocol_deliver_rcu
+>             ping-1277    [030] ..s1.    43.299735: icmp_rcv(skb=0xa0ecab00) <-ip_protocol_deliver_rcu
+>             ping-1277    [030] ..s1.    43.299742: icmp_rcv(skb=0xa0ecac00) <-ip_protocol_deliver_rcu
 > 
->  - Make the function graph entry event have a dynamic size, so that an
->    array of arguments may be added in the ring buffer after it.
+> function graph:
 > 
->  kernel/trace/Kconfig                 |   6 ++
->  kernel/trace/trace.h                 |   1 +
->  kernel/trace/trace_entries.h         |   7 +-
->  kernel/trace/trace_functions_graph.c | 147 +++++++++++++++++++++------
->  4 files changed, 125 insertions(+), 36 deletions(-)
+>  ~# cd /sys/kernel/tracing
+>  ~# echo icmp_rcv >set_graph_function
+>  ~# echo function_graph >current_tracer
+>  ~# echo 1 >options/funcgraph-args
 > 
-> diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-> index 60412c1012ef..033fba0633cf 100644
-> --- a/kernel/trace/Kconfig
-> +++ b/kernel/trace/Kconfig
-> @@ -268,6 +268,12 @@ config FUNCTION_TRACE_ARGS
->  	depends on HAVE_FUNCTION_ARG_ACCESS_API
->  	depends on DEBUG_INFO_BTF
->  	default y
-> +	help
-> +	  If supported with function argument access API and BTF, then
-> +	  the function tracer and function graph tracer will support printing
-> +	  of function arguments. This feature is off by default, and can be
-> +	  enabled via the trace option func-args (for the function tracer) and
-> +	  funcgraph-args (for the function graph tracer)
->  
->  config DYNAMIC_FTRACE
->  	bool "enable/disable function tracing dynamically"
-> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-> index ad9f008d7dd7..6f67bbc17bed 100644
-> --- a/kernel/trace/trace.h
-> +++ b/kernel/trace/trace.h
-> @@ -887,6 +887,7 @@ static __always_inline bool ftrace_hash_empty(struct ftrace_hash *hash)
->  #define TRACE_GRAPH_PRINT_RETVAL        0x800
->  #define TRACE_GRAPH_PRINT_RETVAL_HEX    0x1000
->  #define TRACE_GRAPH_PRINT_RETADDR       0x2000
-> +#define TRACE_GRAPH_ARGS		0x4000
->  #define TRACE_GRAPH_PRINT_FILL_SHIFT	28
->  #define TRACE_GRAPH_PRINT_FILL_MASK	(0x3 << TRACE_GRAPH_PRINT_FILL_SHIFT)
->  
-> diff --git a/kernel/trace/trace_entries.h b/kernel/trace/trace_entries.h
-> index 82fd174ebbe0..254491b545c3 100644
-> --- a/kernel/trace/trace_entries.h
-> +++ b/kernel/trace/trace_entries.h
-> @@ -72,17 +72,18 @@ FTRACE_ENTRY_REG(function, ftrace_entry,
->  );
->  
->  /* Function call entry */
-> -FTRACE_ENTRY_PACKED(funcgraph_entry, ftrace_graph_ent_entry,
-> +FTRACE_ENTRY(funcgraph_entry, ftrace_graph_ent_entry,
->  
->  	TRACE_GRAPH_ENT,
->  
->  	F_STRUCT(
->  		__field_struct(	struct ftrace_graph_ent,	graph_ent	)
->  		__field_packed(	unsigned long,	graph_ent,	func		)
-> -		__field_packed(	int,		graph_ent,	depth		)
-> +		__field_packed(	unsigned long,	graph_ent,	depth		)
-> +		__dynamic_array(unsigned long,	args				)
->  	),
->  
-> -	F_printk("--> %ps (%d)", (void *)__entry->func, __entry->depth)
-> +	F_printk("--> %ps (%lu)", (void *)__entry->func, __entry->depth)
->  );
->  
->  #ifdef CONFIG_FUNCTION_GRAPH_RETADDR
-> diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
-> index d0e4f412c298..c8eda9bebdf4 100644
-> --- a/kernel/trace/trace_functions_graph.c
-> +++ b/kernel/trace/trace_functions_graph.c
-> @@ -12,6 +12,8 @@
->  #include <linux/interrupt.h>
->  #include <linux/slab.h>
->  #include <linux/fs.h>
-> +#include <linux/btf.h>
-> +#include <linux/bpf.h>
+>  ~# ping -c 1 127.0.0.1
+> 
+>  ~# cat trace
+> 
+>  30)               |  icmp_rcv(skb=0xa0ecab00) {
+>  30)               |    __skb_checksum_complete(skb=0xa0ecab00) {
+>  30)               |      skb_checksum(skb=0xa0ecab00, offset=0, len=64, csum=0) {
+>  30)               |        __skb_checksum(skb=0xa0ecab00, offset=0, len=64, csum=0, ops=0x232e0327a88) {
+>  30)   0.418 us    |          csum_partial(buff=0xa0d20924, len=64, sum=0)
+>  30)   0.985 us    |        }
+>  30)   1.463 us    |      }
+>  30)   2.039 us    |    }
+> [..]
+> 
+> This was last posted by Sven Schnelle here:
+> 
+>   https://lore.kernel.org/all/20240904065908.1009086-1-svens@linux.ibm.com/
+> 
+> As Sven hasn't worked on it since, I decided to continue to push it
+> through. I'm keeping Sven as original author and added myself as
+> "Co-developed-by".
+> 
+> The main changes are:
+> 
+> - Made the kconfig option unconditional if all the dependencies are set.
+> 
+> - Not save ftrace_regs in the ring buffer, as that is an abstract
+>   descriptor defined by the architectures and should remain opaque from
+>   generic code. Instead, the args are read at the time they are recorded
+>   (with the ftrace_regs passed to the callback function), and saved into
+>   the ring buffer. Then the print function only takes an array of elements.
+> 
+>   This could allow archs to retrieve arguments that are on the stack where
+>   as, post processing ftrace_regs could cause undesirable results.
+> 
+> - Made the function and function graph entry events dynamically sized
+>   to allow the arguments to be appended to the event in the ring buffer.
+>   The print function only looks to see if the event saved in the ring
+>   buffer is big enough to hold all the arguments defined by the new
+>   FTRACE_REGS_MAX_ARGS macro and if so, it will assume there are arguments
+>   there and print them. This also means user space will not break on
+>   reading these events as arguments will simply be ignored.
+> 
+> - The printing of the arguments has some more data when things are not
+>   processed by BPF. Any unsupported argument will have the type printed
+>   out in the ring buffer. 
+> 
+> - Also removed the spaces around the '=' as that's more in line to how
+>   trace events show their fields.
+> 
+> - One new patch I added to convert function graph tracing over to using
+>   args as soon as the user sets the option even if function graph tracing
+>   is enabled. Function tracer did this already by default.
+> 
+> Steven Rostedt (1):
+>       ftrace: Have funcgraph-args take affect during tracing
+> 
+> Sven Schnelle (3):
+>       ftrace: Add print_function_args()
+>       ftrace: Add support for function argument to graph tracer
+>       ftrace: Add arguments to function tracer
 
-Do we need these headers? I think it is wrapped by print_function_args().
+hi,
+what branch is this based on? can't find any that would apply patch#2
+without conflict.
 
->  
->  #include "trace.h"
->  #include "trace_output.h"
-> @@ -70,6 +72,10 @@ static struct tracer_opt trace_opts[] = {
->  #ifdef CONFIG_FUNCTION_GRAPH_RETADDR
->  	/* Display function return address ? */
->  	{ TRACER_OPT(funcgraph-retaddr, TRACE_GRAPH_PRINT_RETADDR) },
-> +#endif
-> +#ifdef CONFIG_FUNCTION_TRACE_ARGS
-> +	/* Display function arguments ? */
-> +	{ TRACER_OPT(funcgraph-args, TRACE_GRAPH_ARGS) },
->  #endif
->  	/* Include sleep time (scheduled out) between entry and return */
->  	{ TRACER_OPT(sleep-time, TRACE_GRAPH_SLEEP_TIME) },
-> @@ -110,25 +116,41 @@ static void
->  print_graph_duration(struct trace_array *tr, unsigned long long duration,
->  		     struct trace_seq *s, u32 flags);
->  
-> -int __trace_graph_entry(struct trace_array *tr,
-> -				struct ftrace_graph_ent *trace,
-> -				unsigned int trace_ctx)
-> +static int __graph_entry(struct trace_array *tr, struct ftrace_graph_ent *trace,
-> +			 unsigned int trace_ctx, struct ftrace_regs *fregs)
->  {
->  	struct ring_buffer_event *event;
->  	struct trace_buffer *buffer = tr->array_buffer.buffer;
->  	struct ftrace_graph_ent_entry *entry;
-> +	int size;
->  
-> -	event = trace_buffer_lock_reserve(buffer, TRACE_GRAPH_ENT,
-> -					  sizeof(*entry), trace_ctx);
-> +	/* If fregs is defined, add FTRACE_REGS_MAX_ARGS long size words */
-> +	size = sizeof(*entry) + (FTRACE_REGS_MAX_ARGS * !!fregs * sizeof(long));
-> +
-> +	event = trace_buffer_lock_reserve(buffer, TRACE_GRAPH_ENT, size, trace_ctx);
->  	if (!event)
->  		return 0;
-> -	entry	= ring_buffer_event_data(event);
-> -	entry->graph_ent			= *trace;
-> +
-> +	entry = ring_buffer_event_data(event);
-> +	entry->graph_ent = *trace;
-> +
-> +	if (fregs) {
-> +		for (int i = 0; i < FTRACE_REGS_MAX_ARGS; i++)
-> +			entry->args[i] = ftrace_regs_get_argument(fregs, i);
-> +	}
-> +
->  	trace_buffer_unlock_commit_nostack(buffer, event);
->  
->  	return 1;
->  }
->  
-> +int __trace_graph_entry(struct trace_array *tr,
-> +				struct ftrace_graph_ent *trace,
-> +				unsigned int trace_ctx)
-> +{
-> +	return __graph_entry(tr, trace, trace_ctx, NULL);
-> +}
-> +
->  #ifdef CONFIG_FUNCTION_GRAPH_RETADDR
->  int __trace_graph_retaddr_entry(struct trace_array *tr,
->  				struct ftrace_graph_ent *trace,
-> @@ -174,9 +196,9 @@ struct fgraph_times {
->  	unsigned long long		sleeptime; /* may be optional! */
->  };
->  
-> -int trace_graph_entry(struct ftrace_graph_ent *trace,
-> -		      struct fgraph_ops *gops,
-> -		      struct ftrace_regs *fregs)
-> +static int graph_entry(struct ftrace_graph_ent *trace,
-> +		       struct fgraph_ops *gops,
-> +		       struct ftrace_regs *fregs)
->  {
->  	unsigned long *task_var = fgraph_get_task_var(gops);
->  	struct trace_array *tr = gops->private;
-> @@ -248,7 +270,7 @@ int trace_graph_entry(struct ftrace_graph_ent *trace,
->  
->  			ret = __trace_graph_retaddr_entry(tr, trace, trace_ctx, retaddr);
->  		} else
-> -			ret = __trace_graph_entry(tr, trace, trace_ctx);
-> +			ret = __graph_entry(tr, trace, trace_ctx, fregs);
->  	} else {
->  		ret = 0;
->  	}
-> @@ -259,6 +281,20 @@ int trace_graph_entry(struct ftrace_graph_ent *trace,
->  	return ret;
->  }
->  
-> +int trace_graph_entry(struct ftrace_graph_ent *trace,
-> +		      struct fgraph_ops *gops,
-> +		      struct ftrace_regs *fregs)
-> +{
-> +	return graph_entry(trace, gops, NULL);
-> +}
-> +
-> +static int trace_graph_entry_args(struct ftrace_graph_ent *trace,
-> +				  struct fgraph_ops *gops,
-> +				  struct ftrace_regs *fregs)
-> +{
-> +	return graph_entry(trace, gops, fregs);
-> +}
-> +
->  static void
->  __trace_graph_function(struct trace_array *tr,
->  		unsigned long ip, unsigned int trace_ctx)
-> @@ -423,7 +459,10 @@ static int graph_trace_init(struct trace_array *tr)
->  {
->  	int ret;
->  
-> -	tr->gops->entryfunc = trace_graph_entry;
-> +	if (tracer_flags_is_set(TRACE_GRAPH_ARGS))
-> +		tr->gops->entryfunc = trace_graph_entry_args;
-> +	else
-> +		tr->gops->entryfunc = trace_graph_entry;
->  
->  	if (tracing_thresh)
->  		tr->gops->retfunc = trace_graph_thresh_return;
-> @@ -780,7 +819,7 @@ static void print_graph_retaddr(struct trace_seq *s, struct fgraph_retaddr_ent_e
->  
->  static void print_graph_retval(struct trace_seq *s, struct ftrace_graph_ent_entry *entry,
->  				struct ftrace_graph_ret *graph_ret, void *func,
-> -				u32 opt_flags, u32 trace_flags)
-> +				u32 opt_flags, u32 trace_flags, int args_size)
->  {
->  	unsigned long err_code = 0;
->  	unsigned long retval = 0;
-> @@ -814,7 +853,14 @@ static void print_graph_retval(struct trace_seq *s, struct ftrace_graph_ent_entr
->  		if (entry->ent.type != TRACE_GRAPH_RETADDR_ENT)
->  			print_retaddr = false;
->  
-> -		trace_seq_printf(s, "%ps();", func);
-> +		trace_seq_printf(s, "%ps", func);
-> +
-> +		if (args_size >= FTRACE_REGS_MAX_ARGS * sizeof(long)) {
-> +			print_function_args(s, entry->args, (unsigned long)func);
-> +			trace_seq_putc(s, ';');
-> +		} else
-> +			trace_seq_puts(s, "();");
-> +
->  		if (print_retval || print_retaddr)
->  			trace_seq_puts(s, " /*");
->  		else
-> @@ -836,12 +882,13 @@ static void print_graph_retval(struct trace_seq *s, struct ftrace_graph_ent_entr
->  	}
->  
->  	if (!entry || print_retval || print_retaddr)
-> -		trace_seq_puts(s, " */\n");
-> +		trace_seq_puts(s, " */");
+thanks,
+jirka
 
-Do we need this change?
-
-Thank you,
-
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> ----
+>  include/linux/ftrace_regs.h          |   5 +
+>  kernel/trace/Kconfig                 |  12 +++
+>  kernel/trace/trace.c                 |  12 ++-
+>  kernel/trace/trace.h                 |   4 +-
+>  kernel/trace/trace_entries.h         |  12 ++-
+>  kernel/trace/trace_functions.c       |  46 ++++++++-
+>  kernel/trace/trace_functions_graph.c | 174 ++++++++++++++++++++++++++++-------
+>  kernel/trace/trace_irqsoff.c         |   4 +-
+>  kernel/trace/trace_output.c          |  96 ++++++++++++++++++-
+>  kernel/trace/trace_output.h          |   9 ++
+>  kernel/trace/trace_sched_wakeup.c    |   4 +-
+>  11 files changed, 324 insertions(+), 54 deletions(-)
+> 
 
