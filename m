@@ -1,161 +1,389 @@
-Return-Path: <bpf+bounces-47654-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47655-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9285B9FD283
-	for <lists+bpf@lfdr.de>; Fri, 27 Dec 2024 10:20:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA8BA9FD2E7
+	for <lists+bpf@lfdr.de>; Fri, 27 Dec 2024 11:01:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27FA5163AFE
-	for <lists+bpf@lfdr.de>; Fri, 27 Dec 2024 09:20:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25711188029C
+	for <lists+bpf@lfdr.de>; Fri, 27 Dec 2024 10:01:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5A17155741;
-	Fri, 27 Dec 2024 09:20:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16C5D198E76;
+	Fri, 27 Dec 2024 09:58:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="V8Y6BiNL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ia2oX5vh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE998139597
-	for <bpf@vger.kernel.org>; Fri, 27 Dec 2024 09:20:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BEC1158853;
+	Fri, 27 Dec 2024 09:58:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735291220; cv=none; b=cdkW5s77eJdL9FZ0I3KSGAatHvSZUe+PcCvVnQBcmvLV3S9cwe3341Q2tSHSv46HEUc5Rj1chzbXFe5x7KdlGkFyM11zmxh9Rglwr1qsSV+hGJq0cE4GBOKZdPzB8Brb3PgkPj30KRKMoI2UIIV/P8BsBqgFRQLokqUkMQlxqMU=
+	t=1735293504; cv=none; b=i/+oykNirJtPUTahFqemZIwJ9vbGlvxpIh8H76GrF2hw2TCNHmI0Hc4sGBoCwiqmXYngq8n+ufLaFYXRSw9IsVgI+L2WWSiua/b9U9D0KCsY8J6tbf4Y9ehpxd8WovipOW5cqKmvWWm+AIwOp+4mksxvfpsetVvTrmFZKl2zsI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735291220; c=relaxed/simple;
-	bh=Y3fh0ce3Zu8u22azo60MsnTDQj8MqDTK+3uZANqZ8Ms=;
+	s=arc-20240116; t=1735293504; c=relaxed/simple;
+	bh=ZVmriFc0XH8plJi+hYMOKP3vwmebzeJP8fVsrXKydSc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eXc4SIzq8btLzqjVV1SeowuCK4XhQUBAVdDPyQHbf9+pDg1e1DHA9cEzeJ1ctG75FLjcUz4jAW8xl6uShNZYDv8HQzdeCxc1PaCatYMHgZMX017qreZCTX0XxWmoub27WzUBhXD2uHoYfBgHAtqU8L3LMNiUDumM5Thx4K/ttbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=V8Y6BiNL; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-219f6ca9a81so564905ad.1
-        for <bpf@vger.kernel.org>; Fri, 27 Dec 2024 01:20:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1735291218; x=1735896018; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jibWnOynvj6Tts5K4/dFPRmc8WUjCemc/7h1jj7PBSk=;
-        b=V8Y6BiNLskci145oVKqgf01EbyDFNYP8jLAPiiHXSRQEPK/UMagz41Q4WGS+R73zk3
-         Wm1rBTi3vTcvCmjQe2aGI4hZKytA4xZtO5AVUZiPxHPbNnehYNdYtkfI8nqi7OP1RG2n
-         aifkFbkyebgH0/vCPariSvLnn4bLIi2MV9pwceo5hhH5VUMbztOzAfDqxYc0AC0QE0eY
-         BUEGmiId8uQNctWcTHrQsAuM/Os+KjvI4E4tOyvDoT49RBOw55rHYmbldkIpEfX7muy0
-         oADelPhBq75h0E239PcIyfU96pHbmHe3w4updSs94qWlsnmez5Hf5hPOQ8/e0S5JDcNg
-         ZubA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735291218; x=1735896018;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jibWnOynvj6Tts5K4/dFPRmc8WUjCemc/7h1jj7PBSk=;
-        b=DpnCd0o/zksJcsPviajhqKM1RzM+PZ1t9lMim3gkTr4IDsOmZF087HgJu53EuJfNfA
-         BcY3XnUt0krifqGOotfP3a2HJ4Nd32JTrhtvl0WXh6iX1NgVjpayObYLQTQimMiwKSur
-         5d2lh2xtMh1yBlilHbJDs2HjlyITDPzaAZ2/90GDvNJ9sa5YEr7wNQxOX9qKab0KybAd
-         ke1VFiJPEzeRkWuS4Q22aG3wE+RBNd6hSQdRhxiCRDBXq+uUpyXmbsRNQZ4HZJiDrAgU
-         FhTyWzjNKP3Q9RvIyXuqasr6iO1y4v+tRB3F3lgwoNiv8hdDtKRKyVXXbIMmD7PFbxqQ
-         a+pw==
-X-Gm-Message-State: AOJu0YyaYqcKj67NlZ6jrgbeyj62pf0oGzRb7qaRf2+C+m+HIbXiXQGu
-	sIv0zTq3pTDmIpwsWTPIOOoueA22MdZ+GjmorlFIDho5Y2JHm6InNscaDwqF6w==
-X-Gm-Gg: ASbGncuSb/YJgRoCFphX0L4RKR8iTAKngJYty7/BuRK8aVl5Ub1ZUkVTEJef4g1/vAi
-	IYp1iRzx09Vs0LSDv80EktBdU8BLiZ0emaRi2yoqgqKCTAt4tMo6qPNVs/il5zgA+YS1nmlpyyU
-	Pn3pce7H8i4FZiBX83g7t1v6YdcHPHDVziMYcDT17hCkdVzFhkYYUCrE+CY9Vum3x+VD8tP43qm
-	v/5dYla5xCIy54PVHsOK4brdVtgwPANvIm2+f5GjoiWR62jq9PbpKmS/ZtN27/XB68AFJdId/3Z
-	85G/WS0IvsjXY9ao+lA=
-X-Google-Smtp-Source: AGHT+IEdsphK+fVkaZEclFM1m1g2bZVGWULWpmqPpb2/1q/5JxKqhRKT83SWoqbybovy+11JysBZEw==
-X-Received: by 2002:a17:902:c407:b0:215:b077:5c21 with SMTP id d9443c01a7336-219e68f5a3fmr11653385ad.26.1735291217912;
-        Fri, 27 Dec 2024 01:20:17 -0800 (PST)
-Received: from google.com (40.155.125.34.bc.googleusercontent.com. [34.125.155.40])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f2ed644d87sm18925077a91.27.2024.12.27.01.20.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Dec 2024 01:20:16 -0800 (PST)
-Date: Fri, 27 Dec 2024 09:20:12 +0000
-From: Peilin Ye <yepeilin@google.com>
-To: Xu Kuohai <xukuohai@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Quentin Monnet <qmo@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>,
-	Neel Natu <neelnatu@google.com>,
-	Benjamin Segall <bsegall@google.com>,
-	David Vernet <dvernet@meta.com>,
-	Dave Marchevsky <davemarchevsky@meta.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC bpf-next v1 2/4] bpf: Introduce load-acquire and
- store-release instructions
-Message-ID: <Z25xTKrgR0j6U3qA@google.com>
-References: <cover.1734742802.git.yepeilin@google.com>
- <6ca65dc2916dba7490c4fd7a8b727b662138d606.1734742802.git.yepeilin@google.com>
- <f704019d-a8fa-4cf5-a606-9d8328360a3e@huaweicloud.com>
- <Z23hntYzWuZOnScP@google.com>
- <Z23zes0fA3KGABcN@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dgKDR5rVDqjZpoFa3OdWdJ5aQk6OO2Imh25lR8Pw77Ag9LXJwUVxlUPoTlnQSLWei4lzC6RW2L+EO2Kthl/lFov/H66IblN049D4Tdx87LR3youxij30mqtjq3/QMfA57F1evBBlZNDNrywnNI1Tr0Dh/JSZm6fyECPNS4N65Ew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ia2oX5vh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F27EDC4CED0;
+	Fri, 27 Dec 2024 09:58:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1735293504;
+	bh=ZVmriFc0XH8plJi+hYMOKP3vwmebzeJP8fVsrXKydSc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ia2oX5vhH9xnoYZFCBcJPyyWOyOerSgWktBrvllCNkRMLfc9xow0moCafOLrn01yJ
+	 6kFQdDaqa9yysEQ2mmEe3XtjLqE24Q1TJw4cSY9qDQZQIgwMxWj8SniQFIDHmKtmUp
+	 tYhNgN2au2JAFFhVQ+/Q4kHZIXr2sWfH56O9u0IDhaRZQ3EzlN4Hx6mUbn7YLcWFKM
+	 eAU88glX1Kk3faaL5bolHsAt9RvB9HBQ3iOCJzhexsqfddpHzVhvx/5ynuAn6wFE9n
+	 g4vReSPXngynS1Kc4xIskATnCH/g9znuPu2hB6OqnurXTumSKETRWgh0AGggexFHbT
+	 Xz2SFs7F/39Gg==
+Date: Fri, 27 Dec 2024 10:58:15 +0100
+From: Lorenzo Pieralisi <lpieralisi@kernel.org>
+To: Frank Li <Frank.li@nxp.com>, Rob Herring <robh@kernel.org>,
+	robin.murphy@arm.com
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	imx@lists.linux.dev, alyssa@rosenzweig.io, bpf@vger.kernel.org,
+	broonie@kernel.org, jgg@ziepe.ca, joro@8bytes.org,
+	lgirdwood@gmail.com, maz@kernel.org, p.zabel@pengutronix.de,
+	robin.murphy@arm.com, will@kernel.org
+Subject: Re: [PATCH v8 2/2] PCI: imx6: Add IOMMU and ITS MSI support for
+ i.MX95
+Message-ID: <Z256NxZF/+jO2bkR@lpieralisi>
+References: <20241210-imx95_lut-v8-0-2e730b2e5fde@nxp.com>
+ <20241210-imx95_lut-v8-2-2e730b2e5fde@nxp.com>
+ <Z1sTUaoA5yk9RcIc@lpieralisi>
+ <Z1sdbH7N1Ly9eXc0@lizhi-Precision-Tower-5810>
+ <Z1v/LCHsGOgnasuf@lpieralisi>
+ <Z1xs6GkcdTg2c73F@lizhi-Precision-Tower-5810>
+ <Z2FDp1zQ7JzxQKJT@lpieralisi>
+ <Z2GdvpzT6MOygG4W@lizhi-Precision-Tower-5810>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Z23zes0fA3KGABcN@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Z2GdvpzT6MOygG4W@lizhi-Precision-Tower-5810>
 
-On Fri, Dec 27, 2024 at 12:23:22AM +0000, Peilin Ye wrote:
->         if (off) {
-> -               emit_a64_mov_i(true, tmp, off, ctx);
-> -               emit(A64_ADD(true, tmp, tmp, ptr), ctx);
-> -               ptr = tmp;
-> +               if (is_addsub_imm(off)) {
-> +                       emit(A64_ADD_I(true, ptr, ptr, off), ctx);
-                                               ~~~
+On Tue, Dec 17, 2024 at 10:50:22AM -0500, Frank Li wrote:
 
-> +               } else if (is_addsub_imm(-off)) {
-> +                       emit(A64_SUB_I(true, ptr, ptr, -off), ctx);
-                                               ~~~
+[...]
 
-No, I must not write to the 'ptr' register here.
+> > > > Right. Question: what happens if DT shows that there are SMMU and/or
+> > > > ITS bindings/mappings but the SMMU driver and ITS driver are either not
+> > > > enabled or have not probed ?
+> > >
+> > > It is little bit complex.
+> > > iommu:
+> > > Case 1:
+> > > 	iommu{
+> > > 		status = "disabled"
+> > > 	};
+> > >
+> > > 	PCI driver normal probed. if RID is in range of iommu-map, not
+> > > any functional impact and harmless.
+> > > 	If RID is out of range of iommu-map, "false alarm" will return.
+> > > enable PCI EP device failure, but actually it can work without IOMMU.
+> >
+> > What does "false alarm" mean in practice ? PCI device enable fails
+> > but actually it should not ?
+> 
+> Yes, you are right. It should work without iommu. but return failure for
+> this case.
 
-> +               } else {
-> +                       emit_a64_mov_i(true, tmp, off, ctx);
-> +                       emit(A64_ADD(true, tmp, tmp, ptr), ctx);
-> +                       ptr = tmp;
-> +               }
->         }
+Rob, Robin, are you OK with this patch DT bindings usage (and the
+related dependencies described in Frank's reply) ?
 
-I will do this instead:
+I am referring to "iommu-map" and "msi-map" usage, everything else
+is platform specific code.
 
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -658,8 +658,14 @@ static int emit_atomic_load_store(const struct bpf_insn *insn, struct jit_ctx *c
-                ptr = dst;
-
-        if (off) {
--               emit_a64_mov_i(true, tmp, off, ctx);
--               emit(A64_ADD(true, tmp, tmp, ptr), ctx);
-+               if (is_addsub_imm(off)) {
-+                       emit(A64_ADD_I(true, tmp, ptr, off), ctx);
-+               } else if (is_addsub_imm(-off)) {
-+                       emit(A64_SUB_I(true, tmp, ptr, -off), ctx);
-+               } else {
-+                       emit_a64_mov_i(true, tmp, off, ctx);
-+                       emit(A64_ADD(true, tmp, tmp, ptr), ctx);
-+               }
-                ptr = tmp;
-        }
-        if (arena) {
+It looks like things can break in multiple ways but I don't want
+to hold up this series forever.
 
 Thanks,
-Peilin Ye
+Lorenzo
 
+> > That does not look like a false alarm to me.
+> 
+> My means:  return failure but it should work without iommu. Ideally
+> of_map_id() should return failure when iommu is disabled. It needs more
+> work for that. I think we can improve it later.
+> 
+> >
+> > >
+> > > Case 2:
+> > > 	iommu {
+> > > 		status = "Okay"
+> > > 	}
+> > > 	but iommu driver have not probed yet.  PCI Host bridge driver
+> > > should defer till iommu probed.
+> > >
+> > > Worst case is "false alarm". But this happen is very rare if DTS is
+> > > correct.
+> >
+> > Explain what this means.
+> 
+> It return failure, but it should return success if "iommu disabled" and
+> "RID is out of iommu-map range".
+> 
+> >
+> > > MSI:
+> > > case 1:
+> > > 	msi-controller {
+> > > 		status = "disabled";
+> > > 	}
+> > > 	Whole all dwc drivers will be broken.
+> >
+> > What MSI controller. Please make an effort to be precise and explain.
+> 
+> For example: ARM its, I use general term here because some other platform
+> such as RISC V have not use ARM ITS.
+> 
+> pcie {
+> 	...
+> 	msi-map= <...>
+> 	...
+> }
+> 
+> DWC common driver will check property "msi-map". if it exist, built-in
+> MSI controller will skip init by history reason. That is also the another
+> reason why Rob don't want us to check these standard property.
+> 
+> Without MSI, system will failure back to INTx mode, same to no-msi=yes.
+> But some EP devices require MSI support.
+> 
+> Frank
+> 
+> >
+> > Thanks,
+> > Lorenzo
+> >
+> > > case 2:
+> > > 	msi-controller {
+> > > 		status = "Okay"
+> > > 	}
+> > > 	if msi driver have not probed yet, PCI Host bridge driver will
+> > > defer.
+> > >
+> > > Frank
+> > >
+> > > >
+> > > > I assume the LUT programming makes no difference (it is useless yes but
+> > > > should be harmless too) in this case but wanted to check with you`.
+> > > >
+> > > > Thanks,
+> > > > Lorenzo
+> > > >
+> > > > >
+> > > > > >
+> > > > > > >
+> > > > > > > Register a PCI bus callback function to handle enable_device() and
+> > > > > > > disable_device() operations, setting up the LUT whenever a new PCI device
+> > > > > > > is enabled.
+> > > > > > >
+> > > > > > > Acked-by: Richard Zhu <hongxing.zhu@nxp.com>
+> > > > > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > > >
+> > > > > [...]
+> > > > >
+> > > > > > > +	int err_i, err_m;
+> > > > > > > +	u32 sid;
+> > > > > > > +
+> > > > > > > +	dev = imx_pcie->pci->dev;
+> > > > > > > +
+> > > > > > > +	target = NULL;
+> > > > > > > +	err_i = of_map_id(dev->of_node, rid, "iommu-map", "iommu-map-mask", &target, &sid_i);
+> > > > > > > +	if (target) {
+> > > > > > > +		of_node_put(target);
+> > > > > > > +	} else {
+> > > > > > > +		/*
+> > > > > > > +		 * "target == NULL && err_i == 0" means use 1:1 map RID to
+> > > > > >
+> > > > > > Is it what it means ? Or does it mean that the iommu-map property was found
+> > > > > > and RID is out of range ?
+> > > > >
+> > > > > yes, if this happen, sid_i will be equal to RID.
+> > > > >
+> > > > > >
+> > > > > > Could you point me at a sample dts for this host bridge please ?
+> > > > >
+> > > > > https://github.com/nxp-imx/linux-imx/blob/lf-6.6.y/arch/arm64/boot/dts/freescale/imx95.dtsi
+> > > > >
+> > > > > /* 0x10~0x17 stream id for pci0 */
+> > > > >    iommu-map = <0x000 &smmu 0x10 0x1>,
+> > > > >                <0x100 &smmu 0x11 0x7>;
+> > > > >
+> > > > > /* msi part */
+> > > > >    msi-map = <0x000 &its 0x10 0x1>,
+> > > > >              <0x100 &its 0x11 0x7>;
+> > > > >
+> > > > > >
+> > > > > > > +		 * stream ID. Hardware can't support this because stream ID
+> > > > > > > +		 * only 5bits
+> > > > > >
+> > > > > > It is 5 or 6 bits ? From GENMASK(5, 0) above it should be 6.
+> > > > >
+> > > > > Sorry for typo. it is 6bits.
+> > > > >
+> > > > > >
+> > > > > > > +		 */
+> > > > > > > +		err_i = -EINVAL;
+> > > > > > > +	}
+> > > > > > > +
+> > > > > > > +	target = NULL;
+> > > > > > > +	err_m = of_map_id(dev->of_node, rid, "msi-map", "msi-map-mask", &target, &sid_m);
+> > > > > > > +
+> > > > > > > +	/*
+> > > > > > > +	 *   err_m      target
+> > > > > > > +	 *	0	NULL		Use 1:1 map RID to stream ID,
+> > > > > >
+> > > > > > Again, is that what it really means ?
+> > > > > >
+> > > > > > > +	 *				Current hardware can't support it,
+> > > > > > > +	 *				So return -EINVAL.
+> > > > > > > +	 *      != 0    NULL		msi-map not exist, use built-in MSI.
+> > > > > >
+> > > > > > does not exist.
+> > > > > >
+> > > > > > > +	 *	0	!= NULL		Get correct streamID from RID.
+> > > > > > > +	 *	!= 0	!= NULL		Unexisted case, never happen.
+> > > > > >
+> > > > > > "Invalid combination"
+> > > > > >
+> > > > > > > +	 */
+> > > > > > > +	if (!err_m && !target)
+> > > > > > > +		return -EINVAL;
+> > > > > > > +	else if (target)
+> > > > > > > +		of_node_put(target); /* Find stream ID map entry for RID in msi-map */
+> > > > > > > +
+> > > > > > > +	/*
+> > > > > > > +	 * msi-map        iommu-map
+> > > > > > > +	 *   N                N            DWC MSI Ctrl
+> > > > > > > +	 *   Y                Y            ITS + SMMU, require the same sid
+> > > > > > > +	 *   Y                N            ITS
+> > > > > > > +	 *   N                Y            DWC MSI Ctrl + SMMU
+> > > > > > > +	 */
+> > > > > > > +	if (err_i && err_m)
+> > > > > > > +		return 0;
+> > > > > > > +
+> > > > > > > +	if (!err_i && !err_m) {
+> > > > > > > +		/*
+> > > > > > > +		 * MSI glue layer auto add 2 bits controller ID ahead of stream
+> > > > > >
+> > > > > > What's "MSI glue layer" ?
+> > > > >
+> > > > > It is common term for IC desgin, which connect IP's signal to platform with
+> > > > > some simple logic. Inside chip, when connect LUT output 6bit streamIDs
+> > > > > to MSI controller, there are 2bits hardcode controller ID information
+> > > > > append to 6 bits streamID.
+> > > > >
+> > > > >            Glue Layer
+> > > > >           <==========>
+> > > > > ┌─────┐                  ┌──────────┐
+> > > > > │ LUT │ 6bit stream ID   │          │
+> > > > > │     ┼─────────────────►│  MSI     │
+> > > > > └─────┘    2bit ctrl ID  │          │
+> > > > >             ┌───────────►│          │
+> > > > >             │            │          │
+> > > > >  00 PCIe0   │            │          │
+> > > > >  01 ENETC   │            │          │
+> > > > >  10 PCIe1   │            │          │
+> > > > >             │            └──────────┘
+> > > > >
+> > > > > >
+> > > > > > > +		 * ID, so mask this 2bits to get stream ID.
+> > > > > > > +		 * But IOMMU glue layer doesn't do that.
+> > > > > >
+> > > > > > and "IOMMU glue layer" ?
+> > > > >
+> > > > > See above.
+> > > > >
+> > > > > Frank
+> > > > >
+> > > > > >
+> > > > > > > +		 */
+> > > > > > > +		if (sid_i != (sid_m & IMX95_SID_MASK)) {
+> > > > > > > +			dev_err(dev, "iommu-map and msi-map entries mismatch!\n");
+> > > > > > > +			return -EINVAL;
+> > > > > > > +		}
+> > > > > > > +	}
+> > > > > > > +
+> > > > > > > +	sid = sid_i;
+> > > > > >
+> > > > > > err_i could be != 0 here, I understand that the end result is
+> > > > > > fine given how the code is written but it is misleading.
+> > > > > >
+> > > > > > 	if (!err_i)
+> > > > > > 	else if (!err_m)
+> > > > >
+> > > > > Okay
+> > > > >
+> > > > > >
+> > > > > > > +	if (!err_m)
+> > > > > > > +		sid = sid_m & IMX95_SID_MASK;
+> > > > > > > +
+> > > > > > > +	return imx_pcie_add_lut(imx_pcie, rid, sid);
+> > > > > > > +}
+> > > > > > > +
+> > > > > > > +static void imx_pcie_disable_device(struct pci_host_bridge *bridge, struct pci_dev *pdev)
+> > > > > > > +{
+> > > > > > > +	struct imx_pcie *imx_pcie;
+> > > > > > > +
+> > > > > > > +	imx_pcie = to_imx_pcie(to_dw_pcie_from_pp(bridge->sysdata));
+> > > > > > > +	imx_pcie_remove_lut(imx_pcie, pci_dev_id(pdev));
+> > > > > > > +}
+> > > > > > > +
+> > > > > > >  static int imx_pcie_host_init(struct dw_pcie_rp *pp)
+> > > > > > >  {
+> > > > > > >  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> > > > > > > @@ -946,6 +1122,11 @@ static int imx_pcie_host_init(struct dw_pcie_rp *pp)
+> > > > > > >  		}
+> > > > > > >  	}
+> > > > > > >
+> > > > > > > +	if (pp->bridge && imx_check_flag(imx_pcie, IMX_PCIE_FLAG_HAS_LUT)) {
+> > > > > > > +		pp->bridge->enable_device = imx_pcie_enable_device;
+> > > > > > > +		pp->bridge->disable_device = imx_pcie_disable_device;
+> > > > > > > +	}
+> > > > > > > +
+> > > > > > >  	imx_pcie_assert_core_reset(imx_pcie);
+> > > > > > >
+> > > > > > >  	if (imx_pcie->drvdata->init_phy)
+> > > > > > > @@ -1330,6 +1511,8 @@ static int imx_pcie_probe(struct platform_device *pdev)
+> > > > > > >  	imx_pcie->pci = pci;
+> > > > > > >  	imx_pcie->drvdata = of_device_get_match_data(dev);
+> > > > > > >
+> > > > > > > +	mutex_init(&imx_pcie->lock);
+> > > > > > > +
+> > > > > > >  	/* Find the PHY if one is defined, only imx7d uses it */
+> > > > > > >  	np = of_parse_phandle(node, "fsl,imx7d-pcie-phy", 0);
+> > > > > > >  	if (np) {
+> > > > > > > @@ -1627,7 +1810,8 @@ static const struct imx_pcie_drvdata drvdata[] = {
+> > > > > > >  	},
+> > > > > > >  	[IMX95] = {
+> > > > > > >  		.variant = IMX95,
+> > > > > > > -		.flags = IMX_PCIE_FLAG_HAS_SERDES,
+> > > > > > > +		.flags = IMX_PCIE_FLAG_HAS_SERDES |
+> > > > > > > +			 IMX_PCIE_FLAG_HAS_LUT,
+> > > > > > >  		.clk_names = imx8mq_clks,
+> > > > > > >  		.clks_cnt = ARRAY_SIZE(imx8mq_clks),
+> > > > > > >  		.ltssm_off = IMX95_PE0_GEN_CTRL_3,
+> > > > > > >
+> > > > > > > --
+> > > > > > > 2.34.1
+> > > > > > >
 
