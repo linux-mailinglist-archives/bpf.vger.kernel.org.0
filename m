@@ -1,48 +1,47 @@
-Return-Path: <bpf+bounces-47666-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47667-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 287A59FD561
-	for <lists+bpf@lfdr.de>; Fri, 27 Dec 2024 16:13:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 813D79FD564
+	for <lists+bpf@lfdr.de>; Fri, 27 Dec 2024 16:14:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B734E164F4A
-	for <lists+bpf@lfdr.de>; Fri, 27 Dec 2024 15:13:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 703D77A2565
+	for <lists+bpf@lfdr.de>; Fri, 27 Dec 2024 15:14:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66BC21F75B7;
-	Fri, 27 Dec 2024 15:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80F781F866B;
+	Fri, 27 Dec 2024 15:13:02 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1025C1F7593;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 274CE1F76BD;
 	Fri, 27 Dec 2024 15:13:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735312381; cv=none; b=E0Pkx8ndWC9yw7C3pdpAss81svhoiGUFsS412F9Q0b4qTOlUaELCkiqEXnf6vso0qGIbq1aCnoH2Fg1TUcFHeyo5Y5PHIQxCyKWnQltiO22F9vCstuaPQrK8npRhWr0tnfEAX+KDGi8WZZn4wUC/Aw07jHFjpuZdsm3J3WqnD8w=
+	t=1735312382; cv=none; b=jmkMLGuCsws0PzTC0qbumx6IWK0QGuE5VWHbqyjW1zV5GZ/PUMB0jto53+ME/zycIOA+jCvABXg8KGubxBrTjyC2qKlzhoKGPztBeA/U8KpNz3MlbBiCFxjvgjtnRZRGXnOI9gIV0blVevpvIKHZijBAj6L3LzQUqcQnOzDmclc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735312381; c=relaxed/simple;
-	bh=ccRI1n5XSGGE7lsmvwrDByZTZ9E2eV6tXhCU9U7IkEI=;
+	s=arc-20240116; t=1735312382; c=relaxed/simple;
+	bh=fpvJn/qg/zJZnNLIZ4p18NHSLfHWXdhJR9BoJO0Vf7g=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=uQTCH6QnhmnqWXKOM6Orvt1dB2IhWczIFh92MeAV6mK2JsECs6J3fglC3Tq6nAxcy7odKKEbRa7AKM23BtXAl2xkbhvjmVkw0cxmGS/71rVwlrloXS8Iv1B8+VgbwFTztw7w/dedP0dCZd2LtrWRmfL3H0TyhUJbrcLZU/U02Zw=
+	 Content-Type; b=ItCxNKaVTi76rRkOa7yfcvDenBdTO9zcg621ZF6VtHfpKfzGnfQ6zDVto2HZCY0jp8UcQntZHVsTO5NNJYmlBz9lZ1EFCyYykamuHSc1iD3fi7QgUag62+iEN8SRoKlrvpPOinMEgAxteT6L03Pm5BSViAR/T9IkG8OyK/8p57Q=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E37B2C16AAE;
-	Fri, 27 Dec 2024 15:13:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1846EC2BCB5;
+	Fri, 27 Dec 2024 15:13:01 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.98)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1tRC2M-0000000GxWt-1lrM;
+	id 1tRC2M-0000000GxXO-2Ukh;
 	Fri, 27 Dec 2024 10:14:02 -0500
-Message-ID: <20241227151402.274493615@goodmis.org>
+Message-ID: <20241227151402.443592487@goodmis.org>
 User-Agent: quilt/0.68
-Date: Fri, 27 Dec 2024 10:13:45 -0500
+Date: Fri, 27 Dec 2024 10:13:46 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org
 Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Mark Rutland <mark.rutland@arm.com>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
  Andrew Morton <akpm@linux-foundation.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
  Alexei Starovoitov <alexei.starovoitov@gmail.com>,
  Florent Revest <revest@chromium.org>,
  Martin KaFai Lau <martin.lau@linux.dev>,
@@ -50,24 +49,9 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Alexei Starovoitov <ast@kernel.org>,
  Jiri Olsa <jolsa@kernel.org>,
  Alan Maguire <alan.maguire@oracle.com>,
- Will Deacon <will@kernel.org>,
- Huacai Chen <chenhuacai@kernel.org>,
- WANG Xuerui <kernel@xen0n.name>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Naveen N Rao <naveen@kernel.org>,
- Madhavan Srinivasan <maddy@linux.ibm.com>,
- Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>,
- Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>
-Subject: [for-next][PATCH 10/18] ftrace: Add CONFIG_HAVE_FTRACE_GRAPH_FUNC
+ Sven Schnelle <svens@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>
+Subject: [for-next][PATCH 11/18] s390/tracing: Enable HAVE_FTRACE_GRAPH_FUNC
 References: <20241227151335.898746489@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -77,15 +61,12 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+From: Sven Schnelle <svens@linux.ibm.com>
 
-Add CONFIG_HAVE_FTRACE_GRAPH_FUNC kconfig in addition to ftrace_graph_func
-macro check. This is for the other feature (e.g. FPROBE) which requires to
-access ftrace_regs from fgraph_ops::entryfunc() can avoid compiling if
-the fgraph can not pass the valid ftrace_regs.
+Add ftrace_graph_func() which is required for fprobe to access registers.
+This also eliminates the need for calling prepare_ftrace_return() from
+ftrace_caller().
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: Florent Revest <revest@chromium.org>
 Cc: Martin KaFai Lau <martin.lau@linux.dev>
@@ -94,111 +75,149 @@ Cc: Alexei Starovoitov <ast@kernel.org>
 Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Alan Maguire <alan.maguire@oracle.com>
 Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Huacai Chen <chenhuacai@kernel.org>
-Cc: WANG Xuerui <kernel@xen0n.name>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Naveen N Rao <naveen@kernel.org>
-Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Albert Ou <aou@eecs.berkeley.edu>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: x86@kernel.org
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Link: https://lore.kernel.org/173519001472.391279.1174901685282588467.stgit@devnote2
+Link: https://lore.kernel.org/173519002875.391279.7060964632119674159.stgit@devnote2
+Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- arch/arm64/Kconfig     | 1 +
- arch/loongarch/Kconfig | 1 +
- arch/powerpc/Kconfig   | 1 +
- arch/riscv/Kconfig     | 1 +
- arch/x86/Kconfig       | 1 +
- kernel/trace/Kconfig   | 5 +++++
- 6 files changed, 10 insertions(+)
+ arch/s390/Kconfig              |  1 +
+ arch/s390/include/asm/ftrace.h |  5 ++++
+ arch/s390/kernel/entry.h       |  1 -
+ arch/s390/kernel/ftrace.c      | 48 ++++++++++------------------------
+ arch/s390/kernel/mcount.S      | 11 --------
+ 5 files changed, 20 insertions(+), 46 deletions(-)
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 5f086777dad9..a8644a5af9fb 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -216,6 +216,7 @@ config ARM64
- 	select HAVE_SAMPLE_FTRACE_DIRECT_MULTI
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index d8eee56c10b6..622ea2e9a87e 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -190,6 +190,7 @@ config S390
  	select HAVE_EFFICIENT_UNALIGNED_ACCESS
  	select HAVE_GUP_FAST
-+	select HAVE_FTRACE_GRAPH_FUNC
- 	select HAVE_FTRACE_MCOUNT_RECORD
- 	select HAVE_FUNCTION_TRACER
- 	select HAVE_FUNCTION_ERROR_INJECTION
-diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-index 6396615ec035..fe0d9e549ca9 100644
---- a/arch/loongarch/Kconfig
-+++ b/arch/loongarch/Kconfig
-@@ -135,6 +135,7 @@ config LOONGARCH
- 	select HAVE_EFFICIENT_UNALIGNED_ACCESS if !ARCH_STRICT_ALIGN
- 	select HAVE_EXIT_THREAD
- 	select HAVE_GUP_FAST
+ 	select HAVE_FENTRY
 +	select HAVE_FTRACE_GRAPH_FUNC
  	select HAVE_FTRACE_MCOUNT_RECORD
  	select HAVE_FUNCTION_ARG_ACCESS_API
  	select HAVE_FUNCTION_ERROR_INJECTION
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index a0ce777f9706..c28349ad1ac2 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -240,6 +240,7 @@ config PPC
- 	select HAVE_EBPF_JIT
- 	select HAVE_EFFICIENT_UNALIGNED_ACCESS
- 	select HAVE_GUP_FAST
-+	select HAVE_FTRACE_GRAPH_FUNC
- 	select HAVE_FTRACE_MCOUNT_RECORD
- 	select HAVE_FUNCTION_ARG_ACCESS_API
- 	select HAVE_FUNCTION_DESCRIPTORS	if PPC64_ELF_ABI_V1
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 1e807c61258f..c736e349f222 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -146,6 +146,7 @@ config RISCV
- 	select HAVE_DYNAMIC_FTRACE if !XIP_KERNEL && MMU && (CLANG_SUPPORTS_DYNAMIC_FTRACE || GCC_SUPPORTS_DYNAMIC_FTRACE)
- 	select HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- 	select HAVE_DYNAMIC_FTRACE_WITH_ARGS if HAVE_DYNAMIC_FTRACE
-+	select HAVE_FTRACE_GRAPH_FUNC
- 	select HAVE_FTRACE_MCOUNT_RECORD if !XIP_KERNEL
- 	select HAVE_FUNCTION_GRAPH_TRACER
- 	select HAVE_FUNCTION_GRAPH_FREGS
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 6cb420783ef3..db435d159c1b 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -235,6 +235,7 @@ config X86
- 	select HAVE_EXIT_THREAD
- 	select HAVE_GUP_FAST
- 	select HAVE_FENTRY			if X86_64 || DYNAMIC_FTRACE
-+	select HAVE_FTRACE_GRAPH_FUNC		if HAVE_FUNCTION_GRAPH_TRACER
- 	select HAVE_FTRACE_MCOUNT_RECORD
- 	select HAVE_FUNCTION_GRAPH_FREGS	if HAVE_FUNCTION_GRAPH_TRACER
- 	select HAVE_FUNCTION_GRAPH_TRACER	if X86_32 || (X86_64 && DYNAMIC_FTRACE)
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index 82654bbfad9a..2fc55a1a88aa 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -34,6 +34,11 @@ config HAVE_FUNCTION_GRAPH_TRACER
- config HAVE_FUNCTION_GRAPH_FREGS
- 	bool
+diff --git a/arch/s390/include/asm/ftrace.h b/arch/s390/include/asm/ftrace.h
+index 5b7cb49c41ee..fd3f0fe9f7b3 100644
+--- a/arch/s390/include/asm/ftrace.h
++++ b/arch/s390/include/asm/ftrace.h
+@@ -39,6 +39,7 @@ struct dyn_arch_ftrace { };
  
-+config HAVE_FTRACE_GRAPH_FUNC
-+	bool
-+	help
-+	  True if ftrace_graph_func() is defined.
+ struct module;
+ struct dyn_ftrace;
++struct ftrace_ops;
+ 
+ bool ftrace_need_init_nop(void);
+ #define ftrace_need_init_nop ftrace_need_init_nop
+@@ -122,6 +123,10 @@ static inline bool arch_syscall_match_sym_name(const char *sym,
+ 	return !strcmp(sym + 7, name) || !strcmp(sym + 8, name);
+ }
+ 
++void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
++		       struct ftrace_ops *op, struct ftrace_regs *fregs);
++#define ftrace_graph_func ftrace_graph_func
 +
- config HAVE_DYNAMIC_FTRACE
- 	bool
- 	help
+ #endif /* __ASSEMBLY__ */
+ 
+ #ifdef CONFIG_FUNCTION_TRACER
+diff --git a/arch/s390/kernel/entry.h b/arch/s390/kernel/entry.h
+index 21969520f947..a1f28879c87e 100644
+--- a/arch/s390/kernel/entry.h
++++ b/arch/s390/kernel/entry.h
+@@ -41,7 +41,6 @@ void do_restart(void *arg);
+ void __init startup_init(void);
+ void die(struct pt_regs *regs, const char *str);
+ int setup_profiling_timer(unsigned int multiplier);
+-unsigned long prepare_ftrace_return(unsigned long parent, unsigned long sp, unsigned long ip);
+ 
+ struct s390_mmap_arg_struct;
+ struct fadvise64_64_args;
+diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
+index 51439a71e392..c0b2c97efefb 100644
+--- a/arch/s390/kernel/ftrace.c
++++ b/arch/s390/kernel/ftrace.c
+@@ -261,43 +261,23 @@ void ftrace_arch_code_modify_post_process(void)
+ }
+ 
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+-/*
+- * Hook the return address and push it in the stack of return addresses
+- * in current thread info.
+- */
+-unsigned long prepare_ftrace_return(unsigned long ra, unsigned long sp,
+-				    unsigned long ip)
+-{
+-	if (unlikely(ftrace_graph_is_dead()))
+-		goto out;
+-	if (unlikely(atomic_read(&current->tracing_graph_pause)))
+-		goto out;
+-	ip -= MCOUNT_INSN_SIZE;
+-	if (!function_graph_enter(ra, ip, 0, (void *) sp))
+-		ra = (unsigned long) return_to_handler;
+-out:
+-	return ra;
+-}
+-NOKPROBE_SYMBOL(prepare_ftrace_return);
+ 
+-/*
+- * Patch the kernel code at ftrace_graph_caller location. The instruction
+- * there is branch relative on condition. To enable the ftrace graph code
+- * block, we simply patch the mask field of the instruction to zero and
+- * turn the instruction into a nop.
+- * To disable the ftrace graph code the mask field will be patched to
+- * all ones, which turns the instruction into an unconditional branch.
+- */
+-int ftrace_enable_ftrace_graph_caller(void)
++void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
++		       struct ftrace_ops *op, struct ftrace_regs *fregs)
+ {
+-	/* Expect brc 0xf,... */
+-	return ftrace_patch_branch_mask(ftrace_graph_caller, 0xa7f4, false);
+-}
++	unsigned long *parent = &arch_ftrace_regs(fregs)->regs.gprs[14];
++	int bit;
+ 
+-int ftrace_disable_ftrace_graph_caller(void)
+-{
+-	/* Expect brc 0x0,... */
+-	return ftrace_patch_branch_mask(ftrace_graph_caller, 0xa704, true);
++	if (unlikely(ftrace_graph_is_dead()))
++		return;
++	if (unlikely(atomic_read(&current->tracing_graph_pause)))
++		return;
++	bit = ftrace_test_recursion_trylock(ip, *parent);
++	if (bit < 0)
++		return;
++	if (!function_graph_enter_regs(*parent, ip, 0, parent, fregs))
++		*parent = (unsigned long)&return_to_handler;
++	ftrace_test_recursion_unlock(bit);
+ }
+ 
+ #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
+diff --git a/arch/s390/kernel/mcount.S b/arch/s390/kernel/mcount.S
+index 2b628aa3d809..1fec370fecf4 100644
+--- a/arch/s390/kernel/mcount.S
++++ b/arch/s390/kernel/mcount.S
+@@ -104,17 +104,6 @@ SYM_CODE_START(ftrace_common)
+ 	lgr	%r3,%r14
+ 	la	%r5,STACK_FREGS(%r15)
+ 	BASR_EX	%r14,%r1
+-#ifdef CONFIG_FUNCTION_GRAPH_TRACER
+-# The j instruction gets runtime patched to a nop instruction.
+-# See ftrace_enable_ftrace_graph_caller.
+-SYM_INNER_LABEL(ftrace_graph_caller, SYM_L_GLOBAL)
+-	j	.Lftrace_graph_caller_end
+-	lmg	%r2,%r3,(STACK_FREGS_PTREGS_GPRS+14*8)(%r15)
+-	lg	%r4,(STACK_FREGS_PTREGS_PSW+8)(%r15)
+-	brasl	%r14,prepare_ftrace_return
+-	stg	%r2,(STACK_FREGS_PTREGS_GPRS+14*8)(%r15)
+-.Lftrace_graph_caller_end:
+-#endif
+ 	lg	%r0,(STACK_FREGS_PTREGS_PSW+8)(%r15)
+ #ifdef MARCH_HAS_Z196_FEATURES
+ 	ltg	%r1,STACK_FREGS_PTREGS_ORIG_GPR2(%r15)
 -- 
 2.45.2
 
