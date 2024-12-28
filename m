@@ -1,190 +1,120 @@
-Return-Path: <bpf+bounces-47679-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47680-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C05E9FD853
-	for <lists+bpf@lfdr.de>; Sat, 28 Dec 2024 00:37:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C127E9FD980
+	for <lists+bpf@lfdr.de>; Sat, 28 Dec 2024 09:43:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6914164436
-	for <lists+bpf@lfdr.de>; Fri, 27 Dec 2024 23:37:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 576323A2A32
+	for <lists+bpf@lfdr.de>; Sat, 28 Dec 2024 08:43:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F4DC1607B7;
-	Fri, 27 Dec 2024 23:37:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3743A78F5E;
+	Sat, 28 Dec 2024 08:43:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ASyg5kLW"
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="WbIl0pma"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4446B7082D
-	for <bpf@vger.kernel.org>; Fri, 27 Dec 2024 23:37:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C6F35958;
+	Sat, 28 Dec 2024 08:43:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735342632; cv=none; b=l4c+FgDKWyO7CLcN3IfhQpl8GwlB2nG5spaw6Fq+oUSlw+NNhVWWUJs+wV/N5mGFJQ2Ntnuz/V6o6Q5ZdEgyg6E7a3PXKaQiqvJnFcSfQ7QRBr/SuPl6KRh3n+q/ChHSRH8O6GZmeSguDXXqvSQrScFB92QyZFD3LiEP8tjbOmA=
+	t=1735375431; cv=none; b=RiyMWjdGeTqGhsRGYaKU1nxTMbajrrrzVwqASnUByD/76y1zvtthOrnG0v78tIJzi2m59Xeq/mRdYJAaINnR66LCrckL+ljCDe2ECyhGKlnR/JVXfZgf1heqLWXPr5nHQDrjGuIkx/ZKyG6gJ54n73sjP04N3Rss0wJJFt7LoTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735342632; c=relaxed/simple;
-	bh=jeYGpNbfMGy/V90Rw3DjheGF1B7L4iKDd6Yfn7EfS3c=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=BI42wt8xbOxE6d69Sjtkg0KEZIcUUcK28VCvwyIMPXt7WXujg/4fYrIJKbwCxnZ21efOATguM4kNOcUnWeidujehO5zSQhC1I+fmeS8caiX3870I8IrpD8A3iYvvDqR6hMRZ37prKU0KsibS6cXgMJ/sxHY83MoE/86lGEWIel0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ASyg5kLW; arc=none smtp.client-ip=209.85.216.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2ee5616e986so15517685a91.2
-        for <bpf@vger.kernel.org>; Fri, 27 Dec 2024 15:37:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1735342629; x=1735947429; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=V1Jom10EOQH/PKFAAJHq8N5xyHFec0ta56+9r5GmZ5A=;
-        b=ASyg5kLWVKJfTr1YOPU16bTh9bRIwNm7o60clWtsocgd2kuN70hNCQQShzqwxAL9Ef
-         3jxntJFkL6iJddeuRQsmA7ZjPsrKxLgJ1B3r4aCPN5YXTgeKDu18eM+yNmetpudC+Zow
-         p1a0iUN1qPzWc6GMBV2i2Gdtc8WajM+n5hei+9xAmwotfl4xbZdpbQSoem7iDqtJa0PF
-         lIvPY1c1oeCfEN/Zn9K64zuRoVbrTLTme9Td81KcvWttPvDuHH5swL+jFw4vS6m8yPhB
-         MlGzyqRrd3MbDIwtkSA7p7914O/xkSE0KuEgWbu/Y4Kl8QHA6f52ayMITjeHI+linyCp
-         V+7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735342629; x=1735947429;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V1Jom10EOQH/PKFAAJHq8N5xyHFec0ta56+9r5GmZ5A=;
-        b=CosmXbQWOhMQUdrBpIlzBFJD+x/1a5Updq/oknJsioWHJTmJPN+vsjomRufdPxaOIO
-         Jf2sFfU/uLwgwoMMfqo/WO+hYI1GZRhdQ6v6cgXeo8tn6u7FNeRqq8V2Lp6QnLDq5Y8G
-         H6U5jGXPo1SKy8bGoItjAIX0zXu1PWMhoa8T968+om2fPzTSVuHc0C+x5ExEWm1Uow9O
-         fX/r+6LuqKKrWGBHKUD22nF/CGzR3h/p6I8nWAl9aYPfRaQ4+57CYsv1nC7laO67B5py
-         C9loPdTX7huAQV3r5K1Gk57H6lSwE8V7VMzDB2vxSXxe5M+5McTanTZgWHaHotjul6Co
-         +vwg==
-X-Gm-Message-State: AOJu0Yz5yvKK1Tz2IorLbb1BDgI5vPNrY5c4e7C+IssW1OkR440MBXfX
-	q/Gu+A1iJFMAO0XZLqe8pkP7fiN1+EDh7Do4hJyQPnEz4P2oTCNN21cQmdgzH9XbrqN2I65CJm1
-	zWzbH9wdpwLxcHfGf+83JGIwc7VWv0e4ULPyEs6VPosb3u+dLGaUX57NdmtTloRcdh6F5jPkynv
-	1YOQbrJpA6YJaO1yQoJhK0hxpkfTBRLzaiwMbFV+Q=
-X-Google-Smtp-Source: AGHT+IHLqDFBZY1ka2PsyCGmywlPi9etlGqovVDfnWYdL0s2CLTlisPa8ylI+ySeYFuG7avGHeJOt2PnDcL76g==
-X-Received: from pfbf11.prod.google.com ([2002:a05:6a00:ad8b:b0:728:e916:1a4f])
- (user=yepeilin job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6a00:808f:b0:724:59e0:5d22 with SMTP id d2e1a72fcca58-72abdebb934mr45961712b3a.20.1735342628610;
- Fri, 27 Dec 2024 15:37:08 -0800 (PST)
-Date: Fri, 27 Dec 2024 23:36:22 +0000
-In-Reply-To: <3b84fa17ab72f3f69e09e0032452d17eb13b80db.1735342016.git.yepeilin@google.com>
+	s=arc-20240116; t=1735375431; c=relaxed/simple;
+	bh=sZiTPlQI0gHuQF1THsJA4vQwmsj1H9KFzGpKq1nF9WY=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=CR8B/MToIRHGsoawRjxgp/MsCJyHUf+eyO8zSbqH7FwsVUWFZY5roMkmqGjwjgC3qT6gSUkcPFnhJtk+ZG8/N+rJRXAxl1JXWAexUs38vsVoAjC+naIxcLe7c0MFNQh8g8CivHtjDWzV84Q7AT87gp5OLy+RfH09hINUefOTqNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=WbIl0pma; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1735375425;
+	bh=sZiTPlQI0gHuQF1THsJA4vQwmsj1H9KFzGpKq1nF9WY=;
+	h=From:Subject:Date:To:Cc:From;
+	b=WbIl0pmaTig4WqXVNlApAm/gyb1WPNf8/CGCDRFQ2XLpxpT+PxPxg35UzP1JJZETh
+	 Q3KoWLjcxjBFclgDc1ljqUCgtj4BCRz5KJBBOSXNf7cg+q81h/i93BCRmMjQtSEtaN
+	 DbKS7/3vht381rnDmgZWnDgHmB2Ws47fM4EcHsIg=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Subject: [PATCH v2 0/3] sysfs: constify bin_attribute argument of
+ sysfs_bin_attr_simple_read()
+Date: Sat, 28 Dec 2024 09:43:40 +0100
+Message-Id: <20241228-sysfs-const-bin_attr-simple-v2-0-7c6f3f1767a3@weissschuh.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <3b84fa17ab72f3f69e09e0032452d17eb13b80db.1735342016.git.yepeilin@google.com>
-X-Mailer: git-send-email 2.47.1.613.gc27f4b7a9f-goog
-Message-ID: <953c7241e82496cb7a8b5a8724028ad646cd0896.1735342016.git.yepeilin@google.com>
-Subject: [PATCH bpf-next 2/2] bpf, arm64: Emit A64_{ADD,SUB}_I when possible
- in emit_{lse,ll_sc}_atomic()
-From: Peilin Ye <yepeilin@google.com>
-To: bpf@vger.kernel.org
-Cc: Peilin Ye <yepeilin@google.com>, Xu Kuohai <xukuohai@huaweicloud.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Josh Don <joshdon@google.com>, 
-	Barret Rhoden <brho@google.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIADy6b2cC/33NQQ6CMBCF4auQrh3TjjUkrryHIQbawU6ihXQqS
+ gh3t+Le5f8W31uUUGISdaoWlWhi4SGWwF2lXGjjjYB9aYUarTGIILP0Am6IkqHjeG1zTiD8GO8
+ EtdPed9i73qAqwpio5/emX5rSgSUPad7OJvNdfy7q4193MqDBtpasI18bOpxfxCLiwjPsI2XVr
+ Ov6AWq7vmfLAAAA
+X-Change-ID: 20241122-sysfs-const-bin_attr-simple-7c0ddb2fcf12
+To: Michael Ellerman <mpe@ellerman.id.au>, 
+ Nicholas Piggin <npiggin@gmail.com>, 
+ Christophe Leroy <christophe.leroy@csgroup.eu>, 
+ Naveen N Rao <naveen@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Rafael J. Wysocki" <rafael@kernel.org>, 
+ Luis Chamberlain <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>, 
+ Sami Tolvanen <samitolvanen@google.com>, 
+ Daniel Gomez <da.gomez@samsung.com>, Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
+ linux-modules@vger.kernel.org, bpf@vger.kernel.org, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1735375424; l=1255;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=sZiTPlQI0gHuQF1THsJA4vQwmsj1H9KFzGpKq1nF9WY=;
+ b=bVK06F6W/XTwjZZrk9th4YWgZvI6fDp2ksynQwNyKsR4oUOGuKOfH8ZIpuVDiMoiNN90vtbQT
+ fuheImUmzLGCCXSuRqocGwLuU0HITJO2We5q3ZL4M71LsJ3R3lMP4k4
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-Currently in emit_{lse,ll_sc}_atomic(), if there is an offset, we add it
-to the base address by emitting two instructions, for example:
+Most users use this function through the BIN_ATTR_SIMPLE* macros,
+they can handle the switch transparently.
 
-  if (off) {
-          emit_a64_mov_i(1, tmp, off, ctx);
-          emit(A64_ADD(1, tmp, tmp, dst), ctx);
-  ...
+This series is meant to be merged through the driver core tree.
 
-As pointed out by Xu, we can combine the above into a single A64_ADD_I
-instruction if 'is_addsub_imm(off)' is true, or an A64_SUB_I, if
-'is_addsub_imm(-off)' is true.
-
-Suggested-by: Xu Kuohai <xukuohai@huaweicloud.com>
-Signed-off-by: Peilin Ye <yepeilin@google.com>
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
-Hi all,
+Changes in v2:
+- Rebase on torvalds/master
+- Drop wmi-bmof patch
+- Pick up Acks from Andrii
+- Link to v1: https://lore.kernel.org/r/20241205-sysfs-const-bin_attr-simple-v1-0-4a4e4ced71e3@weissschuh.net
 
-This was pointed out by Xu in [1] .  Tested on x86-64, using
-PLATFORM=aarch64 CROSS_COMPILE=aarch64-linux-gnu- vmtest.sh:
+---
+Thomas Weißschuh (3):
+      sysfs: constify bin_attribute argument of sysfs_bin_attr_simple_read()
+      btf: Switch vmlinux BTF attribute to sysfs_bin_attr_simple_read()
+      btf: Switch module BTF attribute to sysfs_bin_attr_simple_read()
 
-LSE:
-  * ./test_progs-cpuv4 -a atomics,arena_atomics
-    2/15 PASSED, 0 SKIPPED, 0 FAILED
-  * ./test_verifier
-    790 PASSED, 0 SKIPPED, 0 FAILED
+ arch/powerpc/platforms/powernv/opal.c |  2 +-
+ fs/sysfs/file.c                       |  2 +-
+ include/linux/sysfs.h                 |  4 ++--
+ kernel/bpf/btf.c                      | 15 ++-------------
+ kernel/bpf/sysfs_btf.c                | 12 ++----------
+ kernel/module/sysfs.c                 |  2 +-
+ 6 files changed, 9 insertions(+), 28 deletions(-)
+---
+base-commit: d6ef8b40d075c425f548002d2f35ae3f06e9cf96
+change-id: 20241122-sysfs-const-bin_attr-simple-7c0ddb2fcf12
 
-LL/SC:
-(In vmtest.sh, changed '-cpu' QEMU option from 'cortex-a76' to
- 'cortex-a57', to make LSE atomics unavailable.)
-  * ./test_progs-cpuv4 -a atomics
-    1/7 PASSED, 0 SKIPPED, 0 FAILED
-  * ./test_verifier
-    790 PASSED, 0 SKIPPED, 0 FAILED
-
-Thanks,
-Peilin Ye
-
-[1] https://lore.kernel.org/bpf/f704019d-a8fa-4cf5-a606-9d8328360a3e@huaweicloud.com/
-
- arch/arm64/net/bpf_jit_comp.c | 26 ++++++++++++++++++--------
- 1 file changed, 18 insertions(+), 8 deletions(-)
-
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 9040033eb1ea..f15bbe92fed9 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -649,8 +649,14 @@ static int emit_lse_atomic(const struct bpf_insn *insn, struct jit_ctx *ctx)
- 	u8 reg = dst;
- 
- 	if (off) {
--		emit_a64_mov_i(1, tmp, off, ctx);
--		emit(A64_ADD(1, tmp, tmp, dst), ctx);
-+		if (is_addsub_imm(off)) {
-+			emit(A64_ADD_I(1, tmp, reg, off), ctx);
-+		} else if (is_addsub_imm(-off)) {
-+			emit(A64_SUB_I(1, tmp, reg, -off), ctx);
-+		} else {
-+			emit_a64_mov_i(1, tmp, off, ctx);
-+			emit(A64_ADD(1, tmp, tmp, reg), ctx);
-+		}
- 		reg = tmp;
- 	}
- 	if (arena) {
-@@ -721,7 +727,7 @@ static int emit_ll_sc_atomic(const struct bpf_insn *insn, struct jit_ctx *ctx)
- 	const s32 imm = insn->imm;
- 	const s16 off = insn->off;
- 	const bool isdw = BPF_SIZE(code) == BPF_DW;
--	u8 reg;
-+	u8 reg = dst;
- 	s32 jmp_offset;
- 
- 	if (BPF_MODE(code) == BPF_PROBE_ATOMIC) {
-@@ -730,11 +736,15 @@ static int emit_ll_sc_atomic(const struct bpf_insn *insn, struct jit_ctx *ctx)
- 		return -EINVAL;
- 	}
- 
--	if (!off) {
--		reg = dst;
--	} else {
--		emit_a64_mov_i(1, tmp, off, ctx);
--		emit(A64_ADD(1, tmp, tmp, dst), ctx);
-+	if (off) {
-+		if (is_addsub_imm(off)) {
-+			emit(A64_ADD_I(1, tmp, reg, off), ctx);
-+		} else if (is_addsub_imm(-off)) {
-+			emit(A64_SUB_I(1, tmp, reg, -off), ctx);
-+		} else {
-+			emit_a64_mov_i(1, tmp, off, ctx);
-+			emit(A64_ADD(1, tmp, tmp, reg), ctx);
-+		}
- 		reg = tmp;
- 	}
- 
+Best regards,
 -- 
-2.47.1.613.gc27f4b7a9f-goog
+Thomas Weißschuh <linux@weissschuh.net>
 
 
