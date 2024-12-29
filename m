@@ -1,159 +1,172 @@
-Return-Path: <bpf+bounces-47686-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47687-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 805F69FDBCF
-	for <lists+bpf@lfdr.de>; Sat, 28 Dec 2024 19:01:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 163489FE095
+	for <lists+bpf@lfdr.de>; Sun, 29 Dec 2024 22:41:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19207161A19
-	for <lists+bpf@lfdr.de>; Sat, 28 Dec 2024 18:01:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DB013A1953
+	for <lists+bpf@lfdr.de>; Sun, 29 Dec 2024 21:41:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F349F18B46E;
-	Sat, 28 Dec 2024 18:01:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35E171991B2;
+	Sun, 29 Dec 2024 21:41:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=proton.me header.i=@proton.me header.b="RVWtGLyS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="btgG/WMK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-106101.protonmail.ch (mail-106101.protonmail.ch [79.135.106.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6271D2111
-	for <bpf@vger.kernel.org>; Sat, 28 Dec 2024 18:00:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0316025948E;
+	Sun, 29 Dec 2024 21:41:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735408862; cv=none; b=mhluJGswS4U7x1FKq3uZKzYjs3KTqEybGuO0o8nLhE0NyviwE3vF4QjpENYpZaCnzHmhHn2MtMXQ7/BjuVlegCiY+HwK5zzz7Q4F+tbKn1UpPS5PabURN7lUauTjKI65MivSPw9Ep2iu8F7qC9H9UJtWEEXnvf7LeMD4e77ohM0=
+	t=1735508469; cv=none; b=JuWG9111VwU4SAbpBrYNqQA3D6EtB9Y+i5j2CMpzykmPzN4Jv2duuSMDnKNXSb8ATzLR+f8cHGBelVtHQMFjoVQi+5zYYQOKensbOKGdkLE5QLpyA0fTrGOelUsKqIn9kNMYnLOphKVHXjXeBxcL6Eq6c6eRLxcHE3eRFmM1eaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735408862; c=relaxed/simple;
-	bh=xZZlX136M1U1/RIpLsfe8GB76Wp9kOWatRvJuMtWhMI=;
-	h=Date:To:From:Subject:Message-ID:MIME-Version:Content-Type; b=Aa+3nFQ9CO06/iOOg3RUj8xTN7qNTq917PTQZ22k4g5oiJqcLOqM5F9lHMpTAGiYVFkrp5sYmDb1iztVHSUQeITKSyFoYN2OkFEfvHb5p7K0ZzxQyGDHmDIYVHTgCD8nIu4t8boEjFne4MqowowurG6Q/FU1wHPKcD91L6KjzM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=RVWtGLyS; arc=none smtp.client-ip=79.135.106.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1735408855; x=1735668055;
-	bh=/wTsBFqgSQdInXSya0vTG0Kxn3CJmdb/QApsN1g/pxI=;
-	h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector:
-	 List-Unsubscribe:List-Unsubscribe-Post;
-	b=RVWtGLyS4dHN7n+k447HyExCNI/aB7qgw6jukwVtTRvyY3md+BrsEoNe9E6oov+b0
-	 jSHwop5ws24u+U73tnP+R/79uEMCXhngn1h0mIxpXgasgyzzbc4W9OAfXZ+jOcy0Tj
-	 seXrdBegY/o6ydRXh0Z4xT0pjOCUhz8S1zTAriEMWii0vBkTMLZta59CFGwGVN+83u
-	 ANIOYpqC8EfyBt10qDoN91DHvGBXX9PK8oxKnbXU5pHRVxUsnww2qX/FFH6ZCep0RU
-	 6UWr5RxbiePmoHLH97Igl3FSuttf7jRIhD8JLMP4Y0cUGJMubJDFDuOAS1+faqIofc
-	 FTa/wzviO103w==
-Date: Sat, 28 Dec 2024 18:00:48 +0000
-To: "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-From: Andrei Enache <andreien@proton.me>
-Subject: [PATCH v2 bpf-next] bpf: Use non-executable memfds for maps
-Message-ID: <eTid-pMaxx4d_gMkyFN6fgVGub01RRJYIl1SzTmRG7RtRlPUJOMrVfe2I1W8s0OBHBFy3UN2WGm_e6mak0nGcrZ4ZdxAYRUSDDcUSVMvNA4=@proton.me>
-Feedback-ID: 46877017:user:proton
-X-Pm-Message-ID: 23de1dfb87eb4c543a3adb93ef4e44af2869afe2
+	s=arc-20240116; t=1735508469; c=relaxed/simple;
+	bh=D06FWVQ72Q1jUyL3uABU0YJOtTC+K2u+2B7QmPqawpw=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I6dXRAPdWGGWZa6Hx8Tcl0oCDkuhqpRKK/fUHvprPJpeYxgiXhWtwAUh8AZ+ORkwV4+GhSah0f0d1CBVBSWyVOVH0BJV2ychGqORch4xSd2pRFru3CGaIqEGSyTcTEBkmU+KxpHoRm4y5qo7SjhXlv/PvU0yzr0+cSgZsHP09Ac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=btgG/WMK; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-aaf0f1adef8so501316966b.3;
+        Sun, 29 Dec 2024 13:41:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1735508466; x=1736113266; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CjKoJkAXM2FYJgrfE1zb1w/AkI3HXqXAjVCH3YWCGO8=;
+        b=btgG/WMKiJu1VNbBS3QmaVT8XaTBAHV/noZloma88naQDPde0233dKb+vpDLjWTTIh
+         Ehpr4oXDuZlOUXQuHuRQDQx9QpXBn6JnJ9R7eM4N1c4/RIINRQ5IBiBHFGlNE4mX5LZE
+         xna/hnJ/LcPEtxzozTJWca3ZjuKXLMHjlOblbjGQBRxvT1O946CfscXgHWVxtup3NhGk
+         UH9CqNEkfo9XvSGtXzPTBDEe7moq8/KO2sVi/nd1g0DPSUm2VJyeR1z4ClFFt3WfR8Vw
+         DCvGl0dJrr69XiXq0pRQVVVhrT2yiGIu1ao5/Fb6GO6R5fUDTu8NMAWHHXdTiQkemciQ
+         JKsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735508466; x=1736113266;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CjKoJkAXM2FYJgrfE1zb1w/AkI3HXqXAjVCH3YWCGO8=;
+        b=LXrYN7xLwOPKGDx1GxTgN2oir28ucx0yRwsk5+Y94qhIlBQ1MC7AMD9HJIl6DD9drM
+         QCL3E8cHwKysTGUpZR3QJcZhLWY8QyJM6XV7iOl7qDs3AWxJidnraoE+zl8h2x6imukn
+         n38xqbuXKj4HxnYZMkcZChbmtcABVO6PMCqYmrzJPMZFmsuX8ZxnUtPq0VcFWJS8WvMu
+         EavExuyLbG+ANKGaNxDLV5N8Zs85QcU6Gp/J2I8GS+Sheycv9YuVwOW2YzWuiLiJDmKp
+         i9rF/dUoxWlFGnbWcngRlrkreeYJJi7s1zx6XWLN7u0/DanoOCRKsQdYejCDVjOZn1ma
+         Y/ZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWPig3gp4E0i+JKltK2WW591uNmOhnR1flXaJCwhWkyrEWU35sHydCfgmUMKE6L2LKoU12Z8No9WU2apTo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzD+NQ6HM2+Gt8UwMaqmNc4x01uI/kz7r1Q+vO5zwtzskZsGXtA
+	+HzywVAzeAd2+NgfccLiit8RT0th669XqZextuRufYoua08VVfgS
+X-Gm-Gg: ASbGncuAydJbsrNsq9s+uYnAXHebomxTnRdmxnjJx4wyhjpjVWVRY7N2AHJeR5KWSsi
+	CZ0ULpecntGvDI3GwEmMD2ZKkGCdK6WAy0ZhTZcuUkN3dSv+4Qp/EP4M9WvWD+DKuzCiKW9GaMg
+	k2z8sfOvvKG+QQJUu+S9Fhfd83DWlWonTLQX9YyFOtDElB0Swe6dpkh40hWxzuo0AN9qjpFvYVC
+	+7TGgmE8Gsw3b5AhAyffo/hXL6EUM8ekJKW4obI+SVST1seu7jvt4NnDh8XGOo=
+X-Google-Smtp-Source: AGHT+IGKWDt89dzf4ZRj41FFxzHbEVakDZlSKfNiL/tqqfliDSb70qDQv2RDtOeQqzS+hceSVohExw==
+X-Received: by 2002:a17:907:2d1f:b0:aa6:966d:3f93 with SMTP id a640c23a62f3a-aac2b0a5b51mr2789716966b.23.1735508466034;
+        Sun, 29 Dec 2024 13:41:06 -0800 (PST)
+Received: from krava (85-193-35-38.rib.o2.cz. [85.193.35.38])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aac0e895d26sm1386364866b.79.2024.12.29.13.41.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Dec 2024 13:41:05 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Sun, 29 Dec 2024 22:40:58 +0100
+To: Jiayuan Chen <mrpre@163.com>
+Cc: bpf@vger.kernel.org, martin.lau@linux.dev, ast@kernel.org,
+	edumazet@google.com, jakub@cloudflare.com, davem@davemloft.net,
+	dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com,
+	linux-kernel@vger.kernel.org, song@kernel.org,
+	john.fastabend@gmail.com, andrii@kernel.org, mhal@rbox.co,
+	yonghong.song@linux.dev, daniel@iogearbox.net,
+	xiyou.wangcong@gmail.com, horms@kernel.org, eddyz87@gmail.com,
+	mykolal@fb.com, kpsingh@kernel.org, sdf@fomichev.me,
+	haoluo@google.com, shuah@kernel.org, pulehui@huawei.com
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: avoid generating untracked
+ files when running bpf selftests
+Message-ID: <Z3HB6mUNW6beUkwz@krava>
+References: <20241224075957.288018-1-mrpre@163.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature"; micalg=pgp-sha512; boundary="------54623a82819daa5e37fb6e2b160d50569290472b08931ffc40ad50b9871f65ac"; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241224075957.288018-1-mrpre@163.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------54623a82819daa5e37fb6e2b160d50569290472b08931ffc40ad50b9871f65ac
-Content-Type: multipart/mixed;boundary=---------------------31de881ffae5e84a515470eec0a919b8
+On Tue, Dec 24, 2024 at 03:59:57PM +0800, Jiayuan Chen wrote:
+> Currently, when we run the BPF selftests with the following command:
+> 'make -C tools/testing/selftests TARGETS=bpf SKIP_TARGETS=""'
+> 
+> The command generates untracked files and directories with make version
+> less than 4.4:
+> '''
+> Untracked files:
+>   (use "git add <file>..." to include in what will be committed)
+> 	tools/testing/selftests/bpfFEATURE-DUMP.selftests
+> 	tools/testing/selftests/bpffeature/
+> '''
+> We lost slash after word "bpf".
+> 
+> The reason is slash appending code is as follow:
+> '''
+> OUTPUT := $(OUTPUT)/
+> $(eval include ../../../build/Makefile.feature)
+> OUTPUT := $(patsubst %/,%,$(OUTPUT))
+> '''
+> 
+> This way of assigning values to OUTPUT will never be effective for the
+> variable OUTPUT provided via the command argument [1] and bpf makefile
+> is called from parent Makfile(tools/testing/selftests/Makefile) like:
+> '''
+> all:
+>   ...
+> 	$(MAKE) OUTPUT=$$BUILD_TARGET -C $$TARGET
+> '''
+> 
+> According to GNU make, we can use override Directive to fix this issue [2].
+> 
+> [1]: https://www.gnu.org/software/make/manual/make.html#Overriding
+> [2]: https://www.gnu.org/software/make/manual/make.html#Override-Directive
+> Fixes: dc3a8804d790 ("selftests/bpf: Adapt OUTPUT appending logic to lower versions of Make")
+> 
+> Signed-off-by: Jiayuan Chen <mrpre@163.com>
 
------------------------31de881ffae5e84a515470eec0a919b8
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;charset=utf-8
+lgtm, tested with make 4.3
 
-This patch enables use of non-executable memfds for bpf maps. [1]
-As this is a recent kernel feature, the code checks errno to make sure it =
-is available.
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
----
-Changes in v2:
-- Rebase on dad704e
-- Link to v1: https://lore.kernel.org/bpf/6qGQ7n8-hGVRUbVaU4K2NOdK93nEC-Yt=
-b1ZCWhJyHoeIJgs0plTiTHLLQ8ghWSxjdhsu7VRiTD8SSqEW0eJyssE0FGOp4fn3wNG7TS-jsq=
-8=3D@proton.me/
-
-[1] https://lwn.net/Articles/918106/
-[2] =
-
-
-
-Signed-off-by: Andrei Enache <andreien@proton.me>
----
- tools/lib/bpf/libbpf.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 66173ddb5..490b41e2d 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1732,11 +1732,22 @@ static int sys_memfd_create(const char *name, unsi=
-gned flags)
- #define MFD_CLOEXEC 0x0001U
- #endif
- =
-
-
-+#ifndef MFD_NOEXEC_SEAL
-+#define MFD_NOEXEC_SEAL 0x0008U
-+#endif
-+
- static int create_placeholder_fd(void)
- {
- 	int fd;
-+	int memfd;
-+
-+	memfd =3D sys_memfd_create("libbpf-placeholder-fd", MFD_CLOEXEC | MFD_NO=
-EXEC_SEAL);
-+
-+	/* MFD_NOEXEC_SEAL is missing from older kernels */
-+	if (errno =3D=3D EINVAL)
-+		memfd =3D sys_memfd_create("libbpf-placeholder-fd", MFD_CLOEXEC);
- =
+jirka
 
 
--	fd =3D ensure_good_fd(sys_memfd_create("libbpf-placeholder-fd", MFD_CLOE=
-XEC));
-+	fd =3D ensure_good_fd(memfd);
- 	if (fd < 0)
- 		return -errno;
- 	return fd;
--- =
-
-
-2.47.1
------------------------31de881ffae5e84a515470eec0a919b8--
-
---------54623a82819daa5e37fb6e2b160d50569290472b08931ffc40ad50b9871f65ac
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: ProtonMail
-
-wsG5BAEBCgBtBYJncDzDCZDqw+/Aif2onkUUAAAAAAAcACBzYWx0QG5vdGF0
-aW9ucy5vcGVucGdwanMub3JnWJp2RigL/Tl8gnGZI3TfuctTsQtUsR3djW2U
-Q/e3pVoWIQSLXhaG+wc35eodSKjqw+/Aif2ongAAJSkP/i9q5TDAKa1v5JRw
-OPVjQX5coDG0Hm92enjcG+WiGjAGB/Z3lK9Hjmv3vsF+I1SiYaxf1N8+/T8M
-J7b8A3Iuiv1ZZKXFvve1SjOLCV4E9KgCIPDiXdvZVycl1bMLF65Aap1Hsp7W
-btg0Bm3Tad5xNbGjn0MhAD6EyxGYVziOGpd3g8vlQd1mWu91RFXCMDloBHv6
-iidjt+w/WnHH5FZnV753IPUaw3xAgmy4N6Pn6YNC+G+Rb785x+mSAiwdYMuZ
-gMydBIgq/d41F3cEhyB10gsl/nqMVNitcr+o/zPXk5s1nhHThxS3vRFovftK
-mBGiLbAByennG7MS7q3mX+9lc51eDEPXMYBPcaRMCOZswUEu5r+aoyh24z5Q
-8oe21bA0ZlDPjJimQ2+ho9cuB3ssj0u7r+phBLwJnI04LK1wUzJjfFs7KLwB
-iC/hQHo0PBhSbtepOe5Ig3+LGQwXmtWQuhGS1h7VYi52A2pRqQ1dsrGODSnB
-vIaKlX/K5ef67ypVM0eSmT1YygjuqYvP6lcuTZSePtqlwEjYRaiYWThmR4KP
-a6KiYZh0OU2NGXlduNeA4qkq7gZPxEf8D8t9zetWtyUfPa5Avc6nkcnud0vi
-ioiTaPUadRPmjwKrfHN4R9SL9izTEEmT7GzHwa7zUTSMLsGT07NDuLdiObCa
-zpelg567
-=jeZc
------END PGP SIGNATURE-----
-
-
---------54623a82819daa5e37fb6e2b160d50569290472b08931ffc40ad50b9871f65ac--
-
+> 
+> ---
+> v1->v2: fix patchwork check fail.
+> ---
+> ---
+>  tools/testing/selftests/bpf/Makefile | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 9e870e519c30..eb4d21651aa7 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -202,9 +202,9 @@ ifeq ($(shell expr $(MAKE_VERSION) \>= 4.4), 1)
+>  $(let OUTPUT,$(OUTPUT)/,\
+>  	$(eval include ../../../build/Makefile.feature))
+>  else
+> -OUTPUT := $(OUTPUT)/
+> +override OUTPUT := $(OUTPUT)/
+>  $(eval include ../../../build/Makefile.feature)
+> -OUTPUT := $(patsubst %/,%,$(OUTPUT))
+> +override OUTPUT := $(patsubst %/,%,$(OUTPUT))
+>  endif
+>  endif
+>  
+> -- 
+> 2.43.5
+> 
 
