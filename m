@@ -1,82 +1,84 @@
-Return-Path: <bpf+bounces-47696-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47697-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AF369FE8FE
-	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 17:16:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D26209FE914
+	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 17:41:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2DA93A0581
-	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 16:16:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3CED3A236B
+	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 16:40:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEA6E84FAD;
-	Mon, 30 Dec 2024 16:16:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8BB51ACEC1;
+	Mon, 30 Dec 2024 16:40:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MLkMAnW1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="inrrVCSK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B3BF1991D2
-	for <bpf@vger.kernel.org>; Mon, 30 Dec 2024 16:16:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5215CAD2D;
+	Mon, 30 Dec 2024 16:40:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735575414; cv=none; b=dYRvZYNBanr2XCVKrHgY4I7+ZDaksMVu2crjCDAxWXX3GYbiAkLk3ctd15UcKgFAsaTVwhqZ3moVVvkqxtbZx+dcHldUQ8DEEUQYzk7RpVGHDYRO0/5YDuICFnGCQmzzDjjPOupWCz/UinnXGQKFzSRhnj0csX/jHVRwgwxFh3w=
+	t=1735576853; cv=none; b=iKcXF6jw0jrRFt7fh3+rhgv/W1Ea1X/Yt910LvjHwi1Q9Rr1xPtlsVkR9MDB1VYlthcurhz/7ZGs1XBsb/VkPs5wlshN2kFAcKjJ9b9CE/BEyhFeNO3bZoxP+DA6k/0J1qAGHJSVfG+ljKe99Ymo3YRaSWgQfl/U37hILXwsqAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735575414; c=relaxed/simple;
-	bh=m8YJdKCI0IzyOaU8MTCg31wgEmmm/WkSgm23lBS4Ovk=;
+	s=arc-20240116; t=1735576853; c=relaxed/simple;
+	bh=3D0XoxQbEucKZVLMbEt0crkGIGQY93WkfTjsnP5JoCY=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lNqoN3Z+g6J5L2H/c0TyCBmYFaMzFi8jT/Z0C6MKR7jTdD/W03zaRnBUFT1hZ9s+8VCrS7Tahcn2UBarGg3kEgAnBiuDf4rbUOfJhR6WHz/ueuCrmy3YbVrS0MnBMo2zE362FCQgzTO5/xAG0caasQTkrxpWi687DHpuA7uXIIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MLkMAnW1; arc=none smtp.client-ip=209.85.208.52
+	 Content-Type:Content-Disposition:In-Reply-To; b=fF8RFw/Au5r2YRXt60ehZnPFv79iXCYD9jGYoYCKh9ywiKbPNijt6bYsLtUwzC4hSiBwzdAi7LkD6EjWCajfhwAKBUhOt9MGpHLPrqZlitSB4mdE+hdE8Bhf0cXBP+9NCOi7AV/0g2rKPSXh8YCEPrX10tRTOAbWGMrLi2YQk+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=inrrVCSK; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5d3bbb0f09dso15996467a12.2
-        for <bpf@vger.kernel.org>; Mon, 30 Dec 2024 08:16:52 -0800 (PST)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-38634c35129so7150846f8f.3;
+        Mon, 30 Dec 2024 08:40:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735575411; x=1736180211; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1735576849; x=1736181649; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=myzJkT0MwJWbLgXZ5T8fUSGjF+RLCxU0gNQQVmUc0F4=;
-        b=MLkMAnW1cHrFPTf8kV4rgsAsad5MsUe9vmWBhQGrdLRsSYAM79znjW0TEBgoIZL5dI
-         vfM3obxNsIpMdO2gS90D7CfxIn53guXCEJLvNK03WHUvYRW1g21NYhVYrqp6g0RMWLky
-         GTy9+G+If3NXHKrNYETcs28wQAzLNligF8a2h7bWMreadplCSywz8tawcLzvlFlkVTmU
-         tEuIP4m5HgECVvtkZTRkO9/Mzrxi1Dh3OpNt01cpy+Rw7R5GwPtWlRCLgY8AiqvBX5cg
-         FW79tb8xZD0kZeff2tsLwt8OdiodGVvLrc/9OB9BJ7xEFCHFBAMfgryrWwwHfpgb7zFV
-         yRGQ==
+        bh=c34inWLrJLZIxxvrkUgRcAEz+7YrbH7BxLS5ubF+0ts=;
+        b=inrrVCSKLHJOguLxqEo17Wt4XQTopsIm0jOfc/G5Ixk4dbOYqlRzueHlgUatHT/o2B
+         taXYGLgNX59nK7tvIOxZsbtRM3vMGG8M6AwarSfpX4q1P20yZCR0AhIjpIy2awcjY1Jf
+         06qHm9AtvMDK9YmBV2pRW32xM94UzaAz7iIy/nvSG5M/Q93NTukrGMbybysQ1/wuX6vx
+         FN2ZZmybeb94GOMRyriXhiCmAcK9xvPoEVTd7Vwp/xhOFRv+wkVjhqkMqnAzkzKhvGgq
+         dXD0WDIbvGLSPlDL9IHrC7h5FDnlLj93Q6okLJLOfT6chvDdpITGD3BWFe8YZvnuSqZ7
+         DVFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735575411; x=1736180211;
+        d=1e100.net; s=20230601; t=1735576849; x=1736181649;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=myzJkT0MwJWbLgXZ5T8fUSGjF+RLCxU0gNQQVmUc0F4=;
-        b=hDh4l9S2z00PyK89vJGca9+i7pFKALc1J7vMUYoAiZxg7Yh8r4XDLO50Nqf/VjYY0p
-         r8fjign7ac/SotnUlqER183dLzJwN+fRshY8JCNXHf7sTFwNSmdsy51xGep9R7qrCXbO
-         guT932pjoLhf/dcuH5FxVzTXVgcN9HD3fx/uMJj+BGY9BbZ9Rn47/2PIqKE0VH33KNUB
-         i3m3PhEbknKYyeNJxmnjvSeAy5fYrmLKp3PzZ9zzXJrtB2wvGUBJaEnpd1wgMj8smHCf
-         2RnAcbkx29hVv6YDjtiCX5NH9BaJ8nDcfyudBmACWqW+QNymTlMLhQz6qITRdYg7dPYM
-         DD2Q==
-X-Gm-Message-State: AOJu0YyUM/PEBu6nY5gdPNPWtPSLBhjXDlzOePLvAPAgsxFrcQ61+Ato
-	jTsGNRx6F6Ta4NMWIB0XAOPd8T3h5RMVnC0qWI6wv1XkmbIyedMf
-X-Gm-Gg: ASbGncu2tpE61xyjz6kgG5P1NhQVcE9oYBYDL+811+jsXmJQhl5zTVUXjNcnbAMP5Id
-	vLD4ekHyPKWFefFf4CdUwNdC6Vki/2e94zT7vebVY9m9+mm0hh/GrucNp4N6kOVBXQV3bmvm8L+
-	8wSXhQ78amQfMNgMTMpW8PwOeNYXRwNsoiPHlcPqJZTpllujVi7rQmm5cijMGLCeLjywDJgh1Rt
-	7MhekQZ7slThV7pgVYJD5NhIAz6RadK2E6fFgV6nkA=
-X-Google-Smtp-Source: AGHT+IHgVg0P59lPEk+SP9d7lPKMJPn86B6pXq5IIkyJJxnYSLJXFrZ6wHwBbj2YIEdKla6bkvli9g==
-X-Received: by 2002:a17:907:2d1e:b0:aa6:bcc2:4da1 with SMTP id a640c23a62f3a-aac2874a98amr3254778666b.7.1735575410727;
-        Mon, 30 Dec 2024 08:16:50 -0800 (PST)
+        bh=c34inWLrJLZIxxvrkUgRcAEz+7YrbH7BxLS5ubF+0ts=;
+        b=Gwdn+zbpH85EJbNUTl2viwgndGmcIb9DvSv/yob6173gdaj/oRgj56CxBorrxQgPcw
+         6HSt1VcNBFTMe2oWMUTSxUoiFUnSCqe3ld7/DP2Si+KcyRLYccghWYhYIihI6Kgq4RpR
+         a9JnuOiSuzQl8/fhxpxHyNX7Yz8VndiiZxn9sIwfEh+UCSeL5riJJWEPKbSx0YmNZWFL
+         cjrnsRm8AAH3jaxHaJ81VefN5BWtBVJloKFEdxh9xOgf22fjgpvgqb8U8CyyoCW9zjY9
+         0ih6ltRwDUZm9XyYvFxUMLXEt3w/OiYZRuVCxfMaW6ZhCJ6O21pVjgsnvR36M7ElKpas
+         U3GA==
+X-Forwarded-Encrypted: i=1; AJvYcCXHrH5c1d7O8MFkNVOpnWC8SeonvwrHo8eJKQhSrDyuZfZaSwMx7MAHsH9A81+Rjtq/sOrd/aTsvuSOD30=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyHy4YpPN+cXaf1p3/Uhg1KZ/QPKCyGwDVaRKqxWCEHYV3g3C2e
+	SIytTqjle9I7+uLHBs2TnOCexhlVUTrNpdLk36nccFSRooOHk3k+
+X-Gm-Gg: ASbGnctduwGeO3CCJgt2iEvGNuwkvhj1yZDAEPUtKQNz6Q7UOYr4ZqF9j8IV8xSmF/K
+	Sp4SiTKoavqb1LZImh2LREdmqj2ypWuZpmXPc1jVIxl7D96cUnrEDuUIW/CrPMscAU6cRflRFiW
+	0UpQE3I9pPHa8EfeWWGcngwYFtNq5XPS5h9Av3Rjhqb9kORiZW6ZuJqYHkrb8D6Mltp+iUtGUou
+	pj7oM0U/pXvhYSqafTiCUhkRkmvhEliWPARBjq7BZY=
+X-Google-Smtp-Source: AGHT+IHjGuXf/XElL7gZWedC8xhQAZYTXimOnHbXw1GRZMDN0TZeLWfDEsWzbMIuXaokGpEKqTCtSA==
+X-Received: by 2002:a05:6000:186b:b0:386:3835:9fec with SMTP id ffacd0b85a97d-38a223f76aemr36139683f8f.44.1735576849396;
+        Mon, 30 Dec 2024 08:40:49 -0800 (PST)
 Received: from krava ([213.175.46.84])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aac0f06f847sm1458557466b.202.2024.12.30.08.16.50
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4365c08afcbsm370553605e9.21.2024.12.30.08.40.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Dec 2024 08:16:50 -0800 (PST)
+        Mon, 30 Dec 2024 08:40:49 -0800 (PST)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 30 Dec 2024 17:16:48 +0100
-To: Andrei Enache <andreien@proton.me>
-Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH v2 bpf-next] bpf: Use non-executable memfds for maps
-Message-ID: <Z3LHcCgqY7kHs08S@krava>
-References: <eTid-pMaxx4d_gMkyFN6fgVGub01RRJYIl1SzTmRG7RtRlPUJOMrVfe2I1W8s0OBHBFy3UN2WGm_e6mak0nGcrZ4ZdxAYRUSDDcUSVMvNA4=@proton.me>
+Date: Mon, 30 Dec 2024 17:40:48 +0100
+To: Pei Xiao <xiaopei01@kylinos.cn>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] bpf: Use refcount_t instead of atomic_t for mmap_count
+Message-ID: <Z3LNEHfLmtSi4wpO@krava>
+References: <6ecce439a6bc81adb85d5080908ea8959b792a50.1735542814.git.xiaopei01@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -85,65 +87,70 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <eTid-pMaxx4d_gMkyFN6fgVGub01RRJYIl1SzTmRG7RtRlPUJOMrVfe2I1W8s0OBHBFy3UN2WGm_e6mak0nGcrZ4ZdxAYRUSDDcUSVMvNA4=@proton.me>
+In-Reply-To: <6ecce439a6bc81adb85d5080908ea8959b792a50.1735542814.git.xiaopei01@kylinos.cn>
 
-On Sat, Dec 28, 2024 at 06:00:48PM +0000, Andrei Enache wrote:
-> This patch enables use of non-executable memfds for bpf maps. [1]
-> As this is a recent kernel feature, the code checks errno to make sure it is available.
-> 
-> ---
-> Changes in v2:
-> - Rebase on dad704e
-> - Link to v1: https://lore.kernel.org/bpf/6qGQ7n8-hGVRUbVaU4K2NOdK93nEC-Ytb1ZCWhJyHoeIJgs0plTiTHLLQ8ghWSxjdhsu7VRiTD8SSqEW0eJyssE0FGOp4fn3wNG7TS-jsq8=@proton.me/
-> 
-> [1] https://lwn.net/Articles/918106/
-> [2] 
-> 
-> 
-> Signed-off-by: Andrei Enache <andreien@proton.me>
-> ---
->  tools/lib/bpf/libbpf.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 66173ddb5..490b41e2d 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -1732,11 +1732,22 @@ static int sys_memfd_create(const char *name, unsigned flags)
->  #define MFD_CLOEXEC 0x0001U
->  #endif
->  
-> 
-> +#ifndef MFD_NOEXEC_SEAL
-> +#define MFD_NOEXEC_SEAL 0x0008U
-> +#endif
-> +
->  static int create_placeholder_fd(void)
->  {
->  	int fd;
-> +	int memfd;
-> +
-> +	memfd = sys_memfd_create("libbpf-placeholder-fd", MFD_CLOEXEC | MFD_NOEXEC_SEAL);
-> +
-> +	/* MFD_NOEXEC_SEAL is missing from older kernels */
-> +	if (errno == EINVAL)
+On Mon, Dec 30, 2024 at 03:16:55PM +0800, Pei Xiao wrote:
+> Use an API that resembles more the actual use of mmap_count.
 
-I think you need to check memfd < 0 before checking errno
+I'm not sure I understand the issue, could you provide more details?
 
-> +		memfd = sys_memfd_create("libbpf-placeholder-fd", MFD_CLOEXEC);
->  
-> 
-
-nit, extra empty line in here (already)
-
+thanks,
 jirka
 
-> -	fd = ensure_good_fd(sys_memfd_create("libbpf-placeholder-fd", MFD_CLOEXEC));
-> +	fd = ensure_good_fd(memfd);
->  	if (fd < 0)
->  		return -errno;
->  	return fd;
-> -- 
 > 
-> 2.47.1
+> Found by cocci:
+> kernel/bpf/arena.c:245:6-25: WARNING: atomic_dec_and_test variation before object free at line 249.
+> 
+> Fixes: b90d77e5fd78 ("bpf: Fix remap of arena.")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202412292037.LXlYSHKl-lkp@intel.com/
+> Signed-off-by: Pei Xiao <xiaopei01@kylinos.cn>
+> ---
+>  kernel/bpf/arena.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+> index 945a5680f6a5..8caf56a308d9 100644
+> --- a/kernel/bpf/arena.c
+> +++ b/kernel/bpf/arena.c
+> @@ -218,7 +218,7 @@ static u64 arena_map_mem_usage(const struct bpf_map *map)
+>  struct vma_list {
+>  	struct vm_area_struct *vma;
+>  	struct list_head head;
+> -	atomic_t mmap_count;
+> +	refcount_t mmap_count;
+>  };
+>  
+>  static int remember_vma(struct bpf_arena *arena, struct vm_area_struct *vma)
+> @@ -228,7 +228,7 @@ static int remember_vma(struct bpf_arena *arena, struct vm_area_struct *vma)
+>  	vml = kmalloc(sizeof(*vml), GFP_KERNEL);
+>  	if (!vml)
+>  		return -ENOMEM;
+> -	atomic_set(&vml->mmap_count, 1);
+> +	refcount_set(&vml->mmap_count, 1);
+>  	vma->vm_private_data = vml;
+>  	vml->vma = vma;
+>  	list_add(&vml->head, &arena->vma_list);
+> @@ -239,7 +239,7 @@ static void arena_vm_open(struct vm_area_struct *vma)
+>  {
+>  	struct vma_list *vml = vma->vm_private_data;
+>  
+> -	atomic_inc(&vml->mmap_count);
+> +	refcount_inc(&vml->mmap_count);
+>  }
+>  
+>  static void arena_vm_close(struct vm_area_struct *vma)
+> @@ -248,7 +248,7 @@ static void arena_vm_close(struct vm_area_struct *vma)
+>  	struct bpf_arena *arena = container_of(map, struct bpf_arena, map);
+>  	struct vma_list *vml = vma->vm_private_data;
+>  
+> -	if (!atomic_dec_and_test(&vml->mmap_count))
+> +	if (!refcount_dec_and_test(&vml->mmap_count))
+>  		return;
+>  	guard(mutex)(&arena->lock);
+>  	/* update link list under lock */
+> -- 
+> 2.25.1
+> 
+> 
 
