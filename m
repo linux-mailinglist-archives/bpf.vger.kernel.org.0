@@ -1,109 +1,73 @@
-Return-Path: <bpf+bounces-47688-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47689-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59C9D9FE097
-	for <lists+bpf@lfdr.de>; Sun, 29 Dec 2024 22:45:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 150FC9FE32A
+	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 08:17:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0C443A18FB
-	for <lists+bpf@lfdr.de>; Sun, 29 Dec 2024 21:44:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D6043A1A0A
+	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 07:17:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9E7619922F;
-	Sun, 29 Dec 2024 21:44:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="DObPJWeH";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="reoz4otw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1341E19EEC2;
+	Mon, 30 Dec 2024 07:17:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E313225948E;
-	Sun, 29 Dec 2024 21:44:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEC528F4A;
+	Mon, 30 Dec 2024 07:17:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735508694; cv=none; b=IRlAs4rDaDJAYleTEQPm1BETM7v5ME7lCu1knxFBpun5zBub9XGWN9GOc24K3B1iFoISrgcCmUGyyg9xsPUkYUww+ax4BiZWqdzuy4gErdDIzOa+JKMdpoomqxceoGxNyqBj8JaZhH9EsC2VHsnsBGRxoITUZiLzAvJ8Di4C/8Y=
+	t=1735543033; cv=none; b=AT+nj8WCJacTzBa4CTQOetO028chOwxC+47hkT5P0QvFCNJk8eq2gjh/Q0qUCLy/VUGRI4RCvkXolbYdP3z8nwhU22hCFy/KEZWKeYoA8zeRLn7Gheh7/H4XSQ0uh5uh2T9GZYTk/K6j7vJZCve33VDujyr0Ajpuiop7G4ahI10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735508694; c=relaxed/simple;
-	bh=IvPoNbC0ZAF+dDJuvjxaTty6bdisC9IJSSJkMAZ8mjU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=X45vUB30fJS9JVeZlPmz6lhYBCx5L0TT6Bpj5UTBOCsMSyMxirvNL2gUUc+8Rbm1qzp/6ZifSLHPiY3071jretOMa4gz2eAgM7SsCSfZyyxcKzqoH/fATsyMnrjdLNcjDXnZ1LUNitKtJHm3ydqcnCmxfIdg5DslBgFbgMf6sDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=DObPJWeH; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=reoz4otw; arc=none smtp.client-ip=103.168.172.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 017871140102;
-	Sun, 29 Dec 2024 16:44:51 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-06.internal (MEProxy); Sun, 29 Dec 2024 16:44:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm1; t=1735508690; x=1735595090; bh=LIcfLh1A/dRKdmqnT+Syp
-	DFuj/WqXpB7n8a4rXugnk8=; b=DObPJWeHCvoVmZ4qr0Lf/ts1ggi/bE49D8aCu
-	eq/Ce5fhRxieAEhYy+/QPId9ef4EDZ2hhfAy5vaNty7dYztD6kHUwg7ydoMR0lTH
-	or9Lmo/fQKK8aNLL7bte51lajcbrkLjYRwDHNCAWvRjUU2ryBZiZRO3uYQcDQjAe
-	nqfYP0wJhwcgmT95txrHda6Zht1Yh1td+9gs5UQ8Gz8TGrn2eJkk8jTOjmo5zxfy
-	IpeN6mTSh53UcMxlF3ZV2qriARiNFuYD4cDm24ilfi6P1XlehhP2jdu87SxRGkXy
-	LmRi5maiaAPArhCPBr4CVsX2jBK6T04IgLT6bSTFowu5b4Y7A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1735508690; x=1735595090; bh=LIcfLh1A/dRKdmqnT+SypDFuj/WqXpB7n8a
-	4rXugnk8=; b=reoz4otwPKaIW822sSNdnUrjXeiI1sS1SygBQtg6eKbLI3QQKUJ
-	vyLhKBvzdX71TGyAyiOmR++PJCDowg4xWv6S4fpkhNprkY47P28AYMTr8L2ONVjC
-	isn2oIxm0rIOUnUrA5Lb+6uJOz74jwjbHYK++HifQpMxI8dWmbg07VjRBWFB3lB4
-	cfRzbtWe+edECwvdX/0aZ5MNXqCjlZMIQfh5PDtYjofwtdjAXWEym5joUvBfKVYm
-	eSLbELbxP156g40FOPzRjl5kjVBJmzosfzGSgyZ1DCPmY3fIXEeqOKXxKK9rmE5O
-	iC2Q9LxGZMOsZwpI/XXb4zj4eSLgkf5R6eQ==
-X-ME-Sender: <xms:0sJxZ7igMAR4i_DJixOsnrEHPgfUriGMWu58Cuk_BWsIucIXl8mnVg>
-    <xme:0sJxZ4Dar3pBCE8eBL_sMyWM6IfcP5dijBCzgzyW8wYJ518Uznm1APNKHDMX3ZOVy
-    8lmFJqzyeNdoOAGEw>
-X-ME-Received: <xmr:0sJxZ7Fgj6DcCsb8U9BgrqhcpzheA44xyMUurB3XGcdyW61IpR8I7BFGhdPQYDs_0yect5PmObXwCr2KZPOcKAjykU3eS5MuhTMtnQ5xcXR9KpYXXAAJ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddruddvgedgudehhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculd
-    ejtddmnecujfgurhephffvvefufffkofgggfestdekredtredttdenucfhrhhomhepffgr
-    nhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpe
-    dvgefgtefgleehhfeufeekuddvgfeuvdfhgeeljeduudfffffgteeuudeiieekjeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugi
-    huuhhurdighiiipdhnsggprhgtphhtthhopedugedpmhhouggvpehsmhhtphhouhhtpdhr
-    tghpthhtoheprghstheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghnughrihhise
-    hkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhesihhoghgvrghrsghogidr
-    nhgvthdprhgtphhtthhopegvugguhiiikeejsehgmhgrihhlrdgtohhmpdhrtghpthhtoh
-    epmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghvpdhrtghpthhtohepshhonhhgsehk
-    vghrnhgvlhdrohhrghdprhgtphhtthhopeihohhnghhhohhnghdrshhonhhgsehlihhnuh
-    igrdguvghvpdhrtghpthhtohepjhhohhhnrdhfrghsthgrsggvnhgusehgmhgrihhlrdgt
-    ohhmpdhrtghpthhtohepkhhpshhinhhghheskhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:0sJxZ4Sd-hMIoNpCK-OLZbiIKj60cpTfhKRh1JDJOcnEGgOKliaDMg>
-    <xmx:0sJxZ4xtLZVUUbD_iuxKsO-PxZXt8rVVSxgbGzR4CjvZRyAvXbK6aQ>
-    <xmx:0sJxZ-4IujogR1AAhvF9ST0LhvyPSMGOdSiuR5JzRsXJYFpyywBniw>
-    <xmx:0sJxZ9wyQTdkhpTfUjx9Ua8MeRr8eXgwXdm5zrqbvB2TZMjtBDsO7g>
-    <xmx:0sJxZ9KxI-SOJiIYfz4a3al_5NWo64vFv4r2j57V1AZGonHkZN_1n9la>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 29 Dec 2024 16:44:48 -0500 (EST)
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	eddyz87@gmail.com
-Cc: martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
+	s=arc-20240116; t=1735543033; c=relaxed/simple;
+	bh=NmS5i2qU3obD3u3PTgg79huLb8morjznKdppkVjV1Po=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HKTe5e/n1kqhYiM3rEBKq5zya702WW2Bt3CF1/jD9ahzLIjuE6Jev+vpP20EevsQlYibzYSQzGsrJ9FOaGw2xrvQe4uCfTxT5n/Fy0LYHzH9Qbay0fc4UPqAyTwc4xSWNy1tzR6VUEAY+meEjeSzKYGD0IWrP3GdGlowDpVUBBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 1035ed96c67e11efa216b1d71e6e1362-20241230
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CTE_8B, HR_CTT_MISS
+	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_DIGIT_LEN, HR_FROM_NAME
+	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
+	HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NO_NAME
+	IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED, SA_EXISTED
+	SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
+	CIE_BAD, CIE_GOOD_SPF, GTI_FG_BS, GTI_C_CI, GTI_FG_IT
+	GTI_RG_INFO, GTI_C_BU, AMN_T1, AMN_GOOD, AMN_C_TI
+	AMN_C_BU
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.41,REQID:e0ffdf3a-9162-4381-a886-c370092d2488,IP:0,U
+	RL:0,TC:0,Content:0,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:20
+X-CID-INFO: VERSION:1.1.41,REQID:e0ffdf3a-9162-4381-a886-c370092d2488,IP:0,URL
+	:0,TC:0,Content:0,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:20
+X-CID-META: VersionHash:6dc6a47,CLOUDID:81cff4b26c5fa3d384fe22ebb3cb6884,BulkI
+	D:2412301517020DQSZIAC,BulkQuantity:0,Recheck:0,SF:17|19|66|78|102,TC:nil,
+	Content:0|50,EDM:5,IP:nil,URL:1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,CO
+	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_ULS
+X-UUID: 1035ed96c67e11efa216b1d71e6e1362-20241230
+X-User: xiaopei01@kylinos.cn
+Received: from localhost.localdomain [(10.44.16.150)] by mailgw.kylinos.cn
+	(envelope-from <xiaopei01@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 1713643918; Mon, 30 Dec 2024 15:17:01 +0800
+From: Pei Xiao <xiaopei01@kylinos.cn>
+To: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next] libbpf: Set MFD_NOEXEC_SEAL when creating memfd
-Date: Sun, 29 Dec 2024 14:44:33 -0700
-Message-ID: <6bf30e1a22d867af9145aa5e94c3fd9281a1c98d.1735508627.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.47.1
+Cc: Pei Xiao <xiaopei01@kylinos.cn>,
+	kernel test robot <lkp@intel.com>
+Subject: [PATCH] bpf: Use refcount_t instead of atomic_t for mmap_count
+Date: Mon, 30 Dec 2024 15:16:55 +0800
+Message-Id: <6ecce439a6bc81adb85d5080908ea8959b792a50.1735542814.git.xiaopei01@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -112,50 +76,60 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Since 105ff5339f49 ("mm/memfd: add MFD_NOEXEC_SEAL and MFD_EXEC"), the
-kernel has started printing a warning if neither MFD_NOEXEC_SEAL nor
-MFD_EXEC is set in memfd_create().
+Use an API that resembles more the actual use of mmap_count.
 
-To avoid this warning (and also be more secure), set MFD_NOEXEC_SEAL by
-default. But since libbpf can be running on potentially very old
-kernels, leave a fallback for kernels without MFD_NOEXEC_SEAL support.
+Found by cocci:
+kernel/bpf/arena.c:245:6-25: WARNING: atomic_dec_and_test variation before object free at line 249.
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+Fixes: b90d77e5fd78 ("bpf: Fix remap of arena.")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202412292037.LXlYSHKl-lkp@intel.com/
+Signed-off-by: Pei Xiao <xiaopei01@kylinos.cn>
 ---
- tools/lib/bpf/libbpf.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ kernel/bpf/arena.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 66173ddb5a2d..46492cc0927d 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1731,12 +1731,24 @@ static int sys_memfd_create(const char *name, unsigned flags)
- #ifndef MFD_CLOEXEC
- #define MFD_CLOEXEC 0x0001U
- #endif
-+#ifndef MFD_NOEXEC_SEAL
-+#define MFD_NOEXEC_SEAL 0x0008U
-+#endif
+diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+index 945a5680f6a5..8caf56a308d9 100644
+--- a/kernel/bpf/arena.c
++++ b/kernel/bpf/arena.c
+@@ -218,7 +218,7 @@ static u64 arena_map_mem_usage(const struct bpf_map *map)
+ struct vma_list {
+ 	struct vm_area_struct *vma;
+ 	struct list_head head;
+-	atomic_t mmap_count;
++	refcount_t mmap_count;
+ };
  
- static int create_placeholder_fd(void)
+ static int remember_vma(struct bpf_arena *arena, struct vm_area_struct *vma)
+@@ -228,7 +228,7 @@ static int remember_vma(struct bpf_arena *arena, struct vm_area_struct *vma)
+ 	vml = kmalloc(sizeof(*vml), GFP_KERNEL);
+ 	if (!vml)
+ 		return -ENOMEM;
+-	atomic_set(&vml->mmap_count, 1);
++	refcount_set(&vml->mmap_count, 1);
+ 	vma->vm_private_data = vml;
+ 	vml->vma = vma;
+ 	list_add(&vml->head, &arena->vma_list);
+@@ -239,7 +239,7 @@ static void arena_vm_open(struct vm_area_struct *vma)
  {
-+	unsigned int flags = MFD_CLOEXEC | MFD_NOEXEC_SEAL;
-+	const char *name = "libbpf-placeholder-fd";
- 	int fd;
+ 	struct vma_list *vml = vma->vm_private_data;
  
--	fd = ensure_good_fd(sys_memfd_create("libbpf-placeholder-fd", MFD_CLOEXEC));
-+	fd = ensure_good_fd(sys_memfd_create(name, flags));
-+	if (fd >= 0)
-+		return fd;
-+	else if (errno != EINVAL)
-+		return -errno;
-+
-+	/* Possibly running on kernel without MFD_NOEXEC_SEAL */
-+	fd = ensure_good_fd(sys_memfd_create(name, flags & ~MFD_NOEXEC_SEAL));
- 	if (fd < 0)
- 		return -errno;
- 	return fd;
+-	atomic_inc(&vml->mmap_count);
++	refcount_inc(&vml->mmap_count);
+ }
+ 
+ static void arena_vm_close(struct vm_area_struct *vma)
+@@ -248,7 +248,7 @@ static void arena_vm_close(struct vm_area_struct *vma)
+ 	struct bpf_arena *arena = container_of(map, struct bpf_arena, map);
+ 	struct vma_list *vml = vma->vm_private_data;
+ 
+-	if (!atomic_dec_and_test(&vml->mmap_count))
++	if (!refcount_dec_and_test(&vml->mmap_count))
+ 		return;
+ 	guard(mutex)(&arena->lock);
+ 	/* update link list under lock */
 -- 
-2.47.1
+2.25.1
 
 
