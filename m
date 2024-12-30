@@ -1,95 +1,126 @@
-Return-Path: <bpf+bounces-47716-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47717-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5E409FEB8D
-	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 00:00:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 959C59FEB9C
+	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 00:15:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D899C3A27A1
-	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 23:00:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F31B3A1FAA
+	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 23:15:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 312F31AAE33;
-	Mon, 30 Dec 2024 23:00:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4D9E19D093;
+	Mon, 30 Dec 2024 23:15:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lRZpkix6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LBg1jkxn"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15ED19E99A;
-	Mon, 30 Dec 2024 23:00:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 986CB18784A;
+	Mon, 30 Dec 2024 23:15:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735599617; cv=none; b=fVLGYxurPgTe2M2lRGGtEBfN1XcfRgoBHWpMwTgGlpxgwI6ZgzoP2Sce6MODCq1QYHBVlQMg3GXncXZyMNXB754nENnARGkmmbkHz41xMPLaYfKKOSCW6ntIKTJgsKqiK9z0XDNE3wTv/OCxXiZ3QoWE4ZXi2kVAsZrYeaEBTlo=
+	t=1735600551; cv=none; b=n1TaFUWzdcODX24kBnTEzzHzRvzIvM7DgBjDPY2ui5vbmrxkj4MmE9kZigQaduwuDrPjl17R/3Mem3uYV992h9AI9YnT3O52kvGzBPdEzD0/ChwKYaElPNd20bJMozk6dbiMwTmxM+9ax5Gf3SA6LPg9PZFYdURWwCBVPtgzpLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735599617; c=relaxed/simple;
-	bh=f6EGxIhfFEszlQ3igzqXNyS7VM7zdpPzD6wc0MePv3Y=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=u9+k257sFR77HuJ576mowOGi71enlj1QdU2ko7hItmP53L0wjUYnYoa8auuPTheSz+abmnOdb9T7m0zFiC4ZCQ+dvrkCalx+3P8/aS4UsKHjxRGnACxylMcEM2UWTFH6kEcz3qu0UUmKQ40h5E/lgknjQk1cVUcQ5W6gTHB/Go4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lRZpkix6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30537C4CED0;
-	Mon, 30 Dec 2024 23:00:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1735599617;
-	bh=f6EGxIhfFEszlQ3igzqXNyS7VM7zdpPzD6wc0MePv3Y=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=lRZpkix6b9swoimdD5SdOVMjrqEbHhGm01e8ZG8Lfbwwah8XPZBZSKOpgO9iJ2YO/
-	 67B/VinJ61AQOpxkIahnZjWD6NZF+n2gJZUAPrDzIRt7jmdBgKN/r5QMb/hkhqKq8h
-	 ljSwZTtoBvjyzWrhSZWhZ9sfSo54iK2ieCGI/chNZMvSiIpF0ystYKcE4Wq9r3VCqB
-	 4RyovJyWdYIhh59rezguVJKP256fU+ViYJV0BjGriO2DTHjJDBvFj/UxIkI/cw1EqR
-	 BbieGlk7T94U22WGx0OnHeM75P4CGAq0YfAcdXc0Fsn3wa2ccqZj0UiDXMRsPqwXPi
-	 BpK7fgD0XJSUg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33C1C380A964;
-	Mon, 30 Dec 2024 23:00:38 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1735600551; c=relaxed/simple;
+	bh=CQlByxdvJ16bZBF763isNVAKzq84Fz2fcK2RuTkpTmk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=t4un0GNQYdT5Hssfy6YoscmNkribckckhZEu9vSrfbqxqQNmyOaZDMJG+2yBTM/8WLh3cr9jgczKtXXL/DL1NZ/4ZSzs9GUT29JRro/YpcHqbEG/uI5uPptuKYaM295wYI3US02cN9N1WDlJqYD/JpPrg6lLRfdns7/9meYF4xE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LBg1jkxn; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43625c4a50dso65240055e9.0;
+        Mon, 30 Dec 2024 15:15:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1735600548; x=1736205348; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4v9HjCzt/OkoQsccdwlrfrtyCMddarfB9K+j5Dh/GYg=;
+        b=LBg1jkxnaa5UuEyB5dgxS8iWlCNYd6r1oIQwcPMLcvtYdDuOJGj01hDWxkZ1od1kO2
+         BnMuJphlkPNEIwSBRQCDH0DGzjmSSkMrMUhctZANygtsKrUqPUmZEkBJbsXBQzJbvvfB
+         mEa2bKmA63Xwd7eXNryhApGDOE9L8Xt4VXyidd8KwkSDZF2X/uwHB7myWdElYvioXRrp
+         dlUDiyVkOfsgV2Bog0iNjFU3OuPTUsblUzE3UjOOMubg4cOa8OHmGOcdIoHIwYvGm9XS
+         KUwA9nycXan9ZjfnHGWCnie8zA0DM/iUKssI9X4Nrs6Fa0R/Gm/Op8k2b6nQq5N0nNoR
+         Vjiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735600548; x=1736205348;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4v9HjCzt/OkoQsccdwlrfrtyCMddarfB9K+j5Dh/GYg=;
+        b=mzjN/GhfpZi5dD5+x9ChrXTtiNnO0PLeDAJRRBr+Y9zdIgeJgHVE67pOb0QW7d1WA1
+         LdqSCIGVvNyXBkD2w8kXJk7bsIdzQ+Ljzjh/5M5wrS4EuilT5GAZWYVAA7KDQPXXabyu
+         PJmtSoniXR+XS9a3Sxaug1/WqN03AO48FjT9ZkTQsbzB1OENL9sHaUBYYY6w+8ViciY6
+         K+1dHw9fqVJBamjLNn6JUI5rfE56cT5ttYEhBqh7FyOGTgvxZ1GF5+EbdxLNRI3Erq/C
+         CoZLP+d0eJkAMsWTbB9OBzvNKjEUt234tz4S40mq3RxHNzES0Y8y88QSIcYLeR+htGBa
+         iczg==
+X-Forwarded-Encrypted: i=1; AJvYcCUhdfKzaYMEIm6I72JBxdDsQWiEQY6O6sqCnLlNK91xGF1spsj/sJfeFF8zelYlwTK6WsGVH0to0ByKrlw1@vger.kernel.org, AJvYcCVryO61CbXzNo0InLZcQh1w1OZhmbMfPMg9F5C7QrfCIBpPJktPAQy03OR0NRycMh7MtTw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx445XTH4qgdz+BZy7aZeBBd44QhUrCQ/WRnvKkDaxpFh91jwAw
+	8xCrWw4jQJAgUGrESGbqOfvSXoCNdcGHcmWvtK/KlliXkj7jk8HiZ354SIqr/gLi/QPOJHji7Dp
+	Mc8pecQbxOoJE7R+e1xJ7om9ng3E=
+X-Gm-Gg: ASbGnctCiJoDt/Sv8xxEz1vMkmy8SHCItI/oJQTSXijjkFeU4v6kHuz1Kk/aPdA7Y0B
+	q2sHuKoCXwMq48HX1tIhHtIDi8T47vuNF5kexjPdSWizErPZ4ixvnQ8BbJSbr0mqniUnWKg==
+X-Google-Smtp-Source: AGHT+IEcDAfmBPb7soWy71DmGhKhJZXIhy04vWhld159a+q6ruus1FIOWDMSdW656HIBElX0SBrSfjOV46C0rQRaxfI=
+X-Received: by 2002:a05:600c:138d:b0:434:ff08:202b with SMTP id
+ 5b1f17b1804b1-43668643173mr332910175e9.12.1735600547638; Mon, 30 Dec 2024
+ 15:15:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2] libbpf: Set MFD_NOEXEC_SEAL when creating memfd
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <173559963675.1460841.7357730511716480117.git-patchwork-notify@kernel.org>
-Date: Mon, 30 Dec 2024 23:00:36 +0000
-References: <6e62c2421ad7eb1da49cbf16da95aaaa7f94d394.1735594195.git.dxu@dxuuu.xyz>
-In-Reply-To: <6e62c2421ad7eb1da49cbf16da95aaaa7f94d394.1735594195.git.dxu@dxuuu.xyz>
+References: <505ee6e414ee701c9ea899220154d1ec3a1f647f.1735595687.git.dxu@dxuuu.xyz>
+In-Reply-To: <505ee6e414ee701c9ea899220154d1ec3a1f647f.1735595687.git.dxu@dxuuu.xyz>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 30 Dec 2024 15:15:36 -0800
+Message-ID: <CAADnVQLxotSL66rxfJpO0Khh1X4uFeytR7axLGVmkg1HL2FnNw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: uapi: Document front truncation in bpf_d_path()
 To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: ast@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com,
- andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Mon, Dec 30, 2024 at 1:55=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> bpf_d_path() will truncate the resolved path from the front if the
+> provided buffer is too small. This is somewhat non-intuitive but makes
+> sense when you think about it. So document it.
+>
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  include/uapi/linux/bpf.h       | 4 ++++
+>  tools/include/uapi/linux/bpf.h | 4 ++++
+>  2 files changed, 8 insertions(+)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 2acf9b336371..91218c5fd207 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -4845,6 +4845,10 @@ union bpf_attr {
+>   *             including the trailing NUL character. On error, a negativ=
+e
+>   *             value.
+>   *
+> + *             If *buf* is too small, the resolved path is truncated fro=
+m
+> + *             the front and -ENAMETOOLONG is returned. The buffer is va=
+lid
+> + *             in this case.
+> + *
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Mon, 30 Dec 2024 14:31:22 -0700 you wrote:
-> Starting from 105ff5339f49 ("mm/memfd: add MFD_NOEXEC_SEAL and
-> MFD_EXEC") and until 1717449b4417 ("memfd: drop warning for missing
-> exec-related flags"), the kernel would print a warning if neither
-> MFD_NOEXEC_SEAL nor MFD_EXEC is set in memfd_create().
-> 
-> If libbpf runs on on a kernel between these two commits (eg. on an
-> improperly backported system), it'll trigger this warning.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,v2] libbpf: Set MFD_NOEXEC_SEAL when creating memfd
-    https://git.kernel.org/bpf/bpf-next/c/1846dd8e3a3e
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+I think this is overkill to add to uapi header.
+Above is an implementation detail.
+Highly unlikely at this point, but it may change.
+While the above description in the uapi file may prompt unnecessary
+concerns if/when implementation changes.
+So let's leave it as-is.
 
