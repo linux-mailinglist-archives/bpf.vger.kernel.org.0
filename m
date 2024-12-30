@@ -1,186 +1,116 @@
-Return-Path: <bpf+bounces-47705-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47706-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0E709FEAA1
-	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 21:37:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDA799FEAAF
+	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 21:46:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FE4F3A297F
-	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 20:36:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C9173A29DE
+	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 20:46:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F88199E94;
-	Mon, 30 Dec 2024 20:36:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B74A19AA56;
+	Mon, 30 Dec 2024 20:46:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="T6dWqOKU";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="yVNUab7W"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.gentoo.org (woodpecker.gentoo.org [140.211.166.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-a7-smtp.messagingengine.com (fhigh-a7-smtp.messagingengine.com [103.168.172.158])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD05818784A
-	for <bpf@vger.kernel.org>; Mon, 30 Dec 2024 20:36:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D41D23CE
+	for <bpf@vger.kernel.org>; Mon, 30 Dec 2024 20:46:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735591017; cv=none; b=ORneTbmrCDMsWSyY14QoJuyDmibOO4SEy1J+FJyWRLnbHAkUtnuOrWfFG3QPCcoOXnm3eza6wLF5+Rn4AUqHmYoiW4ow3rUR/OusCf2+Z7Z/KxD2wSkhL6scsZE2K7VyM7dGS96H3jGUXVMtwgwZxuni1mrYrEdjBdnYCDC5b9g=
+	t=1735591568; cv=none; b=fMGeioCJRsA06vhAWQ554aoLF4AgOv5WMo2glJVRlMqG1yhgCBGPXUu+N/pqhlFZHs61puPYXKfkOqh461jC82OhYl9ZkmQWszCu7aHwRjoIk6NOSm0f8ETQc0yz0CSBe9O89t+SEEzQQgbNcTafyqZUE4b3Le+xwGk7vhnxkwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735591017; c=relaxed/simple;
-	bh=RHAdE2uIsjZwjPWgw2pnrNwwJHdw/zeTk2bQBWdv3rE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=mqaeSbJmaOM30OSR8rtjBfqdNTrwZQ5oedH5MgPtI9DaVHzZFD/vv68OOFUZaAgZdw1KCLmsw4toyzsw+AXGsyFO3DKVc3xsro6KGRtY1epHxmNkgyhOqFyNqO2GSvvAcmA5UcXUGKRhK5yCVVrdTVHQ2HAzPcO0jTH6yYpj/IU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentoo.org; spf=pass smtp.mailfrom=gentoo.org; arc=none smtp.client-ip=140.211.166.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentoo.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gentoo.org
-From: Sam James <sam@gentoo.org>
-To: Andrew Pinski via Gcc <gcc@gcc.gnu.org>
-Cc: Ihor Solodrai <ihor.solodrai@pm.me>,  Andrew Pinski <pinskia@gmail.com>,
-  Cupertino Miranda <cupertino.miranda@oracle.com>,  David Faust
- <david.faust@oracle.com>,  Elena Zannoni <elena.zannoni@oracle.com>,
-  "Jose E. Marchesi" <jose.marchesi@oracle.com>,  Alexei Starovoitov
- <alexei.starovoitov@gmail.com>,  Manu Bretelle <chantra@meta.com>,  Eduard
- Zingerman <eddyz87@gmail.com>,  Mykola Lysenko <mykolal@meta.com>,
-  Yonghong Song <yonghong.song@linux.dev>,  bpf <bpf@vger.kernel.org>
-Subject: Re: Errors compiling BPF programs from Linux selftests/bpf with GCC
-In-Reply-To: <CA+=Sn1ktCrXZMjrC0b1TNxfz1BnQfG24XUdVuktS8kRWeEP2kA@mail.gmail.com>
-	(Andrew Pinski via Gcc's message of "Mon, 30 Dec 2024 12:24:32 -0800")
-Organization: Gentoo
-References: <ZryncitpWOFICUSCu4HLsMIZ7zOuiH5f4jrgjAh0uiOgKvZzQES09eerwIXNonKEq0U6hdI9pHSCPahUKihTeS8NKlVfkcuiRLotteNbQ9I=@pm.me>
-	<CA+=Sn1ktCrXZMjrC0b1TNxfz1BnQfG24XUdVuktS8kRWeEP2kA@mail.gmail.com>
-User-Agent: mu4e 1.12.7; emacs 31.0.50
-Date: Mon, 30 Dec 2024 20:36:49 +0000
-Message-ID: <87v7v0oqla.fsf@gentoo.org>
+	s=arc-20240116; t=1735591568; c=relaxed/simple;
+	bh=lm73R+QfAG2AOytuwh/Pd8qtnJoPkvrlyAGdxkq+Nfs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=b0iTKD+6esoHssaCyLNrrxQrk18GMJPbkoXG+o4f5mvA3zjw8fTV/RCge6z4ehk7Qlmf0SjY1EW7SdkbcLLwUkXATqtwc54yyyfGiDhLUQ9m8PkgNHiyQU9vCy1iEL56XL+Xc0BZxnnpNPc8PizqVTwZO3VoQPtkk3NFiDw/5DM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=T6dWqOKU; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=yVNUab7W; arc=none smtp.client-ip=103.168.172.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 3CD8D1140231;
+	Mon, 30 Dec 2024 15:46:01 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-04.internal (MEProxy); Mon, 30 Dec 2024 15:46:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to; s=fm1;
+	 t=1735591561; x=1735677961; bh=lm73R+QfAG2AOytuwh/Pd8qtnJoPkvrl
+	yAGdxkq+Nfs=; b=T6dWqOKUyKT0NE41W31s46CquLwB+K4Pmd8TYYxh0Bct4uoR
+	C+VZfCvYXepRlbuMCawjAKEeM8+n3XlY8H/1LRo/QTIiNB4Wf1Xu0APHte2lkgsx
+	VhhXDz4bP1DmrXbSESFhVbHhp6CTMUe1UHxySoZAiWzh/UWZvDDAKj8CXpBDm5VV
+	J4CfECzzSmHc0OOLW6R+wq4cGJwlBtVEkVgStFw62ln0ANorvwugCg8LSCXBnBzR
+	hiOEszguuC1/sjdjkcEquo60pWWvyVG83EABOkWwmyG2FdF407m5sdeAnAQbJoyB
+	v85ZdeOatjFPEtROsjwp9V5mNoP1UgTqhAPRRA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:message-id
+	:mime-version:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1735591561; x=
+	1735677961; bh=lm73R+QfAG2AOytuwh/Pd8qtnJoPkvrlyAGdxkq+Nfs=; b=y
+	VNUab7WkqB84sCctV2FjbTujkIFUOW/8/ZHyvH+myiASx6rMzcmPMkxFxMWwFtAr
+	EWNTFPTecmyMRjeMO41tJXlvoxDkbFRILnMQr8sYeXxCOqe5JraT0Z1mI19HzTcP
+	ysFI998LCi3HlNIvN84yeKy7XjApjL2XWk+CSJB/SFfJ/wP6N0+UsEt6lL+DcpM3
+	0j1vV07hYclFERD1w8puoySKpl5a1YoahAO/kFc37j4/Mbpyxll8e1x7Us2JISl0
+	MuCYzvtOg/CwVGaZ+w3peuuS4w3mAM0Fm9wgqnwtlNS6p4qYB+E9PAdtyNoUczwN
+	/eM1MzR6EP+0opJFpudUQ==
+X-ME-Sender: <xms:iAZzZ6vooHK0r6T4jOWJXsZo22_ubsW1w_iHaEKFv72RVHCQo-Qunw>
+    <xme:iAZzZ_fOJm9VKcVylQZrKaPQq284T3ZXrQX8W0NLm8QYzNscLO0hAE-iADFh47q_e
+    Hq2Kae332wHFpRe3w>
+X-ME-Received: <xmr:iAZzZ1xhjCbtjSbRx5PNxtgbpuHLv_XPrwemgcDVcIBjpnJu7cCZVD3JbkRC3dwn9fI0dAHBFQL_vkYiAKKMa4gUkvT35QWJqn9fn35RmGu--g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddruddviedgudegfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculd
+    efhedmnecujfgurhepfffhvfevuffkgggtugesthdtsfdttddtvdenucfhrhhomhepffgr
+    nhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpe
+    fgueelgeeghfffjeejteelieduhfehteehveehteduteeljeehleduhefhgfevheenucff
+    ohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihiidpnhgspghrtghpthht
+    ohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepsghpfhesvhhgvghrrdhkvg
+    hrnhgvlhdrohhrghdprhgtphhtthhopehjohhlshgrsehkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:iAZzZ1OI8VZ2nKYkXGmpG2TsQ0UG10JxNGqpTVskbfr0hacFH01w3w>
+    <xmx:iAZzZ69hGehjnhgYqhBKFeU8sMKnjNqgQEn72ArRYty6ACtK7LzzOA>
+    <xmx:iAZzZ9VtzPAJ-E_yeN5vKkJrcvOF1G722uT34FnxwYjIoW4ChazzPg>
+    <xmx:iAZzZzezsZpCPz2a6tKpME_ebt06qymcNJ5RjD76eTk_JbbPjaihaA>
+    <xmx:iQZzZ8JVBztPZvU5ZiV4QU-HnPUkAKM436B-hr-MILsHEN7cYb-jNHX5>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 30 Dec 2024 15:46:00 -0500 (EST)
+Date: Mon, 30 Dec 2024 13:45:58 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: bpf@vger.kernel.org
+Cc: jolsa@kernel.org
+Subject: d_path() truncates at front of path?
+Message-ID: <pv3zr55lja6lumu7iilsdtbujd6yq6qxsrxssifeqh6tmcmzii@5kkyaajllr65>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Andrew Pinski via Gcc <gcc@gcc.gnu.org> writes:
+Hi,
 
-> On Mon, Dec 30, 2024 at 12:11=E2=80=AFPM Ihor Solodrai via Gcc <gcc@gcc.g=
-nu.org> wrote:
->>
->> Hello everyone.
->>
->> I picked up the work adding GCC BPF backend to BPF CI pipeline [1],
->> originally done by Cupertino Miranda [2].
->>
->> I encountered issues compiling BPF objects for selftests/bpf with
->> recent GCC 15 snapshots. An additional test runner binary is supposed
->> to be generated by tools/testing/selftests/bpf/Makefile if BPF_GCC is
->> set to a directory with GCC binaries for BPF backend. The runner
->> binary depends on BPF binaries, which are produced by GCC.
->>
->> The first issue is compilation errors on vmlinux.h:
->>
->>     In file included from progs/linked_maps1.c:4:
->>     /ci/workspace/tools/testing/selftests/bpf/tools/include/vmlinux.h:84=
-83:9: error: expected identifier before =E2=80=98false=E2=80=99
->>      8483 |         false =3D 0,
->>           |         ^~~~~
->>
->> A snippet from vmlinux.h:
->>
->>     enum {
->>         false =3D 0,
->>         true =3D 1,
->>     };
->>
->> And:
->>
->>     /ci/workspace/tools/testing/selftests/bpf/tools/include/vmlinux.h:23=
-539:15: error: two or more data types in declaration specifiers
->>     23539 | typedef _Bool bool;
->>           |               ^~~~
->>
->> Full log at [3], and also at [4].
->
->
-> These are simple, the selftests/bpf programs need to compile with
-> -std=3Dgnu17 or -std=3Dgnu11 since GCC has changed the default to C23
-> which defines false and bool as keywords now and can't be redeclared
-> like before.
+I was poking around bpftrace test suite and noticed that our d_path()
+wrapper is truncating at the beginning of the path. See [0] for an
+example.
 
-Yes, the kernel has various issues like this:
-https://lore.kernel.org/linux-kbuild/20241119044724.GA2246422@thelio-3990X/.
+bpftrace codegen doesn't do anything fancy here. And I see in the kernel
+d_path() implementation there's some prepend logic going on.
 
-Unfortunately, not all the Makefiles correctly declare that they need
-gnu11.
+I wanted to confirm this is the expected behavior. And if so, whether it
+should be documented.
 
-Clang will hit issues like this too when they change default to gnu23.
+Thanks,
+Daniel
 
->
-> Thanks,
-> Andrew Pinski
->
->>
->> You can easily reproduce the errors with a dummy program:
->>
->>     #include "vmlinux.h"
->>
->>     int main() {
->>         return 0;
->>     }
->>
->> The vmlinux.h is generated from BTF, produced by pahole v1.28 from
->> DWARF data contained in the vmlinux binary. The vmlinux binary I used
->> in these experiments is v6.12 (adc218676eef) compiled with gcc 13.3.0
->> (default Ubuntu installation).
->>
->> You can download the specific vmlinux.h I tried using a link below [5].
->>
->> I bisected recent GCC snapshots and determined that the errors related
->> to the bool declarations started happening on GCC 15-20241117.
->>
->> Older versions compile the dummy program without errors, however on
->> attempt to build the selftests there is a different issue: conflicting
->> int64 definitions (full log at [6]).
->>
->>     In file included from /usr/include/x86_64-linux-gnu/sys/types.h:155,
->>                      from /usr/include/x86_64-linux-gnu/bits/socket.h:29,
->>                      from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
->>                      from /usr/include/linux/if.h:28,
->>                      from /usr/include/linux/icmp.h:23,
->>                      from progs/test_cls_redirect_dynptr.c:10:
->>     /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:27:19: error: confl=
-icting types for =E2=80=98int64_t=E2=80=99; have =E2=80=98__int64_t=E2=80=
-=99 {aka =E2=80=98long long int=E2=80=99}
->>        27 | typedef __int64_t int64_t;
->>           |                   ^~~~~~~
->>     In file included from progs/test_cls_redirect_dynptr.c:6:
->>     /ci/workspace/bpfgcc.20240922/lib/gcc/bpf-unknown-none/15.0.0/includ=
-e/stdint.h:43:24: note: previous declaration of =E2=80=98int64_t=E2=80=99 w=
-ith type =E2=80=98int64_t=E2=80=99 {aka =E2=80=98long int=E2=80=99}
->>        43 | typedef __INT64_TYPE__ int64_t;
->>           |                        ^~~~~~~
->>
->> This is on a typical ubuntu:noble system:
->>
->>     $ dpkg -s libc6 | grep Version
->>     Version: 2.39-0ubuntu8.3
->>
->> I got this with snapshots 15-20241110 and 15-20240922 (the oldest I
->> tested). This problem may or may not be present in the most recent
->> versions, I can't tell for sure.
->>
->> GCC team, please investigate and let me know if you're aware of
->> workarounds or if there is a specific GCC version that you know is
->> capable of building BPF programs in selftests/bpf.
->>
->> If you suspect something might be wrong with the includes for BPF
->> programs, or GCC snapshot build etc, please also let me know. I mostly
->> relied on Cupertino scripts when setting that up, and assumed the
->> selftests/bpf/Makefile is handling BPF_GCC correctly.
->>
->> Thank you, and happy holidays!
->>
->> [1] https://github.com/libbpf/ci/pull/164
->> [2] https://github.com/libbpf/ci/pull/144
->> [3] https://gist.github.com/theihor/98883c4266b3489cee69e5d5aa532e79
->> [4] https://github.com/libbpf/ci/actions/runs/12522053128/job/34929897322
->> [5] https://gist.github.com/theihor/785bb250dd1cce3612e70b5f6d258401
->> [6] https://gist.github.com/theihor/a8aa7201b30ac6b48df77bb1ea3ec0b2
->>
->>
+
+[0]: https://github.com/bpftrace/bpftrace/issues/3663
 
