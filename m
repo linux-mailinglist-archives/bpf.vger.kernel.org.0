@@ -1,57 +1,87 @@
-Return-Path: <bpf+bounces-47694-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47695-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91EFD9FE8F6
-	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 17:11:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EC6B9FE8FC
+	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 17:16:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C7C418823A4
-	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 16:11:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0114D1882EA8
+	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 16:16:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 935541ACEA5;
-	Mon, 30 Dec 2024 16:11:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2B801A3BD8;
+	Mon, 30 Dec 2024 16:16:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ICraLQK6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TXWrfF3Q"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 113631AA1F1;
-	Mon, 30 Dec 2024 16:11:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B89632B9B9;
+	Mon, 30 Dec 2024 16:16:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735575102; cv=none; b=qUjFzJohFnAug27SuCKSQNreuoIGgc4GqxhRmitsNx5PlR+novWIMs3jLgccHXZqew2o/Mj4lS+HwSDtYtZR4jbrb/yNvM7UaxLS/tWKKdx9j1SDzBWzsNff6ImAfpMdz8THCLyPN8w0a/V2m+oXEyLsIbs/CXJSla/W0OkpV3Q=
+	t=1735575383; cv=none; b=Sbk+eEVHb9ZwX9491J7TRruuEQMiznrLlz7AuKk0W4e42BRpPcGgNvgRTO0QJe0G7SDv2f9zCLKjfItIJfSRpmoyVdVKMQSiCIuZZ4c60lUSjuU0GXgRdj+kWkc6LLID2H2QDWiSyQBsZUpIN4myzqKaLOSjaozubwQorPDG1lI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735575102; c=relaxed/simple;
-	bh=wvJXvFOtEGRUbpChdh7t5HgTBvmRKWBLoqqrR0KooJs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Jht3myuCZ/cdjjlwvc7DwlAqZdNcBr+RldDoYSuuo41DfZFFSPA0c/gFx6iDYs3bVsCXfZy5f0BfsExMPmnZLGw1DA3qbaWFo7uo9XDkw1Wn9afkNBDj5mMrg01fVQ1pnR/x93SupCjuW/WsRlrDqw7dtvud/uEtT4+fnZmO30U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ICraLQK6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFA83C4CED0;
-	Mon, 30 Dec 2024 16:11:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1735575101;
-	bh=wvJXvFOtEGRUbpChdh7t5HgTBvmRKWBLoqqrR0KooJs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ICraLQK6aSp7ncQ7qDAudnIHzOUNF91dIebN1C+dVGgl7Gl5WRdWl7iQ5aZ75WRhh
-	 7HF519dBGC2kCtUIVZM89mKWWctCzk8dB71g92PAqFlf0wf9wkR1qVd9bCJNDUSxuy
-	 xq92txNH0DWB+pk2KCurfzsiIYlpEm3k/2Q/sCmI8MOsjpYh8QuZIPFMs3GXA3lnwo
-	 tu4mL7+5UxsxSEf9UWsTlK+q7CXwze0q9WyhRI1yAdAuS+bDYiMF0IO9fws8rzwJSg
-	 ZyICpSHf02XLkI7cy5SzcEtKJB59YXXybGITIRGL2a341n3H/oDTMc4qGYcq61A9LN
-	 3INsq4lvYqQmQ==
-Date: Mon, 30 Dec 2024 13:11:37 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: dwarves@vger.kernel.org, alan.maguire@oracle.com, eddyz87@gmail.com,
-	andrii@kernel.org, mykolal@fb.com, bpf@vger.kernel.org
-Subject: Re: [PATCH dwarves v3 7/8] dwarf_loader: multithreading with a
- job/worker model
-Message-ID: <Z3LGOXGgK1Qx1zW-@x1>
-References: <20241221012245.243845-1-ihor.solodrai@pm.me>
- <20241221012245.243845-8-ihor.solodrai@pm.me>
- <Z3LFREHG-8QhoAcc@x1>
+	s=arc-20240116; t=1735575383; c=relaxed/simple;
+	bh=klXLUdOPJkX9l7AyOXJptO2ZHbzloKcws47obpJ9eoQ=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X5yvgYukVidHRkg8NX6JNfpivp7B6x80wIWDZgg2G/Bc92AiIrgA0s4zrwjRseuUSp2FQ/ierP5Mhjff4RsTPKJSktbBZ70fKfDgLszDneVxeFcfbEKwTjP2V9OyBJBBc3PvfPRVB/NJpHRyEOP85N5Z3ePv2Rp57Tqi4gBvajs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TXWrfF3Q; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5d3e829ff44so18929686a12.0;
+        Mon, 30 Dec 2024 08:16:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1735575380; x=1736180180; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uYTksivbBuRUZqYFhB2BFs8aYcBszDie4Sum0s5YpXM=;
+        b=TXWrfF3Qr+arPjKqZncNSK6XxLwR+12Z8iq2Nh2hb219qzNUem2p3SdPdf7jwcksfv
+         vN4BCCypMNI8ITcwXuUaiNqKG9F919sQ6cTEybzoYoRzgvUjUlVEtTbNchCLSm7xwEvy
+         YOM5FJFfrfHw+z1Lj5i0vDtsGD+OfIQK6VV49BKrbSByPJLeGcVK05srGfRdUaGC7Cjf
+         zuUci5RSyEJHxIaLrwdlQcyllLIpHw0Z8a/yUxkjMzE6dGpJrbFWqe9PGa35RlzHCaU5
+         0EJfE5oZXpPpyfviWQIqv4OcGukvEYcBilJRKMzS2WMK72b2O86lTdUQoNHbbUk9Kit4
+         11kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735575380; x=1736180180;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uYTksivbBuRUZqYFhB2BFs8aYcBszDie4Sum0s5YpXM=;
+        b=hUfVrvOO39Wx1sug13k7xq2rW0AzhGD7so4rYfXcID7yC7XmQxyVef7fH4zWr2SZTz
+         NWTQPpo+NufTuWID90IAy7aAudCUnrYg4Ir66jRxG7a1ZcWkSlkKipKNkOumKVBN7Ujm
+         fox0PLz4g0nJdIfEjrgxxLtnyt8eOfh3pfxoc5c5+4wznqtDREIIDlPrbRLnLqeBvViC
+         Viktut+Se/uQTft9/hz4QyDtGvKHqC4xpxCJEWJmp0e/B4t96Nti5Slz9P27yvLuJy3Z
+         akRQPUi8EuqAi9Hlesf6TjDWOwdQ7N6KL5BIB4AI0R5b05qJdFTUwscCbkWGgAq3A/ex
+         6Jdw==
+X-Forwarded-Encrypted: i=1; AJvYcCVQpU+rpooJO/y+3vu5yWUSb/EY+9lGEFtTvAOX8pRW/epy5CpRaVRJ2cmrVkf8xtD8XhI=@vger.kernel.org, AJvYcCWfmL4gLv7PY/rJqeliakX6Rr75J8Zl0B9iLT4w/iWvvgXRsFhW/r+Nhe4UkbRSfoo5EYSmFHRsbti5CuSJ@vger.kernel.org
+X-Gm-Message-State: AOJu0YzvlXb2kld21G7+lBLVSHTGiRLPnM1axbZifsZt3ZCuRzvmfBSg
+	kI1+0sG0V7IqS94KUSuXDWsR79YTsxt2YNBVVyVCNu+Gk49hOzb9
+X-Gm-Gg: ASbGnctXWBgkMCYQR19djtHmauR2VMAPEnpOzLsVKeqRlM7IMe99g1i1iH//pt+WpQI
+	S6LXTK1evo4NFj4steE7L+fmo65CQQ6BugPf+C9BnoDVWt1TwJO816wFS0GR1ipy1cnPUBT/eiB
+	5JfChNzJWaamz9fClRIQDng9ZSRIbUUKcDFC9KtqC4JLfv1Y6g21illYxMxr0beRmvJna2swMej
+	2guZ/WJZSDV0j2EfnkB8cg5CfQmqYLEOp/IggQd4Ds=
+X-Google-Smtp-Source: AGHT+IFOtkwvjzvmFkYzhEZC9db7bLRIIorb3kv+7TaSx8Y/Gh8hfWvBOe/R8XSl66U1uAhRmFclgg==
+X-Received: by 2002:a17:907:3f19:b0:aa6:75f4:20df with SMTP id a640c23a62f3a-aac08126683mr3329350966b.9.1735575379761;
+        Mon, 30 Dec 2024 08:16:19 -0800 (PST)
+Received: from krava ([213.175.46.84])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aac0e830ae6sm1486108366b.22.2024.12.30.08.16.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Dec 2024 08:16:19 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 30 Dec 2024 17:16:17 +0100
+To: Daniel Xu <dxu@dxuuu.xyz>, Andrei Enache <andreien@proton.me>
+Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+	eddyz87@gmail.com, martin.lau@linux.dev, song@kernel.org,
+	yonghong.song@linux.dev, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next] libbpf: Set MFD_NOEXEC_SEAL when creating memfd
+Message-ID: <Z3LHUWH8YyKGgNX7@krava>
+References: <6bf30e1a22d867af9145aa5e94c3fd9281a1c98d.1735508627.git.dxu@dxuuu.xyz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -60,153 +90,59 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Z3LFREHG-8QhoAcc@x1>
+In-Reply-To: <6bf30e1a22d867af9145aa5e94c3fd9281a1c98d.1735508627.git.dxu@dxuuu.xyz>
 
-On Mon, Dec 30, 2024 at 01:07:36PM -0300, Arnaldo Carvalho de Melo wrote:
-> On Sat, Dec 21, 2024 at 01:23:38AM +0000, Ihor Solodrai wrote:
-> > Multithreading is now contained in dwarf_loader.c, and is implemented
-> > using a jobs queue and a pool of worker threads. As a consequence,
-> > multithreading-related code is removed from pahole.c.
-> > 
-> > A single-thread special case is removed: queueing setup works fine
-> > with a single worker, which will switch between jobs as appropriate.
-> > 
-> > Code supporting previous version of the multithreading, such as
-> > cu_state, thread_data and related functions, is also removed.
-> > 
-> > reproducible_build flag is now moot: the BTF encoding is always
-> > reproducible with these changes.
-> > 
-> > The goal outlined in the RFC [1] - making parallel reproducible BTF
-> > generation as fast as non-reproducible - is achieved by implementing
-> > the requirement of ordered CU encoding (stealing) directly in the job
-> > queue in dwarf_loader.c
-> > 
-> > The synchronization in the queue is implemented by a mutex (which
-> > ensures consistency of queue state) and a job_added condition
-> > variable. Motivation behind using condition variables is a classic
-> > one: we want to avoid the threads checking the state of the queue in a
-> > busy loop, competing for a single mutex.
-> > 
-> > In comparison to the previous version of this patch [2], job_taken
-> > condition variable is removed. The number of decoded CUs in memory is
-> > now limited by initial JOB_DECODE jobs. The enqueue/dequeue interface
-> > is changed aiming to reduce locking. See relevant discussion [3].
+On Sun, Dec 29, 2024 at 02:44:33PM -0700, Daniel Xu wrote:
+> Since 105ff5339f49 ("mm/memfd: add MFD_NOEXEC_SEAL and MFD_EXEC"), the
+> kernel has started printing a warning if neither MFD_NOEXEC_SEAL nor
+> MFD_EXEC is set in memfd_create().
 > 
-> So I'm running tests/tests after each of these patches and at this point
-> I got:
+> To avoid this warning (and also be more secure), set MFD_NOEXEC_SEAL by
+> default. But since libbpf can be running on potentially very old
+> kernels, leave a fallback for kernels without MFD_NOEXEC_SEAL support.
 > 
-> root@number:/home/acme/git/pahole# tests/tests
->   1: Validation of BTF encoding of functions; this may take some time: grep: /tmp/btf_functions.sh.OgxoO4/dwarf.funcs: binary file matches
-> ERROR: mismatch : BTF 'bool evtchn_fifo_is_pending(evtchn_port_t);' not found; DWARF ''
-> Test data is in /tmp/btf_functions.sh.OgxoO4
->   2: Default BTF on a system without BTF: Ok
->   3: Flexible arrays accounting: Ok
->   4: Check that pfunct can print btf_decl_tags read from BTF: Ok
->   5: Pretty printing of files using DWARF type information: Ok
->   6: Parallel reproducible DWARF Loading/Serial BTF encoding: Ok
-> /home/acme/git/pahole
-> root@number:/home/acme/git/pahole#
-> 
-> root@number:/home/acme/git/pahole# grep evtchn_fifo_is_pending /tmp/btf_functions.sh.OgxoO4/dwarf.funcs 
-> bool evtchn_fifo_is_pending(evtchn_port_t);
-> root@number:/home/acme/git/pahole# grep evtchn_fifo_is_pending /tmp/btf_functions.sh.OgxoO4/btf.funcs 
-> bool evtchn_fifo_is_pending(evtchn_port_t);
-> root@number:/home/acme/git/pahole# 
-> 
-> Which seems like a test artifact:
-> 
-> root@number:/home/acme/git/pahole# pfunct -f evtchn_fifo_is_pending /tmp/btf_functions.sh.OgxoO4/vmlinux.btf 
-> bool evtchn_fifo_is_pending(evtchn_port_t port);
-> root@number:/home/acme/git/pahole# pfunct -F btf -f evtchn_fifo_is_pending /tmp/btf_functions.sh.OgxoO4/vmlinux.btf 
-> bool evtchn_fifo_is_pending(evtchn_port_t port);
-> root@number:/home/acme/git/pahole# 
-> 
-> root@number:/home/acme/git/pahole# pfunct -F btf -f evtchn_fifo_is_pending /lib/modules/6.13.0-rc2/build/vmlinux
-> bool evtchn_fifo_is_pending(evtchn_port_t port);
-> root@number:/home/acme/git/pahole# pfunct -F dwarf evtchn_fifo_is_pending /lib/modules/6.13.0-rc2/build/vmlinux
-> bool evtchn_fifo_is_pending(evtchn_port_t port);
-> bool evtchn_fifo_is_pending(evtchn_port_t port);
-> root@number:/home/acme/git/pahole# 
-> 
-> Maybe because DWARF has two such functions? Alan?
-> 
-> But:
-> 
-> root@number:/home/acme/git/pahole# readelf -wi /lib/modules/6.13.0-rc2/build/vmlinux | grep -B2 -A12 evtchn_fifo_is_pending
->  <2><946502d>: Abbrev Number: 0
->  <1><946502e>: Abbrev Number: 128 (DW_TAG_subprogram)
->     <9465030>   DW_AT_name        : (indirect string, offset: 0x39779e): evtchn_fifo_is_pending
->     <9465034>   DW_AT_decl_file   : 1
->     <9465034>   DW_AT_decl_line   : 206
->     <9465035>   DW_AT_decl_column : 13
->     <9465036>   DW_AT_prototyped  : 1
->     <9465036>   DW_AT_type        : <0x9456abf>
->     <946503a>   DW_AT_low_pc      : 0xffffffff81b6d330
->     <9465042>   DW_AT_high_pc     : 0x65
->     <946504a>   DW_AT_frame_base  : 1 byte block: 9c 	(DW_OP_call_frame_cfa)
->     <946504c>   DW_AT_call_all_calls: 1
->     <946504c>   DW_AT_sibling     : <0x946517a>
->  <2><9465050>: Abbrev Number: 81 (DW_TAG_formal_parameter)
->     <9465051>   DW_AT_name        : (indirect string, offset: 0x3abde1): port
-> root@number:/home/acme/git/pahole#
-> 
-> I.e. there is just one, but when pfunct prints it must be seeing some
-> other usage that refers back to 946502e...
-> 
-> root@number:/home/acme/git/pahole# readelf -wi /lib/modules/6.13.0-rc2/build/vmlinux | grep -w -B2 -A12 0x946502e
->  <4><9464825>: Abbrev Number: 60 (DW_TAG_call_site)
->     <9464826>   DW_AT_call_return_pc: 0xffffffff81b6d4f5
->     <946482e>   DW_AT_call_origin : <0x946502e>
->     <9464832>   DW_AT_sibling     : <0x946483d>
->  <5><9464836>: Abbrev Number: 13 (DW_TAG_call_site_parameter)
->     <9464837>   DW_AT_location    : 1 byte block: 55 	(DW_OP_reg5 (rdi))
->     <9464839>   DW_AT_call_value  : 2 byte block: 7f 0 	(DW_OP_breg15 (r15): 0)
->  <5><946483c>: Abbrev Number: 0
->  <4><946483d>: Abbrev Number: 60 (DW_TAG_call_site)
->     <946483e>   DW_AT_call_return_pc: 0xffffffff81b6d590
->     <9464846>   DW_AT_call_origin : <0x9463caa>
->     <946484a>   DW_AT_sibling     : <0x946485d>
->  <5><946484e>: Abbrev Number: 13 (DW_TAG_call_site_parameter)
->     <946484f>   DW_AT_location    : 1 byte block: 55 	(DW_OP_reg5 (rdi))
->     <9464851>   DW_AT_call_value  : 2 byte block: 7f 0 	(DW_OP_breg15 (r15): 0)
-> --
->     <9464f6b>   DW_AT_frame_base  : 1 byte block: 9c 	(DW_OP_call_frame_cfa)
->     <9464f6d>   DW_AT_call_all_calls: 1
->     <9464f6d>   DW_AT_sibling     : <0x946502e>
->  <2><9464f71>: Abbrev Number: 81 (DW_TAG_formal_parameter)
->     <9464f72>   DW_AT_name        : (indirect string, offset: 0x3abde1): port
->     <9464f76>   DW_AT_decl_file   : 1
->     <9464f76>   DW_AT_decl_line   : 212
->     <9464f77>   DW_AT_decl_column : 44
->     <9464f78>   DW_AT_type        : <0x9463263>
->     <9464f7c>   DW_AT_location    : 0x181ea81 (location list)
->     <9464f80>   DW_AT_GNU_locviews: 0x181ea79
->  <2><9464f84>: Abbrev Number: 64 (DW_TAG_variable)
->     <9464f85>   DW_AT_name        : (indirect string, offset: 0x9f2cd): word
->     <9464f89>   DW_AT_decl_file   : 1
->     <9464f89>   DW_AT_decl_line   : 214
-> root@number:/home/acme/git/pahole#
-> 
-> Not really :-\
-> 
-> root@number:/home/acme/git/pahole# pfunct --decl_info -F dwarf evtchn_fifo_is_pending /lib/modules/6.13.0-rc2/build/vmlinux
-> /* Used at: /home/acme/git/linux/drivers/xen/events/events_fifo.c */
-> /* <946502e> /home/acme/git/linux/drivers/xen/events/events_fifo.c:206 */
-> bool evtchn_fifo_is_pending(evtchn_port_t port);
-> /* Used at: /home/acme/git/linux/drivers/xen/events/events_fifo.c */
-> /* <946502e> /home/acme/git/linux/drivers/xen/events/events_fifo.c:206 */
-> bool evtchn_fifo_is_pending(evtchn_port_t port);
-> root@number:/home/acme/git/pahole#
-> 
-> So far I couldn't find an explanation for this oddity... Lets see if
-> after applying all patches we get past this.
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 
-Its not related to this patch series, before we get two outputs for
-these (and other functions in
-/home/acme/git/linux/drivers/xen/events/events_fifo.c).
+there's similar change posted by Andrei already:
+  https://lore.kernel.org/bpf/eTid-pMaxx4d_gMkyFN6fgVGub01RRJYIl1SzTmRG7RtRlPUJOMrVfe2I1W8s0OBHBFy3UN2WGm_e6mak0nGcrZ4ZdxAYRUSDDcUSVMvNA4=@proton.me/T/#u
 
-Still investigating.
+jirka
 
-- Arnaldo
+> ---
+>  tools/lib/bpf/libbpf.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 66173ddb5a2d..46492cc0927d 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -1731,12 +1731,24 @@ static int sys_memfd_create(const char *name, unsigned flags)
+>  #ifndef MFD_CLOEXEC
+>  #define MFD_CLOEXEC 0x0001U
+>  #endif
+> +#ifndef MFD_NOEXEC_SEAL
+> +#define MFD_NOEXEC_SEAL 0x0008U
+> +#endif
+>  
+>  static int create_placeholder_fd(void)
+>  {
+> +	unsigned int flags = MFD_CLOEXEC | MFD_NOEXEC_SEAL;
+> +	const char *name = "libbpf-placeholder-fd";
+>  	int fd;
+>  
+> -	fd = ensure_good_fd(sys_memfd_create("libbpf-placeholder-fd", MFD_CLOEXEC));
+> +	fd = ensure_good_fd(sys_memfd_create(name, flags));
+> +	if (fd >= 0)
+> +		return fd;
+> +	else if (errno != EINVAL)
+> +		return -errno;
+> +
+> +	/* Possibly running on kernel without MFD_NOEXEC_SEAL */
+> +	fd = ensure_good_fd(sys_memfd_create(name, flags & ~MFD_NOEXEC_SEAL));
+>  	if (fd < 0)
+>  		return -errno;
+>  	return fd;
+> -- 
+> 2.47.1
+> 
 
