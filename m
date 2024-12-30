@@ -1,82 +1,58 @@
-Return-Path: <bpf+bounces-47699-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47700-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C1539FE990
-	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 19:02:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 370F19FE9EF
+	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 19:37:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2683E7A16D5
-	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 18:02:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 669573A2AA0
+	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 18:37:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10FFD1ACEDF;
-	Mon, 30 Dec 2024 18:02:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5707D183CD9;
+	Mon, 30 Dec 2024 18:37:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ImClPUJ2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FqHTd2cO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00114EDE
-	for <bpf@vger.kernel.org>; Mon, 30 Dec 2024 18:02:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD8F1EAD0;
+	Mon, 30 Dec 2024 18:37:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735581768; cv=none; b=PhQWwvWkHM3AJP2J2F5zB8dn9VRuDI9q8+RAG0iYJpSnadvg5VwNilZmZDdihfqylRV+/Nqy0TE043d19iihxFsg18rLdFd6OTOfVjQbZ7to3zSKLsCcTnIWn5Y10v0pjsapE5FARz7PxbEV0KDB2UjyL6rk7+xlb12zPjhMuQY=
+	t=1735583826; cv=none; b=StMvNFtyBWo1nex4y8a6Y85dRfX+vq25ZBZIlxUQz3leusMAFGbMqa+ISu7PAip3EfgB+m3/TMqWGtbsgiXJ+kpz2VzeOxyaTJcSBCtULtLeieG6Vb3681ChCAMf4/47QYeYpbc9Rw4nGTG+3NJ0TbBu2uO5u1bojI5uuo5O6vY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735581768; c=relaxed/simple;
-	bh=MYVNnzB7iJQBXMrjk+/33YLZPav+FOMgB9kqsFqi/u8=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NdUUhfFWCVju/EC/3K3PglEH07gtkXQqzoAXS6E/hxBRZpPPpHKyjefBIkKtiYgKtCbCeKTqIA0C2AUUrRk5TM16ta7SzI0vtxpgSkrx1rDzK9nPcJGSibO3wqjS69mKdfj3zsDwhWnGbhomr3YCtIlBXRIHc6Kx5dw8Uc8Qy3o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ImClPUJ2; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-436ae3e14b4so5151275e9.1
-        for <bpf@vger.kernel.org>; Mon, 30 Dec 2024 10:02:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735581765; x=1736186565; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=16iMQTA3yLJ1QlfHU0z1vMcVYOqrhRkI7zvdXHZSoHA=;
-        b=ImClPUJ2JLuKgXM+r0oZiSyixgz00u9jioDDYKtVErjD18LLSxU9IrDKZpPh79FnlM
-         5B8hnBVUQg45//AkfX1OHmViogvQCvXyw4VRJlo2qB0DOiOyHlX/ecZ8m4FVN3jLEYux
-         cOGAss/N8lvIFJFxI70qv1jt6fLL8S3Hy6OgciA28E/VjhaaVoYMjE+3yiniFrYjnNik
-         89zpKxtT7Ml86PDEHlpoL1pZEAi9brOLrwJqb8YHtPRyPYZcS7jXDIOqe/i5VjWLCwbO
-         sVnLr+TiPM7HtU1AdxogV1Tz4y/mMMFD7seKLg/JOZY+VL/wgjYUdNcmCffjikOTaO7w
-         0BjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735581765; x=1736186565;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=16iMQTA3yLJ1QlfHU0z1vMcVYOqrhRkI7zvdXHZSoHA=;
-        b=svzdp5/M0VrAQghKrfMM0EjBPxYf0L9clLoyXuGYIidT0v+fPNvt7SjFfRmpJmSXUD
-         RI+PPUkIqxvgqFxnJtnvKOoFwjK3chFWDmF4G5t3x1jPjxE9502V14ZxV/tfQnU77jY0
-         VNmiSWMCzJSXPg8jMvwXvUouEdCk+xOn6yNVcjVBQX3S95KzMV7bgG25ScffXVHphbkc
-         mPJtJa4sb/ayU9Ll51Wemx5wgaQM3z2+tb2nAX38lyqW/FcQ91AuXvVKfdFSC92O10Vr
-         3l0JWMx35Paq5WHHJ0dAgg5IdcoEuftoneCZXWvqJaIKxS6Jxk+aPBreLXm0yGyYKiIr
-         SXYQ==
-X-Gm-Message-State: AOJu0YzU9B77LWZnz3UW2rvgGSb3616heLKrSv6JDkO3KPAbVgj3LuUP
-	7trYT7W/yLyGGOmv8WpC0XH2at2tiOPph8kqqxIXkxLhrYN4BShe
-X-Gm-Gg: ASbGnctqVTpe+l3Wx9ZDUqp1T0Kol/x9EqpBRKw1GRPku8lo4XvlCuwhLAMYnVx1Ewf
-	RO5rmfMlbsJBZQsYaB9y4E5mlxYc89OlnCDOK2v29wwMYp4h25Kj9nGcnLGqlyn8uDYnbGBzHMZ
-	5D5EDAbJMU/tufS1kRHdq5iZ13jid5DlTD0vqKiLLVWayArEasRGyIS73j9bcIiCS4dxiih7+FQ
-	6rI654TdBqgCIMDdC7dpCObxAScDZKtsYRCowEWZqo=
-X-Google-Smtp-Source: AGHT+IFBpFTYNRfnvzdGW0WPnW62pQqswePByMRjlWhFqLkyLpkR/mWsfve/EKdVvTACbahqL1ir4A==
-X-Received: by 2002:a05:600c:6a87:b0:434:f623:9fe3 with SMTP id 5b1f17b1804b1-4366fb8a411mr304648795e9.16.1735581765026;
-        Mon, 30 Dec 2024 10:02:45 -0800 (PST)
-Received: from krava ([213.175.46.84])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-436604e9c2csm363918175e9.43.2024.12.30.10.02.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Dec 2024 10:02:44 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 30 Dec 2024 19:02:43 +0100
-To: Andrei Enache <andreien@proton.me>
-Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH v3 bpf-next] bpf: Use non-executable memfds for maps
-Message-ID: <Z3LgQwjTHKq_xi4Z@krava>
-References: <2NK63_D3A4XK54XvOAywlNwXaq6bq2I2nc2nU9g-YVdEkYaPPKcbcQ3RI0yRDc65N2LmtEx1e2aWDKXS0BabHqkihS2gtXBcghhwM5TfDeE=@proton.me>
+	s=arc-20240116; t=1735583826; c=relaxed/simple;
+	bh=EANVJ2/f+m7Ra8zRZ0RgWEPJuaQL9QikhE9kQv3f5yM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LcEDQUiLsuaR6fR47lk74tVPOwa4PXqbCX+5JCBmQX01ELBVMFr/dJw9PVDAI8JRYrhja8A5fGCm66cjI1qaZbrdvUz06JXJSVKmqjX9O3vDrx0ygtSzcSQBOJ89y7I8r8a2+qqLSw5rbyjcVftpoGge3S/w1wRoMlZDcKtuL6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FqHTd2cO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A68FC4CED0;
+	Mon, 30 Dec 2024 18:37:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1735583826;
+	bh=EANVJ2/f+m7Ra8zRZ0RgWEPJuaQL9QikhE9kQv3f5yM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FqHTd2cOXXsjcX/HfdyTZvUrH/NrtpY0wQ3thdL5K0+peBu5BWTForsEvVqWDt1Mj
+	 GnSl1GxCM5wPC6qv5MhS7u+1f0s+eSHxjCHD0EPTQ0vuoPcPi5BZM1xQjZcKVRizpS
+	 WCX+0rtxRJCHjfZdIVC+gplKp65KTMV5Twn44rMkO4xs106JuGGtXHR2mkH4QqgH7E
+	 cwRhZl/DibJFRcdg2GQmzPqdyHgVHsaF5umlyjsj0PHZr2AWS5LumglHhNsZ4o025z
+	 6L9gAxyb6XwmdW62GA7MU4VNUUHQa3kDQsSMFhHg443nGpQIuX/Rf0gRrlsNeTujkL
+	 hp9WOXmib/l4g==
+Date: Mon, 30 Dec 2024 15:37:02 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: dwarves@vger.kernel.org, alan.maguire@oracle.com, eddyz87@gmail.com,
+	andrii@kernel.org, mykolal@fb.com, bpf@vger.kernel.org
+Subject: Re: [PATCH dwarves v3 7/8] dwarf_loader: multithreading with a
+ job/worker model
+Message-ID: <Z3LoTvt7PtUAbh5K@x1>
+References: <20241221012245.243845-1-ihor.solodrai@pm.me>
+ <20241221012245.243845-8-ihor.solodrai@pm.me>
+ <Z3LFREHG-8QhoAcc@x1>
+ <Z3LGOXGgK1Qx1zW-@x1>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -85,60 +61,90 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2NK63_D3A4XK54XvOAywlNwXaq6bq2I2nc2nU9g-YVdEkYaPPKcbcQ3RI0yRDc65N2LmtEx1e2aWDKXS0BabHqkihS2gtXBcghhwM5TfDeE=@proton.me>
+In-Reply-To: <Z3LGOXGgK1Qx1zW-@x1>
 
-On Mon, Dec 30, 2024 at 05:18:31PM +0000, Andrei Enache wrote:
-> This patch enables use of non-executable memfds for bpf maps. [1]
-> As this is a recent kernel feature, the code checks at runtime to make sure it is available.
-> ---
-> Changes in v3:
-> - Check return value before checking errno
-> - Update newline style
-> - Link to v2: https://lore.kernel.org/bpf/Z3LHcCgqY7kHs08S@krava/T/
+On Mon, Dec 30, 2024 at 01:11:41PM -0300, Arnaldo Carvalho de Melo wrote:
+> > Not really :-\
+> > 
+> > root@number:/home/acme/git/pahole# pfunct --decl_info -F dwarf evtchn_fifo_is_pending /lib/modules/6.13.0-rc2/build/vmlinux
+> > /* Used at: /home/acme/git/linux/drivers/xen/events/events_fifo.c */
+> > /* <946502e> /home/acme/git/linux/drivers/xen/events/events_fifo.c:206 */
+> > bool evtchn_fifo_is_pending(evtchn_port_t port);
+> > /* Used at: /home/acme/git/linux/drivers/xen/events/events_fifo.c */
+> > /* <946502e> /home/acme/git/linux/drivers/xen/events/events_fifo.c:206 */
+> > bool evtchn_fifo_is_pending(evtchn_port_t port);
+> > root@number:/home/acme/git/pahole#
+> > 
+> > So far I couldn't find an explanation for this oddity... Lets see if
+> > after applying all patches we get past this.
+ 
+> Its not related to this patch series, before we get two outputs for
+> these (and other functions in
+> /home/acme/git/linux/drivers/xen/events/events_fifo.c).
 > 
-> [1] https://lwn.net/Articles/918106/
-> 
-> Signed-off-by: Andrei Enache <andreien@proton.me>
-> ---
->  tools/lib/bpf/libbpf.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 66173ddb5..3a30c094d 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -1732,11 +1732,22 @@ static int sys_memfd_create(const char *name, unsigned flags)
->  #define MFD_CLOEXEC 0x0001U
->  #endif
-> 
-> +#ifndef MFD_NOEXEC_SEAL
-> +#define MFD_NOEXEC_SEAL 0x0008U
-> +#endif
-> +
->  static int create_placeholder_fd(void)
->  {
->  	int fd;
-> +	int memfd;
-> +
-> +	memfd = sys_memfd_create("libbpf-placeholder-fd", MFD_CLOEXEC);
-> +
-> +	/* MFD_NOEXEC_SEAL is missing from older kernels */
-> +	if (memfd < 0 && errno == EINVAL)
-> +		memfd = sys_memfd_create("libbpf-placeholder-fd", MFD_CLOEXEC | MFD_NOEXEC_SEAL);
+> Still investigating.
 
-hum, you need to try 'MFD_CLOEXEC | MFD_NOEXEC_SEAL' first, right?
+root@number:/home/acme/git/pahole# perf probe -x ~/bin/pfunct function__show
+Added new event:
+  probe_pfunct:function_show (on function__show in /home/acme/git/pahole/build/pfunct)
 
-jirka
+You can now use it in all perf tools, such as:
 
-> 
-> -	fd = ensure_good_fd(sys_memfd_create("libbpf-placeholder-fd", MFD_CLOEXEC));
-> +	fd = ensure_good_fd(memfd);
->  	if (fd < 0)
->  		return -errno;
->  	return fd;
-> --
-> 2.47.1
+	perf record -e probe_pfunct:function_show -aR sleep 1
 
+root@number:/home/acme/git/pahole# perf trace -e probe_pfunct:function_show --call-graph dwarf pfunct --decl_info -F dwarf evtchn_fifo_set_pending /lib/modules/6.13.0-rc2/build/vmlinux
+/* Used at: /home/acme/git/linux/drivers/xen/events/events_fifo.c */
+/* <946517a> /home/acme/git/linux/drivers/xen/events/events_fifo.c:200 */
+void evtchn_fifo_set_pending(evtchn_port_t port);
+/* Used at: /home/acme/git/linux/drivers/xen/events/events_fifo.c */
+/* <946517a> /home/acme/git/linux/drivers/xen/events/events_fifo.c:200 */
+void evtchn_fifo_set_pending(evtchn_port_t port);
+     0.000 pfunct/2006089 probe_pfunct:function_show(__probe_ip: 4208235)
+                                       function__show (/home/acme/git/pahole/build/pfunct)
+                                       pfunct_stealer (/home/acme/git/pahole/build/pfunct)
+                                       cus__steal_now (/home/acme/git/pahole/build/libdwarves.so.1.0.0)
+                                       dwarf_loader__worker_thread (/home/acme/git/pahole/build/libdwarves.so.1.0.0)
+                                       start_thread (/usr/lib64/libc.so.6)
+                                       clone3 (/usr/lib64/libc.so.6)
+     0.134 pfunct/2006088 probe_pfunct:function_show(__probe_ip: 4208235)
+                                       function__show (/home/acme/git/pahole/build/pfunct)
+                                       cu_function_iterator (/home/acme/git/pahole/build/pfunct)
+                                       cus__for_each_cu (/home/acme/git/pahole/build/libdwarves.so.1.0.0)
+                                       main (/home/acme/git/pahole/build/pfunct)
+                                       __libc_start_call_main (/usr/lib64/libc.so.6)
+                                       __libc_start_main@@GLIBC_2.34 (/usr/lib64/libc.so.6)
+                                       _start (/home/acme/git/pahole/build/pfunct)
+root@number:/home/acme/git/pahole#
 
+With the following patch we get just one output for this case, but that
+isn't the right solution... I'll look on removing the
+cu_function_iterator() based printing, otherwise when printing all
+matches we'll still duplicate the printings.
+
+Anyway, doesn't seem related to the problem that tests/tests was
+catching, that I'm not being able to reproduce anymore after having the
+whole series applied, probably some race?
+
+- Arnaldo
+
+diff --git a/pfunct.c b/pfunct.c
+index 55eafe8a8e790dcb..9645b004381a7e1e 100644
+--- a/pfunct.c
++++ b/pfunct.c
+@@ -518,7 +518,13 @@ static enum load_steal_kind pfunct_stealer(struct cu *cu,
+ 
+ 		if (tag) {
+ 			function__show(tag__function(tag), cu);
+-			return show_all_matches ? LSK__DELETE : LSK__STOP_LOADING;
++			if (!show_all_matches) {
++				// Expedite exit, since we already did what was requested:
++				// print the first occurrence of a given function
++				exit(0);
++			}
++
++			return LSK__DELETE;
+ 		}
+ 	} else if (class_name) {
+ 		cu_class_iterator(cu, class_name);
 
 
