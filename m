@@ -1,135 +1,230 @@
-Return-Path: <bpf+bounces-47689-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47690-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 150FC9FE32A
-	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 08:17:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DE009FE3B3
+	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 09:27:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D6043A1A0A
-	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 07:17:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16CCA160E47
+	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2024 08:27:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1341E19EEC2;
-	Mon, 30 Dec 2024 07:17:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 306A61A08A0;
+	Mon, 30 Dec 2024 08:27:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEC528F4A;
-	Mon, 30 Dec 2024 07:17:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E9F225948E;
+	Mon, 30 Dec 2024 08:27:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735543033; cv=none; b=AT+nj8WCJacTzBa4CTQOetO028chOwxC+47hkT5P0QvFCNJk8eq2gjh/Q0qUCLy/VUGRI4RCvkXolbYdP3z8nwhU22hCFy/KEZWKeYoA8zeRLn7Gheh7/H4XSQ0uh5uh2T9GZYTk/K6j7vJZCve33VDujyr0Ajpuiop7G4ahI10=
+	t=1735547258; cv=none; b=na0puu51ThZ2KWv/NYEDuVF/VOVmPO/irDYJb3GsWsbQ2vd9WrzUljZGg7k3DECVDOa0rFUCPDJDm7Y/LsGeUe+44O1y7Enzz0hnUbNdEmxG0s6ojNeA7WEBznUBsx7t0Pe2dKA19wCy9uuaCOEK4zU3GyOx+icx1u+wm9flhjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735543033; c=relaxed/simple;
-	bh=NmS5i2qU3obD3u3PTgg79huLb8morjznKdppkVjV1Po=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HKTe5e/n1kqhYiM3rEBKq5zya702WW2Bt3CF1/jD9ahzLIjuE6Jev+vpP20EevsQlYibzYSQzGsrJ9FOaGw2xrvQe4uCfTxT5n/Fy0LYHzH9Qbay0fc4UPqAyTwc4xSWNy1tzR6VUEAY+meEjeSzKYGD0IWrP3GdGlowDpVUBBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 1035ed96c67e11efa216b1d71e6e1362-20241230
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CTE_8B, HR_CTT_MISS
-	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_DIGIT_LEN, HR_FROM_NAME
-	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
-	HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NO_NAME
-	IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED, SA_EXISTED
-	SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
-	CIE_BAD, CIE_GOOD_SPF, GTI_FG_BS, GTI_C_CI, GTI_FG_IT
-	GTI_RG_INFO, GTI_C_BU, AMN_T1, AMN_GOOD, AMN_C_TI
-	AMN_C_BU
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.41,REQID:e0ffdf3a-9162-4381-a886-c370092d2488,IP:0,U
-	RL:0,TC:0,Content:0,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:20
-X-CID-INFO: VERSION:1.1.41,REQID:e0ffdf3a-9162-4381-a886-c370092d2488,IP:0,URL
-	:0,TC:0,Content:0,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:20
-X-CID-META: VersionHash:6dc6a47,CLOUDID:81cff4b26c5fa3d384fe22ebb3cb6884,BulkI
-	D:2412301517020DQSZIAC,BulkQuantity:0,Recheck:0,SF:17|19|66|78|102,TC:nil,
-	Content:0|50,EDM:5,IP:nil,URL:1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,CO
-	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_ULS
-X-UUID: 1035ed96c67e11efa216b1d71e6e1362-20241230
-X-User: xiaopei01@kylinos.cn
-Received: from localhost.localdomain [(10.44.16.150)] by mailgw.kylinos.cn
-	(envelope-from <xiaopei01@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 1713643918; Mon, 30 Dec 2024 15:17:01 +0800
-From: Pei Xiao <xiaopei01@kylinos.cn>
-To: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Pei Xiao <xiaopei01@kylinos.cn>,
-	kernel test robot <lkp@intel.com>
-Subject: [PATCH] bpf: Use refcount_t instead of atomic_t for mmap_count
-Date: Mon, 30 Dec 2024 15:16:55 +0800
-Message-Id: <6ecce439a6bc81adb85d5080908ea8959b792a50.1735542814.git.xiaopei01@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1735547258; c=relaxed/simple;
+	bh=JDmSOmsusRA1zycK0KHEboMhnQiX/c88B9nekJ96g/Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aA5Qr97CBFSRihJmxh2RlTuNo7y9nmrJUh44+mryj8u9j8vBLHLAATfnmjUg33QIaRVLWBw0r2/qylla7H0EjHJfYSenfGuveNp5A1t3zM62OT23o/uXrTnw/Kdkyn0tRLmn+KRo1Vdv4F5aT3A7zTGsSS1BDEqqDY4UuIVB98I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YM8NG4GYTz4f3jss;
+	Mon, 30 Dec 2024 16:27:10 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 58F1A1A18B0;
+	Mon, 30 Dec 2024 16:27:25 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP4 (Coremail) with SMTP id gCh0CgBnjoJpWXJn_q4uGA--.58298S2;
+	Mon, 30 Dec 2024 16:27:23 +0800 (CST)
+Message-ID: <4e6641ce-3f1e-4251-8daf-4dd4b77d08c4@huaweicloud.com>
+Date: Mon, 30 Dec 2024 16:27:21 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC bpf-next v1 2/4] bpf: Introduce load-acquire and
+ store-release instructions
+Content-Language: en-US
+To: Peilin Ye <yepeilin@google.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Puranjay Mohan <puranjay@kernel.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Quentin Monnet <qmo@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, Josh Don <joshdon@google.com>,
+ Barret Rhoden <brho@google.com>, Neel Natu <neelnatu@google.com>,
+ Benjamin Segall <bsegall@google.com>, David Vernet <dvernet@meta.com>,
+ Dave Marchevsky <davemarchevsky@meta.com>, linux-kernel@vger.kernel.org
+References: <cover.1734742802.git.yepeilin@google.com>
+ <6ca65dc2916dba7490c4fd7a8b727b662138d606.1734742802.git.yepeilin@google.com>
+ <f704019d-a8fa-4cf5-a606-9d8328360a3e@huaweicloud.com>
+ <Z23hntYzWuZOnScP@google.com>
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <Z23hntYzWuZOnScP@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgBnjoJpWXJn_q4uGA--.58298S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGr1kGr1rKr15WryUWFy3Jwb_yoWrKrWkp3
+	97Aa1FkF4kAF4kCFyv9w1kZ39Yqr4SyrZxGryUGrWSk3yDGF17tr10gr4a9FWUCr4jg3WY
+	qryj9r1fWFW5CaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIF
+	4iUUUUU
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-Use an API that resembles more the actual use of mmap_count.
+On 12/27/2024 7:07 AM, Peilin Ye wrote:
+> Hi Xu,
+> 
+> Thanks for reviewing this!
+> 
+> On Tue, Dec 24, 2024 at 06:07:14PM +0800, Xu Kuohai wrote:
+>> On 12/21/2024 9:25 AM, Peilin Ye wrote:
+>>> +__AARCH64_INSN_FUNCS(load_acq,  0x3FC08000, 0x08C08000)
+>>> +__AARCH64_INSN_FUNCS(store_rel, 0x3FC08000, 0x08808000)
+>>
+>> I checked Arm Architecture Reference Manual [1].
+>>
+>> Section C6.2.{168,169,170,371,372,373} state that field Rt2 (bits 10-14) and
+>> Rs (bits 16-20) for LDARB/LDARH/LDAR/STLRB/STLRH and no offset type STLR
+>> instructions are fixed to (1).
+>>
+>> Section C2.2.2 explains that (1) means a Should-Be-One (SBO) bit.
+>>
+>> And the Glossary section says "Arm strongly recommends that software writes
+>> the field as all 1s. If software writes a value that is not all 1s, it must
+>> expect an UNPREDICTABLE or CONSTRAINED UNPREDICTABLE result."
+>>
+>> Although the pre-index type of STLR is an excetpion, it is not used in this
+>> series. Therefore, both bits 10-14 and 16-20 in mask and value should be set
+>> to 1s.
+>>
+>> [1] https://developer.arm.com/documentation/ddi0487/latest/
+> 
+> <...>
+> 
+>>> +	insn = aarch64_insn_encode_register(AARCH64_INSN_REGTYPE_RT2, insn,
+>>> +					    AARCH64_INSN_REG_ZR);
+>>> +
+>>> +	return aarch64_insn_encode_register(AARCH64_INSN_REGTYPE_RS, insn,
+>>> +					    AARCH64_INSN_REG_ZR);
+>>
+>> As explained above, RS and RT2 fields should be fixed to 1s.
+> 
+> I'm already setting Rs and Rt2 to all 1's here, as AARCH64_INSN_REG_ZR
+> is defined as 31 (0b11111):
+> 
+> 	AARCH64_INSN_REG_ZR = 31,
+> 
 
-Found by cocci:
-kernel/bpf/arena.c:245:6-25: WARNING: atomic_dec_and_test variation before object free at line 249.
+I see, but the setting of fixed bits is smomewhat of a waste of jit time.
 
-Fixes: b90d77e5fd78 ("bpf: Fix remap of arena.")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202412292037.LXlYSHKl-lkp@intel.com/
-Signed-off-by: Pei Xiao <xiaopei01@kylinos.cn>
----
- kernel/bpf/arena.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> Similar to how load- and store-exclusive instructions are handled
+> currently:
+> 
+>>>    __AARCH64_INSN_FUNCS(load_ex,	0x3F400000, 0x08400000)
+>>>    __AARCH64_INSN_FUNCS(store_ex,	0x3F400000, 0x08000000)
+> 
+> For example, in the manual, Rs is all (1)'s for LDXR{,B,H}, and Rt2 is
+> all (1)'s for both LDXR{,B,H} and STXR{,B,H}.  However, neither Rs nor
+> Rt2 bits are in the mask, and (1) bits are set manually, see
+> aarch64_insn_gen_load_store_ex():
+> 
+>    insn = aarch64_insn_encode_register(AARCH64_INSN_REGTYPE_RT2, insn,
+>                                        AARCH64_INSN_REG_ZR);
+> 
+>    return aarch64_insn_encode_register(AARCH64_INSN_REGTYPE_RS, insn,
+>                                        state);
+> 
+> (For LDXR{,B,H}, 'state' is A64_ZR, which is just an alias to
+> AARCH64_INSN_REG_ZR (0b11111).)
+>
+> - - -
+> 
+> On a related note, I simply grabbed {load,store}_ex's MASK and VALUE,
+> then set their 15th and 23rd bits to make them load-acquire and
+> store-release:
+> 
+>    +__AARCH64_INSN_FUNCS(load_acq,  0x3FC08000, 0x08C08000)
+>    +__AARCH64_INSN_FUNCS(store_rel, 0x3FC08000, 0x08808000)
+>     __AARCH64_INSN_FUNCS(load_ex,   0x3F400000, 0x08400000)
+>     __AARCH64_INSN_FUNCS(store_ex,  0x3F400000, 0x08000000)
+> 
+> My question is, should we extend {load,store}_ex's MASK to make them
+> contain BIT(15) and BIT(23) as well?  As-is, aarch64_insn_is_load_ex()
+> would return true for a load-acquire.
+> 
+> The only user of aarch64_insn_is_load_ex() seems to be this
+> arm64-specific kprobe code in arch/arm64/kernel/probes/decode-insn.c:
+> 
+>    #ifdef CONFIG_KPROBES
+>    static bool __kprobes
+>    is_probed_address_atomic(kprobe_opcode_t *scan_start, kprobe_opcode_t *scan_end)
+>    {
+>            while (scan_start >= scan_end) {
+>                    /*
+>                     * atomic region starts from exclusive load and ends with
+>                     * exclusive store.
+>                     */
+>                    if (aarch64_insn_is_store_ex(le32_to_cpu(*scan_start)))
+>                            return false;
+>                    else if (aarch64_insn_is_load_ex(le32_to_cpu(*scan_start)))
+>                            return true;
+> 
+> But I'm not sure yet if changing {load,store}_ex's MASK would affect the
+> above code.  Do you happen to know the context?
+> 
 
-diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
-index 945a5680f6a5..8caf56a308d9 100644
---- a/kernel/bpf/arena.c
-+++ b/kernel/bpf/arena.c
-@@ -218,7 +218,7 @@ static u64 arena_map_mem_usage(const struct bpf_map *map)
- struct vma_list {
- 	struct vm_area_struct *vma;
- 	struct list_head head;
--	atomic_t mmap_count;
-+	refcount_t mmap_count;
- };
- 
- static int remember_vma(struct bpf_arena *arena, struct vm_area_struct *vma)
-@@ -228,7 +228,7 @@ static int remember_vma(struct bpf_arena *arena, struct vm_area_struct *vma)
- 	vml = kmalloc(sizeof(*vml), GFP_KERNEL);
- 	if (!vml)
- 		return -ENOMEM;
--	atomic_set(&vml->mmap_count, 1);
-+	refcount_set(&vml->mmap_count, 1);
- 	vma->vm_private_data = vml;
- 	vml->vma = vma;
- 	list_add(&vml->head, &arena->vma_list);
-@@ -239,7 +239,7 @@ static void arena_vm_open(struct vm_area_struct *vma)
- {
- 	struct vma_list *vml = vma->vm_private_data;
- 
--	atomic_inc(&vml->mmap_count);
-+	refcount_inc(&vml->mmap_count);
- }
- 
- static void arena_vm_close(struct vm_area_struct *vma)
-@@ -248,7 +248,7 @@ static void arena_vm_close(struct vm_area_struct *vma)
- 	struct bpf_arena *arena = container_of(map, struct bpf_arena, map);
- 	struct vma_list *vml = vma->vm_private_data;
- 
--	if (!atomic_dec_and_test(&vml->mmap_count))
-+	if (!refcount_dec_and_test(&vml->mmap_count))
- 		return;
- 	guard(mutex)(&arena->lock);
- 	/* update link list under lock */
--- 
-2.25.1
+IIUC, this code prevents kprobe from interrupting the LL-SC loop constructed
+by LDXR/STXR pair, as the kprobe trap causes unexpected memory access that
+prevents the exclusive memory access loop from exiting.
+
+Since load-acquire/store-release instructions are not used to construct LL-SC
+loop, I think it is safe to exclude them from {load,store}_ex.
+
+>>> +	if (BPF_ATOMIC_TYPE(insn->imm) == BPF_ATOMIC_LOAD)
+>>> +		ptr = src;
+>>> +	else
+>>> +		ptr = dst;
+>>> +
+>>> +	if (off) {
+>>> +		emit_a64_mov_i(true, tmp, off, ctx);
+>>> +		emit(A64_ADD(true, tmp, tmp, ptr), ctx);
+>>
+>> The mov and add instructions can be optimized to a single A64_ADD_I
+>> if is_addsub_imm(off) is true.
+> 
+> Thanks!  I'll try this.
+> 
+>> I think it's better to split the arm64 related changes into two separate
+>> patches: one for adding the arm64 LDAR/STLR instruction encodings, and
+>> the other for adding jit support.
+> 
+> Got it, in the next version I'll split this patch into (a) core/verifier
+> changes, (b) arm64 insn.{h,c} changes, and (c) arm64 JIT compiler
+> support.
+>
+> Thanks,
+> Peilin Ye
 
 
