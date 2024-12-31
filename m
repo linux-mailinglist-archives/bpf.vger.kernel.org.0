@@ -1,186 +1,112 @@
-Return-Path: <bpf+bounces-47721-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47722-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 071219FEBEF
-	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 01:43:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 644D49FEBFA
+	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 01:51:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9171161F86
-	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 00:43:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F61B1883040
+	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 00:51:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58B66B660;
-	Tue, 31 Dec 2024 00:43:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17148BA2E;
+	Tue, 31 Dec 2024 00:50:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ap4qp1GS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m0sI4LQi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12C5D4A21
-	for <bpf@vger.kernel.org>; Tue, 31 Dec 2024 00:43:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E46222F2D;
+	Tue, 31 Dec 2024 00:50:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735605784; cv=none; b=Yn/k/ihClpzXn4VzNgQvoY685reBplBmVBfTiUUBqr2cs6sVM9sI03twUlgyW9uG+TdzmFzdKPk3t4b798Vrq1q+qe+Mj9JLVXz7qR6EinKzGngEu9fzqYDQUHDpRSm9xatdla7u3oypUL0atDMbioxE23PiL+xMPAcKeFj2Uw8=
+	t=1735606256; cv=none; b=u9fTQXL+bvx4XizMylYdzaZniQKKAG9IodV4QMNJKvSbgrmpcYG6hmlzrApS0lFFEwIWlgjUA+guBI48EL0zrCAwXVm5J9YTR4NRtaC2AWbJfkxvGe0WXDVwk0oCK/Tpk8aKnWbvFXGM0LGrULoltsqrbaVj9hfcsKljMse6tDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735605784; c=relaxed/simple;
-	bh=W9GhY6ZYy/FpN08orNLCVAhNeopyIxAFwLnOkoKOzrI=;
+	s=arc-20240116; t=1735606256; c=relaxed/simple;
+	bh=jBkqqQJEX4PILbfyFsL7OxaUiUrJXdz4wzgXDhfUd88=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IQtbar9ly9wCeci7y5sPnjOZaMmgDmCqrqyoWAPunvTyQTTNTH/YZ29OVQjTJnYOD15EdbkJOAxa+m1s02Ncm0tIN8H1RahNpYr1BheynWtP4+2d+i47qGao3JIir+nwzSu/FuHj0odpUczkhJYuOzpU46JFJw63yBODCj5SVy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ap4qp1GS; arc=none smtp.client-ip=209.85.221.54
+	 To:Cc:Content-Type; b=HumEDAknCdmDClNJaRBOFr19kLpFT810UTf94QmQ2mhvBo9SMBbM8F5sWKoYMiMmBBKNw+qiw61xk5RKaJixXWnsn000pNAwviP+eeoIcIZNkJyohcgYroj0cL2EsPVtAMFGPpPhMfjKvlN6Bhif8OYj7CnqfSwfA/Bhg8VgKNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m0sI4LQi; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3863703258fso6277842f8f.1
-        for <bpf@vger.kernel.org>; Mon, 30 Dec 2024 16:43:02 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4362f61757fso96326395e9.2;
+        Mon, 30 Dec 2024 16:50:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735605781; x=1736210581; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1735606253; x=1736211053; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bmpj+K2wHp0aLEuoOcnqEPYmqjoBMA0H1ajOhkq5Otw=;
-        b=ap4qp1GSuH4zKNSk7abIFpVSKgw3i8Ita4Q5xPYP2yGujD5/8QCLaSyBmy2OJqiX8l
-         F7Wa3wGjAjVpk6SgWo87nVGA5HWmR3g1cYX4jUdpsGgR7SEZ1M7/FxVTrjHlp3Y+vV46
-         B7KeMs9MNU0zEaQVl1XsItN3MLp0JXhaMeOAhreN4cNTTf4rWzBt5fHj+1XCoDMk/tZx
-         MM5sK48pjUFdE9I+ttsmBHe5NAGjf+st6XWGafIxqbIXF4jvcO/CTLgCXppXJUbnxVyj
-         WiePwZQNvkN6LhejJLSODPnwB1WWZO+8AZTLNz8+66HzpYoZM09IGYwzP4cT+rG4IVCX
-         vHHg==
+        bh=jBkqqQJEX4PILbfyFsL7OxaUiUrJXdz4wzgXDhfUd88=;
+        b=m0sI4LQiQcT8Fkb7LarhT0Kjr7jPe4/TcPj9y7Nw8Yq85Jca2xVZZrwAdTcMq9hO8E
+         XrSyWDy/JVA/Tj1re0leH0GF8wOgwkSh9mjy/Fjn/FEQa4L70bYWY1ukxHl9wbPXvahC
+         WKc4JAroMhA49Mp3hPPYr+Y5Z4g5RZQWDyI97h2DSh4fE5yLsEh1SW75JpTnEF+kY+4C
+         Arg/YfPj+X/T1BlPGjyn52T5a/tw6Ob8gR+0OQlFEr48zpqDTkGTUB8CdcEwSVFb//JD
+         v1BrOK9Gpe1/yO3amgWd9+gGOv+iAusVIUCBpfbYuJ+znCFR/1rLDHFaHuvWgP69akZe
+         viSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735605781; x=1736210581;
+        d=1e100.net; s=20230601; t=1735606253; x=1736211053;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bmpj+K2wHp0aLEuoOcnqEPYmqjoBMA0H1ajOhkq5Otw=;
-        b=nn28lUtquEpycZZVoC2jPz62JaNYjxRtCgfOr6J+XJApB0FR+b4JMUqetxKwxCXFm6
-         tBBRAredv6CTctdIiWG4TIfkPzHP2J5Oe9Nm3yMsGkTFf3EQpqN7M1p5xJaOM8p/zWzn
-         joQjAcnpCOi7lMp7qfN4upJ3Gc0aHlBX2qZfXYSK0A+cLXoDIFNgVNRSjr8AUR+sWVPr
-         zeZwuqJxRtM6FORPWfb/fDzhOBmztyENNYi8eLZiQ+3QJcrh5E9n9y4XYRnBHQnfOpVy
-         XWv7CA6AdecaoJ+vcublp7tdc+f2BmD58LDCxKiCbK+YCPxJCTSfdh7kAMi+hhcsEYIr
-         V9OA==
-X-Forwarded-Encrypted: i=1; AJvYcCV0toz7qQvsl8FBr1D2wkKcn1H5kUkVSC9qzk+tRD8W5AluMMIwb+vhbdrfPIa9HwUAlW0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxhcG9MOfzwU0PYp+psXVgfgvUIo/YVMnqb+6EMmR/VRevI8cQb
-	ZGtAwDXLLfaRJXNwNAsLIy9AuXQoFJb+9XevmvQ5jNDqBBBAki2/pIqNH7jl21Ue4P+0OW0iWN7
-	h8dbvSoqE4N3gDzULtsj6Tc/mtEM=
-X-Gm-Gg: ASbGncsdEKHezTX6qX6InoONr+PrLp3h6GFmiSWhEjYeOecYoZawqpXcyBtxOztrmFX
-	9k5zgxFFAxorYTFEilYxUyiKL+p2ndFyZqcSaA5rh563u/hTWz+S+fvBDTHS3Co5K0lsnBg==
-X-Google-Smtp-Source: AGHT+IHzbB2PKXoMoZQRTXyPbOhOACQtshn8UC1vFzko1vdGnM0EpCuJPV9wcAEl4mgeXCr7GfxxZBkO2oMAWBoIn7k=
-X-Received: by 2002:a5d:6d0f:0:b0:385:faec:d945 with SMTP id
- ffacd0b85a97d-38a22a117c4mr30322723f8f.9.1735605781178; Mon, 30 Dec 2024
- 16:43:01 -0800 (PST)
+        bh=jBkqqQJEX4PILbfyFsL7OxaUiUrJXdz4wzgXDhfUd88=;
+        b=OIdXW+SSPxFbvk6rWXx352M3QUdHUwXk5Y0ws7YmynW/hY+1ZxHqWrEA6PuKPVu54c
+         h6bhwYBbWg2X6Vht2o4wCJ+r5helEkT5r29vN0kLO2mQsTGn62StopLgXUsOJlHHVcNp
+         htwujjcgzx2G0/OWMHoDLFpWMQUWdwCcHERZNiKQi6d83DVIQ021wedaW4g60KwuRAIW
+         6Xod49tnBj+rVjBOdZH2RovQe6afwuNCQRVdVW0ewaS+yNSe2YHWyKIdiW01NkY+pFSU
+         92jLaOamSSUKZirq9mDs/cpglZb2FwN6aP1bysMI19RQCfOHlNUvgE0QR76WQmkyfbcj
+         2g9g==
+X-Forwarded-Encrypted: i=1; AJvYcCUmAfnbmkcM/mHzplmnYj94s9wa/5lgpiFd1tVUnna1/gBl1UDn1n3VjejowWxfDULFXz0=@vger.kernel.org, AJvYcCXfGpZbCQTB0Yyu1P0jhbdhEncL3YuSdIYI6gE07EWnL0kTMIeEY7nxpM17ec57XOMGU6XaWBzlnzD2J5pE/Q==@vger.kernel.org, AJvYcCXiRGMA1ZJOkiqtPD8ILnLsuqyRNr7yGnIoPEtG5HxaLdlv8UjeGzNDtXQ7OdvKHNePg+NcTJmX7EuOFiXz@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzq/tN+AOqWKToyZqQP8hGzZ9Jrc4QT+jzd2G9z401Ro4BDnk3D
+	XTJTgCMoD+oG+v2h4w8oHS2iXTbHBTpoSrTawBUQRy1MxcyCYKrJEi4OCtACRkl/095TQ5yZb5w
+	dv7LbplWnZpBn92ctP+Ccc5iemuI=
+X-Gm-Gg: ASbGncuZNt07B68wjd1a9BaDf3+W1yChqZMEmki8pHS2w0iqbYOQ7DKcBXqy/vlFYP1
+	NF/yqf6zihIa7zoj9V8w/Jx0mqP/zFpyq90hmFAjG/RLly1sntHouYdYxEr+iz3//8fzOwQ==
+X-Google-Smtp-Source: AGHT+IHYZ3UJyt6hDvoR2xtV+VlHNg98hIR1jdQVb8Ns3euF9qlwYgJ4dQnlgdHYZ0r/ahF8PnTZBtAZCh5A71J/EuE=
+X-Received: by 2002:a5d:6d0a:0:b0:385:dffb:4d56 with SMTP id
+ ffacd0b85a97d-38a22408d23mr38366182f8f.53.1735606252876; Mon, 30 Dec 2024
+ 16:50:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZryncitpWOFICUSCu4HLsMIZ7zOuiH5f4jrgjAh0uiOgKvZzQES09eerwIXNonKEq0U6hdI9pHSCPahUKihTeS8NKlVfkcuiRLotteNbQ9I=@pm.me>
- <CA+=Sn1ktCrXZMjrC0b1TNxfz1BnQfG24XUdVuktS8kRWeEP2kA@mail.gmail.com>
- <87v7v0oqla.fsf@gentoo.org> <7ZXLMz0XIsj0YzKNHVoLZ1JrCshOqeGCldUFbX3f8F14s0opaXTpmjfzZH2E10v0b2SFXk2x-DVTN5wGuUqPJQDhA3sOcVm7GeiGzKLRhRI=@pm.me>
-In-Reply-To: <7ZXLMz0XIsj0YzKNHVoLZ1JrCshOqeGCldUFbX3f8F14s0opaXTpmjfzZH2E10v0b2SFXk2x-DVTN5wGuUqPJQDhA3sOcVm7GeiGzKLRhRI=@pm.me>
+References: <20241228-sysfs-const-bin_attr-simple-v2-0-7c6f3f1767a3@weissschuh.net>
+In-Reply-To: <20241228-sysfs-const-bin_attr-simple-v2-0-7c6f3f1767a3@weissschuh.net>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 30 Dec 2024 16:42:50 -0800
-Message-ID: <CAADnVQKNqdLW1bpvCpVV3yNizwra0cCkBnAbsNp3rTmi8WFcvQ@mail.gmail.com>
-Subject: Re: Errors compiling BPF programs from Linux selftests/bpf with GCC
-To: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: Andrew Pinski <pinskia@gmail.com>, Sam James <sam@gentoo.org>, 
-	Andrew Pinski via Gcc <gcc@gcc.gnu.org>, Cupertino Miranda <cupertino.miranda@oracle.com>, 
-	David Faust <david.faust@oracle.com>, Elena Zannoni <elena.zannoni@oracle.com>, 
-	"Jose E. Marchesi" <jose.marchesi@oracle.com>, Manu Bretelle <chantra@meta.com>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@meta.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
+Date: Mon, 30 Dec 2024 16:50:41 -0800
+Message-ID: <CAADnVQ+E0z8mY4BF9qamPh1XV9qs2jZ03bfYz2tVw8E4nFVWBw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] sysfs: constify bin_attribute argument of sysfs_bin_attr_simple_read()
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc: Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>, 
+	Sami Tolvanen <samitolvanen@google.com>, Daniel Gomez <da.gomez@samsung.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, ppc-dev <linuxppc-dev@lists.ozlabs.org>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-modules@vger.kernel.org, 
+	bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 30, 2024 at 12:59=E2=80=AFPM Ihor Solodrai <ihor.solodrai@pm.me=
-> wrote:
+On Sat, Dec 28, 2024 at 12:43=E2=80=AFAM Thomas Wei=C3=9Fschuh <linux@weiss=
+schuh.net> wrote:
 >
-> On Monday, December 30th, 2024 at 12:36 PM, Sam James <sam@gentoo.org> wr=
-ote:
+> Most users use this function through the BIN_ATTR_SIMPLE* macros,
+> they can handle the switch transparently.
 >
-> >
-> >
-> > Andrew Pinski via Gcc gcc@gcc.gnu.org writes:
-> >
-> > > On Mon, Dec 30, 2024 at 12:11=E2=80=AFPM Ihor Solodrai via Gcc gcc@gc=
-c.gnu.org wrote:
-> > >
-> > > > Hello everyone.
-> > > >
-> > > > I picked up the work adding GCC BPF backend to BPF CI pipeline [1],
-> > > > originally done by Cupertino Miranda [2].
-> > > >
-> > > > I encountered issues compiling BPF objects for selftests/bpf with
-> > > > recent GCC 15 snapshots. An additional test runner binary is suppos=
-ed
-> > > > to be generated by tools/testing/selftests/bpf/Makefile if BPF_GCC =
-is
-> > > > set to a directory with GCC binaries for BPF backend. The runner
-> > > > binary depends on BPF binaries, which are produced by GCC.
-> > > >
-> > > > The first issue is compilation errors on vmlinux.h:
-> > > >
-> > > > In file included from progs/linked_maps1.c:4:
-> > > > /ci/workspace/tools/testing/selftests/bpf/tools/include/vmlinux.h:8=
-483:9: error: expected identifier before =E2=80=98false=E2=80=99
-> > > > 8483 | false =3D 0,
-> > > > | ^~~~~
-> > > >
-> > > > A snippet from vmlinux.h:
-> > > >
-> > > > enum {
-> > > > false =3D 0,
-> > > > true =3D 1,
-> > > > };
-> > > >
-> > > > And:
-> > > >
-> > > > /ci/workspace/tools/testing/selftests/bpf/tools/include/vmlinux.h:2=
-3539:15: error: two or more data types in declaration specifiers
-> > > > 23539 | typedef _Bool bool;
-> > > > | ^~~~
-> > > >
-> > > > Full log at [3], and also at [4].
-> > >
-> > > These are simple, the selftests/bpf programs need to compile with
-> > > -std=3Dgnu17 or -std=3Dgnu11 since GCC has changed the default to C23
-> > > which defines false and bool as keywords now and can't be redeclared
-> > > like before.
-> >
-> >
-> > Yes, the kernel has various issues like this:
-> > https://lore.kernel.org/linux-kbuild/20241119044724.GA2246422@thelio-39=
-90X/.
-> >
-> > Unfortunately, not all the Makefiles correctly declare that they need
-> > gnu11.
-> >
-> > Clang will hit issues like this too when they change default to gnu23.
->
-> Andrew, Sam, thank you for a swift response.
->
-> vmlinux.h is generated code, so for the booleans perhaps it's more
-> appropriate to generate a condition, for example:
->
->     #if __STDC_VERSION__ < 202311L
->     enum {
->         false =3D 0,
->         true =3D 1,
->     };
->     #endif
->
-> Any drawbacks to this?
+> This series is meant to be merged through the driver core tree.
 
-By special hacking this specific enum in bpftool ?
-Feels like overkill when just adding -std=3Dgnu17 will do.
+hmm. why?
 
->
-> Also if vmlinux was built with GCC C23 then I assume DWARF wouldn't
-> contain the debug info for the enum, hence it wouldn't be present in
-> vmlinux.h.
->
-> I don't think downgrading the standard for a relatively new backend
-> makes sense, especially in the context of CI testing.
-
-I don't see why not. The flag affects the front-end while CI adds
-the test coverage to gcc bpf backend.
+I'd rather take patches 2 and 3 into bpf-next to avoid
+potential conflicts.
+Patch 1 looks orthogonal and independent.
 
