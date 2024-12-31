@@ -1,175 +1,181 @@
-Return-Path: <bpf+bounces-47723-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47724-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBF6F9FEC17
-	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 02:15:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 376D09FEC20
+	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 02:26:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F30C1620BB
-	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 01:15:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DAEA1882E5B
+	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 01:26:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22E89F507;
-	Tue, 31 Dec 2024 01:15:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0DFABE5E;
+	Tue, 31 Dec 2024 01:26:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cOyoeQ6Q"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="kSuSe7DK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-0201.mail-europe.com (mail-0201.mail-europe.com [51.77.79.158])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 397687FD
-	for <bpf@vger.kernel.org>; Tue, 31 Dec 2024 01:15:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C2B7FD
+	for <bpf@vger.kernel.org>; Tue, 31 Dec 2024 01:26:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.77.79.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735607751; cv=none; b=McOzZ5q96zqUh1DujCoLF1gUcfB8gg4B/KwJb1HO8rsoE1gAkKorXRZk0qHg15hoI+BWbD7UGOVVL5UN8sB8freInqqlpnbegYwDT6kJyVc+VZe1zgNNEgUQ2ygJUu7qc+/fpmJWUINAtMUaubu966qvP66cA3ZLgFYO9Z4ILpw=
+	t=1735608388; cv=none; b=MfnWsk1abtIknyA3yydR61Lq/4sjD1xUdPQTSRp5KpdiMhe9sFpcZk6HcazXPaEbIn/wSisbYMJFTMRKcgUQmG14eKsOEYdonvZR8B2XSyCxw6fo5Vy5Ebs4BHDB4ESgfd5ooIXKBkcGhIoCFTYcJdVxNsbHHyGe2wx6pe2VBUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735607751; c=relaxed/simple;
-	bh=sSY1XbF1oxRIXmmaijhJ4nXaZUQVUXWqa4rhwBiQB+Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UlZap2l64oyGt1yR9fYoqXv6r8WJtdTwwxlfEObRwMXBHaIQVMIGfGEo7Q8S631wy4piMYypKxc3vOl9cfuQJsjVjRtJKqHDrUCIOutUEE8HTeHfSQcATv/llCM4gtqxt/iDzzdZ6Nk/C9I8SkeFZzT7DqK9jKikClnwXiF691o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cOyoeQ6Q; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-21625b4f978so1101725ad.0
-        for <bpf@vger.kernel.org>; Mon, 30 Dec 2024 17:15:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1735607749; x=1736212549; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bU44DfVNFhZdddKP7sqRrnrWS7eQdXIUVL22LBgqP5Y=;
-        b=cOyoeQ6QpLNtnknsdp4DTldlx7jR3QTOKnWNGv8mz82e65E5ve8MFcXSwdelpI6iyn
-         YcH/lWD8heG9H4yG6S9Achbsg1sqO0OC9WUp/AaLautg+BiPImpw7xJK1AtqgoI69Aso
-         VvLzvKueQDDQSBTBjJYcwt4sk2XLFKJdkh0XT9Du/9A+KpIJiLXMOYezcTmRR7pFyEeY
-         6KkCweXAguoa/ZNdZXaagBKLZb7QBre9o/buCzjTdgc0pQFhd2cQhvPof2fc0Jg/gROJ
-         NkqGFTJor6Na/00XRmpMgcS/+prVHR/R7tlHZGM3H9uSs8RfqxsolZMQxlsmYeODHT8b
-         dYdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735607749; x=1736212549;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bU44DfVNFhZdddKP7sqRrnrWS7eQdXIUVL22LBgqP5Y=;
-        b=EExwE+eb+SzZ8orMDjycbovdfraCtNnAbhGIphOFTleKGhkGeHAYCb3TFbEbkgMJRb
-         hXSKe8y/KWu4uNr9Jk8Ba9b7TogcUZ2qS4IWMC0oBV5cfqLrwHSKQsH/cd4AdFIZ7Q6I
-         J/i1ED2epXsbzcErNKqwBYiK8ByVkE+hrTYSr+Cdb995pTfwMyYhznqeTCJe9ZzioGRy
-         mwElel0u2wvLG52i+IFYW9CaMdjSqjwhq+xR/X9yAQZHV2FRqyMbr2ez8rRYvV9quH36
-         7esNYGZNfShjQ0HInHpIW2+dErU4q1JYl0jkaD5kd9jdvNh49B1Crv1t8oaIW0qi6m7B
-         42pw==
-X-Gm-Message-State: AOJu0YwNSu8Ar7quf6i1Lg2jKAY99ai2g4iU8uqG2qiscq09Bj6emeju
-	v9Ny0WyHAmuR4jeGsdu1w2tGbmszVNMnOPtdgq5MXd7MK7wjmaet/ylvjY5W73p55iDZMD6Dk5O
-	FIxrR
-X-Gm-Gg: ASbGncs9hyohqjHKL70PUi+DH/51h5OpN7lIaSb4mZ2LXPutEefM3T2wQSfbvH/swly
-	57X4u8kZ6rOBGss1bTD5veGdcw1LjTUgXo8+TNjpQpKCT0ceP1l4L583uCP7PiFt22Far3Ndk7G
-	wCZrsVuo76RrAPxz2Knuq2NYHn5sWCxFaasValbO/rW+hig6kw8a6UGf8VLInaNH4sUPRTYalCH
-	yOmPwo2kXlAwDhj+ivKyp5DAnyJi+ezb2UxLsggB8KnDuXvL1gSRnLu4OjaTnoRAgtYbG06SDfo
-	zIwa5y9AokkYPIeEXtQ=
-X-Google-Smtp-Source: AGHT+IG9vVXq0bODcOzVtZg8nKb4yp7ntyqpp3MtBhtWHUC+tXvqnTJ2k0jASUWKN9LVZAYRo5ShmQ==
-X-Received: by 2002:a17:902:ea05:b0:216:201e:1b63 with SMTP id d9443c01a7336-219e770bffcmr15717445ad.11.1735607749360;
-        Mon, 30 Dec 2024 17:15:49 -0800 (PST)
-Received: from google.com (40.155.125.34.bc.googleusercontent.com. [34.125.155.40])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad815835sm20584170b3a.27.2024.12.30.17.15.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Dec 2024 17:15:48 -0800 (PST)
-Date: Tue, 31 Dec 2024 01:15:44 +0000
-From: Peilin Ye <yepeilin@google.com>
-To: Xu Kuohai <xukuohai@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Quentin Monnet <qmo@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>,
-	Neel Natu <neelnatu@google.com>,
-	Benjamin Segall <bsegall@google.com>,
-	David Vernet <dvernet@meta.com>,
-	Dave Marchevsky <davemarchevsky@meta.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC bpf-next v1 2/4] bpf: Introduce load-acquire and
- store-release instructions
-Message-ID: <Z3NFwKf1FrCk2mWx@google.com>
-References: <cover.1734742802.git.yepeilin@google.com>
- <6ca65dc2916dba7490c4fd7a8b727b662138d606.1734742802.git.yepeilin@google.com>
- <f704019d-a8fa-4cf5-a606-9d8328360a3e@huaweicloud.com>
- <Z23hntYzWuZOnScP@google.com>
- <4e6641ce-3f1e-4251-8daf-4dd4b77d08c4@huaweicloud.com>
+	s=arc-20240116; t=1735608388; c=relaxed/simple;
+	bh=Z++VGEGJDdcxpsKzULiH/OeJO/HaWH1F7AlyAsTHxh0=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=RbKrklRZYqpCfdszsAUgs96OfJ2mCIt7YQ26k699CSvPl4Ip44iPbUfdPvvz606l2YP8+c/oNmZciJGfiJFIqmd5LaMg00jZKqiHSSmp1NvjXouVsdwj3qbm4XE7DcbaA6gN4UZpX1MS6en4ys4uc3NbE/gmB4T8FWHe+yuoKFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=kSuSe7DK; arc=none smtp.client-ip=51.77.79.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1735608375; x=1735867575;
+	bh=Z++VGEGJDdcxpsKzULiH/OeJO/HaWH1F7AlyAsTHxh0=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
+	b=kSuSe7DKVaLXo9vt93VazJn7k4xaF2Vr6mzp/hb53ung+1gsCRgG16yc/wmIxB4nD
+	 fpynCgpqqiMvIxp/+FnTO01YTQT93M5CyUFgSEKodx9bSaoaHrC/0AIh6E3+QqNqbb
+	 5UKuzLSL1FQZ2QlyIEGXA+FnOwi7CZpvlUw1QQb2iT3nNiFIOT3mC/B+r/FDIWZF9d
+	 uy94hOzt684v7TG2vEFPMijClxNke+LVa0ueYq+PcTU2KcesKILsgRwWb51Zx1g+So
+	 DkjJpeKrtYqSOO2Yt4rUZWmqjA9V9fu7x9R+y3IUA75PIecnYjfo0bzPZbqR9evJhV
+	 waKuTIU317ZWg==
+Date: Tue, 31 Dec 2024 01:26:12 +0000
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: Andrew Pinski <pinskia@gmail.com>, Sam James <sam@gentoo.org>, Andrew Pinski via Gcc <gcc@gcc.gnu.org>, Cupertino Miranda <cupertino.miranda@oracle.com>, David Faust <david.faust@oracle.com>, Elena Zannoni <elena.zannoni@oracle.com>, "Jose E. Marchesi" <jose.marchesi@oracle.com>, Manu Bretelle <chantra@meta.com>, Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@meta.com>, Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: Errors compiling BPF programs from Linux selftests/bpf with GCC
+Message-ID: <K9N2BZvW85sXom0Rjc28rKGhmfsmBWsFCgcHkOJz3g3ae9YseEPmygt9Nh1eTbIb354-4gGt59x_ONDF4_BWmj4RFdHplByhh_jog6dBymY=@pm.me>
+In-Reply-To: <CAADnVQKNqdLW1bpvCpVV3yNizwra0cCkBnAbsNp3rTmi8WFcvQ@mail.gmail.com>
+References: <ZryncitpWOFICUSCu4HLsMIZ7zOuiH5f4jrgjAh0uiOgKvZzQES09eerwIXNonKEq0U6hdI9pHSCPahUKihTeS8NKlVfkcuiRLotteNbQ9I=@pm.me> <CA+=Sn1ktCrXZMjrC0b1TNxfz1BnQfG24XUdVuktS8kRWeEP2kA@mail.gmail.com> <87v7v0oqla.fsf@gentoo.org> <7ZXLMz0XIsj0YzKNHVoLZ1JrCshOqeGCldUFbX3f8F14s0opaXTpmjfzZH2E10v0b2SFXk2x-DVTN5wGuUqPJQDhA3sOcVm7GeiGzKLRhRI=@pm.me> <CAADnVQKNqdLW1bpvCpVV3yNizwra0cCkBnAbsNp3rTmi8WFcvQ@mail.gmail.com>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: dec9984f4b1185fa329fd1ce9fb2123b1c229264
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4e6641ce-3f1e-4251-8daf-4dd4b77d08c4@huaweicloud.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 30, 2024 at 04:27:21PM +0800, Xu Kuohai wrote:
-> > > As explained above, RS and RT2 fields should be fixed to 1s.
-> > 
-> > I'm already setting Rs and Rt2 to all 1's here, as AARCH64_INSN_REG_ZR
-> > is defined as 31 (0b11111):
-> > 
-> > 	AARCH64_INSN_REG_ZR = 31,
-> 
-> I see, but the setting of fixed bits is smomewhat of a waste of jit time.
+On Monday, December 30th, 2024 at 4:42 PM, Alexei Starovoitov <alexei.staro=
+voitov@gmail.com> wrote:
 
-Fair point, I'll instead make load_acq/store_rel's MASK/VALUE include
-those (1) bits.
+>=20
+>=20
+> On Mon, Dec 30, 2024 at 12:59=E2=80=AFPM Ihor Solodrai ihor.solodrai@pm.m=
+e wrote:
+>=20
+> > On Monday, December 30th, 2024 at 12:36 PM, Sam James sam@gentoo.org wr=
+ote:
+> >=20
+> > > Andrew Pinski via Gcc gcc@gcc.gnu.org writes:
+> > >=20
+> > > > On Mon, Dec 30, 2024 at 12:11=E2=80=AFPM Ihor Solodrai via Gcc gcc@=
+gcc.gnu.org wrote:
+> > > >=20
+> > > > > Hello everyone.
+> > > > >=20
+> > > > > I picked up the work adding GCC BPF backend to BPF CI pipeline [1=
+],
+> > > > > originally done by Cupertino Miranda [2].
+> > > > >=20
+> > > > > I encountered issues compiling BPF objects for selftests/bpf with
+> > > > > recent GCC 15 snapshots. An additional test runner binary is supp=
+osed
+> > > > > to be generated by tools/testing/selftests/bpf/Makefile if BPF_GC=
+C is
+> > > > > set to a directory with GCC binaries for BPF backend. The runner
+> > > > > binary depends on BPF binaries, which are produced by GCC.
+> > > > >=20
+> > > > > The first issue is compilation errors on vmlinux.h:
+> > > > >=20
+> > > > > In file included from progs/linked_maps1.c:4:
+> > > > > /ci/workspace/tools/testing/selftests/bpf/tools/include/vmlinux.h=
+:8483:9: error: expected identifier before =E2=80=98false=E2=80=99
+> > > > > 8483 | false =3D 0,
+> > > > > | ^~~~~
+> > > > >=20
+> > > > > A snippet from vmlinux.h:
+> > > > >=20
+> > > > > enum {
+> > > > > false =3D 0,
+> > > > > true =3D 1,
+> > > > > };
+> > > > >=20
+> > > > > And:
+> > > > >=20
+> > > > > /ci/workspace/tools/testing/selftests/bpf/tools/include/vmlinux.h=
+:23539:15: error: two or more data types in declaration specifiers
+> > > > > 23539 | typedef _Bool bool;
+> > > > > | ^~~~
+> > > > >=20
+> > > > > Full log at [3], and also at [4].
+> > > >=20
+> > > > These are simple, the selftests/bpf programs need to compile with
+> > > > -std=3Dgnu17 or -std=3Dgnu11 since GCC has changed the default to C=
+23
+> > > > which defines false and bool as keywords now and can't be redeclare=
+d
+> > > > like before.
+> > >=20
+> > > Yes, the kernel has various issues like this:
+> > > https://lore.kernel.org/linux-kbuild/20241119044724.GA2246422@thelio-=
+3990X/.
+> > >=20
+> > > Unfortunately, not all the Makefiles correctly declare that they need
+> > > gnu11.
+> > >=20
+> > > Clang will hit issues like this too when they change default to gnu23=
+.
+> >=20
+> > Andrew, Sam, thank you for a swift response.
+> >=20
+> > vmlinux.h is generated code, so for the booleans perhaps it's more
+> > appropriate to generate a condition, for example:
+> >=20
+> > #if STDC_VERSION < 202311L
+> > enum {
+> > false =3D 0,
+> > true =3D 1,
+> > };
+> > #endif
+> >=20
+> > Any drawbacks to this?
+>=20
+>=20
+> By special hacking this specific enum in bpftool ?
+> Feels like overkill when just adding -std=3Dgnu17 will do.
 
-> > On a related note, I simply grabbed {load,store}_ex's MASK and VALUE,
-> > then set their 15th and 23rd bits to make them load-acquire and
-> > store-release:
-> > 
-> >    +__AARCH64_INSN_FUNCS(load_acq,  0x3FC08000, 0x08C08000)
-> >    +__AARCH64_INSN_FUNCS(store_rel, 0x3FC08000, 0x08808000)
-> >     __AARCH64_INSN_FUNCS(load_ex,   0x3F400000, 0x08400000)
-> >     __AARCH64_INSN_FUNCS(store_ex,  0x3F400000, 0x08000000)
-> > 
-> > My question is, should we extend {load,store}_ex's MASK to make them
-> > contain BIT(15) and BIT(23) as well?  As-is, aarch64_insn_is_load_ex()
-> > would return true for a load-acquire.
-> > 
-> > The only user of aarch64_insn_is_load_ex() seems to be this
-> > arm64-specific kprobe code in arch/arm64/kernel/probes/decode-insn.c:
-> > 
-> >    #ifdef CONFIG_KPROBES
-> >    static bool __kprobes
-> >    is_probed_address_atomic(kprobe_opcode_t *scan_start, kprobe_opcode_t *scan_end)
-> >    {
-> >            while (scan_start >= scan_end) {
-> >                    /*
-> >                     * atomic region starts from exclusive load and ends with
-> >                     * exclusive store.
-> >                     */
-> >                    if (aarch64_insn_is_store_ex(le32_to_cpu(*scan_start)))
-> >                            return false;
-> >                    else if (aarch64_insn_is_load_ex(le32_to_cpu(*scan_start)))
-> >                            return true;
-> > 
-> > But I'm not sure yet if changing {load,store}_ex's MASK would affect the
-> > above code.  Do you happen to know the context?
-> 
-> IIUC, this code prevents kprobe from interrupting the LL-SC loop constructed
-> by LDXR/STXR pair, as the kprobe trap causes unexpected memory access that
-> prevents the exclusive memory access loop from exiting.
->
-> Since load-acquire/store-release instructions are not used to construct LL-SC
-> loop, I think it is safe to exclude them from {load,store}_ex.
+Yeah. I've tried both the flag and a btf_dump hack today, and the hack
+is indeed an overkill, assuming we don't care about generating
+C23-compilant vmlinux.h. To conditionalize the declarations both the
+enum and typedef _Bool have to be matched, so it's actually two hacks.
+Although we do use hacks like this, noticed an interesting example
+today [1].
 
-Ah, I see, thanks!  I'll extend {load,store}_ex's MASK to prevent
-aarch64_insn_is_{load,store}_ex() from returning false-positives for
-load-acquire/store-release.
+Regardless of how the bool-related error is fixed (with STDC_VERSION
+condition or std flag), I get the same int64 errors with GCC
+15-20241229 when building selftests/bpf [2].
 
-Thanks,
-Peilin Ye
+[1] https://github.com/libbpf/libbpf/blob/master/src/btf_dump.c#L1198-L1201
+[2] https://gist.github.com/theihor/7e3341c5a1e1209a744994143abd9e62
+
+>=20
+> > Also if vmlinux was built with GCC C23 then I assume DWARF wouldn't
+> > contain the debug info for the enum, hence it wouldn't be present in
+> > vmlinux.h.
+> >=20
+> > I don't think downgrading the standard for a relatively new backend
+> > makes sense, especially in the context of CI testing.
+>=20
+>=20
+> I don't see why not. The flag affects the front-end while CI adds
+> the test coverage to gcc bpf backend.
+
 
 
