@@ -1,98 +1,157 @@
-Return-Path: <bpf+bounces-47725-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47726-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA4159FEC35
-	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 02:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 48E089FEC74
+	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 04:00:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61F791883172
-	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 01:50:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 031A21882D96
+	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 03:00:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C00B1339A4;
-	Tue, 31 Dec 2024 01:50:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ASI7cQKA"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03C3913C918;
+	Tue, 31 Dec 2024 03:00:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDECB77102;
-	Tue, 31 Dec 2024 01:50:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EE072AE7F;
+	Tue, 31 Dec 2024 03:00:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735609809; cv=none; b=p46PLlSVRF3CadvnnWX1Ho7pH69JUN+ria8fp57KCzi+z7Y5qObZzvMhs8p1wQkLQlrT2/kzUYn9gN7CftnFFDeUz7CAmlXpc897tWGdvrByKCgb2dQy6Qze1kWz+j/S1V23cGzcVSClEWCxgW3FQo3n06WSntVdz4zV9yEWic4=
+	t=1735614039; cv=none; b=awojkQa9CNF83hK9eyFRf82SK/UyUR8xS8P15M/CLagme6TK+xxGZ5Nl1XCu98icgW9tB49VyuN2yBIcWnZg0szdaytIBzSIBULPkxIz9gGGwZf4YkCUYavqPV6uxlvPEb3NOmvixYbwy9ndsl5uHeW/TuR3c4TGCoC9RS9iMVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735609809; c=relaxed/simple;
-	bh=ValXDmuvempSMVWdKZlqskyJtgIEV/Azfll+e48iKfU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=PkSAxX9t9VQ7oQ4r7VwnNmUuC4uEn298ymTzJ5ElItw61IK9oBnb6ntQn63ADsBbMFlywt6O+RMJo98Jp7uhD6yldwqd7I0U2aU3NFHpaSADbvuhZC/yA3oOr+mmIyoYrWH/pe1dvrG3cc6czlz4yecbLQiPKKdm4iCxXUKf0cE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ASI7cQKA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A771EC4CED2;
-	Tue, 31 Dec 2024 01:50:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1735609808;
-	bh=ValXDmuvempSMVWdKZlqskyJtgIEV/Azfll+e48iKfU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ASI7cQKATyqRSX4N0ZNduZ+AStfuwgBcN62r1cavS+6duxvZUQH4/jrSeiZMeZdwl
-	 hBas4NyyKnVP6ANdEJEuRyfYf7eHho4Xa/L/pETghUikNhKDLR/ESQ1x6WX5hwngVj
-	 KSw+9jOzzQ1RuBWetLQcE2z3lDt4y5PHeV54FX8PWWf2pkKhlWYH4VQk86Nr/v++DL
-	 AbECjiZoKMZ5Ox3qdlofLirWc6cNFL0uBSaMWa8E1Kr8sPAa2jyU1Zauc13g1q0/hr
-	 sneixT80n1Td74LpqttYrGROJXiFwa5lPk2GpNaCBdLZ9O0O2gQMKgemAq45wL4NiH
-	 OVrO7W1PCO/Zw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADF3B380A964;
-	Tue, 31 Dec 2024 01:50:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1735614039; c=relaxed/simple;
+	bh=bAUJk69tahyyoHl/5ij4AO2by4uQjV/xTwzsJrYzQ1c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pWr2bj5g8kiEzztGIO7hCQGLEaIPr+OKQ67Mm8eAl34Nt3CTUSKvvkwIGKE4TBm5Cj8XJm2as5kvWKlD5yx596X99Df7nS2P5mK4R4+sgx/bHaEuUMKtciUcbF+xkPouTbtNPEGvPnrLQd1HHcQS/5vi2gMDqgZ9oc9l8iRC/dA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 6384844ec72311efa216b1d71e6e1362-20241231
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.41,REQID:6d32dcf7-6313-4bcc-aac9-76275071eb13,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6dc6a47,CLOUDID:fcda8dcb68b549cf40d5767336733e2e,BulkI
+	D:nil,BulkQuantity:0,Recheck:0,SF:80|81|82|83|102,TC:nil,Content:0|52,EDM:
+	-3,IP:nil,URL:1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,
+	AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 1,FCT|NGT
+X-CID-BAS: 1,FCT|NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
+X-UUID: 6384844ec72311efa216b1d71e6e1362-20241231
+Received: from node4.com.cn [(10.44.16.170)] by mailgw.kylinos.cn
+	(envelope-from <xiaopei01@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1642492231; Tue, 31 Dec 2024 11:00:27 +0800
+Received: from node4.com.cn (localhost [127.0.0.1])
+	by node4.com.cn (NSMail) with SMTP id B28C016002081;
+	Tue, 31 Dec 2024 11:00:27 +0800 (CST)
+X-ns-mid: postfix-67735E4B-627798623
+Received: from [10.42.13.56] (unknown [10.42.13.56])
+	by node4.com.cn (NSMail) with ESMTPA id 1AE1816002081;
+	Tue, 31 Dec 2024 03:00:27 +0000 (UTC)
+Message-ID: <8c81caea-dd2f-4f94-9a26-834fca574d40@kylinos.cn>
+Date: Tue, 31 Dec 2024 11:00:26 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] gve: trigger RX NAPI instead of TX NAPI in gve_xsk_wakeup
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <173560982825.1484600.10568371889170047273.git-patchwork-notify@kernel.org>
-Date: Tue, 31 Dec 2024 01:50:28 +0000
-References: <20241221032807.302244-1-pkaligineedi@google.com>
-In-Reply-To: <20241221032807.302244-1-pkaligineedi@google.com>
-To: Praveen Kaligineedi <pkaligineedi@google.com>
-Cc: netdev@vger.kernel.org, jeroendb@google.com, shailend@google.com,
- willemb@google.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
- daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
- hramamurthy@google.com, joshwash@google.com, ziweixiao@google.com,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, stable@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bpf: Use refcount_t instead of atomic_t for mmap_count
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel test robot <lkp@intel.com>
+References: <6ecce439a6bc81adb85d5080908ea8959b792a50.1735542814.git.xiaopei01@kylinos.cn>
+ <Z3LNEHfLmtSi4wpO@krava>
+From: Pei Xiao <xiaopei01@kylinos.cn>
+In-Reply-To: <Z3LNEHfLmtSi4wpO@krava>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
 
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
 
-On Fri, 20 Dec 2024 19:28:06 -0800 you wrote:
-> From: Joshua Washington <joshwash@google.com>
-> 
-> Commit ba0925c34e0f ("gve: process XSK TX descriptors as part of RX NAPI")
-> moved XSK TX processing to be part of the RX NAPI. However, that commit
-> did not include triggering the RX NAPI in gve_xsk_wakeup. This is
-> necessary because the TX NAPI only processes TX completions, meaning
-> that a TX wakeup would not actually trigger XSK descriptor processing.
-> Also, the branch on XDP_WAKEUP_TX was supposed to have been removed, as
-> the NAPI should be scheduled whether the wakeup is for RX or TX.
-> 
-> [...]
+=E5=9C=A8 2024/12/31 00:40, Jiri Olsa =E5=86=99=E9=81=93:
+> On Mon, Dec 30, 2024 at 03:16:55PM +0800, Pei Xiao wrote:
+>> Use an API that resembles more the actual use of mmap_count.
+>=20
+> I'm not sure I understand the issue, could you provide more details?
+>=20
+hi,
+refcount_t type which allows us to catch overflow and underflow issues.
 
-Here is the summary with links:
-  - [net] gve: trigger RX NAPI instead of TX NAPI in gve_xsk_wakeup
-    https://git.kernel.org/netdev/net/c/fb3a9a1165ce
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+thanks!
+Pei.
+> thanks,
+> jirka
+>=20
+>>
+>> Found by cocci:
+>> kernel/bpf/arena.c:245:6-25: WARNING: atomic_dec_and_test variation be=
+fore object free at line 249.
+>>
+>> Fixes: b90d77e5fd78 ("bpf: Fix remap of arena.")
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Closes: https://lore.kernel.org/oe-kbuild-all/202412292037.LXlYSHKl-lk=
+p@intel.com/
+>> Signed-off-by: Pei Xiao <xiaopei01@kylinos.cn>
+>> ---
+>>  kernel/bpf/arena.c | 8 ++++----
+>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+>> index 945a5680f6a5..8caf56a308d9 100644
+>> --- a/kernel/bpf/arena.c
+>> +++ b/kernel/bpf/arena.c
+>> @@ -218,7 +218,7 @@ static u64 arena_map_mem_usage(const struct bpf_ma=
+p *map)
+>>  struct vma_list {
+>>  	struct vm_area_struct *vma;
+>>  	struct list_head head;
+>> -	atomic_t mmap_count;
+>> +	refcount_t mmap_count;
+>>  };
+>> =20
+>>  static int remember_vma(struct bpf_arena *arena, struct vm_area_struc=
+t *vma)
+>> @@ -228,7 +228,7 @@ static int remember_vma(struct bpf_arena *arena, s=
+truct vm_area_struct *vma)
+>>  	vml =3D kmalloc(sizeof(*vml), GFP_KERNEL);
+>>  	if (!vml)
+>>  		return -ENOMEM;
+>> -	atomic_set(&vml->mmap_count, 1);
+>> +	refcount_set(&vml->mmap_count, 1);
+>>  	vma->vm_private_data =3D vml;
+>>  	vml->vma =3D vma;
+>>  	list_add(&vml->head, &arena->vma_list);
+>> @@ -239,7 +239,7 @@ static void arena_vm_open(struct vm_area_struct *v=
+ma)
+>>  {
+>>  	struct vma_list *vml =3D vma->vm_private_data;
+>> =20
+>> -	atomic_inc(&vml->mmap_count);
+>> +	refcount_inc(&vml->mmap_count);
+>>  }
+>> =20
+>>  static void arena_vm_close(struct vm_area_struct *vma)
+>> @@ -248,7 +248,7 @@ static void arena_vm_close(struct vm_area_struct *=
+vma)
+>>  	struct bpf_arena *arena =3D container_of(map, struct bpf_arena, map)=
+;
+>>  	struct vma_list *vml =3D vma->vm_private_data;
+>> =20
+>> -	if (!atomic_dec_and_test(&vml->mmap_count))
+>> +	if (!refcount_dec_and_test(&vml->mmap_count))
+>>  		return;
+>>  	guard(mutex)(&arena->lock);
+>>  	/* update link list under lock */
+>> --=20
+>> 2.25.1
+>>
+>>
 
 
