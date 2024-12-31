@@ -1,152 +1,142 @@
-Return-Path: <bpf+bounces-47727-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47728-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DA7A9FEC88
-	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 04:32:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 007439FEC9A
+	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 05:09:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 467C71882F78
-	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 03:32:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF63A1882A7E
+	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 04:09:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AC9C2114;
-	Tue, 31 Dec 2024 03:32:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A537D131E2D;
+	Tue, 31 Dec 2024 04:09:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nJyYwy0O"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BF7E22338
-	for <bpf@vger.kernel.org>; Tue, 31 Dec 2024 03:32:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC442CA9
+	for <bpf@vger.kernel.org>; Tue, 31 Dec 2024 04:09:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735615962; cv=none; b=GnYzG9xQDIo36q+4M/DVRJAT5OuljL4boFRxLW3L+SoZ2nxfywnxixQZdTkh7fxDyR5Rbsegj4ceoasFIYgHZJmI3F316L3i04KWSGEHOIBsYwlfcaBkerjidk7mU7ayeE6CaAyLRidUE0jJK6zhllDGKebBH6FsjpKyuu5Dib8=
+	t=1735618169; cv=none; b=TlE/8XV4NRNVutEyzwqWfmsME259PPhtG7jXIw6ywSphJgKeYTP/xsKCCnxh/y+Z8Ni0qn62PYLDrqsAdr/n8ntz5Z4faSJGqI6h3HGrHa/LSMoR9DzmvZQXAc3e4YnmyOvAspKrU7phLFVY5NIpb53eCD0RbYtPSFu0nyC0RVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735615962; c=relaxed/simple;
-	bh=RyJYAHduaHEYk7xk6iqEAkjXkeKoha6H8AForLjCJ3k=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Dkmk1r6+kmeSlQjeEIR8grdu5Sgq0UeBLyMxDk8wWgwViV3DdsAAADRLAVHVORW/lT+qTHImB/LA/khoeG4711Oiv21F8XTIGKFCSsmws5GauHSC4qyGe8B4kmdH3+eEeAXZrL4+y0Aa3N/2LXcoXS1JLadOZ2NJA9H98RbcpxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YMdnd110Nz4f3jt1
-	for <bpf@vger.kernel.org>; Tue, 31 Dec 2024 11:32:21 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id E593D1A0CDA
-	for <bpf@vger.kernel.org>; Tue, 31 Dec 2024 11:32:35 +0800 (CST)
-Received: from ultra.huawei.com (unknown [10.90.53.71])
-	by APP4 (Coremail) with SMTP id gCh0CgD304fSZXNnpCR6GA--.61535S2;
-	Tue, 31 Dec 2024 11:32:35 +0800 (CST)
-From: Pu Lehui <pulehui@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Jann Horn <jannh@google.com>,
-	Pu Lehui <pulehui@huawei.com>,
-	Pu Lehui <pulehui@huaweicloud.com>
-Subject: [PATCH bpf-next] bpf: Move out synchronize_rcu_tasks_trace from mutex CS
-Date: Tue, 31 Dec 2024 03:35:09 +0000
-Message-Id: <20241231033509.349277-1-pulehui@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1735618169; c=relaxed/simple;
+	bh=xm/mdv1zRGVYz2WXyY3LN0AmuzJzH2X2dITD24XIMFM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lPp867Q4JJZt8hGF4NInq5PP4ADqrXAfGvX38DG8aZNKqkPc6dvPj9W43Pu2DoS5q1p/tUyhweMD5Vv0Cy2isQmiWK7ipjMIA8Go4rCcj4lW5vRpTQDboKFm1SDq80DBPqlnSVdXUJc/KKNBxYk2dVaWUf/rxUvyIkFW8sLWiqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nJyYwy0O; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-385e0e224cbso4994094f8f.2
+        for <bpf@vger.kernel.org>; Mon, 30 Dec 2024 20:09:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1735618165; x=1736222965; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xm/mdv1zRGVYz2WXyY3LN0AmuzJzH2X2dITD24XIMFM=;
+        b=nJyYwy0OG5xK1BU3WQZBwIhZe3+gCcvvRlMdcyr5RGR5hA7sOH8wyTeMyBGlV+patX
+         k7lnhcW7K1iQDcXNcNApmDB5c66w2dN8m8GrFxd9H6IJWBDHciPdW6vMifoWKoVdD90B
+         0lc2vu6zx5kV+y/1Usp2+07qtVLBGFzX1JzRGxahJRlm6plaqgJvRaa6ET3LTlMehs3f
+         Q84eFg276Z8uFWQ+j3kyViPUFXdZ35EooDSY2ivxh5NshOZv3h+2YvBenGb+3Md/6kct
+         5HJpkvHlo7nNUJFDxnHyozu3biKLt8cJv1zeELOiOOZTKBFkvug5B7N4JQC1WNA0Pszg
+         q0ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735618165; x=1736222965;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xm/mdv1zRGVYz2WXyY3LN0AmuzJzH2X2dITD24XIMFM=;
+        b=NjUtQEEWI+YWsuPOPcSUy0eAJZ1/nENhpYP4gawcK66RgXKTPEmHUviMHZBGIHFufD
+         94NNI7sRHRLjFZRY8UJLwqAFciv5q5KtnhrNXlG0SrPdWGcBiCV7HkzVHjSFYVzCef5b
+         AtIJZMfDaDwvhq+O9zXuDEmm0dpZbfW9LvFbqonCT/CLmtHZxnjyEYdkiCi/29Qx8vLD
+         CEi1hB52PYSx5lWZNqOzrAPAdyImADYjmv2Co5ePjf6HgYXx4BVaF2Hsb/a4deGKyD4r
+         PBoLNorYm0wcsElnSun7UVS69L6D5cmoTLzT0IAq23edR8ZO2bDn2AaGFsFboJe3mkAN
+         OObQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX686o9iCi4Rl2HpcGj1a/kt1nMDqH9/+2mSG+AFPhzA6xQtTmsnKB5LOHWFsQlyYBOmSk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwEMru7OMYbgFt0bxhtStxlIyU4++FwRj/HrHgZn/J3VG29cc+2
+	UwFKz3Px1TnivFd6fvGwmOnXlXTHNaMP4vfQacw8W/z/xtC0yav6dI7n2reBEzBF+JoAfUlydAa
+	SckIXIlij9jGxtE11Z3f0o0ZE6Ac=
+X-Gm-Gg: ASbGncvnv8UHTVEs0oj9ChhclbhGrkZf9kQPE4ue/I6WJEuzfnIRXD9eD4O/oTYCv9J
+	/4bDUZq4hov9Zc37d5BATJz+TR56V859cjHL/VucCAbXTgL5x+Ouu9wGUyzAoGlgaucjUUA==
+X-Google-Smtp-Source: AGHT+IFbwN9xYtvUff5p0K6Rf1ttjeKRBFEt6aRUBzYfi+epc9o7bTJGYJg3+gdcLIer1mA0JvF1KPNCK91gBm3DKRE=
+X-Received: by 2002:adf:a3d9:0:b0:38a:39ad:3e2f with SMTP id
+ ffacd0b85a97d-38a39ad4088mr15275713f8f.2.1735618164451; Mon, 30 Dec 2024
+ 20:09:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgD304fSZXNnpCR6GA--.61535S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KrW7KF4rWr43KrWxAry7Jrb_yoW8ZrWkpF
-	4DC3s8Kr4UWr4jqw1rXrn7C34UA3ykX398Ja1UGa4rurWYgrZYgF1DKFWYqryF9rWxGFyI
-	qw1jqr17GFWjvaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-	n2kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1x
-	MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
-	VFxhVjvjDU0xZFpf9x0JUd-B_UUUUU=
-X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+References: <ZryncitpWOFICUSCu4HLsMIZ7zOuiH5f4jrgjAh0uiOgKvZzQES09eerwIXNonKEq0U6hdI9pHSCPahUKihTeS8NKlVfkcuiRLotteNbQ9I=@pm.me>
+ <CA+=Sn1ktCrXZMjrC0b1TNxfz1BnQfG24XUdVuktS8kRWeEP2kA@mail.gmail.com>
+ <87v7v0oqla.fsf@gentoo.org> <7ZXLMz0XIsj0YzKNHVoLZ1JrCshOqeGCldUFbX3f8F14s0opaXTpmjfzZH2E10v0b2SFXk2x-DVTN5wGuUqPJQDhA3sOcVm7GeiGzKLRhRI=@pm.me>
+ <CAADnVQKNqdLW1bpvCpVV3yNizwra0cCkBnAbsNp3rTmi8WFcvQ@mail.gmail.com> <K9N2BZvW85sXom0Rjc28rKGhmfsmBWsFCgcHkOJz3g3ae9YseEPmygt9Nh1eTbIb354-4gGt59x_ONDF4_BWmj4RFdHplByhh_jog6dBymY=@pm.me>
+In-Reply-To: <K9N2BZvW85sXom0Rjc28rKGhmfsmBWsFCgcHkOJz3g3ae9YseEPmygt9Nh1eTbIb354-4gGt59x_ONDF4_BWmj4RFdHplByhh_jog6dBymY=@pm.me>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 30 Dec 2024 20:09:13 -0800
+Message-ID: <CAADnVQ+sa+LRN7LfkE3LR70KtBrkq5og7DnDHvEK4Fu_PAMKDg@mail.gmail.com>
+Subject: Re: Errors compiling BPF programs from Linux selftests/bpf with GCC
+To: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: Andrew Pinski <pinskia@gmail.com>, Sam James <sam@gentoo.org>, 
+	Andrew Pinski via Gcc <gcc@gcc.gnu.org>, Cupertino Miranda <cupertino.miranda@oracle.com>, 
+	David Faust <david.faust@oracle.com>, Elena Zannoni <elena.zannoni@oracle.com>, 
+	"Jose E. Marchesi" <jose.marchesi@oracle.com>, Manu Bretelle <chantra@meta.com>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@meta.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Pu Lehui <pulehui@huawei.com>
+On Mon, Dec 30, 2024 at 5:26=E2=80=AFPM Ihor Solodrai <ihor.solodrai@pm.me>=
+ wrote:
+>
+> > >
+> > > #if STDC_VERSION < 202311L
+> > > enum {
+> > > false =3D 0,
+> > > true =3D 1,
+> > > };
+> > > #endif
+> > >
+> > > Any drawbacks to this?
+> >
+> >
+> > By special hacking this specific enum in bpftool ?
+> > Feels like overkill when just adding -std=3Dgnu17 will do.
+>
+> Yeah. I've tried both the flag and a btf_dump hack today, and the hack
+> is indeed an overkill, assuming we don't care about generating
+> C23-compilant vmlinux.h. To conditionalize the declarations both the
+> enum and typedef _Bool have to be matched, so it's actually two hacks.
+> Although we do use hacks like this, noticed an interesting example
+> today [1].
+>
+> Regardless of how the bool-related error is fixed (with STDC_VERSION
+> condition or std flag), I get the same int64 errors with GCC
+> 15-20241229 when building selftests/bpf [2].
+>
+> [1] https://github.com/libbpf/libbpf/blob/master/src/btf_dump.c#L1198-L12=
+01
 
-Commit ef1b808e3b7c ("bpf: Fix UAF via mismatching bpf_prog/attachment
-RCU flavors") resolved a possible UAF issue in uprobes that attach
-non-sleepable bpf prog by explicitly waiting for a tasks-trace-RCU grace
-period. But, in the current implementation, synchronize_rcu_tasks_trace
-is included within the mutex critical section, which increases the
-length of the critical section and may affect performance. So let's move
-out synchronize_rcu_tasks_trace from mutex CS.
+This is more of a workaround for differences in gcc behavior.
+There is no way to cure it with a flag.
+While in this case -std will work. So use it.
+No need for extra hacks.
+There is no objective to produce c23 compliant vmlinux.h at the moment.
 
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
----
- kernel/trace/bpf_trace.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+> [2] https://gist.github.com/theihor/7e3341c5a1e1209a744994143abd9e62
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 48db147c6c7d..30ef8a6f5ca2 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -2245,12 +2245,15 @@ void perf_event_detach_bpf_prog(struct perf_event *event)
- {
- 	struct bpf_prog_array *old_array;
- 	struct bpf_prog_array *new_array;
-+	struct bpf_prog *prog;
- 	int ret;
- 
- 	mutex_lock(&bpf_event_mutex);
- 
--	if (!event->prog)
--		goto unlock;
-+	if (!event->prog) {
-+		mutex_unlock(&bpf_event_mutex);
-+		return;
-+	}
- 
- 	old_array = bpf_event_rcu_dereference(event->tp_event->prog_array);
- 	if (!old_array)
-@@ -2265,6 +2268,11 @@ void perf_event_detach_bpf_prog(struct perf_event *event)
- 	}
- 
- put:
-+	prog = event->prog;
-+	event->prog = NULL;
-+
-+	mutex_unlock(&bpf_event_mutex);
-+
- 	/*
- 	 * It could be that the bpf_prog is not sleepable (and will be freed
- 	 * via normal RCU), but is called from a point that supports sleepable
-@@ -2272,11 +2280,7 @@ void perf_event_detach_bpf_prog(struct perf_event *event)
- 	 */
- 	synchronize_rcu_tasks_trace();
- 
--	bpf_prog_put(event->prog);
--	event->prog = NULL;
--
--unlock:
--	mutex_unlock(&bpf_event_mutex);
-+	bpf_prog_put(prog);
- }
- 
- int perf_event_query_prog_array(struct perf_event *event, void __user *info)
--- 
-2.34.1
+/usr/include/x86_64-linux-gnu/bits/stdint-intn.h
+vs
+/ci/workspace/bpfgcc.20241229/lib/gcc/bpf-unknown-none/15.0.0/include/stdin=
+t.h
 
+looks like a configuration issue.
+We can skip test_cls_redirect*.c for now.
 
