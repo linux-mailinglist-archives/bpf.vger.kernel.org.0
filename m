@@ -1,157 +1,152 @@
-Return-Path: <bpf+bounces-47726-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47727-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48E089FEC74
-	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 04:00:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DA7A9FEC88
+	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 04:32:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 031A21882D96
-	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 03:00:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 467C71882F78
+	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 03:32:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03C3913C918;
-	Tue, 31 Dec 2024 03:00:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AC9C2114;
+	Tue, 31 Dec 2024 03:32:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EE072AE7F;
-	Tue, 31 Dec 2024 03:00:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BF7E22338
+	for <bpf@vger.kernel.org>; Tue, 31 Dec 2024 03:32:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735614039; cv=none; b=awojkQa9CNF83hK9eyFRf82SK/UyUR8xS8P15M/CLagme6TK+xxGZ5Nl1XCu98icgW9tB49VyuN2yBIcWnZg0szdaytIBzSIBULPkxIz9gGGwZf4YkCUYavqPV6uxlvPEb3NOmvixYbwy9ndsl5uHeW/TuR3c4TGCoC9RS9iMVs=
+	t=1735615962; cv=none; b=GnYzG9xQDIo36q+4M/DVRJAT5OuljL4boFRxLW3L+SoZ2nxfywnxixQZdTkh7fxDyR5Rbsegj4ceoasFIYgHZJmI3F316L3i04KWSGEHOIBsYwlfcaBkerjidk7mU7ayeE6CaAyLRidUE0jJK6zhllDGKebBH6FsjpKyuu5Dib8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735614039; c=relaxed/simple;
-	bh=bAUJk69tahyyoHl/5ij4AO2by4uQjV/xTwzsJrYzQ1c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pWr2bj5g8kiEzztGIO7hCQGLEaIPr+OKQ67Mm8eAl34Nt3CTUSKvvkwIGKE4TBm5Cj8XJm2as5kvWKlD5yx596X99Df7nS2P5mK4R4+sgx/bHaEuUMKtciUcbF+xkPouTbtNPEGvPnrLQd1HHcQS/5vi2gMDqgZ9oc9l8iRC/dA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 6384844ec72311efa216b1d71e6e1362-20241231
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.41,REQID:6d32dcf7-6313-4bcc-aac9-76275071eb13,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:6dc6a47,CLOUDID:fcda8dcb68b549cf40d5767336733e2e,BulkI
-	D:nil,BulkQuantity:0,Recheck:0,SF:80|81|82|83|102,TC:nil,Content:0|52,EDM:
-	-3,IP:nil,URL:1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,
-	AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 1,FCT|NGT
-X-CID-BAS: 1,FCT|NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-UUID: 6384844ec72311efa216b1d71e6e1362-20241231
-Received: from node4.com.cn [(10.44.16.170)] by mailgw.kylinos.cn
-	(envelope-from <xiaopei01@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 1642492231; Tue, 31 Dec 2024 11:00:27 +0800
-Received: from node4.com.cn (localhost [127.0.0.1])
-	by node4.com.cn (NSMail) with SMTP id B28C016002081;
-	Tue, 31 Dec 2024 11:00:27 +0800 (CST)
-X-ns-mid: postfix-67735E4B-627798623
-Received: from [10.42.13.56] (unknown [10.42.13.56])
-	by node4.com.cn (NSMail) with ESMTPA id 1AE1816002081;
-	Tue, 31 Dec 2024 03:00:27 +0000 (UTC)
-Message-ID: <8c81caea-dd2f-4f94-9a26-834fca574d40@kylinos.cn>
-Date: Tue, 31 Dec 2024 11:00:26 +0800
+	s=arc-20240116; t=1735615962; c=relaxed/simple;
+	bh=RyJYAHduaHEYk7xk6iqEAkjXkeKoha6H8AForLjCJ3k=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Dkmk1r6+kmeSlQjeEIR8grdu5Sgq0UeBLyMxDk8wWgwViV3DdsAAADRLAVHVORW/lT+qTHImB/LA/khoeG4711Oiv21F8XTIGKFCSsmws5GauHSC4qyGe8B4kmdH3+eEeAXZrL4+y0Aa3N/2LXcoXS1JLadOZ2NJA9H98RbcpxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YMdnd110Nz4f3jt1
+	for <bpf@vger.kernel.org>; Tue, 31 Dec 2024 11:32:21 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id E593D1A0CDA
+	for <bpf@vger.kernel.org>; Tue, 31 Dec 2024 11:32:35 +0800 (CST)
+Received: from ultra.huawei.com (unknown [10.90.53.71])
+	by APP4 (Coremail) with SMTP id gCh0CgD304fSZXNnpCR6GA--.61535S2;
+	Tue, 31 Dec 2024 11:32:35 +0800 (CST)
+From: Pu Lehui <pulehui@huaweicloud.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Jann Horn <jannh@google.com>,
+	Pu Lehui <pulehui@huawei.com>,
+	Pu Lehui <pulehui@huaweicloud.com>
+Subject: [PATCH bpf-next] bpf: Move out synchronize_rcu_tasks_trace from mutex CS
+Date: Tue, 31 Dec 2024 03:35:09 +0000
+Message-Id: <20241231033509.349277-1-pulehui@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bpf: Use refcount_t instead of atomic_t for mmap_count
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel test robot <lkp@intel.com>
-References: <6ecce439a6bc81adb85d5080908ea8959b792a50.1735542814.git.xiaopei01@kylinos.cn>
- <Z3LNEHfLmtSi4wpO@krava>
-From: Pei Xiao <xiaopei01@kylinos.cn>
-In-Reply-To: <Z3LNEHfLmtSi4wpO@krava>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgD304fSZXNnpCR6GA--.61535S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KrW7KF4rWr43KrWxAry7Jrb_yoW8ZrWkpF
+	4DC3s8Kr4UWr4jqw1rXrn7C34UA3ykX398Ja1UGa4rurWYgrZYgF1DKFWYqryF9rWxGFyI
+	qw1jqr17GFWjvaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+	67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1x
+	MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+	VFxhVjvjDU0xZFpf9x0JUd-B_UUUUU=
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 
+From: Pu Lehui <pulehui@huawei.com>
 
+Commit ef1b808e3b7c ("bpf: Fix UAF via mismatching bpf_prog/attachment
+RCU flavors") resolved a possible UAF issue in uprobes that attach
+non-sleepable bpf prog by explicitly waiting for a tasks-trace-RCU grace
+period. But, in the current implementation, synchronize_rcu_tasks_trace
+is included within the mutex critical section, which increases the
+length of the critical section and may affect performance. So let's move
+out synchronize_rcu_tasks_trace from mutex CS.
 
-=E5=9C=A8 2024/12/31 00:40, Jiri Olsa =E5=86=99=E9=81=93:
-> On Mon, Dec 30, 2024 at 03:16:55PM +0800, Pei Xiao wrote:
->> Use an API that resembles more the actual use of mmap_count.
->=20
-> I'm not sure I understand the issue, could you provide more details?
->=20
-hi,
-refcount_t type which allows us to catch overflow and underflow issues.
+Signed-off-by: Pu Lehui <pulehui@huawei.com>
+---
+ kernel/trace/bpf_trace.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-thanks!
-Pei.
-> thanks,
-> jirka
->=20
->>
->> Found by cocci:
->> kernel/bpf/arena.c:245:6-25: WARNING: atomic_dec_and_test variation be=
-fore object free at line 249.
->>
->> Fixes: b90d77e5fd78 ("bpf: Fix remap of arena.")
->> Reported-by: kernel test robot <lkp@intel.com>
->> Closes: https://lore.kernel.org/oe-kbuild-all/202412292037.LXlYSHKl-lk=
-p@intel.com/
->> Signed-off-by: Pei Xiao <xiaopei01@kylinos.cn>
->> ---
->>  kernel/bpf/arena.c | 8 ++++----
->>  1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
->> index 945a5680f6a5..8caf56a308d9 100644
->> --- a/kernel/bpf/arena.c
->> +++ b/kernel/bpf/arena.c
->> @@ -218,7 +218,7 @@ static u64 arena_map_mem_usage(const struct bpf_ma=
-p *map)
->>  struct vma_list {
->>  	struct vm_area_struct *vma;
->>  	struct list_head head;
->> -	atomic_t mmap_count;
->> +	refcount_t mmap_count;
->>  };
->> =20
->>  static int remember_vma(struct bpf_arena *arena, struct vm_area_struc=
-t *vma)
->> @@ -228,7 +228,7 @@ static int remember_vma(struct bpf_arena *arena, s=
-truct vm_area_struct *vma)
->>  	vml =3D kmalloc(sizeof(*vml), GFP_KERNEL);
->>  	if (!vml)
->>  		return -ENOMEM;
->> -	atomic_set(&vml->mmap_count, 1);
->> +	refcount_set(&vml->mmap_count, 1);
->>  	vma->vm_private_data =3D vml;
->>  	vml->vma =3D vma;
->>  	list_add(&vml->head, &arena->vma_list);
->> @@ -239,7 +239,7 @@ static void arena_vm_open(struct vm_area_struct *v=
-ma)
->>  {
->>  	struct vma_list *vml =3D vma->vm_private_data;
->> =20
->> -	atomic_inc(&vml->mmap_count);
->> +	refcount_inc(&vml->mmap_count);
->>  }
->> =20
->>  static void arena_vm_close(struct vm_area_struct *vma)
->> @@ -248,7 +248,7 @@ static void arena_vm_close(struct vm_area_struct *=
-vma)
->>  	struct bpf_arena *arena =3D container_of(map, struct bpf_arena, map)=
-;
->>  	struct vma_list *vml =3D vma->vm_private_data;
->> =20
->> -	if (!atomic_dec_and_test(&vml->mmap_count))
->> +	if (!refcount_dec_and_test(&vml->mmap_count))
->>  		return;
->>  	guard(mutex)(&arena->lock);
->>  	/* update link list under lock */
->> --=20
->> 2.25.1
->>
->>
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 48db147c6c7d..30ef8a6f5ca2 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -2245,12 +2245,15 @@ void perf_event_detach_bpf_prog(struct perf_event *event)
+ {
+ 	struct bpf_prog_array *old_array;
+ 	struct bpf_prog_array *new_array;
++	struct bpf_prog *prog;
+ 	int ret;
+ 
+ 	mutex_lock(&bpf_event_mutex);
+ 
+-	if (!event->prog)
+-		goto unlock;
++	if (!event->prog) {
++		mutex_unlock(&bpf_event_mutex);
++		return;
++	}
+ 
+ 	old_array = bpf_event_rcu_dereference(event->tp_event->prog_array);
+ 	if (!old_array)
+@@ -2265,6 +2268,11 @@ void perf_event_detach_bpf_prog(struct perf_event *event)
+ 	}
+ 
+ put:
++	prog = event->prog;
++	event->prog = NULL;
++
++	mutex_unlock(&bpf_event_mutex);
++
+ 	/*
+ 	 * It could be that the bpf_prog is not sleepable (and will be freed
+ 	 * via normal RCU), but is called from a point that supports sleepable
+@@ -2272,11 +2280,7 @@ void perf_event_detach_bpf_prog(struct perf_event *event)
+ 	 */
+ 	synchronize_rcu_tasks_trace();
+ 
+-	bpf_prog_put(event->prog);
+-	event->prog = NULL;
+-
+-unlock:
+-	mutex_unlock(&bpf_event_mutex);
++	bpf_prog_put(prog);
+ }
+ 
+ int perf_event_query_prog_array(struct perf_event *event, void __user *info)
+-- 
+2.34.1
 
 
