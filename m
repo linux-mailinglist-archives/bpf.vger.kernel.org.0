@@ -1,104 +1,108 @@
-Return-Path: <bpf+bounces-47730-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47731-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C4639FEEC9
-	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 11:37:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 915E99FF063
+	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 16:50:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A00F33A25DE
-	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 10:37:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BED0D3A2D30
+	for <lists+bpf@lfdr.de>; Tue, 31 Dec 2024 15:50:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EFB8192B90;
-	Tue, 31 Dec 2024 10:37:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF2D81A2550;
+	Tue, 31 Dec 2024 15:48:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="UEC2ZwhD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gOkH4oyP"
 X-Original-To: bpf@vger.kernel.org
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA8E813D521;
-	Tue, 31 Dec 2024 10:36:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1724B1A08B1;
+	Tue, 31 Dec 2024 15:48:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735641425; cv=none; b=ptE4bPan0kktAudBErgHNHFb9FRyIAeYhVT9sijO/wfO51PvS84N3CKXYpBj3XHdenf55t8FlxY5exM7dfofzpASyaSP86b6SOVXhR7CBiYN4O5iVclLWBG4lCvm+y/ARcoLzEhw8dLiVBVUwuWIHHZlHuDtwF9EVno6i/E4cOY=
+	t=1735660097; cv=none; b=m5YA9LlolGFmt3lqgVbNiKZDCqrjPjxvWLdRltD1yzvL0GFe8w7KpHc7QW48/yOBSwF1HcB3zSmpeIDlu7Oc/3hYMx/lVxA6Gm4rNpZ6k81jBUtamYw3HhdDfS1N90Q8BCsJnp5KytnWm3JMsYn2Hwv5wDhXetM37io/ZWFlj8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735641425; c=relaxed/simple;
-	bh=4WpB7p6ZcZfKydZjt9Pw6SFgQmWRdOIiB6z20vQcdqg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H4ITaCkmLPVQ6jHJHL1lcpHar/gDDv0T7fTshudDC236slBMl9DzxkeChYc0YElvXj8iLxpfywdOm4Ok5hgULLdvYhvwkRqsaSOIufoKArthKUadCRGOv5mJGes3dsGJRc5cvuwTq+sTUFebDGvWKZyeo65EmbLe89XKtKLesg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=UEC2ZwhD; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1735641050;
-	bh=4WpB7p6ZcZfKydZjt9Pw6SFgQmWRdOIiB6z20vQcdqg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UEC2ZwhDxV5XTXZrc9RSUrw990XCjxNtuzV1rt4h9taux0InFTexNqNvKISUQnu9M
-	 ANQRa+jNB+4qFDnWpi4a4kRn2pMBslONPxV4D4jq32v+cuC03aKz2cIlMx2ocJ1GXg
-	 MS+kr7jeBlqxCdj2D+xwmyVbnKSSvy+11GntmUOI=
-Date: Tue, 31 Dec 2024 11:30:50 +0100
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Naveen N Rao <naveen@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Luis Chamberlain <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>, 
-	Sami Tolvanen <samitolvanen@google.com>, Daniel Gomez <da.gomez@samsung.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	ppc-dev <linuxppc-dev@lists.ozlabs.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-modules@vger.kernel.org, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH v2 0/3] sysfs: constify bin_attribute argument of
- sysfs_bin_attr_simple_read()
-Message-ID: <0cbfd352-ee3b-4670-afae-8e56d888e8c3@t-8ch.de>
-References: <20241228-sysfs-const-bin_attr-simple-v2-0-7c6f3f1767a3@weissschuh.net>
- <CAADnVQ+E0z8mY4BF9qamPh1XV9qs2jZ03bfYz2tVw8E4nFVWBw@mail.gmail.com>
+	s=arc-20240116; t=1735660097; c=relaxed/simple;
+	bh=r7tf2xE0jrAAyvYeMWSfyNsjAJXOkaB/xJW3hNeRhRU=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=MAFl8XWQAznr7tGMRvXYXOB2C22krA8cnb127D7pQtx4WUUxWob6pihbODmQTPt2KvbQETEZQZXiKpdeNhCZFhXTzB4qY4/eXIrkiwRzvWLYrY82cQI8a5cgC7BDyGH+qgpQFrMjbF4bf1ONtlfW1LOZ+KY4t8973ZupnDUSetA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gOkH4oyP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD423C4CED2;
+	Tue, 31 Dec 2024 15:48:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1735660096;
+	bh=r7tf2xE0jrAAyvYeMWSfyNsjAJXOkaB/xJW3hNeRhRU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=gOkH4oyPmdA8sxYEPZek8TjUUApOsoqGuOTog4bxkEGx6NNJsMSTO2qjxNJN3j90h
+	 YYrITjQMV0vO0NAAT1qMMs/oJBp8yQDTbM5+CFPBUt/C+qlOV4e7VodZnY0kMcuXwf
+	 bjz+OuWEFvEy6Qp9/s2t9cWLnzPKmERrH3T7jOjURtb4IPu3Y/56WF4GIg8+Xs6CRE
+	 +mkQ7G0w2jKUCfzq0Ndh2TF9gfGh9AV2algHD/KmGN958jOeYzqK+BZeJcKNYy4XDn
+	 MPAmq5tjtvzenb3Rjw894IB/yuVcW3fALTMgeL4GxxCGMVPxWFvTUCp9ULn7HSMq24
+	 olcSVf1vfQCBg==
+Date: Wed, 1 Jan 2025 00:48:11 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Jiri Olsa
+ <jolsa@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, linux-arch@vger.kernel.org
+Subject: Re: [PATCH v22 20/20] bpf: Use ftrace_get_symaddr() for
+ kprobe_multi probes
+Message-Id: <20250101004811.b72e32be7e9649e690738dec@kernel.org>
+In-Reply-To: <20241227102452.14a1c2d9@gandalf.local.home>
+References: <173518987627.391279.3307342580035322889.stgit@devnote2>
+	<173519012541.391279.12203132904339088937.stgit@devnote2>
+	<20241226212339.2f871f94@batman.local.home>
+	<20241226212453.7b0aa119@batman.local.home>
+	<20241227102452.14a1c2d9@gandalf.local.home>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQ+E0z8mY4BF9qamPh1XV9qs2jZ03bfYz2tVw8E4nFVWBw@mail.gmail.com>
 
-On 2024-12-30 16:50:41-0800, Alexei Starovoitov wrote:
-> On Sat, Dec 28, 2024 at 12:43 AM Thomas Weißschuh <linux@weissschuh.net> wrote:
-> >
-> > Most users use this function through the BIN_ATTR_SIMPLE* macros,
-> > they can handle the switch transparently.
-> >
-> > This series is meant to be merged through the driver core tree.
+On Fri, 27 Dec 2024 10:24:52 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Thu, 26 Dec 2024 21:24:53 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
 > 
-> hmm. why?
+> > > On my 32bit build, I hit a new warning;
+> > > 
+> > > kernel/trace/bpf_trace.c:1073:22: warning: ‘ftrace_get_entry_ip’ defined but not used [-Wunused-function]
+> > >  1073 | static unsigned long ftrace_get_entry_ip(unsigned long fentry_ip)
+> > >       |                      ^~~~~~~~~~~~~~~~~~~
+> > > 
+> > > Config attached.  
+> > 
+> > 
+> > Since this is the last patch of the series, just send a new patch for this one.
+> > I'll continue testing the rest of the patches.
+> 
+> The tests passed without this patch so I applied them to my for-next branch.
 
-Patch 1 changes the signature of sysfs_bin_attr_simple_read().
-Before patch 1 sysfs_bin_attr_simple_read() needs to be assigned to the
-callback member .read, after patch 1 it's .read_new.
-(Both callbacks work exactly the same, except for their signature,
-.read_new is only a transition mechanism and will go away again)
+Thanks!
 
-> I'd rather take patches 2 and 3 into bpf-next to avoid
-> potential conflicts.
-> Patch 1 looks orthogonal and independent.
+> 
+> If you fix this, you just need to send this patch only.
 
-If you pick up 2 and 3 through bpf-next you would need to adapt these
-assignments. As soon as both patch 1 and the modified 2 and 3 hit
-Linus' tree, the build would break due to mismatches function pointers.
-(Casting function pointers to avoid the mismatch will blow up with KCFI)
-Of course Linus can fix this up easily, but it somebody would need to
-keep track of it and I wanted to avoid manual intervention.
-Or we spread out both parts over two development cycles; maybe Greg can
-even pick up patch 1 late in the 6.13 cycle.
 
-Personally I am fine with any approach.
+OK, let me fix this issue. 
+
+> 
+> Thanks,
+> 
+> -- Steve
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
