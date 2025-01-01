@@ -1,267 +1,114 @@
-Return-Path: <bpf+bounces-47737-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47738-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDE359FF4A6
-	for <lists+bpf@lfdr.de>; Wed,  1 Jan 2025 17:56:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 238739FF4DD
+	for <lists+bpf@lfdr.de>; Wed,  1 Jan 2025 21:37:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE6203A1A35
-	for <lists+bpf@lfdr.de>; Wed,  1 Jan 2025 16:56:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF28B1616A1
+	for <lists+bpf@lfdr.de>; Wed,  1 Jan 2025 20:37:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D63821E284B;
-	Wed,  1 Jan 2025 16:56:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D01431E2844;
+	Wed,  1 Jan 2025 20:37:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="enVNLSQj"
+	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="fLudzdeJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5C001E25E4;
-	Wed,  1 Jan 2025 16:56:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45D1B2A1D8
+	for <bpf@vger.kernel.org>; Wed,  1 Jan 2025 20:37:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735750600; cv=none; b=QwCpFxVFvEQHdh+datsTwBlNERJbGGiYD+3lpSBjYuLw2clNHRDwumg6DnZ9vsuEaX0xm09KH75yIfQ4FT9xVoPRc1HRZQfXTEPrJlNo22BCYOLw1HMbsxIx3JHFF8C1qnYBqyPIZ1HWYemO6j173PcaGeHVm64H6v+7G+DyHkA=
+	t=1735763856; cv=none; b=a/zCfF4oQzo3tUTfxcq4XR6uIho7i5hKsVOTFms3zVw/2n+M476PCiGbTZs1eyNDOk3JnkmCx347c6lIiRfVUmY1ODHaGniYHzWTAnrUzlit3fXIJtYCQi29LpLyuW9+OJOLBEpcoVEWR9a8mcJmDqbtwXdCUzUADE7yDxwTnWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735750600; c=relaxed/simple;
-	bh=aELZyPJi0BfxaGsmT5p/362suEMdiC8angLtvKZN8oQ=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oHtyfvj0qkAE2lj6rxBeFWJ4seljGryNtNMRr3dgaBCSEJLQVGSu9ejUE845eZtlQLZ+KpocpBCK2l8FZj2u9AwqTEryl8ZRot3DGCoWJSocSLG7loEidrdQSRTraSKUnvSW0qdpc4/fuaLEG89CT6ijngXU1R8urkfC6O22/eM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=enVNLSQj; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5d3e9f60bf4so18471635a12.3;
-        Wed, 01 Jan 2025 08:56:38 -0800 (PST)
+	s=arc-20240116; t=1735763856; c=relaxed/simple;
+	bh=mafagfzhEP12oo2FlLNSj74xkQf3q9qe2L1TXsQ3U2Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=b9tMbS2Sv3XhwywwTrud0q17QUNfkEtFBTHo2V4wQ2de55GouZQRMaKOZPHwkzDTtrO9rvhSiInaSwNQ77YrPAwO4djNKhcWg2U+T/dW8T16070bEJWuq1Re0jkSQLxwcQGwyrXvseZ7shbXGiaSvV45myRCtZ+QKpNZmB7zVvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=fLudzdeJ; arc=none smtp.client-ip=209.85.222.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-7b9c6c2c44eso656994085a.1
+        for <bpf@vger.kernel.org>; Wed, 01 Jan 2025 12:37:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735750597; x=1736355397; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yDyQxpwaTa1CU6hL48LF11VakYGEcJu7kScqwUzEewk=;
-        b=enVNLSQjNi+ZgBMvUWRxcuGXSQQOfQSffbGRO+DZ59rkQdmrGFbz1nlF4QYJjdJuC/
-         mTBIYFYs4hHqxt1uOFZS8j9p+/yXc5uVXws3rB0pCaGX2dfotOOCWEkj3tHmgDabFP1u
-         gnmaw+FNzLolnzquFFgLr1EBZIkh9+bzb+tECzZMm7/NjzpjfiLIGMywyohcemmllYkJ
-         mGWxBkF/O1DMSi1+ZX6nnM7HE8bHj2SnyAUpCpxkylTLkLuBfBGKUzMg6eOFNuJKbZk7
-         p2QxuUBNZNKJOzyz3puA66e6TipzP2tHrEYqRUzChyB2HDY9MApU8AeUjr9DSQlkcd0h
-         pSJA==
+        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1735763853; x=1736368653; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ip6u4H6Qm+AOB0ufX6FO514o+Zbxgltkn9qiW74ogXY=;
+        b=fLudzdeJZxj2ZPwwspkqgDFzW5XlxKKHTwDPBfh4GtBiAVgjrI9GImnNnl9EUyYqsw
+         pElCGr330HHSR2s4QjR+t4eI8ZQbm7XPWmOJaUORBg/S7rodg3eNFBnGVMlgi6pHDk7X
+         +VL+uI5wC91QCWpREtMuJXTTePaddEndOsruzUE60f2uH1TLgrNwwLjBb3DzDQCHcVlq
+         hhEkLD0xSxbubAa81j8g/iRYIPsL99l7CwobDkoVBN+iH1isYffnYEpB4P2weitcWHz5
+         CqCWQqYGaYwdB4CtRvHT1BR1O60muZRYlfxtWfg01JAoopMXQgojZIRNrBHKtvEfPrH9
+         +lZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735750597; x=1736355397;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yDyQxpwaTa1CU6hL48LF11VakYGEcJu7kScqwUzEewk=;
-        b=w8wUIXL7vKko+f4E2jc+65kdDrBjQh7/xhXyLI2hIjlgv9myp7afG/eTceNsiRt1E0
-         mZEAOHcK5wV5RQcQlLBxr3f8ctnHSgsNAmYcRyiYeCkGZR1Gd4e78awoIPJli2mQkSGO
-         ltkIOAqXO+ivJT8YT89/FXg92muk+HAQUGcGb55MLiHI9vqNECdeHjsgHa/ceO/RTQLw
-         y9gfjIphhrweQBw6StTqpO1ecD7CpcZKzmaKZkRtn2xXFPnyR7EgNVvXOpHz0XMdZdTV
-         Ha03RGJ5v9KKTRyi5LdnbkjAEuB9Z4nYtKgON3yZJhqSsh8DKufw+lDVhUDOchnqOqYo
-         5hiA==
-X-Forwarded-Encrypted: i=1; AJvYcCX5RGN856ffLTtl+xRIl+odxrLCNF1871amx94/vc5+yESjVVEpEauROZSx4AgiNI0g19M=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx+ctsRPLUQ4xdxuCktvvIDMQwkfT3z7Juf/qrDM4IZeMPWTIsa
-	jvRHqUPkWxgP92jg2TGksdyca/fIdTJGDcn1kiha2xYC+TqRnLUr
-X-Gm-Gg: ASbGncvSnFQXzgXrxyoAc6FgdjrKLhnrib64XsLLS1RiiGpjPLTAZslxjChe+O1GOY6
-	Q3ehukmYhtHgxRrSa6HouXnPN+vU3rlaG+ox3vWDvang6Mn2k9ao0QtRrcGy4LSyDDo759rnfee
-	zBvMVXHjwUn+H/x4qBWbw6z3YyXlGhxmVeBLnGteOiyUCjdKMvCPI7l8oVkIwej7vJd8T5Jlkh4
-	Z67t65PICTKEPU3Nvu9qsG586iEbm8y4ackC59kvSnVBtWDnmNs1S57By85j04=
-X-Google-Smtp-Source: AGHT+IF6JZVHFV57AufkieL/1LDs7eilwzPv0engqVNrEweuGPm2s97MZ6DzDfo5SfeaNxkwcktohw==
-X-Received: by 2002:a05:6402:5109:b0:5d3:e766:6140 with SMTP id 4fb4d7f45d1cf-5d81de22cb7mr37260840a12.24.1735750596641;
-        Wed, 01 Jan 2025 08:56:36 -0800 (PST)
-Received: from krava (85-193-35-38.rib.o2.cz. [85.193.35.38])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d80701bf20sm17316005a12.83.2025.01.01.08.56.35
+        d=1e100.net; s=20230601; t=1735763853; x=1736368653;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ip6u4H6Qm+AOB0ufX6FO514o+Zbxgltkn9qiW74ogXY=;
+        b=wSaRcN4m6A49v30O0FpT1/QzCrSRKXerqNB06l/VYzSEyUNHPgQjkaCdpU6b4v7Cxq
+         fjAahvDVD3nZNqBUMpLTvtc78vaP8ZHSe76jzY4JOBqeF0tJEtwyXdeQIwxdiIQj+cgI
+         m04pzpyIFsFfmtWDvTgQ+sxVRHDE+cA6o61ropJLW/tQwiaFpb+wUYSkkzrgLLTB+4lr
+         /0FMUGZ6Yvb1ulUq8oj4h8DBM71fYS1WesX9BxH2BwQY3F4Wqyci7x66VVIuROUG5Rf7
+         XVErbP6MOQgHza3JEfY488d4s6RtBMxHhN/90VW49FmUwoQkrd83v7XMZaOcHjygYLbc
+         2JkA==
+X-Gm-Message-State: AOJu0Yxv6ISQnF1BtHFnybjgxFCfpm4qrp4AGTR4QX5SGoEyRV5dVcgM
+	EBwUp6MJjSKccU19aLUMGg+ezLd6+RYI/g+j2YTCW3TfGbLnQsn/BQuYWHxon6uygbCqlm3oJEw
+	YDahF2g==
+X-Gm-Gg: ASbGncuYxxMYv/bBckLZT8MF69n6ztcM8MQ/RrUlI5KnOPK+HT54ygXkSZviRkcR4lq
+	aCjtUygq3zsu5lMTWaVgqVV6vFpGepdVBihIYU+YqYHtYc1M3NDLNUsl5T08lBVAYiK6LMqRy1m
+	UdNT3HNv4uvnCvrC0kMd+PLvQrNHivY0chCOMpv7aBUl6F758FfjjCu94t/cdHVBxHt8IRZW6L2
+	DtqqfPtulXGr367Gz9pwejqqeJD8a9z1lY2R9noW/S36r873ig=
+X-Google-Smtp-Source: AGHT+IFSuISZ4Sin47xrgRG1iLl/PNpU/ZE4vceflapbUGu5xz/G4iWTAkGJYzu+wwI1HAjxuSAFfQ==
+X-Received: by 2002:a05:620a:2986:b0:7b6:efd0:3d1e with SMTP id af79cd13be357-7b9ba810fc1mr6389283685a.53.1735763853116;
+        Wed, 01 Jan 2025 12:37:33 -0800 (PST)
+Received: from boreas.. ([38.98.88.182])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-46a3eb30dc4sm128358131cf.76.2025.01.01.12.37.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jan 2025 08:56:36 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 1 Jan 2025 17:56:34 +0100
-To: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: dwarves@vger.kernel.org, acme@kernel.org, alan.maguire@oracle.com,
-	eddyz87@gmail.com, andrii@kernel.org, mykolal@fb.com,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH dwarves v3 3/8] btf_encoder: introduce elf_functions
- struct type
-Message-ID: <Z3VzwnXfKIKMi5TX@krava>
-References: <20241221012245.243845-1-ihor.solodrai@pm.me>
- <20241221012245.243845-4-ihor.solodrai@pm.me>
+        Wed, 01 Jan 2025 12:37:32 -0800 (PST)
+From: Emil Tsalapatis <emil@etsalapatis.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	Emil Tsalapatis <emil@etsalapatis.com>
+Subject: [PATCH 0/2] bpf: Allow bpf_for/bpf_repeat while holding spin
+Date: Wed,  1 Jan 2025 15:37:29 -0500
+Message-ID: <20250101203731.1651981-1-emil@etsalapatis.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241221012245.243845-4-ihor.solodrai@pm.me>
+Content-Transfer-Encoding: 8bit
 
-On Sat, Dec 21, 2024 at 01:23:10AM +0000, Ihor Solodrai wrote:
+From: Emil Tsalapatis (Meta) <emil@etsalapatis.com>
 
-SNIP
+In BPF programs, kfunc calls while holding a lock are not allowed
+because kfuncs may sleep by default. The exception to this rule are the
+functions in special_kfunc_list, which are guaranteed to not sleep. The
+bpf_iter_num_* functions used by the bpf_for and bpf_repeat macros make
+no function calls themselves, and as such are guaranteed to not sleep.
+Add them to special_kfunc_list to allow them within BPF spinlock
+critical sections.
 
-> -static int btf_encoder__collect_function(struct btf_encoder *encoder, GElf_Sym *sym)
-> +static void elf_functions__collect_function(struct elf_functions *functions, GElf_Sym *sym)
->  {
-> -	struct elf_function *new;
-> +	struct elf_function *func;
->  	const char *name;
->  
->  	if (elf_sym__type(sym) != STT_FUNC)
-> -		return 0;
-> -	name = elf_sym__name(sym, encoder->symtab);
-> -	if (!name)
-> -		return 0;
-> +		return;
->  
-> -	if (encoder->functions.cnt == encoder->functions.allocated) {
-> -		new = reallocarray_grow(encoder->functions.entries,
-> -					&encoder->functions.allocated,
-> -					sizeof(*encoder->functions.entries));
-> -		if (!new) {
-> -			/*
-> -			 * The cleanup - delete_functions is called
-> -			 * in btf_encoder__encode_cu error path.
-> -			 */
-> -			return -1;
-> -		}
-> -		encoder->functions.entries = new;
-> -	}
-> +	name = elf_sym__name(sym, functions->symtab);
-> +	if (!name)
-> +		return;
->  
-> -	memset(&encoder->functions.entries[encoder->functions.cnt], 0,
-> -	       sizeof(*new));
-> -	encoder->functions.entries[encoder->functions.cnt].name = name;
-> +	func = &functions->entries[functions->cnt];
-> +	func->name = name;
->  	if (strchr(name, '.')) {
->  		const char *suffix = strchr(name, '.');
-> -
+Signed-off-by: Emil Tsalapatis (Meta) <emil@etsalapatis.com>
 
-nit, let's keep that new line after declaration
+Emil Tsalapatis (2):
+  bpf: Allow bpf_for/bpf_repeat calls while holding a spinlock
+  selftests/bpf: test bpf_for within spin lock section
 
-> -		encoder->functions.suffix_cnt++;
-> -		encoder->functions.entries[encoder->functions.cnt].prefixlen = suffix - name;
-> +		functions->suffix_cnt++;
-> +		func->prefixlen = suffix - name;
->  	} else {
-> -		encoder->functions.entries[encoder->functions.cnt].prefixlen = strlen(name);
-> +		func->prefixlen = strlen(name);
->  	}
-> -	encoder->functions.cnt++;
-> -	return 0;
-> +
-> +	functions->cnt++;
->  }
->  
->  static struct elf_function *btf_encoder__find_function(const struct btf_encoder *encoder,
-> @@ -2126,26 +2103,56 @@ int btf_encoder__encode(struct btf_encoder *encoder)
->  	return err;
->  }
->  
-> -
-> -static int btf_encoder__collect_symbols(struct btf_encoder *encoder)
-> +static int elf_functions__collect(struct elf_functions *functions)
->  {
-> -	uint32_t sym_sec_idx;
-> +	uint32_t nr_symbols = elf_symtab__nr_symbols(functions->symtab);
-> +	struct elf_function *tmp;
-> +	Elf32_Word sym_sec_idx;
->  	uint32_t core_id;
->  	GElf_Sym sym;
-> +	int err;
->  
-> -	elf_symtab__for_each_symbol_index(encoder->symtab, core_id, sym, sym_sec_idx) {
-> -		if (btf_encoder__collect_function(encoder, &sym))
-> -			return -1;
-> +	/* We know that number of functions is less than number of symbols,
-> +	 * so we can overallocate temporarily.
-> +	 */
-> +	functions->entries = calloc(nr_symbols, sizeof(*functions->entries));
-> +	if (!functions->entries) {
-> +		err = -ENOMEM;
-> +		goto out_free;
+ kernel/bpf/verifier.c                         | 20 +++++++++++++-
+ .../selftests/bpf/progs/verifier_spin_lock.c  | 26 +++++++++++++++++++
+ 2 files changed, 45 insertions(+), 1 deletion(-)
 
-you could just return -ENOMEM here
+-- 
+2.47.1
 
-> +	}
-> +
-> +	functions->cnt = 0;
-> +	elf_symtab__for_each_symbol_index(functions->symtab, core_id, sym, sym_sec_idx) {
-> +		elf_functions__collect_function(functions, &sym);
->  	}
->  
-> -	if (encoder->functions.cnt) {
-> -		qsort(encoder->functions.entries, encoder->functions.cnt, sizeof(encoder->functions.entries[0]),
-> +	if (functions->cnt) {
-> +		qsort(functions->entries,
-> +		      functions->cnt,
-> +		      sizeof(*functions->entries),
->  		      functions_cmp);
-
-nit, why not keep the single line?
-
-> -		if (encoder->verbose)
-> -			printf("Found %d functions!\n", encoder->functions.cnt);
-> +	} else {
-> +		err = 0;
-> +		goto out_free;
-> +	}
-> +
-> +	/* Reallocate to the exact size */
-> +	tmp = realloc(functions->entries, functions->cnt * sizeof(struct elf_function));
-> +	if (tmp) {
-> +		functions->entries = tmp;
-> +	} else {
-> +		fprintf(stderr, "could not reallocate memory for elf_functions table\n");
-> +		err = -ENOMEM;
-> +		goto out_free;
->  	}
->  
->  	return 0;
-> +
-> +out_free:
-> +	free(functions->entries);
-> +	functions->entries = NULL;
-> +	functions->cnt = 0;
-> +	return err;
->  }
->  
->  static bool ftype__has_arg_names(const struct ftype *ftype)
-> @@ -2406,6 +2413,7 @@ struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filenam
->  				printf("%s: '%s' doesn't have symtab.\n", __func__, cu->filename);
->  			goto out;
->  		}
-> +		encoder->functions.symtab = encoder->symtab;
-
-I was wondering if we need to keep both symtab pointers, but it's sorted
-out in the next patch ;-)
- 
-thanks,
-jirka
-
->  
->  		/* index the ELF sections for later lookup */
->  
-> @@ -2444,7 +2452,7 @@ struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filenam
->  		if (!found_percpu && encoder->verbose)
->  			printf("%s: '%s' doesn't have '%s' section\n", __func__, cu->filename, PERCPU_SECTION);
->  
-> -		if (btf_encoder__collect_symbols(encoder))
-> +		if (elf_functions__collect(&encoder->functions))
->  			goto out_delete;
->  
->  		if (encoder->verbose)
-> @@ -2476,7 +2484,7 @@ void btf_encoder__delete(struct btf_encoder *encoder)
->  	encoder->btf = NULL;
->  	elf_symtab__delete(encoder->symtab);
->  
-> -	encoder->functions.allocated = encoder->functions.cnt = 0;
-> +	encoder->functions.cnt = 0;
->  	free(encoder->functions.entries);
->  	encoder->functions.entries = NULL;
->  
-> -- 
-> 2.47.1
-> 
-> 
-> 
 
