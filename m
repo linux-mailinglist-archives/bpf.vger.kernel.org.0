@@ -1,213 +1,208 @@
-Return-Path: <bpf+bounces-47791-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47792-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 061C1A00174
-	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 00:04:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 81E04A0017D
+	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 00:10:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D58E63A372B
-	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 23:04:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B1CB3A3768
+	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 23:10:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DA491B4F04;
-	Thu,  2 Jan 2025 23:04:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D36F1BC085;
+	Thu,  2 Jan 2025 23:10:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DQTvZTYO"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="GjDxJwkr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-0201.mail-europe.com (mail-0201.mail-europe.com [51.77.79.158])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73B2C224F0
-	for <bpf@vger.kernel.org>; Thu,  2 Jan 2025 23:04:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 604A6149E00
+	for <bpf@vger.kernel.org>; Thu,  2 Jan 2025 23:09:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.77.79.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735859080; cv=none; b=s6x5r0KOhV1PYUbuMjyI1cTKPXcfmJiBU+eeEP//s7HfYRwcllwiE5iJFQIm9mOD5eJkrzPCQJsp2GveLWS+BLxYpRaI0Jd1Ww8kFgNUK01DnOoXuRibfrFODJyaoskXLEoYpFLA+5oaMUADiriqFNXM9IQ+o77oDFha4YXgqbw=
+	t=1735859399; cv=none; b=tg6kxzIOkv0CKjV6lv1CXsssNJA1PdAj3NDtSlaJ01eiv5yN5AZQ7JDKuWysbTZ8gXX29DqLK+0j5nzCTl5D4M9Y2JEmT2KtGghp1NEalG3JFkfvnowKdz33v79YZeHHzNRDjxhcK4+PzxuvOtoPC3FTSWVr+yr099PStmAQ6hY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735859080; c=relaxed/simple;
-	bh=DokGzzFbOjvCtWpufzC1GkQm9PYuxXNzw201Se22cM4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=tUW7ebdiJBQCYEixYc1bSau9xZ26Tpa+AdnRE8AxoLSchMpGwzTVVMgHc5YUCgSQgb3DX1nimq0mERnsVqF1RoZTjpGdvz3fvNTwR8H+pide+tjEEdBLA+sd4FsycyChKQbaZpnVAWB4Dbc4eaD0IAh/u1svQEjFK3VmgADDGHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DQTvZTYO; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2167141dfa1so158635075ad.1
-        for <bpf@vger.kernel.org>; Thu, 02 Jan 2025 15:04:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735859078; x=1736463878; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=eErom6ud3khX44+dOquQHaQg8gNP6zIPpGREZq/z+qw=;
-        b=DQTvZTYOOPCI/9/ivW+KfKAvFMbM41KZBX7W+msZhCgX5LsL/Y9jFV2ZNKNY52Oyfw
-         HHWBoIm/vzUXopo0RcLqAeqznZsSxh3/FnYcVF8xKEpN7MfszYG5ElRMeWk3vrYmr1eh
-         M3DN3tu0YSXen0qpN00GDaaa1ztUTW7K1DdD22i5tcJOXi3e3yEGnqeECMdNjF5LFVM6
-         CT9IG2wXH8QU1wBk09kJPguPsNMzfe3ey2IUXYXGvgIM9O5kuf5fzrTw0RFI3r6Yq35i
-         qgB3SbXtLaFuyhsMVRw7GdpMFn2Ub8K9OTyCZRGSThPhUc9J09LImiU7xqP4KmveSQes
-         /bvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735859078; x=1736463878;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eErom6ud3khX44+dOquQHaQg8gNP6zIPpGREZq/z+qw=;
-        b=xF8u8K0pALbyVuvEk+s/VTFtExipa3gsebgRCCau/Q5kKObTLtGq+uZ0iK5IDxuKD4
-         6pGdSiOKtA6EOINoZvihU741+yHUxW2N4XpE5dCnRxeGFX9qS68uWXIQOwuL/wrHdMMf
-         6BQv25BGUiKEY0ZpxuPz3d+GWXeguqjx8dtqEHHZDSWvG9iaYFeRvfh2dW1Ztz2gEMyV
-         VHqZuBGdO+3I/QKiHRMAZXVLQrdsJMA0VXaUj+GA1tXwL32ghGpeg6P7ty9iMq+gTjrs
-         h9IoKlZnFSqI1UVbCW5kc3D6nYXOhREBArsVdCaHgqRp5h8FMxslUJ7H9AuLVI8hlrQn
-         VCGw==
-X-Forwarded-Encrypted: i=1; AJvYcCUPMAiftbziZLakKcBRBepGDaIBsMmSMtRrs+E4rbg9lAykQxaXEgobeh75hFOksD0akbU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxBlkN803g+HAkTBoVIjIVgGl8Ny+ifg6N0bUgzr+OgzSqLWP5T
-	N77X6gui7wb+w/aMF8gteqokMuz5Xp1uZdhMc5oovk1QQDJOiTxw
-X-Gm-Gg: ASbGnctyMNFNZ8tsLaWGgzdiICdPChZB3J/4QJN06tjy6ttLJxJTZxRgFX90kHrI5Hc
-	JtSQThPQa22h9UsGxtQQR/iarpcGv96r3+0mP0CscuGuHmLHjovt8Txf1OEzgZwFqnedQ5iYwno
-	hlYIMKBnUQEt1ll02KhBjoBCCYgA2Tpp/apJ+t/NawaVqmzFxW9a1Cql2eT+mxXv/Qz189gZYZZ
-	BY3+fy+4jzGBNeiJeR0B58gGbbvB8WbfbzEALWtN+VJkRvDDC9HSQ==
-X-Google-Smtp-Source: AGHT+IFFwfROnQot88P95Nsfb5S0XIUJlevJ7EOszaP1eNrhOmAGORWhIboGT43N+6om6px9OsfRUQ==
-X-Received: by 2002:a17:902:da8e:b0:216:6a4a:9a47 with SMTP id d9443c01a7336-219da7effd4mr798806555ad.21.1735859077661;
-        Thu, 02 Jan 2025 15:04:37 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f447798ab6sm26923314a91.4.2025.01.02.15.04.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jan 2025 15:04:37 -0800 (PST)
-Message-ID: <64d8a1a7037c9bf1057799c04f2d5bb6bdad3bad.camel@gmail.com>
-Subject: Re: Errors compiling BPF programs from Linux selftests/bpf with GCC
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: "Jose E. Marchesi" <jose.marchesi@oracle.com>, Ihor Solodrai
-	 <ihor.solodrai@pm.me>
-Cc: "gcc@gcc.gnu.org" <gcc@gcc.gnu.org>, Cupertino Miranda	
- <cupertino.miranda@oracle.com>, David Faust <david.faust@oracle.com>, Elena
- Zannoni <elena.zannoni@oracle.com>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, Manu Bretelle <chantra@meta.com>, Mykola
- Lysenko <mykolal@meta.com>, Yonghong Song	 <yonghong.song@linux.dev>, bpf
- <bpf@vger.kernel.org>
-Date: Thu, 02 Jan 2025 15:04:30 -0800
-In-Reply-To: <87jzbdim3j.fsf@oracle.com>
-References: 
-	<ZryncitpWOFICUSCu4HLsMIZ7zOuiH5f4jrgjAh0uiOgKvZzQES09eerwIXNonKEq0U6hdI9pHSCPahUKihTeS8NKlVfkcuiRLotteNbQ9I=@pm.me>
-	 <87jzbdim3j.fsf@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
+	s=arc-20240116; t=1735859399; c=relaxed/simple;
+	bh=QwXGcTIfAkvS3Fk94gdZWZga5aiJG1ozpD8PqRzULvE=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LN6RJdyNZpHMxDpgvf5C4WozkIw3W+YWWskGkzkrtA8TFfNsp/UdP8KqSpgIdbYnsg5T3+fl1gPe5G9KBsEL5XfpiZ/xTIJKYUuXdGmeI/8pgn/kKkK6RcTHw54kSXllUUybGPSOnNokltY+MSS8oIf6QHIjYPnIsfDTBRIu0ck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=GjDxJwkr; arc=none smtp.client-ip=51.77.79.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1735859387; x=1736118587;
+	bh=Iu0u3TGFLGOmO4wQz8Z3WGci4lSPvaIEqNt/sfa4ru4=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
+	b=GjDxJwkruWNYH3RF/vb+XzeIXZLySCEtpTi67YeJQeVh6E8kczkHlJrzutxu91t4j
+	 M93HDrCgdL/NKLn21+lms4VjncBswlOAGwrVNzBhd9RP3fpRByoLDNaUyGy/GZ9X/B
+	 kaayeexU3NVEewMPECcwDFyAYtnyBG41Ud3gOEt0/6BOQWgnfkNEviJVwI720XVlLv
+	 77ykuntiDsyO5AYtyLS1uovz0zxu2wgZBls4p6MYA/LJnidTy6cYpQGA4AF9UGObB+
+	 8lG3nGbh364HE2qeABer1ewSn5j8o5XVa9ZgzsWK4QOEV58ka7DCgAdTdlliJAZY6H
+	 A4hI09/g70IKw==
+Date: Thu, 02 Jan 2025 23:09:41 +0000
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: dwarves@vger.kernel.org, alan.maguire@oracle.com, eddyz87@gmail.com, andrii@kernel.org, mykolal@fb.com, bpf@vger.kernel.org
+Subject: Re: [PATCH dwarves v3 7/8] dwarf_loader: multithreading with a job/worker model
+Message-ID: <4-vX-msMWpvfNXsNhfTJhstFrQrBWmeCS_w1Xg4ZNeam4UQw1dlq_G03ZfBh59J3uRbt7dvQhINp6tGdRzGVZMF2HUZleeH9ZYOdBfN5ICM=@pm.me>
+In-Reply-To: <Z3LoTvt7PtUAbh5K@x1>
+References: <20241221012245.243845-1-ihor.solodrai@pm.me> <20241221012245.243845-8-ihor.solodrai@pm.me> <Z3LFREHG-8QhoAcc@x1> <Z3LGOXGgK1Qx1zW-@x1> <Z3LoTvt7PtUAbh5K@x1>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: 91125609b65179da7dd5be6159109f9b4c244d77
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2025-01-02 at 10:47 +0100, Jose E. Marchesi wrote:
-> Hi Ihor.
-> Thanks for working on this! :)
+On Monday, December 30th, 2024 at 10:37 AM, Arnaldo Carvalho de Melo <acme@=
+kernel.org> wrote:
+
 >=20
-> > [...]
-> > Older versions compile the dummy program without errors, however on
-> > attempt to build the selftests there is a different issue: conflicting
-> > int64 definitions (full log at [6]).
+>=20
+> On Mon, Dec 30, 2024 at 01:11:41PM -0300, Arnaldo Carvalho de Melo wrote:
+>=20
+> > > Not really :-\
+> > >=20
+> > > root@number:/home/acme/git/pahole# pfunct --decl_info -F dwarf evtchn=
+_fifo_is_pending /lib/modules/6.13.0-rc2/build/vmlinux
+> > > /* Used at: /home/acme/git/linux/drivers/xen/events/events_fifo.c /
+> > > / <946502e> /home/acme/git/linux/drivers/xen/events/events_fifo.c:206=
+ /
+> > > bool evtchn_fifo_is_pending(evtchn_port_t port);
+> > > / Used at: /home/acme/git/linux/drivers/xen/events/events_fifo.c /
+> > > / <946502e> /home/acme/git/linux/drivers/xen/events/events_fifo.c:206=
+ */
+> > > bool evtchn_fifo_is_pending(evtchn_port_t port);
+> > > root@number:/home/acme/git/pahole#
+> > >=20
+> > > So far I couldn't find an explanation for this oddity... Lets see if
+> > > after applying all patches we get past this.
+>=20
+> > Its not related to this patch series, before we get two outputs for
+> > these (and other functions in
+> > /home/acme/git/linux/drivers/xen/events/events_fifo.c).
 > >=20
-> >     In file included from /usr/include/x86_64-linux-gnu/sys/types.h:155=
-,
-> >                      from /usr/include/x86_64-linux-gnu/bits/socket.h:2=
-9,
-> >                      from /usr/include/x86_64-linux-gnu/sys/socket.h:33=
-,
-> >                      from /usr/include/linux/if.h:28,
-> >                      from /usr/include/linux/icmp.h:23,
-> >                      from progs/test_cls_redirect_dynptr.c:10:
-> >     /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:27:19: error: conf=
-licting types for =E2=80=98int64_t=E2=80=99; have =E2=80=98__int64_t=E2=80=
-=99 {aka =E2=80=98long long int=E2=80=99}
-> >        27 | typedef __int64_t int64_t;
-> >           |                   ^~~~~~~
-> >     In file included from progs/test_cls_redirect_dynptr.c:6:
-> >     /ci/workspace/bpfgcc.20240922/lib/gcc/bpf-unknown-none/15.0.0/inclu=
-de/stdint.h:43:24:
-> > note: previous declaration of =E2=80=98int64_t=E2=80=99 with type =E2=
-=80=98int64_t=E2=80=99 {aka =E2=80=98long
-> > int=E2=80=99}
-> >        43 | typedef __INT64_TYPE__ int64_t;
-> >           |                        ^~~~~~~
+> > Still investigating.
 >=20
-> I think this is what is going on:
 >=20
-> The BPF selftest is indirectly including glibc headers from the host
-> where it is being compiled.  In this case your x86_64 ubuntu system.
+> root@number:/home/acme/git/pahole# perf probe -x ~/bin/pfunct function__s=
+how
+> Added new event:
+> probe_pfunct:function_show (on function__show in /home/acme/git/pahole/bu=
+ild/pfunct)
 >=20
-> Many glibc headers include bits/wordsize.h, which in the case of x86_64
-> is:
+> You can now use it in all perf tools, such as:
 >=20
->   #if defined __x86_64__ && !defined __ILP32__
->   # define __WORDSIZE	64
->   #else
->   # define __WORDSIZE	32
->   #define __WORDSIZE32_SIZE_ULONG		0
->   #define __WORDSIZE32_PTRDIFF_LONG	0
->   #endif
+> perf record -e probe_pfunct:function_show -aR sleep 1
 >=20
-> and then in bits/types.h:
+> root@number:/home/acme/git/pahole# perf trace -e probe_pfunct:function_sh=
+ow --call-graph dwarf pfunct --decl_info -F dwarf evtchn_fifo_set_pending /=
+lib/modules/6.13.0-rc2/build/vmlinux
+> /* Used at: /home/acme/git/linux/drivers/xen/events/events_fifo.c /
+> / <946517a> /home/acme/git/linux/drivers/xen/events/events_fifo.c:200 */
 >=20
->   #if __WORDSIZE =3D=3D 64
->   typedef signed long int __int64_t;
->   typedef unsigned long int __uint64_t;
->   #else
->   __extension__ typedef signed long long int __int64_t;
->   __extension__ typedef unsigned long long int __uint64_t;
->   #endif
+> void evtchn_fifo_set_pending(evtchn_port_t port);
+> /* Used at: /home/acme/git/linux/drivers/xen/events/events_fifo.c /
+> / <946517a> /home/acme/git/linux/drivers/xen/events/events_fifo.c:200 */
 >=20
-> i.e. your BPF program ends using __WORDSIZE 32.  This eventually leads
-> to int64_t being defined as `signed long long int' in stdint-intn.h, as
-> it would correspond to a x86_64 program running in 32-bit mode.
+> void evtchn_fifo_set_pending(evtchn_port_t port);
+> 0.000 pfunct/2006089 probe_pfunct:function_show(__probe_ip: 4208235)
+> function__show (/home/acme/git/pahole/build/pfunct)
+> pfunct_stealer (/home/acme/git/pahole/build/pfunct)
+> cus__steal_now (/home/acme/git/pahole/build/libdwarves.so.1.0.0)
+> dwarf_loader__worker_thread (/home/acme/git/pahole/build/libdwarves.so.1.=
+0.0)
+> start_thread (/usr/lib64/libc.so.6)
+> clone3 (/usr/lib64/libc.so.6)
+> 0.134 pfunct/2006088 probe_pfunct:function_show(__probe_ip: 4208235)
+> function__show (/home/acme/git/pahole/build/pfunct)
+> cu_function_iterator (/home/acme/git/pahole/build/pfunct)
+> cus__for_each_cu (/home/acme/git/pahole/build/libdwarves.so.1.0.0)
+> main (/home/acme/git/pahole/build/pfunct)
+> __libc_start_call_main (/usr/lib64/libc.so.6)
+> __libc_start_main@@GLIBC_2.34 (/usr/lib64/libc.so.6)
+> _start (/home/acme/git/pahole/build/pfunct)
+> root@number:/home/acme/git/pahole#
 >=20
-> GCC BPF, on the other hand, is a "baremetal" compiler and it provides a
-> small set of headers (including stdint.h) that implement standard C99
-> types like int64_t, adjusted to the BPF architecture.
+> With the following patch we get just one output for this case, but that
+> isn't the right solution... I'll look on removing the
+> cu_function_iterator() based printing, otherwise when printing all
+> matches we'll still duplicate the printings.
 >=20
-> In this case there is a conflict between the 32-bit x86_64 definition of
-> int64_t and the one of BPF.
->=20
-> PS: the other headers installed by GCC BPF are:
->     float.h iso646.h limits.h stdalign.h stdarg.h stdatomic.h stdbool.h
->     stdckdint.h stddef.h stdfix.h stdint.h stdnoreturn.h syslimits.h
->     tgmath.h unwind.h varargs.h
+> Anyway, doesn't seem related to the problem that tests/tests was
+> catching, that I'm not being able to reproduce anymore after having the
+> whole series applied, probably some race?
 
-I wondered how this works with clang, because it does not define
-__x86_64__ for bpf target. After staring and the output of -E:
-- for clang int64_t is defined once and definition originate from
-  /usr/include/bits/stdint-intn.h included from /usr/include/stdint.h;
-- for gcc int64_t is defined two times, definitions originate from:
-  - <gcc-install-path>/bpf-unknown-none/15.0.0/include/stdint.h
-  - /usr/include/bits/stdint-intn.h included from /usr/include/sys/types.h.
+Hi Arnaldo, thank you for testing.
 
-So, both refer to stdint-intn.h, but only gcc refers to
-compiler-specific stdint.h. This is so because of the structure of the
-clang's /usr/lib/clang/19/include/stdint.h:
+I couldn't reproduce the mismatch error that you saw:
 
-    ...
-    #if __STDC_HOSTED__ && __has_include_next(<stdint.h>)
-      ...
-      # include_next <stdint.h>
-      ...
-    #else
-      ...
-      typedef __INT64_TYPE__ int64_t;
-      ...
-    #endif
-    ...
+    root@number:/home/acme/git/pahole# tests/tests
+      1: Validation of BTF encoding of functions; this may take some time: =
+grep: /tmp/btf_functions.sh.OgxoO4/dwarf.funcs: binary file matches
+    ERROR: mismatch : BTF 'bool evtchn_fifo_is_pending(evtchn_port_t);' not=
+ found; DWARF ''
+    Test data is in /tmp/btf_functions.sh.OgxoO4
 
-The __STDC_HOSTED__ is defined as 1, thus when clang compiles the test case=
-,
-compiler-specific stdint.h is included, but it's content is ifdef'ed out an=
-d
-it refers to system stdint.h instead. On the other hand, gcc-specific stdin=
-t.h
-unconditionally typedefs int64_t.
+I've tried a couple of kernels:
+  * 6.12 with selftests/bpf config
+  * Fedora 6.12.6-100.fc40.x86_64 (my workstation)
+  * 6.13-rc2 with Fedora-like config
 
-Links:
-- test case pre-processed by clang and gcc:
-  https://gist.github.com/eddyz87/d381094d67979291bd8338655b15dd5e
-- LLVM source code for stdint.h:
-  https://github.com/llvm/llvm-project/blob/c703b4645c79e889fd6a0f3f64f01f9=
-57d981aa4/clang/lib/Headers/stdint.h#L24
+I saw warnings that don't seem to be related to this series:
+
+    theihor@qube:~/dev/dwarves$ PATH=3D$(realpath build):$PATH vmlinux=3D~/=
+git/kernel.org/linux-for-pahole/vmlinux ./tests/tests
+      1: Validation of BTF encoding of functions; this may take some time: =
+Ok
+      2: Default BTF on a system without BTF: Ok
+      3: Flexible arrays accounting: WARNING: still unsuported BTF_KIND_DEC=
+L_TAG(bpf_fastcall) for bpf_cast_to_kern_ctx already with attribute (bpf_kf=
+unc), ignoring
+    WARNING: still unsuported BTF_KIND_DECL_TAG(bpf_fastcall) for bpf_rdonl=
+y_cast already with attribute (bpf_kfunc), ignoring
+    Ok
+      4: Pretty printing of files using DWARF type information: Ok
+      5: Parallel reproducible DWARF Loading/Serial BTF encoding: Ok
+
+As for potential race, since btf_encoder is sequential and a unit of
+work is a CU, I don't see how a single function could have been
+missed. Other declarations in events_fifo.c would've been affected I
+think.
+
+If you see this again, please let me know.
+
+>=20
+> - Arnaldo
+>=20
+> diff --git a/pfunct.c b/pfunct.c
+> index 55eafe8a8e790dcb..9645b004381a7e1e 100644
+> --- a/pfunct.c
+> +++ b/pfunct.c
+> @@ -518,7 +518,13 @@ static enum load_steal_kind pfunct_stealer(struct cu=
+ *cu,
+>=20
+> if (tag) {
+> function__show(tag__function(tag), cu);
+> - return show_all_matches ? LSK__DELETE : LSK__STOP_LOADING;
+> + if (!show_all_matches) {
+> + // Expedite exit, since we already did what was requested:
+> + // print the first occurrence of a given function
+> + exit(0);
+> + }
+> +
+> + return LSK__DELETE;
+> }
+> } else if (class_name) {
+> cu_class_iterator(cu, class_name);
+
 
 
