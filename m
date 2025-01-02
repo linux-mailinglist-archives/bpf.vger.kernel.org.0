@@ -1,115 +1,210 @@
-Return-Path: <bpf+bounces-47754-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47755-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CF789FFEB2
-	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 19:43:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D8EE9FFEFB
+	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 19:59:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8303C1883A0E
-	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 18:43:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00A5F3A3443
+	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 18:59:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91FC71B4122;
-	Thu,  2 Jan 2025 18:43:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="05VvvzlB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E31E1A2543;
+	Thu,  2 Jan 2025 18:59:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99FD36FB0
-	for <bpf@vger.kernel.org>; Thu,  2 Jan 2025 18:43:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD3267E782;
+	Thu,  2 Jan 2025 18:59:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735843416; cv=none; b=U4KKUhMHBBcVHbJIVl15e1GbM8rPXiGkp0JULTTsRRi7EM2XLCKY7kDp/wBFnwnQ6/6oGJuxoGdyg9HbPlSyRQhsEDhaQbjn6IramR02zsq98ZN1WGUTFF/BYa2lxO3VVUBnIYYa7IUWg7QdYt8fRNg5LAad0Tqgsp5WKbcRXFE=
+	t=1735844386; cv=none; b=VqnDZoD4fanrlwORZ2XfAeO1ag2H+7s1WPhHwJB/Xr/XFBg2UU0twoO9D0c9uwqoC75kZXtD2qizODPjE/iPk4swnWSF5nYmq13L2SLhOZJUYa+Lj/TX4B0uEle2ZzpBSLEgOcIa+BrP2IVI1a5UIUdpI/QyVdal6wxL9TijdNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735843416; c=relaxed/simple;
-	bh=eiml2yjpmOszRDlSCn6XV9ArVvimnR2tz8b95UUvfR8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sAry/OObeM8Pw9SpmOrpCOAXK3Dn1x1xT6BHYvxGhjxJD5qT6Mpibz8FXrJ/emE5XCnlBqdw7Rqia684BnqwlgFgiF4nxvowQ/s18DtO+TxqAIGuE2bcjzQZojp6mJujHe4jxG+ngo5WkAC9aUzMOe5tiGtqqClIV0VKJ9lGbEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=05VvvzlB; arc=none smtp.client-ip=209.85.219.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6d89a727a19so110962406d6.0
-        for <bpf@vger.kernel.org>; Thu, 02 Jan 2025 10:43:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1735843413; x=1736448213; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=eiml2yjpmOszRDlSCn6XV9ArVvimnR2tz8b95UUvfR8=;
-        b=05VvvzlBImTVfWoF+IKInLEEpnshPPdwh8HxISJVnMz5jnOEdW+MgcPXiT7Fwqg+Ct
-         dE48JYCjKkhtGWBvZudc+yAuUP3z+MuiYePm/N1nIkf5QLBmaQwmD9Emx878y5QITGtn
-         XgSqXGsheeNLvty627Cc4Chz0nAups9jbzcgZAOvdL0WDSIhOy97pJ785EO7IA0onxP6
-         8kWaLnpTaZjb5cBjbNufhkCBJp4m8DTdXW1GhYB9i14D/nErYthIw6shB0shxR8s/dPO
-         fy2WYD7vYSpgtbIqO7v3eQi5inA39UGwL+YP26sYuFvgqQrrA5VeOkYIGSB3bpTmEPQH
-         Av6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735843413; x=1736448213;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eiml2yjpmOszRDlSCn6XV9ArVvimnR2tz8b95UUvfR8=;
-        b=gRZn1M5OZmS+uu3ovSKEehKEV4BmTbtxGXvJniKVutXdVbPHqR5ZIZE7HBgn7T1ktW
-         uBc1MxK9OrsJD7YxoyL2Owb0W+c4BCQ0z74EON1OU+IugYe2AE9VxIOHScfThuA8717D
-         BBZknHUfGFTbRt4ftcl+v8+4vDqlZTyaznl5iNp/RwFQz5qf48SHzcSUPctbBfHbv2D8
-         omAdAf0eUYDnk6h3bXW1tlvMrh4BH7rDuOPaOIclf30n+pYqN46Kt5Pyxffnh48V0Cbj
-         Ue/K94Ys92IvPHqS4v0uf2zfletGvQoCsAPcelAJeYLPuSYdXF1X7e2Z6zUrsDUYyb8S
-         t08g==
-X-Forwarded-Encrypted: i=1; AJvYcCWQH6Vu/M52FUy1nAhTOMPI20hHM+npUCqavSQK5+jWQazkqjYhw3g36gpSkeONJKxRoMs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwKljLi1Bly6+9GreACN069HoYHpIHkENpMSguG84jxt0lRR4sf
-	i7HD4XUtKoLkpTSAAg4n89VS3Zx09zsedFvxXKD6rnUND6NC1jiwIkhfHJ92Oe11RWh26qiLQ6r
-	xRScTS/WSttozFM5bF0HfTpem1fMZkdDvp0HY
-X-Gm-Gg: ASbGnct7UpwPf1lfIGosgugiBj5hj2e/LC6k5ZecrszIjv3h2u63G3L+vd9jdt+Iyo9
-	66IFz2+x46EVk0FNUo3EoxGnRXlCPiwEOWznE
-X-Google-Smtp-Source: AGHT+IF2tZXZGzK4SR62kPfJyDlYZjAffFvMlSMw7+NG+gQt+geLbrrGjOcGHqDzqV0Ly6l7e8fT7ZNqEBaPAWkEaVw=
-X-Received: by 2002:a05:6214:5bc7:b0:6d8:8a0b:db25 with SMTP id
- 6a1803df08f44-6dd23618b5bmr751231406d6.21.1735843413422; Thu, 02 Jan 2025
- 10:43:33 -0800 (PST)
+	s=arc-20240116; t=1735844386; c=relaxed/simple;
+	bh=D5qnJ35JtduVdAaZpxy3o6MrDaqhbW4dYnbMzDj1J6c=;
+	h=Message-ID:Date:From:To:Cc:Subject; b=NY/Ts2SK0KlLdquBMpq5O74Fx9NqKelePQJ6dPvz09yVe6bWhnXNtRXnP3B7j/0cfBzhQIxWml7KMkApW4BKzl8VzWdAWAe4qk0cpujHpxD/z8ngjmI5jn58TQUSatdwcKzByRCYt2xL2M3zLEsnpi/zUgdc67gC0lxejQBuZZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5466C4CEDC;
+	Thu,  2 Jan 2025 18:59:46 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.98)
+	(envelope-from <rostedt@goodmis.org>)
+	id 1tTQRL-00000005MiX-12Xo;
+	Thu, 02 Jan 2025 14:01:03 -0500
+Message-ID: <20250102185845.928488650@goodmis.org>
+User-Agent: quilt/0.68
+Date: Thu, 02 Jan 2025 13:58:45 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org,
+ linux-kbuild@vger.kernel.org,
+ bpf <bpf@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Masahiro Yamada <masahiroy@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nicolas Schier <nicolas@fjasle.eu>,
+ Zheng Yejian <zhengyejian1@huawei.com>,
+ Martin  Kelly <martin.kelly@crowdstrike.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [PATCH 00/14] scripts/sorttable: ftrace: Remove place holders for weak functions in available_filter_functions
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20241218133415.3759501-1-pkaligineedi@google.com>
- <20241218133415.3759501-3-pkaligineedi@google.com> <3ad7bdd2-80d2-4d73-b86f-4c0aeeee5bf1@intel.com>
-In-Reply-To: <3ad7bdd2-80d2-4d73-b86f-4c0aeeee5bf1@intel.com>
-From: Joshua Washington <joshwash@google.com>
-Date: Thu, 2 Jan 2025 10:43:21 -0800
-X-Gm-Features: AbW1kvYJhRQu9jWJ1-H0lGB_jEU0IWP-wY0jRAO_aZNMsIq7HMjjdk9-3POyjeg
-Message-ID: <CALuQH+W3TK4Kvgbf1d+eFjR8W45_84M7T=aD0BeAdbGQdm5koQ@mail.gmail.com>
-Subject: Re: [PATCH net 2/5] gve: guard XDP xmit NDO on existence of xdp queues
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: Praveen Kaligineedi <pkaligineedi@google.com>, netdev@vger.kernel.org, 
-	Jeroen de Borst <jeroendb@google.com>, Shailend Chand <shailend@google.com>, 
-	Willem de Bruijn <willemb@google.com>, andrew+netdev@lunn.ch, davem@davemloft.net, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
-	john.fastabend@gmail.com, horms@kernel.org, 
-	Harshitha Ramamurthy <hramamurthy@google.com>, Ziwei Xiao <ziweixiao@google.com>, 
-	open list <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 
-> Wouldn't synchronize_rcu() be enough, have you checked?
 
-I based usage of synchronize_net() instead of synchronize_rcu() based on other
-drivers deciding to use it due to synchronize_rcu_expedited() when holding
-rtnl_lock() being more performant.
+This series removes the place holder __ftrace_invalid_address___ from
+the available_filter_functions file.
 
-ICE: https://lore.kernel.org/all/20240529112337.3639084-4-maciej.fijalkowski@intel.com/
-Mellanox: https://lore.kernel.org/netdev/20210212025641.323844-8-saeed@kernel.org/
+The first 13 patches clean up the scripts/sorttable.c code. It was
+a copy from recordmcount.c which is very hard to maintain. That's
+because it uses macro helpers and places the code in a header file
+sorttable.h to handle both the 64 bit and 32 bit version of  the Elf
+structures. It also has _r()/r()/r2() wrappers around accessing the
+data which will read the 64 bit or 32 bit version of the data as well
+as handle endianess. If the wrong wrapper is used, an invalid value
+will result, and this has been a cause for bugs in the past. In fact
+the new ORC code doesn't even use it. That's fine because ORC is only
+for 64 bit x86 which is the default parsing.
 
-> You need to use xdp_features_{set,clear}_redirect_target() when you
-install/remove XDP prog to notify the kernel that ndo_start_xmit is now
-available / not available anymore.
+Instead of having a bunch of macros defined and then include the code
+twice from a header, the Elf structures are each wrapped in a union.
+The union holds the 64 bit and 32 bit version of the needed structure.
+To access the values, helper function pointers are used instead of
+defining a function. For example, instead of having:
 
-Thank you for the suggestion. Given that the fix has gone in, I was planning
-to make this change as part of a future net-next release with other XDP changes.
-Would it make sense to make those changes there, given that the patches as
-they went up, while not completely correct, should at least cover the
-vulnerability?
+In sorttable.h:
 
-Thanks,
-Josh
+ #undef Elf_Ehdr
+ #undef Elf_Shdr
+
+ #ifdef SORTTABLE_64
+ # define Elf_Ehdr		Elf64_Ehdr
+ # define Elf_Shdr		Elf64_Shdr
+ [..]
+ # define _r			r8
+ #else
+ # define Elf_Ehdr		Elf32_Ehdr
+ # define Elf_Shdr		Elf32_Shdr
+ [..]
+ # define _r			r
+ #endif
+
+ [..]
+ Elf_Shdr *s, *shdr = (Elf_Shdr *)((char *)ehdr + _r(&ehdr->e_shoff));
+
+In sorttable.c:
+
+ #include "sorttable.h"
+ #define SORTTABLE_64
+ #include "sorttable.h"
+
+Using the Unions we have:
+
+ typedef union {
+	Elf32_Ehdr	e32;
+	Elf64_Ehdr	e64;
+ } Elf_Ehdr;
+
+ typedef union {
+	Elf32_Shdr	e32;
+	Elf64_Shdr	e64;
+ } Elf_Shdr;
+
+ [..]
+
+ static uint64_t ehdr64_shoff(Elf_Ehdr *ehdr)
+ {
+	return r8(&ehdr->e64.e_shoff);
+ }
+
+ static uint64_t ehdr32_shoff(Elf_Ehdr *ehdr)
+ {
+	return r(&ehdr->e32.e_shoff);
+ }
+
+ [..]
+ static uint64_t (*ehdr_shoff)(Elf_Ehdr *ehdr);
+ [..]
+
+	switch (ehdr->e32.e_ident[EI_CLASS]) {
+	case ELFCLASS32:
+		[..]
+		ehdr_shoff	= ehdr32_shoff;
+		[..]
+	case ELFCLASS65:
+		[..]
+		ehdr_shoff	= ehdr64_shoff;
+		[..]
+
+ shdr_start = (Elf_Shdr *)((char *)ehdr + ehdr_shoff(ehdr));
+
+The code may be a little more verbose, but the meat of the code is easier to
+read, and the conversion functions live in the helper functions to make
+it easier to have the fields read the proper way.
+
+This makes the code easier to maintain, and for this purpose easier
+to extend. Which is the last patch of the series.
+
+The last patch adds the option "-s <file>" to sorttable.c. Now this code
+is called by:
+
+  ${NM} -S vmlinux > .tmp_vmlinux.nm-sort
+  ${objtree}/scripts/sorttable -s .tmp_vmlinux.nm-sort ${1}
+
+Where the file created by "nm -S" is read, recording the address
+and the associated sizes of each function. It then is sorted, and
+before sorting the mcount_loc table, it is scanned to make sure
+all symbols in the mcounc_loc are within the boundaries of the functions
+defined by nm. If they are not, they are zeroed out, as they are most
+likely weak functions (I don't know what else they would be).
+
+Then on boot up, when creating the ftrace tables from the mcount_loc
+table, it will ignore any function that matches the kaslr_offset()
+value. As KASLR will still shift the values even if they are zero.
+But by skipping over entries in mcount_loc that match kaslr_offset()
+all weak functions are removed from the ftrace table as well as the
+available_filter_functions file that is derived from it.
+
+Before:
+    
+ ~# grep __ftrace_invalid_address___ /sys/kernel/tracing/available_filter_functions | wc -l
+ 556
+
+After:
+
+ ~# grep __ftrace_invalid_address___ /sys/kernel/tracing/available_filter_functions | wc -l
+ 0
+
+Steven Rostedt (14):
+      scripts/sorttable: Remove unused macro defines
+      scripts/sorttable: Remove unused write functions
+      scripts/sorttable: Remove unneeded Elf_Rel
+      scripts/sorttable: Have the ORC code use the _r() functions to read
+      scripts/sorttable: Make compare_extable() into two functions
+      scripts/sorttable: Convert Elf_Ehdr to union
+      scripts/sorttable: Replace Elf_Shdr Macro with a union
+      scripts/sorttable: Convert Elf_Sym MACRO over to a union
+      scripts/sorttable: Add helper functions for Elf_Ehdr
+      scripts/sorttable: Add helper functions for Elf_Shdr
+      scripts/sorttable: Add helper functions for Elf_Sym
+      scripts/sorttable: Use uint64_t for mcount sorting
+      scripts/sorttable: Move code from sorttable.h into sorttable.c
+      scripts/sorttable: ftrace: Do not add weak functions to available_filter_functions
+
+----
+ kernel/trace/ftrace.c   |  14 +
+ scripts/link-vmlinux.sh |   4 +-
+ scripts/sorttable.c     | 810 ++++++++++++++++++++++++++++++++++++++++++++----
+ scripts/sorttable.h     | 497 -----------------------------
+ 4 files changed, 771 insertions(+), 554 deletions(-)
+ delete mode 100644 scripts/sorttable.h
 
