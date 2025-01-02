@@ -1,41 +1,41 @@
-Return-Path: <bpf+bounces-47757-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47758-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2756C9FFF01
-	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 20:00:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 127919FFF06
+	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 20:00:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 323701883AB2
-	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 19:00:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA414162DC1
+	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 19:00:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3CA1B4236;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA0071B6CEA;
 	Thu,  2 Jan 2025 18:59:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C3881922D3;
-	Thu,  2 Jan 2025 18:59:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66CD01B414E;
+	Thu,  2 Jan 2025 18:59:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735844387; cv=none; b=j/Gx8xO/n3WFvB3eEknQgOZO20vFT4rvSVlVcislMvcSu4UD6mJr1s/CBDLxqrm1RacMqcE9Xnmm5wBF4tIn0jk4uX6KjLX2UhhIsC+ykMKgINbHmEGhqaAn2EvozNYhdbgsdasB+Vy2FsimfRYH+/gQDkoVMBbxHvTg4MUEs6g=
+	t=1735844387; cv=none; b=pV67zgfms10mu+X9oVydf9urUa5/xrd3tKA8AMW0c3GUTGqV5l2xMLg3APEClFP4m9VaB5jV4BxY2yEHxVlwu2Nq30x2JdkbwVkJJya2aoHrvnr6UCurVUmByI0HbhgdvWVnn9DAkNM5kKiIzf1vk9zCHtP9Fm4RMTcAKmQhjjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1735844387; c=relaxed/simple;
-	bh=dtsZSR5PGN9lZfaBFK/cPKjmy4rRTW/a7uREJxy5Oaw=;
+	bh=Xi5Kd6v+5PObKO7g322knu3becI+HlpZMSy5XBPm7ZY=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=KKTaiagt0b4qmthZFUXI7rwTLPWZDvccV8te7D3NmDLe539sYuTuGQuYsgphVTZnA81PO1hYGo8vhY310yDNO3kQjpwXa/Nb8e4cUGoKQ9mk9irICk9IKFoGNRSD6XKPvFaK159NF/cbaoQEipzIZkC+gGnj7yQxOkP51rTRBWA=
+	 Content-Type; b=UPB08SWLd9BTFgCgOxt/S4nbdPCbJcqfjMN6shgscpZusXkt4fdxE6xzmk1lIM62Pfz5XxjOd9HRyhk3QE1k5fasTkq8WlpRv7sTvRbVHuTF/PZ8i/Z++B0PBqcgVgqa5OMQgkAVCcua0tsJkEoXfg/iRgVCJHCZyPP6Ci5PhSU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B98A8C4CED6;
-	Thu,  2 Jan 2025 18:59:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 063CDC4CEDE;
+	Thu,  2 Jan 2025 18:59:47 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.98)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1tTQRL-00000005Mjt-2W5I;
+	id 1tTQRL-00000005MkN-3F6f;
 	Thu, 02 Jan 2025 14:01:03 -0500
-Message-ID: <20250102190103.445521024@goodmis.org>
+Message-ID: <20250102190103.621684286@goodmis.org>
 User-Agent: quilt/0.68
-Date: Thu, 02 Jan 2025 13:58:47 -0500
+Date: Thu, 02 Jan 2025 13:58:48 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org,
@@ -54,7 +54,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Martin  Kelly <martin.kelly@crowdstrike.com>,
  Christophe Leroy <christophe.leroy@csgroup.eu>,
  Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: [PATCH 02/14] scripts/sorttable: Remove unused write functions
+Subject: [PATCH 03/14] scripts/sorttable: Remove unneeded Elf_Rel
 References: <20250102185845.928488650@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -66,78 +66,94 @@ Content-Type: text/plain; charset=UTF-8
 
 From: Steven Rostedt <rostedt@goodmis.org>
 
-The code of sorttable.h was copied from the recordmcount.h  which defined
-various write functions for different sizes (2, 4, 8 byte lengths). But
-sorttable only uses the 4 byte writes. Remove the extra versions as they
-are not used.
+The code had references to initialize the Elf_Rel relocation tables, but
+it was never used. Remove it.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- scripts/sorttable.c | 26 --------------------------
- 1 file changed, 26 deletions(-)
+ scripts/sorttable.h | 23 ++---------------------
+ 1 file changed, 2 insertions(+), 21 deletions(-)
 
-diff --git a/scripts/sorttable.c b/scripts/sorttable.c
-index 83cdb843d92f..4dcdbf7a5e26 100644
---- a/scripts/sorttable.c
-+++ b/scripts/sorttable.c
-@@ -68,8 +68,6 @@ static uint32_t (*r)(const uint32_t *);
- static uint16_t (*r2)(const uint16_t *);
- static uint64_t (*r8)(const uint64_t *);
- static void (*w)(uint32_t, uint32_t *);
--static void (*w2)(uint16_t, uint16_t *);
--static void (*w8)(uint64_t, uint64_t *);
- typedef void (*table_sort_t)(char *, int);
+diff --git a/scripts/sorttable.h b/scripts/sorttable.h
+index 2a9ec5046e9a..aa7a8499a516 100644
+--- a/scripts/sorttable.h
++++ b/scripts/sorttable.h
+@@ -26,7 +26,6 @@
+ #undef Elf_Addr
+ #undef Elf_Ehdr
+ #undef Elf_Shdr
+-#undef Elf_Rel
+ #undef Elf_Sym
+ #undef ELF_ST_TYPE
+ #undef uint_t
+@@ -42,7 +41,6 @@
+ # define Elf_Addr		Elf64_Addr
+ # define Elf_Ehdr		Elf64_Ehdr
+ # define Elf_Shdr		Elf64_Shdr
+-# define Elf_Rel		Elf64_Rel
+ # define Elf_Sym		Elf64_Sym
+ # define ELF_ST_TYPE		ELF64_ST_TYPE
+ # define uint_t			uint64_t
+@@ -57,7 +55,6 @@
+ # define Elf_Addr		Elf32_Addr
+ # define Elf_Ehdr		Elf32_Ehdr
+ # define Elf_Shdr		Elf32_Shdr
+-# define Elf_Rel		Elf32_Rel
+ # define Elf_Sym		Elf32_Sym
+ # define ELF_ST_TYPE		ELF32_ST_TYPE
+ # define uint_t			uint32_t
+@@ -245,14 +242,10 @@ static int do_sort(Elf_Ehdr *ehdr,
+ 	Elf32_Word *symtab_shndx = NULL;
+ 	Elf_Sym *sort_needed_sym = NULL;
+ 	Elf_Shdr *sort_needed_sec;
+-	Elf_Rel *relocs = NULL;
+-	int relocs_size = 0;
+ 	uint32_t *sort_needed_loc;
+ 	const char *secstrings;
+ 	const char *strtab;
+ 	char *extab_image;
+-	int extab_index = 0;
+-	int i;
+ 	int idx;
+ 	unsigned int shnum;
+ 	unsigned int shstrndx;
+@@ -276,23 +269,15 @@ static int do_sort(Elf_Ehdr *ehdr,
+ 	if (shnum == SHN_UNDEF)
+ 		shnum = _r(&shdr[0].sh_size);
  
- /*
-@@ -146,31 +144,11 @@ static void wbe(uint32_t val, uint32_t *x)
- 	put_unaligned_be32(val, x);
- }
+-	for (i = 0, s = shdr; s < shdr + shnum; i++, s++) {
++	for (s = shdr; s < shdr + shnum; s++) {
+ 		idx = r(&s->sh_name);
+-		if (!strcmp(secstrings + idx, "__ex_table")) {
++		if (!strcmp(secstrings + idx, "__ex_table"))
+ 			extab_sec = s;
+-			extab_index = i;
+-		}
+ 		if (!strcmp(secstrings + idx, ".symtab"))
+ 			symtab_sec = s;
+ 		if (!strcmp(secstrings + idx, ".strtab"))
+ 			strtab_sec = s;
  
--static void w2be(uint16_t val, uint16_t *x)
--{
--	put_unaligned_be16(val, x);
--}
--
--static void w8be(uint64_t val, uint64_t *x)
--{
--	put_unaligned_be64(val, x);
--}
--
- static void wle(uint32_t val, uint32_t *x)
- {
- 	put_unaligned_le32(val, x);
- }
+-		if ((r(&s->sh_type) == SHT_REL ||
+-		     r(&s->sh_type) == SHT_RELA) &&
+-		    r(&s->sh_info) == extab_index) {
+-			relocs = (void *)ehdr + _r(&s->sh_offset);
+-			relocs_size = _r(&s->sh_size);
+-		}
+ 		if (r(&s->sh_type) == SHT_SYMTAB_SHNDX)
+ 			symtab_shndx = (Elf32_Word *)((const char *)ehdr +
+ 						      _r(&s->sh_offset));
+@@ -394,10 +379,6 @@ static int do_sort(Elf_Ehdr *ehdr,
+ 		      extable_ent_size, compare_extable);
+ 	}
  
--static void w2le(uint16_t val, uint16_t *x)
--{
--	put_unaligned_le16(val, x);
--}
+-	/* If there were relocations, we no longer need them. */
+-	if (relocs)
+-		memset(relocs, 0, relocs_size);
 -
--static void w8le(uint64_t val, uint64_t *x)
--{
--	put_unaligned_le64(val, x);
--}
--
- /*
-  * Move reserved section indices SHN_LORESERVE..SHN_HIRESERVE out of
-  * the way to -256..-1, to avoid conflicting with real section
-@@ -277,16 +255,12 @@ static int do_file(char const *const fname, void *addr)
- 		r2	= r2le;
- 		r8	= r8le;
- 		w	= wle;
--		w2	= w2le;
--		w8	= w8le;
- 		break;
- 	case ELFDATA2MSB:
- 		r	= rbe;
- 		r2	= r2be;
- 		r8	= r8be;
- 		w	= wbe;
--		w2	= w2be;
--		w8	= w8be;
- 		break;
- 	default:
- 		fprintf(stderr, "unrecognized ELF data encoding %d: %s\n",
+ 	/* find the flag main_extable_sort_needed */
+ 	for (sym = (void *)ehdr + _r(&symtab_sec->sh_offset);
+ 	     sym < sym + _r(&symtab_sec->sh_size) / sizeof(Elf_Sym);
 -- 
 2.45.2
 
