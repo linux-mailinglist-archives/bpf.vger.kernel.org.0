@@ -1,122 +1,251 @@
-Return-Path: <bpf+bounces-47777-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47778-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5D449FFFC2
-	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 21:02:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B603B9FFFCB
+	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 21:06:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BC241627E3
-	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 20:02:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 959E43A35B0
+	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 20:06:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25EF71B4152;
-	Thu,  2 Jan 2025 20:02:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC341B4F3A;
+	Thu,  2 Jan 2025 20:06:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="LFapZnML"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB4FA1DFD1;
-	Thu,  2 Jan 2025 20:02:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 774403D96A;
+	Thu,  2 Jan 2025 20:06:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735848162; cv=none; b=nbiJvvtvqqcTRDyNcSLgOaJBnfJPnb0oRIdHL6zsLFmMszs+VMu8n9hBgMQXXmK7paRxGXklrTgpxVgXxRf+dGXyfUViLH2kJ0SnnBzHYsuA5Wfk7EusLbFHl0iXeIlzaHYqng8Kmp4KxmBgB5LDUN7BE8o7xmsLkUW7vyehX7U=
+	t=1735848387; cv=none; b=MCz7xuRf7ZIy3SuU7gqLh43h/xLkybChG+KYniUcT1iF1GRMbIj+x92f+wK6zRxqULHrTiQzyJrqmnYJN0iLdy6GZJuqDv8ujUUHCUKnM0j7rsfpkfkNGByls8y9VO3MLInwHRCdDNxJEZFyKlSlvnCN62C4KTmGWFnizYoBoGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735848162; c=relaxed/simple;
-	bh=4Q4jCO12eC6+ybBJOm62KTy7r+b4laSfmxEN9SnD4mo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qvLEFXjUVxSDMuGpbKtSL/IdhoEXw+acAsioLZBUjhBwHj70nTNFtHlA5qTB4PhF9Z1fS49ig5GEQWA7aSWQnfT74clG8H+3kdMTHhJPwHSlXs8eJAkmFnCFGdyhd1ZiDTXPvcLRod4omVs6Gi5N9iltfTnT66ODZiRa0xGqK3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A29AC4CED0;
-	Thu,  2 Jan 2025 20:02:40 +0000 (UTC)
-Date: Thu, 2 Jan 2025 15:03:56 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-kbuild@vger.kernel.org, bpf <bpf@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, Linus Torvalds
- <torvalds@linux-foundation.org>, Masahiro Yamada <masahiroy@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>,
- Zheng Yejian <zhengyejian1@huawei.com>, Martin Kelly
- <martin.kelly@crowdstrike.com>, Christophe Leroy
- <christophe.leroy@csgroup.eu>, Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH 14/14] scripts/sorttable: ftrace: Do not add weak
- functions to available_filter_functions
-Message-ID: <20250102150356.1372a947@gandalf.local.home>
-In-Reply-To: <20250102145501.3e821c56@gandalf.local.home>
-References: <20250102185845.928488650@goodmis.org>
-	<20250102190105.506164167@goodmis.org>
-	<20250102194814.GA7274@noisy.programming.kicks-ass.net>
-	<20250102145501.3e821c56@gandalf.local.home>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1735848387; c=relaxed/simple;
+	bh=URkk3ojDl9zhoDmfCj9S37FZkFSv8dphTHRMkGvzr/w=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=h5bse33K3rcwOeLIMI4A1cuEyDZqITOVu8Cah3kXFX/net3QgR++iAn67BmSy1XRIlprGdYUSYgNSWF7MJRUseWjr1HptNFB5+d3xBklrxIBYNz0pHLNF3Q3c1ELpYITuyE8+eGiq6EMcDEsldwDUwCrrzCtts6CUcerS68IpCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=LFapZnML; arc=none smtp.client-ip=185.70.43.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1735848382; x=1736107582;
+	bh=URkk3ojDl9zhoDmfCj9S37FZkFSv8dphTHRMkGvzr/w=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
+	b=LFapZnMLcwXhY1e5JOmXM968WOTN/WyQ6WMtaPahr/MX/Cjk+GSBAu9ovEZz0Tzd/
+	 KPSaadmzgVuiR8pVRImp+zjYiXhSlTEy5r8vuf3g+Fa7QtrFAZm3ajI54RUueyq4Uu
+	 hTYkeqkGHPgUPSEABofJGAlgpqG8UpNbhVXOHaRTr8hnRljREmvNS4Y1pGR/Alev6p
+	 +OuNQWLvhYpIfacknu2z4DGEzJwRkn+71XTozSUqDENCjWXuSDy6wap60IofNtk5b/
+	 tnfpFWgkkKKnanSF4MCAlTsGff6K2ODCkdEdYzubddFR4FNKO9S90qnOiBHqcShXnX
+	 Smdt3IlOilEqg==
+Date: Thu, 02 Jan 2025 20:06:18 +0000
+To: Jiri Olsa <olsajiri@gmail.com>
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: dwarves@vger.kernel.org, acme@kernel.org, alan.maguire@oracle.com, eddyz87@gmail.com, andrii@kernel.org, mykolal@fb.com, bpf@vger.kernel.org
+Subject: Re: [PATCH dwarves v3 3/8] btf_encoder: introduce elf_functions struct type
+Message-ID: <3MqWfdjBO9srtpr8kjweJgCkdwYKV6JC_-SN27S8Y9_J1SzssIgZs4Ptc5tEqpZ7w2vbSmTQ35J5CX35Yb4KMbw8wsTrB2IAf2SWU-k4Xi4=@pm.me>
+In-Reply-To: <Z3VzwnXfKIKMi5TX@krava>
+References: <20241221012245.243845-1-ihor.solodrai@pm.me> <20241221012245.243845-4-ihor.solodrai@pm.me> <Z3VzwnXfKIKMi5TX@krava>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: 6c363a8fe984166e4df34110c1e2a53793134112
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2 Jan 2025 14:55:01 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Wednesday, January 1st, 2025 at 8:56 AM, Jiri Olsa <olsajiri@gmail.com> =
+wrote:
 
-> On Thu, 2 Jan 2025 20:48:14 +0100
-> Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > *sigh*.. can we please just either add the 'hole' symbols in symtab, or
-> > fix symtab to have entry size?
-> > 
-> > You're just fixing your one problem and leaving everybody else that has
-> > extra data inside the dead weak things up a creek :/
-> > 
-> > Eg. if might make sense to also ignore alternative / static_branch /
-> > static_call patching for such 'dead' code. Yes, that's not an immediate
-> > problem atm, but just fixing __mcount_loc seems very short sighted.  
-> 
-> Read my reply to the email that I forgot to add to the cover letter (but
-> mention in the last patch). Fixing kallsyms does not remove the place
-> holders in the available_filter_functions. This has nothing to do with
-> kallsyms. I need to remove the fentry/mcount references in the mcount_loc
-> section.
-> 
-> The kallsyms is a completely different issue.
+>=20
+> On Sat, Dec 21, 2024 at 01:23:10AM +0000, Ihor Solodrai wrote:
+>=20
+> SNIP
+>=20
+> > -static int btf_encoder__collect_function(struct btf_encoder *encoder, =
+GElf_Sym *sym)
+> > +static void elf_functions__collect_function(struct elf_functions *func=
+tions, GElf_Sym *sym)
+> > {
+> > - struct elf_function *new;
+> > + struct elf_function *func;
+> > const char *name;
+> >=20
+> > if (elf_sym__type(sym) !=3D STT_FUNC)
+> > - return 0;
+> > - name =3D elf_sym__name(sym, encoder->symtab);
+> > - if (!name)
+> > - return 0;
+> > + return;
+> >=20
+> > - if (encoder->functions.cnt =3D=3D encoder->functions.allocated) {
+> > - new =3D reallocarray_grow(encoder->functions.entries,
+> > - &encoder->functions.allocated,
+> > - sizeof(encoder->functions.entries));
+> > - if (!new) {
+> > - /
+> > - * The cleanup - delete_functions is called
+> > - * in btf_encoder__encode_cu error path.
+> > - */
+> > - return -1;
+> > - }
+> > - encoder->functions.entries =3D new;
+> > - }
+> > + name =3D elf_sym__name(sym, functions->symtab);
+> > + if (!name)
+> > + return;
+> >=20
+> > - memset(&encoder->functions.entries[encoder->functions.cnt], 0,
+> > - sizeof(*new));
+> > - encoder->functions.entries[encoder->functions.cnt].name =3D name;
+> > + func =3D &functions->entries[functions->cnt];
+> > + func->name =3D name;
+> > if (strchr(name, '.')) {
+> > const char *suffix =3D strchr(name, '.');
+> > -
+>=20
+>=20
+> nit, let's keep that new line after declaration
 
-Maybe I misunderstood you, if you are not talking about kallsyms, but for
-static calls or anything else that references weak functions.
+ok
 
-The reference is not a problem I'm trying to address. The problem with
-mcount_loc, is that it is used to create the ftrace_table that is exposed
-to user space, and I can't remove entries once they are added.
+>=20
+> > - encoder->functions.suffix_cnt++;
+> > - encoder->functions.entries[encoder->functions.cnt].prefixlen =3D suff=
+ix - name;
+> > + functions->suffix_cnt++;
+> > + func->prefixlen =3D suffix - name;
+> > } else {
+> > - encoder->functions.entries[encoder->functions.cnt].prefixlen =3D strl=
+en(name);
+> > + func->prefixlen =3D strlen(name);
+> > }
+> > - encoder->functions.cnt++;
+> > - return 0;
+> > +
+> > + functions->cnt++;
+> > }
+> >=20
+> > static struct elf_function *btf_encoder__find_function(const struct btf=
+_encoder *encoder,
+> > @@ -2126,26 +2103,56 @@ int btf_encoder__encode(struct btf_encoder *enc=
+oder)
+> > return err;
+> > }
+> >=20
+> > -
+> > -static int btf_encoder__collect_symbols(struct btf_encoder *encoder)
+> > +static int elf_functions__collect(struct elf_functions *functions)
+> > {
+> > - uint32_t sym_sec_idx;
+> > + uint32_t nr_symbols =3D elf_symtab__nr_symbols(functions->symtab);
+> > + struct elf_function *tmp;
+> > + Elf32_Word sym_sec_idx;
+> > uint32_t core_id;
+> > GElf_Sym sym;
+> > + int err;
+> >=20
+> > - elf_symtab__for_each_symbol_index(encoder->symtab, core_id, sym, sym_=
+sec_idx) {
+> > - if (btf_encoder__collect_function(encoder, &sym))
+> > - return -1;
+> > + /* We know that number of functions is less than number of symbols,
+> > + * so we can overallocate temporarily.
+> > + */
+> > + functions->entries =3D calloc(nr_symbols, sizeof(*functions->entries)=
+);
+> > + if (!functions->entries) {
+> > + err =3D -ENOMEM;
+> > + goto out_free;
+>=20
+>=20
+> you could just return -ENOMEM here
 
-To set filter functions you echo names into set_ftrace_filter. If you want
-to enabled 5000 filters, that can take over a minute complete. That's
-because echoing in names to set_ftrace_filter is an O(n^2) operation. It
-has to search every address, call kallsyms on the address then compare it
-to every function passed in. If you have 40,000 functions total, and pass
-in 5,000 functions, that's 40,000 * 5,000 compares!
+I am trying to adhere to the kernel style, although not very strictly.
+It's recommended [1] to have a single exit from a function when there
+is cleanup work.
 
-Since tooling is what does add these large number of filters, a shortcut
-was added. If a number written into set_ftrace_filter, it doesn't do a
-kallsyms lookup, it will enable the nth function in
-available_filter_functions. This turns into a O(1) operation.
+I usually check my patches with a script [2] before submitting.
 
-libtracefs() will read the available_filter_functions, figure out what to
-enable from that, and then write the indexes of all the functions it wants
-to enable. This is a much faster operation then echoing the names one at a
-time.
+[1] https://www.kernel.org/doc/html/v4.10/process/coding-style.html#central=
+ized-exiting-of-functions
+[2] https://github.com/torvalds/linux/blob/master/scripts/checkpatch.pl
 
-This is where the weak functions becomes an issue. If I just ignore them,
-and do not add a place holder in the mcount section. Then the index will be
-off, and will break.
+>=20
+> > + }
+> > +
+> > + functions->cnt =3D 0;
+> > + elf_symtab__for_each_symbol_index(functions->symtab, core_id, sym, sy=
+m_sec_idx) {
+> > + elf_functions__collect_function(functions, &sym);
+> > }
+> >=20
+> > - if (encoder->functions.cnt) {
+> > - qsort(encoder->functions.entries, encoder->functions.cnt, sizeof(enco=
+der->functions.entries[0]),
+> > + if (functions->cnt) {
+> > + qsort(functions->entries,
+> > + functions->cnt,
+> > + sizeof(*functions->entries),
+> > functions_cmp);
+>=20
+>=20
+> nit, why not keep the single line?
 
-When the issue first came about, I simply ignored the weak functions, but
-then my libtracefs self tests started to fail.
+How many chars in a line is too many? :)
 
-So yes, this is just fixing mcount_loc, but I believe it's the only one
-that has a user interface issue.
+>=20
+> > - if (encoder->verbose)
+> > - printf("Found %d functions!\n", encoder->functions.cnt);
+> > + } else {
+> > + err =3D 0;
+> > + goto out_free;
+> > + }
+> > +
+> > + /* Reallocate to the exact size */
+> > + tmp =3D realloc(functions->entries, functions->cnt * sizeof(struct el=
+f_function));
+> > + if (tmp) {
+> > + functions->entries =3D tmp;
+> > + } else {
+> > + fprintf(stderr, "could not reallocate memory for elf_functions table\=
+n");
+> > + err =3D -ENOMEM;
+> > + goto out_free;
+> > }
+> >=20
+> > return 0;
+> > +
+> > +out_free:
+> > + free(functions->entries);
+> > + functions->entries =3D NULL;
+> > + functions->cnt =3D 0;
+> > + return err;
+> > }
+> >=20
+> > static bool ftype__has_arg_names(const struct ftype *ftype)
+> > @@ -2406,6 +2413,7 @@ struct btf_encoder *btf_encoder__new(struct cu *c=
+u, const char *detached_filenam
+> > printf("%s: '%s' doesn't have symtab.\n", func, cu->filename);
+> > goto out;
+> > }
+> > + encoder->functions.symtab =3D encoder->symtab;
+>=20
+>=20
+> I was wondering if we need to keep both symtab pointers, but it's sorted
+> out in the next patch ;-)
+>=20
+> thanks,
+> jirka
+>=20
+> [...]
 
--- Steve
 
