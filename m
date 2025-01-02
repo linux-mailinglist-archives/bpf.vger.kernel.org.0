@@ -1,179 +1,201 @@
-Return-Path: <bpf+bounces-47748-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47749-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 987CF9FFB4E
-	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 17:03:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 377749FFCBA
+	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 18:30:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C7AC7A15AC
-	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 16:03:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 225001881DC0
+	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 17:30:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89C8E2114;
-	Thu,  2 Jan 2025 16:03:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC06717C208;
+	Thu,  2 Jan 2025 17:30:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ehSjfcMp"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KZK3yWca"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11B16BA20
-	for <bpf@vger.kernel.org>; Thu,  2 Jan 2025 16:02:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 016CE14884D
+	for <bpf@vger.kernel.org>; Thu,  2 Jan 2025 17:30:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735833781; cv=none; b=QWDtMtL8cCYW4jnDUj9PdCs66b+L9MREB9JDZ9UJJ7UruV9Jgg3p0Z4OkJnWTtvxifsawB/ZBCHDGxsMh3Q+hNffU/vl80mepZitjR9VHXuJ58JWGkDYzVZNPx3K6ebKbRLa99/8SCfhFpMkG+uPp/2ICfXocGgI//yxSWFXsI0=
+	t=1735839010; cv=none; b=GBGMUcup1CvKPikI0t2ckCcFDXIvWFeR5KfBEYN+nQ/bqCZ9xid8ogMqtg5lh6zQWOMtFeeKdCMlooYYUGrhETrHJTuQXcRq8+vioyAV69eifh0sSU4GfLFUkZDzPaWhAVwqjuA0DcVppoSbS7Xd/7rIad/W7/PZdgzx18mEqJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735833781; c=relaxed/simple;
-	bh=/RW7prpTHN7WDx36+D46lC+dmB6ORfznyq0Y92CxYPc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A7hrj9qi/rX2yBg/DmMZjHgn9NJrjF9b5yhp8f0Df7b7r3Ln7zLwm/93ObfClZ9R6kpUisp4xPgW+yh3uuF9ctRMyGFNj96Nb8f1OoMVTSva92VarpPHsUZa5vZQVDCkVDLwp7bFP11bbP3mCWNCH/j3tH4WnH2jMvXDgJ/JulA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ehSjfcMp; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-436a39e4891so27583705e9.1
-        for <bpf@vger.kernel.org>; Thu, 02 Jan 2025 08:02:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1735833777; x=1736438577; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IUjSUQGZeWN1HqMrYWxMArVEBVbbHAmSHPeKCa7tUTE=;
-        b=ehSjfcMpI7NLgwiPPE2V+ohnRfQ20CqkjT0Sb5DyDxQb+aymyhFq0//JuVZS4PaIj/
-         xTQLgOPv4S8NpN/umx5Hou2g5/W6Fy9+1I3dVNPuaanz0p/h86IUOEd/MfIzLwdRcEJp
-         fbG/27d+dKcb2HISrJOtijPiXSaFIK6ghxw4Ezxk6V4qRmqoazrWvdjSdQqfQSVIf63s
-         RFXNrvzNGW2jbUKND9+oAW4FipIJ6qU21cSE4zec6tZSuHHosQgFhMN/StOxMlPPpewb
-         d7f9VfYsInWmsBVZhWljyGA4Ap9Bfen7tXyLFLC4BjTNAtkMQBy9rtd9vt/XiRD2vgG5
-         xugQ==
+	s=arc-20240116; t=1735839010; c=relaxed/simple;
+	bh=8Kk7GOSkPrPKgNii7L1d4PmZHlCtZviKtEnzyEuMiMs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=bbwJvQQallDJfF/BZMCE8Y18X2sC4fILcYPyoTQCeGj0zvbv5smTG4sdg9vTXUvn5Zo2qO6JJT5lDjUv4sHphDtFsHLNCBOpM3U7Oag5VsxhpdxShrKlJBKF9bPRTFMfRCpmNsstyN9WaKFzKNGI7i0vr5m/XZdgxcIssulmKbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KZK3yWca; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1735839005;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TF/q1lydKCxtj0HCWn8Jgrh/jkO6xBpGH3h2IRX+HOs=;
+	b=KZK3yWcaLHES+grubAwBm4L/7Hdw8Nqk+Ed+Nt3qxOK0Vc4ERxAW6QB7o0zdU+KtX+CQzF
+	mwp4gUf07witG4h5aSc33co4gqYGrEH3rGd6hk54/f/JedRXD2AFpIXiGlqyHU/em0ussn
+	JBS/KpY3oeEjobiWhOW1surb2YYKqdA=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-684-mEn0SErXO6utXyOmJ0UOmQ-1; Thu, 02 Jan 2025 12:30:04 -0500
+X-MC-Unique: mEn0SErXO6utXyOmJ0UOmQ-1
+X-Mimecast-MFC-AGG-ID: mEn0SErXO6utXyOmJ0UOmQ
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-3022a57a4fdso48454581fa.1
+        for <bpf@vger.kernel.org>; Thu, 02 Jan 2025 09:30:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735833777; x=1736438577;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IUjSUQGZeWN1HqMrYWxMArVEBVbbHAmSHPeKCa7tUTE=;
-        b=R0kOMdmxliajVje/D/LnR8odbOIk1yshpKUrjCBz9OcJmBXmUzKibdpXCX4+2wnUzX
-         JvGi0t2wYnutKUMvwvomntM6LtDaIrRU7d/GJ5TU9eGkEbUnWL+zVrNsVkjU1CUIviw2
-         fhG4D7ODeOmgQTgNHMS1YDruWgJmCfTBPLWIHJkl+Wu23H0dxiJNWl7AbCLyn70gzSEZ
-         GZ+fPHPXz8F8/0IXI/UP1Ga5nV+TV0i+ySxUAgEUP/pCkviuGt9hhG/8bbaKBkJQSX5D
-         yiDi4ToQ4vjJN5UuJvXjob6u3gMFi+6bphCl3XUmZ9sH6LrHCY/zizBBN3dFYJ8x1C75
-         KPxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWobPfkgMGyaAHl5cCoHEI5WZYkpKxABIJlH659vAQCd7SxYL+w4eJjD8jslnP/Kc5UAb0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+Gdul7YZzW2S0ZVV9RT1H6aGAOVQ24hktchliuNGSuZio1jMG
-	bk93Bil5MYAwc2oHlbtDa8/MV6Yf6mccIbZFAOgRzZ4NSIyYgIDAQgN5sbLOMkI=
-X-Gm-Gg: ASbGnctnR/PHGfBrXnfMPVH5wM7icxP86032IyloMgqbNM3Iu9Qh97XgFc9/MRTTOLu
-	wbEmNOf9AUFiRW64sMwJOU4ZK5bAW6bcS+b2v6hnBuMv3QLWy99u3Agil48UYBOHhY6n57GYii7
-	pw/7lFDoiyCsXGF/720iCEEbGyCbOb3A82Euqxl9S3JZ2iW/2u5NTj4BgYX75DLcRlNap3voogE
-	GKbfl+O+2eA9rmcwlagyCWstHYyfI9XNUkk3cpPeQqHj62S3r9rvR9YDDQ=
-X-Google-Smtp-Source: AGHT+IHf5gbQBJp/pMHNxyXZQliw8SbNw/rx4/zChE5cpleeGKug3XnJka5pmnvjS6uNnfkCY5WVdg==
-X-Received: by 2002:a05:6000:2a7:b0:385:ef2f:9282 with SMTP id ffacd0b85a97d-38a221f321dmr43992612f8f.5.1735833777159;
-        Thu, 02 Jan 2025 08:02:57 -0800 (PST)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43661219578sm461403955e9.20.2025.01.02.08.02.56
+        d=1e100.net; s=20230601; t=1735839003; x=1736443803;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TF/q1lydKCxtj0HCWn8Jgrh/jkO6xBpGH3h2IRX+HOs=;
+        b=QTFpgDW8OPF7iYz0VMOQlsZBlmCgAMFc2lIjQVJG0jkQEbb0I+vS/kbgfAlXEcCp+u
+         VLv9uM8wFYyPgTSoJD55CM9YF7bm9ew+N/3khreF30NJ4IqACehW6qMq99DURRKoxmla
+         JDJj9UXz0EcMPr6V+FvYxyBRuuQyCJfEin1SNrmCIm5AgVDAR4C68CIOL22voui19cvR
+         A7XeOri/EAZn/4BHZW+CV5XEQpSYXNdLzderkIlfHunGKoC0ywWY9HN8b3qhf8Do0DN5
+         hNbbJtz67K/aUMZq6R62nImCg1NvFq7CVTz6b78vPEhxrHr7ngVLWbD6GtImpvKc2J6A
+         BGGw==
+X-Gm-Message-State: AOJu0YxgZs4JWe4GBsKxR33+soggrnv8t7FGgYINGqpmWxNdOtjnvH5l
+	gxr0N06wWIcu6sLsUa+NUligNqQvdiBta9lEZtZzuwgDnKVtx/frhLtGqg5CbdwB2VHX91WRSmI
+	yH0u6+PrQOItQoh/laJGMqyttTX7y7fT1cOoOBwCX4HaoW53vpg==
+X-Gm-Gg: ASbGncuoZzSjkzZBKMdu2WL0NUhrWcoMJtieLU0nuvBqwOzHuJPB6aPfpZ2xSWd0I3F
+	sjF1Xfjf50lE0N6FDk6ZM2W8ZNl4ADI4LAL3RZMrWeptlxQoP0ZZLFcYrpmeLQ52ZTkGou8i6H4
+	DZUUBVBX2mzwpX/FMAGdHsXeDK0ABS8d3YW83PdGK6G7Eoy6Pkzy2Pn9kfnyBGtanNxg3m4dYe4
+	FdA0LIcXjyK+dgA6MI2NFYoBVjAUbJsz+V0npGG91JvCSrElZWb/Q==
+X-Received: by 2002:a05:651c:60d:b0:302:4115:acc with SMTP id 38308e7fff4ca-30468609a8bmr122376091fa.26.1735839002753;
+        Thu, 02 Jan 2025 09:30:02 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGq6WTs29dVX+Tc687FHw2WskAzVNvZbLuCxEb5RkRgNHTQ+JdkFHd7PoArSLLGQ+24RDTr/g==
+X-Received: by 2002:a05:651c:60d:b0:302:4115:acc with SMTP id 38308e7fff4ca-30468609a8bmr122375981fa.26.1735839002307;
+        Thu, 02 Jan 2025 09:30:02 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-3045ad6cae6sm43916441fa.23.2025.01.02.09.29.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jan 2025 08:02:56 -0800 (PST)
-Date: Thu, 2 Jan 2025 17:02:54 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: tj@kernel.org, hannes@cmpxchg.org, longman@redhat.com, 
-	roman.gushchin@linux.dev, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, chenridong@huawei.com, wangweiyang2@huawei.com
-Subject: Re: [PATCH v1] cgroup/cpuset: remove kernfs active break
-Message-ID: <6zxqs3ms52uvgsyryubna64xy5a6zxogssomsgiyhzishwmfbd@lylwjd6cdkli>
-References: <20241220013106.3603227-1-chenridong@huaweicloud.com>
+        Thu, 02 Jan 2025 09:30:00 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id DCA51177D8E2; Thu, 02 Jan 2025 18:29:57 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Amery Hung <ameryhung@gmail.com>, netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ alexei.starovoitov@gmail.com, martin.lau@kernel.org, sinquersw@gmail.com,
+ jhs@mojatatu.com, jiri@resnulli.us, stfomichev@gmail.com,
+ ekarani.silvestre@ccc.ufcg.edu.br, yangpeihao@sjtu.edu.cn,
+ xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com, ameryhung@gmail.com,
+ amery.hung@bytedance.com
+Subject: Re: [PATCH bpf-next v2 00/14] bpf qdisc
+In-Reply-To: <20241220195619.2022866-1-amery.hung@gmail.com>
+References: <20241220195619.2022866-1-amery.hung@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Thu, 02 Jan 2025 18:29:57 +0100
+Message-ID: <874j2h86p6.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="q5pfjqkiaj7cdu2h"
-Content-Disposition: inline
-In-Reply-To: <20241220013106.3603227-1-chenridong@huaweicloud.com>
-
-
---q5pfjqkiaj7cdu2h
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v1] cgroup/cpuset: remove kernfs active break
-MIME-Version: 1.0
 
-On Fri, Dec 20, 2024 at 01:31:06AM +0000, Chen Ridong <chenridong@huaweiclo=
-ud.com> wrote:
-> RIP: 0010:kernfs_should_drain_open_files+0x1a1/0x1b0
+Amery Hung <ameryhung@gmail.com> writes:
 
-I assume it's this
-	WARN_ON_ONCE(atomic_read(&kn->active) !=3D KN_DEACTIVATED_BIAS);
+> Hi all,
+>
+> This patchset aims to support implementing qdisc using bpf struct_ops.
+> This version takes a step back and only implements the minimum support
+> for bpf qdisc. 1) support of adding skb to bpf_list and bpf_rbtree
+> directly and 2) classful qdisc are deferred to future patchsets.
+>
+> * Overview *
+>
+> This series supports implementing qdisc using bpf struct_ops. bpf qdisc
+> aims to be a flexible and easy-to-use infrastructure that allows users to
+> quickly experiment with different scheduling algorithms/policies. It only
+> requires users to implement core qdisc logic using bpf and implements the
+> mundane part for them. In addition, the ability to easily communicate
+> between qdisc and other components will also bring new opportunities for
+> new applications and optimizations.
 
-> It can be explained by:
-> rmdir 				echo 1 > cpuset.cpus
-> 				kernfs_fop_write_iter // active=3D0
-> cgroup_rm_file
-> kernfs_remove_by_name_ns	kernfs_get_active // active=3D1
-> __kernfs_remove					  // active=3D0x80000002
-> kernfs_drain			cpuset_write_resmask
-> wait_event
-> //waiting (active =3D=3D 0x80000001)
-> 				kernfs_break_active_protection
-> 				// active =3D 0x80000001
-> // continue
-> 				kernfs_unbreak_active_protection
-> 				// active =3D 0x80000002
-> ...
-> kernfs_should_drain_open_files
-> // warning occurs
-> 				kernfs_put_active
+This is very cool, and I'm thrilled to see this work getting closer to
+being merged! :)
 
-Thanks for this breakdown.
+> * struct_ops changes *
+>
+> To make struct_ops works better with bpf qdisc, two new changes are
+> introduced to bpf specifically for struct_ops programs. Frist, we
+> introduce "__ref" postfix for arguments in stub functions in patch 1-2.
+> It allows Qdisc_ops->enqueue to acquire an unique referenced kptr to the
+> skb argument. Through the reference object tracking mechanism in
+> the verifier, we can make sure that the acquired skb will be either
+> enqueued or dropped. Besides, no duplicate references can be acquired.
+> Then, we allow a referenced kptr to be returned from struct_ops programs
+> so that we can return an skb naturally. This is done and tested in patch 3
+> and 4.
+>
+> * Performance of bpf qdisc *
+>
+> We tested several bpf qdiscs included in the selftests and their in-tree
+> counterparts to give you a sense of the performance of qdisc implemented
+> in bpf.
+>
+> The implementation of bpf_fq is fairly complex and slightly different from
+> fq so later we only compare the two fifo qdiscs. bpf_fq implements the
+> same fair queueing algorithm in fq, but without flow hash collision
+> avoidance and garbage collection of inactive flows. bpf_fifo uses a single
+> bpf_list as a queue instead of three queues for different priorities in
+> pfifo_fast. The time complexity of fifo however should be similar since t=
+he
+> queue selection time is negligible.
+>
+> Test setup:
+>
+>     client -> qdisc ------------->  server
+>     ~~~~~~~~~~~~~~~                 ~~~~~~
+>     nested VM1 @ DC1               VM2 @ DC2
+>
+> Throghput: iperf3 -t 600, 5 times
+>
+>       Qdisc        Average (GBits/sec)
+>     ----------     -------------------
+>     pfifo_fast       12.52 =C2=B1 0.26
+>     bpf_fifo         11.72 =C2=B1 0.32=20
+>     fq               10.24 =C2=B1 0.13
+>     bpf_fq           11.92 =C2=B1 0.64=20
+>
+> Latency: sockperf pp --tcp -t 600, 5 times
+>
+>       Qdisc        Average (usec)
+>     ----------     --------------
+>     pfifo_fast      244.58 =C2=B1 7.93
+>     bpf_fifo        244.92 =C2=B1 15.22
+>     fq              234.30 =C2=B1 19.25
+>     bpf_fq          221.34 =C2=B1 10.76
+>
+> Looking at the two fifo qdiscs, the 6.4% drop in throughput in the bpf
+> implementatioin is consistent with previous observation (v8 throughput
+> test on a loopback device). This should be able to be mitigated by
+> supporting adding skb to bpf_list or bpf_rbtree directly in the future.
 
-> To avoid deadlock. the commit 76bb5ab8f6e3 ("cpuset:
-> break kernfs active protection in cpuset_write_resmask()") added
-> 'kernfs_break_active_protection' in the cpuset_write_resmask. This could
-> lead to this warning.
+This looks pretty decent!
 
-The deadlock cycle included cpuset_hotplug_work and since that was
-removed in the said commit, there shouldn't be same deadlock possible.
+> * Clean up skb in bpf qdisc during reset *
+>
+> The current implementation relies on bpf qdisc implementors to correctly
+> release skbs in queues (bpf graphs or maps) in .reset, which might not be
+> a safe thing to do. The solution as Martin has suggested would be
+> supporting private data in struct_ops. This can also help simplifying
+> implementation of qdisc that works with mq. For examples, qdiscs in the
+> selftest mostly use global data. Therefore, even if user add multiple
+> qdisc instances under mq, they would still share the same queue.
 
-Ridong, have you run your patch with CONFIG_LOCKDEP to check that
-eventuality?
+So is the plan to fix this before merging this series? Seems like a bit
+of a footgun, otherwise?
 
-> After the commit 2125c0034c5d ("cgroup/cpuset: Make cpuset hotplug
-> processing synchronous"), the cpuset_write_resmask no longer needs to
-> wait the hotplug to finish, which means that cpuset_write_resmask won't
-> grab the cgroup_mutex. So the deadlock doesn't exist anymore. Therefore,
-> remove kernfs_break_active_protection operation in the
-> 'cpuset_write_resmask'
->=20
-> Fixes: 76bb5ab8f6e3 ("cpuset: break kernfs active protection in cpuset_wr=
-ite_resmask()")
+-Toke
 
-This commit alone isn't sufficient to cause the warning you observed,
-right?
-
-As I read kernfs_break_active_protection() comment, I don't see cpuset
-code violating its conditions:
-a) it's broken/unbroken from withing a kernfs file operation handler,
-b) it pins the needed struct cpuset independently of kernfs_node (it's
-   ok to be removed)
-
-All in all -- I think the particular break/unbreak pair is unncecessary
-nowadays and the warning implemented with hiding/showing kernfs files
-didn't take temporary breakage into account (only based on quick
-searching and vague memories).
-
-Thanks,
-Michal
-
---q5pfjqkiaj7cdu2h
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ3a4rAAKCRAt3Wney77B
-SfQXAQDQ2ZQJNtjSLxUqSR0QEdFcS0VSrh2iZLKCe0WZ3leHUgEAqQK7ZXJx72+u
-S10JZHolaU4fWxvAyMfezHDwOvHSJwY=
-=et6F
------END PGP SIGNATURE-----
-
---q5pfjqkiaj7cdu2h--
 
