@@ -1,348 +1,130 @@
-Return-Path: <bpf+bounces-47789-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47790-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D826A0011B
-	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 23:13:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A92C5A00132
+	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 23:31:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE0DA7A1DA5
-	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 22:13:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 784F116324E
+	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2025 22:31:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD2C61BBBC5;
-	Thu,  2 Jan 2025 22:13:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A32401A724C;
+	Thu,  2 Jan 2025 22:30:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eoopmKfw"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F8DC1B6CE9;
-	Thu,  2 Jan 2025 22:13:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CA9F1BCA1C;
+	Thu,  2 Jan 2025 22:30:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735855997; cv=none; b=byw0dHOXt+2ubmSX0Rsrj0Z0DAQNmSYlGk+1I9d/Wv8KwsimvuBTmnQurVJc73eLvg2CxB9WSqhcPfPLnbxGqL1vA57e6LgqCPtv6is3QZKF2TQhqgnlmO0v8Ai80vlvnnNp7iGQ0JjeZIjKkpXQJS3MtFic/Aa7bPc5ybwaPWc=
+	t=1735857057; cv=none; b=pbQWlMqg0FoqyyoyiPh58PY9SzVPKomjtfOM59+OLP6g4WuT/aUtRLNtVJ53lgbCEu/zforOcE+XWWR5bp+DE1axA6Cu8Wk4guRSI+n2YDJYJyoFR6feqtLbhdbnqV33GVxHCeEyOYl5PiBWpL1WmHbZ3I/FOSkEEjmSAbIuLv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735855997; c=relaxed/simple;
-	bh=rITP3EEkpgAn7tqmxq8YJZ2VuQbmsK+iT2/qX5Oy/KQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dyPc4LvAgeCOXKVcJrKmxyank1wvN66+yXWu6kopaE8Qm/UwlbPXdPdcXX9GffP4oRtniBesXaW318qWAEXXnrZN/hENRQLDKvNhbgLcKmjEImBF1nYQmMOwkJ8qcqca2ayL4slarlI+h0Dpl2S2lG1jaoO8aPZTNmwcpuUf/IQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB85BC4CED0;
-	Thu,  2 Jan 2025 22:13:14 +0000 (UTC)
-Date: Thu, 2 Jan 2025 17:14:31 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-kbuild@vger.kernel.org, bpf <bpf@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>,
- Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor
- <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, Zheng Yejian
- <zhengyejian1@huawei.com>, Martin Kelly <martin.kelly@crowdstrike.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>, Josh Poimboeuf
- <jpoimboe@redhat.com>
-Subject: Re: [PATCH 00/14] scripts/sorttable: ftrace: Remove place holders
- for weak functions in available_filter_functions
-Message-ID: <20250102171431.319ef74b@gandalf.local.home>
-In-Reply-To: <20250102164454.2ffa33b1@gandalf.local.home>
-References: <20250102185845.928488650@goodmis.org>
-	<CAHk-=wjg4ckXG6tQHFAU_mL5vEFedwjGe=uahb31Oju50bYbNA@mail.gmail.com>
-	<20250102164454.2ffa33b1@gandalf.local.home>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1735857057; c=relaxed/simple;
+	bh=knH3x8yBz11NMkT/X48OqIJAi2mjgYRl1KyTLT6ooO0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J2ICcI+fWurodRiwOUMDglZUdJvbWbVpXv6BMv6heR6hGKllQqmZSaAoBVBDVQjfTqagbrlADMHoehKj70IhhNEsdGr4AC7y9/ntMJFrYSxoPLyI1JWr6xwx1o9ftvC80EqYii9t+8lRUXug3MiaN/S0C/it1c1hthMptQiF09g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eoopmKfw; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-21683192bf9so161405715ad.3;
+        Thu, 02 Jan 2025 14:30:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1735857055; x=1736461855; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=GgvqTEGZlDWFBkSHH+Qh2GLJWXsZlbhoi9i1eLoV0B8=;
+        b=eoopmKfweqY5V31oNLAmPBUd4SD68CI5Jf+3TXy8YflWdB2EEv89u3Yi7kitTo+3fw
+         TXBgCX/ciPc/8GbbwMVZBzOj4qp8U6bZWxF1SITmJsn2MboaLZ2/0feqBZvvciLsg6pG
+         qX7IkbYLqihgCSZiT50z3iaOqxFQZHRRx550qzlx1sNDIgJDBPpZ10e+22sRRJun5FO9
+         T5ZmvUt//piB5LKA+35IA/Ody5eBqkMshtyHddEh2ZBZCjrJ5QdyaCNlVHMLRfEIqHI5
+         sE161XQ8aIpzWsRDh03W9gU7pk5tP91EfRE6tgT8uAb7mKypIQcm6uhzNvLhvbj0UsP9
+         ZKyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735857055; x=1736461855;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GgvqTEGZlDWFBkSHH+Qh2GLJWXsZlbhoi9i1eLoV0B8=;
+        b=dzqTX1kPYQZkDduM9h4wa63yIs2w2qOaiH/Lqvo/p8B9dn03q9GtLcQVmk7MRJiIcx
+         snJglnmnzHMoRYQMNGICU8tpggUhdr6GwoMOQu0kL6ex7E25kNGDEK/q+G/W301XPUgS
+         02ISiCqrBep/61Nu7oQJq9gFpUTAeybi79EPzhP3oo29gq3qCf/vnaQKPbPWlZ0I+DsZ
+         Z+UCFC8loEUK/V+ntykB91bMAIVmghfk6RRHCSX7Zfyt4IrQFrOLyAqzLSLeUC1yDl2M
+         A8hFwwFPN13ARZPfkyVi3o5PoGcY20lUQwVoUY8eLHUBWSNI3qkf2OeZXSgaFLEaVIAv
+         VjPA==
+X-Forwarded-Encrypted: i=1; AJvYcCU3C2pPQ+mdnObLfBrTeYRHIt0Wq4+eEXb23zZXZ0Xtf0i6sp0a1uEopvRaFSX1a9LiQnb61dD5VkbRnJQxyBg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzp8oHabAHy2iLWhGlwmFJOSWiHw+mmExczcfT41oKdmqboXQA+
+	Pbheip4At+ZNHBMFTjuJ0IC+ampQpn2yOx4MQmipZk84OyVIE8g=
+X-Gm-Gg: ASbGncvL65ZlBrrXR7o7oKHxg+vqVxAP4oCPs2QWtSG5OKsrSs9eFgVW+IpeYGD3RXz
+	e/zbeAwBG8ItDVFq1owb2rYXKVSFc97D5tdGXSdnMzkXUxQZ8gMetIHN39MlcR7ESswdFg3+YNj
+	kkrWfR5y50kvETSDBbXJ1lCNpKY3if0RdjK+VmLsiYNQw4ExeGaPLg8Ikw9m61tfQ4BjXRy+tZN
+	AWi2VL3skAvMdnZ9wYFwJRmRQvhKCmOQLdWtp8msGakl2eRhqOlraj7
+X-Google-Smtp-Source: AGHT+IFA6psalCdH9hEvWe8JHoLwtOZXcHQWZL7qgrDBlWVOqh3DdbdnUlbzws6oBhmZZT1FbCt+Qg==
+X-Received: by 2002:a17:903:244b:b0:216:34e5:6e49 with SMTP id d9443c01a7336-219e70dd211mr627952155ad.57.1735857055452;
+        Thu, 02 Jan 2025 14:30:55 -0800 (PST)
+Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dc9cde19sm233558745ad.167.2025.01.02.14.30.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jan 2025 14:30:54 -0800 (PST)
+Date: Thu, 2 Jan 2025 14:30:54 -0800
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Alexis =?utf-8?Q?Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+Cc: bpf@vger.kernel.org,
+	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Bastien Curutchet <bastien.curutchet@bootlin.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	linux-kselftest@vger.kernel.org
+Subject: Re: Question about test_xsk.sh
+Message-ID: <Z3cTnjss5soyUobX@mini-arch>
+References: <e3d0bd36-c074-4cda-b6e1-5f873453ad30@bootlin.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e3d0bd36-c074-4cda-b6e1-5f873453ad30@bootlin.com>
 
-On Thu, 2 Jan 2025 16:44:54 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On 12/20, Alexis Lothoré wrote:
+> Hello all,
+> 
+> I was looking  at other test candidates for conversion to bpf test_progs
+> framework (to increase automatic testing scope) and found test_xsk.sh, which
+> does not seem to have coverage yet in test_progs. This test validates the AF_XDP
+> socket behavior with different XDP modes (SKB, DRV, zero copy) and socket
+> configuration (normal, busy polling).
+> 
+> The testing program looks pretty big, considering all files involved
+> (test_xsk.sh, xskxceiver.c, xsk.c, the different XDP programs) and the matrix of
+> tests it runs. So before really diving into it, I would like to ask:
+> - is it indeed a good/relevant target for integration in test_progs (all tests
+> look like functional tests, so I guess it is) ?
+> - if so, is there anyone already working on this ?
+> - multiple commits on xskxceiver.c hint that the program is also used for
+> testing on real hardware, could someone confirm that it is still the case
+> (similar need has been seen with test_xdp_features.sh for example) ? If so, it
+> means that the current form must be preserved, and it would be an additional
+> integration into test_progs rather a conversion (then most of the code should be
+> shared between the non-test_progs and the test_progs version)
 
-> I guess the next thing I could do is to create a "skip" variable that can
-> be modified, and we can skip X entries in the start_mcount_loc. As the
-> start_mcount_loc and stop_mcount_loc (which determines the size of the
-> table) cannot be modified in an architecture independent way.
-
-This is on top of the last patch, but I'll likely restructure it and remove
-the kaslr_offset() part totally. I'd still break it up into two patches.
-One to remove the reading of the System.map, and then the other to add the
-skip variable.
-
-This version, I add a "ftrace_mcount_skip" that is default to zero, but the
-sorttable.c code will update it to skip over the functions that it zeroed
-out.
-
--- Steve
-
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 5963ae76b31a..3193148102e0 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -7077,20 +7077,6 @@ static int ftrace_process_locs(struct module *mod,
- 			continue;
- 		}
- 
--		/*
--		 * At build time, a check is made against: nm -S vmlinux
--		 * to make sure all functions are found within the
--		 * size range of symbols listed by nm. If not, it's likely
--		 * a weak function that was overridden. We do not want those.
--		 * The script will zero them out, but kaslr will still
--		 * update them. If the address is the same as the kaslr_offset()
--		 * then skip the record.
--		 */
--		if (addr == kaslr_offset()) {
--			skipped++;
--			continue;
--		}
--
- 		end_offset = (pg->index+1) * sizeof(pg->records[0]);
- 		if (end_offset > PAGE_SIZE << pg->order) {
- 			/* We should have allocated enough */
-@@ -7761,10 +7747,13 @@ int __init __weak ftrace_dyn_arch_init(void)
- 	return 0;
- }
- 
-+int ftrace_mcount_skip __initdata;
-+
- void __init ftrace_init(void)
- {
- 	extern unsigned long __start_mcount_loc[];
- 	extern unsigned long __stop_mcount_loc[];
-+	unsigned long *start_addr = __start_mcount_loc;
- 	unsigned long count, flags;
- 	int ret;
- 
-@@ -7775,6 +7764,14 @@ void __init ftrace_init(void)
- 		goto failed;
- 
- 	count = __stop_mcount_loc - __start_mcount_loc;
-+
-+	/*
-+	 * scripts/sorttable.c will set ftrace_mcount_skip to state
-+	 * how many functions to skip in the __mcount_loc section.
-+	 * These would have been weak functions.
-+	 */
-+	count -= ftrace_mcount_skip;
-+	start_addr += ftrace_mcount_skip;
- 	if (!count) {
- 		pr_info("ftrace: No functions to be traced?\n");
- 		goto failed;
-@@ -7783,9 +7780,7 @@ void __init ftrace_init(void)
- 	pr_info("ftrace: allocating %ld entries in %ld pages\n",
- 		count, DIV_ROUND_UP(count, ENTRIES_PER_PAGE));
- 
--	ret = ftrace_process_locs(NULL,
--				  __start_mcount_loc,
--				  __stop_mcount_loc);
-+	ret = ftrace_process_locs(NULL, start_addr, __stop_mcount_loc);
- 	if (ret) {
- 		pr_warn("ftrace: failed to allocate entries for functions\n");
- 		goto failed;
-diff --git a/scripts/sorttable.c b/scripts/sorttable.c
-index d1d52bd12adb..506172898fd8 100644
---- a/scripts/sorttable.c
-+++ b/scripts/sorttable.c
-@@ -543,6 +543,7 @@ static pthread_t mcount_sort_thread;
- struct elf_mcount_loc {
- 	Elf_Ehdr *ehdr;
- 	Elf_Shdr *init_data_sec;
-+	Elf_Sym *ftrace_skip_sym;
- 	uint64_t start_mcount_loc;
- 	uint64_t stop_mcount_loc;
- };
-@@ -554,12 +555,19 @@ static void *sort_mcount_loc(void *arg)
- 	uint64_t offset = emloc->start_mcount_loc - shdr_addr(emloc->init_data_sec)
- 					+ shdr_offset(emloc->init_data_sec);
- 	uint64_t count = emloc->stop_mcount_loc - emloc->start_mcount_loc;
-+	uint32_t *skip_addr = NULL;
- 	unsigned char *start_loc = (void *)emloc->ehdr + offset;
-+	void *end_loc = start_loc + count;
-+
-+	if (emloc->ftrace_skip_sym) {
-+		offset = sym_value(emloc->ftrace_skip_sym) -
-+			shdr_addr(emloc->init_data_sec) +
-+			shdr_offset(emloc->init_data_sec);
-+		skip_addr = (void *)emloc->ehdr + offset;
-+	}
- 
- 	/* zero out any locations not found by function list */
- 	if (function_list_size) {
--		void *end_loc = start_loc + count;
--
- 		for (void *ptr = start_loc; ptr < end_loc; ptr += long_size) {
- 			uint64_t key;
- 
-@@ -574,44 +582,65 @@ static void *sort_mcount_loc(void *arg)
- 	}
- 
- 	qsort(start_loc, count/long_size, long_size, compare_extable);
-+
-+	/* Now set how many functions need to be skipped */
-+	for (void *ptr = start_loc; skip_addr && ptr < end_loc; ptr += long_size) {
-+		uint64_t val;
-+
-+		if (long_size == 4)
-+			val = *(uint32_t *)ptr;
-+		else
-+			val = *(uint64_t *)ptr;
-+		if (val) {
-+			uint32_t skip;
-+
-+			/* Update the ftrace_mcount_skip to skip these functions */
-+			val = ptr - (void *)start_loc;
-+			skip = val / long_size;
-+			w(r(&skip), skip_addr);
-+			break;
-+		}
-+	}
- 	return NULL;
- }
- 
- /* Get the address of __start_mcount_loc and __stop_mcount_loc in System.map */
--static void get_mcount_loc(uint64_t *_start, uint64_t *_stop)
-+static void get_mcount_loc(struct elf_mcount_loc *emloc, Elf_Shdr *symtab_sec,
-+			   const char *strtab)
- {
--	FILE *file_start, *file_stop;
--	char start_buff[20];
--	char stop_buff[20];
--	int len = 0;
-+	Elf_Sym *sym, *end_sym;
-+	int symentsize = shdr_entsize(symtab_sec);
-+	int found = 0;
-+
-+	sym = (void *)emloc->ehdr + shdr_offset(symtab_sec);
-+	end_sym = (void *)sym + shdr_size(symtab_sec);
-+
-+	while (sym < end_sym) {
-+		if (!strcmp(strtab + sym_name(sym), "__start_mcount_loc")) {
-+			emloc->start_mcount_loc = sym_value(sym);
-+			if (++found == 3)
-+				break;
-+		} else if (!strcmp(strtab + sym_name(sym), "__stop_mcount_loc")) {
-+			emloc->stop_mcount_loc = sym_value(sym);
-+			if (++found == 3)
-+				break;
-+		} else if (!strcmp(strtab + sym_name(sym), "ftrace_mcount_skip")) {
-+			emloc->ftrace_skip_sym = sym;
-+			if (++found == 3)
-+				break;
-+		}
-+		sym = (void *)sym + symentsize;
-+	}
- 
--	file_start = popen(" grep start_mcount System.map | awk '{print $1}' ", "r");
--	if (!file_start) {
-+	if (!emloc->start_mcount_loc) {
- 		fprintf(stderr, "get start_mcount_loc error!");
- 		return;
- 	}
- 
--	file_stop = popen(" grep stop_mcount System.map | awk '{print $1}' ", "r");
--	if (!file_stop) {
-+	if (!emloc->stop_mcount_loc) {
- 		fprintf(stderr, "get stop_mcount_loc error!");
--		pclose(file_start);
- 		return;
- 	}
--
--	while (fgets(start_buff, sizeof(start_buff), file_start) != NULL) {
--		len = strlen(start_buff);
--		start_buff[len - 1] = '\0';
--	}
--	*_start = strtoul(start_buff, NULL, 16);
--
--	while (fgets(stop_buff, sizeof(stop_buff), file_stop) != NULL) {
--		len = strlen(stop_buff);
--		stop_buff[len - 1] = '\0';
--	}
--	*_stop = strtoul(stop_buff, NULL, 16);
--
--	pclose(file_start);
--	pclose(file_stop);
- }
- #else /* MCOUNT_SORT_ENABLED */
- static inline int parse_symbols(const char *fname) { return 0; }
-@@ -647,8 +676,6 @@ static int do_sort(Elf_Ehdr *ehdr,
- 	unsigned int shstrndx;
- #ifdef MCOUNT_SORT_ENABLED
- 	struct elf_mcount_loc mstruct = {0};
--	uint64_t _start_mcount_loc = 0;
--	uint64_t _stop_mcount_loc = 0;
- #endif
- #if defined(SORTTABLE_64) && defined(UNWINDER_ORC_ENABLED)
- 	unsigned int orc_ip_size = 0;
-@@ -686,15 +713,9 @@ static int do_sort(Elf_Ehdr *ehdr,
- 
- #ifdef MCOUNT_SORT_ENABLED
- 		/* locate the .init.data section in vmlinux */
--		if (!strcmp(secstrings + idx, ".init.data")) {
--			get_mcount_loc(&_start_mcount_loc, &_stop_mcount_loc);
--			mstruct.ehdr = ehdr;
-+		if (!strcmp(secstrings + idx, ".init.data"))
- 			mstruct.init_data_sec = shdr;
--			mstruct.start_mcount_loc = _start_mcount_loc;
--			mstruct.stop_mcount_loc = _stop_mcount_loc;
--		}
- #endif
--
- #if defined(SORTTABLE_64) && defined(UNWINDER_ORC_ENABLED)
- 		/* locate the ORC unwind tables */
- 		if (!strcmp(secstrings + idx, ".orc_unwind_ip")) {
-@@ -736,23 +757,6 @@ static int do_sort(Elf_Ehdr *ehdr,
- 		goto out;
- 	}
- #endif
--
--#ifdef MCOUNT_SORT_ENABLED
--	if (!mstruct.init_data_sec || !_start_mcount_loc || !_stop_mcount_loc) {
--		fprintf(stderr,
--			"incomplete mcount's sort in file: %s\n",
--			fname);
--		goto out;
--	}
--
--	/* create thread to sort mcount_loc concurrently */
--	if (pthread_create(&mcount_sort_thread, NULL, &sort_mcount_loc, &mstruct)) {
--		fprintf(stderr,
--			"pthread_create mcount_sort_thread failed '%s': %s\n",
--			strerror(errno), fname);
--		goto out;
--	}
--#endif
- 	if (!extab_sec) {
- 		fprintf(stderr,	"no __ex_table in file: %s\n", fname);
- 		goto out;
-@@ -772,6 +776,26 @@ static int do_sort(Elf_Ehdr *ehdr,
- 	strtab = (const char *)ehdr + shdr_offset(strtab_sec);
- 	symtab = (const Elf_Sym *)((const char *)ehdr + shdr_offset(symtab_sec));
- 
-+#ifdef MCOUNT_SORT_ENABLED
-+	mstruct.ehdr = ehdr;
-+	get_mcount_loc(&mstruct, symtab_sec, strtab);
-+
-+	if (!mstruct.init_data_sec || !mstruct.start_mcount_loc || !mstruct.stop_mcount_loc) {
-+		fprintf(stderr,
-+			"incomplete mcount's sort in file: %s\n",
-+			fname);
-+		goto out;
-+	}
-+
-+	/* create thread to sort mcount_loc concurrently */
-+	if (pthread_create(&mcount_sort_thread, NULL, &sort_mcount_loc, &mstruct)) {
-+		fprintf(stderr,
-+			"pthread_create mcount_sort_thread failed '%s': %s\n",
-+			strerror(errno), fname);
-+		goto out;
-+	}
-+#endif
-+
- 	if (custom_sort) {
- 		custom_sort(extab_image, shdr_size(extab_sec));
- 	} else {
+Since no one came back to you, here is my attempt to answer.. It is a
+good target but it is indeed a good idea to preserve the ability to
+run it outside of test_progs framework. Maybe we can eventually run
+it with the real hw (in loopback mode) from
+tools/testing/selftests/rivers/net/hw. And I don't think anybody
+is working on integrating it into test_progs. But Magnus/Maciej should
+have more context...
 
