@@ -1,151 +1,146 @@
-Return-Path: <bpf+bounces-47814-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47815-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 652F2A0021A
-	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 01:44:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF273A0021F
+	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 01:46:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F25F51883CFE
-	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 00:44:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA3D21883DB5
+	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 00:46:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B479C145B0C;
-	Fri,  3 Jan 2025 00:43:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C22514A099;
+	Fri,  3 Jan 2025 00:46:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="biFNFEci"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q/lBj2TX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6755013CFBD;
-	Fri,  3 Jan 2025 00:43:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59EC018E25
+	for <bpf@vger.kernel.org>; Fri,  3 Jan 2025 00:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735865031; cv=none; b=TmPkmoOeEnM4acCO+8Us7EuZSNLfa1KQ8Nsr17pbjgBvEOLRl/0XC3PVGABUF+/ye14lBSYFPAUV+lOwQX82rq87YtKEMNsGwhb/JQOxrflarDDw47C9J9jMcFWry1DEUPK0LVCVacWnrHvSMgCYVbss5PMjb0N/YwtvcIEXi1o=
+	t=1735865195; cv=none; b=Yjrg4TS1Dih3Fi8tq1gpM0lr2aKRJ/39+hWJcJQsFtYAjha4mB7DrUdIh8kYncTUqP6EGPyLZjuO+IgnjrcIg3kQAkEmeBhzvsIUOLBpQjjVEP2Rc3Cxd8XL2bydh3GP+wQAkBdPVmLSzOxRvcKB+liR1iMwmb81Nz6fOR/PyAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735865031; c=relaxed/simple;
-	bh=ijaM6s4ZJaMgrFSHC+dq53reI8Fp8p8Vcj+z9h+hS0Q=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BEWC+1F1xfgpymK6WVyAtZJwN6E3anDs/20aBCSaaI7M5Ag3y7uAve7SIoiTo/WYkFpZfoP2glM9ncxU9L4BwRdhK1qnyfprrLy+hEg8+BjW/VOK1+uExvCLVXzlnefrvyO8Qu40vZjkKeZVg9MQFQqQEtY3brIeqDbejXoZRoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=biFNFEci; arc=none smtp.client-ip=185.70.43.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1735865027; x=1736124227;
-	bh=ijaM6s4ZJaMgrFSHC+dq53reI8Fp8p8Vcj+z9h+hS0Q=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
-	b=biFNFEcih+YU7cKOuStfUZmmkFhTlrK5OoqBL7eF3i0lPBXyXFISYHrN1xZNz4KZd
-	 iQauAHV9Q29CH1HeJZB1zoU6VbBory5oJRUzZyJwl73Lviq9jSpclVFNYh2jpX6hdv
-	 KIekjyAUz+WhvVDLagDC0ghSn9b7je/ulKWRj5LUyBoT5S1zSZfZAVA/9IsA7387Wi
-	 zKHGuzEt+Hqht2pxyGupgNc6FE0Q3ZwrOsK87FqUzpwRa94wcSGaQuIqlCJ1x1Oe+5
-	 qwW2qGoM3hkuKNDi4YcjUuu2Wx4wxxtYOnbQ1FniUPOsgCCZFr45wTIXQpN1euYI3q
-	 YuB4DQZxXZu0A==
-Date: Fri, 03 Jan 2025 00:43:42 +0000
-To: Jiri Olsa <olsajiri@gmail.com>
-From: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: dwarves@vger.kernel.org, acme@kernel.org, alan.maguire@oracle.com, eddyz87@gmail.com, andrii@kernel.org, mykolal@fb.com, bpf@vger.kernel.org
-Subject: Re: [PATCH dwarves v3 8/8] btf_encoder: clean up global encoders list
-Message-ID: <hG-genPmZbX2hjVJ0oU90oOYrm7AWp9v0_G4kJwRvC3TBbFcg1rPFMEfu4-zQT8YHDihSU4XbSYNru8XrS-0fcpwSos0AODh8ASitiI5szQ=@pm.me>
-In-Reply-To: <Z3VzuN8yX63qktPl@krava>
-References: <20241221012245.243845-1-ihor.solodrai@pm.me> <20241221012245.243845-9-ihor.solodrai@pm.me> <Z3VzuN8yX63qktPl@krava>
-Feedback-ID: 27520582:user:proton
-X-Pm-Message-ID: 1f549ee92e84ec0397fc3be7154d497d4ab42f29
+	s=arc-20240116; t=1735865195; c=relaxed/simple;
+	bh=WAPkahjzs+9tpqPpsIMhVuhHo2sMqXNPybKwIqWXtuw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=W0p9/JYD/eCDpw6H5Fs2oEmZOj7NLXn0ry5b1QMtO2wkfXzZgm2CYJKGD+tA0i0VB2RgQAqC3lEWswv2WBt8Uq+1++ZEVvSpuuCfRcAf12D43x8rJZ4Q4caXPtMINlfP1D6eYmpKtcKDjzuo2NUV05X2IZs+aAxoyz8v64cOj/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q/lBj2TX; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2166f1e589cso197535605ad.3
+        for <bpf@vger.kernel.org>; Thu, 02 Jan 2025 16:46:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1735865192; x=1736469992; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=5naoOHX+7w86PXxhyUiwwSQMe/xGsvjm2zHcjefDQqs=;
+        b=Q/lBj2TXYzwxJg7OQEixCCBNh49hTN9aKPKTPr52/JOcPAkHyNqqc8kmbEjbjf5HYA
+         hdE9hZC1cLdkpRm7jNB7IRUJ+cicA1WoGtt+oMIhGOmErTp+tLSxxau6/77ecV1J7FpK
+         MrWmqIQj9fZOYnbZbXTe35RJyBbiyGg2OrN9QW6LN0yzapY9vVT498/19OhcXOkhqIir
+         0/RuiLjdJa/EF5ZuD+hT97DyWTFZFAYz8/q6XPxL+xACIDTuvHiVlGSD2dbaKry8NY8R
+         qqBHUbt+cnJkN2GXDLlj7pBBsCcvbU8Eu10H+hvfpNJjor/m5z3sUP2AzHpyU70v3iZS
+         VHzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735865192; x=1736469992;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5naoOHX+7w86PXxhyUiwwSQMe/xGsvjm2zHcjefDQqs=;
+        b=GcP7z8Om3OTpREUh2Tb7Ktxr25+bU9JFNJ+yFrcgMgwfL+ZWfEOecb7G3lBP0jDZz5
+         EIydl/h9Vn1EBH/tu3jjv9hAde20Jkkdxw8hWJMKg1Jit1WDgPeqMH++BGuhKco57mAx
+         QJdHeCFK7dCmBJviHsgCrPfb7N8nAcnF8dn7hSzrgK0503aRamjo1DHZKGE70ALg23Va
+         X0Br3dr8l3HTjOvDuT/nbKrKEp2LOwx9R34Vm6G13/y7ct60j5nTjpHJpakK7r9eQqxj
+         hp38h4edsNtHqi1Qepd2bagRC0BfiFzl737JHzm9jNa2nWqvQtW5VlEpnhKAjQbCKPGH
+         SV6w==
+X-Forwarded-Encrypted: i=1; AJvYcCWM2MTf7lVuhoqyxdzU2h62dPeNDdvFksN2FC6U3ToDjypaMr2mS+7Ik+xSswadjskpc0U=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwQurH4fTM4YqoxQiA+ugD8HsspLtraf6CyG1sgaKE3zubT5+pB
+	GKtjLugOe+Mpgdpz+/jC+j8UbcjEssvBk03SPHZ/gWPLA65lrFoF
+X-Gm-Gg: ASbGncv+Ok3fP8gQfavQ1Mmfp3E14LUX9TlpFaL0SUysSSR7ncH15epfrPrKcsjoFTa
+	ui/+34BOZqK8anM44dQOHplUT+bQHDZVPCrTPsL3f9kJP5Bp5gxbSOCqtz+jsjQweCFd4omCL8R
+	mo42jZ9j3DmxaRmhgr9INWAIHfHrkPekjM9TEVw8DNnFWjOkN70BYAl4PY2UlbH/KBRdDhlR1TF
+	gbz5jMJkpmUn9IysBMNw1/4erklLplI09UJFQlVFajfaJk65cXL0w==
+X-Google-Smtp-Source: AGHT+IG0igTM3LYBuMm5tPGOwINDbMGFtzlaWwz03YJU/MDbb7lEhwjMyqqJcO4qBGcp/ekN1bQnvg==
+X-Received: by 2002:a17:903:2cc:b0:216:4b1f:499 with SMTP id d9443c01a7336-219e6ec0052mr726824055ad.31.1735865192475;
+        Thu, 02 Jan 2025 16:46:32 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dc962ca2sm235607255ad.5.2025.01.02.16.46.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jan 2025 16:46:32 -0800 (PST)
+Message-ID: <4accd577b1486fb8074e7913c3e81d76174ad3d6.camel@gmail.com>
+Subject: Re: Errors compiling BPF programs from Linux selftests/bpf with GCC
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: "Jose E. Marchesi" <jose.marchesi@oracle.com>
+Cc: Ihor Solodrai <ihor.solodrai@pm.me>, "gcc@gcc.gnu.org"
+ <gcc@gcc.gnu.org>,  Cupertino Miranda <cupertino.miranda@oracle.com>, David
+ Faust <david.faust@oracle.com>, Elena Zannoni	 <elena.zannoni@oracle.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,  Manu Bretelle
+ <chantra@meta.com>, Mykola Lysenko <mykolal@meta.com>, Yonghong Song
+ <yonghong.song@linux.dev>,  bpf <bpf@vger.kernel.org>
+Date: Thu, 02 Jan 2025 16:46:27 -0800
+In-Reply-To: <87v7uw21lj.fsf@oracle.com>
+References: 
+	<ZryncitpWOFICUSCu4HLsMIZ7zOuiH5f4jrgjAh0uiOgKvZzQES09eerwIXNonKEq0U6hdI9pHSCPahUKihTeS8NKlVfkcuiRLotteNbQ9I=@pm.me>
+		<87jzbdim3j.fsf@oracle.com>
+		<64d8a1a7037c9bf1057799c04f2d5bb6bdad3bad.camel@gmail.com>
+	 <87v7uw21lj.fsf@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
 
-On Wednesday, January 1st, 2025 at 8:56 AM, Jiri Olsa <olsajiri@gmail.com> =
-wrote:
+On Fri, 2025-01-03 at 01:16 +0100, Jose E. Marchesi wrote:
 
->=20
-> On Sat, Dec 21, 2024 at 01:23:45AM +0000, Ihor Solodrai wrote:
->=20
-> SNIP
->=20
-> > -static int btf_encoder__add_saved_funcs(bool skip_encoding_inconsisten=
-t_proto)
-> > +static int btf_encoder__add_saved_funcs(struct btf_encoder *encoder, b=
-ool skip_encoding_inconsistent_proto)
-> > {
-> > struct btf_encoder_func_state **saved_fns, *s;
-> > - struct btf_encoder *e =3D NULL;
-> > - int i =3D 0, j, nr_saved_fns =3D 0;
-> > + int err =3D 0, i =3D 0, j, nr_saved_fns =3D 0;
-> >=20
-> > - /* Retrieve function states from each encoder, combine them
-> > + /* Retrieve function states from the encoder, combine them
-> > * and sort by name, addr.
-> > */
-> > - btf_encoders__for_each_encoder(e) {
-> > - list_for_each_entry(s, &e->func_states, node)
-> > - nr_saved_fns++;
-> > + list_for_each_entry(s, &encoder->func_states, node) {
-> > + nr_saved_fns++;
-> > }
-> >=20
-> > if (nr_saved_fns =3D=3D 0)
-> > - return 0;
-> > + goto out;
-> >=20
-> > saved_fns =3D calloc(nr_saved_fns, sizeof(*saved_fns));
-> > - btf_encoders__for_each_encoder(e) {
-> > - list_for_each_entry(s, &e->func_states, node)
-> > - saved_fns[i++] =3D s;
-> > + if (!saved_fns) {
-> > + err =3D -ENOMEM;
-> > + goto out;
-> > + }
-> > +
-> > + list_for_each_entry(s, &encoder->func_states, node) {
-> > + saved_fns[i++] =3D s;
-> > }
-> > qsort(saved_fns, nr_saved_fns, sizeof(*saved_fns), saved_functions_cmp)=
-;
-> >=20
-> > @@ -1377,11 +1313,10 @@ static int btf_encoder__add_saved_funcs(bool sk=
-ip_encoding_inconsistent_proto)
-> >=20
-> > /* Now that we are done with function states, free them. */
-> > free(saved_fns);
-> > - btf_encoders__for_each_encoder(e) {
-> > - btf_encoder__delete_saved_funcs(e);
-> > - }
-> > + btf_encoder__delete_saved_funcs(encoder);
->=20
->=20
-> is this call necessary? there's btf_encoder__delete call right after
-> same for elf_functions_list__clear in btf_encoder__encode
+[...]
 
-At this point we know that the function information is no longer
-needed, so we can free up some memory.
+> Yes, in the GCC BPF backend we are using
+>=20
+> =C2=A0=C2=A0use_gcc_stdint=3Dprovide
+>=20
+> which makes GCC to provide the version of stdint.h that assumes
+> freestanding ("baremetal") mode.  If we changed it to use
+>=20
+> =C2=A0=C2=A0use_gcc_stdint=3Dwrap
+>=20
+> then it would install a stdint.h that does somethins similar to what
+> clang does, at least in hosts providing C99 headers (note the lack of
+> __has_include_next):
+>=20
+> =C2=A0=C2=A0#ifndef _GCC_WRAP_STDINT_H
+> =C2=A0=C2=A0#if __STDC_HOSTED__
+> =C2=A0=C2=A0# if defined __cplusplus && __cplusplus >=3D 201103L
+> =C2=A0=C2=A0#  undef __STDC_LIMIT_MACROS
+> =C2=A0=C2=A0#  define __STDC_LIMIT_MACROS
+> =C2=A0=C2=A0#  undef __STDC_CONSTANT_MACROS
+> =C2=A0=C2=A0#  define __STDC_CONSTANT_MACROS
+> =C2=A0=C2=A0# endif
+> =C2=A0=C2=A0#pragma GCC diagnostic push
+> =C2=A0=C2=A0#pragma GCC diagnostic ignored "-Wpedantic" // include_next
+> =C2=A0=C2=A0# include_next <stdint.h>
+> =C2=A0=C2=A0#pragma GCC diagnostic pop
+> =C2=A0=C2=A0#else
+> =C2=A0=C2=A0# include "stdint-gcc.h"
+> =C2=A0=C2=A0#endif
+> =C2=A0=C2=A0#define _GCC_WRAP_STDINT_H
+> =C2=A0=C2=A0#endif
+>=20
+> We could switch to "wrap" to align with clang, but in that case it would
+> be up to the user to provide a "host" stdint.h that contains sensible
+> definitions for BPF.  The kernel selftests, for example, would need to
+> do so to avoid including /usr/include/stdint.h that more likely than not
+> will provide incorrect definitions for int64_t and friends...
 
-I remember when I wrote a "context" patch [1] (now discarded), there
-was a significant difference in MAX RSS between freeing this right
-away and delaying until encoding is finished. Now it might not be as
-significant, but still there is no reason to keep the stuff we know is
-not used later.
-
-[1] https://lore.kernel.org/dwarves/20241213223641.564002-8-ihor.solodrai@p=
-m.me/
-
->=20
-> thanks,
-> jirka
->=20
-> > - return 0;
-> > +out:
-> > + return err;
-> > }
->=20
->=20
-> SNIP
+Would it be possible to push a branch that uses '=3Dwrap' thing somewhere?
+So that it could be further tested to see if there are more issues with sel=
+ftests.
 
 
