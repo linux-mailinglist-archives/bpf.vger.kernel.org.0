@@ -1,138 +1,107 @@
-Return-Path: <bpf+bounces-47847-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47848-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60D23A00A10
-	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 14:53:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 119CCA00AB6
+	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 15:40:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DBE9164007
-	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 13:53:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 332C97A236C
+	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 14:39:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFCCE1F9EDF;
-	Fri,  3 Jan 2025 13:53:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B7E31FA8E3;
+	Fri,  3 Jan 2025 14:39:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="dG6cqRvJ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OwbIovr4"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33A25190049;
-	Fri,  3 Jan 2025 13:52:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 270901FA8E4
+	for <bpf@vger.kernel.org>; Fri,  3 Jan 2025 14:39:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735912381; cv=none; b=GUFggrjB4xi4/l57iZjcXqEZ2aOqxdqwoGMmtfEYunMp3GYZRfLeW7iSkTyF+RtEGlaCsXrPBUvOSkTUNF/F4lTwEm9g/aZwfn4PXbpEGCAZ7mskUgH0sEyLSt/7NAqJT4vt8dvjnLq9u1T2Hn0DGZ/BgJdJKU2cZH2RIUI/a7A=
+	t=1735915179; cv=none; b=YmRObVJ8t8Yx1/8WpS374vGihfGpgdSQwbIokbJKmdm2XcXQFJXVX2YgI3SeknHOBJBaAg1kAo9cyH3AmKiey711Mvu+jSBEK2mejoBXIlYK6LpB3wDyqUYwHAt/sSOZf3TVQYq8KaVEmlycdXxEl9NasdpHIrgxVneRr58lgC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735912381; c=relaxed/simple;
-	bh=q/A2OUQ7y1ThGKTsA3RgK4qE9vSBuk3Ek8fBby8ysVU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=La6k0VSGkl8s3MH8Wtv+xuwFstCV3ZuErT96Mfuue9f6sP2bO0wN8uLqmqPvPMIsBJTKKvI5fbkfpzseJH2SNp2ZHMwTq9hUqKpdxpsJ0B0UVYtZuxWZQCyW/AHN2YQKeT9FjKaZBWe2FkKUhLPCi6Lw/5SY+awcexTrrR6f5F4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=dG6cqRvJ; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C4038240003;
-	Fri,  3 Jan 2025 13:52:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1735912376;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pC6/K17Fqa/UTd240daBQTUsMBS6IYkMe8d6L0ZU79E=;
-	b=dG6cqRvJk0uhouwFsVuqS0dYMK04ybegaHSBXqXu51n8ZwIWrT9jO+TAwo6qlfu+vsp808
-	rabbOP/agJ9lnX4VPHGhYojmspzbu3iHE/tgmgsQmk1yi9kslzGt9hE6gi2QcsYI7SJuj4
-	27pwbK5gnB/EzWeuRtOWzZX8uWcUjaA6ihUkXvam4ijKDDwrtJ91f+Ckjj3PCQZrYSbylP
-	J5Q+5QU/C2xlyMEqynP172TqHMXpCui0M2TjzGhrivKe7WTLv/JhjubhwSgwO69UXcph7s
-	sOQBdvtjWuvQ+lZEACn78GCSU/AM75WSlZPmUrY4Du2s8SbezQ1mQBW0cosxQw==
-Message-ID: <a895f79b-8311-4930-bd59-2937d09b92c4@bootlin.com>
-Date: Fri, 3 Jan 2025 14:52:54 +0100
+	s=arc-20240116; t=1735915179; c=relaxed/simple;
+	bh=yJXFXXRKSA0NqHzuV6j+IkygOpCkviArad2f9/NfyBU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PMs53b64dFZ8NAZGpBxOks6xI8mRU2s8JxykCe7SaJlo/EfCycBcWiuP56HduPDdMk96Y7AKf1yIiWgDggFeqNbzP0u5URsMiHF7Bani8y6GzCzDPCiytxthncb33CU28PwLci3ES+k/pNbtpcqOSjv3z26KNHF5XYqMluC9Tns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OwbIovr4; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5d3cfdc7e4fso8287a12.0
+        for <bpf@vger.kernel.org>; Fri, 03 Jan 2025 06:39:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1735915175; x=1736519975; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yJXFXXRKSA0NqHzuV6j+IkygOpCkviArad2f9/NfyBU=;
+        b=OwbIovr4W5OWUQitUQ0ecZ0sWfmjnf8D9RZWol6VxvTNcLQxigmE85cebr69e6WFK2
+         jxXbYDIVtfxQmW9Q5+xXmgbNOJCGftC35twuoaoCai3dV7xLMYG/PlpzTftff68EX+VF
+         /k/pt0cnHkwbdquyHUoyy6sLJ70Q2tLaANMv6rvrGS6MraCfOjpdKkaarhto8nEKtGWE
+         TqsDlIxuVjbJEm/qbCaT/UENOt3VlGUHBQZRCXT8SQQKrViduK6VfNNedJ7LkQOmOKpz
+         nvFhl4KRuLVJUNFiqWjgDB1KVRKwP2+2GrAIGeVIrK8X81c59oD6oahIkl5GaTnNFQaa
+         CS8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735915175; x=1736519975;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yJXFXXRKSA0NqHzuV6j+IkygOpCkviArad2f9/NfyBU=;
+        b=tvnW92w1oAjJTFAoie4J+zlQCBEIJo6hfckakgY+A3uK76hd4viUysQeaelZcSsV9C
+         9dmImJMfCrBFyCWr1JoX8sQ5k58hxYupx16jCxOJ3WfBHPyUoAb9mh2AbuMa8sOg3ft3
+         wb8GjDD/fg729F3h/8ONg1qlQYXHDVJwZVNl5zBYXZuFxdKsjL6cOnVYBBJ20zS6YtBB
+         bprOaXvTwONgwKJSfFD112e6Ga1XnouFk9LLa2Ex4+ejBJKAtLiF2/r/SUXZYCsF98Ur
+         +ICH8D8W0cyVTELTLTd7bd08Ok3dBQYjuZ4OqUOLDpn1TD1X0drT7/WldYrx1bv/edg5
+         KSJA==
+X-Gm-Message-State: AOJu0YxDm2OIxuaJLSz82YxJhBaRmxbv5vFAXfOWwXyFnaQWG4x0/oWm
+	Jmt83HmVsIj5ZoXq9BLTFH7wu9SR1FihlgCTZf1PTlnzgWZlzyxmMhfVdu0HJkzzuTTsLeNE3C/
+	4g40Tyqx3ZIBYAQOkSwFoye3gzdrC0+pNy1NzzlgArT7C3yt7S67p
+X-Gm-Gg: ASbGncukzfB2ZIw5G4FBKdWTjbFsXUUeVoVGWwM5eCs16ZTouHFMHN/sXlw7yBtUyuG
+	HqKBVvrEFOA+Xy9LGgYjoxZAFyvrg1ehj99BePCcF8dimGXNW/l6IPWF58eyQk/ZTxQ==
+X-Google-Smtp-Source: AGHT+IFnNs0CQ7ACj2YDTUdl8Ky4km9WON1U9kYx4TvRCFt2Fp5QN3i3rsM7PmmF20q4AXpV/3Msju8Oyt4tPznrIP8=
+X-Received: by 2002:aa7:dcd9:0:b0:5d0:eb21:264d with SMTP id
+ 4fb4d7f45d1cf-5d9178759cdmr35113a12.1.1735915174792; Fri, 03 Jan 2025
+ 06:39:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Question about test_xsk.sh
-To: Magnus Karlsson <magnus.karlsson@gmail.com>,
- Stanislav Fomichev <stfomichev@gmail.com>
-Cc: bpf@vger.kernel.org, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
- Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Martin KaFai Lau <martin.lau@linux.dev>,
- Bastien Curutchet <bastien.curutchet@bootlin.com>,
- Stanislav Fomichev <sdf@fomichev.me>, linux-kselftest@vger.kernel.org
-References: <e3d0bd36-c074-4cda-b6e1-5f873453ad30@bootlin.com>
- <Z3cTnjss5soyUobX@mini-arch>
- <CAJ8uoz1r0dDna9tZwm8Q62dks18DHdstF8dkpm-q+_nwOUmbdw@mail.gmail.com>
-From: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-Content-Language: en-US
-In-Reply-To: <CAJ8uoz1r0dDna9tZwm8Q62dks18DHdstF8dkpm-q+_nwOUmbdw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alexis.lothore@bootlin.com
+References: <20241231033509.349277-1-pulehui@huaweicloud.com>
+In-Reply-To: <20241231033509.349277-1-pulehui@huaweicloud.com>
+From: Jann Horn <jannh@google.com>
+Date: Fri, 3 Jan 2025 15:38:58 +0100
+X-Gm-Features: AbW1kvaVcfHnqyJAfCYjuCoU4OnUnEIDgqjjOvKECyoeYcauZ4IzUFPsh3TocJU
+Message-ID: <CAG48ez1Wjorxwk98wQFjyCVOt6D72816DZzetbzzhVi6idCiNw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Move out synchronize_rcu_tasks_trace from
+ mutex CS
+To: Pu Lehui <pulehui@huaweicloud.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Pu Lehui <pulehui@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello Stanislas, Magnus,
+On Tue, Dec 31, 2024 at 4:32=E2=80=AFAM Pu Lehui <pulehui@huaweicloud.com> =
+wrote:
+> Commit ef1b808e3b7c ("bpf: Fix UAF via mismatching bpf_prog/attachment
+> RCU flavors") resolved a possible UAF issue in uprobes that attach
+> non-sleepable bpf prog by explicitly waiting for a tasks-trace-RCU grace
+> period. But, in the current implementation, synchronize_rcu_tasks_trace
+> is included within the mutex critical section, which increases the
+> length of the critical section and may affect performance. So let's move
+> out synchronize_rcu_tasks_trace from mutex CS.
+>
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
 
-On 1/3/25 10:36, Magnus Karlsson wrote:
-> On Thu, 2 Jan 2025 at 23:31, Stanislav Fomichev <stfomichev@gmail.com> wrote:
->>
->> On 12/20, Alexis Lothoré wrote:
->>> Hello all,
->>>
->>> I was looking  at other test candidates for conversion to bpf test_progs
->>> framework (to increase automatic testing scope) and found test_xsk.sh, which
->>> does not seem to have coverage yet in test_progs. This test validates the AF_XDP
->>> socket behavior with different XDP modes (SKB, DRV, zero copy) and socket
->>> configuration (normal, busy polling).
->>>
->>> The testing program looks pretty big, considering all files involved
->>> (test_xsk.sh, xskxceiver.c, xsk.c, the different XDP programs) and the matrix of
->>> tests it runs. So before really diving into it, I would like to ask:
->>> - is it indeed a good/relevant target for integration in test_progs (all tests
->>> look like functional tests, so I guess it is) ?
->>> - if so, is there anyone already working on this ?
->>> - multiple commits on xskxceiver.c hint that the program is also used for
->>> testing on real hardware, could someone confirm that it is still the case
->>> (similar need has been seen with test_xdp_features.sh for example) ? If so, it
->>> means that the current form must be preserved, and it would be an additional
->>> integration into test_progs rather a conversion (then most of the code should be
->>> shared between the non-test_progs and the test_progs version)
->>
->> Since no one came back to you, here is my attempt to answer.. It is a
->> good target but it is indeed a good idea to preserve the ability to
->> run it outside of test_progs framework. Maybe we can eventually run
->> it with the real hw (in loopback mode) from
->> tools/testing/selftests/rivers/net/hw. And I don't think anybody
->> is working on integrating it into test_progs. But Magnus/Maciej should
->> have more context...
-> 
-> Sorry Alexis for the late reply. I have enjoyed a long vacation over
-> the holidays.
-
-No worry, I did not expect quick answers with christmas holidays coming, thanks
-to both of you for your answers.
-
-> I agree with Stanislav's reply. The only thing I can add is that we
-> really want to preserve the ability to run on real HW as the majority
-> of bugs we find are indeed in the zero-copy driver implementations. So
-> these real HW/driver tests are more useful to us than the self
-> contained tests using veth.
-
-ACK. Based on your answers, and since test_xsk.sh seems to also cover many core
-features regarding AF_XDP sockets, I'll work on integrating this in test_progs.
-I'll see if the code can be shared between a "on hw" test and a "test progs"
-test, and if not possible (eg undesirable code dependency between different kind
-of selftests ?), at least replicate the basic AF_XDP tests in test_progs.
-
-Thanks,
-
-Alexis
-
--- 
-Alexis Lothoré, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+This change looks good to me (though I don't know this area particularly we=
+ll).
 
