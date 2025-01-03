@@ -1,97 +1,105 @@
-Return-Path: <bpf+bounces-47848-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47849-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 119CCA00AB6
-	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 15:40:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E0E7A00B62
+	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 16:22:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 332C97A236C
-	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 14:39:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D65A160748
+	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 15:22:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B7E31FA8E3;
-	Fri,  3 Jan 2025 14:39:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C13971FA827;
+	Fri,  3 Jan 2025 15:22:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OwbIovr4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OzlVAbHM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 270901FA8E4
-	for <bpf@vger.kernel.org>; Fri,  3 Jan 2025 14:39:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8912C158553
+	for <bpf@vger.kernel.org>; Fri,  3 Jan 2025 15:22:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735915179; cv=none; b=YmRObVJ8t8Yx1/8WpS374vGihfGpgdSQwbIokbJKmdm2XcXQFJXVX2YgI3SeknHOBJBaAg1kAo9cyH3AmKiey711Mvu+jSBEK2mejoBXIlYK6LpB3wDyqUYwHAt/sSOZf3TVQYq8KaVEmlycdXxEl9NasdpHIrgxVneRr58lgC0=
+	t=1735917771; cv=none; b=Pfv5nkpZ/DVGPj6oj8qTcrSuoKYOx7+cP+h1sLctRh5hwwUoeRM8T/2yyyxLa2Y5Req4AwSAFV7TXZpqKbd4d7fxXyHYPuzCrY+mamW3DMaupJvULwLI3qvKvmaGo/GfrDoSWSTxiCGK01g8qkAYWbvo7hgnaBzdwm1jIyj5wV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735915179; c=relaxed/simple;
-	bh=yJXFXXRKSA0NqHzuV6j+IkygOpCkviArad2f9/NfyBU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PMs53b64dFZ8NAZGpBxOks6xI8mRU2s8JxykCe7SaJlo/EfCycBcWiuP56HduPDdMk96Y7AKf1yIiWgDggFeqNbzP0u5URsMiHF7Bani8y6GzCzDPCiytxthncb33CU28PwLci3ES+k/pNbtpcqOSjv3z26KNHF5XYqMluC9Tns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OwbIovr4; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5d3cfdc7e4fso8287a12.0
-        for <bpf@vger.kernel.org>; Fri, 03 Jan 2025 06:39:36 -0800 (PST)
+	s=arc-20240116; t=1735917771; c=relaxed/simple;
+	bh=3rSeyUiJpDhdND+8XxyaCKGZ2HgEztvmvA7yRwYF5KM=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mDFDV1Dc/N+CfNUY6ej9kLUM/VEYjCgqeciYGU/iZKt7Vqp4HoI8re2qGHJv32eyev23t3YLMwCuEIZxwGxDBFdciMshwKNqhm5+svymcWg/lp47pQ5FzwG67E3ibfBBwab2187npxSQ8skVsuwkTgaO/1lFANr5bRp29ls7kX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OzlVAbHM; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5d3e829ff44so24703014a12.0
+        for <bpf@vger.kernel.org>; Fri, 03 Jan 2025 07:22:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1735915175; x=1736519975; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yJXFXXRKSA0NqHzuV6j+IkygOpCkviArad2f9/NfyBU=;
-        b=OwbIovr4W5OWUQitUQ0ecZ0sWfmjnf8D9RZWol6VxvTNcLQxigmE85cebr69e6WFK2
-         jxXbYDIVtfxQmW9Q5+xXmgbNOJCGftC35twuoaoCai3dV7xLMYG/PlpzTftff68EX+VF
-         /k/pt0cnHkwbdquyHUoyy6sLJ70Q2tLaANMv6rvrGS6MraCfOjpdKkaarhto8nEKtGWE
-         TqsDlIxuVjbJEm/qbCaT/UENOt3VlGUHBQZRCXT8SQQKrViduK6VfNNedJ7LkQOmOKpz
-         nvFhl4KRuLVJUNFiqWjgDB1KVRKwP2+2GrAIGeVIrK8X81c59oD6oahIkl5GaTnNFQaa
-         CS8Q==
+        d=gmail.com; s=20230601; t=1735917768; x=1736522568; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=my1yZUajqvD2M4i+fH2QVHwD7AyxFdsN23ecNimmgPU=;
+        b=OzlVAbHMEi8q7kQZDKk1bTaH/aGWu6fD7N2Wot+Nrm1d793HWj/WMa4jfocfXvHz6K
+         mQrhh4ZwNAEHn/S+hHFReZsYW+FlTUaUmvDkmGcNY3KOaNgZl9dzfPceYTJY5UEvdb1O
+         ALGbEO/B0ixOXkZuzW9my9Gh7xvrat0x43Zr9H9zus6MXLzo0ALlMruqY7/2/bUfFxmt
+         zL5xq8b7R5az86svWSr0rALNGbXg/kfaZK9retHrNw0+Py5XpkwNv95ogxqszey+4YRL
+         IG6d37ypmPvrLdND9/DpVt6PRV+AsnPJ9guO1gKmaeFySd3XNmXqkt/XVh750D3uyYG6
+         i8eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735915175; x=1736519975;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yJXFXXRKSA0NqHzuV6j+IkygOpCkviArad2f9/NfyBU=;
-        b=tvnW92w1oAjJTFAoie4J+zlQCBEIJo6hfckakgY+A3uK76hd4viUysQeaelZcSsV9C
-         9dmImJMfCrBFyCWr1JoX8sQ5k58hxYupx16jCxOJ3WfBHPyUoAb9mh2AbuMa8sOg3ft3
-         wb8GjDD/fg729F3h/8ONg1qlQYXHDVJwZVNl5zBYXZuFxdKsjL6cOnVYBBJ20zS6YtBB
-         bprOaXvTwONgwKJSfFD112e6Ga1XnouFk9LLa2Ex4+ejBJKAtLiF2/r/SUXZYCsF98Ur
-         +ICH8D8W0cyVTELTLTd7bd08Ok3dBQYjuZ4OqUOLDpn1TD1X0drT7/WldYrx1bv/edg5
-         KSJA==
-X-Gm-Message-State: AOJu0YxDm2OIxuaJLSz82YxJhBaRmxbv5vFAXfOWwXyFnaQWG4x0/oWm
-	Jmt83HmVsIj5ZoXq9BLTFH7wu9SR1FihlgCTZf1PTlnzgWZlzyxmMhfVdu0HJkzzuTTsLeNE3C/
-	4g40Tyqx3ZIBYAQOkSwFoye3gzdrC0+pNy1NzzlgArT7C3yt7S67p
-X-Gm-Gg: ASbGncukzfB2ZIw5G4FBKdWTjbFsXUUeVoVGWwM5eCs16ZTouHFMHN/sXlw7yBtUyuG
-	HqKBVvrEFOA+Xy9LGgYjoxZAFyvrg1ehj99BePCcF8dimGXNW/l6IPWF58eyQk/ZTxQ==
-X-Google-Smtp-Source: AGHT+IFnNs0CQ7ACj2YDTUdl8Ky4km9WON1U9kYx4TvRCFt2Fp5QN3i3rsM7PmmF20q4AXpV/3Msju8Oyt4tPznrIP8=
-X-Received: by 2002:aa7:dcd9:0:b0:5d0:eb21:264d with SMTP id
- 4fb4d7f45d1cf-5d9178759cdmr35113a12.1.1735915174792; Fri, 03 Jan 2025
- 06:39:34 -0800 (PST)
+        d=1e100.net; s=20230601; t=1735917768; x=1736522568;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=my1yZUajqvD2M4i+fH2QVHwD7AyxFdsN23ecNimmgPU=;
+        b=EbpfuKcWEwySwdcbAVU+yNHp8NB/xzUwgKxqfkKBZB+ztzyeQ+uiB70FHsl17Blwsf
+         Te9GmuhZmXl/KbJfUFktJ5TCHu+uHscIUih7513JnmGu7QiLx0+OhsVfZohcmWphYxN3
+         NKMtoUvqIk1umOYY1FJ9I2wKKSldvtntl9VCzs4ORyfC4ALZ5yPON1FUNMd5xtBuIc4Y
+         RrIzqQ6AfXv+FerN1F8QBLHucPdQmB/mBRIT17CdMT98FR5/rYBT2lBkdO/88ajcmzcH
+         boDRdYUgjg15hg8tayhDVUz+GlNYRdIbQ+x+vaqXfvcOoYOsaHIzd1Is7hB91yUhkE3a
+         wFBA==
+X-Gm-Message-State: AOJu0Yy7QFlXJnE5a8ZB+ZiKYlnAXkYccDgHBqHScvP4YSyFaqPeeQYo
+	xBm6gyFWLZnSZ21LsXNPRliRuQPoxBkuHIknUqqqskPKIUC9cMbW
+X-Gm-Gg: ASbGncsCY100iU+tZ3XthxBTvoM4uKaPCsigCHGuE3brjhZHRoSfVVQJx/nBV7/SiBo
+	4yWMblR3KNdLpxiPh0pbYoPQ8H5CskxHDVG+WepNN5anyYYS+hkdmk8AOraMVzT/ELpLc7P2Dqq
+	rM6dK2L4lWX/szs5I7vgHqi5I/AaaVmyR4r4mFr86B90zXwSklie4pZD/xhzCEPRY0nzYm1FtAt
+	+oeoQW5Y1udBtBwYOtfbt88EHj5vrAbgie5pObTXs4=
+X-Google-Smtp-Source: AGHT+IFgNEmxbb/XUjghe3ptMjIRKOL5MFIlb9mmLm8OFnWUwZbIUvAdnfGAoxDG7drYiWec1+Kvxg==
+X-Received: by 2002:a17:907:1c96:b0:aaf:ab78:34f0 with SMTP id a640c23a62f3a-aafab784915mr269464266b.30.1735917767529;
+        Fri, 03 Jan 2025 07:22:47 -0800 (PST)
+Received: from krava ([213.175.46.84])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aac0f06543asm1899875966b.175.2025.01.03.07.22.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Jan 2025 07:22:47 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 3 Jan 2025 16:22:45 +0100
+To: Pu Lehui <pulehui@huaweicloud.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jann Horn <jannh@google.com>,
+	Pu Lehui <pulehui@huawei.com>
+Subject: Re: [PATCH bpf-next] bpf: Move out synchronize_rcu_tasks_trace from
+ mutex CS
+Message-ID: <Z3gAxZTJTYngLnYi@krava>
+References: <20241231033509.349277-1-pulehui@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241231033509.349277-1-pulehui@huaweicloud.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <20241231033509.349277-1-pulehui@huaweicloud.com>
-From: Jann Horn <jannh@google.com>
-Date: Fri, 3 Jan 2025 15:38:58 +0100
-X-Gm-Features: AbW1kvaVcfHnqyJAfCYjuCoU4OnUnEIDgqjjOvKECyoeYcauZ4IzUFPsh3TocJU
-Message-ID: <CAG48ez1Wjorxwk98wQFjyCVOt6D72816DZzetbzzhVi6idCiNw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Move out synchronize_rcu_tasks_trace from
- mutex CS
-To: Pu Lehui <pulehui@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Pu Lehui <pulehui@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 31, 2024 at 4:32=E2=80=AFAM Pu Lehui <pulehui@huaweicloud.com> =
-wrote:
+On Tue, Dec 31, 2024 at 03:35:09AM +0000, Pu Lehui wrote:
+> From: Pu Lehui <pulehui@huawei.com>
+> 
 > Commit ef1b808e3b7c ("bpf: Fix UAF via mismatching bpf_prog/attachment
 > RCU flavors") resolved a possible UAF issue in uprobes that attach
 > non-sleepable bpf prog by explicitly waiting for a tasks-trace-RCU grace
@@ -99,9 +107,110 @@ wrote:
 > is included within the mutex critical section, which increases the
 > length of the critical section and may affect performance. So let's move
 > out synchronize_rcu_tasks_trace from mutex CS.
->
+> 
 > Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> ---
+>  kernel/trace/bpf_trace.c | 18 +++++++++++-------
+>  1 file changed, 11 insertions(+), 7 deletions(-)
+> 
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 48db147c6c7d..30ef8a6f5ca2 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -2245,12 +2245,15 @@ void perf_event_detach_bpf_prog(struct perf_event *event)
+>  {
+>  	struct bpf_prog_array *old_array;
+>  	struct bpf_prog_array *new_array;
+> +	struct bpf_prog *prog;
+>  	int ret;
+>  
+>  	mutex_lock(&bpf_event_mutex);
+>  
+> -	if (!event->prog)
+> -		goto unlock;
+> +	if (!event->prog) {
+> +		mutex_unlock(&bpf_event_mutex);
+> +		return;
+> +	}
+>  
+>  	old_array = bpf_event_rcu_dereference(event->tp_event->prog_array);
+>  	if (!old_array)
+> @@ -2265,6 +2268,11 @@ void perf_event_detach_bpf_prog(struct perf_event *event)
+>  	}
+>  
+>  put:
+> +	prog = event->prog;
+> +	event->prog = NULL;
+> +
+> +	mutex_unlock(&bpf_event_mutex);
+> +
+>  	/*
+>  	 * It could be that the bpf_prog is not sleepable (and will be freed
+>  	 * via normal RCU), but is called from a point that supports sleepable
+> @@ -2272,11 +2280,7 @@ void perf_event_detach_bpf_prog(struct perf_event *event)
+>  	 */
+>  	synchronize_rcu_tasks_trace();
+>  
+> -	bpf_prog_put(event->prog);
+> -	event->prog = NULL;
+> -
+> -unlock:
+> -	mutex_unlock(&bpf_event_mutex);
+> +	bpf_prog_put(prog);
+>  }
+>  
+>  int perf_event_query_prog_array(struct perf_event *event, void __user *info)
+> -- 
+> 2.34.1
+> 
 
-This change looks good to me (though I don't know this area particularly we=
-ll).
+would something like below be simpler? (not tested)
+
+jirka
+
+
+---
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 973104f861e9..a4c0efa3a26e 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -2246,6 +2246,7 @@ void perf_event_detach_bpf_prog(struct perf_event *event)
+ {
+ 	struct bpf_prog_array *old_array;
+ 	struct bpf_prog_array *new_array;
++	struct bpf_prog *prog = NULL;
+ 	int ret;
+ 
+ 	mutex_lock(&bpf_event_mutex);
+@@ -2266,18 +2267,22 @@ void perf_event_detach_bpf_prog(struct perf_event *event)
+ 	}
+ 
+ put:
+-	/*
+-	 * It could be that the bpf_prog is not sleepable (and will be freed
+-	 * via normal RCU), but is called from a point that supports sleepable
+-	 * programs and uses tasks-trace-RCU.
+-	 */
+-	synchronize_rcu_tasks_trace();
+-
+-	bpf_prog_put(event->prog);
++	prog = event->prog;
+ 	event->prog = NULL;
+ 
+ unlock:
+ 	mutex_unlock(&bpf_event_mutex);
++
++	if (prog) {
++		/*
++		 * It could be that the bpf_prog is not sleepable (and will be freed
++		 * via normal RCU), but is called from a point that supports sleepable
++		 * programs and uses tasks-trace-RCU.
++		 */
++		synchronize_rcu_tasks_trace();
++
++		bpf_prog_put(prog);
++	}
+ }
+ 
+ int perf_event_query_prog_array(struct perf_event *event, void __user *info)
 
