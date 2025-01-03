@@ -1,294 +1,213 @@
-Return-Path: <bpf+bounces-47812-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47813-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D60B4A001F4
-	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 01:24:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4379A00217
+	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 01:43:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FB523A34F5
-	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 00:24:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7B3A7A1A3A
+	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 00:42:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72B2211CA0;
-	Fri,  3 Jan 2025 00:24:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E7D4130AF6;
+	Fri,  3 Jan 2025 00:42:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="eu69klS6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m3XVIhQ1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 877F028FD
-	for <bpf@vger.kernel.org>; Fri,  3 Jan 2025 00:24:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.165.51.139
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AA9D3CF73
+	for <bpf@vger.kernel.org>; Fri,  3 Jan 2025 00:42:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735863888; cv=none; b=jBcsYriHa5P53lougNsOPPCjO0iJObj6VQ1AzJ+PW8m9zfR5O8q0Ji0bjaAjHvOiOsVI/AFdaRAoiTQGGf8iZiJTrTOKmGjJJ9dMIwYMRgCOvZxWBCLC8zSTXLy/Idr/sML4F3D0xtG2diAJrzdpqvNkwZr/qnnmGJZRHgwYpZA=
+	t=1735864978; cv=none; b=f4nWB/2ME4HuHR+7jTJPBGRb2qxqbz3WuIXyxE2STlxjH8KsYczDJ6dFZqNj+Kw0gV9CSqBp3dowdIBvq7Y2sgE9sLdLJAdmjAFkUQGXnom8iDlmEH2dijExHlcHOwktOKT8bjoG25N1TRMxgAZyV4eInHLbSL7Q8OWNsNqronk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735863888; c=relaxed/simple;
-	bh=YAp8XKx5+zGq/XceBkw+R7d58tZUalYU+JVlHQsIIII=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=peuJ/BQ8lgfXar3+Sdzj4WUiJSEalmIjZyYoGBpRjn25pWCgAY2W8aXmU9MLwU4U1x6Mc6FfA19cUI4c0p5o8sDoniyZYbb6bzPXUbmVnyzoQtjjZGptVTRZ+oGayqBT0tE+aL5dcqNjfZzaO1678ayZGqqe+CCwC25xjnR1sEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=eu69klS6; arc=none smtp.client-ip=188.165.51.139
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1735863876; x=1736123076;
-	bh=YAp8XKx5+zGq/XceBkw+R7d58tZUalYU+JVlHQsIIII=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
-	b=eu69klS6idadZmfPXT4/t+vf2w/43D5ON91UwUQpt+fPX2zBklVf+1qBMRhHhsKna
-	 Q0tczaMICIkwzGS7nhY7gjVt0eb538eIQCvOAYrl0n89ZLxETFCUoJ9DADcQBDtmtD
-	 BXTlagg8wwQ8XfngX3u+hmDmFRCOBeUF6ebn+MvQW8t8RSsQwH3gL3yCYkx19YQ7lD
-	 u7sZTh/ruG4CHwRcF3+TqR4x4Q+vJFgEKAa0nmQ9vffG7qU+VdPMVNVpzdIUjhRka4
-	 uhCloGll7ulMorvtUX8n3A3sSH+fIfdXBLIdngNSmjWQ+CkOpVSYcqL+M63BgwStcJ
-	 rjfF/XeREMD3A==
-Date: Fri, 03 Jan 2025 00:24:29 +0000
-To: Jiri Olsa <olsajiri@gmail.com>
-From: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: dwarves@vger.kernel.org, acme@kernel.org, alan.maguire@oracle.com, eddyz87@gmail.com, andrii@kernel.org, mykolal@fb.com, bpf@vger.kernel.org
-Subject: Re: [PATCH dwarves v3 7/8] dwarf_loader: multithreading with a job/worker model
-Message-ID: <qafFqkIRgYxN5kalyCJsyLhIdpgJmCQtdEE-VwWecjAM1gD2VzuZMDBWKVRU81Hb1ksuQeD9tfzHAYgUFECGd6FST1p2w-rWrwo4sNutaFc=@pm.me>
-In-Reply-To: <Z3VzsA8nv4kQj1bH@krava>
-References: <20241221012245.243845-1-ihor.solodrai@pm.me> <20241221012245.243845-8-ihor.solodrai@pm.me> <Z3VzsA8nv4kQj1bH@krava>
-Feedback-ID: 27520582:user:proton
-X-Pm-Message-ID: 592cef34946214836df700f89e52d32187b977d5
+	s=arc-20240116; t=1735864978; c=relaxed/simple;
+	bh=58RyrTRVMjKJBN/v3kJdUkvQ05FK9PeMp5VhuDyRu+4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=BOU6riUIP3B11KIbCattM1CdJkEe5PvYyKU9gvm4hYj2rrF0wZF0CC1Q28QGmToRJK291d+cdCRInK3utn3wCizkSPlOSFt5aQIz0a4L+zJeAzeM33kJfWzaBq4odVJauJNzvl31IdCI10kz6ivpq9sMVVmxwe4WCgeGoYHAJu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m3XVIhQ1; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-218c8aca5f1so204203925ad.0
+        for <bpf@vger.kernel.org>; Thu, 02 Jan 2025 16:42:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1735864976; x=1736469776; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Wlvj/EdcXrxs2bTGZMSFUMuOGQ64ak+ztyBapKeTHGw=;
+        b=m3XVIhQ1+24JB5ubDMh93jsfv4Fle8T/5+piOr4iGVi50brQVYZKLmPG2PeooGli4Q
+         DBHYRShy18ul5lsiRLzDZen+bZnAUEdtKFCPmDDfKbvzbz+dRRzlhAaqVpdJDMOnxS8Z
+         Tqm3WwD2taV+Fe8DiFfBlodjmmjQRm1FpI6RYNyc5l2Y3XYuPavdUHj/61b/mAJMN84q
+         4AabVw0HNEuLMHBzl8TthsqtB5SEjK5nctj6Mrt6xwQPEvkJJtTrCnGnCN4yKEB65Da7
+         Rg5uJoq69OSy794HWVBsCAYOVZeoNjZlS8lbYsPMq77477AWca4bOgWt2zIxEbeWBR5A
+         wCGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735864976; x=1736469776;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Wlvj/EdcXrxs2bTGZMSFUMuOGQ64ak+ztyBapKeTHGw=;
+        b=BfOgFu+VKvw+IPCBu4RjHIT+tgYEKi+5w4HU9UL9CPD6dQYmfoSSRXj893PeYluWUa
+         qSJyXmBiY31BQpk843+7XcxqcehxsgQ6mH59aFt0xPN8rMzkR8wRkAp73fGTBuhds53c
+         +JN06ORxVRkR8XY/9j6Wa09mwp15IpZInL3HtTZpTenvuIuTkLNP3AkiSQCXeqQuumGG
+         zVE27eQYDvfHjRGIKF8E5jE57CiqzoBYq+cHAmr63ANeZ/xiLWwtW4ZcHJF7RV+9s2rw
+         IPXZbwSaf38JIPIDL9yfqYvMJTw4Z1f5Dj43e/AMaJIvXDkUS+cc0g7MvRtYERK8g1A8
+         Qbhg==
+X-Forwarded-Encrypted: i=1; AJvYcCWyfvf91JAIGEQ/RhQiMV+RphDMTJHA8edQ4oVMPVvfp1pMieOm7R/AOy3R/ohYu9ADVew=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx+RLsXLiEAQWa1JQxaAIR/7R/Cdntxj8zFJn6tS+UjR5/tXxl5
+	FUgFsxQ1M47/5TBVtrsiqB5rmDC54bCLmMHDH3nZgOhl8D/UEqca
+X-Gm-Gg: ASbGncsqimYJjB1G1UKaaxCXm1m9mKV/NjIxE3cscj8eJK2u8m5L52w23ALJgG8RHiR
+	fWAwSxzvsKp19CMGpyAkP2Nkp/asYzEy+JhSeABivGhitJtIvyVmVKR5RC7PfKK8zJA5QlOw6gL
+	5+kG2UFA/xRfg5H1xXaOYB1KIwpek3oW2ceE8wHJC55hCS6JJ3RKN8IZzKWDcEvFWp/Bo7KNVWL
+	1eoqr4a/KTbvlWIZIryfq6P1qziiWfgx2wOVxxo9Zn8QuIdqPvzbA==
+X-Google-Smtp-Source: AGHT+IGyG6rU4+xiAWB/G6X+zPMQmNJUapakg8a94ysoe4fp0Z1eTqTdtbZKX+zT8y78zgazogXbCA==
+X-Received: by 2002:a17:902:ce92:b0:216:4169:f9d7 with SMTP id d9443c01a7336-219e6e8bc7cmr728936535ad.2.1735864975923;
+        Thu, 02 Jan 2025 16:42:55 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dc962c80sm234282705ad.30.2025.01.02.16.42.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jan 2025 16:42:55 -0800 (PST)
+Message-ID: <5fc0ff106733d93488e4dba03f23a9ab71444fb1.camel@gmail.com>
+Subject: Re: Errors compiling BPF programs from Linux selftests/bpf with GCC
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: "Jose E. Marchesi" <jose.marchesi@oracle.com>, Ihor Solodrai
+	 <ihor.solodrai@pm.me>
+Cc: "gcc@gcc.gnu.org" <gcc@gcc.gnu.org>, Cupertino Miranda	
+ <cupertino.miranda@oracle.com>, David Faust <david.faust@oracle.com>, Elena
+ Zannoni <elena.zannoni@oracle.com>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>, Manu Bretelle <chantra@meta.com>, Mykola
+ Lysenko <mykolal@meta.com>, Yonghong Song	 <yonghong.song@linux.dev>, bpf
+ <bpf@vger.kernel.org>
+Date: Thu, 02 Jan 2025 16:42:50 -0800
+In-Reply-To: <877c7daxbi.fsf@oracle.com>
+References: 
+	<ZryncitpWOFICUSCu4HLsMIZ7zOuiH5f4jrgjAh0uiOgKvZzQES09eerwIXNonKEq0U6hdI9pHSCPahUKihTeS8NKlVfkcuiRLotteNbQ9I=@pm.me>
+		<87jzbdim3j.fsf@oracle.com>
+		<HfONx8uvT8UvgKSa4GGd2dyrUNHSFTv6VHMDSeCw0849N7REwVvl5MGyyvEmVIIQRcQIEf_-fyr6TcLJodeWdczujiEqrUZKJzX3sfhrPwA=@pm.me>
+	 <877c7daxbi.fsf@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
 
-On Wednesday, January 1st, 2025 at 8:56 AM, Jiri Olsa <olsajiri@gmail.com> =
-wrote:
+On Thu, 2025-01-02 at 19:24 +0100, Jose E. Marchesi wrote:
 
->=20
->=20
-> On Sat, Dec 21, 2024 at 01:23:38AM +0000, Ihor Solodrai wrote:
->=20
-> SNIP
->=20
-> > diff --git a/btf_encoder.c b/btf_encoder.c
-> > index 90f1b9a..7e03ba4 100644
-> > --- a/btf_encoder.c
-> > +++ b/btf_encoder.c
-> > @@ -1326,7 +1326,7 @@ static void btf_encoder__delete_saved_funcs(struc=
-t btf_encoder *encoder)
-> > }
-> > }
-> >=20
-> > -int btf_encoder__add_saved_funcs(bool skip_encoding_inconsistent_proto=
-)
-> > +static int btf_encoder__add_saved_funcs(bool skip_encoding_inconsisten=
-t_proto)
-> > {
-> > struct btf_encoder_func_state **saved_fns, *s;
-> > struct btf_encoder *e =3D NULL;
-> > @@ -2134,7 +2134,6 @@ int btf_encoder__encode(struct btf_encoder *encod=
-er, struct conf_load *conf)
-> > int err;
-> > size_t shndx;
-> >=20
-> > - /* for single-threaded case, saved funcs are added here */
-> > btf_encoder__add_saved_funcs(conf->skip_encoding_btf_inconsistent_proto=
-);
->=20
->=20
-> should we check the return value in here? now it's the only caller
+[...]
 
-Yes, thanks.
+> IMO the BPP selftest (and BPF programs in general) must not include host
+> glibc headers at all, regardless of what BPF compiler is used.  The
+> glibc headers installed in the host are tailored to some particular
+> architecture, be it x86_64 or whatever, not necessarily compatible with
+> what the compilers assume for the BPF target.
+>
+> This particular case shows the problem well: all the glibc headers
+> included by that BPF selftest assume that `long' is 32 bits, not 64
+> bits, because x86_64 is not defined.  This conflicts with both clang's
+> and GCC's assumption that in BPF a `long' is 64 bits.  This may or may
+> not be a problem, depending on whether the BPF program uses the stuff
+> defined in the headers and how it uses it.  Had you be using an arm or
+> sparc host instead of x86_64, you may be including macros and stuff that
+> assume chars are unsigned.  But chars are signed in bpf.
 
->=20
-> SNIP
->=20
-> > -struct dwarf_thread {
-> > - struct dwarf_cus *dcus;
-> > - void data;
-> > +/ Multithreading is implemented using a job/worker model.
-> > + * cus_processing_queue represents a collection of jobs to be
-> > + * completed by workers.
-> > + * dwarf_loader__worker_thread is the worker loop, taking jobs from
-> > + * the queue, executing them and re-enqueuing new jobs as necessary.
-> > + * Implementation of this queue ensures two constraints:
-> > + * * JOB_STEAL jobs for a CU are executed in the order of cu->id, as
-> > + * a consequence JOB_STEAL jobs always run one at a time.
-> > + * * Initial number of JOB_DECODE jobs in the queue is effectively a
-> > + * limit on how many decoded CUs can be held in memory.
-> > + * See dwarf_loader__decoded_cus_limit()
-> > + /
-> > +static struct {
-> > + pthread_mutex_t mutex;
-> > + pthread_cond_t job_added;
-> > + / next_cu_id determines the next CU ready to be stealed
-> > + * This enforces the order of CU stealing.
-> > + */
-> > + uint32_t next_cu_id;
-> > + struct list_head jobs;
-> > +} cus_processing_queue;
-> > +
-> > +enum job_type {
-> > + JOB_NONE =3D 0,
->=20
->=20
-> nit, no need for JOB_NONE?
+This makes sense, but might cause some friction.
+The following glibc headers are included directly from selftests:
+- errno.h
+- features.h
+- inttypes.h
+- limits.h
+- netinet/in.h
+- netinet/udp.h
+- sched.h
+- stdint.h
+- stdlib.h
+- string.h
+- sys/socket.h
+- sys/types.h
+- time.h
+- unistd.h
 
-I find it useful for the default value to not be a valid "type". This
-helps to avoid bugs when an object is initialized, but the type has
-not been set explicitly (even though it should be).
+However, removing includes for these headers does not help the test in
+question, because some linux UAPI headers include libc headers when exporte=
+d:
 
->=20
-> SNIP
->=20
-> > +static struct cu_processing_job *cus_queue__try_dequeue(void)
-> > +{
-> > + struct cu_processing_job *job, *dequeued_job =3D NULL;
-> > + struct list_head *pos, tmp;
-> > +
-> > + list_for_each_safe(pos, tmp, &cus_processing_queue.jobs) {
-> > + job =3D list_entry(pos, struct cu_processing_job, node);
-> > + if (job->type =3D=3D JOB_STEAL && job->cu->id =3D=3D cus_processing_q=
-ueue.next_cu_id) {
-> > + dequeued_job =3D job;
-> > + break;
-> > + }
-> > + if (job->type =3D=3D JOB_DECODE) {
-> > + / all JOB_STEALs are added to the head, so no viable JOB_STEAL availa=
-ble /
-> > + dequeued_job =3D job;
-> > + break;
-> > + }
-> > + }
-> > + / No jobs or only steals out of order */
-> > + if (!dequeued_job)
-> > + return NULL;
-> > +
-> > + list_del(&dequeued_job->node);
-> > + return job;
->=20
->=20
-> IIUC job =3D=3D dequeued_job at this point, but I think we should return
-> dequeued_job to be clear
+    In file included from /usr/include/netinet/udp.h:51,
+                     from progs/test_cls_redirect_dynptr.c:20:
+    /home/eddy/work/tmp/gccbpf/lib/gcc/bpf-unknown-none/15.0.0/include/stdi=
+nt.h:43:24: error: conflicting types for =E2=80=98int64_t=E2=80=99; have =
+=E2=80=98long int=E2=80=99
+       43 | typedef __INT64_TYPE__ int64_t;
+          |                        ^~~~~~~
+    In file included from /usr/include/sys/types.h:155,
+                     from /usr/include/bits/socket.h:29,
+                     from /usr/include/sys/socket.h:33,
+                     from /usr/include/linux/if.h:28,
+                     from /usr/include/linux/icmp.h:23,
+                     from progs/test_cls_redirect_dynptr.c:12:
+    /usr/include/bits/stdint-intn.h:27:19: note: previous declaration of =
+=E2=80=98int64_t=E2=80=99 with type =E2=80=98int64_t=E2=80=99 {aka =E2=80=
+=98long long int=E2=80=99}
+       27 | typedef __int64_t int64_t;
+          |                   ^~~~~~~
 
-Agree.
+On my system (Fedora 41) the linux/{icmp,if}.h UAPI headers are
+provided by kernel-headers package, sys/socket.h is provided by
+glibc-devel package.
 
->=20
-> SNIP
->=20
-> > -static void *dwarf_cus__process_cu_thread(void *arg)
-> > +static struct cu *dwarf_loader__decode_next_cu(struct dwarf_cus *dcus)
-> > {
-> > - struct dwarf_thread *dthr =3D arg;
-> > - struct dwarf_cus *dcus =3D dthr->dcus;
-> > uint8_t pointer_size, offset_size;
-> > + struct dwarf_cu *dcu =3D NULL;
-> > Dwarf_Die die_mem, *cu_die;
-> > - struct dwarf_cu *dcu;
-> > + int err;
-> >=20
-> > - while (dwarf_cus__nextcu(dcus, &dcu, &die_mem, &cu_die, &pointer_size=
-, &offset_size) =3D=3D 0) {
-> > - if (cu_die =3D=3D NULL)
-> > + err =3D dwarf_cus__nextcu(dcus, &dcu, &die_mem, &cu_die, &pointer_siz=
-e, &offset_size);
-> > +
-> > + if (err < 0)
-> > + goto out_error;
-> > + else if (err =3D=3D 1) /* no more CUs */
-> > + return NULL;
-> > +
-> > + err =3D die__process_and_recode(cu_die, dcu->cu, dcus->conf);
-> > + if (err)
-> > + goto out_error;
-> > + if (cu_die =3D=3D NULL)
-> > + return NULL;
->=20
->=20
-> should this check be placed before calling die__process_and_recode ?
+The UAPI headers have two modes depending whether __KERNEL__ is
+defined. When used during kernel build the __KERNEL__ is defined and
+there are no outside references. When exported for packages like
+kernel-headers (via 'make headers' target) the __KERNEL__ is not
+defined and there are some references to libc includes
+(in fact, references to '#ifdef __KERNEL__' blocks are cut out during
+ headers export).
 
-Yes, but actually this check is redundant. If dwarf_cus__nextcu
-returns 0, then the cu_die is valid. There are null checks within
-dwarf_cus__nextcu:
+E.g. here is a fragment of linux/if.h, when viewed from kernel source:
 
-=09if (ret =3D=3D 0 && *cu_die !=3D NULL) {
-=09=09*dcu =3D dwarf_cus__create_cu(dcus, *cu_die, *pointer_size);
-=09=09if (*dcu =3D=3D NULL) {
-=09=09=09dcus->error =3D ENOMEM;
-=09=09=09ret =3D -1;
-=09=09=09goto out_unlock;
-=09=09}
-=09=09// Do it here to keep all CUs in cus->cus in the same
-=09=09// order as in the DWARF file being loaded (e.g. vmlinux)
-=09=09__cus__add(dcus->cus, (*dcu)->cu);
-=09}
+    #ifndef _LINUX_IF_H
+    #define _LINUX_IF_H
 
->=20
->=20
-> SNIP
->=20
-> > -static int dwarf_cus__process_cus(struct dwarf_cus *dcus)
-> > -{
-> > - if (dcus->conf->nr_jobs > 1)
-> > - return dwarf_cus__threaded_process_cus(dcus);
-> > -
-> > - return __dwarf_cus__process_cus(dcus);
-> > -}
-> > -
-> > static int cus__merge_and_process_cu(struct cus *cus, struct conf_load =
-*conf,
-> > Dwfl_Module *mod, Dwarf *dw, Elf *elf,
-> > const char *filename,
-> > @@ -3733,7 +3859,8 @@ static int cus__merge_and_process_cu(struct cus *=
-cus, struct conf_load *conf,
-> > if (cu__resolve_func_ret_types_optimized(cu) !=3D LSK__KEEPIT)
-> > goto out_abort;
-> >=20
-> > - if (cus__finalize(cus, cu, conf, NULL) =3D=3D LSK__STOP_LOADING)
-> > + cu__finalize(cu, cus, conf);
-> > + if (cus__steal_now(cus, cu, conf) =3D=3D LSK__STOP_LOADING)
-> > goto out_abort;
-> >=20
-> > return 0;
-> > @@ -3765,7 +3892,8 @@ static int cus__load_module(struct cus *cus, stru=
-ct conf_load *conf,
-> > }
-> >=20
-> > if (type_cu !=3D NULL) {
-> > - type_lsk =3D cu__finalize(type_cu, cus, conf, NULL);
-> > + cu__finalize(type_cu, cus, conf);
-> > + type_lsk =3D cus__steal_now(cus, type_cu, conf);
-> > if (type_lsk =3D=3D LSK__DELETE) {
-> > cus__remove(cus, type_cu);
-> > }
-> > @@ -3787,6 +3915,7 @@ static int cus__load_module(struct cus *cus, stru=
-ct conf_load *conf,
-> > .type_dcu =3D type_cu ? &type_dcu : NULL,
-> > .build_id =3D build_id,
-> > .build_id_len =3D build_id_len,
-> > + .nr_cus_created =3D 0,
->=20
->=20
-> should go to the previous patch? if needed at all..
+    #include <linux/libc-compat.h>          /* for compatibility with glibc=
+ */
+    #include <linux/types.h>		/* for "__kernel_caddr_t" et al	*/
+    #include <linux/socket.h>		/* for "struct sockaddr" et al	*/
+    #include <linux/compiler.h>		/* for "__user" et al           */
 
-Yeah. I think it's better to have an explicit assignment.
+    #ifndef __KERNEL__
+    #include <sys/socket.h>			/* for struct sockaddr.		*/
+    #endif
 
->=20
-> thanks,
-> jirka
->=20
-> > };
-> > res =3D dwarf_cus__process_cus(&dcus);
-> > }
-> > diff --git a/dwarves.c b/dwarves.c
-> > index ae512b9..7c3e878 100644
-> > --- a/dwarves.c
-> > +++ b/dwarves.c
-> > @@ -530,48 +530,6 @@ void cus__unlock(struct cus *cus)
-> > pthread_mutex_unlock(&cus->mutex);
-> > }
->=20
->=20
-> SNIP
+And here is the same fragment as part of the kernel-headers package
+(/usr/include/linux/if.h):
+
+    #ifndef _LINUX_IF_H
+    #define _LINUX_IF_H
+
+    #include <linux/libc-compat.h>          /* for compatibility with glibc=
+ */
+    #include <linux/types.h>		/* for "__kernel_caddr_t" et al	*/
+    #include <linux/socket.h>		/* for "struct sockaddr" et al	*/
+    		/* for "__user" et al           */
+
+    #include <sys/socket.h>			/* for struct sockaddr.		*/
+
+As far as I understand, the idea right now is that BPF users can
+install the kernel-headers package (or its equivalent) and start
+hacking. If we declare that this is no longer a blessed way, people
+would need to switch to packages like kernel-devel that provide full
+set of kernel headers for use with dkms etc, e.g. for my system the
+if.h would be located here:
+/usr/src/kernels/6.12.6-200.fc41.x86_64/include/uapi/linux/if.h .
+
+To me this seems logical, however potentially such change might have
+implications for existing BPF code-base.
+
 
