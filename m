@@ -1,174 +1,171 @@
-Return-Path: <bpf+bounces-47821-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47822-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 257B5A002B1
-	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 03:22:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB3F4A002E8
+	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 03:54:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82DA87A1BE4
-	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 02:22:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F9CA3A11D9
+	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2025 02:54:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ACA518A950;
-	Fri,  3 Jan 2025 02:22:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D2681922E6;
+	Fri,  3 Jan 2025 02:54:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TiU7Mv2X"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39B2728E8;
-	Fri,  3 Jan 2025 02:22:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69DFD43173;
+	Fri,  3 Jan 2025 02:54:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735870967; cv=none; b=m/+VR/ISIqEf4X0c7PALHqdHAIdWN6BUH9AvtWU2o73rLKOHaM6hK5dV/t3s91a1TQL0o71f5ugvJzcC78Sc4U1XpTgIrbg5K8ealJ2ZjjWxtEniyE+UpGHrox/TODQGMpL0qYHkE/IT6J2f3ksijLQU4xlyWuHM+oQ45KP4XRA=
+	t=1735872841; cv=none; b=c69AEC9vou4JOKvcAlhSlayEhsAe/uojsnB/LKqnUckPrxO2pWVBYLaqBf+i6odsrUADgUoQMJ6hbsCdpUIEplnjOMPLcGCyhj7WME7CDNI2DGsbbSAGdtbPeH5tLz746sARf709/TG4Zr4shQhr9Klt0A+KfD2CS8PzbCKIoyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735870967; c=relaxed/simple;
-	bh=Lndl1TH8Q7cKgpkINXNw96lhj+AlocwSiTQNlkteB50=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=e9IuhWD8yHAYSGdLJcRj28mtca+U5NnBcoXRgqtsNNgsjpUIX9VhEqX3lJgo9ywDxnFCk2DDm35J/savUwe6+GvcIuPssfoST3xh8pggL4SZDSSSFfxLy6GHQvNSYKEX/kjPCjb43ODeL3b7s8Ridd0ATQxaJCNzuq55HdTRRDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YPS5M1zcXz4f3jMy;
-	Fri,  3 Jan 2025 10:22:15 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 455741A0EF3;
-	Fri,  3 Jan 2025 10:22:35 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP1 (Coremail) with SMTP id cCh0CgCHMbPpSXdnS2P4GA--.44915S2;
-	Fri, 03 Jan 2025 10:22:35 +0800 (CST)
-Message-ID: <6bdac218-a18a-4cb5-b10e-c369d90b502c@huaweicloud.com>
-Date: Fri, 3 Jan 2025 10:22:33 +0800
+	s=arc-20240116; t=1735872841; c=relaxed/simple;
+	bh=VDp/SbqU6Bc5HTFEiWi10wqkHyN/W9x7kql2qAqjTEA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Mzga85DEToZcgNj4Zv1dVLwyzqAADR/mIoR/8OgBNUfx4Vr/1kpqaGbaaLfLjSTYAvYR3vySw3tTyuP2h7HhSbMABl28MwzQ4ogoEyBvwpduSUqmjUvWVV/xCrUtqD+DqQS6yYg4miRbEGE9l4vgRIDWnIUkGZFqtHKl1v2fxMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TiU7Mv2X; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-21644aca3a0so83897255ad.3;
+        Thu, 02 Jan 2025 18:54:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1735872840; x=1736477640; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Gezj6yBh5CN5EwIe+NrefENqJzoWnwHcL38luBqMvho=;
+        b=TiU7Mv2XdEME3JWus3G0eArjuUiCMul851I+TegopYgKC0toFbaU5nX0xOXNQmiIV3
+         KOSzzLMyhIDWHpSX93EkV1JlA/G7cxsU0vmtrB65dkWF1y0hhc4QRIqYV1igdh8Vr002
+         DkSBqpuXmE+TzZhxieEGWuQgGi+J+kxFgK53eKHCVCaKLmF3RetGLrIZ2TJJAO81EiAf
+         mOVLyV9xT5hpROcK7C6/RP2y9CaTDQhMq5bTEkHXojgI6wIUN4a9Y2uyxFd158JBAa6w
+         Ds265N1UKnsqTdhv0OWfoul3TnOCJaftaYzEcapYO/dQthgXpiFoJt3vXVua9cuKvcNk
+         NhsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735872840; x=1736477640;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Gezj6yBh5CN5EwIe+NrefENqJzoWnwHcL38luBqMvho=;
+        b=D05qhAbg5o5fAshgPxUwoqVIG6ZLs+ogEjj6iFOl/DpGJKXsgxINvlubbqGb82c3X4
+         vn4SThHR3TtF706EQdJ9KL28Tax5tgxVba80xBSCdEUdj1tUCiimFWbHsa4eaCUgVLhu
+         UuqDBLE5z05FVxuacuDaxwMWvbEwTyx9Anl4lOsXu1hYXjmgpWBHCqt6Bdi+yaSI40gW
+         91t0ym8Ulbd0xEGoNwKBezVuAg9bzaw6S16iUUoO+VKizwgliLynGP/H1kjP1EWJvcnZ
+         rneEucxZmiC1vFJcBszwF57q/W3zOHDEP+hM4bPebSUMGTtBuIUvk1ZUcXLufquCfKRU
+         00sQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVjzGeuJlQ94/D/r5xFH5FPrDxBmhl1LpEbcfKDo9sbn5MuL93oxZQNg2mthD5znF0enx7SUBHT315uo75y@vger.kernel.org, AJvYcCWUeRLtAV78ULZHiwEmUeMnbX5DehpEDWXXvL+PS0ag4CsVBoABpH8aTIoB7cO9oB62S6o=@vger.kernel.org, AJvYcCXX3B3eMiGUw9dk+5G1lboMrDbJ8zj8PTrcINT+/gx7W2K2/aEDdcIA9YNR93nshe9ISlpZcxDfBDL9q13badaK@vger.kernel.org
+X-Gm-Message-State: AOJu0YymRWBBlAL6oxe03ewdiuntEMXFJtMZ8IawIaCpm4WIjYWKt0CY
+	3MhGO3CEKBrWrS4FVai+PwqIiHSLvb5gcXg7igMajtp6CN8bskXq
+X-Gm-Gg: ASbGncvDfTJnB43WjSWjbzlutbeoATlqHFFWqIbj8scE1b0c8+pD9fhVFBYxhhxcaY3
+	9Lj0LD84kG0aHlcCdM9b+cqfMBdJrATQ48QBFoeingFRqeftLnMAYh/jALJGPpojzEYCnrHWb4f
+	VjFtud3BIKs6+H5JhAV5TXZJAgjlj5oIoNt3X3JV2mNyhcXGpZEqAHWjCnJiY7+ljYKegf4NCdg
+	QnNrJTYCB6mrQcQvt3kM3axfaoPA3h5i+85231dnLRg1TPukTB0ZQ==
+X-Google-Smtp-Source: AGHT+IFknURbcsfIZv/zekTR0dGCqCn53wCMhaZv/CVIEW8VMdCo2ExOmdt+7WMTMpYnMg326dVNbg==
+X-Received: by 2002:a17:902:c943:b0:215:72aa:693f with SMTP id d9443c01a7336-219e6e8bb89mr730697355ad.9.1735872839661;
+        Thu, 02 Jan 2025 18:53:59 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dc96eae7sm234978635ad.85.2025.01.02.18.53.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jan 2025 18:53:59 -0800 (PST)
+Message-ID: <478322da282bbdae28027967ff47bfe2504559fe.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v6 4/5] bpf: verifier: Support eliding map
+ lookup nullness
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Daniel Xu <dxu@dxuuu.xyz>, andrii@kernel.org, ast@kernel.org, 
+	shuah@kernel.org, daniel@iogearbox.net
+Cc: john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, 	jolsa@kernel.org, mykolal@fb.com, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Date: Thu, 02 Jan 2025 18:53:54 -0800
+In-Reply-To: <86213ea40c6e6a30bf8ba967da9b9c4c6d77fd0b.1734667691.git.dxu@dxuuu.xyz>
+References: <cover.1734667691.git.dxu@dxuuu.xyz>
+	 <86213ea40c6e6a30bf8ba967da9b9c4c6d77fd0b.1734667691.git.dxu@dxuuu.xyz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] cgroup/cpuset: remove kernfs active break
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: tj@kernel.org, hannes@cmpxchg.org, longman@redhat.com,
- roman.gushchin@linux.dev, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, chenridong@huawei.com,
- wangweiyang2@huawei.com
-References: <20241220013106.3603227-1-chenridong@huaweicloud.com>
- <6zxqs3ms52uvgsyryubna64xy5a6zxogssomsgiyhzishwmfbd@lylwjd6cdkli>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <6zxqs3ms52uvgsyryubna64xy5a6zxogssomsgiyhzishwmfbd@lylwjd6cdkli>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCHMbPpSXdnS2P4GA--.44915S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw45KrWDKrykXr13XrW8JFb_yoW5uF4DpF
-	yvkFy3KFs7Jr1UC39rJr4xZ34Yq397JFW7Xw13GwnYvaya93Wvy34UWFs8ZrWjgrs8trWY
-	vay2q390q3W5Cw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
-	v3UUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
+On Thu, 2024-12-19 at 21:09 -0700, Daniel Xu wrote:
 
+lgtm, but please see a note below.
 
-On 2025/1/3 0:02, Michal Koutný wrote:
-> On Fri, Dec 20, 2024 at 01:31:06AM +0000, Chen Ridong <chenridong@huaweicloud.com> wrote:
->> RIP: 0010:kernfs_should_drain_open_files+0x1a1/0x1b0
-> 
-> I assume it's this
-> 	WARN_ON_ONCE(atomic_read(&kn->active) != KN_DEACTIVATED_BIAS);
-> 
-Right.
+[...]
 
->> It can be explained by:
->> rmdir 				echo 1 > cpuset.cpus
->> 				kernfs_fop_write_iter // active=0
->> cgroup_rm_file
->> kernfs_remove_by_name_ns	kernfs_get_active // active=1
->> __kernfs_remove					  // active=0x80000002
->> kernfs_drain			cpuset_write_resmask
->> wait_event
->> //waiting (active == 0x80000001)
->> 				kernfs_break_active_protection
->> 				// active = 0x80000001
->> // continue
->> 				kernfs_unbreak_active_protection
->> 				// active = 0x80000002
->> ...
->> kernfs_should_drain_open_files
->> // warning occurs
->> 				kernfs_put_active
-> 
-> Thanks for this breakdown.
-> 
->> To avoid deadlock. the commit 76bb5ab8f6e3 ("cpuset:
->> break kernfs active protection in cpuset_write_resmask()") added
->> 'kernfs_break_active_protection' in the cpuset_write_resmask. This could
->> lead to this warning.
-> 
-> The deadlock cycle included cpuset_hotplug_work and since that was
-> removed in the said commit, there shouldn't be same deadlock possible.
-> 
-> Ridong, have you run your patch with CONFIG_LOCKDEP to check that
-> eventuality?
-> 
+> +/* Returns constant key value if possible, else negative error */
+> +static s64 get_constant_map_key(struct bpf_verifier_env *env,
+> +				struct bpf_reg_state *key,
+> +				u32 key_size)
+> +{
+> +	struct bpf_func_state *state =3D func(env, key);
+> +	struct bpf_reg_state *reg;
+> +	int slot, spi, off;
+> +	int spill_size =3D 0;
+> +	int zero_size =3D 0;
+> +	int stack_off;
+> +	int i, err;
+> +	u8 *stype;
+> +
+> +	if (!env->bpf_capable)
+> +		return -EOPNOTSUPP;
+> +	if (key->type !=3D PTR_TO_STACK)
+> +		return -EOPNOTSUPP;
+> +	if (!tnum_is_const(key->var_off))
+> +		return -EOPNOTSUPP;
+> +
+> +	stack_off =3D key->off + key->var_off.value;
+> +	slot =3D -stack_off - 1;
+> +	spi =3D slot / BPF_REG_SIZE;
+> +	off =3D slot % BPF_REG_SIZE;
+> +	stype =3D state->stack[spi].slot_type;
+> +
+> +	/* First handle precisely tracked STACK_ZERO */
+> +	for (i =3D off; i >=3D 0 && stype[i] =3D=3D STACK_ZERO; i--)
+> +		zero_size++;
+> +	if (zero_size >=3D key_size)
+> +		return 0;
+> +
+> +	/* Check that stack contains a scalar spill of expected size */
+> +	if (!is_spilled_scalar_reg(&state->stack[spi]))
+> +		return -EOPNOTSUPP;
+> +	for (i =3D off; i >=3D 0 && stype[i] =3D=3D STACK_SPILL; i--)
+> +		spill_size++;
+> +	if (spill_size !=3D key_size)
+> +		return -EOPNOTSUPP;
+> +
+> +	reg =3D &state->stack[spi].spilled_ptr;
+> +	if (!tnum_is_const(reg->var_off))
+> +		/* Stack value not statically known */
+> +		return -EOPNOTSUPP;
+> +
+> +	/* We are relying on a constant value. So mark as precise
+> +	 * to prevent pruning on it.
+> +	 */
+> +	bt_set_frame_slot(&env->bt, env->cur_state->curframe, spi);
 
-Yes, I tested.
+I think env->cur_state->curframe is not always correct here.
+It should be key->frameno, as key might point a few stack frames up.
 
->> After the commit 2125c0034c5d ("cgroup/cpuset: Make cpuset hotplug
->> processing synchronous"), the cpuset_write_resmask no longer needs to
->> wait the hotplug to finish, which means that cpuset_write_resmask won't
->> grab the cgroup_mutex. So the deadlock doesn't exist anymore. Therefore,
->> remove kernfs_break_active_protection operation in the
->> 'cpuset_write_resmask'
->>
->> Fixes: 76bb5ab8f6e3 ("cpuset: break kernfs active protection in cpuset_write_resmask()")
-> 
-> This commit alone isn't sufficient to cause the warning you observed,
-> right?
+> +	err =3D mark_chain_precision_batch(env);
+> +	if (err < 0)
+> +		return err;
+> +
+> +	return reg->var_off.value;
+> +}
+> +
+>  static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>  			  struct bpf_call_arg_meta *meta,
+>  			  const struct bpf_func_proto *fn,
 
-I think the commit 76bb5ab8f6e3 ("cpuset: break kernfs active protection
-in cpuset_write_resmask()") is causing the warning I observed.
-
-This warning was observed when removing a cpuset cgroup and writing to
-cpuset.cpus concurrently. Unlike the cgroup_kn_lock_live functions,
-which break active protection and grab the cgroup_mutex immediately to
-avoid concurrent removal, writing to 'cpuset_write_resmask' cannot avoid
-concurrent removal of the cgroup directory. Therefore, this could cause
-the warning.
-
-> As I read kernfs_break_active_protection() comment, I don't see cpuset
-> code violating its conditions:
-> a) it's broken/unbroken from withing a kernfs file operation handler,
-> b) it pins the needed struct cpuset independently of kernfs_node (it's
->    ok to be removed)
-> 
-I am not sure if it is safe to call
-kernfs_unbreak_active_protection(atomic_inc(&kn->active)); after the
-'kn' has been removed. I don't know much about this. However, I have not
-seen any Use-After-Free (UAF) issues so far.
-
-I would be grateful if you could provide more information.
-
-Best regards
-Ridong
-
-> All in all -- I think the particular break/unbreak pair is unncecessary
-> nowadays and the warning implemented with hiding/showing kernfs files
-> didn't take temporary breakage into account (only based on quick
-> searching and vague memories).
-> 
-> Thanks,
-> Michal
+[...]
 
 
