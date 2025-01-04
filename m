@@ -1,213 +1,229 @@
-Return-Path: <bpf+bounces-47879-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47880-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54F36A0159F
-	for <lists+bpf@lfdr.de>; Sat,  4 Jan 2025 16:45:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CBF0A0162C
+	for <lists+bpf@lfdr.de>; Sat,  4 Jan 2025 18:53:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 104603A3C90
-	for <lists+bpf@lfdr.de>; Sat,  4 Jan 2025 15:45:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C88A163781
+	for <lists+bpf@lfdr.de>; Sat,  4 Jan 2025 17:53:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 841791CEE83;
-	Sat,  4 Jan 2025 15:45:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E127A1CDFC2;
+	Sat,  4 Jan 2025 17:52:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HVSJ9kbl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IP/PDCEs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699DE1C9B7A;
-	Sat,  4 Jan 2025 15:45:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C52291C5F1D;
+	Sat,  4 Jan 2025 17:52:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736005512; cv=none; b=nBYAYyklhkXRWYye2k67X00Oapd2POAyG23PpCZngV5nwP9xC1SyN6F3+KYo43MZqvlIRN+du7gx3iq9ujd1yn+bzn5NKesl91TzoAgYZ/vQG9Ka8Jt98S7nkjt8z44TD2xw7m42aWii3B0FQLGHd2o56CqsttxE+cMPCGyGA6U=
+	t=1736013176; cv=none; b=CJy6SYeZIACGH0d4n4RNR4Zhlr/Yl7hkMQSY4bQUXB6qTNG30KPWYNAVA31qvvJG6bMOUKSgpHx8q/n72XqngaYq4Hizk8TGiirs6JWpn8bEe1ODguqL351LOs0k0qNoKM9ORi1EVdu+Y7l5UWSXjbh5/q+HOidlDSbydtYPjNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736005512; c=relaxed/simple;
-	bh=AtyPqjeKFU9afGdDHyL0h3Wn3CMwclYQjfCQPRoZ4o4=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cAF8TY5mcY9mjnogT8XAsxt/w2reCGkmG2P76mTW6lTakM+AOjKWVDqqapMlyuZh5P69olHPBF6W8lmZ1mhq2iGw1xhkjOcFJngseudAkBhBQwnXgIBqmQxgekDZ3/aZ6a0T9H0vyuo4t1APdDtNOJh1WCSBPrU34cgiTyvWX2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HVSJ9kbl; arc=none smtp.client-ip=209.85.218.51
+	s=arc-20240116; t=1736013176; c=relaxed/simple;
+	bh=mSgp80ZWf5vN4PcBPj5bIokW4wJz12MpukMGR8EW56c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rfDOYB1GGil0aifGdp04iEtUAYjwIaUb0TPPHUTXNMFyzDziUkS4As5NGiSTQK1AslS4/V1n3CraMkP68d+Fg6oKDOgmIQF6UpNflcsJ/eY6sesqnNCjH3rHkmCThqomRvIF3BtK/bcQ+of2OrtQm/4dhlBJqFN9EehC6aeCzCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IP/PDCEs; arc=none smtp.client-ip=209.85.219.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-aa67f31a858so2334747366b.2;
-        Sat, 04 Jan 2025 07:45:09 -0800 (PST)
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-e549dd7201cso1293436276.0;
+        Sat, 04 Jan 2025 09:52:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736005508; x=1736610308; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hGuwaxKFAgepLe7eWKLOd3Qb7WhhDhEuisaVVpDDpj4=;
-        b=HVSJ9kblwa209gLikYVpd2AaFE/OiOm+xxuPt5glD++uiy4oRNAeXnHKmRLMBZej2c
-         NE/2HVkIR+dSDcBlb/6AsYs/21cgScWT6Ibz3UUWohA77nZZpP6wzGVWxgYImZBb90Tb
-         oygjJ53tLMXkio4dMcxnXtaEgbMN2rqE+5FYnWu8UxTDLAW8BWjJA+FkeDJGXZ2rLp47
-         sXOiNVQvTa5d325SXgugTJiGpN3yDtusiCSYC34vesy5wuuwsz0mvbV7SlwytlpQJyND
-         Yuj1g8/HXmJPiYJzGhSS/RkU0r5fN7TMfftRTIhAsEHozhncTs9RPvOUYtqjtFdQDM5T
-         Lp9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736005508; x=1736610308;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1736013174; x=1736617974; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hGuwaxKFAgepLe7eWKLOd3Qb7WhhDhEuisaVVpDDpj4=;
-        b=YhCnuQseJmW1bPAmzRbqTZtP8Y350VLDR6sFi8rfyin5xTHaGbhU5o8Wfm5B+wiGuP
-         Mt9RJK7HkyPX5I5VU5yCNv45lUOTPf2sM4oRivcYejWBDvnm0PcwzO9Gy2ZK3vQ4vaYr
-         eZ1W5J9s/fCKRmPvHKmNU7sE4wKXFyGjWNy9ybtxu5bdNqn6Dbc7ug9jchB4AoysT/RJ
-         e5FfTKBFQrscN3SNYTgv6aBFvWqY3//Vplo+xQ8PmeF6xilsYj9BjApsuDde7apeb5sG
-         OF1jhFlbksvM35WEzmHRi6gjDBNL0qUDISswlHJSnaBRnFA4iBpSB51viXqz56WsPkp+
-         8Ahw==
-X-Forwarded-Encrypted: i=1; AJvYcCU1JTJz9z7FUmw5yLItIAwaR0DJZa+d/IF9K7I+qCgRBh6C4DJ0gnO67Sd4bONMF1CQUUtnVoLeKIlvNf4d@vger.kernel.org, AJvYcCXbp5W6ROTzXsiIPHUQ/E1+JgzWbkm0M8jNMKki9HfRCN7HoKaPBa9+Xlj96uCvM1qBBok=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwQ3WfmNf/K9fD6M2kN1HuN9VUKNsduQjx5rtfXg7M9nozkkbKk
-	aT+/+4KK3gKB2/xYg/waeAm/cq9Iy+UkRmoLcNjAhId7OZqNLVNc
-X-Gm-Gg: ASbGncuu1Ie3rX45AIlH5Sxj0Gg+6tujh54XAAHbpFbwTkOK2nsxTn0osmIWcxxuudA
-	rsqjeO8mrvX5Wd+2Mm8g5GUAjZ8+2uz8caLGnnfhslRFwxpVuwzGQidlBXY4aFAzdER0vliUTdf
-	pp/gfe33JJFpWBTuEnzhoWOFNpw7C+gcDe/fqryoT2wDwlBdsPSUhXPMeb8JWRXAVldZ0EkD3Ky
-	61hfojqYBiXo7Pc30oTBOKve1nUJc+rdTFflhS8UXo=
-X-Google-Smtp-Source: AGHT+IHJh3tqUpfeikKHrKbQUJbD3UvypiV8u45tKCYmGQe3oAVUZMiNiYNDJTlAgyAxndEypxguEw==
-X-Received: by 2002:a17:906:dc8d:b0:aa6:7ab9:e24d with SMTP id a640c23a62f3a-aac3365d010mr4221748666b.57.1736005508207;
-        Sat, 04 Jan 2025 07:45:08 -0800 (PST)
-Received: from krava ([213.175.46.84])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aac0f05fd7csm2027771666b.172.2025.01.04.07.45.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Jan 2025 07:45:07 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sat, 4 Jan 2025 16:45:06 +0100
-To: syzbot <syzbot+091dd8c0495cc3c6b48d@syzkaller.appspotmail.com>
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
-	john.fastabend@gmail.com, kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me,
-	song@kernel.org, syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev
-Subject: Re: [syzbot] [bpf?] WARNING: held lock freed in process_one_work
-Message-ID: <Z3lXguFBy-L1Z7Fj@krava>
-References: <67769386.050a0220.3a8527.003e.GAE@google.com>
+        bh=LUjkPGj47hm11KTQsm2hKqLSxMMo/hgYDvHHmf6hkiE=;
+        b=IP/PDCEsd0PVRsWsHD0JmXSRKSEwEO1HcGf6VnDvvvjMw0z5SiNrnrsnFzM+hKIcL4
+         0idEuJQELCrbUDcXnFTxTQLRnkfnlczbXDdVeWhw+NKbYCF9gFhq9jZijwfQsHmuy3XJ
+         xoIpXdU4AhkADryqy8LegOAsNuXgW0d+g+M9aMENw9T8Gx5Bc4DsuogE8qIwqsWJWqr1
+         16ibO8psp8ROAJMwMuHbwkriKxPU2HTFAqSFh1aw77pf/S11uFB0pSX0T3izotuCqott
+         wsA6H3vl4h2vYz4s2yRXf2ZY46V+8tE79m38OGrD7CMjlA3rU8gy/fdfCSb/w9DITXL8
+         Z2Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736013174; x=1736617974;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LUjkPGj47hm11KTQsm2hKqLSxMMo/hgYDvHHmf6hkiE=;
+        b=EbUx6eoifXEeqSoR53W2aqillTqCl2xTfJ3OPRWALhzVUfF3GQezAo3U5AtACPjZXR
+         bnGY6NMpCCr49+VQVUwlGWO57l6PWwyJYgVzuxHNH5mMyEfp8QiNmys3PxkuKTiOOl48
+         kerNCeECuEQ17JAUJAT9t64kv/zt+YhQ9pGFwkVUYSO/nItXqVjutVi4+0Qw3s+stNbn
+         eMk6cyRtHrQHf6uIm2a2QadsHNS2L5dozRX6Kh+YG1aZJAtlZLbXJHMUQTeSMt8t7CNC
+         qIomOjGwgyC80oGnW/DUWTYNdIkKSvOvpPxdql3Fp+BOR9Gm7icx3OADVpZFPr75NPa9
+         hKAA==
+X-Forwarded-Encrypted: i=1; AJvYcCUVs4OQ2H6bdqXaH4ZaXIyZWxQDAE6Wgk3PReBeuaV88bFxoxzhV5GQwgBryW9Dw0/euRY=@vger.kernel.org, AJvYcCXrdIQvnASAj2PWdanLjSZDG4DqLYnXiek1p3q+9AFnLzSpNY9NoL+2oKlm9Gewe+U+vImX47Tu9fl79Ew=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywqu5bFIfVlSgudb23LgmQ0ieknNml+tTdRyCc6shueEIaDX59b
+	RrEOx328ApnKTCEtY9X4FnwQMKEINNZ3HawBAjr/JCrngWhIMl1DdEnNZRG6hvz5RfJ9rNEHwQ2
+	8qrC+qppsqTmu4R+oO+ZqzaiwgiY=
+X-Gm-Gg: ASbGnctOzdMY7Xrs6/TC5ECqfw2zxJwMnF992snGZ6EK6Ml5hHdV10JZIEgxujmzV1Z
+	DT4yB42a2t924hH3AQjjtZA7ztx7+v68lTuBevkdG
+X-Google-Smtp-Source: AGHT+IG7KRbfgRYvJrxcZgctdUiqfo+/iWiuWGtHyeYRqcBAPLNuiD8tFKWpsZsOjnyhO1nbDBXrZ5pr9sZU7MnA6P8=
+X-Received: by 2002:a05:690c:7109:b0:6ef:6178:404a with SMTP id
+ 00721157ae682-6f3f820d3a0mr354863937b3.33.1736013173669; Sat, 04 Jan 2025
+ 09:52:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <67769386.050a0220.3a8527.003e.GAE@google.com>
+References: <CAJHDoJac2Qa6QjhDFi7YZf0D05=Svc13ZQyX=92KsM7pkkVbJA@mail.gmail.com>
+ <CAPhsuW7+ORExwn5fkRykEmEp-wm0YE788Tkd39rK5cZ-Q3dfUw@mail.gmail.com>
+In-Reply-To: <CAPhsuW7+ORExwn5fkRykEmEp-wm0YE788Tkd39rK5cZ-Q3dfUw@mail.gmail.com>
+From: Vishnu ks <ksvishnu56@gmail.com>
+Date: Sat, 4 Jan 2025 23:22:40 +0530
+Message-ID: <CAJHDoJYESDzDf9KJgfSfGGit6JPyxtf3miNbnM7BzNfjOi7CQw@mail.gmail.com>
+Subject: Re: [LSF/MM/BPF TOPIC] Improving Block Layer Tracepoints for
+ Next-Generation Backup Systems
+To: Song Liu <song@kernel.org>, hch@infradead.org, yanjun.zhu@linux.dev
+Cc: lsf-pc@lists.linux-foundation.org, linux-block@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-nvme@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 02, 2025 at 05:24:22AM -0800, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    fd0584d220fe Merge tag 'trace-tools-v6.13-rc4' of git://gi..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16bf90b0580000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=c078001e66e4a17e
-> dashboard link: https://syzkaller.appspot.com/bug?extid=091dd8c0495cc3c6b48d
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/ecc75c8807ba/disk-fd0584d2.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/0d5d397df783/vmlinux-fd0584d2.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/da7bfd7b8963/bzImage-fd0584d2.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+091dd8c0495cc3c6b48d@syzkaller.appspotmail.com
-> 
-> =========================
-> WARNING: held lock freed!
-> 6.13.0-rc4-syzkaller-00071-gfd0584d220fe #0 Not tainted
-> -------------------------
-> kworker/1:2/28505 is freeing memory 0000000000000000-ffffffffffffefff, with a lock still held there!
+Thank you all for your valuable feedback. I'd like to provide more
+technical context about our implementation and the specific challenges
+we're facing.
 
-that address range looks wrong, too bad there's no reproducer
+System Architecture:
+We've built a block-level continuous data protection system that:
+1. Uses eBPF to monitor block_rq_complete tracepoint to track modified sect=
+ors
+2. Captures sector numbers (not data) of changed blocks in real-time
+3. Periodically syncs the actual data from these sectors based on
+configurable RPO
+4. Layers these incremental changes on top of base snapshots
 
-jirka
+Current Implementation:
+- eBPF program attached to block_rq_complete tracks sector ranges from
+bio requests
+- Changed sector numbers are transmitted to a central dispatcher via websoc=
+ket
+- Dispatcher initiates periodic data sync (1-2 min intervals)
+requesting data from tracked sectors
+- Base snapshot + incremental changes provide point-in-time recovery capabi=
+lity
+
+@Christoph: Regarding stability concerns - we're not using tracepoints
+for data integrity, but rather for change detection. The actual data
+synchronization happens through standard block device reads.
+
+Technical Challenge:
+The core issue we've identified is the gap between write completion
+notification and data availability:
+- block_rq_complete tracepoint triggers before data is actually
+persisted to disk
+- Reading sectors immediately after block_rq_complete often returns stale d=
+ata
+- Observed delay between completion and actual disk persistence ranges
+from 3-7 minutes
+- Data becomes immediately available only after unmount/sync/reboot
+
+@Song: Our approach fundamentally differs from md/raid in several ways:
+
+1. Network-based vs Local:
+   - Our system operates over network, allowing replication across
+geographically distributed systems
+   - md/raid works only with locally attached storage devices
+
+2. Replication Model:
+   - We use asynchronous replication with configurable RPO windows
+   - md/raid requires synchronous, immediate mirroring of data
+
+3. Recovery Capabilities:
+   - We provide point-in-time recovery through incremental sector tracking
+   - md/raid focuses on immediate redundancy without historical state
+
+@Zhu: The eBPF performance impact is minimal as we're only tracking
+sector numbers, not actual data. The main overhead comes from the
+periodic data sync operations.
+
+Proposed Enhancement:
+We're looking for ways to:
+1. Detect when data is actually flushed to disk
+2. Track the relationship between bio requests and cache flushes
+3. Potentially add tracepoints around such operations
+
+Questions for the community:
+1. Are there existing tracepoints that could help track actual disk persist=
+ence?
+2. Would adding tracepoints in the page cache writeback path be feasible?
+3. Are there alternative approaches to detecting when data is actually
+persisted?
+
+Would love to hear the community's thoughts on this specific challenge
+and potential approaches to addressing it.
+
+Best regards,
+Vishnu KS
 
 
-> ffff88801ac80948 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x12cd/0x1b30 kernel/workqueue.c:3204
-> 2 locks held by kworker/1:2/28505:
->  #0: ffff88801ac80948 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x12cd/0x1b30 kernel/workqueue.c:3204
->  #1: ffffc900186f7d80 ((work_completion)(&aux->work)){+.+.}-{0:0}, at: process_one_work+0x8bb/0x1b30 kernel/workqueue.c:3205
-> 
-> stack backtrace:
-> CPU: 1 UID: 0 PID: 28505 Comm: kworker/1:2 Not tainted 6.13.0-rc4-syzkaller-00071-gfd0584d220fe #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-> Workqueue: events bpf_prog_free_deferred
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:94 [inline]
->  dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:120
->  print_freed_lock_bug kernel/locking/lockdep.c:6662 [inline]
->  debug_check_no_locks_freed+0x208/0x2b0 kernel/locking/lockdep.c:6697
->  remove_vm_area+0x128/0x3f0 mm/vmalloc.c:3240
->  vfree+0x90/0x950 mm/vmalloc.c:3364
->  bpf_prog_free_deferred+0x539/0x6f0 kernel/bpf/core.c:2820
->  process_one_work+0x958/0x1b30 kernel/workqueue.c:3229
->  process_scheduled_works kernel/workqueue.c:3310 [inline]
->  worker_thread+0x6c8/0xf00 kernel/workqueue.c:3391
->  kthread+0x2c1/0x3a0 kernel/kthread.c:389
->  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
->  </TASK>
-> ------------[ cut here ]------------
-> ODEBUG: free active (active state 1) object: ffff88807a9a9100 object type: rcu_head hint: 0x0
-> WARNING: CPU: 1 PID: 28505 at lib/debugobjects.c:612 debug_print_object+0x1a2/0x2b0 lib/debugobjects.c:612
-> Modules linked in:
-> 
-> CPU: 1 UID: 0 PID: 28505 Comm: kworker/1:2 Not tainted 6.13.0-rc4-syzkaller-00071-gfd0584d220fe #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-> Workqueue: events bpf_prog_free_deferred
-> 
-> RIP: 0010:debug_print_object+0x1a2/0x2b0 lib/debugobjects.c:612
-> Code: fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 54 48 8b 14 dd e0 80 b1 8b 41 56 4c 89 e6 48 c7 c7 60 75 b1 8b e8 af 52 bc fc 90 <0f> 0b 90 90 58 83 05 f6 53 7f 0b 01 48 83 c4 18 5b 5d 41 5c 41 5d
-> RSP: 0018:ffffc900186f7a08 EFLAGS: 00010282
-> 
-> RAX: 0000000000000000 RBX: 0000000000000003 RCX: ffffffff815a1729
-> RDX: ffff8880655ebc00 RSI: ffffffff815a1736 RDI: 0000000000000001
-> RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
-> R10: 0000000000000001 R11: 0000000000000001 R12: ffffffff8bb17c00
-> R13: ffffffff8b4e5e20 R14: 0000000000000000 R15: ffffc900186f7b18
-> FS:  0000000000000000(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f78f559790a CR3: 000000006b8b2000 CR4: 00000000003526f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  __debug_check_no_obj_freed lib/debugobjects.c:1099 [inline]
->  debug_check_no_obj_freed+0x4b7/0x600 lib/debugobjects.c:1129
->  remove_vm_area+0x1ae/0x3f0 mm/vmalloc.c:3241
->  vfree+0x90/0x950 mm/vmalloc.c:3364
->  bpf_prog_free_deferred+0x539/0x6f0 kernel/bpf/core.c:2820
->  process_one_work+0x958/0x1b30 kernel/workqueue.c:3229
->  process_scheduled_works kernel/workqueue.c:3310 [inline]
->  worker_thread+0x6c8/0xf00 kernel/workqueue.c:3391
->  kthread+0x2c1/0x3a0 kernel/kthread.c:389
->  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
->  </TASK>
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
+On Sat, 4 Jan 2025 at 06:41, Song Liu <song@kernel.org> wrote:
+>
+> Hi Vishnu,
+>
+> On Tue, Dec 31, 2024 at 10:35=E2=80=AFPM Vishnu ks <ksvishnu56@gmail.com>=
+ wrote:
+> >
+> > Dear Community,
+> >
+> > I would like to propose a discussion topic regarding the enhancement
+> > of block layer tracepoints, which could fundamentally transform how
+> > backup and recovery systems operate on Linux.
+> >
+> > Current Scenario:
+> >
+> > - I'm developing a continuous data protection system using eBPF to
+> > monitor block request completions
+>
+> This makes little sense. It is not clear how this works.
+>
+> > - The system aims to achieve reliable live data replication for block d=
+evices
+> > Current tracepoints present challenges in capturing the complete
+> > lifecycle of write operations
+>
+> What's the difference between this approach and existing data
+> replication solutions, such as md/raid?
+>
+> >
+> > Potential Impact:
+> >
+> > - Transform Linux Backup Systems:
+> > - Enable true continuous data protection at block level
+> > - Eliminate backup windows by capturing changes in real-time
+> > - Reduce recovery point objectives (RPO) to near-zero
+> > - Allow point-in-time recovery at block granularity
+> >
+> > Current Technical Limitations:
+> >
+> > - Inconsistent visibility into write operation completion
+> > - Gaps between write operations and actual data flushes
+> > - Potential missing instrumentation points
+>
+> If a tracepoint is missing or misplaced, we can fix it in a patch.
+>
+> > - Challenges in ensuring data consistency across replicated volumes
+> >
+> > Proposed Improvements:
+> >
+> > - Additional tracepoints for better write operation visibility
+> > - Optimal placement of existing tracepoints
+> > - New instrumentation points for reliable block-level monitoring
+>
+> Some details in these would help this topic proposal.
+>
+> Thanks,
+> Song
+
+--=20
+Vishnu KS,
+Opensource contributor and researcher,
+https://iamvishnuks.com
 
