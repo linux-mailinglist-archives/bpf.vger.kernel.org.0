@@ -1,328 +1,213 @@
-Return-Path: <bpf+bounces-47878-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47879-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5129A014E1
-	for <lists+bpf@lfdr.de>; Sat,  4 Jan 2025 14:03:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54F36A0159F
+	for <lists+bpf@lfdr.de>; Sat,  4 Jan 2025 16:45:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 620A31881671
-	for <lists+bpf@lfdr.de>; Sat,  4 Jan 2025 13:03:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 104603A3C90
+	for <lists+bpf@lfdr.de>; Sat,  4 Jan 2025 15:45:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75ECF1C1F24;
-	Sat,  4 Jan 2025 12:59:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 841791CEE83;
+	Sat,  4 Jan 2025 15:45:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EvczOAyZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HVSJ9kbl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B13621C3033;
-	Sat,  4 Jan 2025 12:59:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699DE1C9B7A;
+	Sat,  4 Jan 2025 15:45:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735995558; cv=none; b=GRs1OH0ykLKWsx2Qf3q7lCXG2QQOUYDoQWllgK+Bh3LrsgVPldgRw6vY6kWgxOQVSx+f9/Ai+Quju6Uqrtn/aqIaeEOk6tjtP7UQatNtA4veY/bp2yYivzB+zBJ0wxWhkABhQ3shTi8IaK/qXr7CQMFp4iliUbS/r+fpJlOhLNY=
+	t=1736005512; cv=none; b=nBYAYyklhkXRWYye2k67X00Oapd2POAyG23PpCZngV5nwP9xC1SyN6F3+KYo43MZqvlIRN+du7gx3iq9ujd1yn+bzn5NKesl91TzoAgYZ/vQG9Ka8Jt98S7nkjt8z44TD2xw7m42aWii3B0FQLGHd2o56CqsttxE+cMPCGyGA6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735995558; c=relaxed/simple;
-	bh=0G+WJHelzbbjtgv/Zbgactw+yzF4V+X8MJldF12Uf7A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VdjA00VjUwXBn4ELMksrPWmPw0wggMvhnXG/G/XkIxnpf25njeZRVh1Ge5bGsypyQZyHzMQrCluswAohjfljHZyTOPIzRf16InmfeDr96+MGLPerDfxBaYS8ecm4KmgQdPy3+dDe4MnG1IU+l2WHZubD5NYlnAq4kmDW7+XP/vc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EvczOAyZ; arc=none smtp.client-ip=209.85.214.175
+	s=arc-20240116; t=1736005512; c=relaxed/simple;
+	bh=AtyPqjeKFU9afGdDHyL0h3Wn3CMwclYQjfCQPRoZ4o4=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cAF8TY5mcY9mjnogT8XAsxt/w2reCGkmG2P76mTW6lTakM+AOjKWVDqqapMlyuZh5P69olHPBF6W8lmZ1mhq2iGw1xhkjOcFJngseudAkBhBQwnXgIBqmQxgekDZ3/aZ6a0T9H0vyuo4t1APdDtNOJh1WCSBPrU34cgiTyvWX2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HVSJ9kbl; arc=none smtp.client-ip=209.85.218.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-21680814d42so156003385ad.2;
-        Sat, 04 Jan 2025 04:59:16 -0800 (PST)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-aa67f31a858so2334747366b.2;
+        Sat, 04 Jan 2025 07:45:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735995555; x=1736600355; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R0TVXDX/Oq9IB0mhgmi61TXIFVtPNPu1PWKjPd5bzuM=;
-        b=EvczOAyZtwqMmb2Id3htcmHkIeb2jtYmjTrmDvbDnY5/UDsfbVMnmGjpVCMYI121K5
-         DvWLRNrXSQsCdwMTpNpDNIjoGaWAQCXSj2VxLQOYBVSl4BBn3FJRC5Oh19Xos/Kh2ZLL
-         OpTZmp9EMIVM9N6Jw+9PN9Nun8oaFAJvMtJxiEZP2yXpEFpELiQevq6Xz5wfveEwXQ+c
-         eMw4UuauR/ccZEFKl7+lVYvfX+sHTN/I/NhFuIXmVuRoECIsFJWzfFKZNpM11SAIfF7m
-         QklAEspdKofle0ohEnJ5XEgEtVBqUyWICWd3QHLdTPC5MjhhC3x0I61f/EoQhm9cUGxq
-         jqDw==
+        d=gmail.com; s=20230601; t=1736005508; x=1736610308; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hGuwaxKFAgepLe7eWKLOd3Qb7WhhDhEuisaVVpDDpj4=;
+        b=HVSJ9kblwa209gLikYVpd2AaFE/OiOm+xxuPt5glD++uiy4oRNAeXnHKmRLMBZej2c
+         NE/2HVkIR+dSDcBlb/6AsYs/21cgScWT6Ibz3UUWohA77nZZpP6wzGVWxgYImZBb90Tb
+         oygjJ53tLMXkio4dMcxnXtaEgbMN2rqE+5FYnWu8UxTDLAW8BWjJA+FkeDJGXZ2rLp47
+         sXOiNVQvTa5d325SXgugTJiGpN3yDtusiCSYC34vesy5wuuwsz0mvbV7SlwytlpQJyND
+         Yuj1g8/HXmJPiYJzGhSS/RkU0r5fN7TMfftRTIhAsEHozhncTs9RPvOUYtqjtFdQDM5T
+         Lp9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735995555; x=1736600355;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=R0TVXDX/Oq9IB0mhgmi61TXIFVtPNPu1PWKjPd5bzuM=;
-        b=Ike5tNutahEdrzFzMiTsV1uyypScXWbMbQVA5UNQuYkI/ZmPy344KFcY5nZtZgfMgf
-         cAD0TFQO3/v2s5fH0rXVbjnhtzHDIbbINKdVyrvIwQ18aQzCvD3NKKWlKyQY1U0IeRl5
-         LNNcDMOJnpYdeFZo4wOqO4iqdoCXOBEuGW3uzJw1O3NCdR/0AaA8Re/7PHiv6bLqhgIG
-         jp4/nltzhgZ2se4p5j0O9Lj1wsulU54nIJWdTXkJMrAU6hsdmeK9VuT0DFO0ybEPuH7f
-         3b0DlUL80TM6FT1aIg9YH87PdiHq4GnbLxYl+GI3qIN6H7aP0rqjWz2auEHkAbmVMHjw
-         9DAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUdm0FDJI6bixrVjZ+wgKPepNKtctZcVVbHyHeUz8HtS+d4l98HS3YYHydv6T0il50xH9IlYEHUXqWs@vger.kernel.org, AJvYcCV0IA0b6av8AiE6iYv6fuGmRL4DLcwwLxmEDpW2BS6S3bAgkEvA2TKDcpZX0tb59UCxF7hiV/iewHpmPw==@vger.kernel.org, AJvYcCVKvHfLcyo9a2LSPW3R3wdst7Df4u9qa2w69eTCrhKSOxjtI/7fMdkkBq4WPeQl5RkY9WrbMDlyNS6JDGjE7+dj@vger.kernel.org, AJvYcCVe1DczSD2T6B2NoS0BWQmvM40jf6ymhAQGmHwcfkH0Ii9xHE/2LaW16ai4AYGUxJQHQFB5Uw/kO/asLg==@vger.kernel.org, AJvYcCVxlgjpKH5+2L1Bg+uYhtdX7zhCd3LMOtzZT9HzH39qr5w3fHge6/7bfziRQ+7aUWDKY6Xw5O4fF88g431b@vger.kernel.org, AJvYcCW93OuHeFJmsXPaYW96S2GQB6fGb42NKT+IN53KlpBCB2SL//WEgkf0/qilnZXz4ccLjQe2b7rsuId2vlbGmq8=@vger.kernel.org, AJvYcCWWa4WCAYMAujh2XX4c9UJNZzY6O8FCZrBE09xm3VKhanKY3wh3AYjw/93GTYJqy1RstGA=@vger.kernel.org, AJvYcCXyCCQtCq+71SAPfegpsOeTV9GtULMhsCTh0VGaXsil5ue6EuB7vtvz8LvYBslTLIQtRyjaRhlS63Li@vger.kernel.org
-X-Gm-Message-State: AOJu0YxYkGFcq3nx6BNc9s4RVJuIFH6QKAk6hnUj7LpJFBaxHG955lPW
-	rQoJRkT774HLRUr4zpTTFoZ1vMgEffRvhCNZwi0wqtjwHpqJkHl+/IKhjQIi0T0=
-X-Gm-Gg: ASbGnctxIrgYuE7M6PUJ2XTmnR1DJQwmwbiKvPb7KdjiZyyOpit/5eJPRW5uqYATKK9
-	BI/GdgaOdt3cs7LDVcQ/F/9VhiJNN+RTe50NkmOxYZ7CRaMCe0QhkEmGDc1oQy2U75BcYCqa0zh
-	Fcrixkog3NOqy9k+VcFXi/LLRr2CBF39FMPyKMcbRHszxl1gXHBhDRx36j5RBov6E7wgNcvJna6
-	6uz/K9lD2Pi+9k1ml11krJh9kjcmqIxdkv3ZDaJGjPupME=
-X-Google-Smtp-Source: AGHT+IEUXpwO+l/hEGdKf9OR2BDjiiFxnC7t4NGPTcXQ7io7HhNpF9KYbA9KthQzQ0Wr8hVvBSWkSg==
-X-Received: by 2002:a05:6a21:1519:b0:1e1:cdff:5f18 with SMTP id adf61e73a8af0-1e5e044ef7fmr72396060637.4.1735995555179;
-        Sat, 04 Jan 2025 04:59:15 -0800 (PST)
-Received: from ws.. ([103.167.140.11])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad830349sm27761344b3a.47.2025.01.04.04.59.07
+        d=1e100.net; s=20230601; t=1736005508; x=1736610308;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hGuwaxKFAgepLe7eWKLOd3Qb7WhhDhEuisaVVpDDpj4=;
+        b=YhCnuQseJmW1bPAmzRbqTZtP8Y350VLDR6sFi8rfyin5xTHaGbhU5o8Wfm5B+wiGuP
+         Mt9RJK7HkyPX5I5VU5yCNv45lUOTPf2sM4oRivcYejWBDvnm0PcwzO9Gy2ZK3vQ4vaYr
+         eZ1W5J9s/fCKRmPvHKmNU7sE4wKXFyGjWNy9ybtxu5bdNqn6Dbc7ug9jchB4AoysT/RJ
+         e5FfTKBFQrscN3SNYTgv6aBFvWqY3//Vplo+xQ8PmeF6xilsYj9BjApsuDde7apeb5sG
+         OF1jhFlbksvM35WEzmHRi6gjDBNL0qUDISswlHJSnaBRnFA4iBpSB51viXqz56WsPkp+
+         8Ahw==
+X-Forwarded-Encrypted: i=1; AJvYcCU1JTJz9z7FUmw5yLItIAwaR0DJZa+d/IF9K7I+qCgRBh6C4DJ0gnO67Sd4bONMF1CQUUtnVoLeKIlvNf4d@vger.kernel.org, AJvYcCXbp5W6ROTzXsiIPHUQ/E1+JgzWbkm0M8jNMKki9HfRCN7HoKaPBa9+Xlj96uCvM1qBBok=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwQ3WfmNf/K9fD6M2kN1HuN9VUKNsduQjx5rtfXg7M9nozkkbKk
+	aT+/+4KK3gKB2/xYg/waeAm/cq9Iy+UkRmoLcNjAhId7OZqNLVNc
+X-Gm-Gg: ASbGncuu1Ie3rX45AIlH5Sxj0Gg+6tujh54XAAHbpFbwTkOK2nsxTn0osmIWcxxuudA
+	rsqjeO8mrvX5Wd+2Mm8g5GUAjZ8+2uz8caLGnnfhslRFwxpVuwzGQidlBXY4aFAzdER0vliUTdf
+	pp/gfe33JJFpWBTuEnzhoWOFNpw7C+gcDe/fqryoT2wDwlBdsPSUhXPMeb8JWRXAVldZ0EkD3Ky
+	61hfojqYBiXo7Pc30oTBOKve1nUJc+rdTFflhS8UXo=
+X-Google-Smtp-Source: AGHT+IHJh3tqUpfeikKHrKbQUJbD3UvypiV8u45tKCYmGQe3oAVUZMiNiYNDJTlAgyAxndEypxguEw==
+X-Received: by 2002:a17:906:dc8d:b0:aa6:7ab9:e24d with SMTP id a640c23a62f3a-aac3365d010mr4221748666b.57.1736005508207;
+        Sat, 04 Jan 2025 07:45:08 -0800 (PST)
+Received: from krava ([213.175.46.84])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aac0f05fd7csm2027771666b.172.2025.01.04.07.45.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Jan 2025 04:59:14 -0800 (PST)
-From: Xiao Liang <shaw.leon@gmail.com>
-To: netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Kuniyuki Iwashima <kuniyu@amazon.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Donald Hunter <donald.hunter@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Ido Schimmel <idosch@nvidia.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Simon Horman <horms@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Hangbin Liu <liuhangbin@gmail.com>,
-	linux-rdma@vger.kernel.org,
-	linux-can@vger.kernel.org,
-	osmocom-net-gprs@lists.osmocom.org,
-	bpf@vger.kernel.org,
-	linux-ppp@vger.kernel.org,
-	wireguard@lists.zx2c4.com,
-	linux-wireless@vger.kernel.org,
-	b.a.t.m.a.n@lists.open-mesh.org,
-	bridge@lists.linux.dev,
-	linux-wpan@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v7 11/11] selftests: net: Add test cases for link and peer netns
-Date: Sat,  4 Jan 2025 20:57:32 +0800
-Message-ID: <20250104125732.17335-12-shaw.leon@gmail.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250104125732.17335-1-shaw.leon@gmail.com>
-References: <20250104125732.17335-1-shaw.leon@gmail.com>
+        Sat, 04 Jan 2025 07:45:07 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Sat, 4 Jan 2025 16:45:06 +0100
+To: syzbot <syzbot+091dd8c0495cc3c6b48d@syzkaller.appspotmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
+	john.fastabend@gmail.com, kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me,
+	song@kernel.org, syzkaller-bugs@googlegroups.com,
+	yonghong.song@linux.dev
+Subject: Re: [syzbot] [bpf?] WARNING: held lock freed in process_one_work
+Message-ID: <Z3lXguFBy-L1Z7Fj@krava>
+References: <67769386.050a0220.3a8527.003e.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <67769386.050a0220.3a8527.003e.GAE@google.com>
 
- - Add test for creating link in another netns when a link of the same
-   name and ifindex exists in current netns.
- - Add test to verify that link is created in target netns directly -
-   no link new/del events should be generated in link netns or current
-   netns.
- - Add test cases to verify that link-netns is set as expected for
-   various drivers and combination of namespace-related parameters.
+On Thu, Jan 02, 2025 at 05:24:22AM -0800, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    fd0584d220fe Merge tag 'trace-tools-v6.13-rc4' of git://gi..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16bf90b0580000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c078001e66e4a17e
+> dashboard link: https://syzkaller.appspot.com/bug?extid=091dd8c0495cc3c6b48d
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/ecc75c8807ba/disk-fd0584d2.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/0d5d397df783/vmlinux-fd0584d2.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/da7bfd7b8963/bzImage-fd0584d2.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+091dd8c0495cc3c6b48d@syzkaller.appspotmail.com
+> 
+> =========================
+> WARNING: held lock freed!
+> 6.13.0-rc4-syzkaller-00071-gfd0584d220fe #0 Not tainted
+> -------------------------
+> kworker/1:2/28505 is freeing memory 0000000000000000-ffffffffffffefff, with a lock still held there!
 
-Signed-off-by: Xiao Liang <shaw.leon@gmail.com>
----
- tools/testing/selftests/net/Makefile      |   1 +
- tools/testing/selftests/net/config        |   5 +
- tools/testing/selftests/net/link_netns.py | 141 ++++++++++++++++++++++
- tools/testing/selftests/net/netns-name.sh |  10 ++
- 4 files changed, 157 insertions(+)
- create mode 100755 tools/testing/selftests/net/link_netns.py
+that address range looks wrong, too bad there's no reproducer
 
-diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
-index 73ee88d6b043..df07a38f884f 100644
---- a/tools/testing/selftests/net/Makefile
-+++ b/tools/testing/selftests/net/Makefile
-@@ -35,6 +35,7 @@ TEST_PROGS += cmsg_so_mark.sh
- TEST_PROGS += cmsg_so_priority.sh
- TEST_PROGS += cmsg_time.sh cmsg_ipv6.sh
- TEST_PROGS += netns-name.sh
-+TEST_PROGS += link_netns.py
- TEST_PROGS += nl_netdev.py
- TEST_PROGS += srv6_end_dt46_l3vpn_test.sh
- TEST_PROGS += srv6_end_dt4_l3vpn_test.sh
-diff --git a/tools/testing/selftests/net/config b/tools/testing/selftests/net/config
-index 5b9baf708950..ab55270669ec 100644
---- a/tools/testing/selftests/net/config
-+++ b/tools/testing/selftests/net/config
-@@ -107,3 +107,8 @@ CONFIG_XFRM_INTERFACE=m
- CONFIG_XFRM_USER=m
- CONFIG_IP_NF_MATCH_RPFILTER=m
- CONFIG_IP6_NF_MATCH_RPFILTER=m
-+CONFIG_IPVLAN=m
-+CONFIG_CAN=m
-+CONFIG_CAN_DEV=m
-+CONFIG_CAN_VXCAN=m
-+CONFIG_NETKIT=y
-diff --git a/tools/testing/selftests/net/link_netns.py b/tools/testing/selftests/net/link_netns.py
-new file mode 100755
-index 000000000000..aab043c59d69
---- /dev/null
-+++ b/tools/testing/selftests/net/link_netns.py
-@@ -0,0 +1,141 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0
-+
-+import time
-+
-+from lib.py import ksft_run, ksft_exit, ksft_true
-+from lib.py import ip
-+from lib.py import NetNS, NetNSEnter
-+from lib.py import RtnlFamily
-+
-+
-+LINK_NETNSID = 100
-+
-+
-+def test_event() -> None:
-+    with NetNS() as ns1, NetNS() as ns2:
-+        with NetNSEnter(str(ns2)):
-+            rtnl = RtnlFamily()
-+
-+        rtnl.ntf_subscribe("rtnlgrp-link")
-+
-+        ip(f"netns set {ns2} {LINK_NETNSID}", ns=str(ns1))
-+        ip(f"link add netns {ns1} link-netnsid {LINK_NETNSID} dummy1 type dummy")
-+        ip(f"link add netns {ns1} dummy2 type dummy", ns=str(ns2))
-+
-+        ip("link del dummy1", ns=str(ns1))
-+        ip("link del dummy2", ns=str(ns1))
-+
-+        time.sleep(1)
-+        rtnl.check_ntf()
-+        ksft_true(rtnl.async_msg_queue.empty(),
-+                  "Received unexpected link notification")
-+
-+
-+def validate_link_netns(netns, ifname, link_netnsid) -> bool:
-+    link_info = ip(f"-d link show dev {ifname}", ns=netns, json=True)
-+    if not link_info:
-+        return False
-+    return link_info[0].get("link_netnsid") == link_netnsid
-+
-+
-+def test_link_net() -> None:
-+    configs = [
-+        # type, common args, type args, fallback to dev_net
-+        ("ipvlan", "link dummy1", "", False),
-+        ("macsec", "link dummy1", "", False),
-+        ("macvlan", "link dummy1", "", False),
-+        ("macvtap", "link dummy1", "", False),
-+        ("vlan", "link dummy1", "id 100", False),
-+        ("gre", "", "local 192.0.2.1", True),
-+        ("vti", "", "local 192.0.2.1", True),
-+        ("ipip", "", "local 192.0.2.1", True),
-+        ("ip6gre", "", "local 2001:db8::1", True),
-+        ("ip6tnl", "", "local 2001:db8::1", True),
-+        ("vti6", "", "local 2001:db8::1", True),
-+        ("sit", "", "local 192.0.2.1", True),
-+        ("xfrm", "", "if_id 1", True),
-+    ]
-+
-+    with NetNS() as ns1, NetNS() as ns2, NetNS() as ns3:
-+        net1, net2, net3 = str(ns1), str(ns2), str(ns3)
-+
-+        # prepare link netnsid  and a dummy link needed by certain drivers
-+        ip(f"netns set {net3} {LINK_NETNSID}", ns=str(net2))
-+        ip("link add dummy1 type dummy", ns=net3)
-+
-+        cases = [
-+            # source, "netns", "link-netns", expected link-netns
-+            (net3, None, None, None, None),
-+            (net3, net2, None, None, LINK_NETNSID),
-+            (net2, None, net3, LINK_NETNSID, LINK_NETNSID),
-+            (net1, net2, net3, LINK_NETNSID, LINK_NETNSID),
-+        ]
-+
-+        for src_net, netns, link_netns, exp1, exp2 in cases:
-+            tgt_net = netns or src_net
-+            for typ, cargs, targs, fb_dev_net in configs:
-+                cmd = "link add"
-+                if netns:
-+                    cmd += f" netns {netns}"
-+                if link_netns:
-+                    cmd += f" link-netns {link_netns}"
-+                cmd += f" {cargs} foo type {typ} {targs}"
-+                ip(cmd, ns=src_net)
-+                if fb_dev_net:
-+                    ksft_true(validate_link_netns(tgt_net, "foo", exp1),
-+                              f"{typ} link_netns validation failed")
-+                else:
-+                    ksft_true(validate_link_netns(tgt_net, "foo", exp2),
-+                              f"{typ} link_netns validation failed")
-+                ip(f"link del foo", ns=tgt_net)
-+
-+
-+def test_peer_net() -> None:
-+    types = [
-+        "vxcan",
-+        "netkit",
-+        "veth",
-+    ]
-+
-+    with NetNS() as ns1, NetNS() as ns2, NetNS() as ns3, NetNS() as ns4:
-+        net1, net2, net3, net4 = str(ns1), str(ns2), str(ns3), str(ns4)
-+
-+        ip(f"netns set {net3} {LINK_NETNSID}", ns=str(net2))
-+
-+        cases = [
-+            # source, "netns", "link-netns", "peer netns", expected
-+            (net1, None, None, None, None),
-+            (net1, net2, None, None, None),
-+            (net2, None, net3, None, LINK_NETNSID),
-+            (net1, net2, net3, None, None),
-+            (net2, None, None, net3, LINK_NETNSID),
-+            (net1, net2, None, net3, LINK_NETNSID),
-+            (net2, None, net2, net3, LINK_NETNSID),
-+            (net1, net2, net4, net3, LINK_NETNSID),
-+        ]
-+
-+        for src_net, netns, link_netns, peer_netns, exp in cases:
-+            tgt_net = netns or src_net
-+            for typ in types:
-+                cmd = "link add"
-+                if netns:
-+                    cmd += f" netns {netns}"
-+                if link_netns:
-+                    cmd += f" link-netns {link_netns}"
-+                cmd += f" foo type {typ}"
-+                if peer_netns:
-+                    cmd += f" peer netns {peer_netns}"
-+                ip(cmd, ns=src_net)
-+                ksft_true(validate_link_netns(tgt_net, "foo", exp),
-+                          f"{typ} peer_netns validation failed")
-+                ip(f"link del foo", ns=tgt_net)
-+
-+
-+def main() -> None:
-+    ksft_run([test_event, test_link_net, test_peer_net])
-+    ksft_exit()
-+
-+
-+if __name__ == "__main__":
-+    main()
-diff --git a/tools/testing/selftests/net/netns-name.sh b/tools/testing/selftests/net/netns-name.sh
-index 6974474c26f3..0be1905d1f2f 100755
---- a/tools/testing/selftests/net/netns-name.sh
-+++ b/tools/testing/selftests/net/netns-name.sh
-@@ -78,6 +78,16 @@ ip -netns $NS link show dev $ALT_NAME 2> /dev/null &&
-     fail "Can still find alt-name after move"
- ip -netns $test_ns link del $DEV || fail
- 
-+#
-+# Test no conflict of the same name/ifindex in different netns
-+#
-+ip -netns $NS link add name $DEV index 100 type dummy || fail
-+ip -netns $NS link add netns $test_ns name $DEV index 100 type dummy ||
-+    fail "Can create in netns without moving"
-+ip -netns $test_ns link show dev $DEV >> /dev/null || fail "Device not found"
-+ip -netns $NS link del $DEV || fail
-+ip -netns $test_ns link del $DEV || fail
-+
- echo -ne "$(basename $0) \t\t\t\t"
- if [ $RET_CODE -eq 0 ]; then
-     echo "[  OK  ]"
--- 
-2.47.1
+jirka
 
+
+> ffff88801ac80948 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x12cd/0x1b30 kernel/workqueue.c:3204
+> 2 locks held by kworker/1:2/28505:
+>  #0: ffff88801ac80948 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x12cd/0x1b30 kernel/workqueue.c:3204
+>  #1: ffffc900186f7d80 ((work_completion)(&aux->work)){+.+.}-{0:0}, at: process_one_work+0x8bb/0x1b30 kernel/workqueue.c:3205
+> 
+> stack backtrace:
+> CPU: 1 UID: 0 PID: 28505 Comm: kworker/1:2 Not tainted 6.13.0-rc4-syzkaller-00071-gfd0584d220fe #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+> Workqueue: events bpf_prog_free_deferred
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:94 [inline]
+>  dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:120
+>  print_freed_lock_bug kernel/locking/lockdep.c:6662 [inline]
+>  debug_check_no_locks_freed+0x208/0x2b0 kernel/locking/lockdep.c:6697
+>  remove_vm_area+0x128/0x3f0 mm/vmalloc.c:3240
+>  vfree+0x90/0x950 mm/vmalloc.c:3364
+>  bpf_prog_free_deferred+0x539/0x6f0 kernel/bpf/core.c:2820
+>  process_one_work+0x958/0x1b30 kernel/workqueue.c:3229
+>  process_scheduled_works kernel/workqueue.c:3310 [inline]
+>  worker_thread+0x6c8/0xf00 kernel/workqueue.c:3391
+>  kthread+0x2c1/0x3a0 kernel/kthread.c:389
+>  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+>  </TASK>
+> ------------[ cut here ]------------
+> ODEBUG: free active (active state 1) object: ffff88807a9a9100 object type: rcu_head hint: 0x0
+> WARNING: CPU: 1 PID: 28505 at lib/debugobjects.c:612 debug_print_object+0x1a2/0x2b0 lib/debugobjects.c:612
+> Modules linked in:
+> 
+> CPU: 1 UID: 0 PID: 28505 Comm: kworker/1:2 Not tainted 6.13.0-rc4-syzkaller-00071-gfd0584d220fe #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+> Workqueue: events bpf_prog_free_deferred
+> 
+> RIP: 0010:debug_print_object+0x1a2/0x2b0 lib/debugobjects.c:612
+> Code: fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 54 48 8b 14 dd e0 80 b1 8b 41 56 4c 89 e6 48 c7 c7 60 75 b1 8b e8 af 52 bc fc 90 <0f> 0b 90 90 58 83 05 f6 53 7f 0b 01 48 83 c4 18 5b 5d 41 5c 41 5d
+> RSP: 0018:ffffc900186f7a08 EFLAGS: 00010282
+> 
+> RAX: 0000000000000000 RBX: 0000000000000003 RCX: ffffffff815a1729
+> RDX: ffff8880655ebc00 RSI: ffffffff815a1736 RDI: 0000000000000001
+> RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
+> R10: 0000000000000001 R11: 0000000000000001 R12: ffffffff8bb17c00
+> R13: ffffffff8b4e5e20 R14: 0000000000000000 R15: ffffc900186f7b18
+> FS:  0000000000000000(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f78f559790a CR3: 000000006b8b2000 CR4: 00000000003526f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  __debug_check_no_obj_freed lib/debugobjects.c:1099 [inline]
+>  debug_check_no_obj_freed+0x4b7/0x600 lib/debugobjects.c:1129
+>  remove_vm_area+0x1ae/0x3f0 mm/vmalloc.c:3241
+>  vfree+0x90/0x950 mm/vmalloc.c:3364
+>  bpf_prog_free_deferred+0x539/0x6f0 kernel/bpf/core.c:2820
+>  process_one_work+0x958/0x1b30 kernel/workqueue.c:3229
+>  process_scheduled_works kernel/workqueue.c:3310 [inline]
+>  worker_thread+0x6c8/0xf00 kernel/workqueue.c:3391
+>  kthread+0x2c1/0x3a0 kernel/kthread.c:389
+>  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+>  </TASK>
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
 
