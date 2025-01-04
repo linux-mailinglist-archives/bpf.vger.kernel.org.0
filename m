@@ -1,286 +1,119 @@
-Return-Path: <bpf+bounces-47858-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47859-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 663FBA01143
-	for <lists+bpf@lfdr.de>; Sat,  4 Jan 2025 01:12:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15497A01146
+	for <lists+bpf@lfdr.de>; Sat,  4 Jan 2025 01:18:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE6737A214C
-	for <lists+bpf@lfdr.de>; Sat,  4 Jan 2025 00:12:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F2611884A99
+	for <lists+bpf@lfdr.de>; Sat,  4 Jan 2025 00:18:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEECB9463;
-	Sat,  4 Jan 2025 00:12:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3CFC1EA65;
+	Sat,  4 Jan 2025 00:18:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MeGmgKvi"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="oOz1BVDp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-10630.protonmail.ch (mail-10630.protonmail.ch [79.135.106.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0FFE3D66;
-	Sat,  4 Jan 2025 00:12:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5CAC1CF9B
+	for <bpf@vger.kernel.org>; Sat,  4 Jan 2025 00:18:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735949536; cv=none; b=hWjIol84HjMK9lvw7IvHPZtjD26Rou6rjdzTLT9GCvlAaIJjCECk2R7XljpbXKqVV5yTjH8PKJ9OxPBY9g4FjBMgYhilR53wy57nEyVSoxmWJB4AjSUlugLHo53MsMCTKRHQ5uZ8925IY9pQwv3qCWBO7qAFuIsRnVySj/L/hqc=
+	t=1735949888; cv=none; b=AyYZT82yeQi10iQAODLu0Oy7LzuaIZKuIiZh3QlUIWQqj/T4xaDurbZbCh8pHJXOoW3DU3FQeeZt62YalkspdBQ57RHYMJxIcR30kDOcuxiqR+GR7OJrAm+njqMhprxapR28IqBDjoptSUA/m24Yuvvn4h5+SJMTRJKithSIqLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735949536; c=relaxed/simple;
-	bh=/4GPoPGBe3C63ULLtDdVILhR4O9/rYOT28h8cLKGnIg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=dIXcPa06OpzSP+kmpqRe/F+OqoZwhiCqGBzrb9ttXswXl8qJv0+FydN75xZYlPjZChHsilTNFf0fqvB6wEhjLTgDab3lrsAU+QE5CRGf3CrwjDJoKJnFnNvrrQKlzZhImkzzcPcl6PJIZjJJu8CTKRst8SRusxtppU+86XUAlX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MeGmgKvi; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-21670dce0a7so103446545ad.1;
-        Fri, 03 Jan 2025 16:12:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735949534; x=1736554334; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=9ZnzrytGFkbH9taPpO/MztxTRjvQuwWt2CCNEC5Tvi4=;
-        b=MeGmgKviYDrEUaWP1k7be/hBmwKH0RRM1A7vPZDPGF8gUCd1E9gk1PCNFyjTGOTqOz
-         aKcx9GGecVsv56lnEme6N39IZTArdtA8W21JhO/Me1P99DjCwMXbvZIx8fkv5snoT7UZ
-         vURs0ZUltJM7FV0BnBKRXIuDX0xX/QC6nfUxImEi4Kt0N8j31rI+q3Xoq/XMihpcmsEO
-         NoZ6Bhc/7bEp4FE3PnWeYQF5o34Wt79zR1YUcKZjDIYKqcuSZG7wCWCNreWOVQ5WmZPx
-         lLAC/bQFid53ij4dthS2YohClxfCsu303QmyYE/0c4IX9Bzv+iq+fvbt5mMMKHMH/DIT
-         FatQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735949534; x=1736554334;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9ZnzrytGFkbH9taPpO/MztxTRjvQuwWt2CCNEC5Tvi4=;
-        b=kljMkV3KypwdTAz2HVpHezyi9eUPeuKYBqmNDgAliOo/TuLtTL9CMPxNoEbWPSlYgJ
-         wTbFidw5k7NC5KJmZ0rPZKbREmQhhr7f4imQCGMTuiG438xU86dSUIkcDSzGoIxyWTUF
-         RgOGDy+AtH8i4npV9zqgWGC/VcHQRg2zAQmIQOZRcKEF3FF3ueewPL3gmiNhwp/lDy2Y
-         a1OXKzuJlApk5kaLf4/4DvZS4FuwWPDxZvcuUZiq6grcT80fzzrCoBP8YbPD6wxJUyWr
-         fdIhkTBuZJ3tS2ak1ulpkUpi6GGkNqbKtWekGqjiP/dq7te9hNH6dpnMiJEdz0alni83
-         cbhg==
-X-Forwarded-Encrypted: i=1; AJvYcCV+7Eia0Smrim9jfoPbFCH76VDW8LVQEeXNwTM2qPhOvEicXAGnyGDPtKeW9nS7kuA3OmM=@vger.kernel.org, AJvYcCXffyxBd0HQDlQ5JAtR+Mm8RHnml3i03/K/YJX41bYOA/5UQnuouTLJPnHAilgGrBTN4cbC1a1xFfIvHyq3@vger.kernel.org
-X-Gm-Message-State: AOJu0YwVm7vhg7Aup6i6H44qs6FMVF6HUSTFZDQesNsPA/puVOuCo/QB
-	bR4ifRFWgtB1g/3J7v5kCPNSF7x14uDS+UNxuLyD1SZoDg/Qrh1wtfLl8qKz
-X-Gm-Gg: ASbGncuYgnep94+Ww8w6YSrOlILFst7SOLbtpptyxoSrP7/LJioSw1P4lT+JsyhzYdD
-	mJRAJ2XIvgpAUIBnkZ/AcsGQtNi5vDWVtC7VUMI5TO7YyLkb2c8kuFMDDj1YCz5RB7QCIeAqzkD
-	33Bs+Bc9NR3qS5WJDk0PuQx2TAsYQ/0zW11YdtbDTA6ZO8nB+/lf8++LkBOFvY0urKWSVDTErBm
-	LRGH9k0B91G/5RLZiN42/ft0wnQvGV63FeYVUfsOS5CIrptkXZiKg==
-X-Google-Smtp-Source: AGHT+IHeSojTlezqhf/MonjUFn7EXvRnrOoFvkxYLhaR4ipXqIY8pMPxOXegannBBVCxiapXmvnIfw==
-X-Received: by 2002:a05:6a20:9c8d:b0:1e1:f281:8cec with SMTP id adf61e73a8af0-1e5e0481434mr76374713637.10.1735949534102;
-        Fri, 03 Jan 2025 16:12:14 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-900ea610beesm9982899a12.2.2025.01.03.16.12.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Jan 2025 16:12:13 -0800 (PST)
-Message-ID: <9941341e8bd78f3563e0027a59cac8966f1e3666.camel@gmail.com>
-Subject: Re: [PATCH RFC bpf-next v1 2/4] bpf: Introduce load-acquire and
- store-release instructions
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Peilin Ye <yepeilin@google.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko	 <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, John Fastabend	 <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev	 <sdf@fomichev.me>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  "Paul E. McKenney"	
- <paulmck@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, Xu Kuohai	
- <xukuohai@huaweicloud.com>, Catalin Marinas <catalin.marinas@arm.com>, Will
- Deacon <will@kernel.org>, Quentin Monnet <qmo@kernel.org>, Mykola Lysenko
- <mykolal@fb.com>,  Shuah Khan <shuah@kernel.org>, Josh Don
- <joshdon@google.com>, Barret Rhoden <brho@google.com>, Neel Natu	
- <neelnatu@google.com>, Benjamin Segall <bsegall@google.com>, David Vernet	
- <dvernet@meta.com>, Dave Marchevsky <davemarchevsky@meta.com>, 
-	linux-kernel@vger.kernel.org
-Date: Fri, 03 Jan 2025 16:12:08 -0800
-In-Reply-To: <6ca65dc2916dba7490c4fd7a8b727b662138d606.1734742802.git.yepeilin@google.com>
-References: <cover.1734742802.git.yepeilin@google.com>
-	 <6ca65dc2916dba7490c4fd7a8b727b662138d606.1734742802.git.yepeilin@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
+	s=arc-20240116; t=1735949888; c=relaxed/simple;
+	bh=EkgeDvsO6t9yM1O/Og5zk4VJdCI9Lp2ucECNBLclID0=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=JnVrA0RPwRdtby0rKXaDsCTOx4MFoITpGCs/Qg8AhsWqVNAQ457BejRkjUpovkEG0XKJ/L0HPyVqSeQlCYE8n8lIZkULHT/l7N0SWeXbjkN0iHqS5N4YI6mFSpK4QvKsr+UVqnll0wkad0w788qLRRSTE6xIw3U4I9FPT+R5llY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=oOz1BVDp; arc=none smtp.client-ip=79.135.106.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1735949879; x=1736209079;
+	bh=ib4NLQXTHs9yeFSGW7a95Zk8fX3eZOTvFcq5eC0GfMw=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector:
+	 List-Unsubscribe:List-Unsubscribe-Post;
+	b=oOz1BVDp3qKUVL9DPSyjisG1jjChLef541XgXavQDO8WpXcGC+aK7Eq6o+/4DrUkN
+	 tC1n7nd9OhbKmyqZ03UUkoPgq0LtsJcsbCnDxVTSYeURSiviYYMRCcJS660+KMAGWZ
+	 aMIwpLhWoIRo/dDswTSVK7BeTL1MXBX4Y1XCENNV1qUL9aMoHPL7L5T7tRrCm9/eeh
+	 ChUYBjGVAMtZ0Abhr7KjBpps9eP5BJ3ppWM7mSRDm2IYFSpaCsA0c4j7tPFsV8DQWX
+	 uiobGtRoA2wZiFOgfILvay4JMTSyumhARmSZxmyn2eQNOT7FwS5eNBviG9n+SXbMVH
+	 fa/Wyl3QxgElA==
+Date: Sat, 04 Jan 2025 00:17:54 +0000
+To: bpf@vger.kernel.org
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, mykolal@fb.com
+Subject: [PATCH] selftests/bpf: workarounds for GCC BPF build
+Message-ID: <20250104001751.1869849-1-ihor.solodrai@pm.me>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: e8db50d40d5df44985b254125636665d27d969da
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2024-12-21 at 01:25 +0000, Peilin Ye wrote:
-> Introduce BPF instructions with load-acquire and store-release
-> semantics, as discussed in [1].  The following new flags are defined:
+Various compilation errors happen when BPF programs in selftests/bpf
+are built with GCC BPF. For more details see the discussion at [1].
 
-The '[1]' link is missing.
+The changes only affect test_progs-bpf_gcc, which is built only if
+BPF_GCC is set:
+  * Pass -std=3Dgnu17 when  to avoid errors on bool
+    types declarations in vmlinux.h
+  * Pass -nostdinc for tests that trigger int64_t declaration
+    collision due to a difference between gcc and clang stdint.h
+  * Pass -Wno-error for tests that trigger uninitialized variable
+    warning pm BPF_RAW_INSNS
 
->   BPF_ATOMIC_LOAD         0x10
->   BPF_ATOMIC_STORE        0x20
->   BPF_ATOMIC_TYPE(imm)    ((imm) & 0xf0)
->=20
->   BPF_RELAXED        0x0
->   BPF_ACQUIRE        0x1
->   BPF_RELEASE        0x2
->   BPF_ACQ_REL        0x3
->   BPF_SEQ_CST        0x4
->=20
->   BPF_LOAD_ACQ       (BPF_ATOMIC_LOAD | BPF_ACQUIRE)
->   BPF_STORE_REL      (BPF_ATOMIC_STORE | BPF_RELEASE)
->=20
-> A "load-acquire" is a BPF_STX | BPF_ATOMIC instruction with the 'imm'
-> field set to BPF_LOAD_ACQ (0x11).
->=20
-> Similarly, a "store-release" is a BPF_STX | BPF_ATOMIC instruction with
-> the 'imm' field set to BPF_STORE_REL (0x22).
+[1] https://lore.kernel.org/bpf/EYcXjcKDCJY7Yb0GGtAAb7nLKPEvrgWdvWpuNzXm2qi=
+6rYMZDixKv5KwfVVMBq17V55xyC-A1wIjrqG3aw-Imqudo9q9X7D7nLU2gWgbN0w=3D@pm.me/
 
-[...]
+Signed-off-by: Ihor Solodrai <ihor.solodrai@pm.me>
+---
+ tools/testing/selftests/bpf/Makefile | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-> diff --git a/kernel/bpf/disasm.c b/kernel/bpf/disasm.c
-> index 309c4aa1b026..2a354a44f209 100644
-> --- a/kernel/bpf/disasm.c
-> +++ b/kernel/bpf/disasm.c
-> @@ -267,6 +267,20 @@ void print_bpf_insn(const struct bpf_insn_cbs *cbs,
->  				BPF_SIZE(insn->code) =3D=3D BPF_DW ? "64" : "",
->  				bpf_ldst_string[BPF_SIZE(insn->code) >> 3],
->  				insn->dst_reg, insn->off, insn->src_reg);
-> +		} else if (BPF_MODE(insn->code) =3D=3D BPF_ATOMIC &&
-> +			   insn->imm =3D=3D BPF_LOAD_ACQ) {
-> +			verbose(cbs->private_data, "(%02x) %s%d =3D load_acquire((%s *)(r%d %=
-+d))\n",
-> +				insn->code,
-> +				BPF_SIZE(insn->code) =3D=3D BPF_DW ? "r" : "w", insn->dst_reg,
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests=
+/bpf/Makefile
+index 9e870e519c30..2e1fe53efa83 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -103,6 +103,15 @@ progs/btf_dump_test_case_packing.c-bpf_gcc-CFLAGS :=3D=
+ -Wno-error
+ progs/btf_dump_test_case_padding.c-bpf_gcc-CFLAGS :=3D -Wno-error
+ progs/btf_dump_test_case_syntax.c-bpf_gcc-CFLAGS :=3D -Wno-error
+=20
++# Uninitialized variable warning on BPF_RAW_INSN
++progs/verifier_bpf_fastcall.c-CFLAGS :=3D -Wno-error
++progs/verifier_search_pruning.c-CFLAGS :=3D -Wno-error
++
++# int64_t declaration collision
++progs/test_cls_redirect.c-CFLAGS :=3D -nostdinc
++progs/test_cls_redirect_dynptr.c-CFLAGS :=3D -nostdinc
++progs/test_cls_redirect_subprogs.c-CFLAGS :=3D -nostdinc
++
+ # The following tests do type-punning, via the __imm_insn macro, from
+ # `struct bpf_insn' to long and then uses the value.  This triggers an
+ # "is used uninitialized" warning in GCC due to strict-aliasing
+@@ -507,7 +516,7 @@ endef
+ # Build BPF object using GCC
+ define GCC_BPF_BUILD_RULE
+ =09$(call msg,GCC-BPF,$4,$2)
+-=09$(Q)$(BPF_GCC) $3 -DBPF_NO_PRESERVE_ACCESS_INDEX -Wno-attributes -O2 -c=
+ $1 -o $2
++=09$(Q)$(BPF_GCC) $3 -DBPF_NO_PRESERVE_ACCESS_INDEX -Wno-attributes -O2 -s=
+td=3Dgnu17 -c $1 -o $2
+ endef
+=20
+ SKEL_BLACKLIST :=3D btf__% test_pinning_invalid.c test_sk_assign.c
+--=20
+2.47.1
 
-Nit: I think that 'BPF_DW ? "r" : "w"' part is not really necessary.
-
-> +				bpf_ldst_string[BPF_SIZE(insn->code) >> 3],
-> +				insn->src_reg, insn->off);
-> +		} else if (BPF_MODE(insn->code) =3D=3D BPF_ATOMIC &&
-> +			   insn->imm =3D=3D BPF_STORE_REL) {
-> +			verbose(cbs->private_data, "(%02x) store_release((%s *)(r%d %+d), %s%=
-d)\n",
-> +				insn->code,
-> +				bpf_ldst_string[BPF_SIZE(insn->code) >> 3],
-> +				insn->dst_reg, insn->off,
-> +				BPF_SIZE(insn->code) =3D=3D BPF_DW ? "r" : "w", insn->src_reg);
->  		} else {
->  			verbose(cbs->private_data, "BUG_%02x\n", insn->code);
->  		}
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index fa40a0440590..dc3ecc925b97 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -3480,7 +3480,7 @@ static bool is_reg64(struct bpf_verifier_env *env, =
-struct bpf_insn *insn,
->  	}
-> =20
->  	if (class =3D=3D BPF_STX) {
-> -		/* BPF_STX (including atomic variants) has multiple source
-> +		/* BPF_STX (including atomic variants) has one or more source
->  		 * operands, one of which is a ptr. Check whether the caller is
->  		 * asking about it.
->  		 */
-> @@ -7550,6 +7550,8 @@ static int check_load(struct bpf_verifier_env *env,=
- struct bpf_insn *insn, const
-> =20
->  static int check_atomic(struct bpf_verifier_env *env, int insn_idx, stru=
-ct bpf_insn *insn)
->  {
-> +	const int bpf_size =3D BPF_SIZE(insn->code);
-> +	bool write_only =3D false;
->  	int load_reg;
->  	int err;
-> =20
-> @@ -7564,17 +7566,21 @@ static int check_atomic(struct bpf_verifier_env *=
-env, int insn_idx, struct bpf_i
->  	case BPF_XOR | BPF_FETCH:
->  	case BPF_XCHG:
->  	case BPF_CMPXCHG:
-> +		if (bpf_size !=3D BPF_W && bpf_size !=3D BPF_DW) {
-> +			verbose(env, "invalid atomic operand size\n");
-> +			return -EINVAL;
-> +		}
-> +		break;
-> +	case BPF_LOAD_ACQ:
-
-Several notes here:
-- This skips the 'bpf_jit_supports_insn()' call at the end of the function.
-- Also 'check_load()' allows source register to be PTR_TO_CTX,
-  but convert_ctx_access() is not adjusted to handle these atomic instructi=
-ons.
-  (Just in case: context access is special, context structures are not "rea=
-l",
-   e.g. during runtime real sk_buff is passed to the program, not __sk_buff=
-,
-   in convert_ctx_access() verifier adjusts offsets of load and store instr=
-uctions
-   to point to real fields, this is done per program type, e.g. see
-   filter.c:bpf_convert_ctx_access);
-- backtrack_insn() needs special rules to handle BPF_LOAD_ACQ same way
-  it handles loads.
-
-> +		return check_load(env, insn, "atomic");
-> +	case BPF_STORE_REL:
-> +		write_only =3D true;
->  		break;
->  	default:
->  		verbose(env, "BPF_ATOMIC uses invalid atomic opcode %02x\n", insn->imm=
-);
->  		return -EINVAL;
->  	}
-> =20
-> -	if (BPF_SIZE(insn->code) !=3D BPF_W && BPF_SIZE(insn->code) !=3D BPF_DW=
-) {
-> -		verbose(env, "invalid atomic operand size\n");
-> -		return -EINVAL;
-> -	}
-> -
->  	/* check src1 operand */
->  	err =3D check_reg_arg(env, insn->src_reg, SRC_OP);
->  	if (err)
-
-Note: this code fragment looks as follows:
-
-	/* check src1 operand */
-	err =3D check_reg_arg(env, insn->src_reg, SRC_OP);
-	if (err)
-		return err;
-
-	/* check src2 operand */
-	err =3D check_reg_arg(env, insn->dst_reg, SRC_OP);
-	if (err)
-		return err;
-
-And there is no need for 'check_reg_arg(env, insn->dst_reg, SRC_OP)'
-for BPF_STORE_REL.
-
-> @@ -7615,6 +7621,9 @@ static int check_atomic(struct bpf_verifier_env *en=
-v, int insn_idx, struct bpf_i
->  		return -EACCES;
->  	}
-> =20
-> +	if (write_only)
-> +		goto skip_read_check;
-> +
->  	if (insn->imm & BPF_FETCH) {
->  		if (insn->imm =3D=3D BPF_CMPXCHG)
->  			load_reg =3D BPF_REG_0;
-> @@ -7636,14 +7645,15 @@ static int check_atomic(struct bpf_verifier_env *=
-env, int insn_idx, struct bpf_i
->  	 * case to simulate the register fill.
->  	 */
->  	err =3D check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
-> -			       BPF_SIZE(insn->code), BPF_READ, -1, true, false);
-> +			       bpf_size, BPF_READ, -1, true, false);
->  	if (!err && load_reg >=3D 0)
->  		err =3D check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
-> -				       BPF_SIZE(insn->code), BPF_READ, load_reg,
-> -				       true, false);
-> +				       bpf_size, BPF_READ, load_reg, true,
-> +				       false);
->  	if (err)
->  		return err;
-> =20
-> +skip_read_check:
->  	if (is_arena_reg(env, insn->dst_reg)) {
->  		err =3D save_aux_ptr_type(env, PTR_TO_ARENA, false);
->  		if (err)
-
-[...]
 
 
