@@ -1,119 +1,135 @@
-Return-Path: <bpf+bounces-47859-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47860-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15497A01146
-	for <lists+bpf@lfdr.de>; Sat,  4 Jan 2025 01:18:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC6BBA01164
+	for <lists+bpf@lfdr.de>; Sat,  4 Jan 2025 01:47:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F2611884A99
-	for <lists+bpf@lfdr.de>; Sat,  4 Jan 2025 00:18:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCDED3A44C4
+	for <lists+bpf@lfdr.de>; Sat,  4 Jan 2025 00:47:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3CFC1EA65;
-	Sat,  4 Jan 2025 00:18:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95638335C7;
+	Sat,  4 Jan 2025 00:47:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="oOz1BVDp"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SOuEypC3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-10630.protonmail.ch (mail-10630.protonmail.ch [79.135.106.30])
+Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5CAC1CF9B
-	for <bpf@vger.kernel.org>; Sat,  4 Jan 2025 00:18:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33D7AC8C5
+	for <bpf@vger.kernel.org>; Sat,  4 Jan 2025 00:47:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735949888; cv=none; b=AyYZT82yeQi10iQAODLu0Oy7LzuaIZKuIiZh3QlUIWQqj/T4xaDurbZbCh8pHJXOoW3DU3FQeeZt62YalkspdBQ57RHYMJxIcR30kDOcuxiqR+GR7OJrAm+njqMhprxapR28IqBDjoptSUA/m24Yuvvn4h5+SJMTRJKithSIqLs=
+	t=1735951665; cv=none; b=mfw6g1GEPdwCwarU/MVF6Oa0w2igz53FRLB3eX6QAengTDSpwdr0mHDtM2ZWrdpayzLaUvH0UMfOI2U6gmrbdVBTZYLUZoADCiSTBfxU/WZXFB9NRyDlYR3SKxyGLzix4wcPOTuQ85HJkpHKdDHc8lmCUVe6+VNI6N6KdyYALp4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735949888; c=relaxed/simple;
-	bh=EkgeDvsO6t9yM1O/Og5zk4VJdCI9Lp2ucECNBLclID0=;
-	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=JnVrA0RPwRdtby0rKXaDsCTOx4MFoITpGCs/Qg8AhsWqVNAQ457BejRkjUpovkEG0XKJ/L0HPyVqSeQlCYE8n8lIZkULHT/l7N0SWeXbjkN0iHqS5N4YI6mFSpK4QvKsr+UVqnll0wkad0w788qLRRSTE6xIw3U4I9FPT+R5llY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=oOz1BVDp; arc=none smtp.client-ip=79.135.106.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1735949879; x=1736209079;
-	bh=ib4NLQXTHs9yeFSGW7a95Zk8fX3eZOTvFcq5eC0GfMw=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector:
-	 List-Unsubscribe:List-Unsubscribe-Post;
-	b=oOz1BVDp3qKUVL9DPSyjisG1jjChLef541XgXavQDO8WpXcGC+aK7Eq6o+/4DrUkN
-	 tC1n7nd9OhbKmyqZ03UUkoPgq0LtsJcsbCnDxVTSYeURSiviYYMRCcJS660+KMAGWZ
-	 aMIwpLhWoIRo/dDswTSVK7BeTL1MXBX4Y1XCENNV1qUL9aMoHPL7L5T7tRrCm9/eeh
-	 ChUYBjGVAMtZ0Abhr7KjBpps9eP5BJ3ppWM7mSRDm2IYFSpaCsA0c4j7tPFsV8DQWX
-	 uiobGtRoA2wZiFOgfILvay4JMTSyumhARmSZxmyn2eQNOT7FwS5eNBviG9n+SXbMVH
-	 fa/Wyl3QxgElA==
-Date: Sat, 04 Jan 2025 00:17:54 +0000
-To: bpf@vger.kernel.org
-From: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, mykolal@fb.com
-Subject: [PATCH] selftests/bpf: workarounds for GCC BPF build
-Message-ID: <20250104001751.1869849-1-ihor.solodrai@pm.me>
-Feedback-ID: 27520582:user:proton
-X-Pm-Message-ID: e8db50d40d5df44985b254125636665d27d969da
+	s=arc-20240116; t=1735951665; c=relaxed/simple;
+	bh=yEaUBgo1yau1DDTPF+2uzp61/6hpMEXHDmq4IRtUy/A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=McAWpsaclXSKp61sJUnQaI+hGIE8smoZLDmPNmKyIQUpzGkzz8pzMJ/W5dJ8Xy8eWPAHP0DFuKJfxC7qwVJEfLIm+tZmXdplFHU8g+pyTTC/71nrFgW3YBteKRUWAqL8yXPqDXsOsGnBp7b4ffWwze6zHKPaTnPRl2KJca2YeU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SOuEypC3; arc=none smtp.client-ip=91.218.175.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <906201cc-2d16-4c34-9443-737b53a8a07f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1735951659;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=D+n3QEmeRfRYM23xSEzJP15ZH0somRZNJRx2eiFF6O8=;
+	b=SOuEypC3LA+C/nZaQZz/rmfGZiSB0532CA884XVFpOxhEXGv9uTy75Pw1R0cWirbkbaG9+
+	7rcSgODLQc5TYieLQ/f6QWJQ+HScL7gu6GraJG5601n89SG0Gb3k3sfv2vJouCnDmLyBLL
+	VUkIwvK6sz+F6WmbNm8BHiPWRGpTPj8=
+Date: Sat, 4 Jan 2025 01:47:36 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [LSF/MM/BPF TOPIC] Improving Block Layer Tracepoints for
+ Next-Generation Backup Systems
+To: Vishnu ks <ksvishnu56@gmail.com>, lsf-pc@lists.linux-foundation.org
+Cc: linux-block@vger.kernel.org, bpf@vger.kernel.org,
+ linux-nvme@lists.infradead.org
+References: <CAJHDoJac2Qa6QjhDFi7YZf0D05=Svc13ZQyX=92KsM7pkkVbJA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <CAJHDoJac2Qa6QjhDFi7YZf0D05=Svc13ZQyX=92KsM7pkkVbJA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Various compilation errors happen when BPF programs in selftests/bpf
-are built with GCC BPF. For more details see the discussion at [1].
+在 2025/1/1 7:34, Vishnu ks 写道:
+> Dear Community,
+> 
+> I would like to propose a discussion topic regarding the enhancement
+> of block layer tracepoints, which could fundamentally transform how
+> backup and recovery systems operate on Linux.
+> 
+> Current Scenario:
+> 
+> - I'm developing a continuous data protection system using eBPF to
+> monitor block request completions
 
-The changes only affect test_progs-bpf_gcc, which is built only if
-BPF_GCC is set:
-  * Pass -std=3Dgnu17 when  to avoid errors on bool
-    types declarations in vmlinux.h
-  * Pass -nostdinc for tests that trigger int64_t declaration
-    collision due to a difference between gcc and clang stdint.h
-  * Pass -Wno-error for tests that trigger uninitialized variable
-    warning pm BPF_RAW_INSNS
+I am interested in this "eBPF to monitor block request". Will this eBPF 
+make difference on the performance of the whole system? And how to use 
+eBPF to implement this feature? Hope to join the meeting to listen to 
+this topic.
 
-[1] https://lore.kernel.org/bpf/EYcXjcKDCJY7Yb0GGtAAb7nLKPEvrgWdvWpuNzXm2qi=
-6rYMZDixKv5KwfVVMBq17V55xyC-A1wIjrqG3aw-Imqudo9q9X7D7nLU2gWgbN0w=3D@pm.me/
+Best Regards,
 
-Signed-off-by: Ihor Solodrai <ihor.solodrai@pm.me>
----
- tools/testing/selftests/bpf/Makefile | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+Zhu Yanjun
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests=
-/bpf/Makefile
-index 9e870e519c30..2e1fe53efa83 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -103,6 +103,15 @@ progs/btf_dump_test_case_packing.c-bpf_gcc-CFLAGS :=3D=
- -Wno-error
- progs/btf_dump_test_case_padding.c-bpf_gcc-CFLAGS :=3D -Wno-error
- progs/btf_dump_test_case_syntax.c-bpf_gcc-CFLAGS :=3D -Wno-error
-=20
-+# Uninitialized variable warning on BPF_RAW_INSN
-+progs/verifier_bpf_fastcall.c-CFLAGS :=3D -Wno-error
-+progs/verifier_search_pruning.c-CFLAGS :=3D -Wno-error
-+
-+# int64_t declaration collision
-+progs/test_cls_redirect.c-CFLAGS :=3D -nostdinc
-+progs/test_cls_redirect_dynptr.c-CFLAGS :=3D -nostdinc
-+progs/test_cls_redirect_subprogs.c-CFLAGS :=3D -nostdinc
-+
- # The following tests do type-punning, via the __imm_insn macro, from
- # `struct bpf_insn' to long and then uses the value.  This triggers an
- # "is used uninitialized" warning in GCC due to strict-aliasing
-@@ -507,7 +516,7 @@ endef
- # Build BPF object using GCC
- define GCC_BPF_BUILD_RULE
- =09$(call msg,GCC-BPF,$4,$2)
--=09$(Q)$(BPF_GCC) $3 -DBPF_NO_PRESERVE_ACCESS_INDEX -Wno-attributes -O2 -c=
- $1 -o $2
-+=09$(Q)$(BPF_GCC) $3 -DBPF_NO_PRESERVE_ACCESS_INDEX -Wno-attributes -O2 -s=
-td=3Dgnu17 -c $1 -o $2
- endef
-=20
- SKEL_BLACKLIST :=3D btf__% test_pinning_invalid.c test_sk_assign.c
---=20
-2.47.1
-
+> - The system aims to achieve reliable live data replication for block devices
+> Current tracepoints present challenges in capturing the complete
+> lifecycle of write operations
+> 
+> Potential Impact:
+> 
+> - Transform Linux Backup Systems:
+> - Enable true continuous data protection at block level
+> - Eliminate backup windows by capturing changes in real-time
+> - Reduce recovery point objectives (RPO) to near-zero
+> - Allow point-in-time recovery at block granularity
+> 
+> Current Technical Limitations:
+> 
+> - Inconsistent visibility into write operation completion
+> - Gaps between write operations and actual data flushes
+> - Potential missing instrumentation points
+> - Challenges in ensuring data consistency across replicated volumes
+> 
+> Proposed Improvements:
+> 
+> - Additional tracepoints for better write operation visibility
+> - Optimal placement of existing tracepoints
+> - New instrumentation points for reliable block-level monitoring
+> 
+> Implementation Considerations:
+> 
+> - Performance impact of additional tracepoints
+> - Integration with existing block layer infrastructure
+> - Compatibility with various storage backends
+> - Requirements for consistent backup state
+> 
+> These improvements could revolutionize how we approach backup and
+> recovery on Linux systems:
+> 
+> - Move from periodic snapshots to continuous data protection
+> - Enable more granular recovery options
+> - Reduce system overhead during backup operations
+> - Improve reliability of backup systems
+> - Enhance disaster recovery capabilities
+> 
+> This discussion would benefit both the block layer and BPF
+> communities, as well as the broader Linux ecosystem, particularly
+> enterprises requiring robust backup and recovery solutions.
+> 
+> Looking forward to the community's thoughts and feedback.
+> 
+> Best regards,
 
 
