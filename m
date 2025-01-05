@@ -1,142 +1,143 @@
-Return-Path: <bpf+bounces-47884-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47885-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97A95A016B4
-	for <lists+bpf@lfdr.de>; Sat,  4 Jan 2025 21:25:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6460EA01779
+	for <lists+bpf@lfdr.de>; Sun,  5 Jan 2025 01:12:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 657C9163613
-	for <lists+bpf@lfdr.de>; Sat,  4 Jan 2025 20:25:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A673118837EA
+	for <lists+bpf@lfdr.de>; Sun,  5 Jan 2025 00:12:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A2F15A85A;
-	Sat,  4 Jan 2025 20:25:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D2EF17E0;
+	Sun,  5 Jan 2025 00:12:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="SUkEXbm9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dgq9RMVN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 614771CDFCC
-	for <bpf@vger.kernel.org>; Sat,  4 Jan 2025 20:25:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80C0B191
+	for <bpf@vger.kernel.org>; Sun,  5 Jan 2025 00:11:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736022335; cv=none; b=eFxKZT7NvfSJN7LSG9UZTrOewELnsymS+IOFEvZWDYW5JibI8PqSWMUx5fGJNEaISkXWlR6GkC6TesmgRxFBeioANGvGZaDjm3WVm0sQGjDuySSxfOaTm4or+xJQWw5XwdjBTYkMtC/OaUmrfHyafNF3mFdqzDPbgPfZu8Ex0No=
+	t=1736035920; cv=none; b=J94gp9aARhuFMnW4fv6KTWYUUWve38v+/x3ewUDLOEnZ94MhWyPYTEm7//4K6mcYqa6qFtcdM4fSPhy0tXZmLe7VEZUaVqk9WptVSgmOl8YmU09dTECzaCqSmt6AUSG3qOWmldKqROZ8XblS+RwO9TPSG8dfhvRCQpTeKIk734g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736022335; c=relaxed/simple;
-	bh=hSHGEGnD5bmCL0YDJdq/Mt744XSdRJxEYB4AQenLQa0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aKnmIHIT6gOcE6IGbMi1A313J/GrBP1e0CpwYc5Kd6Q06/9a3g7xYgfqmOAVNo+RNEHQqrXAviKlBEDeMrH8NYbuHqLQ3hktLvQ0II4D1yIZi7RcGk13AZTsuit4yyTLeR4PUDjbhATjUePmH/jsPfy+Pl3DEAeRPbyGhmoA1Xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=SUkEXbm9; arc=none smtp.client-ip=209.85.222.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
-Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-7b70e78351aso1067696285a.0
-        for <bpf@vger.kernel.org>; Sat, 04 Jan 2025 12:25:33 -0800 (PST)
+	s=arc-20240116; t=1736035920; c=relaxed/simple;
+	bh=yJeHHFGuqdSbh78GyKlK86nuCSOvOu/2kdEk6ClGqz0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=A4h7qWy244279VYEy93nUGXmR47HdH0bgKV3tovPtRnjWXmwLPyxMgV+6ahtM7deCWXTwZnlSwZuaB2WUC97eyzraA4MFRmlGGfW2oY7FwVoWGUqZUU0EIB/DPiCWAKVAM6itas04z57Ok6sX25zHL511zm5SevwwjeOmP+YIsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dgq9RMVN; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2166f1e589cso228948315ad.3
+        for <bpf@vger.kernel.org>; Sat, 04 Jan 2025 16:11:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1736022332; x=1736627132; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RmALcOErg61e4o7yJybNvIJfIZw9f7N8YtJLyKo17k0=;
-        b=SUkEXbm97ZM0FpnBrDomlETZXqtdXma/DTDlLTI8nWFCyLjoxMlCjS/kPd50E/yaW+
-         QpDK49BeVMn4QawlY+d8FIi6VZpPsfs80XykZN4jwKFFXFogoH25mWMx1AZ56i2lH/DX
-         8dizFngE+e6vHJxsQbq7BtmSd7nWVYgWXujdNJb4BtPKPiQGeCNsipsBztEz/6qouLn/
-         7bjEF8e9rucYzqHuTwgxm24XE/ghZi4CaKUaWYpcl+rBiux7q9BPTKv+nliwwq9uipjn
-         X3VbF+QRsrmd3OvfsQZXn2ayNCW9pCRnKwB3liF5MmTvHOZJAeDx+RzlMOpcuw0QcYUs
-         4lcg==
+        d=gmail.com; s=20230601; t=1736035919; x=1736640719; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=CUb0iAhCaTQveFByz5DjWAxnukdgKWyUzekHKwA1RQc=;
+        b=Dgq9RMVN/ZPT4rYZZLzOnFwcXT6W+ebmgA1w8AMXdCiFJ1eAW5iHeIAj9ioKqOlWyA
+         Fb7Vxa1QzOSsUHU7ZY4jjx2Oyig2e7jNfRPDUpjAvi0/KM+L7LT7d4dbl+cWmaBoeApY
+         Gvx9yjbAoDazxhSGcevCiLZbhVSPYANMMXRnUpKJThGPNU4jIlf23pm8QPfA1kjeRqa9
+         nvIZgDUSI48Cx+aRhc+agEgB50yqKMaSho+vAbc5+Ai2pR2JEL2Z4SP+ys/IHZMV4QJG
+         VyevemyD4OKvyJtL2edRTIKOMVTFnGPEneghLl507A8ay0C1Qtd0+pMTmCyF+rvUmPF1
+         eBHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736022332; x=1736627132;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RmALcOErg61e4o7yJybNvIJfIZw9f7N8YtJLyKo17k0=;
-        b=v0qFRH2RiyrChrPe/MSvrBP7AeZO4DeIqSEx1WewB3iZXGQPpsHwmdJIKIwI/uhp3k
-         fD/V017EjT9yd/PEVcfK/ufWykCLZG1vruOBJmpk8fJU2tKi9VD+xiyWsMkRb8aE5gKL
-         k3/xVW2qVyF6hNdlXn2h4wrg8rGrq8ggUm54OJi13+R8l/iVdBoSC+it7jHNNYSD4/ae
-         Ex1qM8HuJG3Jq6krx2FexsrYN/feLZX0VcATJGPRKoCvpBwpBczUCnHN0bV+1tZZBLrx
-         FqjFtdIJxBDwbc1kAe48UpleXklzLdsyDQGbz/xoR2CSXbi0lhy2uL0hisqMy8SMVy3J
-         TRtQ==
-X-Gm-Message-State: AOJu0Ywkoqi0gEtNAhLrW3XjUUV4jthGg8x6+CCQW5SpJIpw8TjFaPHL
-	6kYYeohB3U9lGOuyQ1SDEnBJ0bQQgkLia9IHRm9cH4WozjZ502hdZXXo9WvOrcmDpnrPsIzsJT+
-	be3030Q==
-X-Gm-Gg: ASbGncuP1KgDLtLnHx9tt+qcAzi2QVt8qqTwIWzHPG98sUaRFMzQONNwMb5wSUKa28N
-	Q24OQsbXaPAtp2BKuKhVI2Otzi4Qkbb8usynxLTUJCLTuri5qFqBpDQM3K41Peu2gFexgzVQquE
-	v+whpQcqArbG+tgnjSef7A7KbSE3aUtoB4d604tgMNrfI6vxoQW62bu6SiydMGJ0ri+h1+SUiH4
-	Kj4geZnJi9gr4eCwfpghvOGbXUWQxxqgKhr8j0UHlzp0Ni21+c=
-X-Google-Smtp-Source: AGHT+IFMTPGC/QYT50OuRCcUt2pnsu0ZEVUBXOJx2JE6iHLf+Hc2kvAkrzwiHxVhumc2xrPLAbIk1A==
-X-Received: by 2002:a05:620a:40c3:b0:7b7:314:f01c with SMTP id af79cd13be357-7b9ba84841emr8024220785a.61.1736022332208;
-        Sat, 04 Jan 2025 12:25:32 -0800 (PST)
-Received: from boreas.. ([38.98.88.182])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b9ac30d7e2sm1376162085a.59.2025.01.04.12.25.31
+        d=1e100.net; s=20230601; t=1736035919; x=1736640719;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CUb0iAhCaTQveFByz5DjWAxnukdgKWyUzekHKwA1RQc=;
+        b=qODeWctK4jMXqK47fwo2DpZUegbZ2vx2xSAk1a8uOUIjQ/J9yr/8IkUPmO496OXwo2
+         +A+xKsFZDbraBjwFsLZ6tl8zwDQMNVUbFm9F5IJV3VBt7JMwRKPJjV22qOIcgxB13XbR
+         Fcl5DRgdBsKmePBdW/hS1EYX2z7pe9UC6enGUlOSg1yqwrluSMDUbv347jdue12ogfyA
+         C2E+aYS0UZjUae6L1YNGEkUADXrGEUrmWJnQeqC9iqLAIJNu+n3hdDimrpc2J19W4nFu
+         ejnvlwDOhDckFK+CVHpPnWCj4ed+mKmyHe2Qx0nXwhdFoH2AVQYAhOaPzpPzzUOuoUzy
+         h6bg==
+X-Gm-Message-State: AOJu0Yz+yF3UX8umAE+toPNkV5TxqZSyNyQaeoB8fWJGCXexOS0V0I8w
+	H6f4grQ79dgXg7PvXaseDXfl4Ap0U/zMRHQh0joImdPJBQYKIQNKFNt37Q==
+X-Gm-Gg: ASbGncs/LEcBKtIhZ2eAMf7wk07EkvutmjEiYErjVPDOXHAWFL9+9AtdANZiHs5Ofnh
+	J9z55u0EM927WVZb8rMOQubRalGbNWr8nSCJhhDnt/aY/XVTXfbg8EMBA/9K8FDhlKoHl8E9DOH
+	Px3ESS1vBInhYvaJtPFq05GDHO3kfK9Jmb5Hdr2tK5b0NFdTtisOSNp3D8u6ylFNMnmMEffuVMU
+	xwV5SxJIdh88ihxGRFQ0Vc+yEhm5LP6Iz18eERqZL3Y9TBwgHkBWw==
+X-Google-Smtp-Source: AGHT+IHFWm27CD+h6tyb7NFiGze0fnvBOclzVqD9vYxdIUKrlLuj+Es/8PnWGY0V4m0m7Ow/p1Pwvw==
+X-Received: by 2002:a17:902:ecca:b0:215:a18f:88a8 with SMTP id d9443c01a7336-219e6f38a1amr647971615ad.51.1736035918655;
+        Sat, 04 Jan 2025 16:11:58 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dca02b77sm266868075ad.242.2025.01.04.16.11.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Jan 2025 12:25:31 -0800 (PST)
-From: Emil Tsalapatis <emil@etsalapatis.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	Emil Tsalapatis <emil@etsalapatis.com>
-Subject: [PATCH v2 2/2] selftests/bpf: test bpf_for within spin lock section
-Date: Sat,  4 Jan 2025 15:25:28 -0500
-Message-ID: <20250104202528.882482-3-emil@etsalapatis.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250104202528.882482-1-emil@etsalapatis.com>
-References: <20250104202528.882482-1-emil@etsalapatis.com>
+        Sat, 04 Jan 2025 16:11:57 -0800 (PST)
+Message-ID: <fbc6c684c4d374a3b7b08198bf4778c05963a313.camel@gmail.com>
+Subject: Re: [PATCH 1/2] bpf: Allow bpf_for/bpf_repeat calls while holding a
+ spinlock
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Emil Tsalapatis <emil@etsalapatis.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org
+Date: Sat, 04 Jan 2025 16:11:53 -0800
+In-Reply-To: <CABFh=a66Fk70ipHbrq+Jh-hA33vHq0fOJd+R9=1tRA1t212CzQ@mail.gmail.com>
+References: <20250101203731.1651981-1-emil@etsalapatis.com>
+	 <20250101203731.1651981-2-emil@etsalapatis.com>
+	 <ac3eda5992a9fbee296abcbc917d5521da0be83c.camel@gmail.com>
+	 <CABFh=a66Fk70ipHbrq+Jh-hA33vHq0fOJd+R9=1tRA1t212CzQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Add a selftest to ensure BPF for loops within critical sections are
-accepted by the verifier.
+On Sat, 2025-01-04 at 14:25 -0500, Emil Tsalapatis wrote:
 
-Signed-off-by: Emil Tsalapatis (Meta) <emil@etsalapatis.com>
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
----
- .../selftests/bpf/progs/verifier_spin_lock.c  | 26 +++++++++++++++++++
- 1 file changed, 26 insertions(+)
+[...]
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_spin_lock.c b/tools/testing/selftests/bpf/progs/verifier_spin_lock.c
-index 25599eac9a70..d9d7b05cf6d2 100644
---- a/tools/testing/selftests/bpf/progs/verifier_spin_lock.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_spin_lock.c
-@@ -530,4 +530,30 @@ l1_%=:	exit;						\
- 	: __clobber_all);
- }
- 
-+SEC("tc")
-+__description("spin_lock: loop within a locked region")
-+__success __failure_unpriv __msg_unpriv("")
-+__retval(0)
-+int bpf_loop_inside_locked_region(void)
-+{
-+	const int zero = 0;
-+	struct val *val;
-+	int i, j = 0;
-+
-+	val = bpf_map_lookup_elem(&map_spin_lock, &zero);
-+	if (!val)
-+		return -1;
-+
-+	bpf_spin_lock(&val->l);
-+	bpf_for(i, 0, 10) {
-+		j++;
-+		/* Silence "unused variable" warnings. */
-+		if (j == 10)
-+			break;
-+	}
-+	bpf_spin_unlock(&val->l);
-+
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.47.1
+> > > @@ -19048,7 +19066,7 @@ static int do_check(struct bpf_verifier_env *=
+env)
+> > >                               if (env->cur_state->active_locks) {
+> > >                                       if ((insn->src_reg =3D=3D BPF_R=
+EG_0 && insn->imm !=3D BPF_FUNC_spin_unlock) ||
+> > >                                           (insn->src_reg =3D=3D BPF_P=
+SEUDO_KFUNC_CALL &&
+> > > -                                          (insn->off !=3D 0 || !is_b=
+pf_graph_api_kfunc(insn->imm)))) {
+> > > +                                          (insn->off !=3D 0 || !kfun=
+c_spin_allowed(insn->imm)))) {
+> > >                                               verbose(env, "function =
+calls are not allowed while holding a lock\n");
+> > >                                               return -EINVAL;
+> > >                                       }
+> >=20
+> >=20
+> > Nit: technically, 'bpf_loop' is a helper function independent of iter_n=
+um API.
+> >      I suggest to change the name to is_bpf_iter_num_api_kfunc.
+> >      Also, if we decide that loops are ok with spin locks,
+> >      the condition above should be adjusted to allow calls to bpf_loop,
+> >      e.g. to make the following test work:
+> >=20
+>=20
+> (Sorry for the duplicate, accidentally didn't send the email in plaintext=
+)
+>=20
+> Will do, bpf_iter_num_api_kfunc is more reasonable. For bpf_loops
+> AFAICT we would need to ensure the callback cannot sleep,
+> which would need extra checks/changes to the verifier compared to
+> bpf_for. IMO we can deal with it in a separate patch if we think
+> allowing it is a good idea.
+
+Not really, callbacks are verified "in-line". When a function call to
+a function calling synchronous callback is verified, verifier steps
+into callback body some number of times. If a sleeping call would
+be discovered during callback function verification, verifier would
+see that spin lock is currently taken and report error. So, this is
+really just a check for particular helper call.
+
+[...]
 
 
