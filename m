@@ -1,40 +1,41 @@
-Return-Path: <bpf+bounces-47890-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47889-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55205A01A65
-	for <lists+bpf@lfdr.de>; Sun,  5 Jan 2025 17:22:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E985FA01A64
+	for <lists+bpf@lfdr.de>; Sun,  5 Jan 2025 17:22:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22800162B1D
-	for <lists+bpf@lfdr.de>; Sun,  5 Jan 2025 16:22:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85B9F3A3106
+	for <lists+bpf@lfdr.de>; Sun,  5 Jan 2025 16:22:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 393B017108A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38BE7170A1A;
 	Sun,  5 Jan 2025 16:22:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C80D01DA4E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8092184F;
 	Sun,  5 Jan 2025 16:22:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736094140; cv=none; b=XUyJeig5mDAW3+cIid0gkGAJM+eh2sd7YU1tBWuZPoyOM2+vndh685vkTleYWbIiKF7S1UwPbD9k7dcko/UoMVVvpssA8FoPjkQl3srEcfehmKHL/68zknqxlXtEYongGHS8vvmz+13RDJ8O6SoGgwbdH4zcZV07zUx267fvCKI=
+	t=1736094140; cv=none; b=mo+kDNxmgWYrB21SbfVbCawAMNztqciKaTzCCcjdNJ3fF8Ktsu01cqw2Uv1czowpoTVsV68TPUIctlXbXgCjGM4UHDRbRfs/rzwBz6mCF4wX9eKB7xU68ZMRIDjbJe77B+rFy8oT4ykxk5ZYqjtNiSA7YJ802wtfpq9eLsCEePU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1736094140; c=relaxed/simple;
-	bh=29UOMsvhvxWUG9Ns0MDq/rK22y+w9nzb3Bqr1M/V/Ao=;
-	h=Message-ID:Date:From:To:Cc:Subject; b=cO6ywQ3TD8h2MAaKNVnQh54ojoafwNjdl/LMqJwm89Q+VHYIcPYoLhST98PXe/ZslMZcUqTajA+LV+NaDCp78fFgWw86I47cblWew6RBnMbMupbVHQjbro4c6p/k1Qi+Y3ZDok3LoPuxYYiiLN+6OCgruAJerIqYov6kStLF8vs=
+	bh=0PiWUTn4HS2+6Hqtdbt7AAKDTj3gjdoEBm3Jr4CL3Cs=;
+	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type; b=GbC/LRMpHGl867d48rsPzIG4EvJITAcwMvi545C1P1t4gc2unvwvIF5NQIDsa/OnEcNs8tedkPXtXLK6ozLBJfM8GxLyGpDCZBOq87oMWCE18AOuxw4Tqmr2P5+ebOdMBusxnl6cJJd1LNut8z9wOAin1hVdRL5TsZzMW0XCAEM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63F6DC4CED0;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66A63C4CEE0;
 	Sun,  5 Jan 2025 16:22:20 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.98)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1tUTPk-00000008EqH-0MGm;
+	id 1tUTPk-00000008Er2-1AeE;
 	Sun, 05 Jan 2025 11:23:44 -0500
-Message-ID: <20250105162211.971039541@goodmis.org>
+Message-ID: <20250105162344.128870118@goodmis.org>
 User-Agent: quilt/0.68
-Date: Sun, 05 Jan 2025 11:22:11 -0500
+Date: Sun, 05 Jan 2025 11:22:12 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org,
@@ -53,129 +54,94 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Martin  Kelly <martin.kelly@crowdstrike.com>,
  Christophe Leroy <christophe.leroy@csgroup.eu>,
  Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: [PATCH 00/14] scripts/sorttable: Rewrite the accessing of the Elf data fields
+Subject: [PATCH 01/14] scripts/sorttable: Remove unused macro defines
+References: <20250105162211.971039541@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+From: Steven Rostedt <rostedt@goodmis.org>
+
+The code of sorttable.h was copied from the recordmcount.h  which defined
+a bunch of Elf MACROs so that they could be used between 32bit and 64bit
+functions. But there's several MACROs that sorttable.h does not use but
+was copied over. Remove them to clean up the code.
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ scripts/sorttable.h | 27 ---------------------------
+ 1 file changed, 27 deletions(-)
+
+diff --git a/scripts/sorttable.h b/scripts/sorttable.h
+index 7bd0184380d3..2a9ec5046e9a 100644
+--- a/scripts/sorttable.h
++++ b/scripts/sorttable.h
+@@ -27,19 +27,10 @@
+ #undef Elf_Ehdr
+ #undef Elf_Shdr
+ #undef Elf_Rel
+-#undef Elf_Rela
+ #undef Elf_Sym
+-#undef ELF_R_SYM
+-#undef Elf_r_sym
+-#undef ELF_R_INFO
+-#undef Elf_r_info
+-#undef ELF_ST_BIND
+ #undef ELF_ST_TYPE
+-#undef fn_ELF_R_SYM
+-#undef fn_ELF_R_INFO
+ #undef uint_t
+ #undef _r
+-#undef _w
+ 
+ #ifdef SORTTABLE_64
+ # define extable_ent_size	16
+@@ -52,19 +43,10 @@
+ # define Elf_Ehdr		Elf64_Ehdr
+ # define Elf_Shdr		Elf64_Shdr
+ # define Elf_Rel		Elf64_Rel
+-# define Elf_Rela		Elf64_Rela
+ # define Elf_Sym		Elf64_Sym
+-# define ELF_R_SYM		ELF64_R_SYM
+-# define Elf_r_sym		Elf64_r_sym
+-# define ELF_R_INFO		ELF64_R_INFO
+-# define Elf_r_info		Elf64_r_info
+-# define ELF_ST_BIND		ELF64_ST_BIND
+ # define ELF_ST_TYPE		ELF64_ST_TYPE
+-# define fn_ELF_R_SYM		fn_ELF64_R_SYM
+-# define fn_ELF_R_INFO		fn_ELF64_R_INFO
+ # define uint_t			uint64_t
+ # define _r			r8
+-# define _w			w8
+ #else
+ # define extable_ent_size	8
+ # define compare_extable	compare_extable_32
+@@ -76,19 +58,10 @@
+ # define Elf_Ehdr		Elf32_Ehdr
+ # define Elf_Shdr		Elf32_Shdr
+ # define Elf_Rel		Elf32_Rel
+-# define Elf_Rela		Elf32_Rela
+ # define Elf_Sym		Elf32_Sym
+-# define ELF_R_SYM		ELF32_R_SYM
+-# define Elf_r_sym		Elf32_r_sym
+-# define ELF_R_INFO		ELF32_R_INFO
+-# define Elf_r_info		Elf32_r_info
+-# define ELF_ST_BIND		ELF32_ST_BIND
+ # define ELF_ST_TYPE		ELF32_ST_TYPE
+-# define fn_ELF_R_SYM		fn_ELF32_R_SYM
+-# define fn_ELF_R_INFO		fn_ELF32_R_INFO
+ # define uint_t			uint32_t
+ # define _r			r
+-# define _w			w
+ #endif
+ 
+ #if defined(SORTTABLE_64) && defined(UNWINDER_ORC_ENABLED)
+-- 
+2.45.2
 
 
-While looking at getting rid of the place holder __ftrace_invalid_address___
-from the available_filter_functions file[1], I noticed that the sorttable.[ch]
-code could use a major clean up!
-
-This series is that clean up of the scripts/sorttable.c code. The sorttable.c
-was a copy from recordmcount.c which is very hard to maintain. That's because
-it uses macro helpers and places the code in a header file sorttable.h to
-handle both the 64 bit and 32 bit version of  the Elf structures. It also uses
-_r()/r()/r2() wrappers around accessing the data which will read the 64 bit or
-32 bit version of the data as well as handle endianess. If the wrong wrapper is
-used, an invalid value will result, and this has been a cause for bugs in the
-past. In fact the new ORC code doesn't even use it. That's fine because ORC is
-only for 64 bit x86 which is the default parsing.
-
-Instead of having a bunch of macros defined and then include the code
-twice from a header, the Elf structures are each wrapped in a union.
-The union holds the 64 bit and 32 bit version of the needed structure.
-To access the values, helper function pointers are used instead of
-defining a function. For example, instead of having:
-
-  In sorttable.h:
-
-     #undef Elf_Ehdr
-     #undef Elf_Shdr
-
-     #ifdef SORTTABLE_64
-     # define Elf_Ehdr		Elf64_Ehdr
-     # define Elf_Shdr		Elf64_Shdr
-     [..]
-     # define _r			r8
-     #else
-     # define Elf_Ehdr		Elf32_Ehdr
-     # define Elf_Shdr		Elf32_Shdr
-     [..]
-     # define _r			r
-     #endif
-
-     [..]
-     Elf_Shdr *s, *shdr = (Elf_Shdr *)((char *)ehdr + _r(&ehdr->e_shoff));
-
-  In sorttable.c:
-
-     #include "sorttable.h"
-     #define SORTTABLE_64
-     #include "sorttable.h"
-
-Using the Unions we have just sorttable.c:
-
-     typedef union {
-	    Elf32_Ehdr	e32;
-	    Elf64_Ehdr	e64;
-     } Elf_Ehdr;
-
-     typedef union {
-	    Elf32_Shdr	e32;
-	    Elf64_Shdr	e64;
-     } Elf_Shdr;
-
-     [..]
-
-     static uint64_t ehdr64_shoff(Elf_Ehdr *ehdr)
-     {
-	    return r8(&ehdr->e64.e_shoff);
-     }
-
-     static uint64_t ehdr32_shoff(Elf_Ehdr *ehdr)
-     {
-	    return r(&ehdr->e32.e_shoff);
-     }
-
-     [..]
-     static uint64_t (*ehdr_shoff)(Elf_Ehdr *ehdr);
-     [..]
-
-	    switch (ehdr->e32.e_ident[EI_CLASS]) {
-	    case ELFCLASS32:
-		    [..]
-		    ehdr_shoff	= ehdr32_shoff;
-		    [..]
-	    case ELFCLASS65:
-		    [..]
-		    ehdr_shoff	= ehdr64_shoff;
-		    [..]
-
-     shdr_start = (Elf_Shdr *)((char *)ehdr + ehdr_shoff(ehdr));
-
-The code may be a little more verbose, but the meat of the code is easier to
-read, and the conversion functions live in the helper functions to make
-it easier to have the fields read the proper way, and not worry how to
-read the fields within the code that accesses them.
-
-This makes the code less error prone and easier to maintain. This also
-makes it easier to extend and update the sorttable code.
-
-[1] https://lore.kernel.org/all/20250102232609.529842248@goodmis.org/
-
-Steven Rostedt (14):
-      scripts/sorttable: Remove unused macro defines
-      scripts/sorttable: Remove unused write functions
-      scripts/sorttable: Remove unneeded Elf_Rel
-      scripts/sorttable: Have the ORC code use the _r() functions to read
-      scripts/sorttable: Make compare_extable() into two functions
-      scripts/sorttable: Convert Elf_Ehdr to union
-      scripts/sorttable: Replace Elf_Shdr Macro with a union
-      scripts/sorttable: Convert Elf_Sym MACRO over to a union
-      scripts/sorttable: Add helper functions for Elf_Ehdr
-      scripts/sorttable: Add helper functions for Elf_Shdr
-      scripts/sorttable: Add helper functions for Elf_Sym
-      scripts/sorttable: Use uint64_t for mcount sorting
-      scripts/sorttable: Move code from sorttable.h into sorttable.c
-      scripts/sorttable: Get start/stop_mcount_loc from ELF file directly
-
-----
- scripts/sorttable.c | 674 +++++++++++++++++++++++++++++++++++++++++++++++-----
- scripts/sorttable.h | 497 --------------------------------------
- 2 files changed, 620 insertions(+), 551 deletions(-)
- delete mode 100644 scripts/sorttable.h
 
