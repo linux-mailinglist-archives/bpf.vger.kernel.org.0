@@ -1,42 +1,42 @@
-Return-Path: <bpf+bounces-47925-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47926-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C363A0204F
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 09:08:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E45BA02050
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 09:08:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1DB73A4094
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F16C5163B59
 	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 08:08:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BFB01DA634;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F1611DA622;
 	Mon,  6 Jan 2025 08:07:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D1861D90C5;
-	Mon,  6 Jan 2025 08:07:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E4751D9337;
+	Mon,  6 Jan 2025 08:07:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736150827; cv=none; b=fKmGaWINJeZJMnA7lvYg6gKjK7wgnOdix4cMBu3KnU7n+qsEENw84Pe7VAX/zc2O+0eAuPrSypUdQw+Q7RJUJOl06QSt0fk89OlWBQtin+qYnzXpdsbJqyCPcnUH+mLkylNqNjsoizs+Y1kztLkun+y5EpIZA5fBg3lEvi0XGpk=
+	t=1736150827; cv=none; b=hqNFx2uKTJ0LaAz0F8GI5VbZ/BL/ftzK/kJp16hCq9Xa/DlSNeMpAIECzh88/5Vj1ckkFaNkxMF+/UFx1OBmHUzP3puLp61bozXBhKd8CzKhr12zoD2OHlXR1sMeU916tJCi8an0r0zFvStatfKqBRVSZuAZiK1TMvk4sj56igA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1736150827; c=relaxed/simple;
-	bh=QzGyMUsCmMaGHNoW5OTSqgcCkHWN6HTrqiFfJA2nuxI=;
+	bh=Kpkyp3Ozm5zn9XwP8P+KJVOEIumTc00mLK6DZAiXIt0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nABHaQAdDmHp1hZ7IoMfdsCWldg9QIicWtKbPf+pK3ZcyHadsQFj1UWl5ngVKNv6uiJ53rXfdYxFCHew7IG4sS6J2Btw/c/GIMgYkFJYCrcffKmjc4Y7IAw+uS5IGXYRNgH2N43FX3SxGq27PdcCOrS9bzCytGr+SX0hnnSyO/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=CV4gYlK9Z5Bb1+6kUsn7cfTe6+wanLqHGyUN40i1OLUc2UqXhfZNrEZCc5P7xXsEehPZpiGHV06KPLUI6rfi+6FnI6fs50hg5V7ZQteA6f7jOdDhlTKLpa/vc76ypGRa5xO1w5ZzYjc+t8VKJOL/Cr1/kQdxfXOx7MQapjnR83I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YRRbT4372z4f3jqx;
-	Mon,  6 Jan 2025 16:06:45 +0800 (CST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YRRbV1RM4z4f3jqj;
+	Mon,  6 Jan 2025 16:06:46 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 7C9651A147C;
-	Mon,  6 Jan 2025 16:07:00 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 254CE1A0A02;
+	Mon,  6 Jan 2025 16:07:01 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgD3W2AZj3tnVG29AA--.29272S14;
+	by APP4 (Coremail) with SMTP id gCh0CgD3W2AZj3tnVG29AA--.29272S15;
 	Mon, 06 Jan 2025 16:07:00 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org,
@@ -55,9 +55,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
 	houtao1@huawei.com,
 	xukuohai@huawei.com
-Subject: [PATCH bpf-next 10/19] bpf: Disable migration in array_map_free()
-Date: Mon,  6 Jan 2025 16:18:51 +0800
-Message-Id: <20250106081900.1665573-11-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next 11/19] bpf: Disable migration in htab_map_free()
+Date: Mon,  6 Jan 2025 16:18:52 +0800
+Message-Id: <20250106081900.1665573-12-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20250106081900.1665573-1-houtao@huaweicloud.com>
 References: <20250106081900.1665573-1-houtao@huaweicloud.com>
@@ -68,10 +68,10 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgD3W2AZj3tnVG29AA--.29272S14
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZFWDAw4UKF4xWr45Wr1fXrb_yoW8WF43pF
-	Wkt34jkr48Xr4Ikrs8Jayjk34YyrW5G342kFZ5K34Fva13Zr9rZw1fG3W8ZF1YkF1kKr1S
-	qw1qy39ayay8ArDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgD3W2AZj3tnVG29AA--.29272S15
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ar4fAw1UWryUKF1UXw4rGrg_yoW5JF47pF
+	Z3G347Kr48XFn29wsxXw4Ikry3Crs3Ka47G3yjg34F9ws8ur97Gw1xAFyFvFyrAr1ktF4S
+	qr90vw1ayw18ZFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
 	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -90,46 +90,68 @@ X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-When freeing the array map, the destroy procedure may invoke
-bpf_obj_free_fields() to free the special fields in map value
-(e.g., kptr). Since kptrs may be allocated from bpf memory allocator,
-migrate_{disable|enable} pairs are necessary for the freeing of these
-kptrs.
+When freeing the hash map, the destroy procedure may invoke
+bpf_obj_free_fields() to free the special fields in pre-allocated values
+or dynamically-allocated values. Since these special fields may be
+allocated from bpf memory allocator, migrate_{disable|enable} pairs are
+necessary for the freeing of these objects.
 
 To simplify reasoning about when migrate_disable() is needed for the
-freeing of these dynamically-allocated kptrs, let the caller to
+freeing of these dynamically-allocated objects, let the caller to
 guarantee migration is disabled before invoking bpf_obj_free_fields().
 
-Therefore, the patch adds migrate_{disable|enable} pair in
-array_map_free(). The migrate_{disable|enable} pairs in the underlying
-implementation of bpf_obj_free_fields() will be removed by the following
-patch.
+For dynamically allocated values, delete_all_elements() already disables
+migration before invoking bpf_obj_free_fields(). Therefore, the patch
+moves migrate_{disable|enable} pair from delete_all_elements() to
+htab_map_free() to handle all bpf_obj_free_fields() invocations. The
+migrate_{disable|enable} pairs in the underlying implementation of
+bpf_obj_free_fields() will be removed by the following patch.
 
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/bpf/arraymap.c | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/bpf/hashtab.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index eb28c0f219ee..451737493b17 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -455,6 +455,7 @@ static void array_map_free(struct bpf_map *map)
- 	struct bpf_array *array = container_of(map, struct bpf_array, map);
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 1db71d25836e..8bf1ad326e02 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -1502,10 +1502,9 @@ static void delete_all_elements(struct bpf_htab *htab)
+ {
  	int i;
  
-+	migrate_disable();
- 	if (!IS_ERR_OR_NULL(map->record)) {
- 		if (array->map.map_type == BPF_MAP_TYPE_PERCPU_ARRAY) {
- 			for (i = 0; i < array->map.max_entries; i++) {
-@@ -471,6 +472,7 @@ static void array_map_free(struct bpf_map *map)
- 				bpf_obj_free_fields(map->record, array_map_elem_ptr(array, i));
+-	/* It's called from a worker thread, so disable migration here,
+-	 * since bpf_mem_cache_free() relies on that.
++	/* It's called from a worker thread and migration has been disabled,
++	 * therefore, it is OK to invoke bpf_mem_cache_free() directly.
+ 	 */
+-	migrate_disable();
+ 	for (i = 0; i < htab->n_buckets; i++) {
+ 		struct hlist_nulls_head *head = select_bucket(htab, i);
+ 		struct hlist_nulls_node *n;
+@@ -1517,7 +1516,6 @@ static void delete_all_elements(struct bpf_htab *htab)
  		}
+ 		cond_resched();
+ 	}
+-	migrate_enable();
+ }
+ 
+ static void htab_free_malloced_timers_and_wq(struct bpf_htab *htab)
+@@ -1572,12 +1570,14 @@ static void htab_map_free(struct bpf_map *map)
+ 	 * underneath and is responsible for waiting for callbacks to finish
+ 	 * during bpf_mem_alloc_destroy().
+ 	 */
++	migrate_disable();
+ 	if (!htab_is_prealloc(htab)) {
+ 		delete_all_elements(htab);
+ 	} else {
+ 		htab_free_prealloced_fields(htab);
+ 		prealloc_destroy(htab);
  	}
 +	migrate_enable();
  
- 	if (array->map.map_type == BPF_MAP_TYPE_PERCPU_ARRAY)
- 		bpf_array_free_percpu(array);
+ 	bpf_map_free_elem_count(map);
+ 	free_percpu(htab->extra_elems);
 -- 
 2.29.2
 
