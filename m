@@ -1,84 +1,84 @@
-Return-Path: <bpf+bounces-47956-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47957-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E08FA02894
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 15:54:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2007A02895
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 15:54:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDE771882DE8
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 14:54:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 851FB1606C8
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 14:54:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5769E137930;
-	Mon,  6 Jan 2025 14:54:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B63D13B59A;
+	Mon,  6 Jan 2025 14:54:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="naQMpyp8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FmJh4Uvc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AD1A8633A
-	for <bpf@vger.kernel.org>; Mon,  6 Jan 2025 14:53:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C71F433CB
+	for <bpf@vger.kernel.org>; Mon,  6 Jan 2025 14:54:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736175240; cv=none; b=p5c96+Uw+nznpqh/VDt7BmdWfksG7FwGJqPNoWQ/2gmt0Jo171/7O+WBU0BCEBMufFsdjmU3CamqsyM5xL35RhGR0xdagXkbSIdNVaOpyhzdbgde4KnD+E/vLd202JNqUhyfLfOzzYd0G4Tst9j7d7w30TccF+g6qMson2L0zjs=
+	t=1736175248; cv=none; b=M3t4NFe3Eus/wW+Zt19jHF40Tw8oK7CsBhM9Kyn2eDNR+Uvf415xFd0UanbcqL2/trvYgLTAYvhQo/IBv/7cti3ABKtZotHbGtXmalgeMlcciSO6h0+EpWrGRL8HFhkOVh+0jDH8J46ssJw4xTKhJS3emolgnUIkafJicmG55yk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736175240; c=relaxed/simple;
-	bh=PIZOsUgeNn4GFhc+HRjWRD/qEOLIPpUzY6a9KyU7klA=;
+	s=arc-20240116; t=1736175248; c=relaxed/simple;
+	bh=EwDzzphZzFhtltBbEjKn6ELpV9oQi7pVRaV5OiC8PVA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bjCDqlD1GCgo3BXgMHeyOKK70c2sgOORynnWlHRbMk0cJBmEEVcdg8bL021DCcc/GcofNtoKqwwHis5C1+S5yDBfCHcL21UhMC9BC5qI8zUO0wC9+0hyuE366+et5eXg2VPrhVi75sBSV9LbHtrAgFYzvxKB3taBa8EBTnLmss8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=naQMpyp8; arc=none smtp.client-ip=209.85.128.53
+	 MIME-Version; b=pgzHqwLujLq46X9o07mM6DIAcnMsKf0rBu4wLvFAWkMfzexnewUXPfvk6JNK09an2KnqOit2NBsXT3YaDu91zz9MqcikOcmRbqr10UrwiS/aCBHOig96rbWGyUCFGQV/mak62IMH8hHzj6R0xmUVN4lSMJ04FdOxvrmKnjU7UwQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FmJh4Uvc; arc=none smtp.client-ip=209.85.221.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-436341f575fso149748475e9.1
-        for <bpf@vger.kernel.org>; Mon, 06 Jan 2025 06:53:58 -0800 (PST)
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-385d7f19f20so6348962f8f.1
+        for <bpf@vger.kernel.org>; Mon, 06 Jan 2025 06:54:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736175237; x=1736780037; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1736175244; x=1736780044; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hnTmnFNraHZZOJddJKqa2n5UrakfYRlTB6KX2RcLzQ8=;
-        b=naQMpyp8B0SyL40wgRGhz4IhqkbMSBF+IH84lBQsbTvm8/vlyrFRlYSnxklMV3R7/1
-         8Hzz0NhezwLtjtk1Nbh67OQiH8FIVQy9gGTsPo6rIFz8+S5odNWGQwecRvkSFb4Qya7j
-         k0uTLB9gl+LdylKFEXshVcNIZqaG61ONpDX51Lt83zoTzaZBqZSwMLVy/tvpkpw/qW46
-         EyA6OSfkLcQ1CZHQZlcioWqLSsnyCkWPV3zyzt/nEn3YNlFcSRjDt2j9yJZlp5E5mFHQ
-         nO4mDXudzPUj3y+jgZDvxmcvRPX3zrgei7rQSgFzV8uFiBvw8OlHTBaEVsXabJtb4zIR
-         TnFQ==
+        bh=RfxLq/k3pa/bVimMye2S+vaiQlpIj+CsmbaBLY7XhHw=;
+        b=FmJh4UvcvTxVtXJNFl0BDq59717emnd4wEckGT02prwMqzSGr/EWsD9bk7HRhqawFb
+         eEDWC9HxGzCfqBgfX7m19iDHnrgzRh9YD1uJKm78EkXz+lRa/wUbtlxArV0tQDf2KepW
+         i4RmKgiDwVjt4ADd6jymd9R8iNu7XiAO3xStepXvEt2HO+yQhT3xLcLnBG0G0WCH9QfN
+         6YkSo2L6qE4fXBQlI/wNV8IBC5aeHrK3PK8cE0TqGfDDz62BBe08JHi6baBZrB9bE9Bn
+         EWHMJOBJwgPKdZ0ourg0mu9B0L6tZ/QpkDv69qXBaN9sYTpIM0/4vgog/t4RmB92CvoH
+         ERLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736175237; x=1736780037;
+        d=1e100.net; s=20230601; t=1736175244; x=1736780044;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hnTmnFNraHZZOJddJKqa2n5UrakfYRlTB6KX2RcLzQ8=;
-        b=BKtOgemGQhvpIaNW9eGZu/7pAkRjK/Dpe4+2b7dHpWMB+QpXH8f9S6yCz+s0Zq1Ubl
-         p7nqrrUQmZytlAc0TOB5pdRJV7ldIVQxUddA5zd/LvWEv/3Iu1UFYCHYIPpNvu+g5RoL
-         qbF5fDQNF3ae6AZqpN4sCVEE1ckiH+pdDw6VLIAA3nwGL6DGRmSjouC1YT8nDt9DSSt7
-         IzTwR/kE0WhX3PF8SJWuVGArOUQTJknNA3D1ZKDf/mDyvJ7IljiHGr5dpYyY9LfXQASX
-         stPuruP6TW29PW+loSwKH/VK712w1y2Hb+JL8Sv7aXLYzoDXiUbWz62htQy/SijdBFzj
-         lVPw==
-X-Gm-Message-State: AOJu0Yxjqf1h00e5Yd5tzh6g+lgcQKA+T5DEIS5sV6D4ISMK/DZ+xLRn
-	M7VtsYjxUy1Es4samSRZDI8fF3r+GP0FkdcF3nelnDZLRvC7vY7ZWAFwP8VsJIgLRlf+
-X-Gm-Gg: ASbGncunqve/xGJYpnSjGO+hXCVIh465U+CGu1RdxjjTnn+eJNxRMk23v+CergZTzqZ
-	prqvnrwor1+qyKIYoWqsz5xYTUI5nel+HFTI7iZRnNFaph4CcqLs9C3XVz874RNKV0NwgrVPKGR
-	WczswA8Xw+g9wF+82RtWj+MMBPrTzCr4OTCENL/b+WVACyQuC1ZxJiDstsxwRwHdxpBtxK1drme
-	Rm2c5NOwhnODD6VxynSSEnK6EzFrWO8fVc9J4+RkFLcLqQKAmtwUDXTI9EdbqFamKuSXd1g57Y=
-X-Google-Smtp-Source: AGHT+IEWWW9/CZ9N03T/6d0NkYMu8csqDWf4yolHS9uL30j+K1oeRzdMYDRWNLzTocd7U54KW68ftQ==
-X-Received: by 2002:a05:600c:3505:b0:430:57e8:3c7e with SMTP id 5b1f17b1804b1-43668b5f39emr399209695e9.28.1736175236825;
-        Mon, 06 Jan 2025 06:53:56 -0800 (PST)
+        bh=RfxLq/k3pa/bVimMye2S+vaiQlpIj+CsmbaBLY7XhHw=;
+        b=SpXQrGeqoyz507gdcy3XXmDLG9m+G0H1ZSHTA6BHmu3YMvSfNd1shuKRzpoLCaAo9L
+         9PBAdK0+a06K5MdceVpeQwOk9IZhhwpXd1ccVciYFTUvJIBbXQFjBcBP0TQL6GnxaEL9
+         S3dzymCr3qLm6a8L+5aGUe+6kWTvz6OKuQwtdh975NW/VL8HAx6waAh9avJTOlUYd/Wb
+         GF3/vaC/opNVCkLvHA1Uy1Rfzyt+LALEO6+FCMNsIPCHqYFz9m1nNT6QY530lb9HdRb8
+         lXQRPepEUlJGJBOoxKKQnNo3PIOUhYUp55QdG42NAQP7rs3dyDIDX0/JJB3JD27nXJUR
+         qdxw==
+X-Gm-Message-State: AOJu0Yxwe2PueVCsX/pnTM+YIVeS04IO48GBJPcd0Pu2H4OK2/xHju6/
+	rQCLSKzJhXoltxeYNRtq995qWV+YN5FqDeRQljNwLDkj7ppbIozeovIS5pEJUEE6VA==
+X-Gm-Gg: ASbGnctNtCZBbKDU7/RDm3BgLjKN1n4p7gKjNeY6xqDky0a4FR7iv+7gtW1fd9QnkBK
+	huuYjBTlGCXPT3vfn8VYG06KgLP2yKkf5YcjScplFTdPLiI7V0oRbO0uWRcwgbaACfpbIymKZnl
+	ri1eo63L7s91xebl6xI0yQNJ209uHpdSAjCu4aMR4pFXHkZabbHj727YQBFhm5oK2Fm1LUgtgdS
+	VSx2ub57nm8IEsf7ucxN/4bLpx0yGdZirMzcikYv+GnnxECJa8NkVUUEPTQjnhAhAHrEOe0a0k=
+X-Google-Smtp-Source: AGHT+IGpDIIY/UlEA1BTnSqFKkJY+bKo67rTJNDCHK8rsE19keHWhr8o6QC/8+kJD/KFTfSzTiyxNQ==
+X-Received: by 2002:a05:6000:1fa9:b0:385:f38e:c0c3 with SMTP id ffacd0b85a97d-38a221f1391mr43705446f8f.6.1736175242481;
+        Mon, 06 Jan 2025 06:54:02 -0800 (PST)
 Received: from babis.. ([2a02:3033:700:3ba2:3837:7343:334:7680])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a1c832e74sm47389982f8f.30.2025.01.06.06.53.54
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a1c832e74sm47389982f8f.30.2025.01.06.06.54.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jan 2025 06:53:56 -0800 (PST)
+        Mon, 06 Jan 2025 06:54:02 -0800 (PST)
 From: Charalampos Stylianopoulos <charalampos.stylianopoulos@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Nick Zavaritsky <mejedi@gmail.com>,
 	Charalampos Stylianopoulos <charalampos.stylianopoulos@gmail.com>
-Subject: [PATCH bpf-next 1/4] bpf: Add map_num_entries map op
-Date: Mon,  6 Jan 2025 15:53:25 +0100
-Message-ID: <20250106145328.399610-2-charalampos.stylianopoulos@gmail.com>
+Subject: [PATCH bpf-next 2/4] bpf: Add bpf command to get number of map entries
+Date: Mon,  6 Jan 2025 15:53:26 +0100
+Message-ID: <20250106145328.399610-3-charalampos.stylianopoulos@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250106145328.399610-1-charalampos.stylianopoulos@gmail.com>
 References: <20250106145328.399610-1-charalampos.stylianopoulos@gmail.com>
@@ -90,216 +90,110 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch extends map operations with map_num_entries that returns the number of
-entries currently present in the map. Provides implementation of the ops
-for maps that track the number of elements added in them.
+Introduces a new command to the main bpf syscall to return the number
+of entries in a map. Returns EOPNOTSUPP if the relevant map operation
+is not implemented.
 
 Co-developed-by: Nick Zavaritsky <mejedi@gmail.com>
 Signed-off-by: Nick Zavaritsky <mejedi@gmail.com>
 Signed-off-by: Charalampos Stylianopoulos <charalampos.stylianopoulos@gmail.com>
 ---
- include/linux/bpf.h               |  3 +++
- include/linux/bpf_local_storage.h |  1 +
- kernel/bpf/devmap.c               | 14 ++++++++++++++
- kernel/bpf/hashtab.c              | 10 ++++++++++
- kernel/bpf/lpm_trie.c             |  8 ++++++++
- kernel/bpf/queue_stack_maps.c     | 11 ++++++++++-
- 6 files changed, 46 insertions(+), 1 deletion(-)
+ include/uapi/linux/bpf.h | 17 +++++++++++++++++
+ kernel/bpf/syscall.c     | 32 ++++++++++++++++++++++++++++++++
+ 2 files changed, 49 insertions(+)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index feda0ce90f5a..217260a8f5f4 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -175,6 +175,7 @@ struct bpf_map_ops {
- 				     void *callback_ctx, u64 flags);
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 2acf9b336371..f5c7adea1387 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -903,6 +903,17 @@ union bpf_iter_link_info {
+  *		A new file descriptor (a nonnegative integer), or -1 if an
+  *		error occurred (in which case, *errno* is set appropriately).
+  *
++ * BPF_MAP_GET_NUM_ENTRIES
++ *	Description
++ *		Get the number of entries currently present in the map.
++ *
++ *		This operation is supported only for a subset of maps. If the
++ *		map is not supported, the operation returns **EOPNOTSUPP**.
++ *
++ *	Return
++ *		Returns zero on success. On error, -1 is returned and *errno*
++ *		is set appropriately.
++ *
+  * NOTES
+  *	eBPF objects (maps and programs) can be shared between processes.
+  *
+@@ -958,6 +969,7 @@ enum bpf_cmd {
+ 	BPF_LINK_DETACH,
+ 	BPF_PROG_BIND_MAP,
+ 	BPF_TOKEN_CREATE,
++	BPF_MAP_GET_NUM_ENTRIES,
+ 	__MAX_BPF_CMD,
+ };
  
- 	u64 (*map_mem_usage)(const struct bpf_map *map);
-+	s64 (*map_num_entries)(const struct bpf_map *map);
+@@ -1837,6 +1849,11 @@ union bpf_attr {
+ 		__u32		bpffs_fd;
+ 	} token_create;
  
- 	/* BTF id of struct allocated by map_alloc */
- 	int *map_btf_id;
-@@ -2402,6 +2403,8 @@ static inline void bpf_map_dec_elem_count(struct bpf_map *map)
- 	this_cpu_dec(*map->elem_count);
- }
- 
-+s64 bpf_map_sum_elem_count(const struct bpf_map *map);
++	struct { /* struct used by BPF_MAP_GET_NUM_ENTRIES command*/
++		__u32 map_fd;
++		__u32 num_entries;
++	} map_get_num_entries;
 +
- extern int sysctl_unprivileged_bpf_disabled;
+ } __attribute__((aligned(8)));
  
- bool bpf_token_capable(const struct bpf_token *token, int cap);
-diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
-index ab7244d8108f..3a9e69e44c1d 100644
---- a/include/linux/bpf_local_storage.h
-+++ b/include/linux/bpf_local_storage.h
-@@ -204,5 +204,6 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
- 			 void *value, u64 map_flags, bool swap_uptrs, gfp_t gfp_flags);
- 
- u64 bpf_local_storage_map_mem_usage(const struct bpf_map *map);
-+s64 bpf_local_storage_map_num_entries(const struct bpf_map *map);
- 
- #endif /* _BPF_LOCAL_STORAGE_H */
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index 3aa002a47a96..f43a58389f8f 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -1041,6 +1041,18 @@ static u64 dev_map_mem_usage(const struct bpf_map *map)
- 	return usage;
+ /* The description below is an attempt at providing documentation to eBPF
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 4e88797fdbeb..a31a63a4aa5d 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -5748,6 +5748,35 @@ static int token_create(union bpf_attr *attr)
+ 	return bpf_token_create(attr);
  }
  
-+static s64 dev_map_num_entries(const struct bpf_map *map)
++#define BPF_MAP_GET_NUM_ENTRIES_LAST_FIELD map_get_num_entries.num_entries
++
++static int bpf_get_num_entries(union bpf_attr *attr, union bpf_attr __user *uattr)
 +{
-+	struct bpf_dtab *dtab = container_of(map, struct bpf_dtab, map);
-+	s64 entries = 0;
++	__u32 num_entries = 0;
++	struct bpf_map *map;
 +
-+	if (map->map_type == BPF_MAP_TYPE_DEVMAP_HASH)
-+		entries = atomic_read((atomic_t *)&dtab->items);
-+	else
-+		entries = -EOPNOTSUPP;
-+	return entries;
++	if (CHECK_ATTR(BPF_MAP_GET_NUM_ENTRIES))
++		return -EINVAL;
++
++
++	CLASS(fd, f)(attr->map_fd);
++	map = __bpf_map_get(f);
++	if (IS_ERR(map))
++		return PTR_ERR(map);
++
++	if (!map->ops->map_num_entries)
++		return -EOPNOTSUPP;
++
++	num_entries = map->ops->map_num_entries(map);
++	if (num_entries < 0)
++		return num_entries;
++
++	if (put_user(num_entries, &uattr->map_get_num_entries.num_entries))
++		return -EFAULT;
++
++	return 0;
 +}
 +
- BTF_ID_LIST_SINGLE(dev_map_btf_ids, struct, bpf_dtab)
- const struct bpf_map_ops dev_map_ops = {
- 	.map_meta_equal = bpf_map_meta_equal,
-@@ -1053,6 +1065,7 @@ const struct bpf_map_ops dev_map_ops = {
- 	.map_delete_elem = dev_map_delete_elem,
- 	.map_check_btf = map_check_no_btf,
- 	.map_mem_usage = dev_map_mem_usage,
-+	.map_num_entries = dev_map_num_entries,
- 	.map_btf_id = &dev_map_btf_ids[0],
- 	.map_redirect = dev_map_redirect,
- };
-@@ -1068,6 +1081,7 @@ const struct bpf_map_ops dev_map_hash_ops = {
- 	.map_delete_elem = dev_map_hash_delete_elem,
- 	.map_check_btf = map_check_no_btf,
- 	.map_mem_usage = dev_map_mem_usage,
-+	.map_num_entries = dev_map_num_entries,
- 	.map_btf_id = &dev_map_btf_ids[0],
- 	.map_redirect = dev_hash_map_redirect,
- };
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 3ec941a0ea41..769a4c33c81f 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -2287,6 +2287,11 @@ static u64 htab_map_mem_usage(const struct bpf_map *map)
- 	return usage;
- }
- 
-+static s64 htab_map_num_entries(const struct bpf_map *map)
-+{
-+	return bpf_map_sum_elem_count(map);
-+}
-+
- BTF_ID_LIST_SINGLE(htab_map_btf_ids, struct, bpf_htab)
- const struct bpf_map_ops htab_map_ops = {
- 	.map_meta_equal = bpf_map_meta_equal,
-@@ -2304,6 +2309,7 @@ const struct bpf_map_ops htab_map_ops = {
- 	.map_set_for_each_callback_args = map_set_for_each_callback_args,
- 	.map_for_each_callback = bpf_for_each_hash_elem,
- 	.map_mem_usage = htab_map_mem_usage,
-+	.map_num_entries = htab_map_num_entries,
- 	BATCH_OPS(htab),
- 	.map_btf_id = &htab_map_btf_ids[0],
- 	.iter_seq_info = &iter_seq_info,
-@@ -2326,6 +2332,7 @@ const struct bpf_map_ops htab_lru_map_ops = {
- 	.map_set_for_each_callback_args = map_set_for_each_callback_args,
- 	.map_for_each_callback = bpf_for_each_hash_elem,
- 	.map_mem_usage = htab_map_mem_usage,
-+	.map_num_entries = htab_map_num_entries,
- 	BATCH_OPS(htab_lru),
- 	.map_btf_id = &htab_map_btf_ids[0],
- 	.iter_seq_info = &iter_seq_info,
-@@ -2499,6 +2506,7 @@ const struct bpf_map_ops htab_percpu_map_ops = {
- 	.map_set_for_each_callback_args = map_set_for_each_callback_args,
- 	.map_for_each_callback = bpf_for_each_hash_elem,
- 	.map_mem_usage = htab_map_mem_usage,
-+	.map_num_entries = htab_map_num_entries,
- 	BATCH_OPS(htab_percpu),
- 	.map_btf_id = &htab_map_btf_ids[0],
- 	.iter_seq_info = &iter_seq_info,
-@@ -2519,6 +2527,7 @@ const struct bpf_map_ops htab_lru_percpu_map_ops = {
- 	.map_set_for_each_callback_args = map_set_for_each_callback_args,
- 	.map_for_each_callback = bpf_for_each_hash_elem,
- 	.map_mem_usage = htab_map_mem_usage,
-+	.map_num_entries = htab_map_num_entries,
- 	BATCH_OPS(htab_lru_percpu),
- 	.map_btf_id = &htab_map_btf_ids[0],
- 	.iter_seq_info = &iter_seq_info,
-@@ -2663,6 +2672,7 @@ const struct bpf_map_ops htab_of_maps_map_ops = {
- 	.map_gen_lookup = htab_of_map_gen_lookup,
- 	.map_check_btf = map_check_no_btf,
- 	.map_mem_usage = htab_map_mem_usage,
-+	.map_num_entries = htab_map_num_entries,
- 	BATCH_OPS(htab),
- 	.map_btf_id = &htab_map_btf_ids[0],
- };
-diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
-index f8bc1e096182..5297eb2e8e97 100644
---- a/kernel/bpf/lpm_trie.c
-+++ b/kernel/bpf/lpm_trie.c
-@@ -780,6 +780,13 @@ static u64 trie_mem_usage(const struct bpf_map *map)
- 	return elem_size * READ_ONCE(trie->n_entries);
- }
- 
-+static s64 trie_num_entries(const struct bpf_map *map)
-+{
-+	struct lpm_trie *trie = container_of(map, struct lpm_trie, map);
-+
-+	return READ_ONCE(trie->n_entries);
-+}
-+
- BTF_ID_LIST_SINGLE(trie_map_btf_ids, struct, lpm_trie)
- const struct bpf_map_ops trie_map_ops = {
- 	.map_meta_equal = bpf_map_meta_equal,
-@@ -794,5 +801,6 @@ const struct bpf_map_ops trie_map_ops = {
- 	.map_delete_batch = generic_map_delete_batch,
- 	.map_check_btf = trie_check_btf,
- 	.map_mem_usage = trie_mem_usage,
-+	.map_num_entries = trie_num_entries,
- 	.map_btf_id = &trie_map_btf_ids[0],
- };
-diff --git a/kernel/bpf/queue_stack_maps.c b/kernel/bpf/queue_stack_maps.c
-index d869f51ea93a..f66aa31248e7 100644
---- a/kernel/bpf/queue_stack_maps.c
-+++ b/kernel/bpf/queue_stack_maps.c
-@@ -22,7 +22,7 @@ struct bpf_queue_stack {
- 	char elements[] __aligned(8);
- };
- 
--static struct bpf_queue_stack *bpf_queue_stack(struct bpf_map *map)
-+static struct bpf_queue_stack *bpf_queue_stack(const struct bpf_map *map)
+ static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size)
  {
- 	return container_of(map, struct bpf_queue_stack, map);
- }
-@@ -265,6 +265,13 @@ static u64 queue_stack_map_mem_usage(const struct bpf_map *map)
- 	return usage;
- }
- 
-+static s64 queue_stack_map_num_entries(const struct bpf_map *map)
-+{
-+	struct bpf_queue_stack *qs = bpf_queue_stack(map);
-+	s64 entries = qs->head - qs->tail;
-+	return entries;
-+}
-+
- BTF_ID_LIST_SINGLE(queue_map_btf_ids, struct, bpf_queue_stack)
- const struct bpf_map_ops queue_map_ops = {
- 	.map_meta_equal = bpf_map_meta_equal,
-@@ -279,6 +286,7 @@ const struct bpf_map_ops queue_map_ops = {
- 	.map_peek_elem = queue_map_peek_elem,
- 	.map_get_next_key = queue_stack_map_get_next_key,
- 	.map_mem_usage = queue_stack_map_mem_usage,
-+	.map_num_entries = queue_stack_map_num_entries,
- 	.map_btf_id = &queue_map_btf_ids[0],
- };
- 
-@@ -295,5 +303,6 @@ const struct bpf_map_ops stack_map_ops = {
- 	.map_peek_elem = stack_map_peek_elem,
- 	.map_get_next_key = queue_stack_map_get_next_key,
- 	.map_mem_usage = queue_stack_map_mem_usage,
-+	.map_num_entries = queue_stack_map_num_entries,
- 	.map_btf_id = &queue_map_btf_ids[0],
- };
+ 	union bpf_attr attr;
+@@ -5884,6 +5913,9 @@ static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size)
+ 	case BPF_TOKEN_CREATE:
+ 		err = token_create(&attr);
+ 		break;
++	case BPF_MAP_GET_NUM_ENTRIES:
++		err = bpf_get_num_entries(&attr, uattr.user);
++		break;
+ 	default:
+ 		err = -EINVAL;
+ 		break;
 -- 
 2.43.0
 
