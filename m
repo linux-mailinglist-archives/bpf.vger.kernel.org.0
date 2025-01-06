@@ -1,152 +1,119 @@
-Return-Path: <bpf+bounces-47915-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47936-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46D6CA02015
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 08:54:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EC9BA0206C
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 09:11:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C547163720
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 07:54:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E76916385D
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 08:11:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E0BC1D63D8;
-	Mon,  6 Jan 2025 07:54:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9E361D7E3E;
+	Mon,  6 Jan 2025 08:11:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Qx+eqjqg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lezsdofa"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 800B7B676;
-	Mon,  6 Jan 2025 07:54:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0638B1A2631;
+	Mon,  6 Jan 2025 08:10:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736150072; cv=none; b=n6srBVHO2LECKIA/UNn+sbSjl484CJcd2fdH3TqJQqWDZ9skAtQi94YvnJHX+TEtPWAZgRw2gAmsaltotbqLRMKXJ93X3Y4Y9A9CCnOhks4ya0X5MsEZxGQ5K4+cOLHyRUEuxrfHCGz8uqStGnpMco+RWUAutCwsocH+E5XLJMo=
+	t=1736151060; cv=none; b=eqgXtWz8wZ9Fge5cuTdECadZ3jMXIFW9kgUZ+RZ9yV82VIPfcp9JSTe1L3LD1QDNp8pJrxd1Cefj/aK0+HnL6Op1UPafRJG9YZa7BBD7ajvsxXOyipHzCyye86XesgjLXKDqKT7uzRuI1MYy/CVpWcPOgCbU+SSQasmsYEiYBKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736150072; c=relaxed/simple;
-	bh=uVhaCB8dTvQKOKi/9Zpe3Ckh4EC4m1wh+mtzskJQF+s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=H3Rood0GaGEImYtkL06NUMPIWSK/sZ67h3iudxJJ1jSdnycKbmnLbd1RC03q1Ge2hnZAk5T6b6TS+TqHXfEF5juzV4Esu01wSB23nYb3HY7OIjQJeUBIvUqvrc/6trzz+loL64Wp8F0PFLHL/a5Hk9GLgYEJy/4rtLjqkWyja4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Qx+eqjqg; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1467340005;
-	Mon,  6 Jan 2025 07:54:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1736150060;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=N/Sjodq7qq2EI8HalXNJGQv85lzSJjUANME+DYv7yG0=;
-	b=Qx+eqjqgPlBBZ4Q652C3bmAM5CdL8koUIdmX6WiQ41eCELpQcqVM8dsiB8a6eXWyL6xQ/m
-	gVscO+rYVkII4ZYa3lzV9DgLhg9Xp5mzzeBMFc4c4qN21aWS2wv74prbmpqoZMj0hWztDj
-	KwwGDpqYxgtBxmBWFUptCyTJbTZVAXzJvA02kTUbVR7U9ykLb7dv8G+eXs88w4oztSJDxJ
-	ojXuCQhOQjCY06qryHNQrj9RzA5mV/Bvh2qKbxUWcNYssG16ABWN0H1DpbClVPyz7H1Pg1
-	NbC4cJ5qMBZ+vYhSXNYrVeX+vtXOq9FTmwPburl9Td5BR1z2QQ+azBX9uJ5Lhw==
-Message-ID: <9a18fec7-8f73-48c6-81d4-5baa5b701f76@bootlin.com>
-Date: Mon, 6 Jan 2025 08:54:18 +0100
+	s=arc-20240116; t=1736151060; c=relaxed/simple;
+	bh=z6rapFQsJJuLWWLJVSfKW1IPI0ctzTNB5tuk0C7Ws2s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rEFVnsXdym6u+BNk26+WCsdacM99qdvEOW8neKdgq25vvyNihPDFacHvJCQDQ6jnLety6MmrJsA6zEsW5XdxjJx2IsRlR9zGLdMS2ObhkFZd92zbkffZB08wzJOH4biRFJp2piuzn53ZndSjzUtwXBt5RK7qGBFbpOphXSWBF5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lezsdofa; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-21628b3fe7dso194787895ad.3;
+        Mon, 06 Jan 2025 00:10:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736151058; x=1736755858; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UNj5EB3CBzzHNe2564u4Vg3r3GIGTo09F7r1zlnGu1M=;
+        b=lezsdofasqPgOyVLFOjFD/yX8VTozt/G13Q7oTlHdreAa3ZIJm5G+/eBdyxVNtvwt3
+         MlskO3fGfylxHI/AN7AomyB6Le4OXWeWeyc3VhE1JSLx640Bm5YiU8Dd1h80StbrlWC6
+         LlGpHIGsFd1SJ3r2lAvj9ZOU2l5DPTHUfIqOSmfzllgi5JUJ2yhlHgD7D5km+qaFYnXF
+         SP0Cu3IPHVIdDM/XlvrHXG54abKXb5ZynSuWla07IPwsfV5Fd/keVmWjvnEovGJDbeQ3
+         NfoQ1XDJYTbpUIqOKCNi1YPHGl0FAi96dWn1esaCL4qL2F6Ixice8WrHsIZ9Tg1nbh6m
+         nCxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736151058; x=1736755858;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UNj5EB3CBzzHNe2564u4Vg3r3GIGTo09F7r1zlnGu1M=;
+        b=QdhE9o12A4GOwqpQAHNQwlY/jwgtrJIK9aRifipAv0zCKtFPa6QeOODIhBlBsPgF6j
+         ZApnHNV+AivaUAVZU8PhaEZDjSZR0mYh9XQSeKl2k7x8Huyh7VRVkFMA/VW2p4czaEeb
+         VL2dO9PrhdA0HtBb1toLuSTDufi3dumiyiAjrrV1xSHapB3OOYGTpoIPi6XthjsZ3lJ7
+         +R1/n2Oy5kai6RlbtE6FGNDnbzbLd1BOJ6PkIhKAEsnIiAbUNh5ChpVH7mp7N2rKLYY5
+         Sh/g6yO3sr+jc7D1TA8dFIKiBlej61vh1jJxIhopeMC+TTcwhs34wZeCzXFGb7obSlyz
+         EgMA==
+X-Forwarded-Encrypted: i=1; AJvYcCU/h4OdRhQyLSFtMldvsEwu2F0smIEQEUdtf5R+aczoqnW/ASsN1zEeTBXOcpyYToO7uMujaBwmTK4uR1KOKeTH@vger.kernel.org, AJvYcCUrgcMxLhx7gM8j3WeRcTUyTUw8w9POh8ssiSaoxtbGePQbH39KOJYTxJJRGSEukSQy47E=@vger.kernel.org, AJvYcCX/VoWVMe/m5vG5vmh6fKrNzUutLavGfz7ZaYFqJptJmKQCpRUvbBpBs/o/xpGuKObyiHud7xe36/zeIaXP@vger.kernel.org
+X-Gm-Message-State: AOJu0YxGa5MgE9oW9CjLDni6hYXch2n/BPiy5ZKY5P28K6fNIikeukXD
+	PX3qr0znQwcjF96zmRtQthrluMtCNNtbW5aFz8ijCDEPNOChUdgRnvUjuA==
+X-Gm-Gg: ASbGncs2CcSWo6dRMxGhZ41H79Nod0X1vfxp2erxkYyt0VQl03vGHuFhzUGbt/GItki
+	Bm1tljzpKNBq7DRi13tOwKz+kF49Yx9GlwuJGczPEcJU4I1V0uh/oAuA34VWHitsnilDT6cgq2P
+	VzUBeZxFLH5GVAoWyN2F9deHO56Lit5VNEZXHYyghP6bnbcCKy+wKRsxZRLfxid5Afxpsg3n1Ei
+	dwGpVc04zXpJ+OQjdbCFRUWPzfiqIjpfEntxemVE8C2ixfZIYQLve8/THznMUtGeRLH/vvrIlip
+X-Google-Smtp-Source: AGHT+IHjMYJ+kYgL9lIpddes5A+CsRLnuYBEZZhoqovTAHBKAqmupPfBM7y9cycXTJ4TnPKyShex5Q==
+X-Received: by 2002:a05:6a21:3189:b0:1e1:ab8b:dda1 with SMTP id adf61e73a8af0-1e5e080c4a3mr6061674637.35.1736151057881;
+        Mon, 06 Jan 2025 00:10:57 -0800 (PST)
+Received: from fedora.dns.podman ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad835469sm31910429b3a.60.2025.01.06.00.10.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Jan 2025 00:10:57 -0800 (PST)
+From: Hangbin Liu <liuhangbin@gmail.com>
+To: netdev@vger.kernel.org
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Simon Horman <horms@kernel.org>,
+	Phil Sutter <phil@nwl.cc>,
+	Florian Westphal <fw@strlen.de>,
+	Petr Mladek <pmladek@suse.com>,
+	Yoann Congal <yoann.congal@smile.fr>,
+	wireguard@lists.zx2c4.com,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCHv4 RESEND net-next 0/2] selftests: wireguards: use nftables for testing
+Date: Mon,  6 Jan 2025 08:10:41 +0000
+Message-ID: <20250106081043.2073169-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] selftests/bpf: Migrate test_xdp_redirect.sh to
- xdp_do_redirect.c
-To: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250103-xdp_redirect-v1-0-e93099f59069@bootlin.com>
- <20250103-xdp_redirect-v1-2-e93099f59069@bootlin.com>
- <c7ff7788-d3af-4867-8b13-57a0bf1f529a@bootlin.com>
-Content-Language: en-US
-From: Bastien Curutchet <bastien.curutchet@bootlin.com>
-In-Reply-To: <c7ff7788-d3af-4867-8b13-57a0bf1f529a@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: bastien.curutchet@bootlin.com
 
-Hi Alexis,
+This patch set convert iptables to nftables for wireguard testing, as
+iptables is deparated and nftables is the default framework of most releases.
 
-On 1/3/25 1:54 PM, Alexis Lothoré wrote:
-> Hi Bastien,
-> 
-> On 1/3/25 11:10, Bastien Curutchet (eBPF Foundation) wrote:
-> 
-> [...]
-> 
->> +		SYS(fail, "ip link add veth%d index %d%d%d type veth peer name veth0 netns %s",
->> +		    i, i, i, i, ns_name);
-> 
-> nit: since you have to run an ip command through SYS anyway, you can reduce the
-> open ns/run command/close ns dance (and all the resulting error checks) by
-> running directly `SYS("ip netns exec %s ip link add [...]", NS0, [...])`
-> 
-> [...]
-> 
+v3: drop iptables directly (Jason A. Donenfeld)
+    Also convert to using nft for qemu testing (Jason A. Donenfeld)
+v2: use one nft table for testing (Phil Sutter)
 
-True, thanks.
+Hangbin Liu (2):
+  selftests: wireguards: convert iptables to nft
+  selftests: wireguard: update to using nft for qemu test
 
->> +	ret = bpf_xdp_attach(if_nametoindex("veth2"),
->> +			     bpf_program__fd(prog_to_111),
->> +			     data->xdp_flags, NULL);
-> 
-> nit: since we are setting static if index at veth creation (which looks needed
-> for this test), the if_nametoindex could be replaced by the corresponding index,
-> which could be directly a define
-> 
+ tools/testing/selftests/wireguard/netns.sh    | 29 +++++++++-----
+ .../testing/selftests/wireguard/qemu/Makefile | 40 ++++++++++++++-----
+ .../selftests/wireguard/qemu/kernel.config    |  7 ++--
+ 3 files changed, 53 insertions(+), 23 deletions(-)
 
-Also true, thanks.
+-- 
+2.46.0
 
->> +	if (!ASSERT_GE(ret, 0, "bpf_xdp_attach"))
->> +		goto close;
->> +
->> +	ret = bpf_xdp_attach(if_nametoindex("veth1"),
->> +			     bpf_program__fd(prog_to_222),
->> +			     data->xdp_flags, NULL);
->> +	if (!ASSERT_GE(ret, 0, "bpf_xdp_attach"))
->> +		goto close;
->> +
->> +	close_netns(nstoken);
->> +
->> +	nstoken = open_netns(NS1);
->> +	if (!ASSERT_OK_PTR(nstoken, "open NS1"))
->> +		goto close;
->> +
->> +	SYS(close, "ping -c 1 %s.2", IPV4_NETWORK);
->> +
->> +	close_netns(nstoken);
->> +
->> +	nstoken = open_netns(NS2);
->> +	if (!ASSERT_OK_PTR(nstoken, "open NS2"))
->> +		goto close;
->> +
->> +	SYS(close, "ping -c 1 %s.1", IPV4_NETWORK);
-> 
-> Is it really useful to check ping originating from both interfaces, isn´t a
-> single ping able to stimulate programs attached to both veth0 ?
-> 
-
-Indeed, I think a single ping would be enough, I just wanted to stick 
-with what test_xdp_redirect.sh does.
-
-> Aside from those minor points, LGTM :)
-> 
-
-Best regards,
-Bastien
 
