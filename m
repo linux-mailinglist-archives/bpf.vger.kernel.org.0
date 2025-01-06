@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-47962-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47961-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA7C4A028DD
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 16:15:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C94E1A028D4
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 16:12:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2524118854D9
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 15:15:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 078753A4BD6
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 15:12:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6579F13775E;
-	Mon,  6 Jan 2025 15:14:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81705146D6B;
+	Mon,  6 Jan 2025 15:12:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="ie82BHIr"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="DwnaquVS"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D50B286352
-	for <bpf@vger.kernel.org>; Mon,  6 Jan 2025 15:14:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFA7649652;
+	Mon,  6 Jan 2025 15:12:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736176497; cv=none; b=X4F5yHR5E7kcsMpasYQ0yuyTmgmFKWQbYTl8i9NJq29j4wtsWvmrLMwZwMmT4zwaMWQFQqxL6gugCZWH1bUe97Gl8oNYLKvdfLIo6inMzxnFgJE0aBb/a+IyHTSZAjNzDJZrjQ1vLHssU2iZ2lPDZn9W8nt4V0KOX/uBExZIoUI=
+	t=1736176335; cv=none; b=Bdehb0SNDnZPL8PZnfl+8L0fu+vWe3JY9cGDUQOm5gaiLRkWHMcEB5u0QlVkt9gJ6kVFdBkqTVhgaW7OmaVP2YYdk4E7B0b/QrQPD0fyzPw61Y85gtlUV10NhlHYDG23C1CUQb2rnNgUUYIpM6Llms7wZlI5vlE2ur5kjaNXv0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736176497; c=relaxed/simple;
-	bh=cpzbqhh3mA0rOaY+WY9ebE296loNdJMp0REVc1ZkjCE=;
+	s=arc-20240116; t=1736176335; c=relaxed/simple;
+	bh=sCaGQ7jza42NQVs9UqVCaTxlwFQv/BwJnE5TDUcyTDc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uPozm4uO+7ViWLleUoi2ycLIXx08TVo9ygPRxBgi3UOQWpBE1/g+DO1PvLzdgra8Dv1z1036/lLKRjSIWFYi07Z5VilGkZ2w1WPHOFh6sba3zU3lZV9qytHlyLcRsUn+tK9RJ6Q7RLUTCB936XK7+H4d3b3PXqxlgob6bRTU5ew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=ie82BHIr; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=aQp1HaRA8/Kl8NLR8tAHphkhpnOw4HEjEEicQ+kTB2bekgsBPLz8CT1FG78tjPTJjT9iIEMS772LJdHwn63enH2BoFMFQ7HPgi+9ljQA0I4XCPvnfBe6gj6gP0Rl/2TMU8dD/jyQ/eP5QbMQgylaDiGUW8S8+MLymA74vk6iU2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=DwnaquVS; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,25 +36,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=sNlE5TgJeFUH2kGL+Ndx1G5F6UB91J/4Otd3aS7qpGo=; b=ie82BHIrvoXB9fyijgjxGjnQoB
-	plfzqUcXX5HP5tVxhTFPjo/8KBxSk/e7bjfoc3FMWN8qyPMVgnjOBU0Z/3tC/11g/CuMBv2mRFU80
-	oq/kva5myjlEypNepMC1d3TAAgebivqICM6tMSNtDpl5S0jzkgqG5m39b/wL8ATyv64tdKS9Slpez
-	M0HcFpUceOiZ5UUtZm06ZI4FTk7KtsF9hiiukr3WUZJDDyY14NOvyHRi0Uc04VokxzO24cP15fSVm
-	k7ZWnF5+QUFldAk1qkdwr2SxvifAQK0tjkK3RY5Jsm9cfJet9QHZHPZvIq2i+T4drAf55kQ0EyAXq
-	d91Ih8JA==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
+	bh=PNCosPEfbLaDBQQ+0n2cAHh2T7+boeTHmgJ7av1bw2I=; b=DwnaquVS0In1JHIXL5vGL2E4Cz
+	rQGbLOJoOzm0GCcNOZAs1RE8XS5n4T4Rh54OtlHhQhcuNQ8fwrd26B/TjBmitUz8y0BAsnqJhkmu0
+	Z2Vinb2ws8Ybdx8PQTUnk2fyqef7ipXbIyfWF9BzjXoQbBKqC+rCY8vEz81RC5CxihO8ZsBIqkgZU
+	3pNgZmd23Xh2ctMDGQEkny+IswtQ5xoNKn+bbEc9JbRJv3lgstmFMxHfnm+TTqFe5jcPYswrhMZd+
+	tRq1cjwdPH03YUZ2K2yqjOhi3dC1FMuCsAzqvF/WMH64ODG+miqQnQGVcOHqPZAnluQv0UiO6izlX
+	+WL8uKVg==;
+Received: from sslproxy04.your-server.de ([78.46.152.42])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1tUofa-0000TZ-S6; Mon, 06 Jan 2025 16:05:30 +0100
+	id 1tUom2-0001g7-5P; Mon, 06 Jan 2025 16:12:10 +0100
 Received: from [178.197.248.26] (helo=[192.168.1.114])
-	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	by sslproxy04.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1tUofa-0004p5-0a;
-	Mon, 06 Jan 2025 16:05:30 +0100
-Message-ID: <ac06c94d-34a9-4606-a2d6-196575d3877e@iogearbox.net>
-Date: Mon, 6 Jan 2025 16:05:29 +0100
+	id 1tUom1-000KEg-0d;
+	Mon, 06 Jan 2025 16:12:09 +0100
+Message-ID: <76bc081f-2b2d-4b8b-9683-65ad9af8205d@iogearbox.net>
+Date: Mon, 6 Jan 2025 16:12:08 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,11 +62,20 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] selftests/bpf: workarounds for GCC BPF build
-To: Ihor Solodrai <ihor.solodrai@pm.me>, bpf@vger.kernel.org
-Cc: andrii@kernel.org, ast@kernel.org, eddyz87@gmail.com, mykolal@fb.com,
- jose.marchesi@oracle.com
-References: <20250104001751.1869849-1-ihor.solodrai@pm.me>
+Subject: Re: [PATCH bpf-next] bpf/tests: Add 32 bits only mong conditional
+ jump tests
+To: Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>
+Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <609f87a2d84e032c8d9ccb9ba7aebef893698f1e.1736154762.git.christophe.leroy@csgroup.eu>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -112,82 +121,24 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <20250104001751.1869849-1-ihor.solodrai@pm.me>
+In-Reply-To: <609f87a2d84e032c8d9ccb9ba7aebef893698f1e.1736154762.git.christophe.leroy@csgroup.eu>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 1.0.7/27510/Mon Jan  6 10:45:39 2025)
 
-On 1/4/25 1:17 AM, Ihor Solodrai wrote:
-> Various compilation errors happen when BPF programs in selftests/bpf
-> are built with GCC BPF. For more details see the discussion at [1].
-
-Thanks for the patch!
-
-> The changes only affect test_progs-bpf_gcc, which is built only if
-> BPF_GCC is set:
->    * Pass -std=gnu17 when  to avoid errors on bool
->      types declarations in vmlinux.h
->    * Pass -nostdinc for tests that trigger int64_t declaration
->      collision due to a difference between gcc and clang stdint.h
->    * Pass -Wno-error for tests that trigger uninitialized variable
->      warning pm BPF_RAW_INSNS
+On 1/6/25 10:15 AM, Christophe Leroy wrote:
+> Commit f1517eb790f9 ("bpf/tests: Expand branch conversion JIT test")
+> introduced "Long conditional jump tests" but due to those tests making
+> use of 64 bits DIV and MOD, they don't get jited on powerpc/32,
+> leading to the Long conditional jump test being skiped for unrelated
+> reason.
 > 
-> [1] https://lore.kernel.org/bpf/EYcXjcKDCJY7Yb0GGtAAb7nLKPEvrgWdvWpuNzXm2qi6rYMZDixKv5KwfVVMBq17V55xyC-A1wIjrqG3aw-Imqudo9q9X7D7nLU2gWgbN0w=@pm.me/
+> Add 4 new tests that are restricted to 32 bits ALU so that the jump
+> tests can also be performed on platforms that do no support 64 bits
+> operations.
 > 
-> Signed-off-by: Ihor Solodrai <ihor.solodrai@pm.me>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ pls also add Jose to Cc (done here) ]
-
-> ---
->   tools/testing/selftests/bpf/Makefile | 11 ++++++++++-
->   1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 9e870e519c30..2e1fe53efa83 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -103,6 +103,15 @@ progs/btf_dump_test_case_packing.c-bpf_gcc-CFLAGS := -Wno-error
->   progs/btf_dump_test_case_padding.c-bpf_gcc-CFLAGS := -Wno-error
->   progs/btf_dump_test_case_syntax.c-bpf_gcc-CFLAGS := -Wno-error
->   
-> +# Uninitialized variable warning on BPF_RAW_INSN
-> +progs/verifier_bpf_fastcall.c-CFLAGS := -Wno-error
-> +progs/verifier_search_pruning.c-CFLAGS := -Wno-error
-
-See previous feedback from Jose:
-
-   Ignoring the warning doesn't cure the resulting undefined behavior.
-   These selftests seems to be violating strict aliasing rules, so it is
-   better to either change the testcase to work well with anti-aliasing
-   rules or to disable strict aliasing, like it is done for many other
-   tests already:
-
-   progs/verifier_bpf_fastcall.c-CFLAGS := -fno-strict-aliasing
-   progs/verifier_search_pruning.c-CFLAGS := -fno-strict-aliasing
-
-> +# int64_t declaration collision
-> +progs/test_cls_redirect.c-CFLAGS := -nostdinc
-> +progs/test_cls_redirect_dynptr.c-CFLAGS := -nostdinc
-> +progs/test_cls_redirect_subprogs.c-CFLAGS := -nostdinc
-
-iiuc, this hunk is not needed given [1] got merged which addresses the
-collision issue already?
-
-   [0] https://lore.kernel.org/bpf/87pll3c8bt.fsf@oracle.com/
-   [1] https://gcc.gnu.org/pipermail/gcc-patches/2025-January/672508.html
-
->   # The following tests do type-punning, via the __imm_insn macro, from
->   # `struct bpf_insn' to long and then uses the value.  This triggers an
->   # "is used uninitialized" warning in GCC due to strict-aliasing
-> @@ -507,7 +516,7 @@ endef
->   # Build BPF object using GCC
->   define GCC_BPF_BUILD_RULE
->   	$(call msg,GCC-BPF,$4,$2)
-> -	$(Q)$(BPF_GCC) $3 -DBPF_NO_PRESERVE_ACCESS_INDEX -Wno-attributes -O2 -c $1 -o $2
-> +	$(Q)$(BPF_GCC) $3 -DBPF_NO_PRESERVE_ACCESS_INDEX -Wno-attributes -O2 -std=gnu17 -c $1 -o $2
->   endef
->   
->   SKEL_BLACKLIST := btf__% test_pinning_invalid.c test_sk_assign.c
-
+lgtm, fixed $subj s/mong/long/ while applying, thanks!
 
