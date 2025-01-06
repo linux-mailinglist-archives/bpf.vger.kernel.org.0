@@ -1,84 +1,84 @@
-Return-Path: <bpf+bounces-47958-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47959-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD66AA02899
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 15:54:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4AFEA0289A
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 15:54:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A01207A1177
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 14:54:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D61ED1882C48
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 14:54:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54C2913B58E;
-	Mon,  6 Jan 2025 14:54:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C401186351;
+	Mon,  6 Jan 2025 14:54:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KoDsvIFM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="efaysKNc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED0CB433CB
-	for <bpf@vger.kernel.org>; Mon,  6 Jan 2025 14:54:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99A40149C7A
+	for <bpf@vger.kernel.org>; Mon,  6 Jan 2025 14:54:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736175251; cv=none; b=Ndot5fDp4fstBgIVdwaDYVhIHM9tGJLYXH2meLEzrNfygCvPJ4yuFCT12K2iU0GM4cSK+ZRoEyRPyseIBuGJLd2YVbZJu8MirCe4MhylzCeYCH4K4gxoX3yD5I0DSmPLomVsTGkzh8Ux1e0D3b770fTuN5XKneuysy8m9Wkt/CA=
+	t=1736175260; cv=none; b=fjqFLBUvl3bvrZogyzGdqH/q6xDoFUXy0gSBZOW2F/AKoO2xUsbcR3mOb7v7vmLU7DTdecP5ltrk0M8T9FH61oBh9iAVQz4QH77TjJivWQZucMZ2a9PvMgXbVSAlNahABjOybv3dg1D5zDSlOxhAf+6IcMwJzMkskQsN/6xB2PY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736175251; c=relaxed/simple;
-	bh=vD7OoCYZuWUrIQLKYDenhdTT+7LqLcv3pmLsJjxvzE4=;
+	s=arc-20240116; t=1736175260; c=relaxed/simple;
+	bh=4ApDpjmxkffrRpNFhU+1HWLc7ansqaGNNqVeGbtIZxE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UniWnpPDVrDCKbJl5F/Yg827xIOJQ8YbbPRH0XBoKsstHT1adIKsQLwhez9R2u0oYRQGTlntOEZXUqrI1ldQnmE0ycDWo/MEZu7zi9jFtJi8hgxwHvLXvrrhmnrLzYnRpCo4mtFNCrd9oTX8J2rzbgUDnWGXgaY4p3VmM3Dlm+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KoDsvIFM; arc=none smtp.client-ip=209.85.221.50
+	 MIME-Version; b=rMApmRCQoLyprBtZZh7w+HEsplw93AQHa+HqLkiY84M4pLQUIXtTuyfpIjIvaOW+j7wWzpnhZoLn6Yv94enSSB3xJltodY6R0KylwvSjLbjNDsa3cad4xGNgoMWmb74BbAfStbhn1u/+TCq2+kVGKG4zRy5A+Qv6+0hTIoVaa6k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=efaysKNc; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-385ef8b64b3so11328068f8f.0
-        for <bpf@vger.kernel.org>; Mon, 06 Jan 2025 06:54:08 -0800 (PST)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-385deda28b3so9534534f8f.0
+        for <bpf@vger.kernel.org>; Mon, 06 Jan 2025 06:54:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736175246; x=1736780046; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1736175254; x=1736780054; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qLp9LvPNwq2kCY8NmpKp7heM93uAueEYhhM+Oqp3y0M=;
-        b=KoDsvIFM4gbqiRleegWuBFPTMtjxWvJaXTRN89vrNSDF4PuusIhEX/XUBeDT5TPhva
-         tqdEj0GRF1LycqQDE2WjtjRejAC0ltTh9Q/lzpWUAzf2p0jRbCMpZxndjT3jpyjRyaaR
-         rdkfK8/SZE3/C4s0aAWed2nKfJMwecDsk0lh5ckAAEBC8JQnpTPHOncSTZGGI4qgf8te
-         VqJkD84a+x85APalHpb2AOkqu9czVnbrPLKhls3eFvNhbLDIh4h2f2ZMz4V7s5W4blHj
-         RHIvJy51YD8YFxO6GngbVFDfHSoHIL+lKKjq+at1IRzuQfjMxAtjU7VwinPKzI191vkc
-         Lg6Q==
+        bh=+Nw6zDoZ2wfSbiPltCWmK0Kbd7iAlPXIjzSfpIYlNp8=;
+        b=efaysKNcZBWJ4pA5sLVHxcHgYkg/8hwMWovTTuJ6UI0+i+C9YsrcIUHPhoVijoZwkV
+         liz4ZvafPs359CyjnBxRBBs2sAM5OkuA9EFLgnpJlfJZnOwkzotQrVBvX60xh5YGhQil
+         rhiKzCJEBYBsVqrWx+zmtoJRZtJ0lgXwIsvQeTFgygiGIkzojEMbLoVbVEL8SHZ5LY2J
+         yelDwh2C16hWQVfP/XfcygpPNyxwr/veSXEzh4Fs1Pd9tIDn7aI032T5mRL3fO/gKGpn
+         7rvSMCQ1ItiWEk6h4zByYRMkR6HIISaA11RBWWXTFiHGv9obs8piA8+d/zT4qeFpVe7Q
+         7a8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736175246; x=1736780046;
+        d=1e100.net; s=20230601; t=1736175254; x=1736780054;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qLp9LvPNwq2kCY8NmpKp7heM93uAueEYhhM+Oqp3y0M=;
-        b=WGM3kVkYliBpwGL0qoMBneYF8Hw5LHFdwNifIG2hW6dB57ltbCR5gMx09Ddfj0f+FA
-         BeAEfkpgvM6FT1r43zb2Fe7GcWAT4r7ibqU0yOuUnijBkscDQpPXOJ+q47lw84vDqVUF
-         yBwz3sfnXuvnR0pIydw1jP/tW9IAz9O6Q7/p29FqyW2zFrSiD5GCTUDAlzXZXgpb+PPN
-         somyr59n6JJtmSSm9sq6pdwjWcWSi++aqKReUH9IZg809+cXj5ZOY9eEc8z5GzNeMSyC
-         9dZ/M+p6/OHLgrwFMVhkVLTpEfYq6BKh5Xzs2zstm726FK9prhXRFYbmFlsequMW0RiM
-         CPIQ==
-X-Gm-Message-State: AOJu0Yz3ux8JrzotBgQW9PSiJLDgUuTONRt57ykW1CxgvPKmQcuVPwVu
-	3OXz0SASzLsoUyMuavu8B844BZ1h2Wjs2ruTH1R5fjVb7qP3fkqwnKatpLl+BFezbA==
-X-Gm-Gg: ASbGnctuEeH7eCQKNmpqQCkNg/LRMXAK/Hum9371xo2a8NCMDDGuAp5oKi4ch2RVtSa
-	dO/scDNp3sdqN5LoAkI+nKxHNPHRD2RtB0RhvBreib0KD35Cg3RAIgDZJ8KagbUSUrShZMBlG7t
-	vIg6SMZTm2oZRFm8XDcE3AAjLACTwSMBjd3TJW1YZwFebdiXb4tntQ8SU2KtCxOOVodG+peho9K
-	qlgAwpTJ35TdUFVeZ0B5BGvnok/Vkr2XNObJxyCRpqapAiojc9y8OlhNTZqHx45ixNaLvjhMus=
-X-Google-Smtp-Source: AGHT+IHsOOu+CCVWgz/n42h2Ko995f4jGOVQjt9NKSe1T9RcvY42dKw9FJCE353NCbxHI7BWZMgyfw==
-X-Received: by 2002:a05:6000:2ae:b0:385:ed16:c97 with SMTP id ffacd0b85a97d-38a224088aemr44648623f8f.49.1736175246287;
-        Mon, 06 Jan 2025 06:54:06 -0800 (PST)
+        bh=+Nw6zDoZ2wfSbiPltCWmK0Kbd7iAlPXIjzSfpIYlNp8=;
+        b=GwsCEXooa+Z2aAW5WZJAymDOQbwNx01Q+jBOa7INaEb3yw4qDuHA7Fn/8CrwyYOU4/
+         9bgW5DWjjDN3N6UF/pKGasH9qk5cZmwTxZwy/9RyRA7VNJw3QEALaGjB7T3hQAWwRV3T
+         RpJNM1yrCLZ16kBiycUTLZxSuWyywWem/P37aWYU10zFhqVU4i/2PanJRrVVW47ZoTTp
+         iOuesvcwodoruYQzzhYiGTHVZATJOdMwvcLbK7CD4pWDuvSYLKDTpKcxTh54IoQFo6UP
+         6sS0HUoOFw0q3R9lB/QWPtb38LKuZ5JCawy7z8g52KwZtDHDSD/ypGMd7KAWscjKK5hi
+         aTPQ==
+X-Gm-Message-State: AOJu0YxeNcq9H9MoXcjlB6HYJUnz42OLptKHgFC6mWOWcAsdUjWIY1y5
+	7O3KLGqHyHxwN12AcxfC88Z6Jxk7K63+kBs65ejNUvs8sRIkWEuOU0pRmvfz2oDOHQ==
+X-Gm-Gg: ASbGncvomma7W6YT19j4muqu0azisLEMRCbSlNl/ykvN+WqoM2kTv/wYVMItDvwRX4K
+	sk0Q+A9rRdn859/6mTJH0QYGhNYNySyoszhgnL1q8LAdL2osa1i4fEj7dgUbMCfd7pmgDczQcCr
+	c4Yn5os7gWWuAHB8drt5/4MDaG0aOfzvjOOoT4VeBoYBUX0javkUgXAfjC9RNU/JQH8OhkXFZh3
+	l2VFTR8UsOkyspLU5QH/RzHfGgkoBtBjph0quUk4duiUNSXWYZIhnLlzZ7H8ZkXe7/Rgp/CqsQ=
+X-Google-Smtp-Source: AGHT+IHg1jdNIkXuSPlEnPnr+qsq5p3Jt3KiFth+eVB2Q0u2U2PhjPxArmRPr/HdH9B45JUMs141VQ==
+X-Received: by 2002:a5d:47a7:0:b0:386:4034:f9a6 with SMTP id ffacd0b85a97d-38a223fd8d3mr44235049f8f.57.1736175254359;
+        Mon, 06 Jan 2025 06:54:14 -0800 (PST)
 Received: from babis.. ([2a02:3033:700:3ba2:3837:7343:334:7680])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a1c832e74sm47389982f8f.30.2025.01.06.06.54.04
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a1c832e74sm47389982f8f.30.2025.01.06.06.54.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jan 2025 06:54:05 -0800 (PST)
+        Mon, 06 Jan 2025 06:54:13 -0800 (PST)
 From: Charalampos Stylianopoulos <charalampos.stylianopoulos@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Nick Zavaritsky <mejedi@gmail.com>,
 	Charalampos Stylianopoulos <charalampos.stylianopoulos@gmail.com>
-Subject: [PATCH bpf-next 3/4] libbpf: Add support for MAP_GET_NUM_ENTRIES command
-Date: Mon,  6 Jan 2025 15:53:27 +0100
-Message-ID: <20250106145328.399610-4-charalampos.stylianopoulos@gmail.com>
+Subject: [PATCH bpf-next 4/4] selftests/bpf: Add tests for bpf_map_get_num_entries
+Date: Mon,  6 Jan 2025 15:53:28 +0100
+Message-ID: <20250106145328.399610-5-charalampos.stylianopoulos@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250106145328.399610-1-charalampos.stylianopoulos@gmail.com>
 References: <20250106145328.399610-1-charalampos.stylianopoulos@gmail.com>
@@ -90,108 +90,143 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Extend the libbpf API to provide support for getting the number of
-entries in a map.
+Extend the existing selftests for maps with checks that the number of
+map entries returned by bpf_map_get_num_entries is as expected.
 
 Co-developed-by: Nick Zavaritsky <mejedi@gmail.com>
 Signed-off-by: Nick Zavaritsky <mejedi@gmail.com>
 Signed-off-by: Charalampos Stylianopoulos <charalampos.stylianopoulos@gmail.com>
 ---
- tools/include/uapi/linux/bpf.h | 17 +++++++++++++++++
- tools/lib/bpf/bpf.c            | 16 ++++++++++++++++
- tools/lib/bpf/bpf.h            |  2 ++
- tools/lib/bpf/libbpf.map       |  1 +
- 4 files changed, 36 insertions(+)
+ .../bpf/map_tests/lpm_trie_map_basic_ops.c    |  5 +++
+ tools/testing/selftests/bpf/test_maps.c       | 35 +++++++++++++++++++
+ 2 files changed, 40 insertions(+)
 
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 2acf9b336371..f5c7adea1387 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -903,6 +903,17 @@ union bpf_iter_link_info {
-  *		A new file descriptor (a nonnegative integer), or -1 if an
-  *		error occurred (in which case, *errno* is set appropriately).
-  *
-+ * BPF_MAP_GET_NUM_ENTRIES
-+ *	Description
-+ *		Get the number of entries currently present in the map.
-+ *
-+ *		This operation is supported only for a subset of maps. If the
-+ *		map is not supported, the operation returns **EOPNOTSUPP**.
-+ *
-+ *	Return
-+ *		Returns zero on success. On error, -1 is returned and *errno*
-+ *		is set appropriately.
-+ *
-  * NOTES
-  *	eBPF objects (maps and programs) can be shared between processes.
-  *
-@@ -958,6 +969,7 @@ enum bpf_cmd {
- 	BPF_LINK_DETACH,
- 	BPF_PROG_BIND_MAP,
- 	BPF_TOKEN_CREATE,
-+	BPF_MAP_GET_NUM_ENTRIES,
- 	__MAX_BPF_CMD,
- };
+diff --git a/tools/testing/selftests/bpf/map_tests/lpm_trie_map_basic_ops.c b/tools/testing/selftests/bpf/map_tests/lpm_trie_map_basic_ops.c
+index d32e4edac930..40265b497791 100644
+--- a/tools/testing/selftests/bpf/map_tests/lpm_trie_map_basic_ops.c
++++ b/tools/testing/selftests/bpf/map_tests/lpm_trie_map_basic_ops.c
+@@ -434,6 +434,11 @@ static void test_lpm_ipaddr(void)
+ 	inet_pton(AF_INET6, "2a00:ffff::", key_ipv6->data);
+ 	assert(bpf_map_lookup_elem(map_fd_ipv6, key_ipv6, &value) == -ENOENT);
  
-@@ -1837,6 +1849,11 @@ union bpf_attr {
- 		__u32		bpffs_fd;
- 	} token_create;
- 
-+	struct { /* struct used by BPF_MAP_GET_NUM_ENTRIES command*/
-+		__u32 map_fd;
-+		__u32 num_entries;
-+	} map_get_num_entries;
++	unsigned int entries;
++	/* Check that the reported number of entries in the map is as expected. */
++	assert(bpf_map_get_num_entries(map_fd_ipv4, &entries) == 0 && entries == 5);
++	assert(bpf_map_get_num_entries(map_fd_ipv6, &entries) == 0 && entries == 1);
 +
- } __attribute__((aligned(8)));
- 
- /* The description below is an attempt at providing documentation to eBPF
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index 359f73ead613..c91f43690624 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -1330,3 +1330,19 @@ int bpf_token_create(int bpffs_fd, struct bpf_token_create_opts *opts)
- 	fd = sys_bpf_fd(BPF_TOKEN_CREATE, &attr, attr_sz);
- 	return libbpf_err_errno(fd);
+ 	close(map_fd_ipv4);
+ 	close(map_fd_ipv6);
  }
-+
-+int bpf_map_get_num_entries(int fd, unsigned int *num_entries)
-+{
-+	const size_t attr_sz = offsetofend(union bpf_attr, map_get_num_entries);
-+	union bpf_attr attr;
-+	int ret;
-+
-+	memset(&attr, 0, attr_sz);
-+	attr.map_get_num_entries.map_fd = fd;
-+
-+	ret = sys_bpf(BPF_MAP_GET_NUM_ENTRIES, &attr, attr_sz);
-+	if (!ret)
-+		*num_entries = attr.map_get_num_entries.num_entries;
-+
-+	return libbpf_err_errno(ret);
-+}
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 435da95d2058..efa5a092acc9 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -653,6 +653,8 @@ struct bpf_prog_bind_opts {
- LIBBPF_API int bpf_prog_bind_map(int prog_fd, int map_fd,
- 				 const struct bpf_prog_bind_opts *opts);
+diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+index 8b40e9496af1..c61cf740a6b6 100644
+--- a/tools/testing/selftests/bpf/test_maps.c
++++ b/tools/testing/selftests/bpf/test_maps.c
+@@ -109,6 +109,10 @@ static void test_hashmap(unsigned int task, void *data)
+ 	assert(bpf_map_get_next_key(fd, &next_key, &next_key) < 0 &&
+ 	       errno == ENOENT);
  
-+LIBBPF_API int bpf_map_get_num_entries(int fd, unsigned int *num_entries);
++	unsigned int entries;
++	/* Check that the number of entries in the map is 2. */
++	assert(bpf_map_get_num_entries(fd, &entries) == 0 && entries == 2);
 +
- struct bpf_test_run_opts {
- 	size_t sz; /* size of this struct for forward/backward compatibility */
- 	const void *data_in; /* optional */
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index a8b2936a1646..63dbad55cc2d 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -436,4 +436,5 @@ LIBBPF_1.6.0 {
- 		bpf_linker__add_buf;
- 		bpf_linker__add_fd;
- 		bpf_linker__new_fd;
-+		bpf_map_get_num_entries;
- } LIBBPF_1.5.0;
+ 	/* Delete both elements. */
+ 	key = 1;
+ 	assert(bpf_map_delete_elem(fd, &key) == 0);
+@@ -122,6 +126,7 @@ static void test_hashmap(unsigned int task, void *data)
+ 	       errno == ENOENT);
+ 	assert(bpf_map_get_next_key(fd, &key, &next_key) < 0 &&
+ 	       errno == ENOENT);
++	assert(bpf_map_get_num_entries(fd, &entries) == 0 && entries == 0);
+ 
+ 	close(fd);
+ }
+@@ -243,6 +248,11 @@ static void test_hashmap_percpu(unsigned int task, void *data)
+ 	key = 1;
+ 	assert(bpf_map_update_elem(fd, &key, value, BPF_EXIST) == 0);
+ 
++
++	unsigned int entries;
++	/* Check that the number of entries in the map is 2. */
++	assert(bpf_map_get_num_entries(fd, &entries) == 0 && entries == 2);
++
+ 	/* Delete both elements. */
+ 	key = 1;
+ 	assert(bpf_map_delete_elem(fd, &key) == 0);
+@@ -256,6 +266,7 @@ static void test_hashmap_percpu(unsigned int task, void *data)
+ 	       errno == ENOENT);
+ 	assert(bpf_map_get_next_key(fd, &key, &next_key) < 0 &&
+ 	       errno == ENOENT);
++	assert(bpf_map_get_num_entries(fd, &entries) == 0 && entries == 0);
+ 
+ 	close(fd);
+ }
+@@ -529,6 +540,10 @@ static void test_devmap_hash(unsigned int task, void *data)
+ 		exit(1);
+ 	}
+ 
++	unsigned int entries;
++	/* Check that the number of entries in the map is 0. */
++	assert(bpf_map_get_num_entries(fd, &entries) == 0 && entries == 0);
++
+ 	close(fd);
+ }
+ 
+@@ -557,10 +572,17 @@ static void test_queuemap(unsigned int task, void *data)
+ 		exit(1);
+ 	}
+ 
++	unsigned int entries;
++	/* Check that the number of entries in the map is 0. */
++	assert(bpf_map_get_num_entries(fd, &entries) == 0 && entries == 0);
++
+ 	/* Push MAP_SIZE elements */
+ 	for (i = 0; i < MAP_SIZE; i++)
+ 		assert(bpf_map_update_elem(fd, NULL, &vals[i], 0) == 0);
+ 
++	/* Check that the number of entries in the map is MAP_SIZE. */
++	assert(bpf_map_get_num_entries(fd, &entries) == 0 && entries == MAP_SIZE);
++
+ 	/* Check that element cannot be pushed due to max_entries limit */
+ 	assert(bpf_map_update_elem(fd, NULL, &val, 0) < 0 &&
+ 	       errno == E2BIG);
+@@ -581,6 +603,9 @@ static void test_queuemap(unsigned int task, void *data)
+ 	assert(bpf_map_lookup_and_delete_elem(fd, NULL, &val) < 0 &&
+ 	       errno == ENOENT);
+ 
++	/* Check that the number of entries in the map is 0. */
++	assert(bpf_map_get_num_entries(fd, &entries) == 0 && entries == 0);
++
+ 	/* Check that non supported functions set errno to EINVAL */
+ 	assert(bpf_map_delete_elem(fd, NULL) < 0 && errno == EINVAL);
+ 	assert(bpf_map_get_next_key(fd, NULL, NULL) < 0 && errno == EINVAL);
+@@ -613,10 +638,17 @@ static void test_stackmap(unsigned int task, void *data)
+ 		exit(1);
+ 	}
+ 
++	unsigned int entries;
++	/* Check that the number of entries in the map is 0. */
++	assert(bpf_map_get_num_entries(fd, &entries) == 0 && entries == 0);
++
+ 	/* Push MAP_SIZE elements */
+ 	for (i = 0; i < MAP_SIZE; i++)
+ 		assert(bpf_map_update_elem(fd, NULL, &vals[i], 0) == 0);
+ 
++	/* Check that the number of entries in the map is MAP_SIZE. */
++	assert(bpf_map_get_num_entries(fd, &entries) == 0 && entries == MAP_SIZE);
++
+ 	/* Check that element cannot be pushed due to max_entries limit */
+ 	assert(bpf_map_update_elem(fd, NULL, &val, 0) < 0 &&
+ 	       errno == E2BIG);
+@@ -637,6 +669,9 @@ static void test_stackmap(unsigned int task, void *data)
+ 	assert(bpf_map_lookup_and_delete_elem(fd, NULL, &val) < 0 &&
+ 	       errno == ENOENT);
+ 
++	/* Check that the number of entries in the map is 0. */
++	assert(bpf_map_get_num_entries(fd, &entries) == 0 && entries == 0);
++
+ 	/* Check that non supported functions set errno to EINVAL */
+ 	assert(bpf_map_delete_elem(fd, NULL) < 0 && errno == EINVAL);
+ 	assert(bpf_map_get_next_key(fd, NULL, NULL) < 0 && errno == EINVAL);
 -- 
 2.43.0
 
