@@ -1,100 +1,102 @@
-Return-Path: <bpf+bounces-47952-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47953-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A081AA027B4
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 15:20:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D66BA02841
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 15:40:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26EB5188592D
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 14:20:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27E4B3A214F
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 14:40:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 859481DE8AF;
-	Mon,  6 Jan 2025 14:20:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3F471DE2DA;
+	Mon,  6 Jan 2025 14:39:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rX0i1QG3"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JLi2So6Y"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0660C433CA;
-	Mon,  6 Jan 2025 14:20:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5A351DE894
+	for <bpf@vger.kernel.org>; Mon,  6 Jan 2025 14:39:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736173210; cv=none; b=StdEwVTrS/adLaUlgf6JBuXCkRmD1YRWrIjjwL7ncApwpBkiDF1ZeQjoUNM1ysWbQCT5K2v/qwM7bdvtG/KFtaBoLhECHH1UmljmL4rADgRbtVWcWGPUGUyAB0AUg3muw+pnSYms8RBkFRVJvd7jt3KkaaC2HivqN+489I6u3Dc=
+	t=1736174382; cv=none; b=RAjQr76bVFdWFb07TKMXvrLmRibqaBMkH9yTIqH5qguZAvBJ3xqrtmeLQBxyIhPU3IURaOx6wlMIBFbHS+Zubp+tOVlVTpElDh0R6Su9WarSc8tXLEKOUU9NCrz7dVKatUNmaOZlmhQV5SsNBW1N0cZ/8CBxEQpzt+Zi9L0RMwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736173210; c=relaxed/simple;
-	bh=RKd7knf1LcOLKPssmb/Vq2FTYvbMnTcKGAZPremeTsY=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=p7Xh8g50XKzABKW3sO4nRGPno0+p8QGzzzO+doKkDLNkVoUFDpYItp+rps1V0Q4/nKmdKWmm89UdEedh6nWPlhS3+H1QxzGv6XNtKe6u418jqVqOpBlznEMFrLaQ1MCElSLYZeuP1tnDCddMs/sOoLIO7IujJBHuChOTvwVoEHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rX0i1QG3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 999CBC4CED2;
-	Mon,  6 Jan 2025 14:20:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736173209;
-	bh=RKd7knf1LcOLKPssmb/Vq2FTYvbMnTcKGAZPremeTsY=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=rX0i1QG37+O46vITWZvwj7oCSpTvSPXyDRIb+QtnK7tdMNxN0o4sRXcfNyzuuEgHj
-	 41loxt4nzIjAh9nPDgfIt3SRWGjJqDRB8Hqulj0HtS1nOOvaB29NLuO+MAjeswSr+z
-	 Z9zL8pTK76aJpIYRJbOdWw2lj72jaXRQReXXp32m3hBsZq4nQduBEQhHkuLRk/i3jn
-	 3PdaSlmMRAmDcL4ck3VR5pDXfzrromsjGcSgVeXRwgVsTU75eO/2Bn18xV97bohfl2
-	 hAZxh3y1nryadMuoRB9ClAYoHluHa2+MH8pqfHAjm8kZ3qbqodS/CYmkfkDsRdA6Fr
-	 OsMeDLkPsi7RA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB104380A97D;
-	Mon,  6 Jan 2025 14:20:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1736174382; c=relaxed/simple;
+	bh=pEcdNS6biiuDg5Lz2TFAPdrcZP4bEIgW5De5HoGw8aA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CA2Pl9x3dza5e6c48UY3HImLhJ+k9jHxFrooOLii7kjW9dJNJAItfibqsMo0Ra+OUTLufJLZxOqo3eXBY8EYrNhJuLTJWVzLZhhQOSCip9wOE+v1kNWHh3DF3VWD7wuStkOYSqQccYJlaNVD58LkvNO2bgIRNFgTDtc63YhZ5/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JLi2So6Y; arc=none smtp.client-ip=95.215.58.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <6c63dd3a-378d-471f-8af0-725edc3785ed@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1736174377;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1QBb1SxSbkhq0fjJPP/D8igQzmWEtDwWTFQrDDQ04OM=;
+	b=JLi2So6YMgc1dnvVKl8hkq5wxmbpmbt93tP9dW3JvqKloiWUhxBzIW4jWw3BIH4IdoUiuD
+	9wXf2ugoGGIVDR78uxu6XWy1ZOr8e/zHj8vPORYlyin6Oy6bcJETw/dBqjDwmgeLJYnrPl
+	dmUulL7tkr6kcGySvUEWJOd+D5/Ekcs=
+Date: Mon, 6 Jan 2025 15:39:34 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 1/3] bpf,
- arm64: Simplify if logic in emit_lse_atomic()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <173617323051.3507566.4440450851266640533.git-patchwork-notify@kernel.org>
-Date: Mon, 06 Jan 2025 14:20:30 +0000
-References: <e8520e5503a489e2dea8526077976ae5a0ab1849.1735868489.git.yepeilin@google.com>
-In-Reply-To: <e8520e5503a489e2dea8526077976ae5a0ab1849.1735868489.git.yepeilin@google.com>
-To: Peilin Ye <yepeilin@google.com>
-Cc: bpf@vger.kernel.org, xukuohai@huaweicloud.com, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, puranjay@kernel.org,
- catalin.marinas@arm.com, will@kernel.org, joshdon@google.com,
- brho@google.com, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Subject: Re: [LSF/MM/BPF TOPIC] Improving Block Layer Tracepoints for
+ Next-Generation Backup Systems
+To: Christoph Hellwig <hch@infradead.org>, Vishnu ks <ksvishnu56@gmail.com>
+Cc: Song Liu <song@kernel.org>, lsf-pc@lists.linux-foundation.org,
+ linux-block@vger.kernel.org, bpf@vger.kernel.org,
+ linux-nvme@lists.infradead.org
+References: <CAJHDoJac2Qa6QjhDFi7YZf0D05=Svc13ZQyX=92KsM7pkkVbJA@mail.gmail.com>
+ <CAPhsuW7+ORExwn5fkRykEmEp-wm0YE788Tkd39rK5cZ-Q3dfUw@mail.gmail.com>
+ <CAJHDoJYESDzDf9KJgfSfGGit6JPyxtf3miNbnM7BzNfjOi7CQw@mail.gmail.com>
+ <Z3uIOPxr4s09qS1X@infradead.org>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <Z3uIOPxr4s09qS1X@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Fri,  3 Jan 2025 02:02:53 +0000 you wrote:
-> Delete that unnecessary outer if clause.  No functional change.
+On 06.01.25 08:37, Christoph Hellwig wrote:
+> On Sat, Jan 04, 2025 at 11:22:40PM +0530, Vishnu ks wrote:
+>> 1. Uses eBPF to monitor block_rq_complete tracepoint to track modified sectors
 > 
-> Signed-off-by: Peilin Ye <yepeilin@google.com>
-> ---
->  arch/arm64/net/bpf_jit_comp.c | 18 ++++++++----------
->  1 file changed, 8 insertions(+), 10 deletions(-)
+> You can't.  Drivers can and often do change the sector during submission
+> processing.
 
-Here is the summary with links:
-  - [bpf-next,v2,1/3] bpf, arm64: Simplify if logic in emit_lse_atomic()
-    https://git.kernel.org/bpf/bpf-next/c/0a5807219a86
-  - [bpf-next,v2,2/3] bpf, arm64: Factor out emit_a64_add_i()
-    https://git.kernel.org/bpf/bpf-next/c/66bb58ac06c2
-  - [bpf-next,v2,3/3] bpf, arm64: Emit A64_{ADD,SUB}_I when possible in emit_{lse,ll_sc}_atomic()
-    https://git.kernel.org/bpf/bpf-next/c/8c21f88407d2
+If I get you correctly, you mean, the action that **drivers often change 
+the sector during submission processing** will generate a lot of 
+tracepoint events. Thus, this will make difference on the performance of 
+the whole system.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+If yes, can we only monitor fentry/fexit of some_important_key_function 
+to reduce the eBPF events? Thus this will not generate too many events 
+then make difference on the performance.
 
+Zhu Yanjun
+
+> 
+>> 2. Captures sector numbers (not data) of changed blocks in real-time
+>> 3. Periodically syncs the actual data from these sectors based on
+>> configurable RPO
+>> 4. Layers these incremental changes on top of base snapshots
+> 
+> And all of that is broken.  If you are interested in this kind of
+> mechanism help upstreaming the blk-filter work, which has been
+> explicitly designed to support that.
+> 
+> Before that you should really undestand how block devices and
+> file systems work, as the rest of the mail suggested a very dangerous
+> misunderstanding of the basic principles.
 
 
