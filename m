@@ -1,123 +1,90 @@
-Return-Path: <bpf+bounces-48028-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48029-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1F86A032D4
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 23:42:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 001B1A03337
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 00:17:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C53F4164884
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 22:42:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1EB587A2885
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 23:17:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C467A1E0DD8;
-	Mon,  6 Jan 2025 22:42:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZZF4ELhh"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17AE31DE2A1;
+	Mon,  6 Jan 2025 23:17:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from www2651.sakura.ne.jp (www2651.sakura.ne.jp [49.212.180.61])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45887524B0;
-	Mon,  6 Jan 2025 22:42:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5254B1DAC81
+	for <bpf@vger.kernel.org>; Mon,  6 Jan 2025 23:17:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=49.212.180.61
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736203332; cv=none; b=CObfgEmWVk2RTgJK0lbURYxxqWCCta/WmAQdFG8nsHGP1uaInYY5jGSI1HBQEcawYXj99RBTxa2dm4DleagNIc8l3ulXKy8+WwvQyXZI7l8pt5puWkMyO7zrLziYHfZOBndIb/eXTyusM28Tr5yxa9mW40WEUyFTSwc4fb9jLjQ=
+	t=1736205463; cv=none; b=RnBfRrzbfFIvL7qXR4n3cRdqveDYeAxLhdzYX9qpQfiszLC/O3Ek8oac5/fotRCgY1DWQ93g9UqTAzBG4iyaRoU0LAdXoHByWtLce+bh8Njuq63Thjs1XBROBlTRLVd96GRlivhfTMLWM52nkeP1JR0gWhkNFAQFDg5tYc8kU+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736203332; c=relaxed/simple;
-	bh=T58Y1wysAHdymYcFdZzV+21Kmdl0+ykGjRQW2kpOB80=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=lksYQZyOmZ/kBo5nKf9TjshRFSkYRFPI6ROPVPCcQFjWOoCWWn04jThjwnE9HCXa7lKmf55lPVq3q1mTaK5Ke4D/00+VeEkq0PNR4WVHTpGLc2QUe0N5gONVAQMyntfk/2yVeMy3mkK5D+xGv60kZbQTpyhrUmH3bMyI5FmXcSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZZF4ELhh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70533C4CEDD;
-	Mon,  6 Jan 2025 22:42:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736203331;
-	bh=T58Y1wysAHdymYcFdZzV+21Kmdl0+ykGjRQW2kpOB80=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ZZF4ELhhJ3GiaeQgxVBOCi6nsGFivEBR4S6ATBK1hMnNb17EPgKLBz4grEv/xZn32
-	 wuGgvrsEjOQrPYo9RzyfoGY69RSebs/gLMXSOOdx/5UBJOT6KPRzS5CgdQnkKevzqf
-	 jLlfimDqOXzDb0EPitv/QCDPRCQd7XoPgp16CQve9G4vOXTkliSEYJ2R+Y2Bv3WOOF
-	 SN+mSldEZ11zbSwz6TRWN+bQdLpHGHX5B//hS5ZmCyuZnAe3X1s9mD1cNPzB8U4PAg
-	 LzHyctQZfmPOJjJpqYWNAHEgHGG9tHSm0q4A+ICPA74NktR6TCkEyz5WZIxY/765ge
-	 6tZ0J+47+06Fg==
-Date: Tue, 7 Jan 2025 07:42:05 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- bpf@vger.kernel.org, linux-perf-users@vger.kernel.org, Martin KaFai Lau
- <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song
- <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh
- <kpsingh@chromium.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo
- <haoluo@google.com>, Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Return error for missed kprobe multi
- bpf program execution
-Message-Id: <20250107074205.cb65bd26e29343c4a2f5084e@kernel.org>
-In-Reply-To: <20250106175048.1443905-1-jolsa@kernel.org>
-References: <20250106175048.1443905-1-jolsa@kernel.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1736205463; c=relaxed/simple;
+	bh=4oZ3OOt6L78EWPLkFIibNqvPZXdkYVzvchJyU7ZDsm0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IqD2xQbKJpWsjxvOj2RzQDUCGiGZbP7EdS3gimxVXu90ObOo4B1RSWh0+HukX5YJTHpBzGkXnV3QUFJqP8UF/g8n9cPN5p5AJZf6g5VvmQQdTFuPvSl15zYDpnRFj44QwP29HLADrf09GTFNSJ8ZW5mtfKdAs0T4JGsQV5X5i1g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somane.sakura.ne.jp; spf=pass smtp.mailfrom=somane.sakura.ne.jp; arc=none smtp.client-ip=49.212.180.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somane.sakura.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somane.sakura.ne.jp
+Received: from somane.. (58-191-24-124f1.hyg1.eonet.ne.jp [58.191.24.124])
+	(authenticated bits=0)
+	by www2651.sakura.ne.jp (8.16.1/8.16.1) with ESMTPSA id 506NGbPp079546
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+	Tue, 7 Jan 2025 08:16:38 +0900 (JST)
+	(envelope-from soma.nakata@somane.sakura.ne.jp)
+From: Soma Nakata <soma.nakata@somane.sakura.ne.jp>
+To: Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Cc: Soma Nakata <soma.nakata@somane.sakura.ne.jp>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] bpf: fix range_tree_set error handling
+Date: Tue,  7 Jan 2025 08:15:35 +0900
+Message-ID: <20250106231536.52856-1-soma.nakata@somane.sakura.ne.jp>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Mon,  6 Jan 2025 18:50:47 +0100
-Jiri Olsa <jolsa@kernel.org> wrote:
+`range_tree_set` might fail and return -ENOMEM,
+causing subsequent `bpf_arena_alloc_pages` to fail.
+Added the error handling.
 
-> When kprobe multi bpf program can't be executed due to recursion check,
-> we currently return 0 (success) to fprobe layer where it's ignored for
-> standard kprobe multi probes.
-> 
-> For kprobe session the success return value will make fprobe layer to
-> install return probe and try to execute it as well.
-> 
-> But the return session probe should not get executed, because the entry
-> part did not run. FWIW the return probe bpf program most likely won't get
-> executed, because its recursion check will likely fail as well, but we
-> don't need to run it in the first place.. also we can make this clear
-> and obvious.
+Signed-off-by: Soma Nakata <soma.nakata@somane.sakura.ne.jp>
+---
+ kernel/bpf/arena.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Yeah, that's right.
-
-> 
-> It also affects missed counts for kprobe session program execution, which
-> are now doubled (extra count for not executed return probe).
-> 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-
-Looks good to me.
-
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thanks!
-
-> ---
->  kernel/trace/bpf_trace.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 48db147c6c7d..1f3d4b72a3f2 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -2797,7 +2797,7 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
->  
->  	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
->  		bpf_prog_inc_misses_counter(link->link.prog);
-> -		err = 0;
-> +		err = 1;
->  		goto out;
->  	}
->  
-> -- 
-> 2.47.0
-> 
-
-
+diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+index 41a76ca56040..4b22a651b5d5 100644
+--- a/kernel/bpf/arena.c
++++ b/kernel/bpf/arena.c
+@@ -138,7 +138,11 @@ static struct bpf_map *arena_map_alloc(union bpf_attr *attr)
+ 	INIT_LIST_HEAD(&arena->vma_list);
+ 	bpf_map_init_from_attr(&arena->map, attr);
+ 	range_tree_init(&arena->rt);
+-	range_tree_set(&arena->rt, 0, attr->max_entries);
++	err = range_tree_set(&arena->rt, 0, attr->max_entries);
++	if (err) {
++		bpf_map_area_free(arena);
++		goto err;
++	}
+ 	mutex_init(&arena->lock);
+ 
+ 	return &arena->map;
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.47.1
+
 
