@@ -1,108 +1,101 @@
-Return-Path: <bpf+bounces-48002-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48003-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0194EA03143
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 21:19:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27A7AA0315F
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 21:27:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8569F188664D
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 20:19:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10C8116495E
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 20:27:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E33751DFE26;
-	Mon,  6 Jan 2025 20:19:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 155341DF26F;
+	Mon,  6 Jan 2025 20:27:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0vyDbD9E"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="gDbU5YkM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 155441DFDA2
-	for <bpf@vger.kernel.org>; Mon,  6 Jan 2025 20:19:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 020FA1CEADF
+	for <bpf@vger.kernel.org>; Mon,  6 Jan 2025 20:27:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736194762; cv=none; b=HlSq603jnsAmXesd0Vqko4TXNceXh1QCFdyeN8LPR9I0OoyiXXipLHGuCUlAGtxS5QNn59K8gsXsEJ8inRBSfhITTlxz4ZygtrJ8jFsidMPk8rApfdVAZbihsF9JogALYF8bafTwCGrta48EpUztwylZsiZjdIrOMLyuHtGV9Pw=
+	t=1736195246; cv=none; b=BT+8tAWYFpXOIwVGtVOfvoajZmXjKJGFK5s4iah2n8VrWZTokganZjARJeUwnDj7Pa1tP28JNaqW2COsWwzqUSlb7vYWSAwqe3oaEE4FKi6VKDewjwleyszLVq3HkR0sGYakaRiWuqoLB0+gA200Nw9lfsbUiyuo/+cCbB8UvgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736194762; c=relaxed/simple;
-	bh=BEGHNYf1HV04ZdYUrBM9HObaBWYpTXvn0aQoVfK3j7g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KOGYDukh4v7341mbN1fl+x87UffWPFNqYNNvYFhI3Eqr/vsMYbVdc4IoICjdKOB0fauKLcJM4jP8YRI7ORKn2uO2U0x8LxMWoLt+qNuyluv6VgCWQWx0T05m+3shxDnSvxtXkAGLaqtjhu8FWxjLJJaHtjInjdooXsgQvRi+ass=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0vyDbD9E; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-215740b7fb8so25975ad.0
-        for <bpf@vger.kernel.org>; Mon, 06 Jan 2025 12:19:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1736194760; x=1736799560; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BEGHNYf1HV04ZdYUrBM9HObaBWYpTXvn0aQoVfK3j7g=;
-        b=0vyDbD9E/EJ0YXWyOYDDAX1tduDrO0bOFbumDqauMBJbF6P5Jc99RGYwB1q9IBqMMN
-         1eHOuut6Q/LtIrY001AYLX7KWzuUI9Tsqpp23Rusw4AhL+oBtDVvWre6+QHpf10zYVyU
-         NckA24Y/qJoamFbj1v0RwkuOAE//A5k4/IAspVEVHXMWcVhGTEzkmBnCGMkMpVrdGC4n
-         DGZDMYvUnBvJ6TvhOcY9UI6WM9Hoj+zEPOqTnoBAfEwj/iO4c5aQAxXVqtlrW72qgwRO
-         1/IRigqd6LilQl8kSyr/q5QBhodRAfL3kO1VOh+m1SMq7V+MhqHK/dQ2z5JCmUY9ZYTC
-         yoHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736194760; x=1736799560;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BEGHNYf1HV04ZdYUrBM9HObaBWYpTXvn0aQoVfK3j7g=;
-        b=Te5B4lFmNJs4+a9/dbUDDL5LbHj0C3wu9MYyOPDKrsAr4iB3XvCkiJZicFZ7jVH/KL
-         6KRUBWQFYSomTBZX64CTUJpqOxjGrNYTzrrzdXIFDDHwHdoCdZPQMoePfxQJJ2tJv4Ty
-         8veyQ+tc3itOlQnVK+URWOgW6BbdgzrgOFKjqQMIPaeNx5NiZsJUWYyR1/WFMHkdcp50
-         uo6g68Jlj+/M/pJLWGrvj9aY4m4uGFXIMpdD/JSXPxk5XVy8djoYTWyyDmL+/BoV+vJp
-         clpTVsmMwTeyH7jQpQ8V8b/fG/F15gyg13yIb29hT2p2pz/YcwP4vaT6YywZ2oEtmOxG
-         /N5w==
-X-Forwarded-Encrypted: i=1; AJvYcCXgCjIwjsM5IwfOrY/T6LG/503qHSTJh6reDMY7vQUb+eB15SdC1vskwe3SFg0W1ysb/kE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx5UjBcORsyePPtyZ1d/HUZLRvM+7C7fWMZ7WfnJeScnjKHL33N
-	1c/yGkylZo2ogxc4f4p35BgFb1NOr5ASMDFdbIsSFwTUS+8nfO801SlNOb6aF1kPP6vWbmx8key
-	NVcTtT74aqV5UTxvq+Tz3Lkw7ukKfrjQovVWO
-X-Gm-Gg: ASbGnctN5sByPanltFfRV+XPLlcdN9h6E+PIZpdQLJjm14/QAv2KrbJdvbK+vlQ3sTm
-	sbpAJ0lOX9ZRW/Lwwr1Eqcl3A6nNW9pKj7KQ4dWABRO1FaGwt0+RjO6RXvTthFqvvgLdfyms=
-X-Google-Smtp-Source: AGHT+IEZs9gdoIt9Lzgc7kMrvGMX2O81Tsoby2UzTbDgJoRlZHNyCguDmX+2yIQysSWrX8iUjp7uIBEB2tZGsdcELi4=
-X-Received: by 2002:a17:902:d481:b0:200:97b5:dc2b with SMTP id
- d9443c01a7336-21a7ae5dfd4mr243615ad.15.1736194760083; Mon, 06 Jan 2025
- 12:19:20 -0800 (PST)
+	s=arc-20240116; t=1736195246; c=relaxed/simple;
+	bh=OyB8SsTRo50wz8in/n23HryNqaxVrzRPp5j5ytnoMSQ=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=c9gbuococLr8V/0zx3oq9KmA1NR/7meN1tLl8GK78/ElhT1Ny+wrI4pin8fu9qHhDmphsv0AQiZsaNUYJ8iKmmwWCCs7ovBpP3Q2ciMyebmsEdbc27+mV6AZSnvt1J3DYxb5XI4wx9E/O5poCceNuMiciaWJ+f6EiCBWyOeuyts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=gDbU5YkM; arc=none smtp.client-ip=185.70.40.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1736195242; x=1736454442;
+	bh=OyB8SsTRo50wz8in/n23HryNqaxVrzRPp5j5ytnoMSQ=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector:
+	 List-Unsubscribe:List-Unsubscribe-Post;
+	b=gDbU5YkM9LJfHFGN4BLLR1tHyz3wbgWrIAPqhE76d52L5HhTArIN9+OCwtKoLo43O
+	 Q3d3L1zGC/ib9QUEcv/UmJIJSCBlFWVRY4orx9zuFOuXi3Ob8ZglSw4Hy/KV85t0Sc
+	 kcMJOGE7JdfjREun99hpDdFJNvzoROIKxA9kx7sT5cX5lOXTYAxZPmdaiR8tPLzdBl
+	 iK7ksiSfVVyB6Pl+o7T7TnBmlNrwdIoCjh5kQTlFtcPDtwJqhbrtkoO5D8CrUbOkqc
+	 ra0ZKPenwXt4AQ0XFc7xAlErPnBlUv6DSe785BdTSd3+MhgV4bR/qtEiwgqGTB1Ad3
+	 Y+cm0MqiQKlGA==
+Date: Mon, 06 Jan 2025 20:27:18 +0000
+To: bpf@vger.kernel.org
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, mykolal@fb.com, jose.marchesi@oracle.com
+Subject: [PATCH bpf-next] selftests/bpf: add -std=gnu17 to GCC BPF build rule
+Message-ID: <20250106202715.1232864-1-ihor.solodrai@pm.me>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: aba6cd6ace910c6c0e8ee7ceee8bb9b4381ccf00
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20220911083418.2818369-1-yuanchu@google.com> <20250103031526.529434-1-tianmuyang@huawei.com>
-In-Reply-To: <20250103031526.529434-1-tianmuyang@huawei.com>
-From: Yuanchu Xie <yuanchu@google.com>
-Date: Mon, 6 Jan 2025 12:19:03 -0800
-X-Gm-Features: AbW1kvbczPJKPcB1QNME6O5RCEPnK3Uv_yx2M4XE7l0LVmJ1WOJ3dEPMoQWN53g
-Message-ID: <CAJj2-QEtASHEfiYuoKrfx7n1UjDS1e+aF0LdYB5vhBUUS3cq8g@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/2] mm: multi-gen LRU: per-process heatmaps
-To: Muyang Tian <tianmuyang@huawei.com>
-Cc: Michael@michaellarabel.com, akpm@linux-foundation.org, bpf@vger.kernel.org, 
-	corbet@lwn.net, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	yuzhao@google.com, yanan@huawei.com, xiesongyang@huawei.com, 
-	wuchangye@huawei.com, liuxin350@huawei.com, zhangmingyi5@huawei.com, 
-	liwei883@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 2, 2025 at 7:15=E2=80=AFPM Muyang Tian <tianmuyang@huawei.com> =
-wrote:
->
-> Hi all,
-> It has been a long time since this patchset[0] submitted, and I've been d=
-oing something similar recently.
-> I wonder why this patchset remains unmerged/uncommented? Is there any oth=
-er similar work?
-Hi Muyang,
+Latest versions of GCC BPF use C23 standard by default. This causes
+compilation errors in vmlinux.h due to bool types declarations.
 
-I'd love to learn about your use case and your approach as well. The
-code here requires some polish and cleanup, but it's mostly bpf code
-in tooling. Happy to work on it.
+Pass -std=3Dgnu17 when building selftests BPF objects with GCC.
 
-Thanks,
-Yuanchu
+For more details see the discussion at [1].
+
+[1] https://lore.kernel.org/bpf/EYcXjcKDCJY7Yb0GGtAAb7nLKPEvrgWdvWpuNzXm2qi=
+6rYMZDixKv5KwfVVMBq17V55xyC-A1wIjrqG3aw-Imqudo9q9X7D7nLU2gWgbN0w=3D@pm.me/
+
+CC: Jose E. Marchesi <jose.marchesi@oracle.com>
+Signed-off-by: Ihor Solodrai <ihor.solodrai@pm.me>
+---
+ tools/testing/selftests/bpf/Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests=
+/bpf/Makefile
+index d5be2f94deef..d81bb4773cb7 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -479,9 +479,10 @@ define CLANG_CPUV4_BPF_BUILD_RULE
+ =09$(Q)$(CLANG) $3 -O2 $(BPF_TARGET_ENDIAN) -c $1 -mcpu=3Dv4 -o $2
+ endef
+ # Build BPF object using GCC
++GCC_BPF_CFLAGS +=3D -std=3Dgnu17 -DBPF_NO_PRESERVE_ACCESS_INDEX -Wno-attri=
+butes
+ define GCC_BPF_BUILD_RULE
+ =09$(call msg,GCC-BPF,$4,$2)
+-=09$(Q)$(BPF_GCC) $3 -DBPF_NO_PRESERVE_ACCESS_INDEX -Wno-attributes -O2 -c=
+ $1 -o $2
++=09$(Q)$(BPF_GCC) $3 -O2 $(GCC_BPF_CFLAGS) -c $1 -o $2
+ endef
+=20
+ SKEL_BLACKLIST :=3D btf__% test_pinning_invalid.c test_sk_assign.c
+--=20
+2.47.1
+
+
 
