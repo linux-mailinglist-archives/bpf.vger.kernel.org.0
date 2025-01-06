@@ -1,215 +1,182 @@
-Return-Path: <bpf+bounces-47938-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47939-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96E46A02073
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 09:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C9EBA02086
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 09:18:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C6A01885417
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 08:11:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B5A91881849
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 08:18:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B562CB676;
-	Mon,  6 Jan 2025 08:11:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="blstKP+n"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D93E51A2631;
+	Mon,  6 Jan 2025 08:18:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 663E91D6DB1;
-	Mon,  6 Jan 2025 08:11:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEFAC35952;
+	Mon,  6 Jan 2025 08:18:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736151073; cv=none; b=FrnOlodnJCCv/Mtwlle/X1f7fQ4TpC9sTxFVn5/UR1A8pQOfe//BUErdauRYf1Gqd+yi+bLbOR3zcGgCFZnyksDLmxBrhOrVORq5zoRe7NzQyNuDW5UYedhr1fSrBDv5WmPfsk6DUlRw7ITzbZ6DIwUkVhwzH/i7jO1z2hXZZgg=
+	t=1736151526; cv=none; b=kZdFD/Qw/iefWm4WS+Xos+8+s6dLvuSI7j3fHtMLbdct5LE2PtiR0lCXjwJtbJnca7FAvKryio0PpGZ/lHU/5NyfcqwVHgXrH7PZHTcqYKEyFqACzIJcwseAW+OMnXylqtUNGOFpk5T9ehldttv4SsVPR1G2sE28KKA88qFsBYY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736151073; c=relaxed/simple;
-	bh=2nmj2gdXo4dkcu0HXHuMoluTNdVGD78lk1l1/emsrUY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VWT8k9QKD5WCIhO/nIU4OZRNslgrzP2wLxrtEteaFyuNW0rGAa1DH7SPB9eFSx2ro/tj7PM8x+2uF5Mq3BwzSjKvnkyHVxOhn47/lpij/nYRBRdAnLo7TOnJ28aujqsepuri76hF2UvJJNz1qbrmVRhLU7w357cW0PNjYjlQ1kY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=blstKP+n; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2161eb95317so206573885ad.1;
-        Mon, 06 Jan 2025 00:11:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736151070; x=1736755870; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bhOap6+15f1GmW4sBRqJQM8M8dIdM7tw6pxxMIVMkWY=;
-        b=blstKP+ncjBR9glBpY1gf2ejk3DZB/bDGOWjp3SuJYJUmNFvYp0wRYFjiscErGCbXp
-         bZ2LBf85XggWa7oVKAnCzSsmpwKw57tY+HbuIWR1GkexiR9AV1sD0BK1nn4fNfe9Hvqk
-         o1vKHK8VAir9oUKp8M9pPIxzn8ZFbotnNKCwoOf+ue6Vh8jw9zQgqx2Tsx2qNY2sHv9t
-         CWKfzrPnHXNalQ2Kk4JLeqaxLlHuae562g8ZRuwzDW8k2wg1hJ1wSZ06lhbpyTJvE5Dl
-         NBvXCNFxX0fPpi8CMJca5EUykzsAPoVJtmpVUt8ZQUMuEYpJ2MBk7bNjKeRuTbKMmhDY
-         iuCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736151070; x=1736755870;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bhOap6+15f1GmW4sBRqJQM8M8dIdM7tw6pxxMIVMkWY=;
-        b=k4YvfQhSS1nIKtA/bPJK6bWiBGhF/hciYx+BtJm0MbQg9ED3Jo1WUTDNmjLGXgkxYH
-         7OPjCpOlEPY52cNUeiNORRChPS9RclkJ7PEcf9WIinnxcCkqTd7fRnJaozveaASird8j
-         BhYQvAKokRcXcLtod7KKpZZ2FSdWHRWHRN0rWvdTTAg8gObWoWFrizPPI70IKuhWHxDu
-         XwZ2lCALn/qySmyh5WQMAvFozo+JlYG8/pmHovdTzakC8eWaKl5SPcV+FqF/t3sZt2q3
-         KL5CVyjSNwEOqvcLvcdKUa3ih/TO8Fbp8XY5zkIg6eC8yg/4ns5Zp/iIHTUBDHiWvwxx
-         FUug==
-X-Forwarded-Encrypted: i=1; AJvYcCV6jebqXL3p3oFfsxiKwOTLak+26dnbU7o63kJneFCeNv0s7oI76FBzu4od5UizwL97pUegJeK07xqvEDuvK1VM@vger.kernel.org, AJvYcCVMp/yvqhSxkj9qw42F6EUPAeLQaoxrYUzhR4PdIBCSVG30n03GOp1eJlW3mHyQYdFB3iC7xfw6h0WrBMxc@vger.kernel.org, AJvYcCW6BKAKf7qZbUbnvP0uZRSCl4g0bOMkKX0IZxR34xRFsr6xYREBmdLusRxU9OOk+reW9iA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwVpWdvlqObRRKPsUWvId7EDuK779EsW+V0Z9RarR27oTeIWEzt
-	nqusj/wVse/hqKLST4nWgyc0bkc9wj2Lsa8AtZWUtLkphUO+K5aVxoU0JQ==
-X-Gm-Gg: ASbGnctxJlcxREvW/ePgzRMyUnmXENnVO9vjgfB90i07/nPTmk902mRxhUkJxDIsh5r
-	J3WJIzq16sKD8hU02MXzx3vGW+VVzTxehRVgRdEj8t4GCW9wWOH3/0SecJfOQ5qLsCJBZUnp/zo
-	OaIzWrWXwLqMy7O+Cn5jEGql55e6eHVYnyqBOoL72bjQuDhMd9Qk3m6jtdA1IMxmZcAu2rAc/Zi
-	+hF00DEwo/hCuAkycvslIZAM8xVMAzcNB8Au4FQjkCJwuOcr4xeCEWk1mfE7d5fLxE4vdIz0kq6
-X-Google-Smtp-Source: AGHT+IEHw+/S3OGAMfCJhasJ0UYNsadv+UBR4uBkeGflOgvtUWbRLzpFTftGbVN+YPDaAubWouJoig==
-X-Received: by 2002:a05:6a21:7898:b0:1e0:cabf:4d99 with SMTP id adf61e73a8af0-1e5e046362dmr103096652637.14.1736151070241;
-        Mon, 06 Jan 2025 00:11:10 -0800 (PST)
-Received: from fedora.dns.podman ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad835469sm31910429b3a.60.2025.01.06.00.11.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jan 2025 00:11:09 -0800 (PST)
-From: Hangbin Liu <liuhangbin@gmail.com>
-To: netdev@vger.kernel.org
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Simon Horman <horms@kernel.org>,
-	Phil Sutter <phil@nwl.cc>,
-	Florian Westphal <fw@strlen.de>,
-	Petr Mladek <pmladek@suse.com>,
-	Yoann Congal <yoann.congal@smile.fr>,
-	wireguard@lists.zx2c4.com,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Hangbin Liu <liuhangbin@gmail.com>
-Subject: [PATCHv4 RESEND net-next 2/2] selftests: wireguard: update to using nft for qemu test
-Date: Mon,  6 Jan 2025 08:10:43 +0000
-Message-ID: <20250106081043.2073169-3-liuhangbin@gmail.com>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20250106081043.2073169-1-liuhangbin@gmail.com>
-References: <20250106081043.2073169-1-liuhangbin@gmail.com>
+	s=arc-20240116; t=1736151526; c=relaxed/simple;
+	bh=Qv1uZ9xv8DoSDXorsLKhgEI652bYODAL01ifmwQ9RF0=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=XzpvmANrz3P+Nk2TV3JL1hmQkhgrVZATh83gxDy3vqaYOloikr2aADum/G68VFiVF6xu9V+keCXDuu7p+sH4AtQrfiRySieb8ayWg1fzRJzIUXkNPtcoWaUT8rmHYScpM1Z2TfmlLiDjXY1YKaUCXnngqiUrL/mKc1RBbGvoF8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YRRrq08lPz4f3lDF;
+	Mon,  6 Jan 2025 16:18:19 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id 4C7B71A0D4F;
+	Mon,  6 Jan 2025 16:18:40 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP3 (Coremail) with SMTP id _Ch0CgB3F8LakXtndt26AA--.6626S2;
+	Mon, 06 Jan 2025 16:18:38 +0800 (CST)
+Subject: Re: faom 13cc1d4ee0a231f81951ee87f1e55229907966ee Mon Sep 17 00:00:00
+ 2001
+To: bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, xukuohai@huawei.com,
+ "houtao1@huawei.com" <houtao1@huawei.com>
+References: <20250106081900.1665573-1-houtao@huaweicloud.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <f516ac54-058b-1b7d-ab21-8405e1fe77fa@huaweicloud.com>
+Date: Mon, 6 Jan 2025 16:18:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250106081900.1665573-1-houtao@huaweicloud.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID:_Ch0CgB3F8LakXtndt26AA--.6626S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWrWDWF48KryxAr1DuFyxAFb_yoWrZF1xpr
+	4fK34fKr4UXa4S9anxAw4IkFyrAw4fG347AwnrKryrtws8Zr98Xw1xJF48ZFZxCryktryf
+	Xr1qqw1qkw1kAFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Sb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
+	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
+	MI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW5JV
+	W7JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_
+	Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr
+	1UYxBIdaVFxhVjvjDU0xZFpf9x07UAwIDUUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Since we will replace iptables with nft for wireguard netns testing,
-let's also convert the qemu test to use nft at the same time.
+Hi,
 
-Co-developed-by: Phil Sutter <phil@nwl.cc>
-Signed-off-by: Phil Sutter <phil@nwl.cc>
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
----
- .../testing/selftests/wireguard/qemu/Makefile | 40 ++++++++++++++-----
- .../selftests/wireguard/qemu/kernel.config    |  7 ++--
- 2 files changed, 34 insertions(+), 13 deletions(-)
+The header of patch #0 is broken for the patch set. However, it seems
+BPF CI still can handle it and the content of patch #0 is still intact,
+so I will not resend the patch set and instead I will respin it after
+receiving some comments. Sorry for the inconvenience.
 
-diff --git a/tools/testing/selftests/wireguard/qemu/Makefile b/tools/testing/selftests/wireguard/qemu/Makefile
-index 35856b11c143..10e79449fefa 100644
---- a/tools/testing/selftests/wireguard/qemu/Makefile
-+++ b/tools/testing/selftests/wireguard/qemu/Makefile
-@@ -40,7 +40,9 @@ endef
- $(eval $(call tar_download,IPERF,iperf,3.11,.tar.gz,https://downloads.es.net/pub/iperf/,de8cb409fad61a0574f4cb07eb19ce1159707403ac2dc01b5d175e91240b7e5f))
- $(eval $(call tar_download,BASH,bash,5.1.16,.tar.gz,https://ftp.gnu.org/gnu/bash/,5bac17218d3911834520dad13cd1f85ab944e1c09ae1aba55906be1f8192f558))
- $(eval $(call tar_download,IPROUTE2,iproute2,5.17.0,.tar.gz,https://www.kernel.org/pub/linux/utils/net/iproute2/,bda331d5c4606138892f23a565d78fca18919b4d508a0b7ca8391c2da2db68b9))
--$(eval $(call tar_download,IPTABLES,iptables,1.8.7,.tar.bz2,https://www.netfilter.org/projects/iptables/files/,c109c96bb04998cd44156622d36f8e04b140701ec60531a10668cfdff5e8d8f0))
-+$(eval $(call tar_download,LIBMNL,libmnl,1.0.5,.tar.bz2,https://www.netfilter.org/projects/libmnl/files/,274b9b919ef3152bfb3da3a13c950dd60d6e2bcd54230ffeca298d03b40d0525))
-+$(eval $(call tar_download,LIBNFTNL,libnftnl,1.2.8,.tar.xz,https://www.netfilter.org/projects/libnftnl/files/,37fea5d6b5c9b08de7920d298de3cdc942e7ae64b1a3e8b880b2d390ae67ad95))
-+$(eval $(call tar_download,NFTABLES,nftables,1.1.1,.tar.xz,https://www.netfilter.org/projects/nftables/files/,6358830f3a64f31e39b0ad421d7dadcd240b72343ded48d8ef13b8faf204865a))
- $(eval $(call tar_download,NMAP,nmap,7.92,.tgz,https://nmap.org/dist/,064183ea642dc4c12b1ab3b5358ce1cef7d2e7e11ffa2849f16d339f5b717117))
- $(eval $(call tar_download,IPUTILS,iputils,s20190709,.tar.gz,https://github.com/iputils/iputils/archive/s20190709.tar.gz/#,a15720dd741d7538dd2645f9f516d193636ae4300ff7dbc8bfca757bf166490a))
- $(eval $(call tar_download,WIREGUARD_TOOLS,wireguard-tools,1.0.20210914,.tar.xz,https://git.zx2c4.com/wireguard-tools/snapshot/,97ff31489217bb265b7ae850d3d0f335ab07d2652ba1feec88b734bc96bd05ac))
-@@ -322,11 +324,12 @@ $(BUILD_PATH)/init-cpio-spec.txt: $(TOOLCHAIN_PATH)/.installed $(BUILD_PATH)/ini
- 	echo "file /bin/ss $(IPROUTE2_PATH)/misc/ss 755 0 0" >> $@
- 	echo "file /bin/ping $(IPUTILS_PATH)/ping 755 0 0" >> $@
- 	echo "file /bin/ncat $(NMAP_PATH)/ncat/ncat 755 0 0" >> $@
--	echo "file /bin/xtables-legacy-multi $(IPTABLES_PATH)/iptables/xtables-legacy-multi 755 0 0" >> $@
--	echo "slink /bin/iptables xtables-legacy-multi 777 0 0" >> $@
-+	echo "file /bin/nft $(NFTABLES_PATH)/src/nft 755 0 0" >> $@
- 	echo "slink /bin/ping6 ping 777 0 0" >> $@
- 	echo "dir /lib 755 0 0" >> $@
- 	echo "file /lib/libc.so $(TOOLCHAIN_PATH)/$(CHOST)/lib/libc.so 755 0 0" >> $@
-+	echo "file /lib/libmnl.so.0 $(TOOLCHAIN_PATH)/lib/libmnl.so.0 755 0 0" >> $@
-+	echo "file /lib/libnftnl.so.11 $(TOOLCHAIN_PATH)/lib/libnftnl.so.11 755 0 0" >> $@
- 	echo "slink $$($(CHOST)-readelf -p .interp '$(BUILD_PATH)/init'| grep -o '/lib/.*') libc.so 777 0 0" >> $@
- 
- $(KERNEL_BUILD_PATH)/.config: $(TOOLCHAIN_PATH)/.installed kernel.config arch/$(ARCH).config
-@@ -338,7 +341,7 @@ $(KERNEL_BUILD_PATH)/.config: $(TOOLCHAIN_PATH)/.installed kernel.config arch/$(
- 	cd $(KERNEL_BUILD_PATH) && ARCH=$(KERNEL_ARCH) $(KERNEL_PATH)/scripts/kconfig/merge_config.sh -n $(KERNEL_BUILD_PATH)/.config $(KERNEL_BUILD_PATH)/minimal.config
- 	$(if $(findstring yes,$(DEBUG_KERNEL)),cp debug.config $(KERNEL_BUILD_PATH) && cd $(KERNEL_BUILD_PATH) && ARCH=$(KERNEL_ARCH) $(KERNEL_PATH)/scripts/kconfig/merge_config.sh -n $(KERNEL_BUILD_PATH)/.config debug.config,)
- 
--$(KERNEL_BZIMAGE): $(TOOLCHAIN_PATH)/.installed $(KERNEL_BUILD_PATH)/.config $(BUILD_PATH)/init-cpio-spec.txt $(IPERF_PATH)/src/iperf3 $(IPUTILS_PATH)/ping $(BASH_PATH)/bash $(IPROUTE2_PATH)/misc/ss $(IPROUTE2_PATH)/ip/ip $(IPTABLES_PATH)/iptables/xtables-legacy-multi $(NMAP_PATH)/ncat/ncat $(WIREGUARD_TOOLS_PATH)/src/wg $(BUILD_PATH)/init
-+$(KERNEL_BZIMAGE): $(TOOLCHAIN_PATH)/.installed $(KERNEL_BUILD_PATH)/.config $(BUILD_PATH)/init-cpio-spec.txt $(IPERF_PATH)/src/iperf3 $(IPUTILS_PATH)/ping $(BASH_PATH)/bash $(IPROUTE2_PATH)/misc/ss $(IPROUTE2_PATH)/ip/ip $(LIBMNL_PATH)/libmnl $(LIBNFTNL_PATH)/libnftnl $(NFTABLES_PATH)/src/nft $(NMAP_PATH)/ncat/ncat $(WIREGUARD_TOOLS_PATH)/src/wg $(BUILD_PATH)/init
- 	$(MAKE) -C $(KERNEL_PATH) O=$(KERNEL_BUILD_PATH) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(CROSS_COMPILE)
- .PHONY: $(KERNEL_BZIMAGE)
- 
-@@ -421,15 +424,34 @@ $(IPROUTE2_PATH)/misc/ss: | $(IPROUTE2_PATH)/.installed $(USERSPACE_DEPS)
- 	$(MAKE) -C $(IPROUTE2_PATH) PREFIX=/ misc/ss
- 	$(STRIP) -s $@
- 
--$(IPTABLES_PATH)/.installed: $(IPTABLES_TAR)
-+$(LIBMNL_PATH)/.installed: $(LIBMNL_TAR)
- 	mkdir -p $(BUILD_PATH)
- 	flock -s $<.lock tar -C $(BUILD_PATH) -xf $<
--	sed -i -e "/nfnetlink=[01]/s:=[01]:=0:" -e "/nfconntrack=[01]/s:=[01]:=0:" $(IPTABLES_PATH)/configure
- 	touch $@
- 
--$(IPTABLES_PATH)/iptables/xtables-legacy-multi: | $(IPTABLES_PATH)/.installed $(USERSPACE_DEPS)
--	cd $(IPTABLES_PATH) && ./configure --prefix=/ $(CROSS_COMPILE_FLAG) --enable-static --disable-shared --disable-nftables --disable-bpf-compiler --disable-nfsynproxy --disable-libipq --disable-connlabel --with-kernel=$(BUILD_PATH)/include
--	$(MAKE) -C $(IPTABLES_PATH)
-+$(LIBMNL_PATH)/libmnl: | $(LIBMNL_PATH)/.installed $(USERSPACE_DEPS)
-+	cd $(LIBMNL_PATH) && ./configure --prefix=$(TOOLCHAIN_PATH) $(CROSS_COMPILE_FLAG)
-+	$(MAKE) -C $(LIBMNL_PATH) install
-+	$(STRIP) -s $(TOOLCHAIN_PATH)/lib/libmnl.so.0
-+
-+$(LIBNFTNL_PATH)/.installed: $(LIBNFTNL_TAR)
-+	mkdir -p $(BUILD_PATH)
-+	flock -s $<.lock tar -C $(BUILD_PATH) -xf $<
-+	touch $@
-+
-+$(LIBNFTNL_PATH)/libnftnl: | $(LIBNFTNL_PATH)/.installed $(USERSPACE_DEPS)
-+	cd $(LIBNFTNL_PATH) && PKG_CONFIG_PATH="$(TOOLCHAIN_PATH)/lib/pkgconfig" ./configure --prefix=$(TOOLCHAIN_PATH) $(CROSS_COMPILE_FLAG)
-+	$(MAKE) -C $(LIBNFTNL_PATH) install
-+	$(STRIP) -s $(TOOLCHAIN_PATH)/lib/libnftnl.so.11
-+
-+$(NFTABLES_PATH)/.installed: $(NFTABLES_TAR)
-+	mkdir -p $(BUILD_PATH)
-+	flock -s $<.lock tar -C $(BUILD_PATH) -xf $<
-+	touch $@
-+
-+$(NFTABLES_PATH)/src/nft: | $(NFTABLES_PATH)/.installed $(USERSPACE_DEPS)
-+	cd $(NFTABLES_PATH) && PKG_CONFIG_PATH="$(TOOLCHAIN_PATH)/lib/pkgconfig" ./configure --prefix=/ $(CROSS_COMPILE_FLAG) --enable-static --disable-shared --disable-debug --disable-man-doc --with-mini-gmp --without-cli
-+	$(MAKE) -C $(NFTABLES_PATH) PREFIX=/
- 	$(STRIP) -s $@
- 
- $(NMAP_PATH)/.installed: $(NMAP_TAR)
-diff --git a/tools/testing/selftests/wireguard/qemu/kernel.config b/tools/testing/selftests/wireguard/qemu/kernel.config
-index f314d3789f17..9930116ecd81 100644
---- a/tools/testing/selftests/wireguard/qemu/kernel.config
-+++ b/tools/testing/selftests/wireguard/qemu/kernel.config
-@@ -19,10 +19,9 @@ CONFIG_NETFILTER_XTABLES=y
- CONFIG_NETFILTER_XT_NAT=y
- CONFIG_NETFILTER_XT_MATCH_LENGTH=y
- CONFIG_NETFILTER_XT_MARK=y
--CONFIG_IP_NF_IPTABLES=y
--CONFIG_IP_NF_FILTER=y
--CONFIG_IP_NF_MANGLE=y
--CONFIG_IP_NF_NAT=y
-+CONFIG_NF_TABLES=m
-+CONFIG_NF_TABLES_INET=y
-+CONFIG_NFT_NAT=y
- CONFIG_IP_ADVANCED_ROUTER=y
- CONFIG_IP_MULTIPLE_TABLES=y
- CONFIG_IPV6_MULTIPLE_TABLES=y
--- 
-2.46.0
+On 1/6/2025 4:18 PM, Hou Tao wrote:
+> Hi,
+>
+> The use of migrate_{disable|enable} pair in BPF is mainly due to the
+> introduction of bpf memory allocator and the use of per-CPU data struct
+> in its internal implementation. The caller needs to disable migration
+> before invoking the alloc or free APIs of bpf memory allocator, and
+> enable migration after the invocation.
+>
+> The main users of bpf memory allocator are various kind of bpf maps in
+> which the map values or the special fields in the map values are
+> allocated by using bpf memory allocator.
+>
+> At present, the running context for bpf program has already disabled
+> migration explictly or implictly, therefore, when these maps are
+> manipulated in bpf program, it is OK to not invoke migrate_disable()
+> and migrate_enable() pair. Howevers, it is not always the case when
+> these maps are manipulated through bpf syscall, therefore many
+> migrate_{disable|enable} pairs are added when the map can either be
+> manipulated by BPF program or BPF syscall.
+>
+> The initial idea of reducing the use of migrate_{disable|enable} comes
+> from Alexei [1]. I turned it into a patch set that archives the goals
+> through the following three methods:
+>
+> 1. remove unnecessary migrate_{disable|enable} pair
+> when the BPF syscall path also disables migration, it is OK to remove
+> the pair. Patch #1~#3 fall into this category, while patch #4~#5 are
+> partially included.
+>
+> 2. move the migrate_{disable|enable} pair from inner callee to outer
+>    caller
+> Instead of invoking migrate_disable() in the inner callee, invoking
+> migrate_disable() in the outer caller to simplify reasoning about when
+> migrate_disable() is needed. Patch #4~#5 and patch #6~#19 belongs to
+> this category.
+>
+> 3. add cant_migrate() check in the inner callee
+> Add cant_migrate() check in the inner callee to ensure the guarantee
+> that migration is disabled is not broken. Patch #1~#5, #13, #16~#19 also
+> belong to this category.
+>
+> Considering the bpf-next CI is broken, the patch set is verified by
+> using bpf tree. Please check the individual patches for more details.
+> Comments are always welcome.
+>
+> [1]: https://lore.kernel.org/bpf/CAADnVQKZ3=F0L7_R_pYqu7ePzpXRwQEN8tCzmFoxjdJHamMOUQ@mail.gmail.com
+>
+> Hou Tao (19):
+>   bpf: Remove migrate_{disable|enable} from LPM trie
+>   bpf: Remove migrate_{disable|enable} in ->map_for_each_callback
+>   bpf: Remove migrate_{disable|enable} in htab_elem_free
+>   bpf: Remove migrate_{disable|enable} from bpf_cgrp_storage_lock
+>     helpers
+>   bpf: Remove migrate_{disable|enable} from bpf_task_storage_lock
+>     helpers
+>   bpf: Disable migration when destroying inode storage
+>   bpf: Disable migration when destroying sock storage
+>   bpf: Disable migration when cloning sock storage
+>   bpf: Disable migration in bpf_selem_free_rcu
+>   bpf: Disable migration in array_map_free()
+>   bpf: Disable migration in htab_map_free()
+>   bpf: Disable migration for bpf_selem_unlink in
+>     bpf_local_storage_map_free()
+>   bpf: Remove migrate_{disable|enable} in bpf_obj_free_fields()
+>   bpf: Remove migrate_{disable,enable} in bpf_cpumask_release()
+>   bpf: Disable migration before calling ops->map_free()
+>   bpf: Remove migrate_{disable|enable} from bpf_selem_alloc()
+>   bpf: Remove migrate_{disable|enable} from bpf_local_storage_alloc()
+>   bpf: Remove migrate_{disable|enable} from bpf_local_storage_free()
+>   bpf: Remove migrate_{disable|enable} from bpf_selem_free()
+>
+>  kernel/bpf/arraymap.c          |  6 ++----
+>  kernel/bpf/bpf_cgrp_storage.c  | 15 +++++++-------
+>  kernel/bpf/bpf_inode_storage.c |  9 ++++----
+>  kernel/bpf/bpf_local_storage.c | 38 +++++++++++++++-------------------
+>  kernel/bpf/bpf_task_storage.c  | 15 +++++++-------
+>  kernel/bpf/cpumask.c           |  2 --
+>  kernel/bpf/hashtab.c           | 21 ++++++++-----------
+>  kernel/bpf/helpers.c           |  4 ----
+>  kernel/bpf/lpm_trie.c          | 24 +++++++--------------
+>  kernel/bpf/range_tree.c        |  2 --
+>  kernel/bpf/syscall.c           | 12 ++++++++---
+>  net/core/bpf_sk_storage.c      | 11 ++++++----
+>  12 files changed, 71 insertions(+), 88 deletions(-)
+>
 
 
