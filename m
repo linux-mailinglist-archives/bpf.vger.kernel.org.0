@@ -1,142 +1,132 @@
-Return-Path: <bpf+bounces-47983-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47984-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 386BEA02DFE
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 17:42:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EC19A02EC0
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 18:17:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ED17161525
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 16:42:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B5813A45D6
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 17:17:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 095891DEFFC;
-	Mon,  6 Jan 2025 16:41:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5545B1DE89C;
+	Mon,  6 Jan 2025 17:17:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fnKNTvf8"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="IX7JZdOz"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E26D1DDC3A;
-	Mon,  6 Jan 2025 16:41:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D6A5155391
+	for <bpf@vger.kernel.org>; Mon,  6 Jan 2025 17:17:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736181716; cv=none; b=p1U3WvCkwpPopKtAX+US4MuRb/5PF9TESmCsHV6LNKWLzu9H9Ca2m2u6HJD/vgxSaw94C+yRbTItRnFh8oSUpFVUpNvXWoYU07wJuCsVW1ktyhcKVah7jJJxqkRB9peby+KlQzs7xtONwgUfnXI4a4J6H01Hh88tADrvkwy8KCU=
+	t=1736183849; cv=none; b=rFKdwnzKfN1wGoFsn2/gdOPemylOE/5i+alBKGYen0c/Ux6CuUbL8VSIfmQ9+dwnFPpDXNeqhghbb6zgc30/MCic7EG9zF3qAUwT8EHzr+e3WpfediEMkoHNufb1MyXRY8rsfBVeDGepZDRXdfRRwA7ChqgCLm+QzVF0PgaV8ns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736181716; c=relaxed/simple;
-	bh=QbFbT//zDPiIzy5J3MmytHrSEmvbPNG9OKmJHznXZ8A=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WvOMKxq+G7bA9xU26IZKsWJb3So5Qz3xUWPcG9zeBjC49sidKTP7stpnYmJbtRYsOHzrwgSDDh2YuEb6vYCr52epiljC0rZaf1o/Z4eHFwmXc/5qcVCPwbv+iudy8g/0QTzqNiJOt3jNpREl3sb4mWA7qqOa4A7ecsRsizmYWMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fnKNTvf8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 815CDC4CED6;
-	Mon,  6 Jan 2025 16:41:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736181715;
-	bh=QbFbT//zDPiIzy5J3MmytHrSEmvbPNG9OKmJHznXZ8A=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fnKNTvf8QgzbsE0daif9rTksXA2VWGVmYE3V7cmGafJsAV07hvZWwt2bOZjwi+/1C
-	 vSKwE/l6zf44Gy9hqNSiXge4xrSjpOpm8Za8TjBHunPiSKkD2Sg6tSoXQKHhHho5mN
-	 S9DZXKS4QIoEJ5dd7OMFStvdXDnQiqA/TZpyGZXkt5NpDH0kTLcCPEuQcav1gXOClE
-	 q5BFgmLn+pc32/PPUhGNn4mCALCqD4x1cBoffQFakarluB1P0DloLhsAA/1Nq8HCZh
-	 99z6O5UuxnuL+QKvK8WQNOfqSz/DoANf0CmAK4WNuWwBJvNnjMBhhdEmgreDIM5Po0
-	 U4QTPc7B/lT0g==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Tejun Heo <tj@kernel.org>,
-	Ihor Solodrai <ihor.solodrai@pm.me>,
-	Sasha Levin <sashal@kernel.org>,
-	shuah@kernel.org,
-	dvernet@meta.com,
-	vishalc@linux.ibm.com,
-	arighi@nvidia.com,
-	linux-kselftest@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 4/8] sched_ext: Fix dsq_local_on selftest
-Date: Mon,  6 Jan 2025 11:41:04 -0500
-Message-Id: <20250106164138.1122164-4-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250106164138.1122164-1-sashal@kernel.org>
-References: <20250106164138.1122164-1-sashal@kernel.org>
+	s=arc-20240116; t=1736183849; c=relaxed/simple;
+	bh=MdM00t21rMuIIkPWOUPvMbENbmQIu0z9Tg4MR5Fy04s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qciMiizx0P17VCNpJnAiOrqmM1x0gJDl/Uq3Zf9cWpDlaWIwiT9P+TNWqgAUFmgaEIIB2e8fI5TnGnbwOgJN8j+UVmD+jt9Ja0o3M88oVFOoRVRmI5igji3cJUzODBOS7LPxojYHL32KLo9LF3k3nwlMmBtImJ9KiByoZYsDclM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=IX7JZdOz; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-43675b1155bso138956415e9.2
+        for <bpf@vger.kernel.org>; Mon, 06 Jan 2025 09:17:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1736183846; x=1736788646; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HZUP75MvgdBZE7PNd9/qOeWcztcIfAnd7GRToVk1ql8=;
+        b=IX7JZdOz77w8Jx4vAqjQAjaSQTfRiBOpjdiycn6rxkGQ0t20YakYjrVPbtgS5kNh4w
+         LTWduoqq8HzRNyx7g5HjSBz5nNrJouDwMj5iTaTq+mIG4GJ/vwOnJ2RaLJJBwIyDQi1+
+         JHiVTWjSkWVMel4XMwdh+HxpC0O4qMECpa9T9aLQVIu0UAVtUBVdfOhXRM9cRBp6D9+I
+         WX7pazEedsqEPSEO4ufumeWYOErQr0HpAGYiNylYh6HjwN2aCqkVtSuicwvv3OGF4nlU
+         xQOR6l+Fq1cjs+Td/CJwvs7XrdwQZizYrvFmRLpQ0SwhYwrSrkA3yrasm/0jHJ2Xkj3L
+         B7IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736183846; x=1736788646;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HZUP75MvgdBZE7PNd9/qOeWcztcIfAnd7GRToVk1ql8=;
+        b=EVQxfJ7gbOn9iBQk+ENC48lLEWSzdPso1MRG6/W8pchxqEiHzhfoVtDmyTMSHwhWTo
+         X5UJUUSxrGXvoegzpjcpfI2kJp/pIJCLWN6M+gO2cIbtdmygWYGgcsSZhOcvzNd+rS4t
+         B4/w+1LbcamOLEs6eqilsGlcnHC2szlHOTo6mTnoMwK6ouOAEWSQRL9nG6BCuCWxRMga
+         lAeYH8wXFDENxMZz6+ypoeyRsuuTnm8bZj58w0xP/NreSPOEdlS8qwOg+uDZVuzjqFxU
+         MniGjH/AWVgG/OXsZ8JxzAv8R/fDmZ/ZksvbelutjhvymXEPJ5ENXwf+NbIEdU4eMwsF
+         m7iw==
+X-Gm-Message-State: AOJu0Yy1Dx058O+QsOlnjHB7n2kGp+a2Bcg9jXGRKIPtAIo+r+R3Ms80
+	EfLK1wgm6VrhdB67SKggBIgrx4QU7Z0p78Lo0KVzQTNVCIn1fh/1Bs0IT85tHiLLMY6Y7ZMnv7M
+	ri0dPAg==
+X-Gm-Gg: ASbGnctuQmrQp/fuNt+DEcb6MnG8KFykr9oWT+ot6Rk7MzF9A1G8nka+Ym7Uiv8StHA
+	Rppbdm6/XZVQKNTCUDHEEKpxGu0sblVWC0OV99V+sh78JsIDTwv6VEc5gkG9UQkTFpHGoFsJRdd
+	/Xw+l6e0YWhOOvHtjPdBDeXxc1W7LoQUlh6bCEG6NVnRHU4b/cxgrpN/ixQxsUgzSXUSJTCC+Z6
+	XYLmQ7aVw5nae5XF/cnKVZ838RGyILyZpZ5cA==
+X-Google-Smtp-Source: AGHT+IFC/7sEfT3wW6c14LTo4ZwO7TEl7M0PVpcB0TOQXnwWsodkRygson07OpDkpLyQ6spCdSLOcQ==
+X-Received: by 2002:a05:600c:4588:b0:434:fff1:1ade with SMTP id 5b1f17b1804b1-4366864413dmr493191075e9.13.1736183846016;
+        Mon, 06 Jan 2025 09:17:26 -0800 (PST)
+Received: from bobby.. ([2a09:bac1:27c0:58::241:2f])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a1c828bd3sm47658263f8f.10.2025.01.06.09.17.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Jan 2025 09:17:25 -0800 (PST)
+From: Arthur Fabre <afabre@cloudflare.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	kernel-team@cloudflare.com,
+	Arthur Fabre <afabre@cloudflare.com>
+Subject: [PATCH bpf v3 0/2] bpf: Account for early exit of bpf_tail_call() and LD_ABS
+Date: Mon,  6 Jan 2025 18:15:23 +0100
+Message-ID: <20250106171709.2832649-1-afabre@cloudflare.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.12.8
 Content-Transfer-Encoding: 8bit
 
-From: Tejun Heo <tj@kernel.org>
+A BPF function can return before its exit instruction: LD_ABS, LD_IND,
+and tail_call() can all cause it to return abnormally.
 
-[ Upstream commit ce2b93fc1dfa1c82f2576aa571731c4e5dcc8dd7 ]
+When such a function is called by another BPF function, the verifier
+doesn't take this into account when calculating the bounds of the return
+value, or pointers to the caller's stack.
 
-The dsp_local_on selftest expects the scheduler to fail by trying to
-schedule an e.g. CPU-affine task to the wrong CPU. However, this isn't
-guaranteed to happen in the 1 second window that the test is running.
-Besides, it's odd to have this particular exception path tested when there
-are no other tests that verify that the interface is working at all - e.g.
-the test would pass if dsp_local_on interface is completely broken and fails
-on any attempt.
-
-Flip the test so that it verifies that the feature works. While at it, fix a
-typo in the info message.
-
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Reported-by: Ihor Solodrai <ihor.solodrai@pm.me>
-Link: http://lkml.kernel.org/r/Z1n9v7Z6iNJ-wKmq@slm.duckdns.org
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/sched_ext/dsp_local_on.bpf.c | 5 ++++-
- tools/testing/selftests/sched_ext/dsp_local_on.c     | 5 +++--
- 2 files changed, 7 insertions(+), 3 deletions(-)
+Changes in v2:
+- Handle LD_ABS and LD_IND, not just tail_call()
+- Split tests out
+- Use inline asm for tests
 
-diff --git a/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c b/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c
-index 6325bf76f47e..fbda6bf54671 100644
---- a/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c
-+++ b/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c
-@@ -43,7 +43,10 @@ void BPF_STRUCT_OPS(dsp_local_on_dispatch, s32 cpu, struct task_struct *prev)
- 	if (!p)
- 		return;
- 
--	target = bpf_get_prandom_u32() % nr_cpus;
-+	if (p->nr_cpus_allowed == nr_cpus)
-+		target = bpf_get_prandom_u32() % nr_cpus;
-+	else
-+		target = scx_bpf_task_cpu(p);
- 
- 	scx_bpf_dsq_insert(p, SCX_DSQ_LOCAL_ON | target, SCX_SLICE_DFL, 0);
- 	bpf_task_release(p);
-diff --git a/tools/testing/selftests/sched_ext/dsp_local_on.c b/tools/testing/selftests/sched_ext/dsp_local_on.c
-index 472851b56854..0ff27e57fe43 100644
---- a/tools/testing/selftests/sched_ext/dsp_local_on.c
-+++ b/tools/testing/selftests/sched_ext/dsp_local_on.c
-@@ -34,9 +34,10 @@ static enum scx_test_status run(void *ctx)
- 	/* Just sleeping is fine, plenty of scheduling events happening */
- 	sleep(1);
- 
--	SCX_EQ(skel->data->uei.kind, EXIT_KIND(SCX_EXIT_ERROR));
- 	bpf_link__destroy(link);
- 
-+	SCX_EQ(skel->data->uei.kind, EXIT_KIND(SCX_EXIT_UNREG));
-+
- 	return SCX_TEST_PASS;
- }
- 
-@@ -50,7 +51,7 @@ static void cleanup(void *ctx)
- struct scx_test dsp_local_on = {
- 	.name = "dsp_local_on",
- 	.description = "Verify we can directly dispatch tasks to a local DSQs "
--		       "from osp.dispatch()",
-+		       "from ops.dispatch()",
- 	.setup = setup,
- 	.run = run,
- 	.cleanup = cleanup,
+Changes in v3:
+- Don't handle just r0, model abnormal exits as a branch that exits or
+  falls through.
+- Try to use C as much as possible for the tests.
+
+Arthur Fabre (2):
+  bpf: Account for early exit of bpf_tail_call() and LD_ABS
+  selftests/bpf: Test r0 and ref lifetime after BPF-BPF call with
+    abnormal return
+
+ kernel/bpf/verifier.c                         |  84 +++++++++----
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../bpf/progs/verifier_abnormal_ret.c         | 115 ++++++++++++++++++
+ 3 files changed, 178 insertions(+), 23 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_abnormal_ret.c
+
 -- 
-2.39.5
+2.43.0
 
 
