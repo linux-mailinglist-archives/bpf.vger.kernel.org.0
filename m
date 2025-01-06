@@ -1,41 +1,41 @@
-Return-Path: <bpf+bounces-47966-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47968-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76EA0A02D80
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 17:17:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB806A02D85
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 17:17:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC89E160343
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 16:17:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE0D3161763
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 16:17:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FC9B1DDC08;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C25671DE88C;
 	Mon,  6 Jan 2025 16:17:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21B4714E2CF;
-	Mon,  6 Jan 2025 16:17:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646BC1DD0FE;
+	Mon,  6 Jan 2025 16:17:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736180240; cv=none; b=sZFRCy6ZxklSaAnS6dPaFtG+ws4xitfLE94AePOeNckFMY2t1bM7jO+PnX+bW8R7LNC21+G4zIK68fSMRxjK1noHp76P93fU4xqXZVcQLsffd6+faxeMJJyvefuxSuq36oU0wwu9ARiRzBg3sOFUyl0RviVxqbdu+hbpWljlFXs=
+	t=1736180240; cv=none; b=hZgmr7QU5RmwWQPrdOZVOP3uspgzWn8MYDQ/JmgwCDcam3pFBbThmndYqMxsCkfhkmxiMSi5IKtpuruorsZS2EzeZb8yCR5SRKuNLdQAYPkfB4i3T/M/tMcO4Ngwp81IJbc9GkX1vHTBbnoO0eMoM004XUAxbR8WZll4t+1rDRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1736180240; c=relaxed/simple;
-	bh=hPJMF92mBogM/dxXMcpU+sIiA76bvESzbDZTgxMCwyM=;
+	bh=rolb2hNPLfLRA+V7hBiHARtWSQSp1k++scv0RMxo1cg=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=b5kN5FkUsryf47Hbl9/9/Vu5n/IlG4jeS5tMaTd2nRg0tk+7kV2PR5X6hgyJdqqrsJuRz7+uHoLZB03bzgUyq0W/mg8Fhj60g9NNYkbx62dXg2LZjRu2wpPQOTgKqPOBimBVjPpJr0huQeEKpOZrkcLBA7iaX03DeEgyc220CPA=
+	 Content-Type; b=WtShWWeGLqBHiBVfOpcwsQtGFGfxF4DitgxffmI26dULoYcqtk2hP0FDUuJ3ofVzgeNu6evDNqzzSfsYkRgLynt5X8UVQnHTeVjFHfam1mEHtrrpGpqaVREdwLex+5AjD1io956MwL6pd03syRzeoGjgl7ti2KUulAeYy1dlaEk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB94FC4CEE3;
-	Mon,  6 Jan 2025 16:17:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BB23C4CEE6;
+	Mon,  6 Jan 2025 16:17:20 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.98)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1tUpoU-00000009Izo-1GZY;
+	id 1tUpoU-00000009J0I-1yWg;
 	Mon, 06 Jan 2025 11:18:46 -0500
-Message-ID: <20250106161846.151121836@goodmis.org>
+Message-ID: <20250106161846.323200780@goodmis.org>
 User-Agent: quilt/0.68
-Date: Mon, 06 Jan 2025 11:17:28 -0500
+Date: Mon, 06 Jan 2025 11:17:29 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org
 Cc: Masami Hiramatsu <mhiramat@kernel.org>,
@@ -52,7 +52,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Martin  Kelly <martin.kelly@crowdstrike.com>,
  Christophe Leroy <christophe.leroy@csgroup.eu>,
  Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: [for-next][PATCH 02/14] scripts/sorttable: Remove unused write functions
+Subject: [for-next][PATCH 03/14] scripts/sorttable: Remove unneeded Elf_Rel
 References: <20250106161726.131794583@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -64,10 +64,8 @@ Content-Type: text/plain; charset=UTF-8
 
 From: Steven Rostedt <rostedt@goodmis.org>
 
-The code of sorttable.h was copied from the recordmcount.h  which defined
-various write functions for different sizes (2, 4, 8 byte lengths). But
-sorttable only uses the 4 byte writes. Remove the extra versions as they
-are not used.
+The code had references to initialize the Elf_Rel relocation tables, but
+it was never used. Remove it.
 
 Cc: bpf <bpf@vger.kernel.org>
 Cc: Masami Hiramatsu <mhiramat@kernel.org>
@@ -83,74 +81,92 @@ Cc: Zheng Yejian <zhengyejian1@huawei.com>
 Cc: Martin  Kelly <martin.kelly@crowdstrike.com>
 Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
 Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Link: https://lore.kernel.org/20250105162344.314385504@goodmis.org
+Link: https://lore.kernel.org/20250105162344.515342233@goodmis.org
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- scripts/sorttable.c | 26 --------------------------
- 1 file changed, 26 deletions(-)
+ scripts/sorttable.h | 23 ++---------------------
+ 1 file changed, 2 insertions(+), 21 deletions(-)
 
-diff --git a/scripts/sorttable.c b/scripts/sorttable.c
-index 83cdb843d92f..4dcdbf7a5e26 100644
---- a/scripts/sorttable.c
-+++ b/scripts/sorttable.c
-@@ -68,8 +68,6 @@ static uint32_t (*r)(const uint32_t *);
- static uint16_t (*r2)(const uint16_t *);
- static uint64_t (*r8)(const uint64_t *);
- static void (*w)(uint32_t, uint32_t *);
--static void (*w2)(uint16_t, uint16_t *);
--static void (*w8)(uint64_t, uint64_t *);
- typedef void (*table_sort_t)(char *, int);
+diff --git a/scripts/sorttable.h b/scripts/sorttable.h
+index 2a9ec5046e9a..aa7a8499a516 100644
+--- a/scripts/sorttable.h
++++ b/scripts/sorttable.h
+@@ -26,7 +26,6 @@
+ #undef Elf_Addr
+ #undef Elf_Ehdr
+ #undef Elf_Shdr
+-#undef Elf_Rel
+ #undef Elf_Sym
+ #undef ELF_ST_TYPE
+ #undef uint_t
+@@ -42,7 +41,6 @@
+ # define Elf_Addr		Elf64_Addr
+ # define Elf_Ehdr		Elf64_Ehdr
+ # define Elf_Shdr		Elf64_Shdr
+-# define Elf_Rel		Elf64_Rel
+ # define Elf_Sym		Elf64_Sym
+ # define ELF_ST_TYPE		ELF64_ST_TYPE
+ # define uint_t			uint64_t
+@@ -57,7 +55,6 @@
+ # define Elf_Addr		Elf32_Addr
+ # define Elf_Ehdr		Elf32_Ehdr
+ # define Elf_Shdr		Elf32_Shdr
+-# define Elf_Rel		Elf32_Rel
+ # define Elf_Sym		Elf32_Sym
+ # define ELF_ST_TYPE		ELF32_ST_TYPE
+ # define uint_t			uint32_t
+@@ -245,14 +242,10 @@ static int do_sort(Elf_Ehdr *ehdr,
+ 	Elf32_Word *symtab_shndx = NULL;
+ 	Elf_Sym *sort_needed_sym = NULL;
+ 	Elf_Shdr *sort_needed_sec;
+-	Elf_Rel *relocs = NULL;
+-	int relocs_size = 0;
+ 	uint32_t *sort_needed_loc;
+ 	const char *secstrings;
+ 	const char *strtab;
+ 	char *extab_image;
+-	int extab_index = 0;
+-	int i;
+ 	int idx;
+ 	unsigned int shnum;
+ 	unsigned int shstrndx;
+@@ -276,23 +269,15 @@ static int do_sort(Elf_Ehdr *ehdr,
+ 	if (shnum == SHN_UNDEF)
+ 		shnum = _r(&shdr[0].sh_size);
  
- /*
-@@ -146,31 +144,11 @@ static void wbe(uint32_t val, uint32_t *x)
- 	put_unaligned_be32(val, x);
- }
+-	for (i = 0, s = shdr; s < shdr + shnum; i++, s++) {
++	for (s = shdr; s < shdr + shnum; s++) {
+ 		idx = r(&s->sh_name);
+-		if (!strcmp(secstrings + idx, "__ex_table")) {
++		if (!strcmp(secstrings + idx, "__ex_table"))
+ 			extab_sec = s;
+-			extab_index = i;
+-		}
+ 		if (!strcmp(secstrings + idx, ".symtab"))
+ 			symtab_sec = s;
+ 		if (!strcmp(secstrings + idx, ".strtab"))
+ 			strtab_sec = s;
  
--static void w2be(uint16_t val, uint16_t *x)
--{
--	put_unaligned_be16(val, x);
--}
--
--static void w8be(uint64_t val, uint64_t *x)
--{
--	put_unaligned_be64(val, x);
--}
--
- static void wle(uint32_t val, uint32_t *x)
- {
- 	put_unaligned_le32(val, x);
- }
+-		if ((r(&s->sh_type) == SHT_REL ||
+-		     r(&s->sh_type) == SHT_RELA) &&
+-		    r(&s->sh_info) == extab_index) {
+-			relocs = (void *)ehdr + _r(&s->sh_offset);
+-			relocs_size = _r(&s->sh_size);
+-		}
+ 		if (r(&s->sh_type) == SHT_SYMTAB_SHNDX)
+ 			symtab_shndx = (Elf32_Word *)((const char *)ehdr +
+ 						      _r(&s->sh_offset));
+@@ -394,10 +379,6 @@ static int do_sort(Elf_Ehdr *ehdr,
+ 		      extable_ent_size, compare_extable);
+ 	}
  
--static void w2le(uint16_t val, uint16_t *x)
--{
--	put_unaligned_le16(val, x);
--}
+-	/* If there were relocations, we no longer need them. */
+-	if (relocs)
+-		memset(relocs, 0, relocs_size);
 -
--static void w8le(uint64_t val, uint64_t *x)
--{
--	put_unaligned_le64(val, x);
--}
--
- /*
-  * Move reserved section indices SHN_LORESERVE..SHN_HIRESERVE out of
-  * the way to -256..-1, to avoid conflicting with real section
-@@ -277,16 +255,12 @@ static int do_file(char const *const fname, void *addr)
- 		r2	= r2le;
- 		r8	= r8le;
- 		w	= wle;
--		w2	= w2le;
--		w8	= w8le;
- 		break;
- 	case ELFDATA2MSB:
- 		r	= rbe;
- 		r2	= r2be;
- 		r8	= r8be;
- 		w	= wbe;
--		w2	= w2be;
--		w8	= w8be;
- 		break;
- 	default:
- 		fprintf(stderr, "unrecognized ELF data encoding %d: %s\n",
+ 	/* find the flag main_extable_sort_needed */
+ 	for (sym = (void *)ehdr + _r(&symtab_sec->sh_offset);
+ 	     sym < sym + _r(&symtab_sec->sh_size) / sizeof(Elf_Sym);
 -- 
 2.45.2
 
