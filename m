@@ -1,153 +1,289 @@
-Return-Path: <bpf+bounces-47935-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47940-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19EEFA0205D
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 09:09:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24002A02087
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 09:20:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30F0918858BC
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 08:09:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 065071635FB
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 08:20:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E64BC1DC988;
-	Mon,  6 Jan 2025 08:07:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ECB01D6DB1;
+	Mon,  6 Jan 2025 08:20:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ovf+6V3k"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B7F21DA0E1;
-	Mon,  6 Jan 2025 08:07:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2DAD4A04;
+	Mon,  6 Jan 2025 08:20:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736150836; cv=none; b=KVTyCsoBiP017BC5o6N0QGHEWI6dyckuBhqw1CrefYje2qjb4t7VY2uMMG/aiw/4ZQ2hEaShG9dgnakOE39t0Nz1mgi++tIPSZT5w0XQ3cbscE567WrR0Tu5pPF++g0i7HGoQEOASvSLGIW2o1uQqiLuDdL2+zVHvG79ar1SYmk=
+	t=1736151625; cv=none; b=H9sYJBZNAM9ttHKlzl02deLOOrwLq3OzmkTelwL8tn+ELi5xUZBobV5a4jBOqZAyq9W4pnCWtekcJmS9VVrqWkphj2bSF2+nI1j5RdyRoTj1mF2LVOwmh/zSHQ9SxSHXxPVUzZG6INbVopH3RSVD6r1b1iNmtS1x2Wq91CsSZtI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736150836; c=relaxed/simple;
-	bh=XPAyxuEqoQ9kPmaRjBByoeA0kuBk23qq7DNXlnka/4c=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DBsBqWg2MVVytdN+WWH9zwy6nOdbQbLg8F1WmTlzZDD6StLICc5ocWomxaRwP4W+/qvmnNRX/EVPcoXzJYuAtRP88zQA5jULrpUJ5Nm6XjyeFUrwlN6oa9PMAaTJAAA38OePcENY0Gs9Ox/quzd+kBJLx1foomdhEvQZeveNLLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YRRbV1C8lz4f3jd9;
-	Mon,  6 Jan 2025 16:06:46 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 44BB91A10C2;
-	Mon,  6 Jan 2025 16:07:06 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgD3W2AZj3tnVG29AA--.29272S23;
-	Mon, 06 Jan 2025 16:07:06 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	houtao1@huawei.com,
-	xukuohai@huawei.com
-Subject: [PATCH bpf-next 19/19] bpf: Remove migrate_{disable|enable} from bpf_selem_free()
-Date: Mon,  6 Jan 2025 16:19:00 +0800
-Message-Id: <20250106081900.1665573-20-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20250106081900.1665573-1-houtao@huaweicloud.com>
-References: <20250106081900.1665573-1-houtao@huaweicloud.com>
+	s=arc-20240116; t=1736151625; c=relaxed/simple;
+	bh=6GixmoG+3+b+D0THHE18JyNslvfoVFs48o9nkhfIygY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kRSGHUhrf1cO5VHN1cFp/rODqX7QBksOP5mnSLyQA8H7IWWCrnHxJazuVPWIskhi8AXmcQVa6k3cJo1r7+H2B/GM97DN5sRjZJRNifOz6Ad76CGMpEcNkGScSzO2of9MhzA4AkIvnLlaRjEJH1zO7983Ad/QA+lIU31P1T/zD3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ovf+6V3k; arc=none smtp.client-ip=209.85.219.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-e3fd6cd9ef7so19403135276.1;
+        Mon, 06 Jan 2025 00:20:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736151623; x=1736756423; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A162jcE+dcZbXBQ3NVUikao2g+sNPSwsAqt9k6Pv4f0=;
+        b=Ovf+6V3kUrewOUCUnDMEvK17gJl7IqLDchAg8i5HRqA7+DBxxTjq0dzOB9KIduVlaB
+         LHZDswaqr4+SQEzyi+rNnBd8U79Ud9cjhFGmScieRejTOv6DyyQhtnsYI1MaJwsKo/iV
+         Nm5XbBy/NE594Jusko/PXYrujxmL4rxXGWuPcXGOvCf9ey3LN0bT8kId4e9tti1+l+pU
+         ONsq8DN8gQV1e3zSjTD2+kp1cuPhH/gk/4kbqsU2WsS5hdtGK0ODeLcgsi7XCxQ6SP83
+         mOuQ427xAM/e6iB91IAzFjTGwRkInBE+cwJ/o4zqSkIx0JJgpSaP8QUc30LogtLrne5w
+         ZJZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736151623; x=1736756423;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=A162jcE+dcZbXBQ3NVUikao2g+sNPSwsAqt9k6Pv4f0=;
+        b=S4E9bwCNlkgttD4thTA5PmtEo2dU6VdCSPmTCTY9MorQRnSAzv4g8n7mEGG2tMie8O
+         LdzgKrq1FTn6yplZ+YUZX8Urz0+D5FVdb18plaP9x9Ts/qEEum7zBFK/6v8cv2xcCAjZ
+         dagnNLNvcWJ4IBgTLCdWte/CvpYSGkwNb/JrGvn4sXv3SGL6y+FsXy+rAy0fE2CLeZJw
+         oR/KrbsVY6+8wTMwR7gG/Dr3+BCl5ouIZxpmP9tJcVjasD1CtOXkYgaYOzLZYXLmrHiv
+         +mY4s5rezLBO6JqzfQNqLWFkoBL8Ysni4PrfTth7I/+oRxZthV7xUlk19LQeCy7uX4fk
+         XG1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUOig2HrtBZJuO6nTY5iUvv2CsvH5goa7Aovj756m/tWd0Nfrcbu2I/M/CfeMkS+1X+Xpw=@vger.kernel.org, AJvYcCWuQFNQ0WHzH5ly5CWlH1SFlZWRk1KTyovyVof6jmc1tkhpnDwaHtKx1k8ggfrOjTRPqrgNs4geHGZvLt+O@vger.kernel.org, AJvYcCXwqgojB3z8bhvTNcXGd1h4WgXjiGOncy/4PE+rRQgr/p6EF93AQRDmGaOhNxQfhKYvL7QZaz8LGd6tIemN6nkmQw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyuj3zNhxzKiwhKmLjv8iVEWrSjTa9rKoZDb4YUiuUGpYgoXCj3
+	Qo7GnzUo1+2u6yHNXYYeXFflMH1EtJZRpN+cRk7WlfLDeD2TpKffFimfT2nFS3YBRLG0FRTFG7C
+	GNxUnWX2gnLlN++G6gDp+aYEkQe8=
+X-Gm-Gg: ASbGnctwgOksIPckuUDM8Wh0i3IU7mMfmKexVH/KPZAsMLAM+5qxwBVU/qUUf7+EZLa
+	Fg8H7e9OE3+lHEs22LlauPUcS7BR9feH5c38V
+X-Google-Smtp-Source: AGHT+IEYAJMaykbg1DUSBx3whgCODzUTMb02CArEp3mxJe5MnRzaAxUAt9ecr3Z+Ybu9+xQmFDb64GdR/wIQwMV2478=
+X-Received: by 2002:a05:690c:3687:b0:6f0:301:5fea with SMTP id
+ 00721157ae682-6f3e2ac4f92mr405375757b3.12.1736151622856; Mon, 06 Jan 2025
+ 00:20:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgD3W2AZj3tnVG29AA--.29272S23
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr1fCr48CF1ftr1rtr48tFb_yoW8tFWfpF
-	Z7Xr95Cr4Uta1F9FsrJF4fCryrXw48Wr17Kr4DA34rtrsxZF93Gr4IkF18Za43Gw1UXryf
-	ZF1Yga4Uuw4UCFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-	xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2
-	AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
-	x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6r
-	W5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF
-	7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14
-	v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuY
-	vjxUF9NVUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20250102201248.790841-1-namhyung@kernel.org>
+In-Reply-To: <20250102201248.790841-1-namhyung@kernel.org>
+From: Howard Chu <howardchu95@gmail.com>
+Date: Mon, 6 Jan 2025 00:20:11 -0800
+Message-ID: <CAH0uvogzMcLXmr9KLT8CzmC0u4UgQ_2QGrpdOCzWWDjQbCL=Uw@mail.gmail.com>
+Subject: Re: [PATCH] perf trace: Fix unaligned access for augmented args
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Ian Rogers <irogers@google.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Hou Tao <houtao1@huawei.com>
+Hello Namhyung,
 
-bpf_selem_free() has the following three callers:
+Thanks for the fix, and sorry for the delay and for making you do
+this. I should've done it myself earlier. This bug is present in the
+commit without the whole BTF thing.
 
-(1) bpf_local_storage_update
-It will be invoked through ->map_update_elem syscall or helpers for
-storage map. Migration has already been disabled in these running
-contexts.
+Here is the commit before '45a0c928e7aa perf trace: BTF-based enum
+pretty printing for syscall args'
 
-(2) bpf_sk_storage_clone
-It has already disabled migration before invoking bpf_selem_free().
+$ git log --oneline
+bfa54a793ba7 (HEAD) driver core: bus: Fix double free in driver API
+bus_register()
 
-(3) bpf_selem_free_list
-bpf_selem_free_list() has three callers: bpf_selem_unlink_storage(),
-bpf_local_storage_update() and bpf_local_storage_destroy().
+perf $ UBSAN_OPTIONS=3Dprint_stacktrace=3D1 ./perf trace -- sleep 1
+builtin-trace.c:1715:35: runtime error: index 6 out of bounds for type
+'syscall_arg_fmt [6]'
+    #0 0x5d0994789a74 in syscall__alloc_arg_fmts
+/root/hw/linux-perf/tools/perf/builtin-trace.c:1715
+    #1 0x5d099478b72c in trace__read_syscall_info
+/root/hw/linux-perf/tools/perf/builtin-trace.c:1868
+    #2 0x5d099478e571 in trace__syscall_info
+/root/hw/linux-perf/tools/perf/builtin-trace.c:2179
+    #3 0x5d099479ac81 in trace__init_syscall_bpf_progs
+/root/hw/linux-perf/tools/perf/builtin-trace.c:3333
+    #4 0x5d099479c28c in trace__init_syscalls_bpf_prog_array_maps
+/root/hw/linux-perf/tools/perf/builtin-trace.c:3466
+    #5 0x5d09947a0098 in trace__run
+/root/hw/linux-perf/tools/perf/builtin-trace.c:3932
+    #6 0x5d09947aa62d in cmd_trace
+/root/hw/linux-perf/tools/perf/builtin-trace.c:5073
+    #7 0x5d09947b6eed in run_builtin /root/hw/linux-perf/tools/perf/perf.c:=
+350
+    #8 0x5d09947b7518 in handle_internal_command
+/root/hw/linux-perf/tools/perf/perf.c:403
+    #9 0x5d09947b77ef in run_argv /root/hw/linux-perf/tools/perf/perf.c:447
+    #10 0x5d09947b7d5e in main /root/hw/linux-perf/tools/perf/perf.c:561
+    #11 0x7ec47642a1c9 in __libc_start_call_main
+../sysdeps/nptl/libc_start_call_main.h:58
+    #12 0x7ec47642a28a in __libc_start_main_impl ../csu/libc-start.c:360
+    #13 0x5d0994615d34 in _start
+(/root/hw/linux-perf/tools/perf/perf+0x4bdd34) (BuildId:
+791904aaae2afa7e7ad7e3aa80a32b71e824abcf)
 
-The callers of bpf_selem_unlink_storage() includes: storage map
-->map_delete_elem syscall, storage map delete helpers and
-bpf_local_storage_map_free(). These contexts have already disabled
-migration when invoking bpf_selem_unlink() which invokes
-bpf_selem_unlink_storage() and bpf_selem_free_list() correspondingly.
+         ? (         ): sleep/180215  ... [continued]: execve())
+                                    =3D 0
+     0.039 ( 0.002 ms): sleep/180215 brk()
+                                    =3D 0x604c45ccb000
+     0.075 ( 0.005 ms): sleep/180215 mmap(len: 8192, prot: READ|WRITE,
+flags: PRIVATE|ANONYMOUS)           =3D 0x7ff6de94d000
 
-bpf_local_storage_update() has been analyzed as the first caller above.
-bpf_local_storage_destroy() is invoked when freeing the local storage
-for the kernel object. Now cgroup, task, inode and sock storage have
-already disabled migration before invoking bpf_local_storage_destroy().
+builtin-trace.c:1531:55: runtime error: member access within
+misaligned address 0x7ec47192343c for type 'struct augmented_arg',
+which requires 8 byte alignment
+0x7ec47192343c: note: pointer points here
+  f6 7f 00 00 13 00 00 00  2f 65 74 63 2f 6c 64 2e  73 6f 2e 70 72 65
+6c 6f  61 64 00 00 00 00 00 00
+              ^
+    #0 0x5d0994788527 in syscall_arg__scnprintf_augmented_string
+/root/hw/linux-perf/tools/perf/builtin-trace.c:1531
+    #1 0x5d09947887ca in syscall_arg__scnprintf_filename
+/root/hw/linux-perf/tools/perf/builtin-trace.c:1545
+    #2 0x5d099478d436 in syscall_arg_fmt__scnprintf_val
+/root/hw/linux-perf/tools/perf/builtin-trace.c:2044
+    #3 0x5d099478dd8b in syscall__scnprintf_args
+/root/hw/linux-perf/tools/perf/builtin-trace.c:2106
+    #4 0x5d0994790c44 in trace__sys_enter
+/root/hw/linux-perf/tools/perf/builtin-trace.c:2387
+    #5 0x5d0994799ba5 in trace__handle_event
+/root/hw/linux-perf/tools/perf/builtin-trace.c:3198
+    #6 0x5d099479d3eb in __trace__deliver_event
+/root/hw/linux-perf/tools/perf/builtin-trace.c:3635
+    #7 0x5d099479d6c9 in trace__deliver_event
+/root/hw/linux-perf/tools/perf/builtin-trace.c:3662
+    #8 0x5d09947a0cc4 in trace__run
+/root/hw/linux-perf/tools/perf/builtin-trace.c:4010
+    #9 0x5d09947aa62d in cmd_trace
+/root/hw/linux-perf/tools/perf/builtin-trace.c:5073
+    #10 0x5d09947b6eed in run_builtin /root/hw/linux-perf/tools/perf/perf.c=
+:350
+    #11 0x5d09947b7518 in handle_internal_command
+/root/hw/linux-perf/tools/perf/perf.c:403
+    #12 0x5d09947b77ef in run_argv /root/hw/linux-perf/tools/perf/perf.c:44=
+7
+    #13 0x5d09947b7d5e in main /root/hw/linux-perf/tools/perf/perf.c:561
+    #14 0x7ec47642a1c9 in __libc_start_call_main
+../sysdeps/nptl/libc_start_call_main.h:58
+    #15 0x7ec47642a28a in __libc_start_main_impl ../csu/libc-start.c:360
+    #16 0x5d0994615d34 in _start
+(/root/hw/linux-perf/tools/perf/perf+0x4bdd34) (BuildId:
+791904aaae2afa7e7ad7e3aa80a32b71e824abcf)
 
-After the analyses above, it is safe to remove migrate_{disable|enable}
-from bpf_selem_free(). Also add a cant_migrate() check in
-bpf_selem_free().
+     <snip>
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- kernel/bpf/bpf_local_storage.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+trace/beauty/timespec.c:12:9: runtime error: member access within
+misaligned address 0x7ec4719264b4 for type 'struct timespec', which
+requires 8 byte alignment
+0x7ec4719264b4: note: pointer points here
+  00 00 00 00 01 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00
+00 00  00 00 00 00 00 00 00 00
+              ^
+    #0 0x5d09947b02e7 in syscall_arg__scnprintf_augmented_timespec
+trace/beauty/timespec.c:12
+    #1 0x5d09947b0417 in syscall_arg__scnprintf_timespec
+trace/beauty/timespec.c:18
+    #2 0x5d099478d436 in syscall_arg_fmt__scnprintf_val
+/root/hw/linux-perf/tools/perf/builtin-trace.c:2044
+    #3 0x5d099478dd8b in syscall__scnprintf_args
+/root/hw/linux-perf/tools/perf/builtin-trace.c:2106
+    #4 0x5d0994790c44 in trace__sys_enter
+/root/hw/linux-perf/tools/perf/builtin-trace.c:2387
+    #5 0x5d0994799ba5 in trace__handle_event
+/root/hw/linux-perf/tools/perf/builtin-trace.c:3198
+    #6 0x5d099479d3eb in __trace__deliver_event
+/root/hw/linux-perf/tools/perf/builtin-trace.c:3635
+    #7 0x5d099479d6c9 in trace__deliver_event
+/root/hw/linux-perf/tools/perf/builtin-trace.c:3662
+    #8 0x5d09947a0cc4 in trace__run
+/root/hw/linux-perf/tools/perf/builtin-trace.c:4010
+    #9 0x5d09947aa62d in cmd_trace
+/root/hw/linux-perf/tools/perf/builtin-trace.c:5073
+    #10 0x5d09947b6eed in run_builtin /root/hw/linux-perf/tools/perf/perf.c=
+:350
+    #11 0x5d09947b7518 in handle_internal_command
+/root/hw/linux-perf/tools/perf/perf.c:403
+    #12 0x5d09947b77ef in run_argv /root/hw/linux-perf/tools/perf/perf.c:44=
+7
+    #13 0x5d09947b7d5e in main /root/hw/linux-perf/tools/perf/perf.c:561
+    #14 0x7ec47642a1c9 in __libc_start_call_main
+../sysdeps/nptl/libc_start_call_main.h:58
+    #15 0x7ec47642a28a in __libc_start_main_impl ../csu/libc-start.c:360
+    #16 0x5d0994615d34 in _start
+(/root/hw/linux-perf/tools/perf/perf+0x4bdd34) (BuildId:
+791904aaae2afa7e7ad7e3aa80a32b71e824abcf)
 
-diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-index d67ba116aee8..f196093db0a0 100644
---- a/kernel/bpf/bpf_local_storage.c
-+++ b/kernel/bpf/bpf_local_storage.c
-@@ -235,6 +235,8 @@ void bpf_selem_free(struct bpf_local_storage_elem *selem,
- 		    struct bpf_local_storage_map *smap,
- 		    bool reuse_now)
- {
-+	cant_migrate();
-+
- 	if (!smap->bpf_ma) {
- 		/* Only task storage has uptrs and task storage
- 		 * has moved to bpf_mem_alloc. Meaning smap->bpf_ma == true
-@@ -258,9 +260,7 @@ void bpf_selem_free(struct bpf_local_storage_elem *selem,
- 		 * bpf_mem_cache_free will be able to reuse selem
- 		 * immediately.
- 		 */
--		migrate_disable();
- 		bpf_mem_cache_free(&smap->selem_ma, selem);
--		migrate_enable();
- 		return;
- 	}
- 
--- 
-2.29.2
+As seen above, I encountered the same runtime error of misalignment as
+you did in https://lore.kernel.org/all/Z2STgyD1p456Qqhg@google.com/,
+not just in time_spec.c, but also in the access of augmented_arg in
+builtin-trace.c.
 
+On Thu, Jan 2, 2025 at 12:12=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> Some version of compilers reported unaligned accesses in perf trace when
+> undefined-behavior sanitizer is on.  I found that it uses raw data in the
+> sample directly and assuming it's properly aligned.
+>
+> Unlike other sample fields, the raw data is not 8-byte aligned because
+> there's a size field (u32) before the actual data.  So I added a static
+> buffer in syscall__augmented_args() and return it instead.  This is not
+> ideal but should work well as perf trace is single-threaded.
+>
+> A better approach would be aligning the raw data by adding a 4-byte data
+> before the augmented args but I'm afraid it'd break the backward
+> compatibility.
+
+Can you explain backward compatibility? Do you mean the 'perf trace
+record' and its perf data file?
+
+With your patch attached:
+
+perf $ UBSAN_OPTIONS=3Dprint_stacktrace=3D1 ./perf trace -e
+clock_nanosleep -- sleep 1
+builtin-trace.c:1966:35: runtime error: index 6 out of bounds for type
+'syscall_arg_fmt [6]'
+    #0 0x577f3fc3d18c in syscall__alloc_arg_fmts
+/root/hw/linux-perf/tools/perf/builtin-trace.c:1966
+    #1 0x577f3fc3f0c1 in trace__read_syscall_info
+/root/hw/linux-perf/tools/perf/builtin-trace.c:2129
+    #2 0x577f3fc422ff in trace__syscall_info
+/root/hw/linux-perf/tools/perf/builtin-trace.c:2466
+    #3 0x577f3fc51b30 in trace__init_syscalls_bpf_prog_array_maps
+/root/hw/linux-perf/tools/perf/builtin-trace.c:3927
+    #4 0x577f3fc5591c in trace__run
+/root/hw/linux-perf/tools/perf/builtin-trace.c:4365
+    #5 0x577f3fc5fd48 in cmd_trace
+/root/hw/linux-perf/tools/perf/builtin-trace.c:5532
+    #6 0x577f3fc6c697 in run_builtin /root/hw/linux-perf/tools/perf/perf.c:=
+351
+    #7 0x577f3fc6ccc2 in handle_internal_command
+/root/hw/linux-perf/tools/perf/perf.c:404
+    #8 0x577f3fc6cf99 in run_argv /root/hw/linux-perf/tools/perf/perf.c:448
+    #9 0x577f3fc6d503 in main /root/hw/linux-perf/tools/perf/perf.c:560
+    #10 0x72edf8a2a1c9 in __libc_start_call_main
+../sysdeps/nptl/libc_start_call_main.h:58
+    #11 0x72edf8a2a28a in __libc_start_main_impl ../csu/libc-start.c:360
+    #12 0x577f3fac12c4 in _start
+(/root/hw/linux-perf/tools/perf/perf+0x4e82c4) (BuildId:
+bca8e50b69a43c91b4d187140c12c6608770d99e)
+
+     0.000 (1000.225 ms): sleep/330971 clock_nanosleep(rqtp: {
+.tv_sec: 1, .tv_nsec: 0 }, rmtp: 0x7fff11ba9dc0) =3D 0
+
+No more misalignment, and I'll fix the index-out-of-bound bug.
+
+Reviewed-by: Howard Chu <howardchu95@gmail.com>
+
+Thanks
+Howard
 
