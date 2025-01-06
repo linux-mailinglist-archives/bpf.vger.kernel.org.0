@@ -1,45 +1,46 @@
-Return-Path: <bpf+bounces-47988-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47989-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02CC9A02F51
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 18:51:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC846A02F52
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 18:51:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E90FE164032
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 17:50:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00F5D3A4F23
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 17:51:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75A711DE8B0;
-	Mon,  6 Jan 2025 17:50:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA07A1DF25C;
+	Mon,  6 Jan 2025 17:51:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V4cd8LWT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J38bKP1O"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECFDD4A0C;
-	Mon,  6 Jan 2025 17:50:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39BB91DE8B8;
+	Mon,  6 Jan 2025 17:51:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736185855; cv=none; b=rIb4+h67U3D/p9bXfS4yh2JZJ4IUG0dWzYMK6Tx7RGbuTFuRoi+v8KtqchOfe7el83rN0B9gSh2bvFNaU/pBjmZFSZKM9n2nBlEQNNc1cNLSsCxy6Yf+KSD4wZPIZgrkhQ0m+eVBTPvDZwsUJRD3+kbpd+8CVFZjgggYb/EoPFY=
+	t=1736185866; cv=none; b=GehY4vc6Km2L6lCWomO1Q/04UUx3PF+Mp51HcwPPzpyPTeOZwI0/I5lB7LNSNH8xWMXkan23O48gFd38j1HUNBEo+15zDKI0pbcCLPz0m/+Oai5dh1z4VrBT3K3nGe/WPuMs4dlDDAPr5+pf+A0t41qxn7vsFhTSkXgtBMdqr9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736185855; c=relaxed/simple;
-	bh=TRtW8/9BwFZwtdlWRGqcUKIsNHklKQHW+AZk0cQ0up4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D62R2U0eeHHNjwK4ouKXK9c3Fh11Hpw1Kw3z0WWfTWvftV+banxwkyw603RYX7FxpZnnCAZTMyuF9orIouRXnHDiO9/hUqw9qx2fENsNsFfdwaoDtaD3hA7Yk36vGyqSskDiJ6nhkzhgNd+whP2ZuTao/McFIILyfD9yGNXPRD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V4cd8LWT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 226B4C4CED2;
-	Mon,  6 Jan 2025 17:50:50 +0000 (UTC)
+	s=arc-20240116; t=1736185866; c=relaxed/simple;
+	bh=le9JywARPIuQy+S+I0HV71655NJxy56umHLs4BFGYm4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=OPvz6ad2ugWG6RHH0U+1bKnAhsy+7tRwi3BInvSaE/yDZkkiaQGDpootfukmKJrJ9ou16x59aoTKXGC8KVP3mJkxLRQD26PPOXdpWzB498uOxo+HOCK9JXobtzu86VtACcM+gd9t2k6AJWCnVsqQwGtRa/EnXA+RwAcY1PhpwAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J38bKP1O; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A667AC4CED2;
+	Mon,  6 Jan 2025 17:51:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736185854;
-	bh=TRtW8/9BwFZwtdlWRGqcUKIsNHklKQHW+AZk0cQ0up4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=V4cd8LWTiSKmGe6np3Mjbef/eZ6S31mr3fOwTSabLHtzuYaEJdiAQFAB0YVSNPhcj
-	 wYpVSe7dsJ1e6LzJ6+v53TWKJ/Ovd38GUfsHKE/WdhZK7Xf5apHpUu//Qy+/jfbFG3
-	 LvMYWLSdyzLu6J4B1Y0dp8vojlPZGVhhEPRtBZJ5/pEtMXu8xIV2MYTY4dxRhKmv+/
-	 r81OieoOYwHSQK81ByWG359MyGB5YNewtTHydEXPEWAvLUBCIcD8vCRG3nC0tOw8kW
-	 htvX7LOZrGT1jGmRJM1oK6U2nuaX40i8NA9I1OZD42DFuCdH/VsEgTffubrWzu4CXr
-	 momx+7ZMEDWNw==
+	s=k20201202; t=1736185865;
+	bh=le9JywARPIuQy+S+I0HV71655NJxy56umHLs4BFGYm4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=J38bKP1OkdN8DLIkXsWW/w8Dnml50V/zsgPdKFamFqxLHScdwFL2huzEgnu/cnbEx
+	 M4VwmLkdL1u59fdTj8+Wd6h4p/vvUHl4S93cPAMFjkMNcH5BakZ+rUso6ofFDO7gW8
+	 vPYuD6HG9G2P2nG37xNYHohqVV+mvOu9Fna5wVOnnotiS61u00sspS3xsYm4/IG82d
+	 MCjAwWmO3/cXi9gn1bfI1UvQmLuNjW+5PsRd9F7I1eB/5XuaOdqKern15gnSGh/Mzm
+	 EMFSsVvzEgeJBWfGFdkqFXIzR/Ax1VMeFRCct+ib5NzdexLH+YrllkOqNK0/sw+8Uh
+	 ZsoVdOL507AyA==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -54,10 +55,12 @@ Cc: bpf@vger.kernel.org,
 	Stanislav Fomichev <sdf@fomichev.me>,
 	Hao Luo <haoluo@google.com>,
 	Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH bpf-next 1/2] bpf: Return error for missed kprobe multi bpf program execution
-Date: Mon,  6 Jan 2025 18:50:47 +0100
-Message-ID: <20250106175048.1443905-1-jolsa@kernel.org>
+Subject: [PATCH bpf-next 2/2] selftests/bpf: Add kprobe session recursion check test
+Date: Mon,  6 Jan 2025 18:50:48 +0100
+Message-ID: <20250106175048.1443905-2-jolsa@kernel.org>
 X-Mailer: git-send-email 2.47.0
+In-Reply-To: <20250106175048.1443905-1-jolsa@kernel.org>
+References: <20250106175048.1443905-1-jolsa@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,40 +69,42 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When kprobe multi bpf program can't be executed due to recursion check,
-we currently return 0 (success) to fprobe layer where it's ignored for
-standard kprobe multi probes.
-
-For kprobe session the success return value will make fprobe layer to
-install return probe and try to execute it as well.
-
-But the return session probe should not get executed, because the entry
-part did not run. FWIW the return probe bpf program most likely won't get
-executed, because its recursion check will likely fail as well, but we
-don't need to run it in the first place.. also we can make this clear
-and obvious.
-
-It also affects missed counts for kprobe session program execution, which
-are now doubled (extra count for not executed return probe).
+Adding kprobe.session probe to bpf_kfunc_common_test that misses bpf
+program execution due to recursion check and making sure it increases
+the program missed count properly.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- kernel/trace/bpf_trace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/bpf/prog_tests/missed.c             | 1 +
+ tools/testing/selftests/bpf/progs/missed_kprobe_recursion.c | 6 ++++++
+ 2 files changed, 7 insertions(+)
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 48db147c6c7d..1f3d4b72a3f2 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -2797,7 +2797,7 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
+diff --git a/tools/testing/selftests/bpf/prog_tests/missed.c b/tools/testing/selftests/bpf/prog_tests/missed.c
+index 70d90c43537c..ed8857ae914a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/missed.c
++++ b/tools/testing/selftests/bpf/prog_tests/missed.c
+@@ -85,6 +85,7 @@ static void test_missed_kprobe_recursion(void)
+ 	ASSERT_GE(get_missed_count(bpf_program__fd(skel->progs.test3)), 1, "test3_recursion_misses");
+ 	ASSERT_GE(get_missed_count(bpf_program__fd(skel->progs.test4)), 1, "test4_recursion_misses");
+ 	ASSERT_GE(get_missed_count(bpf_program__fd(skel->progs.test5)), 1, "test5_recursion_misses");
++	ASSERT_EQ(get_missed_count(bpf_program__fd(skel->progs.test6)), 1, "test6_recursion_misses");
  
- 	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
- 		bpf_prog_inc_misses_counter(link->link.prog);
--		err = 0;
-+		err = 1;
- 		goto out;
- 	}
- 
+ cleanup:
+ 	missed_kprobe_recursion__destroy(skel);
+diff --git a/tools/testing/selftests/bpf/progs/missed_kprobe_recursion.c b/tools/testing/selftests/bpf/progs/missed_kprobe_recursion.c
+index c4bf679a9876..29c18d869ec1 100644
+--- a/tools/testing/selftests/bpf/progs/missed_kprobe_recursion.c
++++ b/tools/testing/selftests/bpf/progs/missed_kprobe_recursion.c
+@@ -46,3 +46,9 @@ int test5(struct pt_regs *ctx)
+ {
+ 	return 0;
+ }
++
++SEC("kprobe.session/bpf_kfunc_common_test")
++int test6(struct pt_regs *ctx)
++{
++	return 0;
++}
 -- 
 2.47.0
 
