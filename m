@@ -1,84 +1,84 @@
-Return-Path: <bpf+bounces-47957-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47958-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2007A02895
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 15:54:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD66AA02899
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 15:54:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 851FB1606C8
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 14:54:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A01207A1177
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 14:54:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B63D13B59A;
-	Mon,  6 Jan 2025 14:54:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54C2913B58E;
+	Mon,  6 Jan 2025 14:54:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FmJh4Uvc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KoDsvIFM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C71F433CB
-	for <bpf@vger.kernel.org>; Mon,  6 Jan 2025 14:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED0CB433CB
+	for <bpf@vger.kernel.org>; Mon,  6 Jan 2025 14:54:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736175248; cv=none; b=M3t4NFe3Eus/wW+Zt19jHF40Tw8oK7CsBhM9Kyn2eDNR+Uvf415xFd0UanbcqL2/trvYgLTAYvhQo/IBv/7cti3ABKtZotHbGtXmalgeMlcciSO6h0+EpWrGRL8HFhkOVh+0jDH8J46ssJw4xTKhJS3emolgnUIkafJicmG55yk=
+	t=1736175251; cv=none; b=Ndot5fDp4fstBgIVdwaDYVhIHM9tGJLYXH2meLEzrNfygCvPJ4yuFCT12K2iU0GM4cSK+ZRoEyRPyseIBuGJLd2YVbZJu8MirCe4MhylzCeYCH4K4gxoX3yD5I0DSmPLomVsTGkzh8Ux1e0D3b770fTuN5XKneuysy8m9Wkt/CA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736175248; c=relaxed/simple;
-	bh=EwDzzphZzFhtltBbEjKn6ELpV9oQi7pVRaV5OiC8PVA=;
+	s=arc-20240116; t=1736175251; c=relaxed/simple;
+	bh=vD7OoCYZuWUrIQLKYDenhdTT+7LqLcv3pmLsJjxvzE4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pgzHqwLujLq46X9o07mM6DIAcnMsKf0rBu4wLvFAWkMfzexnewUXPfvk6JNK09an2KnqOit2NBsXT3YaDu91zz9MqcikOcmRbqr10UrwiS/aCBHOig96rbWGyUCFGQV/mak62IMH8hHzj6R0xmUVN4lSMJ04FdOxvrmKnjU7UwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FmJh4Uvc; arc=none smtp.client-ip=209.85.221.46
+	 MIME-Version; b=UniWnpPDVrDCKbJl5F/Yg827xIOJQ8YbbPRH0XBoKsstHT1adIKsQLwhez9R2u0oYRQGTlntOEZXUqrI1ldQnmE0ycDWo/MEZu7zi9jFtJi8hgxwHvLXvrrhmnrLzYnRpCo4mtFNCrd9oTX8J2rzbgUDnWGXgaY4p3VmM3Dlm+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KoDsvIFM; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-385d7f19f20so6348962f8f.1
-        for <bpf@vger.kernel.org>; Mon, 06 Jan 2025 06:54:05 -0800 (PST)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-385ef8b64b3so11328068f8f.0
+        for <bpf@vger.kernel.org>; Mon, 06 Jan 2025 06:54:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736175244; x=1736780044; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1736175246; x=1736780046; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RfxLq/k3pa/bVimMye2S+vaiQlpIj+CsmbaBLY7XhHw=;
-        b=FmJh4UvcvTxVtXJNFl0BDq59717emnd4wEckGT02prwMqzSGr/EWsD9bk7HRhqawFb
-         eEDWC9HxGzCfqBgfX7m19iDHnrgzRh9YD1uJKm78EkXz+lRa/wUbtlxArV0tQDf2KepW
-         i4RmKgiDwVjt4ADd6jymd9R8iNu7XiAO3xStepXvEt2HO+yQhT3xLcLnBG0G0WCH9QfN
-         6YkSo2L6qE4fXBQlI/wNV8IBC5aeHrK3PK8cE0TqGfDDz62BBe08JHi6baBZrB9bE9Bn
-         EWHMJOBJwgPKdZ0ourg0mu9B0L6tZ/QpkDv69qXBaN9sYTpIM0/4vgog/t4RmB92CvoH
-         ERLg==
+        bh=qLp9LvPNwq2kCY8NmpKp7heM93uAueEYhhM+Oqp3y0M=;
+        b=KoDsvIFM4gbqiRleegWuBFPTMtjxWvJaXTRN89vrNSDF4PuusIhEX/XUBeDT5TPhva
+         tqdEj0GRF1LycqQDE2WjtjRejAC0ltTh9Q/lzpWUAzf2p0jRbCMpZxndjT3jpyjRyaaR
+         rdkfK8/SZE3/C4s0aAWed2nKfJMwecDsk0lh5ckAAEBC8JQnpTPHOncSTZGGI4qgf8te
+         VqJkD84a+x85APalHpb2AOkqu9czVnbrPLKhls3eFvNhbLDIh4h2f2ZMz4V7s5W4blHj
+         RHIvJy51YD8YFxO6GngbVFDfHSoHIL+lKKjq+at1IRzuQfjMxAtjU7VwinPKzI191vkc
+         Lg6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736175244; x=1736780044;
+        d=1e100.net; s=20230601; t=1736175246; x=1736780046;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RfxLq/k3pa/bVimMye2S+vaiQlpIj+CsmbaBLY7XhHw=;
-        b=SpXQrGeqoyz507gdcy3XXmDLG9m+G0H1ZSHTA6BHmu3YMvSfNd1shuKRzpoLCaAo9L
-         9PBAdK0+a06K5MdceVpeQwOk9IZhhwpXd1ccVciYFTUvJIBbXQFjBcBP0TQL6GnxaEL9
-         S3dzymCr3qLm6a8L+5aGUe+6kWTvz6OKuQwtdh975NW/VL8HAx6waAh9avJTOlUYd/Wb
-         GF3/vaC/opNVCkLvHA1Uy1Rfzyt+LALEO6+FCMNsIPCHqYFz9m1nNT6QY530lb9HdRb8
-         lXQRPepEUlJGJBOoxKKQnNo3PIOUhYUp55QdG42NAQP7rs3dyDIDX0/JJB3JD27nXJUR
-         qdxw==
-X-Gm-Message-State: AOJu0Yxwe2PueVCsX/pnTM+YIVeS04IO48GBJPcd0Pu2H4OK2/xHju6/
-	rQCLSKzJhXoltxeYNRtq995qWV+YN5FqDeRQljNwLDkj7ppbIozeovIS5pEJUEE6VA==
-X-Gm-Gg: ASbGnctNtCZBbKDU7/RDm3BgLjKN1n4p7gKjNeY6xqDky0a4FR7iv+7gtW1fd9QnkBK
-	huuYjBTlGCXPT3vfn8VYG06KgLP2yKkf5YcjScplFTdPLiI7V0oRbO0uWRcwgbaACfpbIymKZnl
-	ri1eo63L7s91xebl6xI0yQNJ209uHpdSAjCu4aMR4pFXHkZabbHj727YQBFhm5oK2Fm1LUgtgdS
-	VSx2ub57nm8IEsf7ucxN/4bLpx0yGdZirMzcikYv+GnnxECJa8NkVUUEPTQjnhAhAHrEOe0a0k=
-X-Google-Smtp-Source: AGHT+IGpDIIY/UlEA1BTnSqFKkJY+bKo67rTJNDCHK8rsE19keHWhr8o6QC/8+kJD/KFTfSzTiyxNQ==
-X-Received: by 2002:a05:6000:1fa9:b0:385:f38e:c0c3 with SMTP id ffacd0b85a97d-38a221f1391mr43705446f8f.6.1736175242481;
-        Mon, 06 Jan 2025 06:54:02 -0800 (PST)
+        bh=qLp9LvPNwq2kCY8NmpKp7heM93uAueEYhhM+Oqp3y0M=;
+        b=WGM3kVkYliBpwGL0qoMBneYF8Hw5LHFdwNifIG2hW6dB57ltbCR5gMx09Ddfj0f+FA
+         BeAEfkpgvM6FT1r43zb2Fe7GcWAT4r7ibqU0yOuUnijBkscDQpPXOJ+q47lw84vDqVUF
+         yBwz3sfnXuvnR0pIydw1jP/tW9IAz9O6Q7/p29FqyW2zFrSiD5GCTUDAlzXZXgpb+PPN
+         somyr59n6JJtmSSm9sq6pdwjWcWSi++aqKReUH9IZg809+cXj5ZOY9eEc8z5GzNeMSyC
+         9dZ/M+p6/OHLgrwFMVhkVLTpEfYq6BKh5Xzs2zstm726FK9prhXRFYbmFlsequMW0RiM
+         CPIQ==
+X-Gm-Message-State: AOJu0Yz3ux8JrzotBgQW9PSiJLDgUuTONRt57ykW1CxgvPKmQcuVPwVu
+	3OXz0SASzLsoUyMuavu8B844BZ1h2Wjs2ruTH1R5fjVb7qP3fkqwnKatpLl+BFezbA==
+X-Gm-Gg: ASbGnctuEeH7eCQKNmpqQCkNg/LRMXAK/Hum9371xo2a8NCMDDGuAp5oKi4ch2RVtSa
+	dO/scDNp3sdqN5LoAkI+nKxHNPHRD2RtB0RhvBreib0KD35Cg3RAIgDZJ8KagbUSUrShZMBlG7t
+	vIg6SMZTm2oZRFm8XDcE3AAjLACTwSMBjd3TJW1YZwFebdiXb4tntQ8SU2KtCxOOVodG+peho9K
+	qlgAwpTJ35TdUFVeZ0B5BGvnok/Vkr2XNObJxyCRpqapAiojc9y8OlhNTZqHx45ixNaLvjhMus=
+X-Google-Smtp-Source: AGHT+IHsOOu+CCVWgz/n42h2Ko995f4jGOVQjt9NKSe1T9RcvY42dKw9FJCE353NCbxHI7BWZMgyfw==
+X-Received: by 2002:a05:6000:2ae:b0:385:ed16:c97 with SMTP id ffacd0b85a97d-38a224088aemr44648623f8f.49.1736175246287;
+        Mon, 06 Jan 2025 06:54:06 -0800 (PST)
 Received: from babis.. ([2a02:3033:700:3ba2:3837:7343:334:7680])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a1c832e74sm47389982f8f.30.2025.01.06.06.54.00
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a1c832e74sm47389982f8f.30.2025.01.06.06.54.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jan 2025 06:54:02 -0800 (PST)
+        Mon, 06 Jan 2025 06:54:05 -0800 (PST)
 From: Charalampos Stylianopoulos <charalampos.stylianopoulos@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Nick Zavaritsky <mejedi@gmail.com>,
 	Charalampos Stylianopoulos <charalampos.stylianopoulos@gmail.com>
-Subject: [PATCH bpf-next 2/4] bpf: Add bpf command to get number of map entries
-Date: Mon,  6 Jan 2025 15:53:26 +0100
-Message-ID: <20250106145328.399610-3-charalampos.stylianopoulos@gmail.com>
+Subject: [PATCH bpf-next 3/4] libbpf: Add support for MAP_GET_NUM_ENTRIES command
+Date: Mon,  6 Jan 2025 15:53:27 +0100
+Message-ID: <20250106145328.399610-4-charalampos.stylianopoulos@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250106145328.399610-1-charalampos.stylianopoulos@gmail.com>
 References: <20250106145328.399610-1-charalampos.stylianopoulos@gmail.com>
@@ -90,22 +90,23 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Introduces a new command to the main bpf syscall to return the number
-of entries in a map. Returns EOPNOTSUPP if the relevant map operation
-is not implemented.
+Extend the libbpf API to provide support for getting the number of
+entries in a map.
 
 Co-developed-by: Nick Zavaritsky <mejedi@gmail.com>
 Signed-off-by: Nick Zavaritsky <mejedi@gmail.com>
 Signed-off-by: Charalampos Stylianopoulos <charalampos.stylianopoulos@gmail.com>
 ---
- include/uapi/linux/bpf.h | 17 +++++++++++++++++
- kernel/bpf/syscall.c     | 32 ++++++++++++++++++++++++++++++++
- 2 files changed, 49 insertions(+)
+ tools/include/uapi/linux/bpf.h | 17 +++++++++++++++++
+ tools/lib/bpf/bpf.c            | 16 ++++++++++++++++
+ tools/lib/bpf/bpf.h            |  2 ++
+ tools/lib/bpf/libbpf.map       |  1 +
+ 4 files changed, 36 insertions(+)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
 index 2acf9b336371..f5c7adea1387 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
 @@ -903,6 +903,17 @@ union bpf_iter_link_info {
   *		A new file descriptor (a nonnegative integer), or -1 if an
   *		error occurred (in which case, *errno* is set appropriately).
@@ -144,56 +145,53 @@ index 2acf9b336371..f5c7adea1387 100644
  } __attribute__((aligned(8)));
  
  /* The description below is an attempt at providing documentation to eBPF
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 4e88797fdbeb..a31a63a4aa5d 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -5748,6 +5748,35 @@ static int token_create(union bpf_attr *attr)
- 	return bpf_token_create(attr);
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 359f73ead613..c91f43690624 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -1330,3 +1330,19 @@ int bpf_token_create(int bpffs_fd, struct bpf_token_create_opts *opts)
+ 	fd = sys_bpf_fd(BPF_TOKEN_CREATE, &attr, attr_sz);
+ 	return libbpf_err_errno(fd);
  }
- 
-+#define BPF_MAP_GET_NUM_ENTRIES_LAST_FIELD map_get_num_entries.num_entries
 +
-+static int bpf_get_num_entries(union bpf_attr *attr, union bpf_attr __user *uattr)
++int bpf_map_get_num_entries(int fd, unsigned int *num_entries)
 +{
-+	__u32 num_entries = 0;
-+	struct bpf_map *map;
++	const size_t attr_sz = offsetofend(union bpf_attr, map_get_num_entries);
++	union bpf_attr attr;
++	int ret;
 +
-+	if (CHECK_ATTR(BPF_MAP_GET_NUM_ENTRIES))
-+		return -EINVAL;
++	memset(&attr, 0, attr_sz);
++	attr.map_get_num_entries.map_fd = fd;
 +
++	ret = sys_bpf(BPF_MAP_GET_NUM_ENTRIES, &attr, attr_sz);
++	if (!ret)
++		*num_entries = attr.map_get_num_entries.num_entries;
 +
-+	CLASS(fd, f)(attr->map_fd);
-+	map = __bpf_map_get(f);
-+	if (IS_ERR(map))
-+		return PTR_ERR(map);
-+
-+	if (!map->ops->map_num_entries)
-+		return -EOPNOTSUPP;
-+
-+	num_entries = map->ops->map_num_entries(map);
-+	if (num_entries < 0)
-+		return num_entries;
-+
-+	if (put_user(num_entries, &uattr->map_get_num_entries.num_entries))
-+		return -EFAULT;
-+
-+	return 0;
++	return libbpf_err_errno(ret);
 +}
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index 435da95d2058..efa5a092acc9 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -653,6 +653,8 @@ struct bpf_prog_bind_opts {
+ LIBBPF_API int bpf_prog_bind_map(int prog_fd, int map_fd,
+ 				 const struct bpf_prog_bind_opts *opts);
+ 
++LIBBPF_API int bpf_map_get_num_entries(int fd, unsigned int *num_entries);
 +
- static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size)
- {
- 	union bpf_attr attr;
-@@ -5884,6 +5913,9 @@ static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size)
- 	case BPF_TOKEN_CREATE:
- 		err = token_create(&attr);
- 		break;
-+	case BPF_MAP_GET_NUM_ENTRIES:
-+		err = bpf_get_num_entries(&attr, uattr.user);
-+		break;
- 	default:
- 		err = -EINVAL;
- 		break;
+ struct bpf_test_run_opts {
+ 	size_t sz; /* size of this struct for forward/backward compatibility */
+ 	const void *data_in; /* optional */
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index a8b2936a1646..63dbad55cc2d 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -436,4 +436,5 @@ LIBBPF_1.6.0 {
+ 		bpf_linker__add_buf;
+ 		bpf_linker__add_fd;
+ 		bpf_linker__new_fd;
++		bpf_map_get_num_entries;
+ } LIBBPF_1.5.0;
 -- 
 2.43.0
 
