@@ -1,66 +1,62 @@
-Return-Path: <bpf+bounces-47989-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47990-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC846A02F52
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 18:51:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96791A02F6C
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 19:02:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00F5D3A4F23
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 17:51:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2121C3A1457
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 18:02:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA07A1DF25C;
-	Mon,  6 Jan 2025 17:51:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4B2E1DF97F;
+	Mon,  6 Jan 2025 18:02:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J38bKP1O"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N/bfSPn7"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39BB91DE8B8;
-	Mon,  6 Jan 2025 17:51:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C15AD19CC2A;
+	Mon,  6 Jan 2025 18:02:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736185866; cv=none; b=GehY4vc6Km2L6lCWomO1Q/04UUx3PF+Mp51HcwPPzpyPTeOZwI0/I5lB7LNSNH8xWMXkan23O48gFd38j1HUNBEo+15zDKI0pbcCLPz0m/+Oai5dh1z4VrBT3K3nGe/WPuMs4dlDDAPr5+pf+A0t41qxn7vsFhTSkXgtBMdqr9M=
+	t=1736186533; cv=none; b=bIKh8q7yPRztFItTP6S/MlE3SXUQU6EnYBHPEg/ampWgPtj4Qqn76kS8K6hj8BnArIh0R/JX7fDHEn5FJXOFbgEmit9nSFQIhnMTfQEkihrlJle4fzHyrbmYaCooTyMgfFvWpXpRvcrPIcLAlcbu57lYr1sySxSLNzeOzLrHEKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736185866; c=relaxed/simple;
-	bh=le9JywARPIuQy+S+I0HV71655NJxy56umHLs4BFGYm4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OPvz6ad2ugWG6RHH0U+1bKnAhsy+7tRwi3BInvSaE/yDZkkiaQGDpootfukmKJrJ9ou16x59aoTKXGC8KVP3mJkxLRQD26PPOXdpWzB498uOxo+HOCK9JXobtzu86VtACcM+gd9t2k6AJWCnVsqQwGtRa/EnXA+RwAcY1PhpwAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J38bKP1O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A667AC4CED2;
-	Mon,  6 Jan 2025 17:51:01 +0000 (UTC)
+	s=arc-20240116; t=1736186533; c=relaxed/simple;
+	bh=EKx8mGh4pzmtlwfchOsFoEQke59Ll1f8oRSb788RmEU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=e8S9aaXs1Lkn0bZEpdLs2sC2f156UQZW/DwBw+3gWY/FS5+UyZIfL4hA7tNYOhjBuLXVKU6fHTULZho3Vrgoowm/4disuTqXr8douU3PjZrvW8EpZvMF8liKHLIr+MZDtmc0vgATidQ4XKjDnUVCCeWTLCDfBNwYojC/y7+txIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N/bfSPn7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE346C4CED2;
+	Mon,  6 Jan 2025 18:02:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736185865;
-	bh=le9JywARPIuQy+S+I0HV71655NJxy56umHLs4BFGYm4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=J38bKP1OkdN8DLIkXsWW/w8Dnml50V/zsgPdKFamFqxLHScdwFL2huzEgnu/cnbEx
-	 M4VwmLkdL1u59fdTj8+Wd6h4p/vvUHl4S93cPAMFjkMNcH5BakZ+rUso6ofFDO7gW8
-	 vPYuD6HG9G2P2nG37xNYHohqVV+mvOu9Fna5wVOnnotiS61u00sspS3xsYm4/IG82d
-	 MCjAwWmO3/cXi9gn1bfI1UvQmLuNjW+5PsRd9F7I1eB/5XuaOdqKern15gnSGh/Mzm
-	 EMFSsVvzEgeJBWfGFdkqFXIzR/Ax1VMeFRCct+ib5NzdexLH+YrllkOqNK0/sw+8Uh
-	 ZsoVdOL507AyA==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org,
-	linux-perf-users@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add kprobe session recursion check test
-Date: Mon,  6 Jan 2025 18:50:48 +0100
-Message-ID: <20250106175048.1443905-2-jolsa@kernel.org>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <20250106175048.1443905-1-jolsa@kernel.org>
-References: <20250106175048.1443905-1-jolsa@kernel.org>
+	s=k20201202; t=1736186533;
+	bh=EKx8mGh4pzmtlwfchOsFoEQke59Ll1f8oRSb788RmEU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=N/bfSPn7oJewj55KyLfLw9XEBdORQ0lV5WGTQwBrN1/wfPtirKI8VC13TVWTHVwBF
+	 zB/MA2k3mXFyGkfbFaZwovnJ5Kct1v5Q740MOdVbrJvJ5JNSaopeddwYW6PGjVWrmk
+	 2jStwaMfBnt87V298z7hroxiiHaUNaqfJu+1KWD5ynEDguNNg5we7KuNyg6Vsy49CJ
+	 QI47QpqLrSwy4UHBHq5FpWGLuIrAkpVtNEpn1/mg9pMP7/fXM7DBFyIQwduwymlkYz
+	 LHiMNAaiu4b6dwydSo/3lG5xPl2JBLS1FIRhpx4IUm+ijicw9lGfPher1tUAyUA4rh
+	 B+wc97mcQQ5Fg==
+From: Jakub Kicinski <kuba@kernel.org>
+To: davem@davemloft.net
+Cc: netdev@vger.kernel.org,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	Jakub Kicinski <kuba@kernel.org>,
+	jeroendb@google.com,
+	pkaligineedi@google.com,
+	shailend@google.com,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	willemb@google.com,
+	bpf@vger.kernel.org
+Subject: [PATCH net] eth: gve: use appropriate helper to set xdp_features
+Date: Mon,  6 Jan 2025 10:02:10 -0800
+Message-ID: <20250106180210.1861784-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -69,43 +65,58 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding kprobe.session probe to bpf_kfunc_common_test that misses bpf
-program execution due to recursion check and making sure it increases
-the program missed count properly.
+Commit f85949f98206 ("xdp: add xdp_set_features_flag utility routine")
+added routines to inform the core about XDP flag changes.
+GVE support was added around the same time and missed using them.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+GVE only changes the flags on error recover or resume.
+Presumably the flags may change during resume if VM migrated.
+User would not get the notification and upper devices would
+not get a chance to recalculate their flags.
+
+Fixes: 75eaae158b1b ("gve: Add XDP DROP and TX support for GQI-QPL format")
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 ---
- tools/testing/selftests/bpf/prog_tests/missed.c             | 1 +
- tools/testing/selftests/bpf/progs/missed_kprobe_recursion.c | 6 ++++++
- 2 files changed, 7 insertions(+)
+CC: jeroendb@google.com
+CC: pkaligineedi@google.com
+CC: shailend@google.com
+CC: hawk@kernel.org
+CC: john.fastabend@gmail.com
+CC: willemb@google.com
+CC: bpf@vger.kernel.org
+---
+ drivers/net/ethernet/google/gve/gve_main.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/missed.c b/tools/testing/selftests/bpf/prog_tests/missed.c
-index 70d90c43537c..ed8857ae914a 100644
---- a/tools/testing/selftests/bpf/prog_tests/missed.c
-+++ b/tools/testing/selftests/bpf/prog_tests/missed.c
-@@ -85,6 +85,7 @@ static void test_missed_kprobe_recursion(void)
- 	ASSERT_GE(get_missed_count(bpf_program__fd(skel->progs.test3)), 1, "test3_recursion_misses");
- 	ASSERT_GE(get_missed_count(bpf_program__fd(skel->progs.test4)), 1, "test4_recursion_misses");
- 	ASSERT_GE(get_missed_count(bpf_program__fd(skel->progs.test5)), 1, "test5_recursion_misses");
-+	ASSERT_EQ(get_missed_count(bpf_program__fd(skel->progs.test6)), 1, "test6_recursion_misses");
+diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
+index 8a8f6ab12a98..533e659b15b3 100644
+--- a/drivers/net/ethernet/google/gve/gve_main.c
++++ b/drivers/net/ethernet/google/gve/gve_main.c
+@@ -2241,14 +2241,18 @@ static void gve_service_task(struct work_struct *work)
  
- cleanup:
- 	missed_kprobe_recursion__destroy(skel);
-diff --git a/tools/testing/selftests/bpf/progs/missed_kprobe_recursion.c b/tools/testing/selftests/bpf/progs/missed_kprobe_recursion.c
-index c4bf679a9876..29c18d869ec1 100644
---- a/tools/testing/selftests/bpf/progs/missed_kprobe_recursion.c
-+++ b/tools/testing/selftests/bpf/progs/missed_kprobe_recursion.c
-@@ -46,3 +46,9 @@ int test5(struct pt_regs *ctx)
+ static void gve_set_netdev_xdp_features(struct gve_priv *priv)
  {
- 	return 0;
- }
++	xdp_features_t xdp_features;
 +
-+SEC("kprobe.session/bpf_kfunc_common_test")
-+int test6(struct pt_regs *ctx)
-+{
-+	return 0;
-+}
+ 	if (priv->queue_format == GVE_GQI_QPL_FORMAT) {
+-		priv->dev->xdp_features = NETDEV_XDP_ACT_BASIC;
+-		priv->dev->xdp_features |= NETDEV_XDP_ACT_REDIRECT;
+-		priv->dev->xdp_features |= NETDEV_XDP_ACT_NDO_XMIT;
+-		priv->dev->xdp_features |= NETDEV_XDP_ACT_XSK_ZEROCOPY;
++		xdp_features = NETDEV_XDP_ACT_BASIC;
++		xdp_features |= NETDEV_XDP_ACT_REDIRECT;
++		xdp_features |= NETDEV_XDP_ACT_NDO_XMIT;
++		xdp_features |= NETDEV_XDP_ACT_XSK_ZEROCOPY;
+ 	} else {
+-		priv->dev->xdp_features = 0;
++		xdp_features = 0;
+ 	}
++
++	xdp_set_features_flag(priv->dev, xdp_features);
+ }
+ 
+ static int gve_init_priv(struct gve_priv *priv, bool skip_describe_device)
 -- 
-2.47.0
+2.47.1
 
 
