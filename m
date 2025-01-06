@@ -1,58 +1,55 @@
-Return-Path: <bpf+bounces-48000-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48001-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C32B4A030C8
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 20:37:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 791A7A0313D
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 21:17:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CA2A3A1179
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 19:37:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CCE01886674
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 20:17:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26C661DFE3A;
-	Mon,  6 Jan 2025 19:34:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE26C1D6199;
+	Mon,  6 Jan 2025 20:17:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="LH+75nj7"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="qc8+adco"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-10628.protonmail.ch (mail-10628.protonmail.ch [79.135.106.28])
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5712D1DFE24
-	for <bpf@vger.kernel.org>; Mon,  6 Jan 2025 19:34:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C56DDBC
+	for <bpf@vger.kernel.org>; Mon,  6 Jan 2025 20:17:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736192088; cv=none; b=Del+If8jDKQ2QKVox8ncTQ40khizFfaRfgyRqtw0thbvYg1UhR9f7A4l2ZIjQu5AcbKGOZJ2vYHna0mIMmVctZxZ/8A9DoG8aYqmAKnZ5335hyNheZ1jAOakGS8wN3C3GdSGW/8qUWfpbei7EGUhEh/KsP12fpozV7XV2cwUVls=
+	t=1736194663; cv=none; b=pmqxwUN2ox4uCaWZFuysAE277OpAbQN2pHIEJsnpkWQa90YjxzkToaGHoNDJQWOWdTGhMt2j32NM2yE4VKwZbUBnXh/bru9NIfuysd7dyITnm5Zf1Qejphk8ExgzZxxaCUfjPiKsjNixApCmiDVOVlpVvRgsXZ877DKy1JpIEkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736192088; c=relaxed/simple;
-	bh=VPSBy0F0aXMR+9SNy3//E13NLlopb819I32QmKi2XeE=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CoXRUcSQRvzJS7Mfp5xqQWdbfILJuAAGQGzt4pLuutO0UTOVuAHXnYMED1P8VWbSCXl3vxtwYo68EDKJAtyat+5AzkHfWM1bgJQ2tyjJ/yvJ2Hv5E1GM11BfCLkN1dVrWHuMOGjFrDAbKljR0PvjCVb3HwgZ6zL+Xvzhem2ooqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=LH+75nj7; arc=none smtp.client-ip=79.135.106.28
+	s=arc-20240116; t=1736194663; c=relaxed/simple;
+	bh=2cNpwm2qw3F8MJwZActzI0ra/mhoKkYvZLZ6eaTSG+g=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=V9clUDshbZ6tYwrJBb1iwouLG237JAXb0T3s2ojqmwaN+tockXI2Yk26SlokHrB/bp0BCZe7F+iSTSNULf/bgH9u3/EQlLldLOjf7djusS9+dHbc/E04xUZWz7I0QD6pDCdpUvZrk0Y2FZ3/YwUOwGq2u7NZAH8qrHSeEsm8Qk4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=qc8+adco; arc=none smtp.client-ip=185.70.40.134
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1736192078; x=1736451278;
-	bh=VPSBy0F0aXMR+9SNy3//E13NLlopb819I32QmKi2XeE=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
-	b=LH+75nj7Py7HwPEqQB4b0c0qP9VN27yZWqyLm3hZn1Tqrn7E3cV4VoiwPR7+LGXsY
-	 5vAuJPgRO5ALiS6ldvqFEsAp19wsjeyjm1+iKdPKA0olMIl+TZH8tsJV808EfXhYEk
-	 jaxKLxkrlMkNFCD5Ba2Ic0VRK/Z0ikJpXCANeiYPandftqibg7Ze+EtedIbeBVScGP
-	 RV70gbA9by05RBxhBwIzWAiptng9KGJMd/TUN2dsYiLsDe5XAfXK/caVQLTe+rXTuG
-	 5JK/HNoZSwYJ69yzTeulTsSLLFq0T71LIZad7OvMNfXoE0ulAtEJZRoBNK5LHhcQct
-	 CZasIwJnmkUnw==
-Date: Mon, 06 Jan 2025 19:34:33 +0000
-To: Eduard Zingerman <eddyz87@gmail.com>
+	s=protonmail3; t=1736194653; x=1736453853;
+	bh=z6f9E+dF1NRNY7eUQiacZaBfnCZtw/o9RigqR/fW6QA=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector:
+	 List-Unsubscribe:List-Unsubscribe-Post;
+	b=qc8+adcoROjSPV6UHuWkb4qE+zTv6APe0L6mhkjLeNxV+iHNv2fSWLKMVCroQVUcI
+	 0UUR1yYjiGnpwScEo3suO0fPG/a6BrXDAxZjWpncJLt6NXXqYy5xh68n5HX9M77ljA
+	 PzSEgei1S2a52IA+ON5tWiLl890fOKLSpKtajO77uK/1BsDBeAKQCnHo2ibmVDMpBf
+	 gMgP4G7Dm24lwRUH3prYrA0k2zPM7gpFrivqsfNoWAb+5Yzsu+OYaQor+Qu6Q+9d7r
+	 m9Yd/lfXCVRI2T15Mj2+gQTNeYJGLh+LCEsQ/TqsJxRljGiuz5NQPBciw8fWyQtGBp
+	 X5r8VKEy/KCmg==
+Date: Mon, 06 Jan 2025 20:17:31 +0000
+To: bpf@vger.kernel.org
 From: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: bpf@vger.kernel.org, jose.marchesi@oracle.com, andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, mykolal@fb.com
-Subject: Re: [PATCH v2] selftests/bpf: workarounds for GCC BPF build
-Message-ID: <_iRPq_xemaHzEiT7RlozNHzK7cBYOQKS5PB7o6BPGPeMSp_YHLFxe6p6kx1iLtpVtP12MK63_ww8hdttWuszfjeZHXLAUvzRZiLlWPjt6aw=@pm.me>
-In-Reply-To: <cDuMNyzpES4mR0L6PV40Mg32zr89vCZaKhawXaDo_rgN4cI8GsNiR1gf-eSFuiFgwMpl8ghk0k9U22b0lurlLyq6WWmNAhotqbSwse2KsWc=@pm.me>
-References: <20250106185447.951609-1-ihor.solodrai@pm.me> <4b01f799f25062513fcdb5b64c5d791247b1ee48.camel@gmail.com> <cDuMNyzpES4mR0L6PV40Mg32zr89vCZaKhawXaDo_rgN4cI8GsNiR1gf-eSFuiFgwMpl8ghk0k9U22b0lurlLyq6WWmNAhotqbSwse2KsWc=@pm.me>
+Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, mykolal@fb.com, jose.marchesi@oracle.com
+Subject: [PATCH bpf-next] selftests/bpf: add -fno-strict-aliasing to BPF_CFLAGS
+Message-ID: <20250106201728.1219791-1-ihor.solodrai@pm.me>
 Feedback-ID: 27520582:user:proton
-X-Pm-Message-ID: 9daa1976b4d52e06f7570e3e9baa3d6d176784e5
+X-Pm-Message-ID: 953f3b3caa22e9a2fa1f545237798edcfa0c183b
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,39 +59,79 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Monday, January 6th, 2025 at 11:21 AM, Ihor Solodrai <ihor.solodrai@pm.m=
-e> wrote:
+Following the discussion at [1], set -fno-strict-aliasing flag for all
+BPF object build rules. Remove now unnecessary <test>-CFLAGS variables.
 
->=20
-> [...]
->=20
->=20
-> I was wondering how clang handles this, and it turns out
-> -fno-strict-aliasing is true by default in clang [1]:
->=20
-> -fno-strict-aliasing Disable optimizations based on strict aliasing rules=
- (default)
->=20
-> [1]: https://clang.llvm.org/docs/UsersManual.html
+[1] https://lore.kernel.org/bpf/20250106185447.951609-1-ihor.solodrai@pm.me=
+/
 
-Whoops, that's about clang-cl, sorry.
+CC: Jose E. Marchesi <jose.marchesi@oracle.com>
+Signed-off-by: Ihor Solodrai <ihor.solodrai@pm.me>
 
-Assuming clang does check for aliases, I guess it means clang just
-doesn't detect these violations.
+---
+ tools/testing/selftests/bpf/Makefile | 28 +---------------------------
+ 1 file changed, 1 insertion(+), 27 deletions(-)
 
->=20
-> > > # Some utility functions use LLVM libraries
-> > > jit_disasm_helpers.c-CFLAGS =3D $(LLVM_CFLAGS)
-> > >=20
-> > > @@ -507,7 +511,7 @@ endef
-> > > # Build BPF object using GCC
-> > > define GCC_BPF_BUILD_RULE
-> > > $(call msg,GCC-BPF,$4,$2)
-> > > - $(Q)$(BPF_GCC) $3 -DBPF_NO_PRESERVE_ACCESS_INDEX -Wno-attributes -O=
-2 -c $1 -o $2
-> > > + $(Q)$(BPF_GCC) $3 -DBPF_NO_PRESERVE_ACCESS_INDEX -Wno-attributes -O=
-2 -std=3Dgnu17 -c $1 -o $2
-> > > endef
-> > >=20
-> > > SKEL_BLACKLIST :=3D btf__% test_pinning_invalid.c test_sk_assign.c
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests=
+/bpf/Makefile
+index eb4d21651aa7..d5be2f94deef 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -54,21 +54,6 @@ PCAP_LIBS=09:=3D $(shell $(PKG_CONFIG) --libs libpcap 2>=
+/dev/null)
+ LDLIBS +=3D $(PCAP_LIBS)
+ CFLAGS +=3D $(PCAP_CFLAGS)
+=20
+-# The following tests perform type punning and they may break strict
+-# aliasing rules, which are exploited by both GCC and clang by default
+-# while optimizing.  This can lead to broken programs.
+-progs/bind4_prog.c-CFLAGS :=3D -fno-strict-aliasing
+-progs/bind6_prog.c-CFLAGS :=3D -fno-strict-aliasing
+-progs/dynptr_fail.c-CFLAGS :=3D -fno-strict-aliasing
+-progs/linked_list_fail.c-CFLAGS :=3D -fno-strict-aliasing
+-progs/map_kptr_fail.c-CFLAGS :=3D -fno-strict-aliasing
+-progs/syscall.c-CFLAGS :=3D -fno-strict-aliasing
+-progs/test_pkt_md_access.c-CFLAGS :=3D -fno-strict-aliasing
+-progs/test_sk_lookup.c-CFLAGS :=3D -fno-strict-aliasing
+-progs/timer_crash.c-CFLAGS :=3D -fno-strict-aliasing
+-progs/test_global_func9.c-CFLAGS :=3D -fno-strict-aliasing
+-progs/verifier_nocsr.c-CFLAGS :=3D -fno-strict-aliasing
+-
+ # Some utility functions use LLVM libraries
+ jit_disasm_helpers.c-CFLAGS =3D $(LLVM_CFLAGS)
+=20
+@@ -103,18 +88,6 @@ progs/btf_dump_test_case_packing.c-bpf_gcc-CFLAGS :=3D =
+-Wno-error
+ progs/btf_dump_test_case_padding.c-bpf_gcc-CFLAGS :=3D -Wno-error
+ progs/btf_dump_test_case_syntax.c-bpf_gcc-CFLAGS :=3D -Wno-error
+=20
+-# The following tests do type-punning, via the __imm_insn macro, from
+-# `struct bpf_insn' to long and then uses the value.  This triggers an
+-# "is used uninitialized" warning in GCC due to strict-aliasing
+-# rules.
+-progs/verifier_ref_tracking.c-bpf_gcc-CFLAGS :=3D -fno-strict-aliasing
+-progs/verifier_unpriv.c-bpf_gcc-CFLAGS :=3D -fno-strict-aliasing
+-progs/verifier_cgroup_storage.c-bpf_gcc-CFLAGS :=3D -fno-strict-aliasing
+-progs/verifier_ld_ind.c-bpf_gcc-CFLAGS :=3D -fno-strict-aliasing
+-progs/verifier_map_ret_val.c-bpf_gcc-CFLAGS :=3D -fno-strict-aliasing
+-progs/verifier_spill_fill.c-bpf_gcc-CFLAGS :=3D -fno-strict-aliasing
+-progs/verifier_subprog_precision.c-bpf_gcc-CFLAGS :=3D -fno-strict-aliasin=
+g
+-progs/verifier_uninit.c-bpf_gcc-CFLAGS :=3D -fno-strict-aliasing
+ endif
+=20
+ ifneq ($(CLANG_CPUV4),)
+@@ -474,6 +447,7 @@ CLANG_SYS_INCLUDES =3D $(call get_sys_includes,$(CLANG)=
+,$(CLANG_TARGET_ARCH))
+ BPF_CFLAGS =3D -g -Wall -Werror -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN)=09\
+ =09     -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR)=09=09=09\
+ =09     -I$(abspath $(OUTPUT)/../usr/include)=09=09=09\
++=09     -fno-strict-aliasing =09=09=09=09=09\
+ =09     -Wno-compare-distinct-pointer-types
+ # TODO: enable me -Wsign-compare
+=20
+--=20
+2.47.1
+
+
 
