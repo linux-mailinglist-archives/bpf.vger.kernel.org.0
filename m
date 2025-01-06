@@ -1,42 +1,42 @@
-Return-Path: <bpf+bounces-47922-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47923-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC8C3A02045
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 09:08:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72C8DA02047
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 09:08:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0735A3A4451
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 08:07:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C7051885176
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 08:08:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B3BF1D6DB6;
-	Mon,  6 Jan 2025 08:07:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A00941D95A3;
+	Mon,  6 Jan 2025 08:07:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FA451D89E9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ACBD1D8DE0;
 	Mon,  6 Jan 2025 08:07:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736150824; cv=none; b=VPA9NZnJKpUPbdAhfr2hOLrkeplHJnvkWYWGSmA7hrpXhgC+XS0PC/Zk6RP2q7BIkiYpLaGQM5Wp+huKQhJZhbfKJVYg/HDkxo3IjZSUVvjcfJeF4kqreh4W8sN7L/K0PPAD/1tHcn0vJKQA5ZbannJxwdYqacsRtTLioWWbAkU=
+	t=1736150826; cv=none; b=L3Nl3JjwJ3mKR2qWIoy5uyKQn/pwGVTn6pYwb/RVrC9zJghR8R/9lCduYAKoqS25UvolxuOtRYl/JJzjmilC0WHqrO7eJo51rbVGelkFjY3F4fOLLy5F5fi+BnMEiA8tJEYWQFXYdTP7o0e1RANLo2rCxMCysdO7O5egn47jglw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736150824; c=relaxed/simple;
-	bh=YAPIROEdzONLKsIk4ln7bhwVdLen2GWMJhowmUoGVxY=;
+	s=arc-20240116; t=1736150826; c=relaxed/simple;
+	bh=0uqOBEj3rl9AfX02y+nWxuJuK85j8pOzj5mUXULVNqQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WMevcMfg7HDlXENOHSbmPM3tSNn4Jwwfca9Y3Rd2MFrtQrqzfn+M+CpjUXIzq7o9VqvOBSUjxRAzL91IYK4OMJVDw09kBtrcTnKIVbRcIoDg+k66ZF0/0SzeIESMMphFjEtrgzF3F0KrwnZ2PaXKRULCXZVkIASEe81cB9Akb70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=kYrmmTuBdw4+bZLIU4NEgl7jgI7F++dbXT0JnCCDoSOtgqKMZrb5bJDotiEXDgdVJsaSR7WVwK+iMZ7hU3NiXzzmX+vN5/0dGcqZA6EhMkMl8nnrFG5xwoZd7SV74OXTK9pPgcSnUO+rQFWd3vIM9kfr0G4YVZv4JqJhH1GinWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YRRbR4HQ9z4f3jss;
-	Mon,  6 Jan 2025 16:06:43 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YRRbK6dwHz4f3l24;
+	Mon,  6 Jan 2025 16:06:37 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 895F61A0E5C;
-	Mon,  6 Jan 2025 16:06:58 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 371971A0E6A;
+	Mon,  6 Jan 2025 16:06:59 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgD3W2AZj3tnVG29AA--.29272S11;
+	by APP4 (Coremail) with SMTP id gCh0CgD3W2AZj3tnVG29AA--.29272S12;
 	Mon, 06 Jan 2025 16:06:58 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org,
@@ -55,9 +55,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
 	houtao1@huawei.com,
 	xukuohai@huawei.com
-Subject: [PATCH bpf-next 07/19] bpf: Disable migration when destroying sock storage
-Date: Mon,  6 Jan 2025 16:18:48 +0800
-Message-Id: <20250106081900.1665573-8-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next 08/19] bpf: Disable migration when cloning sock storage
+Date: Mon,  6 Jan 2025 16:18:49 +0800
+Message-Id: <20250106081900.1665573-9-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20250106081900.1665573-1-houtao@huaweicloud.com>
 References: <20250106081900.1665573-1-houtao@huaweicloud.com>
@@ -68,10 +68,10 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgD3W2AZj3tnVG29AA--.29272S11
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr13CFW5ZF17Xr1xCry8Krg_yoW8ArWDpF
-	Z7tr9xKr4DX3yrursxJan3AryfAw4aga47K395Cw1Sqrs3XF98Gw1fCFnY9a43Aryvqryx
-	Xwn0qF98Cr4xZa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgD3W2AZj3tnVG29AA--.29272S12
+X-Coremail-Antispam: 1UD129KBjvJXoW7CFWrWw4DuF1kKFy7Jry8uFg_yoW8XFW8pF
+	97JrnxJrWUX3y8ursrJ3Z3Cr1UZwsYgFy7Krs5Aw1fZrsaqF95G39akF10vFy3u3y0vryf
+	XwnIqF98Cwn7Za7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
 	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -90,52 +90,43 @@ X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-When destroying sock storage, it invokes bpf_local_storage_destroy() to
-remove all storage elements saved in the sock storage. The destroy
-procedure will call bpf_selem_free() to free the element, and
-bpf_selem_free() calls bpf_obj_free_fields() to free the special fields
-in map value (e.g., kptr). Since kptrs may be allocated from bpf memory
-allocator, migrate_{disable|enable} pairs are necessary for the freeing
-of these kptrs.
+bpf_sk_storage_clone() will call bpf_selem_free() to free the clone
+element when the allocation of new sock storage fails. bpf_selem_free()
+will call check_and_free_fields() to free the special fields in the
+element. Since the allocated element is not visible to bpf syscall or
+bpf program when bpf_local_storage_alloc() fails, these special fields
+in the element must be all zero when invoking bpf_selem_free().
 
-To simplify reasoning about when migrate_disable() is needed for the
-freeing of these dynamically-allocated kptrs, let the caller to
-guarantee migration is disabled before invoking bpf_obj_free_fields().
-Therefore, the patch adds migrate_{disable|enable} pair in
-bpf_sock_storage_free(). The migrate_{disable|enable} pairs in the
-underlying implementation of bpf_obj_free_fields() will be removed by
-The following patch.
+To be uniform with other callers of bpf_selem_free(), disabling
+migration when cloning sock storage. Adding migrate_{disable|enable}
+pair also benefits the potential switching from kzalloc to bpf memory
+allocator for sock storage.
 
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- net/core/bpf_sk_storage.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ net/core/bpf_sk_storage.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
-index 2f4ed83a75ae..aa536ecd5d39 100644
+index aa536ecd5d39..7d41cde1bcca 100644
 --- a/net/core/bpf_sk_storage.c
 +++ b/net/core/bpf_sk_storage.c
-@@ -50,15 +50,16 @@ void bpf_sk_storage_free(struct sock *sk)
- {
- 	struct bpf_local_storage *sk_storage;
+@@ -161,6 +161,7 @@ int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk)
+ 
+ 	RCU_INIT_POINTER(newsk->sk_bpf_storage, NULL);
  
 +	migrate_disable();
  	rcu_read_lock();
  	sk_storage = rcu_dereference(sk->sk_bpf_storage);
--	if (!sk_storage) {
--		rcu_read_unlock();
--		return;
--	}
-+	if (!sk_storage)
-+		goto out;
  
- 	bpf_local_storage_destroy(sk_storage);
-+out:
+@@ -213,6 +214,7 @@ int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk)
+ 
+ out:
  	rcu_read_unlock();
 +	migrate_enable();
- }
  
- static void bpf_sk_storage_map_free(struct bpf_map *map)
+ 	/* In case of an error, don't free anything explicitly here, the
+ 	 * caller is responsible to call bpf_sk_storage_free.
 -- 
 2.29.2
 
