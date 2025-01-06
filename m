@@ -1,92 +1,87 @@
-Return-Path: <bpf+bounces-48005-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48006-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ECC9A0317E
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 21:34:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31A21A031B1
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 21:58:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69AE83A5BA6
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 20:34:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24F0316171E
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 20:58:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0E081DFE22;
-	Mon,  6 Jan 2025 20:34:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBB161E008B;
+	Mon,  6 Jan 2025 20:57:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OSUZI3YH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DOY+KiuX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20C4F1DFE18
-	for <bpf@vger.kernel.org>; Mon,  6 Jan 2025 20:34:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11EF6148316
+	for <bpf@vger.kernel.org>; Mon,  6 Jan 2025 20:57:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736195664; cv=none; b=u6ZAbP01kyMzZXpTRVtJqN1TfY6TzQZpCn20Z3mKYiYCj0alqsmt5GVRH/HY05BUNMz5a2Bs+Lke5FpPlaXBylsHfkNz0oS8yK37Rc8bgUMSUQ725PmTBpwMtFuXhsAqQ0RrW/qGV0uxezi8GLu6OCVJ03HOehksa12z9W++y8o=
+	t=1736197074; cv=none; b=WusIAk9Fqpov6VIY1LZ6ViDrMEuK50RF7ldu1by6HeqO1nXAXT7iuDr1w2GBWubmx0qXhL/ylPIM8sGTzo5Nklmm1jbWijWg4mvzduTtOIATGsqkCZASfGj20jMgJaREXTH4h4MDd9Z3u72nLUegjdudcKxAI9NJKUwZKOPrxz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736195664; c=relaxed/simple;
-	bh=3PEi1u991lUARaVW5pGo9dEzohAi3qsRVJ5V6Q7cjFk=;
+	s=arc-20240116; t=1736197074; c=relaxed/simple;
+	bh=DbrSK/CZ5qu4pXlfZ2NFmNNw4U1WJ9X+NxX3n7q00xM=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=NLtaWvoIhd/NI0lbtfIjXN68RvN/0fJWXJyQ00w6ofCU26J9FbvKetWzQS/0pqQs3vYGAXCGGPbsaK6FM1fCdCBo0d6R92E0xAZY0JKzGil39P1carM9Kc4QIhsEHcGY3GJrWbdacH1DZJF3QcX5EvuQYUQ/HCQhCDZJfepHiNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OSUZI3YH; arc=none smtp.client-ip=209.85.214.178
+	 Content-Type:MIME-Version; b=MZmTyzj3mhicEohsNG6drhXrCrtZgPR0mkWovLz2qFB8lTo1dtIUkqPTMnX3niz0yi7pMfhnab5yCPSp8AvR239gEA7c5cOfCSqsE6hcefWG0HjR8TPUaZAz95uebUmbymf0L62PF9hn27/GflsxnWeRVpyKBWi3vghcrLBY92M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DOY+KiuX; arc=none smtp.client-ip=209.85.216.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-21649a7bcdcso207698325ad.1
-        for <bpf@vger.kernel.org>; Mon, 06 Jan 2025 12:34:21 -0800 (PST)
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2efded08c79so16946245a91.0
+        for <bpf@vger.kernel.org>; Mon, 06 Jan 2025 12:57:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736195661; x=1736800461; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1736197072; x=1736801872; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=fY8/I7Beo0CtFIlze7ABHMBCALDKL8tDJlvM3J4CKYk=;
-        b=OSUZI3YHxju7JR7e3NG/J81UmevGwJPOYBf4G48krm9srnLUnMf6PWJjKbd9kngLXU
-         8qpWKcJTYI13L86yvBEHVQFADrwxKtAymYvj7MkHHwtGtM3dos+1XcDaEGtaNItup47+
-         mdG8CmTP5EMPlEc1hUfETXuVsvHIJ7dlpyFxre4+JFIzkw3OHrXqh6VDW0848982bxfJ
-         ukWRoCmAgGd15V1vwxhEZTNgrCEAr++h7Koj4Ux5W4w9UnetFGSt0ZwhIeKP7dxBCS9J
-         f8FihW+1WI0nZHas8kDAgKdMJonEShmOH3KA/XF8+1ejAAFNKF/y7S+eGUoh3Dq8SHQM
-         n6FA==
+        bh=DbrSK/CZ5qu4pXlfZ2NFmNNw4U1WJ9X+NxX3n7q00xM=;
+        b=DOY+KiuXl0mZmbCNRWgtFzW39KjR+0zenopwi0wQSooxs3RZd1g6RD6CXjAWzIS/rZ
+         dGzn6KatRqcSfynykv3m/Zd0ZdA9ZL3FEdbZAHq8UIG9M1xV/uCWkZOInpZmdfg/fIse
+         qlhTCpdYbMoi2pWCea312E8JJojHCMtueaqWEYPj7qS0JPLA8J6oIdgHbZEMX3RKxABX
+         tF+MgBRO/t5FG8KAQy4mskupRHkSqneJq+LC9FKAYpbL+YDyzAzelJHThizCP55Lwzy6
+         qKPgsxK79/F9lS0iPaaH9ITGoghIyzmCPujW+uTfxgIrTaVfLdhRiOgykgOJ3E1yx30+
+         J3kQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736195661; x=1736800461;
+        d=1e100.net; s=20230601; t=1736197072; x=1736801872;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=fY8/I7Beo0CtFIlze7ABHMBCALDKL8tDJlvM3J4CKYk=;
-        b=YiOXPVHmsUKZB4ghA9o7oWMKb6IB9SiD0zqB5QXv+hWNhuCtbndrQhjFTUvE68PFfW
-         IKG1S/5f/X4iymIIOVJ6VTJno++4eOIVECpkZ/yg1i4JHjFXtTJTzDr3S9gA99Zf0t0v
-         IQJDh+IQe2Y2PnH4rQ987AmTSqenZSPd8Bp+Co/2a1dcn7OV2DmnbuHXJMwAfq4pA7FL
-         RehAbnQCkmatwB2nnboXvkdZkR3dPITZwDBrP09Uijknb+lsujhEZNmOtuiml7Eb2IuX
-         UfVSebXBteEHIcbPIhmDOwG1/dZAML9P69tH3TkaHFtyWgdLouBwy3qXoACRITU+oybf
-         M68g==
-X-Forwarded-Encrypted: i=1; AJvYcCUvow/c5XLmUG8hcExEHWrm8A90wttP/51Ylsahwp26VVgkQ/4f3sgR/mZDt+SI2wyh/8c=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy83bToUc5af0YupG38VByld2AYOzCwUIRsTORMZlx7baEyQrqi
-	0MrXuCnZbpgSV2YhXpYVlXBkqZmUbDiZ3RlYyigdMbylkUnPX0Kn
-X-Gm-Gg: ASbGncvYHnON3kHkW5qtsoje4TUOVDufgUCb0tGUA5qUQgysa7j7nbOcbrLT4JszQYh
-	5oqNQZnouGw800TldXzno3o8kM3xDE/ee3KFRPmv4wvq952feu9U3XN6jVcBQWUEH75xzdJUNK3
-	i8p5rMyUrKkIsIEangXFm5aZ+MTovBvtOaaBUiQzzt2/ZbN0I557yqVCuS0ZzJSSxBX3kwEXNrx
-	sO+Eot5lFrhdbvibjVhV21fHoBMLStdf3vZ5blxgFMDYRz8r/blAA==
-X-Google-Smtp-Source: AGHT+IHKG2n7Tobei7+bXc34izg0N/6yYjS3+eZCrqerela1TXBGz0Y8YQ0965Eaq6+yW6b7ArqPbw==
-X-Received: by 2002:a17:903:1209:b0:215:af12:b61a with SMTP id d9443c01a7336-219e70dc4b5mr738955445ad.50.1736195660936;
-        Mon, 06 Jan 2025 12:34:20 -0800 (PST)
+        bh=DbrSK/CZ5qu4pXlfZ2NFmNNw4U1WJ9X+NxX3n7q00xM=;
+        b=nNleuORycthZf7GPPmub6GyCssaaSGKd731ibtvFuyJ7F79LoTzDPAr8H5/O0jziJB
+         6Q60NedFRYvglv6CBT2hQvymU1DFO2WppG/hdb0yr6NEnZmG5PJ1lDm2vTKeEWz/9tRr
+         fSCeQg0xDmiR56gF9DlrzFPowVZyxqJR6aRuY40ES86LS1XHYnvNWL2zm1E7a6U9Ym52
+         FALUgLQjClVarfBR02eSfx59QiWpIK+9ao+htckOPZtQh9VkQy6ZTMmpn8d7qDd77Zkz
+         EcDN2En+BnolHL8JCSHW1Evx+YDcDnxZdVJf0D4gSmO+ii/nWXyel7KqvzaTVdzNyHjX
+         Yjmw==
+X-Forwarded-Encrypted: i=1; AJvYcCXSHOb+gwaPvCYppHmC58feiUbZUBpFLdcWDuCRuslhnad4eWosSG50e9XAT70jTJeV6As=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyhW+6h4eLKlF6Fi3uFqdMBf48k8wABdOIvhJc028zP6WcJOnO0
+	YsilTH4azDm9Aiw32YfFR1hvKT1PcvIWK8FoYOYBMDn2xxCZ3vXF
+X-Gm-Gg: ASbGncsif5zxPAsdZ6ZcK/LVWnoLrahtvH+B4TcKOjI9TmTead7uTwE2NQeFaNALVTM
+	zV37qwtcu6o7YfWvyVN+batmGChPq8uL2ACkYSeLZeGPlH4AGbhvnAHsJ3Djk1/4XMH+TWzqVgK
+	mL4OR7vuY2RI6RQ9QVpmpUNCxvOKhHFAZb+fTlr8InSRX6POXnAD/bliSZvk6RcimFZBR2sI3z4
+	IpyCRO5lE6mM1x8AujKYhHjo7ptakHxgKdOvMLzAO9mjiYBPF7cRg==
+X-Google-Smtp-Source: AGHT+IGdlkO8TrIT1i1QZu6VqRex11t2xBPLap0HrH3rXc3FIOemWwSxNsafBErRxiCyzmwh6IO3Zw==
+X-Received: by 2002:a17:90b:53c8:b0:2ee:c2df:5d30 with SMTP id 98e67ed59e1d1-2f452eb11e2mr58459437a91.26.1736197072349;
+        Mon, 06 Jan 2025 12:57:52 -0800 (PST)
 Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f2ee06dd46sm39940713a91.36.2025.01.06.12.34.19
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f4477c852csm34208735a91.22.2025.01.06.12.57.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jan 2025 12:34:20 -0800 (PST)
-Message-ID: <f2b4420265b118f9aaaa329f86a5b52d48200281.camel@gmail.com>
-Subject: Re: [PATCH bpf v3 2/2] selftests/bpf: Test r0 and ref lifetime
- after BPF-BPF call with abnormal return
+        Mon, 06 Jan 2025 12:57:51 -0800 (PST)
+Message-ID: <ab41261789251099e09f62909da2b0dd084170c3.camel@gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: handle prog/attach type
+ comparison in veristat
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Arthur Fabre <afabre@cloudflare.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>,  John Fastabend <john.fastabend@gmail.com>, Andrii
- Nakryiko <andrii@kernel.org>, Martin KaFai Lau	 <martin.lau@linux.dev>,
- Song Liu <song@kernel.org>, Yonghong Song	 <yonghong.song@linux.dev>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev	 <sdf@fomichev.me>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	kernel-team@cloudflare.com
-Date: Mon, 06 Jan 2025 12:34:16 -0800
-In-Reply-To: <20250106171709.2832649-3-afabre@cloudflare.com>
-References: <20250106171709.2832649-1-afabre@cloudflare.com>
-	 <20250106171709.2832649-3-afabre@cloudflare.com>
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
+	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
+	kernel-team@meta.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Date: Mon, 06 Jan 2025 12:57:47 -0800
+In-Reply-To: <20250106144321.32337-1-mykyta.yatsenko5@gmail.com>
+References: <20250106144321.32337-1-mykyta.yatsenko5@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
@@ -97,101 +92,26 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Mon, 2025-01-06 at 18:15 +0100, Arthur Fabre wrote:
-> In all three cases where a callee can abnormally return (tail_call(),
-> LD_ABS, and LD_IND), test the verifier doesn't know the bounds of:
+On Mon, 2025-01-06 at 14:43 +0000, Mykyta Yatsenko wrote:
+> From: Mykyta Yatsenko <yatsenko@meta.com>
 >=20
-> - r0 / what the callee returned.
-> - References to the caller's stack passed to the callee.
->=20
-> Additionally, ensure the tail_call fallthrough case can't access r0, as
-> bpf_tail_call() returns nothing on failure.
->=20
-> Signed-off-by: Arthur Fabre <afabre@cloudflare.com>
+> Implemented handling of prog type and attach type stats comparison in
+> veristat.
+> To test this change:
+> ```
+> ./veristat pyperf600.bpf.o -o csv > base1.csv
+> ./veristat pyperf600.bpf.o -o csv > base2.csv
+> ./veristat -C base2.csv base1.csv -o csv
+> ...,raw_tracepoint,raw_tracepoint,MATCH,
+> ...,cgroup_inet_ingress,cgroup_inet_ingress,MATCH
+> ```
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 > ---
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+Seem to work fine.
+
+Tested-by: Eduard Zingerman <eddyz87@gmail.com>
 
 [...]
-
-> +#define TEST(NAME, CALLEE) \
-> +	SEC("socket")					\
-> +	__description("r0: " #NAME)	\
-> +	__failure __msg("math between ctx pointer and register with unbounded m=
-in value") \
-> +	__naked int check_abnormal_ret_r0_##NAME(void)	\
-> +	{						\
-> +		asm volatile("				\
-> +		r6 =3D r1;				\
-> +		r2 =3D r10;				\
-> +		r2 +=3D -8;				\
-> +		call " #CALLEE ";			\
-> +		r6 +=3D r0;				\
-> +		r0 =3D 0;					\
-> +		exit;					\
-> +	"	:					\
-> +		:					\
-> +		: __clobber_all);			\
-> +	}						\
-> +							\
-> +	SEC("socket")					\
-> +	__description("ref: " #NAME)	\
-> +	__failure __msg("math between ctx pointer and register with unbounded m=
-in value") \
-> +	__naked int check_abnormal_ret_ref_##NAME(void)	\
-> +	{						\
-> +		asm volatile("				\
-> +		r6 =3D r1;				\
-> +		r7 =3D r10;				\
-> +		r7 +=3D -8;				\
-> +		r2 =3D r7;				\
-> +		call " #CALLEE ";			\
-> +		r0 =3D *(u64*)(r7 + 0);			\
-> +		r6 +=3D r0;				\
-> +		exit;					\
-> +	"	:					\
-> +		:					\
-> +		: __clobber_all);			\
-> +	}
-
-Nit: I think having both cases is an overkill, as both effectively
-     test if branching occur.
-
-[...]
-
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-> +	__uint(max_entries, 1);
-> +	__uint(key_size, sizeof(int));
-> +	__array(values, void(void));
-> +} map_prog SEC(".maps") =3D {
-> +	.values =3D {
-> +		[0] =3D (void *)&dummy_prog,
-> +	},
-> +};
-> +
-> +static __noinline __used
-> +int callee_tail_call(struct __sk_buff *skb, __u64 *foo)
-> +{
-> +	bpf_tail_call(skb, &map_prog, 0);
-> +	*foo =3D 1;
-> +	return 0;
-> +}
-
-Nit: I'd also add a test where invalid action is taken
-     after bpf_tail_call inside the callee,
-     just to make sure that both branches are explored.
-
-> +
-> +SEC("socket")
-> +__description("r0 not set by tail_call")
-> +__failure __msg("R0 !read_ok")
-> +int check_abnormal_ret_tail_call_fail(struct __sk_buff *skb)
-> +{
-> +	return bpf_tail_call(skb, &map_prog, 0);
-> +}
-> +
-> +char _license[] SEC("license") =3D "GPL";
-
 
 
