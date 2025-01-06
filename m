@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-47932-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47930-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59E52A02059
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 09:09:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B21A6A02057
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 09:09:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C49463A4A92
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 08:09:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFF541639CE
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2025 08:08:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 977D71D63CA;
-	Mon,  6 Jan 2025 08:07:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E49B31D9663;
+	Mon,  6 Jan 2025 08:07:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C5F61A00EC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76BCC1D9A62;
 	Mon,  6 Jan 2025 08:07:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736150833; cv=none; b=XELxjrnIn33ZuRN6hj8+xqMG/GG1RyeTxpRvUGB2Jzg4LsQ998N8S4XmAJGcd4C6gpDhCfqvzYrJrVsbMRqVPPHImjMMzQVH7Al2nTojvv2cPI+KhUaFZSr57/s43+xwjwGrsrksQT2eQUkaW4tKqoKFQrgL50S4FVlVH4z/mFI=
+	t=1736150831; cv=none; b=GO3Yr0UfP7XeGDE25jlVS6n+dvFgAVc+EAo6jOst2bkpk7wPbC3wgLe+YqK1QEkObHZe54h9ZNGu74cN9cmeOfKqLV62wD1jW4tQ99eFIZnwNtpWk65VUOHsdZoLF4uuQ+p2tLd+weq4FjeD8MdwXdKPGitbBrFReDYIS8lnYe4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736150833; c=relaxed/simple;
-	bh=at3uEMnzEj2GGm7Y8UIrPau6TJoYjaGeAfrMnaI3nCg=;
+	s=arc-20240116; t=1736150831; c=relaxed/simple;
+	bh=TtbJg5fLauKt2HphBxYSqr/z/j8GJ/RNAz5tbdjYhp4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Pgg5Cs6EjwJNw7bqovoQ3CH+PuiYhND6B9eVvzeQppe+KSrTfINW47n9PJpiw23YFpnT6s4ZHYqtxfpt2Io2qHMxaePLeUkyyYu/A5KUlUsigFTVu/vNHJ+QawFkQc+A+udztfD5vn46018RuY9IvqZ132mwz4Yb98TY70MZ574=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=TCOhZMGSAKViU9GM6H3+aJ4ZZk+9FEyxFvnyt0eFI668/lWtU71mV1pZ+H9eThqmxRgZMNIM8WgQWmF8xIsQHxHfuVxReo6rXDiFbMCDFsgr/RpOOS2kyVj3g6AU9Tp2kLwo1mUiq7DHrkCrdQLW71dH/PpHHFgKqzQbdvWEdeQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YRRbX5hC1z4f3jss;
-	Mon,  6 Jan 2025 16:06:48 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YRRbS1tzfz4f3jd2;
+	Mon,  6 Jan 2025 16:06:44 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id B6DC21A1485;
-	Mon,  6 Jan 2025 16:07:03 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 5D0CB1A0E87;
+	Mon,  6 Jan 2025 16:07:04 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgD3W2AZj3tnVG29AA--.29272S19;
-	Mon, 06 Jan 2025 16:07:03 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgD3W2AZj3tnVG29AA--.29272S20;
+	Mon, 06 Jan 2025 16:07:04 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org,
 	netdev@vger.kernel.org
@@ -55,9 +55,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
 	houtao1@huawei.com,
 	xukuohai@huawei.com
-Subject: [PATCH bpf-next 15/19] bpf: Disable migration before calling ops->map_free()
-Date: Mon,  6 Jan 2025 16:18:56 +0800
-Message-Id: <20250106081900.1665573-16-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next 16/19] bpf: Remove migrate_{disable|enable} from bpf_selem_alloc()
+Date: Mon,  6 Jan 2025 16:18:57 +0800
+Message-Id: <20250106081900.1665573-17-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20250106081900.1665573-1-houtao@huaweicloud.com>
 References: <20250106081900.1665573-1-houtao@huaweicloud.com>
@@ -68,10 +68,10 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgD3W2AZj3tnVG29AA--.29272S19
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw17Cr1ktFW3Aw4rJrWDJwb_yoWrXr4rpa
-	n5Kryjkr40qF47u398Xan7Cry5Aw45K34aka95A34Fvr43Xr93Xrn2vFy3XFyY9r1ktr1F
-	v3Z0g34Yk3y8urDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgD3W2AZj3tnVG29AA--.29272S20
+X-Coremail-Antispam: 1UD129KBjvJXoW7CrykWF45uw48KFy7uw45Wrg_yoW8Gw1UpF
+	Z29r1Skr4rtayru3ZrXF4fAry5Jw48Wr12kw4kCrySvwsxXrn8Wr4xKF18Za45Jw4UXr4f
+	ZF1ftF109a18ZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
 	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -90,114 +90,42 @@ X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-Disabling migration before calling ops->map_free() to simplify the
-freeing of map values or special fields allocated from bpf memory
-allocator.
+bpf_selem_alloc() has two callers:
+(1) bpf_sk_storage_clone_elem()
+bpf_sk_storage_clone() has already disabled migration before invoking
+bpf_sk_storage_clone_elem().
 
-After disabling migration in bpf_map_free(), there is no need for
-additional migration_{disable|enable} pairs in the ->map_free()
-callbacks. Remove these redundant invocations.
+(2) bpf_local_storage_update()
+Its callers include: cgrp/task/inode/sock storage ->map_update_elem()
+callbacks and bpf_{cgrp|task|inode|sk}_storage_get() helpers. These
+running contexts have already disabled migration
+
+Therefore, there is no need to add extra migrate_{disable|enable} pair
+in bpf_selem_alloc(). Also add a cant_migrate() check in
+bpf_selem_alloc().
 
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/bpf/arraymap.c          | 2 --
- kernel/bpf/bpf_local_storage.c | 2 --
- kernel/bpf/hashtab.c           | 2 --
- kernel/bpf/range_tree.c        | 2 --
- kernel/bpf/syscall.c           | 8 +++++++-
- 5 files changed, 7 insertions(+), 9 deletions(-)
+ kernel/bpf/bpf_local_storage.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 451737493b17..eb28c0f219ee 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -455,7 +455,6 @@ static void array_map_free(struct bpf_map *map)
- 	struct bpf_array *array = container_of(map, struct bpf_array, map);
- 	int i;
- 
--	migrate_disable();
- 	if (!IS_ERR_OR_NULL(map->record)) {
- 		if (array->map.map_type == BPF_MAP_TYPE_PERCPU_ARRAY) {
- 			for (i = 0; i < array->map.max_entries; i++) {
-@@ -472,7 +471,6 @@ static void array_map_free(struct bpf_map *map)
- 				bpf_obj_free_fields(map->record, array_map_elem_ptr(array, i));
- 		}
- 	}
--	migrate_enable();
- 
- 	if (array->map.map_type == BPF_MAP_TYPE_PERCPU_ARRAY)
- 		bpf_array_free_percpu(array);
 diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-index b649cf736438..12cf6382175e 100644
+index 12cf6382175e..fd48a2a17ccd 100644
 --- a/kernel/bpf/bpf_local_storage.c
 +++ b/kernel/bpf/bpf_local_storage.c
-@@ -905,13 +905,11 @@ void bpf_local_storage_map_free(struct bpf_map *map,
- 		while ((selem = hlist_entry_safe(
- 				rcu_dereference_raw(hlist_first_rcu(&b->list)),
- 				struct bpf_local_storage_elem, map_node))) {
--			migrate_disable();
- 			if (busy_counter)
- 				this_cpu_inc(*busy_counter);
- 			bpf_selem_unlink(selem, true);
- 			if (busy_counter)
- 				this_cpu_dec(*busy_counter);
--			migrate_enable();
- 			cond_resched_rcu();
- 		}
- 		rcu_read_unlock();
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 8bf1ad326e02..6051f8a39fec 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -1570,14 +1570,12 @@ static void htab_map_free(struct bpf_map *map)
- 	 * underneath and is responsible for waiting for callbacks to finish
- 	 * during bpf_mem_alloc_destroy().
- 	 */
--	migrate_disable();
- 	if (!htab_is_prealloc(htab)) {
- 		delete_all_elements(htab);
- 	} else {
- 		htab_free_prealloced_fields(htab);
- 		prealloc_destroy(htab);
- 	}
--	migrate_enable();
+@@ -80,10 +80,10 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
+ 	if (charge_mem && mem_charge(smap, owner, smap->elem_size))
+ 		return NULL;
  
- 	bpf_map_free_elem_count(map);
- 	free_percpu(htab->extra_elems);
-diff --git a/kernel/bpf/range_tree.c b/kernel/bpf/range_tree.c
-index 5bdf9aadca3a..37b80a23ae1a 100644
---- a/kernel/bpf/range_tree.c
-+++ b/kernel/bpf/range_tree.c
-@@ -259,9 +259,7 @@ void range_tree_destroy(struct range_tree *rt)
- 
- 	while ((rn = range_it_iter_first(rt, 0, -1U))) {
- 		range_it_remove(rn, rt);
--		migrate_disable();
- 		bpf_mem_free(&bpf_global_ma, rn);
--		migrate_enable();
- 	}
- }
- 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 0503ce1916b6..e7a41abe4809 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -835,8 +835,14 @@ static void bpf_map_free(struct bpf_map *map)
- 	struct btf_record *rec = map->record;
- 	struct btf *btf = map->btf;
- 
--	/* implementation dependent freeing */
-+	/* implementation dependent freeing. Disabling migration to simplify
-+	 * the free of values or special fields allocated from bpf memory
-+	 * allocator.
-+	 */
-+	migrate_disable();
- 	map->ops->map_free(map);
-+	migrate_enable();
++	cant_migrate();
 +
- 	/* Delay freeing of btf_record for maps, as map_free
- 	 * callback usually needs access to them. It is better to do it here
- 	 * than require each callback to do the free itself manually.
+ 	if (smap->bpf_ma) {
+-		migrate_disable();
+ 		selem = bpf_mem_cache_alloc_flags(&smap->selem_ma, gfp_flags);
+-		migrate_enable();
+ 		if (selem)
+ 			/* Keep the original bpf_map_kzalloc behavior
+ 			 * before started using the bpf_mem_cache_alloc.
 -- 
 2.29.2
 
