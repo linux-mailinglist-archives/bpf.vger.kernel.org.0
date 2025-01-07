@@ -1,150 +1,184 @@
-Return-Path: <bpf+bounces-48090-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48093-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B580DA03EED
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 13:16:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B99EEA03FF1
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 13:54:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5220E1885E7E
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 12:16:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63AD3164928
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 12:54:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 546121EC01E;
-	Tue,  7 Jan 2025 12:16:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FB311F03E2;
+	Tue,  7 Jan 2025 12:54:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SUk3bIPF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JCYsGSj0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A494A1E0DAF;
-	Tue,  7 Jan 2025 12:16:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE40A1E9B18;
+	Tue,  7 Jan 2025 12:53:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736252191; cv=none; b=c5GRzdks5HQyesQmgC5pk7MPaj98idmogcGK25ggLdJ1mmVnckb8rM6IHJcQEE4huBvVCM2USM9TBSPuKHrun87eAFWiB4Ayc5YqK/h/Xh4QJPMbr3+D8erhtmWGaLmxILgc/Nxk3c8UsLuAjSKQSuMm/13Yo/nxLkgn2WPALko=
+	t=1736254440; cv=none; b=phWYxdIL48pZ49OMKLmuN/Et6Fb3W5dvTDRCTwik57sFZbGpqdnaB8U62RUFJWAUBIiic03ss3pr/gVy52lpat42ucl/AFIjl0/xs2V7A9+say7drb6S9IXsQVMM1T4CcTae403vmQkNAa/5AfzEpNXSrAzvqTYF5tjm/GUk90E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736252191; c=relaxed/simple;
-	bh=Bd/Mz1ZsFzuVF1GvARZd4apNGJyzPz/32LoonyXU8mU=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O8ykbg0XWdT2SmlqfUhM4xq2QHfrHgcNmWmpOmCC3H4w6YxeIrtXbNfJjPaRYJD7iLAexgO9Lebb3jTp3u1MyDGnv/7crpibQL95HHTSNZrW0N5bjK1eTEqVaNM3EIjiFW5nWTPoJzyu/ahHfpySWNkYrMhaNybaDAwyBzmcrko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SUk3bIPF; arc=none smtp.client-ip=209.85.218.44
+	s=arc-20240116; t=1736254440; c=relaxed/simple;
+	bh=inq18haWLx2b6yOB0em2RillkH2hQMFoTDPjGmfyXlM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Np1nWXoiIYYydbRvvx1bySUGoR4D3tQRPNIqDnKcoEnt4+o4vrDwjssrSvsK4xb6MvNpmqND002eOQhi2FUkBXTVgAGp2tdTaW3Py/WRaMEdNHhdx4v3nWaeGuXf0z9RV4l/OOHsyX1ba6qfEndooZ0VRG4Psg8bPPLbJX9nVr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JCYsGSj0; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-aa66ead88b3so537755466b.0;
-        Tue, 07 Jan 2025 04:16:29 -0800 (PST)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3862df95f92so6821154f8f.2;
+        Tue, 07 Jan 2025 04:53:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736252188; x=1736856988; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=aMDvUN0bn8LvCq/dO2IXJIhY7/MF43jvaDflMADuggM=;
-        b=SUk3bIPFC1SaE1QUqd9odmsy01lSKffxr1yFkx8KIHtM/xH4vihjc/3fZg9F4OnKdF
-         0HaW5vuYVu3lyluiug0oNbGHj+3g/79NUAtE0r/bKbfcarWcSBa0BHXFRvPMun2ZclJs
-         0jLf00lfmFY0xgbZJ92/oWzvcqXyXV5brPPJWNOfrRV1vAyl03zx9LGX2+aPtb2IGKpA
-         ZAtXKPValXHPnRYiXptI71cs6jH67welndFlhDaavqqecuRzJQBa2njVac7UmGE9hrOw
-         mdOLSJAvzppr7NVAw6xWq5qNNAQxjyAUqXYkP2tqpk4o4CBGpFzRTn1Eo9pz1Lf6ujjz
-         UpWg==
+        d=gmail.com; s=20230601; t=1736254437; x=1736859237; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F66Eu0GAg36EcgkwSAQsoLttohjhJJSzBhrgfuDrfa8=;
+        b=JCYsGSj0Ozsv7WXXWBE5vGxLV1giyFmwp9fqNQ6SV5l2qzXDhqqTTwbNTXRKipgTMU
+         GP6kQJGdbCBi7fh9CJnvDm42jAq/WoMXlgwKRpZISOwRczhcQt1LoE2B8FOakd+WYa0M
+         jPKT3sJAV/OQQyy4dkbWEWcqOYEPn8LR+Ytl1Ykxxa9RFdqEhCENHQ9slSy0/RuZoFNl
+         FdtRCqsdPaN2yDv2T/hnH89K9magsbWh44CaVoOH06zzN80+oMn0flWYrF/awZL0Tj6l
+         Ioc5B5LHKzsT+DxOwjr3vZ43oHFQnCsWWPqp6QRBQX5bHbOZjlhIhVZnoYMYk05WGZaG
+         F0CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736252188; x=1736856988;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aMDvUN0bn8LvCq/dO2IXJIhY7/MF43jvaDflMADuggM=;
-        b=V/YcoBWl+rKjMLVrVW+2tydSEJUKZiEvT/f4mrE4sztWfec1a3rhLpBpaU4GLiv1I7
-         zw6vvxZJlPi6PKo79IWjrJdyLQaVpsyLx6oYo/GywKlVE2OwZsZdegpKZRAdpQYuT2X/
-         4btBwjKA2hnMh6/JJ+dP7Pj1+p1ZsZtJTAnVcKnSVYV3E6QbyjhzrX2K6haOZm2Si8Q9
-         yZ5CCBPKlbF8aFJU82XqaV1DBQavrlvfVrd+XDvOioR6inm5Ef9JtMXtuUGOIDo3HxvC
-         CnZXemq8jK6FnBwsKQhZ92m1SIU0Wz1AV7Fk3uQmZWkLlHVl9b/NY+LX8EN8pOU0JzmG
-         ok1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWrCXncCQFPcv7j0m4N/ETQ/1pWVNO7Yq7K2mhZn52ybwMNywz51XvhnyBwDT4uQByHmek=@vger.kernel.org, AJvYcCXGmGxo54bJhNrEnlfEW2rvFhZcv4Z3CA10FJfDUimpZJLDmD5EPrK4fiQk3jvFTO7O6uIsvKbw@vger.kernel.org
-X-Gm-Message-State: AOJu0YwwC4Tn1xZWInstbli/7aoprHiC6vaxjauNWDpLHt2+K5vgbCoJ
-	btzsnGdqVgERhD0bEH536e04ifkGpLj+VthCudOlcxT/XWuOnml7
-X-Gm-Gg: ASbGncvQPT1MhHlMhf4LIX3JQYSBVU7qedSz4i6kTBfd9xfUIjK85khs0FZq5FSt2CO
-	9FuZ5ZFWJ6HxCF4+hMqrpUjz2Md2cEEyukjlGLUbJBjaNtthwg18LSwDp1IbpmBBSF/b0vrhxDZ
-	P3vEDEwkCHIp6iasUvfHkuPVZPWPlhnP8RJPhKVy4JhBxv8NmohLSNE2hfNelWkKBPiLXT2VRm3
-	MumUInMz7R/KZZvrnHnaReb7uSeSICYKpxFfbnPEH0=
-X-Google-Smtp-Source: AGHT+IH3soO0JU9jw+R+FlinzZrtuhTOEKZT6ZmnfxMnpvjo3BePGcI5v1frWA4eaJleTMxhY0wEkg==
-X-Received: by 2002:a17:907:9412:b0:aaf:c19b:728b with SMTP id a640c23a62f3a-aafc19b72c9mr1194727766b.51.1736252187612;
-        Tue, 07 Jan 2025 04:16:27 -0800 (PST)
-Received: from krava ([213.175.46.84])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aaf5d1b602bsm1037318766b.178.2025.01.07.04.16.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jan 2025 04:16:27 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 7 Jan 2025 13:16:25 +0100
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Eric Dumazet <edumazet@google.com>,
-	bpf <bpf@vger.kernel.org>,
-	Network Development <netdev@vger.kernel.org>,
-	Viktor Malik <vmalik@redhat.com>
-Subject: Re: [RFC PATCH bpf-next 1/2] libbpf: Add support for dynamic
- tracepoint
-Message-ID: <Z30bGYeyGQL2UpnX@krava>
-References: <20250105124403.991-1-laoar.shao@gmail.com>
- <20250105124403.991-2-laoar.shao@gmail.com>
- <CAADnVQ+ga1ir9XCDxPiU_-eYzKHTQsiod9Sz4_o3XeqGW2rq4A@mail.gmail.com>
- <CALOAHbD+w3niwBojP=-81Wrqj1V9ppLgTfuZjb=AxXjx51MGRA@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1736254437; x=1736859237;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=F66Eu0GAg36EcgkwSAQsoLttohjhJJSzBhrgfuDrfa8=;
+        b=OoMfESW2J/Dmb/B1e0+l0EfcD43Wu4xqAALbcm6/TIxdp7Pmj3Zno3ansvVcJhiKSm
+         vkf5F7y05TfDigbxRJPnK0fHXT25OhnZa9gVzljWYODYfr+7BtT+iFRx3W5sG2qp8nCv
+         vFhI3RMVyQlrdV/9zm+ZItobJGVxc+ptQvMPAEPkazHulH4GDhUJITH3ODMnELvLbWjU
+         4UWRsJ+3B1EtWklqLX9+sOdh+10OHX2yE2OEbc3wNef0sbg4ieM+cJ77YY0ZUdJ7C34U
+         9cxxey+/GujSzfOI22SLGuUWwovPNq0QyIyItWc2Qt1h0Nfl/JUsnMacu2wsziMjS2K+
+         n/rg==
+X-Forwarded-Encrypted: i=1; AJvYcCU0XnkoQ5hoIx9QAVhUquF/kQa0Z//9pvCeGJ0pCC1wJlrsltT84CgagfEoycR9QbujJJZJKds3HYpZ@vger.kernel.org, AJvYcCUE/0Adt020PWhyAsC2bKBHweiflNywzgpY5Biymkxgfplk6WReW7ltvOAyp9uXMn/SPObppyTSwZBgUyAXS52D@vger.kernel.org, AJvYcCVeQ1enEUxexP1GhEdy7ur8hyWjLfM4eWl2aeNSPDINEhWl3stmuvVYDQZrui5mLuS4dgamDxOk8xsyaA==@vger.kernel.org, AJvYcCVoYovxlTxVqdHC1hTGJLJee3Od/uvGHG6A84Plf02IguVCtJjSyWz9HBjTnqtnlZNGuQFNmwQVew48QQ==@vger.kernel.org, AJvYcCW+xm/Ymz7i7TFlRoiHFSB31ghWDK+a7TYUMmLt3jUl79mcCAaC9i5kI1LA6JSpyy/GfnqpOMlkSeolHmYH0/k=@vger.kernel.org, AJvYcCWKSm2v0nDKKLIJ1fmRYOaps1hTWdvV0MmFVqVwUqc6Xaw/p7JO3SqFrxyDw3V4kcyThFv2kL2t6j335Fqc@vger.kernel.org, AJvYcCWUJe8yuL5zTp7DNhaETLOmQwHojSuBzJPF3g+/V0EbhOy6yUekoj/hOjNQr0lNynrExQgamy0woPVp@vger.kernel.org, AJvYcCX8viDrYX/X8hWsPb9GZiUs47am/zXkLXR5PDP5IoRdHFUCPnhZa2EiaZSj5BjRz+2h4+Ks4i4x@vger.kernel.org, AJvYcCXfJzmDwYlSccjdYPBHZXCCDsbveNI39VlZrTAW4Of4oAO6Nb3KLbznKGgzKrfg84mi6FA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxNjRZtVjM75gxKDr8ugr5xAC4uQ5OUgJFumt8H7RrW6mZA5UsG
+	rpk4i4weRqjt9we9041ooy//ivV3sRmugCiAsk0emOh5xWfnyRfL0XkAd+QhPG+vtWlZ24oNRJ+
+	V5UitLeTLfglYaJprvEBdaam4OhM=
+X-Gm-Gg: ASbGncsVhoCwfPPNt/S+ohS/TQ5R7pM0/Emgr9ZFJ1FDYQ16SDRxb7TUaHi6ZhLIpWa
+	v4JE1Ha+C6bPyFdhd3mANmJCwkLuylPpDaCNS
+X-Google-Smtp-Source: AGHT+IHLmQYT6Nfe/TxqetejkNmjRWULhNkXti9Y+FoSO0oNz6JKWmwppacRVdUE20hj8uvdZwuWTQu822tlGBPGUFc=
+X-Received: by 2002:adf:a15d:0:b0:38a:615c:8222 with SMTP id
+ ffacd0b85a97d-38a615c828emr14509037f8f.4.1736254436561; Tue, 07 Jan 2025
+ 04:53:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALOAHbD+w3niwBojP=-81Wrqj1V9ppLgTfuZjb=AxXjx51MGRA@mail.gmail.com>
+References: <20250104125732.17335-1-shaw.leon@gmail.com> <20250107085646.42302-1-kuniyu@amazon.com>
+In-Reply-To: <20250107085646.42302-1-kuniyu@amazon.com>
+From: Xiao Liang <shaw.leon@gmail.com>
+Date: Tue, 7 Jan 2025 20:53:19 +0800
+Message-ID: <CABAhCOQdBL6h9M2C+kd+bGivRJ9Q72JUxW+-gur0nub_=PmFPA@mail.gmail.com>
+Subject: Re: [PATCH net-next v7 00/11] net: Improve netns handling in rtnetlink
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: andrew+netdev@lunn.ch, b.a.t.m.a.n@lists.open-mesh.org, 
+	bpf@vger.kernel.org, bridge@lists.linux.dev, davem@davemloft.net, 
+	donald.hunter@gmail.com, dsahern@kernel.org, edumazet@google.com, 
+	horms@kernel.org, idosch@nvidia.com, jiri@resnulli.us, kuba@kernel.org, 
+	linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-ppp@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-wpan@vger.kernel.org, liuhangbin@gmail.com, netdev@vger.kernel.org, 
+	osmocom-net-gprs@lists.osmocom.org, pabeni@redhat.com, shuah@kernel.org, 
+	wireguard@lists.zx2c4.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 06, 2025 at 10:32:15AM +0800, Yafang Shao wrote:
-> On Mon, Jan 6, 2025 at 8:16 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Sun, Jan 5, 2025 at 4:44 AM Yafang Shao <laoar.shao@gmail.com> wrote:
-> > >
-> > > Dynamic tracepoints can be created using debugfs. For example:
-> > >
-> > >    echo 'p:myprobe kernel_clone args' >> /sys/kernel/debug/tracing/kprobe_events
-> > >
-> > > This command creates a new tracepoint under debugfs:
-> > >
-> > >   $ ls /sys/kernel/debug/tracing/events/kprobes/myprobe/
-> > >   enable  filter  format  hist  id  trigger
-> > >
-> > > Although this dynamic tracepoint appears as a tracepoint, it is internally
-> > > implemented as a kprobe. However, it must be attached as a tracepoint to
-> > > function correctly in certain contexts.
-> >
-> > Nack.
-> > There are multiple mechanisms to create kprobe/tp via text interfaces.
-> > We're not going to mix them with the programmatic libbpf api.
-> 
-> It appears that bpftrace still lacks support for adding a kprobe/tp
-> and then attaching to it directly. Is that correct?
-> What do you think about introducing this mechanism into bpftrace? With
-> such a feature, we could easily attach to inlined kernel functions
-> using bpftrace.
+On Tue, Jan 7, 2025 at 4:57=E2=80=AFPM Kuniyuki Iwashima <kuniyu@amazon.com=
+> wrote:
+[...]
+>
+> We can fix this by linking the dev to the socket's netns and
+> clean them up in __net_exit hook as done in bareudp and geneve.
+>
+> ---8<---
+> diff --git a/drivers/net/gtp.c b/drivers/net/gtp.c
+> index 89a996ad8cd0..77638a815873 100644
+> --- a/drivers/net/gtp.c
+> +++ b/drivers/net/gtp.c
+> @@ -70,6 +70,7 @@ struct pdp_ctx {
+>  /* One instance of the GTP device. */
+>  struct gtp_dev {
+>         struct list_head        list;
+> +       struct list_head        sock_list;
+>
+>         struct sock             *sk0;
+>         struct sock             *sk1u;
+> @@ -102,6 +103,7 @@ static unsigned int gtp_net_id __read_mostly;
+>
+>  struct gtp_net {
+>         struct list_head gtp_dev_list;
+> +       struct list_head gtp_sock_list;
 
-so with the 'echo .. > kprobe_events' you create kprobe which will be
-exported through tracefs together with other tracepoints and bpftrace
-sees it as another tracepoint.. but it's a kprobe :-\
+After a closer look at the GTP driver, I'm confused about
+the gtp_dev_list here. GTP device is linked to this list at
+creation time, but netns can be changed afterwards.
+The list is used in gtp_net_exit_batch_rtnl(), but to my
+understanding net devices can already be deleted in
+default_device_exit_batch() by default.
+And I wonder if the use in gtp_genl_dump_pdp() can be
+replaced by something like for_each_netdev_rcu().
 
-how about we add support for kprobe section like SEC("kprobe/SUBSYSTEM/PROBE"),
-so in your case above it'd be SEC("kprobe/kprobes/myprobe")
 
-then attach_kprobe would parse that out and use new new probe_attach_mode
-for bpf_program__attach_kprobe_opts to attach it correctly
-
-cc-ing Viktor
-
-jirka
+>  };
+>
+>  static u32 gtp_h_initval;
+> @@ -1526,6 +1528,10 @@ static int gtp_newlink(struct net *src_net, struct=
+ net_device *dev,
+>
+>         gn =3D net_generic(dev_net(dev), gtp_net_id);
+>         list_add_rcu(&gtp->list, &gn->gtp_dev_list);
+> +
+> +       gn =3D net_generic(src_net, gtp_net_id);
+> +       list_add(&gtp->sock_list, &gn->gtp_sock_list);
+> +
+>         dev->priv_destructor =3D gtp_destructor;
+>
+>         netdev_dbg(dev, "registered new GTP interface\n");
+> @@ -1552,6 +1558,7 @@ static void gtp_dellink(struct net_device *dev, str=
+uct list_head *head)
+>                         pdp_context_delete(pctx);
+>
+>         list_del_rcu(&gtp->list);
+> +       list_del(&gtp->sock_list);
+>         unregister_netdevice_queue(dev, head);
+>  }
+>
+> @@ -2465,6 +2472,8 @@ static int __net_init gtp_net_init(struct net *net)
+>         struct gtp_net *gn =3D net_generic(net, gtp_net_id);
+>
+>         INIT_LIST_HEAD(&gn->gtp_dev_list);
+> +       INIT_LIST_HEAD(&gn->gtp_sock_list);
+> +
+>         return 0;
+>  }
+>
+> @@ -2475,9 +2484,12 @@ static void __net_exit gtp_net_exit_batch_rtnl(str=
+uct list_head *net_list,
+>
+>         list_for_each_entry(net, net_list, exit_list) {
+>                 struct gtp_net *gn =3D net_generic(net, gtp_net_id);
+> -               struct gtp_dev *gtp;
+> +               struct gtp_dev *gtp, *next;
+> +
+> +               list_for_each_entry_safe(gtp, next, &gn->gtp_dev_list, li=
+st)
+> +                       gtp_dellink(gtp->dev, dev_to_kill);
+>
+> -               list_for_each_entry(gtp, &gn->gtp_dev_list, list)
+> +               list_for_each_entry_safe(gtp, next, &gn->gtp_sock_list, s=
+ock_list)
+>                         gtp_dellink(gtp->dev, dev_to_kill);
+>         }
+>  }
+> ---8<---
 
