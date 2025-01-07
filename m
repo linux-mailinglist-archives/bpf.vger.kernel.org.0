@@ -1,91 +1,105 @@
-Return-Path: <bpf+bounces-48175-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48176-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78705A04B1E
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 21:38:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2F48A04D00
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 00:03:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ADE537A23AA
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 20:38:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2228D18876F4
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 23:03:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FE231F7560;
-	Tue,  7 Jan 2025 20:38:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 101CD1E47A6;
+	Tue,  7 Jan 2025 23:02:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IincHyk5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FSQohAZd"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE70F1F63E7;
-	Tue,  7 Jan 2025 20:38:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6BB61F4E5C;
+	Tue,  7 Jan 2025 23:02:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736282288; cv=none; b=VAFZVz54otiSFrvgspvOsHRhhdSKY6YGtyZEz+ilrB7VAhWOqQveKL9u6DCR1DM5OhXNDxxexIj1JIYjEWELOGnVISnUqDHvyieOccG2KfQI7jLz/sOna87UprnzMxvxwMO4DhsWUksL+fJFY7WYfyf6s7mclZ+Wm9/hbzDxVFw=
+	t=1736290933; cv=none; b=rtzLAKKAnQr7DUB7J++U0rMZAfQo5E2UOA7GeXhkNOttYgiRoGAACw2KMeUugUce5SxzbGx2TgraEnTJlsV2AzCrwuNz9Hxh+fTx1E6MgFJSd6HLq+ZjUmYsT1Uzs+1DuMYU5W+rsrG1nRnv9GpIbl6izX+v40HLqi36f3DbJ54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736282288; c=relaxed/simple;
-	bh=xVENo9muNO/TQ5xVqUKOs/5Q4+G96PW1sKSnQr73q9Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=U14vuusbfwKnu2pH69MbVBc1eKEdkMX/chwVTNtajetkhO6xwi7m74cLY/k8ac5c+MX0RrI206b704qlUqOaXdM+aV6iQbzq5lSl28FpER3LUPzbZkMsV6KrnqF5mB4CstaLafwPTymWoZzNYnWuqkUx3PnksWlv/MrGPfzQJ4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IincHyk5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 582D5C4CED6;
-	Tue,  7 Jan 2025 20:38:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736282287;
-	bh=xVENo9muNO/TQ5xVqUKOs/5Q4+G96PW1sKSnQr73q9Q=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=IincHyk5dnHSj14WBxB3nZ8H+ad7Wv7JCDFqB3ioz1CyxVIL28f/wayA5OfnPboFy
-	 w4bYeV8oyIpNsDF2th/1YTvksDeeiWBKLOGweUN5unnHCsYuY6UO9/ov33L1S7sVm+
-	 1K3BnLtTw6iZPtOBVnjoMMzolL2SbZULRRKu+YNbYACOMPPIofT1Am+zEPd/PAx/vs
-	 ld0p/Rkjj2unh6Png65S7WHaBoyC3nNe0ZjG8UBnxGV+bt8cBPNwF55J92ceGMmf0M
-	 9p3XnJzVS37fvnQRlLFc7Do5qJjEPxgQYy5375IiG9MyjZthi5D9QPQCuQtvR2QVYT
-	 LbPjcwrrJqcnA==
-Date: Tue, 7 Jan 2025 12:38:05 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Xiao Liang <shaw.leon@gmail.com>
-Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, Kuniyuki
- Iwashima <kuniyu@amazon.com>, Donald Hunter <donald.hunter@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Ido
- Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Simon
- Horman <horms@kernel.org>, Shuah Khan <shuah@kernel.org>, Jiri Pirko
- <jiri@resnulli.us>, Hangbin Liu <liuhangbin@gmail.com>,
- linux-rdma@vger.kernel.org, linux-can@vger.kernel.org,
- osmocom-net-gprs@lists.osmocom.org, bpf@vger.kernel.org,
- linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
- linux-wireless@vger.kernel.org, b.a.t.m.a.n@lists.open-mesh.org,
- bridge@lists.linux.dev, linux-wpan@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v7 02/11] rtnetlink: Pack newlink() params into
- struct
-Message-ID: <20250107123805.748080ab@kernel.org>
-In-Reply-To: <20250104125732.17335-3-shaw.leon@gmail.com>
-References: <20250104125732.17335-1-shaw.leon@gmail.com>
-	<20250104125732.17335-3-shaw.leon@gmail.com>
+	s=arc-20240116; t=1736290933; c=relaxed/simple;
+	bh=MwBS8WoKoqlrHE9RBWYu3gV6QERxX40yhERHlroiwS8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Twgo9RD484IKuKfZJQip4R6SStxM/E9l9+0d0/m1tJjLmkVx+BIJ6AVvPmjhdMl6jYIfPREgW5yTBcGJnr+EqsUe67+N9ycKCn1xNDaBrgRLX8r1Q3Cl15m7N4Gm1cKV6/hDOtESrNQQ8A4dVk0x9Hdg5RllsrC5+NxTAM2R2sU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FSQohAZd; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-21634338cfdso23430085ad.2;
+        Tue, 07 Jan 2025 15:02:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736290930; x=1736895730; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JxUtto18f/sIYqADrK6m7JMynq7JzrgYenyQ0yQtRlk=;
+        b=FSQohAZdhrQROsR3I7gRza5FQFhQP02ETwYlAdJ0XXqR9gsAiMYfdm2drVIwBMbiKr
+         0evoL5ZAQhF4Q84P8mOCBv3VTqDWGGZ16ZUblcriRP1FCN5ZAZLirpc0/2pLdPE0V7+6
+         s/OyrlIUI42ZqFM5jBPHl8cXcWkwymbja6noswZMRAZWy6aRCJTviWvYXVUJePZ90LWI
+         jaUsQxljrbnsUxdq1paXDo8NBIdiHTB72Z45nGn6uytTdcCMv2T/ZkH/R+4XTOFqZPxz
+         d0LwWvUF1hURH88PxjgTBX8veTesCd85LHPFefN1rWsPGVXmImHuVQmr47ymmc2SxAzu
+         7/RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736290930; x=1736895730;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JxUtto18f/sIYqADrK6m7JMynq7JzrgYenyQ0yQtRlk=;
+        b=wkZaQbU2IV0p6WTwuylSINVop2j0YRIAIq4FHx9SqvnNiKqA728ziO2y2QgVppk2ys
+         /PJ1kRNfAFcDrSpjF487lsIT1Fk0d9r0v+2KhhaMQbxouTJW1yw0RBhXAb4HTQnrAhe+
+         qM5JrSW8lAi05kWFovPvvozapuPA9A1nGGOv0H5yokPxr+UvcYPTxjCmzkz4AXuNmohA
+         KONZIQRk0Gk1M7dtY1WX3HRLJ+lNHIUStHWYDCKGyktWFS2IBPeR3Deaj+PKiLRITbAj
+         cgNiIjEBkyluOQgO+FtDQKZwfwGdFVKbc2KWeuUeQSXVMjWmAvoUkR5Ec2Spnj2qf/EB
+         +shA==
+X-Forwarded-Encrypted: i=1; AJvYcCUK0qdB+qJBjGL1Ju77+rdAGFUQTwSh48KjSird0WiWBa/CBLsSFR2XD117pTmkYIAzkeo=@vger.kernel.org, AJvYcCUWu1ZUfwyaUoMml1eEwZPsBIcOnRB0o7hsmbWCvdvbHrz+PCilEw9FTyqEu/8+qIttSUxQQy/S/SqV1djX@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxun466vvCN6wMiktd8iPBV3lhSZBatLtPYAjBIElemac3S/U52
+	qvbVJXPBEZL4RADyVrgdNzY3zIprWVdoqr4C5Th9wOL43ffWdgM=
+X-Gm-Gg: ASbGncuQUWjHhwZ367Z/GAMrE6qTcKKQTsPqGzBuTYi0lUKnCP8HfGKjFGAYRloHUeo
+	yR0DVtb9EXxtpvPaJR0OA3TLOmfDtZoRHgGZBiSW02dt9ptXPDpTMyeX3nfrxmYbb9EdJCdlg0W
+	dUuGEnmlDnGd1+wH4oPJUrFOaz2lMG8ZpTv7CQgUoxbVECZnsoZEM40GXngW/MWiKU/xuSZ15F9
+	qYMC8yggtHicqhDCN8rgb1pl41xRIUJ4/s+is53wpkx5gj0eieKh1nO
+X-Google-Smtp-Source: AGHT+IEdLNKjwtK2kBUOP5+4imhU4DEj8APQNFyHpnVvds+W8GWkS3nvLeueN4h/5tmJonMv6LHGmQ==
+X-Received: by 2002:a05:6a00:3913:b0:725:ab14:6249 with SMTP id d2e1a72fcca58-72d21f168afmr1019754b3a.2.1736290930008;
+        Tue, 07 Jan 2025 15:02:10 -0800 (PST)
+Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad8faf93sm33873590b3a.153.2025.01.07.15.02.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jan 2025 15:02:09 -0800 (PST)
+Date: Tue, 7 Jan 2025 15:02:08 -0800
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Feng Yang <yangfeng59949@163.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
+	song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org,
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bpf: Replace (arg_type & MEM_RDONLY) with
+ type_is_rdonly_mem
+Message-ID: <Z32ycDDCNTxavo7c@mini-arch>
+References: <20250107090222.310778-1-yangfeng59949@163.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250107090222.310778-1-yangfeng59949@163.com>
 
-On Sat,  4 Jan 2025 20:57:23 +0800 Xiao Liang wrote:
-> -static int amt_newlink(struct net *net, struct net_device *dev,
-> -		       struct nlattr *tb[], struct nlattr *data[],
-> -		       struct netlink_ext_ack *extack)
-> +static int amt_newlink(struct rtnl_newlink_params *params)
->  {
-> -	struct amt_dev *amt = netdev_priv(dev);
-> +	struct netlink_ext_ack *extack = params->extack;
-> +	struct net_device *dev = params->dev;
-> +	struct nlattr **data = params->data;
-> +	struct nlattr **tb = params->tb;
-> +	struct net *net = params->net;
-> +	struct amt_dev *amt;
+On 01/07, Feng Yang wrote:
+> From: Feng Yang <yangfeng@kylinos.cn>
+> 
+> The existing 'type_is_rdonly_mem' function is more formal in linux source
+> 
+> Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
 
-IMHO you packed a little too much into the struct.
-Could you take the dev and the extack back out?
+Looks ok, but I'm not sure this cleanup is worth it on its own..
+
+Acked-by: Stanislav Fomichev <sdf@fomichev.me>
 
