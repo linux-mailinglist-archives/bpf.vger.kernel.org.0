@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-48060-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48061-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79734A03A03
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 09:45:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 186E7A03A01
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 09:44:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FEFA1886D25
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 08:44:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3077160374
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 08:44:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7B5E1E3DDE;
-	Tue,  7 Jan 2025 08:44:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 124AA1E3DFC;
+	Tue,  7 Jan 2025 08:44:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 532F21DF977;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 533481E0E0A;
 	Tue,  7 Jan 2025 08:44:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736239443; cv=none; b=LyVxJYwdQpjSKcaFJCzY899zq7J8fppkoYsCOpm+XKLsRe14h9toLlnS9GfSokaFtMHHQH+eK7a5JjnODV0mxD/8eh6hHbwDE+7qFJFz39dMuGxMfbXRHz+2yKsB4Wx6mjATOIaUVd8xB+qRD/Pmi45ByX4eOsY1avwl3TqbnGU=
+	t=1736239444; cv=none; b=JX039rhTsgfsFA+TX+DBQWowbtDnS43iHyLAxLihXHyiCfULizdt6lhGcZuxOH4RQ5pg/YAoJIbOc06Lr0ZdDb8R/xWGW+6aerh7sPlM2iTJOq51icQASoj8sUvcJZgck2/H066fJMSZ6WpSBkC6jN6KE+XRk5IQCNszLiLVbsk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736239443; c=relaxed/simple;
-	bh=5dkY9V6arO3B6Epj0oV1jzsP54PvWUIoWcGhJzf5Ygw=;
+	s=arc-20240116; t=1736239444; c=relaxed/simple;
+	bh=FWV0BoBbS84j+XA3gTkPGwbiax5EzuoBU40jfx+C4dE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gG4rJ34QWqQVGYmoHwDoT/FwL+4CocHDwKiVoNxgPvLbCG91mOx1jwqBkzRfqfakxQmShN3VfwNzDP5ki4iZgrCeHS138HbJWaqr1C0SkJAJYCRbv3RgiR+M+rZWC+0pl7GQkZ8vC7kP1sRuBwA6q0Ts1YoTSNxHfjDYpWh0r+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version; b=XJUoCrULvIunNhB2rvvZ1K+p4cJz6UA5ROXIO5G8BkXQNY6HMBPGtIZ2DbrdjOljQyM8v1A5hcR10tFaP4T8+XHCUtXdplt2kGz0IB9FSYdIoq8u6roOd8YSshpEgqX/43+DzBEbxNKIDywSTnsEPexUPcXbC4dY6fbuDug7xiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YS4MX5Y1tz4f3jXP;
-	Tue,  7 Jan 2025 16:43:36 +0800 (CST)
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YS4MY35VXz4f3jHy;
+	Tue,  7 Jan 2025 16:43:37 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id E0D881A15B6;
-	Tue,  7 Jan 2025 16:43:56 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 8C0721A130E;
+	Tue,  7 Jan 2025 16:43:57 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgC3Gl9E6XxnpFgeAQ--.43336S10;
-	Tue, 07 Jan 2025 16:43:56 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgC3Gl9E6XxnpFgeAQ--.43336S11;
+	Tue, 07 Jan 2025 16:43:57 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org,
 	netdev@vger.kernel.org
@@ -56,9 +56,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
 	houtao1@huawei.com,
 	xukuohai@huawei.com
-Subject: [PATCH bpf-next 6/7] bpf: Free element after unlock for pre-allocated htab
-Date: Tue,  7 Jan 2025 16:55:58 +0800
-Message-Id: <20250107085559.3081563-7-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next 7/7] selftests/bpf: Add test case for the freeing of bpf_timer
+Date: Tue,  7 Jan 2025 16:55:59 +0800
+Message-Id: <20250107085559.3081563-8-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20250107085559.3081563-1-houtao@huaweicloud.com>
 References: <20250107085559.3081563-1-houtao@huaweicloud.com>
@@ -69,10 +69,10 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgC3Gl9E6XxnpFgeAQ--.43336S10
-X-Coremail-Antispam: 1UD129KBjvJXoW3JFW8Xw48Cw4kJr1xury3urg_yoW7AFWDpF
-	WfWF17Kr4kCrsF9a1DtF1FgrW5Ars3WayUGFW8KryrKF15Wrnaqr48AF92gFy5Cr9xAF9a
-	vrZFvwsxKws5ua7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgC3Gl9E6XxnpFgeAQ--.43336S11
+X-Coremail-Antispam: 1UD129KBjvJXoWxKr1kZF4xuF1ruF15XFW7CFg_yoWxuFW3pa
+	yrK345Kr4rXw47Ww48tFn7GrWfKrs5XFyxGry0gw1UZr1Iqws5tF92gFy5tFW3CFWDWryS
+	vF4FkFZ8GrZrJrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
 	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -91,146 +91,274 @@ X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-During the update procedure, when overwrite element in a pre-allocated
-htab, the freeing of old_element is protected by the bucket lock. The
-reason why the bucket lock is necessary is that the old_element has
-already been stashed in htab->extra_elems after alloc_htab_elem()
-returns. If freeing the old_element after the bucket lock is unlocked,
-the stashed element may be reused by concurrent update procedure and the
-freeing of old_element will run concurrently with the reuse of the
-old_element. However, the invocation of check_and_free_fields() may
-acquire a spin-lock which violates the lockdep rule because its caller
-has already held a raw-spin-lock (bucket lock). The following warning
-will be reported when such race happens:
+The main purpose of the test is to demonstrate the lock problem for the
+free of bpf_timer under PREEMPT_RT. When freeing a bpf_timer which is
+running on other CPU in bpf_timer_cancel_and_free(), hrtimer_cancel()
+will try to acquire a spin-lock (namely softirq_expiry_lock), however
+the freeing procedure has already held a raw-spin-lock.
 
-  BUG: scheduling while atomic: test_progs/676/0x00000003
-  3 locks held by test_progs/676:
-   #0: ffffffff864b0240 (rcu_read_lock_trace){....}-{0:0}, at: bpf_prog_test_run_syscall+0x2c0/0x830
-   #1: ffff88810e961188 (&htab->lockdep_key){....}-{2:2}, at: htab_map_update_elem+0x306/0x1500
-   #2: ffff8881f4eac1b8 (&base->softirq_expiry_lock){....}-{2:2}, at: hrtimer_cancel_wait_running+0xe9/0x1b0
-  Modules linked in: bpf_testmod(O)
-  Preemption disabled at:
-  [<ffffffff817837a3>] htab_map_update_elem+0x293/0x1500
-  CPU: 0 UID: 0 PID: 676 Comm: test_progs Tainted: G ... 6.12.0+ #11
-  Tainted: [W]=WARN, [O]=OOT_MODULE
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)...
-  Call Trace:
-   <TASK>
-   dump_stack_lvl+0x57/0x70
-   dump_stack+0x10/0x20
-   __schedule_bug+0x120/0x170
-   __schedule+0x300c/0x4800
-   schedule_rtlock+0x37/0x60
-   rtlock_slowlock_locked+0x6d9/0x54c0
-   rt_spin_lock+0x168/0x230
-   hrtimer_cancel_wait_running+0xe9/0x1b0
-   hrtimer_cancel+0x24/0x30
-   bpf_timer_delete_work+0x1d/0x40
-   bpf_timer_cancel_and_free+0x5e/0x80
-   bpf_obj_free_fields+0x262/0x4a0
-   check_and_free_fields+0x1d0/0x280
-   htab_map_update_elem+0x7fc/0x1500
-   bpf_prog_9f90bc20768e0cb9_overwrite_cb+0x3f/0x43
-   bpf_prog_ea601c4649694dbd_overwrite_timer+0x5d/0x7e
-   bpf_prog_test_run_syscall+0x322/0x830
-   __sys_bpf+0x135d/0x3ca0
-   __x64_sys_bpf+0x75/0xb0
-   x64_sys_call+0x1b5/0xa10
-   do_syscall_64+0x3b/0xc0
-   entry_SYSCALL_64_after_hwframe+0x4b/0x53
-   ...
-   </TASK>
+The test first creates two threads: one to start timers and the other to
+free timers. The start-timers thread will start the timer and then wake
+up the free-timers thread to free these timers when the starts complete.
+After freeing, the free-timer thread will wake up the start-timer thread
+to complete the current iteration. A loop of 10 iterations is used.
 
-To fix the problem, the patch breaks the reuse and refill of per-cpu
-extra_elems into two independent part: reuse the per-cpu extra_elems
-with bucket lock being held and refill the old_element as per-cpu
-extra_elems after the bucket lock is unlocked. After the break, it is
-safe to free pre-allocated element after bucket lock is unlocked.
-
-Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/bpf/hashtab.c | 43 ++++++++++++++++---------------------------
- 1 file changed, 16 insertions(+), 27 deletions(-)
+ .../selftests/bpf/prog_tests/free_timer.c     | 165 ++++++++++++++++++
+ .../testing/selftests/bpf/progs/free_timer.c  |  71 ++++++++
+ 2 files changed, 236 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/free_timer.c
+ create mode 100644 tools/testing/selftests/bpf/progs/free_timer.c
 
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 9211df2adda4..83c96c8941f0 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -1034,9 +1034,16 @@ static struct htab_elem *alloc_preallocated_htab_elem(struct bpf_htab *htab,
- 		 * use per-cpu extra elems to avoid freelist_pop/push
- 		 */
- 		pl_new = this_cpu_ptr(htab->extra_elems);
--		l_new = *pl_new;
--		*pl_new = old_elem;
--		return l_new;
-+		/* Paired with cmpxchg_release() in free_htab_elem() */
-+		l_new = smp_load_acquire(pl_new);
-+		/* extra_elems can be NULL if the current update operation
-+		 * preempts another update operation that hasn't yet refilled
-+		 * the per-cpu extra_elems.
-+		 */
-+		if (l_new) {
-+			WRITE_ONCE(*pl_new, NULL);
-+			return l_new;
-+		}
- 	}
- 
- 	l = __pcpu_freelist_pop(&htab->freelist);
-@@ -1139,7 +1146,6 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
- 	struct htab_elem *l_new = NULL, *l_old;
- 	struct hlist_nulls_head *head;
- 	unsigned long flags;
--	void *old_map_ptr;
- 	struct bucket *b;
- 	u32 key_size, hash;
- 	int ret;
-@@ -1200,7 +1206,8 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
- 		copy_map_value_locked(map,
- 				      l_old->key + round_up(key_size, 8),
- 				      value, false);
--		ret = 0;
-+		/* don't free the reused old element */
-+		l_old = NULL;
- 		goto err;
- 	}
- 
-@@ -1216,31 +1223,13 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
- 	 * concurrent search will find it before old elem
- 	 */
- 	hlist_nulls_add_head_rcu(&l_new->hash_node, head);
--	if (l_old) {
-+	if (l_old)
- 		hlist_nulls_del_rcu(&l_old->hash_node);
--
--		/* l_old has already been stashed in htab->extra_elems, free
--		 * its special fields before it is available for reuse. Also
--		 * save the old map pointer in htab of maps before unlock
--		 * and release it after unlock.
--		 */
--		old_map_ptr = NULL;
--		if (htab_is_prealloc(htab)) {
--			if (map->ops->map_fd_put_ptr)
--				old_map_ptr = fd_htab_map_get_ptr(map, l_old);
--			check_and_free_fields(htab, l_old);
--		}
--	}
--	htab_unlock_bucket(htab, b, hash, flags);
--	if (l_old) {
--		if (old_map_ptr)
--			map->ops->map_fd_put_ptr(map, old_map_ptr, true);
--		if (!htab_is_prealloc(htab))
--			free_htab_elem(htab, l_old, false);
--	}
--	return 0;
- err:
- 	htab_unlock_bucket(htab, b, hash, flags);
-+	/* refill per-cpu extra_elems for preallocated htab */
-+	if (!ret && l_old)
-+		free_htab_elem(htab, l_old, true);
- 	return ret;
- }
- 
+diff --git a/tools/testing/selftests/bpf/prog_tests/free_timer.c b/tools/testing/selftests/bpf/prog_tests/free_timer.c
+new file mode 100644
+index 000000000000..b7b77a6b2979
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/free_timer.c
+@@ -0,0 +1,165 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2025. Huawei Technologies Co., Ltd */
++#define _GNU_SOURCE
++#include <unistd.h>
++#include <sys/syscall.h>
++#include <test_progs.h>
++
++#include "free_timer.skel.h"
++
++struct run_ctx {
++	struct bpf_program *start_prog;
++	struct bpf_program *overwrite_prog;
++	pthread_barrier_t notify;
++	int loop;
++	bool start;
++	bool stop;
++};
++
++static void start_threads(struct run_ctx *ctx)
++{
++	ctx->start = true;
++}
++
++static void stop_threads(struct run_ctx *ctx)
++{
++	ctx->stop = true;
++	/* Guarantee the order between ->stop and ->start */
++	__atomic_store_n(&ctx->start, true, __ATOMIC_RELEASE);
++}
++
++static int wait_for_start(struct run_ctx *ctx)
++{
++	while (!__atomic_load_n(&ctx->start, __ATOMIC_ACQUIRE))
++		usleep(10);
++
++	return ctx->stop;
++}
++
++static void *overwrite_timer_fn(void *arg)
++{
++	struct run_ctx *ctx = arg;
++	int loop, fd, err;
++	cpu_set_t cpuset;
++	long ret = 0;
++
++	/* Pin on CPU 0 */
++	CPU_ZERO(&cpuset);
++	CPU_SET(0, &cpuset);
++	pthread_setaffinity_np(pthread_self(), sizeof(cpuset), &cpuset);
++
++	/* Is the thread being stopped ? */
++	err = wait_for_start(ctx);
++	if (err)
++		return NULL;
++
++	fd = bpf_program__fd(ctx->overwrite_prog);
++	loop = ctx->loop;
++	while (loop-- > 0) {
++		LIBBPF_OPTS(bpf_test_run_opts, opts);
++
++		/* Wait for start thread to complete */
++		pthread_barrier_wait(&ctx->notify);
++
++		/* Overwrite timers */
++		err = bpf_prog_test_run_opts(fd, &opts);
++		if (err)
++			ret |= 1;
++		else if (opts.retval)
++			ret |= 2;
++
++		/* Notify start thread to start timers */
++		pthread_barrier_wait(&ctx->notify);
++	}
++
++	return (void *)ret;
++}
++
++static void *start_timer_fn(void *arg)
++{
++	struct run_ctx *ctx = arg;
++	int loop, fd, err;
++	cpu_set_t cpuset;
++	long ret = 0;
++
++	/* Pin on CPU 1 */
++	CPU_ZERO(&cpuset);
++	CPU_SET(1, &cpuset);
++	pthread_setaffinity_np(pthread_self(), sizeof(cpuset), &cpuset);
++
++	/* Is the thread being stopped ? */
++	err = wait_for_start(ctx);
++	if (err)
++		return NULL;
++
++	fd = bpf_program__fd(ctx->start_prog);
++	loop = ctx->loop;
++	while (loop-- > 0) {
++		LIBBPF_OPTS(bpf_test_run_opts, opts);
++
++		/* Run the prog to start timer */
++		err = bpf_prog_test_run_opts(fd, &opts);
++		if (err)
++			ret |= 4;
++		else if (opts.retval)
++			ret |= 8;
++
++		/* Notify overwrite thread to do overwrite */
++		pthread_barrier_wait(&ctx->notify);
++
++		/* Wait for overwrite thread to complete */
++		pthread_barrier_wait(&ctx->notify);
++	}
++
++	return (void *)ret;
++}
++
++void test_free_timer(void)
++{
++	struct free_timer *skel;
++	struct bpf_program *prog;
++	struct run_ctx ctx;
++	pthread_t tid[2];
++	void *ret;
++	int err;
++
++	skel = free_timer__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "open_load"))
++		return;
++
++	memset(&ctx, 0, sizeof(ctx));
++
++	prog = bpf_object__find_program_by_name(skel->obj, "start_timer");
++	if (!ASSERT_OK_PTR(prog, "find start prog"))
++		goto out;
++	ctx.start_prog = prog;
++
++	prog = bpf_object__find_program_by_name(skel->obj, "overwrite_timer");
++	if (!ASSERT_OK_PTR(prog, "find overwrite prog"))
++		goto out;
++	ctx.overwrite_prog = prog;
++
++	pthread_barrier_init(&ctx.notify, NULL, 2);
++	ctx.loop = 10;
++
++	err = pthread_create(&tid[0], NULL, start_timer_fn, &ctx);
++	if (!ASSERT_OK(err, "create start_timer"))
++		goto out;
++
++	err = pthread_create(&tid[1], NULL, overwrite_timer_fn, &ctx);
++	if (!ASSERT_OK(err, "create overwrite_timer")) {
++		stop_threads(&ctx);
++		goto out;
++	}
++
++	start_threads(&ctx);
++
++	ret = NULL;
++	err = pthread_join(tid[0], &ret);
++	ASSERT_EQ(err | (long)ret, 0, "start_timer");
++	ret = NULL;
++	err = pthread_join(tid[1], &ret);
++	ASSERT_EQ(err | (long)ret, 0, "overwrite_timer");
++out:
++	free_timer__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/free_timer.c b/tools/testing/selftests/bpf/progs/free_timer.c
+new file mode 100644
+index 000000000000..4501ae8fc414
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/free_timer.c
+@@ -0,0 +1,71 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2025. Huawei Technologies Co., Ltd */
++#include <linux/bpf.h>
++#include <time.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_helpers.h>
++
++#define MAX_ENTRIES 8
++
++struct map_value {
++	struct bpf_timer timer;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__type(key, int);
++	__type(value, struct map_value);
++	__uint(max_entries, MAX_ENTRIES);
++} map SEC(".maps");
++
++static int timer_cb(void *map, void *key, struct map_value *value)
++{
++	volatile int sum = 0;
++	int i;
++
++	bpf_for(i, 0, 1024 * 1024) sum += i;
++
++	return 0;
++}
++
++static int start_cb(int key)
++{
++	struct map_value *value;
++
++	value = bpf_map_lookup_elem(&map, (void *)&key);
++	if (!value)
++		return 0;
++
++	bpf_timer_init(&value->timer, &map, CLOCK_MONOTONIC);
++	bpf_timer_set_callback(&value->timer, timer_cb);
++	/* Hope 100us will be enough to wake-up and run the overwrite thread */
++	bpf_timer_start(&value->timer, 100000, BPF_F_TIMER_CPU_PIN);
++
++	return 0;
++}
++
++static int overwrite_cb(int key)
++{
++	struct map_value zero = {};
++
++	/* Free the timer which may run on other CPU */
++	bpf_map_update_elem(&map, (void *)&key, &zero, BPF_ANY);
++
++	return 0;
++}
++
++SEC("syscall")
++int BPF_PROG(start_timer)
++{
++	bpf_loop(MAX_ENTRIES, start_cb, NULL, 0);
++	return 0;
++}
++
++SEC("syscall")
++int BPF_PROG(overwrite_timer)
++{
++	bpf_loop(MAX_ENTRIES, overwrite_cb, NULL, 0);
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.29.2
 
