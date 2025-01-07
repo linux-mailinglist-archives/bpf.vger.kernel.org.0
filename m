@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-48129-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48130-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E99EA0448E
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 16:32:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 54EF5A04497
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 16:32:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E704B3A6D1E
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 15:31:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1CDB3A770C
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 15:32:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDF031F4704;
-	Tue,  7 Jan 2025 15:31:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7619A1F4E22;
+	Tue,  7 Jan 2025 15:31:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LT759/7b"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hEx+J9g6"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEA681F3D38;
-	Tue,  7 Jan 2025 15:31:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 109B51F4716;
+	Tue,  7 Jan 2025 15:31:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736263876; cv=none; b=Ssg1dZA+QWuExV4fyqW9Z4hu4cYEMJ26vmhuLYgZgfbOXG7sHbyvtQ/9ucXgysFLSq8fycPpACBzhJUaYjgVe0VljyqGbfUB1xe7fKKmTocDytq1X9IzW4MPP+j5XbCdQiGQLR+Ff/HT04mVpoKEJ2JKVXxgyoxF1EDHSbJlYfk=
+	t=1736263883; cv=none; b=d9yynrOi+5V9OlGnnXeWlU+3SIxtLpPp2Qm4u/VOBEF16j4V6H+3EhgW5Xs27PccAWVtzr1BnJRmgMFwifrA6PoViPd5GNJJexWEIy56ZzpYTfftOHmPcc+C21oC0DVcowgD8bhAvVC2pBqN6HkNVYa0ZbqVsKbWtaGJoNLZZv0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736263876; c=relaxed/simple;
-	bh=QEuodkCqCKVlW/pYKwomGb48liH0jo/JBYA7U9wgwjg=;
+	s=arc-20240116; t=1736263883; c=relaxed/simple;
+	bh=iKT+1pivEr22Eh8qiWxvoWeb/VdyHBFSvRs7hIm0Uc4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OD+4u7LosAGoR8udHlFd5X+AWLr8u5knPclH9dnRAWFpNtHdznOFkSTs2mbUcYZ0i8v+YexaiLlvtaEl+of1LCMnUPFt7bEhfo2LpPRYAFfbiYJGyd6o7Yv7eeSUw8t8uZvn+Tk3w8TfMqcMRStNnqzGT01VoxFvYBTnjSYaLLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LT759/7b; arc=none smtp.client-ip=192.198.163.19
+	 MIME-Version; b=kNCbpmYWHwwFZhBvHSeHxbsR04mL8daW7PcX6GwYh37Acn7EOnZe68RrveyI8vw9e+L9uEA+yv7mSmI2Grd+54kXrAyDPW4O3w7G6IucG3yCjRZHVz9U0eo0kg/YAciKbMNPmZI2MM0U7NXvBstioelelJapfqrFkY0pXF1ZxdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hEx+J9g6; arc=none smtp.client-ip=192.198.163.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1736263874; x=1767799874;
+  t=1736263880; x=1767799880;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=QEuodkCqCKVlW/pYKwomGb48liH0jo/JBYA7U9wgwjg=;
-  b=LT759/7bSNN7BA47jVibLPRtr552jChz2zNN529ctGiQ/FmMjM6+WC9S
-   sd7Et1yuwk2ha8QOCXBAJo7WN4oQcd0+bMbaIm1LxvNfJSfc1TGDescDx
-   +XfXreJ8oGPgzimjSJMxKAnIZ28ttN13Ghypfz8YSgpX1AdN8BxXS1QHE
-   mu5YrNPbEecGdFvvEVmS79swre0j1qcAckhtLN6MzOKGg8tazN57WLMGj
-   rzuouxhzdV11s2N+HFcnTHfINbQPjZawc3egTCV8wAWvjykwgbMTmkFOs
-   7KBqzBuTpS85wS6Uv2uD8hV8bh0+hcdXx+B/VPkB706sXwlDW6VB6yqmN
+  bh=iKT+1pivEr22Eh8qiWxvoWeb/VdyHBFSvRs7hIm0Uc4=;
+  b=hEx+J9g60Q7TDYlisXVcQNuJBvSNDlcyTqjh+1SG8iCpLPtuoEg42lia
+   LKwahEcu2HXyfofE+5HcnKv2cNUYzALuv+LaSzXb0IQArBG9ja6qSPOCA
+   da3NS3LTwyX/maWwXozXsKNYm+RbUsJVPVFGxaStONfsnklLjRDZn6MnO
+   OgN0WQimZElkn080QilZ9+Dg6QxqEFIn0zs1dfDP2kr/+GwbKsyJthZm9
+   C3iMOsN9n1m4dwk7MtI+WNxlbMiNyIGNSiANiwDFfD1rZPODYLU9aYetA
+   /89f4zZHr2/DpfnNLaCp1b+Dpp8eO+/dVUtBJwxHrVjNCTC6k8wBEWS4n
    Q==;
-X-CSE-ConnectionGUID: ZCHZKShSS5musrtoMxEngA==
-X-CSE-MsgGUID: vth9Oh0BSsiD4ycCxoO6Zg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11308"; a="35685799"
+X-CSE-ConnectionGUID: 0S1sbvS9Swyt3gjv/gBiIA==
+X-CSE-MsgGUID: hULjuzbJQyCVWoe+rbHdYg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11308"; a="35685816"
 X-IronPort-AV: E=Sophos;i="6.12,295,1728975600"; 
-   d="scan'208";a="35685799"
+   d="scan'208";a="35685816"
 Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2025 07:31:14 -0800
-X-CSE-ConnectionGUID: C4y1l49ERiyfMsgFgtahwA==
-X-CSE-MsgGUID: TimD9tCXQ+qlEVn9keDrnQ==
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2025 07:31:18 -0800
+X-CSE-ConnectionGUID: qNyliSkcSL2gsVXfLNYGwA==
+X-CSE-MsgGUID: GekxcnpuStKDzAEA2qWNGA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="103646935"
+   d="scan'208";a="103646951"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa008.jf.intel.com with ESMTP; 07 Jan 2025 07:31:10 -0800
+  by orviesa008.jf.intel.com with ESMTP; 07 Jan 2025 07:31:14 -0800
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: Andrew Lunn <andrew+netdev@lunn.ch>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -77,9 +77,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 2/8] net: gro: expose GRO init/cleanup to use outside of NAPI
-Date: Tue,  7 Jan 2025 16:29:34 +0100
-Message-ID: <20250107152940.26530-3-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next v2 3/8] bpf: cpumap: switch to GRO from netif_receive_skb_list()
+Date: Tue,  7 Jan 2025 16:29:35 +0100
+Message-ID: <20250107152940.26530-4-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250107152940.26530-1-aleksander.lobakin@intel.com>
 References: <20250107152940.26530-1-aleksander.lobakin@intel.com>
@@ -91,149 +91,135 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Make GRO init and cleanup functions global to be able to use GRO
-without a NAPI instance. Taking into account already global gro_flush(),
-it's now fully usable standalone.
-New functions are not exported, since they're not supposed to be used
-outside of the kernel core code.
+cpumap has its own BH context based on kthread. It has a sane batch
+size of 8 frames per one cycle.
+GRO can be used here on its own. Adjust cpumap calls to the upper stack
+to use GRO API instead of netif_receive_skb_list() which processes skbs
+by batches, but doesn't involve GRO layer at all.
+In plenty of tests, GRO performs better than listed receiving even
+given that it has to calculate full frame checksums on the CPU.
+As GRO passes the skbs to the upper stack in the batches of
+@gro_normal_batch, i.e. 8 by default, and skb->dev points to the
+device where the frame comes from, it is enough to disable GRO
+netdev feature on it to completely restore the original behaviour:
+untouched frames will be being bulked and passed to the upper stack
+by 8, as it was with netif_receive_skb_list().
 
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 Tested-by: Daniel Xu <dxu@dxuuu.xyz>
 ---
- include/net/gro.h |  3 +++
- net/core/dev.c    | 33 +++------------------------------
- net/core/gro.c    | 34 ++++++++++++++++++++++++++++++++++
- 3 files changed, 40 insertions(+), 30 deletions(-)
+ kernel/bpf/cpumap.c | 45 ++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 42 insertions(+), 3 deletions(-)
 
-diff --git a/include/net/gro.h b/include/net/gro.h
-index 7aad366452d6..343d5afe7c9e 100644
---- a/include/net/gro.h
-+++ b/include/net/gro.h
-@@ -543,6 +543,9 @@ static inline void gro_normal_one(struct gro_node *gro, struct sk_buff *skb,
- 		gro_normal_list(gro);
+diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+index 774accbd4a22..10d062dddb6f 100644
+--- a/kernel/bpf/cpumap.c
++++ b/kernel/bpf/cpumap.c
+@@ -33,8 +33,8 @@
+ #include <trace/events/xdp.h>
+ #include <linux/btf_ids.h>
+ 
+-#include <linux/netdevice.h>   /* netif_receive_skb_list */
+-#include <linux/etherdevice.h> /* eth_type_trans */
++#include <linux/netdevice.h>
++#include <net/gro.h>
+ 
+ /* General idea: XDP packets getting XDP redirected to another CPU,
+  * will maximum be stored/queued for one driver ->poll() call.  It is
+@@ -68,6 +68,7 @@ struct bpf_cpu_map_entry {
+ 
+ 	struct bpf_cpumap_val value;
+ 	struct bpf_prog *prog;
++	struct gro_node gro;
+ 
+ 	struct completion kthread_running;
+ 	struct rcu_work free_work;
+@@ -261,10 +262,36 @@ static int cpu_map_bpf_prog_run(struct bpf_cpu_map_entry *rcpu, void **frames,
+ 	return nframes;
  }
  
-+void gro_init(struct gro_node *gro);
-+void gro_cleanup(struct gro_node *gro);
-+
- /* This function is the alternative of 'inet_iif' and 'inet_sdif'
-  * functions in case we can not rely on fields of IPCB.
-  *
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 1f4e2a0ef1da..f7059e98ce87 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -6616,17 +6616,6 @@ static enum hrtimer_restart napi_watchdog(struct hrtimer *timer)
- 	return HRTIMER_NORESTART;
- }
- 
--static void init_gro_hash(struct napi_struct *napi)
--{
--	int i;
--
--	for (i = 0; i < GRO_HASH_BUCKETS; i++) {
--		INIT_LIST_HEAD(&napi->gro.hash[i].list);
--		napi->gro.hash[i].count = 0;
--	}
--	napi->gro.bitmask = 0;
--}
--
- int dev_set_threaded(struct net_device *dev, bool threaded)
- {
- 	struct napi_struct *napi;
-@@ -6738,10 +6727,8 @@ void netif_napi_add_weight(struct net_device *dev, struct napi_struct *napi,
- 	INIT_HLIST_NODE(&napi->napi_hash_node);
- 	hrtimer_init(&napi->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_PINNED);
- 	napi->timer.function = napi_watchdog;
--	init_gro_hash(napi);
-+	gro_init(&napi->gro);
- 	napi->skb = NULL;
--	INIT_LIST_HEAD(&napi->gro.rx_list);
--	napi->gro.rx_count = 0;
- 	napi->poll = poll;
- 	if (weight > NAPI_POLL_WEIGHT)
- 		netdev_err_once(dev, "%s() called with weight %d\n", __func__,
-@@ -6828,19 +6815,6 @@ void napi_enable(struct napi_struct *n)
- }
- EXPORT_SYMBOL(napi_enable);
- 
--static void flush_gro_hash(struct napi_struct *napi)
--{
--	int i;
--
--	for (i = 0; i < GRO_HASH_BUCKETS; i++) {
--		struct sk_buff *skb, *n;
--
--		list_for_each_entry_safe(skb, n, &napi->gro.hash[i].list, list)
--			kfree_skb(skb);
--		napi->gro.hash[i].count = 0;
--	}
--}
--
- /* Must be called in process context */
- void __netif_napi_del(struct napi_struct *napi)
- {
-@@ -6855,8 +6829,7 @@ void __netif_napi_del(struct napi_struct *napi)
- 	list_del_rcu(&napi->dev_list);
- 	napi_free_frags(napi);
- 
--	flush_gro_hash(napi);
--	napi->gro.bitmask = 0;
-+	gro_cleanup(&napi->gro);
- 
- 	if (napi->thread) {
- 		kthread_stop(napi->thread);
-@@ -12243,7 +12216,7 @@ static int __init net_dev_init(void)
- 		INIT_CSD(&sd->defer_csd, trigger_rx_softirq, sd);
- 		spin_lock_init(&sd->defer_lock);
- 
--		init_gro_hash(&sd->backlog);
-+		gro_init(&sd->backlog.gro);
- 		sd->backlog.poll = process_backlog;
- 		sd->backlog.weight = weight_p;
- 		INIT_LIST_HEAD(&sd->backlog.poll_list);
-diff --git a/net/core/gro.c b/net/core/gro.c
-index 77ec10d9cd43..29ee36bb0b27 100644
---- a/net/core/gro.c
-+++ b/net/core/gro.c
-@@ -793,3 +793,37 @@ __sum16 __skb_gro_checksum_complete(struct sk_buff *skb)
- 	return sum;
- }
- EXPORT_SYMBOL(__skb_gro_checksum_complete);
-+
-+void gro_init(struct gro_node *gro)
++static void cpu_map_gro_receive(struct bpf_cpu_map_entry *rcpu,
++				struct list_head *list)
 +{
-+	for (u32 i = 0; i < GRO_HASH_BUCKETS; i++) {
-+		INIT_LIST_HEAD(&gro->hash[i].list);
-+		gro->hash[i].count = 0;
++	struct sk_buff *skb, *tmp;
++
++	list_for_each_entry_safe(skb, tmp, list, list) {
++		skb_list_del_init(skb);
++		gro_receive_skb(&rcpu->gro, skb);
 +	}
-+
-+	gro->bitmask = 0;
-+
-+	INIT_LIST_HEAD(&gro->rx_list);
-+	gro->rx_count = 0;
-+
-+	gro->napi_id = 0;
 +}
 +
-+void gro_cleanup(struct gro_node *gro)
++static void cpu_map_gro_flush(struct bpf_cpu_map_entry *rcpu, bool empty)
 +{
-+	struct sk_buff *skb, *n;
-+
-+	for (u32 i = 0; i < GRO_HASH_BUCKETS; i++) {
-+		list_for_each_entry_safe(skb, n, &gro->hash[i].list, list)
-+			kfree_skb(skb);
-+
-+		gro->hash[i].count = 0;
-+	}
-+
-+	gro->bitmask = 0;
-+
-+	list_for_each_entry_safe(skb, n, &gro->rx_list, list)
-+		kfree_skb(skb);
-+
-+	gro->rx_count = 0;
++	/*
++	 * If the ring is not empty, there'll be a new iteration soon, and we
++	 * only need to do a full flush if a tick is long (> 1 ms).
++	 * If the ring is empty, to not hold GRO packets in the stack for too
++	 * long, do a full flush.
++	 * This is equivalent to how NAPI decides whether to perform a full
++	 * flush.
++	 */
++	gro_flush(&rcpu->gro, !empty && HZ >= 1000);
++	gro_normal_list(&rcpu->gro);
 +}
++
+ static int cpu_map_kthread_run(void *data)
+ {
+ 	struct bpf_cpu_map_entry *rcpu = data;
+ 	unsigned long last_qs = jiffies;
++	u32 packets = 0;
+ 
+ 	complete(&rcpu->kthread_running);
+ 	set_current_state(TASK_INTERRUPTIBLE);
+@@ -282,6 +309,7 @@ static int cpu_map_kthread_run(void *data)
+ 		void *frames[CPUMAP_BATCH];
+ 		void *skbs[CPUMAP_BATCH];
+ 		LIST_HEAD(list);
++		bool empty;
+ 
+ 		/* Release CPU reschedule checks */
+ 		if (__ptr_ring_empty(rcpu->queue)) {
+@@ -361,7 +389,15 @@ static int cpu_map_kthread_run(void *data)
+ 		trace_xdp_cpumap_kthread(rcpu->map_id, n, kmem_alloc_drops,
+ 					 sched, &stats);
+ 
+-		netif_receive_skb_list(&list);
++		cpu_map_gro_receive(rcpu, &list);
++
++		/* Flush either every 64 packets or in case of empty ring */
++		empty = __ptr_ring_empty(rcpu->queue);
++		if (packets += n >= NAPI_POLL_WEIGHT || empty) {
++			cpu_map_gro_flush(rcpu, empty);
++			packets = 0;
++		}
++
+ 		local_bh_enable(); /* resched point, may call do_softirq() */
+ 	}
+ 	__set_current_state(TASK_RUNNING);
+@@ -430,6 +466,7 @@ __cpu_map_entry_alloc(struct bpf_map *map, struct bpf_cpumap_val *value,
+ 	rcpu->cpu    = cpu;
+ 	rcpu->map_id = map->id;
+ 	rcpu->value.qsize  = value->qsize;
++	gro_init(&rcpu->gro);
+ 
+ 	if (fd > 0 && __cpu_map_load_bpf_program(rcpu, map, fd))
+ 		goto free_ptr_ring;
+@@ -458,6 +495,7 @@ __cpu_map_entry_alloc(struct bpf_map *map, struct bpf_cpumap_val *value,
+ 	if (rcpu->prog)
+ 		bpf_prog_put(rcpu->prog);
+ free_ptr_ring:
++	gro_cleanup(&rcpu->gro);
+ 	ptr_ring_cleanup(rcpu->queue, NULL);
+ free_queue:
+ 	kfree(rcpu->queue);
+@@ -487,6 +525,7 @@ static void __cpu_map_entry_free(struct work_struct *work)
+ 
+ 	if (rcpu->prog)
+ 		bpf_prog_put(rcpu->prog);
++	gro_cleanup(&rcpu->gro);
+ 	/* The queue should be empty at this point */
+ 	__cpu_map_ring_cleanup(rcpu->queue);
+ 	ptr_ring_cleanup(rcpu->queue, NULL);
 -- 
 2.47.1
 
