@@ -1,67 +1,81 @@
-Return-Path: <bpf+bounces-48061-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48062-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 186E7A03A01
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 09:44:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 174BEA03A5D
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 09:57:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3077160374
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 08:44:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 469B43A51C3
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 08:57:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 124AA1E3DFC;
-	Tue,  7 Jan 2025 08:44:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EACDB1E22EB;
+	Tue,  7 Jan 2025 08:57:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="bU4BdYcn"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 533481E0E0A;
-	Tue,  7 Jan 2025 08:44:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41677198E78;
+	Tue,  7 Jan 2025 08:57:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736239444; cv=none; b=JX039rhTsgfsFA+TX+DBQWowbtDnS43iHyLAxLihXHyiCfULizdt6lhGcZuxOH4RQ5pg/YAoJIbOc06Lr0ZdDb8R/xWGW+6aerh7sPlM2iTJOq51icQASoj8sUvcJZgck2/H066fJMSZ6WpSBkC6jN6KE+XRk5IQCNszLiLVbsk=
+	t=1736240254; cv=none; b=p65pfIyGT9WgmXpuS7pKdSI533Jb4PdIFfrtMzcC2j+IJilUnOJhDVMsVuiPjzy/2FKu4PiVL81SItaQVh6fjp9UUJLvZRtxPDW0yDj2fkRJ+CllqFYlLoEzxNxCMRYs7H/I9WB8Ez0z0GU9xEveggauSUhzbbBWURbR+nwrljY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736239444; c=relaxed/simple;
-	bh=FWV0BoBbS84j+XA3gTkPGwbiax5EzuoBU40jfx+C4dE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XJUoCrULvIunNhB2rvvZ1K+p4cJz6UA5ROXIO5G8BkXQNY6HMBPGtIZ2DbrdjOljQyM8v1A5hcR10tFaP4T8+XHCUtXdplt2kGz0IB9FSYdIoq8u6roOd8YSshpEgqX/43+DzBEbxNKIDywSTnsEPexUPcXbC4dY6fbuDug7xiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YS4MY35VXz4f3jHy;
-	Tue,  7 Jan 2025 16:43:37 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 8C0721A130E;
-	Tue,  7 Jan 2025 16:43:57 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgC3Gl9E6XxnpFgeAQ--.43336S11;
-	Tue, 07 Jan 2025 16:43:57 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	houtao1@huawei.com,
-	xukuohai@huawei.com
-Subject: [PATCH bpf-next 7/7] selftests/bpf: Add test case for the freeing of bpf_timer
-Date: Tue,  7 Jan 2025 16:55:59 +0800
-Message-Id: <20250107085559.3081563-8-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20250107085559.3081563-1-houtao@huaweicloud.com>
-References: <20250107085559.3081563-1-houtao@huaweicloud.com>
+	s=arc-20240116; t=1736240254; c=relaxed/simple;
+	bh=2j0To2z708Hn2b6bNch2njDc+GPMbDoEWEYZbiTv8rQ=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=P0Dl3nDUPm0pq7HyThDhbv9WqKE89dKowRV6Qh0rKRtqAY7ZoCue99GZ8OOReK+Gzrz7cyXpbixSdjLjEAuFJ6fSyNRjWkKb2fhf7T9UJpd3aUVSfBfdajX/BWNdqNCufqakKbxpp+pNlNoaWaiaM6XV4ALIf4utjAkmPeblVj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=bU4BdYcn; arc=none smtp.client-ip=99.78.197.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1736240251; x=1767776251;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=SC1mbAev+9sK6OCOjA6+EkRnZ+bYlCkoq+asNgcdmS4=;
+  b=bU4BdYcn0Ax0KfqIt9LTTFgJpdB5xiU49v4k/HZFsOk2ktDZcqN+Rm2B
+   4mP3cG7zpiv0HZKg13pQgQOTmNPT/X4aunjU5ErSAURKYX4RqHr+OKV9I
+   L+Ryr5HiLY4ZfRb+UdU1E3OPeFFUbryZnSwsaGKLiuX3tA0OcP3XFMugP
+   Y=;
+X-IronPort-AV: E=Sophos;i="6.12,295,1728950400"; 
+   d="scan'208";a="159523600"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
+  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2025 08:57:29 +0000
+Received: from EX19MTAUWC002.ant.amazon.com [10.0.38.20:39955]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.36.119:2525] with esmtp (Farcaster)
+ id 9f3ed6e6-aeb4-4841-95ac-539e22d429cf; Tue, 7 Jan 2025 08:57:29 +0000 (UTC)
+X-Farcaster-Flow-ID: 9f3ed6e6-aeb4-4841-95ac-539e22d429cf
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.39;
+ Tue, 7 Jan 2025 08:57:28 +0000
+Received: from 6c7e67c6786f.amazon.com (10.118.249.113) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.39;
+ Tue, 7 Jan 2025 08:57:07 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <shaw.leon@gmail.com>
+CC: <andrew+netdev@lunn.ch>, <b.a.t.m.a.n@lists.open-mesh.org>,
+	<bpf@vger.kernel.org>, <bridge@lists.linux.dev>, <davem@davemloft.net>,
+	<donald.hunter@gmail.com>, <dsahern@kernel.org>, <edumazet@google.com>,
+	<horms@kernel.org>, <idosch@nvidia.com>, <jiri@resnulli.us>,
+	<kuba@kernel.org>, <kuniyu@amazon.com>, <linux-can@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+	<linux-ppp@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-wireless@vger.kernel.org>, <linux-wpan@vger.kernel.org>,
+	<liuhangbin@gmail.com>, <netdev@vger.kernel.org>,
+	<osmocom-net-gprs@lists.osmocom.org>, <pabeni@redhat.com>,
+	<shuah@kernel.org>, <wireguard@lists.zx2c4.com>
+Subject: Re: [PATCH net-next v7 00/11] net: Improve netns handling in rtnetlink
+Date: Tue, 7 Jan 2025 17:56:46 +0900
+Message-ID: <20250107085646.42302-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+In-Reply-To: <20250104125732.17335-1-shaw.leon@gmail.com>
+References: <20250104125732.17335-1-shaw.leon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -69,297 +83,290 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgC3Gl9E6XxnpFgeAQ--.43336S11
-X-Coremail-Antispam: 1UD129KBjvJXoWxKr1kZF4xuF1ruF15XFW7CFg_yoWxuFW3pa
-	yrK345Kr4rXw47Ww48tFn7GrWfKrs5XFyxGry0gw1UZr1Iqws5tF92gFy5tFW3CFWDWryS
-	vF4FkFZ8GrZrJrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-	xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2
-	AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
-	x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6r
-	W5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF
-	7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14
-	v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuY
-	vjxUI-eODUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D031UWA001.ant.amazon.com (10.13.139.88) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-From: Hou Tao <houtao1@huawei.com>
+From: Xiao Liang <shaw.leon@gmail.com>
+Date: Sat,  4 Jan 2025 20:57:21 +0800
+> This patch series includes some netns-related improvements and fixes for
+> rtnetlink, to make link creation more intuitive:
+> 
+>  1) Creating link in another net namespace doesn't conflict with link
+>     names in current one.
+>  2) Refector rtnetlink link creation. Create link in target namespace
+>     directly.
+> 
+> So that
+> 
+>   # ip link add netns ns1 link-netns ns2 tun0 type gre ...
+> 
+> will create tun0 in ns1, rather than create it in ns2 and move to ns1.
+> And don't conflict with another interface named "tun0" in current netns.
+> 
+> Patch 01 serves for 1) to avoids link name conflict in different netns.
+> 
+> To achieve 2), there're mainly 3 steps:
+> 
+>  - Patch 02 packs newlink() parameters into a struct, including
+>    the original "src_net" along with more netns context. No semantic
+>    changes are introduced.
+>  - Patch 03 ~ 07 converts device drivers to use the explicit netns
+>    extracted from params.
+>  - Patch 08 ~ 09 removes the old netns parameter, and converts
+>    rtnetlink to create device in target netns directly.
+> 
+> Patch 10 ~ 11 adds some tests for link name and link netns.
+> 
+> 
+> BTW please note there're some issues found in current code:
+> 
+> - In amt_newlink() drivers/net/amt.c:
+> 
+>     amt->net = net;
+>     ...
+>     amt->stream_dev = dev_get_by_index(net, ...
+> 
+>   Uses net, but amt_lookup_upper_dev() only searches in dev_net.
+>   So the AMT device may not be properly deleted if it's in a different
+>   netns from lower dev.
 
-The main purpose of the test is to demonstrate the lock problem for the
-free of bpf_timer under PREEMPT_RT. When freeing a bpf_timer which is
-running on other CPU in bpf_timer_cancel_and_free(), hrtimer_cancel()
-will try to acquire a spin-lock (namely softirq_expiry_lock), however
-the freeing procedure has already held a raw-spin-lock.
+I think you are right, and the upper device will be leaked
+and UAF will happen.
 
-The test first creates two threads: one to start timers and the other to
-free timers. The start-timers thread will start the timer and then wake
-up the free-timers thread to free these timers when the starts complete.
-After freeing, the free-timer thread will wake up the start-timer thread
-to complete the current iteration. A loop of 10 iterations is used.
+amt must manage a list linked to a lower dev.
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../selftests/bpf/prog_tests/free_timer.c     | 165 ++++++++++++++++++
- .../testing/selftests/bpf/progs/free_timer.c  |  71 ++++++++
- 2 files changed, 236 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/free_timer.c
- create mode 100644 tools/testing/selftests/bpf/progs/free_timer.c
+Given no one has reported the issue, another option would be
+drop cross netns support in a short period.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/free_timer.c b/tools/testing/selftests/bpf/prog_tests/free_timer.c
-new file mode 100644
-index 000000000000..b7b77a6b2979
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/free_timer.c
-@@ -0,0 +1,165 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2025. Huawei Technologies Co., Ltd */
-+#define _GNU_SOURCE
-+#include <unistd.h>
-+#include <sys/syscall.h>
-+#include <test_progs.h>
-+
-+#include "free_timer.skel.h"
-+
-+struct run_ctx {
-+	struct bpf_program *start_prog;
-+	struct bpf_program *overwrite_prog;
-+	pthread_barrier_t notify;
-+	int loop;
-+	bool start;
-+	bool stop;
-+};
-+
-+static void start_threads(struct run_ctx *ctx)
-+{
-+	ctx->start = true;
-+}
-+
-+static void stop_threads(struct run_ctx *ctx)
-+{
-+	ctx->stop = true;
-+	/* Guarantee the order between ->stop and ->start */
-+	__atomic_store_n(&ctx->start, true, __ATOMIC_RELEASE);
-+}
-+
-+static int wait_for_start(struct run_ctx *ctx)
-+{
-+	while (!__atomic_load_n(&ctx->start, __ATOMIC_ACQUIRE))
-+		usleep(10);
-+
-+	return ctx->stop;
-+}
-+
-+static void *overwrite_timer_fn(void *arg)
-+{
-+	struct run_ctx *ctx = arg;
-+	int loop, fd, err;
-+	cpu_set_t cpuset;
-+	long ret = 0;
-+
-+	/* Pin on CPU 0 */
-+	CPU_ZERO(&cpuset);
-+	CPU_SET(0, &cpuset);
-+	pthread_setaffinity_np(pthread_self(), sizeof(cpuset), &cpuset);
-+
-+	/* Is the thread being stopped ? */
-+	err = wait_for_start(ctx);
-+	if (err)
-+		return NULL;
-+
-+	fd = bpf_program__fd(ctx->overwrite_prog);
-+	loop = ctx->loop;
-+	while (loop-- > 0) {
-+		LIBBPF_OPTS(bpf_test_run_opts, opts);
-+
-+		/* Wait for start thread to complete */
-+		pthread_barrier_wait(&ctx->notify);
-+
-+		/* Overwrite timers */
-+		err = bpf_prog_test_run_opts(fd, &opts);
-+		if (err)
-+			ret |= 1;
-+		else if (opts.retval)
-+			ret |= 2;
-+
-+		/* Notify start thread to start timers */
-+		pthread_barrier_wait(&ctx->notify);
+---8<---
+diff --git a/drivers/net/amt.c b/drivers/net/amt.c
+index 98c6205ed19f..d39a5fe17a6f 100644
+--- a/drivers/net/amt.c
++++ b/drivers/net/amt.c
+@@ -3168,6 +3168,12 @@ static int amt_newlink(struct net *net, struct net_device *dev,
+ 	struct amt_dev *amt = netdev_priv(dev);
+ 	int err = -EINVAL;
+ 
++	if (!net_eq(net, dev_net(dev))) {
++		NL_SET_ERR_MSG_ATTR(extack, tb[IFLA_TARGET_NETNSID],
++				    "Can't find stream device in a different netns");
++		return err;
 +	}
 +
-+	return (void *)ret;
-+}
-+
-+static void *start_timer_fn(void *arg)
-+{
-+	struct run_ctx *ctx = arg;
-+	int loop, fd, err;
-+	cpu_set_t cpuset;
-+	long ret = 0;
-+
-+	/* Pin on CPU 1 */
-+	CPU_ZERO(&cpuset);
-+	CPU_SET(1, &cpuset);
-+	pthread_setaffinity_np(pthread_self(), sizeof(cpuset), &cpuset);
-+
-+	/* Is the thread being stopped ? */
-+	err = wait_for_start(ctx);
-+	if (err)
-+		return NULL;
-+
-+	fd = bpf_program__fd(ctx->start_prog);
-+	loop = ctx->loop;
-+	while (loop-- > 0) {
-+		LIBBPF_OPTS(bpf_test_run_opts, opts);
-+
-+		/* Run the prog to start timer */
-+		err = bpf_prog_test_run_opts(fd, &opts);
-+		if (err)
-+			ret |= 4;
-+		else if (opts.retval)
-+			ret |= 8;
-+
-+		/* Notify overwrite thread to do overwrite */
-+		pthread_barrier_wait(&ctx->notify);
-+
-+		/* Wait for overwrite thread to complete */
-+		pthread_barrier_wait(&ctx->notify);
-+	}
-+
-+	return (void *)ret;
-+}
-+
-+void test_free_timer(void)
-+{
-+	struct free_timer *skel;
-+	struct bpf_program *prog;
-+	struct run_ctx ctx;
-+	pthread_t tid[2];
-+	void *ret;
-+	int err;
-+
-+	skel = free_timer__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open_load"))
-+		return;
-+
-+	memset(&ctx, 0, sizeof(ctx));
-+
-+	prog = bpf_object__find_program_by_name(skel->obj, "start_timer");
-+	if (!ASSERT_OK_PTR(prog, "find start prog"))
-+		goto out;
-+	ctx.start_prog = prog;
-+
-+	prog = bpf_object__find_program_by_name(skel->obj, "overwrite_timer");
-+	if (!ASSERT_OK_PTR(prog, "find overwrite prog"))
-+		goto out;
-+	ctx.overwrite_prog = prog;
-+
-+	pthread_barrier_init(&ctx.notify, NULL, 2);
-+	ctx.loop = 10;
-+
-+	err = pthread_create(&tid[0], NULL, start_timer_fn, &ctx);
-+	if (!ASSERT_OK(err, "create start_timer"))
-+		goto out;
-+
-+	err = pthread_create(&tid[1], NULL, overwrite_timer_fn, &ctx);
-+	if (!ASSERT_OK(err, "create overwrite_timer")) {
-+		stop_threads(&ctx);
-+		goto out;
-+	}
-+
-+	start_threads(&ctx);
-+
-+	ret = NULL;
-+	err = pthread_join(tid[0], &ret);
-+	ASSERT_EQ(err | (long)ret, 0, "start_timer");
-+	ret = NULL;
-+	err = pthread_join(tid[1], &ret);
-+	ASSERT_EQ(err | (long)ret, 0, "overwrite_timer");
-+out:
-+	free_timer__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/free_timer.c b/tools/testing/selftests/bpf/progs/free_timer.c
-new file mode 100644
-index 000000000000..4501ae8fc414
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/free_timer.c
-@@ -0,0 +1,71 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2025. Huawei Technologies Co., Ltd */
-+#include <linux/bpf.h>
-+#include <time.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#define MAX_ENTRIES 8
-+
-+struct map_value {
-+	struct bpf_timer timer;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__type(key, int);
-+	__type(value, struct map_value);
-+	__uint(max_entries, MAX_ENTRIES);
-+} map SEC(".maps");
-+
-+static int timer_cb(void *map, void *key, struct map_value *value)
-+{
-+	volatile int sum = 0;
-+	int i;
-+
-+	bpf_for(i, 0, 1024 * 1024) sum += i;
-+
-+	return 0;
-+}
-+
-+static int start_cb(int key)
-+{
-+	struct map_value *value;
-+
-+	value = bpf_map_lookup_elem(&map, (void *)&key);
-+	if (!value)
-+		return 0;
-+
-+	bpf_timer_init(&value->timer, &map, CLOCK_MONOTONIC);
-+	bpf_timer_set_callback(&value->timer, timer_cb);
-+	/* Hope 100us will be enough to wake-up and run the overwrite thread */
-+	bpf_timer_start(&value->timer, 100000, BPF_F_TIMER_CPU_PIN);
-+
-+	return 0;
-+}
-+
-+static int overwrite_cb(int key)
-+{
-+	struct map_value zero = {};
-+
-+	/* Free the timer which may run on other CPU */
-+	bpf_map_update_elem(&map, (void *)&key, &zero, BPF_ANY);
-+
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int BPF_PROG(start_timer)
-+{
-+	bpf_loop(MAX_ENTRIES, start_cb, NULL, 0);
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int BPF_PROG(overwrite_timer)
-+{
-+	bpf_loop(MAX_ENTRIES, overwrite_cb, NULL, 0);
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.29.2
+ 	amt->net = net;
+ 	amt->mode = nla_get_u32(data[IFLA_AMT_MODE]);
+ 
+---8<---
 
+
+> 
+> - In gtp_newlink() in drivers/net/gtp.c:
+> 
+>     gtp->net = src_net;
+>     ...
+>     gn = net_generic(dev_net(dev), gtp_net_id);
+>     list_add_rcu(&gtp->list, &gn->gtp_dev_list);
+> 
+>   Uses src_net, but priv is linked to list in dev_net. So it may not be
+>   properly deleted on removal of link netns.
+
+The device is linked to a list in the same netns, so the
+device will not be leaked.  See gtp_net_exit_batch_rtnl().
+
+Rather, the problem is the udp tunnel socket netns could be
+freed earlier than the dev netns.
+
+---8<---
+# ip netns add test
+# ip netns attach root 1
+# ip -n test link add netns root name gtp0 type gtp role sgsn
+# ip netns del test
+[  125.828205] ref_tracker: net notrefcnt@0000000061c9afc0 has 1/2 users at
+[  125.828205]      sk_alloc+0x7c8/0x8c0
+[  125.828205]      inet_create+0x284/0xd70
+[  125.828205]      __sock_create+0x23b/0x6a0
+[  125.828205]      udp_sock_create4+0x94/0x3f0
+[  125.828205]      gtp_create_sock+0x286/0x340
+[  125.828205]      gtp_create_sockets+0x43/0x110
+[  125.828205]      gtp_newlink+0x775/0x1070
+[  125.828205]      rtnl_newlink+0xa7f/0x19e0
+[  125.828205]      rtnetlink_rcv_msg+0x71b/0xc10
+[  125.828205]      netlink_rcv_skb+0x12b/0x360
+[  125.828205]      netlink_unicast+0x446/0x710
+[  125.828205]      netlink_sendmsg+0x73a/0xbf0
+[  125.828205]      ____sys_sendmsg+0x89d/0xb00
+[  125.828205]      ___sys_sendmsg+0xe9/0x170
+[  125.828205]      __sys_sendmsg+0x104/0x190
+[  125.828205]      do_syscall_64+0xc1/0x1d0
+[  125.828205] 
+[  125.833135] ref_tracker: net notrefcnt@0000000061c9afc0 has 1/2 users at
+[  125.833135]      sk_alloc+0x7c8/0x8c0
+[  125.833135]      inet_create+0x284/0xd70
+[  125.833135]      __sock_create+0x23b/0x6a0
+[  125.833135]      udp_sock_create4+0x94/0x3f0
+[  125.833135]      gtp_create_sock+0x286/0x340
+[  125.833135]      gtp_create_sockets+0x21/0x110
+[  125.833135]      gtp_newlink+0x775/0x1070
+[  125.833135]      rtnl_newlink+0xa7f/0x19e0
+[  125.833135]      rtnetlink_rcv_msg+0x71b/0xc10
+[  125.833135]      netlink_rcv_skb+0x12b/0x360
+[  125.833135]      netlink_unicast+0x446/0x710
+[  125.833135]      netlink_sendmsg+0x73a/0xbf0
+[  125.833135]      ____sys_sendmsg+0x89d/0xb00
+[  125.833135]      ___sys_sendmsg+0xe9/0x170
+[  125.833135]      __sys_sendmsg+0x104/0x190
+[  125.833135]      do_syscall_64+0xc1/0x1d0
+[  125.833135] 
+[  125.837998] ------------[ cut here ]------------
+[  125.838345] WARNING: CPU: 0 PID: 11 at lib/ref_tracker.c:179 ref_tracker_dir_exit+0x26c/0x520
+[  125.838906] Modules linked in:
+[  125.839130] CPU: 0 UID: 0 PID: 11 Comm: kworker/u16:0 Not tainted 6.13.0-rc5-00150-gc707e6e25dde #188
+[  125.839734] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+[  125.840497] Workqueue: netns cleanup_net
+[  125.840773] RIP: 0010:ref_tracker_dir_exit+0x26c/0x520
+[  125.841128] Code: 00 00 00 fc ff df 4d 8b 26 49 bd 00 01 00 00 00 00 ad de 4c 39 f5 0f 85 df 00 00 00 48 8b 74 24 08 48 89 df e8 a5 cc 12 02 90 <0f> 0b 90 48 8d 6b 44 be 04 00 00 00 48 89 ef e8 80 de 67 ff 48 89
+[  125.842364] RSP: 0018:ff11000007f3fb60 EFLAGS: 00010286
+[  125.842714] RAX: 0000000000004337 RBX: ff1100000d231aa0 RCX: 1ffffffff0e40d5c
+[  125.843195] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff8423ee3c
+[  125.843664] RBP: ff1100000d231af0 R08: 0000000000000001 R09: fffffbfff0e397ae
+[  125.844142] R10: 0000000000000001 R11: 0000000000036001 R12: ff1100000d231af0
+[  125.844606] R13: dead000000000100 R14: ff1100000d231af0 R15: dffffc0000000000
+[  125.845067] FS:  0000000000000000(0000) GS:ff1100006ce00000(0000) knlGS:0000000000000000
+[  125.845596] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  125.845984] CR2: 0000564cbf104000 CR3: 000000000ef44001 CR4: 0000000000771ef0
+[  125.846480] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  125.846958] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
+[  125.847450] PKRU: 55555554
+[  125.847634] Call Trace:
+[  125.847800]  <TASK>
+[  125.847946]  ? __warn+0xcc/0x2d0
+[  125.848177]  ? ref_tracker_dir_exit+0x26c/0x520
+[  125.848485]  ? report_bug+0x28c/0x2d0
+[  125.848742]  ? handle_bug+0x54/0xa0
+[  125.848982]  ? exc_invalid_op+0x18/0x50
+[  125.849252]  ? asm_exc_invalid_op+0x1a/0x20
+[  125.849537]  ? _raw_spin_unlock_irqrestore+0x2c/0x50
+[  125.849865]  ? ref_tracker_dir_exit+0x26c/0x520
+[  125.850174]  ? __pfx_ref_tracker_dir_exit+0x10/0x10
+[  125.850510]  ? kfree+0x1cf/0x3e0
+[  125.850740]  net_free+0x5d/0x90
+[  125.850962]  cleanup_net+0x685/0x8e0
+[  125.851226]  ? __pfx_cleanup_net+0x10/0x10
+[  125.851514]  process_one_work+0x7d4/0x16f0
+[  125.851795]  ? __pfx_lock_acquire+0x10/0x10
+[  125.852072]  ? __pfx_process_one_work+0x10/0x10
+[  125.852396]  ? assign_work+0x167/0x240
+[  125.852653]  ? lock_is_held_type+0x9e/0x120
+[  125.852931]  worker_thread+0x54c/0xca0
+[  125.853193]  ? __pfx_worker_thread+0x10/0x10
+[  125.853485]  kthread+0x249/0x300
+[  125.853709]  ? __pfx_kthread+0x10/0x10
+[  125.853966]  ret_from_fork+0x2c/0x70
+[  125.854229]  ? __pfx_kthread+0x10/0x10
+[  125.854480]  ret_from_fork_asm+0x1a/0x30
+[  125.854746]  </TASK>
+[  125.854897] irq event stamp: 17849
+[  125.855138] hardirqs last  enabled at (17883): [<ffffffff812dc6ad>] __up_console_sem+0x4d/0x60
+[  125.855714] hardirqs last disabled at (17892): [<ffffffff812dc692>] __up_console_sem+0x32/0x60
+[  125.856315] softirqs last  enabled at (17878): [<ffffffff8117d603>] handle_softirqs+0x4f3/0x750
+[  125.856908] softirqs last disabled at (17857): [<ffffffff8117d9e4>] __irq_exit_rcu+0xc4/0x100
+[  125.857492] ---[ end trace 0000000000000000 ]---
+---8<---
+
+We can fix this by linking the dev to the socket's netns and
+clean them up in __net_exit hook as done in bareudp and geneve.
+
+---8<---
+diff --git a/drivers/net/gtp.c b/drivers/net/gtp.c
+index 89a996ad8cd0..77638a815873 100644
+--- a/drivers/net/gtp.c
++++ b/drivers/net/gtp.c
+@@ -70,6 +70,7 @@ struct pdp_ctx {
+ /* One instance of the GTP device. */
+ struct gtp_dev {
+ 	struct list_head	list;
++	struct list_head	sock_list;
+ 
+ 	struct sock		*sk0;
+ 	struct sock		*sk1u;
+@@ -102,6 +103,7 @@ static unsigned int gtp_net_id __read_mostly;
+ 
+ struct gtp_net {
+ 	struct list_head gtp_dev_list;
++	struct list_head gtp_sock_list;
+ };
+ 
+ static u32 gtp_h_initval;
+@@ -1526,6 +1528,10 @@ static int gtp_newlink(struct net *src_net, struct net_device *dev,
+ 
+ 	gn = net_generic(dev_net(dev), gtp_net_id);
+ 	list_add_rcu(&gtp->list, &gn->gtp_dev_list);
++
++	gn = net_generic(src_net, gtp_net_id);
++	list_add(&gtp->sock_list, &gn->gtp_sock_list);
++
+ 	dev->priv_destructor = gtp_destructor;
+ 
+ 	netdev_dbg(dev, "registered new GTP interface\n");
+@@ -1552,6 +1558,7 @@ static void gtp_dellink(struct net_device *dev, struct list_head *head)
+ 			pdp_context_delete(pctx);
+ 
+ 	list_del_rcu(&gtp->list);
++	list_del(&gtp->sock_list);
+ 	unregister_netdevice_queue(dev, head);
+ }
+ 
+@@ -2465,6 +2472,8 @@ static int __net_init gtp_net_init(struct net *net)
+ 	struct gtp_net *gn = net_generic(net, gtp_net_id);
+ 
+ 	INIT_LIST_HEAD(&gn->gtp_dev_list);
++	INIT_LIST_HEAD(&gn->gtp_sock_list);
++
+ 	return 0;
+ }
+ 
+@@ -2475,9 +2484,12 @@ static void __net_exit gtp_net_exit_batch_rtnl(struct list_head *net_list,
+ 
+ 	list_for_each_entry(net, net_list, exit_list) {
+ 		struct gtp_net *gn = net_generic(net, gtp_net_id);
+-		struct gtp_dev *gtp;
++		struct gtp_dev *gtp, *next;
++
++		list_for_each_entry_safe(gtp, next, &gn->gtp_dev_list, list)
++			gtp_dellink(gtp->dev, dev_to_kill);
+ 
+-		list_for_each_entry(gtp, &gn->gtp_dev_list, list)
++		list_for_each_entry_safe(gtp, next, &gn->gtp_sock_list, sock_list)
+ 			gtp_dellink(gtp->dev, dev_to_kill);
+ 	}
+ }
+---8<---
+
+
+> 
+> - In pfcp_newlink() in drivers/net/pfcp.c:
+> 
+>     pfcp->net = net;
+>     ...
+>     pn = net_generic(dev_net(dev), pfcp_net_id);
+>     list_add_rcu(&pfcp->list, &pn->pfcp_dev_list);
+> 
+>   Same as above.
+
+I haven't tested pfcp but it seems to have the same problem.
+
+I'll post patches for gtp and pfcp.
+
+
+> 
+> - In lowpan_newlink() in net/ieee802154/6lowpan/core.c:
+> 
+>     wdev = dev_get_by_index(dev_net(ldev), nla_get_u32(tb[IFLA_LINK]));
+> 
+>   Looks for IFLA_LINK in dev_net, but in theory the ifindex is defined
+>   in link netns.
+
+I guess you mean the ifindex is defined in src_net instead.
+Not sure if it's too late to change the behaviour.
 
