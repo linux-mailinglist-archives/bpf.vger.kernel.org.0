@@ -1,85 +1,87 @@
-Return-Path: <bpf+bounces-48142-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48143-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF3CFA047F0
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 18:16:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A12FA047F1
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 18:16:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C93027A2861
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 17:16:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DFA118891C8
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 17:16:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5207E1F472C;
-	Tue,  7 Jan 2025 17:14:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 760221F4E50;
+	Tue,  7 Jan 2025 17:14:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IlyPRGFT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EIXYOe3j"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f67.google.com (mail-oa1-f67.google.com [209.85.160.67])
+Received: from mail-oa1-f65.google.com (mail-oa1-f65.google.com [209.85.160.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22DB18B463;
-	Tue,  7 Jan 2025 17:14:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13BBC18B463;
+	Tue,  7 Jan 2025 17:14:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736270091; cv=none; b=Q9YcRlNtMWjm91wo1uRsEznAnctRh3MMr9xgfy5QPyU0qNySh3NXTxHa3st36yC6rxF8SB51aLd11TJYLznsQO462oyyEMN999PHX1UtGcdzxerdBJqtfcvkFfpL0eq7E/zefeFkAz9z1BrGPcsd61cjUbIBwitC0JBx2McWuws=
+	t=1736270098; cv=none; b=oU1VqbZEYmndz+jsbSPBovEdECgB+by7acPbNsys+YB5A/ef1d7ytS06LP7ApkxdBygIWMXFIl5y/mbd/px6Ap1Wz6w2wX32U4/05QersvktsiJEpW8yPH4RD3qt3dxICtZt6eGdwRnrsMlb5gCjs2WXVlxm/CbCzHI+7+uE8c8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736270091; c=relaxed/simple;
-	bh=NIrTkMg3pQ5PnjMk8momlmtM1TIKOWr4y6trALHHduI=;
+	s=arc-20240116; t=1736270098; c=relaxed/simple;
+	bh=nOC/2ErxrXJK9+GX1bdNlz08JObtzMI0ZAPS9IVId2k=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fF4WJJoajbcUs1RdMDNB9OD1bMyy16vfesW9RVGdQWm9jOjlFArrWa7uEQ2aEbDA04lvIcI1o8kRioM3fWOcmc/hY48W5QhfFAokPE66jpJ37wWLseXy0ep50MhKhiohyfWEclq9tga72TfQMWUTtk+cHdARqt5x+RXiYdRhkNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IlyPRGFT; arc=none smtp.client-ip=209.85.160.67
+	 To:Cc:Content-Type; b=NQ6CaqW5mewTqP+1zjPGmFEYgDCOuEYP9Jsmhxa1gEirOTMlUByZGBzOS39yRIBqcCu+Edp/BsHoV9ZYBCWIh6fumyq/dlfJLh2k25OkaLaugbNCfS6dgcbH/A6aKauq4LOa09T/Lj2BJkFyeXnRy30enI/txWeXRGfR5+1xTUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EIXYOe3j; arc=none smtp.client-ip=209.85.160.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f67.google.com with SMTP id 586e51a60fabf-2689e7a941fso5013234fac.3;
-        Tue, 07 Jan 2025 09:14:48 -0800 (PST)
+Received: by mail-oa1-f65.google.com with SMTP id 586e51a60fabf-2a383315d96so8279087fac.3;
+        Tue, 07 Jan 2025 09:14:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736270088; x=1736874888; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yRIUK7p9KjTjGCUHvNjvcxgwfYIeyorHbrofSUNaikw=;
-        b=IlyPRGFTSUI7PQyWbASQFQh1UkS2WdvEehd9+96lqVM3C4wlGerbqKPBv144AHFwiv
-         q9Fqkr8RCORychM9GMXZ6mc37oiaBQb5FFoQDUycYPXLpsa8GDZ9OeUer3HeW6q/Dj2B
-         /+fHS1BTSAzzUQKrFcgsb+RSk+wMbbbx/UTlOWRjSgIBasE9sHOmMVZI7ZYNY7mjQfoN
-         MLW/4ruD7RoGfEotNFr8Gvl5RqGL5r0Meyfy8obSINxFk4VPEu8ul31Fm6wsp/Lsq5o0
-         N6DN4OO80xMdLLLOThqsmHCZSPkp6t9eLDXjuMqkP27iqKNozgyBoNtRmI4cZM1lyY2w
-         gMmA==
+        d=gmail.com; s=20230601; t=1736270094; x=1736874894; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5NQ6FuqwsunfkgopEPOvkQ8pd0WRpRi0eEuLRq8JalM=;
+        b=EIXYOe3jNTW6JKvGejotWEaotKbI08VnEcGTXriGjBltEVRz6fXHPlBROXMOo0Tdwi
+         QW/vzKG1m4do721VxMHqyHOXSZn47xfo/hzXWPGXiAl4yhfvPy5tVvXzIgS7ug2Ueu3p
+         xbE5W3qz07FtrWKFf3wU87ez7l1F+kjqs09Nlt/wspMu500g2PSmZU/HnF0fIxIQFQid
+         9K0AKNrJneWQvckfN/4vZNMIOrUKg6YfStAhkO2RZckNZkFnaMcsX5A4coP6zHoTXPr0
+         O8oxPNmrZ23OKpKjeuc5BAG1xTuDK/b4luVtBMGbQZsVEIjiAvKVxgl96ZGGAxRBRPm0
+         keqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736270088; x=1736874888;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yRIUK7p9KjTjGCUHvNjvcxgwfYIeyorHbrofSUNaikw=;
-        b=QJgHOuet+mf5nxIZ1oa0Tbb4Tndq2eJLfr3o7kaydyEHKgJVfH37H6yzZNvcsEtQp6
-         B/T8gIjU1RZov8euqFl8g29/3/2FeBUubYmFDN+8WXg1xf4Ive/tZFk9xAPux36rMtzQ
-         4kNCSBz997QsSPusGWhvZ4KUHLA5FshdS8CouB6G45HihicqlkLiPtXpNH/elDYZFCBg
-         4ZNdc+GtmjGwe1GzOxuyIlB3DTG4zehBgGEJtV2EgdrhxGfnuJnTh+6LvvcbqEjd77bp
-         m0LxqZSIGKlfD5M6lT2xD6LNSGHuLuKPfQFbrj84jnP66HStJ0u49qVhzXOyvrHyhjAs
-         ZYdA==
-X-Forwarded-Encrypted: i=1; AJvYcCWGXM1Sb3+BB965Hzbb3JaES7H6DvbPoCGLU7gF2bcpg8DxC0Hmjjr3U593D93r8l7S+aywRnNqM0aCS+w=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxQJRC3s4ULpF7MZpzJg8nEJ2LS6Ibl5mscDGq9OFpbfYokrmOH
-	kdWhnIczfYmxLLnyAufDNxLZb1RSYP8WsN833DV5JCEllUOdqeHLMfrNxbQRlZZYDOOmyb7bVfA
-	HtsrPId2MxReCsKk8uH3dpSJeVRU=
-X-Gm-Gg: ASbGncvspMyPiRWxibUcd2SCiBZveEwNrgszsAfg2Gf4QiPHf7Ao24JVIKD9Lfits09
-	po7YWUWMPSfGVjv5wIR8DtQ50YwYfvKI9720Qspwx5slx+nqLClG6JjIACdv09t8m3szqDqE=
-X-Google-Smtp-Source: AGHT+IHNWzNRNnCvzHwnIzMWkh4VACFP4Nlv68LSbFI0aKpbIWixNbk7GjPTdMQWKq8J5aUX0wc1Bc+AoTUDejrl6sk=
-X-Received: by 2002:a05:6870:a40b:b0:288:563b:e48d with SMTP id
- 586e51a60fabf-2a7fb0a8f1bmr29264414fac.10.1736270087873; Tue, 07 Jan 2025
- 09:14:47 -0800 (PST)
+        d=1e100.net; s=20230601; t=1736270094; x=1736874894;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5NQ6FuqwsunfkgopEPOvkQ8pd0WRpRi0eEuLRq8JalM=;
+        b=vh2KjPdcODQqjoBoAOM3kQ80zyW2qkLSVr5D6tFBvu5G2GFPAiKC3aJH3qKcRdwllz
+         ZnTcSSi1KVGbdMPbYPJAyAWwYMeLBzKiNz40VO8SCPj3cBdlONXsf/u/9Ol/c4FMpJC2
+         dPzAfehN0HlEPJKQLVW81oMNAZKCYAFakfYciv3MdvMFYRPQuMnm7RZaBc//lDF9uGf7
+         hiLIF2M4FpDzmQNZ0ll/hHgFN6PysZ2UKa4E4qQdy7qYP/LVkJP/jWPvfLVhuO8ESg9V
+         fKa2hmpMqqroBSV9rLcScQ+BhB9XGmGkv3YE6ZDaA+Abvrnyom2IGG9KAixqHJzSjPW4
+         TSlA==
+X-Forwarded-Encrypted: i=1; AJvYcCXEMEQWHCc0RHzO0+jtFqim6Krt/EnMZoj0kYUFcX7zCGCPOQirzL+JOH+OZw592FXNI5/v7SOtiv/ZXbI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwHGJaoedt3mpqyDsSFw5xyq4T+lYoegIDwpYdbv62sEKQaUbRi
+	OY9tCFp5kK0dYyE0ur0bXk1ttcSpNbVMelSzIgnpVhYHkr2ncFtFIkMgB4c6DNFhnT6AtW3ry9b
+	wyDROFE3+7ghtCJE2lSw3LED4PbY=
+X-Gm-Gg: ASbGncsthP5K9aOfDBrcakJ8G9SPiNQLbUTd/BaObrutVHmCY4T3XUb2Mhr2rb/aCNl
+	jfdHR6sa2x5VNUj4cQlakgjvq4XtrzTIy8iid5hKhFpGCjlfAbpC8rVQzOIpFUn/dYbk2/tc=
+X-Google-Smtp-Source: AGHT+IGF0tIc9eWsVa+KvFysl2J8Ktwvh1FQ3VbyeBwO4RqYGQHA1SZMFFElTSdCZOBZfR4LgpvYs4zDQtw2y/JS3nc=
+X-Received: by 2002:a05:6870:ef84:b0:29e:6ae2:442 with SMTP id
+ 586e51a60fabf-2a7fb4b9925mr29318264fac.32.1736270094263; Tue, 07 Jan 2025
+ 09:14:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250107140004.2732830-1-memxor@gmail.com> <20250107140004.2732830-8-memxor@gmail.com>
- <20250107145051.GA23315@noisy.programming.kicks-ass.net>
-In-Reply-To: <20250107145051.GA23315@noisy.programming.kicks-ass.net>
+References: <20250107140004.2732830-1-memxor@gmail.com> <20250107140004.2732830-9-memxor@gmail.com>
+ <20250107145159.GB23315@noisy.programming.kicks-ass.net>
+In-Reply-To: <20250107145159.GB23315@noisy.programming.kicks-ass.net>
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Tue, 7 Jan 2025 22:44:07 +0530
-X-Gm-Features: AbW1kvYrnbs6wh4l1AWoW-CH3FVNXoMZEl3oCSAYs1Uf59MS36FYLjlhMVkYb3E
-Message-ID: <CAP01T77D0sM4nO-B0do-Ya2AFhE3rKhZoM1=fV_+RovqELeMyw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 07/22] rqspinlock: Add support for timeouts
+Date: Tue, 7 Jan 2025 22:44:16 +0530
+X-Gm-Features: AbW1kvZQlZeZjKHmMBvBWme3huJSWRssi86aiGRPxwObnAWR63TiF5nxRJUUuAs
+Message-ID: <CAP01T74SHdhtshm3iO_=+W4AHNQSZekJVKwaQn-Sr5up2apKhA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 08/22] rqspinlock: Protect pending bit owners
+ from stalls
 To: Peter Zijlstra <peterz@infradead.org>
 Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	Barret Rhoden <brho@google.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
@@ -88,27 +90,37 @@ Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Eduard Zingerman <eddyz87@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>, 
 	Josh Don <joshdon@google.com>, Dohyun Kim <dohyunkim@google.com>, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 7 Jan 2025 at 20:20, Peter Zijlstra <peterz@infradead.org> wrote:
+On Tue, 7 Jan 2025 at 20:22, Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> On Tue, Jan 07, 2025 at 05:59:49AM -0800, Kumar Kartikeya Dwivedi wrote:
-> > +struct rqspinlock_timeout {
-> > +     u64 timeout_end;
-> > +     u64 duration;
-> > +     u16 spin;
-> > +};
+> On Tue, Jan 07, 2025 at 05:59:50AM -0800, Kumar Kartikeya Dwivedi wrote:
+> > +     if (val & _Q_LOCKED_MASK) {
+> > +             RES_RESET_TIMEOUT(ts);
+> > +             smp_cond_load_acquire(&lock->locked, !VAL || RES_CHECK_TI=
+MEOUT(ts, ret));
+> > +     }
 >
-> > +#define RES_CHECK_TIMEOUT(ts, ret)                    \
-> > +     ({                                            \
-> > +             if (!((ts).spin++ & 0xffff))          \
->
-> Per the above spin is a u16, this mask is pointless.
+> Please check how smp_cond_load_acquire() works on ARM64 and then add
+> some words on how RES_CHECK_TIMEOUT() is still okay.
 
-Ack, I will drop the redundant mask.
+Thanks Peter,
 
+The __cmpwait_relaxed bit does indeed look problematic, my
+understanding is that the ldxr + wfe sequence can get stuck because we
+may not have any updates on the &lock->locked address, and we=E2=80=99ll no=
+t
+call into RES_CHECK_TIMEOUT since that cond_expr check precedes the
+__cmpwait macro.
 
->
-> > +                     (ret) = check_timeout(&(ts)); \
-> > +             (ret);                                \
-> > +     })
+I realized the sevl is just to not get stuck on the first wfe on
+entry, it won=E2=80=99t unblock other CPUs WFE, so things are incorrect as-=
+is.
+In any case this is all too fragile to rely upon so it should be
+fixed.
+
+Do you have suggestions on resolving this? We want to invoke this
+macro as part of the waiting loop. We can have a
+rqspinlock_smp_cond_load_acquire that maps to no-WFE smp_load_acquire
+loop on arm64 and uses the asm-generic version elsewhere.
 
