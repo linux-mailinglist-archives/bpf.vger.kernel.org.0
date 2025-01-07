@@ -1,214 +1,244 @@
-Return-Path: <bpf+bounces-48038-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48039-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69290A0347B
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 02:21:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CE5FA0349A
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 02:40:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D82BA3A3703
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 01:21:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BE391886098
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 01:40:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24DA83BBC9;
-	Tue,  7 Jan 2025 01:21:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j20+CCCm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07C0F4C97;
+	Tue,  7 Jan 2025 01:40:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2038E2594AB;
-	Tue,  7 Jan 2025 01:21:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD7D5FDA7;
+	Tue,  7 Jan 2025 01:40:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736212864; cv=none; b=iJ5pXitre293iBWY8G2mBSo9cVVrvXKgGJ9qGzL+agYGlaD3eQvbOEWBucSeAFTk1MSlJ9Rok/lAqvMigJOMHFJXXAfEfnEniVgJg00kSLcmt4Y7ms4dQLdeb//Lu1y0tYy32J6R9b9K5RZ7612JvZOrTFNfEHpvLaoUo8k4mLg=
+	t=1736214020; cv=none; b=RlIOcEn9Dr2RJ80XeMiKr+soZm9G+HBdtANzICHL/Xtz9HsOFsIbytCrikOJUknr2DvhiGRATYA0477+HKLKswRVqAa3un0rlSPe0wFsbu8jKgTD6D99U351q6z5RUoGvODrn605LYRtU0+5t6/V81NxvVaeUgn+Ht6tAQ8xqqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736212864; c=relaxed/simple;
-	bh=HgQeOReE01qRVQwdQ9lOIiOaEFsysjFi3Cktgm0uAYM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=oeIVkpvKoegse/5xkq2EZTf3Nq0OnnFqAkvMTxjOPXjupQYdyVwwwT/NuhPD6HnlwMuc3eGn7GmHaZ4VWQ0A8D/OKITkxAw1OGMtX7D7DSqtKgmaBef+uo2wpTcFNVneqm1FojsTKuGblc+rxCzZYBUqYTIhKho3t+QFBQxMGwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j20+CCCm; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2ef70c7efa5so17469982a91.2;
-        Mon, 06 Jan 2025 17:21:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736212862; x=1736817662; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=vcbDvrTMF39k4jngwz3O5zMYA8cGG8FpjBS1pAWzs6A=;
-        b=j20+CCCm7hZi+7NDOtX9kfAJb51HULBm5hVqIpZT/TXMNYOz9ZnVg+yQlIYCGB7lsp
-         0Q3oKr7lJWdJdcYKDTLs/46iThUFalSJrTv9OZjVV9tOKdMPoPTRvQMAnqFTLkv7/cZU
-         C40FXCfSSykB8Y7iPwQCPVVJBsmsXLZetO8yXTOcapXP9m7ot/PeWcmcy+YMIoSNgCLY
-         JSaazaTq2jbBXGVqXPz1nB+B10uQA46QkJdb9sY6HAwgMtI9HmjQsH45KcNrML+k/Vpx
-         9a2zOKR0nZeL0LbNNmmQU9y2om6x6sMk58282Cq1S1+5EXmHHeLVLsx0F1HhlXie5jx4
-         5rUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736212862; x=1736817662;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vcbDvrTMF39k4jngwz3O5zMYA8cGG8FpjBS1pAWzs6A=;
-        b=fSf6UdtISLFHahvzK4STNdvmvy99i5iPyWwEelgZVZ/QLlzrHmBmH3p0BsnUMyjTpF
-         1c4wWprQzWC1ysuhcZsGf8mZCBs5BVTA25v1XJNE+reMp7gVGViOahKi3mhjl8kl6PcV
-         /AyuuCFyE5bXCzXakVdnaLb5ZlSQj6TA9L2OVRMQ/DUISvrzP+ctf7Rd2BuYeCg5P6NG
-         6L+B0ek/iX0RaIlcM1y3uvwJx43k5yyKxzKtgvX9poROB34Yptlj9pkjUKKn6nfDinmg
-         3MA3zXg+bd+o2JyMjyILetCREaU91ix13XNAZOAgND++r/dx0pAwo5n+bsjZ8h/XB/fa
-         jvsw==
-X-Forwarded-Encrypted: i=1; AJvYcCWLOf7m4PQcVLB/3TBU2tVEx5vrxUCIYuj3QW7Ocd6vZAAXv1UVAj4J3rtqvNmOeooPY6tPxW+TBzVIy3w=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyR7x8nLxu4MD8V+Vyg/noBqscEJ5BFu6d6n8WDqnEOuycL3IrW
-	jMNWAx5Drfk4YgSUmBRjTmezlvsjWb0tZv/07mNrw11XXTB6rm7/
-X-Gm-Gg: ASbGncsYKcm45FKYP8NiHbHwKVdf6t80SDyRfNh9eBnDaR3+W+VjwQGasv2SNHbTQ24
-	GCiHO/U1R1OrkH8RajKQVsDs1r2x3sYWSXU3vmwYMWM2Aw7o0R4u0sfmn0HLonTdGKJhTuVlSTm
-	BKmnBlKOn2JNL7bHbNmoOSFcbqePi9B5mT069sC8h0VUoiM2z/4VO5qdPpuwnngBC57oLNGq4KE
-	Rhel5z7dQ7JAEL1AG8Jly4w0X0N5DED5TP45ERCshhQCkTvPVXaLA==
-X-Google-Smtp-Source: AGHT+IHyIXbfA2Hr8y07bvoldXNSS0oxmoN+jjI445+F8fGxxs362g8Hmg2/65jphDCT+GYXlBGucg==
-X-Received: by 2002:a17:90b:2d43:b0:2ee:cd83:8fc3 with SMTP id 98e67ed59e1d1-2f452eed6f1mr91716737a91.37.1736212862279;
-        Mon, 06 Jan 2025 17:21:02 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dca02e91sm299209685ad.274.2025.01.06.17.21.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jan 2025 17:21:01 -0800 (PST)
-Message-ID: <e294e3c318e2c7a646e4b2e43516378a0689ea3b.camel@gmail.com>
-Subject: Re: [PATCH RFC bpf-next v1 2/4] bpf: Introduce load-acquire and
- store-release instructions
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Peilin Ye <yepeilin@google.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Song Liu	
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann
-	 <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau	 <martin.lau@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh	 <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo	
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, "Paul E. McKenney"	
- <paulmck@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, Xu Kuohai	
- <xukuohai@huaweicloud.com>, Catalin Marinas <catalin.marinas@arm.com>, Will
- Deacon <will@kernel.org>, Quentin Monnet <qmo@kernel.org>, Mykola Lysenko
- <mykolal@fb.com>,  Shuah Khan <shuah@kernel.org>, Josh Don
- <joshdon@google.com>, Barret Rhoden <brho@google.com>, Neel Natu	
- <neelnatu@google.com>, Benjamin Segall <bsegall@google.com>, David Vernet	
- <dvernet@meta.com>, Dave Marchevsky <davemarchevsky@meta.com>, 
-	linux-kernel@vger.kernel.org
-Date: Mon, 06 Jan 2025 17:20:56 -0800
-In-Reply-To: <Z3x-qSHxWTw5je1O@google.com>
-References: <cover.1734742802.git.yepeilin@google.com>
-	 <6ca65dc2916dba7490c4fd7a8b727b662138d606.1734742802.git.yepeilin@google.com>
-	 <9941341e8bd78f3563e0027a59cac8966f1e3666.camel@gmail.com>
-	 <Z3x-qSHxWTw5je1O@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
+	s=arc-20240116; t=1736214020; c=relaxed/simple;
+	bh=1rx2u0PI5pysIH2/1k0zntVcu0S0KUGDGqVTsGQKfMc=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=qBM31NxrPrjGvN5NE7IyPIy3K2doK7Po7XnAZ5jbT6jx/OsKnzSKKDDbUk+uhCU0H/Kn1axQgsXsp5sUwQh7c83387en0XB15qAs1wZj4ofdTvLOJff11QtNwz2nBHQ4oaqdF849RwmZPTPragbh68rsU2he06LYMFhMoOg1rR0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YRtyj6PYFz4f3jks;
+	Tue,  7 Jan 2025 09:39:57 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id D3C9F1A1486;
+	Tue,  7 Jan 2025 09:40:12 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP2 (Coremail) with SMTP id Syh0CgBncWT4hXxnqoQBAQ--.16535S2;
+	Tue, 07 Jan 2025 09:40:12 +0800 (CST)
+Subject: Re: [PATCH bpf-next 15/19] bpf: Disable migration before calling
+ ops->map_free()
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko
+ <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Hou Tao <houtao1@huawei.com>,
+ Xu Kuohai <xukuohai@huawei.com>
+References: <20250106081900.1665573-1-houtao@huaweicloud.com>
+ <20250106081900.1665573-16-houtao@huaweicloud.com>
+ <CAADnVQJzQ9ADqpCb7mcsQCU1enTdPH7XtZKkTHyY739sg62CzA@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <a467b9ac-3785-7c5d-577c-c2f4a43c6923@huaweicloud.com>
+Date: Tue, 7 Jan 2025 09:40:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <CAADnVQJzQ9ADqpCb7mcsQCU1enTdPH7XtZKkTHyY739sg62CzA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:Syh0CgBncWT4hXxnqoQBAQ--.16535S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3XFyUKr1DAFyrAryrKw15Jwb_yoW7uF4kpF
+	4kKF1jka10qF12kws3Xa1xC34Yvw45K3ySka98G34FyrZxXr9aqr1IyF15XFyY9r1Utr4S
+	vF1qg34Yv3y8ZrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4I
+	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+	WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
+	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
+	IYCTnIWIevJa73UjIFyTuYvjxUF1v3UUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On Tue, 2025-01-07 at 01:08 +0000, Peilin Ye wrote:
+Hi,
 
-Hi Peilin,
+On 1/7/2025 6:24 AM, Alexei Starovoitov wrote:
+> On Mon, Jan 6, 2025 at 12:07 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> Disabling migration before calling ops->map_free() to simplify the
+>> freeing of map values or special fields allocated from bpf memory
+>> allocator.
+>>
+>> After disabling migration in bpf_map_free(), there is no need for
+>> additional migration_{disable|enable} pairs in the ->map_free()
+>> callbacks. Remove these redundant invocations.
+>>
+>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>> ---
+>>  kernel/bpf/arraymap.c          | 2 --
+>>  kernel/bpf/bpf_local_storage.c | 2 --
+>>  kernel/bpf/hashtab.c           | 2 --
+>>  kernel/bpf/range_tree.c        | 2 --
+>>  kernel/bpf/syscall.c           | 8 +++++++-
+>>  5 files changed, 7 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+>> index 451737493b17..eb28c0f219ee 100644
+>> --- a/kernel/bpf/arraymap.c
+>> +++ b/kernel/bpf/arraymap.c
+>> @@ -455,7 +455,6 @@ static void array_map_free(struct bpf_map *map)
+>>         struct bpf_array *array = container_of(map, struct bpf_array, map);
+>>         int i;
+>>
+>> -       migrate_disable();
+>>         if (!IS_ERR_OR_NULL(map->record)) {
+>>                 if (array->map.map_type == BPF_MAP_TYPE_PERCPU_ARRAY) {
+>>                         for (i = 0; i < array->map.max_entries; i++) {
+>> @@ -472,7 +471,6 @@ static void array_map_free(struct bpf_map *map)
+>>                                 bpf_obj_free_fields(map->record, array_map_elem_ptr(array, i));
+>>                 }
+>>         }
+>> -       migrate_enable();
+>>
+>>         if (array->map.map_type == BPF_MAP_TYPE_PERCPU_ARRAY)
+>>                 bpf_array_free_percpu(array);
+>> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
+>> index b649cf736438..12cf6382175e 100644
+>> --- a/kernel/bpf/bpf_local_storage.c
+>> +++ b/kernel/bpf/bpf_local_storage.c
+>> @@ -905,13 +905,11 @@ void bpf_local_storage_map_free(struct bpf_map *map,
+>>                 while ((selem = hlist_entry_safe(
+>>                                 rcu_dereference_raw(hlist_first_rcu(&b->list)),
+>>                                 struct bpf_local_storage_elem, map_node))) {
+>> -                       migrate_disable();
+>>                         if (busy_counter)
+>>                                 this_cpu_inc(*busy_counter);
+>>                         bpf_selem_unlink(selem, true);
+>>                         if (busy_counter)
+>>                                 this_cpu_dec(*busy_counter);
+>> -                       migrate_enable();
+>>                         cond_resched_rcu();
+>>                 }
+>>                 rcu_read_unlock();
+>> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+>> index 8bf1ad326e02..6051f8a39fec 100644
+>> --- a/kernel/bpf/hashtab.c
+>> +++ b/kernel/bpf/hashtab.c
+>> @@ -1570,14 +1570,12 @@ static void htab_map_free(struct bpf_map *map)
+>>          * underneath and is responsible for waiting for callbacks to finish
+>>          * during bpf_mem_alloc_destroy().
+>>          */
+>> -       migrate_disable();
+>>         if (!htab_is_prealloc(htab)) {
+>>                 delete_all_elements(htab);
+>>         } else {
+>>                 htab_free_prealloced_fields(htab);
+>>                 prealloc_destroy(htab);
+>>         }
+>> -       migrate_enable();
+>>
+>>         bpf_map_free_elem_count(map);
+>>         free_percpu(htab->extra_elems);
+>> diff --git a/kernel/bpf/range_tree.c b/kernel/bpf/range_tree.c
+>> index 5bdf9aadca3a..37b80a23ae1a 100644
+>> --- a/kernel/bpf/range_tree.c
+>> +++ b/kernel/bpf/range_tree.c
+>> @@ -259,9 +259,7 @@ void range_tree_destroy(struct range_tree *rt)
+>>
+>>         while ((rn = range_it_iter_first(rt, 0, -1U))) {
+>>                 range_it_remove(rn, rt);
+>> -               migrate_disable();
+>>                 bpf_mem_free(&bpf_global_ma, rn);
+>> -               migrate_enable();
+>>         }
+>>  }
+>>
+>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+>> index 0503ce1916b6..e7a41abe4809 100644
+>> --- a/kernel/bpf/syscall.c
+>> +++ b/kernel/bpf/syscall.c
+>> @@ -835,8 +835,14 @@ static void bpf_map_free(struct bpf_map *map)
+>>         struct btf_record *rec = map->record;
+>>         struct btf *btf = map->btf;
+>>
+>> -       /* implementation dependent freeing */
+>> +       /* implementation dependent freeing. Disabling migration to simplify
+>> +        * the free of values or special fields allocated from bpf memory
+>> +        * allocator.
+>> +        */
+>> +       migrate_disable();
+>>         map->ops->map_free(map);
+>> +       migrate_enable();
+>> +
+> I was about to comment on patches 10-13 that it's
+> better to do it in bpf_map_free(), but then I got to this patch.
+> All makes sense, but the patch breakdown is too fine grain.
+> Patches 10-13 introduce migrate pairs only to be deleted
+> in patch 15. Please squash them into one patch.
 
-[...]
+OK. However I need to argue for the fine grained break down. The
+original though is that if disabling migration for ->map_free callback
+for all maps introduces some problems, we could revert the patch #15
+separately instead of reverting the squashed patch and moving the
+migrate_{disable|enable}() pair to maps which are OK with that change
+again.  What do you think ?
+>
+> Also you mention in the cover letter:
+>
+>> Considering the bpf-next CI is broken
+> What is this about?
 
-> > > --- a/kernel/bpf/disasm.c
-> > > +++ b/kernel/bpf/disasm.c
-> > > @@ -267,6 +267,20 @@ void print_bpf_insn(const struct bpf_insn_cbs *c=
-bs,
-> > >  				BPF_SIZE(insn->code) =3D=3D BPF_DW ? "64" : "",
-> > >  				bpf_ldst_string[BPF_SIZE(insn->code) >> 3],
-> > >  				insn->dst_reg, insn->off, insn->src_reg);
-> > > +		} else if (BPF_MODE(insn->code) =3D=3D BPF_ATOMIC &&
-> > > +			   insn->imm =3D=3D BPF_LOAD_ACQ) {
-> > > +			verbose(cbs->private_data, "(%02x) %s%d =3D load_acquire((%s *)(r=
-%d %+d))\n",
-> > > +				insn->code,
-> > > +				BPF_SIZE(insn->code) =3D=3D BPF_DW ? "r" : "w", insn->dst_reg,
-> >=20
-> > Nit: I think that 'BPF_DW ? "r" : "w"' part is not really necessary.
->=20
-> We already do that in other places in the file, so I wanted to keep it
-> consistent:
->=20
->   $ git grep "? 'w' : 'r'" kernel/bpf/disasm.c | wc -l
->   8
->=20
-> (Though I just realized that I could've used '%c' instead of '%s'.)
+Er, I said it wrong. It is my local bpf-next setup. A few days ago, when
+I tried to verify the patch by using bpf_next/for-next treee, the
+running of test_maps and test_progs failed. Will check today that
+whether it is OK.
+>
+> The cant_migrate() additions throughout looks
+> a bit out of place. All that code doesn't care about migrations.
+> Only bpf_ma code does. Let's add it there instead?
+> The stack trace will tell us the caller anyway,
+> so no information lost.
 
-These are used for operations that can have either BPF_ALU or
-BPF_ALU32 class. I don't think there is such distinction for
-BPF_LOAD_ACQ / BPF_STORE_REL.
+OK. However bpf_ma is not the only one which needs disabled migration.
+The reason that bpf_ma needs migrate_disable() is the use of
+this_cpu_ptr(). However, there are many places in bpf which use
+this_cpu_ptr() (e.g., bpf_for_each_array_elem) and this_cpu_{in|del}
+pair (e.g., bpf_cgrp_storage_lock).  I will check the cant_migrate which
+can be removed in v2.
+>
+> Overall it looks great.
 
-> > >  static int check_atomic(struct bpf_verifier_env *env, int insn_idx, =
-struct bpf_insn *insn)
-> > >  {
-> > > +	const int bpf_size =3D BPF_SIZE(insn->code);
-> > > +	bool write_only =3D false;
-> > >  	int load_reg;
-> > >  	int err;
-> > > =20
-> > > @@ -7564,17 +7566,21 @@ static int check_atomic(struct bpf_verifier_e=
-nv *env, int insn_idx, struct bpf_i
-> > >  	case BPF_XOR | BPF_FETCH:
-> > >  	case BPF_XCHG:
-> > >  	case BPF_CMPXCHG:
-> > > +		if (bpf_size !=3D BPF_W && bpf_size !=3D BPF_DW) {
-> > > +			verbose(env, "invalid atomic operand size\n");
-> > > +			return -EINVAL;
-> > > +		}
-> > > +		break;
-> > > +	case BPF_LOAD_ACQ:
-> >=20
-> > Several notes here:
-> > - This skips the 'bpf_jit_supports_insn()' call at the end of the funct=
-ion.
-> > - Also 'check_load()' allows source register to be PTR_TO_CTX,
-> >   but convert_ctx_access() is not adjusted to handle these atomic instr=
-uctions.
-> >   (Just in case: context access is special, context structures are not =
-"real",
-> >    e.g. during runtime real sk_buff is passed to the program, not __sk_=
-buff,
-> >    in convert_ctx_access() verifier adjusts offsets of load and store i=
-nstructions
-> >    to point to real fields, this is done per program type, e.g. see
-> >    filter.c:bpf_convert_ctx_access);
->=20
-> I see, thanks for pointing these out!  I'll add logic to handle
-> BPF_LOAD_ACQ in check_atomic() directly, instead of introducing
-> check_load().  I'll disallow using BPF_LOAD_ACQ with src_reg being
-> PTR_TO_CTX (just like all existing BPF_ATOMIC instructions), as we don't
-> think there'll be a use case for it.
-=20
-(Just in case: the full list of types currently disallowed for atomics is:
- is_ctx_reg, is_pkt_reg, is_flow_key_reg, is_sk_reg, is_arena_reg,
- see slightly below in the same function).
-
-[...]
-
-> > And there is no need for 'check_reg_arg(env, insn->dst_reg, SRC_OP)'
-> > for BPF_STORE_REL.
->=20
-> Why is that?  IIUC, 'check_reg_arg(..., SRC_OP)' checks if we can read
-> the register, instead of the memory?  For example, doing
-> 'check_reg_arg(env, insn->dst_reg, SRC_OP)' prevents BPF_STORE_REL from
-> using an uninitialized dst_reg.
->=20
-> We also do this check for BPF_ST in do_check():
->=20
->   } else if (class =3D=3D BPF_ST) {
->           enum bpf_reg_type dst_reg_type;
-> <...>
->           /* check src operand */
->           err =3D check_reg_arg(env, insn->dst_reg, SRC_OP);
->           if (err)
->                   return err;
-
-Sorry, my bad, the 'check_reg_arg(env, insn->dst_reg, SRC_OP)'
-is necessary and is done for BPF_STX as well.
-
-Thanks,
-Eduard
+Thanks for these suggestions.
+>
+> pw-bot: cr
+> .
 
 
