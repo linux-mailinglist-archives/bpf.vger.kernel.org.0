@@ -1,154 +1,150 @@
-Return-Path: <bpf+bounces-48089-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48090-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5520AA03EC5
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 13:10:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B580DA03EED
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 13:16:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5FCF3A26AB
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 12:10:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5220E1885E7E
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 12:16:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 215611F1900;
-	Tue,  7 Jan 2025 12:10:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 546121EC01E;
+	Tue,  7 Jan 2025 12:16:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SUk3bIPF"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B52E1F0E37
-	for <bpf@vger.kernel.org>; Tue,  7 Jan 2025 12:09:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A494A1E0DAF;
+	Tue,  7 Jan 2025 12:16:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736251798; cv=none; b=XZFpWnmHt/teyXd99ua4++lp+uPNvNvQSGhxm91RjrLvkl+AZ+EDF+0qQVByfW3P9Bk6Ynjw0jd7BGreuGWwDfBp+UbCBT8FLxmQ26wf3S4IBODsWgxOcQafN8azoXvAOyhd8vizOGBwEFV6QaoZqDaHaOOdw+KGDvMr00VyXRk=
+	t=1736252191; cv=none; b=c5GRzdks5HQyesQmgC5pk7MPaj98idmogcGK25ggLdJ1mmVnckb8rM6IHJcQEE4huBvVCM2USM9TBSPuKHrun87eAFWiB4Ayc5YqK/h/Xh4QJPMbr3+D8erhtmWGaLmxILgc/Nxk3c8UsLuAjSKQSuMm/13Yo/nxLkgn2WPALko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736251798; c=relaxed/simple;
-	bh=RjsYnoi5Ln1C78mKcu4tUxE+9up4SBFDTzF3HuIXpFo=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=iGJxYUQSHmJODbx2v5pMX2wXNuW5D6l1Y+nxO9N43ZiERHCBYgcB5Rd9X329thwQY0blv/e7MKTXhAM3T3HntvszMWSCMAtw1IzTxl7s2jqavKQBNekM+T5R93SSyXIELv21MqB3cr+1ahEYMIBks1uDoA+7ONNyhK74QPViTVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YS8wb562kz4f3jdF
-	for <bpf@vger.kernel.org>; Tue,  7 Jan 2025 20:09:03 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id D43C11A0CDF
-	for <bpf@vger.kernel.org>; Tue,  7 Jan 2025 20:09:23 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP3 (Coremail) with SMTP id _Ch0CgDHGcRtGX1nlZUmAQ--.30769S2;
-	Tue, 07 Jan 2025 20:09:21 +0800 (CST)
-Subject: Re: [PATCH bpf-next 0/7] Free htab element out of bucket lock
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
- Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>, xukuohai@huawei.com,
- "houtao1@huawei.com" <houtao1@huawei.com>
-References: <20250107085559.3081563-1-houtao@huaweicloud.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <9b4ebbaf-dd3c-85a4-2d17-18b8805ea5fb@huaweicloud.com>
-Date: Tue, 7 Jan 2025 20:09:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1736252191; c=relaxed/simple;
+	bh=Bd/Mz1ZsFzuVF1GvARZd4apNGJyzPz/32LoonyXU8mU=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=O8ykbg0XWdT2SmlqfUhM4xq2QHfrHgcNmWmpOmCC3H4w6YxeIrtXbNfJjPaRYJD7iLAexgO9Lebb3jTp3u1MyDGnv/7crpibQL95HHTSNZrW0N5bjK1eTEqVaNM3EIjiFW5nWTPoJzyu/ahHfpySWNkYrMhaNybaDAwyBzmcrko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SUk3bIPF; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-aa66ead88b3so537755466b.0;
+        Tue, 07 Jan 2025 04:16:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736252188; x=1736856988; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=aMDvUN0bn8LvCq/dO2IXJIhY7/MF43jvaDflMADuggM=;
+        b=SUk3bIPFC1SaE1QUqd9odmsy01lSKffxr1yFkx8KIHtM/xH4vihjc/3fZg9F4OnKdF
+         0HaW5vuYVu3lyluiug0oNbGHj+3g/79NUAtE0r/bKbfcarWcSBa0BHXFRvPMun2ZclJs
+         0jLf00lfmFY0xgbZJ92/oWzvcqXyXV5brPPJWNOfrRV1vAyl03zx9LGX2+aPtb2IGKpA
+         ZAtXKPValXHPnRYiXptI71cs6jH67welndFlhDaavqqecuRzJQBa2njVac7UmGE9hrOw
+         mdOLSJAvzppr7NVAw6xWq5qNNAQxjyAUqXYkP2tqpk4o4CBGpFzRTn1Eo9pz1Lf6ujjz
+         UpWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736252188; x=1736856988;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aMDvUN0bn8LvCq/dO2IXJIhY7/MF43jvaDflMADuggM=;
+        b=V/YcoBWl+rKjMLVrVW+2tydSEJUKZiEvT/f4mrE4sztWfec1a3rhLpBpaU4GLiv1I7
+         zw6vvxZJlPi6PKo79IWjrJdyLQaVpsyLx6oYo/GywKlVE2OwZsZdegpKZRAdpQYuT2X/
+         4btBwjKA2hnMh6/JJ+dP7Pj1+p1ZsZtJTAnVcKnSVYV3E6QbyjhzrX2K6haOZm2Si8Q9
+         yZ5CCBPKlbF8aFJU82XqaV1DBQavrlvfVrd+XDvOioR6inm5Ef9JtMXtuUGOIDo3HxvC
+         CnZXemq8jK6FnBwsKQhZ92m1SIU0Wz1AV7Fk3uQmZWkLlHVl9b/NY+LX8EN8pOU0JzmG
+         ok1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWrCXncCQFPcv7j0m4N/ETQ/1pWVNO7Yq7K2mhZn52ybwMNywz51XvhnyBwDT4uQByHmek=@vger.kernel.org, AJvYcCXGmGxo54bJhNrEnlfEW2rvFhZcv4Z3CA10FJfDUimpZJLDmD5EPrK4fiQk3jvFTO7O6uIsvKbw@vger.kernel.org
+X-Gm-Message-State: AOJu0YwwC4Tn1xZWInstbli/7aoprHiC6vaxjauNWDpLHt2+K5vgbCoJ
+	btzsnGdqVgERhD0bEH536e04ifkGpLj+VthCudOlcxT/XWuOnml7
+X-Gm-Gg: ASbGncvQPT1MhHlMhf4LIX3JQYSBVU7qedSz4i6kTBfd9xfUIjK85khs0FZq5FSt2CO
+	9FuZ5ZFWJ6HxCF4+hMqrpUjz2Md2cEEyukjlGLUbJBjaNtthwg18LSwDp1IbpmBBSF/b0vrhxDZ
+	P3vEDEwkCHIp6iasUvfHkuPVZPWPlhnP8RJPhKVy4JhBxv8NmohLSNE2hfNelWkKBPiLXT2VRm3
+	MumUInMz7R/KZZvrnHnaReb7uSeSICYKpxFfbnPEH0=
+X-Google-Smtp-Source: AGHT+IH3soO0JU9jw+R+FlinzZrtuhTOEKZT6ZmnfxMnpvjo3BePGcI5v1frWA4eaJleTMxhY0wEkg==
+X-Received: by 2002:a17:907:9412:b0:aaf:c19b:728b with SMTP id a640c23a62f3a-aafc19b72c9mr1194727766b.51.1736252187612;
+        Tue, 07 Jan 2025 04:16:27 -0800 (PST)
+Received: from krava ([213.175.46.84])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aaf5d1b602bsm1037318766b.178.2025.01.07.04.16.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jan 2025 04:16:27 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 7 Jan 2025 13:16:25 +0100
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Eric Dumazet <edumazet@google.com>,
+	bpf <bpf@vger.kernel.org>,
+	Network Development <netdev@vger.kernel.org>,
+	Viktor Malik <vmalik@redhat.com>
+Subject: Re: [RFC PATCH bpf-next 1/2] libbpf: Add support for dynamic
+ tracepoint
+Message-ID: <Z30bGYeyGQL2UpnX@krava>
+References: <20250105124403.991-1-laoar.shao@gmail.com>
+ <20250105124403.991-2-laoar.shao@gmail.com>
+ <CAADnVQ+ga1ir9XCDxPiU_-eYzKHTQsiod9Sz4_o3XeqGW2rq4A@mail.gmail.com>
+ <CALOAHbD+w3niwBojP=-81Wrqj1V9ppLgTfuZjb=AxXjx51MGRA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20250107085559.3081563-1-houtao@huaweicloud.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:_Ch0CgDHGcRtGX1nlZUmAQ--.30769S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGrWkGr4kKr4DXF45KFW3ZFb_yoW5ZFWxpF
-	WrKw13Kr1kJF9Fqws3t3Z5CrWrAws5Gr4UGr4kJry5Kas8WF1xtr1I9F4YvFWfAr93AF9a
-	qw42yw1fG348urDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9ab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4I
-	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
-	WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
-	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
-	JVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJr
-	UvcSsGvfC2KfnxnUUI43ZEXa7IU17KsUUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALOAHbD+w3niwBojP=-81Wrqj1V9ppLgTfuZjb=AxXjx51MGRA@mail.gmail.com>
 
+On Mon, Jan 06, 2025 at 10:32:15AM +0800, Yafang Shao wrote:
+> On Mon, Jan 6, 2025 at 8:16 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Sun, Jan 5, 2025 at 4:44 AM Yafang Shao <laoar.shao@gmail.com> wrote:
+> > >
+> > > Dynamic tracepoints can be created using debugfs. For example:
+> > >
+> > >    echo 'p:myprobe kernel_clone args' >> /sys/kernel/debug/tracing/kprobe_events
+> > >
+> > > This command creates a new tracepoint under debugfs:
+> > >
+> > >   $ ls /sys/kernel/debug/tracing/events/kprobes/myprobe/
+> > >   enable  filter  format  hist  id  trigger
+> > >
+> > > Although this dynamic tracepoint appears as a tracepoint, it is internally
+> > > implemented as a kprobe. However, it must be attached as a tracepoint to
+> > > function correctly in certain contexts.
+> >
+> > Nack.
+> > There are multiple mechanisms to create kprobe/tp via text interfaces.
+> > We're not going to mix them with the programmatic libbpf api.
+> 
+> It appears that bpftrace still lacks support for adding a kprobe/tp
+> and then attaching to it directly. Is that correct?
+> What do you think about introducing this mechanism into bpftrace? With
+> such a feature, we could easily attach to inlined kernel functions
+> using bpftrace.
 
+so with the 'echo .. > kprobe_events' you create kprobe which will be
+exported through tracefs together with other tracepoints and bpftrace
+sees it as another tracepoint.. but it's a kprobe :-\
 
-On 1/7/2025 4:55 PM, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
->
-> Hi,
->
-> The patch set continues the previous work [1] to move all the freeings
-> of htab elements out of bucket lock. One motivation for the patch set is
-> the locking problem reported by Sebastian [2]: the freeing of bpf_timer
-> under PREEMPT_RT may acquire a spin-lock (namely softirq_expiry_lock).
-> However the freeing procedure for htab element has already held a
-> raw-spin-lock (namely bucket lock), and it will trigger the warning:
-> "BUG: scheduling while atomic" as demonstrated by the selftests patch.
-> Another motivation is to reduce the locked scope of bucket lock.
->
-> The patch set is structured as follows:
->
-> * Patch #1 moves the element freeing out of lock for
->   htab_lru_map_delete_node()
-> * Patch #2~#3 move the element freeing out of lock for
->   __htab_map_lookup_and_delete_elem()
-> * Patch #4~#6 move the element freeing out of lock for
->   htab_map_update_elem()
-> * Patch #7 adds a selftest for the locking problem
->
-> The changes for htab_map_update_elem() require some explanation. The
-> reason that the previous work [1] can't move the element freeing out of
-> the bucket lock for preallocated hash table is due to ->extra_elems
-> optimization. When alloc_htab_elem() returns, the existed-old element
-> has already been stashed in per-cpu ->extra_elems. To handle that, patch
-> #5~#7 break the reuse of ->extra_elems and the refill of ->extra_elems
-> into two independent steps, do resue with bucket lock being held and do
-> refill after unlocking the bucket lock. The downside is that concurrent
-> updates on the same CPU may need to pop free element from per-cpu list
-> instead of reusing ->extra_elems directly, but I think such case will be
-> rare.
+how about we add support for kprobe section like SEC("kprobe/SUBSYSTEM/PROBE"),
+so in your case above it'd be SEC("kprobe/kprobes/myprobe")
 
-Er, the break of reuse and refill of ->extra_elems is buggy. It failed
-the htab_update/concurrent_update in BPF CI occasionally. It may also
-return the unexpected E2BIG error when the map is full and there are
-concurrent overwrites procedure on the same CPU. Need to figure out
-another way to handle the lock problem.
-> Please see individual patches for more details. Comments are always
-> welcome.
->
-> [1]: https://lore.kernel.org/bpf/20241106063542.357743-1-houtao@huaweicloud.com
-> [2]: https://lore.kernel.org/bpf/20241106084527.4gPrMnHt@linutronix.de
->
-> Hou Tao (7):
->   bpf: Free special fields after unlock in htab_lru_map_delete_node()
->   bpf: Bail out early in __htab_map_lookup_and_delete_elem()
->   bpf: Free element after unlock in __htab_map_lookup_and_delete_elem()
->   bpf: Support refilling extra_elems in free_htab_elem()
->   bpf: Factor out the element allocation for pre-allocated htab
->   bpf: Free element after unlock for pre-allocated htab
->   selftests/bpf: Add test case for the freeing of bpf_timer
->
->  kernel/bpf/hashtab.c                          | 170 ++++++++++--------
->  .../selftests/bpf/prog_tests/free_timer.c     | 165 +++++++++++++++++
->  .../testing/selftests/bpf/progs/free_timer.c  |  71 ++++++++
->  3 files changed, 332 insertions(+), 74 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/free_timer.c
->  create mode 100644 tools/testing/selftests/bpf/progs/free_timer.c
->
+then attach_kprobe would parse that out and use new new probe_attach_mode
+for bpf_program__attach_kprobe_opts to attach it correctly
 
+cc-ing Viktor
+
+jirka
 
