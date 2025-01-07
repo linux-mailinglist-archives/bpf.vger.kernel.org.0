@@ -1,83 +1,83 @@
-Return-Path: <bpf+bounces-48051-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48052-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 639CAA038EE
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 08:39:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED0A7A038F8
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 08:44:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7B011885DAD
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 07:40:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D45F6164A67
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 07:44:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 980E51DF726;
-	Tue,  7 Jan 2025 07:39:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C30A1DD873;
+	Tue,  7 Jan 2025 07:44:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="FxTLbs4K"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="SXFDGPLw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 329671DE4CE
-	for <bpf@vger.kernel.org>; Tue,  7 Jan 2025 07:39:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1286818A6B8
+	for <bpf@vger.kernel.org>; Tue,  7 Jan 2025 07:44:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736235589; cv=none; b=SOhKb0vbtfe0q0p2kHlB+O9aRZr3o97eRUxHi7exaKWvoj26wcZViG6Rj4Kpho0zrgAUZxKT+cDHj6kmPUA3oeCrMy2wqUJpdfJjdlq7evO0roEZ30gexJxRN01hfClyS0NmxTDXCEgtX17VEh5Xj0UoOIdI+2eb++eSmWkyUCA=
+	t=1736235866; cv=none; b=ph8GfYg75uybWt7otNEHubMXYEtG7nauZ5vumIoaK+9snwc0xi968rjJE9giBHEXeOKCb9o685CFCfuci4DJPLrJNizRgomNWX+39r8aX4vWaC+fui56kyJ+CZorzjipd+J4nGW6Pcr5NnDTvqSk70GIAvwcAHLtRFZbjShSQp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736235589; c=relaxed/simple;
-	bh=XUQKTM6z7ewqOJszAGdwsm3XWSr7aqcjgOnpDzjvrxE=;
+	s=arc-20240116; t=1736235866; c=relaxed/simple;
+	bh=NfH6PC69PVPWrYbUK8QXJckdVlaQr9R20B3O9zL6MEs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L1JyjWmd2dwLWqIfSxhycqbrNltakMRy8LgvtxjUOFZavYw0Ui/BoCJkhjBeE6XD8cpkUweISZ+3UvWvQrqgGw2J/46sPCHgXCaIbYU4KiuQQWgVsoqRNqn+jsPeM1tK/4LU+2yQmGI0JWTYfndnuFfb50S4+9KHxbjRwM8+EEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=FxTLbs4K; arc=none smtp.client-ip=209.85.218.48
+	 Content-Type:Content-Disposition:In-Reply-To; b=XEMyA+ArszjL8bB91CqTkRJbtXppgTDGBzL0epYS3hzdYXm95sPS3v2xDWWJ2177KHibxCTZyV1Q3EdAZeb0rZGYIy0Ty+iEbLgugSekPB9wiVH028l2Syc6oTr2A7AGLkHbG0p0OyDG2coY0sRE/YlgRP7aAnKAxK0uDNJkA+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=SXFDGPLw; arc=none smtp.client-ip=209.85.208.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-aaf6b1a5f2bso1223016966b.1
-        for <bpf@vger.kernel.org>; Mon, 06 Jan 2025 23:39:46 -0800 (PST)
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5d27243ba8bso28702129a12.2
+        for <bpf@vger.kernel.org>; Mon, 06 Jan 2025 23:44:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1736235585; x=1736840385; darn=vger.kernel.org;
+        d=isovalent.com; s=google; t=1736235863; x=1736840663; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1APbaI3cDjZdK4oFbUu+l2Yj970rKPio1SR3jcny1sA=;
-        b=FxTLbs4K/3MO/vbIZBj9VtX/ZKFm0F+7R8o1HxXFwHKg6twhH41I9O49VbZFTb9Bcq
-         rZZFMol2cmTG5XAVK8X9u5whlv04aaAWKh327yh9Mg8UR01drUsGKNN2oaLNCSSVC7R9
-         /elz7z8+hTHfVvJPDP0BYVKjAAttIQWQZU3m3P3pO2L4rifGX24+wMKssqJgru/WJgOr
-         rMTjT6GrUQzdU45KLHpFX2vzn6aBECERWPxY2JvGDI0kYtrJ04eU8hr3VWvbDKD0SPaO
-         8+Wafney0a9qJTGZIuzo67cI+tOCRD2hTohigqk2j3L3i80BD04MPcVdUVe8QpPfK9X4
-         AoQw==
+        bh=POjD5Zj3Tdumh+ycDPdMEANzD5J+X+oOGf4tPTZQSlI=;
+        b=SXFDGPLwAj9ZkHVhRAAiem8pkwkoBtyMOPzby4pBo0BwGvT5oYCs8R9yyXCfZaEYa8
+         DMFjQPbrscRcWxmV/RQmODq4zYXmdetmoPVUOyvqOUQrnUjqyFS1Q7G2WQUsAbLkHhEA
+         k/LGtv5ZrbzphTvza1HTvNm7KJjJLBOMDdqdiNMwWXO8NbGpbOg6vWd06qq+5y4am6aQ
+         g1JcCiv+uISr25dzslktnOmerkC7lD6EeTbFwApwI+lG3QX6KYz/fFs59aH6ydMAtF+v
+         +2KjmVMWDW4L6V+Tf3P9kZoKnAsTqM9Agiwe2duVkFrm+U4lwvAB+jyoNEVku2d1h6a1
+         ut0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736235585; x=1736840385;
+        d=1e100.net; s=20230601; t=1736235863; x=1736840663;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1APbaI3cDjZdK4oFbUu+l2Yj970rKPio1SR3jcny1sA=;
-        b=ECo+fkJauHHAsGTwc92CiO8ZYJB5FEujEawqh5/u6tQi4CFrRGJGUJz/K9uHba3AID
-         NzZhdw1iYwpah58hn4+WxXFI7K5TnzhcmfDlKg5wOyiDAJoQrkY7O6FUe2ItsEJHM5Mr
-         XJxouJzlAh5x4w30CAyrFdnyy9B5TWWujcDvdQOpfDsqfdWS5Uz+ltSbG0MezfJ35mHW
-         LEq/xGyBD3uPvCAykZ/yymQU0LCK003i/AT+ilqfMTYbPGYjf63WEyHDVBuphTCnCauN
-         GRei0Oz6waW3Ux1i5nJylHGQq7PFQvjqESAhg3bVxad4B4iwdUASKDwpg5kZaTmJ97ia
-         1quA==
-X-Forwarded-Encrypted: i=1; AJvYcCWl10tJQFseZ4pNJIxY8NphaV9+5a/AQwD6sf2+ulFOHjcp0nmn4fCfU/lLZ/Py7dGPW78=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzDG3/Jn6GcQJwlsacT36VTYu7D6sNymkD6H4aRYqTldvooL4sj
-	dBqJdS7DZ8V/ZLwfpY6mYPKgEC7twPoKuf8gLTdp/fxJ26eKWbHKoFR7XDjUs30=
-X-Gm-Gg: ASbGnctYdptz4A7Z2cS7/6PwdyI2BZLLXStjmtiiRMHqQkEPuz5lKcatgnD+kTVljzR
-	qHG6YAtlbtYQLGWY/UM67ejPr+yocJFjIuEC5zdLU9Dp8WLHGpBsOWnrbui3x8PY+gRpHtIZVkF
-	nrdVkSboJdQD5TMaN9K9Ed8TN6sQzBITFHtHL88Pxzw0pUHyrF4Ycmvrf+wZ/QbXJjlQtYcsCOW
-	5CXchudRYoU3VPvGKKxMbXfCBPFWvo7Eryi6SfLYeP00w==
-X-Google-Smtp-Source: AGHT+IHL8T4nYDz4XQvjSMIF8Ie4SVseQIt1d68UC7+M19p8tUQ+85DUFN/i6b/0XyZ08mAQSik2vQ==
-X-Received: by 2002:a17:907:1ca6:b0:aa6:938a:3c40 with SMTP id a640c23a62f3a-ab2918fdaf4mr158053866b.24.1736235585402;
-        Mon, 06 Jan 2025 23:39:45 -0800 (PST)
+        bh=POjD5Zj3Tdumh+ycDPdMEANzD5J+X+oOGf4tPTZQSlI=;
+        b=n9n4YldToPxONnCUlje0ugKkDwNfh6fC5myFDln4BE32YCm8r27tXIEsJOi1zQ+1sK
+         ae1/UvxEXju5p2378JVQIsIV8XgB2/kXZ9a+i1EgRrCXKWK4buYiCcBjWZ00Na4xilMx
+         qlbyptBDSCaveCKBhpn08N2hzfXprp2Snit3TAOMAUNM2ZAGn8y7uah5zGO0+87stb+F
+         0LaNBcb1vf3auVhrexE4mnRKbcDx/01nDawOmzg1Sn+p1mEisesrUujeR0EUEQNqJxpG
+         FjqutxgyrzPE4DeHJ2FpgYIk6EytZV/WIanlmh6fm6sbzokV3xRRkYANG/iLxpgu8YLd
+         b48g==
+X-Forwarded-Encrypted: i=1; AJvYcCVGCkL1fE4A0VzEcWy7kXQELCrf8DB6smmB70/VDEc9Kpw0S9sk+P328x9PDib27Km8EfU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzkNHOd6ETdcvALfaOqUEtKpPjj3vfmDuS01feAlqIy25V7gCih
+	uy8c9ZZN+hNtBDoKfJW5TMV2uoNpriyi6SMIIo2RCneUNP3VAVbJBPwsZyK4jYY=
+X-Gm-Gg: ASbGncs015mOD3r3TsBpMTaNEljhSBQD3UgrJ8+d6m/AqJCEIsUnf7wFe5ZOqRD2YHA
+	T1i5q9r5Qg3gsjTJk7i5IezuGSXL4mjVpLex8YlqDGJT59C1L5Xl0tlcQBozZvOJO9u7fKICSha
+	UT2vJCSjCFdgE4axLIGVELeeLdoChTcnYP2pNGHbTCbtRiDC2G5x1sSMlUCvrTzol24OG0i756b
+	pXM/GAQ0+wGeq/7rXvlOXOAPMwDvcvaFb7mE59m+DudcQ==
+X-Google-Smtp-Source: AGHT+IHO2I4Fce5Kne3vm3dcHr4MzXNnl37K+nW36XUsaR8NMSa2KvUOObOcuWI7BHx+pZ1QdH75cw==
+X-Received: by 2002:a05:6402:34c1:b0:5d3:ba97:527e with SMTP id 4fb4d7f45d1cf-5d81de20416mr55177639a12.25.1736235863197;
+        Mon, 06 Jan 2025 23:44:23 -0800 (PST)
 Received: from eis ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aac0f073333sm2314667666b.203.2025.01.06.23.39.44
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d80679f900sm23998399a12.53.2025.01.06.23.44.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jan 2025 23:39:44 -0800 (PST)
-Date: Tue, 7 Jan 2025 07:43:50 +0000
+        Mon, 06 Jan 2025 23:44:22 -0800 (PST)
+Date: Tue, 7 Jan 2025 07:48:28 +0000
 From: Anton Protopopov <aspsk@isovalent.com>
-To: Charalampos Stylianopoulos <charalampos.stylianopoulos@gmail.com>
+To: Daniel Borkmann <daniel@iogearbox.net>
 Cc: Charalampos Stylianopoulos <charalampos.stylianopoulos@gmail.com>,
 	bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
 	Nick Zavaritsky <mejedi@gmail.com>, aspsk2@gmail.com
 Subject: Re: [PATCH bpf-next 0/4] expose number of map entries to userspace
-Message-ID: <Z3zbNjRpje8ebhpT@eis>
+Message-ID: <Z3zcTB+SjPK5QOt9@eis>
 References: <20250106145328.399610-1-charalampos.stylianopoulos@gmail.com>
  <28acb589-6632-4250-a8ca-00eacda03305@iogearbox.net>
 Precedence: bulk
@@ -106,13 +106,21 @@ On 25/01/06 05:19PM, Daniel Borkmann wrote:
 > An earlier attempt to directly expose it to user space can be found here [0], which
 > eventually led to [1] to only expose it via kfunc for BPF programs in order to avoid
 > extending UAPI.
-
-Yes, see the bpf_map_sum_elem_count() kfunc in the
-kernel/bpf/map_iter.c file, and the links posted by Daniel.
-
+> 
 > Perhaps instead add a small libbpf helper (e.g. bpf_map__current_entries to complement
 > bpf_map__max_entries) which does all the work to extract that info via [1] underneath?
->
+
+One small thingy here is that bpf_map_sum_elem_count() is only
+available from the map iterator. Which means that to get the
+bpf_map_sum_elem_count() for one map only, one have to iterate
+through the whole set of maps (and filter out all but one).
+
+I wanted to follow up my series by either adding the result of
+calling bpf_map_sum_elem_count() to map_info as u32 or to add
+possibility to provide a map_fd/map_id when creating an iterator
+(so that it is only called for one map). But so far I haven't
+a real use case for getting the number of elements for one map only.
+
 > Thanks,
 > Daniel
 > 
