@@ -1,289 +1,273 @@
-Return-Path: <bpf+bounces-48041-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48042-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89690A03513
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 03:21:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 187D6A03515
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 03:24:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22FEB3A60FE
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 02:21:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1EBF3A2C7B
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 02:24:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0E08139CFF;
-	Tue,  7 Jan 2025 02:20:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41E1413AA35;
+	Tue,  7 Jan 2025 02:24:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="2qt4ZKjI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ghDRdQ3/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9CC814B087
-	for <bpf@vger.kernel.org>; Tue,  7 Jan 2025 02:20:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91BCE70810;
+	Tue,  7 Jan 2025 02:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736216459; cv=none; b=YYkjtcn+RReIqeNC7KR9YIJVziU7p6RnKp5RqZpBnfXzv0mnTARgDf7M9U1joa2sIsSrvZuz4JlauGThMA2SdDNoa2zfsntv0a2afKBOtaYWhOpYkt3KZ0c5xf3qdvVXp3eo4HdJ3OtJDV/rujOzZfSaCa33GFUZegTBAw+mlCI=
+	t=1736216662; cv=none; b=CghmO4WAE4CHJHXgxJzBdQygCk1GguIyTqOsXkI6vV8+Gkk0Jlm+cx+HAE9bSe9/8sY7rVsYXIAbX0aIIwxaFF8+45cbFjPO/DqsaVjzRidcQP9c3juAYiBjbxQi9HAwruLepRIUWF3bSHGoEdJ1Uks1pgnl+F6GAFCPdh0aep0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736216459; c=relaxed/simple;
-	bh=ZDx92FCNvaaNTqkZp0+dbn9tgRERr2CZHcmu8V5PG4s=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Z9JdYq70uOWPlLv+mx/iR92EUq1+mP3Lsh9eYI5tfJ88Ei45v7csOUYezMZQeskVg0JzexdQD7/vXkxmeJKkol66mGyjEGXWop7amC/TYQHFTwqoynhUjoyTk6WQEh8nFFJUuICMzoXguqC5H+8HbYiLxdldJXyiekZjE+MZrtA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=2qt4ZKjI; arc=none smtp.client-ip=74.208.4.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
-	s=s1-ionos; t=1736216451; x=1736821251; i=linux@jordanrome.com;
-	bh=bFV8AAWE7WB5PNv7bnDePrI5cbphl4Nbhj6dGOr7osY=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=2qt4ZKjIv2ZksVlyZ7QPn+ytRBgd2e094acnTqeTFfO4h9m1Bvv9oHh1ntHwV6X2
-	 ZhC7jzuJZ7uN7opotwpu94wVZMi293Kzk1Ms4koYefO2bBEJ6d/HrG3a7NXT7Q9Wh
-	 ZgRE1xKp+d80hMgyQtfS1h86BRYkMSK/HX6jCUPSa45I/th3MgwOr2eHU8rZqocP6
-	 NP+Q5Bxm42/Y9QN+y006mtS/b9X3owTG+3R8m3nkhQ0uLav94g8/VSBaAJ5iRyA1s
-	 QczgWkKyRNMvRyVnGhnMuge3JpxHr9XyAl60xP8nK//oYZobLcr215C6lfDal171s
-	 mFiehsPZgVcEjkffhQ==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from localhost ([69.171.251.1]) by mrelay.perfora.net (mreueus004
- [74.208.5.2]) with ESMTPSA (Nemesis) id 1MJmjN-1tBWKk0mAT-00OUD6; Tue, 07 Jan
- 2025 03:06:47 +0100
-From: Jordan Rome <linux@jordanrome.com>
-To: bpf@vger.kernel.org
-Cc: linux-mm@kvack.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Kernel Team <kernel-team@fb.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>
-Subject: [bpf-next v2 2/2] selftests/bpf: Add tests for bpf_copy_from_user_task_str
-Date: Mon,  6 Jan 2025 18:06:32 -0800
-Message-ID: <20250107020632.170883-2-linux@jordanrome.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20250107020632.170883-1-linux@jordanrome.com>
-References: <20250107020632.170883-1-linux@jordanrome.com>
+	s=arc-20240116; t=1736216662; c=relaxed/simple;
+	bh=2rUo6c4R+HsjvqEa/dEuyH55nzIQz7mdn5ndl3NjVqA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ro/EeSJHFtUKp55cWSAONIK5yGAwvw8dGJAYmFwBKcm3EJCgglhzuPsA3x79M8Tg1MecXNlyjTrBs0n4IwmRbxBOuKZ4hI5ixyBHpPem2ASX11LUFBP1rd121ON3V2XsSXzQ1ceVY/Ipyc7WTIV8gK6mdfQ8FtP4VqNsqqpoKz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ghDRdQ3/; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-385ddcfc97bso12665033f8f.1;
+        Mon, 06 Jan 2025 18:24:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736216656; x=1736821456; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jXkrP8t8gOHXzrDwPMWRkyABOLRzwu/N+e6UIfVcHsg=;
+        b=ghDRdQ3/hxSUtVizAePtCBPDn2cWbz7jVt1D6uPdWJ7cAiJhPsGCvCwkD7pdk6cj9n
+         EYafHzChO5xq0pcpGNN99K7S/bOEFPReroJ2Zqb9ikAvfV8IhcA7xBO0c3EMLOXgUzjL
+         e+mw1aD8c/f4LQhVvg/RZM0JgytZvyGuw/zL1WJwiu6GBrUZZbZ7SWdB8s7ijausOmJI
+         A9eGDt40LNWLkQQF2Am9LmuA/E53ZWH5TkdhpESwOVSTmDreZWk5L0oOf7omdgUA/XLC
+         kru7wrtWg9RHoUqJP4QcjJ9LRA6h7rtYJBjiM457v+K0W7G3PIj3R2u3ZSomro/OZd7z
+         4gFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736216656; x=1736821456;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jXkrP8t8gOHXzrDwPMWRkyABOLRzwu/N+e6UIfVcHsg=;
+        b=F9ady2YPrWu8ta/QvhC5wWI+HZ8kbf95s6dHSCy2EFjqD751brmEhoGFnyAGsCy6aE
+         leF/2KqXjTvRhqzUjFtRZQw6M+nwa2Kn5O74QmyZjTze4MHGj3c2vHA+JNgREiweBtub
+         FzDqyAYBm6I+VpMxMh39WtiKSpj3g8xQx96P1dMjiAxOZE+2eNYDzFIyYo6utk/Dnswf
+         /Aj4cM+2d7ZfxGVvRUJUOd2N4VJoxijWx7gsDWbLJ82jmo4Hn3Ik5R6jKGbKvh3OxxrE
+         X7LQ7baoqrCDiOZSeAmqvhSNmF7gS5az9/A7SDMMfb0JCxqM+Y58dRMxGwbxiUd8Criy
+         /d4A==
+X-Forwarded-Encrypted: i=1; AJvYcCX0GnoSJZ9VnMaDJQQ5Dfh6QvFGMX6yke0C8pqmzeprAaJXw2vl9tZWtznNhDg6CWvFuG6ZibM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwbHdVlh9I6TPSJDpws+9eq/GV8GeNAUAnLnI81LrA6zxrQA7fP
+	mDI7u49XQ0c9KAbcCOVmsAcNw4Z83feHmWUsFtYoyVnRwMODtx+r8ZfIi3ti3jV5I4nwn1PmVfI
+	jbKlnItfmybojtj4osFg0hWWZ/sw=
+X-Gm-Gg: ASbGnctNhSYOGZnQ4KmHJu8GHGPtinvZAW7naHN2TlfZtWCmQHAnQRZHn98Od1moKbp
+	Q3Kah7ny0ntXb6ePBucOgj3JjKNSWF2sYSgOprw==
+X-Google-Smtp-Source: AGHT+IH36M140hpGyae1JU8H8yi3BJsV1dne/XfBiQ8IvfJbd31IJ/3/gn/aEShkIhPqCUtrrJwvC7A3fTvD6a+SnKI=
+X-Received: by 2002:a05:6000:2ae:b0:385:ed16:c97 with SMTP id
+ ffacd0b85a97d-38a224088aemr45748331f8f.49.1736216655650; Mon, 06 Jan 2025
+ 18:24:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250106081900.1665573-1-houtao@huaweicloud.com>
+ <20250106081900.1665573-16-houtao@huaweicloud.com> <CAADnVQJzQ9ADqpCb7mcsQCU1enTdPH7XtZKkTHyY739sg62CzA@mail.gmail.com>
+ <a467b9ac-3785-7c5d-577c-c2f4a43c6923@huaweicloud.com>
+In-Reply-To: <a467b9ac-3785-7c5d-577c-c2f4a43c6923@huaweicloud.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 6 Jan 2025 18:24:04 -0800
+X-Gm-Features: AbW1kvbqnH299QAv49Pfwcjsu-P7Vv5NlTIxIPVEeV0zuuXRcZhwlj8w4ldvvg0
+Message-ID: <CAADnVQKQ6bCFVwaFUb0fpnhMyGDH9-HRDOFDkR3Mdjotk39jPw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 15/19] bpf: Disable migration before calling ops->map_free()
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko <andrii@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Hou Tao <houtao1@huawei.com>, 
+	Xu Kuohai <xukuohai@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:1J9yVCZQ2NAHDr9yT0npIqJaYWAKXqcpvuue9cvHHU8bECyraFe
- TJN/mIMwB+l2oA2KtEmxyhlhfmONio2neaoKrXUeqWFW0cWVjQGKVV99WHFx5MuJqNjbCUh
- ePNCDTUCIxTBolx7MOtLZWg1guUOd7cFtHjx9su9Vg6ubPsY5q4TxtpDi9NmGX4P5bLW+3C
- PfKn7TtlYwsdPWUi5bQZw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:DwVnFgOqoBY=;eSP4JiBj9Knh/6QvamAu51cJkky
- eljl8MORGbL6bgpq8gXAYXweVcvZEwqVUZIDGfaVoD7HBt1IQax3dYQU0HJMkOAXYZ5iwxKiy
- F4uSbxosWTIkndaJe43LUOg99+8oreln3Twdt+wWnd36TUQdnUIjk3fz+9vZAFYIDos6rI8x4
- fBGR2+rNB4EmU3D8QOWaD+fusWO0x/g6FCVnV7SsSCT755VHTrrfhQnSrpmvG3yrxZ62lW1ak
- 1gUqimO7Zd7NqfzV7EDffIvP3i9hz1X9yVTJF227yb/7xj86bznrLpFzHEvBm3SdlcwTkc3zV
- oreqgdLfHi7u50qSTfALwjVGTtTjryGIhMDF1WxesWvfbonV3ZKtXNA7WB5JxSjcl4i4vsGax
- BCpLYD+1Qh3OvIxA65Lo6qfgoLRj4Mh+4ybIBGzyauszWSsB1tGIRCoLIbOwSU49Hda0+BJrH
- Js+5uHmdgCElOTg2Pi9a4eFmRBTOWKbmdWXMWLxHugDEIODKe+/1EmTr4xELr62cS+HlSdlEC
- Pijq//aIpwJQUy9yNgAI5/Bzy/xP6oi93TnKIFZGvAgUG9ADkZXRf7HpUixawt7jEPWn6pNhW
- 2Zw7lpXmZSXHkWAWd1QeE5b3OVuNabuhBhvR7C7i88cgyh5E4ZbErAZ/gmOu/ASlrWDDiAfQf
- 5g5GpN46nEJa+vqTZdsET0Eg2MzXQTCfpGg7h3vGCORGhHDPaHPaQV2tUGNN0cYj5KMs5yqZN
- oRrN3WComWqYCFgbffYrP3mIprORC6voVv5zrYnZxTo34I2q+bZMaTcSbntVPFsJB4gWuhNPW
- FFOyNgbMWj1IwwIsEgf/LPEWvuR/3wzFvJb1faHMCiECKGxSTfsYEfx+lwiJe7JpEpv1FEh3J
- tDVtZ+ZhddCHeRWQ/JA6pj/jTX3g+5NWL6oemNBgKnO8CxwkPhqFslefZXXdLhwz5vzFbX9kc
- MyHpU4dGHLoGcBnZci3Uy0V1WT8PV5jXy7L2cDsjCJw2nEgAKyWQdrJvkWpDYpNJOlyBTUHhd
- /NBnNkYO/nhnmT64l0v8cGgduK0lUb7BEepe0qM
 
-This adds tests for both the happy path and the
-error path (with and without the BPF_F_PAD_ZEROS flag).
-
-Signed-off-by: Jordan Rome <linux@jordanrome.com>
-=2D--
- .../selftests/bpf/prog_tests/bpf_iter.c       |  7 +++
- .../selftests/bpf/prog_tests/read_vsyscall.c  |  1 +
- .../selftests/bpf/progs/bpf_iter_tasks.c      | 55 +++++++++++++++++++
- .../selftests/bpf/progs/read_vsyscall.c       |  6 +-
- 4 files changed, 67 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/tes=
-ting/selftests/bpf/prog_tests/bpf_iter.c
-index 6f1bfacd7375..8ed864793bd1 100644
-=2D-- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -34,6 +34,8 @@
- #include "bpf_iter_ksym.skel.h"
- #include "bpf_iter_sockmap.skel.h"
-
-+static char test_data[] =3D "test_data";
-+
- static void test_btf_id_or_null(void)
+On Mon, Jan 6, 2025 at 5:40=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wro=
+te:
+>
+> Hi,
+>
+> On 1/7/2025 6:24 AM, Alexei Starovoitov wrote:
+> > On Mon, Jan 6, 2025 at 12:07=E2=80=AFAM Hou Tao <houtao@huaweicloud.com=
+> wrote:
+> >> From: Hou Tao <houtao1@huawei.com>
+> >>
+> >> Disabling migration before calling ops->map_free() to simplify the
+> >> freeing of map values or special fields allocated from bpf memory
+> >> allocator.
+> >>
+> >> After disabling migration in bpf_map_free(), there is no need for
+> >> additional migration_{disable|enable} pairs in the ->map_free()
+> >> callbacks. Remove these redundant invocations.
+> >>
+> >> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> >> ---
+> >>  kernel/bpf/arraymap.c          | 2 --
+> >>  kernel/bpf/bpf_local_storage.c | 2 --
+> >>  kernel/bpf/hashtab.c           | 2 --
+> >>  kernel/bpf/range_tree.c        | 2 --
+> >>  kernel/bpf/syscall.c           | 8 +++++++-
+> >>  5 files changed, 7 insertions(+), 9 deletions(-)
+> >>
+> >> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+> >> index 451737493b17..eb28c0f219ee 100644
+> >> --- a/kernel/bpf/arraymap.c
+> >> +++ b/kernel/bpf/arraymap.c
+> >> @@ -455,7 +455,6 @@ static void array_map_free(struct bpf_map *map)
+> >>         struct bpf_array *array =3D container_of(map, struct bpf_array=
+, map);
+> >>         int i;
+> >>
+> >> -       migrate_disable();
+> >>         if (!IS_ERR_OR_NULL(map->record)) {
+> >>                 if (array->map.map_type =3D=3D BPF_MAP_TYPE_PERCPU_ARR=
+AY) {
+> >>                         for (i =3D 0; i < array->map.max_entries; i++)=
  {
- 	struct bpf_iter_test_kern3 *skel;
-@@ -328,12 +330,17 @@ static void test_task_sleepable(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_tasks__open_and_load"))
- 		return;
+> >> @@ -472,7 +471,6 @@ static void array_map_free(struct bpf_map *map)
+> >>                                 bpf_obj_free_fields(map->record, array=
+_map_elem_ptr(array, i));
+> >>                 }
+> >>         }
+> >> -       migrate_enable();
+> >>
+> >>         if (array->map.map_type =3D=3D BPF_MAP_TYPE_PERCPU_ARRAY)
+> >>                 bpf_array_free_percpu(array);
+> >> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_sto=
+rage.c
+> >> index b649cf736438..12cf6382175e 100644
+> >> --- a/kernel/bpf/bpf_local_storage.c
+> >> +++ b/kernel/bpf/bpf_local_storage.c
+> >> @@ -905,13 +905,11 @@ void bpf_local_storage_map_free(struct bpf_map *=
+map,
+> >>                 while ((selem =3D hlist_entry_safe(
+> >>                                 rcu_dereference_raw(hlist_first_rcu(&b=
+->list)),
+> >>                                 struct bpf_local_storage_elem, map_nod=
+e))) {
+> >> -                       migrate_disable();
+> >>                         if (busy_counter)
+> >>                                 this_cpu_inc(*busy_counter);
+> >>                         bpf_selem_unlink(selem, true);
+> >>                         if (busy_counter)
+> >>                                 this_cpu_dec(*busy_counter);
+> >> -                       migrate_enable();
+> >>                         cond_resched_rcu();
+> >>                 }
+> >>                 rcu_read_unlock();
+> >> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> >> index 8bf1ad326e02..6051f8a39fec 100644
+> >> --- a/kernel/bpf/hashtab.c
+> >> +++ b/kernel/bpf/hashtab.c
+> >> @@ -1570,14 +1570,12 @@ static void htab_map_free(struct bpf_map *map)
+> >>          * underneath and is responsible for waiting for callbacks to =
+finish
+> >>          * during bpf_mem_alloc_destroy().
+> >>          */
+> >> -       migrate_disable();
+> >>         if (!htab_is_prealloc(htab)) {
+> >>                 delete_all_elements(htab);
+> >>         } else {
+> >>                 htab_free_prealloced_fields(htab);
+> >>                 prealloc_destroy(htab);
+> >>         }
+> >> -       migrate_enable();
+> >>
+> >>         bpf_map_free_elem_count(map);
+> >>         free_percpu(htab->extra_elems);
+> >> diff --git a/kernel/bpf/range_tree.c b/kernel/bpf/range_tree.c
+> >> index 5bdf9aadca3a..37b80a23ae1a 100644
+> >> --- a/kernel/bpf/range_tree.c
+> >> +++ b/kernel/bpf/range_tree.c
+> >> @@ -259,9 +259,7 @@ void range_tree_destroy(struct range_tree *rt)
+> >>
+> >>         while ((rn =3D range_it_iter_first(rt, 0, -1U))) {
+> >>                 range_it_remove(rn, rt);
+> >> -               migrate_disable();
+> >>                 bpf_mem_free(&bpf_global_ma, rn);
+> >> -               migrate_enable();
+> >>         }
+> >>  }
+> >>
+> >> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> >> index 0503ce1916b6..e7a41abe4809 100644
+> >> --- a/kernel/bpf/syscall.c
+> >> +++ b/kernel/bpf/syscall.c
+> >> @@ -835,8 +835,14 @@ static void bpf_map_free(struct bpf_map *map)
+> >>         struct btf_record *rec =3D map->record;
+> >>         struct btf *btf =3D map->btf;
+> >>
+> >> -       /* implementation dependent freeing */
+> >> +       /* implementation dependent freeing. Disabling migration to si=
+mplify
+> >> +        * the free of values or special fields allocated from bpf mem=
+ory
+> >> +        * allocator.
+> >> +        */
+> >> +       migrate_disable();
+> >>         map->ops->map_free(map);
+> >> +       migrate_enable();
+> >> +
+> > I was about to comment on patches 10-13 that it's
+> > better to do it in bpf_map_free(), but then I got to this patch.
+> > All makes sense, but the patch breakdown is too fine grain.
+> > Patches 10-13 introduce migrate pairs only to be deleted
+> > in patch 15. Please squash them into one patch.
+>
+> OK. However I need to argue for the fine grained break down. The
+> original though is that if disabling migration for ->map_free callback
+> for all maps introduces some problems, we could revert the patch #15
+> separately instead of reverting the squashed patch and moving the
+> migrate_{disable|enable}() pair to maps which are OK with that change
+> again.  What do you think ?
 
-+	skel->bss->user_ptr =3D test_data;
- 	do_dummy_read(skel->progs.dump_task_sleepable);
+Feels overkill.
+If migrate disable for the duration of map_free callback causes issues
+we can introduce individual migrate pairs per map type
+or revert the whole thing,
+but imo it's all too theoretical at this point.
 
- 	ASSERT_GT(skel->bss->num_expected_failure_copy_from_user_task, 0,
- 		  "num_expected_failure_copy_from_user_task");
- 	ASSERT_GT(skel->bss->num_success_copy_from_user_task, 0,
- 		  "num_success_copy_from_user_task");
-+	ASSERT_GT(skel->bss->num_expected_failure_copy_from_user_task_str, 0,
-+		  "num_expected_failure_copy_from_user_task_str");
-+	ASSERT_GT(skel->bss->num_success_copy_from_user_task_str, 0,
-+		  "num_success_copy_from_user_task_str");
+> >
+> > Also you mention in the cover letter:
+> >
+> >> Considering the bpf-next CI is broken
+> > What is this about?
+>
+> Er, I said it wrong. It is my local bpf-next setup. A few days ago, when
+> I tried to verify the patch by using bpf_next/for-next treee, the
+> running of test_maps and test_progs failed. Will check today that
+> whether it is OK.
 
- 	bpf_iter_tasks__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c b/tool=
-s/testing/selftests/bpf/prog_tests/read_vsyscall.c
-index c7b9ba8b1d06..a8d1eaa67020 100644
-=2D-- a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-+++ b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-@@ -24,6 +24,7 @@ struct read_ret_desc {
- 	{ .name =3D "copy_from_user", .ret =3D -EFAULT },
- 	{ .name =3D "copy_from_user_task", .ret =3D -EFAULT },
- 	{ .name =3D "copy_from_user_str", .ret =3D -EFAULT },
-+	{ .name =3D "copy_from_user_task_str", .ret =3D -EFAULT },
- };
+I see. /for-next maybe having issues. That needs to be investigated
+separately.
+Make sure /master is working well.
 
- void test_read_vsyscall(void)
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_tasks.c b/tools/te=
-sting/selftests/bpf/progs/bpf_iter_tasks.c
-index bc10c4e4b4fa..90691e34b915 100644
-=2D-- a/tools/testing/selftests/bpf/progs/bpf_iter_tasks.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_tasks.c
-@@ -9,6 +9,7 @@ char _license[] SEC("license") =3D "GPL";
- uint32_t tid =3D 0;
- int num_unknown_tid =3D 0;
- int num_known_tid =3D 0;
-+void *user_ptr =3D 0;
+> >
+> > The cant_migrate() additions throughout looks
+> > a bit out of place. All that code doesn't care about migrations.
+> > Only bpf_ma code does. Let's add it there instead?
+> > The stack trace will tell us the caller anyway,
+> > so no information lost.
+>
+> OK. However bpf_ma is not the only one which needs disabled migration.
+> The reason that bpf_ma needs migrate_disable() is the use of
+> this_cpu_ptr(). However, there are many places in bpf which use
+> this_cpu_ptr() (e.g., bpf_for_each_array_elem) and this_cpu_{in|del}
+> pair (e.g., bpf_cgrp_storage_lock).  I will check the cant_migrate which
+> can be removed in v2.
 
- SEC("iter/task")
- int dump_task(struct bpf_iter__task *ctx)
-@@ -35,7 +36,9 @@ int dump_task(struct bpf_iter__task *ctx)
- }
-
- int num_expected_failure_copy_from_user_task =3D 0;
-+int num_expected_failure_copy_from_user_task_str =3D 0;
- int num_success_copy_from_user_task =3D 0;
-+int num_success_copy_from_user_task_str =3D 0;
-
- SEC("iter.s/task")
- int dump_task_sleepable(struct bpf_iter__task *ctx)
-@@ -44,6 +47,9 @@ int dump_task_sleepable(struct bpf_iter__task *ctx)
- 	struct task_struct *task =3D ctx->task;
- 	static const char info[] =3D "    =3D=3D=3D END =3D=3D=3D";
- 	struct pt_regs *regs;
-+	char task_str1[10] =3D "aaaaaaaaaa";
-+	char task_str2[10], task_str3[10];
-+	char task_str4[20] =3D "aaaaaaaaaaaaaaaaaaaa";
- 	void *ptr;
- 	uint32_t user_data =3D 0;
- 	int ret;
-@@ -78,8 +84,57 @@ int dump_task_sleepable(struct bpf_iter__task *ctx)
- 		BPF_SEQ_PRINTF(seq, "%s\n", info);
- 		return 0;
- 	}
-+
- 	++num_success_copy_from_user_task;
-
-+	/* Read an invalid pointer and ensure we get an error */
-+	ptr =3D NULL;
-+	ret =3D bpf_copy_from_user_task_str((char *)task_str1, sizeof(task_str1)=
-, ptr, task, 0);
-+	if (ret >=3D 0 || task_str1[9] !=3D 'a') {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	/* Read an invalid pointer and ensure we get error with pad zeros flag *=
-/
-+	ptr =3D NULL;
-+	ret =3D bpf_copy_from_user_task_str((char *)task_str1, sizeof(task_str1)=
-, ptr, task, BPF_F_PAD_ZEROS);
-+	if (ret >=3D 0 || task_str1[9] !=3D '\0') {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	++num_expected_failure_copy_from_user_task_str;
-+
-+	/* Same length as the string */
-+	ret =3D bpf_copy_from_user_task_str((char *)task_str2, 10, user_ptr, tas=
-k, 0);
-+	if (bpf_strncmp(task_str2, 10, "test_data\0") !=3D 0 || ret !=3D 10) {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	/* Shorter length than the string */
-+	ret =3D bpf_copy_from_user_task_str((char *)task_str3, 9, user_ptr, task=
-, 0);
-+	if (bpf_strncmp(task_str3, 9, "test_dat\0") !=3D 0 || ret !=3D 9) {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	/* Longer length than the string */
-+	ret =3D bpf_copy_from_user_task_str((char *)task_str4, 20, user_ptr, tas=
-k, 0);
-+	if (bpf_strncmp(task_str4, 10, "test_data\0") !=3D 0 || ret !=3D 10 || t=
-ask_str4[sizeof(task_str4) - 1] !=3D 'a') {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	/* Longer length than the string with pad zeros flag */
-+	ret =3D bpf_copy_from_user_task_str((char *)task_str4, 20, user_ptr, tas=
-k, BPF_F_PAD_ZEROS);
-+	if (bpf_strncmp(task_str4, 10, "test_data\0") !=3D 0 || ret !=3D 10 || t=
-ask_str4[sizeof(task_str4) - 1] !=3D '\0') {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	++num_success_copy_from_user_task_str;
-+
- 	if (ctx->meta->seq_num =3D=3D 0)
- 		BPF_SEQ_PRINTF(seq, "    tgid      gid     data\n");
-
-diff --git a/tools/testing/selftests/bpf/progs/read_vsyscall.c b/tools/tes=
-ting/selftests/bpf/progs/read_vsyscall.c
-index 39ebef430059..623c1c5bd2d0 100644
-=2D-- a/tools/testing/selftests/bpf/progs/read_vsyscall.c
-+++ b/tools/testing/selftests/bpf/progs/read_vsyscall.c
-@@ -8,14 +8,15 @@
-
- int target_pid =3D 0;
- void *user_ptr =3D 0;
--int read_ret[9];
-+int read_ret[10];
-
- char _license[] SEC("license") =3D "GPL";
-
- /*
-- * This is the only kfunc, the others are helpers
-+ * These are the kfuncs, the others are helpers
-  */
- int bpf_copy_from_user_str(void *dst, u32, const void *, u64) __weak __ks=
-ym;
-+int bpf_copy_from_user_task_str(void *dst, u32, const void *, struct task=
-_struct *, u64) __weak __ksym;
-
- SEC("fentry/" SYS_PREFIX "sys_nanosleep")
- int do_probe_read(void *ctx)
-@@ -47,6 +48,7 @@ int do_copy_from_user(void *ctx)
- 	read_ret[7] =3D bpf_copy_from_user_task(buf, sizeof(buf), user_ptr,
- 					      bpf_get_current_task_btf(), 0);
- 	read_ret[8] =3D bpf_copy_from_user_str((char *)buf, sizeof(buf), user_pt=
-r, 0);
-+	read_ret[9] =3D bpf_copy_from_user_task_str((char *)buf, sizeof(buf), us=
-er_ptr, bpf_get_current_task_btf(), 0);
-
- 	return 0;
- }
-=2D-
-2.43.5
-
+Well, maybe not all cant_migrate() hunks across all patches.
+But patches 16, 17, 18, 19 don't look like the right places
+for cant_migrate().
 
