@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-48080-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48084-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D59DEA03EB1
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 13:09:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB872A03EBC
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 13:09:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7247163E23
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 12:09:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 295F63A506E
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 12:09:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9D51F12E8;
-	Tue,  7 Jan 2025 12:09:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BD031F12FF;
+	Tue,  7 Jan 2025 12:09:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kNiBVrvG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NOg80+ou"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A692B1F0E31;
-	Tue,  7 Jan 2025 12:08:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B74231EE7CD;
+	Tue,  7 Jan 2025 12:08:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736251740; cv=none; b=SFssSFI3N4q8Z7WmkiZhsAD0Hfe+u3/QNC+z+d6hzUbem9ZXUpEnLpcgluiL34AZ4cRZ0vmIVnq7CaHn61QanNBpxaN/S8HGcnVyq6crCxMtHhfQSDa8lAlgXsn+Zx14Oij3R7YCpCnBL4I9yrVGjzMmUMk1+0UW3GHXFb7nkNY=
+	t=1736251765; cv=none; b=VDJQf+RGfh1ySRYZWOdSd3WxJgvBIhnETBjOP2YByS3EdcO7c8nzqwMI5BBlDjU7zyaM31GE1FxRUEEESGRIqPbL1hRYjENBOb+RldNx+poUcJyx9ialx5Qm4tuSREO+9g6eVLKsfGCwixBQlZi9bkYgZUfX5kq+PChie66u1Jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736251740; c=relaxed/simple;
-	bh=EHJeTu9LpZCTV6MNhTXwOlGx9U1Hi/QCyocVOYX16VY=;
+	s=arc-20240116; t=1736251765; c=relaxed/simple;
+	bh=DuYK349QWocmvKBH2q5HjOCLoOLJyazu8j8fZf0/Y0E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tMHCWPxLHJmZBSeWcFRKImrzC13rW45hIql2A8nt/7oVje/l15r3rnKJEDl4M1tln0D3f9TvRFu7ahYffrHoial9ro8wrfCwKoAi8Zs0jvHXdrfKi0Qg9obLqh//HNhmqefHdaHpiiIRRbk6zyG9RTfvB5brmLwjGhA7ZWIDHbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kNiBVrvG; arc=none smtp.client-ip=209.85.214.182
+	 MIME-Version; b=X+X5jm2l9gW0HbmPPX2qlscmL6QUHLD+eRbTzzg8dHTRuW9R60IwJIXciN0CYZmCdCvslRFrry1g/nylCl0k8RFh2AnMu7NLzECcaQTUrhM7shYg2CVVw3N2nU4t4F2SGmsRbEmLrknwL9kWvcYfzlCR7gglnqgvqi6px8Afoqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NOg80+ou; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-21619108a6bso209375995ad.3;
-        Tue, 07 Jan 2025 04:08:50 -0800 (PST)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-21661be2c2dso205225545ad.1;
+        Tue, 07 Jan 2025 04:08:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736251728; x=1736856528; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1736251731; x=1736856531; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Avr5zrWxvqU6u4D79YsABli7JY6gs1aynzmiVyQrjoo=;
-        b=kNiBVrvGczxojCq3SY7qvQGfsfF4K67BizqWvhW2WqnnyG+iUlbjfu6tadD/eCmal5
-         /pK52Gh4SsKFotE+HgEn4Veeh+4QT2+Y05cgL06TGYRKo2kb6eEvdbqZvawwg08i2R2L
-         y0KBQLvFjJ5tpjlIAFdSnOuaZSHMbBq+IwndhqDlmbvJ60Q/CL3zxzxpTFGP21EFYWtv
-         esFStfL7T6qvy2eksT3ZCsdsl0fy4PjNKitgEb2A8pSgCl7o/I1fagATYJe3KYcfOd6x
-         fQtnLkKrj85TRNLSjy4hgsSYS5YaUWZZDpTCpSNv9762ClCFJfJUaZ778RGtRMc9iFcY
-         rgjA==
+        bh=0H88QF/Rk74Ebj0cgESBiJW8Kg50jsqod4brl+UMFwI=;
+        b=NOg80+ou1Dt9rU5DTA9QKOmQQHbhU5xU4oV4O9x+CG/7ZolhjUcR4GMG7IudBMPYrq
+         jVKRc6m9wZxO5iaiv4RkQpvNJx0VoNSHI8jYD5zwe1lDBYyOgxgwveg9JKFrJzk43/ON
+         ymniBFj8J/GHhthS6UUtaAiWEbqE+JDvswnOYDncRZX0cB/UgYnPJWVLSc40CSj6TXEm
+         7wOid8z27oyfBTX6lSkUE5GQBC1SjozVMFWoh8Gf2xdRkTuoGjBx6f+m/Dmi1puW0tZK
+         RIRPCd9a9cJ65u1M48iqfnJAU/SR6XmDjRwqt3j4i+qXbTZM84GumveBDoiRaTjZrT8D
+         luUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736251728; x=1736856528;
+        d=1e100.net; s=20230601; t=1736251731; x=1736856531;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Avr5zrWxvqU6u4D79YsABli7JY6gs1aynzmiVyQrjoo=;
-        b=xJF05rhL/xjkBHoSiZu7idLBbUKBRT/P+iJB0oaW5Eab+J+EX2ReFLDZmZsiWDNr5X
-         fUDCTRVxiJ5OSt53DA5rZg3PSbElCcP7be7dKNyoYiK4YmNNzb36bWeOJ0Xrm72y/EC0
-         2SgSNWShUk3+rCDiXijHGZd+7AevC6BwAoYb//NkbvlSvFieqrOGosU4KEFYZFzYCgmu
-         7LkcEs8d+e7eAT2HuMAjERKiFjjGt+SuOZSYP6FeAyt2hMUQogd9x2BaRe9JWZaix3yH
-         FQ5bOn8kBKj/xVXOsbgRJrBAekiMAD0rBor+aK8NKE50cPDK3nVMLd1hWqKWfapjqoJP
-         A9wQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXQ0kn/2UM02jq310hOi8gEigsdaTLgxQPpZcYEEGPGFekQmVx4ZE5GJVFXuJ8OIhMxcrOergVAVipfog==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx3Oci2U7UE6lgV8PWcTr6ffrrYsqymPSzjmQJ9hgr8wEjWMm/E
-	ov2IBqnLhMLu/mmP8WlaHu1P5hTfSfHak2fyRRj6OQRhf9phpV5z
-X-Gm-Gg: ASbGnctte+tJfF85tWGBHzwYMaciQzsoy3LzBY4viyOVmNHX91QltfKKZbOBDMpbYAJ
-	IX7Bredxbuw2P4RMAg8840gshNDIoMXpm+l0ISYf8Z1JbPaNCHqD6DCWLYQaD/ZL9eqQwWWnDzS
-	KfEbv5dlKvLGOzheG+T/qWie/O0PBvUY1N4k0aPsSfiddumHeWgaM2GH1LGYO0krshl8zo+/ENJ
-	c2bZiXdbFnw6afGkIiNUhmjqHWhR3GvWWNx3+zHg2ri8hOvBc+pSQ9PxGCS7uwLpxMg
-X-Google-Smtp-Source: AGHT+IFQU222wEqut6YxLqWX3vKxdPmjpCZ6ZVIHKaFAl4WbT1+D6QKlfX1lHoQuqt0tkt47p2vjKA==
-X-Received: by 2002:a05:6a20:430e:b0:1e6:b2d7:4cf0 with SMTP id adf61e73a8af0-1e6b2d74d7amr11044762637.41.1736251728035;
-        Tue, 07 Jan 2025 04:08:48 -0800 (PST)
+        bh=0H88QF/Rk74Ebj0cgESBiJW8Kg50jsqod4brl+UMFwI=;
+        b=vAfrts3tVPfQht17pVkETX1ojKllMROGy7/Y0FTPiCgAyUskMSbYl/n4n7VszLUL/A
+         MTc9N0oURCMN1NGE6FMeJ8h+zA3O0vOzy5GXNIAIDYFKOFySIwzqN8Mcy6HLmTk0DsV6
+         XH+H3WHftud3vMWJ80KwQkdrO5E3HPihQL2vp9sL11SgRqSVhuw5WGwk4mP0fR0eKlCH
+         EbMsfQrUkICxytJHEOX+9suHzj2pDh8C5hUShO8+a2NU+0wricKcFuy4zeXlVNGozSv8
+         yf5ypeZ6Y6S2yOqVkPHyt3Ij/lhWP4kWi62Z6yGiO6eAJj87r1DSgDDKvELRdP77NnKH
+         V/Zg==
+X-Forwarded-Encrypted: i=1; AJvYcCV6piKXSDZ90aSSmHvxQZEwffQfrmorwEeuMxnTTamvsC0axbAO4zke5+geFcYKGS3xTyqr7bDDS78sGA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy4H9oWYf9q/HqcC0Z1XMLGkO+ibSCQJI6vKzjmUmh31okgopJs
+	m8lYry/3sv6MutljWRzmIwVYwge7OqJEAuXrL/+hLggiZkST+AQG
+X-Gm-Gg: ASbGncs5zWuoRlaTkPkFyFIjDvXRqKX7WZp9k1UKYo5r06qrgIschD3JwKN6GHBpOfr
+	bepz/j5lxtyHgZNiw5AzvktqugnKcKNLzkRV9DqganCsWLEQShq8peev8b1UIwSeaJuvCDMPLRK
+	/0L4wDSdr7KWGd9rydMnXdl/h8hwPEXTbp1rTH28TY+hN2bZV3JHEOK1BkCqhm2P51F4wYPcT9q
+	bNkGg5vYul8eIVOSgIPc5SGyVO5lzAn6u7nKeM4Z/R2WLEySjHwf59ipU8IPxqJeadC
+X-Google-Smtp-Source: AGHT+IGnRh9cdtFUwPt/oUrHUR6JYIEVNO9kbawsgfW4Ycr3KcLPP2EX7S6p3lJzxu6HTSlwyhZMRw==
+X-Received: by 2002:a05:6a00:8d8c:b0:71e:a3:935b with SMTP id d2e1a72fcca58-72abdee2117mr94750158b3a.25.1736251731560;
+        Tue, 07 Jan 2025 04:08:51 -0800 (PST)
 Received: from fedora.redhat.com ([2001:250:3c1e:503:ffff:ffff:ffea:4903])
-        by smtp.googlemail.com with ESMTPSA id d2e1a72fcca58-72aad835b8dsm34245118b3a.63.2025.01.07.04.08.45
+        by smtp.googlemail.com with ESMTPSA id d2e1a72fcca58-72aad835b8dsm34245118b3a.63.2025.01.07.04.08.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jan 2025 04:08:47 -0800 (PST)
+        Tue, 07 Jan 2025 04:08:50 -0800 (PST)
 From: Ming Lei <tom.leiming@gmail.com>
 To: Jens Axboe <axboe@kernel.dk>,
 	linux-block@vger.kernel.org
@@ -79,9 +79,9 @@ Cc: bpf@vger.kernel.org,
 	Martin KaFai Lau <martin.lau@linux.dev>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	Ming Lei <tom.leiming@gmail.com>
-Subject: [RFC PATCH 17/22] ublk: bpf: attach bpf aio prog to ublk device
-Date: Tue,  7 Jan 2025 20:04:08 +0800
-Message-ID: <20250107120417.1237392-18-tom.leiming@gmail.com>
+Subject: [RFC PATCH 18/22] ublk: bpf: add several ublk bpf aio kfuncs
+Date: Tue,  7 Jan 2025 20:04:09 +0800
+Message-ID: <20250107120417.1237392-19-tom.leiming@gmail.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20250107120417.1237392-1-tom.leiming@gmail.com>
 References: <20250107120417.1237392-1-tom.leiming@gmail.com>
@@ -93,253 +93,228 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Attach bpf aio program to ublk device before adding ublk disk, and detach it
-after the disk is removed. And when the bpf aio prog is unregistered,
-all devices will detach from the prog automatically.
+Add ublk bpf aio kfuncs for bpf prog to do:
 
-ublk device needs to provide the bpf aio struct_ops ID for attaching the
-specific prog, and each ublk device has to attach to only single bpf prog.
-
-So that we can use the attached bpf aio prog to submit bpf aio for handling ublk IO.
-
-Given bpf aio prog is attached to ublk device, ublk bpf prog has to
-provide one kfunc to assign 'bpf_aio_complete_ops *' to 'struct bpf_aio'
-instance.
+- prepare buffer
+- assign bpf aio struct_ops
+- submit bpf aios for handle ublk io command
+- deal with ublk io and bpf aio lifetime, and make sure that
+ublk io won't be completed until all bpf aios are completed
 
 Signed-off-by: Ming Lei <tom.leiming@gmail.com>
 ---
- drivers/block/ublk/bpf.c         | 81 +++++++++++++++++++++++++++++++-
- drivers/block/ublk/bpf_aio.c     |  4 ++
- drivers/block/ublk/bpf_aio.h     |  4 ++
- drivers/block/ublk/bpf_aio_ops.c | 22 +++++++++
- drivers/block/ublk/ublk.h        | 10 ++++
- include/uapi/linux/ublk_cmd.h    |  4 +-
- 6 files changed, 123 insertions(+), 2 deletions(-)
+ drivers/block/ublk/bpf.c     | 77 ++++++++++++++++++++++++++++++++++++
+ drivers/block/ublk/bpf_aio.c |  6 ++-
+ drivers/block/ublk/bpf_aio.h | 38 +++++++++++++++++-
+ drivers/block/ublk/ublk.h    |  2 +
+ 4 files changed, 121 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/block/ublk/bpf.c b/drivers/block/ublk/bpf.c
-index d5880d61abe5..921bbbcf4d9e 100644
+index 921bbbcf4d9e..c0babf6d5868 100644
 --- a/drivers/block/ublk/bpf.c
 +++ b/drivers/block/ublk/bpf.c
-@@ -19,6 +19,79 @@ static int ublk_set_bpf_ops(struct ublk_device *ub,
- 	return 0;
+@@ -228,6 +228,77 @@ ublk_bpf_complete_io(struct ublk_bpf_io *io, int res)
+ 	ublk_bpf_complete_io_cmd(io, res);
  }
  
-+static int ublk_set_bpf_aio_op(struct ublk_device *ub,
-+		struct bpf_aio_complete_ops *ops)
++/*
++ * Called before submitting one bpf aio in prog, and this ublk IO's
++ * reference is increased.
++ *
++ * Grab reference of `io` for this `aio`, and the reference will be dropped
++ * by ublk_bpf_dettach_and_complete_aio()
++ */
++__bpf_kfunc int
++ublk_bpf_attach_and_prep_aio(const struct ublk_bpf_io *_io, unsigned off,
++		unsigned bytes, struct bpf_aio *aio)
 +{
-+	int i;
++	struct ublk_bpf_io *io = (struct ublk_bpf_io *)_io;
++	const struct request *req;
++	const struct ublk_rq_data *data;
++	const struct ublk_bpf_io *bpf_io;
 +
-+	for (i = 0; i < ub->dev_info.nr_hw_queues; i++) {
-+		if (ops && ublk_get_queue(ub, i)->bpf_aio_ops) {
-+			ublk_set_bpf_aio_op(ub, NULL);
-+			return -EBUSY;
-+		}
-+		ublk_get_queue(ub, i)->bpf_aio_ops = ops;
++	if (!io || !aio)
++		return -EINVAL;
++
++	req = ublk_bpf_get_req(io);
++	if (!req)
++		return -EINVAL;
++
++	if (off + bytes > blk_rq_bytes(req))
++		return -EINVAL;
++
++	if (req->mq_hctx) {
++		const struct ublk_queue *ubq = req->mq_hctx->driver_data;
++
++		bpf_aio_assign_cb(aio, ubq->bpf_aio_ops);
 +	}
++
++	data = blk_mq_rq_to_pdu((struct request *)req);
++	bpf_io = &data->bpf_data;
++	bpf_aio_assign_buf(aio, &bpf_io->buf, off, bytes);
++
++	refcount_inc(&io->ref);
++	aio->private_data = (void *)io;
++
 +	return 0;
 +}
 +
-+static int ublk_bpf_aio_prog_attach_cb(struct bpf_prog_consumer *consumer,
-+				       struct bpf_prog_provider *provider)
++/*
++ * Called after this attached aio is completed, and the associated ublk IO's
++ * reference is decreased, and if the reference is dropped to zero, complete
++ * this ublk IO.
++ *
++ * Return -EIOCBQUEUED if this `io` is being handled, and 0 is returned
++ * if it can be completed now.
++ */
++__bpf_kfunc void
++ublk_bpf_dettach_and_complete_aio(struct bpf_aio *aio)
 +{
-+	struct ublk_device *ub = container_of(consumer, struct ublk_device,
-+					      aio_prog);
-+	struct bpf_aio_complete_ops *ops = container_of(provider,
-+			struct bpf_aio_complete_ops, provider);
-+	int ret = -ENODEV;
++	struct ublk_bpf_io *io = aio->private_data;
 +
-+	if (ublk_get_device(ub)) {
-+		ret = ublk_set_bpf_aio_op(ub, ops);
-+		if (ret)
-+			ublk_put_device(ub);
++	if (io) {
++		ublk_bpf_io_dec_ref(io);
++		aio->private_data = NULL;
 +	}
-+
-+	return ret;
 +}
 +
-+static void ublk_bpf_aio_prog_detach_cb(struct bpf_prog_consumer *consumer,
-+					bool unreg)
++__bpf_kfunc struct ublk_bpf_io *ublk_bpf_acquire_io_from_aio(struct bpf_aio *aio)
 +{
-+	struct ublk_device *ub = container_of(consumer, struct ublk_device,
-+					      aio_prog);
-+
-+	if (unreg) {
-+		blk_mq_freeze_queue(ub->ub_disk->queue);
-+		ublk_set_bpf_aio_op(ub, NULL);
-+		blk_mq_unfreeze_queue(ub->ub_disk->queue);
-+	} else {
-+		ublk_set_bpf_aio_op(ub, NULL);
-+	}
-+	ublk_put_device(ub);
++	return aio->private_data;
 +}
 +
-+static const struct bpf_prog_consumer_ops ublk_aio_prog_consumer_ops = {
-+	.attach_fn	= ublk_bpf_aio_prog_attach_cb,
-+	.detach_fn	= ublk_bpf_aio_prog_detach_cb,
-+};
-+
-+static int ublk_bpf_aio_attach(struct ublk_device *ub)
++__bpf_kfunc void ublk_bpf_release_io_from_aio(struct ublk_bpf_io *io)
 +{
-+	if (!ublk_dev_support_bpf_aio(ub))
-+		return 0;
-+
-+	ub->aio_prog.prog_id = ub->params.bpf.aio_ops_id;
-+	ub->aio_prog.ops = &ublk_aio_prog_consumer_ops;
-+
-+	return bpf_aio_prog_attach(&ub->aio_prog);
-+}
-+
-+static void ublk_bpf_aio_detach(struct ublk_device *ub)
-+{
-+	if (!ublk_dev_support_bpf_aio(ub))
-+		return;
-+	bpf_aio_prog_detach(&ub->aio_prog);
 +}
 +
 +
- static int ublk_bpf_prog_attach_cb(struct bpf_prog_consumer *consumer,
- 				   struct bpf_prog_provider *provider)
- {
-@@ -76,19 +149,25 @@ static const struct bpf_prog_consumer_ops ublk_prog_consumer_ops = {
- 
- int ublk_bpf_attach(struct ublk_device *ub)
- {
-+	int ret;
+ BTF_KFUNCS_START(ublk_bpf_kfunc_ids)
+ BTF_ID_FLAGS(func, ublk_bpf_complete_io, KF_TRUSTED_ARGS)
+ BTF_ID_FLAGS(func, ublk_bpf_get_iod, KF_TRUSTED_ARGS | KF_RET_NULL)
+@@ -240,6 +311,12 @@ BTF_ID_FLAGS(func, bpf_aio_alloc, KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_aio_alloc_sleepable, KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_aio_release)
+ BTF_ID_FLAGS(func, bpf_aio_submit)
 +
- 	if (!ublk_dev_support_bpf(ub))
- 		return 0;
++/* ublk bpf aio kfuncs */
++BTF_ID_FLAGS(func, ublk_bpf_attach_and_prep_aio)
++BTF_ID_FLAGS(func, ublk_bpf_dettach_and_complete_aio)
++BTF_ID_FLAGS(func, ublk_bpf_acquire_io_from_aio, KF_ACQUIRE)
++BTF_ID_FLAGS(func, ublk_bpf_release_io_from_aio, KF_RELEASE)
+ BTF_KFUNCS_END(ublk_bpf_kfunc_ids)
  
- 	ub->prog.prog_id = ub->params.bpf.ops_id;
- 	ub->prog.ops = &ublk_prog_consumer_ops;
- 
--	return ublk_bpf_prog_attach(&ub->prog);
-+	ret = ublk_bpf_prog_attach(&ub->prog);
-+	if (ret)
-+		return ret;
-+	return ublk_bpf_aio_attach(ub);
- }
- 
- void ublk_bpf_detach(struct ublk_device *ub)
- {
- 	if (!ublk_dev_support_bpf(ub))
- 		return;
-+	ublk_bpf_aio_detach(ub);
- 	ublk_bpf_prog_detach(&ub->prog);
- }
- 
+ __bpf_kfunc void bpf_aio_release_dtor(void *aio)
 diff --git a/drivers/block/ublk/bpf_aio.c b/drivers/block/ublk/bpf_aio.c
-index 6e93f28f389b..da050be4b710 100644
+index da050be4b710..06a6cc8f38b1 100644
 --- a/drivers/block/ublk/bpf_aio.c
 +++ b/drivers/block/ublk/bpf_aio.c
-@@ -213,6 +213,10 @@ __bpf_kfunc int bpf_aio_submit(struct bpf_aio *aio, int fd, loff_t pos,
+@@ -211,6 +211,7 @@ __bpf_kfunc void bpf_aio_release(struct bpf_aio *aio)
+ __bpf_kfunc int bpf_aio_submit(struct bpf_aio *aio, int fd, loff_t pos,
+ 		unsigned bytes, unsigned io_flags)
  {
++	unsigned op = bpf_aio_get_op(aio);
  	struct file *file;
  
-+	/*
-+	 * ->ops has to assigned by kfunc of consumer subsystem because
-+	 * bpf prog lifetime is aligned with the consumer subsystem
-+	 */
+ 	/*
+@@ -220,6 +221,9 @@ __bpf_kfunc int bpf_aio_submit(struct bpf_aio *aio, int fd, loff_t pos,
  	if (!aio->ops)
  		return -EINVAL;
  
++	if (unlikely((bytes > aio->buf_size) && bpf_aio_is_rw(op)))
++		return -EINVAL;
++
+ 	file = fget(fd);
+ 	if (!file)
+ 		return -EINVAL;
+@@ -232,7 +236,7 @@ __bpf_kfunc int bpf_aio_submit(struct bpf_aio *aio, int fd, loff_t pos,
+ 	aio->iocb.ki_filp = file;
+ 	aio->iocb.ki_flags = io_flags;
+ 	aio->bytes = bytes;
+-	if (bpf_aio_is_rw(bpf_aio_get_op(aio))) {
++	if (bpf_aio_is_rw(op)) {
+ 		if (file->f_flags & O_DIRECT)
+ 			aio->iocb.ki_flags |= IOCB_DIRECT;
+ 		else
 diff --git a/drivers/block/ublk/bpf_aio.h b/drivers/block/ublk/bpf_aio.h
-index 07fcd43fd2ac..d144c5e20dcb 100644
+index d144c5e20dcb..0683139f5354 100644
 --- a/drivers/block/ublk/bpf_aio.h
 +++ b/drivers/block/ublk/bpf_aio.h
-@@ -75,4 +75,8 @@ struct bpf_aio *bpf_aio_alloc_sleepable(unsigned int op, enum bpf_aio_flag aio_f
- void bpf_aio_release(struct bpf_aio *aio);
- int bpf_aio_submit(struct bpf_aio *aio, int fd, loff_t pos, unsigned bytes,
- 		unsigned io_flags);
-+
-+int bpf_aio_prog_attach(struct bpf_prog_consumer *consumer);
-+void bpf_aio_prog_detach(struct bpf_prog_consumer *consumer);
-+
- #endif
-diff --git a/drivers/block/ublk/bpf_aio_ops.c b/drivers/block/ublk/bpf_aio_ops.c
-index 12757f634dbd..04ad45fd24e6 100644
---- a/drivers/block/ublk/bpf_aio_ops.c
-+++ b/drivers/block/ublk/bpf_aio_ops.c
-@@ -120,6 +120,28 @@ static void bpf_aio_unreg(void *kdata, struct bpf_link *link)
- 	kfree(curr);
- }
+@@ -40,11 +40,15 @@ struct bpf_aio_buf {
  
-+int bpf_aio_prog_attach(struct bpf_prog_consumer *consumer)
-+{
-+	unsigned id = consumer->prog_id;
-+	struct bpf_aio_complete_ops *ops;
-+	int ret = -EINVAL;
-+
-+	mutex_lock(&bpf_aio_ops_lock);
-+	ops = xa_load(&bpf_aio_all_ops, id);
-+	if (ops && ops->id == id)
-+		ret = bpf_prog_consumer_attach(consumer, &ops->provider);
-+	mutex_unlock(&bpf_aio_ops_lock);
-+
-+	return ret;
-+}
-+
-+void bpf_aio_prog_detach(struct bpf_prog_consumer *consumer)
-+{
-+	mutex_lock(&bpf_aio_ops_lock);
-+	bpf_prog_consumer_detach(consumer, false);
-+	mutex_unlock(&bpf_aio_ops_lock);
-+}
-+
- static void bpf_aio_cb(struct bpf_aio *io, long ret)
- {
- }
-diff --git a/drivers/block/ublk/ublk.h b/drivers/block/ublk/ublk.h
-index 8343e70bd723..2c33f6a94bf2 100644
---- a/drivers/block/ublk/ublk.h
-+++ b/drivers/block/ublk/ublk.h
-@@ -126,6 +126,7 @@ struct ublk_queue {
- 
- #ifdef CONFIG_UBLK_BPF
- 	struct ublk_bpf_ops     *bpf_ops;
-+	struct bpf_aio_complete_ops     *bpf_aio_ops;
- #endif
- 
- 	unsigned short force_abort:1;
-@@ -159,6 +160,7 @@ struct ublk_device {
- 
- #ifdef CONFIG_UBLK_BPF
- 	struct bpf_prog_consumer prog;
-+	struct bpf_prog_consumer aio_prog;
- #endif
- 	struct mutex		mutex;
- 
-@@ -203,6 +205,14 @@ static inline bool ublk_dev_support_bpf(const struct ublk_device *ub)
- 	return ub->dev_info.flags & UBLK_F_BPF;
- }
- 
-+static inline bool ublk_dev_support_bpf_aio(const struct ublk_device *ub)
-+{
-+	if (!ublk_dev_support_bpf(ub))
-+		return false;
-+
-+	return ub->params.bpf.flags & UBLK_BPF_HAS_AIO_OPS_ID;
-+}
-+
- struct ublk_device *ublk_get_device(struct ublk_device *ub);
- struct ublk_device *ublk_get_device_from_id(int idx);
- void ublk_put_device(struct ublk_device *ub);
-diff --git a/include/uapi/linux/ublk_cmd.h b/include/uapi/linux/ublk_cmd.h
-index 27cf14e65cbc..ed6df4d61e89 100644
---- a/include/uapi/linux/ublk_cmd.h
-+++ b/include/uapi/linux/ublk_cmd.h
-@@ -406,9 +406,11 @@ struct ublk_param_zoned {
- 
- struct ublk_param_bpf {
- #define UBLK_BPF_HAS_OPS_ID            (1 << 0)
-+#define UBLK_BPF_HAS_AIO_OPS_ID        (1 << 1)
- 	__u8	flags;
- 	__u8	ops_id;
--	__u8	reserved[6];
-+	__u16	aio_ops_id;
-+	__u8	reserved[4];
+ struct bpf_aio {
+ 	unsigned int opf;
+-	unsigned int bytes;
++	union {
++		unsigned int bytes;
++		unsigned int buf_size;
++	};
+ 	struct bpf_aio_buf	buf;
+ 	struct bpf_aio_work	*work;
+ 	const struct bpf_aio_complete_ops *ops;
+ 	struct kiocb iocb;
++	void	*private_data;
  };
  
- struct ublk_params {
+ typedef void (*bpf_aio_complete_t)(struct bpf_aio *io, long ret);
+@@ -68,6 +72,38 @@ static inline unsigned int bpf_aio_get_op(const struct bpf_aio *aio)
+ 	return aio->opf & BPF_AIO_OP_MASK;
+ }
+ 
++/* Must be called from kfunc defined in consumer subsystem */
++static inline void bpf_aio_assign_cb(struct bpf_aio *aio,
++		const struct bpf_aio_complete_ops *ops)
++{
++	aio->ops = ops;
++}
++
++/*
++ * Skip `skip` bytes and assign the advanced source buffer for `aio`, so
++ * we can cover this part of source buffer by this `aio`
++ */
++static inline void bpf_aio_assign_buf(struct bpf_aio *aio,
++		const struct bpf_aio_buf *src, unsigned skip,
++		unsigned bytes)
++{
++	const struct bio_vec *bvec, *end;
++	struct bpf_aio_buf *abuf = &aio->buf;
++
++	skip += src->bvec_off;
++	for (bvec = src->bvec, end = bvec + src->nr_bvec; bvec < end; bvec++) {
++		if (likely(skip < bvec->bv_len))
++			break;
++		skip -= bvec->bv_len;
++	}
++
++	aio->buf_size = bytes;
++	abuf->bvec_off = skip;
++	abuf->nr_bvec = src->nr_bvec - (bvec - src->bvec);
++	abuf->bvec = bvec;
++}
++
++
+ int bpf_aio_init(void);
+ int bpf_aio_struct_ops_init(void);
+ struct bpf_aio *bpf_aio_alloc(unsigned int op, enum bpf_aio_flag aio_flags);
+diff --git a/drivers/block/ublk/ublk.h b/drivers/block/ublk/ublk.h
+index 2c33f6a94bf2..4bd04512c894 100644
+--- a/drivers/block/ublk/ublk.h
++++ b/drivers/block/ublk/ublk.h
+@@ -8,6 +8,7 @@
+ #include <uapi/linux/ublk_cmd.h>
+ 
+ #include "bpf_reg.h"
++#include "bpf_aio.h"
+ 
+ #define UBLK_MINORS		(1U << MINORBITS)
+ 
+@@ -47,6 +48,7 @@ struct ublk_bpf_io {
+ 	unsigned long			flags;
+ 	refcount_t                      ref;
+ 	int				res;
++	struct bpf_aio_buf		buf;
+ };
+ 
+ struct ublk_rq_data {
 -- 
 2.47.0
 
