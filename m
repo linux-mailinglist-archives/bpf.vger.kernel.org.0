@@ -1,43 +1,44 @@
-Return-Path: <bpf+bounces-48044-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48045-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 692EAA036E3
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 05:17:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 82129A036E7
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 05:17:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEE823A3674
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 04:17:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFACB3A2B27
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 04:17:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26599157A72;
-	Tue,  7 Jan 2025 04:17:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D769198A08;
+	Tue,  7 Jan 2025 04:17:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="R27ENXXl"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="sSHACGSE"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55835EC4;
-	Tue,  7 Jan 2025 04:17:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E0FECC;
+	Tue,  7 Jan 2025 04:17:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736223448; cv=none; b=nVXhgHqsAKEX+l1YxyegJyDMSKSi9yLXAScnnGtrvI9/WCaO0zTPDxmYCKQkf/oJcPLWSLieAX/5xRj6x0POJGIieL0N41qFks4W+4adYcuk/pEdAIPsKiwaG0dFFb2GKtpQN/q8lKx1zQhuLNOCIGs32jN3/JNdT/TCQBfBtqY=
+	t=1736223449; cv=none; b=P0yjE+Tp2x8aC4rdj3u/ydPecmgURr9H4+5U6zgr6Y9OWPyX59noc2uPfaHNy7r/oUcEEZiGg33ksL9mqmLUJdY+joXA4UVrrxedl5frJOelZt27aVvjaTvvTGcZAtMiuQUV74ARi/G8BockGOONvmhz6P4iPDSdI5f9uzxWDXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736223448; c=relaxed/simple;
-	bh=uMpDJn4WL/ugF/STMkBP72XWPwlkjNOQtdWJGhDr3xk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HdfMSkByk4FwFMBNnUHbyJCdZBLzrhxNjQQojJCcq5ELeHJ5QCiL4aVM3hKVEXKUwI4HNMDb/FJN39i+5kV1R4jBQ+Xu4be6EjcR0NoyLmGlTNjIMM7Dp7ZO8IGtGdgsNl/r6+qrvkm9SU/fgEQ7JUWYA9sfazQfY/cE0N8K01A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=R27ENXXl; arc=none smtp.client-ip=115.124.30.98
+	s=arc-20240116; t=1736223449; c=relaxed/simple;
+	bh=8Me0+ORdUwnQJJZusQP7gsBibbKOgKoUBm5L+YNIMj0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=BGYMokYnpO8nVSwd8qcYya/14z6AeRo0sXtqdmJ9yRi9GkkeWiByZn2PqN3WL/qk4is76nK7nAbamWMrHZhKA2ddOekTO/r8wzhLkzlVPpZPwXlxyflhd7a5NjlFdc3tWnXlsICZtVGq90unGcZVaC+CmZ4RsyTKCYexPc51xT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=sSHACGSE; arc=none smtp.client-ip=115.124.30.112
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1736223442; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=bOH18qK4nR/W2tKNNGJkI+f12+0zwrmAacbo4a/CAX8=;
-	b=R27ENXXl9Xl+N8tFk+0qlAg6Z7a/yADE0Ue5dt1I9VhROgJvk+K/kP94GPKYKlrzWrc5pzPbNuLklOWYH/Lgz5yQsx/c3c/nI5JB7mhfrckbyisCAjG9ly/dGZqONc+LI9wSJ/ocsejE2EhVwap1j2xrD8WUBsuhkDjHnrob3So=
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WN9KZYS_1736223435 cluster:ay36)
+	t=1736223443; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=GAH1Lz6yySHh0akD6UjVzqvmSG58TUkUU80VrEvWcyY=;
+	b=sSHACGSEl3WG8GaAfO/5IDxNBX95rPo7e7VBOiMFhuPkKBB5IiIkrlNAikpFI2mPJdI9H9xA0dxwzoTekjWS6M9nMuWn0BDVKQfeCpMJx/4bg58Z020KOHifZtOq8cGe0ss6E9CpZ52HBw5d6NGkKril0MotKJprbX8kPcnIZYs=
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WN9KZa6_1736223441 cluster:ay36)
           by smtp.aliyun-inc.com;
-          Tue, 07 Jan 2025 12:17:20 +0800
+          Tue, 07 Jan 2025 12:17:21 +0800
 From: "D. Wythe" <alibuda@linux.alibaba.com>
 To: kgraul@linux.ibm.com,
 	wenjia@linux.ibm.com,
@@ -62,10 +63,12 @@ Cc: kuba@kernel.org,
 	linux-s390@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH bpf-next v5 0/5] net/smc: Introduce smc_ops
-Date: Tue,  7 Jan 2025 12:17:10 +0800
-Message-ID: <20250107041715.98342-1-alibuda@linux.alibaba.com>
+Subject: [PATCH bpf-next v5 1/5] bpf: export necessary sympols for modules with struct_ops
+Date: Tue,  7 Jan 2025 12:17:11 +0800
+Message-ID: <20250107041715.98342-2-alibuda@linux.alibaba.com>
 X-Mailer: git-send-email 2.45.0
+In-Reply-To: <20250107041715.98342-1-alibuda@linux.alibaba.com>
+References: <20250107041715.98342-1-alibuda@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,83 +77,54 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch aims to introduce BPF injection capabilities for SMC and
-includes a self-test to ensure code stability.
+Exports three necessary symbols for implementing struct_ops with
+tristate subsystem.
 
-Since the SMC protocol isn't ideal for every situation, especially
-short-lived ones, most applications can't guarantee the absence of
-such scenarios. Consequently, applications may need specific strategies
-to decide whether to use SMC. For example, an application might limit SMC
-usage to certain IP addresses or ports.
+To hold or release refcnt of struct_ops refcnt by inline funcs
+bpf_try_module_get and bpf_module_put which use bpf_struct_ops_get(put)
+conditionally.
 
-To maintain the principle of transparent replacement, we want applications
-to remain unaffected even if they need specific SMC strategies. In other
-words, they should not require recompilation of their code.
+And to copy obj name from one to the other with effective checks by
+bpf_obj_name_cpy.
 
-Additionally, we need to ensure the scalability of strategy implementation.
-While using socket options or sysctl might be straightforward, it could
-complicate future expansions.
+Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+---
+ kernel/bpf/bpf_struct_ops.c | 2 ++
+ kernel/bpf/syscall.c        | 1 +
+ 2 files changed, 3 insertions(+)
 
-Fortunately, BPF addresses these concerns effectively. Users can write
-their own strategies in eBPF to determine whether to use SMC, and they can
-easily modify those strategies in the future.
-
-v2:
-  1. Rename smc_bpf_ops to smc_ops.
-  2. Change the scope of smc_ops from global to per netns.
-  3. Directly pass parameters to ops instead of smc_ops_ctx.
-  4. Remove struct smc_ops_ctx.
-  5. Remove exports that are no longer needed.
-
-v3:
-  1. Remove find_ksym_btf_id_by_prefix_kind.
-  2. Enhance selftest, introduce a complete ops for filtering smc
-     connections based on ip pairs and a realistic topology test
-     to verify it.
-
-v4:
-  1. Remove unless func: smc_bpf_ops_check_member()
-  2. Remove unless inline func: smc_ops_find_by_name()
-  3. Change CONFIG_SMC=y to complete CI testing
-  4. Change smc_sock to smc_sock___local in test to avoid
-     compiling failed with CONFIG_SMC=y
-  5. Improve test cases, remove unnecessary timeouts and multi-thread
-     test, using network_helpers to start testing between server and
-     client.
-  6. Fix issues when the return value of the ops function is neither 0
-     nor 1.
-
-v5:
-  1. Fix incorrect CI config from CONFIG_SMC=Y to CONFIG_SMC=y.
-
-D. Wythe (5):
-  bpf: export necessary sympols for modules with struct_ops
-  net/smc: Introduce generic hook smc_ops
-  net/smc: bpf: register smc_ops info struct_ops
-  libbpf: fix error when st-prefix_ops and ops from differ btf
-  bpf/selftests: add selftest for bpf_smc_ops
-
- include/net/netns/smc.h                       |   3 +
- include/net/smc.h                             |  51 +++
- kernel/bpf/bpf_struct_ops.c                   |   2 +
- kernel/bpf/syscall.c                          |   1 +
- net/ipv4/tcp_output.c                         |  15 +-
- net/smc/Kconfig                               |  12 +
- net/smc/Makefile                              |   1 +
- net/smc/af_smc.c                              |  10 +
- net/smc/smc_ops.c                             | 130 ++++++
- net/smc/smc_ops.h                             |  30 ++
- net/smc/smc_sysctl.c                          |  95 +++++
- tools/lib/bpf/libbpf.c                        |  25 +-
- tools/testing/selftests/bpf/config            |   4 +
- .../selftests/bpf/prog_tests/test_bpf_smc.c   | 390 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/bpf_smc.c   | 116 ++++++
- 15 files changed, 873 insertions(+), 12 deletions(-)
- create mode 100644 net/smc/smc_ops.c
- create mode 100644 net/smc/smc_ops.h
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
-
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index 606efe32485a..00c212e0ad39 100644
+--- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -1119,6 +1119,7 @@ bool bpf_struct_ops_get(const void *kdata)
+ 	map = __bpf_map_inc_not_zero(&st_map->map, false);
+ 	return !IS_ERR(map);
+ }
++EXPORT_SYMBOL_GPL(bpf_struct_ops_get);
+ 
+ void bpf_struct_ops_put(const void *kdata)
+ {
+@@ -1130,6 +1131,7 @@ void bpf_struct_ops_put(const void *kdata)
+ 
+ 	bpf_map_put(&st_map->map);
+ }
++EXPORT_SYMBOL_GPL(bpf_struct_ops_put);
+ 
+ int bpf_struct_ops_supported(const struct bpf_struct_ops *st_ops, u32 moff)
+ {
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 5684e8ce132d..62238ec989dc 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1167,6 +1167,7 @@ int bpf_obj_name_cpy(char *dst, const char *src, unsigned int size)
+ 
+ 	return src - orig_src;
+ }
++EXPORT_SYMBOL_GPL(bpf_obj_name_cpy);
+ 
+ int map_check_no_btf(const struct bpf_map *map,
+ 		     const struct btf *btf,
 -- 
 2.45.0
 
