@@ -1,181 +1,158 @@
-Return-Path: <bpf+bounces-48066-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48067-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FD32A03CDA
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 11:48:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6DD9A03D52
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 12:10:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3AB51885630
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 10:48:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3579E188181B
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 11:10:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF2611EBFE4;
-	Tue,  7 Jan 2025 10:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C75A61DF756;
+	Tue,  7 Jan 2025 11:10:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CpjNhOIS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LoInHkcR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7485F1EBA0D;
-	Tue,  7 Jan 2025 10:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20A4E33993
+	for <bpf@vger.kernel.org>; Tue,  7 Jan 2025 11:10:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736246839; cv=none; b=dpJvGG5OGRtSXO2cSQZi97Fw5PVcO2gsSEEwwzbftzFLHJX8SQgVjQdGa2Ql1o+Uh1RKBNgMEn+FFQTTbGg9G3ITeHT2xaeU45TyZMQv3+/7CPjFF6Yhj2K6darGVjAhXdjsFvj0HfZ9PdAhyd5bFVZMW9aaDwyy8XbR8qOJvUc=
+	t=1736248245; cv=none; b=tzt1zFOy2KixShjalwOIFLpYlasj4HA0Bz+NP1cqfmUEStWlhCLw2HuSRvbNYxnyPbgSOPiULYJhAix0GRANk5ImKyN9LOoQVQFO8synabaxc3U/0Fk93K03AdLRD36oIorJpW0bgdW5eVCe653KGksvC2tq6Ot7ifV4bEJ4UdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736246839; c=relaxed/simple;
-	bh=rmV+IrFXiYRmJO8m/Th28rKjbiFt6MRkkO4Sbqpe3Gw=;
+	s=arc-20240116; t=1736248245; c=relaxed/simple;
+	bh=E+9StflzKPqBMknpXlzs1oW6rrIj9vZmSxeFC14GxSc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TNb14KTZ/Gk9LUtJWYCr1QUzqn5NyplQvLv55/qnCE8Zu6ZAo2BAdxeqNqO6QHLuogJ5r69RWkq8BwohWTpreKTnNE+1ULcyCA9R7VYJX2omtq7CvUnuY6rc2vFS5UpK0nv9UmFu6fKGOuKyrvsDt2rJ3BGBfcv3gOPsWYxvq04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CpjNhOIS; arc=none smtp.client-ip=209.85.221.47
+	 To:Cc:Content-Type; b=FdQdVoHzeuMNYa3kaAv5si/dDdROIx9fSPtx4gR9jVcLBbRameMCkr5jjQEFyY/UHQAkGIhcFRpAN0koOfbUmfa3pq5CKOpk3LaunOp6zYWjNTb/918XC9UXmMkHBid+mGLYG77X5YrnOS7xcCQ8o8Ly96jY5QoUeEqwUeB+2hc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LoInHkcR; arc=none smtp.client-ip=209.85.167.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3862df95f92so6746814f8f.2;
-        Tue, 07 Jan 2025 02:47:17 -0800 (PST)
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-53e3a37ae07so16030476e87.3
+        for <bpf@vger.kernel.org>; Tue, 07 Jan 2025 03:10:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736246836; x=1736851636; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fh0AFKuAKxAUWXpt7kGI1qVooHVbo7SNiy/9flSEnaA=;
-        b=CpjNhOISeqslgdQr8wnZOAp9ApHs2YwkPksnqk1MKQ3QUOLtcQZk7hA0hrb07/9/7w
-         DeCq7eKw8HMlHv/jTgrClZY/UpKs0dm6fFCNyiHME+4jwmttynV65KVfS5bhPgIuZSyB
-         NUJc6AHKEfCN1BBVj30d3b9oN7m0Lm5DNKA8F3l+Pg2XPvx8UXMNJFLLMuafrBPbM8sT
-         BWzb4jejI0sE0nYIv9saiZIA0NS2yVLt8jp3rV/VWq+7fHcsZqm3w25fmO/t7IbvdDSZ
-         QmD6Oc7ZQuc1QSx7yVyG8Py/QtnR73wSV9l0ttm/E2hQEfOn3zA4Cars7nJHrcXWM09e
-         o4VA==
+        d=gmail.com; s=20230601; t=1736248240; x=1736853040; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=WZGUI3dB84Vl01DEaY9V1Ugv3huIhg/nxLbxfkp5CH8=;
+        b=LoInHkcRxc+LTJGcZZXuNcUvTAlAW1QnTahz7SNjMgLwzNLM2H/6R/IINBKqOBTG7Y
+         dOnPUPe0n8MGJs517YrBC5QUtzFfiu8POQg9NwSNS+upRA8EJCJUHyvLvsCYd4hVrZKy
+         OY6QIfw5uiw2waVyst7eemZBA/e7ZlQfNJ0vFbnRziWI+PRK8G0QJXOCmO13bkLkxIy4
+         5OAQHyk0q5ydzR5dZ0xLAG8e6xLOaS66zQvS/cuK9LXSZKlgC+mnjzKqGED2ttYHGvtz
+         4LYIP4zAny8PuKXJpXX6VIYcv6pPre7a3o1b1yx1qbYDR+Z+U8/7bgB6DPBEz9o+1TZB
+         MrsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736246836; x=1736851636;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fh0AFKuAKxAUWXpt7kGI1qVooHVbo7SNiy/9flSEnaA=;
-        b=mFtrPvJjBAGjxAmAZWbxXqEIyL3aC9hidFvitNPDzHXsPypEbgQzSWR5x4LmpKblzE
-         6nRbfhLPdrGEUiYO3/Kzw1yNVqvr9Y6P035rGl9ZcdfNZ/MZAupgjm5o58zWOOx3Dvlh
-         4+Bmw1MvV2f/xAmMUECW2xG7XCgZocbkXvCLP2nKWEkgoxrEAkKqYma6NAgpwyk+2OnJ
-         47Cfb6Tw4Yz/lvDa3jzYgFZ0C7378AZkuABGCYmYCM5ckf+8gz+4SgXp/zFtQRxRRujl
-         m20u1bMQWjrVCLE1h82pSnf75G6KdXPDznnHie9YpeMfZZxvDHkX0Pqd3wqJsqrCxJke
-         bEJA==
-X-Forwarded-Encrypted: i=1; AJvYcCUBK8ZOT4hMZho0bTffApVOjCLJuhuMqDWczKlvOjbrrZVAsKp+qrEhuZoCc5MfI9b5FYY=@vger.kernel.org, AJvYcCUfHeUaTrTME02pjvkkXLPDOgj7wqJdQlhkzI/V4tzlB1p0B+L+IeYV00CwK4gMso3e2Q39pF3+yOFVgQ==@vger.kernel.org, AJvYcCV6VJPvg9gAUyI7S2BjNXlFtJ1na2/IckmZj0hgV9rWo4kpjFPPnNnzEGrDMIVYdYDGs/W/FfYj1mPe2SpUo0QH@vger.kernel.org, AJvYcCVB/oQ5RAPRCmg3OHubbU4edbCPbpeTIHQHWDs266UAIAJoaIL9/8QnORdjLv/LI6LeVDxczpLbWfMWA8JASGY=@vger.kernel.org, AJvYcCWtpdhJfVVcbI++sm9qYQXuDvFFa/z8W27l4CgSiGStsQOumx5cFLIPPGfqXtrGPxv3UwyQB9W4@vger.kernel.org, AJvYcCX4aI1OkbVCkO3dZ6bdwISAOJtS2vCZ1CF3fAxLy17kqeDR8q2pU0S7QbFKdxdtR1xyyee7e3puIbu7@vger.kernel.org, AJvYcCXUQKrQ0wF2qtY5oOa9v8p6wlWfobcXO5/U5rTmHbot+cStJfWy9e8YNroJ/OujX0M56A8RadBWFo56C5Au@vger.kernel.org, AJvYcCXY8EACV/lA1hY4o105sAatpGB/KNJov3S+W3coJ80N7vX7AIPEuzTtyntcHkwCiXa2gU52CJ33xaTWuA==@vger.kernel.org, AJvYcCXxX0J4F8Jj8JiKybWKhtXJg0TOQObvD7HIyKoS1Z27pLyIO51GPCyfC+8SG5g4c99TNOp2nxcMW2dO@vger.kernel.org
-X-Gm-Message-State: AOJu0YwR7xZHmlYBFjisBzLTlIh6j1zZY0Cd8IVSNcA7I2X0h04MqW17
-	s6eRsNRpJOsrbCMXi9rC9QmOvf5t68olKOc+D9AKSQH4U4fcBckxUY09lkHaqTZEgI2ORXAUMdR
-	3EbLSjbuinzW+g692W18EmOZEMbiJEKd9
-X-Gm-Gg: ASbGncsTONgZgyE2X7IM4+HIcEKSBdwCbzhE8lgyqlRee7wuV/6sHzIVCQ8BbLLN4X2
-	srNBsmR44ZzqwPIXkj2mCY1gDkL92LMaOmpZv
-X-Google-Smtp-Source: AGHT+IHp1K2L48YKiIQv0pwnQlZPYX8cMCBbRBU/fwg+IEmnnlA8QF5/odQWLMrNcSpCZK0F/LO3cHqTWVNEZ39orXM=
-X-Received: by 2002:a05:6000:480a:b0:386:1cd3:89fa with SMTP id
- ffacd0b85a97d-38a221fa8c6mr57843141f8f.33.1736246835555; Tue, 07 Jan 2025
- 02:47:15 -0800 (PST)
+        d=1e100.net; s=20230601; t=1736248240; x=1736853040;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WZGUI3dB84Vl01DEaY9V1Ugv3huIhg/nxLbxfkp5CH8=;
+        b=lt9wXCKGFZ9M2zRWeGM4+xVyuRhQLO0HBQxqKAOb0CV9pqUISETX4qg9Rj0lXU3DaU
+         cjrGAVxNxXO1yY4FlvwwAmJ/RxjmUztQMQB5IB+h66vmVec575EwCdYdCISHIF4PwqJl
+         6HFOztogwlPs5OEc8mI8YuEEHdTmCcxHWXQ2Ey/azqNe4mFR/mKhjwwWtPHJvVGkU2Ru
+         tIVsaybm5UpN5QLKMnpK1tYYOT7arL0GAlcl4B4U8wOlO2bv+kVybGjVjyu8fFBPDLWy
+         CoGlVW/BmazthtlIom+8tJvCBqjiLAKoYtduZg5P4xA569vXQ8uTU18YLx/YcAqzQ0ow
+         1B8A==
+X-Forwarded-Encrypted: i=1; AJvYcCUiERf8Syjqa1NVzot+MlnMxOvJrzQ+qSwtNWdCNNJg2akbNLWY2q5pw/6TKGF++/XQNMQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx4ePhURLRUWAKXe8tKjlUJAXLLIXQZ1UY1p9+ywaPoD0hrMQ59
+	NAuZVFKdRGth7x3qmF4q2pPmMrntkylohlv3ojfwI0JSSOynE2qbfZ5ZAs0nhFEAevxs+lLXs8V
+	KZhcfK03C5Ctfe9zqJBJ7bnk91z6yAuEnjpy67lgTqHw=
+X-Gm-Gg: ASbGncu1OdyVZxM2jFH61X4CTZwmoDz/wlornBHZomCahTGADxHhEkn1GllTTsJuhWI
+	8qzlO9T03P8HCHFT3fqHBpD5ouCMicUUkqUvlzQZVLZJZqhhz7w+bu5Vg9ls9K04q+DPbRAw=
+X-Google-Smtp-Source: AGHT+IFN6Yy45eT73eJ8VNuw3xrBKYmwuaAm+UjNow3yKJpMMxgAZdRnKMpyuzaFMxLmmLeIOj+J9vkrlBqjzqpMgho=
+X-Received: by 2002:a05:6512:2342:b0:540:3566:5760 with SMTP id
+ 2adb3069b0e04-54229562ab7mr18413668e87.35.1736248240028; Tue, 07 Jan 2025
+ 03:10:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250104125732.17335-1-shaw.leon@gmail.com> <20250107085646.42302-1-kuniyu@amazon.com>
-In-Reply-To: <20250107085646.42302-1-kuniyu@amazon.com>
-From: Xiao Liang <shaw.leon@gmail.com>
-Date: Tue, 7 Jan 2025 18:46:38 +0800
-Message-ID: <CABAhCOQAqspiaFO-486UtZpEWsua51f+1f6-LocNhHVfAqW=NQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v7 00/11] net: Improve netns handling in rtnetlink
-To: Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc: andrew+netdev@lunn.ch, b.a.t.m.a.n@lists.open-mesh.org, 
-	bpf@vger.kernel.org, bridge@lists.linux.dev, davem@davemloft.net, 
-	donald.hunter@gmail.com, dsahern@kernel.org, edumazet@google.com, 
-	horms@kernel.org, idosch@nvidia.com, jiri@resnulli.us, kuba@kernel.org, 
-	linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-ppp@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org, 
-	linux-wpan@vger.kernel.org, liuhangbin@gmail.com, netdev@vger.kernel.org, 
-	osmocom-net-gprs@lists.osmocom.org, pabeni@redhat.com, shuah@kernel.org, 
-	wireguard@lists.zx2c4.com
+References: <20250106145328.399610-1-charalampos.stylianopoulos@gmail.com>
+ <28acb589-6632-4250-a8ca-00eacda03305@iogearbox.net> <Z3zcTB+SjPK5QOt9@eis> <CAAvdH+yNG=GefEd5CcP_52gPzzZexWMMxFAxnM3isX04iErMfQ@mail.gmail.com>
+In-Reply-To: <CAAvdH+yNG=GefEd5CcP_52gPzzZexWMMxFAxnM3isX04iErMfQ@mail.gmail.com>
+From: Charalampos Stylianopoulos <charalampos.stylianopoulos@gmail.com>
+Date: Tue, 7 Jan 2025 12:10:28 +0100
+X-Gm-Features: AbW1kvYV9M5tQqSB81lBWlmevNnGUlcxEOTRLCEK3vB4GJJFEMci2eqnSLhJVb4
+Message-ID: <CAAvdH+wHjWEvO3e0_=o4imJZq1082pzp-qszbQvj_Ev50eQCrw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/4] expose number of map entries to userspace
+To: Anton Protopopov <aspsk@isovalent.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>, Nick Zavaritsky <mejedi@gmail.com>, aspsk2@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 7, 2025 at 4:57=E2=80=AFPM Kuniyuki Iwashima <kuniyu@amazon.com=
-> wrote:
->
-> From: Xiao Liang <shaw.leon@gmail.com>
-> Date: Sat,  4 Jan 2025 20:57:21 +0800
-[...]
-> > - In amt_newlink() drivers/net/amt.c:
-> >
-> >     amt->net =3D net;
-> >     ...
-> >     amt->stream_dev =3D dev_get_by_index(net, ...
-> >
-> >   Uses net, but amt_lookup_upper_dev() only searches in dev_net.
-> >   So the AMT device may not be properly deleted if it's in a different
-> >   netns from lower dev.
->
-> I think you are right, and the upper device will be leaked
-> and UAF will happen.
->
-> amt must manage a list linked to a lower dev.
->
-> Given no one has reported the issue, another option would be
-> drop cross netns support in a short period.
+(sorry for double posting, this time in plain text)
+Thanks a lot for the feedback!
 
-Yes. I also noticed AMT sets dev->netns_local to prevent netns
-change. Probably it also assumes the same netns during creation.
+So, to double check, the suggestion is to only extend the libbpf API
+with a new helper that does pretty much what get_cur_elements() does
+in tools/testing/selftests/bpf/map_tests/map_percpu_stats.c ?
 
-[...]
-> >
-> > - In gtp_newlink() in drivers/net/gtp.c:
-> >
-> >     gtp->net =3D src_net;
-> >     ...
-> >     gn =3D net_generic(dev_net(dev), gtp_net_id);
-> >     list_add_rcu(&gtp->list, &gn->gtp_dev_list);
-> >
-> >   Uses src_net, but priv is linked to list in dev_net. So it may not be
-> >   properly deleted on removal of link netns.
->
-> The device is linked to a list in the same netns, so the
-> device will not be leaked.  See gtp_net_exit_batch_rtnl().
->
-> Rather, the problem is the udp tunnel socket netns could be
-> freed earlier than the dev netns.
-
-Yes, you're right. Actually I mean the netns of the socket by "link netns"
-(there's some clarification about this in patch 02).
-
-[...]
-> >
-> > - In pfcp_newlink() in drivers/net/pfcp.c:
-> >
-> >     pfcp->net =3D net;
-> >     ...
-> >     pn =3D net_generic(dev_net(dev), pfcp_net_id);
-> >     list_add_rcu(&pfcp->list, &pn->pfcp_dev_list);
-> >
-> >   Same as above.
->
-> I haven't tested pfcp but it seems to have the same problem.
->
-> I'll post patches for gtp and pfcp.
->
-
-It would be nice.
-
->
-> >
-> > - In lowpan_newlink() in net/ieee802154/6lowpan/core.c:
-> >
-> >     wdev =3D dev_get_by_index(dev_net(ldev), nla_get_u32(tb[IFLA_LINK])=
-);
-> >
-> >   Looks for IFLA_LINK in dev_net, but in theory the ifindex is defined
-> >   in link netns.
->
-> I guess you mean the ifindex is defined in src_net instead.
-> Not sure if it's too late to change the behaviour.
-
-Yes, it's source net for lowpan. I think it depends on whether
-the interpretation of IFLA_LINK should be considered as part API
-provided by rtnetlink core, or something customizable by driver.
-In the former case, this can be considered as a bug.
-
-Thanks.
+> On Tue, 7 Jan 2025 at 08:44, Anton Protopopov <aspsk@isovalent.com> wrote:
+>>
+>> On 25/01/06 05:19PM, Daniel Borkmann wrote:
+>> > On 1/6/25 3:53 PM, Charalampos Stylianopoulos wrote:
+>> > > This patch series provides an easy way for userspace applications to
+>> > > query the number of entries currently present in a map.
+>> > >
+>> > > Currently, the number of entries in a map is accessible only from kernel space
+>> > > and eBPF programs. A userspace program that wants to track map utilization has to
+>> > > create and attach an eBPF program solely for that purpose.
+>> > >
+>> > > This series makes the number of entries in a map easily accessible, by extending the
+>> > > main bpf syscall with a new command. The command supports only maps that already
+>> > > track utilization, namely hash maps, LPM maps and queue/stack maps.
+>> >
+>> > An earlier attempt to directly expose it to user space can be found here [0], which
+>> > eventually led to [1] to only expose it via kfunc for BPF programs in order to avoid
+>> > extending UAPI.
+>> >
+>> > Perhaps instead add a small libbpf helper (e.g. bpf_map__current_entries to complement
+>> > bpf_map__max_entries) which does all the work to extract that info via [1] underneath?
+>>
+>> One small thingy here is that bpf_map_sum_elem_count() is only
+>> available from the map iterator. Which means that to get the
+>> bpf_map_sum_elem_count() for one map only, one have to iterate
+>> through the whole set of maps (and filter out all but one).
+>>
+>> I wanted to follow up my series by either adding the result of
+>> calling bpf_map_sum_elem_count() to map_info as u32 or to add
+>> possibility to provide a map_fd/map_id when creating an iterator
+>> (so that it is only called for one map). But so far I haven't
+>> a real use case for getting the number of elements for one map only.
+>>
+>> > Thanks,
+>> > Daniel
+>> >
+>> >   [0] https://lore.kernel.org/bpf/20230531110511.64612-1-aspsk@isovalent.com/
+>> >   [1] https://lore.kernel.org/bpf/20230705160139.19967-1-aspsk@isovalent.com/
+>> >       https://lore.kernel.org/bpf/20230719092952.41202-1-aspsk@isovalent.com/
+>> >
+>> > > Charalampos Stylianopoulos (4):
+>> > >    bpf: Add map_num_entries map op
+>> > >    bpf: Add bpf command to get number of map entries
+>> > >    libbpf: Add support for MAP_GET_NUM_ENTRIES command
+>> > >    selftests/bpf: Add tests for bpf_map_get_num_entries
+>> > >
+>> > >   include/linux/bpf.h                           |  3 ++
+>> > >   include/linux/bpf_local_storage.h             |  1 +
+>> > >   include/uapi/linux/bpf.h                      | 17 +++++++++
+>> > >   kernel/bpf/devmap.c                           | 14 ++++++++
+>> > >   kernel/bpf/hashtab.c                          | 10 ++++++
+>> > >   kernel/bpf/lpm_trie.c                         |  8 +++++
+>> > >   kernel/bpf/queue_stack_maps.c                 | 11 +++++-
+>> > >   kernel/bpf/syscall.c                          | 32 +++++++++++++++++
+>> > >   tools/include/uapi/linux/bpf.h                | 17 +++++++++
+>> > >   tools/lib/bpf/bpf.c                           | 16 +++++++++
+>> > >   tools/lib/bpf/bpf.h                           |  2 ++
+>> > >   tools/lib/bpf/libbpf.map                      |  1 +
+>> > >   .../bpf/map_tests/lpm_trie_map_basic_ops.c    |  5 +++
+>> > >   tools/testing/selftests/bpf/test_maps.c       | 35 +++++++++++++++++++
+>> > >   14 files changed, 171 insertions(+), 1 deletion(-)
+>> > >
+>> >
 
