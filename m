@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-48075-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48074-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9213A03EA5
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 13:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ECA41A03EA4
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 13:08:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B7C91885346
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 12:08:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65C241884F78
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 12:08:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C1511F0E39;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 660DE1F0E36;
 	Tue,  7 Jan 2025 12:08:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JgTFJyea"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B0STvmqv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB2EA1EE7AA;
-	Tue,  7 Jan 2025 12:08:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 696CA1EF080;
+	Tue,  7 Jan 2025 12:08:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736251708; cv=none; b=uPHqWv62BAEdcH/WpU/A1VVsVCyFAaYpgmu/566GcWoqnnZddenl5TDyFDMU4tpnMD2m3aYr4iEfNf4WrI8TwwiyjnInbYDMCCQ8SYWS/wCJOopgZ12ASPOINRuMMowi5ux33jb8tYaOjtTvTeaFBEDHI2JmSBTZvzNbxfXqkVw=
+	t=1736251706; cv=none; b=hYl9+AaZ2QxR/6tnj/oGCDxcuRRMG3z4n/LFizRevJf627OmtBgGxf42Roz1ZwzwXBBn9/vssOyL/7Oi+4lIQtTxT+V6enJ2ak2BBpBj7gBmgTIzirC/2MPLHVvkYmm55mCD3YvOVyU21T/6pBQKev1huJgeQGBtwxmKy+GOTcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736251708; c=relaxed/simple;
-	bh=KpB8oZdccyptJ51tr/eLtNf7aCHFsrx2/aU7p0RUFOY=;
+	s=arc-20240116; t=1736251706; c=relaxed/simple;
+	bh=rwh/Sdvw8Cyqx4MZdZgM7ir/civJuEX2EqHleHtzMmA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CnBPD/l+4a3RBNLs8rA7EXG9bfUMiSjmM2zR+vE8t4qYFrOIPV4mU/T5KpNFL3s6Rm+CV1fKYXrw1IS5g9/Lb/cgYhPlmX4YQw6DYTW/aRF93FLKFgwTUChEXyie4yRCmRFU1ItvFNy9MbjXpXlrrn0ehUdKACuBso/93GY6vbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JgTFJyea; arc=none smtp.client-ip=209.85.214.177
+	 MIME-Version; b=OEEg/pN+K/dgA6d9qqEmqE4V7DVq1ftjMdS4HU1d0pA/qSjbCLv8rtZs3TcOt5nLXbfBG/Eyylz7/kew2tF23jzUROMww1wE5PPrNjJLV8NObxG8B2sOG6iiaAL54iFuwRxoBXg315UzR4pDv/IAHesrozPVmnXNREpoe5M/fPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B0STvmqv; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-218c8aca5f1so31260545ad.0;
-        Tue, 07 Jan 2025 04:08:15 -0800 (PST)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-21a7ed0155cso4873555ad.3;
+        Tue, 07 Jan 2025 04:08:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736251693; x=1736856493; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1736251697; x=1736856497; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=75TVTqAygBf7jlHWTgqW0xceJCICHP0IxYYCkmaSwCo=;
-        b=JgTFJyeaFwdGfvhgd0cMTc1oeQMl/H3BVlHOhBp/trZ5c0Ost+RAS0Eye8G4xAbGOt
-         fnXF/QnCS3p6IxOMYUyt6IllYT8OggDK+HGFPcQGKNUx/jdgJYZhU6uKeaVnkCnPWGzZ
-         wpxTmtWZ104rA+Mmb42BGrxlTyL1d7ZgY9StlA9Jf3jNVgm00ulD3SuiBG/t1h/nzlyP
-         qotE0d5VupWJnXgTfz9iB+fhW15LGrXKVqlHdtwuh/R0RKAs44UFB63x1xvGY+fOuauj
-         QYHLPQTS01+nYD/R5DpxxUqAWR+XpPxvGJlqb5dqFMWcZHmdQpdElrZU697tvQ7w94JM
-         /AJQ==
+        bh=/OCRtXrynCQq34YyOvSw6d6QSzz1lqkWDPmH7k10/UA=;
+        b=B0STvmqvYoyuPMS4pAlkzvZ7rsPp3UCSiql1cD7bD40YW7xz9I2YDZQq1bN3FyXdX9
+         zbtZPPiJnsHT8zHV9cBRJJJ2fM+n4QIGuKG4wqUybsGrYRfNOJivO+5APyha0vDWlRJ4
+         WS7k7Muu1fWpHV5nSaJP9MnFwBfKSATeg4vKe1A0RCL35dP2vF4oIxT7bVhAYmymxFVu
+         ASooHsnsgL7FF+U8fDPHc7tcyTbtC96XqQDx7wwvGb7jm9qXwTeCgSJ3FxabZomlj6NG
+         z4cYWdTCUvBuGkGPan7OVhHP7OkhHk0w4lRF/PMoj9i90sEcLGKZV0mZ3+cXCnj1NeGC
+         zqtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736251693; x=1736856493;
+        d=1e100.net; s=20230601; t=1736251697; x=1736856497;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=75TVTqAygBf7jlHWTgqW0xceJCICHP0IxYYCkmaSwCo=;
-        b=VmZvm8uGDqsPOfWgWKrUDA5N6Thg4l+30dIdFfk2zrqdfx7HuQpxjdXJDr0Dw/N/Eg
-         armsJ64MZcsjm3uqDGBINUvtxs4Qg3tYjYDETEt1iwJjuaKLXG5s/SZNeUK2ji4tVTgA
-         VZMQ4SGj9Zeq3PfX1l5EaXDuk+XrqCQEql3aDdFrLpN07VwH7eC4HOjbkMzTnUv4Kxa5
-         ySctiidxK5+pg+Fl9/59zVorBXxrQ1GGFEHUcvPBGLiZLLMOcWHmMxmZodh6U0nyLHbA
-         jSRDhdgM62ervQLi2wq13+J6w7wwgpWSURA9FveYhUZftx85oPPzs2yQJ4N/A2TCYCzN
-         31Lg==
-X-Forwarded-Encrypted: i=1; AJvYcCWfpIO/HEhEXFiTFmpYi8cvEAl/8EG+TZgyS7fDWz7TeyPUXgFBT+8vramKDPW/r+mIS1Vnv0DgZBePoA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyQK+USB3yctFIUCZ966/6P52i2r2IeMcW/2MVPAOOCxRrWrUEr
-	KWBBG5VtSxpuCkpipE7v7CxHbuOS9cbKcj3L/+o2EyRR3sdw3BZ2
-X-Gm-Gg: ASbGncuNxsr2dVOyzoS5ujx6NRXl3tO0ZHs87DiOg8NT6UzXsjQLdFELv9KCP8+vNeb
-	VLPwgCKwCdxSR8443S6cTJQkyPTdMYhM/7PcTrVqwKfKvRWPKGjvmZslstlIGTcvDk9lSII+TmM
-	BjbAb/6AsNYu+gHuTb3nK7PqrCt8x+EIb9dT4+VrmzBNtnYaOXSx4AdPkzmHwf6ulShd7Tno9fP
-	FfNgEF3GZGIARO7ClCuMfX28ayeEAYbc/ldsHoWN8g+yC/uQgeLZ1tIc7ULEEKl/7as
-X-Google-Smtp-Source: AGHT+IHbDkTIn3sGKq6vC1/3PDsX5aI/VlFvjNwqfXOnZJPV1ZofFXkJR5hvFT/1pjOHNYIgrtrMnA==
-X-Received: by 2002:a05:6a00:114b:b0:729:49a:2da6 with SMTP id d2e1a72fcca58-72abdd3c2a4mr94023130b3a.3.1736251693210;
-        Tue, 07 Jan 2025 04:08:13 -0800 (PST)
+        bh=/OCRtXrynCQq34YyOvSw6d6QSzz1lqkWDPmH7k10/UA=;
+        b=JVpF/RakXvmDEPEf2zMqHIPoHtg+T7Z6KeoRipEwGD+Nj70nlUvWKGHuJamgr8AT+Z
+         zeVDrPyBzL7Dq52aPtJ/JZx2ewVRQDdG0FJ0asm4D94kyLNMgSDmUWHWr7O73jm2AN2v
+         R+5lRjXp+5n+9fQuewlb5hhclnM6w77yGeRgNX0JZz5Y2XHVQkbFjusVYdtHSS25dEDE
+         MBtNBZ4dxPFN56kRCoSfiRWOtgDOAtbe1iRBm2g3LL/EWvgNrfVK1g9R51LGcj9a1xsD
+         pFfodyW+sZXoE1ITGaB5RNULYDG6lF7IUMZUKGt4NwQQSYJprk+ZjMw8nX8uH1y9/WwU
+         8fyg==
+X-Forwarded-Encrypted: i=1; AJvYcCUOXmu2r/j5OINB8vkbt3Hm9l+jqkSIfd9MN+Djrh01CSTSGcDA6MANYGQv2+vVny0W+xI8L3Ogmpr4SQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzbNrn9NXUZ+C/EYEmsJqmvO69OdbALLm++NyA2/QyQaxVfJDIY
+	+obxhxSrI8pFvEXA3O240H63GipmgPRtCzeuZlfQiB8hkb7dcrpb
+X-Gm-Gg: ASbGncsNVuRyJUcVtDMoTx49MyCMn71+ZBmy0M+C/5xjzL1XiwFMfAsgHrn800YZ5CC
+	pcHFk3L18Ir47SXVyK46awjxKwf1y6LU46VUWSEqyN1ex3eF4KGt2/heyeUi3hZAkj00xqNdP9R
+	UhtIja1xtaeR/oBbxHvw0k9s2OrZydz4aB62BligseCuS8LorFeh6HGMFWDjIhJdTooIpxm6jz7
+	EnFu/5XfM9rosCUMoSdJsYEN/zQfv2smDo6dDx2KMxDL3iiFJQ/n9Vw4b/dsjWCSD1+
+X-Google-Smtp-Source: AGHT+IHCFAXbWhFBOxYybnDYfv8S6jfPyrWW+tnhPMAI2bNhqoH8muMHe4XnlBcn4OymqwA7eOdodg==
+X-Received: by 2002:a05:6a00:3cc1:b0:725:df1a:288 with SMTP id d2e1a72fcca58-72abe18acb0mr85121816b3a.24.1736251696623;
+        Tue, 07 Jan 2025 04:08:16 -0800 (PST)
 Received: from fedora.redhat.com ([2001:250:3c1e:503:ffff:ffff:ffea:4903])
-        by smtp.googlemail.com with ESMTPSA id d2e1a72fcca58-72aad835b8dsm34245118b3a.63.2025.01.07.04.08.10
+        by smtp.googlemail.com with ESMTPSA id d2e1a72fcca58-72aad835b8dsm34245118b3a.63.2025.01.07.04.08.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jan 2025 04:08:12 -0800 (PST)
+        Tue, 07 Jan 2025 04:08:15 -0800 (PST)
 From: Ming Lei <tom.leiming@gmail.com>
 To: Jens Axboe <axboe@kernel.dk>,
 	linux-block@vger.kernel.org
@@ -79,9 +79,9 @@ Cc: bpf@vger.kernel.org,
 	Martin KaFai Lau <martin.lau@linux.dev>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	Ming Lei <tom.leiming@gmail.com>
-Subject: [RFC PATCH 06/22] ublk: move several helpers to private header
-Date: Tue,  7 Jan 2025 20:03:57 +0800
-Message-ID: <20250107120417.1237392-7-tom.leiming@gmail.com>
+Subject: [RFC PATCH 07/22] ublk: bpf: add bpf prog attach helpers
+Date: Tue,  7 Jan 2025 20:03:58 +0800
+Message-ID: <20250107120417.1237392-8-tom.leiming@gmail.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20250107120417.1237392-1-tom.leiming@gmail.com>
 References: <20250107120417.1237392-1-tom.leiming@gmail.com>
@@ -93,97 +93,103 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Move several helpers into the private header so that make them visible
-to the whole driver, and prepare for supporting ublk-bpf.
+Add bpf prog attach helpers and prepare for supporting ublk bpf, in which
+multiple ublk device may attach to same bpf prog, and there can be
+multiple bpf progs.
+
+`bpf_prog_consumer` will be embedded in the bpf prog user side, such as
+ublk device, `bpf_prog_provider` will be embedded in the bpf struct_ops
+prog side.
 
 Signed-off-by: Ming Lei <tom.leiming@gmail.com>
 ---
- drivers/block/ublk/main.c | 16 +++-------------
- drivers/block/ublk/ublk.h | 11 +++++++++++
- 2 files changed, 14 insertions(+), 13 deletions(-)
+ drivers/block/ublk/bpf_reg.h | 77 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 77 insertions(+)
+ create mode 100644 drivers/block/ublk/bpf_reg.h
 
-diff --git a/drivers/block/ublk/main.c b/drivers/block/ublk/main.c
-index 2510193303bb..aefb414ebf6c 100644
---- a/drivers/block/ublk/main.c
-+++ b/drivers/block/ublk/main.c
-@@ -47,8 +47,6 @@
- static bool ublk_abort_requests(struct ublk_device *ub, struct ublk_queue *ubq);
- 
- static inline unsigned int ublk_req_build_flags(struct request *req);
--static inline struct ublksrv_io_desc *ublk_get_iod(struct ublk_queue *ubq,
--						   int tag);
- static inline bool ublk_dev_is_user_copy(const struct ublk_device *ub)
- {
- 	return ub->dev_info.flags & UBLK_F_USER_COPY;
-@@ -325,7 +323,6 @@ static blk_status_t ublk_setup_iod_zoned(struct ublk_queue *ubq,
- 
- #endif
- 
--static inline void __ublk_complete_rq(struct request *req);
- static void ublk_complete_rq(struct kref *ref);
- 
- static dev_t ublk_chr_devt;
-@@ -496,7 +493,7 @@ static noinline struct ublk_device *ublk_get_device(struct ublk_device *ub)
- }
- 
- /* Called in slow path only, keep it noinline for trace purpose */
--static noinline void ublk_put_device(struct ublk_device *ub)
-+void ublk_put_device(struct ublk_device *ub)
- {
- 	put_device(&ub->cdev_dev);
- }
-@@ -512,13 +509,6 @@ static inline bool ublk_rq_has_data(const struct request *rq)
- 	return bio_has_data(rq->bio);
- }
- 
--static inline struct ublksrv_io_desc *ublk_get_iod(struct ublk_queue *ubq,
--		int tag)
--{
--	return (struct ublksrv_io_desc *)
--		&(ubq->io_cmd_buf[tag * sizeof(struct ublksrv_io_desc)]);
--}
--
- static inline char *ublk_queue_cmd_buf(struct ublk_device *ub, int q_id)
- {
- 	return ublk_get_queue(ub, q_id)->io_cmd_buf;
-@@ -887,7 +877,7 @@ static inline bool ubq_daemon_is_dying(struct ublk_queue *ubq)
- }
- 
- /* todo: handle partial completion */
--static inline void __ublk_complete_rq(struct request *req)
-+void __ublk_complete_rq(struct request *req)
- {
- 	struct ublk_queue *ubq = req->mq_hctx->driver_data;
- 	struct ublk_io *io = &ubq->ios[req->tag];
-@@ -2082,7 +2072,7 @@ static void ublk_remove(struct ublk_device *ub)
- 	ublks_added--;
- }
- 
--static struct ublk_device *ublk_get_device_from_id(int idx)
-+struct ublk_device *ublk_get_device_from_id(int idx)
- {
- 	struct ublk_device *ub = NULL;
- 
-diff --git a/drivers/block/ublk/ublk.h b/drivers/block/ublk/ublk.h
-index 12e39a33015a..76aee4225c78 100644
---- a/drivers/block/ublk/ublk.h
-+++ b/drivers/block/ublk/ublk.h
-@@ -154,4 +154,15 @@ struct ublk_params_header {
- };
- 
- 
-+static inline struct ublksrv_io_desc *ublk_get_iod(struct ublk_queue *ubq,
-+		int tag)
+diff --git a/drivers/block/ublk/bpf_reg.h b/drivers/block/ublk/bpf_reg.h
+new file mode 100644
+index 000000000000..79d02e93aea8
+--- /dev/null
++++ b/drivers/block/ublk/bpf_reg.h
+@@ -0,0 +1,77 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++#ifndef UBLK_INT_BPF_REG_HEADER
++#define UBLK_INT_BPF_REG_HEADER
++
++#include <linux/types.h>
++
++struct bpf_prog_consumer;
++struct bpf_prog_provider;
++
++typedef int (*bpf_prog_attach_t)(struct bpf_prog_consumer *consumer,
++				 struct bpf_prog_provider *provider);
++typedef void (*bpf_prog_detach_t)(struct bpf_prog_consumer *consumer,
++				  bool unreg);
++
++struct bpf_prog_consumer_ops {
++	bpf_prog_attach_t		attach_fn;
++	bpf_prog_detach_t		detach_fn;
++};
++
++struct bpf_prog_consumer {
++	const struct bpf_prog_consumer_ops	*ops;
++	unsigned int				prog_id;
++	struct list_head			node;
++	struct bpf_prog_provider		*provider;
++};
++
++struct bpf_prog_provider {
++	struct list_head	list;
++};
++
++static inline void bpf_prog_provider_init(struct bpf_prog_provider *provider)
 +{
-+	return (struct ublksrv_io_desc *)
-+		&(ubq->io_cmd_buf[tag * sizeof(struct ublksrv_io_desc)]);
++	INIT_LIST_HEAD(&provider->list);
 +}
 +
-+struct ublk_device *ublk_get_device_from_id(int idx);
-+void ublk_put_device(struct ublk_device *ub);
-+void __ublk_complete_rq(struct request *req);
++static inline bool bpf_prog_provider_is_empty(
++		struct bpf_prog_provider *provider)
++{
++	return list_empty(&provider->list);
++}
 +
- #endif
++static inline int bpf_prog_consumer_attach(struct bpf_prog_consumer *consumer,
++					   struct bpf_prog_provider *provider)
++{
++	const struct bpf_prog_consumer_ops *ops = consumer->ops;
++
++	if (!ops || !ops->attach_fn)
++		return -EINVAL;
++
++	if (ops->attach_fn) {
++		int ret = ops->attach_fn(consumer, provider);
++
++		if (ret)
++			return ret;
++	}
++	consumer->provider = provider;
++	list_add(&consumer->node, &provider->list);
++	return 0;
++}
++
++static inline void bpf_prog_consumer_detach(struct bpf_prog_consumer *consumer,
++					    bool unreg)
++{
++	const struct bpf_prog_consumer_ops *ops = consumer->ops;
++
++	if (!consumer->provider)
++		return;
++
++	if (!list_empty(&consumer->node)) {
++		if (ops && ops->detach_fn)
++			ops->detach_fn(consumer, unreg);
++		list_del_init(&consumer->node);
++		consumer->provider = NULL;
++	}
++}
++
++#endif
 -- 
 2.47.0
 
