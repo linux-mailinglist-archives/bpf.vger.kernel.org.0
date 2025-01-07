@@ -1,162 +1,173 @@
-Return-Path: <bpf+bounces-48152-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48153-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 720CCA04915
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 19:17:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E568CA04935
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 19:29:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17DF618869A7
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 18:17:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26A257A264C
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 18:29:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 926FE1DF25C;
-	Tue,  7 Jan 2025 18:17:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BC801F03C5;
+	Tue,  7 Jan 2025 18:29:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="YLpF1yn6";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="OHr6NEyP"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vfSpNxBJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from fout-b5-smtp.messagingengine.com (fout-b5-smtp.messagingengine.com [202.12.124.148])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3CED45027;
-	Tue,  7 Jan 2025 18:17:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D969E1F37BC
+	for <bpf@vger.kernel.org>; Tue,  7 Jan 2025 18:29:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736273826; cv=none; b=rAU0LXLGXoc0zqJEWLtap9ckPTCbXnJxWcTAaJxZBt2GrC5aedWA7KnU3O3LJ5yJ78/jWSzZsWwem0MWcTvAYLy2k6ImRADm9xRM55qCfIuNf4yujtom5NbeRQviTgpGSJb262Ey8v4WV8tdVP0dxBJMfomSfJa5449EM8nlKic=
+	t=1736274561; cv=none; b=o8Sqzqf+3gSoLPGE67iUKmpk/K3uj8V7G8qnMRR2d6gejaEjEr9ZZX8ztmnRMhnMxJJpSPU7u6ay5BI/91xYjxm1dF6xB+LB17Rt018CrCoH46tcgTEHsA2LpZMC7gS+E3XGM/UlXuaVobkL1OLVZB9Gkpxjb0oR18ZnrNmxpZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736273826; c=relaxed/simple;
-	bh=Q4mCkYE5JwAPAUYXO7QAfUyFi16JkVGURfRfI+I+aAs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q3Pki4aFYHhT3jmj7qK6AnulX3s5yeng0PgZwFxZt75qfatXbFx/aAB74lvcjnqFlcMP7CQKTRMYyYBPEVh7Did+FNqJ92TnF8ubtJlsmlyVswyeZBtQRjekv7dhA+k/plFborQ83jz1236RrUPhgujbqyY5hd17fhViLIgLdEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=YLpF1yn6; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=OHr6NEyP; arc=none smtp.client-ip=202.12.124.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-08.internal (phl-compute-08.phl.internal [10.202.2.48])
-	by mailfout.stl.internal (Postfix) with ESMTP id 9902D1140125;
-	Tue,  7 Jan 2025 13:17:02 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-08.internal (MEProxy); Tue, 07 Jan 2025 13:17:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1736273822;
-	 x=1736360222; bh=GVx5k9zZupmiFbgmpI+fhjmeMdA10WmZjrl3xNiIxbk=; b=
-	YLpF1yn66x1Mg6OicLXhbsPNIRQ7SDtT/ruLin4vwrAeTmC3IGJbQH8lRnNfCuNe
-	+ZLYJ9Wifo8BwHCe12wj6uUvLqgwmG3LbvIK5tCwdQoBFFVw8ujoq6iEjkL+9g7h
-	QHx+INLevpkJmTMdtFoxl6y6kOFvqvlzz9Ue3fevhMx5IX2UiNnYNla+EPtaLI23
-	KTZyqrkyGKjoJix47U7YjHA6W/fdY8cLdIOVHQCXN/r2uDB+W65iMdOcm2+UEwR4
-	QQ4+K3dz9w7Oi/gEC9x/vIc9xo6FAM4/aWdYmtOXOaEOvb4n/DI1/TffJW8qPD8+
-	ltdBIl64B+bOnflyLbJMZQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1736273822; x=
-	1736360222; bh=GVx5k9zZupmiFbgmpI+fhjmeMdA10WmZjrl3xNiIxbk=; b=O
-	Hr6NEyPlkjr7mv7OLEDw1Oec8Pwejg42RFxrpBfvntaPtv2eMMlDEKOh8/8ZUlGY
-	nGVPgUpYKdmIsvF9jODOvdvG7oz+zvbYKHDRcFsx4pF7cdsAECiCeOpF/eJLHPFu
-	4/rRuvv6ki3UZBrWTBWSVM+DJmtows2boJZ9yZHPgU4wpihXQRG2jf+VMpj5JIJD
-	L0F5YVSnJ7/hToXARZRuL77Afe4hYyLyPanp6+gl1vViLm2vmyhYoDW76g+dNokS
-	KkMEGlrx/twaaRGfd3BkJ5MQkASYtzx3tNpxMQCOEpJxPQz5ZyQFUd8U8XtO0o6w
-	l3VbeFhmp5G7AtP+/nZWQ==
-X-ME-Sender: <xms:nW99Z0B2BYiY-t1dfdwxW8l5bSDDE3uEQcN0pbqDy73Up7kuKqsR2w>
-    <xme:nW99Z2j1hp1Y6ANVasiQ5ZOEH27g-xMZCsbGHFyJXcuC6TDXSrsaEkeS3kTbORJIP
-    qNSqfbRXenMB1xUXg>
-X-ME-Received: <xmr:nW99Z3lFMrYBHjZXH2HcRmDwY0MxWE4Jex7bT2cH3xp2ZWNa3eclPMD7scMAKjbVLqTkimt_po3iQR21MVF8v4pkxW8i79dUQFscKctJzcTXFQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudegvddguddtlecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenfghrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffk
-    fhggtggugfgjsehtkefstddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguh
-    esugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueek
-    ffelteekkeekgeegffevtddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihiidpnhgspghr
-    tghpthhtohepudejpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehlrghorghrrd
-    hshhgrohesghhmrghilhdrtghomhdprhgtphhtthhopegrlhgvgigvihdrshhtrghrohhv
-    ohhithhovhesghhmrghilhdrtghomhdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvg
-    hlrdhorhhgpdhrtghpthhtohepvgguugihiiekjeesghhmrghilhdrtghomhdprhgtphht
-    thhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhesihhogh
-    gvrghrsghogidrnhgvthdprhgtphhtthhopehmrghrthhinhdrlhgruheslhhinhhugidr
-    uggvvhdprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohephi
-    honhhghhhonhhgrdhsohhngheslhhinhhugidruggvvh
-X-ME-Proxy: <xmx:nW99Z6y2QfwKNrJ4iZwyz5M7t-tQxtwcW89ulnnos2JX4Bi9tKDNsw>
-    <xmx:nW99Z5QT7TzeR-uaYp3NCkg5QKhQjiXAv-csa-64KD9gakgKtgv1QQ>
-    <xmx:nW99Z1bq3tXQ4YTUxSjMB6JldNesh7Ojh6DUHGne_pBgfqP4G9ef7A>
-    <xmx:nW99ZyScWGTO8SQwIYBowp8GSnXon6rMJClemguyFEMU7GscBbCqiA>
-    <xmx:nm99Z_F0Jf0WV-wWvNMh7zo1jAvy8d-oMiqWxcnk2YJ7P1H1mB3hgfwF>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 7 Jan 2025 13:16:59 -0500 (EST)
-Date: Tue, 7 Jan 2025 11:16:58 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Eric Dumazet <edumazet@google.com>, bpf <bpf@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>
-Subject: Re: [RFC PATCH bpf-next 1/2] libbpf: Add support for dynamic
- tracepoint
-Message-ID: <lvmetlwqho4pinf5ehoyxbvcwsfgno54vnnuj2jzaitllgft5e@kqu4cgfwjghn>
-References: <20250105124403.991-1-laoar.shao@gmail.com>
- <20250105124403.991-2-laoar.shao@gmail.com>
- <CAADnVQ+ga1ir9XCDxPiU_-eYzKHTQsiod9Sz4_o3XeqGW2rq4A@mail.gmail.com>
- <CALOAHbD+w3niwBojP=-81Wrqj1V9ppLgTfuZjb=AxXjx51MGRA@mail.gmail.com>
+	s=arc-20240116; t=1736274561; c=relaxed/simple;
+	bh=5oMwt8MqHzoaGlSoK7LJTBv01YeyvD62Wahn82nfuHk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Pp6m2s8Jxbt5xCkyyjYWrD1G0YLvyCfxf9pysFq2uitAKfjByZNPNrHi3ptfxIAlTswuGx+bIB//ZHcpOqxQWSzHTKG46RnRIJ04PTI9PP5TrpD3S6S+4NoCijumU9cBAzJL7ur1rK2G+LTYq1138VpZq7u3RdY0IYZ+5lqde5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vfSpNxBJ; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <fcb4cbb5-d9b7-47fb-b300-e2227223e882@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1736274555;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Tv3UyEYHyZHZTg32H2UgwakeJv09LkurzQja7F+O5X4=;
+	b=vfSpNxBJMgfUym57P4jZzKYApOOugkmNJk9rJ+cINFMrTJ9Uu4BJrqU/9ibnLyvazS3TN1
+	9dlfqaH9e4zcU0qyOKYafnGdivZo0Zr8edS+JZfU3j8JcdDaBu4GYm/5VupODAkN5fVGNR
+	mCS8HUdjRiEyGTvZTMNwwkx7binTGWg=
+Date: Tue, 7 Jan 2025 10:29:05 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Subject: Re: [PATCH bpf-next 1/2] libbpf: Add unique_match option for multi
+ kprobe
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>,
+ Jordan Rome <linux@jordanrome.com>
+References: <20241218225246.3170300-1-yonghong.song@linux.dev>
+ <CAEf4BzaJ3cF+StkPoANKDY3q-5Y-vuvEpcWVTq0zvom1mmFbaw@mail.gmail.com>
+Content-Language: en-GB
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAEf4BzaJ3cF+StkPoANKDY3q-5Y-vuvEpcWVTq0zvom1mmFbaw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALOAHbD+w3niwBojP=-81Wrqj1V9ppLgTfuZjb=AxXjx51MGRA@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-Hi Yafang,
 
-On Mon, Jan 06, 2025 at 10:32:15AM +0800, Yafang Shao wrote:
-> On Mon, Jan 6, 2025 at 8:16 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Sun, Jan 5, 2025 at 4:44 AM Yafang Shao <laoar.shao@gmail.com> wrote:
-> > >
-> > > Dynamic tracepoints can be created using debugfs. For example:
-> > >
-> > >    echo 'p:myprobe kernel_clone args' >> /sys/kernel/debug/tracing/kprobe_events
-> > >
-> > > This command creates a new tracepoint under debugfs:
-> > >
-> > >   $ ls /sys/kernel/debug/tracing/events/kprobes/myprobe/
-> > >   enable  filter  format  hist  id  trigger
-> > >
-> > > Although this dynamic tracepoint appears as a tracepoint, it is internally
-> > > implemented as a kprobe. However, it must be attached as a tracepoint to
-> > > function correctly in certain contexts.
-> >
-> > Nack.
-> > There are multiple mechanisms to create kprobe/tp via text interfaces.
-> > We're not going to mix them with the programmatic libbpf api.
-> 
-> It appears that bpftrace still lacks support for adding a kprobe/tp
-> and then attaching to it directly. Is that correct?
-> What do you think about introducing this mechanism into bpftrace? With
-> such a feature, we could easily attach to inlined kernel functions
-> using bpftrace.
 
-Is the idea to have some other application create dynamic tracepoints
-based on kernel debuginfo?
 
-FWIW bpftrace has some initial support for probing inlined kernel
-functions w/ DWARF. I don't believe it's enabled by default yet, though
-- there's a few limitations. I'll comment in thread below with more
-details.
+On 1/6/25 4:24 PM, Andrii Nakryiko wrote:
+> On Wed, Dec 18, 2024 at 2:53 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>> Jordan reported an issue in Meta production environment where func
+>> try_to_wake_up() is renamed to try_to_wake_up.llvm.<hash>() by clang
+>> compiler at lto mode. The original 'kprobe/try_to_wake_up' does not
+>> work any more since try_to_wake_up() does not match the actual func
+>> name in /proc/kallsyms.
+>>
+>> There are a couple of ways to resolve this issue. For example, in
+>> attach_kprobe(), we could do lookup in /proc/kallsyms so try_to_wake_up()
+>> can be replaced by try_to_wake_up.llvm.<hach>(). Or we can force users
+>> to use bpf_program__attach_kprobe() where they need to lookup
+>> /proc/kallsyms to find out try_to_wake_up.llvm.<hach>(). But these two
+>> approaches requires extra work by either libbpf or user.
+>>
+>> Luckily, suggested by Andrii, multi kprobe already supports wildcard ('*')
+>> for symbol matching. In the above example, 'try_to_wake_up*' can match
+>> to try_to_wake_up() or try_to_wake_up.llvm.<hash>() and this allows
+>> bpf prog works for different kernels as some kernels may have
+>> try_to_wake_up() and some others may have try_to_wake_up.llvm.<hash>().
+>>
+>> The original intention is to kprobe try_to_wake_up() only, so an optional
+>> field unique_match is added to struct bpf_kprobe_multi_opts. If the
+>> field is set to true, the number of matched functions must be one.
+>> Otherwise, the attachment will fail. In the above case, multi kprobe
+>> with 'try_to_wake_up*' and unique_match preserves user functionality.
+>>
+>> Reported-by: Jordan Rome <linux@jordanrome.com>
+>> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   tools/lib/bpf/libbpf.c | 10 +++++++++-
+>>   tools/lib/bpf/libbpf.h |  4 +++-
+>>   2 files changed, 12 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index 66173ddb5a2d..649c6e92972a 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -11522,7 +11522,7 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+>>          struct bpf_link *link = NULL;
+>>          const unsigned long *addrs;
+>>          int err, link_fd, prog_fd;
+>> -       bool retprobe, session;
+>> +       bool retprobe, session, unique_match;
+>>          const __u64 *cookies;
+>>          const char **syms;
+>>          size_t cnt;
+>> @@ -11558,6 +11558,14 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+>>                          err = libbpf_available_kallsyms_parse(&res);
+>>                  if (err)
+>>                          goto error;
+>> +
+>> +               unique_match = OPTS_GET(opts, unique_match, false);
+>> +               if (unique_match && res.cnt != 1) {
+>> +                       pr_warn("prog '%s': failed to find unique match: cnt %lu\n",
+>> +                               prog->name, res.cnt);
+>> +                       return libbpf_err_ptr(-EINVAL);
+> goto error, leaking resources here
 
-Thanks,
-Daniel
+Ack. Will fix.
+
+>
+>
+> we should also think about interaction of unique_match interaction for
+> !pattern case, and either reject it (if it makes no sense), or enforce
+> it (if it does, I haven't really thought about which case do we have)
+
+The unique_match only makes sense for pattern case. So I suggest to
+reject the case unique_match && !pattern. WDYT?
+
+>
+> pw-bot: cr
+>
+>> +               }
+>> +
+>>                  addrs = res.addrs;
+>>                  cnt = res.cnt;
+>>          }
+>> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+>> index d45807103565..3020ee45303a 100644
+>> --- a/tools/lib/bpf/libbpf.h
+>> +++ b/tools/lib/bpf/libbpf.h
+>> @@ -552,10 +552,12 @@ struct bpf_kprobe_multi_opts {
+>>          bool retprobe;
+>>          /* create session kprobes */
+>>          bool session;
+>> +       /* enforce unique match */
+>> +       bool unique_match;
+>>          size_t :0;
+>>   };
+>>
+>> -#define bpf_kprobe_multi_opts__last_field session
+>> +#define bpf_kprobe_multi_opts__last_field unique_match
+>>
+>>   LIBBPF_API struct bpf_link *
+>>   bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+>> --
+>> 2.43.5
+>>
+
 
