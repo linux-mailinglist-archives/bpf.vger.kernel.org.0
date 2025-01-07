@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-48104-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48105-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EABD4A0416E
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 15:01:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06469A0416F
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 15:01:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36C341887707
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 14:01:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC46D18875A0
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 14:01:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A63A1F1929;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26581F37C4;
 	Tue,  7 Jan 2025 14:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cIDQOl3+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UYdijnxF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com [209.85.128.66])
+Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com [209.85.221.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AD4C1F2C45;
-	Tue,  7 Jan 2025 14:00:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C0DE1F2C38;
+	Tue,  7 Jan 2025 14:00:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736258428; cv=none; b=TjeFtc1Pbj3Lbccy6SgQp1xq42mqEHuavGwFpbcJJhKJLfLa61/O9UvBf/THIkVosiFDoPXJvAKSE5371VNXXUQT+h7hvgB77KjHj1hRGI/sqetZy5rxE6NTOFuH3lHeshKCUa7r65zHCuCoDknUymSjY8YMudusS7lFZ7kFj7c=
+	t=1736258429; cv=none; b=Y/Nv3C34Rp6S98Aj9qZg7iLvRTPk2Qncn6er56Tmv97qSMQIJsfduiZzWVSuTWJdwY14+vAJ1dHuGS4r4RpXxM+kHLEpSD3L4TuZ5GU3Pg1fhh2woHP9AGlDTxB/xPF2r7FNdjw9+a1eyV6KT0lOY4JEylncecmOjAAQha4HkmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736258428; c=relaxed/simple;
-	bh=eGu2DApzmi0L8HX4HzBePl4/npJqwEuQr5WMXWg1eJE=;
+	s=arc-20240116; t=1736258429; c=relaxed/simple;
+	bh=A6BHHwSDGZxil39BCj+tpzF00ye2bwkndcWT1dWcfPI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GgUfBI48zv5FolOZjaEiU6JW7R3S6ruVDPMVKSZHOEVLFxLixvxHDOMM96t1UFu6MltM7QbWZmb7NyKftU0Ps/iqa0u+gRKwu4aUWpJJTT7cPE9obtiGR2f3uZ5eANQPbTnbyVyEj3OwmojHWhZdFF39YzKzaYPB94a381YO6RA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cIDQOl3+; arc=none smtp.client-ip=209.85.128.66
+	 MIME-Version; b=XMCzfsz32TAyDTJQj65/4QxfN5eaiigGQK+N/YRWaa82YdmRK7StKYW/xDaUcXJ29zjKNZz4tDBEb9JZBs77/Bs1LIrP0jnW2k+0TaCmUNDMxi0deZHdYAHKshw5BAuRz7yk9PDecllJk3Uo/vsPAVFrie8NmOXKQANwMPzHLvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UYdijnxF; arc=none smtp.client-ip=209.85.221.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f66.google.com with SMTP id 5b1f17b1804b1-436202dd730so111509015e9.2;
-        Tue, 07 Jan 2025 06:00:22 -0800 (PST)
+Received: by mail-wr1-f65.google.com with SMTP id ffacd0b85a97d-385eed29d17so7425923f8f.0;
+        Tue, 07 Jan 2025 06:00:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736258421; x=1736863221; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1736258422; x=1736863222; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=g1S86x/E9hfFZDpeRh/A01JmFmw9TPvNNkAVeTNFDNE=;
-        b=cIDQOl3+cGPAXbM3IlOTZT/fibeAvXYTfOgLn5KapdYzaZ50Ji863XQjlarGCZagW+
-         bh1DYl1L5wVxv2L5iWDeCtX9o7FbNsL0WVVgqI0SSCZlOwQw7JVe65fbdl9cLvYKjJ9h
-         iWb1+gNl59yK3RRSyzv80qi/QlQgTOwfKrD4M9gy6O4u7hgZLBue2bmNZDN34qX8ZdHk
-         DuGnztRLqt2ZKK9vQmAqz1Fect9IVbC4vMPpCi2hWO3didXANnXV7w2BeHsa9uaZYpMj
-         vaWpA1fUw5Pc+sdcCJoMArAXU7tGtTe38XB+sTq7lnrlAvE0YIRA+Mru5lPVVbdEqfTf
-         mBYg==
+        bh=jTnzMjvTX9PnixeDb/QJMwtogTLFCd+4yLgtlaH77/k=;
+        b=UYdijnxF53y6eyCUrvdkwMUWJujLBPIM81AUOl1R4iHOMYGzfhb+vlpfZsGEMh1f93
+         4+JQjuogC62QiYol9RC2SwwZb/EiG7TlllIVW9EFGv/NIX1Z1++8/SIVGvBfDRNrs7Ep
+         eqNiVgQYq2bQBk5FtNPZx9Y2lyB2tQDyTiIfwdeTsjM/ZpAP8sy6Qnzo+Z0wCAmlI/59
+         wJw7F2iqxD/ipc3KPyFMTJkbrRbqW2DYHN4jy037AYDMoSzaupXk6IyIBOrGcU3PJH5s
+         z0QVPyy6luXzOzR5IFdpk0AQbyCBbrwhrrzIf7ZAtVUuWg1hrqEnBBEJHLr0TxAH2nBM
+         1D2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736258421; x=1736863221;
+        d=1e100.net; s=20230601; t=1736258422; x=1736863222;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=g1S86x/E9hfFZDpeRh/A01JmFmw9TPvNNkAVeTNFDNE=;
-        b=slXluWzDqIESxRU1FkwPmW8avqjhZsqMhvVvn1UvmYnBINClZiLqnDAtfIICuAm6DA
-         ZILzHvBxJAcjzUeeiX/3+RUW8snYZJkirQTLfiY0IJAAFsLR23eICxmiHUgEzG22NdUH
-         KhYflsprkiKqusFGoXVeiothbKkDFdY4GyFegO6szsSf59vaVDD6slCpgg/PCKo8Xgog
-         PMpx+fcPpFKkJepWvhOjnejzB0urusPoq0N14fdzBuJrALaWW7ytwnzedwtNt6lm8Eqa
-         KLqOWuWiW8H4Y/Ba/Xs5B8qSrmx15A5J9OAq4Bf3SLhT6aYSkDR7/EzhBKKh7b6vEHwP
-         nAsA==
-X-Forwarded-Encrypted: i=1; AJvYcCUGO2KkQLQi+WDJ4azW5FYjovSt7DKUEPrTeP/VybaaPw9i+GOLzpCGxAXgHshePV2Hlmc3gSUwMD4nv/k=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyZ34erpFBaC2BQlnC+6/9BXnDsjiSSOkt1tgiEDIMs3iSdZFSN
-	oxPAkBcun4aQUoVaTNBTdCpzZ6jLKuNyUpHq8iBq0nmBVuzKj+U+WOxE2U48f/usmA==
-X-Gm-Gg: ASbGncsztGoAqXKPkjXhniDysZVoJHNM30YAb3ZVqhcaY5WeiV8Uhc1dbxdaMDvwDTm
-	s/tvkRxd8W9bxZMUkbnXY8lcC06UhfpBUhZ+5IhUtxHRTyzYXVmjBaT7xP6i7HzQgUh5y29GVmg
-	CDPYaQ4RvifS+hCcVEa7VcYa7FF51OJodoGbdE39OhUSZVdsfV3oFWRyq1J2ljDSaCu2/Ylxbge
-	ctoV7w1tYUbRwBr4Kik5E5hT60bborOmY4AJoxW6b6m9Nw=
-X-Google-Smtp-Source: AGHT+IG5QtsbWBTtMvCxIhoqEnfR3p382B1bTb4UdoM6BO6tHPbLKMHCpcoUiwmrRhOVEkJhPl8NGA==
-X-Received: by 2002:a05:600c:1c21:b0:436:aaf:7eb9 with SMTP id 5b1f17b1804b1-43668b5dfcbmr455433875e9.20.1736258420846;
-        Tue, 07 Jan 2025 06:00:20 -0800 (PST)
-Received: from localhost ([2a03:2880:31ff:74::])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43656b41904sm631546265e9.37.2025.01.07.06.00.20
+        bh=jTnzMjvTX9PnixeDb/QJMwtogTLFCd+4yLgtlaH77/k=;
+        b=pbGWVSsNMSB3S9cloUEWRwHQRKdJ5TZ1vRQWDBFbRi/Y0cRIyv8Xd1dCxx7kcVijsf
+         4wkPe0ZFDkbkdRKaRxvaDFlw55tnWyivWv+eE+RD0xMTA3rx9F8VGW3Tvc3qhaTyCslt
+         Vk0GYT9M+ml3tL4i64XsB5KK24zWcIVt8rfCQhVkEQcrnwRjsh5mnmqza36awtpyn1Ox
+         hSfa+1D//2+AIg2amY1FXNKWQvKshijP35zz/EgWaPvx80cojLOTpJAOvMQFYiXFIsVx
+         lmh033ZPFOKU/V/qCeVWBjz5ox5Nmg85O2MOK2m0hxRx8jTBRu+wNVNyqTGy3t69b3H0
+         Wz5w==
+X-Forwarded-Encrypted: i=1; AJvYcCUceFow4B8LOA3X8bLTcLnYbm+p2o6Qhlgh4z9QwWEcRQgWMV6Foxkgbmaf2RAL7wSVHbbf6J5/za8t3gI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxZXrwptRzb2AFxQql224GndxPpLf82ZcXaqQ58qiwCdFwuj3zU
+	5yyHs4ktagDCNlAaWub0sPm8I+2qSaXex/d1fNwGrWjet1GEYjgM+m/U7s5vcqwHfw==
+X-Gm-Gg: ASbGncuzLmCpZGw7mZy4mWUWc741QGF1GR8A+vie4iDIGiSckYJwqJJTdcf0m2++64Y
+	HQ5cZV9ZxQXFRhWLdoPfncaWx8y61Cm8234Fg6ngU2vQVXwUjxOKte1PjkROGqW7Ha51Xy58+qw
+	dl+sA4o5v6WfB3y3np2lGfVtVi7Fjwd/7qxFBpycG2NJOd92tn/LmGMG348khZnLfVFgTzyrgxh
+	XBEch3vrJLOJF+uu1CFzr3Bu/TJzeSmC0BDR7d1GJsN9N0=
+X-Google-Smtp-Source: AGHT+IHbtviyqxBl7c1L8MU/GwBDVrdaPEaDF6MwBXfI0O5tMtuU/Xq44c7pMTK+/rsL3T0ooXlakQ==
+X-Received: by 2002:a5d:47c8:0:b0:385:f470:c2e1 with SMTP id ffacd0b85a97d-38a221e2f49mr51032448f8f.2.1736258422100;
+        Tue, 07 Jan 2025 06:00:22 -0800 (PST)
+Received: from localhost ([2a03:2880:31ff:10::])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a1c84840asm50400353f8f.61.2025.01.07.06.00.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jan 2025 06:00:20 -0800 (PST)
+        Tue, 07 Jan 2025 06:00:21 -0800 (PST)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -88,9 +88,9 @@ Cc: Barret Rhoden <brho@google.com>,
 	Josh Don <joshdon@google.com>,
 	Dohyun Kim <dohyunkim@google.com>,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v1 07/22] rqspinlock: Add support for timeouts
-Date: Tue,  7 Jan 2025 05:59:49 -0800
-Message-ID: <20250107140004.2732830-8-memxor@gmail.com>
+Subject: [PATCH bpf-next v1 08/22] rqspinlock: Protect pending bit owners from stalls
+Date: Tue,  7 Jan 2025 05:59:50 -0800
+Message-ID: <20250107140004.2732830-9-memxor@gmail.com>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20250107140004.2732830-1-memxor@gmail.com>
 References: <20250107140004.2732830-1-memxor@gmail.com>
@@ -100,152 +100,126 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5029; h=from:subject; bh=eGu2DApzmi0L8HX4HzBePl4/npJqwEuQr5WMXWg1eJE=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnfTCcqbELGAiDo/CBPuG96WSJATpKpcd71rfXPgHH ggfUleOJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ30wnAAKCRBM4MiGSL8RyrTYEA CilodL7VB9trSaR9ZMPNgzrexz4ir1vzg/2ADD5C1X043YoygPX4ux2T4NWz7+r7sLzdhpPz8mZaRo Md4PFbbWr7QGlgzFvyu4umiru8D9EhqeM/vtXR5iLwkklDqNteUryRg/9JT8A+Efw1Ib9KMhjZzeor FoUKFqV59fkhbfqMrvCk4W88Ub9NK/MumeHVdKCxCbjI7cuMJ/hVYOibiXt6aros77yqNwjpgu9Wl+ JWtEs6MNqpORNJYgiYGzffLYsmQ2qocp7JW0x2Hq9SSRmBsr7ziMetdUxpF4/mW8/xizx5xV3wbvgf f0aolfYU07gWwEgIJLSu/0fh+CcpJY6tDdbDJrt0HFJwpiDpzMElVBMbpAY9NE8kk4OHoyGNxxGTWZ wLQ5+/ZSCAc0+RFiJ1o4DH/mbq79dusO93rreHzy2Pu+VLTN8c/xKYWZHXQgQ2RdDymDRIKKj2eZQq 3OFGMeM6TrZ8cXNGoMbdlLNHr+5mTwzrGww8eRN7456kn6eIC3kv0z9QWuBxLiEESWP83J91jNQxJh 12jfdCN/dqmfHi0bRKGzSk1KxTgM+B+KOsQrBWIwvfzFkDfbvnSbMVIyw7z/hI2Q9XSzwV0rvsgR7L VvXYkxLRn9oef/q0Bc7sZC4x1LRE0RsPjpXnM6u9SC5E9r7thBFzpdam7szQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4594; h=from:subject; bh=A6BHHwSDGZxil39BCj+tpzF00ye2bwkndcWT1dWcfPI=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnfTCdyyu7Mfh83I9m8FVMYzvYUcbFbHtdjpbRNpaL FhDZMdOJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ30wnQAKCRBM4MiGSL8RylnnD/ 9mm9iqO78Iqz7RiZh5jUB1BxqwxazQw/vDBoz50U3d3TVVllnh4QiyH7MdiNxmM26YLDhltB9BDHrc Ppi99o8iKdVAS7M0uyE4m0pkX7PXa8C3sZxQdVPJNWTUDJR70mdqubhbj6je5KzC4G8bqnG9sj/2nn oeOdgP4Ot1VnAmya13OglO8DgPWdHebSD5iXzirtb6GDwOWpSTPALQjNqiQRjW4o/pJr5eJLk/dCv7 bAbWoMKsv9aW8eRhCwaY9MQVmQSccLwV6v7c4SBz0QQxs/xqgHvb/vd9jOaLJwdOTebhX+MX4ULiMw vSTNHvMtInrUCifywL4LbyBcr4TfowXAsUJJQRhjC7PC/yqLH5D1HUXWV+pq38KyKxlpCC4CPy+gq3 yTdLnPxZI1Z6YxWnJK5QilrMiMR5qN3achUpq64zcZ76vOQEtH5Gsp3dcsTqrLkK1bFe0hrTYhXWqc RktOzqC6O83gXVpDdtQfoEN19/oM3ava4k+XmPYa2jGyzjSL+/qc9YOSV+UZ/0kCoyWQcsPq/2Th1W RmxWzFEFPBzRlHYQPu69mhloAozAy8gvVzRNNPTinXZB3xG81e7OY5+q5ZUju37g+vn6X/KlQPdkBB lgIybkmfPXIw9BXxE0b1PbVNKS2CKt5jrbFu/kMCSbpoJlQbj2xEhAo3Te3A==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-Introduce policy macro RES_CHECK_TIMEOUT which can be used to detect
-when the timeout has expired for the slow path to return an error. It
-depends on being passed two variables initialized to 0: ts, ret. The
-'ts' parameter is of type rqspinlock_timeout.
+The pending bit is used to avoid queueing in case the lock is
+uncontended, and has demonstrated benefits for the 2 contender scenario,
+esp. on x86. In case the pending bit is acquired and we wait for the
+locked bit to disappear, we may get stuck due to the lock owner not
+making progress. Hence, this waiting loop must be protected with a
+timeout check.
 
-This macro resolves to the (ret) expression so that it can be used in
-statements like smp_cond_load_acquire to break the waiting loop
-condition.
+To perform a graceful recovery once we decide to abort our lock
+acquisition attempt in this case, we must unset the pending bit since we
+own it. All waiters undoing their changes and exiting gracefully allows
+the lock word to be restored to the unlocked state once all participants
+(owner, waiters) have been recovered, and the lock remains usable.
+Hence, set the pending bit back to zero before returning to the caller.
 
-The 'spin' member is used to amortize the cost of checking time by
-dispatching to the implementation every 64k iterations. The
-'timeout_end' member is used to keep track of the timestamp that denotes
-the end of the waiting period. The 'ret' parameter denotes the status of
-the timeout, and can be checked in the slow path to detect timeouts
-after waiting loops.
-
-The 'duration' member is used to store the timeout duration for each
-waiting loop, that is passed down from the caller of the slow path
-function.  Use the RES_INIT_TIMEOUT macro to initialize it. The default
-timeout value defined in the header (RES_DEF_TIMEOUT) is 0.5 seconds.
-
-This macro will be used as a condition for waiting loops in the slow
-path.  Since each waiting loop applies a fresh timeout using the same
-rqspinlock_timeout, we add a new RES_RESET_TIMEOUT as well to ensure the
-values can be easily reinitialized to the default state.
+Introduce a lockevent (rqspinlock_lock_timeout) to capture timeout
+event statistics.
 
 Reviewed-by: Barret Rhoden <brho@google.com>
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/asm-generic/rqspinlock.h |  8 +++++-
- kernel/locking/rqspinlock.c      | 46 +++++++++++++++++++++++++++++++-
- 2 files changed, 52 insertions(+), 2 deletions(-)
+ include/asm-generic/rqspinlock.h  |  2 +-
+ kernel/locking/lock_events_list.h |  5 +++++
+ kernel/locking/rqspinlock.c       | 28 +++++++++++++++++++++++-----
+ 3 files changed, 29 insertions(+), 6 deletions(-)
 
 diff --git a/include/asm-generic/rqspinlock.h b/include/asm-generic/rqspinlock.h
-index 5c2cd3097fb2..8ed266f4e70b 100644
+index 8ed266f4e70b..5c996a82e75f 100644
 --- a/include/asm-generic/rqspinlock.h
 +++ b/include/asm-generic/rqspinlock.h
-@@ -10,9 +10,15 @@
- #define __ASM_GENERIC_RQSPINLOCK_H
+@@ -19,6 +19,6 @@ struct qspinlock;
+  */
+ #define RES_DEF_TIMEOUT (NSEC_PER_SEC / 2)
  
- #include <linux/types.h>
-+#include <vdso/time64.h>
- 
- struct qspinlock;
- 
--extern void resilient_queued_spin_lock_slowpath(struct qspinlock *lock, u32 val);
-+/*
-+ * Default timeout for waiting loops is 0.5 seconds
-+ */
-+#define RES_DEF_TIMEOUT (NSEC_PER_SEC / 2)
-+
-+extern void resilient_queued_spin_lock_slowpath(struct qspinlock *lock, u32 val, u64 timeout);
+-extern void resilient_queued_spin_lock_slowpath(struct qspinlock *lock, u32 val, u64 timeout);
++extern int resilient_queued_spin_lock_slowpath(struct qspinlock *lock, u32 val, u64 timeout);
  
  #endif /* __ASM_GENERIC_RQSPINLOCK_H */
+diff --git a/kernel/locking/lock_events_list.h b/kernel/locking/lock_events_list.h
+index 97fb6f3f840a..c5286249994d 100644
+--- a/kernel/locking/lock_events_list.h
++++ b/kernel/locking/lock_events_list.h
+@@ -49,6 +49,11 @@ LOCK_EVENT(lock_use_node4)	/* # of locking ops that use 4th percpu node */
+ LOCK_EVENT(lock_no_node)	/* # of locking ops w/o using percpu node    */
+ #endif /* CONFIG_QUEUED_SPINLOCKS */
+ 
++/*
++ * Locking events for Resilient Queued Spin Lock
++ */
++LOCK_EVENT(rqspinlock_lock_timeout)	/* # of locking ops that timeout	*/
++
+ /*
+  * Locking events for rwsem
+  */
 diff --git a/kernel/locking/rqspinlock.c b/kernel/locking/rqspinlock.c
-index fada0dca6f3b..815feb24d512 100644
+index 815feb24d512..dd305573db13 100644
 --- a/kernel/locking/rqspinlock.c
 +++ b/kernel/locking/rqspinlock.c
-@@ -6,9 +6,11 @@
-  * (C) Copyright 2013-2014,2018 Red Hat, Inc.
-  * (C) Copyright 2015 Intel Corp.
-  * (C) Copyright 2015 Hewlett-Packard Enterprise Development LP
-+ * (C) Copyright 2024 Meta Platforms, Inc. and affiliates.
-  *
-  * Authors: Waiman Long <longman@redhat.com>
-  *          Peter Zijlstra <peterz@infradead.org>
-+ *          Kumar Kartikeya Dwivedi <memxor@gmail.com>
-  */
- 
- #include <linux/smp.h>
-@@ -22,6 +24,7 @@
- #include <asm/qspinlock.h>
- #include <trace/events/lock.h>
- #include <asm/rqspinlock.h>
-+#include <linux/timekeeping.h>
- 
- /*
-  * Include queued spinlock definitions and statistics code
-@@ -68,6 +71,44 @@
- 
- #include "mcs_spinlock.h"
- 
-+struct rqspinlock_timeout {
-+	u64 timeout_end;
-+	u64 duration;
-+	u16 spin;
-+};
-+
-+static noinline int check_timeout(struct rqspinlock_timeout *ts)
-+{
-+	u64 time = ktime_get_mono_fast_ns();
-+
-+	if (!ts->timeout_end) {
-+		ts->timeout_end = time + ts->duration;
-+		return 0;
-+	}
-+
-+	if (time > ts->timeout_end)
-+		return -ETIMEDOUT;
-+
-+	return 0;
-+}
-+
-+#define RES_CHECK_TIMEOUT(ts, ret)                    \
-+	({                                            \
-+		if (!((ts).spin++ & 0xffff))          \
-+			(ret) = check_timeout(&(ts)); \
-+		(ret);                                \
-+	})
-+
-+/*
-+ * Initialize the 'duration' member with the chosen timeout.
-+ */
-+#define RES_INIT_TIMEOUT(ts, _timeout) ({ (ts).spin = 1; (ts).duration = _timeout; })
-+
-+/*
-+ * We only need to reset 'timeout_end', 'spin' will just wrap around as necessary.
-+ */
-+#define RES_RESET_TIMEOUT(ts) ({ (ts).timeout_end = 0; })
-+
- /*
-  * Per-CPU queue node structures; we can never have more than 4 nested
-  * contexts: task, softirq, hardirq, nmi.
-@@ -97,14 +138,17 @@ static DEFINE_PER_CPU_ALIGNED(struct qnode, qnodes[_Q_MAX_NODES]);
+@@ -138,12 +138,12 @@ static DEFINE_PER_CPU_ALIGNED(struct qnode, qnodes[_Q_MAX_NODES]);
   * contended             :    (*,x,y) +--> (*,0,0) ---> (*,0,1) -'  :
   *   queue               :         ^--'                             :
   */
--void __lockfunc resilient_queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
-+void __lockfunc resilient_queued_spin_lock_slowpath(struct qspinlock *lock, u32 val, u64 timeout)
+-void __lockfunc resilient_queued_spin_lock_slowpath(struct qspinlock *lock, u32 val, u64 timeout)
++int __lockfunc resilient_queued_spin_lock_slowpath(struct qspinlock *lock, u32 val, u64 timeout)
  {
  	struct mcs_spinlock *prev, *next, *node;
-+	struct rqspinlock_timeout ts;
+ 	struct rqspinlock_timeout ts;
++	int idx, ret = 0;
  	u32 old, tail;
- 	int idx;
+-	int idx;
  
  	BUILD_BUG_ON(CONFIG_NR_CPUS >= (1U << _Q_TAIL_CPU_BITS));
  
-+	RES_INIT_TIMEOUT(ts, timeout);
+@@ -201,8 +201,25 @@ void __lockfunc resilient_queued_spin_lock_slowpath(struct qspinlock *lock, u32
+ 	 * clear_pending_set_locked() implementations imply full
+ 	 * barriers.
+ 	 */
+-	if (val & _Q_LOCKED_MASK)
+-		smp_cond_load_acquire(&lock->locked, !VAL);
++	if (val & _Q_LOCKED_MASK) {
++		RES_RESET_TIMEOUT(ts);
++		smp_cond_load_acquire(&lock->locked, !VAL || RES_CHECK_TIMEOUT(ts, ret));
++	}
 +
++	if (ret) {
++		/*
++		 * We waited for the locked bit to go back to 0, as the pending
++		 * waiter, but timed out. We need to clear the pending bit since
++		 * we own it. Once a stuck owner has been recovered, the lock
++		 * must be restored to a valid state, hence removing the pending
++		 * bit is necessary.
++		 *
++		 * *,1,* -> *,0,*
++		 */
++		clear_pending(lock);
++		lockevent_inc(rqspinlock_lock_timeout);
++		return ret;
++	}
+ 
  	/*
- 	 * Wait for in-progress pending->locked hand-overs with a bounded
- 	 * number of spins so that we guarantee forward progress.
+ 	 * take ownership and clear the pending bit.
+@@ -211,7 +228,7 @@ void __lockfunc resilient_queued_spin_lock_slowpath(struct qspinlock *lock, u32
+ 	 */
+ 	clear_pending_set_locked(lock);
+ 	lockevent_inc(lock_pending);
+-	return;
++	return 0;
+ 
+ 	/*
+ 	 * End of pending bit optimistic spinning and beginning of MCS
+@@ -362,5 +379,6 @@ void __lockfunc resilient_queued_spin_lock_slowpath(struct qspinlock *lock, u32
+ 	 * release the node
+ 	 */
+ 	__this_cpu_dec(qnodes[0].mcs.count);
++	return 0;
+ }
+ EXPORT_SYMBOL(resilient_queued_spin_lock_slowpath);
 -- 
 2.43.5
 
