@@ -1,140 +1,185 @@
-Return-Path: <bpf+bounces-48135-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48136-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABFE9A044A0
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 16:33:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A704A045A9
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 17:12:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB0AC166AC3
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 15:33:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 248AF3A54F7
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2025 16:11:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FB6F1F7064;
-	Tue,  7 Jan 2025 15:31:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2641B1F3D4F;
+	Tue,  7 Jan 2025 16:11:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="APWW3StN"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yPt3ebKd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 387FB1F4276;
-	Tue,  7 Jan 2025 15:31:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8409D1EE035
+	for <bpf@vger.kernel.org>; Tue,  7 Jan 2025 16:11:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736263912; cv=none; b=Z4C2mtmeCsn3dbhapXQ07p8bsjLDsF+2kOHaD7u/HLXd5RTNWY4jBZbM9nZx9UJJaB3RzLw7dL9qBTeha7uleWGiyzlD48gIbF/xAkqfoQeBFXgXdxEetY8p+Ro64JJ0kiGs+VXaUyM96jESQuO715p5LihFRIxX1aNpBvQu1oo=
+	t=1736266300; cv=none; b=pyjW1NGEILYnQD6MOBboWngs3+gOuh3lqjDKGEZTR98CgWwKI7HXo+MCN7avjZw9II5UrRfAUgYhl6J/1UDkeeiEPjbI/laxpuKlrzcK+bJsvCEjrtTVndRltmPqyKcMqnhOaLZi305U1La80S1gEzSds95QZdXdGaDakMM0acI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736263912; c=relaxed/simple;
-	bh=02kZtbtipIWVTWFg7jgWGOul0B8zGr6oxzoMcfkW5U4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eiQwle3aH5b6hB4Oi5gDkTfiecKH48/flxJ66UyU54KFli0WkkMt3/Va0OvfXWacviFsAfypEneElva9dZVuayJ0+UKTvUOFF044uAILc9jGZ4s5ywR7myWkybslAfiE6kbo3L+joyLnzdgWHY1vB/SaPFd4bpfuvC1EkgLMs5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=APWW3StN; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1736263909; x=1767799909;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=02kZtbtipIWVTWFg7jgWGOul0B8zGr6oxzoMcfkW5U4=;
-  b=APWW3StNxbi49///Ry3zcuacxr76YSB0poC7/hrsCSTMVkP+/l14A4gb
-   3eRKO13K5e6jO6yWaMg4q4KMlnffYRazIk65+t76xcOnM9NZ4F71OXrSr
-   Z0Q/bqk4I3cjHymdJoR7x5eDo8+JywkyJu9oFgqtgIjkdSbREtdeyQGON
-   JRr6M7331lG7Mf/ku9CngLO2Dmc0bAAc0fiJOgV95+zbyoOeDccRtjrhe
-   c1LiD4bjv1kvvA9jYHTud+kpMFQLhwYyv4qX8QG47lWu5ZEzprDAqNjHY
-   Z51qtbXlyBqZQK5WH2z37heLSHlSylu41WgbTsNKfTi/oKvl4qUZfPm8J
-   Q==;
-X-CSE-ConnectionGUID: FfyrkbRuQKS59eTBliu3UA==
-X-CSE-MsgGUID: 8B3XdXEqRDKN7D3abgyclw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11308"; a="35685915"
-X-IronPort-AV: E=Sophos;i="6.12,295,1728975600"; 
-   d="scan'208";a="35685915"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2025 07:31:39 -0800
-X-CSE-ConnectionGUID: Q6Imvzp/TniSvLBViwAYpw==
-X-CSE-MsgGUID: n+pHpbs5S5+aC992Y7kejw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="103646975"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa008.jf.intel.com with ESMTP; 07 Jan 2025 07:31:35 -0800
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-To: Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Daniel Xu <dxu@dxuuu.xyz>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 8/8] xdp: remove xdp_alloc_skb_bulk()
-Date: Tue,  7 Jan 2025 16:29:40 +0100
-Message-ID: <20250107152940.26530-9-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250107152940.26530-1-aleksander.lobakin@intel.com>
-References: <20250107152940.26530-1-aleksander.lobakin@intel.com>
+	s=arc-20240116; t=1736266300; c=relaxed/simple;
+	bh=oe4rYLsJTSsMqz8kYPo07co6S2Ugvm2arY6rIL9BfrE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Aw8TIByq90lR0lZuJeGKayUu0oNaj+2FK0p0hk50sPX7xaICaC80Ka0rCSfKetofK8LwIjf+Nirv8OyznhG3adloPVVGehPO7Cfmz0pZ7rucukOFRwBv2ykOkY+JkwOxaO0uAY1floD5uwRtUhXi2x00Jjv/qQ2+Tr40vpoUgCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yPt3ebKd; arc=none smtp.client-ip=209.85.166.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-3a815a5fb60so154235ab.0
+        for <bpf@vger.kernel.org>; Tue, 07 Jan 2025 08:11:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1736266296; x=1736871096; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ovdIMwIwiZ14E4dfVfO4ghoVyZV5ri9bDMxCK8IFTAI=;
+        b=yPt3ebKdNxIBfWrLby1RomYYDU1AwUTaLMOmp80bLrYRrE7BXIMQ0CerAWr4ziB2c9
+         UK8eZaK63qo/zFFJWH7dscth41z3gfw2AxCvging7NmplAveit52bFC9x78MNRmoHcoM
+         /QLmo12DhbMdU06+cJS0IDyoTSx2LcQgJLZin9PT8jI843PfBG705oLeTe1bvsZWWrUY
+         PRSh0VGRy+j9Oi90eB9XyhNX+/FP1P5deyc9cyS5d0OIFegqgeIojU+O3zZADSjS1pF2
+         mSF3KHc2LijPEposq6EyYWp9UXO45LnjdQbmchQ2eiKgPprHw5urfNJJgLz3ugpMrw8n
+         dHpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736266296; x=1736871096;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ovdIMwIwiZ14E4dfVfO4ghoVyZV5ri9bDMxCK8IFTAI=;
+        b=Kf5CAntNg3ujGS3gViBOACIMc3HOw2xB8ZA9BbtVeDx8aK3Dn9CltHeN2q7Rl4UglG
+         PxN47zKwrRPhfuL91I563NPYrHzQIPh4eOwItiUFJoaL5I//HQhR0k4WKSjur8fwqUMK
+         3mTEk0hRfQNVxP94M5JLYMrku8Xd5aReJVr0BzgaJH5pFZPKKFMaoKCYz2FutVAo9o8b
+         giJFj1toZLaX3wYRdpaCPo7KWMIljw7HQHK1pobgyxA6K7pzTuyV7t01AMgxPruH/8tZ
+         U/oq45X7sEZlc+FYVAebZ8NiPpzqEz9p5zVeKETEnK/4FbNOmyIUL8EH1phL1ZgzDtfS
+         QQvA==
+X-Forwarded-Encrypted: i=1; AJvYcCWqBPNeeT+Wrz7ujLuiythjEQ15kqZcbd5jrNlCX+W0vnZMVmHGvGzQE3AE7OPGXwCBx38=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyc6QuPy6+0rrCdCVqglpwDoTwEVGNl8Vrzzt6myrKTIuPW+Va5
+	AnNeRH6M3aZPrNIINQgF4sPd0VBDIei6CLyBiSy3lQWxS/kAewjgh6eJYwGUhIPgjwlL9uVOlQS
+	cxvGbG/wf7e6XPXdQlF2j9q0YbCaLUMesbc4U
+X-Gm-Gg: ASbGncswYcwvPBczdW81vMcEYXgkmX2pTzeDFvWnSabm0H61vWPX1j+W+wUp0L9hgJv
+	4qLdVdvFbFzMYdv40q003tJyUmEzQEesLQoG4iG/jY/x8qCIxI/kO3HOcpeMCxIBRaE36tg==
+X-Google-Smtp-Source: AGHT+IFRGMAI8grxoLwU2BMFOYBqhR5G/5+yRiXlsTISXSuvfb3Eb0aGg6zU69aqjzEvaVHXuJ/Tu/v7loLxxl0BAcI=
+X-Received: by 2002:a05:6e02:1068:b0:3ce:3873:48d4 with SMTP id
+ e9e14a558f8ab-3ce38734b0amr762905ab.4.1736266295512; Tue, 07 Jan 2025
+ 08:11:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250106215443.198633-1-irogers@google.com> <576a50c8-9ca2-4e2f-9bd8-7d9be4862920@linaro.org>
+In-Reply-To: <576a50c8-9ca2-4e2f-9bd8-7d9be4862920@linaro.org>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 7 Jan 2025 08:11:23 -0800
+Message-ID: <CAP-5=fUZ2QCocFKdLfBoNYC-CQfSAcdbA05OhegKmTt_PLR1WA@mail.gmail.com>
+Subject: Re: [PATCH v1] tools build: Fix a number of Wconversion warnings
+To: James Clark <james.clark@linaro.org>
+Cc: Leo Yan <leo.yan@arm.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The only user was veth, which now uses napi_skb_cache_get_bulk().
-It's now preferred over a direct allocation and is exported as
-well, so remove this one.
+On Tue, Jan 7, 2025 at 2:33=E2=80=AFAM James Clark <james.clark@linaro.org>=
+ wrote:
+>
+> On 06/01/2025 9:54 pm, Ian Rogers wrote:
+> > There's some expressed interest in having the compiler flag
+> > -Wconversion detect at build time certain kinds of potential problems:
+> > https://lore.kernel.org/lkml/20250103182532.GB781381@e132581.arm.com/
+> >
+> > As feature detection passes -Wconversion from CFLAGS when set, the
+> > feature detection compile tests need to not fail because of
+> > -Wconversion as the failure will be interpretted as a missing
+> > feature. Switch various types to avoid the -Wconversion issue, the
+> > exact meaning of the code is unimportant as it is typically looking
+> > for header file definitions.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+>
+> What's the plan for errors in #includes that we can't modify? I noticed
+> the Perl feature test fails with -Wconversion but can be fixed by
+> disabling the warning:
+>
+>    #pragma GCC diagnostic push
+>    #pragma GCC diagnostic ignored "-Wsign-conversion"
+>    #pragma GCC diagnostic ignored "-Wconversion"
+>    #include <EXTERN.h>
+>    #include <perl.h>
+>    #pragma GCC diagnostic pop
+>
+> Not sure why it needs both those things to be disabled when I only
+> enabled -Wconversion, but it does.
 
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- include/net/xdp.h |  1 -
- net/core/xdp.c    | 10 ----------
- 2 files changed, 11 deletions(-)
+This change lgtm, I'm not sure how others feel. I don't have a plan, I
+was just following up on Leo's Wconversion comment to see what state
+things were in. The feature tests without these changes pretty much
+break the build (I can live without perl support :-) ) so I thought I
+could move things forward there and then see the state of Wconversion
+with the patch I was working on.
 
-diff --git a/include/net/xdp.h b/include/net/xdp.h
-index 6da0e746cf75..e2f83819405b 100644
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@ -344,7 +344,6 @@ struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
- 					   struct net_device *dev);
- struct sk_buff *xdp_build_skb_from_frame(struct xdp_frame *xdpf,
- 					 struct net_device *dev);
--int xdp_alloc_skb_bulk(void **skbs, int n_skb, gfp_t gfp);
- struct xdp_frame *xdpf_clone(struct xdp_frame *xdpf);
- 
- static inline
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 67b53fc7191e..eb8762ff16cb 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -619,16 +619,6 @@ void xdp_warn(const char *msg, const char *func, const int line)
- };
- EXPORT_SYMBOL_GPL(xdp_warn);
- 
--int xdp_alloc_skb_bulk(void **skbs, int n_skb, gfp_t gfp)
--{
--	n_skb = kmem_cache_alloc_bulk(net_hotdata.skbuff_cache, gfp, n_skb, skbs);
--	if (unlikely(!n_skb))
--		return -ENOMEM;
--
--	return 0;
--}
--EXPORT_SYMBOL_GPL(xdp_alloc_skb_bulk);
--
- /**
-  * xdp_build_skb_from_buff - create an skb from &xdp_buff
-  * @xdp: &xdp_buff to convert to an skb
--- 
-2.47.1
+I'm not sure how others feel about fixing Wconversion in perf, the
+errors are quite noisy imo. The biggest issue imo will be with headers
+shared by tools and the kernel, where kernel people may be vocal on
+the merits of Wconversion.
 
+> > ---
+> >   tools/build/feature/test-backtrace.c           | 2 +-
+> >   tools/build/feature/test-bpf.c                 | 2 +-
+> >   tools/build/feature/test-glibc.c               | 2 +-
+> >   tools/build/feature/test-libdebuginfod.c       | 2 +-
+> >   tools/build/feature/test-libdw.c               | 2 +-
+> >   tools/build/feature/test-libelf-gelf_getnote.c | 2 +-
+> >   tools/build/feature/test-libelf.c              | 2 +-
+> >   tools/build/feature/test-lzma.c                | 2 +-
+> >   8 files changed, 8 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/tools/build/feature/test-backtrace.c b/tools/build/feature=
+/test-backtrace.c
+> > index e9ddd27c69c3..7962fbad6401 100644
+> > --- a/tools/build/feature/test-backtrace.c
+> > +++ b/tools/build/feature/test-backtrace.c
+> > @@ -5,7 +5,7 @@
+> >   int main(void)
+> >   {
+> >       void *backtrace_fns[10];
+> > -     size_t entries;
+> > +     int entries;
+> >
+> >       entries =3D backtrace(backtrace_fns, 10);
+> >       backtrace_symbols_fd(backtrace_fns, entries, 1);
+> > diff --git a/tools/build/feature/test-bpf.c b/tools/build/feature/test-=
+bpf.c
+> > index 727d22e34a6e..e7a405f83af6 100644
+> > --- a/tools/build/feature/test-bpf.c
+> > +++ b/tools/build/feature/test-bpf.c
+> > @@ -44,5 +44,5 @@ int main(void)
+> >        * Test existence of __NR_bpf and BPF_PROG_LOAD.
+> >        * This call should fail if we run the testcase.
+> >        */
+> > -     return syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
+> > +     return syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr)) =3D=
+=3D 0;
+>
+> Seems a bit weird to invert some of the return values rather than doing
+> !=3D 0, but as you say, the actual values seem to be unimportant.
+>
+> Reviewed-by: James Clark <james.clark@linaro.org>
+
+Yeah it was arbitrary and I didn't want to add a stdlib.h dependency
+in a bunch of places for the sake of a definition of NULL. I'm happy
+for things to be done differently if people like.
+
+Thanks,
+Ian
 
