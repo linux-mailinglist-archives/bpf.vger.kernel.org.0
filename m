@@ -1,297 +1,417 @@
-Return-Path: <bpf+bounces-48224-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48225-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9E88A0525F
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 05:52:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72CC8A052EA
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 06:56:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35A023A7235
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 04:52:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AA1C166D9E
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 05:56:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 939AE19F121;
-	Wed,  8 Jan 2025 04:52:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5DF21A0BED;
+	Wed,  8 Jan 2025 05:56:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G3xHI011"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fxqf/sNy"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10BE818EB0;
-	Wed,  8 Jan 2025 04:52:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 593F819CC37
+	for <bpf@vger.kernel.org>; Wed,  8 Jan 2025 05:56:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736311941; cv=none; b=izvRYn5WGZHgs0HhHAans0MEPtwQfcUcnZ/mqdzYfi+2pDw2iusgFf2FLDY5gOeLvE5Ohp4Lyn3MgdUcHFD7YrNSCnL3//vIlVBiGMULNsDckVbLvlGq0QV/nXlf1ycEtQMjDZ54NVcPSz18LsxkHopkBEXMIqNtIecycHet2i0=
+	t=1736315766; cv=none; b=DlaUAkvxjrQqlOEv+yM7rA2WPUUyKx1CKSEgNmof8dpIfmnOFMLnJzLyKsSbczLsfladUqin5KNJcYS6+dxZJy8HxTDtXGm08qCikPJObTP/7Hj6NToS1zY0XOOUgNldO+ZyGFzFqFXqxh9M15BIVhH4tT4iJvFojl2PUE6FyzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736311941; c=relaxed/simple;
-	bh=D1PhWHZp6We3lr7kB99PxDSEro3BDLrjugvo4kINodU=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=aET6iJRlkKzLukY4eI6OtE9tVd6ylHPkf9t+q6iI8BBRfIRsD22f48r4E3rDucl8CDeLOtrGDWhelOThJqsPWwTQYurs0fSvEWl4JupeDXMNAUha6lRzEJ411CoLAf/JwWwugx576TFZAUzUwiUGPtsrgd86jjvPr0wd+VPButk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G3xHI011; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94B7EC4CED0;
-	Wed,  8 Jan 2025 04:52:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736311940;
-	bh=D1PhWHZp6We3lr7kB99PxDSEro3BDLrjugvo4kINodU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=G3xHI011+ui/VTEAVoPJqf+lbvbeMZkCu1YPLBPK40W2Jws/lvEi9sP1YaZ1LJlkA
-	 Gy78ufGq+CkPO+m66r0EqwwhMnExEh2gbDFvHY1UwaUlrTycxFAfJMCsgmZY0HNdNn
-	 1x5SXwfKOhde+qw4crp++MKO1l26wstLJvtAffCf6dHn/gYTIYINlq2z2ZbcqDicMK
-	 eB+AK0y8K0XcrR10EwPHvv/hX4RpKojdn91lsbSXPzSwVlRhkFgwkEZSioDo149//3
-	 8l53F0fh8jyAT3ptqP6+i0cElf/5KhKrAE/xMK7BT5iGnANhDPTQ2Dh0IBSyIw4rxv
-	 fd3KhGgdFECHw==
-Date: Wed, 8 Jan 2025 13:52:17 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Donglin Peng <dolinux.peng@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, Sven Schnelle <svens@linux.ibm.com>, Paul
- Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>, Zheng
- Yejian <zhengyejian@huaweicloud.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] ftrace: Add print_function_args()
-Message-Id: <20250108135217.9db8d131835acfb6ce4baa88@kernel.org>
-In-Reply-To: <CAErzpms4g8=3486Uv-PPxiA0GSkNQQm1Ez67eo-H3LtAhTAJCA@mail.gmail.com>
-References: <20241223201347.609298489@goodmis.org>
-	<20241223201541.898496620@goodmis.org>
-	<CAErzpms4g8=3486Uv-PPxiA0GSkNQQm1Ez67eo-H3LtAhTAJCA@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1736315766; c=relaxed/simple;
+	bh=4Dk4sjDEmA4bvhqhaaZNUppThZV/mWq0rf1crxz2BZA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jJPkMBJ/q/ncT/pL2VA3rQNvIvFwOJ7I4h6mnKWDCfj7RPpSQQfMDHW1eTqUjsLataaW04fJHVPJ2b0/t+cTlm5sueVmuuHL4KmOHbweUr0CmTuiqMF+3xFu+vlfyNiz4as1M70FufWaa4LFqtzx7qshI+ot5X22tEw9ldXIeDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fxqf/sNy; arc=none smtp.client-ip=209.85.166.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-3a9d0c28589so74905ab.0
+        for <bpf@vger.kernel.org>; Tue, 07 Jan 2025 21:56:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1736315763; x=1736920563; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MZOzw29TbOcaTenvicUmtZiH45KvH8RJU1bc5tPWnZ0=;
+        b=fxqf/sNy591xxeTrj6PMLOvOYBKxPkoqdzc36jgAPoLlXPHbHNHUBScT2UCMDdGz29
+         hCLayx3A3JMJysByFXF56is8lIc7P72Y2JUO9bbn7AQ/kdA/sV00IE9TqrW+7A2OmRIn
+         +qm8shvQpxJDgZ9ct1y5jazTczxbPs5UI5lC1rNv0w/On3bQFpQevj0mFP2ko8qjHR3I
+         gAXDSuAUYV/ClXfWmUTH/UjQQ7Wsm5ct0McN8+Gc5XL2UfDwCm4wVpPa0h+IX9LMApyL
+         sE8ff+zdYDzRmPDzN2inX+UuJEMFiO/1K2CgDLzBEj2GzREnVVXA9hHex9d6mcI4RfRK
+         Xxfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736315763; x=1736920563;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MZOzw29TbOcaTenvicUmtZiH45KvH8RJU1bc5tPWnZ0=;
+        b=diRK/MYt1H1wFx1LWNLbcKaSPc4VLDKbtKdHLB/EGbq/lAGbOoI9CvBwsPIIhAtvzB
+         ioliVr89dWPKQb6hXCwantW9dWGLVLakhP/+LldLnrD9Slt5AKEdKFha8hgYMqWowkBE
+         20xAUpt4Iky8W8+KL8umSKujTcTniA5BrNCBezGwQt5A+6s0DjqeP+UzF6oBUMJuQ/1x
+         GdEkdGyFJil6+h8RHPm6JTSJl7ha9SdC0kTomr6A5WZa9PI4U0AnZCdvIBKkms2FsLFh
+         ek916jPlFeC4H1xehJpNAY2Ewg/4NVo+9vZiwmk+EZEkdXx8YGGzXJ7DS8nrBZdGj7w6
+         WAUA==
+X-Forwarded-Encrypted: i=1; AJvYcCUygaHvVipU6jfi+vkElnHPgBB5AOA/4RxCrwEhvqDIpV2zdfmNitHBA8nfMv0R9jZvK3Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz2YQYPCRYqrksGh/UUaRGghZIGo+kkH1Wn/kt6ZWyFc1Ek2SX9
+	CdKPX2nh6KuLqwkztjEdjdaW+UVKBTmx93H8rb1eFum8qqp6UIr8XvMCgWo6KVeF9XY1ZVzm3SS
+	usrVsBAJS7UeiUejuVVyhc/Blhd9pa1KAETxh
+X-Gm-Gg: ASbGncs5c6PmnohEpD6ZvW6XZw49p4IuyyHWTIRgI5a8B9zhUw3mmQdF5vIv70YCzkN
+	rMmD+x94sD6zPUVP2Xh4DUD3INiVdk5DqSi/k9sA=
+X-Google-Smtp-Source: AGHT+IFeXsBTqNdLx5CxN3UeHgpJoZQda1EiWT5aDNM3jyLdNUBhg2g9KCFltdbrL8jveDztpDPfl2/ovpOAoFN41XI=
+X-Received: by 2002:a05:6e02:1d8c:b0:3ce:3a03:3e9c with SMTP id
+ e9e14a558f8ab-3ce3af47b94mr2014295ab.2.1736315763197; Tue, 07 Jan 2025
+ 21:56:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+References: <20250107180854.770470-1-irogers@google.com> <20250107180854.770470-4-irogers@google.com>
+ <Z32CeUuxt4ASJeRe@google.com> <CAP-5=fUqbPX4RLSLzw1UJ9NycOh8r5o4TxLfu2RRxooPG0gUtA@mail.gmail.com>
+ <Z33DSLHzCpEVrAdy@google.com>
+In-Reply-To: <Z33DSLHzCpEVrAdy@google.com>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 7 Jan 2025 21:55:51 -0800
+X-Gm-Features: AbW1kvaZ0Fq1DV03fBBaRq_KS8VYMm_PgG0ejhaZ2brbuszj9BQAAWcZBxFeGjI
+Message-ID: <CAP-5=fUxiGhXs55KHnQgXHbOy46Z_16VEgpfJ0ha8UcUXxqvOw@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] perf record: Skip don't fail for events that don't open
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	James Clark <james.clark@linaro.org>, Ze Gao <zegao2021@gmail.com>, 
+	Weilin Wang <weilin.wang@intel.com>, Dominique Martinet <asmadeus@codewreck.org>, 
+	Jean-Philippe Romain <jean-philippe.romain@foss.st.com>, Junhao He <hejunhao3@huawei.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, Aditya Bodkhe <Aditya.Bodkhe1@ibm.com>, Leo Yan <leo.yan@arm.com>, 
+	Atish Patra <atishp@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 8 Jan 2025 10:30:08 +0800
-Donglin Peng <dolinux.peng@gmail.com> wrote:
+On Tue, Jan 7, 2025 at 4:14=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
+rote:
+>
+> On Tue, Jan 07, 2025 at 12:34:25PM -0800, Ian Rogers wrote:
+> > On Tue, Jan 7, 2025 at 11:37=E2=80=AFAM Namhyung Kim <namhyung@kernel.o=
+rg> wrote:
+> > >
+> > > Hi Ian,
+> > >
+> > > On Tue, Jan 07, 2025 at 10:08:53AM -0800, Ian Rogers wrote:
+> > > > Whilst for many tools it is an expected behavior that failure to op=
+en
+> > > > a perf event is a failure, ARM decided to name PMU events the same =
+as
+> > > > legacy events and then failed to rename such events on a server unc=
+ore
+> > > > SLC PMU. As perf's default behavior when no PMU is specified is to
+> > > > open the event on all PMUs that advertise/"have" the event, this
+> > > > yielded failures when trying to make the priority of legacy and
+> > > > sysfs/json events uniform - something requested by RISC-V and ARM. =
+A
+> > > > legacy event user on ARM hardware may find their event opened on an
+> > > > uncore PMU which for perf record will fail. Arnaldo suggested skipp=
+ing
+> > > > such events which this patch implements. Rather than have the skipp=
+ing
+> > > > conditional on running on ARM, the skipping is done on all
+> > > > architectures as such a fundamental behavioral difference could lea=
+d
+> > > > to problems with tools built/depending on perf.
+> > > >
+> > > > An example of perf record failing to open events on x86 is:
+> > > > ```
+> > > > $ perf record -e data_read,cycles,LLC-prefetch-read -a sleep 0.1
+> > > > Error:
+> > > > Failure to open event 'data_read' on PMU 'uncore_imc_free_running_0=
+' which will be removed.
+> > > > The sys_perf_event_open() syscall returned with 22 (Invalid argumen=
+t) for event (data_read).
+> > > > "dmesg | grep -i perf" may provide additional information.
+> > > >
+> > > > Error:
+> > > > Failure to open event 'data_read' on PMU 'uncore_imc_free_running_1=
+' which will be removed.
+> > > > The sys_perf_event_open() syscall returned with 22 (Invalid argumen=
+t) for event (data_read).
+> > > > "dmesg | grep -i perf" may provide additional information.
+> > > >
+> > > > Error:
+> > > > Failure to open event 'LLC-prefetch-read' on PMU 'cpu' which will b=
+e removed.
+> > > > The LLC-prefetch-read event is not supported.
+> > > > [ perf record: Woken up 1 times to write data ]
+> > > > [ perf record: Captured and wrote 2.188 MB perf.data (87 samples) ]
+> > > >
+> > > > $ perf report --stats
+> > > > Aggregated stats:
+> > > >                TOTAL events:      17255
+> > > >                 MMAP events:        284  ( 1.6%)
+> > > >                 COMM events:       1961  (11.4%)
+> > > >                 EXIT events:          1  ( 0.0%)
+> > > >                 FORK events:       1960  (11.4%)
+> > > >               SAMPLE events:         87  ( 0.5%)
+> > > >                MMAP2 events:      12836  (74.4%)
+> > > >              KSYMBOL events:         83  ( 0.5%)
+> > > >            BPF_EVENT events:         36  ( 0.2%)
+> > > >       FINISHED_ROUND events:          2  ( 0.0%)
+> > > >             ID_INDEX events:          1  ( 0.0%)
+> > > >           THREAD_MAP events:          1  ( 0.0%)
+> > > >              CPU_MAP events:          1  ( 0.0%)
+> > > >            TIME_CONV events:          1  ( 0.0%)
+> > > >        FINISHED_INIT events:          1  ( 0.0%)
+> > > > cycles stats:
+> > > >               SAMPLE events:         87
+> > > > ```
+> > > >
+> > > > If all events fail to open then the perf record will fail:
+> > > > ```
+> > > > $ perf record -e LLC-prefetch-read true
+> > > > Error:
+> > > > Failure to open event 'LLC-prefetch-read' on PMU 'cpu' which will b=
+e removed.
+> > > > The LLC-prefetch-read event is not supported.
+> > > > Error:
+> > > > Failure to open any events for recording
+> > > > ```
+> > > >
+> > > > This is done by detecting if dummy events were implicitly added by
+> > > > perf and seeing if the evlist is empty without them. This allows th=
+e
+> > > > dummy event still to be recorded:
+> > > > ```
+> > > > $ perf record -e dummy true
+> > > > [ perf record: Woken up 1 times to write data ]
+> > > > [ perf record: Captured and wrote 0.046 MB perf.data ]
+> > > > ```
+> > > > but fail when inserted:
+> > > > ```
+> > > > $ perf record -e LLC-prefetch-read -a true
+> > > > Error:
+> > > > Failure to open event 'LLC-prefetch-read' on PMU 'cpu' which will b=
+e removed.
+> > > > The LLC-prefetch-read event is not supported.
+> > > > Error:
+> > > > Failure to open any events for recording
+> > > > ```
+> > > >
+> > > > The issue with legacy events is that on RISC-V they want the driver=
+ to
+> > > > not have mappings from legacy to non-legacy config encodings for ea=
+ch
+> > > > vendor/model due to size, complexity and difficulty to update. It w=
+as
+> > > > reported that on ARM Apple-M? CPUs the legacy mapping in the driver
+> > > > was broken and the sysfs/json events should always take precedent,
+> > > > however, it isn't clear this is still the case. It is the case that
+> > > > without working around this issue a legacy event like cycles withou=
+t a
+> > > > PMU can encode differently than when specified with a PMU - the
+> > > > non-PMU version favoring legacy encodings, the PMU one avoiding leg=
+acy
+> > > > encodings.
+> > > >
+> > > > The patch removes events and then adjusts the idx value for each
+> > > > evsel. This is done so that the dense xyarrays used for file
+> > > > descriptors, etc. don't contain broken entries. As event opening
+> > > > happens relatively late in the record process, use of the idx value
+> > > > before the open will have become corrupted, so it is expected there
+> > > > are latent bugs hidden behind this change - the change is best
+> > > > effort. As the only vendor that has broken event names is ARM, this
+> > > > will principally effect ARM users. They will also experience warnin=
+g
+> > > > messages like those above because of the uncore PMU advertising leg=
+acy
+> > > > event names.
+> > > >
+> > > > Suggested-by: Arnaldo Carvalho de Melo <acme@kernel.org>
+> > > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > > > Tested-by: James Clark <james.clark@linaro.org>
+> > > > Tested-by: Leo Yan <leo.yan@arm.com>
+> > > > Tested-by: Atish Patra <atishp@rivosinc.com>
+> > > > ---
+> > > >  tools/perf/builtin-record.c | 54 ++++++++++++++++++++++++++++++++-=
+----
+> > > >  1 file changed, 48 insertions(+), 6 deletions(-)
+> > > >
+> > > > diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-recor=
+d.c
+> > > > index 5db1aedf48df..b3f06638f3c6 100644
+> > > > --- a/tools/perf/builtin-record.c
+> > > > +++ b/tools/perf/builtin-record.c
+> > > > @@ -161,6 +161,7 @@ struct record {
+> > > >       struct evlist           *sb_evlist;
+> > > >       pthread_t               thread_id;
+> > > >       int                     realtime_prio;
+> > > > +     int                     num_parsed_dummy_events;
+> > > >       bool                    switch_output_event_set;
+> > > >       bool                    no_buildid;
+> > > >       bool                    no_buildid_set;
+> > > > @@ -961,7 +962,6 @@ static int record__config_tracking_events(struc=
+t record *rec)
+> > > >        */
+> > > >       if (opts->target.initial_delay || target__has_cpu(&opts->targ=
+et) ||
+> > > >           perf_pmus__num_core_pmus() > 1) {
+> > > > -
+> > > >               /*
+> > > >                * User space tasks can migrate between CPUs, so when=
+ tracing
+> > > >                * selected CPUs, sideband for all CPUs is still need=
+ed.
+> > > > @@ -1366,6 +1366,7 @@ static int record__open(struct record *rec)
+> > > >       struct perf_session *session =3D rec->session;
+> > > >       struct record_opts *opts =3D &rec->opts;
+> > > >       int rc =3D 0;
+> > > > +     bool skipped =3D false;
+> > > >
+> > > >       evlist__for_each_entry(evlist, pos) {
+> > > >  try_again:
+> > > > @@ -1381,15 +1382,50 @@ static int record__open(struct record *rec)
+> > > >                               pos =3D evlist__reset_weak_group(evli=
+st, pos, true);
+> > > >                               goto try_again;
+> > > >                       }
+> > > > -                     rc =3D -errno;
+> > > >                       evsel__open_strerror(pos, &opts->target, errn=
+o, msg, sizeof(msg));
+> > > > -                     ui__error("%s\n", msg);
+> > > > -                     goto out;
+> > > > +                     ui__error("Failure to open event '%s' on PMU =
+'%s' which will be removed.\n%s\n",
+> > > > +                               evsel__name(pos), evsel__pmu_name(p=
+os), msg);
+> > > > +                     pos->skippable =3D true;
+> > > > +                     skipped =3D true;
+> > > > +             } else {
+> > > > +                     pos->supported =3D true;
+> > > >               }
+> > > > -
+> > > > -             pos->supported =3D true;
+> > > >       }
+> > > >
+> > > > +     if (skipped) {
+> > > > +             struct evsel *tmp;
+> > > > +             int idx =3D 0, num_dummy =3D 0, num_non_dummy =3D 0,
+> > > > +                 removed_dummy =3D 0, removed_non_dummy =3D 0;
+> > > > +
+> > > > +             /* Remove evsels that failed to open and update indic=
+es. */
+> > > > +             evlist__for_each_entry_safe(evlist, tmp, pos) {
+> > > > +                     if (evsel__is_dummy_event(pos))
+> > > > +                             num_dummy++;
+> > > > +                     else
+> > > > +                             num_non_dummy++;
+> > > > +
+> > > > +                     if (!pos->skippable)
+> > > > +                             continue;
+> > > > +
+> > > > +                     if (evsel__is_dummy_event(pos))
+> > > > +                             removed_dummy++;
+> > > > +                     else
+> > > > +                             removed_non_dummy++;
+> > > > +
+> > > > +                     evlist__remove(evlist, pos);
+> > > > +             }
+> > > > +             evlist__for_each_entry(evlist, pos) {
+> > > > +                     pos->core.idx =3D idx++;
+> > > > +             }
+> > > > +             /* If list is empty except implicitly added dummy eve=
+nts then fail. */
+> > > > +             if ((num_non_dummy =3D=3D removed_non_dummy) &&
+> > > > +                 ((rec->num_parsed_dummy_events =3D=3D 0) ||
+> > > > +                  (removed_dummy >=3D (num_dummy - rec->num_parsed=
+_dummy_events)))) {
+> > > > +                     ui__error("Failure to open any events for rec=
+ording.\n");
+> > > > +                     rc =3D -1;
+> > > > +                     goto out;
+> > > > +             }
+> > > > +     }
+> > >
+> > > Instead of couting dummy events, I wonder if it could check any
+> > > supported non-dummy events in the evlist.
+> > >
+> > >         if (skipped) {
+> > >                 bool found =3D false;
+> > >
+> > >                 evlist__for_each_entry_safe(evlist, tmp, pos) {
+> > >                         if (pos->skippable) {
+> > >                                 evlist__remove(evlist, pos);
+> > >                                 continue;
+> > >                         }
+> > >                         if (evsel__is_dummy_event(pos))
+> > >                                 continue;
+> > >                         found =3D true;
+> > >                 }
+> > >                 if (!found) {
+> > >                         ui__error("...");
+> > >                         rc =3D -1;
+> > >                         goto out;
+> > >                 }
+> > >                 /* recalculate the index */
+> > >         }
+> > >
+> > > Then it should do the same, no?  The corner case would be when users
+> > > specify dummy events in the command line (maybe to check permissions
+> > > by the exit code).
+> > >
+> > >   $ perf record -a -e dummy true
+> > >
+> > > If it fails to open, then 'skipped' set and 'found' not set so the
+> > > command will fail.  It it succeeds, then it doesn't set 'skipped'
+> > > and the command will exit with 0.
+> > >
+> > > Do I miss something?
+> >
+> > Yep, but it depends on what we want the behavior to be. Consider an
+> > event that doesn't support record and the dummy event which for the
+> > sake of argument will open here:
+> >
+> > $ perf record -a -e LLC-prefetch-read,dummy true
+> >
+> > In this case initially found is false, we then process
+> > LLC-prefetch-read which didn't open and remove it from the evlist.
+> > Next we process the dummy event that did open but because it was a
+> > dummy event found won't be set to true. The code will then proceed to
+> > fail (found =3D=3D false) even though the dummy event did open. Were th=
+is
+> > cycles and not dummy:
+> >
+> > $ perf record -a -e LLC-prefetch-read,cycles true
+> >
+> > Then the expectation would be for this to proceed with a warning on
+> > LLC-prefetch-read and to record cycles. With your code dummy will
+> > behave differently to cycles as it will terminate perf record early.
+> > Does this matter? I'm not sure, but I was trying to make the events
+> > (dummy vs non-dummy) consistent.
+>
+> I'm not sure too.  Anyway it won't get any samples if all other
+> non-dummy events failed.  Then there are not much points to run the
+> perf record IMHO.  I think dummy event is special as you counted it
+> specifically so we don't need to worry about the special case too much.
 
-> Steven Rostedt <rostedt@goodmis.org>于2024年12月24日 周二04:14写道：
-> 
-> > From: Sven Schnelle <svens@linux.ibm.com>
-> >
-> > Add a function to decode argument types with the help of BTF. Will
-> > be used to display arguments in the function and function graph
-> > tracer.
-> >
-> > It can only handle simply arguments and up to FTRACE_REGS_MAX_ARGS number
-> > of arguments. When it hits a max, it will print ", ...":
-> >
-> >    page_to_skb(vi=0xffff8d53842dc980, rq=0xffff8d53843a0800,
-> > page=0xfffffc2e04337c00, offset=6160, len=64, truesize=1536, ...)
-> >
-> > And if it hits an argument that is not recognized, it will print the raw
-> > value and the type of argument it is:
-> >
-> >    make_vfsuid(idmap=0xffffffff87f99db8, fs_userns=0xffffffff87e543c0,
-> > kuid=0x0 (STRUCT))
-> >    __pti_set_user_pgtbl(pgdp=0xffff8d5384ab47f8, pgd=0x110e74067 (STRUCT))
-> >
-> > Co-developed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> > Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-> > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> > ---
-> > Changes since v1:
-> > https://lore.kernel.org/20240904065908.1009086-5-svens@linux.ibm.com
-> >
-> >  - Added Config option FUNCTION_TRACE_ARGS to this patch
-> >   (unconditional if dependencies are met)
-> >
-> >  - Changed the print_function_args() function to take an array of
-> >    unsigned long args and not the ftrace_regs pointer. The ftrace_regs
-> >    should be opaque from generic code.
-> >
-> >  - Have the function print the name of an BTF type that is not supported.
-> >
-> >  - Added FTRACE_REGS_MAX_ARGS as the number of arguments saved in
-> >    the event and printed out.
-> >
-> >  - Print "...," if the number of arguments goes past FTRACE_REGS_MAX_ARGS.
-> >
-> >  include/linux/ftrace_regs.h |  5 +++
-> >  kernel/trace/Kconfig        |  6 +++
-> >  kernel/trace/trace_output.c | 78 +++++++++++++++++++++++++++++++++++++
-> >  kernel/trace/trace_output.h |  9 +++++
-> >  4 files changed, 98 insertions(+)
-> >
-> > diff --git a/include/linux/ftrace_regs.h b/include/linux/ftrace_regs.h
-> > index bbc1873ca6b8..15627ceea9bc 100644
-> > --- a/include/linux/ftrace_regs.h
-> > +++ b/include/linux/ftrace_regs.h
-> > @@ -35,4 +35,9 @@ struct ftrace_regs;
-> >
-> >  #endif /* HAVE_ARCH_FTRACE_REGS */
-> >
-> > +/* This can be overridden by the architectures */
-> > +#ifndef FTRACE_REGS_MAX_ARGS
-> > +# define FTRACE_REGS_MAX_ARGS  6
-> > +#endif
-> > +
-> >  #endif /* _LINUX_FTRACE_REGS_H */
-> > diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-> > index d570b8b9c0a9..60412c1012ef 100644
-> > --- a/kernel/trace/Kconfig
-> > +++ b/kernel/trace/Kconfig
-> > @@ -263,6 +263,12 @@ config FUNCTION_GRAPH_RETADDR
-> >           the function is called. This feature is off by default, and you
-> > can
-> >           enable it via the trace option funcgraph-retaddr.
-> >
-> > +config FUNCTION_TRACE_ARGS
-> > +       bool
-> > +       depends on HAVE_FUNCTION_ARG_ACCESS_API
-> > +       depends on DEBUG_INFO_BTF
-> > +       default y
-> > +
-> >  config DYNAMIC_FTRACE
-> >         bool "enable/disable function tracing dynamically"
-> >         depends on FUNCTION_TRACER
-> > diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
-> > index da748b7cbc4d..40d6c7a9e0c4 100644
-> > --- a/kernel/trace/trace_output.c
-> > +++ b/kernel/trace/trace_output.c
-> > @@ -12,8 +12,11 @@
-> >  #include <linux/sched/clock.h>
-> >  #include <linux/sched/mm.h>
-> >  #include <linux/idr.h>
-> > +#include <linux/btf.h>
-> > +#include <linux/bpf.h>
-> >
-> >  #include "trace_output.h"
-> > +#include "trace_btf.h"
-> >
-> >  /* must be a power of 2 */
-> >  #define EVENT_HASHSIZE 128
-> > @@ -680,6 +683,81 @@ int trace_print_lat_context(struct trace_iterator
-> > *iter)
-> >         return !trace_seq_has_overflowed(s);
-> >  }
-> >
-> > +#ifdef CONFIG_FUNCTION_TRACE_ARGS
-> > +void print_function_args(struct trace_seq *s, unsigned long *args,
-> > +                        unsigned long func)
-> > +{
-> > +       const struct btf_param *param;
-> > +       const struct btf_type *t;
-> > +       const char *param_name;
-> > +       char name[KSYM_NAME_LEN];
-> > +       unsigned long arg;
-> > +       struct btf *btf;
-> > +       s32 tid, nr = 0;
-> > +       int i;
-> > +
-> > +       trace_seq_printf(s, "(");
-> > +
-> > +       if (!args)
-> > +               goto out;
-> > +       if (lookup_symbol_name(func, name))
-> > +               goto out;
-> > +
-> > +       btf = bpf_get_btf_vmlinux();
-> > +       if (IS_ERR_OR_NULL(btf))
-> > +               goto out;
-> 
-> 
-> There is no need to the retrieve the BTF of vmlinux, as btf_find_func_proto
-> will return the correct BTF via its second parameter.
+So the two use-cases for dummy I can think of are:
+1) deliberately recording/sampling sideband data as you don't care
+about any real samples,
+2) a permission check.
+My preference was for dummy to behave as close as possible to other
+"regular" events like cycles. This could matter when we script and
+test all events like with "perf all PMU test":
+https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
+ee/tools/perf/tests/shell/stat_all_pmu.sh?h=3Dperf-tools-next
+If my preference isn't wanted in favor of the simpler code I can make
+the change. The part of the series I want to land is making wildcarded
+and non-wildcarded event configurations consistent.
 
-Good catch! The second parameter of btf_find_func_proto() is output.
-
-Thank you,
-
-> 
-> — donglin
-> 
-> 
-> > +
-> > +       t = btf_find_func_proto(name, &btf);
-> > +       if (IS_ERR_OR_NULL(t))
-> > +               goto out;
-> > +
-> > +       param = btf_get_func_param(t, &nr);
-> > +       if (!param)
-> > +               goto out_put;
-> > +
-> > +       for (i = 0; i < nr; i++) {
-> > +               /* This only prints what the arch allows (6 args by
-> > default) */
-> > +               if (i == FTRACE_REGS_MAX_ARGS) {
-> > +                       trace_seq_puts(s, "...");
-> > +                       break;
-> > +               }
-> > +
-> > +               arg = args[i];
-> > +
-> > +               param_name = btf_name_by_offset(btf, param[i].name_off);
-> > +               if (param_name)
-> > +                       trace_seq_printf(s, "%s=", param_name);
-> > +               t = btf_type_skip_modifiers(btf, param[i].type, &tid);
-> > +
-> > +               switch (t ? BTF_INFO_KIND(t->info) : BTF_KIND_UNKN) {
-> > +               case BTF_KIND_UNKN:
-> > +                       trace_seq_putc(s, '?');
-> > +                       /* Still print unknown type values */
-> > +                       fallthrough;
-> > +               case BTF_KIND_PTR:
-> > +                       trace_seq_printf(s, "0x%lx", arg);
-> > +                       break;
-> > +               case BTF_KIND_INT:
-> > +                       trace_seq_printf(s, "%ld", arg);
-> > +                       break;
-> > +               case BTF_KIND_ENUM:
-> > +                       trace_seq_printf(s, "%ld", arg);
-> > +                       break;
-> > +               default:
-> > +                       /* This does not handle complex arguments */
-> > +                       trace_seq_printf(s, "0x%lx (%s)", arg,
-> > btf_type_str(t));
-> > +                       break;
-> > +               }
-> > +               if (i < nr - 1)
-> > +                       trace_seq_printf(s, ", ");
-> > +       }
-> > +out_put:
-> > +       btf_put(btf);
-> > +out:
-> > +       trace_seq_printf(s, ")");
-> > +}
-> > +#endif
-> > +
-> >  /**
-> >   * ftrace_find_event - find a registered event
-> >   * @type: the type of event to look for
-> > diff --git a/kernel/trace/trace_output.h b/kernel/trace/trace_output.h
-> > index dca40f1f1da4..2e305364f2a9 100644
-> > --- a/kernel/trace/trace_output.h
-> > +++ b/kernel/trace/trace_output.h
-> > @@ -41,5 +41,14 @@ extern struct rw_semaphore trace_event_sem;
-> >  #define SEQ_PUT_HEX_FIELD(s, x)                                \
-> >         trace_seq_putmem_hex(s, &(x), sizeof(x))
-> >
-> > +#ifdef CONFIG_FUNCTION_TRACE_ARGS
-> > +void print_function_args(struct trace_seq *s, unsigned long *args,
-> > +                        unsigned long func);
-> > +#else
-> > +static inline void print_function_args(struct trace_seq *s, unsigned long
-> > *args,
-> > +                                      unsigned long func) {
-> > +       trace_seq_puts(s, "()");
-> > +}
-> > +#endif
-> >  #endif
-> >
-> > --
-> > 2.45.2
-> >
-> >
-> >
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Thanks,
+Ian
 
