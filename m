@@ -1,42 +1,43 @@
-Return-Path: <bpf+bounces-48184-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48183-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60B81A04E55
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 01:55:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4F92A04E53
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 01:55:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31D5A7A22D4
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 00:55:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5723E3A4BE0
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 00:55:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A2FD38DE9;
-	Wed,  8 Jan 2025 00:55:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3C8F27713;
+	Wed,  8 Jan 2025 00:55:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92F2F70813;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B239E70825;
 	Wed,  8 Jan 2025 00:55:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736297726; cv=none; b=hZvEsAUhHmRdBTeeRP+MM4M9xg1V70Pd7+UKqCz1pZq+ZR31ZxdGpW2y47sH8bw4ETzCipKlYQMczsq/6SbMBV1nTNO/BWQLYcUADJUghQwLiP6ZYCaQJVExZbYRIG8FE9XM+o1RF9P3EsKNjiEX19GtV5zHQGyDfhigVC4AXNM=
+	t=1736297726; cv=none; b=D6/LjvjUo8VHCQ+Qf1rIGGYoiJdU59e+GL+LCLy0IeOxct0QbT7LrS+h82I85bjUQ7tIw8Z/vbJAN5D1gfSga1+zteXZcB4iVU9dDyvOTLV8ydaVQwlMgR7T3l8x5bywdz7Mi9xlyiELmIoay/A9LO8ONN6vPeJgmFXSaTBtyN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1736297726; c=relaxed/simple;
-	bh=AC5/8Fvr4OzKfSMnb5Jw7XyTuVYpRtjGEYxMsVYr6Po=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aQqOo9SkHdWMavDbsiv502GVdWuOXzg53Q0ZpPgndz6vDfMod+xliU3WsmBCfQX1dwG+GLvZYIHigZw1zJyXLYHaw9CKRtZl7aDLuNwOw2jNhDjvKQh0L0PhC3s1ZGbvXpCuFlqBkoAM0LA0lsiaVxprc+wJDCJfzD16nWA/DVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	bh=YxUKGwjULBtJEi0m1wVyQjktdIwoL5Ke73ijlRMY2lA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=pzey3VMLWV9TYYGUZ1eSphebIgIoOvcU6fZJLD6EnyRR57NkGKsoqtxeeBDERLvmqqqaSBaZ1/Caktw366VqB3kcG3XUP3GupwbI+fkpKXl5K6ECuB98Yk16dCHDCjxICdCK6vfjbafyWJwiejb5n31+PsWIB6MqPVtikIiHWKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YSTwN4KYcz4f3kFm;
-	Wed,  8 Jan 2025 08:55:00 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YSTwV2k53z4f3jqy;
+	Wed,  8 Jan 2025 08:55:06 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id BED751A16CD;
-	Wed,  8 Jan 2025 08:55:20 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 5EC841A0E7F;
+	Wed,  8 Jan 2025 08:55:21 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgBHq1_1zH1nBtZdAQ--.51859S4;
-	Wed, 08 Jan 2025 08:55:19 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgBHq1_1zH1nBtZdAQ--.51859S5;
+	Wed, 08 Jan 2025 08:55:21 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org,
 	netdev@vger.kernel.org
@@ -54,10 +55,12 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
 	houtao1@huawei.com,
 	xukuohai@huawei.com
-Subject: [PATCH bpf-next v2 00/16] bpf: Reduce the use of migrate_{disable|enable}()
-Date: Wed,  8 Jan 2025 09:07:12 +0800
-Message-Id: <20250108010728.207536-1-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next v2 01/16] bpf: Remove migrate_{disable|enable} from LPM trie
+Date: Wed,  8 Jan 2025 09:07:13 +0800
+Message-Id: <20250108010728.207536-2-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20250108010728.207536-1-houtao@huaweicloud.com>
+References: <20250108010728.207536-1-houtao@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,112 +68,111 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBHq1_1zH1nBtZdAQ--.51859S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxXFW3ArWrXry8Gw4fJFyDtrb_yoWrXryDpr
-	4fK34fKr4UXa4Sv3ZxXw4xCFyrAw4fG347GrnrKr1Fqws8ur9xGw1xJF18ZFy3GryktryS
-	vr1qqw1qy3WDZFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAa
-	w2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-	6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AK
-	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
-	xUFku4UUUUU
+X-CM-TRANSID:gCh0CgBHq1_1zH1nBtZdAQ--.51859S5
+X-Coremail-Antispam: 1UD129KBjvJXoWxJFy8tr1kXr15Ar1rKr1kGrg_yoW5Xr1xpF
+	WxKr9Yyr4UXF4Yqr40vrZ5Ar98Aw4xKay7GaykWa4Iqas09as7Jw48ZF10qFy5AFWUtr4a
+	qF15K340vr48CrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUPYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
+	A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	WxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+	GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
+	0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWU
+	JVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7AKxV
+	WUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
+	14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIx
+	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAF
+	wI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
+	4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jnpnQU
+	UUUU=
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-Hi,
+Both bpf program and bpf syscall may invoke ->update or ->delete
+operation for LPM trie. For bpf program, its running context has already
+disabled migration explicitly through (migrate_disable()) or implicitly
+through (preempt_disable() or disable irq). For bpf syscall, the
+migration is disabled through the use of bpf_disable_instrumentation()
+before invoking the corresponding map operation callback.
 
-The use of migrate_{disable|enable} pair in BPF is mainly due to the
-introduction of bpf memory allocator and the use of per-CPU data struct
-in its internal implementation. The caller needs to disable migration
-before invoking the alloc or free APIs of bpf memory allocator, and
-enable migration after the invocation.
+Therefore, it is safe to remove the migrate_{disable|enable){} pair from
+LPM trie.
 
-The main users of bpf memory allocator are various kind of bpf maps in
-which the map values or the special fields in the map values are
-allocated by using bpf memory allocator.
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+---
+ kernel/bpf/lpm_trie.c | 20 ++++----------------
+ 1 file changed, 4 insertions(+), 16 deletions(-)
 
-At present, the running context for bpf program has already disabled
-migration explictly or implictly, therefore, when these maps are
-manipulated in bpf program, it is OK to not invoke migrate_disable()
-and migrate_enable() pair. Howevers, it is not always the case when
-these maps are manipulated through bpf syscall, therefore many
-migrate_{disable|enable} pairs are added when the map can either be
-manipulated by BPF program or BPF syscall.
-
-The initial idea of reducing the use of migrate_{disable|enable} comes
-from Alexei [1]. I turned it into a patch set that archives the goals
-through the following three methods:
-
-1. remove unnecessary migrate_{disable|enable} pair
-when the BPF syscall path also disables migration, it is OK to remove
-the pair. Patch #1~#3 fall into this category, while patch #4~#5 are
-partially included.
-
-2. move the migrate_{disable|enable} pair from inner callee to outer
-   caller
-Instead of invoking migrate_disable() in the inner callee, invoking
-migrate_disable() in the outer caller to simplify reasoning about when
-migrate_disable() is needed. Patch #4~#5 and patch #6~#19 belongs to
-this category.
-
-3. add cant_migrate() check in the inner callee
-Add cant_migrate() check in the inner callee to ensure the guarantee
-that migration is disabled is not broken. Patch #1~#5, #13, #16~#19 also
-belong to this category.
-
-Please check the individual patches for more details. Comments are
-always welcome.
-
-Change Log:
-v2:
-  * sqaush the ->map_free related patches (#10~#12, #15) into one patch
-  * remove unnecessary cant_migrate() checks.
-
-v1: https://lore.kernel.org/bpf/20250106081900.1665573-1-houtao@huaweicloud.com
-
-Hou Tao (16):
-  bpf: Remove migrate_{disable|enable} from LPM trie
-  bpf: Remove migrate_{disable|enable} in ->map_for_each_callback
-  bpf: Remove migrate_{disable|enable} in htab_elem_free
-  bpf: Remove migrate_{disable|enable} from bpf_cgrp_storage_lock
-    helpers
-  bpf: Remove migrate_{disable|enable} from bpf_task_storage_lock
-    helpers
-  bpf: Disable migration when destroying inode storage
-  bpf: Disable migration when destroying sock storage
-  bpf: Disable migration when cloning sock storage
-  bpf: Disable migration in bpf_selem_free_rcu
-  bpf: Disable migration before calling ops->map_free()
-  bpf: Remove migrate_{disable|enable} in bpf_obj_free_fields()
-  bpf: Remove migrate_{disable,enable} in bpf_cpumask_release()
-  bpf: Remove migrate_{disable|enable} from bpf_selem_alloc()
-  bpf: Remove migrate_{disable|enable} from bpf_local_storage_alloc()
-  bpf: Remove migrate_{disable|enable} from bpf_local_storage_free()
-  bpf: Remove migrate_{disable|enable} from bpf_selem_free()
-
- kernel/bpf/arraymap.c          |  6 ++----
- kernel/bpf/bpf_cgrp_storage.c  | 15 +++++++--------
- kernel/bpf/bpf_inode_storage.c |  9 +++++----
- kernel/bpf/bpf_local_storage.c | 30 +++++++++---------------------
- kernel/bpf/bpf_task_storage.c  | 15 +++++++--------
- kernel/bpf/cpumask.c           |  2 --
- kernel/bpf/hashtab.c           | 19 +++++++------------
- kernel/bpf/helpers.c           |  4 ----
- kernel/bpf/lpm_trie.c          | 20 ++++----------------
- kernel/bpf/range_tree.c        |  2 --
- kernel/bpf/syscall.c           | 10 +++++++---
- net/core/bpf_sk_storage.c      | 11 +++++++----
- 12 files changed, 55 insertions(+), 88 deletions(-)
-
+diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
+index f8bc1e0961823..e8a772e643242 100644
+--- a/kernel/bpf/lpm_trie.c
++++ b/kernel/bpf/lpm_trie.c
+@@ -289,16 +289,11 @@ static void *trie_lookup_elem(struct bpf_map *map, void *_key)
+ }
+ 
+ static struct lpm_trie_node *lpm_trie_node_alloc(struct lpm_trie *trie,
+-						 const void *value,
+-						 bool disable_migration)
++						 const void *value)
+ {
+ 	struct lpm_trie_node *node;
+ 
+-	if (disable_migration)
+-		migrate_disable();
+ 	node = bpf_mem_cache_alloc(&trie->ma);
+-	if (disable_migration)
+-		migrate_enable();
+ 
+ 	if (!node)
+ 		return NULL;
+@@ -342,10 +337,8 @@ static long trie_update_elem(struct bpf_map *map,
+ 	if (key->prefixlen > trie->max_prefixlen)
+ 		return -EINVAL;
+ 
+-	/* Allocate and fill a new node. Need to disable migration before
+-	 * invoking bpf_mem_cache_alloc().
+-	 */
+-	new_node = lpm_trie_node_alloc(trie, value, true);
++	/* Allocate and fill a new node */
++	new_node = lpm_trie_node_alloc(trie, value);
+ 	if (!new_node)
+ 		return -ENOMEM;
+ 
+@@ -425,8 +418,7 @@ static long trie_update_elem(struct bpf_map *map,
+ 		goto out;
+ 	}
+ 
+-	/* migration is disabled within the locked scope */
+-	im_node = lpm_trie_node_alloc(trie, NULL, false);
++	im_node = lpm_trie_node_alloc(trie, NULL);
+ 	if (!im_node) {
+ 		trie->n_entries--;
+ 		ret = -ENOMEM;
+@@ -452,11 +444,9 @@ static long trie_update_elem(struct bpf_map *map,
+ out:
+ 	raw_spin_unlock_irqrestore(&trie->lock, irq_flags);
+ 
+-	migrate_disable();
+ 	if (ret)
+ 		bpf_mem_cache_free(&trie->ma, new_node);
+ 	bpf_mem_cache_free_rcu(&trie->ma, free_node);
+-	migrate_enable();
+ 
+ 	return ret;
+ }
+@@ -555,10 +545,8 @@ static long trie_delete_elem(struct bpf_map *map, void *_key)
+ out:
+ 	raw_spin_unlock_irqrestore(&trie->lock, irq_flags);
+ 
+-	migrate_disable();
+ 	bpf_mem_cache_free_rcu(&trie->ma, free_parent);
+ 	bpf_mem_cache_free_rcu(&trie->ma, free_node);
+-	migrate_enable();
+ 
+ 	return ret;
+ }
 -- 
 2.29.2
 
