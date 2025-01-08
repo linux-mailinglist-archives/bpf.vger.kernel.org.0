@@ -1,299 +1,288 @@
-Return-Path: <bpf+bounces-48296-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48297-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF170A065E1
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 21:16:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24471A065F4
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 21:20:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AF481889D30
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 20:16:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 226977A16CD
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 20:20:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3309202C3D;
-	Wed,  8 Jan 2025 20:16:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99EE2202C55;
+	Wed,  8 Jan 2025 20:20:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="gdP2J5/O"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GyXFwWv7"
 X-Original-To: bpf@vger.kernel.org
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2072.outbound.protection.outlook.com [40.107.105.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f66.google.com (mail-ed1-f66.google.com [209.85.208.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 111142010E5;
-	Wed,  8 Jan 2025 20:16:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.105.72
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736367370; cv=fail; b=XU147R2pT3cJWrWNUu8kyBHDDhEMpwMSx5Yng3iZ2+DZfYk+FlBFUxrW93fPuMRH7mi7A4GFWvY8hwTuOaNOhN0VFPn3+oCN0G1qGEdIufmiv6zdKSxe5LEQiGNq0/Vm7Kb9gvjCOqXa86GQN29xOcvEQjQEU7vs0TX7ALI4LcE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736367370; c=relaxed/simple;
-	bh=H1hG0rtDt4H/HDxFyb1fTzpS6JFNFGQi6qUicv9aLAM=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=DU6XSNiZNScsxXewKSqO0CGwHSFE81ePxf4B2wyVVzmxR+oQMl6QctgsWMtX42rOPmccNLOQ00Z+cmvWacragBsjxZbTPT1quYwdlJrd8j5pJNFhyhhwEW/Lq10nm2bH/+X25jfR95Q2of3WeeMMZTXxy92f2ucky+Ig2PJpMYg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=gdP2J5/O; arc=fail smtp.client-ip=40.107.105.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=CmqXTlfkSslaY7u618BsG9PsJagPrDuTp4owuoGP65u0ldoXBK4W3C97YaYqM5KbwZiaBV6Nf7+zkvV7nwNhfDgLxXRxty9Aj4VR9dVWWr+OJIaFSR0+6HGSLDdM+iCIaIxVAyCXL4C2wnX8a3z1HPE/3gwOLZ+y1cmD/6YBjmBCuvTuLGn0t+QBLj2SaiIANfMLllEFtduwvYZAJ6n6igwoTlQYrAXuDI5wPBls77U+XcJN0YicQxFHxwOtTr7YNm79zCNsEUUYMjVPPLkkes/wTF40EESbOK8+nUVH4KOzFc5A8P+v3tB4msMZV8kqLPoGNiiqs9ddeNobbCNuLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pPTXueMBJgsSkvnNHetI6HqmgEqC5M3DUcL/ufM09KI=;
- b=Jb4SrbZ/Hp0Nfg7EFHJwwSVC/upzzWPYz1b3GnTdRv+59pVB0L02CpY19cSgm9WU8F42bSCm320TXOnFW3xT05o2Hk5Y8HuldO6GGn0Q3ljqjBsap4g2cVLx2kiABubnHA4vbPmTPQy7e45N40n0HNLbb9QdGhKBKecH1zEilMd9TtUalWOpNQ4f9ko9iTL7rcTV9eWsSjh3bI7TeAJu6FxiWFC+hfiFFaqMp95trZrzQAAsDXGcxUkOG33+cvBRWVRIc+bEKIcoEd3Cns8/BPlaUVKMwuu+dDXwFjaIPrGdi6/sa79OLDUMp/7OEbeodb4RtfL+UpDyk2Z3f+HZoA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pPTXueMBJgsSkvnNHetI6HqmgEqC5M3DUcL/ufM09KI=;
- b=gdP2J5/OHT053lEejo4V+USRG4xYSi6GfFGYttsCdT+UTP9pZ/7Bncl3rSshneyUa170mfHl8hxbTQb20mvEk9yP4BNBz+qKXxClukVP00cLz391d/5xvtVMcria5P0NrNHz3xKB6tEWjzR4CMW2AJZBSj2h5fF3DQmSO9LNvBw=
-Received: from GV1PR08MB10521.eurprd08.prod.outlook.com
- (2603:10a6:150:163::20) by AS8PR08MB9290.eurprd08.prod.outlook.com
- (2603:10a6:20b:5a5::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8335.10; Wed, 8 Jan
- 2025 20:16:04 +0000
-Received: from GV1PR08MB10521.eurprd08.prod.outlook.com
- ([fe80::d430:4ef9:b30b:c739]) by GV1PR08MB10521.eurprd08.prod.outlook.com
- ([fe80::d430:4ef9:b30b:c739%5]) with mapi id 15.20.8335.011; Wed, 8 Jan 2025
- 20:16:03 +0000
-From: Yeo Reum Yun <YeoReum.Yun@arm.com>
-To: James Clark <james.clark@linaro.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-perf-users@vger.kernel.org"
-	<linux-perf-users@vger.kernel.org>, "irogers@google.com"
-	<irogers@google.com>, "will@kernel.org" <will@kernel.org>, Mark Rutland
-	<Mark.Rutland@arm.com>, "namhyung@kernel.org" <namhyung@kernel.org>,
-	"acme@kernel.org" <acme@kernel.org>
-CC: "robh@kernel.org" <robh@kernel.org>, Peter Zijlstra
-	<peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Alexander Shishkin
-	<alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Adrian
- Hunter <adrian.hunter@intel.com>, "Liang, Kan" <kan.liang@linux.intel.com>,
-	John Garry <john.g.garry@oracle.com>, Mike Leach <mike.leach@linaro.org>, Leo
- Yan <leo.yan@linux.dev>, Graham Woodward <Graham.Woodward@arm.com>, Michael
- Petlan <mpetlan@redhat.com>, Veronika Molnarova <vmolnaro@redhat.com>, Athira
- Rajeev <atrajeev@linux.vnet.ibm.com>, Thomas Richter <tmricht@linux.ibm.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH v3 1/5] perf: arm_spe: Add format option for discard mode
-Thread-Topic: [PATCH v3 1/5] perf: arm_spe: Add format option for discard mode
-Thread-Index: AQHbYdnYN7Y6izbgSEGawqTCEKZe9rMNUIMM
-Date: Wed, 8 Jan 2025 20:16:03 +0000
-Message-ID:
- <GV1PR08MB1052186F99D5BFCF9169DD90FFB122@GV1PR08MB10521.eurprd08.prod.outlook.com>
-References: <20250108142904.401139-1-james.clark@linaro.org>
- <20250108142904.401139-2-james.clark@linaro.org>
-In-Reply-To: <20250108142904.401139-2-james.clark@linaro.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=arm.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: GV1PR08MB10521:EE_|AS8PR08MB9290:EE_
-x-ms-office365-filtering-correlation-id: 771d2886-2150-4410-cd85-08dd302146a8
-x-checkrecipientrouted: true
-nodisclaimer: true
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|1800799024|376014|7416014|366016|7053199007|38070700018;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?VTA6EyG1TKFuVnTiHy5Iu2sOF32NpXEEaqPxduSNzc2URDNX2N862t/by6Z6?=
- =?us-ascii?Q?akMtyI7JwAIhLX+ATewARFQbUC6xdIVyAw1qro4Et1cVESzKVL7vkTf/7yHg?=
- =?us-ascii?Q?mmVwSlKc2jeSmVAET3DzIJPQPVbFm1c/is0hUW9XwdCY8JM3CgEchdnceAFU?=
- =?us-ascii?Q?DElXIEvr5TMixqxGxNJc0CkDm0zVsTbAxeZS9floSfGNTl1OHV0TfaGmF4Jw?=
- =?us-ascii?Q?vXqCqqJchX0oNrPXCmhONBnAH8WgGP5xQvLaP0UD+pqWsHyU5JHaCi4/YkkA?=
- =?us-ascii?Q?EC5bPqHQ4tzsdIK/BzOsjKnoAifBdgFzoCs9YjJj9I1N6XEJOU5lJ40MtT2Q?=
- =?us-ascii?Q?55Z+/CzR1tYx2dr3dx8smOcHbZc3guwzcnxmej7lxwWuM/fkvktXce88bNlN?=
- =?us-ascii?Q?usWQ5c3Ggp+yTy+eoOemFCxUkaA0uE8Hd2pqP0uAAPCDj/+6BPgVnHtVNfTG?=
- =?us-ascii?Q?4aN2w7cjt5ftJo0DOIWQTZ0yWzMK1HtZB9AQ1keroh+pTx0QgO1XYYbLvH30?=
- =?us-ascii?Q?t8TVf/JRrhWu6AcfhMc+RfV0cIudGdiNHNypL1qnOA41nBYtPpq0RyTUPfUZ?=
- =?us-ascii?Q?y52jd43Jd2fY58A6z2WG+aUWYPAdl1tBU3gdM32DdGMEfPyZPMUhD41NURbm?=
- =?us-ascii?Q?Ja1NgRvUgJBES/uBnFT6vYorPNKM9ATPYoZVzgcKbKt0UYo5DOrVxunDZobQ?=
- =?us-ascii?Q?Rf4dqIS2yYWYn7fXopG44hAAs3GmFMIDjxv2loR7cQI18NKi3HGE6wMJ7kBE?=
- =?us-ascii?Q?VrjtIizvSED6To4CY9HMB5aoU3FQB7DsrdID3OBRxsrsk2pVRX/9Z8WbJYaS?=
- =?us-ascii?Q?1ZQC6Mg6gUt7QL7IM8NrutKpf8Alm1kV3WRLwvcotjx9y6BpurRui9rSkh1f?=
- =?us-ascii?Q?YT/a5UJQqH6/1MvqRGpsBiNc2/+Diu6hT4fwPhv5ghNaPN0euO7a+V4Ry5vq?=
- =?us-ascii?Q?yqMYr3JcLaw3el1IXdPZyH+KgUARgHP94n0dfQlKdxBpdmRogoYpwIngGe85?=
- =?us-ascii?Q?6OG9rI53GUT8Kn9RM/CRp6UpudiDzOc4c8UiXotx/NhPIADuX9VdFwIjLDcV?=
- =?us-ascii?Q?AGYjUA9nV9cDN+se4XUaYEWjjSna2RKIw9QBvteNGDRlVkwCqzeE1g34k6y/?=
- =?us-ascii?Q?0Ml+9ZKa/bPdpe5WhHQDpczH8PodTgS6vVS2JhmpU+kNFbipWt1mVR+cF4DW?=
- =?us-ascii?Q?xINsL2n8IFaD8g9iGnIfn2oAUvBKV8h+7l5lZkF+A0A2NP2LqavWz0rdQ65C?=
- =?us-ascii?Q?FIR69MuPINzlBUqQ18JHq+3UA6dZf2UtfJ2X7Xr31e8bWm/UtvP3lY+ElUQc?=
- =?us-ascii?Q?bSzPkJ41k1mn+YDUB7pEiilO6NP9cFMo3JDrswQXZHBpg9iby46x6f6viFDj?=
- =?us-ascii?Q?tpnaoVn3nN1Tsd6IwWwOM8E34MIkenGBJHQ/OpPL7oJtwMngIi4g2FeZhGwM?=
- =?us-ascii?Q?bYYlHvpO0HZHfgWublbol5kHrpmMA11L?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV1PR08MB10521.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016)(7053199007)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?LP8Lwx/o8XeyKK+RIGyaQyCqBasaQ1YDds4QI5sgoBmY4yN/EaHAa5/uAxGP?=
- =?us-ascii?Q?CiRImwYwveZPq8+HF4LvWONxc4+RepwsDoQIywqlQk0De8SjQY+qB9/aXs8W?=
- =?us-ascii?Q?Ws+NmzDP5TuDsFobll7+V+bS4lyWBR275lZ+5f9mJ2QG2zjlScxcqCNNvXbw?=
- =?us-ascii?Q?Yj0drsObTsw+3Lam/p94FWaljgj1k72hWM1Qt/G5ohojEcsD0T6s7HccOVeE?=
- =?us-ascii?Q?k1qViMpTt9sP1x4eVfuXw9P8XaFsQxOQJl5XK9eV3KEQx760J7rjDxhYA5H8?=
- =?us-ascii?Q?lY3KTTQ36B8k38Opjxq65h4SQtaG8layvuSKN80aIJsClsrOEy4ZclstgSaN?=
- =?us-ascii?Q?/Iw7M3uQ63S8YhpxbLlb7wH0ubTsKFcVf0io9fFhpm4ibvsWEETzrNt7FBwT?=
- =?us-ascii?Q?M4tXZ66egzh6g5A73TfsgEvp36IawTqEzAOgdBMDYnX3PcV+AC1VMXeHMRHs?=
- =?us-ascii?Q?QdRZ4OEN7x7aDYNf5DPLH0Z938Tkn5+pga3YvziwmrzHqZncRKfsucwgdxzQ?=
- =?us-ascii?Q?mhBULc5LTFPcV4T+xl0LAV3goebzUbwzfs7C6zHzeH6EcJSz6wyXirlKTD/S?=
- =?us-ascii?Q?gvcfm9DFU6+rYTsbKb9woHz4yJgQ+BBpPKTLf8/6xehBjOnJpIaNi6enu74D?=
- =?us-ascii?Q?nHrjOHeoyj7mPTntSQ1NforEGwA3RmMdeeussqZFlxOIc4ECE5XQ4FrJPug1?=
- =?us-ascii?Q?Pjbj3ZGy5SCFlu1h5SgyOlgS0tNLwKT+Ajoy55Yzw5fYGzBph8wlrV3nVajK?=
- =?us-ascii?Q?siJ86EdVC6WeMvJxQ1EywF+x3zgbBbrsl/LIb+e7mgZyX+hqN4BtDrwcl2V5?=
- =?us-ascii?Q?v5OTiJpGmp7JXN/9OBC2nAs2vtz0UveFQMMmCAbgQzukIFF4iEAnQiTc4clc?=
- =?us-ascii?Q?ezC0+s6GMFCEi/tHnZw7PyTVkO1dOC4VSHdaxQO7ZvR1krM7e1vppFwEWsmd?=
- =?us-ascii?Q?AzJPMJa5klC2MpugfGrVjrqLTQ1+Pj9Gawhmp5l6pFT2la47VTMeEp8y0VVy?=
- =?us-ascii?Q?Ir+30UqXo2jdVl1nsjjhx+YiAdCHLR0GJhS6w+PiBqCWptbfaV7hK4vEZrsJ?=
- =?us-ascii?Q?jNCYV8g+HJOGzFPcCqqTrYUMQxeHZcAQleVhMQq/YfeItV+zo63eTJG9DxIc?=
- =?us-ascii?Q?FMwik8bp+mBmLhCkvNrCjfeK+f+cNLF8mGbHJlvFPOTPb3p+fp46NjwR8Upa?=
- =?us-ascii?Q?sDjzbWS4FM6xthqofM9lfARFOSdNaay7toX0f5XEWf4XCFT899uD7gKBU7dS?=
- =?us-ascii?Q?4USs7MHkQyJuU2lwgrezl9HXp7VDGfOBXr9hUeXuEvEmKuvn9IHv7sBf20/l?=
- =?us-ascii?Q?06sfEgRTTMKNqgSoWX1y7LMKjsZcC2u4QJ5KczF1AkHiXDoFIGajeWtTr4IG?=
- =?us-ascii?Q?nDv44xe/j+6vxqTY1WQJTa/vWim8MvoVhU+SKPNslq0dy8ziGQ12aqlWrtk0?=
- =?us-ascii?Q?pU5597syFqIaFKU8ZqUUT20ozB0ofL/a2B9+8DCHS7a3chxRDqPzH3rTtEQa?=
- =?us-ascii?Q?rAMxHg3B1FsGFW0aADr7uXOwfdTXyS1TG2v55/mZ9IG2ansjkcRSTioWHlsG?=
- =?us-ascii?Q?St9auZiGMcUoopyP3GM=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C9202010F6;
+	Wed,  8 Jan 2025 20:20:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.66
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1736367636; cv=none; b=R5Pebjk1C8iDAftoLCW2TU1AMnlFgPK3kv9SbPKghm/KIBW/Gl5tcoS1y2he8HwB5o/YCm8dXwKagEOOrpApV4Tcxv6nhjTgvSJpT6RfBG87OIUl8/Qk5fUBD/xyA4441gL5k7o6vCVZcQQQb1S4qHp31lBF3tPNJ5ObtE5ROYc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1736367636; c=relaxed/simple;
+	bh=LoWQASbMQG4BrTCodfixhnsIYEaW6G+SrXUuEjR9Qfk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ofLqxPCOVDVcAvVxuwnEMU6cuBCtPWdBT/KRCteTuRReZkY40wV3sg1crECzhcQYRXB0umWvuBRbyRuUl6T5vGeI9mAF27Agd4Gjkntmqm6owtzoiGxXdAlfWJOX42Ni3EspJIz7Vqjwpy0x59E58QILSGjScZNh9elQLjJ6rgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GyXFwWv7; arc=none smtp.client-ip=209.85.208.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f66.google.com with SMTP id 4fb4d7f45d1cf-5d96944401dso200777a12.0;
+        Wed, 08 Jan 2025 12:20:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736367632; x=1736972432; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=LvPv1CADs+WA8sDcr9hqssOluirA/qoXdYshw0Gxsbo=;
+        b=GyXFwWv7jFaGuSyocPx7UUxc43IGIgOeWsRy7leRW7b9cIKy51aHhvY15i2Raoo9XV
+         t+0xwUjVzsQ73N0G7MSt8m+dYCEn84S0o7xzHHTUdifNLEtUgwCfFA8SJqbTHxerfMkY
+         8KWmj07kQVYviQLtO7cr0aBBPwg5ZHagj+qrYtZVYbz3duJ8nLdmVt0qnkq9qpmaNyuL
+         9B+a1vcHQnXrRxLYRoDhOctH6pdul8Np8tQsx94OnE/ctQTm38Litd4A/gTO2RMM4Pec
+         2h1lj+0GhwUDMRwygeXWVeKBHCbKdPjx7jEPhdWQK1lUXe2Wbf4v1nt4lPuXo3AUqfqY
+         DxKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736367632; x=1736972432;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LvPv1CADs+WA8sDcr9hqssOluirA/qoXdYshw0Gxsbo=;
+        b=kvrf4DjLQ2NPeEiNoeadvLBbMfX5fiDpdLAoJy7eBIMNpHZ07C2uTzEyhzbLi5016z
+         g4YkA3D3bwKYUMHNVnPjrkICJgVKQpoGL8s4DDpnVHlndz22ezVxGxc234jTPUDp1GxJ
+         u7JNreuOayPaDjkNG8RYKsHTE64KQ//BTkx0uqFM0coy6SpOMBWpmyGtTLYILknPdn4O
+         8ZLVHLNVeBE21Et+s14BmoH7FoGSrYgODsrc+OUoVudpsMAIll1BSFZN+q/CUkANH/UM
+         eh4LcKVu/TTQ7J/Z/eRgWvwBDrQEN8h2H7QwPx5lXNEfdgfbA6A2jVWHa/b0GuQu++E5
+         PTBg==
+X-Forwarded-Encrypted: i=1; AJvYcCVVIkbjbpchEh7wOSAfzLRLTpLtLu5Xj9sUhdwifnB4QUnWu/CNytIq1N/luJDIyu5A9N0V7XP0H+Rg/do=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzxdBYYom/dHu2hrIjfFyXxJtFSpfzGuriy788dIKeuHRHKxTq8
+	HNb+zNCU3CowMHDuKaG7EoPlGAl+MF+K7vfFKshf48WqjULDJPU/GZsZi8uTrAg3mEdUz0BKxCg
+	b6sKjcm9rbvWu+kEWdVBu69ayr95eeqzpYjc=
+X-Gm-Gg: ASbGnct7m4oxX5lwyk2GmqRu+lYKfZ2IMHq7vKXohS7j8BDjZRlXMQK0xoPRA8Y48fC
+	/UPVyH2gKxjtNlOUvEFDuG8O7u+bxvVaJam7N4pyIPdlIql4d1r3ZkRM2XxCxf2+eV1ff
+X-Google-Smtp-Source: AGHT+IFZbGnpm4zdTThNCggA0L0SDyOr4lozumP8221krnBZPNvnLilM1OaX434dAdRcMasImoXmEPPlV7ghwmS6slE=
+X-Received: by 2002:a05:6402:3202:b0:5d3:ce7f:abee with SMTP id
+ 4fb4d7f45d1cf-5d972e4ca2amr3948990a12.25.1736367632397; Wed, 08 Jan 2025
+ 12:20:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: GV1PR08MB10521.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 771d2886-2150-4410-cd85-08dd302146a8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jan 2025 20:16:03.3413
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4hd83cPK2XniEtYucZIOXF0T6MAicEOasHU3Rf9iWpGvXis48VnhYciEK1r9fTwq37MEzknj4CaJFKTCDPoRNQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR08MB9290
+References: <20250107140004.2732830-1-memxor@gmail.com> <20250107140004.2732830-12-memxor@gmail.com>
+ <2402fa3e-bd43-47a5-ab8c-bd05877831ff@redhat.com>
+In-Reply-To: <2402fa3e-bd43-47a5-ab8c-bd05877831ff@redhat.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Thu, 9 Jan 2025 01:49:54 +0530
+X-Gm-Features: AbW1kvYJm8VPRtPfqI85uRQOdAAOpf5kcLGgdV3NcDGr71mwgPJippiWXEJK_kQ
+Message-ID: <CAP01T77FDwOs8wP2UvUNHC=oRE-ivUA5Ay04o0rnSc-M1NLmHA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 11/22] rqspinlock: Add deadlock detection and recovery
+To: Waiman Long <llong@redhat.com>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>, 
+	Barret Rhoden <brho@google.com>, Josh Don <joshdon@google.com>, Dohyun Kim <dohyunkim@google.com>, 
+	kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
 
-Reviewd-by: Yeoreum Yun <yeoreum.yun@arm.com>
+On Wed, 8 Jan 2025 at 21:36, Waiman Long <llong@redhat.com> wrote:
+>
+>
+> On 1/7/25 8:59 AM, Kumar Kartikeya Dwivedi wrote:
+> > While the timeout logic provides guarantees for the waiter's forward
+> > progress, the time until a stalling waiter unblocks can still be long.
+> > The default timeout of 1/2 sec can be excessively long for some use
+> > cases.  Additionally, custom timeouts may exacerbate recovery time.
+> >
+> > Introduce logic to detect common cases of deadlocks and perform quicker
+> > recovery. This is done by dividing the time from entry into the locking
+> > slow path until the timeout into intervals of 1 ms. Then, after each
+> > interval elapses, deadlock detection is performed, while also polling
+> > the lock word to ensure we can quickly break out of the detection logic
+> > and proceed with lock acquisition.
+> >
+> > A 'held_locks' table is maintained per-CPU where the entry at the bottom
+> > denotes a lock being waited for or already taken. Entries coming before
+> > it denote locks that are already held. The current CPU's table can thus
+> > be looked at to detect AA deadlocks. The tables from other CPUs can be
+> > looked at to discover ABBA situations. Finally, when a matching entry
+> > for the lock being taken on the current CPU is found on some other CPU,
+> > a deadlock situation is detected. This function can take a long time,
+> > therefore the lock word is constantly polled in each loop iteration to
+> > ensure we can preempt detection and proceed with lock acquisition, using
+> > the is_lock_released check.
+> >
+> > We set 'spin' member of rqspinlock_timeout struct to 0 to trigger
+> > deadlock checks immediately to perform faster recovery.
+> >
+> > Note: Extending lock word size by 4 bytes to record owner CPU can allow
+> > faster detection for ABBA. It is typically the owner which participates
+> > in a ABBA situation. However, to keep compatibility with existing lock
+> > words in the kernel (struct qspinlock), and given deadlocks are a rare
+> > event triggered by bugs, we choose to favor compatibility over faster
+> > detection.
+> >
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+> >   include/asm-generic/rqspinlock.h |  56 +++++++++-
+> >   kernel/locking/rqspinlock.c      | 178 ++++++++++++++++++++++++++++---
+> >   2 files changed, 220 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/include/asm-generic/rqspinlock.h b/include/asm-generic/rqspinlock.h
+> > index 5c996a82e75f..c7e33ccc57a6 100644
+> > --- a/include/asm-generic/rqspinlock.h
+> > +++ b/include/asm-generic/rqspinlock.h
+> > @@ -11,14 +11,68 @@
+> >
+> >   #include <linux/types.h>
+> >   #include <vdso/time64.h>
+> > +#include <linux/percpu.h>
+> >
+> >   struct qspinlock;
+> >
+> > +extern int resilient_queued_spin_lock_slowpath(struct qspinlock *lock, u32 val, u64 timeout);
+> > +
+> >   /*
+> >    * Default timeout for waiting loops is 0.5 seconds
+> >    */
+> >   #define RES_DEF_TIMEOUT (NSEC_PER_SEC / 2)
+> >
+> > -extern int resilient_queued_spin_lock_slowpath(struct qspinlock *lock, u32 val, u64 timeout);
+> > +#define RES_NR_HELD 32
+> > +
+> > +struct rqspinlock_held {
+> > +     int cnt;
+> > +     void *locks[RES_NR_HELD];
+> > +};
+> > +
+> > +DECLARE_PER_CPU_ALIGNED(struct rqspinlock_held, rqspinlock_held_locks);
+> > +
+> > +static __always_inline void grab_held_lock_entry(void *lock)
+> > +{
+> > +     int cnt = this_cpu_inc_return(rqspinlock_held_locks.cnt);
+> > +
+> > +     if (unlikely(cnt > RES_NR_HELD)) {
+> > +             /* Still keep the inc so we decrement later. */
+> > +             return;
+> > +     }
+> > +
+> > +     /*
+> > +      * Implied compiler barrier in per-CPU operations; otherwise we can have
+> > +      * the compiler reorder inc with write to table, allowing interrupts to
+> > +      * overwrite and erase our write to the table (as on interrupt exit it
+> > +      * will be reset to NULL).
+> > +      */
+> > +     this_cpu_write(rqspinlock_held_locks.locks[cnt - 1], lock);
+> > +}
+> > +
+> > +/*
+> > + * It is possible to run into misdetection scenarios of AA deadlocks on the same
+> > + * CPU, and missed ABBA deadlocks on remote CPUs when this function pops entries
+> > + * out of order (due to lock A, lock B, unlock A, unlock B) pattern. The correct
+> > + * logic to preserve right entries in the table would be to walk the array of
+> > + * held locks and swap and clear out-of-order entries, but that's too
+> > + * complicated and we don't have a compelling use case for out of order unlocking.
+> Maybe we can pass in the lock and print a warning if out-of-order unlock
+> is being done.
 
-________________________________________
-From: James Clark <james.clark@linaro.org>
-Sent: 08 January 2025 14:28
-To: linux-arm-kernel@lists.infradead.org; linux-perf-users@vger.kernel.org;=
- irogers@google.com; Yeo Reum Yun; will@kernel.org; Mark Rutland; namhyung@=
-kernel.org; acme@kernel.org
-Cc: robh@kernel.org; James Clark; Peter Zijlstra; Ingo Molnar; Alexander Sh=
-ishkin; Jiri Olsa; Adrian Hunter; Liang, Kan; John Garry; Mike Leach; Leo Y=
-an; Graham Woodward; Michael Petlan; Veronika Molnarova; Athira Rajeev; Tho=
-mas Richter; linux-kernel@vger.kernel.org; bpf@vger.kernel.org
-Subject: [PATCH v3 1/5] perf: arm_spe: Add format option for discard mode
+I think alternatively, I will constrain the verifier in v2 to require
+lock release to be in-order, which would obviate the need to warn at
+runtime and reject programs potentially doing out-of-order unlocks.
+This doesn't cover in-kernel users though, but we're not doing
+out-of-order unlocks with this lock there, and it would be yet another
+branch in the unlock function with little benefit.
 
-FEAT_SPEv1p2 (optional from Armv8.6) adds a discard mode that allows all
-SPE data to be discarded rather than written to memory. Add a format
-bit for this mode.
+> > + *
+> > + * Therefore, we simply don't support such cases and keep the logic simple here.
+> > + */
+> > +static __always_inline void release_held_lock_entry(void)
+> > +{
+> > +     struct rqspinlock_held *rqh = this_cpu_ptr(&rqspinlock_held_locks);
+> > +
+> > +     if (unlikely(rqh->cnt > RES_NR_HELD))
+> > +             goto dec;
+> > +     smp_store_release(&rqh->locks[rqh->cnt - 1], NULL);
+> > +     /*
+> > +      * Overwrite of NULL should appear before our decrement of the count to
+> > +      * other CPUs, otherwise we have the issue of a stale non-NULL entry being
+> > +      * visible in the array, leading to misdetection during deadlock detection.
+> > +      */
+> > +dec:
+> > +     this_cpu_dec(rqspinlock_held_locks.cnt);
+> AFAIU, smp_store_release() only guarantees memory ordering before it,
+> not after. That shouldn't be a problem if the decrement is observed
+> before clearing the entry as that non-NULL entry won't be checked anyway.
 
-If the mode isn't supported, the format bit isn't published and attempts
-to use it will result in -EOPNOTSUPP. Allocating an aux buffer is still
-allowed even though it won't be written to so that old tools continue to
-work, but updated tools can choose to skip this step.
+Ack, I will improve the comment, it's a bit misleading right now.
 
-Signed-off-by: James Clark <james.clark@linaro.org>
----
- drivers/perf/arm_spe_pmu.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+> > +}
+> >
+> >   #endif /* __ASM_GENERIC_RQSPINLOCK_H */
+> > diff --git a/kernel/locking/rqspinlock.c b/kernel/locking/rqspinlock.c
+> > index b63f92bd43b1..b7c86127d288 100644
+> > --- a/kernel/locking/rqspinlock.c
+> > +++ b/kernel/locking/rqspinlock.c
+> > @@ -30,6 +30,7 @@
+> >    * Include queued spinlock definitions and statistics code
+> >    */
+> >   #include "qspinlock.h"
+> > +#include "rqspinlock.h"
+> >   #include "qspinlock_stat.h"
+> >
+> >   /*
+> > @@ -74,16 +75,141 @@
+> >   struct rqspinlock_timeout {
+> >       u64 timeout_end;
+> >       u64 duration;
+> > +     u64 cur;
+> >       u16 spin;
+> >   };
+> >
+> >   #define RES_TIMEOUT_VAL     2
+> >
+> > -static noinline int check_timeout(struct rqspinlock_timeout *ts)
+> > +DEFINE_PER_CPU_ALIGNED(struct rqspinlock_held, rqspinlock_held_locks);
+> > +
+> > +static bool is_lock_released(struct qspinlock *lock, u32 mask, struct rqspinlock_timeout *ts)
+> > +{
+> > +     if (!(atomic_read_acquire(&lock->val) & (mask)))
+> > +             return true;
+> > +     return false;
+> > +}
+> > +
+> > +static noinline int check_deadlock_AA(struct qspinlock *lock, u32 mask,
+> > +                                   struct rqspinlock_timeout *ts)
+> > +{
+> > +     struct rqspinlock_held *rqh = this_cpu_ptr(&rqspinlock_held_locks);
+> > +     int cnt = min(RES_NR_HELD, rqh->cnt);
+> > +
+> > +     /*
+> > +      * Return an error if we hold the lock we are attempting to acquire.
+> > +      * We'll iterate over max 32 locks; no need to do is_lock_released.
+> > +      */
+> > +     for (int i = 0; i < cnt - 1; i++) {
+> > +             if (rqh->locks[i] == lock)
+> > +                     return -EDEADLK;
+> > +     }
+> > +     return 0;
+> > +}
+> > +
+> > +static noinline int check_deadlock_ABBA(struct qspinlock *lock, u32 mask,
+> > +                                     struct rqspinlock_timeout *ts)
+> > +{
+>
+> I think you should note that the ABBA check here is not exhaustive. It
+> is just the most common case and there are corner cases that will be missed.
 
-diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
-index fd5b78732603..f5e6878db9d6 100644
---- a/drivers/perf/arm_spe_pmu.c
-+++ b/drivers/perf/arm_spe_pmu.c
-@@ -85,6 +85,7 @@ struct arm_spe_pmu {
- #define SPE_PMU_FEAT_LDS                       (1UL << 4)
- #define SPE_PMU_FEAT_ERND                      (1UL << 5)
- #define SPE_PMU_FEAT_INV_FILT_EVT              (1UL << 6)
-+#define SPE_PMU_FEAT_DISCARD                   (1UL << 7)
- #define SPE_PMU_FEAT_DEV_PROBED                        (1UL << 63)
-        u64                                     features;
+Ack, will add a comment.
 
-@@ -193,6 +194,9 @@ static const struct attribute_group arm_spe_pmu_cap_gro=
-up =3D {
- #define ATTR_CFG_FLD_store_filter_CFG          config  /* PMSFCR_EL1.ST */
- #define ATTR_CFG_FLD_store_filter_LO           34
- #define ATTR_CFG_FLD_store_filter_HI           34
-+#define ATTR_CFG_FLD_discard_CFG               config  /* PMBLIMITR_EL1.FM=
- =3D DISCARD */
-+#define ATTR_CFG_FLD_discard_LO                        35
-+#define ATTR_CFG_FLD_discard_HI                        35
-
- #define ATTR_CFG_FLD_event_filter_CFG          config1 /* PMSEVFR_EL1 */
- #define ATTR_CFG_FLD_event_filter_LO           0
-@@ -216,6 +220,7 @@ GEN_PMU_FORMAT_ATTR(store_filter);
- GEN_PMU_FORMAT_ATTR(event_filter);
- GEN_PMU_FORMAT_ATTR(inv_event_filter);
- GEN_PMU_FORMAT_ATTR(min_latency);
-+GEN_PMU_FORMAT_ATTR(discard);
-
- static struct attribute *arm_spe_pmu_formats_attr[] =3D {
-        &format_attr_ts_enable.attr,
-@@ -228,6 +233,7 @@ static struct attribute *arm_spe_pmu_formats_attr[] =3D=
- {
-        &format_attr_event_filter.attr,
-        &format_attr_inv_event_filter.attr,
-        &format_attr_min_latency.attr,
-+       &format_attr_discard.attr,
-        NULL,
- };
-
-@@ -238,6 +244,9 @@ static umode_t arm_spe_pmu_format_attr_is_visible(struc=
-t kobject *kobj,
-        struct device *dev =3D kobj_to_dev(kobj);
-        struct arm_spe_pmu *spe_pmu =3D dev_get_drvdata(dev);
-
-+       if (attr =3D=3D &format_attr_discard.attr && !(spe_pmu->features & =
-SPE_PMU_FEAT_DISCARD))
-+               return 0;
-+
-        if (attr =3D=3D &format_attr_inv_event_filter.attr && !(spe_pmu->fe=
-atures & SPE_PMU_FEAT_INV_FILT_EVT))
-                return 0;
-
-@@ -502,6 +511,12 @@ static void arm_spe_perf_aux_output_begin(struct perf_=
-output_handle *handle,
-        u64 base, limit;
-        struct arm_spe_pmu_buf *buf;
-
-+       if (ATTR_CFG_GET_FLD(&event->attr, discard)) {
-+               limit =3D FIELD_PREP(PMBLIMITR_EL1_FM, PMBLIMITR_EL1_FM_DIS=
-CARD);
-+               limit |=3D PMBLIMITR_EL1_E;
-+               goto out_write_limit;
-+       }
-+
-        /* Start a new aux session */
-        buf =3D perf_aux_output_begin(handle, event);
-        if (!buf) {
-@@ -743,6 +758,10 @@ static int arm_spe_pmu_event_init(struct perf_event *e=
-vent)
-            !(spe_pmu->features & SPE_PMU_FEAT_FILT_LAT))
-                return -EOPNOTSUPP;
-
-+       if (ATTR_CFG_GET_FLD(&event->attr, discard) &&
-+           !(spe_pmu->features & SPE_PMU_FEAT_DISCARD))
-+               return -EOPNOTSUPP;
-+
-        set_spe_event_has_cx(event);
-        reg =3D arm_spe_event_to_pmscr(event);
-        if (reg & (PMSCR_EL1_PA | PMSCR_EL1_PCT))
-@@ -1027,6 +1046,9 @@ static void __arm_spe_pmu_dev_probe(void *info)
-        if (FIELD_GET(PMSIDR_EL1_ERND, reg))
-                spe_pmu->features |=3D SPE_PMU_FEAT_ERND;
-
-+       if (spe_pmu->pmsver >=3D ID_AA64DFR0_EL1_PMSVer_V1P2)
-+               spe_pmu->features |=3D SPE_PMU_FEAT_DISCARD;
-+
-        /* This field has a spaced out encoding, so just use a look-up */
-        fld =3D FIELD_GET(PMSIDR_EL1_INTERVAL, reg);
-        switch (fld) {
---
-2.34.1
-
+>
+> Cheers,
+> Longman
+>
 
