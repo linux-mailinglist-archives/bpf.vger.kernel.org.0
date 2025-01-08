@@ -1,206 +1,232 @@
-Return-Path: <bpf+bounces-48221-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48222-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A321AA051A8
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 04:38:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AA66A051B6
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 04:47:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 092903A7532
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 03:38:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91F8E7A17C7
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 03:46:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51ED419CC36;
-	Wed,  8 Jan 2025 03:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A109F17C20F;
+	Wed,  8 Jan 2025 03:46:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dcZR90a4"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="RVYYl6Ci"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EA532594BB
-	for <bpf@vger.kernel.org>; Wed,  8 Jan 2025 03:38:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74C762E40E
+	for <bpf@vger.kernel.org>; Wed,  8 Jan 2025 03:46:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736307494; cv=none; b=TKeZqt0k5VNjL7ZtBrrREsUDiFRk200VwUBvB3RmACYsFuZi/gsz2fXGvhPFcgSLwcZfn86S5ttrRQxTBx6n9zSNKbJkuaWQ8W2BzXs7ry/iOh51tNCnWImYFKdgKXLWHMsPg4ORulqdF6wkogCiTFp3YZ1truzVd7wECNGVT5o=
+	t=1736308018; cv=none; b=T6XTzZv/rzj7cZF201DWVrZ3IgEh+/ydAbMus+bTEtP7fzuLkSrjJ+6h8GfQQ3bXoGyNSoVkBp8HlBL3l89Qle3u/iqZmLBam4tf9KccfDulruhdqGrlgR1Uo384NBJ9Vsj+RMBIgCWrOIiD5efSWohxk/AX8qMhm2x8w+JeCTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736307494; c=relaxed/simple;
-	bh=HuBkXU4WGAIKikDiA4v9faPr62D42N2iT3vf6U8PU7g=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=lv2lStSahMZy0tUgIh/RobIknqOBUaTqUO+o7WUv/m4aS+nOtVbDyn47pgWvEZ1RdajWF53ysId/M14OR1NiZ7k7sv6wik7gKzMV4ip0OV2jD1oG7kOKVbDzuZYOeV59emUblYO/W2mk5tpf5lVxQ4aC0ItYhoh9uRNxzn9MCMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dcZR90a4; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1736307491;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=q1T2+dFg8czdV4/r0tUFcPs7edWiEyCb3Pvfi0CFBS4=;
-	b=dcZR90a4hVeYVO3UTTMcqxKiOivH/EstyTodJkncY/NUrbC9J1oT5w5Ak5QGPlEpRpP/yg
-	y1gbBLUdIP3AHjw0i/+J8WLvelGvYadYdBYwI01D+2BawJTYSAJjaHQvIAzQJqstUMOm5b
-	b13QXGe0OaIyTFhnDLVe9KdUSf3dCJU=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-647--hrs1_b1Ng2K2a7zfsJjVg-1; Tue, 07 Jan 2025 22:38:09 -0500
-X-MC-Unique: -hrs1_b1Ng2K2a7zfsJjVg-1
-X-Mimecast-MFC-AGG-ID: -hrs1_b1Ng2K2a7zfsJjVg
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-7b6e9fb0436so5006798685a.0
-        for <bpf@vger.kernel.org>; Tue, 07 Jan 2025 19:38:09 -0800 (PST)
+	s=arc-20240116; t=1736308018; c=relaxed/simple;
+	bh=3LCFBWDpX022awbUxg9j7aAgxggjyLlvGDhxQ1mEMrs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=BvdrqLXa76HlMbav2JUEEdl3Zuk8oQabvzTT6HpbAHjgA2GTDgCbjHqBdxTBOB/9uPe9r4GqduDqZylDw/8uhcWn4dzhS+EDAExxWt6SmP+gIT3Gjz6eraepUIEmkJF6xbUmJlwqcy1MAUdTVgkBlljcChVMySR2qfZcR/KD8ug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=RVYYl6Ci; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-21670dce0a7so67998555ad.1
+        for <bpf@vger.kernel.org>; Tue, 07 Jan 2025 19:46:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1736308016; x=1736912816; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Mi+CGQoubQ0WXyV85u6vVi98repRddgcWF9ItWY6PUQ=;
+        b=RVYYl6Cisgam4g+5s6BT95TRidn//RJFkxcIfaCxiyyXRAJ08ykbau5Ax9V4713amU
+         N7Qc/U+grXWuL7qKOpJ+BDJWRfw7NiziClOKmj0LJTouN7ZfM5XdbYApAzq/sC+N5GgB
+         ybOwEohVzqYw1O9AVBKZCa7CkNcUtAAxJ0qbU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736307489; x=1736912289;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q1T2+dFg8czdV4/r0tUFcPs7edWiEyCb3Pvfi0CFBS4=;
-        b=w1JZon/WwuCUX//0nBHnpHEMIClkpZvWzSWS1ZjsMwR0LqKXFwqhe7QhQ8/Fxhics6
-         QA20Znj5NsDOc5sHvLXrl+ATKZzpE+NDLqGNu7yxZPYuEa3bLmIDBic9hvzfkb5ZsLJG
-         lXkkB7wnkkryUtlvW1IEqdIzTDRzKx+Dm/gIVERDn1P7BSLh3AI0DIv1w3J5kv01vhDP
-         BYLph5QGyLmfI9pghWwiVgkdCeGAEmd9zxOooeRsXuOM9O7PmVZcGLw2wVjg7SPvjfUu
-         Rp7IeIsLmh4zWGzTQq/pLJcYCs2Tx73vtBR9syyXrW8aWVxgXSUn6dV2U4/exOfpgfs3
-         PD9A==
-X-Forwarded-Encrypted: i=1; AJvYcCXKZL7TiyZICNlPiCOXvvTOj2O0fJwnKO+VQbDg/5VLG2j3bSYzhl7jrjlPEWgBF2oD0Eo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzotiM3cb3gRVXxjKB545Qp/jqVqNNj/saYYvxOQsrm8OSNLFOA
-	IOYt4dECxD/+lsYVScXF+mboteNkCR+yRpftCyncVbD94bL9dYUPeTgleblLHwl+h1xf3iy8mxf
-	dswg4xQU78xxmeR5AmUQNPNP8diyzd3kKeO0KKFH3ENq9FYIHzQ==
-X-Gm-Gg: ASbGncsvEchrOMelB/bIZD5UmkVZ45KX/V1g1qthGI0RRPwRIx2umyLcg3x3lyhZeXu
-	F+gvA4BGFloYpSEHW5qkT4qtzSVdh7GyZC+jsYjfgwjtfDrjBYMHy5IR8Skf6sd/jPQCNNslVm9
-	fA4ESJeSWspD3YzeRtgjb0IbZKm40YpPYWGF7Tcn6IqL3A6hbRqaer87U9jhsFwEFNocWFf80oS
-	uoC9JI3C2iJhf+QjriSQakEPxjoAGrabvvgVUEwNnUrxaN0rNBKgActeNxfEh0gAFuPEUndThO+
-	KK+AXrTMRXAseJ0GnnwWHm3s
-X-Received: by 2002:a05:620a:1aa7:b0:7b6:e20d:2b55 with SMTP id af79cd13be357-7bcd97b1aa0mr201433585a.41.1736307489227;
-        Tue, 07 Jan 2025 19:38:09 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF2jp1gzMsOIs/upwLQ9lfk8KRV5eRMFJzkXxfha13aTa4I5WcjU0JLvHMEgpdV7UefW2UHow==
-X-Received: by 2002:a05:620a:1aa7:b0:7b6:e20d:2b55 with SMTP id af79cd13be357-7bcd97b1aa0mr201430385a.41.1736307488888;
-        Tue, 07 Jan 2025 19:38:08 -0800 (PST)
-Received: from ?IPV6:2601:188:ca00:a00:f844:fad5:7984:7bd7? ([2601:188:ca00:a00:f844:fad5:7984:7bd7])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b9ac478e59sm1648658485a.78.2025.01.07.19.38.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Jan 2025 19:38:08 -0800 (PST)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <f7bc2566-20a7-41fb-ac59-5d6a8901d8fb@redhat.com>
-Date: Tue, 7 Jan 2025 22:38:06 -0500
+        d=1e100.net; s=20230601; t=1736308016; x=1736912816;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Mi+CGQoubQ0WXyV85u6vVi98repRddgcWF9ItWY6PUQ=;
+        b=Kq/+nzvpfoUP4MNCvGqcJLYrHZUGXxvsAsJVmfBhq2OoqGbtjv8pG83O0pJnWvuTUK
+         SOidceeWYNw4GuWkFbxPzjqubBS0FfQQHowVpmF99p4oI5bnxZa3/A0WQzNrXuvKrqyb
+         sw6zKol0XRZVmSM0SZtugmQE7jDQAEzL8ycg+T5aSvL8xFpEJjo2M1iOhyIxB7Z8xZuv
+         Vepx5qmgoHyzAr9gQIRtDSitBrD86OeII92Cl3XNuKX6C3zmdyri6jY/6eoau4EywFBG
+         HKZOGDw1lRU7xzGAvIb+Reu4WhWVUP+VDs/2jUvgrX3TguFfAWAc0jIumqHv+fPtsJJo
+         L9aQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVekgH9ymOGW9bUu3Kpw8gs1GKJVhcAiydpEAXnmBy6IsKsqoqaD/esb0E+J4nZxc9GxJI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzGtirU6jsZ+bnMNJzniwvPgqWSASzwdy8piSnocxFgiedY0Xx6
+	WQVBoow8cXrawATA5UrAf7zin6gNlLETd2G4N7OzVt1MQD/qvy61e+XyDbdFFkNwHMOoYCV9O/d
+	ZCVV8GpLc5AoixmsS6du8fm2G8BcdvFJzfOHeomo=
+X-Gm-Gg: ASbGncuEuOdjVQxn+NcWRgVyU004ZByJBa3UFNv2emJbJzAqL3sYgFkLMYoSk5E/J0Y
+	EOxASoC9PCr7SU1rOjA0+PeOcottv+75/iDUAxsKYM1zwGwFALNhyW/HINwgz1sJ6B0IL9Xypdg
+	0h3g1oCJ2O1yb1CJ3tJ2wuoW5OUGny8teHayFIRqKHf5hzT/uIq/HjUBHNEyV/Ouk03WD3LtNqF
+	QYXCRQ/ig8rq+1H+93K/FsPBXtL/VBu08OUjYYF4Jlc2uAW9T45JKCx652QLeA42mKWfyK/NpVl
+	BooBi25eZCy4iN9W0SbBB/3yWKVdcbOM/gsslS5T1s9m5exDcMRbSwy7RRdCmgkwd2UgEg==
+X-Google-Smtp-Source: AGHT+IFA3KkhNN51bihNTZB7UgR77WHxD+kD+M3694lYFJZ0xWcKF5NN4koPeSDvsfNeikL1QuiMaQ==
+X-Received: by 2002:a17:902:d48a:b0:215:603e:2141 with SMTP id d9443c01a7336-21a83f57383mr21318875ad.19.1736308015712;
+        Tue, 07 Jan 2025 19:46:55 -0800 (PST)
+Received: from sankartest7x-virtual-machine.lvn.broadcom.net ([192.19.161.250])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f54a2ad3b7sm331253a91.31.2025.01.07.19.46.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jan 2025 19:46:55 -0800 (PST)
+From: Sankararaman Jayaraman <sankararaman.jayaraman@broadcom.com>
+To: netdev@vger.kernel.org
+Cc: sankararaman.jayaraman@broadcom.com,
+	ronak.doshi@broadcom.com,
+	bcm-kernel-feedback-list@broadcom.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	u9012063@gmail.com,
+	kuba@kernel.org,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	ast@kernel.org,
+	alexandr.lobakin@intel.com,
+	alexanderduyck@fb.com,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com
+Subject: [PATCH net] vmxnet3: Fix tx queue race condition with XDP
+Date: Wed,  8 Jan 2025 09:18:18 +0530
+Message-Id: <20250108034818.46634-1-sankararaman.jayaraman@broadcom.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v1 09/22] rqspinlock: Protect waiters in queue
- from stalls
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Barret Rhoden <brho@google.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Peter Zijlstra <peterz@infradead.org>, Waiman Long <llong@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, "Paul E. McKenney"
- <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
- Josh Don <joshdon@google.com>, Dohyun Kim <dohyunkim@google.com>,
- kernel-team@meta.com
-References: <20250107140004.2732830-1-memxor@gmail.com>
- <20250107140004.2732830-10-memxor@gmail.com>
-Content-Language: en-US
-In-Reply-To: <20250107140004.2732830-10-memxor@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/7/25 8:59 AM, Kumar Kartikeya Dwivedi wrote:
-> Implement the wait queue cleanup algorithm for rqspinlock. There are
-> three forms of waiters in the original queued spin lock algorithm. The
-> first is the waiter which acquires the pending bit and spins on the lock
-> word without forming a wait queue. The second is the head waiter that is
-> the first waiter heading the wait queue. The third form is of all the
-> non-head waiters queued behind the head, waiting to be signalled through
-> their MCS node to overtake the responsibility of the head.
->
-> In this commit, we are concerned with the second and third kind. First,
-> we augment the waiting loop of the head of the wait queue with a
-> timeout. When this timeout happens, all waiters part of the wait queue
-> will abort their lock acquisition attempts. This happens in three steps.
-> First, the head breaks out of its loop waiting for pending and locked
-> bits to turn to 0, and non-head waiters break out of their MCS node spin
-> (more on that later). Next, every waiter (head or non-head) attempts to
-> check whether they are also the tail waiter, in such a case they attempt
-> to zero out the tail word and allow a new queue to be built up for this
-> lock. If they succeed, they have no one to signal next in the queue to
-> stop spinning. Otherwise, they signal the MCS node of the next waiter to
-> break out of its spin and try resetting the tail word back to 0. This
-> goes on until the tail waiter is found. In case of races, the new tail
-> will be responsible for performing the same task, as the old tail will
-> then fail to reset the tail word and wait for its next pointer to be
-> updated before it signals the new tail to do the same.
->
-> Lastly, all of these waiters release the rqnode and return to the
-> caller. This patch underscores the point that rqspinlock's timeout does
-> not apply to each waiter individually, and cannot be relied upon as an
-> upper bound. It is possible for the rqspinlock waiters to return early
-> from a failed lock acquisition attempt as soon as stalls are detected.
->
-> The head waiter cannot directly WRITE_ONCE the tail to zero, as it may
-> race with a concurrent xchg and a non-head waiter linking its MCS node
-> to the head's MCS node through 'prev->next' assignment.
->
-> Reviewed-by: Barret Rhoden <brho@google.com>
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->   kernel/locking/rqspinlock.c | 42 +++++++++++++++++++++++++++++---
->   kernel/locking/rqspinlock.h | 48 +++++++++++++++++++++++++++++++++++++
->   2 files changed, 87 insertions(+), 3 deletions(-)
->   create mode 100644 kernel/locking/rqspinlock.h
->
-> diff --git a/kernel/locking/rqspinlock.c b/kernel/locking/rqspinlock.c
-> index dd305573db13..f712fe4b1f38 100644
-> --- a/kernel/locking/rqspinlock.c
-> +++ b/kernel/locking/rqspinlock.c
-> @@ -77,6 +77,8 @@ struct rqspinlock_timeout {
->   	u16 spin;
->   };
->   
-> +#define RES_TIMEOUT_VAL	2
-> +
->   static noinline int check_timeout(struct rqspinlock_timeout *ts)
->   {
->   	u64 time = ktime_get_mono_fast_ns();
-> @@ -305,12 +307,18 @@ int __lockfunc resilient_queued_spin_lock_slowpath(struct qspinlock *lock, u32 v
->   	 * head of the waitqueue.
->   	 */
->   	if (old & _Q_TAIL_MASK) {
-> +		int val;
-> +
->   		prev = decode_tail(old, qnodes);
->   
->   		/* Link @node into the waitqueue. */
->   		WRITE_ONCE(prev->next, node);
->   
-> -		arch_mcs_spin_lock_contended(&node->locked);
-> +		val = arch_mcs_spin_lock_contended(&node->locked);
-> +		if (val == RES_TIMEOUT_VAL) {
-> +			ret = -EDEADLK;
-> +			goto waitq_timeout;
-> +		}
->   
->   		/*
->   		 * While waiting for the MCS lock, the next pointer may have
-> @@ -334,7 +342,35 @@ int __lockfunc resilient_queued_spin_lock_slowpath(struct qspinlock *lock, u32 v
->   	 * sequentiality; this is because the set_locked() function below
->   	 * does not imply a full barrier.
->   	 */
-> -	val = atomic_cond_read_acquire(&lock->val, !(VAL & _Q_LOCKED_PENDING_MASK));
-> +	RES_RESET_TIMEOUT(ts);
-> +	val = atomic_cond_read_acquire(&lock->val, !(VAL & _Q_LOCKED_PENDING_MASK) ||
-> +				       RES_CHECK_TIMEOUT(ts, ret));
+If XDP traffic runs on a CPU which is greater than or equal to
+the number of the Tx queues of the NIC, then vmxnet3_xdp_get_tq()
+always picks up queue 0 for transmission as it uses reciprocal scale
+instead of simple modulo operation.
 
-This has the same wfe problem for arm64.
+vmxnet3_xdp_xmit() and vmxnet3_xdp_xmit_frame() use the above
+returned queue without any locking which can lead to race conditions
+when multiple XDP xmits run in parallel on different=C2=A0CPU's.
 
-Cheers,
-Longman
+This patch uses a simple module scheme when the current CPU equals or
+exceeds the number of Tx queues on the NIC. It also adds locking in
+vmxnet3_xdp_xmit() and vmxnet3_xdp_xmit_frame() functions.
+
+Fixes: 54f00cce1178 ("vmxnet3: Add XDP support.")
+Signed-off-by: Sankararaman Jayaraman <sankararaman.jayaraman@broadcom.com>
+Signed-off-by: Ronak Doshi <ronak.doshi@broadcom.com>
+---
+ drivers/net/vmxnet3/vmxnet3_xdp.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/vmxnet3/vmxnet3_xdp.c b/drivers/net/vmxnet3/vmxnet=
+3_xdp.c
+index 1341374a4588..5f177e77cfcb 100644
+--- a/drivers/net/vmxnet3/vmxnet3_xdp.c
++++ b/drivers/net/vmxnet3/vmxnet3_xdp.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Linux driver for VMware's vmxnet3 ethernet NIC.
+- * Copyright (C) 2008-2023, VMware, Inc. All Rights Reserved.
++ * Copyright (C) 2008-2025, VMware, Inc. All Rights Reserved.
+  * Maintained by: pv-drivers@vmware.com
+  *
+  */
+@@ -28,7 +28,7 @@ vmxnet3_xdp_get_tq(struct vmxnet3_adapter *adapter)
+ 	if (likely(cpu < tq_number))
+ 		tq =3D &adapter->tx_queue[cpu];
+ 	else
+-		tq =3D &adapter->tx_queue[reciprocal_scale(cpu, tq_number)];
++		tq =3D &adapter->tx_queue[cpu % tq_number];
+=20
+ 	return tq;
+ }
+@@ -123,7 +123,9 @@ vmxnet3_xdp_xmit_frame(struct vmxnet3_adapter *adapter,
+ 	struct page *page;
+ 	u32 buf_size;
+ 	u32 dw2;
++	unsigned long irq_flags;
+=20
++	spin_lock_irqsave(&tq->tx_lock, irq_flags);
+ 	dw2 =3D (tq->tx_ring.gen ^ 0x1) << VMXNET3_TXD_GEN_SHIFT;
+ 	dw2 |=3D xdpf->len;
+ 	ctx.sop_txd =3D tq->tx_ring.base + tq->tx_ring.next2fill;
+@@ -134,6 +136,7 @@ vmxnet3_xdp_xmit_frame(struct vmxnet3_adapter *adapter,
+=20
+ 	if (vmxnet3_cmd_ring_desc_avail(&tq->tx_ring) =3D=3D 0) {
+ 		tq->stats.tx_ring_full++;
++		spin_unlock_irqrestore(&tq->tx_lock, irq_flags);
+ 		return -ENOSPC;
+ 	}
+=20
+@@ -142,8 +145,10 @@ vmxnet3_xdp_xmit_frame(struct vmxnet3_adapter *adapter=
+,
+ 		tbi->dma_addr =3D dma_map_single(&adapter->pdev->dev,
+ 					       xdpf->data, buf_size,
+ 					       DMA_TO_DEVICE);
+-		if (dma_mapping_error(&adapter->pdev->dev, tbi->dma_addr))
++		if (dma_mapping_error(&adapter->pdev->dev, tbi->dma_addr)) {
++			spin_unlock_irqrestore(&tq->tx_lock, irq_flags);
+ 			return -EFAULT;
++		}
+ 		tbi->map_type |=3D VMXNET3_MAP_SINGLE;
+ 	} else { /* XDP buffer from page pool */
+ 		page =3D virt_to_page(xdpf->data);
+@@ -182,6 +187,7 @@ vmxnet3_xdp_xmit_frame(struct vmxnet3_adapter *adapter,
+ 	dma_wmb();
+ 	gdesc->dword[2] =3D cpu_to_le32(le32_to_cpu(gdesc->dword[2]) ^
+ 						  VMXNET3_TXD_GEN);
++	spin_unlock_irqrestore(&tq->tx_lock, irq_flags);
+=20
+ 	/* No need to handle the case when tx_num_deferred doesn't reach
+ 	 * threshold. Backend driver at hypervisor side will poll and reset
+@@ -226,6 +232,7 @@ vmxnet3_xdp_xmit(struct net_device *dev,
+ 	struct vmxnet3_adapter *adapter =3D netdev_priv(dev);
+ 	struct vmxnet3_tx_queue *tq;
+ 	int i;
++	struct netdev_queue *nq;
+=20
+ 	if (unlikely(test_bit(VMXNET3_STATE_BIT_QUIESCED, &adapter->state)))
+ 		return -ENETDOWN;
+@@ -236,6 +243,9 @@ vmxnet3_xdp_xmit(struct net_device *dev,
+ 	if (tq->stopped)
+ 		return -ENETDOWN;
+=20
++	nq =3D netdev_get_tx_queue(adapter->netdev, tq->qid);
++
++	__netif_tx_lock(nq, smp_processor_id());
+ 	for (i =3D 0; i < n; i++) {
+ 		if (vmxnet3_xdp_xmit_frame(adapter, frames[i], tq, true)) {
+ 			tq->stats.xdp_xmit_err++;
+@@ -243,6 +253,7 @@ vmxnet3_xdp_xmit(struct net_device *dev,
+ 		}
+ 	}
+ 	tq->stats.xdp_xmit +=3D i;
++	__netif_tx_unlock(nq);
+=20
+ 	return i;
+ }
+--=20
+2.25.1
 
 
+--=20
+This electronic communication and the information and any files transmitted=
+=20
+with it, or attached to it, are confidential and are intended solely for=20
+the use of the individual or entity to whom it is addressed and may contain=
+=20
+information that is confidential, legally privileged, protected by privacy=
+=20
+laws, or otherwise restricted from disclosure to anyone else. If you are=20
+not the intended recipient or the person responsible for delivering the=20
+e-mail to the intended recipient, you are hereby notified that any use,=20
+copying, distributing, dissemination, forwarding, printing, or copying of=
+=20
+this e-mail is strictly prohibited. If you received this e-mail in error,=
+=20
+please return the e-mail to the sender, delete it from your computer, and=
+=20
+destroy any printed copy of it.
 
