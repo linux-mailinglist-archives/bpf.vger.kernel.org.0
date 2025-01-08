@@ -1,173 +1,117 @@
-Return-Path: <bpf+bounces-48228-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48229-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAF46A05651
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 10:09:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2267A0565B
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 10:11:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65BD81883B16
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 09:09:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAF533A5023
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 09:11:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54DCF1FC7ED;
-	Wed,  8 Jan 2025 09:05:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OlQxyPTc";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Pi0E5pkC"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C92681F4E2F;
+	Wed,  8 Jan 2025 09:06:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 307761F9420;
-	Wed,  8 Jan 2025 09:05:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D60351F03F1
+	for <bpf@vger.kernel.org>; Wed,  8 Jan 2025 09:06:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736327128; cv=none; b=gtO8456BIoKB8MfFGnXFgh/MD8pifedZY0NvLjdYPrwYs/WIPnYK4FJPi5+jXNaAW5WTV+ViM9KnFrXBBL3/d8oyEOZp4XMVnpjoCwrkoYBM8c1U35N1LaxztsAnQ25MCUwZQUWY/PKxxE7HOPUML3y5GJHu4vfS9kSrg/I/b5k=
+	t=1736327177; cv=none; b=ELgcrP3IYR2wzXA81Eo1Sna8c9AVZgQ5a4QSezeGHEYsD6Ga3tGXscAL5sPzMCU7nYKlM9oo5GsoUPiHGOvao/YNAZZuNX15R8biQ6BSjtMDU+HwlePusWK1Scu9Q9g0WPh16zPwNxg0v9224Q8sadnjjOvEUA6/nSvQ2sE+J8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736327128; c=relaxed/simple;
-	bh=Rfno/WDBaQo6Megi5n9CLWuW+Sf5W7R4mY0Et7Ub/lI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WMYzjwuoNmJyU+XpLsWNpZx3IEhLvlOWTFKZBHJ37ZjreyakRmIM44cduHc2r3cty5PSKzvwgvxzKBzQ4J70wZP46KxEUb9WXBtII66UfeFR7pJgY94yy+TAVwzCqLBJN7SuxhLl+CBRV8nC3tJ0vh+n1hyrZP2+nXx1qc+GDcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=OlQxyPTc; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Pi0E5pkC; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1736327124;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aWZxQxOJaEGd9SElXjI4Z9tZyIiipQdtqCaCraspLAk=;
-	b=OlQxyPTc4KXCBeZGT3TJa+bbkReub6yPnM2lqBeJYit76X+ZTMq2yA0QoY08+401skoxFX
-	dYJ40n67dA+bywAEOToIEQlia/tRRCRY8AbYUF7kOK5dgWaih7fk9FejvNIjyGgDX/rkYS
-	fZCnagS96iMzk5UG0V+o/n5m7OGktAptW2Uhze9UoCeKXif7Csjsohks9L1nt6Zi0Bi0uR
-	Skw19b5vmyf7Fk/A6MPJM4Zs4OpVPjdt5+xI+/8/7gh5esgz0OslIDcPrgbTRWeDurLemF
-	O9SxQ7WM65wZHD2m54kgPfWgHyupWGbr3mY+3/23khr8bWuCp8a6bkqx2y7Y9Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1736327124;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aWZxQxOJaEGd9SElXjI4Z9tZyIiipQdtqCaCraspLAk=;
-	b=Pi0E5pkCHo/POaYqtA2D8zPpOtGjm4FDBWb3u3Jd9uYvwb5+wePI0na9fXkwzIO4roKQ81
-	vwjUMv0cYkSEvMDg==
-To: linux-modules@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Daniel Gomez <da.gomez@samsung.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Petr Pavlu <petr.pavlu@suse.com>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Matt Bobrowski <mattbobrowski@google.com>,
-	Song Liu <song@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	bpf@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH v3 25/28] bpf: Use RCU in all users of __module_text_address().
-Date: Wed,  8 Jan 2025 10:04:54 +0100
-Message-ID: <20250108090457.512198-26-bigeasy@linutronix.de>
-In-Reply-To: <20250108090457.512198-1-bigeasy@linutronix.de>
-References: <20250108090457.512198-1-bigeasy@linutronix.de>
+	s=arc-20240116; t=1736327177; c=relaxed/simple;
+	bh=ZS29Ox+M/g/NfVlX6mCBlPnQYrqSjZsPMZJN+TwQ8tg=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=fY7acwicFsHrYv3JG5RKkLfB9iaOttrZ/abYNOrNozpa8Iel4+4ieSN58lKBAQLQEyq70boMuWtJhxB+V/Dq7BspUXlGnn74CI+YuB1w8wneU6X/CzS3lV1HcmlHbEyR1ltHdogYfJvROxJSX+AofEoMeUk8V+h8RqVAA8Rcx4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YShph6Nkhz4f3kvt
+	for <bpf@vger.kernel.org>; Wed,  8 Jan 2025 17:05:48 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 441B51A0E55
+	for <bpf@vger.kernel.org>; Wed,  8 Jan 2025 17:06:10 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP1 (Coremail) with SMTP id cCh0CgB33Hz+P35nKCJ5AQ--.808S2;
+	Wed, 08 Jan 2025 17:06:10 +0800 (CST)
+Subject: Re: [PATCH bpf-next 0/7] Free htab element out of bucket lock
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko
+ <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, xukuohai@huawei.com,
+ "houtao1@huawei.com" <houtao1@huawei.com>
+References: <20250107085559.3081563-1-houtao@huaweicloud.com>
+ <9b4ebbaf-dd3c-85a4-2d17-18b8805ea5fb@huaweicloud.com>
+ <9685012a-1332-95a1-a8ef-dfd25f5cd072@huaweicloud.com>
+ <20250108072906.chgNtc8S@linutronix.de>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <2728739a-5c6a-acbe-2231-7dd1c52d5826@huaweicloud.com>
+Date: Wed, 8 Jan 2025 17:06:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20250108072906.chgNtc8S@linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID:cCh0CgB33Hz+P35nKCJ5AQ--.808S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtFW7try3tFW7tr1DXF1UZFb_yoWkJwbEk3
+	WqvF97Xw15Jrs3tr1qka1qqr98CayUXF1UXr4DWr97t34Yy398CanY9rWfAFn7GanIkas8
+	ArZIyF1xZw17ujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbakYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
+	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
+	MI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
+	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j
+	6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJb
+	IYCTnIWIevJa73UjIFyTuYvjxUF1v3UUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-__module_address() can be invoked within a RCU section, there is no
-requirement to have preemption disabled.
+Hi,
 
-Replace the preempt_disable() section around __module_address() with
-RCU.
+On 1/8/2025 3:29 PM, Sebastian Andrzej Siewior wrote:
+> On 2025-01-08 09:24:02 [+0800], Hou Tao wrote:
+>> @Sebastian
+>> Is it possible that softirq_expiry_lock is changed to a raw-spin-lock
+>> instead ?
+> No. The point is to PI-boost the timer-task by the task that is
+> canceling the timer. This is possible if the timer-task got preempted by
+> the canceling task - both can't be migrated to another CPU and if the
+> canceling task has higher priority then it will continue to spin and
+> live lock the system.
+> Making the expire lock raw would also force every timer to run with
+> disabled interrupts which would not allow to acquire any spinlock_t
+> locks.
 
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Hao Luo <haoluo@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Matt Bobrowski <mattbobrowski@google.com>
-Cc: Song Liu <song@kernel.org>
-Cc: Stanislav Fomichev <sdf@fomichev.me>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org
-Cc: linux-trace-kernel@vger.kernel.org
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- kernel/trace/bpf_trace.c | 19 ++++++++-----------
- 1 file changed, 8 insertions(+), 11 deletions(-)
-
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 1b8db5aee9d38..020df7b6ff90c 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -2336,10 +2336,9 @@ void bpf_put_raw_tracepoint(struct bpf_raw_event_map=
- *btp)
- {
- 	struct module *mod;
-=20
--	preempt_disable();
-+	guard(rcu)();
- 	mod =3D __module_address((unsigned long)btp);
- 	module_put(mod);
--	preempt_enable();
- }
-=20
- static __always_inline
-@@ -2907,16 +2906,14 @@ static int get_modules_for_addrs(struct module ***m=
-ods, unsigned long *addrs, u3
- 	for (i =3D 0; i < addrs_cnt; i++) {
- 		struct module *mod;
-=20
--		preempt_disable();
--		mod =3D __module_address(addrs[i]);
--		/* Either no module or we it's already stored  */
--		if (!mod || has_module(&arr, mod)) {
--			preempt_enable();
--			continue;
-+		scoped_guard(rcu) {
-+			mod =3D __module_address(addrs[i]);
-+			/* Either no module or we it's already stored  */
-+			if (!mod || has_module(&arr, mod))
-+				continue;
-+			if (!try_module_get(mod))
-+				err =3D -EINVAL;
- 		}
--		if (!try_module_get(mod))
--			err =3D -EINVAL;
--		preempt_enable();
- 		if (err)
- 			break;
- 		err =3D add_module(&arr, mod);
---=20
-2.47.1
+Thanks for the explanation. However I still can not understand why
+making the expire lock raw will force every timer to run with disabled
+interrupt. In my simple understanding, hrtimer_cpu_base_lock_expiry()
+doesn't disable the irq. Do you mean if change the expire lock to raw,
+it also needs to disable the irq to prevent something from happening,
+right ? Also does the raw spinlock have the PI-boost functionality ?
+>
+> Sebastian
+>
+> .
 
 
