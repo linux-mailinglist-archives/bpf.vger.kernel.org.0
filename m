@@ -1,128 +1,105 @@
-Return-Path: <bpf+bounces-48230-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48231-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43754A0568A
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 10:17:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DAC4A05693
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 10:18:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 173D2163A4F
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 09:16:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3173218888EA
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 09:18:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC211A01D4;
-	Wed,  8 Jan 2025 09:16:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A9F41F0E5E;
+	Wed,  8 Jan 2025 09:18:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="jUVmj+Z7";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="FOEJaTlZ"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WgHj+ihJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2680218B495
-	for <bpf@vger.kernel.org>; Wed,  8 Jan 2025 09:16:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7C651EB9ED;
+	Wed,  8 Jan 2025 09:18:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736327807; cv=none; b=PWUXM40ChtlhNalQSn81tmOGTwUV1FvfPtODXN/oc+N07BY4XDu0rRV4bfe+KmZO61QSIqn3TeNaB/KNcV0sPCNPWggTA8Vpu3gjVSj6nG4dOyCrIGT0iNwrr7LKSlX0P5Ijowfjlfdu/+RnRMO8IyToZGWo+1bG5HWPN0YSILg=
+	t=1736327915; cv=none; b=XWdkR76b32MIkhShjJqfAYCrRTZJOEwXAA020Azu+McJbS5B0nEExvSlBW69TFpTfrCQoGqSO4DiicV2NgWqtAw4lTQjxnN7kAyPJYUlPM20Re6GSEZxMkBIBTwUAxnu/tWn6ROH2s+AETCHf4A4VX58yQFLgKDeYYME4w+jp10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736327807; c=relaxed/simple;
-	bh=7l83dhktf1TstnJa0w/Wnyn5Kd5sifBXWwzInLUacuo=;
+	s=arc-20240116; t=1736327915; c=relaxed/simple;
+	bh=5xg2Gqn+MSHjFu8Rlm64KjN9d+JLhIhsJOsp65ICYX4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R2qV93TJC0JUYc7twcSKeVRUeh2pW5pB5wiDclsAsCUB+ihFTXnLlLBlr5pdtvZwezQ9N1wUev+apkyX2p3WHRD8Y1nE6ud/neh51ZK1Reb2yFB2vciHP1bR/K8fNFX9xChlbXx68wlAzhNt92AeNa858nutRM5TNqFf8LQK7tY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=jUVmj+Z7; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=FOEJaTlZ; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 8 Jan 2025 10:16:43 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1736327804;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ijN0bMPMb976G1pq/ZMrzWbok1+cDaflp5Tt32h3vOU=;
-	b=jUVmj+Z7OkxhhzEjTCvTOUGf3yyHP22wLtK8UPYSWmeaBQaEQSvHbcvVi1wFPO+yUOX7qG
-	9SixNdejvt9OxNeQf3SNEYLf3xwtUcY6u4AP7R0McPxKEE4FTXKaIsf5kv4VJ40siTjHTf
-	zxMo3/RXEuZiqA+dmbw5qH3IQiP+tlTXCSvGXmpFc3sHXUye3/bz7z86KD96eV3FdQuWTM
-	nTSs9uilopRk7WcnfMWWEPwMcwV64v8FjrKGBW9QQKRk7ksGS3VSINXNUXH1UqqSNWxDx/
-	+pcKe291IyehZ7QzjOQpmc4bsiBurf9EaVgmC+gq7HJW+H/T17LgotEa7DJDsg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1736327804;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ijN0bMPMb976G1pq/ZMrzWbok1+cDaflp5Tt32h3vOU=;
-	b=FOEJaTlZI30h8+J+1dWTiNvrYrHwaQMxP3t6iKTNVJXesQF3TLHGgslBqUBhJ83RSYDyGC
-	JUpf2vMZnoJdzvBA==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=T814X2/yytXT2yGHJIXybwVHy3TyDsCE3EhQ9MrVOf1GFzrdP/PXfk119gnBbStAeNsDaxoOqcHsS4MEvxIpKqD42VJQ2IWtq/E49o2qLu22BWZ8WzUZEoysLKk9D5gXqYqeC08G13/NPS4i83jXgMUaYP3LgGYt6RklUxfU2vo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WgHj+ihJ; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=ONVopvVQNGVAsAehHnnloX8BOAjlwQgA+K8ochM/nwg=; b=WgHj+ihJOZrGEq7Ahi3onFGPEQ
+	2rNpEDiKrRjvpb9J03W21xPEYuJphgq8r80xs+YLhTBMkoZHPZptTHw5eHjD8qEIe+ai8ToPmG04S
+	TKeMoG9BD0r22sjiJUxGwHVJpqf6EIA+p+jPj9hq1yCi0UcCFg0oAUTo0DCn22p6pnS79KUUXo7DT
+	bysjn7mf6z1+a1v2BZVZUx0is6Ske8htsCnY9wv5/1iv29xj+jxyIUqzI0GMSQ7wWGhOxEQfbL2jM
+	3sENb+IB0MzeZ8bwf0mH7Vb6YRYe4Kae1lebNOuRddafU/sGRXg13h0UXZTEn7WXNU3cBfbT1Epqc
+	ncbkEezg==;
+Received: from 77-249-17-89.cable.dynamic.v4.ziggo.nl ([77.249.17.89] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tVSCp-00000009KH9-2P0I;
+	Wed, 08 Jan 2025 09:18:27 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 2ED523005D6; Wed,  8 Jan 2025 10:18:27 +0100 (CET)
+Date: Wed, 8 Jan 2025 10:18:27 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Waiman Long <llong@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, xukuohai@huawei.com,
-	"houtao1@huawei.com" <houtao1@huawei.com>
-Subject: Re: [PATCH bpf-next 0/7] Free htab element out of bucket lock
-Message-ID: <20250108091643.FjZcvyLV@linutronix.de>
-References: <20250107085559.3081563-1-houtao@huaweicloud.com>
- <9b4ebbaf-dd3c-85a4-2d17-18b8805ea5fb@huaweicloud.com>
- <9685012a-1332-95a1-a8ef-dfd25f5cd072@huaweicloud.com>
- <20250108072906.chgNtc8S@linutronix.de>
- <2728739a-5c6a-acbe-2231-7dd1c52d5826@huaweicloud.com>
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
+	Barret Rhoden <brho@google.com>, Josh Don <joshdon@google.com>,
+	Dohyun Kim <dohyunkim@google.com>, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next v1 00/22] Resilient Queued Spin Lock
+Message-ID: <20250108091827.GF23315@noisy.programming.kicks-ass.net>
+References: <20250107140004.2732830-1-memxor@gmail.com>
+ <CAHk-=wh9bm+xSuJOoAdV_Wr0_jthnE0J5k7hsVgKO6v-3D6=Dg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2728739a-5c6a-acbe-2231-7dd1c52d5826@huaweicloud.com>
+In-Reply-To: <CAHk-=wh9bm+xSuJOoAdV_Wr0_jthnE0J5k7hsVgKO6v-3D6=Dg@mail.gmail.com>
 
-On 2025-01-08 17:06:06 [+0800], Hou Tao wrote:
-> Hi,
-Hi,
-
-> On 1/8/2025 3:29 PM, Sebastian Andrzej Siewior wrote:
-> > On 2025-01-08 09:24:02 [+0800], Hou Tao wrote:
-> >> @Sebastian
-> >> Is it possible that softirq_expiry_lock is changed to a raw-spin-lock
-> >> instead ?
-> > No. The point is to PI-boost the timer-task by the task that is
-> > canceling the timer. This is possible if the timer-task got preempted by
-> > the canceling task - both can't be migrated to another CPU and if the
-> > canceling task has higher priority then it will continue to spin and
-> > live lock the system.
-> > Making the expire lock raw would also force every timer to run with
-> > disabled interrupts which would not allow to acquire any spinlock_t
-> > locks.
+On Tue, Jan 07, 2025 at 03:54:36PM -0800, Linus Torvalds wrote:
+> On Tue, 7 Jan 2025 at 06:00, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> >
+> > This patch set introduces Resilient Queued Spin Lock (or rqspinlock with
+> > res_spin_lock() and res_spin_unlock() APIs).
 > 
-> Thanks for the explanation. However I still can not understand why
-> making the expire lock raw will force every timer to run with disabled
-> interrupt. 
+> So when I see people doing new locking mechanisms, I invariably go "Oh no!".
+> 
+> But this series seems reasonable to me. I see that PeterZ had a couple
+> of minor comments (well, the arm64 one is more fundamental), which
+> hopefully means that it seems reasonable to him too. Peter?
 
-I'm sorry. Not disabled interrupts but preemption. hrtimer_run_softirq()
-acquires the lock via hrtimer_cpu_base_lock_expiry() and holds it while
-during __hrtimer_run_queues() -> __run_hrtimer(). Only
-hrtimer_cpu_base::lock is dropped before the timer is invoked.
-If preemption is disabled you can not acquire a spinlock_t.
+I've not had time to fully read the whole thing yet, I only did a quick
+once over. I'll try and get around to doing a proper reading eventually,
+but I'm chasing a regression atm, and then I need to go review a ton of
+code Andrew merged over the xmas/newyears holiday :/
 
->            In my simple understanding, hrtimer_cpu_base_lock_expiry()
-> doesn't disable the irq. Do you mean if change the expire lock to raw,
-> it also needs to disable the irq to prevent something from happening,
-> right ? 
-No, see the above, it should clear things up.
+One potential issue is that qspinlock isn't suitable for all
+architectures -- and I've yet to figure out widely BPF is planning on
+using this. Notably qspinlock is ineffective (as in way over engineered)
+for architectures that do not provide hardware level progress guarantees
+on competing atomics and qspinlock uses mixed sized atomics, which are
+typically under specified, architecturally.
 
->         Also does the raw spinlock have the PI-boost functionality ?
+Another issue is the code duplication.
 
-No. Blocking on a raw_spinlock_t means to spin until it is its turn to
-acquire the lock.
-The spinlock_t becomes a rt_mutex on PREEMPT_RT and blocking on a lock
-means: give current priority to lock owner (= Priority Inheritance) + go
-to sleep until lock becomes available.
-
-Sebastian
+Anyway, I'll get to it eventually...
 
