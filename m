@@ -1,137 +1,148 @@
-Return-Path: <bpf+bounces-48259-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48260-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A7D4A061D5
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 17:27:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A6E9A0623B
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 17:41:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4DA4188956A
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 16:27:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C9BB166D6E
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 16:41:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 166731FECB3;
-	Wed,  8 Jan 2025 16:27:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8179420012B;
+	Wed,  8 Jan 2025 16:38:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dcdDh+/Q"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="P4nNUTwN"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FF7C2EAE5
-	for <bpf@vger.kernel.org>; Wed,  8 Jan 2025 16:27:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CF4A1FF619;
+	Wed,  8 Jan 2025 16:38:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736353642; cv=none; b=Zt0GDB/d9FMu/uvKbHqiHClzUod/+1HTByibm7xtug8BPwKpC35EhTmxTOp9juXuWy3etbAzID3FfYBPApVdqRd/33DJt+CqJrhS1TpFHYmS9E7vOSuItok1HCgzhgUCK93VF2cxrg+bBl+bbTVTdmy68LkkqqBlG0inHR06VTE=
+	t=1736354336; cv=none; b=eOCMoGZ5hi+uxbsSu5hm2ucWi93DFUHy6zFQKb//gebNW28rqwmTeBHuzKavVFlOydvQ3j8o3mdxblVvt3veKAFuCDPu+wGvoAqek7342GnKRTteVosHo6nUG7QblOhp5mN0QFVw3DRWRne2bUD0EN2X89p4TIXkptbS1+aEbMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736353642; c=relaxed/simple;
-	bh=UeZsfVI8/f4Y/+CVrzTXum3t7UqvjAFMBTCCCz9jcQ0=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=Cky/ptBA0dMD/JLB8BBgUj87y5X6nItndx2jbqULKsf5QCR/G9YaxUFsbLy5rN0cOGhGdHXLPFaPJ6NWdBZ40UVOxtApNU3Qu6MdL+619bUn9+Fi/CD2BUDbXDioxokikOJjHyfEvUp+itKHeGwcsyxoJNbzOd+0rljiPMU0oZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dcdDh+/Q; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1736353638;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fkpeSCEukM6iBxe9HuNrhpoVSaHBXeUot4e0FpvqthU=;
-	b=dcdDh+/QOiJ+22UybXWYTaN+YA+kyvpeEamds4sEWbLaq3aURXMsagYNdL+6eV1SRY0++a
-	5bL8lW75LybGcCe4BUQrlIk51whmGcB4s1QeOFKX4umF2MiC2VmAdD3/RFYoSeLJ+lN98C
-	BWiJBKObzdB//xPMJUbpJ1nEIZybxcI=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-610-mKVBbxLaOpq8AUB3xNRhPw-1; Wed, 08 Jan 2025 11:27:17 -0500
-X-MC-Unique: mKVBbxLaOpq8AUB3xNRhPw-1
-X-Mimecast-MFC-AGG-ID: mKVBbxLaOpq8AUB3xNRhPw
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-7b6eeef7c38so2760174985a.1
-        for <bpf@vger.kernel.org>; Wed, 08 Jan 2025 08:27:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736353637; x=1736958437;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fkpeSCEukM6iBxe9HuNrhpoVSaHBXeUot4e0FpvqthU=;
-        b=YXSe8IIMSFIX100yatb67vfPBZTi5+uOYSkdnivrx/wCCmudB/5rm6EK23mGhkzYCH
-         9+dVher9hHFo+uBNDiQvScWUYtP7ST/mOa78UJO64spAj6WLxaMTT84tNaISyfHOHw21
-         pZWvFK+76XFi+RWpmfr86JBEattDs4tuEWtDHAJ2fMCThDhfefPBy9Zfmm3RK7wHI1+w
-         Q24+pHqwCZ601+fd6VZae+fcGh24WLycqiclbJfmYMggAX0vJYYAfLUI5fyRlsW0bCiD
-         ZkQsd1943Q1oSFuZpMFjZny42xqKJZmxxdvXapJETqSLCzruxFu5sqyJH4FQS2EofsXs
-         PFGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXgjeGuWVPX6MKRUeJ8luPhakUvM3IKKh35fxDUlf+EuK3GOsKDeyPeZFkuSbJ0dmBchk0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwX82H+aE2qMyABbIB3/OLTcL86MAelmijmXLrBTC2Du40QOEay
-	Hzx4hPZFarCsPG303doJCVnNbl1t3W/W7RYQsX1Fgpp3+Pf8eEj8H1Xl0myqYPuh70PSulBc47J
-	TO4PAMRCw1kNxH20ixKr0Xm+u+pWrydAO39FsXDupMRJ6/615dg==
-X-Gm-Gg: ASbGncv1lCyIFpwynK96SIAfHiIaKx6hH4j92T5HFok13lDNhNowW/x9OumvGc42e4R
-	SCq5eIPdlpwwRi9Jgdm7G5ISdb81cxbV1HWj0iY1uIHk6A7NIwvZYZB4WIHEAzv3b7WfPKRwtJ7
-	hZHMSXfCV1qYYfY9zI0G9w/Xl+XPeI/ySbgJctqqi2KFwsdSGlk5LyFlwvhNG9vQAwzVQNjjOCc
-	9zZ7Vh60Sn2hcpkGAp1/j5PvJwXHid4CD67g2hsMeT80hJGUs25VumUIgdws7q7qYzTOVWjebc/
-	1bodKNCrzLWgZgbzmrhWoHwZ
-X-Received: by 2002:a05:620a:e94:b0:7bc:dc89:36f6 with SMTP id af79cd13be357-7bcdc893c87mr237290785a.60.1736353636990;
-        Wed, 08 Jan 2025 08:27:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFzvJ7DjCBIgpCPTr80qYxvGrfJg2NprZNP0WFoAZXTXH0Yn907zsYfu8LUYE21bnpl0WG3wg==
-X-Received: by 2002:a05:620a:e94:b0:7bc:dc89:36f6 with SMTP id af79cd13be357-7bcdc893c87mr237278085a.60.1736353635245;
-        Wed, 08 Jan 2025 08:27:15 -0800 (PST)
-Received: from ?IPV6:2601:188:ca00:a00:f844:fad5:7984:7bd7? ([2601:188:ca00:a00:f844:fad5:7984:7bd7])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b9ac478df8sm1693634085a.81.2025.01.08.08.27.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Jan 2025 08:27:14 -0800 (PST)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <2eaf52fb-b7d4-4024-a671-02d5375fca22@redhat.com>
-Date: Wed, 8 Jan 2025 11:27:12 -0500
+	s=arc-20240116; t=1736354336; c=relaxed/simple;
+	bh=7JoPoy2le9vMdrCVcetgjVVFUE63+ZPwPVlXYBcb8H0=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cV0LqvFsWrGtJLg/JfOkMb37SA/TFGcunIoI/n78CLAfxZA9Yq+bkRFXlBGwI639NpZaUb+O1TvCfIjupZHT8WkGEqcyAw8/fSVymIkmIoVl4I4A9iokDYhHjQ+0ckztWjXn1jRPHx0Jxnz0R+V/XRQ+Ak6i1eADxNhF2LhJRsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=P4nNUTwN; arc=none smtp.client-ip=185.70.43.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1736354332; x=1736613532;
+	bh=7JoPoy2le9vMdrCVcetgjVVFUE63+ZPwPVlXYBcb8H0=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
+	b=P4nNUTwN11D1f+VQMqevkRTdj2xokfYNP9iVcVTDptklBxJ8EEdG5sx/deiW+1Lbm
+	 Z9L0NdAIyaOhkaSKEy5poSJ0moZjHPi2OsrtPrQAD30EE5/A8G3hAVtmyA1V94hEyE
+	 92WIiUq0zqXqsb3AGSIYJbMyGFKXxCXUs9vYbGjQenXZd9ps4TBUOmkaADQWcNUxAP
+	 6ypVsMnlsaK5VPguzEbt1G47kc5oPe3ljcQl7d0ZqXee2xZqx7uEJ6H5QUdwc3h0TK
+	 DP3TvX13OZlUdZIXqIDFus9UwbIy7HoWwkxgBHCXy6Xk2HG7N00bESeLGoygtu+bLK
+	 9J+Vn3v7kAOgQ==
+Date: Wed, 08 Jan 2025 16:38:46 +0000
+To: Alan Maguire <alan.maguire@oracle.com>
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: dwarves@vger.kernel.org, acme@kernel.org, eddyz87@gmail.com, andrii@kernel.org, mykolal@fb.com, bpf@vger.kernel.org
+Subject: Re: [PATCH dwarves] dwarves: set cu->obstack chunk size to 128Kb
+Message-ID: <Xfd2PxigaipLv392tfxKUdgwxRMdn9bMsaq4GCJxbX7DooxvxfZAtJceZkZVk14GHODh0twQw598iFTBaYkZ8mJxTCfEhi7S9WgB54C0zN4=@pm.me>
+In-Reply-To: <92a6a095-3a49-4204-af49-643f2db1e3a9@oracle.com>
+References: <20241221030445.33907-1-ihor.solodrai@pm.me> <92a6a095-3a49-4204-af49-643f2db1e3a9@oracle.com>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: ba50336d0b86dc8d56abe27ea83b9d57226f1ca5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v1 12/22] rqspinlock: Add basic support for
- CONFIG_PARAVIRT
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- Peter Zijlstra <peterz@infradead.org>, Waiman Long <llong@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, "Paul E. McKenney"
- <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
- Barret Rhoden <brho@google.com>, Josh Don <joshdon@google.com>,
- Dohyun Kim <dohyunkim@google.com>, kernel-team@meta.com
-References: <20250107140004.2732830-1-memxor@gmail.com>
- <20250107140004.2732830-13-memxor@gmail.com>
-Content-Language: en-US
-In-Reply-To: <20250107140004.2732830-13-memxor@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 1/7/25 8:59 AM, Kumar Kartikeya Dwivedi wrote:
-> We ripped out PV and virtualization related bits from rqspinlock in an
-> earlier commit, however, a fair lock performs poorly within a virtual
-> machine when the lock holder is preempted. As such, retain the
-> virt_spin_lock fallback to test and set lock, but with timeout and
-> deadlock detection.
->
-> We don't integrate support for CONFIG_PARAVIRT_SPINLOCKS yet, as that
-> requires more involved algorithmic changes and introduces more
-> complexity. It can be done when the need arises in the future.
+On Wednesday, January 8th, 2025 at 5:55 AM, Alan Maguire <alan.maguire@orac=
+le.com> wrote:
 
-virt_spin_lock() doesn't scale well. It is for hypervisors that don't 
-support PV qspinlock yet. Now rqspinlock() will be in this category.
+>=20
+>=20
+> On 21/12/2024 03:04, Ihor Solodrai wrote:
+>=20
+> > In dwarf_loader with growing nr_jobs the wall-clock time of BTF
+> > encoding starts worsening after a certain point [1].
+> >=20
+> > While some overhead of additional threads is expected, it's not
+> > supposed to be noticeable unless nr_jobs is set to an unreasonably big
+> > value.
+> >=20
+> > It turns out when there are "too many" threads decoding DWARF, they
+> > start competing for memory allocation: significant number of cycles is
+> > spent in osq_lock - in the depth of malloc called within
+> > cu__zalloc. Which suggests that many threads are trying to allocate
+> > memory at the same time.
+> >=20
+> > See an example on a perf flamegraph for run with -j240 [2]. This is
+> > 12-core machine, so the effect is small. On machines with more cores
+> > this problem is worse.
+> >=20
+> > Increasing the chunk size of obstacks associated with CUs helps to
+> > reduce the performance penalty caused by this race condition.
+>=20
+>=20
+> Is this because starting with a larger obstack size means we don't have
+> to keep reallocating as the obstack grows?
 
-I wonder if we should provide an option to disable rqspinlock and fall 
-back to the regular qspinlock with strict BPF locking semantics.
+Yes. Bigger obstack size leads to lower number of malloc calls. The
+mallocs tend to happen at the same time between threads in the case of
+DWARF decoding.
 
-Another question that I have is about PREEMPT_RT kernel which cannot 
-tolerate any locking stall. That will probably require disabling 
-rqspinlock if CONFIG_PREEMPT_RT is enabled.
+Curiously, setting a higher obstack chunk size (like 1Mb), does not
+improve the overall wall-clock time, and can even make it worse.
+This happens because the kernel takes a different code path to allocate
+bigger chunks of memory. And also most CUs are not big (at least in case
+of vmlinux), so a bigger chunk size probably increases wasted memory.
 
-Cheers,
-Longman
+128Kb seems to be close to a sweet spot for the vmlinux.
+The default is 4Kb.
 
+>=20
+> Thanks!
+>=20
+> Alan
+>=20
+> > [1] https://lore.kernel.org/dwarves/C82bYTvJaV4bfT15o25EsBiUvFsj5eTlm17=
+933Hvva76CXjIcu3gvpaOCWPgeZ8g3cZ-RMa8Vp0y1o_QMR2LhPB-LEUYfZCGuCfR_HvkIP8=3D=
+@pm.me/
+> > [2] https://gist.github.com/theihor/926af22417a78605fec8d85e1338920e
+> >=20
+> > Signed-off-by: Ihor Solodrai ihor.solodrai@pm.me
+> > ---
+> > dwarves.c | 4 +++-
+> > 1 file changed, 3 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/dwarves.c b/dwarves.c
+> > index 7c3e878..105f81a 100644
+> > --- a/dwarves.c
+> > +++ b/dwarves.c
+> > @@ -722,6 +722,8 @@ int cu__fprintf_ptr_table_stats_csv(struct cu *cu, =
+FILE *fp)
+> > return printed;
+> > }
+> >=20
+> > +#define OBSTACK_CHUNK_SIZE (128*1024)
+> > +
+> > struct cu *cu__new(const char *name, uint8_t addr_size,
+> > const unsigned char *build_id, int build_id_len,
+> > const char *filename, bool use_obstack)
+> > @@ -733,7 +735,7 @@ struct cu *cu__new(const char *name, uint8_t addr_s=
+ize,
+> >=20
+> > cu->use_obstack =3D use_obstack;
+> > if (cu->use_obstack)
+> > - obstack_init(&cu->obstack);
+> > + obstack_begin(&cu->obstack, OBSTACK_CHUNK_SIZE);
+> >=20
+> > if (name =3D=3D NULL || filename =3D=3D NULL)
+> > goto out_free;
 
