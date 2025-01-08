@@ -1,81 +1,83 @@
-Return-Path: <bpf+bounces-48274-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48275-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B16B7A063F4
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 19:06:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67584A063F8
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 19:07:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A78487A36A9
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 18:06:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90274165282
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 18:06:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ADFD201269;
-	Wed,  8 Jan 2025 18:06:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 453DA202C2D;
+	Wed,  8 Jan 2025 18:06:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HrjlfYt0"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LxuBkGJG"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1929F201034
-	for <bpf@vger.kernel.org>; Wed,  8 Jan 2025 18:06:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F759201271
+	for <bpf@vger.kernel.org>; Wed,  8 Jan 2025 18:06:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736359590; cv=none; b=uM/59UVuZJS61bwK3zHnZNPnliitP+V2U3vqml987i3WWXN6oLh5L3I/vNNHsGp5Dq3Ieqig2rhcYU6QHe/L3CNWspqAP8cpIuAnykuvg4Ojtt+U2CGuzme+iAxgQ7KCZCSiTOVgUPEEsVkO2Jc6v7571Z6AsU9ty/ZugdjzKPU=
+	t=1736359592; cv=none; b=OBLxhCj0OzieSFFv7gYtee/0h2JugX75CAiDYXfZSXosp/DRqMBqhNZHGQQFSON+Qjm7l1eubq0CaVw7TI58ff5XDErS9G2t00Mo1boAFRXl3FObzyBtqHxpY42JLNrBTv1f2BUq4tcOVRFjKNsz2eo9yFeYl1S6uXBKHc9mYeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736359590; c=relaxed/simple;
-	bh=R4UWrVe5Gaa9ndThzF20AYFG7pj0l2pER0Xs1zgkco0=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=IFih2sosNVQNRP+dgpyP3BvU9GP8XQzWF/nC1QcN8RW9Sb3txXRbhMABVJ9XdwyyOlEZb0ag+bELPxpXXCuGrvBm+WtYQh+UyFiA71qZUaH8YDsn8Rn6jp8t+bzUhQsqljG3Ia1mSr4gIbHOIoaW3cRMmPZel/hlsV1uhuPv3pM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HrjlfYt0; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1736359592; c=relaxed/simple;
+	bh=XhT2B/XMcI2q+vQQF0C3xrDtTRflQwJMsW4aCd7eL48=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=FhWnEsJZEWP0+tFXSA5+cPcMFRCjLj0RbwQWA07B2iWPaDQoijQml6V8+n37nG5C+oeRa/9p0kIcslUS2ohlkVMYRP4NHG1hjbD+BS6Z2yLnOuzCcmFYHgKnF61Lt/hVLcsPqLCTU6LUjEMxDGl0pehL5O8njE6ZQs5hCYMw2nU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LxuBkGJG; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1736359587;
+	s=mimecast20190719; t=1736359590;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=bnu+BVkl+Xe97p0gYpH/rg1OlF1/gslhVoAE9Hfv1R0=;
-	b=HrjlfYt0KLTcc29FlJ/KwIf1xgpjBflRKVUXoPSGQuWFY0dpMdFWwg320w28pJNexnIVPk
-	avnlq7gfKb/SI8GzghqR5XScIpk/wA/5avl8Wmz3KgwEYYzFLPY7PSrgmrT1GgZl4AotoI
-	JWeNQXo22kNFoPJlM3GdMAS/ky2U7v4=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=P81z0YmLvdT8m64Ix0hrS5vpO81KiskzyN+gGNFCQNI=;
+	b=LxuBkGJGO2dzjgcQsryGFfqvRyWIt+q3CfwpTMt6LqzV6UScCHpE7cI0NXpnY+5BGH2l+T
+	9+82CKERC2FkA6/8F/5HYSzOtaYrtiDtmz/yewgCtIkraD6k8AFQx89P60vqgENZvx7NMr
+	OvhpyhQ4LYPewvITBoLg5/GOqmySTLc=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-581-CyX0isHrMQOLDeqrECKElQ-1; Wed, 08 Jan 2025 13:06:22 -0500
-X-MC-Unique: CyX0isHrMQOLDeqrECKElQ-1
-X-Mimecast-MFC-AGG-ID: CyX0isHrMQOLDeqrECKElQ
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-436328fcfeeso888395e9.1
-        for <bpf@vger.kernel.org>; Wed, 08 Jan 2025 10:06:22 -0800 (PST)
+ us-mta-277-pMru0CXDPgur_0LwUljotg-1; Wed, 08 Jan 2025 13:06:29 -0500
+X-MC-Unique: pMru0CXDPgur_0LwUljotg-1
+X-Mimecast-MFC-AGG-ID: pMru0CXDPgur_0LwUljotg
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-385ed79291eso578495f8f.0
+        for <bpf@vger.kernel.org>; Wed, 08 Jan 2025 10:06:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736359581; x=1736964381;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bnu+BVkl+Xe97p0gYpH/rg1OlF1/gslhVoAE9Hfv1R0=;
-        b=AMbaUDxuQtwfbGogkGdptkBF7AAzeKWe2n+Xeksg58BUssa5YRuu9qXDhU1Al4N/lB
-         aW3GP9e4hbo8n3/IIgmglFkp0C71zLP/YyYh4b8MzFqHl5j4u2K8Eacbm76uDb38ZFTs
-         BKcMzNm6BiRIvsVIg1pUyx47MZzej+7mrygXTfKeJUGhC8PHNRa8KRyYfuojIFLRmuCl
-         sMNGi6wtT6ksroLcTygkRrEE4PkNdcaztnjIBdIMzh4isIh0QN5gLrpxpLFgKfkaBdIZ
-         maeJph7lp6Z6NIhvxf/RRUwJ7VzibQ2KacxhJL0mfu8o+cY61VGc56L+y/1oCuQzhxB5
-         dH/g==
-X-Forwarded-Encrypted: i=1; AJvYcCVNTm0sb56XOvXpLZ88TCkv5D1QSULdBjN6sWynX3ItmE1XvhP78XpHih6jgtWrDM+U0/c=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzePPq/b84hiTVudatI1ym/0nGiMphvWCnheQ8MAA68fxrOn0Qn
-	vciMr61lfifAX/yKB+cnSTO/za56/MDAlzEL0RirPnvQqIlKqyH8RdeQadX9e4xwmE/4owQ6sPx
-	ktZFggt99VWFxvqQoJkzamxwGtQw9/i1Lv2piUOEp3LL4KaWVkw==
-X-Gm-Gg: ASbGnctJ+SXfnc6vDUwVSJ/XxiQXVXStt2OIKLdVxlZx82OGFaLb5KcBbxSJNq3MzD9
-	0WAM18ZvY0muwNuLG4/bXoElysfOJRz/H2xt32AcEU/8U4j3Pb7pnjVCLkSGZuzCPLwU32F6igb
-	21JH4WPclG9yIiQrtKkCqfU1IYSmf55qt/kn7zHop0hp3XXqjXzUp9dCKtuOBS3EbBLv5bR/kNf
-	v5kD6IsdTcxeFl8PnrqH4jEueJ4nszXR+a8Q1Ah0pe+pQo=
-X-Received: by 2002:a05:600c:46d0:b0:431:58cd:b259 with SMTP id 5b1f17b1804b1-436e26f4d53mr37946615e9.31.1736359581543;
-        Wed, 08 Jan 2025 10:06:21 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHPzI29sT/XCixMM7XrCBkXw/ioHXUjl2FaMJjmaMr+6Pqs+CX8MLIRg6SGkdexZ2/7lWykfQ==
-X-Received: by 2002:a05:600c:46d0:b0:431:58cd:b259 with SMTP id 5b1f17b1804b1-436e26f4d53mr37946165e9.31.1736359580892;
-        Wed, 08 Jan 2025 10:06:20 -0800 (PST)
+        d=1e100.net; s=20230601; t=1736359586; x=1736964386;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=P81z0YmLvdT8m64Ix0hrS5vpO81KiskzyN+gGNFCQNI=;
+        b=AHcTAx7wga2n1mDhO5u7XBSfsq1IbLKO3Uy0Xt+C1pCaq6hgums6MgcNTOPYh1CbMG
+         TTAmXX/YaXZg6pq08iLKXHd2mQghQMqX7TB7X0mmAQiL29brZdodZYMpghBx+1dli/V9
+         RgBu/IxUZDgWh6seTCeJyeX7F/etpYm/aYabqqUfmkkV3sSKfKJ8FIQxnzefNtPLf6vH
+         ZiUPp2G2k9KVL12crLEE1GrGIKi1A0kywU36265AxJHNN96UfTOXB5ZdS4s4UI2x3cG4
+         6bDrReg9eycDTwbKUt9r89DNs2byA5tAfeKwjelblEEw505uHzCWysrhph2sAmeK2o9P
+         obfg==
+X-Forwarded-Encrypted: i=1; AJvYcCUajyjAi/h/7RFh26HTe9Jy1QF4y1CAeQfypdAzgu6GdIOHHro380IaruKp5YNgP7YIv34=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzDhEffhmQDm+AJi65MT/hDgVFPNQ5OmT6ASKLTD3ZZC8iyRz6R
+	4MecGzILioM9zKnZiDN9yTeXP4OSWhfdLFFRlIGmvJSaiMhFAe2aOCJPjrzwCK5wUScZE/KCUBs
+	MEBeFEk4r/jwjLg3P9xp6bUUc+ajWfb1WQjYmbV896C3Xk/Ph1g==
+X-Gm-Gg: ASbGncsZpynoo31mukX9bFgScTtsquBpFMzmSLRGu+TJnjfN/p99RCz2sDO040n7a5W
+	6Yilhd0z0yS7mpnEGxgYBumw6/yrGB1+vycH9Krtk88uQUipvzEjxFAUuyZAay73awcLWVxz+5z
+	39NpbYxj/YTIdAyoqUfWmssW5MpQ9defI6ooGq4Hm3/03dVwRMxomQo9xigjQ8TRbrJxThswECa
+	6xRhOGVnMWX+V8IyofQl4jYcOLLC7i1uh8zOg90zSwsC3o=
+X-Received: by 2002:a5d:64af:0:b0:386:1ab3:11f0 with SMTP id ffacd0b85a97d-38a8b0fa39dmr213701f8f.28.1736359586606;
+        Wed, 08 Jan 2025 10:06:26 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHyImssYlGKFMwIIkelKFtn5EBvRpRzebX/KbLVJOoRVPg+AYW6dhCm61RcqZ/eZtr4R9nAwQ==
+X-Received: by 2002:a5d:64af:0:b0:386:1ab3:11f0 with SMTP id ffacd0b85a97d-38a8b0fa39dmr213656f8f.28.1736359585987;
+        Wed, 08 Jan 2025 10:06:25 -0800 (PST)
 Received: from step1.. ([5.77.93.126])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a1c847d7fsm53389298f8f.60.2025.01.08.10.06.18
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a1c8292f4sm54344839f8f.3.2025.01.08.10.06.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jan 2025 10:06:20 -0800 (PST)
+        Wed, 08 Jan 2025 10:06:25 -0800 (PST)
 From: Stefano Garzarella <sgarzare@redhat.com>
 To: netdev@vger.kernel.org
 Cc: Simon Horman <horms@kernel.org>,
@@ -98,11 +100,12 @@ Cc: Simon Horman <horms@kernel.org>,
 	Hyunwoo Kim <v4bel@theori.io>,
 	Michal Luczaj <mhal@rbox.co>,
 	kvm@vger.kernel.org
-Subject: [PATCH net 0/2] vsock: some fixes due to transport de-assignment
-Date: Wed,  8 Jan 2025 19:06:15 +0100
-Message-ID: <20250108180617.154053-1-sgarzare@redhat.com>
+Subject: [PATCH net 1/2] vsock/virtio: discard packets if the transport changes
+Date: Wed,  8 Jan 2025 19:06:16 +0100
+Message-ID: <20250108180617.154053-2-sgarzare@redhat.com>
 X-Mailer: git-send-email 2.47.1
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20250108180617.154053-1-sgarzare@redhat.com>
+References: <20250108180617.154053-1-sgarzare@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -111,27 +114,42 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This series includes two patches discussed in the thread started by
-Hyunwoo Kim a few weeks ago [1].
+If the socket has been de-assigned or assigned to another transport,
+we must discard any packets received because they are not expected
+and would cause issues when we access vsk->transport.
 
-The first patch is a fix more appropriate to the problem reported in
-that thread, the second patch on the other hand is a related fix but
-of a different problem highlighted by Michal Luczaj. It's present only
-in vsock_bpf and already handled in af_vsock.c
+A possible scenario is described by Hyunwoo Kim in the attached link,
+where after a first connect() interrupted by a signal, and a second
+connect() failed, we can find `vsk->transport` at NULL, leading to a
+NULL pointer dereference.
 
-Hyunwoo Kim, Michal, if you can test and report your Tested-by that
-would be great!
-
-[1] https://lore.kernel.org/netdev/Z2K%2FI4nlHdfMRTZC@v4bel-B760M-AORUS-ELITE-AX/
-
-Stefano Garzarella (2):
-  vsock/virtio: discard packets if the transport changes
-  vsock/bpf: return early if transport is not assigned
-
+Fixes: c0cfa2d8a788 ("vsock: add multi-transports support")
+Reported-by: Hyunwoo Kim <v4bel@theori.io>
+Reported-by: Wongi Lee <qwerty@theori.io>
+Closes: https://lore.kernel.org/netdev/Z2LvdTTQR7dBmPb5@v4bel-B760M-AORUS-ELITE-AX/
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+---
  net/vmw_vsock/virtio_transport_common.c | 7 +++++--
- net/vmw_vsock/vsock_bpf.c               | 9 +++++++++
- 2 files changed, 14 insertions(+), 2 deletions(-)
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
+diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+index 9acc13ab3f82..51a494b69be8 100644
+--- a/net/vmw_vsock/virtio_transport_common.c
++++ b/net/vmw_vsock/virtio_transport_common.c
+@@ -1628,8 +1628,11 @@ void virtio_transport_recv_pkt(struct virtio_transport *t,
+ 
+ 	lock_sock(sk);
+ 
+-	/* Check if sk has been closed before lock_sock */
+-	if (sock_flag(sk, SOCK_DONE)) {
++	/* Check if sk has been closed or assigned to another transport before
++	 * lock_sock (note: listener sockets are not assigned to any transport)
++	 */
++	if (sock_flag(sk, SOCK_DONE) ||
++	    (sk->sk_state != TCP_LISTEN && vsk->transport != &t->transport)) {
+ 		(void)virtio_transport_reset_no_sock(t, skb);
+ 		release_sock(sk);
+ 		sock_put(sk);
 -- 
 2.47.1
 
