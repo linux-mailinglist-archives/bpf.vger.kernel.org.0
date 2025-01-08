@@ -1,172 +1,165 @@
-Return-Path: <bpf+bounces-48247-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48248-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E102A05DBF
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 14:59:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E49EA05E8E
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 15:28:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B93643A8652
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 13:56:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89E283A2CA8
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2025 14:28:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 135081FDE1B;
-	Wed,  8 Jan 2025 13:56:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 370001FBEB6;
+	Wed,  8 Jan 2025 14:28:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="b+iWfO05"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hnlLQYTA"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B571FCFEE;
-	Wed,  8 Jan 2025 13:56:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9A621E131B
+	for <bpf@vger.kernel.org>; Wed,  8 Jan 2025 14:28:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736344581; cv=none; b=Pw3Fb0yCzrFcwmeBAc9hl8yNfbMxyDCISOPVVsKgsLLvUPYmEydnP2S5mDfJDM2QWGjcy/yvXIbpCzLuzYIesd7F3+FWrdNbW13dHeDxkxdTI5ok4rcMa0/R2mUlE+5A2xOBmkFHkZL/TKsCSApZvV52IesTrmHCbBGaVNkE6+8=
+	t=1736346494; cv=none; b=Hfzyv5a7eJ08JZQkitxHsDZciiocdMVK0V+keLzRqAZZgUA60iPddAaIUGozIXNJRdFPQ0W+UMigbcDG33KJqiv7gfSBuSUU0TacifWcD9DlbLYmD3lNjc8niQ67F+fxACBb37scgC5BiW/+toG/4qu09KUmZ3y1G+h0tTbqee0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736344581; c=relaxed/simple;
-	bh=pc4lU5q3Vg5I+/c4kH2jkIvXc1TmkuC/ik4mSuPEovw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bb/7RD4KfUhvxKMWDeID03VVyw2hzbZpsigvmiBZ8BUWHSBnxL/vKPqJxTw/RDHzgUTJN7/giQfsQVcJxzDKS6yN1OX4ZkGDElSDx0RCM/WxCIRxsfmZ/aA/5e/32PKzp486SIaxxNTXl3dTGUKDcpR7ZvDsD4ThkOCoic92MIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=b+iWfO05; arc=none smtp.client-ip=115.124.30.119
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1736344569; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=upKJAJq1cpY+dKRFkgN4ANfmP0Qld4oqm5SVhIFXhTM=;
-	b=b+iWfO05K98apl67Dl7w3HjtaLn3ncETXXt1igfqcsZbgsGU6m61rLMafZkkbrx6MCJBt1h25O5wsFCyjFhvZgYq+C6Lh+jSHCQPrQLXsi1Pn8G3m02AMg5f0Abndl0869N7rV+KDixgXEBKWFVf72wOhAax9xRgSd/c+vsjsPw=
-Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WNEIZlZ_1736344566 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Wed, 08 Jan 2025 21:56:07 +0800
-Date: Wed, 8 Jan 2025 21:56:06 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com    >
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-	wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, pabeni@redhat.com,
-	song@kernel.org, sdf@google.com, haoluo@google.com, yhs@fb.com,
-	edumazet@google.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-	jolsa@kernel.org, guwen@linux.alibaba.com, kuba@kernel.org,
-	davem@davemloft.net, netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+	s=arc-20240116; t=1736346494; c=relaxed/simple;
+	bh=EbaQIPivd3k12R9u+2jbA4uZjrTwxRKMILMWyBbew2I=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rNvgqGgkTr3XxQL+T7yapxFQDAb/6rPK4/zDNILQkQAZgkKCZ0oqYiUQjAvh1rgGMiW30/wjWnjTfNtTlf7/WaTm7SfxgA2yuK61r88s/SoMZE1077g4dqk7Uu3XExl4YUA6XPQXmokdkR+i4bOrWvbN3pfzwNc1W3Rqqve3V6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hnlLQYTA; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-38633b5dbcfso16155554f8f.2
+        for <bpf@vger.kernel.org>; Wed, 08 Jan 2025 06:28:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1736346491; x=1736951291; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5DTjVFlw3a1BE3G1k/Oc0pCRnQoWK8WuT3gO6hdQWPM=;
+        b=hnlLQYTAdsXICHCzSALVIWGTCGPfK3iT+bq6XprmbQosiylioVU0GpsSshmSD3aBS8
+         fxKoJ6IJn6a++l34pmWF/JfdUPWM+XjQO+ijaNhE9PcgCG2hPahbbiMqvEA8xMF5jtpv
+         WYHFaIbJ8RutA0LgYVGB/6Yeff7G4eosb6O0bmDNXUgNg1uY+cLJMpoMPtGs7qyVWaBl
+         f5vH1lP69fmxlEa5UOV7Wd3KA05Ph+/MqcVI7d9xBay6aitryEg16ERoSmlGBmdR0DOW
+         YIHyJixCPVp+XdZcbAf9SKV6KvcqpblusPgmcJ26XEQ5g2BuJISOx+uWrVE/j9+F+JJY
+         LuQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736346491; x=1736951291;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5DTjVFlw3a1BE3G1k/Oc0pCRnQoWK8WuT3gO6hdQWPM=;
+        b=FN0wUc+zPMtWbsdRfECeuvd/klhAiumfKpJlCeV9RrXvpk5Ol4eed8VHftjq9G7fWR
+         G0Hk4Mp5ea6Y6c5hRXw7HZPAAQ5SOELBfNZwvMe6YpO7AEmDoF5yPTVC1uIYNlzNAGCP
+         xUWvB/YAGNXTNLFGv7K2D/q5ZsfUxUe7zvzdgmhEE2S607h9Bdpr13SMvJO23LCqnLxI
+         wmDysTS3B5Th25Lo/p87EpPzmA7WvrDbLV1zoNC+JqaCl/J2Jo/P+3MtViRbZnHVytai
+         UjA3yIqBMw2wtP1vOhqaDwz69SN35+AXC9rlT+WQb0rrAOHP01hVr4WQqY4ICtgGodns
+         lk3g==
+X-Forwarded-Encrypted: i=1; AJvYcCVJtQulp663iTtuRCsWXuqhuCyJFNxeJV7cqJpMNUZd8j1WzrNaCcaD+Sky36MSIBz9WFk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyyii2DS3tpnq7Atf94TDe3WS5HuYZtWKW5Hdyc9WMbqtLTB9MC
+	INAaaPp+XAXyc8KxZPHpxq681UsoGwMAsqPfy/3ABQquJnCTPlMmi4kd1L2mU/4=
+X-Gm-Gg: ASbGncsRQAcNTFzQe7FX/iGuFOIZV8HLysb1QIcxpc73HhYx/bdgPWhXT/x+XFzqPhL
+	KFUbY3l6HqGNXG7FV2xCZQxDiep99fdHpFVe7u161nSN5asgN15qio1FXje5MEjSAr4HCwNB5zk
+	mNCA0CYta9a0DzvNIQ5CKruQ+/wW929WmYc0cuMqM8ubW0q6N9X0UJN1bAWEBE35rKTi8lHthtT
+	tUne8BuvHm8AjHBhMr75fR17obM/HdpwiGY2vf2JGFxKpJYAIsYkBca
+X-Google-Smtp-Source: AGHT+IHz31vPgvjsP1ktI6cDJs5dwXi6jyonWjrDKCklrI15yME8jN2ZsQTROIywKIjV9MjHGbUrWw==
+X-Received: by 2002:a5d:64a8:0:b0:386:3a8e:64bd with SMTP id ffacd0b85a97d-38a8730560emr2565669f8f.22.1736346491235;
+        Wed, 08 Jan 2025 06:28:11 -0800 (PST)
+Received: from pop-os.. ([145.224.90.227])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a28f17315sm47577178f8f.108.2025.01.08.06.28.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jan 2025 06:28:10 -0800 (PST)
+From: James Clark <james.clark@linaro.org>
+To: linux-arm-kernel@lists.infradead.org,
+	linux-perf-users@vger.kernel.org,
+	irogers@google.com,
+	yeoreum.yun@arm.com,
+	will@kernel.org,
+	mark.rutland@arm.com
+Cc: robh@kernel.org,
+	James Clark <james.clark@linaro.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	"Liang, Kan" <kan.liang@linux.intel.com>,
+	John Garry <john.g.garry@oracle.com>,
+	Mike Leach <mike.leach@linaro.org>,
+	Leo Yan <leo.yan@linux.dev>,
+	Graham Woodward <graham.woodward@arm.com>,
+	Michael Petlan <mpetlan@redhat.com>,
+	Veronika Molnarova <vmolnaro@redhat.com>,
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+	Thomas Richter <tmricht@linux.ibm.com>,
+	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v5 5/5] bpf/selftests: add selftest for
- bpf_smc_ops
-Message-ID: <20250108135606.GB86266@j66a10360.sqa.eu95>
-References: <20250107041715.98342-1-alibuda@linux.alibaba.com>
- <20250107041715.98342-6-alibuda@linux.alibaba.com>
- <5ff5cb2b-625b-44ba-8472-95e007f24824@linux.dev>
+Subject: [PATCH v3 0/5] perf: arm_spe: Add format option for discard mode
+Date: Wed,  8 Jan 2025 14:27:22 +0000
+Message-Id: <20250108142731.400605-1-james.clark@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5ff5cb2b-625b-44ba-8472-95e007f24824@linux.dev>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 07, 2025 at 04:48:51PM -0800, Martin KaFai Lau wrote:
-> On 1/6/25 8:17 PM, D. Wythe wrote:
-> >+static int send_cmd(int fd, __u16 nlmsg_type, __u32 nlmsg_pid, __u16 nlmsg_flags,
-> >+			__u8 genl_cmd, __u16 nla_type,
-> >+	while ((r = sendto(fd, buf, buflen, 0, (struct sockaddr *) &nladdr,
-> >+			   sizeof(nladdr))) < buflen) {
-> >+		if (r > 0) {
-> >+			buf += r;
-> >+			buflen -= r;
-> >+		} else if (errno != EAGAIN)
-> >+			return -1;
-> >+		}
-> 
-> The "}" indentation is off.
-> 
-> I was wondering if it missed a "}" for the while loop. Turns out the
-> "else if" does not have braces while the "if" has. I would add
-> braces to the "else if" also to avoid confusion like this.
-> 
-Take it. I fix change it in next version.
-> >+	return 0;
-> >+}
-> >+
-> >+static bool get_smc_nl_family_id(void)
-> >+{
-> >+	struct sockaddr_nl nl_src;
-> >+	struct msgtemplate msg;
-> >+	ret = send_cmd(fd, smc_nl_family_id, pid,
-> >+		       NLM_F_REQUEST | NLM_F_ACK, op, SMC_NLA_EID_TABLE_ENTRY,
-> >+	(void *)test_ueid, sizeof(test_ueid));
-> 
-> Same. Indentation is off.
-Take it. Thanks for pointing it out.
-> 
-> >+	if (!ASSERT_EQ(ret, 0, "ueid cmd"))
-> >+		goto fail;
-> >+
-> >+	nstoken = open_netns(TEST_NS);
-> 
-> Instead of make_netns and then immediately open_netns, try
-> netns_new(TEST_NS, true) from the test_progs.c.
-Got it, I'll try it in next version.
-> 
-> >+	if (!ASSERT_OK_PTR(nstoken, "open net namespace"))
-> >+		goto fail_open_netns;
-> >+
-> >+	if (!ASSERT_OK(system("ip addr add 127.0.1.0/8 dev lo"), "add server node"))
-> >+		goto fail_ip;
-> >+
-> >+	if (!ASSERT_OK(system("ip addr add 127.0.2.0/8 dev lo"), "server via risk path"))
-> >+	close_netns(nstoken);
-> >+	return false;
-> >+}
-> >+
-> >+	/* Configure ip strat */
-> >+	block_link(map_fd, CLIENT_IP, SERVER_IP_VIA_RISK_PATH);
-> >+	block_link(map_fd, SERVER_IP, SERVER_IP);
-> >+	close(map_fd);
-> 
-> No need to close(map-fd) here. bpf_smc__destroy(skel) will do it.
-Got it. Many thanks.
-> 
-> It seems the new selftest fails also. not always though which is concerning.
-> 
-This might not be a random failure, but rather related to s390x, which
-carries a seid by default, which may affect my action of deleting ueid.
-I am requesting IBM folks to help me analyze this issue since i have no
-s390x machine.
+Discard mode (Armv8.6) is a way to enable SPE related PMU events without
+the overhead of recording any data. Add a format option, tests and docs
+for it.
 
-Anyway, I will solve it in the next version.
+In theory we could make the driver drop calls to allocate the aux buffer
+when discard mode is enabled. This would give a small memory saving,
+but I think there is potential to interfere with any tools that don't
+expect this so I left the aux allocation untouched. Even old tools that
+don't know about discard mode will be able to use it because we publish
+the format option. Not allocating the aux buffer will have to be added
+to tools which I've done in Perf.
 
-Best wishes,
-D. Wythe
+Tested on the FVP with SAMPLE_FEED_OP (0x812D):
 
-> pw-bot: cr
-> 
-> >+
-> >+	/* should go with smc */
-> >+	run_link(CLIENT_IP, SERVER_IP, SERVICE_1);
-> >+	/* should go with smc fallback */
-> >+	run_link(SERVER_IP, SERVER_IP, SERVICE_2);
-> >+
-> >+	ASSERT_EQ(skel->bss->smc_cnt, 2, "smc count");
-> >+	ASSERT_EQ(skel->bss->fallback_cnt, 1, "fallback count");
-> >+
-> >+	/* should go with smc */
-> >+	run_link(CLIENT_IP, SERVER_IP, SERVICE_2);
-> >+
-> >+	ASSERT_EQ(skel->bss->smc_cnt, 3, "smc count");
-> >+	ASSERT_EQ(skel->bss->fallback_cnt, 1, "fallback count");
-> >+
-> >+	/* should go with smc fallback */
-> >+	run_link(CLIENT_IP, SERVER_IP_VIA_RISK_PATH, SERVICE_3);
-> >+
-> >+	ASSERT_EQ(skel->bss->smc_cnt, 4, "smc count");
-> >+	ASSERT_EQ(skel->bss->fallback_cnt, 2, "fallback count");
-> >+
-> >+fail:
-> >+	bpf_smc__destroy(skel);
-> >+}
-> 
+ $ perf stat -e armv8_pmuv3/event=0x812D/ -- true
+
+ Performance counter stats for 'true':
+
+                 0      armv8_pmuv3/event=0x812D/
+
+ $ perf record -e arm_spe/discard/ -a -N -B --no-bpf-event -o - > /dev/null &
+ $ perf stat -e armv8_pmuv3/event=0x812D/ -- true
+
+  Performance counter stats for 'true':
+
+             17350      armv8_pmuv3/event=0x812D/
+
+Changes since v2:
+  * Use existing SPE_PMU_FEAT_* mechanism (Will)
+
+Changes since v1:
+  * Add a new section and some clarifications about the PMU events to
+    the docs. (Ian)
+
+Applies to v6.13-rc6
+
+James Clark (5):
+  perf: arm_spe: Add format option for discard mode
+  perf docs: arm_spe: Document new discard mode
+  perf tool: arm-spe: Pull out functions for aux buffer and tracking
+    setup
+  perf tool: arm-spe: Don't allocate buffer or tracking event in discard
+    mode
+  perf test: arm_spe: Add test for discard mode
+
+ drivers/perf/arm_spe_pmu.c                | 22 ++++++
+ tools/perf/Documentation/perf-arm-spe.txt | 26 +++++++
+ tools/perf/arch/arm64/util/arm-spe.c      | 90 +++++++++++++++--------
+ tools/perf/tests/shell/test_arm_spe.sh    | 30 ++++++++
+ 4 files changed, 136 insertions(+), 32 deletions(-)
+
+-- 
+2.34.1
+
 
