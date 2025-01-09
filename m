@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-48473-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48474-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 147A6A0826B
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BA3EA0826C
 	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 22:48:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0BBE7A02E0
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 21:48:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 032491887C40
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 21:48:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D86D204C39;
-	Thu,  9 Jan 2025 21:48:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF427204F76;
+	Thu,  9 Jan 2025 21:48:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="k0b/YbOg"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="nV+XLQmm"
 X-Original-To: bpf@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B4322046AA
-	for <bpf@vger.kernel.org>; Thu,  9 Jan 2025 21:48:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21CB72046AD
+	for <bpf@vger.kernel.org>; Thu,  9 Jan 2025 21:48:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736459292; cv=none; b=iRqMhzyc3/S3QIO/MQtRwVzKjHn3qiaOeQGDItYPDkrZ95xk+xfzL1EHiCcTXvQG1Do4Zk0d1BybQAhRApSl1PeqzebkmS0vGJgxkB70QF0u4rLJyCvlutrxY4UETxEbF7jrWRj1OPzqLfZn7Ayb3q//IsIPq1wGjSfqn9cZZrk=
+	t=1736459296; cv=none; b=cBWSD9Rs3SumWxKEIQQVu/+ZGdyLU/HAdTBG+vFImp/8DcbFfX1EeebLAKsX+g7EVR1r/jLWBrzoopWxpHJVSaABMy7f1+rCvrYRHcq5B4wNVBlPieht4OHecMm8TOyqU1j+hBRawc0H/vPQ/vZ3ZjHocc+F1ydBg9rSP5VzqRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736459292; c=relaxed/simple;
-	bh=6FFhGmEGemrHhWvhc6kWPLOVYrkjrrQ1AjluEGcRNMY=;
+	s=arc-20240116; t=1736459296; c=relaxed/simple;
+	bh=Gex09YNkY5U5oBIZXF1mubh1UqqAGNB6D4Hzq50BG1o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dbE3n2TTI3PkjXb2o/CcPTLzOpaI6T35FbQ7cacjiyAbCsk8fs49L6nG0+O5PDR3EHYN4GWytkqwqiH0E7LVo+Ya+zdIrWcvVh68T4O6h82uZz80V7KxrwThJDlguRPa4Twj3kiSMmzcLOMZSSrphdFV/sEexgrxMW4OlAre270=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=k0b/YbOg; arc=none smtp.client-ip=13.77.154.182
+	 MIME-Version; b=YcCZTIVVUEis2ib/uvETkZfMxMl7niSNzhG36ONqbfK7sLvIW0ycn2BR5aFmgWi78mC65GzNZTuU2OCRnhoBbWginrVBiYHt6lC1YBYqrwR3ty7+LmNLYsnoeiPS09TT+Od0+ZEov36XVJDzDWnT8dDbYxa/sNuQcNuxF6drw0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=nV+XLQmm; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: from narnia.corp.microsoft.com (unknown [167.220.2.28])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 909F7203E3A1;
-	Thu,  9 Jan 2025 13:48:05 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 909F7203E3A1
+	by linux.microsoft.com (Postfix) with ESMTPSA id BF5DF203E39C;
+	Thu,  9 Jan 2025 13:48:11 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BF5DF203E39C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1736459291;
-	bh=yNOK8xobsXjC2zcCGpoKul59SyMrDg1nsFvW4E6YNTA=;
+	s=default; t=1736459294;
+	bh=dZ3OaO+4z+9ky0bp9FBfEwFBU9RDmIqhYzLMqaerSXU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=k0b/YbOgFh0UFW7s2hR5Gcj6Wdoc9mvEVJ4LTYT9LcABSnMhso8Yy7bFv2i2tfJye
-	 9IeqA0JWVJEJ2exPoBSt8ftnxztC49eRwHC4lTZtxpmkn6K0sOQ9tAF8x3zb8u1PiR
-	 JoJUuVEzXtGxQnKlmYaQTom8YOopkDtPdxRSg9Jc=
+	b=nV+XLQmmF/UiUI0cl6KViekkiLU1sZ0f/CQbXubfqDDzN7oAa8oNPL0z7rhMq+9Y1
+	 UEYuwUwIsGKy5N3wDRr3a3Ulz6JyGUYRxOZwD0lD7icL+TdRWI2xVFIx/OUDg4Kbzj
+	 o7gv77yMZZFx5Y+iBdh74O/Bv9+rE1pWSHXx5hxs=
 From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
 To: bpf@vger.kernel.org
 Cc: nkapron@google.com,
@@ -49,9 +49,9 @@ Cc: nkapron@google.com,
 	paul@paul-moore.com,
 	code@tyhicks.com,
 	flaniel@linux.microsoft.com
-Subject: [PATCH 11/14] bpf: Implement relocation collection
-Date: Thu,  9 Jan 2025 13:43:53 -0800
-Message-ID: <20250109214617.485144-12-bboscaccy@linux.microsoft.com>
+Subject: [PATCH 12/14] bpf: Resolve external relocations
+Date: Thu,  9 Jan 2025 13:43:54 -0800
+Message-ID: <20250109214617.485144-13-bboscaccy@linux.microsoft.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250109214617.485144-1-bboscaccy@linux.microsoft.com>
 References: <20250109214617.485144-1-bboscaccy@linux.microsoft.com>
@@ -63,337 +63,207 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This code heavily borrows from bpf_program__record_reloc from
-libbpf. This symbol parse is primarily responsible for identifying
-subprogram and call instructions that need to be
-relocated. Additionally map relocations are discovered in this parse
-as well.
+Here we attempt to assign addresses to relocations that target
+external symbols. This code heavily borrows from
+bpf_object__resolve_externs with a few key differences.
+
+Since we are already in the kernel, for kallsyms based relocations, we
+simply look them up. For btf based relocations, we consult the
+kernel's btf information. There is a key difference in the handling
+kconfig based relocations though. Here, we rely upon the userspace
+kconfig map data and simply use the values that are passed in.
 
 Signed-off-by: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
 ---
- kernel/bpf/syscall.c | 308 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 308 insertions(+)
+ kernel/bpf/syscall.c | 174 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 174 insertions(+)
 
 diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index f47e95c1ab975..9c3d037cd6b95 100644
+index 9c3d037cd6b95..b766c790ae3f4 100644
 --- a/kernel/bpf/syscall.c
 +++ b/kernel/bpf/syscall.c
-@@ -6763,6 +6763,310 @@ static int fixup_btf(struct bpf_obj *obj)
+@@ -7067,6 +7067,176 @@ static int collect_relos(struct bpf_obj *obj)
  	return 0;
  }
  
-+static bool insn_is_subprog_call(const struct bpf_insn *insn)
++static int find_ksym_btf_id(struct bpf_obj *obj, const char *ksym_name, u16 kind,
++			    struct btf **res_btf,
++			    struct bpf_module_btf **res_mod_btf)
 +{
-+	return BPF_CLASS(insn->code) == BPF_JMP &&
-+	       BPF_OP(insn->code) == BPF_CALL &&
-+	       BPF_SRC(insn->code) == BPF_K &&
-+	       insn->src_reg == BPF_PSEUDO_CALL &&
-+	       insn->dst_reg == 0 &&
-+	       insn->off == 0;
-+}
++	struct bpf_module_btf *mod_btf;
++	struct btf *btf;
++	int i, id;
 +
-+static bool is_call_insn(const struct bpf_insn *insn)
-+{
-+	return insn->code == (BPF_JMP | BPF_CALL);
-+}
-+
-+static inline bool is_ldimm64_insn(struct bpf_insn *insn)
-+{
-+	return insn->code == (BPF_LD | BPF_IMM | BPF_DW);
-+}
-+
-+static bool insn_is_pseudo_func(struct bpf_insn *insn)
-+{
-+	return is_ldimm64_insn(insn) && insn->src_reg == BPF_PSEUDO_FUNC;
-+}
-+
-+static bool sym_is_subprog(const Elf64_Sym *sym, int text_shndx)
-+{
-+	int bind = ELF64_ST_BIND(sym->st_info);
-+	int type = ELF64_ST_TYPE(sym->st_info);
-+
-+	/* in .text section */
-+	if (sym->st_shndx != text_shndx)
-+		return false;
-+
-+	/* local function */
-+	if (bind == STB_LOCAL && type == STT_SECTION)
-+		return true;
-+
-+	/* global function */
-+	return bind == STB_GLOBAL && type == STT_FUNC;
-+}
-+
-+static bool prog_contains_insn(const struct bpf_prog_obj *prog, size_t insn_idx)
-+{
-+	return insn_idx >= prog->sec_insn_off &&
-+	       insn_idx < prog->sec_insn_off + prog->sec_insn_cnt;
-+}
-+
-+static struct bpf_prog_obj *find_prog_by_sec_insn(const struct bpf_obj *obj,
-+						 size_t sec_idx, size_t insn_idx)
-+{
-+	int l = 0, r = obj->nr_programs - 1, m;
-+	struct bpf_prog_obj *prog;
-+
-+	if (!obj->nr_programs)
-+		return NULL;
-+
-+	while (l < r) {
-+		m = l + (r - l + 1) / 2;
-+		prog = &obj->progs[m];
-+
-+		if (prog->sec_idx < sec_idx ||
-+		    (prog->sec_idx == sec_idx && prog->sec_insn_off <= insn_idx))
-+			l = m;
-+		else
-+			r = m - 1;
-+	}
-+	/* matching program could be at index l, but it still might be the
-+	 * wrong one, so we need to double check conditions for the last time
-+	 */
-+	prog = &obj->progs[l];
-+	if (prog->sec_idx == sec_idx && prog_contains_insn(prog, insn_idx))
-+		return prog;
-+	return NULL;
-+}
-+
-+static enum libbpf_map_type section_to_libbpf_map_type(struct bpf_obj *obj, int sec_idx)
-+{
-+	Elf_Shdr *shdr = &obj->sechdrs[sec_idx];
-+
-+	if (strcmp(".data", obj->secstrings + shdr->sh_name) == 0)
-+		return LIBBPF_MAP_DATA;
-+
-+	if (str_has_prefix(obj->secstrings + shdr->sh_name, ".rodata"))
-+		return LIBBPF_MAP_RODATA;
-+
-+	if (str_has_prefix(obj->secstrings + shdr->sh_name, ".bss"))
-+		return LIBBPF_MAP_BSS;
-+
-+	return LIBBPF_MAP_UNSPEC;
-+}
-+
-+static int program_record_reloc(struct bpf_obj *obj,
-+				struct bpf_prog_obj *prog,
-+				struct bpf_reloc_desc *reloc_desc,
-+				u32 insn_idx, const char *sym_name,
-+				const Elf64_Sym *sym, const Elf64_Rel *rel)
-+{
-+	struct bpf_insn *insn = &prog->insn[insn_idx];
-+	size_t map_idx, nr_maps = obj->nr_maps;
-+	u32 shdr_idx = sym->st_shndx;
-+	enum libbpf_map_type type;
-+	struct bpf_map_obj *map;
-+
-+	if (!is_call_insn(insn) && !is_ldimm64_insn(insn)) {
-+		pr_warn("prog '%s': invalid relo against '%s' for insns[%d].code 0x%x\n",
-+			prog->name, sym_name, insn_idx, insn->code);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (sym_is_extern(sym)) {
-+		int sym_idx = ELF64_R_SYM(rel->r_info);
-+		int i, n = obj->nr_extern;
-+		struct bpf_extern_desc *ext;
-+
-+		for (i = 0; i < n; i++) {
-+			ext = &obj->externs[i];
-+			if (ext->sym_idx == sym_idx)
++	btf = obj->btf_vmlinux;
++	mod_btf = NULL;
++	id = btf_find_by_name_kind(btf, ksym_name, kind);
++	if (id == -ENOENT) {
++		for (i = 0; i < obj->btf_modules_cnt; i++) {
++			/*  we assume module_btf's BTF FD is always >0 */
++			mod_btf = &obj->btf_modules[i];
++			btf = mod_btf->btf;
++			id = btf_find_by_name_kind(btf, ksym_name, kind);
++			if (id != -ENOENT)
 +				break;
 +		}
-+		if (i >= n) {
-+			pr_warn("prog '%s': extern relo failed to find extern for '%s' (%d)\n",
-+				prog->name, sym_name, sym_idx);
-+			return -EOPNOTSUPP;
-+		}
-+		pr_debug("prog '%s': found extern #%d '%s' (sym %d) for insn #%u\n",
-+			 prog->name, i, ext->name, ext->sym_idx, insn_idx);
-+		if (insn->code == (BPF_JMP | BPF_CALL))
-+			reloc_desc->type = RELO_EXTERN_CALL;
-+		else
-+			reloc_desc->type = RELO_EXTERN_LD64;
-+		reloc_desc->insn_idx = insn_idx;
-+		reloc_desc->ext_idx = i;
-+		return 0;
++	}
++	if (id <= 0)
++		return -ESRCH;
++
++	*res_btf = btf;
++	*res_mod_btf = mod_btf;
++	return id;
++}
++
++static int resolve_ksym_var_btf_id(struct bpf_obj *obj, struct bpf_extern_desc *ext)
++{
++	const struct btf_type *targ_var, *targ_type;
++	u32 targ_type_id, local_type_id;
++	struct bpf_module_btf *mod_btf = NULL;
++	const char *targ_var_name;
++	struct btf *btf = NULL;
++	int id, err;
++
++	id = find_ksym_btf_id(obj, ext->name, BTF_KIND_VAR, &btf, &mod_btf);
++	if (id < 0) {
++		if (id == -ESRCH && ext->is_weak)
++			return 0;
++		pr_warn("extern (var ksym) '%s': not found in kernel BTF\n",
++			ext->name);
++		return id;
 +	}
 +
-+	/* sub-program call relocation */
-+	if (is_call_insn(insn)) {
-+		if (insn->src_reg != BPF_PSEUDO_CALL) {
-+			pr_warn("prog '%s': incorrect bpf_call opcode\n", prog->name);
-+			return -EOPNOTSUPP;
-+		}
-+		/* text_shndx can be 0, if no default "main" program exists */
-+		if (!shdr_idx || shdr_idx != obj->index.text)
-+			return -EOPNOTSUPP;
++	/* find local type_id */
++	local_type_id = ext->ksym.type_id;
 +
-+		if (sym->st_value % sizeof(struct bpf_insn)) {
-+			pr_warn("prog '%s': bad call relo against '%s' at offset %zu\n",
-+				prog->name, sym_name, (size_t)sym->st_value);
-+			return -EOPNOTSUPP;
-+		}
-+		reloc_desc->type = RELO_CALL;
-+		reloc_desc->insn_idx = insn_idx;
-+		reloc_desc->sym_off = sym->st_value;
-+		return 0;
++	/* find target type_id */
++	targ_var = btf_type_by_id(btf, id);
++	targ_var_name = btf_str_by_offset(btf, targ_var->name_off);
++	targ_type = skip_mods_and_typedefs(btf, targ_var->type, &targ_type_id);
++
++	err = bpf_core_types_are_compat(obj->btf, local_type_id,
++					btf, targ_type_id);
++	if (err <= 0) {
++		pr_warn("extern (var ksym) '%s': incompatible types\n", ext->name);
++		return -EINVAL;
 +	}
 +
-+	if (!shdr_idx || shdr_idx >= SHN_LORESERVE) {
-+		pr_warn("prog '%s': invalid relo against '%s' in special section 0x%x; forgot to initialize global var?..\n",
-+			prog->name, sym_name, shdr_idx);
-+		return -EOPNOTSUPP;
-+	}
++	ext->is_set = true;
++	ext->ksym.kernel_btf_obj_fd = mod_btf ? mod_btf->fd : 0;
++	ext->ksym.kernel_btf_id = id;
 +
-+	/* loading subprog addresses */
-+	if (sym_is_subprog(sym, obj->index.text)) {
-+		/* global_func: sym->st_value = offset in the section, insn->imm = 0.
-+		 * local_func: sym->st_value = 0, insn->imm = offset in the section.
-+		 */
-+		if ((sym->st_value % sizeof(struct bpf_insn)) ||
-+		    (insn->imm % sizeof(struct bpf_insn))) {
-+			pr_warn("prog '%s': bad subprog addr relo against '%s' at offset %zu+%d\n",
-+				prog->name, sym_name, (size_t)sym->st_value, insn->imm);
-+			return -EOPNOTSUPP;
-+		}
-+		reloc_desc->type = RELO_SUBPROG_ADDR;
-+		reloc_desc->insn_idx = insn_idx;
-+		reloc_desc->sym_off = sym->st_value;
-+		return 0;
-+	}
-+
-+
-+	type = section_to_libbpf_map_type(obj, shdr_idx);
-+
-+	if (shdr_idx == obj->index.arena) {
-+		reloc_desc->type = RELO_DATA;
-+		reloc_desc->insn_idx = insn_idx;
-+		reloc_desc->map_idx = obj->arena_map_idx;
-+		reloc_desc->sym_off = sym->st_value;
-+		return 0;
-+	}
-+
-+	/* generic map reference relocation */
-+	if (type == LIBBPF_MAP_UNSPEC) {
-+		for (map_idx = 0; map_idx < nr_maps; map_idx++) {
-+			map = &obj->maps[map_idx];
-+			if (map->map_type != type ||
-+			    map->sec_idx != sym->st_shndx ||
-+			    map->sec_offset != sym->st_value)
-+				continue;
-+			pr_debug("prog '%s': found map %zd (sec %d, off %d) for insn #%u\n",
-+				 prog->name, map_idx, map->sec_idx,
-+				 map->sec_offset, insn_idx);
-+			break;
-+		}
-+		if (map_idx >= nr_maps) {
-+			pr_warn("prog '%s': map relo failed to find map for section off %lu\n",
-+				prog->name, (size_t)sym->st_value);
-+			return -EOPNOTSUPP;
-+		}
-+		reloc_desc->type = RELO_LD64;
-+		reloc_desc->insn_idx = insn_idx;
-+		reloc_desc->map_idx = map_idx;
-+		reloc_desc->sym_off = 0; /* sym->st_value determines map_idx */
-+		return 0;
-+	}
-+
-+	for (map_idx = 0; map_idx < nr_maps; map_idx++) {
-+		map = &obj->maps[map_idx];
-+		if (map->map_type != type || map->sec_idx != sym->st_shndx)
-+			continue;
-+		pr_debug("prog '%s': found data map %zd (sec %d, off %u) for insn %u\n",
-+			 prog->name, map_idx, map->sec_idx,
-+			 map->sec_offset, insn_idx);
-+		break;
-+	}
-+	if (map_idx >= nr_maps) {
-+		pr_warn("prog '%s': data relo failed to find map for section (%lu:%lu)\n",
-+			prog->name, map_idx, nr_maps);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	reloc_desc->type = RELO_DATA;
-+	reloc_desc->insn_idx = insn_idx;
-+	reloc_desc->map_idx = map_idx;
-+	reloc_desc->sym_off = sym->st_value;
 +	return 0;
 +}
 +
-+static int collect_prog_relocs(struct bpf_obj *obj, Elf64_Shdr *shdr, unsigned int shdr_idx)
++static int resolve_ksym_func_btf_id(struct bpf_obj *obj, struct bpf_extern_desc *ext)
 +{
-+	unsigned int i, nrels, sym_idx, insn_idx;
-+	size_t sec_idx = shdr->sh_info;
-+	int err;
-+	struct bpf_prog_obj *prog;
-+	Elf64_Rel *rel = (void *)obj->hdr + shdr->sh_offset;
++	int local_func_proto_id, kfunc_proto_id, kfunc_id;
++	struct bpf_module_btf *mod_btf = NULL;
++	const struct btf_type *kern_func;
++	struct btf *kern_btf = NULL;
++	int ret;
 +
-+	Elf_Shdr *symsec = &obj->sechdrs[obj->index.sym];
-+	Elf_Sym *sym = (void *)obj->hdr + symsec->sh_offset;
-+	const char *sym_name;
++	local_func_proto_id = ext->ksym.type_id;
 +
-+	nrels = shdr->sh_size / shdr->sh_entsize;
-+
-+	for (i = 0; i < nrels; i++) {
-+		sym_idx = ELF64_R_SYM(rel[i].r_info);
-+		insn_idx = rel[i].r_offset / sizeof(struct bpf_insn);
-+
-+		sym_name = obj->strtab + sym[sym_idx].st_name;
-+		prog = find_prog_by_sec_insn(obj, sec_idx, insn_idx);
-+		if (!prog)
-+			continue;
-+
-+		prog->reloc_desc = krealloc_array(prog->reloc_desc,
-+						  prog->nr_reloc + 1,
-+						  sizeof(struct bpf_reloc_desc),
-+						  GFP_KERNEL);
-+		if (!prog->reloc_desc)
-+			return -ENOMEM;
-+
-+		err = program_record_reloc(obj,
-+					   prog,
-+					   &prog->reloc_desc[prog->nr_reloc],
-+					   insn_idx,
-+					   sym_name,
-+					   &sym[sym_idx],
-+					   &rel[i]);
-+
-+		if (err)
-+			return err;
-+
-+		prog->nr_reloc++;
-+
++	kfunc_id = find_ksym_btf_id(obj, ext->essent_name ?: ext->name, BTF_KIND_FUNC, &kern_btf,
++				    &mod_btf);
++	if (kfunc_id < 0) {
++		if (kfunc_id == -ESRCH && ext->is_weak)
++			return 0;
++		pr_warn("extern (func ksym) '%s': not found in kernel or module BTFs\n",
++			ext->name);
++		return kfunc_id;
 +	}
++
++	kern_func = btf_type_by_id(kern_btf, kfunc_id);
++	kfunc_proto_id = kern_func->type;
++
++	ret = bpf_core_types_are_compat(obj->btf, local_func_proto_id,
++					kern_btf, kfunc_proto_id);
++	if (ret <= 0) {
++		if (ext->is_weak)
++			return 0;
++
++		pr_warn("extern (func ksym) '%s': func_proto [%d] incompatible with [%d]\n",
++			ext->name, local_func_proto_id,
++			kfunc_proto_id);
++		return -EINVAL;
++	}
++
++	ext->is_set = true;
++	ext->ksym.kernel_btf_id = kfunc_id;
++	ext->ksym.btf_fd_idx = mod_btf ? mod_btf->fd_array_idx : 0;
++
++	/* Also set kernel_btf_obj_fd to make sure that bpf_object__relocate_data()
++	 * populates FD into ld_imm64 insn when it's used to point to kfunc.
++	 * {kernel_btf_id, btf_fd_idx} -> fixup bpf_call.
++	 * {kernel_btf_id, kernel_btf_obj_fd} -> fixup ld_imm64.
++	 */
++	ext->ksym.kernel_btf_obj_fd = mod_btf ? mod_btf->fd : 0;
++
 +	return 0;
 +}
 +
-+static int collect_relos(struct bpf_obj *obj)
++static int resolve_externs(struct bpf_obj *obj)
 +{
-+	unsigned int i;
-+	Elf_Shdr *shdr;
-+	int err;
++	struct bpf_extern_desc *ext;
++	int err, i;
++	const struct btf_type *t;
++	unsigned long addr;
 +
-+	for (i = 1; i < obj->hdr->e_shnum; i++) {
-+		shdr = &obj->sechdrs[i];
-+		if (shdr->sh_type != SHT_REL)
-+			continue;
-+		if (i != obj->index.btf && i != obj->index.btf_ext) {
-+			err = collect_prog_relocs(obj, shdr, i);
-+			if (err)
-+				return err;
++	for (i = 0; i < obj->nr_extern; i++) {
++		ext = &obj->externs[i];
++
++		if (ext->type == EXT_KSYM) {
++			if (ext->ksym.type_id) {
++				t = btf_type_by_id(obj->btf, ext->btf_id);
++				if (btf_kind(t) == BTF_KIND_VAR)
++					err = resolve_ksym_var_btf_id(obj, ext);
++				else
++					err = resolve_ksym_func_btf_id(obj, ext);
++				if (err)
++					return err;
++			} else {
++				addr = kallsyms_lookup_name(ext->name);
++				if (addr > 0) {
++					ext->is_set = true;
++					ext->ksym.addr = addr;
++				}
++			}
++		} else if (ext->type == EXT_KCFG) {
++			pr_debug("extern (kcfg) '%s': loading from offset %d\n",
++				 ext->name, ext->kcfg.data_off);
++			ext->is_set = true;
++		} else {
++			pr_warn("extern '%s': unrecognized extern kind\n", ext->name);
++			return -EINVAL;
 +		}
 +	}
++
++	for (i = 0; i < obj->nr_extern; i++) {
++		ext = &obj->externs[i];
++
++		if (!ext->is_set && !ext->is_weak) {
++			pr_warn("extern '%s' (strong): not resolved\n", ext->name);
++			return -ESRCH;
++		} else if (!ext->is_set) {
++			pr_debug("extern '%s' (weak): not resolved, defaulting to zero\n",
++				 ext->name);
++		}
++	}
++
++
 +	return 0;
 +}
 +
  static void free_bpf_obj(struct bpf_obj *obj)
  {
  	int i;
-@@ -7006,6 +7310,10 @@ static int load_fd(union bpf_attr *attr)
+@@ -7314,6 +7484,10 @@ static int load_fd(union bpf_attr *attr)
  	if (err < 0)
  		goto free;
  
-+	err = collect_relos(obj);
++	err = resolve_externs(obj);
 +	if (err < 0)
 +		goto free;
 +
