@@ -1,248 +1,108 @@
-Return-Path: <bpf+bounces-48405-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48406-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCBEAA07BCF
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 16:23:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CC36A07BEE
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 16:28:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A40E3AB7CC
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 15:22:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0B9F1884C4F
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 15:28:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8127721CA1F;
-	Thu,  9 Jan 2025 15:22:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D8B021D5B5;
+	Thu,  9 Jan 2025 15:28:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l+aSG3jn"
+	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="YsIG8cgA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4959D219A97;
-	Thu,  9 Jan 2025 15:22:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFBE721CA1D;
+	Thu,  9 Jan 2025 15:28:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736436151; cv=none; b=WpunDbJmBeqPJiuecENOrZWJ2UbW53tf8CjAXaIZj3pPFwIcU5EELUnzSSfc2+54/zvWo3x7s/hsWvfvtVTLOvQLK2IrKADTUAILMRCNGPbgLP1uCl/sF7diFgdM+yAeI8r9mH82wamBQTufC9tDVDEF81sJvyu7FMr5HFkrKXg=
+	t=1736436504; cv=none; b=A11wen0Sg23cbixBkEtwVdohRtNpHxwN9yjEvIiTPtlr760cnmpm/CdKAuB2Kc7RZRxwOw90xjTK9bq6DXR9dIN59siqpXmPbfRxA5J9uNbv9jiDzul+EfhZK2V99o447zIwaomTzIjMGybzXGx8N9i6wVB9cwQPxum0cc/Hcv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736436151; c=relaxed/simple;
-	bh=deHBZmmhZJQ1mB96LT50et1dZHJDRyTgJ1K59XCtvHE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Z21lWDU+VAymhGRzt47cw3jGvJcCF/YzXLiHgL939g8I4UJafbgwzxlSrHK3tTepLVX+STLrtWg5OzN4LCm/3iBzQaVXU9PbQpFM/XWB3zg09S3Ftns7MQxdtYAVbaK6wnkdXT4bKe9UzAAyYsryNMEeExL6XPpbBG0vDgw/eDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l+aSG3jn; arc=none smtp.client-ip=209.85.219.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6dce7263beaso9519276d6.3;
-        Thu, 09 Jan 2025 07:22:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736436148; x=1737040948; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fcg3/DfftZTPey65NfLlkT9BL5qUIuwyMqfC8or7FBA=;
-        b=l+aSG3jnne+74k1qATakYaopgMJtA0AU9qvU7VNNm0W6xJfeAWuXIvaTQDAGCHrET5
-         ihSGPOKDZ+aZsARrU62IYKaqcCrrC0oISCk5itI5PrJofmPyufzG48o6imzmNtntqlXv
-         7+pB4Dbu0HzRksyfUnhKupEiSvB9cbxxTj63ZDCxv66ilhlurs8pS936CjfsbG8tlWGz
-         OifGCS0e/tiLdXH/A7Tiufm9+Dv896KjJfiso3fN8QfM6KKwmIf5jnZRg2x62Lwo2k6Y
-         ldCFrDboxEf8g3m2cI4ZiJW07XZqqcN+b7/yu7Xe4NI/3mFIe0Vm4yI6zqNe+WNsjMq8
-         7MBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736436148; x=1737040948;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fcg3/DfftZTPey65NfLlkT9BL5qUIuwyMqfC8or7FBA=;
-        b=DLk/eIFC5gjRIk7Yu6I+zqRNzHpwjglFGplEeRjGBsRuJ/Q5VaipWAqVgiUG3ZecP1
-         aW78rogULBxC1MFzSq5bXuM8KmZhHGtrjD1fovDjmnziY2A1IU4aArvk+mpwK+cA0MXr
-         zTm802lUfDQn11lYtOscY7wqgvVgXODGU/byTmNQCmXgl5Gd3FZovIx5uOTRWTBUkvKe
-         CiDnv2kOYQNSnWPc6hngFM/MvyGMK2R3cwi2w9OIGw+g2hO2Uu6xIWPFuLCCPUPnGM5A
-         gVO74zz6cjekNUPxWl4btWGrGnGYKn9avLGgIsJwYICZ5pOzy3cPVOQeqdk2xQzhiR28
-         dm3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWR9FSbeR4Qcwi0zGjcjFuYBBprYb30pekkWageQ27cIqsGpLgl76dJu/mdQ6GRpSbwNEc=@vger.kernel.org, AJvYcCXrlEfv1t35teAwmZo4jN6/0/Z6PoWo64yQMW+UvAlTwzCODuFMdTr56C+hKKBUZFSCVypFseuhoSCjwwEV@vger.kernel.org
-X-Gm-Message-State: AOJu0YzJG9h9MuokiUrSHMXS4q8LIYYcQ+mmy/agB3HmVG72+Zphi41S
-	uLd9Uc5xyBpqteF9iSA2xyCPzLe5U0baCOmsD1AfA96sF+FegiwK8G8wL1ToGxgO0LpRdUFfVaR
-	0j2dfXCgn7wH7Q0gMpAKV+ATSe64=
-X-Gm-Gg: ASbGncseg6+FS7cbC+47Obv+jCPJ+4QyVIYhj3oyEmL9tzLd4exqXpxq7pkW6H410dA
-	GPC22J+z+mPltPTSj6ofvFL+X3ZDAHxdGgacUUw==
-X-Google-Smtp-Source: AGHT+IGtc8B05KJhD7xy2xdv1NbTLL6qgEF2fS/9anHBEUYll0detRjgRUi5idu/CfzHA5R40YHpLPMnELv0MemNIhY=
-X-Received: by 2002:ad4:5c68:0:b0:6d8:9065:2033 with SMTP id
- 6a1803df08f44-6df9b285eb0mr113381566d6.31.1736436148035; Thu, 09 Jan 2025
- 07:22:28 -0800 (PST)
+	s=arc-20240116; t=1736436504; c=relaxed/simple;
+	bh=Spu51y9HfZuOxHXPfsEWvCmRgGJgzXcQUPYrBwwbc4Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IDjF8cMKJJlUFj6MSRkdC8Hfu7k3n4cawGoN5456/Cgnra789F7Ew885djdVAL+eWxytS/2TtfKmOhUclsVEEOzRqYqSaVChtbe3CIpIml/+sgs2/fyTpZL6j1HfnmlrvjW7Jg8mI6aSvOr8PJ1mjNoGXxe56rxFVuzBXHy8CrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=YsIG8cgA; arc=none smtp.client-ip=185.226.149.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
+Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
+	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.93)
+	(envelope-from <mhal@rbox.co>)
+	id 1tVuSA-0038cU-IX; Thu, 09 Jan 2025 16:28:10 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
+	s=selector2; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
+	bh=NnAJ9ysjnx9++5Tx4kBs7NCrt44ysPVsN78x25Ia93U=; b=YsIG8cgAFFi8vjxD/YzvpAyj9G
+	oQlYlT08oJ3QDe3lvIYyOnGCJW8m96RaXXVSKTAZL3GfkdyVRQa2+Zzxhk1J+2B2HSLhuM9if6E1i
+	Uzpya8zCKO9JlMrVpkrlgOwFkjgYEPDw05neTBPiVcOCCY1YdQsOgb3hcYj3hLBkb/z1cP5FQ4Wng
+	F07tDkAFG9W5RlGoOmL+ijIUCGK2mEvdXiYG6H+ue+BymTN+IS6FOScwjVHFd9GUb6TkeMjr9cCE8
+	gmari1ZpangqHiEeSU8bHfOGCd5LuvF79YLJsgXu0IVUTlp3vS6jw/Qc/IANUsQXRCRnR1h5+2WEV
+	65jdyx+g==;
+Received: from [10.9.9.72] (helo=submission01.runbox)
+	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
+	(envelope-from <mhal@rbox.co>)
+	id 1tVuS9-0004qn-2n; Thu, 09 Jan 2025 16:28:09 +0100
+Received: by submission01.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.93)
+	id 1tVuRs-006wNO-LY; Thu, 09 Jan 2025 16:27:52 +0100
+Message-ID: <05c8648c-d6ca-419b-a4ec-6b305f4ca19f@rbox.co>
+Date: Thu, 9 Jan 2025 16:27:51 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250109003436.2829560-1-sdf@fomichev.me>
-In-Reply-To: <20250109003436.2829560-1-sdf@fomichev.me>
-From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Thu, 9 Jan 2025 16:22:16 +0100
-X-Gm-Features: AbW1kvYG-Dt_dpM4v0JLNFOS4TcDIMxcJ4A-lYMpAUp7D6v_JhnnQusvGrKv9FQ
-Message-ID: <CAJ8uoz3bMk_0bbtGdEAkbXNHu0c5Zr+-sAUyqk2M84VLE4FtpQ@mail.gmail.com>
-Subject: Re: [PATCH net] xsk: Bring back busy polling support
-To: Stanislav Fomichev <sdf@fomichev.me>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, horms@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	hawk@kernel.org, john.fastabend@gmail.com, bjorn@kernel.org, 
-	magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
-	jonathan.lemon@gmail.com, jdamato@fastly.com, mkarsten@uwaterloo.ca
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net 1/2] vsock/virtio: discard packets if the transport
+ changes
+To: Stefano Garzarella <sgarzare@redhat.com>
+Cc: netdev@vger.kernel.org, Simon Horman <horms@kernel.org>,
+ Stefan Hajnoczi <stefanha@redhat.com>, linux-kernel@vger.kernel.org,
+ Eric Dumazet <edumazet@google.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ Wongi Lee <qwerty@theori.io>, "David S. Miller" <davem@davemloft.net>,
+ Paolo Abeni <pabeni@redhat.com>, Jason Wang <jasowang@redhat.com>,
+ Bobby Eshleman <bobby.eshleman@bytedance.com>,
+ virtualization@lists.linux.dev, =?UTF-8?Q?Eugenio_P=C3=A9rez?=
+ <eperezma@redhat.com>, Luigi Leonardi <leonardi@redhat.com>,
+ bpf@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+ "Michael S. Tsirkin" <mst@redhat.com>, Hyunwoo Kim <v4bel@theori.io>,
+ kvm@vger.kernel.org
+References: <20250108180617.154053-1-sgarzare@redhat.com>
+ <20250108180617.154053-2-sgarzare@redhat.com>
+ <2b3062e3-bdaa-4c94-a3c0-2930595b9670@rbox.co>
+ <wix5cx7uhthr6imrpsliysktyae6xwuzpvg77uscswyqwszzfb@ms5osa4ckdcm>
+Content-Language: pl-PL, en-GB
+From: Michal Luczaj <mhal@rbox.co>
+In-Reply-To: <wix5cx7uhthr6imrpsliysktyae6xwuzpvg77uscswyqwszzfb@ms5osa4ckdcm>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, 9 Jan 2025 at 01:35, Stanislav Fomichev <sdf@fomichev.me> wrote:
->
-> Commit 86e25f40aa1e ("net: napi: Add napi_config") moved napi->napi_id
-> assignment to a later point in time (napi_hash_add_with_id). This breaks
-> __xdp_rxq_info_reg which copies napi_id at an earlier time and now
-> stores 0 napi_id. It also makes sk_mark_napi_id_once_xdp and
-> __sk_mark_napi_id_once useless because they now work against 0 napi_id.
-> Since sk_busy_loop requires valid napi_id to busy-poll on, there is no way
-> to busy-poll AF_XDP sockets anymore.
->
-> Bring back the ability to busy-poll on XSK by resolving socket's napi_id
-> at bind time. This relies on relatively recent netif_queue_set_napi,
-> but (assume) at this point most popular drivers should have been converted.
-> This also removes per-tx/rx cycles which used to check and/or set
-> the napi_id value.
->
-> Confirmed by running a busy-polling AF_XDP socket
-> (github.com/fomichev/xskrtt) on mlx5 and looking at BusyPollRxPackets
-> from /proc/net/netstat.
+On 1/9/25 14:42, Stefano Garzarella wrote:
+> On Thu, Jan 09, 2025 at 02:34:28PM +0100, Michal Luczaj wrote:
+>> ...
+>> That said, when I apply this patch, but drop the `sk->sk_state !=
+>> TCP_LISTEN &&`: no more splats.
+> 
+> We can't drop `sk->sk_state != TCP_LISTEN &&` because listener socket 
+> doesn't have any transport (vsk->transport == NULL), so every connection 
+> request will receive an error, so maybe this is the reason of no splats.
 
-Thanks Stanislav for finding and fixing this. As a bonus, the
-resulting code is much nicer too.
+Bah, sorry, I didn't run the test suit.
 
-I just took a look at the Intel drivers and some of our drivers have
-not been converted to use netif_queue_set_napi() yet. Just ice, e1000,
-and e1000e use it. But that is on us to fix.
+> I'm cooking some more patches to fix Hyunwoo's scenario handling better 
+> the close work when the virtio destructor is called.
+> 
+> I'll run your reproduces to test it, thanks for that!
+> 
+> Stefano
+> 
 
-From the xsk point of view:
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
-
-> Fixes: 86e25f40aa1e ("net: napi: Add napi_config")
-> Signed-off-by: Stanislav Fomichev <sdf@fomichev.me>
-> ---
->  include/net/busy_poll.h    |  8 --------
->  include/net/xdp.h          |  1 -
->  include/net/xdp_sock_drv.h | 14 --------------
->  net/core/xdp.c             |  1 -
->  net/xdp/xsk.c              | 14 +++++++++-----
->  5 files changed, 9 insertions(+), 29 deletions(-)
->
-> diff --git a/include/net/busy_poll.h b/include/net/busy_poll.h
-> index c858270141bc..c39a426ebf52 100644
-> --- a/include/net/busy_poll.h
-> +++ b/include/net/busy_poll.h
-> @@ -174,12 +174,4 @@ static inline void sk_mark_napi_id_once(struct sock *sk,
->  #endif
->  }
->
-> -static inline void sk_mark_napi_id_once_xdp(struct sock *sk,
-> -                                           const struct xdp_buff *xdp)
-> -{
-> -#ifdef CONFIG_NET_RX_BUSY_POLL
-> -       __sk_mark_napi_id_once(sk, xdp->rxq->napi_id);
-> -#endif
-> -}
-> -
->  #endif /* _LINUX_NET_BUSY_POLL_H */
-> diff --git a/include/net/xdp.h b/include/net/xdp.h
-> index e6770dd40c91..b5b10f2b88e5 100644
-> --- a/include/net/xdp.h
-> +++ b/include/net/xdp.h
-> @@ -62,7 +62,6 @@ struct xdp_rxq_info {
->         u32 queue_index;
->         u32 reg_state;
->         struct xdp_mem_info mem;
-> -       unsigned int napi_id;
->         u32 frag_size;
->  } ____cacheline_aligned; /* perf critical, avoid false-sharing */
->
-> diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
-> index 40085afd9160..7a7316d9c0da 100644
-> --- a/include/net/xdp_sock_drv.h
-> +++ b/include/net/xdp_sock_drv.h
-> @@ -59,15 +59,6 @@ static inline void xsk_pool_fill_cb(struct xsk_buff_pool *pool,
->         xp_fill_cb(pool, desc);
->  }
->
-> -static inline unsigned int xsk_pool_get_napi_id(struct xsk_buff_pool *pool)
-> -{
-> -#ifdef CONFIG_NET_RX_BUSY_POLL
-> -       return pool->heads[0].xdp.rxq->napi_id;
-> -#else
-> -       return 0;
-> -#endif
-> -}
-> -
->  static inline void xsk_pool_dma_unmap(struct xsk_buff_pool *pool,
->                                       unsigned long attrs)
->  {
-> @@ -306,11 +297,6 @@ static inline void xsk_pool_fill_cb(struct xsk_buff_pool *pool,
->  {
->  }
->
-> -static inline unsigned int xsk_pool_get_napi_id(struct xsk_buff_pool *pool)
-> -{
-> -       return 0;
-> -}
-> -
->  static inline void xsk_pool_dma_unmap(struct xsk_buff_pool *pool,
->                                       unsigned long attrs)
->  {
-> diff --git a/net/core/xdp.c b/net/core/xdp.c
-> index bcc5551c6424..2315feed94ef 100644
-> --- a/net/core/xdp.c
-> +++ b/net/core/xdp.c
-> @@ -186,7 +186,6 @@ int __xdp_rxq_info_reg(struct xdp_rxq_info *xdp_rxq,
->         xdp_rxq_info_init(xdp_rxq);
->         xdp_rxq->dev = dev;
->         xdp_rxq->queue_index = queue_index;
-> -       xdp_rxq->napi_id = napi_id;
->         xdp_rxq->frag_size = frag_size;
->
->         xdp_rxq->reg_state = REG_STATE_REGISTERED;
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index 3fa70286c846..89d2bef96469 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -322,7 +322,6 @@ static int xsk_rcv_check(struct xdp_sock *xs, struct xdp_buff *xdp, u32 len)
->                 return -ENOSPC;
->         }
->
-> -       sk_mark_napi_id_once_xdp(&xs->sk, xdp);
->         return 0;
->  }
->
-> @@ -908,11 +907,8 @@ static int __xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len
->         if (unlikely(!xs->tx))
->                 return -ENOBUFS;
->
-> -       if (sk_can_busy_loop(sk)) {
-> -               if (xs->zc)
-> -                       __sk_mark_napi_id_once(sk, xsk_pool_get_napi_id(xs->pool));
-> +       if (sk_can_busy_loop(sk))
->                 sk_busy_loop(sk, 1); /* only support non-blocking sockets */
-> -       }
->
->         if (xs->zc && xsk_no_wakeup(sk))
->                 return 0;
-> @@ -1298,6 +1294,14 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
->         xs->queue_id = qid;
->         xp_add_xsk(xs->pool, xs);
->
-> +       if (xs->zc && qid < dev->real_num_rx_queues) {
-> +               struct netdev_rx_queue *rxq;
-> +
-> +               rxq = __netif_get_rx_queue(dev, qid);
-> +               if (rxq->napi)
-> +                       __sk_mark_napi_id_once(sk, rxq->napi->napi_id);
-> +       }
-> +
->  out_unlock:
->         if (err) {
->                 dev_put(dev);
-> --
-> 2.47.1
->
->
 
