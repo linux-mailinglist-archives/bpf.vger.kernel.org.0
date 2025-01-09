@@ -1,299 +1,519 @@
-Return-Path: <bpf+bounces-48448-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48449-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DA12A080D4
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 20:50:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 599BBA08121
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 21:05:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 892ED3A8DF1
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 19:50:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7C93188C0FC
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 20:05:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FA1C1FF1B0;
-	Thu,  9 Jan 2025 19:48:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="P6MNk2C0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16DE81F9428;
+	Thu,  9 Jan 2025 20:05:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A7FE204F8C
-	for <bpf@vger.kernel.org>; Thu,  9 Jan 2025 19:48:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B45B2B677;
+	Thu,  9 Jan 2025 20:04:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736452125; cv=none; b=gsNYKa5qgxo4MuUHWZzo/n42hcuoAZ7VR3yztqRmNpraiXCnzTreuX4hEWidBhoXvfRsr2F7iqsIs3uWxLBflkRFrYMGqKXb6j5QZPusVHBUXN89GBC8iB3h2KavlV6liO7PC9a5yvfp/dt0vusenOSh/KL43j1GKMITTioqW2A=
+	t=1736453099; cv=none; b=c3XOmONBFqDiRe6vSB/zUvajg1nGtu76vBeq6rk5d7R9at1Q3eTdZUokSbqBEvnsvGaxXs2xygu/s7qH3cpplYFD0L6xOJrLQ0xzTUWtmfsNZHHB4OFzlbiVYZ0Ex0JtCEWRdPfcGhox/WYjhVJKcRW/rsj56sx52fBuIGsbfKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736452125; c=relaxed/simple;
-	bh=D6B4BajMET+2TRhn88NxZIQ+bJWXtAz1Mfi9B6hFn2o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UmITHx62c3D4P1ALsZrasy89YNUCwH/lSozLVa3xb9IiyFlJ+nsunKjo+o0AsOxQG1jT5EWBAEwXqz+aagd/dgNvFat0+RhQLmXSVKy3HXgTUXNXrkZeBXJP7DoQkwrUoG95xO1T/n8M5zB4ZgnysjdTq2XnvFmH9vGaXWpxf3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=P6MNk2C0; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-2166f1e589cso25435915ad.3
-        for <bpf@vger.kernel.org>; Thu, 09 Jan 2025 11:48:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1736452121; x=1737056921; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=H7b+M8bLdxMMDXL0txEk2e29RoPCEkK7c4yJCv5CXWo=;
-        b=P6MNk2C0SJZ7m35IT26aHflyp9jsmxiKmSMWxHt7KuK6r/FDM1As3qA+wHK9huwE17
-         J7WQh00dq0K6fw9OyKbtN3K4ky5ttG7v9HH+908SnFw4uLePs3ceBEtYMm+QZpqMkAEq
-         jjtHclSkjvCfu/vZdQpyRJOm8ys1aO4GIS5Fr5lkwk/nfdQBl0wGJnTLw9A9nYfINsyf
-         7alH9x3IYhrZZmhpPHCs5kYBb9CpPC1Z7s5/5zWdI+59yhFnZ4Xb5wVO8+97XMg5A9k5
-         4kSLyH4hM2RN//UbG69Hnhd7apfjv7FAXKWKgqqqIivwhmxV9iHE+plj81IIJ3gkfy1C
-         CjoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736452121; x=1737056921;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H7b+M8bLdxMMDXL0txEk2e29RoPCEkK7c4yJCv5CXWo=;
-        b=tjFNq9M9SlllaYDFG2vidjFSJ7u8ZnuCB/O93n10jpnxVHUU6ZWW8hw5HxMdBSAO/8
-         0fcA9i7UKUaBXoJJwxTt1XTiRpVogszOxXbzpv6nJzakDO2F/1PQtHzRVDIFnB4P3tDE
-         waX/n3bzsiFPE1tmMmOrqb+XIxMapca+G1cUGmx9pG7VNTzFpkQfEwztHkOFinwEAywj
-         NTbL453lAkAVHwzJ/bbKLmjxBBfvEpmNSdFWUqFJRcus/AjYgIw2y6/IEP+YmUHJ3uKe
-         7qU4haTv1wjG117DM04et/27Wag2rKKHzjnsbbk8dKv3+PBDaIYIj6Kka8qAznvf4bn9
-         oiKg==
-X-Forwarded-Encrypted: i=1; AJvYcCXgYtCrrtYG91mGpkUTIRyuP8Ibb3h0hktG/t9uhxWrAYMfmewCBLiB2Yw6F7zUrrX7f4s=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw/OLUBfVELaeKcxeAdB7f8Tl7MTdpnnZvHi1RV0AWRE9uxYksR
-	JO+mCi97VAityDR2sRX+8BM5ZHY6mWGatAZ8CVxcbSwxalZEV4EuOrAJFNxUId4=
-X-Gm-Gg: ASbGncs3NvskldrhHU2lN/wTB1zwLAQNGnywn3ud9Daz6H+ec/yrv55unBlNBTC3kSH
-	vC/07nX22hcq90ci9ONlzY7FmUM2sYgdVR0jqCktgi8cle0HiWrIW3QY8x6Nb2tDEzL1WtzGKrn
-	Khmp30bA7HbrqAo6PpecLVcGlKy0hndz83PiODhsgpeXZa7MHTUpGhn2nVairf38vhwNgUPFl17
-	BOHvRTRL8SLLe4Yn5HPIDzWGlrHnWLbJ/GHNbIA0JFrxmUAsj2h
-X-Google-Smtp-Source: AGHT+IGqjTKjlwbC+P7rH4jnmptwQdrncdhIeRy9Z8irsAs8dzgv7ivzqLDAR+d7hQV4K4lcyKluyg==
-X-Received: by 2002:a17:902:f70f:b0:216:32ea:c84b with SMTP id d9443c01a7336-21a83fc3652mr126858965ad.37.1736452120766;
-        Thu, 09 Jan 2025 11:48:40 -0800 (PST)
-Received: from ghost ([2601:647:6700:64d0:691c:638a:ff10:3765])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21a9f13c92dsm1606215ad.97.2025.01.09.11.48.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jan 2025 11:48:39 -0800 (PST)
-Date: Thu, 9 Jan 2025 11:48:36 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
-	Christian Brauner <brauner@kernel.org>, Guo Ren <guoren@kernel.org>,
-	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>,
-	James Clark <james.clark@linaro.org>,
-	Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linux.dev>,
-	Jonathan Corbet <corbet@lwn.net>, Arnd Bergmann <arnd@arndb.de>,
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-	linux-csky@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v6 00/16] perf tools: Use generic syscall scripts for all
- archs
-Message-ID: <Z4AoFA974kauIJ9T@ghost>
-References: <20250108-perf_syscalltbl-v6-0-7543b5293098@rivosinc.com>
- <Z3_ybwWW3QZvJ4V6@x1>
+	s=arc-20240116; t=1736453099; c=relaxed/simple;
+	bh=T1358xyOlHjIOsDTrjSjveI8N7SNjbDfhRNUNLFFILc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=by+tFaFQ99ZjdO8U5xuN7tSCcS/C4uyTWW9ZWCDgWgtI+01k7DnRzXVRjdarb4tc1R3Am/vXGIF4PA2/OwzP01sELOJG4f+B5sEUtCtVK4jvondfdn6PdaklJDxREsl5xEBGkLc2DesCsitjWuNIGlUIOkFFFv3J2t9etnGGSEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AFE9C4CED2;
+	Thu,  9 Jan 2025 20:04:57 +0000 (UTC)
+Date: Thu, 9 Jan 2025 15:06:31 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, Masami
+ Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>,
+ Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor
+ <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, Zheng Yejian
+ <zhengyejian1@huawei.com>, Martin Kelly <martin.kelly@crowdstrike.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>, Josh Poimboeuf
+ <jpoimboe@redhat.com>, Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH v2] scripts/sorttable: Move code from sorttable.h into
+ sorttable.c
+Message-ID: <20250109150631.2feaa55e@gandalf.local.home>
+In-Reply-To: <CAHk-=wiafEyX7UgOeZgvd6fvuByE5WXUPh9599kwOc_d-pdeug@mail.gmail.com>
+References: <20250107223217.6f7f96a5@gandalf.local.home>
+	<CAHk-=wiafEyX7UgOeZgvd6fvuByE5WXUPh9599kwOc_d-pdeug@mail.gmail.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Z3_ybwWW3QZvJ4V6@x1>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 09, 2025 at 12:59:43PM -0300, Arnaldo Carvalho de Melo wrote:
-> On Wed, Jan 08, 2025 at 06:36:15PM -0800, Charlie Jenkins wrote:
-> > Standardize the generation of syscall headers around syscall tables.
-> > Previously each architecture independently selected how syscall headers
-> > would be generated, or would not define a way and fallback onto
-> > libaudit. Convert all architectures to use a standard syscall header
-> > generation script and allow each architecture to override the syscall
-> > table to use if they do not use the generic table.
-> > 
-> > As a result of these changes, no architecture will require libaudit, and
-> > so the fallback case of using libaudit is removed by this series.
-> > 
-> > Testing:
-> > 
-> > I have tested that the syscall mappings of id to name generation works
-> > as expected for every architecture, but I have only validated that perf
-> > trace compiles and runs as expected on riscv, arm64, and x86_64.
-> > 
-> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > Reviewed-by: Ian Rogers <irogers@google.com>
-> > Tested-by: Ian Rogers <irogers@google.com>
-> > Acked-by: Namhyung Kim <namhyung@kernel.org>
-> > 
-> > ---
-> > Changes in v6:
-> > - Use tools/build/Build.include instead of scripts/Kbuild.include
-> > - Link to v5: https://lore.kernel.org/r/20250107-perf_syscalltbl-v5-0-935de46d3175@rivosinc.com
+On Thu, 9 Jan 2025 10:24:05 -0800
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
+
+> On Tue, 7 Jan 2025 at 19:30, Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > +
+> > +static int (*compare_extable)(const void *a, const void *b);
+> > +static uint64_t (*ehdr_shoff)(Elf_Ehdr *ehdr);
+> > +static uint16_t (*ehdr_shstrndx)(Elf_Ehdr *ehdr);  
+> ...
 > 
-> Passed these, so far, more tests underway:
-> 
-> ⬢ [acme@toolbox perf-tools-next]$ git log --oneline -1 ; time make -C tools/perf build-test
-> d06826160a982494 (HEAD -> perf-tools-next) perf tools: Remove dependency on libaudit
-> make: Entering directory '/home/acme/git/perf-tools-next/tools/perf'
-> - tarpkg: ./tests/perf-targz-src-pkg .
->                  make_static: cd . && make LDFLAGS=-static NO_PERF_READ_VDSO32=1 NO_PERF_READ_VDSOX32=1 NO_JVMTI=1 NO_LIBTRACEEVENT=1 NO_LIBELF=1 -j28  DESTDIR=/tmp/tmp.JJT3tvN7bV
->               make_with_gtk2: cd . && make GTK2=1 -j28  DESTDIR=/tmp/tmp.BF53V2qpl3
-> - /home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP: cd . && make FEATURE_DUMP_COPY=/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP  feature-dump
-> cd . && make FEATURE_DUMP_COPY=/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP feature-dump
->          make_no_libbionic_O: cd . && make NO_LIBBIONIC=1 FEATURES_DUMP=/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP -j28 O=/tmp/tmp.KZuQ0q2Vs6 DESTDIR=/tmp/tmp.0sxMyH91gS
->            make_util_map_o_O: cd . && make util/map.o FEATURES_DUMP=/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP -j28 O=/tmp/tmp.Y0Mx3KLREI DESTDIR=/tmp/tmp.wg9HCVVLHE
->               make_install_O: cd . && make install FEATURES_DUMP=/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP -j28 O=/tmp/tmp.P0LEBAkW1X DESTDIR=/tmp/tmp.agTavZndFN
->   failed to find: etc/bash_completion.d/perf
+> Side note - and independently of the pure code movement - wouldn't it
+> be nice to just make this a structure of function pointers, and then
+> instead of this:
 
-Is this something introduced by this patch?
+I do that in some of my personal code, but then all the calls to the
+functions tend to be:
 
-- Charlie
+	e.ehdr_shoff(..); or e->ehdr_shoff(..);
 
->          make_no_libpython_O: cd . && make NO_LIBPYTHON=1 FEATURES_DUMP=/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP -j28 O=/tmp/tmp.AQ4uSxhHzq DESTDIR=/tmp/tmp.SyRIMEwTpJ
->          make_refcnt_check_O: cd . && make EXTRA_CFLAGS=-DREFCNT_CHECKING=1 FEATURES_DUMP=/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP -j28 O=/tmp/tmp.boLQpo3gGR DESTDIR=/tmp/tmp.pvNzMWlMJP
->  
-> > Changes in v5:
-> > - Remove references to HAVE_SYSCALL_TABLE_SUPPORT that were
-> >   missed/recently introduced
-> > - Rebase on perf-tools-next
-> > - Install headers to $(OUTPUT)arch instead of $(OUTPUT)tools/perf/arch
-> > - Link to v4: https://lore.kernel.org/r/20241218-perf_syscalltbl-v4-0-bc8caef2ca8e@rivosinc.com
-> > 
-> > Changes in v4:
-> > - Remove audit_machine member of syscalltbl struct (Ian)
-> > - Rebase on perf-tools-next
-> > - Link to v3: https://lore.kernel.org/r/20241216-perf_syscalltbl-v3-0-239f032481d5@rivosinc.com
-> > 
-> > Changes in v3:
-> > - Fix compiliation when OUTPUT is empty
-> > - Correct unused headers to be .h instead of .c  (Namhyung)
-> > - Make variable definition of supported archs (Namhyung)
-> > - Convert += into := for syscalls headers (Namhyung)
-> > - Link to v2: https://lore.kernel.org/r/20241212-perf_syscalltbl-v2-0-f8ca984ffe40@rivosinc.com
-> > 
-> > Changes in v2:
-> > - Rebase onto 6.13-rc2
-> > - Fix output path so it generates to /tools/perf/arch properly
-> > - Link to v1: https://lore.kernel.org/r/20241104-perf_syscalltbl-v1-0-9adae5c761ef@rivosinc.com
-> > 
-> > ---
-> > Charlie Jenkins (16):
-> >       perf tools: Create generic syscall table support
-> >       perf tools: arc: Support generic syscall headers
-> >       perf tools: csky: Support generic syscall headers
-> >       perf tools: arm: Support syscall headers
-> >       perf tools: sh: Support syscall headers
-> >       perf tools: sparc: Support syscall headers
-> >       perf tools: xtensa: Support syscall header
-> >       perf tools: x86: Use generic syscall scripts
-> >       perf tools: alpha: Support syscall header
-> >       perf tools: parisc: Support syscall header
-> >       perf tools: arm64: Use syscall table
-> >       perf tools: loongarch: Use syscall table
-> >       perf tools: mips: Use generic syscall scripts
-> >       perf tools: powerpc: Use generic syscall table scripts
-> >       perf tools: s390: Use generic syscall table scripts
-> >       perf tools: Remove dependency on libaudit
-> > 
-> >  Documentation/admin-guide/workload-tracing.rst     |   2 +-
-> >  tools/build/Build.include                          |   2 +
-> >  tools/build/feature/Makefile                       |   4 -
-> >  tools/build/feature/test-libaudit.c                |  11 -
-> >  tools/perf/Documentation/perf-check.txt            |   2 -
-> >  tools/perf/Makefile.config                         |  39 +-
-> >  tools/perf/Makefile.perf                           |  12 +-
-> >  tools/perf/arch/alpha/entry/syscalls/Kbuild        |   2 +
-> >  .../arch/alpha/entry/syscalls/Makefile.syscalls    |   5 +
-> >  tools/perf/arch/alpha/entry/syscalls/syscall.tbl   | 504 ++++++++++++++++++++
-> >  tools/perf/arch/alpha/include/syscall_table.h      |   2 +
-> >  tools/perf/arch/arc/entry/syscalls/Kbuild          |   2 +
-> >  .../perf/arch/arc/entry/syscalls/Makefile.syscalls |   3 +
-> >  tools/perf/arch/arc/include/syscall_table.h        |   2 +
-> >  tools/perf/arch/arm/entry/syscalls/Kbuild          |   4 +
-> >  .../perf/arch/arm/entry/syscalls/Makefile.syscalls |   2 +
-> >  tools/perf/arch/arm/entry/syscalls/syscall.tbl     | 483 +++++++++++++++++++
-> >  tools/perf/arch/arm/include/syscall_table.h        |   2 +
-> >  tools/perf/arch/arm64/Makefile                     |  22 -
-> >  tools/perf/arch/arm64/entry/syscalls/Kbuild        |   3 +
-> >  .../arch/arm64/entry/syscalls/Makefile.syscalls    |   6 +
-> >  tools/perf/arch/arm64/entry/syscalls/mksyscalltbl  |  46 --
-> >  .../perf/arch/arm64/entry/syscalls/syscall_32.tbl  | 476 +++++++++++++++++++
-> >  .../perf/arch/arm64/entry/syscalls/syscall_64.tbl  |   1 +
-> >  tools/perf/arch/arm64/include/syscall_table.h      |   8 +
-> >  tools/perf/arch/csky/entry/syscalls/Kbuild         |   2 +
-> >  .../arch/csky/entry/syscalls/Makefile.syscalls     |   3 +
-> >  tools/perf/arch/csky/include/syscall_table.h       |   2 +
-> >  tools/perf/arch/loongarch/Makefile                 |  22 -
-/scratch/ewlu/ppa/new-glibc-dumps$ file core._home_ubuntu_glibc_glibc-2_39_build-tree_riscv64-libc_elf_ld_so.1000.a95f9a60-edce-47cf-a6fb-14d3a1705685.58093.1340004> >  tools/perf/arch/loongarch/entry/syscalls/Kbuild    |   2 +
-> >  .../loongarch/entry/syscalls/Makefile.syscalls     |   3 +
-> >  .../arch/loongarch/entry/syscalls/mksyscalltbl     |  45 --
-> >  tools/perf/arch/loongarch/include/syscall_table.h  |   2 +
-> >  tools/perf/arch/mips/entry/syscalls/Kbuild         |   2 +
-> >  .../arch/mips/entry/syscalls/Makefile.syscalls     |   5 +
-> >  tools/perf/arch/mips/entry/syscalls/mksyscalltbl   |  32 --
-> >  tools/perf/arch/mips/include/syscall_table.h       |   2 +
-> >  tools/perf/arch/parisc/entry/syscalls/Kbuild       |   3 +
-> >  .../arch/parisc/entry/syscalls/Makefile.syscalls   |   6 +
-> >  tools/perf/arch/parisc/entry/syscalls/syscall.tbl  | 463 +++++++++++++++++++
-> >  tools/perf/arch/parisc/include/syscall_table.h     |   8 +
-> >  tools/perf/arch/powerpc/Makefile                   |  25 -
-> >  tools/perf/arch/powerpc/entry/syscalls/Kbuild      |   3 +
-> >  .../arch/powerpc/entry/syscalls/Makefile.syscalls  |   6 +
-> >  .../perf/arch/powerpc/entry/syscalls/mksyscalltbl  |  39 --
-> >  tools/perf/arch/powerpc/include/syscall_table.h    |   8 +
-> >  tools/perf/arch/riscv/Makefile                     |  22 -
-> >  tools/perf/arch/riscv/entry/syscalls/Kbuild        |   2 +
-> >  .../arch/riscv/entry/syscalls/Makefile.syscalls    |   4 +
-> >  tools/perf/arch/riscv/entry/syscalls/mksyscalltbl  |  47 --
-> >  tools/perf/arch/riscv/include/syscall_table.h      |   8 +
-> >  tools/perf/arch/s390/Makefile                      |  21 -
-> >  tools/perf/arch/s390/entry/syscalls/Kbuild         |   2 +
-> >  .../arch/s390/entry/syscalls/Makefile.syscalls     |   5 +
-> >  tools/perf/arch/s390/entry/syscalls/mksyscalltbl   |  32 --
-> >  tools/perf/arch/s390/include/syscall_table.h       |   2 +
-> >  tools/perf/arch/sh/entry/syscalls/Kbuild           |   2 +
-> >  .../perf/arch/sh/entry/syscalls/Makefile.syscalls  |   4 +
-> >  tools/perf/arch/sh/entry/syscalls/syscall.tbl      | 472 +++++++++++++++++++
-> >  tools/perf/arch/sh/include/syscall_table.h         |   2 +
-> >  tools/perf/arch/sparc/entry/syscalls/Kbuild        |   3 +
-> >  .../arch/sparc/entry/syscalls/Makefile.syscalls    |   5 +
-> >  tools/perf/arch/sparc/entry/syscalls/syscall.tbl   | 514 +++++++++++++++++++++
-> >  tools/perf/arch/sparc/include/syscall_table.h      |   8 +
-> >  tools/perf/arch/x86/Build                          |   1 -
-> >  tools/perf/arch/x86/Makefile                       |  25 -
-> >  tools/perf/arch/x86/entry/syscalls/Kbuild          |   3 +
-> >  .../perf/arch/x86/entry/syscalls/Makefile.syscalls |   6 +
-> >  tools/perf/arch/x86/entry/syscalls/syscalltbl.sh   |  42 --
-> >  tools/perf/arch/x86/include/syscall_table.h        |   8 +
-> >  tools/perf/arch/xtensa/entry/syscalls/Kbuild       |   2 +
-> >  .../arch/xtensa/entry/syscalls/Makefile.syscalls   |   4 +
-> >  tools/perf/arch/xtensa/entry/syscalls/syscall.tbl  | 439 ++++++++++++++++++
-> >  tools/perf/arch/xtensa/include/syscall_table.h     |   2 +
-> >  tools/perf/builtin-check.c                         |   2 -
-> >  tools/perf/builtin-help.c                          |   2 -
-> >  tools/perf/builtin-trace.c                         |  30 --
-> >  tools/perf/check-headers.sh                        |   9 +
-> >  tools/perf/perf.c                                  |   6 +-
-> >  tools/perf/scripts/Makefile.syscalls               |  61 +++
-> >  tools/perf/scripts/syscalltbl.sh                   |  86 ++++
-> >  tools/perf/tests/make                              |   7 +-
-> >  tools/perf/util/env.c                              |   6 +-
-> >  tools/perf/util/generate-cmdlist.sh                |   4 +-
-> >  tools/perf/util/syscalltbl.c                       |  90 +---
-> >  tools/perf/util/syscalltbl.h                       |   1 -
-> >  tools/scripts/syscall.tbl                          | 409 ++++++++++++++++
-> >  87 files changed, 4105 insertions(+), 623 deletions(-)
-> > ---
-> > base-commit: 034b5b147bf7f44a45e39334725f8633b7ca8c3b
-> > change-id: 20240913-perf_syscalltbl-6f98defcc6f5
-> > -- 
-> > - Charlie
+instead of simply having:
+
+	ehdr_shoff(..);
+
+Hmm, if the structure is global, I guess then we could just have the helper
+functions use the global variable. But then, instead of having:
+
+static int (*compare_extable)(const void *a, const void *b);
+static uint64_t (*ehdr_shoff)(Elf_Ehdr *ehdr);
+static uint16_t (*ehdr_shstrndx)(Elf_Ehdr *ehdr);
+static uint16_t (*ehdr_shentsize)(Elf_Ehdr *ehdr);
+static uint16_t (*ehdr_shnum)(Elf_Ehdr *ehdr);
+static uint64_t (*shdr_addr)(Elf_Shdr *shdr);
+static uint64_t (*shdr_offset)(Elf_Shdr *shdr);
+static uint64_t (*shdr_size)(Elf_Shdr *shdr);
+static uint64_t (*shdr_entsize)(Elf_Shdr *shdr);
+static uint32_t (*shdr_link)(Elf_Shdr *shdr);
+static uint32_t (*shdr_name)(Elf_Shdr *shdr);
+static uint32_t (*shdr_type)(Elf_Shdr *shdr);
+static uint8_t (*sym_type)(Elf_Sym *sym);
+static uint32_t (*sym_name)(Elf_Sym *sym);
+static uint64_t (*sym_value)(Elf_Sym *sym);
+static uint16_t (*sym_shndx)(Elf_Sym *sym);
+static uint64_t (*rela_offset)(Elf_Rela *rela);
+static uint64_t (*rela_info)(Elf_Rela *rela);
+static uint64_t (*rela_addend)(Elf_Rela *rela);
+static void (*rela_write_addend)(Elf_Rela *rela, uint64_t val);
+
+	case ELFCLASS32:
+		compare_extable		= compare_extable_32;
+		ehdr_shoff		= ehdr32_shoff;
+		ehdr_shentsize		= ehdr32_shentsize;
+		ehdr_shstrndx		= ehdr32_shstrndx;
+		ehdr_shnum		= ehdr32_shnum;
+		shdr_addr		= shdr32_addr;
+		shdr_offset		= shdr32_offset;
+		shdr_link		= shdr32_link;
+		shdr_size		= shdr32_size;
+		shdr_name		= shdr32_name;
+		shdr_type		= shdr32_type;
+		shdr_entsize		= shdr32_entsize;
+		sym_type		= sym32_type;
+		sym_name		= sym32_name;
+		sym_value		= sym32_value;
+		sym_shndx		= sym32_shndx;
+		rela_offset		= rela32_offset;
+		rela_info		= rela32_info;
+		rela_addend		= rela32_addend;
+		rela_write_addend	= rela32_write_addend;
+		long_size		= 4;
+		extable_ent_size	= 8;
+		break;
+	case ELFCLASS64:
+		compare_extable		= compare_extable_64;
+		ehdr_shoff		= ehdr64_shoff;
+		ehdr_shentsize		= ehdr64_shentsize;
+		ehdr_shstrndx		= ehdr64_shstrndx;
+		ehdr_shnum		= ehdr64_shnum;
+		shdr_addr		= shdr64_addr;
+		shdr_offset		= shdr64_offset;
+		shdr_link		= shdr64_link;
+		shdr_size		= shdr64_size;
+		shdr_name		= shdr64_name;
+		shdr_type		= shdr64_type;
+		shdr_entsize		= shdr64_entsize;
+		sym_type		= sym64_type;
+		sym_name		= sym64_name;
+		sym_value		= sym64_value;
+		sym_shndx		= sym64_shndx;
+		rela_offset		= rela64_offset;
+		rela_info		= rela64_info;
+		rela_addend		= rela64_addend;
+		rela_write_addend	= rela64_write_addend;
+		long_size		= 8;
+		extable_ent_size	= 16;
+
+		break;
+
+
+We would have:
+
+static struct elf_funcs {
+	int (*compare_extable)(const void *a, const void *b);
+	uint64_t (*ehdr_shoff)(Elf_Ehdr *ehdr);
+	uint16_t (*ehdr_shstrndx)(Elf_Ehdr *ehdr);
+	uint16_t (*ehdr_shentsize)(Elf_Ehdr *ehdr);
+	uint16_t (*ehdr_shnum)(Elf_Ehdr *ehdr);
+	uint64_t (*shdr_addr)(Elf_Shdr *shdr);
+	uint64_t (*shdr_offset)(Elf_Shdr *shdr);
+	uint64_t (*shdr_size)(Elf_Shdr *shdr);
+	uint64_t (*shdr_entsize)(Elf_Shdr *shdr);
+	uint32_t (*shdr_link)(Elf_Shdr *shdr);
+	uint32_t (*shdr_name)(Elf_Shdr *shdr);
+	uint32_t (*shdr_type)(Elf_Shdr *shdr);
+	uint8_t (*sym_type)(Elf_Sym *sym);
+	uint32_t (*sym_name)(Elf_Sym *sym);
+	uint64_t (*sym_value)(Elf_Sym *sym);
+	uint16_t (*sym_shndx)(Elf_Sym *sym);
+} e;
+
+// Hmm, I could add the helper function into the macros:
+
+#define EHDR_HALF(fn_name)				\
+static uint16_t ehdr64_##fn_name(Elf_Ehdr *ehdr)	\
+{							\
+	return r2(&ehdr->e64.e_##fn_name);		\
+}							\
+							\
+static uint16_t ehdr32_##fn_name(Elf_Ehdr *ehdr)	\
+{							\
+	return r2(&ehdr->e32.e_##fn_name);		\
+}							\
+							\
+static uint16 ehdr_##fn_name(Elf_Ehdr *ehdr)		\
+{							\
+	return e.ehdr_##fn_name(ehdr);			\
+}
+
+[..]
+
+	case ELFCLASS32: {
+		struct elf_funcs efuncs = {
+			.compare_extable	= compare_extable_32,
+			.ehdr_shoff		= ehdr32_shoff,
+			.ehdr_shentsize		= ehdr32_shentsize,
+			[..]
+		};
+
+		e = efuncs;
+		long_size		= 4;
+		extable_ent_size	= 8;
+		}
+		break;
+	case ELFCLASS64: {
+		struct elf_funcs efuncs = {
+			.compare_extable	= compare_extable_64,
+			.ehdr_shoff		= ehdr64_shoff,
+			.ehdr_shentsize		= ehdr64_shentsize,
+			[..]
+		};
+
+		e = efuncs;
+		long_size		= 8;
+		extable_ent_size	= 16;
+		}
+		break;
+
+
+Which would give me this patch on top of this:
+
+diff --git a/scripts/sorttable.c b/scripts/sorttable.c
+index 656c1e9b5ad9..9f41575afd7a 100644
+--- a/scripts/sorttable.c
++++ b/scripts/sorttable.c
+@@ -85,6 +85,25 @@ static uint64_t (*r8)(const uint64_t *);
+ static void (*w)(uint32_t, uint32_t *);
+ typedef void (*table_sort_t)(char *, int);
+ 
++static struct elf_funcs {
++	int (*compare_extable)(const void *a, const void *b);
++	uint64_t (*ehdr_shoff)(Elf_Ehdr *ehdr);
++	uint16_t (*ehdr_shstrndx)(Elf_Ehdr *ehdr);
++	uint16_t (*ehdr_shentsize)(Elf_Ehdr *ehdr);
++	uint16_t (*ehdr_shnum)(Elf_Ehdr *ehdr);
++	uint64_t (*shdr_addr)(Elf_Shdr *shdr);
++	uint64_t (*shdr_offset)(Elf_Shdr *shdr);
++	uint64_t (*shdr_size)(Elf_Shdr *shdr);
++	uint64_t (*shdr_entsize)(Elf_Shdr *shdr);
++	uint32_t (*shdr_link)(Elf_Shdr *shdr);
++	uint32_t (*shdr_name)(Elf_Shdr *shdr);
++	uint32_t (*shdr_type)(Elf_Shdr *shdr);
++	uint8_t (*sym_type)(Elf_Sym *sym);
++	uint32_t (*sym_name)(Elf_Sym *sym);
++	uint64_t (*sym_value)(Elf_Sym *sym);
++	uint16_t (*sym_shndx)(Elf_Sym *sym);
++} e;
++
+ static uint64_t ehdr64_shoff(Elf_Ehdr *ehdr)
+ {
+ 	return r8(&ehdr->e64.e_shoff);
+@@ -95,6 +114,11 @@ static uint64_t ehdr32_shoff(Elf_Ehdr *ehdr)
+ 	return r(&ehdr->e32.e_shoff);
+ }
+ 
++static uint64_t ehdr_shoff(Elf_Ehdr *ehdr)
++{
++	return e.ehdr_shoff(ehdr);
++}
++
+ #define EHDR_HALF(fn_name)				\
+ static uint16_t ehdr64_##fn_name(Elf_Ehdr *ehdr)	\
+ {							\
+@@ -104,6 +128,11 @@ static uint16_t ehdr64_##fn_name(Elf_Ehdr *ehdr)	\
+ static uint16_t ehdr32_##fn_name(Elf_Ehdr *ehdr)	\
+ {							\
+ 	return r2(&ehdr->e32.e_##fn_name);		\
++}							\
++							\
++static uint16_t ehdr_##fn_name(Elf_Ehdr *ehdr)		\
++{							\
++	return e.ehdr_##fn_name(ehdr);			\
+ }
+ 
+ EHDR_HALF(shentsize)
+@@ -119,6 +148,11 @@ static uint32_t shdr64_##fn_name(Elf_Shdr *shdr)	\
+ static uint32_t shdr32_##fn_name(Elf_Shdr *shdr)	\
+ {							\
+ 	return r(&shdr->e32.sh_##fn_name);		\
++}							\
++							\
++static uint32_t shdr_##fn_name(Elf_Shdr *shdr)		\
++{							\
++	return e.shdr_##fn_name(shdr);			\
+ }
+ 
+ #define SHDR_ADDR(fn_name)				\
+@@ -130,6 +164,11 @@ static uint64_t shdr64_##fn_name(Elf_Shdr *shdr)	\
+ static uint64_t shdr32_##fn_name(Elf_Shdr *shdr)	\
+ {							\
+ 	return r(&shdr->e32.sh_##fn_name);		\
++}							\
++							\
++static uint64_t shdr_##fn_name(Elf_Shdr *shdr)		\
++{							\
++	return e.shdr_##fn_name(shdr);			\
+ }
+ 
+ #define SHDR_WORD(fn_name)				\
+@@ -141,6 +180,10 @@ static uint32_t shdr64_##fn_name(Elf_Shdr *shdr)	\
+ static uint32_t shdr32_##fn_name(Elf_Shdr *shdr)	\
+ {							\
+ 	return r(&shdr->e32.sh_##fn_name);		\
++}							\
++static uint32_t shdr_##fn_name(Elf_Shdr *shdr)		\
++{							\
++	return e.shdr_##fn_name(shdr);			\
+ }
+ 
+ SHDR_ADDR(addr)
+@@ -161,6 +204,11 @@ static uint64_t sym64_##fn_name(Elf_Sym *sym)	\
+ static uint64_t sym32_##fn_name(Elf_Sym *sym)	\
+ {						\
+ 	return r(&sym->e32.st_##fn_name);	\
++}						\
++						\
++static uint64_t sym_##fn_name(Elf_Sym *sym)	\
++{						\
++	return e.sym_##fn_name(sym);		\
+ }
+ 
+ #define SYM_WORD(fn_name)			\
+@@ -172,6 +220,11 @@ static uint32_t sym64_##fn_name(Elf_Sym *sym)	\
+ static uint32_t sym32_##fn_name(Elf_Sym *sym)	\
+ {						\
+ 	return r(&sym->e32.st_##fn_name);	\
++}						\
++						\
++static uint32_t sym_##fn_name(Elf_Sym *sym)	\
++{						\
++	return e.sym_##fn_name(sym);		\
+ }
+ 
+ #define SYM_HALF(fn_name)			\
+@@ -183,6 +236,11 @@ static uint16_t sym64_##fn_name(Elf_Sym *sym)	\
+ static uint16_t sym32_##fn_name(Elf_Sym *sym)	\
+ {						\
+ 	return r2(&sym->e32.st_##fn_name);	\
++}						\
++						\
++static uint16_t sym_##fn_name(Elf_Sym *sym)	\
++{						\
++	return e.sym_##fn_name(sym);		\
+ }
+ 
+ static uint8_t sym64_type(Elf_Sym *sym)
+@@ -195,6 +253,11 @@ static uint8_t sym32_type(Elf_Sym *sym)
+ 	return ELF32_ST_TYPE(sym->e32.st_info);
+ }
+ 
++static uint8_t sym_type(Elf_Sym *sym)
++{
++	return e.sym_type(sym);
++}
++
+ SYM_ADDR(value)
+ SYM_WORD(name)
+ SYM_HALF(shndx)
+@@ -322,29 +385,16 @@ static int compare_extable_64(const void *a, const void *b)
+ 	return av > bv;
+ }
+ 
++static int compare_extable(const void *a, const void *b)
++{
++	return e.compare_extable(a, b);
++}
++
+ static inline void *get_index(void *start, int entsize, int index)
+ {
+ 	return start + (entsize * index);
+ }
+ 
+-
+-static int (*compare_extable)(const void *a, const void *b);
+-static uint64_t (*ehdr_shoff)(Elf_Ehdr *ehdr);
+-static uint16_t (*ehdr_shstrndx)(Elf_Ehdr *ehdr);
+-static uint16_t (*ehdr_shentsize)(Elf_Ehdr *ehdr);
+-static uint16_t (*ehdr_shnum)(Elf_Ehdr *ehdr);
+-static uint64_t (*shdr_addr)(Elf_Shdr *shdr);
+-static uint64_t (*shdr_offset)(Elf_Shdr *shdr);
+-static uint64_t (*shdr_size)(Elf_Shdr *shdr);
+-static uint64_t (*shdr_entsize)(Elf_Shdr *shdr);
+-static uint32_t (*shdr_link)(Elf_Shdr *shdr);
+-static uint32_t (*shdr_name)(Elf_Shdr *shdr);
+-static uint32_t (*shdr_type)(Elf_Shdr *shdr);
+-static uint8_t (*sym_type)(Elf_Sym *sym);
+-static uint32_t (*sym_name)(Elf_Sym *sym);
+-static uint64_t (*sym_value)(Elf_Sym *sym);
+-static uint16_t (*sym_shndx)(Elf_Sym *sym);
+-
+ static int extable_ent_size;
+ static int long_size;
+ 
+@@ -864,7 +914,30 @@ static int do_file(char const *const fname, void *addr)
+ 	}
+ 
+ 	switch (ehdr->e32.e_ident[EI_CLASS]) {
+-	case ELFCLASS32:
++	case ELFCLASS32: {
++		struct elf_funcs efuncs = {
++			.compare_extable	= compare_extable_32,
++			.ehdr_shoff		= ehdr32_shoff,
++			.ehdr_shentsize		= ehdr32_shentsize,
++			.ehdr_shstrndx		= ehdr32_shstrndx,
++			.ehdr_shnum		= ehdr32_shnum,
++			.shdr_addr		= shdr32_addr,
++			.shdr_offset		= shdr32_offset,
++			.shdr_link		= shdr32_link,
++			.shdr_size		= shdr32_size,
++			.shdr_name		= shdr32_name,
++			.shdr_type		= shdr32_type,
++			.shdr_entsize		= shdr32_entsize,
++			.sym_type		= sym32_type,
++			.sym_name		= sym32_name,
++			.sym_value		= sym32_value,
++			.sym_shndx		= sym32_shndx,
++		};
++
++		e = efuncs;
++		long_size		= 4;
++		extable_ent_size	= 8;
++
+ 		if (r2(&ehdr->e32.e_ehsize) != sizeof(Elf32_Ehdr) ||
+ 		    r2(&ehdr->e32.e_shentsize) != sizeof(Elf32_Shdr)) {
+ 			fprintf(stderr,
+@@ -872,26 +945,32 @@ static int do_file(char const *const fname, void *addr)
+ 			return -1;
+ 		}
+ 
+-		compare_extable		= compare_extable_32;
+-		ehdr_shoff		= ehdr32_shoff;
+-		ehdr_shentsize		= ehdr32_shentsize;
+-		ehdr_shstrndx		= ehdr32_shstrndx;
+-		ehdr_shnum		= ehdr32_shnum;
+-		shdr_addr		= shdr32_addr;
+-		shdr_offset		= shdr32_offset;
+-		shdr_link		= shdr32_link;
+-		shdr_size		= shdr32_size;
+-		shdr_name		= shdr32_name;
+-		shdr_type		= shdr32_type;
+-		shdr_entsize		= shdr32_entsize;
+-		sym_type		= sym32_type;
+-		sym_name		= sym32_name;
+-		sym_value		= sym32_value;
+-		sym_shndx		= sym32_shndx;
+-		long_size		= 4;
+-		extable_ent_size	= 8;
++		}
+ 		break;
+-	case ELFCLASS64:
++	case ELFCLASS64: {
++		struct elf_funcs efuncs = {
++			.compare_extable	= compare_extable_64,
++			.ehdr_shoff		= ehdr64_shoff,
++			.ehdr_shentsize		= ehdr64_shentsize,
++			.ehdr_shstrndx		= ehdr64_shstrndx,
++			.ehdr_shnum		= ehdr64_shnum,
++			.shdr_addr		= shdr64_addr,
++			.shdr_offset		= shdr64_offset,
++			.shdr_link		= shdr64_link,
++			.shdr_size		= shdr64_size,
++			.shdr_name		= shdr64_name,
++			.shdr_type		= shdr64_type,
++			.shdr_entsize		= shdr64_entsize,
++			.sym_type		= sym64_type,
++			.sym_name		= sym64_name,
++			.sym_value		= sym64_value,
++			.sym_shndx		= sym64_shndx,
++		};
++
++		e = efuncs;
++		long_size		= 8;
++		extable_ent_size	= 16;
++
+ 		if (r2(&ehdr->e64.e_ehsize) != sizeof(Elf64_Ehdr) ||
+ 		    r2(&ehdr->e64.e_shentsize) != sizeof(Elf64_Shdr)) {
+ 			fprintf(stderr,
+@@ -900,25 +979,7 @@ static int do_file(char const *const fname, void *addr)
+ 			return -1;
+ 		}
+ 
+-		compare_extable		= compare_extable_64;
+-		ehdr_shoff		= ehdr64_shoff;
+-		ehdr_shentsize		= ehdr64_shentsize;
+-		ehdr_shstrndx		= ehdr64_shstrndx;
+-		ehdr_shnum		= ehdr64_shnum;
+-		shdr_addr		= shdr64_addr;
+-		shdr_offset		= shdr64_offset;
+-		shdr_link		= shdr64_link;
+-		shdr_size		= shdr64_size;
+-		shdr_name		= shdr64_name;
+-		shdr_type		= shdr64_type;
+-		shdr_entsize		= shdr64_entsize;
+-		sym_type		= sym64_type;
+-		sym_name		= sym64_name;
+-		sym_value		= sym64_value;
+-		sym_shndx		= sym64_shndx;
+-		long_size		= 8;
+-		extable_ent_size	= 16;
+-
++		}
+ 		break;
+ 	default:
+ 		fprintf(stderr, "unrecognized ELF class %d %s\n",
+
+
+Is that what you are thinking?
+
+-- Steve
 
