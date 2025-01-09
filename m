@@ -1,58 +1,61 @@
-Return-Path: <bpf+bounces-48412-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48413-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EB55A07CCC
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 17:03:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60AD0A07CF8
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 17:10:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF069188C6D2
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 16:03:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEB99162B6B
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 16:09:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 553BA21D5B0;
-	Thu,  9 Jan 2025 16:03:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80B832206BA;
+	Thu,  9 Jan 2025 16:08:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g2Pocp/D"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EGH/nKDl"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF3C0249E5;
-	Thu,  9 Jan 2025 16:03:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C9121C193;
+	Thu,  9 Jan 2025 16:08:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736438609; cv=none; b=nXUv/8ucwwpNibtbUlL0yBEeYcGPJVjMczVX3CJPZIrh4ep6Qu1Ac2/vrrBftA3xIZ4/2li4CnRoC+XZMr7Vkf6OPo+6i57LvrEYe8LxKLSqcJVHKnTLaMHIKZjtEuvMAmfpD46vhN7GhrB3krv0zNmLcrRQpT2hCc77t44CvT4=
+	t=1736438938; cv=none; b=e10/6zg17fRs7enjIgvpddr3zmFuhyq12mId/ewDS8M7e2HaZ9R+lQ4C0Y6DwYTwnD1VWAhGTvNXARgsv3XWYZ1e1FGx39pTbgxJacaihWu3kByB5/bJF9D+vlYFeVSV8N7KxAtp0jbFgI+azanDEFxSnawxbE3Qp7ZEUHAmN8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736438609; c=relaxed/simple;
-	bh=MeRpIz07IO3DB6Ldz84dGTdMhtVBjunWM8RIYG1CZDs=;
+	s=arc-20240116; t=1736438938; c=relaxed/simple;
+	bh=wBOmjGj7U7kIguqoGCDjLxj7vqsOb8WjHOdQiprEyf4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OgJSv4oeHOZfPaXQKXB8tyEk3ZjOk+b7XAsLa6vxWmNJQGoMMPSVdvSi6ZpMzPwqLRKFBSeLDgGVe1U+CZy3nnJkLbsXUyUckmCH+oOrlmsJCevmjRvafnyf/HHPSMLXUscGNp3oJ7h8zujlWs5rBX0aH8AVZ9yq7zhmgT9/TQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g2Pocp/D; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1E3DC4CED3;
-	Thu,  9 Jan 2025 16:03:28 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=OtC2DY7If+Cla4s7R+u6noPuNwANYriFnjiOeu7urpaC2UTlqCCd/Xgq+QO05MgMM3sStM5gbOwPGrv11v0D4QAPEqn0jAcoK0SkPYhkVFkd3FL8yrriUY/mRlMmkttmJkXklabmQBxLDot7328MEbTrHB033aQUO/btV8QTQ+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EGH/nKDl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEF14C4CED2;
+	Thu,  9 Jan 2025 16:08:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736438609;
-	bh=MeRpIz07IO3DB6Ldz84dGTdMhtVBjunWM8RIYG1CZDs=;
+	s=k20201202; t=1736438937;
+	bh=wBOmjGj7U7kIguqoGCDjLxj7vqsOb8WjHOdQiprEyf4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=g2Pocp/D7ATfHqlN++yZr2YQ2pFNHk7+D97yBWrGkQNdjriYrXijXjq7eEfqNxPWU
-	 gBgac0p5Y3kmvE9xVndfsd2BNgR8Gj0BT0Yf9Y7TxCQHuptOdxjDOvWbLglrYFoX++
-	 n2P3KIbUzwWALrY1OnRLxTOjnhmsjpl0Tqg1NzOSzLAjS6jMJNJJEl7DTA4aBDdwZB
-	 INnyhsIX+ILceH+MkpOvenfwzYhx5JbLNeNeVBjG/Wu6Y+2w4xYm8r3g1wt3meY0yx
-	 oT8Wc7Cj7M5GSxbVfAOq50JHRWdskC4/iA2wYdAL8GFPC+VrgHUaCADEiMiFfOgqMR
-	 /4vk9pZuv3bTA==
-Date: Thu, 9 Jan 2025 13:03:26 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Ihor Solodrai <ihor.solodrai@pm.me>, dwarves@vger.kernel.org,
-	eddyz87@gmail.com, andrii@kernel.org, mykolal@fb.com,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH dwarves] dwarves: set cu->obstack chunk size to 128Kb
-Message-ID: <Z3_zTvfgnOt-fhLZ@x1>
-References: <20241221030445.33907-1-ihor.solodrai@pm.me>
- <92a6a095-3a49-4204-af49-643f2db1e3a9@oracle.com>
- <Xfd2PxigaipLv392tfxKUdgwxRMdn9bMsaq4GCJxbX7DooxvxfZAtJceZkZVk14GHODh0twQw598iFTBaYkZ8mJxTCfEhi7S9WgB54C0zN4=@pm.me>
- <bf09b28d-e1b6-4de8-8eb2-410b017679ff@oracle.com>
+	b=EGH/nKDl+1XVs8xgVYoo3J60Or33gStMSf1J9vuXfqZ0qYpfJ10lmaFWH6Q6uJbCw
+	 WpneShLUIo+ZX2LXYFbzt+InaDfmUd1CR3p75NrDpa0Nr+sTBaS5ENKsg4kGgpxPYC
+	 nS+VVyXpCqg9egefdSlKSI7Lts79im7/ym9ODSosAjh9OQqwatYJhj8N8s5kyjeoMN
+	 D6ZcMCdKTNESWq+mb3tzunGm9qry8hkwW/XLRtyZ5OoS88QRepyZb/3umd/z+klGnJ
+	 uRZO5P9JsnKyz0UhtpFjLTSR+zTCIvNao6ZxxYUaIB/PHum4KDE2qA6Rykr67Hy8xb
+	 YU/bUqq+zUg+Q==
+Date: Thu, 9 Jan 2025 16:08:51 +0000
+From: Simon Horman <horms@kernel.org>
+To: Suman Ghosh <sumang@marvell.com>
+Cc: sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
+	hkelam@marvell.com, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, lcherian@marvell.com,
+	jerinj@marvell.com, john.fastabend@gmail.com, bbhushan2@marvell.com,
+	hawk@kernel.org, andrew+netdev@lunn.ch, ast@kernel.org,
+	daniel@iogearbox.net, bpf@vger.kernel.org
+Subject: Re: [net-next PATCH v2 1/6] octeontx2-pf: Add AF_XDP non-zero copy
+ support
+Message-ID: <20250109160851.GJ7706@kernel.org>
+References: <20250108183329.2207738-1-sumang@marvell.com>
+ <20250108183329.2207738-2-sumang@marvell.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,61 +64,44 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bf09b28d-e1b6-4de8-8eb2-410b017679ff@oracle.com>
+In-Reply-To: <20250108183329.2207738-2-sumang@marvell.com>
 
-On Wed, Jan 08, 2025 at 05:22:56PM +0000, Alan Maguire wrote:
-> On 08/01/2025 16:38, Ihor Solodrai wrote:
-> > On Wednesday, January 8th, 2025 at 5:55 AM, Alan Maguire <alan.maguire@oracle.com> wrote:
-> > 
-> >>
-> >>
-> >> On 21/12/2024 03:04, Ihor Solodrai wrote:
-> >>
-> >>> In dwarf_loader with growing nr_jobs the wall-clock time of BTF
-> >>> encoding starts worsening after a certain point [1].
-> >>>
-> >>> While some overhead of additional threads is expected, it's not
-> >>> supposed to be noticeable unless nr_jobs is set to an unreasonably big
-> >>> value.
-> >>>
-> >>> It turns out when there are "too many" threads decoding DWARF, they
-> >>> start competing for memory allocation: significant number of cycles is
-> >>> spent in osq_lock - in the depth of malloc called within
-> >>> cu__zalloc. Which suggests that many threads are trying to allocate
-> >>> memory at the same time.
-> >>>
-> >>> See an example on a perf flamegraph for run with -j240 [2]. This is
-> >>> 12-core machine, so the effect is small. On machines with more cores
-> >>> this problem is worse.
-> >>>
-> >>> Increasing the chunk size of obstacks associated with CUs helps to
-> >>> reduce the performance penalty caused by this race condition.
-> >>
-> >>
-> >> Is this because starting with a larger obstack size means we don't have
-> >> to keep reallocating as the obstack grows?
-> > 
-> > Yes. Bigger obstack size leads to lower number of malloc calls. The
-> > mallocs tend to happen at the same time between threads in the case of
-> > DWARF decoding.
-> > 
-> > Curiously, setting a higher obstack chunk size (like 1Mb), does not
-> > improve the overall wall-clock time, and can even make it worse.
-> > This happens because the kernel takes a different code path to allocate
-> > bigger chunks of memory. And also most CUs are not big (at least in case
-> > of vmlinux), so a bigger chunk size probably increases wasted memory.
-> > 
-> > 128Kb seems to be close to a sweet spot for the vmlinux.
-> > The default is 4Kb.
-> >
+On Thu, Jan 09, 2025 at 12:03:24AM +0530, Suman Ghosh wrote:
+> For XDP, page_pool APIs are getting used now. But the memory type was
+> not getting set due to which XDP_REDIRECT and hence AF_XDP was not
+> working. This patch ads the memory type MEM_TYPE_PAGE_POOL as the memory
+> model of the XDP program.
 > 
-> Thanks for the additional details!
-> 
-> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+> Signed-off-by: Suman Ghosh <sumang@marvell.com>
 
-I'm adding these details and your reviewed-by tag to that cset.
+...
 
-Thanks!
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
 
-- Arnaldo
+...
+
+> @@ -109,6 +109,11 @@ static void otx2_xdp_snd_pkt_handler(struct otx2_nic *pfvf,
+>  	otx2_dma_unmap_page(pfvf, sg->dma_addr[0],
+>  			    sg->size[0], DMA_TO_DEVICE);
+>  	page = virt_to_page(phys_to_virt(pa));
+> +	if (page->pp) {
+> +		page_pool_recycle_direct(page->pp, page);
+> +		return;
+> +	}
+> +
+>  	put_page(page);
+>  }
+>  
+
+Hi Suman,
+
+It is included indirectly in the following patch,
+[v2 2/6] octeontx2-pf: Don't unmap page pool buffer used by XDP,
+but I believe you need the following in order for this to compile:
+
+#include <net/page_pool/helpers.h>
+
+...
+
+pw-bot: changes-requested
 
