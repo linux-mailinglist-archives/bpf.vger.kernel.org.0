@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-48380-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48381-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CA20A0720D
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 10:50:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66702A07213
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 10:51:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9259E7A16E4
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 09:50:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A36313A6153
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 09:51:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED0FA21765C;
-	Thu,  9 Jan 2025 09:46:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95BBA219EA5;
+	Thu,  9 Jan 2025 09:46:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="LZhQffMu"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="MNCbZPZi"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11356214808;
-	Thu,  9 Jan 2025 09:46:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07EA421578E;
+	Thu,  9 Jan 2025 09:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736415981; cv=none; b=cNMSUZWgyz5WMgRkS/k0D6wPQ3rfkl/37BoIPi3XqkjLxFXaRlYFwT2S9kW0iqkhisw7JmTbDWaTyapn/3byjQn94M21qtgWlgW+BL2j9RMm1ZMojf2r6UFtn1YXhrXHZ3qgXMOVpPh0bxobLCpiUwzJaE92Z1gsyTg52rf7pXs=
+	t=1736415998; cv=none; b=cWIve7K7GFikvjfDlnwql3HBR6jNALPmP8DCfeluBWNxlcRVo1YY3ahqXZE8Te7oPYFVkZVuPYC4jJDn6dwRi/vsIpeaAlWN5gChrk8Mg3EcXFxC/Bq28L1RTMJv8rS8rxLCXfQ3R4AAYE8r6T0cHRZ0TSqrUP3FqIyU/kav9MY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736415981; c=relaxed/simple;
-	bh=IJm8inpuSvxGy2CeDsC512/fiBLIvg5GCcva5vd64xU=;
+	s=arc-20240116; t=1736415998; c=relaxed/simple;
+	bh=0jczcywZzm7zDtpDbF+SAh9vXqdFoANo4qjVnrdMKr8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EwoY69ccKQix02EwuqWP1SwjqgIre3sYbWhRfR1Fxy6aayQxZpQtUPL+ZEHP5pYUxHDC5Al7fOL+77zBRpRBStz7jmfZUltxy5B8vmIqO+oaLxWcVf/9F5DDyhxYWvwUTMMo6SePAXMsvLCxdq1puseNfoe+NVzeBQsB8kjJNNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=LZhQffMu; arc=none smtp.client-ip=220.197.31.5
+	 MIME-Version; b=UoCQ6VxLc8xFfKS3i5EmD1iPi6P/YfaaqHmh05sJ6oV779R+sYtXKmAwVbfBXbPMCmPki6Di29EwSrgGLmu2nV/qdk9XHud1FmySX5veXPyAvTbFAJvXi8ifUV0jAX6j/9AAp37W++8h2bKgtZNjz6M75QW+qM3WQN1J3y2EZgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=MNCbZPZi; arc=none smtp.client-ip=117.135.210.4
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-ID:MIME-Version; bh=Zvr+S
-	CH5MvbB4DGjnd6U/jDSnCspk+QQIM0FyBoHrMU=; b=LZhQffMuiHsnpmCo+zwMF
-	VjbVOk/YZC4bXwejdBP1i/FHPpi6xY6JPHNHASv4fkH3D2ZV9ahEMKN+mw5fDei9
-	aoei73Ioefv5GmTRGAvOxxltew/PlP4H53/thFRup/tzXlPclRZMCLzv65kMoBLA
-	UB0GWZx/UBaUnP2i7r7/F0=
+	s=s110527; h=From:Subject:Date:Message-ID:MIME-Version; bh=vYEuI
+	3zas+jH7nkAGpg2gUIcZ/dI/FzpckCMeupQ9Lk=; b=MNCbZPZivpwRar33L9Z41
+	bIbjlMfMvfuvYOhBtI4haguOiRMKvglf6/rxK16LhIfhyyk5g+02XY/H/wI9abY4
+	FaRNRetKfMlHg+zfq2xkSz7N1ftcQGMTPpcerbXoE5cJOuoQqHj79bb55kRy8yf6
+	hKLxVWeZCJH2dadYRrTF1E=
 Received: from localhost.localdomain (unknown [])
-	by gzsmtp4 (Coremail) with SMTP id PygvCgBnDnRlmn9no5XNEA--.12216S3;
-	Thu, 09 Jan 2025 17:44:26 +0800 (CST)
+	by gzsmtp4 (Coremail) with SMTP id PygvCgBnDnRlmn9no5XNEA--.12216S4;
+	Thu, 09 Jan 2025 17:44:37 +0800 (CST)
 From: Jiayuan Chen <mrpre@163.com>
 To: bpf@vger.kernel.org,
 	jakub@cloudflare.com,
@@ -69,9 +69,9 @@ Cc: netdev@vger.kernel.org,
 	kpsingh@kernel.org,
 	linux-doc@vger.kernel.org,
 	Jiayuan Chen <mrpre@163.com>
-Subject: [PATCH bpf v5 1/3] bpf: fix wrong copied_seq calculation
-Date: Thu,  9 Jan 2025 17:43:59 +0800
-Message-ID: <20250109094402.50838-2-mrpre@163.com>
+Subject: [PATCH bpf v5 2/3] selftests/bpf: add strparser test for bpf
+Date: Thu,  9 Jan 2025 17:44:00 +0800
+Message-ID: <20250109094402.50838-3-mrpre@163.com>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20250109094402.50838-1-mrpre@163.com>
 References: <20250109094402.50838-1-mrpre@163.com>
@@ -82,274 +82,614 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:PygvCgBnDnRlmn9no5XNEA--.12216S3
-X-Coremail-Antispam: 1Uf129KBjvJXoWxKryrKFWrGF47Cr4kuFW7urg_yoWfZFWUpF
-	1DA3yrGrW7JFy7u3Z3Ar97Gr4agw4rKFW7Cry0v3yayrn7Kr1fXF95KF1ayF1UKr45ZFW3
-	tr4DGw43uw1DZa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0piWSoJUUUUU=
-X-CM-SenderInfo: xpus2vi6rwjhhfrp/1tbiWwXPp2d-kW37BwABsv
+X-CM-TRANSID:PygvCgBnDnRlmn9no5XNEA--.12216S4
+X-Coremail-Antispam: 1Uf129KBjvAXoW3Zw1xCw15Zry3Xw18Cw1fXrb_yoW8CF48Ao
+	Z3uan5X3yxGwnxJrykW34DCw4fWF4xXr4DXr47J3yUuF1jyF42vayUGws3Ww1akr4Sgryf
+	JFWjva4rWr45Ar4fn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+	AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvj4RPWrWUUUUU
+X-CM-SenderInfo: xpus2vi6rwjhhfrp/xtbBDwPPp2d-mjQHvQAAso
 
-'sk->copied_seq' was updated in the tcp_eat_skb() function when the
-action of a BPF program was SK_REDIRECT. For other actions, like SK_PASS,
-the update logic for 'sk->copied_seq' was moved to
-tcp_bpf_recvmsg_parser() to ensure the accuracy of the 'fionread' feature.
+Add test cases for bpf + strparser and separated them from
+sockmap_basic, as strparser has more encapsulation and parsing
+capabilities compared to sockmap.
 
-It works for a single stream_verdict scenario, as it also modified
-'sk_data_ready->sk_psock_verdict_data_ready->tcp_read_skb'
-to remove updating 'sk->copied_seq'.
-
-However, for programs where both stream_parser and stream_verdict are
-active(strparser purpose), tcp_read_sock() was used instead of
-tcp_read_skb() (sk_data_ready->strp_data_ready->tcp_read_sock)
-tcp_read_sock() now still update 'sk->copied_seq', leading to duplicated
-updates.
-
-In summary, for strparser + SK_PASS, copied_seq is redundantly calculated
-in both tcp_read_sock() and tcp_bpf_recvmsg_parser().
-
-The issue causes incorrect copied_seq calculations, which prevent
-correct data reads from the recv() interface in user-land.
-
-We do not want to add new proto_ops to implement a new version of
-tcp_read_sock, as this would introduce code complexity [1].
-
-[1]: https://lore.kernel.org/bpf/20241218053408.437295-1-mrpre@163.com
-Fixes: e5c6de5fa025 ("bpf, sockmap: Incorrectly handling copied_seq")
-Co-developed-by: Jakub Sitnicki <jakub@cloudflare.com>
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 Signed-off-by: Jiayuan Chen <mrpre@163.com>
 ---
- include/linux/skmsg.h     |  2 ++
- include/net/strparser.h   |  2 ++
- include/net/tcp.h         |  3 +++
- net/core/skmsg.c          | 51 +++++++++++++++++++++++++++++++++++++++
- net/ipv4/tcp.c            | 31 ++++++++++++++++++++----
- net/strparser/strparser.c | 11 +++++++--
- 6 files changed, 93 insertions(+), 7 deletions(-)
+ .../selftests/bpf/prog_tests/sockmap_basic.c  |  53 --
+ .../selftests/bpf/prog_tests/sockmap_strp.c   | 452 ++++++++++++++++++
+ .../selftests/bpf/progs/test_sockmap_strp.c   |  53 ++
+ 3 files changed, 505 insertions(+), 53 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sockmap_strp.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_strp.c
 
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index 2cbe0c22a32f..ed1fdb0aa044 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -85,6 +85,8 @@ struct sk_psock {
- 	struct sock			*sk_redir;
- 	u32				apply_bytes;
- 	u32				cork_bytes;
-+	u32				copied_seq;
-+	u32				ingress_bytes;
- 	u32				eval;
- 	bool				redir_ingress; /* undefined if sk_redir is null */
- 	struct sk_msg			*cork;
-diff --git a/include/net/strparser.h b/include/net/strparser.h
-index 41e2ce9e9e10..0a83010b3a64 100644
---- a/include/net/strparser.h
-+++ b/include/net/strparser.h
-@@ -43,6 +43,8 @@ struct strparser;
- struct strp_callbacks {
- 	int (*parse_msg)(struct strparser *strp, struct sk_buff *skb);
- 	void (*rcv_msg)(struct strparser *strp, struct sk_buff *skb);
-+	int (*read_sock)(struct strparser *strp, read_descriptor_t *desc,
-+			 sk_read_actor_t recv_actor);
- 	int (*read_sock_done)(struct strparser *strp, int err);
- 	void (*abort_parser)(struct strparser *strp, int err);
- 	void (*lock)(struct strparser *strp);
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index e9b37b76e894..36db593984eb 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -729,6 +729,9 @@ void tcp_get_info(struct sock *, struct tcp_info *);
- /* Read 'sendfile()'-style from a TCP socket */
- int tcp_read_sock(struct sock *sk, read_descriptor_t *desc,
- 		  sk_read_actor_t recv_actor);
-+int tcp_read_sock_noack(struct sock *sk, read_descriptor_t *desc,
-+			sk_read_actor_t recv_actor, u32 noack,
-+			u32 *copied_seq);
- int tcp_read_skb(struct sock *sk, skb_read_actor_t recv_actor);
- struct sk_buff *tcp_recv_skb(struct sock *sk, u32 seq, u32 *off);
- void tcp_read_done(struct sock *sk, size_t len);
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 61f3f3d4e528..fb20193dd50a 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -549,6 +549,7 @@ static int sk_psock_skb_ingress_enqueue(struct sk_buff *skb,
- 			return num_sge;
- 	}
- 
-+	psock->ingress_bytes += len;
- 	copied = len;
- 	msg->sg.start = 0;
- 	msg->sg.size = copied;
-@@ -1092,6 +1093,52 @@ static int sk_psock_strp_read_done(struct strparser *strp, int err)
- 	return err;
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+index 884ad87783d5..244057f49970 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+@@ -531,57 +531,6 @@ static void test_sockmap_skb_verdict_shutdown(void)
+ 	test_sockmap_pass_prog__destroy(skel);
  }
  
-+static int sk_psock_strp_read_sock(struct strparser *strp,
-+				   read_descriptor_t *desc,
-+				   sk_read_actor_t recv_actor)
-+{
-+	struct sock *sk = strp->sk;
-+	struct sk_psock *psock;
-+	struct tcp_sock *tp;
-+	int copied = 0;
+-static void test_sockmap_stream_pass(void)
+-{
+-	int zero = 0, sent, recvd;
+-	int verdict, parser;
+-	int err, map;
+-	int c = -1, p = -1;
+-	struct test_sockmap_pass_prog *pass = NULL;
+-	char snd[256] = "0123456789";
+-	char rcv[256] = "0";
+-
+-	pass = test_sockmap_pass_prog__open_and_load();
+-	verdict = bpf_program__fd(pass->progs.prog_skb_verdict);
+-	parser = bpf_program__fd(pass->progs.prog_skb_parser);
+-	map = bpf_map__fd(pass->maps.sock_map_rx);
+-
+-	err = bpf_prog_attach(parser, map, BPF_SK_SKB_STREAM_PARSER, 0);
+-	if (!ASSERT_OK(err, "bpf_prog_attach stream parser"))
+-		goto out;
+-
+-	err = bpf_prog_attach(verdict, map, BPF_SK_SKB_STREAM_VERDICT, 0);
+-	if (!ASSERT_OK(err, "bpf_prog_attach stream verdict"))
+-		goto out;
+-
+-	err = create_pair(AF_INET, SOCK_STREAM, &c, &p);
+-	if (err)
+-		goto out;
+-
+-	/* sk_data_ready of 'p' will be replaced by strparser handler */
+-	err = bpf_map_update_elem(map, &zero, &p, BPF_NOEXIST);
+-	if (!ASSERT_OK(err, "bpf_map_update_elem(p)"))
+-		goto out_close;
+-
+-	/*
+-	 * as 'prog_skb_parser' return the original skb len and
+-	 * 'prog_skb_verdict' return SK_PASS, the kernel will just
+-	 * pass it through to original socket 'p'
+-	 */
+-	sent = xsend(c, snd, sizeof(snd), 0);
+-	ASSERT_EQ(sent, sizeof(snd), "xsend(c)");
+-
+-	recvd = recv_timeout(p, rcv, sizeof(rcv), SOCK_NONBLOCK,
+-			     IO_TIMEOUT_SEC);
+-	ASSERT_EQ(recvd, sizeof(rcv), "recv_timeout(p)");
+-
+-out_close:
+-	close(c);
+-	close(p);
+-
+-out:
+-	test_sockmap_pass_prog__destroy(pass);
+-}
+ 
+ static void test_sockmap_skb_verdict_fionread(bool pass_prog)
+ {
+@@ -1101,8 +1050,6 @@ void test_sockmap_basic(void)
+ 		test_sockmap_progs_query(BPF_SK_SKB_VERDICT);
+ 	if (test__start_subtest("sockmap skb_verdict shutdown"))
+ 		test_sockmap_skb_verdict_shutdown();
+-	if (test__start_subtest("sockmap stream parser and verdict pass"))
+-		test_sockmap_stream_pass();
+ 	if (test__start_subtest("sockmap skb_verdict fionread"))
+ 		test_sockmap_skb_verdict_fionread(true);
+ 	if (test__start_subtest("sockmap skb_verdict fionread on drop"))
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_strp.c b/tools/testing/selftests/bpf/prog_tests/sockmap_strp.c
+new file mode 100644
+index 000000000000..d3178a7a0e29
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_strp.c
+@@ -0,0 +1,452 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <error.h>
++#include <netinet/tcp.h>
++#include <test_progs.h>
++#include "sockmap_helpers.h"
++#include "test_skmsg_load_helpers.skel.h"
++#include "test_sockmap_strp.skel.h"
++#define STRP_PKT_HEAD_LEN 4
++#define STRP_PKT_BODY_LEN 6
++#define STRP_PKT_FULL_LEN (STRP_PKT_HEAD_LEN + STRP_PKT_BODY_LEN)
++static const char packet[STRP_PKT_FULL_LEN] = "head+body\0";
++static const int test_packet_num = 100;
 +
-+	if (WARN_ON(!sk_is_tcp(sk))) {
-+		desc->error = -EINVAL;
++/* current implementation of tcp_bpf_recvmsg_parser() invoke
++ * data_ready with sk held if skb exist in sk_receive_queue.
++ * Then for data_ready implementation of strparser, it will
++ * delay the read operation if sk was held and EAGAIN is returned.
++ */
++static int sockmap_strp_consume_pre_data(int p)
++{
++	int recvd;
++	bool retried = false;
++	char rcv[10];
++
++retry:
++	errno = 0;
++	recvd = recv_timeout(p, rcv, sizeof(rcv), 0, 1);
++	if (recvd < 0 && errno == EAGAIN && retried == false) {
++		/* On the first call, EAGAIN will certainly be returned.
++		 * Waiting 1 second is pretty enough wait workqueue finish.
++		 */
++		sleep(1);
++		retried = true;
++		goto retry;
++	}
++
++	if (!ASSERT_EQ(recvd, STRP_PKT_FULL_LEN, "recv_timeout(pre-data)") ||
++	    !ASSERT_OK(memcmp(packet, rcv, STRP_PKT_FULL_LEN),
++				"memcmp pre-data"))
++		return -1;
++	return 0;
++}
++
++static struct test_sockmap_strp *sockmap_strp_init(int *out_map, bool pass,
++						   bool need_parser)
++{
++	struct test_sockmap_strp *strp = NULL;
++	int verdict, parser;
++	int err;
++
++	strp = test_sockmap_strp__open_and_load();
++	*out_map = bpf_map__fd(strp->maps.sock_map);
++
++	if (need_parser)
++		parser = bpf_program__fd(strp->progs.prog_skb_parser_partial);
++	else
++		parser = bpf_program__fd(strp->progs.prog_skb_parser);
++
++	if (pass)
++		verdict = bpf_program__fd(strp->progs.prog_skb_verdict_pass);
++	else
++		verdict = bpf_program__fd(strp->progs.prog_skb_verdict);
++
++	err = bpf_prog_attach(parser, *out_map, BPF_SK_SKB_STREAM_PARSER, 0);
++	if (!ASSERT_OK(err, "bpf_prog_attach stream parser"))
++		goto err;
++
++	err = bpf_prog_attach(verdict, *out_map, BPF_SK_SKB_STREAM_VERDICT, 0);
++	if (!ASSERT_OK(err, "bpf_prog_attach stream verdict"))
++		goto err;
++
++	return strp;
++err:
++	test_sockmap_strp__destroy(strp);
++	return NULL;
++}
++
++/* Dispatch packets to different socket by packet size:
++ *
++ *                      ------  ------
++ *                     | pkt4 || pkt1 |... > remote socket
++ *  ------ ------     / ------  ------
++ * | pkt8 | pkt7 |...
++ *  ------ ------     \ ------  ------
++ *                     | pkt2 || pkt3 |... > local socket
++ *                      ------  ------
++ */
++static void test_sockmap_strp_dispatch_pkt(int family, int sotype)
++{
++	int i, j, zero = 0, one = 1, recvd;
++	int err, map;
++	int c0 = -1, p0 = -1, c1 = -1, p1 = -1;
++	struct test_sockmap_strp *strp = NULL;
++	int test_cnt = 6;
++	char rcv[10];
++	struct {
++		char	data[7];
++		int	data_len;
++		int	send_cnt;
++		int	*receiver;
++	} send_dir[2] = {
++		/* data expected to deliver to local */
++		{"llllll", 6, 0, &p0},
++		/* data expected to deliver to remote */
++		{"rrrrr",  5, 0, &c1}
++	};
++
++	strp = sockmap_strp_init(&map, false, false);
++	if (!ASSERT_TRUE(strp, "sockmap_strp_init"))
++		return;
++
++	err = create_socket_pairs(family, sotype, &c0, &c1, &p0, &p1);
++	if (!ASSERT_OK(err, "create_socket_pairs()"))
++		goto out;
++
++	err = bpf_map_update_elem(map, &zero, &p0, BPF_NOEXIST);
++	if (!ASSERT_OK(err, "bpf_map_update_elem(p0)"))
++		goto out_close;
++
++	err = bpf_map_update_elem(map, &one, &p1, BPF_NOEXIST);
++	if (!ASSERT_OK(err, "bpf_map_update_elem(p1)"))
++		goto out_close;
++
++	err = setsockopt(c1, IPPROTO_TCP, TCP_NODELAY, &zero, sizeof(zero));
++	if (!ASSERT_OK(err, "setsockopt(TCP_NODELAY)"))
++		goto out_close;
++
++	/* deliver data with data size greater than 5 to local */
++	strp->data->verdict_max_size = 5;
++
++	for (i = 0; i < test_cnt; i++) {
++		int d = i % 2;
++
++		xsend(c0, send_dir[d].data, send_dir[d].data_len, 0);
++		send_dir[d].send_cnt++;
++	}
++
++	for (i = 0; i < 2; i++) {
++		for (j = 0; j < send_dir[i].send_cnt; j++) {
++			int expected = send_dir[i].data_len;
++
++			recvd = recv_timeout(*send_dir[i].receiver, rcv,
++					     expected, MSG_DONTWAIT,
++					     IO_TIMEOUT_SEC);
++			if (!ASSERT_EQ(recvd, expected, "recv_timeout()"))
++				goto out_close;
++			if (!ASSERT_OK(memcmp(send_dir[i].data, rcv, recvd),
++				       "memcmp(rcv)"))
++				goto out_close;
++		}
++	}
++out_close:
++	close(c0);
++	close(c1);
++	close(p0);
++	close(p1);
++out:
++	test_sockmap_strp__destroy(strp);
++}
++
++/* We have multiple packets in one skb
++ * ------------ ------------ ------------
++ * |  packet1  |   packet2  |  ...
++ * ------------ ------------ ------------
++ */
++static void test_sockmap_strp_multiple_pkt(int family, int sotype)
++{
++	int i, zero = 0;
++	int sent, recvd, total;
++	int err, map;
++	int c = -1, p = -1;
++	struct test_sockmap_strp *strp = NULL;
++	char *snd = NULL, *rcv = NULL;
++
++	strp = sockmap_strp_init(&map, true, true);
++	if (!ASSERT_TRUE(strp, "sockmap_strp_init"))
++		return;
++
++	err = create_pair(family, sotype, &c, &p);
++	if (err)
++		goto out;
++
++	err = bpf_map_update_elem(map, &zero, &p, BPF_NOEXIST);
++	if (!ASSERT_OK(err, "bpf_map_update_elem(zero, p)"))
++		goto out_close;
++
++	/* construct multiple packets in one buffer */
++	total = test_packet_num * STRP_PKT_FULL_LEN;
++	snd = malloc(total);
++	rcv = malloc(total + 1);
++	if (!ASSERT_TRUE(snd, "malloc(snd)") ||
++	    !ASSERT_TRUE(rcv, "malloc(rcv)"))
++		goto out_close;
++
++	for (i = 0; i < test_packet_num; i++) {
++		memcpy(snd + i * STRP_PKT_FULL_LEN,
++		       packet, STRP_PKT_FULL_LEN);
++	}
++
++	sent = xsend(c, snd, total, 0);
++	if (!ASSERT_EQ(sent, total, "xsend(c)"))
++		goto out_close;
++
++	/* try to recv one more byte to avoid truncation check */
++	recvd = recv_timeout(p, rcv, total + 1, MSG_DONTWAIT, IO_TIMEOUT_SEC);
++	if (!ASSERT_EQ(recvd, total, "recv(rcv)"))
++		goto out_close;
++
++	/* we sent TCP segment with multiple encapsulation
++	 * then check whether packets are handled correctly
++	 */
++	if (!ASSERT_OK(memcmp(snd, rcv, total), "memcmp(snd, rcv)"))
++		goto out_close;
++
++out_close:
++	close(c);
++	close(p);
++	if (snd)
++		free(snd);
++	if (rcv)
++		free(rcv);
++out:
++	test_sockmap_strp__destroy(strp);
++}
++
++/* Test strparser with partial read */
++static void test_sockmap_strp_partial_read(int family, int sotype)
++{
++	int zero = 0, recvd, off;
++	int err, map;
++	int c = -1, p = -1;
++	struct test_sockmap_strp *strp = NULL;
++	char rcv[STRP_PKT_FULL_LEN + 1] = "0";
++
++	strp = sockmap_strp_init(&map, true, true);
++	if (!ASSERT_TRUE(strp, "sockmap_strp_init"))
++		return;
++
++	err = create_pair(family, sotype, &c, &p);
++	if (err)
++		goto out;
++
++	/* sk_data_ready of 'p' will be replaced by strparser handler */
++	err = bpf_map_update_elem(map, &zero, &p, BPF_NOEXIST);
++	if (!ASSERT_OK(err, "bpf_map_update_elem(zero, p)"))
++		goto out_close;
++
++	/* 1.1 send partial head, 1 byte header left*/
++	off = STRP_PKT_HEAD_LEN - 1;
++	xsend(c, packet, off, 0);
++	recvd = recv_timeout(p, rcv, sizeof(rcv), MSG_DONTWAIT, 1);
++	if (!ASSERT_EQ(-1, recvd, "insufficient head, should no data recvd"))
++		goto out_close;
++
++	/* 1.2 send remaining head and body */
++	xsend(c, packet + off, STRP_PKT_FULL_LEN - off, 0);
++	recvd = recv_timeout(p, rcv, sizeof(rcv), MSG_DONTWAIT, IO_TIMEOUT_SEC);
++	if (!ASSERT_EQ(recvd, STRP_PKT_FULL_LEN, "should full data recvd"))
++		goto out_close;
++
++	/* 2.1 send partial head, 1 byte header left */
++	off = STRP_PKT_HEAD_LEN - 1;
++	xsend(c, packet, off, 0);
++
++	/* 2.2 send remaining head and partial body, 1 byte body left */
++	xsend(c, packet + off, STRP_PKT_FULL_LEN - off - 1, 0);
++	off = STRP_PKT_FULL_LEN - 1;
++	recvd = recv_timeout(p, rcv, sizeof(rcv), MSG_DONTWAIT, 1);
++	if (!ASSERT_EQ(-1, recvd, "insufficient body, should no data read"))
++		goto out_close;
++
++	/* 2.3 send remaining body */
++	xsend(c, packet + off, STRP_PKT_FULL_LEN - off, 0);
++	recvd = recv_timeout(p, rcv, sizeof(rcv), MSG_DONTWAIT, IO_TIMEOUT_SEC);
++	if (!ASSERT_EQ(recvd, STRP_PKT_FULL_LEN, "should full data recvd"))
++		goto out_close;
++
++out_close:
++	close(c);
++	close(p);
++
++out:
++	test_sockmap_strp__destroy(strp);
++}
++
++/* Test simple soket read/write with strparser + FIONREAD */
++static void test_sockmap_strp_pass(int family, int sotype, bool fionread)
++{
++	int zero = 0, pkt_size = STRP_PKT_FULL_LEN, sent, recvd, avail;
++	int err, map;
++	int c = -1, p = -1;
++	int test_cnt = 10, i;
++	struct test_sockmap_strp *strp = NULL;
++	char rcv[STRP_PKT_FULL_LEN + 1] = "0";
++
++	strp = sockmap_strp_init(&map, true, true);
++	if (!ASSERT_TRUE(strp, "sockmap_strp_init"))
++		return;
++
++	err = create_pair(family, sotype, &c, &p);
++	if (err)
++		goto out;
++
++	/* inject some data before bpf process, it should be read
++	 * correctly because we check sk_receive_queue in
++	 * tcp_bpf_recvmsg_parser()
++	 */
++	sent = xsend(c, packet, pkt_size, 0);
++	if (!ASSERT_EQ(sent, pkt_size, "xsend(pre-data)"))
++		goto out_close;
++
++	/* sk_data_ready of 'p' will be replaced by strparser handler */
++	err = bpf_map_update_elem(map, &zero, &p, BPF_NOEXIST);
++	if (!ASSERT_OK(err, "bpf_map_update_elem(p)"))
++		goto out_close;
++
++	/* consume previous data we injected */
++	if (sockmap_strp_consume_pre_data(p))
++		goto out_close;
++
++	/* Previously, we encountered issues such as deadlocks and
++	 * sequence errors that resulted in the inability to read
++	 * continuously. Therefore, we perform multiple iterations
++	 * of testing here.
++	 */
++	for (i = 0; i < test_cnt; i++) {
++		sent = xsend(c, packet, pkt_size, 0);
++		if (!ASSERT_EQ(sent, pkt_size, "xsend(c)"))
++			goto out_close;
++
++		recvd = recv_timeout(p, rcv, sizeof(rcv), MSG_DONTWAIT,
++				     IO_TIMEOUT_SEC);
++		if (!ASSERT_EQ(recvd, pkt_size, "recv_timeout(p)") ||
++		    !ASSERT_OK(memcmp(packet, rcv, pkt_size),
++				  "memcmp"))
++			goto out_close;
++	}
++
++	if (fionread) {
++		sent = xsend(c, packet, pkt_size, 0);
++		if (!ASSERT_EQ(sent, pkt_size, "second xsend(c)"))
++			goto out_close;
++
++		err = ioctl(p, FIONREAD, &avail);
++		if (!ASSERT_OK(err, "ioctl(FIONREAD) error") ||
++		    !ASSERT_EQ(avail, pkt_size, "ioctl(FIONREAD)"))
++			goto out_close;
++
++		recvd = recv_timeout(p, rcv, sizeof(rcv), MSG_DONTWAIT,
++				     IO_TIMEOUT_SEC);
++		if (!ASSERT_EQ(recvd, pkt_size, "second recv_timeout(p)") ||
++		    !ASSERT_OK(memcmp(packet, rcv, pkt_size),
++			      "second memcmp"))
++			goto out_close;
++	}
++
++out_close:
++	close(c);
++	close(p);
++
++out:
++	test_sockmap_strp__destroy(strp);
++}
++
++/* Test strparser with verdict mode */
++static void test_sockmap_strp_verdict(int family, int sotype)
++{
++	int zero = 0, one = 1, sent, recvd, off;
++	int err, map;
++	int c0 = -1, p0 = -1, c1 = -1, p1 = -1;
++	struct test_sockmap_strp *strp = NULL;
++	char rcv[STRP_PKT_FULL_LEN + 1] = "0";
++
++	strp = sockmap_strp_init(&map, false, true);
++	if (!ASSERT_TRUE(strp, "sockmap_strp_init"))
++		return;
++
++	/* We simulate a reverse proxy server.
++	 * When p0 receives data from c0, we forward it to c1.
++	 * From c1's perspective, it will consider this data
++	 * as being sent by p1.
++	 */
++	err = create_socket_pairs(family, sotype, &c0, &c1, &p0, &p1);
++	if (!ASSERT_OK(err, "create_socket_pairs()"))
++		goto out;
++
++	err = bpf_map_update_elem(map, &zero, &p0, BPF_NOEXIST);
++	if (!ASSERT_OK(err, "bpf_map_update_elem(p0)"))
++		goto out_close;
++
++	err = bpf_map_update_elem(map, &one, &p1, BPF_NOEXIST);
++	if (!ASSERT_OK(err, "bpf_map_update_elem(c1)"))
++		goto out_close;
++
++	sent = xsend(c0, packet, STRP_PKT_FULL_LEN, 0);
++	if (!ASSERT_EQ(sent, STRP_PKT_FULL_LEN, "xsend(c0)"))
++		goto out_close;
++
++	recvd = recv_timeout(c1, rcv, sizeof(rcv), MSG_DONTWAIT,
++			     IO_TIMEOUT_SEC);
++	if (!ASSERT_EQ(recvd, STRP_PKT_FULL_LEN, "recv_timeout(p1)") ||
++	    !ASSERT_OK(memcmp(packet, rcv, STRP_PKT_FULL_LEN),
++			  "received data does not match the sent data"))
++		goto out_close;
++
++	/* send again to ensure the stream is functioning correctly. */
++	sent = xsend(c0, packet, STRP_PKT_FULL_LEN, 0);
++	if (!ASSERT_EQ(sent, STRP_PKT_FULL_LEN, "second xsend(c0)"))
++		goto out_close;
++
++	/* partial read */
++	off = STRP_PKT_FULL_LEN / 2;
++	recvd = recv_timeout(c1, rcv, off, MSG_DONTWAIT,
++			     IO_TIMEOUT_SEC);
++	recvd += recv_timeout(c1, rcv + off, sizeof(rcv) - off, MSG_DONTWAIT,
++			      IO_TIMEOUT_SEC);
++
++	if (!ASSERT_EQ(recvd, STRP_PKT_FULL_LEN, "partial recv_timeout(c1)") ||
++	    !ASSERT_OK(memcmp(packet, rcv, STRP_PKT_FULL_LEN),
++			  "partial received data does not match the sent data"))
++		goto out_close;
++
++out_close:
++	close(c0);
++	close(c1);
++	close(p0);
++	close(p1);
++out:
++	test_sockmap_strp__destroy(strp);
++}
++
++void test_sockmap_strp(void)
++{
++	if (test__start_subtest("sockmap strp tcp pass"))
++		test_sockmap_strp_pass(AF_INET, SOCK_STREAM, false);
++	if (test__start_subtest("sockmap strp tcp v6 pass"))
++		test_sockmap_strp_pass(AF_INET6, SOCK_STREAM, false);
++	if (test__start_subtest("sockmap strp tcp pass fionread"))
++		test_sockmap_strp_pass(AF_INET, SOCK_STREAM, true);
++	if (test__start_subtest("sockmap strp tcp v6 pass fionread"))
++		test_sockmap_strp_pass(AF_INET6, SOCK_STREAM, true);
++	if (test__start_subtest("sockmap strp tcp verdict"))
++		test_sockmap_strp_verdict(AF_INET, SOCK_STREAM);
++	if (test__start_subtest("sockmap strp tcp v6 verdict"))
++		test_sockmap_strp_verdict(AF_INET6, SOCK_STREAM);
++	if (test__start_subtest("sockmap strp tcp partial read"))
++		test_sockmap_strp_partial_read(AF_INET, SOCK_STREAM);
++	if (test__start_subtest("sockmap strp tcp multiple packets"))
++		test_sockmap_strp_multiple_pkt(AF_INET, SOCK_STREAM);
++	if (test__start_subtest("sockmap strp tcp dispatch"))
++		test_sockmap_strp_dispatch_pkt(AF_INET, SOCK_STREAM);
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_strp.c b/tools/testing/selftests/bpf/progs/test_sockmap_strp.c
+new file mode 100644
+index 000000000000..dde3d5bec515
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_sockmap_strp.c
+@@ -0,0 +1,53 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_endian.h>
++int verdict_max_size = 10000;
++struct {
++	__uint(type, BPF_MAP_TYPE_SOCKMAP);
++	__uint(max_entries, 20);
++	__type(key, int);
++	__type(value, int);
++} sock_map SEC(".maps");
++
++SEC("sk_skb/stream_verdict")
++int prog_skb_verdict(struct __sk_buff *skb)
++{
++	__u32 one = 1;
++
++	if (skb->len > verdict_max_size)
++		return SK_PASS;
++
++	return bpf_sk_redirect_map(skb, &sock_map, one, 0);
++}
++
++SEC("sk_skb/stream_verdict")
++int prog_skb_verdict_pass(struct __sk_buff *skb)
++{
++	return SK_PASS;
++}
++
++SEC("sk_skb/stream_parser")
++int prog_skb_parser(struct __sk_buff *skb)
++{
++	return skb->len;
++}
++
++SEC("sk_skb/stream_parser")
++int prog_skb_parser_partial(struct __sk_buff *skb)
++{
++	/* agreement with the test program on a 4-byte size header
++	 * and 6-byte body.
++	 */
++	if (skb->len < 4) {
++		/* need more header to determine full length */
 +		return 0;
 +	}
-+
-+	tp = tcp_sk(sk);
-+	rcu_read_lock();
-+	psock = sk_psock(sk);
-+	if (WARN_ON(!psock)) {
-+		desc->error = -EINVAL;
-+		goto out;
-+	}
-+
-+	psock->ingress_bytes = 0;
-+	/* We could easily add copied_seq and noack into desc then call
-+	 * ops->read_sock without calling symbol directly. But unfortunately
-+	 * most descriptors used by other modules are not inited with zero.
-+	 * Also replacing ops->read_sock can't be workd without introducing
-+	 * new ops as ops itself is located in rodata segment.
++	/* return full length decoded from header.
++	 * the return value may be larger than skb->len which
++	 * means framework must wait body coming.
 +	 */
-+	copied = tcp_read_sock_noack(sk, desc, recv_actor, 1,
-+				     &psock->copied_seq);
-+	if (copied < 0)
-+		goto out;
-+	/* recv_actor may redirect skb to another socket(SK_REDIRECT) or
-+	 * just put skb into ingress queue of current socket(SK_PASS).
-+	 * For SK_REDIRECT, we need 'ack' the frame immediately but for
-+	 * SK_PASS, the 'ack' was delay to tcp_bpf_recvmsg_parser()
-+	 */
-+	tp->copied_seq = psock->copied_seq - psock->ingress_bytes;
-+	tcp_rcv_space_adjust(sk);
-+	__tcp_cleanup_rbuf(sk, copied - psock->ingress_bytes);
-+out:
-+	rcu_read_unlock();
-+	return copied;
++	return 10;
 +}
 +
- static int sk_psock_strp_parse(struct strparser *strp, struct sk_buff *skb)
- {
- 	struct sk_psock *psock = container_of(strp, struct sk_psock, strp);
-@@ -1136,6 +1183,7 @@ int sk_psock_init_strp(struct sock *sk, struct sk_psock *psock)
- 
- 	static const struct strp_callbacks cb = {
- 		.rcv_msg	= sk_psock_strp_read,
-+		.read_sock	= sk_psock_strp_read_sock,
- 		.read_sock_done	= sk_psock_strp_read_done,
- 		.parse_msg	= sk_psock_strp_parse,
- 	};
-@@ -1144,6 +1192,9 @@ int sk_psock_init_strp(struct sock *sk, struct sk_psock *psock)
- 	if (!ret)
- 		sk_psock_set_state(psock, SK_PSOCK_RX_STRP_ENABLED);
- 
-+	if (sk_is_tcp(sk))
-+		psock->copied_seq = tcp_sk(sk)->copied_seq;
-+
- 	return ret;
- }
- 
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index 0d704bda6c41..32de16077ca7 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -1565,12 +1565,13 @@ EXPORT_SYMBOL(tcp_recv_skb);
-  *	  or for 'peeking' the socket using this routine
-  *	  (although both would be easy to implement).
-  */
--int tcp_read_sock(struct sock *sk, read_descriptor_t *desc,
--		  sk_read_actor_t recv_actor)
-+static int __tcp_read_sock(struct sock *sk, read_descriptor_t *desc,
-+			   sk_read_actor_t recv_actor, u32 noack,
-+			   u32 *copied_seq)
- {
- 	struct sk_buff *skb;
- 	struct tcp_sock *tp = tcp_sk(sk);
--	u32 seq = tp->copied_seq;
-+	u32 seq = *copied_seq;
- 	u32 offset;
- 	int copied = 0;
- 
-@@ -1624,9 +1625,12 @@ int tcp_read_sock(struct sock *sk, read_descriptor_t *desc,
- 		tcp_eat_recv_skb(sk, skb);
- 		if (!desc->count)
- 			break;
--		WRITE_ONCE(tp->copied_seq, seq);
-+		WRITE_ONCE(*copied_seq, seq);
- 	}
--	WRITE_ONCE(tp->copied_seq, seq);
-+	WRITE_ONCE(*copied_seq, seq);
-+
-+	if (noack)
-+		goto out;
- 
- 	tcp_rcv_space_adjust(sk);
- 
-@@ -1635,10 +1639,27 @@ int tcp_read_sock(struct sock *sk, read_descriptor_t *desc,
- 		tcp_recv_skb(sk, seq, &offset);
- 		tcp_cleanup_rbuf(sk, copied);
- 	}
-+out:
- 	return copied;
- }
-+
-+int tcp_read_sock(struct sock *sk, read_descriptor_t *desc,
-+		  sk_read_actor_t recv_actor)
-+{
-+	return __tcp_read_sock(sk, desc, recv_actor,
-+			       0, &tcp_sk(sk)->copied_seq);
-+}
- EXPORT_SYMBOL(tcp_read_sock);
- 
-+int tcp_read_sock_noack(struct sock *sk, read_descriptor_t *desc,
-+			sk_read_actor_t recv_actor, u32 noack,
-+			u32 *copied_seq)
-+{
-+	return __tcp_read_sock(sk, desc, recv_actor,
-+			       noack, copied_seq);
-+}
-+EXPORT_SYMBOL(tcp_read_sock_noack);
-+
- int tcp_read_skb(struct sock *sk, skb_read_actor_t recv_actor)
- {
- 	struct sk_buff *skb;
-diff --git a/net/strparser/strparser.c b/net/strparser/strparser.c
-index 8299ceb3e373..95696f42647e 100644
---- a/net/strparser/strparser.c
-+++ b/net/strparser/strparser.c
-@@ -347,7 +347,10 @@ static int strp_read_sock(struct strparser *strp)
- 	struct socket *sock = strp->sk->sk_socket;
- 	read_descriptor_t desc;
- 
--	if (unlikely(!sock || !sock->ops || !sock->ops->read_sock))
-+	if (unlikely(!sock || !sock->ops))
-+		return -EBUSY;
-+
-+	if (unlikely(!strp->cb.read_sock && !sock->ops->read_sock))
- 		return -EBUSY;
- 
- 	desc.arg.data = strp;
-@@ -355,7 +358,10 @@ static int strp_read_sock(struct strparser *strp)
- 	desc.count = 1; /* give more than one skb per call */
- 
- 	/* sk should be locked here, so okay to do read_sock */
--	sock->ops->read_sock(strp->sk, &desc, strp_recv);
-+	if (strp->cb.read_sock)
-+		strp->cb.read_sock(strp, &desc, strp_recv);
-+	else
-+		sock->ops->read_sock(strp->sk, &desc, strp_recv);
- 
- 	desc.error = strp->cb.read_sock_done(strp, desc.error);
- 
-@@ -468,6 +474,7 @@ int strp_init(struct strparser *strp, struct sock *sk,
- 	strp->cb.unlock = cb->unlock ? : strp_sock_unlock;
- 	strp->cb.rcv_msg = cb->rcv_msg;
- 	strp->cb.parse_msg = cb->parse_msg;
-+	strp->cb.read_sock = cb->read_sock;
- 	strp->cb.read_sock_done = cb->read_sock_done ? : default_read_sock_done;
- 	strp->cb.abort_parser = cb->abort_parser ? : strp_abort_strp;
- 
++char _license[] SEC("license") = "GPL";
 -- 
 2.43.5
 
