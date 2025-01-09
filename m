@@ -1,106 +1,194 @@
-Return-Path: <bpf+bounces-48397-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48398-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A329A0791C
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 15:25:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82462A07981
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 15:42:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5AA8E7A3344
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 14:25:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A3D9188B8FA
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 14:42:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E59CA21A438;
-	Thu,  9 Jan 2025 14:25:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9097321C17F;
+	Thu,  9 Jan 2025 14:41:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GA+HHG1e"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="I0ekSmdq"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0085F14EC77
-	for <bpf@vger.kernel.org>; Thu,  9 Jan 2025 14:25:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA39621764D;
+	Thu,  9 Jan 2025 14:41:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736432712; cv=none; b=EtuhNtX3zDcMfGXdBOapqXg2kg50+FCtp4jVapFoKded0VQmmqoQbNPFEmzfi29MiDz3zlAb2YwJB5OJz/KsNjdYw0NriK324qaNPeA/9s6EoU1O1S0+gxvA9SFc/wxtguXH3WreiZV2cDzN3DmS0fqUiQf6h6kihtPGtZMYUU4=
+	t=1736433700; cv=none; b=U8iF+RsqIY/QYGiLDyInHvthptk4uYIIhcxxbdoHZdzy0xg33zmNXZV9Dzrk4MdhHeHboBMh/My+3I7osBrbAsAVNuXgTf8Yz9VcSs35Rr2MrKUNUiX3TgNisQr4OCNZImgvgNnjPKj+uFA0V/1NaBIgmH0ObwWhvzyhtG3pScY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736432712; c=relaxed/simple;
-	bh=toDOfdT/dLLxxneMaOhjxbgIjQyaRYqQq8Kg/40SKto=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Dib3MQacsxGfdXUxe+SlGOw1/BFFQCBdi2AOc0/hMnYzyGBO0YfuUXFhQN5fE82QSj3cD5niwP5Yg0VT1HByLDMrCx+FJEWyAHoxUlYMsIP2DPWaKotsP9hFrT/X8HWlygaITEyRVMkCLdq8+WxTV1gHhLJcd3tyCgCaW7/mzoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GA+HHG1e; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1736432710;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6TQ+MRlGX4zoVa4E9hEX0jIlbvnXvUvfeYr2R+u5ruo=;
-	b=GA+HHG1eF964nkbEmGTbYRgEZEAyIhmpGG6owl4SMzA5olHxLsas+Bp0q2txZP9FUrXPF8
-	DqGTrX54mpWJJueRykFew/EBdYq0i0z+W4CDQQNGWPfremz8QQWvLDDrpAyS0dke3oD9JM
-	OnYdIgCMy7a1D8+xQ8P1D9gE1BfmCDo=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-631-_xap2Xl0OAKARNgrQ8yOhg-1; Thu,
- 09 Jan 2025 09:25:07 -0500
-X-MC-Unique: _xap2Xl0OAKARNgrQ8yOhg-1
-X-Mimecast-MFC-AGG-ID: _xap2Xl0OAKARNgrQ8yOhg
-Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 483C619560B8;
-	Thu,  9 Jan 2025 14:25:05 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.245])
-	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 44721195E3D9;
-	Thu,  9 Jan 2025 14:25:00 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Thu,  9 Jan 2025 15:24:40 +0100 (CET)
-Date: Thu, 9 Jan 2025 15:24:35 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Max Makarov <maxpain@linux.com>, bpf@vger.kernel.org,
-	Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH] uprobes: Fix race in uprobe_free_utask
-Message-ID: <20250109142434.GD26424@redhat.com>
-References: <20250109141440.2692173-1-jolsa@kernel.org>
+	s=arc-20240116; t=1736433700; c=relaxed/simple;
+	bh=xwebiABujpTv1kH6HSs+3ht0Gw1+Q0wxDUPau84O1ZA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ykd5mHE/PU7Pbn1Xv1G+s6tXVixS91fVJb1JdWMCANZMHuLS912i0BcCbgqifforw7zBdlO1LBDNRvcgrJRwkQSNYIveziLEtGAG7JortMwnKlvTlN+R8aI6+FBy6Hhu0pj+457RneRYbozBrwG7fMqMW3FInSSz9IVn2SoMcOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=I0ekSmdq; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=7UpPfWJ/Yy7RSeIQsEMclF3qwwtPS9VmiyiHIvB/7eg=; b=I0ekSmdqsAF/0LpnA8kNJlxYpD
+	y4wm1LUZog41u5K2tTI2lOuKIbcfCQqngM4w8y0leG8p0IFVg9wQOxGKNJX5sVqUCAFAIrtqHPXMS
+	lcLcQHwtuX7KGE4AmMqfEnXHpiRLvad+TxwMMJscs0G33ww5/pbuIPNG7vRuyyJrjlNRLurvHG8TM
+	575wFwh+b7pgnCXW+eZtwc490lOSCyLGZSbeSJN/uYkyLdx7KAX7Xed4wk1AoRnNbBm7O/5u8Ix7D
+	itBRocf32PX5MbbxnGa/XgQx/WaiGFU5ga1XNrmDaTeLQPV6tXfOScGrofJsie0t9UHg+xpX0/p7P
+	vB0s4t1w==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1tVtiy-000POt-0K; Thu, 09 Jan 2025 15:41:28 +0100
+Received: from [178.197.248.23] (helo=[192.168.1.114])
+	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1tVtix-0005Qw-1C;
+	Thu, 09 Jan 2025 15:41:27 +0100
+Message-ID: <af5b64ae-3917-4083-930b-b8e41d3a98d7@iogearbox.net>
+Date: Thu, 9 Jan 2025 15:41:26 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] uprobes: Fix race in uprobe_free_utask
+To: Jiri Olsa <jolsa@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Max Makarov <maxpain@linux.com>, bpf@vger.kernel.org,
+ Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+References: <20250109141440.2692173-1-jolsa@kernel.org>
+Content-Language: en-US
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
 In-Reply-To: <20250109141440.2692173-1-jolsa@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 1.0.7/27513/Thu Jan  9 10:53:02 2025)
 
-On 01/09, Jiri Olsa wrote:
->
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -1915,6 +1915,7 @@ void uprobe_free_utask(struct task_struct *t)
->  	if (!utask)
->  		return;
->
-> +	t->utask = NULL;
->  	WARN_ON_ONCE(utask->active_uprobe || utask->xol_vaddr);
->
->  	timer_delete_sync(&utask->ri_timer);
-> @@ -1924,7 +1925,6 @@ void uprobe_free_utask(struct task_struct *t)
->  		ri = free_ret_instance(ri, true /* cleanup_hprobe */);
->
->  	kfree(utask);
-> -	t->utask = NULL;
+On 1/9/25 3:14 PM, Jiri Olsa wrote:
+> Max Makarov reported kernel panic [1] in perf user callchain code.
+> 
+> The reason for that is the race between uprobe_free_utask and bpf
+> profiler code doing the perf user stack unwind and is triggered
+> within uprobe_free_utask function:
+>    - after current->utask is freed and
+>    - before current->utask is set to NULL
+> 
+>   general protection fault, probably for non-canonical address 0x9e759c37ee555c76: 0000 [#1] SMP PTI
+>   RIP: 0010:is_uprobe_at_func_entry+0x28/0x80
+>   ...
+>    ? die_addr+0x36/0x90
+>    ? exc_general_protection+0x217/0x420
+>    ? asm_exc_general_protection+0x26/0x30
+>    ? is_uprobe_at_func_entry+0x28/0x80
+>    perf_callchain_user+0x20a/0x360
+>    get_perf_callchain+0x147/0x1d0
+>    bpf_get_stackid+0x60/0x90
+>    bpf_prog_9aac297fb833e2f5_do_perf_event+0x434/0x53b
+>    ? __smp_call_single_queue+0xad/0x120
+>    bpf_overflow_handler+0x75/0x110
+>    ...
+>    asm_sysvec_apic_timer_interrupt+0x1a/0x20
+>   RIP: 0010:__kmem_cache_free+0x1cb/0x350
+>   ...
+>    ? uprobe_free_utask+0x62/0x80
+>    ? acct_collect+0x4c/0x220
+>    uprobe_free_utask+0x62/0x80
+>    mm_release+0x12/0xb0
+>    do_exit+0x26b/0xaa0
+>    __x64_sys_exit+0x1b/0x20
+>    do_syscall_64+0x5a/0x80
+> 
+> It can be easily reproduced by running following commands in
+> separate terminals:
+> 
+>    # while :; do bpftrace -e 'uprobe:/bin/ls:_start  { printf("hit\n"); }' -c ls; done
+>    # bpftrace -e 'profile:hz:100000 { @[ustack()] = count(); }'
+> 
+> Fixing this by making sure current->utask pointer is set to NULL
+> before we start to release the utask object.
 
-Acked-by: Oleg Nesterov <oleg@redhat.com>
+Lets add Fixes tag for stable team:
 
+Fixes: cfa7f3d2c526 ("perf,x86: avoid missing caller address in stack traces captured in uprobe")
+
+> [1] https://github.com/grafana/pyroscope/issues/3673
+> Reported-by: Max Makarov <maxpain@linux.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+
+fwiw, the other version we were potentially thinking of was below, but
+just moving the t->utask NULL assignment seemed better.
+
+Thanks,
+Daniel
+
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index c75c482d4c52..05f9cedf2691 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -2835,6 +2835,8 @@ static bool is_uprobe_at_func_entry(struct pt_regs *regs)
+
+         if (!current->utask)
+                 return false;
++       if (!current->utask->active_uprobe)
++               return false;
+
+         auprobe = current->utask->auprobe;
+         if (!auprobe)
 
