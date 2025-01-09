@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-48413-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48414-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60AD0A07CF8
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 17:10:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47AA8A07D1B
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 17:15:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEB99162B6B
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 16:09:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6991188D223
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 16:14:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80B832206BA;
-	Thu,  9 Jan 2025 16:08:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5704D221D86;
+	Thu,  9 Jan 2025 16:14:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EGH/nKDl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pOVP5l4W"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C9121C193;
-	Thu,  9 Jan 2025 16:08:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B680121A45C;
+	Thu,  9 Jan 2025 16:14:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736438938; cv=none; b=e10/6zg17fRs7enjIgvpddr3zmFuhyq12mId/ewDS8M7e2HaZ9R+lQ4C0Y6DwYTwnD1VWAhGTvNXARgsv3XWYZ1e1FGx39pTbgxJacaihWu3kByB5/bJF9D+vlYFeVSV8N7KxAtp0jbFgI+azanDEFxSnawxbE3Qp7ZEUHAmN8w=
+	t=1736439246; cv=none; b=BuZFOl172lQA6/FtNZtNrDE+ek/RjCHj7FOvFvmZWEmmFrXWwWV2wGnxu+gvp2OiL51euhMybNsoaTJjxCCDF+u/sp1a5632M5gNfogdBZx89UrvAqW7VcWHQ9Rr2WjN+zJME2qjUVr+1mXrHYVJGTFksTzABsCrj/GFbJ/XgW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736438938; c=relaxed/simple;
-	bh=wBOmjGj7U7kIguqoGCDjLxj7vqsOb8WjHOdQiprEyf4=;
+	s=arc-20240116; t=1736439246; c=relaxed/simple;
+	bh=8AW2JBM9p7hPaetzgChckRCvgTEi/URlyTvd+dPc5Vk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OtC2DY7If+Cla4s7R+u6noPuNwANYriFnjiOeu7urpaC2UTlqCCd/Xgq+QO05MgMM3sStM5gbOwPGrv11v0D4QAPEqn0jAcoK0SkPYhkVFkd3FL8yrriUY/mRlMmkttmJkXklabmQBxLDot7328MEbTrHB033aQUO/btV8QTQ+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EGH/nKDl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEF14C4CED2;
-	Thu,  9 Jan 2025 16:08:53 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=pr51wbBVOusnWfxPyycXJ4u6U4gYVZ3StA2rkKn/HOI+3icK4yjYXQwfbe8ncS7qZm5LwF51PL1FpiaMjC/gKEbt3i13EAP4f7/Q7EJlTTJSdTn9QOC0fMd9lxvITY+LclVg8nYZ8BvhXORR+sBcGVLEhc+pP/J1Pd3R9srnXD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pOVP5l4W; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E485C4CED2;
+	Thu,  9 Jan 2025 16:14:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736438937;
-	bh=wBOmjGj7U7kIguqoGCDjLxj7vqsOb8WjHOdQiprEyf4=;
+	s=k20201202; t=1736439246;
+	bh=8AW2JBM9p7hPaetzgChckRCvgTEi/URlyTvd+dPc5Vk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EGH/nKDl+1XVs8xgVYoo3J60Or33gStMSf1J9vuXfqZ0qYpfJ10lmaFWH6Q6uJbCw
-	 WpneShLUIo+ZX2LXYFbzt+InaDfmUd1CR3p75NrDpa0Nr+sTBaS5ENKsg4kGgpxPYC
-	 nS+VVyXpCqg9egefdSlKSI7Lts79im7/ym9ODSosAjh9OQqwatYJhj8N8s5kyjeoMN
-	 D6ZcMCdKTNESWq+mb3tzunGm9qry8hkwW/XLRtyZ5OoS88QRepyZb/3umd/z+klGnJ
-	 uRZO5P9JsnKyz0UhtpFjLTSR+zTCIvNao6ZxxYUaIB/PHum4KDE2qA6Rykr67Hy8xb
-	 YU/bUqq+zUg+Q==
-Date: Thu, 9 Jan 2025 16:08:51 +0000
+	b=pOVP5l4WvoKrafD6oNo3GwJl8ddzDNF9T6fRhcd0mLjzdQHHpBZnJqMfF889IghkU
+	 AnC/CmkjhcvaCDMbfZA8XKXMMpiqUQyqZlGFW3Fx49HbKYxHRSwSumheUU38S97VsB
+	 L75dsEyNWNDBcza+d6uaKBi224ICHGqLRmzXdop6rsmrDOFmXISjwxhoBXhBc4gFQD
+	 mOD2SveLpRZpvScTZhq5X86mTk18quIHKgxZ0WM0YYmONab213oiMlviyyzw5lmNBT
+	 Gqyeixeo0eupnXjcKaHWez4P5KNCmwLMLNJrNr+FWmLgAL7zl9ZzTWQ0OebKynMi9z
+	 VPMdCPFOsXmhA==
+Date: Thu, 9 Jan 2025 16:14:00 +0000
 From: Simon Horman <horms@kernel.org>
 To: Suman Ghosh <sumang@marvell.com>
 Cc: sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
@@ -51,11 +51,11 @@ Cc: sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
 	jerinj@marvell.com, john.fastabend@gmail.com, bbhushan2@marvell.com,
 	hawk@kernel.org, andrew+netdev@lunn.ch, ast@kernel.org,
 	daniel@iogearbox.net, bpf@vger.kernel.org
-Subject: Re: [net-next PATCH v2 1/6] octeontx2-pf: Add AF_XDP non-zero copy
- support
-Message-ID: <20250109160851.GJ7706@kernel.org>
+Subject: Re: [net-next PATCH v2 3/6] octeontx2-pf: Add AF_XDP zero copy
+ support for rx side
+Message-ID: <20250109161400.GK7706@kernel.org>
 References: <20250108183329.2207738-1-sumang@marvell.com>
- <20250108183329.2207738-2-sumang@marvell.com>
+ <20250108183329.2207738-4-sumang@marvell.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,13 +64,14 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250108183329.2207738-2-sumang@marvell.com>
+In-Reply-To: <20250108183329.2207738-4-sumang@marvell.com>
 
-On Thu, Jan 09, 2025 at 12:03:24AM +0530, Suman Ghosh wrote:
-> For XDP, page_pool APIs are getting used now. But the memory type was
-> not getting set due to which XDP_REDIRECT and hence AF_XDP was not
-> working. This patch ads the memory type MEM_TYPE_PAGE_POOL as the memory
-> model of the XDP program.
+On Thu, Jan 09, 2025 at 12:03:26AM +0530, Suman Ghosh wrote:
+> This patch adds support to AF_XDP zero copy for CN10K.
+> This patch specifically adds receive side support. In this approach once
+> a xdp program with zero copy support on a specific rx queue is enabled,
+> then that receive quse is disabled/detached from the existing kernel
+> queue and re-assigned to the umem memory.
 > 
 > Signed-off-by: Suman Ghosh <sumang@marvell.com>
 
@@ -80,28 +81,33 @@ On Thu, Jan 09, 2025 at 12:03:24AM +0530, Suman Ghosh wrote:
 
 ...
 
-> @@ -109,6 +109,11 @@ static void otx2_xdp_snd_pkt_handler(struct otx2_nic *pfvf,
->  	otx2_dma_unmap_page(pfvf, sg->dma_addr[0],
->  			    sg->size[0], DMA_TO_DEVICE);
->  	page = virt_to_page(phys_to_virt(pa));
-> +	if (page->pp) {
-> +		page_pool_recycle_direct(page->pp, page);
-> +		return;
-> +	}
-> +
->  	put_page(page);
->  }
+> @@ -572,20 +575,31 @@ int otx2_napi_handler(struct napi_struct *napi, int budget)
+>  		if (pfvf->flags & OTX2_FLAG_ADPTV_INT_COAL_ENABLED)
+>  			otx2_adjust_adaptive_coalese(pfvf, cq_poll);
 >  
+> +		if (likely(cq))
+> +			pool = &pfvf->qset.pool[cq->cq_idx];
+> +
 
 Hi Suman,
 
-It is included indirectly in the following patch,
-[v2 2/6] octeontx2-pf: Don't unmap page pool buffer used by XDP,
-but I believe you need the following in order for this to compile:
-
-#include <net/page_pool/helpers.h>
+FWIIW, Smatch is still concerned that cq may be used uninitialised here.
 
 ...
 
-pw-bot: changes-requested
+> @@ -1429,13 +1447,24 @@ static bool otx2_xdp_rcv_pkt_handler(struct otx2_nic *pfvf,
+>  	unsigned char *hard_start;
+>  	struct otx2_pool *pool;
+>  	int qidx = cq->cq_idx;
+> -	struct xdp_buff xdp;
+> +	struct xdp_buff xdp, *xsk_buff = NULL;
+>  	struct page *page;
+>  	u64 iova, pa;
+>  	u32 act;
+>  	int err;
+
+Please consider preserving reverse xmas tree order - longest line to
+shortest - for local variable declarations.
+
+...
 
