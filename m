@@ -1,108 +1,134 @@
-Return-Path: <bpf+bounces-48406-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48407-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CC36A07BEE
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 16:28:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57B7AA07C45
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 16:46:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0B9F1884C4F
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 15:28:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DA80168479
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 15:46:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D8B021D5B5;
-	Thu,  9 Jan 2025 15:28:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0513D221DB0;
+	Thu,  9 Jan 2025 15:45:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="YsIG8cgA"
+	dkim=pass (2048-bit key) header.d=minyard-net.20230601.gappssmtp.com header.i=@minyard-net.20230601.gappssmtp.com header.b="LAye2daJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFBE721CA1D;
-	Thu,  9 Jan 2025 15:28:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E351322069F
+	for <bpf@vger.kernel.org>; Thu,  9 Jan 2025 15:45:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736436504; cv=none; b=A11wen0Sg23cbixBkEtwVdohRtNpHxwN9yjEvIiTPtlr760cnmpm/CdKAuB2Kc7RZRxwOw90xjTK9bq6DXR9dIN59siqpXmPbfRxA5J9uNbv9jiDzul+EfhZK2V99o447zIwaomTzIjMGybzXGx8N9i6wVB9cwQPxum0cc/Hcv8=
+	t=1736437540; cv=none; b=EBP9rkA9OuOgZqv/iW7mrqkyjad4ilGl9HKmqUbWV/4Sv1WW3jHSGi1Sgr5yXU46t1q1Vwyh5s9c8h43FgZnJAaZIBLJxIQfzoniPBDPoJQ3a6NrlRbo3Ul4OaHtuS0OeWS0k51QH3nuN6afOhtcWtC5RAtiIy7Qf6QLi3xNm0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736436504; c=relaxed/simple;
-	bh=Spu51y9HfZuOxHXPfsEWvCmRgGJgzXcQUPYrBwwbc4Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IDjF8cMKJJlUFj6MSRkdC8Hfu7k3n4cawGoN5456/Cgnra789F7Ew885djdVAL+eWxytS/2TtfKmOhUclsVEEOzRqYqSaVChtbe3CIpIml/+sgs2/fyTpZL6j1HfnmlrvjW7Jg8mI6aSvOr8PJ1mjNoGXxe56rxFVuzBXHy8CrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=YsIG8cgA; arc=none smtp.client-ip=185.226.149.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
-Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
-	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.93)
-	(envelope-from <mhal@rbox.co>)
-	id 1tVuSA-0038cU-IX; Thu, 09 Jan 2025 16:28:10 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-	s=selector2; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
-	bh=NnAJ9ysjnx9++5Tx4kBs7NCrt44ysPVsN78x25Ia93U=; b=YsIG8cgAFFi8vjxD/YzvpAyj9G
-	oQlYlT08oJ3QDe3lvIYyOnGCJW8m96RaXXVSKTAZL3GfkdyVRQa2+Zzxhk1J+2B2HSLhuM9if6E1i
-	Uzpya8zCKO9JlMrVpkrlgOwFkjgYEPDw05neTBPiVcOCCY1YdQsOgb3hcYj3hLBkb/z1cP5FQ4Wng
-	F07tDkAFG9W5RlGoOmL+ijIUCGK2mEvdXiYG6H+ue+BymTN+IS6FOScwjVHFd9GUb6TkeMjr9cCE8
-	gmari1ZpangqHiEeSU8bHfOGCd5LuvF79YLJsgXu0IVUTlp3vS6jw/Qc/IANUsQXRCRnR1h5+2WEV
-	65jdyx+g==;
-Received: from [10.9.9.72] (helo=submission01.runbox)
-	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
-	(envelope-from <mhal@rbox.co>)
-	id 1tVuS9-0004qn-2n; Thu, 09 Jan 2025 16:28:09 +0100
-Received: by submission01.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.93)
-	id 1tVuRs-006wNO-LY; Thu, 09 Jan 2025 16:27:52 +0100
-Message-ID: <05c8648c-d6ca-419b-a4ec-6b305f4ca19f@rbox.co>
-Date: Thu, 9 Jan 2025 16:27:51 +0100
+	s=arc-20240116; t=1736437540; c=relaxed/simple;
+	bh=2brKe+BKxputZorOKd+f+yIxImiCIbAyHwtB6oU0kzg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JwBNBA1p+pI76DGf8x85BgSDdtg/tnv9cai1p2Xo3SpbzXiSOcXJnhxqLARyMbc3L9DtFZycCj0NztAy/Jn3ZS5cz5UajfwOqag8Y0Z1J+bQz7r/nrMC2Pm/hxJWTrthLhpRZwkXXj9St/+/Pr0bvKlpvcrvhwAJhe6cPqAa5mA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=minyard.net; spf=none smtp.mailfrom=minyard.net; dkim=pass (2048-bit key) header.d=minyard-net.20230601.gappssmtp.com header.i=@minyard-net.20230601.gappssmtp.com header.b=LAye2daJ; arc=none smtp.client-ip=209.85.210.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=minyard.net
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=minyard.net
+Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-71e157a79c8so289678a34.2
+        for <bpf@vger.kernel.org>; Thu, 09 Jan 2025 07:45:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=minyard-net.20230601.gappssmtp.com; s=20230601; t=1736437536; x=1737042336; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cgTp2x21PamB5G5tjbV3jPSQRWSgTUkiJmrzV93coW4=;
+        b=LAye2daJq5PwQO2M4vRRKi+w4NVjhkO8A1Wp9+fmpAvIYQpxbbPm2/sSwE6ZLxhooW
+         maYs50vYWHQFpOrOTOU+2y3kOH55RHtnfTl5ES/LRP4wpLUEktnImIIxrVau3NpkQ5Sx
+         0H4cY0tm0abQxDpDy4NZDgUQYo4DkVO0zHE4y36LKCe0OwmC0uGzpqOtVtIEoqJnk0PQ
+         +KF9lKAQGvRkGRMamUgcdSDIky+rblo4w996rzf2CTyadN6ruP9ME+3dklYWXs/EN0r9
+         pCSV3eAmn9ZHv74vRR+RCW+u0QbvFD/8Db1aotCdSLy0Cy6PjBLBt7n/ndYrUjPk5TBF
+         rmhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736437536; x=1737042336;
+        h=in-reply-to:content-disposition:mime-version:references:reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cgTp2x21PamB5G5tjbV3jPSQRWSgTUkiJmrzV93coW4=;
+        b=s2KF/fwLJ2LSt4yAObK3xNhs4iBmYoQi/a9nvm9rTdz/6+uFj3daNJTouEKMvDTGZ4
+         v3NFMfm6GNeDn7gHhJAC9+zjwlHHf6cSTYYSbQpyuC8TSLgbyECOrRqX0HwcNR7aIniY
+         Emn5Sg1pgTr2fNUq/dZwfonHV9mGpxflboCtKTjweoJR+rPwuzsLzRYTYcB5Mp3KNYQM
+         oHEV5zQ7qCko6VacqRx4yOTLvh15f+qZduuULTSDsb/6D4di+HFGhW7pJJidkRaOm2aO
+         JU9qk4PZfy8BQvY6EDE4UBnSt0iZkHor68I7kcdznFpHeOJgpaxtqW5TzzLceX9Qhyhw
+         INUA==
+X-Forwarded-Encrypted: i=1; AJvYcCVONClsNytVviQjDwF6SO7+ZZ/HFQySYqHlW3YrIe1e5CZqDMHAOErozNTjLo/altIP6Zs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwLKk8yVxhnPY5QCwDU0YEXQFtbHwEiikSji6DGbY7OTKI79cvx
+	OvOsDzkLJ9UXwQCdqpFif+XrDnu1zJJjx8qLzCmmFa6TDPtaY4IdN14/4UMwUFc=
+X-Gm-Gg: ASbGncsPLtAZuaSUCaS+wbqgAm+PNysADbcK99RGzdNJqW4OFZRzTeTLAIvnKBsSnAk
+	gJAdOGxFT3Nx1VuJtJmAnmTVuueFlGKK0FdHwwUPC9sA2ZZpuGBDEPjW7p47BklWs1gQzP7tTCY
+	Fx3M7LFt8l/xr+ctpkXcQEy0lwflJkVBb9iD7H94tAV2tqR0bkS2uPm9ACyjJ67Q5pq1ccQMCeV
+	nbMpcLk+A7osdUK49a6+2pzfHaHzgyhXozx/KfEemd/G8Mdztri4IRl0Lua
+X-Google-Smtp-Source: AGHT+IHELUnxP9ZvL+e2Ztemz39I9ORoPYZLTVwEa+XG73J5uz7w7yM0cuXu9KZqTaUsGk+1/+jmGA==
+X-Received: by 2002:a05:6830:6610:b0:716:a95d:9ef with SMTP id 46e09a7af769-721e2e000d6mr4949630a34.2.1736437534534;
+        Thu, 09 Jan 2025 07:45:34 -0800 (PST)
+Received: from mail.minyard.net ([2001:470:b8f6:1b:9076:47eb:1e0a:16fb])
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-5f882625f0esm386258eaf.9.2025.01.09.07.45.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jan 2025 07:45:34 -0800 (PST)
+Date: Thu, 9 Jan 2025 09:45:27 -0600
+From: Corey Minyard <corey@minyard.net>
+To: Joel Granados <joel.granados@kernel.org>
+Cc: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+	Kees Cook <kees@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org,
+	openipmi-developer@lists.sourceforge.net,
+	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	intel-xe@lists.freedesktop.org, linux-hyperv@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-raid@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org,
+	xen-devel@lists.xenproject.org, linux-aio@kvack.org,
+	linux-fsdevel@vger.kernel.org, netfs@lists.linux.dev,
+	codalist@coda.cs.cmu.edu, linux-mm@kvack.org,
+	linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+	fsverity@lists.linux.dev, linux-xfs@vger.kernel.org,
+	io-uring@vger.kernel.org, bpf@vger.kernel.org,
+	kexec@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org, apparmor@lists.ubuntu.com,
+	linux-security-module@vger.kernel.org, keyrings@vger.kernel.org
+Subject: Re: [PATCH] treewide: const qualify ctl_tables where applicable
+Message-ID: <Z3_vF3I453flXoZv@mail.minyard.net>
+Reply-To: corey@minyard.net
+References: <20250109-jag-ctl_table_const-v1-1-622aea7230cf@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 1/2] vsock/virtio: discard packets if the transport
- changes
-To: Stefano Garzarella <sgarzare@redhat.com>
-Cc: netdev@vger.kernel.org, Simon Horman <horms@kernel.org>,
- Stefan Hajnoczi <stefanha@redhat.com>, linux-kernel@vger.kernel.org,
- Eric Dumazet <edumazet@google.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
- Wongi Lee <qwerty@theori.io>, "David S. Miller" <davem@davemloft.net>,
- Paolo Abeni <pabeni@redhat.com>, Jason Wang <jasowang@redhat.com>,
- Bobby Eshleman <bobby.eshleman@bytedance.com>,
- virtualization@lists.linux.dev, =?UTF-8?Q?Eugenio_P=C3=A9rez?=
- <eperezma@redhat.com>, Luigi Leonardi <leonardi@redhat.com>,
- bpf@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
- "Michael S. Tsirkin" <mst@redhat.com>, Hyunwoo Kim <v4bel@theori.io>,
- kvm@vger.kernel.org
-References: <20250108180617.154053-1-sgarzare@redhat.com>
- <20250108180617.154053-2-sgarzare@redhat.com>
- <2b3062e3-bdaa-4c94-a3c0-2930595b9670@rbox.co>
- <wix5cx7uhthr6imrpsliysktyae6xwuzpvg77uscswyqwszzfb@ms5osa4ckdcm>
-Content-Language: pl-PL, en-GB
-From: Michal Luczaj <mhal@rbox.co>
-In-Reply-To: <wix5cx7uhthr6imrpsliysktyae6xwuzpvg77uscswyqwszzfb@ms5osa4ckdcm>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250109-jag-ctl_table_const-v1-1-622aea7230cf@kernel.org>
 
-On 1/9/25 14:42, Stefano Garzarella wrote:
-> On Thu, Jan 09, 2025 at 02:34:28PM +0100, Michal Luczaj wrote:
->> ...
->> That said, when I apply this patch, but drop the `sk->sk_state !=
->> TCP_LISTEN &&`: no more splats.
+On Thu, Jan 09, 2025 at 02:16:39PM +0100, Joel Granados wrote:
+> Add the const qualifier to all the ctl_tables in the tree except the
+> ones in ./net dir. The "net" sysctl code is special as it modifies the
+> arrays before passing it on to the registration function.
 > 
-> We can't drop `sk->sk_state != TCP_LISTEN &&` because listener socket 
-> doesn't have any transport (vsk->transport == NULL), so every connection 
-> request will receive an error, so maybe this is the reason of no splats.
+...
+> diff --git a/drivers/char/ipmi/ipmi_poweroff.c b/drivers/char/ipmi/ipmi_poweroff.c
+> index 941d2dcc8c9d..de84f59468a9 100644
+> --- a/drivers/char/ipmi/ipmi_poweroff.c
+> +++ b/drivers/char/ipmi/ipmi_poweroff.c
+> @@ -650,7 +650,7 @@ static struct ipmi_smi_watcher smi_watcher = {
+>  #ifdef CONFIG_PROC_FS
+>  #include <linux/sysctl.h>
+>  
+> -static struct ctl_table ipmi_table[] = {
+> +static const struct ctl_table ipmi_table[] = {
+>  	{ .procname	= "poweroff_powercycle",
+>  	  .data		= &poweroff_powercycle,
+>  	  .maxlen	= sizeof(poweroff_powercycle),
 
-Bah, sorry, I didn't run the test suit.
+For the IPMI portion:
 
-> I'm cooking some more patches to fix Hyunwoo's scenario handling better 
-> the close work when the virtio destructor is called.
-> 
-> I'll run your reproduces to test it, thanks for that!
-> 
-> Stefano
-> 
+Acked-by: Corey Minyard <cminyard@mvista.com>
 
 
