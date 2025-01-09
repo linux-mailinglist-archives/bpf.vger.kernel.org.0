@@ -1,75 +1,159 @@
-Return-Path: <bpf+bounces-48385-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48391-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61491A0750F
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 12:49:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9B31A07840
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 14:55:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BA863A7AD6
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 11:49:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D26B16602E
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 13:55:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F8D5216E05;
-	Thu,  9 Jan 2025 11:48:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9087E219A76;
+	Thu,  9 Jan 2025 13:55:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="SLpARO5/"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from mailtransmit05.runbox.com (mailtransmit05.runbox.com [185.226.149.38])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E4C2215789;
-	Thu,  9 Jan 2025 11:48:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4526B218EA8;
+	Thu,  9 Jan 2025 13:55:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736423329; cv=none; b=sc4gTaVe4Lg8uBYPijU9Aw3hVZM1jJvuO/A7kQjE35cgEc7FwFu6xD3/nYRzBYUZT8RpJQI4kJdRbdHaal8r56eXO61XAEUvKYwWWQTqRbaSj+VeyReeRfcuDLjGJfdFc/4OyYgJJN7mX4MyHYadnu64N6W4Sbn34i8/XB1ZkUc=
+	t=1736430925; cv=none; b=hzgbs75Fn63SCqfMHRX1NHOuFxnTLd1oeqK7FfhdP3LhqUZIqKnG2eG0ZO7ncSLaGBoq4DRZteBWXAKZJiBVmShXum04b0V1GOK+hpDjpsRUOFjhbnL753Vnyrlk4+Cx1RCOd7UopR7mU7qJBfodH9ABcgR4pTD0dGzc79lZFFM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736423329; c=relaxed/simple;
-	bh=YCEJn8ABQi2ZGK3gViqw+VgqmIlvYqn1J34SpfSMKj8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=n7UGRjjBdr6WvmV5WcNhPB4IbDLQ+DUquIEmqRmFlYQ0hVISdQIv8+HkhVDXy7boh1PPu5k6HqZtuwm0MJWoA89zLH0DoesZnBes4z0mj03dcncs2EhuoIzDkPwXP+LCSbl7ItOMv40bY/Dgz+wmLADm/NEh26mi9O+e/bT2MNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4YTNJj4RTQz2DkMC;
-	Thu,  9 Jan 2025 19:45:41 +0800 (CST)
-Received: from dggpemf500014.china.huawei.com (unknown [7.185.36.43])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6066F1A0188;
-	Thu,  9 Jan 2025 19:48:44 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by dggpemf500014.china.huawei.com
- (7.185.36.43) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Thu, 9 Jan
- 2025 19:48:43 +0800
-From: Muyang Tian <tianmuyang@huawei.com>
-To: <yuanchu@google.com>
-CC: <Michael@michaellarabel.com>, <akpm@linux-foundation.org>,
-	<bpf@vger.kernel.org>, <corbet@lwn.net>, <linux-kernel@vger.kernel.org>,
-	<linux-mm@kvack.org>, <liuxin350@huawei.com>, <liwei883@huawei.com>,
-	<tianmuyang@huawei.com>, <wuchangye@huawei.com>, <xiesongyang@huawei.com>,
-	<yanan@huawei.com>, <yuzhao@google.com>, <zhangmingyi5@huawei.com>
-Subject: Re: [RFC PATCH 0/2] mm: multi-gen LRU: per-process heatmaps
-Date: Thu, 9 Jan 2025 19:48:47 +0800
-Message-ID: <20250109114847.539237-1-tianmuyang@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <CAJj2-QEtASHEfiYuoKrfx7n1UjDS1e+aF0LdYB5vhBUUS3cq8g@mail.gmail.com>
-References: <CAJj2-QEtASHEfiYuoKrfx7n1UjDS1e+aF0LdYB5vhBUUS3cq8g@mail.gmail.com>
+	s=arc-20240116; t=1736430925; c=relaxed/simple;
+	bh=+t6xL6aUUlHqw/1BySaYl0XfaP/8IBcJEMltDRiNodQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TGZG9ZIwSacPYCWy+lgG91gFwcJW9BOIXbMMrExe/fSBxnwUAw3hszbwIXQ0ygWJTi3VULArYTNUMnH9JShhm4VPXMOopUnnKqJku2ELrUF5/e3hij8uPm784pcsf9kw5dkS9dcYViJmVcAfvqyRetpKbFTigkT2EjAG8jJslNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=SLpARO5/; arc=none smtp.client-ip=185.226.149.38
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
+Received: from mailtransmit03.runbox ([10.9.9.163] helo=aibo.runbox.com)
+	by mailtransmit05.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.93)
+	(envelope-from <mhal@rbox.co>)
+	id 1tVsN6-002xng-0t; Thu, 09 Jan 2025 14:14:48 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
+	s=selector2; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
+	bh=3cUkymQJSJr9t9+pyatWi8KGoJKjDsSNQ5WB+gYAx38=; b=SLpARO5/+f9xc+MCY3o5+fIY4m
+	n/M0P0FembpPsxfv9pfCtkC2FqUGFZiWj+C2EqMgYv3ugkDKr8SL+zMlIODzoulXcQ++9O5c2oT1V
+	M8J46X3fy2lezu3dn//tLXmZ+8KUQMfqqp+gRH3IDzN8KgpIdVO3Z1R6R+oswEDviWYo8vEqbifnZ
+	iNyPVXpvMdCc4Up545J2klv1IRx54+ot1HzuX20VrN1wbEsS1m9K46NjGeSxoRaXFvhz5cIWDF0xU
+	x9dWdU9YdVeXKtw3QnsSemb4NXO3Ulia30lbX2GzC/fwTNMwN9Bm6niVIixwJgEvPJTTHWaJCIRMB
+	ZDvo98Ow==;
+Received: from [10.9.9.72] (helo=submission01.runbox)
+	by mailtransmit03.runbox with esmtp (Exim 4.86_2)
+	(envelope-from <mhal@rbox.co>)
+	id 1tVsN4-0003CP-FR; Thu, 09 Jan 2025 14:14:46 +0100
+Received: by submission01.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.93)
+	id 1tVsMw-006OkQ-0S; Thu, 09 Jan 2025 14:14:38 +0100
+Message-ID: <c0896f6a-d8b8-4db5-804d-0e4b35827a62@rbox.co>
+Date: Thu, 9 Jan 2025 14:14:35 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemf500014.china.huawei.com (7.185.36.43)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net 2/2] vsock/bpf: return early if transport is not
+ assigned
+To: Stefano Garzarella <sgarzare@redhat.com>, netdev@vger.kernel.org
+Cc: Simon Horman <horms@kernel.org>, Stefan Hajnoczi <stefanha@redhat.com>,
+ linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Wongi Lee <qwerty@theori.io>,
+ "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ Jason Wang <jasowang@redhat.com>,
+ Bobby Eshleman <bobby.eshleman@bytedance.com>,
+ virtualization@lists.linux.dev, =?UTF-8?Q?Eugenio_P=C3=A9rez?=
+ <eperezma@redhat.com>, Luigi Leonardi <leonardi@redhat.com>,
+ bpf@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+ "Michael S. Tsirkin" <mst@redhat.com>, Hyunwoo Kim <v4bel@theori.io>,
+ kvm@vger.kernel.org
+References: <20250108180617.154053-1-sgarzare@redhat.com>
+ <20250108180617.154053-3-sgarzare@redhat.com>
+From: Michal Luczaj <mhal@rbox.co>
+Content-Language: pl-PL, en-GB
+In-Reply-To: <20250108180617.154053-3-sgarzare@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Yuanchu,
+On 1/8/25 19:06, Stefano Garzarella wrote:
+> Some of the core functions can only be called if the transport
+> has been assigned.
+> 
+> As Michal reported, a socket might have the transport at NULL,
+> for example after a failed connect(), causing the following trace:
+> 
+>     BUG: kernel NULL pointer dereference, address: 00000000000000a0
+>     #PF: supervisor read access in kernel mode
+>     #PF: error_code(0x0000) - not-present page
+>     PGD 12faf8067 P4D 12faf8067 PUD 113670067 PMD 0
+>     Oops: Oops: 0000 [#1] PREEMPT SMP NOPTI
+>     CPU: 15 UID: 0 PID: 1198 Comm: a.out Not tainted 6.13.0-rc2+
+>     RIP: 0010:vsock_connectible_has_data+0x1f/0x40
+>     Call Trace:
+>      vsock_bpf_recvmsg+0xca/0x5e0
+>      sock_recvmsg+0xb9/0xc0
+>      __sys_recvfrom+0xb3/0x130
+>      __x64_sys_recvfrom+0x20/0x30
+>      do_syscall_64+0x93/0x180
+>      entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> 
+> So we need to check the `vsk->transport` in vsock_bpf_recvmsg(),
+> especially for connected sockets (stream/seqpacket) as we already
+> do in __vsock_connectible_recvmsg().
+> 
+> Fixes: 634f1a7110b4 ("vsock: support sockmap")
+> Reported-by: Michal Luczaj <mhal@rbox.co>
+> Closes: https://lore.kernel.org/netdev/5ca20d4c-1017-49c2-9516-f6f75fd331e9@rbox.co/
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
 
-I'm working on observability and the programmable page generation policy of MGLRU based on eBPF, using a similar approach to yours. 
-I'd like to know if there is any related work, such as the application of eBPF in MGLRU? 
-Also, this RFC provides a user space interface to call run_aging(), which is called periodically in the demo. 
-Do you plan to optimize this, perhaps by calling run_aging() based on page access observation results?
+Tested-by: Michal Luczaj <mhal@rbox.co>
 
-Thanks!
+
+> ---
+>  net/vmw_vsock/vsock_bpf.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/net/vmw_vsock/vsock_bpf.c b/net/vmw_vsock/vsock_bpf.c
+> index 4aa6e74ec295..f201d9eca1df 100644
+> --- a/net/vmw_vsock/vsock_bpf.c
+> +++ b/net/vmw_vsock/vsock_bpf.c
+> @@ -77,6 +77,7 @@ static int vsock_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
+>  			     size_t len, int flags, int *addr_len)
+>  {
+>  	struct sk_psock *psock;
+> +	struct vsock_sock *vsk;
+>  	int copied;
+>  
+>  	psock = sk_psock_get(sk);
+> @@ -84,6 +85,13 @@ static int vsock_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
+>  		return __vsock_recvmsg(sk, msg, len, flags);
+>  
+>  	lock_sock(sk);
+> +	vsk = vsock_sk(sk);
+> +
+> +	if (!vsk->transport) {
+> +		copied = -ENODEV;
+> +		goto out;
+> +	}
+> +
+>  	if (vsock_has_data(sk, psock) && sk_psock_queue_empty(psock)) {
+>  		release_sock(sk);
+>  		sk_psock_put(sk, psock);
+> @@ -108,6 +116,7 @@ static int vsock_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
+>  		copied = sk_msg_recvmsg(sk, psock, msg, len, flags);
+>  	}
+>  
+> +out:
+>  	release_sock(sk);
+>  	sk_psock_put(sk, psock);
+>  
 
 
