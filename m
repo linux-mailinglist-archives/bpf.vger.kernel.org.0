@@ -1,283 +1,176 @@
-Return-Path: <bpf+bounces-48488-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48489-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66667A08332
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 00:01:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67C26A0837D
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 00:31:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2D5C3A520E
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 23:01:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B4A00168F1C
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 23:31:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78EF4205E0C;
-	Thu,  9 Jan 2025 23:01:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53916205E3B;
+	Thu,  9 Jan 2025 23:31:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="g9q/3Cy+"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="RffI9t5r";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="i2Mb/yk1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-a2-smtp.messagingengine.com (fout-a2-smtp.messagingengine.com [103.168.172.145])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09265205ADB
-	for <bpf@vger.kernel.org>; Thu,  9 Jan 2025 23:01:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D2E7189BBB;
+	Thu,  9 Jan 2025 23:30:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736463666; cv=none; b=r9jMWE+jlPObxmuB+adcN8yUkENR6zktHNEoR1VKQOjKv31dGdjkEmcvhhxuoY1ad4f4V3S9S0CJi6En6WLp3+BDZ5PaM0qACYa0XrBPDFUQw0EgEFQ0b3OTZM+IwdbkmcvcmBLKTOt0eAlGHJnyQhL+vw3psgMRaxMH75u9470=
+	t=1736465460; cv=none; b=Iv6F374YLK71mt9lkoyfygadx2nCVpjtxPHcAnzTuZ36Ft84EZxve2EkzWRzcD4XXCZknMpkMBqgrel+YKwPw0HHJRMj4CMNHFNVWRijnf0ztbTV1cXAqhDSbC6//eIl2bB7hBKluw6Wz7sTeYaPwZbX8rs8jezhaiMVL4rUf4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736463666; c=relaxed/simple;
-	bh=ouylJ8vaww+BvN5+CjToW8mtqfVEhB1cWP2LujyiEy8=;
+	s=arc-20240116; t=1736465460; c=relaxed/simple;
+	bh=w7GkOc9bZq2Zjok5ovgUZijFRHaFsLDijd9IU/zYoGQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gGoXRX1HEjQM1Wu7+iO+HLVrKPNyA7Lk4iWrahfLHyLNCfPPUe/cXCe6Ye0RooRKUerq2DymBpZlLXdovFOlyBZgszsP3IT4USY7EoK4fMwaNcCxr5+iRT9MuRYF1opayNWgIPHauQa3tjmY6J4CobMzgew0tGCcY+BvNDstR+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=g9q/3Cy+; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-21634338cfdso32807315ad.2
-        for <bpf@vger.kernel.org>; Thu, 09 Jan 2025 15:01:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1736463663; x=1737068463; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=u1Rto3tQvT3jFN5xuxXHqKLZjGHCEokZTCe6xmBnORw=;
-        b=g9q/3Cy+xguC9G42bmdnj9vz+2rGfGWYXgAwg5B1Rg2XFJC1hXiKZU2zYLau/Ev6A2
-         Tyq6HzkDRpTRRH6QykuTg6/ShavOglCcBg3VYKE6k7nz2yVuUU5GGcN10YDJLu01rwba
-         BA7ooUB0gpQeVu4ty+/znHHp4gbXwQHGqEv6US2cOMBuCaG0UQSL0WuhnTvN0BKvMCuL
-         5fzqBajiFdLf8ckDvozIxC3rxNgOLgy/wUhbmqiNkAtIFc9cnKLgjmYJh7xN6RemRxfi
-         gZv+QTtljlvsUH7OwwMbSGhs+u/5uWl8Yck9mkAYSdZwCZbu+IK3fN6Y85OkY40+sGDS
-         0tGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736463663; x=1737068463;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=u1Rto3tQvT3jFN5xuxXHqKLZjGHCEokZTCe6xmBnORw=;
-        b=LZW+jiYSlD6+N5e1EW7IpP4/OuI38o9+QEr0BFV8CnVRWMIosYSRaVTIwMGpPEHShi
-         gps4zlUnM2mDr0aO95m9fq7/1WkuGwSsRCdVAobYS+j3c2cDXFFW6Zm3RG28gnL7BfWf
-         F4F9EB8y39DVNyL7R1oiPK/fpHDbuNWcC+C3bxg6OI7VNjSoEOWqDU0VU/46VIk4UMYd
-         Ju3bgrINblwK39c2sz9U4G7QrZ0av7geFsiSBtvCngh5xnoeVPsDlmsoPzEvyV6UcyvH
-         27lsEY9Gj9x85BOYkbKZikcl4rI41JbjbIAuKkuEWg1w/ovW1eZnp3luotv4fUwThdsN
-         bTtQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWtL9pzqzQ8X+h6DknKBuKTOoTzgWs9qWafM4Egak48LBwfjh6X9wkpgZLbJf6H/r8zaFw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzd6TWP8cErEdMfeNeiEoVGwPfGkT5RM4hrXujjckU/0n3owEoz
-	JLbdQGCuFQl1Kn4v6ZA7E9M8hvdqbJXVV6nm2ap2zhNU9MFLVxsQGzLVMdsUp1I=
-X-Gm-Gg: ASbGnctCcisI3OHbPuDKWfYifFwaq8fI7qWms5uPZfnbNM1nqsZUTM4frgnFQSeZFwq
-	6gKrye0y9RnRTg5ObydhFO7k9t82G8x1ryha8+iG9emhPFxVjxWn3uQjlE39IAfmJTE8R+PtOE1
-	DXq3vXyTuEmy/q08RrqqHtsxGMxcu474VlkCYvXgSQVxt0ZHG0VOkZOTSyRudOsCtUxzD0Fbu9y
-	xVpZ5sJHH0njWXCgoFfGI6w/3K+uY8CN5bNYwfaiWA2ghkqmz/9
-X-Google-Smtp-Source: AGHT+IHHLbAhu86VzYd6LBFp5j+Q2QinJd1yN68qZ09Yns1ZwY4dgQCRzdIJeqQ19rPDtpnqmFcSKA==
-X-Received: by 2002:a17:902:f70f:b0:216:32ea:c84b with SMTP id d9443c01a7336-21a83fc3652mr135133105ad.37.1736463663201;
-        Thu, 09 Jan 2025 15:01:03 -0800 (PST)
-Received: from ghost ([2601:647:6700:64d0:691c:638a:ff10:3765])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21a9f234984sm2890475ad.205.2025.01.09.15.01.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jan 2025 15:01:02 -0800 (PST)
-Date: Thu, 9 Jan 2025 15:00:59 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
-	Christian Brauner <brauner@kernel.org>, Guo Ren <guoren@kernel.org>,
-	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>,
-	James Clark <james.clark@linaro.org>,
-	Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linux.dev>,
-	Jonathan Corbet <corbet@lwn.net>, Arnd Bergmann <arnd@arndb.de>,
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-	linux-csky@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v6 00/16] perf tools: Use generic syscall scripts for all
- archs
-Message-ID: <Z4BVK3D7sN-XYg2o@ghost>
-References: <20250108-perf_syscalltbl-v6-0-7543b5293098@rivosinc.com>
- <Z3_ybwWW3QZvJ4V6@x1>
- <Z4AoFA974kauIJ9T@ghost>
- <Z4A2Y269Ffo0ERkS@x1>
- <Z4BEygdXmofWBr0-@x1>
+	 Content-Type:Content-Disposition:In-Reply-To; b=S2ElfJ0YRx+lkQViWgExWYWox+fgaHlMnHwL/7CcP4iw1zPge//35EkBO8dGC8ByRZQq/hcdV4rbV261ptl1rmsVXT4QOZxSvO8bJ5zaqQCxrewqSavlsDvZ+D0mZqGLPO8Dx9GhPelEaP+CH0Bgd+Cn4CLpDfzo0aYOby+rjoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=RffI9t5r; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=i2Mb/yk1; arc=none smtp.client-ip=103.168.172.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-09.internal (phl-compute-09.phl.internal [10.202.2.49])
+	by mailfout.phl.internal (Postfix) with ESMTP id AF6411380264;
+	Thu,  9 Jan 2025 18:30:57 -0500 (EST)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-09.internal (MEProxy); Thu, 09 Jan 2025 18:30:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1736465457; x=1736551857; bh=16dvk/IUtc
+	/d/6djVXoA4pGwlcklIfSpJOnuxMcfJ90=; b=RffI9t5r9ljgXbZGIIheYL3knI
+	QhQ865YwYOTZX30Pw712e4SysCuFt2LHJbygAOgGRaiVHpDgY4mSOBwTdLF+Njmw
+	5b2FutGJhNTM1OoJ/z4+tgJAtewj5PL1/wySLLIxdPAflMPxGdOH/mHvt0OgO6aw
+	9vLMw2QtDCX0ZS3j4x8n602a5y/2uWKy6CV5c+ucSAKh++whsRtmYHAbRdyj64Ag
+	99f8RQIASWvsPeVxPrW0vmVinGHbcz/C0Ygc1TOwZFgPvFc34IQOy5Y0Pvvr2nRm
+	GEUlwPGhA5xM+lnO2kRK3ZT3vtiIB5LdapvxJ5w7VeB5iAGJtw32eXel43Dg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1736465457; x=1736551857; bh=16dvk/IUtc/d/6djVXoA4pGwlcklIfSpJOn
+	uxMcfJ90=; b=i2Mb/yk1Nu+xU05U0olQh6zdaLEAlcWcpIpjtm1SrKtYJwNy7aB
+	FqlLe0u9FNJV4290H7F5TmGkGfqT60luvLtKqmOToqh5QS+N8uq/UjzAXPJtHtXG
+	l68YyHmPnXH3dFSE2xhID9iXzRM73epM71kKmCju65+hOjWcNy33akdqGCGbFOf6
+	09P6Ng+cMVJtpjtT4M74dmDAhb6A3bSWjOKzVejZAKtBKaOb/faW3AU/o0QFON2a
+	wgswglbA1ZPX9fPiwJH8cOHNIodUmJ69ZyMm4+7m2tfyA8V+BrPhtDps3qju16Po
+	7ytT1IOJyiThsS7StsCIbzAaYfcRdBaUJ4Q==
+X-ME-Sender: <xms:MFyAZ6fbRro6Lemb1a3AHKXHveXVPSibn23FQZkbtpujXz30TiNUqA>
+    <xme:MFyAZ0OsbZFLB6fquwVQSXFGiumOklqplchnIZFX-TFuQSe_YNxJYNmOdGrdc1XSz
+    6ysYcii_0TBCLA-kw>
+X-ME-Received: <xmr:MFyAZ7jimlOPvQcMxt2MdNdi3O2UKw--ChugNpbplwyk1Ce2xPOAjNLjDhkM0cQ-2XB3pI03c_ni0Oc6eZZIylqJIrUTNSRrwnIs1_tEdH2WGQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudegjedgtdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlje
+    dtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddttddvnecuhfhrohhmpeff
+    rghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnh
+    epvdefkeetuddufeeigedtheefffekuedukeehudffudfffffggeeitdetgfdvhfdvnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesug
+    iguhhuuhdrgiihiidpnhgspghrtghpthhtohepudejpdhmohguvgepshhmthhpohhuthdp
+    rhgtphhtthhopegvugguhiiikeejsehgmhgrihhlrdgtohhmpdhrtghpthhtoheprghnug
+    hrihhisehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhr
+    ghdprhgtphhtthhopehshhhurghhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurg
+    hnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopehjohhhnhdrfhgrshht
+    rggsvghnugesghhmrghilhdrtghomhdprhgtphhtthhopehmrghrthhinhdrlhgruheslh
+    hinhhugidruggvvhdprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhgpdhrtghp
+    thhtohephihonhhghhhonhhgrdhsohhngheslhhinhhugidruggvvh
+X-ME-Proxy: <xmx:MVyAZ39EJ5dmCb70mBTNz7FkW705Qi8VXqMAc2gR-Vci1anKrXZ8BQ>
+    <xmx:MVyAZ2sImiYzxCzODb5vtw-9qmzF9H2AZwxuR4VV1qv0tigMnf-UIw>
+    <xmx:MVyAZ-FTsODGcypL6puVZZAExNWpQdrsygGg757wrixqDVEes3tGqA>
+    <xmx:MVyAZ1NuefqADU9au8diD_14DjnK93zhKX3HMWOvTTEpuRPOIJEoyA>
+    <xmx:MVyAZ-R8LfOgNSoZ5rEIxMpNXlHq8Z0T2TkKoPLxk-jfdszoyQKxEpUj>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 9 Jan 2025 18:30:55 -0500 (EST)
+Date: Thu, 9 Jan 2025 16:30:53 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, shuah@kernel.org, 
+	daniel@iogearbox.net, john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, 
+	jolsa@kernel.org, mykolal@fb.com, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v6 4/5] bpf: verifier: Support eliding map
+ lookup nullness
+Message-ID: <gpqzoa2kvemzeuwpc2q4jnlcgscut5ouz7gcnd3e5my7vuml4a@bhhditb2jzq5>
+References: <cover.1734667691.git.dxu@dxuuu.xyz>
+ <86213ea40c6e6a30bf8ba967da9b9c4c6d77fd0b.1734667691.git.dxu@dxuuu.xyz>
+ <478322da282bbdae28027967ff47bfe2504559fe.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Z4BEygdXmofWBr0-@x1>
+In-Reply-To: <478322da282bbdae28027967ff47bfe2504559fe.camel@gmail.com>
 
-On Thu, Jan 09, 2025 at 06:51:06PM -0300, Arnaldo Carvalho de Melo wrote:
-> On Thu, Jan 09, 2025 at 05:49:42PM -0300, Arnaldo Carvalho de Melo wrote:
-> > BTW this series is already pushed out to perf-tools-next:
-> > 
-> > https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/log/?h=perf-tools-next
+On Thu, Jan 02, 2025 at 06:53:54PM -0800, Eduard Zingerman wrote:
+> On Thu, 2024-12-19 at 21:09 -0700, Daniel Xu wrote:
 > 
-> Hey, now I noticed that with this latest version we see:
+> lgtm, but please see a note below.
 > 
-> ⬢ [acme@toolbox perf-tools-next]$ m
-> make: Entering directory '/home/acme/git/perf-tools-next/tools/perf'
->   BUILD:   Doing 'make -j28' parallel build
-> Warning: Kernel ABI header differences:
->   diff -u tools/arch/arm64/include/uapi/asm/unistd.h arch/arm64/include/uapi/asm/unistd.h
+> [...]
 > 
-> Auto-detecting system features:
-> ...                                   libdw: [ on  ]
-> ...                                   glibc: [ on  ]
-> ...                                  libbfd: [ on  ]
-> ...                          libbfd-buildid: [ on  ]
-> ...                                  libelf: [ on  ]
-> ...                                 libnuma: [ on  ]
-> ...                  numa_num_possible_cpus: [ on  ]
-> ...                                 libperl: [ on  ]
-> ...                               libpython: [ on  ]
-> ...                               libcrypto: [ on  ]
-> ...                               libunwind: [ on  ]
-> ...                             libcapstone: [ on  ]
-> ...                               llvm-perf: [ on  ]
-> ...                                    zlib: [ on  ]
-> ...                                    lzma: [ on  ]
-> ...                               get_cpuid: [ on  ]
-> ...                                     bpf: [ on  ]
-> ...                                  libaio: [ on  ]
-> ...                                 libzstd: [ on  ]
+> > +/* Returns constant key value if possible, else negative error */
+> > +static s64 get_constant_map_key(struct bpf_verifier_env *env,
+> > +				struct bpf_reg_state *key,
+> > +				u32 key_size)
+> > +{
+> > +	struct bpf_func_state *state = func(env, key);
+> > +	struct bpf_reg_state *reg;
+> > +	int slot, spi, off;
+> > +	int spill_size = 0;
+> > +	int zero_size = 0;
+> > +	int stack_off;
+> > +	int i, err;
+> > +	u8 *stype;
+> > +
+> > +	if (!env->bpf_capable)
+> > +		return -EOPNOTSUPP;
+> > +	if (key->type != PTR_TO_STACK)
+> > +		return -EOPNOTSUPP;
+> > +	if (!tnum_is_const(key->var_off))
+> > +		return -EOPNOTSUPP;
+> > +
+> > +	stack_off = key->off + key->var_off.value;
+> > +	slot = -stack_off - 1;
+> > +	spi = slot / BPF_REG_SIZE;
+> > +	off = slot % BPF_REG_SIZE;
+> > +	stype = state->stack[spi].slot_type;
+> > +
+> > +	/* First handle precisely tracked STACK_ZERO */
+> > +	for (i = off; i >= 0 && stype[i] == STACK_ZERO; i--)
+> > +		zero_size++;
+> > +	if (zero_size >= key_size)
+> > +		return 0;
+> > +
+> > +	/* Check that stack contains a scalar spill of expected size */
+> > +	if (!is_spilled_scalar_reg(&state->stack[spi]))
+> > +		return -EOPNOTSUPP;
+> > +	for (i = off; i >= 0 && stype[i] == STACK_SPILL; i--)
+> > +		spill_size++;
+> > +	if (spill_size != key_size)
+> > +		return -EOPNOTSUPP;
+> > +
+> > +	reg = &state->stack[spi].spilled_ptr;
+> > +	if (!tnum_is_const(reg->var_off))
+> > +		/* Stack value not statically known */
+> > +		return -EOPNOTSUPP;
+> > +
+> > +	/* We are relying on a constant value. So mark as precise
+> > +	 * to prevent pruning on it.
+> > +	 */
+> > +	bt_set_frame_slot(&env->bt, env->cur_state->curframe, spi);
 > 
->    /home/acme/git/perf-tools-next/tools/perf/scripts/syscalltbl.sh  --abis common,32,i386 /home/acme/git/perf-tools-next/tools/perf/arch/x86/entry/syscalls/syscall_32.tbl /tmp/build/perf-tools-next/arch/x86/include/generated/asm/syscalls_32.h
->    /home/acme/git/perf-tools-next/tools/perf/scripts/syscalltbl.sh  --abis common,64 /home/acme/git/perf-tools-next/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl /tmp/build/perf-tools-next/arch/x86/include/generated/asm/syscalls_64.h
->   GEN     /tmp/build/perf-tools-next/common-cmds.h
->   GEN     /tmp/build/perf-tools-next/arch/arm64/include/generated/asm/sysreg-defs.h
->   PERF_VERSION = 6.13.rc2.gd73982c39183
->   GEN     perf-archive
->   GEN     perf-iostat
->   MKDIR   /tmp/build/perf-tools-next/jvmti/
->   MKDIR   /tmp/build/perf-tools-next/jvmti/
->   MKDIR   /tmp/build/perf-tools-next/jvmti/
->   MKDIR   /tmp/build/perf-tools-next/jvmti/
-> 
-> 
-> While with the previous one we would see something like SYSCALLTBL as
-> the step name, like we have GEN, MKDIR, etc, can you take a look?
+> I think env->cur_state->curframe is not always correct here.
+> It should be key->frameno, as key might point a few stack frames up.
 
-Ooh okay I see, the quiet commands were being ignored as-is. We could
-add the lines to handle this to Makefile.syscalls, but I think the
-better solution is to move the lines from Makefile.build to
-Makefile.perf to be more generically available. Here is a patch for
-that. I also added the comment from the kernel Makefile describing what
-this does.
+Ack, nice catch.
 
-From 8dcec7f5d937ede3d33c687573dc2f1654ddc59e Mon Sep 17 00:00:00 2001
-From: Charlie Jenkins <charlie@rivosinc.com>
-Date: Thu, 9 Jan 2025 14:36:40 -0800
-Subject: [PATCH] perf tools: Expose quiet/verbose variables in Makefile.perf
-
-The variables to make builds silent/verbose live inside
-tools/build/Makefile.build. Move those variables to the top-level
-Makefile.perf to be generally available.
-
-Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
----
- tools/build/Makefile.build | 20 --------------------
- tools/perf/Makefile.perf   | 37 ++++++++++++++++++++++++++++++++++++-
- 2 files changed, 36 insertions(+), 21 deletions(-)
-
-diff --git a/tools/build/Makefile.build b/tools/build/Makefile.build
-index 5fb3fb3d97e0..e710ed67a1b4 100644
---- a/tools/build/Makefile.build
-+++ b/tools/build/Makefile.build
-@@ -12,26 +12,6 @@
- PHONY := __build
- __build:
- 
--ifeq ($(V),1)
--  quiet =
--  Q =
--else
--  quiet=quiet_
--  Q=@
--endif
--
--# If the user is running make -s (silent mode), suppress echoing of commands
--# make-4.0 (and later) keep single letter options in the 1st word of MAKEFLAGS.
--ifeq ($(filter 3.%,$(MAKE_VERSION)),)
--short-opts := $(firstword -$(MAKEFLAGS))
--else
--short-opts := $(filter-out --%,$(MAKEFLAGS))
--endif
--
--ifneq ($(findstring s,$(short-opts)),)
--  quiet=silent_
--endif
--
- build-dir := $(srctree)/tools/build
- 
- # Define $(fixdep) for dep-cmd function
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index a449d0015536..55d6ce9ea52f 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -161,12 +161,47 @@ export VPATH
- SOURCE := $(shell ln -sf $(srctree)/tools/perf $(OUTPUT)/source)
- endif
- 
-+# Beautify output
-+# ---------------------------------------------------------------------------
-+#
-+# Most of build commands in Kbuild start with "cmd_". You can optionally define
-+# "quiet_cmd_*". If defined, the short log is printed. Otherwise, no log from
-+# that command is printed by default.
-+#
-+# e.g.)
-+#    quiet_cmd_depmod = DEPMOD  $(MODLIB)
-+#          cmd_depmod = $(srctree)/scripts/depmod.sh $(DEPMOD) $(KERNELRELEASE)
-+#
-+# A simple variant is to prefix commands with $(Q) - that's useful
-+# for commands that shall be hidden in non-verbose mode.
-+#
-+#    $(Q)$(MAKE) $(build)=scripts/basic
-+#
-+# To put more focus on warnings, be less verbose as default
-+# Use 'make V=1' to see the full commands
-+
- ifeq ($(V),1)
-+  quiet =
-   Q =
- else
--  Q = @
-+  quiet=quiet_
-+  Q=@
- endif
- 
-+# If the user is running make -s (silent mode), suppress echoing of commands
-+# make-4.0 (and later) keep single letter options in the 1st word of MAKEFLAGS.
-+ifeq ($(filter 3.%,$(MAKE_VERSION)),)
-+short-opts := $(firstword -$(MAKEFLAGS))
-+else
-+short-opts := $(filter-out --%,$(MAKEFLAGS))
-+endif
-+
-+ifneq ($(findstring s,$(short-opts)),)
-+  quiet=silent_
-+endif
-+
-+export quiet Q
-+
- # Do not use make's built-in rules
- # (this improves performance and avoids hard-to-debug behaviour);
- MAKEFLAGS += -r
--- 
-2.34.1
-
-
-- Charlie
-
-> 
-> All is out there in perf-tools-next.
-> 
-> - Arnaldo
 
