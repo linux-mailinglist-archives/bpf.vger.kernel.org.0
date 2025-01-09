@@ -1,116 +1,152 @@
-Return-Path: <bpf+bounces-48388-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48389-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E92BAA0770B
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 14:18:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41EEAA07783
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 14:34:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89591188B7C9
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 13:18:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7F0A188A8A2
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 13:34:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5802F218838;
-	Thu,  9 Jan 2025 13:17:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEBE3218AB8;
+	Thu,  9 Jan 2025 13:34:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mz6dG0II"
+	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="dPeu0oXw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailtransmit05.runbox.com (mailtransmit05.runbox.com [185.226.149.38])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87DCA19D087;
-	Thu,  9 Jan 2025 13:17:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC6F2185B2;
+	Thu,  9 Jan 2025 13:34:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736428669; cv=none; b=VFBiUvqTwLDfw7qfpMprYvgAaGva1BZCAhTV2szBs7VX4UUyVBDoQDNRNMS5F5mwbg47PwdPW8O9iFsFxIIlbJEtdx+GP1POaa1OSzOAfnuywtSrqPY3rtPAOzs3kQe/JFCng0B7wYNrYgN9/su9daCc46IV6y3YqVwj8OACU5I=
+	t=1736429686; cv=none; b=FlF5O0RjANvnStjyOzVwjLcodwvgNL1mlGdKjSKg2L1SNoLS5/ZWQF4LkGwL/2dqt2kb30VnRP0RFVUvVAjmotLX0XWzHo31llbXgQuh5wH+QztleO3/Hmi1ETYc7i/pAZYU+DMqgRHtl4yVKu28jwClllGz8autNHj0dC5VWKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736428669; c=relaxed/simple;
-	bh=6hxu54rMoJydvP7eOpJ5bDn4UMBGR5k/muQ6/dpJmeo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o9nCzLF0CbxG6of4K+f6vROauJzIv/f8W+HV6g0s5xuIOCSOp/6ahS9fPhQ5+QvGMODxsjn29HrZiTLPmJmQ3HZG/29BrdxORziKz39AjaaUyoLexLPzRfWw8c9XZr5CZ95HmKAEJ7r9suA2GR6+9OrwkmaS7cgs65XWgDhfpaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mz6dG0II; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2ef05d0ef18so184046a91.0;
-        Thu, 09 Jan 2025 05:17:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736428668; x=1737033468; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6hxu54rMoJydvP7eOpJ5bDn4UMBGR5k/muQ6/dpJmeo=;
-        b=mz6dG0IIzztP6mIdu1PFmjWI/P5XIU1bVQ3Stz/C9nfg54EI6EncQItTg8Citfp+r+
-         ipQ8wJ9cgKS23OqGpzwFEYEf6QM0j3H46qy9v77z55M3dZr0G/ep/nqhhzIsjLjnWy/0
-         xP5tlKMlt6V/xZCWrzqA692dPGUbXKInbw0QsXv6qDAWRviSFLDFFbrH0nzFvIrA7pdU
-         LyKXfqD5kom5TNvdujWWjEYwaSmvamJFXihrTLEaRRsR0yEUoM25tkbjfufVh06Ey8T7
-         MXLJYz9Eonpa4E3oGiphaNGoXCtq1Yk1KOxgOFrJNLYt3ycup6lGKPSqBe8DOtaWxdBX
-         CoDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736428668; x=1737033468;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6hxu54rMoJydvP7eOpJ5bDn4UMBGR5k/muQ6/dpJmeo=;
-        b=veuTF1l1I7dV89c69z429piAeoWAyiaoU9NLqMRFMCURX0NnA2Yi6dNatqrDO8uQX3
-         31P0BstBUTVZ3HhwfYBA3IfiyBBRnuQLKnw6VX35KXCOKUX4j6s77EaQeXUpRGDEVpZu
-         4XUNvw0jkFr1gia/F/SZe/Rx422btNqRwcCXdkphO6VwuDMc/dA+labRkuTFllAFscQ1
-         hPyd/Lt+ZsTw0k0qpkRzDVfcqgpQHMemOGcPqYpLl/Fz6bIwTq3+uyp6CylFq1DVwpWS
-         Ku5lfB6FTOLf/ScnNDCs8e6vzmwtJLe000lPd1hwYhLjWiWNRN97BmpBBqkp1uzninx4
-         DNEw==
-X-Forwarded-Encrypted: i=1; AJvYcCU5vBsGsC587x4M7tsN+R2Ht0TozFIlUWyFLLlnfXfuz4b94nDr1MJOcNfNX9HqKBwUiUXVNySXnQI2s2S1@vger.kernel.org, AJvYcCUtB6Jbg7LQphPJfrOHiGy3YyzcA+OOPy1xSaUl/Znd/gACQrJK7daJGuGBePFCF99lFWoQR7ljU/uxNtrcjX0=@vger.kernel.org, AJvYcCWuV9pffG5Jb+PKPRvQoxGA41SGLkfODsykTP5GIwV1Noe1Hz+0S13NhrYnITFFoQxgNOg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzJgpohOiOdVQ6FZwwLtu74iRbGOdj/jBd+s/+G1Wooqg7ORHJV
-	wOHJ9JOsSC197uUuiFBlAkfGuiqTrCiXdATzpH9FMIdWsJKtSd3toVY2BGLZ5LJP7EAaYpLP/42
-	dY1VgEBdP55yttk0cV4r3Oi59gqM=
-X-Gm-Gg: ASbGncsiDbOtkxpysnNCeZC27kttfQy24k+Gz0BAB+CA7N0P4t0uH/eGAOHweAYcusj
-	+icOjlnkF6ly08gleBjYqook4UM/nYSQz4QVA9A==
-X-Google-Smtp-Source: AGHT+IHrnVRq5yqGfKs9BZ0KjoNCjkq6JCz9xVb+FTaytJ2+rI30Z37eMeRKFzbOqyqpVQOyXCRoQCUL52ZcSIOqEjo=
-X-Received: by 2002:a17:90b:2c8c:b0:2ee:b665:12c2 with SMTP id
- 98e67ed59e1d1-2f548f04e89mr3708553a91.2.1736428667702; Thu, 09 Jan 2025
- 05:17:47 -0800 (PST)
+	s=arc-20240116; t=1736429686; c=relaxed/simple;
+	bh=2iOVx27y8FWIvxdxYvHRDO2A/7X5KLbji8GiY5iP4HE=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=fQXh8wchHW59YPYeT4cSVgax5W6WoAcPEsqbD4Gm4ufBefawKTpwdR79/y2GZn7C9e8i3tNwYmYQOWiOG1s7XOY0ZAyeLBKqoGKWKxGBZbPy6nVaTJUXwGbDPNTuGWEqsN2bIfm/q7q2csM/qq1/MjGHpvh4NZmTpukC3RXSVEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=dPeu0oXw; arc=none smtp.client-ip=185.226.149.38
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
+Received: from mailtransmit03.runbox ([10.9.9.163] helo=aibo.runbox.com)
+	by mailtransmit05.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.93)
+	(envelope-from <mhal@rbox.co>)
+	id 1tVsgD-00305I-SD; Thu, 09 Jan 2025 14:34:33 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
+	s=selector2; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:References:
+	Cc:To:Subject:From:MIME-Version:Date:Message-ID;
+	bh=w1/9gczPFPtb52AVap22ovoMq0pU+nsu8ng9Iwts42I=; b=dPeu0oXwrUl7zzbPhKigqr74+4
+	vQMAkuk363gZiWpmLVjGFes/MI9NAT5EDa2sXOWXEcH4sjrMQ74AW4hpMn12BloZ2Xu0gBGHgs+yh
+	2sjDk/M+IwHonhz+fzexA59U79RrqLjmBYWXWAkF9nqxm6i9yG6gsIuz5u8Fj9nMClfkGfZMD1DeU
+	QnHHar22KkbMoyxh4uonqaoTki9ObYh5nRmZn3+0G/lde2IMcQWxflWHApo/dYWoljXwmWtHHybQQ
+	gtJBy+uteaBMQ8mkOpjfX2VN40FAJzytCzKEIgkXBuJkQ5XLCmEhKqOqCq9bC9CCkWcUzULb2BNL2
+	3qfCyXtA==;
+Received: from [10.9.9.73] (helo=submission02.runbox)
+	by mailtransmit03.runbox with esmtp (Exim 4.86_2)
+	(envelope-from <mhal@rbox.co>)
+	id 1tVsgC-0004nq-Nj; Thu, 09 Jan 2025 14:34:32 +0100
+Received: by submission02.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.93)
+	id 1tVsgA-006cIo-Fi; Thu, 09 Jan 2025 14:34:30 +0100
+Message-ID: <2b3062e3-bdaa-4c94-a3c0-2930595b9670@rbox.co>
+Date: Thu, 9 Jan 2025 14:34:28 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250108-rust-btf-lto-incompat-v1-1-60243ff6d820@google.com>
-In-Reply-To: <20250108-rust-btf-lto-incompat-v1-1-60243ff6d820@google.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Thu, 9 Jan 2025 14:17:35 +0100
-X-Gm-Features: AbW1kvYf-xHDbBtPkhRDbaeDnsJgur8tHOEjdrqZomYxSX_i0nUbbuyb5_tMTtc
-Message-ID: <CANiq72=XD3AfZp=jKNkKLs8PYCBuk2Jm6tbQB2QtbqkieAtm8Q@mail.gmail.com>
-Subject: Re: [PATCH] rust: Disallow BTF generation with Rust + LTO
-To: Matthew Maurer <mmaurer@google.com>, Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@kernel.org>, 
-	Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>, linux-kernel@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, Matthias Maennich <maennich@google.com>, 
-	bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Eric Curtin <ecurtin@redhat.com>, Martin Reboredo <yakoyoku@gmail.com>, Neal Gompa <neal@gompa.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+From: Michal Luczaj <mhal@rbox.co>
+Subject: Re: [PATCH net 1/2] vsock/virtio: discard packets if the transport
+ changes
+To: Stefano Garzarella <sgarzare@redhat.com>, netdev@vger.kernel.org
+Cc: Simon Horman <horms@kernel.org>, Stefan Hajnoczi <stefanha@redhat.com>,
+ linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Wongi Lee <qwerty@theori.io>,
+ "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ Jason Wang <jasowang@redhat.com>,
+ Bobby Eshleman <bobby.eshleman@bytedance.com>,
+ virtualization@lists.linux.dev, =?UTF-8?Q?Eugenio_P=C3=A9rez?=
+ <eperezma@redhat.com>, Luigi Leonardi <leonardi@redhat.com>,
+ bpf@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+ "Michael S. Tsirkin" <mst@redhat.com>, Hyunwoo Kim <v4bel@theori.io>,
+ kvm@vger.kernel.org
+References: <20250108180617.154053-1-sgarzare@redhat.com>
+ <20250108180617.154053-2-sgarzare@redhat.com>
+Content-Language: pl-PL, en-GB
+In-Reply-To: <20250108180617.154053-2-sgarzare@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 9, 2025 at 12:35=E2=80=AFAM Matthew Maurer <mmaurer@google.com>=
- wrote:
->
-> The kernel cannot currently self-parse BTF containing Rust debug
-> information. pahole uses the language of the CU to determine whether to
-> filter out debug information when generating the BTF. When LTO is
-> enabled, Rust code can cross CU boundaries, resulting in Rust debug
-> information in CUs labeled as C. This results in a system which cannot
-> parse its own BTF.
+On 1/8/25 19:06, Stefano Garzarella wrote:
+> If the socket has been de-assigned or assigned to another transport,
+> we must discard any packets received because they are not expected
+> and would cause issues when we access vsk->transport.
+> 
+> A possible scenario is described by Hyunwoo Kim in the attached link,
+> where after a first connect() interrupted by a signal, and a second
+> connect() failed, we can find `vsk->transport` at NULL, leading to a
+> NULL pointer dereference.
+> 
+> Fixes: c0cfa2d8a788 ("vsock: add multi-transports support")
+> Reported-by: Hyunwoo Kim <v4bel@theori.io>
+> Reported-by: Wongi Lee <qwerty@theori.io>
+> Closes: https://lore.kernel.org/netdev/Z2LvdTTQR7dBmPb5@v4bel-B760M-AORUS-ELITE-AX/
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> ---
+>  net/vmw_vsock/virtio_transport_common.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+> index 9acc13ab3f82..51a494b69be8 100644
+> --- a/net/vmw_vsock/virtio_transport_common.c
+> +++ b/net/vmw_vsock/virtio_transport_common.c
+> @@ -1628,8 +1628,11 @@ void virtio_transport_recv_pkt(struct virtio_transport *t,
+>  
+>  	lock_sock(sk);
+>  
+> -	/* Check if sk has been closed before lock_sock */
+> -	if (sock_flag(sk, SOCK_DONE)) {
+> +	/* Check if sk has been closed or assigned to another transport before
+> +	 * lock_sock (note: listener sockets are not assigned to any transport)
+> +	 */
+> +	if (sock_flag(sk, SOCK_DONE) ||
+> +	    (sk->sk_state != TCP_LISTEN && vsk->transport != &t->transport)) {
+>  		(void)virtio_transport_reset_no_sock(t, skb);
+>  		release_sock(sk);
+>  		sock_put(sk);
 
-Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+FWIW, I've tried simplifying Hyunwoo's repro to toy with some tests. Ended
+up with
 
-as well as BPF/BTF, plus others that may be using or were involved
-with the right-hand side of the condition.
+```
+from threading import *
+from socket import *
+from signal import *
 
-Thanks!
+def listener(tid):
+	while True:
+		s = socket(AF_VSOCK, SOCK_SEQPACKET)
+		s.bind((1, 1234))
+		s.listen()
+		pthread_kill(tid, SIGUSR1)
 
-Cheers,
-Miguel
+signal(SIGUSR1, lambda *args: None)
+Thread(target=listener, args=[get_ident()]).start()
+
+while True:
+	c = socket(AF_VSOCK, SOCK_SEQPACKET)
+	c.connect_ex((1, 1234))
+	c.connect_ex((42, 1234))
+```
+
+which gives me splats with or without this patch.
+
+That said, when I apply this patch, but drop the `sk->sk_state !=
+TCP_LISTEN &&`: no more splats.
 
