@@ -1,143 +1,147 @@
-Return-Path: <bpf+bounces-48456-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48457-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A0C4A08208
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 22:14:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77B9DA0820C
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 22:14:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E4F8166AAF
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 21:14:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48CFC188BF37
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 21:14:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56A4F202F71;
-	Thu,  9 Jan 2025 21:14:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76D52204F66;
+	Thu,  9 Jan 2025 21:14:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YUvyPCjF"
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="R0YnG8Cd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB332010E6;
-	Thu,  9 Jan 2025 21:14:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 652C6202F8E
+	for <bpf@vger.kernel.org>; Thu,  9 Jan 2025 21:14:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736457254; cv=none; b=MTHR7PUp2/NYsYJoxYUx11jpz6FtxXYG8MB7V3iuiWacvXvFeuj72OfMAql1k+aXnfzPPHLCJ4iYPn+jn+Tmh3Dlfm6wQTn8k1xgYKV29FmetX8Ek0+JWmwwPdJVkszzBt7gtbBRneEAcFASmYBUPBg9khMXvxAo9USwLH12YdU=
+	t=1736457276; cv=none; b=p+IKXYSQY27CQF1tUiMa5dJxbSYUH8SakWmlaq1+klgNG0B8Yob91Jux7VVJE1i6hcU0UAAdVIWRB+LRMf5WB9PMW76QkecAPKjN50T2zYzdKv1s0EixIcX6v6rUPswSGUcM27qQMcznQKNr3S0Aw78IjkMGvQO64Mu/TiDfTXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736457254; c=relaxed/simple;
-	bh=oRe6W0YtOifBOq/5U5CvVX4H3M2hacfIjbXPMwcFjtc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TcEl8Kw+X57JvC9XaRPn1QxkJBiTTrHhZwsYBontp99QETSxVgyNazZdJaAnHXHPcMx68OOR+xB/aq6wo9hfml1ok+Bwn689/Mx6Iw2FKcIV4ipNfGH8t9u2IFG68BKb9WSJ/AyO7Me+FQaajW3e1ySlv3EXZj4Mnt3qe6QWfPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YUvyPCjF; arc=none smtp.client-ip=209.85.218.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-ab2bb0822a4so287523266b.3;
-        Thu, 09 Jan 2025 13:14:12 -0800 (PST)
+	s=arc-20240116; t=1736457276; c=relaxed/simple;
+	bh=eYzvAapvrXbZXgh9jcwIv3jWk//AlYNgrkVgN3CMHpk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Efjq05CkYZLlUiUmvRqrziQA7jVCo9+dWptauT8C9SV/PLP/ehzW9RxjWDBMQ2aGW2yz2iwa6mDl1qAD7CUvuI+vGKDmwr2k6tV/qQYnB+JAjcaYkBPw8NuLt8L7IpLoAc88QcNh2ca8UH5VAS5OmJU69tb7n0pLtAztZH7VaRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=R0YnG8Cd; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-21654fdd5daso21915115ad.1
+        for <bpf@vger.kernel.org>; Thu, 09 Jan 2025 13:14:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736457251; x=1737062051; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=oRe6W0YtOifBOq/5U5CvVX4H3M2hacfIjbXPMwcFjtc=;
-        b=YUvyPCjF4nxShAE8F3X4MpIhG+e2YaBOTT0bmbdlCjr352bivqIB3XDr2HfwP1K2Cf
-         tKsFP4bLzVW40NW1gf6SCnvXStnON0gWmvkNdRDUR2cCuI1VU1/7MxZIH5lDnZY6UrZ+
-         l9lZnk3fM2++raWo5SExE7iixUE7SK8RyZr9p7kHvkjqS6RX1CgiqQ7Kl3FYAKxl81ps
-         rAQk/pw0wIIH3mD9xXSsujtXRpgVZUn4BaMyPd5FiQS0TtCoCRKhBP4mTZTuYeVVK0GA
-         8CBKXnaMm399WDW8hZEX2MMe4r5gTeBVKwuJxu3gaGyjx/TUjzJkdC/CqME2EBOsOJBd
-         ccIQ==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1736457274; x=1737062074; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=rWi0Eghj3xi161PysLI0KrpGNdQD8oYgIL/QlYOb5cw=;
+        b=R0YnG8Cd03KerAHlX2oRKaYHqn8UXUNqY1Kbdg/Wh5RM8yrMp7yeCQWeSO3CSqzruF
+         FgACscr9401LBSlZD2DiZ5lrr6brdqokDeRVJy137hFHePapiRhQKDpA39XoThklfnuN
+         ApbG5FTMlhmRIULuoSQl3uyOUdDCoPvXYhX2vnaNPKO9wXI83hUIi0KkSNbjQ2ahvl4q
+         hEwNIcf7dmv9XpX8lCKggPicGUxsUAmdfa7Q4a+vj6+afo3zvvVt3QKxUgVpBVTI1y9i
+         VO7CSLRfuJttSVLwyiEYVK2SdN+t1OyK0efCibNObANRqYdvB2SK2338jbh84+RymfJO
+         7krA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736457251; x=1737062051;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oRe6W0YtOifBOq/5U5CvVX4H3M2hacfIjbXPMwcFjtc=;
-        b=wQ6cGlzz5Dq2wevbSvY+s01Lvk7DUvktOHS2fxayaXkpTv8SCSe+M1HhI3JhY4af4t
-         DhjizWHTgbZKywJTTbrOWYjdMZvr0EfqROJ9fDX+nLyDsu8/uUMldHkKvNbegxptSzg1
-         LlD1j/XKaaU9jPfUc0gmp/uVmjiWgABJyjk7hzoNloPQcQNOv0c5meUHmzcZlcrC/vhC
-         SouW4GkoJXpA7fgsYuOlCRA+cKlQVKCY06Bwp+9vghCYpVkNA2OEk53n5DTGYWX6yOVa
-         1zDpKX2Oy6Etut6HUczFwCtnGNIzZF8vdbzucCFZEHngkhstdP3y2Fuosn39PnrZpBRy
-         GoAw==
-X-Forwarded-Encrypted: i=1; AJvYcCVL4Gf0RA0NnGgxcB8AjytrbYzNqiqZEKsLCTB5eHqIZmW1JghYRKAneyma3QmRe8o9soM=@vger.kernel.org, AJvYcCVlK8ndRzaU0A3kIll45O1bwNQFwYkTzuR7jqNY9EZ2pbRSAdhgsCGx/zFJ/FurzYw+Eg0YB5Jtfiy1YKHk@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz8J8PWc+8seDCstguiYxlwyckgTg1gsZANOIl80ABVH9feSqHK
-	o6h7gwOiS2ng2zJlkC7GggtJLTHXEIcoFFg+qMDBVlDtmqNFAb7DXqPdesbyjOnKnGKHCStsb3z
-	9VGS+R1EcZ37gvLWnFf/Hncn1yNc=
-X-Gm-Gg: ASbGncu7gjWonGCYkkwhV7axw/uxzR2fqRZoFYA+omQot3Q96uVk8usG77o7oG9drNA
-	Dk02pwmj8nLLQpg3JH0R255QjpBrbZKURjXlY+ij2
-X-Google-Smtp-Source: AGHT+IEUPbOa4WdvFmUpaXweBL0Ko6uBYL5VTOEFrrQG7SZV6qywnZewzkY81tZ+QL/jp/rDTN47FxoBVeQDRADtj9E=
-X-Received: by 2002:a17:907:7e87:b0:aa6:5e35:d730 with SMTP id
- a640c23a62f3a-ab2ab559bcemr579404766b.24.1736457251023; Thu, 09 Jan 2025
- 13:14:11 -0800 (PST)
+        d=1e100.net; s=20230601; t=1736457274; x=1737062074;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rWi0Eghj3xi161PysLI0KrpGNdQD8oYgIL/QlYOb5cw=;
+        b=eSBNfkH2VxgTSLzF+j7fHSas8ZXUdtuPmLOjK4I4aS4Rk0+LjNtxGa6qEh6L1S7yIg
+         JAQSR2FZKG6FxQNOEQZo62BGoeRot+bDcRAzqZ3Da0lkEJMAX/wXMSGVH4VAkwerRra8
+         adkDEjkmqCo3VldQwNKQPMvRpzzgSARbqN5z2MR1coQ8fiaEP/E9NvpPl1k5m6jVD0bf
+         yXyYnRrjmod3LU+ULRjPlyTtTC4igEGcgsk09L/q5eA5hR7u5VIIShOWC8kdZgbp2hKf
+         hrs8EMOGTp1m7+AT5UDHoEaIKPxi0iLFrXo7J+56Cnep9nUM+EucHEl3HY+MA0+EAFOf
+         /NOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUQMnAiD7orB/M37Yj/iPJgaKtL1AhMmsVI9+cwkIuXBoriT//cmdK30zgtC1oS/wyo870=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzqU2AYWZv0v7+HZ5S32unDFlgF35o0vJExTQ1+yTeCNV+JaH1d
+	5VZz5j4KBZYIr2rk+yE67A8Pol9kV4bfNSXLfHl8pIJ4sfYt6nsTt5efPJSJuo0=
+X-Gm-Gg: ASbGncvvijNcy84b8spQ93X7X+o0ctGj3FBu3O91CHw3y1etcUQ5EXNsu6pkfyZlC6S
+	b6yzsNyGU8xnOqEMW5l4vLGCXNG9dCvvB/KJ8qzvSAzDlA/j6USn3cLyLJuBi9L6FzTXOvxKmeM
+	kvuqTmTjnMGhHHKmmMhQdwVIRVW/Q5+eLp5UwM5ZN1vcW1JSRh324BDaFmDy/uf7PmpfhzuR2hZ
+	zgq4VNwh7qPWh7N3wHis+BKSd1PWrehjWrqbLbSUrt2wVgdDlyt
+X-Google-Smtp-Source: AGHT+IGGpIFpDMCF6QbYUycaFsLmnN4FCC576ZSX1GeEVOuZ9RO46wvil+eTCx3t+IaGa75ky/Kjtw==
+X-Received: by 2002:a17:90b:520e:b0:2f2:ab09:c256 with SMTP id 98e67ed59e1d1-2f548f424b1mr12478961a91.33.1736457273807;
+        Thu, 09 Jan 2025 13:14:33 -0800 (PST)
+Received: from ghost ([2601:647:6700:64d0:691c:638a:ff10:3765])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f54a2ad3b7sm4117850a91.31.2025.01.09.13.14.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jan 2025 13:14:33 -0800 (PST)
+Date: Thu, 9 Jan 2025 13:14:29 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
+	Christian Brauner <brauner@kernel.org>, Guo Ren <guoren@kernel.org>,
+	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>,
+	James Clark <james.clark@linaro.org>,
+	Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linux.dev>,
+	Jonathan Corbet <corbet@lwn.net>, Arnd Bergmann <arnd@arndb.de>,
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
+	linux-csky@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v6 00/16] perf tools: Use generic syscall scripts for all
+ archs
+Message-ID: <Z4A8NU02WVBDGrYZ@ghost>
+References: <20250108-perf_syscalltbl-v6-0-7543b5293098@rivosinc.com>
+ <Z3_ybwWW3QZvJ4V6@x1>
+ <Z4AoFA974kauIJ9T@ghost>
+ <Z4A2Y269Ffo0ERkS@x1>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250107140004.2732830-1-memxor@gmail.com> <CAHk-=wh9bm+xSuJOoAdV_Wr0_jthnE0J5k7hsVgKO6v-3D6=Dg@mail.gmail.com>
- <20250108091827.GF23315@noisy.programming.kicks-ass.net> <CAP01T75XoSv91C6oT8WSFrSsqNxnGHn0ZE=RbPSYgwX79pRQVA@mail.gmail.com>
- <974db75a-4ffd-4379-8085-484c45702fe5@redhat.com>
-In-Reply-To: <974db75a-4ffd-4379-8085-484c45702fe5@redhat.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Fri, 10 Jan 2025 02:43:34 +0530
-X-Gm-Features: AbW1kvZGT9MwXw0Fczwwi9l0CkcoPfVFhv0oq8xdfEf3qVkM2jZMlNgPTbQ_xr0
-Message-ID: <CAP01T76guECG9gn2cDENww4_W9rRvAZ_6YkF9T2mAy7jUS+V4g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 00/22] Resilient Queued Spin Lock
-To: Waiman Long <llong@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	Will Deacon <will@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>, 
-	Barret Rhoden <brho@google.com>, Josh Don <joshdon@google.com>, Dohyun Kim <dohyunkim@google.com>, 
-	kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Z4A2Y269Ffo0ERkS@x1>
 
-On Thu, 9 Jan 2025 at 19:29, Waiman Long <llong@redhat.com> wrote:
->
-> On 1/8/25 3:12 PM, Kumar Kartikeya Dwivedi wrote:
-> > On Wed, 8 Jan 2025 at 14:48, Peter Zijlstra <peterz@infradead.org> wrote:
-> >> On Tue, Jan 07, 2025 at 03:54:36PM -0800, Linus Torvalds wrote:
-> >>> On Tue, 7 Jan 2025 at 06:00, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
-> >>>> This patch set introduces Resilient Queued Spin Lock (or rqspinlock with
-> >>>> res_spin_lock() and res_spin_unlock() APIs).
-> >>> So when I see people doing new locking mechanisms, I invariably go "Oh no!".
-> >>>
-> >>> But this series seems reasonable to me. I see that PeterZ had a couple
-> >>> of minor comments (well, the arm64 one is more fundamental), which
-> >>> hopefully means that it seems reasonable to him too. Peter?
-> >> I've not had time to fully read the whole thing yet, I only did a quick
-> >> once over. I'll try and get around to doing a proper reading eventually,
-> >> but I'm chasing a regression atm, and then I need to go review a ton of
-> >> code Andrew merged over the xmas/newyears holiday :/
-> >>
-> >> One potential issue is that qspinlock isn't suitable for all
-> >> architectures -- and I've yet to figure out widely BPF is planning on
-> >> using this.
-> > For architectures where qspinlock is not available, I think we can
-> > have a fallback to a test and set lock with timeout and deadlock
-> > checks, like patch 12.
-> > We plan on using this in BPF core and BPF maps, so the usage will be
-> > pervasive, and we have atleast one architecture in CI (s390) which
-> > doesn't have ARCH_USER_QUEUED_SPINLOCK selected, so we should have
-> > coverage for both cases. For now the fallback is missing, but I will
-> > add one in v2.
->
-> Event though ARCH_USE_QUEUED_SPINLOCK isn't set for s390, it is actually
-> using its own variant of qspinlock which encodes in the lock word
-> additional information needed by the architecture. Similary for PPC.
+On Thu, Jan 09, 2025 at 05:49:39PM -0300, Arnaldo Carvalho de Melo wrote:
+> On Thu, Jan 09, 2025 at 11:48:36AM -0800, Charlie Jenkins wrote:
+> > On Thu, Jan 09, 2025 at 12:59:43PM -0300, Arnaldo Carvalho de Melo wrote:
+> > > ⬢ [acme@toolbox perf-tools-next]$ git log --oneline -1 ; time make -C tools/perf build-test
+> > > d06826160a982494 (HEAD -> perf-tools-next) perf tools: Remove dependency on libaudit
+> > > make: Entering directory '/home/acme/git/perf-tools-next/tools/perf'
+> > > - tarpkg: ./tests/perf-targz-src-pkg .
+> > >                  make_static: cd . && make LDFLAGS=-static NO_PERF_READ_VDSO32=1 NO_PERF_READ_VDSOX32=1 NO_JVMTI=1 NO_LIBTRACEEVENT=1 NO_LIBELF=1 -j28  DESTDIR=/tmp/tmp.JJT3tvN7bV
+> > >               make_with_gtk2: cd . && make GTK2=1 -j28  DESTDIR=/tmp/tmp.BF53V2qpl3
+> > > - /home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP: cd . && make FEATURE_DUMP_COPY=/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP  feature-dump
+> > > cd . && make FEATURE_DUMP_COPY=/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP feature-dump
+> > >          make_no_libbionic_O: cd . && make NO_LIBBIONIC=1 FEATURES_DUMP=/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP -j28 O=/tmp/tmp.KZuQ0q2Vs6 DESTDIR=/tmp/tmp.0sxMyH91gS
+> > >            make_util_map_o_O: cd . && make util/map.o FEATURES_DUMP=/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP -j28 O=/tmp/tmp.Y0Mx3KLREI DESTDIR=/tmp/tmp.wg9HCVVLHE
+> > >               make_install_O: cd . && make install FEATURES_DUMP=/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP -j28 O=/tmp/tmp.P0LEBAkW1X DESTDIR=/tmp/tmp.agTavZndFN
+> > >   failed to find: etc/bash_completion.d/perf
+> > 
+> > Is this something introduced by this patch?
+> 
+> I don't think so.
+> 
+> BTW this series is already pushed out to perf-tools-next:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/log/?h=perf-tools-next
+> 
+> Thanks!
+> 
+> - Arnaldo
 
-Thanks, I see that now. It seems it is pretty similar to the paravirt
-scenario, where the algorithm would require changes to accommodate
-rqspinlock bits.
-For this series, I am planning to stick to a default TAS fallback, but
-we can tackle these cases together in a follow up.
-This series is already quite big and it would be better to focus on
-the base rqspinlock bits to keep things reviewable.
-Given we're only using this in BPF right now (in specific places where
-we're mindful we may fall back to TAS on some arches), we won't be
-regressing any other users.
+Thank you!
 
->
-> Cheers,
-> Longman
->
+- Charlie
+
 
