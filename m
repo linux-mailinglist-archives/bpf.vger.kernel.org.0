@@ -1,162 +1,173 @@
-Return-Path: <bpf+bounces-48347-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48348-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DFA4A06BFC
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 04:23:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69831A06C44
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 04:32:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC3C31674B1
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 03:23:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 423363A7C4D
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 03:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB15913D52B;
-	Thu,  9 Jan 2025 03:22:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2755617C7C4;
+	Thu,  9 Jan 2025 03:30:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="my1iiEIX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KIyGKh+x"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 333A210E3;
-	Thu,  9 Jan 2025 03:22:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769AB17C9F1;
+	Thu,  9 Jan 2025 03:30:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736392978; cv=none; b=gfCKxWJI3vG6GLVetTM2D8BWt3R8LMsqshk60wrYkqQJbVH+ZCdjG98DVF5h3yCbykiZUYtrnGQJsRvmXjnktfjfwxz9ItMlg0o5SA70ja9rS7hZBJcobaJ+pBygCHZoilF4jz3D7cVxa7pPkqRaKuqkS2bPfIfBMIWbWWjj0jM=
+	t=1736393420; cv=none; b=KG4dRg7moTCRYCZkgIzcpXsmoCWQC1UDgQ3vj8HOVjfFMgmkq6l4WWCtOSKS5ZGFgOEkmG01VZMyNFtO4LDvrD6UwPe/D4zpmVI0l7ONDK6lIAsukmO9mRexL2ZWMz0HZfa/hlOq+7NkGV2KnwdpqqsC3aEnWbyFP+D3xii6s+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736392978; c=relaxed/simple;
-	bh=UK4Z7qZ2n3DHOwfe1/RSpWrSJ+hABJq4TrbP8dFCHbo=;
+	s=arc-20240116; t=1736393420; c=relaxed/simple;
+	bh=p5S5mW+LeXp0PvEEiwMnHoT3w+2HlRlfA2h48ZU173Q=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Iy/SiqgRtWdx9e94lYZHXYiEbxF7Jm0FfpWXtc1Z3O8OXAFS4T48s4rT/nJYszA/KqL/wNW0SKVsHLcKt9E8wJOZwj2QW4xzMaitO+8IlZL39xIaOhRyROGdRvu4tUjV6nyxYBDgaxmCesaTF8hLe9vsPJdYcl0DoIsojp6cR8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=my1iiEIX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A52A3C4CEE7;
-	Thu,  9 Jan 2025 03:22:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736392977;
-	bh=UK4Z7qZ2n3DHOwfe1/RSpWrSJ+hABJq4TrbP8dFCHbo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=my1iiEIXhKbbCPWnQayM2Jb/3gnxaDwAXkWHNpWKa+vWn0OkMn3IPlAS/cXTcFJEA
-	 nMCEZBQhNKWHHygacyYEY/upkop0UkXwgrqtpm9pZ5kvcMewJSGZumqTNJi/5N070u
-	 Y200NC0tYWn3yzZLCr4zNATvv0p9T9e3jxKqlWSAf3diWoxYt4QqEpDcKhz/qlaxII
-	 2VQLz3AO4v6GZ9h54B6fZZfPzF6iL0xjqqCGJIoQPHcTDjdXzFQsfpuGbSbTXc88fK
-	 wtuOvcgel2cecwFDrYKuTLknwbZOwMyXY/stJbNr7RhTuvPWkcNuxn6vhImsF7KkeY
-	 3JNLFfyuMMrNg==
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5d90a5581fcso616883a12.1;
-        Wed, 08 Jan 2025 19:22:57 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU+Na0kwo2GmROAVodXWu8IObpuJeuEc24jW8OtLV+BaH9vxinPxEp2VB06OMsYojltiYKVqWbONZrC8A==@vger.kernel.org, AJvYcCUV7tUbXTNPOq48tH8MeGzglloSi5oAsNIZzOnwT5k2A2MbkDA0T9amd9E1Y3nTzv1L5RdKmPOHbOTQzdjtOP+nfbo63H1L@vger.kernel.org, AJvYcCUys0nSnXJ4/Iwjk5mOgQhkv3zj0G5P6n/O8lAW34q6GT0aBXxQk4nYAS6TNJlzUhN9UiFD+v4mJ2zZYDHQ@vger.kernel.org, AJvYcCVE86aLQMGj7HtSbJSYuDxkTg/G+o1BhbW1aTIvnhvdqnUmrKAoKo9NZqa8rLvtFpNJqTcXl/LRcUfeZJuIC2NvPA==@vger.kernel.org, AJvYcCXAM4gVli5NDbpS3rTs9D+oJ9pCQqUIRa+qbRPI5kBioqDOH+R/Hwc/iXOHKddIXQANinA=@vger.kernel.org, AJvYcCXr3q9uc9C8Vm2sntVzbmsaG1E6G/wzeTdeSoS+is7/TpkRAATY6mm+jPr39zNiOLfEcBs4PzvBHmA1@vger.kernel.org
-X-Gm-Message-State: AOJu0YwJ1qaC529ag3Qt2G7f2ehJUJAFXp0uTDkLHB68PGtbHFRDuyqT
-	YcRVcNiygJ53vARc9h3Uez94W2w1bGbl6vX/sPsO2BVOD9IsJxn+lLN78bkAZ57XeGmNh0uSiyU
-	Bzy2wNnBWTbsQe4zG6W9xNCPnV2E=
-X-Google-Smtp-Source: AGHT+IF2vfwWk/hX1fppoOgb3+DWHmntV4ZAONyRFvI6o1pxOXRZKk7PnjDU1irlzVBy8ipamhJ7KiIEeYXxp0Ftx84=
-X-Received: by 2002:a05:6402:3225:b0:5d3:bab1:513f with SMTP id
- 4fb4d7f45d1cf-5d972e178cbmr4906639a12.18.1736392976133; Wed, 08 Jan 2025
- 19:22:56 -0800 (PST)
+	 To:Cc:Content-Type; b=CgRCxbKWkHwA2rO1+NMGB6N9nL+2gUVoSe9zqrY+n/EsFANWAYicx+u5AG39XURDEnxCxkuJeETSN2/N1EB8rF2urYeIjl3flAJU3l0zEMmAWWUrTTboTt9zvZge9VnJHBQm4Ih6DNVD5znZerBmSJqnYhh6j9VtF892iiHIQdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KIyGKh+x; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-43625c4a50dso3880125e9.0;
+        Wed, 08 Jan 2025 19:30:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736393416; x=1736998216; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p5S5mW+LeXp0PvEEiwMnHoT3w+2HlRlfA2h48ZU173Q=;
+        b=KIyGKh+xYExS6KczYVol4BtYWyb3bMusKKXiKW23i16sbQqH+zrHvztIPtxezpsVsm
+         iTzmJ3itGJla0f9Mhp7ZDm1pLEdL5F5y97dc2SLbyp3u5T3oNQ9ONoIYrwCUw+3twlG9
+         vdm28T3nSfjjdboA8tUBTEOvOvzh4MOvyR+ar25wePRrrHhlKKD7WBrqGLZvlajMAmWo
+         PuRngeLa+XILIYEPRR6f0FQRT6u+ZIh5oZkmf4nxYZeb+8dayk2Ie4VG7W63mAfrmUq+
+         0yNAoBa+Sq4YuSkuSQVhltri2EhxtBRkSYHSXzXVGelg6P+PSd4/JqDLXfbn9/F2PwBm
+         7adQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736393416; x=1736998216;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p5S5mW+LeXp0PvEEiwMnHoT3w+2HlRlfA2h48ZU173Q=;
+        b=p43dvJDt4v23ImZLnPHlfd4e8W34PdKIjso3AmdQd8NQJnft7TyVWGA+aO+k06bNBN
+         UJY7DxLEQzEXClvxFgk6Huj7TqvWtaTJpCVBppvzz2XPcNRJJy0hzpLYQaIZUK1XpQHq
+         QKs7M4OveDlkr9hiXq0/aMhQN4rNMAeo530I07rwmojogUcSfokjQQOtvA2TrcWk5knk
+         Ua70B176xvM5ue2LBNa47h2nYWK70mib0solZkksVA20rUVBKYhCLcq3giBPR6nvnmyx
+         q4Her9cQ0jfZBHohTkniGk5oHbXO/x6lx9rgs29nU8iF+7ULUlZMgEjBE3lb+gYQyrrl
+         7u7A==
+X-Forwarded-Encrypted: i=1; AJvYcCWU3BOWPYx59RLg49fdIa7Ce0dv7MTYXuWl4oYlm0zitfZE00a2aG1FXtJxqlaITpHCGJpbM+fUtJ2S/ZYv@vger.kernel.org, AJvYcCXK40hcdaCTdlK41T5B/iYHaBPfeE4lQtLa8Pmv8sQbJ2zTXN2RhOWKEo153qiOkq55ZFM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyNhaKBKMrknRIP3LGYaUe4+ddMI7ZHOlywhTtFRuFJ4VKE0iES
+	3ST3LbQdYng5HcuI5zod9wkfvc/4sdguxbssfqOvl9fnwC2aExroNaqkwRKXl8gaLDDI5R7yA9R
+	DkDjM1qJmkk2qjDqk1I6/7gMg4TM=
+X-Gm-Gg: ASbGnctaX38+kQf+7OH8xftr8ZALJMLkTfDvnT2TluCrr3DujTc3vNxck/49DUxlrmF
+	xw3WzpDYdgGMjPIC4dp7irkpYnSqW/WOUQrjYKFarB7OQ25LScI3BG51Gp4YIHYMAMa+LoA==
+X-Google-Smtp-Source: AGHT+IGB2aAk1Pw5r5FPTIxMbs4LwMycRPjcfLlx8+uRbrdAjcUMzHT8z6Unf3wscrpU7eFtzLBRIOWooDV+T2yiez8=
+X-Received: by 2002:a5d:59ab:0:b0:38a:624b:e37b with SMTP id
+ ffacd0b85a97d-38a873564a7mr4574653f8f.53.1736393416229; Wed, 08 Jan 2025
+ 19:30:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250108-perf_syscalltbl-v6-0-7543b5293098@rivosinc.com> <20250108-perf_syscalltbl-v6-3-7543b5293098@rivosinc.com>
-In-Reply-To: <20250108-perf_syscalltbl-v6-3-7543b5293098@rivosinc.com>
-From: Guo Ren <guoren@kernel.org>
-Date: Thu, 9 Jan 2025 11:22:44 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQFq41rpBMsEodungBHPbzd2zn9F02fB6dJxnYAr81HJg@mail.gmail.com>
-X-Gm-Features: AbW1kvaPnl9RqcyhYmWgfOMmK2I_eaC06_BB36DSFhf4vdK4RFvF9kDCvTmwHLc
-Message-ID: <CAJF2gTQFq41rpBMsEodungBHPbzd2zn9F02fB6dJxnYAr81HJg@mail.gmail.com>
-Subject: Re: [PATCH v6 03/16] perf tools: csky: Support generic syscall headers
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
-	Christian Brauner <brauner@kernel.org>, John Garry <john.g.garry@oracle.com>, 
-	Will Deacon <will@kernel.org>, James Clark <james.clark@linaro.org>, 
-	Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linux.dev>, 
-	Jonathan Corbet <corbet@lwn.net>, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-csky@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-doc@vger.kernel.org
+References: <20250107140004.2732830-1-memxor@gmail.com> <20250107140004.2732830-15-memxor@gmail.com>
+ <62c08854-04cb-4e45-a9e1-e6200cb787fd@redhat.com> <CAP01T77QD_pYBVS4PfG3jDeXObKHZJkV2nQX+0njv11oKTEqRA@mail.gmail.com>
+ <2ff3a68c-1328-4b47-a4aa-0365b3f1809b@redhat.com>
+In-Reply-To: <2ff3a68c-1328-4b47-a4aa-0365b3f1809b@redhat.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 8 Jan 2025 19:30:05 -0800
+X-Gm-Features: AbW1kvYbnl67k_gh2hDgKRafC1F8uLS-nHwS-eMOICyRrVcDfCyxsrXFVBL8jDI
+Message-ID: <CAADnVQJ=B4cdGa+OuN7d61=LCXmQgZQz=TF+nRD55m3=2EX2cA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 14/22] rqspinlock: Add macros for rqspinlock usage
+To: Waiman Long <llong@redhat.com>
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>, 
+	Barret Rhoden <brho@google.com>, Josh Don <joshdon@google.com>, Dohyun Kim <dohyunkim@google.com>, 
+	Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 9, 2025 at 10:36=E2=80=AFAM Charlie Jenkins <charlie@rivosinc.c=
-om> wrote:
+On Wed, Jan 8, 2025 at 5:11=E2=80=AFPM Waiman Long <llong@redhat.com> wrote=
+:
 >
-> csky uses the generic syscall table, use that in perf instead of
-> requiring libaudit.
 >
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-LGTM! Thx
-
-For c-sky part.
-
-Acked-by: Guo Ren <guoren@kernel.org>
-
-> ---
->  tools/perf/Makefile.perf                              | 2 +-
->  tools/perf/arch/csky/entry/syscalls/Kbuild            | 2 ++
->  tools/perf/arch/csky/entry/syscalls/Makefile.syscalls | 3 +++
->  tools/perf/arch/csky/include/syscall_table.h          | 2 ++
->  4 files changed, 8 insertions(+), 1 deletion(-)
+> > Most of the users use rqspinlock because it is expected a deadlock may
+> > be constructed at runtime (either due to BPF programs or by attaching
+> > programs to the kernel), so lockdep splats will not be helpful on
+> > debug kernels.
 >
-> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> index 44b9e33b9568f638ba12ad688833fdb661c16c16..3fe47bd21c0ea39473c584c82=
-383ca5d4daf580f 100644
-> --- a/tools/perf/Makefile.perf
-> +++ b/tools/perf/Makefile.perf
-> @@ -311,7 +311,7 @@ FEATURE_TESTS :=3D all
->  endif
->  endif
->  # architectures that use the generic syscall table
-> -generic_syscall_table_archs :=3D riscv arc
-> +generic_syscall_table_archs :=3D riscv arc csky
->  ifneq ($(filter $(SRCARCH), $(generic_syscall_table_archs)),)
->  include $(srctree)/tools/perf/scripts/Makefile.syscalls
->  endif
-> diff --git a/tools/perf/arch/csky/entry/syscalls/Kbuild b/tools/perf/arch=
-/csky/entry/syscalls/Kbuild
-> new file mode 100644
-> index 0000000000000000000000000000000000000000..11707c481a24ecf4e220e51eb=
-1aca890fe929a13
-> --- /dev/null
-> +++ b/tools/perf/arch/csky/entry/syscalls/Kbuild
-> @@ -0,0 +1,2 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +syscall-y +=3D syscalls_32.h
-> diff --git a/tools/perf/arch/csky/entry/syscalls/Makefile.syscalls b/tool=
-s/perf/arch/csky/entry/syscalls/Makefile.syscalls
-> new file mode 100644
-> index 0000000000000000000000000000000000000000..ea2dd10d0571df464574a9c02=
-32ada0ac1f79a3f
-> --- /dev/null
-> +++ b/tools/perf/arch/csky/entry/syscalls/Makefile.syscalls
-> @@ -0,0 +1,3 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +syscall_abis_32 +=3D csky time32 stat64 rlimit
-> diff --git a/tools/perf/arch/csky/include/syscall_table.h b/tools/perf/ar=
-ch/csky/include/syscall_table.h
-> new file mode 100644
-> index 0000000000000000000000000000000000000000..4c942821662d95216765b176a=
-84d5fc7974e1064
-> --- /dev/null
-> +++ b/tools/perf/arch/csky/include/syscall_table.h
-> @@ -0,0 +1,2 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#include <asm/syscalls_32.h>
+> In most cases, lockdep will report a cyclic locking dependency
+> (potential deadlock) before a real deadlock happens as it requires the
+> right combination of events happening in a specific sequence. So lockdep
+> can report a deadlock while the runtime check of rqspinlock may not see
+> it and there is no locking stall. Also rqspinlock will not see the other
+> locks held in the current context.
 >
-> --
-> 2.34.1
 >
+> > Say if a mix of both qspinlock and rqspinlock were involved in an ABBA
+> > situation, as long as rqspinlock is being acquired on one of the
+> > threads, it will still timeout even if check_deadlock fails to
+> > establish presence of a deadlock. This will mean the qspinlock call on
+> > the other side will make progress as long as the kernel unwinds locks
+> > correctly on failures (by handling rqspinlock errors and releasing
+> > held locks on the way out).
+>
+> That is true only if the latest lock to be acquired is a rqspinlock. If.
+> all the rqspinlocks in the circular path have already been acquired, no
+> unwinding is possible.
 
+There is no 'last lock'. If it's not an AA deadlock there are more
+than 1 cpu that are spinning. In a hypothetical mix of rqspinlocks
+and regular raw_spinlocks at least one cpu will be spinning on
+rqspinlock and despite missing the entries in the lock table it will
+still exit by timeout. The execution will continue and eventually
+all locks will be released.
 
---=20
-Best Regards
- Guo Ren
+We considered annotating rqspinlock as trylock with
+raw_spin_lock_init lock class, but usefulness is quite limited.
+It's trylock only. So it may appear in a circular dependency
+only if it's a combination of raw_spin_locks and rqspinlocks
+which is not supposed to ever happen once we convert all bpf inner
+parts to rqspinlock.
+Patches 17,18,19 convert the main offenders. Few remain
+that need a bit more thinking.
+At the end all locks at the leaves will be rqspinlocks and
+no normal locks will be taken after
+(unless NMIs are doing silly things).
+And since rqspinlock is a trylock, lockdep will never complain
+on rqspinlock.
+Even if NMI handler is buggy it's unlikely that NMI's raw_spin_lock
+is in a circular dependency with rqspinlock on bpf side.
+So rqspinlock entries will be adding computational
+overhead to lockdep engine to filter out and not much more.
+
+This all assumes that rqspinlocks are limited to bpf, of course.
+
+If rqspinlock has use cases beyond bpf then, sure, let's add
+trylock lockdep annotations.
+
+Note that if there is an actual bug on bpf side with rqspinlock usage
+it will be reported even when lockdep is off.
+This is patch 13.
+Currently it's pr_info() of held rqspinlocks and dumpstack,
+but in the future we plan to make it better consumable by bpf
+side. Printing into something like a special trace_pipe.
+This is tbd.
+
+> That is probably not an issue with the limited rqspinlock conversion in
+> this patch series. In the future when more and more locks are converted
+> to use rqspinlock, this scenario may happen.
+
+The rqspinlock usage should be limited to bpf and no other
+normal lock should be taken after.
+At least that was the intent.
+If folks feel that it's useful beyond bpf then we need to think harder.
+lockdep annotations is an easy part to add.
 
