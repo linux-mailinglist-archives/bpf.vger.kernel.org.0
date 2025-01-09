@@ -1,87 +1,89 @@
-Return-Path: <bpf+bounces-48420-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48422-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74AD5A07ECB
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 18:32:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6463EA07EDC
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 18:36:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70B8C1643E9
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 17:32:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AEC6161F9F
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 17:36:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FCFE18C91F;
-	Thu,  9 Jan 2025 17:32:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84C00191F68;
+	Thu,  9 Jan 2025 17:36:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="ILDrE8nN"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="EzCvHiCT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1917518CBF2
-	for <bpf@vger.kernel.org>; Thu,  9 Jan 2025 17:32:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E62018C91F
+	for <bpf@vger.kernel.org>; Thu,  9 Jan 2025 17:36:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736443934; cv=none; b=bXmj9TTFt+nigxF8JXs7m3tr+zIyq2Hmae/Lg+qaVCdR63qj71GuHaLFHzRfB11xC81TSXe9SwUGUJvsWUi5RwJufqmLP1vDTJTViBggx9hs1HK15YrlUp4hZALm+2doQ95a1c7r2ADO4/UrPj7Xm2SMTqx1Vqlg+EES8mIAMno=
+	t=1736444181; cv=none; b=Dc76YbG90bjXk7CP8qP5yakO5iW5pbKaMpb4cFQt9pT9+E/aeIIwI5/RTY6KX7e/prnKQQGxQcXZxGXCVfJFdChP6shALVvEPsb/xIRL/IBgzcqENTQOsCtLI2MtAXiDQGpZzZyv/hjQtbDXdxn68YdRwwnehIVCTnIoqB8DiZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736443934; c=relaxed/simple;
-	bh=RHcvY5vh/w5Qf1apu2pIUveQ5r1BQ1uATyGEk7bzDHE=;
+	s=arc-20240116; t=1736444181; c=relaxed/simple;
+	bh=x3uYksfOoCqvS4XniyEV29UETSR2DPCFoV/TeVAweyw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aPSOrcSKYzQSY/FJ3+nNU0+BItT9i8a42wQuLmXIJ3uZRJdNnypAwhgSl5amIbYJJpdhbkq3Fao29TJ9YKW0t3bH+tweOYJpUq8056mgKNyNqx3zlC3VxOQsntLEAw7SrgSeOdDAODk0qGyGtpbv9PxygGHWCUQ5WK4uh9EHi0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=ILDrE8nN; arc=none smtp.client-ip=209.85.214.171
+	 Content-Type:Content-Disposition:In-Reply-To; b=COUEXMCqWPyFVExUI7s1uZYU4gHaBEgKUn3Kt7mxSHZt1NGi9oo61xWC+6zhDYUul6TUyHwA2qHFTgVi1hsXMmRABzP3dAz0YOlMdsJ/SMPun0VQ1dW1f84mize91RzbHVj5enChGUb+CZliPLqNEuGq3cAXFTr0KXksPajBmIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=EzCvHiCT; arc=none smtp.client-ip=209.85.214.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2164b1f05caso19877945ad.3
-        for <bpf@vger.kernel.org>; Thu, 09 Jan 2025 09:32:12 -0800 (PST)
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-21649a7bcdcso18910055ad.1
+        for <bpf@vger.kernel.org>; Thu, 09 Jan 2025 09:36:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1736443932; x=1737048732; darn=vger.kernel.org;
+        d=fastly.com; s=google; t=1736444179; x=1737048979; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references
          :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2UNh3XSymBqQsn+VyrNiirXx9s/ikn0z5oyEbF5eRfg=;
-        b=ILDrE8nNC0esu8HcD/pSJw/nIlQpS6AXjll9w4mZlCNtts4jdrMyPNp6sKHg+GQyc5
-         dZfqEntRltSjM+4wzaZyfhf+8mJSl+U4hIzhiY2iGlErO/vf7oWaVAVVhMZE/dqbiO0T
-         5ZVMkGQtujwtArCyuR0JgKSuC8MnS6ynW+Ei8=
+        bh=EZHhPMMDgJMypLywgbNALwEdp/HyHOu1g/oZooCDLms=;
+        b=EzCvHiCTSE28neDl9j/D9H7k4H+oLv393N904jPbz2MkF9ndMSDAsffGPSTmjOJr8C
+         9ssl7AvcQSrhKfiEmrcWE+lkGXs+XFHUgf1EB3w/WTAX3WzrsSrecGWl843Rw38TsG0T
+         jUeEclRUXeq+8wQCT2vJkoTXiXsX1W4uHMWYQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736443932; x=1737048732;
+        d=1e100.net; s=20230601; t=1736444179; x=1737048979;
         h=in-reply-to:content-disposition:mime-version:references
          :mail-followup-to:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2UNh3XSymBqQsn+VyrNiirXx9s/ikn0z5oyEbF5eRfg=;
-        b=F7yasuSpu9YKeSsHhaCGIKdOMZmOX1E9e5U0Uba28dQn9FA1vL9jAgpL9gqdRoG3qn
-         rHuofvonbA3GefOuLdvewl4yxzpAJzAZxX9uQBUu6UaSQc+qszqrxEiILEefaJ14rgnt
-         DN7vpM33LI1KmvTSI0J7txLhMjTT/nDthW+i54CT0xyB12ywXRi1ovGZ8t2C9E5j61iM
-         HIG4HlCbBwSKv4K5so608qHIAifdEOW0tqZNHe1Yma3mnADT84+8/UpL2/hHXepxYDEl
-         AmZ/OsH5rg7fPmvw+9ZHzvwdonIv0M6t0EjhfVc9JoOYaUOa3Gxes8lJ6L/YpNgIz+Pw
-         9gVA==
-X-Forwarded-Encrypted: i=1; AJvYcCWc++r70tSlWOWS7G+TLEZmEM++ZVnFcdGr2FteG4BP2j7JMWkvfp2RnIVPKAJcao1GLWE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxJsBMiniK/+i40pDyWYZv/QZHKz/zGrHVoSoWwSx2JiRakW7sv
-	Kg5fqDPFvLDs4GRRodGl3cfcb50Ki3y1/jdBlM11vQlIzKQ5zqXuDQdnm8rN+UM=
-X-Gm-Gg: ASbGncvLJe1QaJ0znCF2oIW3bz05CD2gX32cDF9DHl8Fl0921ALGZkPeWZTv9NoPSu4
-	cbLqesfJcbuU3GZNhwcmzYF0q61xs/3SM9FxBoIbGDYalxI8XnjBhusiudyCdg/Dx6Ylmto3lHf
-	u0OZ7heFhQLiDwxDXbym8DGT3EtZskVOHMxxR0SqEnIQ6+4vN58NGX1Mf6n5DhuC4w4xLECkwgT
-	CKFJzlwA0toIJsXGWoDmIlkVhZtr4X0y3g/25sxwEkurg8ezvKgTEU/VIknQEbwV5vY/siJdcyg
-	q28MuClp+DkDAZ9E/yAVcDA=
-X-Google-Smtp-Source: AGHT+IG7/4G/oFkDNNnhgkJMtk6EtVQoD1RUklEhY7FF8vplHNOXWAQR/POf4R2MiUbUDfOIGJjYtA==
-X-Received: by 2002:a17:902:f706:b0:216:69ca:773b with SMTP id d9443c01a7336-21a83f4b2bfmr119702625ad.5.1736443932488;
-        Thu, 09 Jan 2025 09:32:12 -0800 (PST)
+        bh=EZHhPMMDgJMypLywgbNALwEdp/HyHOu1g/oZooCDLms=;
+        b=to4PO6uelp+smaWxTeIqk8AntrbdubZ6pFApMqLNEBO2e/oTrpKnAhxF2zXD0D0mlM
+         cM4+mmkGLokGamfwCpXQ6kuY28v3n9Gi8sJyd4rGTb8HUNvQ46yTuwwHr2qwXvEjCjhS
+         V1WvsZbcEBGkk0eQGpEpo86bCQIjWOjbKy9mpr5ur39QK9JPJ6TyysX4cMdSop5KDJNG
+         dSrcX4AlT593z3Dlo+0HZPKHL+AYv+YKqry3OHmghsObDXLSHT5QDpJ+q/8pkAjrG7iz
+         SFD9uQGRnKE0jgcckaaVzSpeRIjSz/9QiCkO0eAAvS2CUuCY6izy6ubqjqy0OpCngRt6
+         TIdw==
+X-Forwarded-Encrypted: i=1; AJvYcCUOPMsamgukDMB5/4Slf0f74XeBTv97uLzql9WeuxCZ0Qufp6xsYzH6EoW/g9xopzIbC/Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0YySmDKYJj7HBdFxmO/UMcnYDLxbYbqsaOk+gVJ+ye1cD+dKx2KT
+	Bv75arFEPdG9iQXMGuBwJ0FDmW9G1qGqnRMp4R/RPkpZfynaDJOU4xy9ZCi0JIE=
+X-Gm-Gg: ASbGnctsr6vl4R6u6Hib3fophPy71OO+gFq6roIQk7NWQMwO0R2BDpQCIjAMlZ30Kar
+	abKH0U6b/qBJi3/CdqjY3TBD9SrKm80pjiqJr2IzMGaOFQTs1WuJs1HCSkYMPNeTaTsykexGGnZ
+	CTIorVNwdDFL78Q85vsPaO9Y6JSu/1T8D6DtXWGc++nrrks9ADn0m+Q1GO+AxidOK0WVne3lBKy
+	yjfL/+LXgjK/EdUkXBAJSq5VYNzfCIdmK1e1q63I028ophQ6i9uaE9CG2JGLKANcop1LHh/TgXN
+	sliyUrZ+7Kz03w92NxDsJTw=
+X-Google-Smtp-Source: AGHT+IEa3zYxpMXCXFOwlLMPkEEXePt9PsXFMZbJIFnWJoslOR8muwkSZIVXyD3D5iar6ke0LsXsVw==
+X-Received: by 2002:a05:6a20:2591:b0:1e0:cfc0:df34 with SMTP id adf61e73a8af0-1e88d0e2320mr11880124637.16.1736444178914;
+        Thu, 09 Jan 2025 09:36:18 -0800 (PST)
 Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21a9f21a7f1sm476895ad.124.2025.01.09.09.32.10
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72d405489fbsm59505b3a.24.2025.01.09.09.36.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jan 2025 09:32:12 -0800 (PST)
-Date: Thu, 9 Jan 2025 09:32:09 -0800
+        Thu, 09 Jan 2025 09:36:18 -0800 (PST)
+Date: Thu, 9 Jan 2025 09:36:15 -0800
 From: Joe Damato <jdamato@fastly.com>
-To: Stanislav Fomichev <sdf@fomichev.me>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, linux-kernel@vger.kernel.org,
+To: Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc: Stanislav Fomichev <sdf@fomichev.me>, netdev@vger.kernel.org,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org, horms@kernel.org, ast@kernel.org,
 	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
 	bjorn@kernel.org, magnus.karlsson@intel.com,
 	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
-	mkarsten@uwaterloo.ca, alazar@nvidia.com
+	mkarsten@uwaterloo.ca
 Subject: Re: [PATCH net] xsk: Bring back busy polling support
-Message-ID: <Z4AIGWGVrEfk1yvE@LQ3V64L9R2>
+Message-ID: <Z4AJD97LFmjfCrc2@LQ3V64L9R2>
 Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
+	Magnus Karlsson <magnus.karlsson@gmail.com>,
 	Stanislav Fomichev <sdf@fomichev.me>, netdev@vger.kernel.org,
 	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
 	pabeni@redhat.com, linux-kernel@vger.kernel.org,
@@ -89,8 +91,9 @@ Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
 	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
 	bjorn@kernel.org, magnus.karlsson@intel.com,
 	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
-	mkarsten@uwaterloo.ca, alazar@nvidia.com
+	mkarsten@uwaterloo.ca
 References: <20250109003436.2829560-1-sdf@fomichev.me>
+ <CAJ8uoz3bMk_0bbtGdEAkbXNHu0c5Zr+-sAUyqk2M84VLE4FtpQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -99,34 +102,42 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250109003436.2829560-1-sdf@fomichev.me>
+In-Reply-To: <CAJ8uoz3bMk_0bbtGdEAkbXNHu0c5Zr+-sAUyqk2M84VLE4FtpQ@mail.gmail.com>
 
-On Wed, Jan 08, 2025 at 04:34:36PM -0800, Stanislav Fomichev wrote:
-> Commit 86e25f40aa1e ("net: napi: Add napi_config") moved napi->napi_id
-> assignment to a later point in time (napi_hash_add_with_id). This breaks
-> __xdp_rxq_info_reg which copies napi_id at an earlier time and now
-> stores 0 napi_id. It also makes sk_mark_napi_id_once_xdp and
-> __sk_mark_napi_id_once useless because they now work against 0 napi_id.
-> Since sk_busy_loop requires valid napi_id to busy-poll on, there is no way
-> to busy-poll AF_XDP sockets anymore.
+On Thu, Jan 09, 2025 at 04:22:16PM +0100, Magnus Karlsson wrote:
+> On Thu, 9 Jan 2025 at 01:35, Stanislav Fomichev <sdf@fomichev.me> wrote:
+> >
+> > Commit 86e25f40aa1e ("net: napi: Add napi_config") moved napi->napi_id
+> > assignment to a later point in time (napi_hash_add_with_id). This breaks
+> > __xdp_rxq_info_reg which copies napi_id at an earlier time and now
+> > stores 0 napi_id. It also makes sk_mark_napi_id_once_xdp and
+> > __sk_mark_napi_id_once useless because they now work against 0 napi_id.
+> > Since sk_busy_loop requires valid napi_id to busy-poll on, there is no way
+> > to busy-poll AF_XDP sockets anymore.
+> >
+> > Bring back the ability to busy-poll on XSK by resolving socket's napi_id
+> > at bind time. This relies on relatively recent netif_queue_set_napi,
+> > but (assume) at this point most popular drivers should have been converted.
+> > This also removes per-tx/rx cycles which used to check and/or set
+> > the napi_id value.
+> >
+> > Confirmed by running a busy-polling AF_XDP socket
+> > (github.com/fomichev/xskrtt) on mlx5 and looking at BusyPollRxPackets
+> > from /proc/net/netstat.
 > 
-> Bring back the ability to busy-poll on XSK by resolving socket's napi_id
-> at bind time. This relies on relatively recent netif_queue_set_napi,
-> but (assume) at this point most popular drivers should have been converted.
-> This also removes per-tx/rx cycles which used to check and/or set
-> the napi_id value.
+> Thanks Stanislav for finding and fixing this. As a bonus, the
+> resulting code is much nicer too.
 > 
-> Confirmed by running a busy-polling AF_XDP socket
-> (github.com/fomichev/xskrtt) on mlx5 and looking at BusyPollRxPackets
-> from /proc/net/netstat.
+> I just took a look at the Intel drivers and some of our drivers have
+> not been converted to use netif_queue_set_napi() yet. Just ice, e1000,
+> and e1000e use it. But that is on us to fix.
 
-Thanks Stanislav for finding and fixing this.
+igc also supports it ;)
 
-I've CC'd Alex who reported a bug a couple weeks ago that might be
-fixed by this change.
+I tried to add support to i40e some time ago, but ran into some
+issues and didn't hear back, so I gave up on i40e.
 
-Alex: would you mind applying this patch to your tree to see if this
-solves the issue you reported [1] ?
+In case my previous attempt is helpful for anyone at Intel, see [1].
 
-[1]: https://lore.kernel.org/netdev/DM8PR12MB5447837576EA58F490D6D4BFAD052@DM8PR12MB5447.namprd12.prod.outlook.com/
+[1]: https://lore.kernel.org/lkml/20240410043936.206169-1-jdamato@fastly.com/
 
