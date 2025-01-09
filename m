@@ -1,197 +1,174 @@
-Return-Path: <bpf+bounces-48478-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48479-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 735F5A0828D
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 23:03:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C166A082A5
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 23:13:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69A5716441D
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 22:03:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 155261634E9
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 22:13:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6900C204F7C;
-	Thu,  9 Jan 2025 22:03:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E775C205513;
+	Thu,  9 Jan 2025 22:13:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kSvhfu8g"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HbBHBXUy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35919187849;
-	Thu,  9 Jan 2025 22:03:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1AE42054E7;
+	Thu,  9 Jan 2025 22:13:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736460222; cv=none; b=ESG9gZ7b77irP0OpS9KW0GE5kWqeJI7CG25IXTHrFO/eiAZyQralhF7Oiipfmy4h19nauw6WL5USxlBLLYBm1KiH40ElxRphKtj5fS/lM0oipAjy+tW9l/oYbbL4jNCg1A46xr/mJBuab69SuflRXpFIa28lnuWNJq7PxBsoZ8g=
+	t=1736460824; cv=none; b=MNdjmpgbfwDvA9F0dvssULD92YgaDQ98ZU6ABV9M8E3Fez7Yx8PI37Xnqj3irI6FMsxb4WpMTh0UQak7kQz2Qt+9ncWMzbTDtcKtthY7YY6wJr9O3TIkVJASYZrgW0i8XiYwx6fPsmpKR3Q+Xs41btiVLYWD400TkEqnv6VWSJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736460222; c=relaxed/simple;
-	bh=2UtPC60eJM9xKW+KyIMh8+hr4BY34X3OWriBSo333mw=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oDTay9WDJkbO7GRV5Rs9D11l8zTlvc5hrOeEwWmhI3u4JKfo/REHhhNabVHN3u1zOueeo+GmBE8vKbXJ0hm9wE1C4Gs0luxGgkt+aJOfNufGlt5zjGSOVZzflQEipU77RpkukxGIc41ATe9xBEQa5JJBLf+46sKEVXbeq50vjQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kSvhfu8g; arc=none smtp.client-ip=209.85.218.49
+	s=arc-20240116; t=1736460824; c=relaxed/simple;
+	bh=n+jQUC9Jm2XnIGTjzYqamZTlEyrbvfx8+RyyaO4UvBA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uyHVMlU0hh8YpyrFGCPKiCMm1vJjtnB6lv6to3ifh4yIWUN+tuLMzNPvXMTVOgfpu4QS/3zfrFFefyxMcsfo5zOWNzbL/Ph13H0HGkhDN0EEVJX8x24nHMOYlBH6++j5kHAh1kRQTGwaolrbGJoVGhJoDDwq6jkTrKPe+8JdTJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HbBHBXUy; arc=none smtp.client-ip=209.85.216.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-aa6b4cc7270so223531266b.0;
-        Thu, 09 Jan 2025 14:03:40 -0800 (PST)
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2ef6c56032eso1873708a91.2;
+        Thu, 09 Jan 2025 14:13:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736460218; x=1737065018; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=93Ke9BV0BcpS+z/bamzxbTV+Xb/l0iw7UeDYASLkxc4=;
-        b=kSvhfu8gbZOrP5PJRDVzgx0acqpiR2qQaCkWyMTmEP45baK7cNOgrhZSFS08E7T5ie
-         Dr5SkvPOIn8pdccCJbUR5P1+HdTLLuqim0+ectf4wK5RXxvhVXhX3Kc9qqAr8e/CgjO3
-         +uVsGMOF9B48IK9TFNR+xZ8q3DJFiFQBCXyeZJQqWRGfw1PmBVrmxh8hTsuBSEbhzojq
-         FoXRdGX5Hlt0stNEyQ6e+W2Wuf2mgCjxFpwXVql4BdBV6AlU43HBJn85dKNs0EJOt5ry
-         GEB5oGEdkbWDHVqGtzaIr9S5IJHHl5HeL+b5wHBI+vxKvsJbQIRa9ujQ5ySWurQe+JC1
-         Sg0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736460218; x=1737065018;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1736460822; x=1737065622; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=93Ke9BV0BcpS+z/bamzxbTV+Xb/l0iw7UeDYASLkxc4=;
-        b=H0FFhn/AkxfBrJOgJqEa4PBo6GjthHS0KnlfpK8w5J0DP+5aXhl3RUDaRAyIAkwNAj
-         w1Zmhdr4SX8YV6lLj+y5kwsA8OdfXlQnAD8Dp5pp7qGE2fEaQXqSzc4Gqukr9KFrPhmz
-         x5rS0GfMlq0OEFKpsn64BRt7DpWScfHDk34iMNWGoMcPHXWEas//Q7ySu/2pEGwpG7eE
-         z7m6H43KlyOYEHTljlZhLY1EwUKTNVAtxVRHOPqOJQg+ULlfkA6DUO6Pjm/ju0HORJBT
-         wZQh7mJ9V81J40fWhLLrSKguwPL+VkbTIAoRfZItnMpvCpNzUBEqRVxnJdgrb3tScnUU
-         sByA==
-X-Forwarded-Encrypted: i=1; AJvYcCUqS2SGA8/rp2/ofez301D/PiEbbBAPXNky02VtozHBQICQJ9VqOVin2KZ2Yto1WGpX6e4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxWms6pWXA+JI39JFKXHyuvIs7bV4V2EKA6do+JjnsdEwyuQBIO
-	v6s1Th5hncd1AE74p8bppPIrU/C2r9ceWkGhttL+FfyDgpBkO8PU71EXjw==
-X-Gm-Gg: ASbGncuoDh/NvWPObyh+PPOr0k4hfpo83EUKH8HVv0NUFEswFZFaaMW7TXTleqPSV5I
-	9OYRidjaBllsKdRcfhB7bru3C0CmdoS00gn9+CnngFMAwuuL3pzoeK1KTKsFTtwbbl6zmUswpwu
-	AhOsUkD1FR1WcTsKjm4dxoqZMbTLVvzt/UMS9KjrsTzMUxwvXMd3cc8XJiU6Npg7+H5ohbJA+hH
-	PTfYNZ1DykonNnZckd8QZt+1R0gdDon4msAtIt00sroAZXcGiVHIqhkj7vL9+s=
-X-Google-Smtp-Source: AGHT+IGg5G16yHywV0cd8EcE2wpZ1o97+aMle57RpqqI71SsvpUTPrkXa2+qG9kUiz1tVbJr+xDZtw==
-X-Received: by 2002:a05:6402:2746:b0:5d0:c697:1f02 with SMTP id 4fb4d7f45d1cf-5d972e1c54emr20040267a12.17.1736460218117;
-        Thu, 09 Jan 2025 14:03:38 -0800 (PST)
-Received: from krava (85-193-35-24.rib.o2.cz. [85.193.35.24])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab2c95b1bc1sm108946366b.147.2025.01.09.14.03.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jan 2025 14:03:37 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 9 Jan 2025 23:03:31 +0100
-To: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: dwarves@vger.kernel.org, bpf@vger.kernel.org, acme@kernel.org,
-	alan.maguire@oracle.com, eddyz87@gmail.com, andrii@kernel.org,
-	mykolal@fb.com, olsajiri@gmail.com
-Subject: Re: [PATCH dwarves v4 RESEND 00/10] pahole: faster reproducible BTF
- encoding
-Message-ID: <Z4BHs_rp6Ts2Dj5O@krava>
-References: <20250109185950.653110-1-ihor.solodrai@pm.me>
+        bh=THyr0bFENuRK/x7hMtFBy9YWHezz9iNPAjNEHK4Wt68=;
+        b=HbBHBXUy25+pbwGT2kEN+cYcvXETJ7JtTl+18BK/BQWhYC+OcohNVhq2BQrAWfg8RW
+         VeqOhy9YykmBIUehWT2zuy57FJjKwYZb7GpujdTwHEiom99sT870oD+QdHDjLMMGFDt7
+         iw3Z/0W+2hemdw4LQ9D2HtzYUaiTwlJYYucJtGDIcxPEatfUC8Um3RnmlZsJnH0mRpxH
+         Kll+GSOP/bhQsi6Z67Nwy35yCls382VHW2SEZIb/1F5o8ndg51tu+fh3D2id0/M0EFmp
+         MVYsdjHBXXXeRodBleP5ZTneHc4ctilsjK2wllcEi2dGlBJ0uiov4hhCwkrY1i0lH3bf
+         NaeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736460822; x=1737065622;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=THyr0bFENuRK/x7hMtFBy9YWHezz9iNPAjNEHK4Wt68=;
+        b=WWhqXdU8szQF1Qz9QVSUAHDXJUE+IFsIHvGbmeJlx7z35ex70TEYzmW4L+O4GFLv4M
+         oQPsd9Noo1kFhyM+KEJzTHZTkQHJ63JbXVL580qH1Sk5dvGEgQ+CTrxEteZZgRDqdibR
+         RlVp3wnzoxGHedMPELlWHQEh8AzeEvAcKj78LPDlUBpimdjR8S456ZoFThYOLllxlULH
+         vAwO2mVYgAVjH2JhkocVu8UtTSs7TAvfCMAkO99a+2Cn84LLg/0ozwN0bY23e27MrZg1
+         EWujD4veTMku9STruhODQc22K4E6pbzdtRiCmq7PifR6yFjhyffzswqltTZPSGYFwfc/
+         0r3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUZ6mtGX/hbbW8h8kkJJEDpN1yfzG+nF/oMRcrxpM8nTixGOgC0s0dBuoRxusLc4C8i7AwKojmHkvmaVwlg@vger.kernel.org, AJvYcCUryjUB5ZJDSjftruZ4O25u9PdtmsiGv95zH2CbuAl1OntMA4E/MyeJ3LusKyvTjGjkqo8=@vger.kernel.org, AJvYcCVoLkhC8dJCrU2rJpfx+5NbM9txln2xpVVZB9sjrFsT1R9IgY4bsqBzSzkJXHGF/8SmMjmY+TdWLopATI3M1FtlpG0R@vger.kernel.org
+X-Gm-Message-State: AOJu0YyJ2367HvM8SuCdhJw2aU/IkcOjq8AqF+cLEDvIB78yzPN86utc
+	94lVXuTjCf6WXyiuqcCmeM7T3xwrZrPFniLO1jREIcIr2kT5gd39uaFrCumR570r+D104VLjTk3
+	rWpgv/ReQf9yUOUuaMCc3BIINm7amxnRd
+X-Gm-Gg: ASbGncsLGPeKxPr8QTwhoNU2D3J3GtcrkVZ5KRnDqNzG/4tESb2skiQdkBR9qnJTkjO
+	j23/vMEFw44oyCK6U1ivYMNkycJMNzxIj6TxHR4ANilPxtV5JgK4F4w==
+X-Google-Smtp-Source: AGHT+IGB4idtyCwBlsDTPAqYT6JY5/HUe6ULdeSVhwHPLZym9wE9lNRCRBpIz/KIDpDvEyH+bhApWHQkk4SvDW+O8mI=
+X-Received: by 2002:a17:90b:270d:b0:2ef:31a9:95c6 with SMTP id
+ 98e67ed59e1d1-2f548ebf526mr13236642a91.14.1736460822034; Thu, 09 Jan 2025
+ 14:13:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250109185950.653110-1-ihor.solodrai@pm.me>
+References: <20250109141440.2692173-1-jolsa@kernel.org>
+In-Reply-To: <20250109141440.2692173-1-jolsa@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 9 Jan 2025 14:13:28 -0800
+X-Gm-Features: AbW1kvYFr51BqGuo-AxCk5g8kARhcXpQia9ZKMl5TtQ4vgYss-dMmKL2OzraUfY
+Message-ID: <CAEf4BzZ2vYmZ9DNy7iaxoaC6imszBnwA-1OCJpuoKcBUGgb_oQ@mail.gmail.com>
+Subject: Re: [PATCH] uprobes: Fix race in uprobe_free_utask
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Max Makarov <maxpain@linux.com>, bpf@vger.kernel.org, 
+	Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 09, 2025 at 06:59:54PM +0000, Ihor Solodrai wrote:
-> Note: a resend due to https://lore.kernel.org/dwarves/Z4AWJBNsGJvBU7ZY@x1/
-> 
-> This is v4 of the series aiming to speed up parallel reproducible BTF
-> encoding. This version mostly addresses feedback from Jiri Olsa on v3.
-> 
-> A notable adition is a patch 10/10, which changes func_states in
-> btf_encoder from a list to an array.
-> 
-> Testing:
-> 
->     vmlinux=/home/theihor/kernels/bpf-next/kbuild-output/.tmp_vmlinux1 PATH=$(realpath build):$PATH ./tests/tests
->       1: Validation of BTF encoding of functions; this may take some time: Ok
->       2: Default BTF on a system without BTF: Ok
->       3: Flexible arrays accounting: pahole: type 'nft_pipapo_elem' not found
->     pahole: type 'tls_rec' not found
->     pahole: type 'fuse_direntplus' not found
->     pahole: type 'nft_rhash_elem' not found
->     pahole: type 'nft_hash_elem' not found
->     pahole: type 'nft_bitmap_elem' not found
->     pahole: type 'ipt_standard' not found
->     pahole: type 'nft_rule_dp_last' not found
->     pahole: type 'ip6t_standard' not found
->     pahole: type 'ipt_error' not found
->     pahole: type 'ip6t_error' not found
->     pahole: type 'nft_rbtree_elem' not found
->     Ok
->       4: Check that pfunct can print btf_decl_tags read from BTF: Ok
->       5: Pretty printing of files using DWARF type information: Ok
->       6: Parallel reproducible DWARF Loading/Serial BTF encoding: Ok
-> 
-> The warnings about not found types are also present at pahole/next, so
-> not related to this patchset.
-> 
-> 
-> Performance check. This patchset (always reproducible):
-> 
->      Performance counter stats for '/home/theihor/dev/dwarves/build/pahole -J -j24 --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs,reproducible_build --btf_encode_detached=/dev/null --lang_exclude=rust /home/theihor/kernels/bpf-next/kbuild-output/.tmp_vmlinux1' (13 runs):
-> 
->               5,788.22 msec cpu-clock:u                      #    3.776 CPUs utilized               ( +-  0.17% )
-> 
->                1.53288 +- 0.00334 seconds time elapsed  ( +-  0.22% )
-> 
-> 
-> pahole/next (d444eb6), parallel non-reproducible:
-> 
->      Performance counter stats for '/home/theihor/dev/dwarves/build/pahole -J -j24 --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs --btf_encode_detached=/dev/null --lang_exclude=rust /home/theihor/kernels/bpf-next/kbuild-output/.tmp_vmlinux1' (13 runs):
-> 
->              10,462.38 msec cpu-clock:u                      #    6.678 CPUs utilized               ( +-  0.15% )
-> 
->                1.56670 +- 0.00548 seconds time elapsed  ( +-  0.35% )
-> 
-> 
-> pahole/next (d444eb6), parallel reproducible:
-> 
->      Performance counter stats for '/home/theihor/dev/dwarves/build/pahole -J -j24 --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs,reproducible_build --btf_encode_detached=/dev/null --lang_exclude=rust /home/theihor/kernels/bpf-next/kbuild-output/.tmp_vmlinux1' (13 runs):
-> 
->               6,399.88 msec cpu-clock:u                      #    3.164 CPUs utilized               ( +-  0.22% )
-> 
->                2.02269 +- 0.00359 seconds time elapsed  ( +-  0.18% )
-> 
-> 
-> v3: https://lore.kernel.org/dwarves/20241221012245.243845-1-ihor.solodrai@pm.me/
-> v2: https://lore.kernel.org/dwarves/20241213223641.564002-1-ihor.solodrai@pm.me/
-> v1: https://lore.kernel.org/dwarves/20241128012341.4081072-1-ihor.solodrai@pm.me/
-> 
-> Alan Maguire (2):
->   btf_encoder: simplify function encoding
->   btf_encoder: separate elf function, saved function representations
-> 
-> Ihor Solodrai (8):
->   btf_encoder: free encoder->secinfo in btf_encoder__delete
->   btf_encoder: introduce elf_functions struct type
->   btf_encoder: introduce elf_functions_list
->   btf_encoder: remove skip_encoding_inconsistent_proto
->   dwarf_loader: introduce cu->id
->   dwarf_loader: multithreading with a job/worker model
->   btf_encoder: clean up global encoders list
->   btf_encoder: switch func_states from a list to an array
+On Thu, Jan 9, 2025 at 6:14=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> Max Makarov reported kernel panic [1] in perf user callchain code.
+>
+> The reason for that is the race between uprobe_free_utask and bpf
+> profiler code doing the perf user stack unwind and is triggered
+> within uprobe_free_utask function:
+>   - after current->utask is freed and
+>   - before current->utask is set to NULL
+>
+>  general protection fault, probably for non-canonical address 0x9e759c37e=
+e555c76: 0000 [#1] SMP PTI
+>  RIP: 0010:is_uprobe_at_func_entry+0x28/0x80
+>  ...
+>   ? die_addr+0x36/0x90
+>   ? exc_general_protection+0x217/0x420
+>   ? asm_exc_general_protection+0x26/0x30
+>   ? is_uprobe_at_func_entry+0x28/0x80
+>   perf_callchain_user+0x20a/0x360
+>   get_perf_callchain+0x147/0x1d0
+>   bpf_get_stackid+0x60/0x90
+>   bpf_prog_9aac297fb833e2f5_do_perf_event+0x434/0x53b
+>   ? __smp_call_single_queue+0xad/0x120
+>   bpf_overflow_handler+0x75/0x110
+>   ...
+>   asm_sysvec_apic_timer_interrupt+0x1a/0x20
+>  RIP: 0010:__kmem_cache_free+0x1cb/0x350
+>  ...
+>   ? uprobe_free_utask+0x62/0x80
+>   ? acct_collect+0x4c/0x220
+>   uprobe_free_utask+0x62/0x80
+>   mm_release+0x12/0xb0
+>   do_exit+0x26b/0xaa0
+>   __x64_sys_exit+0x1b/0x20
+>   do_syscall_64+0x5a/0x80
+>
+> It can be easily reproduced by running following commands in
+> separate terminals:
+>
+>   # while :; do bpftrace -e 'uprobe:/bin/ls:_start  { printf("hit\n"); }'=
+ -c ls; done
+>   # bpftrace -e 'profile:hz:100000 { @[ustack()] =3D count(); }'
+>
+> Fixing this by making sure current->utask pointer is set to NULL
+> before we start to release the utask object.
+>
+> [1] https://github.com/grafana/pyroscope/issues/3673
+> Reported-by: Max Makarov <maxpain@linux.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  kernel/events/uprobes.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+ah, it's interrupt/NMI checking current->utask, makes total sense,
+thanks for the fix!
 
-thanks,
-jirka
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-> 
->  btf_encoder.c               | 662 +++++++++++++++++++-----------------
->  btf_encoder.h               |   7 +-
->  btf_loader.c                |   2 +-
->  ctf_loader.c                |   2 +-
->  dwarf_loader.c              | 335 ++++++++++++------
->  dwarves.c                   |  44 ---
->  dwarves.h                   |  20 +-
->  pahole.c                    | 230 ++-----------
->  pdwtags.c                   |   3 +-
->  pfunct.c                    |   3 +-
->  tests/reproducible_build.sh |   5 +-
->  11 files changed, 623 insertions(+), 690 deletions(-)
-> 
-> -- 
-> 2.47.1
-> 
-> 
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index fa04b14a7d72..5d71ef85420c 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -1915,6 +1915,7 @@ void uprobe_free_utask(struct task_struct *t)
+>         if (!utask)
+>                 return;
+>
+> +       t->utask =3D NULL;
+>         WARN_ON_ONCE(utask->active_uprobe || utask->xol_vaddr);
+>
+>         timer_delete_sync(&utask->ri_timer);
+> @@ -1924,7 +1925,6 @@ void uprobe_free_utask(struct task_struct *t)
+>                 ri =3D free_ret_instance(ri, true /* cleanup_hprobe */);
+>
+>         kfree(utask);
+> -       t->utask =3D NULL;
+>  }
+>
+>  #define RI_TIMER_PERIOD (HZ / 10) /* 100 ms */
+> --
+> 2.47.0
+>
 
