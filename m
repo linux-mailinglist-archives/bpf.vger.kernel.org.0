@@ -1,519 +1,211 @@
-Return-Path: <bpf+bounces-48449-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48452-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 599BBA08121
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 21:05:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7991A08198
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 21:50:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7C93188C0FC
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 20:05:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0E261694B0
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 20:50:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16DE81F9428;
-	Thu,  9 Jan 2025 20:05:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52124204C2A;
+	Thu,  9 Jan 2025 20:49:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nqmu/pKc"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B45B2B677;
-	Thu,  9 Jan 2025 20:04:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5EE02046A3;
+	Thu,  9 Jan 2025 20:49:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736453099; cv=none; b=c3XOmONBFqDiRe6vSB/zUvajg1nGtu76vBeq6rk5d7R9at1Q3eTdZUokSbqBEvnsvGaxXs2xygu/s7qH3cpplYFD0L6xOJrLQ0xzTUWtmfsNZHHB4OFzlbiVYZ0Ex0JtCEWRdPfcGhox/WYjhVJKcRW/rsj56sx52fBuIGsbfKc=
+	t=1736455791; cv=none; b=UBy+aN85LgoB5heqc4mz7hesEeKa/zL51yUvxTdhKbDkTumOMG2/mAR+WU+NWnuIvtB+3hIHSsc33rTay2d2AALJXs3rFJoOvW/Xdcd0sQq0+mbeyLkhEbQ4dm2QM3wW6zrAfPnsiJj0i+U7L6UvSksthpapLswvSkaKd9WCnsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736453099; c=relaxed/simple;
-	bh=T1358xyOlHjIOsDTrjSjveI8N7SNjbDfhRNUNLFFILc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=by+tFaFQ99ZjdO8U5xuN7tSCcS/C4uyTWW9ZWCDgWgtI+01k7DnRzXVRjdarb4tc1R3Am/vXGIF4PA2/OwzP01sELOJG4f+B5sEUtCtVK4jvondfdn6PdaklJDxREsl5xEBGkLc2DesCsitjWuNIGlUIOkFFFv3J2t9etnGGSEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AFE9C4CED2;
-	Thu,  9 Jan 2025 20:04:57 +0000 (UTC)
-Date: Thu, 9 Jan 2025 15:06:31 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, Masami
- Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>,
- Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor
- <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, Zheng Yejian
- <zhengyejian1@huawei.com>, Martin Kelly <martin.kelly@crowdstrike.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>, Josh Poimboeuf
- <jpoimboe@redhat.com>, Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH v2] scripts/sorttable: Move code from sorttable.h into
- sorttable.c
-Message-ID: <20250109150631.2feaa55e@gandalf.local.home>
-In-Reply-To: <CAHk-=wiafEyX7UgOeZgvd6fvuByE5WXUPh9599kwOc_d-pdeug@mail.gmail.com>
-References: <20250107223217.6f7f96a5@gandalf.local.home>
-	<CAHk-=wiafEyX7UgOeZgvd6fvuByE5WXUPh9599kwOc_d-pdeug@mail.gmail.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1736455791; c=relaxed/simple;
+	bh=WaafDH5Bcz9EWnXTxxIKqj+1fKHhVssjjMJMFWARz68=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cig0uxFQNaTQ8H/SCuYDbheJSr7WCX3bzGhyCN+LetajFbxtZbd6JSh68zwteHGAYAmrNqPnB2bwuyWOZJSlWAKTpZ7qNT2vtR9rUxkyMIHy5JErmcFJldQ4saKG2TTmWGNngunedZtoENzPPciE+J0ytsQAd9iTDc/CZrIFIM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nqmu/pKc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F267C4CED2;
+	Thu,  9 Jan 2025 20:49:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736455791;
+	bh=WaafDH5Bcz9EWnXTxxIKqj+1fKHhVssjjMJMFWARz68=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Nqmu/pKcz1tyk9YnKVEPxZJ+HT0GGRgPkroLle6tsTq2iCdZXJUIqdhI8r1ZyOlSC
+	 ljjOdZ/n0XUVaLWwO7bliryv77lUF0aEGWyu85CPLtttKsylU1KP9561emRA4GuncP
+	 zOHdCzy9tI4whMdTlBd8WrAS3ICVU9DDJhEaPk++/jOlJZC+uAkgnixUKuasjsk0+Z
+	 DjSvlTRO2hxej/tAcemKGihaJDHIU9OzYoV9MetjB+P7n8L16mvzrPY+UMk8++Q9/B
+	 LyzdiwhzIRb5R+5csSXr+wv/MXtOMM3GgEDlbKd4h10rJUhS1I0pllZNO9qDy2TE+g
+	 RO+J3N563RX5w==
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-3ce34c6872aso8537795ab.0;
+        Thu, 09 Jan 2025 12:49:51 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVJJZJaI8uKfD6wN/97Z934v8UhruCKNt8fWmpXP0OQhonO5bB0CH1SQKQv6nfkf+25K6zlY+98jF9zGMmhFw==@vger.kernel.org, AJvYcCVQXo8KA4SEj25PRIe8jZU/P+SFcx3PG5uHpC7ynLqqrZ1B4ZNJOOvCXyE/b5pzsyEF47E=@vger.kernel.org, AJvYcCXmaVdTQGWB7W4Q5rxWg1bCI+eJD0gQGeHE2phqSV0Cjm333p7hZdFkTp97qU0p2FSLkhsFQtBW7c1PoByV@vger.kernel.org
+X-Gm-Message-State: AOJu0YxSaFkRTAkRHXcZwcsj9TQhzDK7+PTzopfsGQ4Ms7hlk/R3vSCE
+	begK2RCfxq6WiE2Fy+UI4XbpEA0xY+GKzdWSFqHhXrQYgkEgKcYI+uxCGYgTT0uGeNsJQiV/acY
+	3gUvljmtBYFofR/iRnmKUSQpZ7xk=
+X-Google-Smtp-Source: AGHT+IG+HTj1bjjXb12Biy0PzbE6SEssAyowE2uDsBvkQslv0uhRkEE8Uij+UVyc8qLh5iDSxPN/DkOiHcKjSRiFEqw=
+X-Received: by 2002:a05:6e02:1d14:b0:3a7:d792:d6c4 with SMTP id
+ e9e14a558f8ab-3ce3a8df63cmr68137945ab.21.1736455790677; Thu, 09 Jan 2025
+ 12:49:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <AM6PR03MB5080DC63013560E26507079E99042@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <AM6PR03MB5080E0DFE4F9BAFFDB9D113B99042@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <CAADnVQLU=W7fuEQommfDYrxr9A2ESV7E3uUAm4VUbEugKEZbkQ@mail.gmail.com>
+ <AM6PR03MB50805EAC8B42B0570A2F76B399032@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <CAADnVQJYVLEs8zr414j1xRZ_DAAwcxiCC-1YqDOt8oF13Wf6zw@mail.gmail.com>
+In-Reply-To: <CAADnVQJYVLEs8zr414j1xRZ_DAAwcxiCC-1YqDOt8oF13Wf6zw@mail.gmail.com>
+From: Song Liu <song@kernel.org>
+Date: Thu, 9 Jan 2025 12:49:39 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7KYss11bQpJo-1f7Pdpb=ky2QWQ=zoJuX3buYm1_nbFA@mail.gmail.com>
+X-Gm-Features: AbW1kvbox1g93hvAB5XmZSYmcAJaZ1nrp647saDlplTeWU2dOTVFVRA8tCW2598
+Message-ID: <CAPhsuW7KYss11bQpJo-1f7Pdpb=ky2QWQ=zoJuX3buYm1_nbFA@mail.gmail.com>
+Subject: Re: per st_ops kfunc allow/deny mask. Was: [PATCH bpf-next v6 4/5]
+ bpf: Make fs kfuncs available for SYSCALL program type
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Juntong Deng <juntong.deng@outlook.com>, Tejun Heo <tj@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, snorcht@gmail.com, 
+	Christian Brauner <brauner@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 9 Jan 2025 10:24:05 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
-
-> On Tue, 7 Jan 2025 at 19:30, Steven Rostedt <rostedt@goodmis.org> wrote:
+On Thu, Jan 9, 2025 at 11:24=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Dec 23, 2024 at 4:51=E2=80=AFPM Juntong Deng <juntong.deng@outloo=
+k.com> wrote:
 > >
-> > +
-> > +static int (*compare_extable)(const void *a, const void *b);
-> > +static uint64_t (*ehdr_shoff)(Elf_Ehdr *ehdr);
-> > +static uint16_t (*ehdr_shstrndx)(Elf_Ehdr *ehdr);  
-> ...
-> 
-> Side note - and independently of the pure code movement - wouldn't it
-> be nice to just make this a structure of function pointers, and then
-> instead of this:
+> > >
+> > > The main goal is to get rid of run-time mask check in SCX_CALL_OP() a=
+nd
+> > > make it static by the verifier. To make that happen scx_kf_mask flags
+> > > would need to become KF_* flags while each struct-ops callback will
+> > > specify the expected mask.
+> > > Then at struct-ops prog attach time the verifier will see the expecte=
+d mask
+> > > and can check that all kfuncs calls of this particular program
+> > > satisfy the mask. Then all of the runtime overhead of
+> > > current->scx.kf_mask and scx_kf_allowed() will go away.
+> >
+> > Thanks for pointing this out.
+> >
+> > Yes, I am interested in working on it.
+> >
+> > I will try to solve this problem in a separate patch series.
+> >
+> >
+> > The following are my thoughts:
+> >
+> > Should we really use KF_* to do this? I think KF_* is currently more
+> > like declaring that a kfunc has some kind of attribute, e.g.
+> > KF_TRUSTED_ARGS means that the kfunc only accepts trusted arguments,
+> > rather than being used to categorise kfuncs.
+> >
+> > It is not sustainable to restrict the kfuncs that can be used based on
+> > program types, which are coarse-grained. This problem will get worse
+> > as kfuncs increase.
+> >
+> > In my opinion, managing the kfuncs available to bpf programs should be
+> > implemented as capabilities. Capabilities are a mature permission model=
+.
+> > We can treat a set of kfuncs as a capability (like the various current
+> > kfunc_sets, but the current kfunc_sets did not carefully divide
+> > permissions).
+> >
+> > We should use separate BPF_CAP_XXX flags to manage these capabilities.
+> > For example, SCX may define BPF_CAP_SCX_DISPATCH.
+> >
+> > For program types, we should divide them into two levels, types and
+> > subtypes. Types are used to register common capabilities and subtypes
+> > are used to register specific capabilities. The verifier can check if
+> > the used kfuncs are allowed based on the type and subtype of the bpf
+> > program.
+> >
+> > I understand that we need to maintain backward compatibility to
+> > userspace, but capabilities are internal changes in the kernel.
+> > Perhaps we can make the current program types as subtypes and
+> > add 'types' that are only used internally, and more subtypes
+> > (program types) can be added in the future.
+>
+> Sorry for the delay.
+> imo CAP* approach doesn't fit.
+> caps are security bits exposed to user space.
+> Here there is no need to expose anything to user space.
+>
+> But you're also correct that we cannot extend kfunc KF_* flags
+> that easily. KF_* flags are limited to 32-bit and we're already
+> using 12 bits.
+> enum scx_kf_mask needs 5 bits, so we can squeeze them into
+> the current 32-bit field _for now_,
+> but eventually we'd need to refactor kfunc definition into a wider set:
+> BTF_ID_FLAGS(func, .. KF_*)
+> so that different struct_ops consumers can define their own bits.
+>
+> Right now SCX is the only st_ops consumer who needs this feature,
+> so let's squeeze into the existing KF facility.
+>
+> First step is to remap scx_kf_mask bits into unused bits in KF_
+> and annotate corresponding sched-ext kfuncs with it.
+> For example:
+> SCX_KF_DISPATCH will become
+> KF_DISPATCH (1 << 13)
+>
+> and all kfuncs that are allowed to be called from ->dispatch() callback
+> will be annotated like:
+> - BTF_KFUNCS_START(scx_kfunc_ids_dispatch)
+> - BTF_ID_FLAGS(func, scx_bpf_dispatch_nr_slots)
+> - BTF_ID_FLAGS(func, scx_bpf_dispatch_cancel)
+> + BTF_KFUNCS_START(scx_kfunc_ids_dispatch)
+> + BTF_ID_FLAGS(func, scx_bpf_dispatch_nr_slots, KF_DISPATCH)
+> + BTF_ID_FLAGS(func, scx_bpf_dispatch_cancel, KF_DISPATCH)
+>
+>
+> For sched_ext_ops callback annotations, I think,
+> the simplest approach is to add special
+> BTF_SET8_START(st_ops_flags)
+> BTF_ID_FLAGS(func, sched_ext_ops__dispatch, KF_DISPATCH)
+> and so on for other ops stubs.
+>
+> sched_ext_ops__dispatch() is an empty function that
+> exists in the vmlinux, and though it's not a kfunc
+> we can use it to annotate
+> (struct sched_ext_ops *)->dispatch() callback
+> with a particular KF_ flag
+> (or a set of flags for SCX_KF_RQ_LOCKED case).
+>
+> Then the verifier (while analyzing the program that is targeted
+> to be attach to this ->dispatch() hook)
+> will check this extra KF flag in st_ops
+> and will only allow to call kfuncs with matching flags:
+>
+> if (st_ops->kf_mask & kfunc->kf_mask) // ok to call kfunc from this callb=
+ack
+>
+> The end result current->scx.kf_mask will be removed
+> and instead of run-time check it will become static verifier check.
 
-I do that in some of my personal code, but then all the calls to the
-functions tend to be:
+Shall we move some of these logics from verifier core to
+btf_kfunc_id_set.filter()? IIUC, this would avoid using extra
+KF_* bits. To make the filter functions more capable, we
+probably need to pass bpf_verifier_env into the filter() function.
 
-	e.ehdr_shoff(..); or e->ehdr_shoff(..);
+Does this make sense?
 
-instead of simply having:
-
-	ehdr_shoff(..);
-
-Hmm, if the structure is global, I guess then we could just have the helper
-functions use the global variable. But then, instead of having:
-
-static int (*compare_extable)(const void *a, const void *b);
-static uint64_t (*ehdr_shoff)(Elf_Ehdr *ehdr);
-static uint16_t (*ehdr_shstrndx)(Elf_Ehdr *ehdr);
-static uint16_t (*ehdr_shentsize)(Elf_Ehdr *ehdr);
-static uint16_t (*ehdr_shnum)(Elf_Ehdr *ehdr);
-static uint64_t (*shdr_addr)(Elf_Shdr *shdr);
-static uint64_t (*shdr_offset)(Elf_Shdr *shdr);
-static uint64_t (*shdr_size)(Elf_Shdr *shdr);
-static uint64_t (*shdr_entsize)(Elf_Shdr *shdr);
-static uint32_t (*shdr_link)(Elf_Shdr *shdr);
-static uint32_t (*shdr_name)(Elf_Shdr *shdr);
-static uint32_t (*shdr_type)(Elf_Shdr *shdr);
-static uint8_t (*sym_type)(Elf_Sym *sym);
-static uint32_t (*sym_name)(Elf_Sym *sym);
-static uint64_t (*sym_value)(Elf_Sym *sym);
-static uint16_t (*sym_shndx)(Elf_Sym *sym);
-static uint64_t (*rela_offset)(Elf_Rela *rela);
-static uint64_t (*rela_info)(Elf_Rela *rela);
-static uint64_t (*rela_addend)(Elf_Rela *rela);
-static void (*rela_write_addend)(Elf_Rela *rela, uint64_t val);
-
-	case ELFCLASS32:
-		compare_extable		= compare_extable_32;
-		ehdr_shoff		= ehdr32_shoff;
-		ehdr_shentsize		= ehdr32_shentsize;
-		ehdr_shstrndx		= ehdr32_shstrndx;
-		ehdr_shnum		= ehdr32_shnum;
-		shdr_addr		= shdr32_addr;
-		shdr_offset		= shdr32_offset;
-		shdr_link		= shdr32_link;
-		shdr_size		= shdr32_size;
-		shdr_name		= shdr32_name;
-		shdr_type		= shdr32_type;
-		shdr_entsize		= shdr32_entsize;
-		sym_type		= sym32_type;
-		sym_name		= sym32_name;
-		sym_value		= sym32_value;
-		sym_shndx		= sym32_shndx;
-		rela_offset		= rela32_offset;
-		rela_info		= rela32_info;
-		rela_addend		= rela32_addend;
-		rela_write_addend	= rela32_write_addend;
-		long_size		= 4;
-		extable_ent_size	= 8;
-		break;
-	case ELFCLASS64:
-		compare_extable		= compare_extable_64;
-		ehdr_shoff		= ehdr64_shoff;
-		ehdr_shentsize		= ehdr64_shentsize;
-		ehdr_shstrndx		= ehdr64_shstrndx;
-		ehdr_shnum		= ehdr64_shnum;
-		shdr_addr		= shdr64_addr;
-		shdr_offset		= shdr64_offset;
-		shdr_link		= shdr64_link;
-		shdr_size		= shdr64_size;
-		shdr_name		= shdr64_name;
-		shdr_type		= shdr64_type;
-		shdr_entsize		= shdr64_entsize;
-		sym_type		= sym64_type;
-		sym_name		= sym64_name;
-		sym_value		= sym64_value;
-		sym_shndx		= sym64_shndx;
-		rela_offset		= rela64_offset;
-		rela_info		= rela64_info;
-		rela_addend		= rela64_addend;
-		rela_write_addend	= rela64_write_addend;
-		long_size		= 8;
-		extable_ent_size	= 16;
-
-		break;
-
-
-We would have:
-
-static struct elf_funcs {
-	int (*compare_extable)(const void *a, const void *b);
-	uint64_t (*ehdr_shoff)(Elf_Ehdr *ehdr);
-	uint16_t (*ehdr_shstrndx)(Elf_Ehdr *ehdr);
-	uint16_t (*ehdr_shentsize)(Elf_Ehdr *ehdr);
-	uint16_t (*ehdr_shnum)(Elf_Ehdr *ehdr);
-	uint64_t (*shdr_addr)(Elf_Shdr *shdr);
-	uint64_t (*shdr_offset)(Elf_Shdr *shdr);
-	uint64_t (*shdr_size)(Elf_Shdr *shdr);
-	uint64_t (*shdr_entsize)(Elf_Shdr *shdr);
-	uint32_t (*shdr_link)(Elf_Shdr *shdr);
-	uint32_t (*shdr_name)(Elf_Shdr *shdr);
-	uint32_t (*shdr_type)(Elf_Shdr *shdr);
-	uint8_t (*sym_type)(Elf_Sym *sym);
-	uint32_t (*sym_name)(Elf_Sym *sym);
-	uint64_t (*sym_value)(Elf_Sym *sym);
-	uint16_t (*sym_shndx)(Elf_Sym *sym);
-} e;
-
-// Hmm, I could add the helper function into the macros:
-
-#define EHDR_HALF(fn_name)				\
-static uint16_t ehdr64_##fn_name(Elf_Ehdr *ehdr)	\
-{							\
-	return r2(&ehdr->e64.e_##fn_name);		\
-}							\
-							\
-static uint16_t ehdr32_##fn_name(Elf_Ehdr *ehdr)	\
-{							\
-	return r2(&ehdr->e32.e_##fn_name);		\
-}							\
-							\
-static uint16 ehdr_##fn_name(Elf_Ehdr *ehdr)		\
-{							\
-	return e.ehdr_##fn_name(ehdr);			\
-}
-
-[..]
-
-	case ELFCLASS32: {
-		struct elf_funcs efuncs = {
-			.compare_extable	= compare_extable_32,
-			.ehdr_shoff		= ehdr32_shoff,
-			.ehdr_shentsize		= ehdr32_shentsize,
-			[..]
-		};
-
-		e = efuncs;
-		long_size		= 4;
-		extable_ent_size	= 8;
-		}
-		break;
-	case ELFCLASS64: {
-		struct elf_funcs efuncs = {
-			.compare_extable	= compare_extable_64,
-			.ehdr_shoff		= ehdr64_shoff,
-			.ehdr_shentsize		= ehdr64_shentsize,
-			[..]
-		};
-
-		e = efuncs;
-		long_size		= 8;
-		extable_ent_size	= 16;
-		}
-		break;
-
-
-Which would give me this patch on top of this:
-
-diff --git a/scripts/sorttable.c b/scripts/sorttable.c
-index 656c1e9b5ad9..9f41575afd7a 100644
---- a/scripts/sorttable.c
-+++ b/scripts/sorttable.c
-@@ -85,6 +85,25 @@ static uint64_t (*r8)(const uint64_t *);
- static void (*w)(uint32_t, uint32_t *);
- typedef void (*table_sort_t)(char *, int);
- 
-+static struct elf_funcs {
-+	int (*compare_extable)(const void *a, const void *b);
-+	uint64_t (*ehdr_shoff)(Elf_Ehdr *ehdr);
-+	uint16_t (*ehdr_shstrndx)(Elf_Ehdr *ehdr);
-+	uint16_t (*ehdr_shentsize)(Elf_Ehdr *ehdr);
-+	uint16_t (*ehdr_shnum)(Elf_Ehdr *ehdr);
-+	uint64_t (*shdr_addr)(Elf_Shdr *shdr);
-+	uint64_t (*shdr_offset)(Elf_Shdr *shdr);
-+	uint64_t (*shdr_size)(Elf_Shdr *shdr);
-+	uint64_t (*shdr_entsize)(Elf_Shdr *shdr);
-+	uint32_t (*shdr_link)(Elf_Shdr *shdr);
-+	uint32_t (*shdr_name)(Elf_Shdr *shdr);
-+	uint32_t (*shdr_type)(Elf_Shdr *shdr);
-+	uint8_t (*sym_type)(Elf_Sym *sym);
-+	uint32_t (*sym_name)(Elf_Sym *sym);
-+	uint64_t (*sym_value)(Elf_Sym *sym);
-+	uint16_t (*sym_shndx)(Elf_Sym *sym);
-+} e;
-+
- static uint64_t ehdr64_shoff(Elf_Ehdr *ehdr)
- {
- 	return r8(&ehdr->e64.e_shoff);
-@@ -95,6 +114,11 @@ static uint64_t ehdr32_shoff(Elf_Ehdr *ehdr)
- 	return r(&ehdr->e32.e_shoff);
- }
- 
-+static uint64_t ehdr_shoff(Elf_Ehdr *ehdr)
-+{
-+	return e.ehdr_shoff(ehdr);
-+}
-+
- #define EHDR_HALF(fn_name)				\
- static uint16_t ehdr64_##fn_name(Elf_Ehdr *ehdr)	\
- {							\
-@@ -104,6 +128,11 @@ static uint16_t ehdr64_##fn_name(Elf_Ehdr *ehdr)	\
- static uint16_t ehdr32_##fn_name(Elf_Ehdr *ehdr)	\
- {							\
- 	return r2(&ehdr->e32.e_##fn_name);		\
-+}							\
-+							\
-+static uint16_t ehdr_##fn_name(Elf_Ehdr *ehdr)		\
-+{							\
-+	return e.ehdr_##fn_name(ehdr);			\
- }
- 
- EHDR_HALF(shentsize)
-@@ -119,6 +148,11 @@ static uint32_t shdr64_##fn_name(Elf_Shdr *shdr)	\
- static uint32_t shdr32_##fn_name(Elf_Shdr *shdr)	\
- {							\
- 	return r(&shdr->e32.sh_##fn_name);		\
-+}							\
-+							\
-+static uint32_t shdr_##fn_name(Elf_Shdr *shdr)		\
-+{							\
-+	return e.shdr_##fn_name(shdr);			\
- }
- 
- #define SHDR_ADDR(fn_name)				\
-@@ -130,6 +164,11 @@ static uint64_t shdr64_##fn_name(Elf_Shdr *shdr)	\
- static uint64_t shdr32_##fn_name(Elf_Shdr *shdr)	\
- {							\
- 	return r(&shdr->e32.sh_##fn_name);		\
-+}							\
-+							\
-+static uint64_t shdr_##fn_name(Elf_Shdr *shdr)		\
-+{							\
-+	return e.shdr_##fn_name(shdr);			\
- }
- 
- #define SHDR_WORD(fn_name)				\
-@@ -141,6 +180,10 @@ static uint32_t shdr64_##fn_name(Elf_Shdr *shdr)	\
- static uint32_t shdr32_##fn_name(Elf_Shdr *shdr)	\
- {							\
- 	return r(&shdr->e32.sh_##fn_name);		\
-+}							\
-+static uint32_t shdr_##fn_name(Elf_Shdr *shdr)		\
-+{							\
-+	return e.shdr_##fn_name(shdr);			\
- }
- 
- SHDR_ADDR(addr)
-@@ -161,6 +204,11 @@ static uint64_t sym64_##fn_name(Elf_Sym *sym)	\
- static uint64_t sym32_##fn_name(Elf_Sym *sym)	\
- {						\
- 	return r(&sym->e32.st_##fn_name);	\
-+}						\
-+						\
-+static uint64_t sym_##fn_name(Elf_Sym *sym)	\
-+{						\
-+	return e.sym_##fn_name(sym);		\
- }
- 
- #define SYM_WORD(fn_name)			\
-@@ -172,6 +220,11 @@ static uint32_t sym64_##fn_name(Elf_Sym *sym)	\
- static uint32_t sym32_##fn_name(Elf_Sym *sym)	\
- {						\
- 	return r(&sym->e32.st_##fn_name);	\
-+}						\
-+						\
-+static uint32_t sym_##fn_name(Elf_Sym *sym)	\
-+{						\
-+	return e.sym_##fn_name(sym);		\
- }
- 
- #define SYM_HALF(fn_name)			\
-@@ -183,6 +236,11 @@ static uint16_t sym64_##fn_name(Elf_Sym *sym)	\
- static uint16_t sym32_##fn_name(Elf_Sym *sym)	\
- {						\
- 	return r2(&sym->e32.st_##fn_name);	\
-+}						\
-+						\
-+static uint16_t sym_##fn_name(Elf_Sym *sym)	\
-+{						\
-+	return e.sym_##fn_name(sym);		\
- }
- 
- static uint8_t sym64_type(Elf_Sym *sym)
-@@ -195,6 +253,11 @@ static uint8_t sym32_type(Elf_Sym *sym)
- 	return ELF32_ST_TYPE(sym->e32.st_info);
- }
- 
-+static uint8_t sym_type(Elf_Sym *sym)
-+{
-+	return e.sym_type(sym);
-+}
-+
- SYM_ADDR(value)
- SYM_WORD(name)
- SYM_HALF(shndx)
-@@ -322,29 +385,16 @@ static int compare_extable_64(const void *a, const void *b)
- 	return av > bv;
- }
- 
-+static int compare_extable(const void *a, const void *b)
-+{
-+	return e.compare_extable(a, b);
-+}
-+
- static inline void *get_index(void *start, int entsize, int index)
- {
- 	return start + (entsize * index);
- }
- 
--
--static int (*compare_extable)(const void *a, const void *b);
--static uint64_t (*ehdr_shoff)(Elf_Ehdr *ehdr);
--static uint16_t (*ehdr_shstrndx)(Elf_Ehdr *ehdr);
--static uint16_t (*ehdr_shentsize)(Elf_Ehdr *ehdr);
--static uint16_t (*ehdr_shnum)(Elf_Ehdr *ehdr);
--static uint64_t (*shdr_addr)(Elf_Shdr *shdr);
--static uint64_t (*shdr_offset)(Elf_Shdr *shdr);
--static uint64_t (*shdr_size)(Elf_Shdr *shdr);
--static uint64_t (*shdr_entsize)(Elf_Shdr *shdr);
--static uint32_t (*shdr_link)(Elf_Shdr *shdr);
--static uint32_t (*shdr_name)(Elf_Shdr *shdr);
--static uint32_t (*shdr_type)(Elf_Shdr *shdr);
--static uint8_t (*sym_type)(Elf_Sym *sym);
--static uint32_t (*sym_name)(Elf_Sym *sym);
--static uint64_t (*sym_value)(Elf_Sym *sym);
--static uint16_t (*sym_shndx)(Elf_Sym *sym);
--
- static int extable_ent_size;
- static int long_size;
- 
-@@ -864,7 +914,30 @@ static int do_file(char const *const fname, void *addr)
- 	}
- 
- 	switch (ehdr->e32.e_ident[EI_CLASS]) {
--	case ELFCLASS32:
-+	case ELFCLASS32: {
-+		struct elf_funcs efuncs = {
-+			.compare_extable	= compare_extable_32,
-+			.ehdr_shoff		= ehdr32_shoff,
-+			.ehdr_shentsize		= ehdr32_shentsize,
-+			.ehdr_shstrndx		= ehdr32_shstrndx,
-+			.ehdr_shnum		= ehdr32_shnum,
-+			.shdr_addr		= shdr32_addr,
-+			.shdr_offset		= shdr32_offset,
-+			.shdr_link		= shdr32_link,
-+			.shdr_size		= shdr32_size,
-+			.shdr_name		= shdr32_name,
-+			.shdr_type		= shdr32_type,
-+			.shdr_entsize		= shdr32_entsize,
-+			.sym_type		= sym32_type,
-+			.sym_name		= sym32_name,
-+			.sym_value		= sym32_value,
-+			.sym_shndx		= sym32_shndx,
-+		};
-+
-+		e = efuncs;
-+		long_size		= 4;
-+		extable_ent_size	= 8;
-+
- 		if (r2(&ehdr->e32.e_ehsize) != sizeof(Elf32_Ehdr) ||
- 		    r2(&ehdr->e32.e_shentsize) != sizeof(Elf32_Shdr)) {
- 			fprintf(stderr,
-@@ -872,26 +945,32 @@ static int do_file(char const *const fname, void *addr)
- 			return -1;
- 		}
- 
--		compare_extable		= compare_extable_32;
--		ehdr_shoff		= ehdr32_shoff;
--		ehdr_shentsize		= ehdr32_shentsize;
--		ehdr_shstrndx		= ehdr32_shstrndx;
--		ehdr_shnum		= ehdr32_shnum;
--		shdr_addr		= shdr32_addr;
--		shdr_offset		= shdr32_offset;
--		shdr_link		= shdr32_link;
--		shdr_size		= shdr32_size;
--		shdr_name		= shdr32_name;
--		shdr_type		= shdr32_type;
--		shdr_entsize		= shdr32_entsize;
--		sym_type		= sym32_type;
--		sym_name		= sym32_name;
--		sym_value		= sym32_value;
--		sym_shndx		= sym32_shndx;
--		long_size		= 4;
--		extable_ent_size	= 8;
-+		}
- 		break;
--	case ELFCLASS64:
-+	case ELFCLASS64: {
-+		struct elf_funcs efuncs = {
-+			.compare_extable	= compare_extable_64,
-+			.ehdr_shoff		= ehdr64_shoff,
-+			.ehdr_shentsize		= ehdr64_shentsize,
-+			.ehdr_shstrndx		= ehdr64_shstrndx,
-+			.ehdr_shnum		= ehdr64_shnum,
-+			.shdr_addr		= shdr64_addr,
-+			.shdr_offset		= shdr64_offset,
-+			.shdr_link		= shdr64_link,
-+			.shdr_size		= shdr64_size,
-+			.shdr_name		= shdr64_name,
-+			.shdr_type		= shdr64_type,
-+			.shdr_entsize		= shdr64_entsize,
-+			.sym_type		= sym64_type,
-+			.sym_name		= sym64_name,
-+			.sym_value		= sym64_value,
-+			.sym_shndx		= sym64_shndx,
-+		};
-+
-+		e = efuncs;
-+		long_size		= 8;
-+		extable_ent_size	= 16;
-+
- 		if (r2(&ehdr->e64.e_ehsize) != sizeof(Elf64_Ehdr) ||
- 		    r2(&ehdr->e64.e_shentsize) != sizeof(Elf64_Shdr)) {
- 			fprintf(stderr,
-@@ -900,25 +979,7 @@ static int do_file(char const *const fname, void *addr)
- 			return -1;
- 		}
- 
--		compare_extable		= compare_extable_64;
--		ehdr_shoff		= ehdr64_shoff;
--		ehdr_shentsize		= ehdr64_shentsize;
--		ehdr_shstrndx		= ehdr64_shstrndx;
--		ehdr_shnum		= ehdr64_shnum;
--		shdr_addr		= shdr64_addr;
--		shdr_offset		= shdr64_offset;
--		shdr_link		= shdr64_link;
--		shdr_size		= shdr64_size;
--		shdr_name		= shdr64_name;
--		shdr_type		= shdr64_type;
--		shdr_entsize		= shdr64_entsize;
--		sym_type		= sym64_type;
--		sym_name		= sym64_name;
--		sym_value		= sym64_value;
--		sym_shndx		= sym64_shndx;
--		long_size		= 8;
--		extable_ent_size	= 16;
--
-+		}
- 		break;
- 	default:
- 		fprintf(stderr, "unrecognized ELF class %d %s\n",
-
-
-Is that what you are thinking?
-
--- Steve
+Thanks,
+Song
 
