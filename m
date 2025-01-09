@@ -1,366 +1,283 @@
-Return-Path: <bpf+bounces-48487-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48488-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24BE9A082E0
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 23:42:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66667A08332
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 00:01:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F4547A36AC
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 22:42:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2D5C3A520E
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 23:01:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C74F7205E07;
-	Thu,  9 Jan 2025 22:42:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78EF4205E0C;
+	Thu,  9 Jan 2025 23:01:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Qg+ti6jN"
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="g9q/3Cy+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51FC82054FD
-	for <bpf@vger.kernel.org>; Thu,  9 Jan 2025 22:42:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09265205ADB
+	for <bpf@vger.kernel.org>; Thu,  9 Jan 2025 23:01:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736462525; cv=none; b=lSH31LrAGPw3w1iGj0SBX4B2QKrvj/Dai/KQhtAeeygWb/oONbeblfOurRveGvdrA280L9hu0sOMcTHC3asq6IVYlUBmmy9KvXW8bZoLIn+E3/8Wc9RkPULmnc1a0EVf6ugREoP9LB+NjLHVT9IV2iKWvee6xrt8EeZWoTI1cLg=
+	t=1736463666; cv=none; b=r9jMWE+jlPObxmuB+adcN8yUkENR6zktHNEoR1VKQOjKv31dGdjkEmcvhhxuoY1ad4f4V3S9S0CJi6En6WLp3+BDZ5PaM0qACYa0XrBPDFUQw0EgEFQ0b3OTZM+IwdbkmcvcmBLKTOt0eAlGHJnyQhL+vw3psgMRaxMH75u9470=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736462525; c=relaxed/simple;
-	bh=Y9NkrLGmylM8UnKtAi46e5yWvaF7xye7V0AEdJoQZW0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HjA97FXhZDN4UaCD0KMHd4kiNKyYdkLsxk3gdmWP4aGehY/kwbYkMGYyMyxWKIqQK8hWCZQbSLMpMRjSWzWEp6K//F5+FVRwd6bSwpn1nKxeTJxrVXaYAOW10fa8FiO3w4djP+mXtEH74GtipwGEvL0xc9pEgDXQBt/t+7gfYUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Qg+ti6jN; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5d3cfdc7e4fso3219a12.0
-        for <bpf@vger.kernel.org>; Thu, 09 Jan 2025 14:42:03 -0800 (PST)
+	s=arc-20240116; t=1736463666; c=relaxed/simple;
+	bh=ouylJ8vaww+BvN5+CjToW8mtqfVEhB1cWP2LujyiEy8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gGoXRX1HEjQM1Wu7+iO+HLVrKPNyA7Lk4iWrahfLHyLNCfPPUe/cXCe6Ye0RooRKUerq2DymBpZlLXdovFOlyBZgszsP3IT4USY7EoK4fMwaNcCxr5+iRT9MuRYF1opayNWgIPHauQa3tjmY6J4CobMzgew0tGCcY+BvNDstR+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=g9q/3Cy+; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-21634338cfdso32807315ad.2
+        for <bpf@vger.kernel.org>; Thu, 09 Jan 2025 15:01:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1736462522; x=1737067322; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=weql44/TCZcCo59od+M8ApuTZhXWeNY1dhogmGHwFNE=;
-        b=Qg+ti6jNpBzW1J0HRfg1bG0bUVrtbDPkJ1wDjVbovC23WStsjoJ30QEDSmMWzDLtxl
-         YAnuawHT1dxQWF5qWi7F0og369e92exIPxpeVsCjg4ircnso1e4k0MmvAqPInT55JXGK
-         D7MaqgFDFWiuGJv9KFgchebCjLAz54bZrtWlIfqArAY+2fnWa3VcSyLk9SM4EgiaC5eM
-         3PUmtwlNgSK24qytjYK+jSQn20wbtUhs5O58IPsqzvOClDIEaxuGjEDbNLoG1jivoHGL
-         1/14PcS37gcWtZWI4rf/+kRq0OujFq9soPaUMXhSkpkq9XbWMeBMYW+ol91ZxiHUAdr2
-         njSw==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1736463663; x=1737068463; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=u1Rto3tQvT3jFN5xuxXHqKLZjGHCEokZTCe6xmBnORw=;
+        b=g9q/3Cy+xguC9G42bmdnj9vz+2rGfGWYXgAwg5B1Rg2XFJC1hXiKZU2zYLau/Ev6A2
+         Tyq6HzkDRpTRRH6QykuTg6/ShavOglCcBg3VYKE6k7nz2yVuUU5GGcN10YDJLu01rwba
+         BA7ooUB0gpQeVu4ty+/znHHp4gbXwQHGqEv6US2cOMBuCaG0UQSL0WuhnTvN0BKvMCuL
+         5fzqBajiFdLf8ckDvozIxC3rxNgOLgy/wUhbmqiNkAtIFc9cnKLgjmYJh7xN6RemRxfi
+         gZv+QTtljlvsUH7OwwMbSGhs+u/5uWl8Yck9mkAYSdZwCZbu+IK3fN6Y85OkY40+sGDS
+         0tGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736462522; x=1737067322;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=weql44/TCZcCo59od+M8ApuTZhXWeNY1dhogmGHwFNE=;
-        b=YrBrvRFLL/37wi4AZkzyZ2BDaUE2X6OVslbmz3Jc54LYE3DS4GEHdNEABHCiyxqyZo
-         VCAFuyOWMyKG8I9gRsqFhJJvl7fC8+/6+cBdyyWlU3mT1fK1URm4q/ejvn7ZYF6uUsDg
-         hy+BUAJ1w3Uj7UQo1bw1YlDY3SMKR1epdTHQZg21hgd6GfeXEGG3GV3EuGHOKE06SAd+
-         6IidPzDxR+Pszk0/6De/uYtJBsGrwQoq1AJn4cPp1PsRtffIzE8XgH/JfkQDQMzn+pHJ
-         fxPp7p8V+5mq+OOHd6dLWmY/LBAtpxhUqStHzlk3+YEnzss4IT3YHDcE8jwQ79sQTosG
-         GZBw==
-X-Forwarded-Encrypted: i=1; AJvYcCX39M/Adkw3ul6Ehpa+r5u61dv+qAoCida3vaMzi4kyy5dVQbRMqkJkpp/uVENd45AIUjs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywnu7z8Gsjfv5XXlfkBLwotl9yC5zllMHyni7WYUd7xdD6Iuy5f
-	jBb1lnK4xX6VkMM4lbVFxl2u1pKe9YHVKDN8U0NHqlOT4kXLHDF+RMVJrE7/xGIk0qZlOS6RuOx
-	RfdQFO/TWVz920Vd4G266pUvfRDpLHNJHzltr
-X-Gm-Gg: ASbGncshsvfYsBokT7PbEgtIq/HQN0FHH9pFpxaXAA7WZfqh9HUZePmmklPueHyXPH4
-	I5dGkid/f4qIjsQqMtLpcenTp6JH/16LU48LrN3m2zTfTo0PV+w2g1RNdLAd/Z0U1pOiu
-X-Google-Smtp-Source: AGHT+IEtDhm9+fJt/cE12QK4cG5kPbrLwb3PwE2xwl0do7/zTqTEt4WlDVecRQlmr2gsn6+k2nE7xEVso7IvoZ+UH5s=
-X-Received: by 2002:a05:6402:519:b0:5d4:428e:e99f with SMTP id
- 4fb4d7f45d1cf-5d9a0cc9cdamr6871a12.3.1736462521450; Thu, 09 Jan 2025 14:42:01
- -0800 (PST)
+        d=1e100.net; s=20230601; t=1736463663; x=1737068463;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=u1Rto3tQvT3jFN5xuxXHqKLZjGHCEokZTCe6xmBnORw=;
+        b=LZW+jiYSlD6+N5e1EW7IpP4/OuI38o9+QEr0BFV8CnVRWMIosYSRaVTIwMGpPEHShi
+         gps4zlUnM2mDr0aO95m9fq7/1WkuGwSsRCdVAobYS+j3c2cDXFFW6Zm3RG28gnL7BfWf
+         F4F9EB8y39DVNyL7R1oiPK/fpHDbuNWcC+C3bxg6OI7VNjSoEOWqDU0VU/46VIk4UMYd
+         Ju3bgrINblwK39c2sz9U4G7QrZ0av7geFsiSBtvCngh5xnoeVPsDlmsoPzEvyV6UcyvH
+         27lsEY9Gj9x85BOYkbKZikcl4rI41JbjbIAuKkuEWg1w/ovW1eZnp3luotv4fUwThdsN
+         bTtQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWtL9pzqzQ8X+h6DknKBuKTOoTzgWs9qWafM4Egak48LBwfjh6X9wkpgZLbJf6H/r8zaFw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzd6TWP8cErEdMfeNeiEoVGwPfGkT5RM4hrXujjckU/0n3owEoz
+	JLbdQGCuFQl1Kn4v6ZA7E9M8hvdqbJXVV6nm2ap2zhNU9MFLVxsQGzLVMdsUp1I=
+X-Gm-Gg: ASbGnctCcisI3OHbPuDKWfYifFwaq8fI7qWms5uPZfnbNM1nqsZUTM4frgnFQSeZFwq
+	6gKrye0y9RnRTg5ObydhFO7k9t82G8x1ryha8+iG9emhPFxVjxWn3uQjlE39IAfmJTE8R+PtOE1
+	DXq3vXyTuEmy/q08RrqqHtsxGMxcu474VlkCYvXgSQVxt0ZHG0VOkZOTSyRudOsCtUxzD0Fbu9y
+	xVpZ5sJHH0njWXCgoFfGI6w/3K+uY8CN5bNYwfaiWA2ghkqmz/9
+X-Google-Smtp-Source: AGHT+IHHLbAhu86VzYd6LBFp5j+Q2QinJd1yN68qZ09Yns1ZwY4dgQCRzdIJeqQ19rPDtpnqmFcSKA==
+X-Received: by 2002:a17:902:f70f:b0:216:32ea:c84b with SMTP id d9443c01a7336-21a83fc3652mr135133105ad.37.1736463663201;
+        Thu, 09 Jan 2025 15:01:03 -0800 (PST)
+Received: from ghost ([2601:647:6700:64d0:691c:638a:ff10:3765])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21a9f234984sm2890475ad.205.2025.01.09.15.01.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jan 2025 15:01:02 -0800 (PST)
+Date: Thu, 9 Jan 2025 15:00:59 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
+	Christian Brauner <brauner@kernel.org>, Guo Ren <guoren@kernel.org>,
+	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>,
+	James Clark <james.clark@linaro.org>,
+	Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linux.dev>,
+	Jonathan Corbet <corbet@lwn.net>, Arnd Bergmann <arnd@arndb.de>,
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
+	linux-csky@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v6 00/16] perf tools: Use generic syscall scripts for all
+ archs
+Message-ID: <Z4BVK3D7sN-XYg2o@ghost>
+References: <20250108-perf_syscalltbl-v6-0-7543b5293098@rivosinc.com>
+ <Z3_ybwWW3QZvJ4V6@x1>
+ <Z4AoFA974kauIJ9T@ghost>
+ <Z4A2Y269Ffo0ERkS@x1>
+ <Z4BEygdXmofWBr0-@x1>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250108-rust-btf-lto-incompat-v1-1-60243ff6d820@google.com>
- <CANiq72=XD3AfZp=jKNkKLs8PYCBuk2Jm6tbQB2QtbqkieAtm8Q@mail.gmail.com>
- <CAEg-Je8YdqYFMiUK7enjusTjMhRMWTbL837x7-qQbi4LkcRcLw@mail.gmail.com>
- <CAH5fLghtCure3EjN-hRx9PT=10_E+0MNbjFACT_v+P1StWELPQ@mail.gmail.com>
- <CAJ-ks9nYSssBsiJCQRkKoXwmAizeH1A91RzGvX6iTJAFJD2YrA@mail.gmail.com>
- <Z3_vhR_QMaK0Klly@x1> <CAJ-ks9k23fKauY6JFt37OEewKPLhwdQaOFz19BKekqUoRhJCkA@mail.gmail.com>
- <Z3_5eGD_F1_ZxfqE@x1> <Z4BQG3rmYNDS5W0Z@x1>
-In-Reply-To: <Z4BQG3rmYNDS5W0Z@x1>
-From: Matthew Maurer <mmaurer@google.com>
-Date: Thu, 9 Jan 2025 14:41:50 -0800
-X-Gm-Features: AbW1kvbfN1aH3c8C-m-WU9JZYQbIPEAFaYG9GHZDJixLlWZWd_4W7Ov9UeTaZwA
-Message-ID: <CAGSQo039Kgxk4FfDn_wfD=Ha=UR2xxhSM0MrjzXNR9YeiuCTZg@mail.gmail.com>
-Subject: Re: [PATCH] rust: Disallow BTF generation with Rust + LTO
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Tamir Duberstein <tamird@gmail.com>, Alice Ryhl <aliceryhl@google.com>, Neal Gompa <neal@gompa.dev>, 
-	Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	Gary Guo <gary@garyguo.net>, =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@kernel.org>, 
-	Trevor Gross <tmgross@umich.edu>, linux-kernel@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, Matthias Maennich <maennich@google.com>, 
-	bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Eric Curtin <ecurtin@redhat.com>, Martin Reboredo <yakoyoku@gmail.com>, 
-	Alessandro Decina <alessandro.d@gmail.com>, Michal Rostecki <vadorovsky@protonmail.com>, 
-	Dave Tucker <dave@dtucker.co.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Z4BEygdXmofWBr0-@x1>
 
-On Thu, Jan 9, 2025 at 2:39=E2=80=AFPM Arnaldo Carvalho de Melo <acme@kerne=
-l.org> wrote:
->
-> On Thu, Jan 09, 2025 at 01:29:47PM -0300, Arnaldo Carvalho de Melo wrote:
-> > On Thu, Jan 09, 2025 at 10:49:49AM -0500, Tamir Duberstein wrote:
-> > > On Thu, Jan 9, 2025 at 10:47=E2=80=AFAM Arnaldo Carvalho de Melo <acm=
-e@kernel.org> wrote:
-> > > > I was thinking about it after reading this thread yesterday, i.e. w=
-e
-> > > > could encode constructs from Rust that can be represented in BTF an=
-d
-> > > > skip the ones that can't, pruning types that depend on non BTF
-> > > > representable types, etc.
-> >
-> > > Yep, this is what bpf-linker does, along with some other things[0]. I
-> > > highly recommend reading the code I linked to avoid re-discovering
-> > > these things.
-> >
-> > Sure, thanks for pointing it out and suggest I read it while
-> > experimenting with having the same concept in pahole, I'll try a quick
-> > hack and then look at it to see how close I got to what you guys came u=
-p
-> > with :-)
->
-> So I didn't manage to work on this today, just this quick hack:
->
-> =E2=AC=A2 [acme@toolbox pahole]$ git diff
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 78efd705333e2e52..5610e0902f2cd347 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -1559,7 +1559,7 @@ static int btf_encoder__encode_tag(struct btf_encod=
-er *encoder, struct tag *tag,
->         default:
->                 fprintf(stderr, "Unsupported DW_TAG_%s(0x%x): type: 0x%x\=
-n",
->                         dwarf_tag_name(tag->tag), tag->tag, ref_type_id);
-> -               return -1;
-> +               return 0;
->         }
->  }
->
-> =E2=AC=A2 [acme@toolbox pahole]$
->
-> Which essentially encodes any DWARF tag that the BTF encoder doesn't
-> know about into 'void'.
->
-> Super quick hack, I still have to look at the implications, but some
-> results:
->
-> =E2=AC=A2 [acme@toolbox pahole]$ cp ../build/rust-kernel/vmlinux vmlinux.=
-rust
-> =E2=AC=A2 [acme@toolbox pahole]$ pahole --btf_encode vmlinux.rust
-> die__process_class: tag not supported 0x33 (variant_part) at <4c9c589>!
-> die__create_new_enumeration: DW_TAG_subprogram (0x2e) @ <0x4cb784b> not h=
-andled in a rust CU!
-> tag__recode_dwarf_type: couldn't find name for function 0x4cd72bf, abstra=
-ct_origin=3D0, specification=3D0x4cb784b
-> =E2=AC=A2 [acme@toolbox pahole]$
-> =E2=AC=A2 [acme@toolbox pahole]$ pahole -F btf vmlinux.rust | less
-> =E2=AC=A2 [acme@toolbox pahole]$
-> =E2=AC=A2 [acme@toolbox pahole]$
-> =E2=AC=A2 [acme@toolbox pahole]$ pahole -F btf vmlinux.rust | less
-> =E2=AC=A2 [acme@toolbox pahole]$
-> =E2=AC=A2 [acme@toolbox pahole]$ bpftool btf dump file vmlinux.rust | les=
-s
-> =E2=AC=A2 [acme@toolbox pahole]$ bpftool btf dump file vmlinux.rust | hea=
-d
-> [1] INT 'DW_ATE_signed_32' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=
-=3DSIGNED
-> [2] INT 'DW_ATE_signed_64' size=3D8 bits_offset=3D0 nr_bits=3D64 encoding=
-=3DSIGNED
-> [3] INT 'DW_ATE_unsigned_1' size=3D1 bits_offset=3D0 nr_bits=3D8 encoding=
-=3D(none)
-> [4] INT 'DW_ATE_unsigned_8' size=3D1 bits_offset=3D0 nr_bits=3D8 encoding=
-=3D(none)
-> [5] INT 'DW_ATE_unsigned_64' size=3D8 bits_offset=3D0 nr_bits=3D64 encodi=
-ng=3D(none)
-> [6] INT 'DW_ATE_unsigned_32' size=3D4 bits_offset=3D0 nr_bits=3D32 encodi=
-ng=3D(none)
-> [7] STRUCT 'tracepoint' size=3D80 vlen=3D9
->         'name' type_id=3D8 bits_offset=3D0
->         'key' type_id=3D12 bits_offset=3D64
->         'static_call_key' type_id=3D23 bits_offset=3D192
-> =E2=AC=A2 [acme@toolbox pahole]$ bpftool btf dump file vmlinux.rust | tai=
-l
->         type_id=3D12300 offset=3D226816 size=3D24 (VAR 'cfd_data')
->         type_id=3D12301 offset=3D226880 size=3D8 (VAR 'call_single_queue'=
-)
->         type_id=3D12302 offset=3D226944 size=3D32 (VAR 'csd_data')
->         type_id=3D51838 offset=3D227008 size=3D832 (VAR 'softnet_data')
->         type_id=3D54492 offset=3D227840 size=3D24 (VAR 'rt_uncached_list'=
-)
->         type_id=3D55984 offset=3D227904 size=3D24 (VAR 'rt6_uncached_list=
-')
->         type_id=3D8094 offset=3D229376 size=3D64 (VAR 'vmw_steal_time')
->         type_id=3D8810 offset=3D229440 size=3D64 (VAR 'apf_reason')
->         type_id=3D8811 offset=3D229504 size=3D64 (VAR 'steal_time')
->         type_id=3D8813 offset=3D229568 size=3D8 (VAR 'kvm_apic_eoi')
-> =E2=AC=A2 [acme@toolbox pahole]$ readelf -wi vmlinux.rust | grep DW_AT_pr=
-oducer | head
->     <d>   DW_AT_producer    : (indexed string: 0): clang version 18.1.6 (=
-Fedora 18.1.6-3.fc40)
->     <1be5a>   DW_AT_producer    : (indexed string: 0): clang version 18.1=
-.6 (Fedora 18.1.6-3.fc40)
->     <1ec5b>   DW_AT_producer    : (indexed string: 0): clang version 18.1=
-.6 (Fedora 18.1.6-3.fc40)
->     <3bfd5>   DW_AT_producer    : (indexed string: 0): clang version 18.1=
-.6 (Fedora 18.1.6-3.fc40)
->     <3d11c>   DW_AT_producer    : (indexed string: 0): clang version 18.1=
-.6 (Fedora 18.1.6-3.fc40)
->     <4fcf0>   DW_AT_producer    : (indexed string: 0): clang version 18.1=
-.6 (Fedora 18.1.6-3.fc40)
->     <503d5>   DW_AT_producer    : (indexed string: 0): clang version 18.1=
-.6 (Fedora 18.1.6-3.fc40)
->     <5c067>   DW_AT_producer    : (indexed string: 0): clang version 18.1=
-.6 (Fedora 18.1.6-3.fc40)
->     <5c42e>   DW_AT_producer    : (indexed string: 0): clang version 18.1=
-.6 (Fedora 18.1.6-3.fc40)
->     <5efd9>   DW_AT_producer    : (indexed string: 0): clang version 18.1=
-.6 (Fedora 18.1.6-3.fc40)
-> =E2=AC=A2 [acme@toolbox pahole]$ readelf -wi vmlinux.rust | grep DW_AT_la=
-ng | grep -i rust
->     <4c91de1>   DW_AT_language    : 28  (Rust)
->     <4ce66ea>   DW_AT_language    : 28  (Rust)
->     <4cf2cfa>   DW_AT_language    : 28  (Rust)
->     <4cf71a8>   DW_AT_language    : 28  (Rust)
->     <4d2797d>   DW_AT_language    : 28  (Rust)
->     <4d50f34>   DW_AT_language    : 28  (Rust)
-> =E2=AC=A2 [acme@toolbox pahole]$
->
->   Compilation Unit @ offset 0x4c91dd1:
->    Length:        0x54905 (32-bit)
->    Version:       4
->    Abbrev Offset: 0x244258
->    Pointer Size:  8
->  <0><4c91ddc>: Abbrev Number: 1 (DW_TAG_compile_unit)
->     <4c91ddd>   DW_AT_producer    : (indirect string, offset: 0x282d41): =
-clang LLVM (rustc version 1.80.0 (051478957 2024-07-21) (Fedora 1.80.0-1.fc=
-40))
->     <4c91de1>   DW_AT_language    : 28  (Rust)
->     <4c91de3>   DW_AT_name        : (indirect string, offset: 0x282d91): =
-/usr/lib/rustlib/src/rust/library/core/src/lib.rs/@/core.3f32dfd9e3bca37e-c=
-gu.0
->     <4c91de7>   DW_AT_stmt_list   : 0xa1d85f
->     <4c91deb>   DW_AT_comp_dir    : (indirect string, offset: 0x2ebc6): /=
-home/acme/git/build/rust-kernel
->     <4c91def>   DW_AT_low_pc      : 0
->     <4c91df7>   DW_AT_ranges      : 0x1e5f0
->  <1><4c91dfb>: Abbrev Number: 2 (DW_TAG_variable)
->     <4c91dfc>   DW_AT_name        : (indirect string, offset: 0x555b60): =
-<usize as core::fmt::Debug>::{vtable}
->     <4c91e00>   DW_AT_type        : <0x4c91e0e>
->     <4c91e04>   DW_AT_location    : 9 byte block: 3 78 34 50 82 ff ff ff =
-ff     (DW_OP_addr: ffffffff82503478)
->  <1><4c91e0e>: Abbrev Number: 3 (DW_TAG_structure_type)
->     <4c91e0f>   DW_AT_containing_type: <0x4c91e5a>
->     <4c91e13>   DW_AT_name        : (indirect string, offset: 0x2b3380): =
-<usize as core::fmt::Debug>::{vtable_type}
->     <4c91e17>   DW_AT_byte_size   : 32
->     <4c91e18>   DW_AT_alignment   : 8
->  <2><4c91e19>: Abbrev Number: 4 (DW_TAG_member)
->     <4c91e1a>   DW_AT_name        : (indirect string, offset: 0x313232): =
-drop_in_place
->     <4c91e1e>   DW_AT_type        : <0x4c91e46>
->     <4c91e22>   DW_AT_alignment   : 8
->     <4c91e23>   DW_AT_data_member_location: 0
->  <2><4c91e24>: Abbrev Number: 4 (DW_TAG_member)
->     <4c91e25>   DW_AT_name        : (indirect string, offset: 0x570b7e): =
-size
->     <4c91e29>   DW_AT_type        : <0x4c91e5a>
->
-> =E2=AC=A2 [acme@toolbox pahole]$ pahole -F btf -C "<usize as core::fmt::D=
-ebug>::{vtable_type}" vmlinux.rust
-> struct <usize as core::fmt::Debug>::{vtable_type} {
->         __SANITIZED_FAKE_INT__ *   drop_in_place;        /*     0     8 *=
-/
->         usize                      size;                 /*     8     8 *=
-/
->         usize                      align;                /*    16     8 *=
-/
->         __SANITIZED_FAKE_INT__ *   __method3;            /*    24     8 *=
-/
->
->         /* size: 32, cachelines: 1, members: 4 */
->         /* last cacheline: 32 bytes */
-> };
->
-> =E2=AC=A2 [acme@toolbox pahole]$
->
-> =E2=AC=A2 [acme@toolbox pahole]$ pahole -F btf -C '<core::fmt::Error as c=
-ore::fmt::Debug>::{vtable_type}' vmlinux.rust
-> struct <core::fmt::Error as core::fmt::Debug>::{vtable_type} {
->         __SANITIZED_FAKE_INT__ *   drop_in_place;        /*     0     8 *=
-/
->         usize                      size;                 /*     8     8 *=
-/
->         usize                      align;                /*    16     8 *=
-/
->         __SANITIZED_FAKE_INT__ *   __method3;            /*    24     8 *=
-/
->
->         /* size: 32, cachelines: 1, members: 4 */
->         /* last cacheline: 32 bytes */
-> };
->
-> =E2=AC=A2 [acme@toolbox pahole]$
->
-> =E2=AC=A2 [acme@toolbox pahole]$ pahole --show_decl_info -F dwarf -C Alig=
-nment vmlinux.rust
-> die__process_class: tag not supported 0x33 (variant_part) at <4c9c589>!
-> die__create_new_enumeration: DW_TAG_subprogram (0x2e) @ <0x4cb784b> not h=
-andled in a rust CU!
-> tag__recode_dwarf_type: couldn't find name for function 0x4cd72bf, abstra=
-ct_origin=3D0, specification=3D0x4cb784b
-> /* Used at: /usr/lib/rustlib/src/rust/library/core/src/lib.rs/@/core.3f32=
-dfd9e3bca37e-cgu.0 */
-> /* <4c9c50c> (null):32530 */
-> enum Alignment {
->         Left    =3D 0,
->         Right   =3D 1,
->         Center  =3D 2,
->         Unknown =3D 3,
-> } __attribute__((__packed__));
->
-> =E2=AC=A2 [acme@toolbox pahole]$ pahole --show_decl_info -F btf -C Alignm=
-ent vmlinux.rust
-> /* Used at: vmlinux.rust */
-> /* <0> (null):0 */
-> enum Alignment {
->         Left    =3D 0,
->         Right   =3D 1,
->         Center  =3D 2,
->         Unknown =3D 3,
-> } __attribute__((__packed__));
->
-> =E2=AC=A2 [acme@toolbox pahole]$
->
-> I'll fixup those two:
->
-> die__create_new_enumeration: DW_TAG_subprogram (0x2e) @ <0x4cb784b> not h=
-andled in a rust CU!
-> tag__recode_dwarf_type: couldn't find name for function 0x4cd72bf, abstra=
-ct_origin=3D0, specification=3D0x4cb784
->
-> I.e. support functions inside enumerations.
->
-> And sure this will be refused by the kernel, lots of stuff that have
-> invalid names, probably need to turn those into void as well as a
-> continuation of this hack, then prune, maybe that is it, we'll see.
->
-> Going AFK now.
->
+On Thu, Jan 09, 2025 at 06:51:06PM -0300, Arnaldo Carvalho de Melo wrote:
+> On Thu, Jan 09, 2025 at 05:49:42PM -0300, Arnaldo Carvalho de Melo wrote:
+> > BTW this series is already pushed out to perf-tools-next:
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/log/?h=perf-tools-next
+> 
+> Hey, now I noticed that with this latest version we see:
+> 
+> ⬢ [acme@toolbox perf-tools-next]$ m
+> make: Entering directory '/home/acme/git/perf-tools-next/tools/perf'
+>   BUILD:   Doing 'make -j28' parallel build
+> Warning: Kernel ABI header differences:
+>   diff -u tools/arch/arm64/include/uapi/asm/unistd.h arch/arm64/include/uapi/asm/unistd.h
+> 
+> Auto-detecting system features:
+> ...                                   libdw: [ on  ]
+> ...                                   glibc: [ on  ]
+> ...                                  libbfd: [ on  ]
+> ...                          libbfd-buildid: [ on  ]
+> ...                                  libelf: [ on  ]
+> ...                                 libnuma: [ on  ]
+> ...                  numa_num_possible_cpus: [ on  ]
+> ...                                 libperl: [ on  ]
+> ...                               libpython: [ on  ]
+> ...                               libcrypto: [ on  ]
+> ...                               libunwind: [ on  ]
+> ...                             libcapstone: [ on  ]
+> ...                               llvm-perf: [ on  ]
+> ...                                    zlib: [ on  ]
+> ...                                    lzma: [ on  ]
+> ...                               get_cpuid: [ on  ]
+> ...                                     bpf: [ on  ]
+> ...                                  libaio: [ on  ]
+> ...                                 libzstd: [ on  ]
+> 
+>    /home/acme/git/perf-tools-next/tools/perf/scripts/syscalltbl.sh  --abis common,32,i386 /home/acme/git/perf-tools-next/tools/perf/arch/x86/entry/syscalls/syscall_32.tbl /tmp/build/perf-tools-next/arch/x86/include/generated/asm/syscalls_32.h
+>    /home/acme/git/perf-tools-next/tools/perf/scripts/syscalltbl.sh  --abis common,64 /home/acme/git/perf-tools-next/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl /tmp/build/perf-tools-next/arch/x86/include/generated/asm/syscalls_64.h
+>   GEN     /tmp/build/perf-tools-next/common-cmds.h
+>   GEN     /tmp/build/perf-tools-next/arch/arm64/include/generated/asm/sysreg-defs.h
+>   PERF_VERSION = 6.13.rc2.gd73982c39183
+>   GEN     perf-archive
+>   GEN     perf-iostat
+>   MKDIR   /tmp/build/perf-tools-next/jvmti/
+>   MKDIR   /tmp/build/perf-tools-next/jvmti/
+>   MKDIR   /tmp/build/perf-tools-next/jvmti/
+>   MKDIR   /tmp/build/perf-tools-next/jvmti/
+> 
+> 
+> While with the previous one we would see something like SYSCALLTBL as
+> the step name, like we have GEN, MKDIR, etc, can you take a look?
+
+Ooh okay I see, the quiet commands were being ignored as-is. We could
+add the lines to handle this to Makefile.syscalls, but I think the
+better solution is to move the lines from Makefile.build to
+Makefile.perf to be more generically available. Here is a patch for
+that. I also added the comment from the kernel Makefile describing what
+this does.
+
+From 8dcec7f5d937ede3d33c687573dc2f1654ddc59e Mon Sep 17 00:00:00 2001
+From: Charlie Jenkins <charlie@rivosinc.com>
+Date: Thu, 9 Jan 2025 14:36:40 -0800
+Subject: [PATCH] perf tools: Expose quiet/verbose variables in Makefile.perf
+
+The variables to make builds silent/verbose live inside
+tools/build/Makefile.build. Move those variables to the top-level
+Makefile.perf to be generally available.
+
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+---
+ tools/build/Makefile.build | 20 --------------------
+ tools/perf/Makefile.perf   | 37 ++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 36 insertions(+), 21 deletions(-)
+
+diff --git a/tools/build/Makefile.build b/tools/build/Makefile.build
+index 5fb3fb3d97e0..e710ed67a1b4 100644
+--- a/tools/build/Makefile.build
++++ b/tools/build/Makefile.build
+@@ -12,26 +12,6 @@
+ PHONY := __build
+ __build:
+ 
+-ifeq ($(V),1)
+-  quiet =
+-  Q =
+-else
+-  quiet=quiet_
+-  Q=@
+-endif
+-
+-# If the user is running make -s (silent mode), suppress echoing of commands
+-# make-4.0 (and later) keep single letter options in the 1st word of MAKEFLAGS.
+-ifeq ($(filter 3.%,$(MAKE_VERSION)),)
+-short-opts := $(firstword -$(MAKEFLAGS))
+-else
+-short-opts := $(filter-out --%,$(MAKEFLAGS))
+-endif
+-
+-ifneq ($(findstring s,$(short-opts)),)
+-  quiet=silent_
+-endif
+-
+ build-dir := $(srctree)/tools/build
+ 
+ # Define $(fixdep) for dep-cmd function
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index a449d0015536..55d6ce9ea52f 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -161,12 +161,47 @@ export VPATH
+ SOURCE := $(shell ln -sf $(srctree)/tools/perf $(OUTPUT)/source)
+ endif
+ 
++# Beautify output
++# ---------------------------------------------------------------------------
++#
++# Most of build commands in Kbuild start with "cmd_". You can optionally define
++# "quiet_cmd_*". If defined, the short log is printed. Otherwise, no log from
++# that command is printed by default.
++#
++# e.g.)
++#    quiet_cmd_depmod = DEPMOD  $(MODLIB)
++#          cmd_depmod = $(srctree)/scripts/depmod.sh $(DEPMOD) $(KERNELRELEASE)
++#
++# A simple variant is to prefix commands with $(Q) - that's useful
++# for commands that shall be hidden in non-verbose mode.
++#
++#    $(Q)$(MAKE) $(build)=scripts/basic
++#
++# To put more focus on warnings, be less verbose as default
++# Use 'make V=1' to see the full commands
++
+ ifeq ($(V),1)
++  quiet =
+   Q =
+ else
+-  Q = @
++  quiet=quiet_
++  Q=@
+ endif
+ 
++# If the user is running make -s (silent mode), suppress echoing of commands
++# make-4.0 (and later) keep single letter options in the 1st word of MAKEFLAGS.
++ifeq ($(filter 3.%,$(MAKE_VERSION)),)
++short-opts := $(firstword -$(MAKEFLAGS))
++else
++short-opts := $(filter-out --%,$(MAKEFLAGS))
++endif
++
++ifneq ($(findstring s,$(short-opts)),)
++  quiet=silent_
++endif
++
++export quiet Q
++
+ # Do not use make's built-in rules
+ # (this improves performance and avoids hard-to-debug behaviour);
+ MAKEFLAGS += -r
+-- 
+2.34.1
+
+
+- Charlie
+
+> 
+> All is out there in perf-tools-next.
+> 
 > - Arnaldo
-
-Doing a little more digging, I've also found that the latest version
-of `pahole` doesn't seem to conflict with LTO in my test builds - it
-seems to successfully filter out the Rust types. Version 1.25 was
-causing the errors that got reported to me and I was able to
-reproduce.
 
