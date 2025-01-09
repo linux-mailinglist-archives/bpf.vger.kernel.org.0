@@ -1,271 +1,210 @@
-Return-Path: <bpf+bounces-48375-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48376-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A3E1A07116
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 10:14:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 528B3A0714C
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 10:19:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FBAD1670BA
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 09:14:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 041471883954
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 09:19:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1BB32153EB;
-	Thu,  9 Jan 2025 09:13:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA16221518B;
+	Thu,  9 Jan 2025 09:17:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=theori.io header.i=@theori.io header.b="ZKS+lY4q"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="haYnw3Uc";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="KGvrk327"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A4A2215172
-	for <bpf@vger.kernel.org>; Thu,  9 Jan 2025 09:13:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736414035; cv=none; b=XUkKnE7EuK80QlLzhuFgRcUUA6NDgE8Zc3BjrOqt7E7YUsBlGdJkGLfS40UnDSchp7otDV8tAS3EM9aNXNBXgr+tZTPO62StWNGGse0D8LP7uvTR9gKuqmpOqSiR9maBnmjAQQteCVNYPvuq9O9JgkSJd3TlRLnwZx+H1BNX2co=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736414035; c=relaxed/simple;
-	bh=rBwoqe1Wmgh9x9iNyM1XlHYEu8BOmk+OQoy4LiQcr3U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VYPpEYbm7QPPrxcfcSBa4jtkL85IK4hCDhmeE2okCWrH1dFEVlU9t2oeyk25y57tjB0m7ZxBd1FyRf240qF8jnGxD3OjUxfMvQJS+VuEBgUWl0u3zceiX3VfMnSqgTED3plCadWMk+879hG5INEU8XzCaq+yQm0W8H5Qm2aBk54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=theori.io; spf=pass smtp.mailfrom=theori.io; dkim=pass (1024-bit key) header.d=theori.io header.i=@theori.io header.b=ZKS+lY4q; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=theori.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=theori.io
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2163bd70069so10516415ad.0
-        for <bpf@vger.kernel.org>; Thu, 09 Jan 2025 01:13:52 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B921A216384
+	for <bpf@vger.kernel.org>; Thu,  9 Jan 2025 09:17:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1736414252; cv=fail; b=RIEP/vqCWb3iD2Q6uOyftHXz8iptxaJHGShzYS0X93ziKj8fpyaPcZybNWVuh5XUOBUcqm/AxG0KMl27OhMc+wjMDtHzzryj5xMjOXyylTZzq9uye16hBb6AAoRWMN/x/6tfGkNiX4jxCD6UO94t3ryc4j1rhRFzNTMSCGrUPFo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1736414252; c=relaxed/simple;
+	bh=i+pAPT8Txpo3q00qnI4QacCEIglOiFUB/HSWshYjm/Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=ePsLqz6+pdh8w+7MRZWXAAfcgfDa5zz67wE3LL1MhWov32D3yPtTEZoId1yeYhXQfDEYE8aPAiyPeE0J82cC068LLHymnUxZO67XnLPB8P4OnbHRWOXth/1ywbeWZ+Agqc9k6ngtKm+ne7aLWZtNQbI/jqdMWPjX9P4tDP+MCyo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=haYnw3Uc; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=KGvrk327; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5094ftHi020359;
+	Thu, 9 Jan 2025 09:17:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-type:date:from:message-id:mime-version:subject:to; s=
+	corp-2023-11-20; bh=aFj4uOsiPdmhch7g/nUVHnwTqhzTy4oiNq6C800+SaM=; b=
+	haYnw3UcW3yPsr9zbq3tFSwl1pqy2piec0f8prfb5nH4fUvEb2y3usTNIJZco3OA
+	FyxVrRCDnh2QOiZyc51ea6OhE61C7Idvmt4oHWMU4lFUXKzWovrcmFWlOH6yZ3PQ
+	cd8l3bYMJcK4rEfrgy7h3iPA0FRm41AgGLoKFyeuhQQAmXuLn0qjzP/ev1kNbUCa
+	KCtSKCHY9s+Xn8DHspJnSfjf53MjMVHqCbqmSr7jy9+VzTHkDE3Nmj/Hx5kgj2a8
+	+2FVc8xQRWUce6AOajM7/q9nWa6yU3iK8dtjWZoWYzgPzGJu6kEKTPPSllm+/UEg
+	jf4rhQ5V8SepUgDj6mLQ+w==
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 43xuk08t7s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 09 Jan 2025 09:17:21 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 50993OCC020207;
+	Thu, 9 Jan 2025 09:17:20 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2174.outbound.protection.outlook.com [104.47.57.174])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 43xueh75jt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 09 Jan 2025 09:17:20 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Pi7nZGrx0P9Es5C1oHb9x2XR/0eQnVXe4IUvk7YA6Q+84sgyQOrB20sJzF4TMFQqeSNTEvCofpssTD66uKMC7DN84xbRg2yV2Nvw8NQ+LCiOo2PWSYIWVpVBK9a4gadIocoi6R6keulsUe3KlqLTN6u4FkTXjfbraBHDrJ0aiB8/VWREnrcVbo7+FiNpl5YUZvaLlnTpdEDcYI4+MKYdNQs4GOUnwsJjI9DwgII43+GmB9FOJUXN2gWhTVG1cmZml7eHUvdR4om+hS+AjwuJvSIWgwG2/529owUq59VepL3dEEqdobKmSYlPmSLPLtjUWukaCZVR/HWO2aONDWmSsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aFj4uOsiPdmhch7g/nUVHnwTqhzTy4oiNq6C800+SaM=;
+ b=vwym7qTchS4ezEePGerLZLaaytLIZ4M/0HahyxTYUBk6qs/uY6xs3pb2Fzk0LPmCgHwY/Ee9jSK+d6kW7XuBMf1y7PT3K/N6J/I6wfb8ALI7cVRPzhGDZTEwuGIlapNjHYQ8uyKPLQWd9iQOBFgfBqLlyh1PVbKPbJ8uUZXQK6Tq3yetQWTF+kBqpXuEoxGHUTSu28vxc39nHPCNdSC84V3Oii5j8vjTyss6vQKFW3LduyEftiUNmLu48+sXBX1wL6ifflo0kGbUmNIJfa00MqN4Vh3+N+OjXPu+MwI1RrtixyxsaWZaW4oDMArEtArjbu4dWO8nNBEoIGPxbIQFSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=theori.io; s=google; t=1736414032; x=1737018832; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JDhWYX9BafkKaAXEfR74g4WUJtv8a1JPGzUGgZFFXl0=;
-        b=ZKS+lY4qnyBBeYZhAX4+fyeOAOVxQkru1THd9Jfdbb+qpuNhzVEUyTKJM1PKR+lH/L
-         nBozaUIIClwlWqeiE5fu8HsABu/a16Tf3UKDhyOQP2sK7IaLviTV16dtxm4m71cq7LpC
-         myAjJ1S2xrMA/Wo+2jkJmYNezAVgZRe76km4U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736414032; x=1737018832;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JDhWYX9BafkKaAXEfR74g4WUJtv8a1JPGzUGgZFFXl0=;
-        b=lRXAOHgAFyMnjj8ZNwEigTu15cRyE3tHIOzsvhjd9OLZWKhOZOhb3tqhijW+h6/E8e
-         yEp8iEwhkRKmXDBENAV8yxIWZVMt93+I56uWmPtFb6fbvQ631F5uUOHhxoUqb8MMLXM5
-         aVptw6UrDCmCsIhkrqXekWNkl/xJPSBvtTh+E9uF3EazkPlAT6e+WEKIuXPl/Um4zJPL
-         8bFtyLAl/M1KAggvGzFS71A87H1JtrGGXY+fIMjSgskIQgkx4vVvh/oRIDLOjKvszoUO
-         kXZ4wlWr1rSvuVx7llk0+w1KSaMqQMmglP3DtyR0jg3whxIWVlxnT/C1e1IIE5WhuFdn
-         hlJA==
-X-Forwarded-Encrypted: i=1; AJvYcCW0V3FKXULEtRZWiKpRuJiOkFy6iczccBM2Q7Q/MPr6UirEOuOOZuUNHxz+P1PMssnbimo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwnqbXpvyqyU81H/QJrRasQOv2U08ZyxImYcp05U0lGf6SEH01Y
-	useLnx7sBmSY7eA8YHRpp978eL0EVJyPbk+rU2B+s2SD7xS3u0Wfr4/+aObwHPE=
-X-Gm-Gg: ASbGncsGlW/JZX2gGReHCc6/8S/RW7igdNg0ZedNpEpQ8C56g9Idtd1jPpciUDCDigL
-	DAnPEL8L3UUfl5QTPeeriyLQM9rZLO0z6NvcJlIz9HtLC8EhI1GyySLAFbjirKTQR8lUbQvrv4m
-	hRicMrtBzC4uKjMB3e9Me+MeHCReQGCrPQrwrgF0nVlVpUlk8BNupX8scNZ/+Opql1zavqZ5XOD
-	d+bUxB7kCO7JY7vMBwkTTjPUlOaIPqBlUUYwZ73NhcOqXxbgjIBbxi8weK2bMb+L9H+/w==
-X-Google-Smtp-Source: AGHT+IFw8wRkiTbU7BGp5mX2JtgxMuWF8qlDA2lSpDsKyjYi8kuXreh7G2BQzMPvk5sogG73DVd5pQ==
-X-Received: by 2002:a17:903:249:b0:216:7ee9:2222 with SMTP id d9443c01a7336-21a83ffc1bcmr77965125ad.35.1736414031914;
-        Thu, 09 Jan 2025 01:13:51 -0800 (PST)
-Received: from v4bel-B760M-AORUS-ELITE-AX ([211.219.71.65])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21a91770b61sm7949675ad.4.2025.01.09.01.13.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jan 2025 01:13:51 -0800 (PST)
-Date: Thu, 9 Jan 2025 04:13:44 -0500
-From: Hyunwoo Kim <v4bel@theori.io>
-To: Stefano Garzarella <sgarzare@redhat.com>
-Cc: netdev@vger.kernel.org, Simon Horman <horms@kernel.org>,
-	Stefan Hajnoczi <stefanha@redhat.com>, linux-kernel@vger.kernel.org,
-	Eric Dumazet <edumazet@google.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Wongi Lee <qwerty@theori.io>,
-	"David S. Miller" <davem@davemloft.net>,
-	Paolo Abeni <pabeni@redhat.com>, Jason Wang <jasowang@redhat.com>,
-	Bobby Eshleman <bobby.eshleman@bytedance.com>,
-	virtualization@lists.linux.dev,
-	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
-	Luigi Leonardi <leonardi@redhat.com>, bpf@vger.kernel.org,
-	Jakub Kicinski <kuba@kernel.org>,
-	"Michael S. Tsirkin" <mst@redhat.com>, Michal Luczaj <mhal@rbox.co>,
-	kvm@vger.kernel.org, imv4bel@gmail.com, v4bel@theori.io
-Subject: Re: [PATCH net 1/2] vsock/virtio: discard packets if the transport
- changes
-Message-ID: <Z3+TSNfTJr2X8oQV@v4bel-B760M-AORUS-ELITE-AX>
-References: <20250108180617.154053-1-sgarzare@redhat.com>
- <20250108180617.154053-2-sgarzare@redhat.com>
- <Z37Sh+utS+iV3+eb@v4bel-B760M-AORUS-ELITE-AX>
- <77plpkw3mp4r3ue4ubmh4yhqfo777koiu65dqfqfxmjgc5uq57@aifi6mhtgtuj>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aFj4uOsiPdmhch7g/nUVHnwTqhzTy4oiNq6C800+SaM=;
+ b=KGvrk327pG2XedIk3MiYpBC7NlvedF6h1zz3HyRooQjNyFdz3ElDyGQeLOfPNaV3HGy8Yk1usZFqfBpj1qMMzAjs3hps7N1jHVBIac1h1yg+oqdUDYVzBFugkBNWdz0ABxzoAo7jLv3mSalGHxt3K1s0vMKP4C+V7CNHPMIkB/k=
+Received: from LV8PR10MB7822.namprd10.prod.outlook.com (2603:10b6:408:1e8::6)
+ by PH0PR10MB6434.namprd10.prod.outlook.com (2603:10b6:510:21c::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8335.12; Thu, 9 Jan
+ 2025 09:17:18 +0000
+Received: from LV8PR10MB7822.namprd10.prod.outlook.com
+ ([fe80::4808:df01:d7ce:3c1e]) by LV8PR10MB7822.namprd10.prod.outlook.com
+ ([fe80::4808:df01:d7ce:3c1e%4]) with mapi id 15.20.8335.010; Thu, 9 Jan 2025
+ 09:17:18 +0000
+From: "Jose E. Marchesi" <jose.marchesi@oracle.com>
+To: lsf-pc@lists.linux-foundation.org
+Cc: bpf@vger.kernel.org
+Subject: [LSF/MM/BPF TOPIC] Compiled BPF
+User-Agent: Gnus/5.13 (Gnus v5.13)
+Date: Thu, 09 Jan 2025 10:17:15 +0100
+Message-ID: <87y0zkxs6c.fsf@oracle.com>
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR07CA0020.eurprd07.prod.outlook.com
+ (2603:10a6:208:ac::33) To LV8PR10MB7822.namprd10.prod.outlook.com
+ (2603:10b6:408:1e8::6)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <77plpkw3mp4r3ue4ubmh4yhqfo777koiu65dqfqfxmjgc5uq57@aifi6mhtgtuj>
-
-On Thu, Jan 09, 2025 at 10:01:31AM +0100, Stefano Garzarella wrote:
-> On Wed, Jan 08, 2025 at 02:31:19PM -0500, Hyunwoo Kim wrote:
-> > On Wed, Jan 08, 2025 at 07:06:16PM +0100, Stefano Garzarella wrote:
-> > > If the socket has been de-assigned or assigned to another transport,
-> > > we must discard any packets received because they are not expected
-> > > and would cause issues when we access vsk->transport.
-> > > 
-> > > A possible scenario is described by Hyunwoo Kim in the attached link,
-> > > where after a first connect() interrupted by a signal, and a second
-> > > connect() failed, we can find `vsk->transport` at NULL, leading to a
-> > > NULL pointer dereference.
-> > > 
-> > > Fixes: c0cfa2d8a788 ("vsock: add multi-transports support")
-> > > Reported-by: Hyunwoo Kim <v4bel@theori.io>
-> > > Reported-by: Wongi Lee <qwerty@theori.io>
-> > > Closes: https://lore.kernel.org/netdev/Z2LvdTTQR7dBmPb5@v4bel-B760M-AORUS-ELITE-AX/
-> > > Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-> > > ---
-> > >  net/vmw_vsock/virtio_transport_common.c | 7 +++++--
-> > >  1 file changed, 5 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
-> > > index 9acc13ab3f82..51a494b69be8 100644
-> > > --- a/net/vmw_vsock/virtio_transport_common.c
-> > > +++ b/net/vmw_vsock/virtio_transport_common.c
-> > > @@ -1628,8 +1628,11 @@ void virtio_transport_recv_pkt(struct virtio_transport *t,
-> > > 
-> > >  	lock_sock(sk);
-> > > 
-> > > -	/* Check if sk has been closed before lock_sock */
-> > > -	if (sock_flag(sk, SOCK_DONE)) {
-> > > +	/* Check if sk has been closed or assigned to another transport before
-> > > +	 * lock_sock (note: listener sockets are not assigned to any transport)
-> > > +	 */
-> > > +	if (sock_flag(sk, SOCK_DONE) ||
-> > > +	    (sk->sk_state != TCP_LISTEN && vsk->transport != &t->transport)) {
-> > 
-> > If a race scenario with vsock_listen() is added to the existing
-> > race scenario, the patch can be bypassed.
-> > 
-> > In addition to the existing scenario:
-> > ```
-> >                     cpu0                                                      cpu1
-> > 
-> >                                                               socket(A)
-> > 
-> >                                                               bind(A, {cid: VMADDR_CID_LOCAL, port: 1024})
-> >                                                                 vsock_bind()
-> > 
-> >                                                               listen(A)
-> >                                                                 vsock_listen()
-> >  socket(B)
-> > 
-> >  connect(B, {cid: VMADDR_CID_LOCAL, port: 1024})
-> >    vsock_connect()
-> >      lock_sock(sk);
-> >      virtio_transport_connect()
-> >        virtio_transport_connect()
-> >          virtio_transport_send_pkt_info()
-> >            vsock_loopback_send_pkt(VIRTIO_VSOCK_OP_REQUEST)
-> >              queue_work(vsock_loopback_work)
-> >      sk->sk_state = TCP_SYN_SENT;
-> >      release_sock(sk);
-> >                                                               vsock_loopback_work()
-> >                                                                 virtio_transport_recv_pkt(VIRTIO_VSOCK_OP_REQUEST)
-> >                                                                   sk = vsock_find_bound_socket(&dst);
-> >                                                                   virtio_transport_recv_listen(sk, skb)
-> >                                                                     child = vsock_create_connected(sk);
-> >                                                                     vsock_assign_transport()
-> >                                                                       vvs = kzalloc(sizeof(*vvs), GFP_KERNEL);
-> >                                                                     vsock_insert_connected(vchild);
-> >                                                                       list_add(&vsk->connected_table, list);
-> >                                                                     virtio_transport_send_response(vchild, skb);
-> >                                                                       virtio_transport_send_pkt_info()
-> >                                                                         vsock_loopback_send_pkt(VIRTIO_VSOCK_OP_RESPONSE)
-> >                                                                           queue_work(vsock_loopback_work)
-> > 
-> >                                                               vsock_loopback_work()
-> >                                                                 virtio_transport_recv_pkt(VIRTIO_VSOCK_OP_RESPONSE)
-> >                                                                   sk = vsock_find_bound_socket(&dst);
-> >                                                                   lock_sock(sk);
-> >                                                                   case TCP_SYN_SENT:
-> >                                                                   virtio_transport_recv_connecting()
-> >                                                                     sk->sk_state = TCP_ESTABLISHED;
-> >                                                                   release_sock(sk);
-> > 
-> >                                                               kill(connect(B));
-> >      lock_sock(sk);
-> >      if (signal_pending(current)) {
-> >      sk->sk_state = sk->sk_state == TCP_ESTABLISHED ? TCP_CLOSING : TCP_CLOSE;
-> >      sock->state = SS_UNCONNECTED;    // [1]
-> >      release_sock(sk);
-> > 
-> >  connect(B, {cid: VMADDR_CID_HYPERVISOR, port: 1024})
-> >    vsock_connect(B)
-> >      lock_sock(sk);
-> >      vsock_assign_transport()
-> >        virtio_transport_release()
-> >          virtio_transport_close()
-> >            if (!(sk->sk_state == TCP_ESTABLISHED || sk->sk_state == TCP_CLOSING))
-> >            virtio_transport_shutdown()
-> >              virtio_transport_send_pkt_info()
-> >                vsock_loopback_send_pkt(VIRTIO_VSOCK_OP_SHUTDOWN)
-> >                  queue_work(vsock_loopback_work)
-> >            schedule_delayed_work(&vsk->close_work, VSOCK_CLOSE_TIMEOUT);	// [5]
-> >        vsock_deassign_transport()
-> >          vsk->transport = NULL;
-> >        return -ESOCKTNOSUPPORT;
-> >      release_sock(sk);
-> >                                                               vsock_loopback_work()
-> >                                                                 virtio_transport_recv_pkt(VIRTIO_VSOCK_OP_SHUTDOWN)
-> >                                                                   virtio_transport_recv_connected()
-> >                                                                     virtio_transport_reset()
-> >                                                                       virtio_transport_send_pkt_info()
-> >                                                                         vsock_loopback_send_pkt(VIRTIO_VSOCK_OP_RST)
-> >                                                                           queue_work(vsock_loopback_work)
-> >  listen(B)
-> >    vsock_listen()
-> >      if (sock->state != SS_UNCONNECTED)    // [2]
-> >      sk->sk_state = TCP_LISTEN;    // [3]
-> > 
-> >                                                               vsock_loopback_work()
-> >                                                                 virtio_transport_recv_pkt(VIRTIO_VSOCK_OP_RST)
-> > 								   if ((sk->sk_state != TCP_LISTEN && vsk->transport != &t->transport)) {    // [4]
-> > 								   ...
-> > 							
-> >  virtio_transport_close_timeout()
-> >    virtio_transport_do_close()
-> >      vsock_stream_has_data()
-> >        return vsk->transport->stream_has_data(vsk);    // null-ptr-deref
-> > 
-> > ```
-> > (Yes, This is quite a crazy scenario, but it can actually be induced)
-> > 
-> > Since sock->state is set to SS_UNCONNECTED during the first connect()[1],
-> > it can pass the sock->state check[2] in vsock_listen() and set
-> > sk->sk_state to TCP_LISTEN[3].
-> > If this happens, the check in the patch with
-> > `sk->sk_state != TCP_LISTEN` will pass[4], and a null-ptr-deref can
-> > still occur.)
-> > 
-> > More specifically, because the sk_state has changed to TCP_LISTEN,
-> > virtio_transport_recv_disconnecting() will not be called by the
-> > loopback worker. However, a null-ptr-deref may occur in
-> > virtio_transport_close_timeout(), which is scheduled by
-> > virtio_transport_close() called in the flow of the second connect()[5].
-> > (The patch no longer cancels the virtio_transport_close_timeout() worker)
-> > 
-> > And even if the `sk->sk_state != TCP_LISTEN` check is removed from the
-> > patch, it seems that a null-ptr-deref will still occur due to
-> > virtio_transport_close_timeout().
-> > It might be necessary to add worker cancellation at the
-> > appropriate location.
-> 
-> Thanks for the analysis!
-> 
-> Do you have time to cook a proper patch to cover this scenario?
-> Or we should mix this fix together with your patch (return 0 in
-> vsock_stream_has_data()) while we investigate a better handling?
-
-For now, it seems better to merge them together.
-
-It seems that covering this scenario will require more analysis and testing.
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV8PR10MB7822:EE_|PH0PR10MB6434:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6f3e8f49-451c-46fd-d9c0-08dd308e6a18
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?mvnw9t/LAId8K3sYZiI/B6GTkG6Uv0nuPTl3gZGG3NyPk2y+Kr/Jo/ZovOWV?=
+ =?us-ascii?Q?GJOUwyye1ofJJRpNUmYH5Tsxpb34/HGDzhGrsnX7kPVfmVGGkio3J6Ib20gj?=
+ =?us-ascii?Q?BHykbZ/9782/faVbA97LukkStoa7O6QXCznjw/EuThR2pfccb3taH/A7ATg1?=
+ =?us-ascii?Q?jXWP1c33GVIz1WdlfX+eGWuJEOupL4u2EbDH2P4XPCKJh63oOEzcBvfU5EfV?=
+ =?us-ascii?Q?kkNTX32PgYqVgrcawmnNgeE4laqny3vp06aJfvmGCghx9zqCD8ZAFdt+bl8s?=
+ =?us-ascii?Q?Tu5e4ShVqauew3fJ4lX6lC3dZokmr/4u1KLNTmPbon4mxbHr43clDwnTl+9p?=
+ =?us-ascii?Q?n4aH0FompXgJRKjABUo4brOPsmUglSCEB78zYWGly/7IPYwvih5+0PFqwHB8?=
+ =?us-ascii?Q?iPaLE+WKYvXNvD0HhWJG3WMYr/zrI3rGOF2srcxImSUjJCafniUXTHs7+7Xz?=
+ =?us-ascii?Q?o9blqoHJVSC5fnZ/TxFRHaD2DT4flASRKlBai9ojhOopPyosnnk3QyD+uNUg?=
+ =?us-ascii?Q?uzW2PoWCUq8FCjX6zPopSqH19GFtygKqw7q7GEDHwEij067ojAFxFXLIs0Ho?=
+ =?us-ascii?Q?aXsr21w3Qs5WLkJ2gnV01olTG5kWosKvNjuRqkyZUKLDhswbXB5wT99r1BTj?=
+ =?us-ascii?Q?Z0imgEHSyGve8EZPCEJ9CgoobiHKu/sIiq+QHeGl6Zc+bIeMozvrxDj5Cc0Y?=
+ =?us-ascii?Q?Z/7IVeKSueiyxvnOuwpv6hMv2ZxhCqXi/EuIKhd1c8ipmZ8Fgjs59Hw2cxB6?=
+ =?us-ascii?Q?yGvktTjusmIk3m0W5uYkKnN/uzAWhNm4zgdXF/kemGz8fdM6Y/ZOYcWLKlrY?=
+ =?us-ascii?Q?NQqhunxNpJLs6ao49V4+fnDATVexHLeyix9QFs7T6tmpnsJtV8zFMR2Kk2hs?=
+ =?us-ascii?Q?IBHbaEBcJVeYDSZDOCnYJkBXPb9+FAXzDDICNunmJhvD2hbaMTiFpIGAAEDN?=
+ =?us-ascii?Q?Tq/4mEA9HH7gtrS6ZODfmDTg4OrUTtomwX/YRijywXqbdsCu7H1jN7hjXnYG?=
+ =?us-ascii?Q?Oj9sIANMQBTX72ES/ctxKfFrKKMAXTTi35p+9qlOvHaYTApYuBdqGQpqm2I+?=
+ =?us-ascii?Q?gqPa95tkZpjEM/+jzYNCnFhlq9roi1B0QcADsWJUDmRaBDNVao9iyibBMfBv?=
+ =?us-ascii?Q?hqoW2xE0ySKeB70uwfdPiPJwyqWLd3dZLOfyOFhYkDjeztGdiL403+ydmQ6i?=
+ =?us-ascii?Q?5gTkZTIsfSB3CDMZFy6LvBeVlakR2E8GpoY/W0ob9K5M1ga87SCkMXe3YtaW?=
+ =?us-ascii?Q?FtMA0e7nQ5eRkeEiGsDbZFg4lAn9sH7DeoyrNmhwZxFtgJ9Q8XnhgLK0iYgP?=
+ =?us-ascii?Q?A4G2s7rnzEooWKglGNsrHZ+SJ3XXNZC5lgapyN+xxGUPNie+u955a7V2h+Zm?=
+ =?us-ascii?Q?tYQD35yF3WxpiTzTh/to3MiQm6/G?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR10MB7822.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?aDYHh7GlJylnpAK275PM+66vSkcXYag7bFOxceLmK1UEJ+RZiXBul2vZ9rNi?=
+ =?us-ascii?Q?HqU3m8UBaaqOZbNDXr8diMGs9yPkr8wfQv7xQDI0S68wNOFBwgmuIw5/+CKe?=
+ =?us-ascii?Q?1tppuCfMsD0P+l5qltFoNRHMyZJ8WzfW2WcFAjdxbpnGGjsNFCGQvPv/PcUQ?=
+ =?us-ascii?Q?chiOsQhRUO1JH9iU74iAlI1EzgO6MZz6ErTnojzTdqGAHeGugJsVbSAHO2vs?=
+ =?us-ascii?Q?U5A1eccdWnOwhuArYg0Q/EACRTO7Wykz1+NS7v31aemfkGIK35XoT90+3+MV?=
+ =?us-ascii?Q?wvVVZ3yFy2TfV+xpXKzrdlKLKIptXC2MbYh+vEzAL/L+j+6EOJIwI0HOqIw8?=
+ =?us-ascii?Q?UvQV/LsHc+4ObzLBpka6jYqODbSgKPmMMTweePihmyIEh5MrvlVHjyIfGoJf?=
+ =?us-ascii?Q?iNx5omDDFW4Ah3xphR7nppfEECwzav9nfYmktWSU8C+o6GPSy85EuLQPboXC?=
+ =?us-ascii?Q?HwmT7lQ/TZRE76TuSYPlhu8DVke9BP8yOvpw1OWTmFDOlYO7Pv5eJA73Ednb?=
+ =?us-ascii?Q?8bGzlxIkGDURfvD5JA/iLRTsI1nwemqeOHLWEAHC7GqAT3kQzrQGf0bTGtv4?=
+ =?us-ascii?Q?70XXkBFnOZzgfcCoO+mdXvzT3ychSeAMJoVYKNFHJkv0poDa0HiMIETK7vA1?=
+ =?us-ascii?Q?ooG9YeZ+QlCHXpQx/dmK65mtHW8dK26xK78hj3AWTB0KhLnL8f4sBuco2fFq?=
+ =?us-ascii?Q?/4IHUp3TgZQeKCfa5dJBgSGDwnApiESdmYPaMG1oT31kwxdIBiawORs1NpPW?=
+ =?us-ascii?Q?5HZuTV823wBiv6UzMjzhNDwCDyI8oou8iA+mYdFpG8iTbt+0NO8+PanhfOQY?=
+ =?us-ascii?Q?30UsUyWTU0LDJPw/OKv3hRIrUs8XJVCVz/i635dYrj4DgDksh+5zncndIKTX?=
+ =?us-ascii?Q?JuLP+O4B8MmsuuMvLGdRMqGJuTt75N1be2kzumKPi8wg64KRRuh/fBqFeISB?=
+ =?us-ascii?Q?2pSiKrlm4e3KC23KuHW2j0mNkOJuigROxBziKiVMdJgkSjTfrU6UO+lwvxPT?=
+ =?us-ascii?Q?V5BEU5BPVYFRDPvypbAciMrWrgM+NTZ09S4aLSxL55NDV6xIIKz+l+PWU9rY?=
+ =?us-ascii?Q?ly+7XfHEvN/5DerUgCpfePuYWvQCfhmtFvITWLHeLLG9WuAXp7Vk+jj2jp3n?=
+ =?us-ascii?Q?QWcIcBhi75fX4QwOHa1lipkkC5X25j2Ug9CLOYTDp8JENR1Om3F9Yea3hQZb?=
+ =?us-ascii?Q?AendUN7PYtuoewf8BT+wGR+eSpCuZ+fu4mRlcGeN30oKXokWT6y8Xk1iX4Gm?=
+ =?us-ascii?Q?Wj/jnh2UG9WOxdCUlIvzMbDX/Ljzqc9BYR3Jrjvp/zntjQsOTGB0La6OzxsX?=
+ =?us-ascii?Q?M6T3FhuzMZHGmJVf6qf9K1T+bLbRL3uOyglv4kt3EdYrSRYdcnf9kMtvdaLV?=
+ =?us-ascii?Q?LtGbi9l9hHIQbhqHkjHt9VTaN177+3PU9xfSnMcqme/FMB86zh4k9jTfeo76?=
+ =?us-ascii?Q?m48E8TYaSIFk/p6HaqMdiQtfeLeF1obquf9xTcJc6tUYekWLXz8Gs6Fn9ydr?=
+ =?us-ascii?Q?BTeyXhqP3/90ee3RntJ1dp6Es/a/doE4pCx0MqkBcMWnPBI++M7qekbQd0pv?=
+ =?us-ascii?Q?U9SfpLiy8HcN3WGYfHnwHB+kcRopgltL1V/vvEPJCubfGGRIrzg1R0Iom/gI?=
+ =?us-ascii?Q?tg=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	9PfPGOl0z4/eRupBhJPsQks6i8J46JfUvzX1mevkjc4MdADleWq4u2iIOIAa2usBonIgXO4CPWsyEWQtaOsU9hJCOtyeW2DXN4ORNIoTL7HoJgaYgNZVz4XLIpLK304P4Q0IbhT0aimPIXyRK981P5Tu6NvrYbAbPSMymoKiLty8lHD/v99/KQY/keWJOzN88jTz4xnXYmPV/RePFg8fc13OnZvVwS86cPBK0ij+8W4QcV5BBNCFE2ZviOMwbSba5ZDtV7tvdx74KZHLBWxXCXq2fg9dq7ykrdczEfhjoCG2pfE+uJJ7gFaCvgrPUf9WixGAZRCwfUvwyGxhG9w0dPJPdmG/B4Bgs5sWCx1Ji0rUahkN1vIez1/aAAqJcAMfVEv6nOITM2LiUY8+1ZxToSXp6qyv861p+kWrWChR8UAmwv6OQCSQUCZWW9cYQxNtbcaha7pr+YnyG6FxHS13s9z90GidUz/RKBwQ52824FhHtNabc/GcmezTRUcuKKPN46SoW+dtrJvVIgc2l0hfi2SxMXaEbXdjTshR7MxVbe7Kf+DBpyLaRPZW22LhJbASdnajwXzvh8biGc4utCAf0Wci2yU8jYcxuv/UGLCsgXI=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6f3e8f49-451c-46fd-d9c0-08dd308e6a18
+X-MS-Exchange-CrossTenant-AuthSource: LV8PR10MB7822.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2025 09:17:18.1997
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: R09yE8lrMaWBKr1USUCQkQkOACGusFzWVHE9U7e1bAMUoqzgv8F3S1H7Bs11hnVzeDwInaWtOA57io1dr8V+hJbIBxE+E/62EvEdW8otZrI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB6434
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-01-09_03,2025-01-09_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 spamscore=0
+ mlxlogscore=905 bulkscore=0 phishscore=0 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2411120000
+ definitions=main-2501090075
+X-Proofpoint-ORIG-GUID: 36usqsJ-EGphF4GX8PD_6NwaKfjK1YbL
+X-Proofpoint-GUID: 36usqsJ-EGphF4GX8PD_6NwaKfjK1YbL
 
 
-Regards,
-Hyunwoo Kim
+[Resending because I don't think the message reached bpf@vger]
+
+Hello.
+
+I would like to propose an activity for the BPF track at LSFMMBPF.
+
+As in previous editions, the purpose of the activity is to do a quick
+recap of the current BPF support in both GCC and clang/LLVM and where we
+stand, to discuss and clarify any particular issue that may be relevant
+to either compiler, and to collect and address comments, requirements
+and other feedback from the kernel hackers present.
+
+On the GCC BPF side we would like to pay special attention to the topic
+of divergences, as we are nowadays being bugged not so much by missing
+features anymore, as it used to be, but by divergences in the support of
+certain features between GCC and clang.  Some of these divergences are
+trivial to fix just by following clang's behavior as they are found, but
+others require discussion and agreement.  Also, we would like to expand
+a bit the scope of the discussion to cover a few topics related to the
+"environment" where the compiled BPF programs are built.  Examples of
+the later are external linking and the inclusion of host standard
+headers by BPF programs.
+
+Thanks!
 
