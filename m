@@ -1,122 +1,138 @@
-Return-Path: <bpf+bounces-48393-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48394-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7E61A078B6
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 15:11:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E824A078E8
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 15:15:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8339E1887B07
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 14:11:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF8467A4DE4
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 14:14:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F08D21C168;
-	Thu,  9 Jan 2025 14:10:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CDEB219EAD;
+	Thu,  9 Jan 2025 14:14:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ea/ZnCZb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E9D9219A86;
-	Thu,  9 Jan 2025 14:10:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F6062163A1;
+	Thu,  9 Jan 2025 14:14:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736431855; cv=none; b=MUAS9iLGH4sn3DeLFMczW2yN/INMuRnSp52jA5f9bJXdycB7+a3htONfRyMeYeIjitOh7mn8WOiS0mwWK53lhQx/EFn3toNlt6o3BBnjUxY1a7PZJR0ZMK8zXeDdKJQWo7NLymGEvQYafy+iXPPEl5RSN6s6wxffDQ3+LsS7U/4=
+	t=1736432085; cv=none; b=SHr3x+mrkNRBTXdBXiFGIYhLBpRbtDN3S2kziOFbFt4u+WzoF714M7ML+vN6s28eRV+aK3+oWBiwSJ3rYxtOp6OCerUlQrlr5SCCzBz4NtSS6McqKaA+WHncvcjEqgCX4PLT53BaZsCEUjk88+JpDB8aKnSixI+v79vDqFQ7igc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736431855; c=relaxed/simple;
-	bh=hEJtlxk0cShj4W33jcYxmzhl4RoS+4ZzxPnTzu283mU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FDx/U5pqevl5AMREfyN0b7rR4Aol2/jzfKgIYM9kGnsJKVMWvvoAevPq6nthviDSy0TqIajlMkP41XOrevJyatQN42oo4AXOt2Bt32O5yNr07lPFvR81lj+XKIEBqlOYJrZrcvR8OXs1x9PRGmMBKJSqFzMK7HKbXiOQFnzKkc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-aaeecbb7309so196874966b.0;
-        Thu, 09 Jan 2025 06:10:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736431851; x=1737036651;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hEJtlxk0cShj4W33jcYxmzhl4RoS+4ZzxPnTzu283mU=;
-        b=AQ4ZI4qPapWDyyAqGMIcnbtuxxIQ0TB+i54D19WHLPch3yo98KisO37naLMHKtxhL0
-         by1r1d+ysdPlFm/Q+qyxWjcoAFd2Qm7pfxlSorrqF16dj9yionVZgG6rZDXU30wcajds
-         vYZMctWqfx2tb4e3okhvh5RKzGT3VL9EpRujVst996vMx+WfCWDHWlcBr68Xf2CuhfWV
-         FatnLbCAIcRXhtVVqtFUef7w6nGsuIJU+eeny7tyHS4oOWqOuwY2damrEG52MJoZzRFd
-         67LFB0kkRYm2lZVktIq4gi0IVqAOSkavCQ8b5frnG/mUjyiZrAEsyc7V+hmQFvwcOJcj
-         NyGA==
-X-Forwarded-Encrypted: i=1; AJvYcCUrkkdHn5z4Emd6I7749uDsCD79Bka5Mx8jMc5rIoqkfvnF6ppMQOKiybE0W2yVc9UpKdI=@vger.kernel.org, AJvYcCVerpNAymQPex4a8r2EmSautEfTnb3xzgpd1WAdyr9qiw9AFHESg99iSee4qWGAUb+LkeHgAsOWGjZ4qiwX@vger.kernel.org, AJvYcCW4QBMdivDHCI9Sy3n+otKOxqtbs5SpjFW0UkoeUVYZCpPguUvPiN9wiDkHDpErlvpGMXY0hgQAi4cdrk5Aic0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxuNFrUDZpwmlKI25cBBHXdZwRLXjsUvdD4RQ+oo/fhPA/ZpSmJ
-	u+Kt6APAdkj55q5TwhTXl7GutnrZhz5scaR7OfyybmJo01r9nMGVI+m9xDsJGA4=
-X-Gm-Gg: ASbGnctvXYKf+LIGM9OrLruQvcsEfjZD9Sl5skb3B7k8jDKZw8SNsMu4uotHCWyJPd2
-	ELJ0NO7cySq+FhZKm4ZOVuwAyApTb7naNBXDLs6q5xLpHFl+fwJPzkgljkwLwiJkE4mk11nHrpP
-	MPngAF/EcZImUuoZXmVwh8xdYjo035T0ck+h2oXxUXYqFIxV1R6EJgFyDqbxb+EMO/mvrWo7dL4
-	6RrRWbuunCKMyI6tJ6wvVwjNx+29eWtjEyl5slyXOtT/uUzf2RmT3vcclGDn/7tz9EPOYq4473e
-	ALWuoIU/Kv8=
-X-Google-Smtp-Source: AGHT+IEul33jxi0Z8yy4+wvWWYioJq79gbGbThq+Tu3aTZJgWuepMWF1+NHABp0gyfBzxlmf0hcvyQ==
-X-Received: by 2002:a17:907:971e:b0:aa6:18b6:310e with SMTP id a640c23a62f3a-ab2abc93dfbmr512744066b.38.1736431851244;
-        Thu, 09 Jan 2025 06:10:51 -0800 (PST)
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com. [209.85.218.49])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab2c95647absm75000166b.118.2025.01.09.06.10.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Jan 2025 06:10:50 -0800 (PST)
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-aaeecbb7309so196867566b.0;
-        Thu, 09 Jan 2025 06:10:50 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUv1lpznWW5TCmwLtJ4dYsCIzHmU4aHKET8ZwCyb9HtZo4e2YHf2x/Nm5w3UX1uGheP57MwZUmgAP7lEZv4HWM=@vger.kernel.org, AJvYcCV4jCeBzlAhU6qRJeD/XfLLYsZBUp2QiwOm79uUBm6QSGx36iPa0Pa/Z/tTbgTA3E/vRfY=@vger.kernel.org, AJvYcCVztZ1bjz8caTT7BcqqtejXI0VSCw4opKNq3FHAVxUZVoZ2sDomQpM459SXFKzSuAhfdVtxdvaOZ4VGByG5@vger.kernel.org
-X-Received: by 2002:a17:907:3f92:b0:aac:439:10ce with SMTP id
- a640c23a62f3a-ab2ab73e812mr542998066b.27.1736431850207; Thu, 09 Jan 2025
- 06:10:50 -0800 (PST)
+	s=arc-20240116; t=1736432085; c=relaxed/simple;
+	bh=OAdEG1vf8tSr9JU1w/hnRQYfRNA9+KBF3HzkgcAvugM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EAo1dED9pQpmhD5FeePgPQs1Sz8HBPY07fW+HfgACjKjUORnmY+BJjUrntmm3vKz3pQIzI33yaL2nHFTIe8RLPYrfVVIOH6W30X7fA6sxoCo8UrdX+WoNMzvCPij1SKaw0PIRlGLrIhAjzKel6hQSqTMwhiTopbCGZPhUC5M+bM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ea/ZnCZb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C86EC4CED2;
+	Thu,  9 Jan 2025 14:14:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736432085;
+	bh=OAdEG1vf8tSr9JU1w/hnRQYfRNA9+KBF3HzkgcAvugM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ea/ZnCZb8SFKO7JjTGqfYY6Hl893I04+qF/Lr0JxAv7HGgZtKfs7AtxuBy57TiD/q
+	 9T3YTWJYonIyDW2jkJQ+HkcrALc/NXl8//nXgoUx+fcy1sYzaoi1a8k+FYG5Uc2dW4
+	 POP7KI8zFJVcov2k1tfsE9VT87R50XcmDq++TQTrz/ZYtciocOucJACHIPH185THZd
+	 3NuZEGaNiUWYqZaNFbCcyHEm7+WH+WN9wGhXvB2VMF0mvbw5GqKZpJQyBGATyd4xIr
+	 Nu/FqLu0oCQBktsMnGbvWL6/QdnaJh455bBUBuNem5ARO0rEAIrbCQBOPtP2IEaptQ
+	 +Wymz8Ch0a0UQ==
+From: Jiri Olsa <jolsa@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>
+Cc: Max Makarov <maxpain@linux.com>,
+	bpf@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH] uprobes: Fix race in uprobe_free_utask
+Date: Thu,  9 Jan 2025 15:14:40 +0100
+Message-ID: <20250109141440.2692173-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250108-rust-btf-lto-incompat-v1-1-60243ff6d820@google.com> <CANiq72=XD3AfZp=jKNkKLs8PYCBuk2Jm6tbQB2QtbqkieAtm8Q@mail.gmail.com>
-In-Reply-To: <CANiq72=XD3AfZp=jKNkKLs8PYCBuk2Jm6tbQB2QtbqkieAtm8Q@mail.gmail.com>
-From: Neal Gompa <neal@gompa.dev>
-Date: Thu, 9 Jan 2025 09:10:12 -0500
-X-Gmail-Original-Message-ID: <CAEg-Je8YdqYFMiUK7enjusTjMhRMWTbL837x7-qQbi4LkcRcLw@mail.gmail.com>
-X-Gm-Features: AbW1kvYKQVgwIEm3Rkr1-n2lgv6HpJpoRuMjqUsCsXCPawWuSZJztOcamHNPMWQ
-Message-ID: <CAEg-Je8YdqYFMiUK7enjusTjMhRMWTbL837x7-qQbi4LkcRcLw@mail.gmail.com>
-Subject: Re: [PATCH] rust: Disallow BTF generation with Rust + LTO
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: Matthew Maurer <mmaurer@google.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	Gary Guo <gary@garyguo.net>, =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@kernel.org>, 
-	Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>, linux-kernel@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, Matthias Maennich <maennich@google.com>, 
-	bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Eric Curtin <ecurtin@redhat.com>, Martin Reboredo <yakoyoku@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 9, 2025 at 8:17=E2=80=AFAM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
->
-> On Thu, Jan 9, 2025 at 12:35=E2=80=AFAM Matthew Maurer <mmaurer@google.co=
-m> wrote:
-> >
-> > The kernel cannot currently self-parse BTF containing Rust debug
-> > information. pahole uses the language of the CU to determine whether to
-> > filter out debug information when generating the BTF. When LTO is
-> > enabled, Rust code can cross CU boundaries, resulting in Rust debug
-> > information in CUs labeled as C. This results in a system which cannot
-> > parse its own BTF.
->
-> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
->
-> as well as BPF/BTF, plus others that may be using or were involved
-> with the right-hand side of the condition.
->
+Max Makarov reported kernel panic [1] in perf user callchain code.
 
-Do we have cases where something is a mix of C and Rust? I thought all
-our Linux Rust code was self-contained?
+The reason for that is the race between uprobe_free_utask and bpf
+profiler code doing the perf user stack unwind and is triggered
+within uprobe_free_utask function:
+  - after current->utask is freed and
+  - before current->utask is set to NULL
 
+ general protection fault, probably for non-canonical address 0x9e759c37ee555c76: 0000 [#1] SMP PTI
+ RIP: 0010:is_uprobe_at_func_entry+0x28/0x80
+ ...
+  ? die_addr+0x36/0x90
+  ? exc_general_protection+0x217/0x420
+  ? asm_exc_general_protection+0x26/0x30
+  ? is_uprobe_at_func_entry+0x28/0x80
+  perf_callchain_user+0x20a/0x360
+  get_perf_callchain+0x147/0x1d0
+  bpf_get_stackid+0x60/0x90
+  bpf_prog_9aac297fb833e2f5_do_perf_event+0x434/0x53b
+  ? __smp_call_single_queue+0xad/0x120
+  bpf_overflow_handler+0x75/0x110
+  ...
+  asm_sysvec_apic_timer_interrupt+0x1a/0x20
+ RIP: 0010:__kmem_cache_free+0x1cb/0x350
+ ...
+  ? uprobe_free_utask+0x62/0x80
+  ? acct_collect+0x4c/0x220
+  uprobe_free_utask+0x62/0x80
+  mm_release+0x12/0xb0
+  do_exit+0x26b/0xaa0
+  __x64_sys_exit+0x1b/0x20
+  do_syscall_64+0x5a/0x80
 
+It can be easily reproduced by running following commands in
+separate terminals:
 
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+  # while :; do bpftrace -e 'uprobe:/bin/ls:_start  { printf("hit\n"); }' -c ls; done
+  # bpftrace -e 'profile:hz:100000 { @[ustack()] = count(); }'
+
+Fixing this by making sure current->utask pointer is set to NULL
+before we start to release the utask object.
+
+[1] https://github.com/grafana/pyroscope/issues/3673
+Reported-by: Max Makarov <maxpain@linux.com>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ kernel/events/uprobes.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index fa04b14a7d72..5d71ef85420c 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -1915,6 +1915,7 @@ void uprobe_free_utask(struct task_struct *t)
+ 	if (!utask)
+ 		return;
+ 
++	t->utask = NULL;
+ 	WARN_ON_ONCE(utask->active_uprobe || utask->xol_vaddr);
+ 
+ 	timer_delete_sync(&utask->ri_timer);
+@@ -1924,7 +1925,6 @@ void uprobe_free_utask(struct task_struct *t)
+ 		ri = free_ret_instance(ri, true /* cleanup_hprobe */);
+ 
+ 	kfree(utask);
+-	t->utask = NULL;
+ }
+ 
+ #define RI_TIMER_PERIOD (HZ / 10) /* 100 ms */
+-- 
+2.47.0
+
 
