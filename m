@@ -1,119 +1,94 @@
-Return-Path: <bpf+bounces-48409-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48410-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF1E1A07C65
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 16:50:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6B14A07C83
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 16:52:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49D7C188C5DF
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 15:50:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29FFE3A8C0B
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2025 15:52:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E2BA21D5B1;
-	Thu,  9 Jan 2025 15:50:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 162EE2206A6;
+	Thu,  9 Jan 2025 15:51:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MJYEzDXd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F9BSlQcx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3ACB14D6F9;
-	Thu,  9 Jan 2025 15:50:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 335FF14D6F9;
+	Thu,  9 Jan 2025 15:51:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736437830; cv=none; b=FepSqzbYFoHh0LPOLFyg1F9W5ezER9VcQNBCWysLJpsG5EnIXDrygOnphKnGfnBE9TbnWRs6MRm+QZd8D3i6+ZaGht0v0gYCazo9sNjXHEu3jN5JgYcij80hcfDnA8nrocRYGS+NeWgIb5vvQrfuXzENA4ELow52L1FOt6HF9Rw=
+	t=1736437915; cv=none; b=d9ztAOH0Zjh0rdtneZoSzI5RZMwyxkw3a+pN0Cr0ABmJC3Ho39865ogbb+lkmcGeTvq5Gah6lDuFTbPSv4ylR6yWormBwItXVUkr9vR/maMRRDScB/X/fzncEbbiShMkk0a+hHdiK1EHKwZMWSLEZTvrGwQ461ddE55WVV5QreU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736437830; c=relaxed/simple;
-	bh=Ehi9a4Uylv/Rj5KQiKGMBxE57StjpnAgHmDUjKo73rY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rc+Wu37pOlavFhauFkPolv2hEUv9BABaNIMhD3wBwGNwndZocOzslirgHLagg3Q6wgDDeXlT2fFt3rXBVTtd3G4Pz7sElkcoJkgytdavWaHVAjOEVjv/FlJ65Fy95+YZUMNT2FPW1/XKriz5DlfgaMLFuRNRLbbn6vTL1XOO004=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MJYEzDXd; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-30225b2586cso19790741fa.0;
-        Thu, 09 Jan 2025 07:50:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736437826; x=1737042626; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ehi9a4Uylv/Rj5KQiKGMBxE57StjpnAgHmDUjKo73rY=;
-        b=MJYEzDXdY0joSPebhdiQNnQhmCl5z+IuBig8aG0B0LY4sN/USTbbuB/ouvfWZZ3chb
-         KBRRO5vAf7zcyDdEYUIy27lWuRMCo5GBCoc2D3N5mgrbZS1g2HUvnZEwhwmSjk8Z60y+
-         V80q+Rxbzu7JCbj5H3RfoFHqrUNpdIL3mBeisi+qSPkBcFfDKc+atT1jBO7y+X9Q2qSx
-         6zUWvZFrWb24qK5ie8f0iDSMS9zS9W6bVG08/CIhdyY6aW1bio9bk31dUViFkVz9Fsao
-         xGU52hB2wGlUep1U0YMf7xoEejTCV/oL7W+XLBxgBmcKxdJ8GzefKcmGcij6BO902L38
-         AI9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736437826; x=1737042626;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ehi9a4Uylv/Rj5KQiKGMBxE57StjpnAgHmDUjKo73rY=;
-        b=Iu3Ult7e6zFf5/tRbULjJ9QDsEPUQPrVw2CkFcwGBYk+Bi6Y825C+iSxBFJw9cDYpx
-         RENQx/aNheMtiQTjASxVrGXMhE/toCUJT4Cycum9Ktx6bVCO5kgJ/f1GPC9d0DpoZRQi
-         ogr9bMk5dWZ8EIsfjtlRTibRzChFAvYWXsJ3/gykHnv38jGt1M5T2oe8r5DWwOTfOw5P
-         zcUKBdh5pXRwwtI3cAcBi28CX4TkQAzq3PahCx+2qHjjArMtWxmk5zFJd1vXqTCsGw1o
-         L8s52eR8GM+hpLAtXZy8roulzlB8TXkK7gpsUwZISBx4JmWEBdi18VVdVsq6HTnhzcIW
-         C+Ww==
-X-Forwarded-Encrypted: i=1; AJvYcCUjZPt9uIQuK0gvOsy18xJL7okGr0/0KGB7D6uzV8qZ3qnzYRhAWZqpkHpQegVrxKAyxGCak3LYsiYt+fGP+RY=@vger.kernel.org, AJvYcCVRGS98KcuzK3JIhkjABh8GiEcpJAeb9Mk8xZqUufda1QFd+JzlyTefdY4N5Ds70vu+PBsvdFEWCehuSAVo@vger.kernel.org, AJvYcCXvXpe887lL2ScMF7wD+59gQjlcdPgAf2sOqodpxiBYPYSdgopFICeN6VahD6xKCLtaR9o=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzoMnUk05HJDAieJOg4pXRqQhS9O5BO2rCbQn2t7hz2iJ4XLcDP
-	6fYxccNPTIJi15CGCd9z5JKZDbce7afbLX9sflt6JVDUqYDgTIl+4G0Cc+TekTsijhM9C7h9l7T
-	xxMBaXAqjc6PUKhWK1Z5h7GjckN8=
-X-Gm-Gg: ASbGnct2wGIMvYmqZdU31+O1OungNmuRlAI9Jbnmj6Qj95qGKuLmLg9j8Er5U/hN4bb
-	IQu29vzBrzxVy0m3E2VxiBsjHOo1JcLJyXKDAkIVURJQibQFfkGzFGA==
-X-Google-Smtp-Source: AGHT+IFarG2d8/1jQ8Q0zyrkrOLsaozut5AvYC2nOG8QuBld+JIEwhKUaPAKITernxH0wcrSKwHc1lzi75tMfbs72zQ=
-X-Received: by 2002:a05:651c:2115:b0:2ff:df01:2b4c with SMTP id
- 38308e7fff4ca-305fedba370mr9070591fa.4.1736437825914; Thu, 09 Jan 2025
- 07:50:25 -0800 (PST)
+	s=arc-20240116; t=1736437915; c=relaxed/simple;
+	bh=4PNW5U1RCpwSI6ed5qCmkDfjxSB39XjXAAnaje7o+L4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YgSL0Pd1nJaFdW1GYTicH/Ycjm7wc6v4pyxm1j4g2r5erQdKrVE5oZ1LR1g8lyXY1/k4fS1BxUXKDh7bo6FvvhgUXId5cuRly7PLukaUcgfAOCrvM5b6uc2hYuvspIeaWnmbm4XPghEv2r3h9eDCfNT3Gr4OaqAfx1vGvdzM2aA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F9BSlQcx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07E5AC4CED2;
+	Thu,  9 Jan 2025 15:51:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736437915;
+	bh=4PNW5U1RCpwSI6ed5qCmkDfjxSB39XjXAAnaje7o+L4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=F9BSlQcxUU/kvrDz8ezVoOO+s/YBhBI99DBGbLdRbteRKBcsdBNKhfA6NIrkjDYkC
+	 9GtrmQ7VK0dv7qDBCLFFprwhk5flkxmRl+V2FYyKWlDlaQk5dy/y43RuJc1rAObSVE
+	 sl7FszvwCJ3ZWmJ3LwoRXHehBmq48TqQ4/nOFcPMPAGWGxlPfP39p5Evt4580Qxykh
+	 T6IreW5JxdI40u2aiQRRvDdYRS5jpPoTlnD0T3RTnaN10Mg41YwaqUaSESqRhF+j/w
+	 8yWPU7z9RguVCtFoKzz3OeFzncyxzknkL/0P6P7tlQkSO/uCgw6CAfTy6ch0j+etXR
+	 6KWhdTwfzx9bw==
+Date: Thu, 9 Jan 2025 07:51:54 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Joel Granados <joel.granados@kernel.org>
+Cc: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+	Kees Cook <kees@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org,
+	openipmi-developer@lists.sourceforge.net,
+	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	intel-xe@lists.freedesktop.org, linux-hyperv@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-raid@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org,
+	xen-devel@lists.xenproject.org, linux-aio@kvack.org,
+	linux-fsdevel@vger.kernel.org, netfs@lists.linux.dev,
+	codalist@coda.cs.cmu.edu, linux-mm@kvack.org,
+	linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+	fsverity@lists.linux.dev, linux-xfs@vger.kernel.org,
+	io-uring@vger.kernel.org, bpf@vger.kernel.org,
+	kexec@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org, apparmor@lists.ubuntu.com,
+	linux-security-module@vger.kernel.org, keyrings@vger.kernel.org
+Subject: Re: [PATCH] treewide: const qualify ctl_tables where applicable
+Message-ID: <20250109155154.GP1306365@frogsfrogsfrogs>
+References: <20250109-jag-ctl_table_const-v1-1-622aea7230cf@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250108-rust-btf-lto-incompat-v1-1-60243ff6d820@google.com>
- <CANiq72=XD3AfZp=jKNkKLs8PYCBuk2Jm6tbQB2QtbqkieAtm8Q@mail.gmail.com>
- <CAEg-Je8YdqYFMiUK7enjusTjMhRMWTbL837x7-qQbi4LkcRcLw@mail.gmail.com>
- <CAH5fLghtCure3EjN-hRx9PT=10_E+0MNbjFACT_v+P1StWELPQ@mail.gmail.com>
- <CAJ-ks9nYSssBsiJCQRkKoXwmAizeH1A91RzGvX6iTJAFJD2YrA@mail.gmail.com> <Z3_vhR_QMaK0Klly@x1>
-In-Reply-To: <Z3_vhR_QMaK0Klly@x1>
-From: Tamir Duberstein <tamird@gmail.com>
-Date: Thu, 9 Jan 2025 10:49:49 -0500
-X-Gm-Features: AbW1kvYSSEdIIUxw8mhsL76J6igRsjJNlCMvVxjAVQ7lFupMXPeLlPzxUUY9cYE
-Message-ID: <CAJ-ks9k23fKauY6JFt37OEewKPLhwdQaOFz19BKekqUoRhJCkA@mail.gmail.com>
-Subject: Re: [PATCH] rust: Disallow BTF generation with Rust + LTO
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Alice Ryhl <aliceryhl@google.com>, Neal Gompa <neal@gompa.dev>, 
-	Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, Matthew Maurer <mmaurer@google.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@kernel.org>, 
-	Trevor Gross <tmgross@umich.edu>, linux-kernel@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, Matthias Maennich <maennich@google.com>, 
-	bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Eric Curtin <ecurtin@redhat.com>, Martin Reboredo <yakoyoku@gmail.com>, 
-	Alessandro Decina <alessandro.d@gmail.com>, Michal Rostecki <vadorovsky@protonmail.com>, 
-	Dave Tucker <dave@dtucker.co.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250109-jag-ctl_table_const-v1-1-622aea7230cf@kernel.org>
 
-On Thu, Jan 9, 2025 at 10:47=E2=80=AFAM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> I was thinking about it after reading this thread yesterday, i.e. we
-> could encode constructs from Rust that can be represented in BTF and
-> skip the ones that can't, pruning types that depend on non BTF
-> representable types, etc.
+On Thu, Jan 09, 2025 at 02:16:39PM +0100, Joel Granados wrote:
+> Add the const qualifier to all the ctl_tables in the tree except the
+> ones in ./net dir. The "net" sysctl code is special as it modifies the
+> arrays before passing it on to the registration function.
+> 
+> Constifying ctl_table structs will prevent the modification of
+> proc_handler function pointers as the arrays would reside in .rodata.
+> This is made possible after commit 78eb4ea25cd5 ("sysctl: treewide:
+> constify the ctl_table argument of proc_handlers") constified all the
+> proc_handlers.
 
-Yep, this is what bpf-linker does, along with some other things[0]. I
-highly recommend reading the code I linked to avoid re-discovering
-these things.
+Sounds like a good idea,
+Reviewed-by: "Darrick J. Wong" <djwong@kernel.org> # xfs
 
-[0] https://github.com/aya-rs/bpf-linker/commit/1007ec7fed03562eb7d08f3e752=
-1094a7e698b95
+--D
 
