@@ -1,158 +1,155 @@
-Return-Path: <bpf+bounces-48514-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48515-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFE6DA08646
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 05:45:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E8AF9A08662
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 06:14:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9253D7A3E9F
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 04:44:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B26A7A2184
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 05:14:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B77FA2063C1;
-	Fri, 10 Jan 2025 04:44:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EB892046A5;
+	Fri, 10 Jan 2025 05:13:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VUWqwRsP"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="szFK2ulW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB0111FE452
-	for <bpf@vger.kernel.org>; Fri, 10 Jan 2025 04:44:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F849204C2A
+	for <bpf@vger.kernel.org>; Fri, 10 Jan 2025 05:13:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736484294; cv=none; b=NKljd80IEt9e9QNLQWwe+YZI6sB6XsaFI9P9jRzj+vLoteUJZvPbtLj55v0NbAWDUL7GMCvoN/F3R1wsi+0Z0aNozEN8KnyqwKGH5YukfSLVz3Sfaq0SM71GH4pdWcHRnpwYSDFXvBeJUjdyFoE3qishNa+J2rRQpUshfBu2uTw=
+	t=1736486038; cv=none; b=JSw1NKGXkCAEhi2Pc0FUoo3PchR0VpNXOQfsyyc4Q9kBDQG3F1umGSxe6kicn3xABec5Cw+SI3v3eIKGuwDeEujL6zx13zpsYsGHIdG2cK10IkzaH7tB4SPQE6GYD97gDzLag8aQDAof1IQTcphu4zSGrPSHnPjTfVKXDP/gcpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736484294; c=relaxed/simple;
-	bh=rhc9WoBcCrj3Xv6WbD4jAxuacJRXfXMgdndMFT/i/SA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LLwXMx6sK9/+USvPVnnBP/X/rMN8eDuZ6ib4H8SxWIcU24jWrwk2cPgxYXbVs2THeHSvXxZFWNCx1b2pBD3BAWsY5wQL99qJFaka07p4gv2n/yBOhlwnE3Z/A+zbMfzpzM2s+tbrHA5wLF3sxRja/CNIJ/IewGQ3HwJemSWECek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VUWqwRsP; arc=none smtp.client-ip=209.85.166.180
+	s=arc-20240116; t=1736486038; c=relaxed/simple;
+	bh=slXJnd44zykQM6Ny+pdk7SNyYIz26u28jByG4PgsBrk=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=OBR2BQValYM9MhqQNjKMDM7wZ8YX+Rtu41SWu5PF2PKb1jKs9O628X7kEmJoht2zVwGLoG+iYbWoN0ugvpDln3Y1XgQdYLSI+U5YlZBR3iUSlv2HWB7kwRP743WsPGEQdP4/U3NlVh724pdAHTKHO+d0TzemPkYHY6uZ+oUtaNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ctshao.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=szFK2ulW; arc=none smtp.client-ip=209.85.214.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-3a815a5fb60so82475ab.0
-        for <bpf@vger.kernel.org>; Thu, 09 Jan 2025 20:44:52 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ctshao.bounces.google.com
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-2178115051dso31373825ad.1
+        for <bpf@vger.kernel.org>; Thu, 09 Jan 2025 21:13:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1736484292; x=1737089092; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rhc9WoBcCrj3Xv6WbD4jAxuacJRXfXMgdndMFT/i/SA=;
-        b=VUWqwRsPQpQBfN5lXN+2gaGa4wzJZeoYkXuoi9MJ3Eimn/1lxUpyWk/oCmohChFNrV
-         a/IuBNuyEAHTqDWoS1+1iEgAzbbAtfS02ACD8P+J5W9+lzFfyxQ0TR/kg8kmSajvcUhl
-         LpqpJ7vw0Ed9lSvvT0jHoREW+iXoqdLbBK3MPRdqbLbg6VTgBGUuI5mLUg3Xz/26C+P9
-         JnNh2q1EPGDEVcK4GII2AcGkUc6ZWmL3ErA6qmEQSJFrIptXY2955oP5RasFNx8xOXBg
-         Nca/OZZP0/manE7ZFmOklvdTQhOIbCnR1PwHXNoP/p+XnCpwYimdD03Xpp529gaxESKh
-         p5Lw==
+        d=google.com; s=20230601; t=1736486036; x=1737090836; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=blP3qUW1zAZ81VuDJCt7lJik7KORrQPlPvK969LS39g=;
+        b=szFK2ulWR1XP4+36ud3AZ+6KjangZg4FygIrP/gAIJryUT4ySgjiCKiMd9XsQGbdKh
+         +WjtEZ5oII9ztADzF+iyJimxocU9jwCHw48/Kv2RCBzzSLrVaJO0Y+oWyjauwbC1+w+p
+         nPKkeFYh7RnL6SKVoVdxJPEMfwdLXF6uurl9WIjoLc+S28yaLu6OKJmd62xG3fnWiL5F
+         C9PKn6wFn/UheD9SLAg/7dsDs5OjIQ3NJzSPvYcuWAgWeoCaDLCLS7zD22y/Kwh3l3y+
+         swgDgWVafSRut4VlLQl3Y/1JTl3YFH91qre7tW57ibjEhIGgtGRy5gYoXBXBLlHkKv0D
+         Eneg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736484292; x=1737089092;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rhc9WoBcCrj3Xv6WbD4jAxuacJRXfXMgdndMFT/i/SA=;
-        b=YuUeklUyxnzAGnYeMk77KDM++T/eg+kAwEhrGN1M1kzZurBqrpjfcK7tBWn/ROAhDE
-         1neLMNfIHVAPdYCIF9AcVjldSq7v/4hxiCgMsvDI+8kl6WV5z1E0sQcttOGC/E3EZCso
-         8EVCcKF0U3TRbB7C2kz/BYevSoIc+OPMuFk3/lG3LMCQ5Y7cYjJN8ElgT8uq8YfWMzck
-         jAJpaIVFIwYyZpT7WAd/mDodSsOIX8XWPNl9noNtXsQg+pQiI+BeC5ge7JqLBoNDx55e
-         OzsCRHJCSnB9x+OpihHMHEJyrxzObw3mQyAfR0k1JCczn5ZmWHItanuLx71dXdQkSosj
-         AHng==
-X-Forwarded-Encrypted: i=1; AJvYcCUUtkvWAbe3af4Zw75HlQqJTvyuxGlwfxInVNnvBI74LKMYVSWHwEVCIr0ZJvvPMfC5zDw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwUc1SuW3BPyxLUI5Hco6GVBaOJGbnZuPDQwSHGqj6QukpRCKhD
-	B4S815D5wvyQmjgMeqDc4qSNIcJSz7LctcwB+MiYctPeU1gRdQ71Z6KKJGiPxG6B/PqB6YDJk9E
-	Lvrvf48feuiyLD/A3CMaOYHk1ByGyDyCtm7PF
-X-Gm-Gg: ASbGnctwN1/yT7Fzsn5G1T0JDLbY3tKl74MdZ9yCiABlsttdcndSfdSr5xDMfgcYQLF
-	1dsiYyWSq9YwB8EoCdHjTBE70FvriZTPmFWQrIiQ=
-X-Google-Smtp-Source: AGHT+IHgBTic5uczvh33A44/10usj/9leA+TWY4Mw590l5OXMqFj7OBGqzZvOu0Le88oZP6mKnGbJzVnLarQPWsieUs=
-X-Received: by 2002:a05:6e02:2165:b0:3a7:6edb:a87f with SMTP id
- e9e14a558f8ab-3ce56c22a8dmr1971555ab.6.1736484291604; Thu, 09 Jan 2025
- 20:44:51 -0800 (PST)
+        d=1e100.net; s=20230601; t=1736486036; x=1737090836;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=blP3qUW1zAZ81VuDJCt7lJik7KORrQPlPvK969LS39g=;
+        b=IrWulKY5SFCHKkQxVUBLEF1W2kjRXPAziZQcX0sa9QUf0ZWYfJIkbhfYEeLInmFdJN
+         7dMyQ5lZJGY5cxkQ7tLRjmMNN67zvIx6p9lQoztCvacomwz/hxZXYB+95qCAnLuV2NeC
+         4SuWKTu5LeAowwI0hz9cCX/8/vnbIEnBPguCF6NvnQ+uF0x51rac4VPWZZLs9UKK8g3/
+         J2xffNRJiM+n0lGXPivgdLtehfW/Vhh1XUywLnJOUpAmswfcxvbpVMj5GT3ASPkzyNlJ
+         bAykxhtZNrQmikBJCs73y5pXdMNS4+Lhco2slDSqZo5amTXOF/Of2iyWCW7jPI5AX3H9
+         WFKA==
+X-Forwarded-Encrypted: i=1; AJvYcCWYW4jZc5YGjQ4ronuVkXmygg6y3HC//DDaxknCwcVDOXfTwyFS9Zqrd0FVGbd9+gp4FPM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzn0vMcsK8ZUVaZ+XWTtfkhRutlfyYN+/lhnJusp3xTDQNt0BIJ
+	M239Dy5cx+F7CSSAE6QOvfGTe9AjQTIbxZYIqENUgiWrvxruT8hxuj9ZVdJi+Fm8DM6HT6RfVQX
+	0Vw==
+X-Google-Smtp-Source: AGHT+IH0Ei5gmc9/UKfOPVRdw1TevO8tp0MWg7nqnILImIxo9F7p5b2S63f7075CvI1N+QUliiIkh+qyPHA=
+X-Received: from pfbcz5.prod.google.com ([2002:aa7:9305:0:b0:72a:bc6b:89ad])
+ (user=ctshao job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a20:244d:b0:1d9:fbc:457c
+ with SMTP id adf61e73a8af0-1e88d0a4770mr16871431637.36.1736486036508; Thu, 09
+ Jan 2025 21:13:56 -0800 (PST)
+Date: Thu,  9 Jan 2025 21:11:40 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250109222109.567031-1-irogers@google.com> <20250109222109.567031-4-irogers@google.com>
- <Z4B279zu_8Kz5N6u@google.com>
-In-Reply-To: <Z4B279zu_8Kz5N6u@google.com>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 9 Jan 2025 20:44:38 -0800
-X-Gm-Features: AbW1kvbUzsdIQK4Em_2EoveZDwRfmIi5IlVOp3G93xJpjZVLLtz2riQb_Xue4jQ
-Message-ID: <CAP-5=fUSfbZGNaUttM3UCzcrMzkkFAJVA8mheMKQ0nxNH_KuTg@mail.gmail.com>
-Subject: Re: [PATCH v5 3/4] perf record: Skip don't fail for events that don't open
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	James Clark <james.clark@linaro.org>, Ze Gao <zegao2021@gmail.com>, 
-	Weilin Wang <weilin.wang@intel.com>, Dominique Martinet <asmadeus@codewreck.org>, 
-	Jean-Philippe Romain <jean-philippe.romain@foss.st.com>, Junhao He <hejunhao3@huawei.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, Aditya Bodkhe <Aditya.Bodkhe1@ibm.com>, Leo Yan <leo.yan@arm.com>, 
-	Atish Patra <atishp@rivosinc.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.47.1.688.g23fc6f90ad-goog
+Message-ID: <20250110051346.1507178-1-ctshao@google.com>
+Subject: [PATCH 0/4] perf lock: Tracing contention lock owner call stack
+From: Chun-Tse Shao <ctshao@google.com>
+To: linux-kernel@vger.kernel.org
+Cc: Chun-Tse Shao <ctshao@google.com>, peterz@infradead.org, mingo@redhat.com, 
+	acme@kernel.org, namhyung@kernel.org, mark.rutland@arm.com, 
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com, 
+	adrian.hunter@intel.com, kan.liang@linux.intel.com, 
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 9, 2025 at 5:25=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> On Thu, Jan 09, 2025 at 02:21:08PM -0800, Ian Rogers wrote:
-> > Whilst for many tools it is an expected behavior that failure to open
-> > a perf event is a failure, ARM decided to name PMU events the same as
-> > legacy events and then failed to rename such events on a server uncore
-> > SLC PMU. As perf's default behavior when no PMU is specified is to
-> > open the event on all PMUs that advertise/"have" the event, this
-> > yielded failures when trying to make the priority of legacy and
-> > sysfs/json events uniform - something requested by RISC-V and ARM. A
-> > legacy event user on ARM hardware may find their event opened on an
-> > uncore PMU which for perf record will fail. Arnaldo suggested skipping
-> > such events which this patch implements. Rather than have the skipping
-> > conditional on running on ARM, the skipping is done on all
-> > architectures as such a fundamental behavioral difference could lead
-> > to problems with tools built/depending on perf.
-> >
-> > An example of perf record failing to open events on x86 is:
-> > ```
-> > $ perf record -e data_read,cycles,LLC-prefetch-read -a sleep 0.1
-> > Error:
-> > Failure to open event 'data_read' on PMU 'uncore_imc_free_running_0' wh=
-ich will be removed.
-> > The sys_perf_event_open() syscall returned with 22 (Invalid argument) f=
-or event (data_read).
-> > "dmesg | grep -i perf" may provide additional information.
-> >
-> > Error:
-> > Failure to open event 'data_read' on PMU 'uncore_imc_free_running_1' wh=
-ich will be removed.
-> > The sys_perf_event_open() syscall returned with 22 (Invalid argument) f=
-or event (data_read).
-> > "dmesg | grep -i perf" may provide additional information.
-> >
-> > Error:
-> > Failure to open event 'LLC-prefetch-read' on PMU 'cpu' which will be re=
-moved.
-> > The LLC-prefetch-read event is not supported.
-> > [ perf record: Woken up 1 times to write data ]
-> > [ perf record: Captured and wrote 2.188 MB perf.data (87 samples) ]
->
-> I'm afraid this can be too noisy.
+For perf lock contention, the current owner tracking (-o option) only
+works with per-thread mode (-t option). Enabling call stack mode for
+owner can be useful for diagnosing why a system running slow in
+lock contention.
 
-The intention is to be noisy:
-1) it matches the existing behavior, anything else is potentially a regress=
-ion;
-2) it only happens if trying to record on a PMU/event that doesn't
-support recording, something that is currently an error and so we're
-not motivated to change the behavior as no-one should be using it;
-3) for the wildcard case the only offender is ARM's SLC PMU and the
-appropriate fix there has always been to make the CPU cycle's event
-name match the bus_cycles event name by calling it cpu_cycles -
-something that doesn't conflict with a core PMU event name, the thing
-that has introduced all these problems, patches, long email exchanges,
-unfixed inconsistencies, etc.. If the errors aren't noisy then there
-is little motivation for the ARM SLC PMU's event name to be fixed.
+Example output:
+  $ sudo ~/linux/tools/perf/perf lock con -abvo -Y mutex-spin -E16 perf bench sched pipe
+   ...
+   contended   total wait     max wait     avg wait         type   caller
 
-Thanks,
-Ian
+         171      1.55 ms     20.26 us      9.06 us        mutex   pipe_read+0x57
+                          0xffffffffac6318e7  pipe_read+0x57
+                          0xffffffffac623862  vfs_read+0x332
+                          0xffffffffac62434b  ksys_read+0xbb
+                          0xfffffffface604b2  do_syscall_64+0x82
+                          0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
+          36    193.71 us     15.27 us      5.38 us        mutex   pipe_write+0x50
+                          0xffffffffac631ee0  pipe_write+0x50
+                          0xffffffffac6241db  vfs_write+0x3bb
+                          0xffffffffac6244ab  ksys_write+0xbb
+                          0xfffffffface604b2  do_syscall_64+0x82
+                          0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
+           4     51.22 us     16.47 us     12.80 us        mutex   do_epoll_wait+0x24d
+                          0xffffffffac691f0d  do_epoll_wait+0x24d
+                          0xffffffffac69249b  do_epoll_pwait.part.0+0xb
+                          0xffffffffac693ba5  __x64_sys_epoll_pwait+0x95
+                          0xfffffffface604b2  do_syscall_64+0x82
+                          0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
+           2     20.88 us     11.95 us     10.44 us        mutex   do_epoll_wait+0x24d
+                          0xffffffffac691f0d  do_epoll_wait+0x24d
+                          0xffffffffac693943  __x64_sys_epoll_wait+0x73
+                          0xfffffffface604b2  do_syscall_64+0x82
+                          0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
+           1      7.33 us      7.33 us      7.33 us        mutex   do_epoll_ctl+0x6c1
+                          0xffffffffac692e01  do_epoll_ctl+0x6c1
+                          0xffffffffac6937e0  __x64_sys_epoll_ctl+0x70
+                          0xfffffffface604b2  do_syscall_64+0x82
+                          0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
+           1      6.64 us      6.64 us      6.64 us        mutex   do_epoll_ctl+0x3d4
+                          0xffffffffac692b14  do_epoll_ctl+0x3d4
+                          0xffffffffac6937e0  __x64_sys_epoll_ctl+0x70
+                          0xfffffffface604b2  do_syscall_64+0x82
+                          0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
+
+  === owner stack trace ===
+
+           3     31.24 us     15.27 us     10.41 us        mutex   pipe_read+0x348
+                          0xffffffffac631bd8  pipe_read+0x348
+                          0xffffffffac623862  vfs_read+0x332
+                          0xffffffffac62434b  ksys_read+0xbb
+                          0xfffffffface604b2  do_syscall_64+0x82
+                          0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
+  ...
+
+Chun-Tse Shao (4):
+  perf lock: Add bpf maps for owner stack tracing
+  perf lock: Retrieve owner callstack in bpf program
+  perf lock: Make rb_tree helper functions generic
+  perf lock: Report owner stack in usermode
+
+ tools/perf/builtin-lock.c                     |  55 +++--
+ tools/perf/util/bpf_lock_contention.c         |  58 +++++-
+ .../perf/util/bpf_skel/lock_contention.bpf.c  | 189 +++++++++++++++++-
+ tools/perf/util/bpf_skel/lock_data.h          |   6 +
+ tools/perf/util/lock-contention.h             |   2 +
+ 5 files changed, 290 insertions(+), 20 deletions(-)
+
+--
+2.47.1.688.g23fc6f90ad-goog
+
 
