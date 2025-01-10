@@ -1,182 +1,191 @@
-Return-Path: <bpf+bounces-48551-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48552-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ED32A09137
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 13:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6113EA0918B
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 14:14:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E820F7A0657
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 12:57:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5407A7A31A6
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 13:14:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 256A020D4F7;
-	Fri, 10 Jan 2025 12:57:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=longjmp.de header.i=@longjmp.de header.b="byvtS6yo"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BDB720E027;
+	Fri, 10 Jan 2025 13:14:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1689B20B21B;
-	Fri, 10 Jan 2025 12:57:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC1220E005;
+	Fri, 10 Jan 2025 13:14:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736513841; cv=none; b=npxzSknlbVwULs8mVIlyS+FJ2FeQTXgJ9ObLZ7I+eT4GuER1f3yqGF0Ef27L9Ho9KdDmQ0BuUWZ66Q8+C5qBMAZNjsNX8yScN62Fg0FnWdtUyirOFHyUwvg5gmzE0H2fZlrxdGMtGQ2FvkTryOQLJpI2DMvSvquJuetrKcf/E0I=
+	t=1736514851; cv=none; b=brIGrSLNlUioifeXbs6On+OVCF2w13wTX4YNKVVbxw4RlpwOEX96V2muIVGtOF119wJKczgYFRSYmHlksGEKI0dTXQZjwjAqm5vUdSn/Hi98tDvYfU7dY1mJf8RcQFnZPG3MkZQj7NZTd6d1Mz4grkzG/JDK9ywu3P0yEvjYVRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736513841; c=relaxed/simple;
-	bh=D1E3GfORtqKj6RGSe6oygnWxmoorH/XDT663uENGPC4=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=I7McEUO2eDFMv2zkyZPzNhEUlQOd4LarcychHHmxUl35XcN90m8wdBIR1c5zAINZtjLOwMkULdftNfO71GvQym1AoO2hnpZHINFCg6wA0E+GYKQo6EIYjbH9qiJanVgJIi1ySt5p0EIaZdttSEy+mS+W8J2CX7PV8w3mmB8Qkck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=longjmp.de; spf=pass smtp.mailfrom=longjmp.de; dkim=pass (2048-bit key) header.d=longjmp.de header.i=@longjmp.de header.b=byvtS6yo; arc=none smtp.client-ip=80.241.56.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=longjmp.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=longjmp.de
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4YV1rh4z0Mz9v8T;
-	Fri, 10 Jan 2025 13:57:08 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=longjmp.de; s=MBO0001;
-	t=1736513828;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UwELQyozSQFtMztjtKtUbRMZJ5yFCqtLpCPNlaKjIiY=;
-	b=byvtS6yoLwuuz6YdvnVkOCSM1/adU/IvXuq5sHxKINGt528u9Uiq7WYkVLL2xXR6d84Wm6
-	dVGz6tI5eopTSq053z7oaGnFOgzUk1QCHFCd8+u5CWPGRTfSTVZQ8RxPuVtI7sph4k6bT5
-	BBixJlHd0Y8y6M6RPr1vFopd0Ng9REIdRwGsXv4dxKvwHDzyAn1gKdwCQoatI8nmqiHHks
-	QJnDi/Q6AhBLz+BptC/JoRn3ph74Z/LPR5mXDH57a0f1o7mOMTN4C/1DsNUsnkkyXP5tEz
-	2KySf/MDyz3N/aB/ue/fpCELm+599VDlOZAStAoQVj2gXYAQvZeb06PVDCFg2w==
-Date: Fri, 10 Jan 2025 13:57:06 +0100 (CET)
-From: christoph.werle@longjmp.de
-To: Quentin Monnet <qmo@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <1055201260.220373.1736513826115@office.mailbox.org>
-In-Reply-To: <55b9484a-c7db-402b-94f8-fe0544a9739f@kernel.org>
-References: <20250108220937.1470029-1-christoph.werle@longjmp.de>
- <55b9484a-c7db-402b-94f8-fe0544a9739f@kernel.org>
-Subject: Re: [PATCH] bpftool: fix control flow graph segfault during edge
- creation
+	s=arc-20240116; t=1736514851; c=relaxed/simple;
+	bh=G2AouaBb+qbSO/h+etHLaGmAPXnN0IC/6AFbDgJ8b94=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XRI1Qiupvb554giJnjLb6M3/IzAkqH5+QbBQlX0RhP49TryM60XYXMaWRo/Z7V/xvyqprmZQwN2jhgm72gjbsbzmNYHQqNM7CcfIHOcqbQQzIZrmwm0ASBVP1sZE1I5ZlXV4QxioXBOLBF454b4ykArIP7z2Vodz+80EIl6QWDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4YV28h5lGjz2DkMS;
+	Fri, 10 Jan 2025 21:11:00 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id DF7EE1402DE;
+	Fri, 10 Jan 2025 21:14:04 +0800 (CST)
+Received: from localhost.localdomain (10.90.30.45) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Fri, 10 Jan 2025 21:14:04 +0800
+From: Yunsheng Lin <linyunsheng@huawei.com>
+To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC: <zhangkun09@huawei.com>, <liuyonglong@huawei.com>,
+	<fanghaiqing@huawei.com>, Yunsheng Lin <linyunsheng@huawei.com>, Alexander
+ Lobakin <aleksander.lobakin@intel.com>, Robin Murphy <robin.murphy@arm.com>,
+	Alexander Duyck <alexander.duyck@gmail.com>, Andrew Morton
+	<akpm@linux-foundation.org>, IOMMU <iommu@lists.linux.dev>, MM
+	<linux-mm@kvack.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+	<daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
+ Fastabend <john.fastabend@gmail.com>, Matthias Brugger
+	<matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, <netdev@vger.kernel.org>,
+	<intel-wired-lan@lists.osuosl.org>, <bpf@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>
+Subject: [PATCH net-next v7 0/8] fix two bugs related to page_pool
+Date: Fri, 10 Jan 2025 21:06:54 +0800
+Message-ID: <20250110130703.3814407-1-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Rspamd-Queue-Id: 4YV1rh4z0Mz9v8T
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-Hello Quentin,
+This patchset fix a possible time window problem for page_pool and
+the dma API misuse problem as mentioned in [1], and try to avoid the
+overhead of the fixing using some optimization.
 
-> Thanks for this! It looks OK, would you have a minimal reproducer by any
-> chance?
+From the below performance data, the overhead is not so obvious
+due to performance variations for time_bench_page_pool01_fast_path()
+and time_bench_page_pool02_ptr_ring, and there is about 20ns overhead
+for time_bench_page_pool03_slow() for fixing the bug.
 
-here's a small example based on libbpf-bootstrap:
+Before this patchset:
+root@(none)$ insmod bench_page_pool_simple.ko
+[  323.367627] bench_page_pool_simple: Loaded
+[  323.448747] time_bench: Type:for_loop Per elem: 0 cycles(tsc) 0.769 ns (step:0) - (measurement period time:0.076997150 sec time_interval:76997150) - (invoke count:100000000 tsc_interval:7699707)
+[  324.812884] time_bench: Type:atomic_inc Per elem: 1 cycles(tsc) 13.468 ns (step:0) - (measurement period time:1.346855130 sec time_interval:1346855130) - (invoke count:100000000 tsc_interval:134685507)
+[  324.980875] time_bench: Type:lock Per elem: 1 cycles(tsc) 15.010 ns (step:0) - (measurement period time:0.150101270 sec time_interval:150101270) - (invoke count:10000000 tsc_interval:15010120)
+[  325.652195] time_bench: Type:rcu Per elem: 0 cycles(tsc) 6.542 ns (step:0) - (measurement period time:0.654213000 sec time_interval:654213000) - (invoke count:100000000 tsc_interval:65421294)
+[  325.669215] bench_page_pool_simple: time_bench_page_pool01_fast_path(): Cannot use page_pool fast-path
+[  325.974848] time_bench: Type:no-softirq-page_pool01 Per elem: 2 cycles(tsc) 29.633 ns (step:0) - (measurement period time:0.296338200 sec time_interval:296338200) - (invoke count:10000000 tsc_interval:29633814)
+[  325.993517] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): Cannot use page_pool fast-path
+[  326.576636] time_bench: Type:no-softirq-page_pool02 Per elem: 5 cycles(tsc) 57.391 ns (step:0) - (measurement period time:0.573911820 sec time_interval:573911820) - (invoke count:10000000 tsc_interval:57391174)
+[  326.595307] bench_page_pool_simple: time_bench_page_pool03_slow(): Cannot use page_pool fast-path
+[  328.422661] time_bench: Type:no-softirq-page_pool03 Per elem: 18 cycles(tsc) 181.849 ns (step:0) - (measurement period time:1.818495880 sec time_interval:1818495880) - (invoke count:10000000 tsc_interval:181849581)
+[  328.441681] bench_page_pool_simple: pp_tasklet_handler(): in_serving_softirq fast-path
+[  328.449584] bench_page_pool_simple: time_bench_page_pool01_fast_path(): in_serving_softirq fast-path
+[  328.755031] time_bench: Type:tasklet_page_pool01_fast_path Per elem: 2 cycles(tsc) 29.632 ns (step:0) - (measurement period time:0.296327910 sec time_interval:296327910) - (invoke count:10000000 tsc_interval:29632785)
+[  328.774308] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): in_serving_softirq fast-path
+[  329.578579] time_bench: Type:tasklet_page_pool02_ptr_ring Per elem: 7 cycles(tsc) 79.523 ns (step:0) - (measurement period time:0.795236560 sec time_interval:795236560) - (invoke count:10000000 tsc_interval:79523650)
+[  329.597769] bench_page_pool_simple: time_bench_page_pool03_slow(): in_serving_softirq fast-path
+[  331.507501] time_bench: Type:tasklet_page_pool03_slow Per elem: 19 cycles(tsc) 190.104 ns (step:0) - (measurement period time:1.901047510 sec time_interval:1901047510) - (invoke count:10000000 tsc_interval:190104743)
 
-------------- reprex_edge_segfault.bpf.c
-// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+After this patchset:
+root@(none)$ insmod bench_page_pool_simple.ko
+[  138.634758] bench_page_pool_simple: Loaded
+[  138.715879] time_bench: Type:for_loop Per elem: 0 cycles(tsc) 0.769 ns (step:0) - (measurement period time:0.076972720 sec time_interval:76972720) - (invoke count:100000000 tsc_interval:7697265)
+[  140.079897] time_bench: Type:atomic_inc Per elem: 1 cycles(tsc) 13.467 ns (step:0) - (measurement period time:1.346735370 sec time_interval:1346735370) - (invoke count:100000000 tsc_interval:134673531)
+[  140.247841] time_bench: Type:lock Per elem: 1 cycles(tsc) 15.005 ns (step:0) - (measurement period time:0.150055080 sec time_interval:150055080) - (invoke count:10000000 tsc_interval:15005497)
+[  140.919072] time_bench: Type:rcu Per elem: 0 cycles(tsc) 6.541 ns (step:0) - (measurement period time:0.654125000 sec time_interval:654125000) - (invoke count:100000000 tsc_interval:65412493)
+[  140.936091] bench_page_pool_simple: time_bench_page_pool01_fast_path(): Cannot use page_pool fast-path
+[  141.246985] time_bench: Type:no-softirq-page_pool01 Per elem: 3 cycles(tsc) 30.159 ns (step:0) - (measurement period time:0.301598160 sec time_interval:301598160) - (invoke count:10000000 tsc_interval:30159812)
+[  141.265654] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): Cannot use page_pool fast-path
+[  141.976265] time_bench: Type:no-softirq-page_pool02 Per elem: 7 cycles(tsc) 70.140 ns (step:0) - (measurement period time:0.701405780 sec time_interval:701405780) - (invoke count:10000000 tsc_interval:70140573)
+[  141.994933] bench_page_pool_simple: time_bench_page_pool03_slow(): Cannot use page_pool fast-path
+[  144.018945] time_bench: Type:no-softirq-page_pool03 Per elem: 20 cycles(tsc) 201.514 ns (step:0) - (measurement period time:2.015141210 sec time_interval:2015141210) - (invoke count:10000000 tsc_interval:201514113)
+[  144.037966] bench_page_pool_simple: pp_tasklet_handler(): in_serving_softirq fast-path
+[  144.045870] bench_page_pool_simple: time_bench_page_pool01_fast_path(): in_serving_softirq fast-path
+[  144.205045] time_bench: Type:tasklet_page_pool01_fast_path Per elem: 1 cycles(tsc) 15.005 ns (step:0) - (measurement period time:0.150056510 sec time_interval:150056510) - (invoke count:10000000 tsc_interval:15005645)
+[  144.224320] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): in_serving_softirq fast-path
+[  144.916044] time_bench: Type:tasklet_page_pool02_ptr_ring Per elem: 6 cycles(tsc) 68.269 ns (step:0) - (measurement period time:0.682693070 sec time_interval:682693070) - (invoke count:10000000 tsc_interval:68269300)
+[  144.935234] bench_page_pool_simple: time_bench_page_pool03_slow(): in_serving_softirq fast-path
+[  146.997684] time_bench: Type:tasklet_page_pool03_slow Per elem: 20 cycles(tsc) 205.376 ns (step:0) - (measurement period time:2.053766310 sec time_interval:2053766310) - (invoke count:10000000 tsc_interval:205376624)
 
-#include "vmlinux.h"
-#include <bpf/bpf_helpers.h>
+1. https://lore.kernel.org/lkml/8067f204-1380-4d37-8ffd-007fc6f26738@kernel.org/T/
 
-char LICENSE[] SEC("license") = "Dual BSD/GPL";
+CC: Alexander Lobakin <aleksander.lobakin@intel.com>
+CC: Robin Murphy <robin.murphy@arm.com>
+CC: Alexander Duyck <alexander.duyck@gmail.com>
+CC: Andrew Morton <akpm@linux-foundation.org>
+CC: IOMMU <iommu@lists.linux.dev>
+CC: MM <linux-mm@kvack.org>
 
-int __attribute__ ((noinline)) do_barf()
-{
-	bpf_printk("We're doomed\n");
-	return 0;
-}
+Change log:
+V7:
+  1. Fix a used-after-free bug reported by KASAN as mentioned by Jakub.
+  2. Fix the 'netmem' variable not setting up correctly bug as mentioned
+     by Simon.
 
-SEC("tp/sched/sched_process_exec")
-int handle__sched_process_exec(struct trace_event_raw_sched_process_exec *ctx)
-{
-    if (ctx->pid > 1000)
-	    do_barf();
+V6:
+  1. Repost based on latest net-next.
+  2. Rename page_pool_to_pp() to page_pool_get_pp().
 
-    return 0;
-}
+V5:
+  1. Support unlimit inflight pages.
+  2. Add some optimization to avoid the overhead of fixing bug.
 
-------------- reprex_edge_segfault.c
-// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+V4:
+  1. use scanning to do the unmapping
+  2. spilt dma sync skipping into separate patch
 
-#include <unistd.h>
-#include <bpf/libbpf.h>
-#include <bpf/bpf.h>
-#include "reprex_edge_segfault.skel.h"
+V3:
+  1. Target net-next tree instead of net tree.
+  2. Narrow the rcu lock as the discussion in v2.
+  3. Check the ummapping cnt against the inflight cnt.
 
-int main(int argc, char **argv)
-{
-	struct reprex_edge_segfault_bpf *skel;
-	int err=0;
+V2:
+  1. Add a item_full stat.
+  2. Use container_of() for page_pool_to_pp().
 
-	skel = reprex_edge_segfault_bpf__open();
-	err = reprex_edge_segfault_bpf__load(skel);
-	err = reprex_edge_segfault_bpf__attach(skel);
+Yunsheng Lin (8):
+  page_pool: introduce page_pool_get_pp() API
+  page_pool: fix timing for checking and disabling napi_local
+  page_pool: fix IOMMU crash when driver has already unbound
+  page_pool: support unlimited number of inflight pages
+  page_pool: skip dma sync operation for inflight pages
+  page_pool: use list instead of ptr_ring for ring cache
+  page_pool: batch refilling pages to reduce atomic operation
+  page_pool: use list instead of array for alloc cache
 
-	while (true)
-	    sleep(1);
+ drivers/net/ethernet/freescale/fec_main.c     |   8 +-
+ .../ethernet/google/gve/gve_buffer_mgmt_dqo.c |   2 +-
+ drivers/net/ethernet/intel/iavf/iavf_txrx.c   |   6 +-
+ drivers/net/ethernet/intel/idpf/idpf_txrx.c   |  14 +-
+ drivers/net/ethernet/intel/libeth/rx.c        |   2 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |   3 +-
+ drivers/net/netdevsim/netdev.c                |   6 +-
+ drivers/net/wireless/mediatek/mt76/mt76.h     |   2 +-
+ include/linux/mm_types.h                      |   2 +-
+ include/linux/skbuff.h                        |   1 +
+ include/net/libeth/rx.h                       |   3 +-
+ include/net/netmem.h                          |  24 +-
+ include/net/page_pool/helpers.h               |  11 +
+ include/net/page_pool/types.h                 |  64 +-
+ net/core/devmem.c                             |   4 +-
+ net/core/netmem_priv.h                        |   5 +-
+ net/core/page_pool.c                          | 664 ++++++++++++++----
+ net/core/page_pool_priv.h                     |  12 +-
+ 18 files changed, 675 insertions(+), 158 deletions(-)
 
-	reprex_edge_segfault_bpf__destroy(skel);
-	return -err;
-}
---------------
+-- 
+2.33.0
 
-Then just add reprex_edge_segfault to APPS variable in examples/c/Makefile.
-
-Kind regards,
- Christoph
-
-> Quentin Monnet <qmo@kernel.org> hat am 09.01.2025 19:19 CET geschrieben:
-> 
->  
-> On 08/01/2025 22:09, Christoph Werle wrote:
-> > If the last instruction of a control flow graph building block is a
-> > BPF_CALL, an incorrect edge with e->dst set to NULL is created and
-> > results in a segfault during graph output.
-> > 
-> > Ensure that BPF_CALL as last instruction of a building block is handled
-> > correctly and only generates a single edge unlike actual BPF_JUMP*
-> > instructions.
-> > 
-> > Signed-off-by: Christoph Werle <christoph.werle@longjmp.de>
-> 
-> 
-> Fixes: 0824611f9b38 ("tools: bpftool: partition basic-block for each function in the CFG")
-> 
-> 
-> > ---
-> >  tools/bpf/bpftool/cfg.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/tools/bpf/bpftool/cfg.c b/tools/bpf/bpftool/cfg.c
-> > index eec437cca2ea..e3785f9a697d 100644
-> > --- a/tools/bpf/bpftool/cfg.c
-> > +++ b/tools/bpf/bpftool/cfg.c
-> > @@ -302,6 +302,7 @@ static bool func_add_bb_edges(struct func_node *func)
-> >  
-> >  		insn = bb->tail;
-> >  		if (!is_jmp_insn(insn->code) ||
-> > +		    BPF_OP(insn->code) == BPF_CALL ||
-> >  		    BPF_OP(insn->code) == BPF_EXIT) {
-> >  			e->dst = bb_next(bb);
-> >  			e->flags |= EDGE_FLAG_FALLTHROUGH;
-> 
-> 
-> Thanks for this! It looks OK, would you have a minimal reproducer by any
-> chance?
-> 
-> Quentin
 
