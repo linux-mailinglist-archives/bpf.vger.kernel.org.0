@@ -1,187 +1,207 @@
-Return-Path: <bpf+bounces-48589-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48590-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5ECAFA09D21
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 22:23:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BF8CA09D2A
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 22:26:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 714ED3A88ED
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 21:23:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A5C116AD30
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 21:26:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6138208997;
-	Fri, 10 Jan 2025 21:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BDC2209671;
+	Fri, 10 Jan 2025 21:26:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="N5kfpBUD";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="xjN0zoXG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g/aqRnpI"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-b3-smtp.messagingengine.com (fhigh-b3-smtp.messagingengine.com [202.12.124.154])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C2921A23B0
-	for <bpf@vger.kernel.org>; Fri, 10 Jan 2025 21:23:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 400EA1A23B0
+	for <bpf@vger.kernel.org>; Fri, 10 Jan 2025 21:26:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736544210; cv=none; b=DYwz7wZ4ILvmFjE3dTvvkzauS3NxBCVudOrt7nVJYEEEL2NbCUC6mabXRhfQLP2B9qY32N0VSzMXYX6MTW07e8b3n9c+wZ58+SmcaNzG4ZCMo7aCfJlMI0oWajuHqFVtY32NL8eGxYwZ52duo5efZuuc6PuClWFUQmh1cAK3m88=
+	t=1736544383; cv=none; b=fdAu70NeBhcGzwmVkC/0kR84pz1k4434JYEN94DRs1JnFmOYgEyRbbAAe8vyoxmyzNzKdahmjJJme6+W3zULLUcZRvidzGD1HUuSdcI2DzWw13seuUW/DKrE32T9wzVnyGSnpUDgbHzZE7XCq7SnsDs12XDvBuR0JMka6QJS8t8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736544210; c=relaxed/simple;
-	bh=R7DIyLosg686CcsSRk/5MJprWHWXZhwTnKnynz4eAGI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=QJIOMphkGyStAyYGBdy+j9WBhtgRkJPCSYVEqX8ZmsCQ+rjLNlmwxX2wu/LEu17HWLstJ3ntJJ6W3Zqye/jw688BTe20U1HX5FX6LCWOtmUXdhDy6gPHYCRm1s60iFD0kBoYeJ67XBMt/s3ZAltPoqx09jGfySe2ZRHoQWwgzzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=N5kfpBUD; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=xjN0zoXG; arc=none smtp.client-ip=202.12.124.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 06A9C254005F;
-	Fri, 10 Jan 2025 16:23:22 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-04.internal (MEProxy); Fri, 10 Jan 2025 16:23:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:message-id:mime-version:reply-to
-	:subject:subject:to:to; s=fm1; t=1736544201; x=1736630601; bh=7O
-	ks7w2T3ndadqclTzXJPuoexJnAMWG/oN0gLyIc3B0=; b=N5kfpBUDF2U76DcM+G
-	LsccdYOpnLsjPLd88PmbIxcPTnva9myQN9gcL2UjGLTcm860ezDmejPlvSlKlA5K
-	LwJcvkHTKe+l/zXJ97k8nj1Y5W/3DzQgyIpnfBe6kYZ8owKcmIM7JpyZPWUZdmA/
-	sJQRHukH9saRTItIjflzUii6whdiGVlZh7fhpPZ3+FNF6qlcKfmAyRBulG9O96No
-	EW9I2XY+zRsLnxlQhoYIPb08rEkUDUVlHrF5or+eAKijKuEvwn+raHyCTsTa2JQa
-	VZmb+TFVjXgO6Ifc6G4/F+RNjz57jlqovPIxvCGBv1k3a2AzeAHKPqgA/aVgYGNr
-	S31g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:message-id:mime-version:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1736544201; x=1736630601; bh=7Oks7w2T3ndadqclTzXJPuoexJnA
-	MWG/oN0gLyIc3B0=; b=xjN0zoXGJZJHbS2btbl+TMsBOipIrYe0ZH0fBBt5h+Yu
-	rlfKV/TejMmeEYnvPxkxevs3a6mdW39ICYCeL1LKINflcG1lFhgq+guJtGjFGyd6
-	veQwLa+bNKsbgVk0FDlY9zyQrGlrke4w0Zyzz80cQSxQ493Eg68y2x8zk8Bx65Br
-	GPPD3iVgpodGpaZu7+gutJFblfXhiU+05vgIz5gErwBgnelsAezXPeGYvXdfYI/9
-	oQjTSd01aAD96d/v/LZPKE1sPMyh3GS1nR4JlDZMszX7kBUFu/hnQmu0F/szD8cG
-	V+y54bdNFHdOaeo+JNoEa05Bz6DfUtlXtJTa/i4Orw==
-X-ME-Sender: <xms:yY-BZ8EehEfCRWBfh05eXNzbmL1VNXSOnhBltwFP4he4Eo2qijwWwA>
-    <xme:yY-BZ1WaxCYsTAlzu5RTluq8G2Ex2279q9ZmyOc1lXcqi-HULE0rEpPQfv0FWUrFJ
-    ekimvpU5zHuEvxRYg>
-X-ME-Received: <xmr:yY-BZ2JsGhipyICzzm3o5PL7f6tjyoF-6yQtanSehIJQhIAQJRBoJaWT2V_2hAsrVUKe0NNmcSlC-nP0_h52RxVWNg6nGD2DNu08TTiMmBNurw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudegkedgudegkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculd
-    efhedmnecujfgurhepfffhvfevuffkgggtugfgsehtkefstddttdejnecuhfhrohhmpeff
-    rghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnh
-    epgeefvdejledvffeiteffteehheevgfevjeehgefgtdffjeegtddtledvudejvedvnecu
-    ffhomhgrihhnpehllhhvmhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiiipdhnsggprhgtphhtthho
-    pedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehlshhfqdhptgeslhhishhtsh
-    drlhhinhhugidqfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtohepsghpfhesvhhg
-    vghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:yY-BZ-Gd2ytzhVz4NgaColPVXEUx0Hg58ZYmbRrZ467ZPrHmknSX1g>
-    <xmx:yY-BZyUjCuJ9bVaXcB-x4wUrxadKRIMmAEqnFLWSl0-CI_QTcS25bA>
-    <xmx:yY-BZxPR5lZHa5dX99jBgJN0quTHeUHHXORon7Mc__WNzODw_dmkGw>
-    <xmx:yY-BZ52oPwqIWMBAsRAed5oFaYCVMP9chyo-wLL6oKzHOFcD7RLkKA>
-    <xmx:yY-BZ_iPRjt1x7vE-WKLv37daEX-oy_t2OIK-ssQQq9U_4Lyc_HWdhQA>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 10 Jan 2025 16:23:20 -0500 (EST)
-Date: Fri, 10 Jan 2025 14:23:19 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: lsf-pc@lists.linux-foundation.org
-Cc: bpf@vger.kernel.org
-Subject: [LSF/MM/BPF TOPIC] Modular BPF verifier
-Message-ID: <nahst74z46ov7ii3vmriyhk25zo6tkf2f3hsulzjzselvobbbu@pqn6wfdibwqb>
+	s=arc-20240116; t=1736544383; c=relaxed/simple;
+	bh=AIaMIjejQx/3FWfgipdbMYYt1tupMxLUM/wyFaInC2M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WI+Et5xqW0Vgc9ZAtlF60ZgZz9VeGZrd6Zfoo/g/D1lFDThLVqAVJR4+tdLyvHPoxmTTv0vVYdP93t6breHUl8yAN+GvPeudUos32i+zXdkdh6YnyEwm8o5aneG9X97rYcl/8Uol2HOs2HIQSYNf7EV6QYj9YNdGUz/1wWho0/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g/aqRnpI; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2ef748105deso3302807a91.1
+        for <bpf@vger.kernel.org>; Fri, 10 Jan 2025 13:26:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736544380; x=1737149180; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bvcAMlOXOTkvFaJTQxuoBtjrSeBM5+J65u4qMp34Y5Q=;
+        b=g/aqRnpIYivbNOTAssPYy2OYiPhWONAHwebuPZCvOUV72GS+fU0xZT34gaXCjbU2cB
+         rUVNp8lRspLGxT2xz76V54MhD2DeMLBzXMfW/CY11035Gg6U1+PAxakbkdt4lu4Uuy/X
+         MNoVJVvdbKuMEaXfO9w73OBB7J85ugZEqqsPm+Da3xvVKzyrbZ7YszuLLDi4fpDHrru5
+         Ucz6EYXgVGA08GQE0tFG0oPiebhRe7usV0O5HB2pXB74M4yTJ5JoV0I3jf7UL91CO2bJ
+         oeHgeD1ZeZtXzXk3YFVO4f54ZO4eF3ozeNo26UllIYDldRtq1JmPIKFhW2L2gcqYtZ/k
+         n08A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736544380; x=1737149180;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bvcAMlOXOTkvFaJTQxuoBtjrSeBM5+J65u4qMp34Y5Q=;
+        b=byVkCFwHBOCqg1j3RshHs3JxDxv/ovAJKTJ/Uo8/stUQ22cKdcRsIOIqjfshzvWWpj
+         JLFMGcjSYsMbcMdGwI81crFtjnsm1YCeHeGbzzgKzKzuPikXju0NvGAnbwCyIt3gY8Bi
+         48KjFg3gNrAy93RHZdvujvNHIQizjwUG6VDVfZVJxiRsa5ojzV/i/KiTrHhwhGbUAJZm
+         Fud7c+NYB2Rs3xdzxNaMw3fncNU9f3dicJzzqwlPUrWrlaWSzsBlOWV0XXZpTa6iqopH
+         NW5DS63sYwXppyZgFaZfh6G0BKiCab4c6OMsoZcFqQCWnLoI2cmG27asp0AR3XnycbaI
+         Ii9Q==
+X-Gm-Message-State: AOJu0Yx5Yoy9Toq1PLn739dcCeBpEZS5QZEbCeK4IVsXayNNXpHCe/Zf
+	tBe/AcA6K96ePdj/esDSvBPvJfOPAimrJp7Gdws1AwYiEiNrylc/VyCorNvFo2oV0Wdsi7ElIis
+	CRgLo+OEuNxa6/w9pnKyhaghrsxk=
+X-Gm-Gg: ASbGncvtGwWZ4flZ+NUREmWw13g+4I2tlfq/4zLCUKrZ0mG+oHq+FkM3ZBlOoVfCLar
+	LxzEOHsucMXlUFz43kM9PRdRdgddjj/GHr3t/2lkoaMzuDsy470lgDg==
+X-Google-Smtp-Source: AGHT+IFo3ZXQRjx3ksqDINAwV8Mzx4wsDWKjQyRburFirj7ho36tQbK+rKsPL5tpl5ZRxIqhgpPJdjYjCj+ey1fjPpw=
+X-Received: by 2002:a17:90b:3881:b0:2ee:bc1d:f98b with SMTP id
+ 98e67ed59e1d1-2f548f424bcmr16202675a91.31.1736544380352; Fri, 10 Jan 2025
+ 13:26:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20250109174023.3368432-1-yonghong.song@linux.dev>
+In-Reply-To: <20250109174023.3368432-1-yonghong.song@linux.dev>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 10 Jan 2025 13:26:07 -0800
+X-Gm-Features: AbW1kvZFfejZzocpE22rnDoAXbJBlJmn3IT2-IeR3pManv-eN1DBgaWQS4thyTY
+Message-ID: <CAEf4Bza5gSXOoNhLaW7jm2tDcdip3R2ZRoP0z_ah7uh+OisBYA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] libbpf: Add unique_match option for multi kprobe
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Jordan Rome <linux@jordanrome.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi folks,
+On Thu, Jan 9, 2025 at 9:40=E2=80=AFAM Yonghong Song <yonghong.song@linux.d=
+ev> wrote:
+>
+> Jordan reported an issue in Meta production environment where func
+> try_to_wake_up() is renamed to try_to_wake_up.llvm.<hash>() by clang
+> compiler at lto mode. The original 'kprobe/try_to_wake_up' does not
+> work any more since try_to_wake_up() does not match the actual func
+> name in /proc/kallsyms.
+>
+> There are a couple of ways to resolve this issue. For example, in
+> attach_kprobe(), we could do lookup in /proc/kallsyms so try_to_wake_up()
+> can be replaced by try_to_wake_up.llvm.<hach>(). Or we can force users
+> to use bpf_program__attach_kprobe() where they need to lookup
+> /proc/kallsyms to find out try_to_wake_up.llvm.<hach>(). But these two
+> approaches requires extra work by either libbpf or user.
+>
+> Luckily, suggested by Andrii, multi kprobe already supports wildcard ('*'=
+)
+> for symbol matching. In the above example, 'try_to_wake_up*' can match
+> to try_to_wake_up() or try_to_wake_up.llvm.<hash>() and this allows
+> bpf prog works for different kernels as some kernels may have
+> try_to_wake_up() and some others may have try_to_wake_up.llvm.<hash>().
+>
+> The original intention is to kprobe try_to_wake_up() only, so an optional
+> field unique_match is added to struct bpf_kprobe_multi_opts. If the
+> field is set to true, the number of matched functions must be one.
+> Otherwise, the attachment will fail. In the above case, multi kprobe
+> with 'try_to_wake_up*' and unique_match preserves user functionality.
+>
+> Reported-by: Jordan Rome <linux@jordanrome.com>
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
+>  tools/lib/bpf/libbpf.c | 13 ++++++++++++-
+>  tools/lib/bpf/libbpf.h |  4 +++-
+>  2 files changed, 15 insertions(+), 2 deletions(-)
+>
+> Changelog:
+>   v1 -> v2:
+>     - Avoid possible memory leak of res.addrs.
+>     - Return an error for !pattern && unique_match case.
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 46492cc0927d..a7cc6545ec63 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -11534,7 +11534,7 @@ bpf_program__attach_kprobe_multi_opts(const struc=
+t bpf_program *prog,
+>         struct bpf_link *link =3D NULL;
+>         const unsigned long *addrs;
+>         int err, link_fd, prog_fd;
+> -       bool retprobe, session;
+> +       bool retprobe, session, unique_match;
+>         const __u64 *cookies;
+>         const char **syms;
+>         size_t cnt;
+> @@ -11553,6 +11553,7 @@ bpf_program__attach_kprobe_multi_opts(const struc=
+t bpf_program *prog,
+>         addrs   =3D OPTS_GET(opts, addrs, false);
+>         cnt     =3D OPTS_GET(opts, cnt, false);
+>         cookies =3D OPTS_GET(opts, cookies, false);
+> +       unique_match =3D OPTS_GET(opts, unique_match, false);
+>
+>         if (!pattern && !addrs && !syms)
+>                 return libbpf_err_ptr(-EINVAL);
+> @@ -11560,6 +11561,8 @@ bpf_program__attach_kprobe_multi_opts(const struc=
+t bpf_program *prog,
+>                 return libbpf_err_ptr(-EINVAL);
+>         if (!pattern && !cnt)
+>                 return libbpf_err_ptr(-EINVAL);
+> +       if (!pattern && unique_match)
+> +               return libbpf_err_ptr(-EINVAL);
+>         if (addrs && syms)
+>                 return libbpf_err_ptr(-EINVAL);
+>
+> @@ -11570,6 +11573,14 @@ bpf_program__attach_kprobe_multi_opts(const stru=
+ct bpf_program *prog,
+>                         err =3D libbpf_available_kallsyms_parse(&res);
+>                 if (err)
+>                         goto error;
+> +
+> +               if (unique_match && res.cnt !=3D 1) {
+> +                       pr_warn("prog '%s': failed to find a unique match=
+, num matches: %lu\n",
+> +                               prog->name, res.cnt);
 
-I'd like to propose modular BPF verifier as a discussion topic.
+I've added pattern itself into the error message, and also %lu -> %zu
+(it's size_t, not long unsigned)
 
-=== Motivation ===
 
-A decade of production experience with BPF has shown that the desire for
-feature availability outpaces the ability to deliver new kernels into the field
-[0]. Therefore, the idea of modularizing the BPF subsystem into a loadable
-kernel module (LKM) has started to look appealing, as this would allow loading
-newer versions of the BPF subsystem onto older versions of the kernel without a
-reboot.
-
-That being said, the BPF subsystem is large and complex. It is not practical to
-try and solve the entire problem all at once. So the question is: where do we
-start? Proposal: the verifier, because it is high value and architecturally
-sympathetic to modularization.
-
-**High value**: It is straightforward to reason about functionality delivered
-through kfuncs, helpers, or maps. If feature A exists, codepath X is taken;
-else, codepath Y. This is generally not practical with verifier improvements -
-bugs or limitations there are far more difficult to reason about. Complexity
-grows sharply when applications support many kernel versions. Maintaining a
-minimal set of cutting edge verifiers in the field is a value-add in the form
-of enablement, reliability, and simplicity.
-
-**Architecturally sympathetic**: The verifier is architecturally a “pure
-function” [1].  Pure functions are easy to hot swap, as state transfers are not
-necessary.  Because of the verifier’s current design, large re-architecting
-will not be necessary for modularization. This means modular verifier is
-primarily a refactoring project and can lean on the existing test suite, making
-it a good first target.
-
-If successful, a modular verifier gives us experience as well develops a
-toolkit of techniques that can be applied to the subsystem at large.
-
-=== Goal ===
-
-The goal is to refactor the verifier into an LKM with an eye towards forward
-compatibility.
-
-=== Design ===
-
-[[ The following is an rough design based on early research. I expect it to ]]
-[[ change as I gather feedback and do more prototyping work. Nothing is set ]]
-[[ in stone.                                                                ]]
-
-For forward compatibility, the idea is to implement a facade built into each
-kernel that exposes a stable-enough (non-UAPI) interface such that the verifier
-can remain portable and “plug in” to the running kernel. While I expect the
-facade to be necessary, it will not be sufficient. There will eventually be
-details the facade cannot hide, for example an unavoidable ABI break. To solve
-for this, I/we [2] will maintain a continuously exported copy of the verifier
-code in a separate repository. From there we can develop branching, patching,
-or backport strategies to mitigate breaks. The exact details are TBD and will
-become more clear as work progresses.
-
-On top of delivering newer verifiers to older kernels, the facade opens the
-door to running the verifier in userspace. If the verifier becomes sufficiently
-portable, we can implement a userspace facade and plug the verifier in. A
-possible use case could be integrating the verifier into Clang [3] for tightly
-integrated verifier feedback. This would address a long running pain point with
-BPF development. This is a lot easier said than done, so consider this highly
-speculative.
-
-The facade exists as a cooperative mechanism. While it might technically be
-possible to do a non-cooperative modularization of the verifier through
-aggressive patching and no kernel changes, it seems unnecessarily complex given
-the alternative. Completion of the facade does not block deployment - the
-facade seeks to reduce the chance of stranding older kernels with newer
-verifier changes.
-
-=== Footnotes ===
-
-[0]: Disclaimer: this is not intended to be a criticism of anything - merely to
-point out the fact that the kernel as a singular delivery vehicle leaves a lot
-on the table.
-
-[1]: Perhaps not in practice today, but deeper integration with the rest of the
-kernel can probably be cleaned up and abstracted.
-
-[2]: It's likely more people will be involved if modular verifier proves to be
-viable.
-
-[3]: https://clang.llvm.org/docs/ClangPlugins.html
+> +                       err =3D -EINVAL;
+> +                       goto error;
+> +               }
+> +
+>                 addrs =3D res.addrs;
+>                 cnt =3D res.cnt;
+>         }
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index d45807103565..3020ee45303a 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -552,10 +552,12 @@ struct bpf_kprobe_multi_opts {
+>         bool retprobe;
+>         /* create session kprobes */
+>         bool session;
+> +       /* enforce unique match */
+> +       bool unique_match;
+>         size_t :0;
+>  };
+>
+> -#define bpf_kprobe_multi_opts__last_field session
+> +#define bpf_kprobe_multi_opts__last_field unique_match
+>
+>  LIBBPF_API struct bpf_link *
+>  bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+> --
+> 2.43.5
+>
 
