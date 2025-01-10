@@ -1,88 +1,128 @@
-Return-Path: <bpf+bounces-48573-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48574-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B99D2A097FB
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 17:57:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 946B1A0983A
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 18:14:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FFF43A84B9
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 16:57:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F5FE16847D
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 17:14:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4042C2135A8;
-	Fri, 10 Jan 2025 16:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CF3A213E67;
+	Fri, 10 Jan 2025 17:14:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="YnGjYsjT"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hWvPm9S9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D37781A23B0;
-	Fri, 10 Jan 2025 16:57:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=157.90.84.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 998202135CD;
+	Fri, 10 Jan 2025 17:13:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736528270; cv=none; b=YLg73Gy3/m3H3iS5EbN0qF1YNtBwa5zzpdkNANNc1ocrdYELbXx90IcTHwsHOESbKu4+1WJeydP/zfrz+brWDi2KAT9FlWJ3k1X4rhnn0+sWk5hxQS/rFw55mnkIngNm0GsdKDQeDEeyidXmrRlNeZl1vQOECiAzFapzzTALHRs=
+	t=1736529242; cv=none; b=YHA6WPjai2AXfv8OxCgDNDW8FylN1NKdGUqRSC6O90OLumH01NHdj+tExkim4UrVuEpaBrxeWW0ai5/asBXa+KLeTLSlafDwEeWsl0l1YfvFTA4OtmWaTR8GkMDHj6MlmRNRch3FGSU6NMqpvnx9EzlQs2pxJYVBC7vEqR5Jwe8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736528270; c=relaxed/simple;
-	bh=jaR6XyLLItzgBaZXqL3c99zg9I8sWDgj/4VKxw4etDM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Pi3jHa8QbLiGIIyWBQVHjOY21SPMF6alTubI6Gm8wl1LtrChCwIajF2/0cZ4M5kUTI5G0sRCTUAO/3v7DQslCdPGCnNuvmxRaWp2hgoiAnRG1ris0A4gg9XiUjn+RfMNtUkPH1GVQqKJpAJal9BOA3ZcTfsEEdzIEWoDTLcEIzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com; spf=pass smtp.mailfrom=tuxedocomputers.com; dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b=YnGjYsjT; arc=none smtp.client-ip=157.90.84.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
-Received: from [192.168.42.116] (pd9e5946e.dip0.t-ipconnect.de [217.229.148.110])
-	(Authenticated sender: wse@tuxedocomputers.com)
-	by mail.tuxedocomputers.com (Postfix) with ESMTPSA id 9DE8E2FC007B;
-	Fri, 10 Jan 2025 17:57:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
-	s=default; t=1736528265;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Gs792kudWwrIFfcsrnzu9n7RM7ZEPErzN15aiC7Hr0Y=;
-	b=YnGjYsjT8MPDY0L5Yg6/p/Eq8aGB7Qnctnw52pTVm3dYOiUC/CkxXZVN9lN/ZJSlQfOU3H
-	lQA6Y3I+dZJCpuzlBhRaCdeteOAs0TZd58cQZXySD1ep7GyAtBHby1DAf+V16Z0vnzmiDn
-	2T3i6co9bDFHt32WO8h6KEKSqDi4ozw=
-Authentication-Results: mail.tuxedocomputers.com;
-	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
-Message-ID: <864114f2-e2b2-410c-98bd-d9e18da74aec@tuxedocomputers.com>
-Date: Fri, 10 Jan 2025 17:57:45 +0100
+	s=arc-20240116; t=1736529242; c=relaxed/simple;
+	bh=zCD9wMt7oj+kJBhlIcsVVTGT43QE2wPIyfO0mHZuo3E=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=AAjN4aD1+LG9tm4CDTT98hANfLwZOwpT1esfVG5PUP6rD7p7JWcTczqfDiExaoNz3ll+vgd7jPhqO5SOXaqsiL0jBTIJg7zQs17Fy/X+gzZ7qpj2jCYmpz0HK+OUtxEG5+vAlk3BL/j4o23sXW2dz9yvHfZw2tUEfPpwytLLdGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hWvPm9S9; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1736529240; x=1768065240;
+  h=date:message-id:from:to:cc:subject:in-reply-to:
+   references:mime-version;
+  bh=zCD9wMt7oj+kJBhlIcsVVTGT43QE2wPIyfO0mHZuo3E=;
+  b=hWvPm9S9gyyWflhxezAJQ0/Zw5EZKsCuAkNL9pt9ibrxvKhfx8igBLau
+   BqAxt/w+4WkhB7JJeGhd2XKu7BTEUI/u+ZCjJZLax3klENzioM0Ogu8lV
+   PfZO/Ur9FgiISKQAktuwXDv+fKDWBBLhsHE3nTEvd7HEfk5ILPMEy+C+i
+   v7E/Bn3dcZExGuv+WXwcKSpdB8KGwD5qn3eKJp4zYHR+m82wlFlpFSVej
+   Zj+F+2HJbkF1YqnKygWuQDJ/VUu15h2UnCLWYzcjwzwNjZ/0bri7MxpqP
+   ws6x4YtpsaSIYSiiMKXJNlfXHbNtrSTP7okJPY7QFGY+mFzAY/yI1B5Pm
+   Q==;
+X-CSE-ConnectionGUID: eETlnapHTZaJYZoWsWncOQ==
+X-CSE-MsgGUID: kcx024AdTVSnnR8CHTt/pw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11311"; a="36712482"
+X-IronPort-AV: E=Sophos;i="6.12,303,1728975600"; 
+   d="scan'208";a="36712482"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2025 09:13:58 -0800
+X-CSE-ConnectionGUID: d+N1H3FPQryemumCSoERgQ==
+X-CSE-MsgGUID: skCK+1HISZSgobnkHZdoJg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="127073384"
+Received: from orsosgc001.jf.intel.com (HELO orsosgc001.intel.com) ([10.165.21.142])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2025 09:13:57 -0800
+Date: Fri, 10 Jan 2025 09:13:56 -0800
+Message-ID: <8534hqvbfv.wl-ashutosh.dixit@intel.com>
+From: "Dixit, Ashutosh" <ashutosh.dixit@intel.com>
+To: Joel Granados <joel.granados@kernel.org>
+Cc: Thomas =?ISO-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,	Kees Cook
+ <kees@kernel.org>,	Luis Chamberlain <mcgrof@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,	linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,	linux-crypto@vger.kernel.org,
+	openipmi-developer@lists.sourceforge.net,	intel-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,	intel-xe@lists.freedesktop.org,
+	linux-hyperv@vger.kernel.org,	linux-rdma@vger.kernel.org,
+	linux-raid@vger.kernel.org,	linux-scsi@vger.kernel.org,
+	linux-serial@vger.kernel.org,	xen-devel@lists.xenproject.org,
+	linux-aio@kvack.org,	linux-fsdevel@vger.kernel.org,	netfs@lists.linux.dev,
+	codalist@coda.cs.cmu.edu,	linux-mm@kvack.org,	linux-nfs@vger.kernel.org,
+	ocfs2-devel@lists.linux.dev,	fsverity@lists.linux.dev,
+	linux-xfs@vger.kernel.org,	io-uring@vger.kernel.org,	bpf@vger.kernel.org,
+	kexec@lists.infradead.org,	linux-trace-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org,	apparmor@lists.ubuntu.com,
+	linux-security-module@vger.kernel.org,	keyrings@vger.kernel.org
+Subject: Re: [PATCH] treewide: const qualify ctl_tables where applicable
+In-Reply-To: <20250109-jag-ctl_table_const-v1-1-622aea7230cf@kernel.org>
+References: <20250109-jag-ctl_table_const-v1-1-622aea7230cf@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?ISO-8859-4?Q?Goj=F2?=) APEL-LB/10.8 EasyPG/1.0.0
+ Emacs/28.2 (x86_64-redhat-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Suppress bogus F13 trigger on Sirius keyboard full fan
- shortcut
-To: Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <bentiss@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
- bpf@vger.kernel.org
-References: <20250109183723.190507-1-wse@tuxedocomputers.com>
-Content-Language: en-US
-From: Werner Sembach <wse@tuxedocomputers.com>
-In-Reply-To: <20250109183723.190507-1-wse@tuxedocomputers.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 
-Am 09.01.25 um 19:37 schrieb Werner Sembach:
-> The TUXEDO Sirius 15 Gen1 and the TUXEDO Sirius 15 Gen2 Notebooks have an
-> additional "fan" key next to F12.
+On Thu, 09 Jan 2025 05:16:39 -0800, Joel Granados wrote:
 >
-> Pressing it alone sends a F14 key press which can be bound by user space.
+> diff --git a/drivers/gpu/drm/i915/i915_perf.c b/drivers/gpu/drm/i915/i915_perf.c
+> index 2406cda75b7b..5384d1bb4923 100644
+> --- a/drivers/gpu/drm/i915/i915_perf.c
+> +++ b/drivers/gpu/drm/i915/i915_perf.c
+> @@ -4802,7 +4802,7 @@ int i915_perf_remove_config_ioctl(struct drm_device *dev, void *data,
+>	return ret;
+>  }
 >
-> Pressing it while holding the FN key triggers two things:
-> - The EC firmware locks the fan speed of the internal fans at 100%
-> - F13 key press is registered which by default is already bound in xkb and
->    desktop environments (e.g. in KDE Plasma it launches system settings)
+> -static struct ctl_table oa_table[] = {
+> +static const struct ctl_table oa_table[] = {
+>	{
+>	 .procname = "perf_stream_paranoid",
+>	 .data = &i915_perf_stream_paranoid,
+> diff --git a/drivers/gpu/drm/xe/xe_observation.c b/drivers/gpu/drm/xe/xe_observation.c
+> index 8ec1b84cbb9e..57cf01efc07f 100644
+> --- a/drivers/gpu/drm/xe/xe_observation.c
+> +++ b/drivers/gpu/drm/xe/xe_observation.c
+> @@ -56,7 +56,7 @@ int xe_observation_ioctl(struct drm_device *dev, void *data, struct drm_file *fi
+>	}
+>  }
 >
-> To avoid this unexpected double duty of the FN shortcut, this bpf program
-> suppresses the F13 key press.
->
-> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-This patch is also discussed (and more up to date) here: 
-https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/merge_requests/166
+> -static struct ctl_table observation_ctl_table[] = {
+> +static const struct ctl_table observation_ctl_table[] = {
+>	{
+>	 .procname = "observation_paranoid",
+>	 .data = &xe_observation_paranoid,
+
+For i915 and xe:
+
+Acked-by: Ashutosh Dixit <ashutosh.dixit@intel.com>
 
