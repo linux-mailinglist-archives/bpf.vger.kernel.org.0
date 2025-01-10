@@ -1,117 +1,97 @@
-Return-Path: <bpf+bounces-48570-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48571-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72406A09732
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 17:23:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2D56A097B1
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 17:41:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 620477A41D9
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 16:23:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4196C16B531
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 16:41:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BA3F212FB4;
-	Fri, 10 Jan 2025 16:23:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB75E212F98;
+	Fri, 10 Jan 2025 16:41:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EGZU3Ef8"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="A1TQbOtx"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail-10629.protonmail.ch (mail-10629.protonmail.ch [79.135.106.29])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07F0E212D83;
-	Fri, 10 Jan 2025 16:22:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98D57211477
+	for <bpf@vger.kernel.org>; Fri, 10 Jan 2025 16:41:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.29
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736526180; cv=none; b=iLa1u1LQZ+NVgYlMZnXCexFrDrAOe348bTVFksUGktfcALkzwN+IUFd+GeKLH+CoPqcw58F+de6f7rAGPdozIhWLKMAP64vzRpiGwENYUvaovfLwhvRQiKxOEMRU0I18ubfYwYhRp2niow1JGQCKgivW+jSx+jkxCgiavicNp0g=
+	t=1736527296; cv=none; b=sFa3XM0WRctc6xi4hIVdaGkrOEu9kKrnQ4qgNFxg/aNa3wBABOMz+Ot4lEI6ooZb59ppUkoSUgjowIbn3vJx70eRPr7CnFVjEp0CzcP6KugSBxOVn36wTd5AkkK3klMZXTgW9g58JzJRw5Xf68bDmAOsM7HMzvik8DNkbjXTiRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736526180; c=relaxed/simple;
-	bh=mQgh00oTBEnPK3eaiUyErqe8gGMKiHL5sXNk/n6ICaY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=msoPTU2NIoE74TMenAUWjTfevcVuXbXnoVhXl8FIY+fUBaNb8SRKSDxi7Pen++p2mB07tfXsrMn3MyQAgfQ2yKhoMzeRwkDqQxgN+ldZIWnvOa67H2FXZvWK775sC/wwKmCgEOwI/pcpb9+AmtRqZqR5Z9inBmxnLYmpwgOOgd4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EGZU3Ef8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC202C4CED6;
-	Fri, 10 Jan 2025 16:22:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736526179;
-	bh=mQgh00oTBEnPK3eaiUyErqe8gGMKiHL5sXNk/n6ICaY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EGZU3Ef8D33bvTFUX/Tu2lXX4npAID97EObM21P4W+vsfHcYTVH9Qt4o+18iAeWc7
-	 7+8up9z5xJj1tOzhINprHuhW8DGO8CaHO/utbP6vAj4NEuN2vMKZ5/iuud5yB8smDO
-	 +sY1QsydT5KVI4C839eN1K91nD6/amLZKnmkKRbNSIzIJfpDdFn7CkhdH8u+LDO2/j
-	 HyxY9Yejs1Y/1M1nZmZ2JdYd5RFQS4OQq69FcIkSa3Q1s30RYKw6KaDE8OxMwNgWgb
-	 o+NWQQi/txTHozc/9RXdJeXpnJlluskdVyd+LTSLhzvdRzd3oE2hEkGoOz9RGi//Xi
-	 lVT8XHiPC1bPA==
-From: Will Deacon <will@kernel.org>
-To: linux-arm-kernel@lists.infradead.org,
-	linux-perf-users@vger.kernel.org,
-	irogers@google.com,
-	yeoreum.yun@arm.com,
-	mark.rutland@arm.com,
-	namhyung@kernel.org,
-	acme@kernel.org,
-	James Clark <james.clark@linaro.org>
-Cc: catalin.marinas@arm.com,
-	kernel-team@android.com,
-	Will Deacon <will@kernel.org>,
-	robh@kernel.org,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	"Liang, Kan" <kan.liang@linux.intel.com>,
-	John Garry <john.g.garry@oracle.com>,
-	Mike Leach <mike.leach@linaro.org>,
-	Leo Yan <leo.yan@linux.dev>,
-	Graham Woodward <graham.woodward@arm.com>,
-	Michael Petlan <mpetlan@redhat.com>,
-	Veronika Molnarova <vmolnaro@redhat.com>,
-	Thomas Richter <tmricht@linux.ibm.com>,
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] perf: arm_spe: Add format option for discard mode
-Date: Fri, 10 Jan 2025 16:22:48 +0000
-Message-Id: <173652065683.3245172.11665292685923367751.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20250108142904.401139-1-james.clark@linaro.org>
-References: <20250108142904.401139-1-james.clark@linaro.org>
+	s=arc-20240116; t=1736527296; c=relaxed/simple;
+	bh=cExron3nM5QwGWQtaP3AMzIvgqJzcTsePpFqLoZ0MJY=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=l5iRJ6ckNlt6Va6yz9f+1dMsae8zkUo/yX8ymUEtaChrarnChcUXvkUyjpLRclpUDPxn7iigwJPJlGsuuSSWqHCItHcLLHQIcs6PDLO/GoSGDBTGtzGnLfPm+//PzwjPRDG5N5pLg1hW73Y+4Do3OdHVBFQ3xPbbR6u3ZjNm+hs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=A1TQbOtx; arc=none smtp.client-ip=79.135.106.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+	s=protonmail3; t=1736527286; x=1736786486;
+	bh=cExron3nM5QwGWQtaP3AMzIvgqJzcTsePpFqLoZ0MJY=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
+	b=A1TQbOtxQGN7v8dFSqZRLvx84W2uDz03K23wp8rjUtElTTMvqGIIqClizzcer2yKL
+	 WH8+77QsRWRaZ+LDDa8loUkGWruS1F5uDQLko4681U2jCo/zv+9hnqZngLZ02/rmCA
+	 7JyG+wovFovU8ymZdriRLsPcdUowvFuOeEoXKA3BEquMCxsdd3SuKKfhfnv2weVdY4
+	 qX6CWBJCAfMEyMMizcwRgSW+nZ3AnJ6HeDNJQ6i47ic7bD1sKKbEPVOviJGKxelhiD
+	 bNBPo2thRaTVXcW7MpWBF39NKmDRaVx2uSIGsZfFYeFqmwS7ShrTUb10lAYT1oO/KM
+	 mNTCW8ergvQUA==
+Date: Fri, 10 Jan 2025 16:41:20 +0000
+To: Dave Tucker <dave@dtucker.co.uk>
+From: vadorovsky@protonmail.com
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Tamir Duberstein <tamird@gmail.com>, Alice Ryhl <aliceryhl@google.com>, Neal Gompa <neal@gompa.dev>, Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, Matthew Maurer <mmaurer@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@kernel.org>, Trevor Gross <tmgross@umich.edu>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, Matthias Maennich <maennich@google.com>, bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Eric Curtin <ecurtin@redhat.com>, Martin Reboredo <yakoyoku@gmail.com>, Alessandro Decina <alessandro.d@gmail.com>
+Subject: Re: [PATCH] rust: Disallow BTF generation with Rust + LTO
+Message-ID: <OEhWEyNG4cqhFinY3nHBef8R8vM_Xwc9zmYfae9IrXJJXFDtH1YbEskmd2N5aFVaI8YNOYWfaiEZjFsRC80XUPfgcPYr0jR1hrBjnKHFY9Q=@protonmail.com>
+In-Reply-To: <49AF84D3-3D47-4B35-B1A7-497045FD241F@dtucker.co.uk>
+References: <20250108-rust-btf-lto-incompat-v1-1-60243ff6d820@google.com> <CANiq72=XD3AfZp=jKNkKLs8PYCBuk2Jm6tbQB2QtbqkieAtm8Q@mail.gmail.com> <CAEg-Je8YdqYFMiUK7enjusTjMhRMWTbL837x7-qQbi4LkcRcLw@mail.gmail.com> <CAH5fLghtCure3EjN-hRx9PT=10_E+0MNbjFACT_v+P1StWELPQ@mail.gmail.com> <CAJ-ks9nYSssBsiJCQRkKoXwmAizeH1A91RzGvX6iTJAFJD2YrA@mail.gmail.com> <Z3_vhR_QMaK0Klly@x1> <CAJ-ks9k23fKauY6JFt37OEewKPLhwdQaOFz19BKekqUoRhJCkA@mail.gmail.com> <Z3_5eGD_F1_ZxfqE@x1> <Z4BQG3rmYNDS5W0Z@x1> <49AF84D3-3D47-4B35-B1A7-497045FD241F@dtucker.co.uk>
+Feedback-ID: 114064189:user:proton
+X-Pm-Message-ID: 1c7f40e235306cf401e2a4ba7cc248f9e6a22cb5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 08 Jan 2025 14:28:55 +0000, James Clark wrote:
-> Discard mode (Armv8.6) is a way to enable SPE related PMU events without
-> the overhead of recording any data. Add a format option, tests and docs
-> for it.
-> 
-> In theory we could make the driver drop calls to allocate the aux buffer
-> when discard mode is enabled. This would give a small memory saving,
-> but I think there is potential to interfere with any tools that don't
-> expect this so I left the aux allocation untouched. Even old tools that
-> don't know about discard mode will be able to use it because we publish
-> the format option. Not allocating the aux buffer will have to be added
-> to tools which I've done in Perf.
-> 
-> [...]
+On Friday, January 10th, 2025 at 5:22 PM, Dave Tucker <dave@dtucker.co.uk> =
+wrote:
 
-Applied driver and docs patches to will (for-next/perf), thanks!
+> > On 9 Jan 2025, at 22:39, Arnaldo Carvalho de Melo acme@kernel.org wrote=
+:
+> > And sure this will be refused by the kernel, lots of stuff that have
+> > invalid names, probably need to turn those into void as well as a
+> > continuation of this hack, then prune, maybe that is it, we'll see.
+>=20
+>=20
+> Rather than voiding the names you can do something like this [0] to
+> coerce them into a format that the kernel is happy with. We initally
+> voided names but the resulting BTF was unusable since you couldn=E2=80=
+=99t
+> lookup types by name.
 
-[1/5] perf: arm_spe: Add format option for discard mode
-      https://git.kernel.org/will/c/d28d95bc63cb
-[2/5] perf docs: arm_spe: Document new discard mode
-      https://git.kernel.org/will/c/ba113ecad81a
+Regarding the names, I would recommend to do exactly what we're doing in bp=
+f-linker[0], which is converting each character not supported by C to `_[he=
+x_representation]_`. This way, we make sure that two different types can't =
+produce the same names in BTF.
+
+An another important fixup we do is ignoring data-carrying enums[1], I thin=
+k pahole could that do for now as well. That said, I think a long-term solu=
+tion would be teaching the kernel to accept them.
 
 Cheers,
--- 
-Will
+Michal
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+[0] https://github.com/aya-rs/bpf-linker/blob/v0.9.13/src/llvm/di.rs#L34-L6=
+0
+[1] https://github.com/aya-rs/bpf-linker/blob/v0.9.13/src/llvm/di.rs#L129-L=
+132
 
