@@ -1,84 +1,84 @@
-Return-Path: <bpf+bounces-48593-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48594-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B799A09D60
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 22:50:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68DF9A09D8B
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 23:01:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CE753AA7D5
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 21:50:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F08116B4FD
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 22:01:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CDC5209F50;
-	Fri, 10 Jan 2025 21:50:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F87D214A9E;
+	Fri, 10 Jan 2025 22:01:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ckgQcXGA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TmSkYfEF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6989424B254
-	for <bpf@vger.kernel.org>; Fri, 10 Jan 2025 21:50:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71810212B0D
+	for <bpf@vger.kernel.org>; Fri, 10 Jan 2025 22:01:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736545825; cv=none; b=t7FFoUribqL/ua+oxQSPn9uH7YcPhIQ0QP7aVbxxPV10cs7WFmLdKPKB/5ha749suNlJz3HgzGwzTvk94SdRxZDkOVboxUfxnX0huiUPgYOQV5FeJ0pBk1P4qTafK8sA0zWUMiwvsRFFnxhodmVaT1S1DKkQtX+2/+mh9p7Tyz8=
+	t=1736546493; cv=none; b=Uexqondnn6/h1l6cVEuhnlYxI79zKNJ1qCW0rB8Zo3kMCHUrmTu8dZUJ8Sb2C7lHnIS+WOAdObTUWqqg/1o2r4XQlj3J5HeZtdDUD+p0lW+vdAIBn1rfZheRhHxwHYuCaA247FCw9t5R1tEWbY58hTDZVZ07mHfyLkyt6fqxmjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736545825; c=relaxed/simple;
-	bh=uThlivdER09zy3HD/F9tXPzWUABObMBz7W1AcmNepwg=;
+	s=arc-20240116; t=1736546493; c=relaxed/simple;
+	bh=eyi5MP9OGmEGcTGWfS0EBHNhkdqf8SUCGifmts8+nw8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W03KejB9CXYe7RUm7FtYTbTFUNBunUEH3j5upgq+0Q1Oy2wCm6sJLcX5PD2lW1vwVcjj3dvjlIcrcHGiw5O0ukDFKrCq0v1i/3kk/5RB8471mzpzj6m7AM5tIA1DUZasBKFch6qy8CbosnJkvnotp41aG9pmAHcWb3g++J6g+hU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ckgQcXGA; arc=none smtp.client-ip=209.85.216.53
+	 To:Cc:Content-Type; b=KVnUaLRxpnJqefy7GTZu19UsEF25OUpILdQD9H4u1UaLd6BlqCBmGj80bZDW+Y492+LKxGKEL0QugbnpGR5BEZ1vy4OiuBAXkjP8olbhLF1oa7MVWLVHom9vc1zzsseSX8bSXhPxBwhtHy8mc4RHMjKM+aTH2LzDgb+7oanQFXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TmSkYfEF; arc=none smtp.client-ip=209.85.216.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2ef6c56032eso3269576a91.2
-        for <bpf@vger.kernel.org>; Fri, 10 Jan 2025 13:50:23 -0800 (PST)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2ef89dbd8eeso3304121a91.0
+        for <bpf@vger.kernel.org>; Fri, 10 Jan 2025 14:01:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736545823; x=1737150623; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1736546491; x=1737151291; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5xiufv729pOKW8hnhToeicXpljZB4POyrD90eQfHIv4=;
-        b=ckgQcXGApDQ82fhUDbWOSdHAJ8mJcUFYpmNojR6Tml9asLRG5ojlQjcxeEecZqxOA5
-         VYJiudJZjkw951u2LHjgHnuiyez7OVBWoDVwDg7XJlAj1AqdOYQ5lLi4LaktR1XrbJjz
-         SAq9uC2QHXnl3nCEBr1K95pYIS7h4ucj8ivoA4zpk1DExic1mU1gLwPQsx+9ewnkiuAQ
-         r94mGx1bF3KUDk3HWyRwsP+TNYTGP5TyQrR+nHxVQj7tEEds6/YTDwz5IeejhrwEHvtQ
-         FUNeJu+NQ3gxbCsvEGVcrD8ZFRQOS8oXTCA/UmNgOK3dE2UCXhBXw8IQySZ2G4B8il27
-         jKSA==
+        bh=1xVaG7BPrwWVqfXJ56Ko/Gx/Ry3hlHW50pgwCtZO10A=;
+        b=TmSkYfEF8QcG7ddB2/GxjcEU39iDYrOMF3JQk4JPZ82hgoqdJrxe4nV988Bx9KxpaE
+         70NANE9gRm/a5hovP6ccNraPKgy42ChonJ52sccDHlttVEwEEdjqrolfsbxiQieDylll
+         x7TqgzfNnB8fzty0jVj2HjFa3pbSHi7j/J53jfLNY4EUVAo45NgJXz+8fobEqdD8G88v
+         vgwUPCXHpL/7cm1svRozOibO9QU9L1+IsFAtQG7DO6bwsNFvU7RS2foXqZQM0tVSr9PS
+         6RinrEiwae59a9wE5D8Dn5PfCp9OG53MDukU5D4UIxowUliowjzl5LwfAGQkM9eT7aZy
+         d5BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736545823; x=1737150623;
+        d=1e100.net; s=20230601; t=1736546491; x=1737151291;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5xiufv729pOKW8hnhToeicXpljZB4POyrD90eQfHIv4=;
-        b=cikDyMYNCZF+2FCZCo7btUpBo1AWS2JB7OWX/37MgaJT0yA1aOeob8bxgLDokjTUaC
-         my6uX0VjT1gJNXjbaTjfTwbJweQGZOa901/QZQ44vgkMYIs4yd+DLeKX226D9pH7JmLl
-         O5KeBuz50m1pVrWHR6WuWd9x6euG6hZD2nl0mxcpJoITrVpS66EyjinskVFwcIb9hozl
-         ENISjAJOrYSvl7St1TKK7SAI6uf4vAHzBe21S2j7AYaf3LW75N+oBPiyp3G0BROuyV9z
-         UACSmm4sxFpzSravQKm8/wl1rrbP6IQ6AOza3QrEvtdhuLAg/1Y4A2U7xIuV3z9aJPDz
-         3ooQ==
-X-Gm-Message-State: AOJu0YybUrw6dEdfKqAgb53V3Q7bOk0nMP2+NcWmTzSamn4XHXsUR9Dq
-	WJVhgHSPP+IkwYP33lUWi5t7/55oygDMM+InjmDK8ASJuTqDomGSZsGIAiHvE7x/udz2GRMlTok
-	6aSwcBabWS3j6xcJHi7NQMBr2f5Q=
-X-Gm-Gg: ASbGncvZuvfn+5eArTSOuIfApXUe2SYZ1P5SlFZHwOdnaQP/Esf5qUTWwMYxp4ukboR
-	UG/bOHaj+dATyqvSyPjbjenuRAzP6VpN29lXWQ2bHrBh0bDvbMVQYcA==
-X-Google-Smtp-Source: AGHT+IFwb1UA0jsbhrxi6K9k2KJ9JTPE2VSiqJlbAoIASbUk/Ij6+6kDpkSDfFz6PhS4YjdQLyFQydpfb5BWKq0xfEc=
-X-Received: by 2002:a17:90b:4a44:b0:2f4:f7f8:fc8a with SMTP id
- 98e67ed59e1d1-2f548f7649amr18841977a91.33.1736545822614; Fri, 10 Jan 2025
- 13:50:22 -0800 (PST)
+        bh=1xVaG7BPrwWVqfXJ56Ko/Gx/Ry3hlHW50pgwCtZO10A=;
+        b=UUN2YoYiMANV4q1KeY8gjr+qCDpx2CYgU23VGj4V36LAkw317rUCX5dBKx3Iu2mast
+         pqd/1bie9drjnQ0fU3QoE+H1wqNhbCq8SOdEUP0x1WsZ17OEgujO8QV06Dk0p4l8D0Tf
+         GSrZy+IIQtWJiS720dTHJu7It+5WQvlDDC7atXAXkVxjHzN6d22ZipQJ6uMMxsKy6cYh
+         0gY/IZ04EehRAriNDZ1bCQEg73cfWJxA5L/yEYUOaOjivq01uUwjGsixZXQ9afvnmClN
+         17aEo0ChPeevi/drps9y5W8d2PML8prZraOB8K79sT8QjQZTrMoyA2xp8SjU5nZ8Gj1Y
+         OQ7A==
+X-Gm-Message-State: AOJu0Yy2+jqXTpOmv2NKEoXq4b8ZTF9Iy/nAtxJplYhRsNtr1+EV9rIw
+	cIrJ8dkeBZskWJCC6WFjcMN+bumGbbVBxWqDgeJLdZXuIyR4e/OvJWqgqg1YrB9tSXvN9zIY6In
+	ZLvfhli0Y+a81ydlrQ9YHUJAjllYTbw==
+X-Gm-Gg: ASbGncuMAgF3AWVAg6NdLjR7DIKwtmHuguDq63SZuZIbw3qLHD7M8zY6gJXjOFbydGK
+	9Oe7uhHEx9QCH/NqjFSh8Ts7pRhVjgzXzoT7vRTGER+ED2VgepH89+g==
+X-Google-Smtp-Source: AGHT+IFA1D6dtouSmBLLDoBe3rsVJozlIk7ntkWozV0pB94F/MlCNeMV5QpP2vNf57S2uPnc4TMquKQKSeTWaWOffvI=
+X-Received: by 2002:a17:90b:540b:b0:2f2:3efd:96da with SMTP id
+ 98e67ed59e1d1-2f548f4ea9emr19631765a91.24.1736546490666; Fri, 10 Jan 2025
+ 14:01:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250107020632.170883-1-linux@jordanrome.com>
-In-Reply-To: <20250107020632.170883-1-linux@jordanrome.com>
+References: <20250107020632.170883-1-linux@jordanrome.com> <20250107020632.170883-2-linux@jordanrome.com>
+In-Reply-To: <20250107020632.170883-2-linux@jordanrome.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 10 Jan 2025 13:50:10 -0800
-X-Gm-Features: AbW1kvZdJKWtBITRhKw1pwnPHXPw1S5Hq52RmAs6XYGyTsyVT8Stg86WmsD6Z9A
-Message-ID: <CAEf4BzZuAmSn=HxzNBHrAnx3beem+e97ANHTgR-S4Q8yn2A7CA@mail.gmail.com>
-Subject: Re: [bpf-next v2 1/2] bpf: Add bpf_copy_from_user_task_str kfunc
+Date: Fri, 10 Jan 2025 14:01:18 -0800
+X-Gm-Features: AbW1kvY1FFGBVFDb8cTCIBl-8iqmqwC__rSKToTFCUZAFx3YWKxLdBaqzxIYCK4
+Message-ID: <CAEf4BzacGVVfstC+upqJm+JmzuhAYAht_g1ZfMBAPezgzEQtpQ@mail.gmail.com>
+Subject: Re: [bpf-next v2 2/2] selftests/bpf: Add tests for bpf_copy_from_user_task_str
 To: Jordan Rome <linux@jordanrome.com>
 Cc: bpf@vger.kernel.org, linux-mm@kvack.org, 
 	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
@@ -87,311 +87,222 @@ Cc: bpf@vger.kernel.org, linux-mm@kvack.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 6, 2025 at 6:12=E2=80=AFPM Jordan Rome <linux@jordanrome.com> w=
+On Mon, Jan 6, 2025 at 6:20=E2=80=AFPM Jordan Rome <linux@jordanrome.com> w=
 rote:
 >
-> This new kfunc will be able to copy a string
-> from another process's/task's address space.
-
-nit: this is kernel code, task is unambiguous, so I'd drop the
-"process" reference here
-
-> This is similar to `bpf_copy_from_user_str`
-> but accepts a `struct task_struct*` argument.
->
-> This required adding an additional function
-> in memory.c, namely `copy_str_from_process_vm`,
-> which works similar to `access_process_vm`
-> but utilizes the `strncpy_from_user` helper
-> and only supports reading/copying and not writing.
+> This adds tests for both the happy path and the
+> error path (with and without the BPF_F_PAD_ZEROS flag).
 >
 > Signed-off-by: Jordan Rome <linux@jordanrome.com>
 > ---
->  include/linux/mm.h   |   3 ++
->  kernel/bpf/helpers.c |  46 ++++++++++++++++++++
->  mm/memory.c          | 101 +++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 150 insertions(+)
+>  .../selftests/bpf/prog_tests/bpf_iter.c       |  7 +++
+>  .../selftests/bpf/prog_tests/read_vsyscall.c  |  1 +
+>  .../selftests/bpf/progs/bpf_iter_tasks.c      | 55 +++++++++++++++++++
+>  .../selftests/bpf/progs/read_vsyscall.c       |  6 +-
+>  4 files changed, 67 insertions(+), 2 deletions(-)
 >
-
-please check kernel test bot's complains as well
-
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index c39c4945946c..52b304b20630 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2484,6 +2484,9 @@ extern int access_process_vm(struct task_struct *ts=
-k, unsigned long addr,
->  extern int access_remote_vm(struct mm_struct *mm, unsigned long addr,
->                 void *buf, int len, unsigned int gup_flags);
+> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
+sting/selftests/bpf/prog_tests/bpf_iter.c
+> index 6f1bfacd7375..8ed864793bd1 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> @@ -34,6 +34,8 @@
+>  #include "bpf_iter_ksym.skel.h"
+>  #include "bpf_iter_sockmap.skel.h"
 >
-> +extern int copy_str_from_process_vm(struct task_struct *tsk, unsigned lo=
-ng addr,
-> +               void *buf, int len, unsigned int gup_flags);
-
-nit: curious what mm folks think about naming, I'd go with a slightly
-less verbose naming: "copy_remote_vm_str" (copy vs access, _str suffix
-for non fixed-sized semantics marking)
-
-for the next revision, let's split out mm parts from helpers parts, I
-don't think we lose much as this new internal API is self-contained,
-and it will be easier for mm folks to review
-
+> +static char test_data[] =3D "test_data";
 > +
->  long get_user_pages_remote(struct mm_struct *mm,
->                            unsigned long start, unsigned long nr_pages,
->                            unsigned int gup_flags, struct page **pages,
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index cd5f9884d85b..45d41b7a9906 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -3072,6 +3072,51 @@ __bpf_kfunc void bpf_local_irq_restore(unsigned lo=
-ng *flags__irq_flag)
->         local_irq_restore(*flags__irq_flag);
+>  static void test_btf_id_or_null(void)
+>  {
+>         struct bpf_iter_test_kern3 *skel;
+> @@ -328,12 +330,17 @@ static void test_task_sleepable(void)
+>         if (!ASSERT_OK_PTR(skel, "bpf_iter_tasks__open_and_load"))
+>                 return;
+>
+> +       skel->bss->user_ptr =3D test_data;
+>         do_dummy_read(skel->progs.dump_task_sleepable);
+>
+>         ASSERT_GT(skel->bss->num_expected_failure_copy_from_user_task, 0,
+>                   "num_expected_failure_copy_from_user_task");
+>         ASSERT_GT(skel->bss->num_success_copy_from_user_task, 0,
+>                   "num_success_copy_from_user_task");
+> +       ASSERT_GT(skel->bss->num_expected_failure_copy_from_user_task_str=
+, 0,
+> +                 "num_expected_failure_copy_from_user_task_str");
+> +       ASSERT_GT(skel->bss->num_success_copy_from_user_task_str, 0,
+> +                 "num_success_copy_from_user_task_str");
+>
+>         bpf_iter_tasks__destroy(skel);
+>  }
+> diff --git a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c b/too=
+ls/testing/selftests/bpf/prog_tests/read_vsyscall.c
+> index c7b9ba8b1d06..a8d1eaa67020 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
+> @@ -24,6 +24,7 @@ struct read_ret_desc {
+>         { .name =3D "copy_from_user", .ret =3D -EFAULT },
+>         { .name =3D "copy_from_user_task", .ret =3D -EFAULT },
+>         { .name =3D "copy_from_user_str", .ret =3D -EFAULT },
+> +       { .name =3D "copy_from_user_task_str", .ret =3D -EFAULT },
+>  };
+>
+>  void test_read_vsyscall(void)
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_tasks.c b/tools/t=
+esting/selftests/bpf/progs/bpf_iter_tasks.c
+> index bc10c4e4b4fa..90691e34b915 100644
+> --- a/tools/testing/selftests/bpf/progs/bpf_iter_tasks.c
+> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_tasks.c
+> @@ -9,6 +9,7 @@ char _license[] SEC("license") =3D "GPL";
+>  uint32_t tid =3D 0;
+>  int num_unknown_tid =3D 0;
+>  int num_known_tid =3D 0;
+> +void *user_ptr =3D 0;
+>
+>  SEC("iter/task")
+>  int dump_task(struct bpf_iter__task *ctx)
+> @@ -35,7 +36,9 @@ int dump_task(struct bpf_iter__task *ctx)
 >  }
 >
-> +/**
-> + * bpf_copy_from_user_task_str() - Copy a string from an task's address =
-space
-> + * @dst:             Destination address, in kernel space.  This buffer =
-must be
-> + *                   at least @dst__sz bytes long.
-> + * @dst__sz:         Maximum number of bytes to copy, includes the trail=
-ing NUL.
-> + * @unsafe_ptr__ign: Source address in the task's address space.
-> + * @tsk:             The task whose address space will be used
-> + * @flags:           The only supported flag is BPF_F_PAD_ZEROS
-> + *
-> + * Copies a NULL-terminated string from a task's address space to BPF sp=
-ace.
-
-there is no "BPF space", really... maybe "copies string into *dst* buffer"
-
-> + * If user string is too long this will still ensure zero termination in=
- the
-> + * dst buffer unless buffer size is 0.
-> + *
-> + * If BPF_F_PAD_ZEROS flag is set, memset the tail of @dst to 0 on succe=
-ss and
-> + * memset all of @dst on failure.
-> + */
-> +__bpf_kfunc int bpf_copy_from_user_task_str(void *dst, u32 dst__sz, cons=
-t void __user *unsafe_ptr__ign, struct task_struct *tsk, u64 flags)
-
-this looks like a long line, does it fit under 100 characters?
-
-> +{
-> +       int count =3D dst__sz - 1;
-> +       int ret =3D 0;
+>  int num_expected_failure_copy_from_user_task =3D 0;
+> +int num_expected_failure_copy_from_user_task_str =3D 0;
+>  int num_success_copy_from_user_task =3D 0;
+> +int num_success_copy_from_user_task_str =3D 0;
+>
+>  SEC("iter.s/task")
+>  int dump_task_sleepable(struct bpf_iter__task *ctx)
+> @@ -44,6 +47,9 @@ int dump_task_sleepable(struct bpf_iter__task *ctx)
+>         struct task_struct *task =3D ctx->task;
+>         static const char info[] =3D "    =3D=3D=3D END =3D=3D=3D";
+>         struct pt_regs *regs;
+> +       char task_str1[10] =3D "aaaaaaaaaa";
+> +       char task_str2[10], task_str3[10];
+> +       char task_str4[20] =3D "aaaaaaaaaaaaaaaaaaaa";
+>         void *ptr;
+>         uint32_t user_data =3D 0;
+>         int ret;
+> @@ -78,8 +84,57 @@ int dump_task_sleepable(struct bpf_iter__task *ctx)
+>                 BPF_SEQ_PRINTF(seq, "%s\n", info);
+>                 return 0;
+>         }
 > +
-> +       if (unlikely(flags & ~BPF_F_PAD_ZEROS))
-> +               return -EINVAL;
-> +
-> +       if (unlikely(!dst__sz))
+>         ++num_success_copy_from_user_task;
+>
+> +       /* Read an invalid pointer and ensure we get an error */
+> +       ptr =3D NULL;
+> +       ret =3D bpf_copy_from_user_task_str((char *)task_str1, sizeof(tas=
+k_str1), ptr, task, 0);
+> +       if (ret >=3D 0 || task_str1[9] !=3D 'a') {
+> +               BPF_SEQ_PRINTF(seq, "%s\n", info);
 > +               return 0;
+> +       }
 > +
-> +       ret =3D copy_str_from_process_vm(tsk, (unsigned long)unsafe_ptr__=
-ign, dst, count, 0);
+> +       /* Read an invalid pointer and ensure we get error with pad zeros=
+ flag */
+> +       ptr =3D NULL;
+> +       ret =3D bpf_copy_from_user_task_str((char *)task_str1, sizeof(tas=
+k_str1), ptr, task, BPF_F_PAD_ZEROS);
+> +       if (ret >=3D 0 || task_str1[9] !=3D '\0') {
+> +               BPF_SEQ_PRINTF(seq, "%s\n", info);
+> +               return 0;
+> +       }
 > +
-> +       if (ret <=3D 0) {
-> +               if (flags & BPF_F_PAD_ZEROS)
-> +                       memset((char *)dst, 0, dst__sz);
+> +       ++num_expected_failure_copy_from_user_task_str;
+> +
+> +       /* Same length as the string */
+> +       ret =3D bpf_copy_from_user_task_str((char *)task_str2, 10, user_p=
+tr, task, 0);
+> +       if (bpf_strncmp(task_str2, 10, "test_data\0") !=3D 0 || ret !=3D =
+10) {
+> +               BPF_SEQ_PRINTF(seq, "%s\n", info);
+> +               return 0;
+> +       }
+> +
+> +       /* Shorter length than the string */
+> +       ret =3D bpf_copy_from_user_task_str((char *)task_str3, 9, user_pt=
+r, task, 0);
+> +       if (bpf_strncmp(task_str3, 9, "test_dat\0") !=3D 0 || ret !=3D 9)=
+ {
+> +               BPF_SEQ_PRINTF(seq, "%s\n", info);
+> +               return 0;
+> +       }
+> +
+> +       /* Longer length than the string */
+> +       ret =3D bpf_copy_from_user_task_str((char *)task_str4, 20, user_p=
+tr, task, 0);
+> +       if (bpf_strncmp(task_str4, 10, "test_data\0") !=3D 0 || ret !=3D =
+10 || task_str4[sizeof(task_str4) - 1] !=3D 'a') {
+> +               BPF_SEQ_PRINTF(seq, "%s\n", info);
+> +               return 0;
+> +       }
+> +
+> +       /* Longer length than the string with pad zeros flag */
+> +       ret =3D bpf_copy_from_user_task_str((char *)task_str4, 20, user_p=
+tr, task, BPF_F_PAD_ZEROS);
+> +       if (bpf_strncmp(task_str4, 10, "test_data\0") !=3D 0 || ret !=3D =
+10 || task_str4[sizeof(task_str4) - 1] !=3D '\0') {
 
-nit: no need for (char *) cast? memset takes void *, I think
+looks like a long string, please check 100 character limit
 
-> +               return ret;
+> +               BPF_SEQ_PRINTF(seq, "%s\n", info);
+> +               return 0;
 
-if ret =3D=3D 0, is that an error? If so, `return ret ?: -EINVAL;` or
-something along those lines?
-
-pw-bot: cr
+nit: this BPF_SEQ_PRINTF() + return 0 repetition is... repetitive :)
+`goto drop_out;` maybe?
 
 > +       }
 > +
-> +       if (ret < count) {
-> +               if (flags & BPF_F_PAD_ZEROS)
-> +                       memset((char *)dst + ret, 0, dst__sz - ret);
-> +       } else {
-> +               ((char *)dst)[count] =3D '\0';
-> +       }
+> +       ++num_success_copy_from_user_task_str;
 > +
-> +       return ret + 1;
-> +}
-> +
->  __bpf_kfunc_end_defs();
+>         if (ctx->meta->seq_num =3D=3D 0)
+>                 BPF_SEQ_PRINTF(seq, "    tgid      gid     data\n");
 >
->  BTF_KFUNCS_START(generic_btf_ids)
-> @@ -3164,6 +3209,7 @@ BTF_ID_FLAGS(func, bpf_iter_bits_new, KF_ITER_NEW)
->  BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NULL)
->  BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
->  BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
-> +BTF_ID_FLAGS(func, bpf_copy_from_user_task_str, KF_SLEEPABLE)
->  BTF_ID_FLAGS(func, bpf_get_kmem_cache)
->  BTF_ID_FLAGS(func, bpf_iter_kmem_cache_new, KF_ITER_NEW | KF_SLEEPABLE)
->  BTF_ID_FLAGS(func, bpf_iter_kmem_cache_next, KF_ITER_NEXT | KF_RET_NULL =
-| KF_SLEEPABLE)
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 75c2dfd04f72..514490bd7d6d 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -6673,6 +6673,75 @@ static int __access_remote_vm(struct mm_struct *mm=
-, unsigned long addr,
->         return buf - old_buf;
->  }
+> diff --git a/tools/testing/selftests/bpf/progs/read_vsyscall.c b/tools/te=
+sting/selftests/bpf/progs/read_vsyscall.c
+> index 39ebef430059..623c1c5bd2d0 100644
+> --- a/tools/testing/selftests/bpf/progs/read_vsyscall.c
+> +++ b/tools/testing/selftests/bpf/progs/read_vsyscall.c
+> @@ -8,14 +8,15 @@
 >
-> +/*
-> + * Copy a string from another process's address space as given in mm.
-> + * Don't return partial results. If there is any error return -EFAULT.
-
-What does "don't return partial results" mean? What happens if we read
-part of a string and then fail to read the rest?
-
-> + */
-> +static int __copy_str_from_remote_vm(struct mm_struct *mm, unsigned long=
- addr,
-> +                             void *buf, int len, unsigned int gup_flags)
-> +{
-> +       void *old_buf =3D buf;
-> +       int err =3D 0;
-> +
-> +       if (mmap_read_lock_killable(mm))
-> +               return -EFAULT;
-> +
-> +       /* Untag the address before looking up the VMA */
-> +       addr =3D untagged_addr_remote(mm, addr);
-> +
-> +       /* Avoid triggering the temporary warning in __get_user_pages */
-> +       if (!vma_lookup(mm, addr)) {
-> +               mmap_read_unlock(mm);
-> +               return -EFAULT;
-
-maybe let's do (so that we do mmap_read_unlock in just one place)
-
-err =3D -EFAULT;
-goto err_out;
-
-and then see below
-
-> +       }
-> +
-> +       while (len) {
-> +               int bytes, offset, retval;
-> +               void *maddr;
-> +               struct vm_area_struct *vma =3D NULL;
-> +               struct page *page =3D get_user_page_vma_remote(mm, addr,
-> +                                                            gup_flags, &=
-vma);
-> +
-
-nit: I'd split page declaration and assignment and kept
-get_user_page_vma_remote() invocation on a single line
-
-> +               if (IS_ERR(page)) {
-> +                       /*
-> +                        * Treat as a total failure for now until we deci=
-de how
-> +                        * to handle the CONFIG_HAVE_IOREMAP_PROT case an=
-d
-> +                        * stack expansion.
-> +                        */
-> +                       err =3D -EFAULT;
-> +                       break;
-> +               }
-> +
-> +               bytes =3D len;
-> +               offset =3D addr & (PAGE_SIZE - 1);
-> +               if (bytes > PAGE_SIZE - offset)
-> +                       bytes =3D PAGE_SIZE - offset;
-> +
-> +               maddr =3D kmap_local_page(page);
-> +               retval =3D strncpy_from_user(buf, (const char __user *)ad=
-dr, bytes);
-
-you are not using maddr... that seems wrong (even if it works due to
-how kmap_local_page is currently implemented)
-
-> +               unmap_and_put_page(page, maddr);
-> +
-> +               if (retval < 0) {
-> +                       err =3D retval;
-> +                       break;
-> +               }
-> +
-> +               len -=3D retval;
-> +               buf +=3D retval;
-> +               addr +=3D retval;
-> +
-> +               /* Found the end of the string */
-> +               if (retval < bytes)
-> +                       break;
-> +       }
-
-err_out: here
-
-> +       mmap_read_unlock(mm);
-> +
-> +       if (err)
-> +               return err;
-> +
-> +       return buf - old_buf;
-> +}
-> +
->  /**
->   * access_remote_vm - access another process' address space
->   * @mm:                the mm_struct of the target address space
-> @@ -6714,6 +6783,38 @@ int access_process_vm(struct task_struct *tsk, uns=
-igned long addr,
->  }
->  EXPORT_SYMBOL_GPL(access_process_vm);
+>  int target_pid =3D 0;
+>  void *user_ptr =3D 0;
+> -int read_ret[9];
+> +int read_ret[10];
 >
-> +/**
-> + * copy_str_from_process_vm - copy a string from another process's addre=
-ss space.
-> + * @tsk:       the task of the target address space
-> + * @addr:      start address to access
-
-access -> read from
-
-> + * @buf:       source or destination buffer
-
-for this api it's always the destination, right?
-
-> + * @len:       number of bytes to transfer
-> + * @gup_flags: flags modifying lookup behaviour
-> + *
-> + * The caller must hold a reference on @mm.
-> + *
-> + * Return: number of bytes copied from source to destination. If the str=
-ing
-> + * is shorter than @len then return the length of the string.
-
-and if the string is longer than @len, then what happens? we should
-either specify or drop the "if string is shorter bit" and make it
-unambiguous whether terminating zero is included or not
-
-> + * On any error, return -EFAULT.
-> + */
-> +int copy_str_from_process_vm(struct task_struct *tsk, unsigned long addr=
-,
-> +               void *buf, int len, unsigned int gup_flags)
-> +{
-> +       struct mm_struct *mm;
-> +       int ret;
-> +
-> +       mm =3D get_task_mm(tsk);
-> +       if (!mm)
-> +               return -EFAULT;
-> +
-> +       ret =3D __copy_str_from_remote_vm(mm, addr, buf, len, gup_flags);
-> +
-> +       mmput(mm);
-> +
-> +       return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(copy_str_from_process_vm);
-> +
+>  char _license[] SEC("license") =3D "GPL";
+>
 >  /*
->   * Print the name of a VMA.
+> - * This is the only kfunc, the others are helpers
+> + * These are the kfuncs, the others are helpers
 >   */
+>  int bpf_copy_from_user_str(void *dst, u32, const void *, u64) __weak __k=
+sym;
+> +int bpf_copy_from_user_task_str(void *dst, u32, const void *, struct tas=
+k_struct *, u64) __weak __ksym;
+
+these definitions should be coming from vmlinux.h, no need to add them
+manually anymore
+
+>
+>  SEC("fentry/" SYS_PREFIX "sys_nanosleep")
+>  int do_probe_read(void *ctx)
+> @@ -47,6 +48,7 @@ int do_copy_from_user(void *ctx)
+>         read_ret[7] =3D bpf_copy_from_user_task(buf, sizeof(buf), user_pt=
+r,
+>                                               bpf_get_current_task_btf(),=
+ 0);
+>         read_ret[8] =3D bpf_copy_from_user_str((char *)buf, sizeof(buf), =
+user_ptr, 0);
+> +       read_ret[9] =3D bpf_copy_from_user_task_str((char *)buf, sizeof(b=
+uf), user_ptr, bpf_get_current_task_btf(), 0);
+
+please drop all those (char *) casts, in C any pointer is implicitly
+castable to `void *` and `void *` is (implicitly) castable to any
+other pointer. C++ is stricter, but in C it's canonical to not do
+casting
+
+>
+>         return 0;
+>  }
 > --
 > 2.43.5
 >
