@@ -1,191 +1,142 @@
-Return-Path: <bpf+bounces-48554-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48555-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91011A091D2
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 14:24:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46679A0927C
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 14:48:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DD4E1889A5B
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 13:24:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 065CE161478
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 13:48:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4290120DD53;
-	Fri, 10 Jan 2025 13:24:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8C7820E6E9;
+	Fri, 10 Jan 2025 13:48:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="d4EPS6jg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cZML/Y/d"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailtransmit05.runbox.com (mailtransmit05.runbox.com [185.226.149.38])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74A6A20D4FB;
-	Fri, 10 Jan 2025 13:24:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.38
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C7E620E010;
+	Fri, 10 Jan 2025 13:48:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736515450; cv=none; b=jpceA2vAY6sZOcotjfyPcpuqZgR9gl9njBzJvrBz2cdaGgLVhu+x0Ls+zoej5tBn36H0dljopS2vWpRv6zoa7ojcZHjSBSwFHSZgEICmsFdRkACw9zT8Nu86rPQuNxMGscP953NzwZjGIYOBo/Wlrm5gblXFyw4OgNv1dRQB8dM=
+	t=1736516902; cv=none; b=TCbcVdkMwdyLeNEKMgiRDV0OjaZAMoYAV6tmLCZnQtt7TYKI3DJHgps4QVRlGo/I7zbwHjOystr7DHoJ9ogGHNuM0Tw2qlKl0Ak5aBHUVCJwbLYxnMdeK6YRUBGUlkpCwmiqvA4+UKGY14duEntvMI3AjxesgAxJNS/t/M069pw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736515450; c=relaxed/simple;
-	bh=clT/8RxDgjuG9ypKds+RfpuFO31oP95DIkCEURjcrmM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=j+Nxa499LV4UV1+BdVxPFyC3RSfYa85XuMgPYtfwaud1KKp+zxYhOsACD40jURq9ZmTRvrj/tb5iKqRsnTpgP/cUVYImTWBLjIUUIk3YPzwdPYlWK1tG2j0WnHnNE3BsoogMfzpXYgncCkXi1kQ2KJCN0czue982Pp8kYgrwE38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=d4EPS6jg; arc=none smtp.client-ip=185.226.149.38
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
-Received: from mailtransmit03.runbox ([10.9.9.163] helo=aibo.runbox.com)
-	by mailtransmit05.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.93)
-	(envelope-from <mhal@rbox.co>)
-	id 1tWEzO-005xC4-Oy; Fri, 10 Jan 2025 14:23:50 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-	s=selector2; h=Cc:To:Message-Id:Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Subject:Date:From;
-	bh=FcyrAET8neQquEGrAHiIKKnyo+Au3cIC0L4fmdBd8AA=; b=d4EPS6jgaiE0cjc69P/6q7NbF9
-	qdUPQjNwjYcwfS55oe3+sQer3uTb9Obq80zKg9vNB8MfhF0ANiSSba9dQO2Rwfxb5xRbKRgwoFswS
-	7aWxe+Et/w4sMGWkFObjP0jWsOFFx++zN/b7h3yje2y/4G10i3TyF8rKl6mwoS/8DSWhXpBS5DxAO
-	9ob3fvmMSCdzTXZjkgFmrnj5QRsLwaeWiSnqXbhIG9rVj5nmneoXKU3c5/7d3COswiiuA2HSBRtf5
-	Q7Bc67Rw5DNBJTV2TEkD+h28bL6pS8LdccKOKioTRCGu0mzM8gNQaJiotOrvPC+lRNfYG/BfbW0Ep
-	OiHGcwOQ==;
-Received: from [10.9.9.74] (helo=submission03.runbox)
-	by mailtransmit03.runbox with esmtp (Exim 4.86_2)
-	(envelope-from <mhal@rbox.co>)
-	id 1tWEzN-0002wu-MB; Fri, 10 Jan 2025 14:23:49 +0100
-Received: by submission03.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.93)
-	id 1tWEzF-00DQf8-6f; Fri, 10 Jan 2025 14:23:41 +0100
-From: Michal Luczaj <mhal@rbox.co>
-Date: Fri, 10 Jan 2025 14:21:55 +0100
-Subject: [PATCH bpf] bpf: Fix bpf_sk_select_reuseport() memory leak
+	s=arc-20240116; t=1736516902; c=relaxed/simple;
+	bh=PAcVRU+Kdt4vR9+Cl2Tf2u5LOxm2wokxmSJ5H9ET5KA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=f/aquCHhEDWQzeOCKbpojeLc8ttknIALmlnwMu/w8br/AG4GPnYlvMDpa6ioaOL07hSa2+b6WoGZaZ7UFb++1+DzMRjiM3o6L+fr6ytNzIoCPqTnbiqmfNabz/a2pOE0Ik7BYGsoHp/UqW4rYrkvxnobGHOzjbWsitslxCbRq44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cZML/Y/d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89CB4C4CED6;
+	Fri, 10 Jan 2025 13:48:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736516901;
+	bh=PAcVRU+Kdt4vR9+Cl2Tf2u5LOxm2wokxmSJ5H9ET5KA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cZML/Y/dLkDSFAlcidbpgx+4Rq/wKl79maghmi6nluI9Lp9hL3pkCT23QHD2eyGcm
+	 EHvZKQihaikIzYBG2VIWbRG5le24ZnUO5mfWk6G6DmNCWT7yuxNtNeQ47OOsNzvvNe
+	 tNgggdB50UkuskC7jWxTh/6VCEZhKwg29TsdDSTvLQAnvQRE37MRrJYdbOM55oNKxF
+	 jyhc/Q/g56ovw94J4i9XjwqaRAzbpmtJEhZXEjJ8cfMOet4ukLvVDgfgaUpUF5huvW
+	 OTZ+1Te1cZeUqvYOSbdJGY4jOQG4BQZldJipuqq2nYXD3IMs37+geQpmNYY7UDTgi+
+	 MjjdA7huZgA6A==
+Date: Fri, 10 Jan 2025 10:48:19 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: Ihor Solodrai <ihor.solodrai@pm.me>, dwarves@vger.kernel.org,
+	bpf@vger.kernel.org, eddyz87@gmail.com, andrii@kernel.org,
+	mykolal@fb.com, olsajiri@gmail.com
+Subject: Re: [PATCH dwarves] btf_encoder: always initialize func_state to 0
+Message-ID: <Z4ElI8tY3otAZych@x1>
+References: <20250110023138.659519-1-ihor.solodrai@pm.me>
+ <3f5369ba-7bbb-4816-b7d9-ab08c48870ae@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250110-reuseport-memleak-v1-1-fa1ddab0adfe@rbox.co>
-X-B4-Tracking: v=1; b=H4sIAPIegWcC/x3MSwqEMBBF0a1IjQ0kgp/0VhoHUZ9a+AsVFUHcu
- 8HhGdx7U4AwAv2SmwQnB97WCJMm1I5uHaC4i6ZMZ7k2RivBEeA32dWCZYablHVtkVdl01nrKHZ
- e0PP1Pf/U+J7q53kBfo1BTmgAAAA=
-X-Change-ID: 20250110-reuseport-memleak-9ac6587bd99a
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
- Jakub Sitnicki <jakub@cloudflare.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, 
- Michal Luczaj <mhal@rbox.co>
-X-Mailer: b4 0.14.2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3f5369ba-7bbb-4816-b7d9-ab08c48870ae@oracle.com>
 
-As pointed out in the original comment, lookup in sockmap can return a TCP
-ESTABLISHED socket. Such TCP socket may have had SO_ATTACH_REUSEPORT_EBPF
-set before it was ESTABLISHED. In other words, a non-NULL sk_reuseport_cb
-does not imply a non-refcounted socket.
+On Fri, Jan 10, 2025 at 10:39:50AM +0000, Alan Maguire wrote:
+> On 10/01/2025 02:31, Ihor Solodrai wrote:
+> > BPF CI caught a segfault on aarch64 and s390x [1] after recent merges
+> > into the master branch.
+> > 
+> > The segfault happened at free(func_state->annots) in
+> > btf_encoder__delete_saved_funcs().
+> > 
+> > func_state->annots arrived there uninitialized because after patch [2]
+> > in some cases func_state may be allocated with a realloc, but was not
+> > zeroed out.
+> > 
+> > Fix this bug by always memset-ing a func_state to zero in
+> > btf_encoder__alloc_func_state().
+> > 
+> > [1] https://github.com/kernel-patches/bpf/actions/runs/12700574327
+> > [2] https://lore.kernel.org/dwarves/20250109185950.653110-11-ihor.solodrai@pm.me/
+> 
+> 
+> Thanks for the quick fix! Reproduced this on an aarch64 system:
+> 
+>  BTF [M] kernel/resource_kunit.ko
+> /bin/sh: line 1: 630875 Segmentation fault      (core dumped)
+> LLVM_OBJCOPY="objcopy" pahole -J -j
+> --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs
+> --lang_exclude=rust --btf_base ./vmlinux kernel/kcsan/kcsan_test.ko
+> make[2]: *** [scripts/Makefile.modfinal:57: kernel/kcsan/kcsan_test.ko]
+> Error 139
+> make[2]: *** Deleting file 'kernel/kcsan/kcsan_test.ko'
+> make[2]: *** Waiting for unfinished jobs....
+> /bin/sh: line 1: 630907 Segmentation fault      (core dumped)
+> LLVM_OBJCOPY="objcopy" pahole -J -j
+> --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs
+> --lang_exclude=rust --btf_base ./vmlinux kernel/torture.ko
+> make[2]: *** [scripts/Makefile.modfinal:56: kernel/torture.ko] Error 139
+> make[2]: *** Deleting file 'kernel/torture.ko'
+> 
+> ...and verified that with the fix all works well.
+> 
+> Nit: missing Signed-off-by
 
-Drop sk's reference in both error paths.
+I'm adding it, ok?
 
-unreferenced object 0xffff888101911800 (size 2048):
-  comm "test_progs", pid 44109, jiffies 4297131437
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    80 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace (crc 9336483b):
-    __kmalloc_noprof+0x3bf/0x560
-    __reuseport_alloc+0x1d/0x40
-    reuseport_alloc+0xca/0x150
-    reuseport_attach_prog+0x87/0x140
-    sk_reuseport_attach_bpf+0xc8/0x100
-    sk_setsockopt+0x1181/0x1990
-    do_sock_setsockopt+0x12b/0x160
-    __sys_setsockopt+0x7b/0xc0
-    __x64_sys_setsockopt+0x1b/0x30
-    do_syscall_64+0x93/0x180
-    entry_SYSCALL_64_after_hwframe+0x76/0x7e
-
-Fixes: 64d85290d79c ("bpf: Allow bpf_map_lookup_elem for SOCKMAP and SOCKHASH")
-Signed-off-by: Michal Luczaj <mhal@rbox.co>
----
- net/core/filter.c | 30 ++++++++++++++++++------------
- 1 file changed, 18 insertions(+), 12 deletions(-)
-
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 834614071727ab92cee759dc788ec2ee6f92284b..2fb45a86f3ddbffa9fd55885d4c4c0d8c3a6c381 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -11251,6 +11251,7 @@ BPF_CALL_4(sk_select_reuseport, struct sk_reuseport_kern *, reuse_kern,
- 	bool is_sockarray = map->map_type == BPF_MAP_TYPE_REUSEPORT_SOCKARRAY;
- 	struct sock_reuseport *reuse;
- 	struct sock *selected_sk;
-+	int err;
+- Arnaldo
  
- 	selected_sk = map->ops->map_lookup_elem(map, key);
- 	if (!selected_sk)
-@@ -11258,10 +11259,6 @@ BPF_CALL_4(sk_select_reuseport, struct sk_reuseport_kern *, reuse_kern,
- 
- 	reuse = rcu_dereference(selected_sk->sk_reuseport_cb);
- 	if (!reuse) {
--		/* Lookup in sock_map can return TCP ESTABLISHED sockets. */
--		if (sk_is_refcounted(selected_sk))
--			sock_put(selected_sk);
--
- 		/* reuseport_array has only sk with non NULL sk_reuseport_cb.
- 		 * The only (!reuse) case here is - the sk has already been
- 		 * unhashed (e.g. by close()), so treat it as -ENOENT.
-@@ -11269,24 +11266,33 @@ BPF_CALL_4(sk_select_reuseport, struct sk_reuseport_kern *, reuse_kern,
- 		 * Other maps (e.g. sock_map) do not provide this guarantee and
- 		 * the sk may never be in the reuseport group to begin with.
- 		 */
--		return is_sockarray ? -ENOENT : -EINVAL;
-+		err = is_sockarray ? -ENOENT : -EINVAL;
-+		goto error;
- 	}
- 
- 	if (unlikely(reuse->reuseport_id != reuse_kern->reuseport_id)) {
- 		struct sock *sk = reuse_kern->sk;
- 
--		if (sk->sk_protocol != selected_sk->sk_protocol)
--			return -EPROTOTYPE;
--		else if (sk->sk_family != selected_sk->sk_family)
--			return -EAFNOSUPPORT;
--
--		/* Catch all. Likely bound to a different sockaddr. */
--		return -EBADFD;
-+		if (sk->sk_protocol != selected_sk->sk_protocol) {
-+			err = -EPROTOTYPE;
-+		} else if (sk->sk_family != selected_sk->sk_family) {
-+			err = -EAFNOSUPPORT;
-+		} else {
-+			/* Catch all. Likely bound to a different sockaddr. */
-+			err = -EBADFD;
-+		}
-+		goto error;
- 	}
- 
- 	reuse_kern->selected_sk = selected_sk;
- 
- 	return 0;
-+error:
-+	/* Lookup in sock_map can return TCP ESTABLISHED sockets. */
-+	if (sk_is_refcounted(selected_sk))
-+		sock_put(selected_sk);
-+
-+	return err;
- }
- 
- static const struct bpf_func_proto sk_select_reuseport_proto = {
+> Tested-by: Alan Maguire <alan.maguire@oracle.com>
 
----
-base-commit: 1f6ff8756091d99b7e5fa556abc0465328302b8b
-change-id: 20250110-reuseport-memleak-9ac6587bd99a
-
-Best regards,
--- 
-Michal Luczaj <mhal@rbox.co>
-
+Thanks!
+ 
+> > ---
+> >  btf_encoder.c | 7 +++++--
+> >  1 file changed, 5 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/btf_encoder.c b/btf_encoder.c
+> > index 78efd70..511c1ea 100644
+> > --- a/btf_encoder.c
+> > +++ b/btf_encoder.c
+> > @@ -1083,7 +1083,7 @@ static bool funcs__match(struct btf_encoder_func_state *s1,
+> >  
+> >  static struct btf_encoder_func_state *btf_encoder__alloc_func_state(struct btf_encoder *encoder)
+> >  {
+> > -	struct btf_encoder_func_state *tmp;
+> > +	struct btf_encoder_func_state *state, *tmp;
+> >  
+> >  	if (encoder->func_states.cnt >= encoder->func_states.cap) {
+> >  
+> > @@ -1100,7 +1100,10 @@ static struct btf_encoder_func_state *btf_encoder__alloc_func_state(struct btf_e
+> >  		encoder->func_states.array = tmp;
+> >  	}
+> >  
+> > -	return &encoder->func_states.array[encoder->func_states.cnt++];
+> > +	state = &encoder->func_states.array[encoder->func_states.cnt++];
+> > +	memset(state, 0, sizeof(*state));
+> > +
+> > +	return state;
+> >  }
+> >  
+> >  static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct function *fn, struct elf_function *func)
 
