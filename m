@@ -1,194 +1,187 @@
-Return-Path: <bpf+bounces-48588-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48589-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F5DBA09CA4
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 21:50:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5ECAFA09D21
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 22:23:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31192188F6EF
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 20:50:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 714ED3A88ED
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 21:23:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A805215F40;
-	Fri, 10 Jan 2025 20:50:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6138208997;
+	Fri, 10 Jan 2025 21:23:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="dC/lXUm0"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="N5kfpBUD";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="xjN0zoXG"
 X-Original-To: bpf@vger.kernel.org
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03olkn2022.outbound.protection.outlook.com [40.92.58.22])
+Received: from fhigh-b3-smtp.messagingengine.com (fhigh-b3-smtp.messagingengine.com [202.12.124.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09883206F38;
-	Fri, 10 Jan 2025 20:50:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.58.22
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736542216; cv=fail; b=SyOXX+3J/eSCoeIJcjE+j/96o/46Y8jOA6WknGdz2POGQjIQ9/EpvHNFlEEYawQ8MWt00mCO+NTqVw2YdKTntuTI4bLB9ZmjsOP+4jGTQcriMG378Rgh104PFaqM7PPMLmy04F5TFl09VZVswoZGOFEUb+1yROJHnkfbmq7eeNM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736542216; c=relaxed/simple;
-	bh=wRrr9lswZiAPYCVD2YTyAMU6AmtHTninB5e+wWQ69Uw=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=BIlHK5D7t9sOr/7fx58KjvtT/YZA2/GdLkGz/V34AnLUM9HhcNTKoN5xVOGVvR0jrc7CU7PJUkWaIIpqIQ+NHEjgFyWYlknWQkKcp76oZg050tTAOCfC+othHNV+KF3skXS5zaqGJx+7U76ZBkrzR5QY7/tdvbcOVteT//xiANs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=dC/lXUm0; arc=fail smtp.client-ip=40.92.58.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=xxGixJ+TRJEzUe/5T1J2OOtISFNe2liQgWSV9xDjLIwqNWtuh+RzIexeGdPfnWbK1iof8u8IyUCfPIFFxaamGojicVdA/jTDKo/5OkPsbxnmPdbe1dzvr5+3kFTJ5z8d77lomrmE6EJJDRi4fHxQts0S/8YjS1rBC//dRtoWS4CY0NLGmS+OCH36JEgA33+Zwf/CtJuZuea7UUgE/LnA7YqrO7D54moVMYeZgqjuaNZHJ6R8cJxsdaKSEoV4+1oB+XDdXwGUgA+X/xQmg9EkmMqsVGKkvFGZ6F/81bzwfcRT/Mq6PexmqvEP8nA/4m4jYz3waBuw0FD/FJZQFu42UA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=p6yapK9t5HLTFH7vyHenQxPsBg+GTIyjw1jy6iL0Lsc=;
- b=EV7pJ0calUu4uF8sF/dro5ycpurP+EQJdGRvTwh6ok+vALdzAJof2ZhiUnXlPjjm8Z2ME7nIbJGIJ19qlRik1GhFyHvCnZxU+IrfYCK78GcTsCobtxQrqUdztDX0mSpYCcQIYa11IhF7kMuJ8wWJAWZgwcWOejn0/FDru1mWQYtI6PNDb23ThN8gUOcemZiOCyhNfZixT093zZJ9DnaE2F30BGQZyDYjtLj/lS00CPh/GTIWC9l3fhYwWFoEQcRGiwoSWTvEuetaYO6gzH9MTtYef/tHHdW4Rlgc2xiJWjLjD8yWUk+qJnaL6wV7mh0LtEwBA/4AILCUR0RSi03OEQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p6yapK9t5HLTFH7vyHenQxPsBg+GTIyjw1jy6iL0Lsc=;
- b=dC/lXUm0d3GOtR0D50ymmjF8OfpibMO9BVkQNSl0kcH8pbnuEXXRk2ENw4gkrWdlsOG6SYiKy8FkLGM8i6KNR7lYx3gwK7caQEb2mhXc5xwqYlMbPeLi72TehPA/XMmB+JgAbbw7VN7A6ZLfRXroZiLmNqtM2tR+l/+Xe/EClNWK1bv/c+ts+Gjyae1DLkMhZToYtNMXS20lu/m17kcNJdLjRFoj09LLQuLisrh0SM9+amsGoXDgBRhYufcl14scsk3VxOF2c8cM4ycM/NRlQd+xANhZ3KTpCR0VZNlorOvZYW0ouwU5/tFGUKe828rPerHKHR6Tsupr3pRn7Tckkg==
-Received: from AM6PR03MB5080.eurprd03.prod.outlook.com (2603:10a6:20b:90::20)
- by VI2PR03MB10595.eurprd03.prod.outlook.com (2603:10a6:800:271::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8335.12; Fri, 10 Jan
- 2025 20:50:10 +0000
-Received: from AM6PR03MB5080.eurprd03.prod.outlook.com
- ([fe80::a16:9eb8:6868:f6d8]) by AM6PR03MB5080.eurprd03.prod.outlook.com
- ([fe80::a16:9eb8:6868:f6d8%3]) with mapi id 15.20.8335.012; Fri, 10 Jan 2025
- 20:50:10 +0000
-Message-ID:
- <AM6PR03MB5080AC3D309A9072196E6C4D991C2@AM6PR03MB5080.eurprd03.prod.outlook.com>
-Date: Fri, 10 Jan 2025 20:50:09 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: per st_ops kfunc allow/deny mask. Was: [PATCH bpf-next v6 4/5]
- bpf: Make fs kfuncs available for SYSCALL program type
-To: Tejun Heo <tj@kernel.org>, Song Liu <song@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>,
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>,
- snorcht@gmail.com, Christian Brauner <brauner@kernel.org>,
- bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
-References: <AM6PR03MB5080DC63013560E26507079E99042@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <AM6PR03MB5080E0DFE4F9BAFFDB9D113B99042@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <CAADnVQLU=W7fuEQommfDYrxr9A2ESV7E3uUAm4VUbEugKEZbkQ@mail.gmail.com>
- <AM6PR03MB50805EAC8B42B0570A2F76B399032@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <CAADnVQJYVLEs8zr414j1xRZ_DAAwcxiCC-1YqDOt8oF13Wf6zw@mail.gmail.com>
- <CAPhsuW7KYss11bQpJo-1f7Pdpb=ky2QWQ=zoJuX3buYm1_nbFA@mail.gmail.com>
- <Z4GA2dhj1PZWTvSv@slm.duckdns.org>
-Content-Language: en-US
-From: Juntong Deng <juntong.deng@outlook.com>
-In-Reply-To: <Z4GA2dhj1PZWTvSv@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P123CA0691.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:37b::19) To AM6PR03MB5080.eurprd03.prod.outlook.com
- (2603:10a6:20b:90::20)
-X-Microsoft-Original-Message-ID:
- <e364727f-7c8c-4394-90fe-5ca6940c0503@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C2921A23B0
+	for <bpf@vger.kernel.org>; Fri, 10 Jan 2025 21:23:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.154
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1736544210; cv=none; b=DYwz7wZ4ILvmFjE3dTvvkzauS3NxBCVudOrt7nVJYEEEL2NbCUC6mabXRhfQLP2B9qY32N0VSzMXYX6MTW07e8b3n9c+wZ58+SmcaNzG4ZCMo7aCfJlMI0oWajuHqFVtY32NL8eGxYwZ52duo5efZuuc6PuClWFUQmh1cAK3m88=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1736544210; c=relaxed/simple;
+	bh=R7DIyLosg686CcsSRk/5MJprWHWXZhwTnKnynz4eAGI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=QJIOMphkGyStAyYGBdy+j9WBhtgRkJPCSYVEqX8ZmsCQ+rjLNlmwxX2wu/LEu17HWLstJ3ntJJ6W3Zqye/jw688BTe20U1HX5FX6LCWOtmUXdhDy6gPHYCRm1s60iFD0kBoYeJ67XBMt/s3ZAltPoqx09jGfySe2ZRHoQWwgzzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=N5kfpBUD; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=xjN0zoXG; arc=none smtp.client-ip=202.12.124.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 06A9C254005F;
+	Fri, 10 Jan 2025 16:23:22 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-04.internal (MEProxy); Fri, 10 Jan 2025 16:23:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:message-id:mime-version:reply-to
+	:subject:subject:to:to; s=fm1; t=1736544201; x=1736630601; bh=7O
+	ks7w2T3ndadqclTzXJPuoexJnAMWG/oN0gLyIc3B0=; b=N5kfpBUDF2U76DcM+G
+	LsccdYOpnLsjPLd88PmbIxcPTnva9myQN9gcL2UjGLTcm860ezDmejPlvSlKlA5K
+	LwJcvkHTKe+l/zXJ97k8nj1Y5W/3DzQgyIpnfBe6kYZ8owKcmIM7JpyZPWUZdmA/
+	sJQRHukH9saRTItIjflzUii6whdiGVlZh7fhpPZ3+FNF6qlcKfmAyRBulG9O96No
+	EW9I2XY+zRsLnxlQhoYIPb08rEkUDUVlHrF5or+eAKijKuEvwn+raHyCTsTa2JQa
+	VZmb+TFVjXgO6Ifc6G4/F+RNjz57jlqovPIxvCGBv1k3a2AzeAHKPqgA/aVgYGNr
+	S31g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:message-id:mime-version:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1736544201; x=1736630601; bh=7Oks7w2T3ndadqclTzXJPuoexJnA
+	MWG/oN0gLyIc3B0=; b=xjN0zoXGJZJHbS2btbl+TMsBOipIrYe0ZH0fBBt5h+Yu
+	rlfKV/TejMmeEYnvPxkxevs3a6mdW39ICYCeL1LKINflcG1lFhgq+guJtGjFGyd6
+	veQwLa+bNKsbgVk0FDlY9zyQrGlrke4w0Zyzz80cQSxQ493Eg68y2x8zk8Bx65Br
+	GPPD3iVgpodGpaZu7+gutJFblfXhiU+05vgIz5gErwBgnelsAezXPeGYvXdfYI/9
+	oQjTSd01aAD96d/v/LZPKE1sPMyh3GS1nR4JlDZMszX7kBUFu/hnQmu0F/szD8cG
+	V+y54bdNFHdOaeo+JNoEa05Bz6DfUtlXtJTa/i4Orw==
+X-ME-Sender: <xms:yY-BZ8EehEfCRWBfh05eXNzbmL1VNXSOnhBltwFP4he4Eo2qijwWwA>
+    <xme:yY-BZ1WaxCYsTAlzu5RTluq8G2Ex2279q9ZmyOc1lXcqi-HULE0rEpPQfv0FWUrFJ
+    ekimvpU5zHuEvxRYg>
+X-ME-Received: <xmr:yY-BZ2JsGhipyICzzm3o5PL7f6tjyoF-6yQtanSehIJQhIAQJRBoJaWT2V_2hAsrVUKe0NNmcSlC-nP0_h52RxVWNg6nGD2DNu08TTiMmBNurw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudegkedgudegkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculd
+    efhedmnecujfgurhepfffhvfevuffkgggtugfgsehtkefstddttdejnecuhfhrohhmpeff
+    rghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnh
+    epgeefvdejledvffeiteffteehheevgfevjeehgefgtdffjeegtddtledvudejvedvnecu
+    ffhomhgrihhnpehllhhvmhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiiipdhnsggprhgtphhtthho
+    pedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehlshhfqdhptgeslhhishhtsh
+    drlhhinhhugidqfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtohepsghpfhesvhhg
+    vghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:yY-BZ-Gd2ytzhVz4NgaColPVXEUx0Hg58ZYmbRrZ467ZPrHmknSX1g>
+    <xmx:yY-BZyUjCuJ9bVaXcB-x4wUrxadKRIMmAEqnFLWSl0-CI_QTcS25bA>
+    <xmx:yY-BZxPR5lZHa5dX99jBgJN0quTHeUHHXORon7Mc__WNzODw_dmkGw>
+    <xmx:yY-BZ52oPwqIWMBAsRAed5oFaYCVMP9chyo-wLL6oKzHOFcD7RLkKA>
+    <xmx:yY-BZ_iPRjt1x7vE-WKLv37daEX-oy_t2OIK-ssQQq9U_4Lyc_HWdhQA>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 10 Jan 2025 16:23:20 -0500 (EST)
+Date: Fri, 10 Jan 2025 14:23:19 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: lsf-pc@lists.linux-foundation.org
+Cc: bpf@vger.kernel.org
+Subject: [LSF/MM/BPF TOPIC] Modular BPF verifier
+Message-ID: <nahst74z46ov7ii3vmriyhk25zo6tkf2f3hsulzjzselvobbbu@pqn6wfdibwqb>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR03MB5080:EE_|VI2PR03MB10595:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1274245c-dbea-4f2c-74de-08dd31b85fa2
-X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|6090799003|15080799006|5072599009|19110799003|8060799006|461199028|440099028|3412199025;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?QW5ReUZteFkxdm9PM3p3dU8rU1NkMENmM0RjVVdHZ2RjUTAyT1BtdW5yZUVI?=
- =?utf-8?B?cnlxQ2l6V0E1d1lVSjl2YmFNbzUvTVkvWVJzYWk2TVBNQXk2K2Faa3RzZWR1?=
- =?utf-8?B?dGxqSFVlQzVWaHR5ZDQ5OTdiWi9iZ2NINHNBRjZVaUwzMUxRcnFtMW5KVjZR?=
- =?utf-8?B?RldZQldyWkk5UFBQVjZoVWpJRytENThoelNkQW5ELzJiM2JXSy9iQW8zZWZ1?=
- =?utf-8?B?elZhaWhmc0xLaUM3cTU0c3pnaFhiT2puVkpYYzhvVmFhVkIxR3NyQ3ptWDR0?=
- =?utf-8?B?bXVMQzZFU2ZWSzgzYUFQL2tkeG1rSWVlZUVjY3U0ZENkN0xBcWxFWnlUcmVh?=
- =?utf-8?B?R0I0NjVjNCsxNmZtZWRsYXRiOGJDMGwvcG5QZ1d3ei9YanJSQXpJOFM1WCs0?=
- =?utf-8?B?cWlUMlAyK0EyNm5IVHFyRzVrYjBzTmFsTFQ3L2R2QTcyRDN1di8yZkorNmxi?=
- =?utf-8?B?Y2RzQ2I4OUJyVnJHYXNTMVkzL01zclljUXRGamJOczVYYkk5aDFkelRNV1dT?=
- =?utf-8?B?RUg5VEU0OEgwcWxicVF6WjQrREJ0MXArYmZjY1VhdEgxSHZXZVZWSnVQQ2lZ?=
- =?utf-8?B?cThDMmVyNjUzTXovM2FGVUttRUtPYUxjbnBNWmRFbWlDeWhRZFFVemFLTjFF?=
- =?utf-8?B?WUwrcG40QTN0TjRHelcrKzZkbG9jbFFIYXZObnhMNktGZitzS3ZtTTFNR1hN?=
- =?utf-8?B?cGdDRjB1cVZXMnBmdmlMMXJSeUR3NE9xQ3Q5am55K3J2Zkw3UmZvVWxrMXVM?=
- =?utf-8?B?OERqZlZMekVpc0YyQ3R0dTR3Z09iMXgzSENld3B0UjZvQzNrUmpuTjVJQkQ4?=
- =?utf-8?B?QlBjT1gwM3AzNzdNRjVsbjVNdkR6dk5QK21VSFVWOFZSOTlaN2xaWnlMOTdT?=
- =?utf-8?B?ODBqdTBGZ2FjdlZCUm9teGUzTEdEemRqdXR4N1pYLzcwT3g0S05lbFNSZmEy?=
- =?utf-8?B?WWpIL0gwa2dpNGRhVm14OWJSQ2pjYlVUT3V1Z05ESzIxUkk4d3ZLa2FIUkZ3?=
- =?utf-8?B?RmFuOHoyVUFZSksxZGhIRkVIbTloWEJZZ09BRDZBaGZ4YnJjUmJ1VEExUGZ5?=
- =?utf-8?B?ZGtOajdYZE9sNitqNmllNHBVSFhXT2x1NElOTFV2S0NnR0cyNVZkZjBnbmRD?=
- =?utf-8?B?M2w1OVRXRmJVNE9mUFY5QlBGSEQ0STZUSzN6b3pqUHpqSWtjQVNWMlYvNUFQ?=
- =?utf-8?B?ZEdDWnppSCtYYlp0Qy84VnlENGJUSXQ5N05IN1RUaHV0amtxSjQ0MjhYYVZy?=
- =?utf-8?B?Mk1keWJaamJ2dlArQUhOYWtEZjltaE9nMVRXclc4SEZWRGk0SU9idXh0MG10?=
- =?utf-8?B?TEw0K0dVVlBOaC9lb3Y3cWJxYmVSSEt4RTI1YStkbXFETXlkdmxrdDFiekNL?=
- =?utf-8?B?bWlaaHBrOW12bDV4dFZzZklQaU1ybzN3MTVzcVNCNUQ1SzJUeEl6L1U1ZjVj?=
- =?utf-8?B?dzZsVlc5VWw0WGpzNDc2UldSNDFPYlgxdk1jd3lnPT0=?=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?a3FUcUFXUDJvZmJLVjE0clVmZWh5RzdnaE5ldG5ZZmpCU0JNY2Ywc3lzdXpS?=
- =?utf-8?B?N2ZTa3JyV0lIR2hxM2tmMmdoNnQzRU1QRnQzdHd3UzVrRDhPcEM0TXQ0WWJo?=
- =?utf-8?B?SEZBVEUweGNHVGJBMUd6RHZUdUsvUkVLR0JCUzJEenZwWHNCWjU1dXdpVzNw?=
- =?utf-8?B?elR1WG5zQjRnbkpDaWorb1N0Q0FTR0NTcndBdVpwc0UzVmJqRGszY3J4ZFFV?=
- =?utf-8?B?UG9lU1RVWEdJNFlvK2hJUDg5Ukd6UjFYbFUzS1ZVbnNuRXdRS2NMOUkvbTVH?=
- =?utf-8?B?VURoMVY4d3NjREkxRG1HOFZhY3ZieEpnd0NmbUR4V3dTVm5SWlFlRlkvVkhD?=
- =?utf-8?B?Sy8vcWRXcWo3UjNvMHMwQ1JDYzBDOVJDelZXcFI2cGVMK2xOUlpiR1lnZ1lQ?=
- =?utf-8?B?dVV4M3dCeHVhbXl4ZThybWJjdTdjVDlpb0xCQ1ZhTUhJd1NmakdyRGtNNFJU?=
- =?utf-8?B?MmY1UHExNUFkRWk2Tk5oVFVnT2dIUFQzYnoyTVJ4Z29hL0ZoUkpZdmhveVBF?=
- =?utf-8?B?OWZodVJYdlBDRE5wMTh1bC9HRlhiMW40WFZuOXpMRzRQY1ZTWUM1T0JMNExQ?=
- =?utf-8?B?Z3MrTVhFZTRHb3hacjVHL0QvN0c1UkpHNWJpM0NGZFpCTFRvbzhiTTZvU2Mz?=
- =?utf-8?B?Tjd4eEg5SjR0NEd6ZmRkNHE0cUpDaHE4bXNpOG5hK2dVUDU2L1JROFgyQ2RW?=
- =?utf-8?B?N3NpSlFsM2NPWFFrbDNYWEZaY3dOZExWTVo1STdGZFI3TGV4L1lwNi9mL1A3?=
- =?utf-8?B?RSt3MFN2MW94R1NXZU53SEdiSkJJa3lNd2NJb2ZlVTBPN1lWRnNpZXdvZmJE?=
- =?utf-8?B?ekNuQjdqR1JXRkg2WFZIUk5XVDN4ZmZHYkNjSDBpSzIvYzFINGgzUm56dHZE?=
- =?utf-8?B?Q2tzcDZoT3YwdFU2R0NlWWJ2TUVvSFpvVlN2bkZNdE56ZXFucWx4WUtISXkv?=
- =?utf-8?B?Mm8zWncxV2Z2N2NFZGJ6ZTFOOU9VM1lwYUdQL0J2c3JBZVB0VHljM1c0a0FX?=
- =?utf-8?B?K0gwOU5qV2MrQ1BCYW9UbjNsNlJDTmNYVnplcTJoaHRmUnZoUFZWbGFHZE1R?=
- =?utf-8?B?RTh2WW9aZitzT0hKa0xtbmVzTzEyYXBUQ1dYem00ci9pODBuVEF4MzdKRzZ4?=
- =?utf-8?B?RU1GZ3RkSk9jeWJtdTBybXJWRG5jSVVsV3YwSUxzRVVjNzhiMHJxS1Rqajlu?=
- =?utf-8?B?SDZWbis1SWxsbnJ2TXc2R2k1WkpsZTFkWnMyNzZwZEJYcmNkNGJibitISjJH?=
- =?utf-8?B?SnJHbTNFblBkT2NSWDhnNjVPeXgzakZuajdIVmJHL2dwUzNkcUlUVDQrakZr?=
- =?utf-8?B?cnhjSUh2dlRweHhlZnpqeDZNUDRMZXM3WHBVaDlYOFdZeEU1Y2piN2VxaFh1?=
- =?utf-8?B?WFY1Vm9NNGdPUTJ3Q3hvUXpjaXRPNEVWaVZOUEQ3UjFrWklCWklqVWlWazk1?=
- =?utf-8?B?VHkxUlRmVFZ5MWpyWXJMcjB2MCtRdSs2NTZERU9CRUFHL1hvclluaFl4YUVh?=
- =?utf-8?B?REQ3ekczRitVVVdzNTRMMnJFUGwvc3VxTzRBamlhb085VUtpL2RrOTJDcXd6?=
- =?utf-8?B?Sy85RnNjdCtRbUFMUFh5ZzFLcHh5NCtzVENDQ2t5RzVINzVlRzV5T3ZQV0tT?=
- =?utf-8?B?bEFPdFlROFVyK2o5V1MzdzBrZmlWZjUyT3JBQWZoYitLdGRGUmp2a0xBL2hT?=
- =?utf-8?Q?IKQAsc6wbSSzo+iZc9ra?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1274245c-dbea-4f2c-74de-08dd31b85fa2
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5080.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2025 20:50:10.6548
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI2PR03MB10595
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-On 2025/1/10 20:19, Tejun Heo wrote:
-> Hello,
-> 
-> On Thu, Jan 09, 2025 at 12:49:39PM -0800, Song Liu wrote:
-> ...
->> Shall we move some of these logics from verifier core to
->> btf_kfunc_id_set.filter()? IIUC, this would avoid using extra
->> KF_* bits. To make the filter functions more capable, we
->> probably need to pass bpf_verifier_env into the filter() function.
-> 
-> FWIW, doing this through callbacks (maybe with predefined helpers and
-> conventions) seems like the better approach to me given that this policy is
-> closely tied to specific subsystem (sched_ext here). e.g. If sched_ext want
-> to introduce new kfunc groups or rules, the changes being contained within
-> sched_ext implementation would be nicer.
-> 
-> Thanks.
-> 
+Hi folks,
 
-I think so, it would be better to use callback functions and keep
-this part decoupled from bpf core.
+I'd like to propose modular BPF verifier as a discussion topic.
+
+=== Motivation ===
+
+A decade of production experience with BPF has shown that the desire for
+feature availability outpaces the ability to deliver new kernels into the field
+[0]. Therefore, the idea of modularizing the BPF subsystem into a loadable
+kernel module (LKM) has started to look appealing, as this would allow loading
+newer versions of the BPF subsystem onto older versions of the kernel without a
+reboot.
+
+That being said, the BPF subsystem is large and complex. It is not practical to
+try and solve the entire problem all at once. So the question is: where do we
+start? Proposal: the verifier, because it is high value and architecturally
+sympathetic to modularization.
+
+**High value**: It is straightforward to reason about functionality delivered
+through kfuncs, helpers, or maps. If feature A exists, codepath X is taken;
+else, codepath Y. This is generally not practical with verifier improvements -
+bugs or limitations there are far more difficult to reason about. Complexity
+grows sharply when applications support many kernel versions. Maintaining a
+minimal set of cutting edge verifiers in the field is a value-add in the form
+of enablement, reliability, and simplicity.
+
+**Architecturally sympathetic**: The verifier is architecturally a “pure
+function” [1].  Pure functions are easy to hot swap, as state transfers are not
+necessary.  Because of the verifier’s current design, large re-architecting
+will not be necessary for modularization. This means modular verifier is
+primarily a refactoring project and can lean on the existing test suite, making
+it a good first target.
+
+If successful, a modular verifier gives us experience as well develops a
+toolkit of techniques that can be applied to the subsystem at large.
+
+=== Goal ===
+
+The goal is to refactor the verifier into an LKM with an eye towards forward
+compatibility.
+
+=== Design ===
+
+[[ The following is an rough design based on early research. I expect it to ]]
+[[ change as I gather feedback and do more prototyping work. Nothing is set ]]
+[[ in stone.                                                                ]]
+
+For forward compatibility, the idea is to implement a facade built into each
+kernel that exposes a stable-enough (non-UAPI) interface such that the verifier
+can remain portable and “plug in” to the running kernel. While I expect the
+facade to be necessary, it will not be sufficient. There will eventually be
+details the facade cannot hide, for example an unavoidable ABI break. To solve
+for this, I/we [2] will maintain a continuously exported copy of the verifier
+code in a separate repository. From there we can develop branching, patching,
+or backport strategies to mitigate breaks. The exact details are TBD and will
+become more clear as work progresses.
+
+On top of delivering newer verifiers to older kernels, the facade opens the
+door to running the verifier in userspace. If the verifier becomes sufficiently
+portable, we can implement a userspace facade and plug the verifier in. A
+possible use case could be integrating the verifier into Clang [3] for tightly
+integrated verifier feedback. This would address a long running pain point with
+BPF development. This is a lot easier said than done, so consider this highly
+speculative.
+
+The facade exists as a cooperative mechanism. While it might technically be
+possible to do a non-cooperative modularization of the verifier through
+aggressive patching and no kernel changes, it seems unnecessarily complex given
+the alternative. Completion of the facade does not block deployment - the
+facade seeks to reduce the chance of stranding older kernels with newer
+verifier changes.
+
+=== Footnotes ===
+
+[0]: Disclaimer: this is not intended to be a criticism of anything - merely to
+point out the fact that the kernel as a singular delivery vehicle leaves a lot
+on the table.
+
+[1]: Perhaps not in practice today, but deeper integration with the rest of the
+kernel can probably be cleaned up and abstracted.
+
+[2]: It's likely more people will be involved if modular verifier proves to be
+viable.
+
+[3]: https://clang.llvm.org/docs/ClangPlugins.html
 
