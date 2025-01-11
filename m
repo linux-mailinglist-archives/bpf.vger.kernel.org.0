@@ -1,184 +1,211 @@
-Return-Path: <bpf+bounces-48630-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48631-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAE8EA0A515
-	for <lists+bpf@lfdr.de>; Sat, 11 Jan 2025 18:30:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D9F8A0A54C
+	for <lists+bpf@lfdr.de>; Sat, 11 Jan 2025 19:40:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB897188AF5E
-	for <lists+bpf@lfdr.de>; Sat, 11 Jan 2025 17:30:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2032F188A6E6
+	for <lists+bpf@lfdr.de>; Sat, 11 Jan 2025 18:40:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBC2B1B0F32;
-	Sat, 11 Jan 2025 17:30:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53FFA1B5ED0;
+	Sat, 11 Jan 2025 18:40:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ffRTym4g"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HXbk5M+f"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2062.outbound.protection.outlook.com [40.107.236.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C05841553A7;
-	Sat, 11 Jan 2025 17:30:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.62
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736616640; cv=fail; b=e46dJO93lONy4DEiTzD39KhvzrYR6soKnyee67uGh5wfUZK47o6kE5Rm8yFMBuyMLZdpm58S9wuJpkHEHfHvNMYeYazhlxUN1jnx7wNqZhSTt2BnKta0S/jyRG49QY4E4dxehNbmUSY93SuXs9uqAsqC6Odm1KV8UlXWBV7v/ds=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736616640; c=relaxed/simple;
-	bh=o0aZwThl5MH3HoXEHTk6ZLFYxPqFJbdJ0XqlGsUKUgA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=WhjV3Od9t21V0c7jJf2tYRs7Lo4FcfgmMUHFzjIFt3kMj4fpOPIZYs4j+53vfPQluj2Vq8U3eUGT5is0zYO4CK8GZp4QgKGbXeANiML11Dmbfss2aNxs/CJa54sBvZrOrVuoKypPbvMIlY7fYGAQenqGZyNyWypgK8+RWgTQueM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ffRTym4g; arc=fail smtp.client-ip=40.107.236.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=GN3J18pMYRwYMKGSdpNDEQ7iMF/7mGF+9LYnuF2Kxf3Vf42bUP2XIwjB+KM7Mb9LjogsIqVo3pWY2Q5Q+VrRO1j1e8qCtlMqhIIWi6LthwKpIG/rgWkzpvFqM51l6wsd3fUkTdGbpKBw3IYEGSRzEOZ51jk6CauqH87Diu1p4vPeFa5adOa3wX+BGHP4uB75GPz6AXsgtCAStBqSraszcywcRafvyhnpcSIEQhZnZj+zYbeywdJ+6DJ5WkhvKJnfQNI903eDC6mCuIYVyQ8BinTbgj+2Os4v4L9aB9LOwZ8RIzjt4mA/kNezsTgaoQS/3FqzU1MvIdRIUX4v/EkzEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6Kvx8eK2QYfp50FLwXjktJtcTld4X3dhJeoXe//caQ4=;
- b=I5g8xV3GMBAAs4kwutrqlzNj3qz1jqpfvhdaagyxOGZKEPOZcBt07Rmre5DM/kOo1ifjfvPeHs+zhwmgk1c2/tgN/9xgwKPB0i1eUsH60BjT7o5BcUhULVvJlXCnRKWbDej1jgTPzSfkKZSPZVGkBnLx1AsEgLzG4Gszz1WTYFKv4XXNDFePLIx/PgFLmlmknra7rYf7S/7Mmmvm0r0a1gIaATDhuZoLcvmeHE80NKZameIdK3sYp/i4boLsyPkXn2uxQAMgEMxVrmTC4XA33NeX7w0GieZFZNXImx0NlQrN9fj2mvcn3BCt5WFbdkmrjVXpObkVitmGt1eYvKOMzQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6Kvx8eK2QYfp50FLwXjktJtcTld4X3dhJeoXe//caQ4=;
- b=ffRTym4gXg1Ip4VXRVu5AMHn/dpZIXwciIGtZcLl+70ALEHUor3UoiYIG7iXEsMESbJ3q8XU5xIxvpbvRWeyV1js4YonPXIB+av3gc7JI6TSrdkiupA95BOx95doTX00wxc+RWbib2qEi+kcNyXRFpag7EgFwnPdyGkARIF0CWU/bHiTxz5wuAnZBUzpEB53Y2yhe+YNTzMxrMrUJCwmw+vsqkLTxlbRgFC50Sq8/UohcI8pU1Avexip3UzhfbaTY9DbG74R4DxLUEwqDG3a+CcoS8YsRVWs7QQV6JdzQwiaSj9gFMs7sW+PzZzWXXJBe845MO/2qDEAJQ2n58vU7g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CY5PR12MB6405.namprd12.prod.outlook.com (2603:10b6:930:3e::17)
- by CY5PR12MB6252.namprd12.prod.outlook.com (2603:10b6:930:20::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8335.17; Sat, 11 Jan
- 2025 17:30:35 +0000
-Received: from CY5PR12MB6405.namprd12.prod.outlook.com
- ([fe80::2119:c96c:b455:53b5]) by CY5PR12MB6405.namprd12.prod.outlook.com
- ([fe80::2119:c96c:b455:53b5%3]) with mapi id 15.20.8335.011; Sat, 11 Jan 2025
- 17:30:35 +0000
-Date: Sat, 11 Jan 2025 18:30:26 +0100
-From: Andrea Righi <arighi@nvidia.com>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-	David Vernet <void@manifault.com>,
-	Changwoo Min <changwoo@igalia.com>, Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH] sched_ext: fix kernel-doc warnings
-Message-ID: <Z4Kqso6hS2vsFdIt@gpd3>
-References: <20250111063136.910862-1-rdunlap@infradead.org>
- <Z4I9tXouDIVdWBN5@gpd3>
- <5faf8551-d434-4e2e-980b-0ff5831d3db2@infradead.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5faf8551-d434-4e2e-980b-0ff5831d3db2@infradead.org>
-X-ClientProxiedBy: MR1P264CA0036.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:501:2f::23) To CY5PR12MB6405.namprd12.prod.outlook.com
- (2603:10b6:930:3e::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 354051F16B;
+	Sat, 11 Jan 2025 18:40:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1736620821; cv=none; b=uyizb+51kRwHkHcFYbuMv1je+s1ypO6dygxODJmqPpMY8ryXmWwQAE7zm3NVItSMneVNWzxDh9p2/mOc+GQLnDQNaLxa0zIEo1KHBMlxKPNAiqKvMkHx3urUr4MaZdhc85pcDMQvmdYkmWkmZOPIb7A/5vrS5w+71/QMpkTZdKM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1736620821; c=relaxed/simple;
+	bh=7DdLqMzhTpJW/Tedvh31b4USRvaXV056V3kTLIoVG2c=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PXQzwuGOmTS9V5OqnVVxPLhxhifH9m3km0MnMD/hhTiTcxZwSWGc2h2jtEHWAp+jIWUKlewPE5jUqZohWqzgsu8bpkHSArZXnXmZCcxU9Tsf3g7f1hnjbu5dLqIuXmRA+dHPRJvUkuXS+svCJ30wW76aMrODXI7gsJn9eJtd3r4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HXbk5M+f; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-436a39e4891so21942675e9.1;
+        Sat, 11 Jan 2025 10:40:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736620818; x=1737225618; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vRU6IkG5xqviZpog8kuGzgyGQ5yq/o+Edx/mEDzPhfY=;
+        b=HXbk5M+fsTAAwUvt5qVy3YoHyBiQLWLuTs3IgxM64dpsYWkiF7KRYaIi131FyYBb3a
+         G5Zt2fiDAgwKreGqyRFEwcr93A6F7lqGuvjhkTqKwp0qITppJur+wr68TMNK88XVE1ak
+         lo/3cN2fCAIDGc9B+POkkjJMF2+jYr6rppxfcwYZCl5uz5zs3f9IQpQWiz8dED8f7KhN
+         rRzthtYOXyHXVSMpky8kxDjAYY44BABaU3vfqpz2n+g7Qm5PnkXR+KPO3AulsyCAV9T2
+         W9oIWio4QRNPf8ZN5MFCYKJIk3z/u6DGnHaw86KBppQZlVmEC0gppkJReJFIcGT5tb/B
+         zt8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736620818; x=1737225618;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vRU6IkG5xqviZpog8kuGzgyGQ5yq/o+Edx/mEDzPhfY=;
+        b=NkRPpU3E0J7YPQUU+BH54lVOJqEheQy1+S9lT8QOqRc8ZXhSOo3+aJTWZyIvoSGSvz
+         Kf6Pevf/TzWAbNygxgb22pz2vsMoigWMJwkM0mH6vm2CzFn+rlReJR2dnmfD2GPoQX5E
+         g9K4H5jl3+aGWIs1PwDgoiT4wSXkrmKSfVxRzyCXbzLc73an6XQkM3sIX0H1oR7WNrCw
+         ZEEqAdHVoYJOukr2KcbIJfa2NoVzdNLpS5CCdVlIKrERfLvyGvllC0fMi0Y+9MA0PmS1
+         YiVnCbZ2CPMCRKkcb+Gn2UJsgv+/giE2qX5KcyWjQChPDXqqGxnXjdZ3QFjLG6NrjCAM
+         hjhA==
+X-Forwarded-Encrypted: i=1; AJvYcCUd6DxrEQe2cl26iGLLYf+iqPtCYGX/31qaWvIgwO5tGKdVSls9NhBFNV0K+V5oYXjSloiwyN/yaZ7gP8iQ@vger.kernel.org, AJvYcCV9geo6GknTIppyET9Q5GaQj60jMOqzBHX2D1D+724NQd0Npko9FC/45VbFlSzEGoQpiZHC9pu0p71+ZriARgPA6dK8@vger.kernel.org, AJvYcCVDSCF3QSXjxXT1E0vhLPGwhs8hP0zqtxvuRV6MaaE3p5PgaDo8pyQSuUyKeelrqIxM02g=@vger.kernel.org, AJvYcCWFHjbZZwZT5Kdo//BgHqfibq0PgpHiZS3XUQgG3WvwVRO8JZ80O13TI/sC8Muq1QQcTOZOqOQPnP7/@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz1+rI2i4JFO0Cw8BXXbj4hTMlEbUWIt0Of7SKGeH4k+f2cVObU
+	RYiAWg+WDjkiblx21xOYhhQbKmYc1UZ8HRGSC96Ms0m1YQ8u0JIc
+X-Gm-Gg: ASbGncsEpinOrMHp8nAznW8OFxCfQFdJYsuCR12m3ck3apDA7tuWSloCllNA3GCSpnt
+	3YwV1S0h33KI6CGSuyBjVzPRwA+kRZz7NITthP36K+j2Sha+PM6VXnwQXMHvnyG1aOe8PvqGXrS
+	2gTSwS9NAYR95kP9G6fx+f6Nl9Z8wt1zTkid+viwksVhBi6lFZOKkHdOOM59wDM29+GUbXJHPZE
+	yk47ovdzjCJml08zfFaQH2i/q2HtxYUNFQBvLbOb7g=
+X-Google-Smtp-Source: AGHT+IHPbxB34Z6ANoOJIDCWUBTh+3epyhf4nGI+8yF/HEI8u4kppeSeWkZ9l+ORgztBkJ+Nif1PjA==
+X-Received: by 2002:a5d:47a3:0:b0:38a:4184:2510 with SMTP id ffacd0b85a97d-38a872db629mr15346290f8f.23.1736620818193;
+        Sat, 11 Jan 2025 10:40:18 -0800 (PST)
+Received: from krava ([213.175.46.84])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-436e2e8bea5sm123979515e9.31.2025.01.11.10.40.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Jan 2025 10:40:17 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Sat, 11 Jan 2025 19:40:15 +0100
+To: Aleksa Sarai <cyphar@cyphar.com>
+Cc: Eyal Birger <eyal.birger@gmail.com>, olsajiri@gmail.com,
+	mhiramat@kernel.org, oleg@redhat.com,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	linux-trace-kernel@vger.kernel.org,
+	BPF-dev-list <bpf@vger.kernel.org>,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>, peterz@infradead.org,
+	tglx@linutronix.de, bp@alien8.de, x86@kernel.org,
+	linux-api@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	"rostedt@goodmis.org" <rostedt@goodmis.org>, rafi@rbk.io,
+	Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Subject: Re: Crash when attaching uretprobes to processes running in Docker
+Message-ID: <Z4K7D10rjuVeRCKq@krava>
+References: <CAHsH6Gs3Eh8DFU0wq58c_LF8A4_+o6z456J7BidmcVY2AqOnHQ@mail.gmail.com>
+ <20250110.152323-sassy.torch.lavish.rent-vKX3ul5B3qyi@cyphar.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR12MB6405:EE_|CY5PR12MB6252:EE_
-X-MS-Office365-Filtering-Correlation-Id: 39c61896-e744-4f30-5ed2-08dd3265a810
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?CFwdIlerBFDBkjWxCVBUoFndcSCSIP08qxCSqvKFgnGwc82QjeSAncLGUq94?=
- =?us-ascii?Q?+57z25MiMAc1nwqzX7mTqocDjuKymVd8uvGEYbalMU/aAwlOtR6Aqp9TQZY7?=
- =?us-ascii?Q?0UM4/lV7EBM+SIHcH8VtO7J9W2OlDQJxq3xndXzpVVTrRLQ9e3pb4+pNCSkj?=
- =?us-ascii?Q?mc0savnE2wodj9Be22LVv/p4TYolTVXoIft+7kIguqZRxBHsY+K/PqFPQMr2?=
- =?us-ascii?Q?t59iFGzuo9cfnB4HfiXt2oOodVGpDNh79AXh3CSCH0s+BQqk65+BxuM2wdJ7?=
- =?us-ascii?Q?X/TdzhQemF8yiUAaFOl5jSCfkPdgF9IifH16mkmTrgo2H9WYSnSUGhhc3OtP?=
- =?us-ascii?Q?ZWxx7vAPW4eFnx+4wDOB9Td1fZQKr3ogqb7fWN2IXrDiyc9S6fas9MeWmCK4?=
- =?us-ascii?Q?BbPXwpZpZdKn4gqr2vX6p427fArzwy4xZD8ZwscV0daUcTKfdNMMSjKWFRdE?=
- =?us-ascii?Q?E++ixQyOCjgug1UeAFasInBJO2PIYKXAslcNxSu75RlOXcPDJDFhlRLDyZsr?=
- =?us-ascii?Q?LAj9uIbrghUWljbCeifIfRarWR2oUMx5CEN/c2bTj8njOAOSzTn5e36f/0e4?=
- =?us-ascii?Q?FJiKrLIYLF54Hxhs6x6pRIw9LY/QeBCeT2nPbzP5+zb4m1Yg7eWG4mTOnhoM?=
- =?us-ascii?Q?pqEWI2e3YL4WVSUt//aPI+dZc8w7eWigolsHGSDfxFt0fVp5RPwG9AR4AK4i?=
- =?us-ascii?Q?Ps2pR3/QcnQ8wo8WI5zkAodNxTy4qiEb4j0Vvsb36PyvCkO/sRV2BRBWyjfc?=
- =?us-ascii?Q?GeAXn3mQBlAIpLyjdTfy1GrMYF/cJS5oHhOQ0EVPU8Q5G/61xcS2M5aaQrlX?=
- =?us-ascii?Q?xSx1NFO6Nsy96NhJkvv+1Cyf6sVn4TH/NrED66AdpIomC6d+osO05foL7mJe?=
- =?us-ascii?Q?dFNvj7UUClc3XnBXuNeexWXV+FRmhNlQ10LttBHUZ2w9vu3fJOOnFzufNW1r?=
- =?us-ascii?Q?qCZFKffu8KU+SJ0aczQnoYgURV3Qpc9WUrAnhQx11LJeNkDnGmYef6kON4Zd?=
- =?us-ascii?Q?aOdKA0Y7L4sr5gBXxsx3NHwy1YlxVCpf0LXSYV7vdX9Bq2cUTC4rY+tiSJLo?=
- =?us-ascii?Q?OWrmhq/8S1Q5fpMTxtmMf9/Nn1UuYECTk8Blm1iOGpX1kB4KAMhTc2U8vHOG?=
- =?us-ascii?Q?ydlKvZgeuEKDshqlGqvelK+wahHzWQiEKAQzJnnfg7uWVe00fjBaxZsGZh2o?=
- =?us-ascii?Q?aoYLe0HJU6lCsTEMPCcBBOzIk0NS1VGfca/qAMb4F+1i8qBIE4+RxkPTWAYI?=
- =?us-ascii?Q?FZs8URBtjxcBKvSRf4Avh3A3xyrDypiFGjGBGZHD+r6uMnX09FOHaKbDkhKs?=
- =?us-ascii?Q?b/mDNPN6VyqH3Qxz+Lg4DzWY9SDnongAil7iCwTnGxQv8Qs0arz7C41MIoLp?=
- =?us-ascii?Q?B3wdmmau5BVCvsHVTN5vg6FALWqj?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6405.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?VE/Wi2Po57ZMT3eDcDw9L657IAeOshCRhEpcplN8/SLDUqobsG7GEMHYxMVT?=
- =?us-ascii?Q?dlYe3Y+GW6D8GSrPGPkhFuugrxjvmzMK2WOsbnJrqkqw5QABT2UDa6Q2RshW?=
- =?us-ascii?Q?9/s0ZFMClgf7el79hZkHXPs0gOQcugKnVzlHcaofYZoQscQQ9JMfjL6wuOy6?=
- =?us-ascii?Q?otQGuqMfgJQmeamSkp4lF1Mfi4Y8Fbt+uFe7F+n1inh2VIUM0t2Y1YZlCNPz?=
- =?us-ascii?Q?dMYovOoq1YxX7C4xpNTBvVHLyhV+KTTfFY17HdnOWP9nQHtOkAWOOWuobWs1?=
- =?us-ascii?Q?OmJF8cxBMCwQfwzW+zuXMA4Vztkap0tHGIcK/eVhQKi05ftlxC0ZB3DbDfqJ?=
- =?us-ascii?Q?gUvAgtQjEM3ZPvPCdFrV1uuZj6mYvF+8yCNyZei499Wx93HUrT/XBwfhNXDS?=
- =?us-ascii?Q?eHa37lA+5ea9llvA/itXPrLI5hr/JNoUkrOrmpJ9t2a+YWXrSMGNeQuIxkDK?=
- =?us-ascii?Q?Ltuk5ubzOZB710RA//gEhhuHNa/UaVDvsyM6D19N790hUzRmegxjU1hUmYkn?=
- =?us-ascii?Q?+nutM8CbHHQIEIa/cSg4xvze3gcYx4/NfFHNShF4YiFbhBW6jdKgs40ddpH+?=
- =?us-ascii?Q?8ysB+q91YfEiLN6cQdA9P9YWtfwS+ocPekdFtqBkHI+VtNplEjQ9DxqTuPDC?=
- =?us-ascii?Q?ASC1mr708fYseB6zZJ9Oizn5QQ65wpvTLmOeInlLTxxyxaunP+ePPTRKy4C6?=
- =?us-ascii?Q?uJT/GJRPPsxF3+bqR9PDQrEqWxDVbQD3RflGj8vr/kHmoADffQ1NTlEqjlcB?=
- =?us-ascii?Q?pWtpOk7RZs12bVsjU0oPzabiyd+cseiNLx6pTDElRJTfZLRzton0zRTHG5nN?=
- =?us-ascii?Q?x7EAXiNJmfr+P/Fy5gf8RqDNZ8fnsTqAKbSEyPbpwcE/NLGJowBfzmIeLjgj?=
- =?us-ascii?Q?oXdHvyaFwbwoFRliM9doQCecMYGYRwSiIbCAgaRYXJlKHDutreyLo7Vlpkn+?=
- =?us-ascii?Q?ZPVibX7vpdiSZn8w0G6/p6PfBlweoBKbVdvLm0BzNHp9bw6Lzt6VSErH+U2g?=
- =?us-ascii?Q?d7ImTQ1GIsubxk3dSy5Q8H02MrlWBKucLshW4oakFZWyQh8n57FuSXFA6JlD?=
- =?us-ascii?Q?Fu3acE8KHJY7Mk/Z45sNNEPw4knoRq8fpOdnSxdq6FnqWxOaRuFNklSd5EOM?=
- =?us-ascii?Q?OI1kJkvXVx9P9ylwAmxx1fwSu1uosv5yaf+UsCOi+fDZh1zRlX4CPVSSIFfB?=
- =?us-ascii?Q?FLsKeyzzSs4vTFYlaLGoyZ71PnXUqc5Zoj16Oz+sKPc0lqF1NKDbi8wK+/v8?=
- =?us-ascii?Q?Fz/23ifQfcfE9zCkBVSUP4JY6xaNIG2NR1X49B+Bm7ot7A7bj6cI7glZPG2C?=
- =?us-ascii?Q?1RwiZqPwpP6uuyH+dkXjtf+FbkI/SOyB5oiyyd4iO0nrEQG/gBQ9V7rw6GKN?=
- =?us-ascii?Q?UIDiUtUc364FDm0sp9AMmNxWco36fUfUrLLq1abbokd5cvWXl3jJcEusVK9D?=
- =?us-ascii?Q?6KoAOhC15ydIa2OvrxJO1JoQPi078Ckojn+SrmRPnAXoUzsGcfrs8RT1o72Y?=
- =?us-ascii?Q?dXsS370Gsx9okyIsYoWw6LLhJYNiQga+KLBu/xlOcimmbs0V2k2tMgtsGs52?=
- =?us-ascii?Q?/r9A78ruJl0iqLrS+4L/NWAuU5y7DPWtA0spB8lW?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 39c61896-e744-4f30-5ed2-08dd3265a810
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6405.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2025 17:30:35.0281
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ShGRxLOFE2T7vyJA9flg2NE2QtGdsBeNcYU8bgjMUB5fh+RO63mupoWhBylnIQpHGo27rDMiAA5AIhT63YNDTw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6252
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250110.152323-sassy.torch.lavish.rent-vKX3ul5B3qyi@cyphar.com>
 
-On Sat, Jan 11, 2025 at 09:27:27AM -0800, Randy Dunlap wrote:
-...
-> >> @@ -1408,7 +1409,6 @@ static struct task_struct *scx_task_iter
-> >>  /**
-> >>   * scx_task_iter_next_locked - Next non-idle task with its rq locked
-> >>   * @iter: iterator to walk
-> >> - * @include_dead: Whether we should include dead tasks in the iteration
-> >>   *
-> >>   * Visit the non-idle task with its rq lock held. Allows callers to specify
-> >>   * whether they would like to filter out dead tasks. See scx_task_iter_start()
-> >> @@ -3132,6 +3132,7 @@ static struct task_struct *pick_task_scx
-> >>   * scx_prio_less - Task ordering for core-sched
-> >>   * @a: task A
-> >>   * @b: task B
-> >> + * @in_fi: in forced idle state
+On Sat, Jan 11, 2025 at 02:25:37AM +1100, Aleksa Sarai wrote:
+> On 2025-01-10, Eyal Birger <eyal.birger@gmail.com> wrote:
+> > Hi,
 > > 
-> > in_fi is currently not used / not passed to ops.core_sched_before(), should
-> > we metion this? Like appending (unused) or similar to the description?
+> > When attaching uretprobes to processes running inside docker, the attached
+> > process is segfaulted when encountering the retprobe. The offending commit
+> > is:
+> > 
+> > ff474a78cef5 ("uprobe: Add uretprobe syscall to speed up return probe")
+> > 
+> > To my understanding, the reason is that now that uretprobe is a system call,
+> > the default seccomp filters in docker block it as they only allow a specific
+> > set of known syscalls.
 > 
-> Hi Andrea,
-> I'm not sure that anyone would update that comment if it did become used  ;(
-> so I think it's OK not to mention that.
+> FWIW, the default seccomp profile of Docker _should_ return -ENOSYS for
+> uretprobe (runc has a bunch of ugly logic to try to guarantee this if
+> Docker hasn't updated their profile to include it). Though I guess that
+> isn't sufficient for the magic that uretprobe(2) does...
+> 
+> > This behavior can be reproduced by the below bash script, which works before
+> > this commit.
+> > 
+> > Reported-by: Rafael Buchbinder <rafi@rbk.io>
 
-Yeah, good point (sadly). Then the patch looks good as it is to me. :)
+hi,
+nice ;-) thanks for the report, the problem seems to be that uretprobe syscall
+is blocked and uretprobe trampoline does not expect that
 
--Andrea
+I think we could add code to the uretprobe trampoline to detect this and
+execute standard int3 as fallback to process uretprobe, I'm checking on that
+
+jirka
+
+
+> > 
+> > Eyal.
+> > 
+> > --- CODE ---
+> > #!/bin/bash
+> > 
+> > cat > /tmp/x.c << EOF
+> > #include <stdio.h>
+> > #include <seccomp.h>
+> > 
+> > char *syscalls[] = {
+> > "write",
+> > "exit_group",
+> > };
+> > 
+> > __attribute__((noinline)) int probed(void)
+> > {
+> > printf("Probed\n");
+> > return 1;
+> > }
+> > 
+> > void apply_seccomp_filter(char **syscalls, int num_syscalls)
+> > {
+> > scmp_filter_ctx ctx;
+> > 
+> > ctx = seccomp_init(SCMP_ACT_ERRNO(1));
+> > for (int i = 0; i < num_syscalls; i++) {
+> > seccomp_rule_add(ctx, SCMP_ACT_ALLOW,
+> > seccomp_syscall_resolve_name(syscalls[i]), 0);
+> > }
+> > seccomp_load(ctx);
+> > seccomp_release(ctx);
+> > }
+> > 
+> > int main(int argc, char *argv[])
+> > {
+> > int num_syscalls = sizeof(syscalls) / sizeof(syscalls[0]);
+> > 
+> > apply_seccomp_filter(syscalls, num_syscalls);
+> > 
+> > probed();
+> > 
+> > return 0;
+> > }
+> > EOF
+> > 
+> > cat > /tmp/trace.bt << EOF
+> > uretprobe:/tmp/x:probed
+> > {
+> >     printf("ret=%d\n", retval);
+> > }
+> > EOF
+> > 
+> > gcc -o /tmp/x /tmp/x.c -lseccomp
+> > 
+> > /usr/bin/bpftrace /tmp/trace.bt &
+> > 
+> > sleep 5 # wait for uretprobe attach
+> > /tmp/x
+> > 
+> > pkill bpftrace
+> > 
+> > rm /tmp/x /tmp/x.c /tmp/trace.bt
+> > 
+> 
+> -- 
+> Aleksa Sarai
+> Senior Software Engineer (Containers)
+> SUSE Linux GmbH
+> https://www.cyphar.com/
+
+
 
