@@ -1,141 +1,96 @@
-Return-Path: <bpf+bounces-48618-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48619-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7055FA0A02A
-	for <lists+bpf@lfdr.de>; Sat, 11 Jan 2025 02:46:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62B01A0A03A
+	for <lists+bpf@lfdr.de>; Sat, 11 Jan 2025 03:10:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7B7B16B0B1
-	for <lists+bpf@lfdr.de>; Sat, 11 Jan 2025 01:46:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93030188E40B
+	for <lists+bpf@lfdr.de>; Sat, 11 Jan 2025 02:10:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B0884D5AB;
-	Sat, 11 Jan 2025 01:46:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D2EB13D51E;
+	Sat, 11 Jan 2025 02:10:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IYLLMPex"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tG4RJXaX"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB44226AFA
-	for <bpf@vger.kernel.org>; Sat, 11 Jan 2025 01:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1B6713B29F;
+	Sat, 11 Jan 2025 02:10:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736559975; cv=none; b=j8D8SBQXZHWjynE4/WFADGko6jyc9MJqPTH+eocGByJj6j8qf3lacsSj9rQ51jQfnzoe0HPjLTvjZMsgDumFWY+VmuPfy5EK2Hzx1R7o9l+I++AJNoQZ/fae3ya1yX2HWiqgKOphDYSeEVKf/Buytlmi0Np7gkdNH73tdEz4V5A=
+	t=1736561415; cv=none; b=F5x3pNOhyrQmIOjahd0FDXKX1d8CEUUfPqATEae9t0IE0eaQUA1+c4wD0nVNQ1fa2A94svDmOsN1s2DvS+a7pMYYB/Z+fcEKAQAP25Tx6P9lfLEeC3FZdXbdWp7j7F11Z3f5tq1oM06f07XXKQTNxNL6N0Hm7YjJlO/3oUnSXS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736559975; c=relaxed/simple;
-	bh=oL1znrA+BuRTsJSUJJ28nbRVw8azI79r0G/QLQ0/4o4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BcprjWs9TxThGbLXOn3trEz7e/w3Jyqg0ww0XF48bqmC0LIR9E/nbiH6QaoWJPQ0ZemCHu5McAFBUmQcg4Y9ZHS0tMVMM3V5bzys9EehqPq9OmF5hY7EDAdvGMVuLj8ZD9mfzwMkGH3+PCyidBEMT+v9Hlfu1KNXMKFuvdptWHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IYLLMPex; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <8b72630d-8804-4b80-b4bd-857066b64b08@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1736559957;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MFVi31aY68398PatoQWdmgcINX7DagiGOAeQw2HTam8=;
-	b=IYLLMPexR21QLu7QXdCu3/evVz+nvYMGe3ML8ZcEdzziHZXSOyhmw04YDiOax6C6N13ONg
-	bX+0f4lBidpi8Kkm0M1ZyfSbd8M/B8eI/pYt0ShdUQPuuhoCPaK8fqSEckvvnY0KjExxJH
-	CefzJJpO1O/MSWulw5tTUxnD14mAPLw=
-Date: Fri, 10 Jan 2025 17:45:45 -0800
+	s=arc-20240116; t=1736561415; c=relaxed/simple;
+	bh=9Mks8+kJ+Ij4gLE3fa+X6BGGi5dVMNVfe34gyPmH7dU=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=rQSL2sGKBxvKiUvLIpBZDZ80/iSK8XtP244jSQldzrATC9q9CE8U9n9PMhypuuHRn2aIco3yXNF1JrSwlwvD4Gu5Odba+aWr2R8QdfqtY8Aljw39xf3tvUhNtRFQTLzwuIizH78Mjnek2tSmHXcFHvlVF9QTKG5WcpNG7SYKTTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tG4RJXaX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EAB2C4CEE0;
+	Sat, 11 Jan 2025 02:10:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736561415;
+	bh=9Mks8+kJ+Ij4gLE3fa+X6BGGi5dVMNVfe34gyPmH7dU=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=tG4RJXaXgzPoBp9QaMad5NMzsZoTZjMy+ki6PjNu/9st9h8s5Q3v8sj2u33Rh/yjy
+	 hja0JdYt8KOLKi83u4jZgMGF5oy3H1XH++To962YZzmCNC2fIojAqkxYn0ClC3qc9n
+	 viAuHCBqxgQJVkJkJH2q8wVGYZal471hHUhyATi4+DYspLkZQ75KQZjwyZCslKUTOz
+	 4fVMZNdEln3xWmeWIXnCuiVMyLJmRtFlHTYTa1pVzB+R1BlLP1hh9Db9RmjxDPPrpY
+	 Glfmd0enSsZv70TmX+FQraSrxS3SP8e2iA59UoQ2uprrlwkba8ZxGHHLX4grcx+DJN
+	 6GTvOMJ6yBdLg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70E24380AA57;
+	Sat, 11 Jan 2025 02:10:38 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 2/3] selftests/bpf: Migrate
- test_xdp_redirect.sh to xdp_do_redirect.c
-To: "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller"
- <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Alexis Lothore <alexis.lothore@bootlin.com>, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250110-xdp_redirect-v2-0-b8f3ae53e894@bootlin.com>
- <20250110-xdp_redirect-v2-2-b8f3ae53e894@bootlin.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Content-Language: en-US
-In-Reply-To: <20250110-xdp_redirect-v2-2-b8f3ae53e894@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf] bpf: Fix bpf_sk_select_reuseport() memory leak
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <173656143706.2267647.2275946918157104178.git-patchwork-notify@kernel.org>
+Date: Sat, 11 Jan 2025 02:10:37 +0000
+References: <20250110-reuseport-memleak-v1-1-fa1ddab0adfe@rbox.co>
+In-Reply-To: <20250110-reuseport-memleak-v1-1-fa1ddab0adfe@rbox.co>
+To: Michal Luczaj <mhal@rbox.co>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+ shuah@kernel.org, davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, horms@kernel.org, jakub@cloudflare.com,
+ bpf@vger.kernel.org, netdev@vger.kernel.org
 
-On 1/10/25 1:21 AM, Bastien Curutchet (eBPF Foundation) wrote:
-> +static void ping_test(struct test_data *data)
-> +{
-> +	struct test_xdp_redirect *skel = NULL;
-> +	struct xdp_dummy *skel_dummy = NULL;
-> +	struct nstoken *nstoken = NULL;
-> +	int i, ret;
-> +
-> +	skel_dummy = xdp_dummy__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel_dummy, "open and load xdp_dummy skeleton"))
-> +		goto close;
-> +
-> +	for (i = 1; i < NS_NB; i++) {
-> +		char ns_name[4] = {};
-> +
-> +		snprintf(ns_name, 4, "NS%d", i);
-> +		nstoken = open_netns(ns_name);
-> +		if (!ASSERT_OK_PTR(nstoken, "open ns"))
-> +			goto close;
-> +
-> +		ret = bpf_xdp_attach(if_nametoindex("veth0"),
-> +				     bpf_program__fd(skel_dummy->progs.xdp_dummy_prog),
-> +				     data->xdp_flags, NULL);
-> +		if (!ASSERT_GE(ret, 0, "bpf_xdp_attach dummy_prog"))
-> +			goto close;
-> +
-> +		close_netns(nstoken);
-> +		nstoken = NULL;
-> +	}
-> +
-> +	skel = test_xdp_redirect__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "open and load skeleton"))
-> +		goto close;
-> +
-> +	nstoken = open_netns(NS0);
-> +	if (!ASSERT_OK_PTR(nstoken, "open NS0"))
-> +		goto close;
-> +
-> +	ret = bpf_xdp_attach(VETH2_INDEX,
-> +			     bpf_program__fd(skel->progs.xdp_redirect_to_111),
-> +			     data->xdp_flags, NULL);
-> +	if (!ASSERT_GE(ret, 0, "bpf_xdp_attach"))
-> +		goto close;
-> +
-> +	ret = bpf_xdp_attach(VETH1_INDEX,
-> +			     bpf_program__fd(skel->progs.xdp_redirect_to_222),
-> +			     data->xdp_flags, NULL);
-> +	if (!ASSERT_GE(ret, 0, "bpf_xdp_attach"))
-> +		goto close;
-> +
-> +	close_netns(nstoken);
-> +	nstoken = NULL;
-> +
-> +	nstoken = open_netns(NS1);
-> +	if (!ASSERT_OK_PTR(nstoken, "open NS1"))
-> +		goto close;
-> +
-> +	SYS(close, "ping -c 1 %s.2", IPV4_NETWORK);
+Hello:
 
-I added "> /dev/null" to remove noise for common case.
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Applied. Thanks.
+On Fri, 10 Jan 2025 14:21:55 +0100 you wrote:
+> As pointed out in the original comment, lookup in sockmap can return a TCP
+> ESTABLISHED socket. Such TCP socket may have had SO_ATTACH_REUSEPORT_EBPF
+> set before it was ESTABLISHED. In other words, a non-NULL sk_reuseport_cb
+> does not imply a non-refcounted socket.
+> 
+> Drop sk's reference in both error paths.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf] bpf: Fix bpf_sk_select_reuseport() memory leak
+    https://git.kernel.org/netdev/net/c/b3af60928ab9
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
