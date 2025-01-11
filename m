@@ -1,127 +1,178 @@
-Return-Path: <bpf+bounces-48610-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48611-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7188DA09EE2
-	for <lists+bpf@lfdr.de>; Sat, 11 Jan 2025 00:56:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19D09A09EED
+	for <lists+bpf@lfdr.de>; Sat, 11 Jan 2025 01:05:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD2B33A1A41
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2025 23:56:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF3B9188ED70
+	for <lists+bpf@lfdr.de>; Sat, 11 Jan 2025 00:05:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9991C223337;
-	Fri, 10 Jan 2025 23:55:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D94EF1114;
+	Sat, 11 Jan 2025 00:04:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q6BOgtlH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z4tXzvj6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC5C21D5A6
-	for <bpf@vger.kernel.org>; Fri, 10 Jan 2025 23:55:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22937E1;
+	Sat, 11 Jan 2025 00:04:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736553354; cv=none; b=ZytTl6mNKMcZpgo033T3GvFmOKWfvarzPeZkyNdrTebji1dKFWpm7CF8Thusj+JQ74z/Q0GTYSo7Wrewcy/kgSB/+mpDTrsEuaeew5ApAqwpvmUOO6a5XqY12MR1nOXwkiCmBLACUKCoUvlrXEshFt0ICWs/lPs9aCurUxSBzjA=
+	t=1736553891; cv=none; b=mn7MXvGQ57aFtdjAT/nXza8x8qpkexm47Yool6C02Lj9g5TWORac0vX9NmsmcD9Q9vv390NijXz1bLXGhWcJprgfjxkZci/D1Yn7MwI/0laMQgKj2zW5me3gZWU6DwUFrXKF9tbjle08kYHBxIGBL8b5bmEVYFa+45Z7mYFnwxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736553354; c=relaxed/simple;
-	bh=ioQKeFDzb/+MUMb4xKiQ1a6pidlMBS2076l3PmKk4y0=;
+	s=arc-20240116; t=1736553891; c=relaxed/simple;
+	bh=fNTiO6xtYnhwGjrGNuGearQkYI23E3n7BR4rb/cgQHs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MmOLtTPWWMjLWu+WIBh7KjxdbA+ubvFQi5sGeyoLyF5+Hwo920o5e4rKonoun8GvKEfiBMJGMNo05jHJFQuIgr3L56K+CVDQhY9ZmeHJ0wE5ysZFz4nVna3LSzzmHi6V/34EPumngP55K7gYOW5vKpmttymofFX0vWqDXG6Il88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q6BOgtlH; arc=none smtp.client-ip=209.85.216.42
+	 To:Cc:Content-Type; b=AxRKIuNr+dkYbsmk8ZSDlh98v9GZFPPoarmJeP7SL9b8fwaQmWp7flJPmUw99hRVFjWOdMsrIZMY8tfbwjAI6/fYdlF4NWPZNZkkXbSw0rwbRCh8vFd+6vummxDGIHQnV3p2MdOyijy/LKjP9otQNW1t7WktP3KqXXEHfKycjJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z4tXzvj6; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2f441904a42so4512934a91.1
-        for <bpf@vger.kernel.org>; Fri, 10 Jan 2025 15:55:52 -0800 (PST)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-216401de828so43291355ad.3;
+        Fri, 10 Jan 2025 16:04:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736553352; x=1737158152; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1736553889; x=1737158689; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zzgDf3gv1Ffpl96Ku1GwHQVduv+X7hxjrDqo/dOiwwc=;
-        b=Q6BOgtlHv/rv4ax9DOvDf71YKvz8IIggWZ31ohqBNaq05OasRmbk1yzY9ZGb/PjQbs
-         PXe/7F881c6JdWGrq0myYF5g6WC1LfcIVFDEvwhrFdD1fduAUiOqRUy/pJQUCB4GzoKQ
-         OYYfKUTkFpnjxdSG5jA2ltiS5u3SSdqI29xuUa38dd8KvNIRLaipJ0KBPGXwdAim0ZoM
-         ZmJP+JYIzyz37p6Ip5OLSwRc1Qj3hDteR2TTdYW0w41V3VCjs4PjrILKMbHalNlI8Abl
-         1Co9j7iEHTjDSKOQw+1iPU6J7gx9HDHDoZUy24JV93xybrco+dqMW9ajPkme/PwuAMu+
-         3Lww==
+        bh=3bonLyJ6JIPuL1eNiTcmjAFwP6bs35ylN1Gx9bLqcU8=;
+        b=Z4tXzvj6AD2Ow/4oqKGUB/JSKkPT13Qu8fIfctFhsN3MD6rC+Qs9oonfmZ4O0sa9hl
+         yJMz23LlcIu9U3jf6HH7b9Ib8QZzaXgrQgCFNFzy8OOonxNx+/L7/W5TTBo4FQUBvqwp
+         JngYbtyqmZ5RsUAun34IzfN02kOrke00RX/7TQ9aEc2lXS2NPyPqsfzAxw19rNd4fu0H
+         2ujMrfVCQ8WnKsMZhA1ZSG2pWk5J34yeTfa/7jjeD7zNdVQBTmUEhEweCkSfhPj8tXxk
+         +tK6vMt57ZysHqligVgSM88lRM/o2tIMNGBemoL/w3oky4W7sPXKzidw467si/VwcB+/
+         Kvrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736553352; x=1737158152;
+        d=1e100.net; s=20230601; t=1736553889; x=1737158689;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zzgDf3gv1Ffpl96Ku1GwHQVduv+X7hxjrDqo/dOiwwc=;
-        b=XryC4b7IDcdSjOktacRKXBF2I9aw0Kq3VU61XFoZMxulid2G/NatBWtqTzlAm47/dd
-         2R1MJE8GDpJwLjpTk+livxhzcs2kFtvm5ecKoMChjMiN38Qkh1WPXL2gJeH8efcftCRA
-         XJT9gMKvNqR0LQIKeTXJdL4dEAhbDw8bEMvplQij30qbFKV6NEZHWM/s/CvobLjHklOb
-         ROJcEo84uRSwdmTkLE31nSl6GGLJBgnhTqkGRnk5Jeu2e/hQNjAmV4wYuxggbKqXyj2X
-         f5Gcwqe/TQpxmHWN2sH1r8jSqQ5dtofG7kxPUJ55vE9D3XUN7FBL//K2on3BUVpo4Q+L
-         sjpw==
-X-Gm-Message-State: AOJu0YxBXvSVpn/ve4or8d5h1aHTqzws2B8gD/A5IvTaXhDl6LC0rAdl
-	zEgOs0retp/cqfUOU7NLzVucuhBa0sqXixFYwoVsFvjqHJvoWfK8LiO7ZX+SnHOJFFV3SASqQmG
-	g4atYEGQiwKP7ls7CNf6dqjs8V48=
-X-Gm-Gg: ASbGncuq9Km1cgei5lneiPLQw4PT4ojU2Xe+FXDEKEvfdUbi12/C6YhWk0E/HzokUeX
-	r8EbwYc6EW42macJBFTQ7sJpYsP9ZEJInaZJl1tJmTnwVKvZ3926hdA==
-X-Google-Smtp-Source: AGHT+IH/T+A4IKxP323omvnkaK/xgJijCzZwsLyhRImimjxG5JOdB89sqLFg2U2xnkXiBRxr91rFSPfG3MOBZT4pZYs=
-X-Received: by 2002:a17:90b:280a:b0:2ee:d63f:d77 with SMTP id
- 98e67ed59e1d1-2f548f2ecb6mr19183869a91.9.1736553351955; Fri, 10 Jan 2025
- 15:55:51 -0800 (PST)
+        bh=3bonLyJ6JIPuL1eNiTcmjAFwP6bs35ylN1Gx9bLqcU8=;
+        b=be2grNorUSuxzUIMANG4Qzqyna3Y4lMxlDHQ69ISb86rUQXiMft58ZTocxS8NARVX0
+         0CAoOue5oCC1c91QFLSXDHoDNbXqd0vGC8ZzgDn2qRfoLOdnfSmjL7TSztMGUpe6Eeb6
+         DK1d6nt3S4lcUet+nfi3CBbsISw/Dd0362Oqjg63vHjw2HKkeGypAlOgvhPhEnvaoMIk
+         zvvohp2v649z+nBQ77ilJjID1u2UKOTbBBy9stH+V6PYOTnWanfJUTDeGnKtJuWcqQaq
+         ampsRC5jd/r6iGOzjhLIPX7BvqK8iRMdIgR8U8x9SqNVC3HCrELf9Rrv1A7xbb0AMxrJ
+         FCWA==
+X-Forwarded-Encrypted: i=1; AJvYcCV8m1SEG8SlOtFIFLyeIWv/ims0EC9ez3X8ZK2yBjUhYpdjoWx8t/awfhyaLvp54ubjNwaX6zQ5Dqx2mfKEsDgd52EG@vger.kernel.org, AJvYcCVte7q4JrWeFUJm0MW0iSDIePi3rE9C454SAIyG32C50fQcZRkzUv+hxHcRqn5EcJbaOpSAaHK3bF3weQ==@vger.kernel.org, AJvYcCW1cyYuNY7CHQzP5Uz7pN9fuyhsZJw2GkbvG0lE81UR/8m5NN3nIE7ZTwUuqyYIF6kgeNk=@vger.kernel.org, AJvYcCWD4Hc76uB85Ws/xf8EihIlK0oxZElD09ctw2Ypc1CbzGzlWt0YFte1HlvEYE2xe9tDKRipUGUwsljz821V@vger.kernel.org
+X-Gm-Message-State: AOJu0YwaZYYRs2Dj3lMW1PFCJU0XWNx+ygb41U+9N6ScuYLORTqyIqS3
+	Kl0YY/dTkoHTDLRvKl5LaiLYcCLBPE5xJMtKT3n+FeJ20ev3J57I0VTc+jlmvO3XEVEdmuIi7xG
+	5haC4KE7si+soovdkFYzjqa8mpKd8aw==
+X-Gm-Gg: ASbGncvQL+EliylcE/TRYZlSd4VBOvViWN+kiu79wF6FaruU5/XIzrxv36v3ZGfc32o
+	fN1BghLHvSTk5Ic1uoDTWIzcu2Dq8UJLpFizVPZAWYPdtNi4p/ckNow==
+X-Google-Smtp-Source: AGHT+IF1oRHwTKWMsbpUib7jhYExZc2DppCPYm5PHYUUG6o7mQAMKIEpvqV+cQiYUjHBw9b1chSAyQJDhliRJb9a9QU=
+X-Received: by 2002:a17:90a:d2d0:b0:2ee:7a4f:9265 with SMTP id
+ 98e67ed59e1d1-2f548eae0a0mr19541970a91.15.1736553889146; Fri, 10 Jan 2025
+ 16:04:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250107235813.2964472-1-ihor.solodrai@pm.me> <CAEf4BzZ_2=CquVPBD-WgzkfSk5UAqyp1SOeZHTfD+OsVRiKPhw@mail.gmail.com>
- <aQ6AOJh7xmPLqca9GMQahFPCLjiCkrlDBEMh0UBm-zX4ngEkwJaDJv55lrwMRBuwaf_yrGH3LpKqBXl86kbdRIJLUcKZCUxKAx4uCBsxBeQ=@pm.me>
-In-Reply-To: <aQ6AOJh7xmPLqca9GMQahFPCLjiCkrlDBEMh0UBm-zX4ngEkwJaDJv55lrwMRBuwaf_yrGH3LpKqBXl86kbdRIJLUcKZCUxKAx4uCBsxBeQ=@pm.me>
+References: <173518987627.391279.3307342580035322889.stgit@devnote2> <Z3aSuql3fnXMVMoM@krava>
+In-Reply-To: <Z3aSuql3fnXMVMoM@krava>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 10 Jan 2025 15:55:40 -0800
-X-Gm-Features: AbW1kvaJu1Keou1U-AnRTrhj4MlQ1LqZifI_heb0anYkJLl6b-FGT7IdYgJ9kkU
-Message-ID: <CAEf4BzZ2U=+=8ePb7b=VTuwTPBSeJYsUa0WdR4PCKXHgHzgPyA@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: add -std=gnu11 to BPF_CFLAGS and CFLAGS
-To: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, mykolal@fb.com, 
-	jose.marchesi@oracle.com
+Date: Fri, 10 Jan 2025 16:04:37 -0800
+X-Gm-Features: AbW1kvbk13EDJ-iFrT--c0slWpM7buA85uke6D54ktlz8WUQNmX1fE9KZ2bEfIY
+Message-ID: <CAEf4BzZqpHcqRJscQtAJJ7tLMpdq4_Dr_j7APj=X2g-pnkELVg@mail.gmail.com>
+Subject: Re: [PATCH v22 00/20] tracing: fprobe: function_graph: Multi-function
+ graph and fprobe on fgraph
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>, 
+	linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, 
+	Mark Rutland <mark.rutland@arm.com>, linux-arch@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 10, 2025 at 3:44=E2=80=AFPM Ihor Solodrai <ihor.solodrai@pm.me>=
- wrote:
+On Thu, Jan 2, 2025 at 5:21=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrote=
+:
 >
-> On Friday, January 10th, 2025 at 3:34 PM, Andrii Nakryiko <andrii.nakryik=
-o@gmail.com> wrote:
+> On Thu, Dec 26, 2024 at 02:11:16PM +0900, Masami Hiramatsu (Google) wrote=
+:
+> > Hi,
+> >
+> > Here is the 22nd version of the series to re-implement the fprobe on
+> > function-graph tracer. The previous version is;
+> >
+> > https://lore.kernel.org/all/173379652547.973433.2311391879173461183.stg=
+it@devnote2/
+> >
+> > This version is rebased on v6.13-rc4 with fixes on [3/20] for x86-32 an=
+d
+> > [5/20] for build error.
 >
-> >
-> >
-> > On Tue, Jan 7, 2025 at 3:58=E2=80=AFPM Ihor Solodrai ihor.solodrai@pm.m=
-e wrote:
-> >
-> > > Latest versions of GCC BPF use C23 standard by default. This causes
-> > > compilation errors in vmlinux.h due to bool types declarations.
-> >
-> >
-> > Do you have an example of an error? Why can't we fix that to work with =
-C23?
 >
-> See a thread here: https://lore.kernel.org/bpf/ZryncitpWOFICUSCu4HLsMIZ7z=
-OuiH5f4jrgjAh0uiOgKvZzQES09eerwIXNonKEq0U6hdI9pHSCPahUKihTeS8NKlVfkcuiRLott=
-eNbQ9I=3D@pm.me/
+> hi,
+> I ran the bench and I'm seeing native_sched_clock being used
+> again kretprobe_multi bench:
+>
+>      5.85%  bench            [kernel.kallsyms]                           =
+             [k] native_sched_clock
+>             |
+>             ---native_sched_clock
+>                sched_clock
+>                |
+>                 --5.83%--trace_clock_local
+>                           ftrace_return_to_handler
+>                           return_to_handler
+>                           syscall
+>                           bpf_prog_test_run_opts
+
+completely unrelated, Jiri, but we should stop using
+bpf_prog_test_run_opts() for benchmarking. It goes through FD
+refcounting, which is unnecessary tiny overhead, but more importantly
+it causes cache line bouncing between multiple CPUs (when doing
+multi-threaded benchmarks), which skews and limits results.
+
+>                           trigger_producer_batch
+>                           start_thread
+>                           __GI___clone3
+>
+> I recall we tried to fix that before with [1] change, but that replaced
+> later with [2] changes
+>
+> When I remove the trace_clock_local call in __ftrace_return_to_handler
+> than the kretprobe-multi gets much faster (see last block below), so it
+> seems worth to make it optional
+>
+> there's some decrease in kprobe_multi benchmark compared to base numbers,
+> which I'm not sure yet why, but other than that it seems ok
+>
+> base:
+>         kprobe         :   12.873 =C2=B1 0.011M/s
+>         kprobe-multi   :   13.088 =C2=B1 0.052M/s
+>         kretprobe      :    6.339 =C2=B1 0.003M/s
+>         kretprobe-multi:    7.240 =C2=B1 0.002M/s
+>
+> fprobe_on_fgraph:
+>         kprobe         :   12.816 =C2=B1 0.002M/s
+>         kprobe-multi   :   12.126 =C2=B1 0.004M/s
+>         kretprobe      :    6.305 =C2=B1 0.018M/s
+>         kretprobe-multi:    7.740 =C2=B1 0.003M/s
+>
+> removed native_sched_clock call:
+>         kprobe         :   12.850 =C2=B1 0.006M/s
+>         kprobe-multi   :   12.115 =C2=B1 0.006M/s
+>         kretprobe      :    6.270 =C2=B1 0.017M/s
+>         kretprobe-multi:    9.190 =C2=B1 0.005M/s
+>
+>
+> happy new year ;-) thanks,
+>
+> jirka
+>
+>
+> [1] https://lore.kernel.org/bpf/172615389864.133222.14452329708227900626.=
+stgit@devnote2/
+> [2] https://lore.kernel.org/all/20240914214805.779822616@goodmis.org/
 >
 
-Yeah, thanks, still catching up, just got to that thread and saw the
-discussion. What a mess, I'll pretend I don't know about this. :)
-
-> The one I ran into is about:
->
->     enum {
->         false =3D 0,
->         true =3D 1,
->     };
->
-> Which is illegal in C23, because true and false are reserved words.
->
-> >
-> > [...]
+[...]
 
