@@ -1,75 +1,77 @@
-Return-Path: <bpf+bounces-48635-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48636-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A324FA0A75B
-	for <lists+bpf@lfdr.de>; Sun, 12 Jan 2025 07:45:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D78C0A0A75D
+	for <lists+bpf@lfdr.de>; Sun, 12 Jan 2025 07:45:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E61F23A8A3F
-	for <lists+bpf@lfdr.de>; Sun, 12 Jan 2025 06:45:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E1563A8A6E
+	for <lists+bpf@lfdr.de>; Sun, 12 Jan 2025 06:45:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D28A951C5A;
-	Sun, 12 Jan 2025 06:45:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7162D14EC62;
+	Sun, 12 Jan 2025 06:45:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mfrA4A5W"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i3v6phMk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF90E14EC60;
-	Sun, 12 Jan 2025 06:45:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F96B2581;
+	Sun, 12 Jan 2025 06:45:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736664326; cv=none; b=JFdkREmt3SSg/o3r1WhJcOSOWTBLUW0L43PrO8IM15jv3gM4NSdBJLpfPPEiec9BijrQoOBKqGG/uk7LGR/R6OT15bQ7g6Xxac4DEO3Q4UqgrCrIrfIEuoB3QJz1cHEQB91O60VbxzLw/zVSqrlBi2PewFSH5d/MpJFjNkjrRIo=
+	t=1736664335; cv=none; b=Zg+VcQSQs5A2l34ak9PenZHXhCN/Ef72zoiW49Kf8UaA45E1nhp4NmJ+7FOS44GGEBPQ0PcHYwbLGKpQNv2Pn5MbFKjO4zsG82rfJbU8sbFGVX/O3BWrSd91aGVp+QO0pORwdo6ay+P3UTScERZ30r/YIDQJ8C+tnftFqWOk2CQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736664326; c=relaxed/simple;
-	bh=Wo/niDj4XWuBrTD9vkbMN8C0xUkZN0B4d99vyjfKrpI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=c7bxzJTn2oPANRpQ0RcxlgraC2RMGiNQu6ehVL14+0bBEPBeREFhHRlzl+9bFC/+E64OlXMgFEmuZr0BMWxQPUrO24rxZC69l8Y5nk35/W4KlhZUdrFG3swlBvPJWXPgEpe7/R09YqCGtOGUCqQ7ODB3ZskzC2wJ4kXLg7arQ6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mfrA4A5W; arc=none smtp.client-ip=209.85.214.180
+	s=arc-20240116; t=1736664335; c=relaxed/simple;
+	bh=yph9RWVp5+2gMT8lCxwb6Bk0YWFvTgCp/ifMNozXs1c=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=LJt1lUTStCWhrIX0LlS/uR/yMTMl3q+oJAoVIDv5rCGHEAufv4sQ93FEAD40WOaFl9u1KveVowuHYRcd+3/xE5h3jNXXxp/KJDWPvUIRwrPCPFjxkxFbfBWaMtmuf8Cujwd6+AnJ42Znb9i4A/1jdqsPVVNtJ4Afa5ag6Y5I6xg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i3v6phMk; arc=none smtp.client-ip=209.85.214.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-21a7ed0155cso55660185ad.3;
-        Sat, 11 Jan 2025 22:45:24 -0800 (PST)
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2161eb95317so56113895ad.1;
+        Sat, 11 Jan 2025 22:45:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736664324; x=1737269124; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9KM8zEtHG+fY4X8Wwa0UgChQrVmmncC53lXbkZE2M4M=;
-        b=mfrA4A5WVV/cQNAt6GozsBoLNRbThAP/2SLvpDvXt0pSdh4+3I5UU5/DmmREzQ/OAn
-         xBhrH9JnAaGowy7lV6ED8xirAxGT81m9msxnXjEer4fKI32aphDpXNebPMI4bcsStb/U
-         9y/q6IbX/xn/2GIv+LnXnASwbb8zbRvzRUruoUdxXXaxo/zEBXzOt5a63Ff52x75fCVV
-         q7xXhOfy1c8dnWZgvwTFtzeBJBVEEr7N5C2bTGPJgOPp2cPfmHPGN0mRpzrn8dWQ4t9j
-         Xn56VhNJewpW6gvQrNKwQvd6tpoKGVSepzkOSQcGAa4pVZsKrGvARBVMfhZuetviuCq7
-         1GDg==
+        d=gmail.com; s=20230601; t=1736664333; x=1737269133; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hHJiOiyymPmTO+pR9BFdPEH9iK2DFBm9/nkjMVjpj48=;
+        b=i3v6phMkLmgChpcTmArcTEKVg1cjIYJp6W6YyNOEa/d7YkOIbZUT/5HPNOSDIRxqUe
+         nArXpMDyVII8mg+FQuPqv2821RAZ+U9amODdlkV2cA4DsHp8PJ3ptFOEHiuPdReg8qrr
+         kO/ec4cruy2BfXT0uzGAfJUoVbv30s0Q0468dPTkZDaXzD66PxlYS1/n0qOJzTUTaOwK
+         +88MaJjp/GrEEPajxffj0gh4czS1wXgP3azhWS/NjVulzjKnep/bYdZDLtjkdMqeqiTz
+         Vc8aiPBdxqjlK5Qa5w8e0Ep5hrbvZAO4YTsWBYC686Qf+csjGkzp2vp4Ci9aaqCDFhVh
+         PESw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736664324; x=1737269124;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9KM8zEtHG+fY4X8Wwa0UgChQrVmmncC53lXbkZE2M4M=;
-        b=bQo79EDDIsG3C5BQbaJOVI9E9nwWhqemlkt5OOYyh3SZCUL3t48xKn5VN8HkzgRQ5d
-         yt7l7t2vxJu/km7ZfxymzlTUwcyF++kBtFYj/+dgyVfaKgvR58D+sWg4H+v4S7CR1sNG
-         9AU5MDeT2pPkDT+jhGfVyy+UMeshRFgwB0nQh8ekASp4fDf8uE2n1iq5YxURF11Xoyph
-         ie56nhZrcVDYoMaz6KzoiuzsnrJiA/MgQonYfllHx38VeBGIFI5l/FlSDoagIeiH67n+
-         v6LOHSXQYdIvBacBo80FP+nfo+UDYXiYE0Ymu0BuXtRKO7Y7QtqHbE79EoRWqxbqpt/i
-         e6IA==
-X-Forwarded-Encrypted: i=1; AJvYcCXIFvYbRFUf4oEn0G/uH2ZalpCWfEvU5XrFaZtRrm/hIR7kOtN55QtqJ0eMW19deR0X46HFVAY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy1d8Wz1Whtfn83rOLw8vTzJVK8jU+W6w61PB88kjLIV79unHF3
-	tcEeulPJyCjroTiJEwGXhotneHSyIT5QVmtjuC05kR3IxWyvMWuw
-X-Gm-Gg: ASbGncs7H0GanDMmvqByZpWr1/OSO9Z+C7U/9aGV3CIGXXee0wi2Khs66fTgxmetoUG
-	I/wMx+GAFhu/AQkW9MGsxEmej7KbaIsnjrcaULvwS6G+KK3IYKsyT6oIrcveAJ6qW9/i7ECt//h
-	ntsdvNPTtoXi1WfPEPZZQyDb/6DVhB32C3zaCO43pfcvDI/V6zuzzAdBEAKMAUsccHymKgn9Kj4
-	uhntNT4nYOTCHpBj8iK5Lvl49lhxN2ktZrnCuRpOuncyQGXjAqAwbVMjuH2OOZjGa3ckcZVpfOj
-	K2jI6Ts=
-X-Google-Smtp-Source: AGHT+IGip7RqZ8aTxlkkWN3VaqnhMjyMaRTmQq12zBl1Ni8iqZ8MjuY/h6B0I+MArRsKqKb99LcIMQ==
-X-Received: by 2002:a05:6a20:72a1:b0:1e0:c8c5:9b1c with SMTP id adf61e73a8af0-1e88d0a1e5amr27124372637.9.1736664324092;
-        Sat, 11 Jan 2025 22:45:24 -0800 (PST)
+        d=1e100.net; s=20230601; t=1736664333; x=1737269133;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hHJiOiyymPmTO+pR9BFdPEH9iK2DFBm9/nkjMVjpj48=;
+        b=PSqbPci5siZtpkdD13xxVgz+oy+FJb1q7N+KpAPsYz6wPSY6K/t9vPgvMATOcAtxmX
+         dhAi+gr3CJe+jaVzipK8PY4GGpACkWGiIx4B53ZotRm2ysZA5/t67FAiYXh/P+dkCdZy
+         MlZnORyOcjR2CO+RizPQBvavYIYu+xnwR47HgxglRm1fZHwnLaNuG4C1cBRp11va7xj3
+         /3ZVSPQZkLEMbEkq47wlDcrupHgufnDU57mcIVFgXIUulDXNzvcCmvO5A6jSqlZmcppN
+         dw/+KLvLRyW5SSLlGrMQiZtxNbzuqeiiriNzTBqpH+w181ed6TA4dzIrvKprtYqsEqtn
+         DQrA==
+X-Forwarded-Encrypted: i=1; AJvYcCW1aigbm89O7VjM+yb3Nq0Cz/Xq9LFhOfk4LxXiU6i4HkHi6THsm6Lgk3UipUg103vEWD4zNO0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxofHOjUVi3fbkvxf7FW6ZzBtmeIEW24BtqSZxw38C5+h/z83TJ
+	MStBTbPzzfdGAr25mEFzKSw4sHEJHXDWnXjtnpkXg2lGixb3W/+U
+X-Gm-Gg: ASbGncsuNRDEILiM/ZTCjVOsSvqE/bGKmzMINp3YHr15DQql9H2YOYSDVT56OhHXT1t
+	RkQmq+eUDHYV8iYgh/WMq2L2/NPnMjomRZgTIByWIUTkAgOsh86EOR3HTktRorNfF34Wa97Gnu6
+	B4PEpolOrG/Q7eeo0u34Qkh3gAdkPzVj/2kNHhNeElbsL260l3H5EXk+BxiBiKi0bg/Cu0e5J0f
+	yFQQjkPQUevjv/GJ2qmjy+QiCmwJjulHS0AJZ901Rs7fWEUL3XScIGT0HB1gEWOUbiVBTCiyDhz
+	HYCpDUA=
+X-Google-Smtp-Source: AGHT+IG1lANNaN61ZaBr3NfIM4fnRkOGdOCCjstNr+lOM6C264BEFW9sRINYjXTNcJgXHth73N14LQ==
+X-Received: by 2002:a05:6a21:3993:b0:1db:e509:c0a8 with SMTP id adf61e73a8af0-1e88cfd3c7emr25137907637.21.1736664332824;
+        Sat, 11 Jan 2025 22:45:32 -0800 (PST)
 Received: from localhost.localdomain ([180.159.118.224])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72d4059485bsm3791166b3a.83.2025.01.11.22.45.17
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72d4059485bsm3791166b3a.83.2025.01.11.22.45.24
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sat, 11 Jan 2025 22:45:23 -0800 (PST)
+        Sat, 11 Jan 2025 22:45:32 -0800 (PST)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: andrii@kernel.org,
 	eddyz87@gmail.com,
@@ -87,11 +89,14 @@ To: andrii@kernel.org,
 	dxu@dxuuu.xyz
 Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH v2 0/2] libbpf: Add support for dynamic tracepoints 
-Date: Sun, 12 Jan 2025 14:45:11 +0800
-Message-Id: <20250112064513.883-1-laoar.shao@gmail.com>
+	Yafang Shao <laoar.shao@gmail.com>,
+	Jiri Olsa <olsajiri@gmail.com>
+Subject: [RFC PATCH v2 1/2] libbpf: Add support for dynamic tracepoint
+Date: Sun, 12 Jan 2025 14:45:12 +0800
+Message-Id: <20250112064513.883-2-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+In-Reply-To: <20250112064513.883-1-laoar.shao@gmail.com>
+References: <20250112064513.883-1-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -100,58 +105,89 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The primary goal of this change is to enable tracing of inlined kernel
-functions with BPF programs.
-
-Dynamic tracepoints can be created using tools like perf-probe, debugfs, or
-similar utilities. For example:
+Dynamic tracepoints can be created using debugfs, perf or similar tools.
+For example:
 
   $ perf probe -a 'tcp_listendrop sk'
+
+This command creates a new tracepoint under debugfs:
+
   $ ls /sys/kernel/debug/tracing/events/probe/tcp_listendrop/
   enable  filter  format  hist  id  trigger
 
-Here, tcp_listendrop() is an example of an inlined kernel function.
+Notably, the probed function tcp_listendrop() is an inlined kernel function.
 
-While these dynamic tracepoints are functional, they cannot be easily
-attached to BPF programs. For instance, attempting to use them with
-bpftrace results in the following error:
+Although this dynamic tracepoint appears as a tracepoint, it is internally
+implemented as a kprobe. Therefore, if we want to attach a bpf prog to
+it, the bpf prog must be loaded as a kprobe prog.
 
-  $ bpftrace -l 'tracepoint:probe:*'
-  tracepoint:probe:tcp_listendrop
+The primary motivation for adding support for dynamic tracepoints is to
+simplify tracing of inlined kernel functions using BPF tools, such as
+bpftrace. By leveraging tools like perf, users can create a dynamic
+tracepoint for an inlined kernel function and then attach a BPF program to
+it.
 
-  $ bpftrace -e 'tracepoint:probe:tcp_listendrop {print(comm)}'
-  Attaching 1 probe...
-  ioctl(PERF_EVENT_IOC_SET_BPF): Invalid argument
-  ERROR: Error attaching probe: tracepoint:probe:tcp_listendrop
+To achieve this, a new section, SEC("kprobe/SUBSYSTEM/PROBE"), has been
+introduced.
 
-The issue lies in how these dynamic tracepoints are implemented: despite
-being exposed as tracepoints, they remain kprobe events internally. As a
-result, loading them as a tracepoint program fails. Instead, they must be
-loaded as kprobe programs.
+Suggested-by: Jiri Olsa <olsajiri@gmail.com>
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Cc: Daniel Xu <dxu@dxuuu.xyz>
+---
+ tools/lib/bpf/libbpf.c | 29 ++++++++++++++++++++++++++++-
+ 1 file changed, 28 insertions(+), 1 deletion(-)
 
-This change introduces support for such use cases in libbpf by adding a
-new section: SEC("kprobe/SUBSYSTEM/PROBE")
-
-- Future work
-  Extend support for dynamic tracepoints in bpftrace.
-
-Changes:
-v1->v2:
-- Use a new SEC("kprobe/SUBSYSTEM/PROBE") instead (Jiri)
-
-v1: https://lore.kernel.org/bpf/20250105124403.991-1-laoar.shao@gmail.com/
-
-Yafang Shao (2):
-  libbpf: Add support for dynamic tracepoint
-  selftests/bpf: Add selftest for dynamic tracepoint
-
- tools/lib/bpf/libbpf.c                        | 29 ++++++++-
- .../bpf/prog_tests/test_dynamic_tp.c          | 64 +++++++++++++++++++
- .../testing/selftests/bpf/progs/dynamic_tp.c  | 27 ++++++++
- 3 files changed, 119 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_dynamic_tp.c
- create mode 100644 tools/testing/selftests/bpf/progs/dynamic_tp.c
-
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 66173ddb5a2d..23ea9272491b 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -11600,11 +11600,34 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+ 	return libbpf_err_ptr(err);
+ }
+ 
++/* A dynamic tracepoint: "kprobe/SUBSYSTEM/PROBE" */
++static int attach_dynamic_tracepoint(const struct bpf_program *prog, const char *func_name,
++				     struct bpf_link **link)
++{
++	char *tp_subsys, *tp_name;
++
++	tp_subsys = strdup(func_name);
++	if (!tp_subsys)
++		return -ENOMEM;
++
++	tp_name = strchr(tp_subsys, '/');
++	if (!tp_name) {
++		free(tp_subsys);
++		return -EINVAL;
++	}
++
++	*tp_name = '\0';
++	tp_name++;
++	*link = bpf_program__attach_tracepoint(prog, tp_subsys, tp_name);
++	free(tp_subsys);
++	return libbpf_get_error(*link);
++}
++
+ static int attach_kprobe(const struct bpf_program *prog, long cookie, struct bpf_link **link)
+ {
+ 	DECLARE_LIBBPF_OPTS(bpf_kprobe_opts, opts);
++	const char *func_name, *dynamic_tp;
+ 	unsigned long offset = 0;
+-	const char *func_name;
+ 	char *func;
+ 	int n;
+ 
+@@ -11620,6 +11643,10 @@ static int attach_kprobe(const struct bpf_program *prog, long cookie, struct bpf
+ 	else
+ 		func_name = prog->sec_name + sizeof("kprobe/") - 1;
+ 
++	dynamic_tp = strchr(func_name, '/');
++	if (dynamic_tp)
++		return attach_dynamic_tracepoint(prog, func_name, link);
++
+ 	n = sscanf(func_name, "%m[a-zA-Z0-9_.]+%li", &func, &offset);
+ 	if (n < 1) {
+ 		pr_warn("kprobe name is invalid: %s\n", func_name);
 -- 
 2.43.5
 
