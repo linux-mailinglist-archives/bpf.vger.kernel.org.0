@@ -1,152 +1,154 @@
-Return-Path: <bpf+bounces-48672-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48673-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBFF2A0B3D2
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 10:59:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E599A0B442
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 11:13:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F22EF7A2A82
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 09:59:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B8D1188886E
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 10:13:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 570091FDA9C;
-	Mon, 13 Jan 2025 09:59:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B10C21ADAB;
+	Mon, 13 Jan 2025 10:13:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Fz1cTLLG"
+	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="ja5p8TTx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mailtransmit05.runbox.com (mailtransmit05.runbox.com [185.226.149.38])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 622E81FDA7A;
-	Mon, 13 Jan 2025 09:59:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34BE8235C07;
+	Mon, 13 Jan 2025 10:13:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736762381; cv=none; b=Mo6IdB0U/bvccazxdhAv3QqAGVt6FZMxzTppI8peBAP7iIwoKzOz+qQd++eRPVBzsWIXBkrYrjyg1Uw5BeJCCwmyKVRBbn2rChZfw85HREqmmbyWLBQ78kziF6ls5aQRzHoJRjAgU684m8qbNN8N6/l4pJuhUQFXlIWaTkdoHQs=
+	t=1736763208; cv=none; b=GS+qstBP/T2w2GuwF25eVQuXmLyGGj5IqI5p1SjrxJ/hRTvQoPOm+wSOzDiam+CPOzrzEvae8brlq32OoWgWeXYbKMbmr9GniP4H4hAa+p/NNmF1VAreOz9j88qlohGsxmIaX1fc2IwesznwHakFSDSbxM0VwDkgj1fhafFoXXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736762381; c=relaxed/simple;
-	bh=HXfc/MrkJHMg4EK5swHrR9lPNKRHfqqLHgamt08x0Ek=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=uKmKCk1gGXSpK/fiVvZc1pqhz34GX3UnWHvifbt6aMWLrfPG0IcKpnhduSrRTtcb1YyBLBM6CMkRlYWRuxadSGQpyMZx4q+5bfxfOOiE1LliC7hVBGafRmoAyF0iFaYbqO5mvSMs1fDgoBol6TY20MfgReghEmTZh9iHZfFs+fI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Fz1cTLLG; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 50D3qqn1002379;
-	Mon, 13 Jan 2025 09:59:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
-	content-type:date:from:message-id:mime-version:subject:to; s=
-	pp1; bh=StrBcLiHd6f0gbm6Q8qciYtYqt1wsPKW4JUT9wQkiLY=; b=Fz1cTLLG
-	HyQXtXFR5o0mUMY6VocmaPPVnqOUdwONCNFlZd5Lc8HgSayZeCeJqaUCZNANA7el
-	Ok9KLAdL3m3cQdaDygXMwRXj8DYl0Z8QQ4uLZkmGMXvdO4G7NB8TB15J7PfDpRlu
-	FGdaUKoFi/Ksl5DVK0p7liYWvxsBLqh+6AWie2aZGV51E2ADnDrxZuTWuWmuH0Tf
-	2TnO7+iY7FsAfgsekY+klNrtkIi4X3oNwqj/0P+5Wx+V8QPOE45rk1yu108NBHbo
-	jnjvSeUIMuSP8Nlb/8YB4XCe0ZuD1jKW1pmHEDjccGmq1TaGGWwj/Lg9UqkLaQoh
-	d+U0zDR9JExt3A==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 444uags9cd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 13 Jan 2025 09:58:51 +0000 (GMT)
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 50D9wIjW028414;
-	Mon, 13 Jan 2025 09:58:50 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 444uags9cb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 13 Jan 2025 09:58:50 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 50D8ZOtE007364;
-	Mon, 13 Jan 2025 09:58:49 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4443ymwjt0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 13 Jan 2025 09:58:49 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 50D9wlds54722852
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 13 Jan 2025 09:58:47 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 635F42004D;
-	Mon, 13 Jan 2025 09:58:47 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0BC932004B;
-	Mon, 13 Jan 2025 09:58:45 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.124.211.30])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon, 13 Jan 2025 09:58:44 +0000 (GMT)
-Date: Mon, 13 Jan 2025 15:28:39 +0530
-From: Vishal Chourasia <vishalc@linux.ibm.com>
-To: bpf@vger.kernel.org, daniel@iogearbox.net, maciej.fijalkowski@intel.com,
-        sdf@fomichev.me, netdev@vger.kernel.org, sdf@google.com,
-        kuba@kernel.org, yoong.siang.song@intel.com, ast@kernel.org
-Subject: [RFC] Fix mismatch in if_xdp.h between tools and kernel UAPI
-Message-ID: <Z4TjzzB8NSnTy_Wa@linux.ibm.com>
+	s=arc-20240116; t=1736763208; c=relaxed/simple;
+	bh=AbEypxldcB557r7ML3RWblxFpClAAQjKh+mk6I/n4hI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Wlg15qLr+UOUOqCIm8CG13U/8Jaag9WN5yqCIk4WbpxkgYt3hcwXnd0nH88mya5YJ0rwPZkkJPRjv6hMZb1NHj0mVfX+aZWm+MoKjjECR+tzlO++Cmc3CSSeQUejxJYG9B4Dzr9DtCMdkFMo+XHlzaLzB3t/qvQ0Uo23/9dYYqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=ja5p8TTx; arc=none smtp.client-ip=185.226.149.38
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
+Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
+	by mailtransmit05.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.93)
+	(envelope-from <mhal@rbox.co>)
+	id 1tXHRa-00DhCO-Tc; Mon, 13 Jan 2025 11:13:14 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
+	s=selector2; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
+	bh=XmtGPnPvH6It0GR990T2qwUAKTVPIjKO4lymK4SpZf0=; b=ja5p8TTx11VmfSU8AkwM9xXOmC
+	R0HlPnuhaO1aaA7LAjGwUBgO0aROIcDCW4554r3UreeZMe+JNAeN6PwYZdoPIeZ/a9Ltr0v6pqZk1
+	pfgzT/3Cx6JtLcVuSP1PyMhcWVrhxendX5WNGukCBli1xObGZmO3AYDtBF4RaWeQH0hyrsaoDmXM5
+	ctWBMBsU6CeUXHU/QRGCyegPn52elUhgWOvbCK3wwso/sAASLSTVO/V6u2dsF0xAxNy4nqza65VKJ
+	o6G7pBxsDYS7UQt2L858VXvhHpMHcEgoILEFvv0/wl/CqRDS2y5sJxMQgal2aQkRXYRIjmhDq40nM
+	mI39Dq5Q==;
+Received: from [10.9.9.73] (helo=submission02.runbox)
+	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
+	(envelope-from <mhal@rbox.co>)
+	id 1tXHRZ-00030N-L5; Mon, 13 Jan 2025 11:13:13 +0100
+Received: by submission02.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.93)
+	id 1tXHRG-00DToB-7D; Mon, 13 Jan 2025 11:12:54 +0100
+Message-ID: <cccb1a4f-5495-4db1-801e-eca211b757c3@rbox.co>
+Date: Mon, 13 Jan 2025 11:12:52 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: NYjWebT6GUyyx-s_8TmkQkcAaEQWSLff
-X-Proofpoint-GUID: fEJbpHupk8-Z8s5d6H50apE8zmI4jT0w
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=470
- malwarescore=0 suspectscore=0 lowpriorityscore=0 clxscore=1011
- impostorscore=0 bulkscore=0 spamscore=0 mlxscore=0 priorityscore=1501
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2501130084
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v2 1/5] vsock/virtio: discard packets if the transport
+ changes
+To: Stefano Garzarella <sgarzare@redhat.com>
+Cc: netdev@vger.kernel.org, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Luigi Leonardi <leonardi@redhat.com>, "David S. Miller"
+ <davem@davemloft.net>, Wongi Lee <qwerty@theori.io>,
+ =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>, Eric Dumazet <edumazet@google.com>,
+ kvm@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+ Stefan Hajnoczi <stefanha@redhat.com>, Jason Wang <jasowang@redhat.com>,
+ Simon Horman <horms@kernel.org>, Hyunwoo Kim <v4bel@theori.io>,
+ Jakub Kicinski <kuba@kernel.org>, virtualization@lists.linux.dev,
+ Bobby Eshleman <bobby.eshleman@bytedance.com>, stable@vger.kernel.org
+References: <20250110083511.30419-1-sgarzare@redhat.com>
+ <20250110083511.30419-2-sgarzare@redhat.com>
+ <1aa83abf-6baa-4cf1-a108-66b677bcfd93@rbox.co>
+ <nedvcylhjxrkmkvgugsku2lpdjgjpo5exoke4o6clxcxh64s3i@jkjnvngazr5v>
+ <CAGxU2F7BoMNi-z=SHsmCV5+99=CxHo4dxFeJnJ5=q9X=CM3QMA@mail.gmail.com>
+Content-Language: pl-PL, en-GB
+From: Michal Luczaj <mhal@rbox.co>
+In-Reply-To: <CAGxU2F7BoMNi-z=SHsmCV5+99=CxHo4dxFeJnJ5=q9X=CM3QMA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello all,
+On 1/13/25 10:07, Stefano Garzarella wrote:
+> On Mon, 13 Jan 2025 at 09:57, Stefano Garzarella <sgarzare@redhat.com> wrote:
+>> On Sun, Jan 12, 2025 at 11:42:30PM +0100, Michal Luczaj wrote:
+> 
+> [...]
+> 
+>>>
+>>> So, if I get this right:
+>>> 1. vsock_create() (refcnt=1) calls vsock_insert_unbound() (refcnt=2)
+>>> 2. transport->release() calls vsock_remove_bound() without checking if sk
+>>>   was bound and moved to bound list (refcnt=1)
+>>> 3. vsock_bind() assumes sk is in unbound list and before
+>>>   __vsock_insert_bound(vsock_bound_sockets()) calls
+>>>   __vsock_remove_bound() which does:
+>>>      list_del_init(&vsk->bound_table); // nop
+>>>      sock_put(&vsk->sk);               // refcnt=0
+>>>
+>>> The following fixes things for me. I'm just not certain that's the only
+>>> place where transport destruction may lead to an unbound socket being
+>>> removed from the unbound list.
+>>>
+>>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>>> index 7f7de6d88096..0fe807c8c052 100644
+>>> --- a/net/vmw_vsock/virtio_transport_common.c
+>>> +++ b/net/vmw_vsock/virtio_transport_common.c
+>>> @@ -1303,7 +1303,8 @@ void virtio_transport_release(struct vsock_sock *vsk)
+>>>
+>>>       if (remove_sock) {
+>>>               sock_set_flag(sk, SOCK_DONE);
+>>> -              virtio_transport_remove_sock(vsk);
+>>> +              if (vsock_addr_bound(&vsk->local_addr))
+>>> +                      virtio_transport_remove_sock(vsk);
+>>
+>> I don't get this fix, virtio_transport_remove_sock() calls
+>>    vsock_remove_sock()
+>>      vsock_remove_bound()
+>>        if (__vsock_in_bound_table(vsk))
+>>            __vsock_remove_bound(vsk);
+>>
+>>
+>> So, should already avoid this issue, no?
+> 
+> I got it wrong, I see now what are you trying to do, but I don't think
+> we should skip virtio_transport_remove_sock() entirely, it also purge
+> the rx_queue.
 
-While building libbpf, I encountered the following warning:
+Isn't rx_queue empty-by-definition in case of !__vsock_in_bound_table(vsk)?
 
-Warning: Kernel ABI header at 'tools/include/uapi/linux/if_xdp.h' differs from latest version at 'include/uapi/linux/if_xdp.h'
+>> Can the problem be in vsock_bind() ?
 
-A brief diff shows discrepancies in the doc comments regarding `union
-xsk_tx_metadata` vs. `struct xsk_tx_metadata` references. Below is the
-relevant snippet:
-$ diff tools/include/uapi/linux/if_xdp.h include/uapi/linux/if_xdp.h
-120c120
-<  * field of union xsk_tx_metadata.
----
->  * field of struct xsk_tx_metadata.
-125c125
-<  * are communicated via csum_start and csum_offset fields of union
----
->  * are communicated via csum_start and csum_offset fields of struct
+Well, I wouldn't say so.
 
-This patch aligns the documentation in
-`tools/include/uapi/linux/if_xdp.h` with the kernel UAPI header in
-`include/uapi/linux/if_xdp.h` to remove the mismatch and associated
-warning.
+>> Is this issue pre-existing or introduced by this series?
+> 
+> I think this is pre-existing, can you confirm?
 
-Please consider applying this fix. Let me know if there are any
-questions or if additional changes are needed.
+Yup, I agree, pre-existing.
 
-vishal.c
+> In that case, I'd not stop this series, and fix it in another patch/series.
 
-diff --git a/tools/include/uapi/linux/if_xdp.h b/tools/include/uapi/linux/if_xdp.h
-index 2f082b01ff228..42ec5ddaab8dc 100644
---- a/tools/include/uapi/linux/if_xdp.h
-+++ b/tools/include/uapi/linux/if_xdp.h
-@@ -117,12 +117,12 @@ struct xdp_options {
-        ((1ULL << XSK_UNALIGNED_BUF_OFFSET_SHIFT) - 1)
+Yeah, sure thing.
 
- /* Request transmit timestamp. Upon completion, put it into tx_timestamp
-- * field of union xsk_tx_metadata.
-+ * field of struct xsk_tx_metadata.
-  */
- #define XDP_TXMD_FLAGS_TIMESTAMP               (1 << 0)
+Thanks,
+Michal
 
- /* Request transmit checksum offload. Checksum start position and offset
-- * are communicated via csum_start and csum_offset fields of union
-+ * are communicated via csum_start and csum_offset fields of struct
-  * xsk_tx_metadata.
-  */
- #define XDP_TXMD_FLAGS_CHECKSUM                        (1 << 1)
 
