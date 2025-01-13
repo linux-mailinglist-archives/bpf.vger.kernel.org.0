@@ -1,143 +1,152 @@
-Return-Path: <bpf+bounces-48706-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48707-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 016CFA0BE25
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 17:59:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDCD5A0BEE8
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 18:31:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 735E1188823E
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 16:59:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD7DB3A1380
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 17:31:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A71F2297F4;
-	Mon, 13 Jan 2025 16:58:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 668521B6CE3;
+	Mon, 13 Jan 2025 17:31:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="UUXsPsJj";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="CSSyPd+J"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e1bj167T"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-a5-smtp.messagingengine.com (fhigh-a5-smtp.messagingengine.com [103.168.172.156])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E7F920F096
-	for <bpf@vger.kernel.org>; Mon, 13 Jan 2025 16:58:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2B5190692;
+	Mon, 13 Jan 2025 17:31:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736787524; cv=none; b=QfF0rEZRA+1cW1qc6gI4z+J8yc29JXxyGnMuDWCLFGg/usXUx1vCDNW8DZblCdb5mByvx2pbZIRH9MBsMaWIl2OALNM0A7EZuBXzp/R8qa8TfXqSJHVNYKThxK++sWdZ/mVLVH3j1WyofxoP8sD/8w8LH7VT89qZoFKDipKMnSs=
+	t=1736789497; cv=none; b=dOQVcziUoU/NsnormfCGs1uemIZZHOH+Sx3L/CspMSAzLMVBQWenvqc2ug7EaCDh7uMP96oQLARLV+pPCXzUN9nfu3LYK5rC3Jw11Ku0ImqTUDvIc1JjbTFDX2NpHgeEFr5urBOfGHckdzIW6PklMtkp8tiameh78dI3uQm1Hjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736787524; c=relaxed/simple;
-	bh=yXD+k+D8yp0A2njrD8UaUidlCIGLETn/rMPZJ9l+zmM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sEal9WPZ7wH4BdqRVYBHqBQKcUGyU3vO0Ps9tFLMRkzu47eeVsC/XrFzuHCJxG2Xi9ONpVCjHsVhTDYYghVmb6XXg6JLS5utAizUH6IuhOWGcwBY3u8XtHGvwvWYvLLiLhi0+Kw8moC4lwy5/RpNCu/gnHlCQPhfxJTQJY7++dA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=UUXsPsJj; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=CSSyPd+J; arc=none smtp.client-ip=103.168.172.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-09.internal (phl-compute-09.phl.internal [10.202.2.49])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 6D94511401D2;
-	Mon, 13 Jan 2025 11:58:41 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-09.internal (MEProxy); Mon, 13 Jan 2025 11:58:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1736787521; x=1736873921; bh=rTf7OhjPBq
-	cz6LXvRiTedV2f+sgP6kzLwvStfogEBLE=; b=UUXsPsJjbYFdd8tNDQBrU+8T8z
-	riHVViudkuXC0WMmvOhTDT7hGWCyKeXjOwuoMUFyMvRsqFvZmU6rOFR0h0mcE005
-	jlPtzCOxg+IUlL33UREgyCd5kTVeZPLpAwmr95Rz6Oh9/9unv2slrvbwrmDX8bDn
-	borfc5KA1+MKEz3zkThVb8zdq7ZgTvhATHJ3cdzeH8rXWOc4mAjlkNYcsU0QPjtl
-	QsNJ57FF5XX6oHVlcenr6vVBfgq20XGf/NhFQoYpwJPZFT0QgGqainCF6k2EsQDq
-	TBFZPeoZbSIi+nB6utolDLRD2N9QPrvBac/BgChJxv/PVc+9CS2q8onwtPcw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1736787521; x=1736873921; bh=rTf7OhjPBqcz6LXvRiTedV2f+sgP6kzLwvS
-	tfogEBLE=; b=CSSyPd+JF5YbE1RqOxl8dwChyDXXwLucMnk4uM4Fn54B5Ouw/o2
-	vMH5VvoQ7ia3hhHBXY2BzPmFAtJohqxjnNTLAmvWvaPX5fBBY9bnBiraOOSqbEu8
-	Url1NASSknO2iGp+9B7Nxkg/fVm5MF7jGzMvZGcKhCg/XsA8hpmZGjyD0AOz7tA6
-	Mw8W1EyyzQOHB5s1Q+rt0paUvWYnRno2wVe5MtG5GfZAclU7pxcxxX+LqfK282o3
-	PHRG4D6QvK62Bt3TFMUiuaiWco3lzHAon3yfD91P5s05KowktawKdyG6bSYp5Xqx
-	H7hqrDIyvdK6BAKXMg9yxJP2xN23KqkUlMQ==
-X-ME-Sender: <xms:QEaFZ4wwcd8DIAu8jvVaK8cNoEJk07anz-9zapElYCHZJ-PecnTP2w>
-    <xme:QEaFZ8SP1UUWLnDt86WU-Qfr1tsiRhwGJE1g801G1Qa63xY5GOeWfVITZWaxeHpwD
-    JZC6uK0b2Z2bXQFng>
-X-ME-Received: <xmr:QEaFZ6WmKBM4LhO8VE864aGwlWtueZ8GxD9E0IOr8Bx7ZslUHU_YNFjgXXkSsvbJmMNH96qmJUdhWlp2nQOC0Gyno_kVIhr-HNJK-9oiuZIIbw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudehgedgleehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnegfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhf
-    gggtuggjsehttdfstddttddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesug
-    iguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffek
-    uedukeehudffudfffffggeeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihiidpnhgspghrtghp
-    thhtohepledpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhgvohhnrdhhfigrnh
-    hgsehlihhnuhigrdguvghvpdhrtghpthhtohepsghpfhesvhhgvghrrdhkvghrnhgvlhdr
-    ohhrghdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurg
-    hnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopegrnhgurhhiiheskhgv
-    rhhnvghlrdhorhhgpdhrtghpthhtohephihonhhghhhonhhgrdhsohhngheslhhinhhugi
-    druggvvhdprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
-    vgguugihiiekjeesghhmrghilhdrtghomhdprhgtphhtthhopehkvghrnhgvlhdqphgrth
-    gthhgvshdqsghothesfhgsrdgtohhm
-X-ME-Proxy: <xmx:QEaFZ2ieBqkjgYo5fVtLOwWFhLPNACzfiBK1SlwVu8Jgh6lHqd6lxA>
-    <xmx:QEaFZ6CmRl6F2i2qEnxuzIb8FQfnoZ6YaaZ-XvkQZV851N2rjp2Imw>
-    <xmx:QEaFZ3JOL3rkq85F0Qbs7gyJvzBNYBSxslAmPfMIZ59dQYyY6tOyRw>
-    <xmx:QEaFZxBkVCbk-yjrJDmTnATNy0tYGncieAX4Waz-cDUmKtcA39dLyA>
-    <xmx:QUaFZyspINwn8dxqXYYl0ue83GAatNZQxKR2Ys826coBbU8i6IUK5uQq>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 13 Jan 2025 11:58:39 -0500 (EST)
-Date: Mon, 13 Jan 2025 09:58:38 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, yonghong.song@linux.dev, song@kernel.org, eddyz87@gmail.com, 
-	kernel-patches-bot@fb.com
-Subject: Re: [RFC PATCH bpf-next 0/2] bpf: Introduce global percpu data
-Message-ID: <jfo4cgmk76zibxylkclgw4u7j47phg2ic4ogilhgz52ddilsui@gc3hiffnezkc>
-References: <20250113152437.67196-1-leon.hwang@linux.dev>
+	s=arc-20240116; t=1736789497; c=relaxed/simple;
+	bh=W7U+X60WBv3j+Yw7DI10/ECvBYx1n4vUUezoN4EQtEM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SzU3i7HF2HCVDdwdJc6uMxG4+pRfR2kth3e3lEX6c+PKlndypeqZNpE21qODdt4VxgIZK1PY7bFDCpgNkX1UI/p/He7pSzJ7PrwhWSj/Q67epDbHl1bS5tG7tQ1ZB16oYS1N7Z39NrFIu/Qpl/+KcXhB6tH895+in4f4/A8JC3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e1bj167T; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-e545c1e8a15so6930998276.1;
+        Mon, 13 Jan 2025 09:31:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736789494; x=1737394294; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lpBtrDCior8O34MzUqT/yqPqqHhYm723171PHTvnTNk=;
+        b=e1bj167TQ01lOyIvdp0zsDD5dCdhfLV9BBPj9BuC3NyDHIGh7Q4peX1a4/DLquq5Vf
+         HjW2LBSTjkYpfTdgfoMSV4RtdBO/B8PWQonS081gqaDSeFGctjUB/jFx8bl+W5ef0bAM
+         Mm7ITep5X1L+76gtxXLePqgJL5uo1bBPpZofHzPKYoyUIln/1Bowm5+iPdhA6jvF7qmg
+         TvR9DLpmQKBnw3lDkFcC4hQShBCD0R4aaznpx1sGxfxZH7X+bqthkanzTspMBLA3whoZ
+         GDFz38Bx5iYaf+gmd41t2oQRYqapwbhrZ4rTcKRQ/4RyE0z6/tRt35x/OZ7aZSI341Ht
+         1LtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736789494; x=1737394294;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lpBtrDCior8O34MzUqT/yqPqqHhYm723171PHTvnTNk=;
+        b=rM19xV/ozeyfwMqk8VYK0ElkSeanOQzm0OqcRbk/W3JA2uE1/b+LxY/18kmMZrPkzb
+         X5605fQG+eJ221NUDEmVmsTwUYGZH0rx+pOY1e/1618UARd6F7bzJDJYqBMBlp5hndbM
+         ccVp7PY8kRQEEoQdK+suxMZzmpDonuYfQUysRFawIXmd14vF2cPEcrGECed8gDyJWJIs
+         W4MP6UGCMB5AmLzNTqaU8t9FgWrdTCNHK53pB8FRiQIsdq5WeBmK1jit/vbwVP1CGX/O
+         nNRcCQD6naq5UV+dovtoLQxwFjRgl1lA17C6wLCfgUjGk4AGfNqBR6vFB/xXBW9ravnT
+         fNng==
+X-Forwarded-Encrypted: i=1; AJvYcCWumvVYmU266uJOrN0Ox+HihhjrQh6W8v6WYZRXO98G2t8MWF/grrzQMWt43ihHSNdsvlk=@vger.kernel.org, AJvYcCXnffiecuFoQPCRna/EiZ3JZI/NWzlW1gM26/fsg20zUpfeIaRdkMcjQfRw2ibBX2OECbwY9abXz8Ga4z8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzueyj0zt8aKfDDQODdBsfm09iMNNy75iDcRJ2Rf/SZMxnXe3jL
+	ejVLpMmcY9lxpQqtozqSiLg6BS29JAcszwDnZffHkRFKVgxwVsZ4jls/Sd8YlQ5SuWAmnvc8F7F
+	8h5+YKs9DpIwaMnDwtWf3ZHmPUwA=
+X-Gm-Gg: ASbGncuZNPKOYw+VFz1F6rzKe/gxFtYn8ZIe5FQL32l+Ankcten6xwI8WMoyDM+KcKE
+	PZgry4DCyzrFSiH4OP2nloiMvXiV2+8mNEEMJyBs=
+X-Google-Smtp-Source: AGHT+IGIYqrqJhbpEwAM5/MQ91bcPCmKZWFG0YoEFTypIrbLLyMAsNZInZc1ueMG8J/fuioNF/gFOXOTG4k8lQAjtnk=
+X-Received: by 2002:a05:6902:18d5:b0:e57:4a0d:4716 with SMTP id
+ 3f1490d57ef6-e574a0d488amr4980639276.38.1736789492541; Mon, 13 Jan 2025
+ 09:31:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250113152437.67196-1-leon.hwang@linux.dev>
+References: <CAJHDoJac2Qa6QjhDFi7YZf0D05=Svc13ZQyX=92KsM7pkkVbJA@mail.gmail.com>
+ <CAPhsuW7+ORExwn5fkRykEmEp-wm0YE788Tkd39rK5cZ-Q3dfUw@mail.gmail.com>
+ <CAJHDoJYESDzDf9KJgfSfGGit6JPyxtf3miNbnM7BzNfjOi7CQw@mail.gmail.com>
+ <CAPhsuW6W=08Vf=W6GZ9DCzwu4wq_AgNOayo50vxvqFMr9CcDcg@mail.gmail.com> <677c56994576b_f58f29445@dwillia2-xfh.jf.intel.com.notmuch>
+In-Reply-To: <677c56994576b_f58f29445@dwillia2-xfh.jf.intel.com.notmuch>
+From: Vishnu ks <ksvishnu56@gmail.com>
+Date: Mon, 13 Jan 2025 23:01:30 +0530
+X-Gm-Features: AbW1kvY3SmWXc2HmqTHOHcCdiV_aRXeOTyMqdUtAYuxzDS2HNXhoSW9rgdWo-9g
+Message-ID: <CAJHDoJZ5rFhgu-R_N6e82bqkY43S-sXKVs2khnnnZrqJH1vcHw@mail.gmail.com>
+Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC] Improving Block Layer Tracepoints for
+ Next-Generation Backup Systems
+To: Dan Williams <dan.j.williams@intel.com>
+Cc: Song Liu via Lsf-pc <lsf-pc@lists.linux-foundation.org>, hch@infradead.org, 
+	yanjun.zhu@linux.dev, linux-block@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-nvme@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Leon,
+Thanks everyone for the detailed technical feedback and clarifications
+- they've been extremely valuable in understanding the fundamental
+challenges and existing solutions.
 
-On Mon, Jan 13, 2025 at 11:24:35PM +0800, Leon Hwang wrote:
-> This patch set introduces global per-CPU data, similar to commit
-> 6316f78306c1 ("Merge branch 'support-global-data'"), to reduce restrictions
-> in C for BPF programs.
-> 
-> With this enhancement, it becomes possible to define and use global per-CPU
-> variables, much like the DEFINE_PER_CPU() macro in the kernel[0].
-> 
-> The idea stems from the bpflbr project[1], which itself was inspired by
-> retsnoop[2]. During testing of bpflbr on the v6.6 kernel, two LBR
-> (Last Branch Record) entries were observed related to the
-> bpf_get_smp_processor_id() helper.
-> 
-> Since commit 1ae6921009e5 ("bpf: inline bpf_get_smp_processor_id() helper"),
-> the bpf_get_smp_processor_id() helper has been inlined on x86_64, reducing
-> the overhead and consequently minimizing these two LBR records.
-> 
-> However, the introduction of global per-CPU data offers a more robust
-> solution. By leveraging the percpu_array map and percpu instructions,
-> global per-CPU data can be implemented intrinsically.
-> 
-> This feature also facilitates sharing per-CPU information between tail
-> callers and callees or between freplace callers and callees through a
-> shared global per-CPU variable. Previously, this was achieved using a
-> 1-entry percpu map, which this patch set aims to improve upon.
+I appreciate the points about md-cluster and DRBD's network RAID
+capabilities. While these are robust solutions for network-based
+replication, I'm particularly interested in the point-in-time recovery
+capability for scenarios like ransomware recovery, where being able to
+roll back to a specific point before encryption occurred would be
+valuable.
 
-I think this would be great to have. bpftrace would've liked to use this
-for its recent big string support, but instead had to simulate a percpu
-global through regular globals.
+Regarding blk_filter - I've been exploring it since it was mentioned,
+and it indeed seems to be the right approach for what we're trying to
+achieve. However, I've found that many of our current requirements can
+actually be implemented using eBPF without additional kernel modules.
+I plan to create a detailed demonstration video to share my findings
+with this thread. Additionally, I'll be cleaning up and open-sourcing
+our replicator utility implementation for community feedback.
 
-Thanks,
-Daniel
+I would very much like to attend the LSF/MM/BPF summit to discuss
+these ideas in person and learn more about blk_filter and proper block
+layer fundamentals. Would it be possible for someone to help me with
+an invitation?
+
+Thanks again to everyone who took the time to explain the intricacies
+of write caching, sector tracking limitations, and data persistence
+guarantees. This discussion has been incredibly educational.
+
+Thanks and regards,
+Vishnu KS
+
+On Tue, 7 Jan 2025 at 03:48, Dan Williams <dan.j.williams@intel.com> wrote:
+>
+> Song Liu via Lsf-pc wrote:
+> > On Sat, Jan 4, 2025 at 9:52=E2=80=AFAM Vishnu ks <ksvishnu56@gmail.com>=
+ wrote:
+> > >
+> > [...]
+> > >
+> > > @Song: Our approach fundamentally differs from md/raid in several way=
+s:
+> > >
+> > > 1. Network-based vs Local:
+> > >    - Our system operates over network, allowing replication across
+> > > geographically distributed systems
+> > >    - md/raid works only with locally attached storage devices
+> >
+> > md-cluster (https://docs.kernel.org/driver-api/md/md-cluster.html)
+> > does support RAID in a cluster.
+>
+> Also,
+>
+> https://docs.kernel.org/admin-guide/blockdev/drbd/index.html
+
+--=20
+Vishnu KS,
+Opensource contributor and researcher,
+https://iamvishnuks.com
 
