@@ -1,263 +1,187 @@
-Return-Path: <bpf+bounces-48713-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48714-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5242CA0C3B8
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 22:31:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D880A0C44F
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 23:00:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 453AE188213B
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 21:31:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF5657A265B
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 22:00:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 877501D2F42;
-	Mon, 13 Jan 2025 21:31:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7733B1F8EF9;
+	Mon, 13 Jan 2025 22:00:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lTieHjMA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kv2yPhCB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58E3A1BDCF;
-	Mon, 13 Jan 2025 21:30:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E035518FDAB;
+	Mon, 13 Jan 2025 22:00:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736803860; cv=none; b=DnJAaRKBopDCzJnweSUkyE22+a8/6mgRoiU/oGybpMoOQwNCnXGunHZ8Nlb4WgpWkSaoQldkftWlmC3UEN5k51FgLr7aqnMZ7w8TxcVWqDmBEo3qhgG7cMM1vjo5FkTICJW8tk+R45SI4IOEp9qpKZ9kGd7ntKr5B7WHhcGy2AI=
+	t=1736805638; cv=none; b=WN62WYBq+iEez2wLSYP9UuYCG1TiISq8gWeD4Dq70mydf949RyVq8I5zhFh6BfnVX/gF9ZTATT54TsIr2Yww7BNAp7wMtAj6Uf04k3vKjNMcPqwL6zIRpWeFCT08Ysd32mSgw+T5Q6+FefkiNONeNhI+uc+XUp5b/NnZo/FMPEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736803860; c=relaxed/simple;
-	bh=GzIWB/ozfz9lkuAmR1+RhKyN30aLwcPWK3v+HLQW1KY=;
+	s=arc-20240116; t=1736805638; c=relaxed/simple;
+	bh=SHj2x4csW6qKOxkAvS1hn9sClL6HxYfNRcCMrXeIEAc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qyz3ajjsmWZDG+gj6O3/UsRk3cR4CFISeXaRZcvO1ilASEJmezjWMiDnR/gr77EXBVKaE/PyGSpfPR+NIZ2uF1JcAyPnkk33Aigp6ANfImOLDlEpUua+5jdeTlmJcOFppIhmftzZwrgu3A0epYp61xVYASUO4Gk5Wia76WADWew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lTieHjMA; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4363ae65100so50287285e9.0;
-        Mon, 13 Jan 2025 13:30:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736803857; x=1737408657; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZlHn+GtFzKpqovtntNIkOwPzd+eLgTNYUBwAGwpM/AU=;
-        b=lTieHjMAv/AHDeu2Ndjx0f6J+PXkeTNNm4sNpOgeJz1BVRl3aa27eb5GszhQRf44rt
-         FNwotWh28RwEszCXJNGmNU9skwMSxrz4d65D9aDG5AE56EXJC/fRCPfW7/nJKNGLXRWY
-         GMolz2nubbJ+MZrfv4nH1QlV6RU+3J9C6Lx23BOb+h2nrTlVwzeoPYVgTH2YNSyKRgVP
-         ppodGapNrimvIKqS3lgx86Ymwe6cvFRbEU6jLAr7pj224gAF+2YMkv95FW7VPhk6Heyc
-         xQUKaFAivJdzBykT9DcbyLdY/2i/cvIJ+TIryhzLzG6af3GReXwcx0xNcorUBNI5V+ky
-         /Xew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736803857; x=1737408657;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZlHn+GtFzKpqovtntNIkOwPzd+eLgTNYUBwAGwpM/AU=;
-        b=lx9jtl9v/htP3tRedU5YozpmKFTmR+9mGd9MxzLo/B+NitHt7/VybAYXQ1kSahyzqy
-         tqA+0ddhvH6xvzwPro05PkBlbUzV5malsEsmd3wu5oQY0i3k0PnzWeWCxGo/4dS1yBVz
-         +1JIfTs/5I9KSvMuQgJjOfjTue4B5hSno/Pw8Hp3dE2iL/Ip+iGcl7j4MaHt/ObwMFm5
-         b68o4R7U3/LfCPsEAL+oI3xFdwRxfn4cJOvNY4HQXT7H6kW03YDuhL8p2hrDL8tGt+4X
-         kao92qohBkeIIEIBUjK2ws1qzUj4cSW04YPET0nJNEdI86GOhtcLCIvl0ulzroBatbDG
-         lNCw==
-X-Forwarded-Encrypted: i=1; AJvYcCUJqQHcjAz35atiWa27nmDDjsXJxhSMKqXyuu9S6EtrhL1QVMYwoT6Tzxau3RhMlF4Yj9s=@vger.kernel.org, AJvYcCXfvcfA1b0KsR/IvGv0fTfoPhmB1/Pw8ynVhySbJ3OL5TW4+y99mileO5cRPcSYYhzgyW6L/jzMlSevDLQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwekB6UWCWmrMmg6Vt9SvN5UbEvABWgAj1rSvLkL/7s2YYaqVGf
-	oC/C/TD8OMu28alboV42342b+Z1CBl9/4UMvMbMn4h6ErUHjliNj2RXLKs32Em96iCDyFW5KDaB
-	7oz+ZyzgnkgMeM1HBo/FQi18w+Pg=
-X-Gm-Gg: ASbGnctdQl3EwYyBl0zP6ZL8c3g50RVdHGNDM1pW2VKK29qNG4xNh8nChzlFiJo+B3s
-	946cKGwf3jGc44DaGzWOxv+6hcjTILBbcU0HPHWcQTgEnAR7ef3xtxg==
-X-Google-Smtp-Source: AGHT+IHis/XRGdtkkqf0jNgpkWxfw7jtdestUbZfVnsNrW9/slRe2zVoQskmEpu4PZdDJIP5T15jjzKAjlQAGq36ovc=
-X-Received: by 2002:a05:600c:54c5:b0:431:557e:b40c with SMTP id
- 5b1f17b1804b1-436e3fb231cmr185268125e9.27.1736803856270; Mon, 13 Jan 2025
- 13:30:56 -0800 (PST)
+	 To:Cc:Content-Type; b=CjKvk3Cy+ZVzgh9EuRlLNxtdYhby9qXUFiSYEAc87wNdas/k2IX0U5azXXLnEkjKD136NC35z4jRI5WWGIH3+sP0lNhGkaufKByKMjn3UixrASMZnbcBsc0DyK2Lft2PJIoNtTXgjadHcjmha1cCaSmzCEYjsHpTrUmtcd82PxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kv2yPhCB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66862C4CEE9;
+	Mon, 13 Jan 2025 22:00:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736805637;
+	bh=SHj2x4csW6qKOxkAvS1hn9sClL6HxYfNRcCMrXeIEAc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Kv2yPhCBRNRQJFsIZ9Lsz8Gh2NQJI3hsaljfz+93a8iykYzbqnpgvK6Ftovt6uUz9
+	 ygxuzWWs9HpJpDl4+LjTMLSrRn9/+uOcXcrQYkG9DAPN4arRgycRWSIy6kpGOKkTvo
+	 dpDl3v4tawLtNGZ+oXxz9LJKEuKyfR/zBuzlZ2xWFBa6BCRMXjLBg2mWvjhRU23zD5
+	 BvHTcAnf4/jbk54dy5EnASux+O5s3ZJtc5PMBFp+CjQkWcgdFXh7+J0HkOw/HOkTR6
+	 Mk7SliVubp3LWozGq0ZtG8oNSKCK/FLcgHTRnBpQD7iV5jOnmhGODgUryp8XA6Wx9Z
+	 +QaKHPOjdfNag==
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-844ee43460aso371591839f.1;
+        Mon, 13 Jan 2025 14:00:37 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVo0+XlIKIWsxfOGpIFPTIze0aAhWimFJkmXgBvQmeukmOp1mkv2jsEDDhW8VVBdYT0eH8sbqjRrs3kugMn@vger.kernel.org, AJvYcCWuu1QT3WrF8uwmWXE+p/KteGDiNWsz8fMTr9ugiQLkK+ihrJUDExQvkVnEgCd8w9g/+XRwb6RCNKIpdIF6@vger.kernel.org, AJvYcCXe/yERbVteIAfAjZpqBhjFOLXb5Pm3BODW4BKvRZ3xngW0xrVUzXLIGKUQQLzoAIDWYQQ6/1svSg/zL3ldLTBNNQB7SAtc@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx2KLNihNWUQXzxz+7RF89os465ARusD3uJFURrZTJm9oNw+SWD
+	dlGdwe/aAivpMVhl5M7P/DpINhLYLl+ZF12AnWEHhOstqxefodYUOOXiOs8Gwjd/oHuSOHLBELk
+	s3sKjgu5ux6cMjqKYn6oSh86NEcw=
+X-Google-Smtp-Source: AGHT+IEQlyQf/KVL587SY2eWDCLzaBjslt1hYN6IsEiAFjQkOvD9N1MLvfQt8mSSr/KIaHJemVyTZrAU6kO12ghjam4=
+X-Received: by 2002:a92:cda6:0:b0:3a7:70a4:6877 with SMTP id
+ e9e14a558f8ab-3ce3a87a690mr184148635ab.7.1736805636704; Mon, 13 Jan 2025
+ 14:00:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250107120417.1237392-1-tom.leiming@gmail.com>
- <20250107120417.1237392-9-tom.leiming@gmail.com> <CAADnVQLGw07CNpi7=XHJRgBL2ku7Q23nfah07pBc45G+xeTKxw@mail.gmail.com>
- <Z4SRrrXeoZ2MwH96@fedora>
-In-Reply-To: <Z4SRrrXeoZ2MwH96@fedora>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 13 Jan 2025 13:30:45 -0800
-X-Gm-Features: AbW1kvYWdKL5LnB6tyJ8tPRoaM8fumrY728TfdKs9Ex-NQZxn7RdDRTVsqjvVxY
-Message-ID: <CAADnVQK1y2A_-Co5Jx=eeusbcMbEgErxuPzgCqA0yvUU6Uw1CA@mail.gmail.com>
-Subject: Re: [RFC PATCH 08/22] ublk: bpf: add bpf struct_ops
-To: Ming Lei <tom.leiming@gmail.com>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Amery Hung <ameryhung@gmail.com>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Yonghong Song <yonghong.song@linux.dev>
+References: <20250110011342.2965136-1-song@kernel.org>
+In-Reply-To: <20250110011342.2965136-1-song@kernel.org>
+From: Song Liu <song@kernel.org>
+Date: Mon, 13 Jan 2025 14:00:25 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW5nsd0HbkPC5hJsDJhN36NPcKN8dTd+KqQ6eB+mPc9LFg@mail.gmail.com>
+X-Gm-Features: AbW1kvaDLmTima93aLP4tDWxfLt8MQYJ84-4Gw4IHdIafOonXw7QJ1jMh7EWcRI
+Message-ID: <CAPhsuW5nsd0HbkPC5hJsDJhN36NPcKN8dTd+KqQ6eB+mPc9LFg@mail.gmail.com>
+Subject: Re: [PATCH v9 bpf-next 0/7] Enable writing xattr from BPF programs
+To: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, Christian Brauner <brauner@kernel.org>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>, 
+	Al Viro <viro@zeniv.linux.org.uk>
+Cc: kernel-team@meta.com, andrii@kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kpsingh@kernel.org, 
+	mattbobrowski@google.com, paul@paul-moore.com, jmorris@namei.org, 
+	serge@hallyn.com, memxor@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jan 12, 2025 at 8:08=E2=80=AFPM Ming Lei <tom.leiming@gmail.com> wr=
-ote:
->
-> Hello Alexei,
->
-> Thanks for your comments!
->
-> On Thu, Jan 09, 2025 at 05:43:12PM -0800, Alexei Starovoitov wrote:
-> > On Tue, Jan 7, 2025 at 4:08=E2=80=AFAM Ming Lei <tom.leiming@gmail.com>=
- wrote:
-> > > +
-> > > +/* Return true if io cmd is queued, otherwise forward it to userspac=
-e */
-> > > +bool ublk_run_bpf_handler(struct ublk_queue *ubq, struct request *re=
-q,
-> > > +                         queue_io_cmd_t cb)
-> > > +{
-> > > +       ublk_bpf_return_t ret;
-> > > +       struct ublk_rq_data *data =3D blk_mq_rq_to_pdu(req);
-> > > +       struct ublksrv_io_desc *iod =3D ublk_get_iod(ubq, req->tag);
-> > > +       struct ublk_bpf_io *bpf_io =3D &data->bpf_data;
-> > > +       const unsigned long total =3D iod->nr_sectors << 9;
-> > > +       unsigned int done =3D 0;
-> > > +       bool res =3D true;
-> > > +       int err;
-> > > +
-> > > +       if (!test_bit(UBLK_BPF_IO_PREP, &bpf_io->flags))
-> > > +               ublk_bpf_prep_io(bpf_io, iod);
-> > > +
-> > > +       do {
-> > > +               enum ublk_bpf_disposition rc;
-> > > +               unsigned int bytes;
-> > > +
-> > > +               ret =3D cb(bpf_io, done);
-> >
-> > High level observation...
-> > I suspect forcing all sturct_ops callbacks to have only these
-> > two arguments and packing args into ublk_bpf_io
-> > will be limiting in the long term.
->
-> There are three callbacks defined, and only the two with same type for
-> queuing io commands are covered in this function.
->
-> But yes, callback type belongs to API, which should be designed
-> carefully, and I will think about further.
->
-> >
-> > And this part of api would need to be redesigned,
-> > but since it's not an uapi... not a big deal.
-> >
-> > > +               rc =3D ublk_bpf_get_disposition(ret);
-> > > +
-> > > +               if (rc =3D=3D UBLK_BPF_IO_QUEUED)
-> > > +                       goto exit;
-> > > +
-> > > +               if (rc =3D=3D UBLK_BPF_IO_REDIRECT)
-> > > +                       break;
-> >
-> > Same point about return value processing...
-> > Each struct_ops callback could have had its own meaning
-> > of retvals.
-> > I suspect it would have been more flexible and more powerful
-> > this way.
->
-> Yeah, I agree, just the 3rd callback of release_io_cmd_t isn't covered
-> in this function.
->
-> >
-> > Other than that bpf plumbing looks good.
-> >
-> > There is an issue with leaking allocated memory in bpf_aio_alloc kfunc
-> > (it probably should be KF_ACQUIRE)
->
-> It is one problem which troubles me too:
->
-> - another callback of struct_ops/bpf_aio_complete_cb is guaranteed to be
-> called after the 'struct bpf_aio' instance is submitted via kfunc
-> bpf_aio_submit(), and it is supposed to be freed from
-> struct_ops/bpf_aio_complete_cb
->
-> - but the following verifier failure is triggered if bpf_aio_alloc and
-> bpf_aio_release are marked as KF_ACQUIRE & KF_RELEASE.
->
-> ```
-> libbpf: prog 'ublk_loop_comp_cb': -- BEGIN PROG LOAD LOG --
-> Global function ublk_loop_comp_cb() doesn't return scalar. Only those are=
- supported.
-> ```
+Hi Al Christian and Jan,
 
-That's odd.
-Adding KF_ACQ/REL to bpf_aio_alloc/release kfuncs shouldn't affect
-verification of ublk_loop_comp_cb() prog. It's fine for it to stay 'void'
-return.
-You probably made it global function and that's was the reason for this
-verifier error. Global funcs have to return scalar for now.
-We can relax this restriction if necessary.
+Could you please help review this set? The fs side change is
+in 1/7 (already reviewed by fs folks) and 6/7.
 
->
-> Here 'struct bpf_aio' instance isn't stored in map, and it is provided
-> from struct_ops callback(bpf_aio_complete_cb), I appreciate you may share
-> any idea about how to let KF_ACQUIRE/KF_RELEASE cover the usage here.
+Thanks,
+Song
 
-This is so that:
-
-ublk_loop_comp_cb ->
-  ublk_loop_comp_and_release_aio ->
-    bpf_aio_release
-
-would properly recognize that ref to aio is dropped?
-
-Currently the verifier doesn't support that,
-but there is work in progress to add this feature:
-
-https://lore.kernel.org/bpf/20241220195619.2022866-2-amery.hung@gmail.com/
-
-then in cfi_stabs annotated bio argument in bpf_aio_complete_cb()
-as "struct bpf_aio *aio__ref"
-
-Then the verifier will recognize that callback argument
-comes refcounted and the prog has to call KF_RELEASE kfunc on it.
-
-
+On Thu, Jan 9, 2025 at 5:13=E2=80=AFPM Song Liu <song@kernel.org> wrote:
 >
-> > and a few other things, but before doing any in depth review
-> > from bpf pov I'd like to hear what block folks think.
+> Add support to set and remove xattr from BPF program. Also add
+> security.bpf. xattr name prefix.
 >
-> Me too, look forward to comments from our block guys.
+> kfuncs are added to set and remove xattrs with security.bpf. name
+> prefix. Update kfuncs bpf_get_[file|dentry]_xattr to read xattrs
+> with security.bpf. name prefix. Note that BPF programs can read
+> user. xattrs, but not write and remove them.
 >
-> >
-> > Motivation looks useful,
-> > but the claim of performance gains without performance numbers
-> > is a leap of faith.
->
-> Follows some data:
->
-> 1) ublk-null bpf vs. ublk-null with bpf
->
-> - 1.97M IOPS vs. 3.7M IOPS
->
-> - setup ublk-null
->
->         cd tools/testing/selftests/ublk
->         ./ublk_bpf add -t null -q 2
->
-> - setup ublk-null wit bpf
->
->         cd tools/testing/selftests/ublk
->         ./ublk_bpf reg -t null ./ublk_null.bpf.o
->         ./ublk_bpf add -t null -q 2 --bpf_prog 0
->
-> - run  `fio/t/io_uring -p 0 /dev/ublkb0`
->
-> 2) ublk-loop
->
-> The built-in utility of `ublk_bpf` only supports bpf io handling, but com=
-pared
-> with ublksrv, the improvement isn't so big, still with ~10%. One reason
-> is that bpf aio is just started, not optimized, in theory:
->
-> - it saves one kernel-user context switch
-> - save one time of user-kernel IO buffer copy
-> - much less io handling code footprint compared with userspace io handlin=
-g
->
-> The improvement is supposed to be big especially in big chunk size
-> IO workload.
+> To pick the right version of kfunc to use, a remap logic is added to
+> btf_kfunc_id_set. This helps move some kfunc specific logic off the
+> verifier core code. Also use this remap logic to select
+> bpf_dynptr_from_skb or bpf_dynptr_from_skb_rdonly.
 >
 >
-> Thanks,
-> Ming
+> Cover letter of v1 and v2:
+>
+> Follow up discussion in LPC 2024 [1], that we need security.bpf xattr
+> prefix. This set adds "security.bpf." xattr name prefix, and allows
+> bpf kfuncs bpf_get_[file|dentry]_xattr() to read these xattrs.
+>
+> [1] https://lpc.events/event/18/contributions/1940/
+>
+> Changes v8 =3D> v9
+> 1. Fix build for CONFIG_DEBUG_INFO_BTF=3Dn case. (kernel test robot)
+>
+> v8: https://lore.kernel.org/bpf/20250108225140.3467654-1-song@kernel.org/
+>
+> Changes v7 =3D> v8
+> 1. Rebase and resolve conflicts.
+>
+> v7: https://lore.kernel.org/bpf/20241219221439.2455664-1-song@kernel.org/
+>
+> Changes v6 =3D> v7
+> 1. Move btf_kfunc_id_remap() to the right place. (Bug reported by CI)
+>
+> v6: https://lore.kernel.org/bpf/20241219202536.1625216-1-song@kernel.org/
+>
+> Changes v5 =3D> v6
+> 1. Hide _locked version of the kfuncs from vmlinux.h (Alexei)
+> 2. Add remap logic to btf_kfunc_id_set and use that to pick the correct
+>    version of kfuncs to use.
+> 3. Also use the remap logic for bpf_dynptr_from_skb[|_rdonly].
+>
+> v5: https://lore.kernel.org/bpf/20241218044711.1723221-1-song@kernel.org/
+>
+> Changes v4 =3D> v5
+> 1. Let verifier pick proper kfunc (_locked or not _locked)  based on the
+>    calling context. (Alexei)
+> 2. Remove the __failure test (6/6 of v4).
+>
+> v4: https://lore.kernel.org/bpf/20241217063821.482857-1-song@kernel.org/
+>
+> Changes v3 =3D> v4
+> 1. Do write permission check with inode locked. (Jan Kara)
+> 2. Fix some source_inline warnings.
+>
+> v3: https://lore.kernel.org/bpf/20241210220627.2800362-1-song@kernel.org/
+>
+> Changes v2 =3D> v3
+> 1. Add kfuncs to set and remove xattr from BPF programs.
+>
+> v2: https://lore.kernel.org/bpf/20241016070955.375923-1-song@kernel.org/
+>
+> Changes v1 =3D> v2
+> 1. Update comment of bpf_get_[file|dentry]_xattr. (Jiri Olsa)
+> 2. Fix comment for return value of bpf_get_[file|dentry]_xattr.
+>
+> v1: https://lore.kernel.org/bpf/20241002214637.3625277-1-song@kernel.org/
+>
+> Song Liu (7):
+>   fs/xattr: bpf: Introduce security.bpf. xattr name prefix
+>   selftests/bpf: Extend test fs_kfuncs to cover security.bpf. xattr
+>     names
+>   bpf: lsm: Add two more sleepable hooks
+>   bpf: Extend btf_kfunc_id_set to handle kfunc polymorphism
+>   bpf: Use btf_kfunc_id_set.remap logic for bpf_dynptr_from_skb
+>   bpf: fs/xattr: Add BPF kfuncs to set and remove xattrs
+>   selftests/bpf: Test kfuncs that set and remove xattr from BPF programs
+>
+>  fs/bpf_fs_kfuncs.c                            | 246 +++++++++++++++++-
+>  include/linux/bpf_lsm.h                       |   2 +
+>  include/linux/btf.h                           |  20 ++
+>  include/linux/btf_ids.h                       |   4 +
+>  include/uapi/linux/xattr.h                    |   4 +
+>  kernel/bpf/bpf_lsm.c                          |   2 +
+>  kernel/bpf/btf.c                              | 117 +++++++--
+>  kernel/bpf/verifier.c                         |  31 +--
+>  net/core/filter.c                             |  49 +++-
+>  tools/testing/selftests/bpf/bpf_kfuncs.h      |   5 +
+>  .../selftests/bpf/prog_tests/fs_kfuncs.c      | 162 +++++++++++-
+>  .../selftests/bpf/progs/test_get_xattr.c      |  28 +-
+>  .../bpf/progs/test_set_remove_xattr.c         | 133 ++++++++++
+>  13 files changed, 740 insertions(+), 63 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_set_remove_xat=
+tr.c
+>
+> --
+> 2.43.5
 
