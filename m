@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-48675-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48676-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBE26A0B530
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 12:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD5B6A0B5BA
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 12:31:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EE7B1887431
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 11:11:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73D841885D8D
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 11:31:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7987422F143;
-	Mon, 13 Jan 2025 11:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E48AB22CF01;
+	Mon, 13 Jan 2025 11:29:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="RBeZjvjr"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="msBh88B7"
 X-Original-To: bpf@vger.kernel.org
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B1B22F146;
-	Mon, 13 Jan 2025 11:11:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDE7822CF2A;
+	Mon, 13 Jan 2025 11:29:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736766707; cv=none; b=K+gxSk4gzh26FkoieoZE4nKc1M7CaO1ULb25sUeCEAuLsuV/uR5QOVbecwF5wDYLgzFVnJoTLz/WsSWv+2GvY6cSEw2YctnySdWl2hbF6QKgy2RG3kRJOA1Sxf3D/4ESkxOAC0qP51Em0ViDYVX1h31t6VwMJh/WritZfZITga0=
+	t=1736767795; cv=none; b=EGEVNJP+ZheiWPd6WUEYBhII2bMf1YBnPR2AsRGrRXfhjhC1m84b3uu5Q/lMnT07jBdM/Dxlrj6GBjb4chGbVBioxonwsUTocfIzVDHGn7f404bFu70xc4oVnbLPHzHLC7JNdhGrVTeoQw9sKiuHFsW6zDpmQYcYoIR9K4Myyos=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736766707; c=relaxed/simple;
-	bh=ONKN8fq0iP0VC62UEpQtN5Nmm165/LMTCyM9flI8nJA=;
+	s=arc-20240116; t=1736767795; c=relaxed/simple;
+	bh=ZyeWQJpTwGAGdbZR/bEhR0PM6mD78pCqdTSfYHfG17s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JZ3D7BxZTyKXBg8OKKvibPLRgMEIAT2HzPQ36cUEqHVfDT9ArM62VJwWahEuO4jFpQuMI1rdyBH8q9WOugBiuNf3lmXnyUnEjniWhfPqm5bD4yPaHAxRfwUXuhIk5QCCneM51R/ro/w//FL6S2+oKUt2UxhKGYrhcKSzx7FV7bY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=RBeZjvjr; arc=none smtp.client-ip=90.155.50.34
+	 Content-Type:Content-Disposition:In-Reply-To; b=V5b1/Z7N1bLUYnBhNz+U+0NLz4FZJmbqdb5w95bdg8Ew+M47HjKuUZC2FzTreVJeQfhAluvdZxaxtvhikLzqxDzX/eZJMaRyV+BTCx0MZH3uvrjy9bVzKhaJBUC6ubPzuHarWZQYym8QvQAXLXPEcnOwhwUvXNcEwpPlKt8hiZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=msBh88B7; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=qj0XqtoExeVFzH/0zurjfq7xU6GfRici48V+bRozJOU=; b=RBeZjvjrDPcsThTXhXoukPjSAI
-	NG77K2p71MbOxH6Hr5qVrPuCWPczlMw+Usz4bokWjI0fBdjtehyDAXTrQGWaT9i4QacSF10hny/fl
-	f6+45RSS8YPaU1che58qLXvB808/OeemMrr+OxMrGlNDnXQB7b2TpPPhfKpDgTIF6FwQkbgsaHHv/
-	qWH8aMQaiLuDAwhO0wSyT9a/pEjhwF0eMyVTrcyQr7iWrcVB87HGjIDgYEa6Sc/aXZ3Fypjv84r22
-	BH1K2nUM+QDVXKQYksJjlCJihDeuyCAinjzkix2Z02HSasZ+qUs94+8Oaj8TFlpsejHZLSf1hn/do
-	soSqXYVA==;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=TkMb9saWDKoVdtAfj3qa4lA0CizVrZu729rv04Lulvo=; b=msBh88B7wWuH+agmzukCs9yUjG
+	0HifRnJNNLkU9Vny10uEY5Qh+OiJsv7Tu0Kks7NYZ3UDmxKfaRbf9Pw2gK/7uHsk4TPzrirMWaRiL
+	5BCrdvhYtxcsSAd/BMc5t3gObKHdq2OADpwaRfrcxsyqRs7GtQmKvbv3124PTRvr+6DGa2lRdHU9m
+	8pR1vGulJTMOZSVtYBjzhw2ipgWqmCXCk9SzCBRLldC/pBbxKqw51MjNA4c01jMyEleErgpPjaiq0
+	6pVUFRSzn7YzX5kQ9UwhOxj+ttbE2ABcuW70d3tNn1vMb6TZwJreWA4oa/+YZQRNootJNGZc+XSHn
+	jMKSNFZA==;
 Received: from 77-249-17-89.cable.dynamic.v4.ziggo.nl ([77.249.17.89] helo=noisy.programming.kicks-ass.net)
 	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1tXILk-00000000a7O-2KHM;
-	Mon, 13 Jan 2025 11:11:16 +0000
+	id 1tXIdT-00000000bu0-0Byw;
+	Mon, 13 Jan 2025 11:29:35 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 27A6730057A; Mon, 13 Jan 2025 12:11:16 +0100 (CET)
-Date: Mon, 13 Jan 2025 12:11:16 +0100
+	id 7CCFA30057A; Mon, 13 Jan 2025 12:29:34 +0100 (CET)
+Date: Mon, 13 Jan 2025 12:29:34 +0100
 From: Peter Zijlstra <peterz@infradead.org>
 To: Borislav Petkov <bp@alien8.de>
 Cc: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
@@ -91,48 +91,65 @@ Cc: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
 	linux-mips@vger.kernel.org, linux-mm@kvack.org,
 	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
 	linux-parisc@vger.kernel.or
-Subject: Re: [REGRESSION] Re: [PATCH v7 8/8] x86/module: enable ROX caches
- for module text on 64 bit
-Message-ID: <20250113111116.GF5388@noisy.programming.kicks-ass.net>
+Subject: [PATCH] x86: Disable EXECMEM_ROX support
+Message-ID: <20250113112934.GA8385@noisy.programming.kicks-ass.net>
 References: <20241023162711.2579610-1-rppt@kernel.org>
  <20241023162711.2579610-9-rppt@kernel.org>
  <Z4QM_RFfhNX_li_C@intel.com>
  <20250112190755.GCZ4QTC01KzoZkxel9@fat_crate.local>
+ <20250113111116.GF5388@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250112190755.GCZ4QTC01KzoZkxel9@fat_crate.local>
+In-Reply-To: <20250113111116.GF5388@noisy.programming.kicks-ass.net>
 
-On Sun, Jan 12, 2025 at 08:07:55PM +0100, Borislav Petkov wrote:
-> On Sun, Jan 12, 2025 at 08:42:05PM +0200, Ville Syrjälä wrote:
-> > On Wed, Oct 23, 2024 at 07:27:11PM +0300, Mike Rapoport wrote:
-> > > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-> > > 
-> > > Enable execmem's cache of PMD_SIZE'ed pages mapped as ROX for module
-> > > text allocations on 64 bit.
-> > 
-> > Hi,
-> > 
-> > This breaks resume from hibernation on my Alderlake laptop.
-> > 
-> > Fortunately this still reverts cleanly.
+On Mon, Jan 13, 2025 at 12:11:16PM +0100, Peter Zijlstra wrote:
+
+> There's definiltely breakage with that module_writable_address()
+> nonsense in alternative.c that will not be fixed by that patch.
 > 
-> Does that hunk in the mail here fix it?
+> The very simplest thing at this point is to remove:
 > 
-> https://lore.kernel.org/all/Z4DwPkcYyZ-tDKwY@kernel.org/
+>      select ARCH_HAS_EXECMEM_ROX             if X86_64
+> 
+> and try again next cycle.
 
-There's definiltely breakage with that module_writable_address()
-nonsense in alternative.c that will not be fixed by that patch.
+Boris asked I send it as a proper patch, so here goes. Perhaps next time
+let x86 merge x86 code :/
 
-The very simplest thing at this point is to remove:
+---
+Subject: x86: Disable EXECMEM_ROX support
 
-     select ARCH_HAS_EXECMEM_ROX             if X86_64
+The whole module_writable_address() nonsense made a giant mess of
+alternative.c, not to mention it still contains bugs -- notable some of the CFI
+variants crash and burn.
 
-and try again next cycle.
+Mike has been working on patches to clean all this up again, but given the
+current state of things, this stuff just isn't ready.
+
+Disable for now, lets try again next cycle.
+
+Fixes: 5185e7f9f3bd ("x86/module: enable ROX caches for module text on 64 bit")
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ arch/x86/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 9d7bd0ae48c4..ef6cfea9df73 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -83,7 +83,6 @@ config X86
+ 	select ARCH_HAS_DMA_OPS			if GART_IOMMU || XEN
+ 	select ARCH_HAS_EARLY_DEBUG		if KGDB
+ 	select ARCH_HAS_ELF_RANDOMIZE
+-	select ARCH_HAS_EXECMEM_ROX		if X86_64
+ 	select ARCH_HAS_FAST_MULTIPLIER
+ 	select ARCH_HAS_FORTIFY_SOURCE
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
 
