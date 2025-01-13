@@ -1,147 +1,103 @@
-Return-Path: <bpf+bounces-48711-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48712-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A9E9A0C2D2
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 21:56:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5188A0C30A
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 22:02:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53FC4169A89
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 20:56:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B697518892A7
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 21:02:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B441D2F42;
-	Mon, 13 Jan 2025 20:56:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E906F1FA146;
+	Mon, 13 Jan 2025 21:01:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dispTSV/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CeAI3/e5"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E01A21C3038;
-	Mon, 13 Jan 2025 20:56:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C93391F8932;
+	Mon, 13 Jan 2025 21:01:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736801783; cv=none; b=GjbnqUOyWsVFOTwPShzC8cEKq4txESh2snVBscr20rN1xDhSJdm2eYmfyWZ3iRlYlZXvt7YfoIpjtkpeWjmgDBbhOVbC80wt3PmJI+tAdB+ZH95Fxz5pcgRWASw0Ol+yF9kQkxBnFcKVA9vu9Dqb7EsXUfuvQXJQPsyqmNiF7Mc=
+	t=1736802066; cv=none; b=WQCZV7ZqVLKvYW1kc+DS1DtzN9e0NYCBHzzXqs0+QdcIp+mrNXsMgrs9aeeuSRBiymlgyZl92xKcQPyswB1QX5T+C4iAEmycW942HoV+oPHwhXoPofp8dbikbyexdrAUpgqssxmbh9j2wSZkhfmNB15R2oU6MYA7Mfq7VpnUEJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736801783; c=relaxed/simple;
-	bh=Lyl0OAsd7SE+SYZhWQXbxp+zPFHoMm70S7OryQ7l7bE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AFMXszzH4YdUGeQnis8VzqJ36GbzfUn0CE197WgV+5OUvXTxqL1Im4kejdzor6KkFLvbZD/cVY4xVh3oWYVXAoEfaLgzm5nb1DEfAR8cnri8cdf+/2ZW4HtFzl8LP+gzqBJIM219fF3EuwIH+n13sitlFN3LlIE7OMGIqQtMTs8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dispTSV/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AB66C4CEDD;
-	Mon, 13 Jan 2025 20:56:21 +0000 (UTC)
+	s=arc-20240116; t=1736802066; c=relaxed/simple;
+	bh=g0mBU7aV8GIBGspT2cN1yB38Oyr2NFlgk+x4A5pjysU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fUXjJoFTUGvkmHqLc9SlYGqmAlNwTpjQ2C4Vabqirrw/aM2ovuBhjlnbvBxWsP4+1EJ9RFg7blvHBqY11ZPVq8rJAfKtjWrgay75+OJgse4n0O5wsntB39qlMBBKqxkRePOowlcIDMLpuWj1uu6zSKiHrFQ9eDlIK4RNcrE3hOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CeAI3/e5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23E70C4AF12;
+	Mon, 13 Jan 2025 21:01:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736801782;
-	bh=Lyl0OAsd7SE+SYZhWQXbxp+zPFHoMm70S7OryQ7l7bE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dispTSV/G2FFHmhFBqNYPhW5bJ9XAFAwwzWway4oeAFS3UKlvDyV2aKBJNMubGM69
-	 eyqVfxkEkKX40rJkdWjmjPm18hKMxkWkeLo26FnHjAFZ6vnTaK199edmsYKbWFvK2D
-	 9uUy6mM3VLLYU0B3zj8vn+DZWoIgXz7UYy4+C9Foy3+HC28jMQ0t5Cj3m6kXqwp7zr
-	 Qyo8b4fh0eGGhYkvD7gtwCnYjOgzQHc+OvI1Nu40SAfdkuqQyVQitT0h4K5YkfZal4
-	 nxM6IXpBVNO1tmmVOcjei/1bipxkRouIbbipUOLIn6dUcUnFHIKWX5a8hBxv++/Juh
-	 Na27M1jW3aSEw==
-Date: Mon, 13 Jan 2025 12:56:20 -0800
-From: Namhyung Kim <namhyung@kernel.org>
-To: Atish Kumar Patra <atishp@rivosinc.com>
-Cc: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	James Clark <james.clark@linaro.org>, Ze Gao <zegao2021@gmail.com>,
-	Weilin Wang <weilin.wang@intel.com>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Jean-Philippe Romain <jean-philippe.romain@foss.st.com>,
-	Junhao He <hejunhao3@huawei.com>, linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	Aditya Bodkhe <Aditya.Bodkhe1@ibm.com>, Leo Yan <leo.yan@arm.com>,
-	Beeman Strong <beeman@rivosinc.com>,
-	Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH v5 4/4] perf parse-events: Reapply "Prefer sysfs/JSON
- hardware events over legacy"
-Message-ID: <Z4V99KbadR7ib4FA@google.com>
-References: <20250109222109.567031-1-irogers@google.com>
- <20250109222109.567031-5-irogers@google.com>
- <Z4F3qxFaYnMTtPw7@google.com>
- <CAHBxVyE12g+GFie6gcOPkzm2ckid=sTjZU4ofj6j6EgwPTsDQw@mail.gmail.com>
+	s=k20201202; t=1736802065;
+	bh=g0mBU7aV8GIBGspT2cN1yB38Oyr2NFlgk+x4A5pjysU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=CeAI3/e55gERPTSiIjAXy83h3c6ohx/Aok8c1hwOv6j3esqUqfVydtPwsFIk2M290
+	 Px6ojL4yO8vLcb3K4a8pkOdSFwjXq+n8qmIKi24W1eylsxAkz8EDvrgbOfTiedlu8Q
+	 HK90jlle8svOLx8g9PiQQfa7JNEBzYlzdfUF0Kmy6CrVclPJSbkMJNIudbrpUmpQiH
+	 h6STtgDTHhY8wS5UxujeY4VwvuT1mQEAn/p/uPv/b+n57QHcGqCH07HFy+4RajPbBv
+	 QRqQDPKHL/ACYHCyvA9shW+p/CqfLlYVG3iyI7ImBZE/IO6QvKgWCXfW0kU6oEtRwH
+	 R+Tu6nFMyYwmg==
+Date: Mon, 13 Jan 2025 13:01:04 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Lorenzo Bianconi <lorenzo@kernel.org>, Daniel Xu
+ <dxu@dxuuu.xyz>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, John Fastabend
+ <john.fastabend@gmail.com>, Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?=
+ <toke@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, <netdev@vger.kernel.org>,
+ <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v2 1/8] net: gro: decouple GRO from the NAPI
+ layer
+Message-ID: <20250113130104.5c2c02e0@kernel.org>
+In-Reply-To: <a222a26b-9b1e-416e-a304-fd9742372c7c@intel.com>
+References: <20250107152940.26530-1-aleksander.lobakin@intel.com>
+	<20250107152940.26530-2-aleksander.lobakin@intel.com>
+	<4669c0e0-9ba3-4215-a937-efaad3f71754@redhat.com>
+	<a222a26b-9b1e-416e-a304-fd9742372c7c@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHBxVyE12g+GFie6gcOPkzm2ckid=sTjZU4ofj6j6EgwPTsDQw@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello,
-
-On Fri, Jan 10, 2025 at 11:52:47AM -0800, Atish Kumar Patra wrote:
-> On Fri, Jan 10, 2025 at 11:40 AM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > On Thu, Jan 09, 2025 at 02:21:09PM -0800, Ian Rogers wrote:
-> > > Originally posted and merged from:
-> > > https://lore.kernel.org/r/20240416061533.921723-10-irogers@google.com
-> > > This reverts commit 4f1b067359ac8364cdb7f9fda41085fa85789d0f although
-> > > the patch is now smaller due to related fixes being applied in commit
-> > > 22a4db3c3603 ("perf evsel: Add alternate_hw_config and use in
-> > > evsel__match").
-> > > The original commit message was:
-> > >
-> > > It was requested that RISC-V be able to add events to the perf tool so
-> > > the PMU driver didn't need to map legacy events to config encodings:
-> > > https://lore.kernel.org/lkml/20240217005738.3744121-1-atishp@rivosinc.com/
-> > >
-> > > This change makes the priority of events specified without a PMU the
-> > > same as those specified with a PMU, namely sysfs and JSON events are
-> > > checked first before using the legacy encoding.
-> >
-> > I'm still not convinced why we need this change despite of these
-> > troubles.  If it's because RISC-V cannot define the lagacy hardware
-> > events in the kernel driver, why not using a different name in JSON and
+On Mon, 13 Jan 2025 14:50:02 +0100 Alexander Lobakin wrote:
+> From: Paolo Abeni <pabeni@redhat.com>
+> Date: Thu, 9 Jan 2025 15:24:16 +0100
 > 
-> When the discussion happened a year back. we tried to avoid defining
-> the legacy hardware events in
-> the kernel driver. However, we agreed that we have to define it
-> anyways for other reasons (legacy usage + virtualization)
-> as described here[1]. I have improved the driver in such a way that it
-> can handle both legacy events from the
-> driver or json file (via this patch) if available. If this patch is
-> available, a platform vendor can choose to encode the legacy events in
-> json.
-> Otherwise, it has to specify them in the driver. I will try to send
-> the series today/tomorrow.
-
-Ok, thanks for the update.
-
+> > On 1/7/25 4:29 PM, Alexander Lobakin wrote:  
+> >> @@ -623,21 +622,21 @@ static gro_result_t napi_skb_finish(struct napi_struct *napi,
+> >>  	return ret;
+> >>  }
+> >>  
+> >> -gro_result_t napi_gro_receive(struct napi_struct *napi, struct sk_buff *skb)
+> >> +gro_result_t gro_receive_skb(struct gro_node *gro, struct sk_buff *skb)
+> >>  {
+> >>  	gro_result_t ret;
+> >>  
+> >> -	skb_mark_napi_id(skb, napi);
+> >> +	__skb_mark_napi_id(skb, gro->napi_id);  
+> > 
+> > Is this the only place where gro->napi_id is needed? If so, what about
+> > moving skb_mark_napi_id() in napi_gro_receive() and remove such field?  
 > 
-> This patch will help avoid proliferation of usage of legacy events in
-> the long run. But it is no longer absolutely necessary for RISC-V.
-> If this patch is accepted, there is a hope that we can get rid of the
-> specifying encodings in the driver in the distant future. However, we
-> have
-> to define them in the driver for reasons described in[1].
-> 
-> [1] https://lore.kernel.org/lkml/20241026121758.143259-1-irogers@google.com/T/#m653a6b98919a365a361a698032502bd26af9f6ba
-> > ask users to use the name specifically?  Something like:
-> >
-> >   $ perf record -e riscv-cycles ...
-> >
-> 
-> That was the first alternative I proposed back in 2022 plumbers :).
+> Yes, only here. I thought of this, too. But this will increase the
+> object code of each napi_gro_receive() caller as it's now inline. So I
+> stopped on this one.
+> What do you think?
 
-I see, sorry for missing the earlier discussion.
+What if we make napi_gro_receive() a real function (not inline) 
+and tail call gro_receive_skb()? Is the compiler not clever 
+enough too optimize that?
 
-Thanks,
-Namhyung
-
-
-> But it was concluded that we don't want users to learn new ways
-> of running perf in RISC-V which makes sense to me as well.
-
+Very nice work in general, the napi_id is gro sticks out..
 
