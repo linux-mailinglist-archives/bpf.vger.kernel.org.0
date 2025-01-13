@@ -1,179 +1,143 @@
-Return-Path: <bpf+bounces-48705-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48706-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37353A0BC81
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 16:48:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 016CFA0BE25
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 17:59:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 242A0188576E
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 15:48:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 735E1188823E
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 16:59:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A53631FBBD5;
-	Mon, 13 Jan 2025 15:48:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A71F2297F4;
+	Mon, 13 Jan 2025 16:58:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iE/CT9Gs"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="UUXsPsJj";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="CSSyPd+J"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+Received: from fhigh-a5-smtp.messagingengine.com (fhigh-a5-smtp.messagingengine.com [103.168.172.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 267DE240221;
-	Mon, 13 Jan 2025 15:48:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E7F920F096
+	for <bpf@vger.kernel.org>; Mon, 13 Jan 2025 16:58:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736783291; cv=none; b=ZS+4g7j0xezCjwwpJSIspGPKpqkXNW762nNaTeKnl41yBJu7ieYo3sLiYxGiVZjUXwESIDd6TEsUFCCqhtQ9y/iHJMyyfjtK4f84C0pfr9w2jQDdLbiQvSUaLJvle7tc0l0OENkiYt1e54K5Fbrp3hpXQhc4DTvril8nq8FSwtk=
+	t=1736787524; cv=none; b=QfF0rEZRA+1cW1qc6gI4z+J8yc29JXxyGnMuDWCLFGg/usXUx1vCDNW8DZblCdb5mByvx2pbZIRH9MBsMaWIl2OALNM0A7EZuBXzp/R8qa8TfXqSJHVNYKThxK++sWdZ/mVLVH3j1WyofxoP8sD/8w8LH7VT89qZoFKDipKMnSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736783291; c=relaxed/simple;
-	bh=ExydEF6oUbBv3mhxl1sgVJvfB6r3da1uy1h0Ey5whoQ=;
+	s=arc-20240116; t=1736787524; c=relaxed/simple;
+	bh=yXD+k+D8yp0A2njrD8UaUidlCIGLETn/rMPZJ9l+zmM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=atkNRdODTGq9V0Cqwx1M/fF6WXhZzUQ3T13OSZ7s/pjZfmy/+uWEBP+Iv6AlUc8LpQ946n4KQZDMqrWOpZoYJ+G6FoNBiD+4M+9U2oRDkkXzCuMivZ/ZF5jG9/GYAFaKg6YZ7/hn5YwTB2skrR5phGeFKf82icvTLCHrFFRCkbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iE/CT9Gs; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1736783289; x=1768319289;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=ExydEF6oUbBv3mhxl1sgVJvfB6r3da1uy1h0Ey5whoQ=;
-  b=iE/CT9Gson6D3bFW+s7Bgby4OwbOTaNxvZMXsVlhlfmGR9OTeS7P4NPn
-   RXdjPTRY2CaXMuXQv2933QdWLv2AbhFcpBAFJXjikKCNJQNcQIYKizQ50
-   Y2CTJ9Q61hLRAH7zdYa3mD9v1HviBsW679kpWCZNxFRDzc5UKHO31lCrV
-   ICa/qBanp6MHR+VqXrznlGSHBFY76YGyqwwB4ou5jsOs66jXjyjoxoYSQ
-   pvk7O9iE+sPdfiiS92wzCeVxfKj1T6Pt5EDLoZaYDi9gWtcM/egE77y0P
-   68zyzY2o7E1XC635cegZf021mB61LoYeGgdF+TSHpU8AKODttDtbV+RT2
-   Q==;
-X-CSE-ConnectionGUID: IsQ+kTlqSIuTx9stxs+LjA==
-X-CSE-MsgGUID: xPzJLRa/TjCHnLqULFbWsg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11314"; a="36340679"
-X-IronPort-AV: E=Sophos;i="6.12,310,1728975600"; 
-   d="scan'208";a="36340679"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2025 07:48:08 -0800
-X-CSE-ConnectionGUID: tF9prx5vSTOp32e9QHNHAA==
-X-CSE-MsgGUID: idxS4SPKSjyFVgzRZeU+/A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,310,1728975600"; 
-   d="scan'208";a="104693236"
-Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
-  by fmviesa008.fm.intel.com with SMTP; 13 Jan 2025 07:47:55 -0800
-Received: by stinkbox (sSMTP sendmail emulation); Mon, 13 Jan 2025 17:47:54 +0200
-Date: Mon, 13 Jan 2025 17:47:54 +0200
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Borislav Petkov <bp@alien8.de>, Mike Rapoport <rppt@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.or
-Subject: Re: [PATCH] x86: Disable EXECMEM_ROX support
-Message-ID: <Z4U1qqBekZ-_l1NS@intel.com>
-References: <20241023162711.2579610-1-rppt@kernel.org>
- <20241023162711.2579610-9-rppt@kernel.org>
- <Z4QM_RFfhNX_li_C@intel.com>
- <20250112190755.GCZ4QTC01KzoZkxel9@fat_crate.local>
- <20250113111116.GF5388@noisy.programming.kicks-ass.net>
- <20250113112934.GA8385@noisy.programming.kicks-ass.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=sEal9WPZ7wH4BdqRVYBHqBQKcUGyU3vO0Ps9tFLMRkzu47eeVsC/XrFzuHCJxG2Xi9ONpVCjHsVhTDYYghVmb6XXg6JLS5utAizUH6IuhOWGcwBY3u8XtHGvwvWYvLLiLhi0+Kw8moC4lwy5/RpNCu/gnHlCQPhfxJTQJY7++dA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=UUXsPsJj; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=CSSyPd+J; arc=none smtp.client-ip=103.168.172.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-09.internal (phl-compute-09.phl.internal [10.202.2.49])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 6D94511401D2;
+	Mon, 13 Jan 2025 11:58:41 -0500 (EST)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-09.internal (MEProxy); Mon, 13 Jan 2025 11:58:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1736787521; x=1736873921; bh=rTf7OhjPBq
+	cz6LXvRiTedV2f+sgP6kzLwvStfogEBLE=; b=UUXsPsJjbYFdd8tNDQBrU+8T8z
+	riHVViudkuXC0WMmvOhTDT7hGWCyKeXjOwuoMUFyMvRsqFvZmU6rOFR0h0mcE005
+	jlPtzCOxg+IUlL33UREgyCd5kTVeZPLpAwmr95Rz6Oh9/9unv2slrvbwrmDX8bDn
+	borfc5KA1+MKEz3zkThVb8zdq7ZgTvhATHJ3cdzeH8rXWOc4mAjlkNYcsU0QPjtl
+	QsNJ57FF5XX6oHVlcenr6vVBfgq20XGf/NhFQoYpwJPZFT0QgGqainCF6k2EsQDq
+	TBFZPeoZbSIi+nB6utolDLRD2N9QPrvBac/BgChJxv/PVc+9CS2q8onwtPcw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1736787521; x=1736873921; bh=rTf7OhjPBqcz6LXvRiTedV2f+sgP6kzLwvS
+	tfogEBLE=; b=CSSyPd+JF5YbE1RqOxl8dwChyDXXwLucMnk4uM4Fn54B5Ouw/o2
+	vMH5VvoQ7ia3hhHBXY2BzPmFAtJohqxjnNTLAmvWvaPX5fBBY9bnBiraOOSqbEu8
+	Url1NASSknO2iGp+9B7Nxkg/fVm5MF7jGzMvZGcKhCg/XsA8hpmZGjyD0AOz7tA6
+	Mw8W1EyyzQOHB5s1Q+rt0paUvWYnRno2wVe5MtG5GfZAclU7pxcxxX+LqfK282o3
+	PHRG4D6QvK62Bt3TFMUiuaiWco3lzHAon3yfD91P5s05KowktawKdyG6bSYp5Xqx
+	H7hqrDIyvdK6BAKXMg9yxJP2xN23KqkUlMQ==
+X-ME-Sender: <xms:QEaFZ4wwcd8DIAu8jvVaK8cNoEJk07anz-9zapElYCHZJ-PecnTP2w>
+    <xme:QEaFZ8SP1UUWLnDt86WU-Qfr1tsiRhwGJE1g801G1Qa63xY5GOeWfVITZWaxeHpwD
+    JZC6uK0b2Z2bXQFng>
+X-ME-Received: <xmr:QEaFZ6WmKBM4LhO8VE864aGwlWtueZ8GxD9E0IOr8Bx7ZslUHU_YNFjgXXkSsvbJmMNH96qmJUdhWlp2nQOC0Gyno_kVIhr-HNJK-9oiuZIIbw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudehgedgleehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnegfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhf
+    gggtuggjsehttdfstddttddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesug
+    iguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffek
+    uedukeehudffudfffffggeeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihiidpnhgspghrtghp
+    thhtohepledpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhgvohhnrdhhfigrnh
+    hgsehlihhnuhigrdguvghvpdhrtghpthhtohepsghpfhesvhhgvghrrdhkvghrnhgvlhdr
+    ohhrghdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurg
+    hnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopegrnhgurhhiiheskhgv
+    rhhnvghlrdhorhhgpdhrtghpthhtohephihonhhghhhonhhgrdhsohhngheslhhinhhugi
+    druggvvhdprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
+    vgguugihiiekjeesghhmrghilhdrtghomhdprhgtphhtthhopehkvghrnhgvlhdqphgrth
+    gthhgvshdqsghothesfhgsrdgtohhm
+X-ME-Proxy: <xmx:QEaFZ2ieBqkjgYo5fVtLOwWFhLPNACzfiBK1SlwVu8Jgh6lHqd6lxA>
+    <xmx:QEaFZ6CmRl6F2i2qEnxuzIb8FQfnoZ6YaaZ-XvkQZV851N2rjp2Imw>
+    <xmx:QEaFZ3JOL3rkq85F0Qbs7gyJvzBNYBSxslAmPfMIZ59dQYyY6tOyRw>
+    <xmx:QEaFZxBkVCbk-yjrJDmTnATNy0tYGncieAX4Waz-cDUmKtcA39dLyA>
+    <xmx:QUaFZyspINwn8dxqXYYl0ue83GAatNZQxKR2Ys826coBbU8i6IUK5uQq>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 13 Jan 2025 11:58:39 -0500 (EST)
+Date: Mon, 13 Jan 2025 09:58:38 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Leon Hwang <leon.hwang@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, yonghong.song@linux.dev, song@kernel.org, eddyz87@gmail.com, 
+	kernel-patches-bot@fb.com
+Subject: Re: [RFC PATCH bpf-next 0/2] bpf: Introduce global percpu data
+Message-ID: <jfo4cgmk76zibxylkclgw4u7j47phg2ic4ogilhgz52ddilsui@gc3hiffnezkc>
+References: <20250113152437.67196-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250113112934.GA8385@noisy.programming.kicks-ass.net>
-X-Patchwork-Hint: comment
+In-Reply-To: <20250113152437.67196-1-leon.hwang@linux.dev>
 
-On Mon, Jan 13, 2025 at 12:29:34PM +0100, Peter Zijlstra wrote:
-> On Mon, Jan 13, 2025 at 12:11:16PM +0100, Peter Zijlstra wrote:
-> 
-> > There's definiltely breakage with that module_writable_address()
-> > nonsense in alternative.c that will not be fixed by that patch.
-> > 
-> > The very simplest thing at this point is to remove:
-> > 
-> >      select ARCH_HAS_EXECMEM_ROX             if X86_64
-> > 
-> > and try again next cycle.
-> 
-> Boris asked I send it as a proper patch, so here goes. Perhaps next time
-> let x86 merge x86 code :/
-> 
-> ---
-> Subject: x86: Disable EXECMEM_ROX support
-> 
-> The whole module_writable_address() nonsense made a giant mess of
-> alternative.c, not to mention it still contains bugs -- notable some of the CFI
-> variants crash and burn.
-> 
-> Mike has been working on patches to clean all this up again, but given the
-> current state of things, this stuff just isn't ready.
-> 
-> Disable for now, lets try again next cycle.
-> 
-> Fixes: 5185e7f9f3bd ("x86/module: enable ROX caches for module text on 64 bit")
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  arch/x86/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 9d7bd0ae48c4..ef6cfea9df73 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -83,7 +83,6 @@ config X86
->  	select ARCH_HAS_DMA_OPS			if GART_IOMMU || XEN
->  	select ARCH_HAS_EARLY_DEBUG		if KGDB
->  	select ARCH_HAS_ELF_RANDOMIZE
-> -	select ARCH_HAS_EXECMEM_ROX		if X86_64
->  	select ARCH_HAS_FAST_MULTIPLIER
->  	select ARCH_HAS_FORTIFY_SOURCE
->  	select ARCH_HAS_GCOV_PROFILE_ALL
+Hi Leon,
 
-This one works for my hibernate woes.
+On Mon, Jan 13, 2025 at 11:24:35PM +0800, Leon Hwang wrote:
+> This patch set introduces global per-CPU data, similar to commit
+> 6316f78306c1 ("Merge branch 'support-global-data'"), to reduce restrictions
+> in C for BPF programs.
+> 
+> With this enhancement, it becomes possible to define and use global per-CPU
+> variables, much like the DEFINE_PER_CPU() macro in the kernel[0].
+> 
+> The idea stems from the bpflbr project[1], which itself was inspired by
+> retsnoop[2]. During testing of bpflbr on the v6.6 kernel, two LBR
+> (Last Branch Record) entries were observed related to the
+> bpf_get_smp_processor_id() helper.
+> 
+> Since commit 1ae6921009e5 ("bpf: inline bpf_get_smp_processor_id() helper"),
+> the bpf_get_smp_processor_id() helper has been inlined on x86_64, reducing
+> the overhead and consequently minimizing these two LBR records.
+> 
+> However, the introduction of global per-CPU data offers a more robust
+> solution. By leveraging the percpu_array map and percpu instructions,
+> global per-CPU data can be implemented intrinsically.
+> 
+> This feature also facilitates sharing per-CPU information between tail
+> callers and callees or between freplace callers and callees through a
+> shared global per-CPU variable. Previously, this was achieved using a
+> 1-entry percpu map, which this patch set aims to improve upon.
 
-In case you want it:
-Tested-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+I think this would be great to have. bpftrace would've liked to use this
+for its recent big string support, but instead had to simulate a percpu
+global through regular globals.
 
--- 
-Ville Syrjälä
-Intel
+Thanks,
+Daniel
 
