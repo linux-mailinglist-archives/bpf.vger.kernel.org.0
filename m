@@ -1,143 +1,150 @@
-Return-Path: <bpf+bounces-48678-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48679-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49276A0B60E
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 12:50:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CCE1A0B624
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 12:53:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AAAEA7A244A
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 11:49:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 294571884428
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 11:53:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A42111FDA6B;
-	Mon, 13 Jan 2025 11:49:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D60822A4C4;
+	Mon, 13 Jan 2025 11:53:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="fkrzWApx"
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="BsQUyE0M"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9854B1B4154;
-	Mon, 13 Jan 2025 11:49:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CF2B20459B;
+	Mon, 13 Jan 2025 11:53:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736768993; cv=none; b=eAsFCNvc1QFAzmFSQGWj91RBO7VOSluSz2zpxRx13e5n/FCOxImpa8HyMQj1iOxsuICAxQsMhLfNrIrNBwJRzirGTuLKAVqBZmINcsiFKIGpoxJFnyItjZyOUxNJ1mSHucxFr3AFgyM42wojHLIkrBqvEfoSJRseqOp2BQfEWEM=
+	t=1736769187; cv=none; b=O9M9HJUpbmLWKUKTw8li+tRlPmONMA3wbBh74PsjbfGvpf05On67TTe6darVL5HuhlYh7NtdI/yTJdNS/gNpEZ8pF1sOJeEWfPFO48zSNfN3JhYbMHttI9aLSy6oBFLBzI94Xc1EoP7iqQy6EW4FgBLaBPBeIExDgCbLhJChT9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736768993; c=relaxed/simple;
-	bh=u/3TiRKpp8tpJXx8+txBRBPg+Fjpk1lHw0jz/n8kUag=;
+	s=arc-20240116; t=1736769187; c=relaxed/simple;
+	bh=rj/R/90a7hLmRewZhsY/bA19NAKxOytvjRKPzmkvmTI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TDeUGNMHoFoszz/Dg86qHkxsO2mUO5Akvn3cXB39XtFB7mvWdrkjm7zRxK88SMNpnhyvJxZp6l6xAvuCDQ1GgnHlXrX73wqyy+pn3sdiHh1BP3HHA837fFp+ehquz5GDGFR+aMhBlh8hfzuAvphk/MiVqugyzgG1ZzAqlZQlqzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=fkrzWApx; arc=none smtp.client-ip=115.124.30.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1736768987; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=Oi4ACboGMGTa1BXAPOx4mOpHd0ImIOeMSXF78X60dq4=;
-	b=fkrzWApxJG2o3AqkMTK+3tTOcTBfE2dqGPKrAhTEXwq7QN+9hoRhu17gmaECAVGdtySJ2HoiJ5WzVe6QphbE/WEdfDYRnusatFCOn0WqO+FQw/ALbP+EarrZH49k81De/idXa6aqKO0/D1ilduGIOo+dhOoU3eOru8RWmiN2me8=
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0WNY6mku_1736768984 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Mon, 13 Jan 2025 19:49:45 +0800
-Date: Mon, 13 Jan 2025 19:49:44 +0800
-From: Dust Li <dust.li@linux.alibaba.com>
-To: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-	wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-	pabeni@redhat.com, song@kernel.org, sdf@google.com,
-	haoluo@google.com, yhs@fb.com, edumazet@google.com,
-	john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
-	guwen@linux.alibaba.com
-Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v5 2/5] net/smc: Introduce generic hook smc_ops
-Message-ID: <20250113114944.GB89233@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20250107041715.98342-1-alibuda@linux.alibaba.com>
- <20250107041715.98342-3-alibuda@linux.alibaba.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hW+NMn1LOcnKjiNMtIl4iJsQmvX1VwJVS21dBj4GFSChhwKu6XwqZZINHcGgFoorzkCdks5zu8Nv3ncluiox4aK3OXG0z+7a74HLvqkFdWKoTsZLuY4L6ZJGw3kYs2wXAGFNeL54p3CqhxvKfWU6j/ZgaHYprb/MiC6no4JskV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=BsQUyE0M; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 94EB640E0288;
+	Mon, 13 Jan 2025 11:52:56 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 8xRRmxHxCCYP; Mon, 13 Jan 2025 11:52:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1736769173; bh=qSbRHcCxicQ2oaohgQJ8xn6gI1z5hxVzGPJ9KcO78ak=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BsQUyE0MpgT/tvDuXqOP2by5wxaln0pgDMNsyorzlEBunwnsVmYg6L2A1phKwPV7s
+	 kprzy+NBoNbYbHsJnT3YmhuYEeQN554Y35wC/mmKzG9UGAMJVta9IWmsj8KPfG/LMv
+	 XfD6aFYfx/eAJf4Z4WMS7uJGUgv47TyMQcsEz3kYN83euyk5ovQcb00rZstpPUl+k2
+	 XbESf4MoT3jT5DSHXgpKMVuLAP/j4GxI90mVoMrz7jo6PB/bu04vVroAIHe+P4wncu
+	 uMqHlK64sB5NHbaPMUduXTl1y6aXJwv3ihwZQc6RG0KfSGp8H2vD36ht30yi+eeqLV
+	 QWhvaRrxLFVJpiCA6H19MvlreYEL+92uTMcoce80ej/6rD/fnlBL+Ga63CK5k96ts0
+	 n2vTOs2LhW2VMmg+88LAPYd8NjdMMEnfr6zy1QtfqPlktXHYlwN/tkF4apvCcnQ3VS
+	 CTn1EUlTZTFJseWRU7RWGhnI4DqXJUlXgdmWfAh0Hogqv0/+Bj8DIm/1FQJ6J6gGJO
+	 EwdXtvJeMUKmR9tsmgnfLa4Pn6Qe8PTZ85dV6YjZqO3pPejIvC42f/ZubgkapbMYf6
+	 dhQef/RqIIoxyOJiBZ0pWPWElWKBrNqe3G6IJPjHGPHPAherBr5S2sILxabshks3Oo
+	 quZ4q2rdiiJ34vO8+Ur4yrU0=
+Received: from zn.tnic (pd953008e.dip0.t-ipconnect.de [217.83.0.142])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B4E3940E0269;
+	Mon, 13 Jan 2025 11:51:56 +0000 (UTC)
+Date: Mon, 13 Jan 2025 12:51:51 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+	Mike Rapoport <rppt@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, Brian Cain <bcain@quicinc.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Stafford Horne <shorne@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.or
+Subject: Re: [PATCH] x86: Disable EXECMEM_ROX support
+Message-ID: <20250113115151.GDZ4T-VwIq_6ZafRE4@fat_crate.local>
+References: <20241023162711.2579610-1-rppt@kernel.org>
+ <20241023162711.2579610-9-rppt@kernel.org>
+ <Z4QM_RFfhNX_li_C@intel.com>
+ <20250112190755.GCZ4QTC01KzoZkxel9@fat_crate.local>
+ <20250113111116.GF5388@noisy.programming.kicks-ass.net>
+ <20250113112934.GA8385@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250107041715.98342-3-alibuda@linux.alibaba.com>
+In-Reply-To: <20250113112934.GA8385@noisy.programming.kicks-ass.net>
 
-On 2025-01-07 12:17:12, D. Wythe wrote:
->The introduction of IPPROTO_SMC enables eBPF programs to determine
->whether to use SMC based on the context of socket creation, such as
->network namespaces, PID and comm name, etc.
->
->As a subsequent enhancement, to introduce a new generic hook that
->allows decisions on whether to use SMC or not at runtime, including
->but not limited to local/remote IP address or ports.
->
->Moreover, in the future, we can achieve more complex extensions to the
->protocol stack by extending this ops.
->
->Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
->---
-> include/net/netns/smc.h |  3 ++
-> include/net/smc.h       | 51 ++++++++++++++++++++++
-> net/ipv4/tcp_output.c   | 15 +++++--
-> net/smc/Kconfig         | 12 ++++++
-> net/smc/Makefile        |  1 +
-> net/smc/smc_ops.c       | 51 ++++++++++++++++++++++
-> net/smc/smc_ops.h       | 25 +++++++++++
-> net/smc/smc_sysctl.c    | 95 +++++++++++++++++++++++++++++++++++++++++
-> 8 files changed, 249 insertions(+), 4 deletions(-)
-> create mode 100644 net/smc/smc_ops.c
-> create mode 100644 net/smc/smc_ops.h
->
->diff --git a/include/net/netns/smc.h b/include/net/netns/smc.h
->index fc752a50f91b..59d069f56b2d 100644
->--- a/include/net/netns/smc.h
->+++ b/include/net/netns/smc.h
->@@ -17,6 +17,9 @@ struct netns_smc {
-> #ifdef CONFIG_SYSCTL
-> 	struct ctl_table_header		*smc_hdr;
-> #endif
->+#if IS_ENABLED(CONFIG_SMC_OPS)
->+	struct smc_ops __rcu *ops;
->+#endif /* CONFIG_SMC_OPS */
-> 	unsigned int			sysctl_autocorking_size;
-> 	unsigned int			sysctl_smcr_buf_type;
-> 	int				sysctl_smcr_testlink_time;
->diff --git a/include/net/smc.h b/include/net/smc.h
->index db84e4e35080..326a217001d4 100644
->--- a/include/net/smc.h
->+++ b/include/net/smc.h
->@@ -18,6 +18,8 @@
-> #include "linux/ism.h"
+On Mon, Jan 13, 2025 at 12:29:34PM +0100, Peter Zijlstra wrote:
+> On Mon, Jan 13, 2025 at 12:11:16PM +0100, Peter Zijlstra wrote:
 > 
-> struct sock;
->+struct tcp_sock;
->+struct inet_request_sock;
+> > There's definiltely breakage with that module_writable_address()
+> > nonsense in alternative.c that will not be fixed by that patch.
+> > 
+> > The very simplest thing at this point is to remove:
+> > 
+> >      select ARCH_HAS_EXECMEM_ROX             if X86_64
+> > 
+> > and try again next cycle.
 > 
-> #define SMC_MAX_PNETID_LEN	16	/* Max. length of PNET id */
-> 
->@@ -97,4 +99,53 @@ struct smcd_dev {
-> 	u8 going_away : 1;
-> };
-> 
->+#define  SMC_OPS_NAME_MAX 16
->+
->+enum {
->+	/* ops can be inherit from init_net */
->+	SMC_OPS_FLAG_INHERITABLE = 0x1,
->+
->+	SMC_OPS_ALL_FLAGS = SMC_OPS_FLAG_INHERITABLE,
->+};
->+
->+struct smc_ops {
+> Boris asked I send it as a proper patch, so here goes. Perhaps next time
+> let x86 merge x86 code :/
 
-One more thing.
-Can we call it smc_bpf_ops ? I think smc_ops is a bit ambiguous.
-Same for smc_ops.h/c source file.
+I just love it how this went in without a single x86 maintainer Ack, it broke
+a bunch of things and then it is still there instead of getting reverted.
 
-Best regards,
-Dust
+Let's not do this again please.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
