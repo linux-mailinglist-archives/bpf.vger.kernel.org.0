@@ -1,330 +1,115 @@
-Return-Path: <bpf+bounces-48697-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48698-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79689A0BA17
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 15:44:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B5F44A0BA35
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 15:48:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BDB61885C36
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 14:44:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 023DD1888EA7
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 14:48:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5409920F06D;
-	Mon, 13 Jan 2025 14:39:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35CC320F09D;
+	Mon, 13 Jan 2025 14:45:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mdhV9hqD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cjGQw4qr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C44622DFB1;
-	Mon, 13 Jan 2025 14:39:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 930D91FBBCA;
+	Mon, 13 Jan 2025 14:45:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736779156; cv=none; b=sBNJGu8C+OFoEtVvyJ7hsQ0etH12VvX+5ykHpHNvcjxqQK4ceJhkBHYtwR4LbLHqWUBpQKQ9nxtwWMvMWMZwBm49UwFj8Vwwe6y1EfH9WKtxjrCW6eWZXOAcz53D2Ctv9NdiNvCgJDjQ6V0/5iCM4Vh1y/0tW3cC+n4mpPwwe54=
+	t=1736779556; cv=none; b=go540K5LhMOkYZZXO5qK6g86VPOy4W78QJnh2eO0jZpWpJD77HNCxGYtAi55fyiM6RCIzgP3sc635TUdiHDjAXQQAIkYlx5wqgVO2e1VRG75nno5UsjCmfzOvveqchJeRUr9l1cK12Pp2jZKlscCbvQznwQ0ryUbJGHTrtPADXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736779156; c=relaxed/simple;
-	bh=0G+WJHelzbbjtgv/Zbgactw+yzF4V+X8MJldF12Uf7A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BOLWsJS5luNWaQ+/zuM/zTvfqBrZuPwxp5NB/Lrr4Ayks0T6L4MlWQh8bm1D7YCaxHP/MEem8HuToVskqs/rUEsWUg7gYFFaepO9cKzGReRsFE2Yz7nGG9HZxnm41LZAmdmmecRefsJqxIDcEcp966o6LFN93uCL3HJCUbu/VP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mdhV9hqD; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-21644aca3a0so95936325ad.3;
-        Mon, 13 Jan 2025 06:39:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736779153; x=1737383953; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R0TVXDX/Oq9IB0mhgmi61TXIFVtPNPu1PWKjPd5bzuM=;
-        b=mdhV9hqDkGVkVHMv0B5JnL14GjXjp3LSB6fFUzLsJUGCasBB8mLgesFEOKv28jfDQd
-         Dzv9tytKyUQmeNmr0+wcbcXOgQNMFfYqZUI5zSj9chuix98ydumZFVItYR7h3Smk8JY6
-         qy9WYM4CWnIklxZUKa2JhV5aXokm3Al7xOQSm7mWYdVmiVV+1TJqPaoICAo+SL/hCtu0
-         CxxPKId7EHV4QmxfhygiXApf3kS57jsAH/+Sd0XgB2iliWc223bWim26um12wtE/LfMD
-         w+VpxgfWK0BuRYPqQC8P0mCE8sevD/v8WCBPHiUMxbyMtMZNi945f2zAWPCU0dClTA+z
-         5OkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736779153; x=1737383953;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=R0TVXDX/Oq9IB0mhgmi61TXIFVtPNPu1PWKjPd5bzuM=;
-        b=WiuFY5ERx4fZpmkVLLqT3P0vHJpVZTD4HhV2mAT1D0QBAnwulvqAvaNRcn64O5blyc
-         hDj4RpT+Plp04Pu7UlmXy4MjtAGn2kNUQ61hmsC/OCSzVaA4s5Ze1zVwqwn5qvfsgWpr
-         Pfr78T+22PAEgiES06BHBq9kn31SQTsW7eVc8hshLjM0qcpJDgoGEu6NpGdTdFMpU5Zz
-         D7MVUMDRqz63KPY1fgKYHlrduGQiLzSYH08AUovaad12NMUc7EQcHF2plZ0ltC3c+d0v
-         5p7Nz9b1ZICM4g6+cjkFfwU/c+izLfUAGhSLB8/1nqZV7jB5nwJx0ya24+p9abalJ2d0
-         HuNA==
-X-Forwarded-Encrypted: i=1; AJvYcCUFLHbYOydfU9es94NceemO6MeaBLSuau8MGS8Q5YQESD11JXXOC6rSc+YvLCR3Sm/AtRsdSlk2ET7xLVFg@vger.kernel.org, AJvYcCUH1F2mkybZW4CxDUuGB3TjgjLWxQydaIAE9tOJaQOi7MkoP/SfNHUdxjdW4qpAQUVoGNoa+FGzyN/GUKDUC/4D@vger.kernel.org, AJvYcCWTd2MAO6ANCPBs8qvzHuKtQr7/4ogS81msGHChhwaaOHylmBnmZEfpzWj/C2B3Wto1KaHxpg6R1mv90w==@vger.kernel.org, AJvYcCWjqDRNJI/jmkdmeioMn0CMfVjTK0VRKBw6M//Z3e7KCOGNSoK7rJiRJvIhJLX+FS4hekz2ZHpKtPMf+Q==@vger.kernel.org, AJvYcCWtBh8hPHYqbJoqQIYIihjXOAyYSagAbJi018tUytgJ7p/OowWk5/IwCB84dXwLc0vdo7Aw1uGolxVcuC44rE4=@vger.kernel.org, AJvYcCX/B+yT7GmPsoczL3aqi1Ex3PWFXFf2fwhq0bQr9Ju83Cme6A1xfCrGJsjdfbl4JhOGr4U67PP41/T+@vger.kernel.org, AJvYcCXGoICj+Ow8nY1RV5ZEW8Ggph/NaOfyzM7/vU//PECyYsVQnZIZ/FLkNup8ASnFgz7cdPCzfdCMSLy/@vger.kernel.org, AJvYcCXHOCpOX4LkVkZd5kinYzLin1oVXQ0qV5luP8ZG8OoSBCU0QLSE5VkZEBxMETIKIrOTGOU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxfpaCXHld9uVlEVWr3bQ3IJQ4VPT89um+69Bp60rvdb1FGnt1J
-	A/LqcgXWNaulD7HtHYQnzs/aYAYG83MQONpWAhkwBKdmTun6Ax1ojdA0tyVvWqw=
-X-Gm-Gg: ASbGncuuf7feJL582A2xBsiBfUhssO5EqfS1JSB43mvXNmmx5ZE2+FugdrD+meMcQy0
-	33I/DELTcM7BVkf37+aQxv9+BqRj2JU3OJUY6JhCzGjyfDWPvV8irsFxYCT60fQmyU+E8bDA9ra
-	vlNzm+eqjvcN7it1Hxz9q53DPLxrfNgFSWfJvXCLf9PCehp/DfP3Mw5peDu/iWVk0CTkhJDix8V
-	kotEJlHrksrYu7h3Sa+jyQNyZBqRrI7UO0oddpCDHCTBzg=
-X-Google-Smtp-Source: AGHT+IFt4cEJz+p42bYm31EfJt3Zb0JLb+qW+6vXHsT58zE4AWUF4ed/u79zsBlznytyW2KBQMyVfw==
-X-Received: by 2002:a17:902:d511:b0:215:6489:cfbf with SMTP id d9443c01a7336-21a83f48cc0mr313835205ad.11.1736779153175;
-        Mon, 13 Jan 2025 06:39:13 -0800 (PST)
-Received: from ws.. ([103.167.140.11])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21a9f155e00sm54328715ad.103.2025.01.13.06.39.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jan 2025 06:39:12 -0800 (PST)
-From: Xiao Liang <shaw.leon@gmail.com>
-To: netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Kuniyuki Iwashima <kuniyu@amazon.com>,
-	Jakub Kicinski <kuba@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Simon Horman <horms@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Donald Hunter <donald.hunter@gmail.com>,
-	Alexander Aring <alex.aring@gmail.com>,
-	Stefan Schmidt <stefan@datenfreihafen.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	linux-rdma@vger.kernel.org,
-	linux-can@vger.kernel.org,
-	osmocom-net-gprs@lists.osmocom.org,
-	bpf@vger.kernel.org,
-	linux-ppp@vger.kernel.org,
-	wireguard@lists.zx2c4.com,
-	linux-wireless@vger.kernel.org,
-	b.a.t.m.a.n@lists.open-mesh.org,
-	bridge@lists.linux.dev,
-	linux-wpan@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v8 11/11] selftests: net: Add test cases for link and peer netns
-Date: Mon, 13 Jan 2025 22:37:19 +0800
-Message-ID: <20250113143719.7948-12-shaw.leon@gmail.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250113143719.7948-1-shaw.leon@gmail.com>
-References: <20250113143719.7948-1-shaw.leon@gmail.com>
+	s=arc-20240116; t=1736779556; c=relaxed/simple;
+	bh=4Vujzbm4kNtV5/o/KXPggv4nUMTIKxP0LOJAZ9i8Z+Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p9rkQT9jd0xAaiZ03c5Vg2yzWypXSDD+A3TPPvephhS8lfo4eO2QKr9VfeFLvTHBM7EzrAfGq6xyO2/qohddZFzt0UeCLQa0O8wP6HEvB70+IfGXaHiZKmFIkqxgJ+oE+EubzhnW5p6s7BKi9MrE5APHKF+Y5u4TNPoVDFfRWGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cjGQw4qr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A543CC4AF0B;
+	Mon, 13 Jan 2025 14:45:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736779556;
+	bh=4Vujzbm4kNtV5/o/KXPggv4nUMTIKxP0LOJAZ9i8Z+Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cjGQw4qrc+25VwrU5o7c9G3d/cR+3CwDJHhEQLzEagi/U7UsotaPFVUfY5mHihKPM
+	 ukP5fL2SRcmpEtGWyI5yFsXX8LS09ahNaQE30YcFWnTS4U6dGx3OhImPgnoSir5OL0
+	 fSkkiFeSOy1h5QOSf2yTbdTDuVCT73Hpy4bnFcS8qSWoFm2Zkssdqb3/L9cbdcX7+q
+	 AYbcvhxZA+tV+1TqTQcGkiWDwG5SHCgshXTJj05m0o5U9yGH0jjEQkaMmK16Ic3ovU
+	 M3F6JXJRcgdrURmFSPsuUuQRuZXpOPAicnrl91k9kRkz3AgC0XIE5+EjEhwXNxXgoy
+	 Bz8YtOupu7h4Q==
+Date: Mon, 13 Jan 2025 11:45:52 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Will Deacon <will@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-perf-users@vger.kernel.org,
+	irogers@google.com, yeoreum.yun@arm.com, mark.rutland@arm.com,
+	namhyung@kernel.org, James Clark <james.clark@linaro.org>,
+	catalin.marinas@arm.com, kernel-team@android.com, robh@kernel.org,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	"Liang, Kan" <kan.liang@linux.intel.com>,
+	John Garry <john.g.garry@oracle.com>,
+	Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linux.dev>,
+	Graham Woodward <graham.woodward@arm.com>,
+	Michael Petlan <mpetlan@redhat.com>,
+	Veronika Molnarova <vmolnaro@redhat.com>,
+	Thomas Richter <tmricht@linux.ibm.com>,
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] perf: arm_spe: Add format option for discard mode
+Message-ID: <Z4UnIH8SXQC7kGXL@x1>
+References: <20250108142904.401139-1-james.clark@linaro.org>
+ <173652065683.3245172.11665292685923367751.b4-ty@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <173652065683.3245172.11665292685923367751.b4-ty@kernel.org>
 
- - Add test for creating link in another netns when a link of the same
-   name and ifindex exists in current netns.
- - Add test to verify that link is created in target netns directly -
-   no link new/del events should be generated in link netns or current
-   netns.
- - Add test cases to verify that link-netns is set as expected for
-   various drivers and combination of namespace-related parameters.
+On Fri, Jan 10, 2025 at 04:22:48PM +0000, Will Deacon wrote:
+> On Wed, 08 Jan 2025 14:28:55 +0000, James Clark wrote:
+> > Discard mode (Armv8.6) is a way to enable SPE related PMU events without
+> > the overhead of recording any data. Add a format option, tests and docs
+> > for it.
+> > 
+> > In theory we could make the driver drop calls to allocate the aux buffer
+> > when discard mode is enabled. This would give a small memory saving,
+> > but I think there is potential to interfere with any tools that don't
+> > expect this so I left the aux allocation untouched. Even old tools that
+> > don't know about discard mode will be able to use it because we publish
+> > the format option. Not allocating the aux buffer will have to be added
+> > to tools which I've done in Perf.
+> > 
+> > [...]
+> 
+> Applied driver and docs patches to will (for-next/perf), thanks!
 
-Signed-off-by: Xiao Liang <shaw.leon@gmail.com>
----
- tools/testing/selftests/net/Makefile      |   1 +
- tools/testing/selftests/net/config        |   5 +
- tools/testing/selftests/net/link_netns.py | 141 ++++++++++++++++++++++
- tools/testing/selftests/net/netns-name.sh |  10 ++
- 4 files changed, 157 insertions(+)
- create mode 100755 tools/testing/selftests/net/link_netns.py
+Picked the rest and added it to perf-tools-next,
 
-diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
-index 73ee88d6b043..df07a38f884f 100644
---- a/tools/testing/selftests/net/Makefile
-+++ b/tools/testing/selftests/net/Makefile
-@@ -35,6 +35,7 @@ TEST_PROGS += cmsg_so_mark.sh
- TEST_PROGS += cmsg_so_priority.sh
- TEST_PROGS += cmsg_time.sh cmsg_ipv6.sh
- TEST_PROGS += netns-name.sh
-+TEST_PROGS += link_netns.py
- TEST_PROGS += nl_netdev.py
- TEST_PROGS += srv6_end_dt46_l3vpn_test.sh
- TEST_PROGS += srv6_end_dt4_l3vpn_test.sh
-diff --git a/tools/testing/selftests/net/config b/tools/testing/selftests/net/config
-index 5b9baf708950..ab55270669ec 100644
---- a/tools/testing/selftests/net/config
-+++ b/tools/testing/selftests/net/config
-@@ -107,3 +107,8 @@ CONFIG_XFRM_INTERFACE=m
- CONFIG_XFRM_USER=m
- CONFIG_IP_NF_MATCH_RPFILTER=m
- CONFIG_IP6_NF_MATCH_RPFILTER=m
-+CONFIG_IPVLAN=m
-+CONFIG_CAN=m
-+CONFIG_CAN_DEV=m
-+CONFIG_CAN_VXCAN=m
-+CONFIG_NETKIT=y
-diff --git a/tools/testing/selftests/net/link_netns.py b/tools/testing/selftests/net/link_netns.py
-new file mode 100755
-index 000000000000..aab043c59d69
---- /dev/null
-+++ b/tools/testing/selftests/net/link_netns.py
-@@ -0,0 +1,141 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0
-+
-+import time
-+
-+from lib.py import ksft_run, ksft_exit, ksft_true
-+from lib.py import ip
-+from lib.py import NetNS, NetNSEnter
-+from lib.py import RtnlFamily
-+
-+
-+LINK_NETNSID = 100
-+
-+
-+def test_event() -> None:
-+    with NetNS() as ns1, NetNS() as ns2:
-+        with NetNSEnter(str(ns2)):
-+            rtnl = RtnlFamily()
-+
-+        rtnl.ntf_subscribe("rtnlgrp-link")
-+
-+        ip(f"netns set {ns2} {LINK_NETNSID}", ns=str(ns1))
-+        ip(f"link add netns {ns1} link-netnsid {LINK_NETNSID} dummy1 type dummy")
-+        ip(f"link add netns {ns1} dummy2 type dummy", ns=str(ns2))
-+
-+        ip("link del dummy1", ns=str(ns1))
-+        ip("link del dummy2", ns=str(ns1))
-+
-+        time.sleep(1)
-+        rtnl.check_ntf()
-+        ksft_true(rtnl.async_msg_queue.empty(),
-+                  "Received unexpected link notification")
-+
-+
-+def validate_link_netns(netns, ifname, link_netnsid) -> bool:
-+    link_info = ip(f"-d link show dev {ifname}", ns=netns, json=True)
-+    if not link_info:
-+        return False
-+    return link_info[0].get("link_netnsid") == link_netnsid
-+
-+
-+def test_link_net() -> None:
-+    configs = [
-+        # type, common args, type args, fallback to dev_net
-+        ("ipvlan", "link dummy1", "", False),
-+        ("macsec", "link dummy1", "", False),
-+        ("macvlan", "link dummy1", "", False),
-+        ("macvtap", "link dummy1", "", False),
-+        ("vlan", "link dummy1", "id 100", False),
-+        ("gre", "", "local 192.0.2.1", True),
-+        ("vti", "", "local 192.0.2.1", True),
-+        ("ipip", "", "local 192.0.2.1", True),
-+        ("ip6gre", "", "local 2001:db8::1", True),
-+        ("ip6tnl", "", "local 2001:db8::1", True),
-+        ("vti6", "", "local 2001:db8::1", True),
-+        ("sit", "", "local 192.0.2.1", True),
-+        ("xfrm", "", "if_id 1", True),
-+    ]
-+
-+    with NetNS() as ns1, NetNS() as ns2, NetNS() as ns3:
-+        net1, net2, net3 = str(ns1), str(ns2), str(ns3)
-+
-+        # prepare link netnsid  and a dummy link needed by certain drivers
-+        ip(f"netns set {net3} {LINK_NETNSID}", ns=str(net2))
-+        ip("link add dummy1 type dummy", ns=net3)
-+
-+        cases = [
-+            # source, "netns", "link-netns", expected link-netns
-+            (net3, None, None, None, None),
-+            (net3, net2, None, None, LINK_NETNSID),
-+            (net2, None, net3, LINK_NETNSID, LINK_NETNSID),
-+            (net1, net2, net3, LINK_NETNSID, LINK_NETNSID),
-+        ]
-+
-+        for src_net, netns, link_netns, exp1, exp2 in cases:
-+            tgt_net = netns or src_net
-+            for typ, cargs, targs, fb_dev_net in configs:
-+                cmd = "link add"
-+                if netns:
-+                    cmd += f" netns {netns}"
-+                if link_netns:
-+                    cmd += f" link-netns {link_netns}"
-+                cmd += f" {cargs} foo type {typ} {targs}"
-+                ip(cmd, ns=src_net)
-+                if fb_dev_net:
-+                    ksft_true(validate_link_netns(tgt_net, "foo", exp1),
-+                              f"{typ} link_netns validation failed")
-+                else:
-+                    ksft_true(validate_link_netns(tgt_net, "foo", exp2),
-+                              f"{typ} link_netns validation failed")
-+                ip(f"link del foo", ns=tgt_net)
-+
-+
-+def test_peer_net() -> None:
-+    types = [
-+        "vxcan",
-+        "netkit",
-+        "veth",
-+    ]
-+
-+    with NetNS() as ns1, NetNS() as ns2, NetNS() as ns3, NetNS() as ns4:
-+        net1, net2, net3, net4 = str(ns1), str(ns2), str(ns3), str(ns4)
-+
-+        ip(f"netns set {net3} {LINK_NETNSID}", ns=str(net2))
-+
-+        cases = [
-+            # source, "netns", "link-netns", "peer netns", expected
-+            (net1, None, None, None, None),
-+            (net1, net2, None, None, None),
-+            (net2, None, net3, None, LINK_NETNSID),
-+            (net1, net2, net3, None, None),
-+            (net2, None, None, net3, LINK_NETNSID),
-+            (net1, net2, None, net3, LINK_NETNSID),
-+            (net2, None, net2, net3, LINK_NETNSID),
-+            (net1, net2, net4, net3, LINK_NETNSID),
-+        ]
-+
-+        for src_net, netns, link_netns, peer_netns, exp in cases:
-+            tgt_net = netns or src_net
-+            for typ in types:
-+                cmd = "link add"
-+                if netns:
-+                    cmd += f" netns {netns}"
-+                if link_netns:
-+                    cmd += f" link-netns {link_netns}"
-+                cmd += f" foo type {typ}"
-+                if peer_netns:
-+                    cmd += f" peer netns {peer_netns}"
-+                ip(cmd, ns=src_net)
-+                ksft_true(validate_link_netns(tgt_net, "foo", exp),
-+                          f"{typ} peer_netns validation failed")
-+                ip(f"link del foo", ns=tgt_net)
-+
-+
-+def main() -> None:
-+    ksft_run([test_event, test_link_net, test_peer_net])
-+    ksft_exit()
-+
-+
-+if __name__ == "__main__":
-+    main()
-diff --git a/tools/testing/selftests/net/netns-name.sh b/tools/testing/selftests/net/netns-name.sh
-index 6974474c26f3..0be1905d1f2f 100755
---- a/tools/testing/selftests/net/netns-name.sh
-+++ b/tools/testing/selftests/net/netns-name.sh
-@@ -78,6 +78,16 @@ ip -netns $NS link show dev $ALT_NAME 2> /dev/null &&
-     fail "Can still find alt-name after move"
- ip -netns $test_ns link del $DEV || fail
+Thanks,
+
+- Arnaldo
  
-+#
-+# Test no conflict of the same name/ifindex in different netns
-+#
-+ip -netns $NS link add name $DEV index 100 type dummy || fail
-+ip -netns $NS link add netns $test_ns name $DEV index 100 type dummy ||
-+    fail "Can create in netns without moving"
-+ip -netns $test_ns link show dev $DEV >> /dev/null || fail "Device not found"
-+ip -netns $NS link del $DEV || fail
-+ip -netns $test_ns link del $DEV || fail
-+
- echo -ne "$(basename $0) \t\t\t\t"
- if [ $RET_CODE -eq 0 ]; then
-     echo "[  OK  ]"
--- 
-2.47.1
-
+> [1/5] perf: arm_spe: Add format option for discard mode
+>       https://git.kernel.org/will/c/d28d95bc63cb
+> [2/5] perf docs: arm_spe: Document new discard mode
+>       https://git.kernel.org/will/c/ba113ecad81a
+> 
+> Cheers,
+> -- 
+> Will
+> 
+> https://fixes.arm64.dev
+> https://next.arm64.dev
+> https://will.arm64.dev
 
