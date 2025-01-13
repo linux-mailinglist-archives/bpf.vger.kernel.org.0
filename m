@@ -1,59 +1,78 @@
-Return-Path: <bpf+bounces-48684-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48685-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ECBBA0B8BA
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 14:52:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90FA3A0B992
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 15:33:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62C8E188300D
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 13:52:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE33616276E
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 14:33:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03B4F235C1D;
-	Mon, 13 Jan 2025 13:52:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 767FC2451DB;
+	Mon, 13 Jan 2025 14:33:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="BQxT0AMO"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Pl9v3cKR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailtransmit05.runbox.com (mailtransmit05.runbox.com [185.226.149.38])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7114125B2;
-	Mon, 13 Jan 2025 13:52:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.38
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D8014D8CE
+	for <bpf@vger.kernel.org>; Mon, 13 Jan 2025 14:33:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736776344; cv=none; b=MrY8adHkjiKaPrh7uOooSZH6l9roYcelTZVU0Oz6ZdVeRsUqm1QKT1gTueCUP9NkAMg+UvSWD4uHaurMRK1oAzm6LcL2fej2cMxJdqozn2UDOjwEXzhL1u1OYeghBblxzr1WCiSrGZJqvWhDcF1W/Db0cdksso7LLaxIppiDnQI=
+	t=1736778832; cv=none; b=qm9Al6WnGdj1QabeeYYPGU0F8qcnOZEW1fto4M0/6I8cPwPi5PaLGtAHt7SvBwhXp61Ip7Cku31TC2tEyq34XH+IB0bOVSbmsRCapje+4uHiSchDtg+EOJfXhorVa3LmYScGSPIErg5I9vgyttXpb0KS131eixnzneLqI5IldEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736776344; c=relaxed/simple;
-	bh=9AbuImX+qUA5xUGc1nAF+CP836w8rcdl4nd/P5mYNKc=;
+	s=arc-20240116; t=1736778832; c=relaxed/simple;
+	bh=UI5UyGHuHx/kdjWc1ifSNCtnWW7AKfhnT+stQLJgjJ8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BsHSpdNxA85HsidK1EA5fV32dS1cgvVowM18DBmJxdMJkvyWQUh3c3UpeHYKWMgZ8si+TGr/uU6eTJkFnJSEgre/k72iTn/NagBTny39p4bvPY4/CWP45IMUN2DTZsQxJx6r3LJI4x+mCfmpG2WClzzglpdMDnl9zLxS/U4i9XU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=BQxT0AMO; arc=none smtp.client-ip=185.226.149.38
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
-Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
-	by mailtransmit05.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.93)
-	(envelope-from <mhal@rbox.co>)
-	id 1tXKrW-00E7vS-Nb; Mon, 13 Jan 2025 14:52:14 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-	s=selector2; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
-	bh=9/mNvCKWR3TaBBy6qMKu0clHap35DZ0yxeGdHeDIU+A=; b=BQxT0AMOkcYl2agGwxfQIklx5t
-	+UVjYUoTV345uqtF1mDnoA69p0ZoilmYpBzkKKvj5/HPPlE+qzxWjSAby3Xqnhv9jDfI9q31yYuub
-	kP7OZNP9NKRBx+ttcWU8Je0PyscOrPAl9zEHyz6U3ugP6mJH/F6i/wZL76LatX58KH4UgisKWd0Zx
-	1unwFlLzHRRvybI4JRkhmvXxMlUrPXZp0dDFf0kr+uUAR1Bmet8yDRWjN84onV0u6z5Cuvkef56o+
-	SF2T033rLm9SL932pDhMzky/K+C32AFv69sYKsCu+v2KNwSAkxOn8l0cf85p/IQvX1Nf3PueYdzTM
-	Yt1O7cuQ==;
-Received: from [10.9.9.73] (helo=submission02.runbox)
-	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
-	(envelope-from <mhal@rbox.co>)
-	id 1tXKrV-0004mn-8Z; Mon, 13 Jan 2025 14:52:13 +0100
-Received: by submission02.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.93)
-	id 1tXKrI-00EPet-Dj; Mon, 13 Jan 2025 14:52:00 +0100
-Message-ID: <903dd624-44e5-4792-8aac-0eaaf1e675c5@rbox.co>
-Date: Mon, 13 Jan 2025 14:51:58 +0100
+	 In-Reply-To:Content-Type; b=W/09buYanJtg5FARQyrzRZgHm28ju/AfDFeKuLWOUsTAr7lz3iYXqS9QaZwa0w/vsPtkfUTlam9nci/IunmEz5oar3GXU9/vebPc/zzeNi6K+uVBnGEx7XUna0J9QYUFfBuxHgdE4jECRSp5E7S4HWh1s8KaU2G42paMuzjv9JM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Pl9v3cKR; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4361b0ec57aso42091955e9.0
+        for <bpf@vger.kernel.org>; Mon, 13 Jan 2025 06:33:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1736778829; x=1737383629; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MqbC9h0hn607K4Ewdqlu+9qs+7+DikbnXyIiUIob8m8=;
+        b=Pl9v3cKR/Y9zStQ0pSc57YUmGwD+yPW8ate390qUQivSveNhc1Z2qyIqcrdje8VNxm
+         G2esWiHsHHKMHF5EGEfsIsfds4vmKxv8eth6Ef7wn8/LeW+ghaXr4qr1M+zaBAbjzsXd
+         nYMXC3vapiaCatwGIqBd+JLPMxgZZXky+/xTWjFmdV0smDpvCRYxHx+pcyIZa9cyfur1
+         Vibgq4xvvbooacmoBL/H6HgYnuiPl7NLW1nFvu2XMNasxYBuw80zGdamsIhQlhkPXKqa
+         n7yv6zMB4yO3EEJE7jof3jpA9k79fJeDrSRU2Rq7jsSGw6I6FzsFepuJDzn9AJpPlR88
+         XjEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736778829; x=1737383629;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MqbC9h0hn607K4Ewdqlu+9qs+7+DikbnXyIiUIob8m8=;
+        b=ZmJH0I4o6875go0i+ZSuhsBrCkY1k8Yk34om/pd0NyGwRD9Y6GOFY354l5gMSVY8MC
+         4CyyyL/Z+zt3XOikP0vXUoVaWuaDdtwvP2uOdS8mc+ElmS3CMoX7q4uFuHfb9yRt/KrN
+         tA/XNITY3HPdsMJQ2OajUSy8SYEajE3zX3OJ4XCjNRTZWX41hf+nCnYcoHyveabYh44x
+         AIvtqF5D5GjqQuzKwd3YVyxyeBORdcHtV/Eqg52+QAvm+kZqmKG2/Kkd5+wKxZt8Aqsg
+         k2W4tBS++D4UjhA2j6e9KESYw1Pi+8rnj8naQOKR0BhNRBodKyizQLO0WQIE+iMNuHGz
+         3UQA==
+X-Forwarded-Encrypted: i=1; AJvYcCVk9K97vj4wTiJJR8B905TfZOE+oXYqcZ+vqRm/64V55JLlOifzn9l3g85RYBuH8uqB/FY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzLmG4ypq0gLHn6QCbPDm/XB4BOnNYY1Vg7W4pQLi2+W1WksvFW
+	J9oq1FcefQLx4pH5kMaCj8o9aeHG5+bYCkqsvbA6xgj0KkzCqzu+mdLZU8x+a1w=
+X-Gm-Gg: ASbGnctONEvuIvyDFbi6EohUlcpGzlViDjJxro2JDNpAU1rh+eFjG1s83nS36hLnwiN
+	c27t/63MH2jXNXR1jFEBLJC9JBGJEA3tq5mvlJHapY0d0RNBuWHPGr2J97nZzuzzq0dH4mZOjZe
+	cGFxoknkxHj/7d4cNGBGa7yFXpLc5P3O8zr9cpMXcfALUM0VXUF/VSTDT7HZQlUQnpowhKureKR
+	4IRppp7hLmPrqHyDXYOudyZk+VHmXeICjYNqt3u1gUcgOAKqjEYT9FxdE+j63+/7Jep
+X-Google-Smtp-Source: AGHT+IH09rhSt7io4S7fN4A/EBvnW9x8LDmprwxYrp67xLY37+QhpKW/LvjLTHUaqq4ASbZ5AEkR2A==
+X-Received: by 2002:a05:600c:4511:b0:436:5165:f1ec with SMTP id 5b1f17b1804b1-436e271d428mr208866655e9.30.1736778828577;
+        Mon, 13 Jan 2025 06:33:48 -0800 (PST)
+Received: from [192.168.68.163] ([212.105.145.205])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-436e9e6263fsm149061365e9.39.2025.01.13.06.33.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Jan 2025 06:33:48 -0800 (PST)
+Message-ID: <5ea201e5-6ab7-4935-a8ce-20f67f3193c1@linaro.org>
+Date: Mon, 13 Jan 2025 14:33:46 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,108 +80,59 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2 1/5] vsock/virtio: discard packets if the transport
- changes
-To: Stefano Garzarella <sgarzare@redhat.com>
-Cc: netdev@vger.kernel.org, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- Luigi Leonardi <leonardi@redhat.com>, "David S. Miller"
- <davem@davemloft.net>, Wongi Lee <qwerty@theori.io>,
- =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
- "Michael S. Tsirkin" <mst@redhat.com>, Eric Dumazet <edumazet@google.com>,
- kvm@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
- Stefan Hajnoczi <stefanha@redhat.com>, Jason Wang <jasowang@redhat.com>,
- Simon Horman <horms@kernel.org>, Hyunwoo Kim <v4bel@theori.io>,
- Jakub Kicinski <kuba@kernel.org>, virtualization@lists.linux.dev,
- Bobby Eshleman <bobby.eshleman@bytedance.com>, stable@vger.kernel.org
-References: <20250110083511.30419-1-sgarzare@redhat.com>
- <20250110083511.30419-2-sgarzare@redhat.com>
- <1aa83abf-6baa-4cf1-a108-66b677bcfd93@rbox.co>
- <nedvcylhjxrkmkvgugsku2lpdjgjpo5exoke4o6clxcxh64s3i@jkjnvngazr5v>
- <CAGxU2F7BoMNi-z=SHsmCV5+99=CxHo4dxFeJnJ5=q9X=CM3QMA@mail.gmail.com>
- <cccb1a4f-5495-4db1-801e-eca211b757c3@rbox.co>
- <nzpj4hc6m4jlqhcwv6ngmozl3hcoxr6kehoia4dps7jytxf6df@iqglusiqrm5n>
-Content-Language: pl-PL, en-GB
-From: Michal Luczaj <mhal@rbox.co>
-In-Reply-To: <nzpj4hc6m4jlqhcwv6ngmozl3hcoxr6kehoia4dps7jytxf6df@iqglusiqrm5n>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v3 0/5] perf: arm_spe: Add format option for discard mode
+To: Will Deacon <will@kernel.org>, namhyung@kernel.org, acme@kernel.org
+Cc: catalin.marinas@arm.com, kernel-team@android.com, robh@kernel.org,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
+ "Liang, Kan" <kan.liang@linux.intel.com>,
+ John Garry <john.g.garry@oracle.com>, Mike Leach <mike.leach@linaro.org>,
+ Leo Yan <leo.yan@linux.dev>, Graham Woodward <graham.woodward@arm.com>,
+ Michael Petlan <mpetlan@redhat.com>, Veronika Molnarova
+ <vmolnaro@redhat.com>, Thomas Richter <tmricht@linux.ibm.com>,
+ Athira Rajeev <atrajeev@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-perf-users@vger.kernel.org, irogers@google.com, yeoreum.yun@arm.com,
+ mark.rutland@arm.com
+References: <20250108142904.401139-1-james.clark@linaro.org>
+ <173652065683.3245172.11665292685923367751.b4-ty@kernel.org>
+Content-Language: en-US
+From: James Clark <james.clark@linaro.org>
+In-Reply-To: <173652065683.3245172.11665292685923367751.b4-ty@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 1/13/25 12:05, Stefano Garzarella wrote:
-> On Mon, Jan 13, 2025 at 11:12:52AM +0100, Michal Luczaj wrote:
->> On 1/13/25 10:07, Stefano Garzarella wrote:
->>> On Mon, 13 Jan 2025 at 09:57, Stefano Garzarella <sgarzare@redhat.com> wrote:
->>>> On Sun, Jan 12, 2025 at 11:42:30PM +0100, Michal Luczaj wrote:
->>>
->>> [...]
->>>
->>>>>
->>>>> So, if I get this right:
->>>>> 1. vsock_create() (refcnt=1) calls vsock_insert_unbound() (refcnt=2)
->>>>> 2. transport->release() calls vsock_remove_bound() without checking if sk
->>>>>   was bound and moved to bound list (refcnt=1)
->>>>> 3. vsock_bind() assumes sk is in unbound list and before
->>>>>   __vsock_insert_bound(vsock_bound_sockets()) calls
->>>>>   __vsock_remove_bound() which does:
->>>>>      list_del_init(&vsk->bound_table); // nop
->>>>>      sock_put(&vsk->sk);               // refcnt=0
->>>>>
->>>>> The following fixes things for me. I'm just not certain that's the only
->>>>> place where transport destruction may lead to an unbound socket being
->>>>> removed from the unbound list.
->>>>>
->>>>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->>>>> index 7f7de6d88096..0fe807c8c052 100644
->>>>> --- a/net/vmw_vsock/virtio_transport_common.c
->>>>> +++ b/net/vmw_vsock/virtio_transport_common.c
->>>>> @@ -1303,7 +1303,8 @@ void virtio_transport_release(struct vsock_sock *vsk)
->>>>>
->>>>>       if (remove_sock) {
->>>>>               sock_set_flag(sk, SOCK_DONE);
->>>>> -              virtio_transport_remove_sock(vsk);
->>>>> +              if (vsock_addr_bound(&vsk->local_addr))
->>>>> +                      virtio_transport_remove_sock(vsk);
->>>>
->>>> I don't get this fix, virtio_transport_remove_sock() calls
->>>>    vsock_remove_sock()
->>>>      vsock_remove_bound()
->>>>        if (__vsock_in_bound_table(vsk))
->>>>            __vsock_remove_bound(vsk);
->>>>
->>>>
->>>> So, should already avoid this issue, no?
->>>
->>> I got it wrong, I see now what are you trying to do, but I don't think
->>> we should skip virtio_transport_remove_sock() entirely, it also purge
->>> the rx_queue.
+
+
+On 10/01/2025 4:22 pm, Will Deacon wrote:
+> On Wed, 08 Jan 2025 14:28:55 +0000, James Clark wrote:
+>> Discard mode (Armv8.6) is a way to enable SPE related PMU events without
+>> the overhead of recording any data. Add a format option, tests and docs
+>> for it.
 >>
->> Isn't rx_queue empty-by-definition in case of !__vsock_in_bound_table(vsk)?
+>> In theory we could make the driver drop calls to allocate the aux buffer
+>> when discard mode is enabled. This would give a small memory saving,
+>> but I think there is potential to interfere with any tools that don't
+>> expect this so I left the aux allocation untouched. Even old tools that
+>> don't know about discard mode will be able to use it because we publish
+>> the format option. Not allocating the aux buffer will have to be added
+>> to tools which I've done in Perf.
+>>
+>> [...]
 > 
-> It could be.
+> Applied driver and docs patches to will (for-next/perf), thanks!
 > 
-> But I see some other issues:
-> - we need to fix also in the other transports, since they do the same
-
-Ahh, yes, VMCI and Hyper-V would need that, too.
-
-> - we need to check delayed cancel work too that call 
->    virtio_transport_remove_sock()
-
-That's the "I'm just not certain" part. As with rx_queue, I though delayed
-cancel can only happen for a bound socket. So, per architecture, no need to
-deal with that here, right?
-
-> An alternative approach, which would perhaps allow us to avoid all this, 
-> is to re-insert the socket in the unbound list after calling release() 
-> when we deassign the transport.
+> [1/5] perf: arm_spe: Add format option for discard mode
+>        https://git.kernel.org/will/c/d28d95bc63cb
+> [2/5] perf docs: arm_spe: Document new discard mode
+>        https://git.kernel.org/will/c/ba113ecad81a
 > 
-> WDYT?
+> Cheers,
 
-If we can't keep the old state (sk_state, transport, etc) on failed
-re-connect() then reverting back to initial state sounds, uhh, like an
-option :) I'm not sure how well this aligns with (user's expectations of)
-good ol' socket API, but maybe that train has already left.
+Thanks Will. Arnaldo and Namhyung, are you ok to take the Perf changes now?
 
-Another possibility would be to simply brick the socket on failed (re)connect.
+Thanks
+James
 
 
