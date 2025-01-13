@@ -1,310 +1,152 @@
-Return-Path: <bpf+bounces-48716-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48717-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C043A0C4E2
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 23:51:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F65AA0C4FA
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 23:59:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54A6C1883793
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 22:51:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F02CF7A110D
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 22:59:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97C161F9A8A;
-	Mon, 13 Jan 2025 22:51:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB3891F9EBA;
+	Mon, 13 Jan 2025 22:59:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Kj7TseRX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BxAXjVFF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 653961BFE05
-	for <bpf@vger.kernel.org>; Mon, 13 Jan 2025 22:51:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F6F71F9A8E;
+	Mon, 13 Jan 2025 22:59:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736808686; cv=none; b=d63CqZvmPCqmZVwq0DwjzDqrilvWam+SUCpzoNoG7Kq/wbVvp15W+N+HU9C3z0rAOwCPVVg8/a6kUBx87CC6Zof/ZZdZb/wY5xtonHJ2se6ej2kpCj4Aq3EkR6YLBhevyKxbkoEhD95Zcds0qzkkb+0M/cfg6Y5g8lnAgTFzcJY=
+	t=1736809147; cv=none; b=jKAPX04P/G1T8k60IBF5HZCS36OUYGYeS7/Z32OWoz42rPmKMDZKl5v+aa2q3w2ZoWxSiIiPtX6P0lrQ1IAFJ2agC/Busju9ATWuLCZVw1N0gFELndF9AQuXrwNHJRH39Ybk15o7vIcqzOjsCkRLqrmTCbtSE7juYyyf5QzZkCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736808686; c=relaxed/simple;
-	bh=wKG2DcqZSnpLUKRoUJUZS4Xyzs50QvQ37fDpzoaMQT0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I6rFW3v9qhjx70Ay2ZMk168mraqfPVZ6OAO+6ds7QvYopXTwrtdXczIu6a3YYSxTZL6xBgfodIKxXGkPHu2DAAa0ompIr4z+edqa/UhDo1FyZQW7b9EBWtNY7PN6pEFbORFO4HfwIk0Y0wndDPt9AoYEuM+zQj/nMbPYh5hhOCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Kj7TseRX; arc=none smtp.client-ip=209.85.166.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-3a814c54742so15375ab.1
-        for <bpf@vger.kernel.org>; Mon, 13 Jan 2025 14:51:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1736808683; x=1737413483; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Mud/NLpIFFSGNqZ9NLEZIqQ+lfcjRPT0gc3XwEmzXrQ=;
-        b=Kj7TseRXFwSxaAUZBe/SDcfYvdRcljPXYfzSVZGDhyR6jkjZ4zNJSGNLd0SNDzxxqN
-         BUZbrF33K/rCl9u+bfZif/INKe4/ZqYlyJnYYBNzsAL0abCHXw2L3sm+EJSBpqJj4saL
-         UUaQltTBjLCa5K0f/hdSN5DohwkVPY0s1SRXg+CDJBTM0u1lCLyvfd4WXrI4q7jOA3KW
-         tvXJa/y7mQJKJd2iALKKcOKOCOL7UZDCtHr06ZSNDiVkrY7ZxIqhkC16vz3p99E4O5iP
-         bEjH5S/WE+V1fZ8PVQUzwplADBz2a+204Jn5328fsqLFAXtemRyNFlyH02GpXQ4yRY+K
-         4GvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736808683; x=1737413483;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Mud/NLpIFFSGNqZ9NLEZIqQ+lfcjRPT0gc3XwEmzXrQ=;
-        b=Daiwdy8OTuhjLVwcEDBtg9Frmksypq1cvZrSsXfvxwbH0lz4518fmmL8BUeUFG/oAf
-         Gig6QfIq3G3U5sY2TXh050pANMBUykZnTMl30ToXF+MzGNhkJV3PLUmni3tCxd020/S7
-         HbKrrmjFZuRFzwEnWwECojhfhUXNtzxaGVN65v9p+jY5C8DIOf+cmBC6V5O5ZPP/6D9h
-         3KQ434W0iKf7ZxWuBcpDgRp6E73PaJlz24XKApvMFFQWxooreXfqIBz2Pd3dU6nFUXM2
-         sKblILjAkySUheMCZ2Q6y3QxwY4Tx7xfqZ0N+3wO0B/Bb/80KlI8/GXlz60fYD5EzIQA
-         zxxA==
-X-Forwarded-Encrypted: i=1; AJvYcCUFoSbmNZvere+qHbMubd8PM1EVijQUAdA/Txdryv1CEXsI3oQgkF4KCF0gOA63Rn7KcY4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyTjNC2/EqjywNEilXMQpLqkFePj8vnOekpS9x2bT7i2lzTRZeN
-	xcZ29WI7lLU0MbSFTAEOu2yHhdtQ0bzXU8+gnuN04CAV8YZXhvDe3udFlnLhnjUD9dI/tpQvqcp
-	7KEliY0SRFqU60megN3aYRwlFJ16FUeQ8lZH+
-X-Gm-Gg: ASbGncu+skaCbBRUmPziTC7oOs1xwD0CDrkVhvxSHSvg4HZyDaktX2KmalQPZoVSXdv
-	rw8UnjvdUYs4ti0QInFq8SMu0pq6Mjrrrnmk58jMIn0OD6eD9WKg1+iS1R7MVjCiMSdS0pg==
-X-Google-Smtp-Source: AGHT+IFgMCkgiR9ufNTKatMbQpKINcTTjsfj6mOTK7cAoM96jzFzu5h84BeeOiSklgWl2iqQnPWciiFps2Bsk9fsKLY=
-X-Received: by 2002:a05:6e02:1a4c:b0:3a0:a459:8eca with SMTP id
- e9e14a558f8ab-3ce7ac56a98mr1010485ab.10.1736808683323; Mon, 13 Jan 2025
- 14:51:23 -0800 (PST)
+	s=arc-20240116; t=1736809147; c=relaxed/simple;
+	bh=n1oeyvHgtjf48GNwmyAUR0RM/+tJ12mmaPeKvDNvC7g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QuPxB3DwMj9z/HcaCi6dvRmNbPceBD1J/YblREgV2G5E45I/eGzb+OxLw/HyVSmLWr96H9fjFcCaU+wbVW0OCbfYmOU3911gWo2wgKVzE/2BcUmChHO1WC67rM4U1igY+OQ6YWu4nAo3wqKjIdbm5XteS/b+ql2bX6xBabStZkM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BxAXjVFF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D9E6C4CED6;
+	Mon, 13 Jan 2025 22:59:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736809146;
+	bh=n1oeyvHgtjf48GNwmyAUR0RM/+tJ12mmaPeKvDNvC7g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BxAXjVFFtgapVMyWqFQYJtaM4MjM0tbw6wKmn+XgfwlbqQ6jPsB+X/SMPGVa2ko9j
+	 CklKrIu3MjvLQNtceyTQpyiRkJv73BirjTlPmeuBc0dUXqe5EyoLn8IuztY8Irka68
+	 EiLU31oGONV2tbJERUANVagQ1i/owH2gYY7OJPDFG8PsYBl+BKzxrg2IaA7lYPIcJF
+	 e9ITlaxl8E8pdUYxv2Y7knrMKNAllvHOHaYgV+9MqvbSACPYlVNvrmrt1hStGZfFhH
+	 7bajJw04rwyhQ6ewVi5wU9Dwo0XR54KcyfNyRzbnkhLew3N25h1oN/0ENEd61VGpMt
+	 F0Hi06lcQsHoA==
+Date: Mon, 13 Jan 2025 16:59:05 -0600
+From: Rob Herring <robh@kernel.org>
+To: Frank Li <Frank.li@nxp.com>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>, robin.murphy@arm.com,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	imx@lists.linux.dev, alyssa@rosenzweig.io, bpf@vger.kernel.org,
+	broonie@kernel.org, jgg@ziepe.ca, joro@8bytes.org,
+	lgirdwood@gmail.com, maz@kernel.org, p.zabel@pengutronix.de,
+	will@kernel.org
+Subject: Re: [PATCH v8 2/2] PCI: imx6: Add IOMMU and ITS MSI support for
+ i.MX95
+Message-ID: <20250113225905.GA3325507-robh@kernel.org>
+References: <20241210-imx95_lut-v8-0-2e730b2e5fde@nxp.com>
+ <20241210-imx95_lut-v8-2-2e730b2e5fde@nxp.com>
+ <Z1sTUaoA5yk9RcIc@lpieralisi>
+ <Z1sdbH7N1Ly9eXc0@lizhi-Precision-Tower-5810>
+ <Z1v/LCHsGOgnasuf@lpieralisi>
+ <Z1xs6GkcdTg2c73F@lizhi-Precision-Tower-5810>
+ <Z2FDp1zQ7JzxQKJT@lpieralisi>
+ <Z2GdvpzT6MOygG4W@lizhi-Precision-Tower-5810>
+ <Z256NxZF/+jO2bkR@lpieralisi>
+ <Z31eaxD1h3Om3bHS@lizhi-Precision-Tower-5810>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250109222109.567031-1-irogers@google.com> <20250109222109.567031-5-irogers@google.com>
- <Z4F3qxFaYnMTtPw7@google.com> <CAP-5=fVYMK6tnKH0QU_RPUaogpsDmhmXn+=4P1uXg-moX2QMDw@mail.gmail.com>
- <Z4WNT_UX9eMD_txf@google.com>
-In-Reply-To: <Z4WNT_UX9eMD_txf@google.com>
-From: Ian Rogers <irogers@google.com>
-Date: Mon, 13 Jan 2025 14:51:11 -0800
-X-Gm-Features: AbW1kvbqW30NhOQaqj3o9EnapMdlfjm88aPqHrE2JMDnBMGggJMNHyB5FMWZnvo
-Message-ID: <CAP-5=fXxMmn31iep6tdvaUGzZccR+_D1L4RbjaNiRdEau2NZ9g@mail.gmail.com>
-Subject: Re: [PATCH v5 4/4] perf parse-events: Reapply "Prefer sysfs/JSON
- hardware events over legacy"
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	James Clark <james.clark@linaro.org>, Ze Gao <zegao2021@gmail.com>, 
-	Weilin Wang <weilin.wang@intel.com>, Dominique Martinet <asmadeus@codewreck.org>, 
-	Jean-Philippe Romain <jean-philippe.romain@foss.st.com>, Junhao He <hejunhao3@huawei.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, Aditya Bodkhe <Aditya.Bodkhe1@ibm.com>, 
-	Atish Patra <atishp@rivosinc.com>, Leo Yan <leo.yan@arm.com>, 
-	Beeman Strong <beeman@rivosinc.com>, Arnaldo Carvalho de Melo <acme@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z31eaxD1h3Om3bHS@lizhi-Precision-Tower-5810>
 
-On Mon, Jan 13, 2025 at 2:01=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-> On Fri, Jan 10, 2025 at 02:15:18PM -0800, Ian Rogers wrote:
-> > On Fri, Jan 10, 2025 at 11:40=E2=80=AFAM Namhyung Kim <namhyung@kernel.=
-org> wrote:
-> > >
-> > > On Thu, Jan 09, 2025 at 02:21:09PM -0800, Ian Rogers wrote:
-> > > > Originally posted and merged from:
-> > > > https://lore.kernel.org/r/20240416061533.921723-10-irogers@google.c=
-om
-> > > > This reverts commit 4f1b067359ac8364cdb7f9fda41085fa85789d0f althou=
-gh
-> > > > the patch is now smaller due to related fixes being applied in comm=
-it
-> > > > 22a4db3c3603 ("perf evsel: Add alternate_hw_config and use in
-> > > > evsel__match").
-> > > > The original commit message was:
+On Tue, Jan 07, 2025 at 12:03:39PM -0500, Frank Li wrote:
+> On Fri, Dec 27, 2024 at 10:58:15AM +0100, Lorenzo Pieralisi wrote:
+> > On Tue, Dec 17, 2024 at 10:50:22AM -0500, Frank Li wrote:
+> >
+> > [...]
+> >
+> > > > > > Right. Question: what happens if DT shows that there are SMMU and/or
+> > > > > > ITS bindings/mappings but the SMMU driver and ITS driver are either not
+> > > > > > enabled or have not probed ?
+> > > > >
+> > > > > It is little bit complex.
+> > > > > iommu:
+> > > > > Case 1:
+> > > > > 	iommu{
+> > > > > 		status = "disabled"
+> > > > > 	};
+> > > > >
+> > > > > 	PCI driver normal probed. if RID is in range of iommu-map, not
+> > > > > any functional impact and harmless.
+> > > > > 	If RID is out of range of iommu-map, "false alarm" will return.
+> > > > > enable PCI EP device failure, but actually it can work without IOMMU.
 > > > >
-> > > > It was requested that RISC-V be able to add events to the perf tool=
- so
-> > > > the PMU driver didn't need to map legacy events to config encodings=
-:
-> > > > https://lore.kernel.org/lkml/20240217005738.3744121-1-atishp@rivosi=
-nc.com/
-> > > >
-> > > > This change makes the priority of events specified without a PMU th=
-e
-> > > > same as those specified with a PMU, namely sysfs and JSON events ar=
-e
-> > > > checked first before using the legacy encoding.
+> > > > What does "false alarm" mean in practice ? PCI device enable fails
+> > > > but actually it should not ?
 > > >
-> > > I'm still not convinced why we need this change despite of these
-> > > troubles.  If it's because RISC-V cannot define the lagacy hardware
-> > > events in the kernel driver, why not using a different name in JSON a=
-nd
-> > > ask users to use the name specifically?  Something like:
-> > >
-> > >   $ perf record -e riscv-cycles ...
+> > > Yes, you are right. It should work without iommu. but return failure for
+> > > this case.
 > >
-> > So ARM and RISC-V are more than able to speak for themselves and have
-> > their tags on the series, but let's recap why I'm motivated to do this
-> > change:
+> > Rob, Robin, are you OK with this patch DT bindings usage (and the
+> > related dependencies described in Frank's reply) ?
 > >
-> > 1) perf supported legacy events;
-> > 2) perf supported sysfs and json events, but at a lower priority than
-> > legacy events;
-> > 3) hybrid support was added but in a way where all the hybrid PMUs
-> > needed to be known, assumptions about PMU were implicit and baked into
-> > the tool;
-> > 4) metric support for hybrid was going in a similar implicit direction
-> > and I objected, what would cycles mean in a metric if the core PMU was
->
-> If the legacy cycles event in a metric is a problem, can we change the
-> metric to be more specific?
->
->
-> > implicit? Rather than pursue this the hybrid code was overhauled, PMUs
-> > became more of a thing and we added a notion of a "core" PMU which
-> > would support legacy events;
-> > 5) ARM core PMUs differ in naming, etc. than just about every other
-> > platform. Their core events had been being programmed as if they were
-> > uncore events - ie without the legacy priority. Fixing hybrid, and
-> > fixing ARM PMUs to know they supported legacy events, broke perf on
-> > Apple-M? series due to a PMU driver issue with legacy events:
-> > https://lore.kernel.org/lkml/08f1f185-e259-4014-9ca4-6411d5c1bc65@marca=
-n.st/
-> > "Perf broke on all Apple ARM64 systems (tested almost everything), and
-> > according to maz also on Juno (so, probably all big.LITTLE) since
-> > v6.5."
-> > 6) sysfs/json events were made the priority over legacy to unbreak
-> > perf on Apple-M? CPUs, but only if the PMU is specified:
-> > https://lore.kernel.org/r/20231123042922.834425-1-irogers@google.com
-> >    Reported-by: Hector Martin <marcan@marcan.st>
-> >    Signed-off-by: Ian Rogers <irogers@google.com>
-> >    Tested-by: Hector Martin <marcan@marcan.st>
-> >    Tested-by: Marc Zyngier <maz@kernel.org>
-> >    Acked-by: Mark Rutland <mark.rutland@arm.com>
->
-> I think ARM/Apple-Mx is fine without this change, right?
->
+> > I am referring to "iommu-map" and "msi-map" usage, everything else
+> > is platform specific code.
 > >
-> > This gets us to the current code where I can trivially get an
-> > inconsistency. Here on Intel with no PMU in the event name:
-> > ```
-> > $ perf stat -vv -e cpu-cycles true
-> > Using CPUID GenuineIntel-6-8D-1
-> > Control descriptor is not initialized
-> > ------------------------------------------------------------
-> > perf_event_attr:
-> >   type                             0 (PERF_TYPE_HARDWARE)
-> >   size                             136
-> >   config                           0 (PERF_COUNT_HW_CPU_CYCLES)
-> >   sample_type                      IDENTIFIER
-> >   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNIN=
-G
-> >   disabled                         1
-> >   inherit                          1
-> >   enable_on_exec                   1
-> >   exclude_guest                    1
-> > ------------------------------------------------------------
-> > sys_perf_event_open: pid 752915  cpu -1  group_fd -1  flags 0x8 =3D 3
-> > cpu-cycles: -1: 1293076 273429 273429
-> > cpu-cycles: 1293076 273429 273429
-> >
-> >  Performance counter stats for 'true':
-> >
-> >          1,293,076      cpu-cycles
-> >
-> >        0.000809752 seconds time elapsed
-> >
-> >        0.000841000 seconds user
-> >        0.000000000 seconds sys
-> > ```
-> >
-> > Here with a PMU event name:
-> > ```
-> > $ sudo perf stat -vv -e cpu/cpu-cycles/ true
-> > Using CPUID GenuineIntel-6-8D-1
-> > Attempt to add: cpu/cpu-cycles=3D0/
-> > ..after resolving event: cpu/event=3D0x3c/
-> > Control descriptor is not initialized
-> > ------------------------------------------------------------
-> > perf_event_attr:
-> >   type                             4 (cpu)
-> >   size                             136
-> >   config                           0x3c (cpu-cycles)
-> >   sample_type                      IDENTIFIER
-> >   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNIN=
-G
-> >   disabled                         1
-> >   inherit                          1
-> >   enable_on_exec                   1
-> >   exclude_guest                    1
-> > ------------------------------------------------------------
-> > sys_perf_event_open: pid 752839  cpu -1  group_fd -1  flags 0x8 =3D 3
-> > cpu/cpu-cycles/: -1: 1421235 531150 531150
-> > cpu/cpu-cycles/: 1421235 531150 531150
-> >
-> >  Performance counter stats for 'true':
-> >
-> >          1,421,235      cpu/cpu-cycles/
-> >
-> >        0.001292908 seconds time elapsed
-> >
-> >        0.001340000 seconds user
-> >        0.000000000 seconds sys
-> > ```
-> >
-> > That is the no PMU event is opened as type=3D0/config=3D0 (legacy) whil=
-e
-> > the PMU event is opened as type=3D4/config=3D0x3c (sysfs encoding). Now
->
-> I'm not sure it's a problem.  I think it works as expected...?
->
->
-> > let's cross our fingers and hope that in the driver they are really
-> > the same thing. I take objection to the idea that there should be two
-> > different priorities for sysfs/json and legacy depending on whether a
-> > PMU is or isn't specified in the event name. The priority could be
-> > legacy then sysfs/json, or it could be sysfs/json then legacy, but it
-> > should be the same regardless of whether the PMU is put in the event
->
-> Well, I think having PMU name in the event is a big difference.  Legacy
-> events were there since Day 1, I guess it's natural to think that an
-> event without PMU name means a legacy event and others should come with
-> PMU names explicitly.
+> > It looks like things can break in multiple ways but I don't want
+> > to hold up this series forever.
+> 
+> Rob and Robin:
+> 
+> 	Let me simple summary situation. PCIe controler driver need config
+> "stream id" for each PCI endpoint devices for IOMMU and MSI.
+> 
+> 	So add callback for host bridge enable/disable an endpoint devices.
+> In callback function, call of_map_id("iommu-map" | "msi-map") to get
+> devices's "stream id" from pci's rid.  Then config hardware.
+> 
+> 	The limiation is, if smmu/its controller's "status" is disabled
+> and rid is out of the range of "iommu-map" and "msi-map". Enable device
+> will be fail although it should be success because "stream id" will not be
+> used at all at this case. The out of range of "iommu-map" and "msi-map" is
+> rare.
+> 
+> 	dwc common pci driver simple check "msi-map", which should be
+> another limition and not related this patch.
+> 
+> 	In many dwc platform (like qcom) need config "stream id" also. But
+> that direct parse "iommu-map" and "msi-map" by their drivers, which is not
+> prefered by Rob now when I try to upstream at v3
+> https://lore.kernel.org/imx/20240429150842.GC1709920-robh@kernel.org/
+> 
+> 	Rob: can you help check if this is correct direction?
 
-So then we're breaking the event names by inserting a PMU name in
-uniquify in the stat output:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/perf/util/stat-display.c?h=3Dperf-tools-next#n932
+My objection was only parsing the property yourself rather than using 
+existing functions. So it looks fine to me now. Though you might 
+consider if there is something to be shared with QCom driver.
 
-There was an explicit, and reviewed by Jiri and Arnaldo, intent with
-the hybrid work that using a legacy event with a hybrid PMU, even
-though the PMU doesn't advertise through json or sysfs the legacy
-event, the perf tool supports it.
-
-Making it so that events without PMUs are only legacy events just
-doesn't work. There are far too many existing uses of non-legacy
-events without PMU, the metrics contain 100s of examples.
-
-Prior to switching json/sysfs to being the priority when a PMU is
-specified, it was the case that all encodings were the same, with or
-without a PMU.
-
-I don't think there is anything natural about assuming things about
-event names. Take cycles, cpu-cycles and cpu_cycles:
- - cycles on x86 is only encoded via a legacy event;
- - cpu-cycles on Intel exists as a sysfs event, but cpu-cycles is also
-a legacy event name;
- - cpu_cycles exists as a sysfs event on ARM but doesn't have a
-corresponding legacy event name.
-
-The difference in meaning of an event name can be as subtle as the
-difference between a hyphen and an underscore. Given that we can't
-break everybody's `perf <command> -e <event name> ..` command name nor
-should we break all the metrics, I think the most intuitive thing is
-cycles behave the same with or without a PMU. For example, there may
-be differences in accuracy between a fixed and generic counter and the
-legacy event may only work with one counter because of this while the
-sysfs/json event uses all the counters, or vice versa. As explained,
-in output code the tool will or will not insert PMU names treating
-them as not mattering. Currently they do matter as the parsing will
-give different perf_event_attr and those can have differing kernel
-behaviors. This patch fixes this.
-
-Thanks,
-Ian
+Rob
 
