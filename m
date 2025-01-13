@@ -1,152 +1,167 @@
-Return-Path: <bpf+bounces-48707-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48708-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDCD5A0BEE8
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 18:31:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13F62A0BF5A
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 18:54:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD7DB3A1380
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 17:31:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32618163A6D
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 17:54:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 668521B6CE3;
-	Mon, 13 Jan 2025 17:31:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 315271C3BE1;
+	Mon, 13 Jan 2025 17:54:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e1bj167T"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z+MgmMYJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2B5190692;
-	Mon, 13 Jan 2025 17:31:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00D1E1C07ED
+	for <bpf@vger.kernel.org>; Mon, 13 Jan 2025 17:54:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736789497; cv=none; b=dOQVcziUoU/NsnormfCGs1uemIZZHOH+Sx3L/CspMSAzLMVBQWenvqc2ug7EaCDh7uMP96oQLARLV+pPCXzUN9nfu3LYK5rC3Jw11Ku0ImqTUDvIc1JjbTFDX2NpHgeEFr5urBOfGHckdzIW6PklMtkp8tiameh78dI3uQm1Hjo=
+	t=1736790867; cv=none; b=pA0XSqab/Z+X/8/obrv+q7i5Hl2/fAQguH+RLvK0p43nm/Rdibvqcz8FmfDkpQ2K9gKO3hw25jVBoYlfbrMruDGCQfDqq+Jv+tLvy0KZEfUktwQcSjkAwO3XMmT8oOIiyzm/J27bHkeT8u88HrLyRkaVxOpfGxIbhH7IJAUvmZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736789497; c=relaxed/simple;
-	bh=W7U+X60WBv3j+Yw7DI10/ECvBYx1n4vUUezoN4EQtEM=;
+	s=arc-20240116; t=1736790867; c=relaxed/simple;
+	bh=ZR1H3FVvLylxKFUPMqD5IFqZ24kqWlC9szB1isKyrdo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SzU3i7HF2HCVDdwdJc6uMxG4+pRfR2kth3e3lEX6c+PKlndypeqZNpE21qODdt4VxgIZK1PY7bFDCpgNkX1UI/p/He7pSzJ7PrwhWSj/Q67epDbHl1bS5tG7tQ1ZB16oYS1N7Z39NrFIu/Qpl/+KcXhB6tH895+in4f4/A8JC3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e1bj167T; arc=none smtp.client-ip=209.85.219.177
+	 To:Cc:Content-Type; b=Mxs24SVdTUMQRROXNfxpx1H8d+U7y0rvjpTQRVeIlEb+avFsGsF9OxUi7iONbpFmnOs7kc97IV94x1KUgszwHNgwUxmG5gU4ML5H6UOcetGBzpYEpIljKuIKXkzG8FGfN/weWns+1jmY1iGbXEQVtmn/JDbW9Z/i2DeE70HPGek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z+MgmMYJ; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-e545c1e8a15so6930998276.1;
-        Mon, 13 Jan 2025 09:31:35 -0800 (PST)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-386329da1d9so2420141f8f.1
+        for <bpf@vger.kernel.org>; Mon, 13 Jan 2025 09:54:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736789494; x=1737394294; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1736790864; x=1737395664; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lpBtrDCior8O34MzUqT/yqPqqHhYm723171PHTvnTNk=;
-        b=e1bj167TQ01lOyIvdp0zsDD5dCdhfLV9BBPj9BuC3NyDHIGh7Q4peX1a4/DLquq5Vf
-         HjW2LBSTjkYpfTdgfoMSV4RtdBO/B8PWQonS081gqaDSeFGctjUB/jFx8bl+W5ef0bAM
-         Mm7ITep5X1L+76gtxXLePqgJL5uo1bBPpZofHzPKYoyUIln/1Bowm5+iPdhA6jvF7qmg
-         TvR9DLpmQKBnw3lDkFcC4hQShBCD0R4aaznpx1sGxfxZH7X+bqthkanzTspMBLA3whoZ
-         GDFz38Bx5iYaf+gmd41t2oQRYqapwbhrZ4rTcKRQ/4RyE0z6/tRt35x/OZ7aZSI341Ht
-         1LtQ==
+        bh=ZR1H3FVvLylxKFUPMqD5IFqZ24kqWlC9szB1isKyrdo=;
+        b=Z+MgmMYJG391Bl/NaAqMUVKW6wpkxJLJ60px8pcSyvwZuAo7hxC8qd1tbll0nR8Vtd
+         dPGVfxbQm8FxyvOO3FET+BkAG7r+F7JV2h2V3cY6knWPlDY8I2iRKdVdSMuAG9PWPObd
+         8WgN3zwbFfq3OkJwFIy0pCEmdPuUD3GPQ/P3STbnB12c5DTjAnSYqt5fIbCp65qRcXEY
+         EQpteahAnnCsxODUCx0HALpiBiHwhwt4a/Fv4VKbx8Q/FVFHdrP9C3CkYir3EDoaVtig
+         bhQUky3AlkNpW6HxMpD4QGbLzOMLLFXYlE7Cw1IeGwzOgLZP7DFK/8b72ceKTgVQbGj/
+         2pLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736789494; x=1737394294;
+        d=1e100.net; s=20230601; t=1736790864; x=1737395664;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lpBtrDCior8O34MzUqT/yqPqqHhYm723171PHTvnTNk=;
-        b=rM19xV/ozeyfwMqk8VYK0ElkSeanOQzm0OqcRbk/W3JA2uE1/b+LxY/18kmMZrPkzb
-         X5605fQG+eJ221NUDEmVmsTwUYGZH0rx+pOY1e/1618UARd6F7bzJDJYqBMBlp5hndbM
-         ccVp7PY8kRQEEoQdK+suxMZzmpDonuYfQUysRFawIXmd14vF2cPEcrGECed8gDyJWJIs
-         W4MP6UGCMB5AmLzNTqaU8t9FgWrdTCNHK53pB8FRiQIsdq5WeBmK1jit/vbwVP1CGX/O
-         nNRcCQD6naq5UV+dovtoLQxwFjRgl1lA17C6wLCfgUjGk4AGfNqBR6vFB/xXBW9ravnT
-         fNng==
-X-Forwarded-Encrypted: i=1; AJvYcCWumvVYmU266uJOrN0Ox+HihhjrQh6W8v6WYZRXO98G2t8MWF/grrzQMWt43ihHSNdsvlk=@vger.kernel.org, AJvYcCXnffiecuFoQPCRna/EiZ3JZI/NWzlW1gM26/fsg20zUpfeIaRdkMcjQfRw2ibBX2OECbwY9abXz8Ga4z8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzueyj0zt8aKfDDQODdBsfm09iMNNy75iDcRJ2Rf/SZMxnXe3jL
-	ejVLpMmcY9lxpQqtozqSiLg6BS29JAcszwDnZffHkRFKVgxwVsZ4jls/Sd8YlQ5SuWAmnvc8F7F
-	8h5+YKs9DpIwaMnDwtWf3ZHmPUwA=
-X-Gm-Gg: ASbGncuZNPKOYw+VFz1F6rzKe/gxFtYn8ZIe5FQL32l+Ankcten6xwI8WMoyDM+KcKE
-	PZgry4DCyzrFSiH4OP2nloiMvXiV2+8mNEEMJyBs=
-X-Google-Smtp-Source: AGHT+IGIYqrqJhbpEwAM5/MQ91bcPCmKZWFG0YoEFTypIrbLLyMAsNZInZc1ueMG8J/fuioNF/gFOXOTG4k8lQAjtnk=
-X-Received: by 2002:a05:6902:18d5:b0:e57:4a0d:4716 with SMTP id
- 3f1490d57ef6-e574a0d488amr4980639276.38.1736789492541; Mon, 13 Jan 2025
- 09:31:32 -0800 (PST)
+        bh=ZR1H3FVvLylxKFUPMqD5IFqZ24kqWlC9szB1isKyrdo=;
+        b=edk/mG6FWYHIScUFesAmuzAyRC2BlWyb4wqZj0Phv04uhIRgJuF3cfdFupzJzHo8t6
+         Lt7DUCXEzU9YY4MC2K4bux3FCuokud6yAHfGfDjBNpWDcRcuZDKyYo0G4ae+OUM8ZIsU
+         trdyON/5onnNiTvY4ynS3F0qP8omMygk5rXO2r7BSa5PlwS7JbpPVRT2ieHbxSOauP2w
+         nWLgf1ONvJx7u1MoCEQYwkHmes1IkktPtJmzJ6iAlbOVxXXCZayb5fKGar2sHLvG+AdR
+         V1xLU1GIT3z83edqEOLaQxgXKhTgbwvawG8TVbEwLpHtt/LXbjHzs0e3OO61yOIN7F02
+         3NoQ==
+X-Gm-Message-State: AOJu0YxaRQLijIRKPg0TdoqoQFBu7eX83B+fAWRxcK2QuzGZGWDF38GM
+	LseXw5Mkk/1KZ6OzoRnp5FLnpnEaSdp2uDWbYaAODQXqkmRk/00VBzhC/8VGHOg7FdrQw6T1nVi
+	LnScdhf8U1q0pCIQK6wKekPvWz1w=
+X-Gm-Gg: ASbGncuAKC/d4GwTIarL7y6uZ992SYRs67CqDeksEH8reGW0q1fy+EjaqSIO/rFAxto
+	5AKcwn/q2jqglecog04GURZ1MVlaQrozpF1/R77MGmgA4hPXqsU4cbg==
+X-Google-Smtp-Source: AGHT+IHbmAjj/hL+O10Bi62kDdj3bXN60tGSwzX4ZjBTYtSykt1864nSJjYCHbM5HInekGu4u6NfqI4e0b/fFHo4UaM=
+X-Received: by 2002:a05:6000:2ce:b0:38a:6807:f86 with SMTP id
+ ffacd0b85a97d-38a872da793mr18159978f8f.17.1736790863997; Mon, 13 Jan 2025
+ 09:54:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJHDoJac2Qa6QjhDFi7YZf0D05=Svc13ZQyX=92KsM7pkkVbJA@mail.gmail.com>
- <CAPhsuW7+ORExwn5fkRykEmEp-wm0YE788Tkd39rK5cZ-Q3dfUw@mail.gmail.com>
- <CAJHDoJYESDzDf9KJgfSfGGit6JPyxtf3miNbnM7BzNfjOi7CQw@mail.gmail.com>
- <CAPhsuW6W=08Vf=W6GZ9DCzwu4wq_AgNOayo50vxvqFMr9CcDcg@mail.gmail.com> <677c56994576b_f58f29445@dwillia2-xfh.jf.intel.com.notmuch>
-In-Reply-To: <677c56994576b_f58f29445@dwillia2-xfh.jf.intel.com.notmuch>
-From: Vishnu ks <ksvishnu56@gmail.com>
-Date: Mon, 13 Jan 2025 23:01:30 +0530
-X-Gm-Features: AbW1kvY3SmWXc2HmqTHOHcCdiV_aRXeOTyMqdUtAYuxzDS2HNXhoSW9rgdWo-9g
-Message-ID: <CAJHDoJZ5rFhgu-R_N6e82bqkY43S-sXKVs2khnnnZrqJH1vcHw@mail.gmail.com>
-Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC] Improving Block Layer Tracepoints for
- Next-Generation Backup Systems
-To: Dan Williams <dan.j.williams@intel.com>
-Cc: Song Liu via Lsf-pc <lsf-pc@lists.linux-foundation.org>, hch@infradead.org, 
-	yanjun.zhu@linux.dev, linux-block@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-nvme@lists.infradead.org
+References: <20250109214617.485144-1-bboscaccy@linux.microsoft.com>
+ <CAADnVQLxgD_7GYWZZ49aY2LqVYOy4uGvK2ikm7MJ1Cj60VPNaw@mail.gmail.com> <87ikqm45da.fsf@microsoft.com>
+In-Reply-To: <87ikqm45da.fsf@microsoft.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 13 Jan 2025 09:54:13 -0800
+X-Gm-Features: AbW1kvY2N2lDBotCjjAeL_uOwWyCkEtsday_o0mo8SZiBmsxlnE5_szClbxOczI
+Message-ID: <CAADnVQLYeV8-nJ-=_4p8U=xax99-i5QavJrQ=hnKS0EK1ZjecA@mail.gmail.com>
+Subject: Re: [POC][RFC][PATCH] bpf: in-kernel bpf relocations on raw elf files
+To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+Cc: bpf <bpf@vger.kernel.org>, nkapron@google.com, 
+	Matteo Croce <teknoraver@meta.com>, Roberto Sassu <roberto.sassu@huawei.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Paul Moore <paul@paul-moore.com>, code@tyhicks.com, 
+	Francis Laniel <flaniel@linux.microsoft.com>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Thanks everyone for the detailed technical feedback and clarifications
-- they've been extremely valuable in understanding the fundamental
-challenges and existing solutions.
-
-I appreciate the points about md-cluster and DRBD's network RAID
-capabilities. While these are robust solutions for network-based
-replication, I'm particularly interested in the point-in-time recovery
-capability for scenarios like ransomware recovery, where being able to
-roll back to a specific point before encryption occurred would be
-valuable.
-
-Regarding blk_filter - I've been exploring it since it was mentioned,
-and it indeed seems to be the right approach for what we're trying to
-achieve. However, I've found that many of our current requirements can
-actually be implemented using eBPF without additional kernel modules.
-I plan to create a detailed demonstration video to share my findings
-with this thread. Additionally, I'll be cleaning up and open-sourcing
-our replicator utility implementation for community feedback.
-
-I would very much like to attend the LSF/MM/BPF summit to discuss
-these ideas in person and learn more about blk_filter and proper block
-layer fundamentals. Would it be possible for someone to help me with
-an invitation?
-
-Thanks again to everyone who took the time to explain the intricacies
-of write caching, sector tracking limitations, and data persistence
-guarantees. This discussion has been incredibly educational.
-
-Thanks and regards,
-Vishnu KS
-
-On Tue, 7 Jan 2025 at 03:48, Dan Williams <dan.j.williams@intel.com> wrote:
+On Fri, Jan 10, 2025 at 3:27=E2=80=AFPM Blaise Boscaccy
+<bboscaccy@linux.microsoft.com> wrote:
 >
-> Song Liu via Lsf-pc wrote:
-> > On Sat, Jan 4, 2025 at 9:52=E2=80=AFAM Vishnu ks <ksvishnu56@gmail.com>=
- wrote:
-> > >
-> > [...]
-> > >
-> > > @Song: Our approach fundamentally differs from md/raid in several way=
-s:
-> > >
-> > > 1. Network-based vs Local:
-> > >    - Our system operates over network, allowing replication across
-> > > geographically distributed systems
-> > >    - md/raid works only with locally attached storage devices
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>
+> > On Thu, Jan 9, 2025 at 1:47=E2=80=AFPM Blaise Boscaccy
+> > <bboscaccy@linux.microsoft.com> wrote:
+> >>
+> >>
+> >> This is a proof-of-concept, based off of bpf-next-6.13. The
+> >> implementation will need additional work. The goal of this prototype w=
+as
+> >> to be able load raw elf object files directly into the kernel and have
+> >> the kernel perform all the necessary instruction rewriting and
+> >> relocation calculations. Having a file descriptor tied to a bpf progra=
+m
+> >> allowed us to have tighter integration with the existing LSM
+> >> infrastructure. Additionally, it opens the door for signature and prov=
+enance
+> >> checking, along with loading programs without a functioning userspace.
+> >>
+> >> The main goal of this RFC is to get some feedback on the overall
+> >> approach and feasibility of this design.
 > >
-> > md-cluster (https://docs.kernel.org/driver-api/md/md-cluster.html)
-> > does support RAID in a cluster.
+> > It's not feasible.
+> >
+> > libbpf.a is mainly a loader of bpf ELF files.
+> > There is a specific format of ELF files, a convention on section names,
+> > a protocol between LLVM and libbpf, etc.
+> > These things are stable api from libbpf 1.x pov.
+> > There is a chance that they will change in libbpf 2.x.
+> > There are no plans to do so now, but because it's all user space
+> > there is room for changes.
+> > The kernel doesn't have such luxury.
+> > Hence we cannot copy paste libbpf into the kernel and make
+> > it parse the same ELF data, since it will force us to support
+> > this exact format forever.
+> > Hence the design is not feasible.
+> >
 >
-> Also,
+> Noted.
 >
-> https://docs.kernel.org/admin-guide/blockdev/drbd/index.html
+> > This was discussed multiple times on the list and at LSFMMBPF, LPC
+> > conferences over the years.
+> >
+> > But if the real goal of these patches to:
+> >
+> >> open the door for signature and provenance
+> >> checking, along with loading programs without a functioning userspace.
+> >
+> > then please take a look at the light skeleton.
+> > There is an existing mechanism to load bpf ELF files without libbpf
+> > and without user space.
+> > Search for 'bpftool gen skeleton -L'.
+>
+> Our goal is to have verifiable ebpf programs that are portable across
+> multiple kernels. I looked into light skels, it appears that all the
+> instruction relocations are calculated during skeleton generation and a
+> static instruction buffer containing those fixed relocation results is
+> passed into the kernel? For some relocs, those values would be
+> deterministic, making that a non-issue. For others that rely on btf data
+> or kernel symbols those might not be portable anymore.
 
---=20
-Vishnu KS,
-Opensource contributor and researcher,
-https://iamvishnuks.com
+Specifically?
+lskel preservers CORE. BTF based relocations are done by the kernel.
+
+> Would it be amenable to possibly alter the light skeleton generation
+> code to pass btf and some other metadata into the kernel along with
+> instructions or are you trying to avoid any sort of fixed dependencies
+> on anything in the kernel other than the bpf instrucion set itself?
+
+BTF is passed in the lskel.
+There are few relocation-like things that lskel doesn't support.
+One example is __kconfig, but so far there was no request to support that.
+This can be added when needs arise.
 
