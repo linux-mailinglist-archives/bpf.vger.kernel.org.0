@@ -1,139 +1,208 @@
-Return-Path: <bpf+bounces-48699-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48700-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 691D6A0BADA
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 16:02:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2392BA0BB28
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 16:07:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BFE017A37CA
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 15:00:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A92C1881B88
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 15:05:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60B7F22A4E7;
-	Mon, 13 Jan 2025 14:55:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BABDD1FBBD6;
+	Mon, 13 Jan 2025 15:01:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ljKxA0aF"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="akmVpkH2"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0D88229808;
-	Mon, 13 Jan 2025 14:55:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A1251FBBC9
+	for <bpf@vger.kernel.org>; Mon, 13 Jan 2025 15:01:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736780105; cv=none; b=C0hOxr8sKPc2fpBjFwWsGxhoAaupK4JTV2+EFQxjjEJfb2QhvDYIL7RrkmmrPu/nRR2psZZ+Y1kif1N+YtkeRr+BgDtL4HNaxiCyzDT9ag6F9wH1/UOizyAWoFYB+oExRJP6dfy8EcOrYZop8hWuZ8JIP6s17+CcKWAew6Supgs=
+	t=1736780496; cv=none; b=bLPEp7XafRCEBJZ4D7rtkDyrgFLtXsLMKtmZMWPoLwESKIz7efda08YRJ2B8QmXOelh/WU/IfY0EhHX2ROoHsiZDUy5vNBDePMHjL7nLNVhV/0VbJNZEHvzR1Z4AetMLqBlEfTTLRAafCPn0Ve58QxsAI0hsTcC1QiW7EBWYKEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736780105; c=relaxed/simple;
-	bh=rMXm59SPTsrymD3C2yxFqEbLQ1YAvMyEOn3UiB05slc=;
+	s=arc-20240116; t=1736780496; c=relaxed/simple;
+	bh=kRR1+QzVmvo3iRgs0Rx+6BPBHxGoHd17FoeRkxQMy60=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CFyompBHsOUSwU1TUrXceIB8Rs65E5ZOi/vwU7ovAGIZ3O1IN1lmt6Dgm2R3AW9KP3YRsg5eSxfQq2XY/zxaFVG+jWdst7fo6bcAKBSP4h0MWeuqfOQ4Vc+NGpyMT7zdFGNK7pLrTd+f5v7cY0Ac6HYSrDoBHsCw5e5D+iCttfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ljKxA0aF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADB7AC4CEE2;
-	Mon, 13 Jan 2025 14:55:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736780105;
-	bh=rMXm59SPTsrymD3C2yxFqEbLQ1YAvMyEOn3UiB05slc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ljKxA0aFAxh2ONCcjbhbD784GF9s1PYXJEEhRvReBgZEd6mDOgNWpdwwkyWfeJtFD
-	 ms5xEGQtINBAIYgUytnrPynqhAUDRqfv74ujLH6UCshPh2cTPoJ8hPIZXvR3svIiA7
-	 o7F2SGfoA9kSXA0z25eLW/4YvTTMEneP+GangqZLdQgRreaEQhitpVt0fc/v6k9WRZ
-	 cHiPMwk4/ZkoSkgvizHC3Z1Z7DkSrh/HkjwDNIqWHODpNSrreAduK5Y/WeqkUAORaC
-	 kmspZTxOCvVnKX0NexSwAos/8QKdXhniXRbJetXIy518kJYNu8Z9wNyrPdc2P/rmCr
-	 sNZbLt631SwvQ==
-Date: Mon, 13 Jan 2025 11:55:02 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
-	Christian Brauner <brauner@kernel.org>, Guo Ren <guoren@kernel.org>,
-	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>,
-	James Clark <james.clark@linaro.org>,
-	Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linux.dev>,
-	Jonathan Corbet <corbet@lwn.net>, Arnd Bergmann <arnd@arndb.de>,
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-	linux-csky@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v6 00/16] perf tools: Use generic syscall scripts for all
- archs
-Message-ID: <Z4UpRqywqYPZSUM_@x1>
-References: <20250108-perf_syscalltbl-v6-0-7543b5293098@rivosinc.com>
- <Z3_ybwWW3QZvJ4V6@x1>
- <Z4AoFA974kauIJ9T@ghost>
- <Z4A2Y269Ffo0ERkS@x1>
- <Z4BEygdXmofWBr0-@x1>
- <Z4BVK3D7sN-XYg2o@ghost>
- <Z4F1dXQLPGZ3JFI5@ghost>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dc+Oe+QpqWa1mrjhuUfMYt/iNGQJ+iNRqQhvm6YGxy+KgedocKXaG6Pc4/0A4IresJm6H1WhrjkYGm41x9LwM93J6bzOs6TdHxCVgBiD9mS9BaY3RsWO9hpi3vy+JjfDTzqK8bh9tlIbL6q9pn8oSYLftmXwmHEIoXMknRdKttk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=akmVpkH2; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1736780492;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3yf80rtmCXKEEVXHQYDbWk5EecSmCyvTI8cS1zfM35E=;
+	b=akmVpkH2K8LXHcjOuib/3koNkJiQmjjlbI2PpV9i2ZHNCgRRhqLsQNh1V28ejcIGDwXhib
+	2fcDFGFt/H2TURuEWzakYYGONrA/vP9JVK3OyobGBuN0B4c3Lj5IT5cc+wV2jLsmjRLBA7
+	8MBdMwqqgHDALYJjqXpGsVIIyo8tyH4=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-478-tDNWiSr0P6esrw-vBXIZSQ-1; Mon, 13 Jan 2025 10:01:31 -0500
+X-MC-Unique: tDNWiSr0P6esrw-vBXIZSQ-1
+X-Mimecast-MFC-AGG-ID: tDNWiSr0P6esrw-vBXIZSQ
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-7b6e7f07332so657931685a.1
+        for <bpf@vger.kernel.org>; Mon, 13 Jan 2025 07:01:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736780490; x=1737385290;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3yf80rtmCXKEEVXHQYDbWk5EecSmCyvTI8cS1zfM35E=;
+        b=oXqcdaPIPSDLdzTUulJ/WgvDN3jCsq3YipBLubjXmNvHhyfG5tCQSj3kYo2PFW5uQw
+         xNV7slMzlp2rp2gBlqHcGphDtAdJEQfNSZ14OFz1NaVeJC0SCGpZgzS1rJ65zqWVQz8V
+         tReb7hctzUbI/w+wo+rU6uhDWFdYYD6xH+k3j26ZuCWd+xpysCW2grc7+ag5mp7v+wr4
+         g6eI+FF0ND8t2wPRcDdUnYbRTB4XYBIAHn5TElyL7kxO4QDitYEE+TE5F9ma0Qxar28R
+         WN6BGbzwN+7vZ71qUI78HEfG+nLVED6yiaQLHKW8KDDvHHUKBuYQeSCsLCH4eqN3MTg9
+         qlVA==
+X-Forwarded-Encrypted: i=1; AJvYcCUZ61pQvovTL2SJBLsR5LNyRhTLwGDA3js7p5wwWt35rQhlSrwJ/9Bau3+oCahxWurpJn4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx0GqbZa3LuCAsl6G7fNcp1fRyuAOmi/EUwOOLhFKzhizSb7u12
+	fa9K3DkL0K25apEgCrR63nLcUXJXQinRsPiHYc8RmW24Fs9N3qa2ZqSi9LwfqQorSnKBWvb+6XV
+	EEkSOmkNnRIC39tQQYdTE1bvnJKKM2JpjWxgcv7dYX9AJ4kGhkg==
+X-Gm-Gg: ASbGnctVmn/nkZcYEwpIgiMEohNL5lRuIAuKQrXfswhuvzg2hWjd7/zvXkKiBIlpbNt
+	rO1Frum4SUOCGOjFtqyZXHfSVVzOOCI0O4g28Mig0mpDkoYCL7kLI2vlN+oNHaHghKTUwNaJMEe
+	4AhNfalqU6/ZbNn622a2yrZiU+JgjQhj4agvs8/wnRijZ915KCK60MpquRFbtmdFYaiZ2xGX8Uv
+	uDfjuMC97e2jsZNZlpTKiotYek8FNG6/oL3+BuRGW3ld9opprTw2oGV1ETjN6FsmpH2kSXRIEvT
+	8wVYaF/Dsn0NIkNFbQvrhUyNyXhoVoA6
+X-Received: by 2002:a05:620a:3726:b0:7b1:880c:5805 with SMTP id af79cd13be357-7bcd9759b5cmr3148822085a.45.1736780490415;
+        Mon, 13 Jan 2025 07:01:30 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGmhCA+6joXrA0wKVaaHTe7fd/trt2RKjBSiBo73zD2W/+WWXHhQD1dIWKITENXxjV/Gx6S4g==
+X-Received: by 2002:a05:620a:3726:b0:7b1:880c:5805 with SMTP id af79cd13be357-7bcd9759b5cmr3148813685a.45.1736780489785;
+        Mon, 13 Jan 2025 07:01:29 -0800 (PST)
+Received: from sgarzare-redhat (host-82-53-134-100.retail.telecomitalia.it. [82.53.134.100])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7bce35042eesm496383085a.86.2025.01.13.07.01.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jan 2025 07:01:29 -0800 (PST)
+Date: Mon, 13 Jan 2025 16:01:19 +0100
+From: Stefano Garzarella <sgarzare@redhat.com>
+To: Michal Luczaj <mhal@rbox.co>
+Cc: netdev@vger.kernel.org, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Luigi Leonardi <leonardi@redhat.com>, "David S. Miller" <davem@davemloft.net>, 
+	Wongi Lee <qwerty@theori.io>, Eugenio =?utf-8?B?UMOpcmV6?= <eperezma@redhat.com>, 
+	"Michael S. Tsirkin" <mst@redhat.com>, Eric Dumazet <edumazet@google.com>, kvm@vger.kernel.org, 
+	Paolo Abeni <pabeni@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, 
+	Jason Wang <jasowang@redhat.com>, Simon Horman <horms@kernel.org>, Hyunwoo Kim <v4bel@theori.io>, 
+	Jakub Kicinski <kuba@kernel.org>, virtualization@lists.linux.dev, 
+	Bobby Eshleman <bobby.eshleman@bytedance.com>, stable@vger.kernel.org
+Subject: Re: [PATCH net v2 1/5] vsock/virtio: discard packets if the
+ transport changes
+Message-ID: <5nkibw33isxiw57jmoaadizo3m2p76ve6zioumlu2z2nh5lwck@xodwiv56zrou>
+References: <20250110083511.30419-1-sgarzare@redhat.com>
+ <20250110083511.30419-2-sgarzare@redhat.com>
+ <1aa83abf-6baa-4cf1-a108-66b677bcfd93@rbox.co>
+ <nedvcylhjxrkmkvgugsku2lpdjgjpo5exoke4o6clxcxh64s3i@jkjnvngazr5v>
+ <CAGxU2F7BoMNi-z=SHsmCV5+99=CxHo4dxFeJnJ5=q9X=CM3QMA@mail.gmail.com>
+ <cccb1a4f-5495-4db1-801e-eca211b757c3@rbox.co>
+ <nzpj4hc6m4jlqhcwv6ngmozl3hcoxr6kehoia4dps7jytxf6df@iqglusiqrm5n>
+ <903dd624-44e5-4792-8aac-0eaaf1e675c5@rbox.co>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <Z4F1dXQLPGZ3JFI5@ghost>
+In-Reply-To: <903dd624-44e5-4792-8aac-0eaaf1e675c5@rbox.co>
 
-On Fri, Jan 10, 2025 at 11:31:01AM -0800, Charlie Jenkins wrote:
-> On Thu, Jan 09, 2025 at 03:00:59PM -0800, Charlie Jenkins wrote:
-> > Ooh okay I see, the quiet commands were being ignored as-is. We could
-> > add the lines to handle this to Makefile.syscalls, but I think the
-> > better solution is to move the lines from Makefile.build to
-> > Makefile.perf to be more generically available. Here is a patch for
-> > that. I also added the comment from the kernel Makefile describing what
-> > this does.
+On Mon, Jan 13, 2025 at 02:51:58PM +0100, Michal Luczaj wrote:
+>On 1/13/25 12:05, Stefano Garzarella wrote:
+>> On Mon, Jan 13, 2025 at 11:12:52AM +0100, Michal Luczaj wrote:
+>>> On 1/13/25 10:07, Stefano Garzarella wrote:
+>>>> On Mon, 13 Jan 2025 at 09:57, Stefano Garzarella <sgarzare@redhat.com> wrote:
+>>>>> On Sun, Jan 12, 2025 at 11:42:30PM +0100, Michal Luczaj wrote:
+>>>>
+>>>> [...]
+>>>>
+>>>>>>
+>>>>>> So, if I get this right:
+>>>>>> 1. vsock_create() (refcnt=1) calls vsock_insert_unbound() (refcnt=2)
+>>>>>> 2. transport->release() calls vsock_remove_bound() without checking if sk
+>>>>>>   was bound and moved to bound list (refcnt=1)
+>>>>>> 3. vsock_bind() assumes sk is in unbound list and before
+>>>>>>   __vsock_insert_bound(vsock_bound_sockets()) calls
+>>>>>>   __vsock_remove_bound() which does:
+>>>>>>      list_del_init(&vsk->bound_table); // nop
+>>>>>>      sock_put(&vsk->sk);               // refcnt=0
+>>>>>>
+>>>>>> The following fixes things for me. I'm just not certain that's the only
+>>>>>> place where transport destruction may lead to an unbound socket being
+>>>>>> removed from the unbound list.
+>>>>>>
+>>>>>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>>>>>> index 7f7de6d88096..0fe807c8c052 100644
+>>>>>> --- a/net/vmw_vsock/virtio_transport_common.c
+>>>>>> +++ b/net/vmw_vsock/virtio_transport_common.c
+>>>>>> @@ -1303,7 +1303,8 @@ void virtio_transport_release(struct vsock_sock *vsk)
+>>>>>>
+>>>>>>       if (remove_sock) {
+>>>>>>               sock_set_flag(sk, SOCK_DONE);
+>>>>>> -              virtio_transport_remove_sock(vsk);
+>>>>>> +              if (vsock_addr_bound(&vsk->local_addr))
+>>>>>> +                      virtio_transport_remove_sock(vsk);
+>>>>>
+>>>>> I don't get this fix, virtio_transport_remove_sock() calls
+>>>>>    vsock_remove_sock()
+>>>>>      vsock_remove_bound()
+>>>>>        if (__vsock_in_bound_table(vsk))
+>>>>>            __vsock_remove_bound(vsk);
+>>>>>
+>>>>>
+>>>>> So, should already avoid this issue, no?
+>>>>
+>>>> I got it wrong, I see now what are you trying to do, but I don't think
+>>>> we should skip virtio_transport_remove_sock() entirely, it also purge
+>>>> the rx_queue.
+>>>
+>>> Isn't rx_queue empty-by-definition in case of !__vsock_in_bound_table(vsk)?
+>>
+>> It could be.
+>>
+>> But I see some other issues:
+>> - we need to fix also in the other transports, since they do the same
+>
+>Ahh, yes, VMCI and Hyper-V would need that, too.
+>
+>> - we need to check delayed cancel work too that call
+>>    virtio_transport_remove_sock()
+>
+>That's the "I'm just not certain" part. As with rx_queue, I though delayed
+>cancel can only happen for a bound socket. So, per architecture, no need to
+>deal with that here, right?
 
-> > From 8dcec7f5d937ede3d33c687573dc2f1654ddc59e Mon Sep 17 00:00:00 2001
-> > From: Charlie Jenkins <charlie@rivosinc.com>
-> > Date: Thu, 9 Jan 2025 14:36:40 -0800
-> > Subject: [PATCH] perf tools: Expose quiet/verbose variables in Makefile.perf
-> > 
-> > The variables to make builds silent/verbose live inside
-> > tools/build/Makefile.build. Move those variables to the top-level
-> > Makefile.perf to be generally available.
+I think so.
 
-<SNIP applied patch>
- 
-> Let me know how you want to handle this, I can send this out as a
-> separate patch if that's better.
+>
+>> An alternative approach, which would perhaps allow us to avoid all this,
+>> is to re-insert the socket in the unbound list after calling release()
+>> when we deassign the transport.
+>>
+>> WDYT?
+>
+>If we can't keep the old state (sk_state, transport, etc) on failed
+>re-connect() then reverting back to initial state sounds, uhh, like an
+>option :) I'm not sure how well this aligns with (user's expectations of)
+>good ol' socket API, but maybe that train has already left.
 
-I used the patch you provided above after hand editing the message
-before feeding it to 'git am', added these comments:
+We really want to behave as similar as possible with the other sockets,
+like AF_INET, so I would try to continue toward that train.
 
-    Committer testing:
-    
-    See the SYSCALL lines, now they are consistent with the other
-    operations in other lines:
-    
-      SYSTBL  /tmp/build/perf-tools-next/arch/x86/include/generated/asm/syscalls_32.h
-      SYSTBL  /tmp/build/perf-tools-next/arch/x86/include/generated/asm/syscalls_64.h
-      GEN     /tmp/build/perf-tools-next/common-cmds.h
-      GEN     /tmp/build/perf-tools-next/arch/arm64/include/generated/asm/sysreg-defs.h
-      PERF_VERSION = 6.13.rc2.g3d94bb6ed1d0
-      GEN     perf-archive
-      MKDIR   /tmp/build/perf-tools-next/jvmti/
-      MKDIR   /tmp/build/perf-tools-next/jvmti/
-      MKDIR   /tmp/build/perf-tools-next/jvmti/
-      MKDIR   /tmp/build/perf-tools-next/jvmti/
-      GEN     perf-iostat
-      CC      /tmp/build/perf-tools-next/jvmti/libjvmti.o
-      CC      /tmp/build/perf-tools-next/jvmti/jvmti_agent.o
-    
-    Reported-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-    Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-    Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+>
+>Another possibility would be to simply brick the socket on failed (re)connect.
+>
+
+I see, though, this is not the behavior of AF_INET for example, right?
+
+Do you have time to investigate/fix this problem?
+If not, I'll try to look into it in the next few days, maybe next week.
 
 Thanks,
+Stefano
 
-- Arnaldo
 
