@@ -1,228 +1,156 @@
-Return-Path: <bpf+bounces-48662-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48663-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 353BEA0AE19
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 05:08:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEF8FA0AEB4
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 06:22:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45601166312
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 04:08:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1BC0188733D
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2025 05:22:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A72CA14A4C7;
-	Mon, 13 Jan 2025 04:08:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2710230D2E;
+	Mon, 13 Jan 2025 05:22:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fdu8Kb89"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TdU/+kih"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B69398248C;
-	Mon, 13 Jan 2025 04:08:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE2B1865E5
+	for <bpf@vger.kernel.org>; Mon, 13 Jan 2025 05:22:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736741302; cv=none; b=RVd0LplQKvRvRZGdr/aj1ibq+sVSsjNhDEm5sUrDE5aK1aEKY/pbxGotBLHDT3Fio2fc0t8CGBg8wJT6y9OlJ6ExOQu04kmtSvOVN6pYHE8/1ENMGU2MKGUTZbCXpmm6Kb86lzNf6e4PM6VTlTazkX8lgGxHJnSdp/I95MhBsdY=
+	t=1736745747; cv=none; b=BPRvkN1bzUjrK2tRdKyngaf3hetk8Owg4F+jA3NWDic2qEuJWAc3GElE6NkzbkZPL6XDHx6VoZiwJ+xoTdP1YlbmM+n0zEMzzSxcGnzuATI9PzrE8zqPsLnlfoCwDFCYhAFxSk6VTll+IFzGF8Zf6KmU1pzZmoBSmjH5FqtP0C4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736741302; c=relaxed/simple;
-	bh=0Uz4yQG4wZ+nbc6zM7VzZVDYDJ+2olnmJX/iIu+0dXI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dKKRuk6JfI2PO1L45yYx+i8RK+wjID12YKgsp3nLWpNcEsUbjOqKwateKDSouAoQ0FNfVxMY7yActctlsnJ4wz2blLmAHGOWDQPZNW0WYBlFjuTEgHM+jCUB9aAJTHxzHwyf+/H/JxLtHHYDJlMT7Uqa9AZpI+MxEXQmreJY3vc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fdu8Kb89; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2166f1e589cso79154505ad.3;
-        Sun, 12 Jan 2025 20:08:20 -0800 (PST)
+	s=arc-20240116; t=1736745747; c=relaxed/simple;
+	bh=r9N0xK3Vmhlars0O2eO30dwlxQQcuWOaWELHbi43MvM=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=qC9d+wds+o5MxJDrSFZBMM8iiZ+r/sHGDyJesCgI/dYQwiuzr8Ry8Q5rgC1NL0qCuUUK1OlyUgxqFY6QaljhX2L80a8O3PjxPfqQt42ElFs7TSrTeSfGRmAx1onX+kxoFXHQP5Ly8LhlegFNRZQBporvMGZQOLs/TYkfl/d+8kU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ctshao.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TdU/+kih; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ctshao.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-21650d4612eso105367935ad.2
+        for <bpf@vger.kernel.org>; Sun, 12 Jan 2025 21:22:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736741300; x=1737346100; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=O61dNdsPd81LhYeEXdbyMEZmy6qvkd3iBvbUJscPe5A=;
-        b=fdu8Kb89XMTXTNsa+EgfCmnaPsj5aegW9O7Dw5Dvo0X/IlDJwt7mfVShZcuG0pQJKj
-         zFMy4NJM9YWy7Js9Y1yoU48iZSgSMB8UsLrS57Cl7hV6ZRBtKe8W3s6mIv6BGGBJiFsV
-         iiUqM/jvbiUixp6vdyUu0aGjxD1RwqC1DK4EannHQbpbK2R2+Cja4dZ2y7yVSx+a+A0r
-         cywx2qIocZFfMAifosi97aKleJ+pozD0qlx2727cpzrPnmcrrfbioTQVvEy4TBUa1ebV
-         jmsQf7+yLdlaFij5eaBn2PJVVWfvAODv8xEbC1o7eKt95BkpF9TVxCWKZwv2aqJ199pl
-         wmsg==
+        d=google.com; s=20230601; t=1736745745; x=1737350545; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2SODDUU/4by30C8cH2MnStzrDco9M/M3NU9sKNQSG6A=;
+        b=TdU/+kih/A1itaS/IC0T3mwuRGgU/yapUQMvFVe4qRMv30/jF4JBD6LKREqRSgCxhH
+         COjEguOUUBlNT96ncKQ8RsCwyxrdXsewhszIIDnwLdFIa97t/nhMhf1j1BIbE92lfT8l
+         OuiinhECwL2GjF4Dqssj2eZh3yYEI12iTZm1c4eqkx9JdkhrQNH0ptWyEPiCC8edzqzv
+         yylJQUDsbPqL185lQ8kxQfvYqqza0xpTudDTVKjfmgnJEZj7kBlp3QlJVOKIlayTQz7m
+         vanicFdnfgy+w0AGr20lzYyNdDsaTwK73GBKTv74XdVaeUHSEG20qzUJN0ZoP1g4mXhH
+         1b4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736741300; x=1737346100;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O61dNdsPd81LhYeEXdbyMEZmy6qvkd3iBvbUJscPe5A=;
-        b=ITRYQjlEk7Z3/KxPkCr+AA8ZCMzwwkGIgvrjjawhNvyRnG0iGH/RO+TVB0PiUJNULF
-         7P+BvSNWUujmuDC1C07cbLMt9BXaKbtvpYUnCNX+j0hL7gpClAA0Jq4SgaPlS84SNmMv
-         mVov9GPImOYAxIWmAUlYC0TJAW/NQAo3abuRgtJZ9MzT6GldKKfMVj+OpJ5dSrfsdBcD
-         lYERw1J71ZYGj7v6LB7n5lnXYBBMwWmMQmZnvNPFFn+afdGA1JnDayUKsdT59qLaXY3W
-         aaNYVqHmZS/AkxU4xzSBvk38FHFN1c4+FhXPeQrRGXMeyNrzFZkEOLjRYjipkGWUn2Ui
-         Eieg==
-X-Forwarded-Encrypted: i=1; AJvYcCUZoE4Al09EMHlFQobv87Asng93vkebeEji4NjG/uGe40bFxIdvvr1/p0dhMe3n4jj6gukZOj2GQZZTQ8I=@vger.kernel.org, AJvYcCUoYL8BNh3Ea4iNgLFTgSxzs/yYh6IxP56Q0zvUZgLt8eSRS09+/vww0meCCxno1sLMfl8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwcDp3bTlmISLzpIUi+YR9Gb8s2lYTFAjEON3BCVOqsYsCjrqyw
-	jiam4paSRDPzVh05wu85pbn36T+FyBkxqtnmIWiUMr7Ai/QEpSnP3pJIGwYu
-X-Gm-Gg: ASbGncuKNpf0xlWUGjITvEXlrdCcxct31tma2MDYV5b2gGfeaJ/FhNEI6yrhmnCdZED
-	xwZNlHkGGmcJ9NGyqMXGZKcvMv0RX/mgIy3YyGu12cecinmaJXzvDuGBaZvHV2QH7TsqHhdy0z7
-	Eu93yxR5VR5ooBq4x5Dv0AHnyCtBcc7FanpSEi/6oODUHGHKttPzVHSd6rCI2V6n0iYa91jnao1
-	jtohwASqQM9FJARHQZlDl4eYtca/0Tjt9la7p5Rixa1M6fLrE89Ww==
-X-Google-Smtp-Source: AGHT+IGmhet9oAIKMSii4iwHB7ez148VxH6bFDTlFPTXroqUm58h35zj33g7DHxfZ4p9oOsfx7TJvw==
-X-Received: by 2002:a17:902:d4cd:b0:215:6f9b:e447 with SMTP id d9443c01a7336-21a83f665d4mr281988345ad.30.1736741299933;
-        Sun, 12 Jan 2025 20:08:19 -0800 (PST)
-Received: from fedora ([2001:250:3c1e:503:ffff:ffff:ffaa:4903])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21a9f10e0b9sm44731935ad.44.2025.01.12.20.08.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Jan 2025 20:08:19 -0800 (PST)
-Date: Mon, 13 Jan 2025 12:08:14 +0800
-From: Ming Lei <tom.leiming@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [RFC PATCH 08/22] ublk: bpf: add bpf struct_ops
-Message-ID: <Z4SRrrXeoZ2MwH96@fedora>
-References: <20250107120417.1237392-1-tom.leiming@gmail.com>
- <20250107120417.1237392-9-tom.leiming@gmail.com>
- <CAADnVQLGw07CNpi7=XHJRgBL2ku7Q23nfah07pBc45G+xeTKxw@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1736745745; x=1737350545;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2SODDUU/4by30C8cH2MnStzrDco9M/M3NU9sKNQSG6A=;
+        b=Q69SwDtOpnsnVEK4q/ljYe7KtHRlCAGY/EWsoRzHnnc9m0FzTYuUtrft2Uhc97yz80
+         MNs32PGckmYPPyGqOHPAev4/yfhOIDzT+AroPuXnCsW1eIeUyMT+ljC+AAlMnkn4ccdw
+         IVxLTlPJBGSqIV5BOF95T4eJ+/UTvL6yvqRfioKTOUm98KAGpjfn95k1dBP94r8Aphl8
+         rZX7mumltYa2qXXVFSoPLmWUu1DjwIxt2yJlHk0shwtjz9Ib7+LN0Qffqku/NPi1O7oH
+         /WUJnDK/OppKcPCQwY7pOD4RLnIJ20gT5TbR0TRuqDpzpBsXf/c6CnhxIUXKyKQuENyF
+         5TBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVLdnNnmyFklPmNVyQJRvdmpTbiYb7fpW+kVm6ZbyfnugSeWblDKm6gW4DKTvfg3EgRwwI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzN+ANtnCo67YGnhsuMf0lVN7O8C7EVt4rLpxMq0tx3pO+0Serp
+	Igc58bI1LMLMSsZMGi+k7G7F9eGATVoXaWrYaViEEL6Al8ThVi1YJrKCl4tXwa7HISApjSTzkkV
+	XkQ==
+X-Google-Smtp-Source: AGHT+IGzKx5p7Rir4jhTnwW5HLnSafYS5KkR9v5qyIi4os9QTsqm3PJ9CrGVU2u+/4KcctucmJydyBAqMPs=
+X-Received: from plbkx4.prod.google.com ([2002:a17:902:f944:b0:21a:8a37:37db])
+ (user=ctshao job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:234a:b0:215:8f2e:eeda
+ with SMTP id d9443c01a7336-21a84012c27mr284934195ad.52.1736745745490; Sun, 12
+ Jan 2025 21:22:25 -0800 (PST)
+Date: Sun, 12 Jan 2025 21:20:13 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQLGw07CNpi7=XHJRgBL2ku7Q23nfah07pBc45G+xeTKxw@mail.gmail.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.47.1.688.g23fc6f90ad-goog
+Message-ID: <20250113052220.2105645-1-ctshao@google.com>
+Subject: [PATCH v2 0/4] Tracing contention lock owner call stack
+From: Chun-Tse Shao <ctshao@google.com>
+To: linux-kernel@vger.kernel.org
+Cc: Chun-Tse Shao <ctshao@google.com>, peterz@infradead.org, mingo@redhat.com, 
+	acme@kernel.org, namhyung@kernel.org, mark.rutland@arm.com, 
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com, 
+	adrian.hunter@intel.com, kan.liang@linux.intel.com, 
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hello Alexei,
+For perf lock contention, the current owner tracking (-o option) only
+works with per-thread mode (-t option). Enabling call stack mode for
+owner can be useful for diagnosing why a system running slow in
+lock contention.
 
-Thanks for your comments!
+Example output:
+  $ sudo ~/linux/tools/perf/perf lock con -abvo -Y mutex-spin -E16 perf bench sched pipe
+   ...
+   contended   total wait     max wait     avg wait         type   caller
 
-On Thu, Jan 09, 2025 at 05:43:12PM -0800, Alexei Starovoitov wrote:
-> On Tue, Jan 7, 2025 at 4:08 AM Ming Lei <tom.leiming@gmail.com> wrote:
-> > +
-> > +/* Return true if io cmd is queued, otherwise forward it to userspace */
-> > +bool ublk_run_bpf_handler(struct ublk_queue *ubq, struct request *req,
-> > +                         queue_io_cmd_t cb)
-> > +{
-> > +       ublk_bpf_return_t ret;
-> > +       struct ublk_rq_data *data = blk_mq_rq_to_pdu(req);
-> > +       struct ublksrv_io_desc *iod = ublk_get_iod(ubq, req->tag);
-> > +       struct ublk_bpf_io *bpf_io = &data->bpf_data;
-> > +       const unsigned long total = iod->nr_sectors << 9;
-> > +       unsigned int done = 0;
-> > +       bool res = true;
-> > +       int err;
-> > +
-> > +       if (!test_bit(UBLK_BPF_IO_PREP, &bpf_io->flags))
-> > +               ublk_bpf_prep_io(bpf_io, iod);
-> > +
-> > +       do {
-> > +               enum ublk_bpf_disposition rc;
-> > +               unsigned int bytes;
-> > +
-> > +               ret = cb(bpf_io, done);
-> 
-> High level observation...
-> I suspect forcing all sturct_ops callbacks to have only these
-> two arguments and packing args into ublk_bpf_io
-> will be limiting in the long term.
+         171      1.55 ms     20.26 us      9.06 us        mutex   pipe_read+0x57
+                          0xffffffffac6318e7  pipe_read+0x57
+                          0xffffffffac623862  vfs_read+0x332
+                          0xffffffffac62434b  ksys_read+0xbb
+                          0xfffffffface604b2  do_syscall_64+0x82
+                          0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
+          36    193.71 us     15.27 us      5.38 us        mutex   pipe_write+0x50
+                          0xffffffffac631ee0  pipe_write+0x50
+                          0xffffffffac6241db  vfs_write+0x3bb
+                          0xffffffffac6244ab  ksys_write+0xbb
+                          0xfffffffface604b2  do_syscall_64+0x82
+                          0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
+           4     51.22 us     16.47 us     12.80 us        mutex   do_epoll_wait+0x24d
+                          0xffffffffac691f0d  do_epoll_wait+0x24d
+                          0xffffffffac69249b  do_epoll_pwait.part.0+0xb
+                          0xffffffffac693ba5  __x64_sys_epoll_pwait+0x95
+                          0xfffffffface604b2  do_syscall_64+0x82
+                          0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
+           2     20.88 us     11.95 us     10.44 us        mutex   do_epoll_wait+0x24d
+                          0xffffffffac691f0d  do_epoll_wait+0x24d
+                          0xffffffffac693943  __x64_sys_epoll_wait+0x73
+                          0xfffffffface604b2  do_syscall_64+0x82
+                          0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
+           1      7.33 us      7.33 us      7.33 us        mutex   do_epoll_ctl+0x6c1
+                          0xffffffffac692e01  do_epoll_ctl+0x6c1
+                          0xffffffffac6937e0  __x64_sys_epoll_ctl+0x70
+                          0xfffffffface604b2  do_syscall_64+0x82
+                          0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
+           1      6.64 us      6.64 us      6.64 us        mutex   do_epoll_ctl+0x3d4
+                          0xffffffffac692b14  do_epoll_ctl+0x3d4
+                          0xffffffffac6937e0  __x64_sys_epoll_ctl+0x70
+                          0xfffffffface604b2  do_syscall_64+0x82
+                          0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
 
-There are three callbacks defined, and only the two with same type for
-queuing io commands are covered in this function.
+  === owner stack trace ===
 
-But yes, callback type belongs to API, which should be designed
-carefully, and I will think about further.
+           3     31.24 us     15.27 us     10.41 us        mutex   pipe_read+0x348
+                          0xffffffffac631bd8  pipe_read+0x348
+                          0xffffffffac623862  vfs_read+0x332
+                          0xffffffffac62434b  ksys_read+0xbb
+                          0xfffffffface604b2  do_syscall_64+0x82
+                          0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
+  ...
 
-> 
-> And this part of api would need to be redesigned,
-> but since it's not an uapi... not a big deal.
-> 
-> > +               rc = ublk_bpf_get_disposition(ret);
-> > +
-> > +               if (rc == UBLK_BPF_IO_QUEUED)
-> > +                       goto exit;
-> > +
-> > +               if (rc == UBLK_BPF_IO_REDIRECT)
-> > +                       break;
-> 
-> Same point about return value processing...
-> Each struct_ops callback could have had its own meaning
-> of retvals.
-> I suspect it would have been more flexible and more powerful
-> this way.
+v2: Fix logic deficit in patch 2/4.
+Chun-Tse Shao (4):
+  perf lock: Add bpf maps for owner stack tracing
+  perf lock: Retrieve owner callstack in bpf program
+  perf lock: Make rb_tree helper functions generic
+  perf lock: Report owner stack in usermode
 
-Yeah, I agree, just the 3rd callback of release_io_cmd_t isn't covered
-in this function.
+ tools/perf/builtin-lock.c                     |  54 +++--
+ tools/perf/util/bpf_lock_contention.c         |  58 +++++-
+ .../perf/util/bpf_skel/lock_contention.bpf.c  | 192 +++++++++++++++++-
+ tools/perf/util/bpf_skel/lock_data.h          |   6 +
+ tools/perf/util/lock-contention.h             |   2 +
+ 5 files changed, 292 insertions(+), 20 deletions(-)
 
-> 
-> Other than that bpf plumbing looks good.
-> 
-> There is an issue with leaking allocated memory in bpf_aio_alloc kfunc
-> (it probably should be KF_ACQUIRE)
+--
+2.47.1.688.g23fc6f90ad-goog
 
-It is one problem which troubles me too:
-
-- another callback of struct_ops/bpf_aio_complete_cb is guaranteed to be
-called after the 'struct bpf_aio' instance is submitted via kfunc
-bpf_aio_submit(), and it is supposed to be freed from
-struct_ops/bpf_aio_complete_cb
-
-- but the following verifier failure is triggered if bpf_aio_alloc and
-bpf_aio_release are marked as KF_ACQUIRE & KF_RELEASE.
-
-```
-libbpf: prog 'ublk_loop_comp_cb': -- BEGIN PROG LOAD LOG --
-Global function ublk_loop_comp_cb() doesn't return scalar. Only those are supported.
-```
-
-Here 'struct bpf_aio' instance isn't stored in map, and it is provided
-from struct_ops callback(bpf_aio_complete_cb), I appreciate you may share
-any idea about how to let KF_ACQUIRE/KF_RELEASE cover the usage here.
-
-> and a few other things, but before doing any in depth review
-> from bpf pov I'd like to hear what block folks think.
-
-Me too, look forward to comments from our block guys.
-
-> 
-> Motivation looks useful,
-> but the claim of performance gains without performance numbers
-> is a leap of faith.
-
-Follows some data:
-
-1) ublk-null bpf vs. ublk-null with bpf
-
-- 1.97M IOPS vs. 3.7M IOPS  
-
-- setup ublk-null
-
-	cd tools/testing/selftests/ublk
-	./ublk_bpf add -t null -q 2
-
-- setup ublk-null wit bpf
-
-	cd tools/testing/selftests/ublk
-	./ublk_bpf reg -t null ./ublk_null.bpf.o
-	./ublk_bpf add -t null -q 2 --bpf_prog 0
-
-- run  `fio/t/io_uring -p 0 /dev/ublkb0`
-
-2) ublk-loop
-
-The built-in utility of `ublk_bpf` only supports bpf io handling, but compared
-with ublksrv, the improvement isn't so big, still with ~10%. One reason
-is that bpf aio is just started, not optimized, in theory:
-
-- it saves one kernel-user context switch
-- save one time of user-kernel IO buffer copy
-- much less io handling code footprint compared with userspace io handling
-
-The improvement is supposed to be big especially in big chunk size
-IO workload.
-
-
-Thanks,
-Ming
 
