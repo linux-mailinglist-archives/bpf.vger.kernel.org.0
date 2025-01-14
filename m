@@ -1,143 +1,140 @@
-Return-Path: <bpf+bounces-48878-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48879-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ED80A1159E
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 00:47:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA324A115AB
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 00:52:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07D1F7A15AF
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 23:47:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B80A167AFE
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 23:52:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B8AB2135A0;
-	Tue, 14 Jan 2025 23:47:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E977121ADD1;
+	Tue, 14 Jan 2025 23:52:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g7mlM+lJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EHAS9WE4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BA8414883C
-	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 23:47:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9942135A0;
+	Tue, 14 Jan 2025 23:52:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736898434; cv=none; b=qKx29vpDK25yDQk4xJ0GKDx+8GbTPQcFrAQcRSyUXxAmAf265vF905U9X5T24bgXvCitLNWqy5XHksjc32PY//r7Qaf2eGJ/C3G3IDhNn1pRWnLhkbXL2Vf/++V1rcsWQ/bWsRoFU5hfFAS3auWcW3ZrGcMALMiUoSGIwf4rAF4=
+	t=1736898759; cv=none; b=bi4TAEzgT04XIdFDS/cM1Ho1fhBSYgBatj3mKAH6+riGOU4dYEqNyn/S+wPtxZ/HRNa1VJeewQGhh1aRfBPTgL2IzbTcmm5iHPHFoxpEz/XFmnYuxbdkkbla3NI0jETBBSUfUBoV4M7/pdQ2fQ/CbqkBbYhn08Sf2qUPApf/+SQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736898434; c=relaxed/simple;
-	bh=SGS5XciF/DQbKlqJW+hvceSspz9CFuIyb7lYQpLbfjg=;
+	s=arc-20240116; t=1736898759; c=relaxed/simple;
+	bh=1cvucDChMYk3wMwc3GU/lXASMHIz0KpwFlvJNT7FI7M=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=q7EOJTi81nHVeeZbIUxFsL8NMZCgNV54myHAlMx0S35NxzPiE/aLL1TRYRB7febPy4Y3PzAGSRRt97+VwvgMFKQqGk/7/TGBaVU0XvqazfVGsgi6sr8E5m5oEtequdBKDVrM/OPS7Vj2qVnRpc7aF0wLyowQ/B93vCiVClkA0m8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g7mlM+lJ; arc=none smtp.client-ip=209.85.216.49
+	 To:Cc:Content-Type; b=kYjTnaMYq77c9MVr0xBhbMNY/2JSfzI/oFeJgK/ptmmJn4PpKD3V73z1bhzekQ6HJR8XpyNHLtporp6FWKiqno/lLXnFcxXQLvXOkemv1rEPzNjhoFRYuOKOCZ8lp5PUgT9r0QHS4RYLndRbWF+bzXw0/V4pu+jru8J4pGqTddI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EHAS9WE4; arc=none smtp.client-ip=209.85.214.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2ee709715d9so8356331a91.3
-        for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 15:47:12 -0800 (PST)
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2164b1f05caso108586365ad.3;
+        Tue, 14 Jan 2025 15:52:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736898432; x=1737503232; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1736898757; x=1737503557; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IUuN0rD6Ts0aOurs1BeKX1yRLyAIAVscm0p/4ALjhLg=;
-        b=g7mlM+lJ6Mh51h0VAhbCnVEW18txZI55BH9PAw5cDLoUP/BCC40coIUVj6JHhWN4gf
-         av7XWaSAHn94lEK65hkWXLQB/Vf0tJRmW4tW8nJb+7L+R52xe87f42huHqSIDhG9PvDk
-         W65j+t7omyC0nEqvDU7KpF3OFM3uPzhExiA5fYa1hF+dZwpeNlSSH6oPdtPD1Wzdf5uq
-         covxnP1UE/0MRX+qURivVveD23Jj5BPtzusyFP6BILVUdEn9CBgH4gydUDgUg03Vn363
-         eyFteW+1zFVnBGScitDKHah8/F3fJQL2kBAM/V7kK8Pr/xE5SacLClTOfat95wzncqsQ
-         AKzQ==
+        bh=1cvucDChMYk3wMwc3GU/lXASMHIz0KpwFlvJNT7FI7M=;
+        b=EHAS9WE4hNsJOW7qF0bQ+lsHlt2actt/lOKQ3Q659Tl0ZEW2v0wV4a/b7o4QUBoDOI
+         gKIigbXH7cLc2fl37Q2hBOLg8+PZu0RxgD7+rP562+uKz2Vgfdcx9efJ/GPIcb0h7dCg
+         uGwmZnvo1nALv+3wVgeikLccGVYz8/aJ3r8jZ/RTawINH3z2gXFkzcMBGUnJoXdhpJNj
+         +ZRBI1OKmD8UvGVJ2aGQIQQjnnGmyXQr2pCOSoe1mhY/BzSVmTVZp0wUkZJlrXSTGbld
+         81n5H8aA8IPIdctILtSnd2sS6tLJyCLmOkriNxv8ixL+ZPH7rDnDFqss4ExQLRdkYPKf
+         7f9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736898432; x=1737503232;
+        d=1e100.net; s=20230601; t=1736898757; x=1737503557;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IUuN0rD6Ts0aOurs1BeKX1yRLyAIAVscm0p/4ALjhLg=;
-        b=t0X1tV6UwQVkDKGgOH4knO44EgkQActIFOWzu23474qcgXCJ8RyjySPzVjD54iJnar
-         W4Ak7g3Eq1g7b+ZUzTKEF0uSlGdV85twmnXmm4J4TJoKwcC3t0WMwhXVaalUFS0nIKJn
-         OOro2IdqSLBMN6cXbKgn+5YeSyApKE8Ew24CRVj6ZKOJLLGf3f3geWActQm63UhZl1hu
-         JwSbwW8pQZNx1/8VwyoLX0KSKwy8hlyC4yH184olWCzWjZyFsclp/2y465MR422yA6o/
-         RPiQoK3KXkYBmxRy19BVzKfyZp+soUhu1oeV4XEAiEO9CAcYPq2spOTkFAdRtPSecI1f
-         TiCQ==
-X-Gm-Message-State: AOJu0YxuPGKK0ff3IoX0yYqA6PmVhG4jQP/ct9+bAJTZxB+yqvGmEWiY
-	94AdRZNNvK2nYaRV4AptbD+wnlFBUNezJs+xRTtrVXX6MXEKkl40OYXfl2TtSmcgqBwoHChbfwY
-	zgLbecv+Kwm9k2sMlsTFJZCTBW38=
-X-Gm-Gg: ASbGncu97WeS5NDfMOVPK2kRYU9xWvs38PXT3CHMNS951noVIBIxREwS/SDNTg5px0/
-	Y/ViWmLGNV6rPzl9gE8gQka6ult2zW5doxOf3
-X-Google-Smtp-Source: AGHT+IHyvxwrriG4f227by9duMuMq8ovsm9Y572fygs/z8n0x2V1PGf3lv+anthOeSuX2IyqMvmcleafsTh+yPtVt1A=
-X-Received: by 2002:a17:90a:d00c:b0:2ee:c5ea:bd91 with SMTP id
- 98e67ed59e1d1-2f548f1d783mr38047011a91.29.1736898431950; Tue, 14 Jan 2025
- 15:47:11 -0800 (PST)
+        bh=1cvucDChMYk3wMwc3GU/lXASMHIz0KpwFlvJNT7FI7M=;
+        b=IxeUeSiAkJMcWTYJXBNYYrYJF6n33vjxchAMoKL+SyK0f0FNpv1HN9XPnvjvrFNdpX
+         Bl/OUxsRbsrN7VKCPZhcdYPAvmJvJHdzEdHtXrI/rW7kn1zGBaXQ2eGWaM5cECRv4Rts
+         wdqSbE+Xotf+IGAyPdOJ+Uj5ybG1IlgsdidFwqprX1c/PZSB9NwtzoIlZBA439ofVtWw
+         1wje/aUHQl1vwfWggU45UMhyQOyIQ8Bmhf05rf1KK8SANsro/1hYEkQeCvswhsjj5aRU
+         bzDbbjMylHJfb8wr/I5p8+zO8CQfPhIH3RxeC2MHMftrTW9UbepviM13nMauhhA6Bkxr
+         GvMw==
+X-Forwarded-Encrypted: i=1; AJvYcCUjCsYXbLJPu4lpbEpE3N8LYB+P/xs5tRI7cwRsUkcJaU7XaMgxD0RWTQpcqm7Y6xdNUAJQMcC/hMiDbB0T@vger.kernel.org, AJvYcCVTeZercjj6Vor0ljIFd96vRSe2LRavEaYvpXtqDzqZGEm31mEkOCmFc2IsAVVstOTRJVO9Cf6rADw0YtOOKR4FusKQ@vger.kernel.org, AJvYcCWJT7d2KmCghnETe4n7se6OLYZYHGi2Lo2/9VILq7CQfXeeDDpL+fbgZ4WeFxichAj+4ec=@vger.kernel.org, AJvYcCXZGnIzKQcguUn1XK6LHHLaZT++lZRbDPFcDx7sHaec035o3dArA7DzJD5pLywuBiGIuCBNMgjtnIRU@vger.kernel.org
+X-Gm-Message-State: AOJu0YyiKYYCX9vA5zQ4nQSWgSHXbtxuHSTrD7V1Ff6rAj15IxLnaRsM
+	3UVhj283AJrzHh8cXbI0Y8a9VRs2+eiAd5OiCGJt9W5Ljuh9SsSqF6D+2iJ0H83vZ1JmF33FeXD
+	yl3lLIadEdZ0Hhw2FX2pbiZPcZjg=
+X-Gm-Gg: ASbGncsEKrkCHJuuUvDTSLI4aiqj2IMb1H5iN0KW8HPtD7+9LaMILiywBosBOJYbbGA
+	kxh5hRgbqjXXOFEXbcNs21AXP9BYd6MG4yGeU
+X-Google-Smtp-Source: AGHT+IF9xrZ0Fm+qK9t0KO7jgFf8WDiEIH8bHqVXht+PM6el+fFq+yNfKKY5u1HiXjh5A3WocKYKkCR6jz2kUE9lTjk=
+X-Received: by 2002:a05:6a20:3d8a:b0:1e1:b28e:a148 with SMTP id
+ adf61e73a8af0-1e88cf7bfb7mr38140531637.5.1736898757299; Tue, 14 Jan 2025
+ 15:52:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250114140931.3844196-1-pulehui@huaweicloud.com> <20250114140931.3844196-2-pulehui@huaweicloud.com>
-In-Reply-To: <20250114140931.3844196-2-pulehui@huaweicloud.com>
+References: <CAHsH6Gs3Eh8DFU0wq58c_LF8A4_+o6z456J7BidmcVY2AqOnHQ@mail.gmail.com>
+ <20250110.152323-sassy.torch.lavish.rent-vKX3ul5B3qyi@cyphar.com>
+ <Z4K7D10rjuVeRCKq@krava> <Z4YszJfOvFEAaKjF@krava> <20250114105802.GA19816@redhat.com>
+ <Z4ZyYudZSD92DPiF@krava> <CAEf4BzZoa6gBQzfPLeMTQu+s=GqVdmihFdb1BHkcPPQMFQp+MQ@mail.gmail.com>
+ <20250114203922.GA5051@redhat.com> <CAEf4BzaRCzWMVvyGC_T52djF7q65yM8=AdBEMOPUU8edG-PLxg@mail.gmail.com>
+ <20250114221002.GA10122@redhat.com>
+In-Reply-To: <20250114221002.GA10122@redhat.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 14 Jan 2025 15:46:57 -0800
-X-Gm-Features: AbW1kvb7nc8MCaN3p32vALnPJ9sCc16gMWGPcfhS3_UPYBYQqc9ToprFFaQKGDA
-Message-ID: <CAEf4Bzbuw_ZskaUti-s6bSqG9peRf1Z+oxp9G80hEwBGrW0CQQ@mail.gmail.com>
-Subject: Re: [PATCH bpf 2/2] libbpf: Fix incorrect iter rounds when marking BTF_IS_EMBEDDED
-To: Pu Lehui <pulehui@huaweicloud.com>, Alan Maguire <alan.maguire@oracle.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Pu Lehui <pulehui@huawei.com>
+Date: Tue, 14 Jan 2025 15:52:23 -0800
+X-Gm-Features: AbW1kvaFB1PYsr93n9yEMVFW17_zPOqRsiM6abSy7Xf7yYcskYH5C-Hh6Hu8sVw
+Message-ID: <CAEf4BzZquQBW1DuEmfhUTicoyHOeEpT6FG7VBR-kG35f7Rb5Zw@mail.gmail.com>
+Subject: Re: Crash when attaching uretprobes to processes running in Docker
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+	Eyal Birger <eyal.birger@gmail.com>, mhiramat@kernel.org, 
+	linux-kernel <linux-kernel@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	BPF-dev-list <bpf@vger.kernel.org>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, peterz@infradead.org, tglx@linutronix.de, 
+	bp@alien8.de, x86@kernel.org, linux-api@vger.kernel.org, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Alexei Starovoitov <ast@kernel.org>, "rostedt@goodmis.org" <rostedt@goodmis.org>, rafi@rbk.io, 
+	Shmulik Ladkani <shmulik.ladkani@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 14, 2025 at 6:06=E2=80=AFAM Pu Lehui <pulehui@huaweicloud.com> =
-wrote:
+On Tue, Jan 14, 2025 at 2:11=E2=80=AFPM Oleg Nesterov <oleg@redhat.com> wro=
+te:
 >
-> From: Pu Lehui <pulehui@huawei.com>
+> On 01/14, Andrii Nakryiko wrote:
+> >
+> > On Tue, Jan 14, 2025 at 12:40=E2=80=AFPM Oleg Nesterov <oleg@redhat.com=
+> wrote:
+> > >
+> > > But, unlike sys_uretprobe(), sys_rt_sigreturn() is old, so the existi=
+ng
+> > > setups must know that sigreturn() should be respected...
+> >
+> > someday sys_uretprobe will be old as well ;) FWIW, systemd allowlisted
+> > sys_uretprobe, see [0]
 >
-> When redirecting the base BTF of the split BTF from the distilled base
-> BTF to the vmlinux base BTF, we need to mark distilled base struct/union
-> members of split BTF structs/unions in id_map with BTF_IS_EMBEDDED,
-> which indicates that these types need to match both name and size later.
-> But, the current implementation uses the incorrect iter rounds, we need
-> to correct it to iter from nr_dist_base_types to nr_types.
-
-It's hard to understand what this description says without looking at
-the code... the "iter rounds" and "iter" is very confusing, because we
-are actually dealing with type IDs? Can you please reword to make it
-clearer.
-
-Also, why don't we see this issue in our tests? Can you come up with a
-simple test to demonstrate a problem?
-
-This looks correct, otherwise, but it would be nice for Alan to review
-as well, thanks.
-
-pw-bot: cr
-
+> And I agree! ;)
 >
-> Fixes: 19e00c897d50 ("libbpf: Split BTF relocation")
-> Signed-off-by: Pu Lehui <pulehui@huawei.com>
-> ---
->  tools/lib/bpf/btf_relocate.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I mean, I'd personally prefer to do nothing and wait until userspace figu=
+res
+> out that we have another "special" syscall.
 >
-> diff --git a/tools/lib/bpf/btf_relocate.c b/tools/lib/bpf/btf_relocate.c
-> index b72f83e15156..53d1f3541bce 100644
-> --- a/tools/lib/bpf/btf_relocate.c
-> +++ b/tools/lib/bpf/btf_relocate.c
-> @@ -212,7 +212,7 @@ static int btf_relocate_map_distilled_base(struct btf=
-_relocate *r)
->          * need to match both name and size, otherwise embedding the base
->          * struct/union in the split type is invalid.
->          */
-> -       for (id =3D r->nr_dist_base_types; id < r->nr_split_types; id++) =
-{
-> +       for (id =3D r->nr_dist_base_types; id < r->nr_dist_base_types + r=
-->nr_split_types; id++) {
->                 err =3D btf_mark_embedded_composite_type_ids(r, id);
->                 if (err)
->                         goto done;
-> --
-> 2.34.1
+> But can we do it? I simply do not know. Can we ignore this (valid) bug re=
+port?
+>
+
+Seems wrong for kernel to try to guess whether some syscall is
+filtered by some policy or not (though maybe I'm misunderstanding the
+details and it's kernel-originated problem?). Seems like a recipe for
+more problems.
+
+Nothing is really fundamentally broken. Some piece of software needs
+an upgraded library to not disable the kernel's special syscall (just
+like sys_rt_sigreturn, nothing "new" here, really). Users can't do
+uprobing in such broken setups (but not in general), seems like a good
+incentive for everyone to push for the right thing here: fixed up to
+date software.
+
+> Oleg.
 >
 
