@@ -1,61 +1,66 @@
-Return-Path: <bpf+bounces-48747-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48746-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D196A10377
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 10:57:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA2E7A1035B
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 10:54:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 201D518896DC
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 09:57:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 554237A42B3
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 09:54:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DBEE1ADC94;
-	Tue, 14 Jan 2025 09:57:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7003A225412;
+	Tue, 14 Jan 2025 09:54:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="o3f9nXid"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="jBcQ0fPZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E9AF1ADC73;
-	Tue, 14 Jan 2025 09:57:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63E2C24022A
+	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 09:54:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736848633; cv=none; b=nOsC4lO0T7bV4PneOLiAgWnPe4HrxKU/5TbnZKMsmvMDObmroUF6OhrMza0/5xzUPwczqTApNW4wHk1C1kOOaAQEZ8Hszz3rEoq1hRrwgGNuSzHU9vR72E6DlE1AKrpjoqmtFSXPPZkyiybmMV7Ev7XfvcC2r7ncAAcnrzUlyPw=
+	t=1736848449; cv=none; b=qUDhncQySqj5tP5RCtouCNQCMGoJZxXJuSLErGrD0q+8w1ILXulAYArvgMdaktP2fYv+D+TBRI6k+UjBMZPKBISrQx05LNmvvHJ8SLGjgtj+4Avd+wruxf/ogAny8Q3u7h+DJq/4Jgf9Nf6qnSMDq9DERBU3EqbOhfWTUmX3vOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736848633; c=relaxed/simple;
-	bh=p2S7cQjHwtKfXhux3t3TqEpA73IACmKf3QU7Jnt5v3c=;
+	s=arc-20240116; t=1736848449; c=relaxed/simple;
+	bh=yKABG963UiY0TWMZllpaziGmNrpe1e+StoVAvLqHSKM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=geZ6N6Lr75BcPDCkm7aTPcK4JQfq89cbmpY2+x1HhOWHdmtYlkakvWeFucBe4DYBnLe/4IG5FsSZ1ohgaxODp5joV3Md149mOwq8ifhstQV/mQwVxFcbFza9X4hoHLfKMqUkXHZ+fpfOyTaC5BdEMy+WdLcWy+66Mau9BGDSQyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=o3f9nXid; arc=none smtp.client-ip=115.124.30.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1736848621; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=iNcP2KCOX9JtWeJDFiPz7AMgXEFC4KxUVa/PMlGFmbs=;
-	b=o3f9nXidq61dcOlOV5YzbkcyWvSKvPj0w4pLh7wVZ6mVLbP89n57IVFcd5nT4dt/kkAh7oWL9qxDEboCPsr75DxqzP4Dch/Rdnd71cGS+uDS8Wf86DXpHjrjvFVZNBAxCf2ZptEfFj9eLXO9pCIeodejMUXeQGQkb+NsnhrFkVM=
-Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WNevIV4_1736848295 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Tue, 14 Jan 2025 17:51:36 +0800
-Date: Tue, 14 Jan 2025 17:51:35 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com    >
-To: Dust Li <dust.li@linux.alibaba.com>
-Cc: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-	wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-	pabeni@redhat.com, song@kernel.org, sdf@google.com,
-	haoluo@google.com, yhs@fb.com, edumazet@google.com,
-	john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
-	guwen@linux.alibaba.com, kuba@kernel.org, davem@davemloft.net,
-	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v5 2/5] net/smc: Introduce generic hook smc_ops
-Message-ID: <20250114095135.GB16797@j66a10360.sqa.eu95>
-References: <20250107041715.98342-1-alibuda@linux.alibaba.com>
- <20250107041715.98342-3-alibuda@linux.alibaba.com>
- <20250113114944.GB89233@linux.alibaba.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=sopJhy8jiCOanpWj6m//R1kRYpsS+XNMWwmMkIlS3Ylg5n0kG9I2vp7GTXgXLBK70QXH2zr1xqdy0g8jJvvoVB68ezNSOjc0U0ANYe1BphZc7xIytGkHASJdTO7P8NLuzTL3G8yDsvcQsRmgs18dPipTSX9uR3rX1zAymSAtjsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=jBcQ0fPZ; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=SZJLJLswXhcQCEtLeIEo9quwfmYnoCb4KMf+b4yGjRY=; b=jBcQ0fPZn1V1WYb2Sa/L4qcCVW
+	XR9SzmpAubh4QkljK11sgqIXAL0/py4vbrF3kJJeYR3CtX0+k6Ssdvi8bsPA9oCBsBmZDvfv8IUmt
+	VrbSgr3Xq8xMBSJONWJFEWLR/ypumKGqM3OnDFLz2Cl0uv995l3to69uOycsyyIPUYldZ1qwskTU+
+	Is1I40b1wLwveB/eoHMkyEShDx6qx48kgXBHOEUE9VLRfQzzI2lhrrdrRv95AUqNd4mR+DwLRA7ay
+	tPpSXjWWFr2c2kW5gBxCcsL1vRq0R9h24LYurycCXr1vcyUrymvCYE7BD/d8h1o9iSvpV7ndjYRNd
+	FqR8dmZw==;
+Received: from 77-249-17-89.cable.dynamic.v4.ziggo.nl ([77.249.17.89] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tXdcR-0000000DR90-38eJ;
+	Tue, 14 Jan 2025 09:53:55 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 5678E3004DE; Tue, 14 Jan 2025 10:53:55 +0100 (CET)
+Date: Tue, 14 Jan 2025 10:53:55 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, andrii@kernel.org, memxor@gmail.com,
+	akpm@linux-foundation.org, vbabka@suse.cz, bigeasy@linutronix.de,
+	rostedt@goodmis.org, houtao1@huawei.com, hannes@cmpxchg.org,
+	shakeel.butt@linux.dev, mhocko@suse.com, willy@infradead.org,
+	tglx@linutronix.de, jannh@google.com, tj@kernel.org,
+	linux-mm@kvack.org, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next v4 1/6] mm, bpf: Introduce try_alloc_pages() for
+ opportunistic page allocation
+Message-ID: <20250114095355.GM5388@noisy.programming.kicks-ass.net>
+References: <20250114021922.92609-1-alexei.starovoitov@gmail.com>
+ <20250114021922.92609-2-alexei.starovoitov@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,51 +69,32 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250113114944.GB89233@linux.alibaba.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20250114021922.92609-2-alexei.starovoitov@gmail.com>
 
-On Mon, Jan 13, 2025 at 07:49:44PM +0800, Dust Li wrote:
-> On 2025-01-07 12:17:12, D. Wythe wrote:
-> >The introduction of IPPROTO_SMC enables eBPF programs to determine
-> >whether to use SMC based on the context of socket creation, such as
-> >network namespaces, PID and comm name, etc.
-> >
-> >As a subsequent enhancement, to introduce a new generic hook that
-> >allows decisions on whether to use SMC or not at runtime, including
-> >but not limited to local/remote IP address or ports.
-> >
-> >Moreover, in the future, we can achieve more complex extensions to the
-> >protocol stack by extending this ops.
-> >
-> >Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> >---
-> > include/net/netns/smc.h |  3 ++
-> > include/net/smc.h       | 51 ++++++++++++++++++++++
-> > net/ipv4/tcp_output.c   | 15 +++++--
-> > net/smc/Kconfig         | 12 ++++++
-> > net/smc/Makefile        |  1 +
-> > net/smc/smc_ops.c       | 51 ++++++++++++++++++++++
-> > net/smc/smc_ops.h       | 25 +++++++++++
-> > net/smc/smc_sysctl.c    | 95 +++++++++++++++++++++++++++++++++++++++++
-> > 8 files changed, 249 insertions(+), 4 deletions(-)
-> > create mode 100644 net/smc/smc_ops.c
-> > create mode 100644 net/smc/smc_ops.h
-> >
-> >+
-> >+struct smc_ops {
+On Mon, Jan 13, 2025 at 06:19:17PM -0800, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 > 
-> One more thing.
-> Can we call it smc_bpf_ops ? I think smc_ops is a bit ambiguous.
-> Same for smc_ops.h/c source file.
+> Tracing BPF programs execute from tracepoints and kprobes where
+> running context is unknown, but they need to request additional
+> memory.
 
-I don't think smc_bpf_ops is a good idea. BPF is just a way to implement
-smc_ops. Similarly, we can also implement this ops within the kernel module,
-just like tcp_congestion_ops dose. If you think this is ambiguous, perhaps
-we can call it as smc_handshake_ops ? This should eliminate the ambiguity.
+> The prior workarounds were using pre-allocated memory and
+> BPF specific freelists to satisfy such allocation requests.
+> Instead, introduce gfpflags_allow_spinning() condition that signals
+> to the allocator that running context is unknown.
+> Then rely on percpu free list of pages to allocate a page.
+> The rmqueue_pcplist() should be able to pop the page from.
+> If it fails (due to IRQ re-entrancy or list being empty) then
+> try_alloc_pages() attempts to spin_trylock zone->lock
+> and refill percpu freelist as normal.
 
-Best wishes,
-D. Wythe
-> 
-> Best regards,
-> Dust
+> BPF program may execute with IRQs disabled and zone->lock is
+> sleeping in RT, so trylock is the only option. 
+
+how is spin_trylock() from IRQ context not utterly broken in RT?
+
+It can lead to try to priority boost the idle thread, among other crazy
+things.
+
+
 
