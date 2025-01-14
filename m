@@ -1,215 +1,175 @@
-Return-Path: <bpf+bounces-48866-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48867-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DEA9A11426
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 23:33:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAA23A11430
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 23:35:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F9AF7A24A9
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 22:33:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BC1D3A147C
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 22:35:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DC0D2135C4;
-	Tue, 14 Jan 2025 22:33:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D19E32135C4;
+	Tue, 14 Jan 2025 22:35:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G2XS6atB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c5CqCeDa"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A6431D5142;
-	Tue, 14 Jan 2025 22:33:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22CC1D5142;
+	Tue, 14 Jan 2025 22:35:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736894023; cv=none; b=r0qmkaJnWxYqQynVmQZrFeC4wVTm4LfPBGrAsPtoQojNSkcfJYba26uGuzGstViy5AQ7WOOaKccbuGya2Tkwys33ICiHOLG/awK51RpUla5zZXWCI8QjdX9k6gNyOE06MaKYjOz4ENBPxaBtQD4UwQITP/zYsf00TWnfd5g83e4=
+	t=1736894129; cv=none; b=NkmOhxLljSfuQpPm9SnOv7twe4t2Q3GOK2o07DqYDk4DtsoZdPVTJAkRJcSwMMZopRI6QUq4Obrhzj2bEHYVbAxy10grSJM5Tk659+GyRiWLjRfZBEvzJhRTQGMjN1g/QLMIKFZkVSmd9AS4Tm7hsuSPpDeyl2vLYoh3bP2YIxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736894023; c=relaxed/simple;
-	bh=H6CKNDmx6xA1psmtXt5bj2TfFAV1nP2dHPlIqFZRk7c=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=O5pfEaKICx0+3JHeBZytID9E+sBV6bu8Lyaok+99k7sV2jtnlnx6OtshAvKxL5H1LtHD2e64EMXDrl0xInY6bp6QB/w93Z7vBRpYnNWlWUrUpHY7PRSOtMzmDmuD1omNjqX198bNMCHBAi0DgiDX9byjxFIUbfbCC2MgfnY/b04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G2XS6atB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E49F5C4CEDD;
-	Tue, 14 Jan 2025 22:33:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736894023;
-	bh=H6CKNDmx6xA1psmtXt5bj2TfFAV1nP2dHPlIqFZRk7c=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=G2XS6atBxbT+/Luwusho35E9ExirRGSfm/EC604udBMp9EZPiuKzKq32BQxgcrLh4
-	 UsC3fWCHgbEVg/t1TnH+Uv792bGbgUDG2iZdGXVkR5l4kRppG+WuZSRDobyjQ0vanz
-	 Ne/RZMerEpMv75aeleCk2EmHpkNhKW1iIm1ur7g59xJm5pPsCX6icx7C9F0iSsxmul
-	 xR5kEClDzI5LVeBPlRF9Fra8xsfEWPIad2+AQ6B0ojKMHSZu3NEjffjTxbcP1g5rKw
-	 Oog8zIWMc8aqnNf9Jd4nyIQP86CcG23PunRxHJI/CfyyW1Q3JCM/d/TT5dJ1XSFHfI
-	 yY8kHiNyfFF2A==
-Date: Tue, 14 Jan 2025 16:33:41 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	imx@lists.linux.dev, alyssa@rosenzweig.io, bpf@vger.kernel.org,
-	broonie@kernel.org, jgg@ziepe.ca, joro@8bytes.org,
-	lgirdwood@gmail.com, maz@kernel.org, p.zabel@pengutronix.de,
-	robin.murphy@arm.com, will@kernel.org
-Subject: Re: [PATCH v9 0/2] PCI: add enabe(disable)_device() hook for bridge
-Message-ID: <20250114223341.GA495433@bhelgaas>
+	s=arc-20240116; t=1736894129; c=relaxed/simple;
+	bh=ODVByDZfjM8USabGJb/xU999Gfxan787DvAUDQOlz8I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gYrMi6SA1vGUgWNwO7M8JxFhwe+BpdnPToXDMekCagmpqoGPQHI21GkMiUCET3/k56PQZ/mQ7MAnFqII7rbD3nQivVlfsPLTmSIR1jAVAEcyyGGiDFvwGIjj5F0te0WLU0m9V7g3UhKXlp4V2Qc1bQKIDWD4jgmxRXgoPlLOd3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c5CqCeDa; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2efe25558ddso7598250a91.2;
+        Tue, 14 Jan 2025 14:35:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736894126; x=1737498926; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eyxQYencly8MaFhMrNwHMB/CxD0XASVAN06NZI/PhDo=;
+        b=c5CqCeDaJscH5SuxnKBiLs+v/h6x5euTv5r2fpP5fmB+5fDgVvFjIN4LuQdo1jieMX
+         j1bTKYyHnS3RjfIHQsNNqMCP5Qz7AJIVS9CtpHxOeki0SLLWx04386KDnQedHt2hv5gm
+         cZSUDzSWZGxxeypr8qTdB98qMgWX18SCKl0cKKeu3P4F09lGJ9Wi1rHd8d4mFw+Vp8Nn
+         G0vBqesk73b+D9QTpuoQUZTHBFg+cNvJwvsCwNoEgVYfQlQt56axUOTxH11zXsJGmqvJ
+         grArNQJyfVTylKNxU5lMbUKTAhA3QeglMuv6p2OJ8BihlG8hhSLL2VEYq4OPYfwE/yG5
+         nGIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736894126; x=1737498926;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eyxQYencly8MaFhMrNwHMB/CxD0XASVAN06NZI/PhDo=;
+        b=jwJ762uPLa+PZlqZC8JdjW+uIfMG6woXe1DDPzxG/ZxPLKiYZo7u8fhD4XVNzt6VGL
+         67YM7PQ5j4dnJLmUf33yxuAYUFIuqgKBmMQ0wlU7UcEExnwRhSnvs6z4EU69Nxi9jiKm
+         XPXF3oDG7OvCBz52JJMZOEED77qs5JsaAi22BZsSC0l7SrCk7E8xWPvDq2zbn65FTc6Z
+         yebhxUBW4sHH4sNkAL8IsnLKEyaBeBvQPofVThzfhjWv9jLjSDmvrCOsv3T6dqBJBycR
+         1LzyRAA3XUMb1o4n2hZg3tTtL3xJCcXkgfhaJRTAj7kOkdXTIgk9wKUPjUIDxKNo3ihQ
+         /CQw==
+X-Forwarded-Encrypted: i=1; AJvYcCV5BRbym2plloNPpGUwgUEVj6mTM/nQ+MRQAlPeh5ygYuG7yOJvDd9beNtYOMwuKf2OqcHX8P/YNC0UygHB@vger.kernel.org, AJvYcCWWO2cc4fpd3VYD9hkpjp+QumfdKhBebxhtwQGYzJbTmPW5othZqEWm01ytRR+tjEQ0LZE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy9RnjYkS8WJ4kFEJRnAhtNg+fekmvoZi2DyymbDJRA//eNNoiJ
+	8TcLk6MOt7OsSCCtfWdqyR1jtwqopcpVUcI1CoZU5RaKaG7rfgDSB+MLzI146XUg1odCdR7ASAm
+	YCs5n+X83xdDZlem87u1UD/4Cp3X4Gg==
+X-Gm-Gg: ASbGncvUFmQWyLrQ5cnjPj1UmkaQlLewvJoaoPCfcavxiYfZ/CC92j9zMKRIOeulYjc
+	lddVDBkTa7u0tCbr8mD+Jh9D8C2H/mztJrdML
+X-Google-Smtp-Source: AGHT+IH10Zre8XAVSDuocA1ShgW1xeZ4Flh6m1+yOFCdpkK1Cse2w3HpC0YCYZArWmUo/VGzm5JIkWfL6dOCXaHqk8k=
+X-Received: by 2002:a17:90b:2b8e:b0:2ee:96a5:721c with SMTP id
+ 98e67ed59e1d1-2f548eca2d0mr35579917a91.21.1736894125993; Tue, 14 Jan 2025
+ 14:35:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250114-imx95_lut-v9-0-39f58dbed03a@nxp.com>
+References: <20241223083342.1172756-1-lizhijian@fujitsu.com>
+In-Reply-To: <20241223083342.1172756-1-lizhijian@fujitsu.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 14 Jan 2025 14:35:12 -0800
+X-Gm-Features: AbW1kvZRX4xA0MK5Okk5_NbZ8x4QUWcjGb6m-KtLBH7GX8nh_wmUB1pa5QL1Pgw
+Message-ID: <CAEf4BzYOOnR8k3WNKGKOUnfs_8VXk5Xh5J7Zrstix+bEciyCcg@mail.gmail.com>
+Subject: Re: [PATCH for-next v2] selftests/Makefile: override the srctree for
+ out-of-tree builds
+To: Li Zhijian <lizhijian@fujitsu.com>
+Cc: linux-kselftest@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	Shuah Khan <shuah@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 14, 2025 at 03:37:07PM -0500, Frank Li wrote:
-> Some system's IOMMU stream(master) ID bits(such as 6bits) less than
-> pci_device_id (16bit). It needs add hardware configuration to enable
-> pci_device_id to stream ID convert.
-> 
-> https://lore.kernel.org/imx/20240622173849.GA1432357@bhelgaas/
-> This ways use pcie bus notifier (like apple pci controller), when new PCIe
-> device added, bus notifier will call register specific callback to handle
-> look up table (LUT) configuration.
-> 
-> https://lore.kernel.org/imx/20240429150842.GC1709920-robh@kernel.org/
-> which parse dt's 'msi-map' and 'iommu-map' property to static config LUT
-> table (qcom use this way). This way is rejected by DT maintainer Rob.
-> 
-> Above ways can resolve LUT take or stream id out of usage the problem. If
-> there are not enough stream id resource, not error return, EP hardware
-> still issue DMA to do transfer, which may transfer to wrong possition.
-> 
-> Add enable(disable)_device() hook for bridge can return error when not
-> enough resource, and PCI device can't enabled.
-> 
-> Basicallly this version can match Bjorn's requirement:
-> 1: simple, because it is rare that there are no LUT resource.
-> 2: EP driver probe failure when no LUT, but lspci can see such device.
-> 
-> [    2.164415] nvme nvme0: pci function 0000:01:00.0
-> [    2.169142] pci 0000:00:00.0: Error enabling bridge (-1), continuing
-> [    2.175654] nvme 0000:01:00.0: probe with driver nvme failed with error -12
-> 
-> > lspci
-> 0000:00:00.0 PCI bridge: Philips Semiconductors Device 0000
-> 0000:01:00.0 Non-Volatile memory controller: Micron Technology Inc 2100AI NVMe SSD [Nitro] (rev 03)
-> 
-> To: Bjorn Helgaas <bhelgaas@google.com>
-> To: Richard Zhu <hongxing.zhu@nxp.com>
-> To: Lucas Stach <l.stach@pengutronix.de>
-> To: Lorenzo Pieralisi <lpieralisi@kernel.org>
-> To: Krzysztof Wilczyński <kw@linux.com>
-> To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> To: Rob Herring <robh@kernel.org>
-> To: Shawn Guo <shawnguo@kernel.org>
-> To: Sascha Hauer <s.hauer@pengutronix.de>
-> To: Pengutronix Kernel Team <kernel@pengutronix.de>
-> To: Fabio Estevam <festevam@gmail.com>
-> Cc: linux-pci@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: imx@lists.linux.dev
-> Cc: Frank.li@nxp.com \
-> Cc: alyssa@rosenzweig.io \
-> Cc: bpf@vger.kernel.org \
-> Cc: broonie@kernel.org \
-> Cc: jgg@ziepe.ca \
-> Cc: joro@8bytes.org \
-> Cc: l.stach@pengutronix.de \
-> Cc: lgirdwood@gmail.com \
-> Cc: maz@kernel.org \
-> Cc: p.zabel@pengutronix.de \
-> Cc: robin.murphy@arm.com \
-> Cc: will@kernel.org \
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+On Mon, Dec 23, 2024 at 12:33=E2=80=AFAM Li Zhijian <lizhijian@fujitsu.com>=
+ wrote:
+>
+> Fixes an issue where out-of-tree kselftest builds fail when building
+> the BPF and bpftools components. The failure occurs because the top-level
+> Makefile passes a relative srctree path to its sub-Makefiles, which
+> leads to errors in locating necessary files.
+>
+> For example, the following error is encountered:
+>
+> ```
+> $ make V=3D1 O=3D$build/ TARGETS=3Dhid kselftest-all
+> ...
+> make -C ../tools/testing/selftests all
+> make[4]: Entering directory '/path/to/linux/tools/testing/selftests/hid'
+> make  -C /path/to/linux/tools/testing/selftests/../../../tools/lib/bpf OU=
+TPUT=3D/path/to/linux/O/kselftest/hid/tools/build/libbpf/ \
+>             EXTRA_CFLAGS=3D'-g -O0'                                      =
+\
+>             DESTDIR=3D/path/to/linux/O/kselftest/hid/tools prefix=3D all =
+install_headers
+> make[5]: Entering directory '/path/to/linux/tools/lib/bpf'
+> ...
+> make[5]: Entering directory '/path/to/linux/tools/bpf/bpftool'
+> Makefile:127: ../tools/build/Makefile.feature: No such file or directory
+> make[5]: *** No rule to make target '../tools/build/Makefile.feature'.  S=
+top.
+> ```
+>
+> To resolve this, override the srctree in the kselftests's top Makefile
+> when performing an out-of-tree build. This ensures that all sub-Makefiles
+> have the correct path to the source tree, preventing directory resolution
+> errors.
+>
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> ---
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+>
+> V2:
+>  - handle srctree in selftests itself rather than the linux' top Makefile=
+ # Masahiro Yamada <masahiroy@kernel.org>
+>
+> V1: https://lore.kernel.org/lkml/20241217031052.69744-1-lizhijian@fujitsu=
+.com/
+> ---
+>  tools/testing/selftests/Makefile | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
 
-Applied to pci/controller/imx6 for v6.14, thanks!  And thanks for your
-patience.
+Is this intended to go through the bpf-next tree? I don't see it in
+our patchworks, so please rebase and resend (unless this was routed
+through some other tree already)
 
-> ---
-> Changes in v9:
-> - update commit message and comments
-> - Rob agree use API to parse iommu-map and msi-map.
-> https://lore.kernel.org/imx/20250113225905.GA3325507-robh@kernel.org/
-> - Link to v8: https://lore.kernel.org/r/20241210-imx95_lut-v8-0-2e730b2e5fde@nxp.com
-> 
-> Changes in v8:
-> - update comment message according to Lorenzo Pieralisi's suggestion.
-> - rework err target table
-> - improve err==0 && target ==NULL description, use 1:1 map RID to
-> stream ID.
-> - invalidate case -> unexisted case, never happen
-> - sid_i will not do mask, add comments said only MSI glue layer add
-> controller id.
-> - rework iommu map and msi map return value check logic according to
-> Lorenzo Pieralisi's suggestion
-> - Link to v7: https://lore.kernel.org/r/20241203-imx95_lut-v7-0-d0cd6293225e@nxp.com
-> 
-> Changes in v7:
-> - Rebase v6.13-rc1
-> - Update patch 2 according to mani's feedback
-> - Link to v6: https://lore.kernel.org/r/20241118-imx95_lut-v6-0-a2951ba13347@nxp.com
-> 
-> Changes in v6:
-> - Bjorn give review tags at v4, but v5 have big change, drop Bjorn's review
-> tag.
-> - Add back Marc Zyngier't review and test tags
-> - Add mani's ack at first patch
-> - Mini change for patch 2 according to mani's feedback
-> - Link to v5: https://lore.kernel.org/r/20241104-imx95_lut-v5-0-feb972f3f13b@nxp.com
-> 
-> Changes in v5:
-> - Add help function of pci_bridge_enable(disable)_device
-> - Because big change, removed Bjorn's review tags and have not
-> added
-> Marc Zyngier't review and test tags
-> - Fix pci-imx6.c according to Mani's feedback
-> - Link to v4: https://lore.kernel.org/r/20241101-imx95_lut-v4-0-0fdf9a2fe754@nxp.com
-> 
-> Changes in v4:
-> - Add Bjorn Helgaas review tag for patch1
-> - check 'target' value for patch2
-> - detail see each patches
-> - Link to v3: https://lore.kernel.org/r/20241024-imx95_lut-v3-0-7509c9bbab86@nxp.com
-> 
-> Changes in v3:
-> - disable_device when error happen
-> - use target for of_map_id
-> - Check if rid already in lut table when enable deviced
-> - Link to v2: https://lore.kernel.org/r/20240930-imx95_lut-v2-0-3b6467ba539a@nxp.com
-> 
-> Changes in v2:
-> - see each patch
-> - Link to v1: https://lore.kernel.org/r/20240926-imx95_lut-v1-0-d0c62087dbab@nxp.com
-> 
-> ---
-> Frank Li (2):
->       PCI: Add enable_device() and disable_device() callbacks for bridges
->       PCI: imx6: Add IOMMU and ITS MSI support for i.MX95
-> 
->  drivers/pci/controller/dwc/pci-imx6.c | 199 +++++++++++++++++++++++++++++++++-
->  drivers/pci/pci.c                     |  36 +++++-
->  include/linux/pci.h                   |   2 +
->  3 files changed, 235 insertions(+), 2 deletions(-)
-> ---
-> base-commit: 40384c840ea1944d7c5a392e8975ed088ecf0b37
-> change-id: 20240926-imx95_lut-1c68222e0944
-> 
-> Best regards,
-> ---
-> Frank Li <Frank.Li@nxp.com>
-> 
+> diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/M=
+akefile
+> index 3d8a80abd4f0..ab82278353cf 100644
+> --- a/tools/testing/selftests/Makefile
+> +++ b/tools/testing/selftests/Makefile
+> @@ -154,15 +154,19 @@ override LDFLAGS =3D
+>  override MAKEFLAGS =3D
+>  endif
+>
+> +top_srcdir ?=3D ../../..
+> +
+>  # Append kselftest to KBUILD_OUTPUT and O to avoid cluttering
+>  # KBUILD_OUTPUT with selftest objects and headers installed
+>  # by selftests Makefile or lib.mk.
+> +# Override the `srctree` variable to ensure it is correctly resolved in
+> +# sub-Makefiles, such as those within `bpf`, when managing targets like
+> +# `net` and `hid`.
+>  ifdef building_out_of_srctree
+>  override LDFLAGS =3D
+> +override srctree :=3D $(top_srcdir)
+>  endif
+>
+> -top_srcdir ?=3D ../../..
+> -
+>  ifeq ("$(origin O)", "command line")
+>    KBUILD_OUTPUT :=3D $(O)
+>  endif
+> --
+> 2.44.0
+>
+>
 
