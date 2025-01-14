@@ -1,175 +1,164 @@
-Return-Path: <bpf+bounces-48835-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48836-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BCE4A1100D
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 19:29:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 15880A11011
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 19:29:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 686A91611AA
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 18:29:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2089C1609C5
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 18:29:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EA781FA27F;
-	Tue, 14 Jan 2025 18:29:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC5171FC0F4;
+	Tue, 14 Jan 2025 18:29:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ExNC60Ga"
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="KFBFTQuv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2B2E1F9AAB
-	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 18:29:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E3BC1FAC3B
+	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 18:29:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736879361; cv=none; b=Bt8lCsgXpxipMIMTfLvvFiHZqaNQsJQrWVtgV4rH4PvKd6/terEu/x1VGED6xOn6npERY5FO4CZcE+2EAojqgV88Bpa21ZOR34yWdeJZi4lSABFXDomotcwkh0rRCEzpit50iojT9OFM1auuNMg3TbvXyHuOQJV0/uy9vhn0z9I=
+	t=1736879367; cv=none; b=UvDZ5mJ0hVtZvUSH2enqNvm4Mt972UHNJB3x0i7uDt6XATLkzkgNXFdoGf7GY+QZM6wnr1aE+47J4qAq6cvGiUFO7YfijoKPNKM+jzJblzEYYSlxbtI8gAo/GRLyY596fOQQw8rcn8UHqtih6EJyi5IQcd1kfjNSk+SSsbbH//E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736879361; c=relaxed/simple;
-	bh=kc8LVP1FdDWwB9aZUbKZBGv2GjOXolWt0+u6dPct1CU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LEDB5FNxjcdvjVVEgrH+mi8tpCzYHcl8lOoBbA+83NIPaxvJY55X+FykEAFwGPDkJrrSRie0IgcELo302t8GPu+rYyIlXeb/Jf/D2KxVLL97w661h+cMxygf5I88JzO5P+p5E6xT/WkEvdhvqhW5hvjSS8lFPR85wkLUrdYIa2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ExNC60Ga; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-385df53e559so4618946f8f.3
-        for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 10:29:17 -0800 (PST)
+	s=arc-20240116; t=1736879367; c=relaxed/simple;
+	bh=jsa0CovMO5ZT70pqhIrCF6Xwrs9x8fVebY2Xd/EYn6o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ty/SALo0vFH45WMXZAfwvXe7CVrA6ymzWeeWOOTq9LxZOMtX4XLWt2hULPvKmW34IGSbeJ5IrTO4sEdsG3lVSAWFlVVkjDskmr8cwoAS+kIMG9cix6PhtL9wgkTtIHlunS5wV98nX69/x8LbRQm+FftwB+O82o3G31ACeHUdQCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=KFBFTQuv; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-aae81f4fdc4so1105437766b.0
+        for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 10:29:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736879356; x=1737484156; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4B4h+GqI+a8SvIS5sye8hS5px9jGMW4hqMJvB4sEfG4=;
-        b=ExNC60Ga4YJrt87nzrVkOk5CZcksc/YVb1ndM95c8MGtKGClwS6rbUpZx+5zJZ+qpQ
-         PfqAqVWzRODtAp1yDDgp54DY/X/QRMGIazsUpxli1bq3BrvGxnvzPRM47Ox2Gl7eHmfc
-         WFUC38QaHMg1BiBlj8s7jJ+wDuUG54VDEk7HsKtIJX4baNcgAnOVHbkwp3YzraVbJGHU
-         dSnLCN9iDbM3fNDb30RoVkjNcGKhsJxXYlWq2O/H9XrFjuOZADGO6t9N7Sig/zEFOyr/
-         8X7Hqct2wcyX4xgssej+bHFiJ7alWHaIyVMf7wW2Tn6I6k7I9egIpssbbGRR9z82x817
-         +RbQ==
+        d=ventanamicro.com; s=google; t=1736879362; x=1737484162; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+L6x2g4BC/d/+jfoDGOj0pMskOpzz9VGXCLG5E4WwRY=;
+        b=KFBFTQuv4suEhQgFHTC00K5qiQ3Jw2kiLcP2Ut9JBRBrS6MG3+DcQWnTJ2OvOmD2ET
+         VmAoHdL2GNwADncv1A6R63Igi6HrsrO4q0Iy0Tf0ktWX9MhkhZAWTt4DFpf39SgVrvcn
+         goB1HrkuDsZ6EUUMHyn+nRAXkfPC0D6r+s8all1P1Tni6YRXh8p/Hn56TaO13lf8p0o+
+         e8waI5tHtQROzxqeDrKmwdFRhQ/JWlNMRBEbvpsdANDX4sa5h9naV2GPaEWOaWIvEYUT
+         GOIozzsliRXxnLRPkM//8kc56luukRtxY3CL4EKdxIA1Jd9xtXGcUDyU6uX7Lky9U82N
+         XglQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736879356; x=1737484156;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4B4h+GqI+a8SvIS5sye8hS5px9jGMW4hqMJvB4sEfG4=;
-        b=aPQmyLRdgLiI5Sec9i9TuGUlaJb7CcWbFmY1UzNRLMoY/H4XG9EILrNSY/KUhbzLCK
-         JwkZluDZODnoPgLo0fOjcE80wihG2V44P/c9j3nCTUhitN1G7kwkJTu68VxlT1G5lL/J
-         astOE20oNDh32zsaDIWeXC9wWPJeMzjMyzj1WIE4slZCcgKoKPczKDRDTabbCPTZa3yV
-         l5iS9fX2J6nSPqT8TOYARtAv4+8bIyhcOleCHg5MxOhDZQ4x4UGaT9Oj0V0L8H/u1uc7
-         GYHprUVsoyL6g8YuJOfFlVKXwgbWFCUtuAu4FnK7vLmRd3klhTMiF7oAZy4VkD6PQIpj
-         V5cA==
-X-Forwarded-Encrypted: i=1; AJvYcCXITqH2gqnGRg0wntTHDcC6NFjvWc/I0aRbfEAkG1SEAwxujOvz4aVnC+8oh6yizWTqGSM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy4gqTYDJsgXvmCkOnVLnvdISqcTkqtkLC+A8hGQGfOSc4CTbh2
-	iToIFRNuBZOWmd/JtPji6morC+btXV2JKACflQCjlZF8N6lpZt1tLV49iZcVxrEhRhh8lvmU8uS
-	QKObZy/DLHWCQO6+vAYhvlZFahTQ=
-X-Gm-Gg: ASbGncvpKIJ33HgBEJtrGYPjMpiuI90K71IXZtHtpwoUUxSvx02vprQYB2TZWwISCEH
-	0r7n5ip1LSmczTjQjDTgHoN5YW6mhLVidfDdunOWMqiat5KSHI7HJrA==
-X-Google-Smtp-Source: AGHT+IFRhXZ7KLAJ0znT8DioPYndt6WjqgNiXnghDtjXS3gFJpl4ymE/JUSDndcvRVmMnzwKZWOWLrEzSgzdaR3wlIM=
-X-Received: by 2002:adf:9b9a:0:b0:38a:4575:5ffd with SMTP id
- ffacd0b85a97d-38a8730fbedmr18845761f8f.45.1736879355939; Tue, 14 Jan 2025
- 10:29:15 -0800 (PST)
+        d=1e100.net; s=20230601; t=1736879362; x=1737484162;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+L6x2g4BC/d/+jfoDGOj0pMskOpzz9VGXCLG5E4WwRY=;
+        b=rpHPa+3jp0juzaWjdRMqf1pUAoy56HA5/I9F7+nzGcnqbQZVEZlQWPk3UCT6KP9Vra
+         fj+vttzB6IeAYSb8AFuqlMmSl/5sxpJYt2qdUiDb3sS4ZKHlfBgr6MENM3XEpw+9C+6R
+         C+JTerXRMbEFsAKI+R6k/mtG9S9NRyUU19lhYCLMfUTiJqvg1s+5eaWlrWHFaoRbgzzS
+         9twqDDnBZSP3Hez6zq0xpUyvrQBSfZn1ZWMaSvqjTOx4L2zUmznvJeq6UPnrv62PzU+Z
+         pNhMtH+Yt6nxZ3+10Inkdo9iXp29VstiVY6ezCJT+p4MDx3ssLNapKNv0hhcb4fGQ/9K
+         z+ZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXoqEQMLTr30VZo540WqFCdLQjgShJCWlie2SgaMDSg87CLx5Eu2oIVrkrnGOlqOJAVGnI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxVF07AfLSmUkMeSaA3Os7+W7MwMaWY/Q3rqgnwUjIId5lKTpux
+	cO104DcAIzx+druL6oxxf4AFFNFs0tTXVZi0NO8YEUJhgaf+pScR4T8E3bl11rE=
+X-Gm-Gg: ASbGnctjui0SvnQUBGBYDd4JGAxZ07LO9iruOkE2LUBeBAYg2C8hB8rslbnSm+DIDA+
+	RuYm805LsV9rLuVCiV2ATM/kcFgyY5OCpJofGRU2WcS6sX8js232ZWLL7kkAZVvd2YztivwKQB7
+	kM13ZCW0xeum29LdTeHU4ZolMNOsOQM6AKg+HepwUON04UjBgeo6XNPV5wAdcDc0zVdVFPCv+z8
+	lxhSxu7FbiM4T+Os3dHhP8zlnRQXicDj7zlcw6XgiqDKcrCjjIPlDlpFZdVYEXHr9klea17bWwr
+	dljeGKkBQZKxLd+nxKrrCmWxeUYeVTHwgxTAuyZ/+g==
+X-Google-Smtp-Source: AGHT+IElLRyBSSFsvDLttv+1rxbirlHss1/zCBNTWvitDc/Y1ed9oUs4kNSXL7wHp3+sai4oSrFAlg==
+X-Received: by 2002:a17:907:96a7:b0:aa6:2c18:aaa2 with SMTP id a640c23a62f3a-ab2ab73e7dbmr2340049566b.27.1736879362392;
+        Tue, 14 Jan 2025 10:29:22 -0800 (PST)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab2c905f04fsm659166066b.27.2025.01.14.10.29.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jan 2025 10:29:21 -0800 (PST)
+Date: Tue, 14 Jan 2025 19:29:21 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org, 
+	virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev, 
+	linux-riscv@lists.infradead.org, linux-perf-users@vger.kernel.org, xen-devel@lists.xenproject.org, 
+	kvm@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, linux-mm@kvack.org, linux-kselftest@vger.kernel.org, 
+	bpf@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, 
+	Juergen Gross <jgross@suse.com>, Ajay Kaher <ajay.kaher@broadcom.com>, 
+	Alexey Makhalov <alexey.amakhalov@broadcom.com>, Russell King <linux@armlinux.org.uk>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, "Liang, Kan" <kan.liang@linux.intel.com>, 
+	Boris Ostrovsky <boris.ostrovsky@oracle.com>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, Sean Christopherson <seanjc@google.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Frederic Weisbecker <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Jason Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Ard Biesheuvel <ardb@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+	Joel Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli <juri.lelli@redhat.com>, 
+	Clark Williams <williams@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>, 
+	Tomas Glozar <tglozar@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Kees Cook <kees@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Christoph Hellwig <hch@infradead.org>, Shuah Khan <shuah@kernel.org>, 
+	Sami Tolvanen <samitolvanen@google.com>, Miguel Ojeda <ojeda@kernel.org>, 
+	Alice Ryhl <aliceryhl@google.com>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>, 
+	Samuel Holland <samuel.holland@sifive.com>, Rong Xu <xur@google.com>, 
+	Nicolas Saenz Julienne <nsaenzju@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Yosry Ahmed <yosryahmed@google.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, 
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, 
+	Luis Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>, 
+	Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: Re: [PATCH v4 10/30] riscv/paravirt: Mark pv_steal_clock static call
+ as __ro_after_init
+Message-ID: <20250114-7fc0ed577ee91b6813f92806@orel>
+References: <20250114175143.81438-1-vschneid@redhat.com>
+ <20250114175143.81438-11-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250114021922.92609-1-alexei.starovoitov@gmail.com>
- <20250114021922.92609-2-alexei.starovoitov@gmail.com> <20250114095355.GM5388@noisy.programming.kicks-ass.net>
- <Z4Y6PS3Nj8EMt9Mx@tiehlicka> <20250114103946.GC8362@noisy.programming.kicks-ass.net>
-In-Reply-To: <20250114103946.GC8362@noisy.programming.kicks-ass.net>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 14 Jan 2025 10:29:04 -0800
-X-Gm-Features: AbW1kvYKbPAf1xVyn9_x3zxilLlIKkzAudqp-Kz34Sgg3trNLynhQN0gigkkqbY
-Message-ID: <CAADnVQ+kGLtY0eWwaSL4To3z1KwgmsASvYHFkUXtyiVbvCNDbA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/6] mm, bpf: Introduce try_alloc_pages() for
- opportunistic page allocation
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Michal Hocko <mhocko@suse.com>, bpf <bpf@vger.kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Vlastimil Babka <vbabka@suse.cz>, 
-	Sebastian Sewior <bigeasy@linutronix.de>, Steven Rostedt <rostedt@goodmis.org>, 
-	Hou Tao <houtao1@huawei.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Matthew Wilcox <willy@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>, Tejun Heo <tj@kernel.org>, 
-	linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250114175143.81438-11-vschneid@redhat.com>
 
-On Tue, Jan 14, 2025 at 2:39=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
+On Tue, Jan 14, 2025 at 06:51:23PM +0100, Valentin Schneider wrote:
+> The static call is only ever updated in:
+> 
+>   __init pv_time_init()
+>   __init xen_time_setup_guest()
+> 
+> so mark it appropriately as __ro_after_init.
+> 
+> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+> ---
+>  arch/riscv/kernel/paravirt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/riscv/kernel/paravirt.c b/arch/riscv/kernel/paravirt.c
+> index fa6b0339a65de..dfe8808016fd8 100644
+> --- a/arch/riscv/kernel/paravirt.c
+> +++ b/arch/riscv/kernel/paravirt.c
+> @@ -30,7 +30,7 @@ static u64 native_steal_clock(int cpu)
+>  	return 0;
+>  }
+>  
+> -DEFINE_STATIC_CALL(pv_steal_clock, native_steal_clock);
+> +DEFINE_STATIC_CALL_RO(pv_steal_clock, native_steal_clock);
+>  
+>  static bool steal_acc = true;
+>  static int __init parse_no_stealacc(char *arg)
+> -- 
+> 2.43.0
 >
-> On Tue, Jan 14, 2025 at 11:19:41AM +0100, Michal Hocko wrote:
-> > On Tue 14-01-25 10:53:55, Peter Zijlstra wrote:
-> > > On Mon, Jan 13, 2025 at 06:19:17PM -0800, Alexei Starovoitov wrote:
-> > > > From: Alexei Starovoitov <ast@kernel.org>
-> > > >
-> > > > Tracing BPF programs execute from tracepoints and kprobes where
-> > > > running context is unknown, but they need to request additional
-> > > > memory.
-> > >
-> > > > The prior workarounds were using pre-allocated memory and
-> > > > BPF specific freelists to satisfy such allocation requests.
-> > > > Instead, introduce gfpflags_allow_spinning() condition that signals
-> > > > to the allocator that running context is unknown.
-> > > > Then rely on percpu free list of pages to allocate a page.
-> > > > The rmqueue_pcplist() should be able to pop the page from.
-> > > > If it fails (due to IRQ re-entrancy or list being empty) then
-> > > > try_alloc_pages() attempts to spin_trylock zone->lock
-> > > > and refill percpu freelist as normal.
-> > >
-> > > > BPF program may execute with IRQs disabled and zone->lock is
-> > > > sleeping in RT, so trylock is the only option.
-> > >
-> > > how is spin_trylock() from IRQ context not utterly broken in RT?
-> >
-> > +     if (IS_ENABLED(CONFIG_PREEMPT_RT) && (in_nmi() || in_hardirq()))
-> > +             return NULL;
-> >
-> > Deals with that, right?
->
-> Changelog didn't really mention that, did it? -- it seems to imply quite
-> the opposite :/
 
-Hmm. Until you said it I didn't read it as "imply the opposite" :(
-
-The cover letter is pretty clear...
-"
-- Since spin_trylock() is not safe in RT from hard IRQ and NMI
-  disable such usage in lock_trylock and in try_alloc_pages().
-"
-
-and the patch 2 commit log is clear too...
-
-"
-Since spin_trylock() cannot be used in RT from hard IRQ or NMI
-it uses lockless link list...
-"
-
-and further in patch 3 commit log...
-
-"
-Use spin_trylock in PREEMPT_RT when not in hard IRQ and not in NMI
-and fail instantly otherwise, since spin_trylock is not safe from IRQ
-due to PI issues.
-"
-
-I guess I can reword this particular sentence in patch 1 commit log,
-but before jumping to an incorrect conclusion please read the
-whole set.
-
-> But maybe, I suppose any BPF program needs to expect failure due to this
-> being trylock. I just worry some programs will malfunction due to never
-> succeeding -- and RT getting blamed for this.
->
-> Maybe I worry too much.
-
-Humans will find a way to blame BPF and/or RT for all of their problems
-anyway. Just days ago BPF was blamed in RT for causing IPIs during JIT.
-Valentin's patches are going to address that but ain't noone has time
-to explain that continuously.
-
-Seriously, though, the number of things that still run in hard irq context
-in RT is so small that if some tracing BPF prog is attached there
-it should be using prealloc mode. Full prealloc is still
-the default for bpf hash map.
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
