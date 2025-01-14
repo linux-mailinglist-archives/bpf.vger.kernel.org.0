@@ -1,122 +1,97 @@
-Return-Path: <bpf+bounces-48775-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48778-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3258A1089C
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 15:09:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A3A0A108EF
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 15:17:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C76213A9095
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 14:07:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23CEC1884A9F
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 14:17:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79B01142633;
-	Tue, 14 Jan 2025 14:06:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D821213A879;
+	Tue, 14 Jan 2025 14:17:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qu6dI3iI"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D2861369AA
-	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 14:06:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA1746F06B;
+	Tue, 14 Jan 2025 14:17:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736863610; cv=none; b=GO/5It4kTpjYFbahoIgMZf21sEfgJNCZxODVzYg3fLDnM+l/J4+J5gcPhPLKee81Ckw9ME+OmFWUNTsj+B3cMHl1THFByZviLPDmQdCydQ+2BRbwfXC6x91WK0XdWWQNrElQU69VzHWigcVoRhg5UwoDyYroVJkm93wVgRS3bXY=
+	t=1736864249; cv=none; b=qGNAih5V4drZTiP5GpnT7KKA6axC7hG3qo6FylZwEkiQ3V30Zp7sAzKufmRFWuCgy77LITEZ9rubK2nQ8lzOsMUZle/pFOo/P0/+/wLpvJvkoqsr2KUdZCofTJ4aHnUdh54y6QbAW8YeXEY1yJ4jNQfQSkLkagE49Vo2jLL5pBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736863610; c=relaxed/simple;
-	bh=xuFFfKxlJYFjcEWfz6dNI4DjnnN6bITolBl+ACG8vks=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bJ4CMz3MgYHZ0eAacYBrL8f/tZjDbNGQRH6IS+IbdvoE3jxvxGR4FAwIHLfXzi8es71iOle0D1+PzoBtTurNOsf5B8JC3XwUD4V1zkgX7jUMTSXmH8eEb4FrEIFCGOUFN1fXXzYGQYwdIi+s7TpCyaH/deMlnYex41lkdOYVmZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YXWBm3NmNz4f3jdg
-	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 22:06:24 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id D213B1A157F
-	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 22:06:44 +0800 (CST)
-Received: from ultra.huawei.com (unknown [10.90.53.71])
-	by APP2 (Coremail) with SMTP id Syh0CgCnsWRzb4ZnzsHBAw--.3782S3;
-	Tue, 14 Jan 2025 22:06:44 +0800 (CST)
-From: Pu Lehui <pulehui@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Pu Lehui <pulehui@huawei.com>,
-	Pu Lehui <pulehui@huaweicloud.com>
-Subject: [PATCH bpf 2/2] libbpf: Fix incorrect iter rounds when marking BTF_IS_EMBEDDED
-Date: Tue, 14 Jan 2025 14:09:31 +0000
-Message-Id: <20250114140931.3844196-2-pulehui@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250114140931.3844196-1-pulehui@huaweicloud.com>
-References: <20250114140931.3844196-1-pulehui@huaweicloud.com>
+	s=arc-20240116; t=1736864249; c=relaxed/simple;
+	bh=m+z2P0iqMgo30jCMZH1rPbo39nINlhLh3q/Vd2vM2BY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RZu2KhoXVddqoBY2m3zemLEskaXUJ7nbNAhc3CRIeUyzojrneE5M4RQZUuZXT8dN30nJcstCunLNyDKP8FwbWd/NZXLYP7AXFIS01AbBwaL7mxBCU+KrnT0TFSOJFPEcOVnsHVtb72cID9Q224CFKe4aXvz0XfmrG6Oz+kXWqBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=qu6dI3iI; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=sZSQ+aNYXb1wrd7HMBp8nX09OrL4/Lj8Lt0BpEG6ikI=; b=qu6dI3iIUSsO9XBNdr4DMCRl2v
+	PRWP5V5TDNCElptz95VqqFIX5wgFdWijlDxm8tDRsvRCE7Btp0lpORO4MAhgCkE10tNn/8dicXckZ
+	mjg3tSYt70+YpXKVYcVuQO/wmn/8RwUSXbDt/G196xDcAihPD2U2Zulnbuz4aNXoqMGt4qxO1CJMW
+	f5Y4atGMndeQgZytO4JLdaQiWwSsKsnnj+mk464ggp7mbo/eXHIPMQQmungKLDD2VFLhYRnOal+ck
+	UghRJj9q1/ck3sP8kX7icHSskJkDLpsDtK3sDnDOn4QEs0LWbh+Y0DMKnAh6x+eUHIPhDUc6aGQEp
+	vWPJvQdg==;
+Received: from 77-249-17-89.cable.dynamic.v4.ziggo.nl ([77.249.17.89] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tXhjQ-0000000GrZv-1cYu;
+	Tue, 14 Jan 2025 14:17:24 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 7DF833003AF; Tue, 14 Jan 2025 15:17:23 +0100 (CET)
+Date: Tue, 14 Jan 2025 15:17:23 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	David Laight <David.Laight@aculab.com>,
+	lkml <linux-kernel@vger.kernel.org>,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	x86@kernel.org
+Subject: Re: [RFC] x86/alternatives: Merge first and second step in
+ text_poke_bp_batch
+Message-ID: <20250114141723.GS5388@noisy.programming.kicks-ass.net>
+References: <20250114140237.3506624-1-jolsa@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgCnsWRzb4ZnzsHBAw--.3782S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ww47Zr4DKry5tFyxWr4xtFb_yoW8Jw48pF
-	47G3yxKwn5Jw4Igw1vg3WFkay3Cw4Iq3yUCrW29w1rAFsagwn8KF4xXFs5ArWfWF48tw47
-	Za9I9ry5uw1kAr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUm014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
-	x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-	Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
-	A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
-	0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
-	IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-	Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2
-	xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWU
-	JVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67
-	kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY
-	6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0x
-	vEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVj
-	vjDU0xZFpf9x0JU4OJ5UUUUU=
-X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250114140237.3506624-1-jolsa@kernel.org>
 
-From: Pu Lehui <pulehui@huawei.com>
+On Tue, Jan 14, 2025 at 03:02:37PM +0100, Jiri Olsa wrote:
+> hi,
+> while checking on similar code for uprobes I was wondering if we
+> can merge first 2 steps of instruction update in text_poke_bp_batch
+> function.
+> 
+> Basically the first step now would be to write int3 byte together
+> with the rest of the bytes of the new instruction instead of doing
+> that separately. And the second step would be to overwrite int3
+> byte with first byte of the new instruction.
+> 
+> Would that work or do I miss some x86 detail that could lead to crash?
 
-When redirecting the base BTF of the split BTF from the distilled base
-BTF to the vmlinux base BTF, we need to mark distilled base struct/union
-members of split BTF structs/unions in id_map with BTF_IS_EMBEDDED,
-which indicates that these types need to match both name and size later.
-But, the current implementation uses the incorrect iter rounds, we need
-to correct it to iter from nr_dist_base_types to nr_types.
+I *think* it will work on most modern systems, but I'm very sure I don't
+have all the details.
 
-Fixes: 19e00c897d50 ("libbpf: Split BTF relocation")
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
----
- tools/lib/bpf/btf_relocate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+IIRC this is the magic recipe blessed by both Intel and AMD, and
+if we're going to be changing this I would want both vendors to sign off
+on that.
 
-diff --git a/tools/lib/bpf/btf_relocate.c b/tools/lib/bpf/btf_relocate.c
-index b72f83e15156..53d1f3541bce 100644
---- a/tools/lib/bpf/btf_relocate.c
-+++ b/tools/lib/bpf/btf_relocate.c
-@@ -212,7 +212,7 @@ static int btf_relocate_map_distilled_base(struct btf_relocate *r)
- 	 * need to match both name and size, otherwise embedding the base
- 	 * struct/union in the split type is invalid.
- 	 */
--	for (id = r->nr_dist_base_types; id < r->nr_split_types; id++) {
-+	for (id = r->nr_dist_base_types; id < r->nr_dist_base_types + r->nr_split_types; id++) {
- 		err = btf_mark_embedded_composite_type_ids(r, id);
- 		if (err)
- 			goto done;
--- 
-2.34.1
+> I tried to hack it together in attached patch and it speeds up a bit
+> text_poke_bp_batch as shown below.
 
+Why do we care about performance here?
 
