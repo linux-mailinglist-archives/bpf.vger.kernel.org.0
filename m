@@ -1,124 +1,125 @@
-Return-Path: <bpf+bounces-48784-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48785-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EA31A109AD
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 15:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1365BA10A08
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 15:57:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB20D3A1E41
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 14:46:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B87C73A5507
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 14:57:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6A1A126C02;
-	Tue, 14 Jan 2025 14:46:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0DDB156887;
+	Tue, 14 Jan 2025 14:57:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NWBnFIkb"
 X-Original-To: bpf@vger.kernel.org
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7AC883CD2
-	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 14:46:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAD0F155359;
+	Tue, 14 Jan 2025 14:57:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736865972; cv=none; b=gZnpyxxMtYviOIJR0FYa1UVbehS1PZtiON6KpoTPXyuX1Q+LilU5K4oTjUP8KEMxYsJSScgrib/brh96xsZGLB+b5QcEQvdlV4z5dMOZ+1SStxsvXvvG5v9oJNufgAshyGdo5O/q4qfIoNoJvWfjSAYuUWjLX7IWQjY2l1uTKWo=
+	t=1736866624; cv=none; b=UwEzeS+Ucoz/D04jG1ZQJGnmDf/IBjMCOGQZDG6qwv8MtlfjYrQpBb+QXgWfDps7HLajfqUtzCi0Dk8uORACkimYqZ1E8EE9nHppVwMXi3HSqtJGm3bDkV9+rsZtVwvsfNg2rKvOPojsIeTIOkU/gXtm3kLvHpDd+cdmgmzNuuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736865972; c=relaxed/simple;
-	bh=wsHZtnHpAWP3Z6iWC4XZy/63GYdfKEW6a1pz2UhTr+g=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=UTg5rZPc6/Me+RqdckirK4zKhuP8k6YRt9MjQJQFZPEVfqJI1VpyF8HPVCDuyR6Kub2PqE+LvDGoGpIbyrJ+gj36FG6qcBqHFCnH6ubhKAbK3/xD7XtXiTvR7iJCMTJyxtNQqaO0zY5huHMokpv1h+0FyvoNMU18Hi/HECvI7Cg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mtapsc-3-ithJAbB0MtWJLSy7a8AjyA-1; Tue, 14 Jan 2025 14:39:42 +0000
-X-MC-Unique: ithJAbB0MtWJLSy7a8AjyA-1
-X-Mimecast-MFC-AGG-ID: ithJAbB0MtWJLSy7a8AjyA
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 14 Jan
- 2025 14:38:42 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Tue, 14 Jan 2025 14:38:42 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Jiri Olsa' <jolsa@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-CC: lkml <linux-kernel@vger.kernel.org>, "linux-trace-kernel@vger.kernel.org"
-	<linux-trace-kernel@vger.kernel.org>, "bpf@vger.kernel.org"
-	<bpf@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>
-Subject: RE: [RFC] x86/alternatives: Merge first and second step in
- text_poke_bp_batch
-Thread-Topic: [RFC] x86/alternatives: Merge first and second step in
- text_poke_bp_batch
-Thread-Index: AQHbZozZ4ySmWOzi/E+fxf1y3jFjErMWUqfg
-Date: Tue, 14 Jan 2025 14:38:42 +0000
-Message-ID: <c88cf8951a0d4f73901ba97a81ba3a12@AcuMS.aculab.com>
-References: <20250114140237.3506624-1-jolsa@kernel.org>
-In-Reply-To: <20250114140237.3506624-1-jolsa@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1736866624; c=relaxed/simple;
+	bh=oCB4eY47rtdB0J5M4dUVDjf0mAMot9+HlQNMbwxCRSA=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=juIUYwasMLfs1hq3GDk3xUsUaTE/i3eNEhJNEH0ok4aDOYgnSKXQMiTn70fULvMNjX0SRCil1UuELGxdVwQG/ZHl5kd4BXkTPmlJAV+xsRevKDYrpUj4FZonBsGC1o8eTDO7rE2LpGUmSPS0Mch/vxWdN5t7Jg1Ms+ZRy0tUzlU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NWBnFIkb; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-aaee0b309adso917807066b.3;
+        Tue, 14 Jan 2025 06:57:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736866621; x=1737471421; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zyGBvV0rsTJB5SAWynK2sRNVzB68mWr81iKms0ttm1s=;
+        b=NWBnFIkb50VIcgDVCxR8eqtDZYZt+839WI8qqNP60OMrRe//f35i7SYuhUezMN2drQ
+         D3QJHG9nuDdlIwQs09Opi1+FK5J8g1SLZgNU13JsRYVxQJShz8t57N591b2YPi0LQ1zY
+         GA6/B4vFehmMtQV+oR9RsgjA71MnrBmDXiK7SZeWr2dKQU1ioVBZClFPrKRP/Xs5v749
+         W4Ux9gZPKripMBuUivnLW6TkgfWcy9CWinmKDEFd7rr/MZZB9JI565j13TYcyAY7p90c
+         KDPRhQJ0KcBfuDnsTzSB+8mgTDs2kkvPjSYZgjYMOk/lSKKU50l2fvltUC0Lzefp2srp
+         v1Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736866621; x=1737471421;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zyGBvV0rsTJB5SAWynK2sRNVzB68mWr81iKms0ttm1s=;
+        b=xIbTQ3zOsGchVjwWM+ede4P2JCaejWca5ZOSITzlk6xjQikTAZ3Z6PT/zRrc9t/4le
+         tzPuxGUqW+LTjUlewXobOFuVvb3Fb2JzvMyQQTJun+iV3ckA6yb4uBTNn4E09tpueZZc
+         2kQucScqY+ajNh5k/zt89p4/Cwijl/mzmmx9+eo00aX5Q50WZnxy9AaPZ7js4RM8GBIg
+         hvGRoVWntOIgJMVuxsJkvt5eBPHLlCO7BBiM6DQZlWmhUJMQSVGu4Cpkz6kGPj2ZblLb
+         cWILq7HoDnRvK4b8XtqLGm3eXL1CQ9tyqLACuk0aC0OqeB7lPkgV2hVRlnxhplzBtpm7
+         1MJg==
+X-Forwarded-Encrypted: i=1; AJvYcCUetmMhD/McS45WGBCawRgX9/sVGj0ltiBtKD8FyloQ2IhxvyfQ0I/+ixvmqnGK4ihAa7/oqG09r8mAEKh1@vger.kernel.org, AJvYcCWC84CHbQv6Y4UkHc3tdZES0crAUPy/AyUyvgx8jfKBJOzQiDqUTsyVLc9bqYxYI+92e8NVt9w0Hi7LCgQGYnwePa6Z@vger.kernel.org, AJvYcCWCT2+/jQWLVZd2xo+/KfAIKzgFzWStQcGB85ytZR8fJcVJklO2t8+NLVpuRMBsfAa5dL4=@vger.kernel.org, AJvYcCX++PaKIXKPejQ1FqoaHF/zQAzT+e2I0jA4QgzVnQIwWbj5MzluSxkwDprkBfVGHRbtd49jhUsYymv+@vger.kernel.org
+X-Gm-Message-State: AOJu0YxxcVkOs1/C3wVU+Fwnpw8w3IDu8MGKZZsKwvlwsHCzCmYUWXSN
+	gmxy8Ocw0Y+1NQJ/iKVn50U3QTX+fR33R2d4OlvS625nCTC7x0CM
+X-Gm-Gg: ASbGnctWWRdqJQEnK8sq6e8RTTlZeWTdl1OfhAg/9U9Q0wdvJorEE2eupRmroEoiuZc
+	UGd/WbqhD3WtssjAldw3fu+XQhTK1beoGpH9OpVrH8wkeCVTHrEUjhboHYFKxs8WCb7QaBa+PF0
+	fhtw9Z0VubI6zcTeSVeQW0nQ2QWD61WYy/bPykko2ZgINbCLLsyt4JAuT8RRrlMv/BEnMoQTfgD
+	nZPGdOsTZ9SuE6vHJnchv6A1Rc74ebiopDw7f4pSls=
+X-Google-Smtp-Source: AGHT+IHZ9aMGG4wKkHkVdt6h/Zzook5GS/VTSZBhAWl3N1kpR50TKBEr+HMLdS+BduYidxNK4wyRWA==
+X-Received: by 2002:a17:907:9413:b0:aa6:7165:504b with SMTP id a640c23a62f3a-ab2ab709c3bmr2215869866b.31.1736866620862;
+        Tue, 14 Jan 2025 06:57:00 -0800 (PST)
+Received: from krava ([213.175.46.84])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d99083fbd7sm6325608a12.73.2025.01.14.06.56.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jan 2025 06:57:00 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 14 Jan 2025 15:56:58 +0100
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Eyal Birger <eyal.birger@gmail.com>, Jiri Olsa <olsajiri@gmail.com>,
+	Aleksa Sarai <cyphar@cyphar.com>, mhiramat@kernel.org,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	linux-trace-kernel@vger.kernel.org,
+	BPF-dev-list <bpf@vger.kernel.org>,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>, peterz@infradead.org,
+	tglx@linutronix.de, bp@alien8.de, x86@kernel.org,
+	linux-api@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	"rostedt@goodmis.org" <rostedt@goodmis.org>, rafi@rbk.io,
+	Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Subject: Re: Crash when attaching uretprobes to processes running in Docker
+Message-ID: <Z4Z7OkrtXBauaLcm@krava>
+References: <CAHsH6Gs3Eh8DFU0wq58c_LF8A4_+o6z456J7BidmcVY2AqOnHQ@mail.gmail.com>
+ <20250110.152323-sassy.torch.lavish.rent-vKX3ul5B3qyi@cyphar.com>
+ <Z4K7D10rjuVeRCKq@krava>
+ <Z4YszJfOvFEAaKjF@krava>
+ <CAHsH6Gst+UGCtiCaNq2ikaknZGghpTq2SFZX7S0A8=uDsXt=Zw@mail.gmail.com>
+ <20250114143313.GA29305@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: ZiiDWlVgrZoM_DBapIZGk65odeHn-Ef5zCaS_vZwSLE_1736865581
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250114143313.GA29305@redhat.com>
 
-From: Jiri Olsa
-> Sent: 14 January 2025 14:03
->=20
-> hi,
-> while checking on similar code for uprobes I was wondering if we
-> can merge first 2 steps of instruction update in text_poke_bp_batch
-> function.
->=20
-> Basically the first step now would be to write int3 byte together
-> with the rest of the bytes of the new instruction instead of doing
-> that separately. And the second step would be to overwrite int3
-> byte with first byte of the new instruction.
->=20
-> Would that work or do I miss some x86 detail that could lead to crash?
+On Tue, Jan 14, 2025 at 03:33:13PM +0100, Oleg Nesterov wrote:
+> On 01/14, Eyal Birger wrote:
+> >
+> > FWIW If I change the seccomp policy to SCMP_ACT_KILL this still fails.
+> 
+> Ah... I don't know what SCMP_ACT_KILL is, but indeed, in general it is
+> not safe to even try to call sys_uretprobe() if it is filtered.
+> 
+> Say, __secure_computing(SECCOMP_MODE_STRICT)->__secure_computing_strict()
+> does do_exit(SIGKILL) :/
 
-I suspect it will 'crash and burn'.
+ugh.. could we just 'disable' uretprobe trampoline when seccomp gets enabled?
+overwrite first byte with int3.. and similarly check on seccomp when installing
+uretprobe and switch to int3
 
-Consider what happens if there is a cache-line boundary in the
-middle of an instruction.
-(Actually an instruction fetch boundary will do.)
-
-cpu0: reads the old instructions from the old cache line.
-cpu0: pipeline busy (or similar) so doesn't read the next cache line.
-cpu1: writes the new instructions.
-cpu0: reads the second cache line.
-
-cpu0 now has a mix of the old and new instruction bytes.
-
-Writing the int3 is safe - provided they don't return until
-all the patching is over.
-
-But between writing the int3 (over the first opcode byte) and
-updating anything else I suspect you need something that does
-a complete synchronise between the cpu that discards any bytes
-in the decode pipeline as well as flushing the I-cache (etc).
-I suspect that requires an acked IPI.
-
-Very long cpu stalls are easy to generate.
-Any read from PCIe will be slow (I've at fpga target that takes ~1us).
-You'd need to be unlucky to be patching an instruction while one
-was pending, but a DMA access might just be enough to cause grief.
-
-=09David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
-
+jirka
 
