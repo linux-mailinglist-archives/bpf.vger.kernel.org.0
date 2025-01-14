@@ -1,142 +1,136 @@
-Return-Path: <bpf+bounces-48859-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48860-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02758A1130B
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 22:29:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA385A11354
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 22:46:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE52016306E
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 21:29:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 733797A28BD
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 21:46:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96EE620F997;
-	Tue, 14 Jan 2025 21:29:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10C822135BE;
+	Tue, 14 Jan 2025 21:45:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h7Np/olG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NMjWiNG/"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D6071FECC8
-	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 21:29:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CA64211278;
+	Tue, 14 Jan 2025 21:45:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736890164; cv=none; b=VpI/gwR0qqfwhZNRgCIeHVdSPCIls4qHN6Pl5Zg0BqBSsU9j5juIN9tlvKEi+v5Z4iAMom2p1z/s6bPGTUmp8h1e5Kdy2SEwCx7NxSeNKB7yo5XSFERXI1Aoj+ui6rk5FWETxDj/kutqHiXKLhNFoe956AE21sDb4MK42QNiBno=
+	t=1736891126; cv=none; b=XoOANdG9mX+skzDEQ4+/P2MUyvlcTd/uaDHmYTjY9lq5ffB518XC36z3e83lOcv+tjcAE/hYHCah1dDAgWRXFtv4GfK8i5em15f151uPjZCFFEpaFEB8JG1L7frDOnaVSl2sbFbucfuiSSCQlsWmVB6rDnD7wZ8OvSFIjML7cew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736890164; c=relaxed/simple;
-	bh=qSeKf/sw2lbVVQ/U/mm/YT4N5DMer1R313KgsTl2jv8=;
+	s=arc-20240116; t=1736891126; c=relaxed/simple;
+	bh=B4VxK/IwclpVLI678QvJf7Dk6Acfv8NvptCWzRWVedQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I97q7elJ+1YtJxB5oglDqwS/5mZ0bUvU9pY2ZH0eY2XeM+EeDh9j9j3omPiMPYcmd5PKqpyqs6l0STLL9+I9IK0BLc9ZaEJsNI5prs1j09o8wVWIr4hMbTKOdPLtpWObzxlNYtNHCV9Vk1y5MOgMoCsfGE9hsjCqsFO7aVJnniI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h7Np/olG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92C33C4CEE3
-	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 21:29:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736890163;
-	bh=qSeKf/sw2lbVVQ/U/mm/YT4N5DMer1R313KgsTl2jv8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=h7Np/olGj9Ro5/4vR5KjpobnDYOz3lfzkG1Cq3xYlhxXtmQhpTYu4WadbmUl/fa4F
-	 Gp23rDZ3G6Yn77SLYAmS4A15KtbV7bTN7q4yC5kv6l/FtXZgstAMaZnvYeNt+Wpav+
-	 hubSsIbOKbFEHpbxVzS4eyO8jrbCw/9TVLY3qG3rNp/Tg7/QSSykhO76vas4SJHED9
-	 0YAUNE3wQJoM8cjxwN6WM6LDESSyKxUjq7pUkBPJc4pl7T/EljvSztTXOMKtDoUidO
-	 mRtm/98R/Ycihv0ixZjSwiM5a4Cc6siZMW0lrMfS6124Kkb1Z5/9g9yzlFAHrUUOJ/
-	 h6xBz3rGYbFWw==
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-3a9d9c86920so15957055ab.2
-        for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 13:29:23 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXITYZaWbP5ZS8koiMhOW4xnpwVRxI9FZ2Y6cjaKd2zFYJlzdyKswVBtoV1/FzKDduZU5A=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxE6fF9ULkr15Z/nq78I/zPDSWVwWOdR42frkw5pgnVPK3Q8PhT
-	nj1En4c0XPQWgoa8SGubWteBh/LT+wt0uQhferVS1e47tavmAXCcsd2PF6fygqIwxDaAIdL/sgG
-	lLTXxEbVjU2gXayVUVFwre0p5lyI=
-X-Google-Smtp-Source: AGHT+IHHG6FPQ8IDrvWZxi4YRM+qdsakyt8ABVE+a6wiTX5ytvrnMTuzNvQks+HqYH2wqUWSfJzW447UwhWZHCWUoio=
-X-Received: by 2002:a92:c26d:0:b0:3a7:6566:1e8f with SMTP id
- e9e14a558f8ab-3ce3a8bb66emr180162635ab.16.1736890162921; Tue, 14 Jan 2025
- 13:29:22 -0800 (PST)
+	 To:Cc:Content-Type; b=FCrkTPNTrPLaSfpIFkKks6zjwr8LCrqneOmnk7FjLzNglNT3p8zHpZCE5FD+6MctmkJUKoUwh9Uo2easu/u+gmh5YTg/FweQgGeiMQ3CWMF9e92EVumsvv+6dC/4YR62N59wTvy3idm/e704KuizXwSPTmDpX0dI3kUch2pLu1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NMjWiNG/; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2ee50ffcf14so346906a91.0;
+        Tue, 14 Jan 2025 13:45:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736891124; x=1737495924; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7RL7+HsQwmXaIo0B/cwtFxWTlGU+cmitUPhIWfe6zNU=;
+        b=NMjWiNG/2tutZwkGSBsKtF3nYar6HMVJu4LGhkUu4XxdBGrfszneLrm7OlzdfCRdFQ
+         aPYQr4pV/YNG/3fNmFpXVdrtycpqO12pNfJ7dXjFNtci4T6XYYIOnOZ9jGhV8n+iVBBf
+         ev5+N2fhQNNFRCZCMrrCkVeXR9KrU8DSPIIxAgD8YpmX80LkQfx23WFR6zd5x88351eS
+         tq8GBqf8of9pKjOC6B2LxjzfMmer0rIf8r9O9F1KsvEuSTajtGGMbn3yULvYW0JjWP/H
+         /JpxRBIpqNYQ3C30dYnWLjJ7pbthMj68Qw/HTfYl6I/CN5+xEEPsTXdc13MEBWYJL3JE
+         9HOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736891124; x=1737495924;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7RL7+HsQwmXaIo0B/cwtFxWTlGU+cmitUPhIWfe6zNU=;
+        b=exykbL4C+pwKVQGxSV7YfbEhi9PWJdjmQuwW5LlIp/h/dXnWzNxZGe5qS5pa53xBeu
+         eBY5eeUnS1bWnpbuAdgcsbWzOR4eFzPWujcbfyAJierZlWUAdA640sAXEHd5pzImfw3V
+         5jQuzpL0+dqCR93A5SK0T7KSJS2XYkbMYS3hHRjwPF6B9Z6dOfZ18btzxGHG+KQdP8F7
+         ThpT3PISdsuE3uKgTUlCSZtBRG+OgNS7CCOqQbLsSHqwmFY+S6fBuY1x0QqQ/yJpI+5F
+         i3RyU+kDl7o+6QWo6Dp3qF9H3WoHYH4PlSUCyEGhkKm2tzkn/bPwlvoObbtF6gu03iza
+         Mc2w==
+X-Forwarded-Encrypted: i=1; AJvYcCUjv5R+YOoroVPmaxuNCfYgHX6fdtZ+ftc11PLzJ7ydKAWFG2spR7vovsgqorgXrsmMkCZthCgri2P/huD5d9DNT7tK@vger.kernel.org, AJvYcCWGYibGaYh/JnBEey59HbPS9y0kp8/UddiILQG3eCAnyv5x2q4000QoYe4SLN3uA/FvHzF1BxiPYPNp@vger.kernel.org, AJvYcCWecQHBxTJF5PU+hFDOjiQw9+OLsWJziZNl9OYoNzzc3Cjeu4yz6evBAR/hIfHBhQTVdPuJufRu/qZbbhCX@vger.kernel.org, AJvYcCXA9rsnwCOLGiFYOYTQ+s8ChJBcTfyem1udF9ugazpS6B3UFUyfWSH1j/hbRmFO03Dk+P0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyPp2pU9ah7lqhvQVgQGJycgRbZvETePsQD9q7j+wXHC+J/78hP
+	XzBVbDr5npNimpB/stODWaJQ+vK4vEp4JuN7nsixjxMWiJl+wa1QIFspsqMpl/W6ORKrfhaELkT
+	z6ouiH8PDQ/pzMwSoD3YFttBcEWM=
+X-Gm-Gg: ASbGnctMmRpFUVftr5TJmPcll2TyEvNOO3CJd3szRM3QU7gp5fErdVE7AEUOSOdgheP
+	GkAPK9kMI+xYbc4fVaKt31kLxxYFAwGHiZaQykD6mC5V5oir0YBCRhA==
+X-Google-Smtp-Source: AGHT+IH0FKA+tIQ7HagM82UYT5wwWCYgyacSsyTFhJtKlXmawCq8RBogQ93/3MJRxqMUGEOJwpjGrhxcBYifJI6Hzjc=
+X-Received: by 2002:a17:90b:534c:b0:2ee:c30f:33c9 with SMTP id
+ 98e67ed59e1d1-2f728e1cedemr752422a91.14.1736891124501; Tue, 14 Jan 2025
+ 13:45:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <nahst74z46ov7ii3vmriyhk25zo6tkf2f3hsulzjzselvobbbu@pqn6wfdibwqb>
- <CAPhsuW5cLXSjQetTrcEFMAwnjjd1pGR3rLwVBuHkHMuK6xqwMA@mail.gmail.com> <az6mn2geqofoma4yzioyd5cvarb57mxatm2izupvq3bn4f5wbf@bv7au62xzv4l>
-In-Reply-To: <az6mn2geqofoma4yzioyd5cvarb57mxatm2izupvq3bn4f5wbf@bv7au62xzv4l>
-From: Song Liu <song@kernel.org>
-Date: Tue, 14 Jan 2025 13:29:11 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW6Dm0zLzaa+yx_cC2tWy8M-jv0=VpdZWY=oh=MVV+z1hw@mail.gmail.com>
-X-Gm-Features: AbW1kvYsDgj8SC_4IR2owVgpxRv-k-Q_t5PVXXo6-YjYSlKC4keYvhGGTPzA29o
-Message-ID: <CAPhsuW6Dm0zLzaa+yx_cC2tWy8M-jv0=VpdZWY=oh=MVV+z1hw@mail.gmail.com>
-Subject: Re: [LSF/MM/BPF TOPIC] Modular BPF verifier
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: lsf-pc@lists.linux-foundation.org, bpf@vger.kernel.org
+References: <CAHsH6Gs3Eh8DFU0wq58c_LF8A4_+o6z456J7BidmcVY2AqOnHQ@mail.gmail.com>
+ <20250110.152323-sassy.torch.lavish.rent-vKX3ul5B3qyi@cyphar.com>
+ <Z4K7D10rjuVeRCKq@krava> <Z4YszJfOvFEAaKjF@krava> <20250114105802.GA19816@redhat.com>
+ <Z4ZyYudZSD92DPiF@krava> <CAEf4BzZoa6gBQzfPLeMTQu+s=GqVdmihFdb1BHkcPPQMFQp+MQ@mail.gmail.com>
+ <20250114203922.GA5051@redhat.com>
+In-Reply-To: <20250114203922.GA5051@redhat.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 14 Jan 2025 13:45:11 -0800
+X-Gm-Features: AbW1kva1vYogaoHUziyVoRJIKZjSt5M_Zfni5CCWmCbYg3_OFfE1JSNggSra2Bk
+Message-ID: <CAEf4BzaRCzWMVvyGC_T52djF7q65yM8=AdBEMOPUU8edG-PLxg@mail.gmail.com>
+Subject: Re: Crash when attaching uretprobes to processes running in Docker
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+	Eyal Birger <eyal.birger@gmail.com>, mhiramat@kernel.org, 
+	linux-kernel <linux-kernel@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	BPF-dev-list <bpf@vger.kernel.org>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, peterz@infradead.org, tglx@linutronix.de, 
+	bp@alien8.de, x86@kernel.org, linux-api@vger.kernel.org, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Alexei Starovoitov <ast@kernel.org>, "rostedt@goodmis.org" <rostedt@goodmis.org>, rafi@rbk.io, 
+	Shmulik Ladkani <shmulik.ladkani@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Daniel,
-
-On Tue, Jan 14, 2025 at 1:02=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
+On Tue, Jan 14, 2025 at 12:40=E2=80=AFPM Oleg Nesterov <oleg@redhat.com> wr=
+ote:
 >
-> Hi Song,
->
-> On Mon, Jan 13, 2025 at 03:32:59PM -0800, Song Liu wrote:
-> > On Fri, Jan 10, 2025 at 1:23=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote=
-:
-[...]
+> On 01/14, Andrii Nakryiko wrote:
 > >
-> > Maintaining out-of-tree kernel modules is a lot of work. I wonder wheth=
-er
-> > the benefit would justify this extra work. There are other ways to make
-> > small changes to the built-in verifier, i.e. kernel live patch.
+> > Should we just fix whoever is blocking kernel-internal special syscall
+> > (sys_uretprobe)?
 >
-> The goal (in my mind) is not to maintain a full out-of-tree module.
-> Rather, it'd be to do a 1-way sync out of the kernel and potentially
-> apply some out-of-tree compatability patches. Same idea as libbpf:
-> https://github.com/libbpf/libbpf.
-
-The idea can be practical if we can support the verifier with the same
-model as libbpf. But I am not sure whether this is possible.
-
-> Verifier development should still happen in kernel tree. For folks who
-> do not care about modular verifier, life should go on same as before.
+> Well, we can add __NR_uretprobe to mode1_syscalls[] but this won't
+> really help.
 >
-> w.r.t. KLP, I'm not sure KLP satisfies the use case. For example, it
-> seems unwieldy to potentially live-patch hundreds to thousands of
-> patches. And since verifier is an algorithm heavy construct, we cannot
-> get away from data structure changes -- IIUC something KLP is not good
-> at.
-
-It is correct that it is only practical to make small changes with KLPs. Bu=
-t I
-wonder how often we do need major changes to the verifier.
-
-> >
-> > >
-> > > On top of delivering newer verifiers to older kernels, the facade ope=
-ns the
-> > > door to running the verifier in userspace. If the verifier becomes su=
-fficiently
-> > > portable, we can implement a userspace facade and plug the verifier i=
-n. A
-> > > possible use case could be integrating the verifier into Clang [3] fo=
-r tightly
-> > > integrated verifier feedback. This would address a long running pain =
-point with
-> > > BPF development. This is a lot easier said than done, so consider thi=
-s highly
-> > > speculative.
-> >
-> > I think we don't need the verifier to be a LKM to do verification in us=
-er
-> > space. Instead, we just need a mechanism to bypass (some logic of)
-> > the verifier. Would this work?
+> We can't "fix" the existing user-space setups which can nack any
+> "unnecessary/unknown" syscall.
 >
-> It's the other way around. The goal is not to _move_ verification into
-> userspace but rather pre-verify. That way when the kernel verifies it
-> you have a lot more confidence it will succeed.
+> > What would happen if someone blocked that other
+> > special kernel-internal syscall for signal handling (can't remember
+> > the name,
+>
+> sys_rt_sigreturn().
+>
+> Yes, the task will crash after return from the signal handler if this
+> syscall is filtered out.
+>
+> But, unlike sys_uretprobe(), sys_rt_sigreturn() is old, so the existing
+> setups must know that sigreturn() should be respected...
 
-I think we had the pre-verify idea for quite some time. It will be
-valuable if we can manage it without much extra effort. (Development
-happens in the kernel, etc.)
+someday sys_uretprobe will be old as well ;) FWIW, systemd allowlisted
+sys_uretprobe, see [0]
 
-Thanks,
-Song
+  [0] https://github.com/systemd/systemd/issues/34615#issuecomment-24067614=
+51
+
+>
+> Oleg.
+>
+>
 
