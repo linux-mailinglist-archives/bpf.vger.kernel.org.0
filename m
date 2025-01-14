@@ -1,125 +1,156 @@
-Return-Path: <bpf+bounces-48768-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48770-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B443EA1070C
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 13:47:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93AB4A107B7
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 14:25:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B35951885A0E
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 12:47:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39C263A6209
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 13:25:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E0B2236A73;
-	Tue, 14 Jan 2025 12:47:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 667EF284A48;
+	Tue, 14 Jan 2025 13:25:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="T0LmrXx7"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="EMDhdoUL"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9291C1DA21
-	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 12:46:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D580236EA7;
+	Tue, 14 Jan 2025 13:25:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736858825; cv=none; b=bPyQMlkrP6Y/8rUogrIt2Vf5taAVDgUkVTgh+Ocdi8o1tIaz6Nz6qg5YamkoMRMJn9d5c5+Nh1dzJZ+f3Qx8NUaoIrd/wCJK6m7scSVbYbMHsuP0OXyK+o9uB7ZQerL1AGcFY7XyCCsU49WK2lEc0vXSeMReDVMRBMJdoJPWIqY=
+	t=1736861136; cv=none; b=Ueigp8DlyTM+tTR+S2sDBmVKEzNdruD0820k7xRwuAB/nh53EdAuz9DxenKVzoPuggus5arPuEhwCFm5qulLdz47OSTQEW069scTAoJ/uWLnw45kxWl18jKY+Z6Nnm2V7MWz8NEiuQGUQ6tPJkv7sYU5+tBYHLNnkMuD86Nn35M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736858825; c=relaxed/simple;
-	bh=Uin1dOmwdUP+SHUBgd6PscEgsxreyrFU/vwVc8g8y7M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=CVPXRCRuA03RvFvpVHFNF8aVcolMDt7PQpFelokE+lOUYdl2+2imZu54dDEkH7TmvKqCAi2lFO5EbW/hOOTBKOITKD7PourrqNOPgJvKkHydsTYVUg9iu/2Q3C6IiEuRB60EfYh0EiyDTCmEudFx5hBeYSUX3uXieb9oZmGoC8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=T0LmrXx7; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1736858812;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kH/iRgPgE7A5Fhhf2p8dKe9HdDfKM5Ah+Fq/yovw5X4=;
-	b=T0LmrXx7ia/DwHp3WdAoYMtcxB7cE7yXUAZEBcSz0xpqMQuG0UxsAbVozogH0/cHNpBCw/
-	MZH8qrSstSGlwMIAJAqul/bprabAsa1mrwfEVxiq61/JhUyoeqrTODVNIT/15ITmLii9a+
-	cWdK23ULDdfZlAbw3xyfzQeV15R9nfg=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-84-f9Xa2o6_M6ORlCDSef57RQ-1; Tue, 14 Jan 2025 07:46:51 -0500
-X-MC-Unique: f9Xa2o6_M6ORlCDSef57RQ-1
-X-Mimecast-MFC-AGG-ID: f9Xa2o6_M6ORlCDSef57RQ
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-38639b4f19cso1358443f8f.0
-        for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 04:46:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736858810; x=1737463610;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kH/iRgPgE7A5Fhhf2p8dKe9HdDfKM5Ah+Fq/yovw5X4=;
-        b=dqltiTlsoWgH1b433pR59SfUab0icJiC2hBoiyzkzAC+KXOMei74mr+1+anR9mRYJ6
-         8VJnHF7qI1oUeJj/5Xwf+H3sywPnhdb+f+/PRMbkjKaK7AUVhKE7kkxNk2r75BgE01MA
-         kl8INy3B2ARzMbW6xL+3oliK8OyMwkiJBJW/86B0C9+16lqUEu3ovSoKi6HgutObxfIF
-         zkz6kPELq4persJhtD54CjEzCCsMTOSzy096wfUn3EBmX2TTW0luBxQgCpEPEgtyGUWV
-         z5cJLtkVYJ9jLniuFtR4DalYdkGUoPBXXaItwdahih2wFflVphCjdyNeEp3TGp0BvDZl
-         NErw==
-X-Forwarded-Encrypted: i=1; AJvYcCVLnzaXAPVnfP1ZFBj9OMqKf8zgFgUoaaKGp6lcwgJdVHDvSZ8SCYCe1hIvqXgYge5Yy0s=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxMr9aehVuiNbQ3Ol5Qoqp7uS0wcwF2FGuULD7FbEl4F5Hi+Tnj
-	4vF7fMrY06D6bt8SFyt4QEABBfWshnK6toTNKWHUUO1dDtOrXMeVci4DmhAhJM1fkI446aGgCJ9
-	spqWm4ydqCQJAKVLGqUHCt13Ondt1mx/W7Dj8/OsOyrL8Cg0kIQ==
-X-Gm-Gg: ASbGncuNL4GG1B68skpze4x0H0Ly1kBYmV1Nla+DvC27Y0MImfc1ainpuqUsCUqrLLD
-	XShrS1d7Cih0D05BYtYW2dlPZCw5J/SYJjqH/1XK+8MiEHAKoBbkrSRKcmJNiNDJAHcySifHjy6
-	FZpj0k/6WX67Tqxo3+3nn5YgErQ11csiL491buiqvpUvxZk37jK/bwcs3X9df4S85dtZ2hz5TWT
-	YJ2l1B/gUNXawMP8RfduGInclQcMlfu/+DaW5zAo6LlQe5QL0kbNZGwNn5JRrSuX794M3dIAH3Q
-	RduSoZpcxf8=
-X-Received: by 2002:a05:6000:4a06:b0:385:d7f9:f157 with SMTP id ffacd0b85a97d-38a87338df5mr20454024f8f.36.1736858810318;
-        Tue, 14 Jan 2025 04:46:50 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE+9v10x1N2wFoQ1EghG8MZMb2tc7d0Q08/8q5FSV+ZT6GN8dur266nKm/Vs31WmKlGP+I9ZA==
-X-Received: by 2002:a05:6000:4a06:b0:385:d7f9:f157 with SMTP id ffacd0b85a97d-38a87338df5mr20453986f8f.36.1736858809912;
-        Tue, 14 Jan 2025 04:46:49 -0800 (PST)
-Received: from [192.168.88.253] (146-241-15-169.dyn.eolo.it. [146.241.15.169])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-436e9d26a7bsm180090335e9.0.2025.01.14.04.46.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Jan 2025 04:46:49 -0800 (PST)
-Message-ID: <49043623-f34e-4274-ab4d-494d8319cb32@redhat.com>
-Date: Tue, 14 Jan 2025 13:46:48 +0100
+	s=arc-20240116; t=1736861136; c=relaxed/simple;
+	bh=n2AzDWonAYwOKLO8ylv2VcNlw6AmQ0C+qfIbvQL/okU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=H1ILRSuJ83MB0+EQoEoB5ZBMD9kp5mwBf4B/MtE2TW08SJn0uBTKNpSDtqoHwKDX1lram6RsZp82eNBqhoCsM9cBTwBEvYOXiYL97yPDOYVG03aoqUJRsbS09/6B16xOWjPYlFyMNPyoN2IstjUhDLJzqGKCmN3iOQ/gUeuNy5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=EMDhdoUL; arc=none smtp.client-ip=117.135.210.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-ID:MIME-Version; bh=qL454
+	SbW0mXAyAJzaI/Sx5ya8UOqFy/+uOgDo0q8WoA=; b=EMDhdoULd1Gt5CODbNGbF
+	UQzLi0+76G2tJ8CfM3AaaFELBWUUipbuHtQd/I66sLjOy+3OYtCs0qI0gBW8pSai
+	LYxEga62+Pr34prqu5zECGlJOfenx8dPbayWjfX66eSIyqS01QRDVwsmaI9RbV+m
+	jRvpW7XYAnEjNzhdC1qyz0=
+Received: from localhost.localdomain (unknown [])
+	by gzsmtp1 (Coremail) with SMTP id PCgvCgCn_E1RZYZnl71AAw--.33013S2;
+	Tue, 14 Jan 2025 21:23:40 +0800 (CST)
+From: Jiayuan Chen <mrpre@163.com>
+To: bpf@vger.kernel.org,
+	jakub@cloudflare.com,
+	john.fastabend@gmail.com
+Cc: netdev@vger.kernel.org,
+	martin.lau@linux.dev,
+	ast@kernel.org,
+	edumazet@google.com,
+	davem@davemloft.net,
+	dsahern@kernel.org,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	linux-kernel@vger.kernel.org,
+	song@kernel.org,
+	andrii@kernel.org,
+	mhal@rbox.co,
+	yonghong.song@linux.dev,
+	daniel@iogearbox.net,
+	xiyou.wangcong@gmail.com,
+	horms@kernel.org,
+	corbet@lwn.net,
+	eddyz87@gmail.com,
+	cong.wang@bytedance.com,
+	shuah@kernel.org,
+	mykolal@fb.com,
+	jolsa@kernel.org,
+	haoluo@google.com,
+	sdf@fomichev.me,
+	kpsingh@kernel.org,
+	linux-doc@vger.kernel.org,
+	Jiayuan Chen <mrpre@163.com>
+Subject: [PATCH bpf v6 0/3] bpf: fix wrong copied_seq calculation and add tests
+Date: Tue, 14 Jan 2025 21:23:08 +0800
+Message-ID: <20250114132312.49407-1-mrpre@163.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next PATCH v3 3/6] octeontx2-pf: AF_XDP zero copy receive
- support
-To: Suman Ghosh <sumang@marvell.com>, horms@kernel.org, sgoutham@marvell.com,
- gakula@marvell.com, sbhatta@marvell.com, hkelam@marvell.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, lcherian@marvell.com,
- jerinj@marvell.com, john.fastabend@gmail.com, bbhushan2@marvell.com,
- hawk@kernel.org, andrew+netdev@lunn.ch, ast@kernel.org,
- daniel@iogearbox.net, bpf@vger.kernel.org
-References: <20250110093807.2451954-1-sumang@marvell.com>
- <20250110093807.2451954-4-sumang@marvell.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20250110093807.2451954-4-sumang@marvell.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:PCgvCgCn_E1RZYZnl71AAw--.33013S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxWFyrGFyfXw4kuryDAFyxKrg_yoW5Wr4xpF
+	WkC34rGr47tFyxZws7A3yIgF4Fgw4rCayUGr1Sq3yfZr4jkryYyrs29ayaqrn8GrWfZF1j
+	9r15Wrn0934DZFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0z_pnQ7UUUUU=
+X-CM-SenderInfo: xpus2vi6rwjhhfrp/xtbBDwXUp2eGZBAZbgAAsb
 
-On 1/10/25 10:38 AM, Suman Ghosh wrote:
-> @@ -1337,8 +1358,12 @@ void otx2_aura_pool_free(struct otx2_nic *pfvf)
->  		pool = &pfvf->qset.pool[pool_id];
->  		qmem_free(pfvf->dev, pool->stack);
->  		qmem_free(pfvf->dev, pool->fc_addr);
-> -		page_pool_destroy(pool->page_pool);
-> -		pool->page_pool = NULL;
-> +		if (pool->page_pool) {
-> +			page_pool_destroy(pool->page_pool);
-> +			pool->page_pool = NULL;
-> +		}
+A previous commit described in this topic
+http://lore.kernel.org/bpf/20230523025618.113937-9-john.fastabend@gmail.com
+directly updated 'sk->copied_seq' in the tcp_eat_skb() function when the
+action of a BPF program was SK_REDIRECT. For other actions, like SK_PASS,
+the update logic for 'sk->copied_seq' was moved to
+tcp_bpf_recvmsg_parser() to ensure the accuracy of the 'fionread' feature.
 
-It looks like the above delta is not needed: page_pool_destroy() handles
-correctly NULL value for the page pool.
+That commit works for a single stream_verdict scenario, as it also
+modified 'sk_data_ready->sk_psock_verdict_data_ready->tcp_read_skb'
+to remove updating 'sk->copied_seq'.
 
-/P
+However, for programs where both stream_parser and stream_verdict are
+active(strparser purpose), tcp_read_sock() was used instead of
+tcp_read_skb() (sk_data_ready->strp_data_ready->tcp_read_sock)
+tcp_read_sock() now still update 'sk->copied_seq', leading to duplicated
+updates.
+
+In summary, for strparser + SK_PASS, copied_seq is redundantly calculated
+in both tcp_read_sock() and tcp_bpf_recvmsg_parser().
+
+The issue causes incorrect copied_seq calculations, which prevent
+correct data reads from the recv() interface in user-land.
+
+Also we added test cases for bpf + strparser and separated them from
+sockmap_basic, as strparser has more encapsulation and parsing
+capabilities compared to sockmap.
+
+Fixes: e5c6de5fa025 ("bpf, sockmap: Incorrectly handling copied_seq")
+
+---
+V3 -> V6:
+https://lore.kernel.org/bpf/20250109094402.50838-1-mrpre@163.com/
+https://lore.kernel.org/bpf/20241218053408.437295-1-mrpre@163.com/
+Avoid introducing new proto_ops. (Daniel Borkmann).
+Add more edge test cases for strparser + bpf.
+Fix patchwork fail of test cases code.
+Fix psock fetch without rcu lock.
+Move code of modifying to tcp_bpf.c.
+
+V1 -> V3:
+https://lore.kernel.org/bpf/20241209152740.281125-1-mrpre@163.com/
+Fix patchwork fail by adding Fixes tag.
+Save skb data offset for ENOMEM. (John Fastabend)
+---
+Jiayuan Chen (3):
+  bpf: fix wrong copied_seq calculation
+  selftests/bpf: add strparser test for bpf
+  strparser, docs: Add new callback
+
+ Documentation/networking/strparser.rst        |  11 +-
+ include/linux/skmsg.h                         |   2 +
+ include/net/strparser.h                       |   2 +
+ include/net/tcp.h                             |   8 +
+ net/core/skmsg.c                              |  22 +-
+ net/ipv4/tcp.c                                |  29 +-
+ net/ipv4/tcp_bpf.c                            |  41 ++
+ net/strparser/strparser.c                     |  11 +-
+ .../selftests/bpf/prog_tests/sockmap_basic.c  |  53 --
+ .../selftests/bpf/prog_tests/sockmap_strp.c   | 452 ++++++++++++++++++
+ .../selftests/bpf/progs/test_sockmap_strp.c   |  53 ++
+ 11 files changed, 622 insertions(+), 62 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sockmap_strp.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_strp.c
+
+-- 
+2.43.5
 
 
