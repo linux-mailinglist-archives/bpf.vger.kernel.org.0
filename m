@@ -1,121 +1,172 @@
-Return-Path: <bpf+bounces-48864-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48865-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85A72A113E9
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 23:11:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF18BA11422
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 23:32:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 373EC3A292B
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 22:11:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D08C3160E2A
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 22:32:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B57F32139C7;
-	Tue, 14 Jan 2025 22:11:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B735B2135B2;
+	Tue, 14 Jan 2025 22:32:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DhJ1eA34"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lnseXObs"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B758C21322A
-	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 22:11:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C417220F090;
+	Tue, 14 Jan 2025 22:32:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736892683; cv=none; b=ZOyh+qIsbAPolZt4TWWFYNMmdP1U2PT9VyMunQDNG76ACT/0ogdHrNp5Ok9fQd/hnC4Siu6FFrJCrT557Bij6vyCJrjL84nS7SIzIgZJd3228DrRO9GoPFLhrwL3kqI5yjbkuxpMN/fEdY3agDt+XjQSDtfbOEjwuKQOBNDPYY8=
+	t=1736893955; cv=none; b=q4e+PFVBt6XSHHPxpNBTVCPxd9xTqC7hQ12GdYyuuY145xz23ow9vzQwViliQ3xhm4kDumoe9EWCDH3whE3o5lpo8OBgzGtXErSzCQFKXYqoAC6X5FT0wh2wZTp4A/qcHTfDjRnZOBcFokZL2tyQOKgAjQ4oePMapT3b1nL08KI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736892683; c=relaxed/simple;
-	bh=+ovgz39tY88dwtzotQQdo6p6n/6QPXchjNTUZS4C/5I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QqzrinE4V70s2Nn0wFCL4gu5A869wNgc366RXZOLD+qSpZX9N2cN3sTgoBPOq578GT2rW6s43u23PumZFtl5h37lXf0Z6UPIu9lLdkXBcDStkGjCwPNR6dcqIu3C4T3LznMCQnJRGXc/29SztmtNA/2iuNwmeFXze65HxiY09YE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DhJ1eA34; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1736892680;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+ovgz39tY88dwtzotQQdo6p6n/6QPXchjNTUZS4C/5I=;
-	b=DhJ1eA34URDGeXjuXwMHnt03dIf5krq/yX1g4HfhODtbGg5Z81VnCQxJdxHwA6pEa/U7Hw
-	XAWC6jfNIgWNRa23gk6MFfHNaJkE9xhgdz3aFvyeVi5Na5YtXR26wiax2VIBeSEY5YjR4I
-	CWSV/Byx3W/vbC/+7+frrtOLly0NdU0=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-397-fNVoz8YDMMiv09T73PKnTQ-1; Tue,
- 14 Jan 2025 17:11:16 -0500
-X-MC-Unique: fNVoz8YDMMiv09T73PKnTQ-1
-X-Mimecast-MFC-AGG-ID: fNVoz8YDMMiv09T73PKnTQ
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E2EC71955D83;
-	Tue, 14 Jan 2025 22:11:12 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.50])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 8261519560AA;
-	Tue, 14 Jan 2025 22:11:05 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Tue, 14 Jan 2025 23:10:47 +0100 (CET)
-Date: Tue, 14 Jan 2025 23:10:39 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>,
-	Eyal Birger <eyal.birger@gmail.com>, mhiramat@kernel.org,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	linux-trace-kernel@vger.kernel.org,
-	BPF-dev-list <bpf@vger.kernel.org>,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>, peterz@infradead.org,
-	tglx@linutronix.de, bp@alien8.de, x86@kernel.org,
-	linux-api@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alexei Starovoitov <ast@kernel.org>,
-	"rostedt@goodmis.org" <rostedt@goodmis.org>, rafi@rbk.io,
-	Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: Re: Crash when attaching uretprobes to processes running in Docker
-Message-ID: <20250114221002.GA10122@redhat.com>
-References: <CAHsH6Gs3Eh8DFU0wq58c_LF8A4_+o6z456J7BidmcVY2AqOnHQ@mail.gmail.com>
- <20250110.152323-sassy.torch.lavish.rent-vKX3ul5B3qyi@cyphar.com>
- <Z4K7D10rjuVeRCKq@krava>
- <Z4YszJfOvFEAaKjF@krava>
- <20250114105802.GA19816@redhat.com>
- <Z4ZyYudZSD92DPiF@krava>
- <CAEf4BzZoa6gBQzfPLeMTQu+s=GqVdmihFdb1BHkcPPQMFQp+MQ@mail.gmail.com>
- <20250114203922.GA5051@redhat.com>
- <CAEf4BzaRCzWMVvyGC_T52djF7q65yM8=AdBEMOPUU8edG-PLxg@mail.gmail.com>
+	s=arc-20240116; t=1736893955; c=relaxed/simple;
+	bh=9aSAXbLT8Y/O7QYWW8AMqTJ8XzZEep6OE1DHz3XDhsA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bGNDanTY8xGp+RWIEHeZURK5qWeobh03iTnLU5zRSfbMdma+kc8Rn6CyRdTaXYfpYT6TR5rI2754fH1eY7L2P0EdJcso+d1tWmg+M5lTbZ3JtGSnwuZ9WOQ0ot9W6U50hZlA7fJcFRhC7b3fFqkbtHrrA/TlCMEVse8aCBfmd1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lnseXObs; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2ee67e9287fso10042780a91.0;
+        Tue, 14 Jan 2025 14:32:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736893953; x=1737498753; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9kabmU0F1TZfnF5oln3oXkhsupsM5B62wgwB4C8gG3I=;
+        b=lnseXObs6Y5rllrP2VsR+iAvUny/bUAVTzN6fOuL/cU7zbktCuIv8fGdlUz+7o6hCs
+         mORYcuwa/74vpUXoBmXp0qL6T/hhElHJpLOLjjb/DQa2o7JiCzzuKJiGj2x3Dsr2SqiW
+         QcPt8KjZI7HvXH4M75lhojtK+y62I3MWJ4Qwjn6cJqaqQiVugfrREipVbYW0VIxy7lJv
+         6B0u/a1T+NCJd2cCZsUxNQvFRQzmM2H4SQqwnn/X9yabMqJznrfD6g4Gq0gcEdv5qurR
+         dW/d8/MuJ6y4uC6sfXMNj1V9DXaHDKeqHpPsbWxBxJBcxDcj8dki1C1q2k76OUsZzD3v
+         6rmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736893953; x=1737498753;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9kabmU0F1TZfnF5oln3oXkhsupsM5B62wgwB4C8gG3I=;
+        b=ZW+983XQ/NctcQSQvwJEAQr3hrM616a8Lqamlp1wjvPiQ/HUrqRJBXA9dsKOT0d+bL
+         xbo0GUuLHH1Nz+VlZMUHUlbFfHBa2FdCwH+iz6qzuT659ge2VXKNxv5pujgkwZOV84st
+         3mxE/E9mum6cLb156eIHC598Krbo7Y7GFzdj6Hk1xOSfFxZM2IqpI+jz2ZgIWTwq3NGp
+         V/ndpz0neN+Em2s+UbbUrP7dk+hRdeK4vfgRsvbBo8bVU1piT8Qbeo01uVxT6KOprpLj
+         B8/c7uqOWNZNLIYxhnlbuPEDeVuQ2I1B03NBql8YxlqYdshluO5lo53Fps3oHyF3H0ej
+         D3ZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVO4AN/ABPjQiYR0+Eol8lxtDLZi7EvGnIDLI5aSC3dVzczKmyVNSccL2FCgtzkl4+HRiI=@vger.kernel.org, AJvYcCVs/S7LkDlEbf3KU+JBDfUihRjzpWMs1qymifCrzoj/9xRqzIQeSOoVxha5AxeNTyxqSw2EeJXJ@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+jyiFRiSDqgln5L5yqhGREJ69oIAUpO57Zzxq4HrTe61S4VE7
+	Ne+nKq3sPo1iDOH2n65WFxmZseCcActOP3pBaONUHMOCJWMu890xeZgcFZjtU4oJeguwrteyn1Y
+	kgPFJVNAaZx0Ch/uMkujSTSx0cRI=
+X-Gm-Gg: ASbGnctv5JmDRAElo/9blSfNXDwSMDTSnB+VGDCW2nrf7UnQgs18ULja5v78/XB+jdO
+	PlfQWY364ebtEA47L0eX3Rx+fiYR0w+2U76ND
+X-Google-Smtp-Source: AGHT+IEpXZbkt2vd3agPxz6COsslePzk8RMbBV11b9FAgNIE+WmfwtYEUiCqLr/xUm4vIMSXBDQ/SLrpvGSR529mtFI=
+X-Received: by 2002:a17:90b:2b8e:b0:2ee:d433:7c54 with SMTP id
+ 98e67ed59e1d1-2f548eceae7mr36218369a91.19.1736893953168; Tue, 14 Jan 2025
+ 14:32:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzaRCzWMVvyGC_T52djF7q65yM8=AdBEMOPUU8edG-PLxg@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+References: <20250112064513.883-1-laoar.shao@gmail.com>
+In-Reply-To: <20250112064513.883-1-laoar.shao@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 14 Jan 2025 14:32:18 -0800
+X-Gm-Features: AbW1kvYm4Itaq_DFp2jqD_5mLbxwaEwdwUeCe4q0HqgYWIvaRyNGbp6zSqyvJD4
+Message-ID: <CAEf4BzZcs6YP067-KJYQRsMJMLooypepq8iiX7wXu7CZwVhD3g@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 0/2] libbpf: Add support for dynamic tracepoints
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, edumazet@google.com, dxu@dxuuu.xyz, 
+	bpf@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 01/14, Andrii Nakryiko wrote:
+On Sat, Jan 11, 2025 at 10:45=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com>=
+ wrote:
 >
-> On Tue, Jan 14, 2025 at 12:40 PM Oleg Nesterov <oleg@redhat.com> wrote:
-> >
-> > But, unlike sys_uretprobe(), sys_rt_sigreturn() is old, so the existing
-> > setups must know that sigreturn() should be respected...
+> The primary goal of this change is to enable tracing of inlined kernel
+> functions with BPF programs.
 >
-> someday sys_uretprobe will be old as well ;) FWIW, systemd allowlisted
-> sys_uretprobe, see [0]
+> Dynamic tracepoints can be created using tools like perf-probe, debugfs, =
+or
+> similar utilities. For example:
+>
+>   $ perf probe -a 'tcp_listendrop sk'
+>   $ ls /sys/kernel/debug/tracing/events/probe/tcp_listendrop/
+>   enable  filter  format  hist  id  trigger
+>
+> Here, tcp_listendrop() is an example of an inlined kernel function.
+>
+> While these dynamic tracepoints are functional, they cannot be easily
+> attached to BPF programs. For instance, attempting to use them with
+> bpftrace results in the following error:
+>
+>   $ bpftrace -l 'tracepoint:probe:*'
+>   tracepoint:probe:tcp_listendrop
+>
+>   $ bpftrace -e 'tracepoint:probe:tcp_listendrop {print(comm)}'
+>   Attaching 1 probe...
+>   ioctl(PERF_EVENT_IOC_SET_BPF): Invalid argument
+>   ERROR: Error attaching probe: tracepoint:probe:tcp_listendrop
+>
+> The issue lies in how these dynamic tracepoints are implemented: despite
+> being exposed as tracepoints, they remain kprobe events internally. As a
+> result, loading them as a tracepoint program fails. Instead, they must be
+> loaded as kprobe programs.
+>
+> This change introduces support for such use cases in libbpf by adding a
+> new section: SEC("kprobe/SUBSYSTEM/PROBE")
+>
+> - Future work
+>   Extend support for dynamic tracepoints in bpftrace.
 
-And I agree! ;)
+Seems like the primary motivation is bpftrace support, so let's start
+there. I'm hesitant to include this in libbpf right now. The whole
+SEC("kprobe") that calls "attach_tracepoint()" underneath makes me
+uncomfortable.
 
-I mean, I'd personally prefer to do nothing and wait until userspace figures
-out that we have another "special" syscall.
+You can still attach to such dynamic probe today with pure libbpf
+(e.g., if bpftrace needs to do this, for example) by creating
+perf_event FD from tracefs' id, and then using
+bpf_program__attach_perf_event_opts() to attach to it. It will be on
+the user to use either tracepoint or kprobe BPF program for such
+attachment.
 
-But can we do it? I simply do not know. Can we ignore this (valid) bug report?
+Yes, this doesn't work "declaratively" with a nice SEC("...") syntax,
+but at least it's doable programmatically, and that's what matters for
+bpftrace.
 
-Oleg.
 
+
+>
+> Changes:
+> v1->v2:
+> - Use a new SEC("kprobe/SUBSYSTEM/PROBE") instead (Jiri)
+>
+> v1: https://lore.kernel.org/bpf/20250105124403.991-1-laoar.shao@gmail.com=
+/
+>
+> Yafang Shao (2):
+>   libbpf: Add support for dynamic tracepoint
+>   selftests/bpf: Add selftest for dynamic tracepoint
+>
+>  tools/lib/bpf/libbpf.c                        | 29 ++++++++-
+>  .../bpf/prog_tests/test_dynamic_tp.c          | 64 +++++++++++++++++++
+>  .../testing/selftests/bpf/progs/dynamic_tp.c  | 27 ++++++++
+>  3 files changed, 119 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_dynamic_t=
+p.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/dynamic_tp.c
+>
+> --
+> 2.43.5
+>
 
