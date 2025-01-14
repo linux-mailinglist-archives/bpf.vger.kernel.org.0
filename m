@@ -1,247 +1,215 @@
-Return-Path: <bpf+bounces-48748-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48749-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 324A1A10395
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 11:05:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 797D7A103DA
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 11:17:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EC9E18894D3
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 10:05:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B5321666F6
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 10:17:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF0621CBE95;
-	Tue, 14 Jan 2025 10:05:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A733928EC94;
+	Tue, 14 Jan 2025 10:17:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W7O7f9YM"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Fd4Pv7YP"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23F981ADC7E;
-	Tue, 14 Jan 2025 10:05:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E05422DC5A
+	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 10:17:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736849126; cv=none; b=BwGBiXhja/iQ9Nzhse7sQho8bX36S9tzU7qBETaRV9aiWEgjibAFseAfP+nQ2To8SlFFhjuWoXHNh57VVjOgczbTFRDLAQOp1GeL2s5fmfJw7hu5nZYCXqnd31cu0VG8RwKJCijD1UVR7XjsLvZ01mPjLF6xcjpbtAxb6Li0LLo=
+	t=1736849833; cv=none; b=UOu0ACDTrYc/oNXH/BXUZPtb1Bvo3CaIidV4ZlgOu8efphfkeqtzNE9MBufwlRh+6Ceo6o13Lb0/tDxtDA1Ra0merONf6Asv8+vzfR3vmi/hKr0FhmBpUb4m9hPbBIbma0nL9c3l7QA3/aQwWsJ/6uDX/1ZKYEb7zelnlQJgUYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736849126; c=relaxed/simple;
-	bh=ljvr730by3N+ahLejFsaDgo0llRk/pJOnSiC16km6wY=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=JCw4R2j8ETMf1FUUxdvY7Fo8WzeeCZbGFNXTZOFw2m/BaEBviZPwAm976DGf7hOWgWZNzulY71/XWGqavSHGmm0oGGMOffEjYi1GN52vVRGa2X08oRGH9FXDCVokbfzAdqARCGk1Zm0WSmDRhX0jS+KB8+VsKtK7JyMPB0hXA/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W7O7f9YM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01004C4CEDD;
-	Tue, 14 Jan 2025 10:05:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736849125;
-	bh=ljvr730by3N+ahLejFsaDgo0llRk/pJOnSiC16km6wY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=W7O7f9YMDBvk+fu6sw+Pds4mBLwx5TYOlI/Lw6HCQG6DguARqVFRXLgUN3+x5OxqL
-	 7knF4R0wPhxlByTmsOnP1AVkuLBv/RbN9dFKsNpMWyXeDhC93Xmmtl2OGFdNqazArj
-	 3QP5UZDnWgo3gwMa8bA2BMLbHqkKr9lZb5dKnpQRvQ4FgjciL44nL8LWYBAJCGVWe/
-	 c2mOh8O30zDBe/zQNbTpGIe5uc/Qzke4WLD0EOpqYpZuWXcLIugrHOTY1xv+mrxxiU
-	 6J2k87B9F3bLIEfO+D0jLAy5acmXN5Tdsg5JNb7hYNeViYIkKwMD2VgidVtJwkkWlC
-	 qh79VI1lttl5Q==
-Date: Tue, 14 Jan 2025 19:05:21 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: oleg@redhat.com, Aleksa Sarai <cyphar@cyphar.com>, Eyal Birger
- <eyal.birger@gmail.com>, mhiramat@kernel.org, linux-kernel
- <linux-kernel@vger.kernel.org>, linux-trace-kernel@vger.kernel.org,
- BPF-dev-list <bpf@vger.kernel.org>, Song Liu <songliubraving@fb.com>,
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
- peterz@infradead.org, tglx@linutronix.de, bp@alien8.de, x86@kernel.org,
- linux-api@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>, "rostedt@goodmis.org"
- <rostedt@goodmis.org>, rafi@rbk.io, Shmulik Ladkani
- <shmulik.ladkani@gmail.com>
-Subject: Re: Crash when attaching uretprobes to processes running in Docker
-Message-Id: <20250114190521.0b69a1af64cac41106101154@kernel.org>
-In-Reply-To: <Z4YszJfOvFEAaKjF@krava>
-References: <CAHsH6Gs3Eh8DFU0wq58c_LF8A4_+o6z456J7BidmcVY2AqOnHQ@mail.gmail.com>
-	<20250110.152323-sassy.torch.lavish.rent-vKX3ul5B3qyi@cyphar.com>
-	<Z4K7D10rjuVeRCKq@krava>
-	<Z4YszJfOvFEAaKjF@krava>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1736849833; c=relaxed/simple;
+	bh=ypeaiYFtbSkX4QzSfRyoiNwjIzU0Sf3YPd0V+9Ugxi4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TAUSeSxaE9AyU+802ivLXXY3u6fCFuIpH2H+0oRSm557bNcJXCJ+m2sMgCjPQph2yoJeMSHVqvKHk3SVrEAfFmXGzvg6x0fVIURT+eL5adNviqgX2xECwcn3Wr0pg2Xx9LDKNFku69zREwP9nJftLeXU25chwNnkcACJxU9Dyr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Fd4Pv7YP; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1736849830;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eW+mW3Tu9nGQ0HqpfC02Dq/7caIG1EhK/LPm3HcZUas=;
+	b=Fd4Pv7YP02yVag3B4soqfpHKicmAEt+N3ad0V1OweZUzzcOW/0wT9uxIBEf2h35Gmz5kyE
+	L9gcABd/GUPB6Gktuk0aeWMMYLk6GTL7nD9uYDHKSQDJl8JnzMbTURUA3eJaNyoCUZkdk+
+	LKiRtIFDYsYpNgXiy3xFKSNbKxvwdag=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-260-OV8GVou_M_CkDsRjhv9Qwg-1; Tue, 14 Jan 2025 05:17:07 -0500
+X-MC-Unique: OV8GVou_M_CkDsRjhv9Qwg-1
+X-Mimecast-MFC-AGG-ID: OV8GVou_M_CkDsRjhv9Qwg
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-46798d74f0cso95524161cf.0
+        for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 02:17:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736849827; x=1737454627;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eW+mW3Tu9nGQ0HqpfC02Dq/7caIG1EhK/LPm3HcZUas=;
+        b=V1H4MVfbRL3SRtwex/skBE3vyqkBCCUPykjR/E7FzzJxH017WvRFwXK8iOPCFbegsG
+         lUfQugcWL5JoyKKn7dJofVIRYe4k14b7o2TopBHKqNwi46zmocJDQa0fJ4q9HTOzpsSO
+         ky8yf46O2lZu2Xp6zrtzcMT3NtnkmculqmDZl5TNR82Wv428FFzJ98qS3I39tWdpDj83
+         I5Y93y6ZiuBr3C4mIyU0/Df+m58A5JiqEcLu23m+JXHCGYtoYRbLGm4rcgQDAgYTu5Um
+         xhOmKixRz+ifS3xh4KRg8MsJK7pWwVNCQmr+4VIkrTvl0kaqItWSGIx6Nhmkfi1cdvKZ
+         yuEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXllipVv1uUmvfqkjLhssX3A6g63gdSmIQRTveCJlsrGM3F3dqJyVg+Oum5IB/SgEHoqBQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzpJ9ndc02iVCrtxWOEvZXa4n4P9pIU806PN0XUov8yeGOkQ5cr
+	ynqjcxtGzpXAROutLbxnlvVjHQ9LjK8FnkX1ZQj1uavTpmviAEcutePQzJIH1uxJwTA0u6U0Bnr
+	wNIqNtlCQ+fbhoRLWkBL8j4PwmPKQ2d1W6GYVbKGG2DLxsN038w==
+X-Gm-Gg: ASbGncuCC5Phk/E1PpW5xhqXNIsBwWoTSqksynEqg06xJTRubsF1kFWB2ouDHgqYAeH
+	orKlD2DpVnsO8BKCvQnUbeNoE43aMDgmgTU/lMkd8/gvgnT0y0dTMCm1MTeBgjjd8EesAeJiYeO
+	5YJOLZ0CntPa+QpTSQYksQDgvlWvl9ZgCqh6infBIJJo7LMhclMggrITRAD+OnezmCPyIdnbb0y
+	eNIY0kRcAbfZRW61JdX8kOxMcR3T1sLwn3uwu1iLWJHwpPW92MabsRWbM+0hgnexlBuznO9wgzZ
+	ldy65yIB8f/4FqjzaR63Dzwx+ebby0e9
+X-Received: by 2002:a05:622a:190d:b0:467:8734:994f with SMTP id d75a77b69052e-46c70eb036fmr352574051cf.0.1736849827291;
+        Tue, 14 Jan 2025 02:17:07 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGLaAzZkEVaIW8hnYA/mhsZiNuV3ut2W+7fORTaO+OQ8XSFW5VqRIMMDm+j9GPuo6wkgSZShQ==
+X-Received: by 2002:a05:622a:190d:b0:467:8734:994f with SMTP id d75a77b69052e-46c70eb036fmr352573511cf.0.1736849826374;
+        Tue, 14 Jan 2025 02:17:06 -0800 (PST)
+Received: from sgarzare-redhat (host-82-53-134-100.retail.telecomitalia.it. [82.53.134.100])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-46c8732f9e8sm51362431cf.19.2025.01.14.02.17.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jan 2025 02:17:05 -0800 (PST)
+Date: Tue, 14 Jan 2025 11:16:58 +0100
+From: Stefano Garzarella <sgarzare@redhat.com>
+To: Michal Luczaj <mhal@rbox.co>
+Cc: netdev@vger.kernel.org, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Luigi Leonardi <leonardi@redhat.com>, "David S. Miller" <davem@davemloft.net>, 
+	Wongi Lee <qwerty@theori.io>, Eugenio =?utf-8?B?UMOpcmV6?= <eperezma@redhat.com>, 
+	"Michael S. Tsirkin" <mst@redhat.com>, Eric Dumazet <edumazet@google.com>, kvm@vger.kernel.org, 
+	Paolo Abeni <pabeni@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, 
+	Jason Wang <jasowang@redhat.com>, Simon Horman <horms@kernel.org>, Hyunwoo Kim <v4bel@theori.io>, 
+	Jakub Kicinski <kuba@kernel.org>, virtualization@lists.linux.dev, stable@vger.kernel.org
+Subject: Re: [PATCH net v2 1/5] vsock/virtio: discard packets if the
+ transport changes
+Message-ID: <n2itoh23kikzszzgmyejfwe3mdf6fmxzwbtyo5ahtxpaco3euq@osupldmckz7p>
+References: <20250110083511.30419-1-sgarzare@redhat.com>
+ <20250110083511.30419-2-sgarzare@redhat.com>
+ <1aa83abf-6baa-4cf1-a108-66b677bcfd93@rbox.co>
+ <nedvcylhjxrkmkvgugsku2lpdjgjpo5exoke4o6clxcxh64s3i@jkjnvngazr5v>
+ <CAGxU2F7BoMNi-z=SHsmCV5+99=CxHo4dxFeJnJ5=q9X=CM3QMA@mail.gmail.com>
+ <cccb1a4f-5495-4db1-801e-eca211b757c3@rbox.co>
+ <nzpj4hc6m4jlqhcwv6ngmozl3hcoxr6kehoia4dps7jytxf6df@iqglusiqrm5n>
+ <903dd624-44e5-4792-8aac-0eaaf1e675c5@rbox.co>
+ <5nkibw33isxiw57jmoaadizo3m2p76ve6zioumlu2z2nh5lwck@xodwiv56zrou>
+ <7de34054-10cf-45d0-a869-adebb77ad913@rbox.co>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <7de34054-10cf-45d0-a869-adebb77ad913@rbox.co>
 
-On Tue, 14 Jan 2025 10:22:20 +0100
-Jiri Olsa <olsajiri@gmail.com> wrote:
+On Tue, Jan 14, 2025 at 01:09:24AM +0100, Michal Luczaj wrote:
+>On 1/13/25 16:01, Stefano Garzarella wrote:
+>> On Mon, Jan 13, 2025 at 02:51:58PM +0100, Michal Luczaj wrote:
+>>> On 1/13/25 12:05, Stefano Garzarella wrote:
+>>>> ...
+>>>> An alternative approach, which would perhaps allow us to avoid all this,
+>>>> is to re-insert the socket in the unbound list after calling release()
+>>>> when we deassign the transport.
+>>>>
+>>>> WDYT?
+>>>
+>>> If we can't keep the old state (sk_state, transport, etc) on failed
+>>> re-connect() then reverting back to initial state sounds, uhh, like an
+>>> option :) I'm not sure how well this aligns with (user's expectations of)
+>>> good ol' socket API, but maybe that train has already left.
+>>
+>> We really want to behave as similar as possible with the other sockets,
+>> like AF_INET, so I would try to continue toward that train.
+>
+>I was worried that such connect()/transport error handling may have some
+>user visible side effects, but I guess I was wrong. I mean you can still
+>reach a sk_state=TCP_LISTEN with a transport assigned[1], but perhaps
+>that's a different issue.
+>
+>I've tried your suggestion on top of this series. Passes the tests.
 
-> On Sat, Jan 11, 2025 at 07:40:15PM +0100, Jiri Olsa wrote:
-> > On Sat, Jan 11, 2025 at 02:25:37AM +1100, Aleksa Sarai wrote:
-> > > On 2025-01-10, Eyal Birger <eyal.birger@gmail.com> wrote:
-> > > > Hi,
-> > > > 
-> > > > When attaching uretprobes to processes running inside docker, the attached
-> > > > process is segfaulted when encountering the retprobe. The offending commit
-> > > > is:
-> > > > 
-> > > > ff474a78cef5 ("uprobe: Add uretprobe syscall to speed up return probe")
-> > > > 
-> > > > To my understanding, the reason is that now that uretprobe is a system call,
-> > > > the default seccomp filters in docker block it as they only allow a specific
-> > > > set of known syscalls.
-> > > 
-> > > FWIW, the default seccomp profile of Docker _should_ return -ENOSYS for
-> > > uretprobe (runc has a bunch of ugly logic to try to guarantee this if
-> > > Docker hasn't updated their profile to include it). Though I guess that
-> > > isn't sufficient for the magic that uretprobe(2) does...
-> > > 
-> > > > This behavior can be reproduced by the below bash script, which works before
-> > > > this commit.
-> > > > 
-> > > > Reported-by: Rafael Buchbinder <rafi@rbk.io>
-> > 
-> > hi,
-> > nice ;-) thanks for the report, the problem seems to be that uretprobe syscall
-> > is blocked and uretprobe trampoline does not expect that
-> > 
-> > I think we could add code to the uretprobe trampoline to detect this and
-> > execute standard int3 as fallback to process uretprobe, I'm checking on that
-> 
-> hack below seems to fix the issue, it's using rbx to signal that uretprobe
-> syscall got executed, if not, trampoline does int3 and executes uretprobe
-> handler in the old way
-> 
-> unfortunately now the uretprobe trampoline size crosses the xol slot limit so
-> will need to come up with some generic/arch code solution for that, code below
-> is neglecting that for now
-> 
-> jirka
-> 
-> 
-> ---
->  arch/x86/kernel/uprobes.c | 24 ++++++++++++++++++++++++
->  include/linux/uprobes.h   |  1 +
->  kernel/events/uprobes.c   | 10 ++++++++--
->  3 files changed, 33 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-> index 5a952c5ea66b..b54863f6fa25 100644
-> --- a/arch/x86/kernel/uprobes.c
-> +++ b/arch/x86/kernel/uprobes.c
-> @@ -315,14 +315,25 @@ asm (
->  	".global uretprobe_trampoline_entry\n"
->  	"uretprobe_trampoline_entry:\n"
->  	"pushq %rax\n"
-> +	"pushq %rbx\n"
->  	"pushq %rcx\n"
->  	"pushq %r11\n"
-> +	"movq $1, %rbx\n"
->  	"movq $" __stringify(__NR_uretprobe) ", %rax\n"
->  	"syscall\n"
->  	".global uretprobe_syscall_check\n"
->  	"uretprobe_syscall_check:\n"
-> +	"or %rbx,%rbx\n"
-> +	"jz uretprobe_syscall_return\n"
->  	"popq %r11\n"
->  	"popq %rcx\n"
-> +	"popq %rbx\n"
-> +	"popq %rax\n"
-> +	"int3\n"
-> +	"uretprobe_syscall_return:\n"
-> +	"popq %r11\n"
-> +	"popq %rcx\n"
-> +	"popq %rbx\n"
->  
->  	/* The uretprobe syscall replaces stored %rax value with final
->  	 * return address, so we don't restore %rax in here and just
-> @@ -338,6 +349,16 @@ extern u8 uretprobe_trampoline_entry[];
->  extern u8 uretprobe_trampoline_end[];
->  extern u8 uretprobe_syscall_check[];
->  
-> +#define UINSNS_PER_PAGE                 (PAGE_SIZE/UPROBE_XOL_SLOT_BYTES)
-> +
-> +bool arch_is_uretprobe_trampoline(unsigned long vaddr)
-> +{
-> +	unsigned long start = uprobe_get_trampoline_vaddr();
-> +	unsigned long end = start + 2*UINSNS_PER_PAGE;
-> +
-> +	return vaddr >= start && vaddr < end;
-> +}
-> +
->  void *arch_uprobe_trampoline(unsigned long *psize)
->  {
->  	static uprobe_opcode_t insn = UPROBE_SWBP_INSN;
-> @@ -418,6 +439,9 @@ SYSCALL_DEFINE0(uretprobe)
->  	regs->r11 = regs->flags;
->  	regs->cx  = regs->ip;
->  
-> +	/* zero rbx to signal trampoline that uretprobe syscall was executed */
-> +	regs->bx  = 0;
+Great, thanks!
 
-Can we just return -ENOSYS as like as other syscall instead of
-using rbx as a side channel?
-We can carefully check the return address is not -ERRNO when set up
-and reserve the -ENOSYS for this use case.
+>
+>diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>index fa9d1b49599b..4718fe86689d 100644
+>--- a/net/vmw_vsock/af_vsock.c
+>+++ b/net/vmw_vsock/af_vsock.c
+>@@ -492,6 +492,10 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
+> 		vsk->transport->release(vsk);
+> 		vsock_deassign_transport(vsk);
+>
+>+		vsock_addr_unbind(&vsk->local_addr);
+>+		vsock_addr_unbind(&vsk->remote_addr);
 
-Thank you,
+My only doubt is that if a user did a specific bind() before the
+connect, this way we're resetting everything, is that right?
 
-> +
->  	return regs->ax;
->  
->  sigill:
-> diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-> index e0a4c2082245..dbde57a68a1b 100644
-> --- a/include/linux/uprobes.h
-> +++ b/include/linux/uprobes.h
-> @@ -213,6 +213,7 @@ extern void arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
->  extern void uprobe_handle_trampoline(struct pt_regs *regs);
->  extern void *arch_uprobe_trampoline(unsigned long *psize);
->  extern unsigned long uprobe_get_trampoline_vaddr(void);
-> +bool arch_is_uretprobe_trampoline(unsigned long vaddr);
->  #else /* !CONFIG_UPROBES */
->  struct uprobes_state {
->  };
-> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index fa04b14a7d72..73df64109f38 100644
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -1703,6 +1703,11 @@ void * __weak arch_uprobe_trampoline(unsigned long *psize)
->  	return &insn;
->  }
->  
-> +bool __weak arch_is_uretprobe_trampoline(unsigned long vaddr)
-> +{
-> +	return vaddr == uprobe_get_trampoline_vaddr();
-> +}
-> +
->  static struct xol_area *__create_xol_area(unsigned long vaddr)
->  {
->  	struct mm_struct *mm = current->mm;
-> @@ -1725,8 +1730,9 @@ static struct xol_area *__create_xol_area(unsigned long vaddr)
->  
->  	area->vaddr = vaddr;
->  	init_waitqueue_head(&area->wq);
-> -	/* Reserve the 1st slot for get_trampoline_vaddr() */
-> +	/* Reserve the first two slots for get_trampoline_vaddr() */
->  	set_bit(0, area->bitmap);
-> +	set_bit(1, area->bitmap);
->  	insns = arch_uprobe_trampoline(&insns_size);
->  	arch_uprobe_copy_ixol(area->page, 0, insns, insns_size);
->  
-> @@ -2536,7 +2542,7 @@ static void handle_swbp(struct pt_regs *regs)
->  	int is_swbp;
->  
->  	bp_vaddr = uprobe_get_swbp_addr(regs);
-> -	if (bp_vaddr == uprobe_get_trampoline_vaddr())
-> +	if (arch_is_uretprobe_trampoline(bp_vaddr))
->  		return uprobe_handle_trampoline(regs);
->  
->  	rcu_read_lock_trace();
-> -- 
-> 2.47.1
-> 
+Maybe we need to look better at the release, and prevent it from
+removing the socket from the lists as you suggested, maybe adding a
+function in af_vsock.c that all transports can call.
 
+Thanks,
+Stefano
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>+		vsock_insert_unbound(vsk);
+>+
+> 		/* transport's release() and destruct() can touch some socket
+> 		 * state, since we are reassigning the socket to a new transport
+> 		 * during vsock_connect(), let's reset these fields to have a
+>
+>>> Another possibility would be to simply brick the socket on failed (re)connect.
+>>
+>> I see, though, this is not the behavior of AF_INET for example, right?
+>
+>Right.
+>
+>> Do you have time to investigate/fix this problem?
+>> If not, I'll try to look into it in the next few days, maybe next week.
+>
+>I'm happy to help, but it's not like I have any better ideas.
+>
+>Michal
+>
+>[1]: E.g. this way:
+>```
+>from socket import *
+>
+>MAX_PORT_RETRIES = 24 # net/vmw_vsock/af_vsock.c
+>VMADDR_CID_LOCAL = 1
+>VMADDR_PORT_ANY = -1
+>hold = []
+>
+>def take_port(port):
+>	s = socket(AF_VSOCK, SOCK_SEQPACKET)
+>	s.bind((VMADDR_CID_LOCAL, port))
+>	hold.append(s)
+>	return s
+>
+>s = take_port(VMADDR_PORT_ANY)
+>_, port = s.getsockname()
+>for _ in range(MAX_PORT_RETRIES):
+>	port += 1
+>	take_port(port);
+>
+>s = socket(AF_VSOCK, SOCK_SEQPACKET)
+>err = s.connect_ex((VMADDR_CID_LOCAL, port))
+>assert err != 0
+>print("ok, connect failed; transport set")
+>
+>s.bind((VMADDR_CID_LOCAL, port+1))
+>s.listen(16)
+>```
+>
+
 
