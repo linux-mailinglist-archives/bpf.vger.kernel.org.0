@@ -1,248 +1,261 @@
-Return-Path: <bpf+bounces-48742-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48743-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50B35A1019A
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 09:01:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44C73A102A3
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 10:03:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E55E1888434
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 08:01:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B27781889010
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 09:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E53923D3E9;
-	Tue, 14 Jan 2025 08:01:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B78F83DABE3;
+	Tue, 14 Jan 2025 09:03:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PHmupNuS"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 076C01C3C15
-	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 08:01:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7095D1C3BFC;
+	Tue, 14 Jan 2025 09:03:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736841702; cv=none; b=APLdD2kC0qTx5mfshuLzd3ItvXVjMuFtqvWf325QKulymhbnQIL7LxRqlKGqYLKg2/F7xLFfO6GpraoAL1fqTFRwl8Cs3qkFMQyrcYENoI3NlmTukTk7dJhp5+EmcsYadFh8XotfZkll6rmQ9WkysVKYEK/A/qnf3z4+KZR17H8=
+	t=1736845401; cv=none; b=NWQPyJd7/wW2mg7VKIXWfGGzzpzJZWu7yTe6J9mfJ+xGArBt3RTVdum4rix7XKqE9qPyXoqJPGVU4H8qrQ7b1mZMBOU3xwTZgX3AeF5YWzH58CKFk2avje8qlXEK8/nnkXTybsriq+j/d2oQ9iJMsguYtABa1T3vyapQnqF/+80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736841702; c=relaxed/simple;
-	bh=nV5yDGQeqeTbxzYv/Mw7urPPyKfgEc7M8b8mysFQ0sk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hm6zzaQTorFVWXi0ORLISYIf/So7Gi8o7XBVuo8RRygAJ3m190cQQU6nsB4qPWw7s82lbmXJ1xkfuP6gxfayFPb/gB9NmnWglM785UYmvEouTfg4en63YoBFJGdwtXWfehzz5hSFOMhN41o+ZNncZ8D8Mx+JOgipU4VTGGPcruI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YXM5Q4Rh9z4f3jsx
-	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 16:01:14 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id C66021A15CA
-	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 16:01:29 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgAni1_XGYZnLhitAw--.7364S4;
-	Tue, 14 Jan 2025 16:01:29 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	houtao1@huawei.com,
-	xukuohai@huawei.com
-Subject: [PATCH bpf-next] bpf: Alloc bpf_async_cb by using bpf_global_ma under PREEMPT_RT
-Date: Tue, 14 Jan 2025 16:13:38 +0800
-Message-Id: <20250114081338.2375090-1-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
+	s=arc-20240116; t=1736845401; c=relaxed/simple;
+	bh=QNvuh5EDJiuoHdaCpoRHoR7O5EvfHOckuuZ644v9d00=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=i5PGQvG4AyzcthDOwLJZnzzuNX3QB/MpzTtvxsUJA6itDrLlypMjPloxfVyRoR+Lc9KID0gAwmhVqPc5ExHygGkNwmnIXcmeVtErjyyMQ4Qc0xnEnV4dKYzxAND395Rx6eLTwX4cwLPSkaxltotcEJW9soal3tsC3FlpgJe4loo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PHmupNuS; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-436345cc17bso37198405e9.0;
+        Tue, 14 Jan 2025 01:03:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736845398; x=1737450198; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RJdpc5af8GraPbTvgj2FYJk8F44uMY7sTK/kVSc+LHs=;
+        b=PHmupNuSqVZ1c4/9v08gmJxdnkQvZjVlsgbq7lqgakh3UY6n2MUmIPbh7XyCDtOYi8
+         h6sP9bD7t1gKblz/t/SDukdku4HCUnggUayfr9KuWegfBu/n2S169RZ3lOToLNqjrtEI
+         deVyH7+RxKyoEpeBYPhwOYl42E0oYPM8lmSdCidaZJQy/cswl50hF/yHR3bHgWfNwBNp
+         bkMQmOlMV50gc6eVTvPUSyAWDIWxDJjz5J6sYZLq512TktDYZu9X+nKcZVILkax40d1m
+         zh6Pr8Wgag24BZyv5ZyUFUvHdaVh6sDLpLC2b4GH+UvX3Q+YqKCTF3LQ/Kd/RR6f+0TH
+         fwTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736845398; x=1737450198;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RJdpc5af8GraPbTvgj2FYJk8F44uMY7sTK/kVSc+LHs=;
+        b=SR0b32nf6bZsp/Id9rQoUgTQlhiY23Nwz8yTybRsvjaDVWQ8GK2a6TU9/tB1S++qXy
+         4A5OlPxy2yLuYEMaqgp7bca9Bo7PlyalMeF3YZy0x8q+QiFcuPv/xPXBruol7M3Muy65
+         UXl/FaFOHJvUBRa6QK0AP71vPTeiBb3WJdoUMPSkzDyuOTRtbPAUOP4PwUo79NycKEsB
+         Tl/fldDzs4cZT5aXGX/QdRif2FXEnF5mSxXGHTLwOxU4XJUxmxvzUPbOkuu9q2ykl2dI
+         uMwLroPkyy1w7AdlkCX+vDAro+1de1DAMYQbOeda4rbbC0IbnKT0Gslq4aLwlRUWFeWc
+         3c5w==
+X-Forwarded-Encrypted: i=1; AJvYcCVUJ12DHJyneuoUvKCUd+A1iXh2/D62xggUWicCF6YeikE2Hm9DZRd94ZfvhzXtiREdeyE=@vger.kernel.org, AJvYcCWDMweVxKdTfL345NNnW78cGwY/72iAVTK/Eyn7zYGX+ehNKfbMqxjJvCM5EGk2kdAq+TDKtBJzYcB0dw==@vger.kernel.org, AJvYcCWMqiEvqS7S+p19JoyC4Mxy972Vd2LiczbS6FG4FTZeam+On2DzenjrFb1z6Gyi+OJ3ViSbNkwk@vger.kernel.org, AJvYcCWNBkAKp9/QN6NVsD/h0Q02/ZsLvO9OyvLQGYLLWF3GW8ZGFCOsv9wTTFgirS//Ytn+3q31xGLLEk4dDtznM00=@vger.kernel.org, AJvYcCXJ8t/KNOq1MB57Uai6xRBh0hL7otQfEeu3UgiDI2n+7xV4iIXP/aKMdU2khKhdm0mDpdGLa9VC22yat8ztC7J2@vger.kernel.org, AJvYcCXLuHVvTS/agrf59atzsIcg/BGiLaJqHr4k9hIxDR1Jz14HnUdo0rEsAgRYS7MwsNsIQBizLqwSRcE6AtGA@vger.kernel.org, AJvYcCXMv1EaYpD8i7Oku1H4GtQCkc9Y4s7kIeg6yWCiqod77UbsMAFKnnY7VwH4z6sAOCTtWKeALybkVXoJFQ==@vger.kernel.org, AJvYcCXa7WaEwP8vuyDTOrFnXjGE2Prpg+vceKX14fsUJE+h3i9yTDPrTER7S8/todguSfwelgJG/LVSDfN0@vger.kernel.org, AJvYcCXuuZ8G7OjtYnRKMa+CYDHhrdEDpPQt87Raq5qdhR3zMG9ZD8O5YhLEjhdDgoZQZw7WjVtxx/FaM1YR@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx1zBSZt600gFH9asb9ZlFZ19wtcTE+285dLRqCkxyci/RBJbb4
+	GaILyXT8XXKsd13/iHHWhueRSsnsc/xnOj2Qj8pEYiCtq2eVHqNrs2AtKp6pnU4lyOIBC3GRfnp
+	qAXrPEqlHLV+/Dy4FHaj7sHxK4R1+WDqnM1w=
+X-Gm-Gg: ASbGnctdlxk6OoyjEmfE4+sJM0l36A8DZ36/8hJzxFdVAmpO+BlY/Ln+dx8Iszu0v9m
+	byTbQYtz4gmww3wyo+7fUsllfBRiDgMs78u6U
+X-Google-Smtp-Source: AGHT+IE8ZeqfL/AgiOHI7JzByaRH/gCmdKgPWO5Hj9zc39/ATmbh/1nt9GKO3Q2GNRNSP3Oe53/t8se7t847Ok8yve4=
+X-Received: by 2002:a05:600c:1ca9:b0:435:136:75f6 with SMTP id
+ 5b1f17b1804b1-436e2551d7bmr233515785e9.0.1736845397493; Tue, 14 Jan 2025
+ 01:03:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAni1_XGYZnLhitAw--.7364S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxtr17WF17JF1rJr43tF17trb_yoW7Gw1kpF
-	4fta4ayr4UZFsF9rs3Za1kCr95Cr1kWw17GrZ3Xw1FvrWagr1kKa18WF1rZF98urW8ArW7
-	ZF4ktay5WF1xCw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
-	n4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
-	0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8
-	ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
-	CY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAF
-	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-	7IU1aFAJUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20250113143719.7948-3-shaw.leon@gmail.com> <20250114044935.26418-1-kuniyu@amazon.com>
+In-Reply-To: <20250114044935.26418-1-kuniyu@amazon.com>
+From: Xiao Liang <shaw.leon@gmail.com>
+Date: Tue, 14 Jan 2025 17:02:40 +0800
+X-Gm-Features: AbW1kvbnYf6XKcEPFQ7StR4SBvDI6u3mnWVP_-_JSDczC5xWtD3eG1aBQEYey8A
+Message-ID: <CABAhCOQy-qw8pY+8XjHGPVz7jWZ7wqnadPXZrF-enAO0AEgXyQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v8 06/11] net: ipv6: Use link netns in newlink()
+ of rtnl_link_ops
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: alex.aring@gmail.com, andrew+netdev@lunn.ch, 
+	b.a.t.m.a.n@lists.open-mesh.org, bpf@vger.kernel.org, bridge@lists.linux.dev, 
+	davem@davemloft.net, donald.hunter@gmail.com, dsahern@kernel.org, 
+	edumazet@google.com, herbert@gondor.apana.org.au, horms@kernel.org, 
+	kuba@kernel.org, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-ppp@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-wpan@vger.kernel.org, miquel.raynal@bootlin.com, netdev@vger.kernel.org, 
+	osmocom-net-gprs@lists.osmocom.org, pabeni@redhat.com, shuah@kernel.org, 
+	stefan@datenfreihafen.org, steffen.klassert@secunet.com, 
+	wireguard@lists.zx2c4.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Hou Tao <houtao1@huawei.com>
+On Tue, Jan 14, 2025 at 12:49=E2=80=AFPM Kuniyuki Iwashima <kuniyu@amazon.c=
+om> wrote:
+>
+> From: Xiao Liang <shaw.leon@gmail.com>
+> Date: Mon, 13 Jan 2025 22:37:14 +0800
+> > diff --git a/drivers/net/bonding/bond_netlink.c b/drivers/net/bonding/b=
+ond_netlink.c
+> > index 2a6a424806aa..ac5e402c34bc 100644
+> > --- a/drivers/net/bonding/bond_netlink.c
+> > +++ b/drivers/net/bonding/bond_netlink.c
+> > @@ -564,10 +564,12 @@ static int bond_changelink(struct net_device *bon=
+d_dev, struct nlattr *tb[],
+> >       return 0;
+> >  }
+> >
+> > -static int bond_newlink(struct net *src_net, struct net_device *bond_d=
+ev,
+> > -                     struct nlattr *tb[], struct nlattr *data[],
+> > +static int bond_newlink(struct net_device *bond_dev,
+> > +                     struct rtnl_newlink_params *params,
+> >                       struct netlink_ext_ack *extack)
+> >  {
+> > +     struct nlattr **data =3D params->data;
+> > +     struct nlattr **tb =3D params->tb;
+> >       int err;
+> >
+> >       err =3D bond_changelink(bond_dev, tb, data, extack);
+>
+> Note that IFLA_BOND_ACTIVE_SLAVE uses dev_net(dev) for
+> __dev_get_by_index().
 
-Under PREEMPT_RT, it is not safe to use GPF_ATOMIC kmalloc when
-preemption or irq is disabled. The following warning is reported when
-running test_progs under PREEMPT_RT:
+That's true. Bond devices have no "link-netns", and a slave
+device must be in the same namespace of the main dev.
 
-  BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
-  in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 675, name: test_progs
-  preempt_count: 1, expected: 0
-  RCU nest depth: 0, expected: 0
-  2 locks held by test_progs/675:
-   #0: ffffffff864b0240 (rcu_read_lock_trace){....}-{0:0}, at: bpf_prog_test_run_syscall+0x2c0/0x830
-   #1: ffff8881f4ec40c8 ((&c->lock)){....}-{2:2}, at: ___slab_alloc+0xbc/0x1280
-  Preemption disabled at:
-  [<ffffffff8175ae2b>] __bpf_async_init+0xbb/0xb10
-  CPU: 1 UID: 0 PID: 675 Comm: test_progs Tainted: G           O       6.12.0+ #11
-  Tainted: [O]=OOT_MODULE
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996) ...
-  Call Trace:
-   <TASK>
-   dump_stack_lvl+0x57/0x70
-   dump_stack+0x10/0x20
-   __might_resched+0x337/0x4d0
-   rt_spin_lock+0xd4/0x230
-   ___slab_alloc+0xbc/0x1280
-   __slab_alloc.isra.0+0x5d/0xa0
-   __kmalloc_node_noprof+0xf7/0x4f0
-   bpf_map_kmalloc_node+0xf5/0x6b0
-   __bpf_async_init+0x20e/0xb10
-   bpf_timer_init+0x30/0x40
-   bpf_prog_c7e2dc9ff3d5ba62_start_cb+0x55/0x85
-   bpf_prog_4eb421be69ae82fa_start_timer+0x5d/0x7e
-   bpf_prog_test_run_syscall+0x322/0x830
-   __sys_bpf+0x135d/0x3ca0
-   __x64_sys_bpf+0x75/0xb0
-   x64_sys_call+0x1b5/0xa10
-   do_syscall_64+0x3b/0xc0
-   entry_SYSCALL_64_after_hwframe+0x4b/0x53
+> [...]
+> > diff --git a/drivers/net/macvlan.c b/drivers/net/macvlan.c
+> > index fed4fe2a4748..0c496aa1f706 100644
+> > --- a/drivers/net/macvlan.c
+> > +++ b/drivers/net/macvlan.c
+> > @@ -1565,11 +1565,12 @@ int macvlan_common_newlink(struct net *src_net,=
+ struct net_device *dev,
+> >  }
+> >  EXPORT_SYMBOL_GPL(macvlan_common_newlink);
+> >
+> > -static int macvlan_newlink(struct net *src_net, struct net_device *dev=
+,
+> > -                        struct nlattr *tb[], struct nlattr *data[],
+> > +static int macvlan_newlink(struct net_device *dev,
+> > +                        struct rtnl_newlink_params *params,
+> >                          struct netlink_ext_ack *extack)
+> >  {
+> > -     return macvlan_common_newlink(src_net, dev, tb, data, extack);
+> > +     return macvlan_common_newlink(params->net, dev, params->tb,
+> > +                                   params->data, extack);
+>
+> Pass params as is as you did for ipvlan_link_new().
+>
+> Same for macvtap_newlink().
 
-Fix the problem by using bpf_global_ma to allocate bpf_async_cb when
-PREEMPT_RT is enabled. The reason for still using kmalloc for
-no-PREEMPT_RT case is that bpf_global_ma doesn't support accouting the
-allocated memory to specific memcg. Also doing the memory allocation
-before invoking __bpf_spin_lock_irqsave() to reduce the possibility of
--ENOMEM for bpf_global_ma.
+OK.
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- kernel/bpf/helpers.c | 48 +++++++++++++++++++++++++++++++++++---------
- 1 file changed, 38 insertions(+), 10 deletions(-)
+> [...]
+> > diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
+> > index 1e1b00756be7..1e9eadc77da2 100644
+> > --- a/drivers/net/netkit.c
+> > +++ b/drivers/net/netkit.c
+> > @@ -327,10 +327,13 @@ static int netkit_validate(struct nlattr *tb[], s=
+truct nlattr *data[],
+> >
+> >  static struct rtnl_link_ops netkit_link_ops;
+> >
+> > -static int netkit_new_link(struct net *peer_net, struct net_device *de=
+v,
+> > -                        struct nlattr *tb[], struct nlattr *data[],
+> > +static int netkit_new_link(struct net_device *dev,
+> > +                        struct rtnl_newlink_params *params,
+> >                          struct netlink_ext_ack *extack)
+> >  {
+> > +     struct nlattr **data =3D params->data;
+> > +     struct net *peer_net =3D params->net;
+> > +     struct nlattr **tb =3D params->tb;
+>
+> nit: please keep the reverse xmas tree order.
+>
+>
+> >       struct nlattr *peer_tb[IFLA_MAX + 1], **tbp =3D tb, *attr;
+>
+> you can define *tbp here and initialise it later.
+>
+>         struct nlattr *peer_tb[IFLA_MAX + 1], **tbp, *attr;
+>
+> >       enum netkit_action policy_prim =3D NETKIT_PASS;
+> >       enum netkit_action policy_peer =3D NETKIT_PASS;
+>
+>
+> [...]
+> > @@ -1064,6 +1067,11 @@ static void wwan_create_default_link(struct wwan=
+_device *wwandev,
+> >       struct net_device *dev;
+> >       struct nlmsghdr *nlh;
+> >       struct sk_buff *msg;
+> > +     struct rtnl_newlink_params params =3D {
+> > +             .net =3D &init_net,
+> > +             .tb =3D tb,
+> > +             .data =3D data,
+> > +     };
+>
+> nit: Reverse xmas tree order
+>
+>
+> [...]
+> > diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+> > index ec98349b9620..7ff5e96f6ba7 100644
+> > --- a/net/core/rtnetlink.c
+> > +++ b/net/core/rtnetlink.c
+> > @@ -3766,6 +3766,14 @@ static int rtnl_newlink_create(struct sk_buff *s=
+kb, struct ifinfomsg *ifm,
+> >       struct net_device *dev;
+> >       char ifname[IFNAMSIZ];
+> >       int err;
+> > +     struct rtnl_newlink_params params =3D {
+>
+> nit: Reverse xmas tree order
+>
+>
+> > +             .net =3D net,
+>
+> Use sock_net(skb->sk) directly here and remove net defined above,
+> which is no longer used in this function.
+>
+> ---8<---
+>         unsigned char name_assign_type =3D NET_NAME_USER;
+>         struct rtnl_newlink_params params =3D {
+>                 .net =3D sock_net(skb->sk),
+>                 .src_net =3D net,
+>                 .link_net =3D link_net,
+>                 .peer_net =3D peer_net,
+>                 .tb =3D tb,
+>                 .data =3D data,
+>         };
+>         u32 portid =3D NETLINK_CB(skb).portid;
+> ---8<---
+>
+>
+> [...]
+> > @@ -1698,6 +1702,10 @@ struct net_device *gretap_fb_dev_create(struct n=
+et *net, const char *name,
+> >       LIST_HEAD(list_kill);
+> >       struct ip_tunnel *t;
+> >       int err;
+> > +     struct rtnl_newlink_params params =3D {
+> > +             .net =3D net,
+> > +             .tb =3D tb,
+> > +     };
+> >
+> >       memset(&tb, 0, sizeof(tb));
+>
+> nit: Reverse xmas tree
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index bcda671feafd9..5041f22812936 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1109,12 +1109,14 @@ struct bpf_async_cb {
-  * freeing the timers when inner map is replaced or deleted by user space.
-  */
- struct bpf_hrtimer {
-+	/* cb must be the first member */
- 	struct bpf_async_cb cb;
- 	struct hrtimer timer;
- 	atomic_t cancelling;
- };
- 
- struct bpf_work {
-+	/* cb must be the first member */
- 	struct bpf_async_cb cb;
- 	struct work_struct work;
- 	struct work_struct delete_work;
-@@ -1141,6 +1143,34 @@ enum bpf_async_type {
- 
- static DEFINE_PER_CPU(struct bpf_hrtimer *, hrtimer_running);
- 
-+static void bpf_async_free(struct bpf_async_cb *cb)
-+{
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-+		bpf_mem_free(&bpf_global_ma, cb);
-+	else
-+		kfree(cb);
-+}
-+
-+static void bpf_async_free_rcu(struct bpf_async_cb *cb)
-+{
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-+		bpf_mem_free_rcu(&bpf_global_ma, cb);
-+	else
-+		kfree_rcu(cb, rcu);
-+}
-+
-+static struct bpf_async_cb *bpf_async_alloc(struct bpf_map *map, size_t size)
-+{
-+	struct bpf_async_cb *cb;
-+
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-+		cb = bpf_mem_alloc(&bpf_global_ma, size);
-+	else
-+		/* allocate hrtimer via map_kmalloc to use memcg accounting */
-+		cb = bpf_map_kmalloc_node(map, size, GFP_ATOMIC, map->numa_node);
-+	return cb;
-+}
-+
- static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
- {
- 	struct bpf_hrtimer *t = container_of(hrtimer, struct bpf_hrtimer, timer);
-@@ -1221,7 +1251,7 @@ static void bpf_wq_delete_work(struct work_struct *work)
- 
- 	cancel_work_sync(&w->work);
- 
--	kfree_rcu(w, cb.rcu);
-+	bpf_async_free_rcu(&w->cb);
- }
- 
- static void bpf_timer_delete_work(struct work_struct *work)
-@@ -1236,7 +1266,7 @@ static void bpf_timer_delete_work(struct work_struct *work)
- 	 * bpf_timer_cancel_and_free will have been cancelled.
- 	 */
- 	hrtimer_cancel(&t->timer);
--	kfree_rcu(t, cb.rcu);
-+	bpf_async_free_rcu(&t->cb);
- }
- 
- static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u64 flags,
-@@ -1263,20 +1293,18 @@ static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u
- 		return -EINVAL;
- 	}
- 
-+	cb = bpf_async_alloc(map, size);
-+	if (!cb)
-+		return -ENOMEM;
-+
- 	__bpf_spin_lock_irqsave(&async->lock);
- 	t = async->timer;
- 	if (t) {
-+		bpf_async_free(cb);
- 		ret = -EBUSY;
- 		goto out;
- 	}
- 
--	/* allocate hrtimer via map_kmalloc to use memcg accounting */
--	cb = bpf_map_kmalloc_node(map, size, GFP_ATOMIC, map->numa_node);
--	if (!cb) {
--		ret = -ENOMEM;
--		goto out;
--	}
--
- 	switch (type) {
- 	case BPF_ASYNC_TYPE_TIMER:
- 		clockid = flags & (MAX_CLOCKS - 1);
-@@ -1313,7 +1341,7 @@ static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u
- 		 * or pinned in bpffs.
- 		 */
- 		WRITE_ONCE(async->cb, NULL);
--		kfree(cb);
-+		bpf_async_free(cb);
- 		ret = -EPERM;
- 	}
- out:
--- 
-2.29.2
+Will fix the style issues mentioned above in the next version.
 
+Thanks.
 
