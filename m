@@ -1,199 +1,165 @@
-Return-Path: <bpf+bounces-48839-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48840-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4021AA110BB
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 20:04:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E95DAA1110F
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 20:22:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 509D3168AE8
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 19:04:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 581B51665E1
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 19:22:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 930FD1FC7CE;
-	Tue, 14 Jan 2025 19:04:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83FAD1FCFC5;
+	Tue, 14 Jan 2025 19:22:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DRvrKmYX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ME4A4bHM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A44811B85FA;
-	Tue, 14 Jan 2025 19:04:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A65041E495;
+	Tue, 14 Jan 2025 19:21:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736881489; cv=none; b=NCRYX7nwvIWTNMotZaV6UrAnpImx8SHX4+YmLmoJXJghGENr/dpfV4DmJnWs26QlknQzEGPboMwZv1ahksk0wpWAwaMwqhwNmHVKenGu3JsxrUHxQC/AxK/1DPSc7FemBLgyq9/r6Xb8oaA6/EinddxCrJLCKT3lRP9on7G8rNU=
+	t=1736882521; cv=none; b=rV3dHqjnSDuVQiAaSfln4evGwbJ1ML/hGn6qJIAfLhRGb4wzfgJjEYFIFPPMmbDpduYlNRrwLK9T7vdD9iihYpTQfQ/vvjIxZkIweTXGzQ4gyW4pwOPxtXE4CDoyIycNDAEQ5vQ3etmuKLrbMoJnIPz70zJ5CIwPQTyVd5g/fZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736881489; c=relaxed/simple;
-	bh=OqGK6Z8tSyIVe/r/lJjFfsY83wr55JwqJyKsp3yVWF0=;
+	s=arc-20240116; t=1736882521; c=relaxed/simple;
+	bh=EYlwav4mcTdoq3gOWi0pQ5xfwZ86otI56TWgAM1kaDs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HJXNYkYwk55Z5bpG95ssKcuJRM5vXx0s1QK8CBu0K6WokSqA1hD3TPby+10xErfbg9flePH3xJCFDNUM9mfmrh9mfevJm6w27nmp83crX7D+IvVFZuHZjWryzcWlSERRlE4Sky1xc3Thoda3Em3iclWqip9WmQ8kVdc/Pep5WVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DRvrKmYX; arc=none smtp.client-ip=209.85.216.46
+	 To:Cc:Content-Type; b=q0K3lD+TYu+IZei3InTnT/H8z+ew1SMlF4KfXzNuVfCqzY914W9hin2nN9HOQT3mECote4Y48klvIffsarWQZXtiXlhD3P0CLXkPo7vqO71AtNrv+OM7VSvQcYeb1Ll1pXkAl68adJ5kPJNiXjOGEm7sPhmw4dV4q+uhSuq2Zlc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ME4A4bHM; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2eec9b3a1bbso7829974a91.3;
-        Tue, 14 Jan 2025 11:04:47 -0800 (PST)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2165cb60719so106193555ad.0;
+        Tue, 14 Jan 2025 11:21:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736881487; x=1737486287; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1736882519; x=1737487319; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UEe097M6IZ1c6/MJ6EbTxRLtSdho/vi92Dh1E1/kKsQ=;
-        b=DRvrKmYXTsJgj2bNz07kKPEsWwkgYx3DLmd36Yjt6Krhdris/IjxQgJgsDsReCpWQZ
-         nvhP0RMjmrInIAHf3653GeHuRAkrbnCU4er8GNCaV3jGtfLgl2m6L48JfYLVzaZsnDWL
-         HbhJnuPg3w/uCYAB4UUeoyY2tNAp4MxEL5DhTSHR4GY0/i3wxubkrjxBPQ5oKEg/EztP
-         Xw1KxhiOHdRR3mXo5RQ4mBqb49CtFye1AHMXXg0GwYT0/Mg+x5WCFzP3BOmveIIgVsY7
-         ZJBZlQYuRi1gr/+5C/D/ZWCIao1kXibVCnBaeqw0jnafBk7gpSFVqPLoc8oHjJ78VyVu
-         Scxg==
+        bh=bAYWjDlNWwIFZHAb6sj8GvPPzYC00Jjai6XPpOSZVbg=;
+        b=ME4A4bHMPrCWVLupAg9t/bNsLOG9Is8KYdxxstUsiLRDGd1Be/blwmTmw7NxS9W2Sf
+         Kq27eceNPk9s2RlHFN1c9zwh+Nvsk98Q6BDLmOyscF+0wf1gOqljTvJznubBma8I5E6E
+         l0/m1sewqyVTLITcKWdmOY71MOL0C++P4cvfXJmmy4/7v9o+UutwM8rZrYyj/U/ogRGE
+         8PanPA1T7o72O/x/FSHo9NH+DUbJJHYsZU01QTAdxUc6B+dp/Ar3delSyAercqwozdFw
+         agTvAtRcUUC1sK/YZW8MJtKAUPJokERPu9AHrDIZF+BPhV9rK9JnD+EnsNY06eYFU0Mx
+         kVkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736881487; x=1737486287;
+        d=1e100.net; s=20230601; t=1736882519; x=1737487319;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UEe097M6IZ1c6/MJ6EbTxRLtSdho/vi92Dh1E1/kKsQ=;
-        b=RU0n0a+GAbZeiXNXgt/K4ZSb3ENLg1Q1xcMbF40BG/MbWQn3yzBTSvP8GFoqCLwwPC
-         wN4tbZyUV9fb9nAeTDc1oN/57MxV6/siB/kKQ1nfeRucYIPeSBrWklVuhKR0SyrxVXTx
-         5EPr4THKbWqYHdtUYYnIPUWBbEX2MkeoCxwD7+EX3/Ik0PpDBhE7SvMnK4MkqrjwmFnI
-         cZ4VetAtmlTnDhiqJRN80H5dPLUJuodETjXPWxr6V0fa+RZElwTVo/VXR1GtSxOrK3sB
-         0jzhP4664l3z/pRszEvtgzDh6NcUAo6H7GQApn14nDzLwB/pBy4Xo5cWYv1vKTbhGqfb
-         lkXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU2o3pkTSEisO4BSO4C9UNPGmN/PF1F64W/Ir3oEyQtb+KXMfc84uG6ElY/Pw6EnN2x9y7G5hPDsSha1bO/yhsdNbj1@vger.kernel.org, AJvYcCU8kEEeVKNNmcJms1atLk0LxnNla3Hi8zVfnpgbLs7ki6kPDrSpZ8DsD35w42Zr10tEG5Y=@vger.kernel.org, AJvYcCV6KE88UFx6VhjobCDwi0Co23emtd4RDrcVGE7QASVfZVXVWXrxzzdYVO1nSYgT1eWxvvSsHzjL5gyETg==@vger.kernel.org, AJvYcCWasxaJAeAwkyqfG8bRxLvtl0Dy3GcQPiy/9zBRLa0Fna5Ft4iqwF7EMRCp9OS9KFhnWhDAIjkaABYsikqi@vger.kernel.org
-X-Gm-Message-State: AOJu0YyNS5nwx4B12biXNfozwy6j7/wJb6gk2OcR1qVeMZoZBLvNLxMc
-	nBeO9/U6/2wdAM3dSDAQzF6SRHkVH3y5t/UsVpejRUZMnLPCThviVkC0nsbHjDwYqbF7Uee63vx
-	namVAPrAMiglj78Z9E//VhC7xJSE=
-X-Gm-Gg: ASbGncsUWg0QYkAKXKxY+5jL30C4jk8bCRNPYnbc68YRzT3tQ+ofEUzKX4VcKL5sN17
-	pnlEB9XSAsHTYCCG24gA9AFtFYzR/yXYN0gV2
-X-Google-Smtp-Source: AGHT+IGPhIcGO+TQXrPWOO1ZPVU0z+5sWXrqDm55mqIBD3SrGU5BTvsIyI5REMrOuVa7A4fXcTnsa5fozQnQr150wfg=
-X-Received: by 2002:a17:90b:540e:b0:2ee:a76a:830 with SMTP id
- 98e67ed59e1d1-2f548f1b2bfmr40980565a91.24.1736881486958; Tue, 14 Jan 2025
- 11:04:46 -0800 (PST)
+        bh=bAYWjDlNWwIFZHAb6sj8GvPPzYC00Jjai6XPpOSZVbg=;
+        b=dFPB9QbEFjtqmShOG8+RLDTJAGTf2b9t1G+jhWAYHdWcgJENA/WWmoaDmr94o9d4WP
+         NsiFXFvG+Ksmu3ZCa5ljq38mvaAr1Kw/3wZA/sRxOAfJjTwZFRwu/CqCqxhSVsRv5pI0
+         2ru1+1+YxSaRqNkKZhyiFKnzL6TZXJ0RqzCt47BtdCxrywtH5zLHOdt17bYmZdejvDGS
+         wYtlP/G/gbuMCDat9LfTJR1Cj1ajrqxCq7+hbnEoORC0ZjIn3qtURkN7sSU5V8qtKpfQ
+         w8Cerr7lDHenMqi6RNa9GBmgQ2LDOFsScadn8ZSPJ4ndXwqzh8Zaoyw8a6tCG9bW6D4I
+         ElBA==
+X-Forwarded-Encrypted: i=1; AJvYcCVqmxcqSAIEB62meC8jyPj4z6FSSD4toEs0zk8ygQ1mTRHMkCb98HXUy4oe7LT/VT7CPXLAuSYL+F6AiObO@vger.kernel.org, AJvYcCWEvmwFcbAUbbF8ss/lFxek+XjgIRszIbtOzz+gOgl/7ZsH4IaGMxGPlPkwKHk4swAZvFU=@vger.kernel.org, AJvYcCWPM/mjGDCL2Oh8/BQ3/n6enYNZlIIqEgI+2oUfiy1NpWZeKmkRyy7BG+1HIkFQ/s4C3mxsE6J0DXjA@vger.kernel.org, AJvYcCWSsgoPesPjZjwp7AGBPgqo8VoZ1fd9oPk6VtojulZy5FsXxfVHZDhjVyClFH9P5pyLWTYFxw5FCn/+NE+4tUO0G4qJ@vger.kernel.org
+X-Gm-Message-State: AOJu0YzqBdkhoIsyzjxlHxg+L7+SHwtI5lsszKrQuIcn/4Kd5WHrtkPE
+	TL46/ktS8148A4a0pTrxFbXkwNhf15VMzzPQln2BcsPW1aQNp52znAseFIy51UPBDASP5Ns4TkT
+	6AgogpBRMtYDtHeL3UXnXj40YkjM=
+X-Gm-Gg: ASbGncvoCCFSdVtkswEfYeXKmFA/p1B+Q1m2pZuN/y9rxILthvVDxeKHd/CUso/OMdn
+	xpCbKFKihEdXssH8Wof2QDVAoIl4nYBLxvsC81Th1eNthiPWzylxj+Q==
+X-Google-Smtp-Source: AGHT+IEInQ3nliq6U7ZDfH5HitS+QkRObpsN43yA3MrtfJWj+r/2ebIua7P3dNIdI+vx9PVbNXxWP+5rD3/ilEPL+Kk=
+X-Received: by 2002:a05:6a00:e89:b0:71d:f2e3:a878 with SMTP id
+ d2e1a72fcca58-72d21f10759mr34449002b3a.5.1736882518949; Tue, 14 Jan 2025
+ 11:21:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <173518987627.391279.3307342580035322889.stgit@devnote2>
- <Z3aSuql3fnXMVMoM@krava> <CAEf4BzZqpHcqRJscQtAJJ7tLMpdq4_Dr_j7APj=X2g-pnkELVg@mail.gmail.com>
- <Z4Z-yC_mBTa6Ws70@krava>
-In-Reply-To: <Z4Z-yC_mBTa6Ws70@krava>
+References: <CAHsH6Gs3Eh8DFU0wq58c_LF8A4_+o6z456J7BidmcVY2AqOnHQ@mail.gmail.com>
+ <20250110.152323-sassy.torch.lavish.rent-vKX3ul5B3qyi@cyphar.com>
+ <Z4K7D10rjuVeRCKq@krava> <Z4YszJfOvFEAaKjF@krava> <20250114105802.GA19816@redhat.com>
+ <Z4ZyYudZSD92DPiF@krava>
+In-Reply-To: <Z4ZyYudZSD92DPiF@krava>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 14 Jan 2025 11:04:35 -0800
-X-Gm-Features: AbW1kva_e4D6M60XyDxQhwRiED82CFE6DG9gGIZh1M2JAQrmjpyscMamojYYM6U
-Message-ID: <CAEf4BzbuQxEWfTNRq9163Gi=SMDi3wCpfp+NEMVtz_BRYJxOdg@mail.gmail.com>
-Subject: Re: [PATCH v22 00/20] tracing: fprobe: function_graph: Multi-function
- graph and fprobe on fgraph
+Date: Tue, 14 Jan 2025 11:21:46 -0800
+X-Gm-Features: AbW1kvYA3HYA9G3lAeXlMz62ogiBuaOIE4dkUTraqSnTw4PFa6AB1sY8EE_fAA0
+Message-ID: <CAEf4BzZoa6gBQzfPLeMTQu+s=GqVdmihFdb1BHkcPPQMFQp+MQ@mail.gmail.com>
+Subject: Re: Crash when attaching uretprobes to processes running in Docker
 To: Jiri Olsa <olsajiri@gmail.com>
-Cc: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>, 
-	linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, 
-	Mark Rutland <mark.rutland@arm.com>, linux-arch@vger.kernel.org
+Cc: Oleg Nesterov <oleg@redhat.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+	Eyal Birger <eyal.birger@gmail.com>, mhiramat@kernel.org, 
+	linux-kernel <linux-kernel@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	BPF-dev-list <bpf@vger.kernel.org>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, peterz@infradead.org, tglx@linutronix.de, 
+	bp@alien8.de, x86@kernel.org, linux-api@vger.kernel.org, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Alexei Starovoitov <ast@kernel.org>, "rostedt@goodmis.org" <rostedt@goodmis.org>, rafi@rbk.io, 
+	Shmulik Ladkani <shmulik.ladkani@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 14, 2025 at 7:12=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+On Tue, Jan 14, 2025 at 6:19=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
 e:
 >
-> On Fri, Jan 10, 2025 at 04:04:37PM -0800, Andrii Nakryiko wrote:
-> > On Thu, Jan 2, 2025 at 5:21=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> w=
-rote:
+> On Tue, Jan 14, 2025 at 11:58:03AM +0100, Oleg Nesterov wrote:
+> > On 01/14, Jiri Olsa wrote:
 > > >
-> > > On Thu, Dec 26, 2024 at 02:11:16PM +0900, Masami Hiramatsu (Google) w=
-rote:
-> > > > Hi,
-> > > >
-> > > > Here is the 22nd version of the series to re-implement the fprobe o=
-n
-> > > > function-graph tracer. The previous version is;
-> > > >
-> > > > https://lore.kernel.org/all/173379652547.973433.2311391879173461183=
-.stgit@devnote2/
-> > > >
-> > > > This version is rebased on v6.13-rc4 with fixes on [3/20] for x86-3=
-2 and
-> > > > [5/20] for build error.
-> > >
-> > >
-> > > hi,
-> > > I ran the bench and I'm seeing native_sched_clock being used
-> > > again kretprobe_multi bench:
-> > >
-> > >      5.85%  bench            [kernel.kallsyms]                       =
-                 [k] native_sched_clock
-> > >             |
-> > >             ---native_sched_clock
-> > >                sched_clock
-> > >                |
-> > >                 --5.83%--trace_clock_local
-> > >                           ftrace_return_to_handler
-> > >                           return_to_handler
-> > >                           syscall
-> > >                           bpf_prog_test_run_opts
+> > > --- a/arch/x86/kernel/uprobes.c
+> > > +++ b/arch/x86/kernel/uprobes.c
+> > > @@ -315,14 +315,25 @@ asm (
+> > >     ".global uretprobe_trampoline_entry\n"
+> > >     "uretprobe_trampoline_entry:\n"
+> > >     "pushq %rax\n"
+> > > +   "pushq %rbx\n"
+> > >     "pushq %rcx\n"
+> > >     "pushq %r11\n"
+> > > +   "movq $1, %rbx\n"
+> > >     "movq $" __stringify(__NR_uretprobe) ", %rax\n"
+> > >     "syscall\n"
+> > >     ".global uretprobe_syscall_check\n"
+> > >     "uretprobe_syscall_check:\n"
+> > > +   "or %rbx,%rbx\n"
+> > > +   "jz uretprobe_syscall_return\n"
+> > >     "popq %r11\n"
+> > >     "popq %rcx\n"
+> > > +   "popq %rbx\n"
+> > > +   "popq %rax\n"
+> > > +   "int3\n"
+> > > +   "uretprobe_syscall_return:\n"
+> > > +   "popq %r11\n"
+> > > +   "popq %rcx\n"
+> > > +   "popq %rbx\n"
 > >
-> > completely unrelated, Jiri, but we should stop using
-> > bpf_prog_test_run_opts() for benchmarking. It goes through FD
-> > refcounting, which is unnecessary tiny overhead, but more importantly
-> > it causes cache line bouncing between multiple CPUs (when doing
-> > multi-threaded benchmarks), which skews and limits results.
+> > But why do we need to abuse %rbx? Can't uretprobe_trampoline_entry do
+> >
+> >       syscall
+> >
+> > // int3_section, in case sys_uretprobe() doesn't work
+> >       popq %r11
+> >       popq %rcx
+> >       popq %rax
+> >       int3
+> >
+> > uretprobe_syscall_return:
+> >       popq %r11
+> >       popq %rcx
+> >       popq %rbx
+> >       retq
+> >
+> > and change sys_uretprobe() to do
+> >
+> >       - regs->ip =3D ip;
+> >       + regs->ip =3D ip + sizeof(int3_section);
 >
-> so you mean to switch directly to attaching/hitting kernel functions
-> or perhaps better have kernel module for that?
+> nice idea, I wonder we get the trampoline size under one xol slot with th=
+at
 >
 
-yes, cheap syscall (getpgid or something). Not a kernel module, that's
-logistical hassle.
+Should we just fix whoever is blocking kernel-internal special syscall
+(sys_uretprobe)? What would happen if someone blocked that other
+special kernel-internal syscall for signal handling (can't remember
+the name, but the one that was an inspiration/justification for
+sys_uretprobe)?
 
+
+> thanks,
 > jirka
->
-> >
-> > >                           trigger_producer_batch
-> > >                           start_thread
-> > >                           __GI___clone3
-> > >
-> > > I recall we tried to fix that before with [1] change, but that replac=
-ed
-> > > later with [2] changes
-> > >
-> > > When I remove the trace_clock_local call in __ftrace_return_to_handle=
-r
-> > > than the kretprobe-multi gets much faster (see last block below), so =
-it
-> > > seems worth to make it optional
-> > >
-> > > there's some decrease in kprobe_multi benchmark compared to base numb=
-ers,
-> > > which I'm not sure yet why, but other than that it seems ok
-> > >
-> > > base:
-> > >         kprobe         :   12.873 =C2=B1 0.011M/s
-> > >         kprobe-multi   :   13.088 =C2=B1 0.052M/s
-> > >         kretprobe      :    6.339 =C2=B1 0.003M/s
-> > >         kretprobe-multi:    7.240 =C2=B1 0.002M/s
-> > >
-> > > fprobe_on_fgraph:
-> > >         kprobe         :   12.816 =C2=B1 0.002M/s
-> > >         kprobe-multi   :   12.126 =C2=B1 0.004M/s
-> > >         kretprobe      :    6.305 =C2=B1 0.018M/s
-> > >         kretprobe-multi:    7.740 =C2=B1 0.003M/s
-> > >
-> > > removed native_sched_clock call:
-> > >         kprobe         :   12.850 =C2=B1 0.006M/s
-> > >         kprobe-multi   :   12.115 =C2=B1 0.006M/s
-> > >         kretprobe      :    6.270 =C2=B1 0.017M/s
-> > >         kretprobe-multi:    9.190 =C2=B1 0.005M/s
-> > >
-> > >
-> > > happy new year ;-) thanks,
-> > >
-> > > jirka
-> > >
-> > >
-> > > [1] https://lore.kernel.org/bpf/172615389864.133222.14452329708227900=
-626.stgit@devnote2/
-> > > [2] https://lore.kernel.org/all/20240914214805.779822616@goodmis.org/
-> > >
-> >
-> > [...]
 
