@@ -1,370 +1,211 @@
-Return-Path: <bpf+bounces-48873-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48874-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86B71A1151A
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 00:11:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8D44A11545
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 00:21:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D6FD160B57
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 23:11:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6ABD163DC2
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 23:21:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F215B2144B8;
-	Tue, 14 Jan 2025 23:11:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E4D52139C4;
+	Tue, 14 Jan 2025 23:20:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X1TeRr48"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tYSwb+MQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE827214212
-	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 23:10:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38C57232429;
+	Tue, 14 Jan 2025 23:20:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736896260; cv=none; b=CmCAldbGfoNxYb63zavApsbF5BXNuA9XcSSBlrHrAwTmRNTCafXWuXaHibdXhIuBy/yc+QCYJ3w1NucRtLIZ/lXF0V3yEAzEDBo+xVcSk2fRzo+rNKk0kfOX5KMi5IMLTUj26j9J2W2E/M1KEaW4HivRDIB43ul7L04qgvvod6A=
+	t=1736896857; cv=none; b=QBXwXTLU/mQGHeVRsd7NBDvxDQOALJueafmdPWKXvQ4pHOFAW2TsbJnJ8mZWDi5+N/NW2X4yVWg8JSl+hLpubWU38659CAqeIsYbK+iELcoBAo3V7au4TAAC7x9Wv8lkrWA7ro63IirZfMpdMq3OBLZUsva7ehJ2ULunrtDrksQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736896260; c=relaxed/simple;
-	bh=dXMHH/iXnIjdtjBNP4kVBjg7olDWs3JlBf3UmmX1Hw4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TbYKLxM4Q+asr1ULJb2K59mn+uHw0OruWUbsKeA9p+aPdS5B+pgaWO3Aa9Z7Pl76iktPUKV6qGUvX8Gg2oRZ9PYMSyY5Uo6QVgnTGbkG8EIL9eA4FQmJvMZFlRBO9Ud09sH+MPmRHcyWx1BX5h5eUjDpBmBRR/rP8xxfz3We/5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X1TeRr48; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2163b0c09afso111707915ad.0
-        for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 15:10:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736896258; x=1737501058; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RrgqIsTn5BQAwP1qNjKGO7uVFsew4IHZSxTIVUArylY=;
-        b=X1TeRr48atlz0l1gddFKDGneNrKgDGcip1IdQ0vKwO3+lZkYYOeWeX+sMogee1jywA
-         nPTwIFvsrJhlZePS+rm/IGiuaWRQfmYXIFZ+SxESA7/UvUk6N37N9RXl6P7xNYTyNSsn
-         aqUcVt5AEpO23Ns9dFcU94eskIIwy1aphucG+f2ll8sNMaLc6lhumKNtm2U7znE9vYQb
-         VSgi+KM8TPK8EIrVvBtnPLUtip3crlUedk4EIA2t+WI01ZVr+okKaZ+TONCRioHBNABL
-         bu1pDmHAWEvwxEAp5drXhVe5MxnWT79NrViVPErfC05XM1IbGrTsFdhJ2itngcalVeFL
-         e9WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736896258; x=1737501058;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RrgqIsTn5BQAwP1qNjKGO7uVFsew4IHZSxTIVUArylY=;
-        b=J+/oBTHWLho+bFaIIa2W8tPUl8fuksH8lb3Xnz27G7r0/f1ZNkM/TC5HVm7pDMBFVa
-         sSZmBVx+aRpA3p5fNFB/436J3tIy7e74ZQkrJKsI+R5tdTMjjaN6XfifNmqkiZ6ijVA7
-         HA4JTbAxZCvSLFC1U6uePv0FxTmg0wc3o02S6cuembhDwXcw22AqEWOMf8aO0i35Qhf8
-         LbJGkyGM4k/fXNFPoJbvsP4kYhz2A2TsxxjYSS9u9ICx5b96JEf8oUPJWlQCW3uOhbF+
-         gvSHTfgHV1QAlyOgDEUaKJNiCsP0CffS0MeZb+yp5K3CbxyMwP/jqiQ49fb1SrLh9eGJ
-         5o/w==
-X-Gm-Message-State: AOJu0Yyag1A3QgaMYZ1M4Msww6AI/Mr5wwIhJxUaZ4iSFSXfijuFWDN2
-	HD/XepNUWhkBxdbe3fAItNNBQt9Ak295GrCnP93pV5Cnw4cjfqdXZ/39ugSkqhcZK4M5SGSBe5T
-	sUj0F1I+Cb435xzfbgcqiQdiz6R0=
-X-Gm-Gg: ASbGncsFpf/59DDpKnHG3tWGjcdOvDtqQkKnZE/iQg/+rIsoBj791RWcKMJx73/e3+I
-	qk+KJmp7VroNyWvN7YPZe960PZ5mNNLLdy0dN
-X-Google-Smtp-Source: AGHT+IHIc8CxpAbKZpUuP9m3b2l6jVyyy3qaMdmyzJcKkiPJ8d8NprLv4Pqfwyj0Toa22C100sU5JHS659Fnbxgu0Pw=
-X-Received: by 2002:a17:90a:d00b:b0:2ee:d63f:d8f with SMTP id
- 98e67ed59e1d1-2f548ebf53cmr37356066a91.13.1736896257904; Tue, 14 Jan 2025
- 15:10:57 -0800 (PST)
+	s=arc-20240116; t=1736896857; c=relaxed/simple;
+	bh=l81c8zEzf/BUOHgqBmE29NV0oLDlQ+HkTkgBB3Iu/dQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sF6aZgH/u32b4oRLo0qR4ceAHiTJCXW31oAZWyOZ6o5Ybw4WHCV/dp6qqN+/XAiTail8IlBMX/TLtdNxjZnsKmYFGJ9LXQwkD584PHzXprlnUVLWX2K2Th2kwOObbicrKqJqhFYFJmbcqz/pIUGEIpM3EBGB/F47yxja/5rnY/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tYSwb+MQ; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <6bb42e9b-83ff-497d-8052-27ac609a2af7@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1736896853;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xwDAHSKCfoIYfiftlZsT41jVy2VlUYoZ1+GX2Wio6DU=;
+	b=tYSwb+MQdWzw2aLVqT+zXp/vbimkc326U3PexbG0kgwuT6JUMIcsIyqPtRf5FIpjrRZvTT
+	a24EQ6irgvWJsRkphdcrIG65Y8686CbWrJm5Me/UFOn8ZfmGfTkLeJc9UlhQS8t1kO/bIK
+	0halBv0cSlzh2HfkFbZupmWndGUfC5s=
+Date: Tue, 14 Jan 2025 15:20:40 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250113152437.67196-1-leon.hwang@linux.dev> <20250113152437.67196-2-leon.hwang@linux.dev>
-In-Reply-To: <20250113152437.67196-2-leon.hwang@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 14 Jan 2025 15:10:43 -0800
-X-Gm-Features: AbW1kvZ2G4Y9-MtPF_pCJ8OSTWgeYXzyWiaEKx6sRrB2zf1_PAkhZqflIrPuvuM
-Message-ID: <CAEf4BzahZ04K5LDaqaToJnQ9yvRZ48yh-2+ywsKRgcj8whMheA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 1/2] bpf: Introduce global percpu data
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, yonghong.song@linux.dev, song@kernel.org, 
-	eddyz87@gmail.com, kernel-patches-bot@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH net-next v5 01/15] net-timestamp: add support for
+ bpf_setsockopt()
+To: Jason Xing <kerneljasonxing@gmail.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org,
+ willemdebruijn.kernel@gmail.com, willemb@google.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, horms@kernel.org
+References: <20250112113748.73504-1-kerneljasonxing@gmail.com>
+ <20250112113748.73504-2-kerneljasonxing@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <20250112113748.73504-2-kerneljasonxing@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Jan 13, 2025 at 7:25=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
-rote:
->
-> This patch introduces global per-CPU data, inspired by commit
-> 6316f78306c1 ("Merge branch 'support-global-data'"). It enables the
-> definition of global per-CPU variables in BPF, similar to the
-> DEFINE_PER_CPU() macro in the kernel[0].
->
-> For example, in BPF, it is able to define a global per-CPU variable like
-> this:
->
-> int percpu_data SEC(".data..percpu");
->
-> With this patch, tools like retsnoop[1] and bpflbr[2] can simplify their
-> BPF code for handling LBRs. The code can be updated from
->
-> static struct perf_branch_entry lbrs[1][MAX_LBR_ENTRIES] SEC(".data.lbrs"=
-);
->
-> to
->
-> static struct perf_branch_entry lbrs[MAX_LBR_ENTRIES] SEC(".data..percpu.=
-lbrs");
->
-> This eliminates the need to retrieve the CPU ID using the
-> bpf_get_smp_processor_id() helper.
->
-> Additionally, by reusing global per-CPU variables, sharing information
-> between tail callers and callees or freplace callers and callees becomes
-> simpler compared to using percpu_array maps.
->
-> Links:
-> [0] https://github.com/torvalds/linux/blob/fbfd64d25c7af3b8695201ebc85efe=
-90be28c5a3/include/linux/percpu-defs.h#L114
-> [1] https://github.com/anakryiko/retsnoop
-> [2] https://github.com/Asphaltt/bpflbr
->
-> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+On 1/12/25 3:37 AM, Jason Xing wrote:
+> Users can write the following code to enable the bpf extension:
+> bpf_setsockopt(skops, SOL_SOCKET, SK_BPF_CB_FLAGS, &flags, sizeof(flags));
+> 
+> Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
 > ---
->  kernel/bpf/arraymap.c  |  39 +++++++++++++-
->  kernel/bpf/verifier.c  |  45 +++++++++++++++++
->  tools/lib/bpf/libbpf.c | 112 ++++++++++++++++++++++++++++++++---------
->  3 files changed, 171 insertions(+), 25 deletions(-)
->
+>   include/net/sock.h             |  7 +++++++
+>   include/uapi/linux/bpf.h       |  8 ++++++++
+>   net/core/filter.c              | 25 +++++++++++++++++++++++++
+>   tools/include/uapi/linux/bpf.h |  1 +
+>   4 files changed, 41 insertions(+)
+> 
+> diff --git a/include/net/sock.h b/include/net/sock.h
+> index ccf86c8a7a8a..f5447b4b78fd 100644
+> --- a/include/net/sock.h
+> +++ b/include/net/sock.h
+> @@ -303,6 +303,7 @@ struct sk_filter;
+>     *	@sk_stamp: time stamp of last packet received
+>     *	@sk_stamp_seq: lock for accessing sk_stamp on 32 bit architectures only
+>     *	@sk_tsflags: SO_TIMESTAMPING flags
+> +  *	@sk_bpf_cb_flags: used for bpf_setsockopt
+>     *	@sk_use_task_frag: allow sk_page_frag() to use current->task_frag.
+>     *			   Sockets that can be used under memory reclaim should
+>     *			   set this to false.
+> @@ -445,6 +446,12 @@ struct sock {
+>   	u32			sk_reserved_mem;
+>   	int			sk_forward_alloc;
+>   	u32			sk_tsflags;
+> +#ifdef CONFIG_BPF_SYSCALL
 
-So I think the feature overall makes sense, but we need to think
-through at least libbpf's side of things some more. Unlike .data,
-per-cpu .data section is not mmapable, and so that has implication on
-BPF skeleton and we should make sure all that makes sense on BPF
-skeleton side. In that sense, per-cpu global data is more akin to
-struct_ops initialization image, which can be accessed by user before
-skeleton is loaded to initialize the image.
+The CONFIG_BPF is used instead in the existing "u8 bpf_sock_ops_cb_flags;" in 
+tcp_sock. afaik, CONFIG_BPF is selected by CONFIG_NET. It is why the test bot 
+fails when CONFIG_BPF_SYSCALL is used here but not with the existing 
+bpf_sock_ops_cb_flags. Considering CONFIG_BPF is also mostly useless here 
+because of CONFIG_NET, I would remove this ifdef usage altogether. If there is 
+really a need to distinguish CONFIG_BPF_SYSCALL is enabled or not, this can be 
+improved together with the existing bpf_sock_ops_cb_flags.
 
-There are a few things to consider. What's the BPF skeleton interface?
-Do we expose it as single struct and use that struct as initial image
-for each CPU (which means user won't be able to initialize different
-CPU data differently, at least not through BPF skeleton facilities)?
-Or do we expose this as an array of structs and let user set each CPU
-data independently?
-
-I feel like keeping it simple and having one image for all CPUs would
-cover most cases. And users can still access the underlying
-PERCPU_ARRAY map if they need more control.
-
-But either way, we need tests for skeleton, making sure we NULL-out
-this per-cpu global data, but take it into account before the load.
-
-Also, this huge calloc for possible CPUs, I'd like to avoid it
-altogether for the (probably very common) zero-initialized case.
-
-So in short, needs a bit of iteration to figure out all the
-interfacing issues, but makes sense overall. See some more low-level
-remarks below.
-
-pw-bot: cr
-
-
-[...]
-
-> @@ -815,6 +850,8 @@ const struct bpf_map_ops percpu_array_map_ops =3D {
->         .map_get_next_key =3D array_map_get_next_key,
->         .map_lookup_elem =3D percpu_array_map_lookup_elem,
->         .map_gen_lookup =3D percpu_array_map_gen_lookup,
-> +       .map_direct_value_addr =3D percpu_array_map_direct_value_addr,
-> +       .map_direct_value_meta =3D percpu_array_map_direct_value_meta,
->         .map_update_elem =3D array_map_update_elem,
->         .map_delete_elem =3D array_map_delete_elem,
->         .map_lookup_percpu_elem =3D percpu_array_map_lookup_percpu_elem,
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index b8ca227c78af1..94ce02a48ddc1 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -6809,6 +6809,8 @@ static int bpf_map_direct_read(struct bpf_map *map,=
- int off, int size, u64 *val,
->         u64 addr;
->         int err;
->
-> +       if (map->map_type =3D=3D BPF_MAP_TYPE_PERCPU_ARRAY)
-> +               return -EINVAL;
-
-I'd invert the condition and reject anything by BPF_MAP_TYPE_ARRAY. I
-don't see how any other possible map type can support this magic that
-we do with ARRAY. So to be on the safe side, let's just reject
-everything that's non-ARRAY (here and elsewhere)?
-
->         err =3D map->ops->map_direct_value_addr(map, &addr, off);
->         if (err)
->                 return err;
-
-[...]
-
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 6c262d0152f81..881174f4f90a4 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-
-definitely let's split out libbpf changes from kernel-side changes
-
-> @@ -516,6 +516,7 @@ struct bpf_struct_ops {
->  };
->
->  #define DATA_SEC ".data"
-> +#define PERCPU_DATA_SEC ".data..percpu"
-
-I don't like this prefix, even if that's what we have in the kernel.
-Something like just ".percpu" or ".percpu_data" or ".data_percpu" is
-better, IMO.
-
->  #define BSS_SEC ".bss"
->  #define RODATA_SEC ".rodata"
->  #define KCONFIG_SEC ".kconfig"
-> @@ -562,6 +563,8 @@ struct bpf_map {
->         __u32 btf_value_type_id;
->         __u32 btf_vmlinux_value_type_id;
->         enum libbpf_map_type libbpf_type;
-> +       int num_cpus;
-> +       void *data;
->         void *mmaped;
->         struct bpf_struct_ops *st_ops;
->         struct bpf_map *inner_map;
-> @@ -1923,11 +1926,35 @@ static bool map_is_mmapable(struct bpf_object *ob=
-j, struct bpf_map *map)
->         return false;
->  }
->
-> +static bool map_is_percpu_data(struct bpf_map *map)
+> +#define SK_BPF_CB_FLAG_TEST(SK, FLAG) ((SK)->sk_bpf_cb_flags & (FLAG))
+> +	u32			sk_bpf_cb_flags;
+> +#else
+> +#define SK_BPF_CB_FLAG_TEST(SK, FLAG) 0
+> +#endif
+>   	__cacheline_group_end(sock_write_rxtx);
+>   
+>   	__cacheline_group_begin(sock_write_tx);
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 4162afc6b5d0..e629e09b0b31 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -6903,6 +6903,13 @@ enum {
+>   	BPF_SOCK_OPS_ALL_CB_FLAGS       = 0x7F,
+>   };
+>   
+> +/* Definitions for bpf_sk_cb_flags */
+> +enum {
+> +	SK_BPF_CB_TX_TIMESTAMPING	= 1<<0,
+> +	SK_BPF_CB_MASK			= (SK_BPF_CB_TX_TIMESTAMPING - 1) |
+> +					   SK_BPF_CB_TX_TIMESTAMPING
+> +};
+> +
+>   /* List of known BPF sock_ops operators.
+>    * New entries can only be added at the end
+>    */
+> @@ -7081,6 +7088,7 @@ enum {
+>   	TCP_BPF_SYN_IP		= 1006, /* Copy the IP[46] and TCP header */
+>   	TCP_BPF_SYN_MAC         = 1007, /* Copy the MAC, IP[46], and TCP header */
+>   	TCP_BPF_SOCK_OPS_CB_FLAGS = 1008, /* Get or Set TCP sock ops flags */
+> +	SK_BPF_CB_FLAGS		= 1009, /* Used to set socket bpf flags */
+>   };
+>   
+>   enum {
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index b957cf57299e..c6dd2d2e44c8 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -5222,6 +5222,23 @@ static const struct bpf_func_proto bpf_get_socket_uid_proto = {
+>   	.arg1_type      = ARG_PTR_TO_CTX,
+>   };
+>   
+> +static int sk_bpf_set_cb_flags(struct sock *sk, char *optval, bool getopt)
 > +{
-> +       return str_has_pfx(map->real_name, PERCPU_DATA_SEC);
-> +}
+> +	u32 sk_bpf_cb_flags;
+> +
+> +	if (getopt)
 
-we have enum libbpf_map_type which is used to distinguish BSS vs
-RODATA vs DATA vs others, let's stick to that
+I may have this in my earlier sample code? This is probably because of my 
+laziness for a quick example. getopt should also be supported, similar to the 
+existing TCP_BPF_SOCK_OPS_CB_FLAGS.
 
+> +		return -EINVAL;
 > +
-> +static void map_copy_data(struct bpf_map *map, const void *data)
-> +{
-> +       bool is_percpu_data =3D map_is_percpu_data(map);
-> +       size_t data_sz =3D map->def.value_size;
-> +       size_t elem_sz =3D roundup(data_sz, 8);
-> +       int i;
+> +	sk_bpf_cb_flags = *(u32 *)optval;
 > +
-> +       if (!data)
-> +               return;
+> +	if (sk_bpf_cb_flags & ~SK_BPF_CB_MASK)
+> +		return -EINVAL;
 > +
-> +       if (!is_percpu_data)
-> +               memcpy(map->mmaped, data, data_sz);
-> +       else
-> +               for (i =3D 0; i < map->num_cpus; i++)
-> +                       memcpy(map->data + i*elem_sz, data, data_sz);
+> +	sk->sk_bpf_cb_flags = sk_bpf_cb_flags;
+> +
+> +	return 0;
 > +}
 > +
->  static int
->  bpf_object__init_internal_map(struct bpf_object *obj, enum libbpf_map_ty=
-pe type,
->                               const char *real_name, int sec_idx, void *d=
-ata, size_t data_sz)
->  {
-> +       bool is_percpu_data =3D str_has_pfx(real_name, PERCPU_DATA_SEC);
->         struct bpf_map_def *def;
-> +       const char *data_desc;
->         struct bpf_map *map;
->         size_t mmap_sz;
->         int err;
-> @@ -1948,7 +1975,8 @@ bpf_object__init_internal_map(struct bpf_object *ob=
-j, enum libbpf_map_type type,
->         }
->
->         def =3D &map->def;
-> -       def->type =3D BPF_MAP_TYPE_ARRAY;
-> +       def->type =3D is_percpu_data ? BPF_MAP_TYPE_PERCPU_ARRAY
-> +                                  : BPF_MAP_TYPE_ARRAY;
->         def->key_size =3D sizeof(int);
->         def->value_size =3D data_sz;
->         def->max_entries =3D 1;
-> @@ -1958,29 +1986,57 @@ bpf_object__init_internal_map(struct bpf_object *=
-obj, enum libbpf_map_type type,
->         /* failures are fine because of maps like .rodata.str1.1 */
->         (void) map_fill_btf_type_info(obj, map);
->
-> -       if (map_is_mmapable(obj, map))
-> -               def->map_flags |=3D BPF_F_MMAPABLE;
-> +       data_desc =3D is_percpu_data ? "percpu " : "";
+>   static int sol_socket_sockopt(struct sock *sk, int optname,
+>   			      char *optval, int *optlen,
+>   			      bool getopt)
+> @@ -5238,6 +5255,7 @@ static int sol_socket_sockopt(struct sock *sk, int optname,
+>   	case SO_MAX_PACING_RATE:
+>   	case SO_BINDTOIFINDEX:
+>   	case SO_TXREHASH:
+> +	case SK_BPF_CB_FLAGS:
+>   		if (*optlen != sizeof(int))
+>   			return -EINVAL;
+>   		break;
+> @@ -5247,6 +5265,13 @@ static int sol_socket_sockopt(struct sock *sk, int optname,
+>   		return -EINVAL;
+>   	}
+>   
+> +	if (optname == SK_BPF_CB_FLAGS)
+> +#ifdef CONFIG_BPF_SYSCALL
+> +		return sk_bpf_set_cb_flags(sk, optval, getopt);
+> +#else
+> +		return -EINVAL;
+> +#endif
+> +
+>   	if (getopt) {
+>   		if (optname == SO_BINDTODEVICE)
+>   			return -EINVAL;
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index 4162afc6b5d0..6b0a5b787b12 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -7081,6 +7081,7 @@ enum {
+>   	TCP_BPF_SYN_IP		= 1006, /* Copy the IP[46] and TCP header */
+>   	TCP_BPF_SYN_MAC         = 1007, /* Copy the MAC, IP[46], and TCP header */
+>   	TCP_BPF_SOCK_OPS_CB_FLAGS = 1008, /* Get or Set TCP sock ops flags */
+> +	SK_BPF_CB_FLAGS		= 1009, /* Used to set socket bpf flags */
+>   };
+>   
+>   enum {
 
-nit: just inline the logic in that single place you use it
-
-> +       pr_debug("map '%s' (global %sdata): at sec_idx %d, offset %zu, fl=
-ags %x.\n",
-> +                map->name, data_desc, map->sec_idx, map->sec_offset,
-> +                def->map_flags);
->
-> -       pr_debug("map '%s' (global data): at sec_idx %d, offset %zu, flag=
-s %x.\n",
-> -                map->name, map->sec_idx, map->sec_offset, def->map_flags=
-);
-> +       if (is_percpu_data) {
-> +               map->num_cpus =3D libbpf_num_possible_cpus();
-> +               if (map->num_cpus < 0) {
-> +                       err =3D errno;
-
-map->num_cpus should have actual error value already, avoid using
-errno unnecessarily
-
-> +                       pr_warn("failed to get possible cpus\n");
-> +                       goto free_name;
-> +               }
->
-> -       mmap_sz =3D bpf_map_mmap_sz(map);
-> -       map->mmaped =3D mmap(NULL, mmap_sz, PROT_READ | PROT_WRITE,
-> -                          MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-> -       if (map->mmaped =3D=3D MAP_FAILED) {
-> -               err =3D -errno;
-> -               map->mmaped =3D NULL;
-> -               pr_warn("failed to alloc map '%s' content buffer: %s\n", =
-map->name, errstr(err));
-> -               zfree(&map->real_name);
-> -               zfree(&map->name);
-> -               return err;
-> -       }
-> +               map->data =3D calloc(map->num_cpus, roundup(data_sz, 8));
-> +               if (!map->data) {
-> +                       err =3D -ENOMEM;
-> +                       pr_warn("failed to alloc percpu map '%s' content =
-buffer: %s\n",
-> +                               map->name, errstr(err));
-
-please stick to establish reporting style (i.e., for map operations we
-always use "map '%s': " prefix)
-
-> +                       goto free_name;
-> +               }
-
-[...]
-
-> @@ -10370,7 +10434,7 @@ void *bpf_map__initial_value(const struct bpf_map=
- *map, size_t *psize)
->                 return map->st_ops->data;
->         }
->
-> -       if (!map->mmaped)
-> +       if ((!map->mmaped && !map->data))
-
-nit: why unnecessary extra () ?
-
-
->                 return NULL;
->
->         if (map->def.type =3D=3D BPF_MAP_TYPE_ARENA)
-> @@ -10378,7 +10442,7 @@ void *bpf_map__initial_value(const struct bpf_map=
- *map, size_t *psize)
->         else
->                 *psize =3D map->def.value_size;
->
-> -       return map->mmaped;
-> +       return map->def.type =3D=3D BPF_MAP_TYPE_PERCPU_ARRAY ? map->data=
- : map->mmaped;
->  }
->
->  bool bpf_map__is_internal(const struct bpf_map *map)
-> --
-> 2.47.1
->
 
