@@ -1,62 +1,62 @@
-Return-Path: <bpf+bounces-48816-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48817-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9318BA10EE6
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 19:03:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F4015A10EE8
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 19:03:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7A4D7A07F6
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 18:02:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C1AE188B44F
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 18:03:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B639D213E63;
-	Tue, 14 Jan 2025 17:59:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDCCC1FECA5;
+	Tue, 14 Jan 2025 17:59:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BLQhEFC7"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MiMql5B4"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1C0320CCD0
-	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 17:59:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82BB31FC7D4
+	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 17:59:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736877570; cv=none; b=Tu0iLJ/2IxeBoPQo1JAAL0kbktsfMKhMI+4c1HG+h5nR9OY0/6zEwVDirx1854DyJsWLeOyeT+gJhgJHYjotPJJMLvzjXCszwMkF/MP4DsUhgLEjS88kZA49cttWkl1lCMG4QpNtNVe763MK9wcUE7H/XieM4zxUBB5dunTIX7w=
+	t=1736877595; cv=none; b=Xug8GRWtss5r97GmHYa64BLPxlQOVH8nRCSfLjmRwHfZAOkyhQU2T9EwAPiefepEWCoqGjT4wPKhCTgAf7ezYZF3pvXiBSiII2s+vQ4S9gRHRJRx25liwo272JRBfGbxj2tDv71QPq3nvEriVWNcxskbyB+txaRtOBQL3o4pCBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736877570; c=relaxed/simple;
-	bh=f+M7JVmuzBY3THk0fyjhKmyngjuTaSG33xgNtD22Ej8=;
+	s=arc-20240116; t=1736877595; c=relaxed/simple;
+	bh=a0ZNShjC4ZT1Hj0Or9es9gDy8pngaLJj9xiIa+7Ry9M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=elwQOrCvjq8beR4NqH9nsCq/glvPj9fHkysRdtPChMaC5Bc82+Xx/vwppX8Tz6vBHT6rY/P0Sx+m9upwMUm+T/FRugJQvkTXwx0jjU7PlJYaIpCwr5UoSEETyhWsg/leiZ3NM2eoCmY7oa38RGYvMyR9aOnD2aFFK4mfHdINeyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BLQhEFC7; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=h4osH2ERIvelgKKWAAWtH480VoblNR2ARf/RekY1YkU6fnxxHfp4LZt9D9BkWzPR8kltH4QqHhVIEc6sH0D/dCBF18Ves6NXMNp5zSC5ioQUi34ASzAMCd2DV13LaFmlbkEzy+pE74mmts/6OZqK/5VX2VChr+3o5cPGfcfgw30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MiMql5B4; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1736877567;
+	s=mimecast20190719; t=1736877592;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vzSk9ZzswXx0ijJl+1BL1pcjLYKU11Wq/W2Kyfj2Pb8=;
-	b=BLQhEFC7vf5T1pDwhAyVIup82HPmwZQ1H/2gQOxLoq4weYA6FG2PH1PqHtM8fBgToQ4qvC
-	xrwYDhGime8Ol7jxz+B7VoQOljmuH7QptFaN1g0GXvJHbSaOek9h5kK+HH9uAdQcGp2n/7
-	DSuhj/5szRPJIuz+JpTAeAyhoZ+lztU=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+	bh=Fzzncw7C2q7Oj32JE4D69orayDnnAM5XMqXCZgIYhoQ=;
+	b=MiMql5B4maMaY3ttBA9UywpXoPWNV4YETerlrrNujUIsXdu2fzA1phcUJUrI0+ZyOoUtCP
+	G5cXdhcw8G3XInGhW52IuOVXOvj+BNh9yPWMXCtYe7cBQjaMnqycEucCn0cOMFgFjc48Fv
+	pZdFpsrRg0uiXMftQ5ndaxPn2Cqlp4g=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-317-domFoMd6N8WvyrMSzp1fqA-1; Tue,
- 14 Jan 2025 12:59:23 -0500
-X-MC-Unique: domFoMd6N8WvyrMSzp1fqA-1
-X-Mimecast-MFC-AGG-ID: domFoMd6N8WvyrMSzp1fqA
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-83-jmSM7AxOMj2WDdft3VwBHw-1; Tue,
+ 14 Jan 2025 12:59:49 -0500
+X-MC-Unique: jmSM7AxOMj2WDdft3VwBHw-1
+X-Mimecast-MFC-AGG-ID: jmSM7AxOMj2WDdft3VwBHw
 Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E586919560B7;
-	Tue, 14 Jan 2025 17:59:19 +0000 (UTC)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D8B751955F79;
+	Tue, 14 Jan 2025 17:59:45 +0000 (UTC)
 Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.39.192.55])
-	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 21066195608A;
-	Tue, 14 Jan 2025 17:58:54 +0000 (UTC)
+	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 6685F195608A;
+	Tue, 14 Jan 2025 17:59:20 +0000 (UTC)
 From: Valentin Schneider <vschneid@redhat.com>
 To: linux-kernel@vger.kernel.org,
 	x86@kernel.org,
@@ -146,9 +146,9 @@ Cc: Juergen Gross <jgross@suse.com>,
 	Luis Chamberlain <mcgrof@kernel.org>,
 	Randy Dunlap <rdunlap@infradead.org>,
 	Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: [PATCH v4 15/30] sched/clock: Mark sched_clock_running key as __ro_after_init
-Date: Tue, 14 Jan 2025 18:51:28 +0100
-Message-ID: <20250114175143.81438-16-vschneid@redhat.com>
+Subject: [PATCH v4 16/30] x86/speculation/mds: Mark mds_idle_clear key as allowed in .noinstr
+Date: Tue, 14 Jan 2025 18:51:29 +0100
+Message-ID: <20250114175143.81438-17-vschneid@redhat.com>
 In-Reply-To: <20250114175143.81438-1-vschneid@redhat.com>
 References: <20250114175143.81438-1-vschneid@redhat.com>
 Precedence: bulk
@@ -160,27 +160,42 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
 
-sched_clock_running is only ever enabled in the __init functions
-sched_clock_init() and sched_clock_init_late(), and is never disabled. Mark
-it __ro_after_init.
+Later commits will cause objtool to warn about static keys being used in
+.noinstr sections in order to safely defer instruction patching IPIs
+targeted at NOHZ_FULL CPUs.
+
+mds_idle_clear is used in .noinstr code, and can be modified at
+runtime (SMT hotplug). Suppressing the text_poke_sync() IPI has little
+benefits for this key, as hotplug implies eventually going through
+takedown_cpu() -> stop_machine_cpuslocked() which is going to cause
+interference on all online CPUs anyway.
+
+Mark it to let objtool know not to warn about it.
 
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 ---
- kernel/sched/clock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/cpu/bugs.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/clock.c b/kernel/sched/clock.c
-index a09655b481402..200e5568b9894 100644
---- a/kernel/sched/clock.c
-+++ b/kernel/sched/clock.c
-@@ -66,7 +66,7 @@ notrace unsigned long long __weak sched_clock(void)
- }
- EXPORT_SYMBOL_GPL(sched_clock);
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index 47a01d4028f60..acad84dcfc3cd 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -113,8 +113,13 @@ DEFINE_STATIC_KEY_FALSE(switch_mm_cond_ibpb);
+ /* Control unconditional IBPB in switch_mm() */
+ DEFINE_STATIC_KEY_FALSE(switch_mm_always_ibpb);
  
--static DEFINE_STATIC_KEY_FALSE(sched_clock_running);
-+static DEFINE_STATIC_KEY_FALSE_RO(sched_clock_running);
+-/* Control MDS CPU buffer clear before idling (halt, mwait) */
+-DEFINE_STATIC_KEY_FALSE(mds_idle_clear);
++/*
++ * Control MDS CPU buffer clear before idling (halt, mwait)
++ *
++ * Allowed in .noinstr as this key is updated during hotplug which comes with
++ * more interference than just the text patching IPI.
++ */
++DEFINE_STATIC_KEY_FALSE_NOINSTR(mds_idle_clear);
+ EXPORT_SYMBOL_GPL(mds_idle_clear);
  
- #ifdef CONFIG_HAVE_UNSTABLE_SCHED_CLOCK
  /*
 -- 
 2.43.0
