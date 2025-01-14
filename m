@@ -1,91 +1,177 @@
-Return-Path: <bpf+bounces-48720-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48721-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B872A0C829
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 01:04:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51BB6A0FD35
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 01:10:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B64C2169AA3
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 00:04:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E44907A3338
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 00:10:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DED9317BCE;
-	Tue, 14 Jan 2025 00:04:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B28AA17BA5;
+	Tue, 14 Jan 2025 00:10:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eMj+0CLv"
+	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="K6PlnWJ9"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mailtransmit05.runbox.com (mailtransmit05.runbox.com [185.226.149.38])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49ED9DDD3;
-	Tue, 14 Jan 2025 00:04:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B4C017C91;
+	Tue, 14 Jan 2025 00:09:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736813047; cv=none; b=rUB96TvB/4Yw2ug7ByKdzHkXtUCmgxSjWH1m5T2aV//CZpMUIcQ1dksZbFJn/j0XqfsUPKZGlrYnGFLt2bGr3wVZ0blshw5QHzFeavUCi0f25WGzFlap7w+mTmBapzLgUsZr97rDeO2O3yW1qc9U8De5OfJ547E/Z5k5yGNLGe8=
+	t=1736813399; cv=none; b=B8LpQu/DvatSZKOngrYxOmdzxBk8MT4607KnLDlGROuGpfLOuSZTaOYtv0tnTyUfP9g6SBlwl2GNvZUqsFk0lBUtC7ZW26gm9UGKNcwUxgG9vL61VR/l+LonrU5xfxpdBI6d8PcSTjaJglYDj0vnS8BtJ2XB/zfUWYJzkDbt/nY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736813047; c=relaxed/simple;
-	bh=VoOJcc1HZDuwcf8mRa5xWiojn24Z5Y0pshn+HiQpUtE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UfsSUoHemGXTWbLO6aism7v+liPMeQxMOhfC4vwZeGiGlPEtBehVo8RWNnmr1AEIszEPaxjvovsonYnkOWd+jxJlYaLriCtcD20sBMQ8mFL0hiY/nG5OB983BJDqmjXrVwO3P5WzWyVv4FOF+doqJrjWSKZa1TIsrd9CukRrt3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eMj+0CLv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D07F7C4CED6;
-	Tue, 14 Jan 2025 00:04:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736813045;
-	bh=VoOJcc1HZDuwcf8mRa5xWiojn24Z5Y0pshn+HiQpUtE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=eMj+0CLvXLvJcju6aw5RBAa7GKeDYeK2WTJ1PIqirXbPfdcXAt9ogVHmxhR6nUTTX
-	 rs/xJtEGCj/e7xYB0KTTqI51GRaJ94itJSi2fSUWNSkXJ4DscyXhvZ4Vv6MiaKDfh8
-	 K7eSJ4uyVhHkuqF4cD6SjWYpc3/HcK1QGVjnqTvpB9qB6yeEv2fYAU8qThYRedxlrj
-	 P8Mf0G8LDo0F5+bQn7SepmFNk98LECm3a5tjmNbmPmaOn1ct7lus9QVTiyUV7GOY3H
-	 tJccOkFo7w8RoP7vneG1HawIDHlVWgTbEzWuWtcrsATJ2tOpdFGqCInGkD5kfmJGVT
-	 RFt87kIxL275w==
-Date: Mon, 13 Jan 2025 16:04:04 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jiayuan Chen <mrpre@163.com>
-Cc: bpf@vger.kernel.org, jakub@cloudflare.com, john.fastabend@gmail.com,
- netdev@vger.kernel.org, martin.lau@linux.dev, ast@kernel.org,
- edumazet@google.com, davem@davemloft.net, dsahern@kernel.org,
- pabeni@redhat.com, linux-kernel@vger.kernel.org, song@kernel.org,
- andrii@kernel.org, mhal@rbox.co, yonghong.song@linux.dev,
- daniel@iogearbox.net, xiyou.wangcong@gmail.com, horms@kernel.org,
- corbet@lwn.net, eddyz87@gmail.com, cong.wang@bytedance.com,
- shuah@kernel.org, mykolal@fb.com, jolsa@kernel.org, haoluo@google.com,
- sdf@fomichev.me, kpsingh@kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH bpf v5 1/3] bpf: fix wrong copied_seq calculation
-Message-ID: <20250113160404.7ab0927d@kernel.org>
-In-Reply-To: <20250109094402.50838-2-mrpre@163.com>
-References: <20250109094402.50838-1-mrpre@163.com>
-	<20250109094402.50838-2-mrpre@163.com>
+	s=arc-20240116; t=1736813399; c=relaxed/simple;
+	bh=OsKFXtMineW8sNVrB+luwXdbjpxNtb5UUqOWpJzquZs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=a232ziLqUv/R3a10GhW0bd2wCAYgLcuZmIptR0897UjH9lotOiGalvftsqViles+41qm7emLrBASpP7H8PTbuKTfEROEVKsXvrbkCRb14rktYY4ExccDRFOCiGReKzvMaxJJktJACip0nvxvdz9TAaxlcYI/5mt3B46Eyvl/yiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=K6PlnWJ9; arc=none smtp.client-ip=185.226.149.38
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
+Received: from mailtransmit03.runbox ([10.9.9.163] helo=aibo.runbox.com)
+	by mailtransmit05.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.93)
+	(envelope-from <mhal@rbox.co>)
+	id 1tXUV0-00FOKw-Tk; Tue, 14 Jan 2025 01:09:38 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
+	s=selector2; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
+	bh=ItYetxWsSzgRvLHc8dKmyCADQfPIZfMQ4g/EMKUfjZA=; b=K6PlnWJ9JeqtlI+A2SE03zEl5v
+	t0nhZB9327vqImvtuPI90q8kXl3d74poC3e/F3u7e+OIz2gZ38jkJlSBDpHQz4K2MvLP51v95AbtX
+	WZqKZrqBjmk/Fe1arTJCLNAoMjcSkIDU0h53HoVNldRtaHcQ+7OaKXmoLyM8jVyYsPOmEPLpvt6Dn
+	aFnPE1jYDUK04SeFQbc+8UK5WMn+jTB2XEUxgHyWSp+zxdCfVsTGB3CZjQDFi+73Dlb1Y4OBEaqZJ
+	kXBunvm2DK1lqTBFIoQGGazJKgzMubUR9lTSP8HLwlV0v2DCUcKd/+/xnSjdMeVaQWabfhJcZM6wn
+	zQJgWm4A==;
+Received: from [10.9.9.73] (helo=submission02.runbox)
+	by mailtransmit03.runbox with esmtp (Exim 4.86_2)
+	(envelope-from <mhal@rbox.co>)
+	id 1tXUUx-0005Z5-Fa; Tue, 14 Jan 2025 01:09:37 +0100
+Received: by submission02.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.93)
+	id 1tXUUn-00GzIz-OP; Tue, 14 Jan 2025 01:09:25 +0100
+Message-ID: <7de34054-10cf-45d0-a869-adebb77ad913@rbox.co>
+Date: Tue, 14 Jan 2025 01:09:24 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v2 1/5] vsock/virtio: discard packets if the transport
+ changes
+To: Stefano Garzarella <sgarzare@redhat.com>
+Cc: netdev@vger.kernel.org, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Luigi Leonardi <leonardi@redhat.com>, "David S. Miller"
+ <davem@davemloft.net>, Wongi Lee <qwerty@theori.io>,
+ =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>, Eric Dumazet <edumazet@google.com>,
+ kvm@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+ Stefan Hajnoczi <stefanha@redhat.com>, Jason Wang <jasowang@redhat.com>,
+ Simon Horman <horms@kernel.org>, Hyunwoo Kim <v4bel@theori.io>,
+ Jakub Kicinski <kuba@kernel.org>, virtualization@lists.linux.dev,
+ stable@vger.kernel.org
+References: <20250110083511.30419-1-sgarzare@redhat.com>
+ <20250110083511.30419-2-sgarzare@redhat.com>
+ <1aa83abf-6baa-4cf1-a108-66b677bcfd93@rbox.co>
+ <nedvcylhjxrkmkvgugsku2lpdjgjpo5exoke4o6clxcxh64s3i@jkjnvngazr5v>
+ <CAGxU2F7BoMNi-z=SHsmCV5+99=CxHo4dxFeJnJ5=q9X=CM3QMA@mail.gmail.com>
+ <cccb1a4f-5495-4db1-801e-eca211b757c3@rbox.co>
+ <nzpj4hc6m4jlqhcwv6ngmozl3hcoxr6kehoia4dps7jytxf6df@iqglusiqrm5n>
+ <903dd624-44e5-4792-8aac-0eaaf1e675c5@rbox.co>
+ <5nkibw33isxiw57jmoaadizo3m2p76ve6zioumlu2z2nh5lwck@xodwiv56zrou>
+From: Michal Luczaj <mhal@rbox.co>
+Content-Language: pl-PL, en-GB
+In-Reply-To: <5nkibw33isxiw57jmoaadizo3m2p76ve6zioumlu2z2nh5lwck@xodwiv56zrou>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On Thu,  9 Jan 2025 17:43:59 +0800 Jiayuan Chen wrote:
-> However, for programs where both stream_parser and stream_verdict are
-> active(strparser purpose), tcp_read_sock() was used instead of
-> tcp_read_skb() (sk_data_ready->strp_data_ready->tcp_read_sock)
-> tcp_read_sock() now still update 'sk->copied_seq', leading to duplicated
-> updates.
+On 1/13/25 16:01, Stefano Garzarella wrote:
+> On Mon, Jan 13, 2025 at 02:51:58PM +0100, Michal Luczaj wrote:
+>> On 1/13/25 12:05, Stefano Garzarella wrote:
+>>> ...
+>>> An alternative approach, which would perhaps allow us to avoid all this,
+>>> is to re-insert the socket in the unbound list after calling release()
+>>> when we deassign the transport.
+>>>
+>>> WDYT?
+>>
+>> If we can't keep the old state (sk_state, transport, etc) on failed
+>> re-connect() then reverting back to initial state sounds, uhh, like an
+>> option :) I'm not sure how well this aligns with (user's expectations of)
+>> good ol' socket API, but maybe that train has already left.
+> 
+> We really want to behave as similar as possible with the other sockets,
+> like AF_INET, so I would try to continue toward that train.
 
-To state the obvious feels like the abstraction between TCP and psock
-has broken down pretty severely at this stage. You're modifying TCP
-and straight up calling TCP functions from skmsg.c :(
+I was worried that such connect()/transport error handling may have some
+user visible side effects, but I guess I was wrong. I mean you can still
+reach a sk_state=TCP_LISTEN with a transport assigned[1], but perhaps
+that's a different issue.
 
-> +int tcp_read_sock_noack(struct sock *sk, read_descriptor_t *desc,
-> +			sk_read_actor_t recv_actor, u32 noack,
-> +			u32 *copied_seq)
-> +{
-> +	return __tcp_read_sock(sk, desc, recv_actor,
-> +			       noack, copied_seq);
-> +}
-> +EXPORT_SYMBOL(tcp_read_sock_noack);
+I've tried your suggestion on top of this series. Passes the tests.
 
-Pretty sure you don't have to export this. skmsg can't be a module.
+diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+index fa9d1b49599b..4718fe86689d 100644
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -492,6 +492,10 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
+ 		vsk->transport->release(vsk);
+ 		vsock_deassign_transport(vsk);
+ 
++		vsock_addr_unbind(&vsk->local_addr);
++		vsock_addr_unbind(&vsk->remote_addr);
++		vsock_insert_unbound(vsk);
++
+ 		/* transport's release() and destruct() can touch some socket
+ 		 * state, since we are reassigning the socket to a new transport
+ 		 * during vsock_connect(), let's reset these fields to have a
+
+>> Another possibility would be to simply brick the socket on failed (re)connect.
+> 
+> I see, though, this is not the behavior of AF_INET for example, right?
+
+Right.
+
+> Do you have time to investigate/fix this problem?
+> If not, I'll try to look into it in the next few days, maybe next week.
+
+I'm happy to help, but it's not like I have any better ideas.
+
+Michal
+
+[1]: E.g. this way:
+```
+from socket import *
+
+MAX_PORT_RETRIES = 24 # net/vmw_vsock/af_vsock.c
+VMADDR_CID_LOCAL = 1
+VMADDR_PORT_ANY = -1
+hold = []
+
+def take_port(port):
+	s = socket(AF_VSOCK, SOCK_SEQPACKET)
+	s.bind((VMADDR_CID_LOCAL, port))
+	hold.append(s)
+	return s
+
+s = take_port(VMADDR_PORT_ANY)
+_, port = s.getsockname()
+for _ in range(MAX_PORT_RETRIES):
+	port += 1
+	take_port(port);
+
+s = socket(AF_VSOCK, SOCK_SEQPACKET)
+err = s.connect_ex((VMADDR_CID_LOCAL, port))
+assert err != 0
+print("ok, connect failed; transport set")
+
+s.bind((VMADDR_CID_LOCAL, port+1))
+s.listen(16)
+```
+
 
