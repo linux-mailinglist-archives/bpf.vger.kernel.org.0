@@ -1,87 +1,81 @@
-Return-Path: <bpf+bounces-48793-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48794-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5DE3A10AF9
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 16:36:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1311BA10C1C
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 17:21:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0CAE168BF0
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 15:36:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AEE41886713
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 16:21:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1672159209;
-	Tue, 14 Jan 2025 15:36:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3B241C3BE3;
+	Tue, 14 Jan 2025 16:21:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kYXNX1B9"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CADF232422;
-	Tue, 14 Jan 2025 15:36:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 686D61ADC6E;
+	Tue, 14 Jan 2025 16:21:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736868967; cv=none; b=JMGXP3J0MoN0DiU/VIsMUytwSNicF5Dg5Pp/iRLqzkbJxLZqEkr9sxzR6svBOozXCdH2Y5LBa74tK7+UJI6xYQ7sagO3cZlmz1EbcEFAjkMZZRWEGslXDRV9Ap0FmTVyA7QlfSwuKtWRX41eQE+B9PfMXD9sxwP2E/Fet00eTEM=
+	t=1736871679; cv=none; b=kFD5ZwICJXLZyUa17WfK5EcWL+9j5ZwbTrE4f1V+BElHb1b8lSP96YfxgCmlxo1YTQZa6nnFqvhqVckBHN5zs9EsMB8h/OvIpI3KlZYUbUcU0KdfraZK9W+a2BrjNVNNJqn4Ls5YvFQnRgVtmk9wuu4bhwVFhJMg/uPJ07oveYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736868967; c=relaxed/simple;
-	bh=5X9rPiPMcC8QnDxsT7VvRd66ywPT8nF3IeunOTErs8U=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Dn/38N2G+BJGfvD6T1KxVH2leX8AoStE7FuOau+bDozA4rmfAfSAF5V5V4gZCHOSSkNaUhzijBj90cYX/bqTLmVEV+FipNN71+PYJvxMst1mZazOYtme6ahrPmOZaAlcVWREOlYp/DMnLs/nnV128Xx+oFt2UUt49rTcQe+MzOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E158BC4CEDD;
-	Tue, 14 Jan 2025 15:36:03 +0000 (UTC)
-Date: Tue, 14 Jan 2025 10:36:04 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, David Laight <David.Laight@aculab.com>, lkml
- <linux-kernel@vger.kernel.org>, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org, x86@kernel.org
-Subject: Re: [RFC] x86/alternatives: Merge first and second step in
- text_poke_bp_batch
-Message-ID: <20250114103604.7388352c@gandalf.local.home>
-In-Reply-To: <Z4Z1MoJV0WW-vIHp@krava>
-References: <20250114140237.3506624-1-jolsa@kernel.org>
-	<20250114141723.GS5388@noisy.programming.kicks-ass.net>
-	<Z4Z1MoJV0WW-vIHp@krava>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1736871679; c=relaxed/simple;
+	bh=fItVol50/+YaGZarRhLoai1RaEyMgZvH+fRABBY5oRk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=QYcPRgVot29F82XwvzoIwgPlKGx85+DVhFqUAUqxXWYk3c2/W3vW+wIaBtY2z6SH9gRe7QQuTF4ykU52HPB2WIuwoHb3CHJ/JhU5y8gjXeBc1mEaQQUxTtsxNdeX3plfqV3bENkgreL/Ir7/W1Via8DbNzuARuzPoC+OnRGE3XU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kYXNX1B9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FAA4C4CEDD;
+	Tue, 14 Jan 2025 16:21:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736871678;
+	bh=fItVol50/+YaGZarRhLoai1RaEyMgZvH+fRABBY5oRk=;
+	h=Date:From:To:Cc:Subject:From;
+	b=kYXNX1B9ZQUwzCdpbwP/Y2h8WsUaNRDrzj5ti17ZyL9i13+SKjLfEmsIgedcLWxwG
+	 G3IgGZfQymDmNp4yHVG2y9xSBcq/eT95MmQha50fxOUYZG7O4BPw7WWJgKj+6FZi6y
+	 I4Riuh8PFmnwXq18fp7CZUVTA22Ni6Rg1ltyzdIJE+5XCgu0FKrymwMdGnJBA9mpjl
+	 j3B6yJXbHF4+g1LVbN78yA8iBe/yPEqZfpxtlIVXb79FJqSVRNx11UQFiq6anjnmHP
+	 SVLsEbuIKaPERExhSoP8xpH/Yz9zAGSDxk3mPCiPq+3xqW+a15OYRh1pHQ2RtM4w7Y
+	 dGpQ+bTxIoYdQ==
+Date: Tue, 14 Jan 2025 13:21:15 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: lsf-pc@lists.linux-foundation.org
+Cc: bpf@vger.kernel.org, dwarves@vger.kernel.org,
+	Namhyung Kim <namhyung@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>
+Subject: [LSF/MM/BPF TOPIC] pahole + BTF update and next steps
+Message-ID: <Z4aO-4mkXi4ID7xs@x1>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-On Tue, 14 Jan 2025 15:31:14 +0100
-Jiri Olsa <olsajiri@gmail.com> wrote:
-
-> > IIRC this is the magic recipe blessed by both Intel and AMD, and
-> > if we're going to be changing this I would want both vendors to sign off
-> > on that.  
-> 
-> ok
-
-Right. In fact Intel wouldn't sign off on this recipe for a few years. We
-actually added to the kernel before they gave their full blessing. I got a
-"wink, it should work" from them but they wouldn't officially say so ;-)
-
-But a lot of it has to do with all the magic of the CPU. They have always
-allowed writing the one byte int3. I figured, if I could write that one
-byte int3 then run a sync on all CPUs where all CPUs see that change, then
-nothing should ever care about the other 4 bytes after that int3 (a sync
-was already done). Then change the 4 bytes and sync again.
-
-I doubt the int3 plus the 4 byte change would work, as was mentioned if the
-other 4 bytes were on another cache line, another CPU could read the first
-set of bytes without the int3 and the second set of bytes with the update
-and go boom!
-
-This dance was to make sure everything sees everything properly. I gave a
-talk about this at Kernel-Recipes in 2019:
-
-  https://www.slideshare.net/slideshow/kernel-recipes-2019-ftrace-where-modifying-a-running-kernel-all-started/177509633#44
-
--- Steve
+Hi,
  
+	I'd like to propose a BPF activity on a pahole + BTF update,
+mentioning features that were implemented since last year, changes in
+the release cadence, testing, and maintainance of pahole.
+
+	Also about preparing it for when BTF gets natively generated by
+gcc/clang for the kernel, when it becomes a BTF "augmenter", adding
+extra info or removing/fixing initial compiler BTF generation problems.
+
+	This would be kinda complementary to José's "Compiled BPF"
+proposal, I guess.
+
+	There are also new usage in perf of BPF and BTF that could be
+covered, if there's interest in that as well.
+
+Thanks,
+
+- Arnaldo
 
