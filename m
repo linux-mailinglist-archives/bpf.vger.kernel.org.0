@@ -1,263 +1,233 @@
-Return-Path: <bpf+bounces-48737-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48738-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 599FCA0FFCF
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 04:56:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E1E1A10003
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 05:50:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18DCD3A55B1
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 03:56:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2A57169128
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 04:50:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57E22230D39;
-	Tue, 14 Jan 2025 03:56:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55749232792;
+	Tue, 14 Jan 2025 04:50:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vAjR9AdN"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="COW1ZdIw"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp-fw-52003.amazon.com (smtp-fw-52003.amazon.com [52.119.213.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C784622ACF7;
-	Tue, 14 Jan 2025 03:56:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ED9924023E;
+	Tue, 14 Jan 2025 04:49:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736827004; cv=none; b=E++1iwLLno94Djoak7D5dljDdeHZH43yCfoqMnxrH7uMmdHY+ZyAdRmwEXHBEoUtgGDX4/6qJvoMD4Ei5Af7CohHDjtxzU8XwGkaLGML5d0P5qaQUshVfsRdi8so55p6G4Q9hLUjLji9zDGusx76t0dU1olli/7yvleo8qrg804=
+	t=1736830201; cv=none; b=pbYde5fm7Ox4qq8hNdUlImXGPOvWXIOmYv6U7kwnARd1b2Z64xGzCCjxfDbVSjeBgzfX3aTxaEJyscGmXZUpiD3LM5sc74gUfr2FQiKztv3OzEuT8rquJs3YupVi8xWQdsb5xHtmm1vmf7Z2eigCSrjhRyNqAv1D1v3Qt0MsfZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736827004; c=relaxed/simple;
-	bh=nCLsJ1F8/J91WhpGj9jw+7bQhIyXl9La0vEZdo0ScwA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D3ipumDJBvnQcdogPCkqjHgt0Dg2ezsWFls+ktFJmWrxRJS/LcJ3/cHCoyYAbH2MENKYx5Lmlh2bJx5CUYL0w1AbeoLM7dsN5YijwHUePiO+0pXalaJkFfhPuaM/FZcQe6du5//BV7LVfH2VVae2vrqo8T6Wzk4rUNW0qT3jsyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vAjR9AdN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD82AC4CEE3;
-	Tue, 14 Jan 2025 03:56:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736827004;
-	bh=nCLsJ1F8/J91WhpGj9jw+7bQhIyXl9La0vEZdo0ScwA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=vAjR9AdNT7f90fIdNSBZRYlRvghpUpvpnr5sJFXUEIG1Jq9lNY3M+OXx7uaD740fy
-	 c3nSTYS0GgyK4tC4eK5jXyMfUfVN/FIyi8sZvh4f4FC88zfiyb1S+y5XzCVSR1NSfb
-	 rmYScPsPfjX0FZLYzyrOPGFtAys1QzGRhHyxYHm+Nf09MQZcSc0NbqgWnW40ulJRlT
-	 ZJ2vf1Ou2boGqerBlMcBj7fC1MKZx5XPEUiiJSSso6skrxec7x2Iomc2BHq8AxAwGx
-	 Ue8MnsK1frpXsnoUq8MoSWEEaYV1AKd1nIcxm/zaoP9A0RdK7InflGFOdzbPJjintr
-	 36hQppeB+8ZIQ==
-Date: Mon, 13 Jan 2025 19:56:42 -0800
-From: Namhyung Kim <namhyung@kernel.org>
-To: Chun-Tse Shao <ctshao@google.com>
-Cc: linux-kernel@vger.kernel.org, peterz@infradead.org, mingo@redhat.com,
-	acme@kernel.org, mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-	irogers@google.com, adrian.hunter@intel.com,
-	kan.liang@linux.intel.com, linux-perf-users@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] perf lock: Report owner stack in usermode
-Message-ID: <Z4Xgen-HsfcvUuGN@google.com>
-References: <20250113052220.2105645-1-ctshao@google.com>
- <20250113052220.2105645-5-ctshao@google.com>
+	s=arc-20240116; t=1736830201; c=relaxed/simple;
+	bh=CG5ADQvDH2PcbnFujbCeqXAd7kbVHN7UAWyREHlgoEc=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cf03h3EbKqqkPku1QkeD4WG5PPBtMV2PLDcOxM/xtCoRtF/A00AbI1ril7/cgQvj1ec6x1Z0dxbk5lAQGy8oWdOUaAdeEZ9D8ddIfUQX2cp+a9Z+zCDDv+xAS6InI0Tuuj07gqwHShS3b5Qotx4ssy/LdsTeD1P+u3ZSGvvgAbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=COW1ZdIw; arc=none smtp.client-ip=52.119.213.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1736830201; x=1768366201;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=A4qSpa9PKTl3u7k1DQyLqfv8mgl5yR42K0bhyD7dYtE=;
+  b=COW1ZdIwZiklBml6Wt/rKHHhfhf0eL4SlXcS5jjqeHHLzX9kF+aJ6MLt
+   UHKkt6j6aRIzzo2r/7GrRfWU7vwdmVX7+L+ZtGXjUtMV8k7KRAb+2pFSg
+   WgRtxA6fzX2AAKW8eClhT1+Tk+4SEFJYAUeZ4LXBN96EqpoN6Fu4S+1nN
+   I=;
+X-IronPort-AV: E=Sophos;i="6.12,313,1728950400"; 
+   d="scan'208";a="57499934"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-52003.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2025 04:49:55 +0000
+Received: from EX19MTAUWA002.ant.amazon.com [10.0.38.20:22602]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.15.93:2525] with esmtp (Farcaster)
+ id 7019b803-c524-49e9-8de0-4c37547d545c; Tue, 14 Jan 2025 04:49:53 +0000 (UTC)
+X-Farcaster-Flow-ID: 7019b803-c524-49e9-8de0-4c37547d545c
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.39;
+ Tue, 14 Jan 2025 04:49:53 +0000
+Received: from 6c7e67c6786f.amazon.com (10.119.11.99) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.39;
+ Tue, 14 Jan 2025 04:49:44 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <shaw.leon@gmail.com>
+CC: <alex.aring@gmail.com>, <andrew+netdev@lunn.ch>,
+	<b.a.t.m.a.n@lists.open-mesh.org>, <bpf@vger.kernel.org>,
+	<bridge@lists.linux.dev>, <davem@davemloft.net>, <donald.hunter@gmail.com>,
+	<dsahern@kernel.org>, <edumazet@google.com>, <herbert@gondor.apana.org.au>,
+	<horms@kernel.org>, <kuba@kernel.org>, <kuniyu@amazon.com>,
+	<linux-can@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-kselftest@vger.kernel.org>, <linux-ppp@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
+	<linux-wpan@vger.kernel.org>, <miquel.raynal@bootlin.com>,
+	<netdev@vger.kernel.org>, <osmocom-net-gprs@lists.osmocom.org>,
+	<pabeni@redhat.com>, <shuah@kernel.org>, <stefan@datenfreihafen.org>,
+	<steffen.klassert@secunet.com>, <wireguard@lists.zx2c4.com>
+Subject: Re: [PATCH net-next v8 06/11] net: ipv6: Use link netns in newlink() of rtnl_link_ops
+Date: Tue, 14 Jan 2025 13:49:35 +0900
+Message-ID: <20250114044935.26418-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+In-Reply-To: <20250113143719.7948-3-shaw.leon@gmail.com>
+References: <20250113143719.7948-3-shaw.leon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250113052220.2105645-5-ctshao@google.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D033UWA004.ant.amazon.com (10.13.139.85) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-On Sun, Jan 12, 2025 at 09:20:17PM -0800, Chun-Tse Shao wrote:
-> Parse `owner_lock_stat` into a rb tree, and report owner lock stats with
-> stack trace in order.
-> 
-> Example output:
->   $ sudo ~/linux/tools/perf/perf lock con -abvo -Y mutex-spin -E3 perf bench sched pipe
->   ...
->    contended   total wait     max wait     avg wait         type   caller
-> 
->          171      1.55 ms     20.26 us      9.06 us        mutex   pipe_read+0x57
->                           0xffffffffac6318e7  pipe_read+0x57
->                           0xffffffffac623862  vfs_read+0x332
->                           0xffffffffac62434b  ksys_read+0xbb
->                           0xfffffffface604b2  do_syscall_64+0x82
->                           0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
->           36    193.71 us     15.27 us      5.38 us        mutex   pipe_write+0x50
->                           0xffffffffac631ee0  pipe_write+0x50
->                           0xffffffffac6241db  vfs_write+0x3bb
->                           0xffffffffac6244ab  ksys_write+0xbb
->                           0xfffffffface604b2  do_syscall_64+0x82
->                           0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
->            4     51.22 us     16.47 us     12.80 us        mutex   do_epoll_wait+0x24d
->                           0xffffffffac691f0d  do_epoll_wait+0x24d
->                           0xffffffffac69249b  do_epoll_pwait.part.0+0xb
->                           0xffffffffac693ba5  __x64_sys_epoll_pwait+0x95
->                           0xfffffffface604b2  do_syscall_64+0x82
->                           0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
-> 
->   === owner stack trace ===
-> 
->            3     31.24 us     15.27 us     10.41 us        mutex   pipe_read+0x348
->                           0xffffffffac631bd8  pipe_read+0x348
->                           0xffffffffac623862  vfs_read+0x332
->                           0xffffffffac62434b  ksys_read+0xbb
->                           0xfffffffface604b2  do_syscall_64+0x82
->                           0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
->   ...
-> 
-> Signed-off-by: Chun-Tse Shao <ctshao@google.com>
-> ---
->  tools/perf/builtin-lock.c             | 20 ++++++++++++-
->  tools/perf/util/bpf_lock_contention.c | 41 +++++++++++++++++++++++++++
->  tools/perf/util/lock-contention.h     |  2 ++
->  3 files changed, 62 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-> index f9b7620444c0..0dfec175b25b 100644
-> --- a/tools/perf/builtin-lock.c
-> +++ b/tools/perf/builtin-lock.c
-> @@ -42,6 +42,7 @@
->  #include <linux/zalloc.h>
->  #include <linux/err.h>
->  #include <linux/stringify.h>
-> +#include <linux/rbtree.h>
->  
->  static struct perf_session *session;
->  static struct target target;
-> @@ -1926,6 +1927,23 @@ static void print_contention_result(struct lock_contention *con)
->  			break;
->  	}
->  
-> +	if (con->owner && con->save_callstack) {
-> +		struct rb_root root = RB_ROOT;
-> +
-> +
-
-A duplicate new line.
-
-
-> +		if (symbol_conf.field_sep)
-> +			fprintf(lock_output, "# owner stack trace:\n");
-> +		else
-> +			fprintf(lock_output, "\n=== owner stack trace ===\n\n");
-> +		while ((st = pop_owner_stack_trace(con)))
-> +			insert_to(&root, st, compare);
-> +
-> +		while ((st = pop_from(&root))) {
-> +			print_lock_stat(con, st);
-> +			zfree(st);
-> +		}
-> +	}
-> +
->  	if (print_nr_entries) {
->  		/* update the total/bad stats */
->  		while ((st = pop_from_result())) {
-> @@ -2071,7 +2089,7 @@ static int check_lock_contention_options(const struct option *options,
->  		}
->  	}
->  
-> -	if (show_lock_owner)
-> +	if (show_lock_owner && !verbose)
->  		show_thread_stats = true;
-
-No, I don't think -v should control this.  Let's change the semantic not
-to imply --threads anymore.  I think you can simply delete this code.
-Users need to specify -t/--threads option for the old behavior.  Hmm..
-maybe we can show some warnings.
-
-	if (show_lock_owner && !show_thread_stats) {
-		pr_warning("Now -o try to show owner's callstack instead of pid and comm.\n");
-		pr_warning("Please use -t option too to keep the old behavior.\n");
-	}
-
-Can you please update the documentation of the -o/--lock-owner option
-too?
-
->  
+From: Xiao Liang <shaw.leon@gmail.com>
+Date: Mon, 13 Jan 2025 22:37:14 +0800
+> diff --git a/drivers/net/bonding/bond_netlink.c b/drivers/net/bonding/bond_netlink.c
+> index 2a6a424806aa..ac5e402c34bc 100644
+> --- a/drivers/net/bonding/bond_netlink.c
+> +++ b/drivers/net/bonding/bond_netlink.c
+> @@ -564,10 +564,12 @@ static int bond_changelink(struct net_device *bond_dev, struct nlattr *tb[],
 >  	return 0;
-> diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
-> index c9c58f243ceb..a63d5ffac386 100644
-> --- a/tools/perf/util/bpf_lock_contention.c
-> +++ b/tools/perf/util/bpf_lock_contention.c
-> @@ -414,6 +414,47 @@ static const char *lock_contention_get_name(struct lock_contention *con,
->  	return name_buf;
 >  }
 >  
-> +struct lock_stat *pop_owner_stack_trace(struct lock_contention *con)
-> +{
-> +	int fd;
-> +	u64 *stack_trace;
-> +	struct contention_data data = {};
-> +	size_t stack_size = con->max_stack * sizeof(*stack_trace);
-> +	struct lock_stat *st;
-> +	char name[KSYM_NAME_LEN];
-> +
-> +	fd = bpf_map__fd(skel->maps.owner_lock_stat);
-> +
-> +	stack_trace = zalloc(stack_size);
-> +	if (stack_trace == NULL)
-> +		return NULL;
-> +
-> +	if (bpf_map_get_next_key(fd, NULL, stack_trace))
-> +		return NULL;
-> +
-> +	bpf_map_lookup_elem(fd, stack_trace, &data);
-> +	st = zalloc(sizeof(struct lock_stat));
-
-You need to check the error and handle it properly.
-
-
-> +
-> +	strcpy(name, stack_trace[0] ? lock_contention_get_name(con, NULL,
-> +							       stack_trace, 0) :
-> +				      "unknown");
-> +
-> +	st->name = strdup(name);
-
-Why do you copy and strdup()?  Anyway please check the error.
-
-
-> +	st->flags = data.flags;
-> +	st->nr_contended = data.count;
-> +	st->wait_time_total = data.total_time;
-> +	st->wait_time_max = data.max_time;
-> +	st->wait_time_min = data.min_time;
-> +	st->callstack = memdup(stack_trace, stack_size);
-
-Why not just give it to the 'st'?
-
-> +
-> +	if (data.count)
-> +		st->avg_wait_time = data.total_time / data.count;
-> +
-> +	bpf_map_delete_elem(fd, stack_trace);
-> +	free(stack_trace);
-
-Then you don't need to free it here.
-
-> +
-> +	return st;
-> +}
->  int lock_contention_read(struct lock_contention *con)
+> -static int bond_newlink(struct net *src_net, struct net_device *bond_dev,
+> -			struct nlattr *tb[], struct nlattr *data[],
+> +static int bond_newlink(struct net_device *bond_dev,
+> +			struct rtnl_newlink_params *params,
+>  			struct netlink_ext_ack *extack)
 >  {
->  	int fd, stack, err = 0;
-> diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-contention.h
-> index 1a7248ff3889..83b400a36137 100644
-> --- a/tools/perf/util/lock-contention.h
-> +++ b/tools/perf/util/lock-contention.h
-> @@ -156,6 +156,8 @@ int lock_contention_stop(void);
->  int lock_contention_read(struct lock_contention *con);
->  int lock_contention_finish(struct lock_contention *con);
+> +	struct nlattr **data = params->data;
+> +	struct nlattr **tb = params->tb;
+>  	int err;
 >  
-> +struct lock_stat *pop_owner_stack_trace(struct lock_contention *con);
-> +
->  #else  /* !HAVE_BPF_SKEL */
+>  	err = bond_changelink(bond_dev, tb, data, extack);
 
-I think you need to define it here as well.
+Note that IFLA_BOND_ACTIVE_SLAVE uses dev_net(dev) for
+__dev_get_by_index().
 
-Thanks,
-Namhyung
 
+[...]
+> diff --git a/drivers/net/macvlan.c b/drivers/net/macvlan.c
+> index fed4fe2a4748..0c496aa1f706 100644
+> --- a/drivers/net/macvlan.c
+> +++ b/drivers/net/macvlan.c
+> @@ -1565,11 +1565,12 @@ int macvlan_common_newlink(struct net *src_net, struct net_device *dev,
+>  }
+>  EXPORT_SYMBOL_GPL(macvlan_common_newlink);
 >  
->  static inline int lock_contention_prepare(struct lock_contention *con __maybe_unused)
-> -- 
-> 2.47.1.688.g23fc6f90ad-goog
-> 
+> -static int macvlan_newlink(struct net *src_net, struct net_device *dev,
+> -			   struct nlattr *tb[], struct nlattr *data[],
+> +static int macvlan_newlink(struct net_device *dev,
+> +			   struct rtnl_newlink_params *params,
+>  			   struct netlink_ext_ack *extack)
+>  {
+> -	return macvlan_common_newlink(src_net, dev, tb, data, extack);
+> +	return macvlan_common_newlink(params->net, dev, params->tb,
+> +				      params->data, extack);
+
+Pass params as is as you did for ipvlan_link_new().
+
+Same for macvtap_newlink().
+
+
+[...]
+> diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
+> index 1e1b00756be7..1e9eadc77da2 100644
+> --- a/drivers/net/netkit.c
+> +++ b/drivers/net/netkit.c
+> @@ -327,10 +327,13 @@ static int netkit_validate(struct nlattr *tb[], struct nlattr *data[],
+>  
+>  static struct rtnl_link_ops netkit_link_ops;
+>  
+> -static int netkit_new_link(struct net *peer_net, struct net_device *dev,
+> -			   struct nlattr *tb[], struct nlattr *data[],
+> +static int netkit_new_link(struct net_device *dev,
+> +			   struct rtnl_newlink_params *params,
+>  			   struct netlink_ext_ack *extack)
+>  {
+> +	struct nlattr **data = params->data;
+> +	struct net *peer_net = params->net;
+> +	struct nlattr **tb = params->tb;
+
+nit: please keep the reverse xmas tree order.
+
+
+>  	struct nlattr *peer_tb[IFLA_MAX + 1], **tbp = tb, *attr;
+
+you can define *tbp here and initialise it later.
+
+  	struct nlattr *peer_tb[IFLA_MAX + 1], **tbp, *attr;
+
+>  	enum netkit_action policy_prim = NETKIT_PASS;
+>  	enum netkit_action policy_peer = NETKIT_PASS;
+
+
+[...]
+> @@ -1064,6 +1067,11 @@ static void wwan_create_default_link(struct wwan_device *wwandev,
+>  	struct net_device *dev;
+>  	struct nlmsghdr *nlh;
+>  	struct sk_buff *msg;
+> +	struct rtnl_newlink_params params = {
+> +		.net = &init_net,
+> +		.tb = tb,
+> +		.data = data,
+> +	};
+
+nit: Reverse xmas tree order
+
+
+[...]
+> diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+> index ec98349b9620..7ff5e96f6ba7 100644
+> --- a/net/core/rtnetlink.c
+> +++ b/net/core/rtnetlink.c
+> @@ -3766,6 +3766,14 @@ static int rtnl_newlink_create(struct sk_buff *skb, struct ifinfomsg *ifm,
+>  	struct net_device *dev;
+>  	char ifname[IFNAMSIZ];
+>  	int err;
+> +	struct rtnl_newlink_params params = {
+
+nit: Reverse xmas tree order
+
+
+> +		.net = net,
+
+Use sock_net(skb->sk) directly here and remove net defined above,
+which is no longer used in this function.
+
+---8<---
+        unsigned char name_assign_type = NET_NAME_USER;
+        struct rtnl_newlink_params params = {
+                .net = sock_net(skb->sk),
+                .src_net = net,
+                .link_net = link_net,
+                .peer_net = peer_net,
+                .tb = tb,
+                .data = data,
+        };
+        u32 portid = NETLINK_CB(skb).portid;
+---8<---
+
+
+[...]
+> @@ -1698,6 +1702,10 @@ struct net_device *gretap_fb_dev_create(struct net *net, const char *name,
+>  	LIST_HEAD(list_kill);
+>  	struct ip_tunnel *t;
+>  	int err;
+> +	struct rtnl_newlink_params params = {
+> +		.net = net,
+> +		.tb = tb,
+> +	};
+>  
+>  	memset(&tb, 0, sizeof(tb));
+
+nit: Reverse xmas tree
 
