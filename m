@@ -1,123 +1,185 @@
-Return-Path: <bpf+bounces-48853-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48854-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83A5BA11237
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 21:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A5F6A112B5
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 22:02:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9AA73A4BD9
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 20:40:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67EBC3A045E
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 21:02:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60CEF1459FD;
-	Tue, 14 Jan 2025 20:40:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11BCA20F090;
+	Tue, 14 Jan 2025 21:02:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PQIyUzAm"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="WRGJIZKn";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="igdiQqub"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from fout-b6-smtp.messagingengine.com (fout-b6-smtp.messagingengine.com [202.12.124.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A5E20C033
-	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 20:40:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 911DE1CDFCC
+	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 21:01:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736887208; cv=none; b=HRfLKErxEMbnND3Joq/KUSFpylW3jzHn/qu0a9DCyS2Srg8hn9lr34NBquoNhz2+XAa2RBZ65B+ZbaJAIkJ9+CKFVmEwd/urA+yJI+qF1GhvK3HA4nYTt21MoftJ/YsaTDkf4aScIUYmmP2WJeAp9szTGmUfgZroGpZ6+JUsqNw=
+	t=1736888520; cv=none; b=gfdr+wnVOpoAnHKNE5MOk3XLGGc+L2gbpOZuCuf2izvhIQXk5zvwBQ3nvbXqwS5Bm/EWMVjFEsgpOXEgOEcjuys+SzLH7qv2gAGF4ECTFutBDVFETsDiL0fwYi6NtH6pKc9I5NpksYkwHPirG8KDiQhlFeObvG6ZXy44Y2NfhR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736887208; c=relaxed/simple;
-	bh=iGtvFc/Jy4BJY0LRoDaVaXzDrDXFuoFF7wBMz6Gftpg=;
+	s=arc-20240116; t=1736888520; c=relaxed/simple;
+	bh=snqIui/NwDtfbsolGVJxjMYGF93yhdk/kqVA02luVsU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UzD0nqxS8B6d2BrAncEZFioZ+zvaS4ij0oLhdo9tsYZFpTZbNmNd/rgjO6SfPShLvYE9F9ILR4a0WWP/MmnlXJHEgj9AeeopSjUOOvldjcwxtyZktFSh0bKEhkseyDIbdvYOvrb+Qstym8gmD7P0NeHfuVfmgO+yWa4SxNZi8zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PQIyUzAm; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1736887206;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iGtvFc/Jy4BJY0LRoDaVaXzDrDXFuoFF7wBMz6Gftpg=;
-	b=PQIyUzAmmNZt96k+Fs8Shn0axuxdE+54SSftJO90Xz3axKHcK9/3PllS1RVx1E7aiWRtXt
-	7jeyOeQHaRj6cSvvDmW87tUrlfl41j+JTiH4GVY8+6cQIsa0zhLHHcw7k2IFai03bEthRG
-	S4n1B/OGZxlnRAb8ngaXcgdWazS8I9k=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-614-8PfkFcqLMTezb9LkqFK0JQ-1; Tue,
- 14 Jan 2025 15:40:00 -0500
-X-MC-Unique: 8PfkFcqLMTezb9LkqFK0JQ-1
-X-Mimecast-MFC-AGG-ID: 8PfkFcqLMTezb9LkqFK0JQ
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D77FD19560B3;
-	Tue, 14 Jan 2025 20:39:56 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.88])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id EC0A919560AA;
-	Tue, 14 Jan 2025 20:39:48 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Tue, 14 Jan 2025 21:39:31 +0100 (CET)
-Date: Tue, 14 Jan 2025 21:39:22 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>,
-	Eyal Birger <eyal.birger@gmail.com>, mhiramat@kernel.org,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	linux-trace-kernel@vger.kernel.org,
-	BPF-dev-list <bpf@vger.kernel.org>,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>, peterz@infradead.org,
-	tglx@linutronix.de, bp@alien8.de, x86@kernel.org,
-	linux-api@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alexei Starovoitov <ast@kernel.org>,
-	"rostedt@goodmis.org" <rostedt@goodmis.org>, rafi@rbk.io,
-	Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: Re: Crash when attaching uretprobes to processes running in Docker
-Message-ID: <20250114203922.GA5051@redhat.com>
-References: <CAHsH6Gs3Eh8DFU0wq58c_LF8A4_+o6z456J7BidmcVY2AqOnHQ@mail.gmail.com>
- <20250110.152323-sassy.torch.lavish.rent-vKX3ul5B3qyi@cyphar.com>
- <Z4K7D10rjuVeRCKq@krava>
- <Z4YszJfOvFEAaKjF@krava>
- <20250114105802.GA19816@redhat.com>
- <Z4ZyYudZSD92DPiF@krava>
- <CAEf4BzZoa6gBQzfPLeMTQu+s=GqVdmihFdb1BHkcPPQMFQp+MQ@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=aNX9VbzklYXphxMxa91eOdRVdtK85s+69F6VA0nRcgGM9kpFwfGBqZmB5T78Kazmu4qniRZkEshxLc23oZWnPLvz6FX8Ya9Oevb4MO8pmp+yZZvqE3DbaBsfKoirmhes5wrDJHhyvWj2jSCjjUV5vOrNUZekvwWa72S64DC9Z2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=WRGJIZKn; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=igdiQqub; arc=none smtp.client-ip=202.12.124.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
+	by mailfout.stl.internal (Postfix) with ESMTP id 8CAED1140081;
+	Tue, 14 Jan 2025 16:01:57 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-11.internal (MEProxy); Tue, 14 Jan 2025 16:01:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1736888517;
+	 x=1736974917; bh=buJ0zveaL6uGmmbT6GwtV2U7xr4PQJvlhIX4JdwqZkI=; b=
+	WRGJIZKnnsO5aHczp7NoI3joemFaoFB/ik25aMJIFyL0FvpYtM4VbmBKUMbuMmMC
+	2DRiYYpM+xKnOZ1oVgrfpIafZbKbGXjQsQdvr5C2f6bz3o90kOKyto31BDXJdgab
+	6TCGrMDvqlMHdf7KK1Jsq6TjGCj2bVViqfJrxMSUhHhfncOvBcTlZzpwgexaJVJV
+	dylcQscwSN9/RyvEP2VuNt/FdtvKW4PHZWFBdNo6w6O7yQBNdRfuGUIz7YtZcSTG
+	tXFDJRyCJ2tHxYHVdVj3zF2Lyy4n6uBY3+cyHWYy3q0femmQg6nRREImL7GWwiXM
+	LQkl90NfDxTrqJqxMpgBoQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1736888517; x=
+	1736974917; bh=buJ0zveaL6uGmmbT6GwtV2U7xr4PQJvlhIX4JdwqZkI=; b=i
+	gdiQqub8o0XvT+EfttbM8zU7JrE4qvgAT9gMhgmWiFTNi3ieS9sGPO7eXBZ3Iozw
+	BJDrGPmnsnRDT6hMHEDJrGiyDVRxaOSUceO4C3+qlWRgcUarhqBkqJ5l0FaTSKVL
+	vNOwmXB+8RbRrkeC5nk/IFyTEse/nltsYT/5/jFRthS6GVCnnNy1/kx17wbb5GPR
+	KbKeRIwERA/YCVJIxY22f2E5m03cKUz523CNV85ujNYGJtsHXbRbZT9uyKXigj7h
+	t88TMlJ3quUSQsbSJuXUmpBBJ58Xt0QiORj2KgVcxDUxDY18HeeZwVQ4ciYplOaO
+	6ArMBuz6U+3k2ZLJOvyTw==
+X-ME-Sender: <xms:xdCGZ_FAAY4VVbavtr28gi0YTYHou7YLzi1gcEImH87sy79HuqRG4A>
+    <xme:xdCGZ8VIA7ueucB5NUGXrK5_EtjhT4h0W0zXkpCmXq_CB-L3VoCrZtt04Qv38_BgK
+    i0CHD1rkbGkM9Go2g>
+X-ME-Received: <xmr:xdCGZxJSw3aq0WgJLo00oYc7BytkAzO5H2Sh4kZqZqco2Qa0yOyO8bu3kTIkigqFFXsqwTS00UHRv5NvKgo1PNomzmBrPgXMfyyAWC5FmLWm6A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudehiedgudegvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenfghrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffk
+    fhggtggugfgjsehtkefstddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguh
+    esugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepffffgeegkeejvdejgeehteek
+    udfhgfefgeevkeelhfegueeljefhleejtdekveffnecuffhomhgrihhnpehgihhthhhusg
+    drtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
+    pegugihusegugihuuhhurdighiiipdhnsggprhgtphhtthhopeefpdhmohguvgepshhmth
+    hpohhuthdprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
+    lhhsfhdqphgtsehlihhsthhsrdhlihhnuhigqdhfohhunhgurghtihhonhdrohhrghdprh
+    gtphhtthhopegsphhfsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:xdCGZ9GJYZbFNrNLIR4gW2ZcRuckmax_QMCOoKaLr2XNEStYnLQUmg>
+    <xmx:xdCGZ1U4STCuNt82BSrxsoYfHT-ekal_ZHmfdlXTynxjVGo9HqvO4A>
+    <xmx:xdCGZ4P2C31xwtsocOxVDneHLVOuYAoUmjKyI4QVZ1t3rX07sNMVkA>
+    <xmx:xdCGZ00580pxs39hzZwtqdzx4eqriz43s-Nk_Foq_s7wYRDmwtytTg>
+    <xmx:xdCGZ4SJPXDR7RyR8LkqliWYIgWUpC4H7p7NnG_GH7VozNSQ1UwGGUhH>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 14 Jan 2025 16:01:56 -0500 (EST)
+Date: Tue, 14 Jan 2025 14:01:55 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Song Liu <song@kernel.org>
+Cc: lsf-pc@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: Re: [LSF/MM/BPF TOPIC] Modular BPF verifier
+Message-ID: <az6mn2geqofoma4yzioyd5cvarb57mxatm2izupvq3bn4f5wbf@bv7au62xzv4l>
+References: <nahst74z46ov7ii3vmriyhk25zo6tkf2f3hsulzjzselvobbbu@pqn6wfdibwqb>
+ <CAPhsuW5cLXSjQetTrcEFMAwnjjd1pGR3rLwVBuHkHMuK6xqwMA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzZoa6gBQzfPLeMTQu+s=GqVdmihFdb1BHkcPPQMFQp+MQ@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPhsuW5cLXSjQetTrcEFMAwnjjd1pGR3rLwVBuHkHMuK6xqwMA@mail.gmail.com>
 
-On 01/14, Andrii Nakryiko wrote:
->
-> Should we just fix whoever is blocking kernel-internal special syscall
-> (sys_uretprobe)?
+Hi Song,
 
-Well, we can add __NR_uretprobe to mode1_syscalls[] but this won't
-really help.
+On Mon, Jan 13, 2025 at 03:32:59PM -0800, Song Liu wrote:
+> On Fri, Jan 10, 2025 at 1:23 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> >
+> > Hi folks,
+> >
+> > I'd like to propose modular BPF verifier as a discussion topic.
+> 
+> Interesting idea!
+> 
+> I was thinking about "modular verifier" these days, but in a different
+> way, i.e., how to divide the verifier into smaller modules (logical
+> modules, not necessarily kernel modules). We currently support
+> loading kfuncs in kernel modules, so it is natural to put the checks
+> of kfuncs into modules (via btf_kfunc_id_set.filter function).
+> 
+> > === Motivation ===
+> >
+> > A decade of production experience with BPF has shown that the desire for
+> > feature availability outpaces the ability to deliver new kernels into the field
+> > [0]. Therefore, the idea of modularizing the BPF subsystem into a loadable
+> > kernel module (LKM) has started to look appealing, as this would allow loading
+> > newer versions of the BPF subsystem onto older versions of the kernel without a
+> > reboot.
+> >
+> 
+> [...]
+> 
+> >
+> > For forward compatibility, the idea is to implement a facade built into each
+> > kernel that exposes a stable-enough (non-UAPI) interface such that the verifier
+> > can remain portable and “plug in” to the running kernel. While I expect the
+> > facade to be necessary, it will not be sufficient. There will eventually be
+> > details the facade cannot hide, for example an unavoidable ABI break. To solve
+> > for this, I/we [2] will maintain a continuously exported copy of the verifier
+> > code in a separate repository. From there we can develop branching, patching,
+> > or backport strategies to mitigate breaks. The exact details are TBD and will
+> > become more clear as work progresses.
+> 
+> Maintaining out-of-tree kernel modules is a lot of work. I wonder whether
+> the benefit would justify this extra work. There are other ways to make
+> small changes to the built-in verifier, i.e. kernel live patch.
 
-We can't "fix" the existing user-space setups which can nack any
-"unnecessary/unknown" syscall.
+The goal (in my mind) is not to maintain a full out-of-tree module.
+Rather, it'd be to do a 1-way sync out of the kernel and potentially
+apply some out-of-tree compatability patches. Same idea as libbpf:
+https://github.com/libbpf/libbpf.
 
-> What would happen if someone blocked that other
-> special kernel-internal syscall for signal handling (can't remember
-> the name,
+Verifier development should still happen in kernel tree. For folks who
+do not care about modular verifier, life should go on same as before.
 
-sys_rt_sigreturn().
+w.r.t. KLP, I'm not sure KLP satisfies the use case. For example, it
+seems unwieldy to potentially live-patch hundreds to thousands of
+patches. And since verifier is an algorithm heavy construct, we cannot
+get away from data structure changes -- IIUC something KLP is not good
+at.
 
-Yes, the task will crash after return from the signal handler if this
-syscall is filtered out.
+> 
+> >
+> > On top of delivering newer verifiers to older kernels, the facade opens the
+> > door to running the verifier in userspace. If the verifier becomes sufficiently
+> > portable, we can implement a userspace facade and plug the verifier in. A
+> > possible use case could be integrating the verifier into Clang [3] for tightly
+> > integrated verifier feedback. This would address a long running pain point with
+> > BPF development. This is a lot easier said than done, so consider this highly
+> > speculative.
+> 
+> I think we don't need the verifier to be a LKM to do verification in user
+> space. Instead, we just need a mechanism to bypass (some logic of)
+> the verifier. Would this work?
 
-But, unlike sys_uretprobe(), sys_rt_sigreturn() is old, so the existing
-setups must know that sigreturn() should be respected...
+It's the other way around. The goal is not to _move_ verification into
+userspace but rather pre-verify. That way when the kernel verifies it
+you have a lot more confidence it will succeed.
 
-Oleg.
-
+Thanks,
+Daniel
 
