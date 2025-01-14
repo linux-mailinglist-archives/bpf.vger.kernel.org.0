@@ -1,82 +1,82 @@
-Return-Path: <bpf+bounces-48725-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48726-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78676A0FE16
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 02:29:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5CFFA0FE38
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 02:39:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE1F4188844B
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 01:29:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE449169B54
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 01:39:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47B29225405;
-	Tue, 14 Jan 2025 01:29:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A49E230276;
+	Tue, 14 Jan 2025 01:39:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Xhu+kzUY"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="WUFS1kKx"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14EB224024E
-	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 01:29:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5545C224B0D;
+	Tue, 14 Jan 2025 01:39:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.21.196.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736818149; cv=none; b=gu4OzBEEDxqq01sDlEZDIdTd8FE6balWCxIjG142Cr5/a5iHIMhNniNKVvUKNiwzAtmwCFnbDccZUGpIin8L1qpMejDq4Huz08snjHAZ7eC62nRK9PeQJkxAEcK99hcPU7KbYqgKDNjAw4rcOXeha/WaNBfY97vdcz7LrS5Qm8o=
+	t=1736818775; cv=none; b=r2KKtRrRxFz3HBVVbtDSm3B9N3eMbh3zqD1lYB368z34abTFrAImoHH3vHsldyGDiS5P8Xvk/iflGPk3ncz/5ni1Tl2P956lk5tXE4wSkPFHZG/qUN5b9KgywkQOWdvf1/TO93iNcngIheT3kQgyM56VQOlin7HlQEdZgT8NiOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736818149; c=relaxed/simple;
-	bh=S/psdqgqada54lobyWYK8hdV9TNMnKS/OBd037xPlOE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NGJrnynZTG9iYVwP6ggwWxT+ACqpZjpJ4DEXK0IEoWXrfauxyuHgghsN/ldPsxti0piY4BDl1DHICE7qjmqO+MFlDjJPTqzNgHrgTqlU+nyjj7cyi2W76XhhGwFDNBVbL7aqJqj/egkJkFE6JClq07NYq1sMPrC7Hw4YeHwoIak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Xhu+kzUY; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1736818145;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=EjHfbTrazijVMIUCVhkudNwe2fjYYKc1mpZpcLc1Pys=;
-	b=Xhu+kzUYpVjso5WI3gjoRRSivWw7m4bodn9q3a8Hxe6n8K4XmQnKLSMCwnYBeUv+S1xf9j
-	MVBFyUzKLC9U0h0QHTrIUybp275uJ3IkizSszx0YEq19joRGez2A8U9uAEyyRpaMvbikun
-	6s4vEi4d2jODx1maVBZTxhytoU/Djyc=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-320-jYkgOD5_O1C6xhEjibms2w-1; Mon,
- 13 Jan 2025 20:29:00 -0500
-X-MC-Unique: jYkgOD5_O1C6xhEjibms2w-1
-X-Mimecast-MFC-AGG-ID: jYkgOD5_O1C6xhEjibms2w
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 73E981956087;
-	Tue, 14 Jan 2025 01:28:54 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.72.112.144])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 10F503003FD3;
-	Tue, 14 Jan 2025 01:28:40 +0000 (UTC)
-From: Pingfan Liu <piliu@redhat.com>
-To: kexec@lists.infradead.org,
-	bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jeremy Linton <jeremy.linton@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Simon Horman <horms@kernel.org>,
-	Gerd Hoffmann <kraxel@redhat.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Philipp Rudo <prudo@redhat.com>,
-	Jan Hendrik Farr <kernel@jfarr.cc>,
-	Baoquan He <bhe@redhat.com>,
-	Dave Young <dyoung@redhat.com>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Pingfan Liu <piliu@redhat.com>
-Subject: [RFC] kexec: Use bpf to allow kexec to load PE format boot image
-Date: Tue, 14 Jan 2025 09:28:25 +0800
-Message-ID: <20250114012831.4883-1-piliu@redhat.com>
+	s=arc-20240116; t=1736818775; c=relaxed/simple;
+	bh=fvsXsSG3rvQldIY/85wzJ0AHdohJOHv8n5QAPKehmcM=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DiqVNV7VfOo+9yVWhGe3xbwyrLrmex0Ez7ljioPbXrDaETbjUsogfXd9K07CIny2mJy437Kdd37GPPuV7JV/xQS7WduHOjnb8BqkhFozZvob9vb4lr0RSK6TBZmVIlaByUn7DOLmgjnIfYXzVmN7cwlqswIn2ZSyDkbviXNeopU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=WUFS1kKx; arc=none smtp.client-ip=72.21.196.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1736818774; x=1768354774;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=0cedPuJPQkStIGe+OXyB1F52+EDOiClOdRu6CBFc8ew=;
+  b=WUFS1kKx08w53QWvUM8u1Z75DHg3d3VMxWl/1Bq6I+AF1lwc7CnBvm5G
+   9TpPIwJsz8P/bRTdyQy54QvIPIXVgxSebFL1BEaenLLz8x/uUPvVxpf+D
+   S143HXX4DgXw+fUA57hCf4RciOAfESxcqwESW5XhRCK6j7slfnnB3NOtp
+   I=;
+X-IronPort-AV: E=Sophos;i="6.12,312,1728950400"; 
+   d="scan'208";a="458589578"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2025 01:39:28 +0000
+Received: from EX19MTAUWA001.ant.amazon.com [10.0.7.35:58030]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.14.236:2525] with esmtp (Farcaster)
+ id 86aea7c8-dd91-44b2-aaf7-7a7eff52786e; Tue, 14 Jan 2025 01:39:28 +0000 (UTC)
+X-Farcaster-Flow-ID: 86aea7c8-dd91-44b2-aaf7-7a7eff52786e
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWA001.ant.amazon.com (10.250.64.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.39;
+ Tue, 14 Jan 2025 01:39:27 +0000
+Received: from 6c7e67c6786f.amazon.com (10.119.11.99) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.39;
+ Tue, 14 Jan 2025 01:39:19 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <shaw.leon@gmail.com>
+CC: <alex.aring@gmail.com>, <andrew+netdev@lunn.ch>,
+	<b.a.t.m.a.n@lists.open-mesh.org>, <bpf@vger.kernel.org>,
+	<bridge@lists.linux.dev>, <davem@davemloft.net>, <donald.hunter@gmail.com>,
+	<dsahern@kernel.org>, <edumazet@google.com>, <herbert@gondor.apana.org.au>,
+	<horms@kernel.org>, <kuba@kernel.org>, <kuniyu@amazon.com>,
+	<linux-can@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-kselftest@vger.kernel.org>, <linux-ppp@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
+	<linux-wpan@vger.kernel.org>, <miquel.raynal@bootlin.com>,
+	<netdev@vger.kernel.org>, <osmocom-net-gprs@lists.osmocom.org>,
+	<pabeni@redhat.com>, <shuah@kernel.org>, <stefan@datenfreihafen.org>,
+	<steffen.klassert@secunet.com>, <wireguard@lists.zx2c4.com>
+Subject: Re: [PATCH net-next v8 01/11] rtnetlink: Lookup device in target netns when creating link
+Date: Tue, 14 Jan 2025 10:39:09 +0900
+Message-ID: <20250114013909.7102-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+In-Reply-To: <20250113143719.7948-2-shaw.leon@gmail.com>
+References: <20250113143719.7948-2-shaw.leon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,189 +84,22 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D045UWA004.ant.amazon.com (10.13.139.91) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-Nowadays UEFI PE bootable image is more and more popular on the distribution.
-But it is still an open issue to load that kind of image by kexec with IMA enabled
+From: Xiao Liang <shaw.leon@gmail.com>
+Date: Mon, 13 Jan 2025 22:37:09 +0800
+> When creating link, lookup for existing device in target net namespace
+> instead of current one.
+> For example, two links created by:
+> 
+>   # ip link add dummy1 type dummy
+>   # ip link add netns ns1 dummy1 type dummy
+> 
+> should have no conflict since they are in different namespaces.
+> 
+> Signed-off-by: Xiao Liang <shaw.leon@gmail.com>
 
-*** A brief review of the history ***
-There are two categatories methods to handle this issue.
-  -1. UEFI service emulator for UEFI stub
-  -2. PE format parser
-
-For the first one, I have tried a purgatory-style emulator [1]. But it
-confronts the hardware scaling trouble.  For the second one, there are two
-choices, one is to implement it inside the kernel, the other is inside the user
-space.  Both zboot-format [2] and UKI-format [3] parsers are rejected due to
-the concern that the variant format parsers will inflate the kernel code.  And
-finally, we have these kinds of parsers in the user space 'kexec-tools'.
-
-
-From the beginning, it has been perceived that the user space parser can not
-satisfy the requirement of security-boot without an extra embeded signature.
-This issue was suspended at that time. 
-
-But now, more and more users expect the security feature and want the
-kexec_file_load to guarantee it by IMA.  I tried to fix that issue by the extra
-embeded signature method. But it is also disliked.
-
-Enlighted by Philipp suggestion about implementing systemd-stub in bpf opcode in the discussion to [1],
-I turn to the bpf and hope that parsers in bpf-program can resolve this issue. 
-
-[1]: https://lore.kernel.org/lkml/20240819145417.23367-1-piliu@redhat.com/T/
-[2]: https://lore.kernel.org/kexec/20230306030305.15595-1-kernelfans@gmail.com/
-[3]: https://lore.kernel.org/lkml/20230911052535.335770-1-kernel@jfarr.cc/
-[4]: https://lore.kernel.org/linux-arm-kernel/20230921133703.39042-2-kernelfans@gmail.com/T/
-
-
-
-
-*** Reflect the problem and a new proposal ***
-
-The UEFI emulator is anchored at the UEFI spec. That will incur lots of work
-due to various hardware support.  For example, to support TPM, the emulator
-should implement PCI/I2C bus protocol.
-
-But if the problem is confined to the original linux kernel boot protocol, it will be simple.
-Only three things should be considered: the kernel image, the initrd and the command line.
-If we can get them in a security way, we can tackle the problem.
-
-The integrity of the file is ensured under the protection of the signature
-envelope.  If the kexeced files are parsed in the user space, the envelopes are
-opened and invalid.  So they should sink into the kernel space, be verified and
-be manipulated there.  And to manipulate the various format file, we need
-bpf-program, which know their format.
-
-There are three parties in this solution
--1. The kexec-tools itself is protected by IMA, and it creates a bpf-map and
-update UKI addon file names into the map. Later, the bpf-program will call
-bpf-helper to pad these files into initrd
-
--2. The bpf-program is contained in a dedicated '.bpf' section in PE file. When
-kexec_file_load a PE image, it extract the '.bpf' section and reflect it to the
-user space through procfs. And kexec-tools starts the program.  By this way,
-the bpf-program itself is free from tampering. 
-
-The bpf-program completes two things:
-	-1.parse the image format
-	-2.call bpf kexec helpers to manipulate signed files
-
--3. The bpf helpers. There will be three helpers introduced.
-The first one for the data exchange between the bpf-program and the kernel.
-The second one for the decompressor.
-The third one for the manipulation of the cpio
-
-
-
-***  Overview of the design in Pseudocode ***
-
-
-ThreadA: kexec thread which invokes kexec_file_load
-ThreadB: the dedicated thread in kexec-tools to load bpf-prog
-------
-Diag 1. the interaction between bpf-prog loader and its executer
-
-
-ThreadA						ThreadB
-
-						wait on eventfd_A
-
-
-expose bpf-prog through procfs
-& signal eventfd_A
-& wait on eventfd_B
-
-						read the bpf-prog from procfs
-						& initialize the bpf and install it to the fentry
-						& signal eventfd_B
-						& wait on eventfd_A again
-						
-fentry executes bpf-prog to parse image
-& generate output for the next stop
-
-
--------------------
-Diag 2. bpf-prog
-
-SEC("fentry/kexec_pe_parser_hook")
-int BPF_PROG(pe_parser, struct kimage *image, ...)
-{
-
-	buf = bpf_ringbuf_reserve(rb, size);
-	buf_result = bpf_ringbuf_reserve(rb, res_sz);
-	/* Ask kernel to copy the resource content to here */
-	bpf_helper_carrier(resource_name, buf, size, in);
-	
-	/* Parse the format laying on buf */
-	...
-	/* call extra bpf-helpers */
-	...
-	
-	/* Ask kernel to copy the resource content from here */
-	bpf_helper_carrier(resource_name, buf_result, res_sz, out);
-
-}
-
-At present, bpf map functions provides the mechanism to exchange the data between the user space and bpf-prog.
-But for bpf-prog and the kernel, there is no good choice. So I introduce a bpf helper function
-	bpf_helper_carrier(resource_name, buf, size, in)
-
-The above code implements the data exchange between the kernel and bpf-prog.
-By this way, the data parsing process is not exposed to the user space any longer.
-
-
-
-extra bpf-helpers:
-
-	/* Decompress the compressed kernel image */
-	bpf_helper_decompress(src, src_size, dst, dst_sz)
-	
-	/* 
-	 * Verify the signature of @addon_filename, padding it to initrd's dir @dst_dir
-	 */
-	bpf_helper_supplement_initrd(dst_dir, addon_filename)
-
-	Note: Due to the UEFI environment (such as edk2) only providing basic
-        file operations for FAT filesystems, any UEFI-stub PE image (like systemd-stub)
-        is restricted to these basic operation services.  As a result, the
-        functionality of such bpf-kexec helpers is inherently limited.
-	
-
-*** Thoughts about the basic operation *** 
-
-The basic operations have influence on the stability of bpf-kexec-helpers.
-
-The kexec_file_load faces three kinds of elements: linux-kernel, initrd and cmdline.
-
-For the kernel, on arm64 or riscv, in order to get the bootable image from the compressed data,
-there should be a bpf-helper function as a wrapper of __decompress()
-
-For initrd, systemd-sysext may require padding extra file into initrd
-
-For cmdline, it may require some string trim or conjoin.
-
-Overall, these user requirements are foreseeable and straightforward,
-suggesting that bpf-kexec-helpers will likely remain stable without significant
-changes.
-
-
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Jeremy Linton <jeremy.linton@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Simon Horman <horms@kernel.org>
-Cc: Gerd Hoffmann <kraxel@redhat.com>
-Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: Philipp Rudo <prudo@redhat.com>
-Cc: Jan Hendrik Farr <kernel@jfarr.cc>
-Cc: Baoquan He <bhe@redhat.com>
-Cc: Dave Young <dyoung@redhat.com>
-Cc: Eric Biederman <ebiederm@xmission.com>
-Cc: Pingfan Liu <piliu@redhat.com>
-To: kexec@lists.infradead.org
-To: bpf@vger.kernel.org
-
+Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
 
