@@ -1,185 +1,198 @@
-Return-Path: <bpf+bounces-48854-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48855-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A5F6A112B5
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 22:02:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3661DA112C7
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 22:14:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67EBC3A045E
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 21:02:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94F6E1883834
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2025 21:14:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11BCA20F090;
-	Tue, 14 Jan 2025 21:02:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08BE120F96E;
+	Tue, 14 Jan 2025 21:14:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="WRGJIZKn";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="igdiQqub"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tdal1sZu"
 X-Original-To: bpf@vger.kernel.org
-Received: from fout-b6-smtp.messagingengine.com (fout-b6-smtp.messagingengine.com [202.12.124.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 911DE1CDFCC
-	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 21:01:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9491B20CCF0
+	for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 21:13:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736888520; cv=none; b=gfdr+wnVOpoAnHKNE5MOk3XLGGc+L2gbpOZuCuf2izvhIQXk5zvwBQ3nvbXqwS5Bm/EWMVjFEsgpOXEgOEcjuys+SzLH7qv2gAGF4ECTFutBDVFETsDiL0fwYi6NtH6pKc9I5NpksYkwHPirG8KDiQhlFeObvG6ZXy44Y2NfhR8=
+	t=1736889241; cv=none; b=ZZDBrhaTIHm/gUrNNLa4iwfhJ4PvLZot6GIdv6uXjyjn1V6nmhViwr1OaJXgim6ZpfJsrz/3qMf0F09J+t9eqV78+Snap/QvZMzKIfW3gVx6+yFckhkEKKu2bV6SpbpR12Z7oTSXCS+pGuMPfe8dDpK3stjQrJtYbdq8ZRskIxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736888520; c=relaxed/simple;
-	bh=snqIui/NwDtfbsolGVJxjMYGF93yhdk/kqVA02luVsU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aNX9VbzklYXphxMxa91eOdRVdtK85s+69F6VA0nRcgGM9kpFwfGBqZmB5T78Kazmu4qniRZkEshxLc23oZWnPLvz6FX8Ya9Oevb4MO8pmp+yZZvqE3DbaBsfKoirmhes5wrDJHhyvWj2jSCjjUV5vOrNUZekvwWa72S64DC9Z2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=WRGJIZKn; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=igdiQqub; arc=none smtp.client-ip=202.12.124.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
-	by mailfout.stl.internal (Postfix) with ESMTP id 8CAED1140081;
-	Tue, 14 Jan 2025 16:01:57 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-11.internal (MEProxy); Tue, 14 Jan 2025 16:01:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1736888517;
-	 x=1736974917; bh=buJ0zveaL6uGmmbT6GwtV2U7xr4PQJvlhIX4JdwqZkI=; b=
-	WRGJIZKnnsO5aHczp7NoI3joemFaoFB/ik25aMJIFyL0FvpYtM4VbmBKUMbuMmMC
-	2DRiYYpM+xKnOZ1oVgrfpIafZbKbGXjQsQdvr5C2f6bz3o90kOKyto31BDXJdgab
-	6TCGrMDvqlMHdf7KK1Jsq6TjGCj2bVViqfJrxMSUhHhfncOvBcTlZzpwgexaJVJV
-	dylcQscwSN9/RyvEP2VuNt/FdtvKW4PHZWFBdNo6w6O7yQBNdRfuGUIz7YtZcSTG
-	tXFDJRyCJ2tHxYHVdVj3zF2Lyy4n6uBY3+cyHWYy3q0femmQg6nRREImL7GWwiXM
-	LQkl90NfDxTrqJqxMpgBoQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1736888517; x=
-	1736974917; bh=buJ0zveaL6uGmmbT6GwtV2U7xr4PQJvlhIX4JdwqZkI=; b=i
-	gdiQqub8o0XvT+EfttbM8zU7JrE4qvgAT9gMhgmWiFTNi3ieS9sGPO7eXBZ3Iozw
-	BJDrGPmnsnRDT6hMHEDJrGiyDVRxaOSUceO4C3+qlWRgcUarhqBkqJ5l0FaTSKVL
-	vNOwmXB+8RbRrkeC5nk/IFyTEse/nltsYT/5/jFRthS6GVCnnNy1/kx17wbb5GPR
-	KbKeRIwERA/YCVJIxY22f2E5m03cKUz523CNV85ujNYGJtsHXbRbZT9uyKXigj7h
-	t88TMlJ3quUSQsbSJuXUmpBBJ58Xt0QiORj2KgVcxDUxDY18HeeZwVQ4ciYplOaO
-	6ArMBuz6U+3k2ZLJOvyTw==
-X-ME-Sender: <xms:xdCGZ_FAAY4VVbavtr28gi0YTYHou7YLzi1gcEImH87sy79HuqRG4A>
-    <xme:xdCGZ8VIA7ueucB5NUGXrK5_EtjhT4h0W0zXkpCmXq_CB-L3VoCrZtt04Qv38_BgK
-    i0CHD1rkbGkM9Go2g>
-X-ME-Received: <xmr:xdCGZxJSw3aq0WgJLo00oYc7BytkAzO5H2Sh4kZqZqco2Qa0yOyO8bu3kTIkigqFFXsqwTS00UHRv5NvKgo1PNomzmBrPgXMfyyAWC5FmLWm6A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudehiedgudegvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenfghrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffk
-    fhggtggugfgjsehtkefstddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguh
-    esugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepffffgeegkeejvdejgeehteek
-    udfhgfefgeevkeelhfegueeljefhleejtdekveffnecuffhomhgrihhnpehgihhthhhusg
-    drtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
-    pegugihusegugihuuhhurdighiiipdhnsggprhgtphhtthhopeefpdhmohguvgepshhmth
-    hpohhuthdprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
-    lhhsfhdqphgtsehlihhsthhsrdhlihhnuhigqdhfohhunhgurghtihhonhdrohhrghdprh
-    gtphhtthhopegsphhfsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:xdCGZ9GJYZbFNrNLIR4gW2ZcRuckmax_QMCOoKaLr2XNEStYnLQUmg>
-    <xmx:xdCGZ1U4STCuNt82BSrxsoYfHT-ekal_ZHmfdlXTynxjVGo9HqvO4A>
-    <xmx:xdCGZ4P2C31xwtsocOxVDneHLVOuYAoUmjKyI4QVZ1t3rX07sNMVkA>
-    <xmx:xdCGZ00580pxs39hzZwtqdzx4eqriz43s-Nk_Foq_s7wYRDmwtytTg>
-    <xmx:xdCGZ4SJPXDR7RyR8LkqliWYIgWUpC4H7p7NnG_GH7VozNSQ1UwGGUhH>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 14 Jan 2025 16:01:56 -0500 (EST)
-Date: Tue, 14 Jan 2025 14:01:55 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Song Liu <song@kernel.org>
-Cc: lsf-pc@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: Re: [LSF/MM/BPF TOPIC] Modular BPF verifier
-Message-ID: <az6mn2geqofoma4yzioyd5cvarb57mxatm2izupvq3bn4f5wbf@bv7au62xzv4l>
-References: <nahst74z46ov7ii3vmriyhk25zo6tkf2f3hsulzjzselvobbbu@pqn6wfdibwqb>
- <CAPhsuW5cLXSjQetTrcEFMAwnjjd1pGR3rLwVBuHkHMuK6xqwMA@mail.gmail.com>
+	s=arc-20240116; t=1736889241; c=relaxed/simple;
+	bh=HPeOyPTCGGTDHOMXLb+UXWG1X7FxbwpONqdOtUySSrA=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=tj/LHr+i71wxblHOosuBgaWrtQDJA2PLwksXZ5f4bVa0iLN6Rp+sbxGIRm0n+yucK1hSrtKStL0CqdCv6m8t2HttXXvjPp4Fvq7Qvh5xaE69fcC8PoSv1cxuYpXnKeZgDWO3alYixa1EstZuNexXt3YCIH1NZXoBXrNhCRXsKoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tdal1sZu; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2ee9f66cb12so10679948a91.1
+        for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 13:13:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1736889239; x=1737494039; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=d9cRGGic7Te5o12Iwy1M3OB31drPOXRp+PHli2u04Fc=;
+        b=tdal1sZu79aUYEJfdP1gM9Xcda9j8Wwc4Tr5g7qpUO5NRZ7iabU1ZFvpgbZtTzfbBd
+         QHSuHYSZorVXmiWAGPR+NqJx0xIYP4Ro4dtIgEM2k1Ap0E6HbTMlDo7wxa77Rvy6jjph
+         z7ln0jTq4mLdSJFLR+HRPA5g+EPuLxoHVnBOMJa1iCdMwZBNwfPK5lU/umsM4pKTLkyn
+         xdFrMH4+9KXg4DO3kLyTN/L1RoO0oaZkWrp39eI25LyL6GbhY/NF0TCtt4ykMiSvfram
+         jXm1aHRzkXPSYYs0OljrbiGSfMUJYtQlNhWckV29e/yccyIiV2hPSJe5IJV1yElmyU+1
+         rYpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736889239; x=1737494039;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=d9cRGGic7Te5o12Iwy1M3OB31drPOXRp+PHli2u04Fc=;
+        b=HH2/SN+aYhimCdfD2g5cChPDif746ijdvhu1KfN+UkpskrMsxKzwoSkUZ3sbJIfOu+
+         CeLyCxuiBzB5R57ni9z47wemj2nosAo/JWrF/+9wwIMAc7yagXfRVCOtjAXuYu94c2a9
+         Ij/e9FmvbImpF5zZAp0hxWIYIj41w5vVMCilmZ0Xzom342UyBxjJidRHEVY5wX5CDePp
+         JrjcvLOjUz8jGlT9AvevAsjaNcz6nS33itDG9UpdxBCzKN+bMNI/DKfci/35m7ygDK9g
+         5zRAZUoyme5mN58kGWnWE4MUZZ7vojZq5lKLmyjg+Oa2tS5PMxYoqc+Wh/7XRUfpXxsp
+         Wwsg==
+X-Forwarded-Encrypted: i=1; AJvYcCV1CaplpXKPYfjWQ9RnXyiuX72shIpz9yCQ13Fj5VyzFSt5JEsNANk0rpHmmfiTnCweQOo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyUsT66yjnfU6Uk7Ecg1/lUhPP968EQV5yTAoLnd4AKYODXFzL6
+	YYH9f8AGZW0+LYqh+YIey5SpiY8XE8VG+y11suIS5gdxd1NryTjIDRhZZcd+/C/0OnTZATEX0q3
+	TqQ==
+X-Google-Smtp-Source: AGHT+IFnD8IBYtaFLZfmn+yp8faKF4j5W1D2QQ93HaiFkyR3KITtNCKyHKA+6Vtw5k/ROipPB4Gea/5UJbQ=
+X-Received: from pjbsn8.prod.google.com ([2002:a17:90b:2e88:b0:2f4:465d:5c61])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:1f8b:b0:2ee:bf84:4fe8
+ with SMTP id 98e67ed59e1d1-2f548f1d44cmr36656404a91.30.1736889238866; Tue, 14
+ Jan 2025 13:13:58 -0800 (PST)
+Date: Tue, 14 Jan 2025 13:13:57 -0800
+In-Reply-To: <20250114175143.81438-26-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPhsuW5cLXSjQetTrcEFMAwnjjd1pGR3rLwVBuHkHMuK6xqwMA@mail.gmail.com>
+Mime-Version: 1.0
+References: <20250114175143.81438-1-vschneid@redhat.com> <20250114175143.81438-26-vschneid@redhat.com>
+Message-ID: <Z4bTlZkqihaAyGb4@google.com>
+Subject: Re: [PATCH v4 25/30] context_tracking,x86: Defer kernel text patching IPIs
+From: Sean Christopherson <seanjc@google.com>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org, 
+	virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	loongarch@lists.linux.dev, linux-riscv@lists.infradead.org, 
+	linux-perf-users@vger.kernel.org, xen-devel@lists.xenproject.org, 
+	kvm@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kselftest@vger.kernel.org, bpf@vger.kernel.org, 
+	bcm-kernel-feedback-list@broadcom.com, Peter Zijlstra <peterz@infradead.org>, 
+	Nicolas Saenz Julienne <nsaenzju@redhat.com>, Juergen Gross <jgross@suse.com>, 
+	Ajay Kaher <ajay.kaher@broadcom.com>, Alexey Makhalov <alexey.amakhalov@broadcom.com>, 
+	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, 
+	Josh Poimboeuf <jpoimboe@kernel.org>, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Frederic Weisbecker <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Jason Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Ard Biesheuvel <ardb@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+	Joel Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli <juri.lelli@redhat.com>, 
+	Clark Williams <williams@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>, 
+	Tomas Glozar <tglozar@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, 
+	Mel Gorman <mgorman@suse.de>, Kees Cook <kees@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Christoph Hellwig <hch@infradead.org>, 
+	Shuah Khan <shuah@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, 
+	Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl <aliceryhl@google.com>, 
+	"Mike Rapoport (Microsoft)" <rppt@kernel.org>, Samuel Holland <samuel.holland@sifive.com>, Rong Xu <xur@google.com>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Yosry Ahmed <yosryahmed@google.com>, 
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, 
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, 
+	Luis Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>, 
+	Tiezhu Yang <yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset="us-ascii"
 
-Hi Song,
+On Tue, Jan 14, 2025, Valentin Schneider wrote:
+> text_poke_bp_batch() sends IPIs to all online CPUs to synchronize
+> them vs the newly patched instruction. CPUs that are executing in userspace
+> do not need this synchronization to happen immediately, and this is
+> actually harmful interference for NOHZ_FULL CPUs.
 
-On Mon, Jan 13, 2025 at 03:32:59PM -0800, Song Liu wrote:
-> On Fri, Jan 10, 2025 at 1:23 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> >
-> > Hi folks,
-> >
-> > I'd like to propose modular BPF verifier as a discussion topic.
-> 
-> Interesting idea!
-> 
-> I was thinking about "modular verifier" these days, but in a different
-> way, i.e., how to divide the verifier into smaller modules (logical
-> modules, not necessarily kernel modules). We currently support
-> loading kfuncs in kernel modules, so it is natural to put the checks
-> of kfuncs into modules (via btf_kfunc_id_set.filter function).
-> 
-> > === Motivation ===
-> >
-> > A decade of production experience with BPF has shown that the desire for
-> > feature availability outpaces the ability to deliver new kernels into the field
-> > [0]. Therefore, the idea of modularizing the BPF subsystem into a loadable
-> > kernel module (LKM) has started to look appealing, as this would allow loading
-> > newer versions of the BPF subsystem onto older versions of the kernel without a
-> > reboot.
-> >
-> 
-> [...]
-> 
-> >
-> > For forward compatibility, the idea is to implement a facade built into each
-> > kernel that exposes a stable-enough (non-UAPI) interface such that the verifier
-> > can remain portable and “plug in” to the running kernel. While I expect the
-> > facade to be necessary, it will not be sufficient. There will eventually be
-> > details the facade cannot hide, for example an unavoidable ABI break. To solve
-> > for this, I/we [2] will maintain a continuously exported copy of the verifier
-> > code in a separate repository. From there we can develop branching, patching,
-> > or backport strategies to mitigate breaks. The exact details are TBD and will
-> > become more clear as work progresses.
-> 
-> Maintaining out-of-tree kernel modules is a lot of work. I wonder whether
-> the benefit would justify this extra work. There are other ways to make
-> small changes to the built-in verifier, i.e. kernel live patch.
+...
 
-The goal (in my mind) is not to maintain a full out-of-tree module.
-Rather, it'd be to do a 1-way sync out of the kernel and potentially
-apply some out-of-tree compatability patches. Same idea as libbpf:
-https://github.com/libbpf/libbpf.
+> This leaves us with static keys and static calls.
 
-Verifier development should still happen in kernel tree. For folks who
-do not care about modular verifier, life should go on same as before.
+...
 
-w.r.t. KLP, I'm not sure KLP satisfies the use case. For example, it
-seems unwieldy to potentially live-patch hundreds to thousands of
-patches. And since verifier is an algorithm heavy construct, we cannot
-get away from data structure changes -- IIUC something KLP is not good
-at.
+> @@ -2317,11 +2334,20 @@ static void text_poke_bp_batch(struct text_poke_loc *tp, unsigned int nr_entries
+>  	 * First step: add a int3 trap to the address that will be patched.
+>  	 */
+>  	for (i = 0; i < nr_entries; i++) {
+> -		tp[i].old = *(u8 *)text_poke_addr(&tp[i]);
+> -		text_poke(text_poke_addr(&tp[i]), &int3, INT3_INSN_SIZE);
+> +		void *addr = text_poke_addr(&tp[i]);
+> +
+> +		/*
+> +		 * There's no safe way to defer IPIs for patching text in
+> +		 * .noinstr, record whether there is at least one such poke.
+> +		 */
+> +		if (is_kernel_noinstr_text((unsigned long)addr))
+> +			cond = NULL;
 
-> 
-> >
-> > On top of delivering newer verifiers to older kernels, the facade opens the
-> > door to running the verifier in userspace. If the verifier becomes sufficiently
-> > portable, we can implement a userspace facade and plug the verifier in. A
-> > possible use case could be integrating the verifier into Clang [3] for tightly
-> > integrated verifier feedback. This would address a long running pain point with
-> > BPF development. This is a lot easier said than done, so consider this highly
-> > speculative.
-> 
-> I think we don't need the verifier to be a LKM to do verification in user
-> space. Instead, we just need a mechanism to bypass (some logic of)
-> the verifier. Would this work?
+Maybe pre-check "cond", especially if multiple ranges need to be checked?  I.e.
 
-It's the other way around. The goal is not to _move_ verification into
-userspace but rather pre-verify. That way when the kernel verifies it
-you have a lot more confidence it will succeed.
+		if (cond && is_kernel_noinstr_text(...))
+> +
+> +		tp[i].old = *((u8 *)addr);
+> +		text_poke(addr, &int3, INT3_INSN_SIZE);
+>  	}
+>  
+> -	text_poke_sync();
+> +	__text_poke_sync(cond);
+>  
+>  	/*
+>  	 * Second step: update all but the first byte of the patched range.
 
-Thanks,
-Daniel
+...
+
+> +/**
+> + * is_kernel_noinstr_text - checks if the pointer address is located in the
+> + *                    .noinstr section
+> + *
+> + * @addr: address to check
+> + *
+> + * Returns: true if the address is located in .noinstr, false otherwise.
+> + */
+> +static inline bool is_kernel_noinstr_text(unsigned long addr)
+> +{
+> +	return addr >= (unsigned long)__noinstr_text_start &&
+> +	       addr < (unsigned long)__noinstr_text_end;
+> +}
+
+This doesn't do the right thing for modules, which matters because KVM can be
+built as a module on x86, and because context tracking understands transitions
+to GUEST mode, i.e. CPUs that are running in a KVM guest will be treated as not
+being in the kernel, and thus will have IPIs deferred.  If KVM uses a static key
+or branch between guest_state_enter_irqoff() and guest_state_exit_irqoff(), the
+patching code won't wait for CPUs to exit guest mode, i.e. KVM could theoretically
+use the wrong static path.
+
+I don't expect this to ever cause problems in practice, because patching code in
+KVM's VM-Enter/VM-Exit path that has *functional* implications, while CPUs are
+actively running guest code, would be all kinds of crazy.  But I do think we
+should plug the hole.
+
+If this issue is unique to KVM, i.e. is not a generic problem for all modules (I
+assume module code generally isn't allowed in the entry path, even via NMI?), one
+idea would be to let KVM register its noinstr section for text poking.
 
