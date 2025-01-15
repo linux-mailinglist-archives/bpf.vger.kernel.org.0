@@ -1,48 +1,95 @@
-Return-Path: <bpf+bounces-48958-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48959-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ED3DA12A09
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 18:40:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBE2DA12A26
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 18:52:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C2493A3D58
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 17:40:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B528188B129
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 17:52:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8284C1D5AB8;
-	Wed, 15 Jan 2025 17:40:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ACC11B5ECB;
+	Wed, 15 Jan 2025 17:52:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="svJ45p4O"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Hr5fUgL0";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="W7BHpywi";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Hr5fUgL0";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="W7BHpywi"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E04D01D514E;
-	Wed, 15 Jan 2025 17:40:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20CEE14A630
+	for <bpf@vger.kernel.org>; Wed, 15 Jan 2025 17:51:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736962826; cv=none; b=V7p1iRtdboHNumu34ldaeKJKfGR7Um0J6dQZJsneJnucEh4ga+Z5AACkWeGe95xA5wz3ISwTQAOABzRRV3e//Z6FWWCukNHlb3WQIS6UzCfV1NTnZ/eigjRv0KM8fMd+xS9HPBX3qJlxV5FAXYd3Scqh4PynqC7R5lvXfC8TJPU=
+	t=1736963520; cv=none; b=CUSBeYd6QuoqLLm+pGUYT4aoJaaDweJQWKRdnQ3CYFNDdmI37Kw0xGozJ4dNCqIcA+A6QkDR2BBAF0AcRF78q+susaG8DM045l84ACKwOUe+BD1ASSI5p7f41DhGr6zrBF340ZYsLwGwalUvUU7z6I2xcBwKQpViDtjSWKWxfOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736962826; c=relaxed/simple;
-	bh=MnSQMXREVVBMVqqG4DNkPoiFHSbXoUAQ7+YSxlu2cok=;
+	s=arc-20240116; t=1736963520; c=relaxed/simple;
+	bh=FrivD9Ex4UtfOgGosjtP+HyDWC3L4PVtOF+MsTUxrWY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sP/UCX8Uwl8RJ/Y0PI5y+V4k8wPVP+igLhat76StN983CXDoTE82PP/NYTGoZPQfD7puHSkUAmENTq0s+F3mWNm6mLtOe/+0hTxwSzugyobxhpN4L6G0ROq8L4w+mwZbt6DalM/R305CA6Gn3uR0vfMN6oxgfVMgdQ4MT8ltbxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=svJ45p4O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48597C4CEE0;
-	Wed, 15 Jan 2025 17:40:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736962825;
-	bh=MnSQMXREVVBMVqqG4DNkPoiFHSbXoUAQ7+YSxlu2cok=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=svJ45p4OZzWwWOCVuCmsBOLH/Sb0FwOy4O6Wp/nYfGoUPPMIu4eZ5AeCKRw09uHlp
-	 EvOQeh7YceB+VBH+j4VkwK6PCfrLADM0+kATjPLjH7aCrzR0PAMZpFDYT80+5rN/KI
-	 PnsupXJ14Gkmz1GrEPVem0zwAxnL1TuB7n4nFvfuDjEqXhzeC/ujVDdr2lQV1Y4Krq
-	 c5zmA3nAPBk25FZ7Mu0Zv4qFKeQNdCCQrsNUzOhg17VhdcEwcC5/s9KNK8G1BbWH5e
-	 QEVGA5UezKKiGKayItoNcXhtg6FCRgXsglzQd6JOrixy3ENiUZAh6D0jRRsWRcPnhA
-	 wzQYoGNu+WDCA==
-Message-ID: <3a853e1b-b5bf-4709-b8f6-e466e3e7375e@kernel.org>
-Date: Wed, 15 Jan 2025 18:40:18 +0100
+	 In-Reply-To:Content-Type; b=Nqhfj9gC8ptIuysbNGAghWK8EBrP7yHqCbiDL7595eqxfRCfW3c/Gx+V66jyS/UHQWl66+xJetanCdCvzMFoRp0XggyveBG3YMFPG8E/iw5ZwIk71k3gKHP+MIpG2elDrD4d0n/r972AddXjAenusGpuFOnevMiYKI/354Uzh18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Hr5fUgL0; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=W7BHpywi; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Hr5fUgL0; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=W7BHpywi; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 15E042125F;
+	Wed, 15 Jan 2025 17:51:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1736963516; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=yc07yd8slnb1jCR8zFepQrqSGoFeWJMTkHaBffMwAQU=;
+	b=Hr5fUgL0H+HqY+F25qcEiyvY1pNi2zhh+T3wBSfD9KU0bK2MoWhbi86UDeJqWod9LTeSRe
+	eIhzW/ql1HCrKS0zDiGbjN6CB/V6xAi+ot6Vo86XEeaNtgkWY0gcuyO0uyY4khkYWzTDj/
+	uAzbPESCE+O3d8phkYYPyyP6rkKzsog=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1736963516;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=yc07yd8slnb1jCR8zFepQrqSGoFeWJMTkHaBffMwAQU=;
+	b=W7BHpywitPY2RUcg5yXqnnsrAX1y1RnGy7kWmLOB19GvAARU9ChR8B4LhIvAT+Q2vAeYMb
+	oD3/AgRVdzXblqDg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1736963516; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=yc07yd8slnb1jCR8zFepQrqSGoFeWJMTkHaBffMwAQU=;
+	b=Hr5fUgL0H+HqY+F25qcEiyvY1pNi2zhh+T3wBSfD9KU0bK2MoWhbi86UDeJqWod9LTeSRe
+	eIhzW/ql1HCrKS0zDiGbjN6CB/V6xAi+ot6Vo86XEeaNtgkWY0gcuyO0uyY4khkYWzTDj/
+	uAzbPESCE+O3d8phkYYPyyP6rkKzsog=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1736963516;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=yc07yd8slnb1jCR8zFepQrqSGoFeWJMTkHaBffMwAQU=;
+	b=W7BHpywitPY2RUcg5yXqnnsrAX1y1RnGy7kWmLOB19GvAARU9ChR8B4LhIvAT+Q2vAeYMb
+	oD3/AgRVdzXblqDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D7985139CB;
+	Wed, 15 Jan 2025 17:51:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id xwlMNLv1h2eZNQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 15 Jan 2025 17:51:55 +0000
+Message-ID: <f09d473c-6d61-4566-bfed-a7cfaa1022bd@suse.cz>
+Date: Wed, 15 Jan 2025 18:51:55 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -50,104 +97,127 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v7 0/8] fix two bugs related to page_pool
-To: Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
- kuba@kernel.org, pabeni@redhat.com
-Cc: zhangkun09@huawei.com, liuyonglong@huawei.com, fanghaiqing@huawei.com,
- Alexander Lobakin <aleksander.lobakin@intel.com>,
- Robin Murphy <robin.murphy@arm.com>,
- Alexander Duyck <alexander.duyck@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>, IOMMU <iommu@lists.linux.dev>,
- MM <linux-mm@kvack.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <20250110130703.3814407-1-linyunsheng@huawei.com>
- <3c8e4f86-87e2-470d-84d8-86c70b3e2fcc@kernel.org>
- <c02e856e-6ec5-49d0-8527-2647695a0174@huawei.com>
+Subject: Re: [PATCH bpf-next v5 5/7] mm, bpf: Use memcg in try_alloc_pages().
 Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <c02e856e-6ec5-49d0-8527-2647695a0174@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org
+Cc: andrii@kernel.org, memxor@gmail.com, akpm@linux-foundation.org,
+ peterz@infradead.org, bigeasy@linutronix.de, rostedt@goodmis.org,
+ houtao1@huawei.com, hannes@cmpxchg.org, shakeel.butt@linux.dev,
+ mhocko@suse.com, willy@infradead.org, tglx@linutronix.de, jannh@google.com,
+ tj@kernel.org, linux-mm@kvack.org, kernel-team@fb.com
+References: <20250115021746.34691-1-alexei.starovoitov@gmail.com>
+ <20250115021746.34691-6-alexei.starovoitov@gmail.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <20250115021746.34691-6-alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_RCPT(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,gmail.com,linux-foundation.org,infradead.org,linutronix.de,goodmis.org,huawei.com,cmpxchg.org,linux.dev,suse.com,google.com,kvack.org,fb.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
+On 1/15/25 03:17, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+> 
+> Unconditionally use __GFP_ACCOUNT in try_alloc_pages().
+> The caller is responsible to setup memcg correctly.
+> All BPF memory accounting is memcg based.
+> 
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-On 15/01/2025 12.33, Yunsheng Lin wrote:
-> On 2025/1/14 22:31, Jesper Dangaard Brouer wrote:
->>
->>
->> On 10/01/2025 14.06, Yunsheng Lin wrote:
->>> This patchset fix a possible time window problem for page_pool and
->>> the dma API misuse problem as mentioned in [1], and try to avoid the
->>> overhead of the fixing using some optimization.
->>>
->>>   From the below performance data, the overhead is not so obvious
->>> due to performance variations for time_bench_page_pool01_fast_path()
->>> and time_bench_page_pool02_ptr_ring, and there is about 20ns overhead
->>> for time_bench_page_pool03_slow() for fixing the bug.
->>>
->>
->> My benchmarking on x86_64 CPUs looks significantly different.
->>   - CPU: Intel(R) Xeon(R) CPU E5-1650 v4 @ 3.60GHz
->>
->> Benchmark (bench_page_pool_simple) results from before and after patchset:
->>
->> | Test name  | Cycles |       |    |Nanosec |        |       |      % |
->> | (tasklet_*)| Before | After |diff| Before |  After |  diff | change |
->> |------------+--------+-------+----+--------+--------+-------+--------|
->> | fast_path  |     19 |    24 |   5|  5.399 |  6.928 | 1.529 |   28.3 |
->> | ptr_ring   |     54 |    79 |  25| 15.090 | 21.976 | 6.886 |   45.6 |
->> | slow       |    238 |   299 |  61| 66.134 | 83.298 |17.164 |   26.0 |
->> #+TBLFM: $4=$3-$2::$7=$6-$5::$8=(($7/$5)*100);%.1f
->>
->> My above testing show a clear performance regressions across three
->> different page_pool operating modes.
+> ---
+>  mm/page_alloc.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
 > 
-> I retested it on arm64 server patch by patch as the raw performance
-> data in the attachment, it seems the result seemed similar as before.
-> 
-> Before this patchset:
->              fast_path              ptr_ring            slow
-> 1.         31.171 ns               60.980 ns          164.917 ns
-> 2.         28.824 ns               60.891 ns          170.241 ns
-> 3.         14.236 ns               60.583 ns          164.355 ns
-> 
-> With patch 1-4:
-> 4.         31.443 ns               53.242 ns          210.148 ns
-> 5.         31.406 ns               53.270 ns          210.189 ns
-> 
-> With patch 1-5:
-> 6.         26.163 ns               53.781 ns          189.450 ns
-> 7.         26.189 ns               53.798 ns          189.466 ns
-> 
-> With patch 1-8:
-> 8.         28.108 ns               68.199 ns          202.516 ns
-> 9.         16.128 ns               55.904 ns          202.711 ns
-> 
-> I am not able to get hold of a x86 server yet, I might be able
-> to get one during weekend.
-> 
-> Theoretically, patch 1-4 or 1-5 should not have much performance
-> impact for fast_path and ptr_ring except for the rcu_lock mentioned
-> in page_pool_napi_local(), so it would be good if patch 1-5 is also
-> tested in your testlab with the rcu_lock removing in
-> page_pool_napi_local().
-> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index a9c639e3db91..c87fd6cc3909 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -7131,7 +7131,8 @@ struct page *try_alloc_pages_noprof(int nid, unsigned int order)
+>  	 * specify it here to highlight that try_alloc_pages()
+>  	 * doesn't want to deplete reserves.
+>  	 */
+> -	gfp_t alloc_gfp = __GFP_NOWARN | __GFP_ZERO | __GFP_NOMEMALLOC;
+> +	gfp_t alloc_gfp = __GFP_NOWARN | __GFP_ZERO | __GFP_NOMEMALLOC
+> +			| __GFP_ACCOUNT;
+>  	unsigned int alloc_flags = ALLOC_TRYLOCK;
+>  	struct alloc_context ac = { };
+>  	struct page *page;
+> @@ -7174,6 +7175,11 @@ struct page *try_alloc_pages_noprof(int nid, unsigned int order)
+>  
+>  	/* Unlike regular alloc_pages() there is no __alloc_pages_slowpath(). */
+>  
+> +	if (memcg_kmem_online() && page &&
+> +	    unlikely(__memcg_kmem_charge_page(page, alloc_gfp, order) != 0)) {
+> +		free_pages_nolock(page, order);
+> +		page = NULL;
+> +	}
+>  	trace_mm_page_alloc(page, order, alloc_gfp, ac.migratetype);
+>  	kmsan_alloc_page(page, order, alloc_gfp);
+>  	return page;
 
-What are you saying?
-  - (1) test patch 1-5
-  - or (2) test patch 1-5 but revert patch 2 with page_pool_napi_local()
-
---Jesper
-
->>
->>
->> Data also available in:
->>   - https://github.com/xdp-project/xdp-project/blob/main/areas/mem/page_pool07_bench_DMA_fix.org
->>
 
