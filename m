@@ -1,199 +1,186 @@
-Return-Path: <bpf+bounces-48888-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48889-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3450DA1166F
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 02:17:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EE6AA11679
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 02:23:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E12F7A22C1
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 01:17:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 634EB168FA9
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 01:23:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B2338FB9;
-	Wed, 15 Jan 2025 01:17:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04DA235968;
+	Wed, 15 Jan 2025 01:23:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="H+zLI7/L"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gaaTFx3u"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43D278BE7
-	for <bpf@vger.kernel.org>; Wed, 15 Jan 2025 01:17:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB1BE33DB
+	for <bpf@vger.kernel.org>; Wed, 15 Jan 2025 01:23:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736903862; cv=none; b=HtqMROT4ZCiEbxuKP0Q+y7KWJ+wjFhgkswj/Sqg4VuAJogJq8tZt3QqgO+4JpkDQzxruh0PQE6h8HA2k+emNbk7hytfs9MmIdKbJwE/I8vKh924vLcbf4w2pFOoax/3KW8SeFcO9Rftl/8Gh/HnaYPtNT2LS9h4umvpV+IW6RhU=
+	t=1736904218; cv=none; b=n0+DAL1FZXF2KTTKiuCkLo4zZufsCpQoJ/SktyIr+Ceio9JGNrr52JxIrI8710jbeG2uj1gBLGFd2zGFoTDRTbU36ab8kYiBrv69hAlLw3nO+VdLzWAsEmRDODhGaHamFFOReBD4/PN+mCvVnL2iiyFw/zpoz3e6z7JsMM4Rnqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736903862; c=relaxed/simple;
-	bh=tNhwArqPp1gm4tyy9B3TK51+REmy7c+T3o6UBlbJc3s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mnXRS+Us8mVnS0gBvf5gKIOFu/a0eXugkwXZ/pJqqabseyVuVqUUF7aIS39ttpSh+mu5rogJFgiQuQApsQwlvCGrPuHLTe12aG3YxNqpC3wjmrkhWbDuNqpzj1X1paSn6bry+3pCfkCMqtSVA0P7N86/damZ2sThVYCFa0qsgOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=H+zLI7/L; arc=none smtp.client-ip=95.215.58.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <02031003-872e-49bf-a658-c22bc7e1a954@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1736903848;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MGSguZrh0S4QzlRr4LAZHQzehwExWEFMcRJhr7aDRNI=;
-	b=H+zLI7/LdGHjQVnED81vuI5604DztE1UF+YtLvWPyX/BPy0afKzr4TR7BSFCIW51xlUlgw
-	BybGGpzlPoifHOpn11/NF168AKEcEznyC5zfquJPFTtw45ghwMpwZ1c2A8m9O9774aSTF0
-	1U5d2Vpm+biog7p0oV6Kt2bl3rrArPg=
-Date: Tue, 14 Jan 2025 17:17:20 -0800
+	s=arc-20240116; t=1736904218; c=relaxed/simple;
+	bh=goFAduwmFiyWr8+CR9Jor6ndozV8zdBYGgWiqzBEtFM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IqdFo1fmkFOKdImJkkaBX1ml5VeLr55g+Sqtbe+8e7wusDEAMzEK2E7M5De1er+L1PaWUQNVAzYVbfhERNNxJUyJoTgqy3KMgMODkGh5KyuKfeBvYBOKWRQYUDl/8u5IGoXWoyX4E3kTH5kw2zM9iAklZvh5vvB1dCw7R61VeFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gaaTFx3u; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-385d7f19f20so3132999f8f.1
+        for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 17:23:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736904215; x=1737509015; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ok9Gqy2J4Ancn8P8Xi7xjCCSatpnHob/7noj/m8WMWY=;
+        b=gaaTFx3u/SdrmLcxh0VOUXcC4WKqnHgJeAWksZWC1BBsmx4p9kg/BBS5vbXWZlaumC
+         143OBxqXmMqPQ2fDlW2McP+2Cx9T/2lSYOScQHrCI8n2uJJTCkaXKcj9jvYFU1YATQJZ
+         +Q4ImWy3qLDBQCe77+F7/S4x0sffta/nUqHgH8bFy71St6uRRtz9KiDE+S0MiEUkPkkS
+         2b8m5St4uUl0/P5HKFZeaF6ASyoeo4bRqn2T6oinCqajhduyMarc2fBHzgUYxLYfJD17
+         FCCa+ccwhecFWPJb7CCdw+nJBmLd7JppNjiEDdnwOmu1Rb5vxgTAkbIP7ff4BrYOJQsu
+         N0rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736904215; x=1737509015;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ok9Gqy2J4Ancn8P8Xi7xjCCSatpnHob/7noj/m8WMWY=;
+        b=ZckzAqg0gmGfR4ZUHny7jZjQxjlfk0PPCyYnRfbPnoyaRZFb1tfvmk9fG/15aPj8+y
+         gaV1/Q9A4kocH7bXg/LY/5efeE51RzRTiAwc4eObQPvvqu0V6y7RohKtWec9PjEvS5eY
+         6I3vx3QUh3Rml7hQGooguFJR2jePfltzY/fH0pUB1TOblfB1FBlNNhkIWkNIjoXEqSCp
+         dZHAk2SLyrw8vEqE5oxhxvCF9EKpPAYHRvUkB+8tJvXb7OVyNrjulADEnV7dWea18EK1
+         XjNqe08NBIjQivLFsy1HJxz+sz60eHS3iF0Ai2yk+ICMGOSJj3ngBIJttOr8Z8yIyG2c
+         Y8Jw==
+X-Gm-Message-State: AOJu0YyWQ5pQR+SXRJSIRuoVcuKqbBveoT6WsND4gUXzO/BLKmjoDYsL
+	9pv/DMzARMghJlKI93+Brpj2VZ/CSqSRxEJ0JDDo0NZjPtaqRqq+25HVk9bK7gDpF1MTb8YCZ9p
+	BK5GHY4IqpSZO/kGI9I4qFok+ouY=
+X-Gm-Gg: ASbGncu4taP4KIT7dhvUlRO2vw9AcqVfYCRQUpO7NdYvN+EXBZ1BHKN8APJUd5glajz
+	GSAOgZKEkFx1h6nfzxV4/F20z0qILvrMgfo1fVrT1qHyZgWqwLCu8RA==
+X-Google-Smtp-Source: AGHT+IEIDyHLvrsamKlandIWLQYxw5Y7eUDiworWj6iaDrcVK1rtsEXYoTLICDodaE/CCqnQWn3X4dSB28Q44qY0lE4=
+X-Received: by 2002:a05:6000:461b:b0:385:f17b:de54 with SMTP id
+ ffacd0b85a97d-38a872f9866mr23366450f8f.5.1736904214825; Tue, 14 Jan 2025
+ 17:23:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v5 03/15] bpf: introduce timestamp_used to allow
- UDP socket fetched in bpf prog
-To: Jason Xing <kerneljasonxing@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com,
- willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, horms@kernel.org, bpf@vger.kernel.org,
- netdev@vger.kernel.org
-References: <20250112113748.73504-1-kerneljasonxing@gmail.com>
- <20250112113748.73504-4-kerneljasonxing@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Content-Language: en-US
-In-Reply-To: <20250112113748.73504-4-kerneljasonxing@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250114021922.92609-1-alexei.starovoitov@gmail.com>
+ <20250114021922.92609-2-alexei.starovoitov@gmail.com> <Z4Y9BVygLcRTjhMh@tiehlicka>
+In-Reply-To: <Z4Y9BVygLcRTjhMh@tiehlicka>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 14 Jan 2025 17:23:20 -0800
+X-Gm-Features: AbW1kvYTbRdOozu_LRhOJL0e-n4FXoU9mFOu6DWy4O5wO2B81uhVsJSCtiIQXgc
+Message-ID: <CAADnVQKYb+kHwaAzL5c9S8V+Wcnju+ScMbajmMj2wi6E_=Pq-g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/6] mm, bpf: Introduce try_alloc_pages() for
+ opportunistic page allocation
+To: Michal Hocko <mhocko@suse.com>
+Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Vlastimil Babka <vbabka@suse.cz>, 
+	Sebastian Sewior <bigeasy@linutronix.de>, Steven Rostedt <rostedt@goodmis.org>, 
+	Hou Tao <houtao1@huawei.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Matthew Wilcox <willy@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>, Tejun Heo <tj@kernel.org>, 
+	linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/12/25 3:37 AM, Jason Xing wrote:
-> timestamp_used consists of two parts, one is is_fullsock, the other
-> one is for UDP socket which will be support in the next round.
-> 
-> Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
-> ---
->   include/linux/filter.h | 1 +
->   net/core/filter.c      | 4 ++--
->   net/core/sock.c        | 1 +
->   net/ipv4/tcp_input.c   | 2 ++
->   net/ipv4/tcp_output.c  | 2 ++
->   5 files changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index a3ea46281595..daca3fe48b8f 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -1508,6 +1508,7 @@ struct bpf_sock_ops_kern {
->   	void	*skb_data_end;
->   	u8	op;
->   	u8	is_fullsock;
-> +	u8	timestamp_used;
->   	u8	remaining_opt_len;
->   	u64	temp;			/* temp and everything after is not
->   					 * initialized to 0 before calling
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index c6dd2d2e44c8..1ac996ec5e0f 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -10424,10 +10424,10 @@ static u32 sock_ops_convert_ctx_access(enum bpf_access_type type,
->   		}							      \
->   		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(			      \
->   						struct bpf_sock_ops_kern,     \
-> -						is_fullsock),		      \
-> +						timestamp_used),	      \
->   				      fullsock_reg, si->src_reg,	      \
->   				      offsetof(struct bpf_sock_ops_kern,      \
-> -					       is_fullsock));		      \
-> +					       timestamp_used));	      \
+On Tue, Jan 14, 2025 at 2:31=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Mon 13-01-25 18:19:17, Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
+> >
+> > Tracing BPF programs execute from tracepoints and kprobes where
+> > running context is unknown, but they need to request additional
+> > memory. The prior workarounds were using pre-allocated memory and
+> > BPF specific freelists to satisfy such allocation requests.
+> > Instead, introduce gfpflags_allow_spinning() condition that signals
+> > to the allocator that running context is unknown.
+> > Then rely on percpu free list of pages to allocate a page.
+> > The rmqueue_pcplist() should be able to pop the page from.
+> > If it fails (due to IRQ re-entrancy or list being empty) then
+> > try_alloc_pages() attempts to spin_trylock zone->lock
+> > and refill percpu freelist as normal.
+> > BPF program may execute with IRQs disabled and zone->lock is
+> > sleeping in RT, so trylock is the only option. In theory we can
+> > introduce percpu reentrance counter and increment it every time
+> > spin_lock_irqsave(&zone->lock, flags) is used, but we cannot rely
+> > on it. Even if this cpu is not in page_alloc path the
+> > spin_lock_irqsave() is not safe, since BPF prog might be called
+> > from tracepoint where preemption is disabled. So trylock only.
+> >
+> > Note, free_page and memcg are not taught about gfpflags_allow_spinning(=
+)
+> > condition. The support comes in the next patches.
+> >
+> > This is a first step towards supporting BPF requirements in SLUB
+> > and getting rid of bpf_mem_alloc.
+> > That goal was discussed at LSFMM: https://lwn.net/Articles/974138/
+> >
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+>
+> LGTM, I am not entirely clear on kmsan_alloc_page part though.
 
-hmm... I don't think it is the right change. This change may disallow the bpf 
-prog from reading skops->sk. It is fine to allow bpf prog (includes the new 
-timestamp callback) getting the skops->sk as long as skops->sk is a fullsock.
+Which part is still confusing?
+I hoped the comment below is enough:
+   * Specify __GFP_ZERO to make sure that call to kmsan_alloc_page() below
+   * is safe in any context. Also zeroing the page is mandatory for
+   * BPF use cases.
 
-The actual thing that needs to address is writing to sk, like:
+and once you zoom into:
+void kmsan_alloc_page(struct page *page, unsigned int order, gfp_t flags)
+{
+        bool initialized =3D (flags & __GFP_ZERO) || !kmsan_enabled;
+...
+        if (initialized) {
+                __memset(page_address(shadow), 0, PAGE_SIZE * pages);
+                __memset(page_address(origin), 0, PAGE_SIZE * pages);
+                return;
+        }
 
-	case offsetof(struct bpf_sock_ops, sk_txhash):
-		SOCK_OPS_GET_OR_SET_FIELD(sk_txhash, sk_txhash,
-                                           struct sock, type);
+So it's safe to call it and it's necessary to call it when KMSAN is on.
 
+This was the easiest code path to analyze from doesnt-take-spinlocks pov.
+I feel the comment is enough.
 
-and also all the SOCK_OPS_GET_TCP_SOCK_FIELD() to prepare for the udp sock 
-support. After this patch 3, I think I start to understand the udp/fullsock 
-discussion in patch 2. is_fullsock here does not mean it is tcp, although it is 
-always a tcp_sock now. It literally means it is a full "struct sock". The 
-verifier will treat the skops->sk as "struct sock" instead of "struct tcp_sock".
+If/when people want to support !__GFP_ZERO case with KMSAN they would
+need to make stack_depot_save() behave in
+!gfpflags_allow_spinning() condition.
 
->   		*insn++ = BPF_JMP_IMM(BPF_JEQ, fullsock_reg, 0, jmp);	      \
->   		if (si->dst_reg == si->src_reg)				      \
->   			*insn++ = BPF_LDX_MEM(BPF_DW, reg, si->src_reg,	      \
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index e06bcafb1b2d..dbb9326ae9d1 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -958,6 +958,7 @@ void bpf_skops_tx_timestamping(struct sock *sk, struct sk_buff *skb, int op)
->   	if (sk_is_tcp(sk) && sk_fullsock(sk))
->   		sock_ops.is_fullsock = 1;
->   	sock_ops.sk = sk;
-> +	sock_ops.timestamp_used = 1;
->   	__cgroup_bpf_run_filter_sock_ops(sk, &sock_ops, CGROUP_SOCK_OPS);
->   }
->   #endif
-> diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-> index 4811727b8a02..cad41ad34bd5 100644
-> --- a/net/ipv4/tcp_input.c
-> +++ b/net/ipv4/tcp_input.c
-> @@ -169,6 +169,7 @@ static void bpf_skops_parse_hdr(struct sock *sk, struct sk_buff *skb)
->   	memset(&sock_ops, 0, offsetof(struct bpf_sock_ops_kern, temp));
->   	sock_ops.op = BPF_SOCK_OPS_PARSE_HDR_OPT_CB;
->   	sock_ops.is_fullsock = 1;
-> +	sock_ops.timestamp_used = 1;
->   	sock_ops.sk = sk;
->   	bpf_skops_init_skb(&sock_ops, skb, tcp_hdrlen(skb));
->   
-> @@ -185,6 +186,7 @@ static void bpf_skops_established(struct sock *sk, int bpf_op,
->   	memset(&sock_ops, 0, offsetof(struct bpf_sock_ops_kern, temp));
->   	sock_ops.op = bpf_op;
->   	sock_ops.is_fullsock = 1;
-> +	sock_ops.timestamp_used = 1;
->   	sock_ops.sk = sk;
->   	/* sk with TCP_REPAIR_ON does not have skb in tcp_finish_connect */
->   	if (skb)
-> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-> index 0e5b9a654254..7b4d1dfd57d4 100644
-> --- a/net/ipv4/tcp_output.c
-> +++ b/net/ipv4/tcp_output.c
-> @@ -522,6 +522,7 @@ static void bpf_skops_hdr_opt_len(struct sock *sk, struct sk_buff *skb,
->   		sock_owned_by_me(sk);
->   
->   		sock_ops.is_fullsock = 1;
-> +		sock_ops.timestamp_used = 1;
->   		sock_ops.sk = sk;
->   	}
->   
-> @@ -567,6 +568,7 @@ static void bpf_skops_write_hdr_opt(struct sock *sk, struct sk_buff *skb,
->   		sock_owned_by_me(sk);
->   
->   		sock_ops.is_fullsock = 1;
-> +		sock_ops.timestamp_used = 1;
+Since __GFP_ZERO is necessary for the BPF use case I left all
+the extra work for the future follow ups.
 
-The "timestamp_used = 1;' assignment has missed some places. At least in the 
-tcp_call_bpf().
+> As long as that part is correct you can add
+> Acked-by: Michal Hocko <mhocko@suse.com>
+>
+> Other than that try_alloc_pages_noprof begs some user documentation.
+>
+> /**
+>  * try_alloc_pages_noprof - opportunistic reentrant allocation from any c=
+ontext
+>  * @nid - node to allocate from
+>  * @order - allocation order size
+>  *
+>  * Allocates pages of a given order from the given node. This is safe to
+>  * call from any context (from atomic, NMI but also reentrant
+>  * allocator -> tracepoint -> try_alloc_pages_noprof).
+>  * Allocation is best effort and to be expected to fail easily so nobody =
+should
+>  * rely on the succeess. Failures are not reported via warn_alloc().
+>  *
+>  * Return: allocated page or NULL on failure.
+>  */
 
-Also, the name "timestamp_used" is confusing. Like setting timestamp_used in the 
-bpf_skops_*_hdr_opt() callback here when it is not a timestamp callback.
+Nicely worded. Will add.
 
-Altogether, need to rethink what to add to sock_ops instead of timestamp_used 
-and it should be checked in "some" of the SOCK_OPS_*_FIELD(). A quick thought 
-(not 100% sure) is to add "u8 allow_direct_access" which is only set for the 
-existing sockops callbacks.
-
-[ I will continue the rest later. ]
-
->   		sock_ops.sk = sk;
->   	}
->   
-
+Thanks for all the reviews. Appreciate it!
 
