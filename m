@@ -1,41 +1,42 @@
-Return-Path: <bpf+bounces-48917-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48918-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A56B3A11EBF
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 11:00:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81C5BA11EC0
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 11:00:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D92F3B03A3
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 10:00:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E50351678CE
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 10:00:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53EB7248182;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7EE923F27A;
 	Wed, 15 Jan 2025 10:00:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDDF523F26F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F204623F271
 	for <bpf@vger.kernel.org>; Wed, 15 Jan 2025 10:00:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736935204; cv=none; b=Dr9dTm6GzUlD3dEcCFjtVB0g3gXGYfHQ68q1in7bL3wJXRF/iKu7N/rzV+Oe/HTzrjx0CVDoPv/wTwyZA7ROFGiUvz1qlPvPa9mBD5J0bOpp9BkCzCQ6CwxDByHc3ZkAzD97Y16iImZta8N3IOqBUlunX8U6ciWPyAcbO1uxITs=
+	t=1736935205; cv=none; b=oiXF3yip2jLy4SCzC6xEEIUzinzYRkH48ox5soKygaUSbHInl56HB0X2XvUMzBr+6VgTJdN0Eloz/4StQ6B9lpDVXWt8AOdD0iFFQq6ozHnW8XofpwgEILpuXoYkt4E5yH03O8c2EbYqHBqeNnnlD/4jIG1bOY42YEmBnGYmgXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736935204; c=relaxed/simple;
-	bh=VBwtW4jlSdS8/uOjiy8I6xnOiaNeu0ecqA+PHNu+7b4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fK/A5Q+Md37o8uUkUf9OtP+vo8j6zwAdVcyHvq3qEcR8q63cEJcCdfkfM2cP5DV/bjAEAssBxsqguRXAodTZxDYTKeeFQMp0UFQthG/vI9cP8b/ABmk+/HCs8OlGXwobxup/w2Y290uUWNUKSfCNe1ekUS5yVgRmj2fVcdL+RAk=
+	s=arc-20240116; t=1736935205; c=relaxed/simple;
+	bh=N2h2t85gdytpw1ZRM8jnukQd03nHoS20+cpXsdKi43Y=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=GR7cKOCFz3g29VnEdM/ZnN32+4TYyyTImtfYQeM3HyWp0VeoEJadWAawrTCfsfqRqLluuKwYKfMytuPAzJHic7O1RIf6voHdWaVODp2SFMImwhxhixj4kPdhJOGXcSB590Exfa4lFtWupjIlTdupf8SSTLgEJsTLfIXJsPlFmkQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YY1gZ4RN1z4f3jss
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YY1gZ5CSWz4f3jt0
 	for <bpf@vger.kernel.org>; Wed, 15 Jan 2025 17:59:38 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id CD1491A0CC2
+	by mail.maildlp.com (Postfix) with ESMTP id E42E71A0CBF
 	for <bpf@vger.kernel.org>; Wed, 15 Jan 2025 17:59:53 +0800 (CST)
 Received: from ultra.huawei.com (unknown [10.90.53.71])
-	by APP3 (Coremail) with SMTP id _Ch0CgAHWcMYh4dnLOEBBA--.46150S2;
+	by APP3 (Coremail) with SMTP id _Ch0CgAHWcMYh4dnLOEBBA--.46150S3;
 	Wed, 15 Jan 2025 17:59:53 +0800 (CST)
 From: Pu Lehui <pulehui@huaweicloud.com>
 To: bpf@vger.kernel.org
@@ -54,10 +55,12 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Alan Maguire <alan.maguire@oracle.com>,
 	Pu Lehui <pulehui@huawei.com>,
 	Pu Lehui <pulehui@huaweicloud.com>
-Subject: [PATCH bpf v2 1/4] selftests/bpf: Fix btf leak on new btf alloc failure in btf_distill test
-Date: Wed, 15 Jan 2025 10:02:38 +0000
-Message-Id: <20250115100241.4171581-1-pulehui@huaweicloud.com>
+Subject: [PATCH bpf v2 2/4] libbpf: Fix return zero when elf_begin failed
+Date: Wed, 15 Jan 2025 10:02:39 +0000
+Message-Id: <20250115100241.4171581-2-pulehui@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250115100241.4171581-1-pulehui@huaweicloud.com>
+References: <20250115100241.4171581-1-pulehui@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,59 +68,49 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgAHWcMYh4dnLOEBBA--.46150S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zr1rAw4xZrWfGr1DGrWkCrg_yoW8Xr48pa
-	y0q34akFySg3W7tay8ZFWIgFW8WF1kX3yakF17Kwn5ArWrJFykXrs7Kay5G3ZagrWFvr45
-	Zw1xKFs5Aw48Cw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
-	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
-	zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
-	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
-	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-	nIWIevJa73UjIFyTuYvjfUonmRUUUUU
+X-CM-TRANSID:_Ch0CgAHWcMYh4dnLOEBBA--.46150S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrZr17uw18GFykuF47CF1kuFg_yoW3WrcEka
+	4xGr1fKrW5Gry3Zw15CrZIgFW8GFs0gFnaqFs8trZ0ka1DKwn5CFsrZ3s7tFZxG3y2qFya
+	gF95Wr4fXr43KjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbkxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGwA2048vs2IY02
+	0Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
+	wVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM2
+	8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
+	xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
+	vE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
+	r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04
+	v7MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j
+	6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7
+	AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE
+	2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcV
+	C2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kfnx
+	nUUI43ZEXa7VUjrHUDUUUUU==
 X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 
 From: Pu Lehui <pulehui@huawei.com>
 
-Fix btf leak on new btf alloc failure in btf_distill test.
+The error number of elf_begin is omitted when encapsulating the
+btf_find_elf_sections function.
 
-Fixes: affdeb50616b ("selftests/bpf: Extend distilled BTF tests to cover BTF relocation")
+Fixes: c86f180ffc99 ("libbpf: Make btf_parse_elf process .BTF.base transparently")
 Signed-off-by: Pu Lehui <pulehui@huawei.com>
 ---
-v2: newly discovered bugfix.
+ tools/lib/bpf/btf.c | 1 +
+ 1 file changed, 1 insertion(+)
 
- tools/testing/selftests/bpf/prog_tests/btf_distill.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_distill.c b/tools/testing/selftests/bpf/prog_tests/btf_distill.c
-index ca84726d5ac1..b72b966df77b 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_distill.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_distill.c
-@@ -385,7 +385,7 @@ static void test_distilled_base_missing_err(void)
- 		"[2] INT 'int' size=8 bits_offset=0 nr_bits=64 encoding=SIGNED");
- 	btf5 = btf__new_empty();
- 	if (!ASSERT_OK_PTR(btf5, "empty_reloc_btf"))
--		return;
-+		goto cleanup;
- 	btf__add_int(btf5, "int", 4, BTF_INT_SIGNED);   /* [1] int */
- 	VALIDATE_RAW_BTF(
- 		btf5,
-@@ -478,7 +478,7 @@ static void test_distilled_base_multi_err2(void)
- 		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED");
- 	btf5 = btf__new_empty();
- 	if (!ASSERT_OK_PTR(btf5, "empty_reloc_btf"))
--		return;
-+		goto cleanup;
- 	btf__add_int(btf5, "int", 4, BTF_INT_SIGNED);   /* [1] int */
- 	btf__add_int(btf5, "int", 4, BTF_INT_SIGNED);   /* [2] int */
- 	VALIDATE_RAW_BTF(
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 12468ae0d573..7e810fa468ea 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -1186,6 +1186,7 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
+ 
+ 	elf = elf_begin(fd, ELF_C_READ, NULL);
+ 	if (!elf) {
++		err = -LIBBPF_ERRNO__FORMAT;
+ 		pr_warn("failed to open %s as ELF file\n", path);
+ 		goto done;
+ 	}
 -- 
 2.34.1
 
