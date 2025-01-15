@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-48941-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48942-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFE7AA12735
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 16:21:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4816EA12734
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 16:21:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 340247A3636
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 15:21:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10D441888326
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 15:21:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E6F21991AF;
-	Wed, 15 Jan 2025 15:20:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 151521ADC6D;
+	Wed, 15 Jan 2025 15:20:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SOC+bVG8"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UZUGmEnS"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10F8E194A64;
-	Wed, 15 Jan 2025 15:20:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFE351A00D6;
+	Wed, 15 Jan 2025 15:20:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736954402; cv=none; b=i+Gk1wPROQTDBwiGN/OmaTK15qKfEZ0KcSYsxVOwAUYenlbsm5lIovWVW4UfEVsPpL089W1tVdIdgZfH3gdZO5asPaDpksUd0DM4aphG5222VVYZaZUV7rOj5uivS0nxW4Y7r6dFe9h19V0MttkI0ty2zMnYqKfasdiWPza/q5I=
+	t=1736954406; cv=none; b=f1mAakgx31WmacRjxHOKW/I5bUWrsUTywubeAT+2PJ47br/Vc8+L58sIVF6Ygz+mZhDVfoyhRcrrFTgjD2QvGux6VzLYLWLC+YtmtymBI/0ErXINmfHdkdOcOmhP1kqImwpMl3ULLTRkGOSnmg/kSUjcbvPuxdoAQS2HL4AqU3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736954402; c=relaxed/simple;
-	bh=ccpEnGgtrMRmJlaRq5I0k3F41p3m93uLmAUoR9BiNp8=;
+	s=arc-20240116; t=1736954406; c=relaxed/simple;
+	bh=VLvjyuGtrJTPn43cvE7ThAgmCuRn4A0Q+5OIeczTnMs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oSUWwzNwA0xNuFFNc+15kvBAxIEhATqEs7Eo6ANdoby8JugR+GosAtaZDrse9gS9bqKAEJeFbuuuEgy/MtxWbR161DH/nYq7l2u2wZnIo76811EidcCe2Ls4KteaVZazHyA1390aHoaP+xjRGisV9elH21ygdZTAEpohIpnd2Sw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SOC+bVG8; arc=none smtp.client-ip=192.198.163.15
+	 MIME-Version; b=YYHvHYUqVcYB6HB6tJycHt4Mwq4Dpk2YRiSJQKud3PfCYN3tqmm3F34qt8F4eM85fy+KyuwCd8ETzrT/r7XguRx9D9dqalW72C62u4FzJ06NOBCSegCWdmgL1O0r/vaD6fVe2VFwazBaGqOtkgRdKMwHg3PoOWSTSqsaQq2d1YE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UZUGmEnS; arc=none smtp.client-ip=192.198.163.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1736954401; x=1768490401;
+  t=1736954405; x=1768490405;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=ccpEnGgtrMRmJlaRq5I0k3F41p3m93uLmAUoR9BiNp8=;
-  b=SOC+bVG8ma5JwFvYUdtqlMcbDzKeUlIBUfT5FfcN2HHQ+HZefKL8I2Ad
-   RZer4JWKARro9YmgQJeQMMC3RVBqRnzx3keyrnXEDo9wuTOqeNLQ9qFQC
-   bb5ncTUTLvRkjHsIEuJB7Hb0TPOc2BoNHOwD/9iblELijOa8GDl0YhvJM
-   dmXW0n4QJchXJzaUDTTOZ5dKF4l0G9xT7VEu4wseM0/dlbj8edxWV2r8d
-   wjRdh+5hrq2jpyX/YxOegdXPnuhRXLs3RjhYuX3GexBv5RtVc6bWk78NY
-   DFVSB2gTmTCw+O8h2Nme3YUV6L4b2xA/ppHu307H7L6DnlySoztdSMz3m
-   A==;
-X-CSE-ConnectionGUID: WYRLAmPQRrOFD6xUqwLA5w==
-X-CSE-MsgGUID: b95ZM9MjRHuYKYzBS4E7vg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11316"; a="37451822"
+  bh=VLvjyuGtrJTPn43cvE7ThAgmCuRn4A0Q+5OIeczTnMs=;
+  b=UZUGmEnSOl61JDxTFdtYBEUTF3LbYe8sQtxKoMVR6ySi4tuAsLuWbmj1
+   FfajpU9YoYWuvbQTYKAdTH+pDNx901Xd4q1PonaIGXfAvDGEAF7qVJiE5
+   9jGgqyqQ3idmEAr7Va+NFPZwhS2jrN5l58G+NinUQSaVZwHMSGejSrNJJ
+   j9XpbMNgPWLAEA/E1wPLncWdGLqnXk07Vm8G3P4Nme6By3zTII9A3hsM9
+   THz1qADFPcYJh64rHI7XW4yfr1Fr/xAqbcgq6vvxtjPYO16tVeAJHLUHe
+   9x3GP6/OCK+FmwAassO/sZpB4kz3iqJYlbMC+6RaBk573Y+CAcTb8vaRv
+   Q==;
+X-CSE-ConnectionGUID: DDXjLivyS5q+I+tKZJ0fOA==
+X-CSE-MsgGUID: k/8MowwNQsaKdHC6SiCBPw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11316"; a="37451832"
 X-IronPort-AV: E=Sophos;i="6.13,206,1732608000"; 
-   d="scan'208";a="37451822"
+   d="scan'208";a="37451832"
 Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2025 07:20:01 -0800
-X-CSE-ConnectionGUID: +PCEBH91TL2aeNaKof0b5A==
-X-CSE-MsgGUID: PtlmznioRumC2lLs1Yv0Bw==
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2025 07:20:05 -0800
+X-CSE-ConnectionGUID: l/feQ1qNQBuE3Gi4UOLMhw==
+X-CSE-MsgGUID: jWr/38bhSp+MI6PzEOEBEw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.13,206,1732608000"; 
-   d="scan'208";a="105116673"
+   d="scan'208";a="105116693"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmviesa007.fm.intel.com with ESMTP; 15 Jan 2025 07:19:57 -0800
+  by fmviesa007.fm.intel.com with ESMTP; 15 Jan 2025 07:20:01 -0800
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: Andrew Lunn <andrew+netdev@lunn.ch>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -77,9 +77,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v3 5/8] net: skbuff: introduce napi_skb_cache_get_bulk()
-Date: Wed, 15 Jan 2025 16:18:58 +0100
-Message-ID: <20250115151901.2063909-6-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next v3 6/8] bpf: cpumap: switch to napi_skb_cache_get_bulk()
+Date: Wed, 15 Jan 2025 16:18:59 +0100
+Message-ID: <20250115151901.2063909-7-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.48.0
 In-Reply-To: <20250115151901.2063909-1-aleksander.lobakin@intel.com>
 References: <20250115151901.2063909-1-aleksander.lobakin@intel.com>
@@ -91,124 +91,93 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a function to get an array of skbs from the NAPI percpu cache.
-It's supposed to be a drop-in replacement for
-kmem_cache_alloc_bulk(skbuff_head_cache, GFP_ATOMIC) and
-xdp_alloc_skb_bulk(GFP_ATOMIC). The difference (apart from the
-requirement to call it only from the BH) is that it tries to use
-as many NAPI cache entries for skbs as possible, and allocate new
-ones only if needed.
+Now that cpumap uses GRO, which drops unused skb heads to the NAPI
+cache, use napi_skb_cache_get_bulk() to try to reuse cached entries
+and lower MM layer pressure. Always disable the BH before checking and
+running the cpumap-pinned XDP prog and don't re-enable it in between
+that and allocating an skb bulk, as we can access the NAPI caches only
+from the BH context.
+The better GRO aggregates packets, the less new skbs will be allocated.
+If an aggregated skb contains 16 frags, this means 15 skbs were returned
+to the cache, so next 15 skbs will be built without allocating anything.
 
-The logic is as follows:
+The same trafficgen UDP GRO test now shows:
 
-* there is enough skbs in the cache: decache them and return to the
-  caller;
-* not enough: try refilling the cache first. If there is now enough
-  skbs, return;
-* still not enough: try allocating skbs directly to the output array
-  with %GFP_ZERO, maybe we'll be able to get some. If there's now
-  enough, return;
-* still not enough: return as many as we were able to obtain.
+                GRO off   GRO on
+threaded GRO    2.3       4         Mpps
+thr bulk GRO    2.4       4.7       Mpps
+diff            +4        +17       %
 
-Most of times, if called from the NAPI polling loop, the first one will
-be true, sometimes (rarely) the second one. The third and the fourth --
-only under heavy memory pressure.
-It can save significant amounts of CPU cycles if there are GRO cycles
-and/or Tx completion cycles (anything that descends to
-napi_skb_cache_put()) happening on this CPU.
+Comparing to the baseline cpumap:
+
+baseline        2.7       N/A       Mpps
+thr bulk GRO    2.4       4.7       Mpps
+diff            -11       +74       %
 
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 Tested-by: Daniel Xu <dxu@dxuuu.xyz>
 ---
- include/linux/skbuff.h |  1 +
- net/core/skbuff.c      | 62 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 63 insertions(+)
+ kernel/bpf/cpumap.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index bb2b751d274a..1c089c7c14e1 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -1315,6 +1315,7 @@ struct sk_buff *build_skb_around(struct sk_buff *skb,
- 				 void *data, unsigned int frag_size);
- void skb_attempt_defer_free(struct sk_buff *skb);
+diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+index 4fae029c4490..6997b67a0104 100644
+--- a/kernel/bpf/cpumap.c
++++ b/kernel/bpf/cpumap.c
+@@ -253,7 +253,7 @@ static void cpu_map_bpf_prog_run(struct bpf_cpu_map_entry *rcpu, void **frames,
+ 	if (!rcpu->prog)
+ 		goto out;
  
-+u32 napi_skb_cache_get_bulk(void **skbs, u32 n);
- struct sk_buff *napi_build_skb(void *data, unsigned int frag_size);
- struct sk_buff *slab_build_skb(void *data);
+-	rcu_read_lock_bh();
++	rcu_read_lock();
+ 	bpf_net_ctx = bpf_net_ctx_set(&__bpf_net_ctx);
  
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index a441613a1e6c..42eb31dcc9ce 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -367,6 +367,68 @@ static struct sk_buff *napi_skb_cache_get(void)
- 	return skb;
- }
+ 	ret->xdp_n = cpu_map_bpf_prog_run_xdp(rcpu, frames, ret->xdp_n, stats);
+@@ -265,7 +265,7 @@ static void cpu_map_bpf_prog_run(struct bpf_cpu_map_entry *rcpu, void **frames,
+ 		xdp_do_flush();
  
-+/**
-+ * napi_skb_cache_get_bulk - obtain a number of zeroed skb heads from the cache
-+ * @skbs: pointer to an at least @n-sized array to fill with skb pointers
-+ * @n: number of entries to provide
-+ *
-+ * Tries to obtain @n &sk_buff entries from the NAPI percpu cache and writes
-+ * the pointers into the provided array @skbs. If there are less entries
-+ * available, tries to replenish the cache and bulk-allocates the diff from
-+ * the MM layer if needed.
-+ * The heads are being zeroed with either memset() or %__GFP_ZERO, so they are
-+ * ready for {,__}build_skb_around() and don't have any data buffers attached.
-+ * Must be called *only* from the BH context.
-+ *
-+ * Return: number of successfully allocated skbs (@n if no actual allocation
-+ *	   needed or kmem_cache_alloc_bulk() didn't fail).
-+ */
-+u32 napi_skb_cache_get_bulk(void **skbs, u32 n)
-+{
-+	struct napi_alloc_cache *nc = this_cpu_ptr(&napi_alloc_cache);
-+	u32 bulk, total = n;
+ 	bpf_net_ctx_clear(bpf_net_ctx);
+-	rcu_read_unlock_bh(); /* resched point, may call do_softirq() */
++	rcu_read_unlock();
+ 
+ out:
+ 	if (unlikely(ret->skb_n) && ret->xdp_n)
+@@ -303,7 +303,6 @@ static int cpu_map_kthread_run(void *data)
+ 	while (!kthread_should_stop() || !__ptr_ring_empty(rcpu->queue)) {
+ 		struct xdp_cpumap_stats stats = {}; /* zero stats */
+ 		unsigned int kmem_alloc_drops = 0, sched = 0;
+-		gfp_t gfp = __GFP_ZERO | GFP_ATOMIC;
+ 		struct cpu_map_ret ret = { };
+ 		void *frames[CPUMAP_BATCH];
+ 		void *skbs[CPUMAP_BATCH];
+@@ -355,15 +354,14 @@ static int cpu_map_kthread_run(void *data)
+ 			prefetchw(page);
+ 		}
+ 
++		local_bh_disable();
 +
-+	local_lock_nested_bh(&napi_alloc_cache.bh_lock);
-+
-+	if (nc->skb_count >= n)
-+		goto get;
-+
-+	/* No enough cached skbs. Try refilling the cache first */
-+	bulk = min(NAPI_SKB_CACHE_SIZE - nc->skb_count, NAPI_SKB_CACHE_BULK);
-+	nc->skb_count += kmem_cache_alloc_bulk(net_hotdata.skbuff_cache,
-+					       GFP_ATOMIC | __GFP_NOWARN, bulk,
-+					       &nc->skb_cache[nc->skb_count]);
-+	if (likely(nc->skb_count >= n))
-+		goto get;
-+
-+	/* Still not enough. Bulk-allocate the missing part directly, zeroed */
-+	n -= kmem_cache_alloc_bulk(net_hotdata.skbuff_cache,
-+				   GFP_ATOMIC | __GFP_ZERO | __GFP_NOWARN,
-+				   n - nc->skb_count, &skbs[nc->skb_count]);
-+	if (likely(nc->skb_count >= n))
-+		goto get;
-+
-+	/* kmem_cache didn't allocate the number we need, limit the output */
-+	total -= n - nc->skb_count;
-+	n = nc->skb_count;
-+
-+get:
-+	for (u32 base = nc->skb_count - n, i = 0; i < n; i++) {
-+		u32 cache_size = kmem_cache_size(net_hotdata.skbuff_cache);
-+
-+		skbs[i] = nc->skb_cache[base + i];
-+
-+		kasan_mempool_unpoison_object(skbs[i], cache_size);
-+		memset(skbs[i], 0, offsetof(struct sk_buff, tail));
-+	}
-+
-+	nc->skb_count -= n;
-+	local_unlock_nested_bh(&napi_alloc_cache.bh_lock);
-+
-+	return total;
-+}
-+EXPORT_SYMBOL_GPL(napi_skb_cache_get_bulk);
-+
- static inline void __finalize_skb_around(struct sk_buff *skb, void *data,
- 					 unsigned int size)
- {
+ 		/* Support running another XDP prog on this CPU */
+ 		cpu_map_bpf_prog_run(rcpu, frames, skbs, &ret, &stats);
+-		if (!ret.xdp_n) {
+-			local_bh_disable();
++		if (!ret.xdp_n)
+ 			goto stats;
+-		}
+ 
+-		m = kmem_cache_alloc_bulk(net_hotdata.skbuff_cache, gfp,
+-					  ret.xdp_n, skbs);
++		m = napi_skb_cache_get_bulk(skbs, ret.xdp_n);
+ 		if (unlikely(m < ret.xdp_n)) {
+ 			for (i = m; i < ret.xdp_n; i++)
+ 				xdp_return_frame(frames[i]);
+@@ -376,7 +374,6 @@ static int cpu_map_kthread_run(void *data)
+ 			ret.xdp_n = m;
+ 		}
+ 
+-		local_bh_disable();
+ 		for (i = 0; i < ret.xdp_n; i++) {
+ 			struct xdp_frame *xdpf = frames[i];
+ 
 -- 
 2.48.0
 
