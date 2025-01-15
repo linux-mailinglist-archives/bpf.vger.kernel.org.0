@@ -1,163 +1,188 @@
-Return-Path: <bpf+bounces-48934-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48936-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAED4A126DC
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 16:06:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B0B7A1271C
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 16:19:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1768E1884BBB
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 15:06:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F0401887C48
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 15:19:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C43EC1448E3;
-	Wed, 15 Jan 2025 15:06:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1171014900B;
+	Wed, 15 Jan 2025 15:19:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="Gzgj1KKL"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Nyg/v2wF"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88D0D20326;
-	Wed, 15 Jan 2025 15:06:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4FEB70801;
+	Wed, 15 Jan 2025 15:19:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736953598; cv=none; b=dbIukZ5ZL8ctyFc6S45GnZACKDpriXKSTYGYXV8/hDIUxks99sg/Bc5lIfj46lJs8v/vvkLvMy2ClrcdsO35orB6sbDoQVMk9/hlk8hkR8ryZ1Y8jPggFrVX8aJuRqhIEF0DTVm4ke36BP5w42yByYzeCHo2Q+MvH4AYQLNtT9M=
+	t=1736954384; cv=none; b=WO3DLYpkFkGD8xhpgeY63sk8YHrE3S6Cr3UMCXOmmfgxWLE+M1O9ivSMGwcbRB2HIMnI7ILc4g1kwSJcMMEh2Cu3SwhJD4mDHfGS6HABAEE5TOv+TloPeayFLK4xf3TZfxHYMHIbuz+G8aqGmNT6YZId9TtbVvBeFk9QmEJw77E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736953598; c=relaxed/simple;
-	bh=S5whKp393r67OyZqAAZZd1yqiw2Po0JdmH/hoJOktpg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nSmae6Hm6TyZCavYX6VZs/OBkhbSoVrRZZomEunHrU4H2K2ghmGWZ0q9m+oF3KTO8riQQCEeIzNA8fdMv6tIHy9msj86vQxYtlA3rw3Vw6i2cytmUAAS8fbA5ccNrVDULDsoboFZ+IhJFNrZ9WX9i2fAHx+faYo1j8w31yGMwA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=Gzgj1KKL; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=5I9ltPjgGow7JSjs5Xpf3xrC+FFnf3IxE0cYyxbxMUU=; b=Gzgj1KKLSHM7u0Rg75ZUL3tjp5
-	N+x69FPkj7ZIH5Hr7VYcpVf5YiyKIIvt56bVIXnEmb0Sv0DXtPLQLIZG2eXYZ0/nrnpirsbSpKfmX
-	Lavrlj6G4nMAsLdjAA6wy3Zlqboz23QuDS3QKSw0mOKW2iYpttbEvl9lGcuJEWIkh6GFhrdAGsGIg
-	lARfilMKHIeBHqz1Fm0PmZXlYNlYjD68ehd+wrNYVhuXOnkS/H7YUCqtR68YsHdShxGc753Uz2zjG
-	H7VeskOxqBWfgak3fhSTWj67egv/mUXtJ1x7uBLOZoOvuLLKDk/rnIxbBKr0ScrXazLJeI4sgMnox
-	1XAM4uag==;
-Received: from sslproxy07.your-server.de ([78.47.199.104])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1tY4yW-00025v-Sk; Wed, 15 Jan 2025 16:06:32 +0100
-Received: from [85.1.206.226] (helo=[192.168.1.114])
-	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1tY4yW-0008LB-1W;
-	Wed, 15 Jan 2025 16:06:32 +0100
-Message-ID: <af9c413d-136a-413a-ad99-8aaf98f1e31c@iogearbox.net>
-Date: Wed, 15 Jan 2025 16:06:31 +0100
+	s=arc-20240116; t=1736954384; c=relaxed/simple;
+	bh=7ejRYevHYOXah2gzkbZoNHZ3U+tY63P81luAAusOV5c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ARQLnxW6F3kyIUbXtasbAN0eNIDe8LWO4/5uqE9bX3iU0gS0g2Bc52K9VYS+o2/S3lloo4ngw6EPty0XRSbjbVoKSkgYx6IgrWGYu79PwhFSbGZ4mp1BKFPe5uXRjOlJEW84T9uT6cI3fG987cZ17uDiqJXEiP51g5Z/uMXIAls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Nyg/v2wF; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1736954383; x=1768490383;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=7ejRYevHYOXah2gzkbZoNHZ3U+tY63P81luAAusOV5c=;
+  b=Nyg/v2wFv5GjbopIdgMumt426wMZJ8ArFpurSVm2365LgBKW2cTXZ+5O
+   /U9+u5NyaI+Th7mTuqRzhmz5YDSl3urcUfhUIQ02/Ad/DlDBt+FkbrWHE
+   8tStd+9bcDHn6mnO9xLj7OzZf/0wLfulOauXq3mZjmiHUMRKfObVT+2yl
+   UuqBsxWi4aUxkIjjhh1fZLLhSPLj7W/uZ73PGUN+zvfple7JPC4oq1ZiM
+   QKnzCe48p0ySmoThPn254RPG5oHsQm6KcEVNbGayurqLwFuA3ggpgZ6gX
+   zDMjGkp2kApi6NwfLIZE4sg+jtPKN5grkQCX6tIgLQyKinenYd6LYiUw1
+   A==;
+X-CSE-ConnectionGUID: qIpaeHGKTN++xMZWw1kJ7A==
+X-CSE-MsgGUID: wylSEl8uTfeJjUtSCm0g6A==
+X-IronPort-AV: E=McAfee;i="6700,10204,11316"; a="37451756"
+X-IronPort-AV: E=Sophos;i="6.13,206,1732608000"; 
+   d="scan'208";a="37451756"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2025 07:19:41 -0800
+X-CSE-ConnectionGUID: GyD+oBEsRR+ALt26wRX3rw==
+X-CSE-MsgGUID: EBVu00rWTdOolhOuqOIJNg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,206,1732608000"; 
+   d="scan'208";a="105116640"
+Received: from newjersey.igk.intel.com ([10.102.20.203])
+  by fmviesa007.fm.intel.com with ESMTP; 15 Jan 2025 07:19:37 -0800
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+To: Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Daniel Xu <dxu@dxuuu.xyz>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v3 0/8] bpf: cpumap: enable GRO for XDP_PASS frames
+Date: Wed, 15 Jan 2025 16:18:53 +0100
+Message-ID: <20250115151901.2063909-1-aleksander.lobakin@intel.com>
+X-Mailer: git-send-email 2.48.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3] selftests/Makefile: override the srctree for
- out-of-tree builds
-To: Li Zhijian <lizhijian@fujitsu.com>, bpf@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>, Quentin Monnet
- <qmo@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>
-References: <20250115014734.438225-1-lizhijian@fujitsu.com>
-Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <20250115014734.438225-1-lizhijian@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 1.0.7/27519/Wed Jan 15 10:36:26 2025)
+Content-Transfer-Encoding: 8bit
 
-On 1/15/25 2:47 AM, Li Zhijian wrote:
-> Fixes an issue where out-of-tree kselftest builds fail when building
-> the BPF and bpftools components. The failure occurs because the top-level
-> Makefile passes a relative srctree path to its sub-Makefiles, which
-> leads to errors in locating necessary files.
-> 
-> For example, the following error is encountered:
-> 
-> ```
-> $ make V=1 O=$build/ TARGETS=hid kselftest-all
-> ...
-> make -C ../tools/testing/selftests all
-> make[4]: Entering directory '/path/to/linux/tools/testing/selftests/hid'
-> make  -C /path/to/linux/tools/testing/selftests/../../../tools/lib/bpf OUTPUT=/path/to/linux/O/kselftest/hid/tools/build/libbpf/ \
->              EXTRA_CFLAGS='-g -O0'                                      \
->              DESTDIR=/path/to/linux/O/kselftest/hid/tools prefix= all install_headers
-> make[5]: Entering directory '/path/to/linux/tools/lib/bpf'
-> ...
-> make[5]: Entering directory '/path/to/linux/tools/bpf/bpftool'
-> Makefile:127: ../tools/build/Makefile.feature: No such file or directory
-> make[5]: *** No rule to make target '../tools/build/Makefile.feature'.  Stop.
-> ```
-> 
-> To resolve this, override the srctree in the kselftests's top Makefile
-> when performing an out-of-tree build. This ensures that all sub-Makefiles
-> have the correct path to the source tree, preventing directory resolution
-> errors.
-> 
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-> Tested-by: Quentin Monnet <qmo@kernel.org>
+Several months ago, I had been looking through my old XDP hints tree[0]
+to check whether some patches not directly related to hints can be sent
+standalone. Roughly at the same time, Daniel appeared and asked[1] about
+GRO for cpumap from that tree.
 
-[...]
->   tools/testing/selftests/Makefile | 8 ++++++--
->   1 file changed, 6 insertions(+), 2 deletions(-)
+Currently, cpumap uses its own kthread which processes cpumap-redirected
+frames by batches of 8, without any weighting (but with rescheduling
+points). The resulting skbs get passed to the stack via
+netif_receive_skb_list(), which means no GRO happens.
+Even though we can't currently pass checksum status from the drivers,
+in many cases GRO performs better than the listified Rx without the
+aggregation, confirmed by tests.
 
-Shuah, want to pick this up given its the top-level Makefile or want us to
-route it via bpf-next with your Ack? Fwiw, BPF CI went through fine.
+In order to enable GRO in cpumap, we need to do the following:
+
+* patches 1-2: decouple the GRO struct from the NAPI struct and allow
+  using it out of a NAPI entity within the kernel core code;
+* patch 3: switch cpumap from netif_receive_skb_list() to
+  gro_receive_skb().
+
+Additional improvements:
+
+* patch 4: optimize XDP_PASS in cpumap by using arrays instead of linked
+  lists;
+* patch 5-6: introduce and use function do get skbs from the NAPI percpu
+  caches by bulks, not one at a time;
+* patch 7-8: use that function in veth as well and remove the one that
+  was now superseded by it.
+
+My trafficgen UDP GRO tests, small frame sizes:
+
+                GRO off    GRO on
+baseline        2.7        N/A       Mpps
+patch 3         2.3        4         Mpps
+patch 8         2.4        4.7       Mpps
+
+1...3 diff      -17        +48       %
+1...8 diff      -11        +74       %
+
+Daniel reported from +14%[2] to +18%[3] of throughput in neper's TCP RR
+tests. On my system however, the same test gave me up to +100%.
+
+Note that there's a series from Lorenzo[4] which achieves the same, but
+in a different way. During the discussions, the approach using a
+standalone GRO instance was preferred over the threaded NAPI.
+
+[0] https://github.com/alobakin/linux/tree/xdp_hints
+[1] https://lore.kernel.org/bpf/cadda351-6e93-4568-ba26-21a760bf9a57@app.fastmail.com
+[2] https://lore.kernel.org/bpf/merfatcdvwpx2lj4j2pahhwp4vihstpidws3jwljwazhh76xkd@t5vsh4gvk4mh
+[3] https://lore.kernel.org/bpf/yzda66wro5twmzpmjoxvy4si5zvkehlmgtpi6brheek3sj73tj@o7kd6nurr3o6
+[4] https://lore.kernel.org/bpf/20241130-cpumap-gro-v1-0-c1180b1b5758@kernel.org
+
+Alexander Lobakin (8):
+  net: gro: decouple GRO from the NAPI layer
+  net: gro: expose GRO init/cleanup to use outside of NAPI
+  bpf: cpumap: switch to GRO from netif_receive_skb_list()
+  bpf: cpumap: reuse skb array instead of a linked list to chain skbs
+  net: skbuff: introduce napi_skb_cache_get_bulk()
+  bpf: cpumap: switch to napi_skb_cache_get_bulk()
+  veth: use napi_skb_cache_get_bulk() instead of xdp_alloc_skb_bulk()
+  xdp: remove xdp_alloc_skb_bulk()
+
+ include/linux/netdevice.h                  |  26 ++--
+ include/linux/skbuff.h                     |   1 +
+ include/net/busy_poll.h                    |  11 +-
+ include/net/gro.h                          |  38 ++++--
+ include/net/xdp.h                          |   1 -
+ drivers/net/ethernet/brocade/bna/bnad.c    |   1 +
+ drivers/net/ethernet/cortina/gemini.c      |   1 +
+ drivers/net/veth.c                         |   3 +-
+ drivers/net/wwan/t7xx/t7xx_hif_dpmaif_rx.c |   1 +
+ kernel/bpf/cpumap.c                        | 145 +++++++++++++--------
+ net/core/dev.c                             |  77 +++--------
+ net/core/gro.c                             | 101 +++++++++-----
+ net/core/skbuff.c                          |  62 +++++++++
+ net/core/xdp.c                             |  10 --
+ 14 files changed, 298 insertions(+), 180 deletions(-)
+
+---
+From v2[5]:
+* 1: remove napi_id duplication in both &gro_node and &napi_struct by
+     using a tagged struct group. The most efficient approach I've
+     found so far: no additional branches, no inline expansion, no tail
+     calls / double calls, saves 8 bytes of &napi_struct in comparison
+     with v2 (Jakub, Paolo, me);
+* 4: improve and streamline skb allocation fails (-1 branch per frame),
+     skip more code for skb-only batches.
+
+From v1[6]:
+* use a standalone GRO instance instead of the threaded NAPI (Jakub);
+* rebase and send to net-next as it's now more networking than BPF.
+
+[5] https://lore.kernel.org/netdev/20250107152940.26530-1-aleksander.lobakin@intel.com
+[6] https://lore.kernel.org/bpf/20240830162508.1009458-1-aleksander.lobakin@intel.com
+-- 
+2.48.0
+
 
