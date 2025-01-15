@@ -1,123 +1,132 @@
-Return-Path: <bpf+bounces-48967-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48968-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF792A12AC7
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 19:20:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 202DAA12AD1
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 19:26:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10E5D1887A0A
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 18:21:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F9A8188993E
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 18:26:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25FE81D63C7;
-	Wed, 15 Jan 2025 18:20:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E6521D63CA;
+	Wed, 15 Jan 2025 18:26:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j7/o/xVC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T9d9uj6q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49E0824A7D5;
-	Wed, 15 Jan 2025 18:20:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC0471D61A4;
+	Wed, 15 Jan 2025 18:26:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736965250; cv=none; b=IPBaM3+wyo00E1f09hq+r1+6Iq90SHOqZucViQLJYhVFrG0ugKQPzemVAs5j09WKWhIrs33gJvbG+smbwQ4qT3Wd7MeQTlnq9bjBKk5j62CdQtkx1oOTk6ae+Qvnc2hr/GE9Z6H0tVCStKBdrxDkZ8+y6U6v2x4DifayR+BPRic=
+	t=1736965597; cv=none; b=UnsZhG9b44yuYkNiDiI46xXFHnpInZYc5qsT+Iufs+1zs4na9DpRCQgzWdvu08BIrbGhvzA9zd+cwL8soBpklbU5lbc/7hrORZHOie2YVxsB8bi0EHs8AkPtkwiXsVSLoea2N1YUvI+YrJmitRuF7leJ8ir4TuIW/9j4CMwC07I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736965250; c=relaxed/simple;
-	bh=Vq66YhCbR2GtMp6Cq7zCCTvPpbdue7ohUPmScQz6nzk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hGwyZoTM59H/18eAE2A/CGy5LDH49uXrlEJn8QRgOVaTqfTE1txBFpae7aPvnUepH0ACT7/d9ZZHygbSYaQocRmIGdapaGzmYddgtLYbhLHub7bL1935cnYX28wG5dlny+KtmmBf0VDMMaA8+BLUTT2GCZig1vd+Qc07p1xJ1aw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j7/o/xVC; arc=none smtp.client-ip=209.85.216.48
+	s=arc-20240116; t=1736965597; c=relaxed/simple;
+	bh=dAyz89EZoEzWIPFURAivydT9YnLv35q7fBjWn5AOeXM=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nf22klOEha+K8Clp+/IvSgCAWx53AwciNVUz/HV7LIkCNGiIrcFXQuoHeIec5sjlKMhUwLXsu/3Yf29bs71KFMoEMxcIRISENIbNkXELWWKBq3T+smb7NDUL8V27ff9FW636qIO9SjFUdRQLFgreSLpIwDBeGu57gtiN7GoLgcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T9d9uj6q; arc=none smtp.client-ip=209.85.218.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2ee50ffcf14so2009091a91.0;
-        Wed, 15 Jan 2025 10:20:49 -0800 (PST)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a9e44654ae3so16843666b.1;
+        Wed, 15 Jan 2025 10:26:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736965248; x=1737570048; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Vq66YhCbR2GtMp6Cq7zCCTvPpbdue7ohUPmScQz6nzk=;
-        b=j7/o/xVCgfC64bxHazI/AoCFWAoj0OM4uW3WClKNaIVih/58zjYmzL4iJfNCaSMCS5
-         9SZf34K207OpqMHBav+QNPHhGgq65sPrw6FxPWNoYy69YsDEL3Dv7OAsqtWggtWCS3Ax
-         XIe7ucVpLVLV3Lx17nHcSgZZNU5T4DgyhZiq/dSONavfh/zEYj70hlfJos2WInegXdTk
-         xucGbgwd53RS41TiZMAx3JGSrEd9q6radflIlrfLse+ZMUub6R+YI4c8LV5TnCNXpdh3
-         J+ibSEPc1XwEoaDmpssdnSEu4ubc8J9YNZPdf9C2wbw4zHoGpLD5U8Gq57pn0JXgrUZg
-         jr0Q==
+        d=gmail.com; s=20230601; t=1736965594; x=1737570394; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=h5XLRRKi/BnXe8mm5PslXAVqpPJMYf+9Ft4Tl+nHERA=;
+        b=T9d9uj6qodXPvpvnh0FIH2x2+uJM/4Fo0M0lTIgyMGtLw8ENcfn9zAOGpTc/6E7tBS
+         gdU1c3sG9UFgTIBmFnNxXHEshAQzm9vEZr11hJKNRJdV+C/vAxRUN/jFC2gZCOVcSQq6
+         CFYzgi3aR/a8+lDY8ouW3jiOMCiu0lV9dPE+zdhpsoDBgHUATlFzVzT2+bYsiEJOfZuD
+         0MDYML2Cbr2w+4mo3pmdctkADfEbH55+/ioRy15Da8Oc/qw+JSLfHY1rvKZkJVFRZ01S
+         UL4c+Frw0Rnl8qoyg+JIVqbRGvqc4kn6LaTGtWKuB9AnF1jRoRBVQucvPsmmn+xGDUVe
+         xPsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736965248; x=1737570048;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Vq66YhCbR2GtMp6Cq7zCCTvPpbdue7ohUPmScQz6nzk=;
-        b=FApPbWMI54JgUkXw0AWMo2e2UkhmqdlG9kgpYuXbBd48pCWJ09N4aJoVQUz2v6B/US
-         7cK8Fgtj4AUps5LHT/f0QBNAn5gavy7AJykXxE/m2wHM2O9tznYzNOr/Unaj8hjwZ7AC
-         vsaXlud3JtPkR6/U9JdgI9VGSU3sHCHM+IB0DxB3WoEFDpkevv9wyzv/xWxdhuoOjMLY
-         a8GWimI4diSB3TXk9Qnjwn40072u97uBPcZhg5Mc+KnMFkuKQpsPhG3pZXPKJPRMb2MP
-         najf/yBNOTVmXW2/3F1LMBUvC5EF/4bO559aUJq9j7mR9DeeHcl+CBPhFEktJxiHnYVA
-         uWPg==
-X-Forwarded-Encrypted: i=1; AJvYcCUymtqUfHJDvqNWSwwow+W+GBHeTtrz8q/mIs1pPSbAe3iNoVfRFkgOx6IYm8Ded0dlu6ezygyN4Q4kvFav@vger.kernel.org, AJvYcCVDv3fKz82vIl9t33ivsUvhQL1T5/MtdUqXAbZR/AgP0+L9yMzP7dTChTO2FVp6IDTrAOsGrqfTf3sY1CeOnzgMlHZL@vger.kernel.org, AJvYcCXgjbyP7OutV9P9rXJHbZSCws+untf+TSFsP+JusP6DcW66B7LwEl8D+r888EVGUkpC2gE=@vger.kernel.org, AJvYcCXkviiRc1gydmNcMHjbMgYztDn9bzVuUnzpocryPOAh9Pn9Juv8N3BRV0k+Hugndj91js7HFS2NPCM7@vger.kernel.org
-X-Gm-Message-State: AOJu0YzxucOMx55z2yQUgKHtPTCdssZqSLEG5U47KuyqX/O8RB4CxM9u
-	v1uMGvycRGO3PF2/vsiM2obKdpq+fX3cnlasbH2R0XtX9vrgqVMQqbOBXuNm/rMY39NqLNwcxgs
-	N56sKKMWUe5aTQ7wAZRyzVFaJJgow7g==
-X-Gm-Gg: ASbGncsRcduH1EE2LPk5vAOGKetAbiR9iJFPT8FqhanWquAlp0LgDsVznrJxf3maLXK
-	teWlsXkbsM5Ec3jUlFVxgCmHywn7cck2TbB6E
-X-Google-Smtp-Source: AGHT+IF9NtZ+66UkL1FvOrp8/deBXAsjyUAeArR2ssqxqY4JNezqt9qJmoTEWsR9BAvb4fZrRaNnHkO2od84IYZsXh0=
-X-Received: by 2002:a17:90b:2b8d:b0:2ee:7504:bb3d with SMTP id
- 98e67ed59e1d1-2f728bf2c11mr6571054a91.0.1736965246987; Wed, 15 Jan 2025
- 10:20:46 -0800 (PST)
+        d=1e100.net; s=20230601; t=1736965594; x=1737570394;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h5XLRRKi/BnXe8mm5PslXAVqpPJMYf+9Ft4Tl+nHERA=;
+        b=eyXqr49lK67vBQk3W9AzyAAAzige1Hnv1B8oq/ZuNo/r7XM7xKb/Ky4v5ebL+2nyIo
+         pzqYaR01Ieoo22eaj5WWb82vf9vhqoIesYilDR85WigDs638TpZ4nUmRRKuD2RsT9wpq
+         z7Dqtjd1+ss7CG6wb+4ZMqV0n4jdv6U0qNLsAmThmpRlDGPS2XqXyFIlQe+xGpEMpbXW
+         PNiiCoeQ3ew6CpCXosC5+zuWqgv1e+TOHo/SBobPGiyDA/Pz3G3aahBnim3faRQ3QRcb
+         W4XmaHrSZu1bIGO0xXpRi6pqU70l9EEGZhtBgaphrcPjIsV/NHzCKFwdpXxBt4brkonO
+         dy/g==
+X-Forwarded-Encrypted: i=1; AJvYcCV7HEyrvR8DCMcsdd/boDjuTomVUPD7M6H1ZPg1tEdu0ybtIMbHnKM+rp1e0mbIetrWCgFjRUnBigy2QmLPDUAPGNLl@vger.kernel.org, AJvYcCWiHRzScUdVUTZZfPL42l2NA8thArbfgK6FSsq5ACC9WAhrK05y/BxU3xzjFatlEvLCOyoPa0+N2gRFlOn1@vger.kernel.org, AJvYcCXEJv4T+p5cSr8TLpiJbgHYuX0dDmqdh3w++cKEkVS7JlHRl+1MtL7qTvAOKQAmNUiRkyA=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz+iPcbTsM9uXWd7SKl8M91y7Z4Q+RYHsPRWmheMcPTZw0W3cNo
+	/KxvLlDXoDP3FMACk7ybL/fGn7gqCdjujGVp7Mo4qMXdEnEgRs8SGMGmyQ==
+X-Gm-Gg: ASbGncsgfH54d0wOHKYUJ7eQhQpl6zj9fEThKYSr5BKC5tPI9uCTv/TrmRQcwwrNYVz
+	FSsicBXKqboTaxOuDQIee7RElSCFG+y9oq1iDS6DUGwmQ8eUsn0AgOWt0sO0P/4qLQ5tmq4NEKg
+	k2dTXtDIM89F+gVxz8yXdm5lGBK/xzXO0xIsDrq/maQyK94KbqpqUZI+fNNzpVVmbbdtH3OxDxb
+	mcdbi1aRRzGeJZfAKZGnebDXmBIm45BSA+OShKrWQ==
+X-Google-Smtp-Source: AGHT+IFvh8cjZKvBu1i/Z84VVP8RrVEC2PYJri+pYoLzmdo5Uc6hJX93IkB84KZmtQG+GcYsqBxSKA==
+X-Received: by 2002:a17:907:1c8c:b0:aa6:7cf3:c6ef with SMTP id a640c23a62f3a-ab2ab70a362mr2731381766b.15.1736965593853;
+        Wed, 15 Jan 2025 10:26:33 -0800 (PST)
+Received: from krava ([95.82.160.96])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab2c9060db6sm791648366b.8.2025.01.15.10.26.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jan 2025 10:26:33 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 15 Jan 2025 19:26:29 +0100
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	David Laight <David.Laight@aculab.com>,
+	lkml <linux-kernel@vger.kernel.org>,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	x86@kernel.org
+Subject: Re: [RFC] x86/alternatives: Merge first and second step in
+ text_poke_bp_batch
+Message-ID: <Z4f91RUP8sDniss7@krava>
+References: <20250114140237.3506624-1-jolsa@kernel.org>
+ <20250114141723.GS5388@noisy.programming.kicks-ass.net>
+ <Z4Z1MoJV0WW-vIHp@krava>
+ <20250114103604.7388352c@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAHsH6Gs3Eh8DFU0wq58c_LF8A4_+o6z456J7BidmcVY2AqOnHQ@mail.gmail.com>
- <20250110.152323-sassy.torch.lavish.rent-vKX3ul5B3qyi@cyphar.com>
- <Z4K7D10rjuVeRCKq@krava> <Z4YszJfOvFEAaKjF@krava> <CAHsH6Gst+UGCtiCaNq2ikaknZGghpTq2SFZX7S0A8=uDsXt=Zw@mail.gmail.com>
- <20250114143313.GA29305@redhat.com> <Z4Z7OkrtXBauaLcm@krava>
- <20250114172519.GB29305@redhat.com> <Z4eBs0-kJ3iVZjXL@krava>
- <20250115150607.GA11980@redhat.com> <CAADnVQJjroiR0SRp69f1NbomEH-riw53e_-TioqT4aEt3GSKGg@mail.gmail.com>
-In-Reply-To: <CAADnVQJjroiR0SRp69f1NbomEH-riw53e_-TioqT4aEt3GSKGg@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 15 Jan 2025 10:20:34 -0800
-X-Gm-Features: AbW1kvZVbnIbnZHW-8PInM1hXXlwjQREQdb1YQX5brF_yU0Utl0vyp__rJJ66dk
-Message-ID: <CAEf4BzbVZuYEXro57FhZyTetaKFZ1xr9FGn5iyi8Nwa+LbA0vA@mail.gmail.com>
-Subject: Re: Crash when attaching uretprobes to processes running in Docker
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Oleg Nesterov <oleg@redhat.com>, Jiri Olsa <olsajiri@gmail.com>, 
-	Eyal Birger <eyal.birger@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, BPF-dev-list <bpf@vger.kernel.org>, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>, 
-	Linux API <linux-api@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
-	"rostedt@goodmis.org" <rostedt@goodmis.org>, rafi@rbk.io, 
-	Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250114103604.7388352c@gandalf.local.home>
 
-On Wed, Jan 15, 2025 at 9:56=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Jan 15, 2025 at 7:06=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> w=
-rote:
-> >
-> > Or we can change __secure_computing() to do nothing if
-> > this_syscall =3D=3D __NR_uretprobe.
->
-> I think that's the best way forward.
-> seccomp already allowlists sigreturn syscall.
-> uretprobe syscall is in the same category.
+On Tue, Jan 14, 2025 at 10:36:04AM -0500, Steven Rostedt wrote:
+> On Tue, 14 Jan 2025 15:31:14 +0100
+> Jiri Olsa <olsajiri@gmail.com> wrote:
+> 
+> > > IIRC this is the magic recipe blessed by both Intel and AMD, and
+> > > if we're going to be changing this I would want both vendors to sign off
+> > > on that.  
+> > 
+> > ok
+> 
+> Right. In fact Intel wouldn't sign off on this recipe for a few years. We
+> actually added to the kernel before they gave their full blessing. I got a
+> "wink, it should work" from them but they wouldn't officially say so ;-)
+> 
+> But a lot of it has to do with all the magic of the CPU. They have always
+> allowed writing the one byte int3. I figured, if I could write that one
+> byte int3 then run a sync on all CPUs where all CPUs see that change, then
+> nothing should ever care about the other 4 bytes after that int3 (a sync
+> was already done). Then change the 4 bytes and sync again.
+> 
+> I doubt the int3 plus the 4 byte change would work, as was mentioned if the
+> other 4 bytes were on another cache line, another CPU could read the first
+> set of bytes without the int3 and the second set of bytes with the update
+> and go boom!
+> 
+> This dance was to make sure everything sees everything properly. I gave a
+> talk about this at Kernel-Recipes in 2019:
+> 
+>   https://www.slideshare.net/slideshow/kernel-recipes-2019-ftrace-where-modifying-a-running-kernel-all-started/177509633#44
 
-+1, we will have a similar problem with sys_uprobe (when it's added).
-Just like rt_sigreturn, these are special kernel-only mechanisms, and
-the kernel already protects itself from any user abuse. So I think we
-should have a way to ensure those special syscalls can go through
-regardless of seccomp.
-
-> See __secure_computing_strict.
+nice! thanks for all the details,
+jirka
 
