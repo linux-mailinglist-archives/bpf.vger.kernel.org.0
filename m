@@ -1,115 +1,153 @@
-Return-Path: <bpf+bounces-48978-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48980-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4DD3A12CB3
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 21:31:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4356A12D11
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 22:00:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0F4A16682F
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 20:31:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1A5518896E1
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 21:00:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 559F91DC988;
-	Wed, 15 Jan 2025 20:30:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 186FC1DB14C;
+	Wed, 15 Jan 2025 21:00:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="uHP/y9C0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JLrz2I58"
 X-Original-To: bpf@vger.kernel.org
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8D0D1DA2FD;
-	Wed, 15 Jan 2025 20:30:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B4511DA60F;
+	Wed, 15 Jan 2025 21:00:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736973047; cv=none; b=ouPGIjESCQMoZGlg4uRHxgxJp3YdUvjuLnJQaxkuxebqiE9dxhETQy+y3LxwmEcjNBzl1sekTLi1NKPUq3Jp7aVnBYWgacnzSCSNPvf3BJ3zTlXXFdM7/KGFe2yhgHNeAClRxCt1qx6/vk6rqu3GWMhNfp84KsgNS64yDH2nCPA=
+	t=1736974812; cv=none; b=OKO7qgN43UjfACEybSiylAXNpkXzMliTJzvZCrIRMHMxOazQCqNh4vliSJzlfDZ9VqZkgvWHxndtgrkzGPG6elfyeHAcOyTqMjAxNBoW2DtufNrXg12Ax5LH0vw4/1HGC5k1UW8CHv3Vv1SrN1PT+cC4X+KvYKgfyXJjkVFBlQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736973047; c=relaxed/simple;
-	bh=BYOO8ahA7KfPQlXlr5RsOfavt8hnK4U757hh8EFudms=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pgV9Q/bsAwJXTtEfqAlKhmcO4KVVGQOelebUkSLETgzbDbPuIWtTUreW4em8L8u1pkQErwOwsRkLG7R131wzkwg/yqJqLBqJpIg3OWxZvKumELuNJ0FzfF9iojLDKob/L+0dU6rNH9Ox2FH6O+Eb6ygVHxYj8YKD0d4im3NthRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=uHP/y9C0; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=rXTIpr22DZcYITN7Dougj4FUS5jO5aee0GhdxiE+89U=; b=uHP/y9C0A43shn/tMQl7hZFR1e
-	sIpapg2etl95IeP6cmwDn9znhIjiDvPCqBWdPBJJhfD8i/RSzRrOc1hbIgbUNh2Q0ziU1NucVot8q
-	RuTUkqHershfsAIAa9MPlF1tS3ytnEpa5AqCmtfPPUtTARFHiu6EFs9+dH7XreAIB0UZlD6iegzJS
-	iS18Yt+710zhroLLDuOnFsjUghC7IWx/siTwlL7OK1U6VrZBktRzCk1WRWtoadsQg6pmCBwU35l68
-	v1PRG7MhP7W6fXJfx0zdwatQlcXXLCtzet6lWptY9HIl0bpMQZpmDUZsPkbWZKiGNAKl2gVCt08CB
-	ayNcMSyw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33574)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1tYA26-0001h3-2T;
-	Wed, 15 Jan 2025 20:30:34 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.96)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1tYA25-0006TL-0C;
-	Wed, 15 Jan 2025 20:30:33 +0000
-Date: Wed, 15 Jan 2025 20:30:32 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Roger Quadros <rogerq@kernel.org>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Siddharth Vadapalli <s-vadapalli@ti.com>, srk@ti.com,
-	danishanwar@ti.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 2/4] net: ethernet: ti: am65-cpsw: streamline
- .probe() error handling
-Message-ID: <Z4ga6N7brU1FrQzx@shell.armlinux.org.uk>
-References: <20250115-am65-cpsw-streamline-v1-0-326975c36935@kernel.org>
- <20250115-am65-cpsw-streamline-v1-2-326975c36935@kernel.org>
+	s=arc-20240116; t=1736974812; c=relaxed/simple;
+	bh=RlPD0kUWIPW5R0PKSVU27JaRoL2dMi9vvo/1Qhhlx7Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=MCUbaDarjwH5dmHKNN+ciLjZ7+83Bw1jm8n+TM/OCKldju5m8fihkwUL5m1XekXpa/RdZWnHKt+zA3u+/QqDfCbhPUVdQPIvdAB17erujKj82N/6aw4ICBr4soO8j/7aIIMkBrOSTshVX2/0upKcimjLQnuA43FU/eIohwmaAyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JLrz2I58; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DDFEC4CED1;
+	Wed, 15 Jan 2025 21:00:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736974811;
+	bh=RlPD0kUWIPW5R0PKSVU27JaRoL2dMi9vvo/1Qhhlx7Q=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=JLrz2I58zheY19rQK47qVvp+t77dq2WMCZsCyasfRIy09JD1KERUCk98ZXRnBnnvG
+	 o7i50NxFKCdsWe97sGCjZhlF6XwW1zEDJRH0wrr0gFCuGRAWnkC65twQLcDXMPuFCP
+	 dUsqKh2CRhaPyNAWNMp+Nqi/XqvCIcJ8FWTpAKMeCg5a3W6E+pLdwuwFwOi77PL86R
+	 hqoA1YQBuH6l7LcEbZ5tawJpXZ4cBt72pebRmdZ1982K6PkrkOMgDLAOnQg+B40PJC
+	 6aj1IEJuKx5Ry8+YO4jwPUQZk+LO8utjRG6HdPnM2cq+Y53kNwPOAoch6Mlx9YCGqg
+	 uQwV5KiA3sbsQ==
+Date: Wed, 15 Jan 2025 15:00:10 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Marc Zyngier <maz@kernel.org>
+Cc: Frank Li <Frank.Li@nxp.com>, Bjorn Helgaas <bhelgaas@google.com>,
+	Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	imx@lists.linux.dev, alyssa@rosenzweig.io, bpf@vger.kernel.org,
+	broonie@kernel.org, jgg@ziepe.ca, joro@8bytes.org,
+	lgirdwood@gmail.com, p.zabel@pengutronix.de, robin.murphy@arm.com,
+	will@kernel.org
+Subject: Re: [PATCH v9 0/2] PCI: add enabe(disable)_device() hook for bridge
+Message-ID: <20250115210010.GA551375@bhelgaas>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250115-am65-cpsw-streamline-v1-2-326975c36935@kernel.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <86bjw8wj05.wl-maz@kernel.org>
 
-On Wed, Jan 15, 2025 at 06:43:01PM +0200, Roger Quadros wrote:
-> Keep things simple by explicitly cleaning up on .probe() error
-> path or .remove(). Get rid of devm_add/remove_action() usage.
+On Wed, Jan 15, 2025 at 08:58:50AM +0000, Marc Zyngier wrote:
+> On Tue, 14 Jan 2025 22:33:41 +0000,
+> Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > 
+> > On Tue, Jan 14, 2025 at 03:37:07PM -0500, Frank Li wrote:
+> > > Some system's IOMMU stream(master) ID bits(such as 6bits) less than
+> > > pci_device_id (16bit). It needs add hardware configuration to enable
+> > > pci_device_id to stream ID convert.
+> > > 
+> > > https://lore.kernel.org/imx/20240622173849.GA1432357@bhelgaas/
+> > > This ways use pcie bus notifier (like apple pci controller), when new PCIe
+> > > device added, bus notifier will call register specific callback to handle
+> > > look up table (LUT) configuration.
+> > > 
+> > > https://lore.kernel.org/imx/20240429150842.GC1709920-robh@kernel.org/
+> > > which parse dt's 'msi-map' and 'iommu-map' property to static config LUT
+> > > table (qcom use this way). This way is rejected by DT maintainer Rob.
+> > > 
+> > > Above ways can resolve LUT take or stream id out of usage the problem. If
+> > > there are not enough stream id resource, not error return, EP hardware
+> > > still issue DMA to do transfer, which may transfer to wrong possition.
+> > > 
+> > > Add enable(disable)_device() hook for bridge can return error when not
+> > > enough resource, and PCI device can't enabled.
+> > > 
+> > > Basicallly this version can match Bjorn's requirement:
+> > > 1: simple, because it is rare that there are no LUT resource.
+> > > 2: EP driver probe failure when no LUT, but lspci can see such device.
+> > > 
+> > > [    2.164415] nvme nvme0: pci function 0000:01:00.0
+> > > [    2.169142] pci 0000:00:00.0: Error enabling bridge (-1), continuing
+> > > [    2.175654] nvme 0000:01:00.0: probe with driver nvme failed with error -12
+> > > 
+> > > > lspci
+> > > 0000:00:00.0 PCI bridge: Philips Semiconductors Device 0000
+> > > 0000:01:00.0 Non-Volatile memory controller: Micron Technology Inc 2100AI NVMe SSD [Nitro] (rev 03)
+> > > 
+> > > To: Bjorn Helgaas <bhelgaas@google.com>
+> > > To: Richard Zhu <hongxing.zhu@nxp.com>
+> > > To: Lucas Stach <l.stach@pengutronix.de>
+> > > To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+> > > To: Krzysztof Wilczyński <kw@linux.com>
+> > > To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > To: Rob Herring <robh@kernel.org>
+> > > To: Shawn Guo <shawnguo@kernel.org>
+> > > To: Sascha Hauer <s.hauer@pengutronix.de>
+> > > To: Pengutronix Kernel Team <kernel@pengutronix.de>
+> > > To: Fabio Estevam <festevam@gmail.com>
+> > > Cc: linux-pci@vger.kernel.org
+> > > Cc: linux-kernel@vger.kernel.org
+> > > Cc: linux-arm-kernel@lists.infradead.org
+> > > Cc: imx@lists.linux.dev
+> > > Cc: Frank.li@nxp.com \
+> > > Cc: alyssa@rosenzweig.io \
+> > > Cc: bpf@vger.kernel.org \
+> > > Cc: broonie@kernel.org \
+> > > Cc: jgg@ziepe.ca \
+> > > Cc: joro@8bytes.org \
+> > > Cc: l.stach@pengutronix.de \
+> > > Cc: lgirdwood@gmail.com \
+> > > Cc: maz@kernel.org \
+> > > Cc: p.zabel@pengutronix.de \
+> > > Cc: robin.murphy@arm.com \
+> > > Cc: will@kernel.org \
+> > > Cc: Robin Murphy <robin.murphy@arm.com>
+> > > Cc: Marc Zyngier <maz@kernel.org>
+> > > 
+> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > 
+> > Applied to pci/controller/imx6 for v6.14, thanks!  And thanks for your
+> > patience.
 > 
-> Rename am65_cpsw_disable_serdes_phy() to
-> am65_cpsw_nuss_cleanup_slave_ports() and move it right before
-> am65_cpsw_nuss_init_slave_ports().
+> While you're at it, could you please consider [1], which builds on top
+> of the same infrastructure to remove the Apple PCIe IOMMU hack?
 > 
-> Get rid of am65_cpsw_nuss_phylink_cleanup() and introduce
-> am65_cpsw_nuss_cleanup_ndevs() right before am65_cpsw_nuss_init_ndevs()
-> 
-> Move channel initiailzation code out of am65_cpsw_nuss_register_ndevs()
-> into new function am65_cpsw_nuss_init_chns().
-> Add am65_cpsw_nuss_remove_chns() to do reverse of
-> am65_cpsw_nuss_init_chns().
-> 
-> Add am65_cpsw_nuss_unregister_ndev() to do reverse of
-> am65_cpsw_nuss_register_ndevs().
-> 
-> Use the introduced helpers in probe/remove.
+> [1] https://lore.kernel.org/linux-pci/20241204150145.800408-1-maz@kernel.org/
 
-Wow, so we're now saying that devm shouldn't be used? Given that patch 1
-is wrong, I'm not sure I'd trust this patch to be correct either as it
-goes against what I understand is preferred - to avoid explicit cleanups
-that can get in the wrong order or be missed.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Done, thanks for the reminder!
 
