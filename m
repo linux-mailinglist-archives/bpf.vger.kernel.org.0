@@ -1,171 +1,174 @@
-Return-Path: <bpf+bounces-48911-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48912-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8ECEA11C52
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 09:44:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52F5EA11CA7
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 10:00:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A6353A73D8
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 08:44:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67257169007
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 09:00:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54EF91E7C14;
-	Wed, 15 Jan 2025 08:44:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2277246A12;
+	Wed, 15 Jan 2025 08:58:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dhqVzbb1"
 X-Original-To: bpf@vger.kernel.org
-Received: from air.basealt.ru (air.basealt.ru [193.43.8.18])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51E361DB150;
-	Wed, 15 Jan 2025 08:44:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.43.8.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D672246A06;
+	Wed, 15 Jan 2025 08:58:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736930688; cv=none; b=UIHeDIAOypRpKwn9ntqudW5NloIDcmxM17dwVseCShipjfwuk6ZClMLbbJsv4qTN2kmWn3XAxJCBVrosnqNly7C5fH3hgTjuK9vrLBfyBwbyNDp4rzW53oFIQT6+5/sNi0nZiiAaS/I+1tLCtNNaUGFwK2h6QCQBx24AueHZigM=
+	t=1736931534; cv=none; b=gdNr5cO3dVEba85gg5Qc+7Nf8pc7N9U/xwM35b03f53jUmp3gQE9K2sD2QhVzyhg98wh6H+FBVxQ3beEf0qAkN0qnmk0ikllPYjJOoapURnEWHRdVldmCa1XZ0lH1fwfT0/1iur9MkneA7QI4hmOT9+TWj2z3qGtdWLY3F/BnIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736930688; c=relaxed/simple;
-	bh=rmG61nci4WEevbRh00UWMLiYViTQ0NqenQ7lgqSlwlA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=U2TVr80f/C+4LH8CxWIMVZK1dXPpf/0zbQPCFgO7Fmr0JjRYLkJKK3kRfroxESD/GF0sPK5XYqm5lE7uvkaYR/24qv7oNdYGTCzWLO3GoIPKIMQ+OrLxaEnrlcw2RmL3y2gCxfZ/RQh0FylJs6XzgTU28Jm0IuXQBhdlvgP3EWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=193.43.8.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
-Received: from altlinux.ipa.basealt.ru (unknown [178.76.204.78])
-	by air.basealt.ru (Postfix) with ESMTPSA id BC6FF233C0;
-	Wed, 15 Jan 2025 11:44:35 +0300 (MSK)
-From: Vasiliy Kovalev <kovalev@altlinux.org>
-To: stable@vger.kernel.org
-Cc: netdev@vger.kernel.org,
-	bpf@vger.kernel.org,
-	lvc-project@linuxtesting.org,
-	kovalev@altlinux.org,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jordy Zomer <jordyzomer@google.com>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH 5.10] xsk: fix OOB map writes when deleting elements
-Date: Wed, 15 Jan 2025 11:43:47 +0300
-Message-Id: <20250115084347.333515-1-kovalev@altlinux.org>
-X-Mailer: git-send-email 2.33.8
+	s=arc-20240116; t=1736931534; c=relaxed/simple;
+	bh=vI6Xwhvptn1zlvH6NJeG2RVQFhP751RykEiTaO65sxM=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=mkLcCiN+XaQgHvDdD0W+bm47KmSxcPKpY02UwBThuUjILjgEkB/Dquh+M6E8N3MNqff2TmtdSqqnih875Q0CyqSm56HW5RHtivqsTrz9NhQV4oW4Xsg+U4I149U2+KZqR3hO1q7vL18RInIUt4hhJd8zQuvvIjkR12lhlx1cBkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dhqVzbb1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A94D2C4CEE1;
+	Wed, 15 Jan 2025 08:58:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736931533;
+	bh=vI6Xwhvptn1zlvH6NJeG2RVQFhP751RykEiTaO65sxM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=dhqVzbb1B+OzzHH3tYcq27OtXwx3B8QUMRaVh7eMTaHQmCLYDZ8dNqqiNj6BXCxNo
+	 Cij4B3TpjBMH137MMS/VkjM8jhuE39hz1Ez9BIz+VjgDMwEuJ8Bf2dwbAIPw27QJQj
+	 b3OnQbxlQU4b5+zpEvhIYr8MdGmK9g6Gx+8IxTW+JCm+uAo87+eGvqEyKWLd7Tyb06
+	 i77XWUK3y6NVbctrB/iiyV7Ov379qzGBlfSIlkCadz2oZ2l9FEQ/rYc6e/Z1E2Q5qc
+	 ekHRD8Bvr2DA44oRnNP6Z2z1gdNUEZTCUKMj2K5Y1EjWAkqVzFDxQDuyXOGHa36GuI
+	 brV0E6djZUfTg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1tXzEg-00CPh3-Pf;
+	Wed, 15 Jan 2025 08:58:51 +0000
+Date: Wed, 15 Jan 2025 08:58:50 +0000
+Message-ID: <86bjw8wj05.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Frank Li <Frank.Li@nxp.com>,	Bjorn Helgaas <bhelgaas@google.com>,
+	Richard Zhu <hongxing.zhu@nxp.com>,	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,	Krzysztof =?UTF-8?B?V2lsY3p5?=
+ =?UTF-8?B?xYRza2k=?= <kw@linux.com>,	Manivannan Sadhasivam
+ <manivannan.sadhasivam@linaro.org>,	Rob Herring <robh@kernel.org>,	Shawn
+ Guo <shawnguo@kernel.org>,	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,	Fabio Estevam
+ <festevam@gmail.com>,	linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org,	linux-arm-kernel@lists.infradead.org,
+	imx@lists.linux.dev,	alyssa@rosenzweig.io,	bpf@vger.kernel.org,
+	broonie@kernel.org,	jgg@ziepe.ca,	joro@8bytes.org,	lgirdwood@gmail.com,
+	p.zabel@pengutronix.de,	robin.murphy@arm.com,	will@kernel.org
+Subject: Re: [PATCH v9 0/2] PCI: add enabe(disable)_device() hook for bridge
+In-Reply-To: <20250114223341.GA495433@bhelgaas>
+References: <20250114-imx95_lut-v9-0-39f58dbed03a@nxp.com>
+	<20250114223341.GA495433@bhelgaas>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.4
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: helgaas@kernel.org, Frank.Li@nxp.com, bhelgaas@google.com, hongxing.zhu@nxp.com, l.stach@pengutronix.de, lpieralisi@kernel.org, kw@linux.com, manivannan.sadhasivam@linaro.org, robh@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev, alyssa@rosenzweig.io, bpf@vger.kernel.org, broonie@kernel.org, jgg@ziepe.ca, joro@8bytes.org, lgirdwood@gmail.com, p.zabel@pengutronix.de, robin.murphy@arm.com, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+On Tue, 14 Jan 2025 22:33:41 +0000,
+Bjorn Helgaas <helgaas@kernel.org> wrote:
+>=20
+> On Tue, Jan 14, 2025 at 03:37:07PM -0500, Frank Li wrote:
+> > Some system's IOMMU stream(master) ID bits(such as 6bits) less than
+> > pci_device_id (16bit). It needs add hardware configuration to enable
+> > pci_device_id to stream ID convert.
+> >=20
+> > https://lore.kernel.org/imx/20240622173849.GA1432357@bhelgaas/
+> > This ways use pcie bus notifier (like apple pci controller), when new P=
+CIe
+> > device added, bus notifier will call register specific callback to hand=
+le
+> > look up table (LUT) configuration.
+> >=20
+> > https://lore.kernel.org/imx/20240429150842.GC1709920-robh@kernel.org/
+> > which parse dt's 'msi-map' and 'iommu-map' property to static config LUT
+> > table (qcom use this way). This way is rejected by DT maintainer Rob.
+> >=20
+> > Above ways can resolve LUT take or stream id out of usage the problem. =
+If
+> > there are not enough stream id resource, not error return, EP hardware
+> > still issue DMA to do transfer, which may transfer to wrong possition.
+> >=20
+> > Add enable(disable)_device() hook for bridge can return error when not
+> > enough resource, and PCI device can't enabled.
+> >=20
+> > Basicallly this version can match Bjorn's requirement:
+> > 1: simple, because it is rare that there are no LUT resource.
+> > 2: EP driver probe failure when no LUT, but lspci can see such device.
+> >=20
+> > [    2.164415] nvme nvme0: pci function 0000:01:00.0
+> > [    2.169142] pci 0000:00:00.0: Error enabling bridge (-1), continuing
+> > [    2.175654] nvme 0000:01:00.0: probe with driver nvme failed with er=
+ror -12
+> >=20
+> > > lspci
+> > 0000:00:00.0 PCI bridge: Philips Semiconductors Device 0000
+> > 0000:01:00.0 Non-Volatile memory controller: Micron Technology Inc 2100=
+AI NVMe SSD [Nitro] (rev 03)
+> >=20
+> > To: Bjorn Helgaas <bhelgaas@google.com>
+> > To: Richard Zhu <hongxing.zhu@nxp.com>
+> > To: Lucas Stach <l.stach@pengutronix.de>
+> > To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+> > To: Krzysztof Wilczy=C5=84ski <kw@linux.com>
+> > To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > To: Rob Herring <robh@kernel.org>
+> > To: Shawn Guo <shawnguo@kernel.org>
+> > To: Sascha Hauer <s.hauer@pengutronix.de>
+> > To: Pengutronix Kernel Team <kernel@pengutronix.de>
+> > To: Fabio Estevam <festevam@gmail.com>
+> > Cc: linux-pci@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: imx@lists.linux.dev
+> > Cc: Frank.li@nxp.com \
+> > Cc: alyssa@rosenzweig.io \
+> > Cc: bpf@vger.kernel.org \
+> > Cc: broonie@kernel.org \
+> > Cc: jgg@ziepe.ca \
+> > Cc: joro@8bytes.org \
+> > Cc: l.stach@pengutronix.de \
+> > Cc: lgirdwood@gmail.com \
+> > Cc: maz@kernel.org \
+> > Cc: p.zabel@pengutronix.de \
+> > Cc: robin.murphy@arm.com \
+> > Cc: will@kernel.org \
+> > Cc: Robin Murphy <robin.murphy@arm.com>
+> > Cc: Marc Zyngier <maz@kernel.org>
+> >=20
+> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+>=20
+> Applied to pci/controller/imx6 for v6.14, thanks!  And thanks for your
+> patience.
 
-commit 32cd3db7de97c0c7a018756ce66244342fd583f0 upstream.
+While you're at it, could you please consider [1], which builds on top
+of the same infrastructure to remove the Apple PCIe IOMMU hack?
 
-Jordy says:
+Thanks,
 
-"
-In the xsk_map_delete_elem function an unsigned integer
-(map->max_entries) is compared with a user-controlled signed integer
-(k). Due to implicit type conversion, a large unsigned value for
-map->max_entries can bypass the intended bounds check:
+	M.
 
-	if (k >= map->max_entries)
-		return -EINVAL;
+[1] https://lore.kernel.org/linux-pci/20241204150145.800408-1-maz@kernel.or=
+g/
 
-This allows k to hold a negative value (between -2147483648 and -2),
-which is then used as an array index in m->xsk_map[k], which results
-in an out-of-bounds access.
-
-	spin_lock_bh(&m->lock);
-	map_entry = &m->xsk_map[k]; // Out-of-bounds map_entry
-	old_xs = unrcu_pointer(xchg(map_entry, NULL));  // Oob write
-	if (old_xs)
-		xsk_map_sock_delete(old_xs, map_entry);
-	spin_unlock_bh(&m->lock);
-
-The xchg operation can then be used to cause an out-of-bounds write.
-Moreover, the invalid map_entry passed to xsk_map_sock_delete can lead
-to further memory corruption.
-"
-
-It indeed results in following splat:
-
-[76612.897343] BUG: unable to handle page fault for address: ffffc8fc2e461108
-[76612.904330] #PF: supervisor write access in kernel mode
-[76612.909639] #PF: error_code(0x0002) - not-present page
-[76612.914855] PGD 0 P4D 0
-[76612.917431] Oops: Oops: 0002 [#1] PREEMPT SMP
-[76612.921859] CPU: 11 UID: 0 PID: 10318 Comm: a.out Not tainted 6.12.0-rc1+ #470
-[76612.929189] Hardware name: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
-[76612.939781] RIP: 0010:xsk_map_delete_elem+0x2d/0x60
-[76612.944738] Code: 00 00 41 54 55 53 48 63 2e 3b 6f 24 73 38 4c 8d a7 f8 00 00 00 48 89 fb 4c 89 e7 e8 2d bf 05 00 48 8d b4 eb 00 01 00 00 31 ff <48> 87 3e 48 85 ff 74 05 e8 16 ff ff ff 4c 89 e7 e8 3e bc 05 00 31
-[76612.963774] RSP: 0018:ffffc9002e407df8 EFLAGS: 00010246
-[76612.969079] RAX: 0000000000000000 RBX: ffffc9002e461000 RCX: 0000000000000000
-[76612.976323] RDX: 0000000000000001 RSI: ffffc8fc2e461108 RDI: 0000000000000000
-[76612.983569] RBP: ffffffff80000001 R08: 0000000000000000 R09: 0000000000000007
-[76612.990812] R10: ffffc9002e407e18 R11: ffff888108a38858 R12: ffffc9002e4610f8
-[76612.998060] R13: ffff888108a38858 R14: 00007ffd1ae0ac78 R15: ffffc9002e4610c0
-[76613.005303] FS:  00007f80b6f59740(0000) GS:ffff8897e0ec0000(0000) knlGS:0000000000000000
-[76613.013517] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[76613.019349] CR2: ffffc8fc2e461108 CR3: 000000011e3ef001 CR4: 00000000007726f0
-[76613.026595] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[76613.033841] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[76613.041086] PKRU: 55555554
-[76613.043842] Call Trace:
-[76613.046331]  <TASK>
-[76613.048468]  ? __die+0x20/0x60
-[76613.051581]  ? page_fault_oops+0x15a/0x450
-[76613.055747]  ? search_extable+0x22/0x30
-[76613.059649]  ? search_bpf_extables+0x5f/0x80
-[76613.063988]  ? exc_page_fault+0xa9/0x140
-[76613.067975]  ? asm_exc_page_fault+0x22/0x30
-[76613.072229]  ? xsk_map_delete_elem+0x2d/0x60
-[76613.076573]  ? xsk_map_delete_elem+0x23/0x60
-[76613.080914]  __sys_bpf+0x19b7/0x23c0
-[76613.084555]  __x64_sys_bpf+0x1a/0x20
-[76613.088194]  do_syscall_64+0x37/0xb0
-[76613.091832]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
-[76613.096962] RIP: 0033:0x7f80b6d1e88d
-[76613.100592] Code: 5b 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 73 b5 0f 00 f7 d8 64 89 01 48
-[76613.119631] RSP: 002b:00007ffd1ae0ac68 EFLAGS: 00000206 ORIG_RAX: 0000000000000141
-[76613.131330] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f80b6d1e88d
-[76613.142632] RDX: 0000000000000098 RSI: 00007ffd1ae0ad20 RDI: 0000000000000003
-[76613.153967] RBP: 00007ffd1ae0adc0 R08: 0000000000000000 R09: 0000000000000000
-[76613.166030] R10: 00007f80b6f77040 R11: 0000000000000206 R12: 00007ffd1ae0aed8
-[76613.177130] R13: 000055ddf42ce1e9 R14: 000055ddf42d0d98 R15: 00007f80b6fab040
-[76613.188129]  </TASK>
-
-Fix this by simply changing key type from int to u32.
-
-Fixes: fbfc504a24f5 ("bpf: introduce new bpf AF_XDP map type BPF_MAP_TYPE_XSKMAP")
-CC: stable@vger.kernel.org
-Reported-by: Jordy Zomer <jordyzomer@google.com>
-Suggested-by: Jordy Zomer <jordyzomer@google.com>
-Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Link: https://lore.kernel.org/r/20241122121030.716788-2-maciej.fijalkowski@intel.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Vasiliy Kovalev <kovalev@altlinux.org>
----
-Backport to fix CVE-2024-56614
-Link: https://www.cve.org/CVERecord/?id=CVE-2024-56614
----
- net/xdp/xskmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/xdp/xskmap.c b/net/xdp/xskmap.c
-index 49da2b8ace8b7d..bb356e892128c8 100644
---- a/net/xdp/xskmap.c
-+++ b/net/xdp/xskmap.c
-@@ -223,7 +223,7 @@ static int xsk_map_delete_elem(struct bpf_map *map, void *key)
- {
- 	struct xsk_map *m = container_of(map, struct xsk_map, map);
- 	struct xdp_sock *old_xs, **map_entry;
--	int k = *(u32 *)key;
-+	u32 k = *(u32 *)key;
- 
- 	if (k >= map->max_entries)
- 		return -EINVAL;
--- 
-2.33.8
-
+--=20
+Without deviation from the norm, progress is not possible.
 
