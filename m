@@ -1,274 +1,140 @@
-Return-Path: <bpf+bounces-48927-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48928-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF475A1235A
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 12:58:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BA44A124A8
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 14:24:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E617D1890119
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 11:58:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7D36167698
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 13:24:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EC742475D4;
-	Wed, 15 Jan 2025 11:58:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F33D72419F7;
+	Wed, 15 Jan 2025 13:24:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YlSZTR1V"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DNlTM5wW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F6F2475CC;
-	Wed, 15 Jan 2025 11:58:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 196711BEF9E;
+	Wed, 15 Jan 2025 13:24:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736942317; cv=none; b=jeIeb+le6iyLVysdZ40/UGlUS2+pJ/lP0J5K0dEoMO0Sira+t0QgaItsRLcnCQsAQ4mntYz8IZh69nOYoQKq1gJv6/+qOgEcP3w8s/OLhHxVBDVLdP5AKSReiCKZO56ACBulGG2Jb5IY4qcj1hXy9tigUbXE9jpQVqXEBxAAmKg=
+	t=1736947475; cv=none; b=WWKBI2j09y769u1TlWwb1SqkUwshboXZ8mWZE1JV4XIRG7ofChLVJCuVhNtS+IxkUzW1x0sGRTs2YrciFORDPVtkAE3JV9HlfvF29ItllfjxLKicQomaMUc+J6t0ap/yYFo1OEMmcuT/qRH+MdyhJmIe0bG1hR+1Wi8LvqJnMks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736942317; c=relaxed/simple;
-	bh=sMl9f2LkaeCiTy2z2bfw5tskHF+O1pC5QN3LwdDdF7o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b7kgnDIk0qkZNFvCtGw09kOPryYnmd91S/ZlzsLAb16orinqC+1R/UPVjs3OHTBmKy/8ZzCFSp6kewv2jG4P43gPJGgAKLSjqNTfN36LRqvK3RwTuTB1V12clnQ9ew/EGTqzih1/rgBq0O+lXRz7luB3xexwOnUSxsXrVfu5nFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YlSZTR1V; arc=none smtp.client-ip=209.85.214.179
+	s=arc-20240116; t=1736947475; c=relaxed/simple;
+	bh=xM/06B2nrWtC+XfLoOWeWpaBcEUU7lKPev5GfHDey40=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oZR86g8AtabcgAL+/K2barBoFRCRliKGKLW2a3lNfI9JUVU6To6YlvpAWrl9V8bAbkaRqSh65j2XdxSR9KNoRIaaczvscpc7n9R246yV4slQaMcE4Ske5tINr0AO/t9uoCGNaJFnsaX1R7IlnXHkLnoIAX+JnCtwSnWmPEnhc/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DNlTM5wW; arc=none smtp.client-ip=209.85.160.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-21631789fcdso9168795ad.1;
-        Wed, 15 Jan 2025 03:58:35 -0800 (PST)
+Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-29e5aedbebdso3446751fac.0;
+        Wed, 15 Jan 2025 05:24:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736942315; x=1737547115; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=1oZOXJlrtV3ptX1wxOX2lKlYPN9rLc+sd9YiORr12FU=;
-        b=YlSZTR1V1jXT/CVKVms7ScRFJnMn2RzKSPA/JT6WvteLJSWQhoc5sxBMzwJmEi3YFP
-         6dYygPL3bCjqMBmoFRxP0aeCvrEkwWmWruZ+26cOJyDr5QEw8UGer1NfBPTNXs6CLQnP
-         uGr44gfSXPYMd5ggjW+G/G4zxMMKLU96YeKaYPxleOuWa4OsP9MuaG7C0cVPSyb76YZH
-         FYUwfXs2zDDmdxRb23Prc1ORGulJTEXrXJpd+owHZ6GbcuPhqniMsfpkprdRtDumwoDi
-         wzzo1WS4oUX73bRYxrcmlu8lkIs7SGE1BBYHqQg4mQdPJhbEE9WMemsg+WUr/kYShJPp
-         gzHg==
+        d=gmail.com; s=20230601; t=1736947473; x=1737552273; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rACLYOKdd3vb9E+PLOLWL9v2+cDEO665+FNM19C60sM=;
+        b=DNlTM5wWtG0u82EsYJfwONvy87TrF46rzhbc09mueCMWC1/+OFHC0CmU3LE0lEi4PW
+         mOjT/fM7u7J0U8w1/3bBtnw+Z30z81MelPow/L5dcjOifHPMuIR/TbHkQbDWl9ksBekm
+         1nmmZj1yygORdEQqseg6VfzbenVLrefo9Fx/utbG7K0Ix8eIrjk7twdgNGCB9hrskMft
+         hv69uG4KXQYW123oHKtHi8IZTxHEUXHJOPQ+droiEFSFDPX1sDPrO9K2VKfb3t5O6BfP
+         //fw5zC26Mv8fXrawD6lkA2KanyYa57LDDVeX8QEpLit+8nEXTRuE/sSj0Zsx5alEDWd
+         HARw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736942315; x=1737547115;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1oZOXJlrtV3ptX1wxOX2lKlYPN9rLc+sd9YiORr12FU=;
-        b=jnhl2M75jGqovD94bS/fV8bN+mkQT22/ssZQmclr1fEDHIQi06vCG7qq5Pxhl867A1
-         MsIsYWqiJy2Q0ShQXfzJ+vq63GtEwzYS14UjPpwD3pVi0xmJMjGYuzDAgQFwDCfT+wpI
-         tLnmpY9nG8T5B/GDX8n7vgnRKkpQMIPvWTCCubH3XrrlL9uDYMNJAWxroGPKgI5vKoV/
-         Yf+DtooB9iajEMi6qZbLDYv87v9lUs6uaO4QhzYeD4XadIeduxTR4a697mgg1aJP68c0
-         HE6joUiXevIMvAhVFeDGON3avxefft63xWoMnd9KemrDiRbJ2sSTIEK1a8n6uo7pZXZn
-         CHTg==
-X-Forwarded-Encrypted: i=1; AJvYcCU3TkLI+85KgeiYHCogm1jfrHd3kXDYY5aqPdbHNm68jwLumrKtoWyM8rAVKRqg43ZrmiQUYbc0cr2cUxM=@vger.kernel.org, AJvYcCX8z7dSJvm5qfxLZCiUxaNCknYxWFf7AuEcch/OXC8o3BIJyGYXD2cWI7ACecCpABBzljs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxFOMn4V4A9XkYffriXVItaqODUuCUKuVhHIQZS+tNTwSIfW0bW
-	2fqKZwrocpTWLTGVtwlhnxcu+MGquxh5/wLBSBht/RMYJyitkE0I
-X-Gm-Gg: ASbGncsYcjuYu/fGvENuALj7u2gx3suMHXAv8bzcVPvbkUJYd3vQqQZ9Z6j2jZl8ymD
-	B4b8T3k3rYMKO263k82QhhtMiP6VBFhuFaDekDY70eyzH3AApx2AJXC8cyXcAdQGDTFtGkzxWZI
-	yRtBiDMOsuOpZJNZeq8NVICkiBKZ6G8TgkDxLm4lS1Pxv6mcfAaEEv9WBbvfgfx1SR/EMoxT+Pw
-	eiW94XtYY8X9gmIkJ/wFbbcQQWkrzAivjv1kDROO8MKi/Qo4nWvRQ==
-X-Google-Smtp-Source: AGHT+IE85pf02XYgOqWJTk5Oj3SNAlQRq6+w4IfdCka+V3TtAHSmTn/vQXJogWGVmd93J6MlQ7VYDg==
-X-Received: by 2002:a05:6a00:8c0b:b0:725:e386:3c5b with SMTP id d2e1a72fcca58-72d8c4ae2b5mr3989391b3a.5.1736942314520;
-        Wed, 15 Jan 2025 03:58:34 -0800 (PST)
-Received: from fedora ([2001:250:3c1e:503:ffff:ffff:ffaa:4903])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72d40567624sm8933101b3a.41.2025.01.15.03.58.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jan 2025 03:58:33 -0800 (PST)
-Date: Wed, 15 Jan 2025 19:58:27 +0800
-From: Ming Lei <tom.leiming@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Martin KaFai Lau <martin.lau@kernel.org>,
-	Amery Hung <ameryhung@gmail.com>, Jens Axboe <axboe@kernel.dk>,
-	linux-block@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [RFC PATCH 08/22] ublk: bpf: add bpf struct_ops
-Message-ID: <Z4ei40AVuX2sCTmE@fedora>
-References: <20250107120417.1237392-1-tom.leiming@gmail.com>
- <20250107120417.1237392-9-tom.leiming@gmail.com>
- <CAADnVQLGw07CNpi7=XHJRgBL2ku7Q23nfah07pBc45G+xeTKxw@mail.gmail.com>
- <Z4SRrrXeoZ2MwH96@fedora>
- <CAADnVQK1y2A_-Co5Jx=eeusbcMbEgErxuPzgCqA0yvUU6Uw1CA@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1736947473; x=1737552273;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rACLYOKdd3vb9E+PLOLWL9v2+cDEO665+FNM19C60sM=;
+        b=tP+STiRhUAUVhJO4N/EMMZsmYvFOjvdPtd9J9id2g9rQPQWdtz9ZrCr7BIRwQigQjG
+         O9LHMijma+OIBtzCBldxYuvO+ab1ABIVFoUPYv9XqT771W8R4OWOiyCfHfoqIeKHsYnu
+         XZIpd3G0CPoMt2tWeRtIO2N7eIUwXSaNSyL3S2KuhfdXahgEj5w3pOGnNBG0Yzx4T7cC
+         bP7oWvykiT6HpjUzSsUsc4FkaIjuIxqnqn79xz2Jzh2zUcskUr3mXf4jXogDuzKW07xO
+         szduxbBklDetQt9nSnJlrjqTyVJ7GWePMx4erLNXBOrDCQOT+jWxulmoxHohmJdDz3Wv
+         JQqA==
+X-Forwarded-Encrypted: i=1; AJvYcCUKzP/H5rk9zaHjp+epYu1W/xBpX/fqTho47x0wb03aSmWw+XKYq0KMsbd4uA8tmTV0mXBrZnQC40o3@vger.kernel.org, AJvYcCUZfCTp5ZoAxWPIuVnh6niHmr1FHyyHf8gHfnvjucCw0t6Ugyt/7IOqlv6cZf6zfxhUjCvoUIXDke0D/xbPP55Rmh+q@vger.kernel.org, AJvYcCWrOwLzyeIXV7fa0OeburoWFGP+TdXGUHEKMzW4Ti4ATM8Cl/vp7UodGdCQJl+P0AP1ECZxVii9Rz1RseXz@vger.kernel.org, AJvYcCXEFxR+VZIOmqUfSS5R6lqcE0MIR12Gw3zgtjdOvb7hnXYaXTM/r2gKFR0xMMe4bl/irgw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKwlvqlBaTWAgRCdd3pFoKtw6u3wAO8Nnjnx1STmNqGUqpDyqN
+	/BUXK/+ERnk2b98NzAjuo4UVUMr8mieE+5CEZaj/2Q9oq2DKotbJGFJneTetFdLccYfWYYuXmRN
+	isgi1i7mkLLY3vrlb+dI2QTCIi5U=
+X-Gm-Gg: ASbGncvzniQaXuBYsjkAouXbYuiH7850y7+ZJslvvwoN2MNyUDj2kb3NU2Ug2xThDjj
+	btQ/g7JI7yCUtoky+OO8LMmEzYOnUfvO1DDb3JA==
+X-Google-Smtp-Source: AGHT+IEN56TIpNLIuOjsCCyCF9AKct+bYJzWLW+51NmA05ChkL0eJQ39irdLxhQcH1Bbm/7U4JCdb/IzjBjOiFCP22A=
+X-Received: by 2002:a05:6871:4008:b0:29e:63c3:3392 with SMTP id
+ 586e51a60fabf-2aa066a0fa0mr15489571fac.15.1736947473124; Wed, 15 Jan 2025
+ 05:24:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQK1y2A_-Co5Jx=eeusbcMbEgErxuPzgCqA0yvUU6Uw1CA@mail.gmail.com>
+References: <CAHsH6Gs3Eh8DFU0wq58c_LF8A4_+o6z456J7BidmcVY2AqOnHQ@mail.gmail.com>
+ <20250110.152323-sassy.torch.lavish.rent-vKX3ul5B3qyi@cyphar.com>
+ <Z4K7D10rjuVeRCKq@krava> <Z4YszJfOvFEAaKjF@krava> <CAHsH6Gst+UGCtiCaNq2ikaknZGghpTq2SFZX7S0A8=uDsXt=Zw@mail.gmail.com>
+ <20250114143313.GA29305@redhat.com> <Z4Z7OkrtXBauaLcm@krava>
+ <20250114172519.GB29305@redhat.com> <Z4eBs0-kJ3iVZjXL@krava>
+In-Reply-To: <Z4eBs0-kJ3iVZjXL@krava>
+From: Eyal Birger <eyal.birger@gmail.com>
+Date: Wed, 15 Jan 2025 05:24:22 -0800
+X-Gm-Features: AbW1kvbE5OjHexF7M4SoJdLcFFeEekqCNiQZvsyDbAd2dDnRKzI-AQ2Zu3MZ2y8
+Message-ID: <CAHsH6Gs03iJt-ziWt5Bye_DuqCbk3TpMmgPbkYh64XBvpGaDtw@mail.gmail.com>
+Subject: Re: Crash when attaching uretprobes to processes running in Docker
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Oleg Nesterov <oleg@redhat.com>, Aleksa Sarai <cyphar@cyphar.com>, mhiramat@kernel.org, 
+	linux-kernel <linux-kernel@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	BPF-dev-list <bpf@vger.kernel.org>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, peterz@infradead.org, tglx@linutronix.de, 
+	bp@alien8.de, x86@kernel.org, linux-api@vger.kernel.org, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+	"rostedt@goodmis.org" <rostedt@goodmis.org>, rafi@rbk.io, 
+	Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello Alexei,
+Hi,
 
-On Mon, Jan 13, 2025 at 01:30:45PM -0800, Alexei Starovoitov wrote:
-> On Sun, Jan 12, 2025 at 8:08 PM Ming Lei <tom.leiming@gmail.com> wrote:
-> >
-> > Hello Alexei,
-> >
-> > Thanks for your comments!
-> >
-> > On Thu, Jan 09, 2025 at 05:43:12PM -0800, Alexei Starovoitov wrote:
-> > > On Tue, Jan 7, 2025 at 4:08 AM Ming Lei <tom.leiming@gmail.com> wrote:
-> > > > +
-> > > > +/* Return true if io cmd is queued, otherwise forward it to userspace */
-> > > > +bool ublk_run_bpf_handler(struct ublk_queue *ubq, struct request *req,
-> > > > +                         queue_io_cmd_t cb)
-> > > > +{
-> > > > +       ublk_bpf_return_t ret;
-> > > > +       struct ublk_rq_data *data = blk_mq_rq_to_pdu(req);
-> > > > +       struct ublksrv_io_desc *iod = ublk_get_iod(ubq, req->tag);
-> > > > +       struct ublk_bpf_io *bpf_io = &data->bpf_data;
-> > > > +       const unsigned long total = iod->nr_sectors << 9;
-> > > > +       unsigned int done = 0;
-> > > > +       bool res = true;
-> > > > +       int err;
-> > > > +
-> > > > +       if (!test_bit(UBLK_BPF_IO_PREP, &bpf_io->flags))
-> > > > +               ublk_bpf_prep_io(bpf_io, iod);
-> > > > +
-> > > > +       do {
-> > > > +               enum ublk_bpf_disposition rc;
-> > > > +               unsigned int bytes;
-> > > > +
-> > > > +               ret = cb(bpf_io, done);
+On Wed, Jan 15, 2025 at 1:36=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
+>
+> On Tue, Jan 14, 2025 at 06:25:20PM +0100, Oleg Nesterov wrote:
+> > On 01/14, Jiri Olsa wrote:
 > > >
-> > > High level observation...
-> > > I suspect forcing all sturct_ops callbacks to have only these
-> > > two arguments and packing args into ublk_bpf_io
-> > > will be limiting in the long term.
+> > > ugh.. could we just 'disable' uretprobe trampoline when seccomp gets =
+enabled?
+> > > overwrite first byte with int3.. and similarly check on seccomp when =
+installing
+> > > uretprobe and switch to int3
 > >
-> > There are three callbacks defined, and only the two with same type for
-> > queuing io commands are covered in this function.
-> >
-> > But yes, callback type belongs to API, which should be designed
-> > carefully, and I will think about further.
-> >
-> > >
-> > > And this part of api would need to be redesigned,
-> > > but since it's not an uapi... not a big deal.
-> > >
-> > > > +               rc = ublk_bpf_get_disposition(ret);
-> > > > +
-> > > > +               if (rc == UBLK_BPF_IO_QUEUED)
-> > > > +                       goto exit;
-> > > > +
-> > > > +               if (rc == UBLK_BPF_IO_REDIRECT)
-> > > > +                       break;
-> > >
-> > > Same point about return value processing...
-> > > Each struct_ops callback could have had its own meaning
-> > > of retvals.
-> > > I suspect it would have been more flexible and more powerful
-> > > this way.
-> >
-> > Yeah, I agree, just the 3rd callback of release_io_cmd_t isn't covered
-> > in this function.
-> >
-> > >
-> > > Other than that bpf plumbing looks good.
-> > >
-> > > There is an issue with leaking allocated memory in bpf_aio_alloc kfunc
-> > > (it probably should be KF_ACQUIRE)
-> >
-> > It is one problem which troubles me too:
-> >
-> > - another callback of struct_ops/bpf_aio_complete_cb is guaranteed to be
-> > called after the 'struct bpf_aio' instance is submitted via kfunc
-> > bpf_aio_submit(), and it is supposed to be freed from
-> > struct_ops/bpf_aio_complete_cb
-> >
-> > - but the following verifier failure is triggered if bpf_aio_alloc and
-> > bpf_aio_release are marked as KF_ACQUIRE & KF_RELEASE.
-> >
-> > ```
-> > libbpf: prog 'ublk_loop_comp_cb': -- BEGIN PROG LOAD LOG --
-> > Global function ublk_loop_comp_cb() doesn't return scalar. Only those are supported.
-> > ```
-> 
-> That's odd.
-> Adding KF_ACQ/REL to bpf_aio_alloc/release kfuncs shouldn't affect
-> verification of ublk_loop_comp_cb() prog. It's fine for it to stay 'void'
-> return.
-> You probably made it global function and that's was the reason for this
-> verifier error. Global funcs have to return scalar for now.
-> We can relax this restriction if necessary.
+> > Sorry, I don't understand... What exactly we can do? Aside from checkin=
+g
+> > IS_ENABLED(CONFIG_SECCOMP) in arch_uprobe_trampoline() ?
+>
+> I need to check more on seccomp, but I imagine we could do following:
+>   - when seccomp filter is installed we could check uprobe trampoline
+>     and if it's already installed we change it to int3 trampoline
+>   - when uprobe trampoline is getting installed we check if there's
+>     seccomp filter installed for task and we use int3 trampoline
 
-Looks marking ublk_loop_comp_cb() as static doesn't work:
+Sounds reasonable to me.
+I'm wondering how hard it is to figure out the seccomp installation
+given that from what I understand it's inherited.
 
-[root@ktest-40 ublk]# make
-  CLNG-BPF ublk_loop.bpf.o
-  GEN-SKEL ublk_loop.skel.h
-libbpf: relocation against STT_SECTION in non-exec section is not supported!
-Error: failed to link '/root/git/linux/tools/testing/selftests/ublk/ublk_loop.bpf.o': Invalid argument (22)
+>
+> other than that I guess we will have to add sysctl to enable uretprobe
+> trampoline..
 
-But seems not big deal because we can change its return type to 'int'.
+I'm wondering when one would enable/disable such sysctl.
+"Give me speed but potentially crash processes I don't control"
+is a curious semantic...
 
-> 
-> >
-> > Here 'struct bpf_aio' instance isn't stored in map, and it is provided
-> > from struct_ops callback(bpf_aio_complete_cb), I appreciate you may share
-> > any idea about how to let KF_ACQUIRE/KF_RELEASE cover the usage here.
-> 
-> This is so that:
-> 
-> ublk_loop_comp_cb ->
->   ublk_loop_comp_and_release_aio ->
->     bpf_aio_release
-> 
-> would properly recognize that ref to aio is dropped?
-> 
-> Currently the verifier doesn't support that,
-> but there is work in progress to add this feature:
-> 
-> https://lore.kernel.org/bpf/20241220195619.2022866-2-amery.hung@gmail.com/
-> 
-> then in cfi_stabs annotated bio argument in bpf_aio_complete_cb()
-> as "struct bpf_aio *aio__ref"
-> 
-> Then the verifier will recognize that callback argument
-> comes refcounted and the prog has to call KF_RELEASE kfunc on it.
+Eyal
 
-This looks one very nice feature, thanks for sharing it!
-
-I tried to apply the above patch and patch 3 on next tree and pass 'aio__ref' to the
-callback cfi_stabs, but still failed:
-
-[root@ktest-40 ublk]# ./test_loop_01.sh
-libbpf: prog 'ublk_loop_comp_cb': BPF program load failed: -EINVAL
-libbpf: prog 'ublk_loop_comp_cb': -- BEGIN PROG LOAD LOG --
-0: R1=ctx() R10=fp0
-; int BPF_PROG(ublk_loop_comp_cb, struct bpf_aio *aio, long ret) @ ublk_loop.c:34
-0: (79) r7 = *(u64 *)(r1 +8)          ; R1=ctx() R7_w=scalar()
-1: (79) r6 = *(u64 *)(r1 +0)
-func 'bpf_aio_complete_cb' arg0 has btf_id 37354 type STRUCT 'bpf_aio'
-2: R1=ctx() R6_w=trusted_ptr_bpf_aio()
-; struct ublk_bpf_io *io = ublk_bpf_acquire_io_from_aio(aio); @ ublk_loop.c:24
-2: (bf) r1 = r6                       ; R1_w=trusted_ptr_bpf_aio() R6_w=trusted_ptr_bpf_aio()
-3: (85) call ublk_bpf_acquire_io_from_aio#43231       ; R0_w=ptr_ublk_bpf_io(ref_obj_id=1) refs=1
-4: (bf) r8 = r0                       ; R0_w=ptr_ublk_bpf_io(ref_obj_id=1) R8_w=ptr_ublk_bpf_io(ref_obj_id=1) refs=1
-; ublk_bpf_complete_io(io, ret); @ ublk_loop.c:26
-5: (bf) r1 = r8                       ; R1_w=ptr_ublk_bpf_io(ref_obj_id=1) R8_w=ptr_ublk_bpf_io(ref_obj_id=1) refs=1
-6: (bc) w2 = w7                       ; R2_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff)) R7_w=scalar() refs=1
-7: (85) call ublk_bpf_complete_io#43241       ; refs=1
-; ublk_bpf_release_io_from_aio(io); @ ublk_loop.c:27
-8: (bf) r1 = r8                       ; R1_w=ptr_ublk_bpf_io(ref_obj_id=1) R8=ptr_ublk_bpf_io(ref_obj_id=1) refs=1
-9: (85) call ublk_bpf_release_io_from_aio#43257       ;
-; ublk_bpf_dettach_and_complete_aio(aio); @ ublk_loop.c:29
-10: (bf) r1 = r6                      ; R1_w=trusted_ptr_bpf_aio() R6=trusted_ptr_bpf_aio()
-11: (85) call ublk_bpf_dettach_and_complete_aio#43245         ;
-; bpf_aio_release(aio); @ ublk_loop.c:30
-12: (bf) r1 = r6                      ; R1_w=trusted_ptr_bpf_aio() R6=trusted_ptr_bpf_aio()
-13: (85) call bpf_aio_release#95841
-release kernel function bpf_aio_release expects refcounted PTR_TO_BTF_ID
-processed 14 insns (limit 1000000) max_states_per_insn 0 total_states 1 peak_states 1 mark_read 1
--- END PROG LOAD LOG --
-libbpf: prog 'ublk_loop_comp_cb': failed to load: -EINVAL
-libbpf: failed to load object 'ublk_loop.bpf.o'
-fail to load bpf obj from ublk_loop.bpf.o
-fail to register bpf prog loop ublk_loop.bpf.o
-
-
-
-Thanks,
-Ming
+>
+> jirka
 
