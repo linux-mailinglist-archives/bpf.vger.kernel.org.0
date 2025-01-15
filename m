@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-49003-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49004-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23A83A12F65
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 00:51:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8F3AA12F70
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 00:57:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 707A518880D8
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 23:51:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7694165D59
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 23:57:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C75A31DDA34;
-	Wed, 15 Jan 2025 23:51:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A3701DDC07;
+	Wed, 15 Jan 2025 23:57:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c40cvFyZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bVe3IAbw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D762A1DAC95;
-	Wed, 15 Jan 2025 23:51:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6825812BF24;
+	Wed, 15 Jan 2025 23:57:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736985084; cv=none; b=YEHfzu+vr1ZwE/jAed6y/1e2ip66E5BBuGNyFDysS/WkxEzWdrl4FS9xqzPjNK1ziqaPNr0FCorLSWNXH0azW2WHKOKD7XENpqPP0+kreUUGfJyv9ODPI7xY8mZDovWxcua+TtAKtZfgsTbYp3hvRhk/cjC1t0VI+ZQXh1gDH+c=
+	t=1736985432; cv=none; b=qFMuCu+JQ8M309+eGOiUWtQlruFT5aV9/c0jYuSvfkdD84tKLwMxvauun9MCus/u3EzWZZACUZCbmwJO6v3k1fJ/uPZACWQ8ZuLuSmtv6/uLNr8yBkgzgB15nNA5wRN1DV5r5jRitUVLWKvjLnBaH+RXlP4VCN0sGHTlOqcy32c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736985084; c=relaxed/simple;
-	bh=2UTckcavDEduvei+kEBUAO0RfUTCYzZOhVZNKn0pIsg=;
+	s=arc-20240116; t=1736985432; c=relaxed/simple;
+	bh=w5bHVEGXqQEU/JRGE2iDJpRQ+NWtuYxs68Sz6vmS+hM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CFo7Dtor3S7hb3i6Y9eHTwiE9u3FS2qseG6DWoNBNaD6AiMxM+Uu2Bln99Ez5t+Wron65WUcPRCetO7z+QrA77WySnZ5F7bmuIwJERIBGBQ8YPIUhtsKkNKpFqutjha7LYs6o8sXE/f+Dw3XLj/+bz2a3eXBipunLf9shnH6+LU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c40cvFyZ; arc=none smtp.client-ip=209.85.166.173
+	 To:Cc:Content-Type; b=rYyCm0tRIrv9vTB6iGrDCpllZY8nk41Kc03EIvOPTCElRTmQsPOeCYyn00JAXPnu+bXvEgK+WRvp4DZ4wVAj7le1og8FI8JRI/EueJRMf62XEjk5hgT/sU0YBWPbnQt7rG1oWQ6V0YK5TtkFSNJCRq+MwG/lGjQKctyQSssXO60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bVe3IAbw; arc=none smtp.client-ip=209.85.166.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-3ce886a2d5bso2707435ab.1;
-        Wed, 15 Jan 2025 15:51:22 -0800 (PST)
+Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-844d555491eso12535039f.0;
+        Wed, 15 Jan 2025 15:57:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736985082; x=1737589882; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1736985430; x=1737590230; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xkgp0fplyIiM5HQsbUSPVXTFZ2fJnbj2/HHh7OfNmnk=;
-        b=c40cvFyZYty0nLOe9GtNkErRBjILD7/T7bdnK1sprJ5YlbnDsrFgZF78fHe/r15N/R
-         e++e9LmZiFFW4F23nsxXc9X6gSgDwjnSLwGP0bc0fFybeaw0BY2peQ2dL+vZtdvirlIZ
-         N6Qnwyd60a4lNyemZAjT9QSMuyutLW6F1ko4F4l/F+2Kfw7hWhRileJKa8J0KjKJalLj
-         pIsRAC9e5TMK1RqF7+HuBsmKeXlDyZTZc5aa1/meoJYxvZ/073Za3MQn0qTML6lRgjO5
-         T0S/A+GnnD28HtSg29wQrA+4NKygvkS0k/2FrpX0sZhy2NqyM7wK4s6NimEOnED0Wde4
-         vyRw==
+        bh=TR271hMpY/GcOiJ4zf0tijaUPvQaWLjl4kn5oxsyD/A=;
+        b=bVe3IAbwJ4SjTC0oEyEmHcxaq3eON5ZZrOHVdWcmvF3NmA9N11Ipkwn2Ht27w9+3lN
+         2ZT7ZO+HEM2Us+fmg0D/aS+SibvNUCWl9ljahiiZRNoEXY6XR9BW/3gXrGBUpBJO/Mhc
+         r711rJ4Von4XAV6J+cPQbBpA8nCZFkD9HKq2oOkrhWCuKCsLyQhs8suM4vfVIsjXqyuA
+         H3N8mjuzFs+HRM9y5j2U3IN98m48J86FEge32j6uDs9+Ka4WXQBGnkSeDR7UddQTZ/sK
+         8v1yRVBOPhIV2oJBVTCRHSMl/xNS0ENNRCLEe1zTdLnzGL7ZJgLlWIcbYtSa1th1QEgs
+         MzwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736985082; x=1737589882;
+        d=1e100.net; s=20230601; t=1736985430; x=1737590230;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xkgp0fplyIiM5HQsbUSPVXTFZ2fJnbj2/HHh7OfNmnk=;
-        b=ZRsKZ7Eo93iQhGnHedLOrvwvCz8GHHbE6j88EnxA/C9PbBZv4cLmGJMHHquuDGXa/o
-         Pymk4DLsj3vbHtEt0CJiSxb9BDf5Cimslp5pq4ZpOvPKIh00emE/BRq5boayTrjmcKT3
-         GBcquD04RpverhbL35f2waL9hjLSTE4Xgpl+lYKEsytjWooK6gEWtUUheoNTD+X9QiAG
-         Eikr+K2mYv7TdyVR7UnU2tYoM+lz/Wt9fo51i8BYisaWUJHHVJEOCldEuUe0yNEfwQT4
-         5jTzKX5oTnA+RmFxkULn5wFtE2joF8ZjLP9CE9GIjdf3oNN1DxczRY+PSs2sw41EhOdf
-         IzPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWkMQQX8285kLwC08Upg5+sURbfd4JI3XkTTeexgMCHbfeHNkO5Qx7sSA0KYukGPnZjrSSKGyDv@vger.kernel.org, AJvYcCXZa1CxO4npLTTbxs7EdIPLaI6EL35mhHzLB7Kvl6B7o/daiS3T9t2earzmNX8zCds2JjE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyVddNVMw1LNrGcqHMFvy+aOWXmxJH4u5cAjcJ8slxUBpvLqnC6
-	sp94SEIcvtQLB4wlsZHa4gac3dUqoiaf4NmeFZ86viBQc0Ga78U5e89Zt6Zi8y3l6iceQWazaDD
-	tb5TC9NmwbnLYklU5wb3oIVIfqDU=
-X-Gm-Gg: ASbGncu+4Os6Gh+RQE73baoYMDmC7XdOy+gCDASkCfeSicILsTOKRIaCSNSZKfQjVDr
-	JwIQCYL0KZ2hqW8qC7yy6CGaFBENPlrZGKASa
-X-Google-Smtp-Source: AGHT+IEteWbWscKGuIRNpMt/GTaVW0UZO/q7REkmbfH3+Vl1nJBzlF4YcfDE/N7sLo7Uxi6fIgf9+sJIdWf6UBw/NDA=
-X-Received: by 2002:a05:6e02:1fc7:b0:3ce:7968:ead3 with SMTP id
- e9e14a558f8ab-3ce7968ec04mr106210585ab.7.1736985081961; Wed, 15 Jan 2025
- 15:51:21 -0800 (PST)
+        bh=TR271hMpY/GcOiJ4zf0tijaUPvQaWLjl4kn5oxsyD/A=;
+        b=UxBcNgwUAo5g2rvF+MECJBNZMn9gE8ojLo36mKWtGKerkyEobMyrejgcB9+88xvcX1
+         nweRA9mvikXxfF+N4UdaX0AGmCHFhDFRP3Y3XAhgM3Ob+JSzPcjzS0nmbhpFKHiA2mtj
+         71sZYuEI7b0OcVeaH4r797AFZInZk1fwlNt3QsbvN0RwkCb1CXTfd+O7+aPui6O2VmvG
+         DWNeuOYGyIFhEobvF5V2n759kGtKAM1nRkzTovUdyUKtns4I6ERLZqn9NBAraGX+5wjY
+         JBnNhB+BW+ZiMPI/pWLzXS0IwYUC3jQ1puJM2Cgd2FY8MHrVpeKnO0H9XsUT/VlUi2MN
+         3ifw==
+X-Forwarded-Encrypted: i=1; AJvYcCUzZjbNFqlsuFI4iKNaVP7UOXQyElDx9xGLD/++I+2pSRCaXa0fZruNh6oq0hVNeovXtymtR0MC@vger.kernel.org, AJvYcCXD4mUp/VTnCUgFtofI/N6hhi+klJZvKPlz56y2ALlokgVoG+B4yvILQFqYN98j4rb37CM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx6CC+iy+oGSLFAg0kqVNq3E8cY8fH8uv238Ys54nsJxqlO9TAH
+	T1P6/squu7vTbbrrA8+mnWWtWw2YqDz2k2LVoDWy0q3+CbyYSappQJvFsA4bj2W77gjWiIdGwCq
+	rVqN/yHPPyuMkm9AHTGreu3kRg1o=
+X-Gm-Gg: ASbGnctaRbg0xfhTNmGDWJ3q5oua80az4gJ+rx0IRea+Y/V3r19K1ZnkcN0h+z3Z549
+	4dmqDKQbeg9Y3trilVQ9AloKM6Gq8FY0NIhlG
+X-Google-Smtp-Source: AGHT+IHn7q2eLlSYj8LL7sjTfAvuZfIL0y7Iui3f2YhxN5M23FJsmZ48RgX+DrYtdj63MKI0SPbQM1k/x7f2BqVvcpY=
+X-Received: by 2002:a05:6e02:1b02:b0:3a7:e0a5:aa98 with SMTP id
+ e9e14a558f8ab-3ce3a9d0a82mr227077365ab.13.1736985430541; Wed, 15 Jan 2025
+ 15:57:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,14 +74,14 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20250112113748.73504-1-kerneljasonxing@gmail.com>
- <20250112113748.73504-7-kerneljasonxing@gmail.com> <96b5bf3f-b99d-46ac-a22c-754582020c17@linux.dev>
-In-Reply-To: <96b5bf3f-b99d-46ac-a22c-754582020c17@linux.dev>
+ <20250112113748.73504-9-kerneljasonxing@gmail.com> <ef391d15-4968-42c6-b107-cbd941d98e73@linux.dev>
+In-Reply-To: <ef391d15-4968-42c6-b107-cbd941d98e73@linux.dev>
 From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Thu, 16 Jan 2025 07:50:45 +0800
-X-Gm-Features: AbW1kvYL6RdPk8R4EpjEoG66wqfRLEzP6ANMljRYe00lHdXY9FPmtI8kFkm4q-w
-Message-ID: <CAL+tcoARXLJCvE1hjACH5B_rbxM-B4yGrROaVamp=11N2mnoKw@mail.gmail.com>
-Subject: Re: [PATCH net-next v5 06/15] net-timestamp: prepare for isolating
- two modes of SO_TIMESTAMPING
+Date: Thu, 16 Jan 2025 07:56:34 +0800
+X-Gm-Features: AbW1kvaFD6oyOtpTIazJcRrc5Iq_Y8GNF-dDzCQ2R19sho_8wvwCD9_yaH8662w
+Message-ID: <CAL+tcoC+bXAPP94zLka5GcwbpWNQtFijxd0PcPnVrtS-F=h6vQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v5 08/15] net-timestamp: support sw
+ SCM_TSTAMP_SND for bpf extension
 To: Martin KaFai Lau <martin.lau@linux.dev>
 Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
 	pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com, 
@@ -93,33 +93,43 @@ Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 16, 2025 at 6:11=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
+On Thu, Jan 16, 2025 at 6:48=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
 dev> wrote:
 >
 > On 1/12/25 3:37 AM, Jason Xing wrote:
-> >   void __skb_tstamp_tx(struct sk_buff *orig_skb,
-> >                    const struct sk_buff *ack_skb,
-> >                    struct skb_shared_hwtstamps *hwtstamps,
-> > -                  struct sock *sk, int tstype)
-> > +                  struct sock *sk, bool sw, int tstype)
+> > Support SCM_TSTAMP_SND case. Then we will get the software
+> > timestamp when the driver is about to send the skb. Later, I
+> > will support the hardware timestamp.
 >
-> Instead of adding a new "bool sw" and changing all callers, is it the sam=
-e as
-> testing "!hwtstamps" ?
+> > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> > index 169c6d03d698..0fb31df4ed95 100644
+> > --- a/net/core/skbuff.c
+> > +++ b/net/core/skbuff.c
+> > @@ -5578,6 +5578,9 @@ static void __skb_tstamp_tx_bpf(struct sk_buff *s=
+kb, struct sock *sk, int tstype
+> >       case SCM_TSTAMP_SCHED:
+> >               op =3D BPF_SOCK_OPS_TS_SCHED_OPT_CB;
+> >               break;
+> > +     case SCM_TSTAMP_SND:
+> > +             op =3D BPF_SOCK_OPS_TS_SW_OPT_CB;
+>
+> For the hwtstamps case, is skb_hwtstamps(skb) set? From looking at a few
+> drivers, it does not look like it. I don't see the hwtstamps support in p=
+atch 10
+> either. What did I miss ?
 
-Actually, I had a version using the hwtstamps, then I realized that
-hardware or driver may go wrong and pass a NULL hwstamps. It's indeed
-unlikely to happen. If so, timestamping code will consider it as a
-software timestamp.
-
-I don't expect that thing happening, ensuring our code is robust
-enough. The original timestamping code seems not deal with this case
-as we cannot see some particular test in __skb_tstamp_tx(). The worst
-thing is if it happens, we would never know and treat it as a software
-SCM_TSTAMP_SND case.
-
-Does it make any sense to you?
+Sorry, I missed adding a new flag, namely, BPF_SOCK_OPS_TS_HW_OPT_CB.
+I can also skip adding that new one and rename
+BPF_SOCK_OPS_TS_SW_OPT_CB accordingly for sw and hw cases if we
+finally decide to use hwtstamps parameter to distinguish two different
+cases.
 
 Thanks,
 Jason
+
+>
+> > +             break;
+> >       default:
+> >               return;
+> >       }
 
