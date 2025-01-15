@@ -1,42 +1,42 @@
-Return-Path: <bpf+bounces-48918-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48916-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81C5BA11EC0
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 11:00:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C0F1A11EBD
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 11:00:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E50351678CE
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 10:00:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E77491886754
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 10:00:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7EE923F27A;
-	Wed, 15 Jan 2025 10:00:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C890E2361C9;
+	Wed, 15 Jan 2025 10:00:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F204623F271
-	for <bpf@vger.kernel.org>; Wed, 15 Jan 2025 10:00:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B71091DB14D
+	for <bpf@vger.kernel.org>; Wed, 15 Jan 2025 09:59:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736935205; cv=none; b=oiXF3yip2jLy4SCzC6xEEIUzinzYRkH48ox5soKygaUSbHInl56HB0X2XvUMzBr+6VgTJdN0Eloz/4StQ6B9lpDVXWt8AOdD0iFFQq6ozHnW8XofpwgEILpuXoYkt4E5yH03O8c2EbYqHBqeNnnlD/4jIG1bOY42YEmBnGYmgXg=
+	t=1736935200; cv=none; b=AwTZGfbwjhj1/cN6BIY0hTqillb+1DXzxIbrzsCl9K2mflmfk2a+pmYlUIc1ufG0zvdYhdKFggvw37CYJ10/gWD9LpaDGNi5l2DUDi4toUb7yEYO+1ZA3p7hCcCkaS6HQqgi9XI+9fMU4KtkOO46AgOE/XgCECkEv/9HZkcVNGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736935205; c=relaxed/simple;
-	bh=N2h2t85gdytpw1ZRM8jnukQd03nHoS20+cpXsdKi43Y=;
+	s=arc-20240116; t=1736935200; c=relaxed/simple;
+	bh=WVdQNMNpanAWC0NScMZ8KYPhzeEMN3+PJRlQcWSgLVQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GR7cKOCFz3g29VnEdM/ZnN32+4TYyyTImtfYQeM3HyWp0VeoEJadWAawrTCfsfqRqLluuKwYKfMytuPAzJHic7O1RIf6voHdWaVODp2SFMImwhxhixj4kPdhJOGXcSB590Exfa4lFtWupjIlTdupf8SSTLgEJsTLfIXJsPlFmkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=qnyEx+QDVyrM3We9nvpJVPOP8MJF5D/b4pXrpNCEEWwkzMHXm0q+Ean/VSVvl9XSoUb2F1RbWcv9W23YSqPoUaG7tCLGJkCBedDRM8gvGj6DW0bN6xgAcD0oTeYYsBHoW1GfXcZBd9JOubnIn7RJ+8ZHzQsYKu7Wdw88JeoHSwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YY1gZ5CSWz4f3jt0
-	for <bpf@vger.kernel.org>; Wed, 15 Jan 2025 17:59:38 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YY1gT48vxz4f3khQ
+	for <bpf@vger.kernel.org>; Wed, 15 Jan 2025 17:59:33 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id E42E71A0CBF
+	by mail.maildlp.com (Postfix) with ESMTP id F05211A14DA
 	for <bpf@vger.kernel.org>; Wed, 15 Jan 2025 17:59:53 +0800 (CST)
 Received: from ultra.huawei.com (unknown [10.90.53.71])
-	by APP3 (Coremail) with SMTP id _Ch0CgAHWcMYh4dnLOEBBA--.46150S3;
+	by APP3 (Coremail) with SMTP id _Ch0CgAHWcMYh4dnLOEBBA--.46150S4;
 	Wed, 15 Jan 2025 17:59:53 +0800 (CST)
 From: Pu Lehui <pulehui@huaweicloud.com>
 To: bpf@vger.kernel.org
@@ -55,9 +55,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Alan Maguire <alan.maguire@oracle.com>,
 	Pu Lehui <pulehui@huawei.com>,
 	Pu Lehui <pulehui@huaweicloud.com>
-Subject: [PATCH bpf v2 2/4] libbpf: Fix return zero when elf_begin failed
-Date: Wed, 15 Jan 2025 10:02:39 +0000
-Message-Id: <20250115100241.4171581-2-pulehui@huaweicloud.com>
+Subject: [PATCH bpf v2 3/4] libbpf: Fix incorrect traversal end type ID when marking BTF_IS_EMBEDDED
+Date: Wed, 15 Jan 2025 10:02:40 +0000
+Message-Id: <20250115100241.4171581-3-pulehui@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250115100241.4171581-1-pulehui@huaweicloud.com>
 References: <20250115100241.4171581-1-pulehui@huaweicloud.com>
@@ -68,49 +68,57 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgAHWcMYh4dnLOEBBA--.46150S3
-X-Coremail-Antispam: 1UD129KBjvdXoWrZr17uw18GFykuF47CF1kuFg_yoW3WrcEka
-	4xGr1fKrW5Gry3Zw15CrZIgFW8GFs0gFnaqFs8trZ0ka1DKwn5CFsrZ3s7tFZxG3y2qFya
-	gF95Wr4fXr43KjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbkxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGwA2048vs2IY02
-	0Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-	wVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM2
-	8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-	xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-	vE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
-	r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04
-	v7MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j
-	6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7
-	AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE
-	2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcV
-	C2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kfnx
-	nUUI43ZEXa7VUjrHUDUUUUU==
+X-CM-TRANSID:_Ch0CgAHWcMYh4dnLOEBBA--.46150S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7AFy7AFW8GF18WrW7Gw17KFg_yoW8GFykpF
+	47G3y8Kw1rJw4Iqw1vg3WFyay3Gw4Sq3yjkrWqgw4FvFs0gwn8KF4xZFs5Ar4fWr48t3y7
+	ZFZI9ryY9w1kAr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUm014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
+	x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+	Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
+	A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
+	0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
+	IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
+	Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2
+	xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWU
+	JVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67
+	kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY
+	6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0x
+	vEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVj
+	vjDU0xZFpf9x0JUQXo7UUUUU=
 X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 
 From: Pu Lehui <pulehui@huawei.com>
 
-The error number of elf_begin is omitted when encapsulating the
-btf_find_elf_sections function.
+When redirecting the split BTF to the vmlinux base BTF, we need to mark
+the distilled base struct/union members of split BTF structs/unions in
+id_map with BTF_IS_EMBEDDED. This indicates that these types must match
+both name and size later. Therefore, we need to traverse the entire
+split BTF, which involves traversing type IDs from nr_dist_base_types to
+nr_types. However, the current implementation uses an incorrect
+traversal end type ID, so let's correct it.
 
-Fixes: c86f180ffc99 ("libbpf: Make btf_parse_elf process .BTF.base transparently")
+Fixes: 19e00c897d50 ("libbpf: Split BTF relocation")
 Signed-off-by: Pu Lehui <pulehui@huawei.com>
 ---
- tools/lib/bpf/btf.c | 1 +
- 1 file changed, 1 insertion(+)
+v2: make commit description more sense.
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 12468ae0d573..7e810fa468ea 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -1186,6 +1186,7 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
- 
- 	elf = elf_begin(fd, ELF_C_READ, NULL);
- 	if (!elf) {
-+		err = -LIBBPF_ERRNO__FORMAT;
- 		pr_warn("failed to open %s as ELF file\n", path);
- 		goto done;
- 	}
+ tools/lib/bpf/btf_relocate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/lib/bpf/btf_relocate.c b/tools/lib/bpf/btf_relocate.c
+index b72f83e15156..53d1f3541bce 100644
+--- a/tools/lib/bpf/btf_relocate.c
++++ b/tools/lib/bpf/btf_relocate.c
+@@ -212,7 +212,7 @@ static int btf_relocate_map_distilled_base(struct btf_relocate *r)
+ 	 * need to match both name and size, otherwise embedding the base
+ 	 * struct/union in the split type is invalid.
+ 	 */
+-	for (id = r->nr_dist_base_types; id < r->nr_split_types; id++) {
++	for (id = r->nr_dist_base_types; id < r->nr_dist_base_types + r->nr_split_types; id++) {
+ 		err = btf_mark_embedded_composite_type_ids(r, id);
+ 		if (err)
+ 			goto done;
 -- 
 2.34.1
 
