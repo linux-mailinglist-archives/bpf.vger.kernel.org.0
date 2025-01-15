@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-48943-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48944-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B468A1273B
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 16:22:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0184EA1273A
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 16:22:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18CDC3A6031
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 15:22:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 143801888553
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 15:22:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB7CF1CDFC2;
-	Wed, 15 Jan 2025 15:20:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 866ED16A92E;
+	Wed, 15 Jan 2025 15:20:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kkc6gB3J"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GLReDJWO"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4B9A1C1F31;
-	Wed, 15 Jan 2025 15:20:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F87C1D5141;
+	Wed, 15 Jan 2025 15:20:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736954410; cv=none; b=gtv9+svRess4P+1e1afCSivnI9FvrhClz77s6y4CG0/+wF+VPOgdqFRfqcVTEkQuUF59VI2/1hYwxr9k8ZQDF2CHtmAUCb8LGead4xBS8H3Rf0UyY22Qoic5NBMsPkqKc4Xu5Sh6Gsc4INTudfco3jeQZobIMrLVwM3RKo68SQk=
+	t=1736954414; cv=none; b=PLbzg563tDcXi+968yQflq9LoD7YGG1hH9xOdId4aQ9uM/y6gW/iqi9mrjzAolQ5mdFNAs+ayN2DOOLieti4SOTufEDS6cPrgAVxeaZfNn7P0G8Ltu7gJMO0Mks3eEifjWD30Rey9/AMBPBIGDG9RZUdAjIEB7hDM4h4wqr+vyE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736954410; c=relaxed/simple;
-	bh=HOveXO1oeLngwaGY9rAv/03AUdBAjULxQf2pO0H97GM=;
+	s=arc-20240116; t=1736954414; c=relaxed/simple;
+	bh=gYThw4IhgAdjQNMaa4ehGdflq3N1o9M5hYC6GD2Idn8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mH76pOgR5fnScYK359ygErZsHY2fRv8bZ3LW4iEdi3uRZQtKNc1Njb/iNXasMHYR5c7tkncrIQfgHpW/HCr0W+1/A0MTRF9HWM1y/GgM8hLfkh7uKsTiYj0Z7+GAwgpIgRiOnFh/5W6MjY2A5duNxGRsDDxa990oBmGMemOC7CU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kkc6gB3J; arc=none smtp.client-ip=192.198.163.15
+	 MIME-Version; b=N6TBEGFwoYkz1MW8N0P6X4Ol5kh2MMVYO2EI1ZFqLjqDn3Y2NkdhS4buSLBa/BniNjKRjj+/C7Xv8U88X+aPDC4FNxpOX8OEZW+hWHjTt0iY+OGkBIT4JZOj1pzkBxK3SzQDu3kclE32NZqHIXHINUEgKgUrcUZcqUMD3RfqNo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GLReDJWO; arc=none smtp.client-ip=192.198.163.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1736954409; x=1768490409;
+  t=1736954413; x=1768490413;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=HOveXO1oeLngwaGY9rAv/03AUdBAjULxQf2pO0H97GM=;
-  b=kkc6gB3JlKzq7zH2Fq4cZdnCfabiVT8eGGr/UTeS++KEtrvyF02gxfsF
-   E+yR1JjjBcQLM0c4s6EDNGNbNdrYPqpjbXPYqha7Y+H2lN67YB73WkhFW
-   nYicw4rf+17yo4MkDqG1j/oQiQqZB2WvtTFo3BFh1A4/tZUL2gqyn5tSG
-   t3t3oENo31fDrvgCCD+/x3VtPGsloVEvGuElyhPY4eUyFp9r/LyUMxxwo
-   gdGN01sEO+NCH1K0YPhhAgKqRFAlLMYA51ymEGf91RW2cjsea03GllLSv
-   s/Mb9HA8t7f6oLqhPYfcdhXOnO4MQLgAUBrtcPUfnANxUfyIf4u5p3/f+
+  bh=gYThw4IhgAdjQNMaa4ehGdflq3N1o9M5hYC6GD2Idn8=;
+  b=GLReDJWOeDs/+t4IUGC/++eWzqe18tqFjXfCyLDXX3sDye7fL6MJeOaK
+   Ln3CI997Du6aOmjaawEEyiQTSPpNcduRZC7M5MDo2bAR000lk3ZW+Uf3s
+   tMeLIFhfqSAFqfVhBln/VPnJW4RAc3avYWrKL4+sx0XaNvAQwIVwEi+Ns
+   TMXap7nopFFz4qFCECol8Xot67JqrM9k/ivMPStk6jeo2XycEem/CfFSI
+   VyksFZA6sFchEj3Ycuf/jcgoyz60m0zU4fAeiPuyQFK6rV3qYGEpJzGQe
+   OO3sa8IrU2+r5Qp/lFsZ29/eKYBalEWYjoMIO5H4tLuAewJpvECClaxnM
    w==;
-X-CSE-ConnectionGUID: eZX1gGB7SG6y3dHjbwSoIg==
-X-CSE-MsgGUID: cI5xcv4DSKebJdSva2vg3w==
-X-IronPort-AV: E=McAfee;i="6700,10204,11316"; a="37451847"
+X-CSE-ConnectionGUID: 9Oy/yLEpRs+6yulYT+dydw==
+X-CSE-MsgGUID: 5s2Rf1XFR1qOKRiAFROc8w==
+X-IronPort-AV: E=McAfee;i="6700,10204,11316"; a="37451863"
 X-IronPort-AV: E=Sophos;i="6.13,206,1732608000"; 
-   d="scan'208";a="37451847"
+   d="scan'208";a="37451863"
 Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2025 07:20:09 -0800
-X-CSE-ConnectionGUID: Ff5ZEOHyRF2gWvYA0/d5uQ==
-X-CSE-MsgGUID: vq72rhWZTVOHRmyYPg6ITA==
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2025 07:20:12 -0800
+X-CSE-ConnectionGUID: LDYTDqRxTKKxPBFqu6CjZQ==
+X-CSE-MsgGUID: V9ZyurDcR8O5d0YAEUF4vQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.13,206,1732608000"; 
-   d="scan'208";a="105116699"
+   d="scan'208";a="105116708"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmviesa007.fm.intel.com with ESMTP; 15 Jan 2025 07:20:05 -0800
+  by fmviesa007.fm.intel.com with ESMTP; 15 Jan 2025 07:20:09 -0800
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: Andrew Lunn <andrew+netdev@lunn.ch>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -77,9 +77,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v3 7/8] veth: use napi_skb_cache_get_bulk() instead of xdp_alloc_skb_bulk()
-Date: Wed, 15 Jan 2025 16:19:00 +0100
-Message-ID: <20250115151901.2063909-8-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next v3 8/8] xdp: remove xdp_alloc_skb_bulk()
+Date: Wed, 15 Jan 2025 16:19:01 +0100
+Message-ID: <20250115151901.2063909-9-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.48.0
 In-Reply-To: <20250115151901.2063909-1-aleksander.lobakin@intel.com>
 References: <20250115151901.2063909-1-aleksander.lobakin@intel.com>
@@ -91,30 +91,49 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Now that we can bulk-allocate skbs from the NAPI cache, use that
-function to do that in veth as well instead of direct allocation from
-the kmem caches. veth uses NAPI and GRO, so this is both context-safe
-and beneficial.
+The only user was veth, which now uses napi_skb_cache_get_bulk().
+It's now preferred over a direct allocation and is exported as
+well, so remove this one.
 
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- drivers/net/veth.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ include/net/xdp.h |  1 -
+ net/core/xdp.c    | 10 ----------
+ 2 files changed, 11 deletions(-)
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 01251868a9c2..7634ee8843bc 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -684,8 +684,7 @@ static void veth_xdp_rcv_bulk_skb(struct veth_rq *rq, void **frames,
- 	void *skbs[VETH_XDP_BATCH];
- 	int i;
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index 6da0e746cf75..e2f83819405b 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -344,7 +344,6 @@ struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
+ 					   struct net_device *dev);
+ struct sk_buff *xdp_build_skb_from_frame(struct xdp_frame *xdpf,
+ 					 struct net_device *dev);
+-int xdp_alloc_skb_bulk(void **skbs, int n_skb, gfp_t gfp);
+ struct xdp_frame *xdpf_clone(struct xdp_frame *xdpf);
  
--	if (xdp_alloc_skb_bulk(skbs, n_xdpf,
--			       GFP_ATOMIC | __GFP_ZERO) < 0) {
-+	if (unlikely(!napi_skb_cache_get_bulk(skbs, n_xdpf))) {
- 		for (i = 0; i < n_xdpf; i++)
- 			xdp_return_frame(frames[i]);
- 		stats->rx_drops += n_xdpf;
+ static inline
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index 67b53fc7191e..eb8762ff16cb 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -619,16 +619,6 @@ void xdp_warn(const char *msg, const char *func, const int line)
+ };
+ EXPORT_SYMBOL_GPL(xdp_warn);
+ 
+-int xdp_alloc_skb_bulk(void **skbs, int n_skb, gfp_t gfp)
+-{
+-	n_skb = kmem_cache_alloc_bulk(net_hotdata.skbuff_cache, gfp, n_skb, skbs);
+-	if (unlikely(!n_skb))
+-		return -ENOMEM;
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(xdp_alloc_skb_bulk);
+-
+ /**
+  * xdp_build_skb_from_buff - create an skb from &xdp_buff
+  * @xdp: &xdp_buff to convert to an skb
 -- 
 2.48.0
 
