@@ -1,100 +1,106 @@
-Return-Path: <bpf+bounces-48960-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48961-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CA8AA12A2A
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 18:52:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B609AA12A3B
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 18:53:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C57453A551E
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 17:52:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1517A7A39C1
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 17:53:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D6BE1D5140;
-	Wed, 15 Jan 2025 17:52:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47ABC1D63C8;
+	Wed, 15 Jan 2025 17:52:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J0XThA8G"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="O59TkAiV";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="fzGlQJbE"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE51F155C96;
-	Wed, 15 Jan 2025 17:52:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCE24155C96;
+	Wed, 15 Jan 2025 17:52:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736963549; cv=none; b=HeVrhWcy5T7nx7Xx4FEYpCPe7GWMMQeBrtb+PcpOq0dR8mj03eWkoWQ3YUt3g+9BWZ2L0lr0Fg7vZVMQ7OB3RO2hiTv9wNezvqgEQhBV6dM6Xw65LeZV7AaGKP7R3a8W3MqCR8IIpXQp7FsZZUIbx36meVtK2irNhNmkjROQ/yk=
+	t=1736963564; cv=none; b=as7OqnqLMcKoxSEZauhJUGRslfL9HwpuuqhIsXXMRUQlcvLYuVXExZ4MTXqKU7yFLp93AT4sRvwLdHib1N/BJ61LNL5WqU/yg2v8nVgh/T7fHUMy4IvNoxM2CeMzZhIKReOr+AnK3IJr6XeQ5R8HtzbnwWF1h6ePtXmTNEXng0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736963549; c=relaxed/simple;
-	bh=VYcycM89HGad3xDeQXmDWnM4z4M/2xtJvbd4aqls6q8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZzDehLOiuN4IJTqlnHQeEGWzjjdqRPqEsyi9MwjBJ4OFQTMiaZ5O7RfjbZlzzCLxOkdZunLWM8c/IMO5h2soKEiMlk9ZU4kU96JHtwXFub6JfLcn0BqN+Nh02qjknsXw0x9XmpNWqIFCjc0fedogVNC2BdOgk16JZqSg/Ldzq74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J0XThA8G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE1C9C4CED1;
-	Wed, 15 Jan 2025 17:52:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736963546;
-	bh=VYcycM89HGad3xDeQXmDWnM4z4M/2xtJvbd4aqls6q8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=J0XThA8GhIn92jHD/chbppU4szGH2PiJ+zvJVREsZKA4heQ5oTZbfCiu8xCbTtT8Q
-	 UnIXxU8q85HuAO7rInDWdlcmQW+WHoPQOgK2rmCaS9VA/RGUmnwurxdMzYYMebKAkv
-	 jx7zLNT72b9XaxhoXdKPpKrv0F/TAO7wA4RYFwddNuHnHKb+02BvpeitMhJEda39Mn
-	 ZN1pEsGpCkg+KTqxJOm/cPByiwYRHcXtxzFvw2SmuTfuovoC8gQe0Zw0vNhwIf4tQ9
-	 +NppnlnGVGwq5pBsKy81s+8zhYrEZUZU711k1q+t45+pxiStzaJd4GFZih0UOZKwXX
-	 7OLghYx51w53w==
-Message-ID: <5445fb43-a9c1-42df-874b-71dd51f1e848@kernel.org>
-Date: Wed, 15 Jan 2025 18:52:19 +0100
+	s=arc-20240116; t=1736963564; c=relaxed/simple;
+	bh=SAuv4o0YPcUZA0Dnn4TAU1w9hrOHI62b2s0bpW+yq4M=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=QplvuKlWnT4nVi8mqnHX4Vm5dJKeDpFj+1O++IbEEzsjJMt8BNXNS4HY6xoRjddYgGAszy1KrP4zniiZQDM0jFj5SFOGeZ2RVxp9sujHScBJzHMsR1UGivVU8c664i/MvMd2DSik4n6Sx4mfw6EETGfnV6UgJ7KNsBavnC5j/sE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=O59TkAiV; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=fzGlQJbE; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1736963561;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HoxPdbGDiDXMZjZ2YzakPSB0m74gINsG6VFgtuazYj8=;
+	b=O59TkAiVIoh/kyWqt3sD2QUaiElCxlt4joNfsm5Vy47rl6VB5TFRsEG8yyBoGzvY2r/6mY
+	lQrxl2KFOtZwXB8o2yGswqA28AwPR3ILexVj+8YMlHNoNTQyAqrecm5DQu43fEOAoeu1zB
+	AUUJUV3mFLL/jKj4Q1eejS9vRnjN/1NreJFiVLN6lXCv97Xxmp1pRrzkdAR4+8k7oYySE3
+	EjRlx3bwRLZ1kPZatpooq203bOQXFsUoJ5K9wvWgIoGkzYbbWPFekFpYB6FKtIibo4IGCl
+	3qtrgWckX7984+Okk9ULQbx1KIxKVOK20qnnIXjJMWBsTxDlkgtJ8kE9XE9ROg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1736963561;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HoxPdbGDiDXMZjZ2YzakPSB0m74gINsG6VFgtuazYj8=;
+	b=fzGlQJbELsuQf/TIokTn215dpIYwMgfAYRUXgXNteW1TJ/rfCFCi40yte9UtrzUzNBp68H
+	ns68VXLDVpNCEbAA==
+To: Joel Granados <joel.granados@kernel.org>, Thomas =?utf-8?Q?Wei=C3=9Fsc?=
+ =?utf-8?Q?huh?=
+ <linux@weissschuh.net>, Kees Cook <kees@kernel.org>, Luis Chamberlain
+ <mcgrof@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org,
+ openipmi-developer@lists.sourceforge.net, intel-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, intel-xe@lists.freedesktop.org,
+ linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-serial@vger.kernel.org, xen-devel@lists.xenproject.org,
+ linux-aio@kvack.org, linux-fsdevel@vger.kernel.org, netfs@lists.linux.dev,
+ codalist@coda.cs.cmu.edu, linux-mm@kvack.org, linux-nfs@vger.kernel.org,
+ ocfs2-devel@lists.linux.dev, fsverity@lists.linux.dev,
+ linux-xfs@vger.kernel.org, io-uring@vger.kernel.org, bpf@vger.kernel.org,
+ kexec@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org, apparmor@lists.ubuntu.com,
+ linux-security-module@vger.kernel.org, keyrings@vger.kernel.org, Song Liu
+ <song@kernel.org>, "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>, "Darrick J. Wong"
+ <djwong@kernel.org>, Jani Nikula <jani.nikula@intel.com>, Corey Minyard
+ <cminyard@mvista.com>, Joel Granados <joel.granados@kernel.org>
+Subject: Re: [PATCH v2] treewide: const qualify ctl_tables where applicable
+In-Reply-To: <20250110-jag-ctl_table_const-v2-1-0000e1663144@kernel.org>
+References: <20250110-jag-ctl_table_const-v2-1-0000e1663144@kernel.org>
+Date: Wed, 15 Jan 2025 18:52:40 +0100
+Message-ID: <87jzawarrr.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 3/8] bpf: cpumap: switch to GRO from
- netif_receive_skb_list()
-To: Alexander Lobakin <aleksander.lobakin@intel.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: Lorenzo Bianconi <lorenzo@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250115151901.2063909-1-aleksander.lobakin@intel.com>
- <20250115151901.2063909-4-aleksander.lobakin@intel.com>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <20250115151901.2063909-4-aleksander.lobakin@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
+On Fri, Jan 10 2025 at 15:16, Joel Granados wrote:
+> sed:
+>     sed --in-place \
+>       -e "s/struct ctl_table .table = &uts_kern/const struct ctl_table *table = \&uts_kern/" \
+>       kernel/utsname_sysctl.c
+>
+> Reviewed-by: Song Liu <song@kernel.org>
+> Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org> # for kernel/trace/
+> Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com> # SCSI
+> Reviewed-by: Darrick J. Wong <djwong@kernel.org> # xfs
+> Acked-by: Jani Nikula <jani.nikula@intel.com>
+> Acked-by: Corey Minyard <cminyard@mvista.com>
+> Signed-off-by: Joel Granados <joel.granados@kernel.org>
 
-
-On 15/01/2025 16.18, Alexander Lobakin wrote:
-> cpumap has its own BH context based on kthread. It has a sane batch
-> size of 8 frames per one cycle.
-> GRO can be used here on its own. Adjust cpumap calls to the upper stack
-> to use GRO API instead of netif_receive_skb_list() which processes skbs
-> by batches, but doesn't involve GRO layer at all.
-> In plenty of tests, GRO performs better than listed receiving even
-> given that it has to calculate full frame checksums on the CPU.
-> As GRO passes the skbs to the upper stack in the batches of
-> @gro_normal_batch, i.e. 8 by default, and skb->dev points to the
-> device where the frame comes from, it is enough to disable GRO
-> netdev feature on it to completely restore the original behaviour:
-> untouched frames will be being bulked and passed to the upper stack
-> by 8, as it was with netif_receive_skb_list().
-> 
-> Signed-off-by: Alexander Lobakin<aleksander.lobakin@intel.com>
-> Tested-by: Daniel Xu<dxu@dxuuu.xyz>
-> ---
->   kernel/bpf/cpumap.c | 45 ++++++++++++++++++++++++++++++++++++++++++---
->   1 file changed, 42 insertions(+), 3 deletions(-)
-
-Nice and clean code, I like it! :-)
-
-Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
 
