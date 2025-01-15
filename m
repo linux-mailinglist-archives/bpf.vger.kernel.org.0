@@ -1,83 +1,97 @@
-Return-Path: <bpf+bounces-48892-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48894-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6AF4A116CD
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 02:46:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D2B0A11725
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 03:18:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03EA2164102
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 01:46:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D20F167C3C
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 02:17:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6049F228361;
-	Wed, 15 Jan 2025 01:46:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA69BE6C;
+	Wed, 15 Jan 2025 02:17:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="UkHSp+En"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pah8aSiH"
 X-Original-To: bpf@vger.kernel.org
-Received: from esa12.hc1455-7.c3s2.iphmx.com (esa12.hc1455-7.c3s2.iphmx.com [139.138.37.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63F12227B88;
-	Wed, 15 Jan 2025 01:46:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.138.37.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 704F7381A3
+	for <bpf@vger.kernel.org>; Wed, 15 Jan 2025 02:17:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736905610; cv=none; b=AEo8t9qWGDT872xwn4hqHBUD+4oMuLJ/3al+iWu7B4Ga6r9ng4pWvizIwR2P3O9cFR091kygyhEH42jPmaQviriLgTRugzjcSeYaIytE2vTCET+xUVG5/8xiz2GgrecCQYsnBE09MOj7GRtk72K8cInMcbl4vgGRixAH5xXVUek=
+	t=1736907476; cv=none; b=IsmSQfFz06miwIGN6X9GTBsfNcatRN4crswJwdQXHWTrxrppNyXmjugKXn+LvIkMyiIR8x6qTmNPDf7E1U8AW2x1Qkedy8DW/mShFtetWVmuehhcit+xS4qH+RbLORi4+at3ZriOSOrXupH2cHkup2z4Cv80FTCW8iQdWBoz5Fo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736905610; c=relaxed/simple;
-	bh=21TcC/rql3eON+hX7CuhqWrvpu5XXzotwJKQP7ydNKM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=g0foORLZqAgUW+JHT7/T+1ayDIyUnCAFWweNetv0afLonIh5tTFrPw9AWYT1t5Vx7Q6OGJn7xLRlx/IRGz0yJ126Y6mXWor550C3Az4BTdgqkEFudrsMwRq5sh0NV/FmpHmuj+cENbvhe7MxRi0DYgcrbDDeawKziCouV+ZTdyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=UkHSp+En; arc=none smtp.client-ip=139.138.37.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
-  t=1736905609; x=1768441609;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=21TcC/rql3eON+hX7CuhqWrvpu5XXzotwJKQP7ydNKM=;
-  b=UkHSp+EnLmK5Y9PKG1yRGdcokuHJO7BQQDl1AIug1YMz+LtykOFY8vPD
-   YGPJo6BvrjQA6/ZEvaZf+FRSkjRiwPkCuxzFJvxoKGhfb1K+wGeNwApkb
-   pNGMEvBFVzM80XFRt5Xz/ZYXYXNkS/Xgz3o2zePYIVDICrYkkvHxrMu7M
-   iIuaiJdXQfx8VjrG4WKA9Jl8jjhICUxHCTKK7oODcvIn3aii1qXvu5ob7
-   pUqqcAJssdgfqMcJOld28OGtHZR2CcwPAYLJBHFBJE6J9J77cvlFgvAUv
-   lwA50y+Ibd8z4sEttOwDe4sh9boDq3oVwihNAfRZlKZCewxl1ePqm/fc1
-   w==;
-X-CSE-ConnectionGUID: Nzg6XFEJSGGyZ7Of+MnG7g==
-X-CSE-MsgGUID: 46L8MYSDRt2SYdtRHFf7wQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11315"; a="165479798"
-X-IronPort-AV: E=Sophos;i="6.12,315,1728918000"; 
-   d="scan'208";a="165479798"
-Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
-  by esa12.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2025 10:46:40 +0900
-Received: from yto-m2.gw.nic.fujitsu.com (yto-nat-yto-m2.gw.nic.fujitsu.com [192.168.83.65])
-	by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 8EA0CD500F;
-	Wed, 15 Jan 2025 10:46:37 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com [192.51.206.21])
-	by yto-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 5F8D6D5036;
-	Wed, 15 Jan 2025 10:46:37 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
-	by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id D055120071A06;
-	Wed, 15 Jan 2025 10:46:36 +0900 (JST)
-Received: from iaas-rdma.. (unknown [10.167.135.44])
-	by edo.cn.fujitsu.com (Postfix) with ESMTP id B25311A0071;
-	Wed, 15 Jan 2025 09:46:35 +0800 (CST)
-From: Li Zhijian <lizhijian@fujitsu.com>
+	s=arc-20240116; t=1736907476; c=relaxed/simple;
+	bh=MOB5yfBdofZ3ODotEo7qPJvxm9nPi/A+r3GSL95Jvjk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CJ0vZHu2YSfrID87H5NjzJn1uHN4ejCgSHk41q/8mV58qaV1rdI66pxDGNySUvxBskq1WucXcwighICrm+u92exKnqdsE+QVeAnNjPmggSt91KwH4bKwT80wKHeiM/rQVuu0PvfbKgyp02GAD6aGLG3q3LQvUeFx5+LfEv2bAtE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pah8aSiH; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-21654fdd5daso105542955ad.1
+        for <bpf@vger.kernel.org>; Tue, 14 Jan 2025 18:17:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736907473; x=1737512273; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gN0vJtsMHnI14li1NiTj5wGmn2n1ui8c0NTZs6gOd+w=;
+        b=Pah8aSiHXDhDCevK3n30sabLn/MRtqrJqlqW/SSOdCCxXg3EzcOV7PdcOsj9kG6AAZ
+         fJrGsKG6hJYd+c1qbL3em3YaMyUPGau/4sCwYSTPy2ZFY8vHLlEnkCp8uL9m7Pplfwo6
+         3Uu8eUnCu+dxeH+OToTuHvtEMg+y+VGEWVhpHKmp7c/mwJA1/E2bVrwd8UrILY48Np71
+         lmpf0QHA+R/s/kjbReiU7v9MkKxcjATDy3QKdfJdGIXqOoRlsDAly6Jd4WpU/Mhq6NJK
+         27w5v6FtXuAL6VVm8kl8bnRH0rNoWSFaNa45JBnJbTVpqDWDnNsYszX45n44awUO7R2C
+         3n5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736907473; x=1737512273;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gN0vJtsMHnI14li1NiTj5wGmn2n1ui8c0NTZs6gOd+w=;
+        b=ss4EUA9J8xyju1HwZPuPqapGDVyIuCGaYiiAMAGxjV+qn3EhsLiQY8FqJm9OgUmhMd
+         scshLor47Cek3NjhwSW29qZvioEEqdjSdS49+tSwRPfbusPYwUOcw/59Ca9hx3Wmrnlw
+         pyIJWSC+PX/cqVUn/2u474DyOiB/OcirOAywC7TBiQYBLcGQeQ8FGWnNpfQVSANFAB9i
+         azOZOEtdKRoCwyUiRP9ahNYvim9/DnXp4CUqlSJZKhGaGb19aGJMzOPv562nbFSbRYUo
+         ulwjiv8Zk94kFJijv3BC5rpkEA208Le3Aqo866VT5+qgh7pWr3H/giBvmDuxL6ZNLCHW
+         n56g==
+X-Gm-Message-State: AOJu0Ywf1/5ZlqHc4EzsaoWlSaF6TZ712nJ6fx3G0Uj1ToL0BsJbLe37
+	Tv9uzPmCDddLpEl+B/X5g+sfMAAFRlsdwbxNMsXYxYFt7V9RBdH62vbC0A==
+X-Gm-Gg: ASbGncuwTchmK0arrEFWr+um4X6fonKaXhCeUGkyayv2ROlOcUWsf6Ti8ubvMzO7Sbn
+	RMkBEjfk3Sh282yTzh3g0JvEiVkehUn0pMtAi/47wo8PPKcb+3q3cDbYAX18+IQRA8W2nM8mie8
+	czkdzYx2ARPeX0ejGNkRlAZHPAvYTU5VRpvVes+G3rQTUSIdZRI0olfkoi11sQj7TrxWK2+08lP
+	cOXfwMffVEj4cMi9PMNUyfo+NkS7QZf/7BAPi1Fi6DYAsnhCMWpZhbKTXh1eYWUzblDB9aKun82
+	JLJ18JrF
+X-Google-Smtp-Source: AGHT+IFK6tdW1FPA3xVY7tDs6ZHExuF1d9DHLRmzwm867PQyWSGR3QkvAlO/Szoty0e+gWaWspC3Qg==
+X-Received: by 2002:a17:902:ea0a:b0:216:682f:175 with SMTP id d9443c01a7336-21a840029a0mr446616755ad.49.1736907472941;
+        Tue, 14 Jan 2025 18:17:52 -0800 (PST)
+Received: from localhost.localdomain ([2620:10d:c090:400::5:4043])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-a318e8ec100sm8680763a12.36.2025.01.14.18.17.50
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Tue, 14 Jan 2025 18:17:52 -0800 (PST)
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: bpf@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Shuah Khan <shuah@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Li Zhijian <lizhijian@fujitsu.com>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Quentin Monnet <qmo@kernel.org>,
-	Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH bpf-next v3] selftests/Makefile: override the srctree for out-of-tree builds
-Date: Wed, 15 Jan 2025 09:47:34 +0800
-Message-ID: <20250115014734.438225-1-lizhijian@fujitsu.com>
-X-Mailer: git-send-email 2.44.0
+Cc: andrii@kernel.org,
+	memxor@gmail.com,
+	akpm@linux-foundation.org,
+	peterz@infradead.org,
+	vbabka@suse.cz,
+	bigeasy@linutronix.de,
+	rostedt@goodmis.org,
+	houtao1@huawei.com,
+	hannes@cmpxchg.org,
+	shakeel.butt@linux.dev,
+	mhocko@suse.com,
+	willy@infradead.org,
+	tglx@linutronix.de,
+	jannh@google.com,
+	tj@kernel.org,
+	linux-mm@kvack.org,
+	kernel-team@fb.com
+Subject: [PATCH bpf-next v5 0/7] bpf, mm: Introduce try_alloc_pages()
+Date: Tue, 14 Jan 2025 18:17:39 -0800
+Message-Id: <20250115021746.34691-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -85,90 +99,88 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28924.003
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28924.003
-X-TMASE-Result: 10--2.378300-10.000000
-X-TMASE-MatchedRID: QxNw5Kr7aBeh8NIgadoMHh1kSRHxj+Z5ohrMq0nEhQciKqWY7QWAeyJ1
-	YT6M2y/ptjClCUseMxHZ5nzC46YpxcwitucT3dE7v8fLAX0P50DNKdtHc3A3XFHpIy6wt5Uw2Ca
-	d5s625rB2Ve4lIas8vPv7YatA3DRB0ekSi+00U24ReM8i8p3vgI5UEPjB4tXTYKqjwB8QwAfkYB
-	DLwsbmZ5kvRcwHwyS1nagtny7ZPcQfE8yM4pjsDwtuKBGekqUpnH7sbImOEBRcrZUZpIpVuY0MN
-	210hdsMUVQg0hCHTxQSbjtxD1tRN3YVT44NixONSphYGXunSvyR88aL5Jmd22FLtpZ6hBUpo9GD
-	1VwsMaabDRBqS2n66yzP5xAyz9Oenvkw4sh/+PcMX5CwH5DTUmgGZNLBHGNe
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 
-Fixes an issue where out-of-tree kselftest builds fail when building
-the BPF and bpftools components. The failure occurs because the top-level
-Makefile passes a relative srctree path to its sub-Makefiles, which
-leads to errors in locating necessary files.
+From: Alexei Starovoitov <ast@kernel.org>
 
-For example, the following error is encountered:
+Hi All,
 
-```
-$ make V=1 O=$build/ TARGETS=hid kselftest-all
-...
-make -C ../tools/testing/selftests all
-make[4]: Entering directory '/path/to/linux/tools/testing/selftests/hid'
-make  -C /path/to/linux/tools/testing/selftests/../../../tools/lib/bpf OUTPUT=/path/to/linux/O/kselftest/hid/tools/build/libbpf/ \
-            EXTRA_CFLAGS='-g -O0'                                      \
-            DESTDIR=/path/to/linux/O/kselftest/hid/tools prefix= all install_headers
-make[5]: Entering directory '/path/to/linux/tools/lib/bpf'
-...
-make[5]: Entering directory '/path/to/linux/tools/bpf/bpftool'
-Makefile:127: ../tools/build/Makefile.feature: No such file or directory
-make[5]: *** No rule to make target '../tools/build/Makefile.feature'.  Stop.
-```
+The main motivation is to make alloc page and slab reentrant and
+remove bpf_mem_alloc.
 
-To resolve this, override the srctree in the kselftests's top Makefile
-when performing an out-of-tree build. This ensures that all sub-Makefiles
-have the correct path to the source tree, preventing directory resolution
-errors.
+v4->v5:
+- Fixed patch 1 and 4 commit logs and comments per Michal suggestions.
+  Added Acks.
+- Added patch 6 to make failslab, kfence, kmemleak complaint
+  with trylock mode. It's a prerequisite for reentrant slab patches.
 
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-Tested-by: Quentin Monnet <qmo@kernel.org>
----
-Cc: Masahiro Yamada <masahiroy@kernel.org>
+v4:
+https://lore.kernel.org/bpf/20250114021922.92609-1-alexei.starovoitov@gmail.com/
 
-V3:
-  collected Tested-by and rebased on bpf-next
+v3->v4:
+Addressed feedback from Michal and Shakeel:
+- GFP_TRYLOCK flag is gone. gfpflags_allow_spinning() is used instead.
+- Improved comments and commit logs.
 
-V2:
- - handle srctree in selftests itself rather than the linux' top Makefile # Masahiro Yamada <masahiroy@kernel.org>
+v3:
+https://lore.kernel.org/bpf/20241218030720.1602449-1-alexei.starovoitov@gmail.com/
 
-V1: https://lore.kernel.org/lkml/20241217031052.69744-1-lizhijian@fujitsu.com/
----
- tools/testing/selftests/Makefile | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+v2->v3:
+To address the issues spotted by Sebastian, Vlastimil, Steven:
+- Made GFP_TRYLOCK internal to mm/internal.h
+  try_alloc_pages() and free_pages_nolock() are the only interfaces.
+- Since spin_trylock() is not safe in RT from hard IRQ and NMI
+  disable such usage in lock_trylock and in try_alloc_pages().
+  In such case free_pages_nolock() falls back to llist right away.
+- Process trylock_free_pages llist when preemptible.
+- Check for things like unaccepted memory and order <= 3 early.
+- Don't call into __alloc_pages_slowpath() at all.
+- Inspired by Vlastimil's struct local_tryirq_lock adopted it in
+  local_lock_t. Extra 4 bytes in !RT in local_lock_t shouldn't
+  affect any of the current local_lock_t users. This is patch 3.
+- Tested with bpf selftests in RT and !RT and realized how much
+  more work is necessary on bpf side to play nice with RT.
+  The urgency of this work got higher. The alternative is to
+  convert bpf bits left and right to bpf_mem_alloc.
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index 2401e973c359..f04a3b0003f6 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -154,15 +154,19 @@ override LDFLAGS =
- override MAKEFLAGS =
- endif
- 
-+top_srcdir ?= ../../..
-+
- # Append kselftest to KBUILD_OUTPUT and O to avoid cluttering
- # KBUILD_OUTPUT with selftest objects and headers installed
- # by selftests Makefile or lib.mk.
-+# Override the `srctree` variable to ensure it is correctly resolved in
-+# sub-Makefiles, such as those within `bpf`, when managing targets like
-+# `net` and `hid`.
- ifdef building_out_of_srctree
- override LDFLAGS =
-+override srctree := $(top_srcdir)
- endif
- 
--top_srcdir ?= ../../..
--
- ifeq ("$(origin O)", "command line")
-   KBUILD_OUTPUT := $(O)
- endif
+v2:
+https://lore.kernel.org/bpf/20241210023936.46871-1-alexei.starovoitov@gmail.com/
+
+v1->v2:
+- fixed buggy try_alloc_pages_noprof() in PREEMPT_RT. Thanks Peter.
+- optimize all paths by doing spin_trylock_irqsave() first
+  and only then check for gfp_flags & __GFP_TRYLOCK.
+  Then spin_lock_irqsave() if it's a regular mode.
+  So new gfp flag will not add performance overhead.
+- patches 2-5 are new. They introduce lockless and/or trylock free_pages_nolock()
+  and memcg support. So it's in usable shape for bpf in patch 6.
+
+v1:
+https://lore.kernel.org/bpf/20241116014854.55141-1-alexei.starovoitov@gmail.com/
+
+Alexei Starovoitov (7):
+  mm, bpf: Introduce try_alloc_pages() for opportunistic page allocation
+  mm, bpf: Introduce free_pages_nolock()
+  locking/local_lock: Introduce local_trylock_irqsave()
+  memcg: Use trylock to access memcg stock_lock.
+  mm, bpf: Use memcg in try_alloc_pages().
+  mm: Make failslab, kfence, kmemleak aware of trylock mode
+  bpf: Use try_alloc_pages() to allocate pages for bpf needs.
+
+ include/linux/gfp.h                 |  23 ++++
+ include/linux/local_lock.h          |   9 ++
+ include/linux/local_lock_internal.h |  76 ++++++++++--
+ include/linux/mm_types.h            |   4 +
+ include/linux/mmzone.h              |   3 +
+ kernel/bpf/syscall.c                |   4 +-
+ mm/failslab.c                       |   3 +
+ mm/internal.h                       |   1 +
+ mm/kfence/core.c                    |   4 +
+ mm/kmemleak.c                       |   3 +
+ mm/memcontrol.c                     |  24 +++-
+ mm/page_alloc.c                     | 183 ++++++++++++++++++++++++++--
+ 12 files changed, 313 insertions(+), 24 deletions(-)
+
 -- 
-2.44.0
+2.43.5
 
 
