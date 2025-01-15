@@ -1,221 +1,123 @@
-Return-Path: <bpf+bounces-48966-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-48967-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3797A12A6C
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 19:03:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CF792A12AC7
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 19:20:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AF3E188B583
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 18:03:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10E5D1887A0A
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2025 18:21:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B82FB1A9B43;
-	Wed, 15 Jan 2025 18:03:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25FE81D63C7;
+	Wed, 15 Jan 2025 18:20:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xOnIAyv9";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tAhVYlNo";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xOnIAyv9";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tAhVYlNo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j7/o/xVC"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A03BD24A7EB
-	for <bpf@vger.kernel.org>; Wed, 15 Jan 2025 18:03:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49E0824A7D5;
+	Wed, 15 Jan 2025 18:20:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736964184; cv=none; b=pPPFPp8Y/o5GedqsYI9R1Sc5enSIBu0zeTN+Noo2YeJBww5QSUFTjm1Xb7wQKZz80fVRIYLV8414HUa/0MkdL6h8EqDOd4UpNfcriTjFxrhP3JtVzqu5KF3DtQN2R8srJ3yqA4BlyiymjUoVTmccaoucgceIWYnm+/2424wBOG0=
+	t=1736965250; cv=none; b=IPBaM3+wyo00E1f09hq+r1+6Iq90SHOqZucViQLJYhVFrG0ugKQPzemVAs5j09WKWhIrs33gJvbG+smbwQ4qT3Wd7MeQTlnq9bjBKk5j62CdQtkx1oOTk6ae+Qvnc2hr/GE9Z6H0tVCStKBdrxDkZ8+y6U6v2x4DifayR+BPRic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736964184; c=relaxed/simple;
-	bh=JD08UFzBPdrYb9llzlbOrHWH6jGNLLcA8RV6fM9nlq8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pPkUF+OAr5ouBmb3OcQAccY/XEtvHHMV1yWOkkQCzAsGL5rZN6f0GLNvB1M3r/ZyD+asUXZDZt1mdUe2N24fX5MSrzuhVHAsL60VzpWEbrjac200PZr1Xn0JZEWdZX0zzhvuIQcVBtqshfC4nEFJ4w0dO4qRcKhZD6oGqiLf3Mk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xOnIAyv9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tAhVYlNo; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xOnIAyv9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tAhVYlNo; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8FA551F37E;
-	Wed, 15 Jan 2025 18:03:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1736964180; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=P2SdFvspBXKn6tuOq2g3OXKEp7CwG+JJItZlBCb91E8=;
-	b=xOnIAyv9EBL4pKeVUhzGcBkzoueXHBJbC2DcXoB3w+Zo4nU91UtBbzj2lB2xyDF6EDdojc
-	gcfz0ATX1kPLEs347QVWBMhjdTJ/BcEZ8g6K1Koc6Qya/JvmRcq17Y51ct08NyIa/YTehc
-	JcENzyCDxMN5yEZVCW+fusOcbkwbpx0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1736964180;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=P2SdFvspBXKn6tuOq2g3OXKEp7CwG+JJItZlBCb91E8=;
-	b=tAhVYlNo/ssZy76DqEOLChilhL4rD8rNYQhfFbVss5regyI1Fq1Z9EIYQbUiPFJhy7+ED7
-	+nVAcjeVplDmfZDw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1736964180; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=P2SdFvspBXKn6tuOq2g3OXKEp7CwG+JJItZlBCb91E8=;
-	b=xOnIAyv9EBL4pKeVUhzGcBkzoueXHBJbC2DcXoB3w+Zo4nU91UtBbzj2lB2xyDF6EDdojc
-	gcfz0ATX1kPLEs347QVWBMhjdTJ/BcEZ8g6K1Koc6Qya/JvmRcq17Y51ct08NyIa/YTehc
-	JcENzyCDxMN5yEZVCW+fusOcbkwbpx0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1736964180;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=P2SdFvspBXKn6tuOq2g3OXKEp7CwG+JJItZlBCb91E8=;
-	b=tAhVYlNo/ssZy76DqEOLChilhL4rD8rNYQhfFbVss5regyI1Fq1Z9EIYQbUiPFJhy7+ED7
-	+nVAcjeVplDmfZDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6523C139CB;
-	Wed, 15 Jan 2025 18:03:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gV4OGFT4h2fYOAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 15 Jan 2025 18:03:00 +0000
-Message-ID: <7418e422-ecd3-40c9-bf65-dd9b2fcebfa6@suse.cz>
-Date: Wed, 15 Jan 2025 19:02:59 +0100
+	s=arc-20240116; t=1736965250; c=relaxed/simple;
+	bh=Vq66YhCbR2GtMp6Cq7zCCTvPpbdue7ohUPmScQz6nzk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hGwyZoTM59H/18eAE2A/CGy5LDH49uXrlEJn8QRgOVaTqfTE1txBFpae7aPvnUepH0ACT7/d9ZZHygbSYaQocRmIGdapaGzmYddgtLYbhLHub7bL1935cnYX28wG5dlny+KtmmBf0VDMMaA8+BLUTT2GCZig1vd+Qc07p1xJ1aw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j7/o/xVC; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2ee50ffcf14so2009091a91.0;
+        Wed, 15 Jan 2025 10:20:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736965248; x=1737570048; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Vq66YhCbR2GtMp6Cq7zCCTvPpbdue7ohUPmScQz6nzk=;
+        b=j7/o/xVCgfC64bxHazI/AoCFWAoj0OM4uW3WClKNaIVih/58zjYmzL4iJfNCaSMCS5
+         9SZf34K207OpqMHBav+QNPHhGgq65sPrw6FxPWNoYy69YsDEL3Dv7OAsqtWggtWCS3Ax
+         XIe7ucVpLVLV3Lx17nHcSgZZNU5T4DgyhZiq/dSONavfh/zEYj70hlfJos2WInegXdTk
+         xucGbgwd53RS41TiZMAx3JGSrEd9q6radflIlrfLse+ZMUub6R+YI4c8LV5TnCNXpdh3
+         J+ibSEPc1XwEoaDmpssdnSEu4ubc8J9YNZPdf9C2wbw4zHoGpLD5U8Gq57pn0JXgrUZg
+         jr0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736965248; x=1737570048;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Vq66YhCbR2GtMp6Cq7zCCTvPpbdue7ohUPmScQz6nzk=;
+        b=FApPbWMI54JgUkXw0AWMo2e2UkhmqdlG9kgpYuXbBd48pCWJ09N4aJoVQUz2v6B/US
+         7cK8Fgtj4AUps5LHT/f0QBNAn5gavy7AJykXxE/m2wHM2O9tznYzNOr/Unaj8hjwZ7AC
+         vsaXlud3JtPkR6/U9JdgI9VGSU3sHCHM+IB0DxB3WoEFDpkevv9wyzv/xWxdhuoOjMLY
+         a8GWimI4diSB3TXk9Qnjwn40072u97uBPcZhg5Mc+KnMFkuKQpsPhG3pZXPKJPRMb2MP
+         najf/yBNOTVmXW2/3F1LMBUvC5EF/4bO559aUJq9j7mR9DeeHcl+CBPhFEktJxiHnYVA
+         uWPg==
+X-Forwarded-Encrypted: i=1; AJvYcCUymtqUfHJDvqNWSwwow+W+GBHeTtrz8q/mIs1pPSbAe3iNoVfRFkgOx6IYm8Ded0dlu6ezygyN4Q4kvFav@vger.kernel.org, AJvYcCVDv3fKz82vIl9t33ivsUvhQL1T5/MtdUqXAbZR/AgP0+L9yMzP7dTChTO2FVp6IDTrAOsGrqfTf3sY1CeOnzgMlHZL@vger.kernel.org, AJvYcCXgjbyP7OutV9P9rXJHbZSCws+untf+TSFsP+JusP6DcW66B7LwEl8D+r888EVGUkpC2gE=@vger.kernel.org, AJvYcCXkviiRc1gydmNcMHjbMgYztDn9bzVuUnzpocryPOAh9Pn9Juv8N3BRV0k+Hugndj91js7HFS2NPCM7@vger.kernel.org
+X-Gm-Message-State: AOJu0YzxucOMx55z2yQUgKHtPTCdssZqSLEG5U47KuyqX/O8RB4CxM9u
+	v1uMGvycRGO3PF2/vsiM2obKdpq+fX3cnlasbH2R0XtX9vrgqVMQqbOBXuNm/rMY39NqLNwcxgs
+	N56sKKMWUe5aTQ7wAZRyzVFaJJgow7g==
+X-Gm-Gg: ASbGncsRcduH1EE2LPk5vAOGKetAbiR9iJFPT8FqhanWquAlp0LgDsVznrJxf3maLXK
+	teWlsXkbsM5Ec3jUlFVxgCmHywn7cck2TbB6E
+X-Google-Smtp-Source: AGHT+IF9NtZ+66UkL1FvOrp8/deBXAsjyUAeArR2ssqxqY4JNezqt9qJmoTEWsR9BAvb4fZrRaNnHkO2od84IYZsXh0=
+X-Received: by 2002:a17:90b:2b8d:b0:2ee:7504:bb3d with SMTP id
+ 98e67ed59e1d1-2f728bf2c11mr6571054a91.0.1736965246987; Wed, 15 Jan 2025
+ 10:20:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v5 7/7] bpf: Use try_alloc_pages() to allocate
- pages for bpf needs.
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org
-Cc: andrii@kernel.org, memxor@gmail.com, akpm@linux-foundation.org,
- peterz@infradead.org, bigeasy@linutronix.de, rostedt@goodmis.org,
- houtao1@huawei.com, hannes@cmpxchg.org, shakeel.butt@linux.dev,
- mhocko@suse.com, willy@infradead.org, tglx@linutronix.de, jannh@google.com,
- tj@kernel.org, linux-mm@kvack.org, kernel-team@fb.com
-References: <20250115021746.34691-1-alexei.starovoitov@gmail.com>
- <20250115021746.34691-8-alexei.starovoitov@gmail.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- EP+ylKVEKb0Q2A==
-In-Reply-To: <20250115021746.34691-8-alexei.starovoitov@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -2.80
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_RCPT(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,gmail.com,linux-foundation.org,infradead.org,linutronix.de,goodmis.org,huawei.com,cmpxchg.org,linux.dev,suse.com,google.com,kvack.org,fb.com];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
+References: <CAHsH6Gs3Eh8DFU0wq58c_LF8A4_+o6z456J7BidmcVY2AqOnHQ@mail.gmail.com>
+ <20250110.152323-sassy.torch.lavish.rent-vKX3ul5B3qyi@cyphar.com>
+ <Z4K7D10rjuVeRCKq@krava> <Z4YszJfOvFEAaKjF@krava> <CAHsH6Gst+UGCtiCaNq2ikaknZGghpTq2SFZX7S0A8=uDsXt=Zw@mail.gmail.com>
+ <20250114143313.GA29305@redhat.com> <Z4Z7OkrtXBauaLcm@krava>
+ <20250114172519.GB29305@redhat.com> <Z4eBs0-kJ3iVZjXL@krava>
+ <20250115150607.GA11980@redhat.com> <CAADnVQJjroiR0SRp69f1NbomEH-riw53e_-TioqT4aEt3GSKGg@mail.gmail.com>
+In-Reply-To: <CAADnVQJjroiR0SRp69f1NbomEH-riw53e_-TioqT4aEt3GSKGg@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 15 Jan 2025 10:20:34 -0800
+X-Gm-Features: AbW1kvZVbnIbnZHW-8PInM1hXXlwjQREQdb1YQX5brF_yU0Utl0vyp__rJJ66dk
+Message-ID: <CAEf4BzbVZuYEXro57FhZyTetaKFZ1xr9FGn5iyi8Nwa+LbA0vA@mail.gmail.com>
+Subject: Re: Crash when attaching uretprobes to processes running in Docker
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Oleg Nesterov <oleg@redhat.com>, Jiri Olsa <olsajiri@gmail.com>, 
+	Eyal Birger <eyal.birger@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, BPF-dev-list <bpf@vger.kernel.org>, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>, 
+	Linux API <linux-api@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
+	"rostedt@goodmis.org" <rostedt@goodmis.org>, rafi@rbk.io, 
+	Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/15/25 03:17, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
-> 
-> Use try_alloc_pages() and free_pages_nolock()
-> 
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
->  kernel/bpf/syscall.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 0daf098e3207..8bcf48e31a5a 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -582,14 +582,14 @@ int bpf_map_alloc_pages(const struct bpf_map *map, gfp_t gfp, int nid,
+On Wed, Jan 15, 2025 at 9:56=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Jan 15, 2025 at 7:06=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> w=
+rote:
+> >
+> > Or we can change __secure_computing() to do nothing if
+> > this_syscall =3D=3D __NR_uretprobe.
+>
+> I think that's the best way forward.
+> seccomp already allowlists sigreturn syscall.
+> uretprobe syscall is in the same category.
 
-This makes the gfp parameter unused? And the callers are passing GFP_KERNEL
-anyway? Isn't try_alloc_pages() rather useful for some context that did not
-even try to allocate until now, but now it could?
++1, we will have a similar problem with sys_uprobe (when it's added).
+Just like rt_sigreturn, these are special kernel-only mechanisms, and
+the kernel already protects itself from any user abuse. So I think we
+should have a way to ensure those special syscalls can go through
+regardless of seccomp.
 
-Also unless my concerns about page_owner were wrong, this is where they
-could manifest.
-
->  	old_memcg = set_active_memcg(memcg);
->  #endif
->  	for (i = 0; i < nr_pages; i++) {
-> -		pg = alloc_pages_node(nid, gfp | __GFP_ACCOUNT, 0);
-> +		pg = try_alloc_pages(nid, 0);
->  
->  		if (pg) {
->  			pages[i] = pg;
->  			continue;
->  		}
->  		for (j = 0; j < i; j++)
-> -			__free_page(pages[j]);
-> +			free_pages_nolock(pages[j], 0);
->  		ret = -ENOMEM;
->  		break;
->  	}
-
+> See __secure_computing_strict.
 
