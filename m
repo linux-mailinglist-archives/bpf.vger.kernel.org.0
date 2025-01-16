@@ -1,116 +1,162 @@
-Return-Path: <bpf+bounces-49049-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49050-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A2F0A13A33
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 13:50:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31A08A13A3D
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 13:52:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D3301887C6F
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 12:50:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A0EB167B0D
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 12:52:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B029F1DE89B;
-	Thu, 16 Jan 2025 12:50:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="S5flDUM6"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E35881DED6F;
+	Thu, 16 Jan 2025 12:52:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 106951862
-	for <bpf@vger.kernel.org>; Thu, 16 Jan 2025 12:50:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B8FD1DE8BB;
+	Thu, 16 Jan 2025 12:52:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737031813; cv=none; b=T6g8u7mcZMBZiGSVp/KCsbSyYMiB15I8Rz8LHMvpBKkBpfxuGDDomlI6aaiB6DseN7WMsMVEew8K1V50jf5KXc1tftXqAHNpcgL2FZt4a+JcAxTBtn7uAOiBNfPYQ4mo8kTs4DTR2b4Y05ZKDoheEgjMF8yDAXuRUU/DnwBopWg=
+	t=1737031931; cv=none; b=rrY4lG0BE5CvRn6NfByus2YT6s6nniTPioekI+nR8lZYa1ebThGlvKp7eqo1kWavpzHxJtJo8F1yx3TrFvZEF+8T+g4padL8Bl4dA9KrRPFSmyTonD9l9NhUGem4v2rBsjQlMSJhOWo74xqNA5WwzK+ka9NKQgIbY199U2vSWrQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737031813; c=relaxed/simple;
-	bh=cUAp7WUEbNcmPHqsSB2egxYTb5Myvc39NYPg9s9X79s=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=olQY/iJ9n7WCRy9BCCrQll7g4HE6SIN6qE2m7R3+7tKVkMcwPDvijJEwiYlBnwkfCUrPY0C8Lrzus08hj0rDvB0cX+IhMdes+TzEI8P+9mg8WxrcIXTpL+cByVL4bsPrVtldRnMHQ5eatJOIOOxq70xhCrqw4ZsRk3Ev66lAhj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=S5flDUM6; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-108-26-156-113.bstnma.fios.verizon.net [108.26.156.113])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 50GCnnFm019186
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 16 Jan 2025 07:49:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1737031791; bh=huf9Ik1hje0HQYQhWKBTuB0nHn68Gol/moxeLj16d6o=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=S5flDUM6m8t/2Y7Qox8IFKNFz3YEbLwIJ4BenVzGoIqlojz7ADOJtH0ryPta3hGvR
-	 S/610GAIrE5clwssPaUilNLFiqytCSEiQ/WptqYnLG5YhJZGd1Todi3+k2WOQb+p8H
-	 YRHBcHuk0mUVuSChvchwTfdBKTGoir1QvgHC8/BZ/R4fWbxtFWEExzXTDSyYIFV06V
-	 wGqshAJPP/iPC3HGjUU2PecYSx6K7Tk8PzRwxByXh1I0nNX2ju5RmtlmVkSJgL/n/6
-	 Uvo1bzyg2X/+ijYIFMZ1Hw+g/PoudeUlE18LM9KqsEqcLTel7IS9j6sSC8WD+6hgam
-	 GXDXMXykPjW8A==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 932E915C0108; Thu, 16 Jan 2025 07:49:49 -0500 (EST)
-Date: Thu, 16 Jan 2025 07:49:49 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: lsf-pc@lists.linux-foundation.org
-Cc: Linux Filesystem Development List <linux-fsdevel@vger.kernel.org>,
-        bpf@vger.kernel.org
-Subject: [LSF/MM/BPF TOPIC] time to reconsider tracepoints in the vfs?
-Message-ID: <20250116124949.GA2446417@mit.edu>
+	s=arc-20240116; t=1737031931; c=relaxed/simple;
+	bh=eUdOT2Un72yDGZvOoQ8OJIwBSP/aANwUwNwJcybgR00=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=k1TsujAjge9xxfxZSAM0xlhPGmB1rkqFIdm6EC/nf21gQ39AZeelpJDdLNLtHBGwkQsnDBWV6DaxC1ZUry9HnhcoV9XBBiGaHA8y0dkGxB6lDAJ5DJ16yBfJEH8s/Bd2PlWH6nAvItIxgvgIpDKufQgT70Wnvu5G2JR3vRJhpP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4YYjR348srz1xmTj;
+	Thu, 16 Jan 2025 20:51:11 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id 9D57C1A016C;
+	Thu, 16 Jan 2025 20:52:05 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 16 Jan 2025 20:52:05 +0800
+Message-ID: <1bef4a35-efaa-4083-8ed5-8818fe285db5@huawei.com>
+Date: Thu, 16 Jan 2025 20:52:04 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v7 0/8] fix two bugs related to page_pool
+To: Jesper Dangaard Brouer <hawk@kernel.org>, <davem@davemloft.net>,
+	<kuba@kernel.org>, <pabeni@redhat.com>
+CC: <zhangkun09@huawei.com>, <liuyonglong@huawei.com>,
+	<fanghaiqing@huawei.com>, Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Robin Murphy <robin.murphy@arm.com>, Alexander Duyck
+	<alexander.duyck@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, IOMMU
+	<iommu@lists.linux.dev>, MM <linux-mm@kvack.org>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
+	<john.fastabend@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	<netdev@vger.kernel.org>, <intel-wired-lan@lists.osuosl.org>,
+	<bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
+References: <20250110130703.3814407-1-linyunsheng@huawei.com>
+ <3c8e4f86-87e2-470d-84d8-86c70b3e2fcc@kernel.org>
+ <c02e856e-6ec5-49d0-8527-2647695a0174@huawei.com>
+ <3a853e1b-b5bf-4709-b8f6-e466e3e7375e@kernel.org>
+Content-Language: en-US
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <3a853e1b-b5bf-4709-b8f6-e466e3e7375e@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-Historically, we have avoided adding tracepoints to the VFS because of
-concerns that tracepoints would be considered a userspace-level
-interface, and would therefore potentially constrain our ability to
-improve an interface which has been extremely performance critical.
+On 2025/1/16 1:40, Jesper Dangaard Brouer wrote:
+> 
+> 
+> On 15/01/2025 12.33, Yunsheng Lin wrote:
+>> On 2025/1/14 22:31, Jesper Dangaard Brouer wrote:
+>>>
+>>>
+>>> On 10/01/2025 14.06, Yunsheng Lin wrote:
+>>>> This patchset fix a possible time window problem for page_pool and
+>>>> the dma API misuse problem as mentioned in [1], and try to avoid the
+>>>> overhead of the fixing using some optimization.
+>>>>
+>>>>   From the below performance data, the overhead is not so obvious
+>>>> due to performance variations for time_bench_page_pool01_fast_path()
+>>>> and time_bench_page_pool02_ptr_ring, and there is about 20ns overhead
+>>>> for time_bench_page_pool03_slow() for fixing the bug.
+>>>>
+>>>
+>>> My benchmarking on x86_64 CPUs looks significantly different.
+>>>   - CPU: Intel(R) Xeon(R) CPU E5-1650 v4 @ 3.60GHz
+>>>
+>>> Benchmark (bench_page_pool_simple) results from before and after patchset:
+>>>
+>>> | Test name  | Cycles |       |    |Nanosec |        |       |      % |
+>>> | (tasklet_*)| Before | After |diff| Before |  After |  diff | change |
+>>> |------------+--------+-------+----+--------+--------+-------+--------|
+>>> | fast_path  |     19 |    24 |   5|  5.399 |  6.928 | 1.529 |   28.3 |
+>>> | ptr_ring   |     54 |    79 |  25| 15.090 | 21.976 | 6.886 |   45.6 |
+>>> | slow       |    238 |   299 |  61| 66.134 | 83.298 |17.164 |   26.0 |
+>>> #+TBLFM: $4=$3-$2::$7=$6-$5::$8=(($7/$5)*100);%.1f
+>>>
+>>> My above testing show a clear performance regressions across three
+>>> different page_pool operating modes.
+>>
+>> I retested it on arm64 server patch by patch as the raw performance
+>> data in the attachment, it seems the result seemed similar as before.
+>>
+>> Before this patchset:
+>>              fast_path              ptr_ring            slow
+>> 1.         31.171 ns               60.980 ns          164.917 ns
+>> 2.         28.824 ns               60.891 ns          170.241 ns
+>> 3.         14.236 ns               60.583 ns          164.355 ns
+>>
+>> With patch 1-4:
+>> 4.         31.443 ns               53.242 ns          210.148 ns
+>> 5.         31.406 ns               53.270 ns          210.189 ns
+>>
+>> With patch 1-5:
+>> 6.         26.163 ns               53.781 ns          189.450 ns
+>> 7.         26.189 ns               53.798 ns          189.466 ns
+>>
+>> With patch 1-8:
+>> 8.         28.108 ns               68.199 ns          202.516 ns
+>> 9.         16.128 ns               55.904 ns          202.711 ns
+>>
+>> I am not able to get hold of a x86 server yet, I might be able
+>> to get one during weekend.
+>>
+>> Theoretically, patch 1-4 or 1-5 should not have much performance
+>> impact for fast_path and ptr_ring except for the rcu_lock mentioned
+>> in page_pool_napi_local(), so it would be good if patch 1-5 is also
+>> tested in your testlab with the rcu_lock removing in
+>> page_pool_napi_local().
+>>
+> 
+> What are you saying?
+>  - (1) test patch 1-5
+>  - or (2) test patch 1-5 but revert patch 2 with page_pool_napi_local()
 
-I'd like to discuss whether in 2025, it's time to reconsider our
-reticence in adding tracepoints in the VFS layer.  First, while there
-has been a single incident of a tracepoint being used by programs that
-were distributed far and wide (powertop) such that we had to revert a
-change to a tracepoint that broke it --- that was ***14** years ago,
-in 2011.  Across multiple other subsystems, many of
-which have added an extensive number of tracepoints, there has been
-only a single problem in over a decade, so I'd like to suggest that
-this concern may have not have been as serious as we had first
-thought.
+patch 1-5 with below applied.
 
-In practice, most tracepoints are used by system administrators and
-they have to deal with enough changes that break backwards
-compatibility (e.g., bash 3 ->bash 4, bash 4 -> bash 5, python 2.7 ->
-python 3, etc.) that the ones who really care end up using an
-enterprise distribution, which goes to extreme length to maintain the
-stable ABI nonsense.  Maintaining tracepoints shouldn't be a big deal
-for them.
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -1207,10 +1207,8 @@ static bool page_pool_napi_local(const struct page_pool *pool)
+        /* Synchronizated with page_pool_destory() to avoid use-after-free
+         * for 'napi'.
+         */
+-       rcu_read_lock();
+        napi = READ_ONCE(pool->p.napi);
+        napi_local = napi && READ_ONCE(napi->list_owner) == cpuid;
+-       rcu_read_unlock();
 
-Secondly, we've had a very long time to let the dentry interface
-mature, and so (a) the fundamental architecture of the dcache hasn't
-been changing as much in the past few years, and (b) we should have
-enough understanding of the interface to understand where we could put
-tracepoints (e.g., close to the syscall interface) which would make it
-much less likely that there would be any need to make
-backwards-incompatible changes to tracepoints.
+        return napi_local;
+ }
 
-The benefits of this would be to make it much easier for users,
-developers, and kernel developers to use BPF to probe file
-system-related activities.  Today, people who want to do these sorts
-of things need to use fs-specific tracepoints (for example, ext4 has a
-very large number of tracepoints which can be used for this purpose)
-but this locks users into a single file system and makes it harder for
-them to switch to a different file system, or if they want to use
-different file systems for different use cases.
-
-I'd like to propose that we experiment with adding tracepoints in
-early 2025, so that at the end of the year the year-end 2025 LTS
-kernels will have tracepoints that we are confident will be fit for
-purpose for BPF users.
-
-Thanks,
-
-					- Ted
 
