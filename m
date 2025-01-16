@@ -1,170 +1,111 @@
-Return-Path: <bpf+bounces-49113-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49114-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF0F9A1433D
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 21:29:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5272A14395
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 21:45:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BC783A7477
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 20:28:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02AD816B8D3
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 20:45:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D4E9241681;
-	Thu, 16 Jan 2025 20:28:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB979241696;
+	Thu, 16 Jan 2025 20:45:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=engleder-embedded.com header.i=@engleder-embedded.com header.b="I7OqsmYT"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="PyGJ6hX4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx13lb.world4you.com (mx13lb.world4you.com [81.19.149.123])
+Received: from mail-10628.protonmail.ch (mail-10628.protonmail.ch [79.135.106.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A01AC236A64;
-	Thu, 16 Jan 2025 20:28:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=81.19.149.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78134236A9F
+	for <bpf@vger.kernel.org>; Thu, 16 Jan 2025 20:45:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737059301; cv=none; b=haAYmovAGh+bYTuwiI9OL/Cy5Pvf0hSgB1KPSixTRSYa72V/IoNotNqvGMqjh76lXtBu6IMlaK0ll2nXf6rX48KSJ19VnWCvnsQ2EqEAZvqE6NeB9qJ6C9fxqYTtGmBP/WKWCXl3tgoI3U3FPJOJHQQMpsJTOy8YsD53OJPhiH8=
+	t=1737060311; cv=none; b=FceJ39Zmgc+doEp+i1BCYskZJus5Zp4Kpvqpq8xJyOtSiuugnui/nv7VMRrsINZr693PfngsKIbcqr5r9VpPQG1imShgCimiOk0f1Qv8zFK7spQrD9DHr1go/mm10reRwwTpEGCWWVlr+Lq7cU9Q6ekYcJDVDwdAvldQqogl/YM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737059301; c=relaxed/simple;
-	bh=nudOlvqSJ1aBhTQ2tX4dtnYAuDIsm35x9yhIVoUF/mg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
-	 In-Reply-To:Content-Type; b=MTA9t8QchOzWpTO7rqt6hJwPnHOcLcDy4Am52Lg6LU+cxX1gLQ3o7DxxXdWVO7sxBfg0oi4JjLJ2SbTyKA14r3A9KOmOqi+vADJGYspnyJwSHzxXp/555/UcmfOvrhFRx/cQy/RfcykclprwBpf9mNcJP1DMxI0XSYWqAsp40Mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engleder-embedded.com; spf=pass smtp.mailfrom=engleder-embedded.com; dkim=pass (1024-bit key) header.d=engleder-embedded.com header.i=@engleder-embedded.com header.b=I7OqsmYT; arc=none smtp.client-ip=81.19.149.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engleder-embedded.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=engleder-embedded.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=engleder-embedded.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:Cc:References:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=ahuT/uI6m98g3xSc8Ha9OAIyv3omnEhaK7ihtInarV0=; b=I7OqsmYTo+0VcA+Ln2qQcokgSz
-	OLyZ30zDmnP1fjgVzUgNx13Jf5RBmlYgfjjheUWk96EbXAUkIWdBwjeHv2T7WChrZ7XfEx2LYCHGW
-	FRNBXzk6CEv45lziRZH+e8WYkCElbRz00SeNFQNo5n+xxJOFKXbhwu/3Ub/qqk3scpNY=;
-Received: from [88.117.60.28] (helo=[10.0.0.160])
-	by mx13lb.world4you.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.97.1)
-	(envelope-from <gerhard@engleder-embedded.com>)
-	id 1tYWTJ-000000006xn-2BtL;
-	Thu, 16 Jan 2025 21:28:09 +0100
-Message-ID: <f8fe5618-af94-4f5b-8dbc-e8cae744aedf@engleder-embedded.com>
-Date: Thu, 16 Jan 2025 21:28:07 +0100
+	s=arc-20240116; t=1737060311; c=relaxed/simple;
+	bh=q+kL3CfiLCXEA+kNdg1CWHqmb7wCGdKjTjSOq/y/yfQ=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=VeFl+Y+kqigBSzl091/DRmncDVkHMViG8f3JaXK1X1zI9vw/wR/QW6ZmIRDCfg9mZ91gC5vf2R0fq/RmqkImTGn8rN59hRqhZIcyycXOPj2MhAqiwqx3rBcG4m30zrkgSYjs1nsE1VxORD2gxpK6/EJhO6dDnL53q774XEWPlHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=PyGJ6hX4; arc=none smtp.client-ip=79.135.106.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1737060300; x=1737319500;
+	bh=63jx38g1yZ6vKz/IYz/fxpxEnDim8ZY2HCVpjv3wJ+g=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector:
+	 List-Unsubscribe:List-Unsubscribe-Post;
+	b=PyGJ6hX4G5/FOR8EA+7UfSTMDqaRYM9mqzJbSmyBHcxrQmen1n3wNWOZXPQIHOZ39
+	 to+OYLMrfMdPCzkVv3e8beOB6mt1bjbG0RZKIQB1zwbG0uu1bMkCHv3B1D+eOZSusi
+	 LcSY/OHL/ah/NcP+Az+GWwowSvDXH9azsOq24i5uToK923sLRxHEzViL89ijWlky9p
+	 d02bWzn6wdHtRtubJ88H7LlCnxmX5OMmPG94VKAmCcgH4pMxmujsRfBKpN2uCSk+aZ
+	 n1NWUfzH69Tk4m2jtxTwH0rxoSQpL81KkjdiZKMMKh7f1gaV36kjqaTxEYSTcGS9Vl
+	 quvLPh4X4vehw==
+Date: Thu, 16 Jan 2025 20:44:54 +0000
+To: Andrew Pinski via Gcc <gcc@gcc.gnu.org>, bpf <bpf@vger.kernel.org>
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: Cupertino Miranda <cupertino.miranda@oracle.com>, "Jose E. Marchesi" <jose.marchesi@oracle.com>, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Manu Bretelle <chantra@meta.com>, Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Yonghong Song <yonghong.song@linux.dev>, David Faust <david.faust@oracle.com>, Andrew Pinski <pinskia@gmail.com>
+Subject: Announcement: GCC BPF is now being tested on BPF CI
+Message-ID: <mMhcrHuvf5fyjPwMa19kug9DHQH9yYcCJXKfaFMXhfQlKIuColex7zg7G6qpPqlfF74-IqzkhpZSlzsgvgikc-u6oQp27dNzFQAAatRaEuU=@pm.me>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: c8347efe34b21673c173f37438834c47ea437cc9
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 3/4] virtio_net: Map NAPIs to queues
-To: Joe Damato <jdamato@fastly.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-References: <20250116055302.14308-1-jdamato@fastly.com>
- <20250116055302.14308-4-jdamato@fastly.com>
- <1737013994.1861002-1-xuanzhuo@linux.alibaba.com>
- <Z4kvQI8GmmEGrq1F@LQ3V64L9R2>
-Content-Language: en-US
-Cc: "open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)"
- <bpf@vger.kernel.org>, jasowang@redhat.com, leiyang@redhat.com,
- mkarsten@uwaterloo.ca, "Michael S. Tsirkin" <mst@redhat.com>,
- =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- "open list:VIRTIO CORE AND NET DRIVERS" <virtualization@lists.linux.dev>,
- open list <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org
-From: Gerhard Engleder <gerhard@engleder-embedded.com>
-In-Reply-To: <Z4kvQI8GmmEGrq1F@LQ3V64L9R2>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AV-Do-Run: Yes
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 16.01.25 17:09, Joe Damato wrote:
-> On Thu, Jan 16, 2025 at 03:53:14PM +0800, Xuan Zhuo wrote:
->> On Thu, 16 Jan 2025 05:52:58 +0000, Joe Damato <jdamato@fastly.com> wrote:
->>> Use netif_queue_set_napi to map NAPIs to queue IDs so that the mapping
->>> can be accessed by user apps.
->>>
->>> $ ethtool -i ens4 | grep driver
->>> driver: virtio_net
->>>
->>> $ sudo ethtool -L ens4 combined 4
->>>
->>> $ ./tools/net/ynl/pyynl/cli.py \
->>>         --spec Documentation/netlink/specs/netdev.yaml \
->>>         --dump queue-get --json='{"ifindex": 2}'
->>> [{'id': 0, 'ifindex': 2, 'napi-id': 8289, 'type': 'rx'},
->>>   {'id': 1, 'ifindex': 2, 'napi-id': 8290, 'type': 'rx'},
->>>   {'id': 2, 'ifindex': 2, 'napi-id': 8291, 'type': 'rx'},
->>>   {'id': 3, 'ifindex': 2, 'napi-id': 8292, 'type': 'rx'},
->>>   {'id': 0, 'ifindex': 2, 'type': 'tx'},
->>>   {'id': 1, 'ifindex': 2, 'type': 'tx'},
->>>   {'id': 2, 'ifindex': 2, 'type': 'tx'},
->>>   {'id': 3, 'ifindex': 2, 'type': 'tx'}]
->>>
->>> Note that virtio_net has TX-only NAPIs which do not have NAPI IDs, so
->>> the lack of 'napi-id' in the above output is expected.
->>>
->>> Signed-off-by: Joe Damato <jdamato@fastly.com>
->>> ---
->>>   v2:
->>>     - Eliminate RTNL code paths using the API Jakub introduced in patch 1
->>>       of this v2.
->>>     - Added virtnet_napi_disable to reduce code duplication as
->>>       suggested by Jason Wang.
->>>
->>>   drivers/net/virtio_net.c | 34 +++++++++++++++++++++++++++++-----
->>>   1 file changed, 29 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
->>> index cff18c66b54a..c6fda756dd07 100644
->>> --- a/drivers/net/virtio_net.c
->>> +++ b/drivers/net/virtio_net.c
->>> @@ -2803,9 +2803,18 @@ static void virtnet_napi_do_enable(struct virtqueue *vq,
->>>   	local_bh_enable();
->>>   }
->>>
->>> -static void virtnet_napi_enable(struct virtqueue *vq, struct napi_struct *napi)
->>> +static void virtnet_napi_enable(struct virtqueue *vq,
->>> +				struct napi_struct *napi)
->>>   {
->>> +	struct virtnet_info *vi = vq->vdev->priv;
->>> +	int q = vq2rxq(vq);
->>> +	u16 curr_qs;
->>> +
->>>   	virtnet_napi_do_enable(vq, napi);
->>> +
->>> +	curr_qs = vi->curr_queue_pairs - vi->xdp_queue_pairs;
->>> +	if (!vi->xdp_enabled || q < curr_qs)
->>> +		netif_queue_set_napi(vi->dev, q, NETDEV_QUEUE_TYPE_RX, napi);
->>
->> So what case the check of xdp_enabled is for?
-> 
-> Based on a previous discussion [1], the NAPIs should not be linked
-> for in-kernel XDP, but they _should_ be linked for XSK.
-> 
-> I could certainly have misread the virtio_net code (please let me
-> know if I've gotten it wrong, I'm not an expert), but the three
-> cases I have in mind are:
-> 
->    - vi->xdp_enabled = false, which happens when no XDP is being
->      used, so the queue number will be < vi->curr_queue_pairs.
-> 
->    - vi->xdp_enabled = false, which I believe is what happens in the
->      XSK case. In this case, the NAPI is linked.
-> 
->    - vi->xdp_enabled = true, which I believe only happens for
->      in-kernel XDP - but not XSK - and in this case, the NAPI should
->      NOT be linked.
+Hi everyone.
 
-My interpretation based on [1] is that an in-kernel XDP Tx queue is a
-queue that is only used if XDP is attached and is not visible to
-userspace. The in-kernel XDP Tx queue is used to not load stack Tx
-queues with XDP packets. IIRC fbnic has additional queues only for
-XDP Tx. So for stack RX queues I would always link napi, no matter if
-XDP is attached or not. I think most driver do not have in-kernel XDP
-Tx queues. But I'm also not an expert.
+GCC BPF support in BPF CI has been landed.
 
-Gerhard
+The BPF CI dashboard is here:
+https://github.com/kernel-patches/bpf/actions/workflows/test.yml
+
+A summary of what happens on CI (relevant to GCC BPF):
+  * Linux Kernel is built on a target source revision
+  * Latest snapshots of GCC 15 and binutils are downloaded
+    * GCC BPF compiler is built and cached
+  * selftests/bpf test runners are built with BPF_GCC variable set
+    * BPF_GCC triggers a build of test_progs-bpf_gcc runner
+    * The runner contains BPF binaries produced by GCC BPF
+  * In a separate job, test_progs-bpf_gcc is executed within qemu
+    against the target kernel
+
+GCC BPF is only tested on x86_64.
+
+On x86_64 we test the following toolchains for building the kernel and
+test runners: gcc-13 (ubuntu 24 default), clang-17, clang-18.
+
+An example of successful test run (you have to login to github to see
+the logs):
+https://github.com/kernel-patches/bpf/actions/runs/12816136141/job/35736973=
+856
+
+Currently 2513 of 4340 tests pass for GCC BPF, so a bit more than a half.
+
+Effective BPF selftests denylist for GCC BPF is located here:
+https://github.com/kernel-patches/vmtest/blob/master/ci/vmtest/configs/DENY=
+LIST.test_progs-bpf_gcc
+
+When a patch is submitted to BPF, normally a corresponding PR for
+kernel-patches/bpf github repo is automatically created to trigger a
+BPF CI run for this change. PRs opened manually will do that too, and
+this can be used to test patches before submission.
+
+Since the CI automatically pulls latest GCC snapshot, a change in GCC
+can potentially cause CI failures unrelated to Linux changes being
+tested. This is not the only dependency like that, of course.
+
+In such situations, a change is usually made in CI code to mitigate
+the failure in order to unblock the pipeline for patches. If that
+happens with GCC, someone (most likely me) will have to reach out to
+GCC team. I guess gcc@gcc.gnu.org would be the default point of
+contact, but if there are specific people who should be notified
+please let me know.
+
 
