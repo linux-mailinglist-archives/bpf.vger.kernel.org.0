@@ -1,62 +1,64 @@
-Return-Path: <bpf+bounces-49101-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49102-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38E26A14308
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 21:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E177A14307
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 21:21:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0BAA3A80C5
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 20:21:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5F4D3A7FB0
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 20:21:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCDB8242250;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCF88242252;
 	Thu, 16 Jan 2025 20:21:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wk/Rjpaa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SDkFYGRW"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C25D2361DE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C2F6241685;
 	Thu, 16 Jan 2025 20:21:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737058875; cv=none; b=EB5hBSjvi/BBh7the7pDZYzdt1ag1o7uwQxPjUXxznq4P3O6dqa/yerqWxva7lX6WgFvhSirmkzpU8GrMoq2EGS35YEsJ9Rz7a9nVrU14g4crdh6zIcSE1hST7ivfGwUtG8vD/oHuVME2/pTpo8UoBJPiGM8FkKz9DBhU83VHrI=
+	t=1737058875; cv=none; b=sK3P/VXYpIwYVci0jMjzHStuCeSAu1QRFX+R6aS4wjcCGeAiUmc3YiaTAO30cWBTGo5W7+6fWyFdYN2qwkDqbLFAIAzubQJq5nEuyp1El/jjVz9dQ36DJOMIdlowgrolZsiPFOTuyGsF2hzZZyM7wzGUusKd3Y1bDRwt1cx+tZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1737058875; c=relaxed/simple;
-	bh=TtUqAHtCZPGmuCYiDxjMd5lrVuCO81aZ0Y6hgKFIzo4=;
+	bh=pL1/Lgx7fk6aIW5sHuHV7UEq+eyS6XB5BVEwlDIVglQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=uXmzEMwmEKMctRfVfxSMGIz/PM8bp/QNKsIQscZ6BpzHN2Xs8g6/KfDiMfJoSvIONkLDmr1lyVAGK50a7+UzAfoLRMlu04tlCxmHO2xKVMcDDQubaYIByURecKEVuVjnxJenItk3MM6aFyAZZJwXqn8GqUBCsL1VtVMzuCi9uiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wk/Rjpaa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB03FC4CEE3;
+	 MIME-Version; b=k/3QiBblyMKDskQEA/XHwqE8kXumkf0g1PVcLduUb5Phy87Y9BCet7ihBeUsNpceUBWQ/E3xhvLzMQ9+7hQmqtI/XKRd94t8iZBTCZzGpAK1XTq12xseKwII7pxyqUtEixnxmFZ/tkJk2vkwMl4bSzyNwSh46x/bc1xEzc8/Kzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SDkFYGRW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2DD4C4CEE9;
 	Thu, 16 Jan 2025 20:21:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1737058875;
-	bh=TtUqAHtCZPGmuCYiDxjMd5lrVuCO81aZ0Y6hgKFIzo4=;
+	bh=pL1/Lgx7fk6aIW5sHuHV7UEq+eyS6XB5BVEwlDIVglQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Wk/Rjpaa3p4yqaGnVwzIlsTfVHw3m8tYAx2ECOOSXuXlHS4y0pyeoqGNLeru4PKO0
-	 m7RIYO+R1iLKQ9jX5xLZfwO2VuifL3Vsi6Qa2kdqubq+fObzxf0EaszFiOXEV98zAw
-	 Ko+InBA6gcX6bn9xlQcwFEC8rO9mi6L4/y5yQoVxaTHZuCgi25r+/rQqJtYrSxqqf9
-	 hP8Y3xzWvM1Erx3rR0EM7QdchbyrZgVXaHmH6MmTlMCOwkcLIEEa6GehBlHyH7gg9m
-	 FBmzw57cuEAecqYkhuNnXG7MY7myjwyOeY37BkWOj1nCpwWWN0iDs0a4tZPxj5d8yM
-	 cECD+GzPu4zUA==
+	b=SDkFYGRWeK+T0nHPVLoFcz57JLXQ2scfvgISoxzSQ6eRNmggPcq0K8ouIr1//C/9/
+	 u/R5VJqUg9V1wfKOYnqNxSPi36sD98P3DhjCc49iq0X827OePgc8ZHi2zFx0703GNR
+	 JAiPhT2hj6SoYkPpcPHxTqNadX0NeRbwliu8AdJ80XpDk8o13xuC151scj2b9d/1JU
+	 00IyAxTnll2vzOwRT4VwKXEsWIYcjan8y77pncm68D0G278XDgaTV2za/fLHfHzseu
+	 iblw/AdeOJKy2Uq0PHtQncEkehC9IaGIGKCmmpIy6PM2JzMc2oUbnUud7Gh6M1m9Xz
+	 ryvlJq/ntY/Jw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 8A08ACE37B6; Thu, 16 Jan 2025 12:21:14 -0800 (PST)
+	id 8C838CE37C1; Thu, 16 Jan 2025 12:21:14 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
+	Z qiang <qiang.zhang1211@gmail.com>,
+	kernel test robot <oliver.sang@intel.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Kent Overstreet <kent.overstreet@linux.dev>,
 	bpf@vger.kernel.org
-Subject: [PATCH rcu 04/17] srcu: Pull ->srcu_{un,}lock_count into a new srcu_ctr structure
-Date: Thu, 16 Jan 2025 12:20:59 -0800
-Message-Id: <20250116202112.3783327-4-paulmck@kernel.org>
+Subject: [PATCH rcu 05/17] srcu: Make SRCU readers use ->srcu_ctrs for counter selection
+Date: Thu, 16 Jan 2025 12:21:00 -0800
+Message-Id: <20250116202112.3783327-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <826c8527-d6ba-46c5-bb89-4625750cbeed@paulmck-laptop>
 References: <826c8527-d6ba-46c5-bb89-4625750cbeed@paulmck-laptop>
@@ -68,306 +70,130 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit prepares for array-index-free srcu_read_lock*() by moving the
-->srcu_{un,}lock_count fields into a new srcu_ctr structure.  This will
-permit ->srcu_index to be replaced by a per-CPU pointer to this structure.
+This commit causes SRCU readers to use ->srcu_ctrs for counter
+selection instead of ->srcu_idx.  This takes another step towards
+array-indexing-free SRCU readers.
 
+[ paulmck: Apply kernel test robot feedback. ]
+
+Co-developed-by: Z qiang <qiang.zhang1211@gmail.com>
+Signed-off-by: Z qiang <qiang.zhang1211@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Tested-by: kernel test robot <oliver.sang@intel.com>
 Cc: Alexei Starovoitov <ast@kernel.org>
 Cc: Andrii Nakryiko <andrii@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: <bpf@vger.kernel.org>
 ---
- include/linux/srcutree.h |  13 +++--
- kernel/rcu/srcutree.c    | 115 +++++++++++++++++++--------------------
- 2 files changed, 66 insertions(+), 62 deletions(-)
+ include/linux/srcutree.h |  9 +++++----
+ kernel/rcu/srcutree.c    | 23 +++++++++++++----------
+ 2 files changed, 18 insertions(+), 14 deletions(-)
 
 diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index b17814c9d1c76..c794d599db5c1 100644
+index c794d599db5c1..1b01ced61a45b 100644
 --- a/include/linux/srcutree.h
 +++ b/include/linux/srcutree.h
-@@ -17,14 +17,19 @@
- struct srcu_node;
- struct srcu_struct;
- 
-+/* One element of the srcu_data srcu_ctrs array. */
-+struct srcu_ctr {
-+	atomic_long_t srcu_locks;	/* Locks per CPU. */
-+	atomic_long_t srcu_unlocks;	/* Unlocks per CPU. */
-+};
-+
- /*
-  * Per-CPU structure feeding into leaf srcu_node, similar in function
-  * to rcu_node.
+@@ -101,6 +101,7 @@ struct srcu_usage {
   */
- struct srcu_data {
- 	/* Read-side state. */
--	atomic_long_t srcu_lock_count[2];	/* Locks per CPU. */
--	atomic_long_t srcu_unlock_count[2];	/* Unlocks per CPU. */
-+	struct srcu_ctr srcu_ctrs[2];		/* Locks and unlocks per CPU. */
- 	int srcu_reader_flavor;			/* Reader flavor for srcu_struct structure? */
- 						/* Values: SRCU_READ_FLAVOR_.*  */
+ struct srcu_struct {
+ 	unsigned int srcu_idx;			/* Current rdr array element. */
++	struct srcu_ctr __percpu *srcu_ctrp;
+ 	struct srcu_data __percpu *sda;		/* Per-CPU srcu_data array. */
+ 	struct lockdep_map dep_map;
+ 	struct srcu_usage *srcu_sup;		/* Update-side data. */
+@@ -167,6 +168,7 @@ struct srcu_struct {
+ #define __SRCU_STRUCT_INIT(name, usage_name, pcpu_name)						\
+ {												\
+ 	.sda = &pcpu_name,									\
++	.srcu_ctrp = &pcpu_name.srcu_ctrs[0],							\
+ 	__SRCU_STRUCT_INIT_COMMON(name, usage_name)						\
+ }
  
-@@ -221,7 +226,7 @@ static inline int __srcu_read_lock_lite(struct srcu_struct *ssp)
+@@ -222,13 +224,12 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf);
+  */
+ static inline int __srcu_read_lock_lite(struct srcu_struct *ssp)
+ {
+-	int idx;
++	struct srcu_ctr __percpu *scp = READ_ONCE(ssp->srcu_ctrp);
  
  	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_lock_lite().");
- 	idx = READ_ONCE(ssp->srcu_idx) & 0x1;
--	this_cpu_inc(ssp->sda->srcu_lock_count[idx].counter); /* Y */
-+	this_cpu_inc(ssp->sda->srcu_ctrs[idx].srcu_locks.counter); /* Y */
+-	idx = READ_ONCE(ssp->srcu_idx) & 0x1;
+-	this_cpu_inc(ssp->sda->srcu_ctrs[idx].srcu_locks.counter); /* Y */
++	this_cpu_inc(scp->srcu_locks.counter); /* Y */
  	barrier(); /* Avoid leaking the critical section. */
- 	return idx;
- }
-@@ -240,7 +245,7 @@ static inline int __srcu_read_lock_lite(struct srcu_struct *ssp)
- static inline void __srcu_read_unlock_lite(struct srcu_struct *ssp, int idx)
- {
- 	barrier();  /* Avoid leaking the critical section. */
--	this_cpu_inc(ssp->sda->srcu_unlock_count[idx].counter);  /* Z */
-+	this_cpu_inc(ssp->sda->srcu_ctrs[idx].srcu_unlocks.counter);  /* Z */
- 	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_unlock_lite().");
+-	return idx;
++	return scp - &ssp->sda->srcu_ctrs[0];
  }
  
+ /*
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index b5bb73c877de7..d4e9cd917a69f 100644
+index d4e9cd917a69f..9af86ce2dd248 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
-@@ -116,8 +116,9 @@ do {										\
- /*
-  * Initialize SRCU per-CPU data.  Note that statically allocated
-  * srcu_struct structures might already have srcu_read_lock() and
-- * srcu_read_unlock() running against them.  So if the is_static parameter
-- * is set, don't initialize ->srcu_lock_count[] and ->srcu_unlock_count[].
-+ * srcu_read_unlock() running against them.  So if the is_static
-+ * parameter is set, don't initialize ->srcu_ctrs[].srcu_locks and
-+ * ->srcu_ctrs[].srcu_unlocks.
+@@ -253,8 +253,10 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+ 	atomic_set(&ssp->srcu_sup->srcu_barrier_cpu_cnt, 0);
+ 	INIT_DELAYED_WORK(&ssp->srcu_sup->work, process_srcu);
+ 	ssp->srcu_sup->sda_is_static = is_static;
+-	if (!is_static)
++	if (!is_static) {
+ 		ssp->sda = alloc_percpu(struct srcu_data);
++		ssp->srcu_ctrp = &ssp->sda->srcu_ctrs[0];
++	}
+ 	if (!ssp->sda)
+ 		goto err_free_sup;
+ 	init_srcu_struct_data(ssp);
+@@ -742,12 +744,11 @@ EXPORT_SYMBOL_GPL(__srcu_check_read_flavor);
   */
- static void init_srcu_struct_data(struct srcu_struct *ssp)
+ int __srcu_read_lock(struct srcu_struct *ssp)
  {
-@@ -128,8 +129,6 @@ static void init_srcu_struct_data(struct srcu_struct *ssp)
- 	 * Initialize the per-CPU srcu_data array, which feeds into the
- 	 * leaves of the srcu_node tree.
- 	 */
--	BUILD_BUG_ON(ARRAY_SIZE(sdp->srcu_lock_count) !=
--		     ARRAY_SIZE(sdp->srcu_unlock_count));
- 	for_each_possible_cpu(cpu) {
- 		sdp = per_cpu_ptr(ssp->sda, cpu);
- 		spin_lock_init(&ACCESS_PRIVATE(sdp, lock));
-@@ -429,10 +428,10 @@ static bool srcu_gp_is_expedited(struct srcu_struct *ssp)
- }
+-	int idx;
++	struct srcu_ctr __percpu *scp = READ_ONCE(ssp->srcu_ctrp);
  
- /*
-- * Computes approximate total of the readers' ->srcu_lock_count[] values
-- * for the rank of per-CPU counters specified by idx, and returns true if
-- * the caller did the proper barrier (gp), and if the count of the locks
-- * matches that of the unlocks passed in.
-+ * Computes approximate total of the readers' ->srcu_ctrs[].srcu_locks
-+ * values for the rank of per-CPU counters specified by idx, and returns
-+ * true if the caller did the proper barrier (gp), and if the count of
-+ * the locks matches that of the unlocks passed in.
-  */
- static bool srcu_readers_lock_idx(struct srcu_struct *ssp, int idx, bool gp, unsigned long unlocks)
- {
-@@ -443,7 +442,7 @@ static bool srcu_readers_lock_idx(struct srcu_struct *ssp, int idx, bool gp, uns
- 	for_each_possible_cpu(cpu) {
- 		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
- 
--		sum += atomic_long_read(&sdp->srcu_lock_count[idx]);
-+		sum += atomic_long_read(&sdp->srcu_ctrs[idx].srcu_locks);
- 		if (IS_ENABLED(CONFIG_PROVE_RCU))
- 			mask = mask | READ_ONCE(sdp->srcu_reader_flavor);
- 	}
-@@ -455,8 +454,8 @@ static bool srcu_readers_lock_idx(struct srcu_struct *ssp, int idx, bool gp, uns
- }
- 
- /*
-- * Returns approximate total of the readers' ->srcu_unlock_count[] values
-- * for the rank of per-CPU counters specified by idx.
-+ * Returns approximate total of the readers' ->srcu_ctrs[].srcu_unlocks
-+ * values for the rank of per-CPU counters specified by idx.
-  */
- static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx, unsigned long *rdm)
- {
-@@ -467,7 +466,7 @@ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx, u
- 	for_each_possible_cpu(cpu) {
- 		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
- 
--		sum += atomic_long_read(&sdp->srcu_unlock_count[idx]);
-+		sum += atomic_long_read(&sdp->srcu_ctrs[idx].srcu_unlocks);
- 		mask = mask | READ_ONCE(sdp->srcu_reader_flavor);
- 	}
- 	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && (mask & (mask - 1)),
-@@ -510,9 +509,9 @@ static bool srcu_readers_active_idx_check(struct srcu_struct *ssp, int idx)
- 	 * been no readers on this index at some point in this function.
- 	 * But there might be more readers, as a task might have read
- 	 * the current ->srcu_idx but not yet have incremented its CPU's
--	 * ->srcu_lock_count[idx] counter.  In fact, it is possible
-+	 * ->srcu_ctrs[idx].srcu_locks counter.  In fact, it is possible
- 	 * that most of the tasks have been preempted between fetching
--	 * ->srcu_idx and incrementing ->srcu_lock_count[idx].  And there
-+	 * ->srcu_idx and incrementing ->srcu_ctrs[idx].srcu_locks.  And there
- 	 * could be almost (ULONG_MAX / sizeof(struct task_struct)) tasks
- 	 * in a system whose address space was fully populated with memory.
- 	 * Call this quantity Nt.
-@@ -521,36 +520,36 @@ static bool srcu_readers_active_idx_check(struct srcu_struct *ssp, int idx)
- 	 * code for a long time.  That now-preempted updater has already
- 	 * flipped ->srcu_idx (possibly during the preceding grace period),
- 	 * done an smp_mb() (again, possibly during the preceding grace
--	 * period), and summed up the ->srcu_unlock_count[idx] counters.
-+	 * period), and summed up the ->srcu_ctrs[idx].srcu_unlocks counters.
- 	 * How many times can a given one of the aforementioned Nt tasks
--	 * increment the old ->srcu_idx value's ->srcu_lock_count[idx]
-+	 * increment the old ->srcu_idx value's ->srcu_ctrs[idx].srcu_locks
- 	 * counter, in the absence of nesting?
- 	 *
- 	 * It can clearly do so once, given that it has already fetched
--	 * the old value of ->srcu_idx and is just about to use that value
--	 * to index its increment of ->srcu_lock_count[idx].  But as soon as
--	 * it leaves that SRCU read-side critical section, it will increment
--	 * ->srcu_unlock_count[idx], which must follow the updater's above
--	 * read from that same value.  Thus, as soon the reading task does
--	 * an smp_mb() and a later fetch from ->srcu_idx, that task will be
--	 * guaranteed to get the new index.  Except that the increment of
--	 * ->srcu_unlock_count[idx] in __srcu_read_unlock() is after the
--	 * smp_mb(), and the fetch from ->srcu_idx in __srcu_read_lock()
--	 * is before the smp_mb().  Thus, that task might not see the new
--	 * value of ->srcu_idx until the -second- __srcu_read_lock(),
--	 * which in turn means that this task might well increment
--	 * ->srcu_lock_count[idx] for the old value of ->srcu_idx twice,
--	 * not just once.
-+	 * the old value of ->srcu_idx and is just about to use that
-+	 * value to index its increment of ->srcu_ctrs[idx].srcu_locks.
-+	 * But as soon as it leaves that SRCU read-side critical section,
-+	 * it will increment ->srcu_ctrs[idx].srcu_unlocks, which must
-+	 * follow the updater's above read from that same value.	Thus,
-+	 * as soon the reading task does an smp_mb() and a later fetch from
-+	 * ->srcu_idx, that task will be guaranteed to get the new index.
-+	 * Except that the increment of ->srcu_ctrs[idx].srcu_unlocks
-+	 * in __srcu_read_unlock() is after the smp_mb(), and the fetch
-+	 * from ->srcu_idx in __srcu_read_lock() is before the smp_mb().
-+	 * Thus, that task might not see the new value of ->srcu_idx until
-+	 * the -second- __srcu_read_lock(), which in turn means that this
-+	 * task might well increment ->srcu_ctrs[idx].srcu_locks for the
-+	 * old value of ->srcu_idx twice, not just once.
- 	 *
- 	 * However, it is important to note that a given smp_mb() takes
- 	 * effect not just for the task executing it, but also for any
- 	 * later task running on that same CPU.
- 	 *
--	 * That is, there can be almost Nt + Nc further increments of
--	 * ->srcu_lock_count[idx] for the old index, where Nc is the number
--	 * of CPUs.  But this is OK because the size of the task_struct
--	 * structure limits the value of Nt and current systems limit Nc
--	 * to a few thousand.
-+	 * That is, there can be almost Nt + Nc further increments
-+	 * of ->srcu_ctrs[idx].srcu_locks for the old index, where Nc
-+	 * is the number of CPUs.  But this is OK because the size of
-+	 * the task_struct structure limits the value of Nt and current
-+	 * systems limit Nc to a few thousand.
- 	 *
- 	 * OK, but what about nesting?  This does impose a limit on
- 	 * nesting of half of the size of the task_struct structure
-@@ -581,10 +580,10 @@ static bool srcu_readers_active(struct srcu_struct *ssp)
- 	for_each_possible_cpu(cpu) {
- 		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
- 
--		sum += atomic_long_read(&sdp->srcu_lock_count[0]);
--		sum += atomic_long_read(&sdp->srcu_lock_count[1]);
--		sum -= atomic_long_read(&sdp->srcu_unlock_count[0]);
--		sum -= atomic_long_read(&sdp->srcu_unlock_count[1]);
-+		sum += atomic_long_read(&sdp->srcu_ctrs[0].srcu_locks);
-+		sum += atomic_long_read(&sdp->srcu_ctrs[1].srcu_locks);
-+		sum -= atomic_long_read(&sdp->srcu_ctrs[0].srcu_unlocks);
-+		sum -= atomic_long_read(&sdp->srcu_ctrs[1].srcu_unlocks);
- 	}
- 	return sum;
- }
-@@ -746,7 +745,7 @@ int __srcu_read_lock(struct srcu_struct *ssp)
- 	int idx;
- 
- 	idx = READ_ONCE(ssp->srcu_idx) & 0x1;
--	this_cpu_inc(ssp->sda->srcu_lock_count[idx].counter);
-+	this_cpu_inc(ssp->sda->srcu_ctrs[idx].srcu_locks.counter);
+-	idx = READ_ONCE(ssp->srcu_idx) & 0x1;
+-	this_cpu_inc(ssp->sda->srcu_ctrs[idx].srcu_locks.counter);
++	this_cpu_inc(scp->srcu_locks.counter);
  	smp_mb(); /* B */  /* Avoid leaking the critical section. */
- 	return idx;
+-	return idx;
++	return scp - &ssp->sda->srcu_ctrs[0];
  }
-@@ -760,7 +759,7 @@ EXPORT_SYMBOL_GPL(__srcu_read_lock);
- void __srcu_read_unlock(struct srcu_struct *ssp, int idx)
+ EXPORT_SYMBOL_GPL(__srcu_read_lock);
+ 
+@@ -772,13 +773,12 @@ EXPORT_SYMBOL_GPL(__srcu_read_unlock);
+  */
+ int __srcu_read_lock_nmisafe(struct srcu_struct *ssp)
  {
- 	smp_mb(); /* C */  /* Avoid leaking the critical section. */
--	this_cpu_inc(ssp->sda->srcu_unlock_count[idx].counter);
-+	this_cpu_inc(ssp->sda->srcu_ctrs[idx].srcu_unlocks.counter);
- }
- EXPORT_SYMBOL_GPL(__srcu_read_unlock);
+-	int idx;
+-	struct srcu_data *sdp = raw_cpu_ptr(ssp->sda);
++	struct srcu_ctr __percpu *scpp = READ_ONCE(ssp->srcu_ctrp);
++	struct srcu_ctr *scp = raw_cpu_ptr(scpp);
  
-@@ -777,7 +776,7 @@ int __srcu_read_lock_nmisafe(struct srcu_struct *ssp)
- 	struct srcu_data *sdp = raw_cpu_ptr(ssp->sda);
- 
- 	idx = READ_ONCE(ssp->srcu_idx) & 0x1;
--	atomic_long_inc(&sdp->srcu_lock_count[idx]);
-+	atomic_long_inc(&sdp->srcu_ctrs[idx].srcu_locks);
+-	idx = READ_ONCE(ssp->srcu_idx) & 0x1;
+-	atomic_long_inc(&sdp->srcu_ctrs[idx].srcu_locks);
++	atomic_long_inc(&scp->srcu_locks);
  	smp_mb__after_atomic(); /* B */  /* Avoid leaking the critical section. */
- 	return idx;
+-	return idx;
++	return scpp - &ssp->sda->srcu_ctrs[0];
  }
-@@ -793,7 +792,7 @@ void __srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx)
- 	struct srcu_data *sdp = raw_cpu_ptr(ssp->sda);
+ EXPORT_SYMBOL_GPL(__srcu_read_lock_nmisafe);
  
- 	smp_mb__before_atomic(); /* C */  /* Avoid leaking the critical section. */
--	atomic_long_inc(&sdp->srcu_unlock_count[idx]);
-+	atomic_long_inc(&sdp->srcu_ctrs[idx].srcu_unlocks);
- }
- EXPORT_SYMBOL_GPL(__srcu_read_unlock_nmisafe);
+@@ -1152,6 +1152,8 @@ static void srcu_flip(struct srcu_struct *ssp)
+ 	smp_mb(); /* E */  /* Pairs with B and C. */
  
-@@ -1123,17 +1122,17 @@ static void srcu_flip(struct srcu_struct *ssp)
+ 	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1); // Flip the counter.
++	WRITE_ONCE(ssp->srcu_ctrp,
++		   &ssp->sda->srcu_ctrs[!(ssp->srcu_ctrp - &ssp->sda->srcu_ctrs[0])]);
+ 
  	/*
- 	 * Because the flip of ->srcu_idx is executed only if the
- 	 * preceding call to srcu_readers_active_idx_check() found that
--	 * the ->srcu_unlock_count[] and ->srcu_lock_count[] sums matched
--	 * and because that summing uses atomic_long_read(), there is
--	 * ordering due to a control dependency between that summing and
--	 * the WRITE_ONCE() in this call to srcu_flip().  This ordering
--	 * ensures that if this updater saw a given reader's increment from
--	 * __srcu_read_lock(), that reader was using a value of ->srcu_idx
--	 * from before the previous call to srcu_flip(), which should be
--	 * quite rare.  This ordering thus helps forward progress because
--	 * the grace period could otherwise be delayed by additional
--	 * calls to __srcu_read_lock() using that old (soon to be new)
--	 * value of ->srcu_idx.
-+	 * the ->srcu_ctrs[].srcu_unlocks and ->srcu_ctrs[].srcu_locks sums
-+	 * matched and because that summing uses atomic_long_read(),
-+	 * there is ordering due to a control dependency between that
-+	 * summing and the WRITE_ONCE() in this call to srcu_flip().
-+	 * This ordering ensures that if this updater saw a given reader's
-+	 * increment from __srcu_read_lock(), that reader was using a value
-+	 * of ->srcu_idx from before the previous call to srcu_flip(),
-+	 * which should be quite rare.  This ordering thus helps forward
-+	 * progress because the grace period could otherwise be delayed
-+	 * by additional calls to __srcu_read_lock() using that old (soon
-+	 * to be new) value of ->srcu_idx.
- 	 *
- 	 * This sum-equality check and ordering also ensures that if
- 	 * a given call to __srcu_read_lock() uses the new value of
-@@ -1918,8 +1917,8 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
- 			struct srcu_data *sdp;
- 
- 			sdp = per_cpu_ptr(ssp->sda, cpu);
--			u0 = data_race(atomic_long_read(&sdp->srcu_unlock_count[!idx]));
--			u1 = data_race(atomic_long_read(&sdp->srcu_unlock_count[idx]));
-+			u0 = data_race(atomic_long_read(&sdp->srcu_ctrs[!idx].srcu_unlocks));
-+			u1 = data_race(atomic_long_read(&sdp->srcu_ctrs[idx].srcu_unlocks));
- 
- 			/*
- 			 * Make sure that a lock is always counted if the corresponding
-@@ -1927,8 +1926,8 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
- 			 */
- 			smp_rmb();
- 
--			l0 = data_race(atomic_long_read(&sdp->srcu_lock_count[!idx]));
--			l1 = data_race(atomic_long_read(&sdp->srcu_lock_count[idx]));
-+			l0 = data_race(atomic_long_read(&sdp->srcu_ctrs[!idx].srcu_locks));
-+			l1 = data_race(atomic_long_read(&sdp->srcu_ctrs[idx].srcu_locks));
- 
- 			c0 = l0 - u0;
- 			c1 = l1 - u1;
+ 	 * Ensure that if the updater misses an __srcu_read_unlock()
+@@ -2004,6 +2006,7 @@ static int srcu_module_coming(struct module *mod)
+ 		ssp->sda = alloc_percpu(struct srcu_data);
+ 		if (WARN_ON_ONCE(!ssp->sda))
+ 			return -ENOMEM;
++		ssp->srcu_ctrp = &ssp->sda->srcu_ctrs[0];
+ 	}
+ 	return 0;
+ }
 -- 
 2.40.1
 
