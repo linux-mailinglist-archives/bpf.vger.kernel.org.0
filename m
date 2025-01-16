@@ -1,138 +1,170 @@
-Return-Path: <bpf+bounces-49111-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49113-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BC98A14311
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 21:22:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF0F9A1433D
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 21:29:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BF98188B327
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 20:22:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BC783A7477
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 20:28:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC9B12442C1;
-	Thu, 16 Jan 2025 20:21:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D4E9241681;
+	Thu, 16 Jan 2025 20:28:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q0v8+KM/"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=engleder-embedded.com header.i=@engleder-embedded.com header.b="I7OqsmYT"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx13lb.world4you.com (mx13lb.world4you.com [81.19.149.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D356424224C;
-	Thu, 16 Jan 2025 20:21:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A01AC236A64;
+	Thu, 16 Jan 2025 20:28:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=81.19.149.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737058875; cv=none; b=RYD2iV+P0ZxrR8r2gC5iU+2ajaTn53yrV09p0s50rnCaVrcDOPNRuzzIophp7E1ltdkuBeiohqMm7Li6JIPgTMQGCi9HO3dS77JFJi97BEoNpq0m45yvMlD+LpEhJA7cUdj4y72FYb1XkqjT/s3qYbBN34s4iWov158ljwdQJQ8=
+	t=1737059301; cv=none; b=haAYmovAGh+bYTuwiI9OL/Cy5Pvf0hSgB1KPSixTRSYa72V/IoNotNqvGMqjh76lXtBu6IMlaK0ll2nXf6rX48KSJ19VnWCvnsQ2EqEAZvqE6NeB9qJ6C9fxqYTtGmBP/WKWCXl3tgoI3U3FPJOJHQQMpsJTOy8YsD53OJPhiH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737058875; c=relaxed/simple;
-	bh=bG4qKBMhSQIkQavcS9aqheWrdiR36LBjWLEYWEtdrVU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=N2xXW6oJWH4nSs2A9VWWk/oHmPe0yfsTWuUleZzDyM14iXTH+HGMSlKLj4cbiUNoB8RjqRh9jVMMnHj6fM/gqgpxMJCuI+AHWK4r4fz26f0HJnRsj1DeT8QuZhhwETboTpVgu/JxzepvSufmi04oWnXT1NK639GC5M1H4MEow+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q0v8+KM/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A1AAC4CEDD;
-	Thu, 16 Jan 2025 20:21:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737058875;
-	bh=bG4qKBMhSQIkQavcS9aqheWrdiR36LBjWLEYWEtdrVU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Q0v8+KM/P1UA39NPguehW+6qihfUVZ4RJXk2VoQgIJeoEKNMnagRqCpcdVoDeVU55
-	 GzX6futFwNq8/aGKUJQfZsqOqULQRJG+hIwSJz2GAypgQAiAiU6ATgGuSkYh2f4RkD
-	 rzPKnJbfWd/31mEPxI6yHfDbbM6lddJX4JmRyxH2m2gis9Qg53eP/IZfBSJYrsPbAe
-	 heA7GaiTlR4rxaxV++pElzlfEDXf9l4tAE6PWpu1uVl4QQ0ky0DnpXQmmwcku+KRnR
-	 Noe5rr6mAS4QcgmpwGxIsQvk7ok0tPvpgeHIevwV0c5WHtSup3gAiOFPbWGf1qURGW
-	 Kw3S32uv5p76A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id A56AACE37DC; Thu, 16 Jan 2025 12:21:14 -0800 (PST)
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	bpf@vger.kernel.org
-Subject: [PATCH rcu 15/17] refscale: Add srcu_read_lock_fast() support using "srcu-fast"
-Date: Thu, 16 Jan 2025 12:21:10 -0800
-Message-Id: <20250116202112.3783327-15-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <826c8527-d6ba-46c5-bb89-4625750cbeed@paulmck-laptop>
-References: <826c8527-d6ba-46c5-bb89-4625750cbeed@paulmck-laptop>
+	s=arc-20240116; t=1737059301; c=relaxed/simple;
+	bh=nudOlvqSJ1aBhTQ2tX4dtnYAuDIsm35x9yhIVoUF/mg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
+	 In-Reply-To:Content-Type; b=MTA9t8QchOzWpTO7rqt6hJwPnHOcLcDy4Am52Lg6LU+cxX1gLQ3o7DxxXdWVO7sxBfg0oi4JjLJ2SbTyKA14r3A9KOmOqi+vADJGYspnyJwSHzxXp/555/UcmfOvrhFRx/cQy/RfcykclprwBpf9mNcJP1DMxI0XSYWqAsp40Mo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engleder-embedded.com; spf=pass smtp.mailfrom=engleder-embedded.com; dkim=pass (1024-bit key) header.d=engleder-embedded.com header.i=@engleder-embedded.com header.b=I7OqsmYT; arc=none smtp.client-ip=81.19.149.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engleder-embedded.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=engleder-embedded.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=engleder-embedded.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:Cc:References:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=ahuT/uI6m98g3xSc8Ha9OAIyv3omnEhaK7ihtInarV0=; b=I7OqsmYTo+0VcA+Ln2qQcokgSz
+	OLyZ30zDmnP1fjgVzUgNx13Jf5RBmlYgfjjheUWk96EbXAUkIWdBwjeHv2T7WChrZ7XfEx2LYCHGW
+	FRNBXzk6CEv45lziRZH+e8WYkCElbRz00SeNFQNo5n+xxJOFKXbhwu/3Ub/qqk3scpNY=;
+Received: from [88.117.60.28] (helo=[10.0.0.160])
+	by mx13lb.world4you.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.97.1)
+	(envelope-from <gerhard@engleder-embedded.com>)
+	id 1tYWTJ-000000006xn-2BtL;
+	Thu, 16 Jan 2025 21:28:09 +0100
+Message-ID: <f8fe5618-af94-4f5b-8dbc-e8cae744aedf@engleder-embedded.com>
+Date: Thu, 16 Jan 2025 21:28:07 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2 3/4] virtio_net: Map NAPIs to queues
+To: Joe Damato <jdamato@fastly.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+References: <20250116055302.14308-1-jdamato@fastly.com>
+ <20250116055302.14308-4-jdamato@fastly.com>
+ <1737013994.1861002-1-xuanzhuo@linux.alibaba.com>
+ <Z4kvQI8GmmEGrq1F@LQ3V64L9R2>
+Content-Language: en-US
+Cc: "open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)"
+ <bpf@vger.kernel.org>, jasowang@redhat.com, leiyang@redhat.com,
+ mkarsten@uwaterloo.ca, "Michael S. Tsirkin" <mst@redhat.com>,
+ =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ "open list:VIRTIO CORE AND NET DRIVERS" <virtualization@lists.linux.dev>,
+ open list <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org
+From: Gerhard Engleder <gerhard@engleder-embedded.com>
+In-Reply-To: <Z4kvQI8GmmEGrq1F@LQ3V64L9R2>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AV-Do-Run: Yes
 
-This commit creates a new srcu-fast option for the refscale.scale_type
-module parameter that selects srcu_read_lock_fast() and
-srcu_read_unlock_fast().
+On 16.01.25 17:09, Joe Damato wrote:
+> On Thu, Jan 16, 2025 at 03:53:14PM +0800, Xuan Zhuo wrote:
+>> On Thu, 16 Jan 2025 05:52:58 +0000, Joe Damato <jdamato@fastly.com> wrote:
+>>> Use netif_queue_set_napi to map NAPIs to queue IDs so that the mapping
+>>> can be accessed by user apps.
+>>>
+>>> $ ethtool -i ens4 | grep driver
+>>> driver: virtio_net
+>>>
+>>> $ sudo ethtool -L ens4 combined 4
+>>>
+>>> $ ./tools/net/ynl/pyynl/cli.py \
+>>>         --spec Documentation/netlink/specs/netdev.yaml \
+>>>         --dump queue-get --json='{"ifindex": 2}'
+>>> [{'id': 0, 'ifindex': 2, 'napi-id': 8289, 'type': 'rx'},
+>>>   {'id': 1, 'ifindex': 2, 'napi-id': 8290, 'type': 'rx'},
+>>>   {'id': 2, 'ifindex': 2, 'napi-id': 8291, 'type': 'rx'},
+>>>   {'id': 3, 'ifindex': 2, 'napi-id': 8292, 'type': 'rx'},
+>>>   {'id': 0, 'ifindex': 2, 'type': 'tx'},
+>>>   {'id': 1, 'ifindex': 2, 'type': 'tx'},
+>>>   {'id': 2, 'ifindex': 2, 'type': 'tx'},
+>>>   {'id': 3, 'ifindex': 2, 'type': 'tx'}]
+>>>
+>>> Note that virtio_net has TX-only NAPIs which do not have NAPI IDs, so
+>>> the lack of 'napi-id' in the above output is expected.
+>>>
+>>> Signed-off-by: Joe Damato <jdamato@fastly.com>
+>>> ---
+>>>   v2:
+>>>     - Eliminate RTNL code paths using the API Jakub introduced in patch 1
+>>>       of this v2.
+>>>     - Added virtnet_napi_disable to reduce code duplication as
+>>>       suggested by Jason Wang.
+>>>
+>>>   drivers/net/virtio_net.c | 34 +++++++++++++++++++++++++++++-----
+>>>   1 file changed, 29 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+>>> index cff18c66b54a..c6fda756dd07 100644
+>>> --- a/drivers/net/virtio_net.c
+>>> +++ b/drivers/net/virtio_net.c
+>>> @@ -2803,9 +2803,18 @@ static void virtnet_napi_do_enable(struct virtqueue *vq,
+>>>   	local_bh_enable();
+>>>   }
+>>>
+>>> -static void virtnet_napi_enable(struct virtqueue *vq, struct napi_struct *napi)
+>>> +static void virtnet_napi_enable(struct virtqueue *vq,
+>>> +				struct napi_struct *napi)
+>>>   {
+>>> +	struct virtnet_info *vi = vq->vdev->priv;
+>>> +	int q = vq2rxq(vq);
+>>> +	u16 curr_qs;
+>>> +
+>>>   	virtnet_napi_do_enable(vq, napi);
+>>> +
+>>> +	curr_qs = vi->curr_queue_pairs - vi->xdp_queue_pairs;
+>>> +	if (!vi->xdp_enabled || q < curr_qs)
+>>> +		netif_queue_set_napi(vi->dev, q, NETDEV_QUEUE_TYPE_RX, napi);
+>>
+>> So what case the check of xdp_enabled is for?
+> 
+> Based on a previous discussion [1], the NAPIs should not be linked
+> for in-kernel XDP, but they _should_ be linked for XSK.
+> 
+> I could certainly have misread the virtio_net code (please let me
+> know if I've gotten it wrong, I'm not an expert), but the three
+> cases I have in mind are:
+> 
+>    - vi->xdp_enabled = false, which happens when no XDP is being
+>      used, so the queue number will be < vi->curr_queue_pairs.
+> 
+>    - vi->xdp_enabled = false, which I believe is what happens in the
+>      XSK case. In this case, the NAPI is linked.
+> 
+>    - vi->xdp_enabled = true, which I believe only happens for
+>      in-kernel XDP - but not XSK - and in this case, the NAPI should
+>      NOT be linked.
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: <bpf@vger.kernel.org>
----
- kernel/rcu/refscale.c | 32 +++++++++++++++++++++++++++++++-
- 1 file changed, 31 insertions(+), 1 deletion(-)
+My interpretation based on [1] is that an in-kernel XDP Tx queue is a
+queue that is only used if XDP is attached and is not visible to
+userspace. The in-kernel XDP Tx queue is used to not load stack Tx
+queues with XDP packets. IIRC fbnic has additional queues only for
+XDP Tx. So for stack RX queues I would always link napi, no matter if
+XDP is attached or not. I think most driver do not have in-kernel XDP
+Tx queues. But I'm also not an expert.
 
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index 1b47376acdc40..f11a7c2af778c 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -216,6 +216,36 @@ static const struct ref_scale_ops srcu_ops = {
- 	.name		= "srcu"
- };
- 
-+static void srcu_fast_ref_scale_read_section(const int nloops)
-+{
-+	int i;
-+	struct srcu_ctr __percpu *scp;
-+
-+	for (i = nloops; i >= 0; i--) {
-+		scp = srcu_read_lock_fast(srcu_ctlp);
-+		srcu_read_unlock_fast(srcu_ctlp, scp);
-+	}
-+}
-+
-+static void srcu_fast_ref_scale_delay_section(const int nloops, const int udl, const int ndl)
-+{
-+	int i;
-+	struct srcu_ctr __percpu *scp;
-+
-+	for (i = nloops; i >= 0; i--) {
-+		scp = srcu_read_lock_fast(srcu_ctlp);
-+		un_delay(udl, ndl);
-+		srcu_read_unlock_fast(srcu_ctlp, scp);
-+	}
-+}
-+
-+static const struct ref_scale_ops srcu_fast_ops = {
-+	.init		= rcu_sync_scale_init,
-+	.readsection	= srcu_fast_ref_scale_read_section,
-+	.delaysection	= srcu_fast_ref_scale_delay_section,
-+	.name		= "srcu-fast"
-+};
-+
- static void srcu_lite_ref_scale_read_section(const int nloops)
- {
- 	int i;
-@@ -1163,7 +1193,7 @@ ref_scale_init(void)
- 	long i;
- 	int firsterr = 0;
- 	static const struct ref_scale_ops *scale_ops[] = {
--		&rcu_ops, &srcu_ops, &srcu_lite_ops, RCU_TRACE_OPS RCU_TASKS_OPS
-+		&rcu_ops, &srcu_ops, &srcu_fast_ops, &srcu_lite_ops, RCU_TRACE_OPS RCU_TASKS_OPS
- 		&refcnt_ops, &rwlock_ops, &rwsem_ops, &lock_ops, &lock_irq_ops,
- 		&acqrel_ops, &sched_clock_ops, &clock_ops, &jiffies_ops,
- 		&typesafe_ref_ops, &typesafe_lock_ops, &typesafe_seqlock_ops,
--- 
-2.40.1
-
+Gerhard
 
