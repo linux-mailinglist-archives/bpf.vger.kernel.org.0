@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-49090-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49091-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDD37A14291
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 20:46:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4C3CA14295
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 20:47:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B4FE188C886
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 19:46:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CD893A231D
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 19:47:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 877CF234CEB;
-	Thu, 16 Jan 2025 19:46:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E4F022E41C;
+	Thu, 16 Jan 2025 19:47:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="PBBNb1JN"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="VF5Z4Kj8"
 X-Original-To: bpf@vger.kernel.org
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03olkn2079.outbound.protection.outlook.com [40.92.58.79])
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03olkn2042.outbound.protection.outlook.com [40.92.58.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AE4322DC2B;
-	Thu, 16 Jan 2025 19:46:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.58.79
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27BDB18FC8F;
+	Thu, 16 Jan 2025 19:47:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.58.42
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737056783; cv=fail; b=TCF0swhf25w3DiEu93NiRi+JU8Qa9ia4M1BXIGCrfCdHMCimrEfGTuuNrli+u0Qx+D8vWCWyNWFpn5McvHULQf7aystTKsjv4+uVgNQUVEHbSz20ZtX8tb9RsYz2ASIUJ8C9IMTLnAIL2qpY7wF39ZARzkRdgD6o9SadXf0YmzU=
+	t=1737056827; cv=fail; b=ULQkWwiJc3hU+mZDsx7XsD/YzOFeBR3lszStEEjhyzz43KnvkBEbLxvbTc6MadIiK2iUxxJ+aWkHSMGAo2ZMIN5w9PgyS4JG5STO7QAxITW1ZYvMFrX+jPgksx1C3v6WdKzxzYbNs+oRCRMbmaw53tQ55KBWJb3+jVv1zeqvtsw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737056783; c=relaxed/simple;
-	bh=OxXjD/dGBq/vZAn2GQDS0goOix0417cy8O8ZQKseT7o=;
+	s=arc-20240116; t=1737056827; c=relaxed/simple;
+	bh=h/yO9mzimRtH0uPK0V4jx5i2zzSQi8FD0DauO9EDAMw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Q+0nNJdUhcNjtzks6z9A0Ev3fMbEY7QiMw09+z59coz5/PYNgwpEsykSm8j+vcC6c8NdSqXScLyk+wYhM9Fb2NYZc1wBPHI+dfom6MrjhNF8dJGPdEDhDJ7GWKMgWH37UwWznJG51+9aF6tekxF6nG3qZ6drlYXvGoRWMXzSZsw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=PBBNb1JN; arc=fail smtp.client-ip=40.92.58.79
+	 Content-Type:MIME-Version; b=qXEcx3VFcGYk5cyquOxtYc/bFW3CI7kadM1/n93vUGesTXxt1DIs/8HDHP/orNHR9SMv7ttVCvWqGvfaJw7KSsNThtxZW5sJQsNavzgMOBf9xsdA1AOfoysVVmzig3faxMicj74ClOALS8Nv7tFt0PdHf4/chhpcm1tYUKM6P88=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=VF5Z4Kj8; arc=fail smtp.client-ip=40.92.58.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=k6sUmg0E42rJTCXENJxcRU+WhDWSPvzbpM+uMhUHpu/4DwhZlX3C3tfHt4ScA4CzfMedc1w06f2oPY+biz31Mp3LvO6GIm64ymG5ZJPzpPgflGsQoFdKTWMvU4HV/8ZgURL9or95709hVi4zy0agE1sivF9pjijHWmpNv/R2qrcamo1EOMdQ933zTVh7a+dJtqGM1oTQe38u6IapeQ6eVJrQCoqSdXbILe04C7+6oDIlEHKQ0/h9/yBdbSnr2Y1Co/3ww9ZeZ9Hacc7eJAOiFN3zt7HfbNmALLdu7BJlAkjaHj1Jc3E2UxzpjQjdUXwNQbHQyBtotyzupbBeSVoFUA==
+ b=ngCR2FXKFHtqiJbrap1tEY+9a43Lsp7doE73ckcuFuouMcYXEzZwSWbrjMiu0Slja3cV4RnrV9jeP8H/afM8D7QvubShGPjaPpFPQ3UQVxPnGPCw2/HCTZuM/kdHP3DAy8MkIT5LHw/xZdtHBKffeefbeey/bEBSTgGtYl8jf1IX4dlFIH2tw12GNNvRbdCgwZN0NDInurgs3E43jfBsucTu2k2Ro8FBgnpImLoEzzaL0nqdZyu4hpA5DRlu2sZTql5dTdmajJ7tNb5zO+BYtEvpOsqngWi2Wet2H4NA6MbrGFT3H4vKO2re/IxIX6B6RMD7KG7QpLKERNeuNgnX7w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cZ6A4w4OHkXdtMbn1yg1U3YXnst3cLDL8hDYwE5DRCM=;
- b=wzLE1gy8FNYX3RMQqXjtIVyCIpZGkdpyJIoj/4rvVdQF5sRQaAHP/iAeMf1O3gsOO+vslTm1gyJ0WyeDGFZeH0Vapu/2KKDCPJWq6ZWwYLFKHExzQ2K0aMRkqqci/Pb4YAUgA0vuxfuZr5VKsafQXrVEycwz8LZBc9Z1rh0lnCxJ5CLLavZRyQt2+UF/AKvlGDR//PLnW1h9gQhTm5czc60XZ3mWTsfcTmJBX8OIAIi4iHI9JGPf6KBW45dnfyXJFmjr/87RrKm6pQfM7DbTYE/69sRW+gzKlzJ+Qu40InTTFnGfREVJEHZu/gA+2E0KgGbZAejraODdMx0h21YcmA==
+ bh=xAi8EqhndCSzb6lqFAf7g3rU5YiypcIsgiRlRo9eF5w=;
+ b=dur9/jYuHO3kggjpY36xMPsZ5/7EMqz2lL2/3pd6AmMA0tdxGYVWcTCex+4yZTbGGhRTtEAtNHF81cZ1Q+xljyo/791+dRPWo7FwXH5aKTWXt+Rww1Dw1RTH6EQPdLxgCS0QrB06mXBzy/I9pbyMKJ//sWxxrDWcAU5mevVrz2LMMnGR+71V56nHGVmnGWlBYecTSAQxztFb65bAOhhCb/TcVctbq1P4LMj1cjGunZVofnUY+Au84mPv3uilu6SM8LiBo2n9YhlrQuEm8A/ZjQFv8sazu5lb1V8iHir0Ku5eCBHDFYXnGNnZ6ljy/zmlUl4id0Q4s70zRcpeXUuKLQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cZ6A4w4OHkXdtMbn1yg1U3YXnst3cLDL8hDYwE5DRCM=;
- b=PBBNb1JNcNMMW4r5iNzGA1KumXFeIHbkyy780r2f+XR0CQxciRm7AiYZdsKhTinPKVMVLe/wfgcxm1qNkYwnJ9dNZQmEJAe/goE9QITeGtoWiwihR4RKi6ERIMtebhLmSQVZz4hTrJWyrjoMDFx48a6d26KzL0HBmVy3Fn1oLEHGWEBrNj0z+LKrz3fuRZZmwG/USmhaUx9nVTMBm26oU6UZ87kIr6CxJqDWcdM4xtgOPthKSe7A8jmmL9DqDmVRyAZRNkNmnFXR/LPIN+6MVlIRwZ4yID0H0Feto8Q/kKzjxd2Gdsf4KtyTxMHuJfeDz9JpbQakkoaldmfLsDNDkg==
+ bh=xAi8EqhndCSzb6lqFAf7g3rU5YiypcIsgiRlRo9eF5w=;
+ b=VF5Z4Kj8LAMSF5v394pdC7y6f+dpUgOLYcPwhxOb3azCeSGZwJd4CbaF8viXwR2AlkCTUSbCl5rnKQB6Hc/gzduKoggTxmB2kooMyfK0VWLKL1TURZG5mazJi0SHVy/2dz60tH35UhV5tdiB8qlNJ3FuNbVnwz/VitV9k/iQYrZbgngU4LT2Z0dZAcOZs8aLt+FfI14gfnJSuPSrT/CLC37UuRMTOvHUKtphD05rMbxCb0HU3IcXNs5lzIFRO/993Lh/GFWxYkhhjbYbT88PwsL8vH1CQI6mS32EWlFYa1ScRNWSMfx4kl8gqi9j8bTXvZrqBJTk+MdUaXz2uj7OYg==
 Received: from AM6PR03MB5080.eurprd03.prod.outlook.com (2603:10a6:20b:90::20)
  by AS8PR03MB7970.eurprd03.prod.outlook.com (2603:10a6:20b:427::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8356.13; Thu, 16 Jan
- 2025 19:46:18 +0000
+ 2025 19:47:02 +0000
 Received: from AM6PR03MB5080.eurprd03.prod.outlook.com
  ([fe80::a16:9eb8:6868:f6d8]) by AM6PR03MB5080.eurprd03.prod.outlook.com
  ([fe80::a16:9eb8:6868:f6d8%3]) with mapi id 15.20.8356.010; Thu, 16 Jan 2025
- 19:46:18 +0000
+ 19:47:00 +0000
 From: Juntong Deng <juntong.deng@outlook.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -72,10 +72,10 @@ To: ast@kernel.org,
 	void@manifault.com
 Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH bpf-next 5/7] bpf: Add default BPF capabilities initialization for program types
-Date: Thu, 16 Jan 2025 19:41:10 +0000
+Subject: [RFC PATCH bpf-next 6/7] sched_ext: Make SCX use BPF capabilities
+Date: Thu, 16 Jan 2025 19:41:11 +0000
 Message-ID:
- <AM6PR03MB5080AD77B5A231ED617A5D2E991A2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <AM6PR03MB50802A825536C00D2B53333C991A2@AM6PR03MB5080.eurprd03.prod.outlook.com>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <AM6PR03MB5080C05323552276324C4B4C991A2@AM6PR03MB5080.eurprd03.prod.outlook.com>
 References: <AM6PR03MB5080C05323552276324C4B4C991A2@AM6PR03MB5080.eurprd03.prod.outlook.com>
@@ -85,7 +85,7 @@ X-ClientProxiedBy: LO4P302CA0041.GBRP302.PROD.OUTLOOK.COM
  (2603:10a6:600:317::19) To AM6PR03MB5080.eurprd03.prod.outlook.com
  (2603:10a6:20b:90::20)
 X-Microsoft-Original-Message-ID:
- <20250116194112.14824-5-juntong.deng@outlook.com>
+ <20250116194112.14824-6-juntong.deng@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -95,61 +95,60 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM6PR03MB5080:EE_|AS8PR03MB7970:EE_
-X-MS-Office365-Filtering-Correlation-Id: 46a5e83f-cdf3-4749-efa0-08dd36667215
+X-MS-Office365-Filtering-Correlation-Id: cd326940-f1cd-48a0-9c28-08dd36668afd
 X-MS-Exchange-SLBlob-MailProps:
-	znQPCv1HvwU46ctkesNAQSdI89rGQphJWvyCmanD08b/nTnXOhcKMdvQzGpECoPIv4qmjXoe6E2p5tYkxI56t7Nerty9iwVCTmhex/4j1aRPnaicq8LIeJYJgNVvVdpyPOH55ZXYz3T5BJREEcMBd5srOKp/I57c98P9QRNvM0gcOghnlPlh64xEVozLpshLRDKM6q2UloQVz+PKgy/bpuLjcepZtOFozbsKXzNy5wInDNKX7yFDHcENFaw0gL+AG4HwVirTn024ft3GAQYlZyrn/suEUR5WkUyWOy68FTWOTXP4+7Qp8EZz6TzIashXPIeu1wFyvDJ0G1C2Ta7hqz0o14ztFYPCkW58H4nE3v92RDrj0OB0bESs4rqR9zA/sZU9F6MrGSF8NCzASuoGPATnF5aWvUgpMAnKPN+e+GzBGpy2n8oAumkUSNsGcwgizjycy1ym4fbepuDQC0SI3Wvc1/x2Q/H0VhaUyR07TcXIQbAqHgJH9AyQLa362rHUobA3vJ0ttnu9BTsguQzKz01nF2o2HedRH/4sUNzfnL9rHo9cG53EnlZTkeM+eTUNxuTIgvkjH+E8KvU4Aagzpd+Lc7coUzFFoM02DTb0XGcm+56r8CorwyPLmneAm0gcLuz+u3o1wO+0VfqaNlVUTeRkGPOmLWJzfWlarUpz5GbGXt7KGiLgs5UYLUrH16DcSk/fhdRMD4V5d7UNPnFOSko2qkYyjEGZhwbiVVYqSljaF/2x6wNnyqbtmRZJfgk//NjTb+ZbRxE=
+	znQPCv1HvwU46ctkesNAQSdI89rGQphJV0Vp+aV5YQnTXSmvWD3oESLrA0oPkVumYcW+fPl4RfaHXr1HVIModBzlDINeRapXZ6ohk4e2CHXxx8YtecRO9Iufa3N+edvlW5SYlD00e8DdCIAXCthxzEWEdQr6VHxkvFgn//CBMDyXotgQ1JIVlSxbmoFUiE6/lcon1ZNNOs/Pq75Y/O5NSSQt2PHA/tFXJl/8pAfG9qpJXXVpYmzXmeS/3dhgRVALEXJCNSdz7o7v6WogSgQm5Ue6JVbIrL4HX+r4ogrtw9WPdmVhSFSqgDRF+GO7GypUP13B0tW3d/Mgm3rA8Et6mH+PL1qh6fSYlLq/RrZF5Z946OY3OwIwxnPf90v5d9gPOYrvoa5Q+vbbRiA8QwpbshI43JKdEIFdcOsZ8iDzzBNudde5TmNL7idLyvMboWtxf7IN8NlpzQLY3lbWvtaOssfPGI3Im25+ZxlD2oxgIFtb7BbDMq7fcmVZqVcVnX2zA6+eeDm/PcmSj6yyYAaJscmbfBjJ9/RmA87TeoTG6iqmGqFrBrStPbfhQjrffa208qU9ysrvoKVabp3bfkhka0JVYwZqdy2ync2x+fIYp/XbDEKQZ+P/2rND8mkrpUbMP50rng+bYvm7J7rRtrxQSgEm1H9bpu9EpQ+8FkURikhgNoEkB10d6yYWNvCYjEYzznfhENObs0VZ2eeozFWYFsNWvqp33Gq496NiAoEAyaTEF4bZ+6ZkZ9/qW4NXimC/LGUdTFUOUcU=
 X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|15080799006|8060799006|5072599009|461199028|19110799003|440099028|3412199025|18061999003|19111999003|41001999003;
+	BCL:0;ARA:14566002|15080799006|8060799006|5072599009|461199028|19110799003|440099028|3412199025|41001999003;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?6S+5rMPWLrCM9df4YY5gdU2sIUA9hmT4NlJcdTzRKLuW4n60FKabVOmt0Qh7?=
- =?us-ascii?Q?ICB9H1VCUVD3bWj8x+DTpm06TfFX1yV2pw0rO9iD8iNAnLdQkGXqk8N/L9IL?=
- =?us-ascii?Q?2qGiW7RKfJqWorn4+gilE7BlWC9EL8qdI7W455Shte+yz+tmUYeS/axJBJhW?=
- =?us-ascii?Q?PyYV8edBKXaSg76UJYMn9TTghEoVRCmT4193rJ4cQ5QATDXgzcrBDUMZe1Ym?=
- =?us-ascii?Q?BOs7ZWjwKaYtLQg3LrrJDlxfgY/lQmubbfkg4AgTbtw0f1C17u2Tf0AhSN2+?=
- =?us-ascii?Q?NVX6Yiqep9TLWJqfkiW1x17xAPAKKzupCxQPA82Hu/Eln1lG0Wk1WBxjw2SC?=
- =?us-ascii?Q?Ic1TQhIzVvWy42y5xMjN9AkBPGUQsO3JCEheyKCGUv/wDq2hH82wp0EZyjBN?=
- =?us-ascii?Q?JIeBGAEYDV03yIkFPZyDf5OxaT/o63GF0LsGawz8EQNYlFUCPInz/3tbhwlM?=
- =?us-ascii?Q?VU8JKcRrLyKQDfQLNpws/TtGt2FwQGV9wDkhxyb8PlXNCtWCn/FAXo1muWiA?=
- =?us-ascii?Q?YsdA99/noQQAWFN7uQCANTgGunNVbBPj+nY/rEZTIqtAscYxqkrEiAcZBLk1?=
- =?us-ascii?Q?VsqerznkHs/n+fHFvL860JZLUiYkeI7mj/UBlQwW0mrUj0tRi2oGFjuA1Agn?=
- =?us-ascii?Q?WRjZfc/cvnROik3FKX5WYi6hbyEQJlafdsrVJXqRa2nXrs7H2ZwIuzELQnft?=
- =?us-ascii?Q?cm4rhMs0b73ns4KL7UVPfV5PUrl8a7avb42YJLn6DpwJmn5SN/PC3dSKSvTu?=
- =?us-ascii?Q?unr0E7ujwCQOQpozIGV7qtL0vCRyp+y93h7A0B9P87cykvVb3269I0PMUp+y?=
- =?us-ascii?Q?RNtyfSv7/F2bYYp1aHI22IZgBO1N2owQONGTLlQBQIO/2OkGqK1P6QeXq34P?=
- =?us-ascii?Q?FK96PUnyfeGDMypcRa4rbXy26Q2+QFbfpH9J2oUbpQpdWUQJ69wtMhFIxJlq?=
- =?us-ascii?Q?nqmJtJ5IVeelXwWZAGrhdJMk3KjIzzE5riw2/Dt9KqFEmElxeizS3UMy20Sp?=
- =?us-ascii?Q?RITLbNzopiA3zrlOTbOfrwQvUTfZ2p8THZXEvhENM+T95SbCimmbwbQbD6rK?=
- =?us-ascii?Q?x+YQo/DM1O8AQFiNU4iGj0tHkBRo8Bz9oaGW3nWup0MkmoMi5cBEZ0mVu8KZ?=
- =?us-ascii?Q?Ted5JcgstaTO0MNloPg0hJb3niBcdb4LBA=3D=3D?=
+	=?us-ascii?Q?lmiOiaOPlpAQPZPzDbmQa5hnvKRvg9kIkOZX7llf7wDirddua9wpAxqtXY9Q?=
+ =?us-ascii?Q?/9dkRfr4KfB8szNRPpp31FXvVUsu/+a0ogJZjVQlsKR1KztYNHlwcRYGyGlf?=
+ =?us-ascii?Q?1irtW32qk08AwJUgoJck3/yWhoy3362MjoWviteOUGC8VsKMKDEs6gtzi5fk?=
+ =?us-ascii?Q?D0q0rbA4D3oL8vy0RUyXA6+OrmvdzInH4dSKOCMWJ7v5s3wf9BWbTj9P3s8o?=
+ =?us-ascii?Q?A+Pwj0GfqXFjxE20NEA2AHM5Gugpt8k3YIplurMCEbfQiOyEu2TGsGWMxbKW?=
+ =?us-ascii?Q?wi/YWuiufcV5LDnfeiWyWwEVcZd5ELKWUxLYUdZPOsRasRTLE+qpEZ/bAIcB?=
+ =?us-ascii?Q?Tio5ejMc3YPS2hkC/XwPjm5H7qhZWI7xV2voR1pNjOZW6k4ktcIWopZF2qMe?=
+ =?us-ascii?Q?dPGVLiwI8hM3uIvLJpWDbJHs7kNxPy7/EWitkqfXFCOk/MQ/N4c9VbNgbHQd?=
+ =?us-ascii?Q?cXJRBigrG0Ms/HkAcr6R7+agP3ZRgjkC6mdCSCL09IEqUIlSqlRZh4xR9PeO?=
+ =?us-ascii?Q?PR4amF64HFROXsNANDG0u0JyVp4y/k/FSf+o4E/obqt0O2UziTz5lMzDSFrx?=
+ =?us-ascii?Q?ZBnrUZElwuGT44WbRq6gEzzu6pTjt7HRumcVo3AVaHCCF338gp1tg7VCTTfp?=
+ =?us-ascii?Q?iBXlgaLppQ4ofMi3L4NyhJVw6RKnkd8ZdCWV4oyu7BbIviRLYOqJrhqTTSSc?=
+ =?us-ascii?Q?hBDWbI9dYH4YkhQjVO+Xga89F/mZ2vT1L6PKhYYnIZIY4tJ548Gmi61AEZCv?=
+ =?us-ascii?Q?2ZPzQEzlmSzgeyoUWMCEAo0PAQF8yzz2S26gU3iuVargy0eQqBgvN51hT/E6?=
+ =?us-ascii?Q?rI5AT8TMr9Eo03WOaP5bYVecSb9oqkWxB8ITdEjJN/Uvn79IQHnqVPxW65is?=
+ =?us-ascii?Q?wPq4DJ2OCQq+/Coz7OP9X7COXBKM+cPOYVukItz+Vr0USThPn78lpPnTgOzj?=
+ =?us-ascii?Q?q8Wen/Aa1xlMjybOopVKVlRVv4COvTuUDMX31qLF/h+BNWl8UdtQSR4jc3ms?=
+ =?us-ascii?Q?zsJmJN5ZmPv2cGI1QnDlj/xRNeDEf1X+MHLSLQH5eVQgbNOGdsremWmWRery?=
+ =?us-ascii?Q?/NaY8pKpJYi5uGDyJicgqzWyYA5dzA=3D=3D?=
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?lw2T3OXQgAd8ieO+33x2KT6eb2jmWSoHg4XU+mR5N2nU10XvUSv93F1qOI7a?=
- =?us-ascii?Q?BKt3oR4E/sEI2i9y0q32waSNJjqASw7vMfJDuAX9L5cU6bDoj30VvAEHsvmY?=
- =?us-ascii?Q?swjoXOsxmyQN/pkQdnaJMvV6CLrdzQi30PwSbsts/V4OWZ7noKDAb/Ej6yHO?=
- =?us-ascii?Q?a0aWc+t8xwx//pNGw6/rO6ZQDnlg/Qkqcus5EcMRtttPUO+rwyM7y3mRZFfs?=
- =?us-ascii?Q?Sxzy0GIza0tXyma/euvKPFeupdSkBkQjAAfpWeHZ/Iq/MW6ItAu5NWg7lg9Y?=
- =?us-ascii?Q?1oQyWNEevCXOIGa/Qtbi8eoOa/kTTpIcfDJ7Ivbua+5nUUmh++aa2WBXuPtY?=
- =?us-ascii?Q?ZtUSAlGXpVl0vAngbpdg5LZpmQLMWlG/6E/PMRRKAsKMeU4jwUxPrcsgRx+z?=
- =?us-ascii?Q?JXBYa9GwRf0oZM5Un5VJZ+b/4OggSJfAvTN/QXjmtASGeJ3WNvKFShQsjyKW?=
- =?us-ascii?Q?om0Lpe+B+G3bhYrP5SJwKmB6vz4wrI5fuMOguAtCHH8gNznBadkUeGMcVqIq?=
- =?us-ascii?Q?rOvZxPu9dDMIEBCZdInJTq3F8Epds0l72RDYE/0RWFiAdJmhD9EaBY8YJQxQ?=
- =?us-ascii?Q?GfD+ik6mPngpwB8Kj2GKT8eIH7aKiXIZHrUrWcNFQWJyiFOWW9EOLeDxJ9vR?=
- =?us-ascii?Q?wiNKFJcnBcDuPQrAvlttl7IEUI2C41MvfvDmxU4MgFWBNwe7k1zqwdcLnQLX?=
- =?us-ascii?Q?uwGFZKO9WuyP0qY9kRlyh8Wgnuni6VFnxFPfXg7C+iDkAVYfdTOjbe721E4I?=
- =?us-ascii?Q?aWenj3/RHzp4L0aXZZsbhve1YeAfEsg41vh7mHo3rXdT4mdmvOosDtZ9hjOS?=
- =?us-ascii?Q?uufgjfJj7+nhgJkAhE7pRx1HgndWoxVuMCnxyEM/mrM0OYwRba9Ry91tbeQR?=
- =?us-ascii?Q?/6hFpprF+sJZ04ISeEuQU5cOfMHvqOzIlOKq6r6tjHEke0geERfAqoPg0NAP?=
- =?us-ascii?Q?7ldiBxQY+JtDwPHMq3LqYYfjqhKn7ulOq0RF8GJM/QNtCSRboqWs9+jyLxaf?=
- =?us-ascii?Q?W73DKEW9HzwJ3tJFyJvqfM/qblWY2/G1YeLgrvRZQnhzEQjJv0DbRl+X+8R5?=
- =?us-ascii?Q?Wnq/BPNVYM1iC6ojM/kD9RqGtkQhYXdvSeoqHrsDTohjxBPrzK7EX3Roy0Jn?=
- =?us-ascii?Q?+tVhYllf3Z0Ea8lkHJedEzJR5EfKlqCyVUWXlOWQRjttYJj7gvZmHJhITHdD?=
- =?us-ascii?Q?voWjxoMj8Xl8WzZd3p0iEALfU912Acj+QAjntl3QBxaiER+7+Jql+iSZJWms?=
- =?us-ascii?Q?UMBncx0TZ7ugFmScNLm4?=
+	=?us-ascii?Q?YdQ7pumU4WLSN1TEOwudtPjZLsHbFhxfwfnkwx6iJ50IprBlTlUcLCkYAo1G?=
+ =?us-ascii?Q?w74h0XBmn4x8jGkDANvIJjYW0VWGkbmltxnx/AHUfMsu6rWbRPiSRsbIW3QJ?=
+ =?us-ascii?Q?rRV56KTwjSC6nCWp8Mo6AfoD1VCV+PRkbjiWtolSwU6hmxtdwnd/XbhR5WDx?=
+ =?us-ascii?Q?7e94ywsgL4IcZ1HYutmhj5wAoo/GSoP1f/vjW/dOKTYQ0vSmZhXgSRd1QehT?=
+ =?us-ascii?Q?eprZwGlEL1+Ma650NOZgAXERgbbKlWXB5WKt+zW2039jmoPqwGijPJH486UW?=
+ =?us-ascii?Q?3oYmPwEDQ01cPtmyZZyyK9dgaseOIvUxeHwjhI9xk+kEI0QKMfMN+AURDVdX?=
+ =?us-ascii?Q?/ccRLgsr/PTLTOR05z/N/XIcOlTrRt2be8JmnWSjZ8Xa0DBilbQZU0ssCCHm?=
+ =?us-ascii?Q?J0trTr9TX6d4s/sH/YIIU/kBCjMDwQyWar8laMhKFocpAgA1CcjuhnrEieJ4?=
+ =?us-ascii?Q?mnrxXI1dn0o2Y5VVX7XK63wuJguCx8L1D/dKWZlyEVEJXbGtxoqQMvvC4b5+?=
+ =?us-ascii?Q?FJhgQAECMjYBShVf7a0dDyrKx8N8/0B4Ci2lWTspaGbNvoHS1FIMz+p8ySac?=
+ =?us-ascii?Q?4fR99l4munKPMPqtAtZBGffFsQFT353t3FEHKJL36szJLze/hnzPdGZOncRk?=
+ =?us-ascii?Q?tku8n7TUdjVZuawLRkkxEracHe64lBsgoL8YjgLvibFJxnz1zX5dUEiERO/y?=
+ =?us-ascii?Q?5tNKInp61wgQroEQeTWh4bWYlskhvBwV6Ib2dgz9yVQkE/yUZCeorp2MQXbZ?=
+ =?us-ascii?Q?8JO1Q2cXgPeaiNc5VUGuvZfI6bz7XV92HVvCWjGDT63OUmObAM0AoUg6lVhz?=
+ =?us-ascii?Q?h92kr0PuKWNiNcHMcVcJ6QzCeCGn9ly9y1RDAj2zM2hjhtz26k3DobKFF+nh?=
+ =?us-ascii?Q?uhNBC/RbITNPqm3+egNDdhM1f2qU9zc7YhIOmR8X3OFv8AevFx/KHdeHw5Uu?=
+ =?us-ascii?Q?H0/QPvGIQUKsWh6ckxb00BooBb8weUoYmsS5EKoMnDkL/DiKk+nnMOYau95x?=
+ =?us-ascii?Q?KUH5BXBhidymLQiGfVh6RzWg2OQ/jTFATs1Z9WYjQJzxPhMDd+efMB405LYs?=
+ =?us-ascii?Q?NnVKLoA4X3HWr7RjjE3r+jRt/6shF2AP8be/lN1hLrTEujT9iwn+h8ujgefA?=
+ =?us-ascii?Q?Cv+TzVuffEUHrMjHv3a3mIxXNSsU0sQeWUgKNnO76Jlbk/WOMnWKYyVtaFe2?=
+ =?us-ascii?Q?GAo78dOsDGlcKvlmAHXtKNasTCghI3Paccvuj6VFM35A453z5oIh5C3Ade2R?=
+ =?us-ascii?Q?9c8owH2tH8b17tX/go7O?=
 X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 46a5e83f-cdf3-4749-efa0-08dd36667215
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd326940-f1cd-48a0-9c28-08dd36668afd
 X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5080.eurprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2025 19:46:18.8976
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2025 19:47:00.7544
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -157,75 +156,120 @@ X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
 	00000000-0000-0000-0000-000000000000
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR03MB7970
 
-This patch adds default BPF capabilities initialization for
-program types.
+This patch modifies SCX to use BPF capabilities.
 
-Since this is a proof of concept, only BPF capabilities initialization
-for BPF_PROG_TYPE_STRUCT_OPS is added.
+Make all SCX kfuncs register to BPF capabilities instead of
+BPF_PROG_TYPE_STRUCT_OPS.
 
-BPF_PROG_TYPE_STRUCT_OPS enables only STRUCT_OPS_BASE_CAPS and
-BPF_CAP_SCX_ANY by default.
+Add bpf_scx_bpf_capabilities_adjust as bpf_capabilities_adjust
+callback function.
 
 Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
 ---
- kernel/bpf/verifier.c | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+ kernel/sched/ext.c | 74 ++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 62 insertions(+), 12 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 2a321a641b4a..7a69a581861f 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -22959,6 +22959,40 @@ static int process_fd_array(struct bpf_verifier_env *env, union bpf_attr *attr,
- 	return 0;
+diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
+index 7fff1d045477..53cc7c3ed80b 100644
+--- a/kernel/sched/ext.c
++++ b/kernel/sched/ext.c
+@@ -5765,10 +5765,66 @@ bpf_scx_get_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 	}
  }
  
-+#define STRUCT_OPS_BASE_CAPS \
-+	BPF_CAP_TEST_1, \
-+	BPF_CAP_TEST_2, \
-+	BPF_CAP_TEST_3
-+
-+static const enum bpf_capability struct_ops_caps[] = {
-+	STRUCT_OPS_BASE_CAPS,
-+	BPF_CAP_SCX_ANY
-+};
-+
-+struct bpf_program_type_caps {
-+	enum bpf_prog_type type;
-+	u32 size;
-+	const enum bpf_capability *capabilities;
-+};
-+
-+static const struct bpf_program_type_caps bpf_default_capabilities[] = {
-+	{
-+		.type = BPF_PROG_TYPE_STRUCT_OPS,
-+		.size = ARRAY_SIZE(struct_ops_caps),
-+		.capabilities = struct_ops_caps
-+	},
-+};
-+
-+static void setup_bpf_capabilities(unsigned long *bpf_capabilities,
-+				   const struct bpf_program_type_caps *caps)
++static int bpf_scx_bpf_capabilities_adjust(unsigned long *bpf_capabilities,
++					   u32 context_info, bool enter)
 +{
-+	int i;
-+
-+	bitmap_zero(bpf_capabilities, __MAX_BPF_CAP);
-+	for (i = 0; i < caps->size; i++)
-+		ENABLE_BPF_CAPABILITY(bpf_capabilities, caps->capabilities[i]);
++	if (enter) {
++		switch (context_info) {
++		case offsetof(struct sched_ext_ops, select_cpu):
++			ENABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_SELECT_CPU);
++			ENABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_ENQUEUE);
++			break;
++		case offsetof(struct sched_ext_ops, enqueue):
++			ENABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_ENQUEUE);
++			break;
++		case offsetof(struct sched_ext_ops, dispatch):
++			ENABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_DISPATCH);
++			break;
++		case offsetof(struct sched_ext_ops, running):
++		case offsetof(struct sched_ext_ops, stopping):
++		case offsetof(struct sched_ext_ops, enable):
++			ENABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_REST);
++			break;
++		case offsetof(struct sched_ext_ops, init):
++		case offsetof(struct sched_ext_ops, exit):
++			ENABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_UNLOCKED);
++			break;
++		default:
++			return -EINVAL;
++		}
++	} else {
++		switch (context_info) {
++		case offsetof(struct sched_ext_ops, select_cpu):
++			DISABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_SELECT_CPU);
++			DISABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_ENQUEUE);
++			break;
++		case offsetof(struct sched_ext_ops, enqueue):
++			DISABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_ENQUEUE);
++			break;
++		case offsetof(struct sched_ext_ops, dispatch):
++			DISABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_DISPATCH);
++			break;
++		case offsetof(struct sched_ext_ops, running):
++		case offsetof(struct sched_ext_ops, stopping):
++		case offsetof(struct sched_ext_ops, enable):
++			DISABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_REST);
++			break;
++		case offsetof(struct sched_ext_ops, init):
++		case offsetof(struct sched_ext_ops, exit):
++			DISABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_UNLOCKED);
++			break;
++		default:
++			return -EINVAL;
++		}
++	}
++	return 0;
 +}
 +
- int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u32 uattr_size)
- {
- 	u64 start_time = ktime_get_ns();
-@@ -22997,6 +23031,9 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
- 	env->bypass_spec_v4 = bpf_bypass_spec_v4(env->prog->aux->token);
- 	env->bpf_capable = is_priv = bpf_token_capable(env->prog->aux->token, CAP_BPF);
+ static const struct bpf_verifier_ops bpf_scx_verifier_ops = {
+ 	.get_func_proto = bpf_scx_get_func_proto,
+ 	.is_valid_access = bpf_scx_is_valid_access,
+ 	.btf_struct_access = bpf_scx_btf_struct_access,
++	.bpf_capabilities_adjust = bpf_scx_bpf_capabilities_adjust
+ };
  
-+	if (env->prog->type == BPF_PROG_TYPE_STRUCT_OPS)
-+		setup_bpf_capabilities(env->bpf_capabilities, &bpf_default_capabilities[0]);
-+
- 	bpf_get_btf_vmlinux();
- 
- 	/* grab the mutex to protect few globals used by verifier */
+ static int bpf_scx_init_member(const struct btf_type *t,
+@@ -7596,23 +7652,17 @@ static int __init scx_init(void)
+ 	 * them. For now, register them the same and make each kfunc explicitly
+ 	 * check using scx_kf_allowed().
+ 	 */
+-	if ((ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
++	if ((ret = register_btf_kfunc_id_set_cap(BPF_CAP_SCX_KF_SELECT_CPU,
+ 					     &scx_kfunc_set_select_cpu)) ||
+-	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
++	    (ret = register_btf_kfunc_id_set_cap(BPF_CAP_SCX_KF_ENQUEUE,
+ 					     &scx_kfunc_set_enqueue_dispatch)) ||
+-	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
++	    (ret = register_btf_kfunc_id_set_cap(BPF_CAP_SCX_KF_DISPATCH,
+ 					     &scx_kfunc_set_dispatch)) ||
+-	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
++	    (ret = register_btf_kfunc_id_set_cap(BPF_CAP_SCX_KF_CPU_RELEASE,
+ 					     &scx_kfunc_set_cpu_release)) ||
+-	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
+-					     &scx_kfunc_set_unlocked)) ||
+-	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL,
++	    (ret = register_btf_kfunc_id_set_cap(BPF_CAP_SCX_KF_UNLOCKED,
+ 					     &scx_kfunc_set_unlocked)) ||
+-	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
+-					     &scx_kfunc_set_any)) ||
+-	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
+-					     &scx_kfunc_set_any)) ||
+-	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL,
++	    (ret = register_btf_kfunc_id_set_cap(BPF_CAP_SCX_ANY,
+ 					     &scx_kfunc_set_any))) {
+ 		pr_err("sched_ext: Failed to register kfunc sets (%d)\n", ret);
+ 		return ret;
 -- 
 2.39.5
 
