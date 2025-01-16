@@ -1,90 +1,96 @@
-Return-Path: <bpf+bounces-49060-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49061-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7097A13CFA
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 15:56:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 807A7A13DB0
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 16:32:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CCC83A9FDB
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 14:55:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1AEC188D38F
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 15:32:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16C6522A7F6;
-	Thu, 16 Jan 2025 14:55:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7933324A7F6;
+	Thu, 16 Jan 2025 15:32:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="VMf0aBez"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="H31/a6OS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A48678F2B
-	for <bpf@vger.kernel.org>; Thu, 16 Jan 2025 14:55:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8680422AE55
+	for <bpf@vger.kernel.org>; Thu, 16 Jan 2025 15:31:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737039332; cv=none; b=uCod1icuR0ltOpwT0livnZK8y7bR3NVIQB8WKpyql6g1HFg0o7MVImSoPWovjWIu7Kcj/ga8amdlRYBvtKsytjyFtFEbPCcIH3qlzEFQMFDMTTNuz/lnmyd4p2tH0iBqbflAa/n9s2xWT7kaRYazguY5JX0FFu3nGd2iQsoWEUQ=
+	t=1737041520; cv=none; b=HIscYL1WsZKXQfNvSxsmQSfx2k19hRKp1k1uPe8sywUa+6hYWflhwbi4jC4O3YJ/Cje9CZ0w6n2dFjVDrniJAGaR5mIz0fY2+mTPkV5To8OS6uB/QmXbPxZ4+v8igjiC2b7L2i4ZxVdiQXYEuhxifxnertj4U5QJ4H92BxTUrBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737039332; c=relaxed/simple;
-	bh=ZY13NJcbexQno8YuPhoJEsqXDpdT0s6SQPG08TKFotc=;
+	s=arc-20240116; t=1737041520; c=relaxed/simple;
+	bh=EyHBWBwzh6AHGhhhlCyzXjGA36x06KnwFSPExi66IrE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s6snwKdkRHLUvox7601exo14Fi71hmabUmwTrCC9PZBuZ//3Wb+ob0491IViMHozt7Ozhs4SscoXqrvpkE4lFe7wFEhSeFJqGmG3axL4R3Jhf3fGeRaLErkT8MiwH6J8DCyJdK+Rc/bDOCcX397AIgjZtrMm+KoppXI2Idvgc74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=VMf0aBez; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-43635796b48so6841675e9.0
-        for <bpf@vger.kernel.org>; Thu, 16 Jan 2025 06:55:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1737039329; x=1737644129; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=f9Gg0njoUKqIEbUSNILV+b3Jk22A82UdQJji3hpLUs8=;
-        b=VMf0aBezoYTX1ghMDuScLM2mH4tGrWEJFPsgGrOAEbSOnMNpcIvNiYo+gpUtu5Ynia
-         Hb/g67Ffalm5Ud4VMaEHUL5cr0s2ewqMgs44/Ai9+7uU9hWGzTd3LD95qMkxNbu4g2pI
-         li3miFPRZjSDKhXok72BO5J6KqQ1vnsDk9wEFG9yev5mKJDUl62oLNkv47zBEORvBkj7
-         xgRFp3cZulAgL2t5p5PLyHhmm9Ugab6U8sge4AULX+jpGOQ9w3/x1dDsaNmFAfrl+OnR
-         voqmTZThkBFmB9RGv5fb6dxI2yqF+O7AazOHVoKGKNyHufMKuUEUIEbtu4dUOYlTQWWY
-         8SJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737039329; x=1737644129;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f9Gg0njoUKqIEbUSNILV+b3Jk22A82UdQJji3hpLUs8=;
-        b=rYTCkLo5tEca6KqigGzr0llaltuNoUwdZUNzpWn9AkqJiGbln4jlS2WsJ/UeoxjS5H
-         RKaCd2KmKRiYWoaUidRTj5Y30dzinaGF3+bel9JSqVOY6igTnnMGr/AU0QN0DPx+Palr
-         XDYEQoqRggnjt6zZJ4HEbSJvKYzhFL34EdU/YPG1crbnKmRwJgSem8u6IKodCJykZhTJ
-         Zbf6k8XqRsWxLPHrP1ZRbjh5JbNhA9UcxxI5ffKHiq9PIhO/ZdCEuifQny9rkdMzmx4q
-         OW5Hs+iXS55jg3p/bhP/o8ajVWgcdpv9dxPpF5iAmjt0AVg2wQX5wcEXXvX8Zr8LJBAT
-         R9yQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU1k6Y5Yxy9gL5OygCUmFfFModjqHxgeHQrOj4JNiyD5UVHegXv012/XzixOotqCKh22yE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw6095KDIJz/g7Gg3yuGRR2VMJXm5r0hLRcjRXLCZqKost2iqpK
-	2j5zPIlmJbNtLkW0Te7OoEOAGcb2yXnL9dBqsVpYRA+c7eWd2ReWDM03QLbKcQs=
-X-Gm-Gg: ASbGncswnYPtX6gf3jMY+0iLz6/moBcwZLs8yhSjVcgbQufwEcYy8OQyvhI9EuR8fFx
-	B2tUtW/bkxgwEUjAN5n7rSO3bmEgozpWlL1W28uvJ1Yuau36WFJfOnGmkDcBCi55EqZDVS/+pFI
-	72P3/SpHGq50VCYr9vlt85RGGMOLI1oKpiV29V6UP+U2UnZsJL14BIMVG5G1d6e/T0p6AyIUtW4
-	DweejsmEXv4YMmAigAYho1tdIiBgfUC1cX3qBiMXcJzpg==
-X-Google-Smtp-Source: AGHT+IH+2idMD2XNLNkAbVwahZDtrTWO1Tp1+wA9hHxQoEnhWgX5VB9Cd9IJH++HoiCdzNE1bn09VQ==
-X-Received: by 2002:a05:600c:4f55:b0:434:ea1a:e30c with SMTP id 5b1f17b1804b1-437c6b468a7mr67857425e9.13.1737039328806;
-        Thu, 16 Jan 2025 06:55:28 -0800 (PST)
-Received: from eis ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38bf3275622sm57376f8f.69.2025.01.16.06.55.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jan 2025 06:55:28 -0800 (PST)
-Date: Thu, 16 Jan 2025 14:59:32 +0000
-From: Anton Protopopov <aspsk@isovalent.com>
-To: Nick Zavaritsky <mejedi@gmail.com>
-Cc: Charalampos Stylianopoulos <charalampos.stylianopoulos@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>, aspsk2@gmail.com
-Subject: Re: [PATCH bpf-next 0/4] expose number of map entries to userspace
-Message-ID: <Z4ke1A1agEko41v8@eis>
-References: <20250106145328.399610-1-charalampos.stylianopoulos@gmail.com>
- <28acb589-6632-4250-a8ca-00eacda03305@iogearbox.net>
- <Z3zcTB+SjPK5QOt9@eis>
- <CAAvdH+yNG=GefEd5CcP_52gPzzZexWMMxFAxnM3isX04iErMfQ@mail.gmail.com>
- <CAAvdH+wHjWEvO3e0_=o4imJZq1082pzp-qszbQvj_Ev50eQCrw@mail.gmail.com>
- <Z4AJY8orP8JMzvhW@eis>
- <68891842-975E-48B0-AED5-875F3ABC5F49@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Sr/crIWLvkXsYvDzbhe2Zvgl6F8C4cbVp3RdLJtj2whmZJajN39gZJms6JkAJzhdZ5psFO/a+ZLMe4jc7uIGpjullnVcQN2vjgoNb4oretBhg5I/n0juUkVcZyYOQfOZZBXrT7wrGIOEyGUwbWne/2Ly0HrEB4TiQmS5IvPCwLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=H31/a6OS; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1737041517;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EyHBWBwzh6AHGhhhlCyzXjGA36x06KnwFSPExi66IrE=;
+	b=H31/a6OSHhtfQC8SXn6Y0XATwKRG8Xk9SKBGX/7RMKHUGeiz0vkgr9zx3SwwRSofErxB8E
+	hU92Lwr+qbYh6lGgYp+BU6iNNsKVWGWC8BDTSD96rxbzILJcFW3QM+MSR4B8q/6nrxKhDm
+	D9k1AyznwDM+frdlmCRbe9Yhk/tZ/xU=
+Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-536-uxurKbNRNzexCwgC_jtTRQ-1; Thu,
+ 16 Jan 2025 10:31:51 -0500
+X-MC-Unique: uxurKbNRNzexCwgC_jtTRQ-1
+X-Mimecast-MFC-AGG-ID: uxurKbNRNzexCwgC_jtTRQ
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E31601955D72;
+	Thu, 16 Jan 2025 15:31:45 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.118])
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 1E86B19560BF;
+	Thu, 16 Jan 2025 15:31:37 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Thu, 16 Jan 2025 16:31:20 +0100 (CET)
+Date: Thu, 16 Jan 2025 16:31:11 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Eyal Birger <eyal.birger@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Jiri Olsa <olsajiri@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>,
+	BPF-dev-list <bpf@vger.kernel.org>,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+	Linux API <linux-api@vger.kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	"rostedt@goodmis.org" <rostedt@goodmis.org>, rafi@rbk.io,
+	Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Subject: Re: Crash when attaching uretprobes to processes running in Docker
+Message-ID: <20250116153044.GF21801@redhat.com>
+References: <20250114172519.GB29305@redhat.com>
+ <Z4eBs0-kJ3iVZjXL@krava>
+ <20250115150607.GA11980@redhat.com>
+ <CAADnVQJjroiR0SRp69f1NbomEH-riw53e_-TioqT4aEt3GSKGg@mail.gmail.com>
+ <20250115184011.GA21801@redhat.com>
+ <CAHsH6Gu1kXZ=m3eoTeZcZ9n=n2scxw7z074PnY5oTsXfTqZ=vQ@mail.gmail.com>
+ <20250115190304.GB21801@redhat.com>
+ <CAHsH6Gtd5kYPife3hK+uKafjBMx=-23UzvQgnOnqNDzSZgHyqw@mail.gmail.com>
+ <20250116143956.GD21801@redhat.com>
+ <CAHsH6GukV+ydR+hw_-RF=0=_x6aO7xZzkCmbc53=Pk0Kv=8hUQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -93,132 +99,18 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <68891842-975E-48B0-AED5-875F3ABC5F49@gmail.com>
+In-Reply-To: <CAHsH6GukV+ydR+hw_-RF=0=_x6aO7xZzkCmbc53=Pk0Kv=8hUQ@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
 
-On 25/01/14 12:38PM, Nick Zavaritsky wrote:
-> 
-> > On 9. Jan 2025, at 18:37, Anton Protopopov <aspsk@isovalent.com> wrote:
-> > 
-> > On 25/01/07 12:10PM, Charalampos Stylianopoulos wrote:
-> >> (sorry for double posting, this time in plain text)
-> >> Thanks a lot for the feedback!
-> >> 
-> >> So, to double check, the suggestion is to only extend the libbpf API
-> >> with a new helper that does pretty much what get_cur_elements() does
-> >> in tools/testing/selftests/bpf/map_tests/map_percpu_stats.c ?
-> > 
-> > What is your use case for getting the number of elements in a
-> > particular map? Will it work for you to just use a variant of
-> > get_cur_elements() from selftests vs. adding new API to libbpf?
-> 
-> (On behalf of Charalampos Stylianopoulos) we would like to get the
-> number of elements in some maps for monitoring purposes. The end goal is
-> to get someone paged when a fixed-capacity map is about to start
-> rejecting inserts.
-> 
-> We aim to operate a large number of apps in containers (custom packet
-> processing services, telekom). We find it most convenient for an app
-> itself to expose metrics concerning the maps it has created.
-> 
-> We currently use a map iterator and a bunch of bpf_probe_read_kernel. We
-> foresee the number of maps in our systems getting significantly higher
-> in the near future. Therefore enumerating every map in the system to get
-> a number of elements in a particular map doesn't look sustainable.
-> 
-> How do you feel about introducing bpf_map_sum_elem_count_by_fd kfunc,
-> available in syscall programs?
+On 01/16, Eyal Birger wrote:
+>
+> Ack. I agree.
+>
+> Do you want to send a formal patch, or should I?
 
-This should work already, something like
+Please send the patch ;)
 
-    __s64 bpf_map_sum_elem_count(const struct bpf_map *map) __ksym;
-    __s64 ret_user;
+Oleg.
 
-    struct {
-            __uint(type, BPF_MAP_TYPE_HASH);
-            __type(key, int);
-            __type(value, int);
-            __uint(max_entries, 4);
-    } your_map SEC(".maps");
-
-    SEC("syscall")
-    int sum(void *ctx)
-    {
-            struct bpf_map *map = (struct bpf_map *)&your_map;
-
-            ret_user = bpf_map_sum_elem_count(map);
-
-            return 0;
-    }
-
-    char _license[] SEC("license") = "GPL";
-
-Is this sufficient for your use case?
-
-> > 
-> > [Also, please try not to top-post, see https://www.idallen.com/topposting.html]
-> > 
-> >>> On Tue, 7 Jan 2025 at 08:44, Anton Protopopov <aspsk@isovalent.com> wrote:
-> >>>> 
-> >>>> On 25/01/06 05:19PM, Daniel Borkmann wrote:
-> >>>>> On 1/6/25 3:53 PM, Charalampos Stylianopoulos wrote:
-> >>>>>> This patch series provides an easy way for userspace applications to
-> >>>>>> query the number of entries currently present in a map.
-> >>>>>> 
-> >>>>>> Currently, the number of entries in a map is accessible only from kernel space
-> >>>>>> and eBPF programs. A userspace program that wants to track map utilization has to
-> >>>>>> create and attach an eBPF program solely for that purpose.
-> >>>>>> 
-> >>>>>> This series makes the number of entries in a map easily accessible, by extending the
-> >>>>>> main bpf syscall with a new command. The command supports only maps that already
-> >>>>>> track utilization, namely hash maps, LPM maps and queue/stack maps.
-> >>>>> 
-> >>>>> An earlier attempt to directly expose it to user space can be found here [0], which
-> >>>>> eventually led to [1] to only expose it via kfunc for BPF programs in order to avoid
-> >>>>> extending UAPI.
-> >>>>> 
-> >>>>> Perhaps instead add a small libbpf helper (e.g. bpf_map__current_entries to complement
-> >>>>> bpf_map__max_entries) which does all the work to extract that info via [1] underneath?
-> >>>> 
-> >>>> One small thingy here is that bpf_map_sum_elem_count() is only
-> >>>> available from the map iterator. Which means that to get the
-> >>>> bpf_map_sum_elem_count() for one map only, one have to iterate
-> >>>> through the whole set of maps (and filter out all but one).
-> >>>> 
-> >>>> I wanted to follow up my series by either adding the result of
-> >>>> calling bpf_map_sum_elem_count() to map_info as u32 or to add
-> >>>> possibility to provide a map_fd/map_id when creating an iterator
-> >>>> (so that it is only called for one map). But so far I haven't
-> >>>> a real use case for getting the number of elements for one map only.
-> >>>> 
-> >>>>> Thanks,
-> >>>>> Daniel
-> >>>>> 
-> >>>>>  [0] https://lore.kernel.org/bpf/20230531110511.64612-1-aspsk@isovalent.com/
-> >>>>>  [1] https://lore.kernel.org/bpf/20230705160139.19967-1-aspsk@isovalent.com/
-> >>>>>      https://lore.kernel.org/bpf/20230719092952.41202-1-aspsk@isovalent.com/
-> >>>>> 
-> >>>>>> Charalampos Stylianopoulos (4):
-> >>>>>>   bpf: Add map_num_entries map op
-> >>>>>>   bpf: Add bpf command to get number of map entries
-> >>>>>>   libbpf: Add support for MAP_GET_NUM_ENTRIES command
-> >>>>>>   selftests/bpf: Add tests for bpf_map_get_num_entries
-> >>>>>> 
-> >>>>>>  include/linux/bpf.h                           |  3 ++
-> >>>>>>  include/linux/bpf_local_storage.h             |  1 +
-> >>>>>>  include/uapi/linux/bpf.h                      | 17 +++++++++
-> >>>>>>  kernel/bpf/devmap.c                           | 14 ++++++++
-> >>>>>>  kernel/bpf/hashtab.c                          | 10 ++++++
-> >>>>>>  kernel/bpf/lpm_trie.c                         |  8 +++++
-> >>>>>>  kernel/bpf/queue_stack_maps.c                 | 11 +++++-
-> >>>>>>  kernel/bpf/syscall.c                          | 32 +++++++++++++++++
-> >>>>>>  tools/include/uapi/linux/bpf.h                | 17 +++++++++
-> >>>>>>  tools/lib/bpf/bpf.c                           | 16 +++++++++
-> >>>>>>  tools/lib/bpf/bpf.h                           |  2 ++
-> >>>>>>  tools/lib/bpf/libbpf.map                      |  1 +
-> >>>>>>  .../bpf/map_tests/lpm_trie_map_basic_ops.c    |  5 +++
-> >>>>>>  tools/testing/selftests/bpf/test_maps.c       | 35 +++++++++++++++++++
-> >>>>>>  14 files changed, 171 insertions(+), 1 deletion(-)
-> >>>>>> 
-> >>>>> 
-> 
 
