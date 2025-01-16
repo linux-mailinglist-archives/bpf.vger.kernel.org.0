@@ -1,91 +1,86 @@
-Return-Path: <bpf+bounces-49023-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49024-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8C43A1323B
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 06:14:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C4F0A132C3
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 06:51:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13EB018874FD
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 05:14:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E164E3A4D18
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 05:51:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895851428E7;
-	Thu, 16 Jan 2025 05:14:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e7rWZmpm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C718218C03D;
+	Thu, 16 Jan 2025 05:51:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE9374A05
-	for <bpf@vger.kernel.org>; Thu, 16 Jan 2025 05:14:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 457E629A1
+	for <bpf@vger.kernel.org>; Thu, 16 Jan 2025 05:51:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737004451; cv=none; b=lMv1QvxlzvRYl1x8mG5orduJYOy8LYi+Hq4p3smE5QnAwn5HH7DqM3bk26J2fn3PtRzCd9dFitvTBvkoapx/x/R6R+D9kBpUllO8N8OJ4PyHPRV76pNgcxCc1QkEV4q/K1a0UqRC8sPe39VGu+vJDhnjZMoHyct841LH24uJys8=
+	t=1737006701; cv=none; b=RN2y+wDPSQrV8fWH4cTlpVSRr9mXYrm+LwKmwNUs/RrljXEkfZX7e4jTqNC5rlfTFyoR3KgHogXpO33rX3YM+xEa+QeRdPVAyLeAUKQ5mZTGtcU9hcFNfu3VltPnqADpJUySegDBOJndF5NLrP5DHswPSsmK0dEeaMQR/M3rM+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737004451; c=relaxed/simple;
-	bh=dqwomF0jneZ2eesxHAOTg6ZBsKrRr8TE5jUcMPIkbLw=;
-	h=Message-ID:Date:MIME-Version:To:From:Content-Type; b=ZPFgdjweAGPd5RzhsbIWpAAIzfHfmpncejE2Gqoe8CFGZ1EH5naHC1nWVwLMctHfe17nscVbNN9tKP2/dlRe0R3l8YNYcNEi0E+beVENUpRzupdyd92B13RUJYMZNTqrfI3TEbQXrbc4YJ8e00nAq0m5yboSTefy4XOEyGFv870=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e7rWZmpm; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-21a7ed0155cso6741695ad.3
-        for <bpf@vger.kernel.org>; Wed, 15 Jan 2025 21:14:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737004449; x=1737609249; darn=vger.kernel.org;
-        h=content-transfer-encoding:from:to:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=L4+at9eF5iaEXIA00TwrwPLo3Lg2lEcOJzhDhljXtgk=;
-        b=e7rWZmpmz5tL8k5wpuH28wWA7qYVrqdlcU7MqJJPMkJn1VXV7KrZ/yFiJoiHGFYGrs
-         4hiqnNuv/U1cAegmHlVCrFV3+wMWwTeUiQ0MrGvadBhMreVTwGSZRjpLOom3NJZAtLVo
-         6X6bbzEIDjN+9dXcGTgnjSQgRA8ku60I21Y0GCprtdjHx3wDaOcd/IzoU6KkSq+zkBvp
-         4Aq4fwU/dYdrubWZzaLFIx18nVzhYqq9R5kcLo9jmx08twUXA7B4QY4dDrGBm+AedR4f
-         kzMOalPi9VEl/6q15kI7cMmX8EhwI155vayOUggM+GnB0SJed2LvFoWlI9Ce0cvxepaQ
-         gABQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737004449; x=1737609249;
-        h=content-transfer-encoding:from:to:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=L4+at9eF5iaEXIA00TwrwPLo3Lg2lEcOJzhDhljXtgk=;
-        b=aFOLc+z3nNuPF1sdohcOKpB3UFQZ61jGgbJmZxlyCOESsX3iNfHxAtWmFjXql5RA5C
-         PskckwrxB6wU/5iOiO92wBUseuscWSkryvyGB7VfdEO7NaHEfrs9VfVt+RiSwwo+72c9
-         /renBJHLa6llE+6/nC+BcCR5ECpscPQggm3xub+JG2rpsLoLO9HZudgB++C8HSyRjBcB
-         miWLLi/SpkGKkyYz//DQbXYI6mQ3rXD1CqkjhZVMdEGl5836CcyUmMs/MD4b3aXPDx2X
-         gzZRwDW5eDa2zzoPRBEw5hF5vGkCm1P9PgZ6LW/lgIviaxG7N6iZeFPXi8GRhDCJv140
-         KiMg==
-X-Gm-Message-State: AOJu0YwcDcR+vrucru8+eCmLdPuzJ1sODlNB0k0aOllJaaDfb6AMFTy7
-	SJqBdduIGR8ndqlyUqtmUS9slYnKGt8wsttbfsO9e57iJ6SFFhVn23lNWQ==
-X-Gm-Gg: ASbGncs0g7HgZtJQBcxXgoE2eyQEHpxExiSpqlwNa/w8h8O3LKhjYOnOdB9E7Ok999B
-	PMUFsin5KFpaJ8FQZyV+9X08x89RU/xtre0xx183vwPwmhHg70+DyOBxVf7+EYi99Niw1Aai/W0
-	2gNHyl99CabjjTjYvOWfkm7+pTIrPImtBUy46MJ/LNwJ85KOTw3EsQMKOAIoa+kw3frRLUS9x/P
-	d7+0Jf75E6PYJtM5nt7XYXZn5ZOk7lQhHDd9ra8nZd/VK+SY8n9tLW145e827TKTFjJbxu2uJI=
-X-Google-Smtp-Source: AGHT+IGYqVTrAKlY69KRJJFpSY3P/DJ88q4vYtOnwSzg95+y10LvIRJaogX//t4XgyNFkRzI6clnEA==
-X-Received: by 2002:a05:6a00:929a:b0:72a:8b90:92e9 with SMTP id d2e1a72fcca58-72d21f30475mr42375426b3a.5.1737004448576;
-        Wed, 15 Jan 2025 21:14:08 -0800 (PST)
-Received: from [172.23.161.24] ([183.134.211.52])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72d405491b8sm10061744b3a.9.2025.01.15.21.14.07
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Jan 2025 21:14:08 -0800 (PST)
-Message-ID: <36df7768-1edb-4e1e-890b-3147150c1754@gmail.com>
-Date: Thu, 16 Jan 2025 13:14:02 +0800
+	s=arc-20240116; t=1737006701; c=relaxed/simple;
+	bh=6f//Jd0B/1dhzHrhochm+DlN+51m5p6dKMAXl6g/o1E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=a5wZPC7XIRFoCBZ/Vjmg6WQEe4BniWKrRNVaPvzFOVDoOXHjONWV/iKypPF78Hom0xo6+a9R7f6E+etJVCzjNhGoRUWLbhdKocD3RW32zif/HogxYfCZe/yIcBItkQU/ugpoaNGzsBNtg7hjCrJcDlNHKPbcM2lDxYFpIZTUxjo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id 0200ED032429; Wed, 15 Jan 2025 21:51:23 -0800 (PST)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next 0/3] bpf: Allow 'may_goto 0' instruction
+Date: Wed, 15 Jan 2025 21:51:23 -0800
+Message-ID: <20250116055123.603790-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: bpf@vger.kernel.org
-From: Tao Chen <chen.dylane@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-sub
--- 
-Best Regards
-Dylane Chen
+Emil Tsalapatis from Meta reported such a case where 'may_goto 0' insn is
+generated by clang-19 compiler and this caused verification failure
+since 'may_goto 0' is rejected by verifier.
+
+In fact, 'may_goto 0' insn is actually a no-op and it won't hurt
+verification. The only side effect is that the verifier will convert
+the insn to a sequence of codes like
+   /* r10 - 8 stores the implicit loop count */
+   r11 =3D *(u64 *)(r10 -8)
+   if r11 =3D=3D 0x0 goto pc+2
+   r11 -=3D 1
+   *(u64 *)(r10 -8) =3D r11
+
+With this patch set 'may_goto 0' insns are allowed in verification which
+also removes those insns.
+
+Yonghong Song (3):
+  bpf: Allow 'may_goto 0' instruction
+  bpf: Remove 'may_goto 0' instruction
+  selftests/bpf: Add some tests related to 'may_goto 0' insns
+
+ kernel/bpf/verifier.c                         | 41 +++++++-
+ .../selftests/bpf/prog_tests/verifier.c       |  4 +
+ .../selftests/bpf/progs/verifier_may_goto_1.c | 97 +++++++++++++++++++
+ .../selftests/bpf/progs/verifier_may_goto_2.c | 28 ++++++
+ 4 files changed, 167 insertions(+), 3 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_may_goto_1=
+.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_may_goto_2=
+.c
+
+--=20
+2.43.5
 
 
