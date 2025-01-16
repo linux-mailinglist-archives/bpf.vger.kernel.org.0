@@ -1,291 +1,217 @@
-Return-Path: <bpf+bounces-49066-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49067-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5A8DA13E7A
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 16:56:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62D37A13EE9
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 17:10:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3852A7A3E44
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 15:56:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF7B83A8C66
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 16:10:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA19722CA10;
-	Thu, 16 Jan 2025 15:55:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 581C822CF3B;
+	Thu, 16 Jan 2025 16:09:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JOXzhROt"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="x9pgjSWt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4602722D4E2;
-	Thu, 16 Jan 2025 15:55:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09D6822BACD
+	for <bpf@vger.kernel.org>; Thu, 16 Jan 2025 16:09:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737042908; cv=none; b=Hw+9kOPki/7OUBbtBdd5Haa2qpwIUfUeaHOZacXIK18r34oM2C+gdALCM/ZZ0AplAtD5L156SgGyzkA4pI6pkH0UVorJHRP/hVSZ0AWov39X0X7m7C8HM1hVLhEU7dz2LLarnvZg33iUBTBT9VqgdvcxRFo3IWoo4i/Tz+Zlu4g=
+	t=1737043782; cv=none; b=GIAG5LVZ5bzaINHaekJTYGnctuzQGae75EFTX6S3xNCK7siZhbJ4YOGixiNPM3Ye3HGyy6a4kmbHtrHsIPO0ylt1hZRmODwgQvXvsHpJPZc/CFuHixt1xHmAccFdmYO45EH5ZhZ9SCp/gcpOPHAbjXuxiVnI2ldzJcYPYCyx/kk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737042908; c=relaxed/simple;
-	bh=obYy7duPHYvIurVcQ1b2tc4S9JxTXListwajIQv1jJc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FKV/SJD30LlQQOP47G5vXLYZbY3lyQKePz2O3b8kvZ+ANg/z5ODVFX26/runppuSfzqftBwjXDfaB0MEfFUbd7hx+/eZTg5F4haBuHslISKmColt8kLTLClRUj2AUoeN7MA6m4mPxY7oVN6MgB+0ahVywkctjhqkMbCM98DeWWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JOXzhROt; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1737042906; x=1768578906;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=obYy7duPHYvIurVcQ1b2tc4S9JxTXListwajIQv1jJc=;
-  b=JOXzhROtAFEM4Ypn7z3HOQ8+DomltiOvuMi66PUAkGy99UMz6k4vLnW8
-   nKd6Nd6INOK6vc9NKz/ddghW3QkcdOYO6sluHDBBbMNhmC5VWxuukZjAE
-   whe2FSRM7KQMLLUJq2gYLxAvP2ZTxJ4PjSQi1BiBMrjcSIZYnj1cRD/3k
-   7RuKjKW3haq+KwSV0tGwAukyBCznHEJwIIVbEU02cabJgfD1drtf0aeYz
-   359NeSP0C0iVMiuNUTNlzL+BHImY0mWZ2viR7O62NWYqITC4P0v4A1Dfv
-   RrZUcsDDgSZphpwZigWLbcMKeqf+aJFAzT89hLVc0a+CpLmrWLm370Qkp
-   w==;
-X-CSE-ConnectionGUID: a4MxHRzoRwCBY65wfLz3bg==
-X-CSE-MsgGUID: MqrfN0SxQCKh3voB5oKsXQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11317"; a="36715720"
-X-IronPort-AV: E=Sophos;i="6.13,209,1732608000"; 
-   d="scan'208";a="36715720"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2025 07:54:54 -0800
-X-CSE-ConnectionGUID: 2SOb9qA2RguSbXEBKF8uLA==
-X-CSE-MsgGUID: 3lQTy/WQTh+nLA/aU0nmuA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,209,1732608000"; 
-   d="scan'208";a="106113883"
-Received: from p12ill20yoongsia.png.intel.com ([10.88.227.38])
-  by fmviesa009.fm.intel.com with ESMTP; 16 Jan 2025 07:54:44 -0800
-From: Song Yoong Siang <yoong.siang.song@intel.com>
-To: "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Willem de Bruijn <willemb@google.com>,
-	Florian Bezdeka <florian.bezdeka@siemens.com>,
-	Donald Hunter <donald.hunter@gmail.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Bjorn Topel <bjorn@kernel.org>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>,
+	s=arc-20240116; t=1737043782; c=relaxed/simple;
+	bh=6r93PtDxADKddNEKMIl2n1KK6HOXUzLNWsnmppK99mA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aVNZUstGwQelTxTKRAxTLdJfv+TIRZRh5Xq2Kri/lOjCxNWKbha5GK+SiyRkzpvtuConKyvz/O3AKYtIy04mFSnAvxZUu6H/cjJ7aUTVcoYDhX8q4BSS5vfoWx5NYG7C0D0p9Bu9fvR8nsW+ZeeKCtn35cS6fE47ktbJqPLme/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=x9pgjSWt; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-21634338cfdso28254995ad.2
+        for <bpf@vger.kernel.org>; Thu, 16 Jan 2025 08:09:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1737043779; x=1737648579; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=o3SvrDu0caDhzdAVkyBr9gYgBKDDR95aZo/K9YBI7/c=;
+        b=x9pgjSWtwjVgsSC5qNmd77leknDz5rcQwbOWq1is71mOu02i6F/J54+wskLicLYhuF
+         63dTvt5WXJN/HIxlANSI0mU2OHK2XkLOU84qeEw8mKr0faX1z5bjMwSdLK+uA/y64Wb1
+         8utc+gb9dO/7YBxIe5AbO2a9/uADojuC/BX4M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737043779; x=1737648579;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=o3SvrDu0caDhzdAVkyBr9gYgBKDDR95aZo/K9YBI7/c=;
+        b=iBuacB9SdiX0cPxHb9NkLUxA/kEV3zfZEruXn2v2ettiRe7fBTyeBMO4/IgBUwiRfq
+         Le+WMy259lU6yop+wCuS+dsP7claMhtcxMTvjeSh3RkY2GqBIDNBUYYSHR1j9B5L4iRb
+         0970hTQOMdUxOPxOG2gqtUZ02qzI98aUXdePyl1DOVV4ntTTzpiiCZ1RRS1qlmEMcBXR
+         6Om0pzlyI+bzimNYjPkk4E6IZJM1ElJ40pAorSh1atZpHp1q3WSiPuxgfDbtmuh6AP8i
+         XWvGtCMLe0SAqUMvR5H6GEt3Jv1UbdRYln7gaU5T0haEbkYPFqKvCNcNnPmt1T0q0y4s
+         iPdg==
+X-Forwarded-Encrypted: i=1; AJvYcCUkfW93uB0VjqtgC4JG2VfF920Wckc1NDu/pUU25QbFW294zdU1hjMdufylicDy/NESNkA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxgHDvG2QlzNXEgzrGi2glxOUgh51a4ts2pzva6vdCJ7M2egGDZ
+	lpHeVk2XHKTj1F4BattHDT9Vb1bg5MjjI6vqk4ud2QkqX1wj8nHQkRuKgb+qM5w=
+X-Gm-Gg: ASbGncvNO9RH0t4cRejpBuQmKI44qJnGvOh9vYwG5Cb+81OmBGfYISWtM/hHDASLq35
+	RVCVptvnWh354QTLt/V8D9CPdxrAZPemnuxhrDZzJ3Jglaw89Fd8+hfB+3AsNbIpv9m5F9T03IN
+	vZrrtyfpNR5c/lCd3zp6ubWR2bggdTTb70euzZgkuRZACpVLeqYGKT80Rjwpvq+tz6DpS8pgm8a
+	RPtx+oBpPpzPvgEhNSY62c1rIbCKeyFByzDEZxS9dqpohywwGDR6QXyaJ/iE4MAylU=
+X-Google-Smtp-Source: AGHT+IFXQCdp082WWpGcpuSjSz2khkKE+kq+/Zwi6NgiDuGp4et1L72GBvo6pH6pxi/Ft6I0r1EIJg==
+X-Received: by 2002:a17:902:c408:b0:21a:8839:4f4d with SMTP id d9443c01a7336-21a88395835mr395241215ad.6.1737043779271;
+        Thu, 16 Jan 2025 08:09:39 -0800 (PST)
+Received: from LQ3V64L9R2 ([65.133.87.50])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-a9bdd02b954sm221289a12.52.2025.01.16.08.09.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jan 2025 08:09:38 -0800 (PST)
+Date: Thu, 16 Jan 2025 08:09:36 -0800
+From: Joe Damato <jdamato@fastly.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: gerhard@engleder-embedded.com, jasowang@redhat.com, leiyang@redhat.com,
+	mkarsten@uwaterloo.ca, "Michael S. Tsirkin" <mst@redhat.com>,
+	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
 	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Jesper Dangaard Brouer <hawk@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
-	Joe Damato <jdamato@fastly.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
+	"open list:VIRTIO CORE AND NET DRIVERS" <virtualization@lists.linux.dev>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v2 3/4] virtio_net: Map NAPIs to queues
+Message-ID: <Z4kvQI8GmmEGrq1F@LQ3V64L9R2>
+Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
 	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Mina Almasry <almasrymina@google.com>,
-	Daniel Jurgens <danielj@nvidia.com>,
-	Song Yoong Siang <yoong.siang.song@intel.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	intel-wired-lan@lists.osuosl.org,
-	xdp-hints@xdp-project.net
-Subject: [PATCH bpf-next v6 4/4] igc: Add launch time support to XDP ZC
-Date: Thu, 16 Jan 2025 23:53:50 +0800
-Message-Id: <20250116155350.555374-5-yoong.siang.song@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250116155350.555374-1-yoong.siang.song@intel.com>
-References: <20250116155350.555374-1-yoong.siang.song@intel.com>
+	gerhard@engleder-embedded.com, jasowang@redhat.com,
+	leiyang@redhat.com, mkarsten@uwaterloo.ca,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	"open list:VIRTIO CORE AND NET DRIVERS" <virtualization@lists.linux.dev>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>,
+	netdev@vger.kernel.org
+References: <20250116055302.14308-1-jdamato@fastly.com>
+ <20250116055302.14308-4-jdamato@fastly.com>
+ <1737013994.1861002-1-xuanzhuo@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1737013994.1861002-1-xuanzhuo@linux.alibaba.com>
 
-Enable Launch Time Control (LTC) support to XDP zero copy via XDP Tx
-metadata framework.
+On Thu, Jan 16, 2025 at 03:53:14PM +0800, Xuan Zhuo wrote:
+> On Thu, 16 Jan 2025 05:52:58 +0000, Joe Damato <jdamato@fastly.com> wrote:
+> > Use netif_queue_set_napi to map NAPIs to queue IDs so that the mapping
+> > can be accessed by user apps.
+> >
+> > $ ethtool -i ens4 | grep driver
+> > driver: virtio_net
+> >
+> > $ sudo ethtool -L ens4 combined 4
+> >
+> > $ ./tools/net/ynl/pyynl/cli.py \
+> >        --spec Documentation/netlink/specs/netdev.yaml \
+> >        --dump queue-get --json='{"ifindex": 2}'
+> > [{'id': 0, 'ifindex': 2, 'napi-id': 8289, 'type': 'rx'},
+> >  {'id': 1, 'ifindex': 2, 'napi-id': 8290, 'type': 'rx'},
+> >  {'id': 2, 'ifindex': 2, 'napi-id': 8291, 'type': 'rx'},
+> >  {'id': 3, 'ifindex': 2, 'napi-id': 8292, 'type': 'rx'},
+> >  {'id': 0, 'ifindex': 2, 'type': 'tx'},
+> >  {'id': 1, 'ifindex': 2, 'type': 'tx'},
+> >  {'id': 2, 'ifindex': 2, 'type': 'tx'},
+> >  {'id': 3, 'ifindex': 2, 'type': 'tx'}]
+> >
+> > Note that virtio_net has TX-only NAPIs which do not have NAPI IDs, so
+> > the lack of 'napi-id' in the above output is expected.
+> >
+> > Signed-off-by: Joe Damato <jdamato@fastly.com>
+> > ---
+> >  v2:
+> >    - Eliminate RTNL code paths using the API Jakub introduced in patch 1
+> >      of this v2.
+> >    - Added virtnet_napi_disable to reduce code duplication as
+> >      suggested by Jason Wang.
+> >
+> >  drivers/net/virtio_net.c | 34 +++++++++++++++++++++++++++++-----
+> >  1 file changed, 29 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > index cff18c66b54a..c6fda756dd07 100644
+> > --- a/drivers/net/virtio_net.c
+> > +++ b/drivers/net/virtio_net.c
+> > @@ -2803,9 +2803,18 @@ static void virtnet_napi_do_enable(struct virtqueue *vq,
+> >  	local_bh_enable();
+> >  }
+> >
+> > -static void virtnet_napi_enable(struct virtqueue *vq, struct napi_struct *napi)
+> > +static void virtnet_napi_enable(struct virtqueue *vq,
+> > +				struct napi_struct *napi)
+> >  {
+> > +	struct virtnet_info *vi = vq->vdev->priv;
+> > +	int q = vq2rxq(vq);
+> > +	u16 curr_qs;
+> > +
+> >  	virtnet_napi_do_enable(vq, napi);
+> > +
+> > +	curr_qs = vi->curr_queue_pairs - vi->xdp_queue_pairs;
+> > +	if (!vi->xdp_enabled || q < curr_qs)
+> > +		netif_queue_set_napi(vi->dev, q, NETDEV_QUEUE_TYPE_RX, napi);
+> 
+> So what case the check of xdp_enabled is for?
 
-This patch is tested with tools/testing/selftests/bpf/xdp_hw_metadata on
-Intel I225-LM Ethernet controller. Below are the test steps and result.
+Based on a previous discussion [1], the NAPIs should not be linked
+for in-kernel XDP, but they _should_ be linked for XSK.
 
-Test Steps:
-1. At DUT, start xdp_hw_metadata selftest application:
-   $ sudo ./xdp_hw_metadata enp2s0 -l 1000000000 -L 1
+I could certainly have misread the virtio_net code (please let me
+know if I've gotten it wrong, I'm not an expert), but the three
+cases I have in mind are:
 
-2. At Link Partner, send an UDP packet with VLAN priority 1 to port 9091 of
-   DUT.
+  - vi->xdp_enabled = false, which happens when no XDP is being
+    used, so the queue number will be < vi->curr_queue_pairs.
 
-When launch time is set to 1s in the future, the delta between launch time
-and transmit hardware timestamp is equal to 0.016us, as shown in result
-below:
-  0x562ff5dc8880: rx_desc[4]->addr=84110 addr=84110 comp_addr=84110 EoP
-  rx_hash: 0xE343384 with RSS type:0x1
-  HW RX-time:   1734578015467548904 (sec:1734578015.4675) delta to User RX-time sec:0.0002 (183.103 usec)
-  XDP RX-time:   1734578015467651698 (sec:1734578015.4677) delta to User RX-time sec:0.0001 (80.309 usec)
-  No rx_vlan_tci or rx_vlan_proto, err=-95
-  0x562ff5dc8880: ping-pong with csum=561c (want c7dd) csum_start=34 csum_offset=6
-  HW RX-time:   1734578015467548904 (sec:1734578015.4675) delta to HW Launch-time sec:1.0000 (1000000.000 usec)
-  0x562ff5dc8880: complete tx idx=4 addr=4018
-  HW Launch-time:   1734578016467548904 (sec:1734578016.4675) delta to HW TX-complete-time sec:0.0000 (0.016 usec)
-  HW TX-complete-time:   1734578016467548920 (sec:1734578016.4675) delta to User TX-complete-time sec:0.0000 (32.546 usec)
-  XDP RX-time:   1734578015467651698 (sec:1734578015.4677) delta to User TX-complete-time sec:0.9999 (999929.768 usec)
-  HW RX-time:   1734578015467548904 (sec:1734578015.4675) delta to HW TX-complete-time sec:1.0000 (1000000.016 usec)
-  0x562ff5dc8880: complete rx idx=132 addr=84110
+  - vi->xdp_enabled = false, which I believe is what happens in the
+    XSK case. In this case, the NAPI is linked.
 
-Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
----
- drivers/net/ethernet/intel/igc/igc_main.c | 78 ++++++++++++++++-------
- 1 file changed, 56 insertions(+), 22 deletions(-)
+  - vi->xdp_enabled = true, which I believe only happens for
+    in-kernel XDP - but not XSK - and in this case, the NAPI should
+    NOT be linked.
 
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index 27872bdea9bd..6857f5f5b4b2 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -1566,6 +1566,26 @@ static bool igc_request_tx_tstamp(struct igc_adapter *adapter, struct sk_buff *s
- 	return false;
- }
- 
-+static void igc_insert_empty_packet(struct igc_ring *tx_ring)
-+{
-+	struct igc_tx_buffer *empty_info;
-+	struct sk_buff *empty;
-+	void *data;
-+
-+	empty_info = &tx_ring->tx_buffer_info[tx_ring->next_to_use];
-+	empty = alloc_skb(IGC_EMPTY_FRAME_SIZE, GFP_ATOMIC);
-+	if (!empty)
-+		return;
-+
-+	data = skb_put(empty, IGC_EMPTY_FRAME_SIZE);
-+	memset(data, 0, IGC_EMPTY_FRAME_SIZE);
-+
-+	igc_tx_ctxtdesc(tx_ring, 0, false, 0, 0, 0);
-+
-+	if (igc_init_tx_empty_descriptor(tx_ring, empty, empty_info) < 0)
-+		dev_kfree_skb_any(empty);
-+}
-+
- static netdev_tx_t igc_xmit_frame_ring(struct sk_buff *skb,
- 				       struct igc_ring *tx_ring)
- {
-@@ -1603,26 +1623,8 @@ static netdev_tx_t igc_xmit_frame_ring(struct sk_buff *skb,
- 	skb->tstamp = ktime_set(0, 0);
- 	launch_time = igc_tx_launchtime(tx_ring, txtime, &first_flag, &insert_empty);
- 
--	if (insert_empty) {
--		struct igc_tx_buffer *empty_info;
--		struct sk_buff *empty;
--		void *data;
--
--		empty_info = &tx_ring->tx_buffer_info[tx_ring->next_to_use];
--		empty = alloc_skb(IGC_EMPTY_FRAME_SIZE, GFP_ATOMIC);
--		if (!empty)
--			goto done;
--
--		data = skb_put(empty, IGC_EMPTY_FRAME_SIZE);
--		memset(data, 0, IGC_EMPTY_FRAME_SIZE);
--
--		igc_tx_ctxtdesc(tx_ring, 0, false, 0, 0, 0);
--
--		if (igc_init_tx_empty_descriptor(tx_ring,
--						 empty,
--						 empty_info) < 0)
--			dev_kfree_skb_any(empty);
--	}
-+	if (insert_empty)
-+		igc_insert_empty_packet(tx_ring);
- 
- done:
- 	/* record the location of the first descriptor for this packet */
-@@ -2955,9 +2957,33 @@ static u64 igc_xsk_fill_timestamp(void *_priv)
- 	return *(u64 *)_priv;
- }
- 
-+static void igc_xsk_request_launch_time(u64 launch_time, void *_priv)
-+{
-+	struct igc_metadata_request *meta_req = _priv;
-+	struct igc_ring *tx_ring = meta_req->tx_ring;
-+	__le32 launch_time_offset;
-+	bool insert_empty = false;
-+	bool first_flag = false;
-+
-+	if (!tx_ring->launchtime_enable)
-+		return;
-+
-+	launch_time_offset = igc_tx_launchtime(tx_ring,
-+					       ns_to_ktime(launch_time),
-+					       &first_flag, &insert_empty);
-+	if (insert_empty) {
-+		igc_insert_empty_packet(tx_ring);
-+		meta_req->tx_buffer =
-+			&tx_ring->tx_buffer_info[tx_ring->next_to_use];
-+	}
-+
-+	igc_tx_ctxtdesc(tx_ring, launch_time_offset, first_flag, 0, 0, 0);
-+}
-+
- const struct xsk_tx_metadata_ops igc_xsk_tx_metadata_ops = {
- 	.tmo_request_timestamp		= igc_xsk_request_timestamp,
- 	.tmo_fill_timestamp		= igc_xsk_fill_timestamp,
-+	.tmo_request_launch_time	= igc_xsk_request_launch_time,
- };
- 
- static void igc_xdp_xmit_zc(struct igc_ring *ring)
-@@ -2980,7 +3006,7 @@ static void igc_xdp_xmit_zc(struct igc_ring *ring)
- 	ntu = ring->next_to_use;
- 	budget = igc_desc_unused(ring);
- 
--	while (xsk_tx_peek_desc(pool, &xdp_desc) && budget--) {
-+	while (xsk_tx_peek_desc(pool, &xdp_desc) && budget >= 4) {
- 		struct igc_metadata_request meta_req;
- 		struct xsk_tx_metadata *meta = NULL;
- 		struct igc_tx_buffer *bi;
-@@ -3004,6 +3030,12 @@ static void igc_xdp_xmit_zc(struct igc_ring *ring)
- 		xsk_tx_metadata_request(meta, &igc_xsk_tx_metadata_ops,
- 					&meta_req);
- 
-+		/* xsk_tx_metadata_request() may have updated next_to_use */
-+		ntu = ring->next_to_use;
-+
-+		/* xsk_tx_metadata_request() may have updated Tx buffer info */
-+		bi = meta_req.tx_buffer;
-+
- 		tx_desc = IGC_TX_DESC(ring, ntu);
- 		tx_desc->read.cmd_type_len = cpu_to_le32(meta_req.cmd_type);
- 		tx_desc->read.olinfo_status = cpu_to_le32(olinfo_status);
-@@ -3021,9 +3053,11 @@ static void igc_xdp_xmit_zc(struct igc_ring *ring)
- 		ntu++;
- 		if (ntu == ring->count)
- 			ntu = 0;
-+
-+		ring->next_to_use = ntu;
-+		budget = igc_desc_unused(ring);
- 	}
- 
--	ring->next_to_use = ntu;
- 	if (tx_desc) {
- 		igc_flush_tx_descriptors(ring);
- 		xsk_tx_release(pool);
--- 
-2.34.1
+Thank you for your review and questions about this, I definitely
+want to make sure I've gotten it right :)
 
+> And I think we should merge this to last commit.
+
+I kept them separate for two reasons:
+  1. Easier to review :)
+  2. If a bug were to appear, it'll be easier to bisect the code to
+     determine if the bug is being caused either from linking the
+     queues to NAPIs or from adding support for persistent NAPI
+     config parameters.
+
+Having the two features separated makes it easier to understand and
+fix, as there have been minor bugs in other drivers with NAPI config
+[2].
+
+[1]: https://lore.kernel.org/netdev/20250113135609.13883897@kernel.org/
+[2]: https://lore.kernel.org/lkml/38d019dd-b876-4fc1-ba7e-f1eb85ad7360@nvidia.com/
 
