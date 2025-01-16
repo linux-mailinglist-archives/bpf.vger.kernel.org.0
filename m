@@ -1,149 +1,462 @@
-Return-Path: <bpf+bounces-49129-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49130-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AB92A14565
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 00:20:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C60CA14566
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 00:21:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C9C516BA44
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 23:20:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 040EC16BC53
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 23:20:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B9C241688;
-	Thu, 16 Jan 2025 23:18:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0D67244F83;
+	Thu, 16 Jan 2025 23:19:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TRx4kore"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XQ/BfoFD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 243EB2361D6
-	for <bpf@vger.kernel.org>; Thu, 16 Jan 2025 23:18:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 407D72442E8;
+	Thu, 16 Jan 2025 23:19:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737069520; cv=none; b=VGOUsS38HcNmpwNxH1ZpWbs0IY6WHbP+HeVfmAJiYYwDm5epKUgdOgbR/sp4nttUeG6dON+yj2I7Yy3Y2tMhXlOnedonxnNUfyY5SbOMqCezwv+8mxVeNTMQs43wC2qD8B6TSWTGnvwjWFuuOXUH+HdeX1lTL3nW1arl2qBJLL0=
+	t=1737069562; cv=none; b=mXfLV6/K1t4P5B7at4zd/jnyS4EXsF/r7lCX6cBu0vCclfLgBmR6o8zfvmqRAQpnLCXS7oGA8W1xFlOkQ7ti6mccbGswCwZy6mZNRTbUmKgvqWFvDy8EhPGG7sn/gKebk7rmV3CnP6KVW2JYxAO0ojANCSb7SZhYDEcXo8+heS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737069520; c=relaxed/simple;
-	bh=7SUjvQlKnFxpl0lL2ixtHe0v6c+fIxnnn+lSHqCoQt8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=C5/otxCK60shhF2bRMJaU/bcGfRlSezPGC+PejUEr4MmwZKnhH04ZFPIy06V60x8cTg+BCCzPawYUlpuMLHKDmA5Fk33RhBuRtEUJKmuduUBKsZVMtZOL8hQsJZgVowRpaN8hVIq9e+7iTDOvEq5Jn8bQYPDpJi/2MAdzHLNxAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TRx4kore; arc=none smtp.client-ip=209.85.214.177
+	s=arc-20240116; t=1737069562; c=relaxed/simple;
+	bh=xMAqRHryI/rwucVGtdZ17LFpwg086brv2Et5qs6FV10=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Rj8k2J6gf2crl/7W+sANEsiAB7orJmAm5lo7q5difPqmgokY+781XLnKNpQNL2TawvLYxOG4/GRBVM2wM/NOHA88M43tG65jMGeaqIil2S3Mt0sJwDYsTi5L99zkru9oMtgUazTXhPaIK1wSC3dPPeKocMJ2DxCfBalKWeHPKto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XQ/BfoFD; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-21631789fcdso33644115ad.1
-        for <bpf@vger.kernel.org>; Thu, 16 Jan 2025 15:18:39 -0800 (PST)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2ee51f8c47dso2177979a91.1;
+        Thu, 16 Jan 2025 15:19:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737069518; x=1737674318; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=P8nGCgo764qf3TsXqf9RZU/1CnZzd5SCT221NSAfL1o=;
-        b=TRx4koredan5UTOAKIwJRHuZSJPuXZeld2sHX0SHy33awSql7XPg6i2PsZvdKW6KSt
-         KPQM7QZoRz3k2gNM3YU330YQkTodD4+7TQ0ZudTZbtNVfAiAJx03pb2M1VEDrUKZK2nX
-         TY4AwhcrMa+1C5xsyehcBdLTyW4Xt9jpG4vuwUqY6jIFTETzMgAFXfAbMiTfo7qEHxFv
-         LAFasrgi0tAZ4iW6p7QupcEteXL98Z/zXuQBdOBNlxgU6B5rPjJLHiTVfjZqhDt9j66v
-         A06AQv7nsKqXRQnnV9qEiY7A5eDkc2oz89vslBC3JO4wQzjK3zL09JL+VFW2gt8AenvY
-         WQTA==
+        d=gmail.com; s=20230601; t=1737069559; x=1737674359; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RHGQnPZwnnrXcQFPANQYOEEHzigbTEMvtEMeH0+F998=;
+        b=XQ/BfoFDk2NIn+llxIo+VeU6v0ma0U9PtSigi492bac99YlbGs8IjxgnAcBfR9/DIJ
+         cvtqyrQ7hp5Z1DtJV9cIIk6YxM3vu0Td17M7Xr2p1Jv8j9BsDnp3dAPv8EiFtnd5HwMC
+         kufl3F8nHEXgaVoHS7cSWJiWD+HWkdDFjuF237+h0xYpof1FkXk3DBzbBlVEY8KRaSMM
+         LNIBxp5i0jBLy6chWPdezdu7Yg9fHgna23Bl2KBwJnTKfzRgMOdjCiEjnL2XqYQ1IanW
+         gV3B7LoHcfD+SYSEm++4iH33BUzqDCBZY5GsFIRCyYZ8g3fsJGgS1EsxSRNsKW4nwUti
+         dpqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737069518; x=1737674318;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P8nGCgo764qf3TsXqf9RZU/1CnZzd5SCT221NSAfL1o=;
-        b=xMVe0EXZGzUehmmnxFvhfRiPKfy6ai3QRvYpib2ED25y+Fy/pjN0bPHvYrM8s/2WL3
-         qn1ILwxSJEhH7OocuHiYmpOPreb3PgJIqQiJpS/11Gv/yhysT5xWXfNLwPgDKwFZIQ0N
-         ainILX1KPbvA8edEYPeNoerX4q5/BVqryOKxXm6+vCr4EbSFQBwTkFYn/4r/xQtmYxtk
-         SY6nen0V006XIJBQnNffOb6XT4SwThkeHvToqBXrXhYxwQmFNQztX0DDH+LXXJpOUO2E
-         aqMO3ty+Ka9Qk3iKlo1QwZitXYHfccWJExOpHO79zcCs1YJPL2YJBZ4SEuv/Z3+figBx
-         VEWA==
-X-Gm-Message-State: AOJu0YypyMMd5eOvhcnUEwCrrAYepEwEYf6gQKHaCagPUCRQWq+8mKyK
-	+OlwcSp+R3I/3oZ/J0u0GvwHKlHtzArjR4gh99O+8xiFtRYpnPwp
-X-Gm-Gg: ASbGncsT3TUij7xRsZz0oA4ybkXd5gdvdBzFyhlKLvt4DnplkaAwmK7vyS/NVDW9HH5
-	/REhi8eV7YQfs0Rig7MFbLqLxW2Yw+pD8lE5sWNI64YH+t3xlxDGUbf+0fblFp+0RqIXNkQrGG/
-	TwvcCni/Wz3CqnpONmau2S7UrpcHsfh/rEnEwfnHy7Qglg3chRG/rjxOZ3HRe7gS3uxZFv++x6C
-	GHr20+55BZkQDSte/GOBZN9DVSb5YDVod7WVlsC5gEq/Row/LT23Q==
-X-Google-Smtp-Source: AGHT+IHaWn1RHknaKeKJiZRr3rcjQD+/eCx69j1Qh/J+WDoGa4Oqhd/6+UT2w9D8rU2lguiM4r5UOg==
-X-Received: by 2002:a05:6a00:858b:b0:725:f1e9:5334 with SMTP id d2e1a72fcca58-72d8c756d22mr14710095b3a.8.1737069518451;
-        Thu, 16 Jan 2025 15:18:38 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72dab9b9ae0sm554158b3a.93.2025.01.16.15.18.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jan 2025 15:18:37 -0800 (PST)
-Message-ID: <39fd5e3ffdf54483bafab59abb9183275f558177.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1] veristat: load struct_ops programs only once
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, 	martin.lau@linux.dev, kernel-team@fb.com,
- yonghong.song@linux.dev, 	yatsenko@meta.com
-Date: Thu, 16 Jan 2025 15:18:32 -0800
-In-Reply-To: <CAEf4BzYctSGEU3jELirr50W3Mxf0zBt6s2GpCSsdjDY6bva0Tw@mail.gmail.com>
-References: <20250115223835.919989-1-eddyz87@gmail.com>
-	 <CAEf4BzYctSGEU3jELirr50W3Mxf0zBt6s2GpCSsdjDY6bva0Tw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.2 (3.54.2-1.fc41) 
+        d=1e100.net; s=20230601; t=1737069559; x=1737674359;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RHGQnPZwnnrXcQFPANQYOEEHzigbTEMvtEMeH0+F998=;
+        b=RJXJXMS/2Q+PkayQ+L24gpMkoC0CMxHUioMSC/rAXVxOEBgOoW0teo/ppqvLpONDbD
+         QoPJXIMyJ4ob3FHsRIlIpgsnR19tFuNpnla+gSmZ3YfCRWlhkQfJNlBnBjQAPpNixUHz
+         qWldGyfiE355256480nPwHWIFn2S00Oeb6W7NqeHkjWFCHixSg1KkjpW+fqmquIt0HgC
+         +dTXn/W4cNKQJIn1KZC4Tl3IapK7Zt1svMrSfkLwOOd13Or0SxjVS+Wls5e7jTdzILac
+         HAml/vngu846xuUlhn3xSqH7iMf/1L7exYz9RPcL77DR4jBsxNXDxKQwW3aX+J8sBphz
+         NbOg==
+X-Forwarded-Encrypted: i=1; AJvYcCUQ8Ig5c7UQzgW8mCu9JT5jEeb1jkZLyg1lFYhXhYov4AUbEkxJBacxHEvQLSPV/9m9t2BoBB+tnZ9Z6vhG/JLE@vger.kernel.org, AJvYcCVmV1MQL47y2PJsJm/joSOT2doc2TBEzBoi4eEoVbB735n8OeJjku6mLef4TlFME5nRB+2Qb5Pyl80uXh0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzW9U5ClYflPgoraKVM5fF1ovuXJL/wCbt0gmM//12jKJQFCVE5
+	Vt0YymcSka4MJbw0hCvPdT7yIkphTFDF4PT8yHd2l+LKMjoGOcwXjYAobOceVtCoVGLOI1MlbIr
+	z1/EepGDjbFPJ8CS2NFHkliOwOzk=
+X-Gm-Gg: ASbGncuJydVhwWHQZAP1LqUD7/mJeVRYH5aN7qagXBbtz1Jxcp7Uwm+ycV382XyQIt/
+	LODleNp2s/mnidKvJDVvdzuJKTsYBDz2Q522s
+X-Google-Smtp-Source: AGHT+IGdB59zqZcx9zNHpctB8/u29yWsIw4wdxVo0VhEeDLjYx9weQ1IRHWB3Z+xwYjbx7rQHhPCDirbip6eEFkmdlk=
+X-Received: by 2002:a17:90b:2751:b0:2ee:f440:53ed with SMTP id
+ 98e67ed59e1d1-2f782d9a1d5mr547669a91.31.1737069559453; Thu, 16 Jan 2025
+ 15:19:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20241104050007.13812-1-skb99@linux.ibm.com> <20241104050007.13812-3-skb99@linux.ibm.com>
+ <CAEf4BzZ9Bz8a_hY-jDkqaYg6Phi9bjvoxbBeVZqcgjYXg4a-mA@mail.gmail.com>
+ <Zz33lM0rTJBZpaJR@linux.ibm.com> <CAEf4Bzbek6CYbx5Atz_xwwx5J3gC1ELdVmW-kFrrR=CWNLMyBA@mail.gmail.com>
+ <Z4D7Qx6pQEZ/bHDa@linux.ibm.com> <CAEf4BzaEwvP-eVd=AWzvXPCfVCa5m0BKCe6q9tE5fT7VCAVDmA@mail.gmail.com>
+ <Z4LMPn4u+l1qIi9T@linux.ibm.com> <CAEf4BzZbfc2o0hVnXVQ1vegMGhM8h76F2aGVske3wd8hFQeM+g@mail.gmail.com>
+ <Z4fDBSvtJ+jgm05+@linux.ibm.com>
+In-Reply-To: <Z4fDBSvtJ+jgm05+@linux.ibm.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 16 Jan 2025 15:19:07 -0800
+X-Gm-Features: AbW1kvYFrD4g7WVNyHpQiXv1zNzkyE3H-9-MvMjUgn4VSXhcSZTnrTWqKa3QCb0
+Message-ID: <CAEf4BzY9TQBb8Y0PqRB1SeC742qw_vYX2KVgg4bH5dsaQrfQJA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] libbpf: Remove powerpc prefix from syscall function names
+To: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, ast@kernel.org, hbathini@linux.ibm.com, 
+	andrii@kernel.org, maddy@linux.ibm.com, mpe@ellerman.id.au, 
+	daniel@iogearbox.net, martin.lau@linux.dev, eddyz87@gmail.com, 
+	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
+	shuah@kernel.org, mykolal@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2025-01-16 at 15:15 -0800, Andrii Nakryiko wrote:
+On Wed, Jan 15, 2025 at 6:16=E2=80=AFAM Saket Kumar Bhaskar <skb99@linux.ib=
+m.com> wrote:
+>
+> On Tue, Jan 14, 2025 at 02:40:20PM -0800, Andrii Nakryiko wrote:
+> > On Sat, Jan 11, 2025 at 11:53=E2=80=AFAM Saket Kumar Bhaskar
+> > <skb99@linux.ibm.com> wrote:
+> > >
+> > > CCing Maddy and MPE
+> > > On Fri, Jan 10, 2025 at 02:29:42PM -0800, Andrii Nakryiko wrote:
+> > > > On Fri, Jan 10, 2025 at 2:49=E2=80=AFAM Saket Kumar Bhaskar <skb99@=
+linux.ibm.com> wrote:
+> > > > >
+> > > > > On Thu, Nov 21, 2024 at 04:00:13PM -0800, Andrii Nakryiko wrote:
+> > > > > > On Wed, Nov 20, 2024 at 6:52=E2=80=AFAM Saket Kumar Bhaskar <sk=
+b99@linux.ibm.com> wrote:
+> > > > > > >
+> > > > > > > On Fri, Nov 08, 2024 at 10:43:54AM -0800, Andrii Nakryiko wro=
+te:
+> > > > > > > > On Sun, Nov 3, 2024 at 9:00=E2=80=AFPM Saket Kumar Bhaskar =
+<skb99@linux.ibm.com> wrote:
+> > > > > > > > >
+> > > > > > > > > Since commit 94746890202cf ("powerpc: Don't add __powerpc=
+_ prefix to
+> > > > > > > > > syscall entry points") drops _powerpc prefix to syscall e=
+ntry points,
+> > > > > > > > > even though powerpc now supports syscall wrapper, so /pro=
+c/kallsyms
+> > > > > > > > > have symbols for syscall entry without powerpc prefix(sys=
+_*).
+> > > > > > > > >
+> > > > > > > > > For this reason, arch specific prefix for syscall functio=
+ns in powerpc
+> > > > > > > > > is dropped.
+> > > > > > > > >
+> > > > > > > > > Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+> > > > > > > > > ---
+> > > > > > > > >  tools/lib/bpf/libbpf.c | 12 +++++++++---
+> > > > > > > > >  1 file changed, 9 insertions(+), 3 deletions(-)
+> > > > > > > > >
+> > > > > > > > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbp=
+f.c
+> > > > > > > > > index 219facd0e66e..3a370fa37d8a 100644
+> > > > > > > > > --- a/tools/lib/bpf/libbpf.c
+> > > > > > > > > +++ b/tools/lib/bpf/libbpf.c
+> > > > > > > > > @@ -11110,9 +11110,7 @@ static const char *arch_specific_=
+syscall_pfx(void)
+> > > > > > > > >  #elif defined(__riscv)
+> > > > > > > > >         return "riscv";
+> > > > > > > > >  #elif defined(__powerpc__)
+> > > > > > > > > -       return "powerpc";
+> > > > > > > > > -#elif defined(__powerpc64__)
+> > > > > > > > > -       return "powerpc64";
+> > > > > > > > > +       return "";
+> > > > > > > > >  #else
+> > > > > > > > >         return NULL;
+> > > > > > > > >  #endif
+> > > > > > > > > @@ -11127,7 +11125,11 @@ int probe_kern_syscall_wrapper(i=
+nt token_fd)
+> > > > > > > > >         if (!ksys_pfx)
+> > > > > > > > >                 return 0;
+> > > > > > > > >
+> > > > > > > > > +#if defined(__powerpc__)
+> > > > > > > > > +       snprintf(syscall_name, sizeof(syscall_name), "sys=
+_bpf");
+> > > > > > > > > +#else
+> > > > > > > > >         snprintf(syscall_name, sizeof(syscall_name), "__%=
+s_sys_bpf", ksys_pfx);
+> > > > > > > > > +#endif
+> > > > > > > >
+> > > > > > > > The problem is that on older versions of kernel it will hav=
+e this
+> > > > > > > > prefix, while on newer ones it won't. So to not break anyth=
+ing on old
+> > > > > > > > kernels, we'd need to do feature detection and pick whether=
+ to use
+> > > > > > > > prefix or not, right?
+> > > > > > > >
+> > > > > > > > So it seems like this change needs a bit more work.
+> > > > > > > >
+> > > > > > > > pw-bot: cr
+> > > > > > > >
+> > > > > > > Hi Andrii,
+> > > > > > >
+> > > > > > > IMO since both the patches 7e92e01b7245(powerpc: Provide sysc=
+all wrapper)
+> > > > > > > and 94746890202cf(powerpc: Don't add __powerpc_ prefix to sys=
+call entry points)
+> > > > > > > went into the same kernel version v6.1-rc1, there won't me mu=
+ch kernel
+> > > > > > > versions that has only one of these patches.
+> > > > > > >
+> > > > > > > Also, to test more I tried this patch with ARCH_HAS_SYSCALL_W=
+RAPPER disabled,
+> > > > > > > and it the test passed in this case too.
+> > > > > > >
+> > > > > >
+> > > > > > Keep in mind that libbpf is supposed to work across many kernel
+> > > > > > versions. So as long as there are powerpc (old) kernels that do=
+ use
+> > > > > > arch-specific prefix, we need to detect them and supply prefix =
+when
+> > > > > > attaching ksyscall programs.
+> > > > > >
+> > > > > Hi Andrii,
+> > > > >
+> > > > > Sorry about the delayed response, I have started looking at this =
+after
+> > > > > a vacation.
+> > > > >
+> > > > > There are unlikely to be any old kernels that use arch-specific p=
+refix
+> > > > > as syscall wrapper support was added to powerpc in v6.1 and
+> > > > > commit 94746890202cf that dropped the prefix also went into the s=
+ame
+> > > > > kernel release (v6.1-rc1). So, is it worth it support both sys_bp=
+f and
+> > > > > __powerpc_sys_bpf cases?
+> > > > >
+> > > > > But yes, there can be a kernel without syscall wrapper but having=
+ the
+> > > > > sys_bpf symbol. So, how about identifying syscall wrapper enablem=
+ent
+> > > > > with __se_sys_bpf instead:
+> > > > >
+> > > > >
+> > > > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > > > index 66173ddb5a2d..ff69a30cfe9b 100644
+> > > > > --- a/tools/lib/bpf/libbpf.c
+> > > > > +++ b/tools/lib/bpf/libbpf.c
+> > > > > @@ -11163,11 +11163,15 @@ int probe_kern_syscall_wrapper(int toke=
+n_fd)
+> > > > >         char syscall_name[64];
+> > > > >         const char *ksys_pfx;
+> > > > >
+> > > > > +#if defined(__powerpc__)
+> > > > > +       snprintf(syscall_name, sizeof(syscall_name), "__se_sys_bp=
+f", ksys_pfx);
+> > > > > +#else
+> > > > >         ksys_pfx =3D arch_specific_syscall_pfx();
+> > > > >         if (!ksys_pfx)
+> > > > >                 return 0;
+> > > > >
+> > > > >         snprintf(syscall_name, sizeof(syscall_name), "__%s_sys_bp=
+f", ksys_pfx);
+> > > > > +#endif
+> > > > >
+> > > > >         if (determine_kprobe_perf_type() >=3D 0) {
+> > > > >                 int pfd;
+> > > > > @@ -11176,16 +11180,28 @@ int probe_kern_syscall_wrapper(int toke=
+n_fd)
+> > > > >                 if (pfd >=3D 0)
+> > > > >                         close(pfd);
+> > > > >
+> > > > > +#if defined(__powerpc__)
+> > > > >                 return pfd >=3D 0 ? 1 : 0;
+> > > > > +#else
+> > > > > +               return pfd >=3D 0 ? 1 : 0;
+> > > > > +#endif
+> > > > >         } else { /* legacy mode */
+> > > > >                 char probe_name[128];
+> > > > >
+> > > > >                 gen_kprobe_legacy_event_name(probe_name, sizeof(p=
+robe_name), syscall_name, 0);
+> > > > >                 if (add_kprobe_event_legacy(probe_name, false, sy=
+scall_name, 0) < 0)
+> > > > > +#if defined(__powerpc__)
+> > > > > +                       return 1;
+> > > > > +#else
+> > > > >                         return 0;
+> > > > > +#endif
+> > > > >
+> > > > >                 (void)remove_kprobe_event_legacy(probe_name, fals=
+e);
+> > > > > +#if defined(__powerpc__)
+> > > > > +               return 0;
+> > > > > +#else
+> > > > >                 return 1;
+> > > > > +#endif
+> > > > >         }
+> > > > >  }
+> > > > >
+> > > > > Actually, all architectures could use this '__se_' prefix instead=
+ of
+> > > > > arch specific prefix  to identify if syscall wrapper is enabled.
+> > > > > Separate way to handle powerpc case may not be needed. Will
+> > > > > wait for your inputs to send v2.
+> > > >
+> > > > the problem is that __se_sys_bpf is not traceable (it's a static
+> > > > function), so it seems like this won't work
+> > > >
+> > > >
+> > > > it's been a while, let me try to clarify my understanding of the
+> > > > issue. The problem is that powerpc is special in that when syscall
+> > > > wrapper is used, then, unlike all other architectures, they opted t=
+o
+> > > > not have arch-specific prefix for syscall wrappers, is that right? =
+and
+> > > > that's why all the dancing you are trying to add. Am I right?
+> > > >
+> > > Yes, you got it right. For more details, you can refer to the
+> > > reasoning behind the change here:
+> > > https://github.com/torvalds/linux/commit/94746890202cf
+> >
+> > That was an unfortunate decision to deviate :(
+> >
+> > Alright, so where are we? We can't do __se_<syscall> approach, but we
+> > need to have some reliable way to determine whether powerpc uses
+> > syscall wrapper. Can you please summarize available options for
+> > powerpc? Sorry, it's been a while, so we need to re-page in all the
+> > context.
+> >
+> Hi Andrii,
+>
+> 1. On powerpc we are able to set kprobe on __se_sys_bpf, we are thinking =
+to
+>    use this to check if syscall wrapper is enabled.
 
-[...]
+I'm not trying to be difficult, but what does guarantee that this is
+always the case. I'm looking at this:
 
-> > +/* Make sure only target program is referenced from struct_ops map,
-> > + * otherwise libbpf would automatically set autocreate for all
-> > + * referenced programs.
-> > + * See libbpf.c:bpf_object_adjust_struct_ops_autoload.
-> > + */
-> > +static void mask_unrelated_struct_ops_progs(struct bpf_object *obj,
-> > +                                           struct bpf_map *map,
-> > +                                           struct bpf_program *prog)
-> > +{
-> > +       struct btf *btf =3D bpf_object__btf(obj);
-> > +       const struct btf_type *t, *mt;
-> > +       struct btf_member *m;
-> > +       int i, ptr_sz, moff;
-> > +       size_t data_sz;
-> > +       void *data;
-> > +
-> > +       t =3D btf__type_by_id(btf, bpf_map__btf_value_type_id(map));
-> > +       if (!btf_is_struct(t))
-> > +               return;
-> > +
-> > +       data =3D bpf_map__initial_value(map, &data_sz);
-> > +       ptr_sz =3D min(btf__pointer_size(btf), sizeof(void *));
->=20
-> btf__pointer_size() for .bpf.o should always be 8, so this min is
-> pointless, I think. I can simplify to just ptr_sz =3D sizeof(void *)
-> while applying, if you agree. Let me know.
+static long __se_sys##name(__MAP(x,__SC_LONG,__VA_ARGS__))
 
-I wanted to be pedantic, but am ok if you prefer to switch it to
-'ptr_sz =3D sizeof(void *)'. Can send v2, or if you change it when
-applying, that would be great.
+in arch/powerpc/include/asm/syscall_wrapper.h
 
->=20
-> Other than that looks good.
->=20
-> > +       for (i =3D 0; i < btf_vlen(t); i++) {
-> > +               m =3D &btf_members(t)[i];
-> > +               mt =3D btf__type_by_id(btf, m->type);
-> > +               if (!btf_is_ptr(mt))
-> > +                       continue;
-> > +               moff =3D m->offset / 8;
-> > +               if (moff + ptr_sz > data_sz)
-> > +                       continue;
-> > +               if (memcmp(data + moff, &prog, ptr_sz) =3D=3D 0)
-> > +                       continue;
-> > +               memset(data + moff, 0, ptr_sz);
-> > +       }
-> > +}
-> > +
+It's static, so it's up to the compiler to decide whether to inline
+this function or not. Once inlined, it's effectively not there.
 
-[...]
-
+>
+> Snippet from kernel where syscall wrapper wasn't there for powerpc:
+>
+> # uname -r
+> 6.0.0
+>
+> # cat kprobe_events
+> p:kprobes/p_kprobe2_user_events_osquery netlink_ack
+> r64:kprobes/r_kprobe_user_events_osquery audit_receive
+> p:kprobes/p_kprobe_user_events_osquery audit_receive
+> p:kprobes/my_probe __se_sys_bpf
+>
+> # cat trace
+> # tracer: nop
+> #
+> # entries-in-buffer/entries-written: 20/20   #P:64
+> #
+> #                                _-----=3D> irqs-off/BH-disabled
+> #                               / _----=3D> need-resched
+> #                              | / _---=3D> hardirq/softirq
+> #                              || / _--=3D> preempt-depth
+> #                              ||| / _-=3D> migrate-disable
+> #                              |||| /     delay
+> #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
+> #              | |         |   |||||     |         |
+>       test_progs-1971    [034] .....   532.732614: my_probe: (sys_bpf+0xc=
+/0x40)
+>       test_progs-1971    [034] .....   532.732843: my_probe: (sys_bpf+0xc=
+/0x40)
+>       test_progs-1971    [034] .....   532.733120: my_probe: (sys_bpf+0xc=
+/0x40)
+>       test_progs-1971    [034] .....   532.733485: my_probe: (sys_bpf+0xc=
+/0x40)
+>       test_progs-1971    [034] .....   532.733499: my_probe: (sys_bpf+0xc=
+/0x40)
+>       test_progs-1971    [034] .....   532.733507: my_probe: (sys_bpf+0xc=
+/0x40)
+>       test_progs-1971    [034] .....   532.733512: my_probe: (sys_bpf+0xc=
+/0x40)
+>       test_progs-1971    [034] .....   532.733552: my_probe: (sys_bpf+0xc=
+/0x40)
+>       test_progs-1971    [034] .....   532.733577: my_probe: (sys_bpf+0xc=
+/0x40)
+>       test_progs-1971    [034] .....   532.733581: my_probe: (sys_bpf+0xc=
+/0x40)
+>       test_progs-1971    [034] .....   532.733586: my_probe: (sys_bpf+0xc=
+/0x40)
+>       test_progs-1971    [034] .....   532.733592: my_probe: (sys_bpf+0xc=
+/0x40)
+>       test_progs-1971    [034] .....   532.733596: my_probe: (sys_bpf+0xc=
+/0x40)
+>       test_progs-1971    [034] .....   532.733601: my_probe: (sys_bpf+0xc=
+/0x40)
+>       test_progs-1971    [034] .....   532.733606: my_probe: (sys_bpf+0xc=
+/0x40)
+>       test_progs-1971    [034] .....   532.733612: my_probe: (sys_bpf+0xc=
+/0x40)
+>       test_progs-1971    [034] .....   532.733622: my_probe: (sys_bpf+0xc=
+/0x40)
+>       test_progs-1971    [034] .....   532.733658: my_probe: (sys_bpf+0xc=
+/0x40)
+>       test_progs-1971    [034] .....   532.733740: my_probe: (sys_bpf+0xc=
+/0x40)
+>       test_progs-1971    [034] .....   532.736043: my_probe: (sys_bpf+0xc=
+/0x40)
+>
+> 2. The other is sys_bpf, but this symbol exists in both cases(kernel wher=
+e syscall
+>    wrapper is enabled and where it is disabled).
+>
+> Kernel with syscall wrapper not introduced in powerpc:
+>
+> # uname -r
+> 6.0.0
+>
+> # cat /proc/kallsyms | grep sys_bpf
+> c000000000383630 t __sys_bpf
+> c0000000003844a0 T bpf_sys_bpf
+> c000000000384510 T kern_sys_bpf
+> c000000000384840 T sys_bpf
+> c000000000384840 T __se_sys_bpf
+> c000000001030c80 d bpf_sys_bpf_proto
+> c0000000014a8bf8 d __ksymtab_kern_sys_bpf
+> c0000000014eac1f r __kstrtab_kern_sys_bpf
+> c0000000014fa53b r __kstrtabns_kern_sys_bpf
+> c000000002151e90 d _eil_addr_sys_bpf
+>
+> Kernel with syscall wrapper introduced in powerpc:
+>
+> # uname -r
+> 6.13.0-rc6+
+>
+> # cat /proc/kallsyms | grep sys_bpf
+> c0000000003d7750 t __sys_bpf
+> c0000000003d83ac T bpf_sys_bpf
+> c0000000003d8418 T kern_sys_bpf
+> c0000000003d8734 T sys_bpf
+> c000000001243328 d bpf_sys_bpf_proto
+> c0000000017776b0 r __ksymtab_kern_sys_bpf
+> c0000000021b7520 d _eil_addr_sys_bpf
+>
+> Thanks,
+> Saket
+> > >
+> > > Thanks,
+> > > Saket
+> > > > >
+> > > > > Thanks,
+> > > > > Saket
+> > > > > > > Thanks,
+> > > > > > > Saket
+> > > > > > > > >
+> > > > > > > > >         if (determine_kprobe_perf_type() >=3D 0) {
+> > > > > > > > >                 int pfd;
+> > > > > > > > > @@ -11272,8 +11274,12 @@ struct bpf_link *bpf_program__at=
+tach_ksyscall(const struct bpf_program *prog,
+> > > > > > > > >                  * compiler does not know that we have an=
+ explicit conditional
+> > > > > > > > >                  * as well.
+> > > > > > > > >                  */
+> > > > > > > > > +#if defined(__powerpc__)
+> > > > > > > > > +               snprintf(func_name, sizeof(func_name), "s=
+ys_%s", syscall_name);
+> > > > > > > > > +#else
+> > > > > > > > >                 snprintf(func_name, sizeof(func_name), "_=
+_%s_sys_%s",
+> > > > > > > > >                          arch_specific_syscall_pfx() ? : =
+"", syscall_name);
+> > > > > > > > > +#endif
+> > > > > > > > >         } else {
+> > > > > > > > >                 snprintf(func_name, sizeof(func_name), "_=
+_se_sys_%s", syscall_name);
+> > > > > > > > >         }
+> > > > > > > > > --
+> > > > > > > > > 2.43.5
+> > > > > > > > >
 
