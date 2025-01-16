@@ -1,63 +1,62 @@
-Return-Path: <bpf+bounces-49103-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49104-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5711AA1430D
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 21:22:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D63EEA1430C
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 21:22:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD2783A8D8A
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E9CF3A8E3B
 	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 20:22:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AE3324385B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6716F24385A;
 	Thu, 16 Jan 2025 20:21:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="edf4wwcf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="srWjbDzC"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FDF42416AF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 860D92419F1;
 	Thu, 16 Jan 2025 20:21:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737058875; cv=none; b=BbsyMKfMx8RggdfiPMPsdUNx6CTsTqurbpSiggBnDiOYesdQ3ojSV7iC6FEXeXZcpZwMWRIZxbz08sDS/nsbwUPuYibnVVJ2+IyQV+quNrX2aRbHjT+lO6tagb50O0NEPcxI9rkHuB7N+3WWp+XDAmIRE84iRhEODPMAy/1vYyo=
+	t=1737058875; cv=none; b=g5P0WW1Tnts/1wo5OCPf4oSTaeTPqXnY5GObInaxgJ4tcn7U/HRxLS2WB6xVMxdZeV7jTVZtpDbwuKJky4LwG36UeaKypZXn89KCDrXJHAlfhSxukr9DAMgedSB+BfOVnfk6nCWBXkRhlb93DpK/NxQsikX/hU3eDI5BK8xIY4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1737058875; c=relaxed/simple;
-	bh=DmfpKQXf6Ml/a8ehOKAWLG+3urxxzFu0N5hVWDZFayA=;
+	bh=yk/MWVXZdRjDc32PMvtz8WEH6sSkKtNJuArIejcJ3Tw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XQh5Za8+o8dPNzezgTJ4HVKDBsYslbUv/aa/eyNZYEXDv2pjOg9qHWio40KEoR5wcJMNwW7dOWwXxfLkD6qV9UWcX1sfFGDgtnr8/ezS3ZTqyoRBmKfmEgJsvyvPMruWPGmkxnLJ3epTJj7pXqdxCe1tPmJ8oJ1eg9QYknUrzss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=edf4wwcf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AFDBC4CEF0;
+	 MIME-Version; b=LX6BGnoIZ1li68DaLlGfB/qPahQvTJuWKHkqFzbxJaM4FeKFx6igJMKXV+vAT9Mts3kFfYwgnFL3OzzUmw0b5i6pZJZ9QJTLCgcsjP+9lc2QwpttsAOPUBnDF8UJLtv6L5B65Ou+yffLyEQ/CAIaqe1O8u5flMPFjRKgvmiiJBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=srWjbDzC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B81AC4CEF3;
 	Thu, 16 Jan 2025 20:21:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1737058875;
-	bh=DmfpKQXf6Ml/a8ehOKAWLG+3urxxzFu0N5hVWDZFayA=;
+	bh=yk/MWVXZdRjDc32PMvtz8WEH6sSkKtNJuArIejcJ3Tw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=edf4wwcfBkb+rCeXf6T/mMuM46j60Q89UKL3uTwDlSycRStc5UkVGaAKHNyBKk5vn
-	 JD6NRqhQKf/WGMuhTIdFn7hbUZaPzbdWlIWMpqQsT3avC61uvqTCKHmlyHYEvEYmKK
-	 DTpHJoqVTNaJ6UHVB/TjCX18HPlolowoAUhsWFHv5QaGoY8DX6WlRrIRgW0aQk6bmk
-	 OEUx8YpO/zW94evKWjjq0XqnOwuC4KU2NflRkIQ0DRFNYhVxM6DlFAaPUuS1L8G9p3
-	 m6uomfx3To1cw2Hgva63FzRhgvSEzqlT4DXrU5b2AK5XlIfG896sXCCtYivY8TP49g
-	 fBv5hTsrlEZ4Q==
+	b=srWjbDzCvpWnbEx1ahC8nFKLDT2YcSbIr0n4uQEG5HuNlMPTCL0f4DhGlbHG7hdzX
+	 6UXtgAnYybPuDJi1oJt/xkqkRxRufEdZck0x2O0F8SKwb0179HmvgqAMlsK5vnLAY3
+	 SS4SOMOODlKaRj/dDweeucnIST9xsx/FM6XzrKctvBy/Lc/SmJDWMXjUrwRC8pz3AY
+	 iKxtY7lVXWJG/ED8sz6wn9p3Tt3FbwFGhiOUDHQYVnCB+OJ3WXIbXZv0Ci1fWJzy0n
+	 OO4IBzU7cP1Sn3nUDA0RlUrOb+Gr5bpH+yMvrpUcjDxxISOLppvfJkQFOPV/vjQQ1v
+	 Iu/F8cYnWrtkA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 918B6CE37D2; Thu, 16 Jan 2025 12:21:14 -0800 (PST)
+	id 93EC4CE37D4; Thu, 16 Jan 2025 12:21:14 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	syzbot+16a19b06125a2963eaee@syzkaller.appspotmail.com,
 	Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Kent Overstreet <kent.overstreet@linux.dev>,
 	bpf@vger.kernel.org
-Subject: [PATCH rcu 07/17] srcu: Force synchronization for srcu_get_delay()
-Date: Thu, 16 Jan 2025 12:21:02 -0800
-Message-Id: <20250116202112.3783327-7-paulmck@kernel.org>
+Subject: [PATCH rcu 08/17] srcu: Rename srcu_check_read_flavor_lite() to srcu_check_read_flavor_force()
+Date: Thu, 16 Jan 2025 12:21:03 -0800
+Message-Id: <20250116202112.3783327-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <826c8527-d6ba-46c5-bb89-4625750cbeed@paulmck-laptop>
 References: <826c8527-d6ba-46c5-bb89-4625750cbeed@paulmck-laptop>
@@ -69,18 +68,11 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, srcu_get_delay() can be called concurrently, for example,
-by a CPU that is the first to request a new grace period and the CPU
-processing the current grace period.  Although concurrent access is
-harmless, it unnecessarily expands the state space.  Additionally,
-all calls to srcu_get_delay() are from slow paths.
+This commit renames the srcu_check_read_flavor_lite() function to
+srcu_check_read_flavor_force() and adds a read_flavor argument in order to
+support an srcu_read_lock_fast() variant that is to avoid array indexing
+in both the lock and unlock primitives.
 
-This commit therefore protects all calls to srcu_get_delay() with
-ssp->srcu_sup->lock, which is already held on the invocation from the
-srcu_funnel_gp_start() function.  While in the area, this commit also
-adds a lockdep_assert_held() to srcu_get_delay() itself.
-
-Reported-by: syzbot+16a19b06125a2963eaee@syzkaller.appspotmail.com
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Cc: Alexei Starovoitov <ast@kernel.org>
 Cc: Andrii Nakryiko <andrii@kernel.org>
@@ -88,56 +80,64 @@ Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: <bpf@vger.kernel.org>
 ---
- kernel/rcu/srcutree.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ include/linux/srcu.h     |  2 +-
+ include/linux/srcutiny.h |  2 +-
+ include/linux/srcutree.h | 10 ++++++----
+ 3 files changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index dfc98e69accaf..46e4cdaa1786e 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -648,6 +648,7 @@ static unsigned long srcu_get_delay(struct srcu_struct *ssp)
- 	unsigned long jbase = SRCU_INTERVAL;
- 	struct srcu_usage *sup = ssp->srcu_sup;
- 
-+	lockdep_assert_held(&ACCESS_PRIVATE(ssp->srcu_sup, lock));
- 	if (srcu_gp_is_expedited(ssp))
- 		jbase = 0;
- 	if (rcu_seq_state(READ_ONCE(sup->srcu_gp_seq))) {
-@@ -675,9 +676,13 @@ static unsigned long srcu_get_delay(struct srcu_struct *ssp)
- void cleanup_srcu_struct(struct srcu_struct *ssp)
+diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+index f6f779b9d9ff2..ca00b9af7c237 100644
+--- a/include/linux/srcu.h
++++ b/include/linux/srcu.h
+@@ -279,7 +279,7 @@ static inline int srcu_read_lock_lite(struct srcu_struct *ssp) __acquires(ssp)
  {
- 	int cpu;
-+	unsigned long delay;
- 	struct srcu_usage *sup = ssp->srcu_sup;
+ 	int retval;
  
--	if (WARN_ON(!srcu_get_delay(ssp)))
-+	spin_lock_irq_rcu_node(ssp->srcu_sup);
-+	delay = srcu_get_delay(ssp);
-+	spin_unlock_irq_rcu_node(ssp->srcu_sup);
-+	if (WARN_ON(!delay))
- 		return; /* Just leak it! */
- 	if (WARN_ON(srcu_readers_active(ssp)))
- 		return; /* Just leak it! */
-@@ -1101,7 +1106,9 @@ static bool try_check_zero(struct srcu_struct *ssp, int idx, int trycount)
+-	srcu_check_read_flavor_lite(ssp);
++	srcu_check_read_flavor_force(ssp, SRCU_READ_FLAVOR_LITE);
+ 	retval = __srcu_read_lock_lite(ssp);
+ 	rcu_try_lock_acquire(&ssp->dep_map);
+ 	return retval;
+diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
+index 31b59b4be2a74..6b1a7276aa4c9 100644
+--- a/include/linux/srcutiny.h
++++ b/include/linux/srcutiny.h
+@@ -82,7 +82,7 @@ static inline void srcu_barrier(struct srcu_struct *ssp)
+ }
+ 
+ #define srcu_check_read_flavor(ssp, read_flavor) do { } while (0)
+-#define srcu_check_read_flavor_lite(ssp) do { } while (0)
++#define srcu_check_read_flavor_force(ssp, read_flavor) do { } while (0)
+ 
+ /* Defined here to avoid size increase for non-torture kernels. */
+ static inline void srcu_torture_stats_print(struct srcu_struct *ssp,
+diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+index 6b7eba59f3849..e29cc57eac81d 100644
+--- a/include/linux/srcutree.h
++++ b/include/linux/srcutree.h
+@@ -251,16 +251,18 @@ static inline void __srcu_read_unlock_lite(struct srcu_struct *ssp, int idx)
+ 
+ void __srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor);
+ 
+-// Record _lite() usage even for CONFIG_PROVE_RCU=n kernels.
+-static inline void srcu_check_read_flavor_lite(struct srcu_struct *ssp)
++// Record reader usage even for CONFIG_PROVE_RCU=n kernels.  This is
++// needed only for flavors that require grace-period smp_mb() calls to be
++// promoted to synchronize_rcu().
++static inline void srcu_check_read_flavor_force(struct srcu_struct *ssp, int read_flavor)
  {
- 	unsigned long curdelay;
+ 	struct srcu_data *sdp = raw_cpu_ptr(ssp->sda);
  
-+	spin_lock_irq_rcu_node(ssp->srcu_sup);
- 	curdelay = !srcu_get_delay(ssp);
-+	spin_unlock_irq_rcu_node(ssp->srcu_sup);
+-	if (likely(READ_ONCE(sdp->srcu_reader_flavor) & SRCU_READ_FLAVOR_LITE))
++	if (likely(READ_ONCE(sdp->srcu_reader_flavor) & read_flavor))
+ 		return;
  
- 	for (;;) {
- 		if (srcu_readers_active_idx_check(ssp, idx))
-@@ -1854,7 +1861,9 @@ static void process_srcu(struct work_struct *work)
- 	ssp = sup->srcu_ssp;
+ 	// Note that the cmpxchg() in __srcu_check_read_flavor() is fully ordered.
+-	__srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_LITE);
++	__srcu_check_read_flavor(ssp, read_flavor);
+ }
  
- 	srcu_advance_state(ssp);
-+	spin_lock_irq_rcu_node(ssp->srcu_sup);
- 	curdelay = srcu_get_delay(ssp);
-+	spin_unlock_irq_rcu_node(ssp->srcu_sup);
- 	if (curdelay) {
- 		WRITE_ONCE(sup->reschedule_count, 0);
- 	} else {
+ // Record non-_lite() usage only for CONFIG_PROVE_RCU=y kernels.
 -- 
 2.40.1
 
