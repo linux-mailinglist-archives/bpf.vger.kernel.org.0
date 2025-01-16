@@ -1,145 +1,132 @@
-Return-Path: <bpf+bounces-49045-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49046-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9B62A13960
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 12:48:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB386A13969
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 12:50:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C48E0168A54
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 11:48:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C040168DDD
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 11:49:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13A891DE3C5;
-	Thu, 16 Jan 2025 11:48:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C4E01DE4DF;
+	Thu, 16 Jan 2025 11:49:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eOeQbs4h"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PpVg+sTg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F39DC24A7C2;
-	Thu, 16 Jan 2025 11:48:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE1B419FA92;
+	Thu, 16 Jan 2025 11:49:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737028117; cv=none; b=Ni1DiR1TCzLIiOGBQY0QNUgYf2wvkbtfyOBdlOlPgSeyIZwlWMqmS93ZLmpkYdFCZRN8WUaeyHxIme849urb6C6gBIRNRlDISqHbS0yR2E+0np0McMGhI6xI+DlpgJNkeomwypV1/Rik20AuIyd0sdJTE3S7prPu/H+c39zVLnQ=
+	t=1737028185; cv=none; b=nUZ37yGh8aV6aUqEv3OiGQDDfiJIpWyzipj44jKTCTkhx95hk6G6sRdUBpGINVTvm1chcWV0T6NBHLY3Qg8VcjThVh4XLAhClXAlElyLBVqfWEHnXrWZdXCoEL3htm9o6axmDlDPTcojgkvCFT0NtHLFK4oCi1kobfKBYnjhapc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737028117; c=relaxed/simple;
-	bh=HJzh5eLYCv8EJJgmVTMsiQgqHdac+IUf/vJRGhPT/Ow=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HuM6iNrNzAO+CLHlQZ4zqrV+DKH/fjKP3nbJCTtCyKqWL91WFPIX0diq7sF9bU9ji6UZ0mIxpQD5Z/piTRj2l1xoPNZUzVnU+P4lSFKKjal2x2r9wG7bN87fVCdYnUp2AFAanNfh60RblNmDFt0IKuGDJhokon+g0sJQo3Vnu9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eOeQbs4h; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4363dc916ceso11894295e9.0;
-        Thu, 16 Jan 2025 03:48:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737028114; x=1737632914; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8EPZnBUtvS/OYO7Vs8h8x8FOhvEvG+0Oo/UW/4x38QI=;
-        b=eOeQbs4hiy3GrGXkcko1Mbor6cZOmgmxA5WEtKB7aFtJpXzj7OWxuduP/jxYYHfzRR
-         VtzfHyw4NOR/kHkImZJO5H9D5FH01O8ttBXU5yAVmyG42277V9ydHKRgexB82D03K7nJ
-         Hcn8EjCzHPr1vsNkN/HlYRy4G3XycozVzfki6IsN2VAfbsGkbLzsvQNVXxp0T0dN7Z9j
-         rcDNTmgYdjpmMt87y0pc/CA/MBhze69SpVN4AFvCFP7RYbhe2qlVaYBnPe+75XAer0jP
-         uXJ/ZJYyuGZH4JUTIiLiFG8B9X00eYEWR762f8D4aRy2p7WKIzSzYAH70MNJu++mGxpw
-         511g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737028114; x=1737632914;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8EPZnBUtvS/OYO7Vs8h8x8FOhvEvG+0Oo/UW/4x38QI=;
-        b=rc/69aRYqaF5WFIY0CTfv7n6pZvsUzvmrjGYv83hKZaEGEWAJmM4BFnWCR5Y//Y7Xm
-         T1KKB+0/Ph/fK+z+kIK1qLhSz5U76YGDQc3AsppE9unOOabRPUDRC6VyC5TNCexbZ6VH
-         LrIvCumNDO4MThRnpftDK5P+dODfld6BxCctQIzOJwDuXkMWPqJ2m2Aq+XWTg1T8B4pZ
-         DJNgraRH3NmlEs0bjvVe8AIR/CUkTGhIYlQjd4PyKHUcp2Nt351AZEYvoF5PbeQS6+Sb
-         TzR76XKAbqEjzP2qTU8Izx8DsL18rnaZr8/Ziqk37SOvDZ8UF+dODpBFdsOl03Kv+APw
-         BscQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUZ499TpQuxVpIlk/H0nYjlUbt4s2EVHeotTazq1lkx+X1665aFeJ49x8zbHYpyjE0JE6ur6MswYXkgsPc/Xv2+3EzN@vger.kernel.org, AJvYcCXNIgkVzInAwN2v8ha6fgNQYZQZyAD0MCRaHe/ulK+l52aLyRl0K6aJl9kw20hoZ/Su5CbypxQxBjTpmvlG@vger.kernel.org, AJvYcCXix7BpiC0Y/4JmzPk+5sq5EmOydEssXjb3jkto7W2sy1696VLE6g1oWZlsyF2rSQMKD+E=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw0gyXcUpnYUSP6lIbBT42QIhD9N/u7wC3v9DVofI/7WMjlNZKs
-	BMvfi3jifK2mhkj11PiE3kGyGSn2tD96S+ie3S6xY3Df5Cm8dxQwFw+TYg==
-X-Gm-Gg: ASbGncv4P5puPc82U/+WHTGxnbMWWx8qXGjYfsL3MwwuqcSVRqU6lJFgUbdWN6eWepZ
-	OG5UaRBmYqRL9vt6VYwXnQQlhf301JxENwIzni+K0easHrz03J7OiMYAi0WWLNW5fwRHqW98tC1
-	4CtAdp7unyDRVdZLxQwXyj3OawJvYbzO+FsS8/81CXKF+nDGQ/GGSvVzj/2CVLzrzpDg+O+QUIX
-	5LkJMONVgUnqHqOKn0fsE7lFz6/5kjYVCwkAZI3kkY=
-X-Google-Smtp-Source: AGHT+IEkVAIA+sDM935/MFzAgL6IUhxWzJiTMKcSNJzf8RYXLXA5lacmebdk4RcP/RK9qsmIXTWdVA==
-X-Received: by 2002:a5d:648c:0:b0:38a:906e:16c3 with SMTP id ffacd0b85a97d-38bec4fbceemr2364082f8f.13.1737028113971;
-        Thu, 16 Jan 2025 03:48:33 -0800 (PST)
-Received: from krava ([213.175.46.84])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a8e37d154sm20691803f8f.10.2025.01.16.03.48.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jan 2025 03:48:33 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 16 Jan 2025 12:48:32 +0100
-To: David Laight <David.Laight@aculab.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	lkml <linux-kernel@vger.kernel.org>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"x86@kernel.org" <x86@kernel.org>
-Subject: Re: [RFC] x86/alternatives: Merge first and second step in
- text_poke_bp_batch
-Message-ID: <Z4jyEBf5WIvygWYh@krava>
-References: <20250114140237.3506624-1-jolsa@kernel.org>
- <c88cf8951a0d4f73901ba97a81ba3a12@AcuMS.aculab.com>
+	s=arc-20240116; t=1737028185; c=relaxed/simple;
+	bh=7rknpNPcPjYzUygRvRZKZvmVmYvpn7W3UgSjBzXfRPo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GXD/rUYCDFyYK66LQETTl1N8HHLIJB0XK0rrFcWsmoM/Y6Z+gMrKqq1JYiyIazzOwC+4DP5l0Q8XuqV0UqnI6FUaqXCXUfdws/NpeFzpvaaV2URTTxpDm4Jd2q4AwFN8VGuV0stto22EIE9dI64ty1xpGIoPCW+vQQk6B5Cn6Vg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PpVg+sTg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD04AC4CED6;
+	Thu, 16 Jan 2025 11:49:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1737028184;
+	bh=7rknpNPcPjYzUygRvRZKZvmVmYvpn7W3UgSjBzXfRPo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=PpVg+sTggp0pv+2ieXo6buYA4+4Ffca71AAjJ9yci777yEwpFUSMfkCOHgKzuPpXc
+	 zUovPnZ08phPRl9uzOsdGtns6+jCoLfgVSV0bbX+skr2hAGafpPZnjyXZ62ZAHLyKK
+	 /u2Njy7yzW3fTF5gv2Ocjo87M0lfj2L6jT4N7rJHHLLucfCVqsoJElfErZsQAAblEr
+	 Kp/COdWgZwplkd6gJn0tRIHEgFlhVuT2V1/AFQxY7Qk8pBkyNzP4ntSWzAc1ql3qVk
+	 88EyYZrFAqNI1xcYAoNzfkByal5NCLTXlxsm6SBeWRiZEIUJ2KsCMrPIiyjv3K3Tdw
+	 cX6S7YCTEuHzw==
+Message-ID: <4a461367-5b5d-4716-8c54-dc41c10b7ee7@kernel.org>
+Date: Thu, 16 Jan 2025 13:49:38 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c88cf8951a0d4f73901ba97a81ba3a12@AcuMS.aculab.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 1/4] net: ethernet: am65-cpsw: call
+ netif_carrier_on/off() when appropriate
+To: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Russell King <linux@armlinux.org.uk>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Siddharth Vadapalli <s-vadapalli@ti.com>, srk@ti.com, danishanwar@ti.com,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20250115-am65-cpsw-streamline-v1-0-326975c36935@kernel.org>
+ <20250115-am65-cpsw-streamline-v1-1-326975c36935@kernel.org>
+ <20250115181318.2dd11693@fedora.home>
+Content-Language: en-US
+From: Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <20250115181318.2dd11693@fedora.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 14, 2025 at 02:38:42PM +0000, David Laight wrote:
-> From: Jiri Olsa
-> > Sent: 14 January 2025 14:03
-> > 
-> > hi,
-> > while checking on similar code for uprobes I was wondering if we
-> > can merge first 2 steps of instruction update in text_poke_bp_batch
-> > function.
-> > 
-> > Basically the first step now would be to write int3 byte together
-> > with the rest of the bytes of the new instruction instead of doing
-> > that separately. And the second step would be to overwrite int3
-> > byte with first byte of the new instruction.
-> > 
-> > Would that work or do I miss some x86 detail that could lead to crash?
-> 
-> I suspect it will 'crash and burn'.
-> 
-> Consider what happens if there is a cache-line boundary in the
-> middle of an instruction.
-> (Actually an instruction fetch boundary will do.)
-> 
-> cpu0: reads the old instructions from the old cache line.
-> cpu0: pipeline busy (or similar) so doesn't read the next cache line.
-> cpu1: writes the new instructions.
-> cpu0: reads the second cache line.
-> 
-> cpu0 now has a mix of the old and new instruction bytes.
-> 
-> Writing the int3 is safe - provided they don't return until
-> all the patching is over.
-> 
-> But between writing the int3 (over the first opcode byte) and
-> updating anything else I suspect you need something that does
-> a complete synchronise between the cpu that discards any bytes
-> in the decode pipeline as well as flushing the I-cache (etc).
-> I suspect that requires an acked IPI.
-> 
-> Very long cpu stalls are easy to generate.
-> Any read from PCIe will be slow (I've at fpga target that takes ~1us).
-> You'd need to be unlucky to be patching an instruction while one
-> was pending, but a DMA access might just be enough to cause grief.
 
-ok, thanks for all the details,
 
-jirka
+On 15/01/2025 19:13, Maxime Chevallier wrote:
+> Hello Roger,
+> 
+> On Wed, 15 Jan 2025 18:43:00 +0200
+> Roger Quadros <rogerq@kernel.org> wrote:
+> 
+>> Call netif_carrier_on/off when link is up/down.
+>> When link is up only wake TX netif queue if network device is
+>> running.
+>>
+>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+>> ---
+>>  drivers/net/ethernet/ti/am65-cpsw-nuss.c | 5 ++++-
+>>  1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+>> index dcb6662b473d..36c29d3db329 100644
+>> --- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+>> +++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+>> @@ -2155,6 +2155,7 @@ static void am65_cpsw_nuss_mac_link_down(struct phylink_config *config, unsigned
+>>  	cpsw_sl_ctl_clr(port->slave.mac_sl, mac_control);
+>>  
+>>  	am65_cpsw_qos_link_down(ndev);
+>> +	netif_carrier_off(ndev);
+> 
+> You shouldn't need to do that, phylink does that for you :
+> https://elixir.bootlin.com/linux/v6.13-rc3/source/drivers/net/phy/phylink.c#L1434
+> 
+> Are you facing any specific problem that motivates that patch ?
+
+No. I overlooked it.
+
+> 
+>>  	netif_tx_stop_all_queues(ndev);
+>>  }
+>>  
+>> @@ -2196,7 +2197,9 @@ static void am65_cpsw_nuss_mac_link_up(struct phylink_config *config, struct phy
+>>  	cpsw_ale_control_set(common->ale, port->port_id, ALE_PORT_STATE, ALE_PORT_STATE_FORWARD);
+>>  
+>>  	am65_cpsw_qos_link_up(ndev, speed);
+>> -	netif_tx_wake_all_queues(ndev);
+>> +	netif_carrier_on(ndev);
+> 
+> Same here, phylink will set the carrier on by itself.
+
+Thanks for catching this. I'll drop this patch on next spin.
+
+> 
+> Thanks,
+> 
+> Maxime
+
+-- 
+cheers,
+-roger
+
 
