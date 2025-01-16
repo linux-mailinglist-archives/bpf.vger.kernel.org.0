@@ -1,220 +1,107 @@
-Return-Path: <bpf+bounces-49007-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49008-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5834CA12F77
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 01:04:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54778A12F7B
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 01:12:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C93243A618A
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 00:04:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC8F93A55AF
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 00:12:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5702023A6;
-	Thu, 16 Jan 2025 00:04:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F8C31372;
+	Thu, 16 Jan 2025 00:12:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="A+PQTCTg"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LHeS/34a"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F421D360;
-	Thu, 16 Jan 2025 00:04:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1216B360
+	for <bpf@vger.kernel.org>; Thu, 16 Jan 2025 00:12:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736985845; cv=none; b=cKj0xfAfePSzogXLTKwa6GbvJt7ntdgOY6xSK97P81VdyOaPJzp6zekdPjEV/ZG4Vl1NmRzpqV2+JrASjJg+ZjVIFsVhd1/F/QiUsrmYBR+F9dTPyEu0uvKua5ee+MyZHILN8XzPb5TjPrAh9+AxA7cg1IGMNnSkjt5TvTnjO3U=
+	t=1736986353; cv=none; b=F5+0hBOOiGaAEEQXdpr6WnM0pWcG9uoptDX+rtYbZzAVrjNmqjhW3LyL8ZI54+TrHZ0L81dVcRpfbs5j9ATrGmZjw9ckJOY25PgnNGhJ5zr71XSWYRLOjkjfwIRgkXg0CATqNvlR7CSCPNb/8gM1A9YilgjyUQ/Q6QD/rciR+2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736985845; c=relaxed/simple;
-	bh=IrUYSKH/O7pmDzauwEdwJz9B2ArnSvqiJOKtOu/+Knk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Wqlt/LlwMGSg9/bilL3Sqb1X0BPGx+QnCkC8RlDpMOawRYOw354C0lGFEm0MUx4cNCCPcjH4DogP/YkxUMQXgU7wSv/J4WjmBrffjDwDOUa/Etc/1FGGbkbAwsbR51xO2egXWy/vNeZRuHYWtPguFbK/SPCXp/oU9ZsFToPcM7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=A+PQTCTg; arc=none smtp.client-ip=95.215.58.184
+	s=arc-20240116; t=1736986353; c=relaxed/simple;
+	bh=sdUn3gZIDLWHBmMlnbkTnWYWr6s/2Kn4XrCDou8Kfxs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WBrmwGYRNSla1Fdz0HndSUKO2J8fqI54tneoA0vu60NXJqsXW5LNYXBWW2SVnzO8vu7wenBcks2KvdU10UVyT4CEqZqlA5I0gzA6Bg4eG7AT5KcTOdElSPFt0S0TZpiYmyfCleU5wDZmkry2coVmdUKieef2hKOQh+Yzxm5CSNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LHeS/34a; arc=none smtp.client-ip=91.218.175.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <5d9ba064-3288-4926-b9dc-3119bb3404c1@linux.dev>
+Date: Wed, 15 Jan 2025 16:12:17 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1736985841;
+	t=1736986344;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=grUuNHzbk9eYJZ2uKEHcxdyVTr7XAipNzFw1EzAqcxo=;
-	b=A+PQTCTgRbtRY2LzAbAWVwVd/Y0SB7oZ6Q7CjOtijo2HMcffjDggLT66Nfh32rR6bqD0XR
-	d+IdypTjjkoyUl5XEbsrq6uEtYhWwLiaY5YeTYB885u2Cddwz9uxfZ9VVUjJC2T/PFTNDz
-	h4qaUs4wBo7BXfT/ukKWPLPQTm0lvWI=
-Date: Wed, 15 Jan 2025 16:03:53 -0800
+	bh=5ZT7ZTLPy9olOlHT7k674kvBfCCcnDoRNMOmEIKf7aU=;
+	b=LHeS/34alX8N+ql0rNABKuVHVvaRpou1bvgLZq83X+QZ6uGZVZ8S2BoY8OaPW98xH8aJtr
+	9862X8eMGLweezwibi8SiEg7tPWowpvM7/k+LzwQ3Qzr4Qg5g8Q2cXhb0nGYHlO8mnxhvZ
+	kBIKcuOKp7bZS0Msf0I2XpcXN+oNIxU=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, andrii@kernel.org, memxor@gmail.com, 
+	akpm@linux-foundation.org, peterz@infradead.org, vbabka@suse.cz, bigeasy@linutronix.de, 
+	rostedt@goodmis.org, houtao1@huawei.com, hannes@cmpxchg.org, mhocko@suse.com, 
+	willy@infradead.org, tglx@linutronix.de, jannh@google.com, tj@kernel.org, 
+	linux-mm@kvack.org, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next v5 4/7] memcg: Use trylock to access memcg
+ stock_lock.
+Message-ID: <svm77mp6vx5uui7zzzvfo27oijq6nh3ceqfdc676to6oruidaq@p7ddlyjwwwrw>
+References: <20250115021746.34691-1-alexei.starovoitov@gmail.com>
+ <20250115021746.34691-5-alexei.starovoitov@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v5 13/15] net-timestamp: support tcp_sendmsg for
- bpf extension
-To: Jason Xing <kerneljasonxing@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com,
- willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, horms@kernel.org, bpf@vger.kernel.org,
- netdev@vger.kernel.org
-References: <20250112113748.73504-1-kerneljasonxing@gmail.com>
- <20250112113748.73504-14-kerneljasonxing@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Content-Language: en-US
-In-Reply-To: <20250112113748.73504-14-kerneljasonxing@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250115021746.34691-5-alexei.starovoitov@gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-On 1/12/25 3:37 AM, Jason Xing wrote:
-> Introduce tskey_bpf to correlate tcp_sendmsg timestamp with other
-> three points (SND/SW/ACK). More details can be found in the
-> selftest.
+On Tue, Jan 14, 2025 at 06:17:43PM -0800, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 > 
-> For TCP, tskey_bpf is used to store the initial write_seq value
-> the moment tcp_sendmsg is called, so that the last skb of this
-> call will have the same tskey_bpf with tcp_sendmsg bpf callback.
+> Teach memcg to operate under trylock conditions when spinning locks
+> cannot be used.
 > 
-> UDP works similarly because tskey_bpf can increase by one everytime
-> udp_sendmsg gets called. It will be implemented soon.
+> local_trylock might fail and this would lead to charge cache bypass if
+> the calling context doesn't allow spinning (gfpflags_allow_spinning).
+> In those cases charge the memcg counter directly and fail early if
+> that is not possible. This might cause a pre-mature charge failing
+> but it will allow an opportunistic charging that is safe from
+> try_alloc_pages path.
 > 
-> Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
-> ---
->   include/linux/skbuff.h         |  2 ++
->   include/uapi/linux/bpf.h       |  3 +++
->   net/core/sock.c                |  3 ++-
->   net/ipv4/tcp.c                 | 10 ++++++++--
->   tools/include/uapi/linux/bpf.h |  3 +++
->   5 files changed, 18 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index d3ef8db94a94..3b7b470d5d89 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -609,6 +609,8 @@ struct skb_shared_info {
->   	};
->   	unsigned int	gso_type;
->   	u32		tskey;
-> +	/* For TCP, it records the initial write_seq when sendmsg is called */
-> +	u32		tskey_bpf;
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 
-I would suggest to remove this tskey_bpf addition to skb_shared_info. My 
-understanding is the intention is to get the delay spent in the 
-tcp_sendmsg_locked(). I think this can be done in bpf_sk_storage. More below.
+Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 
->   
->   	/*
->   	 * Warning : all fields before dataref are cleared in __alloc_skb()
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index a0aff1b4eb61..87420c0f2235 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -7037,6 +7037,9 @@ enum {
->   					 * feature is on. It indicates the
->   					 * recorded timestamp.
->   					 */
-> +	BPF_SOCK_OPS_TS_TCP_SND_CB,	/* Called when every tcp_sendmsg
-> +					 * syscall is triggered
-> +					 */
+> @@ -1851,7 +1856,14 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  {
+>  	unsigned long flags;
+>  
+> -	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+> +	if (!local_trylock_irqsave(&memcg_stock.stock_lock, flags)) {
+> +		/*
+> +		 * In case of unlikely failure to lock percpu stock_lock
+> +		 * uncharge memcg directly.
+> +		 */
+> +		mem_cgroup_cancel_charge(memcg, nr_pages);
 
-UDP will need this also?
+mem_cgroup_cancel_charge() has been removed by a patch in mm-tree. Maybe
+we can either revive mem_cgroup_cancel_charge() or simply inline it
+here.
 
->   };
->   
->   /* List of TCP states. There is a build check in net/ipv4/tcp.c to detect
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 2f54e60a50d4..e74ab0e2979d 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -958,7 +958,8 @@ void bpf_skops_tx_timestamping(struct sock *sk, struct sk_buff *skb, int op)
->   	if (sk_is_tcp(sk) && sk_fullsock(sk))
->   		sock_ops.is_fullsock = 1;
->   	sock_ops.sk = sk;
-> -	bpf_skops_init_skb(&sock_ops, skb, 0);
-> +	if (skb)
-> +		bpf_skops_init_skb(&sock_ops, skb, 0);
->   	sock_ops.timestamp_used = 1;
->   	__cgroup_bpf_run_filter_sock_ops(sk, &sock_ops, CGROUP_SOCK_OPS);
->   }
-> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-> index 0a41006b10d1..b6e0db5e4ead 100644
-> --- a/net/ipv4/tcp.c
-> +++ b/net/ipv4/tcp.c
-> @@ -477,7 +477,7 @@ void tcp_init_sock(struct sock *sk)
->   }
->   EXPORT_SYMBOL(tcp_init_sock);
->   
-> -static void tcp_tx_timestamp(struct sock *sk, struct sockcm_cookie *sockc)
-> +static void tcp_tx_timestamp(struct sock *sk, struct sockcm_cookie *sockc, u32 first_write_seq)
->   {
->   	struct sk_buff *skb = tcp_write_queue_tail(sk);
->   	u32 tsflags = sockc->tsflags;
-> @@ -500,6 +500,7 @@ static void tcp_tx_timestamp(struct sock *sk, struct sockcm_cookie *sockc)
->   		tcb->txstamp_ack_bpf = 1;
->   		shinfo->tx_flags |= SKBTX_BPF;
->   		shinfo->tskey = TCP_SKB_CB(skb)->seq + skb->len - 1;
-
-Add the bpf prog callout here instead:
-
-		bpf_skops_tx_timestamping(sk, skb, BPF_SOCK_OPS_TS_TCP_SND_CB);
-
-If the bpf prog wants to figure out the delay from the very beginning of the 
-tcp_sendmsg_locked(), a bpf prog (either by tracing the tcp_sendmsg_locked or by 
-adding a new callout at the beginning of tcp_sendmsg_locked like this patch) can 
-store a bpf_ktime_get_ns() in the bpf_sk_storage. The bpf prog running here (at 
-tcp_tx_timestamp) can get that timestamp from the bpf_sk_storage since it has a 
-hold on the same sk pointer. There is no need to add a new shinfo->tskey_bpf to 
-measure this part of the delay.
-
-> +		shinfo->tskey_bpf = first_write_seq;
->   	}
->   }
->   
-> @@ -1067,10 +1068,15 @@ int tcp_sendmsg_locked(struct sock *sk, struct msghdr *msg, size_t size)
->   	int flags, err, copied = 0;
->   	int mss_now = 0, size_goal, copied_syn = 0;
->   	int process_backlog = 0;
-> +	u32 first_write_seq = 0;
->   	int zc = 0;
->   	long timeo;
->   
->   	flags = msg->msg_flags;
-> +	if (SK_BPF_CB_FLAG_TEST(sk, SK_BPF_CB_TX_TIMESTAMPING)) {
-> +		first_write_seq = tp->write_seq;
-> +		bpf_skops_tx_timestamping(sk, NULL, BPF_SOCK_OPS_TS_TCP_SND_CB);
-
-My preference is to skip this bpf callout for now and depends on a bpf trace 
-program if it is really needed.
-
+> +		return;
 > +	}
->   
->   	if ((flags & MSG_ZEROCOPY) && size) {
->   		if (msg->msg_ubuf) {
-> @@ -1331,7 +1337,7 @@ int tcp_sendmsg_locked(struct sock *sk, struct msghdr *msg, size_t size)
->   
->   out:
->   	if (copied) {
-> -		tcp_tx_timestamp(sk, &sockc);
-> +		tcp_tx_timestamp(sk, &sockc, first_write_seq);
->   		tcp_push(sk, flags, mss_now, tp->nonagle, size_goal);
->   	}
->   out_nopush:
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index 0fe7d663a244..3769e38e052d 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -7030,6 +7030,9 @@ enum {
->   					 * feature is on. It indicates the
->   					 * recorded timestamp.
->   					 */
-> +	BPF_SOCK_OPS_TS_TCP_SND_CB,	/* Called when every tcp_sendmsg
-> +					 * syscall is triggered
-> +					 */
->   };
->   
->   /* List of TCP states. There is a build check in net/ipv4/tcp.c to detect
-
+>  	__refill_stock(memcg, nr_pages);
+>  	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+>  }
 
