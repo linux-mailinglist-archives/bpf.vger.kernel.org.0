@@ -1,220 +1,270 @@
-Return-Path: <bpf+bounces-49041-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49042-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 527BAA135E8
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 09:57:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F816A1366F
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 10:19:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B82E1887B72
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 08:57:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 470D13A3563
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 09:19:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 239131D7E5F;
-	Thu, 16 Jan 2025 08:57:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b+iUGFTV"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 107661D9A50;
+	Thu, 16 Jan 2025 09:19:02 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AE6919D8A0
-	for <bpf@vger.kernel.org>; Thu, 16 Jan 2025 08:57:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5791126AF6;
+	Thu, 16 Jan 2025 09:18:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737017841; cv=none; b=Oo+6SPjTBfnfyrwUPa55dYmugZdQoAOQO5idFoo8ZGJ92j8XkKtQevAJ2IIA+jF1EjcVW52p9BmBQlCHurf+c0jTio/KF7CPAkcJBuW53dgUpDioabKaldT6iNY0y5onfQCWz/kBBCbg+OsrPl2N+iudRLGeL0aAt89D1M5W2H4=
+	t=1737019141; cv=none; b=cWz/ldBX2VCC6Qrsfrdd1xwMCoB44Ikq8gyNIqwFJiUOGrsjy+NqBiR+Hr/FGfSYlWCvNClVg/+36u80lizKIbhU+5LgAZkFyrx5cLEbNesHUdQ5qlTaMwPn2IZ1iLG05iKNZJ7wtt9PD/Ue5FV72e7w1Zi5GP0jAGRU/VpWoOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737017841; c=relaxed/simple;
-	bh=PtUhQynYgZLYfz9e+zHBnnH2YW9fJ84gqLC9SnFqqqU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KdOzgOHq2na7YwI7kQROPzgXhPN4F9Mn7SyQ3Wd5sTRnQ0ckI719Hx5dkII+n/2WjiUVoYJY/NqfeaKHmLziFXQpeAYB/IMpOQQvV9Ze0pQlYxHH7irr3hlwS40WCoa/BAKPIkQTA1zSWCknYTwb6scHMxpZYLlTEGJMPAVGSc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=b+iUGFTV; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1737017838;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pmkLmsyIcPYmFuaESsfI5oPSmcbmJsLv+8kU8eWcxJk=;
-	b=b+iUGFTVAQTEESja0Q2tHSyjXymaEO+gM2Ow+H6WseVs4tQUCnDgSieFrf4N99ZynKKZV/
-	JEGAuo6h4Ezc12u+ghHLDJxbnukg91t+dQec10P4JMiod1j4Nbx3lnRjKtlV+JS2BaYWRj
-	QsgiPERHC2isFLHuBUfd1p/B/WckPKM=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-610-pzuSx4xlO0eq7B5qTNObAw-1; Thu, 16 Jan 2025 03:57:16 -0500
-X-MC-Unique: pzuSx4xlO0eq7B5qTNObAw-1
-X-Mimecast-MFC-AGG-ID: pzuSx4xlO0eq7B5qTNObAw
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-467a0a6c846so17023871cf.1
-        for <bpf@vger.kernel.org>; Thu, 16 Jan 2025 00:57:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737017836; x=1737622636;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pmkLmsyIcPYmFuaESsfI5oPSmcbmJsLv+8kU8eWcxJk=;
-        b=LtGwO89DsyaURlAEvjD8DnQY1LuW/K799MWDxZyf0PVjZ3FRMivie6sMETWf4eHCHD
-         gEwamgXkcD9K48NNUFBcPDFPuX5eHmfquUHPTCTmyia2gdhHbwAV793N2gdWYd8Pjozc
-         fU6TDQqkx/LrVankmhMiiiPt5N0r+t8XIQu6ic0MJ49AveuIbsNKwBL2sZrzR2lkJ1lH
-         Cm/cwpxszlBHWdB+NjhpoFoQ0z8Ea2usAcVLSlsjRj4tGEwOcR3VyVGRqPF4PX/IUKmc
-         Yd9Hf4tv1XXEQxFc5cTtdP6JwX4SqB2qzaOAOgGPjxIImA0kiZVEcGFfHXVS1bRMR5iq
-         4uAw==
-X-Forwarded-Encrypted: i=1; AJvYcCXOsDhCmcNShscyT9rdDA4HC8uYVU2ICRiRHfaFcA96Y3apVO26DQY+8BXl72IxYnm/fcs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz8hrgw4IzrYWZY5V+6n7hW/RKDE4BnO8x3px3k+oEBC157arYY
-	aTmZQ9sCLrsnemirdhZmRv8xNW9QeIEWFQSTWDZv4GR4jiluEIqpKQttAJVonJfPfVetB30fytr
-	qfNKObtopCUVqtdcH3HM84NTSOxDhk2LlE2++NYKDXQI0onzruw==
-X-Gm-Gg: ASbGncud8OLqRZwjzM9VJ1DrD2c+ZMLHJHSwYPk+aZFq7UWl2fZFph92w5ywrcYyhjV
-	Q4iyGY4nzN8xeRwFXRD2POznqTXA/k86q5nloxQc1kTJ1CN7Jx8i/9tDfleJBt0Lw6D4OkxlBkf
-	w2IObpmBwcSdondMYoa5uARm5lbcvelCzP9jJbWzTlz/GS/IGhg209tQvxGjM6F7QaNJm9x0Wg6
-	r/TcKB6vcB+vWIwiv5hzAKLGuE8SVLBSiLaceNQZ6BXf2Jkir7+guW9zCLYpNluBFPV0qz/2So8
-	PczHCwAQ45dH5uTX92aq1qN/EzskOjaY
-X-Received: by 2002:ac8:5813:0:b0:466:aee5:a5b with SMTP id d75a77b69052e-46c70fd1faemr467248011cf.10.1737017836157;
-        Thu, 16 Jan 2025 00:57:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEO29yrvkRyeFaWTkkTVXxmLbJIQYKA6Cnx5MRQ30jCm4qRaBjl6Z9IlhJpdMAezqnYQnnKAw==
-X-Received: by 2002:ac8:5813:0:b0:466:aee5:a5b with SMTP id d75a77b69052e-46c70fd1faemr467247821cf.10.1737017835757;
-        Thu, 16 Jan 2025 00:57:15 -0800 (PST)
-Received: from sgarzare-redhat (host-82-53-134-100.retail.telecomitalia.it. [82.53.134.100])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-46c873216dbsm73689241cf.7.2025.01.16.00.57.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jan 2025 00:57:15 -0800 (PST)
-Date: Thu, 16 Jan 2025 09:57:07 +0100
-From: Stefano Garzarella <sgarzare@redhat.com>
-To: Michal Luczaj <mhal@rbox.co>
-Cc: netdev@vger.kernel.org, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Luigi Leonardi <leonardi@redhat.com>, "David S. Miller" <davem@davemloft.net>, 
-	Wongi Lee <qwerty@theori.io>, Eugenio =?utf-8?B?UMOpcmV6?= <eperezma@redhat.com>, 
-	"Michael S. Tsirkin" <mst@redhat.com>, Eric Dumazet <edumazet@google.com>, kvm@vger.kernel.org, 
-	Paolo Abeni <pabeni@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, 
-	Jason Wang <jasowang@redhat.com>, Simon Horman <horms@kernel.org>, Hyunwoo Kim <v4bel@theori.io>, 
-	Jakub Kicinski <kuba@kernel.org>, virtualization@lists.linux.dev, stable@vger.kernel.org
-Subject: Re: [PATCH net v2 1/5] vsock/virtio: discard packets if the
- transport changes
-Message-ID: <pl4mhcim7v3ukv6eseynh6x2r6nftf7yuayjzd3ftyupwy5r2h@ixmlevubqzb2>
-References: <1aa83abf-6baa-4cf1-a108-66b677bcfd93@rbox.co>
- <nedvcylhjxrkmkvgugsku2lpdjgjpo5exoke4o6clxcxh64s3i@jkjnvngazr5v>
- <CAGxU2F7BoMNi-z=SHsmCV5+99=CxHo4dxFeJnJ5=q9X=CM3QMA@mail.gmail.com>
- <cccb1a4f-5495-4db1-801e-eca211b757c3@rbox.co>
- <nzpj4hc6m4jlqhcwv6ngmozl3hcoxr6kehoia4dps7jytxf6df@iqglusiqrm5n>
- <903dd624-44e5-4792-8aac-0eaaf1e675c5@rbox.co>
- <5nkibw33isxiw57jmoaadizo3m2p76ve6zioumlu2z2nh5lwck@xodwiv56zrou>
- <7de34054-10cf-45d0-a869-adebb77ad913@rbox.co>
- <n2itoh23kikzszzgmyejfwe3mdf6fmxzwbtyo5ahtxpaco3euq@osupldmckz7p>
- <fb6f876f-a4eb-4005-bd76-fff0632291b8@rbox.co>
+	s=arc-20240116; t=1737019141; c=relaxed/simple;
+	bh=5dqH2aw6J/DvANLLtr1H47C/n4iBtvaLs7nTBNr/7aE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=EfhB+GJR8YvfqRsTHYTl4dSCcQkvISZubDUt1HAQN+DzhFNxmOYFYUn6SD9sjSeDZNa5OX3cBNsHUFC2U7YZDek3//sMa5ayPzgkCBg+Sab7hYGfCMAszjx3brBgcw25cpKXf1faI9qW9/J7P8Lj7y/zfNWeu2f3+TrvwcSzMJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from inp1wst086.omp.ru (81.22.207.138) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Thu, 16 Jan
+ 2025 12:18:41 +0300
+From: Dmitriy Privalov <d.privalov@omp.ru>
+To: <stable@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: "David S. Miller" <davem@davemloft.net>, Alexey Kuznetsov
+	<kuznet@ms2.inr.ac.ru>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, Jakub
+ Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin
+ KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song
+	<yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh
+	<kpsingh@kernel.org>, Eric Dumazet <edumazet@google.com>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<bpf@vger.kernel.org>, <lvc-project@linuxtesting.org>, Martin KaFai Lau
+	<martin.lau@kernel.org>, Kuniyuki Iwashima <kuniyu@amazon.com>, Dmitriy
+ Privalov <d.privalov@omp.ru>
+Subject: [PATCH v2 5.10 1/1] tcp/dccp: Don't use timer_pending() in reqsk_queue_unlink().
+Date: Thu, 16 Jan 2025 12:17:57 +0300
+Message-ID: <20250116091757.646769-1-d.privalov@omp.ru>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <fb6f876f-a4eb-4005-bd76-fff0632291b8@rbox.co>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.1, Database issued on: 01/16/2025 08:29:11
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 19
+X-KSE-AntiSpam-Info: Lua profiles 190363 [Jan 16 2025]
+X-KSE-AntiSpam-Info: Version: 6.1.1.7
+X-KSE-AntiSpam-Info: Envelope from: d.privalov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 49 0.3.49
+ 28b3b64a43732373258a371bd1554adb2caa23cb
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 81.22.207.138 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info:
+	patch.msgid.link:7.1.1;81.22.207.138:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1;lore.kernel.org:7.1.1;inp1wst086.omp.ru:7.1.1;nvd.nist.gov:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: FromAlignment: s
+X-KSE-AntiSpam-Info: ApMailHostAddress: 81.22.207.138
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 19
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 01/16/2025 08:33:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 1/16/2025 6:48:00 AM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-On Tue, Jan 14, 2025 at 05:31:08PM +0100, Michal Luczaj wrote:
->On 1/14/25 11:16, Stefano Garzarella wrote:
->> On Tue, Jan 14, 2025 at 01:09:24AM +0100, Michal Luczaj wrote:
->>> On 1/13/25 16:01, Stefano Garzarella wrote:
->>>> On Mon, Jan 13, 2025 at 02:51:58PM +0100, Michal Luczaj wrote:
->>>>> On 1/13/25 12:05, Stefano Garzarella wrote:
->>>>>> ...
->>>>>> An alternative approach, which would perhaps allow us to avoid all this,
->>>>>> is to re-insert the socket in the unbound list after calling release()
->>>>>> when we deassign the transport.
->>>>>>
->>>>>> WDYT?
->>>>>
->>>>> If we can't keep the old state (sk_state, transport, etc) on failed
->>>>> re-connect() then reverting back to initial state sounds, uhh, like an
->>>>> option :) I'm not sure how well this aligns with (user's expectations of)
->>>>> good ol' socket API, but maybe that train has already left.
->>>>
->>>> We really want to behave as similar as possible with the other sockets,
->>>> like AF_INET, so I would try to continue toward that train.
->>>
->>> I was worried that such connect()/transport error handling may have some
->>> user visible side effects, but I guess I was wrong. I mean you can still
->>> reach a sk_state=TCP_LISTEN with a transport assigned[1], but perhaps
->>> that's a different issue.
->>>
->>> I've tried your suggestion on top of this series. Passes the tests.
->>
->> Great, thanks!
->>
->>>
->>> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->>> index fa9d1b49599b..4718fe86689d 100644
->>> --- a/net/vmw_vsock/af_vsock.c
->>> +++ b/net/vmw_vsock/af_vsock.c
->>> @@ -492,6 +492,10 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
->>> 		vsk->transport->release(vsk);
->>> 		vsock_deassign_transport(vsk);
->>>
->>> +		vsock_addr_unbind(&vsk->local_addr);
->>> +		vsock_addr_unbind(&vsk->remote_addr);
->>
->> My only doubt is that if a user did a specific bind() before the
->> connect, this way we're resetting everything, is that right?
->
->That is right.
->
->But we aren't changing much. Transport release already removes vsk from
->vsock_bound_sockets. So even though vsk->local_addr is untouched (i.e.
->vsock_addr_bound() returns `true`), vsk can't be picked by
->vsock_find_bound_socket(). User can't bind() it again, either.
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
 
-Okay, I see, so maybe for now makes sense to merge your patch, to fix 
-the UAF fist.
+commit e8c526f2bdf1845bedaf6a478816a3d06fa78b8f upstream.
 
->
->And when patched as above: bind() works as "expected", but socket is pretty
->much useless, anyway. If I'm correct, the first failing connect() trips
->virtio_transport_recv_connecting(), which sets `sk->sk_err`. I don't see it
->being reset. Does the vsock suppose to keep sk_err state once set?
+Martin KaFai Lau reported use-after-free [0] in reqsk_timer_handler().
 
-Nope, I think this is another thing to fix.
+  """
+  We are seeing a use-after-free from a bpf prog attached to
+  trace_tcp_retransmit_synack. The program passes the req->sk to the
+  bpf_sk_storage_get_tracing kernel helper which does check for null
+  before using it.
+  """
 
->
->Currently only AF_VSOCK throws ConnectionResetError:
->```
->from socket import *
->
->def test(family, addr):
->	s = socket(family, SOCK_STREAM)
->	assert s.connect_ex(addr) != 0
->
->	lis = socket(family, SOCK_STREAM)
->	lis.bind(addr)
->	lis.listen()
->	s.connect(addr)
->
->	p, _ = lis.accept()
->	p.send(b'x')
->	assert s.recv(1) == b'x'
->
->test(AF_INET, ('127.0.0.1', 2000))
->test(AF_UNIX, '\0/tmp/foo')
->test(AF_VSOCK, (1, 2000)) # VMADDR_CID_LOCAL
->```
->
->> Maybe we need to look better at the release, and prevent it from
->> removing the socket from the lists as you suggested, maybe adding a
->> function in af_vsock.c that all transports can call.
->
->I'd be happy to submit a proper patch, but it would be helpful to decide
->how close to AF_INET/AF_UNIX's behaviour is close enough. Or would you
->rather have that UAF plugged first?
->
+The commit 83fccfc3940c ("inet: fix potential deadlock in
+reqsk_queue_unlink()") added timer_pending() in reqsk_queue_unlink() not
+to call del_timer_sync() from reqsk_timer_handler(), but it introduced a
+small race window.
 
-I'd say, let's fix the UAF first, then fix the behaviour (also in a
-single series, but I prefer 2 separate patches if possible).
-About that, AF_VSOCK was started with the goal of following AF_INET as
-closely as possible, and the test suite should serve that as well, so if
-we can solve this problem and get closer to AF_INET, possibly even
-adding a dedicated test, that would be ideal!
+Before the timer is called, expire_timers() calls detach_timer(timer, true)
+to clear timer->entry.pprev and marks it as not pending.
 
-Thank you very much for the help!
-Stefano
+If reqsk_queue_unlink() checks timer_pending() just after expire_timers()
+calls detach_timer(), TCP will miss del_timer_sync(); the reqsk timer will
+continue running and send multiple SYN+ACKs until it expires.
 
+The reported UAF could happen if req->sk is close()d earlier than the timer
+expiration, which is 63s by default.
+
+The scenario would be
+
+  1. inet_csk_complete_hashdance() calls inet_csk_reqsk_queue_drop(),
+     but del_timer_sync() is missed
+
+  2. reqsk timer is executed and scheduled again
+
+  3. req->sk is accept()ed and reqsk_put() decrements rsk_refcnt, but
+     reqsk timer still has another one, and inet_csk_accept() does not
+     clear req->sk for non-TFO sockets
+
+  4. sk is close()d
+
+  5. reqsk timer is executed again, and BPF touches req->sk
+
+Let's not use timer_pending() by passing the caller context to
+__inet_csk_reqsk_queue_drop().
+
+Note that reqsk timer is pinned, so the issue does not happen in most
+use cases. [1]
+
+[0]
+BUG: KFENCE: use-after-free read in bpf_sk_storage_get_tracing+0x2e/0x1b0
+
+Use-after-free read at 0x00000000a891fb3a (in kfence-#1):
+bpf_sk_storage_get_tracing+0x2e/0x1b0
+bpf_prog_5ea3e95db6da0438_tcp_retransmit_synack+0x1d20/0x1dda
+bpf_trace_run2+0x4c/0xc0
+tcp_rtx_synack+0xf9/0x100
+reqsk_timer_handler+0xda/0x3d0
+run_timer_softirq+0x292/0x8a0
+irq_exit_rcu+0xf5/0x320
+sysvec_apic_timer_interrupt+0x6d/0x80
+asm_sysvec_apic_timer_interrupt+0x16/0x20
+intel_idle_irq+0x5a/0xa0
+cpuidle_enter_state+0x94/0x273
+cpu_startup_entry+0x15e/0x260
+start_secondary+0x8a/0x90
+secondary_startup_64_no_verify+0xfa/0xfb
+
+kfence-#1: 0x00000000a72cc7b6-0x00000000d97616d9, size=2376, cache=TCPv6
+
+allocated by task 0 on cpu 9 at 260507.901592s:
+sk_prot_alloc+0x35/0x140
+sk_clone_lock+0x1f/0x3f0
+inet_csk_clone_lock+0x15/0x160
+tcp_create_openreq_child+0x1f/0x410
+tcp_v6_syn_recv_sock+0x1da/0x700
+tcp_check_req+0x1fb/0x510
+tcp_v6_rcv+0x98b/0x1420
+ipv6_list_rcv+0x2258/0x26e0
+napi_complete_done+0x5b1/0x2990
+mlx5e_napi_poll+0x2ae/0x8d0
+net_rx_action+0x13e/0x590
+irq_exit_rcu+0xf5/0x320
+common_interrupt+0x80/0x90
+asm_common_interrupt+0x22/0x40
+cpuidle_enter_state+0xfb/0x273
+cpu_startup_entry+0x15e/0x260
+start_secondary+0x8a/0x90
+secondary_startup_64_no_verify+0xfa/0xfb
+
+freed by task 0 on cpu 9 at 260507.927527s:
+rcu_core_si+0x4ff/0xf10
+irq_exit_rcu+0xf5/0x320
+sysvec_apic_timer_interrupt+0x6d/0x80
+asm_sysvec_apic_timer_interrupt+0x16/0x20
+cpuidle_enter_state+0xfb/0x273
+cpu_startup_entry+0x15e/0x260
+start_secondary+0x8a/0x90
+secondary_startup_64_no_verify+0xfa/0xfb
+
+Fixes: 83fccfc3940c ("inet: fix potential deadlock in reqsk_queue_unlink()")
+Reported-by: Martin KaFai Lau <martin.lau@kernel.org>
+Closes: https://lore.kernel.org/netdev/eb6684d0-ffd9-4bdc-9196-33f690c25824@linux.dev/
+Link: https://lore.kernel.org/netdev/b55e2ca0-42f2-4b7c-b445-6ffd87ca74a0@linux.dev/ [1]
+Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Reviewed-by: Martin KaFai Lau <martin.lau@kernel.org>
+Link: https://patch.msgid.link/20241014223312.4254-1-kuniyu@amazon.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+[d.privalov: adapt calling __inet_csk_reqsk_queue_drop()]
+Signed-off-by: Dmitriy Privalov <d.privalov@omp.ru>
+---
+Backport fix for CVE-2024-50154
+Link: https://nvd.nist.gov/vuln/detail/CVE-2024-50154
+---
+v2: Fix patch applying
+
+ net/ipv4/inet_connection_sock.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+index 1dfa561e8f981..d912894ad4adc 100644
+--- a/net/ipv4/inet_connection_sock.c
++++ b/net/ipv4/inet_connection_sock.c
+@@ -700,21 +700,31 @@ static bool reqsk_queue_unlink(struct request_sock *req)
+ 		found = __sk_nulls_del_node_init_rcu(req_to_sk(req));
+ 		spin_unlock(lock);
+ 	}
+-	if (timer_pending(&req->rsk_timer) && del_timer_sync(&req->rsk_timer))
+-		reqsk_put(req);
++
+ 	return found;
+ }
+ 
+-bool inet_csk_reqsk_queue_drop(struct sock *sk, struct request_sock *req)
++static bool __inet_csk_reqsk_queue_drop(struct sock *sk,
++					struct request_sock *req,
++					bool from_timer)
+ {
+ 	bool unlinked = reqsk_queue_unlink(req);
+ 
++	if (!from_timer && del_timer_sync(&req->rsk_timer))
++		reqsk_put(req);
++
+ 	if (unlinked) {
+ 		reqsk_queue_removed(&inet_csk(sk)->icsk_accept_queue, req);
+ 		reqsk_put(req);
+ 	}
++
+ 	return unlinked;
+ }
++
++bool inet_csk_reqsk_queue_drop(struct sock *sk, struct request_sock *req)
++{
++	return __inet_csk_reqsk_queue_drop(sk, req, false);
++}
+ EXPORT_SYMBOL(inet_csk_reqsk_queue_drop);
+ 
+ void inet_csk_reqsk_queue_drop_and_put(struct sock *sk, struct request_sock *req)
+@@ -781,7 +791,8 @@ static void reqsk_timer_handler(struct timer_list *t)
+ 		return;
+ 	}
+ drop:
+-	inet_csk_reqsk_queue_drop_and_put(sk_listener, req);
++	__inet_csk_reqsk_queue_drop(sk_listener, req, true);
++	reqsk_put(req);
+ }
+ 
+ static void reqsk_queue_hash_req(struct request_sock *req,
+-- 
+2.34.1
 
