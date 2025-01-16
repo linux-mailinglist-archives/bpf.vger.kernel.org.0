@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-49087-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49088-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B308A1427D
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 20:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B5901A14280
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 20:44:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DDAF7A2BE1
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 19:43:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6E017A243D
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 19:44:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B50A8233531;
-	Thu, 16 Jan 2025 19:43:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A757E233532;
+	Thu, 16 Jan 2025 19:44:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Vh8Ada/s"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="BYhATwA8"
 X-Original-To: bpf@vger.kernel.org
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03olkn2051.outbound.protection.outlook.com [40.92.59.51])
+Received: from EUR03-VI1-obe.outbound.protection.outlook.com (mail-vi1eur03olkn2040.outbound.protection.outlook.com [40.92.57.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B52722E409;
-	Thu, 16 Jan 2025 19:43:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.59.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED43214AD2B;
+	Thu, 16 Jan 2025 19:44:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.57.40
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737056597; cv=fail; b=SmnIDJrm/Wu129415OhCq1YbNti9nOvhZNZFo/FFjU8CKt2F+CFywUUXjK9XUFe7LHchOh6j05dR1nAj9MfACOONTwxcPa4q/1zA1xexcFe2vGMI3dNgmwraw485sUrZzKZUny/3gqWb+/mef/aR9QIKwbsdD9P7YxQ+xI0zHVA=
+	t=1737056672; cv=fail; b=fSXPyFnASs1iq5h7pvINlNFaury33g04yPZF6Sdi2Ql5twqgitQGhezlfQ5rQoOO7dZpefzpZvqTkxz3K+suqmZ6qtacK6N4MbCfwylBHnsUBcpwwyxcMl1J0XeXt2amFkd3GlqUs3FOQD2IqVAzFWmSYV+rorYnSjNE9Rjylto=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737056597; c=relaxed/simple;
-	bh=WzL0JC6Cz5/FF98R9p6CG/sIhh6XxgQPgoMzxIGocyI=;
+	s=arc-20240116; t=1737056672; c=relaxed/simple;
+	bh=TdnqlHyEHw6/HWMktIaFaVMal6vOshEfTy4z9mEud24=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=BObO52AwPnaypRKX8wQvk4NJBz3RxvnqxKamx6g9/220CW/DhBu0b/b/JzfniYHR/fbwahncQ4fwzcCiEAWHykq4bKcD7S0DqK/ynZrvIwu8aDJrIapT/pVXnxWjOL3wlWkiBCa2Tgr2WUC+bFZLL0LuMwRu0IFC/lWJTuOeVD8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Vh8Ada/s; arc=fail smtp.client-ip=40.92.59.51
+	 Content-Type:MIME-Version; b=cWdoXJwrr9di0jCyxge82iG8VMsh3J/2EJyvUfCZRI+ebeYVsZZZirbj0MJMSWIpM4qEBJomxS8n8iEwnGK/EW45hQRvFVUmN78cwN6Pd9pEKpVlFNEyGpI3SQZBchgLWVbJJFSt18p83hcDASaY6E9jHQc20w6564YMpM/Obwg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=BYhATwA8; arc=fail smtp.client-ip=40.92.57.40
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=kHNAD1hPkJPrlCmuXQUvTf9az1TEk2hYk2kIP0DpMEDpHCZwXnI5GOZuZ6Nw3uR875k5CHQpy3x/WklD6kzybu7MapfuhYKbjEIA0DFRgggchNDtbAjyVjzEf+iRDSNTvhoLj/z4xT5qk9iqhhDXPcOAthaWGrRdxRvr6iCnYGhZOVnLAi1+X/3PtoT3A8rGa1g0Yy7XAD1ip4Q6upvUbgiyvEvXN4OGNDkJ3/1rLIc3bjA8BMihz/9NWjGblJSsxoMa+3xL7NF14/yT/aKQKSZhFAxcGaTlylqPgN/qf9ioyajeka3TY9HC9ngd0ab2PV7AXGWsuaKuk+8PEjF1VA==
+ b=IKIxRcfy/Y4cFwoHS3nqVpHb5DEMwK/l5+nySpzzeI9Rs1s9eM/KGDNlBn6QksJ6+72umFzE9HV7JHmHLkC0Hbp5Gvg8uTP4hW6OnWAlefTB3kRHggFO4SBO6G/RIs2bArp10ksf8OTnow5ySrEWCuj/aK08mphFpsnH3okgzdfndyHy3zpNVL/2kxgyLu4IjyGAMUQx7dv1EvkCuphtCPmhYrWGtmtbhyDtmOUixLkEgZNn8YSQBYjYo2/nQgT8sC2VCl1mlyLpX85QNN8jNt5bdSjidEdgdCqFNVrYck45ctOFc5tRc+OccK9JfybvwpiGtfhsdHcmNrpuxNSuBg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2kZyZ6v6BsmVdg6OwQQcMrbODiao6uodG37JMurUyC0=;
- b=qClWbvyu0IB6wgbAIyJTucad1wWcy40mkVL6p882+DTI1L9eC2D8D4yoH1LQKqxh30nLzTpeGHjZVp9omErah4QQb9JAFxgLF9qaSSRdZ+dx+GErAVSnhi01ELCHDgK8oy6OBqYRwKIsC1PAZ+xb3nJd1kxkLRiaDW6TMymuMvrtph/WwVH8x/NnQHEu6pMJ+Lul8TQdydoO5bvgKnL63pg79/P7YfBQuRkOLwdzFxICQ391Sn3oRsNSwC2B1skfzJQAsD42ulw4IviPxnIbCzoYhV7N1dBnh+VJnToEXeag2ePj6YM0+zEjoNVjghUf5L5FiabW/rchiYvle2ufuw==
+ bh=dvIeYHB/ZIAD8T2ESpfoSLTIGJUkVMWdBsKU9gs7Dro=;
+ b=JkcrysWU8ZL5Xdv0MteKZl2kWHyRboK+xbCwWHf4qOCf0dIurI4cVplCQzXNSNEERJiRd0lXX7HnlhwDgiUMWM5UqanJsoUCnGaka54SC5cBOloukjGwPdOvEguTeGJ/Uh6dV91oEVb+JoEJMaUUj0A3Wc5+Rz099DF5D5p1NIGGwcgTeCXq10YzeB97edu2FOJIPV2+fGGkRfqrrUkI8faEwgPWcNUEaFlaiY63PSELQ4JBgXJRy9LHwClRirPl07fBTYhi3noQlrNtJney4gpSdBzezGqmT6vA1nzOsjY/tBJUAyWePBYkRoLqtSisTikG3HjTJUwGzkz41FRT6A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2kZyZ6v6BsmVdg6OwQQcMrbODiao6uodG37JMurUyC0=;
- b=Vh8Ada/szZ5Xo+sEb+R9BO4Wcs11pzQrJP+NVm34XZSGfUiaHVVxJzE53IbbUgnFhc4KlVoosJcWxiqSgCo8dvtYaqacZAo5tzwdMBa1Ae6MNZgMf5lhUf7iK+W2hzsFwRwy5RgtC9udub/XuLN3a42dUnItm4N3BnB8spIwRiAt8nn9Z872E6s3bfLZStpIEnZ+DcFxh2ZWf7vZCyHCDShD+a+Ms+l6j0pzAbpHu4vKvjhnTFTq9hy4veAfhJZt3fWcn0ENHEjux3YMaL9Xt/NgCBA4m8LQLM/9ebxdmH2Nxe5pNJJRTKXbYixoDuRvn+5tNY8Syv4X/cGvE7fKbQ==
+ bh=dvIeYHB/ZIAD8T2ESpfoSLTIGJUkVMWdBsKU9gs7Dro=;
+ b=BYhATwA87JMIaOrqhf3jhNaLRBevDzTaoHuowee7oUphTuh2KM6j43K9sk2rs/it+t5V3/ztQB6f1UhLmJZ5KHUYgyFSw0NmX0wZDHdedFgFtt0SOJd3cZeuywhQPINHIa+ftyTiBx9DNp5Uk8mMCZIwW5U1OtJNMHmFdoqkY+JGNKa16VQ42dugyLOuYgXI53+YVSqPKa72zd0t+dan4QPWct6nTvylWDcDRdMtjK2R+fc0Bf6kKYuV5OogN5EUpe4RBfy6X6GD2DzeQMHcsPM9d9XIZtdGcTWtV3Z3vNKWJmsiFj8ffU4tXDeWSGCIfD9Md9UMYAB0BYr+kAbKAQ==
 Received: from AM6PR03MB5080.eurprd03.prod.outlook.com (2603:10a6:20b:90::20)
  by AS8PR03MB7970.eurprd03.prod.outlook.com (2603:10a6:20b:427::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8356.13; Thu, 16 Jan
- 2025 19:43:13 +0000
+ 2025 19:44:27 +0000
 Received: from AM6PR03MB5080.eurprd03.prod.outlook.com
  ([fe80::a16:9eb8:6868:f6d8]) by AM6PR03MB5080.eurprd03.prod.outlook.com
  ([fe80::a16:9eb8:6868:f6d8%3]) with mapi id 15.20.8356.010; Thu, 16 Jan 2025
- 19:43:13 +0000
+ 19:44:27 +0000
 From: Juntong Deng <juntong.deng@outlook.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -72,10 +72,10 @@ To: ast@kernel.org,
 	void@manifault.com
 Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH bpf-next 2/7] bpf: Add enum bpf_capability
-Date: Thu, 16 Jan 2025 19:41:07 +0000
+Subject: [RFC PATCH bpf-next 3/7] bpf: Add capabilities version of kfuncs registration
+Date: Thu, 16 Jan 2025 19:41:08 +0000
 Message-ID:
- <AM6PR03MB508044E85205F344C4DA4B5F991A2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <AM6PR03MB508089CDC0B4E73ADD67BEEE991A2@AM6PR03MB5080.eurprd03.prod.outlook.com>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <AM6PR03MB5080C05323552276324C4B4C991A2@AM6PR03MB5080.eurprd03.prod.outlook.com>
 References: <AM6PR03MB5080C05323552276324C4B4C991A2@AM6PR03MB5080.eurprd03.prod.outlook.com>
@@ -85,7 +85,7 @@ X-ClientProxiedBy: LO4P302CA0041.GBRP302.PROD.OUTLOOK.COM
  (2603:10a6:600:317::19) To AM6PR03MB5080.eurprd03.prod.outlook.com
  (2603:10a6:20b:90::20)
 X-Microsoft-Original-Message-ID:
- <20250116194112.14824-2-juntong.deng@outlook.com>
+ <20250116194112.14824-3-juntong.deng@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -95,59 +95,60 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM6PR03MB5080:EE_|AS8PR03MB7970:EE_
-X-MS-Office365-Filtering-Correlation-Id: fc354ca9-6584-4aff-5329-08dd3666036e
+X-MS-Office365-Filtering-Correlation-Id: 0d13a809-f710-4a98-d674-08dd36662f40
 X-MS-Exchange-SLBlob-MailProps:
-	znQPCv1HvwU46ctkesNAQSdI89rGQphJEVobBKesdTHfPyAMsuVrUV8yCepNesYZyT+MXfGD6BOlLfAlvnbsREvwmysJBCk/tJyzSoIKXZYTWB59SHlQkRK6Czh/OFW+3+CufSuDxCFHeawShgQfom3wJPAKE3BPVzn89TBeUzCyr6i9tYDyWIw4VsQqpBdyjC2+deXuRivmTLgfh9sGYQOD/8ytv4K2VediD+yGMoZIZFYgXW/7zlRAeydxk8eMz5oCpx2Z9QPpma3Fu76z0tSOb87Bum+gCb6AiwaIxm0tHo+1mJ0gjERYat81aHt26g4XqvMRWgD4RdlIaiplQ7oKOsc3IN1VpirCqK7EKOAsWYTXIWxc2WuiZuGYbTlyLzc7YCEg3CpLkpkS1Etpr5z6bv9K5eV3OtSe4PaSJANQVKFXUcgAQxytT8LODhVFIEnoiFHCq+7P0XGGtdKcsDmtlNntsL5U8gEI52ODG5S9+YFCP5F6GFQb3mZJOoS7twgS6puL/fS5RG8fCixbd6zgiZOwGPnvnK1OLW6RWGxqU158WMWLqErzqBrpDWbhJQ3jpbXdh1kB0sQtjC3AuI4piAG5zf8iLh7KbGz3dUesKKHavSbztlRX9RMvPjmMqtpTTwI72QwuH7RZ+d0oZ3mgWSqbcQw8ziCO1Cf+xi6g6qR5K8TsBE3jAoh9+Nq0RpreMVed04FFgXhkgaktAPve+fig7tPQgoro2Zh8ProyaVWFKV9950KqCx2Wj5x7tvHn7m3+KYg=
+	znQPCv1HvwU46ctkesNAQSdI89rGQphJlfXOd4NGK4dtPeZj1fNJdZ6TCQh/SLkHkYr81oaksgrv+flMfLvYR4XUqmRHYHmB6rojPv6DN+8QIXhFI6M1fpRfPv7NPlIbR6jak0okOndjIkOGRYLMhbUGLBlmfcNERIm6cUJrcZBLAYqxXks8S1BwHao9aBD6x6Rp0Rj2BBZV9gU370RQp1ag9vSVSY567cdJsWcaUgx0EEqysZXu+S9xivRZxMFIRQ14f/Ez4bPpnWEt2oXb+dsxJ8GCVLI3HVPRGFn2yO00XgFTMEygZZA4ZzsgoplAX6STtBkLG6Y2AncGSRbRGz5XAZ5uzPftN0Ax15o5xE0hfHrsg/OZnM1HUb1X4iBF5sWg9JXKjuTYOZrydEzFi6HbjZU+YuA7GrPTDf1/KB5KrI/wQOxO55s8Wr4e8M1nHqJScJpIA5UFfwFvXmjw9C0OjseFSCdXspmjMD+fC0ATwslJGmZ/dtjSuqe6Llr3zf3Nidqeidr3ZWf4mWB7TCKmmYb8O5ogNuogUbb57QYP/+E0YRJP80t6Emh6d7T4GLZOoaMSef5nzVFy5qdlP0oVcplkFMtAck+kc6zOlKbyHrz25tP9Hv/EqV5Rv/z3GpGYn8j445iN2KfgGZ4+B12mOsWLJSN7h8RjPpWHFaTzND7aJIMI7Hc1KBIGEFjzngZTV8o8GSnuGQVbKLOenIaLR5qEAqo+XG5DTEFQaPaS0/ZnkSdZOgeSAmBhz3q1a6ax1qefi/c=
 X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|15080799006|8060799006|5072599009|461199028|19110799003|440099028|3412199025;
+	BCL:0;ARA:14566002|15080799006|8060799006|5072599009|461199028|19110799003|440099028|3412199025|41001999003|12091999003;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?am+r6Q06inOs6MQwJztvw+B0t5FJJ6fgUL0AwJy0cDlDn4TJ15IEv+LoKlew?=
- =?us-ascii?Q?sCuRCwa+YWphVfXDt0wK8Hktho8n2nCZ+MvJq7naQKYPVwDlpx76vjfduSsm?=
- =?us-ascii?Q?CkiqjBi4bqbcihLCYqkUaUHD3NkFrDx5N5ML+xdsm8YddVaPZKckfia6hurb?=
- =?us-ascii?Q?EWw1O7pHhv09MocqtPDMvTghMJoNioicDl6N2fCXkAEB81BRuuoyhprBQ79W?=
- =?us-ascii?Q?VUmTqS09ISaD9de4l+KGDIfiA9yuJQwa0c5FTpMCwR4uyM4bpm+EJTQRBN4F?=
- =?us-ascii?Q?BPkTGxrMfyCU5ECz/fpaxppD38R8xRPb02DS1EuBjXKPdzjwwGWwfsAbj+7M?=
- =?us-ascii?Q?QIDt3AXK2XZDcI3537P9U1UcFrHruZxbGMnYJOAs/eOrFA5Le+CQcLSFKF2c?=
- =?us-ascii?Q?hkqmrqf8lr8QgRPageDSp067c6lai6MvZtLBqNtJjKAVPNw9Ew/PU7tsoGGz?=
- =?us-ascii?Q?0lp8J2oa+Pcx4DzK0otgsq6AQwHNaxs3USkixGt1nhoKIlvHd8HKSyz3YkoN?=
- =?us-ascii?Q?0FbNKWBpTP5xOnxk2EDBHx/yZfhU6chVDo+43lpEzSamUUT3/2NuFp3IGCPB?=
- =?us-ascii?Q?965iy2iyV+f+DpqSLfMwXfr0NxsTjqwr5kJjt1b50FUC2GEDGdcSpirlRtGX?=
- =?us-ascii?Q?zp4CiPmAVSguXIFcLTny9j+7lsM2s0IsFJ7eVrlQ8UvT/VAqupuzfBTtlcu5?=
- =?us-ascii?Q?EGNg8ToBO4AkWNLdlG/RXuASsq2XhIce+bPkzQJZoRGjd8ss2X8Zuc6W5YES?=
- =?us-ascii?Q?ILLDPFEPH9Rnu6x7Rc9p1AJqZs5XZNy7Ai1h35vgKMdEtASm3hXArmyLtS6b?=
- =?us-ascii?Q?8LtPGUBXv1xBXULc1EbdY8t1+qoMWCnYICobV27k0mUEGjmbtxM3BmOPDy7w?=
- =?us-ascii?Q?NGs95jtUhEafj4HUWYjqklnRBB90BIvqLrLtxA8C41/nMtwy5AwtuHGaNhrT?=
- =?us-ascii?Q?nEzAuf/eUmh6zKpKesVSSgHAuarUuLmQKg3fOdXZtgmyUDnMcQAqHIWaPIPO?=
- =?us-ascii?Q?1U9hsAJNZSzbmHJoGXSua2wAG7gpfJfx38a0ViJOgZXTgAg=3D?=
+	=?us-ascii?Q?9rrhcaDe3b2qH4IUJQyljH4Yro9eWxZjEUF56vqVv5uqjyMuF00QHxURlcdl?=
+ =?us-ascii?Q?mOTxweKrH09ZdxUUib5bSz2qTUpJj5KyXqwHr+ZiLSAnJ5tI64TAwycYwCiC?=
+ =?us-ascii?Q?c6iRPuBNpY/CNjz0sStjRTGwAz91lP1lpNNgEZmBSa9NBzZo4EZ759qeEoj4?=
+ =?us-ascii?Q?DLfqifiVjXEcEKRm/60XP6Q/T6It1Dxbk3siZUeXvwkVC1trh7s/DgSGhW9v?=
+ =?us-ascii?Q?b9SPHOs4T6u7QBa0GgzNaT5do7QvBiAV21a37W29vg7Sx1NCC1FXPE4cJh9s?=
+ =?us-ascii?Q?+AuLS9qi6qaosEXr3e/PzGVgoLMV7HCFhXwmrAgAQ4D25Ew4v8BQciqrRe0d?=
+ =?us-ascii?Q?iv80qpBdrFmgnCJrhFMOitHKYl6op/KtcJRTC7w5KbrirAM1LWL3hr9DawdD?=
+ =?us-ascii?Q?JnzS4GEC45X08Us+fVKevcpKSLh9qW5H8qPDe4jC5jtwqOTfzLxpk44Fso0M?=
+ =?us-ascii?Q?QuA1FyKvZ8S5N7qCfvQtBDKSA9TPGMEnHcZ3xdsl23VYsKoHQRdZ8hjjODIM?=
+ =?us-ascii?Q?/kM516fU4neX5g3SceeOQ+nxtVX1++oz1TrfWf1FLM/sbK3gHXtuEZF1NZBy?=
+ =?us-ascii?Q?Li491xwiowTW2GeppELM1DVRY6oE/WdZyc0S++BfNRwjqKKu7XlKpaWXxpOt?=
+ =?us-ascii?Q?6CujPtsHwL3gy93ICLjFTpwPCQTKstydWgMhKnLNRFmi6uu75ZuxYl72tZ0c?=
+ =?us-ascii?Q?7okFiLSPw5T/poryL6wZMWgNtZuILFm2h8n5v50GtXA1WbEMD009Ge2oiii6?=
+ =?us-ascii?Q?2QvMDjM+qz7z4MjROVqTkkONoE7YEhdWzWg7Z5Y5Ri84SbNNi6NpJ7jGqQi1?=
+ =?us-ascii?Q?fyxaPnOy+P8dCH7JbeH17dj/lEqOMjgim2Nykp3ieO3jMPke/mWlJi21pREN?=
+ =?us-ascii?Q?rY1StdRKO6fq3WTRC1aCIks+lWf6Q4FDZPMrSx8/aNdlhhbSYNMDvR9x9nwo?=
+ =?us-ascii?Q?OVeFqHWMR3DjWdLEigyBbgoqdLkY5k0+pPbam0rgfyY1S+xlHmGwRz91zm1M?=
+ =?us-ascii?Q?2/FYZHRm9TwSbAy2fgS3Gm7igftvz0syVZH6yUG419uViGV00FxXxI/JMe11?=
+ =?us-ascii?Q?GEb1vZajURBrEZ70Ie6fAseXOS7hPUuFupndcGAFf8dqscwfmQM=3D?=
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?huQOxEplClX7DqQFmzWOQrrs6s0QuSGWszmfF18I9EPv8iYyWTYXKKfJIVvL?=
- =?us-ascii?Q?jsmggIBvPFfDy7yYENZk8zpn7CHQDDf+ZziqPYSLbTBUZPKmenExCdUkNwxD?=
- =?us-ascii?Q?k2iahPT1HxItWKoStqkE9MscyWcsQDce0Gj4lbT8OqI79llEiMUfXyDSqTVC?=
- =?us-ascii?Q?RDuHlRj3+b544wEFX8zS8US2WxCSu6B9/BYAtH25IsN6oqAFv/qrzGJsWEkU?=
- =?us-ascii?Q?Qza67kfUte7QczZ39HyDkggMkicj1ihn9rABj/0WYQGaOt/KmZiEuWnULZ1C?=
- =?us-ascii?Q?xTOhX6QYJEbDMZxmB2Tt7mzMv5KZB/mPsWMAMje8IPfHoMR58a/ufivyxhu2?=
- =?us-ascii?Q?JkOqfQC2M5m3Rqt7NDfSistxDWXAO/nJY7xjheNzgQC9KhT/6JikL7cQkwx3?=
- =?us-ascii?Q?byDqfUEfbaP28sve/WevlhATFjvaynZmQYvTahmtqaql5ih1b/D2TFE2d/f4?=
- =?us-ascii?Q?znrifzASlbU7DKse7XB5RSUXl8f+HgIgGfWIdwQ1yhmsLSeehkeQdJOO0HSL?=
- =?us-ascii?Q?4qFGuGIUKfe6rUcFY56QaY79qjFUzLKrsj0ejYh2mrH46RaUp0jqBZd6G3mC?=
- =?us-ascii?Q?R7cz+pfDpymT4QmkP9iyFYv5Or42EupNySHDkbop3sv+k4ldHzcGv9kGZYz5?=
- =?us-ascii?Q?L6k+aoJ/U7WoapA7jEkyCrecQc+bi/OjIIqGtjHIpkB0B5f7Qxwjj0Up/9KC?=
- =?us-ascii?Q?hB17F94QAzr8ty2M+f6FXSthCh1RuDCc2eIOkxGxBoWQI+fXvVCEvy5/nvRj?=
- =?us-ascii?Q?ilB4zb+dWs1QXfMprZP3eel+B7i4CAH4SyBMUb3Snxgej/4U9oZW0gaZ5Ek2?=
- =?us-ascii?Q?J50VF43ub5ap9aldS4EqUCygL4ZKVh4M7DS8LTptfpy3pZ4jZnc0n1hRUIKy?=
- =?us-ascii?Q?dn6XzplHe+oMIMIZynTlVrjfroE/Ui8l7tUXp2cj2oyznQAlLoFRqo+1hcca?=
- =?us-ascii?Q?Zfj14s3KRJuj129wrWJmcqaZSI3U4w70qeUIQUGZCHiDHotSmR+qvZEMB5MM?=
- =?us-ascii?Q?v1CwygKOz4dEoXGqYq6IZhW7vecCtQ5OZMb1Mr1wyYc6MzSqgvih67DHPa8Y?=
- =?us-ascii?Q?EfWoMPEle8aIyP1dOpmadyFggfKQRZUcHf2gL9cJQeYGT2afYUUeTwrzUiid?=
- =?us-ascii?Q?1te4e78iq9FaM11X/VjXxWVlFYTDYP4tScVS3pZ4YoEOoIvyZWnZ7ED1ZQxm?=
- =?us-ascii?Q?1odmYMMeECnHKzcWMAqdbFMleASz667JBRZuTLDs+aNskUwhNp1HnlHQiGrE?=
- =?us-ascii?Q?d091kaOj1oNu9KMomE9H?=
+	=?us-ascii?Q?tLeEGLbD6tOSmpGXxK8kEDsiCSzx5jEklF6t8IQBKOf2Difpt5exDIx8kW8K?=
+ =?us-ascii?Q?OjhM4vgLWyB899wQolNnQzuMtGMvs+rhPNH1uzkxOCyKE7G/bOFvUOMPP0N3?=
+ =?us-ascii?Q?jgPZtSwNZw171kXefDAyX39/zLfu48y6n3oYCxeHdtb41PM6B9ESPrXsc7S0?=
+ =?us-ascii?Q?bERhmHn8kknuMEtUlxI3E4/JD3EHa3Sew7sjzxWyQQODy7By1HK9aSyPl0H/?=
+ =?us-ascii?Q?UqaFtdyBzd961x4ufKRb9GpCDtdGZ+5yg9rGWmYNq3N1Srd6AiU9oZOFKiMX?=
+ =?us-ascii?Q?b0heKxLIDlZ0fep3Od8uUGPpwJzpAaRT29TxZa2hTJosVnPV7NBwO8+AX0gI?=
+ =?us-ascii?Q?b+82y1pX+0LEnYwFh49ToyPmoR6SF5BSdmjGHeFEtBlKOd5dJSwByWuy66QE?=
+ =?us-ascii?Q?z3Qqm+wd44/giaVIbg4y7Y5IQ3rb5xqJMjRdET3mxPGhKxjucv5FN3Cxmwlw?=
+ =?us-ascii?Q?+8QNGrzzc58GuXZLEunH/XMlsQu94/f1jUSzZmO9Mh3kOSDlcIvwIizbuhnx?=
+ =?us-ascii?Q?THuKe08jCvgjZQRNkjy1Qxm9VU/94CmAfid7TnOiGZ140G7NesKgnDVmj3Yx?=
+ =?us-ascii?Q?B9HG0S0yZWRO9mZGMN5VXoGxShClm/5SCk0ZE/e9qM0piKUN3k1pEuwuCNDJ?=
+ =?us-ascii?Q?3SwnYA2d/jnyeaFROBQL1NvULMX75NRBdzHTxgTsROXjgOXvoTnVm7x4mMWy?=
+ =?us-ascii?Q?K7Ou4t842SS1wI2RwIv7mMMCXFkOgg5gL/nwmGpHeSdRIwkpd/atOSVEI+uo?=
+ =?us-ascii?Q?MCu6Q8qvAY8Idftkx+NaEQTvb4J5W0MWQgal6Ula6h+vtNn9BdQORdzhumgl?=
+ =?us-ascii?Q?g1t77ivOIZgtArLQ1tBaWCQi2FnWbOHggfbAGvcHA6bc7tD85hA9NNQjI7EN?=
+ =?us-ascii?Q?L7IikRhL0ATA4sPLojRta/4IJj+6WnpJbDOPI03T43SqV1RX/RsaPChoAbw5?=
+ =?us-ascii?Q?rjd8xYZcQ+R3++rRk7rgBSVT+DTwGPdFADEeSRh7Llf21VSTE8i4JILhBQvC?=
+ =?us-ascii?Q?9mTLRODirR23hLenbLhJc+eNa99RoeEkDnYMyg4WrPfOMAAAUFtuGuBUnX3j?=
+ =?us-ascii?Q?Xv/Tuyxc84dcofIlK27x/oKkaLDfIG0yEjHFehet3kF9r31YZe8HFQRds6na?=
+ =?us-ascii?Q?uWdxKXy/WbxlME9+l1/dvvV6YUcA2O8sEmiLNny8ne7jQMp4CQfdHSE3o7p9?=
+ =?us-ascii?Q?uF/haN5vXvE+UrRStDAt3t2xM3pFl0z9+kYzkfqi9+6oovC2SXAnRlM9ez5q?=
+ =?us-ascii?Q?g4bu5EQgG6FutA5BAExr?=
 X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc354ca9-6584-4aff-5329-08dd3666036e
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0d13a809-f710-4a98-d674-08dd36662f40
 X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5080.eurprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2025 19:43:13.1296
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2025 19:44:26.9145
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -155,40 +156,269 @@ X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
 	00000000-0000-0000-0000-000000000000
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR03MB7970
 
-This patch adds enum bpf_capability, currently only for proof
-of concept.
+This patch adds capabilities versions of kfuncs registration related
+functions and data structures.
+
+btf_populate_kfunc_set_cap, __btf_kfunc_id_set_contains_cap,
+__register_btf_kfunc_id_set_cap, and register_btf_kfunc_id_set_cap,
+corresponding to btf_populate_kfunc_set, __btf_kfunc_id_set_contains,
+__register_btf_kfunc_id_set, and register_btf_kfunc_id_set respectively.
+
+Note that these are proof-of-concept versions of the functions. In real
+implementation, the original functions should be modified directly.
 
 Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
 ---
- include/uapi/linux/bpf.h | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ include/linux/btf.h |   8 ++-
+ kernel/bpf/btf.c    | 165 +++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 170 insertions(+), 3 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 2acf9b336371..94c21d4eb786 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1058,6 +1058,21 @@ enum bpf_prog_type {
- 	__MAX_BPF_PROG_TYPE
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index 2a08a2b55592..71d9658ee328 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -569,11 +569,14 @@ const char *btf_str_by_offset(const struct btf *btf, u32 offset);
+ struct btf *btf_parse_vmlinux(void);
+ struct btf *bpf_prog_get_target_btf(const struct bpf_prog *prog);
+ u32 *btf_kfunc_id_set_contains(const struct btf *btf, u32 kfunc_btf_id,
+-			       const struct bpf_prog *prog);
++			       const struct bpf_prog *prog,
++			       u32 *capability);
+ u32 *btf_kfunc_is_modify_return(const struct btf *btf, u32 kfunc_btf_id,
+ 				const struct bpf_prog *prog);
+ int register_btf_kfunc_id_set(enum bpf_prog_type prog_type,
+ 			      const struct btf_kfunc_id_set *s);
++int register_btf_kfunc_id_set_cap(enum bpf_capability capability,
++				  const struct btf_kfunc_id_set *s);
+ int register_btf_fmodret_id_set(const struct btf_kfunc_id_set *kset);
+ s32 btf_find_dtor_kfunc(struct btf *btf, u32 btf_id);
+ int register_btf_id_dtor_kfuncs(const struct btf_id_dtor_kfunc *dtors, u32 add_cnt,
+@@ -632,7 +635,8 @@ static inline const char *btf_name_by_offset(const struct btf *btf,
+ }
+ static inline u32 *btf_kfunc_id_set_contains(const struct btf *btf,
+ 					     u32 kfunc_btf_id,
+-					     struct bpf_prog *prog)
++					     struct bpf_prog *prog,
++					     u32 *capability)
+ 
+ {
+ 	return NULL;
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 8396ce1d0fba..535074527e80 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -236,6 +236,7 @@ struct btf_kfunc_hook_filter {
+ struct btf_kfunc_set_tab {
+ 	struct btf_id_set8 *sets[BTF_KFUNC_HOOK_MAX];
+ 	struct btf_kfunc_hook_filter hook_filters[BTF_KFUNC_HOOK_MAX];
++	struct btf_id_set8 *cap_poc_set;
  };
  
-+enum bpf_capability {
-+	BPF_CAP_NONE = 0,
-+	BPF_CAP_TEST_1,
-+	BPF_CAP_TEST_2,
-+	BPF_CAP_TEST_3,
-+	BPF_CAP_SCX_ANY,
-+	BPF_CAP_SCX_KF_UNLOCKED,
-+	BPF_CAP_SCX_KF_CPU_RELEASE,
-+	BPF_CAP_SCX_KF_DISPATCH,
-+	BPF_CAP_SCX_KF_ENQUEUE,
-+	BPF_CAP_SCX_KF_SELECT_CPU,
-+	BPF_CAP_SCX_KF_REST,
-+	__MAX_BPF_CAP
-+};
+ struct btf_id_dtor_kfunc_tab {
+@@ -8483,6 +8484,96 @@ static int btf_populate_kfunc_set(struct btf *btf, enum btf_kfunc_hook hook,
+ 	return ret;
+ }
+ 
++static int btf_populate_kfunc_set_cap(struct btf *btf, enum bpf_capability capability,
++				  const struct btf_kfunc_id_set *kset)
++{
++	struct btf_id_set8 *add_set = kset->set;
++	bool vmlinux_set = !btf_is_module(btf);
++	struct btf_kfunc_set_tab *tab;
++	struct btf_id_set8 *set;
++	u32 set_cnt, i;
++	int ret;
 +
- enum bpf_attach_type {
- 	BPF_CGROUP_INET_INGRESS,
- 	BPF_CGROUP_INET_EGRESS,
++	if (capability >= __MAX_BPF_CAP) {
++		ret = -EINVAL;
++		goto end;
++	}
++
++	if (!add_set->cnt)
++		return 0;
++
++	tab = btf->kfunc_set_tab;
++
++	if (!tab) {
++		tab = kzalloc(sizeof(*tab), GFP_KERNEL | __GFP_NOWARN);
++		if (!tab)
++			return -ENOMEM;
++		btf->kfunc_set_tab = tab;
++	}
++
++	set = tab->cap_poc_set;
++	/* Warn when register_btf_kfunc_id_set is called twice for the same hook
++	 * for module sets.
++	 */
++	if (WARN_ON_ONCE(set && !vmlinux_set)) {
++		ret = -EINVAL;
++		goto end;
++	}
++
++	/* In case of vmlinux sets, there may be more than one set being
++	 * registered per hook. To create a unified set, we allocate a new set
++	 * and concatenate all individual sets being registered. While each set
++	 * is individually sorted, they may become unsorted when concatenated,
++	 * hence re-sorting the final set again is required to make binary
++	 * searching the set using btf_id_set8_contains function work.
++	 *
++	 * For module sets, we need to allocate as we may need to relocate
++	 * BTF ids.
++	 */
++	set_cnt = set ? set->cnt : 0;
++
++	if (set_cnt > U32_MAX - add_set->cnt) {
++		ret = -EOVERFLOW;
++		goto end;
++	}
++
++	if (set_cnt + add_set->cnt > BTF_KFUNC_SET_MAX_CNT) {
++		ret = -E2BIG;
++		goto end;
++	}
++
++	/* Grow set */
++	set = krealloc(tab->cap_poc_set,
++		       offsetof(struct btf_id_set8, pairs[set_cnt + add_set->cnt]),
++		       GFP_KERNEL | __GFP_NOWARN);
++	if (!set) {
++		ret = -ENOMEM;
++		goto end;
++	}
++
++	/* For newly allocated set, initialize set->cnt to 0 */
++	if (!tab->cap_poc_set)
++		set->cnt = 0;
++	tab->cap_poc_set = set;
++
++	/* Concatenate the two sets */
++	memcpy(set->pairs + set->cnt, add_set->pairs, add_set->cnt * sizeof(set->pairs[0]));
++	/* Now that the set is copied, update with relocated BTF ids */
++	for (i = set->cnt; i < set->cnt + add_set->cnt; i++) {
++		set->pairs[i].id = btf_relocate_id(btf, set->pairs[i].id);
++		set->pairs[i].capability = capability;
++	}
++
++	set->cnt += add_set->cnt;
++
++	sort(set->pairs, set->cnt, sizeof(set->pairs[0]), btf_id_cmp_func, NULL);
++
++	return 0;
++end:
++	btf_free_kfunc_set_tab(btf);
++	return ret;
++}
++
+ static u32 *__btf_kfunc_id_set_contains(const struct btf *btf,
+ 					enum btf_kfunc_hook hook,
+ 					u32 kfunc_btf_id,
+@@ -8511,6 +8602,30 @@ static u32 *__btf_kfunc_id_set_contains(const struct btf *btf,
+ 	return id + 1;
+ }
+ 
++static u32 *__btf_kfunc_id_set_contains_cap(const struct btf *btf,
++					u32 kfunc_btf_id,
++					const struct bpf_prog *prog,
++					u32 *capability)
++{
++	struct btf_id_set8 *set;
++	u32 *id;
++
++	if (!btf->kfunc_set_tab)
++		return NULL;
++
++	set = btf->kfunc_set_tab->cap_poc_set;
++	if (!set)
++		return NULL;
++	id = btf_id_set8_contains(set, kfunc_btf_id);
++	if (!id)
++		return NULL;
++	/* The capability is next to flags */
++	if (capability)
++		*capability = *(id + 2);
++	/* The flags for BTF ID are located next to it */
++	return id + 1;
++}
++
+ static int bpf_prog_type_to_kfunc_hook(enum bpf_prog_type prog_type)
+ {
+ 	switch (prog_type) {
+@@ -8565,12 +8680,20 @@ static int bpf_prog_type_to_kfunc_hook(enum bpf_prog_type prog_type)
+  */
+ u32 *btf_kfunc_id_set_contains(const struct btf *btf,
+ 			       u32 kfunc_btf_id,
+-			       const struct bpf_prog *prog)
++			       const struct bpf_prog *prog,
++			       u32 *capability)
+ {
+ 	enum bpf_prog_type prog_type = resolve_prog_type(prog);
+ 	enum btf_kfunc_hook hook;
+ 	u32 *kfunc_flags;
+ 
++	kfunc_flags = __btf_kfunc_id_set_contains_cap(btf, kfunc_btf_id, prog, capability);
++	if (kfunc_flags)
++		return kfunc_flags;
++
++	if (capability)
++		*capability = BPF_CAP_NONE;
++
+ 	kfunc_flags = __btf_kfunc_id_set_contains(btf, BTF_KFUNC_HOOK_COMMON, kfunc_btf_id, prog);
+ 	if (kfunc_flags)
+ 		return kfunc_flags;
+@@ -8611,6 +8734,31 @@ static int __register_btf_kfunc_id_set(enum btf_kfunc_hook hook,
+ 	return ret;
+ }
+ 
++static int __register_btf_kfunc_id_set_cap(enum bpf_capability capability,
++					   const struct btf_kfunc_id_set *kset)
++{
++	struct btf *btf;
++	int ret, i;
++
++	btf = btf_get_module_btf(kset->owner);
++	if (!btf)
++		return check_btf_kconfigs(kset->owner, "kfunc");
++	if (IS_ERR(btf))
++		return PTR_ERR(btf);
++
++	for (i = 0; i < kset->set->cnt; i++) {
++		ret = btf_check_kfunc_protos(btf, btf_relocate_id(btf, kset->set->pairs[i].id),
++					     kset->set->pairs[i].flags);
++		if (ret)
++			goto err_out;
++	}
++
++	ret = btf_populate_kfunc_set_cap(btf, capability, kset);
++err_out:
++	btf_put(btf);
++	return ret;
++}
++
+ /* This function must be invoked only from initcalls/module init functions */
+ int register_btf_kfunc_id_set(enum bpf_prog_type prog_type,
+ 			      const struct btf_kfunc_id_set *kset)
+@@ -8630,6 +8778,21 @@ int register_btf_kfunc_id_set(enum bpf_prog_type prog_type,
+ }
+ EXPORT_SYMBOL_GPL(register_btf_kfunc_id_set);
+ 
++int register_btf_kfunc_id_set_cap(enum bpf_capability capability,
++				  const struct btf_kfunc_id_set *kset)
++{
++	/* All kfuncs need to be tagged as such in BTF.
++	 * WARN() for initcall registrations that do not check errors.
++	 */
++	if (!(kset->set->flags & BTF_SET8_KFUNCS)) {
++		WARN_ON(!kset->owner);
++		return -EINVAL;
++	}
++
++	return __register_btf_kfunc_id_set_cap(capability, kset);
++}
++EXPORT_SYMBOL_GPL(register_btf_kfunc_id_set_cap);
++
+ /* This function must be invoked only from initcalls/module init functions */
+ int register_btf_fmodret_id_set(const struct btf_kfunc_id_set *kset)
+ {
 -- 
 2.39.5
 
