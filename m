@@ -1,118 +1,208 @@
-Return-Path: <bpf+bounces-49070-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49071-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA868A14069
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 18:12:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7D48A140C6
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 18:22:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E37BD1679AF
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 17:12:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 865B63AA91D
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2025 17:21:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8732722CBF5;
-	Thu, 16 Jan 2025 17:12:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4C3022F152;
+	Thu, 16 Jan 2025 17:20:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ffNYlZMp"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nHCLKFIT";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="m1i1T6iP";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AsAeUiTf";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="u6zrTRJl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D82115442C;
-	Thu, 16 Jan 2025 17:12:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCBE222D4DC;
+	Thu, 16 Jan 2025 17:20:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737047532; cv=none; b=Oqhow7wPFWje7JdWFB0xcx5rfA48b3bsN7aMGeViTAtr32OqQYKZIA8YAJ55LjdTM8OKdoOK5lPIAowGYTxJy3fjNt4hRNbhYlEJzmu9BbLJ1vZ+077KSKSP86xB906YAGOQ2NzybQRiVZOmuXaSeDoinS416pJ60vuUmgBt3eM=
+	t=1737048022; cv=none; b=dLRVIgrM5eQ2ZsqNtFxjjTQ4JMFHa13/dLsu9/2rfXeqG8bPEntJvdZjG08nGi+OQRBHZdg6Zsd9NhKVCn/vmgt+A9BAfiZ+Tz0M87necapG2p9mjJq17g9xa9AmUMetI5gOVNElESG/J29oPEfh/13nuig3m6zLm4pEzDsfLz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737047532; c=relaxed/simple;
-	bh=1ZjDAefkkir6NuPWAVn/XE5Z9Yh9OUEFfyK1SEkrDYA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NF2PSjQQ0e2CSG2omNJU1HRfixax0GcXDxd7XRo+cogUk6QTTmbDKyHWVdDb+2wLoHBE03XhsS9jn7LiB5wcJUu56UcDVvNEaHkU+ngnfDKjn7/F5TMyG1I/4hIaeNbJJjmJRPcIAJpPeRa+a66uzbul3/qKXJ+ZjKRw2qkMoVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ffNYlZMp; arc=none smtp.client-ip=209.85.160.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-29fe83208a4so691405fac.0;
-        Thu, 16 Jan 2025 09:12:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737047529; x=1737652329; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1ZjDAefkkir6NuPWAVn/XE5Z9Yh9OUEFfyK1SEkrDYA=;
-        b=ffNYlZMpdNu0TWuAL6fqCLoZlsBQ10QisrHG5EWKt0VwQMvA8T5ey9sfc0eoE3wdXW
-         y//6Fw7EMxbWqAhHlwpzBbBMPr4xqp9eP1MyQXf/K5eCyoPtSnDmcdLDISMeiThyv4DZ
-         Cebbnl8P5US2YenMePO2s7vxL+sVvA6Q77wy+Vmeb6hxp8JYrt0/GMaiwANJad/TXhf7
-         KAeoqFEl9Eiy2TGkJWPrUherGbHZdu0FyCZkkkwrLRvZ7OAfyvbJMC+U4hCBUOybtnKY
-         td7ZJalKiBCNVayEy6LhZs8CciuignFlrVhZ0prK5HllwhJ6oFk4ObSqhVzeQaP+3M9t
-         rt3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737047529; x=1737652329;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1ZjDAefkkir6NuPWAVn/XE5Z9Yh9OUEFfyK1SEkrDYA=;
-        b=XI7CN65gY41ovypd8JIQBVZiuM8xey0FRWp1nLqKdZwkMM7UJJJo5eMUWynoSF1NHO
-         rFap6ddlbxTsivj/e2pReQkMAnSOiGnWq8Kr5141jP16Ycj1aXlRz5QWEfxE0ejPWbeY
-         vu0soxUmvFDjyCHQwDKxhZNX56nJrSunKNgy/pLP3cux+fKo/XAdS2EzLCGP4pdRJgXO
-         QMDcadtJ6ZmSGQoCf015LXFKobSdJn6gUQPzCJtldYcLp9pKbXD67xh48MWpUvpyvjaF
-         fJnnXGbbRwO6D0zc70Te0y4f9v6SKSrMrlgypAewe2gJN7Nx1Z9bePVl+zW9MlrtzQZ3
-         KbjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVJAa7g1V2mf+x0+cMb6ukGR7OyA8x1QuecEtZ3MhkH7cSK0GhgN0ZGh/bHQqX/Knr9Bw/CjoGDysEd@vger.kernel.org, AJvYcCW+PNCYlzwCWZg2ueMcFzQSpEpNRHPMYpSsbBp39/2e4hBFMs2z3swAhtGkzrY/Ns8AGk274eioA2VbUxp/IPPohGBN@vger.kernel.org, AJvYcCW7CttuZzwQea8HHAStYIogS9V3wlDcHdmUZhe/1ZLKbWqh0Z1Lkx9DsInQCYC8/xhKNm0=@vger.kernel.org, AJvYcCWBw4+qDpuAnvmzauoijEbmNF9fsKrNLbx3TBMrwJdq+UK7Tfm2ZlOHMc+KQtYGjtNMnK57HuLS6x/p9kOR@vger.kernel.org
-X-Gm-Message-State: AOJu0YzpgZ2C3Snvu9n4N0pv4ZhrPHZnz5vNCa/77Sl69u6xrrMbp/ps
-	7wq5/bPFnT3GD7vami0mBaI6VIk3YC28ld24aFErlPHvSrMCxBCtLr/gNcu+l4fJ2zMsBh6Lh5u
-	YMyXqAyuaYj70NVELYJu3XjCMLQU=
-X-Gm-Gg: ASbGncucjB7F/pYh12Rm13kNV7bJTbIpGNYih8kCRCx/iXArI8YJuznYhRg6Qfq/HGP
-	fQ0uC3dsvG+e+SHan8so1UhN6li3RIYqkYqBntw==
-X-Google-Smtp-Source: AGHT+IFE5YOiTCzwej2+zI3c0cxmQVw/BAMwETsC/4JHp3F3p0g2wuJSUxCQg2x7/drM7Z1WV0NDYdh2JHNE1GOSkcA=
-X-Received: by 2002:a05:6870:d14a:b0:2a7:8b78:e902 with SMTP id
- 586e51a60fabf-2b186a772c9mr5104602fac.7.1737047529676; Thu, 16 Jan 2025
- 09:12:09 -0800 (PST)
+	s=arc-20240116; t=1737048022; c=relaxed/simple;
+	bh=ksGBLpr3OS3gcF/ZardsT0Q9A/X1TkwnEo8A2F6Hg6g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pJoUjg5NjGgHjIJAmcEYnBTDOk44ccHjyHg2Xu1nDpo5Eiz01g47UEJ8tzlUgEo2UZNiK8r8Xm72XsAdJTpSUCxc4dGwPMX0H8NwtroDXIN6sNv16KfPYYfvh0DGsLmY0UUjIIGFtT/U7Tz1+6PslR9Mt1jgfGUsH8uovJVb/2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=nHCLKFIT; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=m1i1T6iP; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AsAeUiTf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=u6zrTRJl; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 57A911F37C;
+	Thu, 16 Jan 2025 17:20:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1737048017; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yBNa3EjadDudFIr8kxkw3Bz23nyM/hLfUpkyiAgFfAE=;
+	b=nHCLKFIThZvYafca2ocZxgeRKIuOetYrNKOExTn22vK++PBO3cTxRKMN3nteUQGzDnqLW5
+	7z9+hNcxWsN1MzMfGuO8RZTwcbNSG8zO0JJE7j2/7FivglqtempOLO+lb6mTY8q6/jM+TW
+	786rjU5BUlwQSizyoreAjkMaNVd8jZI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1737048017;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yBNa3EjadDudFIr8kxkw3Bz23nyM/hLfUpkyiAgFfAE=;
+	b=m1i1T6iPPvNqpTYh8MC5RsSGUisNsU3foEvBD3ebpElNlgtdE2HrE0HAJ2HhcbF0xsRIP9
+	zCzhu3Einy/qZnDw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=AsAeUiTf;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=u6zrTRJl
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1737048016; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yBNa3EjadDudFIr8kxkw3Bz23nyM/hLfUpkyiAgFfAE=;
+	b=AsAeUiTf0jUrM6W72rPc7VBybFx71g/wX3n69IYjwfz7UriWnsIIgoz6UxpdPhd425za3+
+	oEU6Mrw5E1wjyw4XYegfjMXu6rRIlM0tFV0Kbn/hmMclsQcO7HDDVth4+0c67cvWO7KC9G
+	q6YzA3RFgkUp3Aqo5z1KBa2oebtSrzs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1737048016;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yBNa3EjadDudFIr8kxkw3Bz23nyM/hLfUpkyiAgFfAE=;
+	b=u6zrTRJlibqDDUyHjlDwZf44t6WP1cfprQ+zX0gSfSJ6PiXvseBX9sSshKAswDI8MkL63P
+	1iF2Xkq9/TTKXYCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 46B3913332;
+	Thu, 16 Jan 2025 17:20:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id wrc7EdA/iWeqFQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 16 Jan 2025 17:20:16 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id A44A1A08E0; Thu, 16 Jan 2025 18:20:15 +0100 (CET)
+Date: Thu, 16 Jan 2025 18:20:15 +0100
+From: Jan Kara <jack@suse.cz>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: lsf-pc@lists.linux-foundation.org, 
+	Linux Filesystem Development List <linux-fsdevel@vger.kernel.org>, bpf@vger.kernel.org
+Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC] time to reconsider tracepoints in
+ the vfs?
+Message-ID: <t46oippyv2ngyndiprssjxnw3s76gd47qt2djruonbaxjypwjn@epxwtyrqjdya>
+References: <20250116124949.GA2446417@mit.edu>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250114172519.GB29305@redhat.com> <Z4eBs0-kJ3iVZjXL@krava>
- <20250115150607.GA11980@redhat.com> <CAADnVQJjroiR0SRp69f1NbomEH-riw53e_-TioqT4aEt3GSKGg@mail.gmail.com>
- <20250115184011.GA21801@redhat.com> <CAHsH6Gu1kXZ=m3eoTeZcZ9n=n2scxw7z074PnY5oTsXfTqZ=vQ@mail.gmail.com>
- <20250115190304.GB21801@redhat.com> <CAHsH6Gtd5kYPife3hK+uKafjBMx=-23UzvQgnOnqNDzSZgHyqw@mail.gmail.com>
- <20250116143956.GD21801@redhat.com> <CAHsH6GukV+ydR+hw_-RF=0=_x6aO7xZzkCmbc53=Pk0Kv=8hUQ@mail.gmail.com>
- <20250116153044.GF21801@redhat.com>
-In-Reply-To: <20250116153044.GF21801@redhat.com>
-From: Eyal Birger <eyal.birger@gmail.com>
-Date: Thu, 16 Jan 2025 09:11:57 -0800
-X-Gm-Features: AbW1kvYwkSvS83x9824ZSnXRqsuwoFy-nzCc8TqU2Npnmap9Y_QqEQG9C9BBJnY
-Message-ID: <CAHsH6GshxQxw2euH_v+cvoCk=17GLQXgogUUWzLmo2P=gO9oLg@mail.gmail.com>
-Subject: Re: Crash when attaching uretprobes to processes running in Docker
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Jiri Olsa <olsajiri@gmail.com>, 
-	Aleksa Sarai <cyphar@cyphar.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, BPF-dev-list <bpf@vger.kernel.org>, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>, 
-	Linux API <linux-api@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, "rostedt@goodmis.org" <rostedt@goodmis.org>, rafi@rbk.io, 
-	Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250116124949.GA2446417@mit.edu>
+X-Rspamd-Queue-Id: 57A911F37C
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	SUBJECT_ENDS_QUESTION(1.00)[];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	RCPT_COUNT_THREE(0.00)[4];
+	MISSING_XM_UA(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Thu, Jan 16, 2025 at 7:31=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wro=
-te:
->
-> On 01/16, Eyal Birger wrote:
-> >
-> > Ack. I agree.
-> >
-> > Do you want to send a formal patch, or should I?
->
-> Please send the patch ;)
+On Thu 16-01-25 07:49:49, Theodore Ts'o wrote:
+> Historically, we have avoided adding tracepoints to the VFS because of
+> concerns that tracepoints would be considered a userspace-level
+> interface, and would therefore potentially constrain our ability to
+> improve an interface which has been extremely performance critical.
+> 
+> I'd like to discuss whether in 2025, it's time to reconsider our
+> reticence in adding tracepoints in the VFS layer.  First, while there
+> has been a single incident of a tracepoint being used by programs that
+> were distributed far and wide (powertop) such that we had to revert a
+> change to a tracepoint that broke it --- that was ***14** years ago,
+> in 2011.  Across multiple other subsystems, many of
+> which have added an extensive number of tracepoints, there has been
+> only a single problem in over a decade, so I'd like to suggest that
+> this concern may have not have been as serious as we had first
+> thought.
+> 
+> In practice, most tracepoints are used by system administrators and
+> they have to deal with enough changes that break backwards
+> compatibility (e.g., bash 3 ->bash 4, bash 4 -> bash 5, python 2.7 ->
+> python 3, etc.) that the ones who really care end up using an
+> enterprise distribution, which goes to extreme length to maintain the
+> stable ABI nonsense.  Maintaining tracepoints shouldn't be a big deal
+> for them.
+> 
+> Secondly, we've had a very long time to let the dentry interface
+> mature, and so (a) the fundamental architecture of the dcache hasn't
+> been changing as much in the past few years, and (b) we should have
+> enough understanding of the interface to understand where we could put
+> tracepoints (e.g., close to the syscall interface) which would make it
+> much less likely that there would be any need to make
+> backwards-incompatible changes to tracepoints.
+> 
+> The benefits of this would be to make it much easier for users,
+> developers, and kernel developers to use BPF to probe file
+> system-related activities.  Today, people who want to do these sorts
+> of things need to use fs-specific tracepoints (for example, ext4 has a
+> very large number of tracepoints which can be used for this purpose)
+> but this locks users into a single file system and makes it harder for
+> them to switch to a different file system, or if they want to use
+> different file systems for different use cases.
+> 
+> I'd like to propose that we experiment with adding tracepoints in
+> early 2025, so that at the end of the year the year-end 2025 LTS
+> kernels will have tracepoints that we are confident will be fit for
+> purpose for BPF users.
 
-Will do. If it's ok I'll put you in a "Suggested-by" tag (or
-co-developed - as you see fit).
+So I personally have nothing against tracepoints in VFS. Occasionally they
+are useful and so far userspace was pretty much accepting the fact that
+they are a moving target. That being said with BPF and all the tooling
+around it (bcc, bpftrace) userspace has in my experience very much adapted
+to just attaching BPF programs to random functions through kprobes so they
+are not even relying that much on tracepoints anymore. Just look through
+bcc scripts collection... I have myself adopted to a lack of trace points
+in VFS by just using kprobes. The learning curve is a bit steeper but after
+that it's not a big deal.  I'm watching with a bit of concern developments
+like BTF which try to provide some illusion of stability where there isn't
+much of it. So some tool could spread wide enough without getting regularly
+broken that breaking it will become a problem. But that is not really the
+topic of this discussion.
 
-Eyal.
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
