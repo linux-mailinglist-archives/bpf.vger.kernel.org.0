@@ -1,112 +1,124 @@
-Return-Path: <bpf+bounces-49216-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49217-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDAD5A1560A
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 18:53:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 314F0A15612
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 18:55:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AB413A34A2
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 17:53:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A38851887319
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 17:55:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BE8C1A2630;
-	Fri, 17 Jan 2025 17:53:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A3B31A2545;
+	Fri, 17 Jan 2025 17:55:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TlOoAvmQ"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="sL4F5FYQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDDA286324;
-	Fri, 17 Jan 2025 17:53:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8541A23A9
+	for <bpf@vger.kernel.org>; Fri, 17 Jan 2025 17:55:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.165.51.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737136429; cv=none; b=CP/73HzPYED7nOsrYC25GYKpVhN4JtRhebXdmOk+WzTziiLstwsHgS2LNeyNsDuz/K7xmviZdGVMsp39LDEitvVgN0mrUXYLbKNEY9j39XhvsWgApj2dVeYMJWZ362+1489QVHyCgbaWtcI92a2C4ogh2zkGxsSDWcGm6vk5flU=
+	t=1737136545; cv=none; b=UH/+IfNkuC71NzZzhonzXspY6qEiqWqAWo6FKoQbhLDCZgFizrcf3M+aMY3uKyJcKZWlU0jA3aymdsRe4k5hXFDoX5BsHSypJvglX5LYSnqJf4kJ639SYqhkAYTViWGFzEZWrZTLBkWHzhwaXtxxTEW5pSa/fdp5YVezDdeYmMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737136429; c=relaxed/simple;
-	bh=Vi9ngEbEEJ9tE/5gbN1CRVN0AigKlK07eDeAXByiJfc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Lp7lcedmK63FHz68m8TfUJ45cGWkiJGWJfZZ1gLHbSpGEpppSocG87HbKKYFjRdyN8L00A6O5ejwpBKuWpY6HGdSaHdXTgMQrving89kSaCml0PhoCvab5aFmHh8snFmZmBoyCG3rE0GifoZl0kMAUelqkpSuBxanS73ojhQsGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TlOoAvmQ; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2f43d17b0e3so4390891a91.0;
-        Fri, 17 Jan 2025 09:53:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737136427; x=1737741227; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Vi9ngEbEEJ9tE/5gbN1CRVN0AigKlK07eDeAXByiJfc=;
-        b=TlOoAvmQxM/t3ICGddHl1Xl5uhCGJsMsp7nfDnHWWYZUjAJKtwR7G3F1Vcgyy7NmEY
-         EkPOlZ+GVuUBnuq2JHHNd2WHT9HKo2coiKr2UdUU2LP8skyDxXzJ+hplrkAAlaVnCKx8
-         WbOjWBFR41OsnQvC3HWmAqf3grbraC+H8fP1jE7BDdowHn4mJ1uuITKPN4JctDVoQx23
-         8KwpDHIz9t+Fy9ioP3m9x8TaXqz5d0IgJBSq66D7fWHsbPT/KfZdinObMGMqBZcKqeSf
-         cpxdWI20uBKX/3vOdx+BdgiFsklI5n0AQ9H3F9ZZRkEB1/FeT+CqC1hXEfik8p5wjrEj
-         QksA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737136427; x=1737741227;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Vi9ngEbEEJ9tE/5gbN1CRVN0AigKlK07eDeAXByiJfc=;
-        b=bBXQpO/YWTBXdP9apxtuFi4RE4fvRKfKczbNe32e1lwRJw+sC07qEU4DeqgH+7ocDl
-         yTawIHPHeZlxbS0cS1BAgmu7DLRDamks8Lyw9/E4345xF9K1lvR58hVREJvZHhjLRtAy
-         m+5/iT+wkPEaLW6WScAPIjgsLQh/ToVO7AiGtIyHG2ElTWv3aZusO9reOE6FO/8rA3Qg
-         wHXISmZdBc6FUI+tR39Th1sIEae55IEjDJ3irovUKZSopsV8zZjaU1EnDIPEYwRbz/VX
-         y+vh1LFWMS3Gyxb8niHIvgHILKzay0vlPzPKCGRLNm72G9LsV9D3zajsekZ861qscA6B
-         r5nw==
-X-Forwarded-Encrypted: i=1; AJvYcCV9fVWyMqj0Y6C6J0cg3NKBwrqUa7vLOvxSdy3F2Dnnjj8ze2gIR7TSw9ePjLPNkG3CjAxciQ06kbd6@vger.kernel.org, AJvYcCW/CkgU+zpdS2bORPG/xm2d4ftdLWTTu16MaCtjsyM2ucff7eJUiJyRO0UzBGhIUU4Aj5ldYkwj9rUmn00WfVjxsNG6@vger.kernel.org, AJvYcCWQrvx3mwLBWX5yVHycWet7qCZN8AwNhjLU5fwUJtrMh5lx8yZrleBtrc9Njuo3xrf9Wawav6UUm6MuQIcr@vger.kernel.org, AJvYcCX/3EzqEIfuSuWPyLeHaya5CXfRLlXShb+NzEp2wnJLOhSiMvBfyDetgljlfYxtS4YUAS0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw2CxwW/XRXUYIT7oijN8p0bBj2WUDLIFqpqNaTqYV4X0Jitngx
-	Fa5pNZME18MwAO2qWEC9fpXqfMLrl267Wo7ykAH7Vtocvi/zhMMJT3avJ8WDmXzEMq0Xuw2+0wt
-	Zj/UD5nlIfMlL10v+Hu4JZBKKdZg=
-X-Gm-Gg: ASbGnctBX0couhEq5H11E5G/GjcVaQEMCX7n3IuY6+uFOuWCyOcu9IX6jdr5FRmtsgM
-	0O8IK8TWyuZGLtigq7q2WK/blM6SKUsdJnFC7
-X-Google-Smtp-Source: AGHT+IFULhbKsE8nTOnbK493yGfAm1R9xZ//f+w/HAcEk+EXHFpP+nrfegB1FpJ2d590FkNXfGNhCO85tr6oatbZUUU=
-X-Received: by 2002:a17:90b:2e0b:b0:2ea:83a0:47a5 with SMTP id
- 98e67ed59e1d1-2f782c66295mr4983581a91.4.1737136427209; Fri, 17 Jan 2025
- 09:53:47 -0800 (PST)
+	s=arc-20240116; t=1737136545; c=relaxed/simple;
+	bh=I07rn8h81be6RbBm2AHPSR3EU88miw6hQCBTc4pvf+Q=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=HrDuSYioyGw6KfxzlCDs4Zha54FiV8PZn/Eho0TtPKaRsEEzRMigPePNyaUt4YBbnK6bX7mbAJ3B7VibY2FMZsNXHIS6QaBnFu+A34kpCuzn+07gmAF+p5m7zWWH2IGF9DjpLtlSFXKvcESEvqN6s5zK3oQ5eXeDhGZgyj31eHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=sL4F5FYQ; arc=none smtp.client-ip=188.165.51.139
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1737136527; x=1737395727;
+	bh=I07rn8h81be6RbBm2AHPSR3EU88miw6hQCBTc4pvf+Q=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
+	b=sL4F5FYQa5IyliI2qTw1h0AGViHeL1WLv0YGe+mp0vuaSw9rSTKhfanhMMYGukvT7
+	 8LTUIx0kVrPdxgkJh29P/OJ3rwdv2woMS+6sMj9z8gZUAQ9WQAJAZNUdjjEXLcf8+l
+	 SfOH8ZIGBArRMMA1t+q6TAWFdYk1clxhbuYHI99E2NY2iW2zW0jTfIW16WeU2HgYfy
+	 T7wxh8cEXqnKpb13IIKkL3nwDgeY6YlCqEB3ivHFh3/4i6TS4YexxRoYJsBZEIYSbK
+	 HMh1Y3cwcKGdViID+E/zxxA+5OXTlY5zG4KPsm9m1Kk2/P5NKaciGuZyHcXBdG/kZP
+	 i3ZUX04TCsmOA==
+Date: Fri, 17 Jan 2025 17:55:21 +0000
+To: "Jose E. Marchesi" <jose.marchesi@oracle.com>
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: Andrew Pinski via Gcc <gcc@gcc.gnu.org>, bpf <bpf@vger.kernel.org>, Cupertino Miranda <cupertino.miranda@oracle.com>, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Manu Bretelle <chantra@meta.com>, Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Yonghong Song <yonghong.song@linux.dev>, David Faust <david.faust@oracle.com>, Andrew Pinski <pinskia@gmail.com>, Yonghong Song <yhs@fb.com>
+Subject: Re: Announcement: GCC BPF is now being tested on BPF CI
+Message-ID: <zp_HRUf7wzFwZMVqR2IwXRMf-WtdNZP-ocWWflDG0nDLg2FXZ0Jt91ztxfBxdHurGC_z4C5M5qPIspVTFMAXG5_hFuDwZRMNmXKak3UnLXk=@pm.me>
+In-Reply-To: <87ldv9k9e3.fsf@oracle.com>
+References: <mMhcrHuvf5fyjPwMa19kug9DHQH9yYcCJXKfaFMXhfQlKIuColex7zg7G6qpPqlfF74-IqzkhpZSlzsgvgikc-u6oQp27dNzFQAAatRaEuU=@pm.me> <Yb09J1CvDUk4Mi2bgm3Pd3FJGMi-s3fvc9aftbrOtE4ccqzgwrkalnjKcEA2Y3RB_obEww6EG737pTfyqm6Wyf8fqMRBpaPUA8gH_58GYT4=@pm.me> <87bjw6qpje.fsf@oracle.com> <8zWDbpQS-9sjNHlLlLHFNncS_8_Tl0clkrX-Jst-1FeRJWHWYpPQe9DLdKTQwfPoLX8Grb0tB-714dcMOFsdTRBd0-ZcYwpkqe-HgGXkenc=@pm.me> <87ldv9k9e3.fsf@oracle.com>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: 9a38d434b925fe8efc5d5a2096a54da35635085c
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAHsH6Gs3Eh8DFU0wq58c_LF8A4_+o6z456J7BidmcVY2AqOnHQ@mail.gmail.com>
- <20250110.152323-sassy.torch.lavish.rent-vKX3ul5B3qyi@cyphar.com>
- <Z4K7D10rjuVeRCKq@krava> <Z4YszJfOvFEAaKjF@krava> <20250114105802.GA19816@redhat.com>
- <Z4ZyYudZSD92DPiF@krava> <CAEf4BzZoa6gBQzfPLeMTQu+s=GqVdmihFdb1BHkcPPQMFQp+MQ@mail.gmail.com>
- <20250114203922.GA5051@redhat.com> <CAEf4BzaRCzWMVvyGC_T52djF7q65yM8=AdBEMOPUU8edG-PLxg@mail.gmail.com>
- <20250117114130.GB8603@noisy.programming.kicks-ass.net>
-In-Reply-To: <20250117114130.GB8603@noisy.programming.kicks-ass.net>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 17 Jan 2025 09:53:35 -0800
-X-Gm-Features: AbW1kvZnRk6vdlhYx8A7dRd_5Pqekb8g8c3ysccwsG7aafc2qTZrOC-S3sly2bA
-Message-ID: <CAEf4BzZL9yJa6S7Btr+gqGXR9UGJJonP6c0+MvusTJ3bWKTxSA@mail.gmail.com>
-Subject: Re: Crash when attaching uretprobes to processes running in Docker
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Jiri Olsa <olsajiri@gmail.com>, 
-	Aleksa Sarai <cyphar@cyphar.com>, Eyal Birger <eyal.birger@gmail.com>, mhiramat@kernel.org, 
-	linux-kernel <linux-kernel@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	BPF-dev-list <bpf@vger.kernel.org>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, tglx@linutronix.de, bp@alien8.de, x86@kernel.org, 
-	linux-api@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
-	"rostedt@goodmis.org" <rostedt@goodmis.org>, rafi@rbk.io, 
-	Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 17, 2025 at 3:41=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
->
-> On Tue, Jan 14, 2025 at 01:45:11PM -0800, Andrii Nakryiko wrote:
->
-> > someday sys_uretprobe will be old as well
->
-> And then we'll delete it because everybody that cares about performance
-> will have FRED on ;-)
+On Friday, January 17th, 2025 at 2:44 AM, Jose E. Marchesi <jose.marchesi@o=
+racle.com> wrote:
 
-with "then" sufficiently far into the future, sure :)
+> [...]
+>
+> > Ok. I disabled the execution of the test_progs-bpf_gcc test runner for =
+now.
+> >=20
+> > I think we should check on the state of the tests again after decl_tags
+> > support is landed.
+>=20
+>=20
+> Thank you. Sounds like a plan :)
+>=20
+> Is it possible to configure the CI to send an email to certain
+> recipients when the build of the selftests with GCC fails? That would
+> help us to keep an eye on the patches and either fix GCC or provide
+> advise on how to fix the selftest in case it contains bad C.
+
+In principle, yes. In practice email notifications are not that
+straightforward.
+
+Currently a BPF patch submitter gets a notification about the status
+of the CI pipeline for their patch. This makes sense, recipient is
+obvious in this case.
+
+In case of GCC (or any other CI dependency for that matter), it is
+necessary to determine the potential cause before sending
+notifications. There are all kinds of things that might have caused a
+failure independent of the target being tested: could be a bug in CI
+scripts, or github could have changed runner configuration, or a merge
+commit from (Linux) upstream broke something, etc.
+
+Point is, dependency maintainers (GCC team in this case) don't want to
+get notifications for *all* such failures, because you will have to
+ignore most of them, and so they become noise. A boy crying wolf kind
+of thing.
+
+The other issue is that maintaining email notifications is an
+operational overhead, meaning that the system managing the
+notifications needs to be looked after. Currently for BPF CI it's
+Kernel Patches Daemon instance maintained by Meta engineers [1].
+
+As it stands, if there is problem with GCC that affects BPF CI, you
+can be assured it'll be reported, because it will block the testing of
+the BPF patches.
+
+I suggest GCC BPF team to think about setting up your own automated
+testing infrastructure, focused on testing the GCC compiler. Maybe you
+already have something like that, I don't know. You certainly
+shouldn't rely exclusively on BPF CI for testing the BPF backend.
+
+[1] https://github.com/facebookincubator/kernel-patches-daemon
+
+>=20
+> > Thanks.
+> >=20
+> > [...]
+
 
