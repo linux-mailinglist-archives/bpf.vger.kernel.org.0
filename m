@@ -1,127 +1,167 @@
-Return-Path: <bpf+bounces-49158-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49159-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F603A14880
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 04:33:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3EBCA14892
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 04:43:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B624D7A406B
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 03:32:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DB083A5277
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 03:43:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68DB21E22E6;
-	Fri, 17 Jan 2025 03:32:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7E6A1F63E0;
+	Fri, 17 Jan 2025 03:43:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="r19igKrF"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qC8h4UEJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-10630.protonmail.ch (mail-10630.protonmail.ch [79.135.106.30])
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1979625A643
-	for <bpf@vger.kernel.org>; Fri, 17 Jan 2025 03:32:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC14D1F561F
+	for <bpf@vger.kernel.org>; Fri, 17 Jan 2025 03:43:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737084771; cv=none; b=gw/bZrdATdFb64/a6AalUxVkpOZBAqAvVvvJ/+CXdMVWO8cVcHZV9/fz1LbOYwKNG/as0hxDZEDcK/Iqc08lHz65KYN1dwTT9cqpA8MvaQexWUwNsIz/dtBoFG/ttsfLGEaTlxNlYNsglhoSwZZI0T/y/kkBEiHlmSw1TKvcRGg=
+	t=1737085404; cv=none; b=lTv8k8XzCMPn+KDRwFqvgs5TlaRUd+XQqY8ulvVge+tIW/QDHPovpF3gYZ2UL/E+ksdb5LTdE8BklcScIDNi9QLbOjTV2CCsk83i+oNYneBvGrvy7MBBgC+jQH0j3tnf8y4Gu+XhXJwNJGPZvYQKDzhsu+TucpGm7SAUxslH/8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737084771; c=relaxed/simple;
-	bh=23ScoMATgzX+3eTDIQrPqASefalj4hRIB+wHszj5YmE=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nWKhvOAdHJ7nZ5GZCDSiQPMaa37cAYflFrujJrY+9judhLelV2ArP1/SvyQkAUOh238Dq2HXzvG8l8LN9pal2pYvBoZ8Wcv/9KW2YkHmx3q7cEFqxJm40bXwKGivYip96WtYnyAlN0FFSX7wHw4e9YCwFxcl4eMbVmECRoTj7jI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=r19igKrF; arc=none smtp.client-ip=79.135.106.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1737084761; x=1737343961;
-	bh=23ScoMATgzX+3eTDIQrPqASefalj4hRIB+wHszj5YmE=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
-	b=r19igKrFSe0mlNfoTVyzne+YCEPlt9DuCU6imh5tuBxttKokt16QWRRsm43U+3jyB
-	 0JUNdqpYDJnemDmgApaSBgeQEtkprz4752/g/K4fjyk4t8XdLbROsymJaC7pv98ru5
-	 sLs4iWnyR6SNCYjt1zOooZ4VbTnuEh54blpk2b04Ju97Ae4UrGMomvosgcRFTtLdTu
-	 t6SWTUOqrgJF+ZVAzO8nxgJU6XzXWgAE/ajPHWHS3oIUMVy2K0wGJ88pGiyXFyB1IW
-	 DDs9I5wHVetz6XhGnao/8iOvpQQtd1+RmlWSb2Jr25KR1BvvxPYVQphrsF1uY2+VtL
-	 YCwTenvnjz2zA==
-Date: Fri, 17 Jan 2025 03:32:36 +0000
-To: "Jose E. Marchesi" <jose.marchesi@oracle.com>
-From: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: Andrew Pinski via Gcc <gcc@gcc.gnu.org>, bpf <bpf@vger.kernel.org>, Cupertino Miranda <cupertino.miranda@oracle.com>, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Manu Bretelle <chantra@meta.com>, Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Yonghong Song <yonghong.song@linux.dev>, David Faust <david.faust@oracle.com>, Andrew Pinski <pinskia@gmail.com>, Yonghong Song <yhs@fb.com>
-Subject: Re: Announcement: GCC BPF is now being tested on BPF CI
-Message-ID: <8zWDbpQS-9sjNHlLlLHFNncS_8_Tl0clkrX-Jst-1FeRJWHWYpPQe9DLdKTQwfPoLX8Grb0tB-714dcMOFsdTRBd0-ZcYwpkqe-HgGXkenc=@pm.me>
-In-Reply-To: <87bjw6qpje.fsf@oracle.com>
-References: <mMhcrHuvf5fyjPwMa19kug9DHQH9yYcCJXKfaFMXhfQlKIuColex7zg7G6qpPqlfF74-IqzkhpZSlzsgvgikc-u6oQp27dNzFQAAatRaEuU=@pm.me> <Yb09J1CvDUk4Mi2bgm3Pd3FJGMi-s3fvc9aftbrOtE4ccqzgwrkalnjKcEA2Y3RB_obEww6EG737pTfyqm6Wyf8fqMRBpaPUA8gH_58GYT4=@pm.me> <87bjw6qpje.fsf@oracle.com>
-Feedback-ID: 27520582:user:proton
-X-Pm-Message-ID: 80906411438b23fe667c69944ff703e9cc688b5b
+	s=arc-20240116; t=1737085404; c=relaxed/simple;
+	bh=h0EDYqB7v9EjmiS3bvTo7pyBhZIGLkqG25zeOMMU+bY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OHBe9mXL4y7NCZRX9wj3AoGiGBj7pKyRhfP11wid7yJpG6e+BWfmYZxkEAVdxRNmg1MMTNQDG6Gu0PYAXTaGgDIZqaI4oHgQY7hTXYUD1FLS04avf1xSEgfxNZ/VNHwAcvLSup52D/19uKYWwG01AEmvtDkYhohZB+iti8px1Ac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qC8h4UEJ; arc=none smtp.client-ip=95.215.58.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <ea125a8d-9804-4dd9-983b-1e741a1a4f1d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1737085395;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DSjrlBpbyYAmEKT5oV37/3z2T5zVN2aHy7cK1JA1lLs=;
+	b=qC8h4UEJdC7gNvt8WanXG+Fu85VYLb7ZWhKIseHiS/rJc4M2AevhOCFZ2shxOgWByebySB
+	7rifp1ClJRd6fuDGlwdRl4ZnEpBDk7wrrETpSWyACMVmLiZTd/nhbsofctIVsBjEC1VZZB
+	/iYKrq5HUtx4sUaRqHX6rLLQmd7NIsQ=
+Date: Thu, 16 Jan 2025 19:43:10 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next 2/3] bpf: Remove 'may_goto 0' instruction
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
+References: <20250116055123.603790-1-yonghong.song@linux.dev>
+ <20250116055134.604867-1-yonghong.song@linux.dev>
+ <75bfa14917a3475f60c6fac9d6480320d6f5f005.camel@gmail.com>
+ <CAADnVQ+4ZJNdBU0D8kwe75VOp5x9xLrueEQk4hD1RDR_CJ63Fg@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQ+4ZJNdBU0D8kwe75VOp5x9xLrueEQk4hD1RDR_CJ63Fg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thursday, January 16th, 2025 at 3:58 PM, Jose E. Marchesi <jose.marchesi=
-@oracle.com> wrote:
 
->=20
-> [...]
-> > >=20
-> > > Effective BPF selftests denylist for GCC BPF is located here:
-> > > https://github.com/kernel-patches/vmtest/blob/master/ci/vmtest/config=
-s/DENYLIST.test_progs-bpf_gcc
-> >=20
-> > The announcement triggered an off-list discussion among BPF devs about
-> > how to handle the test running, given the long denylist.
-> >=20
-> > The problem is that any new test is now a potential subject to
-> > debugging whether the test needs changes, or GCC doesn't work for it.
-> >=20
-> > As of now, an important missing piece on GCC side is the decl_tags
-> > support, as they are heavily used by BPF selftests. See a message from
-> > Yonghong Song:
-> > https://gcc.gnu.org/pipermail/gcc-patches/2025-January/673841.html
-> >=20
-> > Some discussed suggestions:
-> > * Run test_progs-bpf_gcc with "allowed to fail", so that the
-> > pipeline is never blocked
-> > * Only run GCC BPF compilation, and don't execute the tests
->=20
->=20
-> I think that this is the best solution for now, and the most useful.
->=20
-> As soon as we achieve passing all the selftests (hopefully soon) then we
-> can change the CI to flag regressions on test run failures as well.
 
-Ok. I disabled the execution of the test_progs-bpf_gcc test runner for now.
 
-I think we should check on the state of the tests again after decl_tags
-support is landed.
+On 1/16/25 5:45 PM, Alexei Starovoitov wrote:
+> On Thu, Jan 16, 2025 at 11:42 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+>> On Wed, 2025-01-15 at 21:51 -0800, Yonghong Song wrote:
+>>> Since 'may_goto 0' insns are actually no-op, let us remove them.
+>>> Otherwise, verifier will generate code like
+>>>     /* r10 - 8 stores the implicit loop count */
+>>>     r11 = *(u64 *)(r10 -8)
+>>>     if r11 == 0x0 goto pc+2
+>>>     r11 -= 1
+>>>     *(u64 *)(r10 -8) = r11
+>>>
+>>> which is the pure overhead.
+>>>
+>>> The following code patterns (from the previous commit) are also
+>>> handled:
+>>>     may_goto 2
+>>>     may_goto 1
+>>>     may_goto 0
+>>>
+>>> With this commit, the above three 'may_goto' insns are all
+>>> eliminated.
+>>>
+>>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>>> ---
+>> Technically this is a side-effect, it subtracts 1 from total loop budget.
+>> An alternative transformation might be:
+>>
+>>      r11 = *(u64 *)(r10 -8)
+>>      if r11 == 0x0 goto pc+2
+>>      r11 -= 3     <---------------- note 3 here
+>>      *(u64 *)(r10 -8) = r11
+>>
+>> On the other hand, it looks like there is no way to trick verifier
+>> into an infinite loop by removing these statements, so this should be
+>> safe modulo exceeding the 8M iterations budget.
+>>
+>> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+>>
+>>>   kernel/bpf/verifier.c | 36 ++++++++++++++++++++++++++++++++++++
+>>>   1 file changed, 36 insertions(+)
+>>>
+>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>>> index edf3cc42a220..72b474bfba2d 100644
+>>> --- a/kernel/bpf/verifier.c
+>>> +++ b/kernel/bpf/verifier.c
+>>> @@ -20133,6 +20133,40 @@ static int opt_remove_nops(struct bpf_verifier_env *env)
+>>>        return 0;
+>>>   }
+>>>
+>>> +static int opt_remove_useless_may_gotos(struct bpf_verifier_env *env)
+>>> +{
+>>> +     struct bpf_insn *insn = env->prog->insnsi;
+>>> +     int i, j, err, last_may_goto, removed_cnt;
+>>> +     int insn_cnt = env->prog->len;
+>>> +
+>>> +     for (i = 0; i < insn_cnt; i++) {
+>>> +             if (!is_may_goto_insn(&insn[i]))
+>>> +                     continue;
+>>> +
+>>> +             for (j = i + 1; j < insn_cnt; j++) {
+>>> +                     if (!is_may_goto_insn(&insn[j]))
+>>> +                             break;
+>>> +             }
+>>> +
+>>> +             last_may_goto = --j;
+>>> +             removed_cnt = 0;
+>>> +             while (j >= i) {
+>>> +                     if (insn[j].off == 0) {
+>>> +                             err = verifier_remove_insns(env, j, 1);
+>> Nit: given how ineffective the verifier_remove_insns() is I'd count
+>>       the number of matching may_goto's and removed them using one call
+>>       to verifier_remove_insns().
+> True,
+> but more generally I don't see why may_goto needs special treatment.
+> opt_remove_nops() should handle both.
+>
+> if (memcmp(&insn[i], &ja, sizeof(ja)) &&
+>      memcmp(&insn[i], &may_goto0, sizeof(ja)))
+>   continue;
+>
+> will almost work.
+> In the sequence of may_goto +2, +1, +0
+> only the last one will be removed, I think,
+> but opt_remove_nops() can be tweaked to achieve that as well.
+> -                 i--;
+> +                 i -= 2;
+>
+> will do ?
 
-Thanks.
+Okay. Let me give a try.
 
->=20
-> > * Flip denylist to allowlist to prevent regressions, but not force
-> > new tests to work with GCC
-> >=20
-> > Input from GCC devs will be much appreciated.
-> >=20
-> > Thanks.
-> >=20
-> > > When a patch is submitted to BPF, normally a corresponding PR for
-> > > kernel-patches/bpf github repo is automatically created to trigger a
-> > > BPF CI run for this change. PRs opened manually will do that too, and
-> > > this can be used to test patches before submission.
-> > >=20
-> > > Since the CI automatically pulls latest GCC snapshot, a change in GCC
-> > > can potentially cause CI failures unrelated to Linux changes being
-> > > tested. This is not the only dependency like that, of course.
-> > >=20
-> > > In such situations, a change is usually made in CI code to mitigate
-> > > the failure in order to unblock the pipeline for patches. If that
-> > > happens with GCC, someone (most likely me) will have to reach out to
-> > > GCC team. I guess gcc@gcc.gnu.org would be the default point of
-> > > contact, but if there are specific people who should be notified
-> > > please let me know.
+>
+> pw-bot: cr
+
 
