@@ -1,129 +1,172 @@
-Return-Path: <bpf+bounces-49225-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49226-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31442A156BC
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 19:33:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DF46A156CA
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 19:34:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3389188CF76
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 18:33:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FCE8188BAD9
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 18:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 362EF1A42A5;
-	Fri, 17 Jan 2025 18:33:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l5inegRw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 039981A76DA;
+	Fri, 17 Jan 2025 18:34:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F7D31A0728;
-	Fri, 17 Jan 2025 18:33:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+Received: from vmicros1.altlinux.org (vmicros1.altlinux.org [194.107.17.57])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A9AF1A255C;
+	Fri, 17 Jan 2025 18:34:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.57
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737138820; cv=none; b=LLRONrZLuxe+2SiwldSZ7EAKCGgE6XtcUOVEAQKLiQNVFLCvX+k6zXfhoos/zi4CSHJiTP8NRKrA1Agz+O/dm6fLg6mDwAhFZY3QkeFOCi1RnsA9rzc1rx6egwmacoygUmK6XA1gTknnifesMy0ZxIeWUTRHkQiv3vsCvC+6OIA=
+	t=1737138862; cv=none; b=hjbCfhhb9/IbgMTWu87WhPKe3VAUg10aglWa7X0nurg2yiB6MDr2UPkJ6jDv0Of/OjTTfGI30ND4NTrVROu4CfKrbxFakdFCTdWU9dhDeyA5LJPhOA+iLX5k7UAXNOT0VGajTm42H+EYfp2lqnpX5LX0Llo4RpwTq6gOlkJHOdI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737138820; c=relaxed/simple;
-	bh=gCBzXbcWy5Z0p6axDFnyuCK+SdLX5sEX4YfTiqz4eUk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Sys3UVEuJhlXTjKS0hV5ugyH33PKMq+WpMtDBdSzZtl4/RomSr9gy5gMbFYglx7jNlf3d8DzLGBcsilbI6KK0zXAZvzHSC961IXbz/9Y8QG2FRYOHByeeTMBDrYDZVK05GJZYKESzZVVaNVSCcijmuXMv4MdgUd5LvB/+ut+lYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l5inegRw; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2efb17478adso4264596a91.1;
-        Fri, 17 Jan 2025 10:33:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737138818; x=1737743618; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pDsX/LhY8aNBdHxcHQr7zfO0GAMG4ohe8BHhjqjqYjg=;
-        b=l5inegRw+h+fDFQC90DpTPiE8kSUyLO4SHAudZ6YVN3G8OFXR2FWRlf7vOczfScFuM
-         2QYWgPIup1W38/9iF9W/mWMgnI+Tm59kahH0yxyilDzNvbvs4wjYOu7dJJj9WIobRRxh
-         UBN/zLkTDonKph2Ww3Nl8yPUD62t7Ofn2DWtpBQDRmNA65h0qFP/F45kpvVd36zEsjY/
-         sfehqBitr6p3A5Lax8Z3R6Kvl+8WGYw6RWNFyBk05BHipp7Wq67BIGUbGGv5tsFBVB24
-         OIJS+ykp5+Y3W6vduTMAxexS9ZiOR3jy/KAeFgyKJmhOE2+GEhvx/TZJmuXfUtYMMRUU
-         RbOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737138818; x=1737743618;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pDsX/LhY8aNBdHxcHQr7zfO0GAMG4ohe8BHhjqjqYjg=;
-        b=R3wBrwawSD4fV1cUbozIR7GavCq3RbjAn5z60eu2kr0HHMrIl4Y4rwcJXrND67hANB
-         kKJvAmm+p9yjYJP83JsildqjePAqWKMB50MkDZQwT9thZ/w7/GbDonJ/U6DpBw2nX7va
-         G9zJQ3u821hrEo7lpU6dgBgW9lbLI3uxv4at+3ahCscpjSsqxMTSTJElcrHXSkk94QO6
-         RpSeZGq7jwPiY6s5f4M8a/TrDEy/gkFKvrwokBnY24/gf8HNGj2VggSc2o1y+ARPk02U
-         sI8uLL/B9Ri2rNOnOmCSjIR9ZBngYoTw6mBJkjSejLqdjCKtZ8F3dU8gUILQ3M7M0kVF
-         9Nkg==
-X-Forwarded-Encrypted: i=1; AJvYcCWs9P9aRIohX0Ach2CoGTQPdlfHfMpD7JEZUUxOsf6P51GpKEOqMTFq32HzUTQhxl+tj+U=@vger.kernel.org, AJvYcCXaWgwpO0EGbIdentmu28z78eXDCdR2WGYm7kTaHfTJn90bl4nblbUvtNOwlPapODHOAqkbpYIvwBSO6+ssiA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzyA0SawIsJzqXj8wBPoR6J5FUB6tw34Mt9Myv3Jb1kOSmoklaS
-	CGWyJFlvMmYsUD+gTSpoIFwVWq2qz3jiMnFXN+T40EBfu6EhxKDcoe7pY1x+tFO7ZzyKrrK7FCC
-	12WOD3cr2E7tBcoDVl310je4W4EVqTg==
-X-Gm-Gg: ASbGncuNpRNpztphzyhkDkT+cxxfEFeGBpX/raozEEZ2nouEzR0MOPkg0vUmIKvL2kL
-	zkrjGifRaMP7imgNLW8ZRqTxt5L/5n/R5desI
-X-Google-Smtp-Source: AGHT+IGxbhrpNwOZv6EpeElQXX0N2j1DGVKd+ZJZ0lh+GFCOoWnYlJcqq10rgM4j3fnK/JH/blPkY1sIWgNTEoLBByk=
-X-Received: by 2002:a17:90b:1f8f:b0:2ea:bf1c:1e3a with SMTP id
- 98e67ed59e1d1-2f782c71e64mr6232893a91.12.1737138818567; Fri, 17 Jan 2025
- 10:33:38 -0800 (PST)
+	s=arc-20240116; t=1737138862; c=relaxed/simple;
+	bh=xS5WmOuTnbaPAn2X3uOIWw49nxLanKIbBs8fvB3fIXU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gWHj8zHJf5TFOg4djwqn2leDKkANaC1cismlQ5p+2+zyE8lAUIwhu/0AovPZzUJ3nnb9s0vU1+XCfjoyBp9kNIiWuAe6IiRmKvULhvnAuonJWaxiHzSRpurvPfXlCnBh7XUAywTkCHW9sGb/5/d/BdApsmbf40ljuZIDRLZx2vk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strace.io; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strace.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
+Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
+	by vmicros1.altlinux.org (Postfix) with ESMTP id DA6CF72C8CC;
+	Fri, 17 Jan 2025 21:34:16 +0300 (MSK)
+Received: by mua.local.altlinux.org (Postfix, from userid 508)
+	id B02E67CCB3A; Fri, 17 Jan 2025 20:34:16 +0200 (IST)
+Date: Fri, 17 Jan 2025 20:34:16 +0200
+From: "Dmitry V. Levin" <ldv@strace.io>
+To: Eyal Birger <eyal.birger@gmail.com>
+Cc: kees@kernel.org, luto@amacapital.net, wad@chromium.org, oleg@redhat.com,
+	mhiramat@kernel.org, andrii@kernel.org, jolsa@kernel.org,
+	alexei.starovoitov@gmail.com, olsajiri@gmail.com, cyphar@cyphar.com,
+	songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+	peterz@infradead.org, tglx@linutronix.de, bp@alien8.de,
+	daniel@iogearbox.net, ast@kernel.org, andrii.nakryiko@gmail.com,
+	rostedt@goodmis.org, rafi@rbk.io, shmulik.ladkani@gmail.com,
+	bpf@vger.kernel.org, linux-api@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] seccomp: passthrough uretprobe systemcall without
+ filtering
+Message-ID: <20250117183416.GA16831@strace.io>
+References: <20250117005539.325887-1-eyal.birger@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250116124949.GA2446417@mit.edu> <Z4l3rb11fJqNravu@dread.disaster.area>
- <CAEf4Bzbe6vWS3wvmvTcCAQY6bZf2G-D6msgvwYHyWVg3HnMXSg@mail.gmail.com> <20250117022050.GO1977892@ZenIV>
-In-Reply-To: <20250117022050.GO1977892@ZenIV>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 17 Jan 2025 10:33:25 -0800
-X-Gm-Features: AbW1kva1X96PUMCVO6uDr8nFdtf_7KiWtclvFjWmJJCLuEkJaGOrJAdilS0SuaI
-Message-ID: <CAEf4BzZga1Vk0UgPBu=t69xpLzJdW67-9Y9F86PGz=SawxChSw@mail.gmail.com>
-Subject: Re: [LSF/MM/BPF TOPIC] time to reconsider tracepoints in the vfs?
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Dave Chinner <david@fromorbit.com>, "Theodore Ts'o" <tytso@mit.edu>, 
-	lsf-pc@lists.linux-foundation.org, 
-	Linux Filesystem Development List <linux-fsdevel@vger.kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250117005539.325887-1-eyal.birger@gmail.com>
 
-On Thu, Jan 16, 2025 at 6:20=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> w=
-rote:
->
-> On Thu, Jan 16, 2025 at 01:43:39PM -0800, Andrii Nakryiko wrote:
->
-> >   - relative stability of tracepoints in terms of naming, semantics,
-> > arguments. While not stable APIs, tracepoints are "more stable" in
-> > practice due to more deliberate and strategic placement (usually), so
-> > they tend to get renamed or changed much less frequently.
-> >
-> > So, as far as BPF is concerned, tracepoints are still preferable to
-> > kprobes for something like VFS, and just because BPF can be used with
-> > kprobes easily doesn't mean BPF users don't need useful tracepoints.
->
-> The problem is, exact same reasons invite their use by LSM-in-BPF and
-> similar projects, and once that happens, the rules regarding stability
-> will bite and bite _hard_.
+On Thu, Jan 16, 2025 at 04:55:39PM -0800, Eyal Birger wrote:
+> When attaching uretprobes to processes running inside docker, the attached
+> process is segfaulted when encountering the retprobe.
+> 
+> The reason is that now that uretprobe is a system call the default seccomp
+> filters in docker block it as they only allow a specific set of known
+> syscalls. This is true for other userspace applications which use seccomp
+> to control their syscall surface.
+> 
+> Since uretprobe is a "kernel implementation detail" system call which is
+> not used by userspace application code directly, it is impractical and
+> there's very little point in forcing all userspace applications to
+> explicitly allow it in order to avoid crashing tracked processes.
+> 
+> Pass this systemcall through seccomp without depending on configuration.
+> 
+> Fixes: ff474a78cef5 ("uprobe: Add uretprobe syscall to speed up return probe")
+> Reported-by: Rafael Buchbinder <rafi@rbk.io>
+> Link: https://lore.kernel.org/lkml/CAHsH6Gs3Eh8DFU0wq58c_LF8A4_+o6z456J7BidmcVY2AqOnHQ@mail.gmail.com/
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
+> ---
+> 
+> The following reproduction script synthetically demonstrates the problem:
+> 
+> cat > /tmp/x.c << EOF
+> 
+> char *syscalls[] = {
+> 	"write",
+> 	"exit_group",
+> 	"fstat",
+> };
+> 
+> __attribute__((noinline)) int probed(void)
+> {
+> 	printf("Probed\n");
+> 	return 1;
+> }
+> 
+> void apply_seccomp_filter(char **syscalls, int num_syscalls)
+> {
+> 	scmp_filter_ctx ctx;
+> 
+> 	ctx = seccomp_init(SCMP_ACT_KILL);
+> 	for (int i = 0; i < num_syscalls; i++) {
+> 		seccomp_rule_add(ctx, SCMP_ACT_ALLOW,
+> 				 seccomp_syscall_resolve_name(syscalls[i]), 0);
+> 	}
+> 	seccomp_load(ctx);
+> 	seccomp_release(ctx);
+> }
+> 
+> int main(int argc, char *argv[])
+> {
+> 	int num_syscalls = sizeof(syscalls) / sizeof(syscalls[0]);
+> 
+> 	apply_seccomp_filter(syscalls, num_syscalls);
+> 
+> 	probed();
+> 
+> 	return 0;
+> }
+> EOF
+> 
+> cat > /tmp/trace.bt << EOF
+> uretprobe:/tmp/x:probed
+> {
+>     printf("ret=%d\n", retval);
+> }
+> EOF
+> 
+> gcc -o /tmp/x /tmp/x.c -lseccomp
+> 
+> /usr/bin/bpftrace /tmp/trace.bt &
+> 
+> sleep 5 # wait for uretprobe attach
+> /tmp/x
+> 
+> pkill bpftrace
+> 
+> rm /tmp/x /tmp/x.c /tmp/trace.bt
+> ---
+>  kernel/seccomp.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index 385d48293a5f..10a55c9b5c18 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -1359,6 +1359,11 @@ int __secure_computing(const struct seccomp_data *sd)
+>  	this_syscall = sd ? sd->nr :
+>  		syscall_get_nr(current, current_pt_regs());
+>  
+> +#ifdef CONFIG_X86_64
+> +	if (unlikely(this_syscall == __NR_uretprobe) && !in_ia32_syscall())
+> +		return 0;
+> +#endif
+> +
+>  	switch (mode) {
+>  	case SECCOMP_MODE_STRICT:
+>  		__secure_computing_strict(this_syscall);  /* may call do_exit */
 
-Not clear what you mean by "their use"... Use of tracepoint by
-LSM-in-BPF? Sure, to augment information gathering, perhaps, if there
-is no more suitable LSM hook. But tracepoints don't allow you to make
-decisions, that's the biggest difference between LSM hooks and
-tracepoints from BPF POV (IMO): LSMs allow decision making,
-tracepoints are read-only.
+This seems to be a hot fix to bypass some SECCOMP_RET_ERRNO filters.
+However, this way it bypasses seccomp completely, including
+SECCOMP_RET_TRACE, making it invisible to strace --seccomp,
+and I wonder why do you want that.
 
-Or you mean use of LSM hooks by BPF because they are more stable
-semantically? If so, yes, sure, that's a good property. Still, neither
-tracepoint nor BPF LSM hooks are truly stable APIs, and users are
-prepared and expected to work around that.
 
-So, again, from BPF and BPF users' POV, neither tracepoint nor LSM
-provides or guarantees API stability (though, in practice, they are,
-thankfully, pretty semantically stable, which reduces the amount of
-pain, of course).
-
->
-> And from what I've seen from the same LSM-in-BPF folks, it won't stay
-> within relatively stable areas - not for long, anyway.
+-- 
+ldv
 
