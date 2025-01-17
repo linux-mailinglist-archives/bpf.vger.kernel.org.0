@@ -1,163 +1,128 @@
-Return-Path: <bpf+bounces-49161-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49162-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5161AA149B3
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 07:24:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDABCA14A08
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 08:15:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 994103A43DB
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 06:24:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33D763A6CDE
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 07:15:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6E5B1F7586;
-	Fri, 17 Jan 2025 06:24:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RsjWGCg2"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B90151F7915;
+	Fri, 17 Jan 2025 07:15:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 176D622619
-	for <bpf@vger.kernel.org>; Fri, 17 Jan 2025 06:24:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07F51F6690
+	for <bpf@vger.kernel.org>; Fri, 17 Jan 2025 07:15:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737095083; cv=none; b=eSyk9Fsf7YXjR+fztb1jNisZqgrg5fwWmGm8YM+DBAwIVvgp5GRMqb+KKp8ea6LKrUyVrzktlDJcLI7IUCKIN/4MaB1JgNBDGXNWpF9dl1lz/OLCKsWqtYICsTJeZthrHmbE3yxcyWiavejRuDb2ccerBUW2QFfIVW2V7pbLF5U=
+	t=1737098137; cv=none; b=NDlA0gh/cLBK/yeo5dKXeb7m67FmxckbfBto1MHha+Q7Maxie82+I2EM8pTtU8ny32DcoMA7ANgl+OeudM/SivIXEvkNaeH33teBA5PpDe3RGMSJXJDySUoytLEw8RKJMu6Sc5fq4NqdjmFEUKv0f3OaOU/Rln25dc8VF4J4bBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737095083; c=relaxed/simple;
-	bh=p1C1wIBV0Vf9Wkff52ZWYTfK/qhWeDg2S5UX/J7CWMI=;
+	s=arc-20240116; t=1737098137; c=relaxed/simple;
+	bh=3SRD1YSvLNuRCPp6gY4wD84jQ6QFFkcJtopK6BOj0KI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=W9nsbPeTQddZnwKiaxseoyhBUcovzBoBMv/NaraIoZjXyc3UiMHtuGBbCCU+Ll5Qdax08vIXK+FNJGRlJtk4Lxco/gZM0o/G1kLUnRrkMNshZmxfwYZv8WHOKPYbMpBiU0p3PMVTbViGb1FBnETCPgGRS2Wj6KoTuV2NNEYGMaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RsjWGCg2; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <9fc744b6-9139-4cbd-bcd7-23945cf94a92@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1737095073;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Tg2CDAYmq5znSllBNtuVwu541iM+r1fpRn6Y/PWx9ws=;
-	b=RsjWGCg2paTSt+/NU0RBJoS6GopcRT6HX18KTLKKQ8zfWFYEO7Vr7F9pup2NnOWQp2JaTr
-	wFCBT8dCInY9Mwr59/YQ3+Okai40rYSCK5Yueb2UEuzxRJGeGdJgfMlRE/FxzXOrU5R7oz
-	74dPLmWU65MtyaN36z3YIeKvF3YRuYE=
-Date: Fri, 17 Jan 2025 14:24:26 +0800
+	 In-Reply-To:Content-Type; b=bqUaGbMdUInowscoLiXQi/Iyag3hKhiH7ezEQarzmsCntLihVRLS+20hoNDInqBksbt/nZnh+hSapWkdQg41T151tHZxPsM0eNFz3dy3otT+l6TYhi6USn00Gh/xWxGTjXc6mWc4bIEedyDDfL7x9e54SabZNDHJYBCLvvet0W4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YZ9wr0NlHz4f3lDN
+	for <bpf@vger.kernel.org>; Fri, 17 Jan 2025 15:15:08 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id BCC361A1211
+	for <bpf@vger.kernel.org>; Fri, 17 Jan 2025 15:15:29 +0800 (CST)
+Received: from [10.67.109.184] (unknown [10.67.109.184])
+	by APP1 (Coremail) with SMTP id cCh0CgCH6nqQA4pnFC+2BA--.7835S2;
+	Fri, 17 Jan 2025 15:15:29 +0800 (CST)
+Message-ID: <15f9c4ac-1d02-4db9-9fd7-634b14cde184@huaweicloud.com>
+Date: Fri, 17 Jan 2025 15:15:28 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next 1/2] bpf: Introduce global percpu data
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf v2 4/4] selftests/bpf: Add distilled BTF test about
+ marking BTF_IS_EMBEDDED
 Content-Language: en-US
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, yonghong.song@linux.dev, song@kernel.org,
- eddyz87@gmail.com, kernel-patches-bot@fb.com
-References: <20250113152437.67196-1-leon.hwang@linux.dev>
- <20250113152437.67196-2-leon.hwang@linux.dev>
- <CAEf4BzahZ04K5LDaqaToJnQ9yvRZ48yh-2+ywsKRgcj8whMheA@mail.gmail.com>
- <9872244c-0e3b-4e83-be1d-1503f7b086e6@linux.dev>
- <CAEf4BzaBXuztqhvAxPGi6nzebMVifx2cU1iFQqEo_GwF3z-ADg@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Leon Hwang <leon.hwang@linux.dev>
-In-Reply-To: <CAEf4BzaBXuztqhvAxPGi6nzebMVifx2cU1iFQqEo_GwF3z-ADg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Alan Maguire <alan.maguire@oracle.com>,
+ Pu Lehui <pulehui@huawei.com>
+References: <20250115100241.4171581-1-pulehui@huaweicloud.com>
+ <20250115100241.4171581-4-pulehui@huaweicloud.com>
+ <CAEf4BzYvbeP16EoKFgfgEQwRw_zfiYVu8rRx8VLTxk=2HuxoNw@mail.gmail.com>
+From: Pu Lehui <pulehui@huaweicloud.com>
+In-Reply-To: <CAEf4BzYvbeP16EoKFgfgEQwRw_zfiYVu8rRx8VLTxk=2HuxoNw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-CM-TRANSID:cCh0CgCH6nqQA4pnFC+2BA--.7835S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7WryxWw13Ary8JrW5uFWDXFb_yoW8Gw47pF
+	y8Aa4aya4fZ3Zrtwn3AF4YgrWFgrs2qrWFkr17tr18Cr1kKrykKF4IgF45Wwn3CrWrZr1S
+	v34Igrs8Cw48Jr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 
 
 
-On 17/1/25 07:37, Andrii Nakryiko wrote:
-> On Wed, Jan 15, 2025 at 11:22 PM Leon Hwang <leon.hwang@linux.dev> wrote:
+On 2025/1/17 7:34, Andrii Nakryiko wrote:
+> On Wed, Jan 15, 2025 at 2:00 AM Pu Lehui <pulehui@huaweicloud.com> wrote:
 >>
->> Hi,
+>> From: Pu Lehui <pulehui@huawei.com>
 >>
->> On 15/1/25 07:10, Andrii Nakryiko wrote:
->>> On Mon, Jan 13, 2025 at 7:25 AM Leon Hwang <leon.hwang@linux.dev> wrote:
->>>>
+>> When redirecting the split BTF to the vmlinux base BTF, we need to mark
+>> the distilled base struct/union members of split BTF structs/unions in
+>> id_map with BTF_IS_EMBEDDED. This indicates that these types must match
+>> both name and size later. So if a needed composite type, which is the
+>> member of composite type in the split BTF, has a different size in the
+>> base BTF we wish to relocate with, btf__relocate() should error out.
+>>
+>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+>> ---
+>> v2: Add test about marking BTF_IS_EMBEDDED.
+>>
+>>   .../selftests/bpf/prog_tests/btf_distill.c    | 72 +++++++++++++++++++
+>>   1 file changed, 72 insertions(+)
+>>
+> 
+> Nice test, thanks! Applied the series to bpf-next.
 
-[...]
+Curious, resilient split BTF is currently supported, shall we deprecate 
+MODULE_ALLOW_BTF_MISMATCH?
 
->>>
->>> So I think the feature overall makes sense, but we need to think
->>> through at least libbpf's side of things some more. Unlike .data,
->>> per-cpu .data section is not mmapable, and so that has implication on
->>> BPF skeleton and we should make sure all that makes sense on BPF
->>> skeleton side. In that sense, per-cpu global data is more akin to
->>> struct_ops initialization image, which can be accessed by user before
->>> skeleton is loaded to initialize the image.
->>>
->>> There are a few things to consider. What's the BPF skeleton interface?
->>> Do we expose it as single struct and use that struct as initial image
->>> for each CPU (which means user won't be able to initialize different
->>> CPU data differently, at least not through BPF skeleton facilities)?
->>> Or do we expose this as an array of structs and let user set each CPU
->>> data independently?
->>>
->>> I feel like keeping it simple and having one image for all CPUs would
->>> cover most cases. And users can still access the underlying
->>> PERCPU_ARRAY map if they need more control.
+> 
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/btf_distill.c b/tools/testing/selftests/bpf/prog_tests/btf_distill.c
+>> index b72b966df77b..fb67ae195a73 100644
+>> --- a/tools/testing/selftests/bpf/prog_tests/btf_distill.c
+>> +++ b/tools/testing/selftests/bpf/prog_tests/btf_distill.c
+>> @@ -601,6 +601,76 @@ static void test_distilled_endianness(void)
+>>          btf__free(base);
+>>   }
 >>
->> Agree. It is necessary to keep it simple.
->>
->>>
->>> But either way, we need tests for skeleton, making sure we NULL-out
->>> this per-cpu global data, but take it into account before the load.
->>>
->>> Also, this huge calloc for possible CPUs, I'd like to avoid it
->>> altogether for the (probably very common) zero-initialized case.
->>
->> Ack.
->>
->>>
->>> So in short, needs a bit of iteration to figure out all the
->>> interfacing issues, but makes sense overall. See some more low-level
->>> remarks below.
->>>
->>
->> It is challenging to figure out them. I'll do my best to achieve it.
->>
->>> pw-bot: cr
->>>
->>>
 > 
 > [...]
-> 
->>>
->>>> @@ -516,6 +516,7 @@ struct bpf_struct_ops {
->>>>  };
->>>>
->>>>  #define DATA_SEC ".data"
->>>> +#define PERCPU_DATA_SEC ".data..percpu"
->>>
->>> I don't like this prefix, even if that's what we have in the kernel.
->>> Something like just ".percpu" or ".percpu_data" or ".data_percpu" is
->>> better, IMO.
->>
->> I tested ".percpu". It is OK to use it. But we have to update "bpftool
->> gen" too, which relies on these section names.
->>
->> Is it better to keep ".data" prefix, like ".data.percpu", ".data_percpu"?
->> Can keeping ".data" prefix reduce some works on bpftool, go-ebpf and
->> akin bpf loaders?
-> 
-> It's literally two lines of code in gen.c, and that should actually be
-> a common array of known prefixes. Even if someone uses this new
-> .percpu section with old bpftool nothing will break, they just won't
-> have structure representing the initial per-CPU image. They will still
-> have the generic map pointer in the skeleton. So I think this is
-> acceptable.
-> 
-> I'd definitely go with a simple and less error-prone ".percpu" prefix.
-> 
-
-Being simple and less error-prone is indeed important. Let's proceed
-with the ".percpu" prefix as suggested.
-
-Thanks,
-Leon
-
 
 
