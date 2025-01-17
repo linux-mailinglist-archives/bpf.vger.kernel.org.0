@@ -1,273 +1,141 @@
-Return-Path: <bpf+bounces-49199-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49200-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D634AA15145
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 15:08:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B3F7A1514F
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 15:10:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC3301659C0
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 14:08:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4F457A04CE
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 14:10:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E664202C52;
-	Fri, 17 Jan 2025 14:07:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FD291FF7D6;
+	Fri, 17 Jan 2025 14:10:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cSexfObQ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Eyk95H/s"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCEDC202C3B;
-	Fri, 17 Jan 2025 14:07:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AB0642AA6
+	for <bpf@vger.kernel.org>; Fri, 17 Jan 2025 14:10:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737122833; cv=none; b=STNoe+VNITlsaEwwCnjMo0OxyD7XSbi6sUI1vncC7kepGm/aPCioi2iT3e+pz08sXVGr4SIrF1W5FSjg7wCFXgb4GKMESO0sRiKS+lq2/cqrEl5DDdeGE+fVKFl9jdcl/PBOma+Pp+DMj+cwwtrKW4916GnHvRLSj4mB3Q08HRo=
+	t=1737123013; cv=none; b=G67UlZF5eosoy6E7cBUnCtBquRiD9zq9+/pfc2kI1ljD0iuhBHNVS2FpKHDlITckpUtWt2V4+uwoUds2dRVSuB+LXQjKwin9ukLPad2wGoOqjZ/sMNg8M92LE8MpsXP2JV9K56H7eNadn8UHODspuVrs1qLpH9qrQtb24stJuZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737122833; c=relaxed/simple;
-	bh=JoibIR4zZQkOBFkS+APsUy4BDrDrp+ZGllSQEZJySjk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=nd6Z+8mEWGNM9QIvEXMedyLo3infQ3y+KuzH4RGFKPeXoTYf6AzrONgUQ1fV8RK0mgioyEuLZV+jARQpUYBw/oUlH3rgtJPqGq7gB3Rhp9PrXAl4VAOVZwKUA9mnW8wt147OO2ThJ63dRGTngyIs9RT15/9z8VCVCFxA+DCKI0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cSexfObQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0C54C4CEDD;
-	Fri, 17 Jan 2025 14:07:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737122833;
-	bh=JoibIR4zZQkOBFkS+APsUy4BDrDrp+ZGllSQEZJySjk=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=cSexfObQqkr26eU9SGU+Vnn4sXEKLdMeqTikE8lP/HN3CVJFeyA0atJzsRLymodO8
-	 JEcxdVp1DSodxsADnQ0d8KsJqs9DXJmdQM+hC0pgYjDs5orV5rZksag1NhLRUy+oZP
-	 V9HAvxYFNWIyu/0Fmrxaeccb8CVlZFh2AVDSdeSK+LJwOlhzkKIu9GY+2Mr5eEj6bK
-	 S22v8cMsW2RYen8DElGPQyyT76EJIj2go5HAnAo5Ipf235nYi3LDKBmw5o0o3hFzn8
-	 CpI4q5+Pt77J+PglBwmvq16arSFDLZ7deZqoqEBXRto0kQrBfPl6pgDQe7hxfOpLtV
-	 z8dzfTdj7CIuQ==
-From: Roger Quadros <rogerq@kernel.org>
-Date: Fri, 17 Jan 2025 16:06:35 +0200
-Subject: [PATCH net-next v2 3/3] net: ethernet: ti: am65-cpsw: streamline
- TX queue creation and cleanup
+	s=arc-20240116; t=1737123013; c=relaxed/simple;
+	bh=k6YK2Fh82YCBgNVV31Vn/3kW+W/L33C9birGbWFG8rA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GLgRoPLRBsnFKMFAoWP5/HvuckV9iA47oxc0qYlgrdcFZSqmM4InglCCtwVFVZ8F4nkRAiEKyf+dFoq2pcJ4WyJ5vGW8N1u6Tkh5m+pJoP/7XVaIUzu44msYWmhOKm5dLa5SlFkOwjvMs/5acfCe9ccpV4mfJ4dlhYaYpcl8Vx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Eyk95H/s; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1737123011;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fX+9XADbSOdFXZoM2AZDs7eTNJG7HJm/jZRz93SA1bA=;
+	b=Eyk95H/sEwtxeuqJo0ywVyiY9oWEIUbVO6k2OLyts6f/QAE5Hd3PpG/eZih+Rqm/Z0og9D
+	ocAZ+5/6ORaARmOwLKiCFpNu9jW8FWPNWPsmoS1uAxQQZJ5ly7s2KCd4HepfbopNVG0+Ze
+	zUlqu0AagcG2msle7qfudSzFonRP+yU=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-583-yIwleJr0PCCNhTtIMwyJPw-1; Fri,
+ 17 Jan 2025 09:10:06 -0500
+X-MC-Unique: yIwleJr0PCCNhTtIMwyJPw-1
+X-Mimecast-MFC-AGG-ID: yIwleJr0PCCNhTtIMwyJPw
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 155881953956;
+	Fri, 17 Jan 2025 14:10:01 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.118])
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 8580819560BF;
+	Fri, 17 Jan 2025 14:09:51 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Fri, 17 Jan 2025 15:09:35 +0100 (CET)
+Date: Fri, 17 Jan 2025 15:09:25 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Eyal Birger <eyal.birger@gmail.com>, kees@kernel.org,
+	luto@amacapital.net, wad@chromium.org, andrii@kernel.org,
+	jolsa@kernel.org, alexei.starovoitov@gmail.com, olsajiri@gmail.com,
+	cyphar@cyphar.com, songliubraving@fb.com, yhs@fb.com,
+	john.fastabend@gmail.com, peterz@infradead.org, tglx@linutronix.de,
+	bp@alien8.de, daniel@iogearbox.net, ast@kernel.org,
+	andrii.nakryiko@gmail.com, rostedt@goodmis.org, rafi@rbk.io,
+	shmulik.ladkani@gmail.com, bpf@vger.kernel.org,
+	linux-api@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	x86@kernel.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] seccomp: passthrough uretprobe systemcall without
+ filtering
+Message-ID: <20250117140924.GA21203@redhat.com>
+References: <20250117005539.325887-1-eyal.birger@gmail.com>
+ <20250117013927.GB2610@redhat.com>
+ <20250117170229.f1e1a9f03a8547d31cd875db@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250117-am65-cpsw-streamline-v2-3-91a29c97e569@kernel.org>
-References: <20250117-am65-cpsw-streamline-v2-0-91a29c97e569@kernel.org>
-In-Reply-To: <20250117-am65-cpsw-streamline-v2-0-91a29c97e569@kernel.org>
-To: Andrew Lunn <andrew+netdev@lunn.ch>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Russell King <linux@armlinux.org.uk>, Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- John Fastabend <john.fastabend@gmail.com>
-Cc: Siddharth Vadapalli <s-vadapalli@ti.com>, srk@ti.com, 
- danishanwar@ti.com, "Russell King (Oracle)" <linux@armlinux.org.uk>, 
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
- Roger Quadros <rogerq@kernel.org>
-X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5366; i=rogerq@kernel.org;
- h=from:subject:message-id; bh=JoibIR4zZQkOBFkS+APsUy4BDrDrp+ZGllSQEZJySjk=;
- b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBnimQAR7c1ywZ8Z2CxW68gWxO3mF6JEd84qOCqE
- dMPBlXM4kqJAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZ4pkAAAKCRDSWmvTvnYw
- k8SbEADAvgAv7ERZnm8Oo2TGNJpRx/FBz9MJZRPBhoB1pqx6xfLUnWA5TLS8SE6YDrxQIL3RRzs
- FieYq7eoC3SOF0xaOCdO1CbraNz1J6AtlhlLhkU/AOEZSheDhOEUYPkHT5dkhLTpxUB9sBWU+oV
- k+QHvkPFV5uTeY9iW6LyOrKvsNIh8U+BruARKK8wEsOYgmhDpjg+ZthTwm46nKosk+AJ9K+OunA
- CazodQT2Cyeuvy6bdrWYHDfUx6Qd8MjNIB33oxaG3MkNff2Iro1U9hMA1lFQFw1BW79T/ofhT5b
- V0/zVwneOx7MmBOi+k/lb54z2146szAIyE6jaZrbnphffvySh69Qz+NfE9QP4tYk+LS3Og6sJNt
- kNTakMhDUC7eD0tOvQP8ZMIcR57QmY+Y0f6qz3BfAEg6A2NheZidBHpYO5Kz3s7DQas2BBq90EH
- Zp5bg10nmuHXfYMdZA5VUeDFCfjbIAqpKYP5zgJjkzqSqsSil8K4dlIrVeK49MAvE2gwR/MPQ3y
- uvzZd7+t8tb0cpzyqqYlsm8DyFe7cOfmLYwpqH/iU0nKBD5Q5+neM6rRn/1E1joqK/TGrPKJWaR
- Rsukg4DoioGaoEwn0hQPRIqV2079nlKN7pTrxM3F/9JX3q9gJ0YL+yV2KoNpBxgFXAlUMcGPrOP
- vSc+zPrF/ytsVSA==
-X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
- fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250117170229.f1e1a9f03a8547d31cd875db@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
 
-Introduce am65_cpsw_create_txqs() and am65_cpsw_destroy_txqs()
-and use them.
+On 01/17, Masami Hiramatsu wrote:
+>
+> On Fri, 17 Jan 2025 02:39:28 +0100
+> Oleg Nesterov <oleg@redhat.com> wrote:
+>
+> > A note for the seccomp maintainers...
+> >
+> > I don't know what do you think, but I agree in advance that the very fact this
+> > patch adds "#ifdef CONFIG_X86_64" into __secure_computing() doesn't look nice.
+> >
+>
+> Indeed. in_ia32_syscall() depends arch/x86 too.
+> We can add an inline function like;
+>
+> ``` uprobes.h
+> static inline bool is_uprobe_syscall(int syscall)
+> {
 
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
----
- drivers/net/ethernet/ti/am65-cpsw-nuss.c | 123 +++++++++++++++++++------------
- 1 file changed, 77 insertions(+), 46 deletions(-)
+We can, and this is what I tried to suggest from the very beginning.
+But I agree with Eyal who decided to send the most trivial fix for
+-stable, we can add the helper later.
 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index 5c87002eeee9..391e78425777 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -501,6 +501,7 @@ static inline void am65_cpsw_put_page(struct am65_cpsw_rx_flow *flow,
- 				      struct page *page,
- 				      bool allow_direct);
- static void am65_cpsw_nuss_rx_cleanup(void *data, dma_addr_t desc_dma);
-+static void am65_cpsw_nuss_tx_cleanup(void *data, dma_addr_t desc_dma);
- 
- static void am65_cpsw_destroy_rxq(struct am65_cpsw_common *common, int id)
- {
-@@ -655,6 +656,76 @@ static int am65_cpsw_create_rxqs(struct am65_cpsw_common *common)
- 	return ret;
- }
- 
-+static void am65_cpsw_destroy_txq(struct am65_cpsw_common *common, int id)
-+{
-+	struct am65_cpsw_tx_chn *tx_chn = &common->tx_chns[id];
-+
-+	napi_disable(&tx_chn->napi_tx);
-+	hrtimer_cancel(&tx_chn->tx_hrtimer);
-+	k3_udma_glue_reset_tx_chn(tx_chn->tx_chn, tx_chn,
-+				  am65_cpsw_nuss_tx_cleanup);
-+	k3_udma_glue_disable_tx_chn(tx_chn->tx_chn);
-+}
-+
-+static void am65_cpsw_destroy_txqs(struct am65_cpsw_common *common)
-+{
-+	struct am65_cpsw_tx_chn *tx_chn = common->tx_chns;
-+	int id;
-+
-+	/* shutdown tx channels */
-+	atomic_set(&common->tdown_cnt, common->tx_ch_num);
-+	/* ensure new tdown_cnt value is visible */
-+	smp_mb__after_atomic();
-+	reinit_completion(&common->tdown_complete);
-+
-+	for (id = 0; id < common->tx_ch_num; id++)
-+		k3_udma_glue_tdown_tx_chn(tx_chn[id].tx_chn, false);
-+
-+	id = wait_for_completion_timeout(&common->tdown_complete,
-+					 msecs_to_jiffies(1000));
-+	if (!id)
-+		dev_err(common->dev, "tx teardown timeout\n");
-+
-+	for (id = common->tx_ch_num - 1; id >= 0; id--)
-+		am65_cpsw_destroy_txq(common, id);
-+}
-+
-+static int am65_cpsw_create_txq(struct am65_cpsw_common *common, int id)
-+{
-+	struct am65_cpsw_tx_chn *tx_chn = &common->tx_chns[id];
-+	int ret;
-+
-+	ret = k3_udma_glue_enable_tx_chn(tx_chn->tx_chn);
-+	if (ret)
-+		return ret;
-+
-+	napi_enable(&tx_chn->napi_tx);
-+
-+	return 0;
-+}
-+
-+static int am65_cpsw_create_txqs(struct am65_cpsw_common *common)
-+{
-+	int id, ret;
-+
-+	for (id = 0; id < common->tx_ch_num; id++) {
-+		ret = am65_cpsw_create_txq(common, id);
-+		if (ret) {
-+			dev_err(common->dev, "couldn't create txq %d: %d\n",
-+				id, ret);
-+			goto err;
-+		}
-+	}
-+
-+	return 0;
-+
-+err:
-+	for (--id; id >= 0; id--)
-+		am65_cpsw_destroy_txq(common, id);
-+
-+	return ret;
-+}
-+
- static int am65_cpsw_nuss_desc_idx(struct k3_cppi_desc_pool *desc_pool,
- 				   void *desc,
- 				   unsigned char dsize_log2)
-@@ -789,9 +860,8 @@ static struct sk_buff *am65_cpsw_build_skb(void *page_addr,
- static int am65_cpsw_nuss_common_open(struct am65_cpsw_common *common)
- {
- 	struct am65_cpsw_host *host_p = am65_common_get_host(common);
--	struct am65_cpsw_tx_chn *tx_chn = common->tx_chns;
--	int port_idx, ret, tx;
- 	u32 val, port_mask;
-+	int port_idx, ret;
- 
- 	if (common->usage_count)
- 		return 0;
-@@ -855,27 +925,14 @@ static int am65_cpsw_nuss_common_open(struct am65_cpsw_common *common)
- 	if (ret)
- 		return ret;
- 
--	for (tx = 0; tx < common->tx_ch_num; tx++) {
--		ret = k3_udma_glue_enable_tx_chn(tx_chn[tx].tx_chn);
--		if (ret) {
--			dev_err(common->dev, "couldn't enable tx chn %d: %d\n",
--				tx, ret);
--			tx--;
--			goto fail_tx;
--		}
--		napi_enable(&tx_chn[tx].napi_tx);
--	}
-+	ret = am65_cpsw_create_txqs(common);
-+	if (ret)
-+		goto cleanup_rx;
- 
- 	dev_dbg(common->dev, "cpsw_nuss started\n");
- 	return 0;
- 
--fail_tx:
--	while (tx >= 0) {
--		napi_disable(&tx_chn[tx].napi_tx);
--		k3_udma_glue_disable_tx_chn(tx_chn[tx].tx_chn);
--		tx--;
--	}
--
-+cleanup_rx:
- 	am65_cpsw_destroy_rxqs(common);
- 
- 	return ret;
-@@ -883,39 +940,13 @@ static int am65_cpsw_nuss_common_open(struct am65_cpsw_common *common)
- 
- static int am65_cpsw_nuss_common_stop(struct am65_cpsw_common *common)
- {
--	struct am65_cpsw_tx_chn *tx_chn = common->tx_chns;
--	int i;
--
- 	if (common->usage_count != 1)
- 		return 0;
- 
- 	cpsw_ale_control_set(common->ale, HOST_PORT_NUM,
- 			     ALE_PORT_STATE, ALE_PORT_STATE_DISABLE);
- 
--	/* shutdown tx channels */
--	atomic_set(&common->tdown_cnt, common->tx_ch_num);
--	/* ensure new tdown_cnt value is visible */
--	smp_mb__after_atomic();
--	reinit_completion(&common->tdown_complete);
--
--	for (i = 0; i < common->tx_ch_num; i++)
--		k3_udma_glue_tdown_tx_chn(tx_chn[i].tx_chn, false);
--
--	i = wait_for_completion_timeout(&common->tdown_complete,
--					msecs_to_jiffies(1000));
--	if (!i)
--		dev_err(common->dev, "tx timeout\n");
--	for (i = 0; i < common->tx_ch_num; i++) {
--		napi_disable(&tx_chn[i].napi_tx);
--		hrtimer_cancel(&tx_chn[i].tx_hrtimer);
--	}
--
--	for (i = 0; i < common->tx_ch_num; i++) {
--		k3_udma_glue_reset_tx_chn(tx_chn[i].tx_chn, &tx_chn[i],
--					  am65_cpsw_nuss_tx_cleanup);
--		k3_udma_glue_disable_tx_chn(tx_chn[i].tx_chn);
--	}
--
-+	am65_cpsw_destroy_txqs(common);
- 	am65_cpsw_destroy_rxqs(common);
- 	cpsw_ale_stop(common->ale);
- 
+I don't think it should live in uprobes.h and I'd prefer something
+like arch_seccomp_ignored(int) but I won't insist.
 
--- 
-2.34.1
+> 	// arch_is_uprobe_syscall check can be replaced by Kconfig,
+> 	// something like CONFIG_ARCH_URETPROBE_SYSCALL.
+
+Or sysctl or both. This is another issue.
+
+> ``` arch/x86/include/asm/uprobes.h
+> #define arch_is_uprobe_syscall(syscall) \
+> 	(IS_ENABLED(CONFIG_X86_64) && syscall == __NR_uretprobe && !in_ia32_syscall())
+> ```
+
+This won't compile if IS_ENABLED(CONFIG_X86_64) == false, __NR_uretprobe
+will be undefined.
+
+> > The problem is that we need a simple patch for -stable which fixes the real
+> > problem. We can cleanup this logic later, I think.
+>
+> Hmm, at least we should make it is_uprobe_syscall() in uprobes.h so that
+> do not pollute the seccomp subsystem with #ifdef.
+
+See above. But I won't insist.
+
+Oleg.
 
 
