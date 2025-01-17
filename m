@@ -1,146 +1,146 @@
-Return-Path: <bpf+bounces-49233-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49234-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DA5DA158A4
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 21:33:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 842A2A1591E
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 22:40:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74D6B7A2BEA
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 20:33:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A07197A11B6
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 21:40:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BD071A9B23;
-	Fri, 17 Jan 2025 20:33:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EFCC1ABECA;
+	Fri, 17 Jan 2025 21:40:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CEXwiZ+8";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0TJ2bZ+2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fQN1j2Jb"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A02E913C9D4
-	for <bpf@vger.kernel.org>; Fri, 17 Jan 2025 20:33:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1169D1AA1F1;
+	Fri, 17 Jan 2025 21:40:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737146003; cv=none; b=c2tZpMApGTaXsPmk3iWw0Pk8lk3ticXgG5JfwyIl/3v27iW1B19KB+js7EmqSsfO3Qxb6h35dpDpEj+25oxeemXaClNwW73obQWhyR1NNOqNOadi7qI2ENwMsON4W6i9m6ySj+KGeWDiAPhbdSreojWe6slTbjyFaEhCbMAOkEA=
+	t=1737150046; cv=none; b=YPrQfOoUTr4gr0AqSeuThljfa6Ds6rcCrMattDjEnp6qm3PDQGfFOvIvX8PdhUNUBRMuYza9ghrDAcpFvCDE7lKZ766Kmj8bMqxLgf0hlNbKpR60h/Zc+8lE0Z7FqAWCc8RXsYqklI3ErFxOZ1u0+Ro3bfh5qblHdoAoyRjveLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737146003; c=relaxed/simple;
-	bh=gqKmkNDVVX0OkQIrFs+CTparWEKqKNGHblvoMdEzpYY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dY+KIdsJSf+Pq2bYPHEGPS1QgQnFEfACYBUGdtn6eJMq4epSbUP2nW2bRjCAsYDIvrix0mE/mHd16Hfn0W9Q0gGrVVYThQUpxSFBOOGMTqZ4JFtGeBx+5j8VxlPWLyVTXaVymmBBnyniAcdEvrSOnY5RG7Pp73E1kTNnycVRlpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=CEXwiZ+8; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0TJ2bZ+2; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 17 Jan 2025 21:33:15 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1737145999;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iUnn4a6TOcC3AYdUHDTHSjARpGbkZffL9aT0zMI8qvk=;
-	b=CEXwiZ+87YqwxQboXiZxrOPj6d6AB9vUMc+IRIbFAIuXeWhcjIkkccGZ6nIoueWW7gRIL/
-	voH1hFcZqpU0qpT1HgJ5KB4i2QVPjKOnSkT8pvMyoceuyblormyiOb1AduPDlHHRo7UHN+
-	hShbvF2mD3zRQU3zAYJGI3vlzh62W4aguVlTS6K1t/iWcM3j/4fGdMSG9iQe3YtUDJNW3C
-	/9HB67cdBbhMoXdAauiX3NjCflB6x0DaQoQcWMeGVI+yEh7x0cKudMto7DkF8n+c35SQtT
-	R+V4ZLdZUv4cp+md1J+S+MI0TOGpS1rH4dEgfMiU7bFwFeYmjgZz0mNP6EziYA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1737145999;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iUnn4a6TOcC3AYdUHDTHSjARpGbkZffL9aT0zMI8qvk=;
-	b=0TJ2bZ+2Pq42hCHjRAlcHn9kZISOsCnqGZdxki+8oXMU3uYSKk0CqoxQsAc8bsR2gGZNLl
-	b5G5pZaa/7jTQ8Bg==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf@vger.kernel.org, andrii@kernel.org, memxor@gmail.com,
-	akpm@linux-foundation.org, peterz@infradead.org, vbabka@suse.cz,
-	rostedt@goodmis.org, houtao1@huawei.com, hannes@cmpxchg.org,
-	shakeel.butt@linux.dev, mhocko@suse.com, willy@infradead.org,
-	tglx@linutronix.de, jannh@google.com, tj@kernel.org,
-	linux-mm@kvack.org, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next v5 3/7] locking/local_lock: Introduce
- local_trylock_irqsave()
-Message-ID: <20250117203315.FWviQT38@linutronix.de>
-References: <20250115021746.34691-1-alexei.starovoitov@gmail.com>
- <20250115021746.34691-4-alexei.starovoitov@gmail.com>
+	s=arc-20240116; t=1737150046; c=relaxed/simple;
+	bh=IeoyIgmvNEmMtBhZ+AJxFIv9hjz9g8oltVor1l0jOSg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Z7gE6NE6+Eg9OLzZVgl7xGZmrTue9sOwQBNyb24gMOhdiQ0KtMkukzdEVcFjU/2gDfpzcqV9+b9U8CpcoDAbcbF1pGGzl77E2luvQcFMcVO3va+6/i6xg+ToXEmbnD59l5JDSQ1AJ3+uoEZpJNRSF2DvV1/jO9RkOfnSOMU9WLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fQN1j2Jb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8703FC4AF09;
+	Fri, 17 Jan 2025 21:40:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1737150045;
+	bh=IeoyIgmvNEmMtBhZ+AJxFIv9hjz9g8oltVor1l0jOSg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=fQN1j2JbyDHGseIpzRjRwTazuOFLH6UQKO79MHmjQtuVntLuRA9JEGSJhdT3S1UZE
+	 hRVz9bHvIfTjLUHD4HnrVYYmqI5Qem0ph3eSX/laFXuWXAwp9hn60oSKVfWFbY7DR6
+	 19WHKeOcANMdvaJ4IuAPnSX5Mxul+8oEjMZrABukGHZZPyW+2/hIE3Iou4s9anIump
+	 yeZRZdHBgbk6Zckjo8FKBuPlifXeUAR8KaIBsB9wVPrNqWyfSldqoMP8e/oP6lB/Ko
+	 5Z8VrZ7jvMTNbpR8PE5UmrYFveBVYzLYX0fGK8oX+ZA8M8KYA3l2T+v/6vvWfKpoIv
+	 /gS/PLqnaCvtA==
+Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-844ee43460aso177363639f.1;
+        Fri, 17 Jan 2025 13:40:45 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUSHKx6PVbIP6CflpyWBI7+ZoodJHqkrshvLI2QiNNXMayih7+yhrn7TbOLHkJZEIuLGLdzhwsktXnxDBQM@vger.kernel.org, AJvYcCWyjtz8Pqm4egwo3xFIXecADui0/IrEBuk5LAMORGvoZKO2wDynQrvrJJ41JQhFdsUhD4Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzTkZCpIjPhGIBG5cMdilx5OSMmCP9uQtEI7fvqfyL7uk/GVULu
+	syb5+0wnkxAHt0zgDg7t9QKrs8SpDzUAvtQvuNeQYYLgI2XBcbGjadaapLFOMUMkVT/+W1S6RN2
+	pSI6Lr7LoPdjx08fmprV5jbz26n0=
+X-Google-Smtp-Source: AGHT+IGuFoXX/oLkhJ85StNzHyBs/FBby1SKMTz8fzeMnWz78zY7GQH4XwKYG1eRry866KTcO/39vNqa7joV0SERpZE=
+X-Received: by 2002:a05:6e02:8e:b0:3ce:7cca:db3e with SMTP id
+ e9e14a558f8ab-3cf744b0115mr41022125ab.19.1737150044919; Fri, 17 Jan 2025
+ 13:40:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <AM6PR03MB5080C05323552276324C4B4C991A2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <AM6PR03MB508044E85205F344C4DA4B5F991A2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <CAPhsuW4F5uyJKa2Gg1QYRy8_FBERgaj=z4smxtjKa5NF_Zac8w@mail.gmail.com> <AM6PR03MB508002DCA7DBE7C7712ECC30991B2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+In-Reply-To: <AM6PR03MB508002DCA7DBE7C7712ECC30991B2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+From: Song Liu <song@kernel.org>
+Date: Fri, 17 Jan 2025 13:40:33 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW4sd5LgmPjceFqaLGu20N4EVxRB_-FWOm5vcCGcRPa3ZA@mail.gmail.com>
+X-Gm-Features: AbW1kvZmdBpPw8JfV3BbuQ-O3N9cFa7jlZKwGjKcILuMTVEGNej9-7tmwf0MsZA
+Message-ID: <CAPhsuW4sd5LgmPjceFqaLGu20N4EVxRB_-FWOm5vcCGcRPa3ZA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 2/7] bpf: Add enum bpf_capability
+To: Juntong Deng <juntong.deng@outlook.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, memxor@gmail.com, tj@kernel.org, 
+	void@manifault.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20250115021746.34691-4-alexei.starovoitov@gmail.com>
 
-On 2025-01-14 18:17:42 [-0800], Alexei Starovoitov wrote:
-> diff --git a/include/linux/local_lock_internal.h b/include/linux/local_lo=
-ck_internal.h
-> index 8dd71fbbb6d2..93672127c73d 100644
-> --- a/include/linux/local_lock_internal.h
-> +++ b/include/linux/local_lock_internal.h
-> @@ -75,37 +85,73 @@ do {								\
-> =20
->  #define __local_lock(lock)					\
->  	do {							\
-> +		local_lock_t *l;				\
->  		preempt_disable();				\
-> -		local_lock_acquire(this_cpu_ptr(lock));		\
-> +		l =3D this_cpu_ptr(lock);				\
-> +		lockdep_assert(l->active =3D=3D 0);			\
-> +		WRITE_ONCE(l->active, 1);			\
-> +		local_lock_acquire(l);				\
->  	} while (0)
+On Fri, Jan 17, 2025 at 11:37=E2=80=AFAM Juntong Deng <juntong.deng@outlook=
+.com> wrote:
+>
+[...]
+>
+> Thanks for your reply.
+>
+> I am not sure if BPF capabilities is a good approach.
+>
+> But we currently need filters because we register all kfuncs to program
+> types, which are too coarse-grained, so we need additional filters for
+> further filtering (make the granularity finer).
+>
+> We added struct btf_kfunc_hook_filter and added filter logic in
+> btf_populate_kfunc_set, __btf_kfunc_id_set_contains, essentially to
+> mitigate the problem of coarse-grained permissions management.
+>
+> If we register all kfuncs to BPF capabilities, then we will no longer
+> need additional filters for further filtering because BPF capabilities
+> is already fine-grained.
 
-=E2=80=A6
+bpf_capabilities_adjust is the filter function with a different name.
+So the extra capability concept doesn't give us much benefit.
 
-> +#define __local_trylock_irqsave(lock, flags)			\
-> +	({							\
-> +		local_lock_t *l;				\
-> +		local_irq_save(flags);				\
-> +		l =3D this_cpu_ptr(lock);				\
-> +		if (READ_ONCE(l->active) =3D=3D 1) {		\
-> +			local_irq_restore(flags);		\
-> +			l =3D NULL;				\
-> +		} else {					\
-> +			WRITE_ONCE(l->active, 1);		\
-> +			local_trylock_acquire(l);		\
-> +		}						\
-> +		!!l;						\
-> +	})
-> +
+>
+> Would it be a better idea for us to let each kfunc have its own
+> capability attribute?
 
-Part of the selling for local_lock_t was that it does not affect
-!PREEMPT_RT builds. By adding `active' you extend every data structure
-and you have an extra write on every local_lock(). It was meant to
-replace preempt_disable()/ local_irq_save() based locking with something
-that actually does locking on PREEMPT_RT without risking my life once
-people with pitchforks come talk about the new locking :)
+This is no different to the BPF helper function ID, which turned
+out to be not scalable.
 
-I admire that you try to make PREEMPT_RT and !PREEMPT_RT similar in a
-way that both detect recursive locking which not meant to be supported.=20
+>
+> In addition, BPF capabilities seem like a extensible idea. Would it be
+> valuable if we make other features of BPF (BPF helpers, BPF maps, even
+> attach targets) have their own capability attributes and can be managed
+> uniformly through BPF capabilities?
+>
+> For example, if a bpf program has BPF_CAP_TRACING, then it will be able
+> to use kprobes and can use tracing related kfuncs and helpers. If a bpf
+> program has BPF_CAP_SOCK then it will be able to use
+> BPF_MAP_TYPE_SOCKMAP and use socket related kfuncs and helpers.
+>
+> In other words, if we add a general internal permissions management
+> system to the BPF subsystem, would it be valuable?
+>
+> BPF is general, and it is foreseeable that BPF will be applied to more
+> and more subsystems and scenarios, so maybe a general fine-grained
+> permissions management would be better?
+>
+> Fine-grained permissions management will bring potential flexibility
+> in configurability.
+>
+> For example, if a system administrator wants to open the features of the
+> HID-BPF driver to users, but the system administrator does not want to
+> open other BPF features to users, such as sched_ext.
 
-Realistically speaking as of today we don't have any recursive lock
-detection other than lockdep. So it should be enough given that the bots
-use it often and hopefully local testing.
-Your assert in local_lock() does not work without lockdep. It will only
-make local_trylock_irqsave() detect recursion and lead to two splats
-with lockdep enabled in local_lock() (one from the assert and the second
-=66rom lockdep).
+This appears to be a totally separate topic.
 
-I would say you could get rid of the `active' field and solely rely on
-lockdep and the owner field. So __local_trylock_irqsave() could maybe
-use local_trylock_acquire() to conditionally acquire the lock if `owner'
-is NULL.
+[...]
 
-This makes it possible to have recursive code without lockdep, but with
-lockdep enabled the testcase should fail if it relies on recursion.
-Other than that, I don't see any advantage. Would that work?
+> Maybe we can have more discussion?
 
-Sebastian
+We sure need more discussion before shipping any changes for this
+topic.
+
+Thanks,
+Song
 
