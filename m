@@ -1,273 +1,127 @@
-Return-Path: <bpf+bounces-49177-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49178-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6C03A14DE8
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 11:45:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0308A14E8B
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 12:35:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C6C51881C61
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 10:45:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC59F168949
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 11:35:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 722CE1FCCE1;
-	Fri, 17 Jan 2025 10:45:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="KK2dx3h3";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="i91PvlMh"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCF091FE46B;
+	Fri, 17 Jan 2025 11:35:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 275B01FBEAF
-	for <bpf@vger.kernel.org>; Fri, 17 Jan 2025 10:44:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737110700; cv=fail; b=WmGU57RiHwG4vbleIDR65FdH662rRa3J/eNwNGJO9jPxcNah4sD0lY51bAbAfnC2sD8c2mSQT5I3AaNmqIIGb1IALbaxZNcm5DOgqFIOKtbbPg82zCWkQ4YlDUflMHAVjCa/Ap5BokqUOIC15MhTuehw2uWkjv9dXAunRoq1Lm8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737110700; c=relaxed/simple;
-	bh=Vs5hnlVcNvJr0G1GRrmKcFFYHDeiJcxIgc5tJjsQJ/8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 Content-Type:MIME-Version; b=feR4hVIwfMtWWgtpSXHxX3D2Fy4U1qxftGQ8F1Reh42GcGEkK2dNpDmEl+OG+Q74N3XGVISwpD7HynUPXQZ4aQm613IMpVguYyHMvvKesdlklpvUkkTdVNNvPbjc/6WF7uTPSQc+GqDsNyB0mzTtMX9hrulB0sXybMxDHIO4xe8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=KK2dx3h3; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=i91PvlMh; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 50H5to3l009922;
-	Fri, 17 Jan 2025 10:44:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2023-11-20; bh=iuL57fQPAE7rcoEkEC
-	EyB1NznkDhrLrDhoY/9QzRYpI=; b=KK2dx3h3cr9TDorT5dqg7hWUmyvex2aN+a
-	qE9lGZtTmgxKgdZgXCeJQfclIrbQqKTE6PLJ3DhLq1R+GsaSwrM73qBTT6+n2tsX
-	n/1nUIc6Bjp11vkLt6/EcIcTPqiC10tcIMEFgzpQ6A6NquxlLCM0kuQWoObCyktZ
-	MF357Ub0poxcGjU51TPJZV5sOqYlXtZ5vNSP2U7IHfaLQCC+u5i53FKiScapyCSU
-	jSt2nf7xEYtuz80WIvFHNYLnEiD1bJ1Uj2a/ohBe9vn2KFqoDmZ4CxsYeYp5qxaJ
-	c07Eh+OFiVpcofc9uXhrLgin0LTYiptoolch36ueUYunm/8vbiew==
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4475mfhrnx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 17 Jan 2025 10:44:13 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 50H9iNEp032241;
-	Fri, 17 Jan 2025 10:44:12 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2046.outbound.protection.outlook.com [104.47.58.46])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 443f3c14yn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 17 Jan 2025 10:44:12 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=txQljohejjuuHv9FnzIsNIWs/Q8mlfn562/2Fa4a2YzoGjstTSyl+0KF12nV3lIcfVHLeq2CObMnaAMMndDp9oRkq1XhVvqLB4KFrwspGJu7lH8dlmV5TpQ7eFG+2nx0kTpYWAxm3c0l1BuF8BYuYZJkQxn6jA74ULbIamSORByhO7XFtHI/n9npdKcb3ydqXSUDzH12ul9Ib8jPloJnrDqWnwxvVt8m5rt5al2i5ifU7RWfU6Ip4uzBhuap7qBDhOL4u8PKUQ+dM3zxP9aU9ns4GvYtYplr28eLdrpw6Jn7PS3tLtVf2YUNGglN9xB1T+iognEqJ7/ssU5tODOaAg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iuL57fQPAE7rcoEkECEyB1NznkDhrLrDhoY/9QzRYpI=;
- b=RO6tOrymKm0RQ+FqbpHl8lK56XLhO8BXoBg6QyVCBwj1WXQ7ui22Aoay1fI/U5y8GgBIPwKXCiKu6X7CG/yOEm0w2CKH9OuKw9qNWlWlmmrvraNTg0vcuWj+EEbcA1Xdi1WI1WMZF7Y05DdzFXDraPFtvi0xPiuudTzVi1vo6DSs9cFRQuyx1wbgqq0NvW/DDO3RjqMBbjs7u6OV6s3332pIXhFTCAkks8cDB8Ae8ADho/hfHQGC0Sa2Ez3RbU0XicWYG4zcNpPKa9ZpHEsQdnEFBYiTWaKETUt0yVxiFuTpWtK88NfHKlLgUB7F1ox7DFwevIbZiiJH2r1gTkoBng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iuL57fQPAE7rcoEkECEyB1NznkDhrLrDhoY/9QzRYpI=;
- b=i91PvlMhDc1ZqpoHM+H8FB6SrQzl3BtKzHVYBwsLRNyJCfLOdC0ZDU3aY7AJHdA4/9okJ0msNLDL/HDrdtbZ/Hq8pREW4rba4yVlB2e2GI/h+RuW89YM+NX/Dk1yl8I4hMUEgT2UV/KddXQRvLgkoSDs8Vz747Za01eK5dus1I4=
-Received: from LV8PR10MB7822.namprd10.prod.outlook.com (2603:10b6:408:1e8::6)
- by PH0PR10MB5895.namprd10.prod.outlook.com (2603:10b6:510:14c::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8356.12; Fri, 17 Jan
- 2025 10:44:09 +0000
-Received: from LV8PR10MB7822.namprd10.prod.outlook.com
- ([fe80::4808:df01:d7ce:3c1e]) by LV8PR10MB7822.namprd10.prod.outlook.com
- ([fe80::4808:df01:d7ce:3c1e%4]) with mapi id 15.20.8356.014; Fri, 17 Jan 2025
- 10:44:08 +0000
-From: "Jose E. Marchesi" <jose.marchesi@oracle.com>
-To: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: Andrew Pinski via Gcc <gcc@gcc.gnu.org>, bpf <bpf@vger.kernel.org>,
-        Cupertino Miranda <cupertino.miranda@oracle.com>,
-        Alexei Starovoitov
- <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, Manu Bretelle
- <chantra@meta.com>,
-        Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko
- <mykolal@fb.com>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        David Faust
- <david.faust@oracle.com>,
-        Andrew Pinski <pinskia@gmail.com>, Yonghong
- Song <yhs@fb.com>
-Subject: Re: Announcement: GCC BPF is now being tested on BPF CI
-In-Reply-To: <8zWDbpQS-9sjNHlLlLHFNncS_8_Tl0clkrX-Jst-1FeRJWHWYpPQe9DLdKTQwfPoLX8Grb0tB-714dcMOFsdTRBd0-ZcYwpkqe-HgGXkenc=@pm.me>
-	(Ihor Solodrai's message of "Fri, 17 Jan 2025 03:32:36 +0000")
-References: <mMhcrHuvf5fyjPwMa19kug9DHQH9yYcCJXKfaFMXhfQlKIuColex7zg7G6qpPqlfF74-IqzkhpZSlzsgvgikc-u6oQp27dNzFQAAatRaEuU=@pm.me>
-	<Yb09J1CvDUk4Mi2bgm3Pd3FJGMi-s3fvc9aftbrOtE4ccqzgwrkalnjKcEA2Y3RB_obEww6EG737pTfyqm6Wyf8fqMRBpaPUA8gH_58GYT4=@pm.me>
-	<87bjw6qpje.fsf@oracle.com>
-	<8zWDbpQS-9sjNHlLlLHFNncS_8_Tl0clkrX-Jst-1FeRJWHWYpPQe9DLdKTQwfPoLX8Grb0tB-714dcMOFsdTRBd0-ZcYwpkqe-HgGXkenc=@pm.me>
-Date: Fri, 17 Jan 2025 11:44:04 +0100
-Message-ID: <87ldv9k9e3.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
-Content-Type: text/plain
-X-ClientProxiedBy: LO4P265CA0310.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:391::18) To LV8PR10MB7822.namprd10.prod.outlook.com
- (2603:10b6:408:1e8::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 438EB1D8E12;
+	Fri, 17 Jan 2025 11:35:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1737113740; cv=none; b=Y/4v2UErtGJ+CBdysNRuXQenn01fIjuTqrTEG7yZkcOHIojTXuMenKZLAhVjKyacULFy5GqJEKsih8VfsW2Yo5HH/CKph/cbq/O7EpjvtQyD6Fs5155lTbyqNFOE9xUpZXWZLEg5TuZzOOJkVLbIPFuBWwHGONKnOHcLLi1wVns=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1737113740; c=relaxed/simple;
+	bh=MpVWMoWdsncOLBNsGe5pt+ULbypkbTe/agZRsjFXQqc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=roI5U5kG1Zy+YGwbV6D3Ze4KYfyLVQKTA+H/Oa+OXuePjiQNIFkgcxwpXHWKkyChCitXuMZeSyM4g6O9azJIIcLJrkIa2rAvRobcQ1I2ThLrO8majB5haU9H32TgLPZoTj2zbX2hzinFANu+VTpdBltESf+ktzngRcvCpCUvpx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4YZHcq34sJzjYBg;
+	Fri, 17 Jan 2025 19:31:39 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2DBB1180101;
+	Fri, 17 Jan 2025 19:35:33 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Fri, 17 Jan 2025 19:35:32 +0800
+Message-ID: <304b542d-514d-4269-ae11-b2e214659483@huawei.com>
+Date: Fri, 17 Jan 2025 19:35:32 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV8PR10MB7822:EE_|PH0PR10MB5895:EE_
-X-MS-Office365-Filtering-Correlation-Id: ac10c332-e71f-4d5a-e20a-08dd36e3df2c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|1800799024|376014|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?+j19c9P8owr3RtweIZw3XXZBtBnMvMniidy8m7J/TRP/mv2dTAaTKBa0FCpm?=
- =?us-ascii?Q?FnXPUW1jWOpW+zWRHx6LGTtdexyHibHcueO6C51n4ZuzxGveFK4HiqVKBXFn?=
- =?us-ascii?Q?I0zMm+yPiEBHz/WD0CnugVH8fA1iAJijHtx2sqdr2Kf48OTM+sf1Q3iLW41R?=
- =?us-ascii?Q?J5H8B8HktJYrm9M7i/SCLfs/EGxcX08bWDwNO9eD4brhtgQVBo8F7PvGr21p?=
- =?us-ascii?Q?uhj+u/s2uZB/KjEtq1euNtq1iQORogCrI1xxsFnx4zbTFxo17YEH4f1426Q6?=
- =?us-ascii?Q?R/ucqyBIW3VSP87QHJo/xujxQghnlD/uMy3NMICwhx3aTGDhxxFjke8S+YTK?=
- =?us-ascii?Q?dLU6IslvVr5JkNaLMg7t+GIPzKxnErTCVE8NSMjauJrX8cOdRgnxaL32Ltgn?=
- =?us-ascii?Q?kxJ1+U06BLq7xa5f8ihxHWd6s1ScqVPLNA8+jERG2JVdUAk39sIF/hrZ2Zuj?=
- =?us-ascii?Q?+gtEYJdF+Wmf2QPhXUSMAUUaUSCjoeynbcerOXO2Hlsp3CBgda5S8bFdSAXJ?=
- =?us-ascii?Q?8FGNVe26jhdpNM04My69DE3r7kYGlGzf9GykMHxpsP6mqxbDESXPIBxUYCbB?=
- =?us-ascii?Q?FZNtTBsODLw8f5fswyuAq1q4NhVAU+EsJbZDpji/Zj52xmNmgoaxTp6BD2i7?=
- =?us-ascii?Q?Kl7MCwdoWFxdPNaRkv/AjtuF0BJJ56vArv6kHPhSQ9K1cAN3Euwn9sDpV+Sl?=
- =?us-ascii?Q?3Q3BhFQjcTQ5yM2uv6GDD0DKuj5xuKGH+ijAjXv4mJKMTg/sWkdRl4X3ozPY?=
- =?us-ascii?Q?VEQ69u2QH0BoN/5SU4QPGOVAdapywaYK901l3J5T0B/vEaD/aXSVE/UwpBjh?=
- =?us-ascii?Q?TgHeHasN6srpDRnI6L9Rp14gghZnn8pCJxKrNuAI/7RSuKAfN9aQu6aKEr8v?=
- =?us-ascii?Q?nRKboisl5ePYcj7duGalmB5RkanKRsbdIZfMSI8TgpKN/DWMkEIf8+0CW7SO?=
- =?us-ascii?Q?hJV3upm7iYeLrV8QP2L1R82iR6d//6MfTT51StyCa3LfdG2vTexkr62FnzPx?=
- =?us-ascii?Q?/Xu321cPizIF9w2J8OAfLLtDtpvCD/Jvk+sg9/Sr8wWx36kqbZHV+JldeN25?=
- =?us-ascii?Q?tCmeP8a9hHtjOsxUCTT0x43roXNm5Vdab4QD8SYsNdazmoUghrkbBK7hcqzD?=
- =?us-ascii?Q?TbN/t96lRIjrPPMmZJeqeel3FPCAJcQpfjz3rQNQzoBfCiDFIj4owTSnsyVm?=
- =?us-ascii?Q?gHWPrpEdrcvs56f8Dj4XQZgs7/ly61joSTUErFiWxnMM2bD7ACR5wn54NscH?=
- =?us-ascii?Q?LcuoI1lipzE1U81gydmwBxYRu0gpzvSxa4/j1XzSmOTscdiNxJJx8PFwvRRk?=
- =?us-ascii?Q?15q/ZzGKv/FY89o9wdNkTN4CmCasi7br4Coaq5rWz7udM1wny4ZaxdoxSWIC?=
- =?us-ascii?Q?QNNkwtKS2k/W/NbBuwtydoEn20QE0WIIFvB7q1DWQB7p82LvLg=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR10MB7822.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(1800799024)(376014)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?hI0Y1SvLw1SqkxcfUsXlm4PCYvUSYUoOD4cbrfXh58rv6S9/EdG0bEdRnCiT?=
- =?us-ascii?Q?8HBVqdnLWf5LIDVYjHicpsilqoLqkmj8elME/7YqmlggPgMBaE+kpn0VvWXV?=
- =?us-ascii?Q?l+p1vd+t/HyHUDa3prkK/ZxtT1NztSWO41Xj7BdWQXnIXxAMIQ+gENWfJBYl?=
- =?us-ascii?Q?Xl3bxqtwQhxC12MQaS4v53pyj55WU7zKs9bJW+UNXipLzie5z4Aviizu4PzW?=
- =?us-ascii?Q?/MAqhBsdFaVReACydE3R4EaYEBjjPQt7lQM8oM7KkPiJe0Eeco4Blv0CaIuv?=
- =?us-ascii?Q?AkH5boRcu8tnvVY0s8Qd7wubiw2ql5pNX7IGJrnUSCR8QswS4JTFZxHMUdi3?=
- =?us-ascii?Q?MEI19sCXxI/7fR8aJavOeQQ94/glEJZT2p9qDmSc75RalqBaJkcoDgajTGO4?=
- =?us-ascii?Q?QUE/H+EGqqezNoO5yOhh/wW5VTCDjyRpEJFExlqhIIG/gJ+RFXRxWpvB4bBC?=
- =?us-ascii?Q?7TTiv7d48nC5rbksA+YIeJYSI3mQdsAW7ruYfuz2LPCxt/xEDwgC/oTwm5a4?=
- =?us-ascii?Q?CPpycQYVsL1EcqpSyC5m/ROqvzzTx5hKbMbe3iO17Dh2r+f7mivGh7QpLNOL?=
- =?us-ascii?Q?a+pChkMg17CNelGiIRpdPyW6BvXdnEl8hzejCDjRSAOpmL2B5JtSI91WbT26?=
- =?us-ascii?Q?kYYCzi7Q3RZ/lmWgg/029Iyyfb74MELB8uPRfH2JnRN41Z37ZSoFNCv2oJwV?=
- =?us-ascii?Q?CPUo429DZCIDb8phfcCe7qokhr5SDwJUE30P1pjYotzwb+TdT8pDkAR1dESl?=
- =?us-ascii?Q?wwxTkKmyJPPViU69ILoa//l3Aod2LzV9VaTBkU63tg3aip+G0tbHdAVNQOk0?=
- =?us-ascii?Q?H+ujrOZj/jhMtZhwPGvJplFH9ik1pblnib5l/R0QnZVFadVWLRWW7VOozHvd?=
- =?us-ascii?Q?rvh5lpW5omRJQ6WpVrhCvY9a2un4Skladg14FHonKCdXs7wQhtLFbEMS2UWb?=
- =?us-ascii?Q?OldJypNhXf1i7esr36g+9x2KGdP710lpawPUcydAUKVwhE8hwL84lvl4Umyt?=
- =?us-ascii?Q?UJJkmUc5lAglLT6pW/CFCPrCWXQMlC09tXx54gCj8rcGewbzkStIDwv98xKF?=
- =?us-ascii?Q?9hW9O+jBLflAz6vQOx29hGJnR/AjOmA+MJSsXFwYH4MCNNJsT1VfhkVjVCia?=
- =?us-ascii?Q?MUXM9ENVTG42i3tXqO57Lw5Mv86+NravdNvPNbbAACxUikDBAccNsq6DWzSp?=
- =?us-ascii?Q?o98Hd6Eg999w8zd3xsLoa7yRLS5zADysBAKPdaEhBcRvX9lJqcV8K/icTjR5?=
- =?us-ascii?Q?W4UR+YfCkpJ9PJI/0PlhWyYpLWIS+bBJWCPtZ15upgPU4CJt41Pq2/Pap78O?=
- =?us-ascii?Q?cN8uO9AZw/BPvCcHd1bJcwcPwpseQGlLrucoBEV64+zBH0LNR8oQ4MWBFRbW?=
- =?us-ascii?Q?lBmfxn3Pmn9TsPVrMogONeLSnh2Wrw8D0xPh4cFkM3hviTNxfFFKQIxbYf1B?=
- =?us-ascii?Q?G+SVq6vYAl4Z7IG6JyJMdwlY5DtIFPLoFlI4LAM7PNE/FtYcSdfzGhJjPWFl?=
- =?us-ascii?Q?Ro5mcN2l/l/sYxw8dTg+pKEXrsDNwSPxbZLbRfiAcq0qn7O7I6LmarhhEMIJ?=
- =?us-ascii?Q?ZxbH+O/Gr+tMJjTvJ5H8ER4BcKV+2nDaB/O9n00zPrwRQPp0Kh3Ia71rhGj8?=
- =?us-ascii?Q?Fg=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	6IutG+s2onneHyTT8evwL/HhPwghkx/ZJ/XeMPmrIK5q7miKiuqd8uSEZ9+noy67KUa29ze6OjnKRq41X2JduDA6zmoLpn6aOTpIZ6forAoj+p2Ylsbz2UnVatiFfRgjRruE8Hl9Sea9nuBwUbuKQ2pTz6OvtPzToaDVhsJs4mQZ5TNjyTcSUDUPthFRToVFTRIZXzvTT0/nogvKR4ZclR6sYwhje1CRKWhJxt2/GdsN8b5KwzjS2f73h7UoE2ST2p7yy5QJHNkebiqjRs7tOOwpiv0cQFTWghiyV6Op0yxnpeS7oc3ewGFFLElm6J1BHK3gzp1csiBQZeFgpZ34+6xOcLI0xOH21+1Fc3xg8L9squBgb0X4o5M1mWDmuARRSBKZprtDkZ7cOFqn1V6GaThyiose/sDJQLPhNRthPukN1fq0IJAaaNzKov7LfnIYJ1uGDclCKR1rPUlpRj8qcEkNluVWcQesjCnVQKPyECUP5Dy3oItJQi8TIbV5hEMKD7k1CrmSSec7RCQaJybPtucYFWoIobj3pExfL6YcEbZ0yvfWd68W2CTJlFfNKwONuwKy7uVPIrWBiQulkr4bFxQLPUgo6SyhEc4SFGW+iOY=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ac10c332-e71f-4d5a-e20a-08dd36e3df2c
-X-MS-Exchange-CrossTenant-AuthSource: LV8PR10MB7822.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2025 10:44:08.8175
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0IBkW72OckUhICLogOqjY4mRdzDfj+4qlCFVAQrHOIUjWvc4tsQ/VMGOMOeaSVU0AUa3a/OdwqIMQPh1yRUlZci0p8CHK/KKnTO/wSi6UbU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5895
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-01-17_04,2025-01-16_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 suspectscore=0
- bulkscore=0 malwarescore=0 adultscore=0 spamscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2411120000
- definitions=main-2501170086
-X-Proofpoint-GUID: hUcJ1Y2cGwWJ9VEJnFrVb8fy6bzyEevh
-X-Proofpoint-ORIG-GUID: hUcJ1Y2cGwWJ9VEJnFrVb8fy6bzyEevh
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v7 0/8] fix two bugs related to page_pool
+To: Jesper Dangaard Brouer <hawk@kernel.org>, <davem@davemloft.net>,
+	<kuba@kernel.org>, <pabeni@redhat.com>
+CC: <zhangkun09@huawei.com>, <liuyonglong@huawei.com>,
+	<fanghaiqing@huawei.com>, Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Robin Murphy <robin.murphy@arm.com>, Alexander Duyck
+	<alexander.duyck@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, IOMMU
+	<iommu@lists.linux.dev>, MM <linux-mm@kvack.org>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
+	<john.fastabend@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	<netdev@vger.kernel.org>, <intel-wired-lan@lists.osuosl.org>,
+	<bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
+References: <20250110130703.3814407-1-linyunsheng@huawei.com>
+ <3c8e4f86-87e2-470d-84d8-86c70b3e2fcc@kernel.org>
+ <c02e856e-6ec5-49d0-8527-2647695a0174@huawei.com>
+ <3a853e1b-b5bf-4709-b8f6-e466e3e7375e@kernel.org>
+ <1bef4a35-efaa-4083-8ed5-8818fe285db5@huawei.com>
+ <f558df7a-d983-4fc5-8358-faf251994d23@kernel.org>
+Content-Language: en-US
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <f558df7a-d983-4fc5-8358-faf251994d23@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
+On 2025/1/17 2:02, Jesper Dangaard Brouer wrote:
 
-> On Thursday, January 16th, 2025 at 3:58 PM, Jose E. Marchesi <jose.marchesi@oracle.com> wrote:
->
->> 
->> [...]
->> > > 
->> > > Effective BPF selftests denylist for GCC BPF is located here:
->> > > https://github.com/kernel-patches/vmtest/blob/master/ci/vmtest/configs/DENYLIST.test_progs-bpf_gcc
->> > 
->> > The announcement triggered an off-list discussion among BPF devs about
->> > how to handle the test running, given the long denylist.
->> > 
->> > The problem is that any new test is now a potential subject to
->> > debugging whether the test needs changes, or GCC doesn't work for it.
->> > 
->> > As of now, an important missing piece on GCC side is the decl_tags
->> > support, as they are heavily used by BPF selftests. See a message from
->> > Yonghong Song:
->> > https://gcc.gnu.org/pipermail/gcc-patches/2025-January/673841.html
->> > 
->> > Some discussed suggestions:
->> > * Run test_progs-bpf_gcc with "allowed to fail", so that the
->> > pipeline is never blocked
->> > * Only run GCC BPF compilation, and don't execute the tests
->> 
->> 
->> I think that this is the best solution for now, and the most useful.
->> 
->> As soon as we achieve passing all the selftests (hopefully soon) then we
->> can change the CI to flag regressions on test run failures as well.
->
-> Ok. I disabled the execution of the test_progs-bpf_gcc test runner for now.
->
-> I think we should check on the state of the tests again after decl_tags
-> support is landed.
+> 
+> Benchmark (bench_page_pool_simple) results from before and after
+> patchset with patches 1-5m and rcu lock removal as requested.
+> 
+> | Test name  |Cycles |   1-5 |    | Nanosec |    1-5 |        |      % |
+> | (tasklet_*)|Before | After |diff|  Before |  After |   diff | change |
+> |------------+-------+-------+----+---------+--------+--------+--------|
+> | fast_path  |    19 |    19 |   0|   5.399 |  5.492 |  0.093 |    1.7 |
+> | ptr_ring   |    54 |    57 |   3|  15.090 | 15.849 |  0.759 |    5.0 |
+> | slow       |   238 |   284 |  46|  66.134 | 78.909 | 12.775 |   19.3 |
+> #+TBLFM: $4=$3-$2::$7=$6-$5::$8=(($7/$5)*100);%.1f
+> 
+> This test with patches 1-5 looks much better regarding performance.
 
-Thank you.  Sounds like a plan :)
+Thanks for the testing.
 
-Is it possible to configure the CI to send an email to certain
-recipients when the build of the selftests with GCC fails?  That would
-help us to keep an eye on the patches and either fix GCC or provide
-advise on how to fix the selftest in case it contains bad C.
+Is there any notiable performance variation during different test running
+for the same built kernel in your machine?
 
->
-> Thanks.
->
->> 
->> > * Flip denylist to allowlist to prevent regressions, but not force
->> > new tests to work with GCC
->> > 
->> > Input from GCC devs will be much appreciated.
->> > 
->> > Thanks.
->> > 
->> > > When a patch is submitted to BPF, normally a corresponding PR for
->> > > kernel-patches/bpf github repo is automatically created to trigger a
->> > > BPF CI run for this change. PRs opened manually will do that too, and
->> > > this can be used to test patches before submission.
->> > > 
->> > > Since the CI automatically pulls latest GCC snapshot, a change in GCC
->> > > can potentially cause CI failures unrelated to Linux changes being
->> > > tested. This is not the only dependency like that, of course.
->> > > 
->> > > In such situations, a change is usually made in CI code to mitigate
->> > > the failure in order to unblock the pipeline for patches. If that
->> > > happens with GCC, someone (most likely me) will have to reach out to
->> > > GCC team. I guess gcc@gcc.gnu.org would be the default point of
->> > > contact, but if there are specific people who should be notified
->> > > please let me know.
+> 
+> --Jesper
+> 
+> https://github.com/xdp-project/xdp-project/blob/main/areas/mem/page_pool07_bench_DMA_fix.org#e5-1650-pp01-dma-fix-v7-p1-5
+> 
+> Kernel:
+>  - 6.13.0-rc6-pp01-DMA-fix-v7-p1-5+ #5 SMP PREEMPT_DYNAMIC Thu Jan 16 18:06:53 CET 2025 x86_64 GNU/Linux
+> 
+> Machine: Intel(R) Xeon(R) CPU E5-1650 v4 @ 3.60GHz
+> 
+> modprobe bench_page_pool_simple loops=100000000
+> 
+> Raw data:
+> [  187.309423] bench_page_pool_simple: time_bench_page_pool01_fast_path(): Cannot use page_pool fast-path
+> [  187.872849] time_bench: Type:no-softirq-page_pool01 Per elem: 19 cycles(tsc) 5.539 ns (step:0) - (measurement period time:0.553906443 sec time_interval:553906443) - (invoke count:100000000 tsc_interval:1994123064)
+> [  187.892023] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): Cannot use page_pool fast-path
+> [  189.611070] time_bench: Type:no-softirq-page_pool02 Per elem: 61 cycles(tsc) 17.095 ns (step:0) - (measurement period time:1.709580367 sec time_interval:1709580367) - (invoke count:100000000 tsc_interval:6154679394)
+> [  189.630414] bench_page_pool_simple: time_bench_page_pool03_slow(): Cannot use page_pool fast-path
+> [  197.222387] time_bench: Type:no-softirq-page_pool03 Per elem: 272 cycles(tsc) 75.826 ns (step:0) - (measurement period time:7.582681388 sec time_interval:7582681388) - (invoke count:100000000 tsc_interval:27298499214)
+> [  197.241926] bench_page_pool_simple: pp_tasklet_handler(): in_serving_softirq fast-path
+> [  197.249968] bench_page_pool_simple: time_bench_page_pool01_fast_path(): in_serving_softirq fast-path
+> [  197.808470] time_bench: Type:tasklet_page_pool01_fast_path Per elem: 19 cycles(tsc) 5.492 ns (step:0) - (measurement period time:0.549225541 sec time_interval:549225541) - (invoke count:100000000 tsc_interval:1977272238)
+> [  197.828174] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): in_serving_softirq fast-path
+> [  199.422305] time_bench: Type:tasklet_page_pool02_ptr_ring Per elem: 57 cycles(tsc) 15.849 ns (step:0) - (measurement period time:1.584920736 sec time_interval:1584920736) - (invoke count:100000000 tsc_interval:5705890830)
+> [  199.442087] bench_page_pool_simple: time_bench_page_pool03_slow(): in_serving_softirq fast-path
+> [  207.342120] time_bench: Type:tasklet_page_pool03_slow Per elem: 284 cycles(tsc) 78.909 ns (step:0) - (measurement period time:7.890955151 sec time_interval:7890955151) - (invoke count:100000000 tsc_interval:28408319289)
+> 
 
