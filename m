@@ -1,122 +1,177 @@
-Return-Path: <bpf+bounces-49192-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49193-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0620A14FD2
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 14:00:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77FBCA1509F
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 14:37:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07A3E188A6F7
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 12:59:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B519316499F
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 13:37:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AA97200121;
-	Fri, 17 Jan 2025 12:58:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB28B200BA2;
+	Fri, 17 Jan 2025 13:36:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hrYtg9ZO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SxINPgMm"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D8941FF7C2
-	for <bpf@vger.kernel.org>; Fri, 17 Jan 2025 12:58:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A86A6200100;
+	Fri, 17 Jan 2025 13:36:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737118734; cv=none; b=J3iCwMZdMF6o2QhHj0LUddaQyehTpsqL1tv/8K4r2en83svNETZmQJdH2MfONJQFOIA6YEZIfZnAOisJvIVrgR5mb6O0ZUcW1/qUZ57o4FTbKQGPnzj4e/yr9fhHFBsQj8evh7UoIdjanQQi2TIhU1/IRA4x/93fhsR9kLziiXY=
+	t=1737121008; cv=none; b=OpZofyoJXxuG1FDa2B8TLpCjzQ4LvyBo8l68TH0aEdk77rszjTT5uWgdzCNpaTqAzsqElpW786oqphf+cUySF6GkYTuJvoJlhZrK/k8mTRorfuB2LxBKaOkTeVivGk1FUwOqY89XFCdcITY68wbi0wYiBXwsEIFPX7Jez8Y9elw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737118734; c=relaxed/simple;
-	bh=LUZN6UQM4fLoP0BmXx1jU/m3Jz1LnC0DxZ30eVflpy8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=JtLpki9echywseSKzaRRRBLQlYLEGftbdDuLmA4/5JeyhCuXuOtjpt3W3YsSxmORKCTKDuEBSEl+uivxK6OpRTQGEUak3+un4oM2fje+cfMvIDLhviqGsjSjThLQQ0G0sqyua0fezb3Y4tLyKZav5xr6LoEfeiQLHl96Usr0P0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hrYtg9ZO; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1737118732;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LUZN6UQM4fLoP0BmXx1jU/m3Jz1LnC0DxZ30eVflpy8=;
-	b=hrYtg9ZONP/2iZHgEdHrB4vl2CX+IZc3MQ1QGNacNoOZ9JZT7Cb+xCK+4jh3bEIHyxMO20
-	Y4MoCk9nSCupkdVnBRHDn+YoRg3E4Sc3liHbEWwDbpMjnz3Oalwhr0njnVpCRrmKfaHV4h
-	jChJ1062LmDMv2mY0bzpz9DMX0XfH6M=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-46-yFak7BFmM5S7lcvXMMZwBQ-1; Fri, 17 Jan 2025 07:58:51 -0500
-X-MC-Unique: yFak7BFmM5S7lcvXMMZwBQ-1
-X-Mimecast-MFC-AGG-ID: yFak7BFmM5S7lcvXMMZwBQ
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-aa683e90dd3so189227266b.3
-        for <bpf@vger.kernel.org>; Fri, 17 Jan 2025 04:58:50 -0800 (PST)
+	s=arc-20240116; t=1737121008; c=relaxed/simple;
+	bh=ykoOYP5A9GqLIO8ujgXlxd/k2bw6vl/rJwrKvkpumwo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TnAqrEWBLnDbWnS1w4ozJHkkkJX9gBR4qivHqdiCdCdpMnF3pR7AbDC9c/Dh3+JBKKeqtiw98ufkEGKIlI9UCP7kqF7k+PdBOvNEXZXF76X0X4vAmCdlmdNABiTc+cR+1eUechYYYRbv4ykjyPlilSqSX+S38HQYUR5lyWzroHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SxINPgMm; arc=none smtp.client-ip=209.85.161.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5f321876499so1141403eaf.1;
+        Fri, 17 Jan 2025 05:36:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1737121006; x=1737725806; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iT6JakgGMnf6JWUAg95lo0Hdan+g6MjCBqiydljWY8k=;
+        b=SxINPgMmG7YLCk24d+zUggLplNQry9HoTOwKAbMbWrbQakYgGtnR7uSik0j9NXfqjB
+         4PpXdCHXbbeeVQq+VaNbSCBvKOlic3OG1TvNlgyct+5wwi25Tdk9oWGkvZYTWu7rkMBH
+         RnWTkHdT27B1c9uRKSRtXRyJvc8YP4ORYCyiovF/VnZNW+ISnIkWxlmJJG8fugsj/+8i
+         wW+p6vJsBNQB/7e/hYjRCOOGmXRjcrjlZ+CKlMcfQBTS7sbp6z2gw8PysCQ3i5f6K5zP
+         BGnlwuUxCJuTiHdXdrvQmr2/19nV1YrS8nIO/1Fb7DSfgt6BwB63+eGc3rJeD2YyWgBu
+         Fh3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737118730; x=1737723530;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1737121006; x=1737725806;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LUZN6UQM4fLoP0BmXx1jU/m3Jz1LnC0DxZ30eVflpy8=;
-        b=otkhjqprTT0flYKuYfcJV+XGy9nJJhEvPMOegudpDMwzRyUxXgdO0rxQ5aV45q8TSI
-         eZ5hzisfJsQlhmF8sVTQWbTE7UVFkMU1TCKrYRHJohX3TFQT+AdVkohWU3Z1m6GY1STZ
-         8l8UMJ42kkPXUBk34jG41aizzw80DRrZy/CNC1CjS+vP3Y3+YYdfyhdEBHeDjYXyjsbl
-         3AwGV/CgDYSU6+Io+opD+ogXYJ9GEnIyrdhVFzeZbra38VuwgB6hkweK3LX5nlvaAJBH
-         ZWgxDntWlDks5OMRo1C85JA3AYaecIgBGjqYduCOn4UvCY0GwD9/iSsQL3FysTx4Q7iL
-         aEpA==
-X-Forwarded-Encrypted: i=1; AJvYcCWHpr0LB1EmLclfBrCRHoq2zU3g4sfJXaxBaA7sBuIhszm/9JpLryNT5Y1RCuCZEg13HEI=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzg9HGSjJgVJDCV8oAYXFzgiHvx4q/j0e0ak6ijrvhZ5AO3OKwI
-	e5UtfD+9nJNKR9ZgUW22RXTty4KC/mUnG6biOJ2o/7G0lT/l6+fY0RqYNYuFaOG8IJ8yibsWqwE
-	tZgwEEN/27gOuOftaGaWeIG1T7atOiqJbxXzizlDuVioCngLkiw==
-X-Gm-Gg: ASbGncvpexpOhwFm5SGw6u8a9BSdRjdWZqKuHNvUmAdsNX+cZEsVsqB6VnfbhBoREVP
-	eNPtywnzAjiwdxcxk6I/+Hzz7Y7IUsM+UXwA4xuPeCTZ9O/nAb+WhV+ch8pwOH1TmH48j4Gjygr
-	Z/Uh/oIpoVpIGIrImWDkGjzfGL9lZVur0ZBNnZPom1XeJYJn/v1M6uNs5VT3KV+uekD4gLFMZzI
-	+bOO6WeJHNvBceKs0mNCZUP/6jcv1dGDJIe+6aJP9PC9AKrEaOmPkxaoT5A+iecefpZ2W79nPN7
-	8+4CUQ==
-X-Received: by 2002:a17:907:7eaa:b0:ab3:398c:c989 with SMTP id a640c23a62f3a-ab38ada1546mr328706766b.0.1737118729757;
-        Fri, 17 Jan 2025 04:58:49 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGLmD1GTGTSt675IQTRpthCfqVA1AbcSDMJl9EZkTXmZm66OBCCVwcEUSSLmPrXc8rBhS/6Cw==
-X-Received: by 2002:a17:907:7eaa:b0:ab3:398c:c989 with SMTP id a640c23a62f3a-ab38ada1546mr328703366b.0.1737118729365;
-        Fri, 17 Jan 2025 04:58:49 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab384fceb0dsm164970866b.185.2025.01.17.04.58.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2025 04:58:49 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 1C46D17E7877; Fri, 17 Jan 2025 13:58:48 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>, Andrew Lunn
- <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>, Lorenzo Bianconi
- <lorenzo@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Jesper
- Dangaard Brouer <hawk@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, netdev@vger.kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 8/8] xdp: remove xdp_alloc_skb_bulk()
-In-Reply-To: <20250115151901.2063909-9-aleksander.lobakin@intel.com>
-References: <20250115151901.2063909-1-aleksander.lobakin@intel.com>
- <20250115151901.2063909-9-aleksander.lobakin@intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Fri, 17 Jan 2025 13:58:48 +0100
-Message-ID: <87y0z9mwaf.fsf@toke.dk>
+        bh=iT6JakgGMnf6JWUAg95lo0Hdan+g6MjCBqiydljWY8k=;
+        b=RuV7Ojr9pk6KGdHm0aavXEttmH8H/Q9qywJZyHB8IYm0x/udCgqw9kd4Yhv5O8MqyU
+         p9Mh67Dp9IicpWUDXBZ5VDeX2EGw4G7VIYGXloYwhdYygqyqJ6fDb0+yz5sG8xrLeh1s
+         0uVoS1/YWCPpiQYuvpyPuBfpvx6b+gakuvqe91PuA3L0vCV6e6GPFvBxm4lQD1AWwvuW
+         0WH6l9u0vQWvplz0y0zeHhl3vXOtiMhlxMtdE1Uq9ifLcRal1ppC8H+yXxcY6n1MfHSC
+         lVf+t4rMxkz+QL+mpkNAOXc0vlI7jTNsKfsZTxRdGTBBwNg4hT7GvexzMDuB/TF5TTAh
+         A8Rw==
+X-Forwarded-Encrypted: i=1; AJvYcCVnzmOWxpuf/kddiuJ2uv+oQPH2GH5aUTYvs9NoTIwVb73iS7bLTYL1PIdhk4sNqi1tIxyTcIkfroOt@vger.kernel.org, AJvYcCVxaVA6nP7I0AqasCekxYk317OinA2+mLLzZpBMTUs3ryI2z043eE4ux30F1a2rFcPCQ+o=@vger.kernel.org, AJvYcCWdOgmuke28C4AVsOEGY5y6n6IEsMfoloAZH+lvZ5DGLjg6WfhjrDCRqEHvsPuu6R1B9GNfBfm0so0PDmt9@vger.kernel.org, AJvYcCWq+QAc/o4J5Vx1mVJUo9q32Sflwtuhz7XWeoFduZNdjWK4WWtbDPl4I0QzDXp7AP4TedGlRylo@vger.kernel.org, AJvYcCXQM2icEZZHVgl3/4DmzFtowqNHNfZpOe8xbO29IiW8kxEAqi5Qh/aI9f/X0+5jdU55E604yV5nuifi9go6koFgAn7Z@vger.kernel.org
+X-Gm-Message-State: AOJu0YyAatkwXzX1YSjvR6hTy7+PZdFByykqGIkYzt60SJoRFcyWoX7b
+	45T2evYrmb7Tl9vPzM+TPaPqeG2AiNOqKWTWvy8s/r/iPBo68pLc3799+6+yasfPAlEHa8RFedz
+	JZeG8XQ7IdEhYUTSCJa6s/iQQU30=
+X-Gm-Gg: ASbGncvReyTe/rvHytM9qDMJvgjPm7g/GEWha2ZKD9FIEWaYfu/CB0IbLPX4C/xI4m8
+	jTFfCdMM1EI67z7zf+3coLmj5IjnVzRJhZU2DAg==
+X-Google-Smtp-Source: AGHT+IFvad+ZXGCoxHtM0gw/gElj7za0zj2PpUGCXThzkgXaHc8LVmM4fMDPZpqOAat3utTHabdLcbeS11L77l1I0c0=
+X-Received: by 2002:a05:6870:2a47:b0:29f:a6e2:4108 with SMTP id
+ 586e51a60fabf-2b1869b0fa6mr6727343fac.2.1737121005718; Fri, 17 Jan 2025
+ 05:36:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20250117005539.325887-1-eyal.birger@gmail.com>
+ <20250117013927.GB2610@redhat.com> <20250117170229.f1e1a9f03a8547d31cd875db@kernel.org>
+In-Reply-To: <20250117170229.f1e1a9f03a8547d31cd875db@kernel.org>
+From: Eyal Birger <eyal.birger@gmail.com>
+Date: Fri, 17 Jan 2025 05:36:34 -0800
+X-Gm-Features: AbW1kvbmNpeFCohqRZCOjNCkMbLk4tbkvbKDcf6UHeDZf44yJqqbEtRACKxLRMY
+Message-ID: <CAHsH6Gtbo39pVjVWbPfSjePPyFYVLWJq9m3HLWgDGp1orvD+GA@mail.gmail.com>
+Subject: Re: [PATCH] seccomp: passthrough uretprobe systemcall without filtering
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, kees@kernel.org, luto@amacapital.net, wad@chromium.org, 
+	andrii@kernel.org, jolsa@kernel.org, alexei.starovoitov@gmail.com, 
+	olsajiri@gmail.com, cyphar@cyphar.com, songliubraving@fb.com, yhs@fb.com, 
+	john.fastabend@gmail.com, peterz@infradead.org, tglx@linutronix.de, 
+	bp@alien8.de, daniel@iogearbox.net, ast@kernel.org, andrii.nakryiko@gmail.com, 
+	rostedt@goodmis.org, rafi@rbk.io, shmulik.ladkani@gmail.com, 
+	bpf@vger.kernel.org, linux-api@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Alexander Lobakin <aleksander.lobakin@intel.com> writes:
-
-> The only user was veth, which now uses napi_skb_cache_get_bulk().
-> It's now preferred over a direct allocation and is exported as
-> well, so remove this one.
+On Fri, Jan 17, 2025 at 12:02=E2=80=AFAM Masami Hiramatsu <mhiramat@kernel.=
+org> wrote:
 >
-> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+> On Fri, 17 Jan 2025 02:39:28 +0100
+> Oleg Nesterov <oleg@redhat.com> wrote:
+>
+> > On 01/16, Eyal Birger wrote:
+> > >
+> > > Fixes: ff474a78cef5 ("uprobe: Add uretprobe syscall to speed up retur=
+n probe")
+> > > Reported-by: Rafael Buchbinder <rafi@rbk.io>
+> > > Link: https://lore.kernel.org/lkml/CAHsH6Gs3Eh8DFU0wq58c_LF8A4_+o6z45=
+6J7BidmcVY2AqOnHQ@mail.gmail.com/
+> > > Cc: stable@vger.kernel.org
+> > ...
+> > > @@ -1359,6 +1359,11 @@ int __secure_computing(const struct seccomp_da=
+ta *sd)
+> > >     this_syscall =3D sd ? sd->nr :
+> > >             syscall_get_nr(current, current_pt_regs());
+> > >
+> > > +#ifdef CONFIG_X86_64
+> > > +   if (unlikely(this_syscall =3D=3D __NR_uretprobe) && !in_ia32_sysc=
+all())
+> > > +           return 0;
+> > > +#endif
+> >
+> > Acked-by: Oleg Nesterov <oleg@redhat.com>
+> >
+> >
+> > A note for the seccomp maintainers...
+> >
+> > I don't know what do you think, but I agree in advance that the very fa=
+ct this
+> > patch adds "#ifdef CONFIG_X86_64" into __secure_computing() doesn't loo=
+k nice.
+> >
+>
+> Indeed. in_ia32_syscall() depends arch/x86 too.
+> We can add an inline function like;
+>
+> ``` uprobes.h
+> static inline bool is_uprobe_syscall(int syscall)
+> {
+>         // arch_is_uprobe_syscall check can be replaced by Kconfig,
+>         // something like CONFIG_ARCH_URETPROBE_SYSCALL.
+> #ifdef arch_is_uprobe_syscall
+>         return arch_is_uprobe_syscall(syscall)
+> #else
+>         return false;
+> #endif
+> }
+> ```
+> and
+> ``` arch/x86/include/asm/uprobes.h
+> #define arch_is_uprobe_syscall(syscall) \
+>         (IS_ENABLED(CONFIG_X86_64) && syscall =3D=3D __NR_uretprobe && !i=
+n_ia32_syscall())
+> ```
 
-Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+Notice it'll need to be enclosed in ifdef CONFIG_X86_64 as __NR_uretprobe
+isn't defined otherwise so the IS_ENABLED isn't needed.
 
+>
+> > The problem is that we need a simple patch for -stable which fixes the =
+real
+> > problem. We can cleanup this logic later, I think.
+>
+> Hmm, at least we should make it is_uprobe_syscall() in uprobes.h so that
+> do not pollute the seccomp subsystem with #ifdef.
+
+I like this approach.
+
+Notice it does add a couple of includes that weren't there before:
+- arch/x86/include/asm/uprobes.h would include asm/unistd.h
+- seccomp.c would include linux/uprobes.h
+
+So it's a less "trivial" patch... If that's ok I can repost with these
+changes.
+
+Eyal.
 
