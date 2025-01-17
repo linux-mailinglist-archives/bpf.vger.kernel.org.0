@@ -1,118 +1,240 @@
-Return-Path: <bpf+bounces-49165-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49166-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35181A14B5D
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 09:43:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E495A14C65
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 10:49:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97F67188D921
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 08:43:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5405C167B43
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 09:48:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F6981F940F;
-	Fri, 17 Jan 2025 08:42:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A5141FCF7D;
+	Fri, 17 Jan 2025 09:48:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DHBRYnQc"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F21741F869A
-	for <bpf@vger.kernel.org>; Fri, 17 Jan 2025 08:42:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB97F1FBCA7
+	for <bpf@vger.kernel.org>; Fri, 17 Jan 2025 09:47:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737103366; cv=none; b=Vmk50LhByVbINjD0JbxOhJCp/5yqGJnjrsLIed/tpYizj8poBoN3B/5n/osXGWCxiUpKxBXkv1zFg7iE5vjgykeLm+/tue0qGBDdQexgmhWb4Q6meAwgL9+3YPf62MBSTeDizckw9PECzV96ujSM7Sl447njYYBfGIZvAzs7bZQ=
+	t=1737107281; cv=none; b=NpG8xsp7Dr3Z9+yNh5naGbz2vsPDNoj+8St3OrPcbEvIJ/XKaHD8xfdMTAns+HRMmwU/sr2NapTzY07VjM+saiKnSxSvGvkaAIeG5f4TrjCZHUfiJE6AFklEd2KJ/OBtOFSvRB5rVHCgPT9G4vx2gt/d1lqjm7kwiCI/symDdb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737103366; c=relaxed/simple;
-	bh=VDspej9NXc6/KOs9/zTmSXm+kCnw928MWK1jGxeucsg=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=JhxgXb8Dib30LEM7IKfS92Gr/w32lbvawdnj+j0J4oIQuYXd6as/tWlbFniKnOXQ8C0eSk3iA6nAGsCQS8RnoGFrbqmUl3Av4/yoeSwUmpmoI25812eAz4rHk0JK1ghaILegJf+YWta3Ny9NuD4+HPxlFpFQWWBseVctlNOiJ4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YZCsS3Xppz4f3jXV
-	for <bpf@vger.kernel.org>; Fri, 17 Jan 2025 16:42:20 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id EC16E1A0B41
-	for <bpf@vger.kernel.org>; Fri, 17 Jan 2025 16:42:40 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP4 (Coremail) with SMTP id gCh0CgDnSF38F4pnpp_JBA--.17507S2;
-	Fri, 17 Jan 2025 16:42:40 +0800 (CST)
-Subject: Re: [PATCH bpf-next] bpf: Alloc bpf_async_cb by using bpf_global_ma
- under PREEMPT_RT
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
- Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>, xukuohai@huawei.com,
- "houtao1@huawei.com" <houtao1@huawei.com>
-References: <20250114081338.2375090-1-houtao@huaweicloud.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <65910c67-0e63-07d9-9eab-3c61456297e1@huaweicloud.com>
-Date: Fri, 17 Jan 2025 16:42:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1737107281; c=relaxed/simple;
+	bh=F2gqeuB0aLhR/bzKUvYunwZ5S0liP9KO05qoNp3Tqo0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=OZTfdNBMFb6e7zP82jJADnNwsEKX7zIYzqtUPmFTpAEsjaEcudw4nfRCr1xPc8ItCmYUvucKOsE5PLz5cN7WSm9xyJNETiuu7FxduvBoTZz2KePcB7I2SONM4LwbAgMHyzUZZzgIc8wwWa6Vt+oe3uP7XwUGLUvehGCxtIukJRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DHBRYnQc; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1737107277;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VvR9KfuLK5jT/0k1YGBwcApH+9cF5PsvBxGMV+DYi4c=;
+	b=DHBRYnQclWBz29AczmtdH2psrHQWNAp2LDJjwl32uDPBUSGvi1VCdiDO7Zu95RYG4y3OpB
+	9Tebjf3WoGAbLJ64WOQ9vzSA4BycUOWy/bKAHOHksNptStG7BmNFug3JbEo5RGgIFyw1yE
+	ZQ5x15X5d61OUrj/+AN5FwVAZ+jtRyE=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-602-ZHR_96cMPUK4MEnbAcYsdw-1; Fri, 17 Jan 2025 04:47:55 -0500
+X-MC-Unique: ZHR_96cMPUK4MEnbAcYsdw-1
+X-Mimecast-MFC-AGG-ID: ZHR_96cMPUK4MEnbAcYsdw
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-43623bf2a83so13472485e9.0
+        for <bpf@vger.kernel.org>; Fri, 17 Jan 2025 01:47:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737107274; x=1737712074;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VvR9KfuLK5jT/0k1YGBwcApH+9cF5PsvBxGMV+DYi4c=;
+        b=GT2XzWzhRdSYZpM9H1TIenw9Gut2W7gaL5uaycmvh7ta7jkZorn7flPlwQP2vjbTp5
+         yak0WXkfD8QlPhXyh08+ctdoWdCpH52/+96qCNYYQBTdbD6tmBTF+GQzKf5ily2JZLKc
+         1AcJM7cc8t0SlnOY18P4eKcAAgAZKJfZh7d1h/0/z9dG8CTm5AScqngFL/B/fXnol+IJ
+         r4adUivB1UfdgYvk9LD6h819CM0uisk3Jzblp/h2FtKBTgyQ24jiJs2JYHhGwnA1U3y+
+         6wDPEPBjKtpkLuNMWhUgxtyOR7hXYKg3WAGwLnU6e3XKZKAmucVU9oa0Pcv0DE91TeA/
+         v6zA==
+X-Forwarded-Encrypted: i=1; AJvYcCWKMTN4l1MftAxFU/M/ndPg/jaqDQIj21tfTIEg74zU31iTolZRDAHQ5NkVchEkZYTptTA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwhXrw5c+PKlBT5wuycqPTfczlXYMiTRFbDjMG4Hb38j0/erfWV
+	Fb4+wf2wL2wX0QBr5lHAgwo+YgqCbEAdkgcy5x0Tkn/j06ybc+k/KG+qANx1gNyv+9Ha5qD7Hen
+	oTJP/iH9gCiRHiMTHcdrhTkGkiQFY6CRG0Gdmrkw7sSQ56uRasg==
+X-Gm-Gg: ASbGncv7DnxvdFFoTH4Exc0CiRH64X3AFaeDvG8ZeePe9YeU63jpyBhc2mfjb/XGH14
+	66MFdVANhMGvi1v57OPGhnRu84xSC3WBEb7/ABSC+0nzyxe6esek3ICPLL7IECUkCO/wQwYK0HW
+	99F3c4Hc+oWKuuEQBFoYZEgizBBd8tq2c3KhuExKe07Me4uds5tUMw6y8PhPYAvVFY0tE1ixhdU
+	KISVLeM7Wp0P40mOST4mniGPdDY+KKVadpE/rkDl0FoZbpnIkY6SkuoPkJbtpoLXKvarwxDo9tj
+	lkV0MZ6PyWfNonGu/ZGlab6OAHVYIDc/6iLZ8EEIbg==
+X-Received: by 2002:a05:600c:9a3:b0:434:fa73:a907 with SMTP id 5b1f17b1804b1-4389191b819mr16313885e9.13.1737107273768;
+        Fri, 17 Jan 2025 01:47:53 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHToHDxXT5KMOIEW1byUZUSn/LchRidR5pJg2ZFHbUxu07B2Q/njknWrWkjTXhDYHkp8NfwWQ==
+X-Received: by 2002:a05:600c:9a3:b0:434:fa73:a907 with SMTP id 5b1f17b1804b1-4389191b819mr16313255e9.13.1737107273291;
+        Fri, 17 Jan 2025 01:47:53 -0800 (PST)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-438904131f5sm27135155e9.11.2025.01.17.01.47.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jan 2025 01:47:52 -0800 (PST)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+ virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
+ linux-perf-users@vger.kernel.org, xen-devel@lists.xenproject.org,
+ kvm@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org,
+ linux-hardening@vger.kernel.org, linux-mm@kvack.org,
+ linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+ bcm-kernel-feedback-list@broadcom.com, Peter Zijlstra
+ <peterz@infradead.org>, Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+ Juergen Gross <jgross@suse.com>, Ajay Kaher <ajay.kaher@broadcom.com>,
+ Alexey Makhalov <alexey.amakhalov@broadcom.com>, Russell King
+ <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will
+ Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui
+ <kernel@xen0n.name>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
+ Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Thomas
+ Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav
+ Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H.
+ Peter Anvin" <hpa@zytor.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa
+ <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter
+ <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, Boris
+ Ostrovsky <boris.ostrovsky@oracle.com>, Josh Poimboeuf
+ <jpoimboe@kernel.org>, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Frederic Weisbecker <frederic@kernel.org>,
+ "Paul E. McKenney" <paulmck@kernel.org>, Jason Baron <jbaron@akamai.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ard Biesheuvel <ardb@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes
+ <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, Boqun
+ Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan
+ <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli
+ <juri.lelli@redhat.com>, Clark Williams <williams@redhat.com>, Yair
+ Podemsky <ypodemsk@redhat.com>, Tomas Glozar <tglozar@redhat.com>, Vincent
+ Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
+ <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, Mel Gorman
+ <mgorman@suse.de>, Kees Cook <kees@kernel.org>, Andrew Morton
+ <akpm@linux-foundation.org>, Christoph Hellwig <hch@infradead.org>, Shuah
+ Khan <shuah@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, Miguel
+ Ojeda <ojeda@kernel.org>, Alice Ryhl <aliceryhl@google.com>, "Mike
+ Rapoport (Microsoft)" <rppt@kernel.org>, Samuel Holland
+ <samuel.holland@sifive.com>, Rong Xu <xur@google.com>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Yosry Ahmed <yosryahmed@google.com>, "Kirill A.
+ Shutemov" <kirill.shutemov@linux.intel.com>, "Masami Hiramatsu (Google)"
+ <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, Luis
+ Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
+ Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: Re: [PATCH v4 25/30] context_tracking,x86: Defer kernel text
+ patching IPIs
+In-Reply-To: <Z4bTlZkqihaAyGb4@google.com>
+References: <20250114175143.81438-1-vschneid@redhat.com>
+ <20250114175143.81438-26-vschneid@redhat.com>
+ <Z4bTlZkqihaAyGb4@google.com>
+Date: Fri, 17 Jan 2025 10:47:49 +0100
+Message-ID: <xhsmhed11hiuy.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20250114081338.2375090-1-houtao@huaweicloud.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:gCh0CgDnSF38F4pnpp_JBA--.17507S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKr4xGF48urW5GF13Wr13CFg_yoW3KrX_ua
-	9YvF4DGr1fZrnak3y3GFW3X3s7Gw40g3W5Xr40qr9ruFyfKw4kt3y8twsxuryrJw48WF9x
-	Gwn3KayUXF13KjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbaxYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
-	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
-	MI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
-	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j
-	6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
-	BIdaVFxhVjvjDU0xZFpf9x07UAwIDUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Type: text/plain
 
-
-
-On 1/14/2025 4:13 PM, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
+On 14/01/25 13:13, Sean Christopherson wrote:
+> On Tue, Jan 14, 2025, Valentin Schneider wrote:
+>> text_poke_bp_batch() sends IPIs to all online CPUs to synchronize
+>> them vs the newly patched instruction. CPUs that are executing in userspace
+>> do not need this synchronization to happen immediately, and this is
+>> actually harmful interference for NOHZ_FULL CPUs.
 >
-> Under PREEMPT_RT, it is not safe to use GPF_ATOMIC kmalloc when
-> preemption or irq is disabled. The following warning is reported when
-> running test_progs under PREEMPT_RT:
+> ...
 >
->   
+>> This leaves us with static keys and static calls.
+>
+> ...
+>
+>> @@ -2317,11 +2334,20 @@ static void text_poke_bp_batch(struct text_poke_loc *tp, unsigned int nr_entries
+>>       * First step: add a int3 trap to the address that will be patched.
+>>       */
+>>      for (i = 0; i < nr_entries; i++) {
+>> -		tp[i].old = *(u8 *)text_poke_addr(&tp[i]);
+>> -		text_poke(text_poke_addr(&tp[i]), &int3, INT3_INSN_SIZE);
+>> +		void *addr = text_poke_addr(&tp[i]);
+>> +
+>> +		/*
+>> +		 * There's no safe way to defer IPIs for patching text in
+>> +		 * .noinstr, record whether there is at least one such poke.
+>> +		 */
+>> +		if (is_kernel_noinstr_text((unsigned long)addr))
+>> +			cond = NULL;
+>
+> Maybe pre-check "cond", especially if multiple ranges need to be checked?  I.e.
+>
+>               if (cond && is_kernel_noinstr_text(...))
+>> +
+>> +		tp[i].old = *((u8 *)addr);
+>> +		text_poke(addr, &int3, INT3_INSN_SIZE);
+>>      }
+>>
+>> -	text_poke_sync();
+>> +	__text_poke_sync(cond);
+>>
+>>      /*
+>>       * Second step: update all but the first byte of the patched range.
+>
+> ...
+>
+>> +/**
+>> + * is_kernel_noinstr_text - checks if the pointer address is located in the
+>> + *                    .noinstr section
+>> + *
+>> + * @addr: address to check
+>> + *
+>> + * Returns: true if the address is located in .noinstr, false otherwise.
+>> + */
+>> +static inline bool is_kernel_noinstr_text(unsigned long addr)
+>> +{
+>> +	return addr >= (unsigned long)__noinstr_text_start &&
+>> +	       addr < (unsigned long)__noinstr_text_end;
+>> +}
+>
+> This doesn't do the right thing for modules, which matters because KVM can be
+> built as a module on x86, and because context tracking understands transitions
+> to GUEST mode, i.e. CPUs that are running in a KVM guest will be treated as not
+> being in the kernel, and thus will have IPIs deferred.  If KVM uses a static key
+> or branch between guest_state_enter_irqoff() and guest_state_exit_irqoff(), the
+> patching code won't wait for CPUs to exit guest mode, i.e. KVM could theoretically
+> use the wrong static path.
+>
 
-SNIP
-> +	bpf_async_free_rcu(&w->cb);
->  }
->  
->  static void bpf_timer_delete_work(struct work_struct *work)
-> @@ -1236,7 +1266,7 @@ static void bpf_timer_delete_work(struct work_struct *work)
->  	 * bpf_timer_cancel_and_free will have been cancelled.
->  	 */
->  	hrtimer_cancel(&t->timer);
-> -	kfree_rcu(t, cb.rcu);
-> +	bpf_async_free_rcu(&t->cb);
->  }
+AFAICT guest_state_{enter,exit}_irqoff() are only used in noinstr functions
+and thus such a static key usage should at the very least be caught and
+warned about by objtool - when this isn't built as a module.
 
-Er, it is buggy here. migrate_{disable|enable} pair is missed because it
-is running under kworker context. Found it when apply the patch after
-the patch set "Free htab element out of bucket lock v2". Will send v2
-for it.
+I never really thought about noinstr sections for modules; I can get
+objtool to warn about a non-noinstr allowed key being used in
+e.g. vmx_vcpu_enter_exit() just by feeding it the vmx.o:
+
+arch/x86/kvm/vmx/vmx.o: warning: objtool: vmx_vcpu_enter_exit.isra.0+0x0: dummykey: non-RO static key usage in noinstr
+
+...but that requires removing a lot of code first because objtool stops
+earlier in its noinstr checks as it hits functions it doesn't have full
+information on, e.g.
+
+arch/x86/kvm/vmx/vmx.o: warning: objtool: vmx_vcpu_enter_exit+0x21c: call to __ct_user_enter() leaves .noinstr.text section
+
+__ct_user_enter() *is* noinstr, but you don't get that from just the header prototype.
+
+> I don't expect this to ever cause problems in practice, because patching code in
+> KVM's VM-Enter/VM-Exit path that has *functional* implications, while CPUs are
+> actively running guest code, would be all kinds of crazy.  But I do think we
+> should plug the hole.
+>
+> If this issue is unique to KVM, i.e. is not a generic problem for all modules (I
+> assume module code generally isn't allowed in the entry path, even via NMI?), one
+> idea would be to let KVM register its noinstr section for text poking.
 
 
