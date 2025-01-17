@@ -1,127 +1,94 @@
-Return-Path: <bpf+bounces-49178-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49179-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0308A14E8B
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 12:35:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC6B3A14E9C
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 12:42:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC59F168949
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 11:35:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 285237A3DF9
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2025 11:41:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCF091FE46B;
-	Fri, 17 Jan 2025 11:35:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE11E1FE477;
+	Fri, 17 Jan 2025 11:41:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="BoBOio13"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 438EB1D8E12;
-	Fri, 17 Jan 2025 11:35:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9BF119992C;
+	Fri, 17 Jan 2025 11:41:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737113740; cv=none; b=Y/4v2UErtGJ+CBdysNRuXQenn01fIjuTqrTEG7yZkcOHIojTXuMenKZLAhVjKyacULFy5GqJEKsih8VfsW2Yo5HH/CKph/cbq/O7EpjvtQyD6Fs5155lTbyqNFOE9xUpZXWZLEg5TuZzOOJkVLbIPFuBWwHGONKnOHcLLi1wVns=
+	t=1737114114; cv=none; b=hXMDT7ScU9APVtshVsuz2HYkW1Gpha0+wNoUdZCNtzQv6SdQDEwcB67wAKNkk7xsIWXzUFN6Grh9u6ksLYgcljri3jB+NaB3Ka6RV3ymcfNAemU0y+pFXve5wPOB2g9yDPMvjuVE014Ydrvi+No9/IsQZFABkMcsXsM697Kkkes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737113740; c=relaxed/simple;
-	bh=MpVWMoWdsncOLBNsGe5pt+ULbypkbTe/agZRsjFXQqc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=roI5U5kG1Zy+YGwbV6D3Ze4KYfyLVQKTA+H/Oa+OXuePjiQNIFkgcxwpXHWKkyChCitXuMZeSyM4g6O9azJIIcLJrkIa2rAvRobcQ1I2ThLrO8majB5haU9H32TgLPZoTj2zbX2hzinFANu+VTpdBltESf+ktzngRcvCpCUvpx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4YZHcq34sJzjYBg;
-	Fri, 17 Jan 2025 19:31:39 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2DBB1180101;
-	Fri, 17 Jan 2025 19:35:33 +0800 (CST)
-Received: from [10.67.120.129] (10.67.120.129) by
- dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 17 Jan 2025 19:35:32 +0800
-Message-ID: <304b542d-514d-4269-ae11-b2e214659483@huawei.com>
-Date: Fri, 17 Jan 2025 19:35:32 +0800
+	s=arc-20240116; t=1737114114; c=relaxed/simple;
+	bh=KpmJK9fmGjbWScLvnlO9YfaqIutL+XcKhyQb5yNu/AI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tPEpb4Kl21iubKYr4z9HmxXnxYWGRqohMVWmXB7GVBjWHIlmLz/fWwruqYlM0SzVmSZfjRH8b0qjrB9Wq5FAXUVAUyTywg32DQzSsDtxxHViAAVzKdIZHrc83TOFHQZD5/7WdmzWXGo/weFeVHDkwTyuIEBump61VoiRi/J/anM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=BoBOio13; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=KpmJK9fmGjbWScLvnlO9YfaqIutL+XcKhyQb5yNu/AI=; b=BoBOio138WSNTSlaC6VuTK3CzG
+	/6TudRXkSpPup6REUJC2gOikLDoXLW/izRfvEcitzjFrwJn5W/g+78ovvqswZj+GN/rRFOyrInbea
+	cTm7WtpDw3zYBMyt4jXBAvVAvvXufFYvJ/zbJk61+zeDD+QD9T+hU7uLWZyVZVfA63wcv+6pKNjqg
+	cmz5raYhvp9zd/RRlXvL6LWQ4SmT48I2v/BUrdWfCEjHnqGR8SeV5+wVF5F+ucpSbcwmfZyAJthkK
+	Jj35k0ZyXThFC5M2XwIyhO03gbY1LXDYBja02Ps5yyyGfZc7E9wWUgol/fEBw5rm32l9hGs8pS4OB
+	XRS0Mo/Q==;
+Received: from 77-249-17-89.cable.dynamic.v4.ziggo.nl ([77.249.17.89] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tYkjD-0000000BPYG-2Sxl;
+	Fri, 17 Jan 2025 11:41:31 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 4C4A330057A; Fri, 17 Jan 2025 12:41:30 +0100 (CET)
+Date: Fri, 17 Jan 2025 12:41:30 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Oleg Nesterov <oleg@redhat.com>, Jiri Olsa <olsajiri@gmail.com>,
+	Aleksa Sarai <cyphar@cyphar.com>,
+	Eyal Birger <eyal.birger@gmail.com>, mhiramat@kernel.org,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	linux-trace-kernel@vger.kernel.org,
+	BPF-dev-list <bpf@vger.kernel.org>,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>, tglx@linutronix.de,
+	bp@alien8.de, x86@kernel.org, linux-api@vger.kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	"rostedt@goodmis.org" <rostedt@goodmis.org>, rafi@rbk.io,
+	Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Subject: Re: Crash when attaching uretprobes to processes running in Docker
+Message-ID: <20250117114130.GB8603@noisy.programming.kicks-ass.net>
+References: <CAHsH6Gs3Eh8DFU0wq58c_LF8A4_+o6z456J7BidmcVY2AqOnHQ@mail.gmail.com>
+ <20250110.152323-sassy.torch.lavish.rent-vKX3ul5B3qyi@cyphar.com>
+ <Z4K7D10rjuVeRCKq@krava>
+ <Z4YszJfOvFEAaKjF@krava>
+ <20250114105802.GA19816@redhat.com>
+ <Z4ZyYudZSD92DPiF@krava>
+ <CAEf4BzZoa6gBQzfPLeMTQu+s=GqVdmihFdb1BHkcPPQMFQp+MQ@mail.gmail.com>
+ <20250114203922.GA5051@redhat.com>
+ <CAEf4BzaRCzWMVvyGC_T52djF7q65yM8=AdBEMOPUU8edG-PLxg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v7 0/8] fix two bugs related to page_pool
-To: Jesper Dangaard Brouer <hawk@kernel.org>, <davem@davemloft.net>,
-	<kuba@kernel.org>, <pabeni@redhat.com>
-CC: <zhangkun09@huawei.com>, <liuyonglong@huawei.com>,
-	<fanghaiqing@huawei.com>, Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Robin Murphy <robin.murphy@arm.com>, Alexander Duyck
-	<alexander.duyck@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, IOMMU
-	<iommu@lists.linux.dev>, MM <linux-mm@kvack.org>, Alexei Starovoitov
-	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
-	<john.fastabend@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	<netdev@vger.kernel.org>, <intel-wired-lan@lists.osuosl.org>,
-	<bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
-References: <20250110130703.3814407-1-linyunsheng@huawei.com>
- <3c8e4f86-87e2-470d-84d8-86c70b3e2fcc@kernel.org>
- <c02e856e-6ec5-49d0-8527-2647695a0174@huawei.com>
- <3a853e1b-b5bf-4709-b8f6-e466e3e7375e@kernel.org>
- <1bef4a35-efaa-4083-8ed5-8818fe285db5@huawei.com>
- <f558df7a-d983-4fc5-8358-faf251994d23@kernel.org>
-Content-Language: en-US
-From: Yunsheng Lin <linyunsheng@huawei.com>
-In-Reply-To: <f558df7a-d983-4fc5-8358-faf251994d23@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemf200006.china.huawei.com (7.185.36.61)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzaRCzWMVvyGC_T52djF7q65yM8=AdBEMOPUU8edG-PLxg@mail.gmail.com>
 
-On 2025/1/17 2:02, Jesper Dangaard Brouer wrote:
+On Tue, Jan 14, 2025 at 01:45:11PM -0800, Andrii Nakryiko wrote:
 
-> 
-> Benchmark (bench_page_pool_simple) results from before and after
-> patchset with patches 1-5m and rcu lock removal as requested.
-> 
-> | Test name  |Cycles |   1-5 |    | Nanosec |    1-5 |        |      % |
-> | (tasklet_*)|Before | After |diff|  Before |  After |   diff | change |
-> |------------+-------+-------+----+---------+--------+--------+--------|
-> | fast_path  |    19 |    19 |   0|   5.399 |  5.492 |  0.093 |    1.7 |
-> | ptr_ring   |    54 |    57 |   3|  15.090 | 15.849 |  0.759 |    5.0 |
-> | slow       |   238 |   284 |  46|  66.134 | 78.909 | 12.775 |   19.3 |
-> #+TBLFM: $4=$3-$2::$7=$6-$5::$8=(($7/$5)*100);%.1f
-> 
-> This test with patches 1-5 looks much better regarding performance.
+> someday sys_uretprobe will be old as well
 
-Thanks for the testing.
-
-Is there any notiable performance variation during different test running
-for the same built kernel in your machine?
-
-> 
-> --Jesper
-> 
-> https://github.com/xdp-project/xdp-project/blob/main/areas/mem/page_pool07_bench_DMA_fix.org#e5-1650-pp01-dma-fix-v7-p1-5
-> 
-> Kernel:
->  - 6.13.0-rc6-pp01-DMA-fix-v7-p1-5+ #5 SMP PREEMPT_DYNAMIC Thu Jan 16 18:06:53 CET 2025 x86_64 GNU/Linux
-> 
-> Machine: Intel(R) Xeon(R) CPU E5-1650 v4 @ 3.60GHz
-> 
-> modprobe bench_page_pool_simple loops=100000000
-> 
-> Raw data:
-> [  187.309423] bench_page_pool_simple: time_bench_page_pool01_fast_path(): Cannot use page_pool fast-path
-> [  187.872849] time_bench: Type:no-softirq-page_pool01 Per elem: 19 cycles(tsc) 5.539 ns (step:0) - (measurement period time:0.553906443 sec time_interval:553906443) - (invoke count:100000000 tsc_interval:1994123064)
-> [  187.892023] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): Cannot use page_pool fast-path
-> [  189.611070] time_bench: Type:no-softirq-page_pool02 Per elem: 61 cycles(tsc) 17.095 ns (step:0) - (measurement period time:1.709580367 sec time_interval:1709580367) - (invoke count:100000000 tsc_interval:6154679394)
-> [  189.630414] bench_page_pool_simple: time_bench_page_pool03_slow(): Cannot use page_pool fast-path
-> [  197.222387] time_bench: Type:no-softirq-page_pool03 Per elem: 272 cycles(tsc) 75.826 ns (step:0) - (measurement period time:7.582681388 sec time_interval:7582681388) - (invoke count:100000000 tsc_interval:27298499214)
-> [  197.241926] bench_page_pool_simple: pp_tasklet_handler(): in_serving_softirq fast-path
-> [  197.249968] bench_page_pool_simple: time_bench_page_pool01_fast_path(): in_serving_softirq fast-path
-> [  197.808470] time_bench: Type:tasklet_page_pool01_fast_path Per elem: 19 cycles(tsc) 5.492 ns (step:0) - (measurement period time:0.549225541 sec time_interval:549225541) - (invoke count:100000000 tsc_interval:1977272238)
-> [  197.828174] bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): in_serving_softirq fast-path
-> [  199.422305] time_bench: Type:tasklet_page_pool02_ptr_ring Per elem: 57 cycles(tsc) 15.849 ns (step:0) - (measurement period time:1.584920736 sec time_interval:1584920736) - (invoke count:100000000 tsc_interval:5705890830)
-> [  199.442087] bench_page_pool_simple: time_bench_page_pool03_slow(): in_serving_softirq fast-path
-> [  207.342120] time_bench: Type:tasklet_page_pool03_slow Per elem: 284 cycles(tsc) 78.909 ns (step:0) - (measurement period time:7.890955151 sec time_interval:7890955151) - (invoke count:100000000 tsc_interval:28408319289)
-> 
+And then we'll delete it because everybody that cares about performance
+will have FRED on ;-)
 
