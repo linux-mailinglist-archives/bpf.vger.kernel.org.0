@@ -1,134 +1,192 @@
-Return-Path: <bpf+bounces-49248-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49249-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90537A15B17
-	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2025 03:38:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D907A15B2B
+	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2025 04:08:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2E20167DDC
-	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2025 02:38:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEED91688D9
+	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2025 03:08:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46E2A42077;
-	Sat, 18 Jan 2025 02:37:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B9EC7BAEC;
+	Sat, 18 Jan 2025 03:07:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MJ0PUtFp"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="hAWTnleM";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="iPUAbDiz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-a6-smtp.messagingengine.com (fhigh-a6-smtp.messagingengine.com [103.168.172.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EDDE23C9;
-	Sat, 18 Jan 2025 02:37:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 353CD130A54;
+	Sat, 18 Jan 2025 03:07:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737167874; cv=none; b=gMI0PxjxKh95MWlOpjc0WzZy1Y4ZjHE7w8dahpnWfson5ZCsvhF9Nh5k/B8MZmtm5fCHn+mcjeqyM2090p/ROIPYOzregC5OjuT9swIvfr5ihd0p/nzUAcibhJ6d0SBSvClzevm3i6Md/6aEFO5prr+oz1HnwHn17YVlBdYEnVs=
+	t=1737169674; cv=none; b=QcVcGGYXjOvbgNg/BaMKBXAaobFhW1fpdOEgo17GZe90twsvxlOxZwPPkLwg7YdYDqQut7bgfk9oDvPnPLYbLCYPp4rnXGPRB132Jq55+WgRU4U+ffhzhouHoNxG/WwuYIg/ytQeu/NTJoAsE8BjF0Y33dOq0igZUpy6E3CiLP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737167874; c=relaxed/simple;
-	bh=srub4pOgrT7whtFMuZdWzw9uT4uD+pFgSf53nM4lnso=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QmfDjfiPuzS5XczvXXgpj3KKIleZa2O5yezxcgPeRypwZ4kVIFV3+t9rWN/mi/Cz7TgDdRUQAzILrJR39QIDk1jzBge0U1CVJ1vv2NB7u/ikPXtCznzuzrTmD+MiepMCuGhzxppivIUMRvF6coW4n82voH58Kln6+u/jaQJW+Ns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MJ0PUtFp; arc=none smtp.client-ip=209.85.166.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-3ce886a2d5bso23090195ab.1;
-        Fri, 17 Jan 2025 18:37:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737167872; x=1737772672; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QSGYQKRGrpMszh1rhCKkSOchjkUZ6YXzO1T56SE1Psw=;
-        b=MJ0PUtFpl0GdEqpzXWuDkAodIJ6wneagAdxw9n+OO4IIQ8JvYQ5GcvOSIyom9cg+4N
-         ggH0IvDrNaBae2lDf1kBOFFyaPBAdfa8xC3eWNs7D5cgffb6BaRKbg9guytafEmqFvFq
-         clG4BpFcnPFrhKRfbWyf7NzOcc9SbzWMr26eVIKi7Wt+A06Vdf8bZZUAgoqP3gevVgfm
-         Me34aqllxR7wPralYXadTyYNKvxICqTxcUbGNjPbtks2XWu+mFuiKD8ezde1ijX22mIF
-         KEIoMzUiqaf+0k8S/cwItHLRuPPUIbtosJELHBi7mX/bujLbLyth+T3G2eejCTRMj1x6
-         Kq/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737167872; x=1737772672;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QSGYQKRGrpMszh1rhCKkSOchjkUZ6YXzO1T56SE1Psw=;
-        b=QrQS8/X9XfYy0YEZ8WNzMjkboqIdpVnvx/lF5BGVTt708yeXv6DqPaYKjqfnH2p5XU
-         IGjXCsYLCRSK0EPhsESHJt+02A7UE+kdX8Yab5+5/CjfzLDacuxku51yCvDkEqMLdM+U
-         aHGE2/vLESWGDAxMvAvmqdfuDraJ9/1p562BFLstjmk37tMeI64S+WJXjwfl5Wn5cGnG
-         nmQeeCDYGnodmvVzXL5GTnPvY77fEPSMHKTEIw8fDDxl22fdfuJ9LDrI/J4kAnRDzSD0
-         HHXC4+j8813MogBMWAdH24Ql35tEO0Sb8/q7u1bHvlET6l6G4KHn1Qy0FAklErTvud+v
-         KDvg==
-X-Forwarded-Encrypted: i=1; AJvYcCVNeECmKRlHueVLrA1cNOgxKTVbBhVPcnL5IpezFF6dN3f5Ju3ZEBRdFxEge6JLlUzVZes=@vger.kernel.org, AJvYcCWxyCIGkpscxtRCPbR3pGP+dduRy0v2D7cEh0GvY+BgsLNHJ1umzcY5FpD1Q2kCa5/Cvk3klaTP@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy4ifceUAVjEs4WNtXsiYeEVp6N1C2L7lg/f8MqE+pFaQC329vs
-	rHIsWcdBL1OTicuDN8mLCTyL7QIIuulhRb4LYffAbGNddV9oMZI89+WCudZkV7qXQLk1pOsXdFm
-	SWtI+sJOFnt3uwJcT1cuDe2fHT4I=
-X-Gm-Gg: ASbGncuetfW94osB9ye0O/+7beXMHRKivx0/Ci2mhbU5fyhdxam/MepXAC28eGRB3rF
-	2lgdGrxfxe34hfLLd2+xLX3OBFtHCYO/RW+dCUxvbC7R23RoVA1w=
-X-Google-Smtp-Source: AGHT+IFWP0KDaGvIVdpLBfuIMDfiJI7jGVAzTHcptRFi/zRuGWlIxJT63KqtibbxbIV07c1LTegPTsaCH2fnex/NQu8=
-X-Received: by 2002:a05:6e02:1608:b0:3ce:7e5d:6292 with SMTP id
- e9e14a558f8ab-3cf743f7c3fmr48439425ab.8.1737167872441; Fri, 17 Jan 2025
- 18:37:52 -0800 (PST)
+	s=arc-20240116; t=1737169674; c=relaxed/simple;
+	bh=N2IN0osMYSuywd8aiZmnJW5TElQXfTyU1CcZJV9fR/o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q+RKDLOMXuIi/eZAilUQ/kY7Ir1UQCfOl/MM9rqfwn1lqvH8KWSTE9fGrV8ZlUcJwJDZYxfMQAkCk346Ilav54trCXsHqMgZHbRtXVlsgCSa9PWMmel++7SrHAos/t6SURVVoMsIdHgFdx3zfm26wfbeHzursR7IzyQZzQPY3QQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=hAWTnleM; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=iPUAbDiz; arc=none smtp.client-ip=103.168.172.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-09.internal (phl-compute-09.phl.internal [10.202.2.49])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 2B09E11402AA;
+	Fri, 17 Jan 2025 22:07:51 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-09.internal (MEProxy); Fri, 17 Jan 2025 22:07:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1737169671; x=1737256071; bh=ZW5l5kQBlD
+	INYguCg3RsWbk6hBJPemS+oyodVSSlN0Q=; b=hAWTnleMcjjKox/sYjF+mSsDpz
+	xwhMNKmx30XzeUZt0OrVFl47GIX+5aEHdzh4jD8saeqcRdWW2ouCLwz2ucZk8yfd
+	5yMZgOY55hoFzpplcmXB5mwPkssQ3pBXoroVbx9jE1lZgQyB9nXPF+fGXxszo2qd
+	f52xsUS2Nr5ajOBJHWxbPTf+7Yxw97AjcFpHYCkhiAS1XV4AJHyvJiaQ3lMzBCtY
+	PWPFnck8F6jpPcjEnxmsztMfLav+UaVcclWRJzgFH1MtrpaAdSp385diLXzTaruv
+	/A1G/AhqXX6dluhvXJB2ypDtkGAdgVo1ZnH8jrSPMEfgyhC+ldqk7e+S46jA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1737169671; x=1737256071; bh=ZW5l5kQBlDINYguCg3RsWbk6hBJPemS+oyo
+	dVSSlN0Q=; b=iPUAbDizpNvDXqoTqCDtwvIl9GNfPwVW0uyIB+GkeJi/sqmA/oj
+	DGfdajyNag92WDLb2S/wYbiD8ZpJPw7qdj5lBzwfBe13eHrIhZa1kxd/k2t3W+va
+	nz+TP5o/GkRF7XEPO+5X9H/IEXCbxyQ7XFSK44iR9UZGOs+CzLAvSPJ0+34PAqs5
+	iSAP65ek8H9Ohyd34BgahqetMlpDIe1TwYtAvfSjv1lLgKZ1RxHEBcRW778xReoZ
+	kAPwiPSmUwN9uRqPAJTFskmcSVOtrvUeIlREXVUTcZ9Upf+/dWaqeEVPfwvNX1ip
+	tMlyH2kaVxr9wuiMERDOIdIxj4H7DvFLpmg==
+X-ME-Sender: <xms:BhuLZytFyThH_F9yEp7Ci_wOd72DbeOi_EnRzrO0FRD9ibPiuToPSQ>
+    <xme:BhuLZ3cxcVdMDVCbfaDrAcZQl9Z_oBbnW4k9QQGwU49Qmi5EVtNNTUnrWN86quK2M
+    t2mx6fHdkr5x210Wg>
+X-ME-Received: <xmr:BhuLZ9xRt7Catm2_P6KvJaLjvz8m1E630LdKw4gkadf3qxgZpWwuFZ8UB6FF17V0Y_CXVLsHzESwyZQ-2bQFf_t467Q71wdQxD8YvuEEkfzdGA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudeigedgheegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlje
+    dtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddttddvnecuhfhrohhmpeff
+    rghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnh
+    epvdefkeetuddufeeigedtheefffekuedukeehudffudfffffggeeitdetgfdvhfdvnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesug
+    iguhhuuhdrgiihiidpnhgspghrtghpthhtohephedpmhhouggvpehsmhhtphhouhhtpdhr
+    tghpthhtohepuggrvhhiugesfhhrohhmohhrsghithdrtghomhdprhgtphhtthhopehthi
+    htshhosehmihhtrdgvughupdhrtghpthhtoheplhhsfhdqphgtsehlihhsthhsrdhlihhn
+    uhigqdhfohhunhgurghtihhonhdrohhrghdprhgtphhtthhopehlihhnuhigqdhfshguvg
+    hvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepsghpfhesvhhgvghr
+    rdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:BhuLZ9PuTHXI0o2Io8PNqfnnzwLoAPjtt1KkYdxHpTkourIsUplq_A>
+    <xmx:BhuLZy8GG3E4xFK65v_lOUFDnlwpyXmdmxU5uBE47rzjabwzVE3UDw>
+    <xmx:BhuLZ1V4SmZzLj3DYc6uvpiQESNNN0eTA6rFUA139KHlBBZ8ef1d5w>
+    <xmx:BhuLZ7cry4w7PN9ynlqRVtbOac6KNetHm4x9wMVpCSlkbHyKbUKcHA>
+    <xmx:BxuLZ5mXhFVjrxTEiw_F7p7eUl-92sYQOQb5PnPEwyuXZBrAkYSBJj-a>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 17 Jan 2025 22:07:50 -0500 (EST)
+Date: Fri, 17 Jan 2025 20:07:48 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Dave Chinner <david@fromorbit.com>
+Cc: Theodore Ts'o <tytso@mit.edu>, lsf-pc@lists.linux-foundation.org, 
+	Linux Filesystem Development List <linux-fsdevel@vger.kernel.org>, bpf@vger.kernel.org
+Subject: Re: [LSF/MM/BPF TOPIC] time to reconsider tracepoints in the vfs?
+Message-ID: <oidb2ijfx64r4lgpf3ei7teexpa54ngnef3cmq5bsxsgxmtros@7pn2y34ud4l7>
+References: <20250116124949.GA2446417@mit.edu>
+ <Z4l3rb11fJqNravu@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250112113748.73504-1-kerneljasonxing@gmail.com>
- <20250112113748.73504-4-kerneljasonxing@gmail.com> <02031003-872e-49bf-a658-c22bc7e1a954@linux.dev>
- <CAL+tcoD6MqBfbpM+ESkiNoRwsQqWsxMwMb4b0qvO=Cf8s52JyA@mail.gmail.com>
- <CAL+tcoDS6H4SMDRs9r+cOM_2bdbNRFRQpuYmpVFyxoMcQJDXLQ@mail.gmail.com>
- <ba353503-bfd3-4de0-bb99-9c7e865e8a73@linux.dev> <CAL+tcoChGB3vA7LMm0VHb9OjmXHUw0--f6v4Crz5R7U+EPo+cg@mail.gmail.com>
- <41688754-20fc-4789-879f-60f763b3a9db@linux.dev> <CAL+tcoCpWs0f145_d+KLmAnuKhQ-83bANkiXXLHE_hoyhGj6Pw@mail.gmail.com>
- <060c5a50-85b6-4f1c-b458-33084858db12@linux.dev>
-In-Reply-To: <060c5a50-85b6-4f1c-b458-33084858db12@linux.dev>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Sat, 18 Jan 2025 10:37:16 +0800
-X-Gm-Features: AbW1kvaDcipx-2OXoL34ZxGSTrGlaFMRX6dwiviWtRk2zFlEj8cDz6Evr39QIW0
-Message-ID: <CAL+tcoBLDvTDQSH-509xDBHXkmutCOZzqX-N0HkPSVzkPjB62Q@mail.gmail.com>
-Subject: Re: [PATCH net-next v5 03/15] bpf: introduce timestamp_used to allow
- UDP socket fetched in bpf prog
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com, 
-	willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, horms@kernel.org, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z4l3rb11fJqNravu@dread.disaster.area>
 
-On Sat, Jan 18, 2025 at 10:17=E2=80=AFAM Martin KaFai Lau <martin.lau@linux=
-.dev> wrote:
->
-> On 1/17/25 5:58 PM, Jason Xing wrote:
-> >> On 1/15/25 5:12 PM, Jason Xing wrote:
-> >>>>> Also, I need to set allow_direct_access to one as long as there is
-> >>>>> "sock_ops.is_fullsock =3D 1;" in the existing callbacks.
-> >>>> Only set allow_direct_access when the sk is fullsock in the "existin=
-g" sockops
-> >>>> callback.
-> >>> Only "existing"? Then how can the bpf program access those members of
-> >>> the tcp socket structure in the current/new timestamping callbacks?
-> >> There is at least one sk write:
-> >>
-> >>          case offsetof(struct bpf_sock_ops, sk_txhash):
-> >>                  SOCK_OPS_GET_OR_SET_FIELD(sk_txhash, sk_txhash,
-> >>                                           struct sock, type);
-> >>
-> >> afaict, the kernel always writes sk->sk_txhash with the sk lock held. =
-The new
-> >> timestamping callbacks cannot write because it does not hold the lock.
-> > Surely, I will handle the sk_txhash case as you suggested =F0=9F=99=82
->
-> to be clear, not setting the allow_tcp_access in the new timestamping cb =
-should do.
+Hi Dave,
 
-Right, I will only apply to the existing callbacks. I think your last
-email is pretty clear to me and dispelled my concern. Prior to this, I
-was worried about not being allowed to access struct tcp_sock in
-timestamping cb. Thanks for your guidance.
+On Fri, Jan 17, 2025 at 08:18:37AM +1100, Dave Chinner wrote:
+> On Thu, Jan 16, 2025 at 07:49:49AM -0500, Theodore Ts'o wrote:
+> > Historically, we have avoided adding tracepoints to the VFS because of
+> > concerns that tracepoints would be considered a userspace-level
+> > interface, and would therefore potentially constrain our ability to
+> > improve an interface which has been extremely performance critical.
+> 
+> Yes, the lack of tracepoints in the VFS is a fairly significant
+> issue when it comes to runtime debugging of production systems...
+> 
+> > I'd like to discuss whether in 2025, it's time to reconsider our
+> > reticence in adding tracepoints in the VFS layer.  First, while there
+> > has been a single incident of a tracepoint being used by programs that
+> > were distributed far and wide (powertop) such that we had to revert a
+> > change to a tracepoint that broke it --- that was ***14** years ago,
+> > in 2011.
+> 
+> Yes, that was a big mistake in multiple ways. Firstly, the app using
+> a tracepoint in this way. The second mistake was the response that
+> "tracepoints should be stable API" based on the abuse of a single
+> tracepoint.
+> 
+> We had extensive tracepoint coverage in subsystems *before* this
+> happened. In XFS, we had already converted hundreds of existing
+> debug-build-only tracing calls to use tracepoints based on the
+> understanding that tracepoints were *not* considered stable user
+> interfaces.
+> 
+> The fact that existing subsystem tracepoints already exposed the
+> internal implementation of objects like struct inode, struct file,
+> superblocks, etc simply wasn't considered when tracepoints were
+> declared "stable".
+> 
+> The fact is that it is simply not possible to maintain any sort of
+> useful introspection with the tracepoint infrastructure without
+> exposing internal implementation details that can change from kernel
+> to kernel.
+> 
+> > Across multiple other subsystems, many of
+> > which have added an extensive number of tracepoints, there has been
+> > only a single problem in over a decade, so I'd like to suggest that
+> > this concern may have not have been as serious as we had first
+> > thought.
+> 
+> Yes, these subsystems still operate under the "tracepoints are not
+> stable" understanding.  The reality is that userspace has *never*
+> been able to rely on tracepoints being stable across multiple kernel
+> releases, regardless of what anyone else (including Linus) says is
+> the policy.
+
+As a (relatively) long time bpftrace developer, I've always been
+fairly consistent with users new to linux tracing that tracepoints
+are _not_ guaranteed to be stable and they exist on the stability
+spectrum somewhere between kprobes/fentry and uapi.
+
+IIRC from the cases I've seen where tracepoints shift, users just adjust
+their scripts. I don't remember having seen anyone both think that it's
+the kernel's fault and then go complain on list.
+
+I'm happy to adjust any of bpftrace's public facing docs to make that
+reality more clear if it'll help.
+
+> 
+> > I'd like to propose that we experiment with adding tracepoints in
+> > early 2025, so that at the end of the year the year-end 2025 LTS
+> > kernels will have tracepoints that we are confident will be fit for
+> > purpose for BPF users.
+> 
+> Why does BPF even need tracepoints? BPF code should be using kprobes
+> to hook into the running kernel to monitor it, yes?
+
+In addition to the points Andrii makes below, tracepoints also have a
+nice documenting property. They tend to get added to "places of
+interest". They're a great starting point for non kernel developers to
+dig into kernel internals. Often times tracepoint naming (as well as the
+exported fields) provide helpful hints.
+
+At least for me, if I'm mucking around new places (mostly net/) I'll
+tend to go look at the tracepoints to find the interesting codepaths.
+
+[..]
 
 Thanks,
-Jason
+Daniel
 
