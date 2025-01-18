@@ -1,98 +1,61 @@
-Return-Path: <bpf+bounces-49249-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49250-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D907A15B2B
-	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2025 04:08:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E8D4A15B3E
+	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2025 04:37:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEED91688D9
-	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2025 03:08:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0753A188AE70
+	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2025 03:37:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B9EC7BAEC;
-	Sat, 18 Jan 2025 03:07:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C9F843169;
+	Sat, 18 Jan 2025 03:37:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="hAWTnleM";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="iPUAbDiz"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="JgJAPfHi"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-a6-smtp.messagingengine.com (fhigh-a6-smtp.messagingengine.com [103.168.172.157])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 353CD130A54;
-	Sat, 18 Jan 2025 03:07:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3014F2F50;
+	Sat, 18 Jan 2025 03:37:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737169674; cv=none; b=QcVcGGYXjOvbgNg/BaMKBXAaobFhW1fpdOEgo17GZe90twsvxlOxZwPPkLwg7YdYDqQut7bgfk9oDvPnPLYbLCYPp4rnXGPRB132Jq55+WgRU4U+ffhzhouHoNxG/WwuYIg/ytQeu/NTJoAsE8BjF0Y33dOq0igZUpy6E3CiLP8=
+	t=1737171449; cv=none; b=iXnhON8Y7LdmE1gySGWBiH3+97jWnF/qPXkjMlpK4Vo7C6bw9j/fuHMv9xso8Ax6GY8Cyq9ORnVmSbzfjCTel7yMkW1jwV+4RPAEHr5mxbvlS9sz8hTeQvav7KrIyqkSLneKz3wEWpcX9AbN0A8NeWa10L/C933GubNyGOPCLmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737169674; c=relaxed/simple;
-	bh=N2IN0osMYSuywd8aiZmnJW5TElQXfTyU1CcZJV9fR/o=;
+	s=arc-20240116; t=1737171449; c=relaxed/simple;
+	bh=QsmzEHN5VmX8x1BO/Et2sEKzyf1LM5z0luOb9m/Hgnw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q+RKDLOMXuIi/eZAilUQ/kY7Ir1UQCfOl/MM9rqfwn1lqvH8KWSTE9fGrV8ZlUcJwJDZYxfMQAkCk346Ilav54trCXsHqMgZHbRtXVlsgCSa9PWMmel++7SrHAos/t6SURVVoMsIdHgFdx3zfm26wfbeHzursR7IzyQZzQPY3QQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=hAWTnleM; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=iPUAbDiz; arc=none smtp.client-ip=103.168.172.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-09.internal (phl-compute-09.phl.internal [10.202.2.49])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 2B09E11402AA;
-	Fri, 17 Jan 2025 22:07:51 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-09.internal (MEProxy); Fri, 17 Jan 2025 22:07:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1737169671; x=1737256071; bh=ZW5l5kQBlD
-	INYguCg3RsWbk6hBJPemS+oyodVSSlN0Q=; b=hAWTnleMcjjKox/sYjF+mSsDpz
-	xwhMNKmx30XzeUZt0OrVFl47GIX+5aEHdzh4jD8saeqcRdWW2ouCLwz2ucZk8yfd
-	5yMZgOY55hoFzpplcmXB5mwPkssQ3pBXoroVbx9jE1lZgQyB9nXPF+fGXxszo2qd
-	f52xsUS2Nr5ajOBJHWxbPTf+7Yxw97AjcFpHYCkhiAS1XV4AJHyvJiaQ3lMzBCtY
-	PWPFnck8F6jpPcjEnxmsztMfLav+UaVcclWRJzgFH1MtrpaAdSp385diLXzTaruv
-	/A1G/AhqXX6dluhvXJB2ypDtkGAdgVo1ZnH8jrSPMEfgyhC+ldqk7e+S46jA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1737169671; x=1737256071; bh=ZW5l5kQBlDINYguCg3RsWbk6hBJPemS+oyo
-	dVSSlN0Q=; b=iPUAbDizpNvDXqoTqCDtwvIl9GNfPwVW0uyIB+GkeJi/sqmA/oj
-	DGfdajyNag92WDLb2S/wYbiD8ZpJPw7qdj5lBzwfBe13eHrIhZa1kxd/k2t3W+va
-	nz+TP5o/GkRF7XEPO+5X9H/IEXCbxyQ7XFSK44iR9UZGOs+CzLAvSPJ0+34PAqs5
-	iSAP65ek8H9Ohyd34BgahqetMlpDIe1TwYtAvfSjv1lLgKZ1RxHEBcRW778xReoZ
-	kAPwiPSmUwN9uRqPAJTFskmcSVOtrvUeIlREXVUTcZ9Upf+/dWaqeEVPfwvNX1ip
-	tMlyH2kaVxr9wuiMERDOIdIxj4H7DvFLpmg==
-X-ME-Sender: <xms:BhuLZytFyThH_F9yEp7Ci_wOd72DbeOi_EnRzrO0FRD9ibPiuToPSQ>
-    <xme:BhuLZ3cxcVdMDVCbfaDrAcZQl9Z_oBbnW4k9QQGwU49Qmi5EVtNNTUnrWN86quK2M
-    t2mx6fHdkr5x210Wg>
-X-ME-Received: <xmr:BhuLZ9xRt7Catm2_P6KvJaLjvz8m1E630LdKw4gkadf3qxgZpWwuFZ8UB6FF17V0Y_CXVLsHzESwyZQ-2bQFf_t467Q71wdQxD8YvuEEkfzdGA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudeigedgheegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlje
-    dtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddttddvnecuhfhrohhmpeff
-    rghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnh
-    epvdefkeetuddufeeigedtheefffekuedukeehudffudfffffggeeitdetgfdvhfdvnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesug
-    iguhhuuhdrgiihiidpnhgspghrtghpthhtohephedpmhhouggvpehsmhhtphhouhhtpdhr
-    tghpthhtohepuggrvhhiugesfhhrohhmohhrsghithdrtghomhdprhgtphhtthhopehthi
-    htshhosehmihhtrdgvughupdhrtghpthhtoheplhhsfhdqphgtsehlihhsthhsrdhlihhn
-    uhigqdhfohhunhgurghtihhonhdrohhrghdprhgtphhtthhopehlihhnuhigqdhfshguvg
-    hvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepsghpfhesvhhgvghr
-    rdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:BhuLZ9PuTHXI0o2Io8PNqfnnzwLoAPjtt1KkYdxHpTkourIsUplq_A>
-    <xmx:BhuLZy8GG3E4xFK65v_lOUFDnlwpyXmdmxU5uBE47rzjabwzVE3UDw>
-    <xmx:BhuLZ1V4SmZzLj3DYc6uvpiQESNNN0eTA6rFUA139KHlBBZ8ef1d5w>
-    <xmx:BhuLZ7cry4w7PN9ynlqRVtbOac6KNetHm4x9wMVpCSlkbHyKbUKcHA>
-    <xmx:BxuLZ5mXhFVjrxTEiw_F7p7eUl-92sYQOQb5PnPEwyuXZBrAkYSBJj-a>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 17 Jan 2025 22:07:50 -0500 (EST)
-Date: Fri, 17 Jan 2025 20:07:48 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Dave Chinner <david@fromorbit.com>
-Cc: Theodore Ts'o <tytso@mit.edu>, lsf-pc@lists.linux-foundation.org, 
-	Linux Filesystem Development List <linux-fsdevel@vger.kernel.org>, bpf@vger.kernel.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=XBMVq7Q0ekSDnOY1jNeCL4apvQQhtPKkUkjlLlEotXb6VC02ESzkvd8pf6c4vo8pRnWpk5E0c1NZjuEEkdtnxTeXDa8FKIkSX8KcpZgG6I2lUvy0EsSS6mYPxX3WasVJ0PH69KFt8OaFXQRcPhYwWt+KysSbTXxeAvWZI7fJ6ss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=JgJAPfHi; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=sOnBT1FZVH1E3dZbLAV8Ykudv006fb56LW7qJ+ZnBq4=; b=JgJAPfHiQgn67/6q+E35BJM2xT
+	iWVzX9n2mROpuIhO/070UJVJhaxJCDf/YCFfe75lhTRin1BnIgjZc8NS0sVXjSrGeia+EAbruSFIg
+	Xk7gjxhhFljeVfXo2MExvasXzLdaxRJLKeFWpLgFpjQpkl1paACkwCmrHdYr2r+3CCa3tMTGTRvCH
+	ox4yAglqCcOJzawzMOiOMUQ4eVasBCjXq0jwmTJTztjXEU4x7p9w8NMtaVC7TG80r1j5N17asc/w5
+	gtEu+TDqtCs1wZJT3hBabrRKkT+g7HUEkIpjUD9V/nf70KU89JoDTIyFDiJFY9taDVgIDRqjDladv
+	dWbnGo0A==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1tYzeF-00000003nHx-2cw8;
+	Sat, 18 Jan 2025 03:37:23 +0000
+Date: Sat, 18 Jan 2025 03:37:23 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: Dave Chinner <david@fromorbit.com>, Theodore Ts'o <tytso@mit.edu>,
+	lsf-pc@lists.linux-foundation.org,
+	Linux Filesystem Development List <linux-fsdevel@vger.kernel.org>,
+	bpf@vger.kernel.org
 Subject: Re: [LSF/MM/BPF TOPIC] time to reconsider tracepoints in the vfs?
-Message-ID: <oidb2ijfx64r4lgpf3ei7teexpa54ngnef3cmq5bsxsgxmtros@7pn2y34ud4l7>
+Message-ID: <20250118033723.GV1977892@ZenIV>
 References: <20250116124949.GA2446417@mit.edu>
  <Z4l3rb11fJqNravu@dread.disaster.area>
+ <oidb2ijfx64r4lgpf3ei7teexpa54ngnef3cmq5bsxsgxmtros@7pn2y34ud4l7>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -101,92 +64,46 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Z4l3rb11fJqNravu@dread.disaster.area>
+In-Reply-To: <oidb2ijfx64r4lgpf3ei7teexpa54ngnef3cmq5bsxsgxmtros@7pn2y34ud4l7>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-Hi Dave,
+On Fri, Jan 17, 2025 at 08:07:48PM -0700, Daniel Xu wrote:
 
-On Fri, Jan 17, 2025 at 08:18:37AM +1100, Dave Chinner wrote:
-> On Thu, Jan 16, 2025 at 07:49:49AM -0500, Theodore Ts'o wrote:
-> > Historically, we have avoided adding tracepoints to the VFS because of
-> > concerns that tracepoints would be considered a userspace-level
-> > interface, and would therefore potentially constrain our ability to
-> > improve an interface which has been extremely performance critical.
+> In addition to the points Andrii makes below, tracepoints also have a
+> nice documenting property. They tend to get added to "places of
+> interest". They're a great starting point for non kernel developers to
+> dig into kernel internals. Often times tracepoint naming (as well as the
+> exported fields) provide helpful hints.
 > 
-> Yes, the lack of tracepoints in the VFS is a fairly significant
-> issue when it comes to runtime debugging of production systems...
-> 
-> > I'd like to discuss whether in 2025, it's time to reconsider our
-> > reticence in adding tracepoints in the VFS layer.  First, while there
-> > has been a single incident of a tracepoint being used by programs that
-> > were distributed far and wide (powertop) such that we had to revert a
-> > change to a tracepoint that broke it --- that was ***14** years ago,
-> > in 2011.
-> 
-> Yes, that was a big mistake in multiple ways. Firstly, the app using
-> a tracepoint in this way. The second mistake was the response that
-> "tracepoints should be stable API" based on the abuse of a single
-> tracepoint.
-> 
-> We had extensive tracepoint coverage in subsystems *before* this
-> happened. In XFS, we had already converted hundreds of existing
-> debug-build-only tracing calls to use tracepoints based on the
-> understanding that tracepoints were *not* considered stable user
-> interfaces.
-> 
-> The fact that existing subsystem tracepoints already exposed the
-> internal implementation of objects like struct inode, struct file,
-> superblocks, etc simply wasn't considered when tracepoints were
-> declared "stable".
-> 
-> The fact is that it is simply not possible to maintain any sort of
-> useful introspection with the tracepoint infrastructure without
-> exposing internal implementation details that can change from kernel
-> to kernel.
-> 
-> > Across multiple other subsystems, many of
-> > which have added an extensive number of tracepoints, there has been
-> > only a single problem in over a decade, so I'd like to suggest that
-> > this concern may have not have been as serious as we had first
-> > thought.
-> 
-> Yes, these subsystems still operate under the "tracepoints are not
-> stable" understanding.  The reality is that userspace has *never*
-> been able to rely on tracepoints being stable across multiple kernel
-> releases, regardless of what anyone else (including Linus) says is
-> the policy.
+> At least for me, if I'm mucking around new places (mostly net/) I'll
+> tend to go look at the tracepoints to find the interesting codepaths.
 
-As a (relatively) long time bpftrace developer, I've always been
-fairly consistent with users new to linux tracing that tracepoints
-are _not_ guaranteed to be stable and they exist on the stability
-spectrum somewhere between kprobes/fentry and uapi.
+Here's one for you:
+        trace_ocfs2_file_splice_read(inode, in, in->f_path.dentry,
+                                     (unsigned long long)OCFS2_I(inode)->ip_blkno,
+                                     in->f_path.dentry->d_name.len,
+                                     in->f_path.dentry->d_name.name,
+                                     flags);
+The trouble is, what happens if your ->splice_read() races
+with rename()?  Yes, it is allowed to happen in parallel with
+splice(2).  Or with read(2), for that matter.  Or close(2) (and
+dup2(2) or exit(2) of something that happens to have the file
+opened).
 
-IIRC from the cases I've seen where tracepoints shift, users just adjust
-their scripts. I don't remember having seen anyone both think that it's
-the kernel's fault and then go complain on list.
+What happens is that
+	* you get len and name that might not match each other - you might
+see len being 200 and name pointing to 40-byte array inside dentry.
+	* you get name that is not guaranteed to be *there* - you might
+pick one before rename and have it freed and reused by the time you
+try to access it.
+	* you get name that points to a string that might be modified
+by another CPU right under you (for short names).
 
-I'm happy to adjust any of bpftrace's public facing docs to make that
-reality more clear if it'll help.
+Doing that inside ->mkdir() - sure, no problem, the name _is_ stable
+there.  Doing that inside ->lookup() - fine on the entry, may be not
+safe on the way out.
 
-> 
-> > I'd like to propose that we experiment with adding tracepoints in
-> > early 2025, so that at the end of the year the year-end 2025 LTS
-> > kernels will have tracepoints that we are confident will be fit for
-> > purpose for BPF users.
-> 
-> Why does BPF even need tracepoints? BPF code should be using kprobes
-> to hook into the running kernel to monitor it, yes?
-
-In addition to the points Andrii makes below, tracepoints also have a
-nice documenting property. They tend to get added to "places of
-interest". They're a great starting point for non kernel developers to
-dig into kernel internals. Often times tracepoint naming (as well as the
-exported fields) provide helpful hints.
-
-At least for me, if I'm mucking around new places (mostly net/) I'll
-tend to go look at the tracepoints to find the interesting codepaths.
-
-[..]
-
-Thanks,
-Daniel
+In filesystems it's living dangerously, but as long as you know what
+you are doing you can get away with that (ocfs2 folks hadn't, but
+it's not just ocfs2 - similar tracepoints exist for nfs, etc.)...
 
