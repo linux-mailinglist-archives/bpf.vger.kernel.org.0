@@ -1,56 +1,56 @@
-Return-Path: <bpf+bounces-49242-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49243-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B216A15A98
-	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2025 01:47:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CC82A15AE7
+	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2025 02:42:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A52093A8E5D
-	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2025 00:47:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73F79168EF5
+	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2025 01:42:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A61F3B666;
-	Sat, 18 Jan 2025 00:47:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B52F282EE;
+	Sat, 18 Jan 2025 01:42:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JNRnyQ47"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eHgDQ/XP"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93CBEB640
-	for <bpf@vger.kernel.org>; Sat, 18 Jan 2025 00:47:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CA47136E
+	for <bpf@vger.kernel.org>; Sat, 18 Jan 2025 01:42:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737161242; cv=none; b=f+Jwp3VOKb2E5McI+uHq4ftn9SSMdJ4JnQc4r7beWtmg3xfiDcY9n5b75u1tlmSnIIH3Jqmfuxwhdx36OxRNi55qbwA4RxJvegv4YajEMy9BwoXkRFe8g8AbCickD3v5zmeXx/sYRVULR1vrjs8N9eIZ1zLlM9PA38nbEGrzfeE=
+	t=1737164547; cv=none; b=k0fIIlWp8bljH+b2uyQXuezrM3vwkSvOqo6tBfuVGGAwD4WK6HFPZoqrrbP7UxwblFffoLkTMrln2ITQQ1hBy9QjDaGdikA6VLwPrfqhdRWNzLDbB1e1b61BMsCHzlTkZh8TL6snL4Man/LTm7v76wWxIJx9e90hnCg/7LiIfRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737161242; c=relaxed/simple;
-	bh=d7Cy1HBZ7uudLln/1KJycVHjr9lgFKrdOo1NmfPV+2g=;
+	s=arc-20240116; t=1737164547; c=relaxed/simple;
+	bh=RJOxkQongaIVqruXMDXrgS7k7YR8+IU9MKMWmAy+0L0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=drzGgtSKT4+w+YeAhHSI4kp82zgXCoHd+U0dzXqbqCGXW3Ey2rcd9JBYpmCpkF2lTKiFz7KliW5CSs68H/vbkrRFuz/oPd9xD7EvL1mcnn0q3++uKrkpKzPh9SKS+S9cqH5VmO9eEy+YmHLNpujXKhMkzHeIXKG7KfchhdGtZ08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JNRnyQ47; arc=none smtp.client-ip=95.215.58.180
+	 In-Reply-To:Content-Type; b=P8S1ZGvNUEKJfrwlCN6Fhgvu1DpZyKQ37yNgytnehP62anFF05+KzzNbeovlikaEoMdOA0JJEGaHTe0UfyG9i9MGZIA9rGB301DRCI1TxgV+UG+UxcIow+jnf9TYIC82YeYRW44PdveGDNO2zyYu8m2JlJGMeH+GeEC+9keZoNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eHgDQ/XP; arc=none smtp.client-ip=95.215.58.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <fc4dd0d9-d4ae-4601-be01-5fad7c74e585@linux.dev>
+Message-ID: <41688754-20fc-4789-879f-60f763b3a9db@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1737161228;
+	t=1737164541;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BRREM1BEEEqOBTIHUcVG5c4TyTNaF/eaJuYWhcxyST0=;
-	b=JNRnyQ47gwTfRm8VdU+ufBHAlsuiMUEj8JYFWFqYQcSK3MVBQAGJFrLU87EBbQ6anQWesQ
-	Sso5AhwhzZE2/siAN+6Zee6P9U4zL7j5LGntgQ3bPbTpgeZXXmAp+DlDADgXELln9ACx4U
-	4mPzIv7Cc2DSgKsLpVQPa7BwX97AWw0=
-Date: Fri, 17 Jan 2025 16:46:56 -0800
+	bh=M1U57c2FZY0LUjTIrx64euHGzhxciNnYcBVICwV6pgk=;
+	b=eHgDQ/XPIDXZQ4/tKept5+L24Lq1uc3ILMr7+Vv4Pn5K2sGYw3PN71Izt5la+xrQdFw3BB
+	6oTIeZ0B6KTf4ufyxdMKphsJPNS0SZsezZwDIcSHKoALxCpxRZBqWDchvG5y7rR/c183vz
+	QnJpn4uVPXpbgjpNIn7v0xHJfQ1lins=
+Date: Fri, 17 Jan 2025 17:42:13 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v5 08/15] net-timestamp: support sw
- SCM_TSTAMP_SND for bpf extension
+Subject: Re: [PATCH net-next v5 03/15] bpf: introduce timestamp_used to allow
+ UDP socket fetched in bpf prog
 To: Jason Xing <kerneljasonxing@gmail.com>
 Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
  pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com,
@@ -60,52 +60,46 @@ Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
  haoluo@google.com, jolsa@kernel.org, horms@kernel.org, bpf@vger.kernel.org,
  netdev@vger.kernel.org
 References: <20250112113748.73504-1-kerneljasonxing@gmail.com>
- <20250112113748.73504-9-kerneljasonxing@gmail.com>
- <ef391d15-4968-42c6-b107-cbd941d98e73@linux.dev>
- <CAL+tcoC+bXAPP94zLka5GcwbpWNQtFijxd0PcPnVrtS-F=h6vQ@mail.gmail.com>
-Content-Language: en-US
+ <20250112113748.73504-4-kerneljasonxing@gmail.com>
+ <02031003-872e-49bf-a658-c22bc7e1a954@linux.dev>
+ <CAL+tcoD6MqBfbpM+ESkiNoRwsQqWsxMwMb4b0qvO=Cf8s52JyA@mail.gmail.com>
+ <CAL+tcoDS6H4SMDRs9r+cOM_2bdbNRFRQpuYmpVFyxoMcQJDXLQ@mail.gmail.com>
+ <ba353503-bfd3-4de0-bb99-9c7e865e8a73@linux.dev>
+ <CAL+tcoChGB3vA7LMm0VHb9OjmXHUw0--f6v4Crz5R7U+EPo+cg@mail.gmail.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAL+tcoC+bXAPP94zLka5GcwbpWNQtFijxd0PcPnVrtS-F=h6vQ@mail.gmail.com>
+Content-Language: en-US
+In-Reply-To: <CAL+tcoChGB3vA7LMm0VHb9OjmXHUw0--f6v4Crz5R7U+EPo+cg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
-On 1/15/25 3:56 PM, Jason Xing wrote:
-> On Thu, Jan 16, 2025 at 6:48 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>
->> On 1/12/25 3:37 AM, Jason Xing wrote:
->>> Support SCM_TSTAMP_SND case. Then we will get the software
->>> timestamp when the driver is about to send the skb. Later, I
->>> will support the hardware timestamp.
->>
->>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
->>> index 169c6d03d698..0fb31df4ed95 100644
->>> --- a/net/core/skbuff.c
->>> +++ b/net/core/skbuff.c
->>> @@ -5578,6 +5578,9 @@ static void __skb_tstamp_tx_bpf(struct sk_buff *skb, struct sock *sk, int tstype
->>>        case SCM_TSTAMP_SCHED:
->>>                op = BPF_SOCK_OPS_TS_SCHED_OPT_CB;
->>>                break;
->>> +     case SCM_TSTAMP_SND:
->>> +             op = BPF_SOCK_OPS_TS_SW_OPT_CB;
->>
->> For the hwtstamps case, is skb_hwtstamps(skb) set? From looking at a few
->> drivers, it does not look like it. I don't see the hwtstamps support in patch 10
->> either. What did I miss ?
-> 
-> Sorry, I missed adding a new flag, namely, BPF_SOCK_OPS_TS_HW_OPT_CB.
-> I can also skip adding that new one and rename
-> BPF_SOCK_OPS_TS_SW_OPT_CB accordingly for sw and hw cases if we
-> finally decide to use hwtstamps parameter to distinguish two different
-> cases.
+On 1/15/25 5:12 PM, Jason Xing wrote:
+>>> Also, I need to set allow_direct_access to one as long as there is
+>>> "sock_ops.is_fullsock = 1;" in the existing callbacks.
+>> Only set allow_direct_access when the sk is fullsock in the "existing" sockops
+>> callback.
+> Only "existing"? Then how can the bpf program access those members of
+> the tcp socket structure in the current/new timestamping callbacks?
 
-I think having a separate BPF_SOCK_OPS_TS_HW_OPT_CB is better considering your 
-earlier hwtstamps may be NULL comment. I don't see the drivers I looked at 
-passing NULL though but the comment of skb_tstamp_tx did say it may be NULL :/
+There is at least one sk write:
 
-Regardless, afaict, skb_hwtstamps(skb) is still not set to the hwtstamps passed 
-by the driver here. The bpf prog is supposed to directly get the hwtstamps from 
-the skops->skb pointer.
+	case offsetof(struct bpf_sock_ops, sk_txhash):
+		SOCK_OPS_GET_OR_SET_FIELD(sk_txhash, sk_txhash,
+					 struct sock, type);
+
+afaict, the kernel always writes sk->sk_txhash with the sk lock held. The new 
+timestamping callbacks cannot write because it does not hold the lock.
+Otherwise, it needs another flag in bpf_sock_ops_kern to say read only or not. 
+imo, it is too complicated to be worth it.
+
+It is fine for the new timestamping callbacks not able to access the tcp_sock 
+fields through the bpf_sock_ops. We are not losing anything. The accessible 
+tcp_sock fields through the bpf_sock_ops is limited and the  bpf_sock_ops api is 
+pretty much frozen. The bpf prog should use the bpf_core_cast(skops->sk, struct 
+tcp_sock). The future UDP timestamping support will likely need to use the 
+bpf_core_cast anyway because we are not extending "struct bpf_sock_ops" for the 
+udp_sock specific fields.
+
 
 
