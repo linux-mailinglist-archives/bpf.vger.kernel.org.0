@@ -1,109 +1,149 @@
-Return-Path: <bpf+bounces-49250-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49251-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E8D4A15B3E
-	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2025 04:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 834B8A15B9F
+	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2025 07:29:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0753A188AE70
-	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2025 03:37:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6051188978D
+	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2025 06:29:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C9F843169;
-	Sat, 18 Jan 2025 03:37:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 550B5148FED;
+	Sat, 18 Jan 2025 06:29:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="JgJAPfHi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C+6n12Vo"
 X-Original-To: bpf@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3014F2F50;
-	Sat, 18 Jan 2025 03:37:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 686DE7CF16;
+	Sat, 18 Jan 2025 06:29:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737171449; cv=none; b=iXnhON8Y7LdmE1gySGWBiH3+97jWnF/qPXkjMlpK4Vo7C6bw9j/fuHMv9xso8Ax6GY8Cyq9ORnVmSbzfjCTel7yMkW1jwV+4RPAEHr5mxbvlS9sz8hTeQvav7KrIyqkSLneKz3wEWpcX9AbN0A8NeWa10L/C933GubNyGOPCLmg=
+	t=1737181772; cv=none; b=qnEhsXQJGBOlJ6IFNP6aWLPNzjv/wV4QHhZv9kfcClah4byBy6lIdbB5UhNrRbx/OktIJXOydoPgL1IN98zxQ9+NDa/TxjbDDekklgAalF3yJjrz6rnL+TuUuOoUle7ddai/Ks4xOl44A1eCXrpKdpJKV1a75KszxN6xshbHs9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737171449; c=relaxed/simple;
-	bh=QsmzEHN5VmX8x1BO/Et2sEKzyf1LM5z0luOb9m/Hgnw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XBMVq7Q0ekSDnOY1jNeCL4apvQQhtPKkUkjlLlEotXb6VC02ESzkvd8pf6c4vo8pRnWpk5E0c1NZjuEEkdtnxTeXDa8FKIkSX8KcpZgG6I2lUvy0EsSS6mYPxX3WasVJ0PH69KFt8OaFXQRcPhYwWt+KysSbTXxeAvWZI7fJ6ss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=JgJAPfHi; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=sOnBT1FZVH1E3dZbLAV8Ykudv006fb56LW7qJ+ZnBq4=; b=JgJAPfHiQgn67/6q+E35BJM2xT
-	iWVzX9n2mROpuIhO/070UJVJhaxJCDf/YCFfe75lhTRin1BnIgjZc8NS0sVXjSrGeia+EAbruSFIg
-	Xk7gjxhhFljeVfXo2MExvasXzLdaxRJLKeFWpLgFpjQpkl1paACkwCmrHdYr2r+3CCa3tMTGTRvCH
-	ox4yAglqCcOJzawzMOiOMUQ4eVasBCjXq0jwmTJTztjXEU4x7p9w8NMtaVC7TG80r1j5N17asc/w5
-	gtEu+TDqtCs1wZJT3hBabrRKkT+g7HUEkIpjUD9V/nf70KU89JoDTIyFDiJFY9taDVgIDRqjDladv
-	dWbnGo0A==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tYzeF-00000003nHx-2cw8;
-	Sat, 18 Jan 2025 03:37:23 +0000
-Date: Sat, 18 Jan 2025 03:37:23 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: Dave Chinner <david@fromorbit.com>, Theodore Ts'o <tytso@mit.edu>,
-	lsf-pc@lists.linux-foundation.org,
-	Linux Filesystem Development List <linux-fsdevel@vger.kernel.org>,
-	bpf@vger.kernel.org
-Subject: Re: [LSF/MM/BPF TOPIC] time to reconsider tracepoints in the vfs?
-Message-ID: <20250118033723.GV1977892@ZenIV>
-References: <20250116124949.GA2446417@mit.edu>
- <Z4l3rb11fJqNravu@dread.disaster.area>
- <oidb2ijfx64r4lgpf3ei7teexpa54ngnef3cmq5bsxsgxmtros@7pn2y34ud4l7>
+	s=arc-20240116; t=1737181772; c=relaxed/simple;
+	bh=kNajPM7FJ1DP3cPX2GpEt6xD1TpMiC0bLvzaWq3QO7M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gjRVDItl7AfIQvWGAzd7YmAMxcGA0nqtUVwzDhYJvhIaVCPVSjSgWoz/kP73IlA/l2aZtRI+zzeDOm6dpdFvH9/YV2xiHqjEENaG2ekpMzQ8XmA9fdYZaPs4Bsw/WyKngmrnq/2GRo1WtI8QEQ6p6nhXq+YKuY/MgWHl9R6GRvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C+6n12Vo; arc=none smtp.client-ip=209.85.166.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-3a8165cfae8so7718235ab.0;
+        Fri, 17 Jan 2025 22:29:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1737181770; x=1737786570; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WgdXEUKh2ebIkCe3AAwPqW7deSJrN8l+kGHJr1UEt+M=;
+        b=C+6n12VoqMwXTIfHw23x7cJXemv+r7hI3L0tntb52pAzrSPjDgLdu+Ae6abN3vr5Qw
+         fFMaIOb3tC7srTPssHvBcGV16Xm7iiMBhymqzXya0xlgOL6VDel936TMW0Pxyii81oJd
+         KrXTGs4oN6cS+vpl1PDcdM+jBjTeC78lqmTmqmeZN/hrkuJXg8yFrL43145X8Sa1V5OG
+         SNQt6+LSGxMXfllBFKRtNfaFCD5b6bWIRmgvwAVQIkmjMLcUgZl+TlClGe35bCTg+BTW
+         OinfvWECFc2naDyI4bWoX5buVN0TIwcxdfy3E0zIBMHitWsXN9WyqJU1c4o0XsrXugN+
+         l7jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737181770; x=1737786570;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WgdXEUKh2ebIkCe3AAwPqW7deSJrN8l+kGHJr1UEt+M=;
+        b=uFMKiSk9wFUUwZx/OA4DL98LFVbaJ2Bpq+rTe6px2oY8Q1BvMojRT0iXucPa7BW8xS
+         oChyZt6J0UYxvDFz1WYle9OfL0gPJEheV7yZi+2u6ak7bhesMG4Boqj22KYWHm267Jzb
+         C7RkQeCjc5WD7BpNWF+FMTzQ18Suxcgj0DZkt83fo8ZJ+8GMCsuozXe605huqf2blcR8
+         1EErRXwxuZB9HzHFgqKHtP8w7w3b1ZeHhufQybC7FVWxoj9dLFBsEVU8gLRZsg4L1m+z
+         zZYA2LrFSmG6GpUVKq/c2eGcUNNQAT/aRAIP9Nn6+R/k793k93LKL5WKCPlxeaRdOJu8
+         Xojg==
+X-Forwarded-Encrypted: i=1; AJvYcCVKqrfHwO9jBuWPH3N3qhK8aFHUS/BW2ZKfMontLqF5heeAciMIFYiup8I0NnYtJDWdwQk=@vger.kernel.org, AJvYcCXWH1HkfzhksNK18BqeH7e/5HiIqyIHYbBE8Ozg0Mr4u6t2wiiBWnVCVrIufesvgsjTnEaz5K3a@vger.kernel.org
+X-Gm-Message-State: AOJu0YzLg2apX1PDp2c2hgp69rQa1mNJCT8A9wBnTU67nj3UbGogPN0A
+	9HgGkQ24u2lhHZ2Ocx6fBqq1nP3T2lKIUeeqEp01HVExu/mre2g18J8xq/gfoDyBofpSXtOsi43
+	f83MXI5tbBXdZ4oJ9MC5Lnvf8S1g=
+X-Gm-Gg: ASbGnctlgFlYIjm9UWrMwsgAZTENKGQXkj2PCQOi6G2pL5HESPSj8bILcwfselg0Ffa
+	tY4qVDHcig5acIUvYMhKCOb+J4WC4jxioosr6KkAngiqhvocGdg==
+X-Google-Smtp-Source: AGHT+IGqm/YkppXmpNbA2vzkwvJffN1fLaKwXV+Eks8Mz4lccRNjOwa3fOcFT4PNA7wNixFRSPQPaYILkyC4S1VAYhk=
+X-Received: by 2002:a05:6e02:1c23:b0:3cf:6c4f:3960 with SMTP id
+ e9e14a558f8ab-3cf744906f8mr35119245ab.19.1737181770251; Fri, 17 Jan 2025
+ 22:29:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <oidb2ijfx64r4lgpf3ei7teexpa54ngnef3cmq5bsxsgxmtros@7pn2y34ud4l7>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <20250112113748.73504-1-kerneljasonxing@gmail.com>
+ <20250112113748.73504-6-kerneljasonxing@gmail.com> <ca852e76-2627-4e07-8005-34168271bf12@linux.dev>
+ <CAL+tcoAY9jeOmZjVqG=7=FxOdXevvOXroTosaE8QpG2bYbFE_Q@mail.gmail.com> <35e2c693-244f-4d55-88f3-99e1ed1e2745@linux.dev>
+In-Reply-To: <35e2c693-244f-4d55-88f3-99e1ed1e2745@linux.dev>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Sat, 18 Jan 2025 14:28:53 +0800
+X-Gm-Features: AbW1kvaLqr32v74jmgaqoHtg0g8_ikex4QT2XIJe3KuXNSzHW54xWp0If3ahWLU
+Message-ID: <CAL+tcoDqnfaZq1VnqJa=RVEqMXyno7xyWJjcbU7ZGuPm7XGi6w@mail.gmail.com>
+Subject: Re: [PATCH net-next v5 05/15] net-timestamp: add strict check in some
+ BPF calls
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com, 
+	willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, horms@kernel.org, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 17, 2025 at 08:07:48PM -0700, Daniel Xu wrote:
+On Sat, Jan 18, 2025 at 10:15=E2=80=AFAM Martin KaFai Lau <martin.lau@linux=
+.dev> wrote:
+>
+> On 1/15/25 3:32 PM, Jason Xing wrote:
+> >> +static bool is_locked_tcp_sock_ops(struct bpf_sock_ops_kern *bpf_sock=
+)
+> >> +{
+> >> +       return bpf_sock->op <=3D BPF_SOCK_OPS_WRITE_HDR_OPT_CB;
+> >
+> > I wonder if I can use the code snippets in the previous reply in this
+> > thread, only checking if we are in the timestamping callback?
+> > +#define BPF_SOCK_OPTS_TS               (BPF_SOCK_OPS_TS_SCHED_OPT_CB |=
+ \
+> > +                                        BPF_SOCK_OPS_TS_SW_OPT_CB | \
+> > +                                        BPF_SOCK_OPS_TS_ACK_OPT_CB | \
+> > +                                        BPF_SOCK_OPS_TS_TCP_SND_CB)
+>
+> Note that BPF_SOCK_OPS_*_CB is not a bit.
+>
+> My understanding is it is a blacklist. Please correct me if I miss-interp=
+ret the
+> intention.
 
-> In addition to the points Andrii makes below, tracepoints also have a
-> nice documenting property. They tend to get added to "places of
-> interest". They're a great starting point for non kernel developers to
-> dig into kernel internals. Often times tracepoint naming (as well as the
-> exported fields) provide helpful hints.
-> 
-> At least for me, if I'm mucking around new places (mostly net/) I'll
-> tend to go look at the tracepoints to find the interesting codepaths.
+Yes, blacklist it is.
 
-Here's one for you:
-        trace_ocfs2_file_splice_read(inode, in, in->f_path.dentry,
-                                     (unsigned long long)OCFS2_I(inode)->ip_blkno,
-                                     in->f_path.dentry->d_name.len,
-                                     in->f_path.dentry->d_name.name,
-                                     flags);
-The trouble is, what happens if your ->splice_read() races
-with rename()?  Yes, it is allowed to happen in parallel with
-splice(2).  Or with read(2), for that matter.  Or close(2) (and
-dup2(2) or exit(2) of something that happens to have the file
-opened).
+>
+> >
+> > Then other developers won't worry too much whether they will cause
+> > some safety problems. If not, they will/must add callbacks earlier
+> > than BPF_SOCK_OPS_WRITE_HDR_OPT_CB.
+>
+> It can't be added earlier because it is in uapi. If the future new cb is =
+safe to
+> use these helpers, then it needs to adjust the BPF_SOCK_OPS_WRITE_HDR_OPT=
+_CB
+> check. is_locked_tcp_sock_ops() is a whitelist. The worst is someone will
+> discover the helpers are not usable in the new cb, so no safety issue.
+>
+> If forgot to adjust the blacklist and the new cb should not use the helpe=
+rs,
+> then it is a safety issue.
+>
+> Anyhow, I don't have a strong opinion here. I did think about checking th=
+e new
+> TS callback instead. I went with the simplest way in the code and also
+> considering the BPF_SOCK_OPS_TS_*_CB is only introduced starting from pat=
+ch 7.
 
-What happens is that
-	* you get len and name that might not match each other - you might
-see len being 200 and name pointing to 40-byte array inside dentry.
-	* you get name that is not guaranteed to be *there* - you might
-pick one before rename and have it freed and reused by the time you
-try to access it.
-	* you get name that points to a string that might be modified
-by another CPU right under you (for short names).
+Got it, I will follow your instructions :)
 
-Doing that inside ->mkdir() - sure, no problem, the name _is_ stable
-there.  Doing that inside ->lookup() - fine on the entry, may be not
-safe on the way out.
-
-In filesystems it's living dangerously, but as long as you know what
-you are doing you can get away with that (ocfs2 folks hadn't, but
-it's not just ocfs2 - similar tracepoints exist for nfs, etc.)...
+Thanks,
+Jason
 
