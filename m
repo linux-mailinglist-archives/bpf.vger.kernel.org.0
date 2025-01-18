@@ -1,156 +1,130 @@
-Return-Path: <bpf+bounces-49256-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49257-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2094EA15D8B
-	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2025 16:04:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4355A15D8E
+	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2025 16:06:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90E9B1888851
-	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2025 15:04:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18A303A83D9
+	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2025 15:06:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 447AA199FA2;
-	Sat, 18 Jan 2025 15:03:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A709619AD8C;
+	Sat, 18 Jan 2025 15:05:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="DuSS+wiE"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TGPuQF8T"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93A5D172BB9
-	for <bpf@vger.kernel.org>; Sat, 18 Jan 2025 15:03:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87C53172BB9
+	for <bpf@vger.kernel.org>; Sat, 18 Jan 2025 15:05:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737212620; cv=none; b=oNgD8n8lJeLnkZ/f+YWswDkv5Qkq6rGSI/q8RW9yEWJz3WMNcqIRRtrFqiPpJnEzKF75k9bjWuKsZZMs44l6GeV9ATwwfJS7oew7JdE1WSJ8F6kdWc9y5qu7TtNrpEBzVG/2N89rMQGSh/ft7YMgmpSSXz7V8luYBaQS4G9xS0U=
+	t=1737212750; cv=none; b=ltZgKGhyVMpz9x2Nc3iyfQtjkoajuE6C7NBSaDyJKbKrD4g+OT1eQEh603rCS5vyJmAi1utTdJRqvmrTL2aNNptTTG6XiJSj8ZDHfaHsjNsBAm7gnJNznMzIaikJ9HI9yzhDsZcVTJDryOvFZlIqVm976brUxU6c/cqkQ6Y/nNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737212620; c=relaxed/simple;
-	bh=NablIjmRy2nMx39DICWLlVTQ1be/IJAFT6T9D7/baDk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Xui4WiZSUW12MoeXLDAq8MSQ6DrVygYz2dghGW4SDao3JbC6cVvGBXW3e8Cb8WjT+S4oznLxtLnsSMcyyvKnsnqowsGxsnMXe7/20gDHQDQHr7P+uKLBrSEkaBTzNtrNj9AYfR4K8iC0EGzYEfIbP+vqkdsA8So1kosYbb5nZ7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=DuSS+wiE; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-aa68b513abcso566374666b.0
-        for <bpf@vger.kernel.org>; Sat, 18 Jan 2025 07:03:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1737212616; x=1737817416; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BsU0V10dN1yqoMT6qC2L8DSBzvmEhUqKxrypw2scHJ4=;
-        b=DuSS+wiElEwB1O4ZL0hpejwnJ5OJfYMvapKTUjF5pkEWbcyKGsWaRZpjqHczNQ7WZj
-         aAJD/d1D/rAw34tmjbnXzeZEqHkHWXRhQirJFQ7TeE4/Y2Le8PBM9E6HxerF6XETU8ko
-         zT2UgIor+hHlG7m4FcnRTzEf0XUOeQ3IUnwMN7HhGNkmFGJnLn/lEbT7Oz8dqV/C9gJO
-         +QwUU8UnKzrYIPkwXLLP4RkODM5dKuf/TmhGG1aeC4VPG2da+Igxp+rMUzBEPdMbsHnx
-         UGs2mjI5gkSo5I8sv4001QqzMGHPeVFHvf6fPz/k3lr+ywtljGZq4fapmBSLLvtra1yc
-         x0ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737212616; x=1737817416;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BsU0V10dN1yqoMT6qC2L8DSBzvmEhUqKxrypw2scHJ4=;
-        b=uT0eRvnnj/Uye0ZWxU1j/s+31iUmEF7NVACisIFyFk7yrUXwmthfTe4ngN+Um+REas
-         czGEo3tsv82q8IMuylnccp5IJE/Ag1hf2A3t8kGlZj8dyp7l56Y7DPZ3paWR8spJEImG
-         Wrn4lFV0TfzaVVRSUkKm6x0p9O+JYTUkeXA8X/4tgQbOx9CbN55hXaNrCQqifOGcA/SS
-         D0bZXtZA1AaKLydVu78LMSgoFaXkm4WE2LpjNvEl6ARNAl+GkRkqKPnGP6PolZNccDI0
-         PXczx3TmrsD+LJEWvH6uYIq59XKoYizTaievaHJP1v4Hry4wg6YrS/B732/FBp55BCXZ
-         4wqg==
-X-Gm-Message-State: AOJu0YwG6D+E8MUC0MLxESVQafmBIXUQUt/c5Hkx5BkC0QfqIsKGIV6v
-	2qlQqBgVXbO+8ZZ9SGitaQZg8Vzudgqp6AOyOIiB5IA4qjlehWBZM2dCW/WWH6E=
-X-Gm-Gg: ASbGncviQGYyNNkjdeTzNLMiVPAO3zKf3usqNJuNHUYCCs4Cgo9l/EjmfEAilYJ+OqR
-	b6ed9zTqPHGHz50tv5DHPZ+gJa3Z0hoQ0bjfHUXzce0jZaP0novM/FROIc/QrfJ1f8aIwpwl3Mi
-	MsTLtJzyyIGNv/ATfnLYh24JPORwj9zmvq37cQBb3it4LXiAg8qijHJ6YdkW5l761ISjnf7w3ng
-	YXqrjyDj65aIbMIJDBL+/F7Feu/AKUdaz6Vd4hyXHLzPYKlDioT/rTnVLyPVw==
-X-Google-Smtp-Source: AGHT+IFly84G+OXXo/u1XMLfKGjBq9YlBfFskeFDqv4t2HPmXeMR34kxPqt/OhU/z8Yer8BWZqR6Fg==
-X-Received: by 2002:a17:907:805:b0:aa6:7c8e:8085 with SMTP id a640c23a62f3a-ab38b1100f2mr638880466b.15.1737212615807;
-        Sat, 18 Jan 2025 07:03:35 -0800 (PST)
-Received: from cloudflare.com ([2a09:bac1:5ba0:d60::38a:14])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab384c613d9sm348102566b.31.2025.01.18.07.03.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Jan 2025 07:03:34 -0800 (PST)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Jiayuan Chen <mrpre@163.com>
-Cc: bpf@vger.kernel.org,  john.fastabend@gmail.com,  netdev@vger.kernel.org,
-  martin.lau@linux.dev,  ast@kernel.org,  edumazet@google.com,
-  davem@davemloft.net,  dsahern@kernel.org,  kuba@kernel.org,
-  pabeni@redhat.com,  linux-kernel@vger.kernel.org,  song@kernel.org,
-  andrii@kernel.org,  mhal@rbox.co,  yonghong.song@linux.dev,
-  daniel@iogearbox.net,  xiyou.wangcong@gmail.com,  horms@kernel.org,
-  corbet@lwn.net,  eddyz87@gmail.com,  cong.wang@bytedance.com,
-  shuah@kernel.org,  mykolal@fb.com,  jolsa@kernel.org,  haoluo@google.com,
-  sdf@fomichev.me,  kpsingh@kernel.org,  linux-doc@vger.kernel.org
-Subject: Re: [PATCH bpf v7 3/5] bpf: disable non stream socket for strparser
-In-Reply-To: <20250116140531.108636-4-mrpre@163.com> (Jiayuan Chen's message
-	of "Thu, 16 Jan 2025 22:05:29 +0800")
-References: <20250116140531.108636-1-mrpre@163.com>
-	<20250116140531.108636-4-mrpre@163.com>
-Date: Sat, 18 Jan 2025 16:03:33 +0100
-Message-ID: <87a5bodv0a.fsf@cloudflare.com>
+	s=arc-20240116; t=1737212750; c=relaxed/simple;
+	bh=FB5tEY/SIGgEcj+wCphizTJs+zgzCCFaTisQu4Io4D8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RHIn68C0Txi6awgNpxTMHfuPcHMTEoDajk+atmOEUV2Z4bOvz1NhLwdBtGyIvbdv4wh7HNIXi45NAtKp81Rpm4tNPoObl4EO0BjOcIic31SuNN9nf2d3ca0O09hkCO7WbylJ28wu/LJkukzUckZQl6EvDYAZtqxKWCnYGO3svLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TGPuQF8T; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1737212747;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FB5tEY/SIGgEcj+wCphizTJs+zgzCCFaTisQu4Io4D8=;
+	b=TGPuQF8TewVK0imZ1cb7e9dHfsU3glLtK0o3lUXZzKfyoN+uDoupJSoo23iyLveSM7yHVv
+	ZcqCMHKezttEwIi+GpSeJyWfCWw1871Y0K0UXkdyHWUtz+g+syQhZKrJtYBH6w5ETclaAc
+	NictkQvrsmRyCBCK+62sIrGIx44m/oc=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-552-kWG6VUqGNcauERNYzyMBkQ-1; Sat,
+ 18 Jan 2025 10:05:42 -0500
+X-MC-Unique: kWG6VUqGNcauERNYzyMBkQ-1
+X-Mimecast-MFC-AGG-ID: kWG6VUqGNcauERNYzyMBkQ
+Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 8EAA119560B1;
+	Sat, 18 Jan 2025 15:05:37 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.39])
+	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id AFEAD195608A;
+	Sat, 18 Jan 2025 15:05:27 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Sat, 18 Jan 2025 16:05:12 +0100 (CET)
+Date: Sat, 18 Jan 2025 16:05:01 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+	Eyal Birger <eyal.birger@gmail.com>, kees@kernel.org,
+	luto@amacapital.net, wad@chromium.org, andrii@kernel.org,
+	jolsa@kernel.org, alexei.starovoitov@gmail.com, olsajiri@gmail.com,
+	cyphar@cyphar.com, songliubraving@fb.com, yhs@fb.com,
+	john.fastabend@gmail.com, peterz@infradead.org, tglx@linutronix.de,
+	bp@alien8.de, daniel@iogearbox.net, ast@kernel.org,
+	rostedt@goodmis.org, rafi@rbk.io, shmulik.ladkani@gmail.com,
+	bpf@vger.kernel.org, linux-api@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	"Dmitry V. Levin" <ldv@strace.io>
+Subject: Re: [PATCH] seccomp: passthrough uretprobe systemcall without
+ filtering
+Message-ID: <20250118150500.GB21464@redhat.com>
+References: <20250117005539.325887-1-eyal.birger@gmail.com>
+ <20250117013927.GB2610@redhat.com>
+ <20250117170229.f1e1a9f03a8547d31cd875db@kernel.org>
+ <20250117140924.GA21203@redhat.com>
+ <CAEf4BzYhcG8waFMFoQS5dFWVkQGP6ed_0mwGTK4quN5+6-8XuA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzYhcG8waFMFoQS5dFWVkQGP6ed_0mwGTK4quN5+6-8XuA@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
 
-On Thu, Jan 16, 2025 at 10:05 PM +08, Jiayuan Chen wrote:
-> Currently, only TCP supports strparser, but sockmap doesn't intercept
-> non-TCP to attach strparser. For example, with UDP, although the
-> read/write handlers are replaced, strparser is not executed due to the
-> lack of read_sock operation.
+On 01/17, Andrii Nakryiko wrote:
 >
-> Furthermore, in udp_bpf_recvmsg(), it checks whether psock has data, and
-> if not, it falls back to the native UDP read interface, making
-> UDP + strparser appear to read correctly. According to it's commit
-> history, the behavior is unexpected.
+> On Fri, Jan 17, 2025 at 6:10 AM Oleg Nesterov <oleg@redhat.com> wrote:
+> >
+> > We can, and this is what I tried to suggest from the very beginning.
+> > But I agree with Eyal who decided to send the most trivial fix for
+> > -stable, we can add the helper later.
+> >
+> > I don't think it should live in uprobes.h and I'd prefer something
+> > like arch_seccomp_ignored(int) but I won't insist.
 >
-> Moreover, since UDP lacks the concept of streams, we intercept it
-> directly. Later, we will try to support Unix streams and add more
-> check.
->
-> Signed-off-by: Jiayuan Chen <mrpre@163.com>
-> ---
+> yep, I think this is the way, keeping it as a general category. Should
+> we also put rt_sigreturn there explicitly as well? Also, wouldn't it
+> be better to have it as a non-arch-specific function for something
+> like rt_sigreturn where defining it per each arch is cumbersome, and
+> have the default implementation also call into an arch-specific
+> function?
 
-Needs a Fixes: tag.
+I personally don't think we should exclude rt_sigreturn. and I guess
+we can't do it in a arch-agnostic way, think of __NR_ia32_sigreturn.
 
->  net/core/sock_map.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
->
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index f1b9b3958792..c6ee2d1d9cf2 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -214,6 +214,14 @@ static struct sk_psock *sock_map_psock_get_checked(struct sock *sk)
->  	return psock;
->  }
->  
-> +static bool sock_map_sk_strp_allowed(const struct sock *sk)
-> +{
-> +	/* todo: support unix stream socket */
-> +	if (sk_is_tcp(sk))
-> +		return true;
-> +	return false;
-> +}
-> +
+However. These are all good questions that need a separate discussion.
+Plus the SECCOMP_RET_TRACE/strace issue raised by Dmitry. And probably
+even more.
 
-We don't need this yet, so please don't add it. Especially since this is
-fix. It should be kept down to a minimum. Do the sk_is_tcp() check
-directly from sock_map_link().
+But IMO it would be better to push the trivial (and urgent) fix to
+-stable first, then discuss the possible cleanups/improvements.
 
->  static int sock_map_link(struct bpf_map *map, struct sock *sk)
->  {
->  	struct sk_psock_progs *progs = sock_map_progs(map);
-> @@ -303,7 +311,10 @@ static int sock_map_link(struct bpf_map *map, struct sock *sk)
->  
->  	write_lock_bh(&sk->sk_callback_lock);
->  	if (stream_parser && stream_verdict && !psock->saved_data_ready) {
-> -		ret = sk_psock_init_strp(sk, psock);
-> +		if (sock_map_sk_strp_allowed(sk))
-> +			ret = sk_psock_init_strp(sk, psock);
-> +		else
-> +			ret = -EOPNOTSUPP;
->  		if (ret) {
->  			write_unlock_bh(&sk->sk_callback_lock);
->  			sk_psock_put(sk, psock);
+What do you think?
+
+Oleg.
+
 
