@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-49292-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49293-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFA59A16F2A
-	for <lists+bpf@lfdr.de>; Mon, 20 Jan 2025 16:20:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C0B1A16F3B
+	for <lists+bpf@lfdr.de>; Mon, 20 Jan 2025 16:29:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AADBC1888F2B
-	for <lists+bpf@lfdr.de>; Mon, 20 Jan 2025 15:20:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CCFB3A6631
+	for <lists+bpf@lfdr.de>; Mon, 20 Jan 2025 15:29:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5181E3791;
-	Mon, 20 Jan 2025 15:20:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF5151E572A;
+	Mon, 20 Jan 2025 15:29:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="YnNpi6P0"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="WhbCaTTN"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A8F18FDC8
-	for <bpf@vger.kernel.org>; Mon, 20 Jan 2025 15:20:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93E0D1E5710
+	for <bpf@vger.kernel.org>; Mon, 20 Jan 2025 15:29:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737386434; cv=none; b=PWl1TTt0bmh+D1MdZ5hlOiEyr1oEJffdwl94szLPssgOIOmHD3LGKSVsMMzbMDDqWN1zE5T2BowC4egaDUJq6cLg57SQdHVOArJYKKIcIec+a1rAe1mPPFtJWw0MDEo9iOFunIR4FhGyk5DqFFTe1Ig9EQQhh44JP9i0qe1/JkY=
+	t=1737386959; cv=none; b=qzVVsvlqkeIOksdig+qpFFsNl9NJvozXCERu+C7pXdOhlv0wMC3WWo6avUM/dBGameKCm1IN+fzjO3ao9E8s7VuT1VUeAOqAQNslLS8lu/Ylj3vHFVC4qQavAjLXK96rYTbKzGIX5Lqj7t8rl+rXr5qiZF15n5j4oL0ssUnUZEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737386434; c=relaxed/simple;
-	bh=iDWIEQ/Sx1yH10UxE3W/LmUmC3GrQE7vFAS3jeW0BGQ=;
+	s=arc-20240116; t=1737386959; c=relaxed/simple;
+	bh=L1RqdFZcmiFUTB4F3O+yurla90viyKkBrF+KgdK1wek=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VL4kPk5X9Re+cvtSh/Gf7/qEvhYJ0ds+X8scx5m4eQYorce/XunM+CefRsdtNWaVNxWF+bcRVaAvyyWbKWsj87NCc+rP6QHdKOrRqMmyMeAPbg633T71tOdDbvYyMOH4Jvo5RH7Gdik+X8jd8VvsSIfDBCzDy0GCfSPOmplhtus=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=YnNpi6P0; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=jPN1t+JcsfHIDepRRCGsbXJjGwgJ3/SOFBBfAaITOHe5Gb8+loHFJMI48ZcO6gDnflgBAbE1rIYH5J8MLNxjbPkTYjLZFAULl7YZR0brKcae8LmxxyZw6fGMdiM3sYX909rH0GWA/qcU0Bp1yqS+36sDqYWw5W/z0kvk5g/XiyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=WhbCaTTN; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,25 +36,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=T4ZMsrIbEs5PndpWdcthkly/tFmD17bAf+4p8ludEXM=; b=YnNpi6P0nJ37wqGwOWAopZDmmo
-	afkYppF/JqE0V2EPIARCyJO382gmulj/WPSyE85DrvW25XfwTZuxmGmb3WFYimliI/ss/Ki8lcFAy
-	FpTfUB9vwvs2g2/O30boOT+0l4VoBP6QoW8xED9Z7yTSzsT8P31AOnGBj9Csvueais6o3dWvINYRU
-	OpUonN7priY7wurvSloTD9Q1z5H3NmxmHyUxLgkGvRv8JCq8q5RY0Okx1cruQ6sCwbUsCUxFY134p
-	YYqNe8NdSZE97WEoL6cQravMcPGRQXemC0IBjnTH+tdTucj7sheARQekGO2NUK4cwB5zYzmhh539Q
-	gptlIRqA==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
+	bh=gDQNI9iN5x4mwsHbBW6jEpfH6cy2AMV7w/8mkg6XnEE=; b=WhbCaTTNTA90I5jmjsUodPoP6z
+	BASd4RFKRq1PhJDSuyAZgrm3XQ+RzDSZa6RkYFt9ruST8krfuaK68wLUs4i4ozOZldivQ9AA/tHiY
+	cNVp6ffcoucn0reYjj6n/lmjKG1pKZRhw0hnmL8S753zYzf1Q4/3ZvLIcFKuqZv4gGYIoty/SGz2K
+	Hw6xezA5GGPbczd6rvbmRvwtjSY1C2SIfdbXCtZISah/CQG9PIt3VMfkY+IG0puylGbS25hts/E6k
+	6Mot30F9Df0FwfhctybiQUaU7KQ3HCXHBJBmMd3UaFxNPqXbcjkggAexeQd3KGPSTvEBx/QUcXjY3
+	963FpaNQ==;
+Received: from sslproxy07.your-server.de ([78.47.199.104])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1tZtZa-000A43-PS; Mon, 20 Jan 2025 16:20:18 +0100
+	id 1tZtiB-000BCb-D2; Mon, 20 Jan 2025 16:29:11 +0100
 Received: from [85.1.206.226] (helo=[192.168.1.114])
-	by sslproxy06.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1tZtZa-000G9F-0k;
-	Mon, 20 Jan 2025 16:20:18 +0100
-Message-ID: <51ffb6c9-de2f-41aa-a530-b0e7d5a7133d@iogearbox.net>
-Date: Mon, 20 Jan 2025 16:20:17 +0100
+	id 1tZtiB-0001B9-0f;
+	Mon, 20 Jan 2025 16:29:11 +0100
+Message-ID: <0056055b-338a-49f1-b6bf-fa11440cb959@iogearbox.net>
+Date: Mon, 20 Jan 2025 16:29:10 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,14 +62,13 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 1/3] bpf: Allow 'may_goto 0' instruction in
- verifier
+Subject: Re: [PATCH bpf-next v2 2/3] bpf: Remove 'may_goto 0' instruction in
+ opt_remove_nops()
 To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>,
- Emil Tsalapatis <etsal@meta.com>, Eduard Zingerman <eddyz87@gmail.com>
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
 References: <20250118192019.2123689-1-yonghong.song@linux.dev>
- <20250118192024.2124059-1-yonghong.song@linux.dev>
+ <20250118192029.2124584-1-yonghong.song@linux.dev>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -115,39 +114,96 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <20250118192024.2124059-1-yonghong.song@linux.dev>
+In-Reply-To: <20250118192029.2124584-1-yonghong.song@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 1.0.7/27524/Mon Jan 20 10:37:47 2025)
 
 On 1/18/25 8:20 PM, Yonghong Song wrote:
-> Commit 011832b97b31 ("bpf: Introduce may_goto instruction") added support
-> for may_goto insn. The 'may_goto 0' insn is disallowed since the insn is
-> equivalent to a nop as both branch will go to the next insn.
+> Since 'may_goto 0' insns are actually no-op, let us remove them.
+> Otherwise, verifier will generate code like
+>     /* r10 - 8 stores the implicit loop count */
+>     r11 = *(u64 *)(r10 -8)
+>     if r11 == 0x0 goto pc+2
+>     r11 -= 1
+>     *(u64 *)(r10 -8) = r11
 > 
-> But it is possible that compiler transformation may generate 'may_goto 0'
-> insn. Emil Tsalapatis from Meta reported such a case which caused
-> verification failure. For example, for the following code,
->     int i, tmp[3];
->     for (i = 0; i < 3 && can_loop; i++)
->       tmp[i] = 0;
->     ...
+> which is the pure overhead.
 > 
-> clang 20 may generate code like
->     may_goto 2;
->     may_goto 1;
->     may_goto 0;
->     r1 = 0; /* tmp[0] = 0; */
->     r2 = 0; /* tmp[1] = 0; */
->     r3 = 0; /* tmp[2] = 0; */
+> The following code patterns (from the previous commit) are also
+> handled:
+>     may_goto 2
+>     may_goto 1
+>     may_goto 0
 > 
-> Let us permit 'may_goto 0' insn to avoid verification failure for codes
-> like the above.
+> With this commit, the above three 'may_goto' insns are all
+> eliminated.
 > 
-> Reported-by: Emil Tsalapatis <etsal@meta.com>
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 > Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
+>   kernel/bpf/verifier.c | 9 +++++++--
+>   1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 963dfda81c06..784547aa40a8 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -20187,20 +20187,25 @@ static const struct bpf_insn NOP = BPF_JMP_IMM(BPF_JA, 0, 0, 0);
+>   
+>   static int opt_remove_nops(struct bpf_verifier_env *env)
+>   {
+> +	const struct bpf_insn may_goto_0 = BPF_RAW_INSN(BPF_JMP | BPF_JCOND, 0, 0, 0, 0);
+>   	const struct bpf_insn ja = NOP;
+>   	struct bpf_insn *insn = env->prog->insnsi;
+>   	int insn_cnt = env->prog->len;
+> +	bool is_may_goto_0, is_ja;
+>   	int i, err;
+>   
+>   	for (i = 0; i < insn_cnt; i++) {
+> -		if (memcmp(&insn[i], &ja, sizeof(ja)))
+> +		is_may_goto_0 = !memcmp(&insn[i], &may_goto_0, sizeof(may_goto_0));
+> +		is_ja = !memcmp(&insn[i], &ja, sizeof(ja));
+> +
+> +		if (!is_may_goto_0 && !is_ja)
+>   			continue;
 
-Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+Why the extra may_goto_0 stack var?
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 245f1f3f1aec..16ba26295ec7 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -20185,16 +20185,19 @@ static int opt_remove_dead_code(struct bpf_verifier_env *env)
+  }
+  
+  static const struct bpf_insn NOP = BPF_JMP_IMM(BPF_JA, 0, 0, 0);
++static const struct bpf_insn MAY_GOTO_0 = BPF_RAW_INSN(BPF_JMP | BPF_JCOND, 0, 0, 0, 0);
+  
+  static int opt_remove_nops(struct bpf_verifier_env *env)
+  {
+-       const struct bpf_insn ja = NOP;
+         struct bpf_insn *insn = env->prog->insnsi;
+         int insn_cnt = env->prog->len;
++       bool is_ja, is_may_goto_0;
+         int i, err;
+  
+         for (i = 0; i < insn_cnt; i++) {
+-               if (memcmp(&insn[i], &ja, sizeof(ja)))
++               is_may_goto_0 = !memcmp(&insn[i], &MAY_GOTO_0, sizeof(MAY_GOTO_0));
++               is_ja         = !memcmp(&insn[i], &NOP, sizeof(NOP));
++               if (!is_may_goto_0 && !is_ja)
+                         continue;
+
+>   		err = verifier_remove_insns(env, i, 1);
+>   		if (err)
+>   			return err;
+>   		insn_cnt--;
+> -		i--;
+> +		i -= (is_may_goto_0 && i > 0) ? 2 : 1;
+
+Maybe add a comment for this logic?
+
+Thanks,
+Daniel
 
