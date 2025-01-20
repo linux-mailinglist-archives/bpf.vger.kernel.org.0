@@ -1,114 +1,115 @@
-Return-Path: <bpf+bounces-49284-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49285-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 536ABA167FA
-	for <lists+bpf@lfdr.de>; Mon, 20 Jan 2025 09:14:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A00DA16866
+	for <lists+bpf@lfdr.de>; Mon, 20 Jan 2025 09:50:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C03E3A1391
-	for <lists+bpf@lfdr.de>; Mon, 20 Jan 2025 08:14:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FD0818891A3
+	for <lists+bpf@lfdr.de>; Mon, 20 Jan 2025 08:50:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83C1F192B63;
-	Mon, 20 Jan 2025 08:14:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B774B194C92;
+	Mon, 20 Jan 2025 08:50:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC4A31922DD
-	for <bpf@vger.kernel.org>; Mon, 20 Jan 2025 08:14:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE6E37E1
+	for <bpf@vger.kernel.org>; Mon, 20 Jan 2025 08:50:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737360866; cv=none; b=R2DRjSqr4kDmdnOUQG4nvPyHiGn3vgGgommGgWYA0C5hPKMsmCE50gaKc9JB1KMzwo+eeI9eV6lK1e8vY+C1t3YHOvZv8S6iDHyJvRH4AuWX474zYoyM1r98t/e5uCOBLoEEB6Rv1wgfn+5JPh+Cl+0bTAKJXCzXUmXDpJ2yNcM=
+	t=1737363013; cv=none; b=RWt4/zphjACWNtNEVwLY2DfBgKn5OTYPfOMsS/e2FyD0Z91eFLwA9izAIrxxZVgVEvoYNuYAb0G+zRsAeYydyu0izoepchsZ35zYijAK8RVC/WZH6ykUxPy37oIR02A02yatt0owP1Sa1VdQD8aGHUaENwk92wQQvCOz8O/LSzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737360866; c=relaxed/simple;
-	bh=rijilFL+ZYNNw/g4mfwzD+YRZETcCV+OeEodGmwKpF4=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=HhEcySGoifP7iGg2UbAAg30VfvyN5pu49ooS4EJPeHZoA0ysq527Sa0DtXi1NMEzpVZxmLJc49QAosCDuaIEUlD9G2UClQxg7atWvU2ry+GDPUbkxycp9O7JzyQsjcKgTBhSdTTPa2OARFbZO+l5caNkXXKt1L3T5nz+pX2wXwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3cf6ceaccdbso30190215ab.1
-        for <bpf@vger.kernel.org>; Mon, 20 Jan 2025 00:14:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737360864; x=1737965664;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qIUS6aIZNMol8udDe36zbnHvTyIM6OPrn2ah/Bnyz8Q=;
-        b=pxQuT0fiDX+zGCfwAFD1zUess9N1Ks/m1QJT9xqd74HW+2r9WOJrn1Oty419x27hpP
-         KLU4z0yxTelTT4j1bh9tqsDnhNlwl9ytBaR9zbuCkhAmUum3PM3iV1HoFfp1mdcv4YL9
-         dEHGB02cOLt6ouEKFjgrIA8InyH2Xm59SIWGQmcP/N8vWXsYZg16HTqG8e2a7CGhXteB
-         z8mi14OZJLflRRYg+k1Juci4ZlQXERerpXP9xJkY7q2RqeaTy5YH9VhNjn+qDwjMy8sd
-         bisu37vIOZTESZFHhDdbHw9OWt66xya9TV4edovkezPU8Zyw0oOxU77Fv8enStTyl7g5
-         3pnw==
-X-Forwarded-Encrypted: i=1; AJvYcCVHNXFgyviEr3DZqCOJMlwN9iMP7KrFJ59dciD3NVa8I00dVI/vuBpxQq0a93fRIz65Rhc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw7aR1ty1/Sglv/wS2+DAxmWaf6N0B3fyDy4D9etWVKVrszAN9x
-	MmoE8ufPhg1+jtpN91h3OoNt6jyMCgmmGmZkuvRNoQDwdT+Yg9QXGmI7Zqcyr62zu+B2gpXMReu
-	NL40PG63cc83C03S3I7atSuHZWA44H+znI1xAELK/mw2f2YpT2e+lVyE=
-X-Google-Smtp-Source: AGHT+IGy7RtPRgs8a7HeID79cIYvLytuO9yxFqElGrnZXnTU1fBKsrPhnwrhH3FxCs5jymKELqlEg2XeQIQhaGWjZYNYl8tD2u+C
+	s=arc-20240116; t=1737363013; c=relaxed/simple;
+	bh=v0P4vue0CQjGjg+jonwOW2P5yRCbRgtBBcNw8OVyXJk=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=TXY5t/PAh3OQPNeuQazJHcOGMzdp0/+wenKmoJ0ELu+AmNdV7WQpmkck/qMVhnMBSqa7MiHry6gIv9RzDCEh9qcy/ONL4rQmuSfR9Pf0kyaq9vrJJssaMzSIgYiZZbTf7+oNAxj95Bd037HHAk9cxZGdAaYpd0NW/wy+kDoxX98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Yc3td4Fwrz4f3jXy
+	for <bpf@vger.kernel.org>; Mon, 20 Jan 2025 16:49:45 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 2B95C1A0D37
+	for <bpf@vger.kernel.org>; Mon, 20 Jan 2025 16:50:06 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP1 (Coremail) with SMTP id cCh0CgCnDH0pDo5nPxHVBQ--.25586S2;
+	Mon, 20 Jan 2025 16:50:05 +0800 (CST)
+Subject: Re: [PATCH bpf-next v3 3/5] bpf: Free element after unlock in
+ __htab_map_lookup_and_delete_elem()
+To: =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@kernel.org>,
+ bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>, houtao1@huawei.com,
+ xukuohai@huawei.com
+References: <20250117101816.2101857-1-houtao@huaweicloud.com>
+ <20250117101816.2101857-4-houtao@huaweicloud.com> <87o705oby2.fsf@toke.dk>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <96a1e15a-52d8-acee-aee8-f494f009d2d7@huaweicloud.com>
+Date: Mon, 20 Jan 2025 16:49:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1989:b0:3ce:7e0b:3639 with SMTP id
- e9e14a558f8ab-3cf744bbcb7mr80802215ab.19.1737360863900; Mon, 20 Jan 2025
- 00:14:23 -0800 (PST)
-Date: Mon, 20 Jan 2025 00:14:23 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <678e05df.050a0220.303755.006d.GAE@google.com>
-Subject: [syzbot] Monthly bpf report (Jan 2025)
-From: syzbot <syzbot+list2d8ac09ea19806ba1dec@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87o705oby2.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:cCh0CgCnDH0pDo5nPxHVBQ--.25586S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtFy3GrW7CF17WrW5AFWfAFb_yoWfWFgE9r
+	s5tFZ7Can5Wws3t3Wjyr4xGr4IkFWUGF18ArW8trW7Ar4rZaykZFsxuryavryfZa97Ja15
+	KFnYqayDA34xKjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUba8YFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCYjI0SjxkI62AI
+	1cAE67vIY487MxkF7I0En4kS14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFV
+	Cjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWl
+	x4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r
+	1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_
+	JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+	sGvfC2KfnxnUUI43ZEXa7IU0s2-5UUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Hello bpf maintainers/developers,
+Hi,
 
-This is a 31-day syzbot report for the bpf subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/bpf
+On 1/17/2025 8:35 PM, Toke Høiland-Jørgensen wrote:
+> Hou Tao <houtao@huaweicloud.com> writes:
+>
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> The freeing of special fields in map value may acquire a spin-lock
+>> (e.g., the freeing of bpf_timer), however, the lookup_and_delete_elem
+>> procedure has already held a raw-spin-lock, which violates the lockdep
+>> rule.
+> This implies that we're fixing a locking violation here? Does this need
+> a Fixes tag?
+>
+> -Toke
 
-During the period, 1 new issues were detected and 0 were fixed.
-In total, 37 issues are still open and 279 have already been fixed.
+Ah, the fix tag is a bit hard. The lockdep violation in the patch is
+also related with PREEMPT_RT, however, the lookup_and_delete_elem is
+introduced in v5.14. Also considering that patch #4 will also fix the
+lockdep violation in the case, I prefer to not add a fix tag in the
+patch. Instead I will update the commit message for the patch to state
+that it will reduce the lock scope of bucket lock. What do you think ?
+> .
 
-Some of the still happening issues:
-
-Ref  Crashes Repro Title
-<1>  21432   Yes   possible deadlock in trie_delete_elem
-                   https://syzkaller.appspot.com/bug?extid=9d95beb2a3c260622518
-<2>  2116    Yes   WARNING in bpf_map_lookup_percpu_elem
-                   https://syzkaller.appspot.com/bug?extid=dce5aae19ae4d6399986
-<3>  1747    Yes   possible deadlock in __bpf_ringbuf_reserve
-                   https://syzkaller.appspot.com/bug?extid=850aaf14624dc0c6d366
-<4>  417     Yes   UBSAN: array-index-out-of-bounds in bpf_prog_select_runtime
-                   https://syzkaller.appspot.com/bug?extid=d2a2c639d03ac200a4f1
-<5>  318     Yes   KMSAN: uninit-value in ___bpf_prog_run (4)
-                   https://syzkaller.appspot.com/bug?extid=853242d9c9917165d791
-<6>  224     Yes   INFO: rcu detected stall in sys_clone (8)
-                   https://syzkaller.appspot.com/bug?extid=c4c6c3dc10cc96bcf723
-<7>  169     Yes   possible deadlock in __queue_map_get
-                   https://syzkaller.appspot.com/bug?extid=8bdfc2c53fb2b63e1871
-<8>  72      Yes   INFO: rcu detected stall in sys_bpf (9)
-                   https://syzkaller.appspot.com/bug?extid=4fe86fa6110c580ea1f5
-<9>  62      Yes   possible deadlock in queue_stack_map_push_elem
-                   https://syzkaller.appspot.com/bug?extid=252bc5c744d0bba917e1
-<10> 50      Yes   possible deadlock in __stack_map_get
-                   https://syzkaller.appspot.com/bug?extid=dddd99ae26c656485d89
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
 
