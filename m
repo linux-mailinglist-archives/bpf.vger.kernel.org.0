@@ -1,191 +1,153 @@
-Return-Path: <bpf+bounces-49291-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49292-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94F50A16DD4
-	for <lists+bpf@lfdr.de>; Mon, 20 Jan 2025 14:53:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFA59A16F2A
+	for <lists+bpf@lfdr.de>; Mon, 20 Jan 2025 16:20:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 413D57A1656
-	for <lists+bpf@lfdr.de>; Mon, 20 Jan 2025 13:53:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AADBC1888F2B
+	for <lists+bpf@lfdr.de>; Mon, 20 Jan 2025 15:20:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48D14BA20;
-	Mon, 20 Jan 2025 13:53:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5181E3791;
+	Mon, 20 Jan 2025 15:20:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HbMtC92I"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="YnNpi6P0"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E40D21B85DB
-	for <bpf@vger.kernel.org>; Mon, 20 Jan 2025 13:53:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A8F18FDC8
+	for <bpf@vger.kernel.org>; Mon, 20 Jan 2025 15:20:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737381211; cv=none; b=PchwjOGvJvWks9Ycs7Novy8HspIIKtAHNMkWBuloxaEylLDbuPY2YqoyywtIJmibIm5/vIwDFQiij9YxHY7VI9x3PdjPmyYL2bunWETJS0sEBr/hf0lBK4AB3SnaqLwJEtiPGJOeQlGpNy9IklYsnZ/0ZkVtrwEUUpkwwemMZvs=
+	t=1737386434; cv=none; b=PWl1TTt0bmh+D1MdZ5hlOiEyr1oEJffdwl94szLPssgOIOmHD3LGKSVsMMzbMDDqWN1zE5T2BowC4egaDUJq6cLg57SQdHVOArJYKKIcIec+a1rAe1mPPFtJWw0MDEo9iOFunIR4FhGyk5DqFFTe1Ig9EQQhh44JP9i0qe1/JkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737381211; c=relaxed/simple;
-	bh=uxNVkuB1kfPiPhaAvJDAYwdoCzbbN5ig+MfWtinYkGs=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=AHU8q7D5cSs2uQvk5YmCjio5PUQn1Cz09fQ2Dck3X7DTCeepjdlCpVtwqzvpe4aBdI+XT4XguNZ//6eYsMWC7Bwv2OCOQTxI7EuS4GbxDcdsZj6FDN/wHAxgau9kUNezG9VaKpCSAxR8XT8aBrCitd4/W3bB/+yLxITiyoMBrTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HbMtC92I; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1737381209;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6OUKdt6VXAQzpOTUFB26LmXUDO8O/oST+Zn2uKcAtKs=;
-	b=HbMtC92IGEx8a976wcxW0kDoKugHnljw5CJ/V3bldO3EleSl4f8dkr/UxaQd0pGkdw7Vvs
-	FLaOvwZFsd3RnEuOP3KbFH5VZ/Mo3jfZrt9VEpg7hpZnAL1LxkF1kfKPvTMoqshvadb4YN
-	4Ooo0u4GxuufcBnly1qGnkquaO6lzww=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-303-ZME1cqtAPS-MNFuw2GoM9A-1; Mon, 20 Jan 2025 08:53:27 -0500
-X-MC-Unique: ZME1cqtAPS-MNFuw2GoM9A-1
-X-Mimecast-MFC-AGG-ID: ZME1cqtAPS-MNFuw2GoM9A
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-468f80df8caso85758931cf.2
-        for <bpf@vger.kernel.org>; Mon, 20 Jan 2025 05:53:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737381207; x=1737986007;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6OUKdt6VXAQzpOTUFB26LmXUDO8O/oST+Zn2uKcAtKs=;
-        b=uXHWs0+CkqgSbIO3m4XHuhaBJ0dWzjoHKrmZlpRnDsd76JrEzub3Gw525YFWEzG9Mj
-         +GsTTmx376uXTk1TGPIpeUU0n97gLV43BkJRW50dUdpz1LO+dwbHgWC5hCsOgIrvcLkE
-         Rtr8RcDDR5IOK4/36RnitYNbGiYCZZDZ9KrhaJvuA3wYwqjL3eKAGtbfhejTp4IR+F5u
-         qNXe8effP5bx7y3dRzJq9nss6fzq9Cojqte5SBHFkfInANS6vn8QCaMOnPQ++VUJ+m3U
-         SmMyHVQ5IsO9FP19uC/b7xqmsv80K10MlSrkuz6IqC4iG6/q6VOpVSqiSjj30ZEp0bVr
-         2bAw==
-X-Forwarded-Encrypted: i=1; AJvYcCWV/e/wMhT1NVkMd8viid/mHs2nKrHReUTPmJReFutQGes1n2QYYOCkyNknJSwevOeojf8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyoMBGu6yVM8ljqdM7wTMdo9fq8haFHeHqEypZ6M6T2bdI0qwgD
-	O6QaauDd9KJcoP6IKdiAhC4EgFgeAOzlxLC9BlTgkoLM103xM9mfLz10iYEsXDsjoVRaH8k/6Cg
-	i2WsuVs/8svyhFD8xHpkrCgwUl9ADw1IHNFrOPTJiHpr2x6unwQ==
-X-Gm-Gg: ASbGncuuP7q3uVqbc7+OHvoPqUHJ8eviJL1wzHQEeoa+7kFUzrOlzblWik1fbPtYxBa
-	PDrbjooLd1roso1xQ3oyrPUoqry3CtOH6F8V/DKviOozvTMFpxXZhujnutnpTWnj1KpeZo33DKH
-	JX/0/hrQwk+wX7SUFfpDMDFDqH0zXzoZh7e19z7iwsDdPY+IOZ3jScYrd6moWzmdajb3bhAUe7G
-	qYPD+CpRkkORHfqyZfb1DM9zQLUYAOH6vctJbBjHWgSubpwCREWR2W/JIklFRfPrg2tF8MFnUt7
-	OpnwexkPe+ETpmL8Bk6cFGsyoN9EwX3v883OEjrxlOKGFl3h4Fr77OA=
-X-Received: by 2002:ac8:7d82:0:b0:467:5e61:c116 with SMTP id d75a77b69052e-46e12a1e36cmr160729041cf.7.1737381207218;
-        Mon, 20 Jan 2025 05:53:27 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGCbxGDy6CHUSfOLqTxGL3gA1S6wKRHlUvydXAdXodFBspL8+Pdog+OKdfN6k1jzDkgqmOx+A==
-X-Received: by 2002:ac8:7d82:0:b0:467:5e61:c116 with SMTP id d75a77b69052e-46e12a1e36cmr160728291cf.7.1737381206799;
-        Mon, 20 Jan 2025 05:53:26 -0800 (PST)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-46e1030da00sm42651971cf.33.2025.01.20.05.53.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jan 2025 05:53:25 -0800 (PST)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
- virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
- loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
- linux-perf-users@vger.kernel.org, xen-devel@lists.xenproject.org,
- kvm@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org,
- linux-hardening@vger.kernel.org, linux-mm@kvack.org,
- linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
- bcm-kernel-feedback-list@broadcom.com, Peter Zijlstra
- <peterz@infradead.org>, Nicolas Saenz Julienne <nsaenzju@redhat.com>,
- Juergen Gross <jgross@suse.com>, Ajay Kaher <ajay.kaher@broadcom.com>,
- Alexey Makhalov <alexey.amakhalov@broadcom.com>, Russell King
- <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will
- Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui
- <kernel@xen0n.name>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
- Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Thomas
- Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav
- Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H.
- Peter Anvin" <hpa@zytor.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa
- <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter
- <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, Boris
- Ostrovsky <boris.ostrovsky@oracle.com>, Josh Poimboeuf
- <jpoimboe@kernel.org>, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
- Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, Frederic Weisbecker <frederic@kernel.org>,
- "Paul E. McKenney" <paulmck@kernel.org>, Jason Baron <jbaron@akamai.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ard Biesheuvel <ardb@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes
- <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, Boqun
- Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan
- <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli
- <juri.lelli@redhat.com>, Clark Williams <williams@redhat.com>, Yair
- Podemsky <ypodemsk@redhat.com>, Tomas Glozar <tglozar@redhat.com>, Vincent
- Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
- <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, Mel Gorman
- <mgorman@suse.de>, Kees Cook <kees@kernel.org>, Andrew Morton
- <akpm@linux-foundation.org>, Christoph Hellwig <hch@infradead.org>, Shuah
- Khan <shuah@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, Miguel
- Ojeda <ojeda@kernel.org>, Alice Ryhl <aliceryhl@google.com>, "Mike
- Rapoport (Microsoft)" <rppt@kernel.org>, Samuel Holland
- <samuel.holland@sifive.com>, Rong Xu <xur@google.com>, Geert Uytterhoeven
- <geert@linux-m68k.org>, Yosry Ahmed <yosryahmed@google.com>, "Kirill A.
- Shutemov" <kirill.shutemov@linux.intel.com>, "Masami Hiramatsu (Google)"
- <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, Luis
- Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
- Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH v4 25/30] context_tracking,x86: Defer kernel text
- patching IPIs
-In-Reply-To: <Z4qQL89GZ_gk0vpu@google.com>
-References: <20250114175143.81438-1-vschneid@redhat.com>
- <20250114175143.81438-26-vschneid@redhat.com>
- <Z4bTlZkqihaAyGb4@google.com>
- <xhsmhed11hiuy.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <Z4qQL89GZ_gk0vpu@google.com>
-Date: Mon, 20 Jan 2025 14:53:13 +0100
-Message-ID: <xhsmhtt9tfv7a.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	s=arc-20240116; t=1737386434; c=relaxed/simple;
+	bh=iDWIEQ/Sx1yH10UxE3W/LmUmC3GrQE7vFAS3jeW0BGQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VL4kPk5X9Re+cvtSh/Gf7/qEvhYJ0ds+X8scx5m4eQYorce/XunM+CefRsdtNWaVNxWF+bcRVaAvyyWbKWsj87NCc+rP6QHdKOrRqMmyMeAPbg633T71tOdDbvYyMOH4Jvo5RH7Gdik+X8jd8VvsSIfDBCzDy0GCfSPOmplhtus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=YnNpi6P0; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=T4ZMsrIbEs5PndpWdcthkly/tFmD17bAf+4p8ludEXM=; b=YnNpi6P0nJ37wqGwOWAopZDmmo
+	afkYppF/JqE0V2EPIARCyJO382gmulj/WPSyE85DrvW25XfwTZuxmGmb3WFYimliI/ss/Ki8lcFAy
+	FpTfUB9vwvs2g2/O30boOT+0l4VoBP6QoW8xED9Z7yTSzsT8P31AOnGBj9Csvueais6o3dWvINYRU
+	OpUonN7priY7wurvSloTD9Q1z5H3NmxmHyUxLgkGvRv8JCq8q5RY0Okx1cruQ6sCwbUsCUxFY134p
+	YYqNe8NdSZE97WEoL6cQravMcPGRQXemC0IBjnTH+tdTucj7sheARQekGO2NUK4cwB5zYzmhh539Q
+	gptlIRqA==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1tZtZa-000A43-PS; Mon, 20 Jan 2025 16:20:18 +0100
+Received: from [85.1.206.226] (helo=[192.168.1.114])
+	by sslproxy06.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1tZtZa-000G9F-0k;
+	Mon, 20 Jan 2025 16:20:18 +0100
+Message-ID: <51ffb6c9-de2f-41aa-a530-b0e7d5a7133d@iogearbox.net>
+Date: Mon, 20 Jan 2025 16:20:17 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2 1/3] bpf: Allow 'may_goto 0' instruction in
+ verifier
+To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>,
+ Emil Tsalapatis <etsal@meta.com>, Eduard Zingerman <eddyz87@gmail.com>
+References: <20250118192019.2123689-1-yonghong.song@linux.dev>
+ <20250118192024.2124059-1-yonghong.song@linux.dev>
+Content-Language: en-US
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <20250118192024.2124059-1-yonghong.song@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 1.0.7/27524/Mon Jan 20 10:37:47 2025)
 
-On 17/01/25 09:15, Sean Christopherson wrote:
-> On Fri, Jan 17, 2025, Valentin Schneider wrote:
->> On 14/01/25 13:13, Sean Christopherson wrote:
->> > On Tue, Jan 14, 2025, Valentin Schneider wrote:
->> >> +/**
->> >> + * is_kernel_noinstr_text - checks if the pointer address is located in the
->> >> + *                    .noinstr section
->> >> + *
->> >> + * @addr: address to check
->> >> + *
->> >> + * Returns: true if the address is located in .noinstr, false otherwise.
->> >> + */
->> >> +static inline bool is_kernel_noinstr_text(unsigned long addr)
->> >> +{
->> >> +	return addr >= (unsigned long)__noinstr_text_start &&
->> >> +	       addr < (unsigned long)__noinstr_text_end;
->> >> +}
->> >
->> > This doesn't do the right thing for modules, which matters because KVM can be
->> > built as a module on x86, and because context tracking understands transitions
->> > to GUEST mode, i.e. CPUs that are running in a KVM guest will be treated as not
->> > being in the kernel, and thus will have IPIs deferred.  If KVM uses a static key
->> > or branch between guest_state_enter_irqoff() and guest_state_exit_irqoff(), the
->> > patching code won't wait for CPUs to exit guest mode, i.e. KVM could theoretically
->> > use the wrong static path.
->>>
->> AFAICT guest_state_{enter,exit}_irqoff() are only used in noinstr functions
->> and thus such a static key usage should at the very least be caught and
->> warned about by objtool - when this isn't built as a module.
->
-> That doesn't magically do the right thing though.  If KVM is built as a module,
-> is_kernel_noinstr_text() will get false negatives even for static keys/branches
-> that are annotaed as NOINSTR.
+On 1/18/25 8:20 PM, Yonghong Song wrote:
+> Commit 011832b97b31 ("bpf: Introduce may_goto instruction") added support
+> for may_goto insn. The 'may_goto 0' insn is disallowed since the insn is
+> equivalent to a nop as both branch will go to the next insn.
+> 
+> But it is possible that compiler transformation may generate 'may_goto 0'
+> insn. Emil Tsalapatis from Meta reported such a case which caused
+> verification failure. For example, for the following code,
+>     int i, tmp[3];
+>     for (i = 0; i < 3 && can_loop; i++)
+>       tmp[i] = 0;
+>     ...
+> 
+> clang 20 may generate code like
+>     may_goto 2;
+>     may_goto 1;
+>     may_goto 0;
+>     r1 = 0; /* tmp[0] = 0; */
+>     r2 = 0; /* tmp[1] = 0; */
+>     r3 = 0; /* tmp[2] = 0; */
+> 
+> Let us permit 'may_goto 0' insn to avoid verification failure for codes
+> like the above.
+> 
+> Reported-by: Emil Tsalapatis <etsal@meta.com>
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 
-Quite so.
-
-I've been looking at mod_mem_type & friends, I'm thinking adding a
-MOD_NOINSTR_TEXT type might be overkill considering modules really
-shouldn't be involved with early entry, KVM being the one exception.
-
-Your suggestion to have a KVM-module-specific noinstr section sounds good
-to me, I'll have a look at that.
-
+Acked-by: Daniel Borkmann <daniel@iogearbox.net>
 
