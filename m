@@ -1,117 +1,138 @@
-Return-Path: <bpf+bounces-49401-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49402-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EBCEA18236
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 17:45:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52684A18249
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 17:50:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AAC5F7A228A
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 16:45:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92BBA1686E9
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 16:50:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5FFC1F4704;
-	Tue, 21 Jan 2025 16:45:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 948791F4297;
+	Tue, 21 Jan 2025 16:50:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AC84koRQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k7D3j8VJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C93D913BC0C
-	for <bpf@vger.kernel.org>; Tue, 21 Jan 2025 16:45:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC77913BC0C
+	for <bpf@vger.kernel.org>; Tue, 21 Jan 2025 16:50:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737477925; cv=none; b=ilkFNbCXdZS7KE1kEyLORv78J7UGndXw4nIj9gF/npNwF8K9bQpw9TESelO4rXrw+YlVpR+A0T5KwJH6otENDe3JFE4oxXPecw2iNxrEdHb2M2yEMFohVveStZlkjoj54iroSvLozDX1lA4kthii/n9e4UfOTV0J6bxDEK2rVOQ=
+	t=1737478253; cv=none; b=BQAa5BcShsy4Hv9Qmgccf5SoqI+sHlFxxCdRjfdbbs0J1RywCNhUooOV49645m1TVzkUKIJSN3uGd4+55yYhu/JI3flU8Jo0u+F7gFD2MhokygvaRbWHz2vEWNT1mhcZdCday1wP1fBYJgPJddVyYf/R2liODZ7ITICS9SfCElg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737477925; c=relaxed/simple;
-	bh=XO/Ymj0ibVxkJr0ihO0VzEhAo9m9O2dsS+oq11HBXQA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XCrwnwOIQg91fJeaEMNc0+jiULwmpEnmFk+jjrS+w9q5xC0RrgdMld1LmmEQRKW2tIs+78Y6X9kab41HDqOuGIqs24m8TNmJMFxbk9ol5BgvwT/bZS3wkhIZG3NJO7m0VFdRwAPT864mYNTQHD3TViCmM40A6zMNhshJuOEbl48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AC84koRQ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1737477922;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TLVsHBbZSrA/NKOjlCOjlNdrdUsp4BXx8cgZinvUkW0=;
-	b=AC84koRQnh3gkUjMku30pzeWuQ2HU6QnaWIfTAy1TWRjkev7OiiZ7ME0hvMUih/sGr3l4X
-	Ao6XVsTMZDHr/CYpxeO/JNsFXOIatL/cEKeiWjEKUQaKctYqf3rFAlWIY2ACQpETL2ojig
-	DTnYqz/oIwuOOmVNn0oDLMWxR0HcDB0=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-262-sO44-CrMMTaemhFpBg_rog-1; Tue,
- 21 Jan 2025 11:45:17 -0500
-X-MC-Unique: sO44-CrMMTaemhFpBg_rog-1
-X-Mimecast-MFC-AGG-ID: sO44-CrMMTaemhFpBg_rog
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 403171956066;
-	Tue, 21 Jan 2025 16:45:12 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.31])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 11A5019560A7;
-	Tue, 21 Jan 2025 16:45:02 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Tue, 21 Jan 2025 17:44:46 +0100 (CET)
-Date: Tue, 21 Jan 2025 17:44:35 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Eyal Birger <eyal.birger@gmail.com>,
-	Kees Cook <kees@kernel.org>, luto@amacapital.net, wad@chromium.org,
-	ldv@strace.io, mhiramat@kernel.org, andrii@kernel.org,
-	alexei.starovoitov@gmail.com, cyphar@cyphar.com,
-	songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-	peterz@infradead.org, tglx@linutronix.de, bp@alien8.de,
-	daniel@iogearbox.net, ast@kernel.org, andrii.nakryiko@gmail.com,
-	rafi@rbk.io, shmulik.ladkani@gmail.com, bpf@vger.kernel.org,
-	linux-api@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	x86@kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] seccomp: passthrough uretprobe systemcall without
- filtering
-Message-ID: <20250121164435.GA17215@redhat.com>
-References: <20250117005539.325887-1-eyal.birger@gmail.com>
- <202501181212.4C515DA02@keescook>
- <CAHsH6GuifA9nUzNR-eW5ZaXyhzebJOCjBSpfZCksoiyCuG=yYw@mail.gmail.com>
- <8B2624AC-E739-4BBE-8725-010C2344F61C@kernel.org>
- <CAHsH6GtpXMswVKytv7_JMGca=3wxKRUK4rZmBBxJPRh1WYdObg@mail.gmail.com>
- <Z4-xeFH0Mgo3llga@krava>
- <20250121111631.6e830edd@gandalf.local.home>
+	s=arc-20240116; t=1737478253; c=relaxed/simple;
+	bh=SsXmSGW57WprIatXJQU3GgUJc0Iq3+wXch4RgUbJtpY=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=sKu/gYxyXAsGkDeUIJrT9X4hlc/gudIfYad6APzV4Fpw3ahKmIJJzcdSs2KhDVwD6DZsWrO8+BeBt0WxMB9idF7JZlJqLVFCPCjlScEaWDQuyWeMMKa95WkImi6SCacRaqj2eNTYJIMQdLS837JQ7ykqIjtNPW3e8waEvJ/hDMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k7D3j8VJ; arc=none smtp.client-ip=209.85.161.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5f33ad7d6faso3747698eaf.0
+        for <bpf@vger.kernel.org>; Tue, 21 Jan 2025 08:50:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1737478250; x=1738083050; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=qIrDR2ZN/EUQN3BtPjqgq3XG3zWYH9SNKP4tKdFLz20=;
+        b=k7D3j8VJ67+ikfDDLDtbZOND5N2QJEaaXhB/bZx3BPV7JGEJy5Rf4nDzq1N+4M36Jo
+         DNhBH4x13buUK8YYRBmD/52XGvM6JowgeqXdPfitr0hbxoRHxdWPb7Ebqw/FuztHKxJl
+         Ag7MedzYScc09iNNSfvCSwZkX85f4iHy2f7JOnYbARpR2apSVYRsrBFxA7pJiIKSTvPV
+         h4nUEPi9EOXyWd2OkyYI8G2zk9sH3iLHo83JlNyf978BnlJ3YWxbYAluHiwcNJUHR+HU
+         fcLVK04njeHNXyNFYk3Cc82gogBqV5tq5sfobBAGVBefQf5+gtjJAoiSDWOVESlbiLvN
+         fVrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737478250; x=1738083050;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qIrDR2ZN/EUQN3BtPjqgq3XG3zWYH9SNKP4tKdFLz20=;
+        b=lMjdZSLk5L82MZt51SYLsEge7w9fJnvoe/vUvfi6LmGbx7FxqNXZaYJML7BusCJTP9
+         M/oQFSV+Sbcr7/9EXs1CTNLGA/OuLkdggqcA9a7CM4/j4f87DI5IceOOXOU0x2sb9A/W
+         p3ynahSHdXL4n8ZQQCc4c81MQsXw3qelgA7JQLZ2e8cFQK2X/6Y9TrBQgG3lCdi5YCeN
+         LPXKEa/8PaYFtYvD2dMVD4VBj0iHItSX/UMSXUpA+bnE3J1dIdhEDMyl1+TawDnLmAT/
+         cHs/nG0hZ+Q3mObjjpK4VygBqlWjh891O4ZfjYCa/QkwtEgMjLq2e6DlVdGD6XlGgWh8
+         is6Q==
+X-Gm-Message-State: AOJu0YwwMpoT6w46eoVgXORS9skTocVEIPAKVLqsBKMG2So3kXVDFQdw
+	IdUKygGkrTn7D472TRRPkm0KAavI3pXqmC5Kft1AT8lZTUoA2w0xWpyFJ+jrIa/ly9qXA5GH054
+	H3fbR7tTKOmmRtwwoV0ACzH19FseI/g==
+X-Gm-Gg: ASbGncsbHrkplSBbm06ts1Gq+PZzynuhOH2XWWn9vrC9aYXc/28BnvQAY3383jWnHnB
+	gDnsuuXlyLhb5lBfPFy1gb2IMbUOe9ntiiKnsVza766ohlE3a9g==
+X-Google-Smtp-Source: AGHT+IFJKo9XDHWURrrlprj329eayn4UoDqadyTZu2AiZrVqBxxqp3rUzXRijSuv6Db64xYbIi73COhgPjWbLlNSLmY=
+X-Received: by 2002:a05:6820:2706:b0:5f6:6547:8a0f with SMTP id
+ 006d021491bc7-5fa3887bbfamr10970193eaf.6.1737478250416; Tue, 21 Jan 2025
+ 08:50:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250121111631.6e830edd@gandalf.local.home>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+From: David CARLIER <devnexen@gmail.com>
+Date: Tue, 21 Jan 2025 16:50:39 +0000
+X-Gm-Features: AbW1kvaYwkyOzt09tAYe3f5VvhOJyqoKd6xI-qw9BiRuuyvxROzxpoqpzMVhWfg
+Message-ID: <CA+XhMqyt7LGkitBrNE1goRMQdsP23=BwLsCor0pY+mM6zO2+zg@mail.gmail.com>
+Subject: [PATCH bpf-next 1/1]
+To: bpf@vger.kernel.org
+Content-Type: multipart/mixed; boundary="000000000000ec2831062c3a2db5"
 
-On 01/21, Steven Rostedt wrote:
->
-> I think this may have been mentioned, but is there a way that the kernel
-> could know that this system call is being monitored by seccomp, and if so,
-> just stick with the interrupt version? If not, enable the system call?
+--000000000000ec2831062c3a2db5
+Content-Type: multipart/alternative; boundary="000000000000ec2830062c3a2db3"
 
-Consider
+--000000000000ec2830062c3a2db3
+Content-Type: text/plain; charset="UTF-8"
 
-	int func_to_uretprobe()
-	{
-		seccomp(SECCOMP_SET_MODE_STRICT/whatever);
-		return 123;
-	}
+libbpf.c memory leaks fixes proposal.
 
-by the time it is called, the kernel can't know that this function will
-call seccomp/install-the-filters/etc, so prepare_uretprobe() can't know
-if it is safe to use uretprobe or not.
+--000000000000ec2830062c3a2db3
+Content-Type: text/html; charset="UTF-8"
 
-Oleg.
+<div dir="ltr">libbpf.c memory leaks fixes proposal.<br></div>
 
+--000000000000ec2830062c3a2db3--
+--000000000000ec2831062c3a2db5
+Content-Type: text/x-patch; charset="US-ASCII"; 
+	name="0001-libbpf.c-bpf_program__attach_uprobe_opts-fix-possibl.patch"
+Content-Disposition: attachment; 
+	filename="0001-libbpf.c-bpf_program__attach_uprobe_opts-fix-possibl.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_m66pn5gd0>
+X-Attachment-Id: f_m66pn5gd0
+
+RnJvbSAzODFhZTUxMzY3MWVhMjE0ZjBmNmEwNGNhOWRhNzVkZmU0NDExNjgzIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBEYXZpZCBDYXJsaWVyIDxkZXZuZXhlbkBnbWFpbC5jb20+CkRh
+dGU6IFNhdCwgMTggSmFuIDIwMjUgMTA6MzA6MzkgKzAwMDAKU3ViamVjdDogW1BBVENIXSBsaWJi
+cGYuYzogYnBmX3Byb2dyYW1fX2F0dGFjaF91cHJvYmVfb3B0cyBmaXggcG9zc2libGUgbWVtb3J5
+CiBsZWFrcy4KCmJwZl9wcm9ncmFtX19hdHRhY2hfcGVyZl9ldmVudF9vcHRzKCkgbWlnaHQgYmUg
+bm90IGVub3VnaCB0byBjbG9zZQp0aGUgZmlsZSBkZXNjcmlwdG9yLCBicHRfbGlua19fZGVzdHJv
+eSgpIGRvZXMgYSBtb3JlIHRob3JvdWdoCmNsZWFuIHVwIGluY2x1ZGluZyBpdHMgaW5uZXIgZmls
+ZSBkZXNjcmlwdG9yLgpBcHBseWluZyB0bwpicGZfcHJvZ3JhbV9fYXR0YWNoX2twcm9iZV9vcHRz
+L2JwZl9wcm9ncmFtX19hdHRhY2hfdHJhY2Vwb2ludHNfb3B0cwp0b28uCgpTaWduZWQtb2ZmLWJ5
+OiBEYXZpZCBDYXJsaWVyIDxkZXZuZXhlbkBnbWFpbC5jb20+Ci0tLQogc3JjL2xpYmJwZi5jIHwg
+NiArKystLS0KIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0p
+CgpkaWZmIC0tZ2l0IGEvc3JjL2xpYmJwZi5jIGIvc3JjL2xpYmJwZi5jCmluZGV4IDE5NDgwOWQu
+LmU1NzE2NzUgMTAwNjQ0Ci0tLSBhL3NyYy9saWJicGYuYworKysgYi9zcmMvbGliYnBmLmMKQEAg
+LTExMjcxLDcgKzExMjcxLDcgQEAgYnBmX3Byb2dyYW1fX2F0dGFjaF9rcHJvYmVfb3B0cyhjb25z
+dCBzdHJ1Y3QgYnBmX3Byb2dyYW0gKnByb2csCiAJbGluayA9IGJwZl9wcm9ncmFtX19hdHRhY2hf
+cGVyZl9ldmVudF9vcHRzKHByb2csIHBmZCwgJnBlX29wdHMpOwogCWVyciA9IGxpYmJwZl9nZXRf
+ZXJyb3IobGluayk7CiAJaWYgKGVycikgewotCQljbG9zZShwZmQpOworCQlicGZfbGlua19fZGVz
+dHJveShsaW5rKTsKIAkJcHJfd2FybigicHJvZyAnJXMnOiBmYWlsZWQgdG8gYXR0YWNoIHRvICVz
+ICclcysweCV6eCc6ICVzXG4iLAogCQkJcHJvZy0+bmFtZSwgcmV0cHJvYmUgPyAia3JldHByb2Jl
+IiA6ICJrcHJvYmUiLAogCQkJZnVuY19uYW1lLCBvZmZzZXQsCkBAIC0xMjI1OSw3ICsxMjI1OSw3
+IEBAIGJwZl9wcm9ncmFtX19hdHRhY2hfdXByb2JlX29wdHMoY29uc3Qgc3RydWN0IGJwZl9wcm9n
+cmFtICpwcm9nLCBwaWRfdCBwaWQsCiAJbGluayA9IGJwZl9wcm9ncmFtX19hdHRhY2hfcGVyZl9l
+dmVudF9vcHRzKHByb2csIHBmZCwgJnBlX29wdHMpOwogCWVyciA9IGxpYmJwZl9nZXRfZXJyb3Io
+bGluayk7CiAJaWYgKGVycikgewotCQljbG9zZShwZmQpOworCQlicGZfbGlua19fZGVzdHJveShs
+aW5rKTsKIAkJcHJfd2FybigicHJvZyAnJXMnOiBmYWlsZWQgdG8gYXR0YWNoIHRvICVzICclczow
+eCV6eCc6ICVzXG4iLAogCQkJcHJvZy0+bmFtZSwgcmV0cHJvYmUgPyAidXJldHByb2JlIiA6ICJ1
+cHJvYmUiLAogCQkJYmluYXJ5X3BhdGgsIGZ1bmNfb2Zmc2V0LApAQCAtMTI1MTQsNyArMTI1MTQs
+NyBAQCBzdHJ1Y3QgYnBmX2xpbmsgKmJwZl9wcm9ncmFtX19hdHRhY2hfdHJhY2Vwb2ludF9vcHRz
+KGNvbnN0IHN0cnVjdCBicGZfcHJvZ3JhbSAqcAogCWxpbmsgPSBicGZfcHJvZ3JhbV9fYXR0YWNo
+X3BlcmZfZXZlbnRfb3B0cyhwcm9nLCBwZmQsICZwZV9vcHRzKTsKIAllcnIgPSBsaWJicGZfZ2V0
+X2Vycm9yKGxpbmspOwogCWlmIChlcnIpIHsKLQkJY2xvc2UocGZkKTsKKwkJYnBmX2xpbmtfX2Rl
+c3Ryb3kobGluayk7CiAJCXByX3dhcm4oInByb2cgJyVzJzogZmFpbGVkIHRvIGF0dGFjaCB0byB0
+cmFjZXBvaW50ICclcy8lcyc6ICVzXG4iLAogCQkJcHJvZy0+bmFtZSwgdHBfY2F0ZWdvcnksIHRw
+X25hbWUsCiAJCQllcnJzdHIoZXJyKSk7Ci0tIAoyLjQ3LjIKCg==
+--000000000000ec2831062c3a2db5--
 
