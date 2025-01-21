@@ -1,131 +1,145 @@
-Return-Path: <bpf+bounces-49410-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49411-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7602FA1847A
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 19:08:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28A3EA18539
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 19:30:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 226CF162346
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 18:07:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1483B188B64B
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 18:30:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA5A01F707D;
-	Tue, 21 Jan 2025 18:06:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAAA81F707D;
+	Tue, 21 Jan 2025 18:29:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="lZhE2ZM5"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="CBVjj374"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D3D21F0E36;
-	Tue, 21 Jan 2025 18:06:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 446571F542E
+	for <bpf@vger.kernel.org>; Tue, 21 Jan 2025 18:29:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737482816; cv=none; b=OWgffXbOHUnYi5/8/wV4/VjmQKXb3fBD3eOdctyRV5LZPGLFQPG8TfHJYqbxrqmlA4u/w7+p+bejhgjv99FCPVXnifE10HQfRGYt9MheJUnIsr7/ZXLJ/bP6cIv3C4x6kSkS+KMFKTqbJdEbHbFfDmOo6IPbxd0kk8SqxOyVBnE=
+	t=1737484194; cv=none; b=bHc2/0iFBUYMOTAch6LALv/T1N+i4x9tBL40NuHuBQQTwJ4aWK/iTyYlKo8iTzbyV3SB4u2CQmayIA4RmNj9hrc3m5SSJvhhRbB9gzHHuIwYx6QOjCThMLTiJxru1lU+MK0/1R4/wsM9xMbOtnh98jyj5NhttMl3ki4G3CTlwbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737482816; c=relaxed/simple;
-	bh=yzMp9OHuDafOKBn9rcCV9TmT/23Cxa4L5N2agXVJ7RY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TN7HUBTQDVX0OCWMTE0KHnAYUXauN+ZhDDEd2C2rOssn7qUKmwyNMnU1F6EGjeH8XCa9QS1DOagu7W2Rk1RCwtrlTcTjLch2Jej3oBJyBPtmRmGEGA7jwbjRXFifsrTNGeNvN47ahDBxOECCcDFiiVKvocP4aikQgTcE7g7wneQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=lZhE2ZM5; arc=none smtp.client-ip=185.226.149.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
-Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
-	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.93)
-	(envelope-from <mhal@rbox.co>)
-	id 1taIeA-001Ctx-TD; Tue, 21 Jan 2025 19:06:42 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-	s=selector2; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
-	bh=B0NkyGC4wYzCqVt2GL2dQ8Knz8FG3vRNUr8ob8BqF5k=; b=lZhE2ZM5ebUs7A8nmbHRIqXRl8
-	MUCnJTfK17MbN21CUElCkz+PNZr31HSVtBnHd1eMmgeeSikqNLHxtf/3jU0zTXjlGBKVQmfENidkm
-	9PX2cX02Cwhpt+nUurU1kGffhyKp1uR3yOaAHgPLf2hEcMWUlWLGwIhYIC34lrJH1g71frVxPG4ko
-	PwefQEVtEe/Hsg9wcV025DbgJjKWY6KwaHMKzoyDUOMOFKsEcLJrvGeJEcjtCyKWPWslQlw3TprVT
-	WpR6AFtLuPmZhYXl+ifjoto4O8sbMlJxi6mqs1FD5AfKJA6Nl6cfWV9os9vsBqklX4Mazlll4RrjA
-	GQ3R5rpw==;
-Received: from [10.9.9.72] (helo=submission01.runbox)
-	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
-	(envelope-from <mhal@rbox.co>)
-	id 1taIe9-0006xt-CE; Tue, 21 Jan 2025 19:06:41 +0100
-Received: by submission01.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.93)
-	id 1taIe0-006jVZ-TF; Tue, 21 Jan 2025 19:06:32 +0100
-Message-ID: <2bdfe259-e182-4846-b501-a33096cc74f1@rbox.co>
-Date: Tue, 21 Jan 2025 19:06:31 +0100
+	s=arc-20240116; t=1737484194; c=relaxed/simple;
+	bh=jqDzj+eTPBIMLC2SCvL3JbqmPEgXso2MiJ7GoqGTJng=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Wdmk0mKskk2JUOVw/TLV/Qa+C72GQEMxA7ulBXlXpeK0iw5fHu8PtWYw0l41qdQo3t8YOi/oXfMk07xztaPHSmi9x5AdbFMLeSwziqZrBc4Y9zVlkrsppErbOQ/lkj1988xer7Jwyc5r6Xw6nmSVNsd3cyAf+VPB5lncqSn6e5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=CBVjj374; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-437a92d7b96so59413615e9.2
+        for <bpf@vger.kernel.org>; Tue, 21 Jan 2025 10:29:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1737484190; x=1738088990; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xkAKeDcaoc8aic3fG+NCS5mGcWlbtV39f2bpcRLuxIs=;
+        b=CBVjj374ySgZoWRqkz/ZOjaeJC02SUgJTl3e5wOoWNU4ivRFj6CtucAn/Eun3JucxH
+         FQ+FKYQ6uK7khIZhR14Nw+5pJs/VzBdsbL9EXArk7eQGBALQ7nw+g7BnOhvTluVhD/E6
+         kHX63P1iDAXceWcKVtKMJ9sqHFLsOYa+8b/skB9njTq53rClIVnqZQBrH/VJC9WDuKb/
+         bXCPPVoajZGv92bDycH2b9RAJL0cEIdeDPnhLCbCtk8sAxbBVmJdHA1IP1JKVi42gJMB
+         6v9navO29kRkaeLf0+a9NpT5s+gS8wVxsctQEkidvjqSKc7hu3KR/tm1iealqp+Ik6ct
+         vuJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737484190; x=1738088990;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xkAKeDcaoc8aic3fG+NCS5mGcWlbtV39f2bpcRLuxIs=;
+        b=N9s3DaP+ULqigg0ISDaLFyuDLLMxAn94rbUFKtsp6maBvnbOfY+5U5AfyCDclF/P13
+         5PM/F373ihyKsbvkscHqgXwrH1OImZM1UJL4rayhBV2HijwZO6ih8j/TqkC8tzKgSHDq
+         G8CW4b6dBh6K3UPduc7mDN9T8x5x33wcxQ2EepITErFUzflWl/KeOoV4K6O5uuQjJrr3
+         DbSj/0wywOIEdfm1v/XNLmWeCOVspGwrKiGHc/bIKunRFm6kyEcF752N40P/8bXVWMIc
+         W50bvfwIfG+8QsxsJkAV0n0cEEk0+ReAjXHQITBKIEMdJLKf2BvzJF5yPizFgpIKLNeh
+         l9hw==
+X-Forwarded-Encrypted: i=1; AJvYcCVkwU/WSRu+/mgHOTsfZgqpYjGbwv/SQUDGV+Bg+LvXIBfMbnq+hFKzjorrg86eRRG/hRQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzy0DCKGoIEtc1isvsgkI58Y+3YiAydeHY3Fatg0LwyD/7nruYB
+	n76z11KrbzMbKRtTgjcCx0wFnVglnmEzFc2CxqanRj0s9xp3v2LdwBmgCE1OPBE=
+X-Gm-Gg: ASbGncsgAa8f43uIqwsUit7rwzcYyoDrpL4Ggp5y7F1Y2neOHIvzfUdcIu7qova2zZm
+	qoRY+JTyJqIL3O86ZIdXwnXE6B2f2tMKwFHUc3KKpISHqLNUpYHKK78oxmAsaoLZSrn2O35B07q
+	eDaMEAj0/XRZ7YJF6/+/sEmP1V+6JC1sP/b8xKCSsdDsRTeb/bsTSQdd0M56AUkon278ADhCs8D
+	8ExRNtZuzv1vhA1NinvPsLlTVqu3A5AZnxT5YP8kAGGz8Pnq8SZ3/r7JX+q2BYVNdkSO4uI
+X-Google-Smtp-Source: AGHT+IHfUrUKD19ckbGWZSAxbod4Fwp6AvvMqNG6Dkq6zkY1uEsGnMGxwAgZfueRaa6lpWJgnlQp+Q==
+X-Received: by 2002:a05:600c:350b:b0:431:58cd:b259 with SMTP id 5b1f17b1804b1-438914671fdmr193243775e9.31.1737484190523;
+        Tue, 21 Jan 2025 10:29:50 -0800 (PST)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-438904621cdsm187778135e9.27.2025.01.21.10.29.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jan 2025 10:29:50 -0800 (PST)
+Date: Tue, 21 Jan 2025 19:29:48 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: syzbot <syzbot+622acb507894a48b2ce9@syzkaller.appspotmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	cgroups@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net, elic@nvidia.com, 
+	gregkh@linuxfoundation.org, hannes@cmpxchg.org, hawk@kernel.org, jasowang@redhat.com, 
+	jirislaby@kernel.org, john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org, 
+	kuba@kernel.org, len.brown@intel.com, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org, linux-serial@vger.kernel.org, mingo@redhat.com, mst@redhat.com, 
+	netdev@vger.kernel.org, parav@nvidia.com, pavel@ucw.cz, rafael@kernel.org, 
+	rostedt@goodmis.org, songliubraving@fb.com, syzkaller-bugs@googlegroups.com, 
+	tj@kernel.org, yhs@fb.com
+Subject: Re: [syzbot] [cgroups?] possible deadlock in
+ console_lock_spinning_enable (5)
+Message-ID: <6pdxz7oqr6442cczbec7n3cqtldrrpfsdk7ynqjguiqp6d5ucv@sibkx2lfldvu>
+References: <0000000000001e66f5061fe3b883@google.com>
+ <678a4e3b.050a0220.303755.0005.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 1/2] vsock/virtio: discard packets if the transport
- changes
-To: Luigi Leonardi <leonardi@redhat.com>
-Cc: Stefano Garzarella <sgarzare@redhat.com>, netdev@vger.kernel.org,
- Simon Horman <horms@kernel.org>, Stefan Hajnoczi <stefanha@redhat.com>,
- linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Wongi Lee <qwerty@theori.io>,
- "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
- Jason Wang <jasowang@redhat.com>,
- Bobby Eshleman <bobby.eshleman@bytedance.com>,
- virtualization@lists.linux.dev, =?UTF-8?Q?Eugenio_P=C3=A9rez?=
- <eperezma@redhat.com>, bpf@vger.kernel.org, Jakub Kicinski
- <kuba@kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>,
- Hyunwoo Kim <v4bel@theori.io>, kvm@vger.kernel.org
-References: <20250108180617.154053-1-sgarzare@redhat.com>
- <20250108180617.154053-2-sgarzare@redhat.com>
- <2b3062e3-bdaa-4c94-a3c0-2930595b9670@rbox.co>
- <blvbtr3c7uxtbspbfwrobfk7qdukz6nst2bnomoxbltst2yhkm@47k6evsdceeg>
-Content-Language: pl-PL, en-GB
-From: Michal Luczaj <mhal@rbox.co>
-In-Reply-To: <blvbtr3c7uxtbspbfwrobfk7qdukz6nst2bnomoxbltst2yhkm@47k6evsdceeg>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="flx2psaakqlkzlmd"
+Content-Disposition: inline
+In-Reply-To: <678a4e3b.050a0220.303755.0005.GAE@google.com>
 
-On 1/21/25 18:30, Luigi Leonardi wrote:
-> On Thu, Jan 09, 2025 at 02:34:28PM +0100, Michal Luczaj wrote:
->> FWIW, I've tried simplifying Hyunwoo's repro to toy with some tests. 
->> Ended
->> up with
->>
->> ```
->>from threading import *
->>from socket import *
->>from signal import *
->>
->> def listener(tid):
->> 	while True:
->> 		s = socket(AF_VSOCK, SOCK_SEQPACKET)
->> 		s.bind((1, 1234))
->> 		s.listen()
->> 		pthread_kill(tid, SIGUSR1)
->>
->> signal(SIGUSR1, lambda *args: None)
->> Thread(target=listener, args=[get_ident()]).start()
->>
->> while True:
->> 	c = socket(AF_VSOCK, SOCK_SEQPACKET)
->> 	c.connect_ex((1, 1234))
->> 	c.connect_ex((42, 1234))
->> ```
->>
->> which gives me splats with or without this patch.
->>
->> That said, when I apply this patch, but drop the `sk->sk_state !=
->> TCP_LISTEN &&`: no more splats.
->>
-> Hi Michal,
-> 
-> I think it would be nice to have this test in the vsock test suite.  
-> WDYT? If you don't have any plans to port this to C, I can take care of 
-> it :)
 
-Sure, go ahead, but note that this is just a (probably suboptimal) Python
-version of Hyunwoo's C repro[1].
+--flx2psaakqlkzlmd
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [syzbot] [cgroups?] possible deadlock in
+ console_lock_spinning_enable (5)
+MIME-Version: 1.0
 
-[1]: https://lore.kernel.org/netdev/Z2LvdTTQR7dBmPb5@v4bel-B760M-AORUS-ELITE-AX/
+On Fri, Jan 17, 2025 at 04:34:03AM -0800, syzbot <syzbot+622acb507894a48b2c=
+e9@syzkaller.appspotmail.com> wrote:
+> syzbot has bisected this issue to:
+>=20
+> commit bc0d90ee021f1baecd6aaa010d787eb373aa74dd
+> Author: Parav Pandit <parav@nvidia.com>
+> Date:   Tue Jan 5 10:32:02 2021 +0000
+>=20
+>     vdpa: Enable user to query vdpa device info
+>=20
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D1440c2b058=
+0000
 
+syzbot got this somehow wrong, it started with the lockdep bug but then
+switched to a different
+| crash: BUG: unable to handle kernel paging request in bpf_trace_run3
+so the bisecting session yielded (I believe) random commit, didn't it?
+
+(The lockdep appears valid, with PSI enabled and the fault injection at
+unfortunate place (with BPF'd tracepoint).)
+
+Michal
+
+--flx2psaakqlkzlmd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ4/nmgAKCRAt3Wney77B
+SfWDAQD9atuzOG3FHcpa9TZop/UV7vy3rJ7Nt2Jbeo9pTOreKgEAoQlnyi+4Metp
+9vIjKtqdXgf9fmKryAgGyrYpKRkNAws=
+=bsM8
+-----END PGP SIGNATURE-----
+
+--flx2psaakqlkzlmd--
 
