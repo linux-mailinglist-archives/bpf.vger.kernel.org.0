@@ -1,145 +1,237 @@
-Return-Path: <bpf+bounces-49397-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49398-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EC47A18122
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 16:29:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DB9EA18189
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 16:58:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC89C1692F1
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 15:29:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6C0716AFCD
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 15:58:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E2B31F471C;
-	Tue, 21 Jan 2025 15:29:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4353C1F470D;
+	Tue, 21 Jan 2025 15:58:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bO2wl5wd"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nUHFdhgD";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oluIpPDg";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nUHFdhgD";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oluIpPDg"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 661901F429D
-	for <bpf@vger.kernel.org>; Tue, 21 Jan 2025 15:29:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A97E01F1505
+	for <bpf@vger.kernel.org>; Tue, 21 Jan 2025 15:58:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737473376; cv=none; b=pN3tBM88PEpMQ80iuIzdDiszaEbppTJ29b742trW5I47quGwvyj+xayYPuO/UD8/RqQGihK2Bz4dT5Ms4mrC5nwJ1+APvOiMrluCeCIKL5PERxAyPeW2G4tvKTpHs9EOoesN7Ud6OuYyoy/wd4jXoiQEX+ifDBe5KKxN2btKYIk=
+	t=1737475120; cv=none; b=mQeXIK4xcGRVJgGcKJK81H198WuWoHec7Xsa3BayQszTwRfZ9Ek9N4GDI9bDbUuBdUxOCnxS4Cs/0IN6JyEvzrOlOarPB+K9zDE8PG5g8S1kKQi0O09yzUpAZzj+gaUPKxXae3cou2F5iU+FxiAzc/P4zUKeKUJ+yhr5cmQlTnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737473376; c=relaxed/simple;
-	bh=rRdlSEuIlKqdrfnuUR/QAUCw5t4cYuBzo0hVt20kNjs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SpXXr5fCzVAVlBGmxBpdwlEzkkCviCxXtAYYejUZaSu4ZXaZlWTuWrrDDJMQ6GlaRM+l+QzHZeNSIslq7Icq2uuthnjsx//yO9B7YiW/zNIIvfpPvjr/5sFkWJXvlYwoBtuDgO/HjK1XUsnIKOOFJJrv7NeEHjkEXoH/5NyHKKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bO2wl5wd; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1737473373;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2nKhFItvInbGy3x2gDKCK0wEWBuvzDIeDEmci5k4cFk=;
-	b=bO2wl5wd/AmxcHSDJk17m/cRHTkg/b/0WtoC6cEUuMVGxGTk1h7z8mwDcyabzdTc7mNzV5
-	xVQC2lbHvfdIUxUs3QWp8QWUqYLrM3Odx95O0ZpYXnXuok3GZugwZjiIdUUb4f0wKC0Gq5
-	GuJeTKVt82fAl7lbPo3CWmfofURvtsI=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-412-nzKq0IOnPwqlDunPUEV6iQ-1; Tue,
- 21 Jan 2025 10:29:28 -0500
-X-MC-Unique: nzKq0IOnPwqlDunPUEV6iQ-1
-X-Mimecast-MFC-AGG-ID: nzKq0IOnPwqlDunPUEV6iQ
-Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
+	s=arc-20240116; t=1737475120; c=relaxed/simple;
+	bh=gBMFnSemPU4B9/SXX4+n8vW7GQ9Sxz9AwPFxJGHGmT4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dxyhoZwGLw3CV06/mAEFMfCG81h0FVG0knlIevdaHxcYLjD0N9iQajTy0EecMUG8MlIbVhhJ0aI5kShxsU5eCBO09+Uy3Fmw8i1jtrbklQojZLj9QxD5sFrN2knDfS3mqHf2Ef9Gaj6AsgIv0PEZam9NLDudMqcBqlN8nxd3Iww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=nUHFdhgD; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oluIpPDg; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=nUHFdhgD; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oluIpPDg; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 4225619560A3;
-	Tue, 21 Jan 2025 15:29:20 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.31])
-	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id D03A61956094;
-	Tue, 21 Jan 2025 15:29:10 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Tue, 21 Jan 2025 16:28:54 +0100 (CET)
-Date: Tue, 21 Jan 2025 16:28:43 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Kees Cook <kees@kernel.org>
-Cc: Eyal Birger <eyal.birger@gmail.com>, luto@amacapital.net,
-	wad@chromium.org, ldv@strace.io, mhiramat@kernel.org,
-	andrii@kernel.org, jolsa@kernel.org, alexei.starovoitov@gmail.com,
-	olsajiri@gmail.com, cyphar@cyphar.com, songliubraving@fb.com,
-	yhs@fb.com, john.fastabend@gmail.com, peterz@infradead.org,
-	tglx@linutronix.de, bp@alien8.de, daniel@iogearbox.net,
-	ast@kernel.org, andrii.nakryiko@gmail.com, rostedt@goodmis.org,
-	rafi@rbk.io, shmulik.ladkani@gmail.com, bpf@vger.kernel.org,
-	linux-api@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	x86@kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] seccomp: passthrough uretprobe systemcall without
- filtering
-Message-ID: <20250121152843.GC3422@redhat.com>
-References: <20250117005539.325887-1-eyal.birger@gmail.com>
- <202501181212.4C515DA02@keescook>
- <20250119123955.GA5281@redhat.com>
- <202501201331.83DB01794@keescook>
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 7B0C71F399;
+	Tue, 21 Jan 2025 15:58:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1737475115; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vzYZxu4zQxSb9+0uvZiUVZVxqCp7jCsg39dJ2ytLhA4=;
+	b=nUHFdhgDbKiT6cvQI0Xoj4+6E1Ej8mQhPbC8yw56c3CIpfHA5w9YDPOAXyRifAX7ZmsECq
+	Zdy3RLwB8OhLI2EVrJQ7cqAS/ZldjkJ6qql1QcXVzyWTo2i3L12xX5Z1D0YNi0MnD1Wnff
+	NxYSragGtczSz/kAMSrsF2qVpkd1nxg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1737475115;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vzYZxu4zQxSb9+0uvZiUVZVxqCp7jCsg39dJ2ytLhA4=;
+	b=oluIpPDg+k5XGm42XHjH73AwJ9sevqT8WzvsxZN0Q20W0mnYKzmFc2BYbK5KHcLgI+/EMy
+	bRuQeX1CPc7KKrCg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=nUHFdhgD;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=oluIpPDg
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1737475115; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vzYZxu4zQxSb9+0uvZiUVZVxqCp7jCsg39dJ2ytLhA4=;
+	b=nUHFdhgDbKiT6cvQI0Xoj4+6E1Ej8mQhPbC8yw56c3CIpfHA5w9YDPOAXyRifAX7ZmsECq
+	Zdy3RLwB8OhLI2EVrJQ7cqAS/ZldjkJ6qql1QcXVzyWTo2i3L12xX5Z1D0YNi0MnD1Wnff
+	NxYSragGtczSz/kAMSrsF2qVpkd1nxg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1737475115;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vzYZxu4zQxSb9+0uvZiUVZVxqCp7jCsg39dJ2ytLhA4=;
+	b=oluIpPDg+k5XGm42XHjH73AwJ9sevqT8WzvsxZN0Q20W0mnYKzmFc2BYbK5KHcLgI+/EMy
+	bRuQeX1CPc7KKrCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5DDE913963;
+	Tue, 21 Jan 2025 15:58:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id P7yoFivEj2cPWgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 21 Jan 2025 15:58:35 +0000
+Message-ID: <cec11348-a55f-40b4-9011-0e83113ade63@suse.cz>
+Date: Tue, 21 Jan 2025 16:59:40 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202501201331.83DB01794@keescook>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v5 3/7] locking/local_lock: Introduce
+ local_trylock_irqsave()
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, andrii@kernel.org, memxor@gmail.com,
+ akpm@linux-foundation.org, peterz@infradead.org, rostedt@goodmis.org,
+ houtao1@huawei.com, hannes@cmpxchg.org, shakeel.butt@linux.dev,
+ mhocko@suse.com, willy@infradead.org, tglx@linutronix.de, jannh@google.com,
+ tj@kernel.org, linux-mm@kvack.org, kernel-team@fb.com
+References: <20250115021746.34691-1-alexei.starovoitov@gmail.com>
+ <20250115021746.34691-4-alexei.starovoitov@gmail.com>
+ <20250117203315.FWviQT38@linutronix.de>
+From: Vlastimil Babka <vbabka@suse.cz>
+Content-Language: en-US
+In-Reply-To: <20250117203315.FWviQT38@linutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 7B0C71F399
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	FREEMAIL_TO(0.00)[linutronix.de,gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,gmail.com,linux-foundation.org,infradead.org,goodmis.org,huawei.com,cmpxchg.org,linux.dev,suse.com,linutronix.de,google.com,kvack.org,fb.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On 01/20, Kees Cook wrote:
->
-> > The only difference is that sys_uretprobe() is new and existing setups
-> > doesn't know about it. Suppose you have
-> >
-> > 	int func(void)
-> > 	{
-> > 		return 123;
-> > 	}
-> >
-> > 	int main(void)
-> > 	{
-> > 		seccomp(SECCOMP_SET_MODE_STRICT, 0,0);
-> > 		for (;;)
-> > 			func();
-> > 	}
-> >
-> > and it runs with func() uretprobed.
-> >
-> > If you install the new kernel, this application will crash immediately.
-> >
-> > I understand your objections, but what do you think we can do instead?
-> > I don't think a new "try_to_speedup_uretprobes_at_your_own_risk" sysctl
-> > makes sense, it will be almost never enabled...
->
-> This seems like a uretprobes design problem. If it's going to use
-> syscalls, it must take things like seccomp into account.
+On 1/17/25 9:33 PM, Sebastian Andrzej Siewior wrote:
+> On 2025-01-14 18:17:42 [-0800], Alexei Starovoitov wrote:
+>> diff --git a/include/linux/local_lock_internal.h b/include/linux/local_lock_internal.h
+>> index 8dd71fbbb6d2..93672127c73d 100644
+>> --- a/include/linux/local_lock_internal.h
+>> +++ b/include/linux/local_lock_internal.h
+>> @@ -75,37 +85,73 @@ do {								\
+>>  
+>>  #define __local_lock(lock)					\
+>>  	do {							\
+>> +		local_lock_t *l;				\
+>>  		preempt_disable();				\
+>> -		local_lock_acquire(this_cpu_ptr(lock));		\
+>> +		l = this_cpu_ptr(lock);				\
+>> +		lockdep_assert(l->active == 0);			\
+>> +		WRITE_ONCE(l->active, 1);			\
+>> +		local_lock_acquire(l);				\
+>>  	} while (0)
+> 
+> …
+> 
+>> +#define __local_trylock_irqsave(lock, flags)			\
+>> +	({							\
+>> +		local_lock_t *l;				\
+>> +		local_irq_save(flags);				\
+>> +		l = this_cpu_ptr(lock);				\
+>> +		if (READ_ONCE(l->active) == 1) {		\
+>> +			local_irq_restore(flags);		\
+>> +			l = NULL;				\
+>> +		} else {					\
+>> +			WRITE_ONCE(l->active, 1);		\
+>> +			local_trylock_acquire(l);		\
+>> +		}						\
+>> +		!!l;						\
+>> +	})
+>> +
+> 
+> Part of the selling for local_lock_t was that it does not affect
+> !PREEMPT_RT builds. By adding `active' you extend every data structure
+> and you have an extra write on every local_lock(). It was meant to
+> replace preempt_disable()/ local_irq_save() based locking with something
+> that actually does locking on PREEMPT_RT without risking my life once
+> people with pitchforks come talk about the new locking :)
+> 
+> I admire that you try to make PREEMPT_RT and !PREEMPT_RT similar in a
+> way that both detect recursive locking which not meant to be supported. 
+> 
+> Realistically speaking as of today we don't have any recursive lock
+> detection other than lockdep. So it should be enough given that the bots
+> use it often and hopefully local testing.
+> Your assert in local_lock() does not work without lockdep. It will only
+> make local_trylock_irqsave() detect recursion and lead to two splats
+> with lockdep enabled in local_lock() (one from the assert and the second
+> from lockdep).
+> 
+> I would say you could get rid of the `active' field and solely rely on
+> lockdep and the owner field. So __local_trylock_irqsave() could maybe
+> use local_trylock_acquire() to conditionally acquire the lock if `owner'
+> is NULL.
+> 
+> This makes it possible to have recursive code without lockdep, but with
+> lockdep enabled the testcase should fail if it relies on recursion.
+> Other than that, I don't see any advantage. Would that work?
 
-True. I reviewed that patch, and I forgot about seccomp too.
+I don't think it would work, or am I missing something? The goal is to
+allow the operation (alloc, free) to opportunistically succeed in e.g.
+nmi context, but only if we didn't interrupt anything that holds the
+lock. Otherwise we must allow for failure - hence trylock.
+(a possible extension that I mentioned is to also stop doing irqsave to
+avoid its overhead and thus also operations from an irq context would be
+oportunistic)
+But if we detect the "trylock must fail" cases only using lockdep, we'll
+deadlock without lockdep. So e.g. the "active" flag has to be there?
 
-> SECCOMP_SET_MODE_STRICT will also crash in the face of syscall_restart...
+So yes this goes beyond the original purpose of local_lock. Do you think
+it should be a different lock type then, which would mean the other
+users of current local_lock that don't want the opportunistic nesting
+via trylock, would not inflict the "active" flag overhead?
 
-Yes, I guess SECCOMP_SET_MODE_STRICT assumes that read/write can't return
-ERESTART_RESTARTBLOCK.
+AFAICS the RT implementation of local_lock could then be shared for both
+of these types, but I might be missing some nuance there.
 
-But again, what can we do right now?
-
-I do not like the idea to revert the patch which adds sys_uretprobe().
-Don't get me wrong, I do not use uprobes, so personally I don't really
-care about the performance improvements it adds. Not to mention FRED,
-although I have no idea when it will be available.
-
-Lets forget about sys_uretprobe(). Lets suppose the kernel doesn't have
-ERESTART_RESTARTBLOCK/sys_restart_syscall and we want to add this feature
-today.
-
-How do you think we can do this without breaking the existing setups which
-use seccomp ?
-
-Oleg.
+> Sebastian
 
 
