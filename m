@@ -1,171 +1,122 @@
-Return-Path: <bpf+bounces-49330-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49331-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A330A1763B
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 04:20:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0367A17689
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 05:35:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53C913A794B
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 03:20:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE47318835E2
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 04:35:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C71D5152514;
-	Tue, 21 Jan 2025 03:20:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5419C1925A3;
+	Tue, 21 Jan 2025 04:35:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DfUYqw//"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="G5OKWgIr";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="WHA1YrPY"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
+Received: from fhigh-a3-smtp.messagingengine.com (fhigh-a3-smtp.messagingengine.com [103.168.172.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC89126AD0
-	for <bpf@vger.kernel.org>; Tue, 21 Jan 2025 03:20:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17AEC45979;
+	Tue, 21 Jan 2025 04:35:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737429641; cv=none; b=CDGgWK7B4Pyh5fZqc9eIDPpBEoRfi/WWx1FdC79DMrMLxIRKxPglnlt7pDaPdv0DJWDFit/7PbQma75+Ix1EBI8LuH6c17jAVGKFf4xzDtp8vCikQ1oirJSCya1lfFzjSFtjQEKkC/K3swYvhxDYkw8svhYPAuu1zEJH0QOPDJA=
+	t=1737434130; cv=none; b=rqQwLPkAeP3/fewP8Twz1VJ3rfFLzOj87qvHefqqIVSyvgcX/cpxRvtTcGhLZ5nOpomrv+nr/NrHGRQeP1LMFUsbe4LBaXuaX4CV2/BfUlkvvuwx84xbi1Ln5CXMCaghSPmxYygINrO9XZ6AnCNiFVzuFBnnblA3J/k4fDzuUdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737429641; c=relaxed/simple;
-	bh=CYz7XVjP8b3IEkhJUJD7pdqdK0PMSTL0D1JfbeqyKvU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=n12XSMfvr+JWDt1eHteciZC79Gky0tyyIVJxyPDbQ5iA58Uu4+vFbOx5ygK9x599GoEinyezZpGr7zxKdKqk6nxuHkLJZLrU9cSi5VJeqTScwi1WZ9OjIqh0wdu7N8cqfYR07fbQbfcvYVRzTEhPfUlwMn8C4HfvGRK0/B/luJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DfUYqw//; arc=none smtp.client-ip=91.218.175.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <4e621ff0-c40f-44ed-9610-8eadfd9f3cf1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1737429632;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ezIv5DUiIFGbWOz3aydu15SaAqCa4Lro3pk6uWnkLBE=;
-	b=DfUYqw//koG3n/yi/Uix1yKNzsjlqzDsmqngNSaE6V8GeaWGaRNSyCSGOUaOqOlByXTL7f
-	JRIKlInThkFvUFS2PkI6gPftuGz/QcTuOCdUpGkV6guCh5EYDIzy/fAGuaZnaoR/+zvors
-	4f9kjEMobG5XjbhUia0ryjPis/ZSpoM=
-Date: Mon, 20 Jan 2025 19:20:27 -0800
+	s=arc-20240116; t=1737434130; c=relaxed/simple;
+	bh=lCfRqpWzuMZujFZShQOZDbGeVUrsywbdtwi215buqbs=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=lYY2+PIjLHCsKhUt2jlvNEkPM7dkdB31sT7IUavSLGCVvshyjEXN6gyf5MuYNqjMQkPYy1MwRV1YIjHlM3gmWKGtqHCePlq+7nIIPmkgwg1UNp4QxmhlQO5g0jrAHWlccgBY/Tqu5dKdXsFrexnnAx+mBpxyrS5EJeN9XhJ0c38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=G5OKWgIr; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=WHA1YrPY; arc=none smtp.client-ip=103.168.172.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 0DA1211401CA;
+	Mon, 20 Jan 2025 23:35:27 -0500 (EST)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-10.internal (MEProxy); Mon, 20 Jan 2025 23:35:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm1; t=1737434127; x=1737520527; bh=21HB76OBIiKme0LcFSfhy
+	Qqla8eDvukUY0J6sp+JmkU=; b=G5OKWgIrF/xSaGbPLGLm6WdVtK8dcrpjVqXHI
+	kolPkXIgrm/GfCvfLIUGUzO+WIUP1Ci+a8WZa+Yymo+duOwypFgEg5ataU1Pv6+h
+	jQY5Hqa/xrBZ1xBVbEcLpf9CE+Op4O+0Bipc0AhCwZYSJ//lWjIY1h9cv2xOEzhD
+	ezXzmnonao9u2aLWUVp7+Y/9cnOdGxMvGdXL42VvZmqpphYjoxWb0UR4M02/nUlW
+	uYenug+MSKVCIbJu5D1dbccHkexssiEw54ZcoND6OvoDA1yaIruaP6Wvanrli+LJ
+	/+CL6b0tBQlwzqcpbfmSpIPMuWgadL/4nWSM4OE2uAD+Ah+vQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:date:date:feedback-id:feedback-id:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to
+	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1737434127; x=1737520527; bh=21HB76OBIiKme0LcFSfhyQqla8eDvukUY0J
+	6sp+JmkU=; b=WHA1YrPYjUmZLPNj9t8di97nHPpVRmsM0D4S5+KwAqhJoDaf7CV
+	PQcFmXgnK+4/F4mWc1lob6DRZzj3hKHUG120Ju7HxEeGDk8r4ytyMPWyl6HTJeGq
+	HVQFs2YN/VA5BLuXF2yN6MxynZ69x5+tKZq3dmm2FPNnrLe3LntCmlSWs15qkQnY
+	RhdZ6t7qXPwXYKnDOv0/XQtyKCc7TB3XwS/F4o4ogQXmP7zzcajUsktpAcezlPRq
+	ZcgmvgwSnyyGQSDTAQsX4EuTsnJY/28F9T6bk4fJ9c1fcgA4nIkZ1AAc3lTf7VxC
+	QxLBfL0zUGCKkgvhCCn31ylLNB71/NDad6A==
+X-ME-Sender: <xms:DiSPZ3r3jkDeMxqmqUVMt1ULvmPwxlqiS4beMfjoqXh-2OUSCVnmNw>
+    <xme:DiSPZxoXpSeWZ2FwAfuwUiCY4IaXK8FJUJNV6MvFSlguI3k4T7vT5D9hUUs6sM2Aq
+    NiPLZcUilreHfgY0w>
+X-ME-Received: <xmr:DiSPZ0OKZAN0qSS8GjFRQXiQQlhiHdm6i3Ba7NzgaV0rWPrzPfPL7_vNpDBpZ19TWyb6NlPr3IChomYn8yJsXxNbqAYMmK55iNQ-wFXqQ6hgL3VebvKr>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudejtddgjedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlje
+    dtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhi
+    vghlucgiuhcuoegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeeiff
+    fgledvffeitdeljedvteeffeeivdefheeiveevjeduieeigfetieevieffffenucevlhhu
+    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuh
+    hurdighiiipdhnsggprhgtphhtthhopeefpdhmohguvgepshhmthhpohhuthdprhgtphht
+    thhopehnvghtuggvvhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlih
+    hnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegs
+    phhfsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:DiSPZ658rpol8HEbhgKzA2JcXhZr5HY_Om9STbnzGnatZVWk-c8iMw>
+    <xmx:DiSPZ24u-7AqDOr-nHE5-zBk5ycIjvUUHiSJO9Tu3qa0YWgL0hfB7Q>
+    <xmx:DiSPZyg1-LjaXbsWnSBOc4ejYRalC2ZlI79ALpvk9smqsNV-rs265Q>
+    <xmx:DiSPZ44j7uSucbC8x0vEBoONKWcc7x-Fn7iZdd8w-xgrphPWP9HoQQ>
+    <xmx:DySPZ8kXc215Bv7R3YcHFdmeqzVJP205HBy04Dgs9XjQoKmsnPOFwOlU>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 20 Jan 2025 23:35:25 -0500 (EST)
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH bpf-next 0/3] bpf: Omit inlined bounds checks for null elided map lookups
+Date: Mon, 20 Jan 2025 21:35:09 -0700
+Message-ID: <cover.1737433945.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 2/3] bpf: Remove 'may_goto 0' instruction in
- opt_remove_nops()
-To: Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20250118192019.2123689-1-yonghong.song@linux.dev>
- <20250118192029.2124584-1-yonghong.song@linux.dev>
- <0056055b-338a-49f1-b6bf-fa11440cb959@iogearbox.net>
-Content-Language: en-GB
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <0056055b-338a-49f1-b6bf-fa11440cb959@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
+This follows up the null elision patchset with a corresponding codegen
+change. When the lookup is known to be inbounds, the inlined lookup can
+skip the bounds check.
 
+See final commit for the JIT diff.
 
+Daniel Xu (3):
+  bpf: verifier: Store null elision decision in insn_aux_data
+  bpf: map: Thread null elision metadata to map_gen_lookup
+  bpf: arraymap: Skip boundscheck during inlining when possible
 
-On 1/20/25 7:29 AM, Daniel Borkmann wrote:
-> On 1/18/25 8:20 PM, Yonghong Song wrote:
->> Since 'may_goto 0' insns are actually no-op, let us remove them.
->> Otherwise, verifier will generate code like
->>     /* r10 - 8 stores the implicit loop count */
->>     r11 = *(u64 *)(r10 -8)
->>     if r11 == 0x0 goto pc+2
->>     r11 -= 1
->>     *(u64 *)(r10 -8) = r11
->>
->> which is the pure overhead.
->>
->> The following code patterns (from the previous commit) are also
->> handled:
->>     may_goto 2
->>     may_goto 1
->>     may_goto 0
->>
->> With this commit, the above three 'may_goto' insns are all
->> eliminated.
->>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>   kernel/bpf/verifier.c | 9 +++++++--
->>   1 file changed, 7 insertions(+), 2 deletions(-)
->>
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 963dfda81c06..784547aa40a8 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -20187,20 +20187,25 @@ static const struct bpf_insn NOP = 
->> BPF_JMP_IMM(BPF_JA, 0, 0, 0);
->>     static int opt_remove_nops(struct bpf_verifier_env *env)
->>   {
->> +    const struct bpf_insn may_goto_0 = BPF_RAW_INSN(BPF_JMP | 
->> BPF_JCOND, 0, 0, 0, 0);
->>       const struct bpf_insn ja = NOP;
->>       struct bpf_insn *insn = env->prog->insnsi;
->>       int insn_cnt = env->prog->len;
->> +    bool is_may_goto_0, is_ja;
->>       int i, err;
->>         for (i = 0; i < insn_cnt; i++) {
->> -        if (memcmp(&insn[i], &ja, sizeof(ja)))
->> +        is_may_goto_0 = !memcmp(&insn[i], &may_goto_0, 
->> sizeof(may_goto_0));
->> +        is_ja = !memcmp(&insn[i], &ja, sizeof(ja));
->> +
->> +        if (!is_may_goto_0 && !is_ja)
->>               continue;
->
-> Why the extra may_goto_0 stack var?
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 245f1f3f1aec..16ba26295ec7 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -20185,16 +20185,19 @@ static int opt_remove_dead_code(struct 
-> bpf_verifier_env *env)
->  }
->
->  static const struct bpf_insn NOP = BPF_JMP_IMM(BPF_JA, 0, 0, 0);
-> +static const struct bpf_insn MAY_GOTO_0 = BPF_RAW_INSN(BPF_JMP | 
-> BPF_JCOND, 0, 0, 0, 0);
+ include/linux/bpf.h          |  2 +-
+ include/linux/bpf_verifier.h |  4 ++++
+ kernel/bpf/arraymap.c        | 35 ++++++++++++++++++++++-------------
+ kernel/bpf/hashtab.c         | 14 ++++++++++----
+ kernel/bpf/verifier.c        |  6 ++++--
+ net/xdp/xskmap.c             |  4 +++-
+ 6 files changed, 44 insertions(+), 21 deletions(-)
 
-This actually is what I did initially. I changed to use the stack var because
-NOP is used in other functions too while MAY_GOTO_0 is only used in
-opt_remove_nops(). Certainly, using MAY_GOTO_0 as static variable works too.
-
->
->  static int opt_remove_nops(struct bpf_verifier_env *env)
->  {
-> -       const struct bpf_insn ja = NOP;
->         struct bpf_insn *insn = env->prog->insnsi;
->         int insn_cnt = env->prog->len;
-> +       bool is_ja, is_may_goto_0;
->         int i, err;
->
->         for (i = 0; i < insn_cnt; i++) {
-> -               if (memcmp(&insn[i], &ja, sizeof(ja)))
-> +               is_may_goto_0 = !memcmp(&insn[i], &MAY_GOTO_0, 
-> sizeof(MAY_GOTO_0));
-> +               is_ja         = !memcmp(&insn[i], &NOP, sizeof(NOP));
-> +               if (!is_may_goto_0 && !is_ja)
->                         continue;
->
->>           err = verifier_remove_insns(env, i, 1);
->>           if (err)
->>               return err;
->>           insn_cnt--;
->> -        i--;
->> +        i -= (is_may_goto_0 && i > 0) ? 2 : 1;
->
-> Maybe add a comment for this logic?
-
-Thanks Alexei for adding comments before merging!
-
->
-> Thanks,
-> Daniel
+-- 
+2.47.1
 
 
