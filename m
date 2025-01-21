@@ -1,317 +1,132 @@
-Return-Path: <bpf+bounces-49365-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49363-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77063A17E3C
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 14:01:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E974A17E24
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 13:57:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DB773A123A
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 13:01:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 140B83A4E25
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 12:56:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0E191F1936;
-	Tue, 21 Jan 2025 13:01:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="CCR8aEK1"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6294E1F237A;
+	Tue, 21 Jan 2025 12:56:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05olkn2028.outbound.protection.outlook.com [40.92.91.28])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BB2D1854;
-	Tue, 21 Jan 2025 13:01:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.91.28
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737464466; cv=fail; b=re6kMp0EqLDAJQbwjumE/AGkNeP0ILiwj91iLHvOQvb4zCj/HvmjeOmYid10d7jH51GdIO4TmEqDNuL5xn7MTXQBh9EhJmVxFkzOt4CA33YzpEpZc8HT9r3/6aGJkevdYDSF0gmtqXDwUspZUKG0TrCPd9ZPXZcIPNn3s7149Z0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737464466; c=relaxed/simple;
-	bh=FWHCEwIM5G/f0lxre4WJgUXEeAVd5dJadZEev93eZmA=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=EwME4Lu23RgCB/VLkEk+/P5EwzWfEKWWQYZZbduF/YG79i+/y8Q7yk/r7/xY1IqgyfSi8SMZEt/jD81TTk2viHhxd/3HwrDWHuasJOLf8+bpiM4c2rpTCQFF5gVerlcwTjUKW08wyA8xkoHltncdTf+DPo0VW/wdcYqktcIF0LM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=CCR8aEK1; arc=fail smtp.client-ip=40.92.91.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=gE1TKuk2EzHkaIOUsYXmCH2xDLAftpQXEx/DixQdCby+ywvL+FuvwCyEEDNz128HYLt+gU/cmKx0W9nKeJ45pg2776/oegianxGaEiOL99peYgyWnnnSJ/n8K2+W7PZO6ZGiwylinN6Ka8GT7fCjHpzXs8UBQDlN1dRrba7zfj/dM3SHyTLwt0HCuwz2V+sS2n7QhTJKXw9H3rRay6NM0t8P6BO4V24YcKNKBNVuXfdxNgbNP0WP66TWtw9KD5YzNLkbjrrg5ei9vLo384fQMgvPwozvZsUSV5JFjCVc/awwxhyZndT+wycA/0iAXUqp4sjXo8ekPfkzAEmtTvsexw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=m2c2URC/WKyo7cSe53XMaKnX54UY9h70kq24z94n6FE=;
- b=RJVcy0f8cCtjsivItIMX1qWJEOiQ2gxoYp/9/B+iw9sCxC21s71g4JQKJ/utwS5qM/E9jCOzCb9M4xZUVneyujGXr28fqdTmTA41oYR7/rtYn2fcID+C5c/aC0WBhHsC9GbGOkDaqKJxERnshspgZNc4PZuFdW7dwH+YaJeU0OQf8ilN+Igzq+cch7xNCXNJUMCi21a5S0lZpkPYKV8veuRIGB2NrHrCv9XhdLBrrcTMp7X2C0xRZ6JEjP3InuoBntRJS7DOzA/0xMncwYGwZq+03n9w+sC95sdgYGwVxASPiA8SLEHdTc+oQ5lfsmBOUeN6BQ/UT3HkOIvwjXsLYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m2c2URC/WKyo7cSe53XMaKnX54UY9h70kq24z94n6FE=;
- b=CCR8aEK1ysPelhVuiOyvwOPScjyvgUEvZdNe/ZaRqGd4Ot10rLTlbmxYO7xo8Ad9FNIuQatD1OR9WL4VP8Kyul43w0C3bKDrQ000TbPZqCGbTIWEGjFslphU/3f3+Aud2g9lALrLziZg/hfmmY7vdrUKNKey0pRl7CGg/OtVzW9TXsBz4CEB5MKBTyrUr2i/oeh6IstWyu0XPmNmrErilbe5qOT5n6PNeZvsNr51k6gO51JCiUpytTuBxX7sHTu0lecdezvf3bAzDfxqPVlG7r7FNKd4fwQfkLwLmksufIIduvbDbYy3ytZpenWNeT5YJV4lhSryvMlspWNcRQf2kQ==
-Received: from AM6PR03MB5080.eurprd03.prod.outlook.com (2603:10a6:20b:90::20)
- by GV2PR03MB9884.eurprd03.prod.outlook.com (2603:10a6:150:bd::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8356.21; Tue, 21 Jan
- 2025 13:01:00 +0000
-Received: from AM6PR03MB5080.eurprd03.prod.outlook.com
- ([fe80::a16:9eb8:6868:f6d8]) by AM6PR03MB5080.eurprd03.prod.outlook.com
- ([fe80::a16:9eb8:6868:f6d8%3]) with mapi id 15.20.8356.020; Tue, 21 Jan 2025
- 13:01:00 +0000
-From: Juntong Deng <juntong.deng@outlook.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	memxor@gmail.com,
-	snorcht@gmail.com,
-	brauner@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Subject: [PATCH bpf-next v7 0/5] bpf: Add open-coded style process file iterator and bpf_fget_task() kfunc
-Date: Tue, 21 Jan 2025 12:55:07 +0000
-Message-ID:
- <AM6PR03MB508004527B8B38AAF18D763399E62@AM6PR03MB5080.eurprd03.prod.outlook.com>
-X-Mailer: git-send-email 2.39.5
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: LO4P123CA0454.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:1aa::9) To AM6PR03MB5080.eurprd03.prod.outlook.com
- (2603:10a6:20b:90::20)
-X-Microsoft-Original-Message-ID:
- <20250121125507.90160-1-juntong.deng@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91A2B1F2374
+	for <bpf@vger.kernel.org>; Tue, 21 Jan 2025 12:56:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1737464206; cv=none; b=oaGOc7lbGPccVEHLU0oJIygxdzL9kWC3iBoEEZn4VZwDOSIahSDr5eU6raMbw6xZNjI9+tbsycCpD6pJVl2C3D4bnwwOVFFXs/pCjtdGMIusqVEUHch6rI3B2yvGnvo21OBMV/Rnjdt1DuSpc8IUVZogSrabTfgtzvSaP+b+YQY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1737464206; c=relaxed/simple;
+	bh=nu9QeniA1BMWeI11IeyFY8LJrC7k6j8NqYO6IN0Gl6g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SVYFpqlLG5uZW/WUGb/tUGvKn/yKtMA3DGqCUYyFnPRp3UoIbjylkvUyt5tZQa+IpG2waFTKf8cdTvkT8Y2XVvF0PhJB0F4WA0A+Pfv9UIS4fZfi+aWP+c5cPsx4RK3nmIi10CxseAs9CksXMNOAPYqCFehJfQbPNDI72JJPDvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YcnJb1j2Kz4f3jLR
+	for <bpf@vger.kernel.org>; Tue, 21 Jan 2025 20:56:15 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 1BC851A139C
+	for <bpf@vger.kernel.org>; Tue, 21 Jan 2025 20:56:37 +0800 (CST)
+Received: from huawei.com (unknown [7.197.88.80])
+	by APP2 (Coremail) with SMTP id Syh0CgAXIWR1mY9nPLhOBg--.23795S2;
+	Tue, 21 Jan 2025 20:56:36 +0800 (CST)
+From: Tengda Wu <wutengda@huaweicloud.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	hffilwlqm@gmail.com,
+	leon.hwang@linux.dev
+Subject: [PATCH bpf] selftests/bpf: Fix freplace_link segfault in tailcalls prog test
+Date: Tue, 21 Jan 2025 20:56:02 +0800
+Message-Id: <20250121125602.683613-1-wutengda@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR03MB5080:EE_|GV2PR03MB9884:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8bbac3d9-d604-4c10-7cb4-08dd3a1ba74d
-X-MS-Exchange-SLBlob-MailProps:
-	vuaKsetfIZkOVoj0UqpnLtxcZHTVbEDrATxzuLOsRLwngE0whULbNMce8SQ516678XiJCmQOSIdBzeE9JzRHz6rO7a5OzleR5N9wYM6I8+O3nhFXSCDlgENYc8MT9swBiycIOOjqgib4aRq2hoKSMPqpJjX6csTziDefXuRuwvqoLOCX5NH4mNyR4ACq49/VRbdoEywXn2G9hr8sOGmOxgcqjXd+NeSBRPsA74qVsEpCnkRYxilkTG7Pxv5W62Xw7QCY7g3yY9gp0A2j90a8VmapNvYvN7NBM6K9I6X2wwPl79pnjbzAdtWbUPnFcWc6TECszZw67e2D6gOwpn7NBm/HtvdPFuEAa9s/LP5tCKP4qeQbyhowgwDdN/ke515KzA/bTbBoMaxQkas/Hb5DdWyd4YHOk7qZgmBH8zp6ieY6v0YUwSj96pV9DibImHCWDWyr6QT7xhnhZRVzuVuvo6D817qhHMjUiTy/kqY5VBqM7t/r8O3G5a5TlcBlTBWAIYHx0ru/Yw7GcQkKaowXAoHHkea22LmysTH9Y1JjCTd1M9MMjRkjpjDHtKrCzBmADFCpV4w/WTDAuoSdAPRuLk7A/67qRMhIF3kkai0cN+5YZax+UBZDypXysQD+mlxL2erKbdigl3imLAbe7NWDgLeoWP6o4OeXXsSvSOjIsm4RryxswTkrKSkO4fPGUMVkJ42HLgwDSbBUdteiwHvxiIqrXdUSErZ/vckNAC59xEvJ48iPJKUyZaGGWcyvp8juxdSQi8oush5Q/OBiedjqFJBZtTz5SS6KMO+bB8hMVfbxNZNtBvEZfGCe1gjYph8M
-X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|15080799006|8060799006|5062599005|19110799003|5072599009|461199028|10035399004|3412199025|440099028|4302099013|41001999003|1602099012;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?vRH1yV/Fxz8ItuZMFeVWazXMEBAk5gOxFOj84UexaWoTYTAN0CTWi/0YkU58?=
- =?us-ascii?Q?HqDstBXKVhTHJCMJFsq+Xo/r/ZhmHZEFibQ1sFwKBVF5Fhqs1PtlHKMDuuAj?=
- =?us-ascii?Q?m4DAvGCZjFytfqbOLqDi1EiZXDQb7mtvvo8gPWgHMMNE89la20W0pIsyybEX?=
- =?us-ascii?Q?Aj+bgSyt7OZdEvMgLMrLZPpr+ozoqfXsUp2OBVOPw2EZNj1+OdRRT7LobXOh?=
- =?us-ascii?Q?HrcgXI9baNLEQaB6YMgeGgvapuiVL4W0KWeZc3/g2eUWo+ohSw9NQjX3fr9W?=
- =?us-ascii?Q?jXkiALplUGahOCNKS9W7Zmjs7IiwE4LDeGfgkHoRVoN5yakRi/NTTePiNXV7?=
- =?us-ascii?Q?uazeCp8wgiTwSHZnDAnKaLERPkR9OITGE0lt8aB1M4ud8RAoMsIVBZty2GxP?=
- =?us-ascii?Q?d/S7/3SZP7+SZxidk/DaYuSlS74LyULdqblHz7+3TX0t9p5eLEM3jREzBYE0?=
- =?us-ascii?Q?ZZ9bnwVDOOhRLFI+t7a0HXu8NG6yNk9jnvTKdu9nQkek0V3q+bAL/dkmXbFt?=
- =?us-ascii?Q?6am69KewjMLo+VO8ZOZlQX0QR1oO8B54hmkzxaZBFoPRUyEFziLJRCD3Rkkd?=
- =?us-ascii?Q?ytXzqrxKjMY2PB9ijmPi2804Sl91dCsclnq5jbF6giBOXXvhdEqKGJW32BkN?=
- =?us-ascii?Q?NUMxTQ56PMeCMw+J7FUGSU7YCY3MfTnIOA0JhuDBO/UII81Axmq2RO1J3ENH?=
- =?us-ascii?Q?g77TKF1O+LzyHQSZFMa4lpaqFHM3Gi93QRfobAf4h045yUfHzjGMyPwFBU+S?=
- =?us-ascii?Q?JhjSSrWIwnJhpY23nLia9EmP6N6Da3GCbkjskzCZJ2HU4iKURh6uqfsX7cha?=
- =?us-ascii?Q?ZyLsugLk3c5xGfQ2wWNhQ+V5hIQ4Z2zFkY5GVYyE8UqHkG0sQq9D8Rnmy6FG?=
- =?us-ascii?Q?XBD3fzq3+62nTIU9Z+cgtKNBjQBxtNyJxACafxfkxrZfbJxzNpoFtuAm/hcD?=
- =?us-ascii?Q?XeCe3RjCY8vOvu2Uy2IVpNxwXE/vKExhsobyo51TIHGL0k9HYhjIaIxnZArb?=
- =?us-ascii?Q?1lWYB74k3+9vW6qH9E/JD/oeogDXR+tesL9uE4BnA+AA4ZtItQYn8Hy4eUVZ?=
- =?us-ascii?Q?vHvLvLMQ5Ad2W954xAv+0ez9KCttdg6GibpU34QzerPkW1ER5YgR9HZlcWCd?=
- =?us-ascii?Q?WASNoe+ENL9ncMqGfBbnh13HCblXgh2ppTmQxbly2h2iBtqggbbjt4085ra4?=
- =?us-ascii?Q?MXNl/qFQyTycUdmXSlfpLQtEKupWcwUM4L3wTzzTB4DkwngIlN/K1rYibCg?=
- =?us-ascii?Q?=3D?=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?+eMiyfE36b71NAno0Hv/GIHHJm/29LOvEUM+2TYcYQJIj1GxKfzvi8+4IDb/?=
- =?us-ascii?Q?xqGclHw13YBNkSHiH2PwY66WQvIKdpDfRjv/RpKq4d2ogd9/hcsLQ+V+lM7p?=
- =?us-ascii?Q?gCYHydw0w7wR+0RsxWfAEbiO3oyuylWXvNrlcNRUJTp9MdZ5pjBIQIPJ3piv?=
- =?us-ascii?Q?r/vJAI8yTkRdGPmd0EJHcZKwz8Q8VXxWImDlYb4Mm87x1oGoym42Mv9OL5gH?=
- =?us-ascii?Q?9rONivchb801ot68c6Lp31Kz9WJCyrMPlw98GRG8oBBrX1GmY0EgWWS3mRCm?=
- =?us-ascii?Q?9Izp669XT0Hot+/YAqoqY1EU88lBKI8OuDH3G0Lq/fIhrflSPgKJb2v1WOFD?=
- =?us-ascii?Q?S06VvTyk6m5iaqVXcdSluEUg4pJZh4VzLk3o8gliddKMEYPDgm0HMpyHyL9c?=
- =?us-ascii?Q?QOpbWLrxS6vnWCN8b2CPDAEg1fPvhuSrDGnTSL1rpZoS+StkLbxoHG5GndMA?=
- =?us-ascii?Q?yMM/DHDp9up17VdeF7CBiq6nVFmgNwUN8Isvpu+H6+ReO5gIAmeAiMvvcV08?=
- =?us-ascii?Q?EoQxHi8wwM0q9s4rlFznrnxpDVP83qRM5zFqc0wB5pSDXBe5d0AERPBsa9NC?=
- =?us-ascii?Q?xqKa0s2EHwTSQi/LT07rb9ZtNTJK2g1Vzez/sbUQPbiqYoUHeuC/CEWkisWp?=
- =?us-ascii?Q?J19jIKwTo0y6wDMOpA+wau6ShhAP3bMvaHkBdBm5/SqGESUBv8RLy0zyAEyM?=
- =?us-ascii?Q?PPBKdCs/v2srR7A6LzwoTCnUoQFmQ/Lqb0HYfF4nlR1VjL/Z1O6njGcWsgxo?=
- =?us-ascii?Q?qCJqS+cpmxyYJ7pJwPmeOq/vOYzvQdoDatM1HN0F1DrrBh34NLsvYhpHLOkq?=
- =?us-ascii?Q?t8LHgvLOjjhM5ZVgD4+Vk9MJmZz8ioBcoOus8tTcN8zqqU0xVioZTn79LGNI?=
- =?us-ascii?Q?W133MnP586WJ3fr4j8xdoPP8/hWas/LwjksQsRwoSEW2HxrptiX9ydJNVlfR?=
- =?us-ascii?Q?d4B7cCH1QBXMYyXNoyp/16nRXKe1YDHJJ0t7fsypcWM+0Vo/OIL0Y9BpYX7A?=
- =?us-ascii?Q?Fa3kqFusYf1YQrkoNNYVPPapXgw+r3apN5t3grZprUuo6WygAHF60etfgkiq?=
- =?us-ascii?Q?/g8NeN/dVHcamN1DM6wfIvXoU2G4A+0bbbFGZMX65F+MotCa2Zi4wLpGqt45?=
- =?us-ascii?Q?cu8XzTwVSHzZkTu/Bz56ndFIwfjrpQNj6zvOo9bimJGLZkK+kJU74FaZ7kEE?=
- =?us-ascii?Q?Tr58fvMx3Z3A4wTBqEqZJiHaPBtp/zCa/GpsSVkYUoS+l3fd8CXChduSz9GT?=
- =?us-ascii?Q?xm8ZGQ3yxvYARZ9zU5TG?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8bbac3d9-d604-4c10-7cb4-08dd3a1ba74d
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5080.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2025 13:01:00.5389
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV2PR03MB9884
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgAXIWR1mY9nPLhOBg--.23795S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kw4rAw45WrWDAFy5tFW8JFb_yoW8Cw4kpa
+	4vvw1DKr1F9rn0qF47Gw429FWS9F4kXFyYkr1rWwn5Ar4UXrZ7GF1I9a4jgF1rZryrX34r
+	Ar1ftrn3u34xG37anT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9jb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+	FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
+	0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxa
+	n2IY04v7MxkF7I0En4kS14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+	17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+	IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4l
+	IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvf
+	C2KfnxnUUI43ZEXa7IU0qZX5UUUUU==
+X-CM-SenderInfo: pzxwv0hjgdqx5xdzvxpfor3voofrz/
 
-This patch series adds open-coded style process file iterator
-bpf_iter_task_file and bpf_fget_task() kfunc, and corresponding
-selftests test cases.
+There are two bpf_link__destroy(freplace_link) calls in
+test_tailcall_bpf2bpf_freplace(). After the first bpf_link__destroy()
+is called, if the following bpf_map_{update,delete}_elem() throws an
+exception, it will jump to the "out" label and call bpf_link__destroy()
+again, causing double free and eventually leading to a segfault.
 
-In addition, since fs kfuncs is general and useful for scenarios
-other than LSM, this patch makes fs kfuncs available for SYSCALL
-program type.
+Fix this issue by moving bpf_link__destroy() out of the "out" label
+and only calling it when freplace_link exists and has not been freed.
 
-(In this version I did not remove the declarations in
-bpf_experimental.h as I guess these might be useful to others?)
-
-Although iter/task_file already exists, for CRIB we still need the
-open-coded iterator style process file iterator, and the same is true
-for other bpf iterators such as iter/tcp, iter/udp, etc.
-
-The traditional bpf iterator is more like a bpf version of procfs, but
-similar to procfs, it is not suitable for CRIB scenarios that need to
-obtain large amounts of complex, multi-level in-kernel information.
-
-The following is from previous discussions [1].
-
-[1]: https://lore.kernel.org/bpf/AM6PR03MB5848CA34B5B68C90F210285E99B12@AM6PR03MB5848.eurprd03.prod.outlook.com/
-
-This is because the context of bpf iterators is fixed and bpf iterators
-cannot be nested. This means that a bpf iterator program can only
-complete a specific small iterative dump task, and cannot dump
-multi-level data.
-
-An example, when we need to dump all the sockets of a process, we need
-to iterate over all the files (sockets) of the process, and iterate over
-the all packets in the queue of each socket, and iterate over all data
-in each packet.
-
-If we use bpf iterator, since the iterator can not be nested, we need to
-use socket iterator program to get all the basic information of all
-sockets (pass pid as filter), and then use packet iterator program to
-get the basic information of all packets of a specific socket (pass pid,
-fd as filter), and then use packet data iterator program to get all the
-data of a specific packet (pass pid, fd, packet index as filter).
-
-This would be complicated and require a lot of (each iteration)
-bpf program startup and exit (leading to poor performance).
-
-By comparison, open coded iterator is much more flexible, we can iterate
-in any context, at any time, and iteration can be nested, so we can
-achieve more flexible and more elegant dumping through open coded
-iterators.
-
-With open coded iterators, all of the above can be done in a single
-bpf program, and with nested iterators, everything becomes compact
-and simple.
-
-Also, bpf iterators transmit data to user space through seq_file,
-which involves a lot of open (bpf_iter_create), read, close syscalls,
-context switching, memory copying, and cannot achieve the performance
-of using ringbuf.
-
-Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+Fixes: 021611d33e78 ("selftests/bpf: Add test to verify tailcall and freplace restrictions")
+Signed-off-by: Tengda Wu <wutengda@huaweicloud.com>
 ---
-v6 -> v7:
-* Fix argument index mistake
+ tools/testing/selftests/bpf/prog_tests/tailcalls.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-* Remove __aligned(8) at bpf_iter_task_file_kern
-
-* Make the if statement that checks item->file closer to
-  fget_task_next
-
-* Remove the const following extern
-
-* Keep bpf_fs_kfuncs_filter
-
-v5 -> v6:
-* Remove local variable in bpf_fget_task.
-
-* Remove KF_RCU_PROTECTED from bpf_iter_task_file_new.
-
-* Remove bpf_fs_kfunc_set from being available for TRACING.
-
-* Use get_task_struct in bpf_iter_task_file_new.
-
-* Use put_task_struct in bpf_iter_task_file_destroy.
-
-v4 -> v5:
-* Add file type checks in test cases for process file iterator
-  and bpf_fget_task().
-
-* Use fentry to synchronize tests instead of waiting in a loop.
-
-* Remove path_d_path_kfunc_non_lsm test case.
-
-* Replace task_lookup_next_fdget_rcu() with fget_task_next().
-
-* Remove future merge conflict section in cover letter (resolved).
-
-v3 -> v4:
-* Make all kfuncs generic, not CRIB specific.
-
-* Move bpf_fget_task to fs/bpf_fs_kfuncs.c.
-
-* Remove bpf_iter_task_file_get_fd and bpf_get_file_ops_type.
-
-* Use struct bpf_iter_task_file_item * as the return value of
-  bpf_iter_task_file_next.
-
-* Change fd to unsigned int type and add next_fd.
-
-* Add KF_RCU_PROTECTED to bpf_iter_task_file_new.
-
-* Make fs kfuncs available to SYSCALL and TRACING program types.
-
-* Update all relevant test cases.
-
-* Remove the discussion section from cover letter.
-
-v2 -> v3:
-* Move task_file open-coded iterator to kernel/bpf/helpers.c.
-
-* Fix duplicate error code 7 in test_bpf_iter_task_file().
-
-* Add comment for case when bpf_iter_task_file_get_fd() returns -1.
-
-* Add future plans in commit message of "Add struct file related
-  CRIB kfuncs".
-
-* Add Discussion section to cover letter.
-
-v1 -> v2:
-* Fix a type definition error in the fd parameter of
-  bpf_fget_task() at crib_common.h.
-
-Juntong Deng (5):
-  bpf: Introduce task_file open-coded iterator kfuncs
-  selftests/bpf: Add tests for open-coded style process file iterator
-  bpf: Add bpf_fget_task() kfunc
-  bpf: Make fs kfuncs available for SYSCALL program type
-  selftests/bpf: Add tests for bpf_fget_task() kfunc
-
- fs/bpf_fs_kfuncs.c                            | 32 +++++--
- kernel/bpf/helpers.c                          |  3 +
- kernel/bpf/task_iter.c                        | 90 ++++++++++++++++++
- .../testing/selftests/bpf/bpf_experimental.h  | 15 +++
- .../selftests/bpf/prog_tests/fs_kfuncs.c      | 46 ++++++++++
- .../testing/selftests/bpf/prog_tests/iters.c  | 78 ++++++++++++++++
- .../selftests/bpf/progs/fs_kfuncs_failure.c   | 33 +++++++
- .../selftests/bpf/progs/iters_task_file.c     | 86 ++++++++++++++++++
- .../bpf/progs/iters_task_file_failure.c       | 91 +++++++++++++++++++
- .../selftests/bpf/progs/test_fget_task.c      | 63 +++++++++++++
- .../selftests/bpf/progs/verifier_vfs_reject.c | 10 --
- 11 files changed, 529 insertions(+), 18 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/fs_kfuncs_failure.c
- create mode 100644 tools/testing/selftests/bpf/progs/iters_task_file.c
- create mode 100644 tools/testing/selftests/bpf/progs/iters_task_file_failure.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_fget_task.c
-
+diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
+index 544144620ca6..028439dd2c5f 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
++++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
+@@ -1624,7 +1624,7 @@ static void test_tailcall_bpf2bpf_freplace(void)
+ 	freplace_link = bpf_program__attach_freplace(freplace_skel->progs.entry_freplace,
+ 						     prog_fd, "subprog_tc");
+ 	if (!ASSERT_ERR_PTR(freplace_link, "attach_freplace failure"))
+-		goto out;
++		goto out_free_link;
+ 
+ 	err = bpf_map_delete_elem(map_fd, &key);
+ 	if (!ASSERT_OK(err, "delete_elem from jmp_table"))
+@@ -1638,11 +1638,11 @@ static void test_tailcall_bpf2bpf_freplace(void)
+ 		goto out;
+ 
+ 	err = bpf_map_update_elem(map_fd, &key, &prog_fd, BPF_ANY);
+-	if (!ASSERT_ERR(err, "update jmp_table failure"))
+-		goto out;
++	ASSERT_ERR(err, "update jmp_table failure");
+ 
+-out:
++out_free_link:
+ 	bpf_link__destroy(freplace_link);
++out:
+ 	tailcall_freplace__destroy(freplace_skel);
+ 	tc_bpf2bpf__destroy(tc_skel);
+ }
 -- 
-2.39.5
+2.34.1
 
 
