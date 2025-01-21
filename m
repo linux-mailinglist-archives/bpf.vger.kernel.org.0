@@ -1,393 +1,189 @@
-Return-Path: <bpf+bounces-49415-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49416-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADEF6A187C6
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 23:36:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91BADA187C9
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 23:38:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1FAD163610
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 22:36:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 339BC188BB39
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 22:38:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04F9C1F8AF3;
-	Tue, 21 Jan 2025 22:36:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE8291F8ADD;
+	Tue, 21 Jan 2025 22:38:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="M+B5Pyii"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hOuCQrsV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 165F11F7064
-	for <bpf@vger.kernel.org>; Tue, 21 Jan 2025 22:35:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C32E6187FE4;
+	Tue, 21 Jan 2025 22:38:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737498963; cv=none; b=l3dty+gQz46VqXkT5ZrmthxoAFnl0DxoJHC/WUAfgFaHTzKqkDMe+6uoqjpF2CJDIJ4e13Mqa4PB+eUY5TzeHlaOwJpph8FB9gFoUag05e42PkmgBfcfJNTkREmqFjmJHWpidMXf691nt4CCSRkE8qtfU4y1wWsQZqBZglxZpEI=
+	t=1737499107; cv=none; b=juNI3pl3ydUZdhzDUbuh387clEJXyMGkh3iCbKubektaWwPz+S5cFqHmLGcNkd+APFItMru/4Kq2Ml7VgSjduau0UaWnn8r7k4h0LKPFYck66LEYmEVqy6v0Ud/uoY3Wv/ogWRP3JJlIHNRDeHIbstCMj5ATrt3uvQsPJl1PLhI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737498963; c=relaxed/simple;
-	bh=06Hh2+UAEpneh6HfJH3Ll28Wf+x1/JghZ6f5pl9BOek=;
+	s=arc-20240116; t=1737499107; c=relaxed/simple;
+	bh=IiYBdtN8+kUip8EwEkxRpTbCERxaPT45SZvkXeZf1GY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Z0CEVpREla0T/f4iZyzK2B0s+XcglZ9c/P3el5pC7YBraTi26EraHHZ9wM0LCOftKfusLW5ZYb61iAxhsK6mshSgZd7dOG6f4yq55ratD6gNka6C7w/5Eywbnv6+KH1UihbJRQctTFP7glrCy5+4IHGS/w2rlopA75wwpLfusEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=M+B5Pyii; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5da12292b67so9904010a12.3
-        for <bpf@vger.kernel.org>; Tue, 21 Jan 2025 14:35:59 -0800 (PST)
+	 To:Cc:Content-Type; b=X89sVc6dC4N8m2yDux5G+SBtU5hvBzfJHS492fGg76ep2DBXeEONVQ9a0IZAB07u5lyK6NcvBv5l9PvNxnx9j8gidOE91PQUq5L+msialVcycRVVfqIvJvyk17WjpH1zynyqh+hvzz6VOlQMScfXUTiuUp7p8FPwuIPAI2cAbCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hOuCQrsV; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-21636268e43so137088485ad.2;
+        Tue, 21 Jan 2025 14:38:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1737498958; x=1738103758; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1737499105; x=1738103905; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BWvQ57s5WLieNo1sliCfgXAQCkGzy3GzVR5mbefurH0=;
-        b=M+B5Pyiilwayg0tUh/v4jkOfWP3OMZKU8emv+ETIXNI4mXaaXtnbdZkjxvHyA0EbXC
-         pLHyhw9esBn2vt1GfWAuqwd1u4+3HI1WlM6q4Y/cSFPsGVvvkC06STsP6BCOxeJqrJPY
-         p+lU44j+30ZSM4bKzgubseEbi5/hrUqMYf09yPmSEs+s1KprNTDDH+XZaVYNOeWJDpfW
-         AuYpWMSLNbwfy42/Pm87pJW1jCNiUaeHJ9fr7vy6zq6BbxeoOq8hK02Q0wNglKEhPXvO
-         4JZyu4hlX/KfJKgY7eZt7BvncOhb5PSxQsj4qWvfaZmW9shmKyahAkTODoladSkTn07v
-         vLAQ==
+        bh=1QBmFNF9CU6iEPIp52Swx+xlInIwAj5N3NR5T+2s9s0=;
+        b=hOuCQrsVjoTOsj8qURll5dMy7xYB/yQfNCNFg9IJwTNFReTfzIgQ4SY022O232dd8C
+         7VkjseYtqThWo9YzIGClqYIF9JLrrrnWQZCaYcBXH1MArRlKa5bjU3kq9N+jKEI5Ulvu
+         t1tVhdAruX9KM3STCEKD5uS01vilnOQGToEjQe0sVKnUZTALQYLZ1CIygsUGplrAMCrL
+         Kq038KdZIZ/1klhhDO+T7czdQ0rPKuKU5iRNoaP2PtGwfSKGzOkQf2iVLdg2oC1VJGZL
+         9A6X6vRXaoHSIactalk3IApFtZiTUobWdpTd+eovFAGRltroyY2jXuUjUPLNsmxGroY2
+         qmyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737498958; x=1738103758;
+        d=1e100.net; s=20230601; t=1737499105; x=1738103905;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BWvQ57s5WLieNo1sliCfgXAQCkGzy3GzVR5mbefurH0=;
-        b=JajWyZFo7CZ7XmvL8KJ+nbgMGBX/q/Fha0Z5IAlFE6d5enDSFwbHGUU/JxRg8ZhpEC
-         cnWisynsE9Ovl7dfgrh5dk9fmjIBg03z3FXgM1LxbzNp415/EGVfwR96P2JBv9ARifDY
-         1hfl0kej6S9hu+QL80wLP7Zo9cXoGmHZ11y3kO1c+SjhRWGhpFOFbCpZDHvs/XMInvLw
-         UJtcVPSbi5e/jt3z7e91nYOaPyXxcqBDPRkaicl1khhVnpX2pU9k5TNRW/P70qWn4sq8
-         8g4vvSMe/FPlR/ETNSS4g+4E5kF6QfxGizE9Mpx/gzED+5m77rplzhAvcMPULCFji2+A
-         fb3A==
-X-Forwarded-Encrypted: i=1; AJvYcCX3FenQgk86UuQWq3a9egitB/xaFVUxEWboFNDGo1XyFmaTdh9ysOb61hTMfad0R74yqH0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzBTgak+h296byJ1RdpnQLkTBV4KmZBNiqjcTMY+Hrg8AmNxZQj
-	pQOML7qqxbzBNMgxJ+K/vcDv8ywgU/jLSk+XOeBrpg79GXUdmA1FLtCGrZHC70AL+W9sPaX6rCF
-	4XXdbZ38rmkh1J7kHofU9h/5xwTPOFea0+dG3
-X-Gm-Gg: ASbGncslWQMxTsHOTyoDdYj5HkDzk6OSs9NSA18b+2Nvlc6LG87LyRRrGspAGcz5vi8
-	5wjuOXQF1a1Dibwep6rcR5hDMqnik0j0Wsi8fPzNUIUgIp5DYqLWM+ez9rOK2FTOgQQQQhpXIG4
-	xei3PQyA==
-X-Google-Smtp-Source: AGHT+IGt0OMy7B4oot6v84WB08lfnc/QRZCDU+KLiGjyKu7W62PqcoeuptE013G66TBd117SgsxqzMkgh51s4sdqzTU=
-X-Received: by 2002:a05:6402:4406:b0:5d9:84ee:ff31 with SMTP id
- 4fb4d7f45d1cf-5db7d2dc6d2mr41461629a12.3.1737498958162; Tue, 21 Jan 2025
- 14:35:58 -0800 (PST)
+        bh=1QBmFNF9CU6iEPIp52Swx+xlInIwAj5N3NR5T+2s9s0=;
+        b=dn9gRYvWSvqBIteUE8HDiNkko35F21YywjTpfR5MSgwmGOjqtMugNfZ7f1Q1Y9u4+6
+         no8d6NhdfhFcyj/oY5Rjv/HAAEgaIqDXVyBkOiJbSGhGN/v50s05pc9ikd4Vog08iNzW
+         R9cWN5tcIbt1aO5QqQkI6uqtMfU+fQFaEMIK3ek/cJVTTDIS81DVAQiosar0buzaSrR5
+         tdrkgeIMqE95V+kWL9NgSCAqbwL8inav4TbCjvFbAMwleGj6kIWm1yq+bnEqs9PHcEFG
+         dzbKuevDY02c98BxyfeKxnfPkE9EhPKrEIBUUMpCJmTWlDfUCDqJNuBewAyhhsPC4zUo
+         mPAA==
+X-Forwarded-Encrypted: i=1; AJvYcCUDKhoNvCHIgXUVfn0R9GMoiCwP8GgFb8D36e7605pTomkCaavWPEHvlllWgXxCqU7QzTk=@vger.kernel.org, AJvYcCVNmTLKArn5jsnhgd9vEnSqXe2pg3x5XjNNdmyqwt8tjZw31tMDSPTa8z0VuYdBn5ed5TZucoWQqNsL@vger.kernel.org, AJvYcCWNHNLIx34FAV52jR/oQQW8RXfRJ3FLhWVWGxA3Jz1FGTanF3z7aX7P3HlAFhvRFyJ0VstDK0azrWrVbEa2uxc7veWG@vger.kernel.org, AJvYcCWxc/Fxby+mHcFOjTIgWVSQYkS1XUqF+VvH2mCYL+zV949q7PTa2yNSUwD3mlPgZ35zxPXkGZce@vger.kernel.org, AJvYcCXcfG5F6F6k1Y9HDuMtLhe1lbgon+gBsEMOZ1d+A9TFwD55RS+5TItfxbviHjS+SLUt82q6v0ZADBcRkH3Q@vger.kernel.org
+X-Gm-Message-State: AOJu0YxxaOG7+6kBT/mI3aZ8aUijBj6lmjeY5xiEA9EV+tunN2dbdKlm
+	v+rpgKcn2ygHtSAfB2B3p6VIsfeTObJx1gDscQ8wIuFtYtzhfrS4+X3U00PqtweZt+vaI9iHQKc
+	7ZkDzYwmaVUxDECdDaVaTgBOd6GU=
+X-Gm-Gg: ASbGncttytDurrlmdYOW3utzzU3xoWGwrGy7OHPPSvaQtt4S+4dHeIZa0aakDgnxV8t
+	5AEhaG2DEupH+cOf0EXPxSWKa0tLmXFV8J8HB04F9Ce01Xk7x+azoDjLjXvolepxd1ok=
+X-Google-Smtp-Source: AGHT+IEb0G90JnUb++0qPTelMMSZe3TRHWq+Fq4dqRtw+7t73B1scPakh3a2X/neoODL/siWVyCBZ1BPUUofYk7+D0M=
+X-Received: by 2002:a05:6a21:3285:b0:1e1:f281:8cec with SMTP id
+ adf61e73a8af0-1eb21498383mr29031250637.10.1737499104890; Tue, 21 Jan 2025
+ 14:38:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250113052220.2105645-1-ctshao@google.com> <20250113052220.2105645-3-ctshao@google.com>
- <Z4XbdVKyXgjUqZcP@google.com>
-In-Reply-To: <Z4XbdVKyXgjUqZcP@google.com>
-From: Chun-Tse Shao <ctshao@google.com>
-Date: Tue, 21 Jan 2025 14:35:46 -0800
-X-Gm-Features: AbW1kvZ6SGeDznqhE4nXMvbzFFvd_WAlQ0gHHFXPNtYPjNsTqI5NxSw61i6S2z4
-Message-ID: <CAJpZYjWvuzrwViWqi3Oet2agXkJP6T=82HZ_YeKNYV2KKioWdA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] perf lock: Retrieve owner callstack in bpf program
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: linux-kernel@vger.kernel.org, peterz@infradead.org, mingo@redhat.com, 
-	acme@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
-	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
-	kan.liang@linux.intel.com, linux-perf-users@vger.kernel.org, 
-	bpf@vger.kernel.org
+References: <20250117005539.325887-1-eyal.birger@gmail.com>
+ <202501181212.4C515DA02@keescook> <CAHsH6GuifA9nUzNR-eW5ZaXyhzebJOCjBSpfZCksoiyCuG=yYw@mail.gmail.com>
+ <8B2624AC-E739-4BBE-8725-010C2344F61C@kernel.org> <CAHsH6GtpXMswVKytv7_JMGca=3wxKRUK4rZmBBxJPRh1WYdObg@mail.gmail.com>
+ <Z4-xeFH0Mgo3llga@krava> <20250121111631.6e830edd@gandalf.local.home> <Z4_Riahgmj-bMR8s@krava>
+In-Reply-To: <Z4_Riahgmj-bMR8s@krava>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 21 Jan 2025 14:38:09 -0800
+X-Gm-Features: AbW1kvYiltR-mpN54P95qZGx9A5ZmJJyHCcX2_kRHm9_GN1BzcWeXina4gS657M
+Message-ID: <CAEf4BzZv3s0NtrviQ1MCCwZMO-SqCsiQF-WXpG6_-p4u5GeA2A@mail.gmail.com>
+Subject: Re: [PATCH] seccomp: passthrough uretprobe systemcall without filtering
+To: Jiri Olsa <olsajiri@gmail.com>, Kees Cook <kees@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Eyal Birger <eyal.birger@gmail.com>, luto@amacapital.net, 
+	wad@chromium.org, oleg@redhat.com, ldv@strace.io, mhiramat@kernel.org, 
+	andrii@kernel.org, alexei.starovoitov@gmail.com, cyphar@cyphar.com, 
+	songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com, 
+	peterz@infradead.org, tglx@linutronix.de, bp@alien8.de, daniel@iogearbox.net, 
+	ast@kernel.org, rafi@rbk.io, shmulik.ladkani@gmail.com, bpf@vger.kernel.org, 
+	linux-api@vger.kernel.org, linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 13, 2025 at 7:35=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
+On Tue, Jan 21, 2025 at 8:55=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
 >
-> On Sun, Jan 12, 2025 at 09:20:15PM -0800, Chun-Tse Shao wrote:
-> > Tracing owner callstack in `contention_begin()` and `contention_end()`,
-> > and storing in `owner_lock_stat` bpf map.
+> On Tue, Jan 21, 2025 at 11:16:31AM -0500, Steven Rostedt wrote:
 > >
-> > Signed-off-by: Chun-Tse Shao <ctshao@google.com>
-> > ---
-> >  .../perf/util/bpf_skel/lock_contention.bpf.c  | 152 +++++++++++++++++-
-> >  1 file changed, 151 insertions(+), 1 deletion(-)
+> > [ Watching this with popcorn from the sidelines, but I'll chime in anyw=
+ay ]
 > >
-> > diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/per=
-f/util/bpf_skel/lock_contention.bpf.c
-> > index 05da19fdab23..3f47fbfa237c 100644
-> > --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> > +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> > @@ -7,6 +7,7 @@
-> >  #include <asm-generic/errno-base.h>
+> > On Tue, 21 Jan 2025 15:38:48 +0100
+> > Jiri Olsa <olsajiri@gmail.com> wrote:
 > >
-> >  #include "lock_data.h"
-> > +#include <time.h>
+> > > I'm still trying to come up with some other solution but wanted
+> > > to exhaust all the options I could think of
 > >
-> >  /* for collect_lock_syms().  4096 was rejected by the verifier */
-> >  #define MAX_CPUS  1024
-> > @@ -178,6 +179,9 @@ int data_fail;
-> >  int task_map_full;
-> >  int data_map_full;
-> >
-> > +struct task_struct *bpf_task_from_pid(s32 pid) __ksym;
-> > +void bpf_task_release(struct task_struct *p) __ksym;
+> > I think this may have been mentioned, but is there a way that the kerne=
+l
+> > could know that this system call is being monitored by seccomp, and if =
+so,
+> > just stick with the interrupt version? If not, enable the system call?
 >
-> To support old (ancient?) kernels, you can declare them as __weak and
-> check if one of them is defined and ignore owner stacks on them.  Also
-> you can check them in user space and turn off the option before loading.
+> yes [1], the problem with that solution is that we install uretprobe
+> trampoline at function's uprobe entry probe, so we won't catch case
+> where seccomp is enabled in this probed function, like:
 >
-> > +
-> >  static inline __u64 get_current_cgroup_id(void)
-> >  {
-> >       struct task_struct *task;
-> > @@ -407,6 +411,60 @@ int contention_begin(u64 *ctx)
-> >       pelem->flags =3D (__u32)ctx[1];
-> >
-> >       if (needs_callstack) {
-> > +             u32 i =3D 0;
-> > +             int owner_pid;
-> > +             unsigned long *entries;
-> > +             struct task_struct *task;
-> > +             cotd *data;
-> > +
-> > +             if (!lock_owner)
-> > +                     goto contention_begin_skip_owner_callstack;
+>   foo
+>     uprobe -> install uretprobe trampoline
+>     ...
+>     seccomp(SECCOMP_MODE_STRICT..
+>     ...
+>     ret -> execute uretprobe trampoline with sys_uretprobe
 >
-> Can be it 'skip_owner'?
 >
-> > +
-> > +             task =3D get_lock_owner(pelem->lock, pelem->flags);
-> > +             if (!task)
-> > +                     goto contention_begin_skip_owner_callstack;
-> > +
-> > +             owner_pid =3D BPF_CORE_READ(task, pid);
-> > +
-> > +             entries =3D bpf_map_lookup_elem(&owner_stacks_entries, &i=
-);
-> > +             if (!entries)
-> > +                     goto contention_begin_skip_owner_callstack;
-> > +             for (i =3D 0; i < max_stack; i++)
-> > +                     entries[i] =3D 0x0;
-> > +
-> > +             task =3D bpf_task_from_pid(owner_pid);
-> > +             if (task) {
-> > +                     bpf_get_task_stack(task, entries,
-> > +                                        max_stack * sizeof(unsigned lo=
-ng),
-> > +                                        0);
-> > +                     bpf_task_release(task);
-> > +             }
-> > +
-> > +             data =3D bpf_map_lookup_elem(&contention_owner_tracing,
-> > +                                        &(pelem->lock));
->
-> No need for parenthesis.
->
-> > +
-> > +             // Contention just happens, or corner case `lock` is owne=
-d by
-> > +             // process not `owner_pid`.
-> > +             if (!data || data->pid !=3D owner_pid) {
-> > +                     cotd first =3D {
-> > +                             .pid =3D owner_pid,
-> > +                             .timestamp =3D pelem->timestamp,
-> > +                             .count =3D 1,
-> > +                     };
-> > +                     bpf_map_update_elem(&contention_owner_tracing,
-> > +                                         &(pelem->lock), &first, BPF_A=
-NY);
-> > +                     bpf_map_update_elem(&contention_owner_stacks,
-> > +                                         &(pelem->lock), entries, BPF_=
-ANY);
->
-> Hmm.. it just discard the old owner data if it comes from a new owner?
-> Why not save the data into the result for the old lock/callstack?
+> I thought we could perhaps switch existing uretprobe trampoline to
+> int3 when we are in sys_seccomp, but another user thread might be
+> already executing the existing uretprobe trampoline, so I don't
+> think we can do that
 
-There are two conditions which enter this if statement:
-1. (!data) contention just started, `&pelem->lock` entry in
-`contetion_owner_tracing` is empty.
-2. (data->pid !=3D owner_pid) Some internal errors so `data->pid` is
-misaligned with `owner_pid`. In this case the timestamp would be
-incorrect so I prefer to drop it.
-WDYT?
+Jiri,
+
+We should abandon the vector of "let's try to detect whether someone
+is blocking sys_uretprobe" as a solution, I don't believe it's
+possible. Blocking sys_uretprobe is too dynamic of a thing. There is
+an arbitrary periods of time between adding uretprobe trampoline
+(i.e., sys_uretprobe) and actually disabling sys_uretprobe through
+seccomp (or even BPF: LSM or even kprobes can do that, why not?), and
+userspace can flip this decision many times over.
+
+And as Oleg said, sysctl
+"please-make-my-uretprobe-2x-faster-assuming-i-know-about-this-option"
+makes no sense either, this will basically almost never get enabled.
+
+
+Kees,
+
+You said yourself that sys_uretprobe is no different from rt_sigreturn
+and restart_syscall, so why would we rollback sys_uretprobe if we
+wouldn't rollback rt_sigreturn/restart_syscall? Given it's impossible,
+generally speaking, to know if userspace is blocking the syscall (and
+that can change dynamically and very frequently), any improvement or
+optimization that kernel would do with the help of special syscall is
+now prohibited, effectively. That doesn't seem wise to restrict the
+kernel development so much just because libseccomp blocks any unknown
+syscall by default.
+
+I'm OK either asking libseccomp to learn about sys_uretprobe and not
+block it (like systemd is doing), or if we want to bend over
+backwards, prevent user policy from filtering theses special syscalls
+which are meant to be used by kernel only. We can't single out
+sys_uretprobe just because it's the newest of this special cohort.
+
+You also asked "what if userspace wants to block uprobes"? If that's
+really the goal, that would be done at uprobe attachment time, not
+when uprobe is (conceptually) attached, new process is forked, and
+kernel installs uretprobe trampoline with uretprobe syscall. Or just
+control that through (lack of) capabilities. Using seccomp to block
+*second part of uretprobe handling* doesn't make much sense. It's just
+the wrong place for that.
+
+P.S. Also using FRED as an excuse for not doing sys_uretprobe is
+manipulative. When we get FRED-enabled CPUs widely available and
+deployed *and* all (or at least majority of) the currently used CPUs
+are decommissioned, only then we can realistically talk about
+sys_uretprobe being unnecessary. That's years and years. sys_uretprobe
+is necessary and important *right now* and will be for the foreseeable
+future.
 
 >
->
-> > +             }
-> > +             // Contention is going on and new waiter joins.
-> > +             else {
-> > +                     __sync_fetch_and_add(&data->count, 1);
-> > +                     // TODO: Since for owner the callstack would chan=
-ge at
-> > +                     // different time, We should check and report if =
-the
-> > +                     // callstack is different with the recorded one i=
-n
-> > +                     // `contention_owner_stacks`.
-> > +             }
-> > +contention_begin_skip_owner_callstack:
-> >               pelem->stack_id =3D bpf_get_stackid(ctx, &stacks,
-> >                                                 BPF_F_FAST_STACK_CMP | =
-stack_skip);
-> >               if (pelem->stack_id < 0)
-> > @@ -443,6 +501,7 @@ int contention_end(u64 *ctx)
-> >       struct tstamp_data *pelem;
-> >       struct contention_key key =3D {};
-> >       struct contention_data *data;
-> > +     __u64 timestamp;
-> >       __u64 duration;
-> >       bool need_delete =3D false;
-> >
-> > @@ -469,12 +528,103 @@ int contention_end(u64 *ctx)
-> >                       return 0;
-> >               need_delete =3D true;
-> >       }
-> > -     duration =3D bpf_ktime_get_ns() - pelem->timestamp;
-> > +     timestamp =3D bpf_ktime_get_ns();
-> > +     duration =3D timestamp - pelem->timestamp;
-> >       if ((__s64)duration < 0) {
-> >               __sync_fetch_and_add(&time_fail, 1);
-> >               goto out;
-> >       }
-> >
-> > +     if (needs_callstack && lock_owner) {
-> > +             u64 owner_contention_time;
-> > +             unsigned long *owner_stack;
-> > +             struct contention_data *cdata;
-> > +             cotd *otdata;
-> > +
-> > +             otdata =3D bpf_map_lookup_elem(&contention_owner_tracing,
-> > +                                          &(pelem->lock));
-> > +             owner_stack =3D bpf_map_lookup_elem(&contention_owner_sta=
-cks,
-> > +                                               &(pelem->lock));
-> > +             if (!otdata || !owner_stack)
-> > +                     goto contention_end_skip_owner_callstack;
-> > +
-> > +             owner_contention_time =3D timestamp - otdata->timestamp;
-> > +
-> > +             // Update `owner_lock_stat` if `owner_stack` is
-> > +             // available.
-> > +             if (owner_stack[0] !=3D 0x0) {
-> > +                     cdata =3D bpf_map_lookup_elem(&owner_lock_stat,
-> > +                                                 owner_stack);
-> > +                     if (!cdata) {
-> > +                             struct contention_data first =3D {
-> > +                                     .total_time =3D owner_contention_=
-time,
-> > +                                     .max_time =3D owner_contention_ti=
-me,
-> > +                                     .min_time =3D owner_contention_ti=
-me,
-> > +                                     .count =3D 1,
-> > +                                     .flags =3D pelem->flags,
-> > +                             };
-> > +                             bpf_map_update_elem(&owner_lock_stat,
-> > +                                                 owner_stack, &first,
-> > +                                                 BPF_ANY);
-> > +                     } else {
-> > +                             __sync_fetch_and_add(&cdata->total_time,
-> > +                                                  owner_contention_tim=
-e);
-> > +                             __sync_fetch_and_add(&cdata->count, 1);
-> > +
-> > +                             /* FIXME: need atomic operations */
-> > +                             if (cdata->max_time < owner_contention_ti=
-me)
-> > +                                     cdata->max_time =3D owner_content=
-ion_time;
-> > +                             if (cdata->min_time > owner_contention_ti=
-me)
-> > +                                     cdata->min_time =3D owner_content=
-ion_time;
-> > +                     }
-> > +             }
-> > +
-> > +             //  No contention is going on, delete `lock` in
-> > +             //  `contention_owner_tracing` and
-> > +             //  `contention_owner_stacks`
-> > +             if (otdata->count <=3D 1) {
-> > +                     bpf_map_delete_elem(&contention_owner_tracing,
-> > +                                         &(pelem->lock));
-> > +                     bpf_map_delete_elem(&contention_owner_stacks,
-> > +                                         &(pelem->lock));
-> > +             }
-> > +             // Contention is still going on, with a new owner
-> > +             // (current task). `otdata` should be updated accordingly=
-.
-> > +             else {
-> > +                     (otdata->count)--;
->
-> No need for parenthesis, and it needs to be atomic dec.
->
-> > +
-> > +                     // If ctx[1] is not 0, the current task terminate=
-s lock
-> > +                     // waiting without acquiring it. Owner is not cha=
-nged.
->
-> Please add a comment that ctx[1] has the return code of the lock
-> function.  Maybe it's better to use a local variable.
->
-> Also I think you need to say about the normal case too.  Returing 0
-> means the waiter now gets the lock and becomes a new owner.  So it needs
-> to update the owner information.
+> jirka
 >
 >
-> > +                     if (ctx[1] =3D=3D 0) {
-> > +                             u32 i =3D 0;
-> > +                             unsigned long *entries =3D bpf_map_lookup=
-_elem(
-> > +                                     &owner_stacks_entries, &i);
-> > +                             if (entries) {
-> > +                                     for (i =3D 0; i < (u32)max_stack;=
- i++)
-> > +                                             entries[i] =3D 0x0;
-> > +
-> > +                                     bpf_get_task_stack(
-> > +                                             bpf_get_current_task_btf(=
-),
->
-> Same as bpf_get_stack(), right?
->
-> > +                                             entries,
-> > +                                             max_stack *
-> > +                                                     sizeof(unsigned l=
-ong),
-> > +                                             0);
-> > +                                     bpf_map_update_elem(
-> > +                                             &contention_owner_stacks,
-> > +                                             &(pelem->lock), entries,
-> > +                                             BPF_ANY);
->
-> Please factor out the code if it indents too much.  Or you can use goto
-> or something to reduce the indentation level.
-
-I will reindent it with `ColumnLimit=3D100`. I was using 80 since it was
-predefined in `.clang-format`, looks outdated but no one updated it..
-
->
->   if (ret !=3D 0)
->         goto skip_update;
->
->   ...
->
->   if (entries =3D=3D NULL)
->         goto skip_stack;
->
->   ...
->
-> Thanks,
-> Namhyung
->
-> > +                             }
-> > +
-> > +                             otdata->pid =3D pid;
-> > +                             otdata->timestamp =3D timestamp;
-> > +                     }
-> > +
-> > +                     bpf_map_update_elem(&contention_owner_tracing,
-> > +                                         &(pelem->lock), otdata, BPF_A=
-NY);
-> > +             }
-> > +     }
-> > +contention_end_skip_owner_callstack:
-> > +
-> >       switch (aggr_mode) {
-> >       case LOCK_AGGR_CALLER:
-> >               key.stack_id =3D pelem->stack_id;
-> > --
-> > 2.47.1.688.g23fc6f90ad-goog
-> >
+> [1] https://lore.kernel.org/bpf/20250114123257.GD19816@redhat.com/
 
