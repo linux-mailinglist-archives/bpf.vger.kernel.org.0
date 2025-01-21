@@ -1,114 +1,78 @@
-Return-Path: <bpf+bounces-49334-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49337-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E0A4A17691
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 05:36:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D2A0A176D4
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 06:10:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8057F188B264
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 04:36:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16AC33A4BB7
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 05:09:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A040C1922FB;
-	Tue, 21 Jan 2025 04:35:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 856201ACEB3;
+	Tue, 21 Jan 2025 05:09:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="ZLc7tUfQ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SSAL5ixW"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Rz/DqcEg"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-a3-smtp.messagingengine.com (fhigh-a3-smtp.messagingengine.com [103.168.172.154])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60B5B1A8F7A;
-	Tue, 21 Jan 2025 04:35:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78F1D1A724C;
+	Tue, 21 Jan 2025 05:09:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737434137; cv=none; b=GmClSL3FaDLIhLNlwt9hL1kINettp2iJ1nBQypv9m4eYL716RJDa/3osyaA5LyrhA+8c4MuzhtSw2PP7eU9rXBXd/8dpqBVdkdPCkMoDutI7QKGznVGVSGD6vlEahhmkg1ILOjKrnWI9jWFRtPs2HJHZvAQbqmkSGRQ2pah7KfM=
+	t=1737436176; cv=none; b=If60nVgwlnZtmi8EhqHgM97oMgeGF9Xxg781xtclSJLcNOI8Y/7I15P5O8Xhfu6Oi7HLuN7lIY4V1dYd7N7AS2CjfHRZK/KvT6uuyF/Byv3tV73cuIpU37eqB8oL9cpeQoDBNtMgx6VnEvTll2SBYckHHB316b1iOsObkVRzjFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737434137; c=relaxed/simple;
-	bh=eVM7SdtXCFlUVH4oy/Vkcn3phtLYk4plrqvtCWZRjUY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=X6DNZmNiCyEdGU3spfW8dmQSq56JR/TRTo9O6vGOmO/w0aNKEZQZn6wS3upoK64Ewy7KGMdYbDKKedC45NyQ9Jz4CnXxgH4PWYtjtW9N6+tsR0H+2OpRC/WiHipd3h+AychiE/y2bC3rmvliTTZTV9QeUxAiD+vVrN+PDx/EDco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=ZLc7tUfQ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SSAL5ixW; arc=none smtp.client-ip=103.168.172.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id A922111401CA;
-	Mon, 20 Jan 2025 23:35:34 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-01.internal (MEProxy); Mon, 20 Jan 2025 23:35:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm1; t=1737434134; x=
-	1737520534; bh=rLsYj07eT2ZgMjURoHuQghZV4EHGquLJkQ6YJEcpFpQ=; b=Z
-	Lc7tUfQPfpSIDE8rmrR+JI286lmvZbFvC7/2tLp5A4KswkXteX53qnyliP27Khqi
-	BvoJs1MIsDeBWDOFl1LlbxV5a800IwK4AJ+tqaxyarxP79BoojTgwPk1jdQAnUlE
-	dohhjMzi6ObQDST56uaDrQRB/YMc0ITThtttt/ZulCBXuNf9LhUuz80TGEo2nrJP
-	/LbhzNDF5RGeg20zRGJnfrxs0nyAx4kHksn8uA+BCLj49NQ+gbAL6D3MlxR73QTK
-	tMXsQSFF8qx3swCgQfr/63FM9z203NxCAol9NeY5RTuOjf+qikj7LrrtUGdM31p/
-	/Dv2Pg6oJe9afcXryDM3Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm2; t=1737434134; x=1737520534; bh=r
-	LsYj07eT2ZgMjURoHuQghZV4EHGquLJkQ6YJEcpFpQ=; b=SSAL5ixWDnss6aW2j
-	9DjM2r9L33oINZKhHGk2cxZpvCzOC//HeN0DiWxB47CnZeiGa1NTPxsG+MHt3DmI
-	ELa64sZU9c4g6iqhdKoyuDFfm9O2i/wCjt3Spb4YBibnv1XXyDkdwU9SkdeN8lwu
-	8N/Z8V1WpJ5SSBhCFKuHZO5PfRr7iWVdIdeBySeuGGP7yc5MaxKCwdxZ+O4oep35
-	x+723wcbr5Xjll6LkoNAu3NecFL6oe++ivCzbK+0IXsxvY4XgBdaD26D8Mjc1jJm
-	QG8cgusjbGIvehFczGXwX/7bePtomfErTiU58FPPHzrfJz5dcuj1h/V8lT1UjR+C
-	Q/goQ==
-X-ME-Sender: <xms:FiSPZ8rxXepHUV-1ZAzC_SJRX2O3cf2HgJ6kLfMIVAB28KLEhZh48Q>
-    <xme:FiSPZyqLaYsCuzRyhr_5Z6RKYFtuXrhd3EydS4xdHeIW3RzHYh0DCMg0_15EV7w1T
-    FJSWQx70QMIl2JoRg>
-X-ME-Received: <xmr:FiSPZxNVEN38IhmJetSoTM8UQ0xu9H8XcFsRF5fufpTFV-_OkMfNCeYBqfZ7GIeMlFNcFGncQb9DD5RFvXtt_dYRM5Smn9r69_emyRxO13AGthntmQ_8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudejtddgjeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlje
-    dtmdenucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeff
-    rghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnh
-    epgfefgfegjefhudeikedvueetffelieefuedvhfehjeeljeejkefgffeghfdttdetnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesug
-    iguhhuuhdrgiihiidpnhgspghrtghpthhtohepudegpdhmohguvgepshhmthhpohhuthdp
-    rhgtphhtthhopegurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhope
-    grshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghl
-    rdhorhhgpdhrtghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghvpdhrtg
-    hpthhtohepvgguugihiiekjeesghhmrghilhdrtghomhdprhgtphhtthhopehsohhnghes
-    khgvrhhnvghlrdhorhhgpdhrtghpthhtohephihonhhghhhonhhgrdhsohhngheslhhinh
-    hugidruggvvhdprhgtphhtthhopehjohhhnhdrfhgrshhtrggsvghnugesghhmrghilhdr
-    tghomhdprhgtphhtthhopehkphhsihhnghhhsehkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:FiSPZz63yvglGUyB5ce0ig1yptSG_WiS_nEQbnBMutxJYAMGr8QuNg>
-    <xmx:FiSPZ759XfwNWDGVcj7wCY3ai2RbRH5UHuaS_pz3e6pmwR0NHy9qmQ>
-    <xmx:FiSPZzja1aKTGeBBGb1NIpPUc0EzI4zdC0GflaaEd-S23kozGJ-u1w>
-    <xmx:FiSPZ17LWaUzepP38INLjXbzJh0jLIjPaSMf8lhE_i-WJcNoeWkGFA>
-    <xmx:FiSPZ6RLQr49-kyONtxZLXbqMcXznfm3vGKKW88lmhSKvxGtEqTP46KO>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 20 Jan 2025 23:35:32 -0500 (EST)
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: daniel@iogearbox.net,
+	s=arc-20240116; t=1737436176; c=relaxed/simple;
+	bh=MRbFXBRyZ6VO80r/tbLavWPYGstR7hTNcSTo0dkY3NQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mwaPS8r6FheMMIcJACT37XHEJd0zumHeaFpax7SOfAItDVSPBejMZjgzAGLK5C3z/JX/NJN/v5RvM/BigzbUWLNRL5bYXorIkbOYYRS3e4v7r0gDiKAYJwU+v1yPLj7aHC1Ytg9BPnvTFYuFvksUvKZYQsL1qyYFL3FSaNL/Mlg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Rz/DqcEg; arc=none smtp.client-ip=117.135.210.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-ID:MIME-Version; bh=bTS2v
+	udIGnYCF5+bPeCAZ9C/WoAScG4XWVTYcSjmUXw=; b=Rz/DqcEghOON4BUZsxO6S
+	scO9I2lh9KWFFudRqRIF9/jeJGLZ71jNQstWO8c+U2hdvlDN009kjaexrYSW5Zwx
+	PhLWvloeWx+e9o1DR3ww/Lzbfd68P741yVio4xCgyNiSlGLrVgQLo+FEZy/L5B8E
+	Cg/7h3A054zu8Pff8zy1dk=
+Received: from localhost.localdomain (unknown [])
+	by gzga-smtp-mtada-g0-3 (Coremail) with SMTP id _____wBHwYeaK49nTErMHA--.41409S2;
+	Tue, 21 Jan 2025 13:07:49 +0800 (CST)
+From: Jiayuan Chen <mrpre@163.com>
+To: bpf@vger.kernel.org,
+	jakub@cloudflare.com,
+	john.fastabend@gmail.com
+Cc: netdev@vger.kernel.org,
+	martin.lau@linux.dev,
 	ast@kernel.org,
-	andrii@kernel.org
-Cc: martin.lau@linux.dev,
-	eddyz87@gmail.com,
+	edumazet@google.com,
+	davem@davemloft.net,
+	dsahern@kernel.org,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	linux-kernel@vger.kernel.org,
 	song@kernel.org,
+	andrii@kernel.org,
+	mhal@rbox.co,
 	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
+	daniel@iogearbox.net,
+	xiyou.wangcong@gmail.com,
+	horms@kernel.org,
+	corbet@lwn.net,
+	eddyz87@gmail.com,
+	cong.wang@bytedance.com,
+	shuah@kernel.org,
+	mykolal@fb.com,
 	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 3/3] bpf: arraymap: Skip boundscheck during inlining when possible
-Date: Mon, 20 Jan 2025 21:35:12 -0700
-Message-ID: <7bfb3b6b1d3400d03fd9b7a7e15586c826449c71.1737433945.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <cover.1737433945.git.dxu@dxuuu.xyz>
-References: <cover.1737433945.git.dxu@dxuuu.xyz>
+	haoluo@google.com,
+	sdf@fomichev.me,
+	kpsingh@kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Jiayuan Chen <mrpre@163.com>
+Subject: [PATCH bpf v8 0/5] bpf: fix wrong copied_seq calculation and add tests
+Date: Tue, 21 Jan 2025 13:07:02 +0800
+Message-ID: <20250121050707.55523-1-mrpre@163.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -116,105 +80,87 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wBHwYeaK49nTErMHA--.41409S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxWFyrGFyfXw4kuryDAFyxKrg_yoW5Cw1DpF
+	WkC34rGr47tFyIva1DA3yIgF4Fgw4rGay5KF1Fq3yfZr4jkryYyrs293Waqrn8GrWYvF1j
+	9r13Wr4Y934DAFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0z_pnQ7UUUUU=
+X-CM-SenderInfo: xpus2vi6rwjhhfrp/1tbiDxPbp2ePHI2amQACsY
 
-For regular arraymaps and percpu arraymaps, if the lookup is known to be
-inbounds, the inlined bounds check can be omitted. One fewer jump puts less
-pressure on the branch predictor. While it probably won't affect real
-workloads much, we can basically get this for free. So might as well -
-free wins are nice.
+A previous commit described in this topic
+http://lore.kernel.org/bpf/20230523025618.113937-9-john.fastabend@gmail.com
+directly updated 'sk->copied_seq' in the tcp_eat_skb() function when the
+action of a BPF program was SK_REDIRECT. For other actions, like SK_PASS,
+the update logic for 'sk->copied_seq' was moved to
+tcp_bpf_recvmsg_parser() to ensure the accuracy of the 'fionread' feature.
 
-JIT diff for regular arraymap (x86-64):
+That commit works for a single stream_verdict scenario, as it also
+modified 'sk_data_ready->sk_psock_verdict_data_ready->tcp_read_skb'
+to remove updating 'sk->copied_seq'.
 
-     ; val = bpf_map_lookup_elem(&map_array, &key);
-    -  22:   movabsq $-131387164803072, %rdi
-    +  22:   movabsq $-131387246749696, %rdi
-       2c:   addq    $472, %rdi
-       33:   movl    (%rsi), %eax
-    -  36:   cmpq    $2, %rax
-    -  3a:   jae     0x45
-    -  3c:   imulq   $48, %rax, %rax
-    -  40:   addq    %rdi, %rax
-    -  43:   jmp     0x47
-    -  45:   xorl    %eax, %eax
-    -  47:   movl    $4, %edi
-    +  36:   imulq   $48, %rax, %rax
-    +  3a:   addq    %rdi, %rax
-    +  3d:   jmp     0x41
-    +  3f:   xorl    %eax, %eax
-    +  41:   movl    $4, %edi
+However, for programs where both stream_parser and stream_verdict are
+active(strparser purpose), tcp_read_sock() was used instead of
+tcp_read_skb() (sk_data_ready->strp_data_ready->tcp_read_sock)
+tcp_read_sock() now still update 'sk->copied_seq', leading to duplicated
+updates.
 
-JIT diff for percpu arraymap (x86-64):
+In summary, for strparser + SK_PASS, copied_seq is redundantly calculated
+in both tcp_read_sock() and tcp_bpf_recvmsg_parser().
 
-     ; val = bpf_map_lookup_elem(&map_array_pcpu, &key);
-    -  22:   movabsq $-131387183532032, %rdi
-    +  22:   movabsq $-131387273779200, %rdi
-       2c:   addq    $472, %rdi
-       33:   movl    (%rsi), %eax
-    -  36:   cmpq    $2, %rax
-    -  3a:   jae     0x52
-    -  3c:   shlq    $3, %rax
-    -  40:   addq    %rdi, %rax
-    -  43:   movq    (%rax), %rax
-    -  47:   addq    %gs:170664, %rax
-    -  50:   jmp     0x54
-    -  52:   xorl    %eax, %eax
-    -  54:   movl    $4, %edi
-    +  36:   shlq    $3, %rax
-    +  3a:   addq    %rdi, %rax
-    +  3d:   movq    (%rax), %rax
-    +  41:   addq    %gs:170664, %rax
-    +  4a:   jmp     0x4e
-    +  4c:   xorl    %eax, %eax
-    +  4e:   movl    $4, %edi
+The issue causes incorrect copied_seq calculations, which prevent
+correct data reads from the recv() interface in user-land.
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+Also we added test cases for bpf + strparser and separated them from
+sockmap_basic, as strparser has more encapsulation and parsing
+capabilities compared to sockmap.
+
+Fixes: e5c6de5fa025 ("bpf, sockmap: Incorrectly handling copied_seq")
+
 ---
- kernel/bpf/arraymap.c | 24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
+V8 -> V7:
+https://lore.kernel.org/bpf/20250116140531.108636-1-mrpre@163.com/
+Avoid using add read_sock to psock. (Jakub Sitnicki)
+Avoid using warpper function to check whether strparser is supported.
 
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 8dbdceeead95..7385104dc0d0 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -221,11 +221,13 @@ static int array_map_gen_lookup(struct bpf_map *map,
- 
- 	*insn++ = BPF_ALU64_IMM(BPF_ADD, map_ptr, offsetof(struct bpf_array, value));
- 	*insn++ = BPF_LDX_MEM(BPF_W, ret, index, 0);
--	if (!map->bypass_spec_v1) {
--		*insn++ = BPF_JMP_IMM(BPF_JGE, ret, map->max_entries, 4);
--		*insn++ = BPF_ALU32_IMM(BPF_AND, ret, array->index_mask);
--	} else {
--		*insn++ = BPF_JMP_IMM(BPF_JGE, ret, map->max_entries, 3);
-+	if (!inbounds) {
-+		if (!map->bypass_spec_v1) {
-+			*insn++ = BPF_JMP_IMM(BPF_JGE, ret, map->max_entries, 4);
-+			*insn++ = BPF_ALU32_IMM(BPF_AND, ret, array->index_mask);
-+		} else {
-+			*insn++ = BPF_JMP_IMM(BPF_JGE, ret, map->max_entries, 3);
-+		}
- 	}
- 
- 	if (is_power_of_2(elem_size)) {
-@@ -269,11 +271,13 @@ static int percpu_array_map_gen_lookup(struct bpf_map *map,
- 	*insn++ = BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, offsetof(struct bpf_array, pptrs));
- 
- 	*insn++ = BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_2, 0);
--	if (!map->bypass_spec_v1) {
--		*insn++ = BPF_JMP_IMM(BPF_JGE, BPF_REG_0, map->max_entries, 6);
--		*insn++ = BPF_ALU32_IMM(BPF_AND, BPF_REG_0, array->index_mask);
--	} else {
--		*insn++ = BPF_JMP_IMM(BPF_JGE, BPF_REG_0, map->max_entries, 5);
-+	if (!inbounds) {
-+		if (!map->bypass_spec_v1) {
-+			*insn++ = BPF_JMP_IMM(BPF_JGE, BPF_REG_0, map->max_entries, 6);
-+			*insn++ = BPF_ALU32_IMM(BPF_AND, BPF_REG_0, array->index_mask);
-+		} else {
-+			*insn++ = BPF_JMP_IMM(BPF_JGE, BPF_REG_0, map->max_entries, 5);
-+		}
- 	}
- 
- 	*insn++ = BPF_ALU64_IMM(BPF_LSH, BPF_REG_0, 3);
+V3 -> V7:
+https://lore.kernel.org/bpf/20250109094402.50838-1-mrpre@163.com/
+https://lore.kernel.org/bpf/20241218053408.437295-1-mrpre@163.com/
+Avoid introducing new proto_ops. (Jakub Sitnicki).
+Add more edge test cases for strparser + bpf.
+Fix patchwork fail of test cases code.
+Fix psock fetch without rcu lock.
+Move code of modifying to tcp_bpf.c.
+
+V1 -> V3:
+https://lore.kernel.org/bpf/20241209152740.281125-1-mrpre@163.com/
+Fix patchwork fail by adding Fixes tag.
+Save skb data offset for ENOMEM. (John Fastabend)
+---
+
+Jiayuan Chen (5):
+  strparser: add read_sock callback
+  bpf: fix wrong copied_seq calculation
+  bpf: disable non stream socket for strparser
+  selftests/bpf: fix invalid flag of recv()
+  selftests/bpf: add strparser test for bpf
+
+ Documentation/networking/strparser.rst        |   9 +-
+ include/linux/skmsg.h                         |   2 +
+ include/net/strparser.h                       |   2 +
+ include/net/tcp.h                             |   8 +
+ net/core/skmsg.c                              |   7 +
+ net/core/sock_map.c                           |   5 +-
+ net/ipv4/tcp.c                                |  29 +-
+ net/ipv4/tcp_bpf.c                            |  42 ++
+ net/strparser/strparser.c                     |  11 +-
+ .../selftests/bpf/prog_tests/sockmap_basic.c  |  59 +--
+ .../selftests/bpf/prog_tests/sockmap_strp.c   | 452 ++++++++++++++++++
+ .../selftests/bpf/progs/test_sockmap_strp.c   |  53 ++
+ 12 files changed, 614 insertions(+), 65 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sockmap_strp.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_strp.c
+
 -- 
-2.47.1
+2.43.5
 
 
