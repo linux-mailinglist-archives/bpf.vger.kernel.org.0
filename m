@@ -1,128 +1,101 @@
-Return-Path: <bpf+bounces-49431-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49432-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DAE0A18A2F
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 03:47:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 369AEA18A47
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 03:53:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 557AF169A25
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 02:47:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9045C16B738
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 02:53:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D174414B07A;
-	Wed, 22 Jan 2025 02:46:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 578B114B092;
+	Wed, 22 Jan 2025 02:53:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="KDrbQgtq"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="brSyH9dJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45792323D;
-	Wed, 22 Jan 2025 02:46:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98164219FC
+	for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 02:53:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737514019; cv=none; b=AWCA5l1rdnvgWi9xnY+M9D0jaFO5Uhcs1wYQLO9ymA75cC/ZLTV7t3W1oYFteGKKQbJq7vTkrJ5n+zaN91ErKHFVRcFKSCgOX8CLWVHmZUE9R+tf+jGGSWwEO1CrLoebNJ5q/pP4r3fb+GWa3Pu1czxPKMQyWhIbPxC5EzNUtgE=
+	t=1737514400; cv=none; b=OI7//mNyzHuLJ6YzrSIL26NV0eCT447r8RVq7vPQL/6e/LgqMu5nkzbpYTdv4/7dTIVOj8BtZhoGsD4cyVvf/WAjdWM0l96YY+Y/ouLlGp3TSHl98wra3wkN6sBuBWeLtgb/K0pZ5lph2U3RxzJY6rtG1wsAX+KDmLujBgwmhZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737514019; c=relaxed/simple;
-	bh=C3NMnukzWY7C/OYqDh/ehO7GoWFm1c1QyFHAyKt5nTc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b6DAm93J2YDpS/wcY7XDLvW9TwdkPfBnB7QMCn2u7eXDkVxueX1FDN5xb8YQIQqJNlICezxEKjhRwax+I0k1aelTw1ytt6wvOEoChigVWAdI3iQszk10pXdVuOU9qDVZjoinmS5Xx1FqFfiO7yjNe/MzKSWNhCyEOzTWqQW8cJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=KDrbQgtq; arc=none smtp.client-ip=115.124.30.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1737514014; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=D0Cs/TpPtr1epsPCo4fvFQC88EQfd/Rs+kZecKuIkfY=;
-	b=KDrbQgtqQWwu0/9hWjl3KLiYIvwSct00KD4rO+wX11X5baCkCjcEi1Swp2RmSkaWZd1tySd6OQW8qZRgF6VMQPR34wlKbJ3f2gWqKyV6Fk/37UCMZRlyFBiz2vqveTDkXq2/T/FL7bEejuZbJTDIUKmqt3346AqCAY7y80ucksE=
-Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WO6vyum_1737514011 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Wed, 22 Jan 2025 10:46:52 +0800
-Date: Wed, 22 Jan 2025 10:46:51 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com    >
-To: Saket Kumar Bhaskar <skb99@linux.ibm.com>
-Cc: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-	wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-	pabeni@redhat.com, song@kernel.org, sdf@google.com,
-	haoluo@google.com, yhs@fb.com, edumazet@google.com,
-	john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
-	guwen@linux.alibaba.com, kuba@kernel.org, davem@davemloft.net,
-	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v6 5/5] bpf/selftests: add selftest for
- bpf_smc_ops
-Message-ID: <20250122024651.GB81479@j66a10360.sqa.eu95>
-References: <20250116074442.79304-1-alibuda@linux.alibaba.com>
- <20250116074442.79304-6-alibuda@linux.alibaba.com>
- <Z49Bv8ySi2EJ/jfl@linux.ibm.com>
+	s=arc-20240116; t=1737514400; c=relaxed/simple;
+	bh=ZLLndwjbCAcOc9TH7LnFN/dyUzObTylzR7VJq6zWEN8=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Olv9fR+QdenFpyeHwGNmE0Qw32nTqUKnFMbas6ifaXShNVVXDhpIFfPiXgUiteslvQnGkbWvtImpzU5QbyXAdEmaZtme66Q2Ev1GE+m8FVBVaZq+Zqji0daDIfOy2epF8wvVpEGUHThATDCgig3iDXKBrYicwlPXUOvDjmTqK0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=brSyH9dJ; arc=none smtp.client-ip=185.70.43.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1737514396; x=1737773596;
+	bh=7T4ipMlrXnKvQ5xnqw1LZ2lQff6AxaqcLG8BEAznqjg=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector:
+	 List-Unsubscribe:List-Unsubscribe-Post;
+	b=brSyH9dJ5y2mkDUilOPhMvHoJRdJ7Pt+Sbqq6nA/bDcbqpywHXg9j3JQLcJG6xlUV
+	 eX9/v9HcgWsq96nVfaSp1yWh70v1Gf3amVHKwQ3k/xZlH/EoCnWWYtYU83dh0OnZHN
+	 /fSS1HeIYbpW4goiPimc2IQwvDuUcbK1Ztyca/W7Zz2TMv3b0j3htAk3yFBrHPW8pw
+	 zz1GBM6XRGmQ9PQAX1sR7W0M4YoewHKaGteZHnLoKtiHCrvgdCWW5NTxAc070oovcV
+	 8AFNeO4e9cffRCRYai7R2IEuHCmwsP6oFqhain8Y+863Pz+rSpSSYBmBdVRH0IrFJp
+	 27IruIwxYwWZA==
+Date: Wed, 22 Jan 2025 02:53:11 +0000
+To: bpf@vger.kernel.org
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, mykolal@fb.com, jose.marchesi@oracle.com
+Subject: [PATCH bpf-next 0/5] BTF: arbitrary __attribute__ encoding
+Message-ID: <20250122025308.2717553-1-ihor.solodrai@pm.me>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: 4cc41bc56e124dfacaad4b5198e218514f3d12a7
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z49Bv8ySi2EJ/jfl@linux.ibm.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 21, 2025 at 12:12:07PM +0530, Saket Kumar Bhaskar wrote:
-> On Thu, Jan 16, 2025 at 03:44:42PM +0800, D. Wythe wrote:
-> > This tests introduces a tiny smc_ops for filtering SMC connections based on
-> > IP pairs, and also adds a realistic topology model to verify this ops.
-> > 
-> > Also, we can only use SMC loopback under CI test, so an
-> > additional configuration needs to be enabled.
-> > 
-> > Follow the steps below to run this test.
-> > 
-> > make -C tools/testing/selftests/bpf
-> > cd tools/testing/selftests/bpf
-> > sudo ./test_progs -t smc
-> > 
-> > Results shows:
-> > Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
-> > 
-> > Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> > ---
-> >  tools/testing/selftests/bpf/config            |   4 +
-> >  .../selftests/bpf/prog_tests/test_bpf_smc.c   | 397 ++++++++++++++++++
-> >  tools/testing/selftests/bpf/progs/bpf_smc.c   | 117 ++++++
-> >  3 files changed, 518 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
-> > 
-> > diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-> > index c378d5d07e02..fac2f2a9d02f 100644
-> > --- a/tools/testing/selftests/bpf/config
-> > +++ b/tools/testing/selftests/bpf/config
-> > @@ -113,3 +113,7 @@ CONFIG_XDP_SOCKETS=y
-> > +};
-> Tested this selftest with patches applied on powerpc.
-> 
-> #./test_progs -t bpf_smc
-> 
-> net.smc.ops = linkcheck
-> #27/1    bpf_smc/topo:OK
-> #27      bpf_smc:OK
-> Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> Tested-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
-> 
-> Thanks,
-> Saket
+This patch series extends BPF Type Format (BTF) to support arbitrary
+__attribute__ encoding.
 
-Hi Saket,
+Setting the kind_flag to 1 in BTF type tags and decl tags now changes
+the meaning for the encoded tag, in particular with respect to
+btf_dump in libbpf.
 
-Thanks for your testing. I hope you don't mind if I add your test-by in
-the next version.
+If the kflag is set, then the string encoded by the tag represents the
+full attribute-list of an attribute specifier [1].
 
-Best wishes,
-D. Wythe
+This feature will allow extending tools such as pahole and bpftool to
+capture and use more granular type information, and make it easier to
+manage compatibility between clang and gcc BPF compilers.
 
-> > -- 
-> > 2.45.0
-> > 
+[1] https://gcc.gnu.org/onlinedocs/gcc-13.2.0/gcc/Attribute-Syntax.html
+
+Ihor Solodrai (5):
+  libbpf: introduce kflag for type_tags and decl_tags in BTF
+  libbpf: check the kflag of type tags in btf_dump
+  selftests/bpf: add a btf_dump test for type_tags
+  bpf: allow kind_flag for BTF type and decl tags
+  selftests/bpf: add a BTF verification test for kflagged type_tag
+
+ Documentation/bpf/btf.rst                     |  27 +++-
+ kernel/bpf/btf.c                              |   7 +-
+ tools/include/uapi/linux/btf.h                |   3 +-
+ tools/lib/bpf/btf.c                           |  87 +++++++---
+ tools/lib/bpf/btf.h                           |   3 +
+ tools/lib/bpf/btf_dump.c                      |   5 +-
+ tools/lib/bpf/libbpf.map                      |   2 +
+ tools/testing/selftests/bpf/prog_tests/btf.c  |  23 ++-
+ .../selftests/bpf/prog_tests/btf_dump.c       | 148 +++++++++++++-----
+ tools/testing/selftests/bpf/test_btf.h        |   6 +
+ 10 files changed, 234 insertions(+), 77 deletions(-)
+
+--=20
+2.48.1
+
+
 
