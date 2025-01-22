@@ -1,178 +1,195 @@
-Return-Path: <bpf+bounces-49439-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49440-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17519A18B17
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 05:40:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FA7DA18BE3
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 07:23:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 057E73AC531
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 04:40:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71B0A16AF24
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 06:23:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC76B170A11;
-	Wed, 22 Jan 2025 04:40:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0C3B1A8F7F;
+	Wed, 22 Jan 2025 06:23:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="LCfNkPAL"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="E+4mQt4P"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F06933991;
-	Wed, 22 Jan 2025 04:40:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7777915B546
+	for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 06:23:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737520802; cv=none; b=CZ9AN26bkgCIL2gfLCATKZaaVyWfS5PJqq80v7GsI3r2mXdFYmcj3FhJ4w5CPyIv+38VkerDB8lJXoi70qrYZfCRZqDrTnc1XY97KhdQB+23E73sCtlzaFCLqnauzYa5Lu6HgovGDyBHrC6Wl+ViXS7OVSF4YN2xZXXh5vm4erI=
+	t=1737527027; cv=none; b=C+9MtyVuzxLR1jCO/SVDzXMuI6KrSXUjJGrlljRXQLifCebKO/TVlJO37B0rOo3PdREb/G9NM7+RSoTwR8Nc2uACMuOP/lyj0u1q2vMYFccFOT6V/PbjYQNA1mUv/ZUnL8aXxoL6HviCb9PXOFO9+XJQtd/UplOZpHjYAAaNJrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737520802; c=relaxed/simple;
-	bh=vozpJzoYh8NFazwcE0sbja2bDFoFPU5h6TA6RG2F2eQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N0+C1ddnSNu1KNbj25bv3kXHToP33N5ES7xARKsNJgrvRUtqecXlIG+bYbNyBaYElBO2903x2d9DjFruugAveXl3LXQfWb/NGNAV9o22t8T1uZWNTOJkp1i135zGgH9ke8kQtqdnLkwisgX6nIZpkwx1m07emDwn1LGUZfHOpmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=LCfNkPAL; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 50M18O0q013816;
-	Wed, 22 Jan 2025 04:39:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=Uj1IBKSyRAR9M7uS0BMNRa1ZCi7T/v
-	zkm1EVAV7KiDc=; b=LCfNkPAL9XOiNff3jWXdS3v6u7HvDU+yx/KMiEz10OID+h
-	BHF+qdBG30yg0+vkh39dKE+YPVI9RDipo2vo/0K8+88vRvRQEwYNEvPBDCVlUgVF
-	T2QsHWKovqldZ60UymJ0NVPl84Roh53Sw4PXe+Jt3e92qxJt0cPdKAXKrPqq/p2+
-	GY9mszuG52k4hloJInmgQ8QtZbeb7PtVXoZ2VPXDBX0KGpp3CsBBO/ebmrzOo8t+
-	ytK4pgvSibbA2iWu1pEBSuI6S1zmI2jIwMz/DZCQlQpMjn3TKBgDHxiUXiOVeWv7
-	AGn7kwtKvA1OaCqR9bC5H6Ed1EwwMn2uLik99WTA==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44apr98pb6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 22 Jan 2025 04:39:14 +0000 (GMT)
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 50M4dEAc032338;
-	Wed, 22 Jan 2025 04:39:14 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44apr98pb1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 22 Jan 2025 04:39:14 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 50M1MuQv022387;
-	Wed, 22 Jan 2025 04:39:12 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 448r4k6mpg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 22 Jan 2025 04:39:12 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 50M4d8EP34538106
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 22 Jan 2025 04:39:09 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D831E20043;
-	Wed, 22 Jan 2025 04:39:08 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 41AAB20040;
-	Wed, 22 Jan 2025 04:39:03 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.43.19.247])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed, 22 Jan 2025 04:39:03 +0000 (GMT)
-Date: Wed, 22 Jan 2025 10:09:00 +0530
-From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
-To: "D. Wythe" <alibuda@linux.alibaba.com>
-Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, pabeni@redhat.com, song@kernel.org,
-        sdf@google.com, haoluo@google.com, yhs@fb.com, edumazet@google.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
-        guwen@linux.alibaba.com, kuba@kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v6 5/5] bpf/selftests: add selftest for
- bpf_smc_ops
-Message-ID: <Z5B2ZFRWsuBviC/Q@linux.ibm.com>
-References: <20250116074442.79304-1-alibuda@linux.alibaba.com>
- <20250116074442.79304-6-alibuda@linux.alibaba.com>
- <Z49Bv8ySi2EJ/jfl@linux.ibm.com>
- <20250122024651.GB81479@j66a10360.sqa.eu95>
+	s=arc-20240116; t=1737527027; c=relaxed/simple;
+	bh=csE5eO77txt/1tgULDwPBlUQn51ePKLm4FAc5Dc7JmA=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=GRb+ICbFm3j7ub9CfgYT0KmevM+1XSX6tUuP2bGI9lbPrSKqFhDjB8if0Y0JSrGDR3VEfrUmdZqnGwmVKoWjKRuzSFgddZkbfPLTy5IORbY0rVfv7KbC5MCraSyp2gpBBBbnwOBbZLYTXfhUjsUAStdbzDgrhGdT2lOBk4xArMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=E+4mQt4P; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-e572cd106f7so16878099276.3
+        for <bpf@vger.kernel.org>; Tue, 21 Jan 2025 22:23:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1737527024; x=1738131824; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=nMZxZB2QjSpIDp5wnSfQlTa2w8/qiOlFxFu++p/vc3s=;
+        b=E+4mQt4P5QlmNdiyZmx1/XDx804TQET26wYwuQ7i4UJtxNntHj4DbzGQfMy97D/7M5
+         jgg7Fxoh3d/ToXll6hHxuSlVWiuxsh3tF94pLrrBmw8wYGD2E5GC2NFR8FuyHbSWLs3L
+         DZKmhHEbYWsXfPMapd17WDES9Ma8smboC+JQYUy7UUC1ZchXbjGS2Sm1KPZQYu9wHSVg
+         +6MS+xXV+XWGO0Db06I7RZvxBVE/GfgP7ogejG2hOhWPhT64lQhShW7Q+hDmuq7oZGTD
+         BwCJ5ZWoNhGZWfjrRQHn4UG3jchsoDZHMVawiOcOS3rDOlrK90Pfr9TwZQr5UlE2ghyG
+         Uj2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737527024; x=1738131824;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nMZxZB2QjSpIDp5wnSfQlTa2w8/qiOlFxFu++p/vc3s=;
+        b=iUioFHcX2b7htSphNsQ7JajVRwIIWxPg4zJCcuDSNNey/nBjwHrsEGOn8E+7XgQD5P
+         BJWvWQU11DjoVSColej/ZvF0QBWiMZAQkNe4a3E17WZKdhAp1cw2Mwa+nAM9e7DTeB4U
+         ltCC3/LgKTEApko6/U9U6I0YYN7uuQQCl/wEiCEWLDWgLhgG0N7mWceU1d377f5HXo92
+         OjDXKTgBV7CR87dOeXq2nNjkXA0mw7H8femDvvVRVwV1b+NAqYSVD2d2L3RvL2n9nFW2
+         QTsEzs76gw10WYBEvsSzrEkoWmVdmkcoCMAzXqYt6TnludRKfyYVQPop+vvkG13vTUZ6
+         h0Uw==
+X-Forwarded-Encrypted: i=1; AJvYcCXoe79GoxKfv2fZff+EnyfBAU6i2o1XZlWGiGA4+5vRNhX/Jny4mGTifPU2p1nLObozJqM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzpJDxsU5CtTYkMl5MjgZZQsF/yxekIKYRDZpcWE27uHcbiT6yF
+	5TMRN8r1lR192Ks2Vgn+F8qu56ztl+h3Cv0okp9BOl3wtd8T8XVeNUPqpfQEpBqE/KGGFwGxSht
+	Ff3eaMQ==
+X-Google-Smtp-Source: AGHT+IFesCcSUy5QR6NwPlyI9//F17lW3wX3r/cz01SIvg7MVkFwQV5BfyGn58F73PrknjQthN5LEM/A3L1B
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2c5:11:807b:be79:d5c3:ee5c])
+ (user=irogers job=sendgmr) by 2002:a05:690c:6101:b0:6f6:d314:49c9 with SMTP
+ id 00721157ae682-6f6eb949eefmr515577b3.8.1737527024453; Tue, 21 Jan 2025
+ 22:23:44 -0800 (PST)
+Date: Tue, 21 Jan 2025 22:23:15 -0800
+Message-Id: <20250122062332.577009-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250122024651.GB81479@j66a10360.sqa.eu95>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Q9lflqyZ0u44bxu6ZGJfEd2KlfghN-gc
-X-Proofpoint-ORIG-GUID: Q41V1KpJ1CnwKQ7Q8J91CM5w7UWBe_ai
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-01-22_01,2025-01-21_03,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 suspectscore=0 mlxscore=0
- spamscore=0 clxscore=1015 bulkscore=0 phishscore=0 malwarescore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2411120000 definitions=main-2501220030
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.48.0.rc2.279.g1de40edade-goog
+Subject: [PATCH v2 00/17] Support dynamic opening of capstone/llvm remove BUILD_NONDISTRO
+From: Ian Rogers <irogers@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, Aditya Gupta <adityag@linux.ibm.com>, 
+	"Steinar H. Gunderson" <sesse@google.com>, Charlie Jenkins <charlie@rivosinc.com>, 
+	Changbin Du <changbin.du@huawei.com>, "Masami Hiramatsu (Google)" <mhiramat@kernel.org>, 
+	James Clark <james.clark@linaro.org>, Kajol Jain <kjain@linux.ibm.com>, 
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Li Huafei <lihuafei1@huawei.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, Andi Kleen <ak@linux.intel.com>, 
+	Chaitanya S Prakash <chaitanyas.prakash@arm.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, llvm@lists.linux.dev, 
+	Song Liu <song@kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Jan 22, 2025 at 10:46:51AM +0800, D. Wythe wrote:
-> On Tue, Jan 21, 2025 at 12:12:07PM +0530, Saket Kumar Bhaskar wrote:
-> > On Thu, Jan 16, 2025 at 03:44:42PM +0800, D. Wythe wrote:
-> > > This tests introduces a tiny smc_ops for filtering SMC connections based on
-> > > IP pairs, and also adds a realistic topology model to verify this ops.
-> > > 
-> > > Also, we can only use SMC loopback under CI test, so an
-> > > additional configuration needs to be enabled.
-> > > 
-> > > Follow the steps below to run this test.
-> > > 
-> > > make -C tools/testing/selftests/bpf
-> > > cd tools/testing/selftests/bpf
-> > > sudo ./test_progs -t smc
-> > > 
-> > > Results shows:
-> > > Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
-> > > 
-> > > Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> > > ---
-> > >  tools/testing/selftests/bpf/config            |   4 +
-> > >  .../selftests/bpf/prog_tests/test_bpf_smc.c   | 397 ++++++++++++++++++
-> > >  tools/testing/selftests/bpf/progs/bpf_smc.c   | 117 ++++++
-> > >  3 files changed, 518 insertions(+)
-> > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
-> > >  create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
-> > > 
-> > > diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-> > > index c378d5d07e02..fac2f2a9d02f 100644
-> > > --- a/tools/testing/selftests/bpf/config
-> > > +++ b/tools/testing/selftests/bpf/config
-> > > @@ -113,3 +113,7 @@ CONFIG_XDP_SOCKETS=y
-> > > +};
-> > Tested this selftest with patches applied on powerpc.
-> > 
-> > #./test_progs -t bpf_smc
-> > 
-> > net.smc.ops = linkcheck
-> > #27/1    bpf_smc/topo:OK
-> > #27      bpf_smc:OK
-> > Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
-> > 
-> > Tested-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
-> > 
-> > Thanks,
-> > Saket
-> 
-> Hi Saket,
-> 
-> Thanks for your testing. I hope you don't mind if I add your test-by in
-> the next version.
-> 
-> Best wishes,
-> D. Wythe
-> 
-Fine for me Wythe.
+Linking against libcapstone and libLLVM can be a significant increase
+in dependencies and size of memory footprint. For something like `perf
+record` the disassembler and addr2line functionality won't be
+used. Support dynamically loading these libraries using dlopen and
+then calling the appropriate functions found using dlsym.
 
-Thanks,
-Saket
-> > > -- 
-> > > 2.45.0
-> > > 
+BUILD_NONDISTRO is used to build perf against the license incompatible
+libbfd and libiberty libraries. As this has been opt-in for nearly 2
+years, commit dd317df07207 ("perf build: Make binutil libraries opt
+in"), remove the code to simplify the code base.
+
+The patch series:
+1) does some initial clean up;
+2) moves the capstone and LLVM code to their own C files,
+3) simplifies a little the capstone code;
+4) adds perf_ variants of the functions that will either directly call
+   the function or use dlsym to discover it;
+5) adds BPF JIT disassembly support to LLVM and capstone disassembly;
+6) removes the BUILD_NONDISTRO code, reduces scope and removes what's possible.
+
+The addr2line LLVM functionality is written in C++. To avoid linking
+against libLLVM for this, a new LIBLLVM_DYNAMIC option is added where
+the C++ code with the libLLVM dependency will be built into a
+libperf-llvm.so and that dlsym-ed and called against. Ideally LLVM
+would extend their C API to avoid this.
+
+The libbfd BPF disassembly supported source lines, this wasn't ported
+to the capstone and LLVM disassembly.
+
+v2: Add mangling of the function names in libperf-llvm.so to avoid
+    potential infinite recursion. Add BPF JIT disassembly support to
+    LLVM and capstone. Add/rebase the BUILD_NONDISTRO cleanup onto the
+    series from:
+    https://lore.kernel.org/lkml/20250111202851.1075338-1-irogers@google.com/
+    Some other minor additional clean up.
+
+Ian Rogers (17):
+  perf build: Remove libtracefs configuration
+  perf map: Constify objdump offset/address conversion APIs
+  perf capstone: Move capstone functionality into its own file
+  perf llvm: Move llvm functionality into its own file
+  perf capstone: Remove open_capstone_handle
+  perf capstone: Support for dlopen-ing libcapstone.so
+  perf llvm: Support for dlopen-ing libLLVM.so
+  perf llvm: Mangle libperf-llvm.so function names
+  perf dso: Move read_symbol from llvm/capstone to dso
+  perf dso: Support BPF programs in dso__read_symbol
+  perf llvm: Disassemble cleanup
+  perf dso: Clean up read_symbol error handling
+  perf build: Remove libbfd support
+  perf build: Remove libiberty support
+  perf build: Remove unused defines
+  perf disasm: Remove disasm_bpf
+  perf disasm: Make ins__scnprintf and ins__is_nop static
+
+ tools/perf/Documentation/perf-check.txt |   1 -
+ tools/perf/Makefile.config              |  90 +---
+ tools/perf/Makefile.perf                |  35 +-
+ tools/perf/builtin-check.c              |   1 -
+ tools/perf/builtin-script.c             |   2 -
+ tools/perf/tests/Build                  |   1 -
+ tools/perf/tests/builtin-test.c         |   1 -
+ tools/perf/tests/make                   |   4 +-
+ tools/perf/tests/pe-file-parsing.c      | 101 ----
+ tools/perf/tests/tests.h                |   1 -
+ tools/perf/util/Build                   |   5 +-
+ tools/perf/util/annotate.h              |   1 -
+ tools/perf/util/capstone.c              | 682 ++++++++++++++++++++++++
+ tools/perf/util/capstone.h              |  24 +
+ tools/perf/util/demangle-cxx.cpp        |  22 +-
+ tools/perf/util/disasm.c                | 632 +---------------------
+ tools/perf/util/disasm.h                |   5 +-
+ tools/perf/util/disasm_bpf.c            | 195 -------
+ tools/perf/util/disasm_bpf.h            |  12 -
+ tools/perf/util/dso.c                   |  98 ++++
+ tools/perf/util/dso.h                   |   4 +
+ tools/perf/util/llvm-c-helpers.cpp      | 120 ++++-
+ tools/perf/util/llvm-c-helpers.h        |  24 +-
+ tools/perf/util/llvm.c                  | 489 +++++++++++++++++
+ tools/perf/util/llvm.h                  |  24 +
+ tools/perf/util/map.c                   |  19 +-
+ tools/perf/util/map.h                   |   6 +-
+ tools/perf/util/print_insn.c            | 117 +---
+ tools/perf/util/srcline.c               | 306 +----------
+ tools/perf/util/srcline.h               |   6 +
+ tools/perf/util/symbol-elf.c            |  95 ----
+ tools/perf/util/symbol.c                | 135 -----
+ tools/perf/util/symbol.h                |   4 -
+ 33 files changed, 1552 insertions(+), 1710 deletions(-)
+ delete mode 100644 tools/perf/tests/pe-file-parsing.c
+ create mode 100644 tools/perf/util/capstone.c
+ create mode 100644 tools/perf/util/capstone.h
+ delete mode 100644 tools/perf/util/disasm_bpf.c
+ delete mode 100644 tools/perf/util/disasm_bpf.h
+ create mode 100644 tools/perf/util/llvm.c
+ create mode 100644 tools/perf/util/llvm.h
+
+-- 
+2.48.0.rc2.279.g1de40edade-goog
+
 
