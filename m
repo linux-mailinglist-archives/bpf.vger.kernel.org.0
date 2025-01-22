@@ -1,222 +1,154 @@
-Return-Path: <bpf+bounces-49520-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49521-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BD9EA19823
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 18:59:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCA56A19834
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 19:06:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47DDF18814EE
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 18:00:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F17616307C
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 18:06:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5086E215194;
-	Wed, 22 Jan 2025 17:59:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 374BD2153D6;
+	Wed, 22 Jan 2025 18:06:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bFjoVkMs"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="d6KjX4Ai"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 196062147F0;
-	Wed, 22 Jan 2025 17:59:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0894215186
+	for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 18:06:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737568788; cv=none; b=EYmUm4PpQe483hLbo34HGtEHYhhA+pOwr+ewr6z0mr71ti59xgMcrLLHJe2dZ2+bb9sNhlXZLq9oAoB20QpuqwzCnpW2tGXWaylTBekmfkpclIOlVCchHmFm8qTI8ACBkJmtSTNNIyggPnX1OgkQPFwzxaiMGXV+4j2eGULYn94=
+	t=1737569210; cv=none; b=SCpkdmGKVDWOBoqCTsagZNuoy2uFblhPiYA1BuvNm+hO1rSdh3tZk7QijiZwJtG/9KEKdriRveAit940wuW3NOjB1t7vzhZc09kw3rB8Ys1I2U9WVVF3gLq6Ra6mKVVkyEOxkVn9U+zRuwKwzUliY/yQvW1Od2+MybkWJfZj+/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737568788; c=relaxed/simple;
-	bh=H/gAGW5mUg9X7OZvlovBl0Z1G3QkMWlVoJ3zKYxdsiI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NZqyFvI7FQyb2ST/rsxgGGAX5USroc3I3c+r0YZ2ToO8w0sNEznlxV9eeF6g8MRP02JmYwuYgPQ/MdhoxscJ0Fvjzysj3C02tm/hbEjhx6EKWsvuSzlFVf4HrkbCOFPjfhc3hB48U02MTsCROkM0xm1NNttv9IHlMCXa+YHndbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bFjoVkMs; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-385f06d0c8eso3882582f8f.0;
-        Wed, 22 Jan 2025 09:59:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737568785; x=1738173585; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tjGhE/Pv/KpTN1+mcyUldkY6LGoiejB+r+xA1Qw55mo=;
-        b=bFjoVkMsviBLB8XAsKNJoqx9ktKIpbKjZzd6a/2fZFWSzmTjClaLTPnzLOq5+csCCR
-         w4gT40HlZFxX1GkB/7dWVgEzO7g96USaFt28r6yj3umbW0H9uiMcsgfwLlzuP753Q6Mx
-         tZsHEUhyuHsMoacxNKVGeeOxhYZW6C1EwLp89YJaAzOOpLDhTLVOwkiZfShjJRB7HpeB
-         eziBuc/eHBcK/vxFHawqRS2J5CiFUeW8nf4xgVXn49ILJiza0dLUIZFoB6ttGqAVifJQ
-         e499TPOz1o/otRS5QI/2KrzbWkWEdNKYuiVWMH8ZnSBueT0dY2llY5PTLheA9JjnnjY1
-         QWeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737568785; x=1738173585;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tjGhE/Pv/KpTN1+mcyUldkY6LGoiejB+r+xA1Qw55mo=;
-        b=hRsIXI30SeGY3lhITjHCaM7GFMpqGW4s/r+ub4PN7aobMsTEDQG7k3eGPp4K3bNRyU
-         557Znud3p256Yx7x+riZ6eMC2ib3kBYao27H1cvhETszOFdyZTr3fl60S/W0sWjh+FZz
-         R17pEQ4d8sH/1TXqqorx7bb3Zdy9D7xV0WxiSWtwIfURkaYGd4C9Pct1fdnayZUN+P7f
-         ZUuKd9OBCiV8hr9XXsMDKX56OkvPHqAt3nWFcsXaXibFq+5Wt2w7pzfEnhnPmAv4U+Ru
-         GhpEjCv2uOuozIFMkyhuWdpSAoldQUDc3tO++n/UFcjrIdlIXKu078MDz5jkfb6fLAIa
-         HmPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVW1qiSXyfRYVULU1vO6dsI/XQ+LUPoNgTVQiBdBJyXUJYGMcdVS/DoUCM8ivTjAU8TZHtnGvuQNA34WI0N@vger.kernel.org, AJvYcCVZXLrmWIZTFSnbqnYYu7ajYcSrOD2yik79OIfX6pIoqoD61vWXOGll0sFwsgVpyZFYXobuI/w5DQEhtm4lyQ==@vger.kernel.org, AJvYcCW6f4MeIBluluVW7y8yXELyKu5vaVgrmCddfaB8F3teESVoFQmMEgeNuHNdpq7fTNuqbyk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwyTQtcrfmTHxTY7aM04ovvlBkasVsZEXJzTx4q24UqufgrCzXu
-	XOHvEVHkKvjBqT0arFAFS14iHVWZ/HmfWxb0SefVMiwYT+eMd3kB3c2X5sTkqhodKcfv5qZhWGR
-	RWE7+lcXhd0+gf6GZ+MQ7UiTuGNo=
-X-Gm-Gg: ASbGncuBGwRzAVpy2cp4zAqvrH49rWSNKsNdzhdJ+79R9yicAhMt6al+YMTTHDtZP0T
-	f7v2GXn8NsBZvO771rso48XCo4vlQeXqh7CrDcb0ch7CwxSNzk52kjaJCoCKq90PCFU3sxLbcUi
-	c4oLC1tPs=
-X-Google-Smtp-Source: AGHT+IFxCXkzhpwgpdx7eCvc2wDO2gfqmMA00YgIOs2a9LuaEY3zZyJrEdtNsS/9JrQr9Bk+OHjxwKHXZd2HupYDbL8=
-X-Received: by 2002:a5d:614b:0:b0:385:f13c:570f with SMTP id
- ffacd0b85a97d-38bf57a1e51mr17279523f8f.33.1737568785087; Wed, 22 Jan 2025
- 09:59:45 -0800 (PST)
+	s=arc-20240116; t=1737569210; c=relaxed/simple;
+	bh=imr1m16tjYb+GGHBLPJM87NZf6BMT1c636p8Pkn1wYI=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=OjMJupLHHpWqOR4vXkA1wfLkHybRv1BDuUs8vgFwI/quHwI39ulw2UBqJ0oZlVhLz5JoA7KjriNKLK5qdnaBTCLJhNIg5+vxJQzzvVrPXI2w6Icr+YaYkiy6HNYAF1eLccSH4VULZgcxcNerrP7Ps3AdzPK4/XBSdRLurfn9hNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=d6KjX4Ai; arc=none smtp.client-ip=185.70.43.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1737569206; x=1737828406;
+	bh=imr1m16tjYb+GGHBLPJM87NZf6BMT1c636p8Pkn1wYI=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
+	b=d6KjX4AiXRX2RtlK8xL5wiLfAKjspVL6WH9BpLGzryJSxaPU4jp7nGWEN5nljGpW1
+	 B9RQ7tZq/JCJWDJkbFu9Z2t9gHg+D21sG4DjIxw+gevUaySigWgY3U7V9mGUPvYXwH
+	 lDHDuZQm52gHb3S+GzHtUKczEd58+03FhiSW931lJ2FWRyq2iQsdUIu0wbrFvfoR1r
+	 hSeZay6T35C6daHfRVZbiteeI6vp2He/y1XaWf9e2nD9925Y2+L8hShYm/SiZ5A77h
+	 Pkty5JlnXXkHEB7KlM67fHxIFP26AG0fuQan41enkCte77/R1x+J8uskT7pvF2vD84
+	 XhQreMfFqHLSg==
+Date: Wed, 22 Jan 2025 18:06:42 +0000
+To: "Jose E. Marchesi" <jose.marchesi@oracle.com>
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, mykolal@fb.com
+Subject: Re: [PATCH bpf-next 0/5] BTF: arbitrary __attribute__ encoding
+Message-ID: <EQX_MzPyzXAlkEpU09L1fHjlBN6I0iRFkNw2X7n4pW2r7ML4hoJ-XMX3oUsUkbCm1UZ0EBpkM7n_3ORDwiL0O1aQSaD6rJfFzBfnAwUJ34U=@pm.me>
+In-Reply-To: <87msfjhy3v.fsf@oracle.com>
+References: <20250122025308.2717553-1-ihor.solodrai@pm.me> <87msfjhy3v.fsf@oracle.com>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: e952fa70d9ccd22bb270e136cb86ea898a911f5a
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <AM6PR03MB508004527B8B38AAF18D763399E62@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <AM6PR03MB50806C5D9B5314E55D4204A499E62@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <CAADnVQLk6w+AkpoWERoid54xZh_FeiV0q1_sVU2o-oMBkP2Y7w@mail.gmail.com> <AM6PR03MB5080CDA2F6336B1BA2FDF2C199E12@AM6PR03MB5080.eurprd03.prod.outlook.com>
-In-Reply-To: <AM6PR03MB5080CDA2F6336B1BA2FDF2C199E12@AM6PR03MB5080.eurprd03.prod.outlook.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 22 Jan 2025 09:59:34 -0800
-X-Gm-Features: AWEUYZkWeDZQredRuCv2R--gyu_IN3k2c_gHpYLrL79tHyNkx1ZN0P2rvqIGFls
-Message-ID: <CAADnVQKkaWkSHLapcUe83YQcmhO+S=2w+1rB_NzUbt=TOW9WFw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 4/5] bpf: Make fs kfuncs available for SYSCALL
- program type
-To: Juntong Deng <juntong.deng@outlook.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, snorcht@gmail.com, 
-	Christian Brauner <brauner@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 22, 2025 at 5:34=E2=80=AFAM Juntong Deng <juntong.deng@outlook.=
-com> wrote:
->
-> On 2025/1/22 00:43, Alexei Starovoitov wrote:
-> > On Tue, Jan 21, 2025 at 5:09=E2=80=AFAM Juntong Deng <juntong.deng@outl=
-ook.com> wrote:
-> >>
-> >> Currently fs kfuncs are only available for LSM program type, but fs
-> >> kfuncs are generic and useful for scenarios other than LSM.
-> >>
-> >> This patch makes fs kfuncs available for SYSCALL program type.
-> >>
-> >> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
-> >> ---
-> >>   fs/bpf_fs_kfuncs.c                                 | 14 ++++++------=
---
-> >>   .../selftests/bpf/progs/verifier_vfs_reject.c      | 10 ----------
-> >>   2 files changed, 6 insertions(+), 18 deletions(-)
-> >>
-> >> diff --git a/fs/bpf_fs_kfuncs.c b/fs/bpf_fs_kfuncs.c
-> >> index 4a810046dcf3..8a7e9ed371de 100644
-> >> --- a/fs/bpf_fs_kfuncs.c
-> >> +++ b/fs/bpf_fs_kfuncs.c
-> >> @@ -26,8 +26,6 @@ __bpf_kfunc_start_defs();
-> >>    * acquired by this BPF kfunc will result in the BPF program being r=
-ejected by
-> >>    * the BPF verifier.
-> >>    *
-> >> - * This BPF kfunc may only be called from BPF LSM programs.
-> >> - *
-> >>    * Internally, this BPF kfunc leans on get_task_exe_file(), such tha=
-t calling
-> >>    * bpf_get_task_exe_file() would be analogous to calling get_task_ex=
-e_file()
-> >>    * directly in kernel context.
-> >> @@ -49,8 +47,6 @@ __bpf_kfunc struct file *bpf_get_task_exe_file(struc=
-t task_struct *task)
-> >>    * passed to this BPF kfunc. Attempting to pass an unreferenced file=
- pointer, or
-> >>    * any other arbitrary pointer for that matter, will result in the B=
-PF program
-> >>    * being rejected by the BPF verifier.
-> >> - *
-> >> - * This BPF kfunc may only be called from BPF LSM programs.
-> >>    */
-> >>   __bpf_kfunc void bpf_put_file(struct file *file)
-> >>   {
-> >> @@ -70,8 +66,6 @@ __bpf_kfunc void bpf_put_file(struct file *file)
-> >>    * reference, or else the BPF program will be outright rejected by t=
-he BPF
-> >>    * verifier.
-> >>    *
-> >> - * This BPF kfunc may only be called from BPF LSM programs.
-> >> - *
-> >>    * Return: A positive integer corresponding to the length of the res=
-olved
-> >>    * pathname in *buf*, including the NUL termination character. On er=
-ror, a
-> >>    * negative integer is returned.
-> >> @@ -184,7 +178,8 @@ BTF_KFUNCS_END(bpf_fs_kfunc_set_ids)
-> >>   static int bpf_fs_kfuncs_filter(const struct bpf_prog *prog, u32 kfu=
-nc_id)
-> >>   {
-> >>          if (!btf_id_set8_contains(&bpf_fs_kfunc_set_ids, kfunc_id) ||
-> >> -           prog->type =3D=3D BPF_PROG_TYPE_LSM)
-> >> +           prog->type =3D=3D BPF_PROG_TYPE_LSM ||
-> >> +           prog->type =3D=3D BPF_PROG_TYPE_SYSCALL)
-> >>                  return 0;
-> >>          return -EACCES;
-> >>   }
-> >> @@ -197,7 +192,10 @@ static const struct btf_kfunc_id_set bpf_fs_kfunc=
-_set =3D {
-> >>
-> >>   static int __init bpf_fs_kfuncs_init(void)
-> >>   {
-> >> -       return register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM, &bpf_fs_kf=
-unc_set);
-> >> +       int ret;
-> >> +
-> >> +       ret =3D register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM, &bpf_fs_k=
-func_set);
-> >> +       return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL,=
- &bpf_fs_kfunc_set);
-> >>   }
-> >>
-> >>   late_initcall(bpf_fs_kfuncs_init);
-> >> diff --git a/tools/testing/selftests/bpf/progs/verifier_vfs_reject.c b=
-/tools/testing/selftests/bpf/progs/verifier_vfs_reject.c
-> >> index d6d3f4fcb24c..5aab75fd2fa5 100644
-> >> --- a/tools/testing/selftests/bpf/progs/verifier_vfs_reject.c
-> >> +++ b/tools/testing/selftests/bpf/progs/verifier_vfs_reject.c
-> >> @@ -148,14 +148,4 @@ int BPF_PROG(path_d_path_kfunc_invalid_buf_sz, st=
-ruct file *file)
-> >>          return 0;
-> >>   }
-> >>
-> >> -SEC("fentry/vfs_open")
-> >> -__failure __msg("calling kernel function bpf_path_d_path is not allow=
-ed")
-> >> -int BPF_PROG(path_d_path_kfunc_non_lsm, struct path *path, struct fil=
-e *f)
-> >> -{
-> >> -       /* Calling bpf_path_d_path() from a non-LSM BPF program isn't =
-permitted.
-> >> -        */
-> >> -       bpf_path_d_path(path, buf, sizeof(buf));
-> >> -       return 0;
-> >> -}
-> >
-> > A leftover from previous versions?
-> > This test should still be rejected by the verifier.
->
-> Thanks for your reply.
->
-> Not a leftover.
->
-> bpf_path_d_path can be called from SYSCALL program type, not only LSM
-> program type, so it seems a bit weird to keep this test case?
+On Wednesday, January 22nd, 2025 at 3:44 AM, Jose E. Marchesi <jose.marches=
+i@oracle.com> wrote:
 
-How is it weird?
-How is this related to syscall prog?
-It's a check that fentry prog cannot call it.
+>=20
+>=20
+> > This patch series extends BPF Type Format (BTF) to support arbitrary
+> > attribute encoding.
+> >=20
+> > Setting the kind_flag to 1 in BTF type tags and decl tags now changes
+> > the meaning for the encoded tag, in particular with respect to
+> > btf_dump in libbpf.
+> >=20
+> > If the kflag is set, then the string encoded by the tag represents the
+> > full attribute-list of an attribute specifier [1].
+>=20
+>=20
+> Why is extending BTF necessary for this? Type and declaration tags
+> contain arbitrary strings, and AFAIK you can have more than one type tag
+> associated with a single type or declaration. Why coupling the
+> interpretation of the contents of the string with the transport format?
+>=20
+> Something like "cattribute:always_inline".
+
+Hi Jose. Good questions.
+
+You are correct that the tags can contain arbitrary strings already,
+and that multiple tags can be associated with the same type or
+declaration.
+
+A specific problem I'm trying to solve is how to direct btf_dump in
+interpreting tags as attributes, and do it in a generic way, as it's a
+part of libbpf.
+
+I discussed with Andrii, Eduard and Alexei a couple of approaches, and
+tried some of them.
+
+For example, a set of dump options could be introduced to handle
+specific use-cases, similar to what you suggested in a
+ATTR_PRESERVE_ACCESS_INDEX patch [1]. This is a valid approach,
+however it is not very generic. An option will have to be introduced
+and implemented for every new use-case.
+
+A more generic approach is adding a set of callbacks to btf_dump. This
+is a big design task, which I think should be avoided unless
+absolutely necessary.
+
+The benefit of this change - defining flagged tags as attributes - is
+that it enables BTF to natively encode attributes as part of a type,
+which is not possible currently. And it's a simple change.
+
+Using the contents of the tag to indicate it's meaning (such as
+"cattrubite:always_inline") will work too. However I don't think it's
+desirable to have to parse the tag strings within libbpf, even more so
+in BPF verifier.
+
+In a discussion with Andrii we briefly entertained an idea of allowing
+btf_dump to print the tag string directly (without requiring it to be
+a tag or attribute), which would allow all kinds of hacks. Tempting,
+but probably very bug-prone.
+
+[1] https://lore.kernel.org/bpf/20240503111836.25275-1-jose.marchesi@oracle=
+.com/
+
+>=20
+> > This feature will allow extending tools such as pahole and bpftool to
+> > capture and use more granular type information, and make it easier to
+> > manage compatibility between clang and gcc BPF compilers.
+> >=20
+> > [1] https://gcc.gnu.org/onlinedocs/gcc-13.2.0/gcc/Attribute-Syntax.html
+> >=20
+> > Ihor Solodrai (5):
+> > libbpf: introduce kflag for type_tags and decl_tags in BTF
+> > libbpf: check the kflag of type tags in btf_dump
+> > selftests/bpf: add a btf_dump test for type_tags
+> > bpf: allow kind_flag for BTF type and decl tags
+> > selftests/bpf: add a BTF verification test for kflagged type_tag
+> >=20
+> > Documentation/bpf/btf.rst | 27 +++-
+> > kernel/bpf/btf.c | 7 +-
+> > tools/include/uapi/linux/btf.h | 3 +-
+> > tools/lib/bpf/btf.c | 87 +++++++---
+> > tools/lib/bpf/btf.h | 3 +
+> > tools/lib/bpf/btf_dump.c | 5 +-
+> > tools/lib/bpf/libbpf.map | 2 +
+> > tools/testing/selftests/bpf/prog_tests/btf.c | 23 ++-
+> > .../selftests/bpf/prog_tests/btf_dump.c | 148 +++++++++++++-----
+> > tools/testing/selftests/bpf/test_btf.h | 6 +
+> > 10 files changed, 234 insertions(+), 77 deletions(-)
+
 
