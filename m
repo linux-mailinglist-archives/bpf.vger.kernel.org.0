@@ -1,79 +1,98 @@
-Return-Path: <bpf+bounces-49526-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49527-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC186A198FE
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 20:07:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A17EA1990C
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 20:10:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF8643ACF67
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 19:06:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30B113A2D3D
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 19:10:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 540A02163BC;
-	Wed, 22 Jan 2025 19:06:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97F42215F56;
+	Wed, 22 Jan 2025 19:10:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="izObgMbJ"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="frJLXGQI"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB32A21518C;
-	Wed, 22 Jan 2025 19:06:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55F58214204
+	for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 19:10:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737572781; cv=none; b=q59qthiSwe7sL+//5qrlWJ2MK/pr25MEh8trtVDyEf1sm2UfjprGL+kg5cq82OjFslNvRSeA0n9/nx4Cw33HjG1hkMB764CBVYacvweQmUt1zpM0Q35cHO+ZgXYtnPhHXT2/vdzhQ2AE6b6FJ1M51c4chWHiZzZZAVDEfVqNBg4=
+	t=1737573010; cv=none; b=ODO9kmVQ7hWcJ+M1CK2gSKp1uDkboHOXw/djEq2M7LHUVZF1t40HDkTA0u5kOSKxsiVRd45J7ggebNs+PuKKCpXH3yVNT+XJfxAKXPbFeM12jmGVBRAmBWH0ScM5fHDMRbhGRdUdV/wKo0J02SzO6RZ2hE4T54jtQcLyfUnb4dw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737572781; c=relaxed/simple;
-	bh=hhZmQ80KMi2K3r5BhEizbk8P3ylxqjrd/b5kjlu8E1c=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=pXTh9pgfFevUoiEL0BqTQo/ir+Trott6mt78hWLN1F47c940t/W2AOv1cfh++IGqtNh/kmznFY+vOH/9VdOfgsmulhvUwQV3+15xkMvhw+GyKeBnnUEqd44MkeI935YX/MajKQWWSonuom8yplHa9aktAB014+NTMmu9w7s8mwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=izObgMbJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D1D3C4CED2;
-	Wed, 22 Jan 2025 19:06:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737572781;
-	bh=hhZmQ80KMi2K3r5BhEizbk8P3ylxqjrd/b5kjlu8E1c=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=izObgMbJkIMd+a8wiSrSaVZQFk5oFZIGkBW5CfxkjolftuTxu+8tr89vDX2xUwADc
-	 2h/9YN1yZKd1d0/g2dlTB2+sjhrP0uIugdNrRSEcPYEwO5eNcjyhNAnOTjadZRyyXi
-	 xzEkX3mB5qGbuJ8n0M4Z+X1gEn89C2GYpY17tEsf8HF9SqP7uRpYAlkb32kdnANv6e
-	 feqwvU6PEP1b9sAJwJ39Tl9IkkIu+SDwUTzpkzxCMWEncwAtkLDa01oXfFrxlSuhZi
-	 34W/qa9hjvtnMbV1aG+3m0gmTPt58QxHeCf/RdYu8kl3tEgpk6agqFMQij9BGAZVPW
-	 o9CHolT/sacVw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAFA9380AA62;
-	Wed, 22 Jan 2025 19:06:46 +0000 (UTC)
-Subject: Re: [GIT PULL] Networking for v6.14
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20250121125748.37808-1-pabeni@redhat.com>
-References: <20250121125748.37808-1-pabeni@redhat.com>
-X-PR-Tracked-List-Id: <netdev.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20250121125748.37808-1-pabeni@redhat.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git tags/net-next-6.14
-X-PR-Tracked-Commit-Id: cf33d96f50903214226b379b3f10d1f262dae018
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0ad9617c78acbc71373fb341a6f75d4012b01d69
-Message-Id: <173757280565.783272.14009973682494742496.pr-tracker-bot@kernel.org>
-Date: Wed, 22 Jan 2025 19:06:45 +0000
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: torvalds@linux-foundation.org, kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+	s=arc-20240116; t=1737573010; c=relaxed/simple;
+	bh=xtCF0OBP+/WsgOxj6z5vYNs/+u2Qw+z3J4OM1v/RYYo=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rD7Ub5r/cbMwjjtTV/QZJKtcHGf2G1CZgrJScXIvc+bQhPfGp2T53iPA81luXz6jdVX1UqyClCf3e0Nc7rg9/Mxx0i8EopivbiZXjoQ9NpE7oQYTe2ItARurMoJhT+Ydh7UXyyHYs5/XH2wgUH53j7Yh5oVlRjX0bZtgymirqlY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=frJLXGQI; arc=none smtp.client-ip=185.70.43.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1737573006; x=1737832206;
+	bh=xtCF0OBP+/WsgOxj6z5vYNs/+u2Qw+z3J4OM1v/RYYo=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
+	b=frJLXGQI+zRFl2HeW4eKBaQFY60n5peknfoIy0n1ce3jYBO2ZxZljYcnV9whEgH1J
+	 HK1m8EMSJHsPFiFRp8zG4ykvS2PuzA0v5V63qyQdThcKQKbRzE3KyQBbXRPm8cB3Rh
+	 YDmY28/KpV4shNk21RZ7+khq6rvIqsj6eo5McIQtrUU2CFRk85bt+5lz9kXY/Kb3tu
+	 XEFTMij/s4MxyocM/RklJg29kgrUpny8lXOx3ygp6dKfLnEa6ZKZA/F0hGz+fXAEcM
+	 t17/T2FCMypSwVif8aGwcYoMYQgxsrjZ8tQ4HY3bR4p3Pcy0Zt/cavqo61bI3vllql
+	 KgEPbRHIifQuA==
+Date: Wed, 22 Jan 2025 19:10:00 +0000
+To: Tejun Heo <tj@kernel.org>
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: sched-ext@meta.com, kernel-team@meta.com, linux-kernel@vger.kernel.org, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH sched_ext/for-6.13-fixes] sched_ext: Fix dsq_local_on selftest
+Message-ID: <m94EAn-xiPWJ1dRFTqcm6urBNNOPza94BmyYvp_5ti06uAZF0Izg2mBC9rpbc3PEfWWvDf7UyDt1x_2gB-7y3esTH3f54s05QBxcTXh4YhQ=@pm.me>
+In-Reply-To: <Z5BMkyJ8I7cth1GH@slm.duckdns.org>
+References: <20241209152924.4508-1-void@manifault.com> <qC39k3UsonrBYD_SmuxHnZIQLsuuccoCrkiqb_BT7DvH945A1_LZwE4g-5Pu9FcCtqZt4lY1HhIPi0homRuNWxkgo1rgP3bkxa0donw8kV4=@pm.me> <Z1n9v7Z6iNJ-wKmq@slm.duckdns.org> <SJEarr1ol1z7N83mqHJjBmpXcXgHNnnuORHfziWINcHBQCJzY0RczexPKxdq_vE5cDYPeO3bx1RdsNhLqw5UYI40HSX9cPZ9rdmebYwwAP8=@pm.me> <HdoCQccNk3GZdnPx5w1vuAfOMMgtWeUgrUhn_e8B-hyRrWoOPakTGcoI3Q4-QmK_44msuvivoRUykxxeB82uR-S3enkmFaQl2t6Zgu-Nq6Y=@pm.me> <Z2MV001RfiG7DNqj@slm.duckdns.org> <ouIylyHgXTVZ9RiyVeHZ26YXQLKMEKHoOVPWIgpWRDD2FL2RDwwUEocaj4LMpMR3PjbwpPuxEnJAjMeD4e7LnWIAYvIbGC5BPvPGtzyumYk=@pm.me> <Z2tNK2oFDX1OPp8C@slm.duckdns.org> <QHB1r-3fBPQIaDS8iz26J-zoMbn3O6VLlwlZP1NQdkMzlQTsCX_xrfTPBoGt6SQOGgtg6vN7aXles4CndepTvjIVQ7bVXDBrvPaiRH5R8tc=@pm.me> <Z5BMkyJ8I7cth1GH@slm.duckdns.org>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: 370d90952211409affdb552cf4d567efc6def8e1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-The pull request you sent on Tue, 21 Jan 2025 13:57:48 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git tags/net-next-6.14
+On Tuesday, January 21st, 2025 at 5:40 PM, Tejun Heo <tj@kernel.org> wrote:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0ad9617c78acbc71373fb341a6f75d4012b01d69
+>=20
+>=20
+> Hello, sorry about the delay.
+>=20
+> On Wed, Jan 15, 2025 at 11:50:37PM +0000, Ihor Solodrai wrote:
+> ...
+>=20
+> > 2025-01-15T23:28:55.8238375Z [ 5.334631] sched_ext: BPF scheduler "dsp_=
+local_on" disabled (runtime error)
+> > 2025-01-15T23:28:55.8243034Z [ 5.335420] sched_ext: dsp_local_on: SCX_D=
+SQ_LOCAL[_ON] verdict target cpu 1 not allowed for kworker/u8:1[33]
+>=20
+>=20
+> That's a head scratcher. It's a single node 2 cpu instance and all unboun=
+d
+> kworkers should be allowed on all CPUs. I'll update the test to test the
+> actual cpumask but can you see whether this failure is consistent or flak=
+y?
 
-Thank you!
+I re-ran all the jobs, and all sched_ext jobs have failed (3/3).
+Previous time only 1 of 3 runs failed.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+https://github.com/kernel-patches/vmtest/actions/runs/12798804552/job/36016=
+405680
+
+>=20
+> Thanks.
+>=20
+> --
+> tejun
 
