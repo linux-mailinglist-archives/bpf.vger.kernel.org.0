@@ -1,171 +1,217 @@
-Return-Path: <bpf+bounces-49537-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49540-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA338A19A9F
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 23:02:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 947A2A19AD1
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 23:22:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBEBE3A8140
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 22:02:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CED3C160944
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 22:22:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61E1C1C5D77;
-	Wed, 22 Jan 2025 22:02:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A6871C8FB4;
+	Wed, 22 Jan 2025 22:22:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k8gLv+A0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V5MDQrAs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72AC1149E17
-	for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 22:02:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19BCD1C5F32;
+	Wed, 22 Jan 2025 22:22:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737583365; cv=none; b=arogREZRfX5M+LOPcyew62rw1SsMWgbq3f25U0ZzHZ3mEBd3we4kYDq0cXAndofz4RUMImMLiGZPoX6kTI1e9cMNiLfWtLgbXGpPq/sbQQ2XbY7kFpJyVRRbdIyJRAU0MsrPSsGpgb+4Fnw/3zY1g6z2gLBAPTn02PKhzx47+do=
+	t=1737584536; cv=none; b=bO4gn+x0726VKGocWO9nOZiTKw8Ll+PucafOIEGpEZ9YBb3tlFXRKcuig5+c/5bXDRRoeacDYwAxHMgP12pzFD/ZDjdUrnN7fKkFqP/bz961pYc/0YPE/J4liQ+O7XI4QKb9yiSImxntSJiB5hYXw6Vc0YfJUojl3J6THHSw+Es=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737583365; c=relaxed/simple;
-	bh=i1HamO6e9UeDjUmUXbKx8FvH4DWMcB/nqNAPUua9sIs=;
+	s=arc-20240116; t=1737584536; c=relaxed/simple;
+	bh=gRra50cyzPzNE6S9eTFrosemF1Wd9wWIfAK7zjV7/AE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fGo/Gm3e7hOXJxlggEglzT2uscBbTnFlPskoZhtyVDiBkJzYW75IwMqSnYjoI680yQn0C4XX1FRH8g27XEhOV+FcIu4JJBOaMaoYSLsoIkqI8hKUisUGlkNssKhvrHUTHXj6dJzsPbn0813K7xnYIkFGwNL2the1Mfm3SqV/HGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k8gLv+A0; arc=none smtp.client-ip=209.85.216.50
+	 To:Cc:Content-Type; b=GGj+i1qkdkkMv10R3ZWZqI0KjXhIn2IqdnSLLb5OBC/SamYnYsQ9jd14iEp30JuVQzJtRMze2OayH6cSkD8iaaFIZ/g4jxaSXMl9g8FBwpmza+UeY/E6DUaNe959XU11B/NErWRQNRq1ozKB3WeScyYUjL777i+fNFZgCAIHkCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V5MDQrAs; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2eed82ca5b4so511894a91.2
-        for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 14:02:44 -0800 (PST)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2165448243fso4392035ad.1;
+        Wed, 22 Jan 2025 14:22:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737583364; x=1738188164; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1737584534; x=1738189334; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EYlpZzww93rG77I4oDg8cp3fmmarmxXqx7u3WQizgCA=;
-        b=k8gLv+A0FKXORZUwFieKfmj+9freNlNcLLqM1XDzeBinMzpuFsFNysN3pT8xqoeTXJ
-         SXdWenqld9xCmoV0hKEwmdHFr+LKOlFutdpADEPkXkVo9PlgU/tBP6zP8+a53i3fOb1k
-         Acee6WJwiyeZG1wGUV+k4KhWFAQo5p0+b7Bs9nrBy5tF2q0kmHrHjlIL90NSgvhxlrgO
-         YFAfbS0ere28hfF4gGqLCsAZPPHd7+p4qEUDz/BrqF9rqyNTWyuxG5v6QpVjPz8WgmFa
-         qBM5m2BOh2Q1DLrqaYoLJXqilkAET2GRxWhaP1Xyku7/E7nogeBuF65NFFpcw6EjE2pA
-         p7Mw==
+        bh=t1m3yu15mM0/OTV56vuKXAPa0H/DFAzABZ6H37u36x0=;
+        b=V5MDQrAs0L6NXKw1dpdRVI1xnU+0UsmyqWlUf/117xeqa4x47xM1+tco88VcHKFlP4
+         X3x2NzFKtIFIS4I2+Ey6YZK7Ble0SziVuSS/ubnx+99QhOXSqKeD7mFtw9azB+qj9b1Q
+         ouwMFYTkkZ1ErPLWYFQoI96stTvS7Wab87V9pLd0PTKYczoVOOkH4yTLoi+ij6X6CNCv
+         i0Thjm13S38zHdDbHhN/ARG6g9ytsBpKEsbeK+IOn4nOlnr4P40oZnKg7RWAkNHi2q1m
+         48QRu/JytFWS+EMjX53Fn/YHp+gzt3t9UhbE5/iIydB3aG+RUuPgNBraav8YiaVJ/nTb
+         HtkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737583364; x=1738188164;
+        d=1e100.net; s=20230601; t=1737584534; x=1738189334;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EYlpZzww93rG77I4oDg8cp3fmmarmxXqx7u3WQizgCA=;
-        b=F6Q7U1EEOtNp+q0W2MpqFvwwBay2mQEwEpNhgBbydLsXSQr2IHHw1ZqEoFoI6K1M5D
-         I/D6fUdewcg7wcf6FzSb3veXfB155P8UgZsoNaJoTXDirBS1XFhqTIhtkq/iWYkFpR2+
-         tUAsalLAMIifo3sYxb6KsiII+0Fd6xGwWZ5pbF1wPDwJUUEvWqro8lPtGlo0NlSBZFHG
-         L2XHDgsD2aWlYMfOf2bXVo+DGmtGOR9LQswDYa9BVWWR/wytmHIDX+VVxAUDX6prP5HG
-         kPNe0aALmqS6NK8eqGGkaljqNTSEVh6AEF/lFsHmAnaWX2lnjACZv0xuHDev+lHEOSN2
-         wzog==
-X-Gm-Message-State: AOJu0YwmT4Az/eBzubnlF9SAFBZsss/Uq2Ap5hDwWT2AgUCy30Qj+KF0
-	sXEJQSmVY8ccUWxCk4IM0a00A90vRfhaptHjPw5AwmtNlAQ17KiCS6SM/Up6IHVtmLZ34cvsVAl
-	xFuYLUU/+M0N7DppGJ4g+n6ixpYY=
-X-Gm-Gg: ASbGncuplHHSPsa/lsOULESsWuAWQxSterjPGCmZBhVtW/9EqOX+xJ3ZQgIpJzZd0Yw
-	6Zhq6B8cHOSklZeGn51hriwTylB65Gn1MPCrharRiWzXWYZOxVVFJ3N/5V1oHcDoxC6g=
-X-Google-Smtp-Source: AGHT+IEN+GWOfdNODC7bkDbq598hMNiTKocPySn8iPjWyf6dxmDKb/0rZ7uegN313if7NTxnjf9qkny9xQXEV8SGPks=
-X-Received: by 2002:a05:6a00:2d96:b0:725:e057:c3dd with SMTP id
- d2e1a72fcca58-72dafbcdbe4mr30212427b3a.22.1737583363597; Wed, 22 Jan 2025
- 14:02:43 -0800 (PST)
+        bh=t1m3yu15mM0/OTV56vuKXAPa0H/DFAzABZ6H37u36x0=;
+        b=N6uj3Jd7Pg06WOiTkYxttzE5DgkJF0X6PeaW6kcGRXzDemcB8vLr6YFE2IwvZG4cWP
+         Mopm8WBVQkCN/nen0UOw6z5KXzL/GbxePU2t3vywX68kjClAEYH/RgQTpQJ8Z+mlXRhT
+         Ov0sUVRFDAO5RWhM6dZrzv50aqjvvRzlW83dLK0ZwtSBWh/zt8uvweCLPNDXoVv7cFj1
+         RYMwG0o8eIRHziB0JPzErw4TsdwVIiLgDeOEaRm+yQS3br50+WtvCc9f3M7JPrgz14JQ
+         njaIFFfAo7Vz7HCJ36ueZkAtPU5L+wJ4BjI+IzvAnOb+cpIqwgfLVxOc2gijV79a+d/P
+         0Rfg==
+X-Forwarded-Encrypted: i=1; AJvYcCWi8jG3fTUwX5oAleDcxeniVEMwtKjdcVgF4/bOSNR1DoJ86UdaUrbQcnf0sKlDoFZEazY=@vger.kernel.org, AJvYcCWmIvC1FY355Nng4FEzYjTgvm09UJF76SEloW/7rDxdf2KqeKEFgKQ80TLRo4Zvzl2pt2mRcXzwvEQ8IbBf@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy8Vbxb1s1KNtfZmDskElNod4E5jn9kC8subZGqwzA5BqO+CTV9
+	6S+XkoUX+a+jqmGu2Ab12IhZC5WtKlWS5Y0XOu3lECwfmz3ct9aW+1fdUjTXV0s4IAlxSFtPoXi
+	sopZTQU9ZwxBvRf45jmJEakqqyg8=
+X-Gm-Gg: ASbGncukULB9bGlUtgMMqVTXd+3GIrhx4cLfnZ8vGke2W16RMAbnYvwUhiKR6ygV+T6
+	hVhHfYj3LhZnVp+C0AvWzZQM7jlVmBnRmMM8SoVHwORvvwjuzTnc1vXoY1FtX1iREYZE=
+X-Google-Smtp-Source: AGHT+IFAsykihvk+hrpHeM4LNNh0yZ0EbOsKQutlh/9mDzvDesL1qqa4RMOumFbVQ3AA24faYjyfd28qkrK2cQ58Wk8=
+X-Received: by 2002:a05:6a20:244e:b0:1e0:d4f4:5b39 with SMTP id
+ adf61e73a8af0-1eb214caa0emr37986003637.24.1737584534236; Wed, 22 Jan 2025
+ 14:22:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250122025308.2717553-1-ihor.solodrai@pm.me> <20250122025308.2717553-2-ihor.solodrai@pm.me>
-In-Reply-To: <20250122025308.2717553-2-ihor.solodrai@pm.me>
+References: <20250122171359.232791-1-chen.dylane@gmail.com> <20250122171359.232791-2-chen.dylane@gmail.com>
+In-Reply-To: <20250122171359.232791-2-chen.dylane@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 22 Jan 2025 14:02:31 -0800
-X-Gm-Features: AWEUYZmtqvQ08dZgwaQnfD0KS0MXYXXYYgvQswbFHxM91eSFLSucATb5wHaBHEs
-Message-ID: <CAEf4BzYFJBLrQ=mjoh5K7KimzVpqz93vxrf1eXwTxDMv3w7gSw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/5] libbpf: introduce kflag for type_tags and
- decl_tags in BTF
-To: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, mykolal@fb.com, 
-	jose.marchesi@oracle.com
+Date: Wed, 22 Jan 2025 14:22:02 -0800
+X-Gm-Features: AWEUYZm0LUcVTPk9jhz17ldyNo23V_fTylJoFNGnPffC5Lf97bImleBQsOmsmns
+Message-ID: <CAEf4BzZM9YCzbs1-nv6nDk=-V8EO08N76wTC5aawCyHRd9Ptqg@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 1/2] libbpf: Add libbpf_probe_bpf_kfunc API
+To: Tao Chen <chen.dylane@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, 
+	haoluo@google.com, jolsa@kernel.org, qmo@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 21, 2025 at 6:53=E2=80=AFPM Ihor Solodrai <ihor.solodrai@pm.me>=
- wrote:
+On Wed, Jan 22, 2025 at 9:14=E2=80=AFAM Tao Chen <chen.dylane@gmail.com> wr=
+ote:
 >
-> Add the following functions to libbpf API:
-> * btf__add_type_attr()
-> * btf__add_decl_attr()
+> Similarly to libbpf_probe_bpf_helper, the libbpf_probe_bpf_kfunc
+> used to test the availability of the different eBPF kfuncs on the
+> current system.
 >
-> These functions allow to add to BTF the type tags and decl tags with
-> info->kflag set to 1. The kflag indicates that the tag directly
-> encodes an __attribute__ and not a normal tag.
->
-> See Documentation/bpf/btf.rst changes for details on the semantics.
->
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Ihor Solodrai <ihor.solodrai@pm.me>
+> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
 > ---
->  Documentation/bpf/btf.rst      | 27 +++++++++--
->  tools/include/uapi/linux/btf.h |  3 +-
-
-kernel documentation and uapi changes should be in a separate patch
-from libbpf-side changes
-
->  tools/lib/bpf/btf.c            | 87 +++++++++++++++++++++++++---------
->  tools/lib/bpf/btf.h            |  3 ++
->  tools/lib/bpf/libbpf.map       |  2 +
->  5 files changed, 93 insertions(+), 29 deletions(-)
+>  tools/lib/bpf/libbpf.h        | 16 +++++++++++++++-
+>  tools/lib/bpf/libbpf.map      |  1 +
+>  tools/lib/bpf/libbpf_probes.c | 36 +++++++++++++++++++++++++++++++++++
+>  3 files changed, 52 insertions(+), 1 deletion(-)
 >
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 3020ee45303a..3b6d33578a16 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -1680,7 +1680,21 @@ LIBBPF_API int libbpf_probe_bpf_map_type(enum bpf_=
+map_type map_type, const void
+>   */
+>  LIBBPF_API int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type,
+>                                        enum bpf_func_id helper_id, const =
+void *opts);
+> -
+> +/**
+> + * @brief **libbpf_probe_bpf_kfunc()** detects if host kernel supports t=
+he
+> + * use of a given BPF kfunc from specified BPF program type.
+> + * @param prog_type BPF program type used to check the support of BPF kf=
+unc
+> + * @param kfunc_id The btf ID of BPF kfunc to check support for
+> + * @param opts reserved for future extensibility, should be NULL
+> + * @return 1, if given combination of program type and kfunc is supporte=
+d; 0,
+> + * if the combination is not supported; negative error code if feature
+> + * detection for provided input arguments failed or can't be performed
+> + *
+> + * Make sure the process has required set of CAP_* permissions (or runs =
+as
+> + * root) when performing feature checking.
+> + */
+> +LIBBPF_API int libbpf_probe_bpf_kfunc(enum bpf_prog_type prog_type,
+> +                                     int kfunc_id, const void *opts);
+>  /**
+>   * @brief **libbpf_num_possible_cpus()** is a helper function to get the
+>   * number of possible CPUs that the host kernel supports and expects.
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index a8b2936a1646..e93fae101efd 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -436,4 +436,5 @@ LIBBPF_1.6.0 {
+>                 bpf_linker__add_buf;
+>                 bpf_linker__add_fd;
+>                 bpf_linker__new_fd;
+> +               libbpf_probe_bpf_kfunc;
+>  } LIBBPF_1.5.0;
+> diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.=
+c
+> index 9dfbe7750f56..bc1cf2afbe87 100644
+> --- a/tools/lib/bpf/libbpf_probes.c
+> +++ b/tools/lib/bpf/libbpf_probes.c
+> @@ -413,6 +413,42 @@ int libbpf_probe_bpf_map_type(enum bpf_map_type map_=
+type, const void *opts)
+>         return libbpf_err(ret);
+>  }
+>
+> +int libbpf_probe_bpf_kfunc(enum bpf_prog_type prog_type, int kfunc_id,
+> +                          const void *opts)
+> +{
+> +       struct bpf_insn insns[] =3D {
+> +               BPF_EXIT_INSN(),
+> +               BPF_EXIT_INSN(),
+> +       };
+> +       const size_t insn_cnt =3D ARRAY_SIZE(insns);
+> +       int err;
+> +       char buf[4096];
+> +
+> +       if (opts)
+> +               return libbpf_err(-EINVAL);
 
-Please double-check whitespacing, tabs vs space might have been messed
-up in this patch.
+note how libbpf_probe_bpf_helper() rejects some program types because
+they can't be really loaded. Let's keep it consistent?
 
 pw-bot: cr
 
-> diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
-> index 2478cef758f8..615ded7b2442 100644
-> --- a/Documentation/bpf/btf.rst
-> +++ b/Documentation/bpf/btf.rst
-> @@ -102,8 +102,9 @@ Each type contains the following common data::
->           * bits 24-28: kind (e.g. int, ptr, array...etc)
->           * bits 29-30: unused
->           * bit     31: kind_flag, currently used by
-> -         *             struct, union, fwd, enum and enum64.
-> -         */
-> +        *             struct, union, enum, fwd, enum64,
-> +        *             DECL_TAG and TYPE_TAG
-
-keep it lower case
-
-> +        */
->          __u32 info;
->          /* "size" is used by INT, ENUM, STRUCT, UNION and ENUM64.
->           * "size" tells the size of the type it is describing.
-
-[...]
-
-> -/*
-> - * Append new BTF_KIND_DECL_TAG type with:
-> - *   - *value* - non-empty/non-NULL string;
-> - *   - *ref_type_id* - referenced type ID, it might not exist yet;
-> - *   - *component_idx* - -1 for tagging reference type, otherwise struct=
-/union
-> - *     member or function argument index;
-> - * Returns:
-> - *   - >0, type ID of newly added BTF type;
-> - *   - <0, on error.
-> - */
-> -int btf__add_decl_tag(struct btf *btf, const char *value, int ref_type_i=
-d,
-> -                int component_idx)
 > +
-> +static int __btf__add_decl_tag(struct btf *btf, const char *value,
-> +                int ref_type_id, int component_idx, int kflag)
+> +       insns[0].code =3D BPF_JMP | BPF_CALL;
+> +       insns[0].src_reg =3D BPF_PSEUDO_KFUNC_CALL;
+> +       insns[0].imm =3D kfunc_id;
+> +
+> +       /* Now only support kfunc from vmlinux */
+> +       insns[0].off =3D 0;
 
-nit: please call it "btf_add_decl_tag" (to distinguish it from public
-API, but also not use double-underscored name unnecessarily)
+why not support modules from the very beginning?
 
+> +
+> +       buf[0] =3D '\0';
+> +       err =3D probe_prog_load(prog_type, insns, insn_cnt, buf, sizeof(b=
+uf));
+> +       if (err < 0)
+> +               return libbpf_err(err);
+> +
+> +       /* If BPF verifier recognizes BPF kfunc but it's not supported fo=
+r
+> +        * given BPF program type, it will emit "calling kernel function
+> +        * bpf_cpumask_create is not allowed"
+> +        */
+> +       if (err =3D=3D 0 && strstr(buf, "not allowed"))
+
+Looking at kernel code, if kfunc ID is not recognized, it seems like
+the verifier won't print anything, is that right? If that's the case,
+then this API will behave differently from libbpf_probe_bpf_helper(),
+which isn't great.
+
+> +               return 0;
+> +
+> +       return 1; /* assume supported */
+> +}
+> +
+>  int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type, enum bpf_func_=
+id helper_id,
+>                             const void *opts)
 >  {
->         struct btf_type *t;
->         int sz, value_off;
-
-[..]
+> --
+> 2.43.0
+>
 
