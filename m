@@ -1,241 +1,211 @@
-Return-Path: <bpf+bounces-49499-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49500-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA2C5A19759
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 18:17:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FB99A19772
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 18:22:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 943577A4EC1
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 17:17:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C195165E34
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 17:22:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7631321517D;
-	Wed, 22 Jan 2025 17:17:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29808215173;
+	Wed, 22 Jan 2025 17:22:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F+oEs/Py"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J4vs3FCr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CA421369B4;
-	Wed, 22 Jan 2025 17:17:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B89516F8F5
+	for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 17:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737566233; cv=none; b=HN5qX9PQHrpnto5/hjSgaSLa8eQlBPKT5G961pAkPlHXtyk1FGHit/DAshxtUri2L0Fx5bvTM4/ELYgwE9OSjZjHFwFwpFfwem0zgcAulppXZS52NfV19uKt0QSNzKnWrmJ9fYQA9LcyukOxeprfR1pVocEI5zCIA5uiW1rQLcw=
+	t=1737566556; cv=none; b=eJxuFxBP/+xr5tcYqJJ71Dz0AajwWUaK0vtbwmTBotacn9NRwg0+ybfzXJelvy78vFiEKT32yyugYMOMNN4rGCCej+Ay4/a2TbJLIoticsrmE/O6qEnq+zvs7Gjgu14uNBBZcrpDR7FRM7zv0wDSIwi4Osi5SzTjlycUwyYgTo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737566233; c=relaxed/simple;
-	bh=o1SE3o3NcZUVY/hmBRha3xtrviGaumM9KPn/dAGuTFk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QPALcrurHa+hSdXZBvfFMCXO5VwzZAi6mJapAvxu2LhGlKau7NEESWeD6OYsEu9KyvOMEkSeewRI6M5BqSFaDpeAGB2CtoJv6MDjEUBwilBtcgucmsf7x1G9B9eF6g2Rpsr/3kLwDjPt4/440jX7zlHqb+Wb4DNel/7JwwhhFxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F+oEs/Py; arc=none smtp.client-ip=209.85.216.44
+	s=arc-20240116; t=1737566556; c=relaxed/simple;
+	bh=BAsS7reSLnrvd0C28lS72NU7xSRfvrZMyQQVwbeP44I=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=DwsPa/za2Q5B/R3A7/jME1ZC+I0hF+USWQU+lgfV/nZ4geVFPtrQjflPVWsXSLwyND34cPGEBnHOAztl6/psPcNf6thmsIXV4VLQUlLe/fH7hQFkXZQZt81XHgqfRoGOuo9Z+3wHOXlW7QrUf4IcMKfCR6v4dIPMRbeIb8EYKSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J4vs3FCr; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2ef760a1001so99537a91.0;
-        Wed, 22 Jan 2025 09:17:11 -0800 (PST)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-21628b3fe7dso127556435ad.3
+        for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 09:22:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737566231; x=1738171031; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1737566554; x=1738171354; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gFCVPvzzCocOSj8lSB1mfBdT82DT1p+MPx9OjvYvaR0=;
-        b=F+oEs/Pyob0UjEyYbUJ7b0LWFxqk0BsDzJMcmqoEvmieb+0AUBSatVQVh6GQHDzDB4
-         O1e9c+9bqlyy3wgtgvwIGGfdZ900KN7D1U6KnqUiu1dc1kopCO4eoxtTdyrMYgtWo9nl
-         NkYVinvhuggjBYoqHGMC1JVxfE9zxlh5mHx2fxdLH8m0G1pa2gbBiYBefP+1FYeeiHM1
-         U31OVehyRDCySW7yahEFHa14Zsd/rWHZF2p6hNk2q8nlsQ3lBncF+2/YE3J6fXMja5r8
-         byImxHe5tuEoWtO+ODy5VVp9KXMOw/AA84KHZkpAP9fD3ycVPv1R3fyvbVs7ewiCWSDb
-         5xhw==
+        bh=IK3bZMsDLQPi1hRLQ8IwlbhD0Y/Bt0GoQeFDwKTld/o=;
+        b=J4vs3FCroyK0RqIXz626oChKwoAjS8DBG2vID9Spaq6DoTw0HTGjXD6Fk0IjJG8lgM
+         o88zhJhvES4/ZuLs4y7ocdRiUtHF02FJeMWSrBGazvqdgaTwiKGykfIhIiFVjqTzqkfC
+         DgSWNmq/m5lNlKzlG02eONwDWXj7fgOadmr34h+MQwGONevl+B2t8B8whixTzIb7UCBa
+         GzmXosoq7/9HOWkmAdOrj0KI4o+V1UtDSm/pMpWWRSu6P/aqIsUDeHazNrWRh19S/Ba9
+         K2RM8Fog4vwVwuYKmK/SP6lHDzr0CTVcfde34DLJnnNxjhB6jGuvIRNOo8gHHgx33jhD
+         mjiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737566231; x=1738171031;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1737566554; x=1738171354;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gFCVPvzzCocOSj8lSB1mfBdT82DT1p+MPx9OjvYvaR0=;
-        b=WWbeUQpwAebWFAUH5ecySh9ANcKqrVa0jI407PAJXruUgdZRPWRNxu0PlgchR4gaOB
-         ykNXkaf3LJIjDHeuJDCJy4PHNT71kFIKDbHqI1w9if4QAhfgIHRVphKMAWeMlZJbrYPy
-         zetKRAtXY/fs2L4+DPEVwBA3I+53q1GR0zpvcWCvklEic+n3A7VmSIQzvZ+Hvs78PQrk
-         lKk1DZfMYnM6p1p2JfJmc59qOxc89pG3xNwmu8uYuJfZ7uV5pJewT8K/xtqdztDjS4CJ
-         D5s06k4qe1UVxbN5BpOnYcsSvJJbqfolXOjryCziJoyVkrNEi42AxzUglClucWfFGAdy
-         ATkA==
-X-Forwarded-Encrypted: i=1; AJvYcCUx/rankgafe8k97rzEUzy70NfVq8tio0S6kYkwkvWUzN+9nUukq7fX+RurkAXdy98PAfs=@vger.kernel.org, AJvYcCVKCN8zfFOOhjOBqyVavqpESeO87ivID2h3q4rpYBIfdvs04g2qCykzeWYS/nzcH4YbhXIJd9TzoJafmg==@vger.kernel.org, AJvYcCVKwfF6bG9kgmQWMdhl3YE6YRaLq9QLEq1PLkJLvvvJqcl3hJ9+NJO5h3cHTiw/4DvpVd7zp3TV@vger.kernel.org, AJvYcCXW4dveTUXyhF3G3PYBETze2Ch9HzEWgjuiOu8ZOB5j00p39D6o4r9tST0XeqCC5pWKr6UD/GzAHzBnow==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwK98E6JI84Op7m3lc6IXSYTOz9Ah8L4ERf46b6lvxeh/0OxikM
-	z3m4U65bhX5ZO/fVIBPmmogkaiQFOe9xvL7hZ4IVff65Jt6+jO/jchyM2ECjEUkMi23B46tAkkR
-	xKv2ikDWLA0cFZlUXXerVfm2gXfU=
-X-Gm-Gg: ASbGncu2KqbgZWpWTAPRoFyyOpHc5N8AQJg3W/tidYBeAtHNWZ7e2VQ1q65U709SI3o
-	h6aSKBiLZv2Va9mDtLMZldDzv2zEXBVP/I292rO9QKX6KejewKEzCVOz7AfvRELygKJQ=
-X-Google-Smtp-Source: AGHT+IHTvHTC++TojYxC/UgWgVuinh02AQWbyRQC6b5Z9w3BtCafMdo3/RyX2E4nRXqJ2H6wOGvd5dmMFKUFBshJkuA=
-X-Received: by 2002:a05:6a00:2184:b0:72a:8cc8:34aa with SMTP id
- d2e1a72fcca58-72daf88b65dmr33962621b3a.0.1737566230650; Wed, 22 Jan 2025
- 09:17:10 -0800 (PST)
+        bh=IK3bZMsDLQPi1hRLQ8IwlbhD0Y/Bt0GoQeFDwKTld/o=;
+        b=eeToBDVq2kWd/PAfjLRzSoURTl64Ij4q/ktjF8oOa+zwREtiaZ6FxMhpcrMEULpdiQ
+         +fu2xEqnlrqhFLA+FYrdFXAHO6aXzq8ol1DnoNXSHkS2copf9NuUN9o7DmG5ay0OuHlk
+         8kf5OSFvomxKcn/E4kuHMO5l0HJZBN/hV+LYT2dByWSFT7guSiJJofc1iL8yicrf/QDg
+         iCHQcHLkr0wjx7OUPVbbmVbj0/lE/g8StPhjAHhVxV741s/ImXTt33RAL1vGvpc7d4fi
+         OpVFoXdH5K9XP3+1ujkG58zYsxfuEBNssWH9SpjIUWdle/HkC9RqZzJzDS7mhH4lwlA6
+         Pa0Q==
+X-Gm-Message-State: AOJu0YxGk5oPZuoLhAF4DHpgSKuxh7abCkTdqBw3uvQuaqREZnGS/aYV
+	rc5LYGb+CJI2mHvzPxPLMHMU8ynHvY2lbZLTDdNYsNkDM1Se9eIJo2iv
+X-Gm-Gg: ASbGncv9TGrFslG5ISfq+RWZcxqxMGwdOByBquOPx4wCByuBXMS381oMYxh8pD2bEu2
+	J5jyQNVk2a/wtIBwFL16iSv145+nH36Dm8QByMkGtke76ERvSWwgRs8JH8lPbCj57EozjGi+POV
+	ZB1FAa/ohefxtwYOM19OazBe/r+o+Ri25uW4gk0ZGAgezQJ7Jgs9XLkNScMjHPDWVfycITWwyA+
+	wkxrGcWPf2JHJ5DWZPss5TzyKfB45uZ1iHFah1AadaTPHIFjlw+Q4aiiRDwvguNj8XNSw==
+X-Google-Smtp-Source: AGHT+IGQJ2+y3tIrSzei8apOOR6x80jG9ucZnbcbGlvQSqpcCWUl93Uzd2nciz+ok5xWzuzLX7oOEA==
+X-Received: by 2002:a17:903:11cd:b0:215:b5c6:9ee8 with SMTP id d9443c01a7336-21c351d3065mr292712635ad.7.1737566553959;
+        Wed, 22 Jan 2025 09:22:33 -0800 (PST)
+Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21c2cea2e29sm97667385ad.38.2025.01.22.09.22.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jan 2025 09:22:33 -0800 (PST)
+Date: Wed, 22 Jan 2025 09:22:32 -0800
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: bpf@vger.kernel.org
+Cc: kuba@kernel.org
+Subject: [ANN] bpf development stats for 6.14
+Message-ID: <Z5EpWMev1CIAQjpT@mini-arch>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250116074442.79304-1-alibuda@linux.alibaba.com>
- <20250116074442.79304-5-alibuda@linux.alibaba.com> <CAEf4BzZvxqiQ2J1XQMm-ZDBjSsmtJJk6-_RbexPk9vWxAO=ksw@mail.gmail.com>
- <20250122024327.GA81479@j66a10360.sqa.eu95>
-In-Reply-To: <20250122024327.GA81479@j66a10360.sqa.eu95>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 22 Jan 2025 09:16:58 -0800
-X-Gm-Features: AbW1kvZiku1BiieaalyxZJhB_Vt4Hw2HwinTvpys0Vs7Ip41IhYFnB8AF6RUhzc
-Message-ID: <CAEf4Bzabc+83abj7gP0h0sCxp-Bajqhm0bdAyn1Gn5bNi5nNXg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 4/5] libbpf: fix error when st-prefix_ops and
- ops from differ btf
-To: "D. Wythe" <alibuda@linux.alibaba.com>
-Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	pabeni@redhat.com, song@kernel.org, sdf@google.com, haoluo@google.com, 
-	yhs@fb.com, edumazet@google.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	jolsa@kernel.org, guwen@linux.alibaba.com, kuba@kernel.org, 
-	davem@davemloft.net, netdev@vger.kernel.org, linux-s390@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 21, 2025 at 6:43=E2=80=AFPM D. Wythe <alibuda@linux.alibaba.com=
-> wrote:
->
-> On Fri, Jan 17, 2025 at 10:36:50AM -0800, Andrii Nakryiko wrote:
-> > On Wed, Jan 15, 2025 at 11:45=E2=80=AFPM D. Wythe <alibuda@linux.alibab=
-a.com> wrote:
-> > >
-> > > When a struct_ops named xxx_ops was registered by a module, and
-> > > it will be used in both built-in modules and the module itself,
-> > > so that the btf_type of xxx_ops will be present in btf_vmlinux
-> > > instead of in btf_mod, which means that the btf_type of
-> > > bpf_struct_ops_xxx_ops and xxx_ops will not be in the same btf.
-> > >
-> > > Here are four possible case:
-> > >
-> > > +--------+---------------+-------------+-----------------------------=
-----+
-> > > |        | st_ops_xxx_ops| xxx_ops     |                             =
-    |
-> > > +--------+---------------+-------------+-----------------------------=
-----+
-> > > | case 0 | btf_vmlinux   | bft_vmlinux | be used and reg only in vmli=
-nux |
-> > > +--------+---------------+-------------+-----------------------------=
-----+
-> > > | case 1 | btf_vmlinux   | bpf_mod     | INVALID                     =
-    |
-> > > +--------+---------------+-------------+-----------------------------=
-----+
-> > > | case 2 | btf_mod       | btf_vmlinux | reg in mod but be used both =
-in  |
-> > > |        |               |             | vmlinux and mod.            =
-    |
-> > > +--------+---------------+-------------+-----------------------------=
-----+
-> > > | case 3 | btf_mod       | btf_mod     | be used and reg only in mod =
-    |
-> > > +--------+---------------+-------------+-----------------------------=
-----+
-> > >
-> > > At present, cases 0, 1, and 3 can be correctly identified, because
-> > > +       if (ret < 0 || ret >=3D sizeof(stname))
-> > > +               return -ENAMETOOLONG;
-> >
-> > see preexisting snprintf() above, we don't really handle truncation
-> > errors explicitly, they are extremely unlikely and not expected at
-> > all, and worst case nothing will be found and user will get some
-> > -ENOENT or something like that eventually. I'd drop this extra error
-> > checking and keep it streamlines, similar to tname
-> >
->
-> Sounds reasonable to me. I will remove the explicit error checks in the
-> next version.
->
-> > > +
-> > > +       /* Look for the corresponding "map_value" type that will be u=
-sed
-> > > +        * in map_update(BPF_MAP_TYPE_STRUCT_OPS) first, figure out t=
-he btf
-> > > +        * and the mod_btf.
-> > > +        * For example, find "struct bpf_struct_ops_tcp_congestion_op=
-s".
-> > > +        */
-> > > +       kern_vtype_id =3D find_ksym_btf_id(obj, stname, BTF_KIND_STRU=
-CT,
-> > >                                         &btf, mod_btf);
-> >
-> > nit: if this fits under 100 characters, keep it single line
-> >
-> > > +       if (kern_vtype_id < 0) {
-> > > +               pr_warn("struct_ops init_kern: struct %s is not found=
- in kernel BTF\n",
-> > > +                               stname);
-> >
-> > same nit about preserving single-line statements as much as possible,
-> > they are much easier to read
->
-> None of them exceed 100 lines. Usually, I would check patches with 85 lin=
-es limitations,
-> but since 100 lines is acceptable, we can modify it to a single line here=
- for
-> better readability.
->
-> And thanks very much for your suggestion, I plan to fix these style
-> issues in next versions with you ack, is this okay for you?
+Regular development statistics update, similar Jakub's netdev post:
+https://lore.kernel.org/netdev/20250121200710.19126f7d@kernel.org/
 
-yep, sgtm
+Previous cycle:
+19 Sep to 19 Nov: 5097 mailing list messages, 61 days, 84 messages per day
+260 repo commits (4 commits/day, 56.92% of these are selftests)
+https://lore.kernel.org/bpf/Zz4FDv5bnghUlJQP@mini-arch/
 
->
-> Best wishes,
-> D. Wythe
-> >
-> > > +               return kern_vtype_id;
-> > > +       }
-> > > +       kern_vtype =3D btf__type_by_id(btf, kern_vtype_id);
-> > > +
-> > > +       kern_type_id =3D btf__find_by_name_kind(btf, tname, BTF_KIND_=
-STRUCT);
-> > >         if (kern_type_id < 0) {
-> > >                 pr_warn("struct_ops init_kern: struct %s is not found=
- in kernel BTF\n",
-> > >                         tname);
-> > > @@ -1020,20 +1039,6 @@ find_struct_ops_kern_types(struct bpf_object *=
-obj, const char *tname_raw,
-> > >         }
-> > >         kern_type =3D btf__type_by_id(btf, kern_type_id);
-> > >
-> > > -       /* Find the corresponding "map_value" type that will be used
-> > > -        * in map_update(BPF_MAP_TYPE_STRUCT_OPS).  For example,
-> > > -        * find "struct bpf_struct_ops_tcp_congestion_ops" from the
-> > > -        * btf_vmlinux.
-> > > -        */
-> > > -       kern_vtype_id =3D find_btf_by_prefix_kind(btf, STRUCT_OPS_VAL=
-UE_PREFIX,
-> > > -                                               tname, BTF_KIND_STRUC=
-T);
-> > > -       if (kern_vtype_id < 0) {
-> > > -               pr_warn("struct_ops init_kern: struct %s%s is not fou=
-nd in kernel BTF\n",
-> > > -                       STRUCT_OPS_VALUE_PREFIX, tname);
-> > > -               return kern_vtype_id;
-> > > -       }
-> > > -       kern_vtype =3D btf__type_by_id(btf, kern_vtype_id);
-> > > -
-> > >         /* Find "struct tcp_congestion_ops" from
-> > >          * struct bpf_struct_ops_tcp_congestion_ops {
-> > >          *      [ ... ]
-> > > @@ -1046,8 +1051,8 @@ find_struct_ops_kern_types(struct bpf_object *o=
-bj, const char *tname_raw,
-> > >                         break;
-> > >         }
-> > >         if (i =3D=3D btf_vlen(kern_vtype)) {
-> > > -               pr_warn("struct_ops init_kern: struct %s data is not =
-found in struct %s%s\n",
-> > > -                       tname, STRUCT_OPS_VALUE_PREFIX, tname);
-> > > +               pr_warn("struct_ops init_kern: struct %s data is not =
-found in struct %s\n",
-> > > +                       tname, stname);
-> > >                 return -EINVAL;
-> > >         }
-> > >
-> > > --
-> > > 2.45.0
-> > >
+Current cycle:
+19 Nov to 21 Jan: 4189 mailing list messages, 63 days, 66 messages per day
+378 repo commits (6 commits/day, 42.86% of these are selftests)
+
+Developer rankings
+------------------
+
+Top reviewers (cs):                  Top reviewers (msg):                
+   1 ( +1) [6] Alexei Starovoitov       1 ( +1) [15] Andrii Nakryiko     
+   2 ( -1) [5] Andrii Nakryiko          2 ( -1) [14] Alexei Starovoitov  
+   3 ( +4) [3] Jiri Olsa                3 ( +1) [11] Eduard Zingerman    
+   4 ( +2) [2] Eduard Zingerman         4 ( -1) [ 8] Martin KaFai Lau    
+   5 (   ) [2] Daniel Borkmann          5 (   ) [ 7] Jiri Olsa           
+   6 ( +2) [2] Jakub Kicinski           6 ( +8) [ 5] Peter Zijlstra      
+   7 (+14) [1] Arnaldo Carvalho de Melo    7 (+14) [ 4] Arnaldo Carvalho de Melo
+   8 ( +2) [1] Peter Zijlstra           8 (+20) [ 3] Quentin Monnet      
+   9 ( +4) [1] Stanislav Fomichev       9 (+27) [ 3] Oleg Nesterov       
+  10 ( +5) [1] Quentin Monnet          10 ( +6) [ 3] Jakub Kicinski      
+  11 ( -8) [1] Martin KaFai Lau        11 ( -3) [ 3] Toke Høiland-Jørgensen
+  12 ( -8) [1] Yonghong Song           12 ( -1) [ 3] Daniel Borkmann     
+  13 ( +3) [1] Steven Rostedt          13 (+14) [ 3] Namhyung Kim        
+  14 (+10) [1] Alan Maguire            14 ( -4) [ 3] Stanislav Fomichev  
+  15 ( -6) [1] Toke Høiland-Jørgensen   15 ( -8) [ 3] Steven Rostedt      
+
+Top authors (cs):                    Top authors (msg):                  
+   1 (***) [1] Thomas Weißschuh         1 (+17) [15] Kumar Kartikeya Dwivedi
+   2 (***) [1] "Song, Yoong Siang"      2 (+30) [ 9] Charlie Jenkins     
+   3 (+28) [1] Ihor Solodrai            3 ( +2) [ 9] Hou Tao             
+   4 ( +4) [1] Kumar Kartikeya Dwivedi    4 (   ) [ 7] Masami Hiramatsu (Google)
+   5 ( +1) [1] Eduard Zingerman         5 (***) [ 7] Ihor Solodrai       
+   6 (***) [1] Daniel Xu                6 ( +8) [ 6] Song Liu            
+   7 ( -2) [1] Daniel Borkmann          7 (***) [ 6] Steven Rostedt      
+   8 (***) [1] Steven Rostedt           8 ( -5) [ 6] Alexander Lobakin   
+   9 ( -8) [1] Andrii Nakryiko          9 (***) [ 5] Daniel Xu           
+  10 ( -7) [1] Jiri Olsa               10 (+31) [ 5] Xiao Liang          
+
+Top scores (positive):               Top scores (negative):              
+   1 (   ) [97] Alexei Starovoitov      1 (***) [53] Kumar Kartikeya Dwivedi
+   2 (   ) [90] Andrii Nakryiko         2 (+19) [38] Charlie Jenkins     
+   3 (***) [41] Jiri Olsa               3 ( +6) [30] Hou Tao             
+   4 (   ) [40] Eduard Zingerman        4 (***) [27] Ihor Solodrai       
+   5 ( -2) [34] Martin KaFai Lau        5 ( -4) [19] Alexander Lobakin   
+   6 ( +2) [25] Peter Zijlstra          6 (+24) [19] Xiao Liang          
+   7 ( -2) [24] Jakub Kicinski          7 (   ) [19] Jason Xing          
+   8 ( +8) [24] Quentin Monnet          8 ( -4) [18] Masami Hiramatsu (Google)
+   9 ( +4) [23] Arnaldo Carvalho de Melo    9 (***) [16] Bastien Curutchet   
+  10 (   ) [20] Stanislav Fomichev     10 ( +7) [16] Jiayuan Chen        
+
+Company rankings
+----------------
+
+Top reviewers (cs):                  Top reviewers (msg):                
+   1 (   ) [11] Meta                    1 (   ) [40] Meta                
+   2 ( +1) [ 5] Isovalent               2 ( +2) [15] RedHat              
+   3 ( +1) [ 4] RedHat                  3 ( +2) [12] Isovalent           
+   4 ( -2) [ 4] Intel                   4 ( -1) [10] Intel               
+   5 (   ) [ 3] Google                  5 ( -3) [ 8] Google              
+   6 ( +7) [ 1] Oracle                  6 ( +2) [ 5] SUSE                
+   7 ( +5) [ 1] Hedgehog                7 ( +4) [ 4] Oracle              
+
+Top authors (cs):                    Top authors (msg):                  
+   1 (   ) [7] Meta                     1 (   ) [47] Meta                
+   2 ( +3) [3] Google                   2 ( +2) [20] Google              
+   3 ( +5) [2] Intel                    3 ( -1) [11] Huawei              
+   4 ( -1) [2] RedHat                   4 ( +1) [10] Intel               
+   5 ( -1) [2] Isovalent                5 ( +1) [10] RedHat              
+   6 ( -4) [1] Huawei                   6 (+13) [10] Rivos               
+   7 (+12) [1] Linutronix               7 (+36) [ 9] Unknown             
+
+Top scores (positive):               Top scores (negative):              
+   1 ( +7) [57] Isovalent               1 (+13) [37] Rivos               
+   2 ( +1) [35] RedHat                  2 ( -1) [34] Huawei              
+   3 ( -2) [34] Meta                    3 (***) [32] Unknown             
+   4 ( +5) [24] Hedgehog                4 (***) [31] Google              
+   5 (+23) [22] Oracle                  5 ( +3) [21] Bootlin             
+   6 ( -1) [20] SUSE                    6 ( +1) [19] Tencent             
+   7 ( -5) [19] Intel                   7 ( -1) [14] Bytedance           
+
+More raw stats
+--------------
+
+Prev: start: Thu, 19 Sep 2024 23:04:43 +0200
+	end: Tue, 19 Nov 2024 16:34:56 +0100
+Prev: messages: 5097 days: 61 (84 msg/day)
+Prev: direct commits: 260 (4 commits/day)
+Prev: test commits: 148 (56.92%)
+Prev: people/aliases: 315  {'author': 124, 'commenter': 138, 'both': 53}
+Prev: review pct: 30.38%  x-corp pct: 27.69%
+
+Curr: start: Tue, 19 Nov 2024 17:53:58 +0000
+	end: Tue, 21 Jan 2025 18:00:07 +0100
+Curr: messages: 4189 days: 63 (66 msg/day)
+Curr: direct commits: 378 (6 commits/day)
+Curr: test commits: 162 (42.86%)
+Curr: people/aliases: 260  {'author': 86, 'commenter': 118, 'both': 56}
+Curr: review pct: 23.54%  x-corp pct: 19.31%
+
+Diff: -20.4% msg/day
+Diff: +40.8% commits/day
+Diff: -20.1% people/day
+Diff: review pct: -6.8%
+      x-corp pct: -8.4%
+
+Contributions to selftests:
+   1 [ 25] Alexis Lothoré
+   2 [ 18] Kumar Kartikeya Dwivedi
+   3 [ 14] Eduard Zingerman
+   4 [ 12] Jiri Olsa
+   5 [  8] Zijian Zhang
+   6 [  6] Ihor Solodrai
+   7 [  6] Hou Tao
+   8 [  5] Mykyta Yatsenko
+   9 [  4] Andrii Nakryiko
+  10 [  4] Martin KaFai Lau
 
