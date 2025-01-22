@@ -1,147 +1,113 @@
-Return-Path: <bpf+bounces-49491-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49492-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDCBEA19631
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 17:12:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 997A3A196FE
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 17:55:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 829D63AB480
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 16:11:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51B263AC7F6
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 16:55:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54630214A8C;
-	Wed, 22 Jan 2025 16:11:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE128215187;
+	Wed, 22 Jan 2025 16:55:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1kdu9jf2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FMo9ZhTC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AAA3214A6F
-	for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 16:11:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA16321518B;
+	Wed, 22 Jan 2025 16:55:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737562312; cv=none; b=RD29v3hXLUdeHm7CKWK+J7eMHaqdvUAcf2xVytXszMoBcJ75Os2f2KdWHwzCNtsPhaUru3lIN4qQOCDHbU1nmaQkcTEIVynmiAQYC/e7OnZshMyqtx5pIGWftb796mmFLHEqVhZeMqf5sbFylJEobDbL3mKQEVqPW/ugu8mHBrM=
+	t=1737564940; cv=none; b=qeUMEZfoycFROhAI5eCChp7YsX4mOJx5To3ERWJyiU7YkvIlxF97tDO7LEfo6Po3yKYhun9Utz0n05/8eiQ2vKkmC3Ipg6N3zVukjebzlUh0RWTft5OVPpodr6+MkilSq82xhYHmQjGWil+J7L8d9doUlNKogstXQHzgkGiwcZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737562312; c=relaxed/simple;
-	bh=jNCWiuGwLIrwAxoH6c87tzyM63E/aK+e20wre6ZWSr0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=umFDhh9WiHzmmpgxQaJa3sHExW+E5U18etctxHk+6ue42+jBnhLid6y/SBxY64Alh3hz/lHJYw2LT4L+DCrFhgUO/+zoL88zx9Toh3OX9vZUUweHrh+7YJ19WVAbQEIUd/m5CYus+/MH2GmHFJlFvupaW5gS0rOmdsk2dHNRfas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1kdu9jf2; arc=none smtp.client-ip=209.85.166.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-3ce82195aa0so214655ab.0
-        for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 08:11:51 -0800 (PST)
+	s=arc-20240116; t=1737564940; c=relaxed/simple;
+	bh=tDh/mOS6P7ygFbCpjoHq826cKO7iE1Bzif0WualZ6Ik=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hkXx2oP0LbaoAPWNkzVaDJYrmURI27iZmU23mISznS11axmH7gV4U0E+wHNhnRns+TLAtZ9E1/bt5cg9ABUxs7usWLu46+DnD+j8VgpowiXEfiUtBxFjXPGwa+DbaytARmMZuQ5nphk6aDBddQAN0VnT5tq6txIonE5DHfY8t+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FMo9ZhTC; arc=none smtp.client-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2ee9a780de4so17068a91.3;
+        Wed, 22 Jan 2025 08:55:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1737562310; x=1738167110; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jNCWiuGwLIrwAxoH6c87tzyM63E/aK+e20wre6ZWSr0=;
-        b=1kdu9jf2pORUhScbCpAhMeZoqRUJcDU6bPaIq3U8rAiPIwnbDiXS1z7BJHtx70mhsv
-         sq+T1nnr3MgOnqKNKxfgqq0hqs7IkJWQzqayAZ4tqSx12sztHA+HPHa5LVvjwBLOPMFy
-         oIu0u80QL+SKWERYBaZfEyd+wIFwmWhnM177220YOgBicZ9gqrss6ltxbjFoGqMRcju9
-         mjyMdkE6Rh51IeSMgF0qXEl9vzgJhR7gs0qiMeOnYe+Gl003i7Eq3jez9SFTBh8nDP5x
-         n54eXt5406048/93Vvzh5n9BT+gkB2xrwnvNfc0kopH1A1FjIMEMf+7j9zKYOW9OJNw4
-         doBw==
+        d=gmail.com; s=20230601; t=1737564938; x=1738169738; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7zINL8i15bfcigl3lUWFYKL/YF1uNpTwZIKUV5mY0Z8=;
+        b=FMo9ZhTCCx4Qaru6kemhuK3miyH2KTYsx7Sc2XFUSrrUQMeFgxev5mQKORNXBHiSfx
+         HVtJHq/7EFOHxL3/XYN/Ga8CCH53blLY5FV75XsClPhXln8eBBACvg14hCKLtTiKtKyt
+         BS4wBvTQepGXn6sy7zg8KATvFaovZq40J1HwKw7xBJCgsV0cd4FjRlVcFVjHmiH28Fc4
+         VcoDoscSWg0Xk7rgQsOo+BPTUIwfQBGS2ayNIbIE/JkzDpTTwvJsa2LpC5l7GeB0PZIm
+         33B8nDZWuH/9m3z1ycS0Vdmcgg6updeEqMrYYRhwgyXnAnXxKEvdAH/B1N0Iz+htpRmW
+         zsTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737562310; x=1738167110;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jNCWiuGwLIrwAxoH6c87tzyM63E/aK+e20wre6ZWSr0=;
-        b=OWhb4XKeRqP6rkQteaBaQX4uNwbRxPaUEhP+QOE69u/BVfo3ioP4HdOJWT9AMcZZZf
-         T0CbKyl7WE/5pROD8wKMFuqxLT+Xa6e5VNURX7rczUTYjwGhz2e8wtOIhQCBt9nI5yfM
-         f6HSOCPsVS7+Q6OccpeYEN32MtBAnbCU8IoYr3nZqAvgN/u7Q4Bg6XJzTmWPbj0PlZ6o
-         fG1gRKe8KANd0g9EMAGDSBpVD2wMTGr/ZbNMu6r1NCjyVXCLidRNVEXXH/oB5aJCIEEm
-         4Ws/auQrVixj6tufByVOSO1n3xj6aNFOJD2SmDbpWGmrsEhyK+wSqts1O1VbU1N5Ha+4
-         rjjg==
-X-Forwarded-Encrypted: i=1; AJvYcCXcusuL0GqIBjaYvfflXs2eOe8dC7NSrua9m1GfRC9CmY9FLJeHbTKY+sOvSdY2WNsL0WY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw1Mdpcpb+upi5JdPqBgCoIhCk3IxLjj6WjLWzDSZm3AuQaBuo1
-	nsZvQ4WWmdJp2QmNVV3o8T9a8QzDTV6Dy1K6kRedhn8e3xueoxTqyUdzDAC6MUNhx6d1KAMcaX0
-	XnTYqFiZH0xk2RfaGcow110m7E8l6bz2bRGSW
-X-Gm-Gg: ASbGncvzcPCbxtbqsLhmsNyY58fNnePzHUK/D36FouShunSWmhFSz3pD281CQNbi/qS
-	aUi1IWkynxhdFTO7CEf9rzL/WoYAJh5uupqZjEB9FNhjdX501Wn05pACUZSAsvzR+IG4u2dXZuH
-	vdSKw=
-X-Google-Smtp-Source: AGHT+IEiFLgAYdHIXS9mFH9WxNkvJOsHn2tSvvkkY8zJ54ZbyBmpqfFOVwUtOm1Q1WCVFVs1ws31sUh2kq3VR1xaSo0=
-X-Received: by 2002:a05:6e02:348f:b0:3ce:7852:1e9 with SMTP id
- e9e14a558f8ab-3cfb3fa3d80mr3094505ab.17.1737562310187; Wed, 22 Jan 2025
- 08:11:50 -0800 (PST)
+        d=1e100.net; s=20230601; t=1737564938; x=1738169738;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7zINL8i15bfcigl3lUWFYKL/YF1uNpTwZIKUV5mY0Z8=;
+        b=h4K5g4Gp8DhXvZmLacJoxpwUj2fY+fF61+R6+IDNjAZvlql6EfN47lB8lC/pcnyFOj
+         rpV0MT5Wigyd2Gf+0rxMt/+b8TYeWz2SisM0CDkbWFPxHlW4RwHw11RDpqE7r/YYGAP+
+         4ng5w9ojL6J9RXwlbVqfNm2ry0IU8lViwgoh0IVgGbBKE2Wc02o8v2mA+OLXyzji4mgd
+         sfIqslPVJpssw+2fMLTTDpDXNvg6cmFHZSrAlSJo2ZgmIIcpIP3WelmxHTOx2oy8AZec
+         mOPzzwJG6kOsfzczj3RKVWiuVOBgJ1tc+BTJVkUNZD7aIFzydRVg/86SEcOvLucLxd5L
+         VrCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX7BltTrS2mhf1mUQjAhU0ua8JIs6XzO4NH4JoE6JtCqCWEq5phq7ZYjyHduogF9lrMDltpiDp/X7D7z84=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzCQksYVaTa44KXpfhd8mM5QMT+mqCc/XNF7ugX5xN3fnDN9bl6
+	u00ezk009A2ZKvVBFSPL0TZ/bRc1X89lMwQxL9HeU79A2GQtdiQe
+X-Gm-Gg: ASbGncslFDBD+WE1pEFxG9CooMHFYAmM3+V2ldtzdgmavV0iyVTIgY2B1ir4Zq++aG+
+	pTmHLDWQLzUNJtPmpAQoSgGnXRXNq8XETuKfwQSW+EV+rP5rxherpwxrzu2twqPSHq6FXhfhKac
+	FIIe5n/pjK2e9qXb7YCYHpdzlXjimbBuI4aZ7GIiecr6r4Eev4Bqqf2rtt0LSBvPQjfme00cz96
+	RO5xF/TJIQG/uRdRegLm5/6tT+u3v37XSwxEaJGX/R/8vxngQeQr7izG0QIRVXDMUIv4Q==
+X-Google-Smtp-Source: AGHT+IEp320gGbJtM34VVrkXpDxQlcpD8oIpQY6SM5ichHNIpxVrTiTslGvS6c1kGFaimj3zbMNC8w==
+X-Received: by 2002:a05:6a00:10d1:b0:72d:a208:d366 with SMTP id d2e1a72fcca58-72dafaa5962mr35884812b3a.20.1737564937805;
+        Wed, 22 Jan 2025 08:55:37 -0800 (PST)
+Received: from localhost ([116.198.225.81])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72dab848321sm11329300b3a.76.2025.01.22.08.55.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jan 2025 08:55:37 -0800 (PST)
+From: Tao Chen <chen.dylane@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	qmo@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	chen.dylane@gmail.com
+Subject: [RFC PATCH bpf-next 0/2] Add prog_kfunc feature probe
+Date: Thu, 23 Jan 2025 00:55:21 +0800
+Message-Id: <20250122165523.1033775-1-chen.dylane@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250122062332.577009-1-irogers@google.com> <Z5EM24qWVQF2VdI8@tassilo>
-In-Reply-To: <Z5EM24qWVQF2VdI8@tassilo>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 22 Jan 2025 08:11:38 -0800
-X-Gm-Features: AbW1kvafVY7CkArTm06Ofo62Z-sE61GIelJQE_qFuHGUl5T-U-N_90G7y7SWyBY
-Message-ID: <CAP-5=fW6ZWf6jF3Xnike81S9s_5tZ9w4DS8=8Ff1Ve87O32_Sg@mail.gmail.com>
-Subject: Re: [PATCH v2 00/17] Support dynamic opening of capstone/llvm remove BUILD_NONDISTRO
-To: Andi Kleen <ak@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Aditya Gupta <adityag@linux.ibm.com>, "Steinar H. Gunderson" <sesse@google.com>, 
-	Charlie Jenkins <charlie@rivosinc.com>, Changbin Du <changbin.du@huawei.com>, 
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, James Clark <james.clark@linaro.org>, 
-	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Li Huafei <lihuafei1@huawei.com>, Dmitry Vyukov <dvyukov@google.com>, 
-	Chaitanya S Prakash <chaitanyas.prakash@arm.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, llvm@lists.linux.dev, 
-	Song Liu <song@kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 22, 2025 at 7:21=E2=80=AFAM Andi Kleen <ak@linux.intel.com> wro=
-te:
->
-> On Tue, Jan 21, 2025 at 10:23:15PM -0800, Ian Rogers wrote:
-> > Linking against libcapstone and libLLVM can be a significant increase
-> > in dependencies and size of memory footprint. For something like `perf
-> > record` the disassembler and addr2line functionality won't be
-> > used. Support dynamically loading these libraries using dlopen and
-> > then calling the appropriate functions found using dlsym.
->
-> It's unclear to me what this actually fixes. If the code is not used
-> it should not be faulted in and the dynamic linker is lazy too, so
-> if it's not used, it won't even be linked.
->
-> I don't see any numbers, but it won't surprise me if it improved
-> actual run time or memory usage significantly.
+More and more kfunc functions are being added to the kernel.
+Different prog types have different restrictions when using kfunc.
+Therefore, prog_kfunc probe is added to check whether it is supported,
+and the use of this api will be added to bpftool later.
 
-In certain scenarios, like data centers, it can be useful to
-statically link all your dependencies to avoid dll hell. The X86
-disassembler alone in libllvm is of a size comparable to the perf tool
-- I think this speaks to us doing a reasonably good job of size
-optimization of the events/metrics in the perf tool. We want these
-dependencies for the performance over forking objdump and addr2line,
-but we don't want it baked in - unless the person doing the build
-wants this and this is still the default if the libraries are detected
-by Makefile.config. Using dlopen also means distributions can have a
-perf tool that doesn't drag in libLLVM.so and a universe of
-dependencies, but when it is installed get the performance advantages.
-In data centres having fast disassembly/addr2line is less of a
-priority over the binary size cost replicated over 10,000s of machines
-because those machines don't tend to be running the annotate/report
-commands.
+Tao Chen (2):
+  libbpf: Add libbpf_probe_bpf_kfunc API
+  selftests/bpf: Add libbpf_probe_bpf_kfunc API selftests
 
-Fwiw, Namhyung's uftrace is doing something similar for python:
-https://github.com/namhyung/uftrace/blob/master/utils/script-python.c#L139
-and I wish the perf tool were also doing this. I think it is much
-nicer to have the tool fail at runtime because of a missing dependency
-which you can then install should you want it, rather than doing an
-equivalent within the code base with #ifdefs and needing users to
-recompile. This patch series significantly reduces the #ifdefs in
-places like the core disasm code.
+ tools/lib/bpf/libbpf.h                        | 16 ++++++++-
+ tools/lib/bpf/libbpf.map                      |  1 +
+ tools/lib/bpf/libbpf_probes.c                 | 36 +++++++++++++++++++
+ .../selftests/bpf/prog_tests/libbpf_probes.c  | 30 ++++++++++++++++
+ 4 files changed, 82 insertions(+), 1 deletion(-)
 
-Thanks,
-Ian
+-- 
+2.43.0
+
 
