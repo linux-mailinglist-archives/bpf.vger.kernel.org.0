@@ -1,77 +1,76 @@
-Return-Path: <bpf+bounces-49484-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49485-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1216A1921D
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 14:12:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0698BA19220
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 14:12:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D860116123A
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 13:12:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24C787A21D6
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 13:12:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81E9121323A;
-	Wed, 22 Jan 2025 13:12:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FB322135A5;
+	Wed, 22 Jan 2025 13:12:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="YA/In+/n"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="ggnWUnmT"
 X-Original-To: bpf@vger.kernel.org
 Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 486B9212D6F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 183F2212F87
 	for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 13:12:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737551523; cv=none; b=cQUocMqaAx4QbDz42wbDBVHvPebUEQnpOo9LzrZJOkH6vgEpm61RNsUDxcGE0M0ZRFf65uBi24yFt2gJXnRINgV+wztUqd8bIk4ni0ykJ3YdTy7VXj741qc0AcsTiwqwXkLuAg5ESibgrroV/GO4nT9iH3prNFeudxckNc+rxfU=
+	t=1737551524; cv=none; b=XhdX3wPlprs95fDfx/6Rw9hYNqpONnUsVJ6PKQi1Gol13EobYxz7g0fc5/sK9NP2ow86LA07e8bm4mnGvwL+A318Y9Kr6XINTnwBbqAxpxe9qE4L9i2zupVRHAPK4O5QL/1aEats1n8AY+4n/yG9CjtRTgdsghgztOZ5fvg0tgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737551523; c=relaxed/simple;
-	bh=ARUdgIgcuAll5lbVp+D8VJxo0QY958HvY5MloGYScpA=;
-	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type:To:CC:
-	 References; b=Q13rfonf3iYX+20eNmXR6CAqjKW6ksESIOzg/lDpVZ+lvpzLTrvHHSrMugYcOKAmkHwPSBYS135aft5vY5yDFaKJQwcfETEOUFSF2fz71Y+GwygBjD3WdvqkkIup3UHqGZXUq6+nz+kNzGxocInHzgbF82GFpLTiyP1EEcaAGl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=YA/In+/n; arc=none smtp.client-ip=210.118.77.11
+	s=arc-20240116; t=1737551524; c=relaxed/simple;
+	bh=5959kPBereMjbacpyhvDGIY1REG5nPqghaV/Z9Pzhpw=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:
+	 In-Reply-To:To:CC:References; b=VndF/MGbW1y35pjrW3vRQz7LX5lQjNvPK6zVhWPTckj9HgJpWWovdSbKHKTefNlnmR6yPuVUczDzVcuMwE6yQtATJxIKftR+GND2t9jrs/CQ4xzLg7uoY61vVo6QmUYY0ejojP3m7nGY/5UdxIlQKl7onsBJpM/4I+4mj8O6NKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=ggnWUnmT; arc=none smtp.client-ip=210.118.77.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20250122131158euoutp013b3e43869ed40eea1fc179b0e5e035e0~dBeZxz99-0266602666euoutp01h
-	for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 13:11:58 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20250122131158euoutp013b3e43869ed40eea1fc179b0e5e035e0~dBeZxz99-0266602666euoutp01h
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20250122131159euoutp01b80c41d4580c5e0df6952db24a6e076f~dBeassJKe0267002670euoutp01M
+	for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 13:11:59 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20250122131159euoutp01b80c41d4580c5e0df6952db24a6e076f~dBeassJKe0267002670euoutp01M
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1737551518;
-	bh=7mbqFGEXZvm7aYX4VKOqowLZGB5dkjt6Zll3vBb629E=;
-	h=From:Subject:Date:To:CC:References:From;
-	b=YA/In+/nq7dDe1ouMzXVtcRVWIeWDlY4+uNLYtNZLecre+BObTViUqwbcsS0z0ef2
-	 MVt1KpG/xY3A/S32BMhN+4EvSIvSySAeY9IG6pB/UdJP0qpbPICqxDVd+r3g5Xf6au
-	 nKu9l6KhMml8jP3S6aehUoxYpOgUpsUNWDLxrbbw=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20250122131158eucas1p19c528eac4a5829e3534f734e970b4a28~dBeZUJsSl2303323033eucas1p1g;
+	s=mail20170921; t=1737551519;
+	bh=KAPuTK6ECY3IIUBY7nMPQTnFjU5YBP/3/lTZDmyrTQc=;
+	h=From:Date:Subject:In-Reply-To:To:CC:References:From;
+	b=ggnWUnmTcCmieOWZHgZBikUZNjTCc1Xv7N88IJse0sunC3YWBGJjAxGYPmhpkab77
+	 21jprwzW48dey4gISMmvx/OaKIbBdo+6MmDM8YmSnC+IZeVA8nkWsjOC50iQJtQ5km
+	 qKCQxDRBDX+xuFS6DzdtEC2hKiT4F8T3cJ7Gk4dM=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+	20250122131158eucas1p21c95e0e6c4195bb550028e862a2680f2~dBeaJ6BS52847028470eucas1p24;
 	Wed, 22 Jan 2025 13:11:58 +0000 (GMT)
 Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges1new.samsung.com (EUCPMTA) with SMTP id BE.75.20821.D9EE0976; Wed, 22
-	Jan 2025 13:11:57 +0000 (GMT)
+	eusmges3new.samsung.com (EUCPMTA) with SMTP id A6.01.20397.E9EE0976; Wed, 22
+	Jan 2025 13:11:58 +0000 (GMT)
 Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
 	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20250122131157eucas1p14bc56b73e8598908574aab12ecdfc245~dBeY61S2_2776327763eucas1p1E;
-	Wed, 22 Jan 2025 13:11:57 +0000 (GMT)
+	20250122131158eucas1p133e9989e5b972e0658b4ef7255901085~dBeZrHpZw2457724577eucas1p1C;
+	Wed, 22 Jan 2025 13:11:58 +0000 (GMT)
 Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
 	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20250122131157eusmtrp285c046ddf173399bddd5200675492c99~dBeY6A2v60895308953eusmtrp2L;
-	Wed, 22 Jan 2025 13:11:57 +0000 (GMT)
-X-AuditID: cbfec7f2-b09c370000005155-39-6790ee9d9831
+	20250122131158eusmtrp2905fbad1053c6e9e921fa8446f7c229a~dBeZpfTLF0895608956eusmtrp2M;
+	Wed, 22 Jan 2025 13:11:58 +0000 (GMT)
+X-AuditID: cbfec7f5-e59c770000004fad-34-6790ee9ea932
 Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms2.samsung.com (EUCPMTA) with SMTP id 7D.5D.19654.D9EE0976; Wed, 22
-	Jan 2025 13:11:57 +0000 (GMT)
+	eusmgms2.samsung.com (EUCPMTA) with SMTP id 8F.5D.19654.E9EE0976; Wed, 22
+	Jan 2025 13:11:58 +0000 (GMT)
 Received: from CAMSVWEXC01.scsc.local (unknown [106.1.227.71]) by
 	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20250122131157eusmtip1634725f49a828c0633603316ad4bb0ee~dBeYuizOw1581915819eusmtip1R;
-	Wed, 22 Jan 2025 13:11:57 +0000 (GMT)
+	20250122131158eusmtip16da4697e3ba78e55fc060bc9a9c788c3~dBeZca9EJ1514915149eusmtip1k;
+	Wed, 22 Jan 2025 13:11:58 +0000 (GMT)
 Received: from localhost (106.110.32.87) by CAMSVWEXC01.scsc.local
 	(2002:6a01:e347::6a01:e347) with Microsoft SMTP Server (TLS) id
-	15.0.1497.48; Wed, 22 Jan 2025 13:11:56 +0000
+	15.0.1497.48; Wed, 22 Jan 2025 13:11:57 +0000
 From: Daniel Gomez <da.gomez@samsung.com>
-Subject: [PATCH 0/2] modules: allow error injection
-Date: Wed, 22 Jan 2025 14:11:12 +0100
-Message-ID: <20250122-modules-error-injection-v1-0-910590a04fd5@samsung.com>
+Date: Wed, 22 Jan 2025 14:11:13 +0100
+Subject: [PATCH 1/2] module: allow for module error injection
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -80,10 +79,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAHDukGcC/x3MwQqDMAyA4VeRnBdoCl1xrzJ2mG02I64diRNBf
-	HfLjv/h+3cwVmGDW7eD8iomtbSgSwdpfJY3o+TW4J0Pjjzhp+bfzIasWhWlTJyWZpDiNQUfYk+
-	Dg6a/yi/Z/uf74zhO5YIzk2kAAAA=
-X-Change-ID: 20250121-modules-error-injection-176c525791b0
+Message-ID: <20250122-modules-error-injection-v1-1-910590a04fd5@samsung.com>
+In-Reply-To: <20250122-modules-error-injection-v1-0-910590a04fd5@samsung.com>
 To: Luis Chamberlain <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>,
 	Sami Tolvanen <samitolvanen@google.com>, Alexei Starovoitov
 	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
@@ -99,144 +96,132 @@ CC: <linux-modules@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<iovisor-dev@lists.iovisor.org>, <gost.dev@samsung.com>, Daniel Gomez
 	<da.gomez@samsung.com>
 X-Mailer: b4 0.15-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1737551516; l=3656;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1737551516; l=2479;
 	i=da.gomez@samsung.com; s=20240621; h=from:subject:message-id;
-	bh=ARUdgIgcuAll5lbVp+D8VJxo0QY958HvY5MloGYScpA=;
-	b=PcU5HWw9TVFd8cSNB9w3Nf+zuENLCH0NMTyuynspDxOAlT5nB2u3QAdD9cwuG+djalybC/oxD
-	Y7nIKh66Q7CAuLJM/TtC6bPWUJtPYk89E561D4TXrIid+O3nudLlujE
+	bh=5959kPBereMjbacpyhvDGIY1REG5nPqghaV/Z9Pzhpw=;
+	b=Qs3ZhYYvDw7GYoEVc3llZYUO8q4SaoeW+kRSaJvET8xE+y9+OysGIigOAgsnUYEJ4MMmnybpA
+	Bm9VggPOhXNDfIM2ltVuK0+zipxQFNMAiWC1AKZnjpi4WjkfYHEczi6
 X-Developer-Key: i=da.gomez@samsung.com; a=ed25519;
 	pk=BqYk31UHkmv0WZShES6pIZcdmPPGay5LbzifAdZ2Ia4=
 X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
 	CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347)
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Sf0xTVxjNfa/v9dml4a2I3HTMSRMdGgHBbbnC4jqH42VgIIuoMzGs2peK
-	8sO0FIVtSccQlYzRDZzQwlY0na3YiaVgabRsjVBRyDIopFJqdIJsbhD5MRhD6CivZvx3vvOd
-	833fubkULiojxVROfiGrzJflSkgBr61r/pfYhgmtYlvbcBKaW9DjaGbex0fTt90kutQ4iyOv
-	qRZHLncHH/1j9ABUajdh6HaNDkffNl0i0ZizEkP9jnoSafRzBBqp6SDR1XNmAnm1owBZ+6cJ
-	dMY8SqJn2gCGjDMTODKaxgk0UOfAkPvyIokeNrURUsh4nXcxpl3n5zMGq5qp8PbhjPXKOZJp
-	1JzHmc7yUh7ze0sdYK7ZBnjMtHV9puCg4G05m5tTxCrjd34sOFo9bCJP3I06Vf2HntAAQ2QF
-	WENB+g3o+qKVrAACSkSbALT0nMW4YgZAu+EOjyumATRrmrEXlnmXIdS4DODZ5tlVKoOfH1SJ
-	aBuA7kFlEJP0Zujstq7w4fR2WNb5JxnEPHojbDk9tsIL6XQ4/KA2hF+G3XUjy0MpCl/2XnPE
-	B2mcfg3eGK/Hg7sgbQfwjLOS4C5Kgr0/Va2EWEsPEvDG0M8rF+H0IICVA0aSU0XAhWoHj7N3
-	YLC8zAa4BgtNvw3jHI6GtV+beRz+DFq6evic4boATl2fDL1ACrQMnQ/tDodP3TY+h6NgoP37
-	kOY47J27GVpQCJee/RsamgwDFn+Ifxe6/r4FtOB13arYuv9j61bFNgD8Cohk1ao8BatKyGdP
-	xqlkeSp1viLuSEGeFSx/1HtL7ik7aHg6GecCGAVcAFK4ZK0wMKJViIRyWXEJqyzIVqpzWZUL
-	vELxJJHCix2nFSJaIStkj7PsCVb5ootRa8QarEi9LvFCRlXKkz3bzUu+RxmpqdmP7fXPHz+U
-	Tny6+cOX/M3sV92SzEV5WkvrXvkmX6CPPSg+4vDXPv9BufirtVjsGN9V4NuTHlYyuOuvDF/W
-	oZIpzTvVqTJd5G7hwlz7gTfDYu6lqPVZGx4kSkebcrckjT0S7IgYfbXfNHQ451T7jtn0rfft
-	++3lH0nbqu4Q25I3XIhxO2PTj0UnxolORlj29bYUGXZ69kanUY6ISSxKWXTgLc/7h9wZ30Rl
-	N9YkN7vCPgiUxnhixPtU6+r7etKMxU/kCbHvwS71Vm+53hvf/Ulr5rH9SaLs3s6UzxsScNeX
-	tvseSVa4ZEK6+9b67y7+eFXCUx2VJWzBlSrZf0+8uEUXBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCKsWRmVeSWpSXmKPExsVy+t/xu7pz301IN1h5U8Hi++/ZzBZfft5m
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SfUxbVRzNfff19dHZ5VEgXDenkblFyOyG0+Qibgxn4lvcjO4fDSFAlUch
+	fIy01IpxiLgPh250DCqURkpnRzuKaAcdNBvYBloZmzMwsA42N1aUfZTMtQyR0Eo/pvvvnN85
+	v3PvPbk0FH1GraGLyio4WZmkJIkSkFbn4uUXvplTSbfUmVPxwlILxP7FST72DboofLLtIcRu
+	YxPEDtcAH/9tuAJwTa+RwIMNGojVHScp/Gf/UQKP2bQUrm5Z4GFPwwCFzUdMPOxWzQBsGfPx
+	8GHTDIXvq4IENvjnIDYYvTw83mwjsKt9mcI3Oqy8HYh1918g2D7NNT6rsyjYWvcoZC2nj1Bs
+	W3UjZIcO1ZDs7JlmwHZ1j5Osz/L024Iswav5XEnRh5xs8/Y8QaHVtrr8h7iP9L/+xq8Gw0wt
+	iKER8xI672jm1QIBLWKMAGkvTZER4gdoaPTnKPEBdLBumXi04uvoIUNYxLQD1FP7yn8m7/Tt
+	6EY3QH63CoRcFJOM+oct/BAmmQ1o8kIAhnAcsw31XFkOJwmZWDTc7FnBNA1X/F22zaExZJ5B
+	Z71aGLHsRpc9jeHIGGYPUg/NhM+KZyZ46OxVe5hAZgKgo+MGKnLVBLR0whYWEDNAoPYDVjIi
+	cMg4PQUj+FnUdNwUne9Hnc6L/MhCpwB16/0gIryORnTHo6lx6I6rmx/BT6FgX2u0mGJ0aeFc
+	1F+BAvf/iYamo2Dnteg8E5mDGhh6JmJWI7c3VgU2ah4rQPN/AZrHCtABeBokcgp5qZSTby3j
+	lGK5pFSuKJOKP9hXagErv3Qk4JrvBcY7f4kdgKCBAyAaJsULgx6VVCTMl1R+zMn25coUJZzc
+	AdbSZFKiUD9wUCpipJIKrpjjyjnZI5WgY9ZUE8Wa4nlPcsaxPPXeu9r3C6vWEw/Pb/vqht0Z
+	+OMdUnc9Q6GkU+O53E82TmpbRdd3fSlpVX0r7vMFBZBLcQ3dGsxJb/zctABOJaRnWeZuSVqe
+	XPWe+l7VhjPv6tea2lpOpPTAJ/J+NBfUZr6Vlihc91xwp3jyRcPv6/MOs9bb+Zljp75w3lTO
+	5o40pa3KyKp5sGlv9k05l313J50ROLTF2TXdp7vYv8lrTisoqJy4WqNcsh17Y8qc7XyQU2Xf
+	veNrpjdRl5A1+/wvr1Xe+3RrvbVc6s8perk++RyQ1Ne5FjtNiLQvv7lfParriu01Ew16+/YD
+	DSmNyu/mf9Lv+X4kbt1MIImUF0pSU6BMLvkXL7CycRQEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrEKsWRmVeSWpSXmKPExsVy+t/xu7rz3k1INzi8U8ji++/ZzBZfft5m
 	t/h85DibxeKF35gtbqyYwWxx6Ph+dosfS68wWjTtWMFkcWTKLGaLaasXs1k839fLZHF51xw2
 	i4bZ31ktnkzZz2axpnMlq8WNCU8ZLTZd/sxq0b7yKZvFhwn/mSyWfnnHbLF0xVtWi6szdzFZ
 	HF/+l83iweptrA4SHjf2nWLy2DnrLrvHgk2lHl03LjF7bFrVyeaxsGEqs8fRtiYWjxebZzJ6
 	rN9ylcXj8ya5AK4oPZui/NKSVIWM/OISW6VoQwsjPUNLCz0jE0s9Q2PzWCsjUyV9O5uU1JzM
-	stQifbsEvYzJd1awFZySqZj8cjZrA+MC8S5GTg4JAROJn4cWsHQxcnEICSxllNg6bzYTREJG
-	YuOXq6wQtrDEn2tdbBBFHxklPu85yg7hbGGUmP/9LTNIFZuApsS+k5vYQWxhAWOJlqOv2UBs
-	FgFVic2tz8HivAI+EnfuzYCyBSVOznwCtJqDgxmod/0ufZAws4C8xPa3c5hB5ksI7GCUmHN9
-	LiPEFVYSZw/0g10hInCNVWLKvFOMIA6zwDVGid6rS9kgqkQlfk/exQLRvp9J4vSxBqgnUiW2
-	X1kCVaQoMWPiShYIu1bi1f3djBMYxWYhuWoWwlWzkFy1gJF5FaNIamlxbnpusZFecWJucWle
-	ul5yfu4mRmBy2nbs55YdjCtffdQ7xMjEwXiIUYKDWUmE9/+TCelCvCmJlVWpRfnxRaU5qcWH
-	GE2BITORWUo0OR+YHvNK4g3NDEwNTcwsDUwtzYyVxHnZrpxPExJITyxJzU5NLUgtgulj4uCU
-	amDaZ2tftjJkd/b7W+7MJgu2mf/Tj9tZfS/49KyZCm467BOOxP636y8+U/Q1sEIsZc/r/S+/
-	zT+uIZN+OcV3rXV0ioJjib3HvEO+xaJ99fuUZCzPSn53Wbh26v7Kk0ezVh08uHzyAnO2M15i
-	jgU9QcWvC9Z9vPt9WvLU3Sucq6SFr+93YfIWOTlZaJ1azG9O8S2PFPl3B+/dxNbLFuIV73As
-	z2XOdMYay5gb78P1nq9lXJA+o9Kz7uilZZqObIuYrm5d/nXa0cBLFS2pXxiuCThscNm1+s0k
-	Y90AXrO6P88uGWa/8VL6lMdoU/bo3LLUqSJG/1orjny8YPdWZe+DxVmKguWLf9vI/g52Sk0M
-	Wb9ciaU4I9FQi7moOBEA/DJZUNcDAAA=
-X-CMS-MailID: 20250122131157eucas1p14bc56b73e8598908574aab12ecdfc245
+	stQifbsEvYxtu/gKNgpXLLp+k72B8aRAFyMnh4SAicTn1VtZuhi5OIQEljJKTFv7kgUiISOx
+	8ctVVghbWOLPtS42iKKPjBINM3dCOVsYJb5/e8oOUsUmoCmx7+QmMJtFQFXi9ql/zCC2sICt
+	xNYrf8Gm8goISpyc+QTI5uBgBqpfv0sfJMwsIC+x/e0cZogSH4nzT6YygthCQPa3tcvBWjkF
+	fCWmHX0KdqmIwDVWiSnzTjGCOMwC1xgleq8uZYM4VVTi9+RdYFUSAvuZJNa8Owr1Q6rE9itL
+	oIoUJWZMXAn1Z63Eq/u7GScwis1CcuAshANnITlwASPzKkaR1NLi3PTcYiO94sTc4tK8dL3k
+	/NxNjMDEtO3Yzy07GFe++qh3iJGJg/EQowQHs5II7/8nE9KFeFMSK6tSi/Lji0pzUosPMZoC
+	A2kis5Rocj4wNeaVxBuaGZgamphZGphamhkrifOyXTmfJiSQnliSmp2aWpBaBNPHxMEp1cCk
+	tmmrgZn3ere3yoUGrsHV15QkddfrPrJf6/zgtLBkXrPnE43kqJ3fzhz/uC2+adrEV+4xVWt3
+	Mc1INLp2yELd3rDwwZIvDPPnmP3LidNLam1VZN5+f4/iqshZpb6peV/0npu0ZdS3F7F/kbVK
+	nJz6RUVG5WSbwKykPpalPru5nUQ8nzLLLZkg/aJ77eO8vD/frtv1H7evyS3L2Jyb9WiKnr7m
+	p71MBh++rNhbkjnLbp7x4w+rbFYu39Qun1hnPrd7qu1C2z6umdI6W0+ev7pr/orz+/dMExPd
+	3an9yiLEKpCHM4rtzZJ9akUMh1Qvfb6lWLPg5a1ay51aDPP3x2z0c3j4payvImh/4d5jKe+U
+	WIozEg21mIuKEwFj9L7e1QMAAA==
+X-CMS-MailID: 20250122131158eucas1p133e9989e5b972e0658b4ef7255901085
 X-Msg-Generator: CA
-X-RootMTR: 20250122131157eucas1p14bc56b73e8598908574aab12ecdfc245
+X-RootMTR: 20250122131158eucas1p133e9989e5b972e0658b4ef7255901085
 X-EPHeader: CA
 CMS-TYPE: 201P
-X-CMS-RootMailID: 20250122131157eucas1p14bc56b73e8598908574aab12ecdfc245
-References: <CGME20250122131157eucas1p14bc56b73e8598908574aab12ecdfc245@eucas1p1.samsung.com>
+X-CMS-RootMailID: 20250122131158eucas1p133e9989e5b972e0658b4ef7255901085
+References: <20250122-modules-error-injection-v1-0-910590a04fd5@samsung.com>
+	<CGME20250122131158eucas1p133e9989e5b972e0658b4ef7255901085@eucas1p1.samsung.com>
 
-Allow error injection during module initialization for testing.
+Allow to test kernel module initialization with eBPF error injection
+by forcing errors when any of the below annotated functions with
+ALLOW_ERROR_INJECTION() return.
 
-This adds ALLOW_ERROR_INJECTION() annotation for complete_formation(),
-do_init_module() and module_enable_rodata_ro_after_init() so we can test
-the error path in these functions.
+Allow to debug and test module load error behaviour when:
 
-In addition, add moderr support, an eBPF based tool to inject module
-errors in any of the above functions for a specific module name.
+complete_formation(): when module initialization switches from
+MODULE_STATE_UNFORMED to MODULE_STATE_COMING stage.
 
-The following example is added to the moderr commit. Adding it also here
-for convenience:
+do_init_module(): when an error occurs during module initialization and
+before we switch from MODULE_STATE_COMING to MODULE_STATE_LIVE stage.
 
-    Example: Inject error -22 to module_enable_rodata_ro_after_init for
-    brd module:
-
-    sudo moderr --modname=brd --modfunc=module_enable_rodata_ro_after_init \
-    --error=-22 --trace
-    Monitoring module error injection... Hit Ctrl-C to end.
-    MODULE     ERROR FUNCTION
-    brd        -22   module_enable_rodata_after_init()
-
-    Kernel messages:
-    [   89.463690] brd: module loaded
-    [   89.463855] brd: module_enable_rodata_ro_after_init() returned -22,
-    ro_after_init data might still be writable
-
-The tool is based on libbpf and is located under tools/bpf.
-
-Here some specific questions for discussion.
-
-* I've noticed that some users of ALLOW_ERROR_INJECTION() in the
-kernel add the option to fail behind a Kconfig (Fault-injection
-framework, FAULT_INJECTION) in lib/Kconfig.debug, such as FAILSLAB or
-FAIL_PAGE_ALLOC. Shall we add similar condition for error injection
-in modules?
-
-* What other functions may people be interested in adding to the list of
-suported for error injection?
-
-* I found a more generic error injection tool (inject.py) [1] in
-IOVisor/BCC (Ccing IOVisor mailing list as well). The tool seems to
-be maintained and supports error injection based on a specified call
-chain and optional predicates. However, it relies on the old and
-deprecated Python eBPF/BCC infrastructure. Since there are other users
-of ALLOW_ERROR_INJECTION(), I'm curious: is there a different generic
-tool to generate error injection in the kernel already converted to
-libbpf? Do users of ALLOW_ERROR_INJECTION() still depend on inject.py
-tool?
-
-[1] https://github.com/iovisor/bcc/blob/master/tools/inject.py
-
-Additionally, would it make sense to develop an in-tree tool with
-libbpf support for this purpose? This approach might require rewriting
-inject.py in libbpf and/or extending moderr to include inject.py
-features (probably replace and rework some of the current functionality
-in moderr).
-
-moderr uses an enum to detect which kprobe function to override the
-return value. I think adding bpf_get_stack()/bpf_get_stackid() support
-would avoid the need for hardcoding the kprobe detection mechanism.
-This approach could also be used for navigation of the call stack as in
-inject.py. Are there any alternative methods to achieve this that avoid
-relying on enumerating the fuctions to probe?
+module_enable_rodata_ro_after_init(): when an error occurs while
+setting memory to RO after module initialization. This is when module
+initialization reaches MODULE_STATE_LIVE stage.
 
 Signed-off-by: Daniel Gomez <da.gomez@samsung.com>
 ---
-Daniel Gomez (2):
-      module: allow for module error injection
-      moderr: add module error injection tool
+ kernel/module/main.c       | 3 +++
+ kernel/module/strict_rwx.c | 2 ++
+ 2 files changed, 5 insertions(+)
 
- kernel/module/main.c          |   3 +
- kernel/module/strict_rwx.c    |   2 +
- tools/bpf/Makefile            |  13 ++-
- tools/bpf/moderr/.gitignore   |   2 +
- tools/bpf/moderr/Makefile     |  95 +++++++++++++++++
- tools/bpf/moderr/moderr.bpf.c | 127 +++++++++++++++++++++++
- tools/bpf/moderr/moderr.c     | 236 ++++++++++++++++++++++++++++++++++++++++++
- tools/bpf/moderr/moderr.h     |  40 +++++++
- 8 files changed, 515 insertions(+), 3 deletions(-)
----
-base-commit: 232f121837ad8b1c21cc80f2c8842a4090c5a2a0
-change-id: 20250121-modules-error-injection-176c525791b0
+diff --git a/kernel/module/main.c b/kernel/module/main.c
+index 1fb9ad289a6f8f328fc37c6d93730882d0e6e613..54e6c4d0aab23ae5001a52c26417e7e7957ea3fd 100644
+--- a/kernel/module/main.c
++++ b/kernel/module/main.c
+@@ -59,6 +59,7 @@
+ #include <linux/codetag.h>
+ #include <linux/debugfs.h>
+ #include <linux/execmem.h>
++#include <linux/bpf.h>
+ #include <uapi/linux/module.h>
+ #include "internal.h"
+ 
+@@ -3089,6 +3090,7 @@ static noinline int do_init_module(struct module *mod)
+ 
+ 	return ret;
+ }
++ALLOW_ERROR_INJECTION(do_init_module, ERRNO);
+ 
+ static int may_init_module(void)
+ {
+@@ -3225,6 +3227,7 @@ static int complete_formation(struct module *mod, struct load_info *info)
+ 	mutex_unlock(&module_mutex);
+ 	return err;
+ }
++ALLOW_ERROR_INJECTION(complete_formation, ERRNO);
+ 
+ static int prepare_coming_module(struct module *mod)
+ {
+diff --git a/kernel/module/strict_rwx.c b/kernel/module/strict_rwx.c
+index 74834ba15615fa02d1fa72b913feedd7400af779..21936f5cc1e679e4de90331ef4920597d9093f35 100644
+--- a/kernel/module/strict_rwx.c
++++ b/kernel/module/strict_rwx.c
+@@ -9,6 +9,7 @@
+ #include <linux/mm.h>
+ #include <linux/vmalloc.h>
+ #include <linux/set_memory.h>
++#include <linux/bpf.h>
+ #include "internal.h"
+ 
+ static int module_set_memory(const struct module *mod, enum mod_mem_type type,
+@@ -71,6 +72,7 @@ int module_enable_rodata_ro_after_init(const struct module *mod)
+ 
+ 	return module_set_memory(mod, MOD_RO_AFTER_INIT, set_memory_ro);
+ }
++ALLOW_ERROR_INJECTION(module_enable_rodata_ro_after_init, ERRNO);
+ 
+ int module_enable_data_nx(const struct module *mod)
+ {
 
-Best regards,
 -- 
-Daniel Gomez <da.gomez@samsung.com>
+2.39.5
 
 
