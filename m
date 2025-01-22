@@ -1,169 +1,177 @@
-Return-Path: <bpf+bounces-49423-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49424-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CFC9A1893A
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 02:00:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43BD0A18950
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 02:04:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31C2F3AA9F9
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 01:00:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A502C188B197
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 01:04:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C5E82837A;
-	Wed, 22 Jan 2025 01:00:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6AE633991;
+	Wed, 22 Jan 2025 01:04:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WEy78DRH"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23DE515AF6
-	for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 01:00:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C9EB1CA81
+	for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 01:04:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737507609; cv=none; b=rH7OH4LAnhFkDGTClf1dpi3do3xOzduWuhP35awdaj2UWP2uNKHFatR2V1FJHnYtVgIC0AezC6Ry1ee/MAnng1BgrY6RtiwDCuvUpgwx0HolyTtA27Qt2r27gYSuByZD9ye6dUUbFq4f+l4IgIg+mIlopZYuOtUoRkV+Ew/Z40o=
+	t=1737507848; cv=none; b=pmrBM7KG7QOUWZVfOsr+ndoCM07s4nLry1ckGRWw6RdY/CZFWP6/SZH4UMCEu8Mjlkbu0NZefxmUdPP+QwknzGkKjUW00lnfJX1xamRv+k5JGYcS2esBXy2mn53uBSbYNQbiLdwFeGCJtFr+JRTMo8RT9G78+mEIR9x8Bogap88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737507609; c=relaxed/simple;
-	bh=d5VNR5XKRCh24DRMRYcpMxYERtvjJwpAAbi3Qd2GbxM=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=g6+PaEVaQ3uL/ytOU0gUUJ3TiN0x5AZe3casS4VCbb26xUv1+0Mp/MY2NoB/NTLGpn454mvZINi9bw+CrhaCHA7Pp5w7Y02Bmjnsc7ubEL/kAVv6DoKEWJTlQrLCj7CB5hUDHRC703Nwlo0902RfrsUFQA4xKVXsuwyyyedBUhw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Yd5MH162Hz4f3jM8
-	for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 08:59:39 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 0A43A1A084E
-	for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 09:00:01 +0800 (CST)
-Received: from [10.67.110.36] (unknown [10.67.110.36])
-	by APP1 (Coremail) with SMTP id cCh0CgB3KHkDQ5BnqQBxBg--.17487S2;
-	Wed, 22 Jan 2025 09:00:00 +0800 (CST)
-Message-ID: <27a58ab7-22c3-4305-b1dd-0e33c4131319@huaweicloud.com>
-Date: Wed, 22 Jan 2025 08:59:47 +0800
+	s=arc-20240116; t=1737507848; c=relaxed/simple;
+	bh=fBMEEQrP8cCyPVJBx+8XOjAmMFlhjYXlOqE8udqGu/8=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=trxlSg+AMXByKvfp8GWgW1Vqy98ee7HjDUdg5d1uL/MQwTniaZhiMxpJVMK14kz0kFGkPUL7UKb0Gm0i2CctpoJDOxvA2YNe1inRFZsgdg42NLUPXEYBEAKYPkozUWPwrcvGd3xRPGrVIpOLWYtw8vV3KR1TVdUbA4E5Z7HXBaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WEy78DRH; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-2178115051dso117163755ad.1
+        for <bpf@vger.kernel.org>; Tue, 21 Jan 2025 17:04:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1737507846; x=1738112646; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HGAInSW7+q0vU97QD0HUaaeZu0zheatXMugXZrnQnto=;
+        b=WEy78DRHeUvxY7t7PcEUsDBI+b9ZIEAFetH3Kd4q9ZhSoY1zzMJgqqsPCOhqIuYVnp
+         OQYlr9Tq9id6pcfECpP3HDdY3eQdvpcLjwjjRMBGxVSX6a4vnJ5wZ/hlXE82E2h/DUM9
+         oUs3lrYctW5FdR7p7zMcn6zgStgomoKIMikNcJCamMup+JWjffjhmtxylVejiRmJF8Y1
+         my8MShAJ8KwYCxGUdiwgGwIzza38fC95+BnBhbELCia2LSoZHEYfl3Uc01ltx1f8oVwq
+         CFqMB269e2Ms0IxzzVf5NrsQ2JscqGCg05/J6LcghGHM/zcgatSM2WhaQU4lppNOCKa4
+         W8aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737507846; x=1738112646;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=HGAInSW7+q0vU97QD0HUaaeZu0zheatXMugXZrnQnto=;
+        b=BzSOFi8qGWNU21d9BSb7bzv4t2Kk82HpyNraLLON+HcKYNlWaBoZYa+ol2MWxrVasq
+         CkP4HosT+2b21ECGiTCwWPvwgwn7z2BZFuoATcBf8mqjiHhr0bqgYnC8iDUuEseSHv8Q
+         N5vxPfXQv5AhgUk5N4UG+AD4RRBEYdrKg5F9ix7hGj8ue5YF7pHufI+eNepgKZQaSKnw
+         R1arxUH2SxXpdjsd/j2bBjjjxE8grC9+l/63+6G1hryLErJczJDxJgJEPExxdhm+C5VX
+         UPF/WSt9fVeiJr+VRPQ1/1w5s5GgT9/gAvNDDWw17wta0hHY7HL/+8ct6bTazJfv5CWu
+         PAcg==
+X-Forwarded-Encrypted: i=1; AJvYcCUNjb3Vmv7OIAOCo8pQVSU6XH1+KE4MOJbFMdLSu0MJidJt5lphFXuO/T2tOsuEOA57ZwI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz1QCeoSs07Jq8qVebMvORdn1105frgKXdYU0Vyj6OXKJwC4Ybv
+	Eeeiz3ktFDbt3+l8oELl3PD3oFtITQI+LIOe8Mn2LGKfuKBKqoVIlsFLdwM8BVZ67dMtOwKnEMx
+	d/w==
+X-Google-Smtp-Source: AGHT+IH6F+XmsAOl9kzgOVOxBLRRXT62oJJbonrrKhR+qzEndDJ3UWVtcgPMx5PJJKXl4IX7nvimBDDp9aQ=
+X-Received: from pfau14.prod.google.com ([2002:a05:6a00:aa8e:b0:72d:b2a2:bed7])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a00:6088:b0:72a:a9b5:ed91
+ with SMTP id d2e1a72fcca58-72daf99ed03mr26365241b3a.13.1737507845610; Tue, 21
+ Jan 2025 17:04:05 -0800 (PST)
+Date: Tue, 21 Jan 2025 17:04:04 -0800
+In-Reply-To: <Z5A6NPqVGoZ32YsN@pavilion.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Tengda Wu <wutengda@huaweicloud.com>
-Subject: Re: [PATCH bpf] selftests/bpf: Fix freplace_link segfault in
- tailcalls prog test
-To: Leon Hwang <leon.hwang@linux.dev>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- hffilwlqm@gmail.com
-References: <20250121125602.683613-1-wutengda@huaweicloud.com>
- <59696465-ee36-444f-9666-6d913d9d280b@linux.dev>
-Content-Language: en-US
-In-Reply-To: <59696465-ee36-444f-9666-6d913d9d280b@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgB3KHkDQ5BnqQBxBg--.17487S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxurW7KF4xtFy8XF17uFW8tFb_yoW5Zr1kpa
-	4kZw1jkr1Sgr1YqF47Ww429FWS9Fs7XFyrCr1rWwn5Ar4Uur97GF1IgFW5WFn3ury5Xw1F
-	vw1xtrn3C3yxJrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-	j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7x
-	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7AK
-	xVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
-	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-	AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
-	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jUzV
-	bUUUUU=
-X-CM-SenderInfo: pzxwv0hjgdqx5xdzvxpfor3voofrz/
+Mime-Version: 1.0
+References: <20250114175143.81438-1-vschneid@redhat.com> <20250114175143.81438-23-vschneid@redhat.com>
+ <Z5A6NPqVGoZ32YsN@pavilion.home>
+Message-ID: <Z5BEBCWVWP_fq2zY@google.com>
+Subject: Re: [PATCH v4 22/30] context_tracking: Exit CT_STATE_IDLE upon
+ irq/nmi entry
+From: Sean Christopherson <seanjc@google.com>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org, x86@kernel.org, 
+	virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	loongarch@lists.linux.dev, linux-riscv@lists.infradead.org, 
+	linux-perf-users@vger.kernel.org, xen-devel@lists.xenproject.org, 
+	kvm@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kselftest@vger.kernel.org, bpf@vger.kernel.org, 
+	bcm-kernel-feedback-list@broadcom.com, Juergen Gross <jgross@suse.com>, 
+	Ajay Kaher <ajay.kaher@broadcom.com>, Alexey Makhalov <alexey.amakhalov@broadcom.com>, 
+	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, 
+	Josh Poimboeuf <jpoimboe@kernel.org>, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Jason Baron <jbaron@akamai.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ard Biesheuvel <ardb@kernel.org>, 
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>, 
+	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
+	Uladzislau Rezki <urezki@gmail.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, 
+	Juri Lelli <juri.lelli@redhat.com>, Clark Williams <williams@redhat.com>, 
+	Yair Podemsky <ypodemsk@redhat.com>, Tomas Glozar <tglozar@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Kees Cook <kees@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Christoph Hellwig <hch@infradead.org>, 
+	Shuah Khan <shuah@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, 
+	Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl <aliceryhl@google.com>, 
+	"Mike Rapoport (Microsoft)" <rppt@kernel.org>, Samuel Holland <samuel.holland@sifive.com>, Rong Xu <xur@google.com>, 
+	Nicolas Saenz Julienne <nsaenzju@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Yosry Ahmed <yosryahmed@google.com>, 
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, 
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, 
+	Luis Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>, 
+	Tiezhu Yang <yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Leon,
+On Wed, Jan 22, 2025, Frederic Weisbecker wrote:
+> Le Tue, Jan 14, 2025 at 06:51:35PM +0100, Valentin Schneider a =C3=A9crit=
+ :
+> > ct_nmi_{enter, exit}() only touches the RCU watching counter and doesn'=
+t
+> > modify the actual CT state part context_tracking.state. This means that
+> > upon receiving an IRQ when idle, the CT_STATE_IDLE->CT_STATE_KERNEL
+> > transition only happens in ct_idle_exit().
+> >=20
+> > One can note that ct_nmi_enter() can only ever be entered with the CT s=
+tate
+> > as either CT_STATE_KERNEL or CT_STATE_IDLE, as an IRQ/NMI happenning in=
+ the
+> > CT_STATE_USER or CT_STATE_GUEST states will be routed down to ct_user_e=
+xit().
+>=20
+> Are you sure? An NMI can fire between guest_state_enter_irqoff() and
+> __svm_vcpu_run().
 
-On 2025/1/21 22:27, Leon Hwang wrote:
-> Hi Tengda,
-> 
-> On 2025/1/21 20:56, Tengda Wu wrote:
->> There are two bpf_link__destroy(freplace_link) calls in
->> test_tailcall_bpf2bpf_freplace(). After the first bpf_link__destroy()
->> is called, if the following bpf_map_{update,delete}_elem() throws an
->> exception, it will jump to the "out" label and call bpf_link__destroy()
->> again, causing double free and eventually leading to a segfault.
->>
-> 
-> Thank you for pointing this out.
-> 
->> Fix this issue by moving bpf_link__destroy() out of the "out" label
->> and only calling it when freplace_link exists and has not been freed.
->>
-> 
-> I think it would be better to reset freplace_link to NULL immediately
-> after the first bpf_link__destroy(freplace_link) call. This would help
-> avoid potential double-free scenarios.
+Heh, technically, they can't.  On SVM, KVM clears GIF prior to svm_vcpu_ent=
+er_exit(),
+and restores GIF=3D1 only after it returns.  I.e. NMIs are fully blocked _o=
+n SVM_.
 
-What a great suggestion, I can't believe I didn't think of it! Haha.
-I will resend a v2 version later. Thanks, Leon.
+VMX unfortunately doesn't provide GIF, and so NMIs can arrive at any time. =
+ It's
+infeasible for software to prevent them, so we're stuck with that.  [In the=
+ory,
+KVM could deliberately generate an NMI and not do IRET so that NMIs are blo=
+cked,
+but that would be beyond crazy].
 
-> 
-> I’ve tested the following diff, which implements this change:
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-> b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-> index 544144620ca61..a12fa0521ccc0 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-> @@ -1602,6 +1602,7 @@ static void test_tailcall_bpf2bpf_freplace(void)
->         err = bpf_link__destroy(freplace_link);
->         if (!ASSERT_OK(err, "destroy link"))
->                 goto out;
-> +       freplace_link = NULL;
-> 
->         /* OK to update prog_array map then delete element from the map. */
-> 
-> Thanks,
-> Leon
-> 
->> Fixes: 021611d33e78 ("selftests/bpf: Add test to verify tailcall and freplace restrictions")
->> Signed-off-by: Tengda Wu <wutengda@huaweicloud.com>
->> ---
->>  tools/testing/selftests/bpf/prog_tests/tailcalls.c | 8 ++++----
->>  1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
->> index 544144620ca6..028439dd2c5f 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
->> @@ -1624,7 +1624,7 @@ static void test_tailcall_bpf2bpf_freplace(void)
->>  	freplace_link = bpf_program__attach_freplace(freplace_skel->progs.entry_freplace,
->>  						     prog_fd, "subprog_tc");
->>  	if (!ASSERT_ERR_PTR(freplace_link, "attach_freplace failure"))
->> -		goto out;
->> +		goto out_free_link;
->>  
->>  	err = bpf_map_delete_elem(map_fd, &key);
->>  	if (!ASSERT_OK(err, "delete_elem from jmp_table"))
->> @@ -1638,11 +1638,11 @@ static void test_tailcall_bpf2bpf_freplace(void)
->>  		goto out;
->>  
->>  	err = bpf_map_update_elem(map_fd, &key, &prog_fd, BPF_ANY);
->> -	if (!ASSERT_ERR(err, "update jmp_table failure"))
->> -		goto out;
->> +	ASSERT_ERR(err, "update jmp_table failure");
->>  
->> -out:
->> +out_free_link:
->>  	bpf_link__destroy(freplace_link);
->> +out:
->>  	tailcall_freplace__destroy(freplace_skel);
->>  	tc_bpf2bpf__destroy(tc_skel);
->>  }
-> 
-
+> And NMIs interrupting userspace don't call enter_from_user_mode(). In fac=
+t
+> they don't call irqentry_enter_from_user_mode() like regular IRQs but
+> irqentry_nmi_enter() instead. Well that's for archs implementing common e=
+ntry
+> code, I can't speak for the others.
+>=20
+> Unifying the behaviour between user and idle such that the IRQs/NMIs exit=
+ the
+> CT_STATE can be interesting but I fear this may not come for free. You wo=
+uld
+> need to save the old state on IRQ/NMI entry and restore it on exit.
+>=20
+> Do we really need it?
+>=20
+> Thanks.
 
