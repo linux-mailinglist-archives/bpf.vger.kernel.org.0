@@ -1,61 +1,97 @@
-Return-Path: <bpf+bounces-49438-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49439-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BBC8A18B11
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 05:36:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17519A18B17
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 05:40:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EEC41883C1B
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 04:36:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 057E73AC531
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 04:40:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 852EE16F8F5;
-	Wed, 22 Jan 2025 04:35:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC76B170A11;
+	Wed, 22 Jan 2025 04:40:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="mYgY2h8V"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="LCfNkPAL"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D9EEECF;
-	Wed, 22 Jan 2025 04:35:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F06933991;
+	Wed, 22 Jan 2025 04:40:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737520552; cv=none; b=h6daPBmCNiaa2zcF1/mVqsd/QjK2GRyRxgSijWX1v9lbwO0lzc6fHdtS8oE12ALcRfxFBeGLSm0Rp0jeZo4kbOZNTHAOfWCzthN9eT6arhGbMzmRrGOyN4kuBsnl6r0zXsBsoRxVea531RbyUNpCIolqEPVOXS9VpD0bnfUqdG8=
+	t=1737520802; cv=none; b=CZ9AN26bkgCIL2gfLCATKZaaVyWfS5PJqq80v7GsI3r2mXdFYmcj3FhJ4w5CPyIv+38VkerDB8lJXoi70qrYZfCRZqDrTnc1XY97KhdQB+23E73sCtlzaFCLqnauzYa5Lu6HgovGDyBHrC6Wl+ViXS7OVSF4YN2xZXXh5vm4erI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737520552; c=relaxed/simple;
-	bh=kx4htrhC1LwQWfgDqorHI8uXV4Zpz4t+IvJ7Z5oP+9s=;
+	s=arc-20240116; t=1737520802; c=relaxed/simple;
+	bh=vozpJzoYh8NFazwcE0sbja2bDFoFPU5h6TA6RG2F2eQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aufTdLKaftmeS2vqhLD16M7KRkLv3ckducaid3CTQMH6815BT18FOurPjXXWttC0TgzyImewTq9mWhJf4w0dzB1mURa79XUgigVXrhAR9QS3H0qlFedBrmDSzInPD4NVKKmM+4yNfrNPZf5RoNMFFE6taJxdQjDAz5gLIiEmir4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=mYgY2h8V; arc=none smtp.client-ip=115.124.30.113
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1737520540; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=IHehevSmLWkA9dPFMqFrIjYjGxd1L3QHCe+CuOPx340=;
-	b=mYgY2h8V+fmrfLld9djLlPnK0vONOHRGBdUnfEYIjw34Bc/QZ7s4VN1AKUg+ctHzHzZVRL/0nnYz3/Yjf47nvEHNp7exqYT0Y0j3WetuaHxwCFL011He9rlVfRnDO9hbiAAIOIDM0Wg7z9aF84pWyNDeRwkKiR3f3JP0zjPQQhg=
-Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WO7DQQg_1737520538 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Wed, 22 Jan 2025 12:35:38 +0800
-Date: Wed, 22 Jan 2025 12:35:38 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com    >
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-	wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, pabeni@redhat.com,
-	song@kernel.org, sdf@google.com, haoluo@google.com, yhs@fb.com,
-	edumazet@google.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-	jolsa@kernel.org, guwen@linux.alibaba.com, kuba@kernel.org,
-	davem@davemloft.net, netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v6 2/5] net/smc: Introduce generic hook smc_ops
-Message-ID: <20250122043538.GC81479@j66a10360.sqa.eu95>
+	 Content-Type:Content-Disposition:In-Reply-To; b=N0+C1ddnSNu1KNbj25bv3kXHToP33N5ES7xARKsNJgrvRUtqecXlIG+bYbNyBaYElBO2903x2d9DjFruugAveXl3LXQfWb/NGNAV9o22t8T1uZWNTOJkp1i135zGgH9ke8kQtqdnLkwisgX6nIZpkwx1m07emDwn1LGUZfHOpmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=LCfNkPAL; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 50M18O0q013816;
+	Wed, 22 Jan 2025 04:39:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=Uj1IBKSyRAR9M7uS0BMNRa1ZCi7T/v
+	zkm1EVAV7KiDc=; b=LCfNkPAL9XOiNff3jWXdS3v6u7HvDU+yx/KMiEz10OID+h
+	BHF+qdBG30yg0+vkh39dKE+YPVI9RDipo2vo/0K8+88vRvRQEwYNEvPBDCVlUgVF
+	T2QsHWKovqldZ60UymJ0NVPl84Roh53Sw4PXe+Jt3e92qxJt0cPdKAXKrPqq/p2+
+	GY9mszuG52k4hloJInmgQ8QtZbeb7PtVXoZ2VPXDBX0KGpp3CsBBO/ebmrzOo8t+
+	ytK4pgvSibbA2iWu1pEBSuI6S1zmI2jIwMz/DZCQlQpMjn3TKBgDHxiUXiOVeWv7
+	AGn7kwtKvA1OaCqR9bC5H6Ed1EwwMn2uLik99WTA==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44apr98pb6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 22 Jan 2025 04:39:14 +0000 (GMT)
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 50M4dEAc032338;
+	Wed, 22 Jan 2025 04:39:14 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44apr98pb1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 22 Jan 2025 04:39:14 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 50M1MuQv022387;
+	Wed, 22 Jan 2025 04:39:12 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 448r4k6mpg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 22 Jan 2025 04:39:12 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 50M4d8EP34538106
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 22 Jan 2025 04:39:09 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D831E20043;
+	Wed, 22 Jan 2025 04:39:08 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 41AAB20040;
+	Wed, 22 Jan 2025 04:39:03 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.43.19.247])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 22 Jan 2025 04:39:03 +0000 (GMT)
+Date: Wed, 22 Jan 2025 10:09:00 +0530
+From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+To: "D. Wythe" <alibuda@linux.alibaba.com>
+Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, pabeni@redhat.com, song@kernel.org,
+        sdf@google.com, haoluo@google.com, yhs@fb.com, edumazet@google.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
+        guwen@linux.alibaba.com, kuba@kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v6 5/5] bpf/selftests: add selftest for
+ bpf_smc_ops
+Message-ID: <Z5B2ZFRWsuBviC/Q@linux.ibm.com>
 References: <20250116074442.79304-1-alibuda@linux.alibaba.com>
- <20250116074442.79304-3-alibuda@linux.alibaba.com>
- <86948347-529b-433a-991d-0b298776db63@linux.dev>
+ <20250116074442.79304-6-alibuda@linux.alibaba.com>
+ <Z49Bv8ySi2EJ/jfl@linux.ibm.com>
+ <20250122024651.GB81479@j66a10360.sqa.eu95>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,116 +100,79 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <86948347-529b-433a-991d-0b298776db63@linux.dev>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20250122024651.GB81479@j66a10360.sqa.eu95>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Q9lflqyZ0u44bxu6ZGJfEd2KlfghN-gc
+X-Proofpoint-ORIG-GUID: Q41V1KpJ1CnwKQ7Q8J91CM5w7UWBe_ai
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-01-22_01,2025-01-21_03,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ priorityscore=1501 lowpriorityscore=0 suspectscore=0 mlxscore=0
+ spamscore=0 clxscore=1015 bulkscore=0 phishscore=0 malwarescore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2411120000 definitions=main-2501220030
 
-On Fri, Jan 17, 2025 at 03:50:48PM -0800, Martin KaFai Lau wrote:
-> On 1/15/25 11:44 PM, D. Wythe wrote:
-> >diff --git a/net/smc/smc_sysctl.c b/net/smc/smc_sysctl.c
-> >index 2fab6456f765..2004241c3045 100644
-> >--- a/net/smc/smc_sysctl.c
-> >+++ b/net/smc/smc_sysctl.c
-> >@@ -18,6 +18,7 @@
-> >  #include "smc_core.h"
-> >  #include "smc_llc.h"
-> >  #include "smc_sysctl.h"
-> >+#include "smc_ops.h"
-> >  static int min_sndbuf = SMC_BUF_MIN_SIZE;
-> >  static int min_rcvbuf = SMC_BUF_MIN_SIZE;
-> >@@ -30,6 +31,69 @@ static int links_per_lgr_max = SMC_LINKS_ADD_LNK_MAX;
-> >  static int conns_per_lgr_min = SMC_CONN_PER_LGR_MIN;
-> >  static int conns_per_lgr_max = SMC_CONN_PER_LGR_MAX;
-> >+#if IS_ENABLED(CONFIG_SMC_OPS)
-> >+static int smc_net_replace_smc_ops(struct net *net, const char *name)
-> >+{
-> >+	struct smc_ops *ops = NULL;
-> >+
-> >+	rcu_read_lock();
-> >+	/* null or empty name ask to clear current ops */
-> >+	if (name && name[0]) {
-> >+		ops = smc_ops_find_by_name(name);
-> >+		if (!ops) {
-> >+			rcu_read_unlock();
-> >+			return -EINVAL;
-> >+		}
-> >+		/* no change, just return */
-> >+		if (ops == rcu_dereference(net->smc.ops)) {
-> >+			rcu_read_unlock();
-> >+			return 0;
-> >+		}
-> >+	}
-> >+	if (!ops || bpf_try_module_get(ops, ops->owner)) {
-> >+		/* xhcg */
+On Wed, Jan 22, 2025 at 10:46:51AM +0800, D. Wythe wrote:
+> On Tue, Jan 21, 2025 at 12:12:07PM +0530, Saket Kumar Bhaskar wrote:
+> > On Thu, Jan 16, 2025 at 03:44:42PM +0800, D. Wythe wrote:
+> > > This tests introduces a tiny smc_ops for filtering SMC connections based on
+> > > IP pairs, and also adds a realistic topology model to verify this ops.
+> > > 
+> > > Also, we can only use SMC loopback under CI test, so an
+> > > additional configuration needs to be enabled.
+> > > 
+> > > Follow the steps below to run this test.
+> > > 
+> > > make -C tools/testing/selftests/bpf
+> > > cd tools/testing/selftests/bpf
+> > > sudo ./test_progs -t smc
+> > > 
+> > > Results shows:
+> > > Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+> > > 
+> > > Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> > > ---
+> > >  tools/testing/selftests/bpf/config            |   4 +
+> > >  .../selftests/bpf/prog_tests/test_bpf_smc.c   | 397 ++++++++++++++++++
+> > >  tools/testing/selftests/bpf/progs/bpf_smc.c   | 117 ++++++
+> > >  3 files changed, 518 insertions(+)
+> > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
+> > >  create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
+> > > 
+> > > diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
+> > > index c378d5d07e02..fac2f2a9d02f 100644
+> > > --- a/tools/testing/selftests/bpf/config
+> > > +++ b/tools/testing/selftests/bpf/config
+> > > @@ -113,3 +113,7 @@ CONFIG_XDP_SOCKETS=y
+> > > +};
+> > Tested this selftest with patches applied on powerpc.
+> > 
+> > #./test_progs -t bpf_smc
+> > 
+> > net.smc.ops = linkcheck
+> > #27/1    bpf_smc/topo:OK
+> > #27      bpf_smc:OK
+> > Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+> > 
+> > Tested-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+> > 
+> > Thanks,
+> > Saket
 > 
-> typo. I noticed it only because...
+> Hi Saket,
 > 
-> >+		ops = rcu_replace_pointer(net->smc.ops, ops, true);
+> Thanks for your testing. I hope you don't mind if I add your test-by in
+> the next version.
 > 
-> ... rcu_replace_pointer() does not align with the above xchg
-> comment. From looking into rcu_replace_pointer, it is not a xchg. It
-> is also not obvious to me why it is safe to assume "true" here...
+> Best wishes,
+> D. Wythe
 > 
-> >+		/* release old ops */
-> >+		if (ops)
-> >+			bpf_module_put(ops, ops->owner);
-> 
-> ... together with a put here on the return value of the rcu_replace_pointer.
-> 
+Fine for me Wythe.
 
-Hi Martin,
-
-This is indeed a very good catch. Initially, I used the xhcg()
-for swapping, but later I thought there wouldn't be a situation where
-smc_net_replace_smc_ops would be called simultaneously with the same net.
-
-Therefore, I modified it to rcu_replace_pointer, which is also why I assumed
-that it was true here, I thought the updates here was prevented. but now I
-realize that sysctl might not be mutually exclusive. It seems that this should
-be changed back to xhcg().
-
-> >+	} else if (ops) {
-> 
-> nit. This looks redundant when looking at the "if (!ops || ..." test above
-> Also a nit, I would move the bpf_try_module_get() immediately after
-> the above "if (ops == rcu_dereference(net->smc.ops))" test. This
-> should simplify the later cases.
-> 
-
-This is a very good suggestion. I tried it and the code became very
-clean. I'll take it in next version.
-
-> >+		rcu_read_unlock();
-> >+		return -EBUSY;
-> >+	}
-> >+	rcu_read_unlock();
-> >+	return 0;
-> >+}
-> >+
-> >+static int proc_smc_ops(const struct ctl_table *ctl, int write,
-> >+#if IS_ENABLED(CONFIG_SMC_OPS)
-> >+		struct smc_ops *ops;
-> >+
-> >+		rcu_read_lock();
-> >+		ops = rcu_dereference(init_net.smc.ops);
-> >+		if (ops && ops->flags & SMC_OPS_FLAG_INHERITABLE) {
-> >+			if (!bpf_try_module_get(ops, ops->owner)) {
-> >+				rcu_read_unlock();
-> >+				return -EBUSY;
-> 
-> Not sure if it should count as error when the ops is in the process
-> of un-register-ing. The next smc_sysctl_net_init will have NULL ops
-> and succeed. Something for you to consider.
->
-
-It seems more reasonable that no need to prevent net initialization
-just because ops is uninstalling... I plan to just skip that error.
-
-> 
-> Also, it needs an ack from the SMC maintainer for the SMC specific
-> parts like the sysctl here.
-
-Got it. I will communicate this matter with the SMC maintainers.
-
-Best wishes,
-D. Wythe
+Thanks,
+Saket
+> > > -- 
+> > > 2.45.0
+> > > 
 
