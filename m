@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-49506-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49507-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7580CA197E8
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 18:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6388BA197EA
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 18:47:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 861AE3A4322
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 17:45:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2A8C3A22E4
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 17:46:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1899D217F28;
-	Wed, 22 Jan 2025 17:43:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EA4C217F30;
+	Wed, 22 Jan 2025 17:43:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Uk+uC17T"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="usuWpjiO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1837621771D
-	for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 17:43:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49107217F31
+	for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 17:43:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737567806; cv=none; b=RrxIVLEii4mUVhGvEmvCrqy61vlQjfUT/VBuO3U14exgLNoRsniclri1ExOzugrHLopwuKhO/D1b9AH0xtoqESsrtb6N+UlBJXfrdU5P3pt9Y+P5FyahTB3whrS6QrrgzWE4qAzypsiVXZYkiZ0iIvw/mMcCOJJragwf8eHaAJ0=
+	t=1737567809; cv=none; b=cNrel3fRy7xojXM2xz7kToBxmkTMBJ8raoaqqFYALUTM5ITbVManUO1jS5+pyPfbJm/OshDv+HwdQMBLA+HvKadw/9JyvgG6By0LbNkABnVzCdRuSTpkj7bs417qgSL1jSa5x0bGc2uqjGmlLqCdpARk+cWhteIqC+3kdw/v4I8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737567806; c=relaxed/simple;
-	bh=/6e4emTQAma3I/ECUbvp8eDgQ0XP3VoFcLmrxffX71Q=;
+	s=arc-20240116; t=1737567809; c=relaxed/simple;
+	bh=1l7Drz96PHmZuDjuJh3eoldtORzBgnpw9DQoVHVz044=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=mm98vHNvoQ1HcdYEVl8a+atbWf5VSsHodvR/e1EtzGbmglc3oNJyRHx5NfiBhxZdEPYk8nQE3ZBErCNPiIOzwHTkSuFV/uhAESn4f2iI1CRA1qS+hJpmprLKAZ10RvnrmeziQyiZ7nBJnkTQ0iXhkDSFQCDXWhIwgDteI8YWX5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Uk+uC17T; arc=none smtp.client-ip=209.85.219.201
+	 To:Content-Type; b=MAfAYFo6YgvGky40MpuXC1h8l5cKRamDLTd2TX4XaMExtWHG/5BkQQ6REk2gzIU2tFlSaiBTOIrnz3Tnk9d4xqqqkT0Hjbq5uLxkC5pnTDABg8p0tZiWIV3E35LrRRRvWWdi646NWqOqNfumlU+mlSthUe9z9wPdVpr7/Ty0UEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=usuWpjiO; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-e578b0d2afdso18712285276.3
-        for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 09:43:24 -0800 (PST)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-e48beea5778so17573818276.1
+        for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 09:43:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1737567804; x=1738172604; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1737567806; x=1738172606; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=VogZlDmYyWqz8VLnX5mLueZuF1SFjnllQQUCqGSdoSM=;
-        b=Uk+uC17TjtTR+PMrqoPJdhl0MXaeuSvIS/phiQFw8IoktxBfrAqga7Y4PBljZ3fPIo
-         mv/rouFKQtSPCr4EzvuaYK08ZwA5+eWkSP8CbgUxXCuOblGKu+raL7p0zOtRZOqQfYVN
-         v6u6iqWnXUAtN2OjpP+Rp1hdPN3qZAh65wLDSBavmJDsG1dAAHbWRrC5U9I+fXQSkqCZ
-         AHej6dJqE/Opn3zx4JtjYEpnQWJMYivYya21uPDBWUsz1gk7QBstPfqnQRKoUZMRrc0K
-         Mt7e3w24P4tE9DXRBYSKbwkpA1/Gd2kwjeFltxcOC0+uSBFSeDFSKz2uT5O5r9JMSVu4
-         QyTA==
+        bh=9k11BWStCbKO82IKSFnabXnqABjaH9qsF2KhV97I5pI=;
+        b=usuWpjiO/YYuiysLhaLey+oeZQ/vVUT9vYlUzPd+8/GEI+yyoTBqRJkKk7LmqTRLtW
+         Ktx1z7GyKXxSk6Oi5ue0+JMUidXy4Jt1O6rqc1qg8pnNGVzNrgf1LHR/9wciYVMHBfDU
+         1OfRrt2n7AlJvbnpItczPftAj9vFVjkjaoDFIC00fiUMW+OaovsuLb0rt7K/yo80vMMF
+         YWSM9Ul/FkEm1Hskn6TGVU53ruP5CbqDkomJr4lCFGvIPX6X3ENJpdnGGoX64+wGvfJx
+         14zrWpLaEkOcKfC8Glke6weP5dmoQ+/DvwYwckbPYdttwbKouk6pUdjUpuyUfTupJ7oF
+         XNHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737567804; x=1738172604;
+        d=1e100.net; s=20230601; t=1737567806; x=1738172606;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VogZlDmYyWqz8VLnX5mLueZuF1SFjnllQQUCqGSdoSM=;
-        b=qq0esimchiY7kUg4ekvfmRDdrSKYht24AIHZlZ9Lv8FMcryTgi/1yZ+7zDjC7Bqphw
-         ahMfZE+lPujwQ4isbm/mcJT96r3+x3GDffQ2VagF8MbMfW+ELXVoHMCuOmj0/NycBDsE
-         fVu/ahKAcuiEz5SeSWor+qhqopJvzEHB7x2xoSOqwFka5HDSvt36Ix/Y6VAZ1YZV7G1m
-         /ioI5f4U8cNpe7aAllpB6qfZFo9bCbYgoxxF1kqKta85uBKceM88+IYAZSFjz4kIjCHK
-         mmLE91bDiHY5xxZ7N8uQvpo/kteKVraFABj92w3qPmAYVAwt/UEaw5GcUs6HwHCtODHl
-         WOTg==
-X-Forwarded-Encrypted: i=1; AJvYcCXZ8Jin+HidCucHULU6ySZQ+Gksj3n4st7C9z1lW3tME/7QCoEAZXjSPmGj6gXYbwFm4uA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxwtRshn0N1UZf1YiOn0NVhGb0fux1Nc9rJcO0o0ty+iWP6+o72
-	W7pQ5YbdaczUEIzLIX/OtvvK3kd1QMwhpq9RTNWSMP8tqF2OvrCydqugFTwXW5px/WaIo9dIRUX
-	HCHZ1qQ==
-X-Google-Smtp-Source: AGHT+IHkuY00040+mvLKGu21zh7GGvsLOIJdp3hWaxKfD0++kd9sPhyMqVnTMrrTJitRqM1oG5JXLSFmPL3k
+        bh=9k11BWStCbKO82IKSFnabXnqABjaH9qsF2KhV97I5pI=;
+        b=dmDTNzpcr1teMTe2FZrTixuEDGKxyEvEPqfUsSfJzU6lmoqiUp8qmcg+om0jNfLOQR
+         sENBzcZd7toMora20J8nxBseRbrmW7Hum1ItKDiAcJjzKQALx+KaB77GR32t1lGCApH5
+         ftmIOZVCfDLm0gjJblD1JVJhecn0c6KlFJQxomWKgQVy7nQC4eraVqGQ/N6NZZqz+baE
+         dkJwq40xLQuaK8bKorAIi2crdByfUEaKv0vEq0G8TkFuJ1ScX8FSXfY9EqyDmMNBDfup
+         o/tvJlk6CD26nEgjytm8ulx7ZNIRysvpTSDk4UlkLeCuod6hozP/IIZ7P9IpHS2Qajhi
+         ydpA==
+X-Forwarded-Encrypted: i=1; AJvYcCU/QAVk1p6PGI73VM/HMX3GHf3KyC/LUVcumY/AdleBLZEWJf7u4P4twROOtNH+4o8WCQA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxSYR5j6gGuLRy/VLyJxfmKz5HX+QAqSyaq7dwsy10QGUIzMRLY
+	ftPc3Eu9DCirxqqe8fdbUsMwWVtO59S6WQ3WgR2t6FEIDmyEqSDFV7IioWV0CWJ3KgaxDyHfnzF
+	WvaAadw==
+X-Google-Smtp-Source: AGHT+IHdKfy4PJ6UkCjZE2RmWgv4q6elWLizrDJAI3/5N5sRKhc+ojTdx19FBBTj9gGMlHfYQfIjk/EPABpv
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2c5:11:807b:be79:d5c3:ee5c])
- (user=irogers job=sendgmr) by 2002:a25:a469:0:b0:e57:41ff:5165 with SMTP id
- 3f1490d57ef6-e57b103232fmr44707276.2.1737567803903; Wed, 22 Jan 2025 09:43:23
+ (user=irogers job=sendgmr) by 2002:a25:e046:0:b0:e39:87ba:3582 with SMTP id
+ 3f1490d57ef6-e57b1326546mr41942276.5.1737567805834; Wed, 22 Jan 2025 09:43:25
  -0800 (PST)
-Date: Wed, 22 Jan 2025 09:42:55 -0800
+Date: Wed, 22 Jan 2025 09:42:56 -0800
 In-Reply-To: <20250122174308.350350-1-irogers@google.com>
-Message-Id: <20250122174308.350350-6-irogers@google.com>
+Message-Id: <20250122174308.350350-7-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,7 +75,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250122174308.350350-1-irogers@google.com>
 X-Mailer: git-send-email 2.48.1.262.g85cc9f2d1e-goog
-Subject: [PATCH v3 05/18] perf capstone: Remove open_capstone_handle
+Subject: [PATCH v3 06/18] perf capstone: Support for dlopen-ing libcapstone.so
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -95,75 +95,473 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	Song Liu <song@kernel.org>, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-open_capstone_handle is similar to capstone_init and used only by
-symbol__disassemble_capstone. symbol__disassemble_capstone_powerpc
-already uses capstone_init, transition symbol__disassemble_capstone
-and eliminate open_capstone_handle.
+If perf wasn't built against libcapstone, no HAVE_LIBCAPSTONE_SUPPORT,
+support dlopen-ing libcapstone.so and then calling the necessary
+functions by looking them up using dlsym. Reverse engineer the types
+in the API using pahole, adding only what's used in the perf code or
+necessary for the sake of struct size and alignment.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/capstone.c | 34 ++++++----------------------------
- 1 file changed, 6 insertions(+), 28 deletions(-)
+ tools/perf/util/capstone.c | 287 ++++++++++++++++++++++++++++++++-----
+ 1 file changed, 248 insertions(+), 39 deletions(-)
 
 diff --git a/tools/perf/util/capstone.c b/tools/perf/util/capstone.c
-index c0a6d94ebc18..c9845e4d8781 100644
+index c9845e4d8781..8d65c7a55a8b 100644
 --- a/tools/perf/util/capstone.c
 +++ b/tools/perf/util/capstone.c
-@@ -137,33 +137,6 @@ ssize_t capstone__fprintf_insn_asm(struct machine *machine __maybe_unused,
+@@ -11,19 +11,249 @@
+ #include "print_insn.h"
+ #include "symbol.h"
+ #include "thread.h"
++#include <dlfcn.h>
+ #include <fcntl.h>
++#include <inttypes.h>
+ #include <string.h>
+ 
+ #ifdef HAVE_LIBCAPSTONE_SUPPORT
+ #include <capstone/capstone.h>
++#else
++typedef size_t csh;
++enum cs_arch {
++	CS_ARCH_ARM = 0,
++	CS_ARCH_ARM64 = 1,
++	CS_ARCH_X86 = 3,
++	CS_ARCH_SYSZ = 6,
++};
++enum cs_mode {
++	CS_MODE_ARM = 0,
++	CS_MODE_32 = 1 << 2,
++	CS_MODE_64 = 1 << 3,
++	CS_MODE_V8 = 1 << 6,
++	CS_MODE_BIG_ENDIAN = 1 << 31,
++};
++enum cs_opt_type {
++	CS_OPT_SYNTAX = 1,
++	CS_OPT_DETAIL = 2,
++};
++enum cs_opt_value {
++	CS_OPT_SYNTAX_ATT = 2,
++	CS_OPT_ON = 3,
++};
++enum cs_err {
++	CS_ERR_OK = 0,
++	CS_ERR_HANDLE = 3,
++};
++enum x86_op_type {
++	X86_OP_IMM = 2,
++	X86_OP_MEM = 3,
++};
++enum x86_reg {
++	X86_REG_RIP = 41,
++};
++typedef int32_t x86_avx_bcast;
++struct x86_op_mem {
++	enum x86_reg segment;
++	enum x86_reg base;
++	enum x86_reg index;
++	int scale;
++	int64_t disp;
++};
++
++struct cs_x86_op {
++	enum x86_op_type type;
++	union {
++		enum x86_reg  reg;
++		int64_t imm;
++		struct x86_op_mem mem;
++	};
++	uint8_t size;
++	uint8_t access;
++	x86_avx_bcast avx_bcast;
++	bool avx_zero_opmask;
++};
++struct cs_x86_encoding {
++	uint8_t modrm_offset;
++	uint8_t disp_offset;
++	uint8_t disp_size;
++	uint8_t imm_offset;
++	uint8_t imm_size;
++};
++typedef int32_t  x86_xop_cc;
++typedef int32_t  x86_sse_cc;
++typedef int32_t  x86_avx_cc;
++typedef int32_t  x86_avx_rm;
++struct cs_x86 {
++	uint8_t prefix[4];
++	uint8_t opcode[4];
++	uint8_t rex;
++	uint8_t addr_size;
++	uint8_t modrm;
++	uint8_t sib;
++	int64_t disp;
++	enum x86_reg sib_index;
++	int8_t sib_scale;
++	enum x86_reg sib_base;
++	x86_xop_cc xop_cc;
++	x86_sse_cc sse_cc;
++	x86_avx_cc avx_cc;
++	bool avx_sae;
++	x86_avx_rm avx_rm;
++	union {
++		uint64_t eflags;
++		uint64_t fpu_flags;
++	};
++	uint8_t op_count;
++	struct cs_x86_op operands[8];
++	struct cs_x86_encoding encoding;
++};
++struct cs_detail {
++	uint16_t regs_read[12];
++	uint8_t regs_read_count;
++	uint16_t regs_write[20];
++	uint8_t regs_write_count;
++	uint8_t groups[8];
++	uint8_t groups_count;
++
++	union {
++		struct cs_x86 x86;
++	};
++};
++struct cs_insn {
++	unsigned int id;
++	uint64_t address;
++	uint16_t size;
++	uint8_t bytes[16];
++	char mnemonic[32];
++	char op_str[160];
++	struct cs_detail *detail;
++};
++#endif
++
++#ifndef HAVE_LIBCAPSTONE_SUPPORT
++static void *perf_cs_dll_handle(void)
++{
++	static bool dll_handle_init;
++	static void *dll_handle;
++
++	if (!dll_handle_init) {
++		dll_handle_init = true;
++		dll_handle = dlopen("libcapstone.so", RTLD_LAZY);
++		if (!dll_handle)
++			pr_debug("dlopen failed for libcapstone.so\n");
++	}
++	return dll_handle;
++}
++#endif
++
++static enum cs_err perf_cs_open(enum cs_arch arch, enum cs_mode mode, csh *handle)
++{
++#ifdef HAVE_LIBCAPSTONE_SUPPORT
++	return cs_open(arch, mode, handle);
++#else
++	static bool fn_init;
++	static enum cs_err (*fn)(enum cs_arch arch, enum cs_mode mode, csh *handle);
++
++	if (!fn_init) {
++		fn = dlsym(perf_cs_dll_handle(), "cs_open");
++		if (!fn)
++			pr_debug("dlsym failed for cs_open\n");
++		fn_init = true;
++	}
++	if (!fn)
++		return CS_ERR_HANDLE;
++	return fn(arch, mode, handle);
++#endif
++}
++
++static enum cs_err perf_cs_option(csh handle, enum cs_opt_type type, size_t value)
++{
++#ifdef HAVE_LIBCAPSTONE_SUPPORT
++	return cs_option(handle, type, value);
++#else
++	static bool fn_init;
++	static enum cs_err (*fn)(csh handle, enum cs_opt_type type, size_t value);
++
++	if (!fn_init) {
++		fn = dlsym(perf_cs_dll_handle(), "cs_option");
++		if (!fn)
++			pr_debug("dlsym failed for cs_option\n");
++		fn_init = true;
++	}
++	if (!fn)
++		return CS_ERR_HANDLE;
++	return fn(handle, type, value);
++#endif
++}
++
++static size_t perf_cs_disasm(csh handle, const uint8_t *code, size_t code_size,
++			uint64_t address, size_t count, struct cs_insn **insn)
++{
++#ifdef HAVE_LIBCAPSTONE_SUPPORT
++	return cs_disasm(handle, code, code_size, address, count, insn);
++#else
++	static bool fn_init;
++	static enum cs_err (*fn)(csh handle, const uint8_t *code, size_t code_size,
++				 uint64_t address, size_t count, struct cs_insn **insn);
++
++	if (!fn_init) {
++		fn = dlsym(perf_cs_dll_handle(), "cs_disasm");
++		if (!fn)
++			pr_debug("dlsym failed for cs_disasm\n");
++		fn_init = true;
++	}
++	if (!fn)
++		return CS_ERR_HANDLE;
++	return fn(handle, code, code_size, address, count, insn);
  #endif
++}
+ 
++static void perf_cs_free(struct cs_insn *insn, size_t count)
++{
+ #ifdef HAVE_LIBCAPSTONE_SUPPORT
++	cs_free(insn, count);
++#else
++	static bool fn_init;
++	static void (*fn)(struct cs_insn *insn, size_t count);
++
++	if (!fn_init) {
++		fn = dlsym(perf_cs_dll_handle(), "cs_free");
++		if (!fn)
++			pr_debug("dlsym failed for cs_free\n");
++		fn_init = true;
++	}
++	if (!fn)
++		return;
++	fn(insn, count);
++#endif
++}
++
++static enum cs_err perf_cs_close(csh *handle)
++{
++#ifdef HAVE_LIBCAPSTONE_SUPPORT
++	return cs_close(handle);
++#else
++	static bool fn_init;
++	static enum cs_err (*fn)(csh *handle);
++
++	if (!fn_init) {
++		fn = dlsym(perf_cs_dll_handle(), "cs_close");
++		if (!fn)
++			pr_debug("dlsym failed for cs_close\n");
++		fn_init = true;
++	}
++	if (!fn)
++		return CS_ERR_HANDLE;
++	return fn(handle);
++#endif
++}
++
+ static int capstone_init(struct machine *machine, csh *cs_handle, bool is64,
+ 			 bool disassembler_style)
+ {
+-	cs_arch arch;
+-	cs_mode mode;
++	enum cs_arch arch;
++	enum cs_mode mode;
+ 
+ 	if (machine__is(machine, "x86_64") && is64) {
+ 		arch = CS_ARCH_X86;
+@@ -44,7 +274,7 @@ static int capstone_init(struct machine *machine, csh *cs_handle, bool is64,
+ 		return -1;
+ 	}
+ 
+-	if (cs_open(arch, mode, cs_handle) != CS_ERR_OK) {
++	if (perf_cs_open(arch, mode, cs_handle) != CS_ERR_OK) {
+ 		pr_warning_once("cs_open failed\n");
+ 		return -1;
+ 	}
+@@ -56,27 +286,25 @@ static int capstone_init(struct machine *machine, csh *cs_handle, bool is64,
+ 		 * is set via annotation args
+ 		 */
+ 		if (disassembler_style)
+-			cs_option(*cs_handle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
++			perf_cs_option(*cs_handle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
+ 		/*
+ 		 * Resolving address operands to symbols is implemented
+ 		 * on x86 by investigating instruction details.
+ 		 */
+-		cs_option(*cs_handle, CS_OPT_DETAIL, CS_OPT_ON);
++		perf_cs_option(*cs_handle, CS_OPT_DETAIL, CS_OPT_ON);
+ 	}
+ 
+ 	return 0;
+ }
+-#endif
+ 
+-#ifdef HAVE_LIBCAPSTONE_SUPPORT
+-static size_t print_insn_x86(struct thread *thread, u8 cpumode, cs_insn *insn,
++static size_t print_insn_x86(struct thread *thread, u8 cpumode, struct cs_insn *insn,
+ 			     int print_opts, FILE *fp)
+ {
+ 	struct addr_location al;
+ 	size_t printed = 0;
+ 
+ 	if (insn->detail && insn->detail->x86.op_count == 1) {
+-		cs_x86_op *op = &insn->detail->x86.operands[0];
++		struct cs_x86_op *op = &insn->detail->x86.operands[0];
+ 
+ 		addr_location__init(&al);
+ 		if (op->type == X86_OP_IMM &&
+@@ -94,7 +322,6 @@ static size_t print_insn_x86(struct thread *thread, u8 cpumode, cs_insn *insn,
+ 	printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
+ 	return printed;
+ }
+-#endif
+ 
+ 
+ ssize_t capstone__fprintf_insn_asm(struct machine *machine __maybe_unused,
+@@ -105,9 +332,8 @@ ssize_t capstone__fprintf_insn_asm(struct machine *machine __maybe_unused,
+ 				   uint64_t ip __maybe_unused, int *lenp __maybe_unused,
+ 				   int print_opts __maybe_unused, FILE *fp __maybe_unused)
+ {
+-#ifdef HAVE_LIBCAPSTONE_SUPPORT
+ 	size_t printed;
+-	cs_insn *insn;
++	struct cs_insn *insn;
+ 	csh cs_handle;
+ 	size_t count;
+ 	int ret;
+@@ -117,7 +343,7 @@ ssize_t capstone__fprintf_insn_asm(struct machine *machine __maybe_unused,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	count = cs_disasm(cs_handle, code, code_size, ip, 1, &insn);
++	count = perf_cs_disasm(cs_handle, code, code_size, ip, 1, &insn);
+ 	if (count > 0) {
+ 		if (machine__normalized_is(machine, "x86"))
+ 			printed = print_insn_x86(thread, cpumode, &insn[0], print_opts, fp);
+@@ -125,20 +351,16 @@ ssize_t capstone__fprintf_insn_asm(struct machine *machine __maybe_unused,
+ 			printed = fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
+ 		if (lenp)
+ 			*lenp = insn->size;
+-		cs_free(insn, count);
++		perf_cs_free(insn, count);
+ 	} else {
+ 		printed = -1;
+ 	}
+ 
+-	cs_close(&cs_handle);
++	perf_cs_close(&cs_handle);
+ 	return printed;
+-#else
+-	return -1;
+-#endif
  }
  
 -#ifdef HAVE_LIBCAPSTONE_SUPPORT
--static int open_capstone_handle(struct annotate_args *args, bool is_64bit, csh *handle)
--{
--	struct annotation_options *opt = args->options;
--	cs_mode mode = is_64bit ? CS_MODE_64 : CS_MODE_32;
--
--	/* TODO: support more architectures */
--	if (!arch__is(args->arch, "x86"))
--		return -1;
--
--	if (cs_open(CS_ARCH_X86, mode, handle) != CS_ERR_OK)
--		return -1;
--
--	if (!opt->disassembler_style ||
--	    !strcmp(opt->disassembler_style, "att"))
--		cs_option(*handle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
--
--	/*
--	 * Resolving address operands to symbols is implemented
--	 * on x86 by investigating instruction details.
--	 */
--	cs_option(*handle, CS_OPT_DETAIL, CS_OPT_ON);
--
--	return 0;
--}
--#endif
--
- #ifdef HAVE_LIBCAPSTONE_SUPPORT
- static void print_capstone_detail(cs_insn *insn, char *buf, size_t len,
+-static void print_capstone_detail(cs_insn *insn, char *buf, size_t len,
++static void print_capstone_detail(struct cs_insn *insn, char *buf, size_t len,
  				  struct annotate_args *args, u64 addr)
-@@ -309,6 +282,7 @@ int symbol__disassemble_capstone(const char *filename __maybe_unused,
- 	cs_insn *insn = NULL;
+ {
+ 	int i;
+@@ -153,7 +375,7 @@ static void print_capstone_detail(cs_insn *insn, char *buf, size_t len,
+ 		return;
+ 
+ 	for (i = 0; i < insn->detail->x86.op_count; i++) {
+-		cs_x86_op *op = &insn->detail->x86.operands[i];
++		struct cs_x86_op *op = &insn->detail->x86.operands[i];
+ 		u64 orig_addr;
+ 
+ 		if (op->type != X86_OP_MEM)
+@@ -194,9 +416,7 @@ static void print_capstone_detail(cs_insn *insn, char *buf, size_t len,
+ 		break;
+ 	}
+ }
+-#endif
+ 
+-#ifdef HAVE_LIBCAPSTONE_SUPPORT
+ struct find_file_offset_data {
+ 	u64 ip;
+ 	u64 offset;
+@@ -213,9 +433,7 @@ static int find_file_offset(u64 start, u64 len, u64 pgoff, void *arg)
+ 	}
+ 	return 0;
+ }
+-#endif
+ 
+-#ifdef HAVE_LIBCAPSTONE_SUPPORT
+ static u8 *
+ read_symbol(const char *filename, struct map *map, struct symbol *sym,
+ 	    u64 *len, bool *is_64bit)
+@@ -262,13 +480,11 @@ read_symbol(const char *filename, struct map *map, struct symbol *sym,
+ 	free(buf);
+ 	return NULL;
+ }
+-#endif
+ 
+ int symbol__disassemble_capstone(const char *filename __maybe_unused,
+ 				 struct symbol *sym __maybe_unused,
+ 				 struct annotate_args *args __maybe_unused)
+ {
+-#ifdef HAVE_LIBCAPSTONE_SUPPORT
+ 	struct annotation *notes = symbol__annotation(sym);
+ 	struct map *map = args->ms.map;
+ 	u64 start = map__rip_2objdump(map, sym->start);
+@@ -279,7 +495,7 @@ int symbol__disassemble_capstone(const char *filename __maybe_unused,
+ 	bool needs_cs_close = false;
+ 	u8 *buf = NULL;
+ 	csh handle;
+-	cs_insn *insn = NULL;
++	struct cs_insn *insn = NULL;
  	char disasm_buf[512];
  	struct disasm_line *dl;
-+	bool disassembler_style = false;
- 
- 	if (args->options->objdump_path)
- 		return -1;
-@@ -333,7 +307,11 @@ int symbol__disassemble_capstone(const char *filename __maybe_unused,
- 
- 	annotation_line__add(&dl->al, &notes->src->source);
- 
--	if (open_capstone_handle(args, is_64bit, &handle) < 0)
-+	if (!args->options->disassembler_style ||
-+	    !strcmp(args->options->disassembler_style, "att"))
-+		disassembler_style = true;
-+
-+	if (capstone_init(maps__machine(args->ms.maps), &handle, is_64bit, disassembler_style) < 0)
- 		goto err;
+ 	bool disassembler_style = false;
+@@ -316,7 +532,7 @@ int symbol__disassemble_capstone(const char *filename __maybe_unused,
  
  	needs_cs_close = true;
+ 
+-	free_count = count = cs_disasm(handle, buf, len, start, len, &insn);
++	free_count = count = perf_cs_disasm(handle, buf, len, start, len, &insn);
+ 	for (i = 0, offset = 0; i < count; i++) {
+ 		int printed;
+ 
+@@ -355,9 +571,9 @@ int symbol__disassemble_capstone(const char *filename __maybe_unused,
+ 
+ out:
+ 	if (needs_cs_close) {
+-		cs_close(&handle);
++		perf_cs_close(&handle);
+ 		if (free_count > 0)
+-			cs_free(insn, free_count);
++			perf_cs_free(insn, free_count);
+ 	}
+ 	free(buf);
+ 	return count < 0 ? count : 0;
+@@ -377,16 +593,12 @@ int symbol__disassemble_capstone(const char *filename __maybe_unused,
+ 	}
+ 	count = -1;
+ 	goto out;
+-#else
+-	return -1;
+-#endif
+ }
+ 
+ int symbol__disassemble_capstone_powerpc(const char *filename __maybe_unused,
+ 					 struct symbol *sym __maybe_unused,
+ 					 struct annotate_args *args __maybe_unused)
+ {
+-#ifdef HAVE_LIBCAPSTONE_SUPPORT
+ 	struct annotation *notes = symbol__annotation(sym);
+ 	struct map *map = args->ms.map;
+ 	struct dso *dso = map__dso(map);
+@@ -499,7 +711,7 @@ int symbol__disassemble_capstone_powerpc(const char *filename __maybe_unused,
+ 
+ out:
+ 	if (needs_cs_close)
+-		cs_close(&handle);
++		perf_cs_close(&handle);
+ 	free(buf);
+ 	return count < 0 ? count : 0;
+ 
+@@ -508,7 +720,4 @@ int symbol__disassemble_capstone_powerpc(const char *filename __maybe_unused,
+ 		close(fd);
+ 	count = -1;
+ 	goto out;
+-#else
+-	return -1;
+-#endif
+ }
 -- 
 2.48.1.262.g85cc9f2d1e-goog
 
