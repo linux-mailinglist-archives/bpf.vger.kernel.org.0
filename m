@@ -1,91 +1,160 @@
-Return-Path: <bpf+bounces-49420-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49421-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C0F3A18862
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 00:29:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B8A7A188E3
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 01:22:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC11E16A5A2
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2025 23:29:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B04A1620A5
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 00:22:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A1921F91C2;
-	Tue, 21 Jan 2025 23:29:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D73C718035;
+	Wed, 22 Jan 2025 00:22:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m6yz2ru+"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD2A11EEA3C;
-	Tue, 21 Jan 2025 23:29:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28DC912B71;
+	Wed, 22 Jan 2025 00:22:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737502179; cv=none; b=J0gRsHRzC0Drg4KALyMJdUM7GvFHOhB5SdIu/UbeFpxzLyhJw2bqu4sxDFZw2IiakOTpBl9srKqXnDtEPeuGstiVSbw6lzXCdyraeOff8EUnmkmoVvF/TKFSCxwQ2mmUHUOhoeiBN0zRT44HFnJCuDCEjTrahS62IoCDTUh3g/g=
+	t=1737505336; cv=none; b=mXRnw7MoJrKr0fVFK8Tk+gXkhybANZXgq/W1cRBBJEo4RNmDOBhcDw/eOa0LyCvM7tjGzX7lKpij/Mgzn7DBu+6owiyIVhnJyaIA1FNtIxWJltTTEyxxZSfp4Kak/LaTC5Bt7td98S5TKy9QhX5mAY1h1KZ+aj1EZ3wha6su2zM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737502179; c=relaxed/simple;
-	bh=a70oBIbk3dMa+YfyTeaI68sAJYTMH3i8jYtTuLjJZ6Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eFYWXYPV/DuQBODKiz0h5a5QM/odUIvQiKk0axv1jDCDURvVo7TodlO0eMl5OyBCdS+pMBL/pRNstuioykwVM5DJfeHnzIxtjEg1SiiDyh2hwk6o6eDLwMTifI0kxEp+ODlaLDbccJFGfRiwcDMPzFY4aR/oWwvBETB7F7maAqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E68EC4CEDF;
-	Tue, 21 Jan 2025 23:29:36 +0000 (UTC)
-Date: Tue, 21 Jan 2025 18:29:39 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Eyal Birger <eyal.birger@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa
- <olsajiri@gmail.com>, Kees Cook <kees@kernel.org>, luto@amacapital.net,
- wad@chromium.org, oleg@redhat.com, ldv@strace.io, mhiramat@kernel.org,
- andrii@kernel.org, alexei.starovoitov@gmail.com, cyphar@cyphar.com,
- songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
- peterz@infradead.org, tglx@linutronix.de, bp@alien8.de,
- daniel@iogearbox.net, ast@kernel.org, rafi@rbk.io,
- shmulik.ladkani@gmail.com, bpf@vger.kernel.org, linux-api@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, x86@kernel.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] seccomp: passthrough uretprobe systemcall without
- filtering
-Message-ID: <20250121182939.33d05470@gandalf.local.home>
-In-Reply-To: <CAHsH6GvcOjNh8VMpPs9CzyVSCOB+92zRj_3ZeDOd6APySWdm5Q@mail.gmail.com>
-References: <20250117005539.325887-1-eyal.birger@gmail.com>
-	<202501181212.4C515DA02@keescook>
-	<CAHsH6GuifA9nUzNR-eW5ZaXyhzebJOCjBSpfZCksoiyCuG=yYw@mail.gmail.com>
-	<8B2624AC-E739-4BBE-8725-010C2344F61C@kernel.org>
-	<CAHsH6GtpXMswVKytv7_JMGca=3wxKRUK4rZmBBxJPRh1WYdObg@mail.gmail.com>
-	<Z4-xeFH0Mgo3llga@krava>
-	<20250121111631.6e830edd@gandalf.local.home>
-	<Z4_Riahgmj-bMR8s@krava>
-	<CAEf4BzZv3s0NtrviQ1MCCwZMO-SqCsiQF-WXpG6_-p4u5GeA2A@mail.gmail.com>
-	<20250121174620.06a0c811@gandalf.local.home>
-	<CAHsH6GvcOjNh8VMpPs9CzyVSCOB+92zRj_3ZeDOd6APySWdm5Q@mail.gmail.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1737505336; c=relaxed/simple;
+	bh=/jGFli4cvz5GuKwl53vdKodQbbfB6lqGAT1IVg71WEg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t6xb0AlHxCL5QW3ZfQOtlZgaCvjSx4j93KZhBGBEhAJHETBXKdAIcvJYop+jbHLxobySvAcSG3DCX1u0+lEgTBrNVMRDoWLikVqRaCAA3D4QrK6DoANtVd/dwnXLXFSZPGY122OlRpXy7FI3bdTKrcqSZCi2Ol6UDzGD1Fys1Mw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m6yz2ru+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A0ECC4CEDF;
+	Wed, 22 Jan 2025 00:22:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1737505335;
+	bh=/jGFli4cvz5GuKwl53vdKodQbbfB6lqGAT1IVg71WEg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=m6yz2ru+LXXh5xzgW1nRGofBLoFG1mOtZGKi5a///oNnHCh2ZlX7+dcv8uCWMxNTP
+	 NYc7Ip5HhxveoM1UG1zbALPWHqlghrr9FWkgxzL4ynzknjr2qzRJNXR0bvmmp0LFhV
+	 2OSMqyc+t3WixyaNjJpsZ4FqrFQOpqBUkDbXqnD8oIRzHSRo6BI6S0PtYY51ka7mXT
+	 F/aNHCRlDP27nrL0iFxyIILAmTVs3KAxdOxLI4Oy09Y/BLpA3KwnyrjprYZYiv2vA6
+	 /XRCO70HAGc/N4UdSrMWqxSo9SxN0390mZcC3+duriCj1eGd6MeQlfVWwQxOpCa2cX
+	 9AeBV3eiLnmoQ==
+Date: Wed, 22 Jan 2025 01:22:12 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+	virtualization@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+	linux-riscv@lists.infradead.org, linux-perf-users@vger.kernel.org,
+	xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
+	linux-arch@vger.kernel.org, rcu@vger.kernel.org,
+	linux-hardening@vger.kernel.org, linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+	bcm-kernel-feedback-list@broadcom.com,
+	Juergen Gross <jgross@suse.com>,
+	Ajay Kaher <ajay.kaher@broadcom.com>,
+	Alexey Makhalov <alexey.amakhalov@broadcom.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	"Liang, Kan" <kan.liang@linux.intel.com>,
+	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Jason Baron <jbaron@akamai.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Clark Williams <williams@redhat.com>,
+	Yair Podemsky <ypodemsk@redhat.com>,
+	Tomas Glozar <tglozar@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Kees Cook <kees@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Hellwig <hch@infradead.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl <aliceryhl@google.com>,
+	"Mike Rapoport (Microsoft)" <rppt@kernel.org>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Rong Xu <xur@google.com>,
+	Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Yosry Ahmed <yosryahmed@google.com>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+	Jinghao Jia <jinghao7@illinois.edu>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: Re: [PATCH v4 22/30] context_tracking: Exit CT_STATE_IDLE upon
+ irq/nmi entry
+Message-ID: <Z5A6NPqVGoZ32YsN@pavilion.home>
+References: <20250114175143.81438-1-vschneid@redhat.com>
+ <20250114175143.81438-23-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250114175143.81438-23-vschneid@redhat.com>
 
-On Tue, 21 Jan 2025 15:13:52 -0800
-Eyal Birger <eyal.birger@gmail.com> wrote:
-
-> Isn't that the case already, or maybe I misunderstood what Jiri wrote [1]:
+Le Tue, Jan 14, 2025 at 06:51:35PM +0100, Valentin Schneider a écrit :
+> ct_nmi_{enter, exit}() only touches the RCU watching counter and doesn't
+> modify the actual CT state part context_tracking.state. This means that
+> upon receiving an IRQ when idle, the CT_STATE_IDLE->CT_STATE_KERNEL
+> transition only happens in ct_idle_exit().
 > 
-> > On Sun, Jan 19, 2025 at 2:44 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> > that's correct, uretprobe syscall is installed by kernel to special user
-> > memory map and it can be executed only from there and if process calls it
-> > from another place it receives sigill  
-> 
-> Eyal.
-> 
-> [1] https://lore.kernel.org/lkml/Z4zXlaEMPbiYYlQ8@krava/
+> One can note that ct_nmi_enter() can only ever be entered with the CT state
+> as either CT_STATE_KERNEL or CT_STATE_IDLE, as an IRQ/NMI happenning in the
+> CT_STATE_USER or CT_STATE_GUEST states will be routed down to ct_user_exit().
 
-Ah, he did. Thanks I missed that:
+Are you sure? An NMI can fire between guest_state_enter_irqoff() and
+__svm_vcpu_run(). And NMIs interrupting userspace don't call
+enter_from_user_mode(). In fact they don't call irqentry_enter_from_user_mode()
+like regular IRQs but irqentry_nmi_enter() instead. Well that's for archs
+implementing common entry code, I can't speak for the others.
 
-> that's correct, uretprobe syscall is installed by kernel to special user
-> memory map and it can be executed only from there and if process calls it
-> from another place it receives sigill
+Unifying the behaviour between user and idle such that the IRQs/NMIs exit the
+CT_STATE can be interesting but I fear this may not come for free. You would
+need to save the old state on IRQ/NMI entry and restore it on exit.
 
--- Steve
+Do we really need it?
+
+Thanks.
 
