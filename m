@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-49446-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49447-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35A19A18BEF
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 07:25:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4835AA18BF1
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 07:25:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CA303AC6FE
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 06:25:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C96916B3BB
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2025 06:25:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43A791C1F27;
-	Wed, 22 Jan 2025 06:24:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8965A1BD9CB;
+	Wed, 22 Jan 2025 06:24:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DT32ZcWM"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Lox9nzeU"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A639C1B424F
-	for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 06:24:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ECFD1BD4F1
+	for <bpf@vger.kernel.org>; Wed, 22 Jan 2025 06:24:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737527080; cv=none; b=UIAp3BtwU7z8o837DZq9seZvcBZ5U18k/vqf8FC8Bhq8XPpzABjlUK5YXh+wlImoL46oiQZGiR9RKlM/K7/FG4gtDUMGXKnMctr9g90qj8YDeXb+qCTE/ki+eBNBDnRbJCd6teNGTNiguTeBaKIhsKDM+AZkyRcr8C4BC20gNTk=
+	t=1737527090; cv=none; b=FrKa0Xh51qN8oM1abOYOVzsMjto0by3gvoQMYtmKKW2dBwpLDqOkeaDxYTI2EfA3734zvaDfoT+mHuIcAI7PPlH178sTPHWZSCh+bxyT4oU8RaswL6/JZsj1Rg8P2kbxaDWuoB5i2eF0r7iLpAzBPoF3zhyguMg9nyvoFJ9d2yw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737527080; c=relaxed/simple;
-	bh=zkchVUHmiy6FsViQcMXqgJK4h3ZnaivC3KMiQNyelg4=;
+	s=arc-20240116; t=1737527090; c=relaxed/simple;
+	bh=6Dnx/wnBwDBR9erRaIWVSMvw7if6PKKA/0Y+ez6I5JI=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=o7VUwChl8WasMtUuYdAorP5GG2mz6d0AThsfm3ZnEqkePDSuP9H3HiXRz13NRWU3Bg0yk776zanYMYmYguimIkvpWhdw6wN3vH86WuJGgQub7EcnmrbEOQHKwq+agN9Mjae2xR7pBVi4+cAZ9nxKrigVTvYt3g81gCmQcwh08WI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DT32ZcWM; arc=none smtp.client-ip=209.85.219.201
+	 To:Content-Type; b=tALZ7BNohiJO9xUlZcMG+iDW5YZTAhzG+tVahZs7fYrDqEJgcdcdScBd1OZRFzc/00nDC6SH7Atqd5LmoPK68EvVnIOZGJVJ+eApLur1rzvmsqKqwoq9cB9WtFMryu3V8v68SvVvyfHxRNnUtSjAzYLPRNSkc6I1eiJnsXq6UyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Lox9nzeU; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-e5799401f12so13942564276.0
-        for <bpf@vger.kernel.org>; Tue, 21 Jan 2025 22:24:38 -0800 (PST)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-e578b0d2afdso16992455276.3
+        for <bpf@vger.kernel.org>; Tue, 21 Jan 2025 22:24:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1737527078; x=1738131878; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1737527085; x=1738131885; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=fh49i/U4dxuuGJFb439c1+LAXnNwt18a++KYTwx6RAY=;
-        b=DT32ZcWMgxhC/9ueKZp8elE96HFZ3TJbXzAV1G6y/eCrVtb3YbCj6KjvXJRQ9XzKi8
-         7tJnN7eWXoSRG8BSUgXrFbrJSd9up3xZGbGraYSQOSxzOJVJjMfuP2ffQVztxgdYurhG
-         Kdj/4uXixhiaUhusY+30QGBOIwNthUciKMTkHg5vMDeKhWv8QxiEiVp0rNqOI/asb7Sl
-         waa6/ApqsEbsbiv3ef+K3NmREX3ZgB/CShDWKhTtSFcR7QjqL6Tw0C7GhWSfiV+xHCpm
-         +CH4m2ZLqLo7JCcVDy4ckDVHF0sQEJHs0DpkjtYkzC3bGIH6rs3aHVyUfebGvan8eW2V
-         yGeg==
+        bh=dzLcjr6O61jYzsZav0yweFrp3Yn/RqRQUqm43OH2Kc8=;
+        b=Lox9nzeUFaCfV7uk8hyDv4vvXCu18fZfu8fsuSqSD8Lc8E58KnehLfV8lSckZJop8J
+         zi6Y0P1Z2zIlt44+XYNvShIsL3WSjzYw/tr1BShJjc7cPxEQaw2RCLGbVWlp7zPoHex7
+         jaMfN7Fg4gFC+82hj0j5SEK2RnXF7reIxhmPRz8LuwMCDuHtA2+YqiK6mOEJxqFTJ7sB
+         gssoAf6DQvpJQ8selSBlx/Ql4qK/Sj1lOi66/u8t4aEYKODYafCMcCw/tP+ekaRX0le5
+         Md1pt8oWAOYaglIazvolT4XkCzlBo2XGbJU78wtlD4ZGy2wpiEk2lEr06gC5dutj06Pr
+         O0uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737527078; x=1738131878;
+        d=1e100.net; s=20230601; t=1737527085; x=1738131885;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fh49i/U4dxuuGJFb439c1+LAXnNwt18a++KYTwx6RAY=;
-        b=Cg0VHK5PR/ojHTCaXS9Uy7AepK6MxnlhvBgVQuMbbqR5l08EiY1I/Mt1izrcfF4QJ5
-         G3+rO1Hehr6Vr7xtT9JRFVf88hApYQ+oI1aIBU52eP1Po7qJ1bXqZosk9H6u5XU5zUFl
-         gv5QSzF5LO6hTvEXm3ioUY9mB5z2wAQ9dZ7qhXDyMXLhgWJRJn4DzEAsnCKbK67w6EIi
-         wOEaNFA0MwOnRgrgisQxEKo7wl76ZZCl7XUefpislrTZzN0F5YvHEcygsSou7Mza8dmB
-         yWQop2pWRICGRyWXgaRG66sbifzaaqLiKngKm9BwaQ87Wji51cTOrpXOuqj3PdnxYjd9
-         7lZA==
-X-Forwarded-Encrypted: i=1; AJvYcCWkg0Osn9pBsLlPC0JDcCzW3X+r/6zCRPmRQZwyOfk9jCUMLs2fo5dAtBs1BQRlGmwukkE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YysqppL7cYMWGEEsv4iA3B4pE1Z/CAix+Q7xt9MgorHDOyqRZtu
-	6OJX+206QDXm5O2IFMtaWxGncVt0Fr0sLquXFaT39nQDjKIyLPyMzrpD2qrW/vHPnPqmWkd0chs
-	npsCtqQ==
-X-Google-Smtp-Source: AGHT+IGBlrKCAF4YXeXIDrMSLK6zjNAH0wIy/uJds3uMRL/gMfUbBtYaIuAcecVR48y7sliHx0Dh7zO+ZTy5
+        bh=dzLcjr6O61jYzsZav0yweFrp3Yn/RqRQUqm43OH2Kc8=;
+        b=hY5LU99ziZuKN1LALVSw0/mV/okxiPoUfQBwbjrAX1uxT+gPVwy+2kLoMcCXxSG8UZ
+         7zzeCLJTXCbU5gF3A/2GpIBf4wlVTpiJTZf2m13mfYEGARZ24Np1j/PDDilJvhXEexb8
+         8BMCbqLiEV8WrCyiLSjqYNQHgFQ7F1Rdd+JCuQgwIDOBnGNkWekSTgcXIvYZ+5uCyCtS
+         rVgRZZmRzc1A18TdIzJdXDF74JtPbRm8fSnLmRkn2kkyXb7u67bWu5vdi+Gf15hG8O/+
+         v9xT6wzGbYhwGiwsNvLwfvCqyPQLi58l+T22jLnW4yrTtSSFtHi8EsJtxgZktnDW4kA8
+         IVlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWHmH4FhrgeNMgLNlJwVw/eAbRUnaVGbKGfonWYfeYqK0GroQQtMNYEdyMZDmnDi0BCzRg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKG04z+z38d+xTuYDEaxc3GOD3ljsrbnfREABd3vk4hKPgt5cX
+	xtVRqhmWa+qE+QTI44AqtbWb3bx8ShPuDXycJpJYDGJfY6wvwzndJZ9O6yW1z5cT2IXVG1h7yqM
+	pRi8obQ==
+X-Google-Smtp-Source: AGHT+IG70iVzkJaei+JOv9VI9WG4JUemPvM+BnKbB85PIFrCDBONxI/Gv0xIkOsOSIVIENT3hHxsVR7pvwfu
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2c5:11:807b:be79:d5c3:ee5c])
- (user=irogers job=sendgmr) by 2002:a25:acda:0:b0:e57:e61b:8b5d with SMTP id
- 3f1490d57ef6-e57e61b8ca3mr24401276.5.1737527077833; Tue, 21 Jan 2025 22:24:37
+ (user=irogers job=sendgmr) by 2002:a25:aab2:0:b0:e39:8506:c03d with SMTP id
+ 3f1490d57ef6-e57b138d8demr38308276.9.1737527085349; Tue, 21 Jan 2025 22:24:45
  -0800 (PST)
-Date: Tue, 21 Jan 2025 22:23:21 -0800
+Date: Tue, 21 Jan 2025 22:23:22 -0800
 In-Reply-To: <20250122062332.577009-1-irogers@google.com>
-Message-Id: <20250122062332.577009-7-irogers@google.com>
+Message-Id: <20250122062332.577009-8-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,7 +75,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250122062332.577009-1-irogers@google.com>
 X-Mailer: git-send-email 2.48.0.rc2.279.g1de40edade-goog
-Subject: [PATCH v2 06/17] perf capstone: Support for dlopen-ing libcapstone.so
+Subject: [PATCH v2 07/17] perf llvm: Support for dlopen-ing libLLVM.so
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -95,470 +95,732 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	Song Liu <song@kernel.org>, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-If perf wasn't built against libcapstone, no HAVE_LIBCAPSTONE_SUPPORT,
-support dlopen-ing libcapstone.so and then calling the necessary
-functions by looking them up using dlsym. Reverse engineer the types
-in the API using pahole, adding only what's used in the perf code or
-necessary for the sake of struct size and alignment.
+If perf wasn't built against libLLVM, no HAVE_LIBLLVM_SUPPORT, support
+dlopen-ing libLLVM.so and then calling the necessary functions by
+looking them up using dlsym. As the C++ code in llvm-c-helpers used
+for addr2line is problematic to call using dlsym, build that C++ code
+against libLLVM.so as a separate shared object, and support dynamic
+loading of it. This build option is enabled with LIBLLVM_DYNAMIC=1
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/capstone.c | 287 ++++++++++++++++++++++++++++++++-----
- 1 file changed, 248 insertions(+), 39 deletions(-)
+ tools/perf/Makefile.config         |  13 ++
+ tools/perf/Makefile.perf           |  23 ++-
+ tools/perf/tests/make              |   2 +
+ tools/perf/util/Build              |   2 +-
+ tools/perf/util/llvm-c-helpers.cpp | 113 +++++++++++-
+ tools/perf/util/llvm.c             | 271 +++++++++++++++++++++++++----
+ 6 files changed, 386 insertions(+), 38 deletions(-)
 
-diff --git a/tools/perf/util/capstone.c b/tools/perf/util/capstone.c
-index c9845e4d8781..8d65c7a55a8b 100644
---- a/tools/perf/util/capstone.c
-+++ b/tools/perf/util/capstone.c
-@@ -11,19 +11,249 @@
- #include "print_insn.h"
- #include "symbol.h"
- #include "thread.h"
-+#include <dlfcn.h>
- #include <fcntl.h>
-+#include <inttypes.h>
- #include <string.h>
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index cd773fbbc176..5c2814acc5d5 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -963,6 +963,19 @@ ifndef NO_LIBLLVM
+     NO_LIBLLVM := 1
+   endif
+ endif
++ifdef LIBLLVM_DYNAMIC
++  ifndef NO_LIBLLVM
++    $(error LIBLLVM_DYNAMIC should be used with NO_LIBLLVM)
++  endif
++  $(call feature_check,llvm-perf)
++  ifneq ($(feature-llvm-perf), 1)
++    $(warning LIBLLVM_DYNAMIC requires libLLVM.so which wasn't feature detected)
++  endif
++  CFLAGS += -DHAVE_LIBLLVM_DYNAMIC
++  CFLAGS += $(shell $(LLVM_CONFIG) --cflags)
++  CXXFLAGS += -DHAVE_LIBLLVM_DYNAMIC
++  CXXFLAGS += $(shell $(LLVM_CONFIG) --cxxflags)
++endif
  
- #ifdef HAVE_LIBCAPSTONE_SUPPORT
- #include <capstone/capstone.h>
-+#else
-+typedef size_t csh;
-+enum cs_arch {
-+	CS_ARCH_ARM = 0,
-+	CS_ARCH_ARM64 = 1,
-+	CS_ARCH_X86 = 3,
-+	CS_ARCH_SYSZ = 6,
-+};
-+enum cs_mode {
-+	CS_MODE_ARM = 0,
-+	CS_MODE_32 = 1 << 2,
-+	CS_MODE_64 = 1 << 3,
-+	CS_MODE_V8 = 1 << 6,
-+	CS_MODE_BIG_ENDIAN = 1 << 31,
-+};
-+enum cs_opt_type {
-+	CS_OPT_SYNTAX = 1,
-+	CS_OPT_DETAIL = 2,
-+};
-+enum cs_opt_value {
-+	CS_OPT_SYNTAX_ATT = 2,
-+	CS_OPT_ON = 3,
-+};
-+enum cs_err {
-+	CS_ERR_OK = 0,
-+	CS_ERR_HANDLE = 3,
-+};
-+enum x86_op_type {
-+	X86_OP_IMM = 2,
-+	X86_OP_MEM = 3,
-+};
-+enum x86_reg {
-+	X86_REG_RIP = 41,
-+};
-+typedef int32_t x86_avx_bcast;
-+struct x86_op_mem {
-+	enum x86_reg segment;
-+	enum x86_reg base;
-+	enum x86_reg index;
-+	int scale;
-+	int64_t disp;
-+};
+ ifndef NO_DEMANGLE
+   $(call feature_check,cxa-demangle)
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 55d6ce9ea52f..eae77f6af59d 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -456,6 +456,12 @@ ifndef NO_JVMTI
+ PROGRAMS += $(OUTPUT)$(LIBJVMTI)
+ endif
+ 
++LIBPERF_LLVM = libperf-llvm.so
 +
-+struct cs_x86_op {
-+	enum x86_op_type type;
-+	union {
-+		enum x86_reg  reg;
-+		int64_t imm;
-+		struct x86_op_mem mem;
-+	};
-+	uint8_t size;
-+	uint8_t access;
-+	x86_avx_bcast avx_bcast;
-+	bool avx_zero_opmask;
-+};
-+struct cs_x86_encoding {
-+	uint8_t modrm_offset;
-+	uint8_t disp_offset;
-+	uint8_t disp_size;
-+	uint8_t imm_offset;
-+	uint8_t imm_size;
-+};
-+typedef int32_t  x86_xop_cc;
-+typedef int32_t  x86_sse_cc;
-+typedef int32_t  x86_avx_cc;
-+typedef int32_t  x86_avx_rm;
-+struct cs_x86 {
-+	uint8_t prefix[4];
-+	uint8_t opcode[4];
-+	uint8_t rex;
-+	uint8_t addr_size;
-+	uint8_t modrm;
-+	uint8_t sib;
-+	int64_t disp;
-+	enum x86_reg sib_index;
-+	int8_t sib_scale;
-+	enum x86_reg sib_base;
-+	x86_xop_cc xop_cc;
-+	x86_sse_cc sse_cc;
-+	x86_avx_cc avx_cc;
-+	bool avx_sae;
-+	x86_avx_rm avx_rm;
-+	union {
-+		uint64_t eflags;
-+		uint64_t fpu_flags;
-+	};
-+	uint8_t op_count;
-+	struct cs_x86_op operands[8];
-+	struct cs_x86_encoding encoding;
-+};
-+struct cs_detail {
-+	uint16_t regs_read[12];
-+	uint8_t regs_read_count;
-+	uint16_t regs_write[20];
-+	uint8_t regs_write_count;
-+	uint8_t groups[8];
-+	uint8_t groups_count;
++ifdef LIBLLVM_DYNAMIC
++PROGRAMS += $(OUTPUT)$(LIBPERF_LLVM)
++endif
 +
-+	union {
-+		struct cs_x86 x86;
-+	};
-+};
-+struct cs_insn {
-+	unsigned int id;
-+	uint64_t address;
-+	uint16_t size;
-+	uint8_t bytes[16];
-+	char mnemonic[32];
-+	char op_str[160];
-+	struct cs_detail *detail;
-+};
+ DLFILTERS := dlfilter-test-api-v0.so dlfilter-test-api-v2.so dlfilter-show-cycles.so
+ DLFILTERS := $(patsubst %,$(OUTPUT)dlfilters/%,$(DLFILTERS))
+ 
+@@ -1019,6 +1025,16 @@ $(LIBSYMBOL)-clean:
+ 	$(call QUIET_CLEAN, libsymbol)
+ 	$(Q)$(RM) -r -- $(LIBSYMBOL_OUTPUT)
+ 
++ifdef LIBLLVM_DYNAMIC
++LIBPERF_LLVM_CXXFLAGS := $(call filter-out,-DHAVE_LIBLLVM_DYNAMIC,$(CXXFLAGS)) -DHAVE_LIBLLVM_SUPPORT
++LIBPERF_LLVM_LIBS = -L$(shell $(LLVM_CONFIG) --libdir) $(LIBLLVM) -lstdc++
++
++$(OUTPUT)$(LIBPERF_LLVM): util/llvm-c-helpers.cpp
++	$(QUIET_LINK)$(CXX) $(LIBPERF_LLVM_CXXFLAGS) $(LIBPERF_LLVM_LIBS) -shared -o $@ $<
++
++$(OUTPUT)perf: $(OUTPUT)$(LIBPERF_LLVM)
++endif
++
+ help:
+ 	@echo 'Perf make targets:'
+ 	@echo '  doc		- make *all* documentation (see below)'
+@@ -1120,6 +1136,11 @@ ifndef NO_JVMTI
+ 	$(call QUIET_INSTALL, $(LIBJVMTI)) \
+ 		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(libdir_SQ)'; \
+ 		$(INSTALL) $(OUTPUT)$(LIBJVMTI) '$(DESTDIR_SQ)$(libdir_SQ)';
++endif
++ifdef LIBLLVM_DYNAMIC
++	$(call QUIET_INSTALL, $(LIBPERF_LLVM)) \
++		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(libdir_SQ)'; \
++		$(INSTALL) $(OUTPUT)$(LIBPERF_LLVM) '$(DESTDIR_SQ)$(libdir_SQ)';
+ endif
+ 	$(call QUIET_INSTALL, libexec) \
+ 		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(perfexec_instdir_SQ)'
+@@ -1301,7 +1322,7 @@ clean:: $(LIBAPI)-clean $(LIBBPF)-clean $(LIBSUBCMD)-clean $(LIBSYMBOL)-clean $(
+ 		-name '\.*.cmd' -delete -o -name '\.*.d' -delete -o -name '*.shellcheck_log' -delete
+ 	$(Q)$(RM) $(OUTPUT).config-detected
+ 	$(call QUIET_CLEAN, core-progs) $(RM) $(ALL_PROGRAMS) perf perf-read-vdso32 \
+-		perf-read-vdsox32 $(OUTPUT)$(LIBJVMTI).so
++		perf-read-vdsox32 $(OUTPUT)$(LIBJVMTI) $(OUTPUT)$(LIBPERF_LLVM)
+ 	$(call QUIET_CLEAN, core-gen)   $(RM)  *.spec *.pyc *.pyo */*.pyc */*.pyo \
+ 		$(OUTPUT)common-cmds.h TAGS tags cscope* $(OUTPUT)PERF-VERSION-FILE \
+ 		$(OUTPUT)FEATURE-DUMP $(OUTPUT)util/*-bison* $(OUTPUT)util/*-flex* \
+diff --git a/tools/perf/tests/make b/tools/perf/tests/make
+index 0ee94caf9ec1..44d76eacce49 100644
+--- a/tools/perf/tests/make
++++ b/tools/perf/tests/make
+@@ -93,6 +93,7 @@ make_libbpf_dynamic := LIBBPF_DYNAMIC=1
+ make_no_libbpf_DEBUG := NO_LIBBPF=1 DEBUG=1
+ make_no_libcrypto   := NO_LIBCRYPTO=1
+ make_no_libllvm     := NO_LIBLLVM=1
++make_libllvm_dynamic := NO_LIBLLVM=1 LIBLLVM_DYNAMIC=1
+ make_with_babeltrace:= LIBBABELTRACE=1
+ make_with_coresight := CORESIGHT=1
+ make_no_sdt	    := NO_SDT=1
+@@ -162,6 +163,7 @@ run += make_no_libbpf
+ run += make_no_libbpf_DEBUG
+ run += make_no_libcrypto
+ run += make_no_libllvm
++run += make_libllvm_dynamic
+ run += make_no_sdt
+ run += make_no_syscall_tbl
+ run += make_with_babeltrace
+diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+index 6fe0b5882c97..eb00c599e179 100644
+--- a/tools/perf/util/Build
++++ b/tools/perf/util/Build
+@@ -27,6 +27,7 @@ perf-util-y += find_bit.o
+ perf-util-y += get_current_dir_name.o
+ perf-util-y += levenshtein.o
+ perf-util-y += llvm.o
++perf-util-y += llvm-c-helpers.o
+ perf-util-y += mmap.o
+ perf-util-y += memswap.o
+ perf-util-y += parse-events.o
+@@ -239,7 +240,6 @@ perf-util-$(CONFIG_CXX_DEMANGLE) += demangle-cxx.o
+ perf-util-y += demangle-ocaml.o
+ perf-util-y += demangle-java.o
+ perf-util-y += demangle-rust.o
+-perf-util-$(CONFIG_LIBLLVM) += llvm-c-helpers.o
+ 
+ ifdef CONFIG_JITDUMP
+ perf-util-$(CONFIG_LIBELF) += jitdump.o
+diff --git a/tools/perf/util/llvm-c-helpers.cpp b/tools/perf/util/llvm-c-helpers.cpp
+index 004081bd12c9..5a6f76e6b705 100644
+--- a/tools/perf/util/llvm-c-helpers.cpp
++++ b/tools/perf/util/llvm-c-helpers.cpp
+@@ -5,17 +5,23 @@
+  * macros (e.g. noinline) that conflict with compiler builtins used
+  * by LLVM.
+  */
++#ifdef HAVE_LIBLLVM_SUPPORT
+ #pragma GCC diagnostic push
+ #pragma GCC diagnostic ignored "-Wunused-parameter"  /* Needed for LLVM <= 15 */
+ #include <llvm/DebugInfo/Symbolize/Symbolize.h>
+ #include <llvm/Support/TargetSelect.h>
+ #pragma GCC diagnostic pop
++#endif
+ 
++#if !defined(HAVE_LIBLLVM_SUPPORT) || defined(HAVE_LIBLLVM_DYNAMIC)
++#include <dlfcn.h>
++#endif
+ #include <inttypes.h>
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <linux/compiler.h>
+ extern "C" {
++#include "debug.h"
+ #include <linux/zalloc.h>
+ }
+ #include "llvm-c-helpers.h"
+@@ -23,14 +29,33 @@ extern "C" {
+ extern "C"
+ char *dso__demangle_sym(struct dso *dso, int kmodule, const char *elf_name);
+ 
++#ifdef HAVE_LIBLLVM_SUPPORT
+ using namespace llvm;
+ using llvm::symbolize::LLVMSymbolizer;
 +#endif
 +
-+#ifndef HAVE_LIBCAPSTONE_SUPPORT
-+static void *perf_cs_dll_handle(void)
++#if !defined(HAVE_LIBLLVM_SUPPORT) && defined(HAVE_LIBLLVM_DYNAMIC)
++static void *perf_llvm_c_helpers_dll_handle(void)
 +{
 +	static bool dll_handle_init;
 +	static void *dll_handle;
 +
 +	if (!dll_handle_init) {
 +		dll_handle_init = true;
-+		dll_handle = dlopen("libcapstone.so", RTLD_LAZY);
++		dll_handle = dlopen("libperf-llvm.so", RTLD_LAZY);
 +		if (!dll_handle)
-+			pr_debug("dlopen failed for libcapstone.so\n");
++			pr_debug("dlopen failed for libperf-llvm.so\n");
++	}
++	return dll_handle;
++}
++#endif
+ 
+ /*
+  * Allocate a static LLVMSymbolizer, which will live to the end of the program.
+  * Unlike the bfd paths, LLVMSymbolizer has its own cache, so we do not need
+  * to store anything in the dso struct.
+  */
++#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+ static LLVMSymbolizer *get_symbolizer()
+ {
+ 	static LLVMSymbolizer *instance = nullptr;
+@@ -49,8 +74,10 @@ static LLVMSymbolizer *get_symbolizer()
+ 	}
+ 	return instance;
+ }
++#endif
+ 
+ /* Returns 0 on error, 1 on success. */
++#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+ static int extract_file_and_line(const DILineInfo &line_info, char **file,
+ 				 unsigned int *line)
+ {
+@@ -69,13 +96,15 @@ static int extract_file_and_line(const DILineInfo &line_info, char **file,
+ 		*line = line_info.Line;
+ 	return 1;
+ }
++#endif
+ 
+ extern "C"
+-int llvm_addr2line(const char *dso_name, u64 addr,
+-		   char **file, unsigned int *line,
+-		   bool unwind_inlines,
+-		   llvm_a2l_frame **inline_frames)
++int llvm_addr2line(const char *dso_name __maybe_unused, u64 addr __maybe_unused,
++		   char **file __maybe_unused, unsigned int *line __maybe_unused,
++		   bool unwind_inlines __maybe_unused,
++		   llvm_a2l_frame **inline_frames __maybe_unused)
+ {
++#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+ 	LLVMSymbolizer *symbolizer = get_symbolizer();
+ 	object::SectionedAddress sectioned_addr = {
+ 		addr,
+@@ -135,8 +164,33 @@ int llvm_addr2line(const char *dso_name, u64 addr,
+ 			return 0;
+ 		return extract_file_and_line(*res_or_err, file, line);
+ 	}
++#elif defined(HAVE_LIBLLVM_DYNAMIC)
++	static bool fn_init;
++	static int (*fn)(const char *dso_name, u64 addr,
++			 char **file, unsigned int *line,
++			 bool unwind_inlines,
++			 llvm_a2l_frame **inline_frames);
++
++	if (!fn_init) {
++		void * handle = perf_llvm_c_helpers_dll_handle();
++
++		if (!handle)
++			return 0;
++
++		fn = reinterpret_cast<decltype(fn)>(dlsym(handle, "llvm_addr2line"));
++		if (!fn)
++			pr_debug("dlsym failed for llvm_addr2line\n");
++		fn_init = true;
++	}
++	if (!fn)
++		return 0;
++	return fn(dso_name, addr, file, line, unwind_inlines, inline_frames);
++#else
++	return 0;
++#endif
+ }
+ 
++#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+ static char *
+ make_symbol_relative_string(struct dso *dso, const char *sym_name,
+ 			    u64 addr, u64 base_addr)
+@@ -158,10 +212,13 @@ make_symbol_relative_string(struct dso *dso, const char *sym_name,
+ 			return strdup(sym_name);
+ 	}
+ }
++#endif
+ 
+ extern "C"
+-char *llvm_name_for_code(struct dso *dso, const char *dso_name, u64 addr)
++char *llvm_name_for_code(struct dso *dso __maybe_unused, const char *dso_name __maybe_unused,
++			 u64 addr __maybe_unused)
+ {
++#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+ 	LLVMSymbolizer *symbolizer = get_symbolizer();
+ 	object::SectionedAddress sectioned_addr = {
+ 		addr,
+@@ -175,11 +232,34 @@ char *llvm_name_for_code(struct dso *dso, const char *dso_name, u64 addr)
+ 	return make_symbol_relative_string(
+ 		dso, res_or_err->FunctionName.c_str(),
+ 		addr, res_or_err->StartAddress ? *res_or_err->StartAddress : 0);
++#elif defined(HAVE_LIBLLVM_DYNAMIC)
++	static bool fn_init;
++	static char *(*fn)(struct dso *dso, const char *dso_name, u64 addr);
++
++	if (!fn_init) {
++		void * handle = perf_llvm_c_helpers_dll_handle();
++
++		if (!handle)
++			return NULL;
++
++		fn = reinterpret_cast<decltype(fn)>(dlsym(handle, "llvm_name_for_code"));
++		if (!fn)
++			pr_debug("dlsym failed for llvm_name_for_code\n");
++		fn_init = true;
++	}
++	if (!fn)
++		return NULL;
++	return fn(dso, dso_name, addr);
++#else
++	return 0;
++#endif
+ }
+ 
+ extern "C"
+-char *llvm_name_for_data(struct dso *dso, const char *dso_name, u64 addr)
++char *llvm_name_for_data(struct dso *dso __maybe_unused, const char *dso_name __maybe_unused,
++			 u64 addr __maybe_unused)
+ {
++#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+ 	LLVMSymbolizer *symbolizer = get_symbolizer();
+ 	object::SectionedAddress sectioned_addr = {
+ 		addr,
+@@ -193,4 +273,25 @@ char *llvm_name_for_data(struct dso *dso, const char *dso_name, u64 addr)
+ 	return make_symbol_relative_string(
+ 		dso, res_or_err->Name.c_str(),
+ 		addr, res_or_err->Start);
++#elif defined(HAVE_LIBLLVM_DYNAMIC)
++	static bool fn_init;
++	static char *(*fn)(struct dso *dso, const char *dso_name, u64 addr);
++
++	if (!fn_init) {
++		void * handle = perf_llvm_c_helpers_dll_handle();
++
++		if (!handle)
++			return NULL;
++
++		fn = reinterpret_cast<decltype(fn)>(dlsym(handle, "llvm_name_for_data"));
++		if (!fn)
++			pr_debug("dlsym failed for llvm_name_for_data\n");
++		fn_init = true;
++	}
++	if (!fn)
++		return NULL;
++	return fn(dso, dso_name, addr);
++#else
++	return 0;
++#endif
+ }
+diff --git a/tools/perf/util/llvm.c b/tools/perf/util/llvm.c
+index ddc737194692..f6a8943b7c9d 100644
+--- a/tools/perf/util/llvm.c
++++ b/tools/perf/util/llvm.c
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include "llvm.h"
++#include "llvm-c-helpers.h"
+ #include "annotate.h"
+ #include "debug.h"
+ #include "dso.h"
+@@ -7,17 +8,243 @@
+ #include "namespaces.h"
+ #include "srcline.h"
+ #include "symbol.h"
++#include <dlfcn.h>
+ #include <fcntl.h>
++#include <inttypes.h>
+ #include <unistd.h>
+ #include <linux/zalloc.h>
+ 
+-#ifdef HAVE_LIBLLVM_SUPPORT
+-#include "llvm-c-helpers.h"
++#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+ #include <llvm-c/Disassembler.h>
+ #include <llvm-c/Target.h>
++#else
++typedef void *LLVMDisasmContextRef;
++typedef int (*LLVMOpInfoCallback)(void *dis_info, uint64_t pc, uint64_t offset,
++				  uint64_t op_size, uint64_t inst_size,
++				  int tag_type, void *tag_buf);
++typedef const char *(*LLVMSymbolLookupCallback)(void *dis_info,
++						uint64_t reference_value,
++						uint64_t *reference_type,
++						uint64_t reference_pc,
++						const char **reference_name);
++#define LLVMDisassembler_ReferenceType_InOut_None 0
++#define LLVMDisassembler_ReferenceType_In_Branch 1
++#define LLVMDisassembler_ReferenceType_In_PCrel_Load 2
++#define LLVMDisassembler_Option_PrintImmHex 2
++#define LLVMDisassembler_Option_AsmPrinterVariant 4
++const char *llvm_targets[] = {
++	"AMDGPU",
++	"ARM",
++	"AVR",
++	"BPF",
++	"Hexagon",
++	"Lanai",
++	"LoongArch",
++	"Mips",
++	"MSP430",
++	"NVPTX",
++	"PowerPC",
++	"RISCV",
++	"Sparc",
++	"SystemZ",
++	"VE",
++	"WebAssembly",
++	"X86",
++	"XCore",
++	"M68k",
++	"Xtensa",
++};
++#endif
++
++#if !defined(HAVE_LIBLLVM_SUPPORT) || defined(HAVE_LIBLLVM_DYNAMIC)
++static void *perf_llvm_dll_handle(void)
++{
++	static bool dll_handle_init;
++	static void *dll_handle;
++
++	if (!dll_handle_init) {
++		dll_handle_init = true;
++		dll_handle = dlopen("libLLVM.so", RTLD_LAZY);
++		if (!dll_handle)
++			pr_debug("dlopen failed for libLLVM.so\n");
 +	}
 +	return dll_handle;
 +}
 +#endif
 +
-+static enum cs_err perf_cs_open(enum cs_arch arch, enum cs_mode mode, csh *handle)
++#if !defined(HAVE_LIBLLVM_SUPPORT) || defined(HAVE_LIBLLVM_DYNAMIC)
++static void *perf_llvm_dll_fun(const char *fmt, const char *target)
 +{
-+#ifdef HAVE_LIBCAPSTONE_SUPPORT
-+	return cs_open(arch, mode, handle);
-+#else
-+	static bool fn_init;
-+	static enum cs_err (*fn)(enum cs_arch arch, enum cs_mode mode, csh *handle);
++	char buf[128];
++	void *fn;
 +
-+	if (!fn_init) {
-+		fn = dlsym(perf_cs_dll_handle(), "cs_open");
-+		if (!fn)
-+			pr_debug("dlsym failed for cs_open\n");
-+		fn_init = true;
-+	}
++	snprintf(buf, sizeof(buf), fmt, target);
++	fn = dlsym(perf_llvm_dll_handle(), buf);
 +	if (!fn)
-+		return CS_ERR_HANDLE;
-+	return fn(arch, mode, handle);
++		pr_debug("dlsym failed for %s\n", buf);
++
++	return fn;
++}
++#endif
++
++static void perf_LLVMInitializeAllTargetInfos(void)
++{
++#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
++	LLVMInitializeAllTargetInfos();
++#else
++	/* LLVMInitializeAllTargetInfos is a header file function not available as a symbol. */
++	static bool done_init;
++
++	if (done_init)
++		return;
++
++	for (size_t i = 0; i < ARRAY_SIZE(llvm_targets); i++) {
++		void (*fn)(void) = perf_llvm_dll_fun("LLVMInitialize%sTargetInfo",
++						     llvm_targets[i]);
++
++		if (!fn)
++			continue;
++		fn();
++	}
++	done_init = true;
 +#endif
 +}
 +
-+static enum cs_err perf_cs_option(csh handle, enum cs_opt_type type, size_t value)
++static void perf_LLVMInitializeAllTargetMCs(void)
 +{
-+#ifdef HAVE_LIBCAPSTONE_SUPPORT
-+	return cs_option(handle, type, value);
++#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
++	LLVMInitializeAllTargetMCs();
 +#else
-+	static bool fn_init;
-+	static enum cs_err (*fn)(csh handle, enum cs_opt_type type, size_t value);
++	/* LLVMInitializeAllTargetMCs is a header file function not available as a symbol. */
++	static bool done_init;
 +
-+	if (!fn_init) {
-+		fn = dlsym(perf_cs_dll_handle(), "cs_option");
++	if (done_init)
++		return;
++
++	for (size_t i = 0; i < ARRAY_SIZE(llvm_targets); i++) {
++		void (*fn)(void) = perf_llvm_dll_fun("LLVMInitialize%sTargetMC",
++						     llvm_targets[i]);
++
 +		if (!fn)
-+			pr_debug("dlsym failed for cs_option\n");
-+		fn_init = true;
++			continue;
++		fn();
 +	}
-+	if (!fn)
-+		return CS_ERR_HANDLE;
-+	return fn(handle, type, value);
++	done_init = true;
 +#endif
 +}
 +
-+static size_t perf_cs_disasm(csh handle, const uint8_t *code, size_t code_size,
-+			uint64_t address, size_t count, struct cs_insn **insn)
++static void perf_LLVMInitializeAllDisassemblers(void)
 +{
-+#ifdef HAVE_LIBCAPSTONE_SUPPORT
-+	return cs_disasm(handle, code, code_size, address, count, insn);
++#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
++	LLVMInitializeAllDisassemblers();
++#else
++	/* LLVMInitializeAllDisassemblers is a header file function not available as a symbol. */
++	static bool done_init;
++
++	if (done_init)
++		return;
++
++	for (size_t i = 0; i < ARRAY_SIZE(llvm_targets); i++) {
++		void (*fn)(void) = perf_llvm_dll_fun("LLVMInitialize%sDisassembler",
++						     llvm_targets[i]);
++
++		if (!fn)
++			continue;
++		fn();
++	}
++	done_init = true;
++#endif
++}
++
++static LLVMDisasmContextRef perf_LLVMCreateDisasm(const char *triple_name, void *dis_info,
++						int tag_type, LLVMOpInfoCallback get_op_info,
++						LLVMSymbolLookupCallback symbol_lookup)
++{
++#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
++	return LLVMCreateDisasm(triple_name, dis_info, tag_type, get_op_info, symbol_lookup);
 +#else
 +	static bool fn_init;
-+	static enum cs_err (*fn)(csh handle, const uint8_t *code, size_t code_size,
-+				 uint64_t address, size_t count, struct cs_insn **insn);
++	static LLVMDisasmContextRef (*fn)(const char *triple_name, void *dis_info,
++					int tag_type, LLVMOpInfoCallback get_op_info,
++					LLVMSymbolLookupCallback symbol_lookup);
 +
 +	if (!fn_init) {
-+		fn = dlsym(perf_cs_dll_handle(), "cs_disasm");
++		fn = dlsym(perf_llvm_dll_handle(), "LLVMCreateDisasm");
 +		if (!fn)
-+			pr_debug("dlsym failed for cs_disasm\n");
++			pr_debug("dlsym failed for LLVMCreateDisasm\n");
 +		fn_init = true;
 +	}
 +	if (!fn)
-+		return CS_ERR_HANDLE;
-+	return fn(handle, code, code_size, address, count, insn);
- #endif
++		return NULL;
++	return fn(triple_name, dis_info, tag_type, get_op_info, symbol_lookup);
++#endif
 +}
- 
-+static void perf_cs_free(struct cs_insn *insn, size_t count)
++
++static int perf_LLVMSetDisasmOptions(LLVMDisasmContextRef context, uint64_t options)
 +{
- #ifdef HAVE_LIBCAPSTONE_SUPPORT
-+	cs_free(insn, count);
++#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
++	return LLVMSetDisasmOptions(context, options);
 +#else
 +	static bool fn_init;
-+	static void (*fn)(struct cs_insn *insn, size_t count);
++	static int (*fn)(LLVMDisasmContextRef context, uint64_t options);
 +
 +	if (!fn_init) {
-+		fn = dlsym(perf_cs_dll_handle(), "cs_free");
++		fn = dlsym(perf_llvm_dll_handle(), "LLVMSetDisasmOptions");
 +		if (!fn)
-+			pr_debug("dlsym failed for cs_free\n");
++			pr_debug("dlsym failed for LLVMSetDisasmOptions\n");
++		fn_init = true;
++	}
++	if (!fn)
++		return 0;
++	return fn(context, options);
++#endif
++}
++
++static size_t perf_LLVMDisasmInstruction(LLVMDisasmContextRef context, uint8_t *bytes,
++					uint64_t bytes_size, uint64_t pc,
++					char *out_string, size_t out_string_size)
++{
++#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
++	return LLVMDisasmInstruction(context, bytes, bytes_size, pc, out_string, out_string_size);
++#else
++	static bool fn_init;
++	static int (*fn)(LLVMDisasmContextRef context, uint8_t *bytes,
++			uint64_t bytes_size, uint64_t pc,
++			char *out_string, size_t out_string_size);
++
++	if (!fn_init) {
++		fn = dlsym(perf_llvm_dll_handle(), "LLVMDisasmInstruction");
++		if (!fn)
++			pr_debug("dlsym failed for LLVMDisasmInstruction\n");
++		fn_init = true;
++	}
++	if (!fn)
++		return 0;
++	return fn(context, bytes, bytes_size, pc, out_string, out_string_size);
++#endif
++}
++
++static void perf_LLVMDisasmDispose(LLVMDisasmContextRef context)
++{
++#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
++	LLVMDisasmDispose(context);
++#else
++	static bool fn_init;
++	static int (*fn)(LLVMDisasmContextRef context);
++
++	if (!fn_init) {
++		fn = dlsym(perf_llvm_dll_handle(), "LLVMDisasmDispose");
++		if (!fn)
++			pr_debug("dlsym failed for LLVMDisasmDispose\n");
 +		fn_init = true;
 +	}
 +	if (!fn)
 +		return;
-+	fn(insn, count);
-+#endif
++	fn(context);
+ #endif
 +}
 +
-+static enum cs_err perf_cs_close(csh *handle)
-+{
-+#ifdef HAVE_LIBCAPSTONE_SUPPORT
-+	return cs_close(handle);
-+#else
-+	static bool fn_init;
-+	static enum cs_err (*fn)(csh *handle);
-+
-+	if (!fn_init) {
-+		fn = dlsym(perf_cs_dll_handle(), "cs_close");
-+		if (!fn)
-+			pr_debug("dlsym failed for cs_close\n");
-+		fn_init = true;
-+	}
-+	if (!fn)
-+		return CS_ERR_HANDLE;
-+	return fn(handle);
-+#endif
-+}
-+
- static int capstone_init(struct machine *machine, csh *cs_handle, bool is64,
- 			 bool disassembler_style)
+ 
+-#ifdef HAVE_LIBLLVM_SUPPORT
+ static void free_llvm_inline_frames(struct llvm_a2l_frame *inline_frames,
+ 				    int num_frames)
  {
--	cs_arch arch;
--	cs_mode mode;
-+	enum cs_arch arch;
-+	enum cs_mode mode;
- 
- 	if (machine__is(machine, "x86_64") && is64) {
- 		arch = CS_ARCH_X86;
-@@ -44,7 +274,7 @@ static int capstone_init(struct machine *machine, csh *cs_handle, bool is64,
- 		return -1;
+@@ -29,14 +256,12 @@ static void free_llvm_inline_frames(struct llvm_a2l_frame *inline_frames,
+ 		zfree(&inline_frames);
  	}
- 
--	if (cs_open(arch, mode, cs_handle) != CS_ERR_OK) {
-+	if (perf_cs_open(arch, mode, cs_handle) != CS_ERR_OK) {
- 		pr_warning_once("cs_open failed\n");
- 		return -1;
- 	}
-@@ -56,27 +286,25 @@ static int capstone_init(struct machine *machine, csh *cs_handle, bool is64,
- 		 * is set via annotation args
- 		 */
- 		if (disassembler_style)
--			cs_option(*cs_handle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
-+			perf_cs_option(*cs_handle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
- 		/*
- 		 * Resolving address operands to symbols is implemented
- 		 * on x86 by investigating instruction details.
- 		 */
--		cs_option(*cs_handle, CS_OPT_DETAIL, CS_OPT_ON);
-+		perf_cs_option(*cs_handle, CS_OPT_DETAIL, CS_OPT_ON);
- 	}
- 
- 	return 0;
  }
 -#endif
  
--#ifdef HAVE_LIBCAPSTONE_SUPPORT
--static size_t print_insn_x86(struct thread *thread, u8 cpumode, cs_insn *insn,
-+static size_t print_insn_x86(struct thread *thread, u8 cpumode, struct cs_insn *insn,
- 			     int print_opts, FILE *fp)
+ int llvm__addr2line(const char *dso_name __maybe_unused, u64 addr __maybe_unused,
+ 		     char **file __maybe_unused, unsigned int *line __maybe_unused,
+ 		     struct dso *dso __maybe_unused, bool unwind_inlines __maybe_unused,
+ 		     struct inline_node *node __maybe_unused, struct symbol *sym __maybe_unused)
  {
- 	struct addr_location al;
- 	size_t printed = 0;
+-#ifdef HAVE_LIBLLVM_SUPPORT
+ 	struct llvm_a2l_frame *inline_frames = NULL;
+ 	int num_frames = llvm_addr2line(dso_name, addr, file, line,
+ 					node && unwind_inlines, &inline_frames);
+@@ -64,9 +289,6 @@ int llvm__addr2line(const char *dso_name __maybe_unused, u64 addr __maybe_unused
+ 	free_llvm_inline_frames(inline_frames, num_frames);
  
- 	if (insn->detail && insn->detail->x86.op_count == 1) {
--		cs_x86_op *op = &insn->detail->x86.operands[0];
-+		struct cs_x86_op *op = &insn->detail->x86.operands[0];
- 
- 		addr_location__init(&al);
- 		if (op->type == X86_OP_IMM &&
-@@ -94,7 +322,6 @@ static size_t print_insn_x86(struct thread *thread, u8 cpumode, cs_insn *insn,
- 	printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
- 	return printed;
- }
--#endif
- 
- 
- ssize_t capstone__fprintf_insn_asm(struct machine *machine __maybe_unused,
-@@ -105,9 +332,8 @@ ssize_t capstone__fprintf_insn_asm(struct machine *machine __maybe_unused,
- 				   uint64_t ip __maybe_unused, int *lenp __maybe_unused,
- 				   int print_opts __maybe_unused, FILE *fp __maybe_unused)
- {
--#ifdef HAVE_LIBCAPSTONE_SUPPORT
- 	size_t printed;
--	cs_insn *insn;
-+	struct cs_insn *insn;
- 	csh cs_handle;
- 	size_t count;
- 	int ret;
-@@ -117,7 +343,7 @@ ssize_t capstone__fprintf_insn_asm(struct machine *machine __maybe_unused,
- 	if (ret < 0)
- 		return ret;
- 
--	count = cs_disasm(cs_handle, code, code_size, ip, 1, &insn);
-+	count = perf_cs_disasm(cs_handle, code, code_size, ip, 1, &insn);
- 	if (count > 0) {
- 		if (machine__normalized_is(machine, "x86"))
- 			printed = print_insn_x86(thread, cpumode, &insn[0], print_opts, fp);
-@@ -125,20 +351,16 @@ ssize_t capstone__fprintf_insn_asm(struct machine *machine __maybe_unused,
- 			printed = fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
- 		if (lenp)
- 			*lenp = insn->size;
--		cs_free(insn, count);
-+		perf_cs_free(insn, count);
- 	} else {
- 		printed = -1;
- 	}
- 
--	cs_close(&cs_handle);
-+	perf_cs_close(&cs_handle);
- 	return printed;
+ 	return num_frames;
 -#else
 -	return -1;
 -#endif
  }
  
--#ifdef HAVE_LIBCAPSTONE_SUPPORT
--static void print_capstone_detail(cs_insn *insn, char *buf, size_t len,
-+static void print_capstone_detail(struct cs_insn *insn, char *buf, size_t len,
- 				  struct annotate_args *args, u64 addr)
- {
- 	int i;
-@@ -153,7 +375,7 @@ static void print_capstone_detail(cs_insn *insn, char *buf, size_t len,
- 		return;
- 
- 	for (i = 0; i < insn->detail->x86.op_count; i++) {
--		cs_x86_op *op = &insn->detail->x86.operands[i];
-+		struct cs_x86_op *op = &insn->detail->x86.operands[i];
- 		u64 orig_addr;
- 
- 		if (op->type != X86_OP_MEM)
-@@ -194,9 +416,7 @@ static void print_capstone_detail(cs_insn *insn, char *buf, size_t len,
- 		break;
- 	}
+ void dso__free_a2l_llvm(struct dso *dso __maybe_unused)
+@@ -75,7 +297,6 @@ void dso__free_a2l_llvm(struct dso *dso __maybe_unused)
  }
--#endif
  
--#ifdef HAVE_LIBCAPSTONE_SUPPORT
+ 
+-#if defined(HAVE_LIBLLVM_SUPPORT)
  struct find_file_offset_data {
  	u64 ip;
  	u64 offset;
-@@ -213,9 +433,7 @@ static int find_file_offset(u64 start, u64 len, u64 pgoff, void *arg)
- 	}
- 	return 0;
- }
--#endif
- 
--#ifdef HAVE_LIBCAPSTONE_SUPPORT
- static u8 *
- read_symbol(const char *filename, struct map *map, struct symbol *sym,
- 	    u64 *len, bool *is_64bit)
-@@ -262,13 +480,11 @@ read_symbol(const char *filename, struct map *map, struct symbol *sym,
+@@ -139,7 +360,6 @@ read_symbol(const char *filename, struct map *map, struct symbol *sym,
  	free(buf);
  	return NULL;
  }
 -#endif
  
- int symbol__disassemble_capstone(const char *filename __maybe_unused,
- 				 struct symbol *sym __maybe_unused,
- 				 struct annotate_args *args __maybe_unused)
- {
--#ifdef HAVE_LIBCAPSTONE_SUPPORT
- 	struct annotation *notes = symbol__annotation(sym);
- 	struct map *map = args->ms.map;
- 	u64 start = map__rip_2objdump(map, sym->start);
-@@ -279,7 +495,7 @@ int symbol__disassemble_capstone(const char *filename __maybe_unused,
- 	bool needs_cs_close = false;
- 	u8 *buf = NULL;
- 	csh handle;
--	cs_insn *insn = NULL;
-+	struct cs_insn *insn = NULL;
- 	char disasm_buf[512];
- 	struct disasm_line *dl;
- 	bool disassembler_style = false;
-@@ -316,7 +532,7 @@ int symbol__disassemble_capstone(const char *filename __maybe_unused,
- 
- 	needs_cs_close = true;
- 
--	free_count = count = cs_disasm(handle, buf, len, start, len, &insn);
-+	free_count = count = perf_cs_disasm(handle, buf, len, start, len, &insn);
- 	for (i = 0, offset = 0; i < count; i++) {
- 		int printed;
- 
-@@ -355,9 +571,9 @@ int symbol__disassemble_capstone(const char *filename __maybe_unused,
- 
- out:
- 	if (needs_cs_close) {
--		cs_close(&handle);
-+		perf_cs_close(&handle);
- 		if (free_count > 0)
--			cs_free(insn, free_count);
-+			perf_cs_free(insn, free_count);
- 	}
- 	free(buf);
- 	return count < 0 ? count : 0;
-@@ -377,16 +593,12 @@ int symbol__disassemble_capstone(const char *filename __maybe_unused,
- 	}
- 	count = -1;
- 	goto out;
--#else
--	return -1;
--#endif
+ /*
+  * Whenever LLVM wants to resolve an address into a symbol, it calls this
+@@ -149,7 +369,6 @@ read_symbol(const char *filename, struct map *map, struct symbol *sym,
+  * should add some textual annotation for after the instruction. The caller
+  * will use this information to add the actual annotation.
+  */
+-#ifdef HAVE_LIBLLVM_SUPPORT
+ struct symbol_lookup_storage {
+ 	u64 branch_addr;
+ 	u64 pcrel_load_addr;
+@@ -170,12 +389,10 @@ symbol_lookup_callback(void *disinfo, uint64_t value,
+ 	*ref_type = LLVMDisassembler_ReferenceType_InOut_None;
+ 	return NULL;
  }
+-#endif
  
- int symbol__disassemble_capstone_powerpc(const char *filename __maybe_unused,
- 					 struct symbol *sym __maybe_unused,
- 					 struct annotate_args *args __maybe_unused)
+ int symbol__disassemble_llvm(const char *filename, struct symbol *sym,
+ 			     struct annotate_args *args __maybe_unused)
  {
--#ifdef HAVE_LIBCAPSTONE_SUPPORT
+-#ifdef HAVE_LIBLLVM_SUPPORT
  	struct annotation *notes = symbol__annotation(sym);
  	struct map *map = args->ms.map;
  	struct dso *dso = map__dso(map);
-@@ -499,7 +711,7 @@ int symbol__disassemble_capstone_powerpc(const char *filename __maybe_unused,
+@@ -197,9 +414,9 @@ int symbol__disassemble_llvm(const char *filename, struct symbol *sym,
+ 	if (args->options->objdump_path)
+ 		return -1;
  
- out:
- 	if (needs_cs_close)
--		cs_close(&handle);
-+		perf_cs_close(&handle);
+-	LLVMInitializeAllTargetInfos();
+-	LLVMInitializeAllTargetMCs();
+-	LLVMInitializeAllDisassemblers();
++	perf_LLVMInitializeAllTargetInfos();
++	perf_LLVMInitializeAllTargetMCs();
++	perf_LLVMInitializeAllDisassemblers();
+ 
+ 	buf = read_symbol(filename, map, sym, &len, &is_64bit);
+ 	if (buf == NULL)
+@@ -215,15 +432,14 @@ int symbol__disassemble_llvm(const char *filename, struct symbol *sym,
+ 			  args->arch->name);
+ 	}
+ 
+-	disasm = LLVMCreateDisasm(triplet, &storage, 0, NULL,
+-				  symbol_lookup_callback);
++	disasm = perf_LLVMCreateDisasm(triplet, &storage, 0, NULL,
++				       symbol_lookup_callback);
+ 	if (disasm == NULL)
+ 		goto err;
+ 
+ 	if (args->options->disassembler_style &&
+ 	    !strcmp(args->options->disassembler_style, "intel"))
+-		LLVMSetDisasmOptions(disasm,
+-				     LLVMDisassembler_Option_AsmPrinterVariant);
++		perf_LLVMSetDisasmOptions(disasm, LLVMDisassembler_Option_AsmPrinterVariant);
+ 
+ 	/*
+ 	 * This needs to be set after AsmPrinterVariant, due to a bug in LLVM;
+@@ -231,7 +447,7 @@ int symbol__disassemble_llvm(const char *filename, struct symbol *sym,
+ 	 * forget about the PrintImmHex flag (which is applied before if both
+ 	 * are given to the same call).
+ 	 */
+-	LLVMSetDisasmOptions(disasm, LLVMDisassembler_Option_PrintImmHex);
++	perf_LLVMSetDisasmOptions(disasm, LLVMDisassembler_Option_PrintImmHex);
+ 
+ 	/* add the function address and name */
+ 	scnprintf(disasm_buf, sizeof(disasm_buf), "%#"PRIx64" <%s>:",
+@@ -256,9 +472,9 @@ int symbol__disassemble_llvm(const char *filename, struct symbol *sym,
+ 		storage.branch_addr = 0;
+ 		storage.pcrel_load_addr = 0;
+ 
+-		ins_len = LLVMDisasmInstruction(disasm, buf + offset,
+-						len - offset, pc,
+-						disasm_buf, sizeof(disasm_buf));
++		ins_len = perf_LLVMDisasmInstruction(disasm, buf + offset,
++						     len - offset, pc,
++						     disasm_buf, sizeof(disasm_buf));
+ 		if (ins_len == 0)
+ 			goto err;
+ 		disasm_len = strlen(disasm_buf);
+@@ -314,13 +530,8 @@ int symbol__disassemble_llvm(const char *filename, struct symbol *sym,
+ 	ret = 0;
+ 
+ err:
+-	LLVMDisasmDispose(disasm);
++	perf_LLVMDisasmDispose(disasm);
  	free(buf);
- 	return count < 0 ? count : 0;
- 
-@@ -508,7 +720,4 @@ int symbol__disassemble_capstone_powerpc(const char *filename __maybe_unused,
- 		close(fd);
- 	count = -1;
- 	goto out;
--#else
+ 	free(line_storage);
+ 	return ret;
+-#else // HAVE_LIBLLVM_SUPPORT
+-	pr_debug("The LLVM disassembler isn't linked in for %s in %s\n",
+-		 sym->name, filename);
 -	return -1;
 -#endif
  }
