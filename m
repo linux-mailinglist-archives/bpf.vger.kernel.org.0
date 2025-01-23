@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-49610-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49611-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86F37A1ABA0
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 21:55:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14A2DA1ABBD
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 22:14:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 422543A8730
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 20:55:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA7CD188CE0B
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 21:14:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99E3C1C3F34;
-	Thu, 23 Jan 2025 20:55:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62B771C3BE6;
+	Thu, 23 Jan 2025 21:14:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="TrE7G3/7"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="cB6pDtcl"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83BBE15A843;
-	Thu, 23 Jan 2025 20:55:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FAC01C5D42;
+	Thu, 23 Jan 2025 21:14:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737665734; cv=none; b=FMmJtnsgSBu45cKpiyAcAZlbFVBigYfBBm2XlTt3iVsQ5LSAAhCo9DT9BJ+f7vVqWafYy9OdIWb59vWz7KN75gskVyf9NixS5SiRS+B87Hx0P6jWg/Uo/1xRYqifrH7+bpQEKnn2nkRhjyGGxLawyyquu1t2TDau7r46CSOfixE=
+	t=1737666861; cv=none; b=oL9qritNSStT+bhV4QOFuId5rt7YICVMatDKGqPurDrrIwNet8dq1P2IiizusiD8uqKaxRjNQS4tWjy47nGSthViMACCTesjoXGaovqAC2wTemkUKc3+cFjZ5NbxpEdtE5Trwd/tNfGZWFBSZgWgs5efYHJpjjXmTRHrZNCDWdw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737665734; c=relaxed/simple;
-	bh=cSCSxSMcps1bRgmUx+OFw5mI6FDEIEX0c4n9fLb6krA=;
+	s=arc-20240116; t=1737666861; c=relaxed/simple;
+	bh=SUs9evQMcePOEWHZkAVZF/s0I1oTQKkUe7ou8a1tAOk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Zqmf7riP3ys6iGk40wlK310DNyaFy/yXu1nvvMfrcL1KWI6pt/hkXoD+fbKFa/10Vl8Fu/g978LDlrgQRhrQCWn0+Xw0nR4cezxFTLIvkRiHRlSbOoETFQqCJ3mvbdox8X/0a5cUdAoXeyb5RhwwlhD4C2RG1KDo9yrmzlMlumU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=TrE7G3/7; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=FBGwtxHWwRKRua23361b55DNXUlDh3EdP7D2RYYenCOci+XrkGDGKeZRMBoWwUImAMU0KKvJrXpdvhA3u6Vlwnma+UMHF1rY3D+VI4e6SkEZ5OX/GCEaRVvWp20INOwHPVspVRERG+30hsW9MscCpukalk3rRfCPZyDsVE2c+Co=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=cB6pDtcl; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,26 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=BrXeBk1bKk5IsEDpSnUvpvo4xc1YNnjHmYUJh4jHJLA=; b=TrE7G3/7htM4M5xvy6js3LcWqQ
-	NumzRCKL8vLY+rqBsRLTMsRzgGIaKto48uvV2kShiK9zBFLpb9zMju3bWNVPCCtjYiYqpOaT2u+Na
-	u4FaSm+KCJtMYVXMn8TB2L1bsOkDDseZ1nFSsXRmMX/qFByS9x4YSFa0c55YjkvH5tg4DLjgWQUcB
-	nWeo9eytk+5LN3DHq0TeO8PaU85B/UX9LFWA6EM/K2d629CuEiOEwOwn57L6mGSLqC9CR9z4XQOnG
-	CC2Of1/Qb3+aK8Wj6uwczBIcgTu5Azd9Cp8vQWJvxOn8yIHPwLoZ87Qd8Ud4KnRX1pc4HjbhEo4h7
-	vu7rlkfA==;
+	bh=T0qx0+atymOaI6fFlg6nov6fRa39FYfi5DYCwAOcU2s=; b=cB6pDtclMTH9Jqy9OTh/tAFrfC
+	p3AztNyc0+5ch9wIkIA72I/vkprRh5obZDhX3uwkUFThhA/4nUucYEkZSKPsWgK2o2q9XKIxqqplQ
+	7i4p6xadH2F3XV3JaPROBoXMZsBrwvy6ulx4bWZJMvUlsVdjk9lki4sv77gXztC5b07hncSvSSWx9
+	Nrc06z5Zq/B/OvZVD6LLf96hkiYwOc3lMMPwkNTH1p25gdGrM4QMCXEGmxlJEX+V+qHRU4QMG3VJQ
+	hajKzG5WsA1cgbOdlZBQVmu32eWp2A0kxzKHa73xFSgXl3ZJx5pRSu6pzN3LlcOPIabzTd5IRHnHr
+	o53aOygg==;
 Received: from sslproxy07.your-server.de ([78.47.199.104])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1tb4ES-000HLH-2T;
-	Thu, 23 Jan 2025 21:55:21 +0100
+	id 1tb4Wh-000KC7-31;
+	Thu, 23 Jan 2025 22:14:12 +0100
 Received: from [85.1.206.226] (helo=[192.168.1.114])
 	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1tb4ER-0007NB-34;
-	Thu, 23 Jan 2025 21:55:20 +0100
-Message-ID: <a6db73c9-e495-45db-b9c6-a6564f68cef0@iogearbox.net>
-Date: Thu, 23 Jan 2025 21:55:19 +0100
+	id 1tb4Wh-000LbL-19;
+	Thu, 23 Jan 2025 22:14:11 +0100
+Message-ID: <66f2d886-e3d4-4f8f-a735-b0ce1c412ee2@iogearbox.net>
+Date: Thu, 23 Jan 2025 22:14:10 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,17 +63,15 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf v2 1/2] bpf, test_run: Fix use-after-free issue in
- eth_skb_pkt_type()
-To: Shigeru Yoshida <syoshida@redhat.com>, ast@kernel.org, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, horms@kernel.org, hawk@kernel.org, lorenzo@kernel.org,
- toke@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
- stfomichev@gmail.com, syzkaller <syzkaller@googlegroups.com>
-References: <20250121150643.671650-1-syoshida@redhat.com>
+Subject: Re: [PATCH] ipv4, bpf: Introduced to support the ULP to modify
+ sockets during setopt
+To: zhangmingyi <zhangmingyi5@huawei.com>, ast@kernel.org, andrii@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+ kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, yanan@huawei.com,
+ wuchangye@huawei.com, xiesongyang@huawei.com, liuxin350@huawei.com,
+ liwei883@huawei.com, tianmuyang@huawei.com
+References: <20250121080547.3159934-1-zhangmingyi5@huawei.com>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -119,65 +117,41 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <20250121150643.671650-1-syoshida@redhat.com>
+In-Reply-To: <20250121080547.3159934-1-zhangmingyi5@huawei.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 1.0.7/27527/Thu Jan 23 10:44:17 2025)
 
-On 1/21/25 4:06 PM, Shigeru Yoshida wrote:
-> KMSAN reported a use-after-free issue in eth_skb_pkt_type()[1]. The
-> cause of the issue was that eth_skb_pkt_type() accessed skb's data
-> that didn't contain an Ethernet header. This occurs when
-> bpf_prog_test_run_xdp() passes an invalid value as the user_data
-> argument to bpf_test_init().
-> 
-> Fix this by returning an error when user_data is less than ETH_HLEN in
-> bpf_test_init(). Additionally, remove the check for "if (user_size >
-> size)" as it is unnecessary.
-> 
-> [1]
-> BUG: KMSAN: use-after-free in eth_skb_pkt_type include/linux/etherdevice.h:627 [inline]
-> BUG: KMSAN: use-after-free in eth_type_trans+0x4ee/0x980 net/ethernet/eth.c:165
->   eth_skb_pkt_type include/linux/etherdevice.h:627 [inline]
->   eth_type_trans+0x4ee/0x980 net/ethernet/eth.c:165
->   __xdp_build_skb_from_frame+0x5a8/0xa50 net/core/xdp.c:635
->   xdp_recv_frames net/bpf/test_run.c:272 [inline]
->   xdp_test_run_batch net/bpf/test_run.c:361 [inline]
->   bpf_test_run_xdp_live+0x2954/0x3330 net/bpf/test_run.c:390
->   bpf_prog_test_run_xdp+0x148e/0x1b10 net/bpf/test_run.c:1318
->   bpf_prog_test_run+0x5b7/0xa30 kernel/bpf/syscall.c:4371
->   __sys_bpf+0x6a6/0xe20 kernel/bpf/syscall.c:5777
->   __do_sys_bpf kernel/bpf/syscall.c:5866 [inline]
->   __se_sys_bpf kernel/bpf/syscall.c:5864 [inline]
->   __x64_sys_bpf+0xa4/0xf0 kernel/bpf/syscall.c:5864
->   x64_sys_call+0x2ea0/0x3d90 arch/x86/include/generated/asm/syscalls_64.h:322
->   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->   do_syscall_64+0xd9/0x1d0 arch/x86/entry/common.c:83
->   entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> 
-> Uninit was created at:
->   free_pages_prepare mm/page_alloc.c:1056 [inline]
->   free_unref_page+0x156/0x1320 mm/page_alloc.c:2657
->   __free_pages+0xa3/0x1b0 mm/page_alloc.c:4838
->   bpf_ringbuf_free kernel/bpf/ringbuf.c:226 [inline]
->   ringbuf_map_free+0xff/0x1e0 kernel/bpf/ringbuf.c:235
->   bpf_map_free kernel/bpf/syscall.c:838 [inline]
->   bpf_map_free_deferred+0x17c/0x310 kernel/bpf/syscall.c:862
->   process_one_work kernel/workqueue.c:3229 [inline]
->   process_scheduled_works+0xa2b/0x1b60 kernel/workqueue.c:3310
->   worker_thread+0xedf/0x1550 kernel/workqueue.c:3391
->   kthread+0x535/0x6b0 kernel/kthread.c:389
->   ret_from_fork+0x6e/0x90 arch/x86/kernel/process.c:147
->   ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-> 
-> CPU: 1 UID: 0 PID: 17276 Comm: syz.1.16450 Not tainted 6.12.0-05490-g9bb88c659673 #8
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-3.fc41 04/01/2014
-> 
-> Fixes: be3d72a2896c ("bpf: move user_size out of bpf_test_init")
-> Reported-by: syzkaller <syzkaller@googlegroups.com>
-> Suggested-by: Martin KaFai Lau <martin.lau@linux.dev>
-> Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
+On 1/21/25 9:05 AM, zhangmingyi wrote:
+> Note that tcp_getsockopt and tcp_setsockopt support TCP_ULP, while
+> bpf_getsockopt and bpf_setsockopt do not support TCP_ULP.
+> I think we can add the handling of this case.
 
-Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+Please elaborate on the use case you're trying to solve, and also a
+BPF selftest is needed to back this use case up. Your latter sentence
+does not sound overly sure which makes me wonder if you've tested this
+code at all?
+
+> Signed-off-by: zhangmingyi <zhangmingyi5@huawei.com>
+> ---
+>   net/core/filter.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 713d6f454df3..f23d3f87e690 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -5383,6 +5383,10 @@ static int sol_tcp_sockopt(struct sock *sk, int optname,
+>   		if (*optlen < 1)
+>   			return -EINVAL;
+>   		break;
+> +	case TCP_ULP:
+> +		if (getopt)
+> +			return -EINVAL;
+> +		break;
+>   	case TCP_BPF_SOCK_OPS_CB_FLAGS:
+>   		if (*optlen != sizeof(int))
+>   			return -EINVAL;
+
 
