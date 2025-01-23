@@ -1,42 +1,42 @@
-Return-Path: <bpf+bounces-49552-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49553-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC037A19CA8
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 03:00:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3AB9A19CAC
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 03:00:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81D6F16D0C5
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 02:00:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AC50188F0CF
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 02:00:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AE18224FD;
-	Thu, 23 Jan 2025 01:59:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0486E35977;
+	Thu, 23 Jan 2025 01:59:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="GwepcI39"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="l4cn4VdX"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82B4A8F5A;
-	Thu, 23 Jan 2025 01:59:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F4078F7D;
+	Thu, 23 Jan 2025 01:59:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737597596; cv=none; b=bmWzPnVz7U4/TpIp3UNHSkDvBvVLoDGVQT1wBSwWkIoTyZLl/tj9hILiRvwPZ4WHoppZCIZByscvgG0A25f6CmQuWHiZ6hzE+0S9afeTN1uVaKLxXwia/yTU1kYnnVLJPUD7Jtgm7fONDN2MAT5/cE5vdtLQN/Dg0v9/Jd9+CYw=
+	t=1737597596; cv=none; b=bmG/Kr6Nm6EuTHTw34ok8Je7e19wpF/e+lfClflSDVf1+hwQrlgmOaf3Qk+MMEPvnK9Y+WanVTDwvnT8LSKWxFsShOpElG4/wTJCbd8cZtcMx0zeybHxJCGJsyf5VrDQMFzwRnWt7zc5loKTPM4MOdNtgoqWM5qHqjZL9vm4etE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1737597596; c=relaxed/simple;
-	bh=0L+lOzuqDwvA7au8Ptv67yZ4le6S9WtRxe/Zj7PDXxw=;
+	bh=zUqjtIpRd2n5Oejzc87cbmjAvoS3w2LDDDQNPSZ6x34=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pWeHQzunDfbZSgP5EFOKSCTUviVbaD7expnGknXLR7orcEIomDIJR4yQGSppXR7EyLO1u2lAn7j04sGv6i+NLPyOgWij9TYukJvqJrzLNC2BeB0kzjLULpg4RHVBlJM6bJHxDl2W2hfWScTrPspeqIxFWju5kFtYJvoTLPv7Kt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=GwepcI39; arc=none smtp.client-ip=115.124.30.124
+	 MIME-Version; b=VD0gG1EkNsAqYyLoIeMyToFOHPQLmDnF+9U8+LE1wFrHll4i2/71sE6cNpUGdf+5WgNkrfntWT+ymvX0wcs0NpnmIDSimF7y1JRmw4wmNI/x8ikxCd5Hc8xUK/uYTihxooz5mQgDvVXrGNrOpGq7ANmmCEWIuqFVhiT/gbge3iA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=l4cn4VdX; arc=none smtp.client-ip=115.124.30.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1737597589; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=P4JL4e44Jo4xpeFGWKuHffDh6hTSU5etq3GouBCGp6Q=;
-	b=GwepcI39bDB/d4oOqf1GYbiBTNCRqn6/TJyZquZlCdD2nrhfJkQPekh5q38Ao//Rm08YSjo+PjLwup5whyVuJhmmZwDvzyhXf31k3Bdb44qA6mPLjV3dD/bqTcRDT0Rfo4NrlorL7GfnwU8bVXYSP7X+SOqt2a/BmIAulzUVvng=
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WO9yfG5_1737597587 cluster:ay36)
+	t=1737597590; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=TiByiMMyy83GiNiHISRyXrNC58WH/21oJ4WTsRWRvHo=;
+	b=l4cn4VdX+D5jLLXVnUyYKub9uMFLml5qLf8Ad8KoLWN9753vmNA1tm1leX3H+0yfSOEjF1WN4CFq6Gy6jRoYE4Pl//Rjq8TCkS9QCbjzvg32zs/tZfj+AR3xLp0R1pAwxXxwIvXSYWaPyvAdASCSxqV0+rK3e9gWM1J6S9mzqos=
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WO9yfGm_1737597588 cluster:ay36)
           by smtp.aliyun-inc.com;
           Thu, 23 Jan 2025 09:59:48 +0800
 From: "D. Wythe" <alibuda@linux.alibaba.com>
@@ -63,9 +63,9 @@ Cc: kuba@kernel.org,
 	linux-s390@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH bpf-next v7 1/6] bpf: export necessary sympols for modules with struct_ops
-Date: Thu, 23 Jan 2025 09:59:37 +0800
-Message-ID: <20250123015942.94810-2-alibuda@linux.alibaba.com>
+Subject: [PATCH bpf-next v7 2/6] net/smc: fix UAF on smcsk after smc_listen_out()
+Date: Thu, 23 Jan 2025 09:59:38 +0800
+Message-ID: <20250123015942.94810-3-alibuda@linux.alibaba.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <20250123015942.94810-1-alibuda@linux.alibaba.com>
 References: <20250123015942.94810-1-alibuda@linux.alibaba.com>
@@ -77,54 +77,95 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Exports three necessary symbols for implementing struct_ops with
-tristate subsystem.
+BPF CI testing report a UAF issue:
 
-To hold or release refcnt of struct_ops refcnt by inline funcs
-bpf_try_module_get and bpf_module_put which use bpf_struct_ops_get(put)
-conditionally.
+  [   16.446633] BUG: kernel NULL pointer dereference, address: 000000000000003  0
+  [   16.447134] #PF: supervisor read access in kernel mod  e
+  [   16.447516] #PF: error_code(0x0000) - not-present pag  e
+  [   16.447878] PGD 0 P4D   0
+  [   16.448063] Oops: Oops: 0000 [#1] PREEMPT SMP NOPT  I
+  [   16.448409] CPU: 0 UID: 0 PID: 9 Comm: kworker/0:1 Tainted: G           OE      6.13.0-rc3-g89e8a75fda73-dirty #4  2
+  [   16.449124] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODUL  E
+  [   16.449502] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/201  4
+  [   16.450201] Workqueue: smc_hs_wq smc_listen_wor  k
+  [   16.450531] RIP: 0010:smc_listen_work+0xc02/0x159  0
+  [   16.452158] RSP: 0018:ffffb5ab40053d98 EFLAGS: 0001024  6
+  [   16.452526] RAX: 0000000000000001 RBX: 0000000000000002 RCX: 000000000000030  0
+  [   16.452994] RDX: 0000000000000280 RSI: 00003513840053f0 RDI: 000000000000000  0
+  [   16.453492] RBP: ffffa097808e3800 R08: ffffa09782dba1e0 R09: 000000000000000  5
+  [   16.453987] R10: 0000000000000000 R11: 0000000000000000 R12: ffffa0978274640  0
+  [   16.454497] R13: 0000000000000000 R14: 0000000000000000 R15: ffffa09782d4092  0
+  [   16.454996] FS:  0000000000000000(0000) GS:ffffa097bbc00000(0000) knlGS:000000000000000  0
+  [   16.455557] CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003  3
+  [   16.455961] CR2: 0000000000000030 CR3: 0000000102788004 CR4: 0000000000770ef  0
+  [   16.456459] PKRU: 5555555  4
+  [   16.456654] Call Trace  :
+  [   16.456832]  <TASK  >
+  [   16.456989]  ? __die+0x23/0x7  0
+  [   16.457215]  ? page_fault_oops+0x180/0x4c  0
+  [   16.457508]  ? __lock_acquire+0x3e6/0x249  0
+  [   16.457801]  ? exc_page_fault+0x68/0x20  0
+  [   16.458080]  ? asm_exc_page_fault+0x26/0x3  0
+  [   16.458389]  ? smc_listen_work+0xc02/0x159  0
+  [   16.458689]  ? smc_listen_work+0xc02/0x159  0
+  [   16.458987]  ? lock_is_held_type+0x8f/0x10  0
+  [   16.459284]  process_one_work+0x1ea/0x6d  0
+  [   16.459570]  worker_thread+0x1c3/0x38  0
+  [   16.459839]  ? __pfx_worker_thread+0x10/0x1  0
+  [   16.460144]  kthread+0xe0/0x11  0
+  [   16.460372]  ? __pfx_kthread+0x10/0x1  0
+  [   16.460640]  ret_from_fork+0x31/0x5  0
+  [   16.460896]  ? __pfx_kthread+0x10/0x1  0
+  [   16.461166]  ret_from_fork_asm+0x1a/0x3  0
+  [   16.461453]  </TASK  >
+  [   16.461616] Modules linked in: bpf_testmod(OE) [last unloaded: bpf_testmod(OE)  ]
+  [   16.462134] CR2: 000000000000003  0
+  [   16.462380] ---[ end trace 0000000000000000 ]---
+  [   16.462710] RIP: 0010:smc_listen_work+0xc02/0x1590
 
-And to copy obj name from one to the other with effective checks by
-bpf_obj_name_cpy.
+The direct cause of this issue is that after smc_listen_out_connected(),
+newclcsock->sk may be NULL since it will releases the smcsk. Therefore,
+if the application closes the socket immediately after accept,
+newclcsock->sk can be NULL. A possible execution order could be as
+follows:
 
+smc_listen_work                                 | userspace
+-----------------------------------------------------------------
+lock_sock(sk)                                   |
+smc_listen_out_connected()                      |
+| \- smc_listen_out                             |
+|    | \- release_sock                          |
+     | |- sk->sk_data_ready()                   |
+                                                | fd = accept();
+                                                | close(fd);
+                                                |  \- socket->sk = NULL;
+/* newclcsock->sk is NULL now */
+SMC_STAT_SERV_SUCC_INC(sock_net(newclcsock->sk))
+
+Since smc_listen_out_connected() will not fail, simply swapping the order
+of the code can easily fix this issue.
+
+Fixes: 3b2dec2603d5 ("net/smc: restructure client and server code in af_smc")
 Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
 ---
- kernel/bpf/bpf_struct_ops.c | 2 ++
- kernel/bpf/syscall.c        | 1 +
- 2 files changed, 3 insertions(+)
+ net/smc/af_smc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index 040fb1cd840b..588e9b43fc2a 100644
---- a/kernel/bpf/bpf_struct_ops.c
-+++ b/kernel/bpf/bpf_struct_ops.c
-@@ -1140,6 +1140,7 @@ bool bpf_struct_ops_get(const void *kdata)
- 	map = __bpf_map_inc_not_zero(&st_map->map, false);
- 	return !IS_ERR(map);
- }
-+EXPORT_SYMBOL_GPL(bpf_struct_ops_get);
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index c370efcfe3e8..9eebf7d0179e 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -2549,8 +2549,9 @@ static void smc_listen_work(struct work_struct *work)
+ 			goto out_decl;
+ 	}
  
- void bpf_struct_ops_put(const void *kdata)
- {
-@@ -1151,6 +1152,7 @@ void bpf_struct_ops_put(const void *kdata)
+-	smc_listen_out_connected(new_smc);
+ 	SMC_STAT_SERV_SUCC_INC(sock_net(newclcsock->sk), ini);
++	/* smc_listen_out() will release smcsk */
++	smc_listen_out_connected(new_smc);
+ 	goto out_free;
  
- 	bpf_map_put(&st_map->map);
- }
-+EXPORT_SYMBOL_GPL(bpf_struct_ops_put);
- 
- int bpf_struct_ops_supported(const struct bpf_struct_ops *st_ops, u32 moff)
- {
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 0daf098e3207..85bee712b16c 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1171,6 +1171,7 @@ int bpf_obj_name_cpy(char *dst, const char *src, unsigned int size)
- 
- 	return src - orig_src;
- }
-+EXPORT_SYMBOL_GPL(bpf_obj_name_cpy);
- 
- int map_check_no_btf(const struct bpf_map *map,
- 		     const struct btf *btf,
+ out_unlock:
 -- 
 2.45.0
 
