@@ -1,218 +1,147 @@
-Return-Path: <bpf+bounces-49601-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49602-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C075DA1AA83
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 20:42:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 469B0A1AA8F
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 20:45:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EDDCD7A5152
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 19:42:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D07F03A186A
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 19:45:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715771ADC9C;
-	Thu, 23 Jan 2025 19:41:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62AFB1C4A26;
+	Thu, 23 Jan 2025 19:45:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mInsmFGP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fyy2NvRe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D6791ADC90;
-	Thu, 23 Jan 2025 19:41:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA4E1C3F34;
+	Thu, 23 Jan 2025 19:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737661296; cv=none; b=eoqaNn5u0GtCGRhmEPUAO+p/RDFG94Rhy4mp1h5jj7UBjy5edBSm4cPJ/Jo5vUYSqHRrlunHBE6M6+hqeVRbGL9dfLeC3z4aUTxD/MQEU4WF7lPiRymr1/h2M2UOGq7OqWNYXBrNH6oSVt9jbKA7y99B9P/JwZh8azzOQQyscFw=
+	t=1737661506; cv=none; b=IXlI7CmcnBnDHQAGLxRcnSTB25AbZEOyGCSuY/Ee6+nGOo0F6PvqmrnMCcAzNN9fcOmYR7bQI71G/JIugGPqkKsSxysWQR0++8H63frm2+aqpO0dxugEoMa7buiwZsSL5/R7VL+M7wWkM1UEWRasbUi9Ymzq/2FfMgJHCweiNWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737661296; c=relaxed/simple;
-	bh=Bjl1jQvhzUuwZLTQMuDb8CiuTF4GdcydCN8OFsoboyo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AwrIF6LnqoKXJbzezhp2hLAOYw2ND5yDgzdkSl05X+cDn+ScN9uMMykHRQk/qETwRkjiR6c8/QiZhholOyADVr0hgkOEByy+M0f6rmnf8ZeBTRrHw2VWkqA0eJgc8NMaQJqGCyQ47l/OftZdzDqB3pg53jClQpusajNSQUr2ll8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mInsmFGP; arc=none smtp.client-ip=209.85.219.176
+	s=arc-20240116; t=1737661506; c=relaxed/simple;
+	bh=GNyYwOjgvjBmBQHiAq4euePxv6GmOehuGrlNoyd3X6Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BQCk7dzkVg1ng+xFEGHHoxkzcC5uJqWp+oeDbASRG198I3lhA4NEGl78H7QnfyCwD2a4AZRTtlj7mJlX8Hs4HS+Xn5jRLpPHrps79WwSeOhFhFEZ2ey9MVvMk/ssppgOZ6aWKA0y6IlxwTXzylH7hhDi6F+dhIMlhFKsXy8LBus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fyy2NvRe; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-e549dd7201cso2474386276.0;
-        Thu, 23 Jan 2025 11:41:34 -0800 (PST)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2161eb94cceso16257285ad.2;
+        Thu, 23 Jan 2025 11:45:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737661293; x=1738266093; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i9JKk2g2n4RajhRZ8hBTm51RbMbUFYtO3JAoB+JrWZ0=;
-        b=mInsmFGPFkT1G4yONWTa8PfGO3avr02kT+1MuZT5b/Vf/fLKEwxwpZSp37p8xsfwJd
-         CNvuVy65QI+Eo4UOMoE4WV3GAzOMogrM4nU8QOLwg0piy2DS9sBOu4KUuFZc7rdGBW4A
-         dBvcsoFH16C+QxRPLPHBf11D0QU+hQi+l9f9LUhGLERmAK+eVk+D0uBgWbteHEWd4zQj
-         upJeXBqm8lvsDvP9UbJQTn/59GAZt+8iJULSBesdlbXCVW6nzH6Q/QVLE49+VOEwYD3y
-         KNnSUYA3GaOHHYZh11VvDmO4A/4kf/R6t/XUywVb2KilT01RIGvDPoqeDbH4pjTmJkcL
-         Ax+w==
+        d=gmail.com; s=20230601; t=1737661504; x=1738266304; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RbDJ5jRP800MdKxkVmQO5UhCCyRJRcpUXo8vGydGxc0=;
+        b=fyy2NvRek00CeWhmi083M755moZZ9+RK6n0MmKOUiP1JhcyftAQGZuVgc6+zKwoKeh
+         Df4WAkmoVk3fSnkMOvFXyKPaGba7DGfZOK2wjdVxaMlc7q5vzspgzZyS6jeWLq8VBlM+
+         v+ujW47WTHL73Uuul6//QXEt9peILRt7RqUXMz6ayrTm+eCl8EWIMd7yNvYC+O9nAesW
+         ENjc8TSkkff5eTgbj10UdIJwVbIm92KjggK7gWGE2U0PJe794H4Yug9/f3UThXGE0Xat
+         F8AmsFkcRONkZx00rv77+aEKXUrt14WjsaxPrqNlOIhc3I5QR9SwkQ+X9dsrpcfmw36f
+         ngMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737661293; x=1738266093;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i9JKk2g2n4RajhRZ8hBTm51RbMbUFYtO3JAoB+JrWZ0=;
-        b=XEScd6n8AS6Yf6Z+VbYpigN9lO7rrbrLtC7MQ3ex/aleH3+INTgstd0I55qUwKS9Sb
-         OhmpzQqdqQsKokfm+AaqJGAM4xpauvkBXsI5GjMAfaDM+t0zBpHaCWKOX97xwgXZit2g
-         5JpVeTnh2JvlkLXzylCXGKsvMGfo1c1IwrO9GORXOvj8xaJku5x3auj2kFv9013kmHvu
-         1hqv6YwWCfnadILJmmz/ZeM0BlpCLrfBsegYP+XFURRHySO8Zkox+N/vl4oXpoRkOe+x
-         FMXVR+3ZYEwPPilxqiS1PpKFmU0naUAdil2lRsFReUILKOy3aTDvFDL8ny+TiT1AUbuq
-         cd2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUDhSMA7I6JR7ySI4B6WuFQo8u8yZQn1oeup+fT36eOiaB9Ej1kfkESQtdaUdC+JJc7x8E=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzaH0/8CjlmRrfTv4wRiBcw2XiZX47RUGJ38Qbyi5GKA47Aq7uH
-	kVKuxuK/lMAOcKYhUZJ20/l7vIUoba22pXWO9gkxhESFI0LlzDmVM6GYVLgIrz65QiGxmIK0BVN
-	xnYPnDY4Hi7M104Q6pJ0cl9vGQqQ=
-X-Gm-Gg: ASbGnctztVQL1OWeAgrnw1x0Cg/RPrbW2FEuOZkUbhjDFYzTQmnKwjxjEiK4zB25o3w
-	oBF2iAcG4zayn35g7WwPH07IKCpUt9GBrQDddIZ/tEJM0iW8PIv+p63zyv/t4IQ==
-X-Google-Smtp-Source: AGHT+IGfj0HO/WuIbNXXYyvmJ941amTp3hCmzyDEHKTX0TFEIhNbAurUyFTuvdzBh/PJ6ax/wz0iHTqKSRefHrFwaSQ=
-X-Received: by 2002:a05:6902:1581:b0:e58:33ce:87a1 with SMTP id
- 3f1490d57ef6-e5833ce8892mr2078445276.24.1737661293138; Thu, 23 Jan 2025
- 11:41:33 -0800 (PST)
+        d=1e100.net; s=20230601; t=1737661504; x=1738266304;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RbDJ5jRP800MdKxkVmQO5UhCCyRJRcpUXo8vGydGxc0=;
+        b=rKJ4GQcHZqnWlwC6dG84Se4zHBxKfVKfDLfhDJReDIRKEBgpb+nM2/KEP5/jrjPYne
+         XJuaV+YRXvtzWGCfMbo9UKlgUhz8iINFVQbAPyUKJPNPUfMu6E5DtL38Wo37LPFPgB7S
+         E/Rw5z9oJeeXLrjQZ3364j6gTWoXRUoi/I4M+f2TKI5AkTd/sFaG3oNOrTCSbKapfHSt
+         mgEeABGugLhRE4fJfefMsltgNLXbYn+sepjy8yNruOr0bZTAzsyaep4PpS1xmm3r0U7L
+         0BxFNrdMg0PCI+vYZtTcruFZ27cU/nJV3bj2MKRKxVLxmDpwrcVmpNt7zuDomo2V22s4
+         4Nbg==
+X-Forwarded-Encrypted: i=1; AJvYcCUgF1jm1NdbLpG8JKivgneoaf28fscAV3AA1Zelw3PdVXWh72GCZEMHBzBZl0e1WmgLoDVOX+8ELaPT7r2l@vger.kernel.org, AJvYcCVBQqx8JOTT6DF0sPQiKCkVRGv4gkMlYpIkw8mc+iN2NAbTe+E4e/aHGDpc5y2iP3XTHWLgetg9@vger.kernel.org, AJvYcCVMluszgZf/tF2mVa/zjDnBKguo2xzsvNvVRW0a+D9T5D53iCToLlcoXbSja8ox0TtqfBo=@vger.kernel.org, AJvYcCVcRXZRRyOfLG6DmE+piUgCcryz+uDrxnMwmSWoFtd0f6Zy8j1sAbt5K1TpLEZsBfbGCBIq0PICXPyGjod1PhfJ@vger.kernel.org
+X-Gm-Message-State: AOJu0YxVFZgIy1isH/xu23cOteeGQDHAUqHsyCzhwbF0tBtXDybhWwHb
+	Qxh48ZaHLRZ3ZS39WWZLSCY8t3QwmAJjUC4ecGCGb7Xwe/xq44M=
+X-Gm-Gg: ASbGncuD4jWbvNPfrC+PNvVijST8Nvlu2wyebW67gA60gxnG3hzQ2lqOAECXcxcYhKg
+	w2U7de08WJN26hxLPcq32vRaXZYt9TAf2uMfr31/XMfMjbMJzKunPioM7NDkdwSBPeNRgh31/iz
+	ddjXN+o7QEnfilDO2AFEQjInfKEQtucx6NtByYTI7Zh1srfbT0L4y0tMB6RpUS9GIT+xHit3KGJ
+	N4f2M6Y/N7GuIUnQSeUwp1QDtniO0tqR0zuXS2l+TrJhPpKd8JzRozqWjmQbfE/XI6oCpIYTE30
+	Tt+s
+X-Google-Smtp-Source: AGHT+IFLfR7sepB411Y1o6WYsBTMG+7bZpq+2cLG/v7NZ59Qt3di4PECY8vUrmkC1ddsallRyaM24w==
+X-Received: by 2002:a17:903:22c4:b0:215:352c:af73 with SMTP id d9443c01a7336-21c3550db34mr349257565ad.18.1737661504553;
+        Thu, 23 Jan 2025 11:45:04 -0800 (PST)
+Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21da3d9e083sm2845345ad.25.2025.01.23.11.45.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jan 2025 11:45:04 -0800 (PST)
+Date: Thu, 23 Jan 2025 11:45:03 -0800
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	Alexis Lothore <alexis.lothore@bootlin.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	netdev@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 00/10] selftests/bpf: Migrate
+ test_xdp_redirect_multi.sh to test_progs
+Message-ID: <Z5KcP_rJw4Iv5tKp@mini-arch>
+References: <20250121-redirect-multi-v2-0-fc9cacabc6b2@bootlin.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241220195619.2022866-1-amery.hung@gmail.com>
- <20241220195619.2022866-2-amery.hung@gmail.com> <ce15f61de21a4415d00d2e52c2eedc63564093c8.camel@gmail.com>
-In-Reply-To: <ce15f61de21a4415d00d2e52c2eedc63564093c8.camel@gmail.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Thu, 23 Jan 2025 11:41:22 -0800
-X-Gm-Features: AWEUYZl8OucAG5Bobcp2FKy1Q_eECLlHpzydjWUvrjHGd2-MrNzgh9Cw0m8EAfQ
-Message-ID: <CAMB2axPoBXnrFE0iRT8rAs8txi0jabcb5ctGoFz85-HyDSpghQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 01/14] bpf: Support getting referenced kptr
- from struct_ops argument
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, alexei.starovoitov@gmail.com, martin.lau@kernel.org, 
-	sinquersw@gmail.com, toke@redhat.com, jhs@mojatatu.com, jiri@resnulli.us, 
-	stfomichev@gmail.com, ekarani.silvestre@ccc.ufcg.edu.br, 
-	yangpeihao@sjtu.edu.cn, xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com, 
-	amery.hung@bytedance.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250121-redirect-multi-v2-0-fc9cacabc6b2@bootlin.com>
 
-On Thu, Jan 23, 2025 at 1:57=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Fri, 2024-12-20 at 11:55 -0800, Amery Hung wrote:
-> > From: Amery Hung <amery.hung@bytedance.com>
-> >
-> > Allows struct_ops programs to acqurie referenced kptrs from arguments
-> > by directly reading the argument.
-> >
-> > The verifier will acquire a reference for struct_ops a argument tagged
-> > with "__ref" in the stub function in the beginning of the main program.
-> > The user will be able to access the referenced kptr directly by reading
-> > the context as long as it has not been released by the program.
-> >
-> > This new mechanism to acquire referenced kptr (compared to the existing
-> > "kfunc with KF_ACQUIRE") is introduced for ergonomic and semantic reaso=
-ns.
-> > In the first use case, Qdisc_ops, an skb is passed to .enqueue in the
-> > first argument. This mechanism provides a natural way for users to get =
-a
-> > referenced kptr in the .enqueue struct_ops programs and makes sure that=
- a
-> > qdisc will always enqueue or drop the skb.
-> >
-> > Signed-off-by: Amery Hung <amery.hung@bytedance.com>
-> > ---
->
-> Hi Amery,
->
-> Sorry, for joining so late in the review process.
-> Decided to take a look at verifier related changes.
-> Overall the patch looks good to me,
-> but I dislike the part allocating parameter ids.
->
-> [...]
->
-> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index 28246c59e12e..c2f4f84e539d 100644
-> > --- a/kernel/bpf/btf.c
-> > +++ b/kernel/bpf/btf.c
-> > @@ -6682,6 +6682,7 @@ bool btf_ctx_access(int off, int size, enum bpf_a=
-ccess_type type,
-> >                       info->reg_type =3D ctx_arg_info->reg_type;
-> >                       info->btf =3D ctx_arg_info->btf ? : btf_vmlinux;
-> >                       info->btf_id =3D ctx_arg_info->btf_id;
-> > +                     info->ref_obj_id =3D ctx_arg_info->refcounted ? +=
-+nr_ref_args : 0;
-> >                       return true;
-> >               }
-> >       }
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index f27274e933e5..26305571e377 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
->
-> [...]
->
-> > @@ -22161,6 +22182,16 @@ static int do_check_common(struct bpf_verifier=
-_env *env, int subprog)
-> >               mark_reg_known_zero(env, regs, BPF_REG_1);
-> >       }
-> >
-> > +     /* Acquire references for struct_ops program arguments tagged wit=
-h "__ref".
-> > +      * These should be the earliest references acquired. btf_ctx_acce=
-ss() will
-> > +      * assume the ref_obj_id of the n-th __ref-tagged argument to be =
-n.
-> > +      */
-> > +     if (!subprog && env->prog->type =3D=3D BPF_PROG_TYPE_STRUCT_OPS) =
-{
-> > +             for (i =3D 0; i < env->prog->aux->ctx_arg_info_size; i++)
-> > +                     if (env->prog->aux->ctx_arg_info[i].refcounted)
-> > +                             acquire_reference(env, 0);
-> > +     }
-> > +
-> >       ret =3D do_check(env);
-> >  out:
-> >       /* check for NULL is necessary, since cur_state can be freed insi=
-de
->
-> I think it would be cleaner if:
-> - each program would own it's instance of 'env->prog->aux->ctx_arg_info';
-> - ref_obj_id field would be added to 'struct bpf_ctx_arg_aux';
-> - parameter ids would be allocated in do_check_common(), but without
->   reliance on being first to allocate.
+On 01/21, Bastien Curutchet (eBPF Foundation) wrote:
+> Hi all,
+> 
+> This patch series continues the work to migrate the *.sh tests into
+> prog_tests framework.
+> 
+> test_xdp_redirect_multi.sh tests the XDP redirections done through
+> bpf_redirect_map().
+> 
+> This is already partly covered by test_xdp_veth.c that already tests
+> map redirections at XDP level. What isn't covered yet by test_xdp_veth is
+> the use of the broadcast flags (BPF_F_BROADCAST or BPF_F_EXCLUDE_INGRESS)
+> and XDP egress programs.
+> 
+> Hence, this patch series add test cases to test_xdp_veth.c to get rid of
+> the test_xdp_redirect_multi.sh:
+>  - PATCH 1 to 5 rework test_xdp_veth to make it more generic and allow to
+>    configure different test cases
+>  - PATCH 6 adds test cases for 'classic' bpf_redirect_map()
+>  - PATCH 7 & 8 covers the broadcast flags
+>  - PATCH 9 covers the XDP egress programs
+>  - PATCH 10 removes test_xdp_redirect_multi.sh
+> 
+> Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
+> ---
+> Changes in v2:
+> - Use serial_test_* to avoid conflict between tests
 
-This is very similar to what v1 is doing but I missed the first part.
-Replacing assignments of prog->aux->ctx_arg_info with deep copy should
-make ctx_arg_info a per-program thing. I agree with you that creating
-this assumption of ref_obj_id is unnecessary and I will change it.
+Do I understand correctly that we want them serial mostly because of the
+hard-coded namespace names? If yes, might be a good idea to follow up
+(separately) with a way to generate unique name for each subtest and
+unserialize them.
 
-https://lore.kernel.org/bpf/20241213232958.2388301-1-amery.hung@bytedance.c=
-om/
+(If you have time/desire, I think there is a bunch of similar cases
+where we have to serialize tests, might as well undo that).
 
-Thanks,
-Amery
+I looked briefly through the series, looks good:
 
->
-> Or add some rigour to this thing and e.g. make env->id_gen signed
-> and declare an enum of special ids like:
->
->   enum special_ids {
->         STRUCT_OPS_CTX_PARAM_0 =3D -1,
->         STRUCT_OPS_CTX_PARAM_1 =3D -2,
->         STRUCT_OPS_CTX_PARAM_2 =3D -3,
->         ...
->   }
->
-> and update the loop above as:
->
->         if (!subprog && env->prog->type =3D=3D BPF_PROG_TYPE_STRUCT_OPS) =
-{
->                 for (i =3D 0; i < env->prog->aux->ctx_arg_info_size; i++)
->                         if (env->prog->aux->ctx_arg_info[i].refcounted)
->                 /* imagined function that acquires an id with specific va=
-lue */
->                                 acquire_special_reference(env, 0, STRUCT_=
-OPS_CTX_PARAM_0 - i /* desired id */);
->         }
->
-> wdyt?
->
+Acked-by: Stanislav Fomichev <sdf@fomichev.me>
 
