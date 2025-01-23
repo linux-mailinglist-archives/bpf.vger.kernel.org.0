@@ -1,342 +1,245 @@
-Return-Path: <bpf+bounces-49589-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49590-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FEE7A1A8D7
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 18:22:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50D38A1A8DF
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 18:24:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C8A53A5DBD
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 17:19:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5481A3A3FAC
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 17:24:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89DDD1547DC;
-	Thu, 23 Jan 2025 17:19:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE7C814600F;
+	Thu, 23 Jan 2025 17:24:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Ltx2Ndp1"
+	dkim=pass (2048-bit key) header.d=siemens.com header.i=florian.bezdeka@siemens.com header.b="avfOWyEP"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4212E13D520;
-	Thu, 23 Jan 2025 17:19:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
+Received: from mta-65-225.siemens.flowmailer.net (mta-65-225.siemens.flowmailer.net [185.136.65.225])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10CC76CDAF
+	for <bpf@vger.kernel.org>; Thu, 23 Jan 2025 17:24:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.136.65.225
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737652761; cv=none; b=bI1l4g6lCsbivvUKraFBBtJ9muK/Kgufn6Om8bLTc2GJRBtSfBwvQYTCeILiZ82y1rWmcuSbam0w7VLvuk2avi3olw/7sHaQlOo0L4TXYv60tpfVMUgDT436vCBgn6pVSD8sn/ssDwRPZ9Kyf1pbxwJpop0S9O0GGMJHMzWEp0c=
+	t=1737653075; cv=none; b=qrwSMxAgOOWtHeqXyiEg+ZXUhR+JaoTf3yOu65KiZUHqaPPp5ATzpDGbudq/nFMqnYOBAIs7PV+desfT0kTvI70MweWY2MWQ2ve3f8a5m7/P/V8MSms6d6gq0tzFOb861o+Gp+w6dZhqhMCgXTzTHJsuNy+R/192ekn6CARN8eI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737652761; c=relaxed/simple;
-	bh=l+eqW+5vF18jJFL7wpNgBpG+SdJRCdkLoucRJnocxAE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=B16CjnowrYW1d/IoAUy1m7vMnNLVM9Mz0CcqtVuinIpJHygFmSi/bTwX+kl6W2xPMH4EVcfy+WAuhJ3cEm5cb3GOL8qUXPs4TEYcPYisgjKu6Ulgj9+joHY38WNNzfUpJKhV4628vsGIJ2OZk24dbtrNNszXfW7ufpYJ048haiQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Ltx2Ndp1; arc=none smtp.client-ip=117.135.210.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-ID:MIME-Version; bh=oB3gQ
-	epzdz1T2MZpa8mU0Bi2mHzAcq0dLl+Xr9/A4Sw=; b=Ltx2Ndp1ghMmlTkSll7Kk
-	vmCxCxhSSNj8dR3NyYdXzTMSYBCRm/3GQkrVLfKNybVobsD3DuIZarlHO5wrWOmX
-	cqIH/MysCKCUHR9lEUizRecc0IY38cxS8oFlPxBpIo+PSaANAhCx4jTWhTv8e9OR
-	iEWJQ1Hbgg7MGGPXLhpyi8=
-Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g0-2 (Coremail) with SMTP id _____wBnjmFKeZJnNajlHw--.26171S4;
-	Fri, 24 Jan 2025 01:16:20 +0800 (CST)
-From: Jiayuan Chen <mrpre@163.com>
-To: bpf@vger.kernel.org
-Cc: borisp@nvidia.com,
-	john.fastabend@gmail.com,
-	kuba@kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	mykolal@fb.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	shuah@kernel.org,
-	netdev@vger.kernel.org,
-	Jiayuan Chen <mrpre@163.com>
-Subject: [PATCH bpf v1 2/2] selftests/bpf: add ktls selftest
-Date: Fri, 24 Jan 2025 01:15:52 +0800
-Message-ID: <20250123171552.57345-3-mrpre@163.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20250123171552.57345-1-mrpre@163.com>
-References: <20250123171552.57345-1-mrpre@163.com>
+	s=arc-20240116; t=1737653075; c=relaxed/simple;
+	bh=EC8kDeSwT8BCE6L3361eSA2oMrWX/LhNkzLG0ssN7bw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=afEbYAcVLEIYnO4Cpf+ngRN3HPGbCPY0SGjcEVJJO5mcTNFszxBquW+m9tc8t8GHjnwvZ7z2Uzw79tDAATCDk4tG3TzGjEumJEk7FmwzIscsVacHFIJOYu8Jv2tL5s82oKxd4Yw9cEP5E6N92Oe91nAK12xX+yPvrWWnl4iADmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com; dkim=pass (2048-bit key) header.d=siemens.com header.i=florian.bezdeka@siemens.com header.b=avfOWyEP; arc=none smtp.client-ip=185.136.65.225
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com
+Received: by mta-65-225.siemens.flowmailer.net with ESMTPSA id 20250123172423f775def56b496d58fb
+        for <bpf@vger.kernel.org>;
+        Thu, 23 Jan 2025 18:24:24 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm2;
+ d=siemens.com; i=florian.bezdeka@siemens.com;
+ h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc:References:In-Reply-To;
+ bh=oxINAJ0LeLqJ3M0qS3mB6DNG37C/XjqZ02n4XQg2+vE=;
+ b=avfOWyEPThY0qZHFWBl2B3Waotz+8loLJ+mZUtGGItUwfJOUtG7FrfOs0qOKpl8WBbOxTJ
+ hmxCiPBT8gqw2waOxbkfTxYZZHTxmmdmq4PuV6EuhYS6vXo67MhLp5hspGJKBF2pL9FC0+Qo
+ MynnVI+uRPOsDiP0334hKKXlZ+L4Bf/rJn8iadkanOpnW1TPw4Y69HZ940bExo8i6vtnn/2C
+ O0P4fqcEZTdD+oO2Fpdf1JfU18oZI2bdZ4VkBWvUV9rdG4Kw9NJ32KkkBu5OAE07aaDI1nwa
+ Rry4DyQN0YMb5WgK/aYrOP/K5Kg61gheKSrhrhKKNf5XcktSigozEdDg==;
+Message-ID: <ea087229cc6f7953875fc69f1b73df1ae1ee9b72.camel@siemens.com>
+Subject: Re: [PATCH bpf-next v6 4/4] igc: Add launch time support to XDP ZC
+From: Florian Bezdeka <florian.bezdeka@siemens.com>
+To: "Song, Yoong Siang" <yoong.siang.song@intel.com>, "Bouska, Zdenek"
+ <zdenek.bouska@siemens.com>, "David S . Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Willem de
+ Bruijn <willemb@google.com>, Donald Hunter <donald.hunter@gmail.com>,
+ Jonathan Corbet <corbet@lwn.net>, Bjorn Topel <bjorn@kernel.org>,
+ "Karlsson, Magnus" <magnus.karlsson@intel.com>, "Fijalkowski, Maciej"
+ <maciej.fijalkowski@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer
+ <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, "Damato, Joe"
+ <jdamato@fastly.com>, Stanislav Fomichev <sdf@fomichev.me>, Xuan Zhuo
+ <xuanzhuo@linux.alibaba.com>, Mina Almasry <almasrymina@google.com>, Daniel
+ Jurgens <danielj@nvidia.com>, Andrii Nakryiko <andrii@kernel.org>, Eduard
+ Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Martin
+ KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Shuah Khan
+ <shuah@kernel.org>, Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose
+ Abreu <joabreu@synopsys.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>, "Kitszel, Przemyslaw"
+ <przemyslaw.kitszel@intel.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+ "linux-stm32@st-md-mailman.stormreply.com"
+ <linux-stm32@st-md-mailman.stormreply.com>, 
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "intel-wired-lan@lists.osuosl.org"
+ <intel-wired-lan@lists.osuosl.org>, "xdp-hints@xdp-project.net"
+ <xdp-hints@xdp-project.net>
+Date: Thu, 23 Jan 2025 18:24:22 +0100
+In-Reply-To: <PH0PR11MB583095A2F12DA10D57781D18D8E02@PH0PR11MB5830.namprd11.prod.outlook.com>
+References: <20250116155350.555374-1-yoong.siang.song@intel.com>
+	 <20250116155350.555374-5-yoong.siang.song@intel.com>
+	 <AS1PR10MB5675499EE0ED3A579151D3D3EBE02@AS1PR10MB5675.EURPRD10.PROD.OUTLOOK.COM>
+	 <PH0PR11MB583095A2F12DA10D57781D18D8E02@PH0PR11MB5830.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wBnjmFKeZJnNajlHw--.26171S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW3WFWxtry3JFyfuF47Xr48tFb_yoWxKw1Dpa
-	y0yrW8KF48Jw1YqrZ5tr4xWrWSvF4jkw47Jr48Wr98AF1xXrn3XF1fKFW5tFnxWrZ8Zry5
-	uwsa9F45ZrWUXFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zic4SrUUUUU=
-X-CM-SenderInfo: xpus2vi6rwjhhfrp/1tbiWx3dp2eScl5PPwABsU
+X-Flowmailer-Platform: Siemens
+Feedback-ID: 519:519-68982:519-21489:flowmailer
 
-add ktls selftest
+Hi all,
 
-Signed-off-by: Jiayuan Chen <mrpre@163.com>
----
- .../selftests/bpf/prog_tests/sockmap_ktls.c   | 175 +++++++++++++++++-
- .../selftests/bpf/progs/test_sockmap_ktls.c   |  26 +++
- 2 files changed, 199 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_ktls.c
+On Thu, 2025-01-23 at 16:41 +0000, Song, Yoong Siang wrote:
+> On Thursday, January 23, 2025 11:40 PM, Bouska, Zdenek <zdenek.bouska@sie=
+mens.com> wrote:
+> >=20
+> > Hi Siang,
+> >=20
+> > I tested this patch series on 6.13 with Intel I226-LM (rev 04).
+> >=20
+> > I also applied patch "selftests/bpf: Actuate tx_metadata_len in xdp_hw_=
+metadata" [1]
+> > and "selftests/bpf: Enable Tx hwtstamp in xdp_hw_metadata" [2] so that =
+TX timestamps
+> > work.
+> >=20
+> > HW RX-timestamp was small (0.5956 instead of 1737373125.5956):
+> >=20
+> > HW RX-time:   595572448 (sec:0.5956) delta to User RX-time sec:17373731=
+24.9873 (1737373124987318.750 usec)
+> > XDP RX-time:   1737373125582798388 (sec:1737373125.5828) delta to User =
+RX-time sec:0.0001 (92.733 usec)
+> >=20
+> > Igc's raw HW RX-timestamp in front of frame data was overwritten by BPF=
+ program on
+> > line 90 in tools/testing/selftests/bpf: meta->hint_valid =3D 0;
+> >=20
+> > "HW timestamp has been copied into local variable" comment is outdated =
+on
+> > line 2813 in drivers/net/ethernet/intel/igc/igc_main.c after
+> > commit 069b142f5819 igc: Add support for PTP .getcyclesx64() [3].
+> >=20
+> > Workaround is to add unused data to xdp_meta struct:
+> >=20
+> > --- a/tools/testing/selftests/bpf/xdp_metadata.h
+> > +++ b/tools/testing/selftests/bpf/xdp_metadata.h
+> > @@ -49,4 +49,5 @@ struct xdp_meta {
+> >                __s32 rx_vlan_tag_err;
+> >        };
+> >        enum xdp_meta_field hint_valid;
+> > +       __u8 avoid_IGC_TS_HDR_LEN[16];
+> > };
+> >=20
+>=20
+> Hi Zdenek Bouska,=20
+>=20
+> Thanks for your help on testing this patch set.
+> You are right, there is some issue with the Rx hw timestamp,
+> I will submit the bug fix patch when the solution is finalized,
+> but the fix will not be part of this launch time patch set.
+> Until then, you can continue to use your WA.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c b/tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c
-index 2d0796314862..16acd8f345fd 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c
-@@ -3,13 +3,64 @@
- /*
-  * Tests for sockmap/sockhash holding kTLS sockets.
-  */
--
-+#include <error.h>
- #include <netinet/tcp.h>
-+#include <linux/tls.h>
- #include "test_progs.h"
-+#include "sockmap_helpers.h"
-+#include "test_skmsg_load_helpers.skel.h"
-+#include "test_sockmap_ktls.skel.h"
- 
- #define MAX_TEST_NAME 80
- #define TCP_ULP 31
- 
-+static int init_ktls_pairs(int c, int p)
-+{
-+	int err;
-+	struct tls12_crypto_info_aes_gcm_128 crypto_rx;
-+	struct tls12_crypto_info_aes_gcm_128 crypto_tx;
-+
-+	err = setsockopt(c, IPPROTO_TCP, TCP_ULP, "tls", strlen("tls"));
-+	if (!ASSERT_OK(err, "setsockopt(TCP_ULP)"))
-+		goto out;
-+
-+	err = setsockopt(p, IPPROTO_TCP, TCP_ULP, "tls", strlen("tls"));
-+	if (!ASSERT_OK(err, "setsockopt(TCP_ULP)"))
-+		goto out;
-+
-+	memset(&crypto_rx, 0, sizeof(crypto_rx));
-+	memset(&crypto_tx, 0, sizeof(crypto_tx));
-+	crypto_rx.info.version = TLS_1_2_VERSION;
-+	crypto_tx.info.version = TLS_1_2_VERSION;
-+	crypto_rx.info.cipher_type = TLS_CIPHER_AES_GCM_128;
-+	crypto_tx.info.cipher_type = TLS_CIPHER_AES_GCM_128;
-+
-+	err = setsockopt(c, SOL_TLS, TLS_TX, &crypto_tx, sizeof(crypto_tx));
-+	if (!ASSERT_OK(err, "setsockopt(TLS_TX)"))
-+		goto out;
-+
-+	err = setsockopt(p, SOL_TLS, TLS_RX, &crypto_rx, sizeof(crypto_rx));
-+	if (!ASSERT_OK(err, "setsockopt(TLS_RX)"))
-+		goto out;
-+	return 0;
-+out:
-+	return -1;
-+}
-+
-+static int create_ktls_pairs(int family, int sotype, int *c, int *p)
-+{
-+	int err;
-+
-+	err = create_pair(family, sotype, c, p);
-+	if (!ASSERT_OK(err, "create_pair()"))
-+		return -1;
-+
-+	err = init_ktls_pairs(*c, *p);
-+	if (!ASSERT_OK(err, "init_ktls_pairs(c, p)"))
-+		return -1;
-+	return 0;
-+}
-+
- static int tcp_server(int family)
- {
- 	int err, s;
-@@ -146,6 +197,115 @@ static const char *fmt_test_name(const char *subtest_name, int family,
- 	return test_name;
- }
- 
-+static void test_sockmap_ktls_offload(int family, int sotype)
-+{
-+	int err;
-+	int c = 0, p = 0, sent, recvd;
-+	char msg[12] = "hello world\0";
-+	char rcv[13];
-+
-+	err = create_ktls_pairs(family, sotype, &c, &p);
-+	if (!ASSERT_OK(err, "create_ktls_pairs()"))
-+		goto out;
-+
-+	sent = send(c, msg, sizeof(msg), 0);
-+	if (!ASSERT_OK(err, "send(msg)"))
-+		goto out;
-+
-+	recvd = recv(p, rcv, sizeof(rcv), 0);
-+	if (!ASSERT_OK(err, "recv(msg)") ||
-+	    !ASSERT_EQ(recvd, sent, "length mismatch"))
-+		goto out;
-+
-+	ASSERT_OK(memcmp(msg, rcv, sizeof(msg)), "data mismatch");
-+
-+out:
-+	if (c)
-+		close(c);
-+	if (p)
-+		close(p);
-+}
-+
-+static void test_sockmap_ktls_tx_cork(int family, int sotype, bool push)
-+{
-+	int err, off;
-+	int i, j;
-+	int start_push = 0, push_len = 0;
-+	int c = 0, p = 0, one = 1, sent, recvd;
-+	int prog_fd, map_fd;
-+	char msg[12] = "hello world\0";
-+	char rcv[20] = {0};
-+	struct test_sockmap_ktls *skel;
-+
-+	skel = test_sockmap_ktls__open_and_load();
-+	if (!ASSERT_TRUE(skel, "open ktls skel"))
-+		return;
-+
-+	err = create_pair(family, sotype, &c, &p);
-+	if (!ASSERT_OK(err, "create_pair()"))
-+		goto out;
-+
-+	prog_fd = bpf_program__fd(skel->progs.prog_sk_policy);
-+	map_fd = bpf_map__fd(skel->maps.sock_map);
-+
-+	err = bpf_prog_attach(prog_fd, map_fd, BPF_SK_MSG_VERDICT, 0);
-+	if (!ASSERT_OK(err, "bpf_prog_attach sk msg"))
-+		goto out;
-+
-+	err = bpf_map_update_elem(map_fd, &one, &c, BPF_NOEXIST);
-+	if (!ASSERT_OK(err, "bpf_map_update_elem(c)"))
-+		goto out;
-+
-+	err = init_ktls_pairs(c, p);
-+	if (!ASSERT_OK(err, "init_ktls_pairs(c, p)"))
-+		goto out;
-+
-+	skel->bss->cork_byte = sizeof(msg);
-+	if (push) {
-+		start_push = 1;
-+		push_len = 2;
-+	}
-+	skel->bss->push_start = start_push;
-+	skel->bss->push_end = push_len;
-+
-+	off = sizeof(msg) / 2;
-+	sent = send(c, msg, off, 0);
-+	if (!ASSERT_EQ(sent, off, "send(msg)"))
-+		goto out;
-+
-+	recvd = recv_timeout(p, rcv, sizeof(rcv), MSG_DONTWAIT, 1);
-+	if (!ASSERT_EQ(-1, recvd, "expected no data"))
-+		goto out;
-+
-+	/* send remaining msg */
-+	sent = send(c, msg + off, sizeof(msg) - off, 0);
-+	if (!ASSERT_EQ(sent, sizeof(msg) - off, "send remaining data"))
-+		goto out;
-+
-+	recvd = recv_timeout(p, rcv, sizeof(rcv), MSG_DONTWAIT, 1);
-+	if (!ASSERT_OK(err, "recv(msg)") ||
-+	    !ASSERT_EQ(recvd, sizeof(msg) + push_len, "check length mismatch"))
-+		goto out;
-+
-+	for (i = 0, j = 0; i < recvd;) {
-+		/* skip checking the data that has been pushed in */
-+		if (i >= start_push && i <= start_push + push_len - 1) {
-+			i++;
-+			continue;
-+		}
-+		if (!ASSERT_EQ(rcv[i], msg[j], "data mismatch"))
-+			goto out;
-+		i++;
-+		j++;
-+	}
-+out:
-+	if (c)
-+		close(c);
-+	if (p)
-+		close(p);
-+	test_sockmap_ktls__destroy(skel);
-+}
-+
- static void run_tests(int family, enum bpf_map_type map_type)
- {
- 	int map;
-@@ -158,14 +318,25 @@ static void run_tests(int family, enum bpf_map_type map_type)
- 		test_sockmap_ktls_disconnect_after_delete(family, map);
- 	if (test__start_subtest(fmt_test_name("update_fails_when_sock_has_ulp", family, map_type)))
- 		test_sockmap_ktls_update_fails_when_sock_has_ulp(family, map);
--
- 	close(map);
- }
- 
-+static void run_ktls_test(int family, int sotype)
-+{
-+	if (test__start_subtest("tls simple offload"))
-+		test_sockmap_ktls_offload(family, sotype);
-+	if (test__start_subtest("tls tx cork"))
-+		test_sockmap_ktls_tx_cork(family, sotype, false);
-+	if (test__start_subtest("tls tx cork with push"))
-+		test_sockmap_ktls_tx_cork(family, sotype, true);
-+}
-+
- void test_sockmap_ktls(void)
- {
- 	run_tests(AF_INET, BPF_MAP_TYPE_SOCKMAP);
- 	run_tests(AF_INET, BPF_MAP_TYPE_SOCKHASH);
- 	run_tests(AF_INET6, BPF_MAP_TYPE_SOCKMAP);
- 	run_tests(AF_INET6, BPF_MAP_TYPE_SOCKHASH);
-+	run_ktls_test(AF_INET, SOCK_STREAM);
-+	run_ktls_test(AF_INET6, SOCK_STREAM);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_ktls.c b/tools/testing/selftests/bpf/progs/test_sockmap_ktls.c
-new file mode 100644
-index 000000000000..e0f757929ef4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_sockmap_ktls.c
-@@ -0,0 +1,26 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+
-+int cork_byte;
-+int push_start;
-+int push_end;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-+	__uint(max_entries, 20);
-+	__type(key, int);
-+	__type(value, int);
-+} sock_map SEC(".maps");
-+
-+SEC("sk_msg")
-+int prog_sk_policy(struct sk_msg_md *msg)
-+{
-+	if (cork_byte > 0)
-+		bpf_msg_cork_bytes(msg, cork_byte);
-+	if (push_start > 0 && push_end > 0)
-+		bpf_msg_push_data(msg, push_start, push_end, 0);
-+
-+	return SK_PASS;
-+}
--- 
-2.43.5
+I think there is no simple fix for that. That needs some discussion
+around the "expectations" to the headroom / meta data area in front of
+the actual packet data.
+
+To be able to write generic BPF programs - generic in terms of "works
+with all drivers" - the headroom is expected to be available for use
+inside the BPF program.
+
+I think that is true for most drivers / devices, but at least igc is
+different in this regard. Devices deliver the RX timestamp in front of
+the actual data while other devices deliver the meta information as
+part of the RX descriptor.
+
+For igc we get:
+
++----------+-----------------+-----+------+
+| headroom | custom metadata |RX TS| data |
++----------+-----------------+-----+------+
+           ^                       ^
+           |                       |
+ xdp_buff->data_meta        xdp_buff->data
+
+
+The only information the application gets is a pointer to the start of
+the data section. For calculating / finding the beginning of the meta
+data area the application has to go backward.
+
+That is exactly how it is currently implemented in the selftest.
+
+Problem: By writing into the calculated meta data area the BPF program
+might already destroy meta information delivered by the driver. At
+least for igc this is a problem.
+
+I hope that was clear...
+
+Best regards,
+Florian
+
+>=20
+> > But Launch time still does not work:
+> >=20
+> > HW Launch-time:   1737374407515922696 (sec:1737374407.5159) delta to HW=
+ TX-complete-time sec:-0.9999 (-999923.649 usec)
+> >=20
+> > Command "sudo ethtool -X enp1s0 start 1 equal 1" was in v4 [4] but is n=
+ot in v6.
+> > Was that intentional? After executing it Launch time feature works:
+>=20
+> This ethtool command is to use RSS method to route the incoming packet
+> to the queue which has launch time enabled. However, not every device sup=
+port
+> RSS. So I move to use a more generic method, which is vlan priority metho=
+d,
+> to route the incoming packet. Therefore, you need to send an
+> UDP packet with VLAN priority 1 to port 9091 of DUT.
+>=20
+> Below is example of my python script to generate the vlan UDP packet.
+> You can have a quick try on it.
+>=20
+> from scapy.all import *
+> from scapy.all import Ether, Dot1Q, IP, UDP
+> packet =3D Ether(src=3D"44:ab:bc:bb:21:44", dst=3D"22:ab:bc:bb:12:34") / =
+Dot1Q(vlan=3D100, prio=3D1) / IP(src=3D"169.254.1.2", dst=3D"169.254.1.1") =
+/ UDP(dport=3D9091)
+> sendp(packet, iface=3D"enp1s0")
+>=20
+> Thanks & Regards
+> Siang
+>=20
+> >=20
+> > HW Launch-time:   1737374618088557111 (sec:1737374618.0886) delta to HW=
+ TX-complete-time sec:0.0000 (0.012 usec)
+> >=20
+> > Thank you for XDP launch time support!
+> >=20
+> > [1] https://lore.kernel.org/linux-kernel/20241205044258.3155799-1-
+> > yoong.siang.song@intel.com/
+> > [2] https://lore.kernel.org/linux-kernel/20241205051936.3156307-1-
+> > yoong.siang.song@intel.com/
+> > [3]
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
+it/?id=3D069
+> > b142f58196bd9f47b35e493255741e2c663c7
+> > [4] https://lore.kernel.org/linux-kernel/20250106135724.9749-1-
+> > yoong.siang.song@intel.com/
+> >=20
+> > Best regards,
+> > Zdenek Bouska
+> >=20
+> > --
+> > Siemens, s.r.o
+> > Foundational Technologies
+> >=20
 
 
