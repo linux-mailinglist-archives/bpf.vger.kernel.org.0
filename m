@@ -1,113 +1,124 @@
-Return-Path: <bpf+bounces-49582-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49583-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3528CA1A83D
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 17:58:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 443E3A1A87E
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 18:10:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3B4E188C0FB
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 16:58:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1C50188E4D3
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 17:08:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9850153BF8;
-	Thu, 23 Jan 2025 16:58:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94D882153FE;
+	Thu, 23 Jan 2025 17:06:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KFSefZzm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jwcNeAsf"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B93C1448E4;
-	Thu, 23 Jan 2025 16:58:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6579D2153F8;
+	Thu, 23 Jan 2025 17:06:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737651480; cv=none; b=f07ButX9PjlITbOEwqxvFn5A9Sv8DgMm4mhV1oWnfXMk8iiEeVTpFfymP8rJS1DtCKmDG/XKhtc1gIhtwwVJnxXEUo2tDtj8aH9xALmFQBTWClwjvyqdNPSzIX5rkaVcwVynmY+tvWRo2NVczb+OdOMwPT+KGgHGeP1cCaFqYwQ=
+	t=1737651963; cv=none; b=ocuMugrmyiYo9jNHVyqfYO8/yPSm5oqfEAo+t9BsopqfZVaW12/hVq0YQibs/Dm9WN3iq+QHvXNxPE7jV6eHoVU5kWxanzXwvWK2jT/lDnwrVzLYbhFGOU3TpzOcAUxdJthCqBcby/DnFqvhtR6s5FoqSe5hc5X3Rz8EZFMeWdQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737651480; c=relaxed/simple;
-	bh=EdXDKN8/jMZQwOGQrsZ+xLxPyNE7bcYwLF1/RYlZH7Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cEC96p+MAV6E6fXmC9f7IRuhHxFI+wPrYCDqq6LaJQWLywjkO9qaHqU2j8+V9FrXuxIm18vM4jfqmgpIw5bGqJ6OqTN9Z8l0q65vsHUdDTM7z2wO1V4Pmbz3vQT8+yUu9JbTLtV/qmro/uKpmcL9G+Dr9v1lqVog64oNiV/BKGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KFSefZzm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5DB5C4CED3;
-	Thu, 23 Jan 2025 16:57:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737651479;
-	bh=EdXDKN8/jMZQwOGQrsZ+xLxPyNE7bcYwLF1/RYlZH7Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KFSefZzmyaV1WMbwvRCeQO786yKLVIySpS+nhmQIwP2/tq7PtbNg0OMqlMMCcy68u
-	 VIfksw9J0XAOKaPcBOQbNz8PE87ia+SlfHJ4uko9BVal4F2/TLUxmsyipz6hV48x7n
-	 /j4fZlrcgd7NPA6UWWn4mnkt66/7OnegdWu6R7Az9iBBktjn964a9E9W49mpW7Czt+
-	 RUAANPr/8vxUj38gJ+vsofUXgHkqhGRv97EcEq38clP9d6KLrWLyNBI4g6FKbKUPvC
-	 b0lQ7NY5cUwLiyGNLMfT32lWkAKjalicMFsgIaOx2+jgLBNd2/p0ED4iJPrjA/DLCK
-	 RxJzMaYodygAw==
-Date: Thu, 23 Jan 2025 06:57:58 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Andrea Righi <arighi@nvidia.com>
-Cc: Ihor Solodrai <ihor.solodrai@pm.me>, sched-ext@meta.com,
-	kernel-team@meta.com, linux-kernel@vger.kernel.org,
-	bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH sched_ext/for-6.13-fixes] sched_ext: Fix dsq_local_on
- selftest
-Message-ID: <Z5J1Ft2YwSRpedzx@slm.duckdns.org>
-References: <Z1n9v7Z6iNJ-wKmq@slm.duckdns.org>
- <SJEarr1ol1z7N83mqHJjBmpXcXgHNnnuORHfziWINcHBQCJzY0RczexPKxdq_vE5cDYPeO3bx1RdsNhLqw5UYI40HSX9cPZ9rdmebYwwAP8=@pm.me>
- <HdoCQccNk3GZdnPx5w1vuAfOMMgtWeUgrUhn_e8B-hyRrWoOPakTGcoI3Q4-QmK_44msuvivoRUykxxeB82uR-S3enkmFaQl2t6Zgu-Nq6Y=@pm.me>
- <Z2MV001RfiG7DNqj@slm.duckdns.org>
- <ouIylyHgXTVZ9RiyVeHZ26YXQLKMEKHoOVPWIgpWRDD2FL2RDwwUEocaj4LMpMR3PjbwpPuxEnJAjMeD4e7LnWIAYvIbGC5BPvPGtzyumYk=@pm.me>
- <Z2tNK2oFDX1OPp8C@slm.duckdns.org>
- <QHB1r-3fBPQIaDS8iz26J-zoMbn3O6VLlwlZP1NQdkMzlQTsCX_xrfTPBoGt6SQOGgtg6vN7aXles4CndepTvjIVQ7bVXDBrvPaiRH5R8tc=@pm.me>
- <Z5BMkyJ8I7cth1GH@slm.duckdns.org>
- <m94EAn-xiPWJ1dRFTqcm6urBNNOPza94BmyYvp_5ti06uAZF0Izg2mBC9rpbc3PEfWWvDf7UyDt1x_2gB-7y3esTH3f54s05QBxcTXh4YhQ=@pm.me>
- <Z5IOpOD9cs2fLaIg@gpd3>
+	s=arc-20240116; t=1737651963; c=relaxed/simple;
+	bh=57gNsFeGAMlR0TbDCGi1s/wIv4wDl8lGHmb+XUT1DpA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mwEzg4/alVp2B1DGHo8PzCKEGj8bgqf0kWCTc9QDYBPVfa3hy2XvZwWaFFDHN1nokg08wPuQoytcWaW1n0qR2bCU46Z2DWDjZ/lstQ7PcxyoYWFefZXdaF+uE7gDpvUSEbcRTmCj8R8g2PqEW7Fa1xULgkV07HIACSpHb5V93Mc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jwcNeAsf; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-21649a7bcdcso20657225ad.1;
+        Thu, 23 Jan 2025 09:06:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1737651960; x=1738256760; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=c5cHnouL9ni1UHHCnJzcDlfamXCkVHhgw5c2JHRsxX4=;
+        b=jwcNeAsfd+YSE8oIKYZE8VFLTPwvekWAa8QCKKP6mQ4V57AlnGvZjydKaQpwMlRsgS
+         laZ3XnfbMlzAcVrtLksaBe8oJEJP3IVOfYKoyLa4hlwJHBJyT/sg7UWW/ggsXBPmj113
+         By1d3PSEQMfNRoXLCKkfXhwmIpDllT8mevvvoENGqZCqOZLSJp1yxy6hsnPc3G3iOTCs
+         7meZjV9P5Swn+QO8SiM7KGQ181v4LG9th9vWm+MVHMDJDJhEzebn2H5vBO7Uf6bNOmXU
+         vx7BM21HNQysvYQjfB5IecoHhSPz1IP1QTnEP/FEaS2ObCC2XHIAyqLQPQLrQvYv6FYv
+         pKbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737651960; x=1738256760;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=c5cHnouL9ni1UHHCnJzcDlfamXCkVHhgw5c2JHRsxX4=;
+        b=hfWMzn7cq48yb34TpuGG/01xQa2oL+IHVze5eB6WumrRM01TW4KcP8v2OgDlqO9Qls
+         eNvnyS+ezPTSJn32dlpFFsufH9+geEzKWThCtYVH7SXbRHT1OrOKCezd8JF0YQ9xdvQj
+         bsc349TBSohPrm40Ng0lrUYCW4kwpKmZs7Zj6Wio69shsBqjivcb5JL77pJ1TU6EsiFI
+         zXyHzX9NHN9C9mHrM3CgD3uyv//neRoRTpXogYXf64Miw1WbKGxT1PcsgVfL1luXwu5k
+         CJUwGi882BF92Do0W1VbD43kJyIcDl0txvNUPBVbiF54cOrhXpxemIXZqSIn9WtSIgLr
+         fLpA==
+X-Forwarded-Encrypted: i=1; AJvYcCXzmEExF0TPHONFofS7CIhR0cJjVSB6URanzHgdVNjFW0XezwaP31EEIfFMNEL8HeQYszV1RORpJw8Mr2o=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyAIml2pCZxwcFO7GT7edbMtVsDJ27ng7myc9vaW4lH9CJcMOXY
+	GkcYEKEywem0lCrPE871vW6B/g7qUkIEVyLZKDtZ0+3JavO6zlmOvmX2EQ==
+X-Gm-Gg: ASbGncsSStR34f50yMqFufA09S5apeAUvEpTTR3roAp9YF+x4wK44alkmA40S5wJRcc
+	MGyG2LFapY7ZCMsVah7E79mceXCU78sj3+FvfEvoVaEqwawmkTnBlGBNEyd4hPksbYg5i9VK5K5
+	FX0VlG3a80ieDSuVoKLffAyo5jeaDg8/Pqd5vvhyDLWjZpYtbhIC9LHXj0HJxX086ZjEobe+VO2
+	uy2KM1wbhYhtucWp6uyAGBBUFyY07l85/UqdKNtruMgbkW1xGkIN/8XqELil/pcXFtilr5DdQhS
+	UKVHiIHUlu7I0A==
+X-Google-Smtp-Source: AGHT+IGe4Tc5dEPr4EJZV499oDB8Rri/Jwzh+JlFyJfsEgbVKhhIiDMsx9SsWs5HcTLohzRokgdzRA==
+X-Received: by 2002:a17:902:ebcd:b0:21c:7e22:7844 with SMTP id d9443c01a7336-21c7e22789fmr264511535ad.51.1737651958989;
+        Thu, 23 Jan 2025 09:05:58 -0800 (PST)
+Received: from localhost ([117.147.90.29])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21da3d9c5d6sm1428095ad.52.2025.01.23.09.05.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jan 2025 09:05:58 -0800 (PST)
+From: Tao Chen <chen.dylane@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	qmo@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Tao Chen <chen.dylane@gmail.com>
+Subject: [PATCH bpf-next v2 0/2] Add prog_kfunc feature probe
+Date: Fri, 24 Jan 2025 01:05:53 +0800
+Message-Id: <20250123170555.291896-1-chen.dylane@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <Z5IOpOD9cs2fLaIg@gpd3>
 
-On Thu, Jan 23, 2025 at 10:40:52AM +0100, Andrea Righi wrote:
-> On Wed, Jan 22, 2025 at 07:10:00PM +0000, Ihor Solodrai wrote:
-> > 
-> > On Tuesday, January 21st, 2025 at 5:40 PM, Tejun Heo <tj@kernel.org> wrote:
-> > 
-> > > 
-> > > 
-> > > Hello, sorry about the delay.
-> > > 
-> > > On Wed, Jan 15, 2025 at 11:50:37PM +0000, Ihor Solodrai wrote:
-> > > ...
-> > > 
-> > > > 2025-01-15T23:28:55.8238375Z [ 5.334631] sched_ext: BPF scheduler "dsp_local_on" disabled (runtime error)
-> > > > 2025-01-15T23:28:55.8243034Z [ 5.335420] sched_ext: dsp_local_on: SCX_DSQ_LOCAL[_ON] verdict target cpu 1 not allowed for kworker/u8:1[33]
-> > > 
-> > > 
-> > > That's a head scratcher. It's a single node 2 cpu instance and all unbound
-> > > kworkers should be allowed on all CPUs. I'll update the test to test the
-> > > actual cpumask but can you see whether this failure is consistent or flaky?
-> > 
-> > I re-ran all the jobs, and all sched_ext jobs have failed (3/3).
-> > Previous time only 1 of 3 runs failed.
-> > 
-> > https://github.com/kernel-patches/vmtest/actions/runs/12798804552/job/36016405680
-> 
-> Oh I see what happens, SCX_DSQ_LOCAL_ON is (incorrectly) resolved to 0.
-> 
-> More exactly, none of the enum values are being resolved correctly, likely
-> due to the CO:RE enum refactoring. There’s probably something broken in
-> tools/testing/selftests/sched_ext/Makefile, I’ll take a look.
+More and more kfunc functions are being added to the kernel.
+Different prog types have different restrictions when using kfunc.
+Therefore, prog_kfunc probe is added to check whether it is supported,
+and the use of this api will be added to bpftool later.
 
-Yeah, we need to add SCX_ENUM_INIT() to each test. Will do that once the
-pending pull request is merged. The original report is a separate issue tho.
-I'm still a bit baffled by it.
+Change list:
+- v1 -> v2:
+  - check unsupported prog type like probe_bpf_helper
+  - add off parameter for module btf
+  - chenk verifier info when kfunc id invalid
 
-Thanks.
+Revisions:
+- v1
+  https://lore.kernel.org/bpf/20250122171359.232791-1-chen.dylane@gmail.com
+
+Tao Chen (2):
+  libbpf: Add libbpf_probe_bpf_kfunc API
+  selftests/bpf: Add libbpf_probe_bpf_kfunc API selftests
+
+ tools/lib/bpf/libbpf.h                        | 17 ++++++-
+ tools/lib/bpf/libbpf.map                      |  1 +
+ tools/lib/bpf/libbpf_probes.c                 | 47 +++++++++++++++++++
+ .../selftests/bpf/prog_tests/libbpf_probes.c  | 35 ++++++++++++++
+ 4 files changed, 99 insertions(+), 1 deletion(-)
 
 -- 
-tejun
+2.43.0
+
 
