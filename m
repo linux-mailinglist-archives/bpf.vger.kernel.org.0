@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-49571-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49572-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11FC4A1A154
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 10:58:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C5F4A1A156
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 10:58:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC867188F358
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 09:58:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3393E7A2D3F
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 09:58:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E0FF20C481;
-	Thu, 23 Jan 2025 09:58:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BF3720D514;
+	Thu, 23 Jan 2025 09:58:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OmzAzZ3y"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SH08KGr/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7081720D4EF;
-	Thu, 23 Jan 2025 09:57:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B89F20D4E8;
+	Thu, 23 Jan 2025 09:58:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737626279; cv=none; b=Jmdh/DPJv1HOnVpyGYsE/CXOteOl69ERn972fZ2nDstMvGgZWW0Z7VjXCU6LjvgdZ+e7sFrBPkl/Ze5qQ+WzS/OyaqvEjAabvgGtM6jSuiRii6VsAevvLWB0JtCYH5e7HjHJmR5SFE03mVlD+pJugv8/l1urEeFMHXz4pGVpEEE=
+	t=1737626297; cv=none; b=IqZ98ACgmsqVSmqr3DdWTkIf8YAKfhW5aEXyzjaN9n9Fa3n9GE9mh7fVQ4KEwvmT77xpnLmefhigQ172G48UX+6pPcZnaKOfSl1Ovo0qwd2x2X3MQSfvmwz5b4ABt+pR1Pxy7jKi1nmHKUVAdHQP4xmSv7x0mQh3l7bHCvyWkqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737626279; c=relaxed/simple;
-	bh=FgicG9xKQ0MGARjqOPxoBkRCtWQnvWJcqdfPo1lLxVI=;
+	s=arc-20240116; t=1737626297; c=relaxed/simple;
+	bh=48/WAXQxl3Ff4TG7sXdI+8kViWQ6eEm678vBkrR0QUI=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XLLZL8uP+si8Y3iSeXSLgzu5QPr9Cc1x8gwrb3wfbupOju16D2i11XhbHmSgyqEGUYkJLBw7tgRL4V8sXHsyFNTS+U4drtJE014+OHoDiPbuShN6ns7ySUa+sUTYVEz+uwcKWyYqLBrxjx/AwNiYKMW+La7uaUbQ7sx1IIXzGdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OmzAzZ3y; arc=none smtp.client-ip=209.85.214.179
+	 Content-Type:MIME-Version; b=M2wHcXPoTwlB34XmdopFk8rnxLZmSCl7OlcnkSNr+b2lmJHPLw2icfP5ir0bODDivLTo2fb9LaWFRN1lUtUYsrzI0eUuKg7iXlBVn2QPM9Rh2ZGod5C+WVCdZQjMmaP0VcX5voXtdE4ZuBDbozMddCuCPbg5o2N/hLoQen13TjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SH08KGr/; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-21a7ed0155cso11118335ad.3;
-        Thu, 23 Jan 2025 01:57:58 -0800 (PST)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-216426b0865so10150245ad.0;
+        Thu, 23 Jan 2025 01:58:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737626277; x=1738231077; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1737626294; x=1738231094; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=xZOSwyM+r7tNYgCh6u6Am2CiILUNHkn5q/reme5TOsM=;
-        b=OmzAzZ3y86PUuCzALm1J9ykg0bINgdocxW8pZ88QYLH1RdOyFpfW4Iog9AREiRo8Va
-         PCmiQ3os1Kbjb8enb1uu+EwZhS5usO177sLe+BWG+aTdK1Ecgyhi0kfOf0eN74ayJZhw
-         /6KJt4dMkH3GkVWiaEp58W3Mo7+IPGQzU2OcgNS7LS4LuGQGTtDlLQ9QL4+YJivUkCf9
-         gPA9UvODd1ZN/rUdHiNs8MLcsvtjDVXq24rvwQAlySL+EcX9a/woNaHA3WFdWAu80UGZ
-         T78n1xt1J54yt73ppkjOKMin4w8lp3paBungbmv3YH2rmrj5MTwovQRQ+k7VFG5Qa067
-         2dXA==
+        bh=sMixnzrCeUhH0J93VrrAb50HrLeJ512qgAxsc1Vxqf4=;
+        b=SH08KGr/xzrZw+AB1RVggTpckTH7KTteMe+3ZRIvn466l+0XmUEykOryZ/tIbSaH8s
+         TYul6jp2YVIJdlRAqwBmSwoi3ZZUQXnG4rmTdpzGk0wEcI0rVJNR6fY7wEbBgGLqiOKY
+         igWKQYF+pFj6SMZU00rYuvByCAmT1qn+uIAa5tdHvkwcR/Ete4yxX5jbSTviA2YhCNuO
+         bEa6gprkjoixJuDq9owZ7dUQNBzmtLDFWwfvKOqV2Zl1YmIGFY6dw//TRLati6GYQPGe
+         pPy3MQYcBrkYPyF+8byIP63BYRHzRiWCUIhGXtuzxEnU2LzIT999r4ek7KYxKqH57UMJ
+         i2MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737626277; x=1738231077;
+        d=1e100.net; s=20230601; t=1737626294; x=1738231094;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=xZOSwyM+r7tNYgCh6u6Am2CiILUNHkn5q/reme5TOsM=;
-        b=DpSY0ypPxlSVG5jnXZioMxEpdi9zGvPszIUT21xT4fqsmLcsgnpE74BroWif2dvXWK
-         kRaZFbsa2MwFhmA2VYMHx3g3Jrx/dk5Ni2GE+2MZioz0ekao2kLimfZe4DrY4HsMWbkp
-         8k4Z4dSwpXYVwxqMo8Eb++EZK9e5h0O0WT8GAiW0zTNPsmI22r/3pmo5k/pjDSpoAv0R
-         T7beJS3Jc/DhIlyWTvO34inE3jloFTX7aaAy5k5ZxyK6e2605B7gtyahEOF/aESvSUEW
-         lVc9bWb9QyBgL+tSlJ3keAK9e3GloNgiUEgFNKU/xdzHaORAdq8LyWCmgsB2YFfHTtVL
-         DCAA==
-X-Forwarded-Encrypted: i=1; AJvYcCUM2LmbsWfe1XVkfIdUIuaTzPcgr5lqH+Y6qedY4ryiyk/xx/CjP9QuDrC/gnfOX7LknxvHe30=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwML0qXtnk3DGsWL8dg05/gL6sjZzUn3wpuo4ONWV2vRjx5UXLo
-	U+iH3zW8E66yC0OB0DN5JE1NB1vI2ozu9/R1DKnlgbYIWLW7GCG6vASxn9+E
-X-Gm-Gg: ASbGnct6PTQuss7zgMfXbJWTBQfoc6tPcHeSRQvL7pdCHG+flu/hVbHZIiwENHtYSvg
-	0lfanEhzp6npTa9NZcggg4C4ORksXr+T/IKBEL4ydZ7xpHcHguao8qh/1sbk2o459UR8f0mJnRB
-	OWEJyhTyAPipiit6CuTy9Gms35HVuOWc8JYc+eFTNa/PyeMRvmxaDM4y0o/q15I5dWAQy0BORuk
-	pmtB8I5tVNDhd3XxFlEpFw/lJ47qcoxg3YirFA/pfJ8KzbPLruwV0z9Jsiap6tLosOyxa3XBY3k
-	pg==
-X-Google-Smtp-Source: AGHT+IEqbGvXZI9hSQvc/trgeyCmPiy5CnLjSNqYYwa6n8AOdMIMJmLdGNSJ6pFCHaLQiD3wKSdrOg==
-X-Received: by 2002:a17:902:f689:b0:215:5935:7eef with SMTP id d9443c01a7336-21c35549f0fmr350115855ad.22.1737626277484;
-        Thu, 23 Jan 2025 01:57:57 -0800 (PST)
+        bh=sMixnzrCeUhH0J93VrrAb50HrLeJ512qgAxsc1Vxqf4=;
+        b=P5v08gBpTN4CHNTW6Eqvo5F9jVI9y9QRQWyIV/J4seytBMRSx25fhGcKHWibXgwYtX
+         A3ihrLKygBeI21fTdDDMZlHqdhVFvCkIo3pjdhBOTu0JLr04p1SwveRcKbmfwUhVXAeH
+         c2IukxkxeESIYyKO55c0FM64/FSxDdQPqjrArEUWwQQOcXReD99IIgLzfwrNPs8BhXgU
+         iB62uWaqGy/l389CaUCgCTEE8DN2W/Ay5BaDIZakVKfsrqtA0UEvSbFSxla0pxNuOKeG
+         ByafddJFvA6E9Wa3VHqtNC3FKQrwTeuwlV7H4xZ5DqScDA+QO/H/7IOUSu9Eq1cVH9ez
+         OT/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWef40XPa/VeFrRmI4AohKFVFEjW1DRITUALEPmE6+FoH2lSK/IPrYVEhlQPaPW3dssi/PJYsA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YylghZ2FG14ZkLNTOE3fmYQeg1hfRNifnrceUSBjnjGUCW/ZRmN
+	1DVB3A0GWufPQIJbRCJF4wFRZSisVVBpmHsDytTLvCkCGMWlFwsx
+X-Gm-Gg: ASbGnctaEqRdK+k2hR9k5WyO0KJAFlG+CKvRO98y6cw152nC3WCOqsT9gjAOWxjVaeD
+	Q1Oeq1MK0sR/nrlwmoVIZOJJpHfYkEiE9EI0T5pfaWBzJ5Euz5nsjhAYIbI78Qy9Wcihi+pKTW1
+	ka80Ot3xkehVBVTjVPdeR4vhqXUhKKzoozqyCnyHQTrKk2oe7kaHtb6/8KfbhmVdnxyLr3iEUdC
+	b0FSh3JH4Ljs0RWZwDs5l+jIp9H9dhwAfpYI203rPW6g+8utJHvpRh3SZ1UGDHDlMx1D/eAtwlM
+	eQ==
+X-Google-Smtp-Source: AGHT+IH6C91rNsLLDPdqIObKr6CDBFjfOZVoyyD6ArJTULRsKtFGhS4xvwnBKY3uMrHgPJ9T35AUyQ==
+X-Received: by 2002:a17:902:e802:b0:215:827e:3a6 with SMTP id d9443c01a7336-21c355ba38amr418284225ad.40.1737626294446;
+        Thu, 23 Jan 2025 01:58:14 -0800 (PST)
 Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21c2d3e14aesm108673965ad.195.2025.01.23.01.57.56
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21c2d43252bsm108630795ad.258.2025.01.23.01.58.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jan 2025 01:57:57 -0800 (PST)
-Message-ID: <37a51a1f055f61911f7a4df9e8072f76412ad136.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 03/14] bpf: Allow struct_ops prog to return
- referenced kptr
+        Thu, 23 Jan 2025 01:58:14 -0800 (PST)
+Message-ID: <63ef4167a39a33cdc72fa8e920d39a1a66e158f6.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 04/14] selftests/bpf: Test returning
+ referenced kptr from struct_ops programs
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Amery Hung <ameryhung@gmail.com>, netdev@vger.kernel.org
 Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
@@ -82,10 +82,10 @@ Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
 	toke@redhat.com, jhs@mojatatu.com, jiri@resnulli.us, stfomichev@gmail.com, 
 	ekarani.silvestre@ccc.ufcg.edu.br, yangpeihao@sjtu.edu.cn, 
 	xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com, amery.hung@bytedance.com
-Date: Thu, 23 Jan 2025 01:57:52 -0800
-In-Reply-To: <20241220195619.2022866-4-amery.hung@gmail.com>
+Date: Thu, 23 Jan 2025 01:58:09 -0800
+In-Reply-To: <20241220195619.2022866-5-amery.hung@gmail.com>
 References: <20241220195619.2022866-1-amery.hung@gmail.com>
-		 <20241220195619.2022866-4-amery.hung@gmail.com>
+		 <20241220195619.2022866-5-amery.hung@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.54.2 (3.54.2-1.fc41) 
@@ -100,149 +100,65 @@ On Fri, 2024-12-20 at 11:55 -0800, Amery Hung wrote:
 
 [...]
 
-> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-> index d9e0af00580b..27d4a170df84 100644
-> --- a/kernel/bpf/bpf_struct_ops.c
-> +++ b/kernel/bpf/bpf_struct_ops.c
-> @@ -386,7 +386,7 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_de=
-sc *st_ops_desc,
->  	st_ops_desc->value_type =3D btf_type_by_id(btf, value_id);
-> =20
->  	for_each_member(i, t, member) {
-> -		const struct btf_type *func_proto;
-> +		const struct btf_type *func_proto, *ret_type;
-> =20
->  		mname =3D btf_name_by_offset(btf, member->name_off);
->  		if (!*mname) {
-> @@ -409,6 +409,16 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_d=
-esc *st_ops_desc,
->  		if (!func_proto)
->  			continue;
-> =20
-> +		if (func_proto->type) {
-> +			ret_type =3D btf_type_resolve_ptr(btf, func_proto->type, NULL);
-> +			if (ret_type && !__btf_type_is_struct(ret_type)) {
-> +				pr_warn("func ptr %s in struct %s returns non-struct pointer, which =
-is not supported\n",
-> +					mname, st_ops->name);
-> +				err =3D -EOPNOTSUPP;
-> +				goto errout;
-> +			}
-> +		}
+> diff --git a/tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fai=
+l__local_kptr.c b/tools/testing/selftests/bpf/progs/struct_ops_kptr_return_=
+fail__local_kptr.c
+> new file mode 100644
+> index 000000000000..b8b4f05c3d7f
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__loca=
+l_kptr.c
+> @@ -0,0 +1,34 @@
+> +#include <vmlinux.h>
+> +#include <bpf/bpf_tracing.h>
+> +#include "../test_kmods/bpf_testmod.h"
+> +#include "bpf_experimental.h"
+> +#include "bpf_misc.h"
 > +
-
-This limitation seems unnecessary, if reference leaks are only allowed
-for parameters marked with __ref.
-
->  		if (btf_distill_func_proto(log, btf,
->  					   func_proto, mname,
->  					   &st_ops->func_models[i])) {
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 26305571e377..0e6a3c4daa7d 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -10707,6 +10707,8 @@ record_func_key(struct bpf_verifier_env *env, str=
-uct bpf_call_arg_meta *meta,
->  static int check_reference_leak(struct bpf_verifier_env *env, bool excep=
-tion_exit)
->  {
->  	struct bpf_verifier_state *state =3D env->cur_state;
-> +	enum bpf_prog_type type =3D resolve_prog_type(env->prog);
-> +	struct bpf_reg_state *reg =3D reg_state(env, BPF_REG_0);
->  	bool refs_lingering =3D false;
->  	int i;
-> =20
-> @@ -10716,6 +10718,12 @@ static int check_reference_leak(struct bpf_verif=
-ier_env *env, bool exception_exi
->  	for (i =3D 0; i < state->acquired_refs; i++) {
->  		if (state->refs[i].type !=3D REF_TYPE_PTR)
->  			continue;
-> +		/* Allow struct_ops programs to return a referenced kptr back to
-> +		 * kernel. Type checks are performed later in check_return_code.
-> +		 */
-> +		if (type =3D=3D BPF_PROG_TYPE_STRUCT_OPS && !exception_exit &&
-> +		    reg->ref_obj_id =3D=3D state->refs[i].id)
-> +			continue;
->  		verbose(env, "Unreleased reference id=3D%d alloc_insn=3D%d\n",
->  			state->refs[i].id, state->refs[i].insn_idx);
->  		refs_lingering =3D true;
-> @@ -16320,13 +16328,14 @@ static int check_return_code(struct bpf_verifie=
-r_env *env, int regno, const char
->  	const char *exit_ctx =3D "At program exit";
->  	struct tnum enforce_attach_type_range =3D tnum_unknown;
->  	const struct bpf_prog *prog =3D env->prog;
-> -	struct bpf_reg_state *reg;
-> +	struct bpf_reg_state *reg =3D reg_state(env, regno);
->  	struct bpf_retval_range range =3D retval_range(0, 1);
->  	enum bpf_prog_type prog_type =3D resolve_prog_type(env->prog);
->  	int err;
->  	struct bpf_func_state *frame =3D env->cur_state->frame[0];
->  	const bool is_subprog =3D frame->subprogno;
->  	bool return_32bit =3D false;
-> +	const struct btf_type *reg_type, *ret_type =3D NULL;
-> =20
->  	/* LSM and struct_ops func-ptr's return type could be "void" */
->  	if (!is_subprog || frame->in_exception_callback_fn) {
-> @@ -16335,10 +16344,26 @@ static int check_return_code(struct bpf_verifie=
-r_env *env, int regno, const char
->  			if (prog->expected_attach_type =3D=3D BPF_LSM_CGROUP)
->  				/* See below, can be 0 or 0-1 depending on hook. */
->  				break;
-> -			fallthrough;
-> +			if (!prog->aux->attach_func_proto->type)
-> +				return 0;
-> +			break;
->  		case BPF_PROG_TYPE_STRUCT_OPS:
->  			if (!prog->aux->attach_func_proto->type)
->  				return 0;
+> +char _license[] SEC("license") =3D "GPL";
 > +
-> +			if (frame->in_exception_callback_fn)
-> +				break;
+> +struct cgroup *bpf_cgroup_acquire(struct cgroup *p) __ksym;
+> +void bpf_task_release(struct task_struct *p) __ksym;
 > +
-> +			/* Allow a struct_ops program to return a referenced kptr if it
-> +			 * matches the operator's return type and is in its unmodified
-> +			 * form. A scalar zero (i.e., a null pointer) is also allowed.
-> +			 */
-> +			reg_type =3D reg->btf ? btf_type_by_id(reg->btf, reg->btf_id) : NULL;
-> +			ret_type =3D btf_type_resolve_ptr(prog->aux->attach_btf,
-> +							prog->aux->attach_func_proto->type,
-> +							NULL);
+> +/* This test struct_ops BPF programs returning referenced kptr. The veri=
+fier should
+> + * reject programs returning a local kptr.
+> + */
+> +SEC("struct_ops/test_return_ref_kptr")
+> +__failure __msg("At program exit the register R0 is not a known value (p=
+tr_or_null_)")
+> +struct task_struct *BPF_PROG(kptr_return_fail__local_kptr, int dummy,
+> +			     struct task_struct *task, struct cgroup *cgrp)
+> +{
+> +	struct task_struct *t;
+> +
+> +	bpf_task_release(task);
+> +
+> +	t =3D bpf_obj_new(typeof(*task));
 
-This does not enforce the kernel provenance of the pointer.
-See my comment for the next patch for an example.
+The return type (and btf id) of the bpf_obj_new is 'void *',
+but here a function with return type (and btf id) of
+'struct task_struct *' is necessary.
+For example:
 
-I think such return should only be allowed for parameters marked with
-__ref suffix. If so, pointer provenance check would just compare
-reg->ref_obj_id value with known ids of __ref arguments.
+-       t =3D bpf_obj_new(typeof(*task));
++       t =3D bpf_task_from_pid(32);
 
-> +			if (ret_type && ret_type =3D=3D reg_type && reg->ref_obj_id)
-> +				return __check_ptr_off_reg(env, reg, regno, false);
->  			break;
->  		default:
->  			break;
-> @@ -16360,8 +16385,6 @@ static int check_return_code(struct bpf_verifier_=
-env *env, int regno, const char
->  		return -EACCES;
->  	}
-> =20
-> -	reg =3D cur_regs(env) + regno;
-> -
->  	if (frame->in_async_callback_fn) {
->  		/* enforce return zero from async callbacks like timer */
->  		exit_ctx =3D "At async callback return";
-> @@ -16460,6 +16483,11 @@ static int check_return_code(struct bpf_verifier=
-_env *env, int regno, const char
->  	case BPF_PROG_TYPE_NETFILTER:
->  		range =3D retval_range(NF_DROP, NF_ACCEPT);
->  		break;
-> +	case BPF_PROG_TYPE_STRUCT_OPS:
-> +		if (!ret_type)
-> +			return 0;
-> +		range =3D retval_range(0, 0);
-> +		break;
->  	case BPF_PROG_TYPE_EXT:
->  		/* freplace program can return anything as its return value
->  		 * depends on the to-be-replaced kernel func or bpf program.
+However, if this replacement is done the test does
+not signal verification error because of insufficient
+checks in the verifier.c:check_return_code().
 
+> +	if (!t)
+> +		return NULL;
+> +
+> +	return t;
+> +}
+> +
+> +SEC(".struct_ops.link")
+> +struct bpf_testmod_ops testmod_kptr_return =3D {
+> +	.test_return_ref_kptr =3D (void *)kptr_return_fail__local_kptr,
+> +};
+
+[...]
 
 
