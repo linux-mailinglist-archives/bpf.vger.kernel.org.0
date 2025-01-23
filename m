@@ -1,213 +1,156 @@
-Return-Path: <bpf+bounces-49607-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49608-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7151CA1AAFC
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 21:13:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E1F6A1AB1B
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 21:21:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE5813AEC85
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 20:12:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34FE11885A55
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 20:21:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F09531C3BF8;
-	Thu, 23 Jan 2025 20:12:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JmlLf9fp"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F30CE1BD027;
+	Thu, 23 Jan 2025 20:21:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dediextern.your-server.de (dediextern.your-server.de [85.10.215.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC6A1C07DC;
-	Thu, 23 Jan 2025 20:12:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7882156F21
+	for <bpf@vger.kernel.org>; Thu, 23 Jan 2025 20:21:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.10.215.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737663127; cv=none; b=fPe4exTEJ0EbYRhfMiOHQ0+2bBsUoW3RhHzBU+ahRuWCRaxJR5G0orwIBTxDwZiqnEFcMGaI9DqqkNv1KLdLdRLUG/UsiovzolZnsstCxeEOE9JZerKXlTmYYPtCOBd5hTdyTx88aJi93SMUHUTh/IQFTE/DrhumXsmyQcnlVVE=
+	t=1737663683; cv=none; b=J/3wirF81FRbfnGF166xm1MRM3f3ISVvBgYBWiWmb9RjEVHSi/ZhpQ2vRcCKPej992oCGGmGhh7f0t7w8jX8zNRCys8dZWY6S43YKyMINCzXL09IV9dgTz916u03ym6ybIP7yrlXMfKOzQ69PuLK6+USneUKHSWYYLHbPEH/q1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737663127; c=relaxed/simple;
-	bh=PxST3s51zrEt9lIkRo0zXXSmRKi0OB4Pqe9a5P4L2u4=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=smHrOmC0Z2svQl+vX+PwUA4UNmrL8MCPE8XKzJ9HCLyUpwZUVDYg7BQ0tH+ykAQYt3rZk7MktfffxVL1/4ohm4veHB/t9fMTkLuKe+g22PfqdBRXiwmz0kPIDotNnGuTzf/NQE4vX8T3zntsfAjOLfhmtjdSDE9Qg8JhoxTuuZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JmlLf9fp; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-aa679ad4265so498301166b.0;
-        Thu, 23 Jan 2025 12:12:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737663124; x=1738267924; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PrETL7CtaIuPkvBFrZDVaIPy9gmEngJKx416P0q0tKg=;
-        b=JmlLf9fpxTxsCTBLdnsdjPOhC8EKGAEkpKqQTZ5OFzLgKbh8s7GTmOBbw/SvZMqHAv
-         Jy8IMP1oHgDwzfNFVXVPMXfv/4XckYX+8OlBSlr0Fta1pE33DPAhExy5Wxedm0+fH3Vx
-         ump3mQoCXfit9LyTBuVok0b9ztXjpTDTii7gUnb2ScVZ4htxBYnrGzRPWhNdaTBZ4rcN
-         P/QLZ2IYci8FtHLE6FuK/i8TEnxvLIsaFSHzLpsj2ro85GeKRDlrZ+ryjTkP8H4hdy0O
-         cfJZFoOAhOs5f0XcAgd4AzfcaOzGXhALm5UtRh2T2IWYKmRifwL3dqybfNCuBJ2moGhE
-         ttrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737663124; x=1738267924;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PrETL7CtaIuPkvBFrZDVaIPy9gmEngJKx416P0q0tKg=;
-        b=xE74gKRBamZL1K1K5yzRUUu41Iu+95LZZOPS1xzwaCruaMOkOi5SG0Y5oxFzFUJnDZ
-         0dTZEiN19wwEmSS3QjyHKQOJYJyXPaezJ8lRfP07IaCrUHng/2KBARfbjmQc4aRND97e
-         89o5oYmjPuJ3p6DyxG69yhvBtlkk/ulz5qaI5lmpyEpGFCXQUfwL8p8JfDungiCs9kaL
-         wJB+IPs/IgZ9/exu/Kqg2ohFQ7785c+3XpYawPDuSnsIp5l6LFY6dcSOMMDX/hNHGcce
-         LwhK3iSZI2GBvTUmgOotjgeFSrYWMDzGJ+r3ZEUOFuIjHkYmPC2HqpQlBw6ib7ui3km1
-         /jhg==
-X-Forwarded-Encrypted: i=1; AJvYcCVAoAohMVOua7FVpdSmotVMOt/jtVsilO5exnLYTcMXVZePVqOBwwNdD2ynDhzcsKB7eGodlqnqdm0XQ3Yh@vger.kernel.org, AJvYcCXwdlppgFXPZ8nPv7sV8Tv0qeRiae+26JT6Llw31mcDaBnJuYWbSnhhjReXrhXfucIsgTU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxUdvlkVfwxDrYL6DalzMFtAPmzk3mqoomtJV21zxea92VuiW/K
-	8X07nVA3HGY6GmpECpco2LdE9xOUF1th7LjSQ6hNXbv5IvW75mHu
-X-Gm-Gg: ASbGncv0rpD4ysP2WXqam2h65CvLaCpmtdmchhgCSD5/csN6U8PPa24p47udKM0nXzl
-	Eju4gQMv3YP37s2fzqjiTZwvmlivvr1VH32aMnBxNi1WZj5Q77ea4JcEo4e9DXUkD2emh9nkr+x
-	iIHWj6Ztwqf1jjOnyMKe1/DwNcUxPZvCi7CZgQHkQVO0Iu+5HsddwUr3vghgJvqwnL+WY8XrmWx
-	WskHmqdBFl626rYJxT3ZaOW6W1ydf/0efnoEoZQyeFaEdAHaaOt/9pyDRn7v1h30UK3YNr4lWAM
-	nkbAIGgicmaxLg==
-X-Google-Smtp-Source: AGHT+IHO4uFpJ9Q1HUMzbynFV/9t/ZsoGAsw3hfnOYrCYPsNLmNjyvs0S6vjwGZnASN76j8lzpVirA==
-X-Received: by 2002:a17:907:3f24:b0:ab3:a2f9:d6ef with SMTP id a640c23a62f3a-ab662a001d4mr348712366b.21.1737663123589;
-        Thu, 23 Jan 2025 12:12:03 -0800 (PST)
-Received: from krava (37-188-182-96.red.o2.cz. [37.188.182.96])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab6760ab280sm11191266b.104.2025.01.23.12.12.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jan 2025 12:12:03 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 23 Jan 2025 21:11:58 +0100
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Tao Chen <chen.dylane@gmail.com>, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, eddyz87@gmail.com, haoluo@google.com,
-	qmo@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH bpf-next 1/2] libbpf: Add libbpf_probe_bpf_kfunc API
-Message-ID: <Z5Kijmlt9vrSyslv@krava>
-References: <20250122170620.218533-1-chen.dylane@gmail.com>
- <Z5Khb2qaSJCo16Yf@krava>
+	s=arc-20240116; t=1737663683; c=relaxed/simple;
+	bh=miXjvkbcf/kg/KZZ4yb5ztHkPNZ8H+7xb+ECZz7DfIc=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:From:Subject:
+	 In-Reply-To:Content-Type; b=bbqjBG38ElHJdj56gUdCL5tzuIwJVvq1Nj/ih8RMil+/w12DRfrVtkGHsrZyfRXxgBvAlm9WWFMOnT8ciyP9z7v2YvOEFEJ4tPn30s9Sb56YYyegU9HmS0FR7CVvkRT2lGCdX/0wZYfRVgbjL3BU54xReT/UOvGbXSKZnULx0eg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de; spf=pass smtp.mailfrom=hetzner-cloud.de; arc=none smtp.client-ip=85.10.215.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hetzner-cloud.de
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+	by dediextern.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <marcus.wichelmann@hetzner-cloud.de>)
+	id 1tb3hV-0003hv-Bs; Thu, 23 Jan 2025 21:21:17 +0100
+Received: from [145.224.73.251] (helo=[192.168.10.222])
+	by sslproxy03.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <marcus.wichelmann@hetzner-cloud.de>)
+	id 1tb3hV-000Owv-0Y;
+	Thu, 23 Jan 2025 21:21:17 +0100
+Message-ID: <29385a29-faed-43f8-b9d3-3f9676d6d012@hetzner-cloud.de>
+Date: Thu, 23 Jan 2025 21:21:16 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z5Khb2qaSJCo16Yf@krava>
+User-Agent: Mozilla Thunderbird
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ bpf@vger.kernel.org
+References: <dae862ec-43b5-41a0-8edf-46c59071cdda@hetzner-cloud.de>
+ <87msfhqydl.fsf@toke.dk>
+ <74f949dc-7921-4f06-88e1-5b3686839b65@hetzner-cloud.de>
+ <Z5KdxTHVFSJSw5FQ@mini-arch>
+Content-Language: en-US
+From: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
+Autocrypt: addr=marcus.wichelmann@hetzner-cloud.de; keydata=
+ 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
+ wySmewx3h/yfMh0aFxHhvLPxrO2IEQ==
+Subject: Re: RX metadata kfuncs cause kernel panic with XDP generic mode
+In-Reply-To: <Z5KdxTHVFSJSw5FQ@mini-arch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: marcus.wichelmann@hetzner-cloud.de
+X-Virus-Scanned: Clear (ClamAV 1.0.7/27527/Thu Jan 23 10:44:17 2025)
 
-On Thu, Jan 23, 2025 at 09:07:11PM +0100, Jiri Olsa wrote:
-> On Thu, Jan 23, 2025 at 01:06:19AM +0800, Tao Chen wrote:
-> > Similarly to libbpf_probe_bpf_helper, the libbpf_probe_bpf_kfunc
-> > used to test the availability of the different eBPF kfuncs on the
-> > current system.
+Am 23.01.25 um 20:51 schrieb Stanislav Fomichev:
+> On 01/23, Marcus Wichelmann wrote:
+>>
+>> Am 23.01.25 um 17:38 schrieb Toke Høiland-Jørgensen:
+>>> Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de> writes:
+>>>
+>>>> There is probably a check missing somewhere that prevents the use of
+>>>> these kfuncs in the scope of do_xdp_generic?
+>>>
+>>> Heh, yeah, we should definitely block device-bound programs from being
+>>> attached in generic mode. Something like the below, I guess. Care to
+>>> test that out?
+>>>
+>>> -Toke
+>>>
+>> Ah, thanks for the quick patch. ;)
+>>
+>> I have tested your patch with the 6.12 branch I'm currently working with and this does the job.
+>>
+>>    # bpftool prog load crash.o /sys/fs/bpf/crash xdpmeta_dev mlx5-conx5-1
+>>    # bpftool net attach xdpgeneric pinned /sys/fs/bpf/crash dev mlx5-conx5-1
+>>    libbpf: Kernel error message: Can't attach device-bound programs in generic mode
+>>    Error: interface xdpgeneric attach failed: Invalid argument
+>>
+>> The do_xdp_generic is also used by the tun driver as a fallback in some cases, so, to my understanding,
+>> even programs attached in driver-mode may take the generic XDP path. How can this be handled there?
 > 
-> hi,
-> there's "bpf_kfunc" DECL_TAG for each kfunc in BTF data,
-> I think that should do the same job? please check [1] and
-> related commits for details
+> [..]
+> 
+>> Currently, it's not an issue, because the tun driver does not implement the xdp_metadata_ops yet, but
+>> it may become one in the future.
+> 
+> We can solve it if/when we add metadata_ops to the tun driver, right?
+> Not sure we need any immediate action right now.
 
-nah there's v2 with support for modules.. makes sense then, will check
+Yeah, that's not needed for now.
 
-sorry for noise ;-)
+I'm currently playing around with implementing a "bpf_xdp_metadata_rx_vnethdr" RX metadata kfunc that allows
+to retrieve the virtio_net_hdr from an XDP program attached to the tun driver (to trigger the TX offloads
+requested by a VM). That's why I discovered this.
+But that's probably a story for another day. ;) I'll submit a patch when I have something working so it can be
+discussed and we can see if that has a chance to be upstreamable.
 
-jirka
-
-> 
-> jirka
-> 
-> 
-> [1] 770abbb5a25a bpftool: Support dumping kfunc prototypes from BTF
-> 
-> > 
-> > Signed-off-by: Tao Chen <chen.dylane@gmail.com>
-> > ---
-> >  tools/lib/bpf/libbpf.h        | 16 +++++++++++++++-
-> >  tools/lib/bpf/libbpf.map      |  1 +
-> >  tools/lib/bpf/libbpf_probes.c | 36 +++++++++++++++++++++++++++++++++++
-> >  3 files changed, 52 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> > index 3020ee45303a..3b6d33578a16 100644
-> > --- a/tools/lib/bpf/libbpf.h
-> > +++ b/tools/lib/bpf/libbpf.h
-> > @@ -1680,7 +1680,21 @@ LIBBPF_API int libbpf_probe_bpf_map_type(enum bpf_map_type map_type, const void
-> >   */
-> >  LIBBPF_API int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type,
-> >  				       enum bpf_func_id helper_id, const void *opts);
-> > -
-> > +/**
-> > + * @brief **libbpf_probe_bpf_kfunc()** detects if host kernel supports the
-> > + * use of a given BPF kfunc from specified BPF program type.
-> > + * @param prog_type BPF program type used to check the support of BPF kfunc
-> > + * @param kfunc_id The btf ID of BPF kfunc to check support for
-> > + * @param opts reserved for future extensibility, should be NULL
-> > + * @return 1, if given combination of program type and kfunc is supported; 0,
-> > + * if the combination is not supported; negative error code if feature
-> > + * detection for provided input arguments failed or can't be performed
-> > + *
-> > + * Make sure the process has required set of CAP_* permissions (or runs as
-> > + * root) when performing feature checking.
-> > + */
-> > +LIBBPF_API int libbpf_probe_bpf_kfunc(enum bpf_prog_type prog_type,
-> > +				      int kfunc_id, const void *opts);
-> >  /**
-> >   * @brief **libbpf_num_possible_cpus()** is a helper function to get the
-> >   * number of possible CPUs that the host kernel supports and expects.
-> > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> > index a8b2936a1646..e93fae101efd 100644
-> > --- a/tools/lib/bpf/libbpf.map
-> > +++ b/tools/lib/bpf/libbpf.map
-> > @@ -436,4 +436,5 @@ LIBBPF_1.6.0 {
-> >  		bpf_linker__add_buf;
-> >  		bpf_linker__add_fd;
-> >  		bpf_linker__new_fd;
-> > +		libbpf_probe_bpf_kfunc;
-> >  } LIBBPF_1.5.0;
-> > diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
-> > index 9dfbe7750f56..bc1cf2afbe87 100644
-> > --- a/tools/lib/bpf/libbpf_probes.c
-> > +++ b/tools/lib/bpf/libbpf_probes.c
-> > @@ -413,6 +413,42 @@ int libbpf_probe_bpf_map_type(enum bpf_map_type map_type, const void *opts)
-> >  	return libbpf_err(ret);
-> >  }
-> >  
-> > +int libbpf_probe_bpf_kfunc(enum bpf_prog_type prog_type, int kfunc_id,
-> > +			   const void *opts)
-> > +{
-> > +	struct bpf_insn insns[] = {
-> > +		BPF_EXIT_INSN(),
-> > +		BPF_EXIT_INSN(),
-> > +	};
-> > +	const size_t insn_cnt = ARRAY_SIZE(insns);
-> > +	int err;
-> > +	char buf[4096];
-> > +
-> > +	if (opts)
-> > +		return libbpf_err(-EINVAL);
-> > +
-> > +	insns[0].code = BPF_JMP | BPF_CALL;
-> > +	insns[0].src_reg = BPF_PSEUDO_KFUNC_CALL;
-> > +	insns[0].imm = kfunc_id;
-> > +
-> > +	/* Now only support kfunc from vmlinux */
-> > +	insns[0].off = 0;
-> > +
-> > +	buf[0] = '\0';
-> > +	err = probe_prog_load(prog_type, insns, insn_cnt, buf, sizeof(buf));
-> > +	if (err < 0)
-> > +		return libbpf_err(err);
-> > +
-> > +	/* If BPF verifier recognizes BPF kfunc but it's not supported for
-> > +	 * given BPF program type, it will emit "calling kernel function
-> > +	 * bpf_cpumask_create is not allowed"
-> > +	 */
-> > +	if (err == 0 && strstr(buf, "not allowed"))
-> > +		return 0;
-> > +
-> > +	return 1; /* assume supported */
-> > +}
-> > +
-> >  int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type, enum bpf_func_id helper_id,
-> >  			    const void *opts)
-> >  {
-> > -- 
-> > 2.43.0
-> > 
+Marcus
 
