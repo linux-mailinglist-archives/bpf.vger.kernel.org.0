@@ -1,157 +1,170 @@
-Return-Path: <bpf+bounces-49611-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49612-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14A2DA1ABBD
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 22:14:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59C5AA1ABDD
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 22:25:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA7CD188CE0B
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 21:14:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 173813A8DA5
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 21:24:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62B771C3BE6;
-	Thu, 23 Jan 2025 21:14:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1935F1CAA63;
+	Thu, 23 Jan 2025 21:24:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="cB6pDtcl"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qRuf8/vC"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FAC01C5D42;
-	Thu, 23 Jan 2025 21:14:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 008AB1C5D4F
+	for <bpf@vger.kernel.org>; Thu, 23 Jan 2025 21:24:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737666861; cv=none; b=oL9qritNSStT+bhV4QOFuId5rt7YICVMatDKGqPurDrrIwNet8dq1P2IiizusiD8uqKaxRjNQS4tWjy47nGSthViMACCTesjoXGaovqAC2wTemkUKc3+cFjZ5NbxpEdtE5Trwd/tNfGZWFBSZgWgs5efYHJpjjXmTRHrZNCDWdw=
+	t=1737667498; cv=none; b=j7s6mCI21JPFk5yNYm5IIyF2iN3bUSQ4bVplx5ZQszA+geHtbZaCor60QhyLZUZv66viHiYjV2/0YYhCLe8RnQ8aWohJ6O5ABa1tQrGRpylHenH/Cf6rRPv05GgcfOUVRndX9qN4DkiZlM333+NPD7bicOfsEc52Ya5MRvuwnl0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737666861; c=relaxed/simple;
-	bh=SUs9evQMcePOEWHZkAVZF/s0I1oTQKkUe7ou8a1tAOk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FBGwtxHWwRKRua23361b55DNXUlDh3EdP7D2RYYenCOci+XrkGDGKeZRMBoWwUImAMU0KKvJrXpdvhA3u6Vlwnma+UMHF1rY3D+VI4e6SkEZ5OX/GCEaRVvWp20INOwHPVspVRERG+30hsW9MscCpukalk3rRfCPZyDsVE2c+Co=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=cB6pDtcl; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=T0qx0+atymOaI6fFlg6nov6fRa39FYfi5DYCwAOcU2s=; b=cB6pDtclMTH9Jqy9OTh/tAFrfC
-	p3AztNyc0+5ch9wIkIA72I/vkprRh5obZDhX3uwkUFThhA/4nUucYEkZSKPsWgK2o2q9XKIxqqplQ
-	7i4p6xadH2F3XV3JaPROBoXMZsBrwvy6ulx4bWZJMvUlsVdjk9lki4sv77gXztC5b07hncSvSSWx9
-	Nrc06z5Zq/B/OvZVD6LLf96hkiYwOc3lMMPwkNTH1p25gdGrM4QMCXEGmxlJEX+V+qHRU4QMG3VJQ
-	hajKzG5WsA1cgbOdlZBQVmu32eWp2A0kxzKHa73xFSgXl3ZJx5pRSu6pzN3LlcOPIabzTd5IRHnHr
-	o53aOygg==;
-Received: from sslproxy07.your-server.de ([78.47.199.104])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1tb4Wh-000KC7-31;
-	Thu, 23 Jan 2025 22:14:12 +0100
-Received: from [85.1.206.226] (helo=[192.168.1.114])
-	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1tb4Wh-000LbL-19;
-	Thu, 23 Jan 2025 22:14:11 +0100
-Message-ID: <66f2d886-e3d4-4f8f-a735-b0ce1c412ee2@iogearbox.net>
-Date: Thu, 23 Jan 2025 22:14:10 +0100
+	s=arc-20240116; t=1737667498; c=relaxed/simple;
+	bh=M5BXGpgwMCnIFqEQNLncr323vXpk/UyBJI1PvRa54rE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KIAMa/M9sxkbT4wa2aiKudfll1ajv8oEYzHZvIgQZMiFJSovKzd+I08y8uzQ8HPl7JYGD+i2V91M+ZzOIreJI0vzdwiN8sb/0VG6tm2zK/wFLvhG2z2aU2WKW3uuvE8CRo5T7yAx8iTzMjY0cRXED241PQqPKnABJ1lONJrHtCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qRuf8/vC; arc=none smtp.client-ip=209.85.166.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-3a9d0c28589so26615ab.0
+        for <bpf@vger.kernel.org>; Thu, 23 Jan 2025 13:24:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1737667496; x=1738272296; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M5BXGpgwMCnIFqEQNLncr323vXpk/UyBJI1PvRa54rE=;
+        b=qRuf8/vC4Bjo1ZwXnPU5QjdS06O1FH5w/rPa/tgSl/fyy/mICi2d32rmLDAq6Qkj2/
+         R6tN8SmpAbyWju6W7oANfyP+FG1QszCNhoOJLqmQ64gDfk3E+gaHLR4UF2rwTBfCDddu
+         INdCT4ESByao8/czyH7ThIplHmKIXuenAXdIUyrbLehbwoz4FBDU767SJhrUWPPkWCrJ
+         XWsbNDOAA6CwWu4NBXOQxRDt9TQmEKaYgylh1LU7U/G3MjWXI0yrC34gy0ySA47BtZwh
+         TT1TwFBIUgxBn6PoIT7qMvB466WzFGofzz+JsHWfvtJSkgY5OqM50gcnqH2mhRPy7IFE
+         PwNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737667496; x=1738272296;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M5BXGpgwMCnIFqEQNLncr323vXpk/UyBJI1PvRa54rE=;
+        b=n9fv6DoMp3wO0Ao+esxoy72Rz6Fm+tKC0x9NH/S15Yn2pVUmTPTbiFLHU99ahZGosd
+         JgL5xkdmlORhOiD8fZQJsgjM2J9XnTg+pT0isMGiKUb2iOpzS6XVBGpkIG83FaeFL9LY
+         nSwCNyMm60E/An5aiQPqsB55fyqgomTHtNFDuDwnFnnDTmUuooE8HKRRSpgBtTwd6p/D
+         CIzEwgw/OMGXb4kq5Vgwn3TIG3XhvgQf7enIvlTkwaw9rKYFfA8WqygC5A0hEesi7Nme
+         tdo/Z2OS8ysPXz7eRWvzandsChLvpM/FgR1aNnKUxhp5HtGQB8h1SENvD/crXWH+begJ
+         4FMA==
+X-Forwarded-Encrypted: i=1; AJvYcCWrx2nLKL8IATBtXk34pPtbgH6C7q8ZD/xI5G4m1mSPTZR/bs1HKA1laCdJW5Cw38dFw2g=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyLJcDfOxId6yx8M9D3tcWkjSqS23qwR0I/NWx7wTyyVHkPWm6b
+	S0WCqLUQu6WAFJ1ZSPnaSDF+zD2wanDVPXAOI3KWVQ8GQprSmP9autGKJ9XL7r92fBj4qeR6T+C
+	q6fm5D9BlZEzV/rFcpmY2R8Tyy9zfi95IIBeQ
+X-Gm-Gg: ASbGnctw6i9GtYNGutuJ76qlR5q/kC+VqTKm3w8+zCdqqsC02Iy3hxF8O2B3G9wBdzY
+	Pql1fJclT60pWFRWeWVehtKHK8z0tmi6pWD5MJ550NDBr5wpJ2ddQmkXcP0oMlmqOrmOUX1YgC3
+	mPBWovUvi9bBm3GA==
+X-Google-Smtp-Source: AGHT+IGwvofrtUyEuSwOuV3OUTAsv9p7IO9zxK0RoTXVD1YmkrPrc9vYfh/5phhlnpuNXd8qGJMfJHgAwe0IUpnUZuM=
+X-Received: by 2002:a92:da09:0:b0:3cf:c1af:99f with SMTP id
+ e9e14a558f8ab-3cfc1af0b2bmr2536455ab.24.1737667495808; Thu, 23 Jan 2025
+ 13:24:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ipv4, bpf: Introduced to support the ULP to modify
- sockets during setopt
-To: zhangmingyi <zhangmingyi5@huawei.com>, ast@kernel.org, andrii@kernel.org,
- martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
- kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, yanan@huawei.com,
- wuchangye@huawei.com, xiesongyang@huawei.com, liuxin350@huawei.com,
- liwei883@huawei.com, tianmuyang@huawei.com
-References: <20250121080547.3159934-1-zhangmingyi5@huawei.com>
-Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <20250121080547.3159934-1-zhangmingyi5@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 1.0.7/27527/Thu Jan 23 10:44:17 2025)
+References: <20250122062332.577009-1-irogers@google.com> <Z5EM24qWVQF2VdI8@tassilo>
+ <CAP-5=fW6ZWf6jF3Xnike81S9s_5tZ9w4DS8=8Ff1Ve87O32_Sg@mail.gmail.com> <Z5KILXC9-dN4Vo1o@tassilo>
+In-Reply-To: <Z5KILXC9-dN4Vo1o@tassilo>
+From: Ian Rogers <irogers@google.com>
+Date: Thu, 23 Jan 2025 13:24:44 -0800
+X-Gm-Features: AWEUYZm6s3k1Q3-4dxuPxZe5_z1NgGEQjOMpv31v0pNOZT3BbLBoJ2mkb87R2IA
+Message-ID: <CAP-5=fW5xmir_26CrQN50TWkzab3GueUvne4VWhWhqc82p6LvA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/17] Support dynamic opening of capstone/llvm remove BUILD_NONDISTRO
+To: Andi Kleen <ak@linux.intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Aditya Gupta <adityag@linux.ibm.com>, "Steinar H. Gunderson" <sesse@google.com>, 
+	Charlie Jenkins <charlie@rivosinc.com>, Changbin Du <changbin.du@huawei.com>, 
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, James Clark <james.clark@linaro.org>, 
+	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Li Huafei <lihuafei1@huawei.com>, Dmitry Vyukov <dvyukov@google.com>, 
+	Chaitanya S Prakash <chaitanyas.prakash@arm.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, llvm@lists.linux.dev, 
+	Song Liu <song@kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/21/25 9:05 AM, zhangmingyi wrote:
-> Note that tcp_getsockopt and tcp_setsockopt support TCP_ULP, while
-> bpf_getsockopt and bpf_setsockopt do not support TCP_ULP.
-> I think we can add the handling of this case.
+On Thu, Jan 23, 2025 at 10:19=E2=80=AFAM Andi Kleen <ak@linux.intel.com> wr=
+ote:
+>
+> > In certain scenarios, like data centers, it can be useful to
+> > statically link all your dependencies to avoid dll hell.
+>
+> Yes but it won't be loaded into memory if not used. Executable
+> loading is all lazy. Maybe look a page fault trace for loading
+> perf if you don't believe me.
+>
+> So you're trying to optimize disk space here?
+>
+> I didn't see that in the cover letter.
 
-Please elaborate on the use case you're trying to solve, and also a
-BPF selftest is needed to back this use case up. Your latter sentence
-does not sound overly sure which makes me wonder if you've tested this
-code at all?
+For me yes, for distributions it is dependencies. This is already in
+the v3 message:
+https://lore.kernel.org/lkml/20250122174308.350350-1-irogers@google.com/
 
-> Signed-off-by: zhangmingyi <zhangmingyi5@huawei.com>
-> ---
->   net/core/filter.c | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 713d6f454df3..f23d3f87e690 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -5383,6 +5383,10 @@ static int sol_tcp_sockopt(struct sock *sk, int optname,
->   		if (*optlen < 1)
->   			return -EINVAL;
->   		break;
-> +	case TCP_ULP:
-> +		if (getopt)
-> +			return -EINVAL;
-> +		break;
->   	case TCP_BPF_SOCK_OPS_CB_FLAGS:
->   		if (*optlen != sizeof(int))
->   			return -EINVAL;
+> It doesn't seem like a very good reason for such an intrusive patch kit.
 
+The capstone and LLVM code is preexisting. Moving the capstone/llvm
+code to their own files isn't dependent on dlopen, it does make it
+nicer to have a single place we're doing dlopen. The change to shim
+the capstone/LLVM calls looks like this:
+https://github.com/googleprodkernel/linux-perf/blob/google_tools_master/too=
+ls/perf/util/llvm.c#L160-L182
+That is a shim is introduced that either calls through to the function
+if we're linking against libcapstone/llvm or does the dlsym. There are
+7 such functions in the LLVM code. I don't think shimming 7 functions
+is at the scale of hugely intrusive.
+
+> If it's a serious concern maybe investigate an executable compressor?
+
+Perhaps just have a squashfs partition.
+
+Fwiw, excluding dependencies I think compression on the events is a
+good solution. Convert json events/metrics to a sysfs file with the
+cpuid in the path, add the compressed file to the binary as data, find
+"json" events by iterating the directories in the compressed file,
+etc. A single filesystem approach to event lookup can mean we do some
+kind of unionfs style lookup of events, which could support users
+adding their own events/metrics in a directory. Zip doesn't support
+compressing across files, which is something of a requirement here,
+other formats do but it's a case of optimizing for some kind of
+libarchive sweet spot. The opportunity here is that about 70% of the
+binary is event encodings, a compressed file is about 30% of the
+current binary size, so we could reduce the binary size by about 40%.
+
+> > The X86
+> > disassembler alone in libllvm is of a size comparable to the perf tool
+>
+> I agree that LLVM is a serious bloat and DLL hell concern, but I don't th=
+ink
+> dlopen is the answer here.
+
+Agreed, but it's where the code is at. addr2line command or use LLVM
+for some performance. I think having an inbuilt solution would be best
+longer term - we spend energy trying to parse and understand text
+output from tools/libraries when the information is just sitting there
+in the instruction encoding. Such a solution would be brittle for
+things like new dwarf information, so we may want to have fallbacks
+like LLVM but having a loosely coupled dependency using dlopen feels
+preferable there, to aid package maintainers.
+
+Thanks,
+Ian
 
