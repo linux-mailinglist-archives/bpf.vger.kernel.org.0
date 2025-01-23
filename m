@@ -1,181 +1,208 @@
-Return-Path: <bpf+bounces-49614-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49615-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06C20A1AC23
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 22:53:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D8CD3A1AC3F
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 23:00:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B87463ADA2E
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 21:53:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89E1B3AE73C
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 21:59:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48E441CDFC1;
-	Thu, 23 Jan 2025 21:53:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84C321CC8A7;
+	Thu, 23 Jan 2025 21:59:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mZrSJIX3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SrPhXtFT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66DD21CAA98
-	for <bpf@vger.kernel.org>; Thu, 23 Jan 2025 21:53:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E97F81CAA9F;
+	Thu, 23 Jan 2025 21:59:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737669187; cv=none; b=tes4EXhM4xPmu2uoo5sTxDLLwmPBwZeWJWQk8NxSf9ZvNCJn0AxuBQyn2FYV9V2qSu/tg1bN17h+kwrnEaGA/PYdNCeM2EZr6v9m0qGhNIw0IF3ZzF9cNg5B1Qined7AkdTPsU4ssmiqxY9MPoyvXtnqiwuI6xNunjKPIKPdmms=
+	t=1737669595; cv=none; b=sVIXR+ZtEA/x+B9xRoBN2FrB0/hqYxugiQmNaS3cHScsvbatgFuyss517Y7lIufRKMfZv59SO71KyO3yWtDVswZsy7P9NmNpeesNIIIqtqGzodnQRfKfSrnPThwsIsdHQXjtl872rLQ7qAt+iyaDrZqnVfXp5j6nBC/9KfcdLyc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737669187; c=relaxed/simple;
-	bh=zKuaqHe3ECZ+QZJ2plP1NWcmvneXigvDjbh4dDIey84=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FqPcdXSaJjoomwzAWpqfBA8wzitD/pg/FNp+2heZazZiS69MlPc1McvU5/aa1Xg2U26jDRtlJErSS6N77R3/hCtco2vcsTxZkTQ9JY/fsZtRAxK62vInMbLsE8QfEeAewiDrU4ONIUMbeT9PynbYC2+8naZLjklJ1zVHLZ27mYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mZrSJIX3; arc=none smtp.client-ip=209.85.160.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-4678c9310afso20231cf.1
-        for <bpf@vger.kernel.org>; Thu, 23 Jan 2025 13:53:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1737669184; x=1738273984; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xHGt0WbleYB5l+m2dLlfWbtdjxWYo81KWqBel+Isirk=;
-        b=mZrSJIX3jKSn/SHtCgZOyvB0W2eF33yPdj6WsAfx1FQOv9U+JNX8wzB/XIBa73PAr0
-         ReJgkrba1SMbpMf+YPbj085qMjHuiDNW1Fps8sfnRKe782rU73DM+PnAeJad7QC4tNEV
-         qve0/jSI7suadkwhuSBsRYK38xm+LzgjVMKY8IxEtlr0XypAofSFgk85e3SSgZGdlUMK
-         3xUz1xtKofOHLeQmx+wWESdkisDS3fsmzRYg1/f71zUFMQioT5x+bo6vJd1OiKhARcdG
-         aJoFd/+t88ir3ai/DG+OVXhw4ZpUGfKxqxb9oXi+fTpN1BMAH9kEZ6JzLUJSoRHakI8z
-         YIlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737669184; x=1738273984;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xHGt0WbleYB5l+m2dLlfWbtdjxWYo81KWqBel+Isirk=;
-        b=uCb/PraZZoTz3jhlk0yznFd1WX7I8DISXRxHmKsq1uydNQnItwyy9nBiaLLHkaYNUn
-         8CXM1CK+TFBjyQtK9q3MdJsq0ScirzM/G0bsltvRoc62gmndZVx+WtcFpEToHxNzCUcf
-         ayWKKUYGGck0mxU+sAr9hCQ0pikokH96aOBc0johZbUoos7Z/kITSX8xZnAqJun3t2LF
-         b3e68b/WmPyGBqkraUd60PrsXn19SpLhhBEjKXJovIH1gG+6AB7XaWbsOOxM2e2dLog/
-         iRSVfsps7/k7L47fceJoRfL1t5F37cVYAov5aTyixbirBh9cZSrLeAIWkCL7s9cVqKvN
-         xnVg==
-X-Forwarded-Encrypted: i=1; AJvYcCVjy5ovauc9JnXIaHcJ9FfgDdZbVceDaOySZXW+JCqnfflKo4Q17vbENTVK90GGWFnouo0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz5Nb8CLSk6jjCJ7icohC+0BWrjwByxWboqQJUui7gjORiz9vVH
-	ODAlj8wA6Rr5j9/FqfmwiqE97jEoIgoCq6gGXSbNLbKilu0ik/hzGH+1Pz4n7tSFRIHTOjR8641
-	sgBEAA6EGA8FpDrl1819MC+fwZIq48bRgtlvW
-X-Gm-Gg: ASbGnct6Q1GYANgUNioRwdxz97cJxTYc9lZgJnp5q1+frX5WwT0uo89LDBPEPGfDiWT
-	sW11KeruoiJsAVtrmDXmB1htQuKr2FSXoW7gLQ0/HYRO69SCOrtb3Bf6Kh24cLMeuPn9+eUjyrZ
-	19fQpTDjI2XBdvoSPI3rbC5Q7jxp4=
-X-Google-Smtp-Source: AGHT+IFrvyD1YIeawr10Rqwn0aqWOnQMagnJHkBqii3YUgDR1PE9AGJ2YTglhmvCvF2LAkLUTFvBu1sN/7u/Lgk0CGI=
-X-Received: by 2002:a05:622a:1aa6:b0:46c:77a0:7714 with SMTP id
- d75a77b69052e-46e5dadbf65mr4804111cf.21.1737669183862; Thu, 23 Jan 2025
- 13:53:03 -0800 (PST)
+	s=arc-20240116; t=1737669595; c=relaxed/simple;
+	bh=7HfuRwOci0npR8VvcikkAMI6UruTBlIu1KOOQZMuSAU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tdJUjnULLwABC+Mk4+7iPM2tvpoMoRyoyOk6F0PO5MHJRFK2FCwQ0M5/jMXzuJQAHLjlzu7aaLcHOpQ77scnC2HbICdW6yUcvwRoJWwzrP5IEz6W+0p8SyveGJ7fQLZA8uJ5DySSRP4SkDPBmutYShRED7c0RvMZjftxxHmoy/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SrPhXtFT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50E6DC4CED3;
+	Thu, 23 Jan 2025 21:59:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1737669594;
+	bh=7HfuRwOci0npR8VvcikkAMI6UruTBlIu1KOOQZMuSAU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SrPhXtFTCTibMceFtt6oNsiO4GBSbQiM7yKFnFq5ZUJlH9iz21CTZomhG/++Rb4K8
+	 tcjJn0XYe2ZnAjmH2wZi6ovFZTXKP2ttSFtHCmrsTzmpDJ0RlW6aMrXOrTGXMNwc68
+	 xm2/CSbVx/WrIGLhI/NB4ZKxzrel93tWpdC2s3cRlDhMuztJyY2Hd38BThEDJ0qqur
+	 033khf43sW9fuD7u0ZqJTD8TT+SEZm3+OeQEYrEBV51povVplBSq0ORKz24/3y731/
+	 bixl2EO+tIT+YqqNVXLoM2n0D1wXOmtebOUmmftOqvcUhzX6Q+MkCA/0UQHM0a8b6u
+	 wnzSquZhzLidQ==
+Date: Thu, 23 Jan 2025 13:59:51 -0800
+From: Namhyung Kim <namhyung@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Aditya Gupta <adityag@linux.ibm.com>,
+	"Steinar H. Gunderson" <sesse@google.com>,
+	Charlie Jenkins <charlie@rivosinc.com>,
+	Changbin Du <changbin.du@huawei.com>,
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+	James Clark <james.clark@linaro.org>,
+	Kajol Jain <kjain@linux.ibm.com>,
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+	Li Huafei <lihuafei1@huawei.com>,
+	Dmitry Vyukov <dvyukov@google.com>, Andi Kleen <ak@linux.intel.com>,
+	Chaitanya S Prakash <chaitanyas.prakash@arm.com>,
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	llvm@lists.linux.dev, Song Liu <song@kernel.org>,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v2 00/17] Support dynamic opening of capstone/llvm remove
+ BUILD_NONDISTRO
+Message-ID: <Z5K712McgLXkN6aR@google.com>
+References: <20250122062332.577009-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250123214342.4145818-1-andrii@kernel.org>
-In-Reply-To: <20250123214342.4145818-1-andrii@kernel.org>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 23 Jan 2025 13:52:52 -0800
-X-Gm-Features: AbW1kvYitEyfLCjZHD7-lTTvjs22unJX8NoVKvDf4fLvx82SDzv6eFu65vu0VC4
-Message-ID: <CAJuCfpE9QOo-xmDpk_FF=gs3p=9Zzb-Q5yDaKAEChBCnpogmQg@mail.gmail.com>
-Subject: Re: [PATCH] mm,procfs: allow read-only remote mm access under CAP_PERFMON
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-mm@kvack.org, akpm@linux-foundation.org, 
-	linux-fsdevel@vger.kernel.org, brauner@kernel.org, viro@zeniv.linux.org.uk, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kernel-team@meta.com, 
-	rostedt@goodmis.org, peterz@infradead.org, mingo@kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	shakeel.butt@linux.dev, rppt@kernel.org, liam.howlett@oracle.com, 
-	Jann Horn <jannh@google.com>, Kees Cook <kees@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250122062332.577009-1-irogers@google.com>
 
-On Thu, Jan 23, 2025 at 1:44=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org>=
- wrote:
->
-> It's very common for various tracing and profiling toolis to need to
-> access /proc/PID/maps contents for stack symbolization needs to learn
-> which shared libraries are mapped in memory, at which file offset, etc.
-> Currently, access to /proc/PID/maps requires CAP_SYS_PTRACE (unless we
-> are looking at data for our own process, which is a trivial case not too
-> relevant for profilers use cases).
->
-> Unfortunately, CAP_SYS_PTRACE implies way more than just ability to
-> discover memory layout of another process: it allows to fully control
-> arbitrary other processes. This is problematic from security POV for
-> applications that only need read-only /proc/PID/maps (and other similar
-> read-only data) access, and in large production settings CAP_SYS_PTRACE
-> is frowned upon even for the system-wide profilers.
->
-> On the other hand, it's already possible to access similar kind of
-> information (and more) with just CAP_PERFMON capability. E.g., setting
-> up PERF_RECORD_MMAP collection through perf_event_open() would give one
-> similar information to what /proc/PID/maps provides.
->
-> CAP_PERFMON, together with CAP_BPF, is already a very common combination
-> for system-wide profiling and observability application. As such, it's
-> reasonable and convenient to be able to access /proc/PID/maps with
-> CAP_PERFMON capabilities instead of CAP_SYS_PTRACE.
->
-> For procfs, these permissions are checked through common mm_access()
-> helper, and so we augment that with cap_perfmon() check *only* if
-> requested mode is PTRACE_MODE_READ. I.e., PTRACE_MODE_ATTACH wouldn't be
-> permitted by CAP_PERFMON.
->
-> Besides procfs itself, mm_access() is used by process_madvise() and
-> process_vm_{readv,writev}() syscalls. The former one uses
-> PTRACE_MODE_READ to avoid leaking ASLR metadata, and as such CAP_PERFMON
-> seems like a meaningful allowable capability as well.
->
-> process_vm_{readv,writev} currently assume PTRACE_MODE_ATTACH level of
-> permissions (though for readv PTRACE_MODE_READ seems more reasonable,
-> but that's outside the scope of this change), and as such won't be
-> affected by this patch.
+On Tue, Jan 21, 2025 at 10:23:15PM -0800, Ian Rogers wrote:
+> Linking against libcapstone and libLLVM can be a significant increase
+> in dependencies and size of memory footprint. For something like `perf
+> record` the disassembler and addr2line functionality won't be
+> used. Support dynamically loading these libraries using dlopen and
+> then calling the appropriate functions found using dlsym.
 
-CC'ing Jann and Kees.
+It's not clear from the description how you would use dlopen/dlsym.
+Based on an offline discussion, you want to leave the current linking
+model as is, and to support dlopen/dlsym when it's NOT detected at
+build-time, right?
 
->
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  kernel/fork.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index ded49f18cd95..c57cb3ad9931 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -1547,6 +1547,15 @@ struct mm_struct *get_task_mm(struct task_struct *=
-task)
->  }
->  EXPORT_SYMBOL_GPL(get_task_mm);
->
-> +static bool can_access_mm(struct mm_struct *mm, struct task_struct *task=
-, unsigned int mode)
-> +{
-> +       if (mm =3D=3D current->mm)
-> +               return true;
-> +       if ((mode & PTRACE_MODE_READ) && perfmon_capable())
-> +               return true;
-> +       return ptrace_may_access(task, mode);
-> +}
-> +
->  struct mm_struct *mm_access(struct task_struct *task, unsigned int mode)
->  {
->         struct mm_struct *mm;
-> @@ -1559,7 +1568,7 @@ struct mm_struct *mm_access(struct task_struct *tas=
-k, unsigned int mode)
->         mm =3D get_task_mm(task);
->         if (!mm) {
->                 mm =3D ERR_PTR(-ESRCH);
-> -       } else if (mm !=3D current->mm && !ptrace_may_access(task, mode))=
- {
-> +       } else if (!can_access_mm(mm, task, mode)) {
->                 mmput(mm);
->                 mm =3D ERR_PTR(-EACCES);
->         }
-> --
-> 2.43.5
->
+For that, you need to carry some definitions of the functions and types
+for the used APIs.  But I'm not sure if it's right to carry them in the
+perf code base.
+
+> 
+> BUILD_NONDISTRO is used to build perf against the license incompatible
+> libbfd and libiberty libraries. As this has been opt-in for nearly 2
+> years, commit dd317df07207 ("perf build: Make binutil libraries opt
+> in"), remove the code to simplify the code base.
+
+This part can be a separate series.
+
+> 
+> The patch series:
+> 1) does some initial clean up;
+> 2) moves the capstone and LLVM code to their own C files,
+> 3) simplifies a little the capstone code;
+
+I like changes up to this in general.  Let me take a look at the
+patches.
+
+Thanks,
+Namhyung
+
+
+> 4) adds perf_ variants of the functions that will either directly call
+>    the function or use dlsym to discover it;
+> 5) adds BPF JIT disassembly support to LLVM and capstone disassembly;
+> 6) removes the BUILD_NONDISTRO code, reduces scope and removes what's possible.
+> 
+> The addr2line LLVM functionality is written in C++. To avoid linking
+> against libLLVM for this, a new LIBLLVM_DYNAMIC option is added where
+> the C++ code with the libLLVM dependency will be built into a
+> libperf-llvm.so and that dlsym-ed and called against. Ideally LLVM
+> would extend their C API to avoid this.
+> 
+> The libbfd BPF disassembly supported source lines, this wasn't ported
+> to the capstone and LLVM disassembly.
+> 
+> v2: Add mangling of the function names in libperf-llvm.so to avoid
+>     potential infinite recursion. Add BPF JIT disassembly support to
+>     LLVM and capstone. Add/rebase the BUILD_NONDISTRO cleanup onto the
+>     series from:
+>     https://lore.kernel.org/lkml/20250111202851.1075338-1-irogers@google.com/
+>     Some other minor additional clean up.
+> 
+> Ian Rogers (17):
+>   perf build: Remove libtracefs configuration
+>   perf map: Constify objdump offset/address conversion APIs
+>   perf capstone: Move capstone functionality into its own file
+>   perf llvm: Move llvm functionality into its own file
+>   perf capstone: Remove open_capstone_handle
+>   perf capstone: Support for dlopen-ing libcapstone.so
+>   perf llvm: Support for dlopen-ing libLLVM.so
+>   perf llvm: Mangle libperf-llvm.so function names
+>   perf dso: Move read_symbol from llvm/capstone to dso
+>   perf dso: Support BPF programs in dso__read_symbol
+>   perf llvm: Disassemble cleanup
+>   perf dso: Clean up read_symbol error handling
+>   perf build: Remove libbfd support
+>   perf build: Remove libiberty support
+>   perf build: Remove unused defines
+>   perf disasm: Remove disasm_bpf
+>   perf disasm: Make ins__scnprintf and ins__is_nop static
+> 
+>  tools/perf/Documentation/perf-check.txt |   1 -
+>  tools/perf/Makefile.config              |  90 +---
+>  tools/perf/Makefile.perf                |  35 +-
+>  tools/perf/builtin-check.c              |   1 -
+>  tools/perf/builtin-script.c             |   2 -
+>  tools/perf/tests/Build                  |   1 -
+>  tools/perf/tests/builtin-test.c         |   1 -
+>  tools/perf/tests/make                   |   4 +-
+>  tools/perf/tests/pe-file-parsing.c      | 101 ----
+>  tools/perf/tests/tests.h                |   1 -
+>  tools/perf/util/Build                   |   5 +-
+>  tools/perf/util/annotate.h              |   1 -
+>  tools/perf/util/capstone.c              | 682 ++++++++++++++++++++++++
+>  tools/perf/util/capstone.h              |  24 +
+>  tools/perf/util/demangle-cxx.cpp        |  22 +-
+>  tools/perf/util/disasm.c                | 632 +---------------------
+>  tools/perf/util/disasm.h                |   5 +-
+>  tools/perf/util/disasm_bpf.c            | 195 -------
+>  tools/perf/util/disasm_bpf.h            |  12 -
+>  tools/perf/util/dso.c                   |  98 ++++
+>  tools/perf/util/dso.h                   |   4 +
+>  tools/perf/util/llvm-c-helpers.cpp      | 120 ++++-
+>  tools/perf/util/llvm-c-helpers.h        |  24 +-
+>  tools/perf/util/llvm.c                  | 489 +++++++++++++++++
+>  tools/perf/util/llvm.h                  |  24 +
+>  tools/perf/util/map.c                   |  19 +-
+>  tools/perf/util/map.h                   |   6 +-
+>  tools/perf/util/print_insn.c            | 117 +---
+>  tools/perf/util/srcline.c               | 306 +----------
+>  tools/perf/util/srcline.h               |   6 +
+>  tools/perf/util/symbol-elf.c            |  95 ----
+>  tools/perf/util/symbol.c                | 135 -----
+>  tools/perf/util/symbol.h                |   4 -
+>  33 files changed, 1552 insertions(+), 1710 deletions(-)
+>  delete mode 100644 tools/perf/tests/pe-file-parsing.c
+>  create mode 100644 tools/perf/util/capstone.c
+>  create mode 100644 tools/perf/util/capstone.h
+>  delete mode 100644 tools/perf/util/disasm_bpf.c
+>  delete mode 100644 tools/perf/util/disasm_bpf.h
+>  create mode 100644 tools/perf/util/llvm.c
+>  create mode 100644 tools/perf/util/llvm.h
+> 
+> -- 
+> 2.48.0.rc2.279.g1de40edade-goog
+> 
 
