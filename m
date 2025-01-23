@@ -1,646 +1,164 @@
-Return-Path: <bpf+bounces-49558-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49559-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAA11A19CBF
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 03:01:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 565E0A19CF5
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 03:22:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC60D3A64A8
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 02:01:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB38616E1DE
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 02:22:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4A9D146D76;
-	Thu, 23 Jan 2025 02:00:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78A2B20B22;
+	Thu, 23 Jan 2025 02:21:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Dk3Hy/Gc"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Ow0+G1SS"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EED8412FB1B;
-	Thu, 23 Jan 2025 02:00:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D12D3232;
+	Thu, 23 Jan 2025 02:21:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737597604; cv=none; b=MNJ4Jt+l4/GOThu+ZZ8F6/yNkC+hFN+/Y3fuBMfOuQo997XV9EdCOTMdHAjS8bhZIgqAwkCiAdZBfxgglKYrD2Xs1Ee9884BFsDjNTAWFhTsQgn+HgPda7wyiK22p9vg/6/TEisN3j8KXGKBOd9SxGHjB1bI/s3iO9n5N1CFym4=
+	t=1737598917; cv=none; b=NZNR76JvU++ZJFa/F35sbskuZmIrtx3Eu6avr4SpbDGTMNQ+XLRPgP2m9y5AT8YbB4gzDOWNUIHt76qzY/6ZzjaQk5iBxY0vflas+quHgNrItKV2giyVgNXvwA+8Bqd268SaAv8aigAAbpDs4uB4jf2/1Ip9miZ252gGFjToMP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737597604; c=relaxed/simple;
-	bh=5f27BuMetbDOKvR4cgTOadAS7oz9dRpg4Mj7JIgnT10=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cmQkrtOaQmZG7QdT8LUPkpmN03NK66Vj6BSW1kU3OjzJ+mCgKp3AwRZ7gm1WfgMCLS2181VNJuWCoo/EHKl3D2aQXzN+nKJ2qnGSI0OstPdX5fIIse35M/g4/YBthb6v1jz1a5I11RHui0p3y3ZTeV6Jwzg2kZuAp3fqbXJLajo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Dk3Hy/Gc; arc=none smtp.client-ip=115.124.30.110
+	s=arc-20240116; t=1737598917; c=relaxed/simple;
+	bh=O0004Fp/PwMUyShcBZvPfRbmhH7tY4eOGMWkdrheC70=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XKFbszzEJ2TlAMaOk9Zl3G5OV/HZF3lmAYciOZ3SAyTFkH2z5XkezjPBDSluF3XetZiRNUTz59VxqgLm4PtP2bSg6QfmiteYoyiss16zIKYI0a7+P7gaKrFhEXtuLkJx9RL+pPunMmyJsnBEBcElj8yis+Bi5e9qTlH9YtPZhEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Ow0+G1SS; arc=none smtp.client-ip=115.124.30.100
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1737597593; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=sITxhK8IDwMgcITs+Hr/jEQhQ5z79RIOVO6+kIY2wzY=;
-	b=Dk3Hy/GcfZWESkTNeLki9lIeexhWVvrLcbyxlYIba4JDcZGSac6wEy/bnRql7WJs4TBqZ13Opj0FQvg1eyR4kZjUxG6nlUfij3ssilYkZWkDWBNIRR3VbbZ4l9rB4KQLzBpAkIkjrasa+vhp5aG+N3pyXnfKVO4SHIYUWLFAAcA=
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WO9yfJV_1737597591 cluster:ay36)
+	t=1737598909; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=bOiM5BoMJqM/ebH3s2iqhNfCXeb+AKnDndw+EHGdh18=;
+	b=Ow0+G1SS9EMK6zR8YxDsFYFW/gveA9ZhypFIEDNl+RTb7u7EsmW9CkfHAvPyhcL7QOOBGfNSyKrwsTQREMKa/71fQwpbegj9CI0ovFLy2VVvHq7djv1eGHy/FAJdwyymrHDlXZOCfDjOHr1tQZOfpNthOYu5Mn2IuGyaSHH8DTA=
+Received: from 30.221.96.170(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0WOA2eXV_1737598906 cluster:ay36)
           by smtp.aliyun-inc.com;
-          Thu, 23 Jan 2025 09:59:51 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-To: kgraul@linux.ibm.com,
-	wenjia@linux.ibm.com,
-	jaka@linux.ibm.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	pabeni@redhat.com,
-	song@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	yhs@fb.com,
-	edumazet@google.com,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	jolsa@kernel.org,
-	guwen@linux.alibaba.com
-Cc: kuba@kernel.org,
-	davem@davemloft.net,
-	netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH bpf-next v7 6/6] bpf/selftests: add selftest for bpf_smc_ops
-Date: Thu, 23 Jan 2025 09:59:42 +0800
-Message-ID: <20250123015942.94810-7-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 2.45.0
-In-Reply-To: <20250123015942.94810-1-alibuda@linux.alibaba.com>
-References: <20250123015942.94810-1-alibuda@linux.alibaba.com>
+          Thu, 23 Jan 2025 10:21:48 +0800
+Message-ID: <437f3824-f6be-4053-acfe-7f3f1ebc626c@linux.alibaba.com>
+Date: Thu, 23 Jan 2025 10:21:46 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v7 2/6] net/smc: fix UAF on smcsk after
+ smc_listen_out()
+To: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+ wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ pabeni@redhat.com, song@kernel.org, sdf@google.com, haoluo@google.com,
+ yhs@fb.com, edumazet@google.com, john.fastabend@gmail.com,
+ kpsingh@kernel.org, jolsa@kernel.org, guwen@linux.alibaba.com
+Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+ linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org
+References: <20250123015942.94810-1-alibuda@linux.alibaba.com>
+ <20250123015942.94810-3-alibuda@linux.alibaba.com>
+Content-Language: en-US
+From: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+In-Reply-To: <20250123015942.94810-3-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-This tests introduces a tiny smc_ops for filtering SMC connections based on
-IP pairs, and also adds a realistic topology model to verify this ops.
 
-Also, we can only use SMC loopback under CI test, so an
-additional configuration needs to be enabled.
 
-Follow the steps below to run this test.
+On 2025/1/23 09:59, D. Wythe wrote:
+> BPF CI testing report a UAF issue:
+> 
+>   [   16.446633] BUG: kernel NULL pointer dereference, address: 000000000000003  0
+>   [   16.447134] #PF: supervisor read access in kernel mod  e
+>   [   16.447516] #PF: error_code(0x0000) - not-present pag  e
+>   [   16.447878] PGD 0 P4D   0
+>   [   16.448063] Oops: Oops: 0000 [#1] PREEMPT SMP NOPT  I
+>   [   16.448409] CPU: 0 UID: 0 PID: 9 Comm: kworker/0:1 Tainted: G           OE      6.13.0-rc3-g89e8a75fda73-dirty #4  2
+>   [   16.449124] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODUL  E
+>   [   16.449502] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/201  4
+>   [   16.450201] Workqueue: smc_hs_wq smc_listen_wor  k
+>   [   16.450531] RIP: 0010:smc_listen_work+0xc02/0x159  0
+>   [   16.452158] RSP: 0018:ffffb5ab40053d98 EFLAGS: 0001024  6
+>   [   16.452526] RAX: 0000000000000001 RBX: 0000000000000002 RCX: 000000000000030  0
+>   [   16.452994] RDX: 0000000000000280 RSI: 00003513840053f0 RDI: 000000000000000  0
+>   [   16.453492] RBP: ffffa097808e3800 R08: ffffa09782dba1e0 R09: 000000000000000  5
+>   [   16.453987] R10: 0000000000000000 R11: 0000000000000000 R12: ffffa0978274640  0
+>   [   16.454497] R13: 0000000000000000 R14: 0000000000000000 R15: ffffa09782d4092  0
+>   [   16.454996] FS:  0000000000000000(0000) GS:ffffa097bbc00000(0000) knlGS:000000000000000  0
+>   [   16.455557] CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003  3
+>   [   16.455961] CR2: 0000000000000030 CR3: 0000000102788004 CR4: 0000000000770ef  0
+>   [   16.456459] PKRU: 5555555  4
+>   [   16.456654] Call Trace  :
+>   [   16.456832]  <TASK  >
+>   [   16.456989]  ? __die+0x23/0x7  0
+>   [   16.457215]  ? page_fault_oops+0x180/0x4c  0
+>   [   16.457508]  ? __lock_acquire+0x3e6/0x249  0
+>   [   16.457801]  ? exc_page_fault+0x68/0x20  0
+>   [   16.458080]  ? asm_exc_page_fault+0x26/0x3  0
+>   [   16.458389]  ? smc_listen_work+0xc02/0x159  0
+>   [   16.458689]  ? smc_listen_work+0xc02/0x159  0
+>   [   16.458987]  ? lock_is_held_type+0x8f/0x10  0
+>   [   16.459284]  process_one_work+0x1ea/0x6d  0
+>   [   16.459570]  worker_thread+0x1c3/0x38  0
+>   [   16.459839]  ? __pfx_worker_thread+0x10/0x1  0
+>   [   16.460144]  kthread+0xe0/0x11  0
+>   [   16.460372]  ? __pfx_kthread+0x10/0x1  0
+>   [   16.460640]  ret_from_fork+0x31/0x5  0
+>   [   16.460896]  ? __pfx_kthread+0x10/0x1  0
+>   [   16.461166]  ret_from_fork_asm+0x1a/0x3  0
+>   [   16.461453]  </TASK  >
+>   [   16.461616] Modules linked in: bpf_testmod(OE) [last unloaded: bpf_testmod(OE)  ]
+>   [   16.462134] CR2: 000000000000003  0
+>   [   16.462380] ---[ end trace 0000000000000000 ]---
+>   [   16.462710] RIP: 0010:smc_listen_work+0xc02/0x1590
+> 
+> The direct cause of this issue is that after smc_listen_out_connected(),
+> newclcsock->sk may be NULL since it will releases the smcsk. Therefore,
+> if the application closes the socket immediately after accept,
+> newclcsock->sk can be NULL. A possible execution order could be as
+> follows:
+> 
+> smc_listen_work                                 | userspace
+> -----------------------------------------------------------------
+> lock_sock(sk)                                   |
+> smc_listen_out_connected()                      |
+> | \- smc_listen_out                             |
+> |    | \- release_sock                          |
+>      | |- sk->sk_data_ready()                   |
+>                                                 | fd = accept();
+>                                                 | close(fd);
+>                                                 |  \- socket->sk = NULL;
+> /* newclcsock->sk is NULL now */
+> SMC_STAT_SERV_SUCC_INC(sock_net(newclcsock->sk))
+> 
+> Since smc_listen_out_connected() will not fail, simply swapping the order
+> of the code can easily fix this issue.
+> 
+> Fixes: 3b2dec2603d5 ("net/smc: restructure client and server code in af_smc")
+> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> ---
+>  net/smc/af_smc.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+> index c370efcfe3e8..9eebf7d0179e 100644
+> --- a/net/smc/af_smc.c
+> +++ b/net/smc/af_smc.c
+> @@ -2549,8 +2549,9 @@ static void smc_listen_work(struct work_struct *work)
+>  			goto out_decl;
+>  	}
+>  
+> -	smc_listen_out_connected(new_smc);
+>  	SMC_STAT_SERV_SUCC_INC(sock_net(newclcsock->sk), ini);
+> +	/* smc_listen_out() will release smcsk */
+> +	smc_listen_out_connected(new_smc);
+>  	goto out_free;
+>  
+>  out_unlock:
 
-make -C tools/testing/selftests/bpf
-cd tools/testing/selftests/bpf
-sudo ./test_progs -t smc
-
-Results shows:
-Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-Tested-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
----
- tools/testing/selftests/bpf/config            |   4 +
- .../selftests/bpf/prog_tests/test_bpf_smc.c   | 396 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/bpf_smc.c   | 117 ++++++
- 3 files changed, 517 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
-
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index c378d5d07e02..fac2f2a9d02f 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -113,3 +113,7 @@ CONFIG_XDP_SOCKETS=y
- CONFIG_XFRM_INTERFACE=y
- CONFIG_TCP_CONG_DCTCP=y
- CONFIG_TCP_CONG_BBR=y
-+CONFIG_INFINIBAND=y
-+CONFIG_SMC=y
-+CONFIG_SMC_OPS=y
-+CONFIG_SMC_LO=y
-\ No newline at end of file
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c b/tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
-new file mode 100644
-index 000000000000..0580961fd693
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
-@@ -0,0 +1,396 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <linux/genetlink.h>
-+#include "network_helpers.h"
-+#include "bpf_smc.skel.h"
-+
-+#ifndef IPPROTO_SMC
-+#define IPPROTO_SMC 256
-+#endif
-+
-+#define CLIENT_IP			"127.0.0.1"
-+#define SERVER_IP			"127.0.1.0"
-+#define SERVER_IP_VIA_RISK_PATH	"127.0.2.0"
-+
-+#define SERVICE_1	11234
-+#define SERVICE_2	22345
-+#define SERVICE_3	33456
-+
-+#define TEST_NS	"bpf_smc_netns"
-+
-+static struct netns_obj *test_netns;
-+
-+struct smc_strat_ip_key {
-+	__u32  sip;
-+	__u32  dip;
-+};
-+
-+struct smc_strat_ip_value {
-+	__u8	mode;
-+};
-+
-+#if defined(__s390x__)
-+/* s390x has default seid  */
-+static bool setup_ueid(void) { return true; }
-+static void cleanup_ueid(void) {}
-+#else
-+enum {
-+	SMC_NETLINK_ADD_UEID = 10,
-+	SMC_NETLINK_REMOVE_UEID
-+};
-+
-+enum {
-+	SMC_NLA_EID_TABLE_UNSPEC,
-+	SMC_NLA_EID_TABLE_ENTRY,    /* string */
-+};
-+
-+struct msgtemplate {
-+	struct nlmsghdr n;
-+	struct genlmsghdr g;
-+	char buf[1024];
-+};
-+
-+#define GENLMSG_DATA(glh)	((void *)(NLMSG_DATA(glh) + GENL_HDRLEN))
-+#define GENLMSG_PAYLOAD(glh)	(NLMSG_PAYLOAD(glh, 0) - GENL_HDRLEN)
-+#define NLA_DATA(na)		((void *)((char *)(na) + NLA_HDRLEN))
-+#define NLA_PAYLOAD(len)	((len) - NLA_HDRLEN)
-+
-+#define SMC_GENL_FAMILY_NAME	"SMC_GEN_NETLINK"
-+#define SMC_BPFTEST_UEID	"SMC-BPFTEST-UEID"
-+
-+static uint16_t smc_nl_family_id = -1;
-+
-+static int send_cmd(int fd, __u16 nlmsg_type, __u32 nlmsg_pid,
-+		    __u16 nlmsg_flags, __u8 genl_cmd, __u16 nla_type,
-+		    void *nla_data, int nla_len)
-+{
-+	struct nlattr *na;
-+	struct sockaddr_nl nladdr;
-+	int r, buflen;
-+	char *buf;
-+
-+	struct msgtemplate msg = {0};
-+
-+	msg.n.nlmsg_len = NLMSG_LENGTH(GENL_HDRLEN);
-+	msg.n.nlmsg_type = nlmsg_type;
-+	msg.n.nlmsg_flags = nlmsg_flags;
-+	msg.n.nlmsg_seq = 0;
-+	msg.n.nlmsg_pid = nlmsg_pid;
-+	msg.g.cmd = genl_cmd;
-+	msg.g.version = 1;
-+	na = (struct nlattr *) GENLMSG_DATA(&msg);
-+	na->nla_type = nla_type;
-+	na->nla_len = nla_len + 1 + NLA_HDRLEN;
-+	memcpy(NLA_DATA(na), nla_data, nla_len);
-+	msg.n.nlmsg_len += NLMSG_ALIGN(na->nla_len);
-+
-+	buf = (char *) &msg;
-+	buflen = msg.n.nlmsg_len;
-+	memset(&nladdr, 0, sizeof(nladdr));
-+	nladdr.nl_family = AF_NETLINK;
-+
-+	while ((r = sendto(fd, buf, buflen, 0, (struct sockaddr *) &nladdr,
-+			   sizeof(nladdr))) < buflen) {
-+		if (r > 0) {
-+			buf += r;
-+			buflen -= r;
-+		} else if (errno != EAGAIN) {
-+			return -1;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static bool get_smc_nl_family_id(void)
-+{
-+	struct sockaddr_nl nl_src;
-+	struct msgtemplate msg;
-+	struct nlattr *nl;
-+	int fd, ret;
-+	pid_t pid;
-+
-+	fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_GENERIC);
-+	if (!ASSERT_OK_FD(fd, "nl_family socket"))
-+		return false;
-+
-+	pid = getpid();
-+
-+	memset(&nl_src, 0, sizeof(nl_src));
-+	nl_src.nl_family = AF_NETLINK;
-+	nl_src.nl_pid = pid;
-+
-+	ret = bind(fd, (struct sockaddr *) &nl_src, sizeof(nl_src));
-+	if (!ASSERT_OK(ret, "nl_family bind"))
-+		goto fail;
-+
-+	ret = send_cmd(fd, GENL_ID_CTRL, pid,
-+		       NLM_F_REQUEST, CTRL_CMD_GETFAMILY,
-+		       CTRL_ATTR_FAMILY_NAME, (void *)SMC_GENL_FAMILY_NAME,
-+		       strlen(SMC_GENL_FAMILY_NAME));
-+	if (!ASSERT_OK(ret, "nl_family query"))
-+		goto fail;
-+
-+	ret = recv(fd, &msg, sizeof(msg), 0);
-+	if (!ASSERT_FALSE(msg.n.nlmsg_type == NLMSG_ERROR || (ret < 0) ||
-+			  !NLMSG_OK((&msg.n), ret), "nl_family response"))
-+		goto fail;
-+
-+	nl = (struct nlattr *) GENLMSG_DATA(&msg);
-+	nl = (struct nlattr *) ((char *) nl + NLA_ALIGN(nl->nla_len));
-+	if (!ASSERT_EQ(nl->nla_type, CTRL_ATTR_FAMILY_ID, "nl_family nla type"))
-+		goto fail;
-+
-+	smc_nl_family_id = *(uint16_t *) NLA_DATA(nl);
-+	close(fd);
-+	return true;
-+fail:
-+	close(fd);
-+	return false;
-+}
-+
-+static bool smc_ueid(int op)
-+{
-+	struct sockaddr_nl nl_src;
-+	struct msgtemplate msg;
-+	struct nlmsgerr *err;
-+	char test_ueid[32];
-+	int fd, ret;
-+	pid_t pid;
-+
-+	/* UEID required */
-+	memset(test_ueid, '\x20', sizeof(test_ueid));
-+	memcpy(test_ueid, SMC_BPFTEST_UEID, strlen(SMC_BPFTEST_UEID));
-+	fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_GENERIC);
-+	if (!ASSERT_OK_FD(fd, "ueid socket"))
-+		return false;
-+
-+	pid = getpid();
-+	memset(&nl_src, 0, sizeof(nl_src));
-+	nl_src.nl_family = AF_NETLINK;
-+	nl_src.nl_pid = pid;
-+
-+	ret = bind(fd, (struct sockaddr *) &nl_src, sizeof(nl_src));
-+	if (!ASSERT_OK(ret, "ueid bind"))
-+		goto fail;
-+
-+	ret = send_cmd(fd, smc_nl_family_id, pid,
-+		       NLM_F_REQUEST | NLM_F_ACK, op, SMC_NLA_EID_TABLE_ENTRY,
-+		       (void *)test_ueid, sizeof(test_ueid));
-+	if (!ASSERT_OK(ret, "ueid cmd"))
-+		goto fail;
-+
-+	ret = recv(fd, &msg, sizeof(msg), 0);
-+	if (!ASSERT_FALSE((ret < 0) ||
-+	    !NLMSG_OK((&msg.n), ret), "ueid response"))
-+		goto fail;
-+
-+	if (msg.n.nlmsg_type == NLMSG_ERROR) {
-+		err = NLMSG_DATA(&msg);
-+		switch (op) {
-+		case SMC_NETLINK_REMOVE_UEID:
-+			if (!ASSERT_FALSE((err->error && err->error != -ENOENT),
-+					  "ueid remove"))
-+				goto fail;
-+			break;
-+		case SMC_NETLINK_ADD_UEID:
-+			if (!ASSERT_OK(err->error, "ueid add"))
-+				goto fail;
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+	close(fd);
-+	return true;
-+fail:
-+	close(fd);
-+	return false;
-+}
-+
-+static bool setup_ueid(void)
-+{
-+	/* get smc nl id */
-+	if (!get_smc_nl_family_id())
-+		return false;
-+	/* clear old ueid for bpftest */
-+	smc_ueid(SMC_NETLINK_REMOVE_UEID);
-+	/* smc-loopback required ueid */
-+	return smc_ueid(SMC_NETLINK_ADD_UEID);
-+}
-+
-+static void cleanup_ueid(void)
-+{
-+	smc_ueid(SMC_NETLINK_REMOVE_UEID);
-+}
-+#endif /* __s390x__ */
-+
-+static bool setup_netns(void)
-+{
-+	test_netns = netns_new(TEST_NS, true);
-+	if (!ASSERT_OK_PTR(test_netns, "open net namespace"))
-+		goto fail_netns;
-+
-+	if (!ASSERT_OK(system("ip addr add 127.0.1.0/8 dev lo"),
-+		       "add server node"))
-+		goto fail_ip;
-+
-+	if (!ASSERT_OK(system("ip addr add 127.0.2.0/8 dev lo"),
-+		       "server via risk path"))
-+		goto fail_ip;
-+
-+	return true;
-+fail_ip:
-+	netns_free(test_netns);
-+fail_netns:
-+	return false;
-+}
-+
-+static void cleanup_netns(void)
-+{
-+	netns_free(test_netns);
-+	remove_netns(TEST_NS);
-+}
-+
-+static bool setup_smc(void)
-+{
-+	if (!setup_ueid())
-+		return false;
-+
-+	if (!setup_netns())
-+		goto fail_netns;
-+
-+	return true;
-+fail_netns:
-+	cleanup_ueid();
-+	return false;
-+}
-+
-+static int set_client_addr_cb(int fd, void *opts)
-+{
-+	const char *src = (const char *)opts;
-+	struct sockaddr_in localaddr;
-+
-+	localaddr.sin_family = AF_INET;
-+	localaddr.sin_port = htons(0);
-+	localaddr.sin_addr.s_addr = inet_addr(src);
-+	return !ASSERT_OK(bind(fd, &localaddr, sizeof(localaddr)), "client bind");
-+}
-+
-+static void run_link(const char *src, const char *dst, int port)
-+{
-+	struct network_helper_opts opts = {0};
-+	int server, client;
-+
-+	server = start_server_str(AF_INET, SOCK_STREAM, dst, port, NULL);
-+	if (!ASSERT_OK_FD(server, "start service_1"))
-+		return;
-+
-+	opts.proto = IPPROTO_TCP;
-+	opts.post_socket_cb = set_client_addr_cb;
-+	opts.cb_opts = (void *)src;
-+
-+	client = connect_to_fd_opts(server, &opts);
-+	if (!ASSERT_OK_FD(client, "start connect"))
-+		goto fail_client;
-+
-+	close(client);
-+fail_client:
-+	close(server);
-+}
-+
-+static void block_link(int map_fd, const char *src, const char *dst)
-+{
-+	struct smc_strat_ip_value val = { .mode = /* block */ 0 };
-+	struct smc_strat_ip_key key = {
-+		.sip = inet_addr(src),
-+		.dip = inet_addr(dst),
-+	};
-+
-+	bpf_map_update_elem(map_fd, &key, &val, BPF_ANY);
-+}
-+
-+/*
-+ * This test describes a real-life service topology as follows:
-+ *
-+ *                             +-------------> service_1
-+ *            link1            |                     |
-+ *   +--------------------> server                   |  link 2
-+ *   |                         |                     V
-+ *   |                         +-------------> service_2
-+ *   |        link 3
-+ *  client -------------------> server_via_unsafe_path -> service_3
-+ *
-+ * Among them,
-+ * 1. link-1 is very suitable for using SMC.
-+ * 2. link-2 is not suitable for using SMC, because the mode of this link is
-+ *    kind of short-link services.
-+ * 3. link-3 is also not suitable for using SMC, because the RDMA link is
-+ *    unavailable and needs to go through a long timeout before it can fallback
-+ *    to TCP.
-+ * To achieve this goal, we use a customized SMC ip strategy via smc_ops.
-+ */
-+static void test_topo(void)
-+{
-+	struct bpf_smc *skel;
-+	int rc, map_fd;
-+
-+	skel = bpf_smc__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "bpf_smc__open_and_load"))
-+		return;
-+
-+	rc = bpf_smc__attach(skel);
-+	if (!ASSERT_OK(rc, "bpf_smc__attach"))
-+		goto fail;
-+
-+	map_fd = bpf_map__fd(skel->maps.smc_strats_ip);
-+	if (!ASSERT_OK_FD(map_fd, "bpf_map__fd"))
-+		goto fail;
-+
-+	/* Mock the process of transparent replacement, since we will modify
-+	 * protocol to ipproto_smc accropding to it via
-+	 * fmod_ret/update_socket_protocol.
-+	 */
-+	system("sysctl -w net.smc.ops=linkcheck");
-+
-+	/* Configure ip strat */
-+	block_link(map_fd, CLIENT_IP, SERVER_IP_VIA_RISK_PATH);
-+	block_link(map_fd, SERVER_IP, SERVER_IP);
-+
-+	/* should go with smc */
-+	run_link(CLIENT_IP, SERVER_IP, SERVICE_1);
-+	/* should go with smc fallback */
-+	run_link(SERVER_IP, SERVER_IP, SERVICE_2);
-+
-+	ASSERT_EQ(skel->bss->smc_cnt, 2, "smc count");
-+	ASSERT_EQ(skel->bss->fallback_cnt, 1, "fallback count");
-+
-+	/* should go with smc */
-+	run_link(CLIENT_IP, SERVER_IP, SERVICE_2);
-+
-+	ASSERT_EQ(skel->bss->smc_cnt, 3, "smc count");
-+	ASSERT_EQ(skel->bss->fallback_cnt, 1, "fallback count");
-+
-+	/* should go with smc fallback */
-+	run_link(CLIENT_IP, SERVER_IP_VIA_RISK_PATH, SERVICE_3);
-+
-+	ASSERT_EQ(skel->bss->smc_cnt, 4, "smc count");
-+	ASSERT_EQ(skel->bss->fallback_cnt, 2, "fallback count");
-+
-+fail:
-+	bpf_smc__destroy(skel);
-+}
-+
-+void test_bpf_smc(void)
-+{
-+	if (!setup_smc()) {
-+		printf("setup for smc test failed, test SKIP:\n");
-+		test__skip();
-+		return;
-+	}
-+
-+	if (test__start_subtest("topo"))
-+		test_topo();
-+
-+	cleanup_ueid();
-+	cleanup_netns();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_smc.c b/tools/testing/selftests/bpf/progs/bpf_smc.c
-new file mode 100644
-index 000000000000..c8499e7821fa
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_smc.c
-@@ -0,0 +1,117 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_tracing_net.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+enum {
-+	BPF_SMC_LISTEN	= 10,
-+};
-+
-+struct smc_sock___local {
-+	struct sock sk;
-+	struct smc_sock *listen_smc;
-+	bool use_fallback;
-+} __attribute__((preserve_access_index));
-+
-+int smc_cnt = 0;
-+int fallback_cnt = 0;
-+
-+SEC("fentry/smc_release")
-+int BPF_PROG(bpf_smc_release, struct socket *sock)
-+{
-+	/* only count from one side (client) */
-+	if (sock->sk->__sk_common.skc_state == BPF_SMC_LISTEN)
-+		return 0;
-+	smc_cnt++;
-+	return 0;
-+}
-+
-+SEC("fentry/smc_switch_to_fallback")
-+int BPF_PROG(bpf_smc_switch_to_fallback, struct smc_sock___local *smc)
-+{
-+	/* only count from one side (client) */
-+	if (smc && !smc->listen_smc)
-+		fallback_cnt++;
-+	return 0;
-+}
-+
-+/* go with default value if no strat was found */
-+bool default_ip_strat_value = true;
-+
-+struct smc_strat_ip_key {
-+	__u32	sip;
-+	__u32	dip;
-+};
-+
-+struct smc_strat_ip_value {
-+	__u8	mode;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(key_size, sizeof(struct smc_strat_ip_key));
-+	__uint(value_size, sizeof(struct smc_strat_ip_value));
-+	__uint(max_entries, 128);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+} smc_strats_ip SEC(".maps");
-+
-+static bool smc_check(__u32 src, __u32 dst)
-+{
-+	struct smc_strat_ip_value *value;
-+	struct smc_strat_ip_key key = {
-+		.sip = src,
-+		.dip = dst,
-+	};
-+
-+	value = bpf_map_lookup_elem(&smc_strats_ip, &key);
-+	return value ? value->mode : default_ip_strat_value;
-+}
-+
-+SEC("fmod_ret/update_socket_protocol")
-+int BPF_PROG(smc_run, int family, int type, int protocol)
-+{
-+	struct task_struct *task;
-+
-+	if (family != AF_INET && family != AF_INET6)
-+		return protocol;
-+
-+	if ((type & 0xf) != SOCK_STREAM)
-+		return protocol;
-+
-+	if (protocol != 0 && protocol != IPPROTO_TCP)
-+		return protocol;
-+
-+	task = bpf_get_current_task_btf();
-+	/* Prevent from affecting other tests */
-+	if (!task || !task->nsproxy->net_ns->smc.ops)
-+		return protocol;
-+
-+	return IPPROTO_SMC;
-+}
-+
-+SEC("struct_ops/bpf_smc_set_tcp_option_cond")
-+int BPF_PROG(bpf_smc_set_tcp_option_cond, const struct tcp_sock *tp,
-+	     struct inet_request_sock *ireq)
-+{
-+	return smc_check(ireq->req.__req_common.skc_daddr,
-+			 ireq->req.__req_common.skc_rcv_saddr);
-+}
-+
-+SEC("struct_ops/bpf_smc_set_tcp_option")
-+int BPF_PROG(bpf_smc_set_tcp_option, struct tcp_sock *tp)
-+{
-+	return smc_check(tp->inet_conn.icsk_inet.sk.__sk_common.skc_rcv_saddr,
-+			 tp->inet_conn.icsk_inet.sk.__sk_common.skc_daddr);
-+}
-+
-+SEC(".struct_ops.link")
-+struct smc_ops  linkcheck = {
-+	.name			= "linkcheck",
-+	.set_option		= (void *) bpf_smc_set_tcp_option,
-+	.set_option_cond	= (void *) bpf_smc_set_tcp_option_cond,
-+};
--- 
-2.45.0
-
+LGTM.
+Reviewed-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
 
