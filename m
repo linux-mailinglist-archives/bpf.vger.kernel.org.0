@@ -1,129 +1,87 @@
-Return-Path: <bpf+bounces-49604-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49605-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08C11A1AAAC
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 20:49:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DC5CA1AAB6
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 20:51:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 763DF3A910C
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 19:49:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2178E3A3C0F
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 19:51:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 023531ADC88;
-	Thu, 23 Jan 2025 19:49:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2563F1ADC7D;
+	Thu, 23 Jan 2025 19:51:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RsFEo5hJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mWL4TMq0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 157C6192B76;
-	Thu, 23 Jan 2025 19:49:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D8CF1B6CEA
+	for <bpf@vger.kernel.org>; Thu, 23 Jan 2025 19:51:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737661773; cv=none; b=CqrHVrT+TNDISmOWB2x4rviI4olxFCmZxApVQOcbo84fALJUwL6lBqSOXRCsFfrYRCFiCNI5MVqfL4HtfFkJ8NAMMxzmOz+LlB7xuwjx7iI41AxcYxLIfii7lvl+RUXWGf6LRTz+gDDvxMgmywaXh4xAAgqyiM/u2WqMoXQl2Gc=
+	t=1737661897; cv=none; b=HwKDAMjSkRA4mO1uytm+2lVNYFnTiuUKlYpjJ4Axz5iPNvGRDQ8iZpmxmzAyzI+kZvI+WIzVg/ZPD+L8M5b1eXcxXg6G2x84uk0OsYO+XenIwj73n2eoOgMLAEQsGA9BXA1N2hHl2I3Peia0B2Cq6AhS5mQggD1/+JBtZOrNEss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737661773; c=relaxed/simple;
-	bh=QdjY/uftDkB8P39mPx/Ss9DRZ+cCm2+3VhpA3nLNghU=;
+	s=arc-20240116; t=1737661897; c=relaxed/simple;
+	bh=n/Rm/uwFmX9rXvWWg19RWGzvrw/hud9/H35We4C3i0A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HZjkXGrVBBKF3w6yavKl2wM6Ey2ltujINE5/p6HNiA2yCCzaswBK0QCanfkBRG29k/Z6LWWc+JK4MGDz4VtVyCgQJ+w36l20J1iMv2615a9uNldua9ALzkDmhNLnsAg8XT6t2CAZOnqkHMeyT/ucj3tsUSAkRKl3g3IfDxcBkHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RsFEo5hJ; arc=none smtp.client-ip=209.85.214.177
+	 Content-Type:Content-Disposition:In-Reply-To; b=WjWmjHd6tKmxm/ExXSLTf40mtovEMwEsf0CbL/A78i2d4j+tehYQOvfauEdKbh5B+6QNwPfn3m7EnNeRlIT3X2P4dAyWtLmrzSuAuMtu7t5aNtXSuldjIQMpsR1E0y4Y8S0DcgJWeNPO38mbQ4DUG9r0uQLurEmWyGTT26MTDy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mWL4TMq0; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-21661be2c2dso23639035ad.1;
-        Thu, 23 Jan 2025 11:49:31 -0800 (PST)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-21628b3fe7dso23173085ad.3
+        for <bpf@vger.kernel.org>; Thu, 23 Jan 2025 11:51:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737661771; x=1738266571; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/qLickY1e0ujLI7bpuAPKBg3ra7SxF8sIpaNTGdpk/E=;
-        b=RsFEo5hJqYugvOSQrowfLPJ6Z5SBBNDr15AnBA7FPIR+NVQTrE8NoPRNB1CHzIO4vq
-         PGfDnPbemm0GQDqX0BCgYRTbpILl4cUK3O9icAPwVp7SOO3DLm8M/miq+mzd7HV9vF34
-         ePuhLdAiUBMLkcWXbzLYN+OYZeTZOUvDnRwP94Kz9KQEFX9vxKOz5oTiK6s3NX71ZIQr
-         5ciGD7vCquztv30NVveMWXQ5ccTctDFc/GXTm/u5cISc4UaenuNFSsFSuO0KUm8dXrLt
-         PObZxcIWvyvCgi/hudoZy400rgLuq5mfJAHTNUh1OIVg1JjVtOaAgt90wgKVIcxmlUm6
-         izZw==
+        d=gmail.com; s=20230601; t=1737661894; x=1738266694; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=fuoOYlQ8EyfVZfwQwvYBLrh9EM3gB8+fMt9KB/dbQcE=;
+        b=mWL4TMq0asYKy1hMCggA95UxH0sthmgE2wIQ6gbaG7ehHE1OL5X+DcQvQXHm5r2h+I
+         sW5BLq6nKBpSS2XutlrWOf3E6nX0/mM5R2/3lIIgCOykdWuJuIp+AE1NBHjiuryN8aEe
+         pCl57BVawt3BJikRraMa1BwCvznO8LdevA0BwILbmfDughAaZYXmCJl2Gn5arTEQrTQL
+         vMk73X3AaVRfrtJfKdyhoaV0/steTPh/BA8Oz2D8EWsGKles2yxpoFQSFPY0iVsSFoLt
+         JoUB3K/DuUmKfkontpOg+eSuWV9o1P53IIEr2IAlQTMF6pGBaNwSKRc2WdmH89Naeu1G
+         rPJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737661771; x=1738266571;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/qLickY1e0ujLI7bpuAPKBg3ra7SxF8sIpaNTGdpk/E=;
-        b=LOlhFcxLk816c4gxqpPAi6ccPkvbpNQv+VGREzUk+SD5eb+F3fLQk5e3Lla37MaRHh
-         OOlF6JWYMX+aJR1nshlRFp202e8xxgUY6zmdzNRYwqR1RBDmym6dVG9EeyID1zySy1CU
-         zOiAAxy/07k2kFLz5hq6Ayoe3U6too+wzmBUDp4rB0+sZuxF/BqcGMIu033jLfpMH7Gk
-         V3vmRKEYRgwB7XpF2MU0izvj0ns2/eki3aHBLKICP5OYZ1aDb/H2J3wzuEC3IaA9xl4l
-         7JkGbVK536VvO8KDf+QIkfUm0pp3KzywGgYVjhFK5/i6bJ2YQ9pFx+/9+9fFWJ8mH/Tm
-         5W7A==
-X-Forwarded-Encrypted: i=1; AJvYcCUexellNDkI88vTT4HJq+5++kkwal/tBU+lBpA2ch1KPA+BTzwdKWyu513FEqszM0YEWWr+XFD+K05wFkJZ@vger.kernel.org, AJvYcCV9C/TgEPN4mXgA0zP0bCkzFd8QYReYjjaa2/gVSP0iPz1DVR8H08/smVuzcNN3uVoxxuz17XsnQv2t@vger.kernel.org, AJvYcCVGGn6vZFOfNIluDn9xHG9qN20itW1V5Cceh+pQBrDxd07h2atkxvMwCLiXBcF0a+vev61W/2RqCyQMG8bL9hIV@vger.kernel.org, AJvYcCWFlHb2UipgHrExqVRMJPfRYMOHfNpKfyVdxBvJTSBBWt/HbcfHXFxsC/r6Y2Lz6rU0fRg=@vger.kernel.org, AJvYcCXzNRzoSiQy6A6O23sLN1DnQ5mgm8IQx7owD54j/V57bywPS8+CHdiPsGgpkS4nwiYtlrbP1/RV@vger.kernel.org
-X-Gm-Message-State: AOJu0YzGlMOnPPJvyEzCHihCUGUcY9KWGW59za/h8Y0iT7HgqM6r2RoE
-	Y6LaargX1bKHW4sWUColzk/0gxpd2fA2uci8bTuRM/TR4x6wjbw=
-X-Gm-Gg: ASbGncuZXIFi9Jl00Ce7s+LCUNMFiv3O/sjBCc4q85gnyuM/GBvzuRdiuvClqsP64py
-	lA6RIfLc2gGZ+KrX4LB4KBqy+E0rF18R5SmT2QvizIX4/mHWOHWgcmc8u6xMif01VCc8z/sNljp
-	UfsLDgt0zRHdhOZG6RY90CgjwYB0gKrKqYmD/mKFw/lLrUCwKm4CSVSGvzu0VFqa5TfY0Mn2n8w
-	be8NSWqehyi3u8/frnsGKZiP9/Yi2U9gow1J5JULHjBwJES3qsuR5zR88z61NMiqdkCP0bzH247
-	2X0v
-X-Google-Smtp-Source: AGHT+IESeNKwX2zcipFaXoMlvYsxaD0Oto3RCfSnVHPTxJyo13u3XHbde1U83PRnjPUOPMjYL0fFMw==
-X-Received: by 2002:a17:903:988:b0:216:7ee9:220b with SMTP id d9443c01a7336-21c35530048mr461405425ad.22.1737661771206;
-        Thu, 23 Jan 2025 11:49:31 -0800 (PST)
+        d=1e100.net; s=20230601; t=1737661894; x=1738266694;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fuoOYlQ8EyfVZfwQwvYBLrh9EM3gB8+fMt9KB/dbQcE=;
+        b=inFy/8TORP099O+X7wYM7CXx+S6DRgBNonxlXY/0wGLmNdetk1WqYedatOS6zZQ2aa
+         IyVcb0HvkiCbEnGzxAUczLsVlA5rgU5TtGIPCXQv0YVI3UA58NzihH9ZUk0J0C4IkbB2
+         96Kx77G6521kiDKtrgCkGcxRx17Xc+txoSfzvgyClidU9mEhjWDEDMlPGaHsvuqdIEG0
+         HjoZWhPCdBn64mHgOo1HbXXYxzHughlVS0Xm5l7yhyVi1fMgoA6o2mc9QxoIUyz8378F
+         8QtIkVI5gfxqFghTDqtnuB48wknuNM2jI4wfPCz/EOpgZ1cnmz2WVcs5a7CriGRPzeq1
+         H2Pg==
+X-Forwarded-Encrypted: i=1; AJvYcCXmbSsVcgGbskfb+6L2XCyKy5NDwzX6JE0X7dEsb2OZRWFjHeEbPQgIBdaGOM/iBCKyS1M=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxwZ/UQLWsv+HRdrj5QuBXV9EnsyLAW8xQAMb2+jKcIi9qbKTDv
+	fL1M39QLmBj/jyCH6wQ7LibxRtog2mhRE33uz9h1eSoD5eqoNlc=
+X-Gm-Gg: ASbGncsI6f8rTPa1wcgUaghNID+2WyW+i2pnumSBEtbtD7wmIzL28WafpjiSgHSW+2X
+	ULKTlPkYPjhqKrqD5V44n5Dsqybq2BNdL1n4BzrldPLPozcVzXSwtoyJu5dkHygzxSYaghoZGXE
+	09GpKRvVeWkkHNfuVawTAyaihtVbgAIImJO6G/aGMB2u9i7Mmjq1iwYcBHe8p65Xi4loD811Z5W
+	nQNZ4dP8MTWiim14ieliPgMglwDyTw3P26VilZi38Oep3c8OCk7eYO+ZW03+S58Sv4SAbASoOj6
+	Z3V/
+X-Google-Smtp-Source: AGHT+IEbWx+H6cptmJrMPMe/RQXfLsTeN22GpAC3n4IwLmEZQ6eCieUZ7148QQxkfNxd7iLWcPOugA==
+X-Received: by 2002:a05:6a21:78a5:b0:1e1:adfe:c43 with SMTP id adf61e73a8af0-1eb214613bbmr39964887637.9.1737661894510;
+        Thu, 23 Jan 2025 11:51:34 -0800 (PST)
 Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21da4141436sm2728275ad.134.2025.01.23.11.49.30
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72f8a69eb69sm345083b3a.13.2025.01.23.11.51.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jan 2025 11:49:30 -0800 (PST)
-Date: Thu, 23 Jan 2025 11:49:30 -0800
+        Thu, 23 Jan 2025 11:51:34 -0800 (PST)
+Date: Thu, 23 Jan 2025 11:51:33 -0800
 From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Florian Bezdeka <florian.bezdeka@siemens.com>
-Cc: "Song, Yoong Siang" <yoong.siang.song@intel.com>,
-	"Bouska, Zdenek" <zdenek.bouska@siemens.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Willem de Bruijn <willemb@google.com>,
-	Donald Hunter <donald.hunter@gmail.com>,
-	Jonathan Corbet <corbet@lwn.net>, Bjorn Topel <bjorn@kernel.org>,
-	"Karlsson, Magnus" <magnus.karlsson@intel.com>,
-	"Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	"Damato, Joe" <jdamato@fastly.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Mina Almasry <almasrymina@google.com>,
-	Daniel Jurgens <danielj@nvidia.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	"Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-	"Kitszel, Przemyslaw" <przemyslaw.kitszel@intel.com>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-	"linux-stm32@st-md-mailman.stormreply.com" <linux-stm32@st-md-mailman.stormreply.com>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-	"xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>
-Subject: Re: [PATCH bpf-next v6 4/4] igc: Add launch time support to XDP ZC
-Message-ID: <Z5KdSlzmyCKUyXTn@mini-arch>
-References: <20250116155350.555374-1-yoong.siang.song@intel.com>
- <20250116155350.555374-5-yoong.siang.song@intel.com>
- <AS1PR10MB5675499EE0ED3A579151D3D3EBE02@AS1PR10MB5675.EURPRD10.PROD.OUTLOOK.COM>
- <PH0PR11MB583095A2F12DA10D57781D18D8E02@PH0PR11MB5830.namprd11.prod.outlook.com>
- <ea087229cc6f7953875fc69f1b73df1ae1ee9b72.camel@siemens.com>
+To: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
+Cc: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	bpf@vger.kernel.org
+Subject: Re: RX metadata kfuncs cause kernel panic with XDP generic mode
+Message-ID: <Z5KdxTHVFSJSw5FQ@mini-arch>
+References: <dae862ec-43b5-41a0-8edf-46c59071cdda@hetzner-cloud.de>
+ <87msfhqydl.fsf@toke.dk>
+ <74f949dc-7921-4f06-88e1-5b3686839b65@hetzner-cloud.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -132,58 +90,40 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ea087229cc6f7953875fc69f1b73df1ae1ee9b72.camel@siemens.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <74f949dc-7921-4f06-88e1-5b3686839b65@hetzner-cloud.de>
 
-On 01/23, Florian Bezdeka wrote:
-> Hi all,
+On 01/23, Marcus Wichelmann wrote:
 > 
-> On Thu, 2025-01-23 at 16:41 +0000, Song, Yoong Siang wrote:
-> > On Thursday, January 23, 2025 11:40 PM, Bouska, Zdenek <zdenek.bouska@siemens.com> wrote:
-> > > 
-> > > Hi Siang,
-> > > 
-> > > I tested this patch series on 6.13 with Intel I226-LM (rev 04).
-> > > 
-> > > I also applied patch "selftests/bpf: Actuate tx_metadata_len in xdp_hw_metadata" [1]
-> > > and "selftests/bpf: Enable Tx hwtstamp in xdp_hw_metadata" [2] so that TX timestamps
-> > > work.
-> > > 
-> > > HW RX-timestamp was small (0.5956 instead of 1737373125.5956):
-> > > 
-> > > HW RX-time:   595572448 (sec:0.5956) delta to User RX-time sec:1737373124.9873 (1737373124987318.750 usec)
-> > > XDP RX-time:   1737373125582798388 (sec:1737373125.5828) delta to User RX-time sec:0.0001 (92.733 usec)
-> > > 
-> > > Igc's raw HW RX-timestamp in front of frame data was overwritten by BPF program on
-> > > line 90 in tools/testing/selftests/bpf: meta->hint_valid = 0;
-> > > 
-> > > "HW timestamp has been copied into local variable" comment is outdated on
-> > > line 2813 in drivers/net/ethernet/intel/igc/igc_main.c after
-> > > commit 069b142f5819 igc: Add support for PTP .getcyclesx64() [3].
-> > > 
-> > > Workaround is to add unused data to xdp_meta struct:
-> > > 
-> > > --- a/tools/testing/selftests/bpf/xdp_metadata.h
-> > > +++ b/tools/testing/selftests/bpf/xdp_metadata.h
-> > > @@ -49,4 +49,5 @@ struct xdp_meta {
-> > >                __s32 rx_vlan_tag_err;
-> > >        };
-> > >        enum xdp_meta_field hint_valid;
-> > > +       __u8 avoid_IGC_TS_HDR_LEN[16];
-> > > };
-> > > 
+> Am 23.01.25 um 17:38 schrieb Toke Høiland-Jørgensen:
+> > Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de> writes:
 > > 
-> > Hi Zdenek Bouska, 
+> > > There is probably a check missing somewhere that prevents the use of
+> > > these kfuncs in the scope of do_xdp_generic?
 > > 
-> > Thanks for your help on testing this patch set.
-> > You are right, there is some issue with the Rx hw timestamp,
-> > I will submit the bug fix patch when the solution is finalized,
-> > but the fix will not be part of this launch time patch set.
-> > Until then, you can continue to use your WA.
+> > Heh, yeah, we should definitely block device-bound programs from being
+> > attached in generic mode. Something like the below, I guess. Care to
+> > test that out?
+> > 
+> > -Toke
+> > 
+> Ah, thanks for the quick patch. ;)
 > 
-> I think there is no simple fix for that. That needs some discussion
-> around the "expectations" to the headroom / meta data area in front of
-> the actual packet data.
+> I have tested your patch with the 6.12 branch I'm currently working with and this does the job.
+> 
+>   # bpftool prog load crash.o /sys/fs/bpf/crash xdpmeta_dev mlx5-conx5-1
+>   # bpftool net attach xdpgeneric pinned /sys/fs/bpf/crash dev mlx5-conx5-1
+>   libbpf: Kernel error message: Can't attach device-bound programs in generic mode
+>   Error: interface xdpgeneric attach failed: Invalid argument
+> 
+> The do_xdp_generic is also used by the tun driver as a fallback in some cases, so, to my understanding,
+> even programs attached in driver-mode may take the generic XDP path. How can this be handled there?
 
-By 'simple' you mean without some new UAPI to signal the size of that
-'reserved area' by the driver? I don't see any other easy way out as well :-/
+[..]
+
+> Currently, it's not an issue, because the tun driver does not implement the xdp_metadata_ops yet, but
+> it may become one in the future.
+
+We can solve it if/when we add metadata_ops to the tun driver, right?
+Not sure we need any immediate action right now.
 
