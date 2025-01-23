@@ -1,47 +1,78 @@
-Return-Path: <bpf+bounces-49592-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49593-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CCE1A1A948
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 19:00:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 49B77A1A94B
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 19:01:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6603D188A5C2
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 18:00:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A44A188AB09
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 18:02:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FF95166F34;
-	Thu, 23 Jan 2025 18:00:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57425154C07;
+	Thu, 23 Jan 2025 18:01:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="HZ7OiVjq"
 X-Original-To: bpf@vger.kernel.org
-Received: from dediextern.your-server.de (dediextern.your-server.de [85.10.215.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DCD313D882
-	for <bpf@vger.kernel.org>; Thu, 23 Jan 2025 17:59:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.10.215.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C2785FEE6
+	for <bpf@vger.kernel.org>; Thu, 23 Jan 2025 18:01:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737655202; cv=none; b=bb+lMx3qHrA5otEN65b+Cj/RO5GsGCo0NbokCciPteTlO0njeF1fXoqX3xiRDCIBtaEiQA0kiCMSdFz+1jecxaGzS6+JexrC6uDyky+0DNGdZzf24v2zG6t6K9U5g0MrOgB3TTHv8Igm0QnoDKhOn+sIyxYrvfbdimwo+Intcmk=
+	t=1737655307; cv=none; b=Psso62gmkxqWYgJ+Wwp5JJ2FrT6iaxpOs3w0b4+KyLmXJ7eFJq5G9OKGAmaisJy7K2hlRicRV78Od4006UCr6xU+8iT/v45aYfnpVhgBcEfcih7llE41vwP5f7J6Wyc3IfM8Vhxr6XHgzXObuAuKUNfs99pjkhJO0UpYcaJVp3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737655202; c=relaxed/simple;
-	bh=T/WFP0GYss0snl/P0qQOfU03bimiaAWQd3kmtrXFz3o=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:From:Subject:
-	 In-Reply-To:Content-Type; b=JfIDXhL4+0mZf+wDXj+bUWCzR11hx0+Gb8j9xBc+Fn7XHGxbJdW3ldEbgZxLf5PkN9lwE+T9lFxLnAGtPr0CpU5HnmnQJEbbZnYTOYYO0t85/EYyPFoOuvrbfUg4UZjJTvxkjVcHCNhda6PV7HoIvt/SZ8dOFwxNmJ8JJ7Rg5+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de; spf=pass smtp.mailfrom=hetzner-cloud.de; arc=none smtp.client-ip=85.10.215.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hetzner-cloud.de
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-	by dediextern.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <marcus.wichelmann@hetzner-cloud.de>)
-	id 1tb1Ui-000Fax-BX; Thu, 23 Jan 2025 18:59:56 +0100
-Received: from [2a0d:3344:1523:1f10:f118:b2d4:edbb:54af]
-	by sslproxy04.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <marcus.wichelmann@hetzner-cloud.de>)
-	id 1tb1Ui-000O5d-0P;
-	Thu, 23 Jan 2025 18:59:56 +0100
-Message-ID: <74f949dc-7921-4f06-88e1-5b3686839b65@hetzner-cloud.de>
-Date: Thu, 23 Jan 2025 18:59:53 +0100
+	s=arc-20240116; t=1737655307; c=relaxed/simple;
+	bh=a+wvI6s5OG0/4/Kp81DJZpgEQT6Tr4dBQvYiZd85jJw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aksevuEIhHYYCLYXiujvLl/zlytDzTLICDESw0mBbwt65hWu6Sh4/SMIJHYkkevHIOCnghlVMV9CcGWDSD8yIDfEXxoJsyb/0yEk3BeKomdvdQqLKmx4GwrmVCc9L38QfvPdvE/hjIlXsZkIf8n8yCZiczIqyRMbFoAgYTbTkK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=HZ7OiVjq; arc=none smtp.client-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2f7d35de32dso294690a91.3
+        for <bpf@vger.kernel.org>; Thu, 23 Jan 2025 10:01:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1737655305; x=1738260105; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BZA/H5bVrFbA/i0rTND2KaNKy+1cl1snV3q4LxBnVjo=;
+        b=HZ7OiVjqmneQu4pE5GKoYSgUS2Kl3+LOAttmMLTe0TZDqjLXsHWqTtaAGP43SG/ih7
+         3gDX3Y/4HHO64wTp+5gSIwKnYlA/+1q8npoZBxSGojfGadQyC0L2KweGAy4ifasHUo2U
+         D19knnd/zxWQKTEc+5OItmBOzgCI1Su64Km12/r1DyGUER4azAlD1CHlRYfJRLWxWOQm
+         IH8hMy45usHDC8xG4o7Ntt/B+kXmfSvyoYBt3EGmdTHvXjnKqTTga8fHx0AyXl0ourpc
+         3QOfEiKy1R8WGqi3b8Fe5Un2kRJS5h9GJ9QaGtmK+wSYeFQ15032WZQSK5utXDWT58wF
+         d79g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737655305; x=1738260105;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BZA/H5bVrFbA/i0rTND2KaNKy+1cl1snV3q4LxBnVjo=;
+        b=TH7fABxMAQuj5KaUl3bJd0i6BQrL1dnD/1zr4SMNphfFyRUGhuSOF5HGU9alkfty1Q
+         VjWzCgYbOB5hRdQL95Avm3PGvP4IXvntWhchEYYL1q64Y4QlqMdCDpMnNq2d/TFAaTVo
+         VMT/S0i+QZvBnkUE7jR6LebwvkSVMLLbg3XcXWQGQBjDSy/ZUwuiXXymtWm60Yd3bZRk
+         tiaR6AXDBB92FxDDQmjWsbDfXFca5IeIo5zMmPi1N5KFFCqQNX3nI8tpmUfneOolvkob
+         zl0w7yb10ivnFScVWlMidN5lnc5OdDgQjZjkNjP6jFWdCjjlaVN8rciVW/n4HHq5Mee8
+         FSUw==
+X-Gm-Message-State: AOJu0YyLmJeoGsavcrK0SghxpQ/l/7pUE4GO8RNzi2jj2oR+8hnWxEe9
+	FXjZNPQC7V3Rx/Ev6OlKtlNf3zdjvgAKXSKHn2Js5h4BpDFotIxU5xWVQ92upRs=
+X-Gm-Gg: ASbGncsPAbBB6h8dFQ6eeJzUBxHW8QZNQJa8RvcfUkhmiBFYgr9WNyQs3PCarbIUemm
+	xWUbdUNQo607hElA/AjV0rfWYiKdG4JszcmNb6Gx7lo6i6Z/MNPGDb4ApZeDNS4L+pABLWxY84O
+	/fypxVszsnC42g8D2X5OcqmMdea6G/dkSzK5poYh3FmeO9vRvMqQLwXWdOmGDarsmswmc+fQaDB
+	e5WCkHf6zWQn7uncsE05aTyidInsv45w63TWjGBfZ2PEH2LSzwk2O/yR+YPOzxDgTcni8+Hb39I
+	E/8MfwHcNaleNqqw2Sv2SvldFe3AvQ==
+X-Google-Smtp-Source: AGHT+IFuj2y9YbAJGQzA2qK0yg55WTeAT3tbvUZTLLGYrpLVA3b5dcRHTVoHkhgxBynypxV8UNKxsQ==
+X-Received: by 2002:a17:90a:c2c6:b0:2ee:3fa7:ef23 with SMTP id 98e67ed59e1d1-2f782da78e4mr14670308a91.8.1737655304639;
+        Thu, 23 Jan 2025 10:01:44 -0800 (PST)
+Received: from [10.254.144.106] ([139.177.225.251])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f7fe97010bsm196773a91.40.2025.01.23.10.01.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Jan 2025 10:01:44 -0800 (PST)
+Message-ID: <69264563-bad1-4c22-8165-822784091dcd@bytedance.com>
+Date: Fri, 24 Jan 2025 02:01:37 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -49,90 +80,104 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- bpf@vger.kernel.org
-Cc: stfomichev@gmail.com
-References: <dae862ec-43b5-41a0-8edf-46c59071cdda@hetzner-cloud.de>
- <87msfhqydl.fsf@toke.dk>
+Subject: Re: [PATCH bpf v2] bpf: Fix deadlock when freeing cgroup storage
+To: Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, David Vernet <void@manifault.com>
+Cc: "open list:BPF [STORAGE & CGROUPS]" <bpf@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20241221061018.37717-1-wuyun.abel@bytedance.com>
 Content-Language: en-US
-From: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-Autocrypt: addr=marcus.wichelmann@hetzner-cloud.de; keydata=
- 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
- wySmewx3h/yfMh0aFxHhvLPxrO2IEQ==
-Subject: Re: RX metadata kfuncs cause kernel panic with XDP generic mode
-In-Reply-To: <87msfhqydl.fsf@toke.dk>
+From: Abel Wu <wuyun.abel@bytedance.com>
+In-Reply-To: <20241221061018.37717-1-wuyun.abel@bytedance.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: marcus.wichelmann@hetzner-cloud.de
-X-Virus-Scanned: Clear (ClamAV 1.0.7/27527/Thu Jan 23 10:44:17 2025)
+Content-Transfer-Encoding: 7bit
 
+Ping :)
 
-Am 23.01.25 um 17:38 schrieb Toke Høiland-Jørgensen:
-> Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de> writes:
+On 12/21/24 2:10 PM, Abel Wu Wrote:
+> The following commit
+> bc235cdb423a ("bpf: Prevent deadlock from recursive bpf_task_storage_[get|delete]")
+> first introduced deadlock prevention for fentry/fexit programs attaching
+> on bpf_task_storage helpers. That commit also employed the logic in map
+> free path in its v6 version.
 > 
->> There is probably a check missing somewhere that prevents the use of
->> these kfuncs in the scope of do_xdp_generic?
+> Later bpf_cgrp_storage was first introduced in
+> c4bcfb38a95e ("bpf: Implement cgroup storage available to non-cgroup-attached bpf progs")
+> which faces the same issue as bpf_task_storage, instead of its busy
+> counter, NULL was passed to bpf_local_storage_map_free() which opened
+> a window to cause deadlock:
 > 
-> Heh, yeah, we should definitely block device-bound programs from being
-> attached in generic mode. Something like the below, I guess. Care to
-> test that out?
+> 	<TASK>
+> 		(acquiring local_storage->lock)
+> 	_raw_spin_lock_irqsave+0x3d/0x50
+> 	bpf_local_storage_update+0xd1/0x460
+> 	bpf_cgrp_storage_get+0x109/0x130
+> 	bpf_prog_a4d4a370ba857314_cgrp_ptr+0x139/0x170
+> 	? __bpf_prog_enter_recur+0x16/0x80
+> 	bpf_trampoline_6442485186+0x43/0xa4
+> 	cgroup_storage_ptr+0x9/0x20
+> 		(holding local_storage->lock)
+> 	bpf_selem_unlink_storage_nolock.constprop.0+0x135/0x160
+> 	bpf_selem_unlink_storage+0x6f/0x110
+> 	bpf_local_storage_map_free+0xa2/0x110
+> 	bpf_map_free_deferred+0x5b/0x90
+> 	process_one_work+0x17c/0x390
+> 	worker_thread+0x251/0x360
+> 	kthread+0xd2/0x100
+> 	ret_from_fork+0x34/0x50
+> 	ret_from_fork_asm+0x1a/0x30
+> 	</TASK>
 > 
-> -Toke
+> Progs:
+>   - A: SEC("fentry/cgroup_storage_ptr")
+>     - cgid (BPF_MAP_TYPE_HASH)
+> 	Record the id of the cgroup the current task belonging
+> 	to in this hash map, using the address of the cgroup
+> 	as the map key.
+>     - cgrpa (BPF_MAP_TYPE_CGRP_STORAGE)
+> 	If current task is a kworker, lookup the above hash
+> 	map using function parameter @owner as the key to get
+> 	its corresponding cgroup id which is then used to get
+> 	a trusted pointer to the cgroup through
+> 	bpf_cgroup_from_id(). This trusted pointer can then
+> 	be passed to bpf_cgrp_storage_get() to finally trigger
+> 	the deadlock issue.
+>   - B: SEC("tp_btf/sys_enter")
+>     - cgrpb (BPF_MAP_TYPE_CGRP_STORAGE)
+> 	The only purpose of this prog is to fill Prog A's
+> 	hash map by calling bpf_cgrp_storage_get() for as
+> 	many userspace tasks as possible.
 > 
-Ah, thanks for the quick patch. ;)
+> Steps to reproduce:
+>   - Run A;
+>   - while (true) { Run B; Destroy B; }
+> 
+> Fix this issue by passing its busy counter to the free procedure so
+> it can be properly incremented before storage/smap locking.
+> 
+> Fixes: c4bcfb38a95e ("bpf: Implement cgroup storage available to non-cgroup-attached bpf progs")
+> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
+> ---
+>   kernel/bpf/bpf_cgrp_storage.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/bpf/bpf_cgrp_storage.c b/kernel/bpf/bpf_cgrp_storage.c
+> index 20f05de92e9c..7996fcea3755 100644
+> --- a/kernel/bpf/bpf_cgrp_storage.c
+> +++ b/kernel/bpf/bpf_cgrp_storage.c
+> @@ -154,7 +154,7 @@ static struct bpf_map *cgroup_storage_map_alloc(union bpf_attr *attr)
+>   
+>   static void cgroup_storage_map_free(struct bpf_map *map)
+>   {
+> -	bpf_local_storage_map_free(map, &cgroup_cache, NULL);
+> +	bpf_local_storage_map_free(map, &cgroup_cache, &bpf_cgrp_storage_busy);
+>   }
+>   
+>   /* *gfp_flags* is a hidden argument provided by the verifier */
 
-I have tested your patch with the 6.12 branch I'm currently working with and this does the job.
-
-   # bpftool prog load crash.o /sys/fs/bpf/crash xdpmeta_dev mlx5-conx5-1
-   # bpftool net attach xdpgeneric pinned /sys/fs/bpf/crash dev mlx5-conx5-1
-   libbpf: Kernel error message: Can't attach device-bound programs in generic mode
-   Error: interface xdpgeneric attach failed: Invalid argument
-
-The do_xdp_generic is also used by the tun driver as a fallback in some cases, so, to my understanding,
-even programs attached in driver-mode may take the generic XDP path. How can this be handled there?
-Currently, it's not an issue, because the tun driver does not implement the xdp_metadata_ops yet, but
-it may become one in the future.
-
-Marcus
 
