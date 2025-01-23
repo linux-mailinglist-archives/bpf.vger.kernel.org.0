@@ -1,79 +1,126 @@
-Return-Path: <bpf+bounces-49577-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49579-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53CDBA1A7B8
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 17:20:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7DF8A1A7F7
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 17:38:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA6D83AB112
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 16:20:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CC0316735B
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 16:38:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D13A2212D94;
-	Thu, 23 Jan 2025 16:20:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95431213241;
+	Thu, 23 Jan 2025 16:38:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bCk0ELXo"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hjDq7i+y"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55223211A01;
-	Thu, 23 Jan 2025 16:20:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AAD61386DA
+	for <bpf@vger.kernel.org>; Thu, 23 Jan 2025 16:38:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737649211; cv=none; b=tTFz+chQ/bXYbuWi2zPgAewG7EPCDhjnPsLQvi1esuMIzbtT/YNaG2vkWqFIH+8xbgpUNXas2JVbkqIRuXwrh6QFZtOCvf93JPnT6rWyDG/qOaq7IkONB2+SNJiKjln8LPv/6GDilhEuQaNHHt2kh7r5vOyIbDJqFEcu/UTgGf0=
+	t=1737650302; cv=none; b=HrQhSJvHbRKnY6jr/e5eNplMNUrqJ4IP6qKkZ5PdeAad0QF2irY8RkFUhlB48gNZ+jtXOkSnTOPn4gQU62IiezseHdr+z4uwSeUWQKMZHi6fVW67etZ9gz4k7R931v90fJOQMK/QkIC6iZmCdXZOBslzrjaPPjn8qrlhJJFS3xM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737649211; c=relaxed/simple;
-	bh=lXjObilW38zTMWV9g6LZTxDQvHihLR5kuK8qU7Yrm6o=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=gn8ngmAIDEqTV4cqg+TRSuLKm34DJLGHEfIwdA4dRSkJJ1CTzcr6L4xD3H8VhPQ318ok3QmwTyZ4rPyc6elcbrZ8aaFEczY40AbWbae2RkmPfZoocOvFNKiulY3PFNj+HOc5yPgrmaPdIYdh8z6nFES74IpqL3eeiONT98Cuq18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bCk0ELXo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2378C4CEDD;
-	Thu, 23 Jan 2025 16:20:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737649210;
-	bh=lXjObilW38zTMWV9g6LZTxDQvHihLR5kuK8qU7Yrm6o=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=bCk0ELXoz9ylLPDLlOoxR/kmkCFPbM83S5Q2TYHXt+HZyVYJy8kv6cps06U1R306a
-	 c9mAYKoqWaBTfAALpoIz9uFYoTOm8qfBoquRj5YW4tjgzVrh+/0lKfiDXwoMcORAAL
-	 Vdlv8/0aELgyUqJQrSuKnQHpqzPRVDrhI0TwhR2SKDzXzxtE2VukuoQw5xihUj/Dc5
-	 6mxbNgLEnMMLTOvnJo1vVQGqnabpLHI+8URx4eJkLw1J8GTp0EmWaUXncmNwtTr3Y8
-	 ui/ZwxAOIx0EroCGZduwnmRGwCDjzxx/Cjjtt7TBu3iy2H2fAJUKPN6KDZUOXDa+jL
-	 ztxwQM2vU1Zkw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 9E96B380AA7A;
-	Thu, 23 Jan 2025 16:20:36 +0000 (UTC)
-Subject: Re: [GIT PULL] BPF changes for v6.14
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20250121003755.71163-1-alexei.starovoitov@gmail.com>
-References: <20250121003755.71163-1-alexei.starovoitov@gmail.com>
-X-PR-Tracked-List-Id: <bpf.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20250121003755.71163-1-alexei.starovoitov@gmail.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/bpf-next-6.14
-X-PR-Tracked-Commit-Id: 3f3c2f0cf669ff28b995b3d6b820ab870c2aa9d9
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d0d106a2bd21499901299160744e5fe9f4c83ddb
-Message-Id: <173764923540.1408734.8208133174193516411.pr-tracker-bot@kernel.org>
-Date: Thu, 23 Jan 2025 16:20:35 +0000
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org
+	s=arc-20240116; t=1737650302; c=relaxed/simple;
+	bh=fQllFcMWAPgxJPO9jl9X9/ja7J1uVtN03bRxkZfZpQk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=QZ0rYeqRMbpjbhF4mWFXaEoGwHoUy7TutlJ71e2m3V79OVGV6ShAjAb+YJiMI+tVmfcXoyQXGMxYjipCJprIHAwlxowgjbFTEUbkk+MBe1PDuf7rigAh9teS0vbh7ZDsyc0oy3afYy+EAeXqQ8J+cW/WjKroaQLOr0IP5gvMseM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hjDq7i+y; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1737650299;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8Gp4Lqmck0xLIjlUYaNawF6i7JeDue6Z19dmeCYgLeo=;
+	b=hjDq7i+ySg482akgV7MoKDZdwAnnEalYKL6/Zfdx+E6X1KF8daphu7K+4ZBOmPl8fj29lf
+	b1WIbD1s+ftPpPQWgY7R4YaLFdeSVB0qpMcTaAtZIXCi17yJo5C3wOEkC3GDZqdfF1H+CY
+	C29e5TUbttEJMTOWSCOSzSKEaPxk5tM=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-262-JUuCQRo-O_Gs7kP2Ecbg0g-1; Thu, 23 Jan 2025 11:38:17 -0500
+X-MC-Unique: JUuCQRo-O_Gs7kP2Ecbg0g-1
+X-Mimecast-MFC-AGG-ID: JUuCQRo-O_Gs7kP2Ecbg0g
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-aa69e84128aso106164966b.1
+        for <bpf@vger.kernel.org>; Thu, 23 Jan 2025 08:38:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737650296; x=1738255096;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8Gp4Lqmck0xLIjlUYaNawF6i7JeDue6Z19dmeCYgLeo=;
+        b=alX12ZwGeaRd5+YqO70BAdwqJgUmYS0gWB0YT2RCBy3XwviTQQxquaiPeSbG6wW/zS
+         Oeynnz2+XBpHWC2fR2Jysw1hWpsB5ZF4ukOEe+Qw2ssPjDkLKqthnZk7Zucvy7yGEGc8
+         5A+Dv8LRVDSGj10JgaqqcrGomSjif3C86vrCq1+dCiXwCIrhFsYCo3raFZT4ybpoICRO
+         +OybQhsAvgtBftsiAvy17lUIEy+ID5pCENUFqNofDU6jsP7WR4X8nNw8NX+gwwZ0GrSg
+         KWCI2jwkVFvTUU7lkIKkjEiAPeNzgl7Fg4lMSgleNlkxTIgm/zpfPaY6lejR1AoYqQWj
+         S6QQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXdomSZR0EwAH0DngNDKX91W1v64OBeGqBZ4DlFEw/g3DdLPQinkipYB7iZ89NlfKbES2k=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwWbQivSOjJS2NAJKhnbmJlSW9wc1MnJccvQm4ZGIHlATbXni8t
+	QLUg8mP+xG3lkYx6UTKCdm8Pgy23EzJT3LEpDPzFBDN8xitIIt7VrHROXy5ukTUzafmTqAnurDh
+	fHK9BC2EeZKROgKVjUJj+coB5AFDBEPbkrbbsfGNE954+/wGGZw==
+X-Gm-Gg: ASbGncsyDp828FjTgUWOYZ6qZQUG70uiwoJHCRv8/FNFCb/CZV1P9Npg7A3U9EXz6Xb
+	U5cFaWjIE5IRS9bVAPvxdnQxWjNYJgfdFIMAg4MMX1QhsjmoM3rAq7z2CA/4j5OV+ROUSWjeaPq
+	vfiUJVUyTcPYgO54alFRIu8u9B8tnv4yh1CTsaMIijrLdXzHN71SCNxHWrJTNBcBnbC2jdVmHNk
+	fJ0ZtwNsUPcUzvvftLS3Lcnbrl2J8VZa4KfbCrZqJYQl/Fe+F/h29Khw8pq9F2r5sb81SV2ElxX
+	Jr2ot1qlEXzIYTtLylg=
+X-Received: by 2002:a17:907:6ea1:b0:aa6:89b9:e9c6 with SMTP id a640c23a62f3a-ab38b111647mr1889989566b.21.1737650296515;
+        Thu, 23 Jan 2025 08:38:16 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGeseCJzIERzaXWgZcksOt2phO/IlkO0qodKrzTiLkTNIPsYlBA/4wPbBOANdU3ADTZbVrmMQ==
+X-Received: by 2002:a17:907:6ea1:b0:aa6:89b9:e9c6 with SMTP id a640c23a62f3a-ab38b111647mr1889988166b.21.1737650296152;
+        Thu, 23 Jan 2025 08:38:16 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab384f87d86sm1091662966b.146.2025.01.23.08.38.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jan 2025 08:38:15 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 9BD13180A83C; Thu, 23 Jan 2025 17:38:14 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>, bpf@vger.kernel.org
+Cc: Stanislav Fomichev <sdf@google.com>
+Subject: Re: RX metadata kfuncs cause kernel panic with XDP generic mode
+In-Reply-To: <dae862ec-43b5-41a0-8edf-46c59071cdda@hetzner-cloud.de>
+References: <dae862ec-43b5-41a0-8edf-46c59071cdda@hetzner-cloud.de>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Thu, 23 Jan 2025 17:38:14 +0100
+Message-ID: <87msfhqydl.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain
 
-The pull request you sent on Mon, 20 Jan 2025 16:37:55 -0800:
+Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de> writes:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/bpf-next-6.14
+> There is probably a check missing somewhere that prevents the use of
+> these kfuncs in the scope of do_xdp_generic?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d0d106a2bd21499901299160744e5fe9f4c83ddb
+Heh, yeah, we should definitely block device-bound programs from being
+attached in generic mode. Something like the below, I guess. Care to
+test that out?
 
-Thank you!
+-Toke
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+diff --git a/net/core/dev.c b/net/core/dev.c
+index afa2282f2604..c1fa68264989 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -9924,6 +9924,10 @@ static int dev_xdp_attach(struct net_device *dev, struct netlink_ext_ack *extack
+                        NL_SET_ERR_MSG(extack, "Program bound to different device");
+                        return -EINVAL;
+                }
++               if (bpf_prog_is_dev_bound(new_prog->aux) && mode == XDP_MODE_SKB) {
++                       NL_SET_ERR_MSG(extack, "Can't attach device-bound programs in generic mode");
++                       return -EINVAL;
++               }
+                if (new_prog->expected_attach_type == BPF_XDP_DEVMAP) {
+                        NL_SET_ERR_MSG(extack, "BPF_XDP_DEVMAP programs can not be attached to a device");
+                        return -EINVAL;
+
 
