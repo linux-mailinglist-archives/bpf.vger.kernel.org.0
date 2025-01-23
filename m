@@ -1,42 +1,43 @@
-Return-Path: <bpf+bounces-49587-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49588-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D4B5A1A8D5
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 18:21:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25134A1A8CE
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 18:20:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED5103A35D4
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 17:19:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31544164D11
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2025 17:19:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CE8D146593;
-	Thu, 23 Jan 2025 17:19:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C1D113DDD3;
+	Thu, 23 Jan 2025 17:19:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="N07qLtFV"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="JcZBawQ9"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 311C2142E6F;
-	Thu, 23 Jan 2025 17:19:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD69113D891;
+	Thu, 23 Jan 2025 17:19:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737652756; cv=none; b=muf0+TeQmRizfbZ51tqF1IgdAkO629+uM48/rTBDt6jjDz8sPfSce3o3IV3tSayXPSW/Z6Vc47QBrc6cwkoTxTZs3FIa/LlQeZwjn28G5OCukDJws5GU0O5l7/l7191pMzPnuEiXNOAMFWVdXJbdXqEx4Q0DoZa3LpUZjIhgeow=
+	t=1737652758; cv=none; b=BSnCnMMqK4OkSgPOO2fWNG/dOs4JS8RYIe+xlnr2omlXTCD2CctnuyI8xRKAs6iamOASLquM43sFalZIM/x4+hIAs74GdIkTq2V0qEoj1/erWKpUrPylg+PokWqAnlaXDqVZ7ND676qAIxkKs82ocuRD7zqlfTRysok0C1dPeN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737652756; c=relaxed/simple;
-	bh=YD3cfXPS7uj8iKkK+NGgmRGEclSxSJbhk58dSFRbX8Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kV6FvP/Ph7JMzaE05LpbvnaYNI17Niqpkup231CFt9uxqII7Sae5f1pSlsQOHDXXHcvCQI+VN9uG4r/KkN/JwOXgRue2R8SxjOP07R2MShNIjcKlo81L+gkr5DSk/ihOdlkdIUQNd5gtbSHYqMpze8E6jHZKenfrJxQcai6qcgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=N07qLtFV; arc=none smtp.client-ip=220.197.31.4
+	s=arc-20240116; t=1737652758; c=relaxed/simple;
+	bh=7G0svEXwM2aJqyw7IR/e+A3gpubl36pVvmL6I2PJDKA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=omtTGHMN4E5OFnGTrLBBzcNVVY00Su9lWB4ob6lLTFe8ODghj5/hKUyW8FRzN1Uq6RCkndD0IMlnX7SU1K3yWb64AN8WClfG+0l+KUZGLfZ+DIra4LLwKtr2WKvmc9i8fG5K9WdDXRK7JAWzy4bhOGv5AK76OrnEqGhFa9rIuJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=JcZBawQ9; arc=none smtp.client-ip=117.135.210.4
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-ID:MIME-Version; bh=XKiwJ
-	jFGTOM1fwCeJkho73TOTX/XyzSyxZlNbugFbq4=; b=N07qLtFVUaUnt4mefX3CJ
-	ZnA1lCq7n3LFzM7XgCC5HF4Z1Hz2IWsYidJtRJBTxQUI4eQUHgnJDwpwYRU7mUQs
-	/znw3hXX7uKg82ybgfX0q+EJXIt3Qy0sbpn0Y37zOc1wu3fYyrLnVTIb8j/dMcBb
-	AJihReLF/5Ntsbqtz+EyFg=
+	s=s110527; h=From:Subject:Date:Message-ID:MIME-Version; bh=qOvJI
+	XGT0GAs+bC3xHveezTTFrL6aDnNMlj1p1lKZ6o=; b=JcZBawQ9rKS/V0rA96uDx
+	rBWiULkcs6p9dLZ66NYQshLijgNS9lVndbMrqGiTx9stGpWCUqbYoUBmnmYmLVgf
+	GwQSnZdKJwoXVqmAdugIw2CfOD8CJdq68FK35x0pLOsyyPDA+Ky+10vE1eT8IPKk
+	Bz5pNUYWTGPqRuS3Yj55iY=
 Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g0-2 (Coremail) with SMTP id _____wBnjmFKeZJnNajlHw--.26171S2;
-	Fri, 24 Jan 2025 01:16:03 +0800 (CST)
+	by gzga-smtp-mtada-g0-2 (Coremail) with SMTP id _____wBnjmFKeZJnNajlHw--.26171S3;
+	Fri, 24 Jan 2025 01:16:11 +0800 (CST)
 From: Jiayuan Chen <mrpre@163.com>
 To: bpf@vger.kernel.org
 Cc: borisp@nvidia.com,
@@ -61,10 +62,12 @@ Cc: borisp@nvidia.com,
 	shuah@kernel.org,
 	netdev@vger.kernel.org,
 	Jiayuan Chen <mrpre@163.com>
-Subject: [PATCH bpf v1 0/2] bpf: fix ktls panic and add tests
-Date: Fri, 24 Jan 2025 01:15:50 +0800
-Message-ID: <20250123171552.57345-1-mrpre@163.com>
+Subject: [PATCH bpf v1 1/2] bpf: fix ktls panic
+Date: Fri, 24 Jan 2025 01:15:51 +0800
+Message-ID: <20250123171552.57345-2-mrpre@163.com>
 X-Mailer: git-send-email 2.43.5
+In-Reply-To: <20250123171552.57345-1-mrpre@163.com>
+References: <20250123171552.57345-1-mrpre@163.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -72,17 +75,12 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wBnjmFKeZJnNajlHw--.26171S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7tF18ZFy7tF4rtry3Aw1rXrb_yoW8tFWfpa
-	4rtr9xAryUJ34UXrWSvF4kuFyFqa1vqFy8WFn7tw1rAFZ8A3W5JFyxKr18GrZ3W34xWF9x
-	Za4vyw4rWr1UZrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zi5ku7UUUUU=
-X-CM-SenderInfo: xpus2vi6rwjhhfrp/xtbBDwjdp2eSaCq93gABso
-
-
-We can reproduce the issue using the existing test program:
-'test_sockmap --ktls'
-Or use the selftest I provided, which will cause a panic:
+X-CM-TRANSID:_____wBnjmFKeZJnNajlHw--.26171S3
+X-Coremail-Antispam: 1Uf129KBjvJXoWxWF4rAr17Gw4xKFWkKryfJFb_yoW5uw17pF
+	1FgrZrAryDX34UtrWFvF4kua4Fqa9aqFyUWFWIyw1rArZxC3WjqFyUKr18KFZ5urZ7uF9I
+	qa1DZw15ur1UurDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0piWCJdUUUUU=
+X-CM-SenderInfo: xpus2vi6rwjhhfrp/1tbiDwHdp2eSak6uTAAAsH
 
 [ 2172.936997] ------------[ cut here ]------------
 [ 2172.936999] kernel BUG at lib/iov_iter.c:629!
@@ -114,25 +112,61 @@ Or use the selftest I provided, which will cause a panic:
 [ 2172.950632]  ? ktime_get_coarse_real_ts64+0xc2/0xd0
 [ 2172.951036]  __x64_sys_sendto+0x24/0x30
 [ 2172.951382]  do_syscall_64+0x90/0x170
+......
 
-1. It looks like the issue started occurring after I bounding ktls and bpf
-together, and the addition of assertions to iov_iter has caused a panic.
-If my fix tag is incorrect, please assist me in correcting the fix tag.
+After calling bpf_exec_tx_verdict(), the size of msg_pl->sg may increase,
+e.g., when the BPF program executes bpf_msg_push_data().
 
-2. I make minimal changes for now, and if there are other reasons that
-cause similar panics, we can revisit later. For now, this fix should be
-sufficient.
+If the BPF program sets cork_bytes and sg.size is smaller than cork_bytes,
+it will return -ENOSPC and attempt to roll back to the non-zero copy
+logic. However, during rollback, msg->msg_iter is reset, but since
+msg_pl->sg.size has been increased, subsequent executions will exceed the
+actual size of msg_iter.
+'''
+iov_iter_revert(&msg->msg_iter, msg_pl->sg.size - orig_size);
+'''
 
-Jiayuan Chen (2):
-  bpf: fix ktls panic
-  selftests/bpf: add ktls selftest
+The changes in this commit are based on the following considerations:
 
- net/tls/tls_sw.c                              |   8 +-
- .../selftests/bpf/prog_tests/sockmap_ktls.c   | 175 +++++++++++++++++-
- .../selftests/bpf/progs/test_sockmap_ktls.c   |  26 +++
- 3 files changed, 205 insertions(+), 4 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_ktls.c
+1. When cork_bytes is set, rolling back to non-zero copy logic is
+pointless and can directly go to zero-copy logic.
 
+2. Suppose sg.size is initially 5, and we push it to 100, setting
+apply_bytes to 7. Then, 98 bytes of data are sent out, leaving 2 bytes to
+be processed. The rollback logic cannot determine which data has been
+processed and which hasn't.
+
+This current change is based on the principle of minimal modification,
+which won't make things worse. If we still encounter similar panic
+further, we can consider a more comprehensive solution.
+
+Fixes: fcb14cb1bdac ("new iov_iter flavour - ITER_UBUF")
+Fixes: d3b18ad31f93 ("tls: add bpf support to sk_msg handling")
+Signed-off-by: Jiayuan Chen <mrpre@163.com>
+---
+ net/tls/tls_sw.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+index 7bcc9b4408a2..b3cae4dd4f49 100644
+--- a/net/tls/tls_sw.c
++++ b/net/tls/tls_sw.c
+@@ -1120,9 +1120,13 @@ static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
+ 					num_async++;
+ 				else if (ret == -ENOMEM)
+ 					goto wait_for_memory;
+-				else if (ctx->open_rec && ret == -ENOSPC)
++				else if (ctx->open_rec && ret == -ENOSPC) {
++					if (msg_pl->cork_bytes) {
++						ret = 0;
++						goto send_end;
++					}
+ 					goto rollback_iter;
+-				else if (ret != -EAGAIN)
++				} else if (ret != -EAGAIN)
+ 					goto send_end;
+ 			}
+ 			continue;
 -- 
 2.43.5
 
