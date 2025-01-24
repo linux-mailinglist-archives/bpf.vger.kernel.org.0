@@ -1,160 +1,121 @@
-Return-Path: <bpf+bounces-49650-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49651-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA832A1AFAC
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 06:08:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DA71A1AFBD
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 06:14:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBF4A188EB22
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 05:08:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAF523A8BAB
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 05:14:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D063D1D6DA1;
-	Fri, 24 Jan 2025 05:08:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCDA01D89EC;
+	Fri, 24 Jan 2025 05:14:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aPEEjMuY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PgwUZUwC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A71B3380
-	for <bpf@vger.kernel.org>; Fri, 24 Jan 2025 05:08:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE2A8155759;
+	Fri, 24 Jan 2025 05:14:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737695309; cv=none; b=mFKdwlS7Zm3IZQru3jFTNUwmVJK5Z9+VR+6xJUBrC9/tu/R7rl23BwhBQXoKKAiz1HPO9gm79FB+MwGyXGOmvjM85FCXzxegOrqoXq8glNJp3Yww4ayYZSdz8Dpg8D6mkkj0HpOPsz1h+qoQQeCyXilZAI4rY5LEy62BIXNLh9A=
+	t=1737695658; cv=none; b=J34hCNn8GsJcjLyMKZC+x5Q7Rsa6cuXfxdqtnPj9A9Y6nxMKnkwgztvnfOFcZP+HIlvA9iMiMdwJWWbnfg0VFHF0iW+G06Gj52DsSSBbhPabmsHF3b5uzhLsyqHo5xcT+thZjTgMGKpy1SUR27Cz0MucffinorSeTKPTzu0d4SM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737695309; c=relaxed/simple;
-	bh=maf37QmpuqjmXuvsuCiUbcbWdhF6P4uKpve+TSVHbEU=;
+	s=arc-20240116; t=1737695658; c=relaxed/simple;
+	bh=1iHB2RMbkiM1ZKPiAR2chCSHhw/1N8h3lgL5DnTbYIc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tzJIqcmhVpxxNCAO5FFtGr1q5w1DGn3+z0kgafAKJLD23I7sNIaS9fx1SVQ/8v0cTrc8jJSH1X+WM+peoLTbZL5lhhzE/brpw2gOlHtV+FGr1i4mJEN/LTYzQy+yXZl1FU728WPDrmnhJ1SscJmYcMRN0X1RpdKeWeop3JsT83U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aPEEjMuY; arc=none smtp.client-ip=209.85.221.42
+	 To:Cc:Content-Type; b=TiW20oDY6I0cUjVq4B4gy3II+fBknMJvNN1Kj95kmEj+wn4UwelAXa5eLQolMFprdY0CmcAG8bsH+HijYwfRGEh6WTCFRgmuCu0G23jrpkGBJksCTB5RbODVTI/nXesNVJjARCXdBoVuuUdgj++Cy9VS9x4yr/+Geb+HLuvX9jo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PgwUZUwC; arc=none smtp.client-ip=209.85.128.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-386329da1d9so912431f8f.1
-        for <bpf@vger.kernel.org>; Thu, 23 Jan 2025 21:08:27 -0800 (PST)
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4368a293339so18703355e9.3;
+        Thu, 23 Jan 2025 21:14:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737695306; x=1738300106; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1737695655; x=1738300455; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CyNDXJzU8DeJKX9wCGxfOko42mfcETSRY65b87hvaIc=;
-        b=aPEEjMuYvr3o97HoMN0on4KhY1+45XD85JomAHWuy2/O/3sg2OcBWb99lcdKzwd3mE
-         sI0Tq5tDXRH8JVEWLiOuydrOALJbmHcRVohJuriKj1lvQZ8Ti/V7h+g3qVUwvBg4vc2i
-         yF91PXW41bBZlpxwUisczwhTofcGoQG/Irf9Br5ylXGM7YdnT+MQwsUJ9dIz3EKxarmy
-         lJEg6wpK5XdUIMgXRUefAOo0Ukbqy8Fchu3/QytKXAO4l7oLHwrTtHgdu/DyEiIVTny/
-         t+OIz3DurcOSYZSUUhZ3v9BrKdXsdJeTG6k76Nv2UKr9/qdSi8MAapBuqEEb/FrjRGjU
-         qn6A==
+        bh=1iHB2RMbkiM1ZKPiAR2chCSHhw/1N8h3lgL5DnTbYIc=;
+        b=PgwUZUwCmLuUhyu5RZP23rRrd6lKyTV48zq9r342Fyc4G3J1p4H2lO5AxF3lvQa7Gk
+         osoKMkjzfDuCn03mtCrKoP2XmiEDmCBADSVPOG36g2S6G43kgI8gl8bddgspNc4cSpsw
+         uGxjcsA+ApMzYj3acEC80sdJ0yzzUPfUjIgvqrp96oZMdJ7b7plZQb4pNsjCrn965JR8
+         ZlOHPDVT2EiqwmdJUClY2tyWByrHzro/UG3kPRCLP7//UiIJjBXmmd+RMsLi74cVMZzf
+         t/QC/Y+YFM4uTnTZR6Cu0j9ij6m7cHqtzsUaqzQIRPMOD9fPIDWT2nIs5DJqrpSDC8fu
+         XLWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737695306; x=1738300106;
+        d=1e100.net; s=20230601; t=1737695655; x=1738300455;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CyNDXJzU8DeJKX9wCGxfOko42mfcETSRY65b87hvaIc=;
-        b=KJbmWPw8lNzT1yGnRhv961bsDkD40PIjUQhc3atqzfnKF7r99DJ6DNIHJol+Hyx5+w
-         KFKHropLVf+6eMwZpMsqU5s71sOrHy7fir0ZWqPI/ZJEwNvNPFxy9yRp5CcPRzEbr0lg
-         4TQZ8427odPFunlLeOelLRXW7lZ690n8UaCmiM1M5sjUU23bDMp3CA0ZReYG0THw4OZ8
-         QpvS8hyZBRJkqI6BTERBbSAAMjkM1Ucd0SPtoH5uU94Jh4K/9cayDkaTi3xzmRI0hPQY
-         EA236ioaqaM4u7B3D5+3FVTNdz9X7Jtt33pVY439vcDbV7FkdzoblDqjK3VgKpBSKTGb
-         kgPA==
-X-Gm-Message-State: AOJu0YxzH72mdHz64Fi7JvmuvD0RWjfhcEHNZ3xkw06rJQm1gVA9dpg6
-	3iMHq/c3ImLMtxiNG/vQUA0Jiv+TW5eX+oAFlYkDzHM6kQbiJ8f0YI+P3ElGRuJiOgvPTv5bdzz
-	B/FwSB48qT6BM4vJ3ncvZnRrFvKs=
-X-Gm-Gg: ASbGncs81mMk+ZGdI0pMgr6x2jEPNsEI5qpHUtAJ19wEail/CPsQkpxq9YMSEuMZ44d
-	kID5cjCY4geaqlcZaKStuqGQhyXsCsTa/wpajSfITj4mLOvyMOghy3URCBvgwVTjvRLgBqVX5Yl
-	Qtgk6bQvLU2HbgMfEPyA==
-X-Google-Smtp-Source: AGHT+IHhU5fmdlLT7CW+9DMblEOyayACAAy+yDx4WO6dXLslZFhPyrmnXd975hHJHnURba98TebwKDOVA9c2dLUmAUg=
-X-Received: by 2002:a5d:64a1:0:b0:38a:39ad:3e2f with SMTP id
- ffacd0b85a97d-38bf565573dmr25097007f8f.2.1737695305664; Thu, 23 Jan 2025
- 21:08:25 -0800 (PST)
+        bh=1iHB2RMbkiM1ZKPiAR2chCSHhw/1N8h3lgL5DnTbYIc=;
+        b=kIHD7EsZsH+1r5khz8rHpV+agGPUjJFLFIy1UyP+6wPy1LQssEgmKh7fOq8nkiOv9d
+         o+ybvZ6/c1W7wEPRtUEKt6p5e7Mlw/etixGqwNxQDTDUNvZjGgVRVX5WUhoo02dyjAwr
+         fffkdQZ/K6q5vnr0O2XLKMwUEUi56KIrk852MJj0Abv6GEvaMZVLHrXE7mxH8lRnfUcJ
+         2qUzztvSmlyVJnfL4WhRTrqJI53wmWvZHBqbYs06zVpn4tYPKR+DMfduBxrubyR8qTe3
+         iduw4pJGCTiNeh9rCrkQn21YqFrAyV4/avvFLU5FDsnt4Eu4gACrWFyaivlgDmYmiSCo
+         ZlhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVfRopuOXfUdG4ITDeGOFpufd9iSOIKlsz2c8HW6mesfxz6CPuHLxG8P/1OAh+8Yp03u+D15XLn@vger.kernel.org, AJvYcCWdjOrfYYsp9dwqizxOTKQczfLmMrGeueiUJhe1GMy4RrFUloSSnIwbvIt59DiNRhU1LhgT6DHn96RdzNQ=@vger.kernel.org, AJvYcCXzWklTQ+yfXnfB867wXGbXFrD9YRcy5ueOHpp9bo+YXldbxAnX9F+ykZ0vBKWNQSdRQA4YhgBPSviFkFlfiihx@vger.kernel.org
+X-Gm-Message-State: AOJu0YyCfFbsjY1NYMAMzaIDb+U+9qVeYNsJXgl5QGHW2r5gT0IZKSuT
+	gaPvPXng85otO1ZUrNo+wKBAwyR7yIFxbPXJh0bDLsAex3n6n4shhT+61JJ4D5z7VX/VCh+vG5q
+	4WeRu+/2nbuRRn0DKcMozA8RpNlY=
+X-Gm-Gg: ASbGncs+sC05zKevBywsjTZlHM3gSO9Bn2UdHAxUPRdSlD7d0FJ2ltiMd2iO/H1y5T5
+	tOmZi2gikIJNxPo0L3s8AihAFtU3YgoYGeYfoNV8Rvmw2U9riXIIZxKg/dO1052zwSiufyncu6Z
+	Fp0K9d2rluyuWNv9U72Q==
+X-Google-Smtp-Source: AGHT+IGKqUWxI37W+QASCGhJIn/tj/hEXFdJ7Xi81uBkm9HW/mY8sOJIghyv5lNNFus5ZOXpryd52UYtxZt9cxVxc1Y=
+X-Received: by 2002:a05:6000:1449:b0:386:3825:2c3b with SMTP id
+ ffacd0b85a97d-38bf5663880mr26622584f8f.18.1737695654834; Thu, 23 Jan 2025
+ 21:14:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250109214617.485144-1-bboscaccy@linux.microsoft.com>
- <CAADnVQLxgD_7GYWZZ49aY2LqVYOy4uGvK2ikm7MJ1Cj60VPNaw@mail.gmail.com>
- <87ikqm45da.fsf@microsoft.com> <CAADnVQLYeV8-nJ-=_4p8U=xax99-i5QavJrQ=hnKS0EK1ZjecA@mail.gmail.com>
- <87sepl5k4z.fsf@microsoft.com>
-In-Reply-To: <87sepl5k4z.fsf@microsoft.com>
+References: <20250122183720.1411176-1-skb99@linux.ibm.com>
+In-Reply-To: <20250122183720.1411176-1-skb99@linux.ibm.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 23 Jan 2025 21:08:14 -0800
-X-Gm-Features: AWEUYZknCXvCm8M2f4rlQFIcbdjfGUoXjq4f69XDkceLFfMO5zb2Vw9mC46inOs
-Message-ID: <CAADnVQJtbMCVJ4WfNk44QEh0oVRTYqUMBn3zFAgrVP469k7v2g@mail.gmail.com>
-Subject: bpf signing. Re: [POC][RFC][PATCH] bpf: in-kernel bpf relocations on
- raw elf files
-To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-Cc: bpf <bpf@vger.kernel.org>, nkapron@google.com, 
-	Matteo Croce <teknoraver@meta.com>, Roberto Sassu <roberto.sassu@huawei.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Paul Moore <paul@paul-moore.com>, code@tyhicks.com, 
-	Francis Laniel <flaniel@linux.microsoft.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>
+Date: Thu, 23 Jan 2025 21:14:04 -0800
+X-Gm-Features: AWEUYZlg-44KfCUU4IxkEVk22ELBcFVz62GkQBrzb_dtdVb57gHVqXlpNmRgMG4
+Message-ID: <CAADnVQJcmyMmxPfSaKgqMiCDZP=Pe8-Jf7NnEdfgxejvZr+44g@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Fix mix-up of 4096 and page size.
+To: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+Cc: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Hari Bathini <hbathini@linux.ibm.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 14, 2025 at 10:24=E2=80=AFAM Blaise Boscaccy
-<bboscaccy@linux.microsoft.com> wrote:
+On Wed, Jan 22, 2025 at 10:38=E2=80=AFAM Saket Kumar Bhaskar
+<skb99@linux.ibm.com> wrote:
 >
-> It looks like they are done in the kernel and not necessarily by the
-> kernel? The relocation logic is emitted by emit_relo* functions during
-> skeleton generation and the ebpf program is responsible for relocating
-> itself at runtime, correct? Meaning that the same program is going to
-> appear very different to the kernel if it's loaded via lskel or libbpf?
-
-Looks like you're reading the code without actually trying to run it.
-
-> >> Would it be amenable to possibly alter the light skeleton generation
-> >> code to pass btf and some other metadata into the kernel along with
-> >> instructions or are you trying to avoid any sort of fixed dependencies
-> >> on anything in the kernel other than the bpf instrucion set itself?
-> >
-> > BTF is passed in the lskel.
-> > There are few relocation-like things that lskel doesn't support.
-> > One example is __kconfig, but so far there was no request to support th=
-at.
-> > This can be added when needs arise.
+> For platforms on powerpc architecture with a default page size greater
+> than 4096, there was an inconsistency in fragment size calculation.
+> This caused the BPF selftest xdp_adjust_tail/xdp_adjust_frags_tail_grow
+> to fail on powerpc.
 >
-> Yes, I ran into the lskel generator doing fun stuff like:
+> The issue occurred because the fragment buffer size in
+> bpf_prog_test_run_xdp() was set to 4096, while the actual data size in
+> the fragment within the shared skb was checked against PAGE_SIZE
+> (65536 on powerpc) in min_t, causing it to exceed 4096 and be set
+> accordingly. This discrepancy led to an overflow when
+> bpf_xdp_frags_increase_tail() checked for tailroom, as skb_frag_size(frag=
+)
+> could be greater than rxq->frag_size (when PAGE_SIZE > 4096).
 >
-> libbpf: extern (kcfg) 'LINUX_KERNEL_VERSION': set to 0x6080c
->
-> Which caused some concern. Is the feature set for the light skeleton
-> generator and the feature set for libbpf is expected to drift, whereas
-> new features will get added to libbpf but they will get added to the
-> lskel generator if and only if someone requests support for it?
+> This commit updates the page size references to 4096 to ensure consistenc=
+y
+> and prevent overflow issues in fragment size calculations.
 
-Correct.
+This isn't right. Please fix the selftest instead.
 
-> Ancillary, would there be opposition to passing the symbol table into
-> the kernel via the light skeleton?
-
-Yes, if by "symbol table" you mean ELF symbol table.
-
-> I couldn't find anything tangible related to a 'gate keeper' on the bpf
-> mailing list and haven't attended the conferences.  Are you going to
-> shoot down all attempts at code signing of eBPF programs in the kernel?
-
-gate keeper concept is the sign verification by the kernel.
-
-> Internally, we want to cryptographically verify all running kernel code
-> with a proper root of trust. Additionally we've been looking into
-> NIST-800-172 requirements. That's currently making eBPF a no-go.  Root
-> and userspace are not trusted either in these contexts, making userspace
-> gate-keeper daemons unworkable.
-
-The idea was to add LSM-like hook in the prog loading path where
-"gate keeper" bpf program loaded early during the boot
-(without any user space) would validate the signature attached
-to lskel and whatever other prog attributes it might need.
-
-KP proposed:
-https://lore.kernel.org/bpf/CACYkzJ6xSk_DHO+3JoCYpGrXjFkk9v-LOSWW0=3D0KLwAj=
-1Gc0SA@mail.gmail.com/
-
-iirc John had the whole design proposal written somewhere,
-but I cannot find it now.
-
-John,
-can you summarize how gate keeper bpf prog would work?
+pw-bot: cr
 
