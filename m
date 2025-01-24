@@ -1,151 +1,156 @@
-Return-Path: <bpf+bounces-49638-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49639-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E65BA1AED6
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 03:45:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A6D7A1AED9
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 03:49:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79FD016B2D6
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 02:45:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D23416B691
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 02:49:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53C0F1D619E;
-	Fri, 24 Jan 2025 02:45:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F1BB1D54EF;
+	Fri, 24 Jan 2025 02:49:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V48qY1s5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eXgoiQEG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 759931C5F33;
-	Fri, 24 Jan 2025 02:45:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83FF528EA;
+	Fri, 24 Jan 2025 02:49:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737686717; cv=none; b=vFPVJ1vptDQlZEoiEMClyRED2irmnfFJCEMQL/y/gH/LM13Z8/gG3q+4veRKxrsCmgu+v/ua5q63bPA2P4PrdWN6Ak27guYALmG+bLFjwnWvoWekVkhAm+Ve6Gkoi0NJk0Dwj0KEUHfOFSlI5CCj4sR/TU3G2bJZf6KhsykSSBQ=
+	t=1737686963; cv=none; b=WT1kzulmE+a2Fwd9D4OMK9y8SPL0ufnw75N6n6SiK7JeyEV4xYPcLa01pvFJRAeCcsHg2kW0HcCiNWflMnC4bGAoE3IqM774lIbXODoU3fr8xCQLh5R9/L1LbBJkYtIE/GBd8WTyQjPRRWbcNCfLaox+ng37yVQqA1Q5CdwOUgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737686717; c=relaxed/simple;
-	bh=AGK4PFDghSQSTeGrgxUFnwcXS/yxeQImh4MkmJxrK2I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Innb+yvdnegLbPh57wqSN/Zdi+eHkdhbxKW9n8h/i3C/lzvwchFMO/Rph4qoR1YJ3a58jxEWqesXBbNTjJrFcZSEX4WDvLaVALYAEC9xLxKVAXOIaAnbIoRDsJIApO5mcMXl0mXZY9JhnaROF88M4vYJ4YdpSIDccRKm0C7aAFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V48qY1s5; arc=none smtp.client-ip=209.85.214.170
+	s=arc-20240116; t=1737686963; c=relaxed/simple;
+	bh=uTaJvVZEyS41kDvx4qBjwEfBb3HfIje2Mg9A3OEiXdA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cmAfpQCxKOBBjxf73qDwrqMr5Wnt2LJegRtvglFC4ohsUq+SIX94iGMbOj3XGbIvBHZVdq4lEa2kfsOz/YZSZjrbnDb4VHYxejJ5gaDYkuoQ8iAXQf4VPSaVmciCLEO/Ev8JdLI8kRI0uuuR7PLl4zYHpMc+vVAZOSUP9CqVYxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eXgoiQEG; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-21631789fcdso37279665ad.1;
-        Thu, 23 Jan 2025 18:45:15 -0800 (PST)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2166f1e589cso39425115ad.3;
+        Thu, 23 Jan 2025 18:49:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737686715; x=1738291515; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GePSqs03Aexh6HgXJIw+ZOzcN1MnAJHA3c0/jz1hhjE=;
-        b=V48qY1s5fxdq4/0alixLYN0O5PkFVtzWp0mlGHFAZZFH8egOWSdC3idTjdKL+b7efS
-         iuqPdCeybWUlAQbeUiRUTZKAUxxPoT7GxJCv/4Y1768MdfKTdJ5xwBQ2IvTKlNPZLoZq
-         VbrZRYPNz+IWCm0PtSXy3IIPc80mrBVy9MZYfVBTbvtjViMquRvWwrd1P5GILZbSH0AU
-         fFHFsFvoNOpiFtmjdRruYoqYpSlzBmAPDoDYN7kE2klqiCcElxBldwN+jKJ8KTK8OYGb
-         YuhcKPT8dtSQN7EK/Iiz7hXGesw+6dZW0b+ysKbDDasy7/78vOlz59OiBcWt8hhyyAw5
-         ajbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737686715; x=1738291515;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1737686962; x=1738291762; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GePSqs03Aexh6HgXJIw+ZOzcN1MnAJHA3c0/jz1hhjE=;
-        b=Q+kQRlm6cFCaC74kpCe+yrhnKAvrVXMMvMtiBmOJU9LT2iWTCEqmNU9ewSHnfnhD6b
-         AkANlUlJ4fiewxFGIsZJrd/XrKZgVSBNrKZDT6ds5uC4VdYmKB0HAD5VcGno5KQuTgtS
-         X2HjLBQE8azowvK+CTdzuhdfzSmtImwQjCwHz5nOju4n5x9gkR6yUAi0utZ4sk3dVaV5
-         ljZf+fRtbOyzC9zQxT+AlzpWuFiugEyUa6qaWORUZUSxIlP6n1eJBO7Cz8v5pMCTHzrw
-         rRlRG4mz8mc8sR7MhQBe3uqfrI1AyfkDtTXF5sNWqLUz2OaXpO7nIlYyBi1IZZQdO9yD
-         VWnw==
-X-Forwarded-Encrypted: i=1; AJvYcCV6kufRDE4vKf6JCf7bBc/Oyf7CbEr4N7C/zGxBHR5jOuOSXUTrfdAdqw9wUapsdV24vMI=@vger.kernel.org, AJvYcCVT3rqdvpPANA5xCIE4FalF4GwZSpjTWOPsk+avUFljKJeX4RDYJ3UHOpatVduffuBXIKaa4u5A@vger.kernel.org
-X-Gm-Message-State: AOJu0YyuNsTxtBhPoJ7vrIsXdz+Q/KJq076gJQWRj0U1rZuwP4kxrRUt
-	ogRY0vIdkABUtWM7Co+FjnDYgTFIXuEy205YZdg1O8euvKpktcQ=
-X-Gm-Gg: ASbGncuJNmRDl31ho1ZPwcPGDM4NJb3ZoNBokBXERu1Xgovwqi3AgdI5n4aeuvI61Jn
-	LS81c8cmd2Hc2lHQ0CA+30N1m35rKxu4vApJINjZeMcLGIdvAFiOBYe7+/ePGYLxknCWzxoT0UN
-	WgAD5RxxXnT7D+R5OcE0m6cAm6BPHzgO8b6+28DWQ4XgWY98AroSv+ONF6yhb5SVqg8vusoLRGM
-	r1ufBqYBzXEEav7Alg6szvrE4DayR2f+AKr7j8//3L7n4jMTVaVyKHonVGpH732ga6RW249V/1v
-	+BLCx6eXte7IH24=
-X-Google-Smtp-Source: AGHT+IHz4SfDUQRu78nxEFlQ7GNd/xQ1tPysAoM3RuyWNKfaGxCmvpmgxaxqlLI9+RwKo3dxLcCSVw==
-X-Received: by 2002:a05:6a21:600f:b0:1e1:adcd:eadb with SMTP id adf61e73a8af0-1eb696e2d17mr8901431637.11.1737686714585;
-        Thu, 23 Jan 2025 18:45:14 -0800 (PST)
-Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72f8a69f401sm705410b3a.29.2025.01.23.18.45.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jan 2025 18:45:14 -0800 (PST)
-Date: Thu, 23 Jan 2025 18:45:13 -0800
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Shigeru Yoshida <syoshida@redhat.com>, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com,
-	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	jolsa@kernel.org, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
-	hawk@kernel.org, lorenzo@kernel.org, toke@redhat.com,
-	bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf v2 2/2] selftests/bpf: Adjust data size to have
- ETH_HLEN
-Message-ID: <Z5L-ubBI7z1J6IDi@mini-arch>
-References: <20250121150643.671650-1-syoshida@redhat.com>
- <20250121150643.671650-2-syoshida@redhat.com>
- <Z5KWE6J8OtRVCFDR@mini-arch>
- <5e342fea-764b-48a0-afda-4adfb504bd46@linux.dev>
+        bh=+P7BfKeGcBPfCTs4gJli3q0Ab4Tw87izmoTl0CsKCbE=;
+        b=eXgoiQEGI+1kBdt3Zz+wAuzcBH5hb5H8XYXasLp323BdJFO7OAuat3WFYPyFnVrjV5
+         Agi5KzLjceQveBE+wTBC5mLMBTI2OeZ9HIpXjodVeuLrxzfkyZy6v2cXFMj8MH17MmG+
+         JoxAjAsfBc3f1Rq7xyKTCFDl+N7fpdcpdcrxSg9n6cyIZquhLnMgfeHROUR1m6wylob7
+         OK1rPqH73eFU7uwwWLgXan3oF39PpVW4ynBMZedgBMaRNLjzXogRN1Ov0vIL7bVEetwZ
+         +Jx2C76cf5+4hM1ZRA/cPcUz7LWbDfYjBE8+B465wFqi9OAplnYHa/pdy94sZWXjbcBb
+         HZ+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737686962; x=1738291762;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=+P7BfKeGcBPfCTs4gJli3q0Ab4Tw87izmoTl0CsKCbE=;
+        b=KGlY/SargcHgVvuYwY2jl65FjYzefZ9WcKDvBZ9LLbzYf9u8CPMCmIX03+xqFzIjRr
+         vKLZITxvxI6so7Yuezey4JIh9q+jF3Cvb14OAxueqVQBRRLJhFSr8BBhyE0nR37s2+O3
+         oAQ0zLIPgiVOWLY+6tna6Ykibn+5ClYXuv3nSjGjPfNge3pwbiHsR4XCM0v7ge0Obg9J
+         aewG7zI1qYuTY6dmsJQnyD0g3ZZ95jng1AWFXzW2a2og1bsGUW2NXfdP93pM8MALebnE
+         7ppNq0t+iLAmHB+Rt7zen2ah2Spk+qqOtwaVrM13IZuxrnpMHhb5kIKP7HzfTf3H4oPa
+         qtGw==
+X-Forwarded-Encrypted: i=1; AJvYcCXwxNqAcX2L88VQ3ccQtphUhL7eaGy9j0vtGkFaECENNqnsZ9X/28jv8bC6GiswzGib/4PrEfdBIcU0yjg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy4/nLfwDjZdq2bVcdrO5QqeoNbU0ojeOfpniKP9BZTHNqxKCtl
+	Dc5w+EN+Q7ofTJpdearYhilhfNxe2fpof5tJnVe8RwZKvsRihffB
+X-Gm-Gg: ASbGncvrm6qJtXQ7O98GmvWT3Jxb2AzdfzON4JcPT9PugoA+6hIlALZk8gNRxc9KoOd
+	HTdSXnTJQkVUPcA9U8uymyOY3qqlVROKrOMsPi9uh8+oBFKkL7FrcqajP/SsPKVlAeEoiJyUWoO
+	rjczy0UILyhrOAhL0rIv6wdiDOsUlfuIwspaoOdxUX/o5tjNi+PfoXamwNxJRCzfgy0mbF3kGfS
+	ZT5Eff1xBk7pSLBcWQ6ecKCzVQ+hBfwEVIA/4HF666sVbLoKltofCrrMybFK4lupCG76BPVaYXY
+	Tn9nhlUKcVOq9OQAWXIUr89S
+X-Google-Smtp-Source: AGHT+IE5ERuR9TbMnrMgVeeGMQAf0G2KUtyxEolz/khgT0F28xyPAbF07OQdlhxx9SwDtSf7bp3c5A==
+X-Received: by 2002:a17:903:22d0:b0:215:63a0:b58c with SMTP id d9443c01a7336-21c356780cfmr380494655ad.46.1737686961412;
+        Thu, 23 Jan 2025 18:49:21 -0800 (PST)
+Received: from [172.23.160.121] ([183.134.211.52])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21da414d9e9sm5918865ad.171.2025.01.23.18.49.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Jan 2025 18:49:20 -0800 (PST)
+Message-ID: <20ad3071-2140-470e-90c0-96fc8f74ff2d@gmail.com>
+Date: Fri, 24 Jan 2025 10:49:14 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <5e342fea-764b-48a0-afda-4adfb504bd46@linux.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2 0/2] Add prog_kfunc feature probe
+To: Eduard Zingerman <eddyz87@gmail.com>, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, haoluo@google.com,
+ jolsa@kernel.org, qmo@kernel.org
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250123170555.291896-1-chen.dylane@gmail.com>
+ <3955701be6b7f068d50a5bef2bbe74b97e285621.camel@gmail.com>
+From: Tao Chen <chen.dylane@gmail.com>
+In-Reply-To: <3955701be6b7f068d50a5bef2bbe74b97e285621.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 01/23, Martin KaFai Lau wrote:
-> On 1/23/25 11:18 AM, Stanislav Fomichev wrote:
-> > On 01/22, Shigeru Yoshida wrote:
-> > > The function bpf_test_init() now returns an error if user_size
-> > > (.data_size_in) is less than ETH_HLEN, causing the tests to
-> > > fail. Adjust the data size to ensure it meets the requirement of
-> > > ETH_HLEN.
-> > > 
-> > > Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
-> > > ---
-> > >   .../testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c  | 4 ++--
-> > >   .../testing/selftests/bpf/prog_tests/xdp_devmap_attach.c  | 8 ++++----
-> > >   2 files changed, 6 insertions(+), 6 deletions(-)
-> > > 
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c b/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
-> > > index c7f74f068e78..df27535995af 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
-> > > @@ -52,10 +52,10 @@ static void test_xdp_with_cpumap_helpers(void)
-> > >   	ASSERT_EQ(info.id, val.bpf_prog.id, "Match program id to cpumap entry prog_id");
-> > >   	/* send a packet to trigger any potential bugs in there */
-> > > -	char data[10] = {};
-> > > +	char data[ETH_HLEN] = {};
-> > >   	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
-> > >   			    .data_in = &data,
-> > > -			    .data_size_in = 10,
-> > > +			    .data_size_in = sizeof(data),
-> > >   			    .flags = BPF_F_TEST_XDP_LIVE_FRAMES,
-> > >   			    .repeat = 1,
-> > >   		);
-> > 
-> > We should still keep 10, but change the ASSERT_OK below to expect the
-> > error instead. Looking at the comment above, the purpose of the test
-> > is to exercise that error case.
-> > 
+在 2025/1/24 08:42, Eduard Zingerman 写道:
+> On Fri, 2025-01-24 at 01:05 +0800, Tao Chen wrote:
+>> More and more kfunc functions are being added to the kernel.
+>> Different prog types have different restrictions when using kfunc.
+>> Therefore, prog_kfunc probe is added to check whether it is supported,
+>> and the use of this api will be added to bpftool later.
+>>
+>> Change list:
+>> - v1 -> v2:
+>>    - check unsupported prog type like probe_bpf_helper
+>>    - add off parameter for module btf
+>>    - chenk verifier info when kfunc id invalid
+>>
+>> Revisions:
+>> - v1
+>>    https://lore.kernel.org/bpf/20250122171359.232791-1-chen.dylane@gmail.com
+>>
+>> Tao Chen (2):
+>>    libbpf: Add libbpf_probe_bpf_kfunc API
+>>    selftests/bpf: Add libbpf_probe_bpf_kfunc API selftests
+>>
+>>   tools/lib/bpf/libbpf.h                        | 17 ++++++-
+>>   tools/lib/bpf/libbpf.map                      |  1 +
+>>   tools/lib/bpf/libbpf_probes.c                 | 47 +++++++++++++++++++
+>>   .../selftests/bpf/prog_tests/libbpf_probes.c  | 35 ++++++++++++++
+>>   4 files changed, 99 insertions(+), 1 deletion(-)
+>>
 > 
-> I think the bpf_prog_test_run_opts in this dev/cpumap test is to check the
-> bpf_redirect_map() helper, so it expects the bpf_prog_test_run_opts to
-> succeed.
+> Hi Tao,
 > 
-> It just happens the current data[10] cannot trigger the fixed bug because
-> the bpf prog returns a XDP_REDIRECT instead of XDP_PASS, so xdp_recv_frames
-> is not called.
+> Looks like something is wrong with the way the patch was generated:
+> - patchwork link:
+>    https://patchwork.kernel.org/project/netdevbpf/patch/20250123170555.291896-2-chen.dylane@gmail.com/
+> - error message:
+>    https://github.com/kernel-patches/bpf/pull/8395
 > 
-> To test patch 1, a separate test is probably needed to trigger the bug in
-> xdp_recv_frames() with a bpf prog returning XDP_PASS.
+>      Cmd('git') failed due to: exit code(128)
+>        cmdline: git am --3way
+>        stdout: 'Applying: libbpf: Add libbpf_probe_bpf_kfunc API
+>      Patch failed at 0001 libbpf: Add libbpf_probe_bpf_kfunc API
+>      When you have resolved this problem, run "git am --continue".
+>      If you prefer to skip this patch, run "git am --skip" instead.
+>      To restore the original branch and stop patching, run "git am --abort".'
+>        stderr: 'error: corrupt patch at line 103
+>      error: could not build fake ancestor
+>      hint: Use 'git am --show-current-patch=diff' to see the failed patch'
+> 
+> I get the same error when trying to apply locally,
+> could you please double check?
+> 
+> Thanks,
+> Eduard
+> 
 
-Ah, yes, you're right, I missed the remaining parts that make sure
-the redirect happens :-(
+Hi, Eduard, thank you for your reply, i tried it out, and it turns out 
+it's really my problem. I will resend it in v3.
+
+-- 
+Best Regards
+Dylane Chen
 
