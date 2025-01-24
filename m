@@ -1,163 +1,177 @@
-Return-Path: <bpf+bounces-49708-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49709-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6B56A1BD4D
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 21:21:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16402A1BD66
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 21:29:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4F55188696F
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 20:21:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 039053ADD72
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 20:29:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A101921A425;
-	Fri, 24 Jan 2025 20:21:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1482C22540F;
+	Fri, 24 Jan 2025 20:29:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DtvJlfcJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jFWNYJBh"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E7F718A93E
-	for <bpf@vger.kernel.org>; Fri, 24 Jan 2025 20:21:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8202C18A93E;
+	Fri, 24 Jan 2025 20:29:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737750066; cv=none; b=ESgwCN8B8WuXMxKdEku721VYXf05nvxpX5QFT9Zc29EUWrGKVTIaS0qKvVAR2mlw5ak7GFRV7b/+r/vzGytwMc8PpiAj7zRTPs98tONcuEqhj/L3wuEH8PUcgTrcO1rVYVsIhbtg/mES1rdfn9FpPPsMyxwgYL0r3SBUG+YWc+U=
+	t=1737750567; cv=none; b=RlPCTgZ6+hZ0++Yt21RS9DXJzdj5acJNVA0VyPOT5OmegxzhCrFwRp6O4d9r386eMqqukjoN72MGjnlO7AVu5rqNYWxxKzpX3FKxVUXhMCjmYJaaSZCmQiuZqpyOBtMgHLTo9Ke2GnIoT0COslUoT84Z2YaryEZ9960wYFRSujs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737750066; c=relaxed/simple;
-	bh=Yb1W1gjJqHwl1D4aMg6xgGWVL9WrsI7znMGCeIRMM5E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gpV5jIo0xaZT77xi2IoERYLOd2xIZPS/6ozVM8KfvdQZaK34bypiKBcQ1F70F6EkDtLmU6SkfPIgXz6EgfgNc9SScglVWWhO8iiCccVXDfmWYiXhFqLwhYa19b9Cwf8RCif5fOhF+nA3S0Hp9QV7kSpS6v/tYg37Ci2LSatwkk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DtvJlfcJ; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <02c69185-1477-485c-af4f-a46f7aadadab@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1737750054;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YB9Lkx2YLsx81q0woXn4RYBLPtp8YNlgiS03lX4O1zc=;
-	b=DtvJlfcJfZ3EE/MgqSFwKX/dT7w/cfgHzpTaA5Yi37ktQFVhaleZdSp2/U9pLQMnmXvWge
-	1OUpENRtzOO1ZRT2Ub1EWyx/3VR5btmtPmfgiNMTlDyLTND2m42bdvdFgOAf9HbsZadcwu
-	3Ux8q3DI3kiWk7l7UfIKgRyuWx+uKvE=
-Date: Fri, 24 Jan 2025 12:20:48 -0800
+	s=arc-20240116; t=1737750567; c=relaxed/simple;
+	bh=qS9lEbjEAHyWdYyrlQKhkEwMB4XrYbs8N4dUHkzIWn0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HOb3DxMsVqRHCcgmx9wABcbMHBZ2pPDuQVcB6vK3aw+Re24TTzy93ZqT7xd7zxJsO0TMHn1iyHxc1FnlPohjBZRavUeumbRNqPMrLpnyXQucrJdqBXLyCWor966TJTS0mFLoh/5k9Iai4VRZFiCc9v+TELMy46Dhqf5IMfUQzc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jFWNYJBh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35A5DC4CED2;
+	Fri, 24 Jan 2025 20:29:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1737750567;
+	bh=qS9lEbjEAHyWdYyrlQKhkEwMB4XrYbs8N4dUHkzIWn0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=jFWNYJBhljSOIece13T6U862UWe/ZPxMVPvgVGbAjsixPOTdMsxIj1h9deyNG6AVD
+	 YU1oJqr40rZf7bwWnN4sn3m27i4V8tGTeCM+jamkze5dNCt0pXs7wcoNakYMPoVWY4
+	 7xfUeAjBINucgjiRPyce/XrUGJ6nQBqT5hW/nfLSxjTKUtyR9nZCAT/u2pIR55ndEY
+	 wRCqnkGMtE3THwYKX7z6GrNFTZn3usmUuJoOqz6wsr+jit3h8EeUyTLp9/vOeBaV6r
+	 58AA/835R07jG4AhUdM+8hnysMJ9oNQCYE4sCXvDRxOMiRA68wUK0NM1JRvqNxqoB0
+	 JmWo3B5yhUSQQ==
+From: Song Liu <song@kernel.org>
+To: bpf@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-security-module@vger.kernel.org
+Cc: kernel-team@meta.com,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz,
+	kpsingh@kernel.org,
+	mattbobrowski@google.com,
+	liamwisehart@meta.com,
+	shankaran@meta.com,
+	Song Liu <song@kernel.org>
+Subject: [PATCH v10 bpf-next 0/7] Enable writing xattr from BPF programs
+Date: Fri, 24 Jan 2025 12:29:04 -0800
+Message-ID: <20250124202911.3264715-1-song@kernel.org>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf v2] bpf: Fix deadlock when freeing cgroup storage
-To: Abel Wu <wuyun.abel@bytedance.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, David Vernet <void@manifault.com>,
- "open list:BPF [STORAGE & CGROUPS]" <bpf@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <20241221061018.37717-1-wuyun.abel@bytedance.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Content-Language: en-US
-In-Reply-To: <20241221061018.37717-1-wuyun.abel@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On 12/20/24 10:10 PM, Abel Wu wrote:
-> The following commit
-> bc235cdb423a ("bpf: Prevent deadlock from recursive bpf_task_storage_[get|delete]")
-> first introduced deadlock prevention for fentry/fexit programs attaching
-> on bpf_task_storage helpers. That commit also employed the logic in map
-> free path in its v6 version.
-> 
-> Later bpf_cgrp_storage was first introduced in
-> c4bcfb38a95e ("bpf: Implement cgroup storage available to non-cgroup-attached bpf progs")
-> which faces the same issue as bpf_task_storage, instead of its busy
-> counter, NULL was passed to bpf_local_storage_map_free() which opened
-> a window to cause deadlock:
-> 
-> 	<TASK>
-> 		(acquiring local_storage->lock)
-> 	_raw_spin_lock_irqsave+0x3d/0x50
-> 	bpf_local_storage_update+0xd1/0x460
-> 	bpf_cgrp_storage_get+0x109/0x130
-> 	bpf_prog_a4d4a370ba857314_cgrp_ptr+0x139/0x170
-> 	? __bpf_prog_enter_recur+0x16/0x80
-> 	bpf_trampoline_6442485186+0x43/0xa4
-> 	cgroup_storage_ptr+0x9/0x20
-> 		(holding local_storage->lock)
-> 	bpf_selem_unlink_storage_nolock.constprop.0+0x135/0x160
-> 	bpf_selem_unlink_storage+0x6f/0x110
-> 	bpf_local_storage_map_free+0xa2/0x110
-> 	bpf_map_free_deferred+0x5b/0x90
-> 	process_one_work+0x17c/0x390
-> 	worker_thread+0x251/0x360
-> 	kthread+0xd2/0x100
-> 	ret_from_fork+0x34/0x50
-> 	ret_from_fork_asm+0x1a/0x30
-> 	</TASK>
-> 
-> Progs:
->   - A: SEC("fentry/cgroup_storage_ptr")
+Add support to set and remove xattr from BPF program. Also add
+security.bpf. xattr name prefix.
 
-The v1 thread has suggested using notrace in a few functions. I didn't see any 
-counterarguments that wouldn't be sufficient.
+kfuncs are added to set and remove xattrs with security.bpf. name
+prefix. Update kfuncs bpf_get_[file|dentry]_xattr to read xattrs
+with security.bpf. name prefix. Note that BPF programs can read
+user. xattrs, but not write and remove them.
 
-imo, that should be a better option instead of having more unnecessary failures 
-in all other normal use cases which will not be interested in tracing 
-cgroup_storage_ptr().
+To pick the right version of kfunc to use, a remap logic is added to
+btf_kfunc_id_set. This helps move some kfunc specific logic off the
+verifier core code. Also use this remap logic to select
+bpf_dynptr_from_skb or bpf_dynptr_from_skb_rdonly.
 
-pw-bot: cr
 
->     - cgid (BPF_MAP_TYPE_HASH)
-> 	Record the id of the cgroup the current task belonging
-> 	to in this hash map, using the address of the cgroup
-> 	as the map key.
->     - cgrpa (BPF_MAP_TYPE_CGRP_STORAGE)
-> 	If current task is a kworker, lookup the above hash
-> 	map using function parameter @owner as the key to get
-> 	its corresponding cgroup id which is then used to get
-> 	a trusted pointer to the cgroup through
-> 	bpf_cgroup_from_id(). This trusted pointer can then
-> 	be passed to bpf_cgrp_storage_get() to finally trigger
-> 	the deadlock issue.
->   - B: SEC("tp_btf/sys_enter")
->     - cgrpb (BPF_MAP_TYPE_CGRP_STORAGE)
-> 	The only purpose of this prog is to fill Prog A's
-> 	hash map by calling bpf_cgrp_storage_get() for as
-> 	many userspace tasks as possible.
-> 
-> Steps to reproduce:
->   - Run A;
->   - while (true) { Run B; Destroy B; }
-> 
-> Fix this issue by passing its busy counter to the free procedure so
-> it can be properly incremented before storage/smap locking.
-> 
-> Fixes: c4bcfb38a95e ("bpf: Implement cgroup storage available to non-cgroup-attached bpf progs")
-> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
-> ---
->   kernel/bpf/bpf_cgrp_storage.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/bpf_cgrp_storage.c b/kernel/bpf/bpf_cgrp_storage.c
-> index 20f05de92e9c..7996fcea3755 100644
-> --- a/kernel/bpf/bpf_cgrp_storage.c
-> +++ b/kernel/bpf/bpf_cgrp_storage.c
-> @@ -154,7 +154,7 @@ static struct bpf_map *cgroup_storage_map_alloc(union bpf_attr *attr)
->   
->   static void cgroup_storage_map_free(struct bpf_map *map)
->   {
-> -	bpf_local_storage_map_free(map, &cgroup_cache, NULL);
-> +	bpf_local_storage_map_free(map, &cgroup_cache, &bpf_cgrp_storage_busy);
->   }
->   
->   /* *gfp_flags* is a hidden argument provided by the verifier */
+Cover letter of v1 and v2:
 
+Follow up discussion in LPC 2024 [1], that we need security.bpf xattr
+prefix. This set adds "security.bpf." xattr name prefix, and allows
+bpf kfuncs bpf_get_[file|dentry]_xattr() to read these xattrs.
+
+[1] https://lpc.events/event/18/contributions/1940/
+
+---
+Changes v9 => v10:
+1. Refactor bpf_[set|remove]_dentry_xattr[_locked]. (Christian Brauner).
+
+v9: https://lore.kernel.org/bpf/20250110011342.2965136-1-song@kernel.org/
+
+Changes v8 => v9
+1. Fix build for CONFIG_DEBUG_INFO_BTF=n case. (kernel test robot)
+
+v8: https://lore.kernel.org/bpf/20250108225140.3467654-1-song@kernel.org/
+
+Changes v7 => v8
+1. Rebase and resolve conflicts.
+
+v7: https://lore.kernel.org/bpf/20241219221439.2455664-1-song@kernel.org/
+
+Changes v6 => v7
+1. Move btf_kfunc_id_remap() to the right place. (Bug reported by CI)
+
+v6: https://lore.kernel.org/bpf/20241219202536.1625216-1-song@kernel.org/
+
+Changes v5 => v6
+1. Hide _locked version of the kfuncs from vmlinux.h (Alexei)
+2. Add remap logic to btf_kfunc_id_set and use that to pick the correct
+   version of kfuncs to use.
+3. Also use the remap logic for bpf_dynptr_from_skb[|_rdonly].
+
+v5: https://lore.kernel.org/bpf/20241218044711.1723221-1-song@kernel.org/
+
+Changes v4 => v5
+1. Let verifier pick proper kfunc (_locked or not _locked)  based on the
+   calling context. (Alexei)
+2. Remove the __failure test (6/6 of v4).
+
+v4: https://lore.kernel.org/bpf/20241217063821.482857-1-song@kernel.org/
+
+Changes v3 => v4
+1. Do write permission check with inode locked. (Jan Kara)
+2. Fix some source_inline warnings.
+
+v3: https://lore.kernel.org/bpf/20241210220627.2800362-1-song@kernel.org/
+
+Changes v2 => v3
+1. Add kfuncs to set and remove xattr from BPF programs.
+
+v2: https://lore.kernel.org/bpf/20241016070955.375923-1-song@kernel.org/
+
+Changes v1 => v2
+1. Update comment of bpf_get_[file|dentry]_xattr. (Jiri Olsa)
+2. Fix comment for return value of bpf_get_[file|dentry]_xattr.
+
+v1: https://lore.kernel.org/bpf/20241002214637.3625277-1-song@kernel.org/
+
+Song Liu (7):
+  fs/xattr: bpf: Introduce security.bpf. xattr name prefix
+  selftests/bpf: Extend test fs_kfuncs to cover security.bpf. xattr
+    names
+  bpf: lsm: Add two more sleepable hooks
+  bpf: Extend btf_kfunc_id_set to handle kfunc polymorphism
+  bpf: Use btf_kfunc_id_set.remap logic for bpf_dynptr_from_skb
+  bpf: fs/xattr: Add BPF kfuncs to set and remove xattrs
+  selftests/bpf: Test kfuncs that set and remove xattr from BPF programs
+
+ fs/bpf_fs_kfuncs.c                            | 238 +++++++++++++++++-
+ include/linux/bpf_lsm.h                       |   2 +
+ include/linux/btf.h                           |  20 ++
+ include/linux/btf_ids.h                       |   4 +
+ include/uapi/linux/xattr.h                    |   4 +
+ kernel/bpf/bpf_lsm.c                          |   2 +
+ kernel/bpf/btf.c                              | 117 +++++++--
+ kernel/bpf/verifier.c                         |  31 +--
+ net/core/filter.c                             |  49 +++-
+ tools/testing/selftests/bpf/bpf_kfuncs.h      |   5 +
+ .../selftests/bpf/prog_tests/fs_kfuncs.c      | 162 +++++++++++-
+ .../selftests/bpf/progs/test_get_xattr.c      |  28 ++-
+ .../bpf/progs/test_set_remove_xattr.c         | 133 ++++++++++
+ 13 files changed, 732 insertions(+), 63 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_set_remove_xattr.c
+
+--
+2.43.5
 
