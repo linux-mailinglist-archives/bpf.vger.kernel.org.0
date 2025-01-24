@@ -1,162 +1,172 @@
-Return-Path: <bpf+bounces-49625-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49626-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA9A2A1ADBB
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 01:04:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 015CCA1ADE8
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 01:26:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8B9416B968
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 00:04:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F26FB188E857
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 00:26:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B0E31876;
-	Fri, 24 Jan 2025 00:04:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9C82153814;
+	Fri, 24 Jan 2025 00:26:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cPHkj03g"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PB2gJI/7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BF9F4C91;
-	Fri, 24 Jan 2025 00:04:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F12F14B94B;
+	Fri, 24 Jan 2025 00:26:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737677086; cv=none; b=qdiNMQSax7+Zcg2LzEOaMV1mStQH3Co1pWpB/y9KKFX2D5VUDBEre+Qn+6bII8JuhWqzJmd01TUuyo9yxTT6c6KYuLUDvANszNQagofadJHFGax4ZSwB9w0gH9Jl3F2i0mIUFWRX1YO86dOedacfgiV3gxNBqoARZCX2eXYVSxY=
+	t=1737678388; cv=none; b=X2XJ7OpNR3+xp2iOBD+NxUus3euGCTuaA2U0qNS7DIAL/m12epOzHNDruSfPUD+iWggOdX6gIK461Wt2ErEyMvoIUeDDawucHsu1Ukzs0QO0X8ovp94gO7cZWGGPKYSVh4CrjV1lK6OQxQBdqxPRDEpEe04OvxyvxbnV7s5r5Rw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737677086; c=relaxed/simple;
-	bh=/0D3zhqHQKPwUIQ3nwIHNussk4FwtKkHQzzM/IBcM4E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OJ/DKiNgVZcecJ9l0jK8RV/5LcaH/g91GyTAggosO/mcTszR++8VkRN/KdRmWY+uttjzXgmpcfelfdxS3qvcKXvkjG/qGQmY+UOa4RfF7OH10yrru8cDb3w9uEccaLVY57YwtagabJsrYfpR+V51wJS4CG9hw27wg4dnAXvpfyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cPHkj03g; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-e3a0acba5feso2270943276.2;
-        Thu, 23 Jan 2025 16:04:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737677083; x=1738281883; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XnjhNl+gxwgNIARGeSMd9goOS9xLJvXCt/qd2UtdTFg=;
-        b=cPHkj03gKR9Q5+KNDgNUuLtW9joKznqnWhYwT62KPw2CD4TV5AFcuaAX9TygZOHNuo
-         B7uoAH6OtU8tx2xRx1k5nxi4cCMv6TjPuFeIZZf9asKl123gA6ksMjfHtmbTjYtjBUVI
-         kB2qqF29pO4C/ydDZIURT+oFodkE25/01eo1bEJoovpjgP1vCvGxb1X3uuMSOXe3bxYf
-         CtyTE7bPLAOB0WorK2ld/FCFgMhJ6p0odk8+HgiZMys+aMd5WKEBkKgq+Yvp4ldlR7HU
-         qrYn2sj/Mp5LsWe4gHBlHkOvlF0wJTuuho3kcjAeivO0mlOANyIgW1AInatXiNjCdjnk
-         cnXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737677083; x=1738281883;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XnjhNl+gxwgNIARGeSMd9goOS9xLJvXCt/qd2UtdTFg=;
-        b=ghgdFR57pijYEe1ru7hkZbKF1wTMlT2zZvXpG2W4GL8kKFrt0+BSn11MUXs/8ELclX
-         wtsMOGcXqhabM9upAi5yzif2hBWOoe5LomM9x5PK4X5zcFtRHRniUHPR7Gts/Py+NmWg
-         4LdlWAh9Gqjz0sPafoNAM5yvh8PzVaGYtMg7GUmKQ1bg1N0Fk2jsx/vVT58T6LOGT5yF
-         KJylNYpmWxM+KVKVYBwfrwwKe4OxZ2/dW0nymLTm2spBCgaQU+slxhEI0jI2eQdzPaHN
-         7807HsDN50dV0PURqtQG8qIqS6ZQXIK0gkQNx7SMn6nZHP1HCNiC09QFvWMhdEpluoOf
-         e+7A==
-X-Forwarded-Encrypted: i=1; AJvYcCWI5PwgARCdKamaEcRBu4i5Cjvn+3k3R1EWGnrQ+SSMXdieeDTjfrZlXlfmtMOxuDxY3Uk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwT5ne3++bP3gwyd9qnT1iTllDRrZr/XAU4HLyztKoekCc1oBUQ
-	nO2Eze822ZJNgMQHWAs7wNyMQ6c+LOxiHr23fz6vYhIN2JlNgNpa8kIZ3uWoRGS98cnd+Eux0Ua
-	rtZYCbdyOcu+Q+SrljtGuFIQbz3s=
-X-Gm-Gg: ASbGncttQDfxrU/xL0kRQhWCANJMyd+Ostd9ANxrHHfS21hjjrMUOsQoDjSBg+C2SVQ
-	SjKuLmX4ILHdpGVLpm4Tftyw37IWpGinDn38nslB7FSl9NaLzxD4L5RiUoBLRYA==
-X-Google-Smtp-Source: AGHT+IGIJlySrDpdq4YBS5+Dt2KkbNTPhmh6kQMDMIrzAOSrpMCo1bHXY2Rw0hXIRBFvrHo2mOXKNYy71mp+Gqrrw84=
-X-Received: by 2002:a05:6902:d48:b0:e58:118a:99e4 with SMTP id
- 3f1490d57ef6-e58118a9aa4mr7977035276.15.1737677083197; Thu, 23 Jan 2025
- 16:04:43 -0800 (PST)
+	s=arc-20240116; t=1737678388; c=relaxed/simple;
+	bh=dMRIZWkP39mpiDb+XJ71/LB8SzyGukso5aiyi35FLys=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=euBxURcVpQ2dkuY8cWgTcAdYdbrRtd6T5G5jKM36nuJ0TDbyzG3ZiUQEKDHs5Uxhs1+gfk8sWdevtjQohAnLr8uOQkbMrxmVAdPHpOtD8MlXlLWU+IR5n5Yt6+wyNE4jK0fShZi9Wahkc2LnMCznluhMOklKC3aFIBkVGWGHFwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PB2gJI/7; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 23 Jan 2025 16:26:03 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1737678369;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DTU+H9g9S1KRdaeFv8k4QBY+6+IjlyGyewpTM1VwtNY=;
+	b=PB2gJI/7j1FYWc5IO92Q3ksRKeQcYUZw3wtN2haAUQuhJz6X8J3DJRlwEt1jV2CRNjmDlC
+	lJTMKxToTNsnguEdrD/w/4g2TnAblI1CyPI7hbxX7ednkwhGBas6e0C+4UAT12GvwZzG+t
+	W2rwFn0EYB4K+hVSDOOYfq9Y+O1U1W4=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Kees Cook <kees@kernel.org>
+Cc: Suren Baghdasaryan <surenb@google.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, linux-mm@kvack.org, akpm@linux-foundation.org, 
+	linux-fsdevel@vger.kernel.org, brauner@kernel.org, viro@zeniv.linux.org.uk, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org, 
+	peterz@infradead.org, mingo@kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, rppt@kernel.org, liam.howlett@oracle.com, 
+	Jann Horn <jannh@google.com>, linux-security-module@vger.kernel.org
+Subject: Re: [PATCH] mm,procfs: allow read-only remote mm access under
+ CAP_PERFMON
+Message-ID: <u2bbo43kjtn5zstayucq6lqbfc4nbsmf6vcqlo7uac4imsgbx2@tpdcqyotgb34>
+References: <20250123214342.4145818-1-andrii@kernel.org>
+ <CAJuCfpE9QOo-xmDpk_FF=gs3p=9Zzb-Q5yDaKAEChBCnpogmQg@mail.gmail.com>
+ <202501231526.A3C13EC5@keescook>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241220195619.2022866-1-amery.hung@gmail.com>
- <20241220195619.2022866-3-amery.hung@gmail.com> <16c2f9b5d9c91bf5b8ee8c18a17c9cf846b394e8.camel@gmail.com>
-In-Reply-To: <16c2f9b5d9c91bf5b8ee8c18a17c9cf846b394e8.camel@gmail.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Thu, 23 Jan 2025 16:04:32 -0800
-X-Gm-Features: AbW1kvbLWwtMPLz0NYtfCcdzmzGNSL_JElPULxk-Cb_p-39Tf56At0ZLItdOlRA
-Message-ID: <CAMB2axOoFbgQsEeLqdtpfWY=4g7yCxO19t8orxa5Ao6gNTXiDQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 02/14] selftests/bpf: Test referenced kptr
- arguments of struct_ops programs
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, alexei.starovoitov@gmail.com, martin.lau@kernel.org, 
-	sinquersw@gmail.com, toke@redhat.com, jhs@mojatatu.com, jiri@resnulli.us, 
-	stfomichev@gmail.com, ekarani.silvestre@ccc.ufcg.edu.br, 
-	yangpeihao@sjtu.edu.cn, xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com, 
-	amery.hung@bytedance.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <202501231526.A3C13EC5@keescook>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jan 23, 2025 at 1:57=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Fri, 2024-12-20 at 11:55 -0800, Amery Hung wrote:
->
-> Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
->
-> [...]
->
-> > diff --git a/tools/testing/selftests/bpf/progs/struct_ops_refcounted_fa=
-il__global_subprog.c b/tools/testing/selftests/bpf/progs/struct_ops_refcoun=
-ted_fail__global_subprog.c
-> > new file mode 100644
-> > index 000000000000..43493a7ead39
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/struct_ops_refcounted_fail__glo=
-bal_subprog.c
-> > @@ -0,0 +1,37 @@
-> > +#include <vmlinux.h>
-> > +#include <bpf/bpf_tracing.h>
-> > +#include "../test_kmods/bpf_testmod.h"
-> > +#include "bpf_misc.h"
-> > +
-> > +char _license[] SEC("license") =3D "GPL";
-> > +
-> > +extern void bpf_task_release(struct task_struct *p) __ksym;
-> > +
-> > +__noinline int subprog_release(__u64 *ctx __arg_ctx)
-> > +{
-> > +     struct task_struct *task =3D (struct task_struct *)ctx[1];
-> > +     int dummy =3D (int)ctx[0];
-> > +
-> > +     bpf_task_release(task);
-> > +
-> > +     return dummy + 1;
-> > +}
-> > +
-> > +/* Test that the verifier rejects a program that contains a global
-> > + * subprogram with referenced kptr arguments
-> > + */
-> > +SEC("struct_ops/test_refcounted")
->
-> Nit: I'd add a __msg("Validating subprog_release() func#1...")
->      before the error message match, just to make sure that
->      error is reported when subprog_release() is verified.
->
+On Thu, Jan 23, 2025 at 03:47:44PM -0800, Kees Cook wrote:
+> On Thu, Jan 23, 2025 at 01:52:52PM -0800, Suren Baghdasaryan wrote:
+> > On Thu, Jan 23, 2025 at 1:44 PM Andrii Nakryiko <andrii@kernel.org> wrote:
+> > >
+> > > It's very common for various tracing and profiling toolis to need to
+> > > access /proc/PID/maps contents for stack symbolization needs to learn
+> > > which shared libraries are mapped in memory, at which file offset, etc.
+> > > Currently, access to /proc/PID/maps requires CAP_SYS_PTRACE (unless we
+> > > are looking at data for our own process, which is a trivial case not too
+> > > relevant for profilers use cases).
+> > >
+> > > Unfortunately, CAP_SYS_PTRACE implies way more than just ability to
+> > > discover memory layout of another process: it allows to fully control
+> > > arbitrary other processes. This is problematic from security POV for
+> > > applications that only need read-only /proc/PID/maps (and other similar
+> > > read-only data) access, and in large production settings CAP_SYS_PTRACE
+> > > is frowned upon even for the system-wide profilers.
+> > >
+> > > On the other hand, it's already possible to access similar kind of
+> > > information (and more) with just CAP_PERFMON capability. E.g., setting
+> > > up PERF_RECORD_MMAP collection through perf_event_open() would give one
+> > > similar information to what /proc/PID/maps provides.
+> > >
+> > > CAP_PERFMON, together with CAP_BPF, is already a very common combination
+> > > for system-wide profiling and observability application. As such, it's
+> > > reasonable and convenient to be able to access /proc/PID/maps with
+> > > CAP_PERFMON capabilities instead of CAP_SYS_PTRACE.
+> > >
+> > > For procfs, these permissions are checked through common mm_access()
+> > > helper, and so we augment that with cap_perfmon() check *only* if
+> > > requested mode is PTRACE_MODE_READ. I.e., PTRACE_MODE_ATTACH wouldn't be
+> > > permitted by CAP_PERFMON.
+> > >
+> > > Besides procfs itself, mm_access() is used by process_madvise() and
+> > > process_vm_{readv,writev}() syscalls. The former one uses
+> > > PTRACE_MODE_READ to avoid leaking ASLR metadata, and as such CAP_PERFMON
+> > > seems like a meaningful allowable capability as well.
+> > >
+> > > process_vm_{readv,writev} currently assume PTRACE_MODE_ATTACH level of
+> > > permissions (though for readv PTRACE_MODE_READ seems more reasonable,
+> > > but that's outside the scope of this change), and as such won't be
+> > > affected by this patch.
+> > 
+> > CC'ing Jann and Kees.
+> > 
+> > >
+> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > ---
+> > >  kernel/fork.c | 11 ++++++++++-
+> > >  1 file changed, 10 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel/fork.c b/kernel/fork.c
+> > > index ded49f18cd95..c57cb3ad9931 100644
+> > > --- a/kernel/fork.c
+> > > +++ b/kernel/fork.c
+> > > @@ -1547,6 +1547,15 @@ struct mm_struct *get_task_mm(struct task_struct *task)
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(get_task_mm);
+> > >
+> > > +static bool can_access_mm(struct mm_struct *mm, struct task_struct *task, unsigned int mode)
+> > > +{
+> > > +       if (mm == current->mm)
+> > > +               return true;
+> > > +       if ((mode & PTRACE_MODE_READ) && perfmon_capable())
+> > > +               return true;
+> > > +       return ptrace_may_access(task, mode);
+> > > +}
+> 
+> nit: "may" tends to be used more than "can" for access check function naming.
+> 
+> So, this will bypass security_ptrace_access_check() within
+> ptrace_may_access(). CAP_PERFMON may be something LSMs want visibility
+> into.
+> 
+> It also bypasses the dumpability check in __ptrace_may_access(). (Should
+> non-dumpability block visibility into "maps" under CAP_PERFMON?)
+> 
+> This change provides read access for CAP_PERFMON to:
+> 
+> /proc/$pid/maps
+> /proc/$pid/smaps
+> /proc/$pid/mem
+> /proc/$pid/environ
+> /proc/$pid/auxv
+> /proc/$pid/attr/*
+> /proc/$pid/smaps_rollup
+> /proc/$pid/pagemap
+> 
+> /proc/$pid/mem access seems way out of bounds for CAP_PERFMON. environ
+> and auxv maybe too much also. The "attr" files seem iffy. pagemap may be
+> reasonable.
 
-I see. I will add the msg match.
+From what I understand, PTRACE_MODE_ATTACH is used for /proc/$pid/mem,
+so this patch is not changing anything. However for environ and auxv,
+PTRACE_MODE_READ is being used, so they will be accessible for
+CAP_PERFMON.
 
-> > +__failure __msg("invalid bpf_context access off=3D8. Reference may alr=
-eady be released")
-> > +int refcounted_fail__global_subprog(unsigned long long *ctx)
-> > +{
-> > +     struct task_struct *task =3D (struct task_struct *)ctx[1];
-> > +
-> > +     bpf_task_release(task);
-> > +
-> > +     return subprog_release(ctx);
-> > +}
-> > +
-> > +SEC(".struct_ops.link")
-> > +struct bpf_testmod_ops testmod_ref_acquire =3D {
-> > +     .test_refcounted =3D (void *)refcounted_fail__global_subprog,
-> > +};
->
-> [...]
->
+What's your reason behind too much for environ and auxv?
+
 
