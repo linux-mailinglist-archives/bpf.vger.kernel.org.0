@@ -1,271 +1,271 @@
-Return-Path: <bpf+bounces-49701-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49702-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D78FA1BC76
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 19:52:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B029A1BC99
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 20:08:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C773716FB08
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 18:52:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD3923ACCB8
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 19:07:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AEB02253E6;
-	Fri, 24 Jan 2025 18:51:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93407224AF1;
+	Fri, 24 Jan 2025 19:07:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xYl7SLWe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FAWGp/1a"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B189D224B0E
-	for <bpf@vger.kernel.org>; Fri, 24 Jan 2025 18:51:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BC551CCEEC;
+	Fri, 24 Jan 2025 19:07:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737744702; cv=none; b=CAMzVhe/zl0oGYkPiv5xIFpiR/HWUBTPYAZCJss/CLQ+hiruIZwwLBHE7EIaeaIaz17SGs8L7Gz/TWDarjs5k67vODIbPdb90i92k0pu/eYbCWi4VBydqTvfPaxIFBwPl6ffKQkElpt3m9AgPPAFmZSnl2Ad2OOgBAefAaioc38=
+	t=1737745662; cv=none; b=p3ErCv6UlpRenLW8aIK/GrWZfzsM2akFqptaaXcDhuSaLzXkD8Lm6/jmrab+mRUbQrsK2MvCCWMSvhhTnIC/oRUkzK2jZ0B1hj/uYLd8SNB3xSY+yL1AFwcuGafdRRzPXLUFsLxS0OosuOjo3xltG/t+BAvoWM0lYaD/aAp+36Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737744702; c=relaxed/simple;
-	bh=fDdkmfCCvdBVH6L5BLC6/7ennq1G2HESzBduxQPVxw8=;
+	s=arc-20240116; t=1737745662; c=relaxed/simple;
+	bh=PXrJs9ZPNIEquEYhRhDNDhbsr5oSKmZUVYbDQcYYsTI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=O+LaT0ZFXzEFPT2E01wVAn37ea2+oB6h+g5ej/TWfiLwVphUJJVESpW6842u9SCmMoentVmeWCUBR/j61FYGDTwOjAlLCFit669LqCUqb87srdBeIQxsUFqeiQy6dacgVLWaodrB1QgawbWQw85Foy4HpDhBVEf3KPWU6X1VSWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xYl7SLWe; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5d0c939ab78so747a12.0
-        for <bpf@vger.kernel.org>; Fri, 24 Jan 2025 10:51:39 -0800 (PST)
+	 To:Cc:Content-Type; b=DG69UiqvGJ/zTYvfsxCMEKbB6EbA7g1jNK6VHJjz5szk1fpw745xU5DSHRCkj+wC5sUv6hv5WTjCDkbWixwHD9/dp6iKpVHdsnp6BqU737H9AgfmWZfg644+aUh/pVGPhqssc5DE1qNLc5W3aWxNky70dT4aSxbT862ac3GhFt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FAWGp/1a; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-aab925654d9so448722066b.2;
+        Fri, 24 Jan 2025 11:07:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1737744698; x=1738349498; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1737745658; x=1738350458; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aw/hjejM3ch7CQVj+0QYv4YbXgyC5i5Q+BA5aHuSxsY=;
-        b=xYl7SLWesBUucPFZFNFmo30rQrN92E3CiruDWx730zeC4uNaru93KJ+jlPsqejoQOt
-         0QOfJ1GhwFTiEQWJbXzXWspnENTCA6kesiWAbCEll1QtmyIrENzsqAabfpAZvV2Pjtpc
-         9vuLZDYpIegCut7boZpk8R/9XKZPLH0ERHexDPv8RaY+wZvX63VZGkSm/WqTb3/b9qKq
-         IMMKcx98vXSIsIBEZTV5ddO8Ax8Ft+I7J0CiGbgVQSd8fYunuOvGrvpTDxmqYjP68LpP
-         HY0Tfx8mBuQGacaKrQgPdexfqbo1DcrIIBDvF4mnw3GcdaYDpVNuwBpBzokQ/Ti+79tK
-         CvYw==
+        bh=M64ccCiSMLIZYqvDwKn2KQG8TzxywkOKAzy05Y8MZaw=;
+        b=FAWGp/1aLDCHa5FxSvDu+g350bbKTX5P62ur4VwZrrTBgGHaPybmvEuKJa2QJNBFC+
+         8yODhlNgOB6Moc1NY4iNybalQSMCMaPqZ9LLojg7Kewgth2Wa0XUk0XB8WxWNJL5nqrg
+         gVuOK63TqFE5I/aagdfpVvyDYN/3cTsU+mm3e0olw7S1F1HzDv7quNP59km+Ug900iBg
+         2MxDj+EofGfUir5nHhtbp4SU33Mqtxatsy7sOPn6G0Li3Ft2EzAnMg4N8xUJSz+sA0r8
+         BuGVmOdDCca+RiSzoGADL69qzR+Z1EyXeyepMeUsdJK5djKou/OUiDm7PDugwsrpRUs7
+         IOXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737744698; x=1738349498;
+        d=1e100.net; s=20230601; t=1737745658; x=1738350458;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aw/hjejM3ch7CQVj+0QYv4YbXgyC5i5Q+BA5aHuSxsY=;
-        b=py0Qqhe17a69UvqImx1H4/2kWolJbnIfcF9SzfpaWUpKDqW5KI4W5bgRP8cNq0ZMFA
-         H4RKBq5kCKYnWYVp3V+m84qORXGcC2C2PK7OUaIPG66CsVg3TwFxcDEQnOUWdrSgLE2H
-         fbTlL0ahO1g7r/0quuV5PvuadEUlg5aDTG1ZH1N+S+SbYAxnZkJqK88HEIHxgofZFlrL
-         U0VqcaXsali4ZRKR58Ib7cq/y762EgovetNq+5dlsW8XQ2HKAhbOqch1mtfpY39FRTvo
-         8IUzteANw1I98Bx0lq0vx5RBKIC0fbu0yMxeosNeYm8HxB8LgcND12A1bFS8Vs8Cg5la
-         2mmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVsCP94DYuxYVi7bOIXAr2IDVID19H/g+XMth5G3LUATkcNur28WbDKNzwZFmLfpzCawSg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6zbtVLJ07tS+25R4nMdBYWfVWEe3SXAa/gAbdxnT+TPVLAQtg
-	q1vcLpMoYtblP8hiuN25j6x7JPFN9W87VVQzTICOrLOlNf+bF+wQv2dtqAqHUQDhg9Btv0efLDw
-	1TA+YzWLTBMlco+rss3gAOhPJr495WSoI5Hq8
-X-Gm-Gg: ASbGncsRT2/gFayY+Y04wjg5FNe4x57N+dWzi0hnn9DO7NFqkrPzn5SdH+SIwWHlYH2
-	4bLbCrz2kMlVJpFB3LN1/0JCU6YvX705yVsgQ/12Ef3Ea2NyoGGGqtORW2g7RCNxUgWuO5D4w50
-	sSp8JKQo549xJFoc0=
-X-Google-Smtp-Source: AGHT+IHy2qOAjc2g89RIHQ1Ph0fZ3qahOk5LuwhuPnCexqQtW7QUAfR5ZBPMtJ/IqD5mz9ytT5S+92P+roC83MXr1yw=
-X-Received: by 2002:a05:6402:28a0:b0:5d0:d935:457b with SMTP id
- 4fb4d7f45d1cf-5dc23a582e4mr5855a12.0.1737744697674; Fri, 24 Jan 2025 10:51:37
- -0800 (PST)
+        bh=M64ccCiSMLIZYqvDwKn2KQG8TzxywkOKAzy05Y8MZaw=;
+        b=L/HrfKUrwELWE7e17Ma3BdE90Trxl+FfAGdEQoA4D9fZvT2eFUMKw29as3iVJlHbZx
+         t8bl16/ofl2IkXe5uc7Sqi0FmZyu9X6ogE7KhuPjSj12cPLaDVGgh8RWKkR1ew4Bj8ba
+         aosmj2oWWgTl1yxUWPXjmcLzv1g02ousqBVRUIosRtXDtEPC+kszSV4y0CUrFoe3QilJ
+         eltkAhiHPeoYCcPRzs1yo7XYwpBWQCEdOkU8ZmxgMs1gr5pJD0IcEMfX1bfkaHK0M3O9
+         NRuJAZ+XYB91K6Sr/njfMzcGyqdmXKMhvc2j6O8cFTPmfvfwOYRDKINq31bclSAUFtJQ
+         HVIg==
+X-Forwarded-Encrypted: i=1; AJvYcCVHv4VKwjPLWWFaHaUD4UAnBmRsgRiJ5/Td2V/Wa6X0/xd6ePHH8NCc5vpfhHKvpM2+mxG1Yaw+Fo8G@vger.kernel.org, AJvYcCVewf/VBJvTgQttiOWldqEUZvQ8WT9sXN6QEnhn7QgSj7/PZLi9u6rfDJk3Fk7PkarK4Cw=@vger.kernel.org, AJvYcCWCfz8TNeK+g4jE6od0B+mHEJBl25lxx6KPdFESTh4BN6Ow6hHqNMoq4iufe6g6NeY03dd5AGmT@vger.kernel.org, AJvYcCWWI/Do2T1GpXskzhdceuM+iQyAhLktaTLIG8kFzlYFE/HIbz9U+74eEknvvy6hjIIBvTvOMSACAYpHTA==@vger.kernel.org, AJvYcCWZlumolwD6PFq+rfdEypE+5txegmNGNgQDffv41DIrUwUsTYs5p4DlXGeQgg2M5OqXiGkWTLwf8dLcaA==@vger.kernel.org, AJvYcCWgE1X4gdgdXCVFV3MFLK8MwDLxdmEwRtmrIb2zGEb6mG2v+IAHxfDE53VtAnN8CdFomq4BK31qWIsghr3e@vger.kernel.org, AJvYcCWgqmYYHudlT1g79u7sFvOs2rsmOEoUdiPQJntRS72qy9sfd+Hv6+/DwWrrcRf3RMl1fryX4GfCuwXhU+HZGg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzyYi/k9HRum2nPQJ/qoW8coy7aTBUYU7zvT5oHYvkJEWbZ/e2P
+	TiCKAXvZqsjHylnNp71oD+YaEO5HjC4aMgDNopzNWIv7+MlEyZyJl1rwAHZQh47CWb2owHwoqYp
+	TNUM8O5Cj9GyEBoIknVWtYBOqdSw=
+X-Gm-Gg: ASbGncvYXuj9V2iaRpV59I/eOwEqJnAJSmzq6RYFIAT3pYWI+nP+xRkiUNTn9oKT1Db
+	+gWiaRtq3oVTtJZ1iqbtQ5J86zI5dhNupu68LPbEk46jbVSU1IfbiqHvstoA=
+X-Google-Smtp-Source: AGHT+IHVokvHgS4VPbH29H+qihMfYRv5DXmUYISCN+1KE4QC6a2L3CH+v4Rg2tloe5yQ1DMWw4vIjjDbAzeSubHjNHs=
+X-Received: by 2002:a17:907:1c2a:b0:aac:832:9bf7 with SMTP id
+ a640c23a62f3a-ab38b27be47mr2790084466b.24.1737745658104; Fri, 24 Jan 2025
+ 11:07:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250122200402.3461154-1-maze@google.com> <4a6be957-f932-426a-99bf-7209620f8fa9@iogearbox.net>
-In-Reply-To: <4a6be957-f932-426a-99bf-7209620f8fa9@iogearbox.net>
-From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date: Fri, 24 Jan 2025 10:51:25 -0800
-X-Gm-Features: AWEUYZkF3JCKPZNGn_sTqPHMeDvCGDSz_h-1xZRsueiwq6c0SA0-CHv7rGMWcXE
-Message-ID: <CANP3RGcxE4pv1Dqi65O4KMP8B=7rcX9Hyd4RRMLGRtiC9L1E2Q@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: fix classic bpf reads from negative offset
- outside of linear skb portion
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Alexei Starovoitov <ast@kernel.org>, 
-	Linux Network Development Mailing List <netdev@vger.kernel.org>, "David S . Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, BPF Mailing List <bpf@vger.kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Willem de Bruijn <willemb@google.com>, 
-	Matt Moeller <moeller.matt@gmail.com>
+References: <20241216204124.3752367-1-dhowells@redhat.com> <20241216204124.3752367-28-dhowells@redhat.com>
+ <a7x33d4dnMdGTtRivptq6S1i8btK70SNBP2XyX_xwDAhLvgQoPox6FVBOkifq4eBinfFfbZlIkMZBe3QarlWTxoEtHZwJCZbNKtaqrR7PvI=@pm.me>
+ <CAB9dFdtVFgG7OWZRytL9Vpr=knNPnMe6b_Esg7rgfFfwLa8j0A@mail.gmail.com> <GHG6tQSGPRj9L93-skG-HGz4vGtXUxy6ibsUTKloUKncNmy8A7xgte0MEiI0iZJ7jD-SSrZiK2oswgvJCRan_0ZMi6xDlP11SHDi1Utf7mI=@pm.me>
+In-Reply-To: <GHG6tQSGPRj9L93-skG-HGz4vGtXUxy6ibsUTKloUKncNmy8A7xgte0MEiI0iZJ7jD-SSrZiK2oswgvJCRan_0ZMi6xDlP11SHDi1Utf7mI=@pm.me>
+From: Marc Dionne <marc.c.dionne@gmail.com>
+Date: Fri, 24 Jan 2025 15:07:26 -0400
+X-Gm-Features: AWEUYZm1VpljAqRhQQ6dX7tl5sygVWqfg2AdWCAk6rSkUpuGiA6tuCJB2vasH_k
+Message-ID: <CAB9dFds_bPG1vThvOxhKcoFbUPGURYRHrY_zubPrAqpQrgHA7A@mail.gmail.com>
+Subject: Re: [PATCH v5 27/32] netfs: Change the read result collector to only
+ use one work item
+To: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: David Howells <dhowells@redhat.com>, Christian Brauner <christian@brauner.io>, 
+	Steve French <smfrench@gmail.com>, Matthew Wilcox <willy@infradead.org>, 
+	Jeff Layton <jlayton@kernel.org>, Gao Xiang <hsiangkao@linux.alibaba.com>, 
+	Dominique Martinet <asmadeus@codewreck.org>, Paulo Alcantara <pc@manguebit.com>, 
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>, 
+	Eric Van Hensbergen <ericvh@kernel.org>, Ilya Dryomov <idryomov@gmail.com>, netfs@lists.linux.dev, 
+	linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org, v9fs@lists.linux.dev, 
+	linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org, 
+	linux-mm@kvack.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 23, 2025 at 2:36=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.n=
-et> wrote:
+On Fri, Jan 24, 2025 at 2:46=E2=80=AFPM Ihor Solodrai <ihor.solodrai@pm.me>=
+ wrote:
 >
-> On 1/22/25 9:04 PM, Maciej =C5=BBenczykowski wrote:
-> > We're received reports of cBPF code failing to accept DHCP packets.
-> > "BPF filter for DHCP not working (android14-6.1-lts + android-14.0.0_r7=
-4)"
+> On Friday, January 24th, 2025 at 10:21 AM, Marc Dionne <marc.dionne@auris=
+tor.com> wrote:
 >
-> I presume this is cBPF on AF_PACKET, right?
+> >
+> > [...]
+> >
+> > > A log snippet:
+> > >
+> > > 2025-01-24T02:15:03.9009694Z [ 246.932163] INFO: task ip:1055 blocked=
+ for more than 122 seconds.
+> > > 2025-01-24T02:15:03.9013633Z [ 246.932709] Tainted: G OE 6.13.0-g2bcb=
+9cf535b8-dirty #149
+> > > 2025-01-24T02:15:03.9018791Z [ 246.933249] "echo 0 > /proc/sys/kernel=
+/hung_task_timeout_secs" disables this message.
+> > > 2025-01-24T02:15:03.9025896Z [ 246.933802] task:ip state:D stack:0 pi=
+d:1055 tgid:1055 ppid:1054 flags:0x00004002
+> > > 2025-01-24T02:15:03.9028228Z [ 246.934564] Call Trace:
+> > > 2025-01-24T02:15:03.9029758Z [ 246.934764] <TASK>
+> > > 2025-01-24T02:15:03.9032572Z [ 246.934937] __schedule+0xa91/0xe80
+> > > 2025-01-24T02:15:03.9035126Z [ 246.935224] schedule+0x41/0xb0
+> > > 2025-01-24T02:15:03.9037992Z [ 246.935459] v9fs_evict_inode+0xfe/0x17=
+0
+> > > 2025-01-24T02:15:03.9041469Z [ 246.935748] ? __pfx_var_wake_function+=
+0x10/0x10
+> > > 2025-01-24T02:15:03.9043837Z [ 246.936101] evict+0x1ef/0x360
+> > > 2025-01-24T02:15:03.9046624Z [ 246.936340] __dentry_kill+0xb0/0x220
+> > > 2025-01-24T02:15:03.9048855Z [ 246.936610] ? dput+0x3a/0x1d0
+> > > 2025-01-24T02:15:03.9051128Z [ 246.936838] dput+0x114/0x1d0
+> > > 2025-01-24T02:15:03.9053548Z [ 246.937069] __fput+0x136/0x2b0
+> > > 2025-01-24T02:15:03.9056154Z [ 246.937305] task_work_run+0x89/0xc0
+> > > 2025-01-24T02:15:03.9058593Z [ 246.937571] do_exit+0x2c6/0x9c0
+> > > 2025-01-24T02:15:03.9061349Z [ 246.937816] do_group_exit+0xa4/0xb0
+> > > 2025-01-24T02:15:03.9064401Z [ 246.938090] __x64_sys_exit_group+0x17/=
+0x20
+> > > 2025-01-24T02:15:03.9067235Z [ 246.938390] x64_sys_call+0x21a0/0x21a0
+> > > 2025-01-24T02:15:03.9069924Z [ 246.938672] do_syscall_64+0x79/0x120
+> > > 2025-01-24T02:15:03.9072746Z [ 246.938941] ? clear_bhb_loop+0x25/0x80
+> > > 2025-01-24T02:15:03.9075581Z [ 246.939230] ? clear_bhb_loop+0x25/0x80
+> > > 2025-01-24T02:15:03.9079275Z [ 246.939510] entry_SYSCALL_64_after_hwf=
+rame+0x76/0x7e
+> > > 2025-01-24T02:15:03.9081976Z [ 246.939875] RIP: 0033:0x7fb86f66f21d
+> > > 2025-01-24T02:15:03.9087533Z [ 246.940153] RSP: 002b:00007ffdb3cf93f8=
+ EFLAGS: 00000202 ORIG_RAX: 00000000000000e7
+> > > 2025-01-24T02:15:03.9092590Z [ 246.940689] RAX: ffffffffffffffda RBX:=
+ 00007fb86f785fa8 RCX: 00007fb86f66f21d
+> > > 2025-01-24T02:15:03.9097722Z [ 246.941201] RDX: 00000000000000e7 RSI:=
+ ffffffffffffff80 RDI: 0000000000000000
+> > > 2025-01-24T02:15:03.9102762Z [ 246.941705] RBP: 00007ffdb3cf9450 R08:=
+ 00007ffdb3cf93a0 R09: 0000000000000000
+> > > 2025-01-24T02:15:03.9107940Z [ 246.942215] R10: 00007ffdb3cf92ff R11:=
+ 0000000000000202 R12: 0000000000000001
+> > > 2025-01-24T02:15:03.9113002Z [ 246.942723] R13: 0000000000000000 R14:=
+ 0000000000000000 R15: 00007fb86f785fc0
+> > > 2025-01-24T02:15:03.9114614Z [ 246.943244] </TASK>
+> >
+> >
+> > That looks very similar to something I saw in afs testing, with a
+> > similar stack but in afs_evict_inode where it hung waiting in
+> > netfs_wait_for_outstanding_io.
+> >
+> > David pointed to this bit where there's a double get in
+> > netfs_retry_read_subrequests, since netfs_reissue_read already takes
+> > care of getting a ref on the subrequest:
+> >
+> > diff --git a/fs/netfs/read_retry.c b/fs/netfs/read_retry.c
+> > index 2290af0d51ac..53d62e31a4cc 100644
+> > --- a/fs/netfs/read_retry.c
+> > +++ b/fs/netfs/read_retry.c
+> > @@ -152,7 +152,6 @@ static void netfs_retry_read_subrequests(struct
+> > netfs_io_request *rreq)
+> > __clear_bit(NETFS_SREQ_BOUNDARY,
+> > &subreq->flags);
+> >
+> > }
+> >
+> > - netfs_get_subrequest(subreq,
+> > netfs_sreq_trace_get_resubmit);
+> > netfs_reissue_read(rreq, subreq);
+> > if (subreq =3D=3D to)
+> > break;
+> >
+> > That seems to help for my afs test case, I suspect it might help in
+> > your case as well.
 >
-> > The relevant Android code is at:
-> >    https://cs.android.com/android/platform/superproject/main/+/main:pac=
-kages/modules/NetworkStack/jni/network_stack_utils_jni.cpp;l=3D95;drc=3D9df=
-50aef1fd163215dcba759045706253a5624f5
-> > which uses a lot of macros from:
-> >    https://cs.android.com/android/platform/superproject/main/+/main:pac=
-kages/modules/Connectivity/bpf/headers/include/bpf/BpfClassic.h;drc=3Dc58cf=
-b7c7da257010346bd2d6dcca1c0acdc8321
-> >
-> > This is widely used and does work on the vast majority of drivers,
-> > but is exposing a core kernel cBPF bug related to driver skb layout.
-> >
-> > Root cause is iwlwifi driver, specifically on (at least):
-> >    Dell 7212: Intel Dual Band Wireless AC 8265
-> >    Dell 7220: Intel Wireless AC 9560
-> >    Dell 7230: Intel Wi-Fi 6E AX211
-> > delivers frames where the UDP destination port is not in the skb linear
-> > portion, while the cBPF code is using SKF_NET_OFF relative addressing.
-> >
-> > simplified from above, effectively:
-> >    BPF_STMT(BPF_LDX | BPF_B | BPF_MSH, SKF_NET_OFF)
-> >    BPF_STMT(BPF_LD  | BPF_H | BPF_IND, SKF_NET_OFF + 2)
-> >    BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, 68, 1, 0)
-> >    BPF_STMT(BPF_RET | BPF_K, 0)
-> >    BPF_STMT(BPF_RET | BPF_K, 0xFFFFFFFF)
-> > fails to match udp dport=3D68 packets.
-> >
-> > Specifically the 3rd cBPF instruction fails to match the condition:
-> >    if (ptr >=3D skb->head && ptr + size <=3D skb_tail_pointer(skb))
-> > within bpf_internal_load_pointer_neg_helper() and thus returns NULL,
-> > which results in reading -EFAULT.
-> >
-> > This is because bpf_skb_load_helper_{8,16,32} don't include the
-> > "data past headlen do skb_copy_bits()" logic from the non-negative
-> > offset branch in the negative offset branch.
-> >
-> > Note: I don't know sparc assembly, so this doesn't fix sparc...
-> > ideally we should just delete bpf_internal_load_pointer_neg_helper()
-> > This seems to have always been broken (but not pre-git era, since
-> > obviously there was no eBPF helpers back then), but stuff older
-> > than 5.4 is no longer LTS supported anyway, so using 5.4 as fixes tag.
-> >
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: Stanislav Fomichev <sdf@fomichev.me>
-> > Cc: Willem de Bruijn <willemb@google.com>
-> > Reported-by: Matt Moeller <moeller.matt@gmail.com>
-> > Closes: https://issuetracker.google.com/384636719 [Treble - GKI partner=
- internal]
-> > Signed-off-by: Maciej =C5=BBenczykowski <maze@google.com>
-> > Fixes: 219d54332a09 ("Linux 5.4")
+> Hi Marc. Thank you for the suggestion.
 >
-> Hm, so not strictly broken, just that using relative SKF_NET_OFF offset
-> is limited in that it requires the data to be in linear section. Some
-> potential workarounds that come to mind:
-
-I'd consider that to be broken... this is *ancient* functionality of
-classic bpf, and it far predates both eBPF and drivers creating weird
-split packet layouts.
-The breakage is very much userspace visible.
-
-> 1) When you say vast majority of drivers, have you checked how much they
->     typically pull into linear section and whether it would make sense al=
-so
->     for iwlwifi to do the same? (It sounds like start of network header i=
-s
->     already in non-linear part for iwlwifi?)
-
-Well... when I say 'vast majority' what I mean is: this is rolled out
-to *all* Android mainline capable devices (and has been for a while),
-and this is the first bugreport we've got.  I would imagine if IPv4
-DHCP discovery failed to work (and this appears to be a 100% failure
-on affected drivers) we'd be hearing a *lot* more screaming...
-
-Of course this doesn't mean this is the first time this has failed,
-since this is certainly not something easy to debug...  But it has to
-be mostly working on the ecosystem as a whole.
-
-Of course most deployed devices tend to have old kernels and or old
-drivers, so probably most of them simply don't do packet split (and
-even if they do, they'd presumably be doing more normal header split,
-and be splitting after the udp header)
-
-> 2) Perhaps rework the filter to avoid relying on SKF_NET_OFF.. tradeoff
->     are more instructions, e.g.,
+> I've just tried this diff on top of bpf-next (d0d106a2bd21):
 >
->    # tcpdump -dd udp dst port 68
->    { 0x28, 0, 0, 0x0000000c },
->    { 0x15, 0, 4, 0x000086dd },
->    { 0x30, 0, 0, 0x00000014 },
->    { 0x15, 0, 11, 0x00000011 },
->    { 0x28, 0, 0, 0x00000038 },
->    { 0x15, 8, 9, 0x00000044 },
->    { 0x15, 0, 8, 0x00000800 },
->    { 0x30, 0, 0, 0x00000017 },
->    { 0x15, 0, 6, 0x00000011 },
->    { 0x28, 0, 0, 0x00000014 },
->    { 0x45, 4, 0, 0x00001fff },
->    { 0xb1, 0, 0, 0x0000000e },
->    { 0x48, 0, 0, 0x00000010 },
->    { 0x15, 0, 1, 0x00000044 },
->    { 0x6, 0, 0, 0x00040000 },
->    { 0x6, 0, 0, 0x00000000 },
+> diff --git a/fs/netfs/read_retry.c b/fs/netfs/read_retry.c
+> index 2290af0d51ac..53d62e31a4cc 100644
+> --- a/fs/netfs/read_retry.c
+> +++ b/fs/netfs/read_retry.c
+> @@ -152,7 +152,6 @@ static void netfs_retry_read_subrequests(struct netfs=
+_io_request *rreq)
+>                                 __clear_bit(NETFS_SREQ_BOUNDARY, &subreq-=
+>flags);
+>                         }
+>
+> -                       netfs_get_subrequest(subreq, netfs_sreq_trace_get=
+_resubmit);
+>                         netfs_reissue_read(rreq, subreq);
+>                         if (subreq =3D=3D to)
+>                                 break;
+>
+>
+> and I'm getting a hung task with the same stack
+>
+> [  184.362292] INFO: task modprobe:2527 blocked for more than 20 seconds.
+> [  184.363173]       Tainted: G           OE      6.13.0-gd0d106a2bd21-di=
+rty #1
+> [  184.363651] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disable=
+s this message.
+> [  184.364142] task:modprobe        state:D stack:0     pid:2527  tgid:25=
+27  ppid:2134   flags:0x00000002
+> [  184.364743] Call Trace:
+> [  184.364907]  <TASK>
+> [  184.365057]  __schedule+0xa91/0xe80
+> [  184.365311]  schedule+0x41/0xb0
+> [  184.365525]  v9fs_evict_inode+0xfe/0x170
+> [  184.365782]  ? __pfx_var_wake_function+0x10/0x10
+> [  184.366082]  evict+0x1ef/0x360
+> [  184.366312]  __dentry_kill+0xb0/0x220
+> [  184.366561]  ? dput+0x3a/0x1d0
+> [  184.366765]  dput+0x114/0x1d0
+> [  184.366962]  __fput+0x136/0x2b0
+> [  184.367172]  __x64_sys_close+0x9e/0xd0
+> [  184.367443]  do_syscall_64+0x79/0x120
+> [  184.367685]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> [  184.368005] RIP: 0033:0x7f4c6fc7f60b
+> [  184.368249] RSP: 002b:00007ffc7582beb8 EFLAGS: 00000297 ORIG_RAX: 0000=
+000000000003
+> [  184.368733] RAX: ffffffffffffffda RBX: 0000555e18cff7a0 RCX: 00007f4c6=
+fc7f60b
+> [  184.369176] RDX: 00007f4c6fd64ee0 RSI: 0000000000000001 RDI: 000000000=
+0000000
+> [  184.369634] RBP: 00007ffc7582bee0 R08: 0000000000000000 R09: 000000000=
+0000007
+> [  184.370078] R10: 0000555e18cff980 R11: 0000000000000297 R12: 000000000=
+0000000
+> [  184.370544] R13: 00007f4c6fd65030 R14: 0000555e18cff980 R15: 0000555e1=
+8d7b750
+> [  184.371004]  </TASK>
+> [  184.371151]
+> [  184.371151] Showing all locks held in the system:
+> [  184.371560] 1 lock held by khungtaskd/32:
+> [  184.371816]  #0: ffffffff83195d90 (rcu_read_lock){....}-{1:3}, at: deb=
+ug_show_all_locks+0x2e/0x180
+> [  184.372397] 2 locks held by kworker/u8:21/2134:
+> [  184.372695]  #0: ffff9a5300104d48 ((wq_completion)events_unbound){+.+.=
+}-{0:0}, at: process_scheduled_works+0x23a/0x600
+> [  184.373376]  #1: ffff9e9882187e20 ((work_completion)(&sub_info->work))=
+{+.+.}-{0:0}, at: process_scheduled_works+0x25a/0x600
+> [  184.374075]
+> [  184.374182] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+>
+> So this appears to be something different.
+>
+> >
+> > Marc
 
-I don't think this works as is.
-When I run this with -dd I get the (at first glance) same output as
-you, but with a warning, here's the same thing with -d:
+Looks like there may be a similar issue with the
+netfs_get_subrequest() at line 196, which also precedes a call to
+netfs_reissue_read.  Might be worth trying with that removed as well.
 
-$ tcpdump -d udp dst port 68
-Warning: assuming Ethernet
-(000) ldh      [12]   <-- assumes ethernet header, loads ethertype
-(001) jeq      #0x86dd          jt 2    jf 6
-(002) ldb      [20]
-(003) jeq      #0x11            jt 4    jf 15
-(004) ldh      [56]
-(005) jeq      #0x44            jt 14   jf 15
-(006) jeq      #0x800           jt 7    jf 15
-(007) ldb      [23]
-(008) jeq      #0x11            jt 9    jf 15
-(009) ldh      [20]
-(010) jset     #0x1fff          jt 15   jf 11
-(011) ldxb     4*([14]&0xf)
-(012) ldh      [x + 16]
-(013) jeq      #0x44            jt 14   jf 15
-(014) ret      #262144
-(015) ret      #0
-
-Not assuming ethernet is the entire point of using SKF_NET_OFF.
-(and SKF_AD_OFF + SKF_AD_PROTOCOL to check ethertype)
-
-> 3) Use eBPF asm, e.g. you can pull in data into linear section via helper
->     bpf_skb_pull_data() if needed, or use bpf_skb_load_bytes() which work=
-s
->     for linear & non-linear data.
-
-Sure, we could (and possibly should) replace our existing cBPF filters
-with eBPF.
-I've been considering it, BUT... we shouldn't have to.
-[The reason why I've been considering switching all our cBPF to eBPF
-is related to the bpf jit hardening thread from a few months back]
-
-Furthermore some devices running this code are quite likely still on
-3.18 and 4.4 kernels (I would have to check, but 4.9 is guaranteed)...
-which makes any such transition painful.
-
-This is *clearly* a kernel bug/regression vs something like Linux 2.0
-(or 1.0), and should thus be fixed in the kernel.
-
-> 4) What about pulling in linear data in AF_PACKET code right before the
->     cBPF filter is run (perhaps usage of SKF_NET_OFF could be detected an=
-d
->     then only done if really needed by the filter)?
-
-I'm not sure how to do this cleanly without a kernel change.
-
-And for a kernel change fixing the bpf helpers simply seems superior.
-
-I guess I could 'hack' this by still doing a relative load, but then
-considering -EFAULT to match...
-But with the kernel bug present, it's hard to say in how many other
-places our cBPF code can run into this same problem (just in other
-filters and/or at different offsets).
-
-Btw. we did get a working patch tested yesterday [it basically does an
-extra  -=3D skb_headroom(skb) ], I'll try to clean it up (add comments)
-and send in a v2.
+Marc
 
