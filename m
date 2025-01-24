@@ -1,139 +1,138 @@
-Return-Path: <bpf+bounces-49706-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49707-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E57A0A1BD0D
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 20:56:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51B2AA1BD1B
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 21:04:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F6533A378B
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 19:56:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0B817A560A
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 20:04:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBDB22248BF;
-	Fri, 24 Jan 2025 19:56:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D9DF224AFC;
+	Fri, 24 Jan 2025 20:04:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="muZTTf1K"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MIdU02w/"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E5F314A630
-	for <bpf@vger.kernel.org>; Fri, 24 Jan 2025 19:56:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19FFD155726;
+	Fri, 24 Jan 2025 20:04:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737748565; cv=none; b=SwpLKLwNSSQRYA0t3Ys11/K80Mb9PF3F1ZKK9w7hXHHAEEg0FytaSrgI/S+Twid1I5LyFOKp20fEupWaf7Vd5A1fIvO8SV5iK/L5qaFuI0VRkcq/BJv3p+Ij256OiojJOblW3yD04AXr06kMyXiT8rC4tXOQeH5D7d4wq/1nnkU=
+	t=1737749077; cv=none; b=MS67yHNzXrYM+hqUZK9oh0Wt4e96i4SY5edVHnWgENFDTmmEiOHr2xhJOsak8rywrOQpn0NelRzebLL5TxQQDr6E3vVIN3C13VqhQomKGRdvhwbisVbsWGED/d3W2AKzVJ3Tp54cOGhVDbLoSKtSzFjKIUY51Lnr3Q8P34IDEIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737748565; c=relaxed/simple;
-	bh=8d6c8k45v44p1eYyeLf5XkFvPszIh5Uqun7ZTEHwJAs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SRxzstiHpNcAtI+xDm3W6CS2SY2QmPo0BuAnjyZGW7f45r/RY3f+C7PdkyhQVYsdKmXn4aTMgl60KwKG/dQdJVdjJo5zX6PXD9xo9+hNA+6tmupNx6L+Nf+zJjeD3AezMAM0TT9qg7+nCL0e0ia2O54HZ3GF61/TC8nPc0wlk6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=muZTTf1K; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83C17C4CED2;
-	Fri, 24 Jan 2025 19:56:04 +0000 (UTC)
+	s=arc-20240116; t=1737749077; c=relaxed/simple;
+	bh=p4c8+EXEqWoOgOD9nyaPz0HgC7LOqV8Qkb8hvEJjQBQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X8Qmyzj88bRHc8zGx47LazPkBmsnAhluixHKXA/13IsJ3PwzGkh2vIel6QUnDRrTuRnM3xQidtX+WAmMUuMWp4LHYCy/ZEklNDYjRJ/ybxzy556NId8+FemxoKOxqmEOKRtQlxCYzbafpH4kQguuEtjdPE5C5xkvEbnpm3lRX0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MIdU02w/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94338C4CED2;
+	Fri, 24 Jan 2025 20:04:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737748564;
-	bh=8d6c8k45v44p1eYyeLf5XkFvPszIh5Uqun7ZTEHwJAs=;
-	h=From:To:Cc:Subject:Date:From;
-	b=muZTTf1K8aFmy9ED/NL66MCd4kn0ktUuXmSTM/+x38mYf6LUFFN2TzBa2yK1ePp2B
-	 1aBSmhPZqrfxrQSinKWdorJwf0qA5+bh4LEuB0u76OsCrvykdbzF1szHIbY1MJskqp
-	 G22TFOdNt7WcyRcIqK5gnD1xAUAiU/Y1Yal1o80umahUzbL/12uHDkOrp7lMnf81OQ
-	 TC8yGMb4lFGO7EwHdPcRca/GBPMyuRw5aSnmrdspeoGqdTpwzoPT+Zo5JHVud7vgR0
-	 sqEma2TP5q5OBZF0E21HEcwyHUAlW7utXJCfQSnNSNDgp/hl1NsRJBCY7SKZt/ce5V
-	 m9VBW+gKAtaww==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@kernel.org
-Cc: andrii@kernel.org,
-	kernel-team@meta.com,
-	syzbot+4dc041c686b7c816a71e@syzkaller.appspotmail.com
-Subject: [PATCH bpf-next] bpf: avoid holding freeze_mutex during mmap operation
-Date: Fri, 24 Jan 2025 11:56:00 -0800
-Message-ID: <20250124195600.3220170-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.43.5
+	s=k20201202; t=1737749076;
+	bh=p4c8+EXEqWoOgOD9nyaPz0HgC7LOqV8Qkb8hvEJjQBQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MIdU02w/ne0Uz0CNL2H4xsPGqHa065XBTLtSudAZgwqTt7AhIVuta7xzMUDZiCw7e
+	 F8nvkBMhHW6QoRil+uj+4q81Iu8QbwcYSTeEXMK1Urvi7npQG8qyol8KHP20YmG9aC
+	 aHA5xeJ/JLgzWZ2c31Gmw9D81SvJQwhGVSq6WpD2qrD9ZL6YkFeBr9JHt+NkUg5eMW
+	 jkOPjUpttEnQrwoPtatNbS9BBml0d9zhE2uhP3khoO+nPJpnObrSPKTPkxgECB88aZ
+	 gBVp4bUDGkNCqTOTIzDNgGnnUKccBZWx/MmlQe2MJtRuxmCrPVfcgUlxisQkqEPqEi
+	 D0rpUs4Lu3jxQ==
+Date: Fri, 24 Jan 2025 21:04:26 +0100
+From: Benjamin Tissoires <bentiss@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jinghao Jia <jinghao7@illinois.edu>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Jiri Kosina <jikos@kernel.org>, 
+	Masahiro Yamada <masahiroy@kernel.org>, Nicolas Schier <n.schier@avm.de>, Ruowen Qin <ruqin@redhat.com>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Subject: Re: [PATCH bpf v2 2/2] samples/{bpf,hid}: fix broken vmlinux path
+ for VMLINUX_BTF
+Message-ID: <2sxhtfdzspkn5umtfpxiueb67v4jhl3nad6i66qtfry52o7sip@nm5oeplybppa>
+References: <20250123081950.173588-1-jinghao7@illinois.edu>
+ <20250123081950.173588-3-jinghao7@illinois.edu>
+ <CAEf4BzbCm4=NLV4DOyRxvxEtZUONzqmXBOFMp5cg=4hPEEYUtA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzbCm4=NLV4DOyRxvxEtZUONzqmXBOFMp5cg=4hPEEYUtA@mail.gmail.com>
 
-We use map->freeze_mutex to prevent races between map_freeze() and
-memory mapping BPF map contents with writable permissions. The way we
-naively do this means we'll hold freeze_mutex for entire duration of all
-the mm and VMA manipulations, which is completely unnecessary. This can
-potentially also lead to deadlocks, as reported by syzbot in [0].
+On Jan 24 2025, Andrii Nakryiko wrote:
+> On Thu, Jan 23, 2025 at 12:20 AM Jinghao Jia <jinghao7@illinois.edu> wrote:
+> >
+> > Commit 13b25489b6f8 ("kbuild: change working directory to external
+> > module directory with M=") changed kbuild working directory of bpf and
+> > hid samples to samples/{bpf,hid}, which broke the vmlinux path for
+> > VMLINUX_BTF, as the Makefiles assume the current work directory to be
+> > the kernel output directory and use a relative path (i.e., ./vmlinux):
+> >
+> >   Makefile:316: *** Cannot find a vmlinux for VMLINUX_BTF at any of "  /path/to/linux/samples/bpf/vmlinux", build the kernel or set VMLINUX_BTF like "VMLINUX_BTF=/sys/kernel/btf/vmlinux" or VMLINUX_H variable.  Stop.
+> >
+> > Correctly refer to the kernel output directory using $(objtree).
+> >
+> > Fixes: 13b25489b6f8 ("kbuild: change working directory to external module directory with M=")
+> > Tested-by: Ruowen Qin <ruqin@redhat.com>
+> > Signed-off-by: Jinghao Jia <jinghao7@illinois.edu>
+> > ---
+> >  samples/bpf/Makefile | 2 +-
+> >  samples/hid/Makefile | 2 +-
+> >  2 files changed, 2 insertions(+), 2 deletions(-)
+> >
+> 
+> can you please split samples/bpf from samples/hid changes, so we can
+> land samples/bpf fix through bpf-next tree independently from other
+> changes?
 
-So, instead, hold freeze_mutex only during writeability checks, bump
-(proactively) "write active" count for the map, unlock the mutex and
-proceed with mmap logic. And only if something went wrong during mmap
-logic, then undo that "write active" counter increment.
+FWIW, I don't mind if this goes through the bpf-next tree all at once.
 
-Note, instead of checking VM_MAYWRITE we check VM_WRITE before and after
-mmaping, because we also have a logic that unsets VM_MAYWRITE
-forcefully, if VM_WRITE is not set. So VM_MAYWRITE could be set early on
-for read-only mmaping, but it won't be afterwards. VM_WRITE is
-a consistent way to detect writable mmaping in our implementation.
+Acked-by: Benjamin Tissoires <bentiss@kernel.org>
 
-  [0] https://lore.kernel.org/bpf/678dcbc9.050a0220.303755.0066.GAE@google.com/
+Cheers,
+Benjamin
 
-Fixes: fc9702273e2e ("bpf: Add mmap() support for BPF_MAP_TYPE_ARRAY")
-Reported-by: syzbot+4dc041c686b7c816a71e@syzkaller.appspotmail.com
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- kernel/bpf/syscall.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 0daf098e3207..0d5b39e99770 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1035,7 +1035,7 @@ static const struct vm_operations_struct bpf_map_default_vmops = {
- static int bpf_map_mmap(struct file *filp, struct vm_area_struct *vma)
- {
- 	struct bpf_map *map = filp->private_data;
--	int err;
-+	int err = 0;
- 
- 	if (!map->ops->map_mmap || !IS_ERR_OR_NULL(map->record))
- 		return -ENOTSUPP;
-@@ -1059,7 +1059,12 @@ static int bpf_map_mmap(struct file *filp, struct vm_area_struct *vma)
- 			err = -EACCES;
- 			goto out;
- 		}
-+		bpf_map_write_active_inc(map);
- 	}
-+out:
-+	mutex_unlock(&map->freeze_mutex);
-+	if (err)
-+		return err;
- 
- 	/* set default open/close callbacks */
- 	vma->vm_ops = &bpf_map_default_vmops;
-@@ -1070,13 +1075,14 @@ static int bpf_map_mmap(struct file *filp, struct vm_area_struct *vma)
- 		vm_flags_clear(vma, VM_MAYWRITE);
- 
- 	err = map->ops->map_mmap(map, vma);
--	if (err)
--		goto out;
-+	if (err) {
-+		if (vma->vm_flags & VM_WRITE) {
-+			mutex_lock(&map->freeze_mutex);
-+			bpf_map_write_active_dec(map);
-+			mutex_unlock(&map->freeze_mutex);
-+		}
-+	}
- 
--	if (vma->vm_flags & VM_MAYWRITE)
--		bpf_map_write_active_inc(map);
--out:
--	mutex_unlock(&map->freeze_mutex);
- 	return err;
- }
- 
--- 
-2.43.5
-
+> 
+> pw-bot: cr
+> 
+> > diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> > index 96a05e70ace3..f5865fbbae62 100644
+> > --- a/samples/bpf/Makefile
+> > +++ b/samples/bpf/Makefile
+> > @@ -307,7 +307,7 @@ $(obj)/$(TRACE_HELPERS): TPROGS_CFLAGS := $(TPROGS_CFLAGS) -D__must_check=
+> >
+> >  VMLINUX_BTF_PATHS ?= $(abspath $(if $(O),$(O)/vmlinux))                                \
+> >                      $(abspath $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)) \
+> > -                    $(abspath ./vmlinux)
+> > +                    $(abspath $(objtree)/vmlinux)
+> >  VMLINUX_BTF ?= $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
+> >
+> >  $(obj)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL)
+> > diff --git a/samples/hid/Makefile b/samples/hid/Makefile
+> > index 69159c81d045..db5a077c77fc 100644
+> > --- a/samples/hid/Makefile
+> > +++ b/samples/hid/Makefile
+> > @@ -164,7 +164,7 @@ $(obj)/hid_surface_dial.o: $(obj)/hid_surface_dial.skel.h
+> >
+> >  VMLINUX_BTF_PATHS ?= $(abspath $(if $(O),$(O)/vmlinux))                                \
+> >                      $(abspath $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)) \
+> > -                    $(abspath ./vmlinux)
+> > +                    $(abspath $(objtree)/vmlinux)
+> >  VMLINUX_BTF ?= $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
+> >
+> >  $(obj)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL)
+> > --
+> > 2.48.1
+> >
 
