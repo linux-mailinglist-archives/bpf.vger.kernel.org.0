@@ -1,118 +1,170 @@
-Return-Path: <bpf+bounces-49681-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49680-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F3AAA1BAD9
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 17:46:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F34A5A1BAD7
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 17:46:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 057423A623C
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 16:46:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E2363A5131
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 16:46:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DFDC1A8F61;
-	Fri, 24 Jan 2025 16:46:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6DC215A86A;
+	Fri, 24 Jan 2025 16:46:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZseZAzfM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cg6sj/Ox"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33D2F1459E0;
-	Fri, 24 Jan 2025 16:46:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 978331459E0
+	for <bpf@vger.kernel.org>; Fri, 24 Jan 2025 16:46:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737737196; cv=none; b=QifmcxEugr3Or8n6A4qoucq7uP3bvXduEobxiyh8UL5kzyoencoyTQDnhBClqrtKsXHrdT77XkYofJ6y8dQZDTIm8C80u63b4DGK0rsreLhe8kox/yWilGNHZemDgQtIgOZrG8cXj1D2wxMfX+WnlcZ3n0nICuWtMiQJr/p7hKo=
+	t=1737737192; cv=none; b=ddHp5SdOZWDSpa62dcEO7j3UcufJbCotMeO+5I5O7ZLUGpeMIAWEsUJ9DXMXpgeCrH+BmbhFaQLnkrlsK4JvpakneMe35VzA01ESx9X7IjIqjhTJcARBjicXCAbx70U5YOYFn4KQrqOwa8cKWeALsNQHnX1wQ6lorUpIoy3ePl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737737196; c=relaxed/simple;
-	bh=3P+9aTiLaHox8mL2ZK+WSxeM0kY5helZLnTFCzt45dc=;
+	s=arc-20240116; t=1737737192; c=relaxed/simple;
+	bh=ZNqhy3Wcm2npqR84shnCSvtgTBAP9i0t7NnihrwPt/A=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iVwkWXHrCCatpzdNEnE0m8knOQizxfLclvAPr5KDviUHDmGGoRdGvyGCd/8RULJvWt9T0i62KAwhyCx96859OnP5cCduWTC82Ldw9z3XtfyMz/93e9JhcW3XHjrVkJ0zJt+1Asoo4lKxf3peOWx063Md1JRz/spFlIjYhibCwjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZseZAzfM; arc=none smtp.client-ip=209.85.218.46
+	 To:Cc:Content-Type; b=CpEdUF+0R0IL3/NUY21UFrQSux5/2dcMaRPQF8U5qxt/OSeEd9MPEarZG6COq9bm635Y+8Bs4ePuIaPM2O07rmVYOvWazJ2O/JCGmfAdgPYtrs1bhKRCkJ9+fLlon4IHwD2Rz503iSGlJtPpqgka8S1TH2KFUtWmnOVMKwTrQSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cg6sj/Ox; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-aaf60d85238so403607266b.0;
-        Fri, 24 Jan 2025 08:46:34 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-43618283d48so16892515e9.1
+        for <bpf@vger.kernel.org>; Fri, 24 Jan 2025 08:46:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737737193; x=1738341993; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1737737189; x=1738341989; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3P+9aTiLaHox8mL2ZK+WSxeM0kY5helZLnTFCzt45dc=;
-        b=ZseZAzfMABao2yI1/Df7T+OQgrhqV0FBYt4HPa04UO4vBgaQqM3q16korfrKUs/fke
-         6vzw8rS3dHd3mCpMPQ5MJ/6S9mb29JMY9XcEz3FmYuSUYD18vNRJNEK3si1ODtkhXtwg
-         xn6Pui7uEypaEFHYmPFOgsaWDtIGHh6JaJ3Ir3qBK4MTfZ4w2+NxTKRzvw8DgT5owbo6
-         ixtLN2s29Lidt98u9Rw0ZN+oiC30Kq9Yr5KUh1w9ACrKzC7qyoAh73z+EEjdjH8eSu+H
-         fCEpFNzUVQI70EyR24oyhpkJZCNHz5pn7v6RJoLn/KFUTxtbb6SwDVA1yeJ4S3AJvCrl
-         UGaQ==
+        bh=HIOdVq0vV7wf8pNdPBX3WFTF0TOx7BFGfhlZUudS4M0=;
+        b=cg6sj/OxRgLQ1uH8kDlLUiSooVvot6WVzg9fbXfzJLFhFfhbzTKYOH5La54Nk2Fy1a
+         6ewCepZDajEvzcqvPAZlaVURuwUytUB/WAfesgwyTktNxuEWWER/sJUKlZ44e6GmWXt/
+         RqG3phj1vNRBFktfHbI3FbdxC7ipTEiUGEJEHtykZnJgM5o9ak2M5G+W4uPXphEV10mm
+         qGjD/LcPDi2ce+6kuZDtIwgOOcWaQ5/teSTojSgNrt0qOfwL7wVwCT2t486HGKp4CyKi
+         A4/8I/zEdvNQCxoVnpaKwxtlJ5mlxo1ry7dpHZlm3kb7mID8qDGVGDFkCOar+nFdJhs1
+         ljug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737737193; x=1738341993;
+        d=1e100.net; s=20230601; t=1737737189; x=1738341989;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3P+9aTiLaHox8mL2ZK+WSxeM0kY5helZLnTFCzt45dc=;
-        b=BmLYerkVUg1Z4UUmCbplxmrpPq0xR7Qy9rOMa1BD7MSHOd994pmCrcbx9qOJcsei0K
-         dvKdyDXHa5CuRiJ8CvB/cOo2aIP2BaxgUkpyue6XpiJVRPb47oZwdXBzSp8TIg/8oyw6
-         506DIUB4BDVQNgxT6ee/7y0BuPcxnL60yw9ft+19YJGafFGl2b6AJGQj3CqtVpZ208Kk
-         P6kXdujJ0O/s7CaKedb1cQylh1C9GQCmTxibO4z720tj+1f1/cl1uuSET6+j4y5QdOih
-         HDBRolaHPryVlaHHWsmbZh0efXLbuYJva3EyL0rbTiOMZFYqQEKqOLPK0wnI0EcTAs4z
-         JwEw==
-X-Forwarded-Encrypted: i=1; AJvYcCUmqn6XIhsJrQUAjd3ORg1x7VXyfTVM2TkaHrGyZkXxbrBjtm2Phh1QuQFwF3WfyowWtnA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzbLKhm2g+9/+ZaHdP1T9oh/MTZ6aGVjRNy3L+rVVhiAvQVUk7V
-	1HH8J69JnWAxJTi1drt0zYMvPzvQXtgY+ylPmTPpAYZYL7fu4qlUuSbZXI8PYjSmSsSZwloWT6+
-	iTFb6sI2LClWVEFp2bkK9YlQswNs=
-X-Gm-Gg: ASbGncvVL4VE1uLMHD4y9LXTfS1+KXI4J2Lz4vfe/ns8B2Ryzt5VbovJ4LsI1B0vkNn
-	S3ViQWzBBZJUosPawA5nWrPRtUC1D+ajagjwMDWToIfuWdP4frjTL1ImugQOt9oe6WBAYWgs6Mx
-	U=
-X-Google-Smtp-Source: AGHT+IGMNi7U+c3YgeTKPqKmkN12vA7tjq7ur6vHq+zBUJB5GBN9ofCptg5c4QoAbKBPKmEwrFGHUESzlJTCsnJlf3Y=
-X-Received: by 2002:a17:907:2ce5:b0:aab:cce0:f8b4 with SMTP id
- a640c23a62f3a-ab38b4c6b05mr3017971166b.52.1737737193217; Fri, 24 Jan 2025
- 08:46:33 -0800 (PST)
+        bh=HIOdVq0vV7wf8pNdPBX3WFTF0TOx7BFGfhlZUudS4M0=;
+        b=upF0vd8Ma3oQHHNvmFaOWv4FpaI8tP1uUhN0iS6ezpaPSic4nLGIl7xTtzdBEJOfWd
+         v7K/tc+ZuMxGe4q/KDUoHQALJiGQod3P6cTTTmA0YmMxydyxdfWz1dTzAWVT4ZQgCD9n
+         wVUsD7txAHB2DU6DHYS7r2bLiB0XjPXrm3WoAoh/D2La0+pQrB5Q6yrIKsK/BKTNRvXG
+         4ow6g0BA6ETivS02+lRwdHtHiZr+nrSMW2zD9Dm4FYQmCbJPkINthcrjz25cHMqw2CU6
+         DC3IwCZwNxS8KwWvyrlI1ETi1rNDlh3Qix1+Fxqc8JToWuC9PZ7R+GpZ8KI09k7PcHMt
+         pTiQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXKd85Td6rphIjg0NCo9aKhhaMAx92ipvDADIFhv5/wGHHcw+gPnlufz+jU8VTwrqcQRgA=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx9JvCAj+6IsYeyT4ITYiOjfghRwCC23dVA9YgvyvoKChrsMGhN
+	awwwdSUWdhkV6GriRvEJin9TcpuplBVuWl/w7rbSKugQjrVC2hRGevqW2/vTSj64NJoKdV4Dcvc
+	zItyjUkI0zNoGZxZPLwtRd5SzEWQ=
+X-Gm-Gg: ASbGnctTAfvQYYbo2ZWEKo/CkpHqwBKOAboJcg1dOwp5cJhn5wGI/LYVbe4FvdLy6Xg
+	sxpC7OdwkozWJYSjvHs6EbZ7DoflOKUmfUOY37Tp3gG5loSgqIVod6fvpSkB0EQ/6EoTFRV+w5p
+	cJxdSrnHrKKiRznwFIDw==
+X-Google-Smtp-Source: AGHT+IE7BI6HNRvEYsbjvR7JB35pW97LgmJJTBXuV+FrmneMEc4oxMxZS6v6dB1H6kH/U6SDBGKlBQoEzbsb0fCA/SU=
+X-Received: by 2002:adf:fd84:0:b0:385:faf5:eb9f with SMTP id
+ ffacd0b85a97d-38bf57c91e7mr30145364f8f.48.1737737188639; Fri, 24 Jan 2025
+ 08:46:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250124090211.110328-1-sankararaman.jayaraman@broadcom.com>
-In-Reply-To: <20250124090211.110328-1-sankararaman.jayaraman@broadcom.com>
-From: William Tu <u9012063@gmail.com>
-Date: Fri, 24 Jan 2025 08:45:56 -0800
-X-Gm-Features: AWEUYZkH6xFaPaEOJR0ohihd2I5L7RV1uXP71LkRO-Lq8_VRerVgOElw7fHJ1H4
-Message-ID: <CALDO+SbGYqG6jskUhp-dzxTPa2Mf5ge794Z_L0AC8MLxoKXMnA@mail.gmail.com>
-Subject: Re: [PATCH net] vmxnet3: Fix tx queue race condition with XDP
-To: Sankararaman Jayaraman <sankararaman.jayaraman@broadcom.com>
-Cc: netdev@vger.kernel.org, ronak.doshi@broadcom.com, 
-	bcm-kernel-feedback-list@broadcom.com, andrew+netdev@lunn.ch, 
-	davem@davemloft.net, kuba@kernel.org, edumazet@google.com, pabeni@redhat.com, 
-	ast@kernel.org, alexandr.lobakin@intel.com, alexanderduyck@fb.com, 
-	bpf@vger.kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
-	john.fastabend@gmail.com
+References: <20250124035655.78899-1-alexei.starovoitov@gmail.com>
+ <Z5OgvePdlqRoKMyx@casper.infradead.org> <e5c1eed1-3ea2-4452-a871-3308c90e932b@suse.cz>
+ <CAADnVQJhU3EYp3fWYcTFtZobJUAaWRQmjjBSw5te9OpUaM8TNw@mail.gmail.com> <2b2e6e04-b91d-4d9d-9cf9-5c690abe6746@suse.cz>
+In-Reply-To: <2b2e6e04-b91d-4d9d-9cf9-5c690abe6746@suse.cz>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 24 Jan 2025 08:46:17 -0800
+X-Gm-Features: AWEUYZlJcdB9HixE4QFfndGOLwTnL9deAZ-R_-JU658ZMyXYSWK_edNK6hnlkKE
+Message-ID: <CAADnVQJ3WCHjPD4EKUK-fdy-hW1rDTD=AwYtrDJ=_RztcGDYFw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 0/6] bpf, mm: Introduce try_alloc_pages()
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Matthew Wilcox <willy@infradead.org>, bpf <bpf@vger.kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Sebastian Sewior <bigeasy@linutronix.de>, Steven Rostedt <rostedt@goodmis.org>, 
+	Hou Tao <houtao1@huawei.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Michal Hocko <mhocko@suse.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>, Tejun Heo <tj@kernel.org>, 
+	linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>, Marco Elver <elver@google.com>, 
+	Andrey Konovalov <andreyknvl@gmail.com>, Oscar Salvador <osalvador@suse.de>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 24, 2025 at 1:00=E2=80=AFAM Sankararaman Jayaraman
-<sankararaman.jayaraman@broadcom.com> wrote:
+On Fri, Jan 24, 2025 at 8:28=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
 >
-> If XDP traffic runs on a CPU which is greater than or equal to
-> the number of the Tx queues of the NIC, then vmxnet3_xdp_get_tq()
-> always picks up queue 0 for transmission as it uses reciprocal scale
-> instead of simple modulo operation.
+> On 1/24/25 17:19, Alexei Starovoitov wrote:
+> > On Fri, Jan 24, 2025 at 6:19=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz=
+> wrote:
+> >>
+> >> On 1/24/25 15:16, Matthew Wilcox wrote:
+> >> > On Thu, Jan 23, 2025 at 07:56:49PM -0800, Alexei Starovoitov wrote:
+> >> >> - Considered using __GFP_COMP in try_alloc_pages to simplify
+> >> >>   free_pages_nolock a bit, but then decided to make it work
+> >> >>   for all types of pages, since free_pages_nolock() is used by
+> >> >>   stackdepot and currently it's using non-compound order 2.
+> >> >>   I felt it's best to leave it as-is and make free_pages_nolock()
+> >> >>   support all pages.
+> >> >
+> >> > We're trying to eliminate non-use of __GFP_COMP.  Because people don=
+'t
+> >> > use __GFP_COMP, there's a security check that we can't turn on.  Wou=
+ld
+> >> > you reconsider this change you made?
+> >>
+> >> This means changing stackdepot to use __GFP_COMP. Which would be a goo=
+d
+> >> thing on its own. But if you consider if off-topic to your series, I c=
+an
+> >> look at it.
+> >
+> > Ohh. I wasn't aware of that.
+> > I can certainly add __GFP_COMP to try_alloc_pages() and
 >
-> vmxnet3_xdp_xmit() and vmxnet3_xdp_xmit_frame() use the above
-> returned queue without any locking which can lead to race conditions
-> when multiple XDP xmits run in parallel on different CPU's.
->
-> This patch uses a simple module scheme when the current CPU equals or
-> exceeds the number of Tx queues on the NIC. It also adds locking in
-> vmxnet3_xdp_xmit() and vmxnet3_xdp_xmit_frame() functions.
->
-> Fixes: 54f00cce1178 ("vmxnet3: Add XDP support.")
-> Signed-off-by: Sankararaman Jayaraman <sankararaman.jayaraman@broadcom.co=
-m>
-> Signed-off-by: Ronak Doshi <ronak.doshi@broadcom.com>
-> ---
+> Yeah IIRC I suggested that previously.
 
-LGTM
-Acked-by: William Tu <u9012063@gmail.com>
+Yes, as a way to simplify free_pages_nolock().
+Hence I looked into it and added the above comment to the cover letter.
+Now I see that there are more and stronger reasons to use it.
+
+> > will check stackdepot too.
+>
+> Great, thanks.
+>
+> > I spotted this line:
+> > VM_BUG_ON_PAGE(compound && compound_order(page) !=3D order, page);
+> > that line alone was a good enough reason to use __GFP_COMP,
+> > but since it's debug only I could only guess where the future lies.
+> >
+> > Should it be something like:
+> >
+> > if (WARN_ON(compound && compound_order(page) !=3D order))
+> >  order =3D compound_order(page);
+> >
+> > since proceeding with the wrong order is certain to crash.
+> > ?
+>
+> That's the common question, should we be paranoid and add overhead to fas=
+t
+> paths in production. Here we do only for DEBUG_VM, which is meant for eas=
+ier
+> debugging during development of new code.
+>
+> I think it's not worth adding this overhead in normal configs, as the
+> (increasing) majority of order > 0 parameters should come here from
+> compound_order() anyway (i.e. put_folio()) As said we're trying to elimin=
+ate
+> the other cases so we don't need to cater for them more.
+
+Understood.
+I also agree with Matthew comment about page corruption.
+Whether compound_order(page) or order is correct is indeed a question.
+
+I'll wait for review on patch 3 before resubmitting with GFP_COMP included.
 
