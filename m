@@ -1,204 +1,224 @@
-Return-Path: <bpf+bounces-49696-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49697-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB892A1BC4B
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 19:44:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B90CDA1BC51
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 19:46:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FEBD188387B
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 18:44:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95E96188EBDE
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 18:46:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9A852236F1;
-	Fri, 24 Jan 2025 18:44:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 245392248B7;
+	Fri, 24 Jan 2025 18:46:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CVxWnVfW"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="E/l/7uJB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1191223328;
-	Fri, 24 Jan 2025 18:44:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 969791D968E;
+	Fri, 24 Jan 2025 18:46:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737744262; cv=none; b=IROnMreukbJumKGoytDKNjf2LVRrYtnrL6O7TqGYtrVwWUoQ+Gha5GLLTns/NrSYY23DGo9SFJCTm/lyEFagl3kaEjG3o2PfEgkNuXunv/NlevTtrAmUb7kD5VZ0LxTgSNaBgGPDgeLxpO4Kp6A7hRcGij520eQ92hJBzqVF6AY=
+	t=1737744386; cv=none; b=Zfy8ZGUreTWv+NhHOu87F0GLn7uR4cGBbFlmiWMOOxz2kpdGWqlVSdxUr9yNgzs7sdTeeOXZYdT3l0m1weFRqpKXfr+Z42JhM2pZG4rSTW/AM2WE1rg/tJMRolZxORUo/JwK6X3vkK2wA3CJZmUzbHPF6unfc0e5cz4ytK7hC14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737744262; c=relaxed/simple;
-	bh=swjNgBM9FbK2sXKFxU6qcJBLExgx+sFCNCrY/Nu9oXY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DUongE2cdkt0ZvUeWqIWQdMTGLHiqe2V6M/oMNvlx7TXSDeG39xzOi37lPZvdxb5aegv0BnIXJFxDSr5CQ/bGPoT5Mp8kNx1WGYQj5uSNlW/pKNANIzftbsK7YGRBp+a1U8JTEFtjTZqhRYs8FZkxRnH8k0VuXcXqidwENPc4RI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CVxWnVfW; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2ee989553c1so4274204a91.3;
-        Fri, 24 Jan 2025 10:44:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737744260; x=1738349060; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ns5/auv2UTuQ2jSAz+EklmLm9vKfhvXOtIW/L+0+qGw=;
-        b=CVxWnVfWxRVI3wZtv4svaFiQkUIRJEZtNjuRL8ZF7SOPVMQPf6dkRitpXQ6xb6f+rJ
-         jxCoYxrdqhBWP2+ZDjeSzT4iA4mSs4c8n/vaokEuObYrOgNG4SXMNBnU3D4rLEdOwL2J
-         MBFUgdSo1f0xxhfBWJwzkQxv4mtHVunu+Bw9gTjwLsrOCkaXaOdznIAf2zV8fBH0geZM
-         WAegX/NnSbeBiV8JOHjM0Uj5D0ORl90Mj7QrmxefSveTrnc9+gbfy7eugzeLNrYRh5lo
-         rkHyVgOdk0w/BKMue6jS5GiwvcS3WuhcLMuw1/moiygtRRDS08sxVps6pR7dtfxt/WSj
-         CG4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737744260; x=1738349060;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ns5/auv2UTuQ2jSAz+EklmLm9vKfhvXOtIW/L+0+qGw=;
-        b=d+kM7CMDBLPCgAEE7FA3FMYd+o3CQOwJSD9cZCPedwstPQecF2RwQfSpXI35mfs+mw
-         OREPloJN+wspIfFvqygZbS7HKmWq1Efoq6MAOucQYQQld9lkmqPOtPNVlBOXr16In6mU
-         Pz1i8qOQE9rmZAibvVfRZvo58a8rYKdqTSygNnD51jYFaaZ/b8KKXElWRZm4XjD+PmP1
-         CQZ+N+Bq627yczKc+qluGKeT+Coh4ocEHS/rtAjx3s8gGNxTXLIkasikRpB/6La55/Kr
-         bgBbX3ISufN1g+0WjIWkacPLCcBVph0ahvuKecoSzuqDdwTH7B7aDdV82d3cxOYbxWMr
-         sMFg==
-X-Forwarded-Encrypted: i=1; AJvYcCU04cTGtsVLcsMY0Qo1iZXNhlVsbVHZI8wNURtEHljDEh6kTJIBN432EkM1aYp3W7PVXctqc5oxmYBR8V1Y@vger.kernel.org, AJvYcCVObzb3er4h5RSTUq/4z/Wkng0N8LO2FIODuWDrtDDNq3uxbG7tgb/mkk9bdBNdWVV5EGg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy5+74Wcse93/dqDSeqANKZROJMvsQ/EWY9Od64DT9bsQ6PsgcT
-	er3TnaKRTZKH7Ch7zuseP/Q0X94JosRvI1AGnUDwqoo/KV7RHAD/20LmCHZ7dqi9hdP38F65XkW
-	XODagHRX1jhnWNMKubOUbuNKWcLcVpoAF
-X-Gm-Gg: ASbGncuPj7dDsJ/bwMUOpCBt/sIVVonNiqw/tN895BllPm1/uUk++Z4glrlpySBmi/C
-	oA4eEk8KAs9V2bTcBz5zdMjRSQ2dCazsTeJuVK7JXHiL+vb8NTDSVc65tghzmNDOabqoW8i9c8p
-	57yg==
-X-Google-Smtp-Source: AGHT+IE4Ip5HGtXfgggGiwrtTkKrK2Z/y+E6GJ1HeVCZ+eFJtEG8Yyk9aTfTjxKrVo7AD/MRUDYY+B6AnGYmlivAr6o=
-X-Received: by 2002:a05:6a00:2443:b0:726:c23f:4e5c with SMTP id
- d2e1a72fcca58-72daf9be6a8mr39016904b3a.1.1737744260081; Fri, 24 Jan 2025
- 10:44:20 -0800 (PST)
+	s=arc-20240116; t=1737744386; c=relaxed/simple;
+	bh=YEjs1fwtkflEV259p++RHguTbAFij47wYlJev11bbHA=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=j9pDEbyT277LTuTM6c/Ke9l3LE3qWutXEFugNo3x1s6hex5sDvH2jYR1ThgQHXs1xyxgmLL7DY5rp+4aNkGBK+HgPNhIdUyAn2UTnH111ZQWYYXG5NLPFK3inpVfWQ8gK56doJcRUTQ7aeFSxnAhOgfhMiCHlxdJn+Aiks+Yh9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=E/l/7uJB; arc=none smtp.client-ip=185.70.40.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1737744376; x=1738003576;
+	bh=NvncBzRcxeOI6PjLZFf+SX3ReeDVUDV3PW59X2TpDhc=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
+	b=E/l/7uJBS3B/9TMGO9nRot5sTozJn/qHRVOeWlIeUIRZYQxD1JvByn3W/fRVPHLca
+	 9tGvQDRnUw0gsyFHq+YtrWrLcJagwt4dOXTtm/sQfabB5Zgv3CscWb4u2OmKKsK7Rc
+	 jLVK47aD8THve06aMMnJs2rGWPVQvCBJ+sSIi0jw1z25RWStSzwJ801g8znRZhFjm+
+	 pZ+Gn3/eWykL3hC+a6Ea8d8xo6srlzRukBpcC7arjAmjFA6kf4H9iYf5KMjamZglYj
+	 EeZrlMeTE6o7DVhQ5vMfjXLcnLWKBEsREGSvGReyIaqoVTtTPcmykYoYMqoyABCo7V
+	 /fydUwU3Ms2kA==
+Date: Fri, 24 Jan 2025 18:46:11 +0000
+To: Marc Dionne <marc.dionne@auristor.com>
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: David Howells <dhowells@redhat.com>, Christian Brauner <christian@brauner.io>, Steve French <smfrench@gmail.com>, Matthew Wilcox <willy@infradead.org>, Jeff Layton <jlayton@kernel.org>, Gao Xiang <hsiangkao@linux.alibaba.com>, Dominique Martinet <asmadeus@codewreck.org>, Paulo Alcantara <pc@manguebit.com>, Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>, Eric Van Hensbergen <ericvh@kernel.org>, Ilya Dryomov <idryomov@gmail.com>, netfs@lists.linux.dev, linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org, v9fs@lists.linux.dev, linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH v5 27/32] netfs: Change the read result collector to only use one work item
+Message-ID: <GHG6tQSGPRj9L93-skG-HGz4vGtXUxy6ibsUTKloUKncNmy8A7xgte0MEiI0iZJ7jD-SSrZiK2oswgvJCRan_0ZMi6xDlP11SHDi1Utf7mI=@pm.me>
+In-Reply-To: <CAB9dFdtVFgG7OWZRytL9Vpr=knNPnMe6b_Esg7rgfFfwLa8j0A@mail.gmail.com>
+References: <20241216204124.3752367-1-dhowells@redhat.com> <20241216204124.3752367-28-dhowells@redhat.com> <a7x33d4dnMdGTtRivptq6S1i8btK70SNBP2XyX_xwDAhLvgQoPox6FVBOkifq4eBinfFfbZlIkMZBe3QarlWTxoEtHZwJCZbNKtaqrR7PvI=@pm.me> <CAB9dFdtVFgG7OWZRytL9Vpr=knNPnMe6b_Esg7rgfFfwLa8j0A@mail.gmail.com>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: 92d80bfc501a4c70e696781549a4c2f0bd1513cb
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250124144411.13468-1-chen.dylane@gmail.com> <20250124144411.13468-2-chen.dylane@gmail.com>
-In-Reply-To: <20250124144411.13468-2-chen.dylane@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 24 Jan 2025 10:44:08 -0800
-X-Gm-Features: AWEUYZncRpNZnsnYdJLCAAiqMOcDet23uCL713BqHcC_lWiU5x0I_3T4mNxTY7c
-Message-ID: <CAEf4BzYTGiAedD8zEmw16NQ6JWAtkwDU2rhGLGZjXL0H1iKO+g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/3] libbpf: Refactor libbpf_probe_bpf_helper
-To: Tao Chen <chen.dylane@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, 
-	haoluo@google.com, jolsa@kernel.org, qmo@kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 24, 2025 at 6:44=E2=80=AFAM Tao Chen <chen.dylane@gmail.com> wr=
-ote:
->
-> Extract the common part as probe_func_comm, which will be used in
-> both libbpf_probe_bpf_{helper, kfunc}
->
-> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
-> ---
->  tools/lib/bpf/libbpf_probes.c | 38 ++++++++++++++++++++++++-----------
->  1 file changed, 26 insertions(+), 12 deletions(-)
->
-> diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.=
-c
-> index 9dfbe7750f56..b73345977b4e 100644
-> --- a/tools/lib/bpf/libbpf_probes.c
-> +++ b/tools/lib/bpf/libbpf_probes.c
-> @@ -413,22 +413,20 @@ int libbpf_probe_bpf_map_type(enum bpf_map_type map=
-_type, const void *opts)
->         return libbpf_err(ret);
->  }
->
-> -int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type, enum bpf_func_=
-id helper_id,
-> -                           const void *opts)
-> +static int probe_func_comm(enum bpf_prog_type prog_type, struct bpf_insn=
- insn,
-> +                          char *accepted_msgs, size_t msgs_size)
->  {
->         struct bpf_insn insns[] =3D {
-> -               BPF_EMIT_CALL((__u32)helper_id),
-> +               BPF_EXIT_INSN(),
->                 BPF_EXIT_INSN(),
->         };
->         const size_t insn_cnt =3D ARRAY_SIZE(insns);
-> -       char buf[4096];
-> -       int ret;
-> +       int err;
->
-> -       if (opts)
-> -               return libbpf_err(-EINVAL);
-> +       insns[0] =3D insn;
->
->         /* we can't successfully load all prog types to check for BPF hel=
-per
-> -        * support, so bail out with -EOPNOTSUPP error
-> +        * and kfunc support, so bail out with -EOPNOTSUPP error
->          */
->         switch (prog_type) {
->         case BPF_PROG_TYPE_TRACING:
+On Friday, January 24th, 2025 at 10:21 AM, Marc Dionne <marc.dionne@auristo=
+r.com> wrote:
 
-there isn't much logic that you will extract here besides this check
-whether program type can even be successfully loaded, so I wouldn't
-extract probe_func_comm(), but rather extract just the check:
+>=20
+> [...]
+>=20
+> > A log snippet:
+> >=20
+> > 2025-01-24T02:15:03.9009694Z [ 246.932163] INFO: task ip:1055 blocked f=
+or more than 122 seconds.
+> > 2025-01-24T02:15:03.9013633Z [ 246.932709] Tainted: G OE 6.13.0-g2bcb9c=
+f535b8-dirty #149
+> > 2025-01-24T02:15:03.9018791Z [ 246.933249] "echo 0 > /proc/sys/kernel/h=
+ung_task_timeout_secs" disables this message.
+> > 2025-01-24T02:15:03.9025896Z [ 246.933802] task:ip state:D stack:0 pid:=
+1055 tgid:1055 ppid:1054 flags:0x00004002
+> > 2025-01-24T02:15:03.9028228Z [ 246.934564] Call Trace:
+> > 2025-01-24T02:15:03.9029758Z [ 246.934764] <TASK>
+> > 2025-01-24T02:15:03.9032572Z [ 246.934937] __schedule+0xa91/0xe80
+> > 2025-01-24T02:15:03.9035126Z [ 246.935224] schedule+0x41/0xb0
+> > 2025-01-24T02:15:03.9037992Z [ 246.935459] v9fs_evict_inode+0xfe/0x170
+> > 2025-01-24T02:15:03.9041469Z [ 246.935748] ? __pfx_var_wake_function+0x=
+10/0x10
+> > 2025-01-24T02:15:03.9043837Z [ 246.936101] evict+0x1ef/0x360
+> > 2025-01-24T02:15:03.9046624Z [ 246.936340] __dentry_kill+0xb0/0x220
+> > 2025-01-24T02:15:03.9048855Z [ 246.936610] ? dput+0x3a/0x1d0
+> > 2025-01-24T02:15:03.9051128Z [ 246.936838] dput+0x114/0x1d0
+> > 2025-01-24T02:15:03.9053548Z [ 246.937069] __fput+0x136/0x2b0
+> > 2025-01-24T02:15:03.9056154Z [ 246.937305] task_work_run+0x89/0xc0
+> > 2025-01-24T02:15:03.9058593Z [ 246.937571] do_exit+0x2c6/0x9c0
+> > 2025-01-24T02:15:03.9061349Z [ 246.937816] do_group_exit+0xa4/0xb0
+> > 2025-01-24T02:15:03.9064401Z [ 246.938090] __x64_sys_exit_group+0x17/0x=
+20
+> > 2025-01-24T02:15:03.9067235Z [ 246.938390] x64_sys_call+0x21a0/0x21a0
+> > 2025-01-24T02:15:03.9069924Z [ 246.938672] do_syscall_64+0x79/0x120
+> > 2025-01-24T02:15:03.9072746Z [ 246.938941] ? clear_bhb_loop+0x25/0x80
+> > 2025-01-24T02:15:03.9075581Z [ 246.939230] ? clear_bhb_loop+0x25/0x80
+> > 2025-01-24T02:15:03.9079275Z [ 246.939510] entry_SYSCALL_64_after_hwfra=
+me+0x76/0x7e
+> > 2025-01-24T02:15:03.9081976Z [ 246.939875] RIP: 0033:0x7fb86f66f21d
+> > 2025-01-24T02:15:03.9087533Z [ 246.940153] RSP: 002b:00007ffdb3cf93f8 E=
+FLAGS: 00000202 ORIG_RAX: 00000000000000e7
+> > 2025-01-24T02:15:03.9092590Z [ 246.940689] RAX: ffffffffffffffda RBX: 0=
+0007fb86f785fa8 RCX: 00007fb86f66f21d
+> > 2025-01-24T02:15:03.9097722Z [ 246.941201] RDX: 00000000000000e7 RSI: f=
+fffffffffffff80 RDI: 0000000000000000
+> > 2025-01-24T02:15:03.9102762Z [ 246.941705] RBP: 00007ffdb3cf9450 R08: 0=
+0007ffdb3cf93a0 R09: 0000000000000000
+> > 2025-01-24T02:15:03.9107940Z [ 246.942215] R10: 00007ffdb3cf92ff R11: 0=
+000000000000202 R12: 0000000000000001
+> > 2025-01-24T02:15:03.9113002Z [ 246.942723] R13: 0000000000000000 R14: 0=
+000000000000000 R15: 00007fb86f785fc0
+> > 2025-01-24T02:15:03.9114614Z [ 246.943244] </TASK>
+>=20
+>=20
+> That looks very similar to something I saw in afs testing, with a
+> similar stack but in afs_evict_inode where it hung waiting in
+> netfs_wait_for_outstanding_io.
+>=20
+> David pointed to this bit where there's a double get in
+> netfs_retry_read_subrequests, since netfs_reissue_read already takes
+> care of getting a ref on the subrequest:
+>=20
+> diff --git a/fs/netfs/read_retry.c b/fs/netfs/read_retry.c
+> index 2290af0d51ac..53d62e31a4cc 100644
+> --- a/fs/netfs/read_retry.c
+> +++ b/fs/netfs/read_retry.c
+> @@ -152,7 +152,6 @@ static void netfs_retry_read_subrequests(struct
+> netfs_io_request *rreq)
+> __clear_bit(NETFS_SREQ_BOUNDARY,
+> &subreq->flags);
+>=20
+> }
+>=20
+> - netfs_get_subrequest(subreq,
+> netfs_sreq_trace_get_resubmit);
+> netfs_reissue_read(rreq, subreq);
+> if (subreq =3D=3D to)
+> break;
+>=20
+> That seems to help for my afs test case, I suspect it might help in
+> your case as well.
 
-static bool can_probe_prog_type(enum bpf_prog_type prog_type)
-{
-        /* we can't successfully load all prog types to check for BPF
-helper/kfunc
-         * support, so check this early and bail
-         */
-        switch (prog_type) {
-            ...: return false
-        default:
-            return true;
-}
+Hi Marc. Thank you for the suggestion.
+
+I've just tried this diff on top of bpf-next (d0d106a2bd21):
+
+diff --git a/fs/netfs/read_retry.c b/fs/netfs/read_retry.c
+index 2290af0d51ac..53d62e31a4cc 100644
+--- a/fs/netfs/read_retry.c
++++ b/fs/netfs/read_retry.c
+@@ -152,7 +152,6 @@ static void netfs_retry_read_subrequests(struct netfs_i=
+o_request *rreq)
+                                __clear_bit(NETFS_SREQ_BOUNDARY, &subreq->f=
+lags);
+                        }
+=20
+-                       netfs_get_subrequest(subreq, netfs_sreq_trace_get_r=
+esubmit);
+                        netfs_reissue_read(rreq, subreq);
+                        if (subreq =3D=3D to)
+                                break;
 
 
-And just check that can_probe_prog_type() inside
-libbpf_probe_bpf_helper and libbpf_probe_bpf_kfunc
+and I'm getting a hung task with the same stack
 
-pw-bot: cr
+[  184.362292] INFO: task modprobe:2527 blocked for more than 20 seconds.
+[  184.363173]       Tainted: G           OE      6.13.0-gd0d106a2bd21-dirt=
+y #1
+[  184.363651] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables =
+this message.
+[  184.364142] task:modprobe        state:D stack:0     pid:2527  tgid:2527=
+  ppid:2134   flags:0x00000002
+[  184.364743] Call Trace:
+[  184.364907]  <TASK>
+[  184.365057]  __schedule+0xa91/0xe80
+[  184.365311]  schedule+0x41/0xb0
+[  184.365525]  v9fs_evict_inode+0xfe/0x170
+[  184.365782]  ? __pfx_var_wake_function+0x10/0x10
+[  184.366082]  evict+0x1ef/0x360
+[  184.366312]  __dentry_kill+0xb0/0x220
+[  184.366561]  ? dput+0x3a/0x1d0
+[  184.366765]  dput+0x114/0x1d0
+[  184.366962]  __fput+0x136/0x2b0
+[  184.367172]  __x64_sys_close+0x9e/0xd0
+[  184.367443]  do_syscall_64+0x79/0x120
+[  184.367685]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[  184.368005] RIP: 0033:0x7f4c6fc7f60b
+[  184.368249] RSP: 002b:00007ffc7582beb8 EFLAGS: 00000297 ORIG_RAX: 000000=
+0000000003
+[  184.368733] RAX: ffffffffffffffda RBX: 0000555e18cff7a0 RCX: 00007f4c6fc=
+7f60b
+[  184.369176] RDX: 00007f4c6fd64ee0 RSI: 0000000000000001 RDI: 00000000000=
+00000
+[  184.369634] RBP: 00007ffc7582bee0 R08: 0000000000000000 R09: 00000000000=
+00007
+[  184.370078] R10: 0000555e18cff980 R11: 0000000000000297 R12: 00000000000=
+00000
+[  184.370544] R13: 00007f4c6fd65030 R14: 0000555e18cff980 R15: 0000555e18d=
+7b750
+[  184.371004]  </TASK>
+[  184.371151]
+[  184.371151] Showing all locks held in the system:
+[  184.371560] 1 lock held by khungtaskd/32:
+[  184.371816]  #0: ffffffff83195d90 (rcu_read_lock){....}-{1:3}, at: debug=
+_show_all_locks+0x2e/0x180
+[  184.372397] 2 locks held by kworker/u8:21/2134:
+[  184.372695]  #0: ffff9a5300104d48 ((wq_completion)events_unbound){+.+.}-=
+{0:0}, at: process_scheduled_works+0x23a/0x600
+[  184.373376]  #1: ffff9e9882187e20 ((work_completion)(&sub_info->work)){+=
+.+.}-{0:0}, at: process_scheduled_works+0x25a/0x600
+[  184.374075]
+[  184.374182] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-> @@ -440,10 +438,26 @@ int libbpf_probe_bpf_helper(enum bpf_prog_type prog=
-_type, enum bpf_func_id helpe
->                 break;
->         }
->
-> -       buf[0] =3D '\0';
-> -       ret =3D probe_prog_load(prog_type, insns, insn_cnt, buf, sizeof(b=
-uf));
-> -       if (ret < 0)
-> -               return libbpf_err(ret);
-> +       accepted_msgs[0] =3D '\0';
-> +       err =3D probe_prog_load(prog_type, insns, insn_cnt, accepted_msgs=
-, msgs_size);
-> +       if (err < 0)
-> +               return libbpf_err(err);
-> +
-> +       return 0;
-> +}
-> +
-> +int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type, enum bpf_func_=
-id helper_id,
-> +                           const void *opts)
-> +{
-> +       char buf[4096];
-> +       int ret;
-> +
-> +       if (opts)
-> +               return libbpf_err(-EINVAL);
-> +
-> +       ret =3D probe_func_comm(prog_type, BPF_EMIT_CALL((__u32)helper_id=
-), buf, sizeof(buf));
-> +       if (ret)
-> +               return ret;
->
->         /* If BPF verifier doesn't recognize BPF helper ID (enum bpf_func=
-_id)
->          * at all, it will emit something like "invalid func unknown#181"=
-.
-> --
-> 2.43.0
->
+So this appears to be something different.
+
+>=20
+> Marc
 
