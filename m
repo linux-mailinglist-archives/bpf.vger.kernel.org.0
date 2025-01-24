@@ -1,325 +1,850 @@
-Return-Path: <bpf+bounces-49721-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49722-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66828A1BE8F
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 23:45:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CFB1A1BE9E
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 23:54:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A803816E5DD
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 22:45:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8616216DCC5
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 22:54:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC0E51EE009;
-	Fri, 24 Jan 2025 22:45:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B71ED1E98ED;
+	Fri, 24 Jan 2025 22:54:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="rFjW3k6P"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hYBphlf0"
 X-Original-To: bpf@vger.kernel.org
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02olkn2057.outbound.protection.outlook.com [40.92.49.57])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED4611E7C34;
-	Fri, 24 Jan 2025 22:45:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.49.57
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737758703; cv=fail; b=kuITL9OWKNFE7IZ9wsEfDid9mKR3sO7C0HHoyZRs+u76K4sVkKEGUKU64GW3G9/0dUsrAymfGuzza0csClrJTxZc2JBOl86fa79AxF22FAOUrc2ccaXRatnlIHXxk0xmGJzcjmEH7z15cr2viNU0IOJmKCiPKoVWucacz/j92Rs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737758703; c=relaxed/simple;
-	bh=o1A0tt9bKjc8H/b/4ug5XnMiIVO3NWWngDCcdGqoJQI=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=W1JoIGqkxUo59zxaxhvGcQYl0AhuAcOvY02CjK5lvG0reHtBtfN4UFyAaqTiWx8/aRymlxsnij7AdqcQK+R57bRtTxUfK4XmDfmPZRLCyVp694h1WmTgP1wyXqlzZ5sJYf2ZWN4gGHWHb+YL0C8BS+hnL+HSLHoRxnwHxw6ncvA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=rFjW3k6P; arc=fail smtp.client-ip=40.92.49.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=q1YqSi3CUMlkUIpkoiTn/DvDApwLRqSfe6LHmqNjjw379n2+P/YERvtFKExVeUsHeb8Zw/7bR6f9/Wqr2hwUSBokzD8l9sxDSQPZgTuA1ZWUpxMaGF56iM7iG9AFpt5j0XL3W+W0VH5InFkZ75Cxqnn8He83/qF50sEQ6geO/HwVBl22mT+yRA/44WrD55fkDBkZazaI4OiGfpKFibSels84jC2Scv7rOzEvUa1z+jYWbpEMIKetAefcZDD0AZNPXtmFigv6j20w8kgGguTk7gZ773trmHXUc8Q1ztmvH2v5COEBhCOh4AikpdmH3XFWlgtfg8RE14nsfK3k2nwOTA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9MKLfsBNGeGeW29DMbNhi9WJqmM+wjp9SEHkAdLTJDU=;
- b=lq6+UE1aWJG4eYNIqELmghUcuOqhcWbN7Q7kFO/lT9mKTo5FRwIU+pUPojs02WXsarXKuXb7lm+fHE8rGlTYq4xqhOfaZ46n0THlpMWyJvmMxuIqAGUW7lH3orhyjWyOyjvMAxEBs6k3keY+IDR1EFl1iFR1HGTQ0XcrhiXHAer0a3L1/DIdI6Pm6wSM2+Q+1wmRx+WRWi6uzx/fJo2pvwiyi7dk9XJf5wGYM2RhMZhDe5M89sZlgRe1MH53UFz+g0ott/20oxOG8CDesMNnLYtPoXpgGowNfx2N9dcNv4nRqDEmnB0Q9vmJytMGV21aZWRlR6OUZAPV/+Cuesty7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9MKLfsBNGeGeW29DMbNhi9WJqmM+wjp9SEHkAdLTJDU=;
- b=rFjW3k6PXYut3mQGyh2l+u+TXkozAi3rTahtoqOZ/F5MTE+b4/FI2vDs8WlDsavqQomjOldMEyrObXGot6mgWs5akxVRmpjxIqGvz/aSQZwViiogyUCXY8Z/vdrJ1adYcZydaIaz1USN7Yo2FCt5JobwCGT4CLMbBrtmMPMEIJA7cWby4BxuOILTmkuySSuHd51SG27W9NeFtsHqGALtXJU9K732BhMR1ba/LRDX8BmxJgy02ZoP4NRBkt9xSMaRvyWJ7hvrEHctscM0niwAP39LqD69uWIRPymVuJHvtPXOKvrMTesg0FvHiIZqx92AlrqdIV0+Cc2hjaB7Pvmv1A==
-Received: from AM6PR03MB5080.eurprd03.prod.outlook.com (2603:10a6:20b:90::20)
- by PA4PR03MB6927.eurprd03.prod.outlook.com (2603:10a6:102:ee::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8377.17; Fri, 24 Jan
- 2025 22:44:58 +0000
-Received: from AM6PR03MB5080.eurprd03.prod.outlook.com
- ([fe80::a16:9eb8:6868:f6d8]) by AM6PR03MB5080.eurprd03.prod.outlook.com
- ([fe80::a16:9eb8:6868:f6d8%3]) with mapi id 15.20.8377.009; Fri, 24 Jan 2025
- 22:44:58 +0000
-Message-ID:
- <AM6PR03MB508053DF89CDFEB95CBEB20C99E32@AM6PR03MB5080.eurprd03.prod.outlook.com>
-Date: Fri, 24 Jan 2025 22:44:46 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH bpf-next 6/7] sched_ext: Make SCX use BPF capabilities
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>,
- David Vernet <void@manifault.com>, bpf <bpf@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-References: <AM6PR03MB5080C05323552276324C4B4C991A2@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <AM6PR03MB50802A825536C00D2B53333C991A2@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <CAADnVQLidcL-WU-VWXZtBph=qjJfAhoyrsYWyL7JwB0ZEH5KFQ@mail.gmail.com>
-Content-Language: en-US
-From: Juntong Deng <juntong.deng@outlook.com>
-In-Reply-To: <CAADnVQLidcL-WU-VWXZtBph=qjJfAhoyrsYWyL7JwB0ZEH5KFQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: LO2P123CA0015.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:a6::27) To AM6PR03MB5080.eurprd03.prod.outlook.com
- (2603:10a6:20b:90::20)
-X-Microsoft-Original-Message-ID:
- <6daa8db9-bdba-40de-a5cb-308fe58c3d52@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3452118A93E;
+	Fri, 24 Jan 2025 22:54:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1737759272; cv=none; b=LuvDSEWhPNN14CuHoRv5av94qjLXC+omsrYSVsvWMYSxI0gVaVCr0RdivgM5DozwiQoed7NIViZSACwvDsjAsFfPFM7X9LmaJR4qfjQ7cpmPF5mwpyRXFQ8gAxbBi3GyWxUi1q5jkXBOMLQoNdILD11hqF7dZ9/4iFbqO5+kyhk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1737759272; c=relaxed/simple;
+	bh=xitZsDeb+kS2/9Wf9Yac4mAURmzv5CHPyuz/C0uKDh8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MG7YF1/gIj+QXz7go1vu561hlM+euY42EOvuWQgP2GBtMRcTPy1gTng8UQQVHAiMgx7BvDVpTJdXcq91HQ7a2kErzPH8RQ2EZqiAua0R55nAF+WWmymFMoJRFQirOkLhllPOcsEFLfJ3fIwhLtoW8WelMdkVENQDJvKSf/BqqGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hYBphlf0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BE81C4CED2;
+	Fri, 24 Jan 2025 22:54:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1737759270;
+	bh=xitZsDeb+kS2/9Wf9Yac4mAURmzv5CHPyuz/C0uKDh8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hYBphlf0rWoIv8lCN5iw7aNgJGFstJKUGHxKV9t3hD4/P1CyT4vJH/N6cDJNDgvYp
+	 hmV04JHf6NRUXVj2ic9yCxYFsViBEH3ovPtXDZ+cBHcbGz12kYVjmLkjNX4/3efzFQ
+	 6SJ85U+OixOz+jv7Gb0JeH8x2cOS0u8J48rysu3JDI0QBPeTlWEj5RGMWSlQWGxiBO
+	 7gsphj2WtPFWOX35iEjtNZA2fG7q6+RnyUFx379WJRCiYEk8RH1dCX+yFPsBGsc7X6
+	 GZZ4u+i2gDohLBIK8K5dJatbWlBGtp48OSOZEzdgWaHlaiYgEKrpTLZYlmMEYb2wit
+	 81v+FNjI8q5vg==
+Date: Fri, 24 Jan 2025 14:54:28 -0800
+From: Namhyung Kim <namhyung@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Aditya Gupta <adityag@linux.ibm.com>,
+	"Steinar H. Gunderson" <sesse@google.com>,
+	Charlie Jenkins <charlie@rivosinc.com>,
+	Changbin Du <changbin.du@huawei.com>,
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+	James Clark <james.clark@linaro.org>,
+	Kajol Jain <kjain@linux.ibm.com>,
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+	Li Huafei <lihuafei1@huawei.com>,
+	Dmitry Vyukov <dvyukov@google.com>, Andi Kleen <ak@linux.intel.com>,
+	Chaitanya S Prakash <chaitanyas.prakash@arm.com>,
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	llvm@lists.linux.dev, Song Liu <song@kernel.org>,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v3 07/18] perf llvm: Support for dlopen-ing libLLVM.so
+Message-ID: <Z5QaJOWZfIrlDEmm@google.com>
+References: <20250122174308.350350-1-irogers@google.com>
+ <20250122174308.350350-8-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR03MB5080:EE_|PA4PR03MB6927:EE_
-X-MS-Office365-Filtering-Correlation-Id: ad5cbb62-6add-4762-3c11-08dd3cc8b9f2
-X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|461199028|15080799006|6090799003|19110799003|8060799006|5072599009|440099028|3412199025|12091999003|41001999003;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?Y0lDZ2pTZDlhNm1OaGRVekJNb1ZseGEyNGhVZXE0RXJNQXozeG5mT2x6WUxH?=
- =?utf-8?B?SS94NjM5MkwraXV6RGJtYkkvVTlLR0taOTkwK0xtVDl2Q2xRYzd6MG91c2h4?=
- =?utf-8?B?OFdLN3l1OGJmNTlpbFo4MVQ0WC8rdXZGT3ZhQlBwT3hTQXI0VWdXOUoyMXJF?=
- =?utf-8?B?Q0I1MWd0R051VUwyZjgxcUQ4Qkp2aWNheVJZUHFGOWJmTWQ4cW5DL0NzZ2Rm?=
- =?utf-8?B?ZnE2aGMvMUlPUzV2Qjk0aU9ESWxERFRzYVBEWWlLdzFvRlozbkprbXFrakov?=
- =?utf-8?B?QjJPTThwSUJnaldlYTFnVjVxd2xpK2tmYW5xSlVDanA1QTZVSllQT0hxTkxX?=
- =?utf-8?B?eU1scUVQckhIZDh6OW1FbjFOR21hWXlWbXNlYWs2Q0h4QitobmVTMjRDa0hn?=
- =?utf-8?B?Nld2dG83Zjl2cU9rUy9TN05nQzFZRjlRcW9XTDdvQm1sUVNWWkFuekNYOFl5?=
- =?utf-8?B?eHlOVkZpdldjYjh6Wmdtdk16M1AzVWQxMEtsdkQ1Y1kzS1FkeER2c1BRMm9j?=
- =?utf-8?B?VDRHa3M4VSt1RjhhcDlZRW9TNFJZNXpGVHV6MUlwUzRuUlpsWlZ3RXNlOGtE?=
- =?utf-8?B?MjZXUW13L3JzVVoraDBGYm03UEtLb1JJWHhXU0RvNG9NLzA0RW9IU3hFYUMr?=
- =?utf-8?B?bWhtOFAyQjFZN0NyVVF5dWdtV3RFNHpkVmNXcUl4VStoWDNaMFdKaHZWekJv?=
- =?utf-8?B?M0x3RU90YXIrcXc0N0d0UFZ5WDZrTGJvL0lLMjZEYVp6bk5vVDBsWkhwd2Ft?=
- =?utf-8?B?dnI1U1k0ZjFzOXFXL2I4V2ZJOVpCRk1wZGl5RHFkRkpTYWh6dlp3L2N6ZkZR?=
- =?utf-8?B?U3JiTlB6YnUzMk9FaTRIREpVdU5mQ1Z4QXg2UXA2L0pxMEFialVGQjdWNnZu?=
- =?utf-8?B?YlBNcU14c3BsY0YzV0J4QkNWdDJIRlFPMUpRSmVjY2F0eEJGNXpxU3FOay9s?=
- =?utf-8?B?R0NqczArSzl5clFNZFZUdUxMMHY5U05Pd0pqTzYrQ04yOHU1QXJkOGV1Y3pQ?=
- =?utf-8?B?d0owM3NCbUFpaTQxMXR2WDQ1a3ErR25SL0JRcXl6V3NqcW43Q1E1dkVjbUcw?=
- =?utf-8?B?ZFk2Y3ZVN2lFUGk5ZHErckVFMmtUSDhDT0IrZTlIc1crSkdQZ09ybVYxOXU4?=
- =?utf-8?B?QmVkMnlielRRd3A0STJtajZrV2hYYSs4MHY2dDh4QnhpTTBHanB6Y3ZxNzht?=
- =?utf-8?B?T1BMUkM2bDhUaXVxK3BXSUpCUVo0L0E2SWx4dmo5dkZmMzZlQkRjWFMydkJK?=
- =?utf-8?B?cmMzclVGeXVzeEtta3BNWW9Zc25GckRSR2ZjaDg1MHV5RWhsN2Z3QWZjblJF?=
- =?utf-8?B?bWdabS9kWnN1TnhKTlcyVkRJdmJnemh6QUIrbjczOGZpUWZjTS9ybGpkdkZI?=
- =?utf-8?B?MTlSUGVFbDE4M2JnbUxPRHdWVk9jZmxOS08rVjlkblJXRzU0dWZKTi8zcDdr?=
- =?utf-8?B?ZGVWWitieXpRc2dORFJ1enlPdDJmS3Ewa3U3ZnRRTFV3VVZSTlQ2ZHUwVW14?=
- =?utf-8?B?NUF0RXhJTHhwdmZkUWhnb2JwVzMxWnFnOXVuWDhxTzlJWUZ5TUdab0wxVHZG?=
- =?utf-8?B?L0JMZz09?=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Rk5jdjlwbVhBR1lMZ1BoNHZrSTdKRFRoMnV4VFNkcE42OFhONXZDd056RHpO?=
- =?utf-8?B?TkpwWUNsOUtEaXNOT08yZWVzOGVoTitaanYwdVBNaGljRjJ1NmoybWUwWUZx?=
- =?utf-8?B?WS9ZVDAwSU5vR2FKb0E2UW4wQk16Y3V1QlI3ZnNwdFphbDdZZU1lTXVDNmhI?=
- =?utf-8?B?TU5JS0tnZjNXNS9tZ0R5Y1RWbEJsblFjQ0hlL29RT004cXhLTUljenlhNXRy?=
- =?utf-8?B?SkluR2FXTmhGVkJ0R1JqT2gwVnpwUE9XNURCaFpkNVR4cDl1TENWOWR1M0xn?=
- =?utf-8?B?b0dQUEtFVk5pRWh2NENHVS9PeEk5N2hXdlc1SXpuYnpiR2VmQkgwdS8xTHNC?=
- =?utf-8?B?TDZ3aXc0eFNab0ZRWDAwNWhaVFlFZUZLK095cFFMaDZqU1VnQ1dRMlJ1bVFX?=
- =?utf-8?B?ZVZhcXJ4dnNpSG9LUTBVS0ZaZUxVWExRdUZ2c3lzSzc3Zy9nbjV0OWduZXl3?=
- =?utf-8?B?Q2Q2TUV1ZG0rd09HY3R1M3E1TUk2bG9iS2dxWDBIOGFEekZJbjM5Rklhb3BB?=
- =?utf-8?B?ZkJqc294ZkxJaFdPT3ZqSEJnUTRCaDdCNTJkVG5IWDR0VmZ3M3BXQkFaN21N?=
- =?utf-8?B?R0FjNVZoZmp4V0xMMzNJSWw3cGtkZ1VjT1l6YUlGbytkTk02QjdWeDd3eXZo?=
- =?utf-8?B?dFlhZmVJU09LYnZMempyM1RDdUtJazVCczV4OE5Kd1JPNS9qc3RhTFppaWJ4?=
- =?utf-8?B?R2xTVmhiTUU4S0pSRkpON25zZ2hyU3ZZaTJ2YklvNVNhQm44T0ZUYnFIbWMv?=
- =?utf-8?B?WWlhOERXVjl1UGdMR25hY2NPTytpSWdneVVFUTBTcVl0VkovMGlhVWRneFB0?=
- =?utf-8?B?VHpXL25IU1NRbHBpZEJHZ3Q1SEh5TndTUzJ4TDJTTzhFYnR3UHdVRHdibFFM?=
- =?utf-8?B?NkhwTGplZ3dZUCtiL3A0V2V2RnpCOXZuN2cwcFFLTHdXL1ExVmRlRzgzVEhU?=
- =?utf-8?B?end0aUtRcWdXV0EwVEhFdnRoOTJ4NjJwd1RmUXNJQWZUNnFKN2dmcFRPSHhF?=
- =?utf-8?B?UmdUaXE2cDZDWE0vRUQ3M0lPeTdLQW5LSmNTV1hUWDBCZEFJWDRPNjh5QjYz?=
- =?utf-8?B?S0FFb2xyaFN1YW52M1RHYWlhUmJKak9PMEdheXFYRjdleGcyL3RmU3JONFdF?=
- =?utf-8?B?SmY1anI4K1JzZW5HTkdsaExFcTVJYU4vT1lUYTcweTV4dmk5eGthOG8wRDJN?=
- =?utf-8?B?UCs0bFBxMnVsOVE3alRLekpmSW95K3c5YkR4RkxyVFJ6T0pqS0tjWXNqaGRO?=
- =?utf-8?B?KzlvUmRtNmZoMjluWnh3eUZSK21iUElGN2FBMWMrQ1dzaFFoNXZBNG4xQ1Zz?=
- =?utf-8?B?V0ZsaGQwY09yV1ZzeXBrRXpxVmJuS1NLQ1lRWVRaWms0VXF6MldTSDhXRHBJ?=
- =?utf-8?B?VEZ5Q1d2OVV6MXRjNVNwc2EyenVtSE40QTl3Vm9kZUhrbk1Wa2ZnMElzNndJ?=
- =?utf-8?B?ZGF6ZTg4WGdRLzBuVkdhRWhJcUpudkxQRDNMcFU1d0I2Z0QwR0NMVWd6cHBz?=
- =?utf-8?B?bGF2RTMvQmxlRjNJL1R3a0k4TmVlSlV4aTUxQUU1am5wQWttbW5xK3dHUGdq?=
- =?utf-8?B?M2hISlJZVmpRblQ4eWlsMXlncDVKbDhqUzRzT2VRYlhNY2dTVWJLNFFtbzdr?=
- =?utf-8?B?am1Ed1ZWZGZvL3hrdDZBWFNFVldqSTRadkpLeDhzdTdlWmZIaXFBa282Ym0x?=
- =?utf-8?Q?pBs0fZb9aptdR8y+uVCi?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad5cbb62-6add-4762-3c11-08dd3cc8b9f2
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5080.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2025 22:44:58.1419
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR03MB6927
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250122174308.350350-8-irogers@google.com>
 
-On 2025/1/24 04:52, Alexei Starovoitov wrote:
-> On Thu, Jan 16, 2025 at 11:47 AM Juntong Deng <juntong.deng@outlook.com> wrote:
->>
->> This patch modifies SCX to use BPF capabilities.
->>
->> Make all SCX kfuncs register to BPF capabilities instead of
->> BPF_PROG_TYPE_STRUCT_OPS.
->>
->> Add bpf_scx_bpf_capabilities_adjust as bpf_capabilities_adjust
->> callback function.
->>
->> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
->> ---
->>   kernel/sched/ext.c | 74 ++++++++++++++++++++++++++++++++++++++--------
->>   1 file changed, 62 insertions(+), 12 deletions(-)
->>
->> diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
->> index 7fff1d045477..53cc7c3ed80b 100644
->> --- a/kernel/sched/ext.c
->> +++ b/kernel/sched/ext.c
->> @@ -5765,10 +5765,66 @@ bpf_scx_get_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->>          }
->>   }
+On Wed, Jan 22, 2025 at 09:42:57AM -0800, Ian Rogers wrote:
+> If perf wasn't built against libLLVM, no HAVE_LIBLLVM_SUPPORT, support
+> dlopen-ing libLLVM.so and then calling the necessary functions by
+> looking them up using dlsym. As the C++ code in llvm-c-helpers used
+> for addr2line is problematic to call using dlsym, build that C++ code
+> against libLLVM.so as a separate shared object, and support dynamic
+> loading of it. This build option is enabled with LIBLLVM_DYNAMIC=1
+
+You mean dlopen libllvm is supported only if this build option is used,
+right?  I'm afraid that would also make others hard to use this feature.
+Anyway I think _DYNAMIC is more about static link vs. dynamic link.
+Maybe is LIBLLVM_DLOPEN=1 a little better?  Also please add a
+description to Makefile.perf when you add a build option.
+
 > 
-> 'capabilities' name doesn't fit.
-> The word already has its meaning in the kernel.
-> It cannot be reused for a different purpose.
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/Makefile.config         |  13 ++
+>  tools/perf/Makefile.perf           |  23 ++-
+>  tools/perf/tests/make              |   2 +
+>  tools/perf/util/Build              |   2 +-
+>  tools/perf/util/llvm-c-helpers.cpp | 113 +++++++++++-
+>  tools/perf/util/llvm.c             | 271 +++++++++++++++++++++++++----
+>  6 files changed, 386 insertions(+), 38 deletions(-)
 > 
->> +static int bpf_scx_bpf_capabilities_adjust(unsigned long *bpf_capabilities,
->> +                                          u32 context_info, bool enter)
->> +{
->> +       if (enter) {
->> +               switch (context_info) {
->> +               case offsetof(struct sched_ext_ops, select_cpu):
->> +                       ENABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_SELECT_CPU);
->> +                       ENABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_ENQUEUE);
->> +                       break;
->> +               case offsetof(struct sched_ext_ops, enqueue):
->> +                       ENABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_ENQUEUE);
->> +                       break;
->> +               case offsetof(struct sched_ext_ops, dispatch):
->> +                       ENABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_DISPATCH);
->> +                       break;
->> +               case offsetof(struct sched_ext_ops, running):
->> +               case offsetof(struct sched_ext_ops, stopping):
->> +               case offsetof(struct sched_ext_ops, enable):
->> +                       ENABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_REST);
->> +                       break;
->> +               case offsetof(struct sched_ext_ops, init):
->> +               case offsetof(struct sched_ext_ops, exit):
->> +                       ENABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_UNLOCKED);
->> +                       break;
->> +               default:
->> +                       return -EINVAL;
->> +               }
->> +       } else {
->> +               switch (context_info) {
->> +               case offsetof(struct sched_ext_ops, select_cpu):
->> +                       DISABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_SELECT_CPU);
->> +                       DISABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_ENQUEUE);
->> +                       break;
->> +               case offsetof(struct sched_ext_ops, enqueue):
->> +                       DISABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_ENQUEUE);
->> +                       break;
->> +               case offsetof(struct sched_ext_ops, dispatch):
->> +                       DISABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_DISPATCH);
->> +                       break;
->> +               case offsetof(struct sched_ext_ops, running):
->> +               case offsetof(struct sched_ext_ops, stopping):
->> +               case offsetof(struct sched_ext_ops, enable):
->> +                       DISABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_REST);
->> +                       break;
->> +               case offsetof(struct sched_ext_ops, init):
->> +               case offsetof(struct sched_ext_ops, exit):
->> +                       DISABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CAP_SCX_KF_UNLOCKED);
->> +                       break;
->> +               default:
->> +                       return -EINVAL;
->> +               }
->> +       }
->> +       return 0;
->> +}
+> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+> index cd773fbbc176..5c2814acc5d5 100644
+> --- a/tools/perf/Makefile.config
+> +++ b/tools/perf/Makefile.config
+> @@ -963,6 +963,19 @@ ifndef NO_LIBLLVM
+>      NO_LIBLLVM := 1
+>    endif
+>  endif
+> +ifdef LIBLLVM_DYNAMIC
+> +  ifndef NO_LIBLLVM
+> +    $(error LIBLLVM_DYNAMIC should be used with NO_LIBLLVM)
+
+Hmm.. it doesn't seem reasonable to use these two options together.
+Maybe you could force NO_LIBLLVM=1 when LIBLLVM_DYNAMIC is used.
+
+
+> +  endif
+> +  $(call feature_check,llvm-perf)
+> +  ifneq ($(feature-llvm-perf), 1)
+> +    $(warning LIBLLVM_DYNAMIC requires libLLVM.so which wasn't feature detected)
+
+Huh?  It's not clear whether you need libLLVM.so or not here.  Can you
+proceed without it?  Why isn't it an error?
+
+Also it looks like it's against the original purpose.  I think you
+wanted dlopen because the library is not available at build time.  But
+now you need it in the build script?
+
+
+> +  endif
+> +  CFLAGS += -DHAVE_LIBLLVM_DYNAMIC
+> +  CFLAGS += $(shell $(LLVM_CONFIG) --cflags)
+> +  CXXFLAGS += -DHAVE_LIBLLVM_DYNAMIC
+> +  CXXFLAGS += $(shell $(LLVM_CONFIG) --cxxflags)
+> +endif
+>  
+>  ifndef NO_DEMANGLE
+>    $(call feature_check,cxa-demangle)
+> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> index 55d6ce9ea52f..eae77f6af59d 100644
+> --- a/tools/perf/Makefile.perf
+> +++ b/tools/perf/Makefile.perf
+> @@ -456,6 +456,12 @@ ifndef NO_JVMTI
+>  PROGRAMS += $(OUTPUT)$(LIBJVMTI)
+>  endif
+>  
+> +LIBPERF_LLVM = libperf-llvm.so
+> +
+> +ifdef LIBLLVM_DYNAMIC
+> +PROGRAMS += $(OUTPUT)$(LIBPERF_LLVM)
+> +endif
+> +
+>  DLFILTERS := dlfilter-test-api-v0.so dlfilter-test-api-v2.so dlfilter-show-cycles.so
+>  DLFILTERS := $(patsubst %,$(OUTPUT)dlfilters/%,$(DLFILTERS))
+>  
+> @@ -1019,6 +1025,16 @@ $(LIBSYMBOL)-clean:
+>  	$(call QUIET_CLEAN, libsymbol)
+>  	$(Q)$(RM) -r -- $(LIBSYMBOL_OUTPUT)
+>  
+> +ifdef LIBLLVM_DYNAMIC
+> +LIBPERF_LLVM_CXXFLAGS := $(call filter-out,-DHAVE_LIBLLVM_DYNAMIC,$(CXXFLAGS)) -DHAVE_LIBLLVM_SUPPORT
+> +LIBPERF_LLVM_LIBS = -L$(shell $(LLVM_CONFIG) --libdir) $(LIBLLVM) -lstdc++
+> +
+> +$(OUTPUT)$(LIBPERF_LLVM): util/llvm-c-helpers.cpp
+> +	$(QUIET_LINK)$(CXX) $(LIBPERF_LLVM_CXXFLAGS) $(LIBPERF_LLVM_LIBS) -shared -o $@ $<
+> +
+> +$(OUTPUT)perf: $(OUTPUT)$(LIBPERF_LLVM)
+> +endif
+> +
+>  help:
+>  	@echo 'Perf make targets:'
+>  	@echo '  doc		- make *all* documentation (see below)'
+> @@ -1120,6 +1136,11 @@ ifndef NO_JVMTI
+>  	$(call QUIET_INSTALL, $(LIBJVMTI)) \
+>  		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(libdir_SQ)'; \
+>  		$(INSTALL) $(OUTPUT)$(LIBJVMTI) '$(DESTDIR_SQ)$(libdir_SQ)';
+> +endif
+> +ifdef LIBLLVM_DYNAMIC
+> +	$(call QUIET_INSTALL, $(LIBPERF_LLVM)) \
+> +		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(libdir_SQ)'; \
+> +		$(INSTALL) $(OUTPUT)$(LIBPERF_LLVM) '$(DESTDIR_SQ)$(libdir_SQ)';
+>  endif
+>  	$(call QUIET_INSTALL, libexec) \
+>  		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(perfexec_instdir_SQ)'
+> @@ -1301,7 +1322,7 @@ clean:: $(LIBAPI)-clean $(LIBBPF)-clean $(LIBSUBCMD)-clean $(LIBSYMBOL)-clean $(
+>  		-name '\.*.cmd' -delete -o -name '\.*.d' -delete -o -name '*.shellcheck_log' -delete
+>  	$(Q)$(RM) $(OUTPUT).config-detected
+>  	$(call QUIET_CLEAN, core-progs) $(RM) $(ALL_PROGRAMS) perf perf-read-vdso32 \
+> -		perf-read-vdsox32 $(OUTPUT)$(LIBJVMTI).so
+> +		perf-read-vdsox32 $(OUTPUT)$(LIBJVMTI) $(OUTPUT)$(LIBPERF_LLVM)
+>  	$(call QUIET_CLEAN, core-gen)   $(RM)  *.spec *.pyc *.pyo */*.pyc */*.pyo \
+>  		$(OUTPUT)common-cmds.h TAGS tags cscope* $(OUTPUT)PERF-VERSION-FILE \
+>  		$(OUTPUT)FEATURE-DUMP $(OUTPUT)util/*-bison* $(OUTPUT)util/*-flex* \
+> diff --git a/tools/perf/tests/make b/tools/perf/tests/make
+> index 0ee94caf9ec1..44d76eacce49 100644
+> --- a/tools/perf/tests/make
+> +++ b/tools/perf/tests/make
+> @@ -93,6 +93,7 @@ make_libbpf_dynamic := LIBBPF_DYNAMIC=1
+>  make_no_libbpf_DEBUG := NO_LIBBPF=1 DEBUG=1
+>  make_no_libcrypto   := NO_LIBCRYPTO=1
+>  make_no_libllvm     := NO_LIBLLVM=1
+> +make_libllvm_dynamic := NO_LIBLLVM=1 LIBLLVM_DYNAMIC=1
+>  make_with_babeltrace:= LIBBABELTRACE=1
+>  make_with_coresight := CORESIGHT=1
+>  make_no_sdt	    := NO_SDT=1
+> @@ -162,6 +163,7 @@ run += make_no_libbpf
+>  run += make_no_libbpf_DEBUG
+>  run += make_no_libcrypto
+>  run += make_no_libllvm
+> +run += make_libllvm_dynamic
+>  run += make_no_sdt
+>  run += make_no_syscall_tbl
+>  run += make_with_babeltrace
+> diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+> index 6fe0b5882c97..eb00c599e179 100644
+> --- a/tools/perf/util/Build
+> +++ b/tools/perf/util/Build
+> @@ -27,6 +27,7 @@ perf-util-y += find_bit.o
+>  perf-util-y += get_current_dir_name.o
+>  perf-util-y += levenshtein.o
+>  perf-util-y += llvm.o
+> +perf-util-y += llvm-c-helpers.o
+>  perf-util-y += mmap.o
+>  perf-util-y += memswap.o
+>  perf-util-y += parse-events.o
+> @@ -239,7 +240,6 @@ perf-util-$(CONFIG_CXX_DEMANGLE) += demangle-cxx.o
+>  perf-util-y += demangle-ocaml.o
+>  perf-util-y += demangle-java.o
+>  perf-util-y += demangle-rust.o
+> -perf-util-$(CONFIG_LIBLLVM) += llvm-c-helpers.o
+>  
+>  ifdef CONFIG_JITDUMP
+>  perf-util-$(CONFIG_LIBELF) += jitdump.o
+> diff --git a/tools/perf/util/llvm-c-helpers.cpp b/tools/perf/util/llvm-c-helpers.cpp
+> index 004081bd12c9..5a6f76e6b705 100644
+> --- a/tools/perf/util/llvm-c-helpers.cpp
+> +++ b/tools/perf/util/llvm-c-helpers.cpp
+> @@ -5,17 +5,23 @@
+>   * macros (e.g. noinline) that conflict with compiler builtins used
+>   * by LLVM.
+>   */
+> +#ifdef HAVE_LIBLLVM_SUPPORT
+>  #pragma GCC diagnostic push
+>  #pragma GCC diagnostic ignored "-Wunused-parameter"  /* Needed for LLVM <= 15 */
+>  #include <llvm/DebugInfo/Symbolize/Symbolize.h>
+>  #include <llvm/Support/TargetSelect.h>
+>  #pragma GCC diagnostic pop
+> +#endif
+>  
+> +#if !defined(HAVE_LIBLLVM_SUPPORT) || defined(HAVE_LIBLLVM_DYNAMIC)
+> +#include <dlfcn.h>
+> +#endif
+>  #include <inttypes.h>
+>  #include <stdio.h>
+>  #include <sys/types.h>
+>  #include <linux/compiler.h>
+>  extern "C" {
+> +#include "debug.h"
+>  #include <linux/zalloc.h>
+>  }
+>  #include "llvm-c-helpers.h"
+> @@ -23,14 +29,33 @@ extern "C" {
+>  extern "C"
+>  char *dso__demangle_sym(struct dso *dso, int kmodule, const char *elf_name);
+>  
+> +#ifdef HAVE_LIBLLVM_SUPPORT
+>  using namespace llvm;
+>  using llvm::symbolize::LLVMSymbolizer;
+> +#endif
+> +
+> +#if !defined(HAVE_LIBLLVM_SUPPORT) && defined(HAVE_LIBLLVM_DYNAMIC)
+
+Like I said, it'd be simpler if you could make HAVE_LIBLLVM_SUPPORT and
+HAVE_LIBLLVM_DYNAMIC (or _DLOPEN) mutually exclusive.
+
+And the same argument for the code organization.
+
+Thanks,
+Namhyung
+
+
+> +static void *perf_llvm_c_helpers_dll_handle(void)
+> +{
+> +	static bool dll_handle_init;
+> +	static void *dll_handle;
+> +
+> +	if (!dll_handle_init) {
+> +		dll_handle_init = true;
+> +		dll_handle = dlopen("libperf-llvm.so", RTLD_LAZY);
+> +		if (!dll_handle)
+> +			pr_debug("dlopen failed for libperf-llvm.so\n");
+> +	}
+> +	return dll_handle;
+> +}
+> +#endif
+>  
+>  /*
+>   * Allocate a static LLVMSymbolizer, which will live to the end of the program.
+>   * Unlike the bfd paths, LLVMSymbolizer has its own cache, so we do not need
+>   * to store anything in the dso struct.
+>   */
+> +#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+>  static LLVMSymbolizer *get_symbolizer()
+>  {
+>  	static LLVMSymbolizer *instance = nullptr;
+> @@ -49,8 +74,10 @@ static LLVMSymbolizer *get_symbolizer()
+>  	}
+>  	return instance;
+>  }
+> +#endif
+>  
+>  /* Returns 0 on error, 1 on success. */
+> +#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+>  static int extract_file_and_line(const DILineInfo &line_info, char **file,
+>  				 unsigned int *line)
+>  {
+> @@ -69,13 +96,15 @@ static int extract_file_and_line(const DILineInfo &line_info, char **file,
+>  		*line = line_info.Line;
+>  	return 1;
+>  }
+> +#endif
+>  
+>  extern "C"
+> -int llvm_addr2line(const char *dso_name, u64 addr,
+> -		   char **file, unsigned int *line,
+> -		   bool unwind_inlines,
+> -		   llvm_a2l_frame **inline_frames)
+> +int llvm_addr2line(const char *dso_name __maybe_unused, u64 addr __maybe_unused,
+> +		   char **file __maybe_unused, unsigned int *line __maybe_unused,
+> +		   bool unwind_inlines __maybe_unused,
+> +		   llvm_a2l_frame **inline_frames __maybe_unused)
+>  {
+> +#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+>  	LLVMSymbolizer *symbolizer = get_symbolizer();
+>  	object::SectionedAddress sectioned_addr = {
+>  		addr,
+> @@ -135,8 +164,33 @@ int llvm_addr2line(const char *dso_name, u64 addr,
+>  			return 0;
+>  		return extract_file_and_line(*res_or_err, file, line);
+>  	}
+> +#elif defined(HAVE_LIBLLVM_DYNAMIC)
+> +	static bool fn_init;
+> +	static int (*fn)(const char *dso_name, u64 addr,
+> +			 char **file, unsigned int *line,
+> +			 bool unwind_inlines,
+> +			 llvm_a2l_frame **inline_frames);
+> +
+> +	if (!fn_init) {
+> +		void * handle = perf_llvm_c_helpers_dll_handle();
+> +
+> +		if (!handle)
+> +			return 0;
+> +
+> +		fn = reinterpret_cast<decltype(fn)>(dlsym(handle, "llvm_addr2line"));
+> +		if (!fn)
+> +			pr_debug("dlsym failed for llvm_addr2line\n");
+> +		fn_init = true;
+> +	}
+> +	if (!fn)
+> +		return 0;
+> +	return fn(dso_name, addr, file, line, unwind_inlines, inline_frames);
+> +#else
+> +	return 0;
+> +#endif
+>  }
+>  
+> +#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+>  static char *
+>  make_symbol_relative_string(struct dso *dso, const char *sym_name,
+>  			    u64 addr, u64 base_addr)
+> @@ -158,10 +212,13 @@ make_symbol_relative_string(struct dso *dso, const char *sym_name,
+>  			return strdup(sym_name);
+>  	}
+>  }
+> +#endif
+>  
+>  extern "C"
+> -char *llvm_name_for_code(struct dso *dso, const char *dso_name, u64 addr)
+> +char *llvm_name_for_code(struct dso *dso __maybe_unused, const char *dso_name __maybe_unused,
+> +			 u64 addr __maybe_unused)
+>  {
+> +#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+>  	LLVMSymbolizer *symbolizer = get_symbolizer();
+>  	object::SectionedAddress sectioned_addr = {
+>  		addr,
+> @@ -175,11 +232,34 @@ char *llvm_name_for_code(struct dso *dso, const char *dso_name, u64 addr)
+>  	return make_symbol_relative_string(
+>  		dso, res_or_err->FunctionName.c_str(),
+>  		addr, res_or_err->StartAddress ? *res_or_err->StartAddress : 0);
+> +#elif defined(HAVE_LIBLLVM_DYNAMIC)
+> +	static bool fn_init;
+> +	static char *(*fn)(struct dso *dso, const char *dso_name, u64 addr);
+> +
+> +	if (!fn_init) {
+> +		void * handle = perf_llvm_c_helpers_dll_handle();
+> +
+> +		if (!handle)
+> +			return NULL;
+> +
+> +		fn = reinterpret_cast<decltype(fn)>(dlsym(handle, "llvm_name_for_code"));
+> +		if (!fn)
+> +			pr_debug("dlsym failed for llvm_name_for_code\n");
+> +		fn_init = true;
+> +	}
+> +	if (!fn)
+> +		return NULL;
+> +	return fn(dso, dso_name, addr);
+> +#else
+> +	return 0;
+> +#endif
+>  }
+>  
+>  extern "C"
+> -char *llvm_name_for_data(struct dso *dso, const char *dso_name, u64 addr)
+> +char *llvm_name_for_data(struct dso *dso __maybe_unused, const char *dso_name __maybe_unused,
+> +			 u64 addr __maybe_unused)
+>  {
+> +#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+>  	LLVMSymbolizer *symbolizer = get_symbolizer();
+>  	object::SectionedAddress sectioned_addr = {
+>  		addr,
+> @@ -193,4 +273,25 @@ char *llvm_name_for_data(struct dso *dso, const char *dso_name, u64 addr)
+>  	return make_symbol_relative_string(
+>  		dso, res_or_err->Name.c_str(),
+>  		addr, res_or_err->Start);
+> +#elif defined(HAVE_LIBLLVM_DYNAMIC)
+> +	static bool fn_init;
+> +	static char *(*fn)(struct dso *dso, const char *dso_name, u64 addr);
+> +
+> +	if (!fn_init) {
+> +		void * handle = perf_llvm_c_helpers_dll_handle();
+> +
+> +		if (!handle)
+> +			return NULL;
+> +
+> +		fn = reinterpret_cast<decltype(fn)>(dlsym(handle, "llvm_name_for_data"));
+> +		if (!fn)
+> +			pr_debug("dlsym failed for llvm_name_for_data\n");
+> +		fn_init = true;
+> +	}
+> +	if (!fn)
+> +		return NULL;
+> +	return fn(dso, dso_name, addr);
+> +#else
+> +	return 0;
+> +#endif
+>  }
+> diff --git a/tools/perf/util/llvm.c b/tools/perf/util/llvm.c
+> index ddc737194692..f6a8943b7c9d 100644
+> --- a/tools/perf/util/llvm.c
+> +++ b/tools/perf/util/llvm.c
+> @@ -1,5 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  #include "llvm.h"
+> +#include "llvm-c-helpers.h"
+>  #include "annotate.h"
+>  #include "debug.h"
+>  #include "dso.h"
+> @@ -7,17 +8,243 @@
+>  #include "namespaces.h"
+>  #include "srcline.h"
+>  #include "symbol.h"
+> +#include <dlfcn.h>
+>  #include <fcntl.h>
+> +#include <inttypes.h>
+>  #include <unistd.h>
+>  #include <linux/zalloc.h>
+>  
+> -#ifdef HAVE_LIBLLVM_SUPPORT
+> -#include "llvm-c-helpers.h"
+> +#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+>  #include <llvm-c/Disassembler.h>
+>  #include <llvm-c/Target.h>
+> +#else
+> +typedef void *LLVMDisasmContextRef;
+> +typedef int (*LLVMOpInfoCallback)(void *dis_info, uint64_t pc, uint64_t offset,
+> +				  uint64_t op_size, uint64_t inst_size,
+> +				  int tag_type, void *tag_buf);
+> +typedef const char *(*LLVMSymbolLookupCallback)(void *dis_info,
+> +						uint64_t reference_value,
+> +						uint64_t *reference_type,
+> +						uint64_t reference_pc,
+> +						const char **reference_name);
+> +#define LLVMDisassembler_ReferenceType_InOut_None 0
+> +#define LLVMDisassembler_ReferenceType_In_Branch 1
+> +#define LLVMDisassembler_ReferenceType_In_PCrel_Load 2
+> +#define LLVMDisassembler_Option_PrintImmHex 2
+> +#define LLVMDisassembler_Option_AsmPrinterVariant 4
+> +const char *llvm_targets[] = {
+> +	"AMDGPU",
+> +	"ARM",
+> +	"AVR",
+> +	"BPF",
+> +	"Hexagon",
+> +	"Lanai",
+> +	"LoongArch",
+> +	"Mips",
+> +	"MSP430",
+> +	"NVPTX",
+> +	"PowerPC",
+> +	"RISCV",
+> +	"Sparc",
+> +	"SystemZ",
+> +	"VE",
+> +	"WebAssembly",
+> +	"X86",
+> +	"XCore",
+> +	"M68k",
+> +	"Xtensa",
+> +};
+> +#endif
+> +
+> +#if !defined(HAVE_LIBLLVM_SUPPORT) || defined(HAVE_LIBLLVM_DYNAMIC)
+> +static void *perf_llvm_dll_handle(void)
+> +{
+> +	static bool dll_handle_init;
+> +	static void *dll_handle;
+> +
+> +	if (!dll_handle_init) {
+> +		dll_handle_init = true;
+> +		dll_handle = dlopen("libLLVM.so", RTLD_LAZY);
+> +		if (!dll_handle)
+> +			pr_debug("dlopen failed for libLLVM.so\n");
+> +	}
+> +	return dll_handle;
+> +}
+> +#endif
+> +
+> +#if !defined(HAVE_LIBLLVM_SUPPORT) || defined(HAVE_LIBLLVM_DYNAMIC)
+> +static void *perf_llvm_dll_fun(const char *fmt, const char *target)
+> +{
+> +	char buf[128];
+> +	void *fn;
+> +
+> +	snprintf(buf, sizeof(buf), fmt, target);
+> +	fn = dlsym(perf_llvm_dll_handle(), buf);
+> +	if (!fn)
+> +		pr_debug("dlsym failed for %s\n", buf);
+> +
+> +	return fn;
+> +}
+> +#endif
+> +
+> +static void perf_LLVMInitializeAllTargetInfos(void)
+> +{
+> +#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+> +	LLVMInitializeAllTargetInfos();
+> +#else
+> +	/* LLVMInitializeAllTargetInfos is a header file function not available as a symbol. */
+> +	static bool done_init;
+> +
+> +	if (done_init)
+> +		return;
+> +
+> +	for (size_t i = 0; i < ARRAY_SIZE(llvm_targets); i++) {
+> +		void (*fn)(void) = perf_llvm_dll_fun("LLVMInitialize%sTargetInfo",
+> +						     llvm_targets[i]);
+> +
+> +		if (!fn)
+> +			continue;
+> +		fn();
+> +	}
+> +	done_init = true;
+> +#endif
+> +}
+> +
+> +static void perf_LLVMInitializeAllTargetMCs(void)
+> +{
+> +#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+> +	LLVMInitializeAllTargetMCs();
+> +#else
+> +	/* LLVMInitializeAllTargetMCs is a header file function not available as a symbol. */
+> +	static bool done_init;
+> +
+> +	if (done_init)
+> +		return;
+> +
+> +	for (size_t i = 0; i < ARRAY_SIZE(llvm_targets); i++) {
+> +		void (*fn)(void) = perf_llvm_dll_fun("LLVMInitialize%sTargetMC",
+> +						     llvm_targets[i]);
+> +
+> +		if (!fn)
+> +			continue;
+> +		fn();
+> +	}
+> +	done_init = true;
+> +#endif
+> +}
+> +
+> +static void perf_LLVMInitializeAllDisassemblers(void)
+> +{
+> +#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+> +	LLVMInitializeAllDisassemblers();
+> +#else
+> +	/* LLVMInitializeAllDisassemblers is a header file function not available as a symbol. */
+> +	static bool done_init;
+> +
+> +	if (done_init)
+> +		return;
+> +
+> +	for (size_t i = 0; i < ARRAY_SIZE(llvm_targets); i++) {
+> +		void (*fn)(void) = perf_llvm_dll_fun("LLVMInitialize%sDisassembler",
+> +						     llvm_targets[i]);
+> +
+> +		if (!fn)
+> +			continue;
+> +		fn();
+> +	}
+> +	done_init = true;
+> +#endif
+> +}
+> +
+> +static LLVMDisasmContextRef perf_LLVMCreateDisasm(const char *triple_name, void *dis_info,
+> +						int tag_type, LLVMOpInfoCallback get_op_info,
+> +						LLVMSymbolLookupCallback symbol_lookup)
+> +{
+> +#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+> +	return LLVMCreateDisasm(triple_name, dis_info, tag_type, get_op_info, symbol_lookup);
+> +#else
+> +	static bool fn_init;
+> +	static LLVMDisasmContextRef (*fn)(const char *triple_name, void *dis_info,
+> +					int tag_type, LLVMOpInfoCallback get_op_info,
+> +					LLVMSymbolLookupCallback symbol_lookup);
+> +
+> +	if (!fn_init) {
+> +		fn = dlsym(perf_llvm_dll_handle(), "LLVMCreateDisasm");
+> +		if (!fn)
+> +			pr_debug("dlsym failed for LLVMCreateDisasm\n");
+> +		fn_init = true;
+> +	}
+> +	if (!fn)
+> +		return NULL;
+> +	return fn(triple_name, dis_info, tag_type, get_op_info, symbol_lookup);
+> +#endif
+> +}
+> +
+> +static int perf_LLVMSetDisasmOptions(LLVMDisasmContextRef context, uint64_t options)
+> +{
+> +#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+> +	return LLVMSetDisasmOptions(context, options);
+> +#else
+> +	static bool fn_init;
+> +	static int (*fn)(LLVMDisasmContextRef context, uint64_t options);
+> +
+> +	if (!fn_init) {
+> +		fn = dlsym(perf_llvm_dll_handle(), "LLVMSetDisasmOptions");
+> +		if (!fn)
+> +			pr_debug("dlsym failed for LLVMSetDisasmOptions\n");
+> +		fn_init = true;
+> +	}
+> +	if (!fn)
+> +		return 0;
+> +	return fn(context, options);
+> +#endif
+> +}
+> +
+> +static size_t perf_LLVMDisasmInstruction(LLVMDisasmContextRef context, uint8_t *bytes,
+> +					uint64_t bytes_size, uint64_t pc,
+> +					char *out_string, size_t out_string_size)
+> +{
+> +#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+> +	return LLVMDisasmInstruction(context, bytes, bytes_size, pc, out_string, out_string_size);
+> +#else
+> +	static bool fn_init;
+> +	static int (*fn)(LLVMDisasmContextRef context, uint8_t *bytes,
+> +			uint64_t bytes_size, uint64_t pc,
+> +			char *out_string, size_t out_string_size);
+> +
+> +	if (!fn_init) {
+> +		fn = dlsym(perf_llvm_dll_handle(), "LLVMDisasmInstruction");
+> +		if (!fn)
+> +			pr_debug("dlsym failed for LLVMDisasmInstruction\n");
+> +		fn_init = true;
+> +	}
+> +	if (!fn)
+> +		return 0;
+> +	return fn(context, bytes, bytes_size, pc, out_string, out_string_size);
+> +#endif
+> +}
+> +
+> +static void perf_LLVMDisasmDispose(LLVMDisasmContextRef context)
+> +{
+> +#if defined(HAVE_LIBLLVM_SUPPORT) && !defined(HAVE_LIBLLVM_DYNAMIC)
+> +	LLVMDisasmDispose(context);
+> +#else
+> +	static bool fn_init;
+> +	static int (*fn)(LLVMDisasmContextRef context);
+> +
+> +	if (!fn_init) {
+> +		fn = dlsym(perf_llvm_dll_handle(), "LLVMDisasmDispose");
+> +		if (!fn)
+> +			pr_debug("dlsym failed for LLVMDisasmDispose\n");
+> +		fn_init = true;
+> +	}
+> +	if (!fn)
+> +		return;
+> +	fn(context);
+>  #endif
+> +}
+> +
+>  
+> -#ifdef HAVE_LIBLLVM_SUPPORT
+>  static void free_llvm_inline_frames(struct llvm_a2l_frame *inline_frames,
+>  				    int num_frames)
+>  {
+> @@ -29,14 +256,12 @@ static void free_llvm_inline_frames(struct llvm_a2l_frame *inline_frames,
+>  		zfree(&inline_frames);
+>  	}
+>  }
+> -#endif
+>  
+>  int llvm__addr2line(const char *dso_name __maybe_unused, u64 addr __maybe_unused,
+>  		     char **file __maybe_unused, unsigned int *line __maybe_unused,
+>  		     struct dso *dso __maybe_unused, bool unwind_inlines __maybe_unused,
+>  		     struct inline_node *node __maybe_unused, struct symbol *sym __maybe_unused)
+>  {
+> -#ifdef HAVE_LIBLLVM_SUPPORT
+>  	struct llvm_a2l_frame *inline_frames = NULL;
+>  	int num_frames = llvm_addr2line(dso_name, addr, file, line,
+>  					node && unwind_inlines, &inline_frames);
+> @@ -64,9 +289,6 @@ int llvm__addr2line(const char *dso_name __maybe_unused, u64 addr __maybe_unused
+>  	free_llvm_inline_frames(inline_frames, num_frames);
+>  
+>  	return num_frames;
+> -#else
+> -	return -1;
+> -#endif
+>  }
+>  
+>  void dso__free_a2l_llvm(struct dso *dso __maybe_unused)
+> @@ -75,7 +297,6 @@ void dso__free_a2l_llvm(struct dso *dso __maybe_unused)
+>  }
+>  
+>  
+> -#if defined(HAVE_LIBLLVM_SUPPORT)
+>  struct find_file_offset_data {
+>  	u64 ip;
+>  	u64 offset;
+> @@ -139,7 +360,6 @@ read_symbol(const char *filename, struct map *map, struct symbol *sym,
+>  	free(buf);
+>  	return NULL;
+>  }
+> -#endif
+>  
+>  /*
+>   * Whenever LLVM wants to resolve an address into a symbol, it calls this
+> @@ -149,7 +369,6 @@ read_symbol(const char *filename, struct map *map, struct symbol *sym,
+>   * should add some textual annotation for after the instruction. The caller
+>   * will use this information to add the actual annotation.
+>   */
+> -#ifdef HAVE_LIBLLVM_SUPPORT
+>  struct symbol_lookup_storage {
+>  	u64 branch_addr;
+>  	u64 pcrel_load_addr;
+> @@ -170,12 +389,10 @@ symbol_lookup_callback(void *disinfo, uint64_t value,
+>  	*ref_type = LLVMDisassembler_ReferenceType_InOut_None;
+>  	return NULL;
+>  }
+> -#endif
+>  
+>  int symbol__disassemble_llvm(const char *filename, struct symbol *sym,
+>  			     struct annotate_args *args __maybe_unused)
+>  {
+> -#ifdef HAVE_LIBLLVM_SUPPORT
+>  	struct annotation *notes = symbol__annotation(sym);
+>  	struct map *map = args->ms.map;
+>  	struct dso *dso = map__dso(map);
+> @@ -197,9 +414,9 @@ int symbol__disassemble_llvm(const char *filename, struct symbol *sym,
+>  	if (args->options->objdump_path)
+>  		return -1;
+>  
+> -	LLVMInitializeAllTargetInfos();
+> -	LLVMInitializeAllTargetMCs();
+> -	LLVMInitializeAllDisassemblers();
+> +	perf_LLVMInitializeAllTargetInfos();
+> +	perf_LLVMInitializeAllTargetMCs();
+> +	perf_LLVMInitializeAllDisassemblers();
+>  
+>  	buf = read_symbol(filename, map, sym, &len, &is_64bit);
+>  	if (buf == NULL)
+> @@ -215,15 +432,14 @@ int symbol__disassemble_llvm(const char *filename, struct symbol *sym,
+>  			  args->arch->name);
+>  	}
+>  
+> -	disasm = LLVMCreateDisasm(triplet, &storage, 0, NULL,
+> -				  symbol_lookup_callback);
+> +	disasm = perf_LLVMCreateDisasm(triplet, &storage, 0, NULL,
+> +				       symbol_lookup_callback);
+>  	if (disasm == NULL)
+>  		goto err;
+>  
+>  	if (args->options->disassembler_style &&
+>  	    !strcmp(args->options->disassembler_style, "intel"))
+> -		LLVMSetDisasmOptions(disasm,
+> -				     LLVMDisassembler_Option_AsmPrinterVariant);
+> +		perf_LLVMSetDisasmOptions(disasm, LLVMDisassembler_Option_AsmPrinterVariant);
+>  
+>  	/*
+>  	 * This needs to be set after AsmPrinterVariant, due to a bug in LLVM;
+> @@ -231,7 +447,7 @@ int symbol__disassemble_llvm(const char *filename, struct symbol *sym,
+>  	 * forget about the PrintImmHex flag (which is applied before if both
+>  	 * are given to the same call).
+>  	 */
+> -	LLVMSetDisasmOptions(disasm, LLVMDisassembler_Option_PrintImmHex);
+> +	perf_LLVMSetDisasmOptions(disasm, LLVMDisassembler_Option_PrintImmHex);
+>  
+>  	/* add the function address and name */
+>  	scnprintf(disasm_buf, sizeof(disasm_buf), "%#"PRIx64" <%s>:",
+> @@ -256,9 +472,9 @@ int symbol__disassemble_llvm(const char *filename, struct symbol *sym,
+>  		storage.branch_addr = 0;
+>  		storage.pcrel_load_addr = 0;
+>  
+> -		ins_len = LLVMDisasmInstruction(disasm, buf + offset,
+> -						len - offset, pc,
+> -						disasm_buf, sizeof(disasm_buf));
+> +		ins_len = perf_LLVMDisasmInstruction(disasm, buf + offset,
+> +						     len - offset, pc,
+> +						     disasm_buf, sizeof(disasm_buf));
+>  		if (ins_len == 0)
+>  			goto err;
+>  		disasm_len = strlen(disasm_buf);
+> @@ -314,13 +530,8 @@ int symbol__disassemble_llvm(const char *filename, struct symbol *sym,
+>  	ret = 0;
+>  
+>  err:
+> -	LLVMDisasmDispose(disasm);
+> +	perf_LLVMDisasmDispose(disasm);
+>  	free(buf);
+>  	free(line_storage);
+>  	return ret;
+> -#else // HAVE_LIBLLVM_SUPPORT
+> -	pr_debug("The LLVM disassembler isn't linked in for %s in %s\n",
+> -		 sym->name, filename);
+> -	return -1;
+> -#endif
+>  }
+> -- 
+> 2.48.1.262.g85cc9f2d1e-goog
 > 
-> and this callback defeats the whole point of u32 bitmask.
-> 
-
-Yes, you are right, I agree that procedural callbacks defeat the purpose
-of BPF capabilities.
-
-> In earlier patch
-> env->context_info = __btf_member_bit_offset(t, member) / 8; // moff
-> 
-> is also wrong.
-> The context_info name is too generic and misleading.
-> and 'env' isn't a right place to save moff.
-> 
-> Let's try to implement what was discussed earlier:
-> 
-> 1
-> After successful check_struct_ops_btf_id() save moff in
-> prog->aux->attach_st_ops_member_off.
-> 
-> 2
-> Add .filter callback to sched-ext kfunc registration path and
-> let it allow/deny kfuncs based on st_ops attach point.
-> 
-> 3
-> Remove scx_kf_allow() and current->scx.kf_mask.
-> 
-> That will be a nice perf win and will prove that
-> this approach works end-to-end.
-
-I am trying, but I found a problem (bug?) when I added test cases
-to bpf_testmod.c.
-
-Filters currently do not work with kernel modules.
-
-Filters rely heavily on (bpf_fs_kfunc_set_ids as an example)
-
-if (!btf_id_set8_contains(&bpf_fs_kfunc_set_ids, kfunc_id)
-
-exclude kfuncs that are not part of its own set
-(__btf_kfunc_id_set_contains performs all the filters for each kfunc),
-otherwise it will result in false rejects.
-
-But this method cannot be used in kernel modules because the BTF ids of
-all kfuncs are relocated.
-
-The BTF ids of all kfuncs in the kernel module will be relocated by
-btf_relocate_id in btf_populate_kfunc_set.
-
-This results in the kfunc_id passed into the filter being different from
-the BTF id in set_ids.
-
-One possible solution is to export btf_relocate_id and
-btf_get_module_btf, and let the kernel module do the relocation itself.
-
-But I am not sure exporting them is a good idea.
-
-Do you have any suggestions?
-
-
-In addition, BTF_KFUNC_FILTER_MAX_CNT is currently 16, which is not a
-large enough size.
-
-If we use filters to enforce restrictions on struct_ops for different
-contexts, then each different context needs a filter.
-
-All filters for scenarios using struct_ops (SCX, HID, TCP congestion,
-etc.) are placed in the same struct btf_kfunc_hook_filter
-(filters array).
-
-It is foreseeable that the 16 slots will be exhausted soon.
-
-Should we change it to a linked list?
 
