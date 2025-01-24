@@ -1,153 +1,136 @@
-Return-Path: <bpf+bounces-49658-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49662-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED923A1B2E0
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 10:46:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 242A1A1B375
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 11:26:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D360418888A9
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 09:46:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DACCC16D4FD
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 10:25:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3067621A446;
-	Fri, 24 Jan 2025 09:45:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3954B21A952;
+	Fri, 24 Jan 2025 10:25:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r5sDAFyt"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="eX/fQkYI"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91CF718D63C;
-	Fri, 24 Jan 2025 09:45:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 787FD1D63C5;
+	Fri, 24 Jan 2025 10:25:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737711956; cv=none; b=Kob+uJbiMA4wCiLTwnkK0/eS1U2aN2NCg/EKSuCDRYAEoLs6j8Xgz68Wvtx0GET5uxBzScQ1XrKPAq8vSIXFGNc8RuchD5ivQ/lWOfmzcC5qoFSPnJ+LUijdoDzLdV/CNX9Lf5vwQzQRENLlLbM563Ls0MC3+SeebczvKi+rjUY=
+	t=1737714351; cv=none; b=Y7GCgWkbKOxmRmat0jn8rRW5VqmvFuNujvXVTKXAnzu3tyMrh64uL8CUBcvodWOOzlAzqGY7wIRCzdczIpprU6qpkqrbNAfYi0AVl5775j9xtTjItqOIkBIRcmJJx4ULstAnX+OJD58cuk4Eu4jlZ7RMGspcPqc7GAPdAAH0nLE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737711956; c=relaxed/simple;
-	bh=eB2zDntAjt8L+m9HIlRkkULjJqOEs9/jE8oisXlLBWU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pdeqFvNMB8tyrkmE7qPVeWsfqYZNxN7123qnOWgbwQHzzVXeV+olWaErFcrsdPQtcIhoqJQZkbfX0d9SELQFgDHZ/q1h8BVTzG4B39sATAlHIZ5caDk+fK2olSjHKkC3E/VW4kU+xmj1wrDe/sVYEgOOHoQ0McbYmitN4aJbJ4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r5sDAFyt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B960C4CED2;
-	Fri, 24 Jan 2025 09:45:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737711956;
-	bh=eB2zDntAjt8L+m9HIlRkkULjJqOEs9/jE8oisXlLBWU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=r5sDAFytysFAd08xigMIdNSQaON3PfDxZ9tc2l98pwn0W46Ey2NIYkhf0+iCBAHls
-	 1+on1E+DvhXwG4zDqHZUhtELbONQvdPAIWLAgT4ke458UWqPtrerWhznFTx6LmtEcn
-	 ZByXndeHa8U9otquiYrS+xKHlt6wgIs6yLqefkaa5acZpR8OejesrGUtZRjgCL3hGf
-	 BVnePg8OtowoCgFrP8cGL7+qi+ugAKLi7RS3UW+xRArwnq1y4xu3En9+PwD/gIOPht
-	 3cJh1+WuLGlR+d34M7Gsp5/oDDSJDkJIpwgpuyZKbrOaiDPbArRMfQqNumuRYPLpKM
-	 jO3u/iaJNGQwg==
-Date: Fri, 24 Jan 2025 10:45:48 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-mm@kvack.org, akpm@linux-foundation.org, 
-	linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org, peterz@infradead.org, 
-	mingo@kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, shakeel.butt@linux.dev, rppt@kernel.org, liam.howlett@oracle.com, 
-	surenb@google.com
-Subject: Re: [PATCH] mm,procfs: allow read-only remote mm access under
- CAP_PERFMON
-Message-ID: <20250124-zander-restaurant-7583fe1634b9@brauner>
-References: <20250123214342.4145818-1-andrii@kernel.org>
+	s=arc-20240116; t=1737714351; c=relaxed/simple;
+	bh=1tKSOU2jBWy3i7dXol9gvJP5/Csa3T3P2R2QjVzrxBE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=C/tz1OYjCrzuYM5YnqcIDfLKA9GDNdAeifxIdTqCWiAtNNIABbZVL0KnC46DePHjbqhhUO5c2nWRFCBwbpLbvHQRyZCFxtQozHsD12qcAheqgS5uSoDgz0UP7KOc73zcneTZEjrLuJnjR30Gr43/GlHK14hQbY1HvEMH0MGo9/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=eX/fQkYI; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0A8B41C0009;
+	Fri, 24 Jan 2025 10:25:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1737714346;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6fCdfHN1q0kTW8w9eBXyqkbB49ohSJygSeTX0zRNxMc=;
+	b=eX/fQkYI4sPkIdHLonL+h8QsP4lkstETFRQ15x32KAdXejGjKBs+ugw0BP8oYVRF5icbST
+	TDE8YW/60SuO+hqmNHJf4V0Uo5klTe32s07+rLxa/ydjjdtdRMctIQpz1kSkvWYNAtgnhO
+	e+pr+NDCK9Bj0SK+/JWm4LCEMv88ETdBbEw27e0QXvW6m0ksunFbd9GAuoHYqhlxAoFxAw
+	TB3bAli5qWbeuRM2UM0BTxj/6gLT6Lyay+Upcx1jVxfWYR3uEutQpNrYQlLHGeJA6cB93o
+	jwfwBwUb98nPaf0NGG8skcyHrxjyaDINq3HvcHKNnR2DQAg958H5U/97h0HfUQ==
+Message-ID: <b00deb3a-175a-4d04-9fc0-d71d317ad86e@bootlin.com>
+Date: Fri, 24 Jan 2025 11:25:44 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250123214342.4145818-1-andrii@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2 00/10] selftests/bpf: Migrate
+ test_xdp_redirect_multi.sh to test_progs
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+ Alexis Lothore <alexis.lothore@bootlin.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20250121-redirect-multi-v2-0-fc9cacabc6b2@bootlin.com>
+ <Z5KcP_rJw4Iv5tKp@mini-arch>
+Content-Language: en-US
+From: Bastien Curutchet <bastien.curutchet@bootlin.com>
+In-Reply-To: <Z5KcP_rJw4Iv5tKp@mini-arch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: bastien.curutchet@bootlin.com
 
-On Thu, Jan 23, 2025 at 01:43:42PM -0800, Andrii Nakryiko wrote:
-> It's very common for various tracing and profiling toolis to need to
-> access /proc/PID/maps contents for stack symbolization needs to learn
-> which shared libraries are mapped in memory, at which file offset, etc.
-> Currently, access to /proc/PID/maps requires CAP_SYS_PTRACE (unless we
-> are looking at data for our own process, which is a trivial case not too
-> relevant for profilers use cases).
-> 
-> Unfortunately, CAP_SYS_PTRACE implies way more than just ability to
-> discover memory layout of another process: it allows to fully control
-> arbitrary other processes. This is problematic from security POV for
-> applications that only need read-only /proc/PID/maps (and other similar
-> read-only data) access, and in large production settings CAP_SYS_PTRACE
-> is frowned upon even for the system-wide profilers.
-> 
-> On the other hand, it's already possible to access similar kind of
-> information (and more) with just CAP_PERFMON capability. E.g., setting
-> up PERF_RECORD_MMAP collection through perf_event_open() would give one
-> similar information to what /proc/PID/maps provides.
-> 
-> CAP_PERFMON, together with CAP_BPF, is already a very common combination
-> for system-wide profiling and observability application. As such, it's
-> reasonable and convenient to be able to access /proc/PID/maps with
-> CAP_PERFMON capabilities instead of CAP_SYS_PTRACE.
-> 
-> For procfs, these permissions are checked through common mm_access()
-> helper, and so we augment that with cap_perfmon() check *only* if
-> requested mode is PTRACE_MODE_READ. I.e., PTRACE_MODE_ATTACH wouldn't be
-> permitted by CAP_PERFMON.
-> 
-> Besides procfs itself, mm_access() is used by process_madvise() and
-> process_vm_{readv,writev}() syscalls. The former one uses
-> PTRACE_MODE_READ to avoid leaking ASLR metadata, and as such CAP_PERFMON
-> seems like a meaningful allowable capability as well.
-> 
-> process_vm_{readv,writev} currently assume PTRACE_MODE_ATTACH level of
-> permissions (though for readv PTRACE_MODE_READ seems more reasonable,
-> but that's outside the scope of this change), and as such won't be
-> affected by this patch.
-> 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  kernel/fork.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index ded49f18cd95..c57cb3ad9931 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -1547,6 +1547,15 @@ struct mm_struct *get_task_mm(struct task_struct *task)
->  }
->  EXPORT_SYMBOL_GPL(get_task_mm);
->  
-> +static bool can_access_mm(struct mm_struct *mm, struct task_struct *task, unsigned int mode)
-> +{
-> +	if (mm == current->mm)
-> +		return true;
-> +	if ((mode & PTRACE_MODE_READ) && perfmon_capable())
-> +		return true;
+Hi Stanislav
 
-Just fyi, I suspect that this will trigger new audit denials if the task
-doesn't have CAP_SYS_ADMIN or CAP_PERFORM in the initial user namespace
-but where it would still have access through ptrace_may_access(). Such
-changes have led to complaints before.
-
-I'm not sure how likely that is but it might be noticable. If that's the
-case ns_capable_noaudit(&init_user_ns, ...) would help.
-
-> +	return ptrace_may_access(task, mode);
-> +}
-> +
->  struct mm_struct *mm_access(struct task_struct *task, unsigned int mode)
->  {
->  	struct mm_struct *mm;
-> @@ -1559,7 +1568,7 @@ struct mm_struct *mm_access(struct task_struct *task, unsigned int mode)
->  	mm = get_task_mm(task);
->  	if (!mm) {
->  		mm = ERR_PTR(-ESRCH);
-> -	} else if (mm != current->mm && !ptrace_may_access(task, mode)) {
-> +	} else if (!can_access_mm(mm, task, mode)) {
->  		mmput(mm);
->  		mm = ERR_PTR(-EACCES);
->  	}
-> -- 
-> 2.43.5
+On 1/23/25 8:45 PM, Stanislav Fomichev wrote:
+> On 01/21, Bastien Curutchet (eBPF Foundation) wrote:
+>> Hi all,
+>>
+>> This patch series continues the work to migrate the *.sh tests into
+>> prog_tests framework.
+>>
+>> test_xdp_redirect_multi.sh tests the XDP redirections done through
+>> bpf_redirect_map().
+>>
+>> This is already partly covered by test_xdp_veth.c that already tests
+>> map redirections at XDP level. What isn't covered yet by test_xdp_veth is
+>> the use of the broadcast flags (BPF_F_BROADCAST or BPF_F_EXCLUDE_INGRESS)
+>> and XDP egress programs.
+>>
+>> Hence, this patch series add test cases to test_xdp_veth.c to get rid of
+>> the test_xdp_redirect_multi.sh:
+>>   - PATCH 1 to 5 rework test_xdp_veth to make it more generic and allow to
+>>     configure different test cases
+>>   - PATCH 6 adds test cases for 'classic' bpf_redirect_map()
+>>   - PATCH 7 & 8 covers the broadcast flags
+>>   - PATCH 9 covers the XDP egress programs
+>>   - PATCH 10 removes test_xdp_redirect_multi.sh
+>>
+>> Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
+>> ---
+>> Changes in v2:
+>> - Use serial_test_* to avoid conflict between tests
 > 
+> Do I understand correctly that we want them serial mostly because of the
+> hard-coded namespace names? If yes, might be a good idea to follow up
+> (separately) with a way to generate unique name for each subtest and
+> unserialize them.
+> 
+
+Yes, that's it. Ok, I'll send a V3 with random namespace names.
+
+> (If you have time/desire, I think there is a bunch of similar cases
+> where we have to serialize tests, might as well undo that).
+> 
+
+I'll try to look at it.
+
+> I looked briefly through the series, looks good:
+> 
+> Acked-by: Stanislav Fomichev <sdf@fomichev.me>
+
+
+Best regards,
+Bastien
 
