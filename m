@@ -1,103 +1,118 @@
-Return-Path: <bpf+bounces-49679-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49681-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A84AA1BA57
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 17:28:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F3AAA1BAD9
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 17:46:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B82018906E6
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 16:28:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 057423A623C
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 16:46:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 805F118EFCC;
-	Fri, 24 Jan 2025 16:28:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DFDC1A8F61;
+	Fri, 24 Jan 2025 16:46:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oNEtmoRu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZseZAzfM"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A8BE156649
-	for <bpf@vger.kernel.org>; Fri, 24 Jan 2025 16:28:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33D2F1459E0;
+	Fri, 24 Jan 2025 16:46:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737736109; cv=none; b=aFWZcpWJRlaMGSksPzhu9j4To+mbtjNqC80Agdeu3Z2XYUUZ9izjsnrYWlWGFqr3t12vbZpXDqL8IR+EQer1ViQEV64Jr0a8GTPGu+9/odVUrkSYeMQiyRZ3PB2oRhwCs1L096aEOBkJgJ/m/rHEpMpxBk3D/ArqkKgAXMgpM4o=
+	t=1737737196; cv=none; b=QifmcxEugr3Or8n6A4qoucq7uP3bvXduEobxiyh8UL5kzyoencoyTQDnhBClqrtKsXHrdT77XkYofJ6y8dQZDTIm8C80u63b4DGK0rsreLhe8kox/yWilGNHZemDgQtIgOZrG8cXj1D2wxMfX+WnlcZ3n0nICuWtMiQJr/p7hKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737736109; c=relaxed/simple;
-	bh=ezPn5AZD9BoLjkr9/XF5/26e+Umxh/iPtpyHseXFGng=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eNiSfxw54z9rBvnJ57OhB9d3W7S+/PwvUN5QmnUO9M1auZbg5hQyEwUT49jq7qTAZg8uwfbEfe6y9TOcRV2PE2AFSR1j1j0PwrwTrdGwPeYohqfNr/yobOdbzgSEIx5obqk8wzRQ9ywdOytygh/cAr1UOCDQvinHrLCDEyf8Rgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=oNEtmoRu; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Irbw1bGTK9gYgpshyOyAQdC0GwwG9zFKQ+fCPPFgO+Y=; b=oNEtmoRulpKzxP9axT7jkgDXDe
-	Pte02DiB3LLnzFujy4qy8z0ivQEFNO8djkZCl/m6s5qUmTlapagKLHqX5Ohl6/vlrAIkwYSEeOHHp
-	umyTJxuFDMyJvslktxkwxlXNx1XH/Ea8l6nX/I6ZB0FFlbUEowjlYU3lbzAipot6fJz9geX+y7glZ
-	BX5x8B07FS7vYh0iqqCmjFTlIcCoq/zA4LoC7ARBjy0+Kd2KVjZJorKlaL+Bb32Oh9GzPhbtKQuL0
-	1rvajr2yYK5QIjLh8eGtmLPqAUS3eQMR3h1C82M6J0pG1SeQ6V9C3jWw6fOtfEUMxFkHZwveeaBx0
-	q5drOqRw==;
-Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tbMXd-0000000Gqrz-1XhV;
-	Fri, 24 Jan 2025 16:28:21 +0000
-Date: Fri, 24 Jan 2025 16:28:21 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>, bpf <bpf@vger.kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Sebastian Sewior <bigeasy@linutronix.de>,
-	Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Michal Hocko <mhocko@suse.com>,
-	Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>,
-	Tejun Heo <tj@kernel.org>, linux-mm <linux-mm@kvack.org>,
-	Kernel Team <kernel-team@fb.com>, Marco Elver <elver@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Oscar Salvador <osalvador@suse.de>
-Subject: Re: [PATCH bpf-next v6 0/6] bpf, mm: Introduce try_alloc_pages()
-Message-ID: <Z5O_pcGpSh94Hbvu@casper.infradead.org>
-References: <20250124035655.78899-1-alexei.starovoitov@gmail.com>
- <Z5OgvePdlqRoKMyx@casper.infradead.org>
- <e5c1eed1-3ea2-4452-a871-3308c90e932b@suse.cz>
- <CAADnVQJhU3EYp3fWYcTFtZobJUAaWRQmjjBSw5te9OpUaM8TNw@mail.gmail.com>
+	s=arc-20240116; t=1737737196; c=relaxed/simple;
+	bh=3P+9aTiLaHox8mL2ZK+WSxeM0kY5helZLnTFCzt45dc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iVwkWXHrCCatpzdNEnE0m8knOQizxfLclvAPr5KDviUHDmGGoRdGvyGCd/8RULJvWt9T0i62KAwhyCx96859OnP5cCduWTC82Ldw9z3XtfyMz/93e9JhcW3XHjrVkJ0zJt+1Asoo4lKxf3peOWx063Md1JRz/spFlIjYhibCwjQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZseZAzfM; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-aaf60d85238so403607266b.0;
+        Fri, 24 Jan 2025 08:46:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1737737193; x=1738341993; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3P+9aTiLaHox8mL2ZK+WSxeM0kY5helZLnTFCzt45dc=;
+        b=ZseZAzfMABao2yI1/Df7T+OQgrhqV0FBYt4HPa04UO4vBgaQqM3q16korfrKUs/fke
+         6vzw8rS3dHd3mCpMPQ5MJ/6S9mb29JMY9XcEz3FmYuSUYD18vNRJNEK3si1ODtkhXtwg
+         xn6Pui7uEypaEFHYmPFOgsaWDtIGHh6JaJ3Ir3qBK4MTfZ4w2+NxTKRzvw8DgT5owbo6
+         ixtLN2s29Lidt98u9Rw0ZN+oiC30Kq9Yr5KUh1w9ACrKzC7qyoAh73z+EEjdjH8eSu+H
+         fCEpFNzUVQI70EyR24oyhpkJZCNHz5pn7v6RJoLn/KFUTxtbb6SwDVA1yeJ4S3AJvCrl
+         UGaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737737193; x=1738341993;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3P+9aTiLaHox8mL2ZK+WSxeM0kY5helZLnTFCzt45dc=;
+        b=BmLYerkVUg1Z4UUmCbplxmrpPq0xR7Qy9rOMa1BD7MSHOd994pmCrcbx9qOJcsei0K
+         dvKdyDXHa5CuRiJ8CvB/cOo2aIP2BaxgUkpyue6XpiJVRPb47oZwdXBzSp8TIg/8oyw6
+         506DIUB4BDVQNgxT6ee/7y0BuPcxnL60yw9ft+19YJGafFGl2b6AJGQj3CqtVpZ208Kk
+         P6kXdujJ0O/s7CaKedb1cQylh1C9GQCmTxibO4z720tj+1f1/cl1uuSET6+j4y5QdOih
+         HDBRolaHPryVlaHHWsmbZh0efXLbuYJva3EyL0rbTiOMZFYqQEKqOLPK0wnI0EcTAs4z
+         JwEw==
+X-Forwarded-Encrypted: i=1; AJvYcCUmqn6XIhsJrQUAjd3ORg1x7VXyfTVM2TkaHrGyZkXxbrBjtm2Phh1QuQFwF3WfyowWtnA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzbLKhm2g+9/+ZaHdP1T9oh/MTZ6aGVjRNy3L+rVVhiAvQVUk7V
+	1HH8J69JnWAxJTi1drt0zYMvPzvQXtgY+ylPmTPpAYZYL7fu4qlUuSbZXI8PYjSmSsSZwloWT6+
+	iTFb6sI2LClWVEFp2bkK9YlQswNs=
+X-Gm-Gg: ASbGncvVL4VE1uLMHD4y9LXTfS1+KXI4J2Lz4vfe/ns8B2Ryzt5VbovJ4LsI1B0vkNn
+	S3ViQWzBBZJUosPawA5nWrPRtUC1D+ajagjwMDWToIfuWdP4frjTL1ImugQOt9oe6WBAYWgs6Mx
+	U=
+X-Google-Smtp-Source: AGHT+IGMNi7U+c3YgeTKPqKmkN12vA7tjq7ur6vHq+zBUJB5GBN9ofCptg5c4QoAbKBPKmEwrFGHUESzlJTCsnJlf3Y=
+X-Received: by 2002:a17:907:2ce5:b0:aab:cce0:f8b4 with SMTP id
+ a640c23a62f3a-ab38b4c6b05mr3017971166b.52.1737737193217; Fri, 24 Jan 2025
+ 08:46:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQJhU3EYp3fWYcTFtZobJUAaWRQmjjBSw5te9OpUaM8TNw@mail.gmail.com>
+References: <20250124090211.110328-1-sankararaman.jayaraman@broadcom.com>
+In-Reply-To: <20250124090211.110328-1-sankararaman.jayaraman@broadcom.com>
+From: William Tu <u9012063@gmail.com>
+Date: Fri, 24 Jan 2025 08:45:56 -0800
+X-Gm-Features: AWEUYZkH6xFaPaEOJR0ohihd2I5L7RV1uXP71LkRO-Lq8_VRerVgOElw7fHJ1H4
+Message-ID: <CALDO+SbGYqG6jskUhp-dzxTPa2Mf5ge794Z_L0AC8MLxoKXMnA@mail.gmail.com>
+Subject: Re: [PATCH net] vmxnet3: Fix tx queue race condition with XDP
+To: Sankararaman Jayaraman <sankararaman.jayaraman@broadcom.com>
+Cc: netdev@vger.kernel.org, ronak.doshi@broadcom.com, 
+	bcm-kernel-feedback-list@broadcom.com, andrew+netdev@lunn.ch, 
+	davem@davemloft.net, kuba@kernel.org, edumazet@google.com, pabeni@redhat.com, 
+	ast@kernel.org, alexandr.lobakin@intel.com, alexanderduyck@fb.com, 
+	bpf@vger.kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
+	john.fastabend@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 24, 2025 at 08:19:19AM -0800, Alexei Starovoitov wrote:
-> I spotted this line:
-> VM_BUG_ON_PAGE(compound && compound_order(page) != order, page);
-> that line alone was a good enough reason to use __GFP_COMP,
-> but since it's debug only I could only guess where the future lies.
-> 
-> Should it be something like:
-> 
-> if (WARN_ON(compound && compound_order(page) != order))
->  order = compound_order(page);
-> 
-> since proceeding with the wrong order is certain to crash.
-> ?
+On Fri, Jan 24, 2025 at 1:00=E2=80=AFAM Sankararaman Jayaraman
+<sankararaman.jayaraman@broadcom.com> wrote:
+>
+> If XDP traffic runs on a CPU which is greater than or equal to
+> the number of the Tx queues of the NIC, then vmxnet3_xdp_get_tq()
+> always picks up queue 0 for transmission as it uses reciprocal scale
+> instead of simple modulo operation.
+>
+> vmxnet3_xdp_xmit() and vmxnet3_xdp_xmit_frame() use the above
+> returned queue without any locking which can lead to race conditions
+> when multiple XDP xmits run in parallel on different CPU's.
+>
+> This patch uses a simple module scheme when the current CPU equals or
+> exceeds the number of Tx queues on the NIC. It also adds locking in
+> vmxnet3_xdp_xmit() and vmxnet3_xdp_xmit_frame() functions.
+>
+> Fixes: 54f00cce1178 ("vmxnet3: Add XDP support.")
+> Signed-off-by: Sankararaman Jayaraman <sankararaman.jayaraman@broadcom.co=
+m>
+> Signed-off-by: Ronak Doshi <ronak.doshi@broadcom.com>
+> ---
 
-It's hard to say.  We've got a discrepancy between "order at free call
-site" and "order recorded in page".  We might, for example, have a
-memory corruption which has overwritten the compound_order() stored in
-the struct page, in which case the 'order' passed in is the correct one,
-and "correcting" it to the corrupt one stored in struct page would be
-the thing which caused the crash.
-
-I'd leave it as VM_BUG_ON().
+LGTM
+Acked-by: William Tu <u9012063@gmail.com>
 
