@@ -1,299 +1,189 @@
-Return-Path: <bpf+bounces-49805-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49806-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E46BA1C3AB
-	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 15:02:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CFB9A1C3D8
+	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 15:52:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11434168F5D
-	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 14:02:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9523A3A265A
+	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 14:52:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0D7C2C1A2;
-	Sat, 25 Jan 2025 14:02:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C90902D05E;
+	Sat, 25 Jan 2025 14:52:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="13DxjDJC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NJ89AAtA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B812208D0
-	for <bpf@vger.kernel.org>; Sat, 25 Jan 2025 14:02:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07E335947;
+	Sat, 25 Jan 2025 14:52:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737813735; cv=none; b=qbIGGReu8Z6vrC4mKJ9Vx0wrzyBRkWnc03Me+zl93sciO+E1JhBf7izDf3KFzW+XgDoNtDFbIcoEV9uRSazBo5Z5SvXDvm/FJFg2o3tbzhFisP+UIj+TwRpyn3bUbu6qKrS3rdUtOEyYbEYBMJeCNBTa9TvOMXubgB3JYLizeM8=
+	t=1737816733; cv=none; b=RfaVKoxxgjNOt2gRxcVkafO83ORf1u/n7Bl21BnP1frQ8YV1O/BrFSWVJo55uSQoSgOxDdrAzBgT020uyUbxAdrA76snJDxgRQGjZDuzo459Du7PUhF4/ygDbQ2/ifqtvcf3feCYB9wfyl4mfxPuVzvhYSaJzi0l0LgkC5TuuX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737813735; c=relaxed/simple;
-	bh=Z7KW7hGpC/vEHRFvXd1cQKpvirnueSbzXHCCQEkOjbA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PXIekD+DgBN4iUInjhB34XtzeM9UjmcOI4hA0RElU4p2CV9Cez6qknc2VqIhK6ZCT3viubJoest5fSyDij00s4G3DoDR0RKXnl3wSQdC+tdlX3pS2iN70WYcMY7aSqrZNjGy4+lAOw+WxWg6CBki2x6vH9xI0P8jQUk+yeZGwaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=13DxjDJC; arc=none smtp.client-ip=74.208.4.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
-	s=s1-ionos; t=1737813731; x=1738418531; i=linux@jordanrome.com;
-	bh=rYf1KXUNG30BcbFQzSpNBwFqJgAn9teGb0jTJqlGBfg=;
-	h=X-UI-Sender-Class:MIME-Version:References:In-Reply-To:From:Date:
-	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=13DxjDJCYipi/k6vbTRJG7A7xWgcd56z8C9a2WbWegtxouvQpCKoq/+wnU2v6HBq
-	 VzimlDbspMfh2E/54VWPP7qCQ7pZ1pDeietwLIOLdepcTSpbjoxCSeEI5Lj0d0VRJ
-	 t0wms8B4BFxKI6Iq/ebtgi78t652877j4jpoXs+7BflYtkKShbcW/I/GmfApeWxOu
-	 +ioAhj+WeIMMsQakJCdXkvj0QPtIZ9IyjsWER5YxJoYlUP7W3JAi71uzVLEO5A+Mp
-	 /IlQNq1Ji56J8OXVwAp8wBH/dcLlj6MXbR4ZNz/Lsv1HqRZ3h5Ow4ie99pwicVT4Y
-	 7R+vC6KXcDZf4PIOFQ==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from mail-il1-f177.google.com ([209.85.166.177]) by
- mrelay.perfora.net (mreueus002 [74.208.5.2]) with ESMTPSA (Nemesis) id
- 0Me96G-1tqTEr0kVa-00RfZf for <bpf@vger.kernel.org>; Sat, 25 Jan 2025 15:02:11
- +0100
-Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-3cfce97a3d9so3678775ab.2
-        for <bpf@vger.kernel.org>; Sat, 25 Jan 2025 06:02:11 -0800 (PST)
-X-Gm-Message-State: AOJu0Yw1fO9K0yX8ZvlMA43MIyr2c6oBksUCklZl5CGnIq14OykvHxUx
-	t5I5AxYbu2zk92HCCOfsmcipUU7+B5yVWDy4oVXZXRkOWCcMMRvpNXh09wu5O9Tf/mmP4Zudze4
-	JxM79iK2viZSOaXOxJkZwxPfLDtU=
-X-Google-Smtp-Source: AGHT+IE5GrCHOzylD7RLBeNyEdIR9FJzPs5p/pyF2/z1RwtKgiEmMbCj6K0TFEd/nTQODRRPSQ5UH2wseoHxEnWuA6c=
-X-Received: by 2002:a05:6e02:1d88:b0:3a7:e452:db5 with SMTP id
- e9e14a558f8ab-3cf744788cfmr290655085ab.15.1737813730652; Sat, 25 Jan 2025
- 06:02:10 -0800 (PST)
+	s=arc-20240116; t=1737816733; c=relaxed/simple;
+	bh=U8cLi1k6bRitQGFglcYrARlqUklFvkMju3EiAPE1YNI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=geMaqmb2xH5uaoYb8G02zHpRTo3Gh/zrqgpbXMEsirF3flUXFQ0Dn5rEX1bWkWnRZ7lqPFs1gEMfochF7ArrBPV+NWes3kGjUI5pKfiu2Y6+T7f82nEE1/N+htcqL+YLkdcUr/SW+ZYsJ+wiV4zgpGkBi82SGhOsdy5IKeZxbV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NJ89AAtA; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-219f8263ae0so56117935ad.0;
+        Sat, 25 Jan 2025 06:52:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1737816731; x=1738421531; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YNuMyLA/pexBhgMV2jzIK6ArauTH0LbZcCgr+1uCTb8=;
+        b=NJ89AAtAVrUOtnGZSyt4cDgmG/CtcO6/bszu2GAg4WlvwAqxHzx67fpVpZIUuZ7hl8
+         mZ6RxkBa1724ABOEgOWymm8mTeW0lk+jygE3hENbyWY4xeLaJ4EtQ2vk9ziT9FWNHJdS
+         T47pXWaWT4WOcSdTEhy2EvKkGHz1Yn0qWcEz07e9t0HH6IUiwa1TMqQ9WJhEzbZdvj5+
+         GwRwoSgaiuTSS2Ltxe1wphOdbpoqOSFzMcaeG/gIaTboD25XnnQ4s9Vf6cfSnFf3m+eI
+         uY8VTV5WHqtycDJaFWcESMBFT/toGZcBKmyozLyY+1HCTPDRVU6dwIMgAZj+sOa34E7e
+         9F/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737816731; x=1738421531;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=YNuMyLA/pexBhgMV2jzIK6ArauTH0LbZcCgr+1uCTb8=;
+        b=wxl5oicwy2DPGUZ35HgEaW66bEE5RPUjAVuey18pJqI4mbWvwJo2aUQ0ZkpH+zgZcC
+         5i0v26+KyM2tUsVcMZmvLSk+Y7SBeEGnxPqpFN9FqPINm0eEgR8d93WRM2oRyBgBtZC8
+         bxWlp1g/eRpAzbYHrjlTCoYNaLop876L8drnlWCE0qs1udzVsnBGi838ZEJiX/D++NWl
+         m9qw/nrYUDc3gVSL3jQ6sGDdnPEiRZpf/4tk4cXAjwJXNvUNZiv5X1m4zrFTgqYROXXw
+         VEs7bCT8usauSXX1cch5iynJVxewp+3NM22yt4dBvWi/6Q9ucd1QakMDUo9b2OkjfmJy
+         4kMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU8Q+EA16p/T5owpyXIAECTf5MD+AA1or6MZFW01i8GBfstO/TAzNmGCUw+2w6dk5DZySY=@vger.kernel.org, AJvYcCUKApjxKe5Xm3OnPHejLq6vLkeDcgo9tbhocjtWFVHUdmrEdGD2Hd6ZY1/1N4EiHQvtOiGzt6ZOFMW+qxpH@vger.kernel.org
+X-Gm-Message-State: AOJu0YxlUtJK4hMJUEPd4IuzPEHurhrg4hj0RjgPrYgugpPnwg64Rp2J
+	cmsWmbw6njlQdBYR38ZBlCLn4Z1MdOJNJ9R3NAP9QMSIGJQdDJJU
+X-Gm-Gg: ASbGncuXRNidcRkhfBj8Mso1ZZ7iB1wHvBsIsR4mzwcCD7IHhc/BhxZoxoXSEsTqdZt
+	4Wb9wLaVfxxF86KT2Vtpk7QUIyAzFsvGVszEjIZ7FtEea1CCNujKpKuYjH5j65U1e2fftcJdWqF
+	3jXCAB9bJYxfnQxRPxem/4xCtjK87/tE3K+3Lw/inxsf64f0x3wxO5JCvio4VJ2RRVNTQgvu0ne
+	ZiW9EowRsEGRAHObSSCDMTQ5Vv8Pz9gu+3ePpSMKULnpEsLgXtCbwWKGQnDbYBvhTVklaeFQdzq
+	+w==
+X-Google-Smtp-Source: AGHT+IHQ0Mcne477v9UjGfRZ/ngf1o6IFBX8sDKyd5+xdfG4yRMvPKrRk0kBstZrfZmUqJeqp9OE1w==
+X-Received: by 2002:a05:6a00:3c8a:b0:725:f4c6:6b68 with SMTP id d2e1a72fcca58-72daf93116bmr49152856b3a.4.1737816730828;
+        Sat, 25 Jan 2025 06:52:10 -0800 (PST)
+Received: from [0.0.0.0] ([5.34.218.166])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72f8a6c6775sm3784919b3a.73.2025.01.25.06.52.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 25 Jan 2025 06:52:10 -0800 (PST)
+Message-ID: <a043941b-f7d0-4f5a-a2aa-4f47c58370b2@gmail.com>
+Date: Sat, 25 Jan 2025 22:52:03 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250124181602.1872142-1-linux@jordanrome.com> <CAEf4Bzb9EOwQnzCL4j6vGFdJ-hgPXif5Z8iXUT-sKvf+bgTfEg@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb9EOwQnzCL4j6vGFdJ-hgPXif5Z8iXUT-sKvf+bgTfEg@mail.gmail.com>
-From: Jordan Rome <linux@jordanrome.com>
-Date: Sat, 25 Jan 2025 09:01:59 -0500
-X-Gmail-Original-Message-ID: <CA+QiOd7i7xjQhyjfaOfTMhZZ=x_-kpdDaA7pvcs1ZuEFgErFcQ@mail.gmail.com>
-X-Gm-Features: AWEUYZlmuiSI9JYAQZJlAfxa8d14eIKfXKn-YrZ4ah-wQ5bmO4uRGJZWzsMzhFA
-Message-ID: <CA+QiOd7i7xjQhyjfaOfTMhZZ=x_-kpdDaA7pvcs1ZuEFgErFcQ@mail.gmail.com>
-Subject: Re: [bpf-next v3 1/3] mm: add copy_remote_vm_str
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, linux-mm@kvack.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Kernel Team <kernel-team@fb.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Alexander Potapenko <glider@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:K58to31bYV0jTxbYp+FiACOKPZC+p62SQL9ox26xX75eo0MurOw
- iHxSz7Ddl2673nMo4LuM0MQ0SaEMwQwkjgek9+23JRNz6q8Ga7NwvqbhgVABTDKXou2y8yH
- o54MEhThol9mPyTSrBmoB1SKzvE6A/8U2kBwU1AG8DUCrC4ItMugJGemMxxC3dnNUrD2GqI
- ZMu1nBCPVMPRXKnoZyJwg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:hzWOnCmSb/M=;iabz7Mqwa75417KqSuHMBcosD9g
- oifQXqPe5ZRVCuXA0526uSKTuf7q09RjvFyet5Nu9XrlQ4X5PNxOryPp8pfS+ucHzHkWA8GCn
- vMSfHUJRY9jpDzvCQmPLEogZdNApcwcCejo4ALXqp/MFjWx7mggmXqdrFg8lQlDIpvi8SEEwi
- dqHF6dSAGUqbjjceo5Zz7TQW0TTkrRNkQ+F3iDz+UbPls8rcfwX/uewJZQr7V+aFz41oESLdB
- hdav9+TpS+tMLUiCzNCXAxbaCZzgp05zpLEIabcB/bgpHmjhy7H7VhB3gXtxQ3V06n2XEeim0
- kzbTFMOqPPSBtGZCq4+10AWFH/eg74OfGXQjxOHDNU8Z22rNaHHMwQR9L6j4iyvoz7ZIYJo3+
- 8g7XrPVyJbgw4u4jNF5dOw6HN58QcNQh5YZ9aTREOjfU86WRUthqs7OeL7778FOs/L8/N+2d8
- gpCNIt7MwrcUDIoYHE1z+O4RSFHjblsaGcc8MCI193AuAKoaNzoddXTV/TBFxHoidOJr9DZEv
- ZkvS42SDYM0VqTB6Gki+/vekNnmA1fowaobSo/KfTb/fgIxDgPXM/70GQ05ukgY20ALlYWwar
- gw9YChmpd1FTn2EZRlnx0vH2z3ARiL9geK/sr3vLhN7RXcg3tZHnO48OX+hfPjjSjhoT8Pj8+
- v/au4rynNGGMIfPLzxMBY75rjIpeHhm4mwdsifpVaJPsYDwEQkRWqv0IJcZYV4o2IOHaI3H8S
- EWaxJ/6VHb2yIOvFSPHYkLtCx9hGWIZlzFUz510rXUEZEGvpzpx9i94wga060kJPOxjOaz3+Y
- 5wn8QxGddQ2sa3bu2XBgKPpGFzzzJ7h2/c6KY3N7qZ9+gypD9cXMnXImw86/Q1kmMgQM14eT8
- ONy7J3cpeeuNgrYQT6c8nTyGpkx4cHZolrKntN8lgfGKjpUYJllKEgzDCMMiKl9rqt6qp+bon
- tmNkLOp/MWkNJ2L1WMyMswH6fPqnBZ8cTHjIGd5KCDB3tPR6RbQGpuHJFH28KQY8ZZjddg/la
- jivcqlIJ9C+jowhCZI+R6odwqooR3mVoxVHIIrhRcfD4d/E1nbM2GAjsnfkd7IJeT4wxZ/Lfu
- mBYchivTiQcEgjcCRzEtN7fb0iYBk75WZWg3vZOkvX2pcWC4Y1e94Eo7qxpVE1wlpwgcc5sYl
- e7QdqFyIrhx3flpadOrDI55+oCBGsLBFR+M1k42LATXumP4m8PXH0W6zLO5hZgeemZ/1sYqoV
- comYj3b8yJcKDKgzQDIqhI0tupFSgqmy9g==
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v3 1/3] libbpf: Refactor libbpf_probe_bpf_helper
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ eddyz87@gmail.com, haoluo@google.com, qmo@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20250124144411.13468-1-chen.dylane@gmail.com>
+ <20250124144411.13468-2-chen.dylane@gmail.com> <Z5O_SBFCWY-3yUI-@krava>
+From: Tao Chen <chen.dylane@gmail.com>
+In-Reply-To: <Z5O_SBFCWY-3yUI-@krava>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 24, 2025 at 7:09=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, Jan 24, 2025 at 10:22=E2=80=AFAM Jordan Rome <linux@jordanrome.co=
-m> wrote:
-> >
-> > Similar to `access_process_vm` but specific to strings.
-> > Also chunks reads by page and utilizes `strscpy`
-> > for handling null termination.
-> >
-> > Signed-off-by: Jordan Rome <linux@jordanrome.com>
-> > ---
-> >  include/linux/mm.h |   3 ++
-> >  mm/memory.c        | 119 +++++++++++++++++++++++++++++++++++++++++++++
-> >  mm/nommu.c         |  68 ++++++++++++++++++++++++++
-> >  3 files changed, 190 insertions(+)
-> >
->
-> [...]
->
-> > +               maddr =3D kmap_local_page(page);
-> > +               retval =3D strscpy(buf, maddr + offset, bytes);
-> > +               unmap_and_put_page(page, maddr);
-> > +
-> > +               if (retval > -1 && retval < bytes) {
-> > +                       /* found the end of the string */
-> > +                       buf +=3D retval;
-> > +                       goto out;
-> > +               }
-> > +
-> > +               if (retval =3D=3D -E2BIG) {
->
-> nit: strscpy() can't return any other error, so I'd structure result
-> handling as:
->
-> if (retval < 0) {
->   /* that annoying last byte copy */
->   retval =3D bytes;
-> }
-> if (retval < bytes) {
->     /* "we are done" handling */
-> }
->
-> /* common len, buf, addr adjustment logic stays here */
->
+在 2025/1/25 00:26, Jiri Olsa 写道:
+> On Fri, Jan 24, 2025 at 10:44:09PM +0800, Tao Chen wrote:
+>> Extract the common part as probe_func_comm, which will be used in
+>> both libbpf_probe_bpf_{helper, kfunc}
+>>
+>> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
+>> ---
+>>   tools/lib/bpf/libbpf_probes.c | 38 ++++++++++++++++++++++++-----------
+>>   1 file changed, 26 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
+>> index 9dfbe7750f56..b73345977b4e 100644
+>> --- a/tools/lib/bpf/libbpf_probes.c
+>> +++ b/tools/lib/bpf/libbpf_probes.c
+>> @@ -413,22 +413,20 @@ int libbpf_probe_bpf_map_type(enum bpf_map_type map_type, const void *opts)
+>>   	return libbpf_err(ret);
+>>   }
+>>   
+>> -int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type, enum bpf_func_id helper_id,
+>> -			    const void *opts)
+>> +static int probe_func_comm(enum bpf_prog_type prog_type, struct bpf_insn insn,
+>> +			   char *accepted_msgs, size_t msgs_size)
+>>   {
+>>   	struct bpf_insn insns[] = {
+>> -		BPF_EMIT_CALL((__u32)helper_id),
+>> +		BPF_EXIT_INSN(),
+>>   		BPF_EXIT_INSN(),
+> 
+> I'd just keep above in libbpf_probe_bpf_helper and pass insns to probe_func_comm,
+> seems easier
+> 
+> jirka
+> 
 
-Ack. Actually, I thought of a way to make this cleaner
-and correct.
+Hi jiri,
+Thank you for your review, your suggestion seems better, i will
+send it in v4.
 
->
-> but also here's the question. If we get E2BIG, while bytes is exactly
-> how many bytes we have left in the buffer, the last byte should be
-> zero, no? So this should be cleanly handled, right? Or do we have a
-> test for that and it works already?
->
+>>   	};
+>>   	const size_t insn_cnt = ARRAY_SIZE(insns);
+>> -	char buf[4096];
+>> -	int ret;
+>> +	int err;
+>>   
+>> -	if (opts)
+>> -		return libbpf_err(-EINVAL);
+>> +	insns[0] = insn;
+>>   
+>>   	/* we can't successfully load all prog types to check for BPF helper
+>> -	 * support, so bail out with -EOPNOTSUPP error
+>> +	 * and kfunc support, so bail out with -EOPNOTSUPP error
+>>   	 */
+>>   	switch (prog_type) {
+>>   	case BPF_PROG_TYPE_TRACING:
+>> @@ -440,10 +438,26 @@ int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type, enum bpf_func_id helpe
+>>   		break;
+>>   	}
+>>   
+>> -	buf[0] = '\0';
+>> -	ret = probe_prog_load(prog_type, insns, insn_cnt, buf, sizeof(buf));
+>> -	if (ret < 0)
+>> -		return libbpf_err(ret);
+>> +	accepted_msgs[0] = '\0';
+>> +	err = probe_prog_load(prog_type, insns, insn_cnt, accepted_msgs, msgs_size);
+>> +	if (err < 0)
+>> +		return libbpf_err(err);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type, enum bpf_func_id helper_id,
+>> +			    const void *opts)
+>> +{
+>> +	char buf[4096];
+>> +	int ret;
+>> +
+>> +	if (opts)
+>> +		return libbpf_err(-EINVAL);
+>> +
+>> +	ret = probe_func_comm(prog_type, BPF_EMIT_CALL((__u32)helper_id), buf, sizeof(buf));
+>> +	if (ret)
+>> +		return ret;
+>>   
+>>   	/* If BPF verifier doesn't recognize BPF helper ID (enum bpf_func_id)
+>>   	 * at all, it will emit something like "invalid func unknown#181".
+>> -- 
+>> 2.43.0
+>>
 
-Ok, I found an inconsistency that gets handled in the BPF helper
-`bpf_copy_from_user_task_str`, which I'm going to fix in the next
-version of this patch.
 
-Let me explain how this function is SUPPOSED to work
-and enumerate some different test cases (a lot of which are in commit 3).
-
-Note1: all of the target strings
-are null terminated (if you try to copy a string that's not null terminated
-you may accidentally copy junk).
-
-Note2: strscopy returns E2BIG if the len requested isn't as long
-as the string INCLUDING the nul terminator. So if you want to copy
-"test_data\0" you need to request 10 bytes not 9. And if you request
-10 or anything greater it returns 9.
-
-Note3: This function, as opposed to the bpf helper calling
-this function, returns the number copied NOT including the nul terminator.
-
-So... the target string is "test_data".
-
-Request 10 bytes, return 9.
-Request 2 bytes, return 1.
-Request 20 bytes, return 9.
-
-Now, let's say this string falls across a page boundary
-where "_" is the last character in the page.
-
-Request 10 bytes, which becomes a request
-for 5 bytes for the first page. strscopy returns E2BIG
-and copies "test\0" into the buffer. We copy the last
-bytes of the page into the buffer, which is the "_",
-and then  request 5 more bytes on the next page,
-copying "data\0" and strscopy returns 4. Return 9.
-
-Now let's say the last "a" is the last character on the page.
-Request 10 bytes, which becomes a request
-for 9 bytes. strscopy returns E2BIG and copies "test_dat\0"
-into the buffer. Once again we copy the last byte
-of the page into the buffer, which is "a"
-and we request 1 more byte of the next page, which
-is the nul terminator. strscopy returns 0 and this
-function returns 9.
-
-Again note, that this version of the code has a bug
-that is "handled" by the bpf helper and I'm going to fix.
-
-> > +                       retval =3D bytes;
-> > +                       /*
-> > +                        * Because strscpy always null terminates we ne=
-ed to
-> > +                        * copy the last byte in the page if we are goi=
-ng to
-> > +                        * load more pages
-> > +                        */
-> > +                       if (bytes < len) {
-> > +                               end =3D bytes - 1;
-> > +                               copy_from_user_page(vma,
-> > +                                               page,
-> > +                                               addr + end,
-> > +                                               buf + end,
->
-> you don't need the `end` variable, just use `bytes - 1` twice?
->
-> > +                                               maddr + (PAGE_SIZE - 1)=
-,
-> > +                                               1);
-> > +                       }
-> > +               }
-> > +
-> > +               len -=3D retval;
-> > +               buf +=3D retval;
-> > +               addr +=3D retval;
-> > +       }
-> > +
-> > +out:
-> > +       mmap_read_unlock(mm);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       return buf - old_buf;
-> > +}
-> > +
-> > +/**
-> > + * copy_remote_vm_str - copy a string from another process's address s=
-pace.
-> > + * @tsk:       the task of the target address space
-> > + * @addr:      start address to read from
-> > + * @buf:       destination buffer
-> > + * @len:       number of bytes to transfer
-> > + * @gup_flags: flags modifying lookup behaviour
-> > + *
-> > + * The caller must hold a reference on @mm.
-> > + *
-> > + * Return: number of bytes copied from @addr (source) to @buf (destina=
-tion).
-> > + * If the source string is shorter than @len then return the length of=
- the
-> > + * source string. If the source string is longer than @len, return @le=
-n.
-> > + * On any error, return -EFAULT.
->
-> strncpy_from_user_nofault() doc says:
->
->   On success, returns the length of the string INCLUDING the trailing NUL
->
-> Is this the case with copy_remote_vm_str() as well? I.e., if the
-> source string is 5 bytes + NUL, dst buf is 10. Will we get 5 or 6
-> returned? We should be very careful with all this +/- 1 business in
-> corner cases, too easy to mess this up.
->
-
-Explained above.
-
-> > + */
-> > +int copy_remote_vm_str(struct task_struct *tsk, unsigned long addr,
-> > +               void *buf, int len, unsigned int gup_flags)
-> > +{
-> > +       struct mm_struct *mm;
-> > +       int ret;
-> > +
-> > +       mm =3D get_task_mm(tsk);
-> > +       if (!mm)
-> > +               return -EFAULT;
-> > +
-> > +       ret =3D __copy_remote_vm_str(mm, addr, buf, len, gup_flags);
-> > +
-> > +       mmput(mm);
-> > +
-> > +       return ret;
-> > +}
-> > +EXPORT_SYMBOL_GPL(copy_remote_vm_str);
-> > +
->
-> [...]
+-- 
+Best Regards
+Dylane Chen
 
