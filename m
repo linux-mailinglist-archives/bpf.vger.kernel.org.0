@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-49750-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49751-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A572BA1C073
-	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 03:19:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3F00A1C071
+	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 03:19:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02A627A2354
-	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 02:19:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADC0A3AE138
+	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 02:19:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82C6F204689;
-	Sat, 25 Jan 2025 02:19:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2209D204689;
+	Sat, 25 Jan 2025 02:19:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bi2U9wZp"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="N6pAa0WP"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B4EC1FA26C
-	for <bpf@vger.kernel.org>; Sat, 25 Jan 2025 02:19:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BAE21FBCB5
+	for <bpf@vger.kernel.org>; Sat, 25 Jan 2025 02:19:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737771558; cv=none; b=gJBaWpzdq8yYV4/iH0BNk6sOb6/jCO/Ny4LYH/cp+f0JT1EXEzT0BgzCy4QixLpV8/3jn4xoWczQJg0zx7XDbg72R7EtFIN1os/h+VHgn/exsBMDoDEjDI4WxQ92i5dq+vIuIfXg4/asxBzFS/wxmemaV4gj32e10/HiSFZ30Zk=
+	t=1737771578; cv=none; b=boJGbBVr7y9ni0NY5c6p8epA8TL/9vNQFaBpKpW8TTUs2X4zG9SSdFWjOxEFsw8ggR+qy2qZuX7QGl3YX+rwxYQCVh3mgj3dFER/HjVC91a01k6A6fpsIY3yAnU8DXnEPKgIyqQ19V7+H+uzmbz7ngq9SF+S9ykYe4KIgUJpNJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737771558; c=relaxed/simple;
-	bh=NllgFKw6vtsbjQq8bKvhSHXxpeTqsCYhCXJrfqLuyeI=;
+	s=arc-20240116; t=1737771578; c=relaxed/simple;
+	bh=LimUoi+FuxUWEB5grkneFv7gxwV1h7mQgMdnYeNS3nM=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=UidZMP+4PY3utMT7ZPqKHWI17la9LiIS0mBDTCDlMmZRWBtKWqe3OkB+rBTOWQXn6k7SGrerdcTG74rMdZ7cvWRBJbV5670XTNvSRU0oJpSri4pk/O2B4M3Ldvy8YV0HaJwEOOpO6ypi3803sUMZ1D2m99+gSZ5MYOgVNtSgDtA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bi2U9wZp; arc=none smtp.client-ip=209.85.216.74
+	 To:Cc:Content-Type; b=o/WgLDQDUAxzKb+0PULdbetl4pZ9+shDige1KWZGFFH579LT7encV+ugYzyTNTGF5Mau0aTpkXf9EZe/Ox/H0LBeFSrNBVld6WVgx3JDNX28UJUMHO63Zhq+Tdh+W8c01M0PFOCN67FytUIvyP2B2Teda0BtKqOE2lgEF7tw6MQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=N6pAa0WP; arc=none smtp.client-ip=209.85.216.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2efa74481fdso5497036a91.1
-        for <bpf@vger.kernel.org>; Fri, 24 Jan 2025 18:19:16 -0800 (PST)
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2ee8ced572eso5566038a91.0
+        for <bpf@vger.kernel.org>; Fri, 24 Jan 2025 18:19:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1737771556; x=1738376356; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1737771576; x=1738376376; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3/pYcf0sANYo9TEsaEY4ONRLzSTmKybwrzwLYycpJYE=;
-        b=bi2U9wZpzPvuc9YLs+d6lIGReufKyWEWIJtyLbSp2FM68dX7zStpdsAYniXpxstfFB
-         YvVHvhoOMwSv02jCjBgO4Slszq2Lu0vslfmPc5disDzMtSG6cHqq7FjBdD4e1z5DnlBc
-         wca4oOSAOvJfgUx5mw7o3h2Pexeimto53tGFm/pxJGgcAEy67YYW+lGYltXEF/ncxiDf
-         nNpjb9Fyzj+d+KVUwkdD1gakmRlvMFpFVACxGdxpoVMggJ5Qp3dNVWbj/bvsQpzl+7Gf
-         G5tXL6DjrpdnTnyHDyNK2hANIxyiVzthblht09WHEY1UYq6wYnUL3SOI9+8qTvVqedgP
-         VtRQ==
+        bh=TUVtAh3jk+1Z9FYL8oOTJSugJD98SnZKa+Q8sEqs79Q=;
+        b=N6pAa0WP7TxijnwGyTA+z/qqQG8zHNtpt4WpJalWEHed2tur/NRniBvWvP0eNJxY/T
+         +EHuM/3A6BMfwtj1PYr79ppXbepeDchdoNLYbtWM839jlWIBUKBW2vg7Z//zl3z3BHGV
+         +lw586Ifc56yV2/z18BawCXq9Ph+sruzmsvTo4E/zK8Fdr/9QM30ln5qZ0Mg2lJ6BLqi
+         dBzlUX8rmq+FTE1gTsUkDCdiY/OCDgOHXDB3RrQMTnq3bogMeFXKbqsRopgJB9lR6C1s
+         ivGULYLrQQi1Bk5M010k07McZFFfKLdz906C280ysSgY9SrowF0svy8m0Cy3QgjrOHuR
+         wq8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737771556; x=1738376356;
+        d=1e100.net; s=20230601; t=1737771576; x=1738376376;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3/pYcf0sANYo9TEsaEY4ONRLzSTmKybwrzwLYycpJYE=;
-        b=dz50B7P05ZbFz7iEW0qYkwI7jPwNa1mG5kZVlp3VMVTxSAti5NL5KN0NbVAZ9zWbfE
-         GrEnl4a4fQj2kxPlyJVGNZ+WyblGvfCCnrQdylffDdyU+pcBDZvo2WOfsEeScJmTYTQp
-         iY83sLQT6gtVVOofp+3eGSyi+h/uKLIT3e26CQnpWILHxyNbyNw5BZc1NjiXejKzsZbi
-         djzgHdyID/n+JgBWeyyg1QF4Tq818fEtlruV44guaNVxsIxmqo5tGX6hl5Lda5ruhlzs
-         o8F4sx4xFHrNKXNAKzp+jH49WW/K5mFn2ELGFoOEWa7lKBsYaEHhjv8ao6FWCavYggaY
-         e4pw==
-X-Gm-Message-State: AOJu0Yxm1NGzDavI1CboMqm8MAyjlwIE4WgAY9yFRsUMGyESJGkY8MPQ
-	gBnpA4eqXFd/Wmck5l+DfqA5hDaLNCtTJSFBDwxNcnqOuLKTPdUEyh6IkOULMtU3A4nHpqfsrB5
-	1tl6zrHLlWXNZeZZtdXXsXyVw//BSYM9TGLbx2YHoe/tbqMv84vo2i9Ek2w+QTVy7ymrEFLDRJb
-	GjWZMGlwIuAW6nTDoMjzHYmbjPyJZUviQpHxWuZNY=
-X-Google-Smtp-Source: AGHT+IHLeumw4Cen/udsKyGtvAVMvHHnzYuG7MNiJRP+RmXCfv67AF/APEi6auE44B6c9jmN91D0FezxRYqdMA==
-X-Received: from pjd4.prod.google.com ([2002:a17:90b:54c4:b0:2d3:d4ca:5fb0])
+        bh=TUVtAh3jk+1Z9FYL8oOTJSugJD98SnZKa+Q8sEqs79Q=;
+        b=aT2qaW+kLBCH3VvZbRaBnWEgzn0gC3VCW3r/GWQ5f7ra9qCLz5bf5oVKVC2x9yEKqF
+         1dxm33Mzb3emJXQk7OdM+QQfZncyT+1BTGdJnY0VjboAkX+RaKCiFrrNsqPT9Wjlcbwu
+         1QTpIY6kweWjexZEs0+jzTNgu8PchIQsX/X0V03N4Xm2XOzgL/jFXwj8PnpIV+h5f9cw
+         /ISHDxPeAWfT7z3xH6SrMcLmS2oMreSKfZ32izMuIzLmzchG0OuPX/p00jVsOj6k6s5F
+         4emQGmSCqxGvmgL/Xum/3/rx7cYzwU21LfeEtS1s0Dx/f71mjwVqieNhJ+FJ18PO3d3Y
+         LY3w==
+X-Gm-Message-State: AOJu0Ywhxj+LwkmR5GRwbNHxMR7greWkUoreMBK1Otyx7bDK9GXmsZKV
+	V5TGm9pVDrZXhApd8J7hdv90KjctW2MPXmJvo4BvWv66VTXhFAUPru+UlhwnIDr7zVXKwI+VhD2
+	N3K9U5mmEOiEQEBdCh8VVsHfslzHcMZ4Xh3MbB083jIKJqbyMYDEmpq2s9Be8hVi0euPdkh9vBE
+	TfJYOFfbl/supGLrr6FLCK6zRFeo4racp9WdMttN4=
+X-Google-Smtp-Source: AGHT+IF5/7KDUnK2hWYlKFk6TCuy51i/bgTYYOR6pwVpRa8Y8ICyfmquFNa7v3yriLE2ixCD8VdqiMqRbmEGkg==
+X-Received: from pfbcg8.prod.google.com ([2002:a05:6a00:2908:b0:725:d8bc:33e1])
  (user=yepeilin job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:90b:2e4e:b0:2ee:fd53:2b17 with SMTP id 98e67ed59e1d1-2f782d97276mr45715232a91.29.1737771555858;
- Fri, 24 Jan 2025 18:19:15 -0800 (PST)
-Date: Sat, 25 Jan 2025 02:19:09 +0000
+ 2002:a05:6a00:6812:b0:72d:b36a:4497 with SMTP id d2e1a72fcca58-72db36a45eemr40542229b3a.3.1737771575436;
+ Fri, 24 Jan 2025 18:19:35 -0800 (PST)
+Date: Sat, 25 Jan 2025 02:19:30 +0000
 In-Reply-To: <cover.1737763916.git.yepeilin@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,9 +74,9 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <cover.1737763916.git.yepeilin@google.com>
 X-Mailer: git-send-email 2.48.1.262.g85cc9f2d1e-goog
-Message-ID: <1733f889a4b46d13844d1083b5cfba5005b22e86.1737763916.git.yepeilin@google.com>
-Subject: [PATCH bpf-next v1 6/8] bpf, arm64: Support load-acquire and
- store-release instructions
+Message-ID: <3f2de7c6e5d2def7bdfb091347c1dacea0915974.1737763916.git.yepeilin@google.com>
+Subject: [PATCH bpf-next v1 7/8] selftests/bpf: Add selftests for load-acquire
+ and store-release instructions
 From: Peilin Ye <yepeilin@google.com>
 To: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc: Peilin Ye <yepeilin@google.com>, bpf@ietf.org, Xu Kuohai <xukuohai@huaweicloud.com>, 
@@ -93,205 +93,726 @@ Cc: Peilin Ye <yepeilin@google.com>, bpf@ietf.org, Xu Kuohai <xukuohai@huaweiclo
 	Benjamin Segall <bsegall@google.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Support BPF load-acquire (BPF_LOAD_ACQ) and store-release
-(BPF_STORE_REL) instructions in the arm64 JIT compiler.  For example:
+Add several ./test_progs tests:
 
-  db 10 00 00 11 00 00 00  r0 = load_acquire((u64 *)(r1 + 0x0))
-  95 00 00 00 00 00 00 00  exit
+  - atomics/load_acquire
+  - atomics/store_release
+  - arena_atomics/load_acquire
+  - arena_atomics/store_release
+  - verifier_load_acquire/*
+  - verifier_store_release/*
+  - verifier_precision/bpf_load_acquire
+  - verifier_precision/bpf_store_release
 
-  opcode (0xdb): BPF_ATOMIC | BPF_DW | BPF_STX
-  imm (0x00000011): BPF_LOAD_ACQ
+The last two tests are added to check if backtrack_insn() handles the
+new instructions correctly.
 
-The JIT compiler would emit an LDAR instruction for the above, e.g.:
+Additionally, the last test also makes sure that the verifier
+"remembers" the value (in src_reg) we store-release into e.g. a stack
+slot.  For example, if we take a look at the test program:
 
-  ldar  x7, [x0]
+    #0:  "r1 = 8;"
+    #1:  "store_release((u64 *)(r10 - 8), r1);"
+    #2:  "r1 = *(u64 *)(r10 - 8);"
+    #3:  "r2 = r10;"
+    #4:  "r2 += r1;"	/* mark_precise */
+    #5:  "r0 = 0;"
+    #6:  "exit;"
 
-Similarly, consider the following 16-bit store-release:
+At #1, if the verifier doesn't remember that we wrote 8 to the stack,
+then later at #4 we would be adding an unbounded scalar value to the
+stack pointer, which would cause the program to be rejected:
 
-  cb 21 00 00 22 00 00 00  store_release((u16 *)(r1 + 0x0), w2)
-  95 00 00 00 00 00 00 00  exit
+  VERIFIER LOG:
+  =============
+...
+  math between fp pointer and register with unbounded min value is not allowed
 
-  opcode (0xcb): BPF_ATOMIC | BPF_H | BPF_STX
-  imm (0x00000022): BPF_ATOMIC_STORE | BPF_RELEASE
-
-An STLRH instruction would be emitted, e.g.:
-
-  stlrh  w1, [x0]
-
-For a complete mapping:
-
-  load-acquire     8-bit  LDARB
- (BPF_LOAD_ACQ)   16-bit  LDARH
-                  32-bit  LDAR (32-bit)
-                  64-bit  LDAR (64-bit)
-  store-release    8-bit  STLRB
- (BPF_STORE_REL)  16-bit  STLRH
-                  32-bit  STLR (32-bit)
-                  64-bit  STLR (64-bit)
-
-Arena accesses are supported.
-bpf_jit_supports_insn(..., /*in_arena=*/true) always returns true for
-BPF_LOAD_ACQ and BPF_STORE_REL instructions, as they don't depend on
-ARM64_HAS_LSE_ATOMICS.
+All new tests depend on the pre-defined __BPF_FEATURE_LOAD_ACQ_STORE_REL
+feature macro, which implies -mcpu>=v4.
 
 Signed-off-by: Peilin Ye <yepeilin@google.com>
 ---
- arch/arm64/net/bpf_jit.h      | 20 ++++++++
- arch/arm64/net/bpf_jit_comp.c | 92 ++++++++++++++++++++++++++++++++++-
- 2 files changed, 110 insertions(+), 2 deletions(-)
+ .../selftests/bpf/prog_tests/arena_atomics.c  |  61 ++++++-
+ .../selftests/bpf/prog_tests/atomics.c        |  57 ++++++-
+ .../selftests/bpf/prog_tests/verifier.c       |   4 +
+ .../selftests/bpf/progs/arena_atomics.c       |  62 ++++++-
+ tools/testing/selftests/bpf/progs/atomics.c   |  62 ++++++-
+ .../bpf/progs/verifier_load_acquire.c         |  92 +++++++++++
+ .../selftests/bpf/progs/verifier_precision.c  |  39 +++++
+ .../bpf/progs/verifier_store_release.c        | 153 ++++++++++++++++++
+ 8 files changed, 524 insertions(+), 6 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_load_acquire.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_store_release.c
 
-diff --git a/arch/arm64/net/bpf_jit.h b/arch/arm64/net/bpf_jit.h
-index b22ab2f97a30..a3b0e693a125 100644
---- a/arch/arm64/net/bpf_jit.h
-+++ b/arch/arm64/net/bpf_jit.h
-@@ -119,6 +119,26 @@
- 	aarch64_insn_gen_load_store_ex(Rt, Rn, Rs, A64_SIZE(sf), \
- 				       AARCH64_INSN_LDST_STORE_REL_EX)
+diff --git a/tools/testing/selftests/bpf/prog_tests/arena_atomics.c b/tools/testing/selftests/bpf/prog_tests/arena_atomics.c
+index 26e7c06c6cb4..81d3575d7652 100644
+--- a/tools/testing/selftests/bpf/prog_tests/arena_atomics.c
++++ b/tools/testing/selftests/bpf/prog_tests/arena_atomics.c
+@@ -162,6 +162,60 @@ static void test_uaf(struct arena_atomics *skel)
+ 	ASSERT_EQ(skel->arena->uaf_recovery_fails, 0, "uaf_recovery_fails");
+ }
  
-+/* Load-acquire & store-release */
-+#define A64_LDAR(Rt, Rn, size)  \
-+	aarch64_insn_gen_load_acq_store_rel(Rt, Rn, AARCH64_INSN_SIZE_##size, \
-+					    AARCH64_INSN_LDST_LOAD_ACQ)
-+#define A64_STLR(Rt, Rn, size)  \
-+	aarch64_insn_gen_load_acq_store_rel(Rt, Rn, AARCH64_INSN_SIZE_##size, \
-+					    AARCH64_INSN_LDST_STORE_REL)
++static void test_load_acquire(struct arena_atomics *skel)
++{
++	LIBBPF_OPTS(bpf_test_run_opts, topts);
++	int err, prog_fd;
 +
-+/* Rt = [Rn] (load acquire) */
-+#define A64_LDARB(Wt, Xn)	A64_LDAR(Wt, Xn, 8)
-+#define A64_LDARH(Wt, Xn)	A64_LDAR(Wt, Xn, 16)
-+#define A64_LDAR32(Wt, Xn)	A64_LDAR(Wt, Xn, 32)
-+#define A64_LDAR64(Xt, Xn)	A64_LDAR(Xt, Xn, 64)
++	if (skel->data->skip_lacq_srel_tests) {
++		printf("%s:SKIP:Clang does not support BPF load-acquire or addr_space_cast\n",
++		       __func__);
++		test__skip();
++		return;
++	}
 +
-+/* [Rn] = Rt (store release) */
-+#define A64_STLRB(Wt, Xn)	A64_STLR(Wt, Xn, 8)
-+#define A64_STLRH(Wt, Xn)	A64_STLR(Wt, Xn, 16)
-+#define A64_STLR32(Wt, Xn)	A64_STLR(Wt, Xn, 32)
-+#define A64_STLR64(Xt, Xn)	A64_STLR(Xt, Xn, 64)
++	/* No need to attach it, just run it directly */
++	prog_fd = bpf_program__fd(skel->progs.load_acquire);
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	if (!ASSERT_OK(err, "test_run_opts err"))
++		return;
++	if (!ASSERT_OK(topts.retval, "test_run_opts retval"))
++		return;
 +
- /*
-  * LSE atomics
-  *
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 8446848edddb..488cbe094551 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -647,6 +647,87 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
++	ASSERT_EQ(skel->arena->load_acquire8_result, 0x12, "load_acquire8_result");
++	ASSERT_EQ(skel->arena->load_acquire16_result, 0x1234, "load_acquire16_result");
++	ASSERT_EQ(skel->arena->load_acquire32_result, 0x12345678, "load_acquire32_result");
++	ASSERT_EQ(skel->arena->load_acquire64_result, 0x1234567890abcdef,
++		  "load_acquire64_result");
++}
++
++static void test_store_release(struct arena_atomics *skel)
++{
++	LIBBPF_OPTS(bpf_test_run_opts, topts);
++	int err, prog_fd;
++
++	if (skel->data->skip_lacq_srel_tests) {
++		printf("%s:SKIP:Clang does not support BPF store-release or addr_space_cast\n",
++		       __func__);
++		test__skip();
++		return;
++	}
++
++	/* No need to attach it, just run it directly */
++	prog_fd = bpf_program__fd(skel->progs.store_release);
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	if (!ASSERT_OK(err, "test_run_opts err"))
++		return;
++	if (!ASSERT_OK(topts.retval, "test_run_opts retval"))
++		return;
++
++	ASSERT_EQ(skel->arena->store_release8_result, 0x12, "store_release8_result");
++	ASSERT_EQ(skel->arena->store_release16_result, 0x1234, "store_release16_result");
++	ASSERT_EQ(skel->arena->store_release32_result, 0x12345678, "store_release32_result");
++	ASSERT_EQ(skel->arena->store_release64_result, 0x1234567890abcdef,
++		  "store_release64_result");
++}
++
+ void test_arena_atomics(void)
+ {
+ 	struct arena_atomics *skel;
+@@ -171,7 +225,7 @@ void test_arena_atomics(void)
+ 	if (!ASSERT_OK_PTR(skel, "arena atomics skeleton open"))
+ 		return;
+ 
+-	if (skel->data->skip_tests) {
++	if (skel->data->skip_all_tests) {
+ 		printf("%s:SKIP:no ENABLE_ATOMICS_TESTS or no addr_space_cast support in clang",
+ 		       __func__);
+ 		test__skip();
+@@ -199,6 +253,11 @@ void test_arena_atomics(void)
+ 	if (test__start_subtest("uaf"))
+ 		test_uaf(skel);
+ 
++	if (test__start_subtest("load_acquire"))
++		test_load_acquire(skel);
++	if (test__start_subtest("store_release"))
++		test_store_release(skel);
++
+ cleanup:
+ 	arena_atomics__destroy(skel);
+ }
+diff --git a/tools/testing/selftests/bpf/prog_tests/atomics.c b/tools/testing/selftests/bpf/prog_tests/atomics.c
+index 13e101f370a1..5d7cff3eed2b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/atomics.c
++++ b/tools/testing/selftests/bpf/prog_tests/atomics.c
+@@ -162,6 +162,56 @@ static void test_xchg(struct atomics_lskel *skel)
+ 	ASSERT_EQ(skel->bss->xchg32_result, 1, "xchg32_result");
+ }
+ 
++static void test_load_acquire(struct atomics_lskel *skel)
++{
++	LIBBPF_OPTS(bpf_test_run_opts, topts);
++	int err, prog_fd;
++
++	if (skel->data->skip_lacq_srel_tests) {
++		printf("%s:SKIP:Clang does not support BPF load-acquire\n", __func__);
++		test__skip();
++		return;
++	}
++
++	/* No need to attach it, just run it directly */
++	prog_fd = skel->progs.load_acquire.prog_fd;
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	if (!ASSERT_OK(err, "test_run_opts err"))
++		return;
++	if (!ASSERT_OK(topts.retval, "test_run_opts retval"))
++		return;
++
++	ASSERT_EQ(skel->bss->load_acquire8_result, 0x12, "load_acquire8_result");
++	ASSERT_EQ(skel->bss->load_acquire16_result, 0x1234, "load_acquire16_result");
++	ASSERT_EQ(skel->bss->load_acquire32_result, 0x12345678, "load_acquire32_result");
++	ASSERT_EQ(skel->bss->load_acquire64_result, 0x1234567890abcdef, "load_acquire64_result");
++}
++
++static void test_store_release(struct atomics_lskel *skel)
++{
++	LIBBPF_OPTS(bpf_test_run_opts, topts);
++	int err, prog_fd;
++
++	if (skel->data->skip_lacq_srel_tests) {
++		printf("%s:SKIP:Clang does not support BPF store-release\n", __func__);
++		test__skip();
++		return;
++	}
++
++	/* No need to attach it, just run it directly */
++	prog_fd = skel->progs.store_release.prog_fd;
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	if (!ASSERT_OK(err, "test_run_opts err"))
++		return;
++	if (!ASSERT_OK(topts.retval, "test_run_opts retval"))
++		return;
++
++	ASSERT_EQ(skel->bss->store_release8_result, 0x12, "store_release8_result");
++	ASSERT_EQ(skel->bss->store_release16_result, 0x1234, "store_release16_result");
++	ASSERT_EQ(skel->bss->store_release32_result, 0x12345678, "store_release32_result");
++	ASSERT_EQ(skel->bss->store_release64_result, 0x1234567890abcdef, "store_release64_result");
++}
++
+ void test_atomics(void)
+ {
+ 	struct atomics_lskel *skel;
+@@ -170,7 +220,7 @@ void test_atomics(void)
+ 	if (!ASSERT_OK_PTR(skel, "atomics skeleton load"))
+ 		return;
+ 
+-	if (skel->data->skip_tests) {
++	if (skel->data->skip_all_tests) {
+ 		printf("%s:SKIP:no ENABLE_ATOMICS_TESTS (missing Clang BPF atomics support)",
+ 		       __func__);
+ 		test__skip();
+@@ -193,6 +243,11 @@ void test_atomics(void)
+ 	if (test__start_subtest("xchg"))
+ 		test_xchg(skel);
+ 
++	if (test__start_subtest("load_acquire"))
++		test_load_acquire(skel);
++	if (test__start_subtest("store_release"))
++		test_store_release(skel);
++
+ cleanup:
+ 	atomics_lskel__destroy(skel);
+ }
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
+index 8a0e1ff8a2dc..8bdad4167cf5 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -45,6 +45,7 @@
+ #include "verifier_ldsx.skel.h"
+ #include "verifier_leak_ptr.skel.h"
+ #include "verifier_linked_scalars.skel.h"
++#include "verifier_load_acquire.skel.h"
+ #include "verifier_loops1.skel.h"
+ #include "verifier_lwt.skel.h"
+ #include "verifier_map_in_map.skel.h"
+@@ -80,6 +81,7 @@
+ #include "verifier_spill_fill.skel.h"
+ #include "verifier_spin_lock.skel.h"
+ #include "verifier_stack_ptr.skel.h"
++#include "verifier_store_release.skel.h"
+ #include "verifier_subprog_precision.skel.h"
+ #include "verifier_subreg.skel.h"
+ #include "verifier_tailcall_jit.skel.h"
+@@ -173,6 +175,7 @@ void test_verifier_int_ptr(void)              { RUN(verifier_int_ptr); }
+ void test_verifier_iterating_callbacks(void)  { RUN(verifier_iterating_callbacks); }
+ void test_verifier_jeq_infer_not_null(void)   { RUN(verifier_jeq_infer_not_null); }
+ void test_verifier_jit_convergence(void)      { RUN(verifier_jit_convergence); }
++void test_verifier_load_acquire(void)	      { RUN(verifier_load_acquire); }
+ void test_verifier_ld_ind(void)               { RUN(verifier_ld_ind); }
+ void test_verifier_ldsx(void)                  { RUN(verifier_ldsx); }
+ void test_verifier_leak_ptr(void)             { RUN(verifier_leak_ptr); }
+@@ -211,6 +214,7 @@ void test_verifier_sockmap_mutate(void)       { RUN(verifier_sockmap_mutate); }
+ void test_verifier_spill_fill(void)           { RUN(verifier_spill_fill); }
+ void test_verifier_spin_lock(void)            { RUN(verifier_spin_lock); }
+ void test_verifier_stack_ptr(void)            { RUN(verifier_stack_ptr); }
++void test_verifier_store_release(void)	      { RUN(verifier_store_release); }
+ void test_verifier_subprog_precision(void)    { RUN(verifier_subprog_precision); }
+ void test_verifier_subreg(void)               { RUN(verifier_subreg); }
+ void test_verifier_tailcall_jit(void)         { RUN(verifier_tailcall_jit); }
+diff --git a/tools/testing/selftests/bpf/progs/arena_atomics.c b/tools/testing/selftests/bpf/progs/arena_atomics.c
+index 40dd57fca5cc..fe8b67d9c87b 100644
+--- a/tools/testing/selftests/bpf/progs/arena_atomics.c
++++ b/tools/testing/selftests/bpf/progs/arena_atomics.c
+@@ -19,9 +19,15 @@ struct {
+ } arena SEC(".maps");
+ 
+ #if defined(ENABLE_ATOMICS_TESTS) && defined(__BPF_FEATURE_ADDR_SPACE_CAST)
+-bool skip_tests __attribute((__section__(".data"))) = false;
++bool skip_all_tests __attribute((__section__(".data"))) = false;
+ #else
+-bool skip_tests = true;
++bool skip_all_tests = true;
++#endif
++
++#if defined(__BPF_FEATURE_LOAD_ACQ_STORE_REL) && defined(__BPF_FEATURE_ADDR_SPACE_CAST)
++bool skip_lacq_srel_tests __attribute((__section__(".data"))) = false;
++#else
++bool skip_lacq_srel_tests = true;
+ #endif
+ 
+ __u32 pid = 0;
+@@ -274,4 +280,56 @@ int uaf(const void *ctx)
  	return 0;
  }
  
-+static inline bool is_atomic_load_store(const s32 imm)
++__u8 __arena_global load_acquire8_value = 0x12;
++__u16 __arena_global load_acquire16_value = 0x1234;
++__u32 __arena_global load_acquire32_value = 0x12345678;
++__u64 __arena_global load_acquire64_value = 0x1234567890abcdef;
++
++__u8 __arena_global load_acquire8_result = 0;
++__u16 __arena_global load_acquire16_result = 0;
++__u32 __arena_global load_acquire32_result = 0;
++__u64 __arena_global load_acquire64_result = 0;
++
++SEC("raw_tp/sys_enter")
++int load_acquire(const void *ctx)
 +{
-+	const s32 type = BPF_ATOMIC_TYPE(imm);
++	if (pid != (bpf_get_current_pid_tgid() >> 32))
++		return 0;
 +
-+	return type == BPF_ATOMIC_LOAD || type == BPF_ATOMIC_STORE;
-+}
-+
-+static int emit_atomic_load_store(const struct bpf_insn *insn, struct jit_ctx *ctx)
-+{
-+	const s32 type = BPF_ATOMIC_TYPE(insn->imm);
-+	const s16 off = insn->off;
-+	const u8 code = insn->code;
-+	const bool arena = BPF_MODE(code) == BPF_PROBE_ATOMIC;
-+	const u8 arena_vm_base = bpf2a64[ARENA_VM_START];
-+	const u8 dst = bpf2a64[insn->dst_reg];
-+	const u8 src = bpf2a64[insn->src_reg];
-+	const u8 tmp = bpf2a64[TMP_REG_1];
-+	u8 reg;
-+
-+	switch (type) {
-+	case BPF_ATOMIC_LOAD:
-+		reg = src;
-+		break;
-+	case BPF_ATOMIC_STORE:
-+		reg = dst;
-+		break;
-+	default:
-+		pr_err_once("unknown atomic load/store op type %02x\n", type);
-+		return -EINVAL;
-+	}
-+
-+	if (off) {
-+		emit_a64_add_i(1, tmp, reg, tmp, off, ctx);
-+		reg = tmp;
-+	}
-+	if (arena) {
-+		emit(A64_ADD(1, tmp, reg, arena_vm_base), ctx);
-+		reg = tmp;
-+	}
-+
-+	switch (insn->imm) {
-+	case BPF_LOAD_ACQ:
-+		switch (BPF_SIZE(code)) {
-+		case BPF_B:
-+			emit(A64_LDARB(dst, reg), ctx);
-+			break;
-+		case BPF_H:
-+			emit(A64_LDARH(dst, reg), ctx);
-+			break;
-+		case BPF_W:
-+			emit(A64_LDAR32(dst, reg), ctx);
-+			break;
-+		case BPF_DW:
-+			emit(A64_LDAR64(dst, reg), ctx);
-+			break;
-+		}
-+		break;
-+	case BPF_STORE_REL:
-+		switch (BPF_SIZE(code)) {
-+		case BPF_B:
-+			emit(A64_STLRB(src, reg), ctx);
-+			break;
-+		case BPF_H:
-+			emit(A64_STLRH(src, reg), ctx);
-+			break;
-+		case BPF_W:
-+			emit(A64_STLR32(src, reg), ctx);
-+			break;
-+		case BPF_DW:
-+			emit(A64_STLR64(src, reg), ctx);
-+			break;
-+		}
-+		break;
-+	default:
-+		pr_err_once("unknown atomic load/store op code %02x\n", insn->imm);
-+		return -EINVAL;
-+	}
++#ifdef __BPF_FEATURE_LOAD_ACQ_STORE_REL
++	load_acquire8_result = __atomic_load_n(&load_acquire8_value, __ATOMIC_ACQUIRE);
++	load_acquire16_result = __atomic_load_n(&load_acquire16_value, __ATOMIC_ACQUIRE);
++	load_acquire32_result = __atomic_load_n(&load_acquire32_value, __ATOMIC_ACQUIRE);
++	load_acquire64_result = __atomic_load_n(&load_acquire64_value, __ATOMIC_ACQUIRE);
++#endif
 +
 +	return 0;
 +}
 +
- #ifdef CONFIG_ARM64_LSE_ATOMICS
- static int emit_lse_atomic(const struct bpf_insn *insn, struct jit_ctx *ctx)
- {
-@@ -1641,11 +1722,17 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 			return ret;
- 		break;
++__u8 __arena_global store_release8_result = 0;
++__u16 __arena_global store_release16_result = 0;
++__u32 __arena_global store_release32_result = 0;
++__u64 __arena_global store_release64_result = 0;
++
++SEC("raw_tp/sys_enter")
++int store_release(const void *ctx)
++{
++	if (pid != (bpf_get_current_pid_tgid() >> 32))
++		return 0;
++
++#ifdef __BPF_FEATURE_LOAD_ACQ_STORE_REL
++	__u8 val8 = 0x12;
++	__u16 val16 = 0x1234;
++	__u32 val32 = 0x12345678;
++	__u64 val64 = 0x1234567890abcdef;
++
++	__atomic_store_n(&store_release8_result, val8, __ATOMIC_RELEASE);
++	__atomic_store_n(&store_release16_result, val16, __ATOMIC_RELEASE);
++	__atomic_store_n(&store_release32_result, val32, __ATOMIC_RELEASE);
++	__atomic_store_n(&store_release64_result, val64, __ATOMIC_RELEASE);
++#endif
++
++	return 0;
++}
++
+ char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/atomics.c b/tools/testing/selftests/bpf/progs/atomics.c
+index f89c7f0cc53b..4c23d7d0d37d 100644
+--- a/tools/testing/selftests/bpf/progs/atomics.c
++++ b/tools/testing/selftests/bpf/progs/atomics.c
+@@ -5,9 +5,15 @@
+ #include <stdbool.h>
  
-+	case BPF_STX | BPF_ATOMIC | BPF_B:
-+	case BPF_STX | BPF_ATOMIC | BPF_H:
- 	case BPF_STX | BPF_ATOMIC | BPF_W:
- 	case BPF_STX | BPF_ATOMIC | BPF_DW:
-+	case BPF_STX | BPF_PROBE_ATOMIC | BPF_B:
-+	case BPF_STX | BPF_PROBE_ATOMIC | BPF_H:
- 	case BPF_STX | BPF_PROBE_ATOMIC | BPF_W:
- 	case BPF_STX | BPF_PROBE_ATOMIC | BPF_DW:
--		if (cpus_have_cap(ARM64_HAS_LSE_ATOMICS))
-+		if (is_atomic_load_store(insn->imm))
-+			ret = emit_atomic_load_store(insn, ctx);
-+		else if (cpus_have_cap(ARM64_HAS_LSE_ATOMICS))
- 			ret = emit_lse_atomic(insn, ctx);
- 		else
- 			ret = emit_ll_sc_atomic(insn, ctx);
-@@ -2669,7 +2756,8 @@ bool bpf_jit_supports_insn(struct bpf_insn *insn, bool in_arena)
- 	switch (insn->code) {
- 	case BPF_STX | BPF_ATOMIC | BPF_W:
- 	case BPF_STX | BPF_ATOMIC | BPF_DW:
--		if (!cpus_have_cap(ARM64_HAS_LSE_ATOMICS))
-+		if (!is_atomic_load_store(insn->imm) &&
-+		    !cpus_have_cap(ARM64_HAS_LSE_ATOMICS))
- 			return false;
- 	}
- 	return true;
+ #ifdef ENABLE_ATOMICS_TESTS
+-bool skip_tests __attribute((__section__(".data"))) = false;
++bool skip_all_tests __attribute((__section__(".data"))) = false;
+ #else
+-bool skip_tests = true;
++bool skip_all_tests = true;
++#endif
++
++#ifdef __BPF_FEATURE_LOAD_ACQ_STORE_REL
++bool skip_lacq_srel_tests __attribute((__section__(".data"))) = false;
++#else
++bool skip_lacq_srel_tests = true;
+ #endif
+ 
+ __u32 pid = 0;
+@@ -168,3 +174,55 @@ int xchg(const void *ctx)
+ 
+ 	return 0;
+ }
++
++__u8 load_acquire8_value = 0x12;
++__u16 load_acquire16_value = 0x1234;
++__u32 load_acquire32_value = 0x12345678;
++__u64 load_acquire64_value = 0x1234567890abcdef;
++
++__u8 load_acquire8_result = 0;
++__u16 load_acquire16_result = 0;
++__u32 load_acquire32_result = 0;
++__u64 load_acquire64_result = 0;
++
++SEC("raw_tp/sys_enter")
++int load_acquire(const void *ctx)
++{
++	if (pid != (bpf_get_current_pid_tgid() >> 32))
++		return 0;
++
++#ifdef __BPF_FEATURE_LOAD_ACQ_STORE_REL
++	load_acquire8_result = __atomic_load_n(&load_acquire8_value, __ATOMIC_ACQUIRE);
++	load_acquire16_result = __atomic_load_n(&load_acquire16_value, __ATOMIC_ACQUIRE);
++	load_acquire32_result = __atomic_load_n(&load_acquire32_value, __ATOMIC_ACQUIRE);
++	load_acquire64_result = __atomic_load_n(&load_acquire64_value, __ATOMIC_ACQUIRE);
++#endif
++
++	return 0;
++}
++
++__u8 store_release8_result = 0;
++__u16 store_release16_result = 0;
++__u32 store_release32_result = 0;
++__u64 store_release64_result = 0;
++
++SEC("raw_tp/sys_enter")
++int store_release(const void *ctx)
++{
++	if (pid != (bpf_get_current_pid_tgid() >> 32))
++		return 0;
++
++#ifdef __BPF_FEATURE_LOAD_ACQ_STORE_REL
++	__u8 val8 = 0x12;
++	__u16 val16 = 0x1234;
++	__u32 val32 = 0x12345678;
++	__u64 val64 = 0x1234567890abcdef;
++
++	__atomic_store_n(&store_release8_result, val8, __ATOMIC_RELEASE);
++	__atomic_store_n(&store_release16_result, val16, __ATOMIC_RELEASE);
++	__atomic_store_n(&store_release32_result, val32, __ATOMIC_RELEASE);
++	__atomic_store_n(&store_release64_result, val64, __ATOMIC_RELEASE);
++#endif
++
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/progs/verifier_load_acquire.c b/tools/testing/selftests/bpf/progs/verifier_load_acquire.c
+new file mode 100644
+index 000000000000..506df4b8231b
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/verifier_load_acquire.c
+@@ -0,0 +1,92 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++#if defined(__TARGET_ARCH_arm64) && defined(__BPF_FEATURE_LOAD_ACQ_STORE_REL)
++
++SEC("socket")
++__description("load-acquire, 8-bit")
++__success __success_unpriv __retval(0x12)
++__naked void load_acquire_8(void)
++{
++	asm volatile (
++	"*(u8 *)(r10 - 1) = 0x12;"
++	"w0 = load_acquire((u8 *)(r10 - 1));"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("socket")
++__description("load-acquire, 16-bit")
++__success __success_unpriv __retval(0x1234)
++__naked void load_acquire_16(void)
++{
++	asm volatile (
++	"*(u16 *)(r10 - 2) = 0x1234;"
++	"w0 = load_acquire((u16 *)(r10 - 2));"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("socket")
++__description("load-acquire, 32-bit")
++__success __success_unpriv __retval(0x12345678)
++__naked void load_acquire_32(void)
++{
++	asm volatile (
++	"*(u32 *)(r10 - 4) = 0x12345678;"
++	"w0 = load_acquire((u32 *)(r10 - 4));"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("socket")
++__description("load-acquire, 64-bit")
++__success __success_unpriv __retval(0x1234567890abcdef)
++__naked void load_acquire_64(void)
++{
++	asm volatile (
++	"*(u64 *)(r10 - 8) = 0x1234567890abcdef;"
++	"r0 = load_acquire((u64 *)(r10 - 8));"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("socket")
++__description("load-acquire with uninitialized src_reg")
++__failure __failure_unpriv __msg("R2 !read_ok")
++__naked void load_acquire_with_uninitialized_src_reg(void)
++{
++	asm volatile (
++	"r0 = load_acquire((u64 *)(r2 + 0));"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("socket")
++__description("load-acquire with non-pointer src_reg")
++__failure __failure_unpriv __msg("R1 invalid mem access 'scalar'")
++__naked void load_acquire_with_non_pointer_src_reg(void)
++{
++	asm volatile (
++	"r1 = 0;"
++	"r0 = load_acquire((u64 *)(r1 + 0));"
++	"exit;"
++	::: __clobber_all);
++}
++
++#else
++
++SEC("socket")
++__description("load-acquire is not supported by compiler or jit, use a dummy test")
++__success
++int dummy_test(void)
++{
++	return 0;
++}
++
++#endif
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/verifier_precision.c b/tools/testing/selftests/bpf/progs/verifier_precision.c
+index 6b564d4c0986..7d5b9e95e3cf 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_precision.c
++++ b/tools/testing/selftests/bpf/progs/verifier_precision.c
+@@ -90,6 +90,45 @@ __naked int bpf_end_bswap(void)
+ 		::: __clobber_all);
+ }
+ 
++#if defined(__TARGET_ARCH_arm64) && defined(__BPF_FEATURE_LOAD_ACQ_STORE_REL)
++
++SEC("?raw_tp")
++__success __log_level(2)
++__msg("mark_precise: frame0: regs=r1 stack= before 2: (bf) r2 = r10")
++__msg("mark_precise: frame0: regs=r1 stack= before 1: (db) r1 = load_acquire((u64 *)(r10 -8))")
++__msg("mark_precise: frame0: regs= stack=-8 before 0: (7a) *(u64 *)(r10 -8) = 8")
++__naked int bpf_load_acquire(void)
++{
++	asm volatile (
++		"*(u64 *)(r10 - 8) = 8;"
++		"r1 = load_acquire((u64 *)(r10 - 8));"
++		"r2 = r10;"
++		"r2 += r1;"	/* mark_precise */
++		"r0 = 0;"
++		"exit;"
++		::: __clobber_all);
++}
++
++SEC("?raw_tp")
++__success __log_level(2)
++__msg("mark_precise: frame0: regs=r1 stack= before 3: (bf) r2 = r10")
++__msg("mark_precise: frame0: regs=r1 stack= before 2: (79) r1 = *(u64 *)(r10 -8)")
++__msg("mark_precise: frame0: regs= stack=-8 before 1: (db) store_release((u64 *)(r10 -8), r1)")
++__msg("mark_precise: frame0: regs=r1 stack= before 0: (b7) r1 = 8")
++__naked int bpf_store_release(void)
++{
++	asm volatile (
++		"r1 = 8;"
++		"store_release((u64 *)(r10 - 8), r1);"
++		"r1 = *(u64 *)(r10 - 8);"
++		"r2 = r10;"
++		"r2 += r1;"	/* mark_precise */
++		"r0 = 0;"
++		"exit;"
++		::: __clobber_all);
++}
++
++#endif /* load-acquire, store-release */
+ #endif /* v4 instruction */
+ 
+ SEC("?raw_tp")
+diff --git a/tools/testing/selftests/bpf/progs/verifier_store_release.c b/tools/testing/selftests/bpf/progs/verifier_store_release.c
+new file mode 100644
+index 000000000000..d8c3b73388cb
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/verifier_store_release.c
+@@ -0,0 +1,153 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++#if defined(__TARGET_ARCH_arm64) && defined(__BPF_FEATURE_LOAD_ACQ_STORE_REL)
++
++SEC("socket")
++__description("store-release, 8-bit")
++__success __success_unpriv __retval(0x12)
++__naked void store_release_8(void)
++{
++	asm volatile (
++	"w1 = 0x12;"
++	"store_release((u8 *)(r10 - 1), w1);"
++	"w0 = *(u8 *)(r10 - 1);"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("socket")
++__description("store-release, 16-bit")
++__success __success_unpriv __retval(0x1234)
++__naked void store_release_16(void)
++{
++	asm volatile (
++	"w1 = 0x1234;"
++	"store_release((u16 *)(r10 - 2), w1);"
++	"w0 = *(u16 *)(r10 - 2);"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("socket")
++__description("store-release, 32-bit")
++__success __success_unpriv __retval(0x12345678)
++__naked void store_release_32(void)
++{
++	asm volatile (
++	"w1 = 0x12345678;"
++	"store_release((u32 *)(r10 - 4), w1);"
++	"w0 = *(u32 *)(r10 - 4);"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("socket")
++__description("store-release, 64-bit")
++__success __success_unpriv __retval(0x1234567890abcdef)
++__naked void store_release_64(void)
++{
++	asm volatile (
++	"r1 = 0x1234567890abcdef;"
++	"store_release((u64 *)(r10 - 8), r1);"
++	"r0 = *(u64 *)(r10 - 8);"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("socket")
++__description("store-release with uninitialized src_reg")
++__failure __failure_unpriv __msg("R2 !read_ok")
++__naked void store_release_with_uninitialized_src_reg(void)
++{
++	asm volatile (
++	"store_release((u64 *)(r10 - 8), r2);"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("socket")
++__description("store-release with uninitialized dst_reg")
++__failure __failure_unpriv __msg("R2 !read_ok")
++__naked void store_release_with_uninitialized_dst_reg(void)
++{
++	asm volatile (
++	"r1 = 0x1234567890abcdef;"
++	"store_release((u64 *)(r2 - 8), r1);"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("socket")
++__description("store-release with non-pointer dst_reg")
++__failure __failure_unpriv __msg("R1 invalid mem access 'scalar'")
++__naked void store_release_with_non_pointer_dst_reg(void)
++{
++	asm volatile (
++	"r1 = 0;"
++	"store_release((u64 *)(r1 + 0), r1);"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("socket")
++__description("store-release, leak pointer to stack")
++__success __retval(0)
++__failure_unpriv __msg_unpriv("R1 leaks addr into mem")
++__naked void store_release_leak_pointer_to_stack(void)
++{
++	asm volatile (
++	"store_release((u64 *)(r10 - 8), r1);"
++	"r0 = 0;"
++	"exit;"
++	::: __clobber_all);
++}
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, 1);
++	__type(key, long long);
++	__type(value, long long);
++} map_hash_8b SEC(".maps");
++
++SEC("socket")
++__description("store-release, leak pointer to map")
++__success __retval(0)
++__failure_unpriv __msg_unpriv("R6 leaks addr into mem")
++__naked void store_release_leak_pointer_to_map(void)
++{
++	asm volatile (
++	"r6 = r1;"
++	"r1 = 0;"
++	"*(u64 *)(r10 - 8) = r1;"
++	"r2 = r10;"
++	"r2 += -8;"
++	"r1 = %[map_hash_8b] ll;"
++	"call %[bpf_map_lookup_elem];"
++	"if r0 == 0 goto l0_%=;"
++	"store_release((u64 *)(r0 + 0), r6);"
++"l0_%=:"
++	"r0 = 0;"
++	"exit;"
++	:
++	: __imm(bpf_map_lookup_elem),
++	  __imm_addr(map_hash_8b)
++	: __clobber_all);
++}
++
++#else
++
++SEC("socket")
++__description("store-release is not supported by compiler or jit, use a dummy test")
++__success
++int dummy_test(void)
++{
++	return 0;
++}
++
++#endif
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.48.1.262.g85cc9f2d1e-goog
 
