@@ -1,86 +1,84 @@
-Return-Path: <bpf+bounces-49765-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49767-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE212A1C1F6
-	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 07:59:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4C1FA1C20B
+	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 08:14:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B88B67A1814
-	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 06:58:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6ECE73A6675
+	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 07:14:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4FDF207A1F;
-	Sat, 25 Jan 2025 06:52:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39584207A0E;
+	Sat, 25 Jan 2025 07:14:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dmfc80PZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wf1iiUpj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B73E5207A0E
-	for <bpf@vger.kernel.org>; Sat, 25 Jan 2025 06:52:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60C0715A8;
+	Sat, 25 Jan 2025 07:14:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737787968; cv=none; b=LvESOIhAWk77Nwk9j1wjMmvrQyIqVv+pCQjnyxX1mp+bgXhgQRJNXQf9hB5be3qXlCJhPFHjTN9DbujcVxbQp059ER8jobvILLlUQTkKcjJSiJY1VtRnp9lwgep6av94f2j+tw4H9+UMTpAXzP3Edadebuw91MW8snkwnM0aisw=
+	t=1737789272; cv=none; b=SGvUt4THrOmSMLb3pOlkOBMvRasoBCIV0P4Bg+92d2iFbFPJvwlmFtXwp7rahtY7FsXaHuajT2L9I+vwrJnhSeE1GU6J1CR2QO7nb7Xw4QHJRXPF0htyHzzbZJn9Hnvkw0XbdmfvXGfUISfn7K79c8lAYTyY0Z4TcRxwpiCLUBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737787968; c=relaxed/simple;
-	bh=2xk4GflnDVL/9cCJ4tZAWRvfzkJapFZbVQNV2R3lpqE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=afkR6t7fsLqENB3jCA3hnYd3QI9G0HUGgiOYxDWW4JK5faNqq3jcfPqjHi4pacHP5nMlPiZKUuXv/MMngkqoaWk6Wj+6qcu+1girMgTdHxdmknHYmPvoG2fpLN/gyYv+vxianQKOfM6kPn4VR6uqB0MeGemsYDwSVW+lNPrarqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dmfc80PZ; arc=none smtp.client-ip=209.85.214.182
+	s=arc-20240116; t=1737789272; c=relaxed/simple;
+	bh=bAEytCmIJItVawz5FtwbLf3Rs6v1xKcIjfJjz13uw38=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=F25Ey6pX0wyVD4PksqVweI2Eb8R/W3e4WcthqycdpgbckPhWXZzNXkcgGbE8eI4EVuZxqLmsfPq+QNMrZMUdS1fNwjZ7MseuRFNtkTbZ42GUoN+F7ViogLhfpAQTSsJ8lPOrq3F/oOOr/MWPHT1Ou8de94zDjVIJlendRJLCKik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wf1iiUpj; arc=none smtp.client-ip=209.85.216.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-21661be2c2dso49412905ad.1
-        for <bpf@vger.kernel.org>; Fri, 24 Jan 2025 22:52:46 -0800 (PST)
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2f43d17b0e3so5287651a91.0;
+        Fri, 24 Jan 2025 23:14:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737787966; x=1738392766; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qxCiKUpxc8BoGcMZmcC1U9yhSr1dOPJaybAPqf44sMw=;
-        b=dmfc80PZtj++i/tsVkDbX/J+pF97YPxtDftvVtXUxz2ISEPd8hZyY8xUQrmHwn8BRm
-         3DIreXCm4InIbxypm81C8nW17e1QhQyf+bGBuuZwypRtyXROk3BNhCraqQNmM85LKfEi
-         0btjH1YJ6b997rPk4Rd4IO81YGlutt/0y6F7J6qf30onr/drYgL5sLwwUdQSElxbGE52
-         Xizb9WmhYcXQ77OQ2e1Ymvz2JI1Ux0m4JBAKB/scOKCpOL3/iYKjEsWzOXLk1Js0H0+O
-         b0iI0CtM95xFJEXoZO7OW5EKG5UWIRsfcEGv+j5dHTynPii7IVg45wJaDLh96T7uWuym
-         IHEw==
+        d=gmail.com; s=20230601; t=1737789270; x=1738394070; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YbT6Z5w0G7bq6lWLN+mHRo7+c/FiVemmHUOtqfnUWhk=;
+        b=Wf1iiUpjfC9DW/sWQEu4G+f8otc5ks7dTzAaLpMn+ztxSKyi5TQ6rjLcG8UF2inxT9
+         EJlKLzBE4HzrWuuVfj1XYdXNraDzJ+DizO/3Y44eb3hLtbQ4lsDTsDSG4n1FmtISrvxA
+         gf+5seAUg3UP/QH4SkCId6MocT+Z6CM9Z42/xRg+66gAqS4weiJDRWZ8LlgqeYTfTNqw
+         ItLOqeaI7CKGPVlfXCR1Il7vSXeq/b7Farh/nLD201l3TywVURiGHt0hoM/eTM3DeiUv
+         /lhgc4dd/IlPBsWrf7ZBbNU/oClpPGiPJvgKDXMShtf7gW+2yDOTD4I1H8HgFdyJBU4H
+         yQYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737787966; x=1738392766;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qxCiKUpxc8BoGcMZmcC1U9yhSr1dOPJaybAPqf44sMw=;
-        b=MiFVCrwZyLYaalW6LkYD8BsLfjf7LsWZlekjvj7iXkcdvwSM58JmNBGJLL9tlMHdA9
-         /Bg2s37MS2tTUXA2yylip3AVsb6k/77hU+e3OXkpkbfpBqt9yITOVQAiLmJzq9RxXQsi
-         XjTlpTfyHAxTETTX0H5ociuLJ14kTUPLQgJHSZG4SW33O2eJrcNnOo+7KRqWfEgr4CY1
-         V1VBxf1mVS1gg2oR0yDDNCYmPyo/900C86Vc2Qe0Fb8vFb7Zt7XBqyQr/38SAaxolqDt
-         YQZ1LFxO3MCaI2S6ULSdLCyEi0cT8ewBR0XAW9Bbm7B4YMu8PFnWB4Uqepf33+Itqzos
-         5iEw==
-X-Forwarded-Encrypted: i=1; AJvYcCWBQZtgpe/UIS72hxqxl0Eya55RCKsNZ+eh+NI/rpTdUZOpYj4+i2HAmjBgOZgfkGuc5Qw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz/2JKqRBmH5O5QGOeUXhmj+bEA5JfHmplcWJC/rHBKD8SGrEhw
-	WLdiGyZGZxwGtgG1m/l+3deUQ3VZEu5Ds8u0blSDgDjPFQL1jqK0
-X-Gm-Gg: ASbGncv7xwdS9naHxoY+IXmFllTaead/aGa40mcXH5uA2G5c4wUyIMDqTOF3Hf0CPL4
-	UREwScHutxgfcvCT71JecPPPVFCzSIykuQpUi8CzvK/8RQxiXnJzg+b5A1cZGvB8fiMdhsobpvW
-	xv14GKnc+0H4Q2ZW4/wDxeGhIB+a8YxwAQoE3O6pGuf2a2+kO0xEDe1QjAYtnqrjdOG3oz2/DMK
-	gHYi8HRhxRt0HJqUp8TIlGXKEN2QMLg56aUp2Zjq0stB/Pvgry5ZMEvfjNcd5MRfr9DITUDUNi0
-	JwGNevjU8JWgKynnO6Hmhniov5HmTT48izw+rUVCxPu3quiI
-X-Google-Smtp-Source: AGHT+IHDw43KbdiGICtI3iCJjOJEZlTD4A9c7Xei30IHy67e9XIg6IVNDSkIHRhaBn7mOsB65WnKMQ==
-X-Received: by 2002:a17:903:174c:b0:215:4394:40b5 with SMTP id d9443c01a7336-21c355dc59fmr467606705ad.43.1737787965926;
-        Fri, 24 Jan 2025 22:52:45 -0800 (PST)
+        d=1e100.net; s=20230601; t=1737789270; x=1738394070;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YbT6Z5w0G7bq6lWLN+mHRo7+c/FiVemmHUOtqfnUWhk=;
+        b=mfZyWW9UrhklwibnXSa1oUQbwwSWdNFEsNYu5e1YINUXjZJRsJCKn4A9axibEcI0CO
+         o8Wff2M3yip8ze1lJeX66qP3Bu9NrzX6V2eZDDxh/h6Wm+qj4qOlwzMnmn04d74MZweO
+         YIGQ6Cxy121e/FyufpTJ3sAbxs0Od3wXTUY3cpKoF7wNLVqiomSSK6JOXd4TLOF4abLQ
+         kY5ciliyApvqUw6+JqXuZ5MfsOGY7KEOLNmJxqowiJNt/Yulv/IcLkdyGsfp9zGN1tgi
+         braIOJSG25EyOcNa8XBev5Uy1Ec/gVeoXjqtf9yCKz1Cg70jlkGtz3SSaPVQeAXIvlt+
+         eoBg==
+X-Forwarded-Encrypted: i=1; AJvYcCVCwGpEpI8QtT+uuR74RHGOWKHEcWQCiLhURzqvj4kSSs4QVqGtb4xUQDhLxAiH6XcHgNhJPKxaBuiuhB27/yY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzJ+pE9JLNTxKpwpQUxQqCM2QNeA67DPjCKhXal51qZkEOIMRT9
+	euJK+kO4UOEiGWlSWFfZHr6/TqsbLrfzLdQXfNF34ec1FXU6bN/QZcvTtvn6
+X-Gm-Gg: ASbGncs5GtVZBXeDsYWcgyMoTOZY7J5fgHScLkdBC4EWCsxSWEuFIQZi+pByV1p5MgX
+	BzmpwdGIKCi+yWTpg5zVQfF+BvOCT/W3su9Uym1yiuBTKWDLWA9CFeKlvlLjjJdzmQ4YUwDdwyU
+	3efwIhrRYMc8RBu9mnz3mo5YqXJH80iGRDuz98T/sYmvwV4rFVNKFbnZPawlJmPruZ6lfNpviFn
+	m6pKwjjEd3nQ5HU8UMlaD5ilPfZ0HmKWdPx+OtYDUR7nqGdKeawkN8e+LhG90zxpfs7toIwwoDh
+	09OWp6JVfHdOHQ8ud1Tww5mCwPJvmIgpUNufokJ03U9fg4yB
+X-Google-Smtp-Source: AGHT+IF/x5u//p/sLbrSoc+/DtEl2pQlBUwtefFUMMFvJHqqSPz/Q81Tg0l7W612xzqnDojUykvNTg==
+X-Received: by 2002:a17:90b:2548:b0:2ee:fdf3:390d with SMTP id 98e67ed59e1d1-2f782d9a164mr46743099a91.31.1737789270080;
+        Fri, 24 Jan 2025 23:14:30 -0800 (PST)
 Received: from localhost.localdomain (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21da413f28csm26492735ad.136.2025.01.24.22.52.44
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f7ffa450c9sm2925910a91.9.2025.01.24.23.14.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jan 2025 22:52:45 -0800 (PST)
+        Fri, 24 Jan 2025 23:14:29 -0800 (PST)
 From: Tony Ambardar <tony.ambardar@gmail.com>
 X-Google-Original-From: Tony Ambardar <itugrok@yahoo.com>
-To: shivam.tiwari00021@gmail.com
+To: bpf@vger.kernel.org
 Cc: Tony Ambardar <tony.ambardar@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
 	Song Liu <song@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
@@ -88,13 +86,17 @@ Cc: Tony Ambardar <tony.ambardar@gmail.com>,
 	Stanislav Fomichev <sdf@fomichev.me>,
 	Hao Luo <haoluo@google.com>,
 	Jiri Olsa <jolsa@kernel.org>,
-	bpf@vger.kernel.org
-Subject: [PATCH bpf v1] libbpf: fix accessing BTF.ext core_relo header
-Date: Fri, 24 Jan 2025 22:52:36 -0800
-Message-Id: <20250125065236.2603346-1-itugrok@yahoo.com>
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf v1] selftests/bpf: Fix runqslower cross-endian build
+Date: Fri, 24 Jan 2025 23:14:23 -0800
+Message-Id: <20250125071423.2603588-1-itugrok@yahoo.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <CALz0HOrGei1UTAkceBZqPjGkY=6pRhpjt=b63bhhgPjF7_E9Gg@mail.gmail.com>
-References: <CALz0HOrGei1UTAkceBZqPjGkY=6pRhpjt=b63bhhgPjF7_E9Gg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -105,39 +107,50 @@ Content-Transfer-Encoding: 8bit
 
 From: Tony Ambardar <tony.ambardar@gmail.com>
 
-Update btf_ext_parse_info() to ensure the core_relo header is present
-before reading its fields. This avoids a potential buffer read overflow
-reported by the OSS Fuzz project.
+The runqslower binary from a cross-endian build currently fails to run
+because the included skeleton has host endianness. Fix this by passing the
+target BPF endianness to the runqslower sub-make.
 
-Fixes: cf579164e9ea ("libbpf: Support BTF.ext loading and output in either endianness")
-Link: https://issues.oss-fuzz.com/issues/388905046
+Fixes: 5a63c33d6f00 ("selftests/bpf: Support cross-endian building")
 Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
 ---
- tools/lib/bpf/btf.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/bpf/runqslower/Makefile        | 3 ++-
+ tools/testing/selftests/bpf/Makefile | 1 +
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 48c66f3a9200..560b519f820e 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -3015,8 +3015,6 @@ static int btf_ext_parse_info(struct btf_ext *btf_ext, bool is_native)
- 		.desc = "line_info",
- 	};
- 	struct btf_ext_sec_info_param core_relo = {
--		.off = btf_ext->hdr->core_relo_off,
--		.len = btf_ext->hdr->core_relo_len,
- 		.min_rec_size = sizeof(struct bpf_core_relo),
- 		.ext_info = &btf_ext->core_relo_info,
- 		.desc = "core_relo",
-@@ -3034,6 +3032,8 @@ static int btf_ext_parse_info(struct btf_ext *btf_ext, bool is_native)
- 	if (btf_ext->hdr->hdr_len < offsetofend(struct btf_ext_header, core_relo_len))
- 		return 0; /* skip core relos parsing */
+diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
+index c4f1f1735af6..5613b5736d93 100644
+--- a/tools/bpf/runqslower/Makefile
++++ b/tools/bpf/runqslower/Makefile
+@@ -6,6 +6,7 @@ OUTPUT ?= $(abspath .output)/
+ BPFTOOL_OUTPUT := $(OUTPUT)bpftool/
+ DEFAULT_BPFTOOL := $(BPFTOOL_OUTPUT)bootstrap/bpftool
+ BPFTOOL ?= $(DEFAULT_BPFTOOL)
++BPF_TARGET_ENDIAN ?= --target=bpf
+ LIBBPF_SRC := $(abspath ../../lib/bpf)
+ BPFOBJ_OUTPUT := $(OUTPUT)libbpf/
+ BPFOBJ := $(BPFOBJ_OUTPUT)libbpf.a
+@@ -63,7 +64,7 @@ $(OUTPUT)/%.skel.h: $(OUTPUT)/%.bpf.o | $(BPFTOOL)
+ 	$(QUIET_GEN)$(BPFTOOL) gen skeleton $< > $@
  
-+	core_relo.off = btf_ext->hdr->core_relo_off;
-+	core_relo.len = btf_ext->hdr->core_relo_len;
- 	err = btf_ext_parse_sec_info(btf_ext, &core_relo, is_native);
- 	if (err)
- 		return err;
+ $(OUTPUT)/%.bpf.o: %.bpf.c $(BPFOBJ) | $(OUTPUT)
+-	$(QUIET_GEN)$(CLANG) -g -O2 --target=bpf $(INCLUDES)		      \
++	$(QUIET_GEN)$(CLANG) -g -O2 $(BPF_TARGET_ENDIAN) $(INCLUDES)	      \
+ 		 -c $(filter %.c,$^) -o $@ &&				      \
+ 	$(LLVM_STRIP) -g $@
+ 
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 87551628e112..6722080b2107 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -306,6 +306,7 @@ $(OUTPUT)/runqslower: $(BPFOBJ) | $(DEFAULT_BPFTOOL) $(RUNQSLOWER_OUTPUT)
+ 		    BPFTOOL_OUTPUT=$(HOST_BUILD_DIR)/bpftool/		       \
+ 		    BPFOBJ_OUTPUT=$(BUILD_DIR)/libbpf/			       \
+ 		    BPFOBJ=$(BPFOBJ) BPF_INCLUDE=$(INCLUDE_DIR)		       \
++		    BPF_TARGET_ENDIAN=$(BPF_TARGET_ENDIAN)		       \
+ 		    EXTRA_CFLAGS='-g $(OPT_FLAGS) $(SAN_CFLAGS) $(EXTRA_CFLAGS)' \
+ 		    EXTRA_LDFLAGS='$(SAN_LDFLAGS) $(EXTRA_LDFLAGS)' &&	       \
+ 		    cp $(RUNQSLOWER_OUTPUT)runqslower $@
 -- 
 2.34.1
 
