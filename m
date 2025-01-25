@@ -1,162 +1,144 @@
-Return-Path: <bpf+bounces-49766-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49765-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AFEEA1C1F8
-	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 07:59:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE212A1C1F6
+	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 07:59:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F7551654F1
-	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 06:59:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B88B67A1814
+	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 06:58:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EAD7207A3D;
-	Sat, 25 Jan 2025 06:53:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4FDF207A1F;
+	Sat, 25 Jan 2025 06:52:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="i6lQiaO7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dmfc80PZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3FBE207A32;
-	Sat, 25 Jan 2025 06:53:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B73E5207A0E
+	for <bpf@vger.kernel.org>; Sat, 25 Jan 2025 06:52:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737787997; cv=none; b=a+65cck+4ayUXZc38dJEAMv/G2WhN+qYUkWhts62X+UtJ6rvAhBVxBNTEiokRs0mIvWIGcfuoUsysX202fA9mJeIAAcmBOSyLI2JumWwiWQB5LQnMqqt57s707HK567+kiFyYcaD6obiUqku1Y0y87NmBcI68oq26HYT4wyXhFA=
+	t=1737787968; cv=none; b=LvESOIhAWk77Nwk9j1wjMmvrQyIqVv+pCQjnyxX1mp+bgXhgQRJNXQf9hB5be3qXlCJhPFHjTN9DbujcVxbQp059ER8jobvILLlUQTkKcjJSiJY1VtRnp9lwgep6av94f2j+tw4H9+UMTpAXzP3Edadebuw91MW8snkwnM0aisw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737787997; c=relaxed/simple;
-	bh=oj8SGqRq+oKUdpcA0PDcHm5fhcqMnVgpPP/oa5I9kqs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z7UeoVV2UTN4tHUFmly07J5tevpdkLNjIthTCJuamx49bfgQAwndRYWNGAB1CanxXOudKeXVz7akC90qI7rUBYLxpC+vjohHA8pdbZV/kwt6NPHoVZ6egNsQgCSpKJ8qyOmDahntO9OYP/E0Ec9O/sjgMOwIgMdB0+ZKMa0hvPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=i6lQiaO7; arc=none smtp.client-ip=220.197.31.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=hDbCwusUEvHpWYX/2mH63j2HRxQtYnpTDXZK60c8mdk=;
-	b=i6lQiaO7ERTJJ0uM8j+TO3djTQLwFmHNuPPLlqKnt04D+jP3ZqjQFX6hqdGmdC
-	bMitxGI/5OWkWdtQmPfh3qKTqoDLKqQLbdEVduzEtlFqQ7hpVnJL6VFazmal36YB
-	aPA/eZIbPSC8rDtcUUmtEna6W1rnn3tbDAdYT0MMRAP1s=
-Received: from iZ0xi1olgj2q723wq4k6skZ (unknown [])
-	by gzga-smtp-mtada-g1-3 (Coremail) with SMTP id _____wDXd1AFipRn3_aGIQ--.34842S2;
-	Sat, 25 Jan 2025 14:51:58 +0800 (CST)
-Date: Sat, 25 Jan 2025 14:51:49 +0800
-From: Jiayuan Chen <mrpre@163.com>
-To: John Fastabend <john.fastabend@gmail.com>
-Cc: bpf@vger.kernel.org, borisp@nvidia.com, kuba@kernel.org, 
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com, horms@kernel.org, 
-	andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
-	shuah@kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf v1 1/2] bpf: fix ktls panic
-Message-ID: <g7y5kd2lkzkcklixeuyhq5rf6ijruicizcilakjl5uueb7ye2b@xu2kkhwbgv5w>
-References: <20250123171552.57345-1-mrpre@163.com>
- <20250123171552.57345-2-mrpre@163.com>
- <gkx7axo3mau4jb7ojsdl4lwrtkuxsbnozplupscl3vvl3zfqg5@qnc5qfwzcwlj>
+	s=arc-20240116; t=1737787968; c=relaxed/simple;
+	bh=2xk4GflnDVL/9cCJ4tZAWRvfzkJapFZbVQNV2R3lpqE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=afkR6t7fsLqENB3jCA3hnYd3QI9G0HUGgiOYxDWW4JK5faNqq3jcfPqjHi4pacHP5nMlPiZKUuXv/MMngkqoaWk6Wj+6qcu+1girMgTdHxdmknHYmPvoG2fpLN/gyYv+vxianQKOfM6kPn4VR6uqB0MeGemsYDwSVW+lNPrarqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dmfc80PZ; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-21661be2c2dso49412905ad.1
+        for <bpf@vger.kernel.org>; Fri, 24 Jan 2025 22:52:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1737787966; x=1738392766; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qxCiKUpxc8BoGcMZmcC1U9yhSr1dOPJaybAPqf44sMw=;
+        b=dmfc80PZtj++i/tsVkDbX/J+pF97YPxtDftvVtXUxz2ISEPd8hZyY8xUQrmHwn8BRm
+         3DIreXCm4InIbxypm81C8nW17e1QhQyf+bGBuuZwypRtyXROk3BNhCraqQNmM85LKfEi
+         0btjH1YJ6b997rPk4Rd4IO81YGlutt/0y6F7J6qf30onr/drYgL5sLwwUdQSElxbGE52
+         Xizb9WmhYcXQ77OQ2e1Ymvz2JI1Ux0m4JBAKB/scOKCpOL3/iYKjEsWzOXLk1Js0H0+O
+         b0iI0CtM95xFJEXoZO7OW5EKG5UWIRsfcEGv+j5dHTynPii7IVg45wJaDLh96T7uWuym
+         IHEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737787966; x=1738392766;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qxCiKUpxc8BoGcMZmcC1U9yhSr1dOPJaybAPqf44sMw=;
+        b=MiFVCrwZyLYaalW6LkYD8BsLfjf7LsWZlekjvj7iXkcdvwSM58JmNBGJLL9tlMHdA9
+         /Bg2s37MS2tTUXA2yylip3AVsb6k/77hU+e3OXkpkbfpBqt9yITOVQAiLmJzq9RxXQsi
+         XjTlpTfyHAxTETTX0H5ociuLJ14kTUPLQgJHSZG4SW33O2eJrcNnOo+7KRqWfEgr4CY1
+         V1VBxf1mVS1gg2oR0yDDNCYmPyo/900C86Vc2Qe0Fb8vFb7Zt7XBqyQr/38SAaxolqDt
+         YQZ1LFxO3MCaI2S6ULSdLCyEi0cT8ewBR0XAW9Bbm7B4YMu8PFnWB4Uqepf33+Itqzos
+         5iEw==
+X-Forwarded-Encrypted: i=1; AJvYcCWBQZtgpe/UIS72hxqxl0Eya55RCKsNZ+eh+NI/rpTdUZOpYj4+i2HAmjBgOZgfkGuc5Qw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz/2JKqRBmH5O5QGOeUXhmj+bEA5JfHmplcWJC/rHBKD8SGrEhw
+	WLdiGyZGZxwGtgG1m/l+3deUQ3VZEu5Ds8u0blSDgDjPFQL1jqK0
+X-Gm-Gg: ASbGncv7xwdS9naHxoY+IXmFllTaead/aGa40mcXH5uA2G5c4wUyIMDqTOF3Hf0CPL4
+	UREwScHutxgfcvCT71JecPPPVFCzSIykuQpUi8CzvK/8RQxiXnJzg+b5A1cZGvB8fiMdhsobpvW
+	xv14GKnc+0H4Q2ZW4/wDxeGhIB+a8YxwAQoE3O6pGuf2a2+kO0xEDe1QjAYtnqrjdOG3oz2/DMK
+	gHYi8HRhxRt0HJqUp8TIlGXKEN2QMLg56aUp2Zjq0stB/Pvgry5ZMEvfjNcd5MRfr9DITUDUNi0
+	JwGNevjU8JWgKynnO6Hmhniov5HmTT48izw+rUVCxPu3quiI
+X-Google-Smtp-Source: AGHT+IHDw43KbdiGICtI3iCJjOJEZlTD4A9c7Xei30IHy67e9XIg6IVNDSkIHRhaBn7mOsB65WnKMQ==
+X-Received: by 2002:a17:903:174c:b0:215:4394:40b5 with SMTP id d9443c01a7336-21c355dc59fmr467606705ad.43.1737787965926;
+        Fri, 24 Jan 2025 22:52:45 -0800 (PST)
+Received: from localhost.localdomain (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21da413f28csm26492735ad.136.2025.01.24.22.52.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Jan 2025 22:52:45 -0800 (PST)
+From: Tony Ambardar <tony.ambardar@gmail.com>
+X-Google-Original-From: Tony Ambardar <itugrok@yahoo.com>
+To: shivam.tiwari00021@gmail.com
+Cc: Tony Ambardar <tony.ambardar@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org
+Subject: [PATCH bpf v1] libbpf: fix accessing BTF.ext core_relo header
+Date: Fri, 24 Jan 2025 22:52:36 -0800
+Message-Id: <20250125065236.2603346-1-itugrok@yahoo.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <CALz0HOrGei1UTAkceBZqPjGkY=6pRhpjt=b63bhhgPjF7_E9Gg@mail.gmail.com>
+References: <CALz0HOrGei1UTAkceBZqPjGkY=6pRhpjt=b63bhhgPjF7_E9Gg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <gkx7axo3mau4jb7ojsdl4lwrtkuxsbnozplupscl3vvl3zfqg5@qnc5qfwzcwlj>
-X-CM-TRANSID:_____wDXd1AFipRn3_aGIQ--.34842S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxuF4fJF13AF43tryxZw17Awb_yoW5AFy7pr
-	WfX3Wayr4DtFyIkrn7Za18XryxZrySqF4UGr4Yq34rCrsxGr10ga4rKrWFga90krWv9F1S
-	vw4Duan8CFZ8CFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07Uc2-nUUUUU=
-X-CM-SenderInfo: xpus2vi6rwjhhfrp/xtbBDxbfp2eUfa2cpQAAs7
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 24, 2025 at 09:24:48PM -0800, John Fastabend wrote:
-> On 2025-01-24 01:15:51, Jiayuan Chen wrote:
-> > [ 2172.936997] ------------[ cut here ]------------
-> > [ 2172.936999] kernel BUG at lib/iov_iter.c:629!
-> > ......
-> > pointless and can directly go to zero-copy logic.
-> > 
-> > 2. Suppose sg.size is initially 5, and we push it to 100, setting
-> > apply_bytes to 7. Then, 98 bytes of data are sent out, leaving 2 bytes to
-> > be processed. The rollback logic cannot determine which data has been
-> > processed and which hasn't.
-> 
-> This is the error path we are talking about correct?
-> 
->         if (msg->cork_bytes && msg->cork_bytes > msg->sg.size &&
->             !enospc && !full_record) {
->                 err = -ENOSPC;
->                 goto out_err;
->         }
-> 
-yes, it its.
-> > 
-> > diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-> > index 7bcc9b4408a2..b3cae4dd4f49 100644
-> > --- a/net/tls/tls_sw.c
-> > +++ b/net/tls/tls_sw.c
-> > @@ -1120,9 +1120,13 @@ static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
-> >  					num_async++;
-> >  				else if (ret == -ENOMEM)
-> >  					goto wait_for_memory;
-> > -				else if (ctx->open_rec && ret == -ENOSPC)
-> > +				else if (ctx->open_rec && ret == -ENOSPC) {
-> > +					if (msg_pl->cork_bytes) {
-> > +						ret = 0;
-> > +						goto send_end;
-> > +					}
-> 
-> The app will lose bytes here I suspect if we return copied == try_to_copy then
-> no error makes it to the user?
+From: Tony Ambardar <tony.ambardar@gmail.com>
 
-I looked into the corking logic for non-TLS sockets in tcp_bpf_sendmsg,
-and I found that when a "cork" situation occurs, the user-space send
-doesn't return an error, and the returned length is the same as the input
-length parameter, even if some data is cached. I think TLS should also
-behave similarly.
+Update btf_ext_parse_info() to ensure the core_relo header is present
+before reading its fields. This avoids a potential buffer read overflow
+reported by the OSS Fuzz project.
 
-Additionally, I saw that the current non-zero-copy logic for handling
-corking is written as:
-'''
-line 1177
+Fixes: cf579164e9ea ("libbpf: Support BTF.ext loading and output in either endianness")
+Link: https://issues.oss-fuzz.com/issues/388905046
+Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
+---
+ tools/lib/bpf/btf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-else if (ret != -EAGAIN) {
-	if (ret == -ENOSPC)
-		ret = 0;
-	goto send_end;
-}
-'''
-
-Meanwhile, I set cork_bytes to 1 and tested the following behavior logic:
-'''
-send(msg, 1);
-send(msg+1, 1);
-send(msg+2, remain_length);
-'''
-Both the sender and receiver seem to be working normally both for TLS and
-non-TLS sockets.
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 48c66f3a9200..560b519f820e 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -3015,8 +3015,6 @@ static int btf_ext_parse_info(struct btf_ext *btf_ext, bool is_native)
+ 		.desc = "line_info",
+ 	};
+ 	struct btf_ext_sec_info_param core_relo = {
+-		.off = btf_ext->hdr->core_relo_off,
+-		.len = btf_ext->hdr->core_relo_len,
+ 		.min_rec_size = sizeof(struct bpf_core_relo),
+ 		.ext_info = &btf_ext->core_relo_info,
+ 		.desc = "core_relo",
+@@ -3034,6 +3032,8 @@ static int btf_ext_parse_info(struct btf_ext *btf_ext, bool is_native)
+ 	if (btf_ext->hdr->hdr_len < offsetofend(struct btf_ext_header, core_relo_len))
+ 		return 0; /* skip core relos parsing */
  
-> Could we return delta from bpf_exec_tx_verdict and then we can calculate
-> the correct number of bytes to revert? I'll need to check but its not
-> clear to me if BPF program pushes data that the right thing is done with
-> delta there now.
-> 
-> Thanks for looking into this.
-
-Let's assume the original data is "abcdefgh" (8 bytes), and after 3 pushes
-by the BPF program, it becomes 11-byte data: "abc?de?fgh?".
-
-Then, we set cork_bytes to 6, which means the first 6 bytes have been
-processed, and the remaining 5 bytes "?fgh?" will be cached until the
-length meets the cork_bytes requirement.
-
-However, some data in "?fgh?" is not within 'sg->msg_iter'
-(but in msg_pl instead), especially the data "?" we pushed.
-
-So it doesn't seem as simple as just reverting through an offset of msg_iter.
-It appears that 'msg_iter' and 'msg_pl' are two separate objects,
-and the BPF program modifies the scatterlist within the msg_pl.
-
---
-Thanks.
++	core_relo.off = btf_ext->hdr->core_relo_off;
++	core_relo.len = btf_ext->hdr->core_relo_len;
+ 	err = btf_ext_parse_sec_info(btf_ext, &core_relo, is_native);
+ 	if (err)
+ 		return err;
+-- 
+2.34.1
 
 
