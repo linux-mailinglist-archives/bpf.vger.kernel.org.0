@@ -1,180 +1,289 @@
-Return-Path: <bpf+bounces-49781-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49785-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5B30A1C246
-	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 09:31:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F8F4A1C2CF
+	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 11:59:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A92F1888D10
-	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 08:31:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 607003A6441
+	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 10:59:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFFC820898D;
-	Sat, 25 Jan 2025 08:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j34qagjp"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5FF6207DF8;
+	Sat, 25 Jan 2025 10:59:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA1DD207E1F;
-	Sat, 25 Jan 2025 08:30:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA7EA1DB154
+	for <bpf@vger.kernel.org>; Sat, 25 Jan 2025 10:59:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737793828; cv=none; b=EYlJPFbDHj+iHfFXfNQJJlJCQyy9xwaKsi2zGbuhgNC0R/vRSVN0saZ9SfReIxyvVa1S2JfhuSQxqLBeLtSTVmPepUANUbC4c/fjk+Lz3GelJ0OPusD+tGoUDY49Ggy0BlROvKMJhqHLVRX9uND9vCg2n4+sh8+nqI4SIeFxw4Y=
+	t=1737802754; cv=none; b=mbY9kfEq6oLVaknuvLmqQkPwsdD7Em8S6GUJzzaI5rkZXKN8NCkb6nYiLEg6dl2jda/zWCNdE/+3xSOZOnXYeO+pOwljkxiY09Gmjol/AoW9GXkeQNdGS+DG6XgFNdhitTc+D/NTiww7n0I4326F7onu7n1k7tz1+FAJ6wQK+lI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737793828; c=relaxed/simple;
-	bh=0ISlPQASi8sOGiTZRr8sXYkkw/cj+H2dHR0QbFcOJZg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=fE/M456cErgK0gw6qJIgcux8erovBtwTlRXH6p1VidBfGjcJt1sSvHGfQj3mwDvbzre/TwF94SWTkYBDgYuO6zeoidBU8/+IHgvPMQTDHr8532VAilGNQhxe8aNadQxh8OpXvdIkW057N4wjafzIy9qSdlsWL9/HF9KQBIHeKKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j34qagjp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8E522C4CEF9;
-	Sat, 25 Jan 2025 08:30:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737793828;
-	bh=0ISlPQASi8sOGiTZRr8sXYkkw/cj+H2dHR0QbFcOJZg=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=j34qagjpglU0mUZTxVx7V705AZZ+TSZG8lr+v1hheI3W3UYXy8PLATiG3L7cdy1xQ
-	 ezVDXNirVX6M5mbKRs77VP//QwDg/aBidH57SQTcUjtZK+rVZtQgfR7L72HniZDm7o
-	 UOa24rf+87hPpVdaVcrOHRPmGOywvj9N0oTvZ+k+tAQYeZKYR2iVT44wm3IIhWlrzw
-	 E04tVMxQpQnTuZtop+Vr7hjhVTEqO6ougPSFRThxqhaXfhp0z31kjPSOle5QmP/q1V
-	 FxVu556UuXuMGg7rc7aQPO0v9LT83NnGA9yJjkC/zqEft7+v/nXFW7lArDr6CV2dSy
-	 QebgY54JE9HEw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85C81C0218C;
-	Sat, 25 Jan 2025 08:30:28 +0000 (UTC)
-From: Levi Zim via B4 Relay <devnull+rsworktech.outlook.com@kernel.org>
-Date: Sat, 25 Jan 2025 16:29:54 +0800
-Subject: [PATCH bpf-next v2 7/7] selftests/bpf: copy_from_user_dynptr test
+	s=arc-20240116; t=1737802754; c=relaxed/simple;
+	bh=FoLuAmC0+ybBKKcbKFN5mUJIY1uvWwLxTl6ZYh+6jUI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=YKuE91ifxhwvT1cf1TxMrp2+Q6nfBd3LehP3SK4CiklJkZ0kXPXXvil24b1ldjJo2igMwfzdzIArbeFb9TC2jNn6FCthiHCOKP97jIEVBFjONbAvu7G4BZJRChpOfOLRpvzI/O3Bx2kcRDAhx+R850J5H3j0JY973t7ZmzQ5cH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YgBWC2trtz4f3jqx
+	for <bpf@vger.kernel.org>; Sat, 25 Jan 2025 18:58:47 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id E7E081A0DDA
+	for <bpf@vger.kernel.org>; Sat, 25 Jan 2025 18:59:02 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+	by APP4 (Coremail) with SMTP id gCh0CgBXul7zw5Rn79XHBw--.24605S4;
+	Sat, 25 Jan 2025 18:59:01 +0800 (CST)
+From: Hou Tao <houtao@huaweicloud.com>
+To: bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	houtao1@huawei.com,
+	xukuohai@huawei.com
+Subject: [PATCH bpf-next v2 00/20] Support dynptr key for hash map
+Date: Sat, 25 Jan 2025 19:10:49 +0800
+Message-Id: <20250125111109.732718-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250125-bpf_dynptr_probe-v2-7-c42c87f97afe@outlook.com>
-References: <20250125-bpf_dynptr_probe-v2-0-c42c87f97afe@outlook.com>
-In-Reply-To: <20250125-bpf_dynptr_probe-v2-0-c42c87f97afe@outlook.com>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
- Steven Rostedt <rostedt@goodmis.org>, 
- Masami Hiramatsu <mhiramat@kernel.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-trace-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
- Levi Zim <rsworktech@outlook.com>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2541;
- i=rsworktech@outlook.com; h=from:subject:message-id;
- bh=1lAHI+FdFmnes4eRlPuwbThpqaSf+nKUYWM4JR6lmdg=;
- b=owEBbQKS/ZANAwAIAW87mNQvxsnYAcsmYgBnlKEgaDOvvSTi2myiN4juIhT7XAwb4vipaIBC8
- te11MKDd8CJAjMEAAEIAB0WIQQolnD5HDY18KF0JEVvO5jUL8bJ2AUCZ5ShIAAKCRBvO5jUL8bJ
- 2EHZD/4+UmX7SD5haN6mjGVHWxiNzKbUCDyXVJCQ4glNAR/glcfFXli/rDRJVW1037wSANcxq7G
- 92qggOGmZCk2/hRHADnnTYYxdWaQhUlOdqfyX7YEhGTM8sS63DNfrryWbP9Gwxz8pTNv65nNrvM
- /iOJIGYe5oJ4XGoAV3jMqJoZHIeH7qHSw6WxCV03lGmFnw5jZrY1NYwdMhlboj2Gh6Owht3an/0
- QpV3nhuZZcGi9Ij7D48n5QFrRaso+HNYxPlR6+H198ITxErAE2jUBmh7cNGZDjdWCPK/PaMiaFy
- POx4mNrWjG2JyAGpBgdDSwDSe/YzUtpLRhoneOwlehCEm3IkbOCpabINUxII1qNb5R7KIQbDs+X
- feJXyRtTD4oe/W7cYyMqIQGsXFRG+UTj+PU71D3qH1FXhc7y/kbw+C46dljianT8fq9cjuJJmI4
- EYuDFrzvHH+Ysfglgu8hps76uV4I724bI5vC4wtDFjHhqMkQm/tkqCc3e3dqvvdDJ13PYBSZApZ
- 4sRZPpCw4afkgdeJ9UeYVrclW8QslIV9ZiIgoRF48wjKQ//vqSDtcFYIaww4cO8wGxAsW9r04C8
- hRg/y/Q/TFka0xNPijh7FPE1Za5/PjkNptLlXMHqlsiCZiRZEtSuU38dvhK1XHR5fMMhvW4gyAs
- eLXZu1iOairMXpQ==
-X-Developer-Key: i=rsworktech@outlook.com; a=openpgp;
- fpr=17AADD6726DDC58B8EE5881757670CCFA42CCF0A
-X-Endpoint-Received: by B4 Relay for rsworktech@outlook.com/default with
- auth_id=219
-X-Original-From: Levi Zim <rsworktech@outlook.com>
-Reply-To: rsworktech@outlook.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgBXul7zw5Rn79XHBw--.24605S4
+X-Coremail-Antispam: 1UD129KBjvJXoW3WF47AF18tr47Ary7uFWrGrg_yoW3ur1kpa
+	y0g3y3tryxtFy7Xw47Ca1xAr4Fvw4kXw1UG3Wxt348G34UXryfZr1xK3W09F9xtryFqr45
+	Zwn7tr93uw10kFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvYb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kK
+	e7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
+	WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
+	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07
+	UZ4SrUUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-From: Levi Zim <rsworktech@outlook.com>
+From: Hou Tao <houtao1@huawei.com>
 
-This patch adds a test for copy_from_user_dynptr helper,
-which tests reading variable length of user memory into a ringbuf
-backed dynptr.
+Hi,
 
-Signed-off-by: Levi Zim <rsworktech@outlook.com>
+The patch set aims to add the basic dynptr key support for hash map as
+discussed in [1]. The main motivation is to fully utilize the BTF info
+of the map key and to support variable-length key (e.g., string or any
+byte stream) for bpf map. The patch set uses bpf_dynptr to represent the
+variable-length part in the map key and the total number of
+variable-length parts in the map key is limited as 1 now. Due to the
+limitation in bpf memory allocator, the max size of dynptr in map key is
+limited as 4088 bytes. Beside the variable-length parts (dynptr parts),
+the fixed-size part in map key is still allowed, so all of these
+following map key definitions are valid:
+
+	struct bpf_dynptr;
+
+	struct map_key_1 {
+		struct bpf_dynptr name;
+	};
+	struct map_key_2 {
+		int pid;
+		struct bpf_dynptr name;
+	};
+	struct map_key_3 {
+		struct map_key_2 f1;
+		unsigned long when;
+	};
+
+The patch set supports lookup, update, delete operations on normal hash
+map with dynptr key for both bpf program and bpf syscall. It also
+supports lookup_and_delete and get_next_key operations on dynptr map key
+for bpf syscall.
+
+However the following operations have not been fully supported yet on a
+hash map with dynptr key:
+
+1) batched map operation through bpf syscall
+2) the memory accounting for dynptr (aka .htab_map_mem_usage)
+3) btf print for the dynptr in map key
+4) bpftool support
+5) the iteration of elements through bpf program
+When a bpf program iterates the element in a hash map with dynptr key
+(e.g., bpf_for_each_map_elem() helper or map element iterator), the
+dynptr in the map key has not been specially treated yet and the dynptr
+is only treated as a read-only 16-bytes buffer.
+
+The patch set is structured as follow:
+
+Patch #1~#2 introduce BPF_DYNPTR in btf_field_type and parse the
+bpf_dynptr in the map key.
+
+Patch #3~#7 remove the need to specify BPF_F_DYNPTR_IN_KEY explicitly,
+introduces an internal BPF_INT_F_DYNPTR_IN_KEY map flag, set the
+internal flag when there is any bpf_dynptr in the map key btf, and also
+verify the value of max_extra is valid when it is set.
+
+Patch #8~#9 refactor check_stack_range_initialized() and support
+dynptr-keyed map in verifier.
+
+Patch #10~#12 introduce bpf_dynptr_user, support the use of
+bpf_dynptr_user in bpf syscall for map lookup, lookup_delete, update,
+delete and get_next_key operations.
+
+Patch #13~#17 update the lookup, lookup_delete, update, delete and
+get_next_key callback correspondingly to support dynptr-keyed hash map.
+
+Patch #18~#19 add positive and negative test cases for hash map with
+dynptr key support.
+
+Patch #20 adds the benchmark to compare the lookup and update
+performance between normal hash map and dynptr-keyed hash map.
+
+Patch set v2 mainly address the suggestions and comments in v1. It
+mainly includes:
+1) remove the need to set BPF_F_DYNPTR_IN_KEY flag explicitly
+2) remove bpf_dynptr_user helpers from libbpf
+3) support dynptr-keyed map in verifier in a less-intrusive way
+4) add always_inline for lookup_{nulls_elem|elem}_raw to alleviate
+   the performance degradation
+
+The performance results in v2 are almost the same as v1. When the max
+length of str is greater than 256, the lookup performance of dynptr
+hash-map will be better than the normal hash map. When the max length is
+greater than 512, the update performance of dynptr hash map will be
+better than the normal hash map. And the memory consumption of hash-map
+with dynptr key is smaller compared with normal hash map.
+
+a) lookup operation
+
+max_entries = 8K (randomly generated data set)
+| max length of desc | normal hash-map    | dynptr hash-map   |
+| ---                |  ---               | ---               |
+|  64                | 12.0 M/s (1.7 MB)  | 8.3 M/s (1.4 MB)  |
+| 128                |  6.4 M/s (2.2 MB)  | 6.6 M/s (1.7 MB)  |
+| 256                |  3.7 M/s (4.2 MB)  | 4.8 M/s (2.3 MB)  |
+| 512                |  2.1 M/s (8.2 MB)  | 3.1 M/s (3.8 MB)  |
+| 1024               |  1.1 M/s (16 MB)   | 1.9 M/s (6.5 MB)  |
+| 2048               |  0.6 M/s (32 MB)   | 1.1 M/s (12 MB)   |
+| 4096               |  0.3 M/s (64 MB)   | 0.6 M/s (22 MB)   |
+
+| string in file     | normal hash-map    | dynptr hash-map   |
+| ---                |  ---               | ---               |
+| kallsyms           |  7.7 M/s (29 MB)   | 7.3 M/s (22 MB)   |
+| string in BTF      |  8.0 M/s (22 MB)   | 7.3 M/s (16 MB)   |
+| alexa top 1M sites |  3.9 M/s (191 MB)  | 3.7 M/s (138 MB)  |
+
+b) update and delete operation
+
+max_entries = 8K (randomly generated data set)
+| max length of desc | normal hash-map    | dynptr hash-map   |
+| ---                |  ---               | ---               |
+|  64                |  5.0 M/s           | 3.6 M/s           |
+| 128                |  3.8 M/s           | 3.4 M/s           |
+| 256                |  2.7 M/s           | 2.7 M/s           |
+| 512                |  1.7 M/s           | 2.1 M/s           |
+| 1024               |  0.9 M/s           | 1.5 M/s           |
+| 2048               |  0.5 M/s           | 0.9 M/s           |
+| 4096               |  0.3 M/s           | 0.5 M/s           |
+
+| strings in file    | normal hash-map    | dynptr hash-map   |
+| ---                |  ---               | ---               |
+| kallsyms           |  3.9 M/s           | 2.9 M/s           |
+| strings in BTF     |  4.1 M/s           | 3.3 M/s           |
+| alexa top 1M sites |  2.7 M/s           | 2.5 M/s           |
+
+As usual, comments and suggestions are always welcome.
+
+PS: I will soon start my long Chinese Lunar New Year holiday, so my
+replies may be a bit slow.
+
 ---
- tools/testing/selftests/bpf/prog_tests/dynptr.c    |  3 ++
- tools/testing/selftests/bpf/progs/dynptr_success.c | 34 ++++++++++++++++++++++
- 2 files changed, 37 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/tools/testing/selftests/bpf/prog_tests/dynptr.c
-index a5a61a4c570d803bfca2af3f1a3b7d5eb0b8197f..a0095204609c710d49a6105ebf8be44723fb53d2 100644
---- a/tools/testing/selftests/bpf/prog_tests/dynptr.c
-+++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
-@@ -33,6 +33,7 @@ static struct {
- 	{"test_dynptr_skb_tp_btf", SETUP_SKB_PROG_TP},
- 	{"test_probe_read_kernel_dynptr", SETUP_RINGBUF},
- 	{"test_probe_read_user_dynptr", SETUP_RINGBUF},
-+	{"test_copy_from_user_dynptr", SETUP_RINGBUF},
- };
- 
- static int ringbuf_cb(void *ctx, void *data, size_t len)
-@@ -43,6 +44,8 @@ static int ringbuf_cb(void *ctx, void *data, size_t len)
- 	if (!ASSERT_EQ(len, skel->data->test_buf.length, "length"))
- 		return -E2BIG;
- 
-+	ASSERT_EQ(skel->bss->err, 0, "err");
-+
- 	if (!ASSERT_MEMEQ(buf, skel->data->test_buf.buf, len, "ringbuf_cb"))
- 		return -EINVAL;
- 
-diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c b/tools/testing/selftests/bpf/progs/dynptr_success.c
-index 5317860290dccb0862b6a0b94bb6f738c8d92835..10dda58fed66a05ad1b08c8684784fddabe3f4ad 100644
---- a/tools/testing/selftests/bpf/progs/dynptr_success.c
-+++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
-@@ -639,3 +639,37 @@ int test_probe_read_user_dynptr(void *ctx)
- 	bpf_ringbuf_submit_dynptr(&ptr, 0);
- 	return 0;
- }
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_nanosleep")
-+int test_copy_from_user_dynptr(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+	int copy_len;
-+
-+	if (bpf_get_current_pid_tgid() >> 32 != pid)
-+		return 0;
-+
-+	err = bpf_probe_read_user(&copy_len, sizeof(copy_len), &user_ptr->length);
-+	if (err < 0 || copy_len < 0) {
-+		err = 1;
-+		return 0;
-+	}
-+
-+	if (copy_len > MAX_BUFFER_LEN)
-+		copy_len = MAX_BUFFER_LEN;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, copy_len, 0, &ptr);
-+
-+	if (-E2BIG != bpf_copy_from_user_dynptr(&ptr, 0, MAX_BUFFER_LEN + 1,
-+		&user_ptr->buf, 0)) {
-+		err = 2;
-+		goto cleanup;
-+	}
-+
-+	err = bpf_copy_from_user_dynptr(&ptr, 0, copy_len,
-+		&user_ptr->buf, 0);
-+
-+cleanup:
-+	bpf_ringbuf_submit_dynptr(&ptr, 0);
-+	return 0;
-+}
+Change Log:
+v2:
+  * remove the need to set BPF_F_DYNPTR_IN_KEY flag explicitly
+  * remove bpf_dynptr_user helpers from libbpf
+  * support dynptr-keyed map in verifier in a less-intrusive way
+  * handle the return value of kvmemdup_bpfptr() correctly
+  * add necessary comments for ->record and ->key_record
+  * use __bpf_md_ptr to define the data field of bpf_dynptr_user
+  * add always_inline for lookup_{nulls_elem|elem}_raw
+  * add benchmark patch for dynptr-keyed hash map
+
+v1: https://lore.kernel.org/bpf/20241008091501.8302-1-houtao@huaweicloud.com/
+
+[1]: https://lore.kernel.org/bpf/CAADnVQJWaBRB=P-ZNkppwm=0tZaT3qP8PKLLJ2S5SSA2-S8mxg@mail.gmail.com/
+
+Hou Tao (20):
+  bpf: Add two helpers to facilitate the parsing of bpf_dynptr
+  bpf: Parse bpf_dynptr in map key
+  bpf: Factor out get_map_btf() helper
+  bpf: Move the initialization of btf before ->map_alloc_check
+  bpf: Introduce an internal map flag BPF_INT_F_DYNPTR_IN_KEY
+  bpf: Set BPF_INT_F_DYNPTR_IN_KEY conditionally
+  bpf: Use map_extra to indicate the max data size of dynptrs in map key
+  bpf: Split check_stack_range_initialized() into small functions
+  bpf: Support map key with dynptr in verifier
+  bpf: Introduce bpf_dynptr_user
+  bpf: Handle bpf_dynptr_user in bpf syscall when it is used as input
+  bpf: Handle bpf_dynptr_user in bpf syscall when it is used as output
+  bpf: Support basic operations for dynptr key in hash map
+  bpf: Export bpf_dynptr_set_size
+  bpf: Support get_next_key operation for dynptr key in hash map
+  bpf: Disable unsupported operations for map with dynptr key
+  bpf: Enable BPF_INT_F_DYNPTR_IN_KEY for hash map
+  selftests/bpf: Add bpf_dynptr_user_init() helper
+  selftests/bpf: Add test cases for hash map with dynptr key
+  selftests/bpf: Add benchmark for dynptr key support in hash map
+
+ include/linux/bpf.h                           |  40 +-
+ include/linux/btf.h                           |   2 +
+ include/uapi/linux/bpf.h                      |   6 +
+ kernel/bpf/btf.c                              |  46 +-
+ kernel/bpf/hashtab.c                          | 319 ++++++++-
+ kernel/bpf/helpers.c                          |   2 +-
+ kernel/bpf/map_in_map.c                       |  21 +-
+ kernel/bpf/syscall.c                          | 363 +++++++++--
+ kernel/bpf/verifier.c                         | 373 ++++++++---
+ tools/include/uapi/linux/bpf.h                |   6 +
+ tools/testing/selftests/bpf/Makefile          |   2 +
+ tools/testing/selftests/bpf/bench.c           |  10 +
+ .../selftests/bpf/benchs/bench_dynptr_key.c   | 612 ++++++++++++++++++
+ .../bpf/benchs/run_bench_dynptr_key.sh        |  51 ++
+ tools/testing/selftests/bpf/bpf_util.h        |   9 +
+ .../bpf/prog_tests/htab_dynkey_test.c         | 427 ++++++++++++
+ .../selftests/bpf/progs/cpumask_common.h      |   2 +-
+ .../selftests/bpf/progs/dynptr_key_bench.c    | 250 +++++++
+ .../bpf/progs/htab_dynkey_test_failure.c      | 216 +++++++
+ .../bpf/progs/htab_dynkey_test_success.c      | 383 +++++++++++
+ 20 files changed, 2946 insertions(+), 194 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_dynptr_key.c
+ create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_dynptr_key.sh
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_dynkey_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/dynptr_key_bench.c
+ create mode 100644 tools/testing/selftests/bpf/progs/htab_dynkey_test_failure.c
+ create mode 100644 tools/testing/selftests/bpf/progs/htab_dynkey_test_success.c
 
 -- 
-2.48.1
-
+2.29.2
 
 
