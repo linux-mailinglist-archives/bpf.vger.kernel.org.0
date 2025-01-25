@@ -1,305 +1,196 @@
-Return-Path: <bpf+bounces-49763-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49764-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB856A1C103
-	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 06:20:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96C45A1C108
+	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 06:25:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B31A9188CF5F
-	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 05:20:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 134113A988C
+	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 05:25:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D152A207A0E;
-	Sat, 25 Jan 2025 05:20:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185BE207A0C;
+	Sat, 25 Jan 2025 05:25:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gxE3NGdS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WnzrRrOQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD3F22066D4
-	for <bpf@vger.kernel.org>; Sat, 25 Jan 2025 05:20:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 268172582;
+	Sat, 25 Jan 2025 05:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737782430; cv=none; b=bwGHdg9YDFIR15OuSJEh2YpZyr3i0SzvDK98MLdtdvpLgdUFzYwk/aKoFv83VkDGKX0fN+HgX9ZiXm+Pz0gaXSc36tzdc8TNzW6Yw3FoUnxFIMQziagsJu2eXY5g9fXGlrNP+D0Kzepde99/CsofmIrTZLMmUe5VVtRYD2fV2TA=
+	t=1737782712; cv=none; b=EOV7n+hz5fEtVask7POf8B/NMyzfYd8CfCHCeE8q6zNtcmtsN5MxhTJCgArHhXQRUvSoOIrCJi87rx03N/gkHoUaIlLZQkjPANegRWVuzJRYzQoYz+aPaSaHL+kp4EIjfCbCxZVKe2Kohj4sv7VKLSF2Gx7XjovWGE+kSwhUVqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737782430; c=relaxed/simple;
-	bh=O1T75UsFALNUbzpJblBAoQmy/QjVDjUDQQaSNFCCp1g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SEbiUQkpY7QUUiWpWpC5S4hoFm4plMqQ1ZhMZ6YgyljNLx4HuqgtNp83HkCrFlyZOk88WE6w4/3M0pJOdKkIW6o/IXCRbUNcMYMUYs4G5iNLumiyiVTQv7E7c3X75OOVTK/bdZVVeKLKXX1YUn+2yOkqkVevXkBWPeXcb79g6C8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gxE3NGdS; arc=none smtp.client-ip=209.85.166.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3ce82195aa0so81535ab.0
-        for <bpf@vger.kernel.org>; Fri, 24 Jan 2025 21:20:28 -0800 (PST)
+	s=arc-20240116; t=1737782712; c=relaxed/simple;
+	bh=7GaXwBaMTNz7QsHoI0hOmYJ3MRj/002l/EBAzzP+oYc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Mpngt8l2UnY4N3orTXMeKK4UAmnp+oGfvnW7SbfcyRrq10YI/3VLlmb6l86x5YzK6N/6ucG6/3jCxJAQNHi0hNOqHnwD5RcJjJUpPx5L02tZXtqyIyslNQd4jZJyIfFw/NSBagnU4UnbsQPeXFBnCKZELUkEG+xycBkdKvEu0R8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WnzrRrOQ; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2f43d17b0e3so5211915a91.0;
+        Fri, 24 Jan 2025 21:25:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1737782427; x=1738387227; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gI0l6geyBvTNYUfVyhSQBTU8bwzp+pWMDrseI++M4u0=;
-        b=gxE3NGdSTACkd86mqBRQrY42C5x7mRYKsjmpOsRdNzP9FmVC4LMv+4hK9emaiwsnBN
-         mA/b77yVvSA/y2VZrGX2lJv/yn/oUg7ECGW7oXJFn0T3cec075KpCyLik7DCuQ4/Tmbx
-         40aJiOEfJ51j8ircTAIir96BCmBWY/DNvwqANSY9n6Tka6biTtJy5ZVtWba6U6K+zSVJ
-         N//og35rxdnMnI7VGDFFdo0CfXmB7mgwvEcO07BJGPsrwnjg2P1f9P6mQf+T4rW0i08F
-         Gd3HaqJbAEpGfkxVEkE+7PuUYGHVwlNc8zBRIyX4m5/Q3sYSOh32NM4xUYVA/D1bHofh
-         P4jA==
+        d=gmail.com; s=20230601; t=1737782710; x=1738387510; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xSSTIOL0i8k8ok3WPoUFyCTMS5T9Rt15wlkg9Dm8NG4=;
+        b=WnzrRrOQsLaqvIOwtwjPqYTZHgIkt6XKtWBujo+Igocp+FXnsEVWNO9AI5jn7G55yM
+         Xi3xxBKutL+Ygrc/aw72S+Nh/VtMObaM7xFejm1526EASAV5yOYUqMPpKe8xeKtye6GS
+         7kDkbEax/R6uo66WkPg03BcziuBniEVzQa72jY4eHGh2B91k39TYQUPrPQhhodXaaJgU
+         nColPYmJCeJ/c6aI7FqzP1GuTxQwNItkJEbzxB38iLxucOk4O21QiQ+hETBUAPcqewfn
+         twQEYfSYhPCx6lfRFmP90/wZigpI/7AHPqB96ONQrtD+EIT0Sw1TxX06YoMtb4kiNZ35
+         lHDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737782428; x=1738387228;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gI0l6geyBvTNYUfVyhSQBTU8bwzp+pWMDrseI++M4u0=;
-        b=EuPQYDo+O7Y/71QVejvB+xMq3T5SPO7sb4NNCuRCd1r9tWJ5cZzH9Dz9FyU5QRBCqw
-         iYITlD5gWPOYsTIj0wf9PB8BykQEGMH33kPWO1oJz6SyS0qMySbVP1uwqlhhKE9HK3a2
-         YBuKd/GBFs9fRpN8NoOydguNxIojQByzwYfcH1Du9Mgxy+uvDy2kCGMW04niDjJ8sBIZ
-         8caX0H8FXSNVYa5eW/FsBbq1IiaEDP8fwgqpUyZbkT1lutXdA/rXpOZ5K60m0p8odOR8
-         gIh9lwZqZ1bEyuX4mZ568RtziPwG6VY/dKWtjdTwkoW6wumruSHD829U63fDW22hIYYU
-         DDHw==
-X-Forwarded-Encrypted: i=1; AJvYcCVwn78jfoVOrA3QSLWlbs/CPKOKyYOavsm2vJ8WndahYIOGo2EYn2cgiDoLPpQMAGX3mko=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxVaMevusWMxvN7M6PPTehvbIqUlUTkaVzrcoOu6C20Qw/XwZnZ
-	7aoAx5FCERVgQGTXr1eP9efGdQXW9tXY29OpG7ANGag/9T+Btb64Ky/jpQFZmIgLqME7Y1qTLit
-	MkNYUIP4b8mjXi7uA7OMjedd18F+rFMANEIBy
-X-Gm-Gg: ASbGncsIn78ZuIGO3jN5JxbivOBKuZFDx+AZ4lIxDWlgK1uBuYnBRGLEh7IOMb+y0AV
-	UsOvcyG5PkuSkqjVcYl6SX1znFbtKMniFbIsqK51Gdlz1QbKDb15n17nZgHjjj12i9RcQLMGsXQ
-	==
-X-Google-Smtp-Source: AGHT+IFUtNMh9Z0W8Yw1lY2LJ5LvNNJDokBmjw9PDDQzB7H9sTQAesT/p5rL6z55wxyts2HnMe4Rd/e5IOCIHo9xAs8=
-X-Received: by 2002:a05:6e02:218b:b0:3cd:d110:20dd with SMTP id
- e9e14a558f8ab-3cfd20f391amr966595ab.27.1737782427506; Fri, 24 Jan 2025
- 21:20:27 -0800 (PST)
+        d=1e100.net; s=20230601; t=1737782710; x=1738387510;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xSSTIOL0i8k8ok3WPoUFyCTMS5T9Rt15wlkg9Dm8NG4=;
+        b=xTQ3kOmjuay7sk6KQ2Fjl7O6ZXrIkH7p+Jg2o2gEE0ITdTY+jyevBkPGxYuxScg9PB
+         WYu+UyTiAQLreITieMcLpRpkqlexnG0PtQL9P2muiq39nTQvfHNCAqM3OFk+jdn9oNlT
+         Ea2F9YiT7OyFwvdOUlQ2s+fa1BN7+q9ifhLMTQkfKpO9V7qAWqj6qSilNc+80oZEcZZ2
+         vkRH6qsomMmgAcGDBsN85S5DrzpjtN2lF90lRShpyPgfFZ04zhhhj670aVBGh8E/RR4U
+         U1OssqwWJCzGUSDvTDqr/jvdqzD8eo0GlVughq3h0e/3vVl9zcrFrzCot/6d2JQBgjmy
+         1PLw==
+X-Forwarded-Encrypted: i=1; AJvYcCWranDp627rUDgo/qWkgKF9fosaRj3DwvzCTtc789GkwQ3U5OmC8a4wqS3JQhGPQcbmcqNtxYU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKkLdbbdPQF367WP2bXLF0ubSrtivxdsohNlqVZCLF/hUThbEs
+	WJjKOMB15j64N/mZdzvkzIu9HLGqBzpoOMuFnyaL6BGia9TYUXRR
+X-Gm-Gg: ASbGncuS/gCtuz6XNLBSvASXcnYpDXn8mR2wHrRqG8WTltYlqQlPxyFm99agdjMOLTG
+	ojjudp5tM22BBA0qy9pq4Mz5VpEAHv5bVfbLTDmFZUSoQfaH+ke82t9EXFrABb7whDMqZPwDvJK
+	P3b5U0Gh5Gdxbff6oa1Q4T358KDFgbfSb8ChUeQFrGPKbcJEihTvL7nWK6Rw06FdkBWS+0RQ7IO
+	BG6Jev2PvNUkP13pzRMAdlB2+CgnElrqTF39UjzEm/AO+F3WKH4OspMukIyo4Yn+omNHwd3u8Tq
+	VOmkeA==
+X-Google-Smtp-Source: AGHT+IFq/aJZjajPErKiYz+/prB7gSGb5LGY157NzZABtyZKeFWx7pwWYjUCU4p2pqdMjjNIQGmg3g==
+X-Received: by 2002:a17:90a:e18f:b0:2ee:ad18:b309 with SMTP id 98e67ed59e1d1-2f782c674c1mr43610792a91.3.1737782710082;
+        Fri, 24 Jan 2025 21:25:10 -0800 (PST)
+Received: from gmail.com ([98.97.36.130])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f7ffa82ce5sm2684408a91.42.2025.01.24.21.25.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Jan 2025 21:25:09 -0800 (PST)
+Date: Fri, 24 Jan 2025 21:24:48 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: Jiayuan Chen <mrpre@163.com>
+Cc: bpf@vger.kernel.org, borisp@nvidia.com, kuba@kernel.org, 
+	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com, horms@kernel.org, 
+	andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
+	shuah@kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH bpf v1 1/2] bpf: fix ktls panic
+Message-ID: <gkx7axo3mau4jb7ojsdl4lwrtkuxsbnozplupscl3vvl3zfqg5@qnc5qfwzcwlj>
+References: <20250123171552.57345-1-mrpre@163.com>
+ <20250123171552.57345-2-mrpre@163.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250122174308.350350-1-irogers@google.com> <20250122174308.350350-7-irogers@google.com>
- <Z5QSm-w0efS9xh47@google.com>
-In-Reply-To: <Z5QSm-w0efS9xh47@google.com>
-From: Ian Rogers <irogers@google.com>
-Date: Fri, 24 Jan 2025 21:20:15 -0800
-X-Gm-Features: AWEUYZn1lYG_s_9UtV1AZf9F5dR3PIeFgOCadQ-EqV9fiTjdjaYQwOER_v3rUyQ
-Message-ID: <CAP-5=fWNy8CM8nKOAH=aXyNKg5h4U4vWfB92io_T5KpCsSgv9Q@mail.gmail.com>
-Subject: Re: [PATCH v3 06/18] perf capstone: Support for dlopen-ing libcapstone.so
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Aditya Gupta <adityag@linux.ibm.com>, "Steinar H. Gunderson" <sesse@google.com>, 
-	Charlie Jenkins <charlie@rivosinc.com>, Changbin Du <changbin.du@huawei.com>, 
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, James Clark <james.clark@linaro.org>, 
-	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Li Huafei <lihuafei1@huawei.com>, Dmitry Vyukov <dvyukov@google.com>, 
-	Andi Kleen <ak@linux.intel.com>, Chaitanya S Prakash <chaitanyas.prakash@arm.com>, 
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	llvm@lists.linux.dev, Song Liu <song@kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250123171552.57345-2-mrpre@163.com>
 
-On Fri, Jan 24, 2025 at 2:22=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-> On Wed, Jan 22, 2025 at 09:42:56AM -0800, Ian Rogers wrote:
-> > If perf wasn't built against libcapstone, no HAVE_LIBCAPSTONE_SUPPORT,
-> > support dlopen-ing libcapstone.so and then calling the necessary
-> > functions by looking them up using dlsym. Reverse engineer the types
-> > in the API using pahole, adding only what's used in the perf code or
-> > necessary for the sake of struct size and alignment.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/util/capstone.c | 287 ++++++++++++++++++++++++++++++++-----
-> >  1 file changed, 248 insertions(+), 39 deletions(-)
-> >
-> > diff --git a/tools/perf/util/capstone.c b/tools/perf/util/capstone.c
-> > index c9845e4d8781..8d65c7a55a8b 100644
-> > --- a/tools/perf/util/capstone.c
-> > +++ b/tools/perf/util/capstone.c
-> > @@ -11,19 +11,249 @@
-> >  #include "print_insn.h"
-> >  #include "symbol.h"
-> >  #include "thread.h"
-> > +#include <dlfcn.h>
-> >  #include <fcntl.h>
-> > +#include <inttypes.h>
->
-> These two can go under #else (!HAVE_LIBCAPSTONE_SUPPORT).
+On 2025-01-24 01:15:51, Jiayuan Chen wrote:
+> [ 2172.936997] ------------[ cut here ]------------
+> [ 2172.936999] kernel BUG at lib/iov_iter.c:629!
+> ......
+> [ 2172.944996] PKRU: 55555554
+> [ 2172.945155] Call Trace:
+> [ 2172.945299]  <TASK>
+> [ 2172.945428]  ? die+0x36/0x90
+> [ 2172.945601]  ? do_trap+0xdd/0x100
+> [ 2172.945795]  ? iov_iter_revert+0x178/0x180
+> [ 2172.946031]  ? iov_iter_revert+0x178/0x180
+> [ 2172.946267]  ? do_error_trap+0x7d/0x110
+> [ 2172.946499]  ? iov_iter_revert+0x178/0x180
+> [ 2172.946736]  ? exc_invalid_op+0x50/0x70
+> [ 2172.946961]  ? iov_iter_revert+0x178/0x180
+> [ 2172.947197]  ? asm_exc_invalid_op+0x1a/0x20
+> [ 2172.947446]  ? iov_iter_revert+0x178/0x180
+> [ 2172.947683]  ? iov_iter_revert+0x5c/0x180
+> [ 2172.947913]  tls_sw_sendmsg_locked.isra.0+0x794/0x840
+> [ 2172.948206]  tls_sw_sendmsg+0x52/0x80
+> [ 2172.948420]  ? inet_sendmsg+0x1f/0x70
+> [ 2172.948634]  __sys_sendto+0x1cd/0x200
+> [ 2172.948848]  ? find_held_lock+0x2b/0x80
+> [ 2172.949072]  ? syscall_trace_enter+0x140/0x270
+> [ 2172.949330]  ? __lock_release.isra.0+0x5e/0x170
+> [ 2172.949595]  ? find_held_lock+0x2b/0x80
+> [ 2172.949817]  ? syscall_trace_enter+0x140/0x270
+> [ 2172.950211]  ? lockdep_hardirqs_on_prepare+0xda/0x190
+> [ 2172.950632]  ? ktime_get_coarse_real_ts64+0xc2/0xd0
+> [ 2172.951036]  __x64_sys_sendto+0x24/0x30
+> [ 2172.951382]  do_syscall_64+0x90/0x170
+> ......
+> 
+> After calling bpf_exec_tx_verdict(), the size of msg_pl->sg may increase,
+> e.g., when the BPF program executes bpf_msg_push_data().
+> 
+> If the BPF program sets cork_bytes and sg.size is smaller than cork_bytes,
+> it will return -ENOSPC and attempt to roll back to the non-zero copy
+> logic. However, during rollback, msg->msg_iter is reset, but since
+> msg_pl->sg.size has been increased, subsequent executions will exceed the
+> actual size of msg_iter.
+> '''
+> iov_iter_revert(&msg->msg_iter, msg_pl->sg.size - orig_size);
+> '''
+> 
+> The changes in this commit are based on the following considerations:
+> 
+> 1. When cork_bytes is set, rolling back to non-zero copy logic is
+> pointless and can directly go to zero-copy logic.
+> 
+> 2. Suppose sg.size is initially 5, and we push it to 100, setting
+> apply_bytes to 7. Then, 98 bytes of data are sent out, leaving 2 bytes to
+> be processed. The rollback logic cannot determine which data has been
+> processed and which hasn't.
 
-Ack.
+This is the error path we are talking about correct?
 
-> >  #include <string.h>
-> >
-> >  #ifdef HAVE_LIBCAPSTONE_SUPPORT
-> >  #include <capstone/capstone.h>
-> > +#else
-> > +typedef size_t csh;
-> > +enum cs_arch {
-> > +     CS_ARCH_ARM =3D 0,
-> > +     CS_ARCH_ARM64 =3D 1,
-> > +     CS_ARCH_X86 =3D 3,
-> > +     CS_ARCH_SYSZ =3D 6,
-> > +};
-> > +enum cs_mode {
-> > +     CS_MODE_ARM =3D 0,
-> > +     CS_MODE_32 =3D 1 << 2,
-> > +     CS_MODE_64 =3D 1 << 3,
-> > +     CS_MODE_V8 =3D 1 << 6,
-> > +     CS_MODE_BIG_ENDIAN =3D 1 << 31,
-> > +};
-> > +enum cs_opt_type {
-> > +     CS_OPT_SYNTAX =3D 1,
-> > +     CS_OPT_DETAIL =3D 2,
-> > +};
-> > +enum cs_opt_value {
-> > +     CS_OPT_SYNTAX_ATT =3D 2,
-> > +     CS_OPT_ON =3D 3,
-> > +};
-> > +enum cs_err {
-> > +     CS_ERR_OK =3D 0,
-> > +     CS_ERR_HANDLE =3D 3,
-> > +};
-> > +enum x86_op_type {
-> > +     X86_OP_IMM =3D 2,
-> > +     X86_OP_MEM =3D 3,
-> > +};
-> > +enum x86_reg {
-> > +     X86_REG_RIP =3D 41,
-> > +};
-> > +typedef int32_t x86_avx_bcast;
-> > +struct x86_op_mem {
-> > +     enum x86_reg segment;
-> > +     enum x86_reg base;
-> > +     enum x86_reg index;
-> > +     int scale;
-> > +     int64_t disp;
-> > +};
-> > +
-> > +struct cs_x86_op {
-> > +     enum x86_op_type type;
-> > +     union {
-> > +             enum x86_reg  reg;
-> > +             int64_t imm;
-> > +             struct x86_op_mem mem;
-> > +     };
-> > +     uint8_t size;
-> > +     uint8_t access;
-> > +     x86_avx_bcast avx_bcast;
-> > +     bool avx_zero_opmask;
-> > +};
-> > +struct cs_x86_encoding {
-> > +     uint8_t modrm_offset;
-> > +     uint8_t disp_offset;
-> > +     uint8_t disp_size;
-> > +     uint8_t imm_offset;
-> > +     uint8_t imm_size;
-> > +};
-> > +typedef int32_t  x86_xop_cc;
-> > +typedef int32_t  x86_sse_cc;
-> > +typedef int32_t  x86_avx_cc;
-> > +typedef int32_t  x86_avx_rm;
-> > +struct cs_x86 {
-> > +     uint8_t prefix[4];
-> > +     uint8_t opcode[4];
-> > +     uint8_t rex;
-> > +     uint8_t addr_size;
-> > +     uint8_t modrm;
-> > +     uint8_t sib;
-> > +     int64_t disp;
-> > +     enum x86_reg sib_index;
-> > +     int8_t sib_scale;
-> > +     enum x86_reg sib_base;
-> > +     x86_xop_cc xop_cc;
-> > +     x86_sse_cc sse_cc;
-> > +     x86_avx_cc avx_cc;
-> > +     bool avx_sae;
-> > +     x86_avx_rm avx_rm;
-> > +     union {
-> > +             uint64_t eflags;
-> > +             uint64_t fpu_flags;
-> > +     };
-> > +     uint8_t op_count;
-> > +     struct cs_x86_op operands[8];
-> > +     struct cs_x86_encoding encoding;
-> > +};
-> > +struct cs_detail {
-> > +     uint16_t regs_read[12];
-> > +     uint8_t regs_read_count;
-> > +     uint16_t regs_write[20];
-> > +     uint8_t regs_write_count;
-> > +     uint8_t groups[8];
-> > +     uint8_t groups_count;
-> > +
-> > +     union {
-> > +             struct cs_x86 x86;
-> > +     };
-> > +};
->
-> As discussed, let's remove the detail part.
+        if (msg->cork_bytes && msg->cork_bytes > msg->sg.size &&
+            !enospc && !full_record) {
+                err = -ENOSPC;
+                goto out_err;
+        }
 
-I kind of feel there should be a #warning in that case. I'd rather
-leave it as is and not have a build warning.
+> 
+> This current change is based on the principle of minimal modification,
+> which won't make things worse. If we still encounter similar panic
+> further, we can consider a more comprehensive solution.
+> 
+> Fixes: fcb14cb1bdac ("new iov_iter flavour - ITER_UBUF")
+> Fixes: d3b18ad31f93 ("tls: add bpf support to sk_msg handling")
+> Signed-off-by: Jiayuan Chen <mrpre@163.com>
+> ---
+>  net/tls/tls_sw.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+> index 7bcc9b4408a2..b3cae4dd4f49 100644
+> --- a/net/tls/tls_sw.c
+> +++ b/net/tls/tls_sw.c
+> @@ -1120,9 +1120,13 @@ static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
+>  					num_async++;
+>  				else if (ret == -ENOMEM)
+>  					goto wait_for_memory;
+> -				else if (ctx->open_rec && ret == -ENOSPC)
+> +				else if (ctx->open_rec && ret == -ENOSPC) {
+> +					if (msg_pl->cork_bytes) {
+> +						ret = 0;
+> +						goto send_end;
+> +					}
 
-> > +struct cs_insn {
-> > +     unsigned int id;
-> > +     uint64_t address;
-> > +     uint16_t size;
-> > +     uint8_t bytes[16];
-> > +     char mnemonic[32];
-> > +     char op_str[160];
-> > +     struct cs_detail *detail;
-> > +};
-> > +#endif
-> > +
-> > +#ifndef HAVE_LIBCAPSTONE_SUPPORT
-> > +static void *perf_cs_dll_handle(void)
-> > +{
-> > +     static bool dll_handle_init;
-> > +     static void *dll_handle;
-> > +
-> > +     if (!dll_handle_init) {
-> > +             dll_handle_init =3D true;
-> > +             dll_handle =3D dlopen("libcapstone.so", RTLD_LAZY);
-> > +             if (!dll_handle)
-> > +                     pr_debug("dlopen failed for libcapstone.so\n");
-> > +     }
-> > +     return dll_handle;
-> > +}
-> > +#endif
-> > +
-> > +static enum cs_err perf_cs_open(enum cs_arch arch, enum cs_mode mode, =
-csh *handle)
-> > +{
-> > +#ifdef HAVE_LIBCAPSTONE_SUPPORT
-> > +     return cs_open(arch, mode, handle);
-> > +#else
-> > +     static bool fn_init;
-> > +     static enum cs_err (*fn)(enum cs_arch arch, enum cs_mode mode, cs=
-h *handle);
-> > +
-> > +     if (!fn_init) {
-> > +             fn =3D dlsym(perf_cs_dll_handle(), "cs_open");
-> > +             if (!fn)
-> > +                     pr_debug("dlsym failed for cs_open\n");
-> > +             fn_init =3D true;
-> > +     }
-> > +     if (!fn)
-> > +             return CS_ERR_HANDLE;
-> > +     return fn(arch, mode, handle);
-> > +#endif
-> > +}
->
-> I think it's better to organize the code with less #ifdef's.
+The app will lose bytes here I suspect if we return copied == try_to_copy then
+no error makes it to the user?
 
-I think this reduces readability - 100s of lines where it isn't clear
-there is something conditional going on, or losing the fact a function
-is a shim. More details in:
-https://lore.kernel.org/lkml/CAP-5=3DfV0w9tLFr7xYHFUH=3DUUq+tr+o5EYUik0d74r=
-MWa9=3DQi+A@mail.gmail.com/
+Could we return delta from bpf_exec_tx_verdict and then we can calculate
+the correct number of bytes to revert? I'll need to check but its not
+clear to me if BPF program pushes data that the right thing is done with
+delta there now.
 
-Thanks,
-Ian
+Thanks for looking into this.
 
