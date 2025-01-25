@@ -1,221 +1,305 @@
-Return-Path: <bpf+bounces-49762-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49763-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4C84A1C0F8
-	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 05:54:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB856A1C103
+	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 06:20:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 229823A86B1
-	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 04:54:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B31A9188CF5F
+	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 05:20:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3445206F31;
-	Sat, 25 Jan 2025 04:54:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D152A207A0E;
+	Sat, 25 Jan 2025 05:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="oYwKszB8"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gxE3NGdS"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2047.outbound.protection.outlook.com [40.107.237.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 972B6146A7A;
-	Sat, 25 Jan 2025 04:54:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.47
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737780877; cv=fail; b=nTI0wJSl7OXnhV+9wWW5Svc/HWdYfrGd+rJwavqCg+DbEvOgF7OtWN0xzVmlbSRvb04hRLn2ewXK1X7opKP6X8Pls1yrgJ+0PUenns3tQEulfGsyMJUbFfIO6LwAayyxnReB2fTZmlks5/UnWM1TJOo1EVgWvMMSxj3W6ERreEY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737780877; c=relaxed/simple;
-	bh=6MXNFkWlE+CqNVDZpc+FMxKXvQ//AjMR9QXM0LXw0uU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=eccImAFot648Io0q9w5ZMA8ktfvrSrZiywNbzh4Pa5lCUxCZcnQwYEYMtJj8A/uUspiN6H9IMYSuWNYLFXXgpniNp/kzH03gWvlKsm+WTqUFE+7fZ4VIpu5ey1fknZu6sQNJWVDRrVHROhxpCHzHGdu/jehKiVjY10bQNLzubPw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=oYwKszB8; arc=fail smtp.client-ip=40.107.237.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=pjKMzX1h/J6QqyDqlo2UnPGH1lQKvhHEvT79nCK0v130LVB/0hGpSYQT4cVJdz11AzCC4Dgq+MlyX/l3Af4CFrjCSFZOjquHafI/aldew9MA1rxocbHGUpcchV6ZB7h53nsLikR5Vkf9YUTqfjJGildbS4y5b+WtzdcgX13J5YcobovmgX5v7HA7JALG3lMvXTO//+qzLrH9cPMkLQfXOSa39+RBjf6do2lbM8xjP77LxcJqGJRHwtysT9T07Z5ABm64HRguPz3rHf3vbNWjiKG12GZ/06/aIeuK4hfgK44ogBfEwqzu6s1Nmx2lhi/o1SEXihtEvYLns58C/HdtYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KEjJDTfSfsrAjzPGqXBdmD5XZk46nQbBaartazm9X7A=;
- b=Dz6K9IX5PDv6S6qbzWJzbpmyfq6XROR/66VBHY4S1cUVRXkxpPxUXq+Rn6KkGkZHxgbQoBdBu3B+d+R6FIdiICM09i5xzHy+3dXGEr8XsV1MBUijevFH91fyqbB9KJsSvjTPahDxsx8dPBJ971moiNOOEHWEnxODm9JRYDCP2X6KBMSbK/mOGxWbc02bWsPnDhVxd0Opc5PpUDTfqEj25IFR22PeTrAjd0Vzv9X8yphaOMig7HWrkFRmREoLYQ4vtSdiOOZifI57JMnS3B3LmEZjPvxzHGKE2ZgwsfscpeufYFaOxdJDnVFXFqgqsQClQI0OXTezlc+VOO7L6xUCKw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KEjJDTfSfsrAjzPGqXBdmD5XZk46nQbBaartazm9X7A=;
- b=oYwKszB89xPk2UuhoFgM/VOD4EA0iD9yw6+4B1ry08hbZG+db5ZCIMJX/MRn4of7smKqAG2qCqe8Rff89NIhAXY1e7KLne+Dj2BnfOtogQV7nGeiUmIawZThC0gKubKQWndyLwwB+vrQkf08bT3bgM9US0NqXQ2UKYo84ckMkDY4zzkoMzonU/lvzOoPnq7MWPncYIoacUdRJUZBB3GzLenHpFASTzYKp82kG4T9JrHOUWLpIIVO5I212lezmm8xPVfW9lRrUlh1EMl3OeV99trt/AdY6OoyLhw39kXntT31tZpeXlfyEw1yDBz/Jxk3gko9M/b1o/MXC2fmkMdMAw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM4PR12MB6424.namprd12.prod.outlook.com (2603:10b6:8:be::16) by
- LV3PR12MB9215.namprd12.prod.outlook.com (2603:10b6:408:1a0::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8377.19; Sat, 25 Jan
- 2025 04:54:32 +0000
-Received: from DM4PR12MB6424.namprd12.prod.outlook.com
- ([fe80::8133:5fd9:ff45:d793]) by DM4PR12MB6424.namprd12.prod.outlook.com
- ([fe80::8133:5fd9:ff45:d793%3]) with mapi id 15.20.8377.009; Sat, 25 Jan 2025
- 04:54:31 +0000
-Date: Sat, 25 Jan 2025 05:54:23 +0100
-From: Andrea Righi <arighi@nvidia.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: Ihor Solodrai <ihor.solodrai@pm.me>, sched-ext@meta.com,
-	kernel-team@meta.com, linux-kernel@vger.kernel.org,
-	bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH sched_ext/for-6.14-fixes] sched_ext:
- selftests/dsp_local_on: Fix sporadic failures
-Message-ID: <Z5Ruf3o2f4sC0J5N@gpd3>
-References: <ouIylyHgXTVZ9RiyVeHZ26YXQLKMEKHoOVPWIgpWRDD2FL2RDwwUEocaj4LMpMR3PjbwpPuxEnJAjMeD4e7LnWIAYvIbGC5BPvPGtzyumYk=@pm.me>
- <Z2tNK2oFDX1OPp8C@slm.duckdns.org>
- <QHB1r-3fBPQIaDS8iz26J-zoMbn3O6VLlwlZP1NQdkMzlQTsCX_xrfTPBoGt6SQOGgtg6vN7aXles4CndepTvjIVQ7bVXDBrvPaiRH5R8tc=@pm.me>
- <Z5BMkyJ8I7cth1GH@slm.duckdns.org>
- <m94EAn-xiPWJ1dRFTqcm6urBNNOPza94BmyYvp_5ti06uAZF0Izg2mBC9rpbc3PEfWWvDf7UyDt1x_2gB-7y3esTH3f54s05QBxcTXh4YhQ=@pm.me>
- <Z5IOpOD9cs2fLaIg@gpd3>
- <Z5J1Ft2YwSRpedzx@slm.duckdns.org>
- <Z5KOLqwLq96HjkwH@gpd3>
- <Z5LCHVHZPl2fjPyc@gpd3>
- <Z5QNhsWw0P1iPd2q@slm.duckdns.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z5QNhsWw0P1iPd2q@slm.duckdns.org>
-X-ClientProxiedBy: FR3P281CA0097.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a1::15) To DM4PR12MB6424.namprd12.prod.outlook.com
- (2603:10b6:8:be::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD3F22066D4
+	for <bpf@vger.kernel.org>; Sat, 25 Jan 2025 05:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1737782430; cv=none; b=bwGHdg9YDFIR15OuSJEh2YpZyr3i0SzvDK98MLdtdvpLgdUFzYwk/aKoFv83VkDGKX0fN+HgX9ZiXm+Pz0gaXSc36tzdc8TNzW6Yw3FoUnxFIMQziagsJu2eXY5g9fXGlrNP+D0Kzepde99/CsofmIrTZLMmUe5VVtRYD2fV2TA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1737782430; c=relaxed/simple;
+	bh=O1T75UsFALNUbzpJblBAoQmy/QjVDjUDQQaSNFCCp1g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SEbiUQkpY7QUUiWpWpC5S4hoFm4plMqQ1ZhMZ6YgyljNLx4HuqgtNp83HkCrFlyZOk88WE6w4/3M0pJOdKkIW6o/IXCRbUNcMYMUYs4G5iNLumiyiVTQv7E7c3X75OOVTK/bdZVVeKLKXX1YUn+2yOkqkVevXkBWPeXcb79g6C8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gxE3NGdS; arc=none smtp.client-ip=209.85.166.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3ce82195aa0so81535ab.0
+        for <bpf@vger.kernel.org>; Fri, 24 Jan 2025 21:20:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1737782427; x=1738387227; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gI0l6geyBvTNYUfVyhSQBTU8bwzp+pWMDrseI++M4u0=;
+        b=gxE3NGdSTACkd86mqBRQrY42C5x7mRYKsjmpOsRdNzP9FmVC4LMv+4hK9emaiwsnBN
+         mA/b77yVvSA/y2VZrGX2lJv/yn/oUg7ECGW7oXJFn0T3cec075KpCyLik7DCuQ4/Tmbx
+         40aJiOEfJ51j8ircTAIir96BCmBWY/DNvwqANSY9n6Tka6biTtJy5ZVtWba6U6K+zSVJ
+         N//og35rxdnMnI7VGDFFdo0CfXmB7mgwvEcO07BJGPsrwnjg2P1f9P6mQf+T4rW0i08F
+         Gd3HaqJbAEpGfkxVEkE+7PuUYGHVwlNc8zBRIyX4m5/Q3sYSOh32NM4xUYVA/D1bHofh
+         P4jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737782428; x=1738387228;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gI0l6geyBvTNYUfVyhSQBTU8bwzp+pWMDrseI++M4u0=;
+        b=EuPQYDo+O7Y/71QVejvB+xMq3T5SPO7sb4NNCuRCd1r9tWJ5cZzH9Dz9FyU5QRBCqw
+         iYITlD5gWPOYsTIj0wf9PB8BykQEGMH33kPWO1oJz6SyS0qMySbVP1uwqlhhKE9HK3a2
+         YBuKd/GBFs9fRpN8NoOydguNxIojQByzwYfcH1Du9Mgxy+uvDy2kCGMW04niDjJ8sBIZ
+         8caX0H8FXSNVYa5eW/FsBbq1IiaEDP8fwgqpUyZbkT1lutXdA/rXpOZ5K60m0p8odOR8
+         gIh9lwZqZ1bEyuX4mZ568RtziPwG6VY/dKWtjdTwkoW6wumruSHD829U63fDW22hIYYU
+         DDHw==
+X-Forwarded-Encrypted: i=1; AJvYcCVwn78jfoVOrA3QSLWlbs/CPKOKyYOavsm2vJ8WndahYIOGo2EYn2cgiDoLPpQMAGX3mko=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxVaMevusWMxvN7M6PPTehvbIqUlUTkaVzrcoOu6C20Qw/XwZnZ
+	7aoAx5FCERVgQGTXr1eP9efGdQXW9tXY29OpG7ANGag/9T+Btb64Ky/jpQFZmIgLqME7Y1qTLit
+	MkNYUIP4b8mjXi7uA7OMjedd18F+rFMANEIBy
+X-Gm-Gg: ASbGncsIn78ZuIGO3jN5JxbivOBKuZFDx+AZ4lIxDWlgK1uBuYnBRGLEh7IOMb+y0AV
+	UsOvcyG5PkuSkqjVcYl6SX1znFbtKMniFbIsqK51Gdlz1QbKDb15n17nZgHjjj12i9RcQLMGsXQ
+	==
+X-Google-Smtp-Source: AGHT+IFUtNMh9Z0W8Yw1lY2LJ5LvNNJDokBmjw9PDDQzB7H9sTQAesT/p5rL6z55wxyts2HnMe4Rd/e5IOCIHo9xAs8=
+X-Received: by 2002:a05:6e02:218b:b0:3cd:d110:20dd with SMTP id
+ e9e14a558f8ab-3cfd20f391amr966595ab.27.1737782427506; Fri, 24 Jan 2025
+ 21:20:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB6424:EE_|LV3PR12MB9215:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1f506079-e05c-49f9-f12e-08dd3cfc5b52
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|1800799024|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?3iMtnBzNuRXkhPEFDxIiIBhcoa9WHMTWl3BMLF2cPTiLr8eUILuCtuHvDHLv?=
- =?us-ascii?Q?Zc7YjDr4K3NWLQyX19WZnhO/pNk3srm+JjDVpW1s4I/g99kNNgxQZqmBYoHQ?=
- =?us-ascii?Q?EFTFHZRNCn8PNjS30kjyZB1s6ZM3I/2KQTQFphuvW4G2VruSopHZ8z821DML?=
- =?us-ascii?Q?KKEcQoMdt2Y4BjtCIJTb5Tj/qy/edArzTniwm15CNXgtRIlXAGVHZirHg0+P?=
- =?us-ascii?Q?vuyB6hqXPEs18H7wmIYzg8C/KwQJ56ogEgawgqFifXeOUO1duTr2atUGVYJ0?=
- =?us-ascii?Q?xyKQCJ96M60/1x46RNOSIRsORc27qa/rF8pGRuwy6ANYOe1rgSjQzg9OjbI2?=
- =?us-ascii?Q?AsyPVoZa5z4zNAIuW8n1Ds2ernxBPU2uCmjzOPTlhQGdpIYmzhUYyx5huXRg?=
- =?us-ascii?Q?RS7lQGyBkxvmyK4XbaDrik8Pb75gZjOz6p4IRfXccUCkcRncy7UTwopPCLwU?=
- =?us-ascii?Q?NgC//1bKdo5+Bwrus+W9zKYiIPCIcoV4l5FGOJvGDzjbAIVe+6t+546auKOB?=
- =?us-ascii?Q?0sPmf7i5usdvHR7TdFEPh0LTxOdCBEoQK5+B46EPT0fZ1ipAVTH1/k6MJm/k?=
- =?us-ascii?Q?TDAbHbYdeqKllypJwjWaw8q+gH8hWSo2PHqLObRcZSTyUr8eOSbWdDTgJaLB?=
- =?us-ascii?Q?6MChRJSJexho+L39wUTnuFA/K143m49wosmxls3/bgf2AjLFgGMAUgn5fMqv?=
- =?us-ascii?Q?gggu4CYt1TlCbpmqxrygCuNrVfScYKFxSuh5Ktb7WXvTcDdkVvEtEhgYJHCI?=
- =?us-ascii?Q?CrGoVgP4mkx++6RFOsLXZIy5SYcrKuE9ljCoKbzIurQztNl5CyMLNKVHJCcY?=
- =?us-ascii?Q?Oq8V/dTEIbE1e73oHJEYzHTo6r64qlIolRNe+npJAWDKYiuNetTcT1nFDuh2?=
- =?us-ascii?Q?FQ4Ywl5MhaUIuWrapBSV1pFREpndOtc0poDXfynQ/qpx0laULnmqJvd5c6Kt?=
- =?us-ascii?Q?ap+x4xpUwrub9scTKZfrjd6TD5/JPKbzrbprKXjaMAbnHkEx/n3lyNIJPGYG?=
- =?us-ascii?Q?Ie1NUPfjU4tZ32W8VJKwNPIAAQhdsOupYvltDYfG3smfAFcoiMsXiCu2N/h8?=
- =?us-ascii?Q?N7GWIa76Zo3rvF/EDHWKFZPfDne9b6yV6QTsF7YfYa63HbI8NWbvXcHFvOW3?=
- =?us-ascii?Q?ntRwVGsY38JZ035kaZWplzhgBM50QJ8rrPpSnqe6S5MBkntrsTwd8Ez4elSH?=
- =?us-ascii?Q?dKffYIboZbRr66/rVm/So6plHPUVL+5M42wk8pEwxzjEvF9yTbQb8VRHghhY?=
- =?us-ascii?Q?6iOtcoIW+qddtVLAh48wBdhZx3eCA/SahnfNY1u2/bR2afCE41MvRz6b9FLl?=
- =?us-ascii?Q?aGBUkDK1tBThrn81SjZxPY8byih/qBQ9FXWnv29iKoiYg4Gac+CFlJU2X8Vl?=
- =?us-ascii?Q?9VEFYM6UijttymXGOJ3PBjxSl4mW?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6424.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?ABi4UWTh3emL8qii+JiCF6TitPWecSyd5d5FREyrfifxjNSvrwuDAuF50PFt?=
- =?us-ascii?Q?0Hl8pcqJITN3gGbkgYx6VhGLhuU33+jJbhTLCb1ob2laV9HyHonk8kBKJsaZ?=
- =?us-ascii?Q?XG6f2EtWZJBNCuJg9twB3d31dOt6AKtzFm0GjmbS54+ASRn0G6TdT+eElKF3?=
- =?us-ascii?Q?2dTsa8vlGWoDilzRCst5bEiOZCTc6YGAKlRBXj72XJOY6Y1qJy25MEUqosvZ?=
- =?us-ascii?Q?DPpQOQjdpXp2T9IIpr9tEH3E28m41xCtk1jM99xJCK1G4DFkzW2KbXULaQBV?=
- =?us-ascii?Q?X5SLuy5Lq1LltIND/K+7pPo645jGYoHgIGX+LbPmLgsuJ0Ve9Orkiqu7oF1u?=
- =?us-ascii?Q?ffQlhT2BPdHl1EZhjuVN3CxEbk0hNHSV1WYQ79+GhiYVnBMp+C9Ho662/l+R?=
- =?us-ascii?Q?IaOycZMHP/gGsS398unxqPEC2BpjvON+VKo5izHOp9tsHU6YMvJnLqzf903I?=
- =?us-ascii?Q?LPLDBEZOCNT8+99+mCoZirjEIMkYhanbAQff4otG5ORd/coSIVI/M4ZD0w40?=
- =?us-ascii?Q?N42Hn70P32I2Vsuabb6rStAq/awqOdOmXNoYwAa/DmwASZIUrpEeYGh/3Dth?=
- =?us-ascii?Q?pmw35ZYl8EBT4tKjnSWdo7KhFP09+0DrV4FRyxWTKwfT+JKbqtmEnl3d64lN?=
- =?us-ascii?Q?AUe4CWCE1YXyyGM05OvV+w8hL4IaVSalerrLqCUzam7tEBTdHlAwmPfY3l3k?=
- =?us-ascii?Q?JpKWm14hITNCmNq6WDWlPO8bF+ILQNzHXyrsv0XShxmh6kaJR3gPbNKNMib1?=
- =?us-ascii?Q?llc3+cap21TSkjZL3jaUY/8QB3HklWB3LjTAtcCr0pf77sDAcY42YogqPXhL?=
- =?us-ascii?Q?8bSC5ZZCzQDXpHShL7DgRKvu6rscZhC8MAyHxzUtha06MKiWxtxds/rfXoaj?=
- =?us-ascii?Q?6DAxdTjF9LaonbDmK5Z/rQttuNSFweAOP4US4jboejVsgSt8VmMIBx2zhy9O?=
- =?us-ascii?Q?upLV7fq1YUQjknguDRyc3RJ0iYjwsnW4vSTjj2k75ueROgkbEjHHSE7uE7sK?=
- =?us-ascii?Q?48j1lueAzYrf8rCDY18RXGdPd5oWRwMXbFeLNRmuTbU5F+Q0I+fn2jDaCHt9?=
- =?us-ascii?Q?/IxMETgzwfZfF9vAOxQIoIPPsxEkokqfw0SKGdvJaiIy3imgk9Ol2NWDfb/X?=
- =?us-ascii?Q?dNNF5GwufoqGgHlKoG6BzU9IbcZOf6cUjm8a0j+QVu2JEzxja5QA2+UarsWK?=
- =?us-ascii?Q?lCdnM6ih3puDdiJ9xdnyoY3Bz7p+/NafDSVutyw7Z474RU3EOajCKvK/zlD+?=
- =?us-ascii?Q?Qo8Bvu9Ls/OXBvcvMumgxhczE0YS15fq0byfUJt2iEUMwL4IkGX/YX9YYzFi?=
- =?us-ascii?Q?baYkNKKVVn/CHb0MbxKLYngg0ufu87DVDNY2CPvvXTatI/QdL1mx6+K979Bs?=
- =?us-ascii?Q?2h2e9Y5Z1k2/3HWx89Sop1Lof5/vAxIy3jj9RKVlUcfBUiMYd2jIWZEw21qn?=
- =?us-ascii?Q?c/3+bFm2zeRCVyfE9/UI/FaASctJ9QV4bDuoY/JudJjIilvU+oI3njTxEoY2?=
- =?us-ascii?Q?nxOD30AwIdNb23nr4Hzgg3Z8pQ4h0Z7SHY5afMLxQ/9yVIiQtcX8/scBqQJJ?=
- =?us-ascii?Q?zZ8ecYuBLB6rsRABwiUM+gb35gtXQw/ZlqwqmZEY?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f506079-e05c-49f9-f12e-08dd3cfc5b52
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6424.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jan 2025 04:54:31.9426
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VTrs+AzYmJIcRUujOpox1BK27XaTHH6w/cp1CyNljT0qb+48XEZM4tjKVDlyrmFcuEvTBjnh78o3gNUctvkdjw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9215
+References: <20250122174308.350350-1-irogers@google.com> <20250122174308.350350-7-irogers@google.com>
+ <Z5QSm-w0efS9xh47@google.com>
+In-Reply-To: <Z5QSm-w0efS9xh47@google.com>
+From: Ian Rogers <irogers@google.com>
+Date: Fri, 24 Jan 2025 21:20:15 -0800
+X-Gm-Features: AWEUYZn1lYG_s_9UtV1AZf9F5dR3PIeFgOCadQ-EqV9fiTjdjaYQwOER_v3rUyQ
+Message-ID: <CAP-5=fWNy8CM8nKOAH=aXyNKg5h4U4vWfB92io_T5KpCsSgv9Q@mail.gmail.com>
+Subject: Re: [PATCH v3 06/18] perf capstone: Support for dlopen-ing libcapstone.so
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Aditya Gupta <adityag@linux.ibm.com>, "Steinar H. Gunderson" <sesse@google.com>, 
+	Charlie Jenkins <charlie@rivosinc.com>, Changbin Du <changbin.du@huawei.com>, 
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, James Clark <james.clark@linaro.org>, 
+	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Li Huafei <lihuafei1@huawei.com>, Dmitry Vyukov <dvyukov@google.com>, 
+	Andi Kleen <ak@linux.intel.com>, Chaitanya S Prakash <chaitanyas.prakash@arm.com>, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	llvm@lists.linux.dev, Song Liu <song@kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 24, 2025 at 12:00:38PM -1000, Tejun Heo wrote:
-> From e9fe182772dcb2630964724fd93e9c90b68ea0fd Mon Sep 17 00:00:00 2001
-> From: Tejun Heo <tj@kernel.org>
-> Date: Fri, 24 Jan 2025 10:48:25 -1000
-> 
-> dsp_local_on has several incorrect assumptions, one of which is that
-> p->nr_cpus_allowed always tracks p->cpus_ptr. This is not true when a task
-> is scheduled out while migration is disabled - p->cpus_ptr is temporarily
-> overridden to the previous CPU while p->nr_cpus_allowed remains unchanged.
-> 
-> This led to sporadic test faliures when dsp_local_on_dispatch() tries to put
-> a migration disabled task to a different CPU. Fix it by keeping the previous
-> CPU when migration is disabled.
-> 
-> There are SCX schedulers that make use of p->nr_cpus_allowed. They should
-> also implement explicit handling for p->migration_disabled.
-> 
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> Reported-by: Ihor Solodrai <ihor.solodrai@pm.me>
-> Cc: Andrea Righi <arighi@nvidia.com>
-> Cc: Changwoo Min <changwoo@igalia.com>
-> ---
-> Applying to sched_ext/for-6.14-fixes. Thanks.
-> 
->  tools/testing/selftests/sched_ext/dsp_local_on.bpf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c b/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c
-> index fbda6bf54671..758b479bd1ee 100644
-> --- a/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c
-> +++ b/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c
-> @@ -43,7 +43,7 @@ void BPF_STRUCT_OPS(dsp_local_on_dispatch, s32 cpu, struct task_struct *prev)
->  	if (!p)
->  		return;
->  
-> -	if (p->nr_cpus_allowed == nr_cpus)
-> +	if (p->nr_cpus_allowed == nr_cpus && !p->migration_disabled)
+On Fri, Jan 24, 2025 at 2:22=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> On Wed, Jan 22, 2025 at 09:42:56AM -0800, Ian Rogers wrote:
+> > If perf wasn't built against libcapstone, no HAVE_LIBCAPSTONE_SUPPORT,
+> > support dlopen-ing libcapstone.so and then calling the necessary
+> > functions by looking them up using dlsym. Reverse engineer the types
+> > in the API using pahole, adding only what's used in the perf code or
+> > necessary for the sake of struct size and alignment.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/util/capstone.c | 287 ++++++++++++++++++++++++++++++++-----
+> >  1 file changed, 248 insertions(+), 39 deletions(-)
+> >
+> > diff --git a/tools/perf/util/capstone.c b/tools/perf/util/capstone.c
+> > index c9845e4d8781..8d65c7a55a8b 100644
+> > --- a/tools/perf/util/capstone.c
+> > +++ b/tools/perf/util/capstone.c
+> > @@ -11,19 +11,249 @@
+> >  #include "print_insn.h"
+> >  #include "symbol.h"
+> >  #include "thread.h"
+> > +#include <dlfcn.h>
+> >  #include <fcntl.h>
+> > +#include <inttypes.h>
+>
+> These two can go under #else (!HAVE_LIBCAPSTONE_SUPPORT).
 
-This doesn't work with !CONFIG_SMP, maybe we can introduce a helper like:
+Ack.
 
-static bool is_migration_disabled(const struct task_struct *p)
-{
-	if (bpf_core_field_exists(p->migration_disabled))
-		return p->migration_disabled;
-	return false;
-}
+> >  #include <string.h>
+> >
+> >  #ifdef HAVE_LIBCAPSTONE_SUPPORT
+> >  #include <capstone/capstone.h>
+> > +#else
+> > +typedef size_t csh;
+> > +enum cs_arch {
+> > +     CS_ARCH_ARM =3D 0,
+> > +     CS_ARCH_ARM64 =3D 1,
+> > +     CS_ARCH_X86 =3D 3,
+> > +     CS_ARCH_SYSZ =3D 6,
+> > +};
+> > +enum cs_mode {
+> > +     CS_MODE_ARM =3D 0,
+> > +     CS_MODE_32 =3D 1 << 2,
+> > +     CS_MODE_64 =3D 1 << 3,
+> > +     CS_MODE_V8 =3D 1 << 6,
+> > +     CS_MODE_BIG_ENDIAN =3D 1 << 31,
+> > +};
+> > +enum cs_opt_type {
+> > +     CS_OPT_SYNTAX =3D 1,
+> > +     CS_OPT_DETAIL =3D 2,
+> > +};
+> > +enum cs_opt_value {
+> > +     CS_OPT_SYNTAX_ATT =3D 2,
+> > +     CS_OPT_ON =3D 3,
+> > +};
+> > +enum cs_err {
+> > +     CS_ERR_OK =3D 0,
+> > +     CS_ERR_HANDLE =3D 3,
+> > +};
+> > +enum x86_op_type {
+> > +     X86_OP_IMM =3D 2,
+> > +     X86_OP_MEM =3D 3,
+> > +};
+> > +enum x86_reg {
+> > +     X86_REG_RIP =3D 41,
+> > +};
+> > +typedef int32_t x86_avx_bcast;
+> > +struct x86_op_mem {
+> > +     enum x86_reg segment;
+> > +     enum x86_reg base;
+> > +     enum x86_reg index;
+> > +     int scale;
+> > +     int64_t disp;
+> > +};
+> > +
+> > +struct cs_x86_op {
+> > +     enum x86_op_type type;
+> > +     union {
+> > +             enum x86_reg  reg;
+> > +             int64_t imm;
+> > +             struct x86_op_mem mem;
+> > +     };
+> > +     uint8_t size;
+> > +     uint8_t access;
+> > +     x86_avx_bcast avx_bcast;
+> > +     bool avx_zero_opmask;
+> > +};
+> > +struct cs_x86_encoding {
+> > +     uint8_t modrm_offset;
+> > +     uint8_t disp_offset;
+> > +     uint8_t disp_size;
+> > +     uint8_t imm_offset;
+> > +     uint8_t imm_size;
+> > +};
+> > +typedef int32_t  x86_xop_cc;
+> > +typedef int32_t  x86_sse_cc;
+> > +typedef int32_t  x86_avx_cc;
+> > +typedef int32_t  x86_avx_rm;
+> > +struct cs_x86 {
+> > +     uint8_t prefix[4];
+> > +     uint8_t opcode[4];
+> > +     uint8_t rex;
+> > +     uint8_t addr_size;
+> > +     uint8_t modrm;
+> > +     uint8_t sib;
+> > +     int64_t disp;
+> > +     enum x86_reg sib_index;
+> > +     int8_t sib_scale;
+> > +     enum x86_reg sib_base;
+> > +     x86_xop_cc xop_cc;
+> > +     x86_sse_cc sse_cc;
+> > +     x86_avx_cc avx_cc;
+> > +     bool avx_sae;
+> > +     x86_avx_rm avx_rm;
+> > +     union {
+> > +             uint64_t eflags;
+> > +             uint64_t fpu_flags;
+> > +     };
+> > +     uint8_t op_count;
+> > +     struct cs_x86_op operands[8];
+> > +     struct cs_x86_encoding encoding;
+> > +};
+> > +struct cs_detail {
+> > +     uint16_t regs_read[12];
+> > +     uint8_t regs_read_count;
+> > +     uint16_t regs_write[20];
+> > +     uint8_t regs_write_count;
+> > +     uint8_t groups[8];
+> > +     uint8_t groups_count;
+> > +
+> > +     union {
+> > +             struct cs_x86 x86;
+> > +     };
+> > +};
+>
+> As discussed, let's remove the detail part.
 
->  		target = bpf_get_prandom_u32() % nr_cpus;
->  	else
->  		target = scx_bpf_task_cpu(p);
-> -- 
-> 2.48.1
-> 
+I kind of feel there should be a #warning in that case. I'd rather
+leave it as is and not have a build warning.
+
+> > +struct cs_insn {
+> > +     unsigned int id;
+> > +     uint64_t address;
+> > +     uint16_t size;
+> > +     uint8_t bytes[16];
+> > +     char mnemonic[32];
+> > +     char op_str[160];
+> > +     struct cs_detail *detail;
+> > +};
+> > +#endif
+> > +
+> > +#ifndef HAVE_LIBCAPSTONE_SUPPORT
+> > +static void *perf_cs_dll_handle(void)
+> > +{
+> > +     static bool dll_handle_init;
+> > +     static void *dll_handle;
+> > +
+> > +     if (!dll_handle_init) {
+> > +             dll_handle_init =3D true;
+> > +             dll_handle =3D dlopen("libcapstone.so", RTLD_LAZY);
+> > +             if (!dll_handle)
+> > +                     pr_debug("dlopen failed for libcapstone.so\n");
+> > +     }
+> > +     return dll_handle;
+> > +}
+> > +#endif
+> > +
+> > +static enum cs_err perf_cs_open(enum cs_arch arch, enum cs_mode mode, =
+csh *handle)
+> > +{
+> > +#ifdef HAVE_LIBCAPSTONE_SUPPORT
+> > +     return cs_open(arch, mode, handle);
+> > +#else
+> > +     static bool fn_init;
+> > +     static enum cs_err (*fn)(enum cs_arch arch, enum cs_mode mode, cs=
+h *handle);
+> > +
+> > +     if (!fn_init) {
+> > +             fn =3D dlsym(perf_cs_dll_handle(), "cs_open");
+> > +             if (!fn)
+> > +                     pr_debug("dlsym failed for cs_open\n");
+> > +             fn_init =3D true;
+> > +     }
+> > +     if (!fn)
+> > +             return CS_ERR_HANDLE;
+> > +     return fn(arch, mode, handle);
+> > +#endif
+> > +}
+>
+> I think it's better to organize the code with less #ifdef's.
+
+I think this reduces readability - 100s of lines where it isn't clear
+there is something conditional going on, or losing the fact a function
+is a shim. More details in:
+https://lore.kernel.org/lkml/CAP-5=3DfV0w9tLFr7xYHFUH=3DUUq+tr+o5EYUik0d74r=
+MWa9=3DQi+A@mail.gmail.com/
 
 Thanks,
--Andrea
+Ian
 
