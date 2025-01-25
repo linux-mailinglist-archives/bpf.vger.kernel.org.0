@@ -1,204 +1,222 @@
-Return-Path: <bpf+bounces-49723-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49724-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 283D7A1BF12
-	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 00:41:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB2F8A1BF8E
+	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 01:09:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD1B63A5408
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2025 23:41:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B14F3AC674
+	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2025 00:09:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FEF91EEA2C;
-	Fri, 24 Jan 2025 23:41:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C3CD1367;
+	Sat, 25 Jan 2025 00:09:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mWpxEz9j"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EwpsTANU"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB93A2B9BC;
-	Fri, 24 Jan 2025 23:41:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48BC71E521
+	for <bpf@vger.kernel.org>; Sat, 25 Jan 2025 00:09:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737762068; cv=none; b=tOLsbKBTDkbHdCkPOemRXOC7Oh6An6B/ngXgIzLngtFF8tMGr2DKhsUVf5kT217AA8n/3bHDKOJzEFD41wGEhFiBkbPu0yksyskTLR5TIwJj3pSpp4NFgaFSh1eHadO2NHimEhSkQnB1jZ7ZUdYI3Lt3nyQvMDdiZMxgoIfWOv8=
+	t=1737763758; cv=none; b=bCaOfYMM2u7ma/fkTi0jBCkyw+rp6s9bC9I6h0QqrNO3E9wRX9jGw0wIflsTlV12xzwT0G7s1Dndy/juPbuamcaMnRiKoV6CNMTau33+BZrhDScGi62nLFcHBZc0tZFBh1GCsZ1LJrOG88OO91xeb1nxY2eJzxkWSv/awdwqV94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737762068; c=relaxed/simple;
-	bh=b3WQmM/tao+lpAuI3faT+EbYcotu4+fjpb2WjLWCPJ0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OKpFU6VX1mVgkq85csCj5Y5evzGOw8bhBiMpPdK9vVl8+cl4Zicvkvy7fD894V4Er/2yVSdm2/H/HtocPK6ShfXReS33wU1WYnGl4eWrlU89lGgGhKQIoc62vwK1kWBFcw1sVWYAuYBFBtEFGOfgsyE6k5iItmjv/nkJ3UPSrjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mWpxEz9j; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e1440d0b-4803-49b2-ba17-b9523649ca8b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1737762057;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D0YzInS2Txyl/Fuy8v3vm8ES3MAgYqQz1nDaGeki7n0=;
-	b=mWpxEz9jlWKtZxWjuCuqdU2Bg7iF+PltrtZ4N/3DUPqkZrtzUAm7FoDYri4ezTxBr7hPWS
-	52JPtj5cXfUYnizEfuYRC4XRVi9fJ8bhjLe2F3wXhJ2G/SI4EKDfE68DRHwqRsSxfxZjFG
-	DfGCPac89g9wlhPPz9kI8RnwPxaQqPg=
-Date: Fri, 24 Jan 2025 15:40:47 -0800
+	s=arc-20240116; t=1737763758; c=relaxed/simple;
+	bh=10rPhfxVEp3plKDhSNtMcI0sw0nubKnNoFFxz3D6FqI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Fl1jAEPsFkZBNSz4EvmVkPJ5uBId6HM8Awl1IbsqP3GSZf9oDucx+g6lfU7RWbgGvN3PQkFOJy21X8R+idZUCaoxdSevobqt69JC2qtRaxib2Cs38V3P8uT+tmafVjEHA4rMEG7tTdlnl/dqvAL2I2+qsARXYICxqhzbYwCR8Bc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EwpsTANU; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-ab633d9582aso458340666b.1
+        for <bpf@vger.kernel.org>; Fri, 24 Jan 2025 16:09:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1737763753; x=1738368553; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Hl+KiFhn0qyQzxsQhytCkRSC033pK7LTwYTo6zdlpd0=;
+        b=EwpsTANURVoDK/+F0twNIq70WpK2ZyAlxg9LRVimwlUJj7vZwFHAi9rkcQ1KoA5iqj
+         NTp+iFUXLSbx98YbNcZK1v8Q1kgAh53NsfyhIN43AyxP1+US3v6nZ1uNmGhUdd0dd/4J
+         RpLK9ZGJ9Gm3F7ehki/xwFLh5miQE9+h+Ieqt25L+qK68QpFvpBR1BimnTwh6NDZR+Dg
+         FwJrXSpT+aKj2aZfEU9NE48HODBtJt3smk5wFR/a1az3/WvREO9nxzDSpGGuLbD0J1TW
+         +3Q4jhNUfDISt1pDLa4SeAWMzQEJalUH/eHUXlwZ3uexVwL91nZajV9W5D1W3hH7ZZ1y
+         BRow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737763753; x=1738368553;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Hl+KiFhn0qyQzxsQhytCkRSC033pK7LTwYTo6zdlpd0=;
+        b=R8lp61umDcBMvf0fTrGN/HudEO9gr8JrQtyp6xuMk1XvzIsfA29h1sD5V6DhdroXIL
+         hZGhV8TimlzQUQqLVeQAmjGQX1z3B23J6mdLPSL2RSZpWgH4KVeCrHPey2cX/6z6bb+Y
+         vEeLGTMWL//7+Dmdm785SCEpiE1FA+3OpZmbN9WoLktyxT7yzq0V3j9oFEZA9SXv1iK2
+         +ZMOPVryoZwN/NbrM2wxt6ktYcElVaHdnGEKCY9w9UvhTzG2dVvFiEaFQ/lRRJZ3gV5g
+         oEDn7V7iPWM05x/TVl7ETtdHKJj+utkSVYCj6LipIJKbL9z3B97gPH3SO8xZmHjQRi5/
+         zgXA==
+X-Gm-Message-State: AOJu0Yw7OrFMIT1b+7hEOebYMKtLE3o6OMzqcbQ2znrDEuFOx9PmOzhZ
+	JHvSbVnLKNnV0OMK4bACeO6htjHlwKOEnVWamxHP62k+VNgh+KGWCfh19PviTmy8Ni4O4QCmEcA
+	A6fo1iNZFxoFEgO3D5OdEY/D+lRc=
+X-Gm-Gg: ASbGncsxogNwHe1OIQ53k/xx+hrPLkn0hff93W+WFP7D7uY/Gxo3yZcQ3/Mz/NfIUa8
+	PpHL09m29n9vfg9sTwEBmDkvnopFk+bS0Xz5ebL1gplTFKEgtJDB7TMmVQVYZ
+X-Google-Smtp-Source: AGHT+IEGgiHnJRBFQZRRPcAFSZMO+Gthat7fBOMCY/sbFMbFSBIyHApXykuPYZtaEAJOvCtfnHeXAn4gMLLrVLyipHk=
+X-Received: by 2002:a17:907:7b89:b0:aaf:74dc:5dbc with SMTP id
+ a640c23a62f3a-ab38b320334mr2478547666b.29.1737763753153; Fri, 24 Jan 2025
+ 16:09:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH net-next v6 03/13] bpf: stop UDP sock accessing TCP
- fields in bpf callbacks
-To: Jason Xing <kerneljasonxing@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com,
- willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, horms@kernel.org, bpf@vger.kernel.org,
- netdev@vger.kernel.org
-References: <20250121012901.87763-1-kerneljasonxing@gmail.com>
- <20250121012901.87763-4-kerneljasonxing@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Content-Language: en-US
-In-Reply-To: <20250121012901.87763-4-kerneljasonxing@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250124181602.1872142-1-linux@jordanrome.com>
+In-Reply-To: <20250124181602.1872142-1-linux@jordanrome.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 24 Jan 2025 16:08:53 -0800
+X-Gm-Features: AWEUYZnaF7f5gKt5yInZK1OuHqd-R4iOPSbppSleaq4_dHY7tMzfvNFDkTUICxU
+Message-ID: <CAEf4Bzb9EOwQnzCL4j6vGFdJ-hgPXif5Z8iXUT-sKvf+bgTfEg@mail.gmail.com>
+Subject: Re: [bpf-next v3 1/3] mm: add copy_remote_vm_str
+To: Jordan Rome <linux@jordanrome.com>
+Cc: bpf@vger.kernel.org, linux-mm@kvack.org, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Kernel Team <kernel-team@fb.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Alexander Potapenko <glider@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/20/25 5:28 PM, Jason Xing wrote:
-> Applying the new member allow_tcp_access in the existing callbacks
-> where is_fullsock is set to 1 can help us stop UDP socket accessing
-> struct tcp_sock, or else it could be catastrophe leading to panic.
-> 
-> For now, those existing callbacks are used only for TCP. I believe
-> in the short run, we will have timestamping UDP callbacks support.
-
-The commit message needs adjustment. UDP is not supported yet, so this change 
-feels like it's unnecessary based on the commit message. However, even without 
-UDP support, the new timestamping callbacks cannot directly write some fields 
-because the sk lock is not held, so this change is needed for TCP timestamping 
-support.
-
-To keep it simple, instead of distinguishing between read and write access, we 
-disallow all read/write access to the tcp_sock through the older bpf_sock_ops 
-ctx. The new timestamping callbacks can use newer helpers to read everything 
-from a sk (e.g. bpf_core_cast), so nothing is lost.
-
-The "allow_tcp_access" flag is added to indicate that the callback site has a 
-tcp_sock locked. Yes, it will make future UDP support easier because a udp_sock 
-is not a tcp_sock to begin with.
-
-> 
-> Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
+On Fri, Jan 24, 2025 at 10:22=E2=80=AFAM Jordan Rome <linux@jordanrome.com>=
+ wrote:
+>
+> Similar to `access_process_vm` but specific to strings.
+> Also chunks reads by page and utilizes `strscpy`
+> for handling null termination.
+>
+> Signed-off-by: Jordan Rome <linux@jordanrome.com>
 > ---
->   include/linux/filter.h | 1 +
->   include/net/tcp.h      | 1 +
->   net/core/filter.c      | 8 ++++----
->   net/ipv4/tcp_input.c   | 2 ++
->   net/ipv4/tcp_output.c  | 2 ++
->   5 files changed, 10 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index a3ea46281595..1b1333a90b4a 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -1508,6 +1508,7 @@ struct bpf_sock_ops_kern {
->   	void	*skb_data_end;
->   	u8	op;
->   	u8	is_fullsock;
-> +	u8	allow_tcp_access;
+>  include/linux/mm.h |   3 ++
+>  mm/memory.c        | 119 +++++++++++++++++++++++++++++++++++++++++++++
+>  mm/nommu.c         |  68 ++++++++++++++++++++++++++
+>  3 files changed, 190 insertions(+)
+>
 
-It is useful to add a comment here to explain the sockops callback has the 
-tcp_sock locked when it is set.
+[...]
 
->   	u8	remaining_opt_len;
->   	u64	temp;			/* temp and everything after is not
->   					 * initialized to 0 before calling
-> diff --git a/include/net/tcp.h b/include/net/tcp.h
-> index 5b2b04835688..293047694710 100644
-> --- a/include/net/tcp.h
-> +++ b/include/net/tcp.h
-> @@ -2649,6 +2649,7 @@ static inline int tcp_call_bpf(struct sock *sk, int op, u32 nargs, u32 *args)
->   	memset(&sock_ops, 0, offsetof(struct bpf_sock_ops_kern, temp));
->   	if (sk_fullsock(sk)) {
->   		sock_ops.is_fullsock = 1;
-> +		sock_ops.allow_tcp_access = 1;
->   		sock_owned_by_me(sk);
->   	}
->   
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 8e2715b7ac8a..fdd305b4cfbb 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -10381,10 +10381,10 @@ static u32 sock_ops_convert_ctx_access(enum bpf_access_type type,
->   		}							      \
->   		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(			      \
->   						struct bpf_sock_ops_kern,     \
-> -						is_fullsock),		      \
-> +						allow_tcp_access),	      \
->   				      fullsock_reg, si->src_reg,	      \
->   				      offsetof(struct bpf_sock_ops_kern,      \
-> -					       is_fullsock));		      \
-> +					       allow_tcp_access));	      \
->   		*insn++ = BPF_JMP_IMM(BPF_JEQ, fullsock_reg, 0, jmp);	      \
->   		if (si->dst_reg == si->src_reg)				      \
->   			*insn++ = BPF_LDX_MEM(BPF_DW, reg, si->src_reg,	      \
-> @@ -10469,10 +10469,10 @@ static u32 sock_ops_convert_ctx_access(enum bpf_access_type type,
->   					       temp));			      \
->   		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(			      \
->   						struct bpf_sock_ops_kern,     \
-> -						is_fullsock),		      \
-> +						allow_tcp_access),	      \
->   				      reg, si->dst_reg,			      \
->   				      offsetof(struct bpf_sock_ops_kern,      \
-> -					       is_fullsock));		      \
-> +					       allow_tcp_access));	      \
->   		*insn++ = BPF_JMP_IMM(BPF_JEQ, reg, 0, 2);		      \
->   		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(			      \
->   						struct bpf_sock_ops_kern, sk),\
-> diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-> index eb82e01da911..77185479ed5e 100644
-> --- a/net/ipv4/tcp_input.c
-> +++ b/net/ipv4/tcp_input.c
-> @@ -169,6 +169,7 @@ static void bpf_skops_parse_hdr(struct sock *sk, struct sk_buff *skb)
->   	memset(&sock_ops, 0, offsetof(struct bpf_sock_ops_kern, temp));
->   	sock_ops.op = BPF_SOCK_OPS_PARSE_HDR_OPT_CB;
->   	sock_ops.is_fullsock = 1;
-> +	sock_ops.allow_tcp_access = 1;
->   	sock_ops.sk = sk;
->   	bpf_skops_init_skb(&sock_ops, skb, tcp_hdrlen(skb));
->   
-> @@ -185,6 +186,7 @@ static void bpf_skops_established(struct sock *sk, int bpf_op,
->   	memset(&sock_ops, 0, offsetof(struct bpf_sock_ops_kern, temp));
->   	sock_ops.op = bpf_op;
->   	sock_ops.is_fullsock = 1;
-> +	sock_ops.allow_tcp_access = 1;
->   	sock_ops.sk = sk;
->   	/* sk with TCP_REPAIR_ON does not have skb in tcp_finish_connect */
->   	if (skb)
-> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-> index 0e5b9a654254..695749807c09 100644
-> --- a/net/ipv4/tcp_output.c
-> +++ b/net/ipv4/tcp_output.c
-> @@ -522,6 +522,7 @@ static void bpf_skops_hdr_opt_len(struct sock *sk, struct sk_buff *skb,
->   		sock_owned_by_me(sk);
->   
->   		sock_ops.is_fullsock = 1;
-> +		sock_ops.allow_tcp_access = 1;
->   		sock_ops.sk = sk;
->   	}
->   
-> @@ -567,6 +568,7 @@ static void bpf_skops_write_hdr_opt(struct sock *sk, struct sk_buff *skb,
->   		sock_owned_by_me(sk);
->   
->   		sock_ops.is_fullsock = 1;
-> +		sock_ops.allow_tcp_access = 1;
->   		sock_ops.sk = sk;
->   	}
->   
+> +               maddr =3D kmap_local_page(page);
+> +               retval =3D strscpy(buf, maddr + offset, bytes);
+> +               unmap_and_put_page(page, maddr);
+> +
+> +               if (retval > -1 && retval < bytes) {
+> +                       /* found the end of the string */
+> +                       buf +=3D retval;
+> +                       goto out;
+> +               }
+> +
+> +               if (retval =3D=3D -E2BIG) {
 
+nit: strscpy() can't return any other error, so I'd structure result
+handling as:
+
+if (retval < 0) {
+  /* that annoying last byte copy */
+  retval =3D bytes;
+}
+if (retval < bytes) {
+    /* "we are done" handling */
+}
+
+/* common len, buf, addr adjustment logic stays here */
+
+
+but also here's the question. If we get E2BIG, while bytes is exactly
+how many bytes we have left in the buffer, the last byte should be
+zero, no? So this should be cleanly handled, right? Or do we have a
+test for that and it works already?
+
+> +                       retval =3D bytes;
+> +                       /*
+> +                        * Because strscpy always null terminates we need=
+ to
+> +                        * copy the last byte in the page if we are going=
+ to
+> +                        * load more pages
+> +                        */
+> +                       if (bytes < len) {
+> +                               end =3D bytes - 1;
+> +                               copy_from_user_page(vma,
+> +                                               page,
+> +                                               addr + end,
+> +                                               buf + end,
+
+you don't need the `end` variable, just use `bytes - 1` twice?
+
+> +                                               maddr + (PAGE_SIZE - 1),
+> +                                               1);
+> +                       }
+> +               }
+> +
+> +               len -=3D retval;
+> +               buf +=3D retval;
+> +               addr +=3D retval;
+> +       }
+> +
+> +out:
+> +       mmap_read_unlock(mm);
+> +       if (err)
+> +               return err;
+> +
+> +       return buf - old_buf;
+> +}
+> +
+> +/**
+> + * copy_remote_vm_str - copy a string from another process's address spa=
+ce.
+> + * @tsk:       the task of the target address space
+> + * @addr:      start address to read from
+> + * @buf:       destination buffer
+> + * @len:       number of bytes to transfer
+> + * @gup_flags: flags modifying lookup behaviour
+> + *
+> + * The caller must hold a reference on @mm.
+> + *
+> + * Return: number of bytes copied from @addr (source) to @buf (destinati=
+on).
+> + * If the source string is shorter than @len then return the length of t=
+he
+> + * source string. If the source string is longer than @len, return @len.
+> + * On any error, return -EFAULT.
+
+strncpy_from_user_nofault() doc says:
+
+  On success, returns the length of the string INCLUDING the trailing NUL
+
+Is this the case with copy_remote_vm_str() as well? I.e., if the
+source string is 5 bytes + NUL, dst buf is 10. Will we get 5 or 6
+returned? We should be very careful with all this +/- 1 business in
+corner cases, too easy to mess this up.
+
+> + */
+> +int copy_remote_vm_str(struct task_struct *tsk, unsigned long addr,
+> +               void *buf, int len, unsigned int gup_flags)
+> +{
+> +       struct mm_struct *mm;
+> +       int ret;
+> +
+> +       mm =3D get_task_mm(tsk);
+> +       if (!mm)
+> +               return -EFAULT;
+> +
+> +       ret =3D __copy_remote_vm_str(mm, addr, buf, len, gup_flags);
+> +
+> +       mmput(mm);
+> +
+> +       return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(copy_remote_vm_str);
+> +
+
+[...]
 
