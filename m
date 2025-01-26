@@ -1,644 +1,338 @@
-Return-Path: <bpf+bounces-49821-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49822-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CB0CA1C73A
-	for <lists+bpf@lfdr.de>; Sun, 26 Jan 2025 10:49:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3482A1C7B8
+	for <lists+bpf@lfdr.de>; Sun, 26 Jan 2025 13:42:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC7D43A553A
-	for <lists+bpf@lfdr.de>; Sun, 26 Jan 2025 09:49:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5320F1887537
+	for <lists+bpf@lfdr.de>; Sun, 26 Jan 2025 12:42:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7415014AD20;
-	Sun, 26 Jan 2025 09:49:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0EB51547D2;
+	Sun, 26 Jan 2025 12:42:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="a+TKJOCN"
+	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="byehsN/6"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EF8E86352
-	for <bpf@vger.kernel.org>; Sun, 26 Jan 2025 09:48:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76E3F17E
+	for <bpf@vger.kernel.org>; Sun, 26 Jan 2025 12:42:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737884942; cv=none; b=TTzrFgF1I3jjUG81LKa1Kjgojs2ZNSfQSZ5T5NcluRG9WYoin4iVwwgsIreuPRFpM5kXnKxG6vBVUWcHMgqJelwuaKXB7Y7A1VtwN9iFtlQtqWSISGFi/BZ58fwsPXCY8q925Em0hnTt6SARLAAo3XjQuqFr3TXabYhTM50zIV8=
+	t=1737895356; cv=none; b=GbQ17kUgCH820jyLGjyll+pDH27fBNwEPwxabYTjtjfi3+dYEDxYrEnr730mqbpzyDrr3OZ4Jg2evn+r1AxbIxs23sdCIlmLfY2XmsAydZlCp4oNsT7bb9dYWO4kWnA0hLhfiuLcCwmCSJ10tVTasnObtRBVINM5nLq9NyVsNvs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737884942; c=relaxed/simple;
-	bh=oZdG9P+drO3In6X6MtmHo3nysImLXL31uAdHiYFvK64=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZvPU278TeQA6gzI8CQr4Rx0z4yyYYjpKcSBBZJgtqlmkkt9GIK4QcS5kNpw6xyJF4KsH/EcZvMY8LNYFUuTS5qKFQUlDyJhzSgXcEEtGykcCEXjHJT136JXpqc6qS/d/JXv/rr+a6BShz2bKQ69w91DCnI2zEq/0RuwjW8K48Wo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=a+TKJOCN; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <0e14b9c5-fa74-4de0-a903-cfbc7efd7b97@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1737884927;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j/UffQrFwRVhHTe5KigDsyAezErQac/gQ0Gd78pdtzg=;
-	b=a+TKJOCNCaqXgUcjB743dIhagzVBMZgVHyXh+tbuqWqHJOiLKS0p6XJPuEQJsGILSjrb7J
-	S50rV7NfD05EFar0AqJCguwCkEO2mgor3/jE4lHu/b905tgy8r0drXsQN7V8++9PEoDi0F
-	F+rzsUq0NyhSCm5i4KXGNPX7pCySVlY=
-Date: Sun, 26 Jan 2025 10:48:39 +0100
+	s=arc-20240116; t=1737895356; c=relaxed/simple;
+	bh=XUOTX3CB2TIdtcBcOAOEc0OuccLBrnl1ceC7eTfADao=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rCPVD8yccQsVjkMIAX6rsA1P/s2VMpbrf9b2AZ7CYsFtyWwwnegi2y7hit1r28wKyRo7xzATQJBc3GQIJaERBX2z6xJPBDQFeqIDpUaEGQzIOcntlpvFS6iC6tKc1xZjHYNzjbJ+Nu/Si59G2Y67dZFuFge4p/nPm4xE61UGpjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=byehsN/6; arc=none smtp.client-ip=74.208.4.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
+	s=s1-ionos; t=1737895312; x=1738500112; i=linux@jordanrome.com;
+	bh=+Vlu2jdNpbATIazxCRDh42Sp6PcgYXmIQ/5U9nvK1ig=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:
+	 MIME-Version:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=byehsN/6FJ8TVKECgbxyykRUWNnqHPUcWxUXmwLS8mFW/0tF4VcvAfab4Uf8tWi5
+	 0AWKziqWBRggny1+rQh1X2V7XYKoVoPgLyD5erBMBFt0kJxdrxdj+gayeQs+m02E4
+	 bb6qVmfzQRuB2DwSxqnAlGteI1VpoEjIEOwGIj/h0Hga6caZODA7w/MukQDD640En
+	 WXW/d3qxUZ8SwAm6aexUwbkgJoa2ElZq9VFxFC40NO4egxx2qQQMTGsNkBiJrPoXw
+	 uyvk7v7Bowc9L58nIOvKdX4yU4q8gW73qioEziNxJNtx1H7yVicyFYY6hT00Ax/eT
+	 oit8D9oKiwprZV6Rug==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from localhost ([69.171.251.115]) by mrelay.perfora.net (mreueus004
+ [74.208.5.2]) with ESMTPSA (Nemesis) id 1MGycx-1tg8hP1Lj1-009kvf; Sun, 26 Jan
+ 2025 13:41:52 +0100
+From: Jordan Rome <linux@jordanrome.com>
+To: bpf@vger.kernel.org
+Cc: linux-mm@kvack.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Kernel Team <kernel-team@fb.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Alexander Potapenko <glider@google.com>
+Subject: [bpf-next v4 1/3] mm: add copy_remote_vm_str
+Date: Sun, 26 Jan 2025 04:41:45 -0800
+Message-ID: <20250126124147.3154108-1-linux@jordanrome.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v7 6/6] bpf/selftests: add selftest for
- bpf_smc_ops
-To: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
- wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- pabeni@redhat.com, song@kernel.org, sdf@google.com, haoluo@google.com,
- yhs@fb.com, edumazet@google.com, john.fastabend@gmail.com,
- kpsingh@kernel.org, jolsa@kernel.org, guwen@linux.alibaba.com
-Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org
-References: <20250123015942.94810-1-alibuda@linux.alibaba.com>
- <20250123015942.94810-7-alibuda@linux.alibaba.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20250123015942.94810-7-alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:JmcUMYCtNw/iPiwqR2nutfXGPdekms12sq6yY4Crs9jwIwO2HDl
+ X6ZuPldqSdCmp7pVzFg6kOC5CSJonXjwQG5Av5Y1wDJS4Zax2gf+rNd0JZ8KtUpHRUSsVEa
+ CGp8ORt36SKXYs3yo6pK7vS7kP6XTYM5kL96TRiZNNkNwrl+tKDHI+yazE1lRblmhxqvATi
+ DpQ3e++ie306dMmgizc8A==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:0oDabORroaU=;qGnI7yD+GxvMza7knm2o+Fqm31s
+ RR5msbwyN3CsdI7Yq6ffaWIS3Q4wPSPqtravPo0PREzvr74cluZZl9RTPY5EA1hX7GoLTxgwN
+ E98PvyzATlkq++uz520Lg4HpaB25OAg8PjYsSo9d15eK27Gj/1DcTyBllhAdI13r1ZBBaOQvC
+ yMWq8ILmDEbb0JPB6DJtXxzD8+HdBjJjgnPxM5bgJMm2cZ1+DT2UcU/Zptf2jlKFOMudqAlYd
+ j/iDSY6sTu41fcm0s9cCngZDnyoRB9HL9OHMDa7Wdgi6rkmctnH9lMnag4TJEWrLTYMSzjnWU
+ 4O1LsqwqucKkGxl2I03IrXLm4V2krqLAa0LmPiJbGY1iIG6IyHw+s2+fSKFBib3YKviEw4OxH
+ jQFRADEhwSxI/aLXReT+jmo9uMqJhM+G0xxf0sMc99KS+SY1cs64pryWrfJHhH+pqpLxA9a3D
+ /8FXP3gpDwUP5ZZCE6/FEEKS6oMDxV1GVXGKbuYB8kUl7TXxIJ9ySUBjbC0sq/DucyBRaoXVq
+ ORfH8ghZZqVVWXnC9MIZVp1D96vcVry/TnH7GzIApsGvJtoBueasmaoDlYsBfjx02ejpsZ1rl
+ K4qxSfwNE0bqfCthI2Lg5MPoDoZEWAJ+7L0/VqTyymMybXzuuGpuH6WllPKPMIRObXFL9CIQV
+ jI7OK1gdRCTfk4OeHVZEK/X9buFKzSPdljMsim5HbMdltSmqFdLzirUGNuKV4iNAlI2CO7KTT
+ o0ZqOARCZSOxiChQCG5BeRt7lxHekQ6fyhzzUHCEEJ1+U0CBI/7dyBDgnN+CCRrwRiJhMqdcW
+ RUefUka5Ger8gjyQZ2vk0SMkqgL27eio/CPqOIMPIgaCnkQOrKeF/pXbCiKHR33g8ChitPD+l
+ OB8BVAJQr/qjvXiZgtoUX6116DMWkrNiQObqYVhMMBgAOxaUtubjVGv52BMLGv+Ak8Mp7DJCY
+ pg/BvCnL3Yhcfebz5utRDe91XLpfNtAHPdFtbpjcnrMgTJfcG/uH08Y2NsHgGSXFZGjjNveZ5
+ lZ8gb+UKWFhzHzgJYY1BSK+3qTG69kvzz3wbkYIkIK6H1cj0Tlh8PjlWVNsu53NSIzhXreIjG
+ Iw1dQo3N0Om/trPipIxCs8Wz3wazU1WfqyxP6vV0ijap7Z1f0OOwIgzmr7G2tY3RLMWImuiLt
+ pBU52f2efgWhRIGWt3ebBaukcY48DB5meqtQ0Fe1TZKOcyu3yNeJUfRrwUUXsR0DNHbDtrkHe
+ uRNDwiERwFq/NdK6ohtT8ykj5/OK2c+k8Q==
 
-在 2025/1/23 2:59, D. Wythe 写道:
-> This tests introduces a tiny smc_ops for filtering SMC connections based on
-> IP pairs, and also adds a realistic topology model to verify this ops.
-> 
-> Also, we can only use SMC loopback under CI test, so an
-> additional configuration needs to be enabled.
-> 
-> Follow the steps below to run this test.
-> 
-> make -C tools/testing/selftests/bpf
-> cd tools/testing/selftests/bpf
-> sudo ./test_progs -t smc
+Similar to `access_process_vm` but specific to strings.
+Also chunks reads by page and utilizes `strscpy`
+for handling null termination.
 
-Enable CONFIG_INFINIBAND, CONFIG_SMC, CONFIG_SMC_OPS, CONFIG_SMC_LO, 
-then run the above commands, it can work well.
+Signed-off-by: Jordan Rome <linux@jordanrome.com>
+=2D--
+ include/linux/mm.h |   3 ++
+ mm/memory.c        | 118 +++++++++++++++++++++++++++++++++++++++++++++
+ mm/nommu.c         |  66 +++++++++++++++++++++++++
+ 3 files changed, 187 insertions(+)
 
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index f02925447e59..f3a05b3eb2f2 100644
+=2D-- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2485,6 +2485,9 @@ extern int access_process_vm(struct task_struct *tsk=
+, unsigned long addr,
+ extern int access_remote_vm(struct mm_struct *mm, unsigned long addr,
+ 		void *buf, int len, unsigned int gup_flags);
 
-Thanks,
-Zhu Yanjun
-> 
-> Results shows:
-> Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> Tested-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
-> ---
->   tools/testing/selftests/bpf/config            |   4 +
->   .../selftests/bpf/prog_tests/test_bpf_smc.c   | 396 ++++++++++++++++++
->   tools/testing/selftests/bpf/progs/bpf_smc.c   | 117 ++++++
->   3 files changed, 517 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
->   create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
-> 
-> diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-> index c378d5d07e02..fac2f2a9d02f 100644
-> --- a/tools/testing/selftests/bpf/config
-> +++ b/tools/testing/selftests/bpf/config
-> @@ -113,3 +113,7 @@ CONFIG_XDP_SOCKETS=y
->   CONFIG_XFRM_INTERFACE=y
->   CONFIG_TCP_CONG_DCTCP=y
->   CONFIG_TCP_CONG_BBR=y
-> +CONFIG_INFINIBAND=y
-> +CONFIG_SMC=y
-> +CONFIG_SMC_OPS=y
-> +CONFIG_SMC_LO=y
-> \ No newline at end of file
-> diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c b/tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
-> new file mode 100644
-> index 000000000000..0580961fd693
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
-> @@ -0,0 +1,396 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <test_progs.h>
-> +#include <linux/genetlink.h>
-> +#include "network_helpers.h"
-> +#include "bpf_smc.skel.h"
-> +
-> +#ifndef IPPROTO_SMC
-> +#define IPPROTO_SMC 256
-> +#endif
-> +
-> +#define CLIENT_IP			"127.0.0.1"
-> +#define SERVER_IP			"127.0.1.0"
-> +#define SERVER_IP_VIA_RISK_PATH	"127.0.2.0"
-> +
-> +#define SERVICE_1	11234
-> +#define SERVICE_2	22345
-> +#define SERVICE_3	33456
-> +
-> +#define TEST_NS	"bpf_smc_netns"
-> +
-> +static struct netns_obj *test_netns;
-> +
-> +struct smc_strat_ip_key {
-> +	__u32  sip;
-> +	__u32  dip;
-> +};
-> +
-> +struct smc_strat_ip_value {
-> +	__u8	mode;
-> +};
-> +
-> +#if defined(__s390x__)
-> +/* s390x has default seid  */
-> +static bool setup_ueid(void) { return true; }
-> +static void cleanup_ueid(void) {}
-> +#else
-> +enum {
-> +	SMC_NETLINK_ADD_UEID = 10,
-> +	SMC_NETLINK_REMOVE_UEID
-> +};
-> +
-> +enum {
-> +	SMC_NLA_EID_TABLE_UNSPEC,
-> +	SMC_NLA_EID_TABLE_ENTRY,    /* string */
-> +};
-> +
-> +struct msgtemplate {
-> +	struct nlmsghdr n;
-> +	struct genlmsghdr g;
-> +	char buf[1024];
-> +};
-> +
-> +#define GENLMSG_DATA(glh)	((void *)(NLMSG_DATA(glh) + GENL_HDRLEN))
-> +#define GENLMSG_PAYLOAD(glh)	(NLMSG_PAYLOAD(glh, 0) - GENL_HDRLEN)
-> +#define NLA_DATA(na)		((void *)((char *)(na) + NLA_HDRLEN))
-> +#define NLA_PAYLOAD(len)	((len) - NLA_HDRLEN)
-> +
-> +#define SMC_GENL_FAMILY_NAME	"SMC_GEN_NETLINK"
-> +#define SMC_BPFTEST_UEID	"SMC-BPFTEST-UEID"
-> +
-> +static uint16_t smc_nl_family_id = -1;
-> +
-> +static int send_cmd(int fd, __u16 nlmsg_type, __u32 nlmsg_pid,
-> +		    __u16 nlmsg_flags, __u8 genl_cmd, __u16 nla_type,
-> +		    void *nla_data, int nla_len)
-> +{
-> +	struct nlattr *na;
-> +	struct sockaddr_nl nladdr;
-> +	int r, buflen;
-> +	char *buf;
-> +
-> +	struct msgtemplate msg = {0};
-> +
-> +	msg.n.nlmsg_len = NLMSG_LENGTH(GENL_HDRLEN);
-> +	msg.n.nlmsg_type = nlmsg_type;
-> +	msg.n.nlmsg_flags = nlmsg_flags;
-> +	msg.n.nlmsg_seq = 0;
-> +	msg.n.nlmsg_pid = nlmsg_pid;
-> +	msg.g.cmd = genl_cmd;
-> +	msg.g.version = 1;
-> +	na = (struct nlattr *) GENLMSG_DATA(&msg);
-> +	na->nla_type = nla_type;
-> +	na->nla_len = nla_len + 1 + NLA_HDRLEN;
-> +	memcpy(NLA_DATA(na), nla_data, nla_len);
-> +	msg.n.nlmsg_len += NLMSG_ALIGN(na->nla_len);
-> +
-> +	buf = (char *) &msg;
-> +	buflen = msg.n.nlmsg_len;
-> +	memset(&nladdr, 0, sizeof(nladdr));
-> +	nladdr.nl_family = AF_NETLINK;
-> +
-> +	while ((r = sendto(fd, buf, buflen, 0, (struct sockaddr *) &nladdr,
-> +			   sizeof(nladdr))) < buflen) {
-> +		if (r > 0) {
-> +			buf += r;
-> +			buflen -= r;
-> +		} else if (errno != EAGAIN) {
-> +			return -1;
-> +		}
-> +	}
-> +	return 0;
-> +}
-> +
-> +static bool get_smc_nl_family_id(void)
-> +{
-> +	struct sockaddr_nl nl_src;
-> +	struct msgtemplate msg;
-> +	struct nlattr *nl;
-> +	int fd, ret;
-> +	pid_t pid;
-> +
-> +	fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_GENERIC);
-> +	if (!ASSERT_OK_FD(fd, "nl_family socket"))
-> +		return false;
-> +
-> +	pid = getpid();
-> +
-> +	memset(&nl_src, 0, sizeof(nl_src));
-> +	nl_src.nl_family = AF_NETLINK;
-> +	nl_src.nl_pid = pid;
-> +
-> +	ret = bind(fd, (struct sockaddr *) &nl_src, sizeof(nl_src));
-> +	if (!ASSERT_OK(ret, "nl_family bind"))
-> +		goto fail;
-> +
-> +	ret = send_cmd(fd, GENL_ID_CTRL, pid,
-> +		       NLM_F_REQUEST, CTRL_CMD_GETFAMILY,
-> +		       CTRL_ATTR_FAMILY_NAME, (void *)SMC_GENL_FAMILY_NAME,
-> +		       strlen(SMC_GENL_FAMILY_NAME));
-> +	if (!ASSERT_OK(ret, "nl_family query"))
-> +		goto fail;
-> +
-> +	ret = recv(fd, &msg, sizeof(msg), 0);
-> +	if (!ASSERT_FALSE(msg.n.nlmsg_type == NLMSG_ERROR || (ret < 0) ||
-> +			  !NLMSG_OK((&msg.n), ret), "nl_family response"))
-> +		goto fail;
-> +
-> +	nl = (struct nlattr *) GENLMSG_DATA(&msg);
-> +	nl = (struct nlattr *) ((char *) nl + NLA_ALIGN(nl->nla_len));
-> +	if (!ASSERT_EQ(nl->nla_type, CTRL_ATTR_FAMILY_ID, "nl_family nla type"))
-> +		goto fail;
-> +
-> +	smc_nl_family_id = *(uint16_t *) NLA_DATA(nl);
-> +	close(fd);
-> +	return true;
-> +fail:
-> +	close(fd);
-> +	return false;
-> +}
-> +
-> +static bool smc_ueid(int op)
-> +{
-> +	struct sockaddr_nl nl_src;
-> +	struct msgtemplate msg;
-> +	struct nlmsgerr *err;
-> +	char test_ueid[32];
-> +	int fd, ret;
-> +	pid_t pid;
-> +
-> +	/* UEID required */
-> +	memset(test_ueid, '\x20', sizeof(test_ueid));
-> +	memcpy(test_ueid, SMC_BPFTEST_UEID, strlen(SMC_BPFTEST_UEID));
-> +	fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_GENERIC);
-> +	if (!ASSERT_OK_FD(fd, "ueid socket"))
-> +		return false;
-> +
-> +	pid = getpid();
-> +	memset(&nl_src, 0, sizeof(nl_src));
-> +	nl_src.nl_family = AF_NETLINK;
-> +	nl_src.nl_pid = pid;
-> +
-> +	ret = bind(fd, (struct sockaddr *) &nl_src, sizeof(nl_src));
-> +	if (!ASSERT_OK(ret, "ueid bind"))
-> +		goto fail;
-> +
-> +	ret = send_cmd(fd, smc_nl_family_id, pid,
-> +		       NLM_F_REQUEST | NLM_F_ACK, op, SMC_NLA_EID_TABLE_ENTRY,
-> +		       (void *)test_ueid, sizeof(test_ueid));
-> +	if (!ASSERT_OK(ret, "ueid cmd"))
-> +		goto fail;
-> +
-> +	ret = recv(fd, &msg, sizeof(msg), 0);
-> +	if (!ASSERT_FALSE((ret < 0) ||
-> +	    !NLMSG_OK((&msg.n), ret), "ueid response"))
-> +		goto fail;
-> +
-> +	if (msg.n.nlmsg_type == NLMSG_ERROR) {
-> +		err = NLMSG_DATA(&msg);
-> +		switch (op) {
-> +		case SMC_NETLINK_REMOVE_UEID:
-> +			if (!ASSERT_FALSE((err->error && err->error != -ENOENT),
-> +					  "ueid remove"))
-> +				goto fail;
-> +			break;
-> +		case SMC_NETLINK_ADD_UEID:
-> +			if (!ASSERT_OK(err->error, "ueid add"))
-> +				goto fail;
-> +			break;
-> +		default:
-> +			break;
-> +		}
-> +	}
-> +	close(fd);
-> +	return true;
-> +fail:
-> +	close(fd);
-> +	return false;
-> +}
-> +
-> +static bool setup_ueid(void)
-> +{
-> +	/* get smc nl id */
-> +	if (!get_smc_nl_family_id())
-> +		return false;
-> +	/* clear old ueid for bpftest */
-> +	smc_ueid(SMC_NETLINK_REMOVE_UEID);
-> +	/* smc-loopback required ueid */
-> +	return smc_ueid(SMC_NETLINK_ADD_UEID);
-> +}
-> +
-> +static void cleanup_ueid(void)
-> +{
-> +	smc_ueid(SMC_NETLINK_REMOVE_UEID);
-> +}
-> +#endif /* __s390x__ */
-> +
-> +static bool setup_netns(void)
-> +{
-> +	test_netns = netns_new(TEST_NS, true);
-> +	if (!ASSERT_OK_PTR(test_netns, "open net namespace"))
-> +		goto fail_netns;
-> +
-> +	if (!ASSERT_OK(system("ip addr add 127.0.1.0/8 dev lo"),
-> +		       "add server node"))
-> +		goto fail_ip;
-> +
-> +	if (!ASSERT_OK(system("ip addr add 127.0.2.0/8 dev lo"),
-> +		       "server via risk path"))
-> +		goto fail_ip;
-> +
-> +	return true;
-> +fail_ip:
-> +	netns_free(test_netns);
-> +fail_netns:
-> +	return false;
-> +}
-> +
-> +static void cleanup_netns(void)
-> +{
-> +	netns_free(test_netns);
-> +	remove_netns(TEST_NS);
-> +}
-> +
-> +static bool setup_smc(void)
-> +{
-> +	if (!setup_ueid())
-> +		return false;
-> +
-> +	if (!setup_netns())
-> +		goto fail_netns;
-> +
-> +	return true;
-> +fail_netns:
-> +	cleanup_ueid();
-> +	return false;
-> +}
-> +
-> +static int set_client_addr_cb(int fd, void *opts)
-> +{
-> +	const char *src = (const char *)opts;
-> +	struct sockaddr_in localaddr;
-> +
-> +	localaddr.sin_family = AF_INET;
-> +	localaddr.sin_port = htons(0);
-> +	localaddr.sin_addr.s_addr = inet_addr(src);
-> +	return !ASSERT_OK(bind(fd, &localaddr, sizeof(localaddr)), "client bind");
-> +}
-> +
-> +static void run_link(const char *src, const char *dst, int port)
-> +{
-> +	struct network_helper_opts opts = {0};
-> +	int server, client;
-> +
-> +	server = start_server_str(AF_INET, SOCK_STREAM, dst, port, NULL);
-> +	if (!ASSERT_OK_FD(server, "start service_1"))
-> +		return;
-> +
-> +	opts.proto = IPPROTO_TCP;
-> +	opts.post_socket_cb = set_client_addr_cb;
-> +	opts.cb_opts = (void *)src;
-> +
-> +	client = connect_to_fd_opts(server, &opts);
-> +	if (!ASSERT_OK_FD(client, "start connect"))
-> +		goto fail_client;
-> +
-> +	close(client);
-> +fail_client:
-> +	close(server);
-> +}
-> +
-> +static void block_link(int map_fd, const char *src, const char *dst)
-> +{
-> +	struct smc_strat_ip_value val = { .mode = /* block */ 0 };
-> +	struct smc_strat_ip_key key = {
-> +		.sip = inet_addr(src),
-> +		.dip = inet_addr(dst),
-> +	};
-> +
-> +	bpf_map_update_elem(map_fd, &key, &val, BPF_ANY);
-> +}
-> +
-> +/*
-> + * This test describes a real-life service topology as follows:
-> + *
-> + *                             +-------------> service_1
-> + *            link1            |                     |
-> + *   +--------------------> server                   |  link 2
-> + *   |                         |                     V
-> + *   |                         +-------------> service_2
-> + *   |        link 3
-> + *  client -------------------> server_via_unsafe_path -> service_3
-> + *
-> + * Among them,
-> + * 1. link-1 is very suitable for using SMC.
-> + * 2. link-2 is not suitable for using SMC, because the mode of this link is
-> + *    kind of short-link services.
-> + * 3. link-3 is also not suitable for using SMC, because the RDMA link is
-> + *    unavailable and needs to go through a long timeout before it can fallback
-> + *    to TCP.
-> + * To achieve this goal, we use a customized SMC ip strategy via smc_ops.
-> + */
-> +static void test_topo(void)
-> +{
-> +	struct bpf_smc *skel;
-> +	int rc, map_fd;
-> +
-> +	skel = bpf_smc__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "bpf_smc__open_and_load"))
-> +		return;
-> +
-> +	rc = bpf_smc__attach(skel);
-> +	if (!ASSERT_OK(rc, "bpf_smc__attach"))
-> +		goto fail;
-> +
-> +	map_fd = bpf_map__fd(skel->maps.smc_strats_ip);
-> +	if (!ASSERT_OK_FD(map_fd, "bpf_map__fd"))
-> +		goto fail;
-> +
-> +	/* Mock the process of transparent replacement, since we will modify
-> +	 * protocol to ipproto_smc accropding to it via
-> +	 * fmod_ret/update_socket_protocol.
-> +	 */
-> +	system("sysctl -w net.smc.ops=linkcheck");
-> +
-> +	/* Configure ip strat */
-> +	block_link(map_fd, CLIENT_IP, SERVER_IP_VIA_RISK_PATH);
-> +	block_link(map_fd, SERVER_IP, SERVER_IP);
-> +
-> +	/* should go with smc */
-> +	run_link(CLIENT_IP, SERVER_IP, SERVICE_1);
-> +	/* should go with smc fallback */
-> +	run_link(SERVER_IP, SERVER_IP, SERVICE_2);
-> +
-> +	ASSERT_EQ(skel->bss->smc_cnt, 2, "smc count");
-> +	ASSERT_EQ(skel->bss->fallback_cnt, 1, "fallback count");
-> +
-> +	/* should go with smc */
-> +	run_link(CLIENT_IP, SERVER_IP, SERVICE_2);
-> +
-> +	ASSERT_EQ(skel->bss->smc_cnt, 3, "smc count");
-> +	ASSERT_EQ(skel->bss->fallback_cnt, 1, "fallback count");
-> +
-> +	/* should go with smc fallback */
-> +	run_link(CLIENT_IP, SERVER_IP_VIA_RISK_PATH, SERVICE_3);
-> +
-> +	ASSERT_EQ(skel->bss->smc_cnt, 4, "smc count");
-> +	ASSERT_EQ(skel->bss->fallback_cnt, 2, "fallback count");
-> +
-> +fail:
-> +	bpf_smc__destroy(skel);
-> +}
-> +
-> +void test_bpf_smc(void)
-> +{
-> +	if (!setup_smc()) {
-> +		printf("setup for smc test failed, test SKIP:\n");
-> +		test__skip();
-> +		return;
-> +	}
-> +
-> +	if (test__start_subtest("topo"))
-> +		test_topo();
-> +
-> +	cleanup_ueid();
-> +	cleanup_netns();
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_smc.c b/tools/testing/selftests/bpf/progs/bpf_smc.c
-> new file mode 100644
-> index 000000000000..c8499e7821fa
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/bpf_smc.c
-> @@ -0,0 +1,117 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include "vmlinux.h"
-> +
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include "bpf_tracing_net.h"
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +enum {
-> +	BPF_SMC_LISTEN	= 10,
-> +};
-> +
-> +struct smc_sock___local {
-> +	struct sock sk;
-> +	struct smc_sock *listen_smc;
-> +	bool use_fallback;
-> +} __attribute__((preserve_access_index));
-> +
-> +int smc_cnt = 0;
-> +int fallback_cnt = 0;
-> +
-> +SEC("fentry/smc_release")
-> +int BPF_PROG(bpf_smc_release, struct socket *sock)
-> +{
-> +	/* only count from one side (client) */
-> +	if (sock->sk->__sk_common.skc_state == BPF_SMC_LISTEN)
-> +		return 0;
-> +	smc_cnt++;
-> +	return 0;
-> +}
-> +
-> +SEC("fentry/smc_switch_to_fallback")
-> +int BPF_PROG(bpf_smc_switch_to_fallback, struct smc_sock___local *smc)
-> +{
-> +	/* only count from one side (client) */
-> +	if (smc && !smc->listen_smc)
-> +		fallback_cnt++;
-> +	return 0;
-> +}
-> +
-> +/* go with default value if no strat was found */
-> +bool default_ip_strat_value = true;
-> +
-> +struct smc_strat_ip_key {
-> +	__u32	sip;
-> +	__u32	dip;
-> +};
-> +
-> +struct smc_strat_ip_value {
-> +	__u8	mode;
-> +};
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_HASH);
-> +	__uint(key_size, sizeof(struct smc_strat_ip_key));
-> +	__uint(value_size, sizeof(struct smc_strat_ip_value));
-> +	__uint(max_entries, 128);
-> +	__uint(map_flags, BPF_F_NO_PREALLOC);
-> +} smc_strats_ip SEC(".maps");
-> +
-> +static bool smc_check(__u32 src, __u32 dst)
-> +{
-> +	struct smc_strat_ip_value *value;
-> +	struct smc_strat_ip_key key = {
-> +		.sip = src,
-> +		.dip = dst,
-> +	};
-> +
-> +	value = bpf_map_lookup_elem(&smc_strats_ip, &key);
-> +	return value ? value->mode : default_ip_strat_value;
-> +}
-> +
-> +SEC("fmod_ret/update_socket_protocol")
-> +int BPF_PROG(smc_run, int family, int type, int protocol)
-> +{
-> +	struct task_struct *task;
-> +
-> +	if (family != AF_INET && family != AF_INET6)
-> +		return protocol;
-> +
-> +	if ((type & 0xf) != SOCK_STREAM)
-> +		return protocol;
-> +
-> +	if (protocol != 0 && protocol != IPPROTO_TCP)
-> +		return protocol;
-> +
-> +	task = bpf_get_current_task_btf();
-> +	/* Prevent from affecting other tests */
-> +	if (!task || !task->nsproxy->net_ns->smc.ops)
-> +		return protocol;
-> +
-> +	return IPPROTO_SMC;
-> +}
-> +
-> +SEC("struct_ops/bpf_smc_set_tcp_option_cond")
-> +int BPF_PROG(bpf_smc_set_tcp_option_cond, const struct tcp_sock *tp,
-> +	     struct inet_request_sock *ireq)
-> +{
-> +	return smc_check(ireq->req.__req_common.skc_daddr,
-> +			 ireq->req.__req_common.skc_rcv_saddr);
-> +}
-> +
-> +SEC("struct_ops/bpf_smc_set_tcp_option")
-> +int BPF_PROG(bpf_smc_set_tcp_option, struct tcp_sock *tp)
-> +{
-> +	return smc_check(tp->inet_conn.icsk_inet.sk.__sk_common.skc_rcv_saddr,
-> +			 tp->inet_conn.icsk_inet.sk.__sk_common.skc_daddr);
-> +}
-> +
-> +SEC(".struct_ops.link")
-> +struct smc_ops  linkcheck = {
-> +	.name			= "linkcheck",
-> +	.set_option		= (void *) bpf_smc_set_tcp_option,
-> +	.set_option_cond	= (void *) bpf_smc_set_tcp_option_cond,
-> +};
++extern int copy_remote_vm_str(struct task_struct *tsk, unsigned long addr=
+,
++		void *buf, int len, unsigned int gup_flags);
++
+ long get_user_pages_remote(struct mm_struct *mm,
+ 			   unsigned long start, unsigned long nr_pages,
+ 			   unsigned int gup_flags, struct page **pages,
+diff --git a/mm/memory.c b/mm/memory.c
+index 398c031be9ba..e1ed5095b258 100644
+=2D-- a/mm/memory.c
++++ b/mm/memory.c
+@@ -6714,6 +6714,124 @@ int access_process_vm(struct task_struct *tsk, uns=
+igned long addr,
+ }
+ EXPORT_SYMBOL_GPL(access_process_vm);
+
++/*
++ * Copy a string from another process's address space as given in mm.
++ * If there is any error return -EFAULT.
++ */
++static int __copy_remote_vm_str(struct mm_struct *mm, unsigned long addr,
++			      void *buf, int len, unsigned int gup_flags)
++{
++	void *old_buf =3D buf;
++	int err =3D 0;
++
++	if (mmap_read_lock_killable(mm))
++		return -EFAULT;
++
++	/* Untag the address before looking up the VMA */
++	addr =3D untagged_addr_remote(mm, addr);
++
++	/* Avoid triggering the temporary warning in __get_user_pages */
++	if (!vma_lookup(mm, addr)) {
++		err =3D -EFAULT;
++		goto out;
++	}
++
++	while (len) {
++		int bytes, offset, retval;
++		void *maddr;
++		struct page *page;
++		struct vm_area_struct *vma =3D NULL;
++
++		page =3D get_user_page_vma_remote(mm, addr, gup_flags, &vma);
++
++		if (IS_ERR(page)) {
++			/*
++			 * Treat as a total failure for now until we decide how
++			 * to handle the CONFIG_HAVE_IOREMAP_PROT case and
++			 * stack expansion.
++			 */
++			err =3D -EFAULT;
++			goto out;
++		}
++
++		bytes =3D len;
++		offset =3D addr & (PAGE_SIZE - 1);
++		if (bytes > PAGE_SIZE - offset)
++			bytes =3D PAGE_SIZE - offset;
++
++		maddr =3D kmap_local_page(page);
++		retval =3D strscpy(buf, maddr + offset, bytes);
++		unmap_and_put_page(page, maddr);
++
++		if (retval > -1) {
++			/* Found the end of the string */
++			buf +=3D retval;
++			goto out;
++		}
++
++		retval =3D bytes - 1;
++		buf +=3D retval;
++
++		if (bytes =3D=3D len)
++			goto out;
++
++		/*
++		 * Because strscpy always NUL terminates we need to
++		 * copy the last byte in the page if we are going to
++		 * load more pages
++		 */
++		addr +=3D retval;
++		len -=3D retval;
++		copy_from_user_page(vma,
++				page,
++				addr,
++				buf,
++				maddr + (PAGE_SIZE - 1),
++				1);
++		len -=3D 1;
++		buf +=3D 1;
++		addr +=3D 1;
++	}
++
++out:
++	mmap_read_unlock(mm);
++	if (err)
++		return err;
++
++	return buf - old_buf;
++}
++
++/**
++ * copy_remote_vm_str - copy a string from another process's address spac=
+e.
++ * @tsk:	the task of the target address space
++ * @addr:	start address to read from
++ * @buf:	destination buffer
++ * @len:	number of bytes to copy
++ * @gup_flags:	flags modifying lookup behaviour
++ *
++ * The caller must hold a reference on @mm.
++ *
++ * Return: number of bytes copied from @addr (source) to @buf (destinatio=
+n);
++ * not including the trailing NUL. On any error, return -EFAULT.
++ */
++int copy_remote_vm_str(struct task_struct *tsk, unsigned long addr,
++		void *buf, int len, unsigned int gup_flags)
++{
++	struct mm_struct *mm;
++	int ret;
++
++	mm =3D get_task_mm(tsk);
++	if (!mm)
++		return -EFAULT;
++
++	ret =3D __copy_remote_vm_str(mm, addr, buf, len, gup_flags);
++
++	mmput(mm);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(copy_remote_vm_str);
++
+ /*
+  * Print the name of a VMA.
+  */
+diff --git a/mm/nommu.c b/mm/nommu.c
+index 9cb6e99215e2..480ddf50dec1 100644
+=2D-- a/mm/nommu.c
++++ b/mm/nommu.c
+@@ -1701,6 +1701,72 @@ int access_process_vm(struct task_struct *tsk, unsi=
+gned long addr, void *buf, in
+ }
+ EXPORT_SYMBOL_GPL(access_process_vm);
+
++/*
++ * Copy a string from another process's address space as given in mm.
++ * If there is any error return -EFAULT.
++ */
++static int __copy_remote_vm_str(struct mm_struct *mm, unsigned long addr,
++			      void *buf, int len)
++{
++	int ret;
++
++	if (mmap_read_lock_killable(mm))
++		return -EFAULT;
++
++	/* the access must start within one of the target process's mappings */
++	vma =3D find_vma(mm, addr);
++	if (vma) {
++		/* don't overrun this mapping */
++		if (addr + len >=3D vma->vm_end)
++			len =3D vma->vm_end - addr;
++
++		/* only read mappings where it is permitted */
++		if (vma->vm_flags & VM_MAYREAD) {
++			ret =3D strscpy(buf, addr, len);
++			if (ret < 0)
++				ret =3D len - 1;
++		} else {
++			ret =3D -EFAULT;
++		}
++	} else {
++		ret =3D -EFAULT;
++	}
++
++	mmap_read_unlock(mm);
++	return ret;
++}
++
++/**
++ * copy_remote_vm_str - copy a string from another process's address spac=
+e.
++ * @tsk:	the task of the target address space
++ * @addr:	start address to read from
++ * @buf:	destination buffer
++ * @len:	number of bytes to copy
++ * @gup_flags:	flags modifying lookup behaviour (unused)
++ *
++ * The caller must hold a reference on @mm.
++ *
++ * Return: number of bytes copied from @addr (source) to @buf (destinatio=
+n);
++ * not including the trailing NUL. On any error, return -EFAULT.
++ */
++int copy_remote_vm_str(struct task_struct *tsk, unsigned long addr,
++		void *buf, int len, unsigned int gup_flags)
++{
++	struct mm_struct *mm;
++	int ret;
++
++	mm =3D get_task_mm(tsk);
++	if (!mm)
++		return -EFAULT;
++
++	ret =3D __copy_remote_vm_str(mm, addr, buf, len);
++
++	mmput(mm);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(copy_remote_vm_str);
++
+ /**
+  * nommu_shrink_inode_mappings - Shrink the shared mappings on an inode
+  * @inode: The inode to check
+=2D-
+2.43.5
 
 
