@@ -1,188 +1,186 @@
-Return-Path: <bpf+bounces-49832-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49833-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 593F1A1C86A
-	for <lists+bpf@lfdr.de>; Sun, 26 Jan 2025 15:29:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8B7CA1C870
+	for <lists+bpf@lfdr.de>; Sun, 26 Jan 2025 15:40:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 422D218865E5
-	for <lists+bpf@lfdr.de>; Sun, 26 Jan 2025 14:29:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E597165C34
+	for <lists+bpf@lfdr.de>; Sun, 26 Jan 2025 14:40:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABF61155333;
-	Sun, 26 Jan 2025 14:29:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E93F14B094;
+	Sun, 26 Jan 2025 14:40:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nMeTi7qr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a6Z1ZhXN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 300844A01
-	for <bpf@vger.kernel.org>; Sun, 26 Jan 2025 14:29:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08ACD2AF00
+	for <bpf@vger.kernel.org>; Sun, 26 Jan 2025 14:40:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737901785; cv=none; b=Z5TRmEFC7W+YQxINEOBqncMPnjWdr3g71VLrudx8h7tOIM2raLpqT2NsxjrnZjxWeWhoyA/RqRIT8H3tIkDF/SxrC1efMYbCY9aipAmrd3XBKpUWLLHk+5uR5hX7OWzi93lk3bkfrddrb0l6p/ulYpNjV8FT6nyz5NiXEmkGR34=
+	t=1737902411; cv=none; b=Bw3hIMCehusdoX19eCfgzGpUyPgVmCjzdpGfDtH7Z/HQIs3zgwWedvBEJoMNSTD81x9zw1QTMLYVIdoT5EorP672kNNL24E/1QhG1B6PY3gf/YWLgnlGoLS22+v6Mtpf2zNbzuhIHjOb93NyVk2id1Flo09HxA2Bq09wlgjRXYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737901785; c=relaxed/simple;
-	bh=ICwCtmajtbeCHxXOWQp9heFfoiRu9FikxqdBEmxACJE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rCE51W+XbSElo3z/WPsNItMQ9CA/ExAcM+7raSHICUhvDKjeA5xs9ATmwrNzxRnjNly4pnnk+v5rI0CjmnL4yzY57XcXnjRzg8ktV5dpQ6PYiKkgNve4lDZkymvNz/KnduH4M6L+sNXoZS3BGBuMDOt62b1miN48W4dnds0rHtc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nMeTi7qr; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1737901783; x=1769437783;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ICwCtmajtbeCHxXOWQp9heFfoiRu9FikxqdBEmxACJE=;
-  b=nMeTi7qrVfSB6t0pYUUSCg7AAdbB8qan1xfC9vBIra01pLiamAaqkQ0l
-   owaukwVxKqeJQZfLSKDxfiN858VEFKqiHP4XnHvEIbVqeiCnC5eKshW4Z
-   /zrPlXcL4lUzz7+YjYJFvVZ3ew0ZF+s9LdITThFS/aJO8Ao7BMFR1rJCA
-   /bLNjIYSScUoC3nr2/v+beBV9clK6ZJ99SmJnr6J4VppA6fGCsvBESQ1E
-   58EJyZdFOwS2M12B9EntwocSwcFeuTPawLmA8lklDUH1Yi/V4HYhjQG6K
-   +jU1VXizRYTneo7iJZqAYw+7Muj3riOr986LD3aWUUcF0a12ZFjMiFb7r
-   g==;
-X-CSE-ConnectionGUID: apOI0NWrTPac3HDETJP6XQ==
-X-CSE-MsgGUID: HwWa6RbvRguiq/HRbvCCKg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11327"; a="55915037"
-X-IronPort-AV: E=Sophos;i="6.13,236,1732608000"; 
-   d="scan'208";a="55915037"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2025 06:29:43 -0800
-X-CSE-ConnectionGUID: znWr7inoSsCAeGOhhkVZsw==
-X-CSE-MsgGUID: K0eMfUkJR3SFuE/oprmQyQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,236,1732608000"; 
-   d="scan'208";a="108794286"
-Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
-  by fmviesa009.fm.intel.com with ESMTP; 26 Jan 2025 06:29:40 -0800
-Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tc3dp-000fQd-2J;
-	Sun, 26 Jan 2025 14:29:37 +0000
-Date: Sun, 26 Jan 2025 22:28:55 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jordan Rome <linux@jordanrome.com>, bpf@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, linux-mm@kvack.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Kernel Team <kernel-team@fb.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Alexander Potapenko <glider@google.com>
-Subject: Re: [bpf-next v4 1/3] mm: add copy_remote_vm_str
-Message-ID: <202501262241.ZEkByWKM-lkp@intel.com>
-References: <20250126124147.3154108-1-linux@jordanrome.com>
+	s=arc-20240116; t=1737902411; c=relaxed/simple;
+	bh=Of6s/34NuA/HPkSmdPrlVHZZnoDx8kQdpML1kh+efqY=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=ICWaWe6DorJPEemuHQo8jw2HuGlyB4QkCJwhv73QSo8EFFhR9mgRmTqaqKThfgMk5Xx8p5r6oYK4Z9QnniYUif2f2Ho+vQsBKhJMQp/17qmhX6bs82fVE3PPIooiFdu/WOZlIZ+O19Y/Xkav99IrLJXiu2iL9j0wZT5ZENGwNf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a6Z1ZhXN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 680DCC4CED3;
+	Sun, 26 Jan 2025 14:40:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1737902409;
+	bh=Of6s/34NuA/HPkSmdPrlVHZZnoDx8kQdpML1kh+efqY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=a6Z1ZhXNIBlQS+vgmffLTnv4K4LZgWkkoNm7vDRs1wsx2mE2cUwmlCtIrDbV5gQaz
+	 9VRU+o/stI6WqgHvrENVQf15AKiScyd8vAFHbjsYwjYxkUNfdHazvseZLFN7J7DsVG
+	 xwalIPPZ8i38b+ERk1Uz2JBXwOhEgeKxTInK5x5AwHgC0zCcL3SL12OqVBb4Ji8H50
+	 sENOTnulzVwIGWr3fveeyMQPXFHQt/HX7FNXEZe5LLs+o0bcIEr1ni3z3xLVW8vB0z
+	 7v3KiqmzwFTO/NHKhkHQxgB8FSFckIBl6aLzuTzELJ+YzrtCJ6hE+h91NkZKdtJfyZ
+	 TPhAzZaLzJksA==
+Date: Sun, 26 Jan 2025 23:40:05 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Sven Schnelle <svens@linux.ibm.com>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Ilya Leoshkevich <iii@linux.ibm.com>, bpf
+ <bpf@vger.kernel.org>
+Subject: Re: [TEST FAILURE] bpf: s390: missed/kprobe_recursion
+Message-Id: <20250126234005.70cb3b43193b08ed8a211553@kernel.org>
+In-Reply-To: <Z5O0shrdgeExZ2kF@krava>
+References: <3c841f0a-772a-406c-9888-f8e71826daff@linux.dev>
+	<Z5N4N6MUMt8_EwGS@krava>
+	<Z5O0shrdgeExZ2kF@krava>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250126124147.3154108-1-linux@jordanrome.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi Jordan,
+On Fri, 24 Jan 2025 16:41:38 +0100
+Jiri Olsa <olsajiri@gmail.com> wrote:
 
-kernel test robot noticed the following build errors:
+> On Fri, Jan 24, 2025 at 12:23:35PM +0100, Jiri Olsa wrote:
+> > On Thu, Jan 23, 2025 at 02:32:38PM -0800, Martin KaFai Lau wrote:
+> > > Hi Jiri,
+> > > 
+> > > The "missed/kprobe_recursion" fails consistently on s390. It seems to start
+> > > failing after the recent bpf and bpf-next tree ffwd.
+> > > 
+> > > An example:
+> > > https://github.com/kernel-patches/bpf/actions/runs/12934431612/job/36076956920
+> > > 
+> > > Can you help to take a look?
+> > > 
+> > > afaict, it only happens on s390 so far, so cc IIya if there is any recent
+> > > change that may ring the bell.
+> > 
+> > hi,
+> > I need to check more but I wonder it's the:
+> >   7495e179b478 s390/tracing: Enable HAVE_FTRACE_GRAPH_FUNC
+> > 
+> > which seems to add recursion check and bail out before we have
+> > a chance to trigger it in bpf code
+> 
+> so the test attaches bpf program test1 to bpf_fentry_test1 via kprobe.multi
+> 
+> 	SEC("kprobe.multi/bpf_fentry_test1")
+> 	int test1(struct pt_regs *ctx)
+> 	{
+> 		bpf_kfunc_common_test();
+> 		return 0;
+> 	}
+> 
+> and several other programs are attached to bpf_kfunc_common_test function
+> 
+> 
+> I can't test this on s390, but looks like following is happening:
+> 
+> kprobe.multi uses fprobe, so the test kernel path goes:
+> 
+>     bpf_fentry_test1
+>       ftrace_graph_func
+>         function_graph_enter_regs
+> 	   fprobe_entry
+> 	     kprobe_multi_link_prog_run
+> 	       test1 (bpf program)
+> 	         bpf_kfunc_common_test
+> 		   kprobe_ftrace_handler
+> 		     kprobe_perf_func
+> 		       trace_call_bpf
+> 		         -> bpf_prog_active check fails, missed count is incremented
+> 
+> 
+> kprobe_ftrace_handler calls/takes ftrace_test_recursion_trylock (ftrace recursion lock)
+> 
+> but s390 now calls/takes ftrace_test_recursion_trylock already in ftrace_graph_func,
+> so s390 stops at kprobe_ftrace_handler and does not get to trace_call_bpf to increment
+> prog->missed counters
 
-[auto build test ERROR on bpf-next/master]
-[also build test ERROR on bpf/master linus/master v6.13 next-20250124]
-[cannot apply to akpm-mm/mm-everything]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Jordan-Rome/bpf-Add-bpf_copy_from_user_task_str-kfunc/20250126-204439
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20250126124147.3154108-1-linux%40jordanrome.com
-patch subject: [bpf-next v4 1/3] mm: add copy_remote_vm_str
-config: arm-randconfig-001-20250126 (https://download.01.org/0day-ci/archive/20250126/202501262241.ZEkByWKM-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250126/202501262241.ZEkByWKM-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202501262241.ZEkByWKM-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   mm/nommu.c: In function '__copy_remote_vm_str':
->> mm/nommu.c:1717:9: error: 'vma' undeclared (first use in this function); did you mean 'vmap'?
-    1717 |         vma = find_vma(mm, addr);
-         |         ^~~
-         |         vmap
-   mm/nommu.c:1717:9: note: each undeclared identifier is reported only once for each function it appears in
-   In file included from include/linux/bitmap.h:13,
-                    from include/linux/cpumask.h:12,
-                    from include/linux/smp.h:13,
-                    from include/linux/lockdep.h:14,
-                    from include/linux/spinlock.h:63,
-                    from include/linux/mmzone.h:8,
-                    from include/linux/gfp.h:7,
-                    from include/linux/mm.h:7,
-                    from mm/nommu.c:20:
->> mm/nommu.c:1725:44: error: passing argument 2 of 'sized_strscpy' makes pointer from integer without a cast [-Wint-conversion]
-    1725 |                         ret = strscpy(buf, addr, len);
-         |                                            ^~~~
-         |                                            |
-         |                                            long unsigned int
-   include/linux/string.h:82:28: note: in definition of macro '__strscpy1'
-      82 |         sized_strscpy(dst, src, size + __must_be_cstr(dst) + __must_be_cstr(src))
-         |                            ^~~
-   mm/nommu.c:1725:31: note: in expansion of macro 'strscpy'
-    1725 |                         ret = strscpy(buf, addr, len);
-         |                               ^~~~~~~
-   include/linux/string.h:72:31: note: expected 'const char *' but argument is of type 'long unsigned int'
-      72 | ssize_t sized_strscpy(char *, const char *, size_t);
-         |                               ^~~~~~~~~~~~
+Oops, good catch! I missed to remove it from s390. We've already moved it
+in function_graph_enter_regs().
 
 
-vim +1717 mm/nommu.c
+> 
+> adding Sven, Masami, any idea?
+> 
+> if the ftrace_test_recursion_trylock is needed ftrace_graph_func on s390, then
+> I think we will need to fix our test to skip s390 arch
 
-  1703	
-  1704	/*
-  1705	 * Copy a string from another process's address space as given in mm.
-  1706	 * If there is any error return -EFAULT.
-  1707	 */
-  1708	static int __copy_remote_vm_str(struct mm_struct *mm, unsigned long addr,
-  1709				      void *buf, int len)
-  1710	{
-  1711		int ret;
-  1712	
-  1713		if (mmap_read_lock_killable(mm))
-  1714			return -EFAULT;
-  1715	
-  1716		/* the access must start within one of the target process's mappings */
-> 1717		vma = find_vma(mm, addr);
-  1718		if (vma) {
-  1719			/* don't overrun this mapping */
-  1720			if (addr + len >= vma->vm_end)
-  1721				len = vma->vm_end - addr;
-  1722	
-  1723			/* only read mappings where it is permitted */
-  1724			if (vma->vm_flags & VM_MAYREAD) {
-> 1725				ret = strscpy(buf, addr, len);
-  1726				if (ret < 0)
-  1727					ret = len - 1;
-  1728			} else {
-  1729				ret = -EFAULT;
-  1730			}
-  1731		} else {
-  1732			ret = -EFAULT;
-  1733		}
-  1734	
-  1735		mmap_read_unlock(mm);
-  1736		return ret;
-  1737	}
-  1738	
+Yes. Please try this patch;
+
+
+From 12fcda79d0b1082449d5f7cfb8039b0237cf246d Mon Sep 17 00:00:00 2001
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Date: Sun, 26 Jan 2025 23:38:59 +0900
+Subject: [PATCH] s390: fgraph: Fix to remove ftrace_test_recursion_trylock()
+
+Fix to remove ftrace_test_recursion_trylock() from ftrace_graph_func()
+because commit d576aec24df9 ("fgraph: Get ftrace recursion lock in
+function_graph_enter") has been moved it to function_graph_enter_regs()
+already.
+
+Reported-by: Jiri Olsa <olsajiri@gmail.com>
+Fixes: d576aec24df9 ("fgraph: Get ftrace recursion lock in function_graph_enter")
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+---
+ arch/s390/kernel/ftrace.c | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
+index c0b2c97efefb..63ba6306632e 100644
+--- a/arch/s390/kernel/ftrace.c
++++ b/arch/s390/kernel/ftrace.c
+@@ -266,18 +266,13 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
+ 		       struct ftrace_ops *op, struct ftrace_regs *fregs)
+ {
+ 	unsigned long *parent = &arch_ftrace_regs(fregs)->regs.gprs[14];
+-	int bit;
+ 
+ 	if (unlikely(ftrace_graph_is_dead()))
+ 		return;
+ 	if (unlikely(atomic_read(&current->tracing_graph_pause)))
+ 		return;
+-	bit = ftrace_test_recursion_trylock(ip, *parent);
+-	if (bit < 0)
+-		return;
+ 	if (!function_graph_enter_regs(*parent, ip, 0, parent, fregs))
+ 		*parent = (unsigned long)&return_to_handler;
+-	ftrace_test_recursion_unlock(bit);
+ }
+ 
+ #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
+-- 
+2.43.0
+
+Thank you,
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
