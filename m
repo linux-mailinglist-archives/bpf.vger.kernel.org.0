@@ -1,126 +1,227 @@
-Return-Path: <bpf+bounces-49838-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49839-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B485A1CE55
-	for <lists+bpf@lfdr.de>; Sun, 26 Jan 2025 21:04:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6425A1CEFE
+	for <lists+bpf@lfdr.de>; Sun, 26 Jan 2025 23:06:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7EDB3A6D10
-	for <lists+bpf@lfdr.de>; Sun, 26 Jan 2025 20:04:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32D663A232C
+	for <lists+bpf@lfdr.de>; Sun, 26 Jan 2025 22:06:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA9EF175D4F;
-	Sun, 26 Jan 2025 20:04:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C5B878F29;
+	Sun, 26 Jan 2025 22:06:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W7NBrwmV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DDxurefg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7BEF1487F8;
-	Sun, 26 Jan 2025 20:04:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E2CB28691
+	for <bpf@vger.kernel.org>; Sun, 26 Jan 2025 22:06:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737921874; cv=none; b=Sm0f3rqvJ1RQP9h5aO9PKFQxRU3hIF1Humd5VAQKH+WNpB+miMNK8vxmjMMptp5M2l0Hh0WA1SG95bRGAAQLwR1KPZ8julYDv8aSnjZsB5Gf0ESc1EOLumaQ3i9DyqDqmmEplVRYdAlcxzf4oyiiY8cO+lmJuEx5ueqLeOhTotY=
+	t=1737929197; cv=none; b=OKBB7VmVlR+HZMSUuzB6EOOJMNECDq8NBj12NClr+4OwYYiVKSbaTSFbLcSkMyuO+Io+BLWfYFL1pT+xzPxBdS5oCt2jxEc6csaLysmq3TiFaPVK6Kq/V81p+1/FuLoh2NDd/NtHQZ/r6oXS0SCFTOh00Tdn4HejoqQ2/bjvCdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737921874; c=relaxed/simple;
-	bh=cA2sHLSy+IECdgnCU0W45BIEjNF7mxy9cjFQpF7naOU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QApg/57Wd1A9jm8H4uLIp9NUW5z8nq6+P3AZoYqOM24mtN3w2rAEYY4cz+9El6ZgU8CUh2XbsWrYPC5CId907EmYuclfWVu8Pgy3ZcCkuUfZcrpObiGVobxWpSwhn3TsoYBQBD+9zWJF5k8Q8v+kxHGXQFIfwcykGh0eAEYfJKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W7NBrwmV; arc=none smtp.client-ip=209.85.222.45
+	s=arc-20240116; t=1737929197; c=relaxed/simple;
+	bh=Xaqkgbj27+rHW7bYvtUyImJjmfIZFtmedmNkaJF3GkM=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h7whTWUk/4pP1Fzm1SAsfhv70GfQ4YeN9MgdeZkA5Fa1KNxqD9RNWtGyWmmsiJsGs7Dt4GRdh4r4JEAlwaqDDGcWzq0Lt4eZ/8FTOl0ovLQ3biRf8cKHJJyqAeu7Pe9qkOYwt2I7HaXxmjOUvHI6xuuao6HyPJa7qdhAEhGeb6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DDxurefg; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-85c4d855fafso641324241.2;
-        Sun, 26 Jan 2025 12:04:31 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4363dc916ceso30386605e9.0
+        for <bpf@vger.kernel.org>; Sun, 26 Jan 2025 14:06:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737921871; x=1738526671; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1UFB2cdGGKotEJHKLG+7okveVa4RPRX04Ef/GbO4+/g=;
-        b=W7NBrwmVsByyoHhEeaPJYlfi4D4d+GoYqd8cBofuKCzLkydCPahnu1f9Ywuf5eSzxZ
-         FryDWSu+FRlC0FRhqorunCsS10FqGLn8hVKYDvtBzzNj1oXy6JKj94ximmzFsu8Mirz2
-         hVITrhPmgVUsgOlQ0jz5N7gC3IOsC4h8LVDG5UN2XcsdFz9AZdmuLTYmj6p1uSbAQNml
-         xqsjUL5kbPMZCUx17RRMRUhlRNH0m0NlPlWLpKPEDdpq7kvH41DMura3pYUdH+MNIdkS
-         mczo3Cqmv3b/glZYhDPBVLsXBYTAflWgVdueqWGXmFZ3608Iso+kqxrwP08dKzSkeJ7S
-         BkUQ==
+        d=gmail.com; s=20230601; t=1737929194; x=1738533994; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6gXFttI9tomEAiDcFCPxDD4UJtPiHoJxMvYXMLmQGdY=;
+        b=DDxurefgQ+QnRh/I9M4LYBJKhJVZ9DE1T3Wj2j9nxTZ2z05XdqEx/zQxLWHERXOfrT
+         QUM0s6kzU9ZhROXKmujYXmhgjJGiY7LjOKIMsSpD6+bBkbg8pDO8pdwDEj5gSwe2niJ6
+         ed02wWGQsMcuCfJw8/2w4rYwmCk5SvMzwyCZR5SjQKM0Ew//SlYWpNWcYKok23EkNBHL
+         +EDOTRTglbE00VATcBA1VuiDJSj7lRcitFCzMMTbSX9Jiqq1MZuf+U6PfTDlaG9fvoDW
+         iDbJiJlHt2rv5Lhgr2x2C3fPYvaEqDf4/1TONhiKNqwlj+2gNANFsL5DtqYEiT4hIrS5
+         mpFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737921871; x=1738526671;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1UFB2cdGGKotEJHKLG+7okveVa4RPRX04Ef/GbO4+/g=;
-        b=uOAdOa8udCkzd/FePjsPs31VdzVOZCu2kpyozOlwGoKZQHyAoRD1k7kizRWPF8ToYY
-         5y4jLdqWOJ+gVqBvvbtTLuF3odQrXUf1N1tOvlPZaqqxzOqDqxlSGid2vpz+6ye8aPXW
-         F6mwmdooSZEgaURTstKE8Q4x9x8BciHsO015FUQHJ2QVgj+NnwIe9r6C45vAhPuFbt0H
-         nDtI8/lddDDdB/jo7HljpR0KdnoZTEKVvLRTr9HB/DReIR8wvzIIYta7AFnY7jx8Fgps
-         qXfI+gW2qOlXY8Kw9wZIYt3DdzVhmpIj618qsnmBZM6VT/+4lzaQD7OzKEEarGqh6nSU
-         mEaw==
-X-Forwarded-Encrypted: i=1; AJvYcCUPdtiNNRjtFtWwlzzsAthpYdx/nFPtlNGqSoCxNurYQAKFBBkmMv+DauJtZ1nYrta4eUg=@vger.kernel.org, AJvYcCXyXSLDFvyR1379t4Tsdl5rJ6+GbGLbcQWFAhwrl1Z8wHBDMbzD9rBbSnnzsxBVO1xwxUSbRYC4uw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwRiEo/AVZyiQozuCHWlwIR4+vwDzOSwpFE877W1NSOvJA6Rdoq
-	HdUbOsDt/owiyoiwXd+PurNVw39HEQdED9WkYYqHptx8XgaqHjOkcMoadbz/Tr8bUdzqCMOlPhH
-	FJbfLhthlPUEcfli3stWhglqG3YLA4A==
-X-Gm-Gg: ASbGncsamR+7IQhYQtuYv9Hd4BO7acqsjjrlRQLQMi6AghHkTGsNFIEQTqpNIWs8JRO
-	SWHyP6bj8HnJChvmh3mX7OiOtZRiKEOq1IfFon6yci+L1716wMM734keDV2MTXzplETEfzEGCLm
-	uIgdeCxSEKDifrTwWHwv0=
-X-Google-Smtp-Source: AGHT+IGbZszlaUqrEoNChwpMD/TouWv1o51Lx10zKeJCaCrz2n1IqHvAZCs0yJZ7YvwC+VX47CGzsEL7cug21QJNRsk=
-X-Received: by 2002:a05:6102:f08:b0:4b2:c391:7d16 with SMTP id
- ada2fe7eead31-4b690ba7dcamr32509801137.7.1737921870753; Sun, 26 Jan 2025
- 12:04:30 -0800 (PST)
+        d=1e100.net; s=20230601; t=1737929194; x=1738533994;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6gXFttI9tomEAiDcFCPxDD4UJtPiHoJxMvYXMLmQGdY=;
+        b=xNwf552XBkfswMiz+B4ukJSMpaAym0NJJ88Vy02qZkACyD7rHNqZT7i1oVdFgBtwlr
+         Mi4RwMe6AzJ61U7D/W1+qOETZn435ynkpGpSY+n7M8LX8m1dMWkzUQjSbcgEdhSFM9MM
+         8Utt1Uw0wBWMjKcVgh9vTJE/bOoJKb8Fsim86x1BB6KfkP9sI+YW+2EmlAkY5qSZ4jBi
+         g43fkiQZcgmbyhzec9AmJWJ68ZgyZUoor9/J5gXmuY9M8iyKM12do613AOepIwSLMeLt
+         F+PHKy1T5mDKiUnlnW1CB9hfOpucHOdBug2thMNY0qN5QHuff4awzaWdn3IjU6ld8lgj
+         y0yg==
+X-Forwarded-Encrypted: i=1; AJvYcCUZW07ltcy+xZX/Ny1z4yPkUz7ETEWOQuLERiyu0i16ZtjtaCI8RNph5T4qIhLHyHpygHk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxqnz6P3O76ykD0rZx+3xiefnPTmqLMrOD+gHmy0QJjmlD1/TTu
+	Ds72OJXqvW7o97Tr4tq4QFhJCGuvBOZDKnLIFtj1iE09JuckVYTk
+X-Gm-Gg: ASbGnctqH7rwOW1W33ZtTB5mj50OXL4DkSX3PvqDOygSexGUldYWPcV1F7WJITw9CKg
+	xdQNtiOfzbFc9CrsOemWzLrMOI/MZjOf/3uNwAAnZubNMeNBCvY7PJJ/kw4KSNm02ngUYJDLD5E
+	DhCoDu+U9t1xizaqbSIPUmBrpygp19I4W+tEJWlgDbpWaGLBvp8l3LFnkUq6ZV9gjXTRE9dC4zj
+	GYQMNvbKpRT2RJRS/GtnJAkBjET8ZXwHL/v438MUf8QSaoeExW1YOUaLkTNuk2GTdCTejpHSqN1
+	pNQrxSB6mLWazw==
+X-Google-Smtp-Source: AGHT+IGbzKUU6xb10R7fejU2jEyzFllDdtR4gtiggohpiFKpwnyIvGoYUaIQf60MVCXnwViO6f+zVw==
+X-Received: by 2002:a05:600c:63ce:b0:437:c453:ff19 with SMTP id 5b1f17b1804b1-438bd0bd5eemr95800825e9.14.1737929193425;
+        Sun, 26 Jan 2025 14:06:33 -0800 (PST)
+Received: from krava (37-188-142-26.red.o2.cz. [37.188.142.26])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-438b1cc8571sm121073335e9.1.2025.01.26.14.06.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Jan 2025 14:06:32 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Sun, 26 Jan 2025 23:06:28 +0100
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Sven Schnelle <svens@linux.ibm.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Ilya Leoshkevich <iii@linux.ibm.com>, bpf <bpf@vger.kernel.org>
+Subject: Re: [TEST FAILURE] bpf: s390: missed/kprobe_recursion
+Message-ID: <Z5ax5AKwIaD6ONM-@krava>
+References: <3c841f0a-772a-406c-9888-f8e71826daff@linux.dev>
+ <Z5N4N6MUMt8_EwGS@krava>
+ <Z5O0shrdgeExZ2kF@krava>
+ <20250126234005.70cb3b43193b08ed8a211553@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241217103629.2383809-1-alan.maguire@oracle.com> <CAM_iQpXGzy5ESZ3ZE0Wo_p_pkXYbgMe3L8stbBcBCo+oJuWimw@mail.gmail.com>
-In-Reply-To: <CAM_iQpXGzy5ESZ3ZE0Wo_p_pkXYbgMe3L8stbBcBCo+oJuWimw@mail.gmail.com>
-From: Cong Wang <xiyou.wangcong@gmail.com>
-Date: Sun, 26 Jan 2025 12:04:19 -0800
-X-Gm-Features: AWEUYZnymLgvb1R84UVxarIqrqwBu4pmkgz0CA5MQil9Y0z-IVhL1RyA5w6rhuc
-Message-ID: <CAM_iQpU8jQ9yEs_rAf2gdyt5yie7BwkiU4vpa-efF6ccVo5ADg@mail.gmail.com>
-Subject: Re: [PATCH dwarves] btf_encoder: verify 0 address DWARF variables are
- really in ELF section
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: acme@kernel.org, yonghong.song@linux.dev, dwarves@vger.kernel.org, 
-	ast@kernel.org, andrii@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, 
-	song@kernel.org, eddyz87@gmail.com, olsajiri@gmail.com, 
-	stephen.s.brennan@oracle.com, laura.nao@collabora.com, ubizjak@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250126234005.70cb3b43193b08ed8a211553@kernel.org>
 
-On Sat, Jan 25, 2025 at 8:55=E2=80=AFPM Cong Wang <xiyou.wangcong@gmail.com=
-> wrote:
->
-> Hi Alan,
->
-> On Tue, Dec 17, 2024 at 2:36=E2=80=AFAM Alan Maguire <alan.maguire@oracle=
-.com> wrote:
-> >
-> > We use the DWARF location information to match a variable with its
-> > associated ELF section.  In the case of per-CPU variables their
-> > ELF section address range starts at 0, so any 0 address variables will
-> > appear to belong in that ELF section.  However, for "discard" sections
-> > DWARF encodes the associated variables with address location 0 so
-> > we need to double-check that address 0 variables really are in the
-> > associated section by checking the ELF symbol table.
-> >
-> > This resolves an issue exposed by CONFIG_DEBUG_FORCE_WEAK_PER_CPU=3Dy
-> > kernel builds where __pcpu_* dummary variables in a .discard section
-> > get misclassified as belonging in the per-CPU variable section since
-> > they specify location address 0.
->
-> It is _not_ your patch's fault, but I got this segfault which prevents me=
- from
-> testing this patch. (It also happens after reverting your patch.)
+On Sun, Jan 26, 2025 at 11:40:05PM +0900, Masami Hiramatsu wrote:
+> On Fri, 24 Jan 2025 16:41:38 +0100
+> Jiri Olsa <olsajiri@gmail.com> wrote:
+> 
+> > On Fri, Jan 24, 2025 at 12:23:35PM +0100, Jiri Olsa wrote:
+> > > On Thu, Jan 23, 2025 at 02:32:38PM -0800, Martin KaFai Lau wrote:
+> > > > Hi Jiri,
+> > > > 
+> > > > The "missed/kprobe_recursion" fails consistently on s390. It seems to start
+> > > > failing after the recent bpf and bpf-next tree ffwd.
+> > > > 
+> > > > An example:
+> > > > https://github.com/kernel-patches/bpf/actions/runs/12934431612/job/36076956920
+> > > > 
+> > > > Can you help to take a look?
+> > > > 
+> > > > afaict, it only happens on s390 so far, so cc IIya if there is any recent
+> > > > change that may ring the bell.
+> > > 
+> > > hi,
+> > > I need to check more but I wonder it's the:
+> > >   7495e179b478 s390/tracing: Enable HAVE_FTRACE_GRAPH_FUNC
+> > > 
+> > > which seems to add recursion check and bail out before we have
+> > > a chance to trigger it in bpf code
+> > 
+> > so the test attaches bpf program test1 to bpf_fentry_test1 via kprobe.multi
+> > 
+> > 	SEC("kprobe.multi/bpf_fentry_test1")
+> > 	int test1(struct pt_regs *ctx)
+> > 	{
+> > 		bpf_kfunc_common_test();
+> > 		return 0;
+> > 	}
+> > 
+> > and several other programs are attached to bpf_kfunc_common_test function
+> > 
+> > 
+> > I can't test this on s390, but looks like following is happening:
+> > 
+> > kprobe.multi uses fprobe, so the test kernel path goes:
+> > 
+> >     bpf_fentry_test1
+> >       ftrace_graph_func
+> >         function_graph_enter_regs
+> > 	   fprobe_entry
+> > 	     kprobe_multi_link_prog_run
+> > 	       test1 (bpf program)
+> > 	         bpf_kfunc_common_test
+> > 		   kprobe_ftrace_handler
+> > 		     kprobe_perf_func
+> > 		       trace_call_bpf
+> > 		         -> bpf_prog_active check fails, missed count is incremented
+> > 
+> > 
+> > kprobe_ftrace_handler calls/takes ftrace_test_recursion_trylock (ftrace recursion lock)
+> > 
+> > but s390 now calls/takes ftrace_test_recursion_trylock already in ftrace_graph_func,
+> > so s390 stops at kprobe_ftrace_handler and does not get to trace_call_bpf to increment
+> > prog->missed counters
+> 
+> Oops, good catch! I missed to remove it from s390. We've already moved it
+> in function_graph_enter_regs().
+> 
+> 
+> > 
+> > adding Sven, Masami, any idea?
+> > 
+> > if the ftrace_test_recursion_trylock is needed ftrace_graph_func on s390, then
+> > I think we will need to fix our test to skip s390 arch
+> 
+> Yes. Please try this patch;
+> 
+> 
+> From 12fcda79d0b1082449d5f7cfb8039b0237cf246d Mon Sep 17 00:00:00 2001
+> From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+> Date: Sun, 26 Jan 2025 23:38:59 +0900
+> Subject: [PATCH] s390: fgraph: Fix to remove ftrace_test_recursion_trylock()
+> 
+> Fix to remove ftrace_test_recursion_trylock() from ftrace_graph_func()
+> because commit d576aec24df9 ("fgraph: Get ftrace recursion lock in
+> function_graph_enter") has been moved it to function_graph_enter_regs()
+> already.
+> 
+> Reported-by: Jiri Olsa <olsajiri@gmail.com>
+> Fixes: d576aec24df9 ("fgraph: Get ftrace recursion lock in function_graph_enter")
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Never mind, I managed to workaround this issue by a clean build.
+great, ci is passing with this fix
 
-And I tested your patch, it works for me with CONFIG_DEBUG_FORCE_WEAK_PER_C=
-PU=3Dy.
+Tested-by: Jiri Olsa <jolsa@kernel.org>
 
-Tested-by: Cong Wang <cong.wang@bytedance.com>
+thanks,
+jirka
 
-Thanks a lot!
+
+> ---
+>  arch/s390/kernel/ftrace.c | 5 -----
+>  1 file changed, 5 deletions(-)
+> 
+> diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
+> index c0b2c97efefb..63ba6306632e 100644
+> --- a/arch/s390/kernel/ftrace.c
+> +++ b/arch/s390/kernel/ftrace.c
+> @@ -266,18 +266,13 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
+>  		       struct ftrace_ops *op, struct ftrace_regs *fregs)
+>  {
+>  	unsigned long *parent = &arch_ftrace_regs(fregs)->regs.gprs[14];
+> -	int bit;
+>  
+>  	if (unlikely(ftrace_graph_is_dead()))
+>  		return;
+>  	if (unlikely(atomic_read(&current->tracing_graph_pause)))
+>  		return;
+> -	bit = ftrace_test_recursion_trylock(ip, *parent);
+> -	if (bit < 0)
+> -		return;
+>  	if (!function_graph_enter_regs(*parent, ip, 0, parent, fregs))
+>  		*parent = (unsigned long)&return_to_handler;
+> -	ftrace_test_recursion_unlock(bit);
+>  }
+>  
+>  #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
+> -- 
+> 2.43.0
+> 
+> Thank you,
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
