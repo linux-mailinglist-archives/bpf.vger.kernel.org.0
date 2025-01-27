@@ -1,284 +1,219 @@
-Return-Path: <bpf+bounces-49848-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49849-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36B62A1D397
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 10:38:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ABB9A1D4A1
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 11:37:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EE453A3C19
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 09:38:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 965A71881569
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 10:37:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 918CF1FDA6A;
-	Mon, 27 Jan 2025 09:38:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09BD01FECA1;
+	Mon, 27 Jan 2025 10:37:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=illinois.edu header.i=@illinois.edu header.b="Tx49416P"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SBG60Ehs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00007101.pphosted.com (mx0b-00007101.pphosted.com [148.163.139.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D727928E7;
-	Mon, 27 Jan 2025 09:38:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=148.163.139.28
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737970725; cv=fail; b=jMPsfefWGcxqd3iWbpYPMdtdwKbTrakl6BlW6PxQES/Xt5Q1XMTupVF4k8VX9tCi5p8SibEDTI7AGhierkjbV0xrKtu9yjR/umJox4lGn4CDxd/+MzNcSgMgwPEt9vRGG6cO9vAi6MAI5o5T7t7x540oKunrkllSVUebGl/D1s4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737970725; c=relaxed/simple;
-	bh=3t46Oxcd0pLKdzg5WTsYVkzzajHM54Y5e+SVUIKZ8mQ=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ahWSEyOYpaVSbqLe9dzK3mFZH2eI+z5+BtKOQEdRMc9SUwKGWR6P4awaXWVuQMo/Ma50VAKb5ekXuKvlis15m+gRsxXW+4D4KHEM4dYsgROuyoOUd93Uyme5M0iyNGAvST4oFbCXbYJZiP9PT/TAptkpqkPxmEjqCumA1K7QXAI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=illinois.edu; spf=pass smtp.mailfrom=illinois.edu; dkim=pass (2048-bit key) header.d=illinois.edu header.i=@illinois.edu header.b=Tx49416P; arc=fail smtp.client-ip=148.163.139.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=illinois.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=illinois.edu
-Received: from pps.filterd (m0272703.ppops.net [127.0.0.1])
-	by mx0b-00007101.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 50R8mHCX013943;
-	Mon, 27 Jan 2025 09:38:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=illinois.edu; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=campusrelays;
-	 bh=A2kYtthnZaAaPsf6pPDqdlxIPSEXMna372Y/qPs3m6U=; b=Tx49416Pg/Pe
-	1pqJRrhYZ41iry0yKvJr+E5m0dKhJQHd26Ypt8yaFwUnsHxrPEG/78X+dc9GdDoW
-	9tFUcaXuFEkZvYrQafMCeU/LjwGn1wmJK9gtht2daOKzCksbwm8CuyP8TIUyFFtH
-	egpSW1+UrvJMinW319GyzSu24Zh4EARwA8EgdcS2WTBjZkn0erPJUbUy7UDwiSCO
-	Gjn3yiC3Fw5yEWWSNVVFDlEkTZvYLGWF5cBt9dymCi9WzrTWvfMWvgxxWKvwaHyN
-	QvPdFX3AcEAssfFsGVIuDNBWNLNgr5pci5g8Cnzdl2Bupy9aCHQ8NYHQmT/9fgfF
-	/+ypk7xp1A==
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2045.outbound.protection.outlook.com [104.47.66.45])
-	by mx0b-00007101.pphosted.com (PPS) with ESMTPS id 44dw8yte01-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 27 Jan 2025 09:38:01 +0000 (GMT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=GIP7etSwR4M/fd2qVXU6sWPmi6bu8FyDuouqgzpcGM6CKP7ffjQ2lzzVWlYMX/Jn15Ilrpy64DVr/zD0b1Koi/SHwgWhsN17MpSD12VhHckSVdzUPp8ZsVE+pK1vylOtNinj16rScFycNv567RpnyYJN2auNY4KQD2aU1QpjUzGaz+iyBNURJs9yG3u7llvjX37lOfeeDmA8EJmWOIeBCncX3jX3UNaBrfKA1vC8YjHhaxiE4V2+psmgStq05hm2pOLaGkVPZEn+HPCknZBWHkeQhHJE+CKXwq+pHrFfXHs0695EYvVUCqOVRmRfUWuKUoKoGeKAgC7dnhpSdBToEw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=A2kYtthnZaAaPsf6pPDqdlxIPSEXMna372Y/qPs3m6U=;
- b=aCA1rm4VKv2AYoLt+zyUragQ3tvet2S9ELJPa8QTcX+WG3mia3EXFUAlRjZObLtdNl2dWJdLHLm9GNCFUtLUkvv4hrhmjflEcK7GCt1tMBxIHnyz/mx7OqwIlZzHDwNHpst1EeZsAHgFFv0ht03LsNY6Jt7xTTup2pDJN7Cp4tFdGpalAoTkYAzYdop3/zEzoRCOjZPfpd/kWAiU9JeqVEFgaqLNn8dmsgO3xoq3737rB8USfdPo0letIdCORCUjtQxkk3H/HCUuXtF+Bqhjhewz4PHRnj8AQtY9QhPzZJ3LoR9YinMMkqNWbkF0iIROGcfP+tWHBlNQS+r4Go2EoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=illinois.edu; dmarc=pass action=none header.from=illinois.edu;
- dkim=pass header.d=illinois.edu; arc=none
-Received: from DS0PR11MB7286.namprd11.prod.outlook.com (2603:10b6:8:13c::15)
- by SA0PR11MB4703.namprd11.prod.outlook.com (2603:10b6:806:9f::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8377.22; Mon, 27 Jan
- 2025 09:37:58 +0000
-Received: from DS0PR11MB7286.namprd11.prod.outlook.com
- ([fe80::d52:d2da:59c7:808]) by DS0PR11MB7286.namprd11.prod.outlook.com
- ([fe80::d52:d2da:59c7:808%4]) with mapi id 15.20.8377.009; Mon, 27 Jan 2025
- 09:37:57 +0000
-Message-ID: <d2f8f530-2e31-4ddd-a743-35c7f0c48199@illinois.edu>
-Date: Mon, 27 Jan 2025 03:37:56 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf v2 1/2] samples/hid: remove unnecessary -I flags from
- libbpf EXTRA_CFLAGS
-To: Nicolas Schier <n.schier@avm.de>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <bentiss@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>, Ruowen Qin <ruqin@redhat.com>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org
-References: <20250123081950.173588-1-jinghao7@illinois.edu>
- <20250123081950.173588-2-jinghao7@illinois.edu>
- <20250127-military-salamander-of-fame-3f6e1e@l-nschier-nb>
-Content-Language: en-US
-From: Jinghao Jia <jinghao7@illinois.edu>
-In-Reply-To: <20250127-military-salamander-of-fame-3f6e1e@l-nschier-nb>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CH2PR14CA0052.namprd14.prod.outlook.com
- (2603:10b6:610:56::32) To DS0PR11MB7286.namprd11.prod.outlook.com
- (2603:10b6:8:13c::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C90A11FDA99;
+	Mon, 27 Jan 2025 10:37:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1737974223; cv=none; b=UJSvAmgV7Lh1mGfkDD4YPKdfrazrzbjhN/q33EonAVT01cLcVHoM09IVbxFVQ9V5mnZwI1LCS707MTVCJCVzOX3zXfLQyFol9TIH0arQSkgpSpSGUEf+lGTrFmvRyUHxiIrQRwtY2Iicvh/5hz0mWga6hNabjW1Sd3AOIswAGyg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1737974223; c=relaxed/simple;
+	bh=jxECeMXjdkYPN8Gg6gBfLrTjeCyPn6+e948JqztZKrc=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TFl9rHEq+kNCgUFMQ8s6ptM0CM+eDhKwDj84bwSCqpBawBkEk7rLyd5Da7v8J6gtc8vNAgVlvXvrmW+YAnGiWBZj9V0lwRY5NRR/oappCawkQVgKoZCV9iCQwzdfYArQ8YzceOVw+HrVs+1Q/75eoMD9vxfsarMj7DU4ARCzCeM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SBG60Ehs; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-540201cfedbso4142055e87.3;
+        Mon, 27 Jan 2025 02:37:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1737974220; x=1738579020; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=W4QFE15tzxGQeI7M/zW2nqDheIV1bS+m/FQTTUzpTLk=;
+        b=SBG60EhsV6vyJ1IDGSJKIKZienw7FUEeoTFQPU3iMW3FXZaU6I7fmM1KsRGgAHn7hV
+         xp2IujVbrtpOBhfuhagLYwW3q8l9JhXsbguC8I4L0Gd/q1MWh3Pwney0FnqgVN+VZFU5
+         U2JBGF2vw+yfi60jmAq5S13gFp7i5fttClRvx47xArAe4UIub6hr1PFun+l/nvLpDO3C
+         ErW2tCc19Co6A4KVKwfqsMwPJcBC4c+sysy0Jjwia6vV60BoduprpwwMRKS3zyjyUN+Z
+         DpvVUPtInzNzKsnkQNfwDWnIoeSHLtDOyoUw23EwemjyWG1ODG1NiRjFJ36ecUFAKCEV
+         hvLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737974220; x=1738579020;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W4QFE15tzxGQeI7M/zW2nqDheIV1bS+m/FQTTUzpTLk=;
+        b=PMk2fDCAeKFtcCY/q//RJcZe4MRRi0SIIq7lF8XPIF4Mmr55NnCCBMYQo61p/iWq5i
+         vstKQmPBdhvEh12FMXrCA61Rmuga4o3qKW4DP/JQKfzjMAjYCcQGmW40/LF6R8zRtZNO
+         35GyYmXRwmbjGURMxoIdgamrn3KEAMZGGwiADwKzp6n28dtMbUN/SMbfIdNqhwpunFYg
+         VrfXA/tga5vPKDAybWKJai0RZLLmoRm0ZOiM469WDji0rjp4neY/BgJy97wFa9HD44YA
+         BRWVFHwJ5ssLhCrehUYtS/Iqx6uWHfS1yVlDmNbT9DB5pVim4AJIAtc56GmMUofYOc1h
+         XyPw==
+X-Forwarded-Encrypted: i=1; AJvYcCUSbQBrqmlVU+4ZjkZDv1R0JYDh7Up6QagW4bP5DB5MDPygrc+30pQ7ln5qY9XaQVWEYQNG@vger.kernel.org, AJvYcCUTMjOpy7b06hLjWlmbxRfUrQboZmGaR0dVLsIGCeUfXEQgxcUIG36A7042LKSSQTdo4I5+a8FejDW3B1+9935Q@vger.kernel.org, AJvYcCUjyPh0BEHz92YIKm7kxhKI4L4fhXLmkXiY9/0t2fWncjFaqyIeogtPawrS9HC3y0OQC62Q@vger.kernel.org, AJvYcCUlUqm4+Ebsfnny1oEJ05SIppnqsPFndHibRJhTrfrY+BFWDl2DltjOHqWBB/bjQbVb98mhfRtOtYF7PQ==@vger.kernel.org, AJvYcCVW+B3sT1AUmSZfr5O5SqMRM9CZFw/+qH778Jub4WjSuTv2td9cXC5UkNvwMpiYK0SkmxMQ9EQFAN/kjGJA@vger.kernel.org, AJvYcCWF8WgkhqAkYU4mK0hNVbXo6Xg+FK/xfMZC0ouFFUbcBG8jpzX1ON+Nh/Vm7m2NIBS6ayrml5fXWUTb1mnaM4CSxg==@vger.kernel.org, AJvYcCX2VA5zezrGPJjCAd9xs7ELQTsdN9WtKCj0T4h5Ce6L+khYsA5l17EOX1O5zozNiv0yNu9eQ5KoUAgdIsrMNMZD@vger.kernel.org, AJvYcCXpIUm1221jaXwpgC6vY18LBSSui5dhWmFBubj/vjWCsHK7hqZeWzOhXLgO7UqRyjzxP2Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxS7Cvb1k5M3UjD2VdSDrtX4yXOYutVYVG2F/TY8iBpuwO9mMxc
+	pFtWpeFBL9pQXibvyu9GpEESGS4XeAbyeyH/riL+xbAKbnJbE4wW
+X-Gm-Gg: ASbGnctbKY7zwkt2spfIvn1g7lrZabunv8Iprk4H2ZpilVwYsJgi+M0fJwWf4kt+3QL
+	S2KBDPjQA1kMY6DJWIrKbI+XpzIovaz9DzOdsU0KB3nmW5bdyS+KUbPUGgXKG0Eyo1xowMfuk+p
+	Jqwak1eG40FGTLtOPJKC88ZaA6c70OSC8+7BSJkRe8ZX+S4xPfZ8g1oM8MszYPUwjDL/Ps7V9CZ
+	OyjDfypdAiy5wrW8ZY5aSPhsmH01uTkY5XV7Fc2w5p9ss1qBbbmqnr9KFetB3y/JgROsaxUFZfJ
+	GVHXxr5ihEKmc20XWTrVBoVgP0Daqs9anCI=
+X-Google-Smtp-Source: AGHT+IEcn2mDT5d0SWT5jg0poO+BtsvQPwWj5ydN+QiFTcCpstqFwzzlc4zIAZ/gMSqSpGuiyMrqQQ==
+X-Received: by 2002:a19:8c1d:0:b0:543:baa9:a48a with SMTP id 2adb3069b0e04-543baa9a4bcmr6967602e87.27.1737974219462;
+        Mon, 27 Jan 2025 02:36:59 -0800 (PST)
+Received: from pc636 (host-217-213-93-172.mobileonline.telia.com. [217.213.93.172])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-3076bc1956csm14103761fa.70.2025.01.27.02.36.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jan 2025 02:36:58 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Mon, 27 Jan 2025 11:36:51 +0100
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: Uladzislau Rezki <urezki@gmail.com>, Jann Horn <jannh@google.com>,
+	linux-kernel@vger.kernel.org, x86@kernel.org,
+	virtualization@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+	linux-riscv@lists.infradead.org, linux-perf-users@vger.kernel.org,
+	xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
+	linux-arch@vger.kernel.org, rcu@vger.kernel.org,
+	linux-hardening@vger.kernel.org, linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+	bcm-kernel-feedback-list@broadcom.com,
+	Juergen Gross <jgross@suse.com>,
+	Ajay Kaher <ajay.kaher@broadcom.com>,
+	Alexey Makhalov <alexey.amakhalov@broadcom.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	"Liang, Kan" <kan.liang@linux.intel.com>,
+	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Jason Baron <jbaron@akamai.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Clark Williams <williams@redhat.com>,
+	Yair Podemsky <ypodemsk@redhat.com>,
+	Tomas Glozar <tglozar@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Kees Cook <kees@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Hellwig <hch@infradead.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl <aliceryhl@google.com>,
+	"Mike Rapoport (Microsoft)" <rppt@kernel.org>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Rong Xu <xur@google.com>,
+	Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Yosry Ahmed <yosryahmed@google.com>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+	Jinghao Jia <jinghao7@illinois.edu>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: Re: [PATCH v4 29/30] x86/mm, mm/vmalloc: Defer
+ flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
+Message-ID: <Z5dhw0Ml4KGEfaUv@pc636>
+References: <20250114175143.81438-1-vschneid@redhat.com>
+ <20250114175143.81438-30-vschneid@redhat.com>
+ <CAG48ez1Mh+DOy0ysOo7Qioxh1W7xWQyK9CLGNU9TGOsLXbg=gQ@mail.gmail.com>
+ <xhsmh34hhh37q.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <Z4qBMqcMg16p57av@pc636>
+ <xhsmhwmetfk9d.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <Z44wSJTXknQVKWb0@pc636>
+ <xhsmhr04xfow1.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <Z4_Sl-zu7GprkbaL@pc636>
+ <xhsmh8qr0p784.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB7286:EE_|SA0PR11MB4703:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6aaa7b08-f03b-4150-75f7-08dd3eb6487d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016|7416014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?VE9GbC9JWlNiMHdlb2ZCWW0vY1AzZ1pjbTFNQXVjYkFPbXM3dDNCSW9mM2tH?=
- =?utf-8?B?OVBTQ0w3ZmMydmNhSndhekdqWVdVWmZPZjJqVkd3L0xBT2toRmRNUklGbE1Z?=
- =?utf-8?B?MTZLbGFDenRFUXlxN1VFdkhFM3FvV0pyTUlVZDFXOUVJeDZ0Z2lxSTkwL0V4?=
- =?utf-8?B?eHhVUXIvQjRMUDRxSWtZdHMrLzgxaVlzWXREQjdwVUJrL2NrT0hFWTNmc1R3?=
- =?utf-8?B?YXFCcC9BbjdFODRmbUdsL0hFR1hoMjR6VStnRm53aG5za2FPMVEwaTFZdUcz?=
- =?utf-8?B?cDcwZG1WS1VlWkU4NjFXUlN4emlNc1VpaS9KTnRQY1VFU2tqM01jeGV0OUpw?=
- =?utf-8?B?c2FoUmkvZ3ZmZEtZaWlTZStRRVVNeVlWQVM1ZGIramNnRXd3MVlVajJEc1lD?=
- =?utf-8?B?dzRuV1NpcFhqSXZReHExV1FXR0tzSkxuN3kvOUNwVjdTWXVPeWM5cmF6R2Rs?=
- =?utf-8?B?cnlQaXQ5NFh3ZGxTUXpYRC9tY1ROWHo2ekk2L2JsZTNJMkVsdGRGblZneThN?=
- =?utf-8?B?UVFTMlQreEVTN0IyT05USmpDR0VBcXRtN2t0TjdBam1kUTFFRFdRWENZUExz?=
- =?utf-8?B?WHJGTXhZSkxlalRPSnQ0L1JvQ0plb2ZSSldkcVNmTU9BVERxdVZ5Z3BYUllv?=
- =?utf-8?B?VjJPckl3c2dSUk5pSW9TVG1ST3hNT2RndmJ2RWpnVTdlcGJxN05LK3hKUmZj?=
- =?utf-8?B?NVQ1WkF5Zllra2oxcDJkalpDVk9YL21xaHdGQUpqSG4zNlFHQVpCL2t4ZHRK?=
- =?utf-8?B?ZTA5YU55R2JGbHNsUUN2d1o5UVI4RWp3YWtkcGpYdkZndFlubEhUSFdQRFpq?=
- =?utf-8?B?Z09HMTZiajJUQUp0SDJheFd5QTM0VHZWZGxOMzhhUjF2ZUJVL1gwckROZVkv?=
- =?utf-8?B?V0I3WDBJLzJmd3ZHdDFUQUFGYm9jVFp1Y2sxd0loM1p0OWRWVVMwSlIxam5a?=
- =?utf-8?B?WlNJb2Fzc3kvQyt0Z005dWFsL1dCN1hIaC92K3U4NmZUbWxEZ2lnRFpReXVL?=
- =?utf-8?B?blFJSDlEa3B2WHVwTDR5ZEp1Z2pzbDEvbUtvNStWWXNKdFI0YUhDT2xNbktD?=
- =?utf-8?B?ZXYzY1E2N29UdmpIUHZ0Vi9XOWh6UHdMMXdIMVp0MzBPdlA5U1hyenA5ck5Z?=
- =?utf-8?B?Q1BlbkRvVlFobHBDS2FyUzU0cmxsc2pkL2R4dGFYTzVZaEpZaUNlSmhaYXQ0?=
- =?utf-8?B?MHAvM29RZStyYis0NGRvYW0yZHhueDJiQ2EzcXQxUTBSZ3FaK1RVdTFCaHQz?=
- =?utf-8?B?OGVUMklkd1NIS2t0Y3lHUm1MV2ozMTlSM1pRNVlNQmo3MlZ0Q1JnL2pnZlFr?=
- =?utf-8?B?TWMxQkttRTNoZ0FVMkNlbkhWTjM1dkVqbFJ4dE1uTitUMEVDVFFSanFSdS9l?=
- =?utf-8?B?K2VieE9ucFZoME9qWG0xazVPTENIcDVsYU5WZ093a2IxQWRZS2lZMm0vazMv?=
- =?utf-8?B?OC9GcUNydnNDcnZRdzdYblNRdUpMNGo0TDNvQ0hFemhqcTNvWUJSdzFUNkZk?=
- =?utf-8?B?YTBheUxtWUZGZ2FMRG1aK1J4VkhxRDVoYjcreVNQMjVVdzN2cmtDd1hlR3Ev?=
- =?utf-8?B?aGdLVXVibzJoaUdOSTRQQzlSNGg4VExiMTg2VjNOVUhEYkhZNHB4Y0lIWUR0?=
- =?utf-8?B?L0ExbThvZG00U0xiaFltaHJaTm9BS2ErUWVhTC8wZlpoSis2TEtYOVNJNnFl?=
- =?utf-8?B?alRURkZXcHFDa2FmSUM2WHVoNU5CcE9qdUNHOVhiR205U3c4ZEJZYjlBU3JS?=
- =?utf-8?B?MnNDdkdXcEJtbVhJRm9mOTlobkZBOFVZQmhnUlpNOC95bDNtZHNmOWpEaVVV?=
- =?utf-8?B?UG1CMmhnY3Q0Z3ViM2dObFRHTFRObHdWT2R3WEM5emRCN2pXVW5zcUQ1Z2Q3?=
- =?utf-8?Q?8T7xW/tuNk65b?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7286.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(7416014);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?TC81SjQ0dVJBVUM5Qlk0bGNhT3Y3Q0lmcTkvQjdCbFZieEswNWVOY3RJM3RS?=
- =?utf-8?B?TWZaK3BJRkg5eGR4Zk5wZUh6dFZrSlZxNFJCSm0vR1ZnZ3RpaURONUd5VzJG?=
- =?utf-8?B?ZndzZFV0bWNJNzdIMXYwUDJLU2NtclRyMWN6WUxMaU9leG1JNHdEcWxLYzJW?=
- =?utf-8?B?eUVQRThLZFlpY0dObzVqSlhyeUZKYUhvb3dQRDhQV1A3Ym5HYTJoQzRYTGUx?=
- =?utf-8?B?RTI2bS9LTnExQkV0WVRFVUQ0QVNOUGFLdmNXdmMxSExTVkR4cnBOYldhNVkv?=
- =?utf-8?B?Y3pndG00aHdtWE5TOG9PakM3Yis2VVltOGlEUzB0Nm9sUm1VTmM0QkJPQTZu?=
- =?utf-8?B?Mk02dUwyZXc5Y2JGNzgyZ2JNUGRvWmgxVTY4NjN4OTcvYWJXOGdxNDE0cGpU?=
- =?utf-8?B?VkJWOUQ0RlpPNGRUTzh1anZ5RStheDI5cnpoYlgyYmhuYWFWcGYvYmkxTDJi?=
- =?utf-8?B?dks5M2p3SlJQUVBSSEM4ZTFjV3RYTFN3WGFXWDZCQ0pFT1Naa04yODkweFlj?=
- =?utf-8?B?NTNaUlVnZjRpenlzcXVVMzd6amM0TWRQNGtBdmdCRW05WmxYOUZ1WnEvdnJ4?=
- =?utf-8?B?T3B0T0wxMGNlOW1FOHN3Qy9DcTNweGJFeFBTWUFuMnZXT2tIMVdhU0RWRjhI?=
- =?utf-8?B?WjFnczkrdFA2dXJEaXc4UFNHUnlGSmRmaWdPZGVSMWlCYysrNUU5dmNpbExM?=
- =?utf-8?B?ZVZhd2RON2VNQTJ6Y2ZOTkg2NnQ3LzI3d01ya0ZJdWZudzVOc2s1aDEyMHZX?=
- =?utf-8?B?MllsT1MwMDRERGFZZ2U3ajFqRVRBUGlVNVd2SWQranYzTEg2K3JDd0wxV2Ey?=
- =?utf-8?B?NjNoQzh4NDAraHFPVmM1R3hqRGtOTGd3aFlYODRZeDNOUlYyWi9NTzZTTUNO?=
- =?utf-8?B?angwV2VRUVQ1M25FdGREN3FUM3E3OVdTTzRBNDNTQmd5N3dnQjF2RE5HTis5?=
- =?utf-8?B?NnJpeUp2WWNycXFET2tZRjg5Zm9EcjdmbXBOWGtReWpHK0YvazBDNCs3OGZ6?=
- =?utf-8?B?bHlzZ1ozTlVIUVpMbUVRQTVWTU0wd0JtQ3l3VW5UalhxNGRrSytUc3Njc3g5?=
- =?utf-8?B?T1Y4ZHQ3MXJRNmNjeFI3bEsvMDVJQWdpakk1ZDNsQXBJOVVJcVVRVXNzUHZV?=
- =?utf-8?B?N1k5OEtkTHFTTG56QlRUU0VHZ0FqR2QrajJYUWNXb3pxUnNLM1FBb1dZbktI?=
- =?utf-8?B?UWJYQzU5NTVjeGMya2pCMlZMRVRRcFdPVDFiZ1lacjQ4NDFPcERjekE2TEQy?=
- =?utf-8?B?VHVXMkh4UU9hL1ZuUThXKzBSMkxiUE5iY29VbGhsd0dNdXRtUEZpM3Bkd0x3?=
- =?utf-8?B?Ym9UbTA0a0g1bm5SdXpLVGFVejhIazZ1eWlWUlo3RktkUGFRUmRFQS8xUlV5?=
- =?utf-8?B?V1UrMldvZGw0ei9vK3NNS0YwVnZkMG1nYU5mOFg2WXFXVVFKcWZYMk5vK2oz?=
- =?utf-8?B?a01EVk0rVVpVeVRQOVVaZDQ5eTFETXk1eDlZdTk2QWpab0NEOXF4UVErT1B2?=
- =?utf-8?B?UUlxMGpWWk05V0Y5VkJkVDVwVXB4Ujk2T3JWazVUNjRQL29nSk9wZ0FZMkJH?=
- =?utf-8?B?T2Q0WkpsNzRnQ3hDdnRpRVptZ2ZhS283SHp1RG9pUUtjVmpYRXZSMFAwOXZT?=
- =?utf-8?B?aVlKaU9aYUZZUU5XRG5hdHFzK3Z5bFI4ZVN1OVhXUEpiSDV1RnpRNllXZkRV?=
- =?utf-8?B?WndGeWgvL2hGeTU5OWo0a2ZrczBGUFpzUGZRU1VzUFowcjRGWU91ZGF2Wm9P?=
- =?utf-8?B?VTE4UWNqd3pBUWpYeVh3SmdtWDIvRTlycG1SaXRYN2sveEpzU0lhS1NWMTNh?=
- =?utf-8?B?MlE2OFVFWlllNm5qZHU4RnJuMGhMZTRRcnIyQTFMZjd6TjhaZ0JveGFuNXQy?=
- =?utf-8?B?U05obE1XNUg2c2tvTVVaUmpQV1BLak43M3hNWkNFU3ZqN0c4eXhrVlF1Sllm?=
- =?utf-8?B?SVlvZnMyZXhIWU9PdC8xVTA2bFN3NGZWdFlJN1p3R3NnQjVVTE5FeXZMSG5B?=
- =?utf-8?B?c1k2RnhJNEQ4emdiNmtKd0c5cHBEaTJjL0VBVXFGcUdEUWVIRmRvVFkxSXd1?=
- =?utf-8?B?cFNBcHRpUmFQNEpNY29Cbm5WR3FPTHd5eVFUc0xhUmhVYzBVRlJMNHNRUlZW?=
- =?utf-8?Q?aDLyooCgGuSCBz6kLrsYa2jmv?=
-X-OriginatorOrg: illinois.edu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6aaa7b08-f03b-4150-75f7-08dd3eb6487d
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7286.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2025 09:37:57.8983
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 44467e6f-462c-4ea2-823f-7800de5434e3
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rt70l/Ghy21MDNLKATAPcMkIclu1m1mjifAcLXL5atwVZVI3y2xb98mFw4WRIHt2pruYjycv5MJiCBexGy1SLQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4703
-X-Proofpoint-ORIG-GUID: PAMvkdDJZuRVic5ATBAQXRDqnDZxIZ20
-X-Proofpoint-GUID: PAMvkdDJZuRVic5ATBAQXRDqnDZxIZ20
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-01-27_04,2025-01-27_01,2024-11-22_01
-X-Spam-Details: rule=cautious_plus_nq_notspam policy=cautious_plus_nq score=0 spamscore=0
- mlxscore=0 mlxlogscore=999 adultscore=0 phishscore=0 lowpriorityscore=0
- impostorscore=0 suspectscore=0 malwarescore=0 bulkscore=0 clxscore=1015
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2501270076
-X-Spam-Score: 0
-X-Spam-OrigSender: jinghao7@illinois.edu
-X-Spam-Bar: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <xhsmh8qr0p784.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 
-On 1/27/25 3:29 AM, Nicolas Schier wrote:
-> On Thu, Jan 23, 2025 at 02:19:49AM -0600, Jinghao Jia wrote:
->> Commit 5a6ea7022ff4 ("samples/bpf: Remove unnecessary -I flags from
->> libbpf EXTRA_CFLAGS") fixed the build error caused by redundant include
->> path for samples/bpf, but not samples/hid.
->>
->> Apply the same fix on samples/hid as well.
->>
->> Fixes: 13b25489b6f8 ("kbuild: change working directory to external module directory with M=")
+On Fri, Jan 24, 2025 at 04:22:19PM +0100, Valentin Schneider wrote:
+> On 21/01/25 18:00, Uladzislau Rezki wrote:
+> >> >
+> >> > As noted before, we defer flushing for vmalloc. We have a lazy-threshold
+> >> > which can be exposed(if you need it) over sysfs for tuning. So, we can add it.
+> >> >
+> >>
+> >> In a CPU isolation / NOHZ_FULL context, isolated CPUs will be running a
+> >> single userspace application that will never enter the kernel, unless
+> >> forced to by some interference (e.g. IPI sent from a housekeeping CPU).
+> >>
+> >> Increasing the lazy threshold would unfortunately only delay the
+> >> interference - housekeeping CPUs are free to run whatever, and so they will
+> >> eventually cause the lazy threshold to be hit and IPI all the CPUs,
+> >> including the isolated/NOHZ_FULL ones.
+> >>
+> > Do you have any testing results for your workload? I mean how much
+> > potentially we can allocate. Again, maybe it is just enough to back
+> > and once per-hour offload it.
+> >
 > 
-> I can't see a relation between this patch and the referenced commit.
-> Can you please check whether the 'Fixes' is (still?) valid here?
+> Potentially as much as you want... In our Openshift environments, you can
+> get any sort of container executing on the housekeeping CPUs and they're
+> free to do pretty much whatever they want. Per CPU isolation they're not
+> allowed/meant to disturb isolated CPUs, however.
 > 
-> Kind regards,
-> Nicolas
+> > Apart of that how critical IPIing CPUs affect your workloads?
+> >
 > 
-
-The 'Fixes' is from commit 5a6ea7022ff4 ("samples/bpf: Remove unnecessary
--I flags from libbpf EXTRA_CFLAGS") that fixes the equivalent issue in
-samples/bpf --- according to its commit message, commit 13b25489b6f8
-("kbuild: change working directory to external module directory with M=")
-is the commit that breaks the libbpf build in the samples.
-
-Best,
-Jinghao
-
+> If I'm being pedantic, a single IPI to an isolated CPU breaks the
+> isolation. If we can't quiesce IPIs to isolated CPUs, then we can't
+> guarantee that whatever is running on the isolated CPUs is actually
+> isolated / shielded from third party interference.
 > 
->> Tested-by: Ruowen Qin <ruqin@redhat.com>
->> Signed-off-by: Jinghao Jia <jinghao7@illinois.edu>
->> ---
->>  samples/hid/Makefile | 11 ++++++-----
->>  1 file changed, 6 insertions(+), 5 deletions(-)
->>
->> diff --git a/samples/hid/Makefile b/samples/hid/Makefile
->> index 8ea59e9631a3..69159c81d045 100644
->> --- a/samples/hid/Makefile
->> +++ b/samples/hid/Makefile
->> @@ -40,16 +40,17 @@ BPF_EXTRA_CFLAGS += -I$(srctree)/arch/mips/include/asm/mach-generic
->>  endif
->>  endif
->>  
->> -TPROGS_CFLAGS += -Wall -O2
->> -TPROGS_CFLAGS += -Wmissing-prototypes
->> -TPROGS_CFLAGS += -Wstrict-prototypes
->> +COMMON_CFLAGS += -Wall -O2
->> +COMMON_CFLAGS += -Wmissing-prototypes
->> +COMMON_CFLAGS += -Wstrict-prototypes
->>  
->> +TPROGS_CFLAGS += $(COMMON_CFLAGS)
->>  TPROGS_CFLAGS += -I$(objtree)/usr/include
->>  TPROGS_CFLAGS += -I$(LIBBPF_INCLUDE)
->>  TPROGS_CFLAGS += -I$(srctree)/tools/include
->>  
->>  ifdef SYSROOT
->> -TPROGS_CFLAGS += --sysroot=$(SYSROOT)
->> +COMMON_CFLAGS += --sysroot=$(SYSROOT)
->>  TPROGS_LDFLAGS := -L$(SYSROOT)/usr/lib
->>  endif
->>  
->> @@ -112,7 +113,7 @@ clean:
->>  
->>  $(LIBBPF): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OUTPUT)
->>  # Fix up variables inherited from Kbuild that tools/ build system won't like
->> -	$(MAKE) -C $(LIBBPF_SRC) RM='rm -rf' EXTRA_CFLAGS="$(TPROGS_CFLAGS)" \
->> +	$(MAKE) -C $(LIBBPF_SRC) RM='rm -rf' EXTRA_CFLAGS="$(COMMON_CFLAGS)" \
->>  		LDFLAGS=$(TPROGS_LDFLAGS) srctree=$(HID_SAMPLES_PATH)/../../ \
->>  		O= OUTPUT=$(LIBBPF_OUTPUT)/ DESTDIR=$(LIBBPF_DESTDIR) prefix= \
->>  		$@ install_headers
->> -- 
->> 2.48.1
->>
+I see. I thought you are fixing some issue. I do not see a straight
+forward way how to remove such "distortion". Probably we can block the
+range which we defer for flushing. But it also can be problematic
+because of other constraints.
 
+Thanks!
+
+--
+Uladzislau Rezki
 
