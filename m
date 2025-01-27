@@ -1,165 +1,130 @@
-Return-Path: <bpf+bounces-49897-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49898-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D51F1A2012D
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 23:54:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F18CCA2015A
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 00:05:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A6FE3A523A
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 22:54:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9468716565C
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 23:05:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 487B71DC9A7;
-	Mon, 27 Jan 2025 22:54:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA05B1DC9A2;
+	Mon, 27 Jan 2025 23:05:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E80VJDTP"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qLWONNQT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58BBE1991BF;
-	Mon, 27 Jan 2025 22:54:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80EB61DACA7
+	for <bpf@vger.kernel.org>; Mon, 27 Jan 2025 23:05:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738018452; cv=none; b=MCBl0xiFUOQXvXrr4ttUJeauAPvjffpQO95WA+rE/pSdWR0NDQE08rh4ZS/4GJS74aAWfwXsoI2SrgT6oJm8Q0mr3EuS75MtJ8ptMKRGjoM2S+Lsu6eDMDfLLKmQPjVHvp39KkFzzue+niZq5ZPSDUn0uoJAud1OQlR8HpjBilg=
+	t=1738019131; cv=none; b=rGKKuhqiHXmzOKDdVZlvPly4tcCyDuixBSYMJwOR8yYyjnNKP7PXqnQxpdre4+l4WaD6bxEk3UZh8Mt6znRmmdGdP3fOib9liVv724HBC1Gko+5fkxJnTIss8AYSFxbnr8tUSdGt9BGn4kFBAKsm/cVKIK12oYqSb0ZI2R85Z10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738018452; c=relaxed/simple;
-	bh=cRjAcpMjFLL1m2e46QLpUxuFpdU24woSx6aEV2chxao=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Z/8Aq0yFUI5C0hEck9wwSc0wnO0Pz3m6friA0VsrOYbzODJnOnrdGRZFDsVhkV5NbUWE+cGUXFTxnkmWwBjs0WVBDlNqb4jhb9MNqtKuKc+uTGf1mG+d/TC+z6SX8es5rwHDQP9KuwLIufiW2AANGLz1borxbkXL2Q+1gg6CrJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E80VJDTP; arc=none smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-46df3fc7176so46086001cf.2;
-        Mon, 27 Jan 2025 14:54:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738018450; x=1738623250; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QBUEBw4yjgIXSCi4zJIhbPcJ811I7WO0XsQmUV8oSV0=;
-        b=E80VJDTPHLTeGO3LFLRbjfoJZ8wI+HEVv3ztuCXNm8h/fakJh6ZSTpG3JNxBtfA2wp
-         3lRm+u0AEnwToQmd5CS2fOXiV20RNtkSOQkgwOB7XRjLu65qeH+nXCmTZDMhKMh0B4mk
-         wBGZhKXESgg2pmLJEs6uvRv38m4tbDgdubjTPDyn5AGsHqFrIHDMiUwUPkIEgExbcj+z
-         BS+TRFCgEchsFQFg9ykZwEFnR5yLxhB1AKOKt+RRS5I0L7njWbwEtM6iWhOwb4NZWVKw
-         Soq+pew0XD8v1odFXk5RcTZ/kqjtsHoBRn3sVxEBk3NyMJcYlXSVBY4Mmio7138m71q+
-         kJSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738018450; x=1738623250;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QBUEBw4yjgIXSCi4zJIhbPcJ811I7WO0XsQmUV8oSV0=;
-        b=aZwLBnCxxsG2ASn6img4tdFEeAFweiwf3iQRTXlxYis9Z7YyYfpAB1SYlhFCgL/Pje
-         Slw1BjXmB2nLiruUPY/LDhJPNFRFw2vNIWhNSqHEC4DYwGAdxC2Kh6X7C0hN5/ZBUiGa
-         UapxcOOCax6F/biL1ZY4IG5QQVDuO7qms+EYWECImbSlIbFlZ0U6+ODf9e4ePwtPoeUf
-         TXVrg7h66OTglkGpRIvFe65fCDhW8J9GDbrOpc9tnkqypLEmlLa3gGaipZ7Txvb8odt6
-         aAaWDxdriXi9+PwmsBino0T4rA3dcWygsYysqRxOy5QdLCOPc2eDeFTWfnmMSNdBI2W/
-         qADQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUc8Xto+jgwx8xRfBC46r02Xdin8iG0DPWA+WDO+95hMqZeRumiS0BZwP/DSBoHnDKyVaMU0zTZpiQPc1IPsZP2@vger.kernel.org, AJvYcCVEgZJzqTvB4GDxc6B1yoni9fqXOsrcB+e07l+17qtGzN2lKKOUVTZh15raP+3yJ9gGzyssl4ADikVCL9VG@vger.kernel.org, AJvYcCWTYUP0YdRp10T2lOdjaWWe4Xjawv2aFyUwkuDIShogkh92MvoW0kX9dmLwSzAzuZ7cFHc=@vger.kernel.org, AJvYcCWy2xjVnNE9VRH/HKUcpFLkoFlW0HfHZm7d9E/aLp9SKMwR8dzgjrqLf1+hQ6qqeq2hn7HL2v7JtZz3H/fcjfMrtzHI@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz9YSYPQn/iUOoqQ3RpcjoY4T6GZXKiYdI8e/8jpHK+dgkM8gHd
-	8D0D2VgAvJlThHQ+bzO7IucxrKeMh+xLTg6kqdQHdYyrLKtLkEeVEu037jBM0BLZ9JRBEIttirG
-	Yv5RMm/KMjatPgBISGt4ASH8vxLo=
-X-Gm-Gg: ASbGncsBOHOYh/MwiASi52igYaFES9u6gMIUFI6AXl7gVk2u4Y+87/Cm96wCbJvcuPT
-	Wmxx9YWGmiIoDxTTuysHM+SaAzRX8lpmsRdV5PM511jjSoVCv4u7ojQCOuJ+k8A==
-X-Google-Smtp-Source: AGHT+IHKeID9uLei14uZgypw7a410glzRtnGfzWpFMgGqVPzHjs9TIV0cNc5CfaUn5rgdNeKbWW5EV04G1cfFlKRbKA=
-X-Received: by 2002:ac8:59d4:0:b0:467:45b7:c49f with SMTP id
- d75a77b69052e-46e12b564f3mr602772301cf.40.1738018449973; Mon, 27 Jan 2025
- 14:54:09 -0800 (PST)
+	s=arc-20240116; t=1738019131; c=relaxed/simple;
+	bh=9eOZO557I3AVaxCLQXhmIgkgKjRLU9Wi1jgi5Jr99w4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nGeBe45FyyPA2LnlNq0RnpVv8jo7deYoNJyleYnXpzO3URcJ7shbr/HuYKV85fTFqsdV5WrGB/nq98pDQp60ka4ve8w/UQ39ILdlkwj6vNt5Gsgq4q+Ql4+ByEX12J95NjLHeIJKROakwwIM/0uCfI5lGN4MZcftuiwfKAYrm4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qLWONNQT; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <3c153542-079a-4566-9f32-8335bbb0456a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1738019113;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rCw3mJ1w4NJnZl0OvH+BZ8sydRhM86rSvEiTEi79bt4=;
+	b=qLWONNQTTtoxRtrOYGi1w5pmcJLm//ry4ETTA3+7uFHqGL/mf8HykBuk0bDwG/uWjSZBgj
+	Ibh82AXVcrO5IdgdTF6MUco3hFSPEwXZPwqYV6H//ZuwQDoV6KUKkUDOF8rFhwPj51cc5g
+	6nN6nw4z5D80JrRw6pkoJl3Tcd/nbH0=
+Date: Mon, 27 Jan 2025 15:05:06 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250125-bpf_dynptr_probe-v2-0-c42c87f97afe@outlook.com>
- <20250125-bpf_dynptr_probe-v2-1-c42c87f97afe@outlook.com> <CAADnVQ+bRvL-4n4ZB5QS2oUxvo3vhJHf=8=2No3WWqYHqSyBEg@mail.gmail.com>
- <MEYP282MB2312A90273FF290ED5FC6F6AC6ED2@MEYP282MB2312.AUSP282.PROD.OUTLOOK.COM>
- <CAADnVQJ7bw0Qa4UM_E0zb5bqt5P09f7rryFSe6faY8ibX0zWuA@mail.gmail.com>
-In-Reply-To: <CAADnVQJ7bw0Qa4UM_E0zb5bqt5P09f7rryFSe6faY8ibX0zWuA@mail.gmail.com>
-From: Andrei Matei <andreimatei1@gmail.com>
-Date: Mon, 27 Jan 2025 17:53:59 -0500
-X-Gm-Features: AWEUYZmPMUvpm8zkeZ0gDfxE3t2WlRe0ZGxaYDOvr0SgR5lAWuywZK-kZVm_onU
-Message-ID: <CABWLseu6=ZSYpQncaj=0EeVzKtP8vjPyOBJkWcFb-dxbm5OfVQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/7] bpf: Implement bpf_probe_read_kernel_dynptr
- helper
+Subject: Re: [PATCH bpf v2] bpf: Fix deadlock when freeing cgroup storage
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Levi Zim <rsworktech@outlook.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Mykola Lysenko <mykolal@fb.com>, 
-	Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc: Alexei Starovoitov <ast@kernel.org>, Abel Wu <wuyun.abel@bytedance.com>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, David Vernet <void@manifault.com>,
+ "open list:BPF [STORAGE & CGROUPS]" <bpf@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20241221061018.37717-1-wuyun.abel@bytedance.com>
+ <02c69185-1477-485c-af4f-a46f7aadadab@linux.dev>
+ <7139ed64-55be-4b70-a03f-8b2414fc93d3@bytedance.com>
+ <CAADnVQ+ws4c=G02HjR7Oww_cSuoVFfkWMjP0BbnUrrDgo6tywQ@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <CAADnVQ+ws4c=G02HjR7Oww_cSuoVFfkWMjP0BbnUrrDgo6tywQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Jan 27, 2025 at 5:04=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Sat, Jan 25, 2025 at 5:05=E2=80=AFPM Levi Zim <rsworktech@outlook.com>=
- wrote:
-> >
-> > On 2025/1/26 00:58, Alexei Starovoitov wrote:
-> >  > On Sat, Jan 25, 2025 at 12:30=E2=80=AFAM Levi Zim via B4 Relay
-> >  > <devnull+rsworktech.outlook.com@kernel.org> wrote:
-> >  >> From: Levi Zim <rsworktech@outlook.com>
-> >  >>
-> >  >> This patch add a helper function bpf_probe_read_kernel_dynptr:
-> >  >>
-> >  >> long bpf_probe_read_kernel_dynptr(const struct bpf_dynptr *dst,
-> >  >>          u32 offset, u32 size, const void *unsafe_ptr, u64 flags);
-> >  > We stopped adding helpers years ago.
-> >  > Only new kfuncs are allowed.
-> >
-> > Sorry, I didn't know that. Just asking, is there any
-> > documentation/discussion
-> > about stopping adding helpers?
-> >
-> > I will switch the implementation to kfuncs in v3.
-> >
-> >  > This particular one doesn't look useful as-is.
-> >  > The same logic can be expressed with
-> >  > - create dynptr
-> >  > - dynptr_slice
-> >  > - copy_from_kernel
-> >
-> > By copy_from_kernel I assume you mean bpf_probe_read_kernel. The proble=
-m
-> > with dynptr_slice_rdwr and probe_read_kernel is that they only support =
-a
-> > compile-time constant size [1].
-> >
-> > But in order to best utilize the space on a BPF ringbuf, it is possible
-> > to reserve a
-> > variable length of space as dynptr on a ringbuf with
-> > bpf_ringbuf_reserve_dynptr.
+On 1/27/25 2:15 PM, Alexei Starovoitov wrote:
+> On Sun, Jan 26, 2025 at 1:31 AM Abel Wu <wuyun.abel@bytedance.com> wrote:
+>>
+>> On 1/25/25 4:20 AM, Martin KaFai Lau Wrote:
+>>> On 12/20/24 10:10 PM, Abel Wu wrote:
+>>>> The following commit
+>>>> bc235cdb423a ("bpf: Prevent deadlock from recursive bpf_task_storage_[get|delete]")
+>>>> first introduced deadlock prevention for fentry/fexit programs attaching
+>>>> on bpf_task_storage helpers. That commit also employed the logic in map
+>>>> free path in its v6 version.
+>>>>
+>>>> Later bpf_cgrp_storage was first introduced in
+>>>> c4bcfb38a95e ("bpf: Implement cgroup storage available to non-cgroup-attached bpf progs")
+>>>> which faces the same issue as bpf_task_storage, instead of its busy
+>>>> counter, NULL was passed to bpf_local_storage_map_free() which opened
+>>>> a window to cause deadlock:
+>>>>
+>>>>      <TASK>
+>>>>          (acquiring local_storage->lock)
+>>>>      _raw_spin_lock_irqsave+0x3d/0x50
+>>>>      bpf_local_storage_update+0xd1/0x460
+>>>>      bpf_cgrp_storage_get+0x109/0x130
+>>>>      bpf_prog_a4d4a370ba857314_cgrp_ptr+0x139/0x170
+>>>>      ? __bpf_prog_enter_recur+0x16/0x80
+>>>>      bpf_trampoline_6442485186+0x43/0xa4
+>>>>      cgroup_storage_ptr+0x9/0x20
+>>>>          (holding local_storage->lock)
+>>>>      bpf_selem_unlink_storage_nolock.constprop.0+0x135/0x160
+>>>>      bpf_selem_unlink_storage+0x6f/0x110
+>>>>      bpf_local_storage_map_free+0xa2/0x110
+>>>>      bpf_map_free_deferred+0x5b/0x90
+>>>>      process_one_work+0x17c/0x390
+>>>>      worker_thread+0x251/0x360
+>>>>      kthread+0xd2/0x100
+>>>>      ret_from_fork+0x34/0x50
+>>>>      ret_from_fork_asm+0x1a/0x30
+>>>>      </TASK>
+>>>>
+>>>> Progs:
+>>>>    - A: SEC("fentry/cgroup_storage_ptr")
+>>>
+>>> The v1 thread has suggested using notrace in a few functions. I didn't see any counterarguments that wouldn't be sufficient.
+>>>
+>>> imo, that should be a better option instead of having more unnecessary failures in all other normal use cases which will not be interested in tracing cgroup_storage_ptr().
+> 
+> Martin,
+> 
+> task_storage_map_free() is doing this busy inc/dec already,
+> in that sense doing the same in cgroup_storage_map_free() fits.
 
-For our uprobes, we've run into similar issues around doing variable-sized
-bpf_probe_read_user() into ring buffers for our debugger [1]. Our use case
-is that we generate uprobes that recursively read data structures until we
-fill up a buffer. The verifier's insistence on knowing statically that a re=
-ad
-fits into the buffer makes for awkward code, and makes it hard to pack the
-buffer fully; we have to split our reads into a couple of static size class=
-es.
+sgtm. Agree to be consistent with the task_storage_map_free.
 
-Any chance there'd be interest in taking the opportunity to support
-dynamically-sized reads from userspace too? :)
+would be nice if the busy inc/dec usage can be revisited after the rqspinlock work.
 
-[1] https://side-eye.io
-
->
-> That makes sense. The commit log didn't call it out.
-> Please spell out the motivation clearly.
-> Also why bpf_probe_read_kernel_common ?
-> Do we need to memset() it on failure?
->
+Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
 
