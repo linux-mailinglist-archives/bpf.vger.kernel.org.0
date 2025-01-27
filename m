@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-49904-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49905-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 475FBA201C9
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 00:40:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC9A0A201CA
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 00:40:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 291F01662A3
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 23:40:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE1133A4FE7
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 23:40:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35B2A1DDC37;
-	Mon, 27 Jan 2025 23:40:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E39531DE2AE;
+	Mon, 27 Jan 2025 23:40:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gGDJegYY"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RstSVUsj"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3A8D1DC9BE
-	for <bpf@vger.kernel.org>; Mon, 27 Jan 2025 23:40:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 928C51DC9BE
+	for <bpf@vger.kernel.org>; Mon, 27 Jan 2025 23:40:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738021209; cv=none; b=k3yKBGXGqQkUlebasyJOL7y0M3muIBFIbOef+WhF/OMzXM1fHTyS7WX6iCUydV8ABQrVG31poVgIMBFHMAmOajLpPonNd5DzFfibEEhF7kQV2MLJkvlq5FpYmgbr8lZCGsxO1WPKRNHYjk6SzVPzxUuukc7RcI/VtdjDDYzH/CU=
+	t=1738021212; cv=none; b=gMjub6tmOueuhZG1iJSXJVBMXqMIVpr8+/Ld1Y4sMi+G4hQEqvr0FJKDhRtXLy3rRIBlBMb2OUYpLMXuYS0GDo30jXwGtMB5HPbyi/F54vyK8yOcCkvcf2KU4hexbcg48r2sF6SD4YTsRFKohZgOf4u8qDw8Gexd4nUB7ipanr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738021209; c=relaxed/simple;
-	bh=x62fGO/+S/hBgRU/Tw6RYQqFftSfHissCZjzh364n/k=;
+	s=arc-20240116; t=1738021212; c=relaxed/simple;
+	bh=rpkbCdfTxmIRYmSExqf0cnLqvM7WIi/71M/ulYMWsHA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SUTkdjrq5r+8F7B2m9YTbvAmlifa3d+xRGQD9mEaECDrY693b63PPD9KfGf2pc2ambVyRZxoDfLMsgjGbt07lwY0fQh0W+eNmRLRyH7sPP8mEaIuqHciJzjVKNgBq21mMwEKzsxhENqImNgJhv6oPC+khY5JrRvXCBMEJAFmmPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gGDJegYY; arc=none smtp.client-ip=95.215.58.182
+	 MIME-Version; b=S14dS2wwITNR8CEBehokggPbuvUPgORSYY9hQiSlge/fAf8Xzyu5IsiOk21bfy2uxJx4eiUxyFLsbnwpvxOAUTDX2M1hnj4Kfyk4chx38Y/VZUG2ljJi4IXu+A1KHTNzMT3OemMvVdLttDMajZG3LTA9knfX2BIbRuzJU2jZdug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RstSVUsj; arc=none smtp.client-ip=95.215.58.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1738021205;
+	t=1738021207;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=39ai8KCTykcHjuN/hfG+Uz32i7d9BqLJ5GoGtjef1v0=;
-	b=gGDJegYYDMC4213y1JQ2+Vtwy5aZCyOFLMskghLl7YRFOrmCJim0RrYMWoWyAFm8I4s1nI
-	yLTd27zemuFg/UD1HtvnTQ9qBF7oX0g6+8dsXeiMfqasm1ptWVudtN1ZCqBGJv5IcLzJi1
-	KgzXU2R8YWwzDmHpJepYhQrUYVei1Gg=
+	bh=MhjpJoz+gldrb29KBrFyJBdFe7Iv8fDNIPNAHD3d22w=;
+	b=RstSVUsjko400gqZFeoh4BOLpXU0gxKLj50QhzjzrNf3k3BnteIe1yVMITQmvfkLEKaSyb
+	+wuuZQFPkkECnLSKwk8GDNMdJoXgALZgV190dplXZmKtNcG2rRlKT9TB1PK6Xgyo5M50aS
+	Lc3/AQ319NHqoYbpuL7nj/xZsl7smD0=
 From: Ihor Solodrai <ihor.solodrai@linux.dev>
 To: bpf@vger.kernel.org
 Cc: andrii@kernel.org,
@@ -50,9 +50,9 @@ Cc: andrii@kernel.org,
 	eddyz87@gmail.com,
 	mykolal@fb.com,
 	jose.marchesi@oracle.com
-Subject: [PATCH bpf-next v2 2/6] docs/bpf: document the semantics of BTF tags with kind_flag
-Date: Mon, 27 Jan 2025 15:39:51 -0800
-Message-ID: <20250127233955.2275804-3-ihor.solodrai@linux.dev>
+Subject: [PATCH bpf-next v2 3/6] libbpf: check the kflag of type tags in btf_dump
+Date: Mon, 27 Jan 2025 15:39:52 -0800
+Message-ID: <20250127233955.2275804-4-ihor.solodrai@linux.dev>
 In-Reply-To: <20250127233955.2275804-1-ihor.solodrai@linux.dev>
 References: <20250127233955.2275804-1-ihor.solodrai@linux.dev>
 Precedence: bulk
@@ -64,113 +64,31 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Explain the meaning of kind_flag in BTF type_tags and decl_tags.
-Update uapi btf.h kind_flag comment to reflect the changes.
+If the kflag is set for a BTF type tag, then the tag represents an
+arbitrary __attribute__. Change btf_dump accordingly.
 
 Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
 ---
- Documentation/bpf/btf.rst      | 25 +++++++++++++++++++++----
- include/uapi/linux/btf.h       |  3 ++-
- tools/include/uapi/linux/btf.h |  3 ++-
- 3 files changed, 25 insertions(+), 6 deletions(-)
+ tools/lib/bpf/btf_dump.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
-index 2478cef758f8..48d9b33d59db 100644
---- a/Documentation/bpf/btf.rst
-+++ b/Documentation/bpf/btf.rst
-@@ -102,7 +102,8 @@ Each type contains the following common data::
-          * bits 24-28: kind (e.g. int, ptr, array...etc)
-          * bits 29-30: unused
-          * bit     31: kind_flag, currently used by
--         *             struct, union, fwd, enum and enum64.
-+	 *             struct, union, enum, fwd, enum64,
-+	 *             decl_tag and type_tag
-          */
-         __u32 info;
-         /* "size" is used by INT, ENUM, STRUCT, UNION and ENUM64.
-@@ -478,7 +479,7 @@ No additional type data follow ``btf_type``.
- 
- ``struct btf_type`` encoding requirement:
-  * ``name_off``: offset to a non-empty string
-- * ``info.kind_flag``: 0
-+ * ``info.kind_flag``: 0 or 1
-  * ``info.kind``: BTF_KIND_DECL_TAG
-  * ``info.vlen``: 0
-  * ``type``: ``struct``, ``union``, ``func``, ``var`` or ``typedef``
-@@ -489,7 +490,6 @@ No additional type data follow ``btf_type``.
-         __u32   component_idx;
-     };
- 
--The ``name_off`` encodes btf_decl_tag attribute string.
- The ``type`` should be ``struct``, ``union``, ``func``, ``var`` or ``typedef``.
- For ``var`` or ``typedef`` type, ``btf_decl_tag.component_idx`` must be ``-1``.
- For the other three types, if the btf_decl_tag attribute is
-@@ -499,12 +499,21 @@ the attribute is applied to a ``struct``/``union`` member or
- a ``func`` argument, and ``btf_decl_tag.component_idx`` should be a
- valid index (starting from 0) pointing to a member or an argument.
- 
-+If ``info.kind_flag`` is 0, then this is a normal decl tag, and the
-+``name_off`` encodes btf_decl_tag attribute string.
-+
-+If ``info.kind_flag`` is 1, then the decl tag represents an arbitrary
-+__attribute__. In this case, ``name_off`` encodes a string
-+representing the attribute-list of the attribute specifier. For
-+example, for an ``__attribute__((aligned(4)))`` the string's contents
-+is ``aligned(4)``.
-+
- 2.2.18 BTF_KIND_TYPE_TAG
- ~~~~~~~~~~~~~~~~~~~~~~~~
- 
- ``struct btf_type`` encoding requirement:
-  * ``name_off``: offset to a non-empty string
-- * ``info.kind_flag``: 0
-+ * ``info.kind_flag``: 0 or 1
-  * ``info.kind``: BTF_KIND_TYPE_TAG
-  * ``info.vlen``: 0
-  * ``type``: the type with ``btf_type_tag`` attribute
-@@ -522,6 +531,14 @@ type_tag, then zero or more const/volatile/restrict/typedef
- and finally the base type. The base type is one of
- int, ptr, array, struct, union, enum, func_proto and float types.
- 
-+Similarly to decl tags, if the ``info.kind_flag`` is 0, then this is a
-+normal type tag, and the ``name_off`` encodes btf_type_tag attribute
-+string.
-+
-+If ``info.kind_flag`` is 1, then the type tag represents an arbitrary
-+__attribute__, and the ``name_off`` encodes a string representing the
-+attribute-list of the attribute specifier.
-+
- 2.2.19 BTF_KIND_ENUM64
- ~~~~~~~~~~~~~~~~~~~~~~
- 
-diff --git a/include/uapi/linux/btf.h b/include/uapi/linux/btf.h
-index ec1798b6d3ff..266d4ffa6c07 100644
---- a/include/uapi/linux/btf.h
-+++ b/include/uapi/linux/btf.h
-@@ -36,7 +36,8 @@ struct btf_type {
- 	 * bits 24-28: kind (e.g. int, ptr, array...etc)
- 	 * bits 29-30: unused
- 	 * bit     31: kind_flag, currently used by
--	 *             struct, union, enum, fwd and enum64
-+	 *             struct, union, enum, fwd, enum64,
-+	 *             decl_tag and type_tag
- 	 */
- 	__u32 info;
- 	/* "size" is used by INT, ENUM, STRUCT, UNION, DATASEC and ENUM64.
-diff --git a/tools/include/uapi/linux/btf.h b/tools/include/uapi/linux/btf.h
-index ec1798b6d3ff..266d4ffa6c07 100644
---- a/tools/include/uapi/linux/btf.h
-+++ b/tools/include/uapi/linux/btf.h
-@@ -36,7 +36,8 @@ struct btf_type {
- 	 * bits 24-28: kind (e.g. int, ptr, array...etc)
- 	 * bits 29-30: unused
- 	 * bit     31: kind_flag, currently used by
--	 *             struct, union, enum, fwd and enum64
-+	 *             struct, union, enum, fwd, enum64,
-+	 *             decl_tag and type_tag
- 	 */
- 	__u32 info;
- 	/* "size" is used by INT, ENUM, STRUCT, UNION, DATASEC and ENUM64.
+diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+index a3fc6908f6c9..460c3e57fadb 100644
+--- a/tools/lib/bpf/btf_dump.c
++++ b/tools/lib/bpf/btf_dump.c
+@@ -1494,7 +1494,10 @@ static void btf_dump_emit_type_chain(struct btf_dump *d,
+ 		case BTF_KIND_TYPE_TAG:
+ 			btf_dump_emit_mods(d, decls);
+ 			name = btf_name_of(d, t->name_off);
+-			btf_dump_printf(d, " __attribute__((btf_type_tag(\"%s\")))", name);
++			if (btf_kflag(t))
++				btf_dump_printf(d, " __attribute__((%s))", name);
++			else
++				btf_dump_printf(d, " __attribute__((btf_type_tag(\"%s\")))", name);
+ 			break;
+ 		case BTF_KIND_ARRAY: {
+ 			const struct btf_array *a = btf_array(t);
 -- 
 2.48.1
 
