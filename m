@@ -1,147 +1,149 @@
-Return-Path: <bpf+bounces-49855-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49856-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6E0FA1D5E8
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 13:28:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAA34A1D666
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 14:14:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 445B43A2A18
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 12:28:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCF123A6D39
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 13:13:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F35E1FF1D4;
-	Mon, 27 Jan 2025 12:28:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B871F1FF1DF;
+	Mon, 27 Jan 2025 13:13:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JHfGpRTF"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PSLjNTZw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 291F41FECC7;
-	Mon, 27 Jan 2025 12:28:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1D311FF1B4
+	for <bpf@vger.kernel.org>; Mon, 27 Jan 2025 13:13:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737980886; cv=none; b=R8ZAxb/1NvVvMxG0FOH06MTaj0zbTGprVKYHdoP9M6sKtkH2S8XdmteJrHHuZrKAFFg9CLZbD+aoeVka+iEt1oaeDnuSzuybynqaTp7smot3BeF/a32s0nG0Ai/Wq40jCoxwirUlZWYFek/OexDhfDxHATIbKQbLjwRPBDCpaok=
+	t=1737983635; cv=none; b=dFrXIqFO4BVgg57Q+1gx651hjAZZv9f5W+Uy85dcUDqLDVJF8uvTA4yESiRZ6SEWvLO/E3Aq7sp/cDaJ8oISuH/wEKB65aIFxNd9Q+MH7V47XvmNNFXjCVl4dTs5qlAXfeQDcO3JkFZmUoIad4INCCBtGAkTkoLQtAJ2rPFkzNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737980886; c=relaxed/simple;
-	bh=bg9amlmFdK/h2r1MnHxwVsOFVnMATC4b5ax0Y6Sl1Us=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mf/HRJRm/mM52raHLzup54D4FHJhaul+w1wq1+aW/Z0QbusufkjgyF6BlRgYPT6aSwhL2HXAaqoaK4EHBuXsBjQcatlP3BTmR18zmX1mgg9lQbHdPBA4OhnDvZY1zfe8N4adD8Kvc2TX1ewjYESD+4W3UwTXFR5dPO2vEME+Tj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JHfGpRTF; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1737980884; x=1769516884;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bg9amlmFdK/h2r1MnHxwVsOFVnMATC4b5ax0Y6Sl1Us=;
-  b=JHfGpRTFmfxy9nepMa2pNhD5whreQbRfxuaz5D+qkyQh+id2fQUkqJl7
-   2kjhzJokl/Fey4cMeUIWVvcJZel3EKRb6GSX3RwQwdygqLH3p6L9QtOOE
-   N15hN6bYhnARrJM0H1IepEmZtMFkfEZIq5Oy7o2JOLKjJse0JOYy2o7Il
-   yCLoXGDXnxABnD6Bj8TSixWajJUfH15KzFz/SlKY965EPtYbwo0eSmCgY
-   3V7JY8ioMct6IB6ZI3tWr6SUBr6zLlUwFc5y8vo9vfVZNfnmaimQsKJJ2
-   lD1Y+EJi5VPKAD4SFgKdoG8qMfSCHhLe/iUWgp1c4m+0y88T9IunbDbfG
-   g==;
-X-CSE-ConnectionGUID: xIQnwC+ORZu97nYLkMzWeA==
-X-CSE-MsgGUID: tcqpbMvCRSy9Ut1ujYsrqQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11328"; a="49032860"
-X-IronPort-AV: E=Sophos;i="6.13,238,1732608000"; 
-   d="scan'208";a="49032860"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2025 04:28:03 -0800
-X-CSE-ConnectionGUID: /nXOYI4iSHqijSeaDJ5RCQ==
-X-CSE-MsgGUID: k6fZ0skxT2KoCiodPqeCXA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,238,1732608000"; 
-   d="scan'208";a="108218730"
-Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
-  by fmviesa006.fm.intel.com with ESMTP; 27 Jan 2025 04:27:58 -0800
-Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tcODc-000gkp-0T;
-	Mon, 27 Jan 2025 12:27:56 +0000
-Date: Mon, 27 Jan 2025 20:27:43 +0800
-From: kernel test robot <lkp@intel.com>
-To: Levi Zim via B4 Relay <devnull+rsworktech.outlook.com@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
+	s=arc-20240116; t=1737983635; c=relaxed/simple;
+	bh=UG1uWB9PPsdJVySf4XB80nqQdIhk5TQ8Trsvg6yxuvA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KIrKY9xhnf6Rotai1En3pfXBVsktPuhTUt2Z2cn8a9hFZn8wr6GJx5Bw8ifUO3h1tKF3Xgc86g3X9kT9ZgtARiDgInMWV6YSWBuhY/1u/83LnxiXduymF2s5nVKYYhaS/yjYqCDeFn4depFPS1aHKOCgkv1dl8ytZ60IOSgyemw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PSLjNTZw; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1737983632;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=fcUM4E5/zqehZHkTb/+XMPrTsEhKyeNv3Vdv9RdTApE=;
+	b=PSLjNTZw2wDC2whzo5r8R4XdzbUtuXTze4J/u8SPcfWsoWtrpl8Kva8XWYkejsZhmMiCmT
+	23FemoPyDCVIac/rmMmo0idsAFCPsFzARroHpr+JM1KLGkQJNtZCTEbQnV45cyDwYIB9Kt
+	t+gfHhrG/sPEFxqIM4hVdyqLoIf8mio=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-651-0fa3LLS0PQCqsB43rUqxGQ-1; Mon, 27 Jan 2025 08:13:51 -0500
+X-MC-Unique: 0fa3LLS0PQCqsB43rUqxGQ-1
+X-Mimecast-MFC-AGG-ID: 0fa3LLS0PQCqsB43rUqxGQ
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-aab954d1116so419763166b.3
+        for <bpf@vger.kernel.org>; Mon, 27 Jan 2025 05:13:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737983630; x=1738588430;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fcUM4E5/zqehZHkTb/+XMPrTsEhKyeNv3Vdv9RdTApE=;
+        b=o785OROgGIkjMcKTuGi7Rx7ZF2/Cb3SHHVuGAeWlVOZYBL4jRZsC5kYtOpQR1z08ig
+         pfHS9TZHqUQpIFlY2om9p9Yc/bLlvafXn/qez8GsudCHzixFuB8tSN69DTsC+NxUVcXG
+         F7rw+UK26EIOqBzktz81T+HP9HdhXMUNgwk56mTTeB8PvYfR+njdxHjHQgRytdVoDaEa
+         mupZJly6REYqwIZ8rTXnIpB5z4AKLy90+FA3XGXrtODaWdYR7OUmSqMbMpjoG1cUYTZd
+         mNJz1hAAN5+WWZzC96MLamm6FHgJ6QVKFlB0R+2UiXhaVqlCnZRq10InI7bNMuOfaa4Q
+         2tXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWSm11fI46yNXFnpsrMYdXUaJcPLdu6aIbFjxWBM4/m5m5TUu20mvZMA4Nz54JAG/XOGSI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwavP/kuURGR2PXqk5z9KpJtTPTUHgQ9v9kX7B+Rb7txyEd2W9H
+	A2749B7iU1bYwDV86y9s76IKIVAji5FyYdbz3fXqsvjFUWDJZ5O4eB09WkpK1HC9Ouj7cihV7BW
+	nLfHBgF0Uuwol4+L1s5HUFAJ4AqQmQFLY2VxkVwjbrG+2xf3Uxg==
+X-Gm-Gg: ASbGnct2AkLmfNP1uUcAL3h0mbkiIkdvborb5wJRNsKaU9BYLZjj9+j6aykcS9+xgri
+	Qrs1AOd3kZq8tHllYf4WDwV3e2BzeKRer6ARkbAlj71fh2NPLViSrYEsJJR+/hIJGmZPftug0Ax
+	kMlQujvTUcJLiIn/EPlE7aMQsorJ1qp/Hs1HHF2IQ4me6OML+O4SX9Deozq4KxF9MHqQvSPIYdN
+	iXeg27xEt/1+e5r22x/24B4lyBDcCXxpAD97oU89bamiLLW6XRN4MJ/mmcXrTHvXPENuMoYK5tW
+	bc511n6u2PRg/BefjOd/XjpqAEtnBQ==
+X-Received: by 2002:a17:906:4e95:b0:ab3:9fda:8de6 with SMTP id a640c23a62f3a-ab39fda9d0fmr2873612866b.53.1737983630015;
+        Mon, 27 Jan 2025 05:13:50 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHVolCeZJHuXjqdhHG/qXr2B3y0CAjTQR5vG/mpSIuxPZT28Ss3xWkda9FoT57ev6ADNksOrA==
+X-Received: by 2002:a17:906:4e95:b0:ab3:9fda:8de6 with SMTP id a640c23a62f3a-ab39fda9d0fmr2873610066b.53.1737983629669;
+        Mon, 27 Jan 2025 05:13:49 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab69051b1ddsm357596366b.180.2025.01.27.05.13.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jan 2025 05:13:49 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 05397180AEB5; Mon, 27 Jan 2025 14:13:47 +0100 (CET)
+From: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Matt Bobrowski <mattbobrowski@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <skhan@linuxfoundation.org>
-Cc: oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, Levi Zim <rsworktech@outlook.com>
-Subject: Re: [PATCH bpf-next v2 2/7] bpf: Implement
- bpf_probe_read_user_dynptr helper
-Message-ID: <202501272059.wikSvChi-lkp@intel.com>
-References: <20250125-bpf_dynptr_probe-v2-2-c42c87f97afe@outlook.com>
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Cc: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>,
+	Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH net 1/2] net: xdp: Disallow attaching device-bound programs in generic mode
+Date: Mon, 27 Jan 2025 14:13:42 +0100
+Message-ID: <20250127131344.238147-1-toke@redhat.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250125-bpf_dynptr_probe-v2-2-c42c87f97afe@outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Levi,
+Device-bound programs are used to support RX metadata kfuncs. These
+kfuncs are driver-specific and rely on the driver context to read the
+metadata. This means they can't work in generic XDP mode. However, there
+is no check to disallow such programs from being attached in generic
+mode, in which case the metadata kfuncs will be called in an invalid
+context, leading to crashes.
 
-kernel test robot noticed the following build warnings:
+Fix this by adding a check to disallow attaching device-bound programs
+in generic mode.
 
-[auto build test WARNING on d0d106a2bd21499901299160744e5fe9f4c83ddb]
+Fixes: 2b3486bc2d23 ("bpf: Introduce device-bound XDP programs")
+Reported-by: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
+Closes: https://lore.kernel.org/r/dae862ec-43b5-41a0-8edf-46c59071cdda@hetzner-cloud.de
+Tested-by: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
+Acked-by: Stanislav Fomichev <sdf@fomichev.me>
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
+ net/core/dev.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Levi-Zim-via-B4-Relay/bpf-Implement-bpf_probe_read_kernel_dynptr-helper/20250125-163114
-base:   d0d106a2bd21499901299160744e5fe9f4c83ddb
-patch link:    https://lore.kernel.org/r/20250125-bpf_dynptr_probe-v2-2-c42c87f97afe%40outlook.com
-patch subject: [PATCH bpf-next v2 2/7] bpf: Implement bpf_probe_read_user_dynptr helper
-config: x86_64-randconfig-122-20250127 (https://download.01.org/0day-ci/archive/20250127/202501272059.wikSvChi-lkp@intel.com/config)
-compiler: clang version 19.1.3 (https://github.com/llvm/llvm-project ab51eccf88f5321e7c60591c5546b254b6afab99)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250127/202501272059.wikSvChi-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202501272059.wikSvChi-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
-   kernel/trace/bpf_trace.c:899:41: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void [noderef] __user *[addressable] [assigned] [usertype] sival_ptr @@     got void * @@
-   kernel/trace/bpf_trace.c:899:41: sparse:     expected void [noderef] __user *[addressable] [assigned] [usertype] sival_ptr
-   kernel/trace/bpf_trace.c:899:41: sparse:     got void *
->> kernel/trace/bpf_trace.c:235:39: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected void const [noderef] __user *unsafe_ptr @@     got void *unsafe_ptr @@
-   kernel/trace/bpf_trace.c:235:39: sparse:     expected void const [noderef] __user *unsafe_ptr
-   kernel/trace/bpf_trace.c:235:39: sparse:     got void *unsafe_ptr
-   kernel/trace/bpf_trace.c: note: in included file (through include/linux/smp.h, include/linux/lockdep.h, include/linux/spinlock.h, ...):
-   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
-   kernel/trace/bpf_trace.c: note: in included file (through include/linux/rbtree.h, include/linux/mm_types.h, include/linux/mmzone.h, ...):
-   include/linux/rcupdate.h:880:25: sparse: sparse: context imbalance in 'uprobe_prog_run' - unexpected unlock
-
-vim +235 kernel/trace/bpf_trace.c
-
-   228	
-   229	BPF_CALL_5(bpf_probe_read_user_dynptr, const struct bpf_dynptr_kern *, dst,
-   230		u32, offset, u32, size, void *, unsafe_ptr, u64, flags)
-   231	{
-   232		int ret = bpf_probe_read_check_dynptr(dst, offset, size, flags);
-   233	
-   234		return ret ?: bpf_probe_read_user_common(dst->data + dst->offset + offset,
- > 235					size, unsafe_ptr);
-   236	}
-   237	
-
+diff --git a/net/core/dev.c b/net/core/dev.c
+index afa2282f2604..c1fa68264989 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -9924,6 +9924,10 @@ static int dev_xdp_attach(struct net_device *dev, struct netlink_ext_ack *extack
+ 			NL_SET_ERR_MSG(extack, "Program bound to different device");
+ 			return -EINVAL;
+ 		}
++		if (bpf_prog_is_dev_bound(new_prog->aux) && mode == XDP_MODE_SKB) {
++			NL_SET_ERR_MSG(extack, "Can't attach device-bound programs in generic mode");
++			return -EINVAL;
++		}
+ 		if (new_prog->expected_attach_type == BPF_XDP_DEVMAP) {
+ 			NL_SET_ERR_MSG(extack, "BPF_XDP_DEVMAP programs can not be attached to a device");
+ 			return -EINVAL;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.48.1
+
 
