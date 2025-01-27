@@ -1,169 +1,129 @@
-Return-Path: <bpf+bounces-49866-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49867-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53B6CA1DA20
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 17:04:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41282A1DA6C
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 17:22:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C2DF16767C
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 16:04:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F511162696
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 16:22:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B6B5153800;
-	Mon, 27 Jan 2025 16:04:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5563015442D;
+	Mon, 27 Jan 2025 16:22:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FGGV/9sp"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cpMBTOT8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DFB07BAEC;
-	Mon, 27 Jan 2025 16:04:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C0D814E2E8
+	for <bpf@vger.kernel.org>; Mon, 27 Jan 2025 16:22:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737993887; cv=none; b=a0uk5ChCQNLor8MNMvEhE4Hvq61v9QN1jJrrAGUsUu5PmOFt4Ty5OKY0A9mFgJz4ZLt4yF5ruDvdxGHKMhSKFmdiS/Z7L6s4PQsJzr/1oB9K+pj6V/mL9jX3XII0ezs2tGlKpeEhwVGGKP2mdXopLytGnnBOiLxiGEixYX0TH/8=
+	t=1737994948; cv=none; b=q7VdV6ykoqPk4payapYH7rTJHqzhEOgIMA+kEPs0+BGx9SIRPsmE4OqEcTKjzYUFkLZJZdRS+fhXu18U/0hHJm47fnCOe2lnK9qo7SbeESqgAvWxUZjYSxbTBrySFqJuMpFojukuNR3kK14/dNa/FoEGbJY6GDqVuQ2UN2jPOOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737993887; c=relaxed/simple;
-	bh=apZ5E3/lHSBZLZjJrFRNg92Lj7oD7FG7hxu8W7ybIv4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JTIund1cG6gAGyL/I6U+uYp6/iCP/1s6t3QGmHhzXo+iCiGcxi2rnS+U7Yo+ctR2VuRFyFgN5b9ugUOJ5BJSYgWwo2Ws3l5i7jy1xhezIXPwLfCwPoFe4/U1SZjiqZgrRyqVDYmM/bSOBuk2AypxTjxNCrpKGHzeCxO5I6XsqZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FGGV/9sp; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2163b0c09afso84285165ad.0;
-        Mon, 27 Jan 2025 08:04:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737993884; x=1738598684; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bhtYqaf9HNl2Tvv5wf0rnBEEHSiWm6k/ivguWbD71P0=;
-        b=FGGV/9spSfc8Nvz9AzXSQaY+t2Dvgcqmsi80imqIHEITy++wkTQFrJkbTowuxgJ/mt
-         NdFa6x9b8OZceCA3fPKozgP9MMHairIN2wNnoVoA+QGSSI+M+1mOvHpN3g+nuhHMAgCv
-         iVsVMNzsXCSRrEsfvy19Tzt97QuqK5BAiePekza+RgnjsieIm24oTUUCg+J4wOxx7MTT
-         b8rHlAOh5LrpFSpkRZJQ7nOd8SlkiK7YoP3hb8aCqCYJPPjQXh1T4D/miTVEd9MAzZuP
-         9PmgHHpbK8B3jRGlvAaDiH0Eg5tvOuBWlB9zhZBO1Y5ubwDPDtddGa+blr68qAfKh+ey
-         tzKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737993885; x=1738598685;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bhtYqaf9HNl2Tvv5wf0rnBEEHSiWm6k/ivguWbD71P0=;
-        b=pEOgchqX5mq+kF/SIxHB3+BMnc0VGc1/ZxQKuF1T9Frv14EEko+rNjEjMSPb7JNj3g
-         qmvJfUaqoUaMXiUCRwafcrzYgNWQC5vgvd7hNYuNAdacCUJk1TCa5RzEwAG79Y+s4HWK
-         1JBEQBQgzvXlb1EF8/1gGh70nuCrXArZvHSNQuRdHDzjD6mke40TE2fcCBDgiNLi31Y5
-         edXrqh0z533fUE6AsqwD36t0ArnqAlUSrpMnC3LMAvY99dPXQpdtl7V+M6qQwHowbDpr
-         SmzNP6n2wjmGnhDTylwO3vly27lG4ws1BE0pw4ZWC2JY8kw2sMiHBBeF7WzqQMSY36lO
-         yzlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUCjs9pnqIkMUdl63yt/17cwAZBeTF/Lv71LGoisf6CTmcLUrVwkeSSQM1z8B5zxbyoSSliYC1k+NRh@vger.kernel.org, AJvYcCUbqkLlVfO+o1nTqG1SR6xnb6kWf+EejrtXW5Ab4lS9v8bTMVl86bUEpluHswXsug4rj+a+6A3mx5zylOOycfL4@vger.kernel.org, AJvYcCWFOG0f+XCMyJqsx8mEcVSVMK95qJDCDufpP1s+Gev6JTAvAAotsWqfuEh+0ce/H8O9MBc=@vger.kernel.org, AJvYcCXSsYnNlJweNndMJjLsu55512zN+ppnRSe4vxaO1J6pbC1srmsYxYo/N8hxEmUnMr9ormw5ItNKgcFOui+C@vger.kernel.org, AJvYcCXmoUJBpPxsV4ENq+Bdqrn1Nc18OkC8umxpx4ejFkPltmyDMWNFLwbBVXN+H6uWlHoSlXUBpvnF@vger.kernel.org
-X-Gm-Message-State: AOJu0YyA17x8xTyaoHv7xplMtxMUndNc3wWtkkfYPPC/EZAmrL2Fya3Q
-	4R5Mfg9tVA4kwKIEV1i08mfso0opkO7SAInLYBDCa/PgTv9kNBKs
-X-Gm-Gg: ASbGncsFa1QnH6Tm2uvY3d76CCG95x1glQAVS/xoPpPVezO5smbmtaYUGPXVUpp9LJT
-	P3mfCR7gdIAEakiB+w8LkR3a8rZskZyEeW/G5izrU4Hi05QmRVhb1R5AxOD41638+1LAkKsjfRH
-	2UMjutj1d+jpgYHDUl0rxdNaFAJnwQPVsaepufjZ+AhTJLCcnCj9u61ezaOHr8J9tCLHoGttZ9V
-	yegrs3a2FbI9JsYzzBkMKlWeHzx+vBVwo2W6HYtpCYl9jd+QWeImdrZckhE9Wj5oNtmbRuoJSfc
-	Q3K2NQ==
-X-Google-Smtp-Source: AGHT+IESvwfGyLqmu3jP5n+pNmNlyBZKOsDbT4avridkVgJrMVZ+QuspeR4I4KnEw+lvpFE0YHH7iA==
-X-Received: by 2002:a05:6a21:3391:b0:1e0:d123:7166 with SMTP id adf61e73a8af0-1eb2148de80mr63097969637.14.1737993884394;
-        Mon, 27 Jan 2025 08:04:44 -0800 (PST)
-Received: from gmail.com ([98.97.39.174])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72f8a6b307fsm7317183b3a.46.2025.01.27.08.04.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jan 2025 08:04:43 -0800 (PST)
-Date: Mon, 27 Jan 2025 08:04:29 -0800
-From: John Fastabend <john.fastabend@gmail.com>
-To: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: Jiayuan Chen <mrpre@163.com>, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org, martin.lau@linux.dev, ast@kernel.org, edumazet@google.com, 
-	davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com, 
-	linux-kernel@vger.kernel.org, song@kernel.org, andrii@kernel.org, mhal@rbox.co, 
-	yonghong.song@linux.dev, daniel@iogearbox.net, xiyou.wangcong@gmail.com, horms@kernel.org, 
-	corbet@lwn.net, eddyz87@gmail.com, cong.wang@bytedance.com, shuah@kernel.org, 
-	mykolal@fb.com, jolsa@kernel.org, haoluo@google.com, sdf@fomichev.me, 
-	kpsingh@kernel.org, linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf v9 0/5] bpf: fix wrong copied_seq calculation and add
- tests
-Message-ID: <i2pmhcfge4my5rl4sy5uvu3lhnbtov5rhcjdrqbwunicnefrzy@uhs35blc47lv>
-References: <20250122100917.49845-1-mrpre@163.com>
- <877c6hd5io.fsf@cloudflare.com>
+	s=arc-20240116; t=1737994948; c=relaxed/simple;
+	bh=xeaE0s1tUBtCaWKr730a+Zpx3gx2XZJW8WErnnP01p4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=vFlz5o5dd/tOBLbjTCfEIRJLSdt6sWT3F7WfvD/6cfBGhwCDfw9q6dLOqrmKJgLJ3Qf5XhxPvlzII7ivzdfNVX1oiyWuUDg/d4r0YO1ANNZF7Tpf/6EVgZ4aQDDMHmYxfSHdsalUbt7X/JwvwjMZCOZnhJbBf3o+OBm9VixGDcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cpMBTOT8; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1737994943;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=yYjSiglpl5sAVK1Kei7Yu9LFHMAm4yswlMhmPa5GXYM=;
+	b=cpMBTOT8Sy0rBqtE7GInwfwVle/MScWVOc1Swybs2M8yIlRHypoE/PC1T+DM/HV5oZrwMU
+	4keJNQ7kq0maPpI0mYigRGMooRYtzNV+imZSHAbYa7vmeNCxWwEVTKjMbUzC++yop5TjHX
+	4dBk5Zxq/L1xybGNtb06kyLiy0Vl0Oo=
+From: Leon Hwang <leon.hwang@linux.dev>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	yonghong.song@linux.dev,
+	song@kernel.org,
+	eddyz87@gmail.com,
+	qmo@kernel.org,
+	dxu@dxuuu.xyz,
+	leon.hwang@linux.dev,
+	kernel-patches-bot@fb.com
+Subject: [PATCH bpf-next 0/4] bpf: Introduce global percpu data
+Date: Tue, 28 Jan 2025 00:21:54 +0800
+Message-ID: <20250127162158.84906-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877c6hd5io.fsf@cloudflare.com>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 2025-01-26 15:16:47, Jakub Sitnicki wrote:
-> On Wed, Jan 22, 2025 at 06:09 PM +08, Jiayuan Chen wrote:
-> > A previous commit described in this topic
-> > http://lore.kernel.org/bpf/20230523025618.113937-9-john.fastabend@gmail.com
-> > directly updated 'sk->copied_seq' in the tcp_eat_skb() function when the
-> > action of a BPF program was SK_REDIRECT. For other actions, like SK_PASS,
-> > the update logic for 'sk->copied_seq' was moved to
-> > tcp_bpf_recvmsg_parser() to ensure the accuracy of the 'fionread' feature.
-> >
-> > That commit works for a single stream_verdict scenario, as it also
-> > modified 'sk_data_ready->sk_psock_verdict_data_ready->tcp_read_skb'
-> > to remove updating 'sk->copied_seq'.
-> >
-> > However, for programs where both stream_parser and stream_verdict are
-> > active (strparser purpose), tcp_read_sock() was used instead of
-> > tcp_read_skb() (sk_data_ready->strp_data_ready->tcp_read_sock).
-> > tcp_read_sock() now still updates 'sk->copied_seq', leading to duplicated
-> > updates.
-> >
-> > In summary, for strparser + SK_PASS, copied_seq is redundantly calculated
-> > in both tcp_read_sock() and tcp_bpf_recvmsg_parser().
-> >
-> > The issue causes incorrect copied_seq calculations, which prevent
-> > correct data reads from the recv() interface in user-land.
-> >
-> > Also we added test cases for bpf + strparser and separated them from
-> > sockmap_basic, as strparser has more encapsulation and parsing
-> > capabilities compared to sockmap.
-> >
-> > ---
-> > V8 -> v9
-> > https://lore.kernel.org/bpf/20250121050707.55523-1-mrpre@163.com/
-> > Fixed some issues suggested by Jakub Sitnicki.
-> >
-> > V7 -> V8
-> > https://lore.kernel.org/bpf/20250116140531.108636-1-mrpre@163.com/
-> > Avoid using add read_sock to psock. (Jakub Sitnicki)
-> > Avoid using warpper function to check whether strparser is supported.
-> >
-> > V3 -> V7:
-> > https://lore.kernel.org/bpf/20250109094402.50838-1-mrpre@163.com/
-> > https://lore.kernel.org/bpf/20241218053408.437295-1-mrpre@163.com/
-> > Avoid introducing new proto_ops. (Jakub Sitnicki).
-> > Add more edge test cases for strparser + bpf.
-> > Fix patchwork fail of test cases code.
-> > Fix psock fetch without rcu lock.
-> > Move code of modifying to tcp_bpf.c.
-> >
-> > V1 -> V3:
-> > https://lore.kernel.org/bpf/20241209152740.281125-1-mrpre@163.com/
-> > Fix patchwork fail by adding Fixes tag.
-> > Save skb data offset for ENOMEM. (John Fastabend)
-> > ---
-> 
-> Thanks for addressing all feedback, Jiayuan. Series LGTM.
-> Feel free to carry my tags if there is another iteration.
+This patch set introduces global percpu data, similar to commit
+6316f78306c1 ("Merge branch 'support-global-data'"), to reduce restrictions
+in C for BPF programs.
 
-+1 Thanks Jiayuan for sticking with this.
+With this enhancement, it becomes possible to define and use global percpu
+variables, much like the DEFINE_PER_CPU() macro in the kernel[0].
 
-I've reviewed this a couple times. I had one nit on the if/else branch
-for a read call, but I haven't come up with anything better on my end
-and this fixes a real bug. So lets take it.
+The idea stems from the bpflbr project[1], which itself was inspired by
+retsnoop[2]. During testing of bpflbr on the v6.6 kernel, two LBR
+(Last Branch Record) entries were observed related to the
+bpf_get_smp_processor_id() helper.
 
-For the series.
+Since commit 1ae6921009e5 ("bpf: inline bpf_get_smp_processor_id() helper"),
+the bpf_get_smp_processor_id() helper has been inlined on x86_64, reducing
+the overhead and consequently minimizing these two LBR records.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+However, the introduction of global percpu data offers a more robust
+solution. By leveraging the percpu_array map and percpu instructions,
+global percpu data can be implemented intrinsically.
 
-> 
-> -jkbs
+This feature also facilitates sharing percpu information between tail
+callers and callees or between freplace callers and callees through a
+shared global percpu variable. Previously, this was achieved using a
+1-entry percpu_array map, which this patch set aims to improve upon.
+
+Links:
+[0] https://github.com/torvalds/linux/blob/fbfd64d25c7af3b8695201ebc85efe90be28c5a3/include/linux/percpu-defs.h#L114
+[1] https://github.com/Asphaltt/bpflbr
+[2] https://github.com/anakryiko/retsnoop
+
+Changes:
+rfc -> v1:
+  * Address comments from Andrii:
+    * Keep one image of global percpu variable for all CPUs.
+    * Reject non-ARRAY map in bpf_map_direct_read(), check_reg_const_str(),
+      and check_bpf_snprintf_call() in verifier.
+    * Split out libbpf changes from kernel-side changes.
+    * Use ".percpu" as PERCPU_DATA_SEC.
+    * Use enum libbpf_map_type to distinguish BSS, DATA, RODATA and
+      PERCPU_DATA.
+    * Avoid using errno for checking err from libbpf_num_possible_cpus().
+    * Use "map '%s': " prefix for error message.
+
+Leon Hwang (4):
+  bpf: Introduce global percpu data
+  bpf, libbpf: Support global percpu data
+  bpf, bpftool: Generate skeleton for global percpu data
+  selftests/bpf: Add a case to test global percpu data
+
+ kernel/bpf/arraymap.c                         |  39 +++-
+ kernel/bpf/verifier.c                         |  45 +++++
+ tools/bpf/bpftool/gen.c                       |  13 +-
+ tools/lib/bpf/libbpf.c                        | 175 ++++++++++++++----
+ tools/lib/bpf/libbpf.h                        |   1 +
+ .../bpf/prog_tests/global_data_init.c         |  89 ++++++++-
+ .../bpf/progs/test_global_percpu_data.c       |  21 +++
+ 7 files changed, 340 insertions(+), 43 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_global_percpu_data.c
+
+-- 
+2.47.1
+
 
