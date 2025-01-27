@@ -1,231 +1,111 @@
-Return-Path: <bpf+bounces-49871-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49872-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25D48A1DA70
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 17:23:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDFDFA1DAD1
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 17:50:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70C4B163EB6
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 16:22:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A519B188945C
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 16:50:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A23941547F2;
-	Mon, 27 Jan 2025 16:22:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D201157465;
+	Mon, 27 Jan 2025 16:50:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Eyp/pzIK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M7VqSsu8"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 060A415442D
-	for <bpf@vger.kernel.org>; Mon, 27 Jan 2025 16:22:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A4173D64;
+	Mon, 27 Jan 2025 16:50:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737994974; cv=none; b=TU+e6B4D8TWvIbQfMJyTPLXJFqGBg9GQUfG7MZ6b9Gaen7tk3iZWFKCP6SmqpRT1/ezEj+0/N1W4e1SgnRathTyfdzwlUO0AqosvqXg3pJoZAg+lQ/t6OC94zk6g5AZM57dUsOOv65zV0kcJnQyublFgd4huTofN1414LUc1fQk=
+	t=1737996623; cv=none; b=g8jjZJe0pj0I267drMKbWUHLTs7Su8PVyIfa/gFV/3bXkPoTJVCd5ck5EPhBISRb/6sPuPI1MUWGA7Q9HOBKSfD3tXcUXEy49hw3/FvFnA02mF/GPGDK+ihs07uaZbbqLNkv3Y5Dwi/3BKJuPN9lkoaLOrQQPSXtgjvKcJTF+Ag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737994974; c=relaxed/simple;
-	bh=zXF+iIWfXeqpjqcalFixwr56iIRI0Gz3CXU1eGflHTQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kCl4EtEM/q6jv+86g0v/h8XrBW/0eicMF/RgZqWydOcdI35O/3GJM4HlKnAkBNV+CfBzuog4zN9lHUsZ7ulz1ZpdQnXpch1bWwzxbZzTsp8IIiu8kBQAKdT9V1/Y9LfT8UBJNXO4VvS1h5n0Tk2elBOZi+Hh/fLHw2NvCpueTY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Eyp/pzIK; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1737994970;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1J1mQJZm9dOclTH351NApfaEMSuhjnTGy0CaWvBwMus=;
-	b=Eyp/pzIK7hJXyZMAFDD0dRxuXyAb8qFSWsQZoIj3x+xFMK6wCmk55ZFshcw4v592RzwtQJ
-	ijhfy6qW4cxqIAFeK+FsApIwssbzDTbfelUMNTn2liqcHFYa8V4BQbhHEfZOQsZFtTV4Id
-	dYXwSqjypu7yBfFOxn3GwYyLy6L+VY4=
-From: Leon Hwang <leon.hwang@linux.dev>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	yonghong.song@linux.dev,
-	song@kernel.org,
-	eddyz87@gmail.com,
-	qmo@kernel.org,
-	dxu@dxuuu.xyz,
-	leon.hwang@linux.dev,
-	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next 4/4] selftests/bpf: Add a case to test global percpu data
-Date: Tue, 28 Jan 2025 00:21:58 +0800
-Message-ID: <20250127162158.84906-5-leon.hwang@linux.dev>
-In-Reply-To: <20250127162158.84906-1-leon.hwang@linux.dev>
-References: <20250127162158.84906-1-leon.hwang@linux.dev>
+	s=arc-20240116; t=1737996623; c=relaxed/simple;
+	bh=4eMJ6dNs78vhPKEr4/Zek7iEDf3GW96/yiHO387NT8c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UMx1Fn3fIL6Yrj96JKyaAXgfC+jPlWfKESUn3NiTMXK2FMtb/zSChDAirPQGcwvL29UI92dZTEs6jKX+5d9aTrP1zm7pKGiEbYLg2KFojoQu+MifxkCn/c6GI0pgPTaFIIWmEu/kHcqUgf6BnXIZnHMXopEw414QWlHY81vLWlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M7VqSsu8; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2ef714374c0so7217375a91.0;
+        Mon, 27 Jan 2025 08:50:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1737996622; x=1738601422; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=JqaAx3l5UvR6RdJOS4dq1vZQGJJ3/P1h1kbS9S//ltU=;
+        b=M7VqSsu8TVLDZ8bcqM1JPAuuFo+7xGdZNlmL5jC3Sodc0msbjPjII3BFmnkt7oQZJS
+         xkvUx17KFn9jFufy2CryPojCiIdzbFhzVJI8TdgLl2FEmG1HOzG4IL22u0YiNZitHed7
+         GL+7XcRIRgVDq9crW/zw3TqAPedPdWpS/1FUpzCMTOIczzzS5vVd5Ny+UNfMlKNs5Kon
+         sx/MWiBS3gvCXa1E2XVMLtuVd46xI02R9v8F0lYmGovEZAusp0XSdO4oOlzvgeD9EcCB
+         sXdjdW/mJWi81lzIU1mZwQseuYnXPvh4TSMqjIpxmxHqWXrOP86WiW3WkVymIDQDIEiF
+         yM5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737996622; x=1738601422;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JqaAx3l5UvR6RdJOS4dq1vZQGJJ3/P1h1kbS9S//ltU=;
+        b=mF07zEzKTVkm53uJAGPsjQaHcBv0ej2kOwF8C6hkRUzSykTaQyzzkYNBeeozuZNPU+
+         Edgn1BvGv/+md8Hk5ckMPUt3a/thk1dHt4e/oqsQzKG4M0czT4I1NWt+LUS9krwACj09
+         c7NalGnTWUtKx+MWm1kTMta623Tq+l9iHIBiVlOEpBaBB+VS0+XfVaAjeubUb3W2kKx2
+         9mztxSNhP5F9M065g0tUogH5bcdi86CwopPGwEfQo+/JfHOmcHLKPWoHhJ7Q5lm/DCDA
+         T267LJx8LG+OS9ZHO2gvVfbMMQZoHyv8UPdr8g0XHMzWpv5BKzkpyi42nNeuV5q34Kej
+         hq7g==
+X-Forwarded-Encrypted: i=1; AJvYcCWs0tnqJRk4rl3yvblgdw6WzG1CQpgC1pGORtVVJ580o+FpMOT/iZS+Xz9zDQFnp7I83oBPcCWv@vger.kernel.org, AJvYcCXVDPAy6ZpGTlsSLKZp3JDX6OxyJItQUyAEUQZ/p5/PrvOZF6wAt8EUB6JwYWe6mp9XtpY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyUSCN+10lEdF9eaMyNOB0NBJ6UBXIdopsZ+0zIryJeqIPsAFd7
+	fOcbn1hER6ITMHQnuqKjIbKb3nQSQ12HfllXGVEjhtGSTKMnuvI=
+X-Gm-Gg: ASbGncsRccg1mHAFeb08HY1EsZBhlfXs8cFwzTdK6mPy/k2fGZgDTmsP5kn7q+puw5t
+	mAZFCMVXfh4Pi7eqzdwJm0vfyZXmfaxFs6E6w4JKq0/13dDk3mBvSKFIaVo1wlJUSH+stmIPOGD
+	S/K8p1okdaC5MX+Z5PCfe5kHpAZb6dqWJyjxCXVaB/6g5xyBloo2dH7hj0+eJN7DUoj7TDRCT7c
+	Ed7KZZe9xxRn0L8NwtWY0ZK3vRbnJYOv+8sAZtY2XvpIC5wwVkJExSj+U0UqvZtVC9nx9CeNZc3
+	xiZ3
+X-Google-Smtp-Source: AGHT+IH7ENF+/Aww1QG4PkDutuUp75KE9OurU3FE7XyIpC2jdWpV8Dil6F827vH4LhGTUqSsBZ3gzA==
+X-Received: by 2002:a17:90b:2583:b0:2ef:949c:6f6b with SMTP id 98e67ed59e1d1-2f7ff358287mr21856474a91.13.1737996621532;
+        Mon, 27 Jan 2025 08:50:21 -0800 (PST)
+Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f7ffb194a5sm7467698a91.44.2025.01.27.08.50.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jan 2025 08:50:20 -0800 (PST)
+Date: Mon, 27 Jan 2025 08:50:20 -0800
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH net 2/2] selftests/net: Add test for loading devbound XDP
+ program in generic mode
+Message-ID: <Z5e5TKixwRLBLDfc@mini-arch>
+References: <20250127131344.238147-1-toke@redhat.com>
+ <20250127131344.238147-2-toke@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20250127131344.238147-2-toke@redhat.com>
 
-If the arch, like s390x, does not support percpu insn, this case won't
-test global percpu data by checking -EOPNOTSUPP when load prog.
+On 01/27, Toke Høiland-Jørgensen wrote:
+> Add a test to bpf_offload.py for loading a devbound XDP program in
+> generic mode, checking that it fails correctly.
+> 
+> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 
-The following APIs have been tested for global percpu data:
-1. bpf_map__set_initial_value()
-2. bpf_map__initial_value()
-3. generated percpu struct pointer that points to internal map's data
-4. bpf_map__lookup_elem() for global percpu data map
-
-cd tools/testing/selftests/bpf; ./test_progs -t global_percpu_data
-124     global_percpu_data_init:OK
-Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
----
- .../bpf/prog_tests/global_data_init.c         | 89 ++++++++++++++++++-
- .../bpf/progs/test_global_percpu_data.c       | 21 +++++
- 2 files changed, 109 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_global_percpu_data.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/global_data_init.c b/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-index 8466332d7406f..a5d0890444f67 100644
---- a/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-+++ b/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <test_progs.h>
-+#include "test_global_percpu_data.skel.h"
- 
- void test_global_data_init(void)
- {
-@@ -8,7 +9,7 @@ void test_global_data_init(void)
- 	__u8 *buff = NULL, *newval = NULL;
- 	struct bpf_object *obj;
- 	struct bpf_map *map;
--        __u32 duration = 0;
-+	__u32 duration = 0;
- 	size_t sz;
- 
- 	obj = bpf_object__open_file(file, NULL);
-@@ -60,3 +61,89 @@ void test_global_data_init(void)
- 	free(newval);
- 	bpf_object__close(obj);
- }
-+
-+void test_global_percpu_data_init(void)
-+{
-+	struct test_global_percpu_data *skel = NULL;
-+	u64 *percpu_data = NULL;
-+	struct bpf_map *map;
-+	size_t init_data_sz;
-+	char buff[128] = {};
-+	int init_value = 2;
-+	int key, value_sz;
-+	int prog_fd, err;
-+	int *init_data;
-+	int num_cpus;
-+
-+	LIBBPF_OPTS(bpf_test_run_opts, topts,
-+		    .data_in = buff,
-+		    .data_size_in = sizeof(buff),
-+		    .repeat = 1,
-+	);
-+
-+	num_cpus = libbpf_num_possible_cpus();
-+	if (!ASSERT_GT(num_cpus, 0, "libbpf_num_possible_cpus"))
-+		return;
-+
-+	percpu_data = calloc(num_cpus, sizeof(*percpu_data));
-+	if (!ASSERT_FALSE(percpu_data == NULL, "calloc percpu_data"))
-+		return;
-+
-+	value_sz = sizeof(*percpu_data) * num_cpus;
-+	memset(percpu_data, 0, value_sz);
-+
-+	skel = test_global_percpu_data__open();
-+	if (!ASSERT_OK_PTR(skel, "test_global_percpu_data__open"))
-+		goto out;
-+
-+	ASSERT_EQ(skel->percpu->percpu_data, -1, "skel->percpu->percpu_data");
-+
-+	map = skel->maps.percpu;
-+	err = bpf_map__set_initial_value(map, &init_value,
-+					 sizeof(init_value));
-+	if (!ASSERT_OK(err, "bpf_map__set_initial_value"))
-+		goto out;
-+
-+	init_data = bpf_map__initial_value(map, &init_data_sz);
-+	if (!ASSERT_OK_PTR(init_data, "bpf_map__initial_value"))
-+		goto out;
-+
-+	ASSERT_EQ(*init_data, init_value, "initial_value");
-+	ASSERT_EQ(init_data_sz, sizeof(init_value), "initial_value size");
-+
-+	if (!ASSERT_EQ((void *) init_data, (void *) skel->percpu, "skel->percpu"))
-+		goto out;
-+	ASSERT_EQ(skel->percpu->percpu_data, init_value, "skel->percpu->percpu_data");
-+
-+	err = test_global_percpu_data__load(skel);
-+	if (err == -EOPNOTSUPP)
-+		goto out;
-+	if (!ASSERT_OK(err, "test_global_percpu_data__load"))
-+		goto out;
-+
-+	ASSERT_EQ(bpf_map__type(map), BPF_MAP_TYPE_PERCPU_ARRAY,
-+		  "bpf_map__type");
-+
-+	prog_fd = bpf_program__fd(skel->progs.update_percpu_data);
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "update_percpu_data");
-+	ASSERT_EQ(topts.retval, 0, "update_percpu_data retval");
-+
-+	key = 0;
-+	err = bpf_map__lookup_elem(map, &key, sizeof(key), percpu_data,
-+				   value_sz, 0);
-+	if (!ASSERT_OK(err, "bpf_map__lookup_elem"))
-+		goto out;
-+
-+	if (!ASSERT_LT(skel->bss->curr_cpu, num_cpus, "curr_cpu"))
-+		goto out;
-+	ASSERT_EQ((int) percpu_data[skel->bss->curr_cpu], 1, "percpu_data");
-+	if (num_cpus > 1)
-+		ASSERT_EQ((int) percpu_data[(skel->bss->curr_cpu+1)%num_cpus],
-+			  init_value, "init_value");
-+
-+out:
-+	test_global_percpu_data__destroy(skel);
-+	if (percpu_data)
-+		free(percpu_data);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_global_percpu_data.c b/tools/testing/selftests/bpf/progs/test_global_percpu_data.c
-new file mode 100644
-index 0000000000000..731c3214b0bb4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_global_percpu_data.c
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright Leon Hwang */
-+
-+#include <linux/bpf.h>
-+#include <linux/pkt_cls.h>
-+
-+#include <bpf/bpf_helpers.h>
-+
-+int percpu_data SEC(".percpu") = -1;
-+int curr_cpu;
-+
-+SEC("tc")
-+int update_percpu_data(struct __sk_buff *skb)
-+{
-+	curr_cpu = bpf_get_smp_processor_id();
-+	percpu_data = 1;
-+
-+	return TC_ACT_OK;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.47.1
-
+Acked-by: Stanislav Fomichev <sdf@fomichev.me>
 
