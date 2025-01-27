@@ -1,85 +1,120 @@
-Return-Path: <bpf+bounces-49852-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49853-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E78EDA1D550
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 12:28:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1DA2A1D55A
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 12:32:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3D7C7A3BCE
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 11:28:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA2231887A1C
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 11:32:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 359631FECCD;
-	Mon, 27 Jan 2025 11:28:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D44561FECC9;
+	Mon, 27 Jan 2025 11:32:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="C409MVTC"
+	dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b="l5jrvOWL"
 X-Original-To: bpf@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail.avm.de (mail.avm.de [212.42.244.119])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C36125A646;
-	Mon, 27 Jan 2025 11:28:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DE52647;
+	Mon, 27 Jan 2025 11:32:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.42.244.119
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737977308; cv=none; b=e3oeWDKRtViA2Jz+3SUaT0nTwm9AeSAqBVkonh7CmwItMYYfZMk9S2qQggyAoJlGKgarP+xyd8FJ9pqmKJxe7syk8BVBwi7FltFzxw45UWbSMdjsLMCg/ZE7H9Rn6GO53Pe1BZXghgGGQJa2XWoHot0WXvJA5E/NyHgRQy+OdWY=
+	t=1737977549; cv=none; b=YYjeJ0jEGSPqMxeveJ9kEd7uUfkLr4LnF86XsowHOrH0G37AhC+3l6XmnWHuqQIpHEQtT2TXDAo5yrhomaRtCVrVXRqiG/hoOV5sS3Hfc2cig2s2rSHRoE0UGg4APESU41rJhULS15+nfWPa1EqRJFtPKoP5XHJiBfWD56fZqRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737977308; c=relaxed/simple;
-	bh=GQoYB4Aob3xWAWnF8gpzfqf/CV52pRYvErqC2avKG9g=;
+	s=arc-20240116; t=1737977549; c=relaxed/simple;
+	bh=mMwgzU0qB1jXi43ww+rCOS5ZwHoB0iRetm/NwBsm4G0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y8mb/q00HQv/DgC5A/qsXCqOqII37GEJtI2Ms4PpQlbtp9wAIECSy4JsFdfW7yo6z+b+imVrFe5Q227g5U0WtiUcJ6HpvVAM4lfWK9huv+Pj8rGkJ/H3EJOSe4Kbsn9YGYYVeVGR9J2mO76KN0izsYLNmdGA39JPLHiSiwJWaEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=C409MVTC; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=4+JW8sEw705PBUez1KwWSHcwOqxXtNjS9aj2SZZoj6w=; b=C409MVTCGBuNGnsP7NfupJWvCO
-	j7bs5f+qVTftz6QUX1SsYFmln0BxeHtnpJpo4yQiXa5XV1pEgMdU08nN01nXgjtZgEMMzrBYtSU4K
-	ZSjNdMpPjdYbgwySosjw6Ddo8aMegkxy0z1UpwKsCiUS43fA0o024TOK8ZkAeNk5hVxx/ldsPDuDn
-	C35tlEBeg0eyzGIt4NaFRd/ynbK5cN1XlriwCUwMUrw0JnwT63QQzlv9nAAlBDrTI4mKmLhaKmMIM
-	ScUH9EXYFcwHksl7V4hHQ+VIq8nbv9K4vxYImv0U0FeDFg3Vy4xVO77PFD/5qLCduY+74cRppMpcY
-	voGtm/YQ==;
-Received: from 77-249-17-89.cable.dynamic.v4.ziggo.nl ([77.249.17.89] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1tcNHr-0000000EhMe-0X1s;
-	Mon, 27 Jan 2025 11:28:15 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 8AA523004DE; Mon, 27 Jan 2025 12:28:14 +0100 (CET)
-Date: Mon, 27 Jan 2025 12:28:14 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Liao Chang <liaochang1@huawei.com>
-Cc: mhiramat@kernel.org, oleg@redhat.com, mingo@redhat.com, acme@kernel.org,
-	namhyung@kernel.org, mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-	irogers@google.com, adrian.hunter@intel.com,
-	kan.liang@linux.intel.com, andrii.nakryiko@gmail.com,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v5 0/2] uprobes: Improve scalability by reducing the
- contention on siglock
-Message-ID: <20250127112814.GH16742@noisy.programming.kicks-ass.net>
-References: <20250124093826.2123675-1-liaochang1@huawei.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=AmmyA7jj19FTD7BhDlrXMD96OGbVH0ymxeWid89yONGU4BEVlQqnZevV//7CuoNFVcyBajteIY/nUPwAzRpnDmplryaqiJrAhoEljaZMIWQmY4XB94f1Jp9A+woyZ3Pzh7hr9YCGkkU91l2/XDrHhDbIZpWsoiqo9Z4CMfiUrtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de; spf=pass smtp.mailfrom=avm.de; dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b=l5jrvOWL; arc=none smtp.client-ip=212.42.244.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=avm.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
+	t=1737977541; bh=mMwgzU0qB1jXi43ww+rCOS5ZwHoB0iRetm/NwBsm4G0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=l5jrvOWLvSOjXrpTHOkJ0ca7oCu76sQU0rIevmBu7gT1mPRWQmRhwacUCHb3GpREv
+	 xTfRMSuGO/Uf/YjEhV+s9SvuOm+oZjRKncV8mARXp0eHz4ilJuVQDJ1qu1wfsygfkm
+	 FzIJ07fqEBvtk0wniN0blzAS5SpdJDDzgIhe/SRI=
+Received: from [2001:bf0:244:244::71] (helo=mail.avm.de)
+	by mail.avm.de with ESMTP (eXpurgate 4.52.1)
+	(envelope-from <n.schier@avm.de>)
+	id 67976ec5-35e9-7f0000032729-7f0000018224-1
+	for <multiple-recipients>; Mon, 27 Jan 2025 12:32:21 +0100
+Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [IPv6:2001:bf0:244:244::71])
+	by mail.avm.de (Postfix) with ESMTPS;
+	Mon, 27 Jan 2025 12:32:21 +0100 (CET)
+Received: from l-nschier-nb (unknown [IPv6:2001:9e8:9fa:e101:5fb1:76a5:fd66:46b3])
+	by mail-auth.avm.de (Postfix) with ESMTPSA id 1A03F808E0;
+	Mon, 27 Jan 2025 12:32:21 +0100 (CET)
+Date: Mon, 27 Jan 2025 12:32:19 +0100
+From: Nicolas Schier <n.schier@avm.de>
+To: Jinghao Jia <jinghao7@illinois.edu>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Jiri Kosina <jikos@kernel.org>,
+	Benjamin Tissoires <bentiss@kernel.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Ruowen Qin <ruqin@redhat.com>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Subject: Re: [PATCH bpf v2 1/2] samples/hid: remove unnecessary -I flags from
+ libbpf EXTRA_CFLAGS
+Message-ID: <20250127-mottled-lean-waxbill-6fd7a1@l-nschier-nb>
+References: <20250123081950.173588-1-jinghao7@illinois.edu>
+ <20250123081950.173588-2-jinghao7@illinois.edu>
+ <20250127-military-salamander-of-fame-3f6e1e@l-nschier-nb>
+ <d2f8f530-2e31-4ddd-a743-35c7f0c48199@illinois.edu>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250124093826.2123675-1-liaochang1@huawei.com>
+In-Reply-To: <d2f8f530-2e31-4ddd-a743-35c7f0c48199@illinois.edu>
+X-purgate-ID: 149429::1737977541-E8C54833-65997A4D/0/0
+X-purgate-type: clean
+X-purgate-size: 1202
+X-purgate-Ad: Categorized by eleven eXpurgate (R) https://www.eleven.de
+X-purgate: This mail is considered clean (visit https://www.eleven.de for further information)
+X-purgate: clean
 
-On Fri, Jan 24, 2025 at 09:38:24AM +0000, Liao Chang wrote:
-> Liao Chang (2):
->   uprobes: Remove redundant spinlock in uprobe_deny_signal()
->   uprobes: Remove the spinlock within handle_singlestep()
+On Mon, Jan 27, 2025 at 03:37:56AM -0600, Jinghao Jia wrote:
+> On 1/27/25 3:29 AM, Nicolas Schier wrote:
+> > On Thu, Jan 23, 2025 at 02:19:49AM -0600, Jinghao Jia wrote:
+> >> Commit 5a6ea7022ff4 ("samples/bpf: Remove unnecessary -I flags from
+> >> libbpf EXTRA_CFLAGS") fixed the build error caused by redundant include
+> >> path for samples/bpf, but not samples/hid.
+> >>
+> >> Apply the same fix on samples/hid as well.
+> >>
+> >> Fixes: 13b25489b6f8 ("kbuild: change working directory to external module directory with M=")
+> > 
+> > I can't see a relation between this patch and the referenced commit.
+> > Can you please check whether the 'Fixes' is (still?) valid here?
+> > 
+> > Kind regards,
+> > Nicolas
+> > 
 > 
->  include/linux/uprobes.h |  1 +
->  kernel/events/uprobes.c | 10 +++++-----
->  2 files changed, 6 insertions(+), 5 deletions(-)
+> The 'Fixes' is from commit 5a6ea7022ff4 ("samples/bpf: Remove unnecessary
+> -I flags from libbpf EXTRA_CFLAGS") that fixes the equivalent issue in
+> samples/bpf --- according to its commit message, commit 13b25489b6f8
+> ("kbuild: change working directory to external module directory with M=")
+> is the commit that breaks the libbpf build in the samples.
 
-Thanks, I've picked up the patches but will not merge them until post
--rc1.
+ah sorry, I should have read 5a6ea7022ff4 before.  Thanks for
+clarification.
+
+Kind regards,
+Nicolas
 
