@@ -1,123 +1,122 @@
-Return-Path: <bpf+bounces-49883-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49884-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FF25A1DCE4
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 20:43:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5106FA1DD85
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 21:45:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C84541886D34
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 19:43:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B041B16543F
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 20:45:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F908194A67;
-	Mon, 27 Jan 2025 19:43:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B41D3198E81;
+	Mon, 27 Jan 2025 20:45:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MMRcENEd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ioQmiJuk"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A960E18FDBD;
-	Mon, 27 Jan 2025 19:43:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8BEF198857
+	for <bpf@vger.kernel.org>; Mon, 27 Jan 2025 20:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738006990; cv=none; b=Z83p7qECkPyZOarzzpONpnhNdp2rTpsHAmuPs/s/GR5xgHiKc1Yr9gc7W410quwnmRsRhIRgI56CA72J83GtDdwDLJA8orvGcyinu/nTye3ccIY8AnJPtwBsmINSGBJuz9gJIgoGTyOWzEcywbRTmW+C1aYh8IHvrV+A09o4aJs=
+	t=1738010705; cv=none; b=h7fvJck1A5Q5Sr21yuyn7ofHEmETNCOECmzBETqDKKF5trsTiqrQoLgFTHqtYDiFNzYj0yOTHUfeeGJbukCXiVf6NkTvbZPHOOTSsg9lP7DdaAlll6FrTZJtDxVqazwudKom3EohvY8CLNid3EZVAcqRM3Rf0m3jhKd1mPZZwvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738006990; c=relaxed/simple;
-	bh=iTdO+69RM1LBQsJWCHGCvzAUTh7tuT2jXHCzvASr/3I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P95P8P0lcvUBAS3sEUr+mvOHUarG/UP07M3aYMU/TQMc5ka4DCyG/MY5Ht+8obxd7CN/9Wb64bViRp7jrFqsIYgIyvSOPdVLYkAwmDI9RAl5k0QziCAo+19n01OZyV/qi5Lqrj3R39HjUlFCDrAGrwTzZN5idh56TwUUyHUuv34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MMRcENEd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 197D1C4CED2;
-	Mon, 27 Jan 2025 19:43:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738006990;
-	bh=iTdO+69RM1LBQsJWCHGCvzAUTh7tuT2jXHCzvASr/3I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MMRcENEdar7TwZvs8QKJy/D5y8srtw/e6uMqZ24FbRjn3LfmDk59Q8wDDZ7PdwzMA
-	 wGlnjWJHNUqVkBz399bCcg/XddGxi4b7utnVq6fdVdOINb4PKIxaFrJ4Cv+TPZuOrM
-	 2ERSvDF4+Oa0DJElI9n4ylubYhfTlFVK4e7qmLw0X8ULU3CFDj3nl8zokLVpYMkyBc
-	 Tst5I6I7NY5Swgo3YUM3djfRzV9d8X/9zBABayOQAwUbq/g94cTC/Z90AT+/sS04Ga
-	 o4XVvuGY0IJFKfBFuZC5j3rjLBNbMsb5IAT4NQdxAvP5J8Q9/PWEzXPFWEbmGijaF2
-	 fVoGTKJf72i9g==
-Date: Mon, 27 Jan 2025 11:43:07 -0800
-From: Kees Cook <kees@kernel.org>
-To: Eyal Birger <eyal.birger@gmail.com>
-Cc: luto@amacapital.net, wad@chromium.org, oleg@redhat.com, ldv@strace.io,
-	mhiramat@kernel.org, andrii@kernel.org, jolsa@kernel.org,
-	alexei.starovoitov@gmail.com, olsajiri@gmail.com, cyphar@cyphar.com,
-	songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-	peterz@infradead.org, tglx@linutronix.de, bp@alien8.de,
-	daniel@iogearbox.net, ast@kernel.org, andrii.nakryiko@gmail.com,
-	rostedt@goodmis.org, rafi@rbk.io, shmulik.ladkani@gmail.com,
-	bpf@vger.kernel.org, linux-api@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] seccomp: passthrough uretprobe systemcall without
- filtering
-Message-ID: <202501271142.71C1B5EE6@keescook>
-References: <20250117005539.325887-1-eyal.birger@gmail.com>
- <202501181212.4C515DA02@keescook>
- <CAHsH6GuifA9nUzNR-eW5ZaXyhzebJOCjBSpfZCksoiyCuG=yYw@mail.gmail.com>
- <8B2624AC-E739-4BBE-8725-010C2344F61C@kernel.org>
- <CAHsH6GtpXMswVKytv7_JMGca=3wxKRUK4rZmBBxJPRh1WYdObg@mail.gmail.com>
- <202501201334.604217B7@keescook>
- <CAHsH6Gt4EqSz6TrQa+JKG98y8CUTtOM8=dfCVy0fZ8pwXJr1pw@mail.gmail.com>
- <202501271131.7B5C22D@keescook>
- <CAHsH6GtPBt329FeN7K4X4Hqc_uZ=a8uofDN15mqqC4obQ-RK5g@mail.gmail.com>
+	s=arc-20240116; t=1738010705; c=relaxed/simple;
+	bh=F+RheqY0XWtX64Hz/jspCq+Q1VTBvvJUKJ9vH/vOSwE=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=NoKHwPqB7d4U3/Iw871KgdPQuFORraSlq4mqd0ltg3zcAe5zsBDGKd654F+VHhJELGHBge4uxMieEaBtEQrlqBnx97D9gaLAI1ab0mNmaxMy1xdF3ctaVZ7JFSzy8x08rXl43mndY3Xok1cB8SJCt7OadWwgR4kC45Gj35eWpuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ioQmiJuk; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2166360285dso83471995ad.1
+        for <bpf@vger.kernel.org>; Mon, 27 Jan 2025 12:45:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738010703; x=1738615503; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F+RheqY0XWtX64Hz/jspCq+Q1VTBvvJUKJ9vH/vOSwE=;
+        b=ioQmiJukGFgQ1Vg4TDaNBvLzCTwoeBlmsoJljb8Fx+GRLy+KNClNu9SYjo1n0tstjH
+         eaLtac9C5XwNxrXFul8kYif8ygivY9DLBxT5b8RM1mc9MG/DmV+hJReBHPaeKqQwbMLY
+         WTCftxy8/CbSc5OVukVmOQZolK9CJLfcGzD40sc4GOug5G/jzM9xCeYayxAcN9m+aQha
+         oqQmeJMgQjZVA0+7PqcC4d5VNsNGzO17o3zM32909vE/oqAwfRN83jlVKBVseOgZ3Fih
+         fXXg8gZV5/A3tL0HEqzgFxKAaxi96RtQCbvArmySCTnqfINOoob+5g9tcegFgjK8xzmR
+         xdJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738010703; x=1738615503;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=F+RheqY0XWtX64Hz/jspCq+Q1VTBvvJUKJ9vH/vOSwE=;
+        b=w8chJtOD+ZQkIdgd+bQUMXV5X8tXEhrZAIH+ZBScxosC2Xf4jfVZh06C2YI2r5Zirj
+         1IMOjtqK3MBt3x8XninotDmEu+y/X3QBUEnoG2lDdgD6WBBGpug1rkALBDKeym9pdMya
+         etg4GXD4O4ym8UAQEzC1rrlEgfjelWBIbcJffumxi1mgjeBhuwKSuCaGxy+7AIGQQ9O6
+         tl2BOmhE8JFbVyMH1z05Wfw6H3jzU6hOZRFgIQQG/A0I1Yx673qbdH91FM2lTdlqu5H6
+         RyOgw2avCLxJDQ6x8XZAVgS/RQ1raqAqmu+S28PG7o4A/HC6fpYU/Ri58LDPTZnOU7nz
+         IQ3A==
+X-Forwarded-Encrypted: i=1; AJvYcCU39A0Tx/ZGaXfVobM+z6kUdd0wVOJq/UtIPkCSwrP0o+8SFnaoO4mFECCFgpi98bu6hEI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxUSOAcV9m3SrYMFPp4KrFCKjUf/2OpMxnZcJOuDIcfY2pMuFMM
+	twjhQTSjlXc/uwTJ57PxrZN3zRRV6YUn5/63CyF9+xsboaFlDVG9
+X-Gm-Gg: ASbGnctK5TADjYsAXp/5kCQrJNMTnZ/WsHAZkam/i8WI+X55TSHWDI3DVN3DL7pcuye
+	wbeqROWvHDexAeBM57k2WlVKwgWVX0XuGEG/CTfZXLBOjdjzbopBUYinCoK5tV7Kyg69fXoIDH9
+	hTn/zdrR5KTZkXYIH7gKVLuribOIoXGW1CnQnUKb4kUp0Myn2Q/EA4yxAM+RsD0kr00smMoaaE2
+	O9pg0RtckDKgJw/vX/jEhIcI7iExDrjhUsZynPCVZQ2dqGNq6c+DWvRCJC022lAafyp2hcYeFOH
+	BQ==
+X-Google-Smtp-Source: AGHT+IEdOrVEG/ZVAxe1QPXKSxdBA8H5I0xd02PK3BK+ZfYwS8t//BOH41YifPDz6QINDt4FnpQ3NQ==
+X-Received: by 2002:a17:902:d501:b0:20c:9821:6998 with SMTP id d9443c01a7336-21c352c798emr730890535ad.10.1738010702955;
+        Mon, 27 Jan 2025 12:45:02 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21da3d9e1besm68114225ad.11.2025.01.27.12.45.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jan 2025 12:45:02 -0800 (PST)
+Message-ID: <84c9958a01420bc79290e959a1bf6f94463c57d1.camel@gmail.com>
+Subject: Re: Vurnability in libbpf heap buffer attached with solution and
+ Issue link
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: shivam tiwari <shivam.tiwari00021@gmail.com>, bpf@vger.kernel.org
+Date: Mon, 27 Jan 2025 12:44:57 -0800
+In-Reply-To: <CALz0HOrGei1UTAkceBZqPjGkY=6pRhpjt=b63bhhgPjF7_E9Gg@mail.gmail.com>
+References: 
+	<CALz0HOrGei1UTAkceBZqPjGkY=6pRhpjt=b63bhhgPjF7_E9Gg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.2 (3.54.2-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHsH6GtPBt329FeN7K4X4Hqc_uZ=a8uofDN15mqqC4obQ-RK5g@mail.gmail.com>
 
-On Mon, Jan 27, 2025 at 11:39:44AM -0800, Eyal Birger wrote:
-> On Mon, Jan 27, 2025 at 11:33 AM Kees Cook <kees@kernel.org> wrote:
-> >
-> > On Mon, Jan 27, 2025 at 11:24:02AM -0800, Eyal Birger wrote:
-> > > Hi Kees,
-> > >
-> > > On Mon, Jan 20, 2025 at 1:34 PM Kees Cook <kees@kernel.org> wrote:
-> > > >
-> > > > On Sat, Jan 18, 2025 at 07:39:25PM -0800, Eyal Birger wrote:
-> > > > > Alternatively, maybe this syscall implementation should be reverted?
-> > > >
-> > > > Honestly, that seems the best choice. I don't think any thought was
-> > > > given to how it would interact with syscall interposers (including
-> > > > ptrace, strict mode seccomp, etc).
-> > >
-> > > I don't know if you noticed Andrii's and others' comments on this [1].
-> > >
-> > > Given that:
-> > > - this issue requires immediate remediation
-> > > - there seems to be pushback for reverting the syscall implementation
-> > > - filtering uretprobe is not within the capabilities of seccomp without this
-> > >   syscall (so reverting the syscall is equivalent to just passing it through
-> > >   seccomp)
-> > >
-> > > is it possible to consider applying this current fix, with the possibility of
-> > > extending seccomp in the future to support filtering uretprobe if deemed
-> > > necessary (for example by allowing userspace to define a stricter policy)?
-> >
-> > I still think this is a Docker problem, but I agree that uretprobe
-> > without syscall is just as unfilterable as seccomp ignoring the syscall.
-> >
-> > Can you please update the patch to use the existing action_cache bitmaps
-> > instead of adding an open-coded check? We can consider adding
-> > syscall_restart to this as well in the future...
-> 
-> I can. The main difference as far as I can tell is that it would not
-> apply to strict mode. Is that OK? it means that existing binaries using
-> strict mode would still crash if uretprobe is attached to them.
+On Fri, 2025-01-24 at 13:25 +0530, shivam tiwari wrote:
+> Fix Heap Buffer Overflow in btf_ext_parse_info Function
+> This pull request addresses a heap-buffer-overflow vulnerability detected=
+ in the btf_ext_parse_info function located in src/btf.c. The issue arises =
+at line 3001, where an out-of-bounds memory access occurs, potentially lead=
+ing to undefined behavior and memory corruption. This can happen if the fun=
+ction accesses data that exceeds the allocated buffer size without sufficie=
+nt bounds checking.
+> Fix:
+> =C2=A0* Added additional checks to ensure the buffer accesses remain with=
+in bounds.
+> =C2=A0* Improved memory validation to prevent overflows and ensure the in=
+tegrity of the data being processed.
+> This change mitigates the risk of a heap buffer overflow, improving the s=
+afety of the code and ensuring that all memory accesses are within valid ra=
+nges.
+>=20
+> For further details, refer to the issue link: OSS-Fuzz Issue 388905046=C2=
+=A0https://issues.oss-fuzz.com/issues/388905046=C2=A0
+> attached below updated code file=C2=A0
+> If you have any specific resolution code or further details to include in=
+ the PR, please let me know.
 
-Ah, good point. Please also add it to mode1_syscalls for strict. :)
+Hi Shivam,
 
--- 
-Kees Cook
+Please take a look at kernel contribution guidlines:
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+Please consider sending a patch in accordance to these guidelines.
 
