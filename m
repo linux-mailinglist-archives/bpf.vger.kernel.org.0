@@ -1,115 +1,174 @@
-Return-Path: <bpf+bounces-49859-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49860-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A41BA1D794
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 14:56:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 013E0A1D8DF
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 15:56:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37A891888087
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 13:56:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B17118865D9
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 14:56:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54B67200121;
-	Mon, 27 Jan 2025 13:56:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B8A113B2B8;
+	Mon, 27 Jan 2025 14:56:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b="b7gieUBM"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WVed1oKV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx.treblig.org (mx.treblig.org [46.235.229.95])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75010200100;
-	Mon, 27 Jan 2025 13:56:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.229.95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34E4538DE9;
+	Mon, 27 Jan 2025 14:56:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737986174; cv=none; b=pe/+/lJRQoviWP5+hrEiHQuEJ5e5g7RsJgIwwSXCfS8gOZUlhnRx1pYhPXuatK86mbQ5nWX8AFwP/8sJBGZLOIfxddnyzfLg8tTGL5FzbZ7P5oExGeXZY1SgzPxXeo3vjPdrkgSXHwJHDljS7X5aLQ2k5Fnie6EqUGibtGO9pAk=
+	t=1737989776; cv=none; b=V5GBqUkDNOeZWitYA2XfvQY+fSpuuSzJX10edxhXNQQRk/IdKek95ROewjYlFbQw3WbBtSyfITVYEY0iqeD1KfbBVNzl0SiIi8c7WAzuMqNcrCdJzQm/FviB1MVhnv1AYeGxAGKENg/3q140Y3ph94OMeVJTeZnLlB/jAL3K5L8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737986174; c=relaxed/simple;
-	bh=4OThCG/VyXaV3aAWewpWa5sUba95WcdjuRDMhuanKv4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LgS/HX3vq7EPcvQmh1KCmBYsSHmZS1xW96CcnlwwLqq0IXVlmlErMG9tQQtwDn7l8s9rkITSAiXCvfZzRlEGNfKmVUon49+Kg7933trGwAQ+Sj3RzF5puCJyvD68g/ZG/sXAp3USTxezYPorViPjFjyGa9pDmfSop7U/igiXr9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org; spf=pass smtp.mailfrom=treblig.org; dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b=b7gieUBM; arc=none smtp.client-ip=46.235.229.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=treblig.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
-	; s=bytemarkmx; h=Content-Type:MIME-Version:Message-ID:Subject:From:Date:From
-	:Subject; bh=iaSvE1tmCYtDKUbO/xVc6BrHlZj+GwfNR36Vu72ya94=; b=b7gieUBM5vJMzZaU
-	+w9ibmeEAGhBHiRgS8NA/wNEeftvfnrTe6HOawf9A60nn9GmqmlLUhF15By6g0A29xAI4GqfQmM+C
-	huUnSf16vMCprhvYlD0E24rANRscmJCIh0Y0E4n2p1BE45iLZU/cCBlbquEWhRDiaBG7EE/2Cb3Rq
-	DSwO5O616bw2OI81OUlFIp2xyECEQAbJftNPaJ9cI1zKSCLnm7KGMWb9Az2zLnGgefay3U1xRn0EL
-	+I5YVG2Z6HphIynHdG0R1l3b4pnr05b3Bw8GwAiEJLLRNxUHp+Ezfw3ayEr3fG8G/1uuBWZ92pjKb
-	acq1xf5m4z5WI64w5Q==;
-Received: from dg by mx.treblig.org with local (Exim 4.96)
-	(envelope-from <dg@treblig.org>)
-	id 1tcPaj-00CISv-19;
-	Mon, 27 Jan 2025 13:55:53 +0000
-Date: Mon, 27 Jan 2025 13:55:53 +0000
-From: "Dr. David Alan Gilbert" <linux@treblig.org>
-To: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-	martin.lau@linux.dev, roberto.sassu@huaweicloud.com,
-	bpf@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] bpf/umd possible deadcode
-Message-ID: <Z5eQaeG92S5K8J7I@gallifrey>
-References: <20241114022400.301175-1-linux@treblig.org>
+	s=arc-20240116; t=1737989776; c=relaxed/simple;
+	bh=jgZ2GO8S3cXCdWyE6ZvOdFoqm0rhCqZC3ICQKad44uQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=qESKVxqOrAXe9OgMwi4km3msue6Z+bStm5HR/sKuHk705JFMXZO/XF4UIO2wht6UtiU7QZzQmMSPdFyJ0eJKeisPSCmuESl0ZAL5Xo8WCRf0A7gE1UM7D9hrBwdkvYeoN/jxu7Qa37qygysMiCtB8+/QlkTDXAc5mWlqoKi8VnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WVed1oKV; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1737989775; x=1769525775;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=jgZ2GO8S3cXCdWyE6ZvOdFoqm0rhCqZC3ICQKad44uQ=;
+  b=WVed1oKVFkzK/oETPO0J8VpsIwi4ypJTg0lX+AcJEgqH+erXdJNaC/zx
+   vwuxJ5EvFrKw8crBjfrH3OrZkmYyiIBfNFMF7HidrQkt6uq0J8zqSAp/C
+   45ZUNEiKIjk56k4gUxBaq3cmZw4dCPXjJfc0nYZR7zJGhVo2kmA6NEUXR
+   0KWBG3Cls9htsZqhlU+aXWYz+V2nSgl8rO7BSXBFLVrHPboFTM4jos7U7
+   sXSVvlfFUG6DsyEBbPRooxxmuhyYGXhs3SfVRgtB3m5OhDLEzWHgORxHb
+   nG6Ys7jT0v1Ol5wgE5vgBrxk+WOrx/f94U1RMMbUu5Eo/yUWua9d7E6Dh
+   w==;
+X-CSE-ConnectionGUID: 6HP7/vAvQ/yiDPBSiq3Asw==
+X-CSE-MsgGUID: yhqiLSZiQVmyFVnUzK1mOg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11328"; a="49104680"
+X-IronPort-AV: E=Sophos;i="6.13,238,1732608000"; 
+   d="scan'208";a="49104680"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2025 06:56:13 -0800
+X-CSE-ConnectionGUID: Z9Coz29cQ6uqfPwc/L4sHg==
+X-CSE-MsgGUID: XE2pskZGQO2Q6A9y4rThjA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="113598177"
+Received: from bergbenj-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.246.14])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2025 06:56:01 -0800
+From: Jani Nikula <jani.nikula@intel.com>
+To: Joel Granados <joel.granados@kernel.org>, Ard Biesheuvel <ardb@kernel.org>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>, Thomas =?utf-8?Q?Wei=C3=9F?=
+ =?utf-8?Q?schuh?=
+ <linux@weissschuh.net>, Kees Cook <kees@kernel.org>, Luis Chamberlain
+ <mcgrof@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-crypto@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
+ intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ intel-xe@lists.freedesktop.org, linux-hyperv@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-raid@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org,
+ xen-devel@lists.xenproject.org, linux-aio@kvack.org,
+ linux-fsdevel@vger.kernel.org, netfs@lists.linux.dev,
+ codalist@coda.cs.cmu.edu, linux-mm@kvack.org, linux-nfs@vger.kernel.org,
+ ocfs2-devel@lists.linux.dev, fsverity@lists.linux.dev,
+ linux-xfs@vger.kernel.org, io-uring@vger.kernel.org, bpf@vger.kernel.org,
+ kexec@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org, apparmor@lists.ubuntu.com,
+ linux-security-module@vger.kernel.org, keyrings@vger.kernel.org, Song Liu
+ <song@kernel.org>, "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>, "Darrick J. Wong"
+ <djwong@kernel.org>, Corey Minyard <cminyard@mvista.com>
+Subject: Re: Re: Re: [PATCH v2] treewide: const qualify ctl_tables where
+ applicable
+In-Reply-To: <f4lfo2fb7ajogucsvisfd5sg2avykavmkizr6ycsllcrco4mo3@qt2zx4zp57zh>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20250110-jag-ctl_table_const-v2-1-0000e1663144@kernel.org>
+ <Z4+jwDBrZNRgu85S@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+ <nslqrapp4v3rknjgtfk4cg64ha7rewrrg24aslo2e5jmxfwce5@t4chrpuk632k>
+ <CAMj1kXEZPe8zk7s67SADK9wVH3cfBup-sAZSC6_pJyng9QT7aw@mail.gmail.com>
+ <f4lfo2fb7ajogucsvisfd5sg2avykavmkizr6ycsllcrco4mo3@qt2zx4zp57zh>
+Date: Mon, 27 Jan 2025 16:55:58 +0200
+Message-ID: <87jzag9ugx.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <20241114022400.301175-1-linux@treblig.org>
-X-Chocolate: 70 percent or better cocoa solids preferably
-X-Operating-System: Linux/6.1.0-21-amd64 (x86_64)
-X-Uptime: 13:55:34 up 264 days,  1:09,  1 user,  load average: 0.04, 0.02,
- 0.00
-User-Agent: Mutt/2.2.12 (2023-09-09)
+Content-Type: text/plain
 
-* linux@treblig.org (linux@treblig.org) wrote:
-> From: "Dr. David Alan Gilbert" <linux@treblig.org>
-> 
-> 
-> Hi,
->   I'm not 100% sure about these, since I'm not quite
-> sure how to test it properly.
-> 
->   As far as I can tell the UMD isn't needed by bpf itself
-> any more; so I've got one patch that just removes that select.
-> But then that leaves no users of umd itself; and I split that
-> separately since I saw there was still some discussion this year
-> on other uses.
+On Mon, 27 Jan 2025, Joel Granados <joel.granados@kernel.org> wrote:
+> On Wed, Jan 22, 2025 at 01:41:35PM +0100, Ard Biesheuvel wrote:
+>> On Wed, 22 Jan 2025 at 13:25, Joel Granados <joel.granados@kernel.org> wrote:
+>> >
+>> > On Tue, Jan 21, 2025 at 02:40:16PM +0100, Alexander Gordeev wrote:
+>> > > On Fri, Jan 10, 2025 at 03:16:08PM +0100, Joel Granados wrote:
+>> > >
+>> > > Hi Joel,
+>> > >
+>> > > > Add the const qualifier to all the ctl_tables in the tree except for
+>> > > > watchdog_hardlockup_sysctl, memory_allocation_profiling_sysctls,
+>> > > > loadpin_sysctl_table and the ones calling register_net_sysctl (./net,
+>> > > > drivers/inifiniband dirs). These are special cases as they use a
+>> > > > registration function with a non-const qualified ctl_table argument or
+>> > > > modify the arrays before passing them on to the registration function.
+>> > > >
+>> > > > Constifying ctl_table structs will prevent the modification of
+>> > > > proc_handler function pointers as the arrays would reside in .rodata.
+>> > > > This is made possible after commit 78eb4ea25cd5 ("sysctl: treewide:
+>> > > > constify the ctl_table argument of proc_handlers") constified all the
+>> > > > proc_handlers.
+>> > >
+>> > > I could identify at least these occurences in s390 code as well:
+>> > Hey Alexander
+>> >
+>> > Thx for bringing these to my attention. I had completely missed them as
+>> > the spatch only deals with ctl_tables outside functions.
+>> >
+>> > Short answer:
+>> > These should not be included in the current patch because they are a
+>> > different pattern from how sysctl tables are usually used. So I will not
+>> > include them.
+>> >
+>> > With that said, I think it might be interesting to look closer at them
+>> > as they seem to be complicating the proc_handler (I have to look at them
+>> > closer).
+>> >
+>> > I see that they are defining a ctl_table struct within the functions and
+>> > just using the data (from the incoming ctl_table) to forward things down
+>> > to proc_do{u,}intvec_* functions. This is very odd and I have only seen
+>> > it done in order to change the incoming ctl_table (which is not what is
+>> > being done here).
+>> >
+>> > I will take a closer look after the merge window and circle back with
+>> > more info. Might take me a while as I'm not very familiar with s390
+>> > code; any additional information on why those are being used inside the
+>> > functions would be helpfull.
+>> >
+>> 
+>> Using const data on the stack is not as useful, because the stack is
+>> always mapped writable.
+>> 
+>> Global data structures marked 'const' will be moved into an ELF
+>> section that is typically mapped read-only in its entirely, and so the
+>> data cannot be modified by writing to it directly. No such protection
+>> is possible for the stack, and so the constness there is only enforced
+>> at compile time.
+> I completely agree with you. No reason to use const within those
+> functions. But why define those ctl_tables in function to begin with.
+> Can't you just use the ones that are defined outside the functions?
 
-Hi,
-  Does anyone have any views on this pair?
+You could have static const within functions too. You get the rodata
+protection and function local scope, best of both worlds?
 
-Thanks,
+BR,
+Jani.
 
-Dave
 
-> Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
-> 
-> Dave
-> 
-> Dr. David Alan Gilbert (2):
->   bpf: Don't select USERMODE_DRIVER
->   umd: Remove
-> 
->  include/linux/usermode_driver.h |  19 ----
->  kernel/Makefile                 |   1 -
->  kernel/bpf/preload/Kconfig      |   5 -
->  kernel/usermode_driver.c        | 191 --------------------------------
->  4 files changed, 216 deletions(-)
->  delete mode 100644 include/linux/usermode_driver.h
->  delete mode 100644 kernel/usermode_driver.c
-> 
-> -- 
-> 2.47.0
-> 
 -- 
- -----Open up your eyes, open up your mind, open up your code -------   
-/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
-\        dave @ treblig.org |                               | In Hex /
- \ _________________________|_____ http://www.treblig.org   |_______/
+Jani Nikula, Intel
 
