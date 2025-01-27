@@ -1,122 +1,129 @@
-Return-Path: <bpf+bounces-49884-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49885-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5106FA1DD85
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 21:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AEE9AA1DD92
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 21:51:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B041B16543F
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 20:45:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08E6F1650E0
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 20:51:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B41D3198E81;
-	Mon, 27 Jan 2025 20:45:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE65195FEC;
+	Mon, 27 Jan 2025 20:51:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ioQmiJuk"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uSFwSkcN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8BEF198857
-	for <bpf@vger.kernel.org>; Mon, 27 Jan 2025 20:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7948518E756
+	for <bpf@vger.kernel.org>; Mon, 27 Jan 2025 20:51:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738010705; cv=none; b=h7fvJck1A5Q5Sr21yuyn7ofHEmETNCOECmzBETqDKKF5trsTiqrQoLgFTHqtYDiFNzYj0yOTHUfeeGJbukCXiVf6NkTvbZPHOOTSsg9lP7DdaAlll6FrTZJtDxVqazwudKom3EohvY8CLNid3EZVAcqRM3Rf0m3jhKd1mPZZwvc=
+	t=1738011081; cv=none; b=cs6XEphKF87g2gATuqJ7YLwQtkKDz4A1V1i58sSN3G/+eb6L0ZTh6WNjzV73dM4UZkw01pys9yzNV1L8vG8Y1bR9So8036h6h51gLNKdJO5Pi7aDpLa2ZIWJfALwBwQz82m2/qZJ9pzrq05gy20XEA1aoYIwbhoDdQ97Pt08YGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738010705; c=relaxed/simple;
-	bh=F+RheqY0XWtX64Hz/jspCq+Q1VTBvvJUKJ9vH/vOSwE=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=NoKHwPqB7d4U3/Iw871KgdPQuFORraSlq4mqd0ltg3zcAe5zsBDGKd654F+VHhJELGHBge4uxMieEaBtEQrlqBnx97D9gaLAI1ab0mNmaxMy1xdF3ctaVZ7JFSzy8x08rXl43mndY3Xok1cB8SJCt7OadWwgR4kC45Gj35eWpuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ioQmiJuk; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2166360285dso83471995ad.1
-        for <bpf@vger.kernel.org>; Mon, 27 Jan 2025 12:45:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738010703; x=1738615503; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F+RheqY0XWtX64Hz/jspCq+Q1VTBvvJUKJ9vH/vOSwE=;
-        b=ioQmiJukGFgQ1Vg4TDaNBvLzCTwoeBlmsoJljb8Fx+GRLy+KNClNu9SYjo1n0tstjH
-         eaLtac9C5XwNxrXFul8kYif8ygivY9DLBxT5b8RM1mc9MG/DmV+hJReBHPaeKqQwbMLY
-         WTCftxy8/CbSc5OVukVmOQZolK9CJLfcGzD40sc4GOug5G/jzM9xCeYayxAcN9m+aQha
-         oqQmeJMgQjZVA0+7PqcC4d5VNsNGzO17o3zM32909vE/oqAwfRN83jlVKBVseOgZ3Fih
-         fXXg8gZV5/A3tL0HEqzgFxKAaxi96RtQCbvArmySCTnqfINOoob+5g9tcegFgjK8xzmR
-         xdJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738010703; x=1738615503;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=F+RheqY0XWtX64Hz/jspCq+Q1VTBvvJUKJ9vH/vOSwE=;
-        b=w8chJtOD+ZQkIdgd+bQUMXV5X8tXEhrZAIH+ZBScxosC2Xf4jfVZh06C2YI2r5Zirj
-         1IMOjtqK3MBt3x8XninotDmEu+y/X3QBUEnoG2lDdgD6WBBGpug1rkALBDKeym9pdMya
-         etg4GXD4O4ym8UAQEzC1rrlEgfjelWBIbcJffumxi1mgjeBhuwKSuCaGxy+7AIGQQ9O6
-         tl2BOmhE8JFbVyMH1z05Wfw6H3jzU6hOZRFgIQQG/A0I1Yx673qbdH91FM2lTdlqu5H6
-         RyOgw2avCLxJDQ6x8XZAVgS/RQ1raqAqmu+S28PG7o4A/HC6fpYU/Ri58LDPTZnOU7nz
-         IQ3A==
-X-Forwarded-Encrypted: i=1; AJvYcCU39A0Tx/ZGaXfVobM+z6kUdd0wVOJq/UtIPkCSwrP0o+8SFnaoO4mFECCFgpi98bu6hEI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxUSOAcV9m3SrYMFPp4KrFCKjUf/2OpMxnZcJOuDIcfY2pMuFMM
-	twjhQTSjlXc/uwTJ57PxrZN3zRRV6YUn5/63CyF9+xsboaFlDVG9
-X-Gm-Gg: ASbGnctK5TADjYsAXp/5kCQrJNMTnZ/WsHAZkam/i8WI+X55TSHWDI3DVN3DL7pcuye
-	wbeqROWvHDexAeBM57k2WlVKwgWVX0XuGEG/CTfZXLBOjdjzbopBUYinCoK5tV7Kyg69fXoIDH9
-	hTn/zdrR5KTZkXYIH7gKVLuribOIoXGW1CnQnUKb4kUp0Myn2Q/EA4yxAM+RsD0kr00smMoaaE2
-	O9pg0RtckDKgJw/vX/jEhIcI7iExDrjhUsZynPCVZQ2dqGNq6c+DWvRCJC022lAafyp2hcYeFOH
-	BQ==
-X-Google-Smtp-Source: AGHT+IEdOrVEG/ZVAxe1QPXKSxdBA8H5I0xd02PK3BK+ZfYwS8t//BOH41YifPDz6QINDt4FnpQ3NQ==
-X-Received: by 2002:a17:902:d501:b0:20c:9821:6998 with SMTP id d9443c01a7336-21c352c798emr730890535ad.10.1738010702955;
-        Mon, 27 Jan 2025 12:45:02 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21da3d9e1besm68114225ad.11.2025.01.27.12.45.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jan 2025 12:45:02 -0800 (PST)
-Message-ID: <84c9958a01420bc79290e959a1bf6f94463c57d1.camel@gmail.com>
-Subject: Re: Vurnability in libbpf heap buffer attached with solution and
- Issue link
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: shivam tiwari <shivam.tiwari00021@gmail.com>, bpf@vger.kernel.org
-Date: Mon, 27 Jan 2025 12:44:57 -0800
-In-Reply-To: <CALz0HOrGei1UTAkceBZqPjGkY=6pRhpjt=b63bhhgPjF7_E9Gg@mail.gmail.com>
-References: 
-	<CALz0HOrGei1UTAkceBZqPjGkY=6pRhpjt=b63bhhgPjF7_E9Gg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.2 (3.54.2-1.fc41) 
+	s=arc-20240116; t=1738011081; c=relaxed/simple;
+	bh=OVO7YwMMYFQSf6bO8E55LBXw4BlLAwgfmdVioaw0KQQ=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=Sk0uEuQL8v3KuKlUBLlLuULZdjjnw/FqluSA3I690Od4uqOhc9kgMYkfQwipS91qyrADeIOacADC8ahFeOA8cmjscsmjsNM1M/CNz+Lkixsp6ijmKMxh658rXI1yNty1mHY0NUHsjk2XPEJM5uW33bc0/JP+acc9/Id5H3qGxOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uSFwSkcN; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <6decc31d-838f-4caa-957c-9230a970d01e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1738011067;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=00qEdsPMOlTic0OaMrv66fEynTV0bQHKlOysQaZVg7s=;
+	b=uSFwSkcNPQw5a7CWlVGCJMy+3FdtWrUJu4+4LYrVrjCEWJlUvxg9mV/FE3rlK1XrkSB6u9
+	sXUvjr3NY2HbhIJ9EzN3yi5nEsZhjqwI5aPi1UPtC4PKKnwW8k7G5l2pL0vdqA/taF6f/J
+	TrGr9r+PnL/WlfQe7A4UKEYU05IgPus=
+Date: Mon, 27 Jan 2025 12:51:02 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+Subject: Re: [PATCH bpf-next 0/5] BTF: arbitrary __attribute__ encoding
+To: Alan Maguire <alan.maguire@oracle.com>, bpf@vger.kernel.org
+Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ eddyz87@gmail.com, mykolal@fb.com, jose.marchesi@oracle.com,
+ Arnaldo Carvalho de Melo <acme@kernel.org>
+References: <20250122025308.2717553-1-ihor.solodrai@pm.me>
+ <4bc39acd-e7ce-44e1-b7c7-ffbeb1ecb4f1@oracle.com>
+Content-Language: en-US
+In-Reply-To: <4bc39acd-e7ce-44e1-b7c7-ffbeb1ecb4f1@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, 2025-01-24 at 13:25 +0530, shivam tiwari wrote:
-> Fix Heap Buffer Overflow in btf_ext_parse_info Function
-> This pull request addresses a heap-buffer-overflow vulnerability detected=
- in the btf_ext_parse_info function located in src/btf.c. The issue arises =
-at line 3001, where an out-of-bounds memory access occurs, potentially lead=
-ing to undefined behavior and memory corruption. This can happen if the fun=
-ction accesses data that exceeds the allocated buffer size without sufficie=
-nt bounds checking.
-> Fix:
-> =C2=A0* Added additional checks to ensure the buffer accesses remain with=
-in bounds.
-> =C2=A0* Improved memory validation to prevent overflows and ensure the in=
-tegrity of the data being processed.
-> This change mitigates the risk of a heap buffer overflow, improving the s=
-afety of the code and ensuring that all memory accesses are within valid ra=
-nges.
->=20
-> For further details, refer to the issue link: OSS-Fuzz Issue 388905046=C2=
-=A0https://issues.oss-fuzz.com/issues/388905046=C2=A0
-> attached below updated code file=C2=A0
-> If you have any specific resolution code or further details to include in=
- the PR, please let me know.
+On 1/22/25 2:13 AM, Alan Maguire wrote:
+ > On 22/01/2025 02:53, Ihor Solodrai wrote:
+ >> This patch series extends BPF Type Format (BTF) to support arbitrary
+ >> __attribute__ encoding.
+ >>
+ >> Setting the kind_flag to 1 in BTF type tags and decl tags now changes
+ >> the meaning for the encoded tag, in particular with respect to
+ >> btf_dump in libbpf.
+ >>
+ >> If the kflag is set, then the string encoded by the tag represents the
+ >> full attribute-list of an attribute specifier [1].
+ >>
+ >> This feature will allow extending tools such as pahole and bpftool to
+ >> capture and use more granular type information, and make it easier to
+ >> manage compatibility between clang and gcc BPF compilers.
+ >>
+ >
+ > sounds good! So presumably pahole will then have a "full_attribute" or
+ > similar BTF feature that will only do full attribute encoding for
+ > kernels that expect the kind flag to be set? Otherwise we'll run the
+ > risk of generating invalid BTF for older kernels with newer pahole
+ > (since those older kernels will fail to verify tags with a kind flag 
+set).
 
-Hi Shivam,
+Hi Alan. Sorry I missed this message on the first pass.
 
-Please take a look at kernel contribution guidlines:
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html
-Please consider sending a patch in accordance to these guidelines.
+Yes, this BTF extension enables pahole to encode any __attribute__ in
+BTF. There is already a use case for that, which led me to this patch
+series: expressing bpf_arena tags in vmlinux.h.
+
+As to "full_attribute"-like feature in pahole, my intuition is that
+it's a significant chunk of work, and it might not be necessary in the
+near future. But with these changes in BTF it at least becomes a
+possibility. And you're right, it will have to be an optional feature.
+
+ >
+ > Thanks!
+ >
+ > Alan
+ >
+ >> [1] https://gcc.gnu.org/onlinedocs/gcc-13.2.0/gcc/Attribute-Syntax.html
+ >>
+ >> Ihor Solodrai (5):
+ >>   libbpf: introduce kflag for type_tags and decl_tags in BTF
+ >>   libbpf: check the kflag of type tags in btf_dump
+ >>   selftests/bpf: add a btf_dump test for type_tags
+ >>   bpf: allow kind_flag for BTF type and decl tags
+ >>   selftests/bpf: add a BTF verification test for kflagged type_tag
+ >>
+ >>  Documentation/bpf/btf.rst                     |  27 +++-
+ >>  kernel/bpf/btf.c                              |   7 +-
+ >>  tools/include/uapi/linux/btf.h                |   3 +-
+ >>  tools/lib/bpf/btf.c                           |  87 +++++++---
+ >>  tools/lib/bpf/btf.h                           |   3 +
+ >>  tools/lib/bpf/btf_dump.c                      |   5 +-
+ >>  tools/lib/bpf/libbpf.map                      |   2 +
+ >>  tools/testing/selftests/bpf/prog_tests/btf.c  |  23 ++-
+ >>  .../selftests/bpf/prog_tests/btf_dump.c       | 148 +++++++++++++-----
+ >>  tools/testing/selftests/bpf/test_btf.h        |   6 +
+ >>  10 files changed, 234 insertions(+), 77 deletions(-)
+ >>
+ >
 
