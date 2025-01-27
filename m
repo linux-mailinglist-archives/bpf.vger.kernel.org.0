@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-49907-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49908-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC79EA201CC
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 00:40:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1931FA201CD
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 00:40:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29EC2165FE4
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 23:40:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B03023A54D6
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 23:40:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1130C1DE2B9;
-	Mon, 27 Jan 2025 23:40:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74DE41DE2BE;
+	Mon, 27 Jan 2025 23:40:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MVSUNq5e"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iTavZsUA"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D07E41DE2AD
-	for <bpf@vger.kernel.org>; Mon, 27 Jan 2025 23:40:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 534441DE2A0
+	for <bpf@vger.kernel.org>; Mon, 27 Jan 2025 23:40:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738021214; cv=none; b=JLDYn7q1cW41E205q/KC6MKLzfUI9r/VjgYOM0p6d9cwJAwpWIQTpzNlsdeaFCKvL1BDM2Wa4B3tlc4U/HFrJPmO+t8D2qqZpyw8+63Ocv7fHpF5dc5GiXl6JsPZAmwvRwM8XywZAtLCutHYj/KUvngw8Lw/zRBmBhgOzUilDBs=
+	t=1738021217; cv=none; b=KyhfaQatgxnEU3NRCchRFEppKiTknbxHFCrz2ZgzK63+eXnGv58IysMbKWdmFDhhOR9H1oFlvWmwYwo8aMkYaeQsqDyOnR/JHnLg8jc6iQPxBQ3kayFqwvNcbfEwxRUh0ZFX7o9JSeVxMwkjDjXA5DIsKd1Fv5DfHUadXE6UgqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738021214; c=relaxed/simple;
-	bh=FsP9T4F5kDsFu1q41DqM6c/7AHasopa2Usg7+Iy/qCM=;
+	s=arc-20240116; t=1738021217; c=relaxed/simple;
+	bh=lhm/4JxodG/npquGRyEwLbfG2Bg04sjRWBoO45lNQo0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oGOelACGsuwpBtjLS0I4boye6Clhj15y1F0amOFaEp6xzvSNWRlwNneg0id+oC3aTMFes7Qk4P9jQhG3lDLH23yg2Z2WVXZ5iGFaUVEasmgFlSMOGxpBTk0YhA0wDKjk8W9NtCROcqO+nV3cfV+fbEsGQUnXF0G3927joaMKPmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MVSUNq5e; arc=none smtp.client-ip=95.215.58.172
+	 MIME-Version; b=KDnwtXlMNiRP3w0qKZ2G7b18XZlMDvTZ5oV8hQXkZAzm2gXRjk8D/reNJcoapz/nSKH4G2rCVRn9AII/N+02N0beCOTHiBgfc6LixVPlvhPqAH+w1a+hdQT/q2rOAyqGNS3rHuju1tvGZAelOs2wdKBKHfQLGbXZ26O/JdOfjkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iTavZsUA; arc=none smtp.client-ip=95.215.58.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1738021211;
+	t=1738021212;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZXCgDwz11jFQTl+vBsVmWkn/uJEuFA/IFlsVQi7HN5A=;
-	b=MVSUNq5eyrSUP6rpxqsyEYa5p0LzhfmjVWXGPQwBdN09jzshzYJNZhwZvYX7TtrGejjvCR
-	6AK7ue+EpSWrKx13a0juQpi1LPd/nChfSUXVZAKFnTABXyedMFcghqDWxPGiQljVCb5LHi
-	Jmt2DxZBCM0//uf2tV5ulhB+jfEMots=
+	bh=7j+wx1XXA57tEmKtlkZxRTt5BzPNsOBcj/sCUX6GblM=;
+	b=iTavZsUATfSzMu+A3+Yune+6ix5EAf991w47XcW/zpeZ4Kqutr0EPEDYjHFEWSs8XZF7DI
+	/puR7Fxsr2Z6MOq66c/oIDTQdGDVMc06zivtiVDebnq37uT/cBjUXRV8M5mSMgKM6cKKFV
+	Lvu99n8kq2jThF1bTzpolsk8vL4yYXI=
 From: Ihor Solodrai <ihor.solodrai@linux.dev>
 To: bpf@vger.kernel.org
 Cc: andrii@kernel.org,
@@ -50,9 +50,9 @@ Cc: andrii@kernel.org,
 	eddyz87@gmail.com,
 	mykolal@fb.com,
 	jose.marchesi@oracle.com
-Subject: [PATCH bpf-next v2 5/6] bpf: allow kind_flag for BTF type and decl tags
-Date: Mon, 27 Jan 2025 15:39:54 -0800
-Message-ID: <20250127233955.2275804-6-ihor.solodrai@linux.dev>
+Subject: [PATCH bpf-next v2 6/6] selftests/bpf: add a BTF verification test for kflagged type_tag
+Date: Mon, 27 Jan 2025 15:39:55 -0800
+Message-ID: <20250127233955.2275804-7-ihor.solodrai@linux.dev>
 In-Reply-To: <20250127233955.2275804-1-ihor.solodrai@linux.dev>
 References: <20250127233955.2275804-1-ihor.solodrai@linux.dev>
 Precedence: bulk
@@ -64,127 +64,75 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-BTF type tags and decl tags now may have info->kflag set to 1,
-changing the semantics of the tag.
+Add a BTF verification test case for a type_tag with a kflag set.
+Type tags with a kflag are now valid.
 
-Change BTF verification to permit BTF that makes use of this feature:
-  * remove kflag check in btf_decl_tag_check_meta(), as both values
-    are valid
-  * allow kflag to be set for BTF_KIND_TYPE_TAG type in
-    btf_ref_type_check_meta()
-
-Make sure kind_flag is NOT set when checking for specific BTF tags,
-such as "kptr", "user" etc.
-
-Modify a selftest checking for kflag in decl_tag accordingly.
+Add BTF_DECL_ATTR_ENC and BTF_TYPE_ATTR_ENC test helper macros,
+corresponding to *_TAG_ENC.
 
 Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
 ---
- kernel/bpf/btf.c                             | 26 +++++++++-----------
- tools/testing/selftests/bpf/prog_tests/btf.c |  4 +--
- 2 files changed, 13 insertions(+), 17 deletions(-)
+ tools/testing/selftests/bpf/prog_tests/btf.c | 19 ++++++++++++++++++-
+ tools/testing/selftests/bpf/test_btf.h       |  6 ++++++
+ 2 files changed, 24 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 8396ce1d0fba..98919c6b6b87 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -2575,7 +2575,7 @@ static int btf_ref_type_check_meta(struct btf_verifier_env *env,
- 		return -EINVAL;
- 	}
- 
--	if (btf_type_kflag(t)) {
-+	if (btf_type_kflag(t) && BTF_INFO_KIND(t->info) != BTF_KIND_TYPE_TAG) {
- 		btf_verifier_log_type(env, t, "Invalid btf_info kind_flag");
- 		return -EINVAL;
- 	}
-@@ -3332,6 +3332,8 @@ static int btf_find_kptr(const struct btf *btf, const struct btf_type *t,
- 			 u32 off, int sz, struct btf_field_info *info, u32 field_mask)
- {
- 	enum btf_field_type type;
-+	const char *tag_value;
-+	bool is_type_tag;
- 	u32 res_id;
- 
- 	/* Permit modifiers on the pointer itself */
-@@ -3341,19 +3343,20 @@ static int btf_find_kptr(const struct btf *btf, const struct btf_type *t,
- 	if (!btf_type_is_ptr(t))
- 		return BTF_FIELD_IGNORE;
- 	t = btf_type_by_id(btf, t->type);
--
--	if (!btf_type_is_type_tag(t))
-+	is_type_tag = btf_type_is_type_tag(t) && !btf_type_kflag(t);
-+	if (!is_type_tag)
- 		return BTF_FIELD_IGNORE;
- 	/* Reject extra tags */
- 	if (btf_type_is_type_tag(btf_type_by_id(btf, t->type)))
- 		return -EINVAL;
--	if (!strcmp("kptr_untrusted", __btf_name_by_offset(btf, t->name_off)))
-+	tag_value = __btf_name_by_offset(btf, t->name_off);
-+	if (!strcmp("kptr_untrusted", tag_value))
- 		type = BPF_KPTR_UNREF;
--	else if (!strcmp("kptr", __btf_name_by_offset(btf, t->name_off)))
-+	else if (!strcmp("kptr", tag_value))
- 		type = BPF_KPTR_REF;
--	else if (!strcmp("percpu_kptr", __btf_name_by_offset(btf, t->name_off)))
-+	else if (!strcmp("percpu_kptr", tag_value))
- 		type = BPF_KPTR_PERCPU;
--	else if (!strcmp("uptr", __btf_name_by_offset(btf, t->name_off)))
-+	else if (!strcmp("uptr", tag_value))
- 		type = BPF_UPTR;
- 	else
- 		return -EINVAL;
-@@ -4944,11 +4947,6 @@ static s32 btf_decl_tag_check_meta(struct btf_verifier_env *env,
- 		return -EINVAL;
- 	}
- 
--	if (btf_type_kflag(t)) {
--		btf_verifier_log_type(env, t, "Invalid btf_info kind_flag");
--		return -EINVAL;
--	}
--
- 	component_idx = btf_type_decl_tag(t)->component_idx;
- 	if (component_idx < -1) {
- 		btf_verifier_log_type(env, t, "Invalid component_idx");
-@@ -6743,7 +6741,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
- 	info->btf_id = t->type;
- 	t = btf_type_by_id(btf, t->type);
- 
--	if (btf_type_is_type_tag(t)) {
-+	if (btf_type_is_type_tag(t) && !btf_type_kflag(t)) {
- 		tag_value = __btf_name_by_offset(btf, t->name_off);
- 		if (strcmp(tag_value, "user") == 0)
- 			info->reg_type |= MEM_USER;
-@@ -7002,7 +7000,7 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
- 
- 			/* check type tag */
- 			t = btf_type_by_id(btf, mtype->type);
--			if (btf_type_is_type_tag(t)) {
-+			if (btf_type_is_type_tag(t) && !btf_type_kflag(t)) {
- 				tag_value = __btf_name_by_offset(btf, t->name_off);
- 				/* check __user tag */
- 				if (strcmp(tag_value, "user") == 0)
 diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
-index e63d74ce046f..aab9ad88c845 100644
+index aab9ad88c845..8a9ba4292109 100644
 --- a/tools/testing/selftests/bpf/prog_tests/btf.c
 +++ b/tools/testing/selftests/bpf/prog_tests/btf.c
-@@ -3866,7 +3866,7 @@ static struct btf_raw_test raw_tests[] = {
- 	.err_str = "vlen != 0",
- },
- {
--	.descr = "decl_tag test #8, invalid kflag",
-+	.descr = "decl_tag test #8, tag with kflag",
+@@ -3870,7 +3870,7 @@ static struct btf_raw_test raw_tests[] = {
  	.raw_types = {
  		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),	/* [1] */
  		BTF_VAR_ENC(NAME_TBD, 1, 0),			/* [2] */
-@@ -3881,8 +3881,6 @@ static struct btf_raw_test raw_tests[] = {
- 	.key_type_id = 1,
- 	.value_type_id = 1,
- 	.max_entries = 1,
--	.btf_load_err = true,
--	.err_str = "Invalid btf_info kind_flag",
+-		BTF_TYPE_ENC(NAME_TBD, BTF_INFO_ENC(BTF_KIND_DECL_TAG, 1, 0), 2), (-1),
++		BTF_DECL_ATTR_ENC(NAME_TBD, 2, -1),
+ 		BTF_END_RAW,
+ 	},
+ 	BTF_STR_SEC("\0local\0tag1"),
+@@ -4204,6 +4204,23 @@ static struct btf_raw_test raw_tests[] = {
+ 	.btf_load_err = true,
+ 	.err_str = "Type tags don't precede modifiers",
  },
++{
++	.descr = "type_tag test #7, tag with kflag",
++	.raw_types = {
++		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),	/* [1] */
++		BTF_TYPE_ATTR_ENC(NAME_TBD, 1),			/* [2] */
++		BTF_PTR_ENC(2),					/* [3] */
++		BTF_END_RAW,
++	},
++	BTF_STR_SEC("\0tag"),
++	.map_type = BPF_MAP_TYPE_ARRAY,
++	.map_name = "tag_type_check_btf",
++	.key_size = sizeof(int),
++	.value_size = 4,
++	.key_type_id = 1,
++	.value_type_id = 1,
++	.max_entries = 1,
++},
  {
- 	.descr = "decl_tag test #9, var, invalid component_idx",
+ 	.descr = "enum64 test #1, unsigned, size 8",
+ 	.raw_types = {
+diff --git a/tools/testing/selftests/bpf/test_btf.h b/tools/testing/selftests/bpf/test_btf.h
+index fb4f4714eeb4..e65889ab4adf 100644
+--- a/tools/testing/selftests/bpf/test_btf.h
++++ b/tools/testing/selftests/bpf/test_btf.h
+@@ -72,9 +72,15 @@
+ #define BTF_TYPE_FLOAT_ENC(name, sz) \
+ 	BTF_TYPE_ENC(name, BTF_INFO_ENC(BTF_KIND_FLOAT, 0, 0), sz)
+ 
++#define BTF_DECL_ATTR_ENC(value, type, component_idx)	\
++	BTF_TYPE_ENC(value, BTF_INFO_ENC(BTF_KIND_DECL_TAG, 1, 0), type), (component_idx)
++
+ #define BTF_DECL_TAG_ENC(value, type, component_idx)	\
+ 	BTF_TYPE_ENC(value, BTF_INFO_ENC(BTF_KIND_DECL_TAG, 0, 0), type), (component_idx)
+ 
++#define BTF_TYPE_ATTR_ENC(value, type)	\
++	BTF_TYPE_ENC(value, BTF_INFO_ENC(BTF_KIND_TYPE_TAG, 1, 0), type)
++
+ #define BTF_TYPE_TAG_ENC(value, type)	\
+ 	BTF_TYPE_ENC(value, BTF_INFO_ENC(BTF_KIND_TYPE_TAG, 0, 0), type)
+ 
 -- 
 2.48.1
 
