@@ -1,172 +1,306 @@
-Return-Path: <bpf+bounces-49893-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49894-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3EE6A20089
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 23:27:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 512F5A2008B
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 23:27:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44CE816226A
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 22:27:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94FC93A4442
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 22:27:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCD451DB122;
-	Mon, 27 Jan 2025 22:27:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 609CB1DC05F;
+	Mon, 27 Jan 2025 22:27:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YPev0QIO"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SAQ3TV7A"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8E4C1D88DB
-	for <bpf@vger.kernel.org>; Mon, 27 Jan 2025 22:27:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9F311DB951
+	for <bpf@vger.kernel.org>; Mon, 27 Jan 2025 22:27:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738016846; cv=none; b=OdMbmyCHyvLC0gDtSS0LZKT04NuXFz2lhjAVxZimtCgvorjqZXR4JvriY/Mv/AT8vxxMujUrNGSdRbrhZ/8QI5r1fCmbdZYV3fvZoB2WW/p4amz65ZhhhqrY9yje1mQK9LqVNFt+XfAOyNtpGDBQW0agoIoWSZXXFwK+9t1wF5w=
+	t=1738016862; cv=none; b=ZUq6VVVf1G+FDEr+nXpg5U7efIyEv5LFMrgCXIY29f83Cb45vJY+Nmv0G4eJz54ZMKN7fj3YDHryUSyZSne51iJvDNJ7+PNa+N4SDQ5/2C1Ih98Vrv0DQn6+CRVM7f3zxFOF4FftbaO72LPv76eUahR2oYS04tm7Nz4fROC+Mbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738016846; c=relaxed/simple;
-	bh=y3wTT1UySivtV2KOvJxdGpQCByX6sYuwX+Ftgfmw8t8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=d4TTOjXbHlwZHfRURUr6RrCM/WlSWfIeY8RHD1Hhtsz/gkOhwfi654mcqeuece3zQ99VmbuScu2YwqEgNRScn0hMoDcBc2gN0AwGyJCsA5sYuoikTuSZMTz9Yc2ARO05OaNM2FAO1gxVhGoOKWJbkkzVFKIq2XbO1NDvtwPww1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YPev0QIO; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3862d16b4f5so3039622f8f.0
-        for <bpf@vger.kernel.org>; Mon, 27 Jan 2025 14:27:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738016843; x=1738621643; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XWHMGMmf83sdyJBsVnxonDtOjI7Hl8K15GchNrxkfUs=;
-        b=YPev0QIOtuPRiIe8+OpOqYvNUDmFdx9SLY0C+j8S80YpZNNg+z8fwmGghH0TrK9O9U
-         LBh1De9cmJXzzkimSnhtNmci+aQMN5ejXa14xIo52+rciuOXPJ6T/TgrnI8glQ+UrXeq
-         unUcrBCeebzU12W/Vt0hbmyxferIhoS7+0FY9K9xfWVUsDJQnkUIqTL3xx63ml4CEGJw
-         XaPeBEEKiudgQZeHmD89cik0gk1oZ51UQ3xFQfMi9Otp31Ps8Y2AiDC7y46Bcjx5aRvb
-         QwdyVWLEZb4r6wxhS78hA/uSgYALQqmLMP9xj1BEERllYmZAcxUaOG6zAxndxVtVKiiL
-         YViw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738016843; x=1738621643;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XWHMGMmf83sdyJBsVnxonDtOjI7Hl8K15GchNrxkfUs=;
-        b=dr2lt8I1YxhtBw6EdFWkB2DRBMWpqgQ1ortClyo0r8OQe1xHVHit5qOwasyegKWhpb
-         bP1HX5HyABMqFHkz+ExYaZDwlAa+Yu71OMJkicDVpTiSX1UFO3SmfpNBqorq+2dQI0Uv
-         On1l4RB4P4HyK7p5bClymbw5vLeleqG6eXlnoyKL/0+Y5uq0D4xDcszO7af01v1rmC8n
-         lGLUg3O2apeWEN+j9dZl30iloTUFMjysZdMP0GHA/6sqs77rDF0pYS6JK0vvzJmkC1gy
-         I9yW5IuYF7yJPMSMIahSrrZKqVNOgfSFudah3HqmfvTV2OoPE/a+6cRR0AUn19CYl48d
-         dciA==
-X-Gm-Message-State: AOJu0YyZhkRlSzaEiagTYZzVRBEQKYR3z9uQTqBIkAVThPtVUh6ffxjV
-	k/Zg0ic5ys9KsP2ITOBqnw2w8idMEVcJ+Jgfetc7yRtq346JdWgsaBrFNmdQLMIxnb142sh94/2
-	7K152Of52/dfrhZEPZcjoPgtxwVs3i67J
-X-Gm-Gg: ASbGncsyYX/k/c1Kghkbjn2+QYNKOwg3cdQqceBUVOo5c7lVzProVnGJZdedTTo6lIp
-	IiPH4H6i+GBCCJ7RjMSarYcCpcqtJcb6ghn4QIZ2/AeZO6PwyM/S/+wGSnhY93MArwB4QDRdWun
-	niUz5NnX/OB4Q+HfH3Jw==
-X-Google-Smtp-Source: AGHT+IFAyJN1Xtih+8Qv5N+FBNQk0P+kWhdrcLbBUtXbNooF7/pjqiuiaqljfC6Ak57JjbgYjorTYioTbVVUWCjcS7o=
-X-Received: by 2002:a05:6000:2c8:b0:38b:f3f4:5812 with SMTP id
- ffacd0b85a97d-38c49a536d2mr861158f8f.21.1738016842710; Mon, 27 Jan 2025
- 14:27:22 -0800 (PST)
+	s=arc-20240116; t=1738016862; c=relaxed/simple;
+	bh=qwyomT270OZ+fFb3gdzKk4djx/Ko77r3v8bKpEP4px8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=L8Hfl2ik8fh9R75OxFcO7tfbjsgfbnNOeQJYUGaWVs/CAluqJjRR/uSj5Ml3OWX0tZyITeXZU/vaWUAX1kPovSLZi7EbpPEnR9RFpEI2e1UgcDnlRw9dHVX4L50rsMSxL/6UihF6HhvRKLo/oF8QCk6aWczaj8LSWlo1eoHzzPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SAQ3TV7A; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1738016852;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Xqa9vZ7LVdK9kXeVi7kfFjHKe8Rw9F9uB4xyC9o7Br0=;
+	b=SAQ3TV7AIP9MASQYs92Kf9jrhFHAsQL7Npm7DWI6IN8u0545PA5F8GddR9+mjkwdjSn46A
+	YFvRV/s/S/583tFISHJHqK4mSgRWgHqC7XQZoTMr+K/qNuBxyR37vOza4OWGPX6i+aZRif
+	NvgnGbW3icKI2UNmEkPS1G5kb9hwyO4=
+From: Martin KaFai Lau <martin.lau@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@meta.com,
+	Tejun Heo <tj@kernel.org>,
+	Benjamin Tissoires <bentiss@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Amery Hung <ameryhung@gmail.com>
+Subject: [PATCH bpf-next] bpf: Use kallsyms to find the function name of a struct_ops's stub function
+Date: Mon, 27 Jan 2025 14:27:19 -0800
+Message-ID: <20250127222719.2544255-1-martin.lau@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250124195600.3220170-1-andrii@kernel.org>
-In-Reply-To: <20250124195600.3220170-1-andrii@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 27 Jan 2025 14:27:11 -0800
-X-Gm-Features: AWEUYZm3T4rTsHEXVBHWp2huBTxjeO0aEyTEa1atpzAghu-KgRWwuSneSnGPbBM
-Message-ID: <CAADnVQJ-QiXv6FA0n6N9+2z4sxksg2HSdzyS2z00CCqP3CbfGQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: avoid holding freeze_mutex during mmap operation
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Kernel Team <kernel-team@meta.com>, 
-	syzbot+4dc041c686b7c816a71e@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Jan 24, 2025 at 11:56=E2=80=AFAM Andrii Nakryiko <andrii@kernel.org=
-> wrote:
->
-> We use map->freeze_mutex to prevent races between map_freeze() and
-> memory mapping BPF map contents with writable permissions. The way we
-> naively do this means we'll hold freeze_mutex for entire duration of all
-> the mm and VMA manipulations, which is completely unnecessary. This can
-> potentially also lead to deadlocks, as reported by syzbot in [0].
->
-> So, instead, hold freeze_mutex only during writeability checks, bump
-> (proactively) "write active" count for the map, unlock the mutex and
-> proceed with mmap logic. And only if something went wrong during mmap
-> logic, then undo that "write active" counter increment.
->
-> Note, instead of checking VM_MAYWRITE we check VM_WRITE before and after
-> mmaping, because we also have a logic that unsets VM_MAYWRITE
-> forcefully, if VM_WRITE is not set. So VM_MAYWRITE could be set early on
-> for read-only mmaping, but it won't be afterwards. VM_WRITE is
-> a consistent way to detect writable mmaping in our implementation.
+From: Martin KaFai Lau <martin.lau@kernel.org>
 
-bpf_map_mmap_open/bpf_map_mmap_close use VM_MAYWRITE,
+In commit 1611603537a4 ("bpf: Create argument information for nullable arguments."),
+it introduced a "__nullable" tagging at the argument name of a
+stub function. Some background on the commit:
+it requires to tag the stub function instead of directly tagging
+the "ops" of a struct. This is because the btf func_proto of the "ops"
+does not have the argument name and the "__nullable" is tagged at
+the argument name.
 
-Do they need to change as well?
+To find the stub function of a "ops", it currently relies on a naming
+convention on the stub function "st_ops__ops_name".
+e.g. tcp_congestion_ops__ssthresh. However, the new kernel
+sub system implementing bpf_struct_ops have missed this and
+have been surprised that the "__nullable" and the to-be-landed
+"__ref" tagging was not effective.
 
->   [0] https://lore.kernel.org/bpf/678dcbc9.050a0220.303755.0066.GAE@googl=
-e.com/
->
-> Fixes: fc9702273e2e ("bpf: Add mmap() support for BPF_MAP_TYPE_ARRAY")
-> Reported-by: syzbot+4dc041c686b7c816a71e@syzkaller.appspotmail.com
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  kernel/bpf/syscall.c | 20 +++++++++++++-------
->  1 file changed, 13 insertions(+), 7 deletions(-)
->
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 0daf098e3207..0d5b39e99770 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -1035,7 +1035,7 @@ static const struct vm_operations_struct bpf_map_de=
-fault_vmops =3D {
->  static int bpf_map_mmap(struct file *filp, struct vm_area_struct *vma)
->  {
->         struct bpf_map *map =3D filp->private_data;
-> -       int err;
-> +       int err =3D 0;
->
->         if (!map->ops->map_mmap || !IS_ERR_OR_NULL(map->record))
->                 return -ENOTSUPP;
-> @@ -1059,7 +1059,12 @@ static int bpf_map_mmap(struct file *filp, struct =
-vm_area_struct *vma)
->                         err =3D -EACCES;
->                         goto out;
->                 }
-> +               bpf_map_write_active_inc(map);
->         }
-> +out:
-> +       mutex_unlock(&map->freeze_mutex);
-> +       if (err)
-> +               return err;
->
->         /* set default open/close callbacks */
->         vma->vm_ops =3D &bpf_map_default_vmops;
-> @@ -1070,13 +1075,14 @@ static int bpf_map_mmap(struct file *filp, struct=
- vm_area_struct *vma)
->                 vm_flags_clear(vma, VM_MAYWRITE);
->
->         err =3D map->ops->map_mmap(map, vma);
-> -       if (err)
-> -               goto out;
-> +       if (err) {
-> +               if (vma->vm_flags & VM_WRITE) {
-> +                       mutex_lock(&map->freeze_mutex);
-> +                       bpf_map_write_active_dec(map);
-> +                       mutex_unlock(&map->freeze_mutex);
+One option would be to give a warning whenever the stub function does
+not follow the naming convention, regardless if it requires arg tagging
+or not.
 
-Extra lock/unlock looks unnecessary.
+Instead, this patch uses the kallsyms_lookup approach and removes
+the requirement on the naming convention. The st_ops->cfi_stubs has
+all the stub function kernel addresses. kallsyms_lookup() is used to
+lookup the function name. With the function name, BTF can be used to
+find the BTF func_proto. The existing "__nullable" arg name searching
+logic will then fall through.
 
-This functiona and map_freeze() need to see frozen and write_active coheren=
-t,
-but write_active_dec looks like without mutex.
-It's atomic64_dec.
+One notable change is,
+if it failed in kallsyms_lookup or it failed in looking up the stub
+function name from the BTF, the bpf_struct_ops registration will fail.
+This is different from the previous behavior that it silently ignored
+the "st_ops__ops_name" function not found error.
+
+The "tcp_congestion_ops", "sched_ext_ops", and "hid_bpf_ops" can still be
+registered successfully after this patch. There is struct_ops_maybe_null
+selftest to cover the "__nullable" tagging.
+
+Other minor changes:
+1. Removed the "%s__%s" format from the pr_warn because the naming
+   convention is removed.
+2. The existing bpf_struct_ops_supported() is also moved earlier
+   because prepare_arg_info needs to use it to decide if the
+   stub function is NULL before calling the prepare_arg_info.
+
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Benjamin Tissoires <bentiss@kernel.org>
+Cc: Yonghong Song <yonghong.song@linux.dev>
+Cc: Amery Hung <ameryhung@gmail.com>
+Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+---
+ kernel/bpf/bpf_struct_ops.c | 98 +++++++++++++++++--------------------
+ 1 file changed, 44 insertions(+), 54 deletions(-)
+
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index 040fb1cd840b..9b7f3b9c5262 100644
+--- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -146,39 +146,6 @@ void bpf_struct_ops_image_free(void *image)
+ }
+ 
+ #define MAYBE_NULL_SUFFIX "__nullable"
+-#define MAX_STUB_NAME 128
+-
+-/* Return the type info of a stub function, if it exists.
+- *
+- * The name of a stub function is made up of the name of the struct_ops and
+- * the name of the function pointer member, separated by "__". For example,
+- * if the struct_ops type is named "foo_ops" and the function pointer
+- * member is named "bar", the stub function name would be "foo_ops__bar".
+- */
+-static const struct btf_type *
+-find_stub_func_proto(const struct btf *btf, const char *st_op_name,
+-		     const char *member_name)
+-{
+-	char stub_func_name[MAX_STUB_NAME];
+-	const struct btf_type *func_type;
+-	s32 btf_id;
+-	int cp;
+-
+-	cp = snprintf(stub_func_name, MAX_STUB_NAME, "%s__%s",
+-		      st_op_name, member_name);
+-	if (cp >= MAX_STUB_NAME) {
+-		pr_warn("Stub function name too long\n");
+-		return NULL;
+-	}
+-	btf_id = btf_find_by_name_kind(btf, stub_func_name, BTF_KIND_FUNC);
+-	if (btf_id < 0)
+-		return NULL;
+-	func_type = btf_type_by_id(btf, btf_id);
+-	if (!func_type)
+-		return NULL;
+-
+-	return btf_type_by_id(btf, func_type->type); /* FUNC_PROTO */
+-}
+ 
+ /* Prepare argument info for every nullable argument of a member of a
+  * struct_ops type.
+@@ -203,27 +170,42 @@ find_stub_func_proto(const struct btf *btf, const char *st_op_name,
+ static int prepare_arg_info(struct btf *btf,
+ 			    const char *st_ops_name,
+ 			    const char *member_name,
+-			    const struct btf_type *func_proto,
++			    const struct btf_type *func_proto, void *stub_func_addr,
+ 			    struct bpf_struct_ops_arg_info *arg_info)
+ {
+ 	const struct btf_type *stub_func_proto, *pointed_type;
+ 	const struct btf_param *stub_args, *args;
+ 	struct bpf_ctx_arg_aux *info, *info_buf;
+ 	u32 nargs, arg_no, info_cnt = 0;
++	char ksym[KSYM_SYMBOL_LEN];
++	const char *stub_fname;
++	s32 stub_func_id;
+ 	u32 arg_btf_id;
+ 	int offset;
+ 
+-	stub_func_proto = find_stub_func_proto(btf, st_ops_name, member_name);
+-	if (!stub_func_proto)
+-		return 0;
++	stub_fname = kallsyms_lookup((unsigned long)stub_func_addr, NULL, NULL, NULL, ksym);
++	if (!stub_fname) {
++		pr_warn("Cannot find the stub function name for the %s in struct %s\n",
++			member_name, st_ops_name);
++		return -ENOENT;
++	}
++
++	stub_func_id = btf_find_by_name_kind(btf, stub_fname, BTF_KIND_FUNC);
++	if (stub_func_id < 0) {
++		pr_warn("Cannot find the stub function %s in btf\n", stub_fname);
++		return -ENOENT;
++	}
++
++	stub_func_proto = btf_type_by_id(btf, stub_func_id);
++	stub_func_proto = btf_type_by_id(btf, stub_func_proto->type);
+ 
+ 	/* Check if the number of arguments of the stub function is the same
+ 	 * as the number of arguments of the function pointer.
+ 	 */
+ 	nargs = btf_type_vlen(func_proto);
+ 	if (nargs != btf_type_vlen(stub_func_proto)) {
+-		pr_warn("the number of arguments of the stub function %s__%s does not match the number of arguments of the member %s of struct %s\n",
+-			st_ops_name, member_name, member_name, st_ops_name);
++		pr_warn("the number of arguments of the stub function %s does not match the number of arguments of the member %s of struct %s\n",
++			stub_fname, member_name, st_ops_name);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -253,21 +235,21 @@ static int prepare_arg_info(struct btf *btf,
+ 						    &arg_btf_id);
+ 		if (!pointed_type ||
+ 		    !btf_type_is_struct(pointed_type)) {
+-			pr_warn("stub function %s__%s has %s tagging to an unsupported type\n",
+-				st_ops_name, member_name, MAYBE_NULL_SUFFIX);
++			pr_warn("stub function %s has %s tagging to an unsupported type\n",
++				stub_fname, MAYBE_NULL_SUFFIX);
+ 			goto err_out;
+ 		}
+ 
+ 		offset = btf_ctx_arg_offset(btf, func_proto, arg_no);
+ 		if (offset < 0) {
+-			pr_warn("stub function %s__%s has an invalid trampoline ctx offset for arg#%u\n",
+-				st_ops_name, member_name, arg_no);
++			pr_warn("stub function %s has an invalid trampoline ctx offset for arg#%u\n",
++				stub_fname, arg_no);
+ 			goto err_out;
+ 		}
+ 
+ 		if (args[arg_no].type != stub_args[arg_no].type) {
+-			pr_warn("arg#%u type in stub function %s__%s does not match with its original func_proto\n",
+-				arg_no, st_ops_name, member_name);
++			pr_warn("arg#%u type in stub function %s does not match with its original func_proto\n",
++				arg_no, stub_fname);
+ 			goto err_out;
+ 		}
+ 
+@@ -324,6 +306,13 @@ static bool is_module_member(const struct btf *btf, u32 id)
+ 	return !strcmp(btf_name_by_offset(btf, t->name_off), "module");
+ }
+ 
++int bpf_struct_ops_supported(const struct bpf_struct_ops *st_ops, u32 moff)
++{
++	void *func_ptr = *(void **)(st_ops->cfi_stubs + moff);
++
++	return func_ptr ? 0 : -ENOTSUPP;
++}
++
+ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+ 			     struct btf *btf,
+ 			     struct bpf_verifier_log *log)
+@@ -387,7 +376,10 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+ 
+ 	for_each_member(i, t, member) {
+ 		const struct btf_type *func_proto;
++		void **stub_func_addr;
++		u32 moff;
+ 
++		moff = __btf_member_bit_offset(t, member) / 8;
+ 		mname = btf_name_by_offset(btf, member->name_off);
+ 		if (!*mname) {
+ 			pr_warn("anon member in struct %s is not supported\n",
+@@ -413,7 +405,11 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+ 		func_proto = btf_type_resolve_func_ptr(btf,
+ 						       member->type,
+ 						       NULL);
+-		if (!func_proto)
++
++		/* The member is not a function pointer or
++		 * the function pointer is not supported.
++		 */
++		if (!func_proto || bpf_struct_ops_supported(st_ops, moff))
+ 			continue;
+ 
+ 		if (btf_distill_func_proto(log, btf,
+@@ -425,8 +421,9 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+ 			goto errout;
+ 		}
+ 
++		stub_func_addr = *(void **)(st_ops->cfi_stubs + moff);
+ 		err = prepare_arg_info(btf, st_ops->name, mname,
+-				       func_proto,
++				       func_proto, stub_func_addr,
+ 				       arg_info + i);
+ 		if (err)
+ 			goto errout;
+@@ -1152,13 +1149,6 @@ void bpf_struct_ops_put(const void *kdata)
+ 	bpf_map_put(&st_map->map);
+ }
+ 
+-int bpf_struct_ops_supported(const struct bpf_struct_ops *st_ops, u32 moff)
+-{
+-	void *func_ptr = *(void **)(st_ops->cfi_stubs + moff);
+-
+-	return func_ptr ? 0 : -ENOTSUPP;
+-}
+-
+ static bool bpf_struct_ops_valid_to_reg(struct bpf_map *map)
+ {
+ 	struct bpf_struct_ops_map *st_map = (struct bpf_struct_ops_map *)map;
+-- 
+2.43.5
+
 
