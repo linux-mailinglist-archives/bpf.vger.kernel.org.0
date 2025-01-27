@@ -1,149 +1,169 @@
-Return-Path: <bpf+bounces-49865-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49866-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BCE2A1D9FE
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 16:56:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53B6CA1DA20
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 17:04:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AC8718888D0
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 15:56:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C2DF16767C
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 16:04:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 307E114D6ED;
-	Mon, 27 Jan 2025 15:56:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B6B5153800;
+	Mon, 27 Jan 2025 16:04:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="XCkAcaox"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FGGV/9sp"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF66257C9F;
-	Mon, 27 Jan 2025 15:56:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DFB07BAEC;
+	Mon, 27 Jan 2025 16:04:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737993371; cv=none; b=oEOR7qY9Y6Xjlfdl7jusbVmqsIKr7PZ5mRzJ2cW6c21/4NecqQOUsS2vHonQ5LLXr1+u2TTE/uBFdRviUR7sh0w4XRpB51tCK4RbyIfVOtkaZYRc9nbYtz7sQiAUnhRVNxSNQP+XKoVk/xm5bU4M5A5Y5r4Ye2RE7u0sBGYjjOs=
+	t=1737993887; cv=none; b=a0uk5ChCQNLor8MNMvEhE4Hvq61v9QN1jJrrAGUsUu5PmOFt4Ty5OKY0A9mFgJz4ZLt4yF5ruDvdxGHKMhSKFmdiS/Z7L6s4PQsJzr/1oB9K+pj6V/mL9jX3XII0ezs2tGlKpeEhwVGGKP2mdXopLytGnnBOiLxiGEixYX0TH/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737993371; c=relaxed/simple;
-	bh=j+Dd41/g8rbc68X5gQHmErIYTHOLM/MIJf5Z8xO29Xo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=h0BCkgxaK4FIvODeO3g4VPQjklarvd91NGgrJQsBvle/UIpipvwijdnjMiZxIV2h8ECLSuwuIGoOVHlN3cyH/jaemqgwvbjqmkCvl0W2JPg3BjoOMjBWcyH/rrABCaDiVWieQfgvALOTdNqCvWJEbs5vYyXinqgSVqvzQmTnbYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=XCkAcaox; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=KYGIV0K+Ds0HRrmBUcI2GYW9SKCNSbFok23w9atOp/g=; b=XCkAcaoxCqMYh2/lAy1vpxrqKP
-	29Xrg+mPGlBYkDXERirEOqg+WNagY1JF+0Y+XNinwutjnYLulBLzd3z1FQKDvJXy8C9tRV4LINLc0
-	L2HWU/Q3pTuAnyMUIajJVpkkm/QsYyr4qcttueTSdN/tPlBUcAWMIVOch71kj8FDLl7vIi8Yqyw9S
-	CEOWeVyT6iIIviKT1ngbcPAcV39v/0aMs9zR/mLyyNF8yDeY9GNLxLq8WdZpx+GcUSPgD7OitjWwE
-	XTQXCKK5Uf3KtIJLBc46tsMGB39nf7NwYglNtQ7r1bGIz6E2dLJrd2eo12k4ReOhiQcQuTfz1YTsl
-	H5s3vGbg==;
-Received: from sslproxy08.your-server.de ([78.47.166.52])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1tcRSw-0002Qd-2p;
-	Mon, 27 Jan 2025 16:55:59 +0100
-Received: from [178.197.248.16] (helo=[192.168.1.114])
-	by sslproxy08.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1tcRSw-0002SU-2i;
-	Mon, 27 Jan 2025 16:55:58 +0100
-Message-ID: <17742abb-d85f-4102-be86-2b0be922f44c@iogearbox.net>
-Date: Mon, 27 Jan 2025 16:55:58 +0100
+	s=arc-20240116; t=1737993887; c=relaxed/simple;
+	bh=apZ5E3/lHSBZLZjJrFRNg92Lj7oD7FG7hxu8W7ybIv4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JTIund1cG6gAGyL/I6U+uYp6/iCP/1s6t3QGmHhzXo+iCiGcxi2rnS+U7Yo+ctR2VuRFyFgN5b9ugUOJ5BJSYgWwo2Ws3l5i7jy1xhezIXPwLfCwPoFe4/U1SZjiqZgrRyqVDYmM/bSOBuk2AypxTjxNCrpKGHzeCxO5I6XsqZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FGGV/9sp; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2163b0c09afso84285165ad.0;
+        Mon, 27 Jan 2025 08:04:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1737993884; x=1738598684; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bhtYqaf9HNl2Tvv5wf0rnBEEHSiWm6k/ivguWbD71P0=;
+        b=FGGV/9spSfc8Nvz9AzXSQaY+t2Dvgcqmsi80imqIHEITy++wkTQFrJkbTowuxgJ/mt
+         NdFa6x9b8OZceCA3fPKozgP9MMHairIN2wNnoVoA+QGSSI+M+1mOvHpN3g+nuhHMAgCv
+         iVsVMNzsXCSRrEsfvy19Tzt97QuqK5BAiePekza+RgnjsieIm24oTUUCg+J4wOxx7MTT
+         b8rHlAOh5LrpFSpkRZJQ7nOd8SlkiK7YoP3hb8aCqCYJPPjQXh1T4D/miTVEd9MAzZuP
+         9PmgHHpbK8B3jRGlvAaDiH0Eg5tvOuBWlB9zhZBO1Y5ubwDPDtddGa+blr68qAfKh+ey
+         tzKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737993885; x=1738598685;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bhtYqaf9HNl2Tvv5wf0rnBEEHSiWm6k/ivguWbD71P0=;
+        b=pEOgchqX5mq+kF/SIxHB3+BMnc0VGc1/ZxQKuF1T9Frv14EEko+rNjEjMSPb7JNj3g
+         qmvJfUaqoUaMXiUCRwafcrzYgNWQC5vgvd7hNYuNAdacCUJk1TCa5RzEwAG79Y+s4HWK
+         1JBEQBQgzvXlb1EF8/1gGh70nuCrXArZvHSNQuRdHDzjD6mke40TE2fcCBDgiNLi31Y5
+         edXrqh0z533fUE6AsqwD36t0ArnqAlUSrpMnC3LMAvY99dPXQpdtl7V+M6qQwHowbDpr
+         SmzNP6n2wjmGnhDTylwO3vly27lG4ws1BE0pw4ZWC2JY8kw2sMiHBBeF7WzqQMSY36lO
+         yzlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUCjs9pnqIkMUdl63yt/17cwAZBeTF/Lv71LGoisf6CTmcLUrVwkeSSQM1z8B5zxbyoSSliYC1k+NRh@vger.kernel.org, AJvYcCUbqkLlVfO+o1nTqG1SR6xnb6kWf+EejrtXW5Ab4lS9v8bTMVl86bUEpluHswXsug4rj+a+6A3mx5zylOOycfL4@vger.kernel.org, AJvYcCWFOG0f+XCMyJqsx8mEcVSVMK95qJDCDufpP1s+Gev6JTAvAAotsWqfuEh+0ce/H8O9MBc=@vger.kernel.org, AJvYcCXSsYnNlJweNndMJjLsu55512zN+ppnRSe4vxaO1J6pbC1srmsYxYo/N8hxEmUnMr9ormw5ItNKgcFOui+C@vger.kernel.org, AJvYcCXmoUJBpPxsV4ENq+Bdqrn1Nc18OkC8umxpx4ejFkPltmyDMWNFLwbBVXN+H6uWlHoSlXUBpvnF@vger.kernel.org
+X-Gm-Message-State: AOJu0YyA17x8xTyaoHv7xplMtxMUndNc3wWtkkfYPPC/EZAmrL2Fya3Q
+	4R5Mfg9tVA4kwKIEV1i08mfso0opkO7SAInLYBDCa/PgTv9kNBKs
+X-Gm-Gg: ASbGncsFa1QnH6Tm2uvY3d76CCG95x1glQAVS/xoPpPVezO5smbmtaYUGPXVUpp9LJT
+	P3mfCR7gdIAEakiB+w8LkR3a8rZskZyEeW/G5izrU4Hi05QmRVhb1R5AxOD41638+1LAkKsjfRH
+	2UMjutj1d+jpgYHDUl0rxdNaFAJnwQPVsaepufjZ+AhTJLCcnCj9u61ezaOHr8J9tCLHoGttZ9V
+	yegrs3a2FbI9JsYzzBkMKlWeHzx+vBVwo2W6HYtpCYl9jd+QWeImdrZckhE9Wj5oNtmbRuoJSfc
+	Q3K2NQ==
+X-Google-Smtp-Source: AGHT+IESvwfGyLqmu3jP5n+pNmNlyBZKOsDbT4avridkVgJrMVZ+QuspeR4I4KnEw+lvpFE0YHH7iA==
+X-Received: by 2002:a05:6a21:3391:b0:1e0:d123:7166 with SMTP id adf61e73a8af0-1eb2148de80mr63097969637.14.1737993884394;
+        Mon, 27 Jan 2025 08:04:44 -0800 (PST)
+Received: from gmail.com ([98.97.39.174])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72f8a6b307fsm7317183b3a.46.2025.01.27.08.04.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jan 2025 08:04:43 -0800 (PST)
+Date: Mon, 27 Jan 2025 08:04:29 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: Jakub Sitnicki <jakub@cloudflare.com>
+Cc: Jiayuan Chen <mrpre@163.com>, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org, martin.lau@linux.dev, ast@kernel.org, edumazet@google.com, 
+	davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com, 
+	linux-kernel@vger.kernel.org, song@kernel.org, andrii@kernel.org, mhal@rbox.co, 
+	yonghong.song@linux.dev, daniel@iogearbox.net, xiyou.wangcong@gmail.com, horms@kernel.org, 
+	corbet@lwn.net, eddyz87@gmail.com, cong.wang@bytedance.com, shuah@kernel.org, 
+	mykolal@fb.com, jolsa@kernel.org, haoluo@google.com, sdf@fomichev.me, 
+	kpsingh@kernel.org, linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf v9 0/5] bpf: fix wrong copied_seq calculation and add
+ tests
+Message-ID: <i2pmhcfge4my5rl4sy5uvu3lhnbtov5rhcjdrqbwunicnefrzy@uhs35blc47lv>
+References: <20250122100917.49845-1-mrpre@163.com>
+ <877c6hd5io.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 1/2] net: xdp: Disallow attaching device-bound
- programs in generic mode
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@fomichev.me>,
- Martin KaFai Lau <martin.lau@kernel.org>
-Cc: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>, netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20250127131344.238147-1-toke@redhat.com>
-Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <20250127131344.238147-1-toke@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 1.0.7/27531/Mon Jan 27 10:43:38 2025)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877c6hd5io.fsf@cloudflare.com>
 
-On 1/27/25 2:13 PM, Toke Høiland-Jørgensen wrote:
-> Device-bound programs are used to support RX metadata kfuncs. These
-> kfuncs are driver-specific and rely on the driver context to read the
-> metadata. This means they can't work in generic XDP mode. However, there
-> is no check to disallow such programs from being attached in generic
-> mode, in which case the metadata kfuncs will be called in an invalid
-> context, leading to crashes.
+On 2025-01-26 15:16:47, Jakub Sitnicki wrote:
+> On Wed, Jan 22, 2025 at 06:09 PM +08, Jiayuan Chen wrote:
+> > A previous commit described in this topic
+> > http://lore.kernel.org/bpf/20230523025618.113937-9-john.fastabend@gmail.com
+> > directly updated 'sk->copied_seq' in the tcp_eat_skb() function when the
+> > action of a BPF program was SK_REDIRECT. For other actions, like SK_PASS,
+> > the update logic for 'sk->copied_seq' was moved to
+> > tcp_bpf_recvmsg_parser() to ensure the accuracy of the 'fionread' feature.
+> >
+> > That commit works for a single stream_verdict scenario, as it also
+> > modified 'sk_data_ready->sk_psock_verdict_data_ready->tcp_read_skb'
+> > to remove updating 'sk->copied_seq'.
+> >
+> > However, for programs where both stream_parser and stream_verdict are
+> > active (strparser purpose), tcp_read_sock() was used instead of
+> > tcp_read_skb() (sk_data_ready->strp_data_ready->tcp_read_sock).
+> > tcp_read_sock() now still updates 'sk->copied_seq', leading to duplicated
+> > updates.
+> >
+> > In summary, for strparser + SK_PASS, copied_seq is redundantly calculated
+> > in both tcp_read_sock() and tcp_bpf_recvmsg_parser().
+> >
+> > The issue causes incorrect copied_seq calculations, which prevent
+> > correct data reads from the recv() interface in user-land.
+> >
+> > Also we added test cases for bpf + strparser and separated them from
+> > sockmap_basic, as strparser has more encapsulation and parsing
+> > capabilities compared to sockmap.
+> >
+> > ---
+> > V8 -> v9
+> > https://lore.kernel.org/bpf/20250121050707.55523-1-mrpre@163.com/
+> > Fixed some issues suggested by Jakub Sitnicki.
+> >
+> > V7 -> V8
+> > https://lore.kernel.org/bpf/20250116140531.108636-1-mrpre@163.com/
+> > Avoid using add read_sock to psock. (Jakub Sitnicki)
+> > Avoid using warpper function to check whether strparser is supported.
+> >
+> > V3 -> V7:
+> > https://lore.kernel.org/bpf/20250109094402.50838-1-mrpre@163.com/
+> > https://lore.kernel.org/bpf/20241218053408.437295-1-mrpre@163.com/
+> > Avoid introducing new proto_ops. (Jakub Sitnicki).
+> > Add more edge test cases for strparser + bpf.
+> > Fix patchwork fail of test cases code.
+> > Fix psock fetch without rcu lock.
+> > Move code of modifying to tcp_bpf.c.
+> >
+> > V1 -> V3:
+> > https://lore.kernel.org/bpf/20241209152740.281125-1-mrpre@163.com/
+> > Fix patchwork fail by adding Fixes tag.
+> > Save skb data offset for ENOMEM. (John Fastabend)
+> > ---
 > 
-> Fix this by adding a check to disallow attaching device-bound programs
-> in generic mode.
-> 
-> Fixes: 2b3486bc2d23 ("bpf: Introduce device-bound XDP programs")
-> Reported-by: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-> Closes: https://lore.kernel.org/r/dae862ec-43b5-41a0-8edf-46c59071cdda@hetzner-cloud.de
-> Tested-by: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-> Acked-by: Stanislav Fomichev <sdf@fomichev.me>
-> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> Thanks for addressing all feedback, Jiayuan. Series LGTM.
+> Feel free to carry my tags if there is another iteration.
 
-Acked-by: Daniel Borkmann <daniel@iogearbox.net>
++1 Thanks Jiayuan for sticking with this.
+
+I've reviewed this a couple times. I had one nit on the if/else branch
+for a read call, but I haven't come up with anything better on my end
+and this fixes a real bug. So lets take it.
+
+For the series.
+
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+
+> 
+> -jkbs
 
