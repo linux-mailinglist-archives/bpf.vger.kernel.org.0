@@ -1,88 +1,119 @@
-Return-Path: <bpf+bounces-49873-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49874-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D629EA1DAEE
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 18:01:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3311A1DBD4
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 19:04:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 453961888277
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 17:01:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA6683A1F6A
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2025 18:04:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC56117C230;
-	Mon, 27 Jan 2025 17:01:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFBF818CBFB;
+	Mon, 27 Jan 2025 18:04:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UDgUDXIa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pa1i/Uqj"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E591155A30;
-	Mon, 27 Jan 2025 17:01:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F83D153808;
+	Mon, 27 Jan 2025 18:04:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737997278; cv=none; b=ZCnVgDM+XsAieb2eoohFOqN2N1LbQpTa2l3f7pULC0rNfs22QiC4XpYC/TKLrr0u8DthGWxFseLEkxkCQuyjhY5JW1FnQESVSFil0dzGS/8twBa5Bjhz1VQ3oT2tvZTRSlaMq9JSWrX33KKpmVnw8uwljowNVTRKJk5oZoQ+xBo=
+	t=1738001085; cv=none; b=BghCQGr3wpesljYMhRc78izPvuWBY1eAORiVG8AE0cfoQFRe0aM6zgPorZfS6Ob6TWGc5Q/SuYq9NI8mY3vV24UNnhmYJEaR3+fF4YDBMMHNv9kjv25pFBnlWyTBp5306NtQXZnn+IG9GZYq9nmuCGhQODh9Mf3XpUgKdTzLsYY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737997278; c=relaxed/simple;
-	bh=nZMe67iC2cfntqyhHatSInrcFPPcQS5JKLd9WXO+8fI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bvS/+xDMgvuFOje/Rzy074KOGo++eZc+IMjYxlSPrP5gmqYoU/sQ9Dr7aGQ1Zu03VFmm51N+EGywl+Jpdv5S68d0kUzk2k5uoPgMKsUF87jjv8M81/mwaiSZCT/+zQrHjgF89c9LmfrMQ/YnkEXb9ANS0IRz1CH/1edPIiz1Y2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UDgUDXIa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C934C4CEE4;
-	Mon, 27 Jan 2025 17:01:12 +0000 (UTC)
+	s=arc-20240116; t=1738001085; c=relaxed/simple;
+	bh=H/TAc9fGLArvc2BRtJuDGahSmYMiOfZlb3sEWjWRvdk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=L4YPJobzaTzIVE03OCabjQqMGEt8hrqHejbahLIDpFcGTIsPv9qWYmCSX/zRg/ZG/z3NgV8Ninsk91W8IiczlvXloocvtxFmahAlaT2S7GErq6WMWPxWxbO2jNebI0absyOgsnX3U0nkuLb0DKwHBG0KSTZw431dbStlruhYSFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pa1i/Uqj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F93BC4CED2;
+	Mon, 27 Jan 2025 18:04:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737997275;
-	bh=nZMe67iC2cfntqyhHatSInrcFPPcQS5JKLd9WXO+8fI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UDgUDXIaWWNR/FnHgc0fvM7CGuZSMx3U/z7uYCZiZW9BzCjUb3Tqys4K21Mxgyj+M
-	 JcH9AlxAukfQhK1cLawv8BxLKkua+LGFy1FogrFlr9XTMXU/5c8mDE4ZGBiJhb1/BH
-	 kDVUAixGA5bA6Ria1IqPNo5vdwOaELt+Xcj1LXROlizb9aQ0KvQ5Q+FXDB3fPJ1AXe
-	 WjvaI/FFGWJwd3gatfVJP2F1CowM1m1DKYbppkPJgNblyQUCIHtg1Kt/1cuD5M+1nv
-	 I5dzqM7y/cWJxqlyaVx2vVR1xrlqS+hPjGQ2jnAUKHK0m4OWP/uHMc8yrnzX4uyXA6
-	 bNibi+F1XN/fw==
-Date: Mon, 27 Jan 2025 17:01:10 +0000
-From: Simon Horman <horms@kernel.org>
-To: Sankararaman Jayaraman <sankararaman.jayaraman@broadcom.com>
-Cc: netdev@vger.kernel.org, ronak.doshi@broadcom.com,
-	bcm-kernel-feedback-list@broadcom.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, u9012063@gmail.com, kuba@kernel.org,
-	edumazet@google.com, pabeni@redhat.com, ast@kernel.org,
-	alexandr.lobakin@intel.com, alexanderduyck@fb.com,
-	bpf@vger.kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-	john.fastabend@gmail.com
-Subject: Re: [PATCH net] vmxnet3: Fix tx queue race condition with XDP
-Message-ID: <20250127170110.GE5024@kernel.org>
-References: <20250124090211.110328-1-sankararaman.jayaraman@broadcom.com>
+	s=k20201202; t=1738001084;
+	bh=H/TAc9fGLArvc2BRtJuDGahSmYMiOfZlb3sEWjWRvdk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=pa1i/Uqj8nt3XnOgB4es4hq3WXqmWYJe+K+7Ypr1PhtZKUOMb+h3wCHGV8pGfCXWf
+	 V/jNdW1KJ0DAgBElQtp27kbynF6Xdb64ebEeDtcaavOt9nt3wH1DLI4Alev/ln14Z5
+	 8MnTCYVHpwTy5t3/GnzlRYIwYejiGooeUjDn1YgpVCFKG0fB11N85ZNFumQQbSP2kU
+	 WigdIP+MK+4Ziy2Bpk1ilyK4PIrxFTjdf+y0w2rgNqfwu0cfUToiNhOhF8q3sAM18+
+	 xPG+JfYTyHktRw2Gk07i3VSNMzu5ZS6RERP5ylIMJESoE+MWfyQ7kbBA6E5MKHoZY2
+	 EGi/oAiz8W3jA==
+Date: Mon, 27 Jan 2025 10:04:41 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Cc: Stanislav Fomichev <stfomichev@gmail.com>, Florian Bezdeka
+ <florian.bezdeka@siemens.com>, "Song, Yoong Siang"
+ <yoong.siang.song@intel.com>, "Bouska, Zdenek" <zdenek.bouska@siemens.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Simon Horman
+ <horms@kernel.org>, Willem de Bruijn <willemb@google.com>, Donald Hunter
+ <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Bjorn Topel
+ <bjorn@kernel.org>, "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+ "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>, Jonathan Lemon
+ <jonathan.lemon@gmail.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
+ <john.fastabend@gmail.com>, "Damato, Joe" <jdamato@fastly.com>, Stanislav
+ Fomichev <sdf@fomichev.me>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Mina
+ Almasry <almasrymina@google.com>, Daniel Jurgens <danielj@nvidia.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Mykola Lysenko <mykolal@fb.com>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP
+ Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Alexandre Torgue
+ <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, Maxime
+ Coquelin <mcoquelin.stm32@gmail.com>, "Nguyen, Anthony L"
+ <anthony.l.nguyen@intel.com>, "Kitszel, Przemyslaw"
+ <przemyslaw.kitszel@intel.com>, "netdev@vger.kernel.org"
+ <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-doc@vger.kernel.org"
+ <linux-doc@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+ "linux-stm32@st-md-mailman.stormreply.com"
+ <linux-stm32@st-md-mailman.stormreply.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "intel-wired-lan@lists.osuosl.org"
+ <intel-wired-lan@lists.osuosl.org>, "xdp-hints@xdp-project.net"
+ <xdp-hints@xdp-project.net>
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v6 4/4] igc: Add launch time
+ support to XDP ZC
+Message-ID: <20250127100441.0b11e1b8@kernel.org>
+In-Reply-To: <87bjvwqvtl.fsf@toke.dk>
+References: <20250116155350.555374-1-yoong.siang.song@intel.com>
+	<20250116155350.555374-5-yoong.siang.song@intel.com>
+	<AS1PR10MB5675499EE0ED3A579151D3D3EBE02@AS1PR10MB5675.EURPRD10.PROD.OUTLOOK.COM>
+	<PH0PR11MB583095A2F12DA10D57781D18D8E02@PH0PR11MB5830.namprd11.prod.outlook.com>
+	<ea087229cc6f7953875fc69f1b73df1ae1ee9b72.camel@siemens.com>
+	<Z5KdSlzmyCKUyXTn@mini-arch>
+	<87bjvwqvtl.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250124090211.110328-1-sankararaman.jayaraman@broadcom.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 24, 2025 at 02:32:11PM +0530, Sankararaman Jayaraman wrote:
-> If XDP traffic runs on a CPU which is greater than or equal to
-> the number of the Tx queues of the NIC, then vmxnet3_xdp_get_tq()
-> always picks up queue 0 for transmission as it uses reciprocal scale
-> instead of simple modulo operation.
-> 
-> vmxnet3_xdp_xmit() and vmxnet3_xdp_xmit_frame() use the above
-> returned queue without any locking which can lead to race conditions
-> when multiple XDP xmits run in parallel on different CPU's.
-> 
-> This patch uses a simple module scheme when the current CPU equals or
-> exceeds the number of Tx queues on the NIC. It also adds locking in
-> vmxnet3_xdp_xmit() and vmxnet3_xdp_xmit_frame() functions.
-> 
-> Fixes: 54f00cce1178 ("vmxnet3: Add XDP support.")
-> Signed-off-by: Sankararaman Jayaraman <sankararaman.jayaraman@broadcom.com>
-> Signed-off-by: Ronak Doshi <ronak.doshi@broadcom.com>
+On Fri, 24 Jan 2025 12:45:42 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> >> I think there is no simple fix for that. That needs some discussion
+> >> around the "expectations" to the headroom / meta data area in front of
+> >> the actual packet data. =20
+> >
+> > By 'simple' you mean without some new UAPI to signal the size of that
+> > 'reserved area' by the driver? I don't see any other easy way out as we=
+ll :-/ =20
+>=20
+> Yeah, I don't think we can impose UAPI restrictions on the metadata area
+> at this point. I guess the best we can do is to educate users that they
+> should call the timestamp kfunc before they modify the metadata?
 
-Reviewed-by: Simon Horman <horms@kernel.org>
-
+I may be misunderstanding the discussion, but I think the answer=20
+is that the driver must be fixed. The metadata-in-prepend problem
+also exists for simple adjust head use case, so it existed since
+early days of BPF. The driver should copy out (or parse) the metadata
+before it invokes the XDP prog. The nfp driver does that.
 
