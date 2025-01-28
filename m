@@ -1,159 +1,133 @@
-Return-Path: <bpf+bounces-49926-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49927-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FC1FA202F3
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 02:24:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27286A2030C
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 02:35:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C2DA18868E4
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 01:24:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57EFA3A77F7
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 01:34:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A51061369B6;
-	Tue, 28 Jan 2025 01:24:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D48C481A3;
+	Tue, 28 Jan 2025 01:35:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="chawJ90G"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MtyH7X4O"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C13C42561D;
-	Tue, 28 Jan 2025 01:24:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 533A58F54;
+	Tue, 28 Jan 2025 01:34:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738027484; cv=none; b=OC5SrlA2nD2OIfLvObLjWv/h50ZMJVQf1ebIoCRMU6UFPMyQpqQLJxZf9sToyLZ9ETyfbs5O7I3vwjStdYJud7GJgU+sAZVdcjodFKYIzw7/SPkOmCMcS2W/vc552do4IRwD36dF9sxFcfG6r1DvyP0M8p/Ie92/UucWYbnvYc8=
+	t=1738028099; cv=none; b=q0OMnPdxWS6W52ZJpfYBHYbotlSJq5auv1uQ6RUVsozFYz9qdHm2bBIEi24xso1vpev0i7e99+Nvh5EETb54VTvdyjLEg/yPVxjGLz87tgqzvDk7+dFP5SkXaRH2NpI+YN9d01Btzvs2sfkmoOtIL4em5XNM8NOlIBK5H0OjDR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738027484; c=relaxed/simple;
-	bh=ZNOabaBUHCQqFjCjXCMWKlI0Rwj13ltQaBfx+WUZ8mk=;
+	s=arc-20240116; t=1738028099; c=relaxed/simple;
+	bh=+oPBgWwqGUOexPCWAxNqZHrFZ/fA248oiW8luLVn7/8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ADtaIzJDfSBmIQfWr7Rb6Poh+iDtJw8V5Oan+HyXvEuBVQ6tW+RCkLCPRC7n7V/iR8p6GmsSGSVoseHmW/AHVVyQPoNUk75VzDVkmqe0LCCjS3X34pO3Tj1LX109jeDvhKUTcfxfdAaCFgraCUQ1A6I3uFJo4JbYuI9T4zZ/NbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=chawJ90G; arc=none smtp.client-ip=209.85.216.51
+	 To:Cc:Content-Type; b=K68Z9/2pr05gWgC7E3VESskKPr89//OhOVltoM2vqaSSjK8nQOyqTgM5GQ1Tm/CWnVE/C1qI6qzAnJiRxoChEOpW8NIld+/cHgDifBlsUIeE7FZZxPukOSmYfSoUHC59pHrc/dQFj4U1203WBUDURNi9sqN+Xs9tfQGheTrzGh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MtyH7X4O; arc=none smtp.client-ip=209.85.166.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2ef28f07dbaso7015907a91.2;
-        Mon, 27 Jan 2025 17:24:42 -0800 (PST)
+Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-3a8160382d4so13407085ab.0;
+        Mon, 27 Jan 2025 17:34:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738027482; x=1738632282; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1738028097; x=1738632897; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hWL6C+kqpj+gBy0RfSYoYVLKnqSYvu312YXcNFBv0HU=;
-        b=chawJ90GwrNmLt2XBnYzEYv0O6Gy+hSVYKAYSOKh7/gZpBLQovJ4TRu0k11eUzZWw2
-         Qk7HRFUvLtFqKG/bIc0hzJIPIadvbHaWiRrJ7Th5hJR36/Xiq6YYAwF4YJSLHjY664Fq
-         7ACXukrLnjRWCBgtoHq8UMWY4jKmuZIQKuIJ3tTW8HQHAm+r1xaxIAxAgO/HLPdT2dH5
-         V4RDtnKttIYjZMqJxO4TAOzjNZc/hYG3PCuXTB2cyfSxZBKTIY68/UJY347lyvPkGHFu
-         6eijoZnE8mH8X3eWrzuy8imzZWjxd8bwLR+Tdridt4WOBW/3hh4UZxlz4D4RMHTgPFUy
-         6XAA==
+        bh=+oPBgWwqGUOexPCWAxNqZHrFZ/fA248oiW8luLVn7/8=;
+        b=MtyH7X4OUvXA8Bc9Fsb9VgFH+HpP5YCMiUaa6Vhm3oZQeT2e5dSpWTcQ21TLYqUStO
+         8w6eEijC6tTVwz4xLuuj4syOH0gbPa2y2mqqLatLyE7uRKi+e8juUH7VPcQGkiV2hgO6
+         BEYhv38J7RYaToU4lXw1+4lMFm0R3p13TqT8RzS8fqXZC9pnhx4ydupqKryg7gjX6a3q
+         1yECLgfXxhRpvgrX6+8qLEE6Fe0FDKXyjk8N0/tQVdCIljy/BP4UHWv4Wq+a+r6K2Ol5
+         iR2u/K7Gkk7yTG6VI8dNiHnanEqFs8IfSn3tyQignpiinsp3lE7JstOtZUZfHhLjntxl
+         eYBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738027482; x=1738632282;
+        d=1e100.net; s=20230601; t=1738028097; x=1738632897;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hWL6C+kqpj+gBy0RfSYoYVLKnqSYvu312YXcNFBv0HU=;
-        b=pfngPgtca3j9veALTvQXKcv8TXd8o5v+Q7VMFOAuWqxdY82V6oXrLPUs/lLC1fhbnt
-         U83cBNw753DDd0e81rzbxcyf1O4vOzwMMVvINuf5LseRkbc4AkbC2CCtzpfVD6eXTWnJ
-         538hSapnJBldnuPkQJ/XN6bJ4kihZBQEQE5llUrO82q6JEe8R0HWZOYSpVS8jwIooVuL
-         vvylcomlnJdeE/JggeNqt+22rR+AQP6aVaxEEjLdouME5xHP9oq6teVSc4Su6Lww7CZ0
-         pzaj2EQppE2OQRh8MxHcJl7hMPtbvDTUp1aZA9qEflha2q+jd3SGtx0Y2Hs/x7kXA2TF
-         zctw==
-X-Forwarded-Encrypted: i=1; AJvYcCUZugXEnBNa/wRI4lsSwkQCIAIFxW3DbOWuc9PuAvlbRKXWlHFGKyo2jsKLcaSKjxUL6th3+SVSlSVng+nLxd9Clf5y@vger.kernel.org, AJvYcCUhC2YLF7RHoVgmA6WLvBmBzcdMIQjMoNRkF3K7AyAuMlH56NEf3Pka73GQsq1FPowDuEHIjkNWA2Q7TC0w@vger.kernel.org, AJvYcCVIKacmH/Q9XmQH+yGl3Er7HWGnF3PONE5wgvqVHGbY/Eo8yZJBc644VJAz4CjvPqKu7ki+sDIzoiiXTq81mw==@vger.kernel.org, AJvYcCXWhjsgbTIILDJZFpCaqny+YmQNTi7EXiKX8FXbx7np366ogQ06BCiplnLSrXj0Fn7p7dw=@vger.kernel.org, AJvYcCXmGmRl9SCZX9DrTY+4TmyDHq46+Sw2udItLc2/TRlo+G8WQT/N4jzT8vp8Hkb8VEpmSm1sgPuKf+vZQkV9Q8LNxw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyjWWY8ZZ7Lb71rDp82iGjR6hyXZSzCHtB9Tkwt6PrnkE5FkoFz
-	yRsvB0IafxWb8OAo5XJpXpFFRsh6hTMJSQ8Fr+uxcWg/SJV1HJMgWgjID518vktm3T7XBl8r5Br
-	AKBqCiN6fhIFobj+HZ3DE+krXUKo=
-X-Gm-Gg: ASbGncvcSR9m6TyvO2yh/Xrc7cUlAfrQxuKsbd9dbro3tSfbAfxtD/NL5WJWRCdJGet
-	zSo7mOOjyx1ARA69MWqnjX3/g/wVvusDk6oCWW2PLwoeTaF6KjAQvgQQRnpWvIqCiWI2Yz69Kcl
-	tbVg==
-X-Google-Smtp-Source: AGHT+IEnr9Q9tZOl7yts+9JQOMhGxLXwor7F1+tEO7eO4lojdnHymfL2CNPa8Qw5kBoY8swBcV5WfM44QXbraQ4a4HE=
-X-Received: by 2002:a05:6a00:2917:b0:725:b201:2362 with SMTP id
- d2e1a72fcca58-72dafa409b5mr61620850b3a.11.1738027481968; Mon, 27 Jan 2025
- 17:24:41 -0800 (PST)
+        bh=+oPBgWwqGUOexPCWAxNqZHrFZ/fA248oiW8luLVn7/8=;
+        b=dmQ4yFgQ1qk3x/s8q2V6vtH9e+2p24wMJoKYsEDEkt2yBao3u7WRPvsPBs930giDQv
+         F//W5F8xOh0zr89bWZH3yuQ1oz/wvPebSaYfPq/QqF0RUNuJoFIvIQj/Raippc1/iqJQ
+         x/z0GtpcD2nqT+i91sHZSf0kM3wyFZUQ0geBp3B0gTZ3ffzlFD4pv6cSmhzlbdaJvzl4
+         y16HTPITid/5Nrz97bh8kFbyNi+KOJdR8wWGBOa6Fu94cs/Tl/4sirb07vBWzyt5Yl2y
+         0AZnqA85FLQKSNsuj/rZsoJih5eEc4iryPYLovoKBZtr+N3vuq4zZ2RqpQFileXYbR60
+         QMCg==
+X-Forwarded-Encrypted: i=1; AJvYcCVJp7XzGtkKE9RRglYHsilkXm4ybbcICiHrOEmu1/ZtBIzrE426DAg4u7AQUPfd2MNn1Bi47nVd@vger.kernel.org, AJvYcCVvNCjzzwTtcETna4EAIZjXr1TJB2t4yYp23VJa+UbZyHbIR935gjNAw1TEHwJ7K+30MAo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzB2UtgXTksY0eULnNre78ii9c/2jyyRVNMuf2NUgNMvWDGhdP8
+	cLpVpEH5K57M1FJcrpoNvtcqD2iVNvuLv3lnXKY1zDvd2a6yfkQHTZg40PLr/bLru1QI6AOPC2D
+	ASgWMVtHx1oTuueVm6UFqv8vLmY8=
+X-Gm-Gg: ASbGnct6GSKuEoJOm4nqR0QY4e4c64Thv1uhaJMvf6KbcXApGkP6B+5BCYOxLg/ZL/V
+	p+ii0xR5mPDLqfUncnsKGM05WvkBlSl5OjYMBc8YfpsYEP+wwtrR+anbtDQlSRA==
+X-Google-Smtp-Source: AGHT+IHt6+VjtGmVY0WpD9cHknxl56A8hB/aEspZJdQ4DqCAwIhCOrkRr70OLOhtbhsFJ/kr8wKe3lu+qhkJ/Z63AYU=
+X-Received: by 2002:a92:c248:0:b0:3cf:cbac:3ba6 with SMTP id
+ e9e14a558f8ab-3cfcbac3c55mr106177545ab.5.1738028097295; Mon, 27 Jan 2025
+ 17:34:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250127222114.1132392-1-andrii@kernel.org> <20250127164106.5f40b62e0f1cf353538c46fd@linux-foundation.org>
-In-Reply-To: <20250127164106.5f40b62e0f1cf353538c46fd@linux-foundation.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 27 Jan 2025 17:24:30 -0800
-X-Gm-Features: AWEUYZk09zQNKSjG3RxZBbWMKxSCzryFhpuTAs83Pv_RrQIyT0M8-_pPLCp7Qxc
-Message-ID: <CAEf4BzZmO0sBGRDp3MhMTWEfm-UamnJcoaEKqJXb33v9eyYEKg@mail.gmail.com>
-Subject: Re: [PATCH v2] mm,procfs: allow read-only remote mm access under CAP_PERFMON
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
-	brauner@kernel.org, viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org, 
-	peterz@infradead.org, mingo@kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, shakeel.butt@linux.dev, rppt@kernel.org, 
-	liam.howlett@oracle.com, surenb@google.com, kees@kernel.org, jannh@google.com
+References: <20250121012901.87763-1-kerneljasonxing@gmail.com>
+ <20250121012901.87763-4-kerneljasonxing@gmail.com> <e1440d0b-4803-49b2-ba17-b9523649ca8b@linux.dev>
+ <CAL+tcoB182=QS0hLN9_ihf5Fcivr3BHuom8rrm+75bjpgC___Q@mail.gmail.com>
+In-Reply-To: <CAL+tcoB182=QS0hLN9_ihf5Fcivr3BHuom8rrm+75bjpgC___Q@mail.gmail.com>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Tue, 28 Jan 2025 09:34:20 +0800
+X-Gm-Features: AWEUYZlzuxuMJPKVAVrqD2QCV5fPg2pOiKA1hFD6q7CbPy6NRINam-wuXi7YKyc
+Message-ID: <CAL+tcoAjQFT57wSxcLaVUJJi1qQYYtE7OH2Q+KpZUziB49uBZg@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next v6 03/13] bpf: stop UDP sock accessing TCP
+ fields in bpf callbacks
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com, 
+	willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, horms@kernel.org, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 27, 2025 at 4:41=E2=80=AFPM Andrew Morton <akpm@linux-foundatio=
-n.org> wrote:
+On Sat, Jan 25, 2025 at 8:28=E2=80=AFAM Jason Xing <kerneljasonxing@gmail.c=
+om> wrote:
 >
-> On Mon, 27 Jan 2025 14:21:14 -0800 Andrii Nakryiko <andrii@kernel.org> wr=
-ote:
+> On Sat, Jan 25, 2025 at 7:41=E2=80=AFAM Martin KaFai Lau <martin.lau@linu=
+x.dev> wrote:
+> >
+> > On 1/20/25 5:28 PM, Jason Xing wrote:
+> > > Applying the new member allow_tcp_access in the existing callbacks
+> > > where is_fullsock is set to 1 can help us stop UDP socket accessing
+> > > struct tcp_sock, or else it could be catastrophe leading to panic.
+> > >
+> > > For now, those existing callbacks are used only for TCP. I believe
+> > > in the short run, we will have timestamping UDP callbacks support.
+> >
+> > The commit message needs adjustment. UDP is not supported yet, so this =
+change
+> > feels like it's unnecessary based on the commit message. However, even =
+without
+> > UDP support, the new timestamping callbacks cannot directly write some =
+fields
+> > because the sk lock is not held, so this change is needed for TCP times=
+tamping
 >
-> > It's very common for various tracing and profiling toolis to need to
-> > access /proc/PID/maps contents for stack symbolization needs to learn
-> > which shared libraries are mapped in memory, at which file offset, etc.
-> > Currently, access to /proc/PID/maps requires CAP_SYS_PTRACE (unless we
-> > are looking at data for our own process, which is a trivial case not to=
-o
-> > relevant for profilers use cases).
-> >
-> > Unfortunately, CAP_SYS_PTRACE implies way more than just ability to
-> > discover memory layout of another process: it allows to fully control
-> > arbitrary other processes. This is problematic from security POV for
-> > applications that only need read-only /proc/PID/maps (and other similar
-> > read-only data) access, and in large production settings CAP_SYS_PTRACE
-> > is frowned upon even for the system-wide profilers.
-> >
-> > On the other hand, it's already possible to access similar kind of
-> > information (and more) with just CAP_PERFMON capability. E.g., setting
-> > up PERF_RECORD_MMAP collection through perf_event_open() would give one
-> > similar information to what /proc/PID/maps provides.
-> >
-> > CAP_PERFMON, together with CAP_BPF, is already a very common combinatio=
-n
-> > for system-wide profiling and observability application. As such, it's
-> > reasonable and convenient to be able to access /proc/PID/maps with
-> > CAP_PERFMON capabilities instead of CAP_SYS_PTRACE.
-> >
-> > For procfs, these permissions are checked through common mm_access()
-> > helper, and so we augment that with cap_perfmon() check *only* if
-> > requested mode is PTRACE_MODE_READ. I.e., PTRACE_MODE_ATTACH wouldn't b=
-e
-> > permitted by CAP_PERFMON. So /proc/PID/mem, which uses
-> > PTRACE_MODE_ATTACH, won't be permitted by CAP_PERFMON, but
-> > /proc/PID/maps, /proc/PID/environ, and a bunch of other read-only
-> > contents will be allowable under CAP_PERFMON.
-> >
-> > Besides procfs itself, mm_access() is used by process_madvise() and
-> > process_vm_{readv,writev}() syscalls. The former one uses
-> > PTRACE_MODE_READ to avoid leaking ASLR metadata, and as such CAP_PERFMO=
-N
-> > seems like a meaningful allowable capability as well.
-> >
-> > process_vm_{readv,writev} currently assume PTRACE_MODE_ATTACH level of
-> > permissions (though for readv PTRACE_MODE_READ seems more reasonable,
-> > but that's outside the scope of this change), and as such won't be
-> > affected by this patch.
-> >
->
-> This should be documented somewhere, so we can tell our users what we
-> did.  Documentation/filesystems/proc.rst seems to be the place.  .
+> Thanks and I will revise them. But I still want to say that the
+> timestamping callbacks after this series are all under the protection
+> of socket lock.
 
-Wow, that's a big file :) Funny enough, that file mentions ptrace only
-in the context of /proc/<pid>/timerslack_ns, nothing else. Hm.. Should
-I add a common section saying something about how either
-CAP_SYS_PTRACE or CAP_PERFMON provides access to other process' user
-space information?
+For the record only, I was wrong about the understanding of socket
+lock like above because there remains cases where this kind of path,
+say, i40e_intr()->i40e_ptp_tx_hwtstamp()->skb_tstamp_tx()->__skb_tstamp_tx(=
+),
+will not be protected under the socket lock. With that said, directly
+accessing tcp_sock is not safe even if the socket type is TCP.
 
-If that's ok, I can send that as a follow up patch (as I bet there
-will be a bunch of iteration on exact form, shape, wording,
-placement).
+Thanks,
+Jason
 
