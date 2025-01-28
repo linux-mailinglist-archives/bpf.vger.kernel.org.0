@@ -1,141 +1,111 @@
-Return-Path: <bpf+bounces-49971-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49972-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C69ECA20D55
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 16:43:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FB16A20D5F
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 16:45:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED787188A318
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 15:43:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79253167C95
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 15:45:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C20A31D61A4;
-	Tue, 28 Jan 2025 15:43:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D93491D618E;
+	Tue, 28 Jan 2025 15:45:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="ZzdR8vdI"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="P90yyR8z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 879061D6DB8
-	for <bpf@vger.kernel.org>; Tue, 28 Jan 2025 15:43:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB9DD1AA1DA
+	for <bpf@vger.kernel.org>; Tue, 28 Jan 2025 15:45:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738079006; cv=none; b=dVKAp0TYCy1N3PySlRWBgudzkDDi5GhSeKJGTkGOoW2zU+WDUVRZM0sOtyDcaDMyeN/+g588PXhP3hqzt09f1Ddcwc8SMC88gK8uIob6qGhXlGAvyg0JyAphHHmSCDKhs3OfxPEwaG4Wnu7CwddAEtvZm/Drk0pRUzRqz1+fIwg=
+	t=1738079116; cv=none; b=BmYQ08aWb34YgeSU6C2Htd/5ZgOt2PPeC2npJuuThNPm3OpUfIghfAPnYlesmjBnCgMd2yh1ZVgYn/pdSUhQvCeqXCnbAhPlm8zXkABdDITXMqiDffKP/3OqZWI0J+e57dTEXPLovmztPH/WF2SAkOdjaFaudzfOk5aYIXA67B4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738079006; c=relaxed/simple;
-	bh=4CM+Y34LzyqTPbJa964bMKTZoegb6ZCbeVLJYvxkr2Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OMt+AABMPuVgu7ja5s1rp9eLS84Yh5NYyPLm0iPu7GsIbZ0f2vnK3d0oRfBQjVxiRBWBIYpAVVinACgPqtmNY8+3IgWwGUmgbMhg9iqPcSYFTJB3ZtzjJqzGBXpVvTOcsVZodRINwFeSS/c9F8ewctDNEojiQX+Su0l1OzcCsQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=ZzdR8vdI; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-e5447fae695so10101580276.2
-        for <bpf@vger.kernel.org>; Tue, 28 Jan 2025 07:43:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1738079001; x=1738683801; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4CM+Y34LzyqTPbJa964bMKTZoegb6ZCbeVLJYvxkr2Y=;
-        b=ZzdR8vdIiohnoZ4hKdRsx8vjUSASU/72vdBDURxTPxW6Y5y+xqJe1XFJv37MN3/RSh
-         1N9DWACiMe42Ssr+6RyacQYB0mKZF7r9X4dw06gLm3TJ5kXU+QA6Pwxa8XDIazhEp8C0
-         9uU7YdXy5cLi0N5EPxtYGd6vErWsFg/mLsK5lwXF/VP7H3vmwwe2R2U45ytaFkUMk6Za
-         lp6jed/BVTI9FjvFUI0MN7HYChc3iERhjHp52qu+iW++/bUjLH+wfDW2Jw7AJF6Rr/MJ
-         y67AxGiMWpozGojGCejMex/pBvJsfQOTerwdd08tOqwT12ksmB/+EE0jtUDQTB2nY1qi
-         QFbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738079001; x=1738683801;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4CM+Y34LzyqTPbJa964bMKTZoegb6ZCbeVLJYvxkr2Y=;
-        b=hfr3+B7/SuuWntVpadmlXdMV0QG0+7L9VGe/NzqFqANaSDZP7gwBzwuE5NDcSy4zA+
-         Pv+tyFGNJ909KsncfTd+e0MUJiZWqQL6+f3njuuMzwQDQLYRv/ZLakVofX8GqCXaknar
-         QTi8DUP1RbAgBY7yI02oQLHqkFmBme3DvGITVdcHFTr0yQcuWKcLZennEQmw8k20WCD9
-         tlfzpL35kbBaaar7i5OI4VP/KkY3SHRqgV5xKM05G1XComnrhRGFBzRGlK76AUOfLjZ4
-         5ha5YmwZakd3r1ylZ7xvVwEoG0XfEYqt5V/dZtfoxt1WAx+XczWFnc0+JTv2+K3Oi0nT
-         d1Og==
-X-Forwarded-Encrypted: i=1; AJvYcCW4iImG+FSyfIwzC0qLe3ZjiV6a395uh9w9V58mMwSS83IYA7xJazkzusoGW7TGe/zKbY4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxnlwRSuc52mtzonzYFAI1TkusLCFxP+wftLkS/qc/e3EQ5NAaK
-	k/oAgUouy5eNQf8s4BR/Zy4fyPH8CqV/ei/LcEdAm48Jouv+w4g0tl38EfkYLCAGu5bj3xGUBEP
-	jZaerywkeHClB2mk8tS/zWskX9unq0wCOFq5g
-X-Gm-Gg: ASbGncsBaw6TgonbSpf0yLzD6zCDq8z92Ye18hvl5SkJRlo/4XqsXBtU5ZG2CT4USNu
-	DxTXXdbLUta5MM1zQr++YsE1lJEjYTJa9QTixXd4quP+iFSLIH5UhwZa4nghx4cih2oNhc4Y=
-X-Google-Smtp-Source: AGHT+IGuLqrmdoXiE8apV7tzhOJZ5Xm1OF/NxWm8Kjkh7RMoG05FR1MdO9WMx2ebniwyt0o5rEC0Jv+xP432BtVJDY0=
-X-Received: by 2002:a05:690c:4d02:b0:6ef:6646:b50a with SMTP id
- 00721157ae682-6f6eb6b2881mr361409457b3.20.1738079001445; Tue, 28 Jan 2025
- 07:43:21 -0800 (PST)
+	s=arc-20240116; t=1738079116; c=relaxed/simple;
+	bh=noXyBqI87BE5bKgzA/bkBi5QPBLeFamw8wGuZmVJ96I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bIA2/ONFrF8W0rIPTVIhl7x4YpXt/JTBAzJJr4davzKRkJG72qvbrA8JaSRBKpajtWKV7tSCjx2pm4DXc8+QL/ZX/g4b/It6aFRDbBBYiBCq4fn0gcMoXG158NYwHZV5e6nG62ZV8LBwet9eq0/N13KJFi1xdhTrIvXwygFhNE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=P90yyR8z; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1738079113;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J1t6D/PIMIyABHQaylKfMHsHw7I0DV8eA6V4Mnp8hC4=;
+	b=P90yyR8zwhAWwUR8uKLFPiMw44IVx3hQNQRexebS1B6gNHqHdPrFtf4qPuG3Y1Fn1yFgt4
+	z3Ab05c8FRgng55RTaf3YY357ygA6pxuZeuCvi74pOP79YdsW1AEd6UNeflowamLqITwun
+	Lh7z9AkKps23MKdInxdgZyrz/R/R9MI=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-561-_UDh5xabOfuNR0SA5QAVhQ-1; Tue,
+ 28 Jan 2025 10:45:05 -0500
+X-MC-Unique: _UDh5xabOfuNR0SA5QAVhQ-1
+X-Mimecast-MFC-AGG-ID: _UDh5xabOfuNR0SA5QAVhQ
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 4F7CB19560B3;
+	Tue, 28 Jan 2025 15:45:02 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.70])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 88BFC30001BE;
+	Tue, 28 Jan 2025 15:44:52 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Tue, 28 Jan 2025 16:44:35 +0100 (CET)
+Date: Tue, 28 Jan 2025 16:44:25 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Eyal Birger <eyal.birger@gmail.com>
+Cc: kees@kernel.org, luto@amacapital.net, wad@chromium.org,
+	mhiramat@kernel.org, andrii@kernel.org, jolsa@kernel.org,
+	alexei.starovoitov@gmail.com, olsajiri@gmail.com, cyphar@cyphar.com,
+	songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+	peterz@infradead.org, tglx@linutronix.de, bp@alien8.de,
+	daniel@iogearbox.net, ast@kernel.org, andrii.nakryiko@gmail.com,
+	rostedt@goodmis.org, rafi@rbk.io, shmulik.ladkani@gmail.com,
+	bpf@vger.kernel.org, linux-api@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2] seccomp: passthrough uretprobe systemcall without
+ filtering
+Message-ID: <20250128154424.GB24845@redhat.com>
+References: <20250128145806.1849977-1-eyal.birger@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250110-jag-ctl_table_const-v2-1-0000e1663144@kernel.org>
- <Z4+jwDBrZNRgu85S@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
- <nslqrapp4v3rknjgtfk4cg64ha7rewrrg24aslo2e5jmxfwce5@t4chrpuk632k>
- <CAMj1kXEZPe8zk7s67SADK9wVH3cfBup-sAZSC6_pJyng9QT7aw@mail.gmail.com>
- <f4lfo2fb7ajogucsvisfd5sg2avykavmkizr6ycsllcrco4mo3@qt2zx4zp57zh>
- <87jzag9ugx.fsf@intel.com> <Z5epb86xkHQ3BLhp@casper.infradead.org> <u2fwibsnbfvulxj6adigla6geiafh2vuve4hcyo4vmeytwjl7p@oz6xonrq5225>
-In-Reply-To: <u2fwibsnbfvulxj6adigla6geiafh2vuve4hcyo4vmeytwjl7p@oz6xonrq5225>
-From: Paul Moore <paul@paul-moore.com>
-Date: Tue, 28 Jan 2025 10:43:10 -0500
-X-Gm-Features: AWEUYZkHRaUuCTQsu1U9C5jhigmIE9c2_8OmkE_i2Qv7ILXtAaTfDLC5EcLBZNk
-Message-ID: <CAHC9VhQnB_bsQaezBfAcA0bE7Zoc99QXrvO1qjpHA-J8+_doYg@mail.gmail.com>
-Subject: Re: Re: Re: Re: [PATCH v2] treewide: const qualify ctl_tables where applicable
-To: Joel Granados <joel.granados@kernel.org>
-Cc: Matthew Wilcox <willy@infradead.org>, Jani Nikula <jani.nikula@intel.com>, 
-	Ard Biesheuvel <ardb@kernel.org>, Alexander Gordeev <agordeev@linux.ibm.com>, 
-	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
-	Kees Cook <kees@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	openipmi-developer@lists.sourceforge.net, intel-gfx@lists.freedesktop.org, 
-	dri-devel@lists.freedesktop.org, intel-xe@lists.freedesktop.org, 
-	linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org, 
-	linux-serial@vger.kernel.org, xen-devel@lists.xenproject.org, 
-	linux-aio@kvack.org, linux-fsdevel@vger.kernel.org, netfs@lists.linux.dev, 
-	codalist@coda.cs.cmu.edu, linux-mm@kvack.org, linux-nfs@vger.kernel.org, 
-	ocfs2-devel@lists.linux.dev, fsverity@lists.linux.dev, 
-	linux-xfs@vger.kernel.org, io-uring@vger.kernel.org, bpf@vger.kernel.org, 
-	kexec@lists.infradead.org, linux-trace-kernel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, apparmor@lists.ubuntu.com, 
-	linux-security-module@vger.kernel.org, keyrings@vger.kernel.org, 
-	Song Liu <song@kernel.org>, "Steven Rostedt (Google)" <rostedt@goodmis.org>, 
-	"Martin K. Petersen" <martin.petersen@oracle.com>, "Darrick J. Wong" <djwong@kernel.org>, 
-	Corey Minyard <cminyard@mvista.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250128145806.1849977-1-eyal.birger@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-On Tue, Jan 28, 2025 at 6:22=E2=80=AFAM Joel Granados <joel.granados@kernel=
-.org> wrote:
-> On Mon, Jan 27, 2025 at 03:42:39PM +0000, Matthew Wilcox wrote:
-> > On Mon, Jan 27, 2025 at 04:55:58PM +0200, Jani Nikula wrote:
-> > > You could have static const within functions too. You get the rodata
-> > > protection and function local scope, best of both worlds?
-> >
-> > timer_active is on the stack, so it can't be static const.
-> >
-> > Does this really need to be cc'd to such a wide distribution list?
-> That is a very good question. I removed 160 people from the original
-> e-mail and left the ones that where previously involved with this patch
-> and left all the lists for good measure. But it seems I can reduce it
-> even more.
+can't review, I know nothing about seccomp_cache, but
+
+On 01/28, Eyal Birger wrote:
 >
-> How about this: For these treewide efforts I just leave the people that
-> are/were involved in the series and add two lists: linux-kernel and
-> linux-hardening.
->
-> Unless someone screams, I'll try this out on my next treewide.
+> +static bool seccomp_is_const_allow(struct sock_fprog_kern *fprog,
+> +				   struct seccomp_data *sd)
+> +{
+> +#ifdef __NR_uretprobe
+> +	if (sd->nr == __NR_uretprobe
+> +#ifdef SECCOMP_ARCH_COMPAT
+> +	    && sd->arch != SECCOMP_ARCH_COMPAT
+> +#endif
 
-I'm not screaming about it :) but anything that touches the LSM,
-SELinux, or audit code (or matches the regex in MAINTAINERS) I would
-prefer to see on the associated mailing list.
+it seems you can check
 
---=20
-paul-moore.com
+            && sd->arch == SECCOMP_ARCH_NATIVE
+
+and avoid #ifdef SECCOMP_ARCH_COMPAT
+
+Oleg.
+
 
