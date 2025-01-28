@@ -1,412 +1,145 @@
-Return-Path: <bpf+bounces-49990-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49991-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4890AA21494
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 23:44:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75FB9A2149C
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 23:49:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73A681888028
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 22:44:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE16B166735
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 22:49:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E7891E0B74;
-	Tue, 28 Jan 2025 22:44:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1B491E1C22;
+	Tue, 28 Jan 2025 22:49:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="2tRjXSHe"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YVhKKmVD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.194])
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF0591C3BF7
-	for <bpf@vger.kernel.org>; Tue, 28 Jan 2025 22:44:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66AD719D892
+	for <bpf@vger.kernel.org>; Tue, 28 Jan 2025 22:49:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738104267; cv=none; b=kChGoQisIBzp05uNz5EhxK520pV/k8Ial82AKyCIUHP72P7aGxZkY8iQeE0fx0lyv8+T3Q4PqU5NcgUUiLSSXH/by25gVhjqe/xEaSSNsCG2JCr07hMj1QRbC9qfJiH33UN+xDg/y+CvwK+yNnOtmfV8BF+TE9Y/d/BGaflTOdg=
+	t=1738104572; cv=none; b=qZFhL6ZDMSJOWKJzHjd3GIkiBzVIhL96vkQdzWXWxuKEfld7O7BtEnpgBGACZEit6zp8in6+bVxl2s8E2Q2B+Ns/Hi8SPEhKL19AM3vsrPAWgn+XkIBzLOxyrNOrA2gbjc54xgL3yqF59JJlodf6fzqtjOR1+WLo3StgspWsN/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738104267; c=relaxed/simple;
-	bh=sC2j8xRGHe7nr+QNZ5ZANfcvHGfTRLLs3oKofC73OZw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=e9xY68OB7NqtsXOfuRtgax3isuDizCY0ZJOFEmY8abX9tpu4F2dg2dE9pCS4FRDf2QKPhXk3E4wOl9vzljtaoT5LC036BXdF2vqCqYC+dICeMZO1DPjGD87a4R1VN80BBpJH5VHYj1Q8OO1qHpFKzJIUHiaWtJfazf2dq4Hm7gg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=2tRjXSHe; arc=none smtp.client-ip=74.208.4.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
-	s=s1-ionos; t=1738104255; x=1738709055; i=linux@jordanrome.com;
-	bh=LhJJH5WuMX5aq6LX3M5eXAA/nYkW+PydFm8hbRxet3Y=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=2tRjXSHe/cXn1FoqIkguxSxTIWSxQYsaSCPdxkI42RSPpQt2UlWePk1il7Xa6VyB
-	 XrAVJVUJn0P2FMPF4YulA3dTrrUI98UlY8zh+SD632nPzq1z2p2KWl0qMZUoIHFkY
-	 K2/pOsaIYuf/2env6m/UV83If0p5lhzfGCpBgfbv1wxfHrlaOWX5xwrXCDdIQy2Bw
-	 dvAf0Xa/oKS+kIzT1lmkNDQC53fG7zwnxYXwrqUXx3vg/BfKckYkFMW5lOpDZ2CXQ
-	 fLYuQo36nBiuCBVjtg6TnW++NQ+Y4+Ta0T75PJ6RvjTK735wi94lMGTd8XfNULd7C
-	 G9iL4WKeoB1j/zRYzw==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from localhost ([69.171.251.3]) by mrelay.perfora.net (mreueus004
- [74.208.5.2]) with ESMTPSA (Nemesis) id 1MwxJ1-1tF1lc0Dhz-00tyiV; Tue, 28 Jan
- 2025 23:44:15 +0100
-From: Jordan Rome <linux@jordanrome.com>
-To: bpf@vger.kernel.org
-Cc: linux-mm@kvack.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Kernel Team <kernel-team@fb.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Alexander Potapenko <glider@google.com>
-Subject: [bpf-next v6 3/3] selftests/bpf: Add tests for bpf_copy_from_user_task_str
-Date: Tue, 28 Jan 2025 14:43:52 -0800
-Message-ID: <20250128224352.3808460-3-linux@jordanrome.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20250128224352.3808460-1-linux@jordanrome.com>
-References: <20250128224352.3808460-1-linux@jordanrome.com>
+	s=arc-20240116; t=1738104572; c=relaxed/simple;
+	bh=0z1Uu2ZoNK4FMlqQYppsrJJjYCmDj0CbPV0ZLW+wLgE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D7DieES8iZ6YRgSxZqK9lZmZL6/PW2qpJRJ4YtRdbujvzShC3sw8E4qacm0UE1F6tZeQKiTh7nHBwAM+5QGOcnVr1Klf2Lf7ZEosEOcHSIxqO+uuGnFJR3xSw0Haz2l7KUEzJfUzt5c4gv8VQwvS2d0MWyPWRO8AW8vyR734Fok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YVhKKmVD; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <e03f6c1d-37c3-4d0b-8e42-1f8980ed379a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1738104558;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ylNTxkBjhSFS6U9A/qTUzi5AjkmPH4/OseDQKYmB8n0=;
+	b=YVhKKmVDZ2GYQ86Ja4x+ridvVmRjz8qkKsXJtXzCsLrHv03xzQZFJewvKpJtxIWSpv8qcs
+	03tp/WBNyWoFsY4lEB7ooopBor6e02tV5FxIMOkixgRI2F/V9tKzVsIrnKjow2lHSCRPwA
+	3VpInGxoaY1FUSTMWTryzqidmkT32OE=
+Date: Tue, 28 Jan 2025 14:49:08 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:dUpyW8ZQI4xCv3r6SWnn1cP0igwa1BlRWYz1XV0OhYgqhhyXbq4
- 2/ZOwp/r0QLRCb8dTC27YKV12g8V4tHfTxApeitjEOKpVG6/rm9vvlDbR0Ga56y+9MIjDDQ
- VMjo+x/UdzAZNmt+tXryeel4uAAgiq1Hss6vh5hV8WvyVGETCg5dv/GJimVPvqHNUQwk/Lb
- jPobii2DRd1EQ4SpTbloA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:BBG0znHmojc=;jyOkfJqp77N3aFhAWLMgPFmcmEo
- jOor2fIc/IMLOQUabPQvbCE9fM/ZQp1lsMoEzplfjJkMGjv/On3Xz9SoR1KqyZ4so2NiuY1ng
- uiAMuRDXhYtE/2QVPj1pbWYVnxDKSOk3YFc7CKBN3YaapwLquS2kh8x7yqJaNDynsLyEy6XSt
- YnAyEB41gx2wK5wDLpvO4rKRURbTP59yZVWzdrgYJYL3N8Ka1vTImqwHYX7qfnFtraiAP/lA5
- 3K6+wSzv/SnJP1UO1cE52OPo154CORBEqEr+yqbDs0rlWj6Gh3Bzc+ItkSwc+iefN/sz1l1UH
- SPH2sNR+fcK6MSFs+T7SCPiUPuqAP2xefPwroNi3T3p1lUbfousbjvadE4tT2ZCSM+lEmhl4x
- micd13WC/cvOJWoAbJmR5jpdLMLW61clY4jcBt8X5z9nMXTNpDeo6Dogf7v1QP0ljYxtKw0sC
- H+X57bGhuW7nYKerb3UK1Koe8EEYarOXHHCVebRMKFCeS+tort/uvabwNBmtR/fILKEpcGmfp
- k9geUhZdkUJM7bPMQYXPSXjkMoTR04A1wRoPptKE8dHx9tA8XhzJzABwp44ioCCVMG6KnYzry
- N0P2ZnNHd8X9erUAm6W2+GojwYXSHhT341Sq/TLusIyjFbK2o0Q3I+DPlPSEZyqbPSgXle15t
- JVo2gZLXtod5WV9h/iV5e5TD7Ir7RfWFM/ouuXNwdZcpEPIUbT25AY/XoPRHdC4MZr5IxQdGv
- oXiGb2zQVhLqcMaFmZJqFYaCkbozJ/spRp/kC42VzId8uIbBsVY3wXxuT4iYwZmN3zldsinRG
- eZ4IgpxKszf9v6QnVNq/77R4PFs0cD9XcfOocuLB27UYpZu9lwcSCV95/8QmEIXDa8QsPXjeB
- VAx9awSCslCsxUrUSs3jtP/nYzlBxPMvAWBAi61K3uJVrrVDde1VC/BkTqCt2g0z/Mx3dy4Gx
- PsauebZ2ziTSjcvKm32kGQG6Wc9Il6I1YW+OSxlAvDvGhkgTHmz/83wCK9GmBrMwZmyHP7sXT
- X4uhjwjjxk3UuXwCDv0mE+gWKIJ1Rn5M/2xlG+bbIoD4/RrzSFQ06U4ZKwEiVmsNBLBt9kGkw
- OiB0E3WePbhUv6iCp8ZkA/b3aCY4aWaKTL5dBr0AAu5kF/MjqGKQ==
+Subject: Re: [PATCH bpf-next v3 01/14] selftests/bpf: helpers: Add
+ append_tid()
+To: "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+ Alexis Lothore <alexis.lothore@bootlin.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20250128-redirect-multi-v3-0-c1ce69997c01@bootlin.com>
+ <20250128-redirect-multi-v3-1-c1ce69997c01@bootlin.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20250128-redirect-multi-v3-1-c1ce69997c01@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-This adds tests for both the happy path and the
-error path (with and without the BPF_F_PAD_ZEROS flag).
+On 1/28/25 1:57 AM, Bastien Curutchet (eBPF Foundation) wrote:
+> Some tests can't be run in parallel because they use same namespace
+> names or veth names.
+> 
+> Create an helper that appends the thread ID to a given string. 8
+> characters are used for it (7 digits + '\0')
+> 
+> Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
+> ---
+>   tools/testing/selftests/bpf/network_helpers.c | 11 +++++++++++
+>   tools/testing/selftests/bpf/network_helpers.h | 10 ++++++++++
+>   2 files changed, 21 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
+> index 80844a5fb1feef2ff73c2f0293e52495803ab769..d2ff7521aaa696ed04d8f1308394b4c01c1c038b 100644
+> --- a/tools/testing/selftests/bpf/network_helpers.c
+> +++ b/tools/testing/selftests/bpf/network_helpers.c
+> @@ -446,6 +446,17 @@ char *ping_command(int family)
+>   	return "ping";
+>   }
+>   
+> +int append_tid(char *str, size_t offset)
+nit. offset should always be strlen(str) now. The append_tid will be easier to 
+use if the append_tid always does the strlen() itself to figure out the end of 
+the str.
 
-Signed-off-by: Jordan Rome <linux@jordanrome.com>
-=2D--
- .../selftests/bpf/prog_tests/bpf_iter.c       |  68 +++++++++++
- .../selftests/bpf/prog_tests/read_vsyscall.c  |   1 +
- .../selftests/bpf/progs/bpf_iter_tasks.c      | 110 ++++++++++++++++++
- .../selftests/bpf/progs/read_vsyscall.c       |  11 +-
- 4 files changed, 188 insertions(+), 2 deletions(-)
+It will be useful to replace the "size_t offset" arg with "size_t sz" which 
+tells the max size of the "char *str" and the append_tid does a check to ensure 
+there is enough space to append the "%07d" tid.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/tes=
-ting/selftests/bpf/prog_tests/bpf_iter.c
-index 6f1bfacd7375..add4a18c33bd 100644
-=2D-- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -323,19 +323,87 @@ static void test_task_pidfd(void)
- static void test_task_sleepable(void)
- {
- 	struct bpf_iter_tasks *skel;
-+	int pid, status, err, data_pipe[2], finish_pipe[2], c;
-+	char *test_data =3D NULL;
-+	char *test_data_long =3D NULL;
-+	char *data[2];
-+
-+	if (!ASSERT_OK(pipe(data_pipe), "data_pipe") ||
-+	    !ASSERT_OK(pipe(finish_pipe), "finish_pipe"))
-+		return;
-
- 	skel =3D bpf_iter_tasks__open_and_load();
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_tasks__open_and_load"))
- 		return;
-
-+	pid =3D fork();
-+	if (!ASSERT_GE(pid, 0, "fork"))
-+		return;
-+
-+	if (pid =3D=3D 0) {
-+		/* child */
-+		close(data_pipe[0]);
-+		close(finish_pipe[1]);
-+
-+		test_data =3D malloc(sizeof(char) * 10);
-+		strncpy(test_data, "test_data", 10);
-+		test_data[9] =3D '\0';
-+
-+		test_data_long =3D malloc(sizeof(char) * 5000);
-+		for (int i =3D 0; i < 5000; ++i) {
-+			if (i % 2 =3D=3D 0)
-+				test_data_long[i] =3D 'b';
-+			else
-+				test_data_long[i] =3D 'a';
-+		}
-+		test_data_long[4999] =3D '\0';
-+
-+		data[0] =3D test_data;
-+		data[1] =3D test_data_long;
-+
-+		write(data_pipe[1], &data, sizeof(data));
-+
-+		/* keep child alive until after the test */
-+		err =3D read(finish_pipe[0], &c, 1);
-+		if (err !=3D 1)
-+			exit(-1);
-+
-+		close(data_pipe[1]);
-+		close(finish_pipe[0]);
-+		_exit(0);
-+	}
-+
-+	/* parent */
-+	close(data_pipe[1]);
-+	close(finish_pipe[0]);
-+
-+	err =3D read(data_pipe[0], &data, sizeof(data));
-+	ASSERT_EQ(err, sizeof(data), "read_check");
-+
-+	skel->bss->user_ptr =3D data[0];
-+	skel->bss->user_ptr_long =3D data[1];
-+	skel->bss->pid =3D pid;
-+
- 	do_dummy_read(skel->progs.dump_task_sleepable);
-
- 	ASSERT_GT(skel->bss->num_expected_failure_copy_from_user_task, 0,
- 		  "num_expected_failure_copy_from_user_task");
- 	ASSERT_GT(skel->bss->num_success_copy_from_user_task, 0,
- 		  "num_success_copy_from_user_task");
-+	ASSERT_GT(skel->bss->num_expected_failure_copy_from_user_task_str, 0,
-+		  "num_expected_failure_copy_from_user_task_str");
-+	ASSERT_GT(skel->bss->num_success_copy_from_user_task_str, 0,
-+		  "num_success_copy_from_user_task_str");
-
- 	bpf_iter_tasks__destroy(skel);
-+
-+	write(finish_pipe[1], &c, 1);
-+	err =3D waitpid(pid, &status, 0);
-+	ASSERT_EQ(err, pid, "waitpid");
-+	ASSERT_EQ(status, 0, "zero_child_exit");
-+
-+	close(data_pipe[0]);
-+	close(finish_pipe[1]);
- }
-
- static void test_task_stack(void)
-diff --git a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c b/tool=
-s/testing/selftests/bpf/prog_tests/read_vsyscall.c
-index c7b9ba8b1d06..a8d1eaa67020 100644
-=2D-- a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-+++ b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-@@ -24,6 +24,7 @@ struct read_ret_desc {
- 	{ .name =3D "copy_from_user", .ret =3D -EFAULT },
- 	{ .name =3D "copy_from_user_task", .ret =3D -EFAULT },
- 	{ .name =3D "copy_from_user_str", .ret =3D -EFAULT },
-+	{ .name =3D "copy_from_user_task_str", .ret =3D -EFAULT },
- };
-
- void test_read_vsyscall(void)
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_tasks.c b/tools/te=
-sting/selftests/bpf/progs/bpf_iter_tasks.c
-index bc10c4e4b4fa..966ee5a7b066 100644
-=2D-- a/tools/testing/selftests/bpf/progs/bpf_iter_tasks.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_tasks.c
-@@ -9,6 +9,13 @@ char _license[] SEC("license") =3D "GPL";
- uint32_t tid =3D 0;
- int num_unknown_tid =3D 0;
- int num_known_tid =3D 0;
-+void *user_ptr =3D 0;
-+void *user_ptr_long =3D 0;
-+uint32_t pid =3D 0;
-+
-+static char big_str1[5000];
-+static char big_str2[5005];
-+static char big_str3[4996];
-
- SEC("iter/task")
- int dump_task(struct bpf_iter__task *ctx)
-@@ -35,7 +42,9 @@ int dump_task(struct bpf_iter__task *ctx)
- }
-
- int num_expected_failure_copy_from_user_task =3D 0;
-+int num_expected_failure_copy_from_user_task_str =3D 0;
- int num_success_copy_from_user_task =3D 0;
-+int num_success_copy_from_user_task_str =3D 0;
-
- SEC("iter.s/task")
- int dump_task_sleepable(struct bpf_iter__task *ctx)
-@@ -44,6 +53,9 @@ int dump_task_sleepable(struct bpf_iter__task *ctx)
- 	struct task_struct *task =3D ctx->task;
- 	static const char info[] =3D "    =3D=3D=3D END =3D=3D=3D";
- 	struct pt_regs *regs;
-+	char task_str1[10] =3D "aaaaaaaaaa";
-+	char task_str2[10], task_str3[10];
-+	char task_str4[20] =3D "aaaaaaaaaaaaaaaaaaaa";
- 	void *ptr;
- 	uint32_t user_data =3D 0;
- 	int ret;
-@@ -78,8 +90,106 @@ int dump_task_sleepable(struct bpf_iter__task *ctx)
- 		BPF_SEQ_PRINTF(seq, "%s\n", info);
- 		return 0;
- 	}
-+
- 	++num_success_copy_from_user_task;
-
-+	/* Read an invalid pointer and ensure we get an error */
-+	ptr =3D NULL;
-+	ret =3D bpf_copy_from_user_task_str((char *)task_str1, sizeof(task_str1)=
-, ptr, task, 0);
-+	if (ret >=3D 0 || task_str1[9] !=3D 'a' || task_str1[0] !=3D '\0') {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	/* Read an invalid pointer and ensure we get error with pad zeros flag *=
-/
-+	ptr =3D NULL;
-+	ret =3D bpf_copy_from_user_task_str((char *)task_str1, sizeof(task_str1)=
-,
-+					  ptr, task, BPF_F_PAD_ZEROS);
-+	if (ret >=3D 0 || task_str1[9] !=3D '\0' || task_str1[0] !=3D '\0') {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	++num_expected_failure_copy_from_user_task_str;
-+
-+	/* Same length as the string */
-+	ret =3D bpf_copy_from_user_task_str((char *)task_str2, 10, user_ptr, tas=
-k, 0);
-+	/* only need to do the task pid check once */
-+	if (bpf_strncmp(task_str2, 10, "test_data\0") !=3D 0 || ret !=3D 10 || t=
-ask->tgid !=3D pid) {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	/* Shorter length than the string */
-+	ret =3D bpf_copy_from_user_task_str((char *)task_str3, 2, user_ptr, task=
-, 0);
-+	if (bpf_strncmp(task_str3, 2, "t\0") !=3D 0 || ret !=3D 2) {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	/* Longer length than the string */
-+	ret =3D bpf_copy_from_user_task_str((char *)task_str4, 20, user_ptr, tas=
-k, 0);
-+	if (bpf_strncmp(task_str4, 10, "test_data\0") !=3D 0 || ret !=3D 10
-+	    || task_str4[sizeof(task_str4) - 1] !=3D 'a') {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	/* Longer length than the string with pad zeros flag */
-+	ret =3D bpf_copy_from_user_task_str((char *)task_str4, 20, user_ptr, tas=
-k, BPF_F_PAD_ZEROS);
-+	if (bpf_strncmp(task_str4, 10, "test_data\0") !=3D 0 || ret !=3D 10
-+	    || task_str4[sizeof(task_str4) - 1] !=3D '\0') {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	/* Longer length than the string past a page boundary */
-+	ret =3D bpf_copy_from_user_task_str(big_str1, 5000, user_ptr, task, 0);
-+	if (bpf_strncmp(big_str1, 10, "test_data\0") !=3D 0 || ret !=3D 10) {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	/* String that crosses a page boundary */
-+	ret =3D bpf_copy_from_user_task_str(big_str1, 5000, user_ptr_long, task,=
- BPF_F_PAD_ZEROS);
-+	if (bpf_strncmp(big_str1, 4, "baba") !=3D 0 || ret !=3D 5000
-+	    || bpf_strncmp(big_str1 + 4996, 4, "bab\0") !=3D 0) {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	for (int i =3D 0; i < 4999; ++i) {
-+		if (i % 2 =3D=3D 0) {
-+			if (big_str1[i] !=3D 'b') {
-+				BPF_SEQ_PRINTF(seq, "%s\n", info);
-+				return 0;
-+			}
-+		} else {
-+			if (big_str1[i] !=3D 'a') {
-+				BPF_SEQ_PRINTF(seq, "%s\n", info);
-+				return 0;
-+			}
-+		}
-+	}
-+
-+	/* Longer length than the string that crosses a page boundary */
-+	ret =3D bpf_copy_from_user_task_str(big_str2, 5005, user_ptr_long, task,=
- BPF_F_PAD_ZEROS);
-+	if (bpf_strncmp(big_str2, 4, "baba") !=3D 0 || ret !=3D 5000
-+	    || bpf_strncmp(big_str2 + 4996, 5, "bab\0\0") !=3D 0) {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	/* Shorter length than the string that crosses a page boundary */
-+	ret =3D bpf_copy_from_user_task_str(big_str3, 4996, user_ptr_long, task,=
- 0);
-+	if (bpf_strncmp(big_str3, 4, "baba") !=3D 0 || ret !=3D 4996
-+	    || bpf_strncmp(big_str3 + 4992, 4, "bab\0") !=3D 0) {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	++num_success_copy_from_user_task_str;
-+
- 	if (ctx->meta->seq_num =3D=3D 0)
- 		BPF_SEQ_PRINTF(seq, "    tgid      gid     data\n");
-
-diff --git a/tools/testing/selftests/bpf/progs/read_vsyscall.c b/tools/tes=
-ting/selftests/bpf/progs/read_vsyscall.c
-index 39ebef430059..395591374d4f 100644
-=2D-- a/tools/testing/selftests/bpf/progs/read_vsyscall.c
-+++ b/tools/testing/selftests/bpf/progs/read_vsyscall.c
-@@ -8,14 +8,16 @@
-
- int target_pid =3D 0;
- void *user_ptr =3D 0;
--int read_ret[9];
-+int read_ret[10];
-
- char _license[] SEC("license") =3D "GPL";
-
- /*
-- * This is the only kfunc, the others are helpers
-+ * These are the kfuncs, the others are helpers
-  */
- int bpf_copy_from_user_str(void *dst, u32, const void *, u64) __weak __ks=
-ym;
-+int bpf_copy_from_user_task_str(void *dst, u32, const void *,
-+				struct task_struct *, u64) __weak __ksym;
-
- SEC("fentry/" SYS_PREFIX "sys_nanosleep")
- int do_probe_read(void *ctx)
-@@ -47,6 +49,11 @@ int do_copy_from_user(void *ctx)
- 	read_ret[7] =3D bpf_copy_from_user_task(buf, sizeof(buf), user_ptr,
- 					      bpf_get_current_task_btf(), 0);
- 	read_ret[8] =3D bpf_copy_from_user_str((char *)buf, sizeof(buf), user_pt=
-r, 0);
-+	read_ret[9] =3D bpf_copy_from_user_task_str((char *)buf,
-+						  sizeof(buf),
-+						  user_ptr,
-+						  bpf_get_current_task_btf(),
-+						  0);
-
- 	return 0;
- }
-=2D-
-2.43.5
+> +{
+> +	if (!str)
+> +		return -1;
+> +
+> +	sprintf(&str[offset], "%07d", gettid());
+> +	str[offset + 7] = '\0';
+> +
+> +	return 0;
+> +}
+> +
+>   int remove_netns(const char *name)
+>   {
+>   	char *cmd;
+> diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
+> index ebec8a8d6f81e9d079a3b087127a37885c656856..b2451dd00594190e1dcb58498d70dd80c0e7c51c 100644
+> --- a/tools/testing/selftests/bpf/network_helpers.h
+> +++ b/tools/testing/selftests/bpf/network_helpers.h
+> @@ -98,6 +98,16 @@ int send_recv_data(int lfd, int fd, uint32_t total_bytes);
+>   int make_netns(const char *name);
+>   int remove_netns(const char *name);
+>   
+> +/**
+> + * append_tid() - Append thread ID to the given string.
+> + *
+> + * /!\ the appended thread ID is 8 characters long
+> + *     so the input string must be allocated accordingly
+> + *
+> + * Returns -1 if input is NULL, 0 otherwise
+> + */
+> +int append_tid(char *str, size_t offset);
+> +
+>   static __u16 csum_fold(__u32 csum)
+>   {
+>   	csum = (csum & 0xffff) + (csum >> 16);
+> 
 
 
