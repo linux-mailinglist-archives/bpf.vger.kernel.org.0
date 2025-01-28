@@ -1,117 +1,324 @@
-Return-Path: <bpf+bounces-49973-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49974-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD7F2A20DBC
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 16:55:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BA3BA20F8A
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 18:21:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EE091657BF
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 15:55:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33B503A3DD4
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 17:21:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83B7C1DA0E0;
-	Tue, 28 Jan 2025 15:55:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 983BF1DE3DD;
+	Tue, 28 Jan 2025 17:21:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UpQD+QST"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="RS36gzQL";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ka5PDexh"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 942621D8DE1
-	for <bpf@vger.kernel.org>; Tue, 28 Jan 2025 15:55:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 448041CDFD5
+	for <bpf@vger.kernel.org>; Tue, 28 Jan 2025 17:21:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738079702; cv=none; b=KpB1Z5LuXF2sJKPb24heB1+NcmmSXGEd/sHVcbpK6jR/TTqZ+kM2h3FogW3mPgeLg09eeQqKVaC6d+mWbxy/6wwkKhpJxNoe8YdZQ09JYo2CrjPfcNQI3vAL/Z2kH4HUYJKDJnHrEMqycEYhCx+rpsOEydDrHp566jz4AOn5dAI=
+	t=1738084903; cv=none; b=E4vD9SGmjxf7Zdm3WICmUm8+KGG4MhFulZu0wcUTQgQiL83bWM07ZENK+q4DCOxQxR71vDAq2LnKbDmR843HhkyNVBZnCxmlvQclYqfzXJG3/AP00QcHuMZd0yjtDiNxMRVn+tYkuoUGLrxyO7kY3K+mYEKOtON8qGvV0DNtOrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738079702; c=relaxed/simple;
-	bh=ggpM2k9PDQk6/H8zY3iHjqOT8TBaewkRFFLQCjQKBAg=;
+	s=arc-20240116; t=1738084903; c=relaxed/simple;
+	bh=bRaw5BbzRZN4GeebOuH76POYP/O165F58ttXnN/pUvY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JAMAcmI5AzQZQeFPwfnRnA3vHI04xrF+ytrFv/8T/+KixS+Fg2v2Cf7WVbHyQooSMoWAivEpCOxz26S8LIvgVp0wpi+qdIo/4iI3N3sazeRVkVHahC9nP73r08wfPP6H8fg86FdqElOlFJwsQvWWTRv+oWdBw9NxPQ6AktrmDL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UpQD+QST; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1738079699;
+	 Content-Type:Content-Disposition:In-Reply-To; b=VUx5nNpO931aA4+AMde146ySGGlh3QRE4MOdcuCUTBCxlwk8zRpQQVVSzoomGLsUZ20dkmGSxdxPkIU0oApgvJysCLG38tzm4X55HKvJSqlL07/Ac1uYiYWko3hG4B6A2AgvmDD7wkCScFieRmDRtY2koRZRxilz6NjSHA2Sr1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=RS36gzQL; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ka5PDexh; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 28 Jan 2025 18:21:37 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1738084899;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=C95ku0MuhkG03MXVzeMTxA5H+ymY03VNMJ8Dz5j0JFA=;
-	b=UpQD+QSTj/nSgl7vk37PXCYWI7msI4DeVStX+KZzfv0Fg2KPTHddozdIFYYREnqZtPV60z
-	oBcM8SQ04wU0MfgOZ/NOtkW+SvnyJELbYpL25MEkJrzX9eSMNKM0idUPfMrJJlJZZt+GY1
-	Mrz0aIVXT8yqFmv1CkI9ImWCK4hC/+8=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-161-vL9C7_GxNieR4EuN-Tg0fw-1; Tue,
- 28 Jan 2025 10:54:53 -0500
-X-MC-Unique: vL9C7_GxNieR4EuN-Tg0fw-1
-X-Mimecast-MFC-AGG-ID: vL9C7_GxNieR4EuN-Tg0fw
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 1611C18009DD;
-	Tue, 28 Jan 2025 15:54:50 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.70])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 5279D3003FD1;
-	Tue, 28 Jan 2025 15:54:40 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Tue, 28 Jan 2025 16:54:23 +0100 (CET)
-Date: Tue, 28 Jan 2025 16:54:12 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Eyal Birger <eyal.birger@gmail.com>
-Cc: kees@kernel.org, luto@amacapital.net, wad@chromium.org,
-	mhiramat@kernel.org, andrii@kernel.org, jolsa@kernel.org,
-	alexei.starovoitov@gmail.com, olsajiri@gmail.com, cyphar@cyphar.com,
-	songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-	peterz@infradead.org, tglx@linutronix.de, bp@alien8.de,
-	daniel@iogearbox.net, ast@kernel.org, andrii.nakryiko@gmail.com,
-	rostedt@goodmis.org, rafi@rbk.io, shmulik.ladkani@gmail.com,
-	bpf@vger.kernel.org, linux-api@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2] seccomp: passthrough uretprobe systemcall without
- filtering
-Message-ID: <20250128155402.GA17054@redhat.com>
-References: <20250128145806.1849977-1-eyal.birger@gmail.com>
- <20250128154424.GB24845@redhat.com>
+	bh=MOJUlAo7lz1CwdMKpv46rlAJOwnNrK33eU6Dw3GvpRY=;
+	b=RS36gzQLNYLvo/gP8Pu3Qw+zafkf6Vyzb3rQz+36Z4CDthljPupCFikNp0MNMl1AXuWZ+/
+	7/a5KjvD28hNar6vx4iMVRRGQYN5IC0AwDuMARcCxXjdlzfc2Ao1R6hw0Di7TXrW5bbEYK
+	Yh4Ye2v9lheN+5fJMdaOTpRXxnhici02bM7H+1bgxKlxL5nKycx+/+E4dztIAVpcCgRcYf
+	vhrupS1PipeRLed5lz29oo+RJBNjh1GklFQ/nJXBHwRmj0+YHpiBxj4xM1XtfI03pH5ux+
+	pv0jIw8/7ffpViTNzV7aXhSWWt5Cfkwi89J9XeUMV9tzEMIAtJehdaRKz3BUkw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1738084899;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MOJUlAo7lz1CwdMKpv46rlAJOwnNrK33eU6Dw3GvpRY=;
+	b=Ka5PDexhtF5JhuaPwa5lr6lrqXmXclnV44mzF0L9JhPN2+u5ZT5ueMiRFKfP0WgONYda9G
+	qIi5tstpIZoOTuCA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, andrii@kernel.org, memxor@gmail.com,
+	akpm@linux-foundation.org, peterz@infradead.org, vbabka@suse.cz,
+	rostedt@goodmis.org, houtao1@huawei.com, hannes@cmpxchg.org,
+	shakeel.butt@linux.dev, mhocko@suse.com, willy@infradead.org,
+	tglx@linutronix.de, jannh@google.com, tj@kernel.org,
+	linux-mm@kvack.org, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next v6 3/6] locking/local_lock: Introduce
+ local_trylock_t and local_trylock_irqsave()
+Message-ID: <20250128172137.bLPGqHth@linutronix.de>
+References: <20250124035655.78899-1-alexei.starovoitov@gmail.com>
+ <20250124035655.78899-4-alexei.starovoitov@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250128154424.GB24845@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+In-Reply-To: <20250124035655.78899-4-alexei.starovoitov@gmail.com>
 
-On 01/28, Oleg Nesterov wrote:
->
-> can't review, I know nothing about seccomp_cache, but
->
-> On 01/28, Eyal Birger wrote:
-> >
-> > +static bool seccomp_is_const_allow(struct sock_fprog_kern *fprog,
-> > +				   struct seccomp_data *sd)
-> > +{
-> > +#ifdef __NR_uretprobe
-> > +	if (sd->nr == __NR_uretprobe
-> > +#ifdef SECCOMP_ARCH_COMPAT
-> > +	    && sd->arch != SECCOMP_ARCH_COMPAT
-> > +#endif
->
-> it seems you can check
->
->             && sd->arch == SECCOMP_ARCH_NATIVE
->
-> and avoid #ifdef SECCOMP_ARCH_COMPAT
+On 2025-01-23 19:56:52 [-0800], Alexei Starovoitov wrote:
+> Usage:
+> 
+> local_lock_t lock;                     // sizeof(lock) == 0 in !RT
+> local_lock_irqsave(&lock, ...);        // irqsave as before
+> if (local_trylock_irqsave(&lock, ...)) // compilation error
+> 
+> local_trylock_t lock;                  // sizeof(lock) == 4 in !RT
+> local_lock_irqsave(&lock, ...);        // irqsave and active = 1
+> if (local_trylock_irqsave(&lock, ...)) // if (!active) irqsave
 
-Although perhaps you added this ifdef to avoid the unnecessary
-sd->arch check if !CONFIG_COMPAT ...
+so I've been looking at this for a while and I don't like the part where
+the type is hidden away. It is then casted back. So I tried something
+with _Generics but then the existing guard implementation complained.
+Then I asked myself why do we want to hide much of the implementation
+and not make it obvious. So I made a few macros to hide most of the
+implementation for !RT. Later I figured if the variable is saved locally
+then I save one this_cpu_ptr invocation. So I wrote it out and the
+snippet below is what I have.
 
-Oleg.
+is this anywhere near possible to accept?
 
+diff --git a/include/linux/local_lock.h b/include/linux/local_lock.h
+index 091dc0b6bdfb9..05c254a5d7d3e 100644
+--- a/include/linux/local_lock.h
++++ b/include/linux/local_lock.h
+@@ -51,6 +51,65 @@
+ #define local_unlock_irqrestore(lock, flags)			\
+ 	__local_unlock_irqrestore(lock, flags)
+ 
++/**
++ * localtry_lock_init - Runtime initialize a lock instance
++ */
++#define localtry_lock_init(lock)		__localtry_lock_init(lock)
++
++/**
++ * localtry_lock - Acquire a per CPU local lock
++ * @lock:	The lock variable
++ */
++#define localtry_lock(lock)		__localtry_lock(lock)
++
++/**
++ * localtry_lock_irq - Acquire a per CPU local lock and disable interrupts
++ * @lock:	The lock variable
++ */
++#define localtry_lock_irq(lock)		__localtry_lock_irq(lock)
++
++/**
++ * localtry_lock_irqsave - Acquire a per CPU local lock, save and disable
++ *			 interrupts
++ * @lock:	The lock variable
++ * @flags:	Storage for interrupt flags
++ */
++#define localtry_lock_irqsave(lock, flags)				\
++	__localtry_lock_irqsave(lock, flags)
++
++/**
++ * localtry_trylock_irqsave - Try to acquire a per CPU local lock, save and disable
++ *			      interrupts if acquired
++ * @lock:	The lock variable
++ * @flags:	Storage for interrupt flags
++ *
++ * The function can be used in any context such as NMI or HARDIRQ. Due to
++ * locking constrains it will _always_ fail to acquire the lock on PREEMPT_RT.
++ */
++#define localtry_trylock_irqsave(lock, flags)				\
++	__localtry_trylock_irqsave(lock, flags)
++
++/**
++ * local_unlock - Release a per CPU local lock
++ * @lock:	The lock variable
++ */
++#define localtry_unlock(lock)		__localtry_unlock(lock)
++
++/**
++ * local_unlock_irq - Release a per CPU local lock and enable interrupts
++ * @lock:	The lock variable
++ */
++#define localtry_unlock_irq(lock)		__localtry_unlock_irq(lock)
++
++/**
++ * localtry_unlock_irqrestore - Release a per CPU local lock and restore
++ *			      interrupt flags
++ * @lock:	The lock variable
++ * @flags:      Interrupt flags to restore
++ */
++#define localtry_unlock_irqrestore(lock, flags)			\
++	__localtry_unlock_irqrestore(lock, flags)
++
+ DEFINE_GUARD(local_lock, local_lock_t __percpu*,
+ 	     local_lock(_T),
+ 	     local_unlock(_T))
+diff --git a/include/linux/local_lock_internal.h b/include/linux/local_lock_internal.h
+index 8dd71fbbb6d2b..789b0d878e6c5 100644
+--- a/include/linux/local_lock_internal.h
++++ b/include/linux/local_lock_internal.h
+@@ -15,6 +15,11 @@ typedef struct {
+ #endif
+ } local_lock_t;
+ 
++typedef struct {
++	local_lock_t	llock;
++	unsigned int	acquired;
++} localtry_lock_t;
++
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ # define LOCAL_LOCK_DEBUG_INIT(lockname)		\
+ 	.dep_map = {					\
+@@ -50,6 +55,7 @@ static inline void local_lock_debug_init(local_lock_t *l) { }
+ #endif /* !CONFIG_DEBUG_LOCK_ALLOC */
+ 
+ #define INIT_LOCAL_LOCK(lockname)	{ LOCAL_LOCK_DEBUG_INIT(lockname) }
++#define INIT_LOCALTRY_LOCK(lockname)	{ .llock = { LOCAL_LOCK_DEBUG_INIT(lockname.llock) }}
+ 
+ #define __local_lock_init(lock)					\
+ do {								\
+@@ -118,6 +124,86 @@ do {								\
+ #define __local_unlock_nested_bh(lock)				\
+ 	local_lock_release(this_cpu_ptr(lock))
+ 
++/* localtry_lock_t variants */
++
++#define __localtry_lock_init(lock)				\
++do {								\
++	__local_lock_init(&(lock)->llock);			\
++	WRITE_ONCE(&(lock)->acquired, 0);			\
++} while (0)
++
++#define __localtry_lock(lock)					\
++	do {							\
++		localtry_lock_t *lt;				\
++		preempt_disable();				\
++		lt = this_cpu_ptr(lock);			\
++		local_lock_acquire(&lt->llock);			\
++		WRITE_ONCE(lt->acquired, 1);			\
++	} while (0)
++
++#define __localtry_lock_irq(lock)				\
++	do {							\
++		localtry_lock_t *lt;				\
++		local_irq_disable();				\
++		lt = this_cpu_ptr(lock);			\
++		local_lock_acquire(&lt->llock);			\
++		WRITE_ONCE(lt->acquired, 1);			\
++	} while (0)
++
++#define __localtry_lock_irqsave(lock, flags)			\
++	do {							\
++		localtry_lock_t *lt;				\
++		local_irq_save(flags);				\
++		lt = this_cpu_ptr(lock);			\
++		local_lock_acquire(&lt->llock);			\
++		WRITE_ONCE(lt->acquired, 1);			\
++	} while (0)
++
++#define __localtry_trylock_irqsave(lock, flags)			\
++	({							\
++		localtry_lock_t *lt;				\
++		bool _ret;					\
++								\
++		local_irq_save(flags);				\
++		lt = this_cpu_ptr(lock);			\
++		if (!READ_ONCE(lt->acquired)) {			\
++			local_lock_acquire(&lt->llock);		\
++			WRITE_ONCE(lt->acquired, 1);		\
++			_ret = true;				\
++		} else {					\
++			_ret = false;				\
++			local_irq_restore(flags);		\
++		}						\
++		_ret;						\
++	})
++
++#define __localtry_unlock(lock)					\
++	do {							\
++		localtry_lock_t *lt;				\
++		lt = this_cpu_ptr(lock);			\
++		WRITE_ONCE(lt->acquired, 0);			\
++		local_lock_release(&lt->llock);			\
++		preempt_enable();				\
++	} while (0)
++
++#define __localtry_unlock_irq(lock)				\
++	do {							\
++		localtry_lock_t *lt;				\
++		lt = this_cpu_ptr(lock);			\
++		WRITE_ONCE(lt->acquired, 0);			\
++		local_lock_release(&lt->llock);			\
++		local_irq_enable();				\
++	} while (0)
++
++#define __localtry_unlock_irqrestore(lock, flags)		\
++	do {							\
++		localtry_lock_t *lt;				\
++		lt = this_cpu_ptr(lock);			\
++		WRITE_ONCE(lt->acquired, 0);			\
++		local_lock_release(&lt->llock);			\
++		local_irq_restore(flags);			\
++	} while (0)
++
+ #else /* !CONFIG_PREEMPT_RT */
+ 
+ /*
+@@ -125,8 +211,10 @@ do {								\
+  * critical section while staying preemptible.
+  */
+ typedef spinlock_t local_lock_t;
++typedef spinlock_t localtry_lock_t;
+ 
+ #define INIT_LOCAL_LOCK(lockname) __LOCAL_SPIN_LOCK_UNLOCKED((lockname))
++#define INIT_LOCALTRY_LOCK(lockname) INIT_LOCAL_LOCK(lockname)
+ 
+ #define __local_lock_init(l)					\
+ 	do {							\
+@@ -169,4 +257,31 @@ do {								\
+ 	spin_unlock(this_cpu_ptr((lock)));			\
+ } while (0)
+ 
++/* localtry_lock_t variants */
++
++#define __localtry_lock_init(lock)			__local_lock_init(lock)
++#define __localtry_lock(lock)				__local_lock(lock)
++#define __localtry_lock_irq(lock)			__local_lock(lock)
++#define __localtry_lock_irqsave(lock, flags)		__local_lock_irqsave(lock, flags)
++#define __localtry_unlock(lock)				__local_unlock(lock)
++#define __localtry_unlock_irq(lock)			__local_unlock(lock)
++#define __localtry_unlock_irqrestore(lock, flags)	__local_unlock_irqrestore(lock, flags)
++
++#define __localtry_trylock_irqsave(lock, flags)			\
++	({							\
++		int __locked;					\
++								\
++		typecheck(unsigned long, flags);		\
++		flags = 0;					\
++		if (in_nmi() | in_hardirq()) {			\
++			__locked = 0;				\
++		} else {					\
++			migrate_disable();			\
++			__locked = spin_trylock(this_cpu_ptr((lock)));	\
++			if (!__locked)				\
++				migrate_enable();		\
++		}						\
++		__locked;					\
++	})
++
+ #endif /* CONFIG_PREEMPT_RT */
 
