@@ -1,222 +1,225 @@
-Return-Path: <bpf+bounces-49929-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49930-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE924A20338
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 03:58:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D53EAA2038F
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 05:57:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C855918871A2
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 02:58:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E28AF7A3C03
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 04:57:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64CFE16EB4C;
-	Tue, 28 Jan 2025 02:58:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0266818BC3F;
+	Tue, 28 Jan 2025 04:57:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PkbjjGVW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IA1iElbk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C9ED46BF;
-	Tue, 28 Jan 2025 02:58:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B1CD7485
+	for <bpf@vger.kernel.org>; Tue, 28 Jan 2025 04:57:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738033092; cv=none; b=onff+DlbOgFhmYzY3/gXZ4OnXt3IC2mwXh9L+hAmQz8R/EWqaxuKsXDGEYbT6A5hLT893maD5at6Jfqi/01a++FG6QIp0quRqoJ1Lw/9xX9NkMkIUf/jgWrZqZ2gHLCFn5igF9/wrMDdwOkLnDIhdFQKaLn6n3MHPeFW+Ozs8uw=
+	t=1738040241; cv=none; b=msNe+FTecOdKWjXTUJ3Cup/SHzmxfX1XkgalhrYfYmm21MA+FBt71rhWOHfhjtj8M8EMj+Ma8qgQxvLINPlhzHJWsSeYezQWoGEnemMPikHoWIL2vaPRQpldMwaerkH1AsaTKFV+sPSPnFXcEcQ/Qz4TpMGC1pNF2WBkcy/wvNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738033092; c=relaxed/simple;
-	bh=vVKL+2uJt4OG/7ST+JwZv4qCHoDZnpI9wPbbpQDgIs4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SjU3dx8sWnRi07G10W41/x7wI83XVvOmfQ/DlAnD9WD/T65dFdias6VUWpy/Z+BrQ8PXpo5LWrqfcQzjSE5/0ejmyR5BywduXFfpysb0y/V76Al5AYD254/9nJ7hrt5uHMW4DsbviIB+7pFvT/Jw980dgm8UK0wPTLt7qZ7K2Mc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PkbjjGVW; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3862a921123so3397728f8f.3;
-        Mon, 27 Jan 2025 18:58:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738033089; x=1738637889; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/qqFfvpQ/KtWP1BA9PZjJ0zlj8CSxBiFQlmFDFrvCwk=;
-        b=PkbjjGVW/TRW/b+ieLwvlL1HvHX/oEndG9YqakNwViOsUlrpIYuDbYksCObOCO5haq
-         BaNbP3wIAKipN2ojr5mHwgSXx/Nx3XiwYcyUQ1dgm0B3QQ+vIRHh8q238CHDVAU8VFj9
-         S+6mHSJa5fLP1O7YrDYHp0kt+ybzKHriA9LjGHcmn1gmpZwvu9uDtP3NUf8qxmtvSTyV
-         oWS4DysvB+GsvU+/sWbZXuQvVD0fygnP/eNcrYP9i3ymCPED5H49m07wLTLqjr/2WuIm
-         kPWcb+uSO149S4VBVcrqEvGV3wVHbLEccyplsIZgoIs6MMhTfkec9T8q1CyaTcLEuADE
-         ivJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738033089; x=1738637889;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/qqFfvpQ/KtWP1BA9PZjJ0zlj8CSxBiFQlmFDFrvCwk=;
-        b=irjMusB2/krMCJaFNsuXvF/SNLn028O09HKXApra/N7YPJacC7DiKSrEYNNXteZZVb
-         vn6h9oyGB3UTHdObsy6j7HawLCl2ywbGKseRVzZIhtaXko6JHE1u2YFrIwebxISJNf5P
-         QHoAcZ8kJgRuEbglwbR24wXRBFGz4MkMpU0MhODs4qKsYLD3tfl5Nivp0Q4IX2Zg/vlq
-         1xl32hFBFzeWtwZ1K4FDT7nClgbNORdr4acySlsHxNTeY3UZbHYEmPH1z/MuvIC/D+nF
-         qjunBlu6TALA5lYmWG44XXVNxW/AMqrzxheor4VdEgzDjwCFsEImuxNMXr6tsBMPr4e2
-         iVoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU4RzTYtCzkWekKoq8qn6BmSvoC+/GtX7zJtYxdSPDd3O+MeOXwXlMA98QoqBECoubuCJdu9j2Zmu2YvmHOZhJj@vger.kernel.org, AJvYcCUTa5UTfdnRmHxxn7ANfa8h957m58mZ13752TSvPPuVhuiKnwL79gp75MCt0yApr0D9KXE=@vger.kernel.org, AJvYcCWHlXf/lWhupaa/STz0GLIr8Nvolex58Qqn3OsWxXjToXBUzpHdu3PqTsxXbYLNPVijOq4wIHP5JeuRq0b1@vger.kernel.org, AJvYcCXrFxB9lSl6s6XLK3WxhIc8fTp90+oASJ4M+bvAeHCRxI4EFmu9M5htXIN5CqdokqzruE86dXWnehKtdSV9HbXAHiHh@vger.kernel.org
-X-Gm-Message-State: AOJu0YwBMkSGAgCfBE9YO6YJtUd0sXnt/EeKj32yydZg5ezrpZe4h9k8
-	dl0SftlzrwrOGsdvG2PAjgoBwtccSaUAcLjxETduwOifQjIpP0dNCcS4t/txkdWTidSefiqQog8
-	kx1Od2MQrtSNARxLZe64O9mzySpk=
-X-Gm-Gg: ASbGncvugwLx6T0BjWOOWoMQ63QuixW5o7B4BI/59UlGMD4hvmQd7i+EQokOU4g0fy7
-	uPGIAHv+hY4ihF7e5zloVr15xSFZ7DfuAvMExoq61wnCySm/7QWznJzIg84wZXxKNKlqmmlsiMH
-	oD0Jx0RPOG/r0kCVtFDDtGZ8u5a3cE
-X-Google-Smtp-Source: AGHT+IHUS0JtyZsYUl1FT8gCFXfY5O9/3R+lODB8pzWiCyU29JV+ukN8MuiutZuobNAbfM+Vz6u7NvJpQkistlNcbJM=
-X-Received: by 2002:a5d:6d02:0:b0:385:e1a8:e28e with SMTP id
- ffacd0b85a97d-38bf56555a0mr40591417f8f.10.1738033089039; Mon, 27 Jan 2025
- 18:58:09 -0800 (PST)
+	s=arc-20240116; t=1738040241; c=relaxed/simple;
+	bh=LFEBPleBP8OEUp5sw3/IH1CCaKA+kGUcMQLaZPvE8OY=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=tTpD0NbWDbnDqIi3zpmrSRaEUTtQ4eWcWu4Y9ZBVDdfBtiuqKKhUP3TgDGbzC4M4IX3nW7G3347/7UzRHBVKDhMGT7xCLl9cAqNX9r1iXYbOWIlHb0xX9QRlV03Km1ZaHi3YzTy52R8UdlmzFoSCj4r/6ABCKbyKDgRxUN+QTVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IA1iElbk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCBE4C4CED3;
+	Tue, 28 Jan 2025 04:57:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738040240;
+	bh=LFEBPleBP8OEUp5sw3/IH1CCaKA+kGUcMQLaZPvE8OY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=IA1iElbkN6eNoNFcOju6dIW66J5wsuZ/+VTDTQ5nglQPCLpC4O3aMgGy2aHINS5RO
+	 SEQDQLloGeO+uuyNG79/sPK7lymowboLhQNZoPzn/lLCsjzdQr2Bdrpk7yqgLBmoWE
+	 5xN2Yrcv7LjSFYvO9PzKZA7XmHMNk/sppkYLEjTAQQcaC/8Ltjr282N1hsWG1mCD/o
+	 1bVow9+WLST2CVCm9cczd3Cih0OnbYjyrUOFUuxlE+jSYjztcankGbQbPPw6qTPWKv
+	 Y8YdzR7w74p/zTCvpl9b7ZKucZ2qMHP/GWXHn+rDKB8vqhcb1hYJkweUxAJqulFXKb
+	 44SobhBi1SuSA==
+Date: Tue, 28 Jan 2025 13:57:18 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Sven Schnelle <svens@linux.ibm.com>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Ilya Leoshkevich <iii@linux.ibm.com>, bpf
+ <bpf@vger.kernel.org>
+Subject: Re: [TEST FAILURE] bpf: s390: missed/kprobe_recursion
+Message-Id: <20250128135718.e89fbb19f6f57a53373d499e@kernel.org>
+In-Reply-To: <CAEf4BzaT8Vw+82b974S_7pDUjA+PGYKsoSzoTuO33ZQJwgrcMA@mail.gmail.com>
+References: <3c841f0a-772a-406c-9888-f8e71826daff@linux.dev>
+	<Z5N4N6MUMt8_EwGS@krava>
+	<Z5O0shrdgeExZ2kF@krava>
+	<20250126234005.70cb3b43193b08ed8a211553@kernel.org>
+	<Z5ax5AKwIaD6ONM-@krava>
+	<CAEf4BzaT8Vw+82b974S_7pDUjA+PGYKsoSzoTuO33ZQJwgrcMA@mail.gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250125-bpf_dynptr_probe-v2-0-c42c87f97afe@outlook.com>
- <20250125-bpf_dynptr_probe-v2-1-c42c87f97afe@outlook.com> <CAADnVQ+bRvL-4n4ZB5QS2oUxvo3vhJHf=8=2No3WWqYHqSyBEg@mail.gmail.com>
- <MEYP282MB2312A90273FF290ED5FC6F6AC6ED2@MEYP282MB2312.AUSP282.PROD.OUTLOOK.COM>
- <CAADnVQJ7bw0Qa4UM_E0zb5bqt5P09f7rryFSe6faY8ibX0zWuA@mail.gmail.com>
- <CABWLseu6=ZSYpQncaj=0EeVzKtP8vjPyOBJkWcFb-dxbm5OfVQ@mail.gmail.com> <CAEf4BzYLPVqRzwzziugfV+fXbd6KQnkvsXJWOYDEgQ6rgUSH9A@mail.gmail.com>
-In-Reply-To: <CAEf4BzYLPVqRzwzziugfV+fXbd6KQnkvsXJWOYDEgQ6rgUSH9A@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 27 Jan 2025 18:57:58 -0800
-X-Gm-Features: AWEUYZkQJSuFNbIDYKFXWJ4lyNJZIJK2EDphZyLGO-6rzAlzs90vWHyHaSi4RkI
-Message-ID: <CAADnVQKLrCf=wSrJQWEHgGLRnmwqTO98n2waU78KvUZgPXJsjg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/7] bpf: Implement bpf_probe_read_kernel_dynptr
- helper
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrei Matei <andreimatei1@gmail.com>, Jordan Rome <linux@jordanrome.com>, 
-	Levi Zim <rsworktech@outlook.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Mykola Lysenko <mykolal@fb.com>, 
-	Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 27, 2025 at 3:09=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Jan 27, 2025 at 2:54=E2=80=AFPM Andrei Matei <andreimatei1@gmail.=
-com> wrote:
+On Mon, 27 Jan 2025 11:09:27 -0800
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+
+> On Sun, Jan 26, 2025 at 2:06 PM Jiri Olsa <olsajiri@gmail.com> wrote:
 > >
-> > On Mon, Jan 27, 2025 at 5:04=E2=80=AFPM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
+> > On Sun, Jan 26, 2025 at 11:40:05PM +0900, Masami Hiramatsu wrote:
+> > > On Fri, 24 Jan 2025 16:41:38 +0100
+> > > Jiri Olsa <olsajiri@gmail.com> wrote:
 > > >
-> > > On Sat, Jan 25, 2025 at 5:05=E2=80=AFPM Levi Zim <rsworktech@outlook.=
-com> wrote:
+> > > > On Fri, Jan 24, 2025 at 12:23:35PM +0100, Jiri Olsa wrote:
+> > > > > On Thu, Jan 23, 2025 at 02:32:38PM -0800, Martin KaFai Lau wrote:
+> > > > > > Hi Jiri,
+> > > > > >
+> > > > > > The "missed/kprobe_recursion" fails consistently on s390. It seems to start
+> > > > > > failing after the recent bpf and bpf-next tree ffwd.
+> > > > > >
+> > > > > > An example:
+> > > > > > https://github.com/kernel-patches/bpf/actions/runs/12934431612/job/36076956920
+> > > > > >
+> > > > > > Can you help to take a look?
+> > > > > >
+> > > > > > afaict, it only happens on s390 so far, so cc IIya if there is any recent
+> > > > > > change that may ring the bell.
+> > > > >
+> > > > > hi,
+> > > > > I need to check more but I wonder it's the:
+> > > > >   7495e179b478 s390/tracing: Enable HAVE_FTRACE_GRAPH_FUNC
+> > > > >
+> > > > > which seems to add recursion check and bail out before we have
+> > > > > a chance to trigger it in bpf code
 > > > >
-> > > > On 2025/1/26 00:58, Alexei Starovoitov wrote:
-> > > >  > On Sat, Jan 25, 2025 at 12:30=E2=80=AFAM Levi Zim via B4 Relay
-> > > >  > <devnull+rsworktech.outlook.com@kernel.org> wrote:
-> > > >  >> From: Levi Zim <rsworktech@outlook.com>
-> > > >  >>
-> > > >  >> This patch add a helper function bpf_probe_read_kernel_dynptr:
-> > > >  >>
-> > > >  >> long bpf_probe_read_kernel_dynptr(const struct bpf_dynptr *dst,
-> > > >  >>          u32 offset, u32 size, const void *unsafe_ptr, u64 flag=
-s);
-> > > >  > We stopped adding helpers years ago.
-> > > >  > Only new kfuncs are allowed.
+> > > > so the test attaches bpf program test1 to bpf_fentry_test1 via kprobe.multi
 > > > >
-> > > > Sorry, I didn't know that. Just asking, is there any
-> > > > documentation/discussion
-> > > > about stopping adding helpers?
+> > > >     SEC("kprobe.multi/bpf_fentry_test1")
+> > > >     int test1(struct pt_regs *ctx)
+> > > >     {
+> > > >             bpf_kfunc_common_test();
+> > > >             return 0;
+> > > >     }
 > > > >
-> > > > I will switch the implementation to kfuncs in v3.
+> > > > and several other programs are attached to bpf_kfunc_common_test function
 > > > >
-> > > >  > This particular one doesn't look useful as-is.
-> > > >  > The same logic can be expressed with
-> > > >  > - create dynptr
-> > > >  > - dynptr_slice
-> > > >  > - copy_from_kernel
 > > > >
-> > > > By copy_from_kernel I assume you mean bpf_probe_read_kernel. The pr=
-oblem
-> > > > with dynptr_slice_rdwr and probe_read_kernel is that they only supp=
-ort a
-> > > > compile-time constant size [1].
+> > > > I can't test this on s390, but looks like following is happening:
 > > > >
-> > > > But in order to best utilize the space on a BPF ringbuf, it is poss=
-ible
-> > > > to reserve a
-> > > > variable length of space as dynptr on a ringbuf with
-> > > > bpf_ringbuf_reserve_dynptr.
+> > > > kprobe.multi uses fprobe, so the test kernel path goes:
+> > > >
+> > > >     bpf_fentry_test1
+> > > >       ftrace_graph_func
+> > > >         function_graph_enter_regs
+> > > >        fprobe_entry
+> > > >          kprobe_multi_link_prog_run
+> > > >            test1 (bpf program)
+> > > >              bpf_kfunc_common_test
+> > > >                kprobe_ftrace_handler
+> > > >                  kprobe_perf_func
+> > > >                    trace_call_bpf
+> > > >                      -> bpf_prog_active check fails, missed count is incremented
+> > > >
+> > > >
+> > > > kprobe_ftrace_handler calls/takes ftrace_test_recursion_trylock (ftrace recursion lock)
+> > > >
+> > > > but s390 now calls/takes ftrace_test_recursion_trylock already in ftrace_graph_func,
+> > > > so s390 stops at kprobe_ftrace_handler and does not get to trace_call_bpf to increment
+> > > > prog->missed counters
+> > >
+> > > Oops, good catch! I missed to remove it from s390. We've already moved it
+> > > in function_graph_enter_regs().
+> > >
+> > >
+> > > >
+> > > > adding Sven, Masami, any idea?
+> > > >
+> > > > if the ftrace_test_recursion_trylock is needed ftrace_graph_func on s390, then
+> > > > I think we will need to fix our test to skip s390 arch
+> > >
+> > > Yes. Please try this patch;
+> > >
+> > >
+> > > From 12fcda79d0b1082449d5f7cfb8039b0237cf246d Mon Sep 17 00:00:00 2001
+> > > From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+> > > Date: Sun, 26 Jan 2025 23:38:59 +0900
+> > > Subject: [PATCH] s390: fgraph: Fix to remove ftrace_test_recursion_trylock()
+> > >
+> > > Fix to remove ftrace_test_recursion_trylock() from ftrace_graph_func()
+> > > because commit d576aec24df9 ("fgraph: Get ftrace recursion lock in
+> > > function_graph_enter") has been moved it to function_graph_enter_regs()
+> > > already.
+> > >
+> > > Reported-by: Jiri Olsa <olsajiri@gmail.com>
+> > > Fixes: d576aec24df9 ("fgraph: Get ftrace recursion lock in function_graph_enter")
+> > > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > >
-> > For our uprobes, we've run into similar issues around doing variable-si=
-zed
-> > bpf_probe_read_user() into ring buffers for our debugger [1]. Our use c=
-ase
-> > is that we generate uprobes that recursively read data structures until=
- we
-> > fill up a buffer. The verifier's insistence on knowing statically that =
-a read
-> > fits into the buffer makes for awkward code, and makes it hard to pack =
-the
-> > buffer fully; we have to split our reads into a couple of static size c=
-lasses.
+> > great, ci is passing with this fix
 > >
-> > Any chance there'd be interest in taking the opportunity to support
-> > dynamically-sized reads from userspace too? :)
->
-> That's bpf_probe_read_user_dynptr() from patch #2, no?
->
-> But generally speaking, here's a list of new APIs that we'd need to
-> cover all existing fixed buffer versions:
->
-> - non-sleepable probe reads:
->
->   bpf_probe_read_kernel_dynptr()
->   bpf_probe_read_user_dynptr()
->   bpf_probe_read_kernel_str_dynptr()
->   bpf_probe_read_user_str_dynptr()
->
-> - sleepable probe reads (copy_from_user):
->
-> bpf_copy_from_user_dynptr()
-> bpf_copy_from_user_str_dynptr()
->
-> - and then we have complementary task-based APIs for non-current process:
->
-> bpf_probe_read_user_task_dynptr()
-> bpf_probe_read_user_str_task_dynptr()
-> bpf_copy_from_user_task_dynptr()
-> bpf_copy_from_user_str_task_dynptr()
->
-> Jordan is working on non-dynptr version of
-> bpf_copy_from_user_str_task(), once he's done with that, we'll add
-> dynptr version, probably.
+> > Tested-by: Jiri Olsa <jolsa@kernel.org>
 
-This is quite a bunch of kfuncs.
-It doesn't look like adding _dynptr suffix and duplicating
-kfuncs approach scales.
+Thanks for testing!
 
-Let's make the existing helpers/kfuncs more flexible ?
+> 
+> Masami,
+> 
+> Are you going to land this fix in your tree? We can create a temporary
+> patch for BPF CI once you have the commit in the tree.
 
-We can introduce a kfunc bpf_dynptr_buf() that checks that
-dynptr is not readonly and type =3D=3D local or ringbuf and
-return dynptr->data as PTR_TO_MEM | dynptr_flag | VERIFIER_ADDS_SIZE_CHECK.
+I think this should be a fix from linux-trace tree. I also found
+another issue on s390. (s390 does not implemented )
+Let me resend it because I missed to Cc to linux-trace ML.
 
-Then allow bpf_probe_read_user/kernel/... all of them to accept
-this register type where PTR_TO_MEM is required
-while relaxing ARG_CONST_SIZE 2nd argument to ARG_ANYTHING.
-Then the verifier will insert an extra check
-if (arg1->size < arg2)
-before the call.
+Thank you,
+> 
+> >
+> > thanks,
+> > jirka
+> >
+> >
+> > > ---
+> > >  arch/s390/kernel/ftrace.c | 5 -----
+> > >  1 file changed, 5 deletions(-)
+> > >
+> > > diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
+> > > index c0b2c97efefb..63ba6306632e 100644
+> > > --- a/arch/s390/kernel/ftrace.c
+> > > +++ b/arch/s390/kernel/ftrace.c
+> > > @@ -266,18 +266,13 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
+> > >                      struct ftrace_ops *op, struct ftrace_regs *fregs)
+> > >  {
+> > >       unsigned long *parent = &arch_ftrace_regs(fregs)->regs.gprs[14];
+> > > -     int bit;
+> > >
+> > >       if (unlikely(ftrace_graph_is_dead()))
+> > >               return;
+> > >       if (unlikely(atomic_read(&current->tracing_graph_pause)))
+> > >               return;
+> > > -     bit = ftrace_test_recursion_trylock(ip, *parent);
+> > > -     if (bit < 0)
+> > > -             return;
+> > >       if (!function_graph_enter_regs(*parent, ip, 0, parent, fregs))
+> > >               *parent = (unsigned long)&return_to_handler;
+> > > -     ftrace_test_recursion_unlock(bit);
+> > >  }
+> > >
+> > >  #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
+> > > --
+> > > 2.43.0
+> > >
+> > > Thank you,
+> > >
+> > > --
+> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> >
 
-Not only the bpf_probe_read_kernel/user, _str variants will work
-but things like bpf_strtol, bpf_strncmp, bpf_snprintf, bpf_get_stack
-will auto-magically work as well.
 
-I think those are quite valuable to make available with non-constant size.
-bpf_get_stack_*() directly into the ring buffer sounds very useful.
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
