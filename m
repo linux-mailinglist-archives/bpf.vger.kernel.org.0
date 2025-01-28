@@ -1,197 +1,262 @@
-Return-Path: <bpf+bounces-49964-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49965-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B4C6A20A8B
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 13:27:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BCE3A20C6A
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 15:58:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC68C3A71DE
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 12:27:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83A6218848AA
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 14:58:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 099B91A08A0;
-	Tue, 28 Jan 2025 12:27:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02A841ACED5;
+	Tue, 28 Jan 2025 14:58:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=siemens.com header.i=zdenek.bouska@siemens.com header.b="hQqdfVBP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dlee6Q3a"
 X-Original-To: bpf@vger.kernel.org
-Received: from mta-65-226.siemens.flowmailer.net (mta-65-226.siemens.flowmailer.net [185.136.65.226])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9C13290F
-	for <bpf@vger.kernel.org>; Tue, 28 Jan 2025 12:27:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.136.65.226
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DC3AF9F8;
+	Tue, 28 Jan 2025 14:58:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738067246; cv=none; b=LDuaQF7lGZltOJ8K5GP5qS+OLyUAHBEz7qn4x4RdSFoPUlEFqnSy/HnjY/7cNiEZtwgk2iRW/gDKcn+ciXVhChJqQJAIcZJ8WprFR7NCgmcr3DOwmOCYRrdQlx5ce0Bxw5ED1lLSBMmrcfX7jxZndXWE677RnERbuashNDfl/5c=
+	t=1738076306; cv=none; b=q461SAU/0ouoL4c4DItk/TadqHzaDMaBDaRAG/XdTkha2XOAbVCNQR2lFHCJKnvEOSEJap6iAzppVG8RcDw0KN6cj93QGUtAH0pzxago8V+TmsKzKb08ZQjkO+9OswU3+sDZVXSA1m7sroJjNFR7AuFWxvsxIL7OHZVm2u+aO2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738067246; c=relaxed/simple;
-	bh=1gWtyaI+egDjezQYz9OVoseWuHwXlTKaft5yT0HP2UY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=CBAgqxlNx3p4x4J4webAOv33gNrwITynl5OcN7+8tmg6Dmy48XY4GUjcbawH7+LoUFrFLPlLukwC5DItofJNSvoeJncuY1/xrxRS3+hOGfWEYdMpYfspOPQWnLEtQ7ADjkUOhQVdUhzCzimug9Hsm3Og6i8U4oa+LCio0qm2BJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com; dkim=pass (2048-bit key) header.d=siemens.com header.i=zdenek.bouska@siemens.com header.b=hQqdfVBP; arc=none smtp.client-ip=185.136.65.226
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com
-Received: by mta-65-226.siemens.flowmailer.net with ESMTPSA id 202501281227158a6a30e6b0a1806762
-        for <bpf@vger.kernel.org>;
-        Tue, 28 Jan 2025 13:27:15 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm2;
- d=siemens.com; i=zdenek.bouska@siemens.com;
- h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc;
- bh=p4ixpKONXaTxPgBnMeyq9hz7nD1mrYbVaBMo2Q6Zl2w=;
- b=hQqdfVBP3AM7WaZHqHi1myUev0D3MsOvJpsfORbVHsl8HkRZx6Rzx1cU+7jTaPu/kHngdL
- oEi6uxyZSpu3Av4Rq3WjG+O5rDPrtU4OzJLw73iw47usrcTl6SjrRQKRtt6yPRBIDRNHyNwZ
- fFxzKjH3oyYZBh/3R1h01hGluE4XVGYQlZ9CQdeYjIMNHjbInQSVEpxdOprKSAdNkUMhM1i7
- tzrLfGplmbAfDHzMi2iCkBl1nhQAGllXJ0rbdoCd9XnZLR73MckcFyM/DyzlpEhA/FMBoiSY
- WTDjA87pns/piTcjqm7HU+LifhzLcSUCcNGlnWTNHfWeJHh98DpuDbMQ==;
-From: Zdenek Bouska <zdenek.bouska@siemens.com>
-Date: Tue, 28 Jan 2025 13:26:48 +0100
-Subject: [PATCH] igc: Fix HW RX timestamp when passed by ZC XDP
+	s=arc-20240116; t=1738076306; c=relaxed/simple;
+	bh=lM67DGGiMbIMrMTUwNR8l7KiQyWcxQfJsWFW+hgxxU0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ASXdoZNCqbEudWx3F+MzzRdTs3SfnYpEZ7/VFfv8RK4UH12kKvYwu3kvcWx+rN9keEclXXZ9HmEqBZbA7maskgfuhTh56ePaJSkkay/i30mLpVrNY8oP3zZ4KoZhLaKEJz6Obcmkb+glfwo1ucNrDdXMGI4TI5hP5O9hf1xreoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dlee6Q3a; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2ef70c7efa5so8031926a91.2;
+        Tue, 28 Jan 2025 06:58:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738076304; x=1738681104; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5NgK1PyzlgcgU3jbjx+DyDukT7QBmAGxcdaN+SPDB1Y=;
+        b=dlee6Q3a7RszllPDFz/TD5+8jVb30OuY9K0CargqegNTRvGqmebdZC81Alatqg22mw
+         svmD/zn4RrVIdU4gLGbLsxQ9nUJBUCAc511l7Byq8rv9QHCi0miCGPRRwYH1usvD2xcD
+         Iv3CUJujuTFf1hieSn3JY2RJgCgeU9GZKWGnNMMcyEnh6QeBBzLY6Fm1c4Wuw28bmdm7
+         WWDedAlYpzND0o20FHjQyONbON4Psn6ejBa2gNJ40R8PWrzInpUjKPeo5KNiY08ubptu
+         qoyQhwsvykWHo8O55oaEydNnrBiO+Awm0bNRAK9GmSh7V8i1HkQ2NopRk0G1zvGKmX0w
+         SrUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738076304; x=1738681104;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5NgK1PyzlgcgU3jbjx+DyDukT7QBmAGxcdaN+SPDB1Y=;
+        b=hhHpgVQlEmpYgPfEqrSnZrUlRHEDaAORqpNoaAwY8XTMGnPZG1LgRFUnScJH8d4ePU
+         42KtULOxKCcImnSLKCY2lZl8BSQg30Cb1xntJfn3X7rQodb3i6CqgDXmrYItcNXDIkOw
+         KahPaE3WIZ56kYdPB82/PCeRxVY3ndzFE0S5JDKrin38d3n4USc3HtbBzIYEo+aR4LNT
+         /mA/3Vj6X0j9HdTQrzKRibe4fbZf59iJGRJpruC8cSritCgq6iZTNhmT/McGgqCC3ghN
+         C3DNQdriqLsbchdjGOYu8WA17KnXRASKm1MgqZc1leT8UsT5/hH0BZeI9iLIsPFbckOE
+         IerA==
+X-Forwarded-Encrypted: i=1; AJvYcCU7rwxBXTOswj9b44zZE6etqwUhKZfFijf619GP01hMcZnub+TVtdixilxAcvJp0F3h/WLV3zsWLS0u@vger.kernel.org, AJvYcCUYRAWfmu9Cg6vPjbKAeCjZRmW3RHGtPQXYvK+FbPrTlGCC4JEC7fT5qmGKyaBRe9WS6rs=@vger.kernel.org, AJvYcCVl1KdcbOA7iWDYyK/n6th3rWMg7lzTTcJkmvxGAdQ9l+RZG7dCk0DN4m5/1CGLPXf4yPAAj5A9NS9ROYnjoi03UlEd@vger.kernel.org, AJvYcCX7POaLecgnmqPruLlzqOSOnXl4ruTh9ryCmkZUK/n0WVAOE5FZvU5Ta3s48izmNubu8J+cIA/n@vger.kernel.org, AJvYcCXwKiV9tWMvbgikAX7DwXl/VIXPVm33nUsVb0c/EGazX7MN2YfJRhprQ6TTh1fCPd+WGX98BzqMC7Q8/y9p@vger.kernel.org
+X-Gm-Message-State: AOJu0YyNKoRfqd1cSpQOFfMaGiLTV7+74b77W+myLJp0LcL/GmWz83dT
+	DicDolPtv5B070mD8HbJXpqLLY3hZpQ/i/kUYxi7gMf0/XJq3WmB
+X-Gm-Gg: ASbGncuYLKwLA0KO04qICMeMMLxA18Xtee4nT3CaCPrz2RJzibVsVzY3tfErcfWs8Fs
+	XwJQhkulHbmaVmO9JsnVeIdJ1WL0o2Jg3tcfbaDmKeDRRR9mfkVKQvBJRyirYWb6xtsfyqJAGBh
+	HNROybV5nYn2fDTw32kKLNFn1yvIkAIJgiCNMnLJPRMyxbvS29p+vYsW4aFOvyO4hz6xMf9HQpm
+	OhL/HMpmKsCxbW17hMwlxJNHssmGXDn5iqGbZvJH+mL/Vcgu6mqmaeOETUSZp6/Wi1iTrIeE1cQ
+	xPPv69CLY9Ht/6IHJZa9FWNxmKU/8yenmAlYTjm/oc0CwYrmjUjYyS0Ji60JiZt/7yycyg==
+X-Google-Smtp-Source: AGHT+IF4WOMe+E1ASphpyPufkPOsl65YTCva6RW3RPHB5aOPWPoVqJdw41Y0NpAQQaSz7q4qYh/Kcg==
+X-Received: by 2002:a17:90b:4c43:b0:2ee:c5ea:bd91 with SMTP id 98e67ed59e1d1-2f782d65adbmr61068210a91.29.1738076304080;
+        Tue, 28 Jan 2025 06:58:24 -0800 (PST)
+Received: from localhost.localdomain (syn-104-035-026-140.res.spectrum.com. [104.35.26.140])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f7ffac2807sm9485398a91.20.2025.01.28.06.58.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jan 2025 06:58:23 -0800 (PST)
+From: Eyal Birger <eyal.birger@gmail.com>
+To: kees@kernel.org,
+	luto@amacapital.net,
+	wad@chromium.org,
+	oleg@redhat.com,
+	mhiramat@kernel.org,
+	andrii@kernel.org,
+	jolsa@kernel.org
+Cc: alexei.starovoitov@gmail.com,
+	olsajiri@gmail.com,
+	cyphar@cyphar.com,
+	songliubraving@fb.com,
+	yhs@fb.com,
+	john.fastabend@gmail.com,
+	peterz@infradead.org,
+	tglx@linutronix.de,
+	bp@alien8.de,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	andrii.nakryiko@gmail.com,
+	rostedt@goodmis.org,
+	rafi@rbk.io,
+	shmulik.ladkani@gmail.com,
+	bpf@vger.kernel.org,
+	linux-api@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Eyal Birger <eyal.birger@gmail.com>,
+	stable@vger.kernel.org
+Subject: [PATCH v2] seccomp: passthrough uretprobe systemcall without filtering
+Date: Tue, 28 Jan 2025 06:58:06 -0800
+Message-ID: <20250128145806.1849977-1-eyal.birger@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250128-igc-fix-hw-rx-timestamp-when-passed-by-zc-xdp-v1-1-b765d3e972de@siemens.com>
-X-B4-Tracking: v=1; b=H4sIAAfNmGcC/x2NwQ7CIBAFf6XZsy+BxibqrxgPCEvZQ5GwjUWb/
- rvE4xxmZiflKqx0G3aq/BaVV+5gTwP55PLMkNCZRjNOxo4XyOwRpSFtqA2rLKyrWwq2xBnFqXL
- A84OvRwsF1ymwM9bEaM/Um6Vyl/+/++M4fhyn/7t/AAAA
-To: Tony Nguyen <anthony.l.nguyen@intel.com>, 
- Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
- Andrew Lunn <andrew+netdev@lunn.ch>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Vinicius Costa Gomes <vinicius.gomes@intel.com>, 
- Florian Bezdeka <florian.bezdeka@siemens.com>, 
- Jan Kiszka <jan.kiszka@siemens.com>, 
- Song Yoong Siang <yoong.siang.song@intel.com>
-Cc: intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
- Zdenek Bouska <zdenek.bouska@siemens.com>
-X-Flowmailer-Platform: Siemens
-Feedback-ID: 519:519-1328595:519-21489:flowmailer
+Content-Transfer-Encoding: 8bit
 
-Fixes HW RX timestamp in the following scenario:
-- AF_PACKET socket with enabled HW RX timestamps is created
-- AF_XDP socket with enabled zero copy is created
-- frame is forwarded to the BPF program, where the timestamp should
-  still be readable (extracted by igc_xdp_rx_timestamp(), kfunc
-  behind bpf_xdp_metadata_rx_timestamp())
-- the frame got XDP_PASS from BPF program, redirecting to the stack
-- AF_PACKET socket receives the frame with HW RX timestamp
+When attaching uretprobes to processes running inside docker, the attached
+process is segfaulted when encountering the retprobe.
 
-Moves the skb timestamp setting from igc_dispatch_skb_zc() to
-igc_construct_skb_zc() so that igc_construct_skb_zc() is similar to
-igc_construct_skb().
+The reason is that now that uretprobe is a system call the default seccomp
+filters in docker block it as they only allow a specific set of known
+syscalls. This is true for other userspace applications which use seccomp
+to control their syscall surface.
 
-This issue can also be reproduced by running:
- # tools/testing/selftests/bpf/xdp_hw_metadata enp1s0
-When a frame with the wrong port 9092 (instead of 9091) is used:
- # echo -n xdp | nc -u -q1 192.168.10.9 9092
-then the RX timestamp is missing and xdp_hw_metadata prints:
- skb hwtstamp is not found!
+Since uretprobe is a "kernel implementation detail" system call which is
+not used by userspace application code directly, it is impractical and
+there's very little point in forcing all userspace applications to
+explicitly allow it in order to avoid crashing tracked processes.
 
-With this fix or when copy mode is used:
- # tools/testing/selftests/bpf/xdp_hw_metadata -c enp1s0
-then RX timestamp is found and xdp_hw_metadata prints:
- found skb hwtstamp = 1736509937.852786132
+Pass this systemcall through seccomp without depending on configuration.
 
-Fixes: 069b142f5819 ("igc: Add support for PTP .getcyclesx64()")
-Signed-off-by: Zdenek Bouska <zdenek.bouska@siemens.com>
+Note: uretprobe isn't supported in i386 and __NR_ia32_rt_tgsigqueueinfo
+uses the same number as __NR_uretprobe so the syscall isn't forced in the
+compat bitmap.
+
+Fixes: ff474a78cef5 ("uprobe: Add uretprobe syscall to speed up return probe")
+Reported-by: Rafael Buchbinder <rafi@rbk.io>
+Link: https://lore.kernel.org/lkml/CAHsH6Gs3Eh8DFU0wq58c_LF8A4_+o6z456J7BidmcVY2AqOnHQ@mail.gmail.com/
+Link: https://lore.kernel.org/lkml/20250121182939.33d05470@gandalf.local.home/T/#me2676c378eff2d6a33f3054fed4a5f3afa64e65b
+Cc: stable@vger.kernel.org
+Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
 ---
- drivers/net/ethernet/intel/igc/igc_main.c | 21 ++++++++++++---------
- 1 file changed, 12 insertions(+), 9 deletions(-)
+v2: use action_cache bitmap and mode1 array to check the syscall
 
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index 27872bdea9bd..d6c3147725b7 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -2707,8 +2707,9 @@ static int igc_clean_rx_irq(struct igc_q_vector *q_vector, const int budget)
+The following reproduction script synthetically demonstrates the problem
+for seccomp filters:
+
+cat > /tmp/x.c << EOF
+
+char *syscalls[] = {
+	"write",
+	"exit_group",
+	"fstat",
+};
+
+__attribute__((noinline)) int probed(void)
+{
+	printf("Probed\n");
+	return 1;
+}
+
+void apply_seccomp_filter(char **syscalls, int num_syscalls)
+{
+	scmp_filter_ctx ctx;
+
+	ctx = seccomp_init(SCMP_ACT_KILL);
+	for (int i = 0; i < num_syscalls; i++) {
+		seccomp_rule_add(ctx, SCMP_ACT_ALLOW,
+				 seccomp_syscall_resolve_name(syscalls[i]), 0);
+	}
+	seccomp_load(ctx);
+	seccomp_release(ctx);
+}
+
+int main(int argc, char *argv[])
+{
+	int num_syscalls = sizeof(syscalls) / sizeof(syscalls[0]);
+
+	apply_seccomp_filter(syscalls, num_syscalls);
+
+	probed();
+
+	return 0;
+}
+EOF
+
+cat > /tmp/trace.bt << EOF
+uretprobe:/tmp/x:probed
+{
+    printf("ret=%d\n", retval);
+}
+EOF
+
+gcc -o /tmp/x /tmp/x.c -lseccomp
+
+/usr/bin/bpftrace /tmp/trace.bt &
+
+sleep 5 # wait for uretprobe attach
+/tmp/x
+
+pkill bpftrace
+
+rm /tmp/x /tmp/x.c /tmp/trace.bt
+---
+ kernel/seccomp.c | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 385d48293a5f..23b594a68bc0 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -734,13 +734,13 @@ seccomp_prepare_user_filter(const char __user *user_filter)
+ 
+ #ifdef SECCOMP_ARCH_NATIVE
+ /**
+- * seccomp_is_const_allow - check if filter is constant allow with given data
++ * seccomp_is_filter_const_allow - check if filter is constant allow with given data
+  * @fprog: The BPF programs
+  * @sd: The seccomp data to check against, only syscall number and arch
+  *      number are considered constant.
+  */
+-static bool seccomp_is_const_allow(struct sock_fprog_kern *fprog,
+-				   struct seccomp_data *sd)
++static bool seccomp_is_filter_const_allow(struct sock_fprog_kern *fprog,
++					  struct seccomp_data *sd)
+ {
+ 	unsigned int reg_value = 0;
+ 	unsigned int pc;
+@@ -812,6 +812,21 @@ static bool seccomp_is_const_allow(struct sock_fprog_kern *fprog,
+ 	return false;
  }
  
- static struct sk_buff *igc_construct_skb_zc(struct igc_ring *ring,
--					    struct xdp_buff *xdp)
-+					    struct igc_xdp_buff *ctx)
- {
-+	struct xdp_buff *xdp = &ctx->xdp;
- 	unsigned int totalsize = xdp->data_end - xdp->data_meta;
- 	unsigned int metasize = xdp->data - xdp->data_meta;
- 	struct sk_buff *skb;
-@@ -2727,27 +2728,28 @@ static struct sk_buff *igc_construct_skb_zc(struct igc_ring *ring,
- 		__skb_pull(skb, metasize);
- 	}
- 
-+	if (ctx->rx_ts) {
-+		skb_shinfo(skb)->tx_flags |= SKBTX_HW_TSTAMP_NETDEV;
-+		skb_hwtstamps(skb)->netdev_data = ctx->rx_ts;
-+	}
++static bool seccomp_is_const_allow(struct sock_fprog_kern *fprog,
++				   struct seccomp_data *sd)
++{
++#ifdef __NR_uretprobe
++	if (sd->nr == __NR_uretprobe
++#ifdef SECCOMP_ARCH_COMPAT
++	    && sd->arch != SECCOMP_ARCH_COMPAT
++#endif
++	   )
++		return true;
++#endif
 +
- 	return skb;
- }
++	return seccomp_is_filter_const_allow(fprog, sd);
++}
++
+ static void seccomp_cache_prepare_bitmap(struct seccomp_filter *sfilter,
+ 					 void *bitmap, const void *bitmap_prev,
+ 					 size_t bitmap_size, int arch)
+@@ -1023,6 +1038,9 @@ static inline void seccomp_log(unsigned long syscall, long signr, u32 action,
+  */
+ static const int mode1_syscalls[] = {
+ 	__NR_seccomp_read, __NR_seccomp_write, __NR_seccomp_exit, __NR_seccomp_sigreturn,
++#ifdef __NR_uretprobe
++	__NR_uretprobe,
++#endif
+ 	-1, /* negative terminated */
+ };
  
- static void igc_dispatch_skb_zc(struct igc_q_vector *q_vector,
- 				union igc_adv_rx_desc *desc,
--				struct xdp_buff *xdp,
--				ktime_t timestamp)
-+				struct igc_xdp_buff *ctx)
- {
- 	struct igc_ring *ring = q_vector->rx.ring;
- 	struct sk_buff *skb;
- 
--	skb = igc_construct_skb_zc(ring, xdp);
-+	skb = igc_construct_skb_zc(ring, ctx);
- 	if (!skb) {
- 		ring->rx_stats.alloc_failed++;
- 		set_bit(IGC_RING_FLAG_RX_ALLOC_FAILED, &ring->flags);
- 		return;
- 	}
- 
--	if (timestamp)
--		skb_hwtstamps(skb)->hwtstamp = timestamp;
--
- 	if (igc_cleanup_headers(ring, desc, skb))
- 		return;
- 
-@@ -2783,7 +2785,6 @@ static int igc_clean_rx_irq_zc(struct igc_q_vector *q_vector, const int budget)
- 		union igc_adv_rx_desc *desc;
- 		struct igc_rx_buffer *bi;
- 		struct igc_xdp_buff *ctx;
--		ktime_t timestamp = 0;
- 		unsigned int size;
- 		int res;
- 
-@@ -2813,6 +2814,8 @@ static int igc_clean_rx_irq_zc(struct igc_q_vector *q_vector, const int budget)
- 			 */
- 			bi->xdp->data_meta += IGC_TS_HDR_LEN;
- 			size -= IGC_TS_HDR_LEN;
-+		} else {
-+			ctx->rx_ts = NULL;
- 		}
- 
- 		bi->xdp->data_end = bi->xdp->data + size;
-@@ -2821,7 +2824,7 @@ static int igc_clean_rx_irq_zc(struct igc_q_vector *q_vector, const int budget)
- 		res = __igc_xdp_run_prog(adapter, prog, bi->xdp);
- 		switch (res) {
- 		case IGC_XDP_PASS:
--			igc_dispatch_skb_zc(q_vector, desc, bi->xdp, timestamp);
-+			igc_dispatch_skb_zc(q_vector, desc, ctx);
- 			fallthrough;
- 		case IGC_XDP_CONSUMED:
- 			xsk_buff_free(bi->xdp);
-
----
-base-commit: ffd294d346d185b70e28b1a28abe367bbfe53c04
-change-id: 20250128-igc-fix-hw-rx-timestamp-when-passed-by-zc-xdp-95dea010ff14
-
-Best regards,
 -- 
-Zdenek Bouska
-
-Siemens, s.r.o.
-Foundational Technologies
+2.43.0
 
 
