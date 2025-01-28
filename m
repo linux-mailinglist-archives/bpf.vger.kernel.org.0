@@ -1,262 +1,253 @@
-Return-Path: <bpf+bounces-49965-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49966-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BCE3A20C6A
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 15:58:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC23DA20C9C
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 16:05:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83A6218848AA
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 14:58:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BC15167621
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 15:05:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02A841ACED5;
-	Tue, 28 Jan 2025 14:58:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38B631B0F34;
+	Tue, 28 Jan 2025 15:05:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dlee6Q3a"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dRIQ96aj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DC3AF9F8;
-	Tue, 28 Jan 2025 14:58:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738076306; cv=none; b=q461SAU/0ouoL4c4DItk/TadqHzaDMaBDaRAG/XdTkha2XOAbVCNQR2lFHCJKnvEOSEJap6iAzppVG8RcDw0KN6cj93QGUtAH0pzxago8V+TmsKzKb08ZQjkO+9OswU3+sDZVXSA1m7sroJjNFR7AuFWxvsxIL7OHZVm2u+aO2w=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738076306; c=relaxed/simple;
-	bh=lM67DGGiMbIMrMTUwNR8l7KiQyWcxQfJsWFW+hgxxU0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ASXdoZNCqbEudWx3F+MzzRdTs3SfnYpEZ7/VFfv8RK4UH12kKvYwu3kvcWx+rN9keEclXXZ9HmEqBZbA7maskgfuhTh56ePaJSkkay/i30mLpVrNY8oP3zZ4KoZhLaKEJz6Obcmkb+glfwo1ucNrDdXMGI4TI5hP5O9hf1xreoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dlee6Q3a; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2ef70c7efa5so8031926a91.2;
-        Tue, 28 Jan 2025 06:58:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738076304; x=1738681104; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5NgK1PyzlgcgU3jbjx+DyDukT7QBmAGxcdaN+SPDB1Y=;
-        b=dlee6Q3a7RszllPDFz/TD5+8jVb30OuY9K0CargqegNTRvGqmebdZC81Alatqg22mw
-         svmD/zn4RrVIdU4gLGbLsxQ9nUJBUCAc511l7Byq8rv9QHCi0miCGPRRwYH1usvD2xcD
-         Iv3CUJujuTFf1hieSn3JY2RJgCgeU9GZKWGnNMMcyEnh6QeBBzLY6Fm1c4Wuw28bmdm7
-         WWDedAlYpzND0o20FHjQyONbON4Psn6ejBa2gNJ40R8PWrzInpUjKPeo5KNiY08ubptu
-         qoyQhwsvykWHo8O55oaEydNnrBiO+Awm0bNRAK9GmSh7V8i1HkQ2NopRk0G1zvGKmX0w
-         SrUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738076304; x=1738681104;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5NgK1PyzlgcgU3jbjx+DyDukT7QBmAGxcdaN+SPDB1Y=;
-        b=hhHpgVQlEmpYgPfEqrSnZrUlRHEDaAORqpNoaAwY8XTMGnPZG1LgRFUnScJH8d4ePU
-         42KtULOxKCcImnSLKCY2lZl8BSQg30Cb1xntJfn3X7rQodb3i6CqgDXmrYItcNXDIkOw
-         KahPaE3WIZ56kYdPB82/PCeRxVY3ndzFE0S5JDKrin38d3n4USc3HtbBzIYEo+aR4LNT
-         /mA/3Vj6X0j9HdTQrzKRibe4fbZf59iJGRJpruC8cSritCgq6iZTNhmT/McGgqCC3ghN
-         C3DNQdriqLsbchdjGOYu8WA17KnXRASKm1MgqZc1leT8UsT5/hH0BZeI9iLIsPFbckOE
-         IerA==
-X-Forwarded-Encrypted: i=1; AJvYcCU7rwxBXTOswj9b44zZE6etqwUhKZfFijf619GP01hMcZnub+TVtdixilxAcvJp0F3h/WLV3zsWLS0u@vger.kernel.org, AJvYcCUYRAWfmu9Cg6vPjbKAeCjZRmW3RHGtPQXYvK+FbPrTlGCC4JEC7fT5qmGKyaBRe9WS6rs=@vger.kernel.org, AJvYcCVl1KdcbOA7iWDYyK/n6th3rWMg7lzTTcJkmvxGAdQ9l+RZG7dCk0DN4m5/1CGLPXf4yPAAj5A9NS9ROYnjoi03UlEd@vger.kernel.org, AJvYcCX7POaLecgnmqPruLlzqOSOnXl4ruTh9ryCmkZUK/n0WVAOE5FZvU5Ta3s48izmNubu8J+cIA/n@vger.kernel.org, AJvYcCXwKiV9tWMvbgikAX7DwXl/VIXPVm33nUsVb0c/EGazX7MN2YfJRhprQ6TTh1fCPd+WGX98BzqMC7Q8/y9p@vger.kernel.org
-X-Gm-Message-State: AOJu0YyNKoRfqd1cSpQOFfMaGiLTV7+74b77W+myLJp0LcL/GmWz83dT
-	DicDolPtv5B070mD8HbJXpqLLY3hZpQ/i/kUYxi7gMf0/XJq3WmB
-X-Gm-Gg: ASbGncuYLKwLA0KO04qICMeMMLxA18Xtee4nT3CaCPrz2RJzibVsVzY3tfErcfWs8Fs
-	XwJQhkulHbmaVmO9JsnVeIdJ1WL0o2Jg3tcfbaDmKeDRRR9mfkVKQvBJRyirYWb6xtsfyqJAGBh
-	HNROybV5nYn2fDTw32kKLNFn1yvIkAIJgiCNMnLJPRMyxbvS29p+vYsW4aFOvyO4hz6xMf9HQpm
-	OhL/HMpmKsCxbW17hMwlxJNHssmGXDn5iqGbZvJH+mL/Vcgu6mqmaeOETUSZp6/Wi1iTrIeE1cQ
-	xPPv69CLY9Ht/6IHJZa9FWNxmKU/8yenmAlYTjm/oc0CwYrmjUjYyS0Ji60JiZt/7yycyg==
-X-Google-Smtp-Source: AGHT+IF4WOMe+E1ASphpyPufkPOsl65YTCva6RW3RPHB5aOPWPoVqJdw41Y0NpAQQaSz7q4qYh/Kcg==
-X-Received: by 2002:a17:90b:4c43:b0:2ee:c5ea:bd91 with SMTP id 98e67ed59e1d1-2f782d65adbmr61068210a91.29.1738076304080;
-        Tue, 28 Jan 2025 06:58:24 -0800 (PST)
-Received: from localhost.localdomain (syn-104-035-026-140.res.spectrum.com. [104.35.26.140])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f7ffac2807sm9485398a91.20.2025.01.28.06.58.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jan 2025 06:58:23 -0800 (PST)
-From: Eyal Birger <eyal.birger@gmail.com>
-To: kees@kernel.org,
-	luto@amacapital.net,
-	wad@chromium.org,
-	oleg@redhat.com,
-	mhiramat@kernel.org,
-	andrii@kernel.org,
-	jolsa@kernel.org
-Cc: alexei.starovoitov@gmail.com,
-	olsajiri@gmail.com,
-	cyphar@cyphar.com,
-	songliubraving@fb.com,
-	yhs@fb.com,
-	john.fastabend@gmail.com,
-	peterz@infradead.org,
-	tglx@linutronix.de,
-	bp@alien8.de,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	andrii.nakryiko@gmail.com,
-	rostedt@goodmis.org,
-	rafi@rbk.io,
-	shmulik.ladkani@gmail.com,
-	bpf@vger.kernel.org,
-	linux-api@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	Eyal Birger <eyal.birger@gmail.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v2] seccomp: passthrough uretprobe systemcall without filtering
-Date: Tue, 28 Jan 2025 06:58:06 -0800
-Message-ID: <20250128145806.1849977-1-eyal.birger@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93E8418DF86;
+	Tue, 28 Jan 2025 15:05:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.17
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1738076741; cv=fail; b=N1GCGEIm7fMOnBFquuLiAHmB2613e2l/Wnb2VVCA6lJGW1mnO++1N3ZM+7lfEBjpGp0w2yzau6c/GYqKnE+SnWKI0HxAFH+p+vnFe/byZ/2rz828THbDz6VIRW+deKEdh6uvZZFdIzL9Y1bJoKyPHXjSGq4rTuItwzMHqxWNlJ0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1738076741; c=relaxed/simple;
+	bh=DQZUp2vkYRTJgZXLjszM+3ZB7+ZzDmG1RIF1EyWX4ic=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=DyXkl2/YTHQPjhR/yXZySFi4/ixcux94GSqayz5YWVeYq5Q1qlKvo/0Ut9+kQQvjczy9F8r+jsGU7UjE1RIXB4NNr81jE862LDf/ZZKXumcjAnt5kW+EWA666cyvv5FxwPHKjfpSr2rhsjlOAnIAuG/GVGNFeazlJvzft6oyaEQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dRIQ96aj; arc=fail smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1738076740; x=1769612740;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=DQZUp2vkYRTJgZXLjszM+3ZB7+ZzDmG1RIF1EyWX4ic=;
+  b=dRIQ96aj6h4wkeCh36TZYXRR1mqEXoGSaFE4zfqkexlt1RBMy+3qJoGb
+   nGl/PvmSKw3t2afU+RUgTIXvREN+384/T1TyPGSK5zkRJvnMOzk0dWalA
+   VBTqNzaVPeoNG/THHGA9KrV7k0Lcgawj3Wj9Li2T5TCA01fW+m2/pRcTL
+   3ucJ43EcudPLeA5VZMNUEpZkedTY8yKOkwPxA0iTn6pO07tjhISkGngwo
+   N3PeOLtGUhMCmaqGziBH9vJos+iauAVHbGqTNQqFPj00CFK2N6RMq5MdW
+   5y73/UGQYd4k53zKvUdY6ZIdb1XOZ6U5UO6HpXXMPzE2tT6IkO6l5NPfX
+   A==;
+X-CSE-ConnectionGUID: +9L0npZuTTanOJAFLHIDXw==
+X-CSE-MsgGUID: LbTfteHSTNa8Ft/RUFzv2A==
+X-IronPort-AV: E=McAfee;i="6700,10204,11329"; a="38597195"
+X-IronPort-AV: E=Sophos;i="6.13,241,1732608000"; 
+   d="scan'208";a="38597195"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2025 07:05:39 -0800
+X-CSE-ConnectionGUID: u4n85xpaQXCtvcMYtpSMxQ==
+X-CSE-MsgGUID: q6B9q60dQaGsyKvW4XpWjw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,241,1732608000"; 
+   d="scan'208";a="109334292"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmviesa009.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Jan 2025 07:05:38 -0800
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44; Tue, 28 Jan 2025 07:05:37 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44 via Frontend Transport; Tue, 28 Jan 2025 07:05:37 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Tue, 28 Jan 2025 07:05:36 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=t6RbBEDL05q3MDOtLI6llYe/28vV+N0U+CgYBellZOzC97on4pHubSTAszl+R7/vvQZrthmkBVZ9LaOeNc+Pb0IiEOoAGAqsr4z/neZ1AROIFNlr6+SR3ZWYRphG6EDq3m+mp9fBTHsNjhRslEbzhDJdnyEIRaSx4tQlP9yNeMwVrNj216poHBTMdbC1dsyJqKsUirxfnm/hUtz/OR6xCDRhCHFnTvzl6xQbJEszaUQFPue5WomtGIXDdI6I63pE3rV0xDSlftsxl2yFs/4L8h2CAGGfUT5BCsKa+oVSYVFjGJY9gMixZY8JjL7QR+e7UDTZoL3CDo9x75o42v8GBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=q+hAtAqcbmw7vzp8y97iM83ShoGsfjDbyPTiURjOMeo=;
+ b=Yy8pOcAsxx3ElQ1BsCv1qajZNO3C/64/t7J2X/iJBsvi+vleCb+aAhb13aOdyl0/rDAr9Uiw+mTKzxRGC5R26JkBe0lePf5W2B8V5mpVJmEoDWcTxQRKzz1HJEDwerLXOm970fUTh8cFWIuYDnu532nRNgPN7T6CiNcwzA5HxImte0lrk1H/eEhD9Gw+DUAFSE3+se72NR1MJGY0254GQNo4w4z56Pz7J89tZQCCV+2cB4ZW8Bb+4/b6085UtLj72kwh9CrFOB/zATyVtFFloMQwPbjVX/QZss2+lexJ3Ich+MKpOZirPeTwmyvkC+WlbvvareZHfFVjy6tmIq6XdQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
+ by PH7PR11MB5817.namprd11.prod.outlook.com (2603:10b6:510:13a::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8377.22; Tue, 28 Jan
+ 2025 15:05:23 +0000
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::4b3b:9dbe:f68c:d808]) by DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::4b3b:9dbe:f68c:d808%5]) with mapi id 15.20.8377.021; Tue, 28 Jan 2025
+ 15:05:22 +0000
+Message-ID: <332c50f5-3c68-4fce-8bb3-161f76f2119c@intel.com>
+Date: Tue, 28 Jan 2025 16:03:11 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bpf: Fix mix-up of 4096 and page size.
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Saket Kumar Bhaskar
+	<skb99@linux.ibm.com>
+CC: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML
+	<linux-kernel@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, "Hari
+ Bathini" <hbathini@linux.ibm.com>, Andrii Nakryiko <andrii@kernel.org>,
+	"Daniel Borkmann" <daniel@iogearbox.net>, "David S. Miller"
+	<davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard
+ Brouer <hawk@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z
+	<eddyz87@gmail.com>, "Eric Dumazet" <edumazet@google.com>, Paolo Abeni
+	<pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Song Liu
+	<song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+	<john.fastabend@gmail.com>, "KP Singh" <kpsingh@kernel.org>
+References: <20250122183720.1411176-1-skb99@linux.ibm.com>
+ <CAADnVQJcmyMmxPfSaKgqMiCDZP=Pe8-Jf7NnEdfgxejvZr+44g@mail.gmail.com>
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+Content-Language: en-US
+In-Reply-To: <CAADnVQJcmyMmxPfSaKgqMiCDZP=Pe8-Jf7NnEdfgxejvZr+44g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MI1P293CA0025.ITAP293.PROD.OUTLOOK.COM
+ (2603:10a6:290:3::11) To DS0PR11MB8718.namprd11.prod.outlook.com
+ (2603:10b6:8:1b9::20)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB8718:EE_|PH7PR11MB5817:EE_
+X-MS-Office365-Filtering-Correlation-Id: 676e21b3-be9a-4a76-9ce2-08dd3fad300d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|366016|1800799024|7053199007;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?VENEUnA4MmJEbjNhdENDQ2k2eFhmVm1aVGgrbEUydU81QnQvUWZTaFowOVIw?=
+ =?utf-8?B?cjkxQzB6enZhU2V6bktqMk5PVUNmWUdia0NZcVlreUgvSlYxdlQxQnMxc0xW?=
+ =?utf-8?B?YUE3ajliWHhpd1BWVEl5ODBKKy85cWlYRW9IZjFoNmpKTDRSeW1DT0FtWHVR?=
+ =?utf-8?B?OTNqR00rZHVJVEpZRFIxS3RyWmx1TWFOdFJYSlJYQThUT3pjSGJvaDlBOFdG?=
+ =?utf-8?B?aURkRDBtRUNXZFg0ZlpjbnpnSXZXRTZWR09kWnlUQ1hSNk1sK0FqNkJBdTJu?=
+ =?utf-8?B?eXMvMEFGUEVHVFJHU3FITEMweHFVWUdBUWlmTjJPTUY4TWdabURvVElEK0JY?=
+ =?utf-8?B?amJDU3Vack5keEtMWnVQRTJpRjNHbjl0bisxdkhLZDZqdzFIT2FvMS95cTVr?=
+ =?utf-8?B?MUpkU0w1RmpQVll0Smhrd1JiYmwvTlo0akw3c21DZlBKTVlmb1N1Y25DampF?=
+ =?utf-8?B?NEZxZUtWa0RmYlVCME11WEJweHNGREhlSmRidXFXNGgzTmYwVWluWXFTR2FB?=
+ =?utf-8?B?ckM2YjhzTUdYV1p0QUdTaDIwY05Dd3U4azAwNStaL1pQZzdiTXd4K3ZjZ2ZN?=
+ =?utf-8?B?QUdhT0svWE1wTTBZcEFtVGg5Z0I5WE9YckpOOXcwR05TbENDMUVXT1JWOHBB?=
+ =?utf-8?B?WWhQOXhzSzhBRGVtVGw4ZWl5MjJIZ09VSGVNVDBwVE15a2ZCMzRFL2hBWXJj?=
+ =?utf-8?B?UmxYMnMrQ0RhS21ocHBSeU9Da0FOSTFvdzY5cElMRHUzREFTSnRCczYydnhk?=
+ =?utf-8?B?Q3RNWlMxRzI3OUplMGN6MURoSWhVVHVBZ0ZYNmM5c0NxMFd1YkpUWDcrVFJv?=
+ =?utf-8?B?OUNHZ3ZMc2pyTDIvb3RueTRYWC9MTEdnbytCeUJaOUowaURGMWhWWHZWOHRj?=
+ =?utf-8?B?NjJIZjNscW1vYlBtMUZDMzVEcTcxamg1Y2RaeTJzSEhVWWF1ZzV3alhIaGJM?=
+ =?utf-8?B?Q1hWOW9zcWlDSi92NE9ud25jQU5zYUtWMUk0UURZQndHdXFTcVRDYUcveHFl?=
+ =?utf-8?B?bytBb3Flc2VSL1lIQ1I1Zkl6TzVZSjE5S1JrWGhqaFdBOTBPTEtIejg5cThC?=
+ =?utf-8?B?eGNqWVNhQjFLUG8xNXNVY3hjcEhIdUU5SStRUHNhdlNlelVVeTgwS0luZ01W?=
+ =?utf-8?B?c01oNGowNkhLY0hrNVQrYjU0Y091NG1tZ2c0RUpTQmpVOVdxSmNYOEhFS1oz?=
+ =?utf-8?B?eUUyc0FZV01ybVBwRnBLdFA1bkFyUUsyWHhjY0g2SGlWZ2ZBcTlJNXV1VFh0?=
+ =?utf-8?B?b0xYS3VGOFV1MHlldFFSMGpYWWtERUdwTC9Sck5mTDc4OWxZbWlVczJ2WmJt?=
+ =?utf-8?B?WEdVejNscVkzOHZNbGhYSWZLaGFuZVlJbUwxSS82QzFFazlxYVhzRDhEekxs?=
+ =?utf-8?B?dU5nbzQwVXcrOFhOMzBrL3BOWWVocVNIdG1GalUyVk9vS1pkWGx1bTZZVGta?=
+ =?utf-8?B?Vzhjb3VpTkQvVVJ4QVZ4RkFzaWF1MUhNRUhqakdDdWFYTUJDV3pkMlVWb0Vz?=
+ =?utf-8?B?ZURxbjFBN0JvZjlqSFQxV3FsdFJFa0Z4RjNZd1Btd3R4bDZvK0trWWo3OE1k?=
+ =?utf-8?B?b3djN0dTTkI1ZWxPbkFJQ3d5RFFmblhFRE5hR1Z4RTUvUW50TkhLS095OUNw?=
+ =?utf-8?B?VzBwOUQraXYzRVZzSE1qNCtoRzcxM2VLRmxNTjE4S2FZa09pT3J2ZTJSUEZs?=
+ =?utf-8?B?YjR6cHdoZTBOeEcvcEFZcGdla1IySGhXL29CZWFEclNLK3ZWdXpQTHNiSEQ3?=
+ =?utf-8?B?c3JGMjNLbXpKK2t3dHBEbktjcFU1S21NcHlma2VRZGZDbGFNNGF2UGxLS3NE?=
+ =?utf-8?B?Z2kyZCtGOUhOeUF4T3d3Y0pVdWxXS1JxZjhZU0lhcThvckZhZEo4ZDh0Y01X?=
+ =?utf-8?Q?buyFTFwPaLTKm?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Z2syb3JwTWVvcUdZU0hhdEZqN0xDYjBBTHZNRmg1MHZQYVJPNFNjeXRkOVh5?=
+ =?utf-8?B?MUtWQ0p3QlFiYW54SWF6aUVuMjEzUmk5M0hBUUNEQy9pZWZ0QkwyNHNKNkxM?=
+ =?utf-8?B?VVBETGZMTE5HZEkzRmQxM3krWFJnNUJpYmxRVzg4OTZNbkpkdmROSERkc2w2?=
+ =?utf-8?B?aTdSNG02UXNFYlVZczJHeVZXODQ0Rkx5Ylc3eGo4RGRwTC9KTFE0WHkwd1My?=
+ =?utf-8?B?MHJJcXgwU0ZlM2ZFK1JRTUQwN2d2R3J1ZVZDVTdOYWppU0JTYXhFZ0xGVHdq?=
+ =?utf-8?B?N2xLU3VyMTNqaVphTzVVNTQxelJKN1hhcVpVSDRDNG1ydWQ0aEdEY09OaWpi?=
+ =?utf-8?B?UGNHM2Q2OURLQkMzQkNqRUNFTkxEM2FRR3ZSVDdBcTZ5MzQ5bU9jNXdDenh0?=
+ =?utf-8?B?Q2tFbGRub0hiUDVWY1QyV1lSejVzOGxrbmtRTDlKbWVCd3lvYkZVcC8vZEZN?=
+ =?utf-8?B?d08yS1BvejRNTVZsbDFuR0pUQ2h3aUU1TUF4Sk8xUmpUUGE0c21RbGV1NFA2?=
+ =?utf-8?B?Y2t0YndUZzM5eEc0S2RYSExkWFlVZmhJK1NoK08vODQwVXdTRUZxTGE3TGlM?=
+ =?utf-8?B?b3J6RFZNSnovcWp0YmFuV21TR0xOMGtmN0t1Yk03blhuUEk5ZnpTZWx0bkd0?=
+ =?utf-8?B?d3pCMC9kdVRPZHJIY2oyR205eEl0akV0cGhudGJVQW1QSjhJWE8vNjdmdlp5?=
+ =?utf-8?B?NmYwVnVxbmJHSDdlNEFmOVlWbW5NTWc1WWs5ZkVYQ0djeERWYWcrUUhpVTQ0?=
+ =?utf-8?B?Y1BraHdGaDgzd2NWWnJjek55cE01QmN3VGlyOFlKYlBKMU1tdy80WWpneHBR?=
+ =?utf-8?B?K2pOKzk4dWZmeVJOUmh0OWxrVlBXZVZ3MGJFajRWYnpMQ0VLU2NOYmNoSk92?=
+ =?utf-8?B?UWVqY0pmOU15eTZOTUQrZFdJZjJCUjhZRmR5aXBPT3pHRmRRdE0wVjBZeG5K?=
+ =?utf-8?B?TmR0U29uZ2JmOVg1eUUxWUlyaUlSazFJbEJOUnI3cWt4RmJybUVUM2dyNkRi?=
+ =?utf-8?B?eVV3ckhML2Z1YzNQdzV6cUpOUE5Kblp4RDJScjNvYUFVMmg1S09SWmhhZGpr?=
+ =?utf-8?B?V0trdWtIZWtYYWlIR0o3a2ZkNVNMNi9ZZFIyVGI4VERGY2ZKd2NPdnJhY2k4?=
+ =?utf-8?B?WDQ3SlVmRHUxWmk2S2hGeUdwQ3BNU05LU2M0SFZOQlROSWZKVVNhN2pWUGFp?=
+ =?utf-8?B?cE1NWEROcmN4bWl0VytuR0lXVGR6aU5QWUJod3RHcWVWejFld3pGSE5meFVR?=
+ =?utf-8?B?QWN1ZmR0bnN0aVh1WFNmNENldHV6S1ZKRkhic3MrTFUwTmQxcTV6dU9qQkxo?=
+ =?utf-8?B?LzUyR1ZKNExqbXRkODMzbFBSTEtYYThmV2REL245VzdNZzlMdnFWSVpuRzdJ?=
+ =?utf-8?B?M2JjMlFzU3MraUc1NnJQVDFVMVV0MjlmbEdvekY2VWs0ZUpKKzc1MkZOZzgv?=
+ =?utf-8?B?cnBzTXlEczdNS21uZVBPS1hpRUNaaEJVQmxsRExsa1duSDVhTzdpNWwwdzJ4?=
+ =?utf-8?B?MnRIekduUzRxRXhPU244OEh2S3NHQ1d3dkJRbGZpb0JxUDMrZ1pSRTlWazZL?=
+ =?utf-8?B?bUR0dHVFVWZPUXFaL3Ivb05xUzYzVmJtTS9NWENBTUF4OG9WckpPQ1NyMkg0?=
+ =?utf-8?B?WlVMYlJaQkd4UlA0aXVGcVc0WUtLdnVVeGd0dHJNNmk3SVErUGxjWTBUcHdj?=
+ =?utf-8?B?c2dXZ0RHS010a3NQdWxISnlJelZDd1V6ZXc4bGpNV082eFVScEU0OUg2OW42?=
+ =?utf-8?B?NGtnTE53TXBrTW9leHVwZTFlY3pybUJsSDV5YmhYdjlETGNjeDhpTGNXRm1k?=
+ =?utf-8?B?d3FrWlZiN01uSXR6dThoZmx1K0Q2Vml4Qnlpclk3dHFqMXNyTjdObmMyci9R?=
+ =?utf-8?B?NmVudTQ4SSt2SWtFS2JFMnFTcXkxbyt2VkQ0em5qcVdqQTd3bDdGTEphUzBz?=
+ =?utf-8?B?ak5GRE5wTjV4Q3ovcEp5ZkR5RS8xQnNCbnZOekpGamE3amNER0lVdm1wSURp?=
+ =?utf-8?B?NUxMTC9BWkhjdDdjclcvOW1OSGxmTEM1UldPdmQ1VnhST1VYamdLNUk3N25O?=
+ =?utf-8?B?Sm5ScnExeENxdEN6eE5aT2orTllvdlZWNGdhckloRHZSRWluQmtvZmZqV3dU?=
+ =?utf-8?B?dEg0TEwvRkhuV0NxZlA1VjlKOHlWMmFST05TMTl5SHQ4L3NSSmltQkwvc1E4?=
+ =?utf-8?B?cmc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 676e21b3-be9a-4a76-9ce2-08dd3fad300d
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8718.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jan 2025 15:05:22.8183
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: a7kqqjreIxkmOq+Cgs/SqZ88/EGWWh5vPglxYZ8AQpm33qShUGmWf/1KzgLgJDbceat6dqTA830w0Pe8T+ijlEEAyBfQY8Q76aOseSsFTr4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB5817
+X-OriginatorOrg: intel.com
 
-When attaching uretprobes to processes running inside docker, the attached
-process is segfaulted when encountering the retprobe.
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 23 Jan 2025 21:14:04 -0800
 
-The reason is that now that uretprobe is a system call the default seccomp
-filters in docker block it as they only allow a specific set of known
-syscalls. This is true for other userspace applications which use seccomp
-to control their syscall surface.
+> On Wed, Jan 22, 2025 at 10:38 AM Saket Kumar Bhaskar
+> <skb99@linux.ibm.com> wrote:
+>>
+>> For platforms on powerpc architecture with a default page size greater
+>> than 4096, there was an inconsistency in fragment size calculation.
+>> This caused the BPF selftest xdp_adjust_tail/xdp_adjust_frags_tail_grow
+>> to fail on powerpc.
+>>
+>> The issue occurred because the fragment buffer size in
+>> bpf_prog_test_run_xdp() was set to 4096, while the actual data size in
+>> the fragment within the shared skb was checked against PAGE_SIZE
+>> (65536 on powerpc) in min_t, causing it to exceed 4096 and be set
+>> accordingly. This discrepancy led to an overflow when
+>> bpf_xdp_frags_increase_tail() checked for tailroom, as skb_frag_size(frag)
+>> could be greater than rxq->frag_size (when PAGE_SIZE > 4096).
+>>
+>> This commit updates the page size references to 4096 to ensure consistency
+>> and prevent overflow issues in fragment size calculations.
+> 
+> This isn't right. Please fix the selftest instead.
 
-Since uretprobe is a "kernel implementation detail" system call which is
-not used by userspace application code directly, it is impractical and
-there's very little point in forcing all userspace applications to
-explicitly allow it in order to avoid crashing tracked processes.
+It's not _that_ easy, I had tried in the past. Anyway, this patch is
+*not* a good "solution".
 
-Pass this systemcall through seccomp without depending on configuration.
+If you (Saket) really want to fix this, both test_run and the selftest
+must be in sync, so you need to (both are arch-dependent): 1) get the
+correct PAGE_SIZE; 2) calculate the correct tailroom in userspace (which
+depends on sizeof(shinfo) and SKB_DATA_ALIGN -> SMP_CACHE_BYTES).
 
-Note: uretprobe isn't supported in i386 and __NR_ia32_rt_tgsigqueueinfo
-uses the same number as __NR_uretprobe so the syscall isn't forced in the
-compat bitmap.
+> 
+> pw-bot: cr
 
-Fixes: ff474a78cef5 ("uprobe: Add uretprobe syscall to speed up return probe")
-Reported-by: Rafael Buchbinder <rafi@rbk.io>
-Link: https://lore.kernel.org/lkml/CAHsH6Gs3Eh8DFU0wq58c_LF8A4_+o6z456J7BidmcVY2AqOnHQ@mail.gmail.com/
-Link: https://lore.kernel.org/lkml/20250121182939.33d05470@gandalf.local.home/T/#me2676c378eff2d6a33f3054fed4a5f3afa64e65b
-Cc: stable@vger.kernel.org
-Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
----
-v2: use action_cache bitmap and mode1 array to check the syscall
-
-The following reproduction script synthetically demonstrates the problem
-for seccomp filters:
-
-cat > /tmp/x.c << EOF
-
-char *syscalls[] = {
-	"write",
-	"exit_group",
-	"fstat",
-};
-
-__attribute__((noinline)) int probed(void)
-{
-	printf("Probed\n");
-	return 1;
-}
-
-void apply_seccomp_filter(char **syscalls, int num_syscalls)
-{
-	scmp_filter_ctx ctx;
-
-	ctx = seccomp_init(SCMP_ACT_KILL);
-	for (int i = 0; i < num_syscalls; i++) {
-		seccomp_rule_add(ctx, SCMP_ACT_ALLOW,
-				 seccomp_syscall_resolve_name(syscalls[i]), 0);
-	}
-	seccomp_load(ctx);
-	seccomp_release(ctx);
-}
-
-int main(int argc, char *argv[])
-{
-	int num_syscalls = sizeof(syscalls) / sizeof(syscalls[0]);
-
-	apply_seccomp_filter(syscalls, num_syscalls);
-
-	probed();
-
-	return 0;
-}
-EOF
-
-cat > /tmp/trace.bt << EOF
-uretprobe:/tmp/x:probed
-{
-    printf("ret=%d\n", retval);
-}
-EOF
-
-gcc -o /tmp/x /tmp/x.c -lseccomp
-
-/usr/bin/bpftrace /tmp/trace.bt &
-
-sleep 5 # wait for uretprobe attach
-/tmp/x
-
-pkill bpftrace
-
-rm /tmp/x /tmp/x.c /tmp/trace.bt
----
- kernel/seccomp.c | 24 +++++++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 385d48293a5f..23b594a68bc0 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -734,13 +734,13 @@ seccomp_prepare_user_filter(const char __user *user_filter)
- 
- #ifdef SECCOMP_ARCH_NATIVE
- /**
-- * seccomp_is_const_allow - check if filter is constant allow with given data
-+ * seccomp_is_filter_const_allow - check if filter is constant allow with given data
-  * @fprog: The BPF programs
-  * @sd: The seccomp data to check against, only syscall number and arch
-  *      number are considered constant.
-  */
--static bool seccomp_is_const_allow(struct sock_fprog_kern *fprog,
--				   struct seccomp_data *sd)
-+static bool seccomp_is_filter_const_allow(struct sock_fprog_kern *fprog,
-+					  struct seccomp_data *sd)
- {
- 	unsigned int reg_value = 0;
- 	unsigned int pc;
-@@ -812,6 +812,21 @@ static bool seccomp_is_const_allow(struct sock_fprog_kern *fprog,
- 	return false;
- }
- 
-+static bool seccomp_is_const_allow(struct sock_fprog_kern *fprog,
-+				   struct seccomp_data *sd)
-+{
-+#ifdef __NR_uretprobe
-+	if (sd->nr == __NR_uretprobe
-+#ifdef SECCOMP_ARCH_COMPAT
-+	    && sd->arch != SECCOMP_ARCH_COMPAT
-+#endif
-+	   )
-+		return true;
-+#endif
-+
-+	return seccomp_is_filter_const_allow(fprog, sd);
-+}
-+
- static void seccomp_cache_prepare_bitmap(struct seccomp_filter *sfilter,
- 					 void *bitmap, const void *bitmap_prev,
- 					 size_t bitmap_size, int arch)
-@@ -1023,6 +1038,9 @@ static inline void seccomp_log(unsigned long syscall, long signr, u32 action,
-  */
- static const int mode1_syscalls[] = {
- 	__NR_seccomp_read, __NR_seccomp_write, __NR_seccomp_exit, __NR_seccomp_sigreturn,
-+#ifdef __NR_uretprobe
-+	__NR_uretprobe,
-+#endif
- 	-1, /* negative terminated */
- };
- 
--- 
-2.43.0
-
+Thanks,
+Olek
 
