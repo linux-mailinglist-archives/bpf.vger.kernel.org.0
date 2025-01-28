@@ -1,81 +1,73 @@
-Return-Path: <bpf+bounces-49979-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49980-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A3FEA21356
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 21:56:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D913A21358
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 21:57:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3285B7A1DB8
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 20:55:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F10C31675B6
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 20:57:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63C771DB34E;
-	Tue, 28 Jan 2025 20:56:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 392F11E7C10;
+	Tue, 28 Jan 2025 20:57:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t10S4Ir6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Za2arqJ0"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBD381B413D;
-	Tue, 28 Jan 2025 20:56:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8FCC1DB34E;
+	Tue, 28 Jan 2025 20:57:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738097785; cv=none; b=AnBxNNnDjERc2bPO67ipM1FlBPZTkctBX82+KAgBlMD0kHdl73i/6zY9H/pQMcroEexrtkoUXD7uP2TFTvh5qaN70C7fOTSX0OyU824vugRj/wMPpuPXIR7vxNTey6RNZbid16LBkESaQ5SjJYnvwwtX69N33u8DFFXK0/Kc1k4=
+	t=1738097827; cv=none; b=ZoDmEsRYIVwsf0X2cKXIHVEpPV6vtl27QSpw0rt7+NCOxmx3A9FGAlP2L4C+Nr2GBghPW72mjNgbvGBtRRvcJSL3hbgSIbZKak3NQOXAm2TtN2BFz2A6INGyTexr3BXUWGQTpiKFSPaKf3OocTC8HMqLrj87k/OSjLdI1VnzzCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738097785; c=relaxed/simple;
-	bh=VmxxfpxrQ1lkQIBflaPl6Q/VZxmO9YQUzyZeBiIxp9E=;
+	s=arc-20240116; t=1738097827; c=relaxed/simple;
+	bh=x7YDvWsOV1m58zdR2LDHr+xA2bpMI4bdPxmrUqwKaVk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lFE6X66WmQRRClFmU+tjhJHuOZWUiO4hUmNNzamt61byCZqZfrG4v1ol1yp+r0Fi7Qn9q5vrhDvDdICv+bbk14X3j8ZK0Ct7SXfuCWZ+nZz+KiDXlBXibCUNju9wqgE3a2PD+UFTii5sIOJ81p+iLUj5vnQu5RRN0OvOhjfjF6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t10S4Ir6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F3CBC4CED3;
-	Tue, 28 Jan 2025 20:56:24 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=TgSAPNP5UCOx9VqkiJI5lbZ37Kc0h91+8psm07YrfnT1QQoqjmQdMK4KcW6DehO5eD6TVQYa6TcspyzZCfZWkQqRppJ04b33hiD0QN1GwGjkiYU09lEHFb935CtrjNQkKi4W473731QgadvnSWcxuSP0ogI6K8Lo29TIiZU0i9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Za2arqJ0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84EA7C4CED3;
+	Tue, 28 Jan 2025 20:57:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738097785;
-	bh=VmxxfpxrQ1lkQIBflaPl6Q/VZxmO9YQUzyZeBiIxp9E=;
+	s=k20201202; t=1738097827;
+	bh=x7YDvWsOV1m58zdR2LDHr+xA2bpMI4bdPxmrUqwKaVk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=t10S4Ir6CTfVDknapbp1g4H2UYZbNAc6zTZwZH85xu8FXYc1lgmyxa28ZsFjupiU1
-	 Mp9z+3guOjM4S7ennIhTJ5xIk3tcg52dlbHjTHbo71P/reOYDf8QR8EcHBLidvoPi+
-	 PvOmbnbtzeIKzjupB/e9DMZd+LwIBW19FsyDOlKsTeN085Xn4KZYNfGg2S6Q3xdgaE
-	 F1kGVeggU0v/LaaBz2zYnYkfbOViArme0/k7tzfFlppGBUawUugEE829Z4D6yvDBa+
-	 Fr+QNJnO+J3pdA31MWSN7iapasLvSj0kFWi0wmwUWxniZsEq6CsD61npByVIZ4/vfF
-	 XTxIFI3i5APNQ==
-Date: Tue, 28 Jan 2025 12:56:22 -0800
-From: Namhyung Kim <namhyung@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
+	b=Za2arqJ0+MdRp9VrNuTSkUE0m9ZlIJLFTH6G1gaasLOGHnKWK2f9778vk6sjbGq26
+	 eFH9ruA+gt6GwOrp+JAmscY08ZtZR0WhR2TfZo6DOWIK0x69i+glwC00OY9F9GZk+c
+	 dJCTJ/qI12VIi119XEf76D31svgmaKqo13IOh9pu4XfOldKg74uenWWH8W3SWjdeGB
+	 rbcHYb5/rqzCvmNAbfFpyyHJBMPlJIFOlcKPbTc7Nyz1AVOdgUHWAvSEbA6Rp0DsQ1
+	 961sE2cjbtwiMlFy3jIXYwHJgqmcGLRF16QeYgz4ephmzrlcbzwAun5ANlF6f7reZr
+	 7/kkr4xXmQAhw==
+Date: Tue, 28 Jan 2025 12:57:05 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Daniel Gomez <da.gomez@samsung.com>, Petr Pavlu <petr.pavlu@suse.com>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
 	Nathan Chancellor <nathan@kernel.org>,
 	Nick Desaulniers <ndesaulniers@google.com>,
 	Bill Wendling <morbo@google.com>,
 	Justin Stitt <justinstitt@google.com>,
-	Aditya Gupta <adityag@linux.ibm.com>,
-	"Steinar H. Gunderson" <sesse@google.com>,
-	Charlie Jenkins <charlie@rivosinc.com>,
-	Changbin Du <changbin.du@huawei.com>,
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-	James Clark <james.clark@linaro.org>,
-	Kajol Jain <kjain@linux.ibm.com>,
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-	Li Huafei <lihuafei1@huawei.com>,
-	Dmitry Vyukov <dvyukov@google.com>, Andi Kleen <ak@linux.intel.com>,
-	Chaitanya S Prakash <chaitanyas.prakash@arm.com>,
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	llvm@lists.linux.dev, Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v3 03/18] perf capstone: Move capstone functionality into
- its own file
-Message-ID: <Z5lEdtLVHRZwxuY8@google.com>
-References: <20250122174308.350350-1-irogers@google.com>
- <20250122174308.350350-4-irogers@google.com>
- <Z5QM8nHzwuQYczyQ@google.com>
- <CAP-5=fV0w9tLFr7xYHFUH=UUq+tr+o5EYUik0d74rMWa9=Qi+A@mail.gmail.com>
+	linux-modules@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+	bpf <bpf@vger.kernel.org>, clang-built-linux <llvm@lists.linux.dev>,
+	iovisor-dev <iovisor-dev@lists.iovisor.org>, gost.dev@samsung.com
+Subject: Re: [PATCH 2/2] moderr: add module error injection tool
+Message-ID: <Z5lEoUxV4fBzKf4i@bombadil.infradead.org>
+References: <CGME20250122131159eucas1p17693e311a9b7674288eb3c34014b6f2c@eucas1p1.samsung.com>
+ <20250122-modules-error-injection-v1-0-910590a04fd5@samsung.com>
+ <20250122-modules-error-injection-v1-2-910590a04fd5@samsung.com>
+ <CAADnVQJ8tYSx-ujszq54m2XyecoJUgQZ6HQheTrohhfQS6Y9sQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -85,159 +77,81 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fV0w9tLFr7xYHFUH=UUq+tr+o5EYUik0d74rMWa9=Qi+A@mail.gmail.com>
+In-Reply-To: <CAADnVQJ8tYSx-ujszq54m2XyecoJUgQZ6HQheTrohhfQS6Y9sQ@mail.gmail.com>
 
-On Fri, Jan 24, 2025 at 04:59:21PM -0800, Ian Rogers wrote:
-> On Fri, Jan 24, 2025 at 1:58 PM Namhyung Kim <namhyung@kernel.org> wrote:
+On Wed, Jan 22, 2025 at 09:02:19AM -0800, Alexei Starovoitov wrote:
+> On Wed, Jan 22, 2025 at 5:12 AM Daniel Gomez <da.gomez@samsung.com> wrote:
 > >
-> > On Wed, Jan 22, 2025 at 09:42:53AM -0800, Ian Rogers wrote:
-> > > Capstone disassembly support was split between disasm.c and
-> > > print_insn.c. Move support out of these files into capstone.[ch] and
-> > > remove include capstone/capstone.h from those files. As disassembly
-> > > routines can fail, make failure the only option without
-> > > HAVE_LIBCAPSTONE_SUPPORT. For simplicity's sake, duplicate the
-> > > read_symbol utility function.
-> > >
-> > > The intent with moving capstone support into a single file is that
-> > > dynamic support, using dlopen for libcapstone, can be added in later
-> > > patches. This can potentially always succeed or fail, so relying on
-> > > ifdefs isn't sufficient. Using dlopen is a useful option to minimize
-> > > the perf tools dependencies and potentially size.
-> > >
-> > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > ---
-> > >  tools/perf/builtin-script.c  |   2 -
-> > >  tools/perf/util/Build        |   1 +
-> > >  tools/perf/util/capstone.c   | 536 +++++++++++++++++++++++++++++++++++
-> > >  tools/perf/util/capstone.h   |  24 ++
-> > >  tools/perf/util/disasm.c     | 358 +----------------------
-> > >  tools/perf/util/print_insn.c | 117 +-------
-> > >  6 files changed, 569 insertions(+), 469 deletions(-)
-> > >  create mode 100644 tools/perf/util/capstone.c
-> > >  create mode 100644 tools/perf/util/capstone.h
-> > >
-> > > diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-> > > index 33667b534634..f05b2b70d5a7 100644
-> > > --- a/tools/perf/builtin-script.c
-> > > +++ b/tools/perf/builtin-script.c
-> > > @@ -1200,7 +1200,6 @@ static int any_dump_insn(struct evsel *evsel __maybe_unused,
-> > >                        u8 *inbuf, int inlen, int *lenp,
-> > >                        FILE *fp)
-> > >  {
-> > > -#ifdef HAVE_LIBCAPSTONE_SUPPORT
-> > >       if (PRINT_FIELD(BRSTACKDISASM)) {
-> > >               int printed = fprintf_insn_asm(x->machine, x->thread, x->cpumode, x->is64bit,
-> > >                                              (uint8_t *)inbuf, inlen, ip, lenp,
-> > > @@ -1209,7 +1208,6 @@ static int any_dump_insn(struct evsel *evsel __maybe_unused,
-> > >               if (printed > 0)
-> > >                       return printed;
-> > >       }
-> > > -#endif
-> > >       return fprintf(fp, "%s", dump_insn(x, ip, inbuf, inlen, lenp));
-> > >  }
-> > >
-> > > diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-> > > index 5ec97e8d6b6d..9542decf9625 100644
-> > > --- a/tools/perf/util/Build
-> > > +++ b/tools/perf/util/Build
-> > > @@ -8,6 +8,7 @@ perf-util-y += block-info.o
-> > >  perf-util-y += block-range.o
-> > >  perf-util-y += build-id.o
-> > >  perf-util-y += cacheline.o
-> > > +perf-util-y += capstone.o
-> > >  perf-util-y += config.o
-> > >  perf-util-y += copyfile.o
-> > >  perf-util-y += ctype.o
-> > > diff --git a/tools/perf/util/capstone.c b/tools/perf/util/capstone.c
-> > > new file mode 100644
-> > > index 000000000000..c0a6d94ebc18
-> > > --- /dev/null
-> > > +++ b/tools/perf/util/capstone.c
-> > > @@ -0,0 +1,536 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +#include "capstone.h"
-> > > +#include "annotate.h"
-> > > +#include "addr_location.h"
-> > > +#include "debug.h"
-> > > +#include "disasm.h"
-> > > +#include "dso.h"
-> > > +#include "machine.h"
-> > > +#include "map.h"
-> > > +#include "namespaces.h"
-> > > +#include "print_insn.h"
-> > > +#include "symbol.h"
-> > > +#include "thread.h"
-> > > +#include <fcntl.h>
-> > > +#include <string.h>
-> > > +
-> > > +#ifdef HAVE_LIBCAPSTONE_SUPPORT
-> > > +#include <capstone/capstone.h>
-> > > +#endif
+> > Add support for a module error injection tool. The tool
+> > can inject errors in the annotated module kernel functions
+> > such as complete_formation(), do_init_module() and
+> > module_enable_rodata_after_init(). Module name and module function are
+> > required parameters to have control over the error injection.
 > >
-> > I think you can use a big #ifdef throughout the file to minimize the
-> > #ifdef dances.  Usually it goes to the header to provide dummy static
-> > inlines and make the .c file depends on config.  But I know you will
-> > add dlopen code for the #else case later.
+> > Example: Inject error -22 to module_enable_rodata_ro_after_init for
+> > brd module:
+> >
+> > sudo moderr --modname=brd --modfunc=module_enable_rodata_ro_after_init \
+> > --error=-22 --trace
+> > Monitoring module error injection... Hit Ctrl-C to end.
+> > MODULE     ERROR FUNCTION
+> > brd        -22   module_enable_rodata_after_init()
+> >
+> > Kernel messages:
+> > [   89.463690] brd: module loaded
+> > [   89.463855] brd: module_enable_rodata_ro_after_init() returned -22,
+> > ro_after_init data might still be writable
+> >
+> > Signed-off-by: Daniel Gomez <da.gomez@samsung.com>
+> > ---
+> >  tools/bpf/Makefile            |  13 ++-
+> >  tools/bpf/moderr/.gitignore   |   2 +
+> >  tools/bpf/moderr/Makefile     |  95 +++++++++++++++++
+> >  tools/bpf/moderr/moderr.bpf.c | 127 +++++++++++++++++++++++
+> >  tools/bpf/moderr/moderr.c     | 236 ++++++++++++++++++++++++++++++++++++++++++
+> >  tools/bpf/moderr/moderr.h     |  40 +++++++
+> >  6 files changed, 510 insertions(+), 3 deletions(-)
 > 
-> So I think big ifdefs like:
-> 
-> #if HAVE_xyz
-> // 100s of lines
-> #else
-> // 100s of lines
-> #endif
-> 
-> are best avoided. It is also the point of the shim-ing that we do
-> 
-> ... perf_foobar(...)
-> {
-> #if NO_SHIM
->   ... foobar(...);
-> #else
->   //dlsym code
-> #endif
-> }
-> 
-> Having the shimming and not shimming as two separate functions buried
-> in a 100 #ifdef loses that the code is common except for the shimming.
+> The tool looks useful, but we don't add tools to the kernel repo.
+> It has to stay out of tree.
 
-Right, can we split the common part and move it out of #ifdef?
+For selftests we do add random tools.
 
-> 
-> For example, in the current code we have find_file_offset:
-> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/util/disasm.c?h=perf-tools-next&id=91b7747dc70d64b5ec56ffe493310f207e7ffc99#n1371
-> 
-> It is only possible to understand the use of this seemingly common
-> code by trying to interpret what's going on with the #ifdefs.
-> 
-> I think it stylistically it is okay to have multiple stubbed out
-> functions inside a #if or #else, such as:
-> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/include/linux/perf_event.h?h=perf-tools-next&id=91b7747dc70d64b5ec56ffe493310f207e7ffc99#n1797
+> The value of error injection is not clear to me.
 
-I think the convention in the kernel community is that it's better to
-remove #ifdef's in .c files and add a dummy functions under !condition
-in .h files.  If that's not possible, I think we should make the code
-less conditional by minimizing the #ifdef's.
+It is of great value, since it deals with corner cases which are
+otherwise hard to reproduce in places which a real error can be
+catostrophic.
 
-> 
-> But when the logic is shared and all in one file it becomes next to
-> impossible to determine what's in use and what's not. Other than by
-> tweaking things and trying to get build errors.
-> 
-> So for the shims I've placed the #if inside the function to make it
-> clear the function is a shim. For the other functions that are over
-> 100s of lines, for clarity the individual functions have #if
-> HAVE_LIBLLVM_SUPPORT around them to make it clear that the function
-> only has a meaning in that context - ie the source code doesn't make
-> you go on a #ifdef finding expedition to try to understand when the
-> code is in use.
+> Other places in the kernel use it to test paths in the kernel
+> that are difficult to do otherwise.
 
-I think the both approaches have their own pros and cons.  Some people
-prefer one and others may have different opinions.  I think the big
-conditional block is better and easy to follow.  Maybe we cannot agree
-on this.  Then I believe it'd be better to follow the convention, no?
+Right.
 
-Thanks,
-Namhyung
+> These 3 functions don't seem to be in this category.
 
+That's the key here we should focus on. The problem is when a maintainer
+*does* agree that adding an error injection entry is useful for testing,
+and we have a developer willing to do the work to help test / validate
+it. In this case, this error case is rare but we do want to strive to
+test this as we ramp up and extend our modules selftests.
+
+Then there is the aspect of how to mitigate how instrusive code changes
+to allow error injection are. In 2021 we evaluated the prospect of error
+injection in-kernel long ago for other areas like the block layer for
+add_disk() failures [0] but the minimal interface to enable this from
+userspace with debugfs was considered just too intrusive.
+
+This effort tried to evaluate what this could look like with eBPF to
+mitigate the required in-kernel code, and I believe the light weight
+nature of it by just requiring a sprinkle with ALLOW_ERROR_INJECTION()
+suffices to my taste.
+
+So, perhaps the tools aspect can just go in:
+
+tools/testing/selftests/module/
+
+[0] https://www.spinics.net/lists/linux-block/msg68159.html
+
+  Luis
 
