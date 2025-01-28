@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-49919-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49921-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87810A20249
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 01:08:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E74DA20250
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 01:08:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E481F163839
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 00:08:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA1323A41F9
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 00:08:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50B0F199230;
-	Tue, 28 Jan 2025 00:06:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0614F1B4248;
+	Tue, 28 Jan 2025 00:06:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t44AqHzj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KyBflCto"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D5BC3FBB3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E06C13207;
 	Tue, 28 Jan 2025 00:06:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738022797; cv=none; b=FBBHA1wWkuO7TrAJs8dU6/DDVtY9J1HGDcpFCfzxVuxhsQCUqBIqJ4ZJbexRx2ZAqUSqjhQU+1s/sIfj8Ace/K1ifAN1+GSFM+u3lxFruE1kljphOmJT+24jb/PtMoqmt9DB+hUkaaciuM712KXbQf1gwwQ2n4E24eTuCX/t3fo=
+	t=1738022798; cv=none; b=GWLGbtTPsDlks1IurdL2ZARocRr5BYFMwNIjL9zaiEUlgSSSfxkNCXIZeQu2aEHtUmNHtqWqo/G/LQasPOgUavDQUNwyiDAYnSPvYfmDzT1Rz4PFKP9y5CudZ4c9+vyEYUHbfmymfWUFLW4AqDZaMm+XTlylWUA0QAXMlMOGpOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738022797; c=relaxed/simple;
-	bh=3ES+UMqW9IDjhgp9zbK7Yt0ICLLMVND8zdIhJ7yDAJA=;
+	s=arc-20240116; t=1738022798; c=relaxed/simple;
+	bh=sCuTz3zxaa3V2tY51057fBvBcrlzP04scyPpCe0UiUk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jC5PjZULApH7XDnNyofHhtjz1rNQgmxCbbpXQZhv01z2GR5iJ/lJpRrevRlz4UX11a+foahtjwrH9Wf0VxDMYR9FpBch45MoT4HGHf5VuVtAb9LpZgK7k15ughk8NP0MNThoiEQUej6vHVX9WncIOsb+azkyQRBM3fO60IYInoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t44AqHzj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5349AC2BCB9;
+	 MIME-Version; b=t0cuXlkrv3HXnGuC7kx0Cnlc3Zx3NZPlmsZqPROvCjHou7NG4dQ9wwHzSgSbT0OZBE1W4cpbD2qUjVlDb4SXY685+jh8gKYjhIK3kMamN/0I7g3T1cbQa+x9MlzJCkE5qJS3SEeWH1JCu5vwJXGe72l8msjXld0RD4T48rfO4rM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KyBflCto; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F9E2C2BCC7;
 	Tue, 28 Jan 2025 00:06:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1738022796;
-	bh=3ES+UMqW9IDjhgp9zbK7Yt0ICLLMVND8zdIhJ7yDAJA=;
+	bh=sCuTz3zxaa3V2tY51057fBvBcrlzP04scyPpCe0UiUk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=t44AqHzjYzWj3ShvYJgAzqA9/rqp4BdIqGq/Zl0qKsT0bbxwGqWSCszF8OELHkfJu
-	 eda7fNOmYrNVxX1KapzOGLsDWCefqiGpQGV2Tuodu2q1w4qF4MilPc3fjEylno1zsG
-	 KA42SgMtHCyCiHt5HPDsGDE3ERpTQcYtxNQ5g7Qe16ZJSwROv/p7hK6W1A+E+SIQSO
-	 ugN1GrzbQfMhBAAbMEZj1k3V/RcWtaJ7+haG4YI68BY+uGKS0kCyAtS4bHUwLt/V5h
-	 HhFrGGC2sOBEVnyKl8iQVHJBxiO1beQryJ+vdt8pq/vcmPUj6QnwRtTwc/au9vxzjG
-	 UaUtv9tvINZIQ==
+	b=KyBflCtoOCNe1eYXQDMhv3yXKmQuzSPmPBVTr1CWm+f8LbPeJskf451A8zORT9PkA
+	 TdKUL0L/mcrrCkvUQCVGcyiI/cNH44xrIzzW4wNtDiWyBRCexU8aB4NBECHA2nRbDt
+	 hcHoSdgyxIQ7a74G2TvjKIp0NEVwwfAPfgkxVEVUG9gjrIyOyYA+Y+4UPRmWo2tcbW
+	 4n7YdNI02h/5AVkToeqWPlKfSo7f75I8d4XHfsg1XyzZyPQemhQenyo/DYPM02lXA6
+	 9jlyTy5lhrr5opWFEBYgokSdU8fb2Sczwu4msZ8IZ4SOYfyLtJoDQ0HDBqtOYS9nFz
+	 4OlFCSUzE59tQ==
 Received: from mchehab by mail.kernel.org with local (Exim 4.98)
 	(envelope-from <mchehab+huawei@kernel.org>)
-	id 1tcZ7i-0000000DRMo-2MV1;
+	id 1tcZ7i-0000000DRMs-2Tzs;
 	Tue, 28 Jan 2025 01:06:34 +0100
 From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>,
@@ -57,9 +57,9 @@ Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
 	bpf@vger.kernel.org,
 	linux-hardening@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC v2 37/38] scripts/get_abi.py: add support for undefined ABIs
-Date: Tue, 28 Jan 2025 01:06:26 +0100
-Message-ID: <6ae44b8acd09b8fc14a7824a42ab42faa4e96f8d.1738020236.git.mchehab+huawei@kernel.org>
+Subject: [RFC v2 38/38] scripts/get_abi.pl: drop now obsoleted script
+Date: Tue, 28 Jan 2025 01:06:27 +0100
+Message-ID: <3ca485c75500cb5e004fa3bab7cd9732ecf47d18.1738020236.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <cover.1738020236.git.mchehab+huawei@kernel.org>
 References: <cover.1738020236.git.mchehab+huawei@kernel.org>
@@ -69,746 +69,1127 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-The undefined logic is complex and has lots of magic on it.
-
-Implement it, using the same algorithm we have at get_abi.pl. Yet,
-some tweaks to optimize performance and to make the code simpler
-were added here:
-- at the perl version, the tree graph had loops, so we had to
-  use BFS to traverse it. On this version, the graph is a tree,
-  so, it simplifies the what group for sysfs aliases;
-- the logic which splits regular expressions into subgroups
-  was re-written to make it faster;
-- it may optionally use multiple processes to search for symbol
-  matches;
-- it has some additional debug levels.
+As all functionalities of it were migrated to get_abi.py,
+drop the now obsoleted script.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- scripts/get_abi.py | 670 ++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 669 insertions(+), 1 deletion(-)
+ scripts/get_abi.pl | 1103 --------------------------------------------
+ 1 file changed, 1103 deletions(-)
+ delete mode 100755 scripts/get_abi.pl
 
-diff --git a/scripts/get_abi.py b/scripts/get_abi.py
-index 1c9c6b23a6fb..543bed397c8c 100755
---- a/scripts/get_abi.py
-+++ b/scripts/get_abi.py
-@@ -13,8 +13,10 @@ import os
- import re
- import sys
- 
-+from concurrent import futures
- from pprint import pformat
--from random import randrange, seed
-+from random import randrange, seed, shuffle
-+from datetime import datetime
- 
- ABI_DIR = "Documentation/ABI/"
- 
-@@ -22,6 +24,12 @@ ABI_DIR = "Documentation/ABI/"
- DEBUG_WHAT_PARSING = 1
- DEBUG_WHAT_OPEN = 2
- DEBUG_DUMP_ABI_STRUCTS = 4
-+DEBUG_UNDEFINED = 8
-+DEBUG_REGEX = 16
-+DEBUG_SUBGROUP_MAP = 32
-+DEBUG_SUBGROUP_DICT = 64
-+DEBUG_SUBGROUP_SIZE = 128
-+DEBUG_GRAPH = 256
- 
- DEBUG_HELP = """
- Print debug information according with the level(s),
-@@ -30,6 +38,13 @@ which is given by the following bitmask:
- 1  - enable debug parsing logic
- 2  - enable debug messages on file open
- 4  - enable debug for ABI parse data
-+8  - enable extra debug information to identify troubles
-+     with ABI symbols found at the local machine that
-+     weren't found on ABI documentation (used only for
-+     undefined subcommand)
-+16 - enable debug for what to regex conversion
-+32 - enable debug for symbol regex subgroups
-+64 - enable debug for sysfs graph tree variable
- """
- 
- 
-@@ -638,6 +653,593 @@ class AbiParser:
-             print(f"Regular expression /{expr}/ not found.")
- 
- 
-+class AbiRegex(AbiParser):
-+    """Extends AbiParser to search ABI nodes with regular expressions"""
-+
-+    # Escape only ASCII visible characters
-+    escape_symbols = r"([\x21-\x29\x2b-\x2d\x3a-\x40\x5c\x60\x7b-\x7e])"
-+    leave_others = "others"
-+
-+    # Tuples with regular expressions to be compiled and replacement data
-+    re_whats = [
-+        # Drop escape characters that might exist
-+        (re.compile("\\\\"), ""),
-+
-+        # Temporarily escape dot characters
-+        (re.compile(r"\."),  "\xf6"),
-+
-+        # Temporarily change [0-9]+ type of patterns
-+        (re.compile(r"\[0\-9\]\+"),  "\xff"),
-+
-+        # Temporarily change [\d+-\d+] type of patterns
-+        (re.compile(r"\[0\-\d+\]"),  "\xff"),
-+        (re.compile(r"\[0:\d+\]"),  "\xff"),
-+        (re.compile(r"\[(\d+)\]"),  "\xf4\\\\d+\xf5"),
-+
-+        # Temporarily change [0-9] type of patterns
-+        (re.compile(r"\[(\d)\-(\d)\]"),  "\xf4\1-\2\xf5"),
-+
-+        # Handle multiple option patterns
-+        (re.compile(r"[\{\<\[]([\w_]+)(?:[,|]+([\w_]+)){1,}[\}\>\]]"), r"(\1|\2)"),
-+
-+        # Handle wildcards
-+        (re.compile(r"([^\/])\*"), "\\1\\\\w\xf7"),
-+        (re.compile(r"/\*/"), "/.*/"),
-+        (re.compile(r"/\xf6\xf6\xf6"), "/.*"),
-+        (re.compile(r"\<[^\>]+\>"), "\\\\w\xf7"),
-+        (re.compile(r"\{[^\}]+\}"), "\\\\w\xf7"),
-+        (re.compile(r"\[[^\]]+\]"), "\\\\w\xf7"),
-+
-+        (re.compile(r"XX+"), "\\\\w\xf7"),
-+        (re.compile(r"([^A-Z])[XYZ]([^A-Z])"), "\\1\\\\w\xf7\\2"),
-+        (re.compile(r"([^A-Z])[XYZ]$"), "\\1\\\\w\xf7"),
-+        (re.compile(r"_[AB]_"), "_\\\\w\xf7_"),
-+
-+        # Recover [0-9] type of patterns
-+        (re.compile(r"\xf4"), "["),
-+        (re.compile(r"\xf5"),  "]"),
-+
-+        # Remove duplicated spaces
-+        (re.compile(r"\s+"), r" "),
-+
-+        # Special case: drop comparison as in:
-+        # What: foo = <something>
-+        # (this happens on a few IIO definitions)
-+        (re.compile(r"\s*\=.*$"), ""),
-+
-+        # Escape all other symbols
-+        (re.compile(escape_symbols), r"\\\1"),
-+        (re.compile(r"\\\\"), r"\\"),
-+        (re.compile(r"\\([\[\]\(\)\|])"), r"\1"),
-+        (re.compile(r"(\d+)\\(-\d+)"), r"\1\2"),
-+
-+        (re.compile(r"\xff"), r"\\d+"),
-+
-+        # Special case: IIO ABI which a parenthesis.
-+        (re.compile(r"sqrt(.*)"), r"sqrt(.*)"),
-+
-+        # Simplify regexes with multiple .*
-+        (re.compile(r"(?:\.\*){2,}"),  ""),
-+
-+        # Recover dot characters
-+        (re.compile(r"\xf6"), "\\."),
-+        # Recover plus characters
-+        (re.compile(r"\xf7"), "+"),
-+    ]
-+    re_has_num = re.compile(r"\\d")
-+
-+    # Symbol name after escape_chars that are considered a devnode basename
-+    re_symbol_name =  re.compile(r"(\w|\\[\.\-\:])+$")
-+
-+    # List of popular group names to be skipped to minimize regex group size
-+    # Use DEBUG_SUBGROUP_SIZE to detect those
-+    skip_names = set(["devices", "hwmon"])
-+
-+    def regex_append(self, what, new):
-+        """
-+        Get a search group for a subset of regular expressions.
-+
-+        As ABI may have thousands of symbols, using a for to search all
-+        regular expressions is at least O(n^2). When there are wildcards,
-+        the complexity increases substantially, eventually becoming exponential.
-+
-+        To avoid spending too much time on them, use a logic to split
-+        them into groups. The smaller the group, the better, as it would
-+        mean that searches will be confined to a small number of regular
-+        expressions.
-+
-+        The conversion to a regex subset is tricky, as we need something
-+        that can be easily obtained from the sysfs symbol and from the
-+        regular expression. So, we need to discard nodes that have
-+        wildcards.
-+
-+        If it can't obtain a subgroup, place the regular expression inside
-+        a special group (self.leave_others).
-+        """
-+
-+        for search_group in reversed(new.split("/")):
-+            if not search_group or search_group in self.skip_names:
-+                continue
-+            if self.re_symbol_name.match(search_group):
-+                break
-+
-+        if not search_group:
-+            search_group = self.leave_others
-+
-+        if self.debug & DEBUG_SUBGROUP_MAP:
-+            self.log.debug("%s: mapped as %s", what, search_group)
-+
-+        try:
-+            if search_group not in self.regex_group:
-+                self.regex_group[search_group] = []
-+
-+            self.regex_group[search_group].append(re.compile(new))
-+            if self.search_string:
-+                if what.find(self.search_string) >= 0:
-+                    print(f"What: {what}")
-+        except re.PatternError:
-+            self.log.warning("Ignoring '%s' as it produced an invalid regex:\n"
-+                             "           '%s'", what, new)
-+
-+    def get_regexes(self, what):
-+        """
-+        Given an ABI devnode, return a list of all regular expressions that
-+        may match it, based on the sub-groups created by regex_append()
-+        """
-+
-+        re_list = []
-+
-+        patches = what.split("/")
-+        patches.reverse()
-+        patches.append(self.leave_others)
-+
-+        for search_group in patches:
-+            if search_group in self.regex_group:
-+                re_list += self.regex_group[search_group]
-+
-+        return re_list
-+
-+    def __init__(self, *args, **kwargs):
-+        """
-+        Override init method to get verbose argument
-+        """
-+
-+        self.regex_group = None
-+        self.search_string = None
-+        self.re_string = None
-+
-+        if "search_string" in kwargs:
-+            self.search_string = kwargs.get("search_string")
-+            del kwargs["search_string"]
-+
-+            if self.search_string:
-+
-+                try:
-+                    self.re_string = re.compile(self.search_string)
-+                except re.PatternError as e:
-+                    msg = f"{self.search_string} is not a valid regular expression"
-+                    raise ValueError(msg) from e
-+
-+        super().__init__(*args, **kwargs)
-+
-+    def parse_abi(self, *args, **kwargs):
-+
-+        super().parse_abi(*args, **kwargs)
-+
-+        self.regex_group = {}
-+
-+        print("Converting ABI What fields into regexes...", file=sys.stderr)
-+
-+        for t in sorted(self.data.items(), key=lambda x: x[0]):
-+            v = t[1]
-+            if v.get("type") == "File":
-+                continue
-+
-+            v["regex"] = []
-+
-+            for what in v.get("what", []):
-+                if not what.startswith("/sys"):
-+                    continue
-+
-+                new = what
-+                for r, s in self.re_whats:
-+                    try:
-+                        new = r.sub(s, new)
-+                    except re.PatternError as e:
-+                        # Help debugging troubles with new regexes
-+                        raise re.PatternError(f"{e}\nwhile re.sub('{r.pattern}', {s}, str)") from e
-+
-+                v["regex"].append(new)
-+
-+                if self.debug & DEBUG_REGEX:
-+                    self.log.debug("%-90s <== %s", new, what)
-+
-+                # Store regex into a subgroup to speedup searches
-+                self.regex_append(what, new)
-+
-+        if self.debug & DEBUG_SUBGROUP_DICT:
-+            self.log.debug("%s", pformat(self.regex_group))
-+
-+        if self.debug & DEBUG_SUBGROUP_SIZE:
-+            biggestd_keys = sorted(self.regex_group.keys(),
-+                                   key= lambda k: len(self.regex_group[k]),
-+                                   reverse=True)
-+
-+            print("Top regex subgroups:", file=sys.stderr)
-+            for k in biggestd_keys[:10]:
-+                print(f"{k} has {len(self.regex_group[k])} elements", file=sys.stderr)
-+
-+class SystemSymbols:
-+    """Stores arguments for the class and initialize class vars"""
-+
-+    def graph_add_file(self, path, link=None):
-+        """
-+        add a file path to the sysfs graph stored at self.root
-+        """
-+
-+        if path in self.files:
-+            return
-+
-+        name = ""
-+        ref = self.root
-+        for edge in path.split("/"):
-+            name += edge + "/"
-+            if edge not in ref:
-+                ref[edge] = {"__name": [name.rstrip("/")]}
-+
-+            ref = ref[edge]
-+
-+        if link and link not in ref["__name"]:
-+            ref["__name"].append(link.rstrip("/"))
-+
-+        self.files.add(path)
-+
-+    def print_graph(self, root_prefix="", root=None, level=0):
-+        """Prints a reference tree graph using UTF-8 characters"""
-+
-+        if not root:
-+            root = self.root
-+            level = 0
-+
-+        # Prevent endless traverse
-+        if level > 5:
-+            return
-+
-+        if level > 0:
-+            prefix = "├──"
-+            last_prefix = "└──"
-+        else:
-+            prefix = ""
-+            last_prefix = ""
-+
-+        items = list(root.items())
-+
-+        names = root.get("__name", [])
-+        for k, edge in items:
-+            if k == "__name":
-+                continue
-+
-+            if not k:
-+                k = "/"
-+
-+            if len(names) > 1:
-+                k += " links: " + ",".join(names[1:])
-+
-+            if edge == items[-1][1]:
-+                print(root_prefix + last_prefix + k)
-+                p = root_prefix
-+                if level > 0:
-+                    p += "   "
-+                self.print_graph(p, edge, level + 1)
-+            else:
-+                print(root_prefix + prefix + k)
-+                p = root_prefix + "│   "
-+                self.print_graph(p, edge, level + 1)
-+
-+    def _walk(self, root):
-+        """
-+        Walk through sysfs to get all devnodes that aren't ignored.
-+
-+        By default, uses /sys as sysfs mounting point. If another
-+        directory is used, it replaces them to /sys at the patches.
-+        """
-+
-+        with os.scandir(root) as obj:
-+            for entry in obj:
-+                path = os.path.join(root, entry.name)
-+                if self.sysfs:
-+                    p = path.replace(self.sysfs, "/sys", count=1)
-+                else:
-+                    p = path
-+
-+                if self.re_ignore.search(p):
-+                    return
-+
-+                # Handle link first to avoid directory recursion
-+                if entry.is_symlink():
-+                    real = os.path.realpath(path)
-+                    if not self.sysfs:
-+                        self.aliases[path] = real
-+                    else:
-+                        real = real.replace(self.sysfs, "/sys", count=1)
-+
-+                    # Add absfile location to graph if it doesn't exist
-+                    if not self.re_ignore.search(real):
-+                        # Add link to the graph
-+                        self.graph_add_file(real, p)
-+
-+                elif entry.is_file():
-+                    self.graph_add_file(p)
-+
-+                elif entry.is_dir():
-+                    self._walk(path)
-+
-+    def __init__(self, abi, sysfs="/sys", hints=False):
-+        """
-+        Initialize internal variables and get a list of all files inside
-+        sysfs that can currently be parsed.
-+
-+        Please notice that there are several entries on sysfs that aren't
-+        documented as ABI. Ignore those.
-+
-+        The real paths will be stored under self.files. Aliases will be
-+        stored in separate, as self.aliases.
-+        """
-+
-+        self.abi = abi
-+        self.log = abi.log
-+
-+        if sysfs != "/sys":
-+            self.sysfs = sysfs.rstrip("/")
-+        else:
-+            self.sysfs = None
-+
-+        self.hints = hints
-+
-+        self.root = {}
-+        self.aliases = {}
-+        self.files = set()
-+
-+        dont_walk = [
-+            # Those require root access and aren't documented at ABI
-+            f"^{sysfs}/kernel/debug",
-+            f"^{sysfs}/kernel/tracing",
-+            f"^{sysfs}/fs/pstore",
-+            f"^{sysfs}/fs/bpf",
-+            f"^{sysfs}/fs/fuse",
-+
-+            # This is not documented at ABI
-+            f"^{sysfs}/module",
-+
-+            f"^{sysfs}/fs/cgroup",  # this is big and has zero docs under ABI
-+            f"^{sysfs}/firmware",   # documented elsewhere: ACPI, DT bindings
-+            "sections|notes",       # aren't actually part of ABI
-+
-+            # kernel-parameters.txt - not easy to parse
-+            "parameters",
-+        ]
-+
-+        self.re_ignore = re.compile("|".join(dont_walk))
-+
-+        print(f"Reading {sysfs} directory contents...", file=sys.stderr)
-+        self._walk(sysfs)
-+
-+    def check_file(self, refs, found):
-+        """Check missing ABI symbols for a given sysfs file"""
-+
-+        res_list = []
-+
-+        try:
-+            for names in refs:
-+                fname = names[0]
-+
-+                res = {
-+                    "found": False,
-+                    "fname": fname,
-+                    "msg": "",
-+                }
-+                res_list.append(res)
-+
-+                re_what = self.abi.get_regexes(fname)
-+                if not re_what:
-+                    self.abi.log.warning(f"missing rules for {fname}")
-+                    continue
-+
-+                for name in names:
-+                    for r in re_what:
-+                        if self.abi.debug & DEBUG_UNDEFINED:
-+                            self.log.debug("check if %s matches '%s'", name, r.pattern)
-+                        if r.match(name):
-+                            res["found"] = True
-+                            if found:
-+                                res["msg"] += f"  {fname}: regex:\n\t"
-+                            continue
-+
-+                if self.hints and not res["found"]:
-+                    res["msg"] += f"  {fname} not found. Tested regexes:\n"
-+                    for r in re_what:
-+                        res["msg"] += "    " + r.pattern + "\n"
-+
-+        except KeyboardInterrupt:
-+            pass
-+
-+        return res_list
-+
-+    def _ref_interactor(self, root):
-+        """Recursive function to interact over the sysfs tree"""
-+
-+        for k, v in root.items():
-+            if isinstance(v, dict):
-+                yield from self._ref_interactor(v)
-+
-+            if root == self.root or k == "__name":
-+                continue
-+
-+            if self.abi.re_string:
-+                fname = v["__name"][0]
-+                if self.abi.re_string.search(fname):
-+                    yield v
-+            else:
-+                yield v
-+
-+
-+    def get_fileref(self, all_refs, chunk_size):
-+        """Interactor to group refs into chunks"""
-+
-+        n = 0
-+        refs = []
-+
-+        for ref in all_refs:
-+            refs.append(ref)
-+
-+            n += 1
-+            if n >= chunk_size:
-+                yield refs
-+                n = 0
-+                refs = []
-+
-+        yield refs
-+
-+    def check_undefined_symbols(self, max_workers=None, chunk_size=50,
-+                                found=None, dry_run=None):
-+        """Seach ABI for sysfs symbols missing documentation"""
-+
-+        self.abi.parse_abi()
-+
-+        if self.abi.debug & DEBUG_GRAPH:
-+            self.print_graph()
-+
-+        all_refs = []
-+        for ref in self._ref_interactor(self.root):
-+            all_refs.append(ref["__name"])
-+
-+        if dry_run:
-+            print(f"Would check", file=sys.stderr)
-+            for ref in all_refs:
-+                print(", ".join(ref))
-+
-+            return
-+
-+        print("Starting to search symbols (it may take several minutes):",
-+              file=sys.stderr)
-+        start = datetime.now()
-+        old_elapsed = None
-+
-+        # Python doesn't support multithreading due to limitations on its
-+        # global lock (GIL). While Python 3.13 finally made GIL optional,
-+        # there are still issues related to it. Also, we want to have
-+        # backward compatibility with older versions of Python.
-+        #
-+        # So, use instead multiprocess. However, Python is very slow passing
-+        # data from/to multiple processes. Also, it may consume lots of memory
-+        # if the data to be shared is not small.  So, we need to group workload
-+        # in chunks that are big enough to generate performance gains while
-+        # not being so big that would cause out-of-memory.
-+
-+        num_refs = len(all_refs)
-+        print(f"Number of references to parse: {num_refs}", file=sys.stderr)
-+
-+        if not max_workers:
-+            max_workers = os.cpu_count()
-+        elif max_workers > os.cpu_count():
-+            max_workers = os.cpu_count()
-+
-+        max_workers = max(max_workers, 1)
-+
-+        max_chunk_size = int((num_refs + max_workers - 1) / max_workers)
-+        chunk_size = min(chunk_size, max_chunk_size)
-+        chunk_size = max(1, chunk_size)
-+
-+        if max_workers > 1:
-+            executor = futures.ProcessPoolExecutor
-+
-+            # Place references in a random order. This may help improving
-+            # performance, by mixing complex/simple expressions when creating
-+            # chunks
-+            shuffle(all_refs)
-+        else:
-+            # Python has a high overhead with processes. When there's just
-+            # one worker, it is faster to not create a new process.
-+            # Yet, User still deserves to have a progress print. So, use
-+            # python's "thread", which is actually a single process, using
-+            # an internal schedule to switch between tasks. No performance
-+            # gains for non-IO tasks, but still it can be quickly interrupted
-+            # from time to time to display progress.
-+            executor = futures.ThreadPoolExecutor
-+
-+        not_found = []
-+        f_list = []
-+        with executor(max_workers=max_workers) as exe:
-+            for refs in self.get_fileref(all_refs, chunk_size):
-+                if refs:
-+                    try:
-+                        f_list.append(exe.submit(self.check_file, refs, found))
-+
-+                    except KeyboardInterrupt:
-+                        return
-+
-+            total = len(f_list)
-+
-+            if not total:
-+                if self.abi.re_string:
-+                    print(f"No ABI symbol matches {self.abi.search_string}")
-+                else:
-+                    self.abi.log.warning("No ABI symbols found")
-+                return
-+
-+            print(f"{len(f_list):6d} jobs queued on {max_workers} workers",
-+                  file=sys.stderr)
-+
-+            while f_list:
-+                try:
-+                    t = futures.wait(f_list, timeout=1,
-+                                     return_when=futures.FIRST_COMPLETED)
-+
-+                    done = t[0]
-+
-+                    for fut in done:
-+                        res_list = fut.result()
-+
-+                        for res in res_list:
-+                            if not res["found"]:
-+                                not_found.append(res["fname"])
-+                            if res["msg"]:
-+                                print(res["msg"])
-+
-+                        f_list.remove(fut)
-+                except KeyboardInterrupt:
-+                    return
-+
-+                except RuntimeError as e:
-+                    self.abi.log.warning(f"Future: {e}")
-+                    break
-+
-+                if sys.stderr.isatty():
-+                    elapsed = str(datetime.now() - start).split(".", maxsplit=1)[0]
-+                    if len(f_list) < total:
-+                        elapsed += f" ({total - len(f_list)}/{total} jobs completed).  "
-+                    if elapsed != old_elapsed:
-+                        print(elapsed + "\r", end="", flush=True,
-+                              file=sys.stderr)
-+                        old_elapsed = elapsed
-+
-+        elapsed = str(datetime.now() - start).split(".", maxsplit=1)[0]
-+        print(elapsed, file=sys.stderr)
-+
-+        for f in sorted(not_found):
-+            print(f"{f} not found.")
-+
-+
-+REST_DESC = """
-+Produce output in ReST format.
-+
-+The output is done on two sections:
-+
-+- Symbols: show all parsed symbols in alphabetic order;
-+- Files: cross reference the content of each file with the symbols on it.
-+"""
-+
-+
- class AbiRest:
-     """Initialize an argparse subparser for rest output"""
- 
-@@ -725,6 +1327,71 @@ class AbiSearch:
-         parser.parse_abi()
-         parser.search_symbols(args.expression)
- 
-+UNDEFINED_DESC="""
-+Check undefined ABIs on local machine.
-+
-+Read sysfs devnodes and check if the devnodes there are defined inside
-+ABI documentation.
-+
-+The search logic tries to minimize the number of regular expressions to
-+search per each symbol.
-+
-+By default, it runs on a single CPU, as Python support for CPU threads
-+is still experimental, and multi-process runs on Python is very slow.
-+
-+On experimental tests, if the number of ABI symbols to search per devnode
-+is contained on a limit of ~150 regular expressions, using a single CPU
-+is a lot faster than using multiple processes. However, if the number of
-+regular expressions to check is at the order of ~30000, using multiple
-+CPUs speeds up the check.
-+"""
-+
-+class AbiUndefined:
-+    """
-+    Initialize an argparse subparser for logic to check undefined ABI at
-+    the current machine's sysfs
-+    """
-+
-+    def __init__(self, subparsers):
-+        """Initialize argparse subparsers"""
-+
-+        parser = subparsers.add_parser("undefined",
-+                                       formatter_class=argparse.RawTextHelpFormatter,
-+                                       description=UNDEFINED_DESC)
-+
-+        parser.add_argument("-S", "--sysfs-dir", default="/sys",
-+                            help="directory where sysfs is mounted")
-+        parser.add_argument("-s", "--search-string",
-+                            help="search string regular expression to limit symbol search")
-+        parser.add_argument("-H", "--show-hints", action="store_true",
-+                            help="Hints about definitions for missing ABI symbols.")
-+        parser.add_argument("-j", "--jobs", "--max-workers", type=int, default=1,
-+                            help="If bigger than one, enables multiprocessing.")
-+        parser.add_argument("-c", "--max-chunk-size", type=int, default=50,
-+                            help="Maximum number of chunk size")
-+        parser.add_argument("-f", "--found", action="store_true",
-+                            help="Also show found items. "
-+                                 "Helpful to debug the parser."),
-+        parser.add_argument("-d", "--dry-run", action="store_true",
-+                            help="Don't actually search for undefined. "
-+                                 "Helpful to debug the parser."),
-+
-+        parser.set_defaults(func=self.run)
-+
-+    def run(self, args):
-+        """Run subparser"""
-+
-+        abi = AbiRegex(args.dir, debug=args.debug,
-+                       search_string=args.search_string)
-+
-+        abi_symbols = SystemSymbols(abi=abi, hints=args.show_hints,
-+                                    sysfs=args.sysfs_dir)
-+
-+        abi_symbols.check_undefined_symbols(dry_run=args.dry_run,
-+                                            found=args.found,
-+                                            max_workers=args.jobs,
-+                                            chunk_size=args.max_chunk_size)
-+
- 
- def main():
-     """Main program"""
-@@ -739,6 +1406,7 @@ def main():
-     AbiRest(subparsers)
-     AbiValidate(subparsers)
-     AbiSearch(subparsers)
-+    AbiUndefined(subparsers)
- 
-     args = parser.parse_args()
- 
+diff --git a/scripts/get_abi.pl b/scripts/get_abi.pl
+deleted file mode 100755
+index de1c0354b50c..000000000000
+--- a/scripts/get_abi.pl
++++ /dev/null
+@@ -1,1103 +0,0 @@
+-#!/usr/bin/env perl
+-# SPDX-License-Identifier: GPL-2.0
+-
+-BEGIN { $Pod::Usage::Formatter = 'Pod::Text::Termcap'; }
+-
+-use strict;
+-use warnings;
+-use utf8;
+-use Pod::Usage qw(pod2usage);
+-use Getopt::Long;
+-use File::Find;
+-use IO::Handle;
+-use Fcntl ':mode';
+-use Cwd 'abs_path';
+-use Data::Dumper;
+-
+-my $help = 0;
+-my $hint = 0;
+-my $man = 0;
+-my $debug = 0;
+-my $enable_lineno = 0;
+-my $show_warnings = 1;
+-my $prefix="Documentation/ABI";
+-my $sysfs_prefix="/sys";
+-my $search_string;
+-
+-# Debug options
+-my $dbg_what_parsing = 1;
+-my $dbg_what_open = 2;
+-my $dbg_dump_abi_structs = 4;
+-my $dbg_undefined = 8;
+-
+-$Data::Dumper::Indent = 1;
+-$Data::Dumper::Terse = 1;
+-
+-#
+-# If true, assumes that the description is formatted with ReST
+-#
+-my $description_is_rst = 1;
+-
+-GetOptions(
+-	"debug=i" => \$debug,
+-	"enable-lineno" => \$enable_lineno,
+-	"rst-source!" => \$description_is_rst,
+-	"dir=s" => \$prefix,
+-	'help|?' => \$help,
+-	"show-hints" => \$hint,
+-	"search-string=s" => \$search_string,
+-	man => \$man
+-) or pod2usage(2);
+-
+-pod2usage(1) if $help;
+-pod2usage(-exitstatus => 0, -noperldoc, -verbose => 2) if $man;
+-
+-pod2usage(2) if (scalar @ARGV < 1 || @ARGV > 2);
+-
+-my ($cmd, $arg) = @ARGV;
+-
+-pod2usage(2) if ($cmd ne "search" && $cmd ne "rest" && $cmd ne "validate" && $cmd ne "undefined");
+-pod2usage(2) if ($cmd eq "search" && !$arg);
+-
+-require Data::Dumper if ($debug & $dbg_dump_abi_structs);
+-
+-my %data;
+-my %symbols;
+-
+-#
+-# Displays an error message, printing file name and line
+-#
+-sub parse_error($$$$) {
+-	my ($file, $ln, $msg, $data) = @_;
+-
+-	return if (!$show_warnings);
+-
+-	$data =~ s/\s+$/\n/;
+-
+-	print STDERR "Warning: file $file#$ln:\n\t$msg";
+-
+-	if ($data ne "") {
+-		print STDERR ". Line\n\t\t$data";
+-	} else {
+-	    print STDERR "\n";
+-	}
+-}
+-
+-#
+-# Parse an ABI file, storing its contents at %data
+-#
+-sub parse_abi {
+-	my $file = $File::Find::name;
+-
+-	my $mode = (stat($file))[2];
+-	return if ($mode & S_IFDIR);
+-	return if ($file =~ m,/README,);
+-	return if ($file =~ m,/\.,);
+-	return if ($file =~ m,\.(rej|org|orig|bak)$,);
+-
+-	my $name = $file;
+-	$name =~ s,.*/,,;
+-
+-	my $fn = $file;
+-	$fn =~ s,.*Documentation/ABI/,,;
+-
+-	my $nametag = "File $fn";
+-	$data{$nametag}->{what} = "File $name";
+-	$data{$nametag}->{type} = "File";
+-	$data{$nametag}->{file} = $name;
+-	$data{$nametag}->{filepath} = $file;
+-	$data{$nametag}->{is_file} = 1;
+-	$data{$nametag}->{line_no} = 1;
+-
+-	my $type = $file;
+-	$type =~ s,.*/(.*)/.*,$1,;
+-
+-	my $what;
+-	my $new_what;
+-	my $tag = "";
+-	my $ln;
+-	my $xrefs;
+-	my $space;
+-	my @labels;
+-	my $label = "";
+-
+-	print STDERR "Opening $file\n" if ($debug & $dbg_what_open);
+-	open IN, $file;
+-	while(<IN>) {
+-		$ln++;
+-		if (m/^(\S+)(:\s*)(.*)/i) {
+-			my $new_tag = lc($1);
+-			my $sep = $2;
+-			my $content = $3;
+-
+-			if (!($new_tag =~ m/(what|where|date|kernelversion|contact|description|users)/)) {
+-				if ($tag eq "description") {
+-					# New "tag" is actually part of
+-					# description. Don't consider it a tag
+-					$new_tag = "";
+-				} elsif ($tag ne "") {
+-					parse_error($file, $ln, "tag '$tag' is invalid", $_);
+-				}
+-			}
+-
+-			# Invalid, but it is a common mistake
+-			if ($new_tag eq "where") {
+-				parse_error($file, $ln, "tag 'Where' is invalid. Should be 'What:' instead", "");
+-				$new_tag = "what";
+-			}
+-
+-			if ($new_tag =~ m/what/) {
+-				$space = "";
+-				$content =~ s/[,.;]$//;
+-
+-				push @{$symbols{$content}->{file}}, " $file:" . ($ln - 1);
+-
+-				if ($tag =~ m/what/) {
+-					$what .= "\xac" . $content;
+-				} else {
+-					if ($what) {
+-						parse_error($file, $ln, "What '$what' doesn't have a description", "") if (!$data{$what}->{description});
+-
+-						foreach my $w(split /\xac/, $what) {
+-							$symbols{$w}->{xref} = $what;
+-						};
+-					}
+-
+-					$what = $content;
+-					$label = $content;
+-					$new_what = 1;
+-				}
+-				push @labels, [($content, $label)];
+-				$tag = $new_tag;
+-
+-				push @{$data{$nametag}->{symbols}}, $content if ($data{$nametag}->{what});
+-				next;
+-			}
+-
+-			if ($tag ne "" && $new_tag) {
+-				$tag = $new_tag;
+-
+-				if ($new_what) {
+-					@{$data{$what}->{label_list}} = @labels if ($data{$nametag}->{what});
+-					@labels = ();
+-					$label = "";
+-					$new_what = 0;
+-
+-					$data{$what}->{type} = $type;
+-					if (!defined($data{$what}->{file})) {
+-						$data{$what}->{file} = $name;
+-						$data{$what}->{filepath} = $file;
+-					} else {
+-						$data{$what}->{description} .= "\n\n" if (defined($data{$what}->{description}));
+-						if ($name ne $data{$what}->{file}) {
+-							$data{$what}->{file} .= " " . $name;
+-							$data{$what}->{filepath} .= " " . $file;
+-						}
+-					}
+-					print STDERR "\twhat: $what\n" if ($debug & $dbg_what_parsing);
+-					$data{$what}->{line_no} = $ln;
+-				} else {
+-					$data{$what}->{line_no} = $ln if (!defined($data{$what}->{line_no}));
+-				}
+-
+-				if (!$what) {
+-					parse_error($file, $ln, "'What:' should come first:", $_);
+-					next;
+-				}
+-				if ($new_tag eq "description") {
+-					$sep =~ s,:, ,;
+-					$content = ' ' x length($new_tag) . $sep . $content;
+-					while ($content =~ s/\t+/' ' x (length($&) * 8 - length($`) % 8)/e) {}
+-					if ($content =~ m/^(\s*)(\S.*)$/) {
+-						# Preserve initial spaces for the first line
+-						$space = $1;
+-						$content = "$2\n";
+-						$data{$what}->{$tag} .= $content;
+-					} else {
+-						undef($space);
+-					}
+-
+-				} else {
+-					$data{$what}->{$tag} = $content;
+-				}
+-				next;
+-			}
+-		}
+-
+-		# Store any contents before tags at the database
+-		if (!$tag && $data{$nametag}->{what}) {
+-			$data{$nametag}->{description} .= $_;
+-			next;
+-		}
+-
+-		if ($tag eq "description") {
+-			my $content = $_;
+-			while ($content =~ s/\t+/' ' x (length($&) * 8 - length($`) % 8)/e) {}
+-			if (m/^\s*\n/) {
+-				$data{$what}->{$tag} .= "\n";
+-				next;
+-			}
+-
+-			if (!defined($space)) {
+-				# Preserve initial spaces for the first line
+-				if ($content =~ m/^(\s*)(\S.*)$/) {
+-					$space = $1;
+-					$content = "$2\n";
+-				}
+-			} else {
+-				$space = "" if (!($content =~ s/^($space)//));
+-			}
+-			$data{$what}->{$tag} .= $content;
+-
+-			next;
+-		}
+-		if (m/^\s*(.*)/) {
+-			$data{$what}->{$tag} .= "\n$1";
+-			$data{$what}->{$tag} =~ s/\n+$//;
+-			next;
+-		}
+-
+-		# Everything else is error
+-		parse_error($file, $ln, "Unexpected content", $_);
+-	}
+-	$data{$nametag}->{description} =~ s/^\n+// if ($data{$nametag}->{description});
+-	if ($what) {
+-		parse_error($file, $ln, "What '$what' doesn't have a description", "") if (!$data{$what}->{description});
+-
+-		foreach my $w(split /\xac/,$what) {
+-			$symbols{$w}->{xref} = $what;
+-		};
+-	}
+-	close IN;
+-}
+-
+-sub create_labels {
+-	my %labels;
+-
+-	foreach my $what (keys %data) {
+-		next if ($data{$what}->{file} eq "File");
+-
+-		foreach my $p (@{$data{$what}->{label_list}}) {
+-			my ($content, $label) = @{$p};
+-			$label = "abi_" . $label . " ";
+-			$label =~ tr/A-Z/a-z/;
+-
+-			# Convert special chars to "_"
+-			$label =~s/([\x00-\x2f\x3a-\x40\x5b-\x60\x7b-\xff])/_/g;
+-			$label =~ s,_+,_,g;
+-			$label =~ s,_$,,;
+-
+-			# Avoid duplicated labels
+-			while (defined($labels{$label})) {
+-			    my @chars = ("A".."Z", "a".."z");
+-			    $label .= $chars[rand @chars];
+-			}
+-			$labels{$label} = 1;
+-
+-			$data{$what}->{label} = $label;
+-
+-			# only one label is enough
+-			last;
+-		}
+-	}
+-}
+-
+-#
+-# Outputs the book on ReST format
+-#
+-
+-# \b doesn't work well with paths. So, we need to define something else:
+-# Boundaries are punct characters, spaces and end-of-line
+-my $start = qr {(^|\s|\() }x;
+-my $bondary = qr { ([,.:;\)\s]|\z) }x;
+-my $xref_match = qr { $start(\/(sys|config|proc|dev|kvd)\/[^,.:;\)\s]+)$bondary }x;
+-my $symbols = qr { ([\x01-\x08\x0e-\x1f\x21-\x2f\x3a-\x40\x7b-\xff]) }x;
+-
+-sub output_rest {
+-	create_labels();
+-
+-	my $part = "";
+-
+-	foreach my $what (sort {
+-				($data{$a}->{type} eq "File") cmp ($data{$b}->{type} eq "File") ||
+-				$a cmp $b
+-			       } keys %data) {
+-		my $type = $data{$what}->{type};
+-
+-		my @file = split / /, $data{$what}->{file};
+-		my @filepath = split / /, $data{$what}->{filepath};
+-
+-		if ($enable_lineno) {
+-			printf ".. LINENO %s%s#%s\n\n",
+-			       $prefix, $file[0],
+-			       $data{$what}->{line_no};
+-		}
+-
+-		my $w = $what;
+-
+-		if ($type ne "File") {
+-			my $cur_part = $what;
+-			if ($what =~ '/') {
+-				if ($what =~ m#^(\/?(?:[\w\-]+\/?){1,2})#) {
+-					$cur_part = "Symbols under $1";
+-					$cur_part =~ s,/$,,;
+-				}
+-			}
+-
+-			if ($cur_part ne "" && $part ne $cur_part) {
+-			    $part = $cur_part;
+-			    my $bar = $part;
+-			    $bar =~ s/./-/g;
+-			    print "$part\n$bar\n\n";
+-			}
+-
+-			printf ".. _%s:\n\n", $data{$what}->{label};
+-
+-			my @names = split /\xac/,$w;
+-			my $len = 0;
+-
+-			foreach my $name (@names) {
+-				$name =~ s/$symbols/\\$1/g;
+-				$name = "**$name**";
+-				$len = length($name) if (length($name) > $len);
+-			}
+-
+-			print "+-" . "-" x $len . "-+\n";
+-			foreach my $name (@names) {
+-				printf "| %s", $name . " " x ($len - length($name)) . " |\n";
+-				print "+-" . "-" x $len . "-+\n";
+-			}
+-
+-			print "\n";
+-		}
+-
+-		for (my $i = 0; $i < scalar(@filepath); $i++) {
+-			my $path = $filepath[$i];
+-			my $f = $file[$i];
+-
+-			$path =~ s,.*/(.*/.*),$1,;;
+-			$path =~ s,[/\-],_,g;;
+-			my $fileref = "abi_file_".$path;
+-
+-			if ($type eq "File") {
+-				print ".. _$fileref:\n\n";
+-			} else {
+-				print "Defined on file :ref:`$f <$fileref>`\n\n";
+-			}
+-		}
+-
+-		if ($type eq "File") {
+-			my $bar = $w;
+-			$bar =~ s/./-/g;
+-			print "$w\n$bar\n\n";
+-		}
+-
+-		my $desc = "";
+-		$desc = $data{$what}->{description} if (defined($data{$what}->{description}));
+-		$desc =~ s/\s+$/\n/;
+-
+-		if (!($desc =~ /^\s*$/)) {
+-			if ($description_is_rst) {
+-				# Remove title markups from the description
+-				# Having titles inside ABI files will only work if extra
+-				# care would be taken in order to strictly follow the same
+-				# level order for each markup.
+-				$desc =~ s/\n[\-\*\=\^\~]+\n/\n\n/g;
+-
+-				# Enrich text by creating cross-references
+-
+-				my $new_desc = "";
+-				my $init_indent = -1;
+-				my $literal_indent = -1;
+-
+-				open(my $fh, "+<", \$desc);
+-				while (my $d = <$fh>) {
+-					my $indent = $d =~ m/^(\s+)/;
+-					my $spaces = length($indent);
+-					$init_indent = $indent if ($init_indent < 0);
+-					if ($literal_indent >= 0) {
+-						if ($spaces > $literal_indent) {
+-							$new_desc .= $d;
+-							next;
+-						} else {
+-							$literal_indent = -1;
+-						}
+-					} else {
+-						if ($d =~ /()::$/ && !($d =~ /^\s*\.\./)) {
+-							$literal_indent = $spaces;
+-						}
+-					}
+-
+-					$d =~ s,Documentation/(?!devicetree)(\S+)\.rst,:doc:`/$1`,g;
+-
+-					my @matches = $d =~ m,Documentation/ABI/([\w\/\-]+),g;
+-					foreach my $f (@matches) {
+-						my $xref = $f;
+-						my $path = $f;
+-						$path =~ s,.*/(.*/.*),$1,;;
+-						$path =~ s,[/\-],_,g;;
+-						$xref .= " <abi_file_" . $path . ">";
+-						$d =~ s,\bDocumentation/ABI/$f\b,:ref:`$xref`,g;
+-					}
+-
+-					# Seek for cross reference symbols like /sys/...
+-					@matches = $d =~ m/$xref_match/g;
+-
+-					foreach my $s (@matches) {
+-						next if (!($s =~ m,/,));
+-						if (defined($data{$s}) && defined($data{$s}->{label})) {
+-							my $xref = $s;
+-
+-							$xref =~ s/$symbols/\\$1/g;
+-							$xref = ":ref:`$xref <" . $data{$s}->{label} . ">`";
+-
+-							$d =~ s,$start$s$bondary,$1$xref$2,g;
+-						}
+-					}
+-					$new_desc .= $d;
+-				}
+-				close $fh;
+-
+-
+-				print "$new_desc\n\n";
+-			} else {
+-				$desc =~ s/^\s+//;
+-
+-				# Remove title markups from the description, as they won't work
+-				$desc =~ s/\n[\-\*\=\^\~]+\n/\n\n/g;
+-
+-				if ($desc =~ m/\:\n/ || $desc =~ m/\n[\t ]+/  || $desc =~ m/[\x00-\x08\x0b-\x1f\x7b-\xff]/) {
+-					# put everything inside a code block
+-					$desc =~ s/\n/\n /g;
+-
+-					print "::\n\n";
+-					print " $desc\n\n";
+-				} else {
+-					# Escape any special chars from description
+-					$desc =~s/([\x00-\x08\x0b-\x1f\x21-\x2a\x2d\x2f\x3c-\x40\x5c\x5e-\x60\x7b-\xff])/\\$1/g;
+-					print "$desc\n\n";
+-				}
+-			}
+-		} else {
+-			print "DESCRIPTION MISSING for $what\n\n" if (!$data{$what}->{is_file});
+-		}
+-
+-		if ($data{$what}->{symbols}) {
+-			printf "Has the following ABI:\n\n";
+-
+-			foreach my $content(@{$data{$what}->{symbols}}) {
+-				my $label = $data{$symbols{$content}->{xref}}->{label};
+-
+-				# Escape special chars from content
+-				$content =~s/([\x00-\x1f\x21-\x2f\x3a-\x40\x7b-\xff])/\\$1/g;
+-
+-				print "- :ref:`$content <$label>`\n\n";
+-			}
+-		}
+-
+-		if (defined($data{$what}->{users})) {
+-			my $users = $data{$what}->{users};
+-
+-			$users =~ s/\n/\n\t/g;
+-			printf "Users:\n\t%s\n\n", $users if ($users ne "");
+-		}
+-
+-	}
+-}
+-
+-#
+-# Searches for ABI symbols
+-#
+-sub search_symbols {
+-	foreach my $what (sort keys %data) {
+-		next if (!($what =~ m/($arg)/));
+-
+-		my $type = $data{$what}->{type};
+-		next if ($type eq "File");
+-
+-		my $file = $data{$what}->{filepath};
+-
+-		$what =~ s/\xac/, /g;
+-		my $bar = $what;
+-		$bar =~ s/./-/g;
+-
+-		print "\n$what\n$bar\n\n";
+-
+-		my $kernelversion = $data{$what}->{kernelversion} if (defined($data{$what}->{kernelversion}));
+-		my $contact = $data{$what}->{contact} if (defined($data{$what}->{contact}));
+-		my $users = $data{$what}->{users} if (defined($data{$what}->{users}));
+-		my $date = $data{$what}->{date} if (defined($data{$what}->{date}));
+-		my $desc = $data{$what}->{description} if (defined($data{$what}->{description}));
+-
+-		$kernelversion =~ s/^\s+// if ($kernelversion);
+-		$contact =~ s/^\s+// if ($contact);
+-		if ($users) {
+-			$users =~ s/^\s+//;
+-			$users =~ s/\n//g;
+-		}
+-		$date =~ s/^\s+// if ($date);
+-		$desc =~ s/^\s+// if ($desc);
+-
+-		printf "Kernel version:\t\t%s\n", $kernelversion if ($kernelversion);
+-		printf "Date:\t\t\t%s\n", $date if ($date);
+-		printf "Contact:\t\t%s\n", $contact if ($contact);
+-		printf "Users:\t\t\t%s\n", $users if ($users);
+-		print "Defined on file(s):\t$file\n\n";
+-		print "Description:\n\n$desc";
+-	}
+-}
+-
+-# Exclude /sys/kernel/debug and /sys/kernel/tracing from the search path
+-sub dont_parse_special_attributes {
+-	if (($File::Find::dir =~ m,^/sys/kernel,)) {
+-		return grep {!/(debug|tracing)/ } @_;
+-	}
+-
+-	if (($File::Find::dir =~ m,^/sys/fs,)) {
+-		return grep {!/(pstore|bpf|fuse)/ } @_;
+-	}
+-
+-	return @_
+-}
+-
+-my %leaf;
+-my %aliases;
+-my @files;
+-my %root;
+-
+-sub graph_add_file {
+-	my $file = shift;
+-	my $type = shift;
+-
+-	my $dir = $file;
+-	$dir =~ s,^(.*/).*,$1,;
+-	$file =~ s,.*/,,;
+-
+-	my $name;
+-	my $file_ref = \%root;
+-	foreach my $edge(split "/", $dir) {
+-		$name .= "$edge/";
+-		if (!defined ${$file_ref}{$edge}) {
+-			${$file_ref}{$edge} = { };
+-		}
+-		$file_ref = \%{$$file_ref{$edge}};
+-		${$file_ref}{"__name"} = [ $name ];
+-	}
+-	$name .= "$file";
+-	${$file_ref}{$file} = {
+-		"__name" => [ $name ]
+-	};
+-
+-	return \%{$$file_ref{$file}};
+-}
+-
+-sub graph_add_link {
+-	my $file = shift;
+-	my $link = shift;
+-
+-	# Traverse graph to find the reference
+-	my $file_ref = \%root;
+-	foreach my $edge(split "/", $file) {
+-		$file_ref = \%{$$file_ref{$edge}} || die "Missing node!";
+-	}
+-
+-	# do a BFS
+-
+-	my @queue;
+-	my %seen;
+-	my $st;
+-
+-	push @queue, $file_ref;
+-	$seen{$start}++;
+-
+-	while (@queue) {
+-		my $v = shift @queue;
+-		my @child = keys(%{$v});
+-
+-		foreach my $c(@child) {
+-			next if $seen{$$v{$c}};
+-			next if ($c eq "__name");
+-
+-			if (!defined($$v{$c}{"__name"})) {
+-				printf STDERR "Error: Couldn't find a non-empty name on a children of $file/.*: ";
+-				print STDERR Dumper(%{$v});
+-				exit;
+-			}
+-
+-			# Add new name
+-			my $name = @{$$v{$c}{"__name"}}[0];
+-			if ($name =~ s#^$file/#$link/#) {
+-				push @{$$v{$c}{"__name"}}, $name;
+-			}
+-			# Add child to the queue and mark as seen
+-			push @queue, $$v{$c};
+-			$seen{$c}++;
+-		}
+-	}
+-}
+-
+-my $escape_symbols = qr { ([\x01-\x08\x0e-\x1f\x21-\x29\x2b-\x2d\x3a-\x40\x7b-\xfe]) }x;
+-sub parse_existing_sysfs {
+-	my $file = $File::Find::name;
+-
+-	my $mode = (lstat($file))[2];
+-	my $abs_file = abs_path($file);
+-
+-	my @tmp;
+-	push @tmp, $file;
+-	push @tmp, $abs_file if ($abs_file ne $file);
+-
+-	foreach my $f(@tmp) {
+-		# Ignore cgroup, as this is big and has zero docs under ABI
+-		return if ($f =~ m#^/sys/fs/cgroup/#);
+-
+-		# Ignore firmware as it is documented elsewhere
+-		# Either ACPI or under Documentation/devicetree/bindings/
+-		return if ($f =~ m#^/sys/firmware/#);
+-
+-		# Ignore some sysfs nodes that aren't actually part of ABI
+-		return if ($f =~ m#/sections|notes/#);
+-
+-		# Would need to check at
+-		# Documentation/admin-guide/kernel-parameters.txt, but this
+-		# is not easily parseable.
+-		return if ($f =~ m#/parameters/#);
+-	}
+-
+-	if (S_ISLNK($mode)) {
+-		$aliases{$file} = $abs_file;
+-		return;
+-	}
+-
+-	return if (S_ISDIR($mode));
+-
+-	# Trivial: file is defined exactly the same way at ABI What:
+-	return if (defined($data{$file}));
+-	return if (defined($data{$abs_file}));
+-
+-	push @files, graph_add_file($abs_file, "file");
+-}
+-
+-sub get_leave($)
+-{
+-	my $what = shift;
+-	my $leave;
+-
+-	my $l = $what;
+-	my $stop = 1;
+-
+-	$leave = $l;
+-	$leave =~ s,/$,,;
+-	$leave =~ s,.*/,,;
+-	$leave =~ s/[\(\)]//g;
+-
+-	# $leave is used to improve search performance at
+-	# check_undefined_symbols, as the algorithm there can seek
+-	# for a small number of "what". It also allows giving a
+-	# hint about a leave with the same name somewhere else.
+-	# However, there are a few occurences where the leave is
+-	# either a wildcard or a number. Just group such cases
+-	# altogether.
+-	if ($leave =~ m/\.\*/ || $leave eq "" || $leave =~ /\\d/) {
+-		$leave = "others";
+-	}
+-
+-	return $leave;
+-}
+-
+-my @not_found;
+-
+-sub check_file($$)
+-{
+-	my $file_ref = shift;
+-	my $names_ref = shift;
+-	my @names = @{$names_ref};
+-	my $file = $names[0];
+-
+-	my $found_string;
+-
+-	my $leave = get_leave($file);
+-	if (!defined($leaf{$leave})) {
+-		$leave = "others";
+-	}
+-	my @expr = @{$leaf{$leave}->{expr}};
+-	die ("\rmissing rules for $leave") if (!defined($leaf{$leave}));
+-
+-	my $path = $file;
+-	$path =~ s,(.*/).*,$1,;
+-
+-	if ($search_string) {
+-		return if (!($file =~ m#$search_string#));
+-		$found_string = 1;
+-	}
+-
+-	for (my $i = 0; $i < @names; $i++) {
+-		if ($found_string && $hint) {
+-			if (!$i) {
+-				print STDERR "--> $names[$i]\n";
+-			} else {
+-				print STDERR "    $names[$i]\n";
+-			}
+-		}
+-		foreach my $re (@expr) {
+-			print STDERR "$names[$i] =~ /^$re\$/\n" if ($debug && $dbg_undefined);
+-			if ($names[$i] =~ $re) {
+-				return;
+-			}
+-		}
+-	}
+-
+-	if ($leave ne "others") {
+-		my @expr = @{$leaf{"others"}->{expr}};
+-		for (my $i = 0; $i < @names; $i++) {
+-			foreach my $re (@expr) {
+-				print STDERR "$names[$i] =~ /^$re\$/\n" if ($debug && $dbg_undefined);
+-				if ($names[$i] =~ $re) {
+-					return;
+-				}
+-			}
+-		}
+-	}
+-
+-	push @not_found, $file if (!$search_string || $found_string);
+-
+-	if ($hint && (!$search_string || $found_string)) {
+-		my $what = $leaf{$leave}->{what};
+-		$what =~ s/\xac/\n\t/g;
+-		if ($leave ne "others") {
+-			print STDERR "\r    more likely regexes:\n\t$what\n";
+-		} else {
+-			print STDERR "\r    tested regexes:\n\t$what\n";
+-		}
+-	}
+-}
+-
+-sub check_undefined_symbols {
+-	my $num_files = scalar @files;
+-	my $next_i = 0;
+-	my $start_time = times;
+-
+-	@files = sort @files;
+-
+-	my $last_time = $start_time;
+-
+-	# When either debug or hint is enabled, there's no sense showing
+-	# progress, as the progress will be overriden.
+-	if ($hint || ($debug && $dbg_undefined)) {
+-		$next_i = $num_files;
+-	}
+-
+-	my $is_console;
+-	$is_console = 1 if (-t STDERR);
+-
+-	for (my $i = 0; $i < $num_files; $i++) {
+-		my $file_ref = $files[$i];
+-		my @names = @{$$file_ref{"__name"}};
+-
+-		check_file($file_ref, \@names);
+-
+-		my $cur_time = times;
+-
+-		if ($i == $next_i || $cur_time > $last_time + 1) {
+-			my $percent = $i * 100 / $num_files;
+-
+-			my $tm = $cur_time - $start_time;
+-			my $time = sprintf "%d:%02d", int($tm), 60 * ($tm - int($tm));
+-
+-			printf STDERR "\33[2K\r", if ($is_console);
+-			printf STDERR "%s: processing sysfs files... %i%%: $names[0]", $time, $percent;
+-			printf STDERR "\n", if (!$is_console);
+-			STDERR->flush();
+-
+-			$next_i = int (($percent + 1) * $num_files / 100);
+-			$last_time = $cur_time;
+-		}
+-	}
+-
+-	my $cur_time = times;
+-	my $tm = $cur_time - $start_time;
+-	my $time = sprintf "%d:%02d", int($tm), 60 * ($tm - int($tm));
+-
+-	printf STDERR "\33[2K\r", if ($is_console);
+-	printf STDERR "%s: processing sysfs files... done\n", $time;
+-
+-	foreach my $file (@not_found) {
+-		print "$file not found.\n";
+-	}
+-}
+-
+-sub undefined_symbols {
+-	print STDERR "Reading $sysfs_prefix directory contents...";
+-	find({
+-		wanted =>\&parse_existing_sysfs,
+-		preprocess =>\&dont_parse_special_attributes,
+-		no_chdir => 1
+-	     }, $sysfs_prefix);
+-	print STDERR "done.\n";
+-
+-	$leaf{"others"}->{what} = "";
+-
+-	print STDERR "Converting ABI What fields into regexes...";
+-	foreach my $w (sort keys %data) {
+-		foreach my $what (split /\xac/,$w) {
+-			next if (!($what =~ m/^$sysfs_prefix/));
+-
+-			# Convert what into regular expressions
+-
+-			# Escape dot characters
+-			$what =~ s/\./\xf6/g;
+-
+-			# Temporarily change [0-9]+ type of patterns
+-			$what =~ s/\[0\-9\]\+/\xff/g;
+-
+-			# Temporarily change [\d+-\d+] type of patterns
+-			$what =~ s/\[0\-\d+\]/\xff/g;
+-			$what =~ s/\[(\d+)\]/\xf4$1\xf5/g;
+-
+-			# Temporarily change [0-9] type of patterns
+-			$what =~ s/\[(\d)\-(\d)\]/\xf4$1-$2\xf5/g;
+-
+-			# Handle multiple option patterns
+-			$what =~ s/[\{\<\[]([\w_]+)(?:[,|]+([\w_]+)){1,}[\}\>\]]/($1|$2)/g;
+-
+-			# Handle wildcards
+-			$what =~ s,\*,.*,g;
+-			$what =~ s,/\xf6..,/.*,g;
+-			$what =~ s/\<[^\>]+\>/.*/g;
+-			$what =~ s/\{[^\}]+\}/.*/g;
+-			$what =~ s/\[[^\]]+\]/.*/g;
+-
+-			$what =~ s/[XYZ]/.*/g;
+-
+-			# Recover [0-9] type of patterns
+-			$what =~ s/\xf4/[/g;
+-			$what =~ s/\xf5/]/g;
+-
+-			# Remove duplicated spaces
+-			$what =~ s/\s+/ /g;
+-
+-			# Special case: this ABI has a parenthesis on it
+-			$what =~ s/sqrt\(x^2\+y^2\+z^2\)/sqrt\(x^2\+y^2\+z^2\)/;
+-
+-			# Special case: drop comparition as in:
+-			#	What: foo = <something>
+-			# (this happens on a few IIO definitions)
+-			$what =~ s,\s*\=.*$,,;
+-
+-			# Escape all other symbols
+-			$what =~ s/$escape_symbols/\\$1/g;
+-			$what =~ s/\\\\/\\/g;
+-			$what =~ s/\\([\[\]\(\)\|])/$1/g;
+-			$what =~ s/(\d+)\\(-\d+)/$1$2/g;
+-
+-			$what =~ s/\xff/\\d+/g;
+-
+-			# Special case: IIO ABI which a parenthesis.
+-			$what =~ s/sqrt(.*)/sqrt\(.*\)/;
+-
+-			# Simplify regexes with multiple .*
+-			$what =~ s#(?:\.\*){2,}##g;
+-#			$what =~ s#\.\*/\.\*#.*#g;
+-
+-			# Recover dot characters
+-			$what =~ s/\xf6/\./g;
+-
+-			my $leave = get_leave($what);
+-
+-			my $added = 0;
+-			foreach my $l (split /\|/, $leave) {
+-				if (defined($leaf{$l})) {
+-					next if ($leaf{$l}->{what} =~ m/\b$what\b/);
+-					$leaf{$l}->{what} .= "\xac" . $what;
+-					$added = 1;
+-				} else {
+-					$leaf{$l}->{what} = $what;
+-					$added = 1;
+-				}
+-			}
+-			if ($search_string && $added) {
+-				print STDERR "What: $what\n" if ($what =~ m#$search_string#);
+-			}
+-
+-		}
+-	}
+-	# Compile regexes
+-	foreach my $l (sort keys %leaf) {
+-		my @expr;
+-		foreach my $w(sort split /\xac/, $leaf{$l}->{what}) {
+-			push @expr, qr /^$w$/;
+-		}
+-		$leaf{$l}->{expr} = \@expr;
+-	}
+-
+-	# Take links into account
+-	foreach my $link (sort keys %aliases) {
+-		my $abs_file = $aliases{$link};
+-		graph_add_link($abs_file, $link);
+-	}
+-	print STDERR "done.\n";
+-
+-	check_undefined_symbols;
+-}
+-
+-# Ensure that the prefix will always end with a slash
+-# While this is not needed for find, it makes the patch nicer
+-# with --enable-lineno
+-$prefix =~ s,/?$,/,;
+-
+-if ($cmd eq "undefined" || $cmd eq "search") {
+-	$show_warnings = 0;
+-}
+-#
+-# Parses all ABI files located at $prefix dir
+-#
+-find({wanted =>\&parse_abi, no_chdir => 1}, $prefix);
+-
+-print STDERR Data::Dumper->Dump([\%data], [qw(*data)]) if ($debug & $dbg_dump_abi_structs);
+-
+-#
+-# Handles the command
+-#
+-if ($cmd eq "undefined") {
+-	undefined_symbols;
+-} elsif ($cmd eq "search") {
+-	search_symbols;
+-} else {
+-	if ($cmd eq "rest") {
+-		output_rest;
+-	}
+-
+-	# Warn about duplicated ABI entries
+-	foreach my $what(sort keys %symbols) {
+-		my @files = @{$symbols{$what}->{file}};
+-
+-		next if (scalar(@files) == 1);
+-
+-		printf STDERR "Warning: $what is defined %d times: @files\n",
+-		    scalar(@files);
+-	}
+-}
+-
+-__END__
+-
+-=head1 NAME
+-
+-get_abi.pl - parse the Linux ABI files and produce a ReST book.
+-
+-=head1 SYNOPSIS
+-
+-B<get_abi.pl> [--debug <level>] [--enable-lineno] [--man] [--help]
+-	       [--(no-)rst-source] [--dir=<dir>] [--show-hints]
+-	       [--search-string <regex>]
+-	       <COMMAND> [<ARGUMENT>]
+-
+-Where B<COMMAND> can be:
+-
+-=over 8
+-
+-B<search> I<SEARCH_REGEX> - search for I<SEARCH_REGEX> inside ABI
+-
+-B<rest>                   - output the ABI in ReST markup language
+-
+-B<validate>               - validate the ABI contents
+-
+-B<undefined>              - existing symbols at the system that aren't
+-                            defined at Documentation/ABI
+-
+-=back
+-
+-=head1 OPTIONS
+-
+-=over 8
+-
+-=item B<--dir>
+-
+-Changes the location of the ABI search. By default, it uses
+-the Documentation/ABI directory.
+-
+-=item B<--rst-source> and B<--no-rst-source>
+-
+-The input file may be using ReST syntax or not. Those two options allow
+-selecting between a rst-compliant source ABI (B<--rst-source>), or a
+-plain text that may be violating ReST spec, so it requres some escaping
+-logic (B<--no-rst-source>).
+-
+-=item B<--enable-lineno>
+-
+-Enable output of .. LINENO lines.
+-
+-=item B<--debug> I<debug level>
+-
+-Print debug information according with the level, which is given by the
+-following bitmask:
+-
+-    -  1: Debug parsing What entries from ABI files;
+-    -  2: Shows what files are opened from ABI files;
+-    -  4: Dump the structs used to store the contents of the ABI files.
+-
+-=item B<--show-hints>
+-
+-Show hints about possible definitions for the missing ABI symbols.
+-Used only when B<undefined>.
+-
+-=item B<--search-string> I<regex string>
+-
+-Show only occurences that match a search string.
+-Used only when B<undefined>.
+-
+-=item B<--help>
+-
+-Prints a brief help message and exits.
+-
+-=item B<--man>
+-
+-Prints the manual page and exits.
+-
+-=back
+-
+-=head1 DESCRIPTION
+-
+-Parse the Linux ABI files from ABI DIR (usually located at Documentation/ABI),
+-allowing to search for ABI symbols or to produce a ReST book containing
+-the Linux ABI documentation.
+-
+-=head1 EXAMPLES
+-
+-Search for all stable symbols with the word "usb":
+-
+-=over 8
+-
+-$ scripts/get_abi.pl search usb --dir Documentation/ABI/stable
+-
+-=back
+-
+-Search for all symbols that match the regex expression "usb.*cap":
+-
+-=over 8
+-
+-$ scripts/get_abi.pl search usb.*cap
+-
+-=back
+-
+-Output all obsoleted symbols in ReST format
+-
+-=over 8
+-
+-$ scripts/get_abi.pl rest --dir Documentation/ABI/obsolete
+-
+-=back
+-
+-=head1 BUGS
+-
+-Report bugs to Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+-
+-=head1 COPYRIGHT
+-
+-Copyright (c) 2016-2021 by Mauro Carvalho Chehab <mchehab+huawei@kernel.org>.
+-
+-License GPLv2: GNU GPL version 2 <http://gnu.org/licenses/gpl.html>.
+-
+-This is free software: you are free to change and redistribute it.
+-There is NO WARRANTY, to the extent permitted by law.
+-
+-=cut
 -- 
 2.48.1
 
