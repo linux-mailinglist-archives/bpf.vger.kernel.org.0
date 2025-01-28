@@ -1,237 +1,243 @@
-Return-Path: <bpf+bounces-49978-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49979-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 006AAA211FD
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 20:11:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A3FEA21356
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 21:56:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3C947A406A
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 19:10:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3285B7A1DB8
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 20:55:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 202C01DE8A5;
-	Tue, 28 Jan 2025 19:11:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63C771DB34E;
+	Tue, 28 Jan 2025 20:56:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DVWx3TJs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t10S4Ir6"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7A6D1DE8AD
-	for <bpf@vger.kernel.org>; Tue, 28 Jan 2025 19:11:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBD381B413D;
+	Tue, 28 Jan 2025 20:56:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738091471; cv=none; b=uGQjcLH4jIdg5MELiU5SaH+mb52tMxzauNNeQZ7gUxjOj1sKAE2+YdhTxml0C9nz2K962UyDJEdIngyaBDhVR5loom0YtQmn6OtKP8eTXFe6RnxYll0b0+PVhTOI8LNP3a8U/hLM9sVA5I7/xLe+pKLgUaRoNeoy9aIU1uMBxjQ=
+	t=1738097785; cv=none; b=AnBxNNnDjERc2bPO67ipM1FlBPZTkctBX82+KAgBlMD0kHdl73i/6zY9H/pQMcroEexrtkoUXD7uP2TFTvh5qaN70C7fOTSX0OyU824vugRj/wMPpuPXIR7vxNTey6RNZbid16LBkESaQ5SjJYnvwwtX69N33u8DFFXK0/Kc1k4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738091471; c=relaxed/simple;
-	bh=+hzuBfFg7K6TqkJXl//PSTrUF4nd/QIbA4vDwZ41wOU=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=p+omFAvH43ltENujErtBWhLfsri63BHotHsRKdvga8IT32vPhar9WemEgPBy31nwO6PpvVGNV1JCsHIY3FcIqNopE7DuTq0xF2NL0Isml5tWvNs/gdfA2Cga3V7ATEgmiPARWH0mOvx54FbganGVE5rXCcZiU+33khNvQfdRIW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DVWx3TJs; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1738097785; c=relaxed/simple;
+	bh=VmxxfpxrQ1lkQIBflaPl6Q/VZxmO9YQUzyZeBiIxp9E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lFE6X66WmQRRClFmU+tjhJHuOZWUiO4hUmNNzamt61byCZqZfrG4v1ol1yp+r0Fi7Qn9q5vrhDvDdICv+bbk14X3j8ZK0Ct7SXfuCWZ+nZz+KiDXlBXibCUNju9wqgE3a2PD+UFTii5sIOJ81p+iLUj5vnQu5RRN0OvOhjfjF6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t10S4Ir6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F3CBC4CED3;
+	Tue, 28 Jan 2025 20:56:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738097785;
+	bh=VmxxfpxrQ1lkQIBflaPl6Q/VZxmO9YQUzyZeBiIxp9E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=t10S4Ir6CTfVDknapbp1g4H2UYZbNAc6zTZwZH85xu8FXYc1lgmyxa28ZsFjupiU1
+	 Mp9z+3guOjM4S7ennIhTJ5xIk3tcg52dlbHjTHbo71P/reOYDf8QR8EcHBLidvoPi+
+	 PvOmbnbtzeIKzjupB/e9DMZd+LwIBW19FsyDOlKsTeN085Xn4KZYNfGg2S6Q3xdgaE
+	 F1kGVeggU0v/LaaBz2zYnYkfbOViArme0/k7tzfFlppGBUawUugEE829Z4D6yvDBa+
+	 Fr+QNJnO+J3pdA31MWSN7iapasLvSj0kFWi0wmwUWxniZsEq6CsD61npByVIZ4/vfF
+	 XTxIFI3i5APNQ==
+Date: Tue, 28 Jan 2025 12:56:22 -0800
+From: Namhyung Kim <namhyung@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Aditya Gupta <adityag@linux.ibm.com>,
+	"Steinar H. Gunderson" <sesse@google.com>,
+	Charlie Jenkins <charlie@rivosinc.com>,
+	Changbin Du <changbin.du@huawei.com>,
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+	James Clark <james.clark@linaro.org>,
+	Kajol Jain <kjain@linux.ibm.com>,
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+	Li Huafei <lihuafei1@huawei.com>,
+	Dmitry Vyukov <dvyukov@google.com>, Andi Kleen <ak@linux.intel.com>,
+	Chaitanya S Prakash <chaitanyas.prakash@arm.com>,
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	llvm@lists.linux.dev, Song Liu <song@kernel.org>,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v3 03/18] perf capstone: Move capstone functionality into
+ its own file
+Message-ID: <Z5lEdtLVHRZwxuY8@google.com>
+References: <20250122174308.350350-1-irogers@google.com>
+ <20250122174308.350350-4-irogers@google.com>
+ <Z5QM8nHzwuQYczyQ@google.com>
+ <CAP-5=fV0w9tLFr7xYHFUH=UUq+tr+o5EYUik0d74rMWa9=Qi+A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1738091466;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mmZT8PaXoi/HunjOtQbjefqQfnCV71OuFQe94XCRs20=;
-	b=DVWx3TJs2soTZpBNemucvFacnryUUHga12rgZBxAaTOhcYj1iFJyC/YOMue+8tUTZF7bxa
-	t4RNum65n2ZPreOB+DqRztoXAr33zSlnnqYrfOL0nikI8PmfwlpZ0Cq3wJB8yH9ucFBPnz
-	ezKiXyQ+O4wSq08poCTOcU41RlpGK5o=
-Date: Tue, 28 Jan 2025 19:11:04 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Ihor Solodrai" <ihor.solodrai@linux.dev>
-Message-ID: <335ad811ae2cf5ebdfc494c185b9f02e9ca40c3e@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH] netfs: Add retry stat counters
-To: "David Howells" <dhowells@redhat.com>, "Marc Dionne"
- <marc.dionne@auristor.com>, "Steve French" <stfrench@microsoft.com>
-Cc: dhowells@redhat.com, "Eric Van Hensbergen" <ericvh@kernel.org>,
- "Latchesar Ionkov" <lucho@ionkov.net>, "Dominique Martinet"
- <asmadeus@codewreck.org>, "Christian Schoenebeck"
- <linux_oss@crudebyte.com>, "Paulo Alcantara" <pc@manguebit.com>, "Jeff
- Layton" <jlayton@kernel.org>, "Christian Brauner" <brauner@kernel.org>,
- v9fs@lists.linux.dev, linux-cifs@vger.kernel.org, netfs@lists.linux.dev,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- ast@kernel.org, bpf@vger.kernel.org
-In-Reply-To: <3187377.1738056789@warthog.procyon.org.uk>
-References: <3173328.1738024385@warthog.procyon.org.uk>
- <3187377.1738056789@warthog.procyon.org.uk>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fV0w9tLFr7xYHFUH=UUq+tr+o5EYUik0d74rMWa9=Qi+A@mail.gmail.com>
 
-January 28, 2025 at 1:33 AM, "David Howells" <dhowells@redhat.com> wrote:
+On Fri, Jan 24, 2025 at 04:59:21PM -0800, Ian Rogers wrote:
+> On Fri, Jan 24, 2025 at 1:58 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > On Wed, Jan 22, 2025 at 09:42:53AM -0800, Ian Rogers wrote:
+> > > Capstone disassembly support was split between disasm.c and
+> > > print_insn.c. Move support out of these files into capstone.[ch] and
+> > > remove include capstone/capstone.h from those files. As disassembly
+> > > routines can fail, make failure the only option without
+> > > HAVE_LIBCAPSTONE_SUPPORT. For simplicity's sake, duplicate the
+> > > read_symbol utility function.
+> > >
+> > > The intent with moving capstone support into a single file is that
+> > > dynamic support, using dlopen for libcapstone, can be added in later
+> > > patches. This can potentially always succeed or fail, so relying on
+> > > ifdefs isn't sufficient. Using dlopen is a useful option to minimize
+> > > the perf tools dependencies and potentially size.
+> > >
+> > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > > ---
+> > >  tools/perf/builtin-script.c  |   2 -
+> > >  tools/perf/util/Build        |   1 +
+> > >  tools/perf/util/capstone.c   | 536 +++++++++++++++++++++++++++++++++++
+> > >  tools/perf/util/capstone.h   |  24 ++
+> > >  tools/perf/util/disasm.c     | 358 +----------------------
+> > >  tools/perf/util/print_insn.c | 117 +-------
+> > >  6 files changed, 569 insertions(+), 469 deletions(-)
+> > >  create mode 100644 tools/perf/util/capstone.c
+> > >  create mode 100644 tools/perf/util/capstone.h
+> > >
+> > > diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+> > > index 33667b534634..f05b2b70d5a7 100644
+> > > --- a/tools/perf/builtin-script.c
+> > > +++ b/tools/perf/builtin-script.c
+> > > @@ -1200,7 +1200,6 @@ static int any_dump_insn(struct evsel *evsel __maybe_unused,
+> > >                        u8 *inbuf, int inlen, int *lenp,
+> > >                        FILE *fp)
+> > >  {
+> > > -#ifdef HAVE_LIBCAPSTONE_SUPPORT
+> > >       if (PRINT_FIELD(BRSTACKDISASM)) {
+> > >               int printed = fprintf_insn_asm(x->machine, x->thread, x->cpumode, x->is64bit,
+> > >                                              (uint8_t *)inbuf, inlen, ip, lenp,
+> > > @@ -1209,7 +1208,6 @@ static int any_dump_insn(struct evsel *evsel __maybe_unused,
+> > >               if (printed > 0)
+> > >                       return printed;
+> > >       }
+> > > -#endif
+> > >       return fprintf(fp, "%s", dump_insn(x, ip, inbuf, inlen, lenp));
+> > >  }
+> > >
+> > > diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+> > > index 5ec97e8d6b6d..9542decf9625 100644
+> > > --- a/tools/perf/util/Build
+> > > +++ b/tools/perf/util/Build
+> > > @@ -8,6 +8,7 @@ perf-util-y += block-info.o
+> > >  perf-util-y += block-range.o
+> > >  perf-util-y += build-id.o
+> > >  perf-util-y += cacheline.o
+> > > +perf-util-y += capstone.o
+> > >  perf-util-y += config.o
+> > >  perf-util-y += copyfile.o
+> > >  perf-util-y += ctype.o
+> > > diff --git a/tools/perf/util/capstone.c b/tools/perf/util/capstone.c
+> > > new file mode 100644
+> > > index 000000000000..c0a6d94ebc18
+> > > --- /dev/null
+> > > +++ b/tools/perf/util/capstone.c
+> > > @@ -0,0 +1,536 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +#include "capstone.h"
+> > > +#include "annotate.h"
+> > > +#include "addr_location.h"
+> > > +#include "debug.h"
+> > > +#include "disasm.h"
+> > > +#include "dso.h"
+> > > +#include "machine.h"
+> > > +#include "map.h"
+> > > +#include "namespaces.h"
+> > > +#include "print_insn.h"
+> > > +#include "symbol.h"
+> > > +#include "thread.h"
+> > > +#include <fcntl.h>
+> > > +#include <string.h>
+> > > +
+> > > +#ifdef HAVE_LIBCAPSTONE_SUPPORT
+> > > +#include <capstone/capstone.h>
+> > > +#endif
+> >
+> > I think you can use a big #ifdef throughout the file to minimize the
+> > #ifdef dances.  Usually it goes to the header to provide dummy static
+> > inlines and make the .c file depends on config.  But I know you will
+> > add dlopen code for the #else case later.
+> 
+> So I think big ifdefs like:
+> 
+> #if HAVE_xyz
+> // 100s of lines
+> #else
+> // 100s of lines
+> #endif
+> 
+> are best avoided. It is also the point of the shim-ing that we do
+> 
+> ... perf_foobar(...)
+> {
+> #if NO_SHIM
+>   ... foobar(...);
+> #else
+>   //dlsym code
+> #endif
+> }
+> 
+> Having the shimming and not shimming as two separate functions buried
+> in a 100 #ifdef loses that the code is common except for the shimming.
 
->=20
->=20Here's an additional patch to allow stats on the number of retries to=
- be
->=20
->=20obtained. This isn't a fix per se.
->=20
->=20David
->
-> [...]
+Right, can we split the common part and move it out of #ifdef?
 
-Hi David, Marc.
+> 
+> For example, in the current code we have find_file_offset:
+> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/util/disasm.c?h=perf-tools-next&id=91b7747dc70d64b5ec56ffe493310f207e7ffc99#n1371
+> 
+> It is only possible to understand the use of this seemingly common
+> code by trying to interpret what's going on with the #ifdefs.
+> 
+> I think it stylistically it is okay to have multiple stubbed out
+> functions inside a #if or #else, such as:
+> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/include/linux/perf_event.h?h=perf-tools-next&id=91b7747dc70d64b5ec56ffe493310f207e7ffc99#n1797
 
-I regret to report that this patch didn't fix the hanging in
-v9fs_evict_inode when running selftests/bpf.
+I think the convention in the kernel community is that it's better to
+remove #ifdef's in .c files and add a dummy functions under !condition
+in .h files.  If that's not possible, I think we should make the code
+less conditional by minimizing the #ifdef's.
 
-Here is what I tried to test:
+> 
+> But when the logic is shared and all in one file it becomes next to
+> impossible to determine what's in use and what's not. Other than by
+> tweaking things and trying to get build errors.
+> 
+> So for the shims I've placed the #if inside the function to make it
+> clear the function is a shim. For the other functions that are over
+> 100s of lines, for clarity the individual functions have #if
+> HAVE_LIBLLVM_SUPPORT around them to make it clear that the function
+> only has a meaning in that context - ie the source code doesn't make
+> you go on a #ifdef finding expedition to try to understand when the
+> code is in use.
 
-  * Checked out latest bpf-next source tree (0fc5dddb9409)
-  * Applied patch: https://lore.kernel.org/netfs/3173328.1738024385@warth=
-og.procyon.org.uk/
-  * Applied retry stats patch: https://lore.kernel.org/netfs/3187377.1738=
-056789@warthog.procyon.org.uk/
-  * Modified tools/testing/selftests/bpf/config to enable /proc/fs/netfs/=
-stats
-  * Modified CI scripts to collect the stats
-  * Ran the shell script reproducing the CI testing pipeline
+I think the both approaches have their own pros and cons.  Some people
+prefer one and others may have different opinions.  I think the big
+conditional block is better and easy to follow.  Maybe we cannot agree
+on this.  Then I believe it'd be better to follow the convention, no?
 
-Bash piece starting a process collecting /proc/fs/netfs/stats:
+Thanks,
+Namhyung
 
-    function tail_netfs {
-        echo -n > /mnt/vmtest/netfs-stats.log
-        while true; do
-            echo >> /mnt/vmtest/netfs-stats.log
-            cat /proc/fs/netfs/stats >> /mnt/vmtest/netfs-stats.log
-            sleep 1
-        done
-    }
-    export -f tail_netfs
-    nohup bash -c 'tail_netfs' & disown
-
-Last recored /proc/fs/netfs/stats (note 0 retries):
-
-    Reads  : DR=3D0 RA=3D15184 RF=3D5 RS=3D0 WB=3D0 WBZ=3D0
-    Writes : BW=3D488 WT=3D0 DW=3D0 WP=3D488 2C=3D0
-    ZeroOps: ZR=3D7964 sh=3D0 sk=3D0
-    DownOps: DL=3D15189 ds=3D15189 df=3D0 di=3D0
-    CaRdOps: RD=3D0 rs=3D0 rf=3D0
-    UpldOps: UL=3D488 us=3D488 uf=3D0
-    CaWrOps: WR=3D0 ws=3D0 wf=3D0
-    Retries: rq=3D0 rs=3D0 wq=3D0 ws=3D0
-    Objs   : rr=3D2 sr=3D1 foq=3D1 wsc=3D0
-    WbLock : skip=3D0 wait=3D0
-    -- FS-Cache statistics --
-    Cookies: n=3D0 v=3D0 vcol=3D0 voom=3D0
-    Acquire: n=3D0 ok=3D0 oom=3D0
-    LRU    : n=3D0 exp=3D0 rmv=3D0 drp=3D0 at=3D0
-    Invals : n=3D0
-    Updates: n=3D0 rsz=3D0 rsn=3D0
-    Relinqs: n=3D0 rtr=3D0 drop=3D0
-    NoSpace: nwr=3D0 ncr=3D0 cull=3D0
-    IO     : rd=3D0 wr=3D0 mis=3D0
-
-The stack on hung task hasn't changed:
-
-    [  184.375149] INFO: task modprobe:2759 blocked for more than 20 seco=
-nds.
-    [  184.376149]       Tainted: G           OE      6.13.0-gbb67a65a921=
-c-dirty #3
-    [  184.376593] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" dis=
-ables this message.
-    [  184.377119] task:modprobe        state:D stack:0     pid:2759  tgi=
-d:2759  ppid:455    flags:0x00004002
-    [  184.377701] Call Trace:
-    [  184.377886]  <TASK>
-    [  184.378039]  __schedule+0xa91/0xe80
-    [  184.378282]  schedule+0x41/0xb0
-    [  184.378490]  v9fs_evict_inode+0xfe/0x170
-    [  184.378754]  ? __pfx_var_wake_function+0x10/0x10
-    [  184.379070]  evict+0x1ef/0x360
-    [  184.379288]  __dentry_kill+0xb0/0x220
-    [  184.379528]  ? dput+0x3a/0x1d0
-    [  184.379736]  dput+0x114/0x1d0
-    [  184.379946]  __fput+0x136/0x2b0
-    [  184.380158]  task_work_run+0x89/0xc0
-    [  184.380396]  do_exit+0x2c6/0x9c0
-    [  184.380617]  do_group_exit+0xa4/0xb0
-    [  184.380870]  __x64_sys_exit_group+0x17/0x20
-    [  184.381137]  x64_sys_call+0x21a0/0x21a0
-    [  184.381386]  do_syscall_64+0x79/0x120
-    [  184.381630]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-    [  184.381969] RIP: 0033:0x7f817bf7c21d
-    [  184.382202] RSP: 002b:00007fff92c8d148 EFLAGS: 00000206 ORIG_RAX: =
-00000000000000e7
-    [  184.382676] RAX: ffffffffffffffda RBX: 00007f817c092fa8 RCX: 00007=
-f817bf7c21d
-    [  184.383138] RDX: 00000000000000e7 RSI: ffffffffffffff88 RDI: 00000=
-00000000001
-    [  184.383582] RBP: 00007fff92c8d1a0 R08: 00007fff92c8d0e8 R09: 00000=
-00000000000
-    [  184.384042] R10: 00007fff92c8d05f R11: 0000000000000206 R12: 00000=
-00000000001
-    [  184.384486] R13: 0000000000000000 R14: 0000000000000001 R15: 00007=
-f817c092fc0
-    [  184.384963]  </TASK>
-    [  184.385112]
-    [  184.385112] Showing all locks held in the system:
-    [  184.385499] 1 lock held by khungtaskd/32:
-    [  184.385793]  #0: ffffffff9d195d90 (rcu_read_lock){....}-{1:3}, at:=
- debug_show_all_locks+0x2e/0x180
-    [  184.386366] 2 locks held by kworker/u8:10/455:
-    [  184.386649]  #0: ffffa1a240104d48 ((wq_completion)events_unbound){=
-+.+.}-{0:0}, at: process_scheduled_works+0x23a/0x600
-    [  184.387357]  #1: ffffb06380a23e20 ((work_completion)(&sub_info->wo=
-rk)){+.+.}-{0:0}, at: process_scheduled_works+0x25a/0x600
-    [  184.388076]
-    [  184.388183] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-
-I pushed full logs to github:
-https://github.com/kernel-patches/bpf/commit/88c0d0e1692b04c0d54b7c194100=
-3758d23e0d6a
-
-I recommend trying to reproduce with steps I shared in my initial report:
-https://lore.kernel.org/bpf/a7x33d4dnMdGTtRivptq6S1i8btK70SNBP2XyX_xwDAhL=
-vgQoPox6FVBOkifq4eBinfFfbZlIkMZBe3QarlWTxoEtHZwJCZbNKtaqrR7PvI=3D@pm.me/
-
-I know it may not be very convenient due to all the CI stuff, but you
-should be able to use it to iterate on the kernel source locally and
-narrow down the problem.
-
-I have everything set up, so you also might share some debugging code
-for me to run if you prefer.
-
-Thanks.
-
----
-
-Not directly related, but it took me a while to figure out how to
-collect the netfs stats.
-
-I first added:
-    CONFIG_NETFS_DEBUG=3Dy
-    CONFIG_NETFS_STATS=3Dy
-
-But that didn't work, because /proc/fs/netfs/stats is created only
-with CONFIG_FSCACHE_STATS (fs/netfs/main.c):
-
-    #ifdef CONFIG_FSCACHE_STATS
-            if (!proc_create_single("fs/netfs/stats", S_IFREG | 0444, NUL=
-L,
-                                    netfs_stats_show))
-                    goto error_procfile;
-    #endif
-
-And that depends on CONFIG_FSCACHE=3Dy, so I ended up with:
-
-    CONFIG_FSCACHE=3Dy
-    CONFIG_FSCACHE_STATS=3Dy
-    CONFIG_NETFS_SUPPORT=3Dy
-    CONFIG_NETFS_DEBUG=3Dy
-    CONFIG_NETFS_STATS=3Dy
 
