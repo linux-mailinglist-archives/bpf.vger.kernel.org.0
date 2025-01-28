@@ -1,225 +1,233 @@
-Return-Path: <bpf+bounces-49930-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49931-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D53EAA2038F
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 05:57:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0932A2066C
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 09:46:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E28AF7A3C03
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 04:57:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A5EE168E3C
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2025 08:46:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0266818BC3F;
-	Tue, 28 Jan 2025 04:57:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75BDC1DED4E;
+	Tue, 28 Jan 2025 08:46:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IA1iElbk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GbCG6O4B"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B1CD7485
-	for <bpf@vger.kernel.org>; Tue, 28 Jan 2025 04:57:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6772A1E521;
+	Tue, 28 Jan 2025 08:46:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738040241; cv=none; b=msNe+FTecOdKWjXTUJ3Cup/SHzmxfX1XkgalhrYfYmm21MA+FBt71rhWOHfhjtj8M8EMj+Ma8qgQxvLINPlhzHJWsSeYezQWoGEnemMPikHoWIL2vaPRQpldMwaerkH1AsaTKFV+sPSPnFXcEcQ/Qz4TpMGC1pNF2WBkcy/wvNA=
+	t=1738053999; cv=none; b=To1w7UE9qOgC6Ew7K6iMSdRw0+422fDOEl639tynt5eqvbXCXmNX3Zw6X9RorhjNrk1ekBe0YLuaOmEWkocs7QHYg2J+hG8gwUbxa9QWtrMGqH4F8n435oewbZUo9ehQOTO3AHf7d7OfYmGVWb8wrkabioZ7MuE6NQ/IxX3/jEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738040241; c=relaxed/simple;
-	bh=LFEBPleBP8OEUp5sw3/IH1CCaKA+kGUcMQLaZPvE8OY=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=tTpD0NbWDbnDqIi3zpmrSRaEUTtQ4eWcWu4Y9ZBVDdfBtiuqKKhUP3TgDGbzC4M4IX3nW7G3347/7UzRHBVKDhMGT7xCLl9cAqNX9r1iXYbOWIlHb0xX9QRlV03Km1ZaHi3YzTy52R8UdlmzFoSCj4r/6ABCKbyKDgRxUN+QTVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IA1iElbk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCBE4C4CED3;
-	Tue, 28 Jan 2025 04:57:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738040240;
-	bh=LFEBPleBP8OEUp5sw3/IH1CCaKA+kGUcMQLaZPvE8OY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=IA1iElbkN6eNoNFcOju6dIW66J5wsuZ/+VTDTQ5nglQPCLpC4O3aMgGy2aHINS5RO
-	 SEQDQLloGeO+uuyNG79/sPK7lymowboLhQNZoPzn/lLCsjzdQr2Bdrpk7yqgLBmoWE
-	 5xN2Yrcv7LjSFYvO9PzKZA7XmHMNk/sppkYLEjTAQQcaC/8Ltjr282N1hsWG1mCD/o
-	 1bVow9+WLST2CVCm9cczd3Cih0OnbYjyrUOFUuxlE+jSYjztcankGbQbPPw6qTPWKv
-	 Y8YdzR7w74p/zTCvpl9b7ZKucZ2qMHP/GWXHn+rDKB8vqhcb1hYJkweUxAJqulFXKb
-	 44SobhBi1SuSA==
-Date: Tue, 28 Jan 2025 13:57:18 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Masami Hiramatsu <mhiramat@kernel.org>,
- Sven Schnelle <svens@linux.ibm.com>, Martin KaFai Lau
- <martin.lau@linux.dev>, Ilya Leoshkevich <iii@linux.ibm.com>, bpf
- <bpf@vger.kernel.org>
-Subject: Re: [TEST FAILURE] bpf: s390: missed/kprobe_recursion
-Message-Id: <20250128135718.e89fbb19f6f57a53373d499e@kernel.org>
-In-Reply-To: <CAEf4BzaT8Vw+82b974S_7pDUjA+PGYKsoSzoTuO33ZQJwgrcMA@mail.gmail.com>
-References: <3c841f0a-772a-406c-9888-f8e71826daff@linux.dev>
-	<Z5N4N6MUMt8_EwGS@krava>
-	<Z5O0shrdgeExZ2kF@krava>
-	<20250126234005.70cb3b43193b08ed8a211553@kernel.org>
-	<Z5ax5AKwIaD6ONM-@krava>
-	<CAEf4BzaT8Vw+82b974S_7pDUjA+PGYKsoSzoTuO33ZQJwgrcMA@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1738053999; c=relaxed/simple;
+	bh=aHW5cZG3nB4a82hjmpdiJ24hN/iOKEoJ9/7yJk6oAj0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RDrSN9oKe/im0W0y/eUXrCFp8BrPvPTmTk8qvowTFZrkRDtJHX37kyVvUgpBtRngoCtHp78l7SIGNyiCo5B0ABKPxIdZBQDyHwiaZpvcXXaxk/IGJ8Df8Lj6OvgnekNWATe2eSOL804o/YXpB3V8X/h6RlVaS6cyvXsyxRKAXcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GbCG6O4B; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2164b662090so103799995ad.1;
+        Tue, 28 Jan 2025 00:46:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738053996; x=1738658796; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=b9Sp+PcWJIu0XHPlF/6kU7osHPphCkNRJOyL2h8vsqk=;
+        b=GbCG6O4BbQlQ3nkzUolugH4nQjKtaTUc88NmQid3pofGmqoegpeZhvt4eNpqDAffEw
+         llfbfASptCd3kWcY+2QB1S+QTrMFV+JZsncx2UQuT3DqkuAENOrAf3a1jzj0S3OXqrnh
+         1pyXWJiZqZ85ZntG5VfKfAk0S+199yJiMxZ3FUmEZp+KaaTTdEs0QuUyHGJFNXtEyBxu
+         YLa/peqOXT2ZBDi6KnvnJmnBvcxzbYZ0N8EsPvDkM/LEn+3lIVOqLDhKimWG4nnakZG8
+         QNcDtkUPVHXx2MO8MZNrrJi0bPjD4ntNbjaoSdj7izOp61mckHV4UVXPPjhjb8zJ5VVp
+         62dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738053996; x=1738658796;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=b9Sp+PcWJIu0XHPlF/6kU7osHPphCkNRJOyL2h8vsqk=;
+        b=FypPTBFjGOb5Ga09gO/kmkElZv1s1+77ymtLK97PDbK7zSq+Ez5yjIuZ9Ia80jTbwv
+         FRLNN4Qekrp0xFAshM4kxdellznY6YB/xDC5YtU2c+jHrNh/E4Ne6FElTgeibr2zZypQ
+         t+sUS4anZtMK5CGvoV2n93sRCKBgY9arc6Lro1jRN3gDNh2JKQCsoBSYEovIE/uL8913
+         maDjAAP4sqWu4hyEvDm15ffiWZQjKCg2F0cyLJEdGxEoYAqQGU8DRur36Api/FuTTyWo
+         Wco5nh8iBb3ZB9VSxjeYh/lGHT+Won4y0XEcP4CpOKGOURLAbM0Ye/LG7LIXNrJ7TLOJ
+         ZI1g==
+X-Forwarded-Encrypted: i=1; AJvYcCXuY3uVHuT+yKnvXNqgL6fgc8uf9LyqwAHCf7b6N+ouKEDZoRWT9oEN7ai9ZPwmfg1jBTLxppU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwU/ul+u1kNwCTmiqwnq8l2XC3WmS4maIGmmwo9qATX8gX1ULJ4
+	rhdiPn2kH0kHfu6EM9fsZJ2s+GCEc8TEZc1pGAMN3yk2OLnAsQL1
+X-Gm-Gg: ASbGncvB6+eOldPtAzX1wR/43ei9X+WaIORHP5TZDW1eYDDnk9sqjYkqggP6z2ECXnc
+	NjTgGTubhPjrsXCdqmPlS62cPyYKWMwvjf4hew8HPJuNSFdDDxb5n69YZ8xARYh1hQWjHGMzCMm
+	H/iF3VGepfdmcaQPp8xxwaFIXVgC1nqZpksKHLAIXQpJ4POyP/67lwAIsaqtS1fRlE4XdWBBftG
+	CF1neSM8yfWORNDBqjF6LabrUSXa44g8/eAuVg1Bno4Uf4zN+wIzKHxBjdYySR1M88lE1eLbwWr
+	ESda7/oV2vXueZphJk2KNL3atl190yEANjOzZ/OTstcwhPfCVZcucQ==
+X-Google-Smtp-Source: AGHT+IGgGvgDwwhjDiLTTIZ4hDfc/yZf20veY9tLbZLpQHxE82T9OX4WX04dDTOntOHNx7ogIgpM0w==
+X-Received: by 2002:a17:902:d2d2:b0:215:6cb2:7877 with SMTP id d9443c01a7336-21c352c7b8emr720494315ad.4.1738053996531;
+        Tue, 28 Jan 2025 00:46:36 -0800 (PST)
+Received: from KERNELXING-MC1.tencent.com ([111.201.25.167])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21da414e2b8sm75873275ad.205.2025.01.28.00.46.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jan 2025 00:46:36 -0800 (PST)
+From: Jason Xing <kerneljasonxing@gmail.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	dsahern@kernel.org,
+	willemdebruijn.kernel@gmail.com,
+	willemb@google.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	horms@kernel.org
+Cc: bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Jason Xing <kerneljasonxing@gmail.com>
+Subject: [PATCH bpf-next v7 00/13] net-timestamp: bpf extension to equip applications transparently
+Date: Tue, 28 Jan 2025 16:46:07 +0800
+Message-Id: <20250128084620.57547-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On Mon, 27 Jan 2025 11:09:27 -0800
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+"Timestamping is key to debugging network stack latency. With
+SO_TIMESTAMPING, bugs that are otherwise incorrectly assumed to be
+network issues can be attributed to the kernel." This is extracted
+from the talk "SO_TIMESTAMPING: Powering Fleetwide RPC Monitoring"
+addressed by Willem de Bruijn at netdevconf 0x17).
 
-> On Sun, Jan 26, 2025 at 2:06 PM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Sun, Jan 26, 2025 at 11:40:05PM +0900, Masami Hiramatsu wrote:
-> > > On Fri, 24 Jan 2025 16:41:38 +0100
-> > > Jiri Olsa <olsajiri@gmail.com> wrote:
-> > >
-> > > > On Fri, Jan 24, 2025 at 12:23:35PM +0100, Jiri Olsa wrote:
-> > > > > On Thu, Jan 23, 2025 at 02:32:38PM -0800, Martin KaFai Lau wrote:
-> > > > > > Hi Jiri,
-> > > > > >
-> > > > > > The "missed/kprobe_recursion" fails consistently on s390. It seems to start
-> > > > > > failing after the recent bpf and bpf-next tree ffwd.
-> > > > > >
-> > > > > > An example:
-> > > > > > https://github.com/kernel-patches/bpf/actions/runs/12934431612/job/36076956920
-> > > > > >
-> > > > > > Can you help to take a look?
-> > > > > >
-> > > > > > afaict, it only happens on s390 so far, so cc IIya if there is any recent
-> > > > > > change that may ring the bell.
-> > > > >
-> > > > > hi,
-> > > > > I need to check more but I wonder it's the:
-> > > > >   7495e179b478 s390/tracing: Enable HAVE_FTRACE_GRAPH_FUNC
-> > > > >
-> > > > > which seems to add recursion check and bail out before we have
-> > > > > a chance to trigger it in bpf code
-> > > >
-> > > > so the test attaches bpf program test1 to bpf_fentry_test1 via kprobe.multi
-> > > >
-> > > >     SEC("kprobe.multi/bpf_fentry_test1")
-> > > >     int test1(struct pt_regs *ctx)
-> > > >     {
-> > > >             bpf_kfunc_common_test();
-> > > >             return 0;
-> > > >     }
-> > > >
-> > > > and several other programs are attached to bpf_kfunc_common_test function
-> > > >
-> > > >
-> > > > I can't test this on s390, but looks like following is happening:
-> > > >
-> > > > kprobe.multi uses fprobe, so the test kernel path goes:
-> > > >
-> > > >     bpf_fentry_test1
-> > > >       ftrace_graph_func
-> > > >         function_graph_enter_regs
-> > > >        fprobe_entry
-> > > >          kprobe_multi_link_prog_run
-> > > >            test1 (bpf program)
-> > > >              bpf_kfunc_common_test
-> > > >                kprobe_ftrace_handler
-> > > >                  kprobe_perf_func
-> > > >                    trace_call_bpf
-> > > >                      -> bpf_prog_active check fails, missed count is incremented
-> > > >
-> > > >
-> > > > kprobe_ftrace_handler calls/takes ftrace_test_recursion_trylock (ftrace recursion lock)
-> > > >
-> > > > but s390 now calls/takes ftrace_test_recursion_trylock already in ftrace_graph_func,
-> > > > so s390 stops at kprobe_ftrace_handler and does not get to trace_call_bpf to increment
-> > > > prog->missed counters
-> > >
-> > > Oops, good catch! I missed to remove it from s390. We've already moved it
-> > > in function_graph_enter_regs().
-> > >
-> > >
-> > > >
-> > > > adding Sven, Masami, any idea?
-> > > >
-> > > > if the ftrace_test_recursion_trylock is needed ftrace_graph_func on s390, then
-> > > > I think we will need to fix our test to skip s390 arch
-> > >
-> > > Yes. Please try this patch;
-> > >
-> > >
-> > > From 12fcda79d0b1082449d5f7cfb8039b0237cf246d Mon Sep 17 00:00:00 2001
-> > > From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-> > > Date: Sun, 26 Jan 2025 23:38:59 +0900
-> > > Subject: [PATCH] s390: fgraph: Fix to remove ftrace_test_recursion_trylock()
-> > >
-> > > Fix to remove ftrace_test_recursion_trylock() from ftrace_graph_func()
-> > > because commit d576aec24df9 ("fgraph: Get ftrace recursion lock in
-> > > function_graph_enter") has been moved it to function_graph_enter_regs()
-> > > already.
-> > >
-> > > Reported-by: Jiri Olsa <olsajiri@gmail.com>
-> > > Fixes: d576aec24df9 ("fgraph: Get ftrace recursion lock in function_graph_enter")
-> > > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> >
-> > great, ci is passing with this fix
-> >
-> > Tested-by: Jiri Olsa <jolsa@kernel.org>
+There are a few areas that need optimization with the consideration of
+easier use and less performance impact, which I highlighted and mainly
+discussed at netconf 2024 with Willem de Bruijn and John Fastabend:
+uAPI compatibility, extra system call overhead, and the need for
+application modification. I initially managed to solve these issues
+by writing a kernel module that hooks various key functions. However,
+this approach is not suitable for the next kernel release. Therefore,
+a BPF extension was proposed. During recent period, Martin KaFai Lau
+provides invaluable suggestions about BPF along the way. Many thanks
+here!
 
-Thanks for testing!
+In this series, I only support foundamental codes and tx for TCP.
+This approach mostly relies on existing SO_TIMESTAMPING feature, users
+only needs to pass certain flags through bpf_setsocktopt() to a separate
+tsflags. Please see the last selftest patch in this series.
 
-> 
-> Masami,
-> 
-> Are you going to land this fix in your tree? We can create a temporary
-> patch for BPF CI once you have the commit in the tree.
+After this series, we could step by step implement more advanced
+functions/flags already in SO_TIMESTAMPING feature for bpf extension.
 
-I think this should be a fix from linux-trace tree. I also found
-another issue on s390. (s390 does not implemented )
-Let me resend it because I missed to Cc to linux-trace ML.
+---
+v7
+Link: https://lore.kernel.org/all/20250121012901.87763-1-kerneljasonxing@gmail.com/
+1. target bpf-next tree
+2. simplely and directly stop timestamping callbacks calling a few BPF
+CALLS due to safety concern.
+3. add more new testcases and adjust the existing testcases
+4. revise some comments of new timestamping callbacks
+5. remove a few BPF CGROUP locks
 
-Thank you,
-> 
-> >
-> > thanks,
-> > jirka
-> >
-> >
-> > > ---
-> > >  arch/s390/kernel/ftrace.c | 5 -----
-> > >  1 file changed, 5 deletions(-)
-> > >
-> > > diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
-> > > index c0b2c97efefb..63ba6306632e 100644
-> > > --- a/arch/s390/kernel/ftrace.c
-> > > +++ b/arch/s390/kernel/ftrace.c
-> > > @@ -266,18 +266,13 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
-> > >                      struct ftrace_ops *op, struct ftrace_regs *fregs)
-> > >  {
-> > >       unsigned long *parent = &arch_ftrace_regs(fregs)->regs.gprs[14];
-> > > -     int bit;
-> > >
-> > >       if (unlikely(ftrace_graph_is_dead()))
-> > >               return;
-> > >       if (unlikely(atomic_read(&current->tracing_graph_pause)))
-> > >               return;
-> > > -     bit = ftrace_test_recursion_trylock(ip, *parent);
-> > > -     if (bit < 0)
-> > > -             return;
-> > >       if (!function_graph_enter_regs(*parent, ip, 0, parent, fregs))
-> > >               *parent = (unsigned long)&return_to_handler;
-> > > -     ftrace_test_recursion_unlock(bit);
-> > >  }
-> > >
-> > >  #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
-> > > --
-> > > 2.43.0
-> > >
-> > > Thank you,
-> > >
-> > > --
-> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> >
+RFC v6
+In the meantime, any suggestions and reviews are welcome!
+Link: https://lore.kernel.org/all/20250112113748.73504-1-kerneljasonxing@gmail.com/
+1. handle those safety problem by using the correct method.
+2. support bpf_getsockopt.
+3. adjust the position of BPF_SOCK_OPS_TS_TCP_SND_CB
+4. fix mishandling the hardware timestamp error
+5. add more corresponding tests
 
+v5
+Link: https://lore.kernel.org/all/20241207173803.90744-1-kerneljasonxing@gmail.com/
+1. handle the safety issus when someone tries to call unrelated bpf
+helpers.
+2. avoid adding direct function call in the hot path like
+__dev_queue_xmit()
+3. remove reporting the hardware timestamp and tskey since they can be
+fetched through the existing helper with the help of
+bpf_skops_init_skb(), please see the selftest.
+4. add new sendmsg callback in tcp_sendmsg, and introduce tskey_bpf used
+by bpf program to correlate tcp_sendmsg with other hook points in patch [13/15].
+
+v4
+Link: https://lore.kernel.org/all/20241028110535.82999-1-kerneljasonxing@gmail.com/
+1. introduce sk->sk_bpf_cb_flags to let user use bpf_setsockopt() (Martin)
+2. introduce SKBTX_BPF to enable the bpf SO_TIMESTAMPING feature (Martin)
+3. introduce bpf map in tests (Martin)
+4. I choose to make this series as simple as possible, so I only support
+most cases in the tx path for TCP protocol.
+
+v3
+Link: https://lore.kernel.org/all/20241012040651.95616-1-kerneljasonxing@gmail.com/
+1. support UDP proto by introducing a new generation point.
+2. for OPT_ID, introducing sk_tskey_bpf_offset to compute the delta
+between the current socket key and bpf socket key. It is desiged for
+UDP, which also applies to TCP.
+3. support bpf_getsockopt()
+4. use cgroup static key instead.
+5. add one simple bpf selftest to show how it can be used.
+6. remove the rx support from v2 because the number of patches could
+exceed the limit of one series.
+
+V2
+Link: https://lore.kernel.org/all/20241008095109.99918-1-kerneljasonxing@gmail.com/
+1. Introduce tsflag requestors so that we are able to extend more in the
+future. Besides, it enables TX flags for bpf extension feature separately
+without breaking users. It is suggested by Vadim Fedorenko.
+2. introduce a static key to control the whole feature. (Willem)
+3. Open the gate of bpf_setsockopt for the SO_TIMESTAMPING feature in
+some TX/RX cases, not all the cases.
+
+Jason Xing (13):
+  net-timestamp: add support for bpf_setsockopt()
+  net-timestamp: prepare for timestamping callbacks use
+  bpf: stop unsafely accessing TCP fields in bpf callbacks
+  bpf: stop calling some sock_op BPF CALLs in new timestamping callbacks
+  net-timestamp: prepare for isolating two modes of SO_TIMESTAMPING
+  net-timestamp: support SCM_TSTAMP_SCHED for bpf extension
+  net-timestamp: support sw SCM_TSTAMP_SND for bpf extension
+  net-timestamp: support hw SCM_TSTAMP_SND for bpf extension
+  net-timestamp: support SCM_TSTAMP_ACK for bpf extension
+  net-timestamp: make TCP tx timestamp bpf extension work
+  net-timestamp: add a new callback in tcp_tx_timestamp()
+  net-timestamp: introduce cgroup lock to avoid affecting non-bpf cases
+  bpf: add simple bpf tests in the tx path for so_timestamping feature
+
+ include/linux/filter.h                        |   5 +
+ include/linux/skbuff.h                        |  25 +-
+ include/net/sock.h                            |  10 +
+ include/net/tcp.h                             |   4 +-
+ include/uapi/linux/bpf.h                      |  35 ++
+ net/core/dev.c                                |   5 +-
+ net/core/filter.c                             |  48 ++-
+ net/core/skbuff.c                             |  65 +++-
+ net/core/sock.c                               |  15 +
+ net/dsa/user.c                                |   2 +-
+ net/ipv4/tcp.c                                |  11 +
+ net/ipv4/tcp_input.c                          |   8 +-
+ net/ipv4/tcp_output.c                         |   7 +
+ net/socket.c                                  |   2 +-
+ tools/include/uapi/linux/bpf.h                |  28 ++
+ .../bpf/prog_tests/so_timestamping.c          |  86 +++++
+ .../selftests/bpf/progs/so_timestamping.c     | 299 ++++++++++++++++++
+ 17 files changed, 633 insertions(+), 22 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/so_timestamping.c
+ create mode 100644 tools/testing/selftests/bpf/progs/so_timestamping.c
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.43.5
+
 
