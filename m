@@ -1,375 +1,207 @@
-Return-Path: <bpf+bounces-50050-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50049-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80C69A223B3
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 19:16:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 38416A223B2
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 19:16:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD5743A4C82
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 18:15:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D152A3A4B24
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 18:15:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAACE1E1A20;
-	Wed, 29 Jan 2025 18:15:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0D611DF749;
+	Wed, 29 Jan 2025 18:15:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KY03Zad5"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="J8WJTv1l"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71CCF1ACEC8
-	for <bpf@vger.kernel.org>; Wed, 29 Jan 2025 18:15:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A42A31DE2DC
+	for <bpf@vger.kernel.org>; Wed, 29 Jan 2025 18:15:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738174544; cv=none; b=flqtad8CSClcnvILtd0WSfekISiGk2ClJ1iXr7NtaElD6mfB+QWu/+TuA8K53eSwgoZFJUWkj+0i1mH8CMd2cShUu49mXUWJhgFuRJif/tm+5IbQfguk3bnm1I8nZX9gskPoLpyr8ErojDJ3tGq2N6QzNq3Muh4X89l8SthelYo=
+	t=1738174522; cv=none; b=d1mt+miMOT4BqAUncgqpBeGTaimMtdexVPJXNRmZ+lf20SeKskVMaSZS397U2xbJnsDODTdjGa9ZLktnxmERMq5U1Ar+HosC2DGSSln2BDdg7Q6OAUEFFAAuZ5Lm19THDbDS1hzwpmDoPtlRy7dc85PrkpDOJ5NKF4aoV+2QNss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738174544; c=relaxed/simple;
-	bh=v2SiZKw8IUmu3usyNq6Lh26nZGfb4khaxeZF9tFAe0A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fc9hH+z1F0wmbd3YYAcsrH4VdPz1TztFEE06haIFIAui5pl4K+Eaf7nSerDASEygMWgXXZlRiKsMptJufPVukn5Ij+2y+RtRJuwKL1pPYisxmPyrjUmMd8kufKne/mut2bUP8BLvp6Emr342mjt9Hd8NafHSeq2u4YtEM2gtGCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KY03Zad5; arc=none smtp.client-ip=209.85.219.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-e3a26de697fso10710012276.3
-        for <bpf@vger.kernel.org>; Wed, 29 Jan 2025 10:15:42 -0800 (PST)
+	s=arc-20240116; t=1738174522; c=relaxed/simple;
+	bh=wCFnbIIybuKiwpXxrJcymmC7JymqorEFQQf8dYEqH5c=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=A3L2BFXV42/HC+rwzdsLH3HoK6g/uj0DG7nMxRIVjQbAOW4ZL6YfiIKl6XZwYMzxPjob+IaiSdLgFoQunfAVIUdrzDnzPTY+PPnskf2liux+72W6LabgmU6Z5gJWGaI7Px8RaIO1l1de7sCE0M6+OpzVidTy7Hmi1EHTb9D0Y6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=J8WJTv1l; arc=none smtp.client-ip=209.85.167.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3eb7e725aa0so2940078b6e.0
+        for <bpf@vger.kernel.org>; Wed, 29 Jan 2025 10:15:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738174541; x=1738779341; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=broadcom.com; s=google; t=1738174518; x=1738779318; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AGiHXYg7e8z8VMa1sVF4V/w7Xn7ktfxkRf2PjsUHEV0=;
-        b=KY03Zad5F2s3rbn1hifNHk26EvB+HIa/WACS8k/T20MQ46hGKAflmUeKtL8ECgqZGg
-         7DWv0NHgGvBl7vO1TCYKVp+E0v/Js/qNjQAt/3QT+gpNgoIMgXNjVAKjZUxs2M8+BmBt
-         gRbGzeSJdKEW1DGjLbdTl0uPySTiYWQng6EMVp1WaEOOdqCtRkLfyp5Qdb5SxllkaYQc
-         WI5IHyHqr+bl3DAHeyKpZtAY273S6nIDCLfQ8rdKCiq8jI6C/qV2oyonn4Uot1sDzuNN
-         62bKmwG2PatHfrYnbhP7bLTyR+jAxfh+ZKKN1XeE/F5tIguI9zOhLpiuQnpDrm5f3deG
-         aBvQ==
+        bh=73largg9wahTKmlr8ZZdxSEO4OgWDT1fPbBkex8RVTQ=;
+        b=J8WJTv1ljKT6QwrWr5FBslVnBajKXTmKNzBOmjBlbZ4juSX2b3OlF/qNvfy28DC3C2
+         GSrUC/oT7XILVyme3xSVxJEqg+Rx/qFAZwds75hQQE74T+IcP7YaEOo3Jw6AMcvbPu5a
+         8Fte/vmYo8APJeesvv5Y78aYhSk5aN7o5zDhc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738174541; x=1738779341;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1738174518; x=1738779318;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AGiHXYg7e8z8VMa1sVF4V/w7Xn7ktfxkRf2PjsUHEV0=;
-        b=AoGDKMQEqRpoPuWsuR/RPQeJONa/Fv2N4zb/xqNQXKZuesA4b13AjBwRLeYFFPUVod
-         MHrQa86pjTm+ud22v8IIcvdz8afpgX4buWjVzN4qA+Vqf1PbJpyVbeNujoF/uOEHP6cs
-         S2MbqSYw3ppjxbPCOX4xqBcBB2XoHh4QAeOQmxRcT0uJrPdoaJM6Y8BiNPeNZH0xbPoc
-         oOer+GoChjhcoGl43K1rvQg9gbL4TQGYeodHVPZiCOmIT6xMXBDWm48SwHWIbYNBSrjQ
-         h41YYCJlk8XFW1w47LyKNep2XfOzmpZ87/20t8uIO7BQk27pb+ujGxFf0HOpAHqjgFgZ
-         Im+w==
-X-Gm-Message-State: AOJu0YzeaeU8//AaEXlse3Ke40zZmPfgCLeSiYrmAIf7OX6CTfI0DKdZ
-	eJOIbfZ/SJkne+cHubAkqTiFquKUUOr6jaCtpaZvIamW7qf3HL7N2EVH7Kfq2/lQWzwYSwcGxfs
-	HKR7RX9nnt5ygPEdZeM2QbVt13V8=
-X-Gm-Gg: ASbGncu2/hHYx9kDXfN0Fnv3R60aViU083l1aSdiUZw3NP52xGeJPbpl007D0XXoUhE
-	Z4zmh6a9nRpGpo0enN7g/gGzKOENiE1dTwws+8p8pocUjeWEK8Od+Xh7hhzhhdMtkRHZN7u8w
-X-Google-Smtp-Source: AGHT+IF5U9/QGqPkXZk7myKWBGY03gRfRB/YaJO+h2s8Ib9LIPQcJy52H5USv1IrUQ1XIX/Qj0l4IHAnDzKaPu6ow8E=
-X-Received: by 2002:a05:690c:4902:b0:6ef:57ad:9d91 with SMTP id
- 00721157ae682-6f7a840711emr34227197b3.24.1738174541251; Wed, 29 Jan 2025
- 10:15:41 -0800 (PST)
+        bh=73largg9wahTKmlr8ZZdxSEO4OgWDT1fPbBkex8RVTQ=;
+        b=LLSEMzKgfSgIqpCn7mmCdy1RZwnh5B7CUL7xXoIvpDKv0AU1pCaC0GUAfGj2dSryr/
+         i7MmJx7ZkITAmYYUSHUvsM1LqXFTZd8Jm0WefaH3uPR+xj2b1dwNU6ShZMt4SjbQSR+M
+         HycESIn5mD+m8DfsSuZUKTi9XavA8g9i/hsdOxmTCllXYtwsRNN1BMc5d4uviaU3hTj/
+         8/O9Hp9a/91s7ABkrIUfB4DSuSaEFVG/CkW2F65dlIY4fr5kfCkTgmksOAVSeNfP3mRR
+         NGV3yPqylol5HvmTrU1Lj3BWDkk37W6TfKclOEuf/nH4LP9nPieWvodYbHvaM+VBse2P
+         uh2w==
+X-Forwarded-Encrypted: i=1; AJvYcCVgYG4Bd5IrTuUWIuq89e70wnzebT8WwFFufH7DhEira5F54yOGkdghWMBpoAuFiGHFIDw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwJBEPMGH20rlqheadPJT6mVviVCN/nSpCCzzrWzGo3DhT9SGLg
+	wFhnpQCxUPwaODBvq1PfXpumTQ1G4fFR2J83SWQp19kTvvLvXaAGcdkLr7Ch/A==
+X-Gm-Gg: ASbGnct7GgXvDPgoJ6lwXAK8K3LD/FcUsNTlW7LMmZQ8R+ouUzovNO1Ax4TcxZ+aBLy
+	FHa/pumS4r0aZEx0nDr6HikbQXFCzrAz0m/YtWQBd1H6KawGjryYUKkb53pBNNjCKsQGaMpFfHb
+	DGek8TnfhtHovzD4RY82DStvNU96XuGKE0LBAlzoznEESRVF6X0ecVyxdwJxU74h+Lh0ZDqdMbu
+	GTQq0V7NevGUN4lAL3aYWTFVj6q60hNX3Z/nZ603fi6LVyy+U4AFi7gpODBV7fWIdVQTFSxaQk+
+	CjydatCay69mH+Gv0+idrSRMHM3ejDyA6/Q7h+96H/YLQL7CSfeUprrCH01cwpU73Xy5ajzX4Co
+	ofA3UCBBJtHkxYdN4/yaj7PGOgDU7
+X-Google-Smtp-Source: AGHT+IHP3/qOhhMPBOFZAjk+2oHo8/Wdv9U9RQ3phvQekxuOjvAA0q8p/sGBWqtGI+atxjtqN53LTw==
+X-Received: by 2002:a05:6870:2183:b0:29e:3d40:ab48 with SMTP id 586e51a60fabf-2b32f2d94d7mr2505453fac.34.1738174518629;
+        Wed, 29 Jan 2025 10:15:18 -0800 (PST)
+Received: from sankartest7x-virtual-machine.lvn.broadcom.net ([192.19.161.250])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-2b28f0f325dsm4487810fac.6.2025.01.29.10.15.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jan 2025 10:15:18 -0800 (PST)
+From: Sankararaman Jayaraman <sankararaman.jayaraman@broadcom.com>
+To: kuba@kernel.org
+Cc: alexanderduyck@fb.com,
+	alexandr.lobakin@intel.com,
+	andrew+netdev@lunn.ch,
+	ast@kernel.org,
+	bcm-kernel-feedback-list@broadcom.com,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	davem@davemloft.net,
+	edumazet@google.com,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	ronak.doshi@broadcom.com,
+	sankararaman.jayaraman@broadcom.com,
+	u9012063@gmail.com
+Subject: [PATCH net v2] vmxnet3: Fix tx queue race condition with XDP
+Date: Wed, 29 Jan 2025 23:47:03 +0530
+Message-Id: <20250129181703.148027-1-sankararaman.jayaraman@broadcom.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20250127143635.623dc3b0@kernel.org>
+References: <20250127143635.623dc3b0@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250127222719.2544255-1-martin.lau@linux.dev>
-In-Reply-To: <20250127222719.2544255-1-martin.lau@linux.dev>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Wed, 29 Jan 2025 10:15:30 -0800
-X-Gm-Features: AWEUYZmtHV2V_NE3p1yJUhWRponrBWhf7p_SG4WIJKbHVHlK0pN8qE2zp7rb2Pk
-Message-ID: <CAMB2axMhL1Q_5agCwVURiuET70XEReLmGPY4G2rcqYZNwpbUdw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Use kallsyms to find the function name of a
- struct_ops's stub function
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@meta.com, 
-	Tejun Heo <tj@kernel.org>, Benjamin Tissoires <bentiss@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 27, 2025 at 2:27=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
->
-> From: Martin KaFai Lau <martin.lau@kernel.org>
->
-> In commit 1611603537a4 ("bpf: Create argument information for nullable ar=
-guments."),
-> it introduced a "__nullable" tagging at the argument name of a
-> stub function. Some background on the commit:
-> it requires to tag the stub function instead of directly tagging
-> the "ops" of a struct. This is because the btf func_proto of the "ops"
-> does not have the argument name and the "__nullable" is tagged at
-> the argument name.
->
-> To find the stub function of a "ops", it currently relies on a naming
-> convention on the stub function "st_ops__ops_name".
-> e.g. tcp_congestion_ops__ssthresh. However, the new kernel
-> sub system implementing bpf_struct_ops have missed this and
-> have been surprised that the "__nullable" and the to-be-landed
-> "__ref" tagging was not effective.
->
-> One option would be to give a warning whenever the stub function does
-> not follow the naming convention, regardless if it requires arg tagging
-> or not.
->
-> Instead, this patch uses the kallsyms_lookup approach and removes
-> the requirement on the naming convention. The st_ops->cfi_stubs has
-> all the stub function kernel addresses. kallsyms_lookup() is used to
-> lookup the function name. With the function name, BTF can be used to
-> find the BTF func_proto. The existing "__nullable" arg name searching
-> logic will then fall through.
->
-> One notable change is,
-> if it failed in kallsyms_lookup or it failed in looking up the stub
-> function name from the BTF, the bpf_struct_ops registration will fail.
-> This is different from the previous behavior that it silently ignored
-> the "st_ops__ops_name" function not found error.
->
-> The "tcp_congestion_ops", "sched_ext_ops", and "hid_bpf_ops" can still be
-> registered successfully after this patch. There is struct_ops_maybe_null
-> selftest to cover the "__nullable" tagging.
->
+If XDP traffic runs on a CPU which is greater than or equal to
+the number of the Tx queues of the NIC, then vmxnet3_xdp_get_tq()
+always picks up queue 0 for transmission as it uses reciprocal scale
+instead of simple modulo operation.
 
-The patch looks good to me. Also tested with selftests in the qdisc
-set and they passed.
+vmxnet3_xdp_xmit() and vmxnet3_xdp_xmit_frame() use the above
+returned queue without any locking which can lead to race conditions
+when multiple XDP xmits run in parallel on different CPU's.
 
-Reviewed-by: Amery Hung <ameryhung@gmail.com>
+This patch uses a simple module scheme when the current CPU equals or
+exceeds the number of Tx queues on the NIC. It also adds locking in
+vmxnet3_xdp_xmit() and vmxnet3_xdp_xmit_frame() functions.
 
+Fixes: 54f00cce1178 ("vmxnet3: Add XDP support.")
+Signed-off-by: Sankararaman Jayaraman <sankararaman.jayaraman@broadcom.com>
+Signed-off-by: Ronak Doshi <ronak.doshi@broadcom.com>
+Changes v1-> v2:
+Retained the copyright dates as it is.
+Used spin_lock()/spin_unlock() instead of spin_lock_irqsave(). 
+---
+ drivers/net/vmxnet3/vmxnet3_xdp.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-> Other minor changes:
-> 1. Removed the "%s__%s" format from the pr_warn because the naming
->    convention is removed.
-> 2. The existing bpf_struct_ops_supported() is also moved earlier
->    because prepare_arg_info needs to use it to decide if the
->    stub function is NULL before calling the prepare_arg_info.
->
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: Benjamin Tissoires <bentiss@kernel.org>
-> Cc: Yonghong Song <yonghong.song@linux.dev>
-> Cc: Amery Hung <ameryhung@gmail.com>
-> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
-> ---
->  kernel/bpf/bpf_struct_ops.c | 98 +++++++++++++++++--------------------
->  1 file changed, 44 insertions(+), 54 deletions(-)
->
-> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-> index 040fb1cd840b..9b7f3b9c5262 100644
-> --- a/kernel/bpf/bpf_struct_ops.c
-> +++ b/kernel/bpf/bpf_struct_ops.c
-> @@ -146,39 +146,6 @@ void bpf_struct_ops_image_free(void *image)
->  }
->
->  #define MAYBE_NULL_SUFFIX "__nullable"
-> -#define MAX_STUB_NAME 128
-> -
-> -/* Return the type info of a stub function, if it exists.
-> - *
-> - * The name of a stub function is made up of the name of the struct_ops =
-and
-> - * the name of the function pointer member, separated by "__". For examp=
-le,
-> - * if the struct_ops type is named "foo_ops" and the function pointer
-> - * member is named "bar", the stub function name would be "foo_ops__bar"=
-.
-> - */
-> -static const struct btf_type *
-> -find_stub_func_proto(const struct btf *btf, const char *st_op_name,
-> -                    const char *member_name)
-> -{
-> -       char stub_func_name[MAX_STUB_NAME];
-> -       const struct btf_type *func_type;
-> -       s32 btf_id;
-> -       int cp;
-> -
-> -       cp =3D snprintf(stub_func_name, MAX_STUB_NAME, "%s__%s",
-> -                     st_op_name, member_name);
-> -       if (cp >=3D MAX_STUB_NAME) {
-> -               pr_warn("Stub function name too long\n");
-> -               return NULL;
-> -       }
-> -       btf_id =3D btf_find_by_name_kind(btf, stub_func_name, BTF_KIND_FU=
-NC);
-> -       if (btf_id < 0)
-> -               return NULL;
-> -       func_type =3D btf_type_by_id(btf, btf_id);
-> -       if (!func_type)
-> -               return NULL;
-> -
-> -       return btf_type_by_id(btf, func_type->type); /* FUNC_PROTO */
-> -}
->
->  /* Prepare argument info for every nullable argument of a member of a
->   * struct_ops type.
-> @@ -203,27 +170,42 @@ find_stub_func_proto(const struct btf *btf, const c=
-har *st_op_name,
->  static int prepare_arg_info(struct btf *btf,
->                             const char *st_ops_name,
->                             const char *member_name,
-> -                           const struct btf_type *func_proto,
-> +                           const struct btf_type *func_proto, void *stub=
-_func_addr,
->                             struct bpf_struct_ops_arg_info *arg_info)
->  {
->         const struct btf_type *stub_func_proto, *pointed_type;
->         const struct btf_param *stub_args, *args;
->         struct bpf_ctx_arg_aux *info, *info_buf;
->         u32 nargs, arg_no, info_cnt =3D 0;
-> +       char ksym[KSYM_SYMBOL_LEN];
-> +       const char *stub_fname;
-> +       s32 stub_func_id;
->         u32 arg_btf_id;
->         int offset;
->
-> -       stub_func_proto =3D find_stub_func_proto(btf, st_ops_name, member=
-_name);
-> -       if (!stub_func_proto)
-> -               return 0;
-> +       stub_fname =3D kallsyms_lookup((unsigned long)stub_func_addr, NUL=
-L, NULL, NULL, ksym);
-> +       if (!stub_fname) {
-> +               pr_warn("Cannot find the stub function name for the %s in=
- struct %s\n",
-> +                       member_name, st_ops_name);
-> +               return -ENOENT;
-> +       }
-> +
-> +       stub_func_id =3D btf_find_by_name_kind(btf, stub_fname, BTF_KIND_=
-FUNC);
-> +       if (stub_func_id < 0) {
-> +               pr_warn("Cannot find the stub function %s in btf\n", stub=
-_fname);
-> +               return -ENOENT;
-> +       }
-> +
-> +       stub_func_proto =3D btf_type_by_id(btf, stub_func_id);
-> +       stub_func_proto =3D btf_type_by_id(btf, stub_func_proto->type);
->
->         /* Check if the number of arguments of the stub function is the s=
-ame
->          * as the number of arguments of the function pointer.
->          */
->         nargs =3D btf_type_vlen(func_proto);
->         if (nargs !=3D btf_type_vlen(stub_func_proto)) {
-> -               pr_warn("the number of arguments of the stub function %s_=
-_%s does not match the number of arguments of the member %s of struct %s\n"=
-,
-> -                       st_ops_name, member_name, member_name, st_ops_nam=
-e);
-> +               pr_warn("the number of arguments of the stub function %s =
-does not match the number of arguments of the member %s of struct %s\n",
-> +                       stub_fname, member_name, st_ops_name);
->                 return -EINVAL;
->         }
->
-> @@ -253,21 +235,21 @@ static int prepare_arg_info(struct btf *btf,
->                                                     &arg_btf_id);
->                 if (!pointed_type ||
->                     !btf_type_is_struct(pointed_type)) {
-> -                       pr_warn("stub function %s__%s has %s tagging to a=
-n unsupported type\n",
-> -                               st_ops_name, member_name, MAYBE_NULL_SUFF=
-IX);
-> +                       pr_warn("stub function %s has %s tagging to an un=
-supported type\n",
-> +                               stub_fname, MAYBE_NULL_SUFFIX);
->                         goto err_out;
->                 }
->
->                 offset =3D btf_ctx_arg_offset(btf, func_proto, arg_no);
->                 if (offset < 0) {
-> -                       pr_warn("stub function %s__%s has an invalid tram=
-poline ctx offset for arg#%u\n",
-> -                               st_ops_name, member_name, arg_no);
-> +                       pr_warn("stub function %s has an invalid trampoli=
-ne ctx offset for arg#%u\n",
-> +                               stub_fname, arg_no);
->                         goto err_out;
->                 }
->
->                 if (args[arg_no].type !=3D stub_args[arg_no].type) {
-> -                       pr_warn("arg#%u type in stub function %s__%s does=
- not match with its original func_proto\n",
-> -                               arg_no, st_ops_name, member_name);
-> +                       pr_warn("arg#%u type in stub function %s does not=
- match with its original func_proto\n",
-> +                               arg_no, stub_fname);
->                         goto err_out;
->                 }
->
-> @@ -324,6 +306,13 @@ static bool is_module_member(const struct btf *btf, =
-u32 id)
->         return !strcmp(btf_name_by_offset(btf, t->name_off), "module");
->  }
->
-> +int bpf_struct_ops_supported(const struct bpf_struct_ops *st_ops, u32 mo=
-ff)
-> +{
-> +       void *func_ptr =3D *(void **)(st_ops->cfi_stubs + moff);
-> +
-> +       return func_ptr ? 0 : -ENOTSUPP;
-> +}
-> +
->  int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
->                              struct btf *btf,
->                              struct bpf_verifier_log *log)
-> @@ -387,7 +376,10 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_d=
-esc *st_ops_desc,
->
->         for_each_member(i, t, member) {
->                 const struct btf_type *func_proto;
-> +               void **stub_func_addr;
-> +               u32 moff;
->
-> +               moff =3D __btf_member_bit_offset(t, member) / 8;
->                 mname =3D btf_name_by_offset(btf, member->name_off);
->                 if (!*mname) {
->                         pr_warn("anon member in struct %s is not supporte=
-d\n",
-> @@ -413,7 +405,11 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_d=
-esc *st_ops_desc,
->                 func_proto =3D btf_type_resolve_func_ptr(btf,
->                                                        member->type,
->                                                        NULL);
-> -               if (!func_proto)
-> +
-> +               /* The member is not a function pointer or
-> +                * the function pointer is not supported.
-> +                */
-> +               if (!func_proto || bpf_struct_ops_supported(st_ops, moff)=
-)
->                         continue;
->
->                 if (btf_distill_func_proto(log, btf,
-> @@ -425,8 +421,9 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_de=
-sc *st_ops_desc,
->                         goto errout;
->                 }
->
-> +               stub_func_addr =3D *(void **)(st_ops->cfi_stubs + moff);
->                 err =3D prepare_arg_info(btf, st_ops->name, mname,
-> -                                      func_proto,
-> +                                      func_proto, stub_func_addr,
->                                        arg_info + i);
->                 if (err)
->                         goto errout;
-> @@ -1152,13 +1149,6 @@ void bpf_struct_ops_put(const void *kdata)
->         bpf_map_put(&st_map->map);
->  }
->
-> -int bpf_struct_ops_supported(const struct bpf_struct_ops *st_ops, u32 mo=
-ff)
-> -{
-> -       void *func_ptr =3D *(void **)(st_ops->cfi_stubs + moff);
-> -
-> -       return func_ptr ? 0 : -ENOTSUPP;
-> -}
-> -
->  static bool bpf_struct_ops_valid_to_reg(struct bpf_map *map)
->  {
->         struct bpf_struct_ops_map *st_map =3D (struct bpf_struct_ops_map =
-*)map;
-> --
-> 2.43.5
->
+diff --git a/drivers/net/vmxnet3/vmxnet3_xdp.c b/drivers/net/vmxnet3/vmxnet3_xdp.c
+index 1341374a4588..e3f94b3374f9 100644
+--- a/drivers/net/vmxnet3/vmxnet3_xdp.c
++++ b/drivers/net/vmxnet3/vmxnet3_xdp.c
+@@ -28,7 +28,7 @@ vmxnet3_xdp_get_tq(struct vmxnet3_adapter *adapter)
+ 	if (likely(cpu < tq_number))
+ 		tq = &adapter->tx_queue[cpu];
+ 	else
+-		tq = &adapter->tx_queue[reciprocal_scale(cpu, tq_number)];
++		tq = &adapter->tx_queue[cpu % tq_number];
+ 
+ 	return tq;
+ }
+@@ -124,6 +124,7 @@ vmxnet3_xdp_xmit_frame(struct vmxnet3_adapter *adapter,
+ 	u32 buf_size;
+ 	u32 dw2;
+ 
++	spin_lock(&tq->tx_lock);
+ 	dw2 = (tq->tx_ring.gen ^ 0x1) << VMXNET3_TXD_GEN_SHIFT;
+ 	dw2 |= xdpf->len;
+ 	ctx.sop_txd = tq->tx_ring.base + tq->tx_ring.next2fill;
+@@ -134,6 +135,7 @@ vmxnet3_xdp_xmit_frame(struct vmxnet3_adapter *adapter,
+ 
+ 	if (vmxnet3_cmd_ring_desc_avail(&tq->tx_ring) == 0) {
+ 		tq->stats.tx_ring_full++;
++		spin_unlock(&tq->tx_lock);
+ 		return -ENOSPC;
+ 	}
+ 
+@@ -142,8 +144,10 @@ vmxnet3_xdp_xmit_frame(struct vmxnet3_adapter *adapter,
+ 		tbi->dma_addr = dma_map_single(&adapter->pdev->dev,
+ 					       xdpf->data, buf_size,
+ 					       DMA_TO_DEVICE);
+-		if (dma_mapping_error(&adapter->pdev->dev, tbi->dma_addr))
++		if (dma_mapping_error(&adapter->pdev->dev, tbi->dma_addr)) {
++			spin_unlock(&tq->tx_lock);
+ 			return -EFAULT;
++		}
+ 		tbi->map_type |= VMXNET3_MAP_SINGLE;
+ 	} else { /* XDP buffer from page pool */
+ 		page = virt_to_page(xdpf->data);
+@@ -182,6 +186,7 @@ vmxnet3_xdp_xmit_frame(struct vmxnet3_adapter *adapter,
+ 	dma_wmb();
+ 	gdesc->dword[2] = cpu_to_le32(le32_to_cpu(gdesc->dword[2]) ^
+ 						  VMXNET3_TXD_GEN);
++	spin_unlock(&tq->tx_lock);
+ 
+ 	/* No need to handle the case when tx_num_deferred doesn't reach
+ 	 * threshold. Backend driver at hypervisor side will poll and reset
+@@ -226,6 +231,7 @@ vmxnet3_xdp_xmit(struct net_device *dev,
+ 	struct vmxnet3_adapter *adapter = netdev_priv(dev);
+ 	struct vmxnet3_tx_queue *tq;
+ 	int i;
++	struct netdev_queue *nq;
+ 
+ 	if (unlikely(test_bit(VMXNET3_STATE_BIT_QUIESCED, &adapter->state)))
+ 		return -ENETDOWN;
+@@ -236,6 +242,9 @@ vmxnet3_xdp_xmit(struct net_device *dev,
+ 	if (tq->stopped)
+ 		return -ENETDOWN;
+ 
++	nq = netdev_get_tx_queue(adapter->netdev, tq->qid);
++
++	__netif_tx_lock(nq, smp_processor_id());
+ 	for (i = 0; i < n; i++) {
+ 		if (vmxnet3_xdp_xmit_frame(adapter, frames[i], tq, true)) {
+ 			tq->stats.xdp_xmit_err++;
+@@ -243,6 +252,7 @@ vmxnet3_xdp_xmit(struct net_device *dev,
+ 		}
+ 	}
+ 	tq->stats.xdp_xmit += i;
++	__netif_tx_unlock(nq);
+ 
+ 	return i;
+ }
+-- 
+2.25.1
+
 
