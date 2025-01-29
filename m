@@ -1,207 +1,441 @@
-Return-Path: <bpf+bounces-50049-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50051-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38416A223B2
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 19:16:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1A84A22440
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 19:48:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D152A3A4B24
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 18:15:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D82A23A6A60
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 18:48:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0D611DF749;
-	Wed, 29 Jan 2025 18:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 427A61E102E;
+	Wed, 29 Jan 2025 18:48:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="J8WJTv1l"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o3dGGvMS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A42A31DE2DC
-	for <bpf@vger.kernel.org>; Wed, 29 Jan 2025 18:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2AF314F9FF;
+	Wed, 29 Jan 2025 18:48:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738174522; cv=none; b=d1mt+miMOT4BqAUncgqpBeGTaimMtdexVPJXNRmZ+lf20SeKskVMaSZS397U2xbJnsDODTdjGa9ZLktnxmERMq5U1Ar+HosC2DGSSln2BDdg7Q6OAUEFFAAuZ5Lm19THDbDS1hzwpmDoPtlRy7dc85PrkpDOJ5NKF4aoV+2QNss=
+	t=1738176496; cv=none; b=SZ289eTqucgHYzwaRX6QpzoImaqUYH+M0zAt3GTojf7+ivQ8/9Q2Dt2Owyc2xyYGs53ldBUUaPphlE6KPCmgU6hHlkfJIcOT8QSUeFFJAefYuB77PnPQcapKRYexZyTBS9A/rdybd5A0tQKPkAtmiJ0klwaQMYZeiiDPyd8tQEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738174522; c=relaxed/simple;
-	bh=wCFnbIIybuKiwpXxrJcymmC7JymqorEFQQf8dYEqH5c=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=A3L2BFXV42/HC+rwzdsLH3HoK6g/uj0DG7nMxRIVjQbAOW4ZL6YfiIKl6XZwYMzxPjob+IaiSdLgFoQunfAVIUdrzDnzPTY+PPnskf2liux+72W6LabgmU6Z5gJWGaI7Px8RaIO1l1de7sCE0M6+OpzVidTy7Hmi1EHTb9D0Y6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=J8WJTv1l; arc=none smtp.client-ip=209.85.167.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3eb7e725aa0so2940078b6e.0
-        for <bpf@vger.kernel.org>; Wed, 29 Jan 2025 10:15:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1738174518; x=1738779318; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=73largg9wahTKmlr8ZZdxSEO4OgWDT1fPbBkex8RVTQ=;
-        b=J8WJTv1ljKT6QwrWr5FBslVnBajKXTmKNzBOmjBlbZ4juSX2b3OlF/qNvfy28DC3C2
-         GSrUC/oT7XILVyme3xSVxJEqg+Rx/qFAZwds75hQQE74T+IcP7YaEOo3Jw6AMcvbPu5a
-         8Fte/vmYo8APJeesvv5Y78aYhSk5aN7o5zDhc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738174518; x=1738779318;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=73largg9wahTKmlr8ZZdxSEO4OgWDT1fPbBkex8RVTQ=;
-        b=LLSEMzKgfSgIqpCn7mmCdy1RZwnh5B7CUL7xXoIvpDKv0AU1pCaC0GUAfGj2dSryr/
-         i7MmJx7ZkITAmYYUSHUvsM1LqXFTZd8Jm0WefaH3uPR+xj2b1dwNU6ShZMt4SjbQSR+M
-         HycESIn5mD+m8DfsSuZUKTi9XavA8g9i/hsdOxmTCllXYtwsRNN1BMc5d4uviaU3hTj/
-         8/O9Hp9a/91s7ABkrIUfB4DSuSaEFVG/CkW2F65dlIY4fr5kfCkTgmksOAVSeNfP3mRR
-         NGV3yPqylol5HvmTrU1Lj3BWDkk37W6TfKclOEuf/nH4LP9nPieWvodYbHvaM+VBse2P
-         uh2w==
-X-Forwarded-Encrypted: i=1; AJvYcCVgYG4Bd5IrTuUWIuq89e70wnzebT8WwFFufH7DhEira5F54yOGkdghWMBpoAuFiGHFIDw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwJBEPMGH20rlqheadPJT6mVviVCN/nSpCCzzrWzGo3DhT9SGLg
-	wFhnpQCxUPwaODBvq1PfXpumTQ1G4fFR2J83SWQp19kTvvLvXaAGcdkLr7Ch/A==
-X-Gm-Gg: ASbGnct7GgXvDPgoJ6lwXAK8K3LD/FcUsNTlW7LMmZQ8R+ouUzovNO1Ax4TcxZ+aBLy
-	FHa/pumS4r0aZEx0nDr6HikbQXFCzrAz0m/YtWQBd1H6KawGjryYUKkb53pBNNjCKsQGaMpFfHb
-	DGek8TnfhtHovzD4RY82DStvNU96XuGKE0LBAlzoznEESRVF6X0ecVyxdwJxU74h+Lh0ZDqdMbu
-	GTQq0V7NevGUN4lAL3aYWTFVj6q60hNX3Z/nZ603fi6LVyy+U4AFi7gpODBV7fWIdVQTFSxaQk+
-	CjydatCay69mH+Gv0+idrSRMHM3ejDyA6/Q7h+96H/YLQL7CSfeUprrCH01cwpU73Xy5ajzX4Co
-	ofA3UCBBJtHkxYdN4/yaj7PGOgDU7
-X-Google-Smtp-Source: AGHT+IHP3/qOhhMPBOFZAjk+2oHo8/Wdv9U9RQ3phvQekxuOjvAA0q8p/sGBWqtGI+atxjtqN53LTw==
-X-Received: by 2002:a05:6870:2183:b0:29e:3d40:ab48 with SMTP id 586e51a60fabf-2b32f2d94d7mr2505453fac.34.1738174518629;
-        Wed, 29 Jan 2025 10:15:18 -0800 (PST)
-Received: from sankartest7x-virtual-machine.lvn.broadcom.net ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-2b28f0f325dsm4487810fac.6.2025.01.29.10.15.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jan 2025 10:15:18 -0800 (PST)
-From: Sankararaman Jayaraman <sankararaman.jayaraman@broadcom.com>
-To: kuba@kernel.org
-Cc: alexanderduyck@fb.com,
-	alexandr.lobakin@intel.com,
-	andrew+netdev@lunn.ch,
-	ast@kernel.org,
-	bcm-kernel-feedback-list@broadcom.com,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	davem@davemloft.net,
-	edumazet@google.com,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	ronak.doshi@broadcom.com,
-	sankararaman.jayaraman@broadcom.com,
-	u9012063@gmail.com
-Subject: [PATCH net v2] vmxnet3: Fix tx queue race condition with XDP
-Date: Wed, 29 Jan 2025 23:47:03 +0530
-Message-Id: <20250129181703.148027-1-sankararaman.jayaraman@broadcom.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20250127143635.623dc3b0@kernel.org>
-References: <20250127143635.623dc3b0@kernel.org>
+	s=arc-20240116; t=1738176496; c=relaxed/simple;
+	bh=CXP7BPR+I6h1lJOInWBbEeVVe76H2Yx2qxQM2byVMcw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JMBuJQDTvanDBMvfqCH8vqp9WryHm3ogoGNoWikJIpXQEDZE+i6dFJAw2ZaQUfWhQzAq03nGeZ87eq/4VOYEbTeglKPg1FMe/64xX9M8HgOcMQCiYSgPVCFC4587g7fmrVMaN7UJoLNsqrY7S3ekH8u80a73YCa5jwj5RxqGPDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o3dGGvMS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A01AC4CED1;
+	Wed, 29 Jan 2025 18:48:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738176494;
+	bh=CXP7BPR+I6h1lJOInWBbEeVVe76H2Yx2qxQM2byVMcw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=o3dGGvMSBN3rjir2qxzHa/0T9GrTLUNoK5jneY7yJ4Tw5DZ9HWPsWU0BEFJNo/I4x
+	 S79kHwnTssFcnlbDwomnqyiZklHoNn0ZaeWZiu16H91QXcfOPKHrSPrMzT6yRWapxD
+	 FJAfjsR79t8tUGi6FiCjd88G4AjmHJS5dWtUHsAVD4fwbWH+Ai6kSpKqyZt/nw1kl5
+	 8GifN3wqPbbvCSJT5Sy7gNr7W5P2UYve7zbp4uWWllZ3aMs7cq0goLQbT8OBGT+K7B
+	 Oi0WRBVFIV646sJgjkYqADmd8BTw+Q6MA0yUUvvQ2iQwH4nykxJ31AunZrqMXbSBCM
+	 Vq0juwdUb5VMQ==
+Date: Wed, 29 Jan 2025 10:48:11 -0800
+From: Namhyung Kim <namhyung@kernel.org>
+To: Chun-Tse Shao <ctshao@google.com>
+Cc: linux-kernel@vger.kernel.org, peterz@infradead.org, mingo@redhat.com,
+	acme@kernel.org, mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+	irogers@google.com, adrian.hunter@intel.com,
+	kan.liang@linux.intel.com, nathan@kernel.org,
+	ndesaulniers@google.com, morbo@google.com, justinstitt@google.com,
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: Re: [PATCH v3 2/5] perf lock: Retrieve owner callstack in bpf program
+Message-ID: <Z5p361_enAI8ZtX8@google.com>
+References: <20250129001905.619859-1-ctshao@google.com>
+ <20250129001905.619859-3-ctshao@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250129001905.619859-3-ctshao@google.com>
 
-If XDP traffic runs on a CPU which is greater than or equal to
-the number of the Tx queues of the NIC, then vmxnet3_xdp_get_tq()
-always picks up queue 0 for transmission as it uses reciprocal scale
-instead of simple modulo operation.
+On Tue, Jan 28, 2025 at 04:14:58PM -0800, Chun-Tse Shao wrote:
+> Tracing owner callstack in `contention_begin()` and `contention_end()`,
+> and storing in `owner_stat` bpf map.
 
-vmxnet3_xdp_xmit() and vmxnet3_xdp_xmit_frame() use the above
-returned queue without any locking which can lead to race conditions
-when multiple XDP xmits run in parallel on different CPU's.
+Can you please elaborate?  It'd be helpful to describe how the lock
+owner is tracked and deals with multiple waiters.  Note that owner will
+be changed when contention_end() is called (without an error).
 
-This patch uses a simple module scheme when the current CPU equals or
-exceeds the number of Tx queues on the NIC. It also adds locking in
-vmxnet3_xdp_xmit() and vmxnet3_xdp_xmit_frame() functions.
+And please mention that it can fail to get an owner and its callstack.
+Actually that's very common and only mutex (and rwsem for writing?)
+would support owner tracking.
 
-Fixes: 54f00cce1178 ("vmxnet3: Add XDP support.")
-Signed-off-by: Sankararaman Jayaraman <sankararaman.jayaraman@broadcom.com>
-Signed-off-by: Ronak Doshi <ronak.doshi@broadcom.com>
-Changes v1-> v2:
-Retained the copyright dates as it is.
-Used spin_lock()/spin_unlock() instead of spin_lock_irqsave(). 
----
- drivers/net/vmxnet3/vmxnet3_xdp.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+> 
+> Signed-off-by: Chun-Tse Shao <ctshao@google.com>
+> ---
+>  .../perf/util/bpf_skel/lock_contention.bpf.c  | 237 +++++++++++++++++-
+>  1 file changed, 235 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> index b4961dd86222..1ad2a0793c37 100644
+> --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> @@ -1,5 +1,6 @@
+>  // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>  // Copyright (c) 2022 Google
+> +#include "linux/bpf.h"
 
-diff --git a/drivers/net/vmxnet3/vmxnet3_xdp.c b/drivers/net/vmxnet3/vmxnet3_xdp.c
-index 1341374a4588..e3f94b3374f9 100644
---- a/drivers/net/vmxnet3/vmxnet3_xdp.c
-+++ b/drivers/net/vmxnet3/vmxnet3_xdp.c
-@@ -28,7 +28,7 @@ vmxnet3_xdp_get_tq(struct vmxnet3_adapter *adapter)
- 	if (likely(cpu < tq_number))
- 		tq = &adapter->tx_queue[cpu];
- 	else
--		tq = &adapter->tx_queue[reciprocal_scale(cpu, tq_number)];
-+		tq = &adapter->tx_queue[cpu % tq_number];
- 
- 	return tq;
- }
-@@ -124,6 +124,7 @@ vmxnet3_xdp_xmit_frame(struct vmxnet3_adapter *adapter,
- 	u32 buf_size;
- 	u32 dw2;
- 
-+	spin_lock(&tq->tx_lock);
- 	dw2 = (tq->tx_ring.gen ^ 0x1) << VMXNET3_TXD_GEN_SHIFT;
- 	dw2 |= xdpf->len;
- 	ctx.sop_txd = tq->tx_ring.base + tq->tx_ring.next2fill;
-@@ -134,6 +135,7 @@ vmxnet3_xdp_xmit_frame(struct vmxnet3_adapter *adapter,
- 
- 	if (vmxnet3_cmd_ring_desc_avail(&tq->tx_ring) == 0) {
- 		tq->stats.tx_ring_full++;
-+		spin_unlock(&tq->tx_lock);
- 		return -ENOSPC;
- 	}
- 
-@@ -142,8 +144,10 @@ vmxnet3_xdp_xmit_frame(struct vmxnet3_adapter *adapter,
- 		tbi->dma_addr = dma_map_single(&adapter->pdev->dev,
- 					       xdpf->data, buf_size,
- 					       DMA_TO_DEVICE);
--		if (dma_mapping_error(&adapter->pdev->dev, tbi->dma_addr))
-+		if (dma_mapping_error(&adapter->pdev->dev, tbi->dma_addr)) {
-+			spin_unlock(&tq->tx_lock);
- 			return -EFAULT;
-+		}
- 		tbi->map_type |= VMXNET3_MAP_SINGLE;
- 	} else { /* XDP buffer from page pool */
- 		page = virt_to_page(xdpf->data);
-@@ -182,6 +186,7 @@ vmxnet3_xdp_xmit_frame(struct vmxnet3_adapter *adapter,
- 	dma_wmb();
- 	gdesc->dword[2] = cpu_to_le32(le32_to_cpu(gdesc->dword[2]) ^
- 						  VMXNET3_TXD_GEN);
-+	spin_unlock(&tq->tx_lock);
- 
- 	/* No need to handle the case when tx_num_deferred doesn't reach
- 	 * threshold. Backend driver at hypervisor side will poll and reset
-@@ -226,6 +231,7 @@ vmxnet3_xdp_xmit(struct net_device *dev,
- 	struct vmxnet3_adapter *adapter = netdev_priv(dev);
- 	struct vmxnet3_tx_queue *tq;
- 	int i;
-+	struct netdev_queue *nq;
- 
- 	if (unlikely(test_bit(VMXNET3_STATE_BIT_QUIESCED, &adapter->state)))
- 		return -ENETDOWN;
-@@ -236,6 +242,9 @@ vmxnet3_xdp_xmit(struct net_device *dev,
- 	if (tq->stopped)
- 		return -ENETDOWN;
- 
-+	nq = netdev_get_tx_queue(adapter->netdev, tq->qid);
-+
-+	__netif_tx_lock(nq, smp_processor_id());
- 	for (i = 0; i < n; i++) {
- 		if (vmxnet3_xdp_xmit_frame(adapter, frames[i], tq, true)) {
- 			tq->stats.xdp_xmit_err++;
-@@ -243,6 +252,7 @@ vmxnet3_xdp_xmit(struct net_device *dev,
- 		}
- 	}
- 	tq->stats.xdp_xmit += i;
-+	__netif_tx_unlock(nq);
- 
- 	return i;
- }
--- 
-2.25.1
+Why did you add this?
 
+
+>  #include "vmlinux.h"
+>  #include <bpf/bpf_helpers.h>
+>  #include <bpf/bpf_tracing.h>
+> @@ -7,6 +8,7 @@
+>  #include <asm-generic/errno-base.h>
+>  
+>  #include "lock_data.h"
+> +#include <time.h>
+
+And this too.  I remember adding header sometimes caused a trouble in
+the build.  So I'm trying to be careful on this.  Roughly I don't think
+you need new structs or functions so I'm wondering why it's added.
+
+>  
+>  /* for collect_lock_syms().  4096 was rejected by the verifier */
+>  #define MAX_CPUS  1024
+> @@ -31,7 +33,7 @@ struct {
+>  struct {
+>  	__uint(type, BPF_MAP_TYPE_HASH);
+>  	__uint(key_size, sizeof(__u64)); // owner stacktrace
+> -	__uint(value_size, sizeof(__u64)); // owner stack id
+> +	__uint(value_size, sizeof(__s32)); // owner stack id
+>  	__uint(max_entries, 1);
+>  } owner_stacks SEC(".maps");
+>  
+> @@ -197,6 +199,9 @@ int data_fail;
+>  int task_map_full;
+>  int data_map_full;
+>  
+> +struct task_struct *bpf_task_from_pid(s32 pid) __ksym;
+> +void bpf_task_release(struct task_struct *p) __ksym;
+
+These should have __weak and you need to check if it's NULL or not
+before use to support ancient kernels.  If it's NULL then it should
+reject owner callstack tracking.  Or you can check it in userspace
+using vmlinux BTF and set lock_owner to false if it's not available.
+
+Please take a look at check_slab_cache_iter() for example.
+
+> +
+>  static inline __u64 get_current_cgroup_id(void)
+>  {
+>  	struct task_struct *task;
+> @@ -420,6 +425,27 @@ static inline struct tstamp_data *get_tstamp_elem(__u32 flags)
+>  	return pelem;
+>  }
+>  
+> +static inline s32 get_owner_stack_id(u64 *stacktrace)
+> +{
+> +	s32 *id;
+> +	static s32 id_gen = 1;
+> +
+> +	id = bpf_map_lookup_elem(&owner_stacks, stacktrace);
+> +	if (id)
+> +		return *id;
+> +
+> +	// FIXME: currently `a = __sync_fetch_and_add(...)` cause "Invalid usage of the XADD return
+> +	// value" error in BPF program: https://github.com/llvm/llvm-project/issues/91888
+> +	bpf_map_update_elem(&owner_stacks, stacktrace, &id_gen, BPF_NOEXIST);
+> +	__sync_fetch_and_add(&id_gen, 1);
+
+I'm afraid it doesn't guarantee a unique stack id.
+
+I believe BPF has atomic instructions that can do ADD and FETCH.  I'm
+not sure if it's a kernel or compiler version issue.  Have you tried
+compare-and-exchange?
+
+> +
+> +	id = bpf_map_lookup_elem(&owner_stacks, stacktrace);
+> +	if (id)
+> +		return *id;
+> +
+> +	return -1;
+> +}
+> +
+>  SEC("tp_btf/contention_begin")
+>  int contention_begin(u64 *ctx)
+>  {
+> @@ -437,6 +463,91 @@ int contention_begin(u64 *ctx)
+>  	pelem->flags = (__u32)ctx[1];
+>  
+>  	if (needs_callstack) {
+> +		u32 i = 0;
+> +		u32 id = 0;
+> +		int owner_pid;
+> +		u64 *buf;
+> +		struct task_struct *task;
+> +		struct owner_tracing_data *otdata;
+> +
+> +		if (!lock_owner)
+> +			goto skip_owner_begin;
+> +
+> +		task = get_lock_owner(pelem->lock, pelem->flags);
+> +		if (!task)
+> +			goto skip_owner_begin;
+> +
+> +		owner_pid = BPF_CORE_READ(task, pid);
+> +
+> +		buf = bpf_map_lookup_elem(&stack_buf, &i);
+> +		if (!buf)
+> +			goto skip_owner_begin;
+> +		for (i = 0; i < max_stack; i++)
+> +			buf[i] = 0x0;
+> +
+> +		task = bpf_task_from_pid(owner_pid);
+> +		if (task) {
+> +			bpf_get_task_stack(task, buf, max_stack * sizeof(unsigned long), 0);
+> +			bpf_task_release(task);
+> +		}
+> +
+> +		otdata = bpf_map_lookup_elem(&owner_data, &pelem->lock);
+> +		id = get_owner_stack_id(buf);
+> +
+> +		// Contention just happens, or corner case `lock` is owned by process not
+> +		// `owner_pid`. For the corner case we treat it as unexpected internal error and
+> +		// just ignore the precvious tracing record.
+
+Typo precvious
+
+It's unfortunate the comment style is mixed.  I'm not sure if we have a
+strict rule for BPF code but at least we need to be consistent in a file.
+Probably // is ok for a short comment at the end of line.  But please
+use C-style block comments for multi-line messages.
+
+
+> +		if (!otdata || otdata->pid != owner_pid) {
+> +			struct owner_tracing_data first = {
+> +				.pid = owner_pid,
+> +				.timestamp = pelem->timestamp,
+> +				.count = 1,
+> +				.stack_id = id,
+> +			};
+> +			bpf_map_update_elem(&owner_data, &pelem->lock, &first, BPF_ANY);
+> +		}
+> +		// Contention is ongoing and new waiter joins.
+> +		else {
+> +			__sync_fetch_and_add(&otdata->count, 1);
+> +
+> +			// The owner is the same, but stacktrace might be changed. In this case we
+> +			// store/update `owner_stat` based on current owner stack id.
+> +			if (id != otdata->stack_id) {
+> +				u64 duration = otdata->timestamp - pelem->timestamp;
+> +				struct contention_key ckey = {
+> +					.stack_id = id,
+> +					.pid = 0,
+> +					.lock_addr_or_cgroup = 0,
+> +				};
+> +				struct contention_data *cdata =
+> +					bpf_map_lookup_elem(&owner_stat, &ckey);
+> +
+> +				if (!cdata) {
+> +					struct contention_data first = {
+> +						.total_time = duration,
+> +						.max_time = duration,
+> +						.min_time = duration,
+> +						.count = 1,
+> +						.flags = pelem->flags,
+> +					};
+> +					bpf_map_update_elem(&owner_stat, &ckey, &first,
+> +							    BPF_NOEXIST);
+> +				} else {
+> +					__sync_fetch_and_add(&cdata->total_time, duration);
+> +					__sync_fetch_and_add(&cdata->count, 1);
+> +
+> +					/* FIXME: need atomic operations */
+> +					if (cdata->max_time < duration)
+> +						cdata->max_time = duration;
+> +					if (cdata->min_time > duration)
+> +						cdata->min_time = duration;
+> +				}
+
+This code block is repeating at least for 3 times.  Can you factor it
+out as a function?
+
+> +
+> +				otdata->timestamp = pelem->timestamp;
+> +				otdata->stack_id = id;
+> +			}
+> +		}
+> +skip_owner_begin:
+>  		pelem->stack_id = bpf_get_stackid(ctx, &stacks,
+>  						  BPF_F_FAST_STACK_CMP | stack_skip);
+>  		if (pelem->stack_id < 0)
+> @@ -473,6 +584,7 @@ int contention_end(u64 *ctx)
+>  	struct tstamp_data *pelem;
+>  	struct contention_key key = {};
+>  	struct contention_data *data;
+> +	__u64 timestamp;
+>  	__u64 duration;
+>  	bool need_delete = false;
+>  
+> @@ -499,12 +611,133 @@ int contention_end(u64 *ctx)
+>  			return 0;
+>  		need_delete = true;
+>  	}
+> -	duration = bpf_ktime_get_ns() - pelem->timestamp;
+> +	timestamp = bpf_ktime_get_ns();
+> +	duration = timestamp - pelem->timestamp;
+>  	if ((__s64)duration < 0) {
+>  		__sync_fetch_and_add(&time_fail, 1);
+>  		goto out;
+>  	}
+>  
+> +	if (needs_callstack && lock_owner) {
+> +		u64 owner_time;
+> +		struct contention_key ckey = {};
+> +		struct contention_data *cdata;
+> +		struct owner_tracing_data *otdata;
+> +
+> +		otdata = bpf_map_lookup_elem(&owner_data, &pelem->lock);
+> +		if (!otdata)
+> +			goto skip_owner_end;
+> +
+> +		// Update `owner_stat`.
+> +		owner_time = timestamp - otdata->timestamp;
+> +		ckey.stack_id = otdata->stack_id;
+> +		cdata = bpf_map_lookup_elem(&owner_stat, &ckey);
+> +
+> +		if (!cdata) {
+> +			struct contention_data first = {
+> +				.total_time = owner_time,
+> +				.max_time = owner_time,
+> +				.min_time = owner_time,
+> +				.count = 1,
+> +				.flags = pelem->flags,
+> +			};
+> +			bpf_map_update_elem(&owner_stat, &ckey, &first, BPF_NOEXIST);
+> +		} else {
+> +			__sync_fetch_and_add(&cdata->total_time, owner_time);
+> +			__sync_fetch_and_add(&cdata->count, 1);
+> +
+> +			/* FIXME: need atomic operations */
+> +			if (cdata->max_time < owner_time)
+> +				cdata->max_time = owner_time;
+> +			if (cdata->min_time > owner_time)
+> +				cdata->min_time = owner_time;
+> +		}
+> +
+> +		// No contention is occurring, delete `lock` entry in `owner_data`.
+> +		if (otdata->count <= 1)
+> +			bpf_map_delete_elem(&owner_data, &pelem->lock);
+> +		// Contention is still ongoing, with a new owner (current task). `owner_data`
+> +		// should be updated accordingly.
+> +		else {
+> +			u32 i = 0;
+> +			u64 *buf;
+> +
+> +			// FIXME: __sync_fetch_and_sub(&otdata->count, 1) causes compile error.
+> +			otdata->count--;
+
+What about __sync_fetch_and_add(..., -1) ?  It doesn't seem BPF atomic
+operations have SUB.
+
+https://docs.kernel.org/bpf/standardization/instruction-set.html#atomic-operations
+
+> +
+> +			buf = bpf_map_lookup_elem(&stack_buf, &i);
+> +			if (!buf)
+> +				goto skip_owner_end;
+> +			for (i = 0; i < (u32)max_stack; i++)
+> +				buf[i] = 0x0;
+> +
+> +			// ctx[1] has the return code of the lock function.
+
+Why not adding 's32 ret = (s32)ctx[1]' ?
+
+Thanks,
+Namhyung
+
+
+> +			// If ctx[1] is not 0, the current task terminates lock waiting without
+> +			// acquiring it. Owner is not changed, but we still need to update the owner
+> +			// stack.
+> +			if (!ctx[1]) {
+> +				s32 id = 0;
+> +				struct task_struct *task = bpf_task_from_pid(otdata->pid);
+> +
+> +				if (task) {
+> +					bpf_get_task_stack(task, buf,
+> +							   max_stack * sizeof(unsigned long), 0);
+> +					bpf_task_release(task);
+> +				}
+> +
+> +				id = get_owner_stack_id(buf);
+> +
+> +				// If owner stack is changed, update `owner_data` and `owner_stat`
+> +				// accordingly.
+> +				if (id != otdata->stack_id) {
+> +					u64 duration = otdata->timestamp - pelem->timestamp;
+> +					struct contention_key ckey = {
+> +						.stack_id = id,
+> +						.pid = 0,
+> +						.lock_addr_or_cgroup = 0,
+> +					};
+> +					struct contention_data *cdata =
+> +						bpf_map_lookup_elem(&owner_stat, &ckey);
+> +
+> +					if (!cdata) {
+> +						struct contention_data first = {
+> +							.total_time = duration,
+> +							.max_time = duration,
+> +							.min_time = duration,
+> +							.count = 1,
+> +							.flags = pelem->flags,
+> +						};
+> +						bpf_map_update_elem(&owner_stat, &ckey, &first,
+> +								    BPF_NOEXIST);
+> +					} else {
+> +						__sync_fetch_and_add(&cdata->total_time, duration);
+> +						__sync_fetch_and_add(&cdata->count, 1);
+> +
+> +						/* FIXME: need atomic operations */
+> +						if (cdata->max_time < duration)
+> +							cdata->max_time = duration;
+> +						if (cdata->min_time > duration)
+> +							cdata->min_time = duration;
+> +					}
+> +
+> +					otdata->timestamp = pelem->timestamp;
+> +					otdata->stack_id = id;
+> +				}
+> +			}
+> +			// If ctx[1] is 0, then update tracinng data with the current task, which is
+> +			// the new owner.
+> +			else {
+> +				otdata->pid = pid;
+> +				otdata->timestamp = timestamp;
+> +
+> +				bpf_get_task_stack(bpf_get_current_task_btf(), buf,
+> +						   max_stack * sizeof(unsigned long), 0);
+> +				otdata->stack_id = get_owner_stack_id(buf);
+> +			}
+> +		}
+> +	}
+> +skip_owner_end:
+> +
+>  	switch (aggr_mode) {
+>  	case LOCK_AGGR_CALLER:
+>  		key.stack_id = pelem->stack_id;
+> -- 
+> 2.48.1.262.g85cc9f2d1e-goog
+> 
 
