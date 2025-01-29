@@ -1,205 +1,91 @@
-Return-Path: <bpf+bounces-50052-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50053-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8EF3A22497
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 20:36:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE5B2A22503
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 21:13:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E129B3A3F0D
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 19:36:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF938167E3A
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 20:13:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B58E61E2606;
-	Wed, 29 Jan 2025 19:36:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A81651E3DCD;
+	Wed, 29 Jan 2025 20:13:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0HmYxwJ4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fqwplmzG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A620F197552
-	for <bpf@vger.kernel.org>; Wed, 29 Jan 2025 19:36:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F25529A2;
+	Wed, 29 Jan 2025 20:13:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738179376; cv=none; b=bOEJfuq9GzarDKcKf90S+tTyvtZksNxbkg4vGmiSVHCPynUIF7ypDNKYnUP3EsUnMRiHepcCk5MUfxdsu0lShapUR1nEg1bbg/0Kc53cyjjEMx9yIYCSiN1LZw/RyRkEsuspv9uzuVja9ybZcIIdbGya43TY4ANRmihCVbG8OsA=
+	t=1738181600; cv=none; b=avqVk5wC/QmFDQG8+AbJWdW1H9Ot7IFYwYuFMaMNZc0tSRGaikCjBvZCnfjdtsn/0J4uMUPwIQcBKpvWq9J/++cP65LNqqSKqeSaQcZYyCsGTUYV8w6L2bAhwfNryFR9/7mbDTI/nZ3G3mrmYUiorarX0iJSn1rl2uxy4iD8XwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738179376; c=relaxed/simple;
-	bh=aog1npG7zbwvqSDpQbzTFt1LmdJAZBP9KpuHlfTmsXY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CuOw74O+gyeHIBMhBarDlz9zEF18NKJ9NrfpjVWZ3pNK0CsMri7mg7j/Iq3zth81Kz8/+ed+zLXLC5tpK1dOOgJMgk/IE8YGA35IRRrbU8haqS0/qU4kgfTz0l6amKbcFstUCpHsNE2eFoUJuvbpTJGsDsoqFPghuClgkUmrktc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0HmYxwJ4; arc=none smtp.client-ip=209.85.166.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-3ce82195aa0so19195ab.0
-        for <bpf@vger.kernel.org>; Wed, 29 Jan 2025 11:36:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1738179374; x=1738784174; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VfFH/icuVW98ZGt4CSx3c++Z8r68yk+i5Ztzc10SRjo=;
-        b=0HmYxwJ4LOW9bFJKd2cFv7WQuYJsfOZJNlwOs6IdItWZpgvBlJqhHkzQr/g4hXWTRU
-         AuWi6m4fH8YkWsT+NFNhX7UcxCm7iC+/xtNreTpArKBeQ3CHVf1NYFSDCXPIXT5YPGdg
-         xp22RKdq0fgySY+XEMiKJtupSm0JpQ7/prUw1p005ET1z0+QBjeGWdJUKety7/Nv9c6d
-         YMh7zPCao7lyAYELpYxKjYRWgUdio+TiWcv3ISnubJnH+LEqkqFSqAd5eSn2hi26vVjj
-         O56/Hh2cw5paVlg5cQlHUo+pxq5n7049eSXecn9TucJ88+KHyvpWPObEsVB+JBsm7xTE
-         Ywow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738179374; x=1738784174;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VfFH/icuVW98ZGt4CSx3c++Z8r68yk+i5Ztzc10SRjo=;
-        b=nLS0oBJD1W41AyDHxk+bGt/zuZhJg/ci5r4PXi1EHtLuObv9JXuUBHSTngT6cF2khJ
-         NIVM/zIXpm7pxBHwX0Y0jh1TFqiY07RLnpk8+uXo3/mU+/7t+nuGQvAX6tPTLNU29Pez
-         oXZySOjtHX122lo/5nE8bOBbST9dVbqxfDNuRXVDSC7Rtk2kXL/UbKqDj+VntJaNtmOv
-         ucm3+1kg/BE2P/0ln9QJ4ei9IJ9q5rzMVSe6XdlQSKiP2Lqr8qxFeu2M/jvt4E9oONZH
-         7BEj8Aw6yPEsVX47hO2mRb+ISogK7mVFG/zh3o3uNEM4NNinbHROtKmoEDr64e+fc1zL
-         VnEw==
-X-Forwarded-Encrypted: i=1; AJvYcCWV2U/+GaL0tSSOyaH/d3L/ZtbpQFf//pgoR2M7X8ABKb96Rvf+iehKGNH/BHK9uIy9dMo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw+up7z1t4FHIhIaPfCrdRkP3M6Sla+ppf58VSt52APaaKiDocr
-	2iTYdgdCzBIFqw3DhXI1Y/ATlxcPQyLNMkTwpU4lNd8rDoUcGtFGU9XOcMKnA0CwSPFezkr2v7d
-	VEuPv+U9zfn93U3DnOeGac5PhHGKwFYu9gBhK
-X-Gm-Gg: ASbGncsdU3zXBj2olh1mRlpkQqydlCkuupeEUGQbezAYQIDy6wjvR5ioLD9dIlZJRg7
-	T74P5m6v6DRnPVUVA/O6+UVO+EKRJXvppR/wV5p4AIDSkG4KhsTiDtJQyMybrV/dj/4c0rtvVBM
-	OUUjsXoXM6icKC0blSPjGZF4bk
-X-Google-Smtp-Source: AGHT+IHyvEbAe7I0uASeZ+x+1BrZI4xyMO5ykKohX5lInnnPkEZRh2gj5blNBgj45TmtVMq4eUjQ2lW7CVyEyBVLIP8=
-X-Received: by 2002:a05:6e02:1987:b0:3ce:471b:1ae4 with SMTP id
- e9e14a558f8ab-3d009a2f410mr216695ab.5.1738179373545; Wed, 29 Jan 2025
- 11:36:13 -0800 (PST)
+	s=arc-20240116; t=1738181600; c=relaxed/simple;
+	bh=jWFk2NmkYKMUSK6oUQcdr+W+82tqugnkobd+Ux4WpbY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ouY7LmZ6ys4OPfxMCUI5yGs5nUu0ysGfW1eZqy+Hlt+uM37J0YgTbslQYEGTqBdPQVSBb03yLtzJEzrJF2HC0VuOWi78X/cAOD3fXFrx/5sl0KrCJXZS8kfjWUwFNp1Vlvgo//uX/n13fXrZfzd7kTNdFND0xmV3A64DbrTYNG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fqwplmzG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D335AC4CED3;
+	Wed, 29 Jan 2025 20:13:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738181599;
+	bh=jWFk2NmkYKMUSK6oUQcdr+W+82tqugnkobd+Ux4WpbY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=fqwplmzGNiVcRgETJDn5qxPGxpQtmUHQv2fb0BaUe+6XRyERP86tSrMgppMYSpcGJ
+	 cm3bue1HOQ9B/egsS2HkdTuKZV7aIGQ1Hxg70khGOwJcwUNSjj4t+2kdNhkodqXHBe
+	 4phqulNSuLSh9M5wxL+SHFr6t10rxQqgqFOBMsIRbCwL2WeDqLurD7dPIPSRpqiYxO
+	 lJiYXnsfOA8S4fiicZ1kyD+9F4qwEn/BL0bqvgQOLUW2Ki9fqQpS138LSdC5l243Wn
+	 B/3atujtwiGy8IPF4UfbrLJk+Cy8yHUSkQOauOK0qJIFHEHGZXTkhu6e+z+TS/dv71
+	 0HBPShnaE1PYA==
+Message-ID: <5072d959-5bfa-4b8a-8bb4-496df7940919@kernel.org>
+Date: Wed, 29 Jan 2025 20:13:14 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250122174308.350350-1-irogers@google.com> <20250122174308.350350-14-irogers@google.com>
- <gnwmibvjtwboisw7uv32bdo4ziw4qzgwzvndqg2czpa6vp4olv@44n36ndbwobc>
- <CAP-5=fW9nM9zoQ5SQOq2HQfkougRotm=EBw99cvGDOpD=giK2g@mail.gmail.com> <jgxfnphfo3nzlfipnuuzdlfc4ehbr2tnh2evz3mdhynd6wvrsu@fcz6vrvepybb>
-In-Reply-To: <jgxfnphfo3nzlfipnuuzdlfc4ehbr2tnh2evz3mdhynd6wvrsu@fcz6vrvepybb>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 29 Jan 2025 11:36:02 -0800
-X-Gm-Features: AWEUYZkc7cnANysO6DBXAQ06kDYu_R25G9BqfZ2LqG1BThHYjZpq_jsx4qaWxvk
-Message-ID: <CAP-5=fVcF+F7ST3Ya0_3hXq69ArhZv0gy30U4SPC7Cqih7HAWA@mail.gmail.com>
-Subject: Re: [PATCH v3 13/18] perf build: Remove libbfd support
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Aditya Gupta <adityag@linux.ibm.com>, "Steinar H. Gunderson" <sesse@google.com>, 
-	Charlie Jenkins <charlie@rivosinc.com>, Changbin Du <changbin.du@huawei.com>, 
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, James Clark <james.clark@linaro.org>, 
-	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Li Huafei <lihuafei1@huawei.com>, Dmitry Vyukov <dvyukov@google.com>, 
-	Andi Kleen <ak@linux.intel.com>, Chaitanya S Prakash <chaitanyas.prakash@arm.com>, 
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	llvm@lists.linux.dev, Song Liu <song@kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/6] tools: selftests/bpf: test_bpftool_synctypes: escape
+ raw symbols
+To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>,
+ Eduard Zingerman <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Mykola Lysenko <mykolal@fb.com>,
+ Stanislav Fomichev <sdf@fomichev.me>, Yonghong Song
+ <yonghong.song@linux.dev>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <cover.1738171937.git.mchehab+huawei@kernel.org>
+ <12d8c07cc7bcea017f67774741f9a59d04c2f20d.1738171937.git.mchehab+huawei@kernel.org>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <12d8c07cc7bcea017f67774741f9a59d04c2f20d.1738171937.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 29, 2025 at 8:47=E2=80=AFAM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> On Tue, Jan 28, 2025 at 05:40:44PM -0800, Ian Rogers wrote:
-> > On Tue, Jan 28, 2025 at 4:31=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote=
-:
-> > >
-> > > Hi Ian,
-> > >
-> > > On Wed, Jan 22, 2025 at 09:43:03AM -0800, Ian Rogers wrote:
-> > > > libbfd is license incompatible with perf and building requires the
-> > > > BUILD_NONDISTRO=3D1 build flag. Remove the code to simplify the cod=
-e
-> > > > base.
-> > > >
-> > > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > > ---
-> > > >  tools/perf/Documentation/perf-check.txt |   1 -
-> > > >  tools/perf/Makefile.config              |  38 +---
-> > > >  tools/perf/builtin-check.c              |   1 -
-> > > >  tools/perf/tests/Build                  |   1 -
-> > > >  tools/perf/tests/builtin-test.c         |   1 -
-> > > >  tools/perf/tests/pe-file-parsing.c      | 101 ----------
-> > > >  tools/perf/tests/tests.h                |   1 -
-> > > >  tools/perf/util/demangle-cxx.cpp        |  13 +-
-> > > >  tools/perf/util/disasm_bpf.c            | 166 ----------------
-> > > >  tools/perf/util/srcline.c               | 243 +-------------------=
-----
-> > > >  tools/perf/util/symbol-elf.c            |  86 +--------
-> > > >  tools/perf/util/symbol.c                | 135 -------------
-> > > >  tools/perf/util/symbol.h                |   4 -
-> > > >  13 files changed, 7 insertions(+), 784 deletions(-)
-> > > >  delete mode 100644 tools/perf/tests/pe-file-parsing.c
-> > >
-> > > [..]
-> > >
-> > > I was briefly investigating why the centos build of perf was not
-> > > demangling rust v0 symbols [0]. From looking at the rust issue [1], i=
-t
-> > > appears the rust team somehow delivered support for v0 demangling
-> > > through libbfd. The code itself looked a bit odd (relying on cxx
-> > > demangle to run first?), but that's a separate thing.
-> >
-> > There is still C++ demangling support by way of cxxabi:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.gi=
-t/tree/tools/perf/util/demangle-cxx.cpp?h=3Dperf-tools-next#n44
-> > that was in libstdc++ (GNU) and libcxx (LLVM) when I looked.
-> >
-> > > The centos build does not build with libbfd for the license issues yo=
-u
-> > > mentioned. So your change probably won't regress any distro use cases=
-.
-> > > But it does remove support for motivated users who don't have
-> > > re-distribution requirements.
-> > >
-> > > But since this patchset came up first in my search, I thought it'd be
-> > > good to mention that someone probably needs to add v0 support to
-> > > tools/perf/util/demangle-rust.c.
-> >
-> > So I don't see any libbfd dependencies in demangle-rust.c:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.gi=
-t/tree/tools/perf/util/demangle-rust.c?h=3Dperf-tools-next#n8
-> > Unusually we don't have any tests on the Rust demangling, we do for
-> > Java and OCaml:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.gi=
-t/tree/tools/perf/tests/demangle-java-test.c?h=3Dperf-tools-next
-> > https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.gi=
-t/tree/tools/perf/tests/demangle-ocaml-test.c?h=3Dperf-tools-next
-> >
-> > Reading a bit more it seems that previous libiberty was coming to the
-> > rescue by way of C++ demangling. I'll see if I can write a demangler
-> > by way of lex and yacc.
->
-> Cool :)
+2025-01-29 18:39 UTC+0100 ~ Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org>
+> Modern Python versions complain about usage of "\" inside normal
+> strings, as they should use r-string notation.
+> 
+> Change the annotations there to avoid such warnings:
+> 
+> 	tools/testing/selftests/bpf/test_bpftool_synctypes.py:319: SyntaxWarning: invalid escape sequence '\w' pattern = re.compile('([\w-]+) ?(?:\||}[ }\]"])')
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Not by way of lex and yacc, as it seemed overkill, but I sent out:
-https://lore.kernel.org/lkml/20250129193037.573431-1-irogers@google.com/
-I only tested with the examples from the doc. If you could take a look.
+Hi, and thanks! But please note we have a fix for this in the bpf-next
+tree already:
 
-> > If we have a v0 standard one is there any
-> > value in the existing demangler or legacy demangling? It seems this
-> > has been broken for the best part of 5 years.
->
-> I believe the "legacy" symbol format is still the rust default. So
-> probably can't remove that. Looks like there's some desire to change
-> that, probably probably not very soon [0].
->
-> That probably also explains why nobody reported the breakage - only very
-> cool kids are using v0 scheme currently.
-
-Ok. I wasn't sure on the status so I've tried to incorporate the
-previous legacy support and the v0 support in my patch.
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=c5d2bac978c513e1f22273cba9c55db3778032e5
 
 Thanks,
-Ian
-
-> Thanks,
-> Daniel
->
->
-> [0]: https://github.com/rust-lang/rust/pull/89917
+Quentin
 
