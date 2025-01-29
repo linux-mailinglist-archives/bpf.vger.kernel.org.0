@@ -1,81 +1,90 @@
-Return-Path: <bpf+bounces-50024-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50025-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C595A218C0
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 09:17:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7113A21944
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 09:48:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DB93165A68
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 08:17:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39599188715C
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 08:48:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8C8F199E84;
-	Wed, 29 Jan 2025 08:17:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4D831A262A;
+	Wed, 29 Jan 2025 08:47:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="f7VyE5jl";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MimCJlxB"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DkQ2RiM7";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="zsx3Trl7"
 X-Original-To: bpf@vger.kernel.org
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA0BA190665
-	for <bpf@vger.kernel.org>; Wed, 29 Jan 2025 08:17:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C88DF2D627;
+	Wed, 29 Jan 2025 08:47:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738138651; cv=none; b=QlQ23UxZlAUs+YSovgAYafnWWCyG43nOAoqOBeHyP3CYb61gL7vHC6qXcAd3Bck7SzhHB87e6r5IUI8sLblIle8WJHQvofzljZxX5I7kQvglFNXyUiXpoTmZkE2EX1izc6p4C0jgpk2vh4olK1YXSXf4/hlZ6tNbp91/l1b9L6I=
+	t=1738140476; cv=none; b=qTtbmSHHbdYg1GmjimQaKlDM4SqSp2X7y9/RroCAL4UhOCL0EuVYI7VQKeUgGKFr/4YeeTLiDfxC3ZrPvpZmVCKm1iOLKSLOo38+UWVAH/TO1/5w90tC18XqBxam7devQTQbNfCtMU4jVh7znQDY0qc3XxfSZtDw/rqhk+I7Cto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738138651; c=relaxed/simple;
-	bh=UroWcRB17LjL6KOfHOUVBAVoQiHB6oRzVu2kG52FCWU=;
+	s=arc-20240116; t=1738140476; c=relaxed/simple;
+	bh=IRSYsnFTl7GoJrzCtumS87btxucbhXtd4YE2R0MqWwo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O22Cy4rtHOS3mZZdgirSDaCKkLWgh8I4XAuFcwerH02RMmEn2bq6EdsiPILTRF/waxXSfQVEXcGCc3flLbKBhLKvvPuy7EIQsF5yp90Gg60TRDaZ7FjknSWtJ508Eo7L5HxZfwZAoTbECeagNB2yQncIs3NUAeMoB9Zv1cXt+9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=f7VyE5jl; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MimCJlxB; arc=none smtp.client-ip=193.142.43.55
+	 Content-Type:Content-Disposition:In-Reply-To; b=eMgp6551FLjVYtpgjyJ1qs3sIJsBxAgUcaJm3RF/kUQeQtu8XWcYHLLZ/+1inaO6ibfljmRnKqQ5aZ+YR+xH/QSQkvRqBG3MSxgtpetUs+SxEL9qZP/Dw8ILtlYKRxW5eN2p+Q3O4itbwsZI5XNS7QJvTeVWRQKr1obwGpBp+44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DkQ2RiM7; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=zsx3Trl7; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 29 Jan 2025 09:17:26 +0100
+Date: Wed, 29 Jan 2025 09:47:51 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1738138647;
+	s=2020; t=1738140473;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ubwupqMU7Aau/E7dbQGwTNwl8txzA7eXEiahExGy9ko=;
-	b=f7VyE5jlkeMJYQW+38wMyNw1JoDJCSfqaIFhvRQi2Wn5ny//hE7VhEK8cY2IDTyffME3WE
-	UNiGP89/Y9a3QrrvG7T6Mb6goiuIUSKYaDYZNEJ0HL/M7BuMH93OrdL4p6HbVPH+d7Ndly
-	XTOx3GI8Px/TrCRGscaDHCZ1zElTWB84STX4fp1Bkzs++MKe7n1v0nFOHmfk0tXTy0KnpT
-	qOWx5jadgIRjW9Zu4UJ7VOAn3J21ep1MJwEW6iRB0oBZRApbqwpxs4+FiB+p3d0RyLPPRS
-	bryEU1K1kHmC9H04T3qLzupUmDefcu/tXuKMrrFJ/y6W2CYU8v+jgWqjhMxCEA==
+	bh=ksEbIYmixQ1riVYIMLfOM0Bq27Mu3VzLFkEyv4A1JMI=;
+	b=DkQ2RiM7VSLwAjmNtu4+jvU9jzzhb/S1miMl0+tE+SRj4pMPnS9N5AVs5yT7um75MFEEnh
+	ErRP6z2obh1gkfZUSZzgBMD4oDAkKXhDz+x+w74bgcU6H1MV6DQ3Ss5E/zjqGNcekpbmF6
+	7LYqjvD5YMutYQ2g95L+g4PY5b48W1cVogwbZvG1v6tbb7UHlYBgWI0gGXQr6eyEChPUov
+	6x+w+pTZdi7An0OdHaAhTH6TJz/8lDWDmVq8f2uW6X3VtNgyynjESd39anTijK3IVGAZL2
+	insmXgaMjO/ePMt/Y8rbZjKsEikE9PiwjBLQWZSOVSXyIuYqYFXqEc/IhDN4bQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1738138647;
+	s=2020e; t=1738140473;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ubwupqMU7Aau/E7dbQGwTNwl8txzA7eXEiahExGy9ko=;
-	b=MimCJlxB6a/6gptRkHvVOAV5C8ZGLogrWeMJaZH0qKU5uRqcyXwlgDS0y3btGfhC2wRgF4
-	BR5LfQoqCWVlhABA==
+	bh=ksEbIYmixQ1riVYIMLfOM0Bq27Mu3VzLFkEyv4A1JMI=;
+	b=zsx3Trl7xAMFkt/jBr9+KNuIqR553V9Aui8t1Eor0XOsU3j8o7oiiLYWgY0xtpHqSSsU0E
+	gSurOZXoerJuoODw==
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>
-Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Michal Hocko <mhocko@suse.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>,
-	Tejun Heo <tj@kernel.org>, linux-mm <linux-mm@kvack.org>,
-	Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next v6 3/6] locking/local_lock: Introduce
- local_trylock_t and local_trylock_irqsave()
-Message-ID: <20250129081726.vGHs_2kD@linutronix.de>
-References: <20250124035655.78899-1-alexei.starovoitov@gmail.com>
- <20250124035655.78899-4-alexei.starovoitov@gmail.com>
- <20250128172137.bLPGqHth@linutronix.de>
- <CAADnVQ+6YD=jzx08ynUDo=ptFbD62o17ozymFfycF5WbPb9GbA@mail.gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: linux-modules@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+	Daniel Gomez <da.gomez@samsung.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Petr Pavlu <petr.pavlu@suse.com>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eduard Zingerman <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Matt Bobrowski <mattbobrowski@google.com>,
+	Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>,
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
+Subject: [PATCH v3.5 25/28] bpf: Use RCU in all users of
+ __module_text_address().
+Message-ID: <20250129084751.tH6iidUO@linutronix.de>
+References: <20250108090457.512198-1-bigeasy@linutronix.de>
+ <20250108090457.512198-26-bigeasy@linutronix.de>
+ <CAADnVQJPf9N1THd4DXbOC=UthYvaPmOm5xQD2rcFunGXp6h5_g@mail.gmail.com>
+ <20250109205440.J5EYqOuu@linutronix.de>
+ <CAADnVQKOB0AB+VGuO5aG6LCMdfkEp3ACyDmqkX0fk9nFNeUmDw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,65 +93,93 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAADnVQ+6YD=jzx08ynUDo=ptFbD62o17ozymFfycF5WbPb9GbA@mail.gmail.com>
+In-Reply-To: <CAADnVQKOB0AB+VGuO5aG6LCMdfkEp3ACyDmqkX0fk9nFNeUmDw@mail.gmail.com>
 
-PeterZ, may I summon you.
+__module_address() can be invoked within a RCU section, there is no
+requirement to have preemption disabled.
 
-On 2025-01-28 10:50:33 [-0800], Alexei Starovoitov wrote:
-> On Tue, Jan 28, 2025 at 9:21=E2=80=AFAM Sebastian Andrzej Siewior
-> <bigeasy@linutronix.de> wrote:
-> >
-> > On 2025-01-23 19:56:52 [-0800], Alexei Starovoitov wrote:
-> > > Usage:
-> > >
-> > > local_lock_t lock;                     // sizeof(lock) =3D=3D 0 in !RT
-> > > local_lock_irqsave(&lock, ...);        // irqsave as before
-> > > if (local_trylock_irqsave(&lock, ...)) // compilation error
-> > >
-> > > local_trylock_t lock;                  // sizeof(lock) =3D=3D 4 in !RT
-> > > local_lock_irqsave(&lock, ...);        // irqsave and active =3D 1
-> > > if (local_trylock_irqsave(&lock, ...)) // if (!active) irqsave
-> >
-> > so I've been looking at this for a while and I don't like the part where
-> > the type is hidden away. It is then casted back. So I tried something
-> > with _Generics but then the existing guard implementation complained.
-> > Then I asked myself why do we want to hide much of the implementation
-> > and not make it obvious.
->=20
-> Well, the idea of hiding extra field with _Generic is to avoid
-> the churn:
->=20
-> git grep -E 'local_.*lock_irq'|wc -l
-> 42
+Replace the preempt_disable() section around __module_address() with
+RCU.
 
-This could be also hidden with a macro defining the general body and
-having a place holder for "lock primitive".
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Hao Luo <haoluo@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Matt Bobrowski <mattbobrowski@google.com>
+Cc: Song Liu <song@kernel.org>
+Cc: Stanislav Fomichev <sdf@fomichev.me>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org
+Cc: linux-trace-kernel@vger.kernel.org
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
 
-> I think the api is clean enough and _Generic part is not exposed
-> to users.
-> Misuse or accidental usage is not possible either.
-> See the point:
-> if (local_trylock_irqsave(&lock, ...)) // compilation error
->=20
-> So imo it's a better tradeoff.
->=20
-> > is this anywhere near possible to accept?
->=20
-> Other than churn it's fine.
-> I can go with it if you insist,
-> but casting and _Generic() I think is cleaner.
-> Certainly a bit unusual pattern.
-> Could you sleep on it?
+The previous version was broken in terms that the break statement broke
+out of the scoped_guard loop and added something to the list. This is
+now fixed by adding the "skip_add" bool.
+While at it, I updated the comment by removing the "we".
 
-The cast there is somehow=E2=80=A6 We could have BUILD_BUG_ON() to ensure a
-stable the layout of the structs=E2=80=A6 However all this is not my call.
+ kernel/trace/bpf_trace.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-PeterZ, do you have any preferences or an outline what you would like to
-see here?
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index adc947587eb81..e6a17a60d8787 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -2345,10 +2345,9 @@ void bpf_put_raw_tracepoint(struct bpf_raw_event_map *btp)
+ {
+ 	struct module *mod;
+ 
+-	preempt_disable();
++	guard(rcu)();
+ 	mod = __module_address((unsigned long)btp);
+ 	module_put(mod);
+-	preempt_enable();
+ }
+ 
+ static __always_inline
+@@ -2932,18 +2931,21 @@ static int get_modules_for_addrs(struct module ***mods, unsigned long *addrs, u3
+ 	u32 i, err = 0;
+ 
+ 	for (i = 0; i < addrs_cnt; i++) {
++		bool skip_add = false;
+ 		struct module *mod;
+ 
+-		preempt_disable();
+-		mod = __module_address(addrs[i]);
+-		/* Either no module or we it's already stored  */
+-		if (!mod || has_module(&arr, mod)) {
+-			preempt_enable();
+-			continue;
++		scoped_guard(rcu) {
++			mod = __module_address(addrs[i]);
++			/* Either no module or it's already stored  */
++			if (!mod || has_module(&arr, mod)) {
++				skip_add = true;
++				break; /* scoped_guard */
++			}
++			if (!try_module_get(mod))
++				err = -EINVAL;
+ 		}
+-		if (!try_module_get(mod))
+-			err = -EINVAL;
+-		preempt_enable();
++		if (skip_add)
++			continue;
+ 		if (err)
+ 			break;
+ 		err = add_module(&arr, mod);
+-- 
+2.47.2
 
-> I can do s/local_trylock_t/localtry_lock_t/.
-> That part is trivial.
-
-Sebastian
 
