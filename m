@@ -1,401 +1,83 @@
-Return-Path: <bpf+bounces-50063-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50064-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FF61A22564
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 22:02:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26DC4A22591
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 22:20:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99B73188787A
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 21:02:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8ED0616712E
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 21:20:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 246101E9B05;
-	Wed, 29 Jan 2025 21:00:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F85A1E2838;
+	Wed, 29 Jan 2025 21:20:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tRKfG7lh"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qCwBoij2"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93C3142A92;
-	Wed, 29 Jan 2025 21:00:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 278C919CC33
+	for <bpf@vger.kernel.org>; Wed, 29 Jan 2025 21:20:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738184457; cv=none; b=OozPCdb3G+4fuuau/zM3QGtwFZsatBAnRui81ikkffPzhsd7UIcWNy21rrZVGWVnLwleFMKCS5RE6zI2iRLdO79MZbxnE2kp5C8KR2AI+WA1X/EDjMSJ4lQ4GdB+M98OqHmOtB2LJlne+1tCNMOPX4d4dE+TW4/gDfw/83SbOdc=
+	t=1738185638; cv=none; b=CDv+zruSM0DvdHTwBK1h9EheiUC4iaeWQgvd6nD7nNeOhFArFGU82KW+ypKy++zWLXf2nxHrF//YjrxgG1ADLTngzabRkc2aRtoIEt2E63hEROHGNr33T1scfr79kjg1OCEmTqm8X+a71Z+13fCQO734TNM7Y8NhLj+bQi3VvOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738184457; c=relaxed/simple;
-	bh=fuGYW/1zNIvvDw4pAzEC/dfR1GTOdiw8eWV8eiTYGLY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Eob7PVFXvhCrhZ6ytcjjjdHwnkT1KUKdkrfcSk3fyMHnzHp5OPQNEcxgsEzbKL2I2QjS8KKnJ0JsrL//A2IS5qsK6E4lQ1Z2yLEnNXyTGaxQZvKqN7iIrNbLIiO2rIPUu9h1nbDmP0WIUTSopd+34gT/MH6jRYi4/oKfyHbOnbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tRKfG7lh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2241AC4CED3;
-	Wed, 29 Jan 2025 21:00:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738184457;
-	bh=fuGYW/1zNIvvDw4pAzEC/dfR1GTOdiw8eWV8eiTYGLY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tRKfG7lhcfDktvoJFu8lUh3H3v12FASpRFD0Gs/eKdy3VQfCDgWoTsUJ+yFWS58Ob
-	 VWjAxYd5pjqD64CZlll6NVbBIVdKwF6mPI7oiac3sSb1mdIb/uI8ezq9bgpyQwNKd5
-	 uGzIu+tDcZaNarkYJ9rf7oAFFaoSZA2umzTT8rx/rbck1/mjSwSziVNeAeGIIJY44c
-	 dtaaDMJhVxD9pXFW/opXROzWoFao/rIUVibJy0ZgixELrOIDnJesr9cRkHJEjdxU5i
-	 vvSsYJEIiYk0IYUMGfNT2AAgWHFaItpfbw+tPRxyGYAYpZJp5vt/vtNT1641TfNqlW
-	 Jrr6CySjRibWA==
-From: Song Liu <song@kernel.org>
-To: bpf@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org
-Cc: kernel-team@meta.com,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	kpsingh@kernel.org,
-	mattbobrowski@google.com,
-	liamwisehart@meta.com,
-	shankaran@meta.com,
-	Song Liu <song@kernel.org>
-Subject: [PATCH v11 bpf-next 7/7] selftests/bpf: Test kfuncs that set and remove xattr from BPF programs
-Date: Wed, 29 Jan 2025 12:59:57 -0800
-Message-ID: <20250129205957.2457655-8-song@kernel.org>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20250129205957.2457655-1-song@kernel.org>
-References: <20250129205957.2457655-1-song@kernel.org>
+	s=arc-20240116; t=1738185638; c=relaxed/simple;
+	bh=X4Vt1hgB0RIXoAXaBj053a1Hzi/IcGW3aTYft6oZQN8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nyClSXeNLBbQM+ous5pso1300GfXhYJbFjkdedEQRzI0lLDgs+REgUS/qVmjnQK/nw+M5SlYPkfBUSp3BYTgDSVDXEEakAzPXWJ6NAtjtoNmxiYYPMdcY0trle3tpOly/3LKYgPjak4NmNsFuI0D6ogFAagDPuZnFQZ2vHiVG04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qCwBoij2; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <bf0e9c67-b1c9-4e39-8af0-ff2bdc493359@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1738185633;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9huOPBN/p8VtKMZYUp1GteZOwJEA24wLhGfKuj4zrQc=;
+	b=qCwBoij2yV+m3sYW9BABT7t8GyvT6DpFy2iGZxfnIlgGtLE1GuvnebkKWj6rW++k9ve0hF
+	Qp+zloVlB7CI5tu/Kz/BhcHntAjhgzYibohhT0vXLWt5APetbeDagiPckx2l89jWVHMiC+
+	FLn/amf8j8mMdUGJdyNkLdt5KA7rzMk=
+Date: Wed, 29 Jan 2025 13:20:27 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 1/2] ipv4, bpf: Introduced to support the ULP to get or
+ set sockets
+To: zhangmingyi <zhangmingyi5@huawei.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
+ yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, yanan@huawei.com, wuchangye@huawei.com,
+ xiesongyang@huawei.com, liuxin350@huawei.com, liwei883@huawei.com,
+ tianmuyang@huawei.com
+References: <20250127090724.3168791-1-zhangmingyi5@huawei.com>
+ <20250127090724.3168791-2-zhangmingyi5@huawei.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20250127090724.3168791-2-zhangmingyi5@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Two sets of tests are added to exercise the not _locked and _locked
-version of the kfuncs. For both tests, user space accesses xattr
-security.bpf.foo on a testfile. The BPF program is triggered by user
-space access (on LSM hook inode_[set|get]_xattr) and sets or removes
-xattr security.bpf.bar. Then user space then validates that xattr
-security.bpf.bar is set or removed as expected.
+On 1/27/25 1:07 AM, zhangmingyi wrote:
+> Note that tcp_getsockopt and tcp_setsockopt support TCP_ULP, while
+> bpf_getsockopt and bpf_setsockopt do not support TCP_ULP.
+> I'm not sure why there is such a difference, but I noticed that
+> tcp_setsockopt is called in bpf_setsockopt.I think we can add the
+> handling of this case.
+> 
+> Signed-off-by: zhangmingyi <zhangmingyi5@huawei.com>
 
-Note that, in both tests, the BPF programs use the not _locked kfuncs.
-The verifier picks the proper kfuncs based on the calling context.
-
-Signed-off-by: Song Liu <song@kernel.org>
----
- tools/testing/selftests/bpf/bpf_kfuncs.h      |   5 +
- .../selftests/bpf/prog_tests/fs_kfuncs.c      | 125 ++++++++++++++++
- .../bpf/progs/test_set_remove_xattr.c         | 133 ++++++++++++++++++
- 3 files changed, 263 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/test_set_remove_xattr.c
-
-diff --git a/tools/testing/selftests/bpf/bpf_kfuncs.h b/tools/testing/selftests/bpf/bpf_kfuncs.h
-index 2eb3483f2fb0..8215c9b3115e 100644
---- a/tools/testing/selftests/bpf/bpf_kfuncs.h
-+++ b/tools/testing/selftests/bpf/bpf_kfuncs.h
-@@ -87,4 +87,9 @@ struct dentry;
-  */
- extern int bpf_get_dentry_xattr(struct dentry *dentry, const char *name,
- 			      struct bpf_dynptr *value_ptr) __ksym __weak;
-+
-+extern int bpf_set_dentry_xattr(struct dentry *dentry, const char *name__str,
-+				const struct bpf_dynptr *value_p, int flags) __ksym __weak;
-+extern int bpf_remove_dentry_xattr(struct dentry *dentry, const char *name__str) __ksym __weak;
-+
- #endif
-diff --git a/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c b/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
-index 419f45b56472..43a26ec69a8e 100644
---- a/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
-@@ -8,6 +8,7 @@
- #include <unistd.h>
- #include <test_progs.h>
- #include "test_get_xattr.skel.h"
-+#include "test_set_remove_xattr.skel.h"
- #include "test_fsverity.skel.h"
- 
- static const char testfile[] = "/tmp/test_progs_fs_kfuncs";
-@@ -72,6 +73,127 @@ static void test_get_xattr(const char *name, const char *value, bool allow_acces
- 	remove(testfile);
- }
- 
-+/* xattr value we will set to security.bpf.foo */
-+static const char value_foo[] = "hello";
-+
-+static void read_and_validate_foo(struct test_set_remove_xattr *skel)
-+{
-+	char value_out[32];
-+	int err;
-+
-+	err = getxattr(testfile, skel->rodata->xattr_foo, value_out, sizeof(value_out));
-+	ASSERT_EQ(err, sizeof(value_foo), "getxattr size foo");
-+	ASSERT_EQ(strncmp(value_out, value_foo, sizeof(value_foo)), 0, "strncmp value_foo");
-+}
-+
-+static void set_foo(struct test_set_remove_xattr *skel)
-+{
-+	ASSERT_OK(setxattr(testfile, skel->rodata->xattr_foo, value_foo, strlen(value_foo) + 1, 0),
-+		  "setxattr foo");
-+}
-+
-+static void validate_bar_match(struct test_set_remove_xattr *skel)
-+{
-+	char value_out[32];
-+	int err;
-+
-+	err = getxattr(testfile, skel->rodata->xattr_bar, value_out, sizeof(value_out));
-+	ASSERT_EQ(err, sizeof(skel->data->value_bar), "getxattr size bar");
-+	ASSERT_EQ(strncmp(value_out, skel->data->value_bar, sizeof(skel->data->value_bar)), 0,
-+		  "strncmp value_bar");
-+}
-+
-+static void validate_bar_removed(struct test_set_remove_xattr *skel)
-+{
-+	char value_out[32];
-+	int err;
-+
-+	err = getxattr(testfile, skel->rodata->xattr_bar, value_out, sizeof(value_out));
-+	ASSERT_LT(err, 0, "getxattr size bar should fail");
-+}
-+
-+static void test_set_remove_xattr(void)
-+{
-+	struct test_set_remove_xattr *skel = NULL;
-+	int fd = -1, err;
-+
-+	fd = open(testfile, O_CREAT | O_RDONLY, 0644);
-+	if (!ASSERT_GE(fd, 0, "create_file"))
-+		return;
-+
-+	close(fd);
-+	fd = -1;
-+
-+	skel = test_set_remove_xattr__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_set_remove_xattr__open_and_load"))
-+		return;
-+
-+	/* Set security.bpf.foo to "hello" */
-+	err = setxattr(testfile, skel->rodata->xattr_foo, value_foo, strlen(value_foo) + 1, 0);
-+	if (err && errno == EOPNOTSUPP) {
-+		printf("%s:SKIP:local fs doesn't support xattr (%d)\n"
-+		       "To run this test, make sure /tmp filesystem supports xattr.\n",
-+		       __func__, errno);
-+		test__skip();
-+		goto out;
-+	}
-+
-+	if (!ASSERT_OK(err, "setxattr"))
-+		goto out;
-+
-+	skel->bss->monitored_pid = getpid();
-+	err = test_set_remove_xattr__attach(skel);
-+	if (!ASSERT_OK(err, "test_set_remove_xattr__attach"))
-+		goto out;
-+
-+	/* First, test not _locked version of the kfuncs with getxattr. */
-+
-+	/* Read security.bpf.foo and trigger test_inode_getxattr. This
-+	 * bpf program will set security.bpf.bar to "world".
-+	 */
-+	read_and_validate_foo(skel);
-+	validate_bar_match(skel);
-+
-+	/* Read security.bpf.foo and trigger test_inode_getxattr again.
-+	 * This will remove xattr security.bpf.bar.
-+	 */
-+	read_and_validate_foo(skel);
-+	validate_bar_removed(skel);
-+
-+	ASSERT_TRUE(skel->bss->set_security_bpf_bar_success, "set_security_bpf_bar_success");
-+	ASSERT_TRUE(skel->bss->remove_security_bpf_bar_success, "remove_security_bpf_bar_success");
-+	ASSERT_TRUE(skel->bss->set_security_selinux_fail, "set_security_selinux_fail");
-+	ASSERT_TRUE(skel->bss->remove_security_selinux_fail, "remove_security_selinux_fail");
-+
-+	/* Second, test _locked version of the kfuncs, with setxattr */
-+
-+	/* Set security.bpf.foo and trigger test_inode_setxattr. This
-+	 * bpf program will set security.bpf.bar to "world".
-+	 */
-+	set_foo(skel);
-+	validate_bar_match(skel);
-+
-+	/* Set security.bpf.foo and trigger test_inode_setxattr again.
-+	 * This will remove xattr security.bpf.bar.
-+	 */
-+	set_foo(skel);
-+	validate_bar_removed(skel);
-+
-+	ASSERT_TRUE(skel->bss->locked_set_security_bpf_bar_success,
-+		    "locked_set_security_bpf_bar_success");
-+	ASSERT_TRUE(skel->bss->locked_remove_security_bpf_bar_success,
-+		    "locked_remove_security_bpf_bar_success");
-+	ASSERT_TRUE(skel->bss->locked_set_security_selinux_fail,
-+		    "locked_set_security_selinux_fail");
-+	ASSERT_TRUE(skel->bss->locked_remove_security_selinux_fail,
-+		    "locked_remove_security_selinux_fail");
-+
-+out:
-+	close(fd);
-+	test_set_remove_xattr__destroy(skel);
-+	remove(testfile);
-+}
-+
- #ifndef SHA256_DIGEST_SIZE
- #define SHA256_DIGEST_SIZE      32
- #endif
-@@ -161,6 +283,9 @@ void test_fs_kfuncs(void)
- 	if (test__start_subtest("security_selinux_xattr_error"))
- 		test_get_xattr("security.selinux", "hello", false);
- 
-+	if (test__start_subtest("set_remove_xattr"))
-+		test_set_remove_xattr();
-+
- 	if (test__start_subtest("fsverity"))
- 		test_fsverity();
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_set_remove_xattr.c b/tools/testing/selftests/bpf/progs/test_set_remove_xattr.c
-new file mode 100644
-index 000000000000..6a612cf168d3
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_set_remove_xattr.c
-@@ -0,0 +1,133 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include <errno.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_kfuncs.h"
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+__u32 monitored_pid;
-+
-+const char xattr_foo[] = "security.bpf.foo";
-+const char xattr_bar[] = "security.bpf.bar";
-+static const char xattr_selinux[] = "security.selinux";
-+char value_bar[] = "world";
-+char read_value[32];
-+
-+bool set_security_bpf_bar_success;
-+bool remove_security_bpf_bar_success;
-+bool set_security_selinux_fail;
-+bool remove_security_selinux_fail;
-+
-+char name_buf[32];
-+
-+static inline bool name_match_foo(const char *name)
-+{
-+	bpf_probe_read_kernel(name_buf, sizeof(name_buf), name);
-+
-+	return !bpf_strncmp(name_buf, sizeof(xattr_foo), xattr_foo);
-+}
-+
-+/* Test bpf_set_dentry_xattr and bpf_remove_dentry_xattr */
-+SEC("lsm.s/inode_getxattr")
-+int BPF_PROG(test_inode_getxattr, struct dentry *dentry, char *name)
-+{
-+	struct bpf_dynptr value_ptr;
-+	__u32 pid;
-+	int ret;
-+
-+	pid = bpf_get_current_pid_tgid() >> 32;
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	/* Only do the following for security.bpf.foo */
-+	if (!name_match_foo(name))
-+		return 0;
-+
-+	bpf_dynptr_from_mem(read_value, sizeof(read_value), 0, &value_ptr);
-+
-+	/* read security.bpf.bar */
-+	ret = bpf_get_dentry_xattr(dentry, xattr_bar, &value_ptr);
-+
-+	if (ret < 0) {
-+		/* If security.bpf.bar doesn't exist, set it */
-+		bpf_dynptr_from_mem(value_bar, sizeof(value_bar), 0, &value_ptr);
-+
-+		ret = bpf_set_dentry_xattr(dentry, xattr_bar, &value_ptr, 0);
-+		if (!ret)
-+			set_security_bpf_bar_success = true;
-+		ret = bpf_set_dentry_xattr(dentry, xattr_selinux, &value_ptr, 0);
-+		if (ret)
-+			set_security_selinux_fail = true;
-+	} else {
-+		/* If security.bpf.bar exists, remove it */
-+		ret = bpf_remove_dentry_xattr(dentry, xattr_bar);
-+		if (!ret)
-+			remove_security_bpf_bar_success = true;
-+
-+		ret = bpf_remove_dentry_xattr(dentry, xattr_selinux);
-+		if (ret)
-+			remove_security_selinux_fail = true;
-+	}
-+
-+	return 0;
-+}
-+
-+bool locked_set_security_bpf_bar_success;
-+bool locked_remove_security_bpf_bar_success;
-+bool locked_set_security_selinux_fail;
-+bool locked_remove_security_selinux_fail;
-+
-+/* Test bpf_set_dentry_xattr_locked and bpf_remove_dentry_xattr_locked.
-+ * It not necessary to differentiate the _locked version and the
-+ * not-_locked version in the BPF program. The verifier will fix them up
-+ * properly.
-+ */
-+SEC("lsm.s/inode_setxattr")
-+int BPF_PROG(test_inode_setxattr, struct mnt_idmap *idmap,
-+	     struct dentry *dentry, const char *name,
-+	     const void *value, size_t size, int flags)
-+{
-+	struct bpf_dynptr value_ptr;
-+	__u32 pid;
-+	int ret;
-+
-+	pid = bpf_get_current_pid_tgid() >> 32;
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	/* Only do the following for security.bpf.foo */
-+	if (!name_match_foo(name))
-+		return 0;
-+
-+	bpf_dynptr_from_mem(read_value, sizeof(read_value), 0, &value_ptr);
-+
-+	/* read security.bpf.bar */
-+	ret = bpf_get_dentry_xattr(dentry, xattr_bar, &value_ptr);
-+
-+	if (ret < 0) {
-+		/* If security.bpf.bar doesn't exist, set it */
-+		bpf_dynptr_from_mem(value_bar, sizeof(value_bar), 0, &value_ptr);
-+
-+		ret = bpf_set_dentry_xattr(dentry, xattr_bar, &value_ptr, 0);
-+		if (!ret)
-+			locked_set_security_bpf_bar_success = true;
-+		ret = bpf_set_dentry_xattr(dentry, xattr_selinux, &value_ptr, 0);
-+		if (ret)
-+			locked_set_security_selinux_fail = true;
-+	} else {
-+		/* If security.bpf.bar exists, remove it */
-+		ret = bpf_remove_dentry_xattr(dentry, xattr_bar);
-+		if (!ret)
-+			locked_remove_security_bpf_bar_success = true;
-+
-+		ret = bpf_remove_dentry_xattr(dentry, xattr_selinux);
-+		if (ret)
-+			locked_remove_security_selinux_fail = true;
-+	}
-+
-+	return 0;
-+}
--- 
-2.43.5
-
+A nit that I found it useful to recognize different authors of the mailing list. 
+It would be easier to have a formatted name. It seems "Mingyi Zhang" was used 
+earlier, as seen by searching the git log history.
 
