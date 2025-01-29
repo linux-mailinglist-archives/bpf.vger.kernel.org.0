@@ -1,217 +1,154 @@
-Return-Path: <bpf+bounces-50038-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50039-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90739A22214
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 17:49:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF37AA222E5
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 18:25:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3562E16581C
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 16:49:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 654917A2534
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 17:24:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 150451DFE36;
-	Wed, 29 Jan 2025 16:49:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 290831E1C3A;
+	Wed, 29 Jan 2025 17:24:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="yXeaHL3Q";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="CVP/a/IH"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="xa8qBN8l"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A79EF1DF99D;
-	Wed, 29 Jan 2025 16:49:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20BEC1E1A16
+	for <bpf@vger.kernel.org>; Wed, 29 Jan 2025 17:24:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738169359; cv=none; b=ZSijuOh6ZqcJBIYa3mE7jy458ZPv3WbYY2mVQ6JcH5QRtZq9Q2TII86hR0drtmwTp+U4hoZ8mBh6YnNUyCosajs6uY3ddKkZZUxIbptgOlLTZgGe/XSL3efzyZc5vNwbUkq+YUev5ONCFV1nahA2I4rcGevwtmt1dvu3lY6G4sY=
+	t=1738171486; cv=none; b=gkw4es4Lln/e0gdA4AnTkxb/fFUSzceQaulYoIDQc8GIxVyKuJeov8ffjrJQOAesoC0HaIFVGdWTVOi3xSviIBxIb4z8yyzTqPVvH2/ngbbMrBVFKUNYT2zX5amqhib6c8kSXDRb9EGkaE1BOhAu128SfqNf6vbOzyMQUm6rO4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738169359; c=relaxed/simple;
-	bh=ScNGwMw3yrW7uEnx8gMr7SocWDNRpxCJn+8tkeRUdwA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WVCjjdeWZAUclHJESEUvHoOoNAsHRklOLjFxE/K7kd289nAs3hfckuC1dp6AN/MJfKAJRam42e/HN14b2I4L6s572J3urUlAp0U+ci9yhUX17o+M3lKlGpXGU0grmaPEN9vZxoUDujuJ9Ov5ewTXI/ZpB+cV9oxBKdEa/l0yqcE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=yXeaHL3Q; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=CVP/a/IH; arc=none smtp.client-ip=103.168.172.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 7DE661140126;
-	Wed, 29 Jan 2025 11:49:16 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-11.internal (MEProxy); Wed, 29 Jan 2025 11:49:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1738169356;
-	 x=1738255756; bh=bBgnwCaZmFQcqHwIuKoOPFtB2fxHPzpWL7bX3kk/lUU=; b=
-	yXeaHL3QbfL5dc5oF3lZZJhW02VdAyOGqdE56Jb4snsC+9Rlq7C5L8jaUY+KHhm6
-	Nx5EX4WYrJd9Kdw025FbRuWeMnmaU8dgyCl2r29OCxgz8XHv8DjLgrTVw6lU8cB/
-	lmifrqTreqWcDVYR8J34zLskiNMF9zXBq8AroMXXFLdeM7xZXH/kX/PhNC2UzYT6
-	9+yAhISRkk1U68e1Jk27FazI4ttxO+UEpH7SS8y8NOPCs7FabO22Th6eZGvytGUX
-	QVr7jI2jzJyF9hFIDV4KW7A/oSF9Guwcc4A2br4LvCMA/oQSKLr7lEK/FfNo6+IE
-	8+PobsVwE25lrb+nRpgXSA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1738169356; x=
-	1738255756; bh=bBgnwCaZmFQcqHwIuKoOPFtB2fxHPzpWL7bX3kk/lUU=; b=C
-	VP/a/IH2ksyX4zqIt9V/WzUxjdXKZLC9xR2mBpWCov7bbqgYqlfCGyX/qGJYw8+a
-	Vrpzg/4zPiuFZm+zUj8W6iAwHIjBFKmnJOZWFKDmxYGAo08h65Z0/+ra2OAq4+z6
-	G+sZl3p8UiedqVM0GIB+JI/xM2hFokRtk5VNlUaLWKc0l6WTruBGcsuK1wAOaTyK
-	gMjGemDIvry2YDMlaNAO7gDrwGxVfzRluuUphdWRPQS6a4yt7BlDD8qIBrdyazzG
-	CMQS5s4siNMwa1f+Xx1VlWnA8H+aPAuzNVMSMh3uLV8/Z5hJS/iGPX4KZCRmhwHs
-	ahganvblA2e2J+UVichiQ==
-X-ME-Sender: <xms:C1yaZ17CoUV-XIXmW8cR6JtAZMds65myOy_3Rz6A0QoG1Lq0QRD3sA>
-    <xme:C1yaZy5SHvUHr2NCw1xmPrwozohiOH_OCUYpMpV9p3bypMBpgqltNLP2IUCpzhv9O
-    U4eXtumh52zUdYiMA>
-X-ME-Received: <xmr:C1yaZ8ephjmGxNp98pIVGv6ick9ttPuvR7ymurzZdKJEBqvOj78ur_W3E7FS0iMHW5fO5sqZtmDcpIoomPDuteF5AyFiwZL2ZLK4NjnuKZwAxg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdefhedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnegfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhf
-    gggtugfgjgestheksfdttddtudenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihuse
-    gugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpedufeeitdeiheffueffleffgeeh
-    geejkeetkefgtdekfeejheffjedtgfekieetleenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiiipdhnsggprhgt
-    phhtthhopeduledpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepihhiiheslhhinh
-    hugidrihgsmhdrtghomhdprhgtphhtthhopehshhhurghhsehkvghrnhgvlhdrohhrghdp
-    rhgtphhtthhopegvugguhiiikeejsehgmhgrihhlrdgtohhmpdhrtghpthhtoheprghsth
-    eskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlsehiohhgvggrrhgsohig
-    rdhnvghtpdhrtghpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrghdprhgtphhtth
-    hopehjohhhnhdrfhgrshhtrggsvghnugesghhmrghilhdrtghomhdprhgtphhtthhopehm
-    rghrthhinhdrlhgruheslhhinhhugidruggvvhdprhgtphhtthhopehsohhngheskhgvrh
-    hnvghlrdhorhhg
-X-ME-Proxy: <xmx:DFyaZ-J_NtVS2ifzedY8_U6MRGtCuL8G8RpfYGhgL8UunUZ-_aL2Nw>
-    <xmx:DFyaZ5JDtdtino8FAP_T0Huw5Qz2jIW1texbtDgEPP2dgOwzLzDsfw>
-    <xmx:DFyaZ3yNYc5gVhpGKdrmpx2ltbFC-uTvsWxaKwsPDhTJnlvEMQhHGg>
-    <xmx:DFyaZ1I3lO2NsN6873MQbsmAKYvg6M2EEpna2jpXqr95S0nrmgGJOQ>
-    <xmx:DFyaZx_097w-7cNKADIyscFxCZ3zRIIS0141Wx6aBqy046PvX9luLzM8>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 29 Jan 2025 11:49:14 -0500 (EST)
-Date: Wed, 29 Jan 2025 09:49:12 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: shuah@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, john.fastabend@gmail.com, 
-	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	Marc Hartmayer <mhartmay@linux.ibm.com>
-Subject: Re: [PATCH bpf-next v7 4/5] bpf: verifier: Support eliding map
- lookup nullness
-Message-ID: <hsgmutuoi4kvjkr7erm5ty2fdrhdrjpz4fpp5doe65l3pzguxv@lcbmvmjpyykq>
-References: <cover.1736886479.git.dxu@dxuuu.xyz>
- <68f3ea96ff3809a87e502a11a4bd30177fc5823e.1736886479.git.dxu@dxuuu.xyz>
- <78b2e750b4568e294b5fc5a33cf4bc8f62fae7f6.camel@linux.ibm.com>
+	s=arc-20240116; t=1738171486; c=relaxed/simple;
+	bh=N0YneRw92WXGIHdikNV2IiZfnjq0rTZVJ82U1x+yMTQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nhvNDHaRHMJOflL4pQOwwMKZbybKFCvjTvbyql3x8hZwees7NEnwaPgoH/H7o4KLK2dfnFzhAdGzDbaTpWed2jWplxJeG+wIb8aN+tBoIcNg2+RfIn8HNwjkB+OUmmxl1PfQXatl8twuNCc+AX2eTEvcTZY3rQDKAZBpmd9di6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=xa8qBN8l; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-21636268e43so12035945ad.2
+        for <bpf@vger.kernel.org>; Wed, 29 Jan 2025 09:24:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1738171483; x=1738776283; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Aq4/gMpDYbPjuvYfh3I5NVoS6GqeADLR3UUjHmAsbcU=;
+        b=xa8qBN8l2XoRvMYZwWZQJncjhJoLDsyLSgqNlpR+8hL6A3ivSynKS+K3QsamVnOjIO
+         eDIduaBcHxNDObdNuWPYZNGjT/P8O8cJFJzKYyDzYrpdOzS38tggknJmNvH6RsGJ8S5D
+         L37PcYrzG0S7e+Mve0XhvUosU3eVRqj3rfeVk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738171483; x=1738776283;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Aq4/gMpDYbPjuvYfh3I5NVoS6GqeADLR3UUjHmAsbcU=;
+        b=EZVFPqmDbIO9mkelT70SIIvPyKB1WHryViBjR6en3hqLEV9hJtCUHQGVViAifT8671
+         HIrBF79XueLcIzPXSTFePmumqLLzLx4dmK4G2D1OHtIjYbBA0QI6ZK6Dl532jNpfcw8C
+         XuRDCHore8Gn5IJEQLdyClpELy2VgDZ22pxBpJZAkVLyER2nf8mQRhuiFmfm0nvkRTyz
+         3POJIN5PfPAkZZnXavSaC/Zx+dOM77PJufumGiujWcCj/lIVQV2zROmsFVn01hVW06SQ
+         bXUdhSDdzgCrAcQG+PgT9g/7Q8qwcWShcT0K4VkyMDSAYUVZRFUYHxRS0PRaNA0CzxzA
+         tY/w==
+X-Forwarded-Encrypted: i=1; AJvYcCUxSuGLkA5ue8OSZNeLXlXliqeiPzsf+Jfb3CUnBtW2KfGKUptlfx/wUMFL2y08kqX0t28=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx8EKWK7rokunVDJ1mXsSTETxETGHJiog3AkS1SheGeaDaejn4X
+	K/FxHonXUR+NVpjDvgAiJvrcU6z1bxWiOWTT4+AEwq2txqowRIbqFKshQGowcFU=
+X-Gm-Gg: ASbGncvVBjTJ2rZkXKMFMGEqJrg1FNM8IjBs3BohqufxMcqS/r8rPDrHprZfrpZWVSm
+	kG+WMA5VQ5AUwoG7PJhecS7b1KN3HVmlSIXnpeI1GronkP5wJKzSJdquNsXa85x2QRFyVJ9lRJn
+	qWhJjsxgD+AjWPr3dq29uD3zrlcLH1BvzejXO1rbqwFn9pYrxLDBFYdbgUhu/JyyTDa3wPGPx27
+	oBIGW9/G/wI0Exiu1uYcAICFl6Tf7etd4IhXvM7Ut8BdV2M6bF7Qg8c8HhOg8QUvbVBu24Jc3Fw
+	5whr7UmteKv2NeOI0yfkj/0=
+X-Google-Smtp-Source: AGHT+IFTb6XDnBS6Kmn63C4xyF4rg4Vtlz0IPi7h1hNldfq2r+c1V0Jig8cb4HmfqwS/oFthayJOoA==
+X-Received: by 2002:a17:902:d48a:b0:216:4064:53ad with SMTP id d9443c01a7336-21dd7de20f8mr69481155ad.48.1738171483392;
+        Wed, 29 Jan 2025 09:24:43 -0800 (PST)
+Received: from localhost.localdomain ([2620:11a:c019:0:65e:3115:2f58:c5fd])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21da4bc5c1fsm101147295ad.82.2025.01.29.09.24.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jan 2025 09:24:42 -0800 (PST)
+From: Joe Damato <jdamato@fastly.com>
+To: netdev@vger.kernel.org
+Cc: sridhar.samudrala@intel.com,
+	Joe Damato <jdamato@fastly.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Amritha Nambiar <amritha.nambiar@intel.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	bpf@vger.kernel.org (open list:XDP (eXpress Data Path):Keyword:(?:\b|_)xdp(?:\b|_)),
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Donald Hunter <donald.hunter@gmail.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	linux-kernel@vger.kernel.org (open list),
+	linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
+	Martin Karsten <mkarsten@uwaterloo.ca>,
+	Mina Almasry <almasrymina@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Simon Horman <horms@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [RFC net-next 0/2] netdevgenl: Add an xsk attribute to queues
+Date: Wed, 29 Jan 2025 17:24:23 +0000
+Message-Id: <20250129172431.65773-1-jdamato@fastly.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <78b2e750b4568e294b5fc5a33cf4bc8f62fae7f6.camel@linux.ibm.com>
 
-Hi Ilya,
+Greetings:
 
-On Wed, Jan 29, 2025 at 03:58:54PM +0100, Ilya Leoshkevich wrote:
-> On Tue, 2025-01-14 at 13:28 -0700, Daniel Xu wrote:
-> > This commit allows progs to elide a null check on statically known
-> > map
-> > lookup keys. In other words, if the verifier can statically prove
-> > that
-> > the lookup will be in-bounds, allow the prog to drop the null check.
-> > 
-> > This is useful for two reasons:
-> > 
-> > 1. Large numbers of nullness checks (especially when they cannot
-> > fail)
-> >    unnecessarily pushes prog towards BPF_COMPLEXITY_LIMIT_JMP_SEQ.
-> > 2. It forms a tighter contract between programmer and verifier.
-> > 
-> > For (1), bpftrace is starting to make heavier use of percpu scratch
-> > maps. As a result, for user scripts with large number of unrolled
-> > loops,
-> > we are starting to hit jump complexity verification errors.  These
-> > percpu lookups cannot fail anyways, as we only use static key values.
-> > Eliding nullness probably results in less work for verifier as well.
-> > 
-> > For (2), percpu scratch maps are often used as a larger stack, as the
-> > currrent stack is limited to 512 bytes. In these situations, it is
-> > desirable for the programmer to express: "this lookup should never
-> > fail,
-> > and if it does, it means I messed up the code". By omitting the null
-> > check, the programmer can "ask" the verifier to double check the
-> > logic.
-> > 
-> > Tests also have to be updated in sync with these changes, as the
-> > verifier is more efficient with this change. Notable, iters.c tests
-> > had
-> > to be changed to use a map type that still requires null checks, as
-> > it's
-> > exercising verifier tracking logic w.r.t iterators.
-> > 
-> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > ---
-> >  kernel/bpf/verifier.c                         | 92
-> > ++++++++++++++++++-
-> >  tools/testing/selftests/bpf/progs/iters.c     | 14 +--
-> >  .../selftests/bpf/progs/map_kptr_fail.c       |  2 +-
-> >  .../selftests/bpf/progs/verifier_map_in_map.c |  2 +-
-> >  .../testing/selftests/bpf/verifier/map_kptr.c |  2 +-
-> >  5 files changed, 99 insertions(+), 13 deletions(-)
-> 
-> [...]
-> 
-> > @@ -9158,6 +9216,7 @@ static int check_func_arg(struct
-> > bpf_verifier_env *env, u32 arg,
-> >  	enum bpf_arg_type arg_type = fn->arg_type[arg];
-> >  	enum bpf_reg_type type = reg->type;
-> >  	u32 *arg_btf_id = NULL;
-> > +	u32 key_size;
-> >  	int err = 0;
-> >  
-> >  	if (arg_type == ARG_DONTCARE)
-> > @@ -9291,8 +9350,13 @@ static int check_func_arg(struct
-> > bpf_verifier_env *env, u32 arg,
-> >  			verbose(env, "invalid map_ptr to access map-
-> > >key\n");
-> >  			return -EACCES;
-> >  		}
-> > -		err = check_helper_mem_access(env, regno, meta-
-> > >map_ptr->key_size,
-> > -					      BPF_READ, false,
-> > NULL);
-> > +		key_size = meta->map_ptr->key_size;
-> > +		err = check_helper_mem_access(env, regno, key_size,
-> > BPF_READ, false, NULL);
-> > +		if (err)
-> > +			return err;
-> > +		meta->const_map_key = get_constant_map_key(env, reg,
-> > key_size);
-> > +		if (meta->const_map_key < 0 && meta->const_map_key
-> > != -EOPNOTSUPP)
-> > +			return meta->const_map_key;
-> 
-> Mark Hartmayer reported a problem that after this commit the verifier
-> started refusing to load libvirt's virCgroupV2DevicesLoadProg(), which
-> contains the following snippet:
-> 
-> 53: (b7) r1 = -1                      ; R1_w=-1
-> 54: (7b) *(u64 *)(r10 -8) = r1        ; R1_w=-1 R10=fp0 fp-8_w=-1
-> 55: (bf) r2 = r10                     ; R2_w=fp0 R10=fp0
-> 56: (07) r2 += -8                     ; R2_w=fp-8
-> 57: (18) r1 = 0x9553c800              ; R1_w=map_ptr(ks=8,vs=4)
-> 59: (85) call bpf_map_lookup_elem#1
-> 
-> IIUC here the actual constant value is -1, which this code confuses
-> with an error.
+This is an attempt to followup on something Jakub asked me about [1],
+adding an xsk attribute to queues and more clearly documenting which
+queues are linked to NAPIs...
 
-Thanks for reporting. I think I know what the issue is - will send a
-patch shortly.
+But:
 
-Daniel
+1. I couldn't pick a good "thing" to expose as "xsk", so I chose 0 or 1.
+   Happy to take suggestions on what might be better to expose for the
+   xsk queue attribute.
+
+2. I create a silly C helper program to create an XDP socket in order to
+   add a new test to queues.py. I'm not particularly good at python
+   programming, so there's probably a better way to do this. Notably,
+   python does not seem to have a socket.AF_XDP, so I needed the C
+   helper to make a socket and bind it to a queue to perform the test.
+
+Tested this on my mlx5 machine and the test seems to pass.
+
+Happy to take any suggestions / feedback on this one; sorry in advance
+if I missed many obvious better ways to do things.
+
+Thanks,
+Joe
+
+[1]: https://lore.kernel.org/netdev/20250113143109.60afa59a@kernel.org/
+
+Joe Damato (2):
+  netdev-genl: Add an XSK attribute to queues
+  selftests: drv-net: Test queue xsk attribute
+
+ Documentation/netlink/specs/netdev.yaml       | 10 ++-
+ include/uapi/linux/netdev.h                   |  1 +
+ net/core/netdev-genl.c                        |  6 ++
+ tools/include/uapi/linux/netdev.h             |  1 +
+ tools/testing/selftests/drivers/.gitignore    |  1 +
+ tools/testing/selftests/drivers/net/Makefile  |  3 +
+ tools/testing/selftests/drivers/net/queues.py | 32 ++++++-
+ .../selftests/drivers/net/xdp_helper.c        | 90 +++++++++++++++++++
+ 8 files changed, 141 insertions(+), 3 deletions(-)
+ create mode 100644 tools/testing/selftests/drivers/net/xdp_helper.c
+
+
+base-commit: 0ad9617c78acbc71373fb341a6f75d4012b01d69
+-- 
+2.25.1
+
 
