@@ -1,136 +1,109 @@
-Return-Path: <bpf+bounces-50005-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-49996-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7425CA215A3
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 01:27:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 049E9A21579
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 01:18:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D02841888812
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 00:27:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E451F1628E5
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 00:18:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47CFF16DEB3;
-	Wed, 29 Jan 2025 00:27:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B616161320;
+	Wed, 29 Jan 2025 00:17:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nvRFGquY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XMQr51eX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE3F815534E
-	for <bpf@vger.kernel.org>; Wed, 29 Jan 2025 00:27:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C475543166;
+	Wed, 29 Jan 2025 00:17:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738110462; cv=none; b=K+a4mh7iQIcObzJds2VrB1mepmT/UprO/OwSPAknGfF6zSlLaa+Ux897KtiPI1XV7u3v0O+h5MaUmHu/3evmjxPMF7s3ksdMoerbbCcfnGO6PNWxSUi0zU1xO9umz0dxfnKoj0/Oy4EOtGJn1RdW85WueJ4IKRFkba8FAiEwm0w=
+	t=1738109874; cv=none; b=dZyGBqsguICjf5ZNLZb00t/5eVp19xx4OhqE/kSwUYjlQwRT5OdIZt5C5qu/e5e7j4fATk11R4K5i0KfLq1tyrl+j5P/2/nl5Fl4vzZFI5oB4XUI2KhtmxCqO/16NwbGZ2l+o5SoaTwhxQ9jOFYSBArl71BmMrsB/6bRWjbgmYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738110462; c=relaxed/simple;
-	bh=JXR8T33WgTBIEDVxRbVK0LNxlccdzx4b2VLjaRPQh0w=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=gRqzm4NMfhrgy8MtWtQqcFzypuYhq6NU9bkZdGb47fU1F+y9JRdg1qgxfi87WIYQNL/knI0xALy+rqhdL1ws1tUbcSOO+VDPlXL9XNRGx5eDJqqV4wy3SpyYYyujLTgPcTkp2E1IzuIceI+pRkRyuPZhXrP6lgPoN2xkOSo4doQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ctshao.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nvRFGquY; arc=none smtp.client-ip=209.85.216.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ctshao.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2f5538a2356so11575084a91.2
-        for <bpf@vger.kernel.org>; Tue, 28 Jan 2025 16:27:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1738110460; x=1738715260; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/kZ7iqAFWEW/1CVmn2pzdj8BRoAIsJA95X92RXs36J8=;
-        b=nvRFGquYQypX/GMKG5jfKGxtDChsO1vDSr9GUI/hHLe7/D0oI9eS1PosoMoJPE1BEP
-         dX6OVnkNdthZoOTx38OqagAzRcrgQ6546uoSjyKRzD3nzI9AE8UpVTKNG/4yn8HNlnqo
-         n0iLhZGVNlaieHPmDkvL3P246sFVHGauFsb9B4W9zz8gJXwKJBMGFM9UFe4QtNZb8eqr
-         Od3wq84AxXsrIBn1xfoO/eI0IyT6RdnvMIYlNW5r/K26ISmq2oDLSLVtqjd8fo5aRYcW
-         Jr9h1MzBAVv0pQ1ilGxkoxyyUUZ2+zJIcoXa/hX1TJHbyZC0lMQvf9KKEdPKOjwvW/QT
-         Iatg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738110460; x=1738715260;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/kZ7iqAFWEW/1CVmn2pzdj8BRoAIsJA95X92RXs36J8=;
-        b=Gd3YnwPaBQzxrFVIpmg5RZ3JvGeLc+Hbox0lpSGWuVY0acmfqyZNwaCW4iTqIakMHi
-         OoH0WJi2GRpwr7tCDf5AK3hRl0phtzyF37IQFjANPh1AJRvpDGbv/xYYTRoRnCounOnm
-         Lb64OWP/PhgE4hx8sSk0mAK1CSxMJWp/rRg+gwakTX3TRG2uhslimkwD2/+q2FJ6i22T
-         3//a7Gm0UAXNHghHCixnF6GpC4aEdHxZT+pFU07yoiCtgOzLow7bspu4b5EeVEVcEpO+
-         jhWzbz2/WiBTEPLgEImXH1farZ+UDKuqTe1QXlT7iKaKWmG2XOGBIO0/8vpG/ISwXioM
-         1i3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWtqD7OaTt8SGTgoPI9H3NE+y+SRYFfbjJ/lS/pkr2csXgJby+7y9yM7FUjV+nUNUdtSoM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyV4vTCoc9EaRQEcdaVcPUf1nqzGYI0nceUGzssgBJDYPpbQRQh
-	6HBRqB1zE2PaWqvuuVaHQhspC+uvzsy77dqWfypYCf8vDxKMhpbte+LFdgQlmFqqQzX9hLW+/ol
-	FWQ==
-X-Google-Smtp-Source: AGHT+IHuivb002Myaw3lnKxSivwCEVIBuEWsY7r6mdBhKNiyiCBu9zbawayIbipZdTXtPqU4Sr6JtaI2KY0=
-X-Received: from pjyr14.prod.google.com ([2002:a17:90a:e18e:b0:2e5:5ffc:1c36])
- (user=ctshao job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:5190:b0:2ee:d63f:d8f
- with SMTP id 98e67ed59e1d1-2f83abb91d4mr1576644a91.13.1738110460020; Tue, 28
- Jan 2025 16:27:40 -0800 (PST)
-Date: Tue, 28 Jan 2025 16:15:01 -0800
-In-Reply-To: <20250129001905.619859-1-ctshao@google.com>
+	s=arc-20240116; t=1738109874; c=relaxed/simple;
+	bh=rhcPxDE/hGrU4tf9/2EyzDn71kVa3O0+HXsB6rQX/xg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aVnzb/G+R1Tq+yka/FC6aHwL6U/OWLeK8280Xwwrrfjkky4JL3j348TPiCFl09auNOIFF8e+XGz9ZQWhdKFK/G7v+wAcTdHpwHQOMGCQ8QLXXW0qV7rsL4wRFEGdUyj0gC/tVuCFkmfjcX5CyW1xu7UmcJcst8oWAnQuZrwbnls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XMQr51eX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FF80C4CED3;
+	Wed, 29 Jan 2025 00:17:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738109874;
+	bh=rhcPxDE/hGrU4tf9/2EyzDn71kVa3O0+HXsB6rQX/xg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=XMQr51eXkbgeqEBNx86SM3BNnHtKhdZ+DwW0CQw3KFQaBJU4p+Xa/y4x+vBGlceeM
+	 J8T/UOk/6HEc6WyfirILBWGMo/CidLMIuS/xexztcRoWWEtQNmQUHwRfVNuGJ6c2mk
+	 ebLST4lm8SjTzlGN5/d4TE5OW1pnRPVn1+L1VCOelReXoCWC+tPyLieXsFo1soWERW
+	 rBy6NjICdHHW8f6yVqVzWn8fgdhOpd/1YZQbmzOEYoz7YgvuKb8GrCiqBLsb130PUe
+	 MJXcGsFpKLnYoOd6jUFngLM5O+hh5dVbLmGpqzVg68ot6KJamoPW9CRdVpFjkk7T1p
+	 JtL10Th6zOpwA==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: linux-mm@kvack.org,
+	akpm@linux-foundation.org,
+	linux-fsdevel@vger.kernel.org,
+	brauner@kernel.org,
+	viro@zeniv.linux.org.uk
+Cc: linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	peterz@infradead.org,
+	mingo@kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	shakeel.butt@linux.dev,
+	rppt@kernel.org,
+	liam.howlett@oracle.com,
+	surenb@google.com,
+	kees@kernel.org,
+	jannh@google.com,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH] docs,procfs: document /proc/PID/* access permission checks
+Date: Tue, 28 Jan 2025 16:17:47 -0800
+Message-ID: <20250129001747.759990-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250129001905.619859-1-ctshao@google.com>
-X-Mailer: git-send-email 2.48.1.262.g85cc9f2d1e-goog
-Message-ID: <20250129001905.619859-6-ctshao@google.com>
-Subject: [PATCH v3 5/5] perf lock: Update documentation for -o option in
- contention mode
-From: Chun-Tse Shao <ctshao@google.com>
-To: linux-kernel@vger.kernel.org
-Cc: Chun-Tse Shao <ctshao@google.com>, peterz@infradead.org, mingo@redhat.com, 
-	acme@kernel.org, namhyung@kernel.org, mark.rutland@arm.com, 
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com, 
-	adrian.hunter@intel.com, kan.liang@linux.intel.com, nathan@kernel.org, 
-	ndesaulniers@google.com, morbo@google.com, justinstitt@google.com, 
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-This patch also decouple -o with -t, and shows warning to notify the new
-behavior for -ov.
+Add a paragraph explaining what sort of capabilities a process would
+need to read procfs data for some other process. Also mention that
+reading data for its own process doesn't require any extra permissions.
 
-Signed-off-by: Chun-Tse Shao <ctshao@google.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/perf/builtin-lock.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ Documentation/filesystems/proc.rst | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-index d9b0d7472aea..b925be06b0d8 100644
---- a/tools/perf/builtin-lock.c
-+++ b/tools/perf/builtin-lock.c
-@@ -1818,7 +1818,7 @@ static void print_contention_result(struct lock_contention *con)
- 			break;
- 	}
+diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+index 09f0aed5a08b..0e7825bb1e3a 100644
+--- a/Documentation/filesystems/proc.rst
++++ b/Documentation/filesystems/proc.rst
+@@ -128,6 +128,16 @@ process running on the system, which is named after the process ID (PID).
+ The link  'self'  points to  the process reading the file system. Each process
+ subdirectory has the entries listed in Table 1-1.
  
--	if (con->owner && con->save_callstack) {
-+	if (con->owner && con->save_callstack && verbose > 0) {
- 		struct rb_root root = RB_ROOT;
- 
- 		if (symbol_conf.field_sep)
-@@ -1979,6 +1979,11 @@ static int check_lock_contention_options(const struct option *options,
- 		}
- 	}
- 
-+	if (show_lock_owner && !show_thread_stats) {
-+		pr_warning("Now -o try to show owner's callstack instead of pid and comm.\n");
-+		pr_warning("Please use -t option too to keep the old behavior.\n");
-+	}
++A process can read its own information from /proc/PID/* with no extra
++permissions. When reading /proc/PID/* information for other processes, reading
++process is required to have either CAP_SYS_PTRACE capability with
++PTRACE_MODE_READ access permissions, or, alternatively, CAP_PERFMON
++capability. This applies to all read-only information like `maps`, `environ`,
++`pagemap`, etc. The only exception is `mem` file due to its read-write nature,
++which requires CAP_SYS_PTRACE capabilities with more elevated
++PTRACE_MODE_ATTACH permissions; CAP_PERFMON capability does not grant access
++to /proc/PID/mem for other processes.
 +
- 	return 0;
- }
- 
-@@ -2570,7 +2575,8 @@ int cmd_lock(int argc, const char **argv)
- 		     "Filter specific address/symbol of locks", parse_lock_addr),
- 	OPT_CALLBACK('S', "callstack-filter", NULL, "NAMES",
- 		     "Filter specific function in the callstack", parse_call_stack),
--	OPT_BOOLEAN('o', "lock-owner", &show_lock_owner, "show lock owners instead of waiters"),
-+	OPT_BOOLEAN('o', "lock-owner", &show_lock_owner, "show lock owners instead of waiters.\n"
-+		"\t\t\tThis option can be combined with -t, which shows owner's per thread lock stats, or -v, which shows owner's stacktrace"),
- 	OPT_STRING_NOEMPTY('x', "field-separator", &symbol_conf.field_sep, "separator",
- 		   "print result in CSV format with custom separator"),
- 	OPT_BOOLEAN(0, "lock-cgroup", &show_lock_cgroups, "show lock stats by cgroup"),
+ Note that an open file descriptor to /proc/<pid> or to any of its
+ contained files or subdirectories does not prevent <pid> being reused
+ for some other process in the event that <pid> exits. Operations on
 -- 
-2.48.1.262.g85cc9f2d1e-goog
+2.43.5
 
 
