@@ -1,171 +1,252 @@
-Return-Path: <bpf+bounces-50066-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50067-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1C70A225DB
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 22:31:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D29D1A225FB
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 22:55:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B457188751A
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 21:31:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B3B27A148A
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 21:54:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D227A1E0DCC;
-	Wed, 29 Jan 2025 21:31:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064891E3793;
+	Wed, 29 Jan 2025 21:55:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kj8yJsPq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hp3K0Ktz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A170122619;
-	Wed, 29 Jan 2025 21:31:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 767AC191489;
+	Wed, 29 Jan 2025 21:55:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738186271; cv=none; b=JPWoAs72cjLYWvwvSiigHocClhc+PTj4FLxqLSWB06Xxa9ln4vV/r19dktVn0/dDu62Q2AcM4kFE7dcOBPy3VycI/iQP4+mNJ5MkOaM9OJdAkP3+CsH/t6LGv/1XUI3dJRWC61LprK7+s8L0x7bUmInBimc82lDY0TdxqfMvjCI=
+	t=1738187717; cv=none; b=KiZO53dLbO+e+Mn2YFLpza24nwA/E7/7by7eqiopTn4uuAkN42/y2fT9CAkHRYik64OT/oUSKJ185PC3zv39tleVFNy4pyna/1OBCwqmM+EL1GcHWStRuIRU5bbtwI6JKd7NBjYD3+7Vosg3yk8/Fc9b2GYJblSkeH3FE73EscM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738186271; c=relaxed/simple;
-	bh=XOPhAyMINDBxOdOWfa8NSmmOFwzOegM22M4vc+Ci4pA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=vDlK2DMY3dfOlzSRfId8es9Du/oLYZxPmtH51GPC7RIL5AdCaaF8bjmfSGU/KXvmqPhIw6w4ECcSrEfnMy7E2OWFbqNYKSmtHfDYE9XJ9gKm+13Y7Aq5SrnNFhwtpfQdrBDW85NUp5++dtsmQwq5QHpJzziDQrUEFC5l9yHb2Aw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kj8yJsPq; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-5439a6179a7so60187e87.1;
-        Wed, 29 Jan 2025 13:31:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738186268; x=1738791068; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KmQghTxrSNZIJicf8St9hkhO8RNvDDXNdb0xqgUBNEQ=;
-        b=kj8yJsPqaLn3iStmp4b8g2FndvG8wpLgJGBq43Zc1ZMKCT4RpRkJZKHV4sPuNTOx87
-         +a8C59mp313F7Zd354KnxC9a972QC/c5Ua32E7d0qQayFRKsCSPWcGY9+UEN+8Q1aLKm
-         qqi7hvqW95ZvZtHJ/OjOBrsuVMpEIYvn2YaR6ZeJIWROk6C5iqpgU2uqxSANCLUhkiUU
-         vF+n3zGv7IxQd24AJ9pOEPQNMQFPMWoHR8/WsgSmyOxtbReqiQt9Ylto4rexEPXnFPV/
-         i+feGmvEl6UYHKlAXLOdH1Sf6zBImb6+EGxiwEm46NlI0Q9HQ21ubTa6Mnt5i7UCi2jb
-         FXpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738186268; x=1738791068;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KmQghTxrSNZIJicf8St9hkhO8RNvDDXNdb0xqgUBNEQ=;
-        b=O5vplB57vU+KezRDomccp0ICd0v6THXM8XzR7/IBfnjmIZZmTcFzWVlObNwRKQt0Py
-         jLAuAxOyJKG6lMDVhdbcCVhgGywR7+4gp9xy1QTV87e+zIQYjJJOaQCezb5ZS9tCSnL3
-         4fHjXMLlt/zD9tcsH6Xd+rA2swODDf75/B9fFnRNq2QvBYqCu7aWY7D7rJekGnulDKmI
-         7kRBpx/LtUHnLyzIF8btO+KwmaqKywk7N23cfQmVaAPLjQ+2WQCfSPsq4RIQwaf7AFaE
-         xVjGngiPduBb5aDBAu41lLKODEGQFiCTr9ebmZ4+BuevahjU3FsL4qHz5dvJVM834Cbj
-         KixA==
-X-Forwarded-Encrypted: i=1; AJvYcCVoVRSdWgtbaC+yH5OCUhhkJaFJ1j5PXk6BcBO7xTV3qwqcpEVkCsExkaAD9AxDHDaNRkrYT4sY5Ny2pllcKw==@vger.kernel.org, AJvYcCXKhXdY5I/t9rAB+DrCk4Co/iMFsGK6jwcA29wPy5jg79GKRGNw306j6nrae1/XokfhlQE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzbjPD7OUPG3oVrsj41uZ0mhjpcARpihFhGvaKNlFNqmm4xfsrQ
-	pDDFZWi/reqZDx2lDtHPV7/KY9mxMh8J+D8Nz93nDGMMxrCSOHAIPAl0WuVDC9YrnlI9Y+4jv3Q
-	QNE3x8Ptu2mocVPpERQScMo+aMnJnQ9Hh
-X-Gm-Gg: ASbGnctuuXvRuSTsYV2l2jJcBb49njVkN1FJgmHT2e3tIR53lS7eXWT0hpanB03E8oJ
-	9LYaAo3dsSpfci8YPXqFxIS+dL/dIE9E8dJFM3StfEH+A5LG9GQHJJLtyfFR1OkxPyRyiPG2p
-X-Google-Smtp-Source: AGHT+IEBGwB23rborskxzA4KFILlvubMz9LTFxq7qUdNdXQohhHPpB7ObVSyC3+3goPahJXRZTfTGeYV2c+uaP+vEus=
-X-Received: by 2002:a05:6512:104b:b0:543:e4de:3e12 with SMTP id
- 2adb3069b0e04-543ea3fa8f9mr283827e87.18.1738186267536; Wed, 29 Jan 2025
- 13:31:07 -0800 (PST)
+	s=arc-20240116; t=1738187717; c=relaxed/simple;
+	bh=G/M3y3ZkIoso+I8kP+mH6KrqA0+FLZcjw02xJDLsIW8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SHHBzB8YeoKTrNRfmvZ2PqPl19whPixU9BYkfiUAMwfxHRnBVZsd0dc1wNmzumfVK0me+0fi1VcMaEFIqWOC6wJ9XsntWVKZWI7v9JPkdh0iX+wK2H+fWC//P6J+IOzJ760SKEjZL7HyRoR/zr7eAZxfzSlP9QPrIVxljTLr6CQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hp3K0Ktz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 057FCC4CED1;
+	Wed, 29 Jan 2025 21:55:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738187715;
+	bh=G/M3y3ZkIoso+I8kP+mH6KrqA0+FLZcjw02xJDLsIW8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hp3K0KtzMvS4tjgJ0HuLjKxTCSslN1z6rE3nBLcD+JunsEkwr+Hp28PlmKi4EpsQl
+	 KAymwEE/4XC65dpwAgaaKqnPY83NMr3wY/rhZtwWCbhMpjd006ljz+L0SMEP1471gX
+	 dLZsWM0j33dCkGNLhObpWap0pB1kdfUoxs8KEZ7SqmyDmfJFD5pxI2JbRFF5vWNS1Q
+	 /rjmk2bigbcyIvl+LvPRk4u3gr79uWeMRn7Box/Zfv2hHsj+CVMXjSqqImwKGm9Dhn
+	 Hh+y5dbtvM7/BTX2nviAd7a+HjIJ6Dfz6LrWe6iSZ50RsvFiKgAf2av3wQ6zvkWJSY
+	 A3IxYENyktuVg==
+Date: Wed, 29 Jan 2025 13:55:13 -0800
+From: Namhyung Kim <namhyung@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	James Clark <james.clark@linaro.org>, Ze Gao <zegao2021@gmail.com>,
+	Weilin Wang <weilin.wang@intel.com>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Jean-Philippe Romain <jean-philippe.romain@foss.st.com>,
+	Junhao He <hejunhao3@huawei.com>, linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Aditya Bodkhe <Aditya.Bodkhe1@ibm.com>,
+	Atish Patra <atishp@rivosinc.com>, Leo Yan <leo.yan@arm.com>,
+	Beeman Strong <beeman@rivosinc.com>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [PATCH v5 4/4] perf parse-events: Reapply "Prefer sysfs/JSON
+ hardware events over legacy"
+Message-ID: <Z5qjwRG5jX9zAGtf@google.com>
+References: <20250109222109.567031-1-irogers@google.com>
+ <20250109222109.567031-5-irogers@google.com>
+ <Z4F3qxFaYnMTtPw7@google.com>
+ <CAP-5=fVYMK6tnKH0QU_RPUaogpsDmhmXn+=4P1uXg-moX2QMDw@mail.gmail.com>
+ <Z4WNT_UX9eMD_txf@google.com>
+ <CAP-5=fXxMmn31iep6tdvaUGzZccR+_D1L4RbjaNiRdEau2NZ9g@mail.gmail.com>
+ <CAP-5=fXdq2oSgTnNJJydAnBdSg5WeaPy6zjaink5+bsyXLoPiw@mail.gmail.com>
+ <Z4f3fDXemAMpBNMS@google.com>
+ <CAP-5=fWS8AzSo=vxcCFUaYMMth7FNMPNbCXjYOGApQ0AitqA2Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAPhsuW4psFtCVqHe2wK4RO2boCbcyPtfsGzHzzNU_1D0gsVoaA@mail.gmail.com>
- <itmqbpdn3zpsuz3epmwq3lhjmxkzsmjyw4obizuxy63uo6rofz@pckf7rtngzm7> <CAOQ4uxhgiUw3b2i7JYm5qZX1qPvYJshrCWy_i0BkPVtmzKo1AA@mail.gmail.com>
-In-Reply-To: <CAOQ4uxhgiUw3b2i7JYm5qZX1qPvYJshrCWy_i0BkPVtmzKo1AA@mail.gmail.com>
-From: Steve French <smfrench@gmail.com>
-Date: Wed, 29 Jan 2025 15:30:56 -0600
-X-Gm-Features: AWEUYZmV6e0eAXyKiyCo4qRehtAjNyn3DW8G2A8fcAPW2dyfbmWc7iZoU1McASU
-Message-ID: <CAH2r5muKu3p6jgjMeQHe=Jq_v0dhpNGWQSS=5u+rzYPb152RRA@mail.gmail.com>
-Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC] fanotify filter
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Jan Kara <jack@suse.cz>, Song Liu <song@kernel.org>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	lsf-pc@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fWS8AzSo=vxcCFUaYMMth7FNMPNbCXjYOGApQ0AitqA2Q@mail.gmail.com>
 
-On Thu, Jan 16, 2025 at 8:42=E2=80=AFAM Amir Goldstein <amir73il@gmail.com>=
- wrote:
->
-> On Thu, Jan 16, 2025 at 12:46=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
+On Wed, Jan 15, 2025 at 01:20:32PM -0800, Ian Rogers wrote:
+> On Wed, Jan 15, 2025 at 9:59 AM Namhyung Kim <namhyung@kernel.org> wrote:
 > >
-> > Hi!
+> > > On Mon, Jan 13, 2025 at 2:51 PM Ian Rogers <irogers@google.com> wrote:
+> > > > There was an explicit, and reviewed by Jiri and Arnaldo, intent with
+> > > > the hybrid work that using a legacy event with a hybrid PMU, even
+> > > > though the PMU doesn't advertise through json or sysfs the legacy
+> > > > event, the perf tool supports it.
 > >
-> > On Tue 14-01-25 11:41:06, Song Liu via Lsf-pc wrote:
-> > > At LSF/MM/BPF 2025, I would like to continue the discussion on enabli=
-ng
-> > > in-kernel fanotify filter, with kernel modules or BPF programs.There =
-are a
-> > > few rounds of RFC/PATCH for this work:[1][2][3].
-> > >
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D Motivation =3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > >
-> > > Currently, fanotify sends all events to user space, which is expensiv=
-e. If the
-> > > in-kernel filter can handle some events, it will be a clear win.
-> > >
-> > > Tracing and LSM BPF programs are always global. For systems that use
-> > > different rules on different files/directories, the complexity and ov=
-erhead
-> > > of these tracing/LSM programs may grow linearly with the number of
-> > > rules. fanotify, on the other hand, only enters the actual handlers f=
-or
-> > > matching fanotify marks. Therefore, fanotify-bpf has the potential to=
- be a
-> > > more scalable alternative to tracing/LSM BPF programs.
-> > >
-> > > Monitoring of a sub-tree in the VFS has been a challenge for both fan=
-otify
-> > > [4] and BPF LSM [5]. One of the key motivations of this work is to pr=
-ovide a
-> > > more efficient solution for sub-tree monitoring.
-> > >
-> > >
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D Challenge =3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > >
-> > > The latest proposal for sub-tree monitoring is to have a per filesyst=
-em
-> > > fanotify mark and use the filter function (in a kernel module or a BP=
-F
-> > > program) to filter events for the target sub-tree. This approach is n=
-ot
-> > > scalable for multiple rules within the same file system, and thus has
-> > > little benefit over existing tracing/LSM BPF programs. A better appro=
-ach
-> > > would be use per directory fanotify marks. However, it is not yet cle=
-ar
-> > > how to manage these marks. A naive approach for this is to employ
-> > > some directory walking mechanism to populate the marks to all sub
-> > > directories in the sub-tree at the beginning; and then on mkdir, the
-> > > child directory needs to inherit marks from the parent directory. I h=
-ope
-> > > we can discuss the best solution for this in LSF/MM/BPF.
+> > I thought legacy events on hybrid were converted to PMU events.
+> 
+> No, when BIG.little was created nothing changed in perf events but
+> when Intel did hybrid they wanted to make the hybrid CPUs (atom and
+> performance) appear as if they were one type. The PMU event encodings
+> vary a lot for this on Intel, ARM has standards for the encoding.
+> Intel extended the legacy format to take a PMU type id:
+> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/include/uapi/linux/perf_event.h?h=perf-tools-next#n41
+> "EEEEEEEE: PMU type ID"
+> that is in the top 32-bits of the config.
+
+Oh right, I forgot the extended type thing.  Then we can keep the legacy
+encoding with it on hybrid systems when users give well-known names (w/o
+PMU) for legacy event.
+
+> 
+> > > >
+> > > > Making it so that events without PMUs are only legacy events just
+> > > > doesn't work. There are far too many existing uses of non-legacy
+> > > > events without PMU, the metrics contain 100s of examples.
 > >
-> > Obviously, I'm interested in this :). We'll see how many people are
-> > interested in this topic but I'll be happy to discuss this also in some
-> > break / over beer in a small circle.
->
-> Yeh, count me in :)
+> > That's unfortunate.  It'd be nice if metrics were written with PMU
+> > names.
+> 
+> But then we'd end up with things like on Intel:
+> UNC_CHA_TOR_OCCUPANCY.IA_MISS_DRD
+> becoming:
+> uncore_cha/UNC_CHA_TOR_OCCUPANCY.IA_MISS_DRD/
+> or just:
+> cha/UNC_CHA_TOR_OCCUPANCY.IA_MISS_DRD/
+> As a user the first works for me and doesn't have any ambiguity over
+> PMUs as the event name already encodes the PMU. AMD similarly place
+> the part of a pipeline into event names. Were we to break everybody by
+> requiring the PMU we'd also need to explain which PMU to use. Sites
+> with event lists (like https://perfmon-events.intel.com/) don't
+> explain the PMU and it'd be messy as on Intel you have a CHA PMU for
+> server chips but a CBOX on client chips, etc.
+
+While I prefer having PMU names in the JSON events/metrics, it may not
+be pratical to change them all.  Probably we can allow them without PMU
+and hope that they have unique prefixes.
+
+> 
+> > I have a question.  What if an event name in a metric matches to
+> > multiple unrelated PMUs?
+> 
+> The metric may break or we'd aggregate the unrelated counts together.
+
+Ok, then they should use unique names.
 
 
-I am also interested in this topic, especially how we can better
-handle fanotify for network fs
-(or perhaps cluster fs as well) that already support notify at the
-protocol level.  I had
-added fs specific ioctls for allowing apps to be notified about remote
-changes (SMB3.1.1 change notify
-e.g.) but was interested in how to make it easier to wait on changes
-(e.g. to make it possible
-for fanotify/inotify to work for network fs)
+> Take a metric like IPC as "instructions/cycles", that metric should
+> work on a hybrid system as they have instructions and cycles. If you
+> used an event for instructions like inst_retired.any then maybe the
+> metric will fail on one kind of core that didn't have that event. Now
 
---=20
+The metrics is for specific CPU model then the vendor should be
+responsible to provide accurate metrics using approapriate PMU/events
+IMHO.
+
+
+> if we have accelerators advertising instructions and cycles events, we
+> should be able to compute the metric for the accelerator. What could
+> happen today is that the accelerator will have a cpumask of a single
+> CPU, we could aggregate the accelerator counter into the CPU event
+> with the same CPU as the cpumask, we'd end up with a weird quasi CPU
+> and accelerator IPC metric for that CPU. What should happen is that we
+> get an IPC for the accelerator and IPC for each hybrid core
+> independently, but the way we handle evsels, CPUs, PMUs is not really
+> set up for that. Hopefully getting a set of PMUs into the evsel will
+> clear that up. Assuming all of that is cleared up, is it wrong if the
+> IPC metric is computed for the accelerator if it was originally
+> written as a CPU metric? Not really. Could there be metrics where that
+> is the case?
+
+Yes, I think there should be separate metrics for the accelerators.
+
+
+> Probably, and specifying PMUs in the event names would be
+> a fix. There have also been proposals that we restrict the PMUs for
+> certain metrics. As event names are currently so distinct it isn't a
+> problem we've faced yet and it is not clear it is a problem other than
+> highlighting tech debt in areas of the tool like aggregation.
+> 
+> > > >
+> > > > Prior to switching json/sysfs to being the priority when a PMU is
+> > > > specified, it was the case that all encodings were the same, with or
+> > > > without a PMU.
+> > > >
+> > > > I don't think there is anything natural about assuming things about
+> > > > event names. Take cycles, cpu-cycles and cpu_cycles:
+> > > >  - cycles on x86 is only encoded via a legacy event;
+> > > >  - cpu-cycles on Intel exists as a sysfs event, but cpu-cycles is also
+> > > > a legacy event name;
+> > > >  - cpu_cycles exists as a sysfs event on ARM but doesn't have a
+> > > > corresponding legacy event name.
+> >
+> > I think the behavior should be:
+> >
+> >   cycles -> PERF_COUNT_HW_CPU_CYCLES
+> >   cpu-cycles -> PERF_COUNT_HW_CPU_CYCLES
+> >   cpu_cycles -> no legacy -> sysfs or json
+> >   cpu/cycles/ -> sysfs or json
+> >   cpu/cpu-cycles/ -> sysfs or json
+> 
+> So I disagree as if you add a PMU to an event name the encoding
+> shouldn't change:
+> 1) This historically was perf's behavior.
+
+Well.. I'm not sure about the history.  I believe the logic I said above
+is the historic and (I think) right behavior.
+
+> 2) Different event encodings can have different behaviors (broken in
+> some notable cases).
+
+Yep, let's make it clear.
+
+> 3) Intuitively what wildcarding does is try to open "*/event/" where *
+> is every possible PMU name. Having different event encodings is
+> breaking that intuition it could also break situations where you try
+> to assert equivalence based on type/config.
+
+While I don't like the wildcard matching, I think it doesn't matter as
+long as we keep the above behavior.  If it can find a legacy name, then
+go with it, done.  If not, try all PMUs as if it's given with PMU name
+in the event.
+
+> 4) The legacy encodings were (are?) broken on ARM Apple M? CPUs,
+> that's why the priority was changed.
+
+I guess that why they use cpu_cycles.
+
+> 5) RISC-V would like the tool tackle the legacy to config mapping
+> challenge, rather than the PMU driver, given the potential diversity
+> of hardware implementations.
+
+I hope they can find a better solution. :)
+
+> 
+> To this end we hosted RISC-V's perf people at Google and they
+> expressed that their preference was what this series does, and they
+> expressed this directly to you.
+> 
+> I don't think there would be an issue in this area if it wasn't for
+> Neoverse and Linus - that's why the revert happened. This change in
+> behavior was proposed by Arnaldo:
+> https://lore.kernel.org/lkml/ZlY0F_lmB37g10OK@x1/
+> and has tags from Intel, ARM and Rivos (RISC-V). I intend to carry it
+> in Google's tree.
+
+Maybe it's because of Linus.  But anyway it reminds me of behaviors that
+need to be discussed.  And we can (and should) improve things always.
+
 Thanks,
+Namhyung
 
-Steve
 
