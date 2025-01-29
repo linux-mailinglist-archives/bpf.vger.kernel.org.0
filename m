@@ -1,190 +1,243 @@
-Return-Path: <bpf+bounces-50014-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50015-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BE4CA2162B
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 02:41:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7956DA21655
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 02:45:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58A9B1888A1B
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 01:41:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 997AE3A8795
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 01:45:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 728B2188735;
-	Wed, 29 Jan 2025 01:41:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8EC918DF80;
+	Wed, 29 Jan 2025 01:45:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n1VDZJY3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tJt4ZVW0"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D451342A92;
-	Wed, 29 Jan 2025 01:41:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BF1E17C68;
+	Wed, 29 Jan 2025 01:45:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738114902; cv=none; b=N2+82jlo9jMhTzxwh7/k+TDaquObqoh8dwXya06VrG1fYo7iMJFuI5IyuCBxt3iXLCB7F4G9Jr4grIef5Hr0clyjdGwX+uPX21j0hPI67WdsmBGV/7Z49YI1drnPPZeFOo2PJZ/dCKQxWfsmzt/o4Y0msw74giyr9+QNhv20IS4=
+	t=1738115125; cv=none; b=tBVLu49wQREp6CA51HPPi8LA9d/MRURrEs3ikIDAZgcf7FDgOhJG8kp9bTcgfK74ZBRUiq+koJULjZZnJESQmWE5ZHvHGrUL3LwfMXNGMGb9SEXvLBAjhPJ0c8aMeGSe2uTRR5OEl0NpAqyfU8GRGfBOdTqkU13S6i1UtYlw6ec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738114902; c=relaxed/simple;
-	bh=bGrFUj9+jARzNSZm8ZYw/VH0NfaZgjtLxs5bCA+7fBM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Bw3SabY0aVeIjN0MED2rASUugUj+cvDoOsIy70xyNpSuIC9eSohVmC+ZcCQX6w1xCU1Uk2/l6IG7Oq8E8+/sWjg97izv9Yb1KyeUKS/5g2aYroBRwXnUhPckSx93Q+3QMdmBrSlfQDR5wcUn7aycwKcRC+lIJSJ87SuI/+Hen18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n1VDZJY3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38EF3C4CED3;
-	Wed, 29 Jan 2025 01:41:41 +0000 (UTC)
+	s=arc-20240116; t=1738115125; c=relaxed/simple;
+	bh=CWzXW0bIMSURgr0c3IY4/tvstyV6bj1ozJj9dzgjU1s=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=aQ8mgffPWoD32Lu22oMBWebvQ2Opc3pRRPkcfWU4MTd7mQztYihgKse+eYhQgQY3tNqSwA/vHyXkY0AABoxQCV23q2gQkjSbsntQKJ9WbgK/u1A7N8/YIhIYnWL3EtWaBrq0GPyhepP6/1FpQZj0C83h31L8UekJYKpcIDGjX/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tJt4ZVW0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3927EC4CED3;
+	Wed, 29 Jan 2025 01:45:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738114901;
-	bh=bGrFUj9+jARzNSZm8ZYw/VH0NfaZgjtLxs5bCA+7fBM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=n1VDZJY31zisnT5tXOdJh/SXfRGcB2u22K5FAz6ShmEXOMD4RlBCpNo/1jIr2iB49
-	 dvQyMubk+4wwg1t9wtRBCPy76ZUWo0EsdmiElXI5NiGL8lpfewdr0iax3VAS0o/I9q
-	 7Az7qPldcF9qBawOw08PkYdbZtaj5TRknj8qSNeq6MZ3XxScw55wblEnCkP3oLrBBB
-	 ku873wIOswf5+DCp17YdyG9OCIvmNUskG/SwLBGYQwP+8I88Tyce5Q8JpxxwuJ+3Bt
-	 bOxX7WmUy7int8WbsZmc09/93D+/YLl+RV6oL6BlJDIr/GNB/Xo51b3h37sM9ADIMB
-	 3zvrfEaoX6m5g==
-Date: Tue, 28 Jan 2025 17:41:37 -0800
-From: Kees Cook <kees@kernel.org>
-To: Eyal Birger <eyal.birger@gmail.com>
-Cc: luto@amacapital.net, wad@chromium.org, oleg@redhat.com,
-	mhiramat@kernel.org, andrii@kernel.org, jolsa@kernel.org,
-	alexei.starovoitov@gmail.com, olsajiri@gmail.com, cyphar@cyphar.com,
-	songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-	peterz@infradead.org, tglx@linutronix.de, bp@alien8.de,
-	daniel@iogearbox.net, ast@kernel.org, andrii.nakryiko@gmail.com,
-	rostedt@goodmis.org, rafi@rbk.io, shmulik.ladkani@gmail.com,
-	bpf@vger.kernel.org, linux-api@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2] seccomp: passthrough uretprobe systemcall without
- filtering
-Message-ID: <202501281634.7F398CEA87@keescook>
-References: <20250128145806.1849977-1-eyal.birger@gmail.com>
+	s=k20201202; t=1738115124;
+	bh=CWzXW0bIMSURgr0c3IY4/tvstyV6bj1ozJj9dzgjU1s=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=tJt4ZVW0p8weQsSPDZjLgTUab4flB9ZDeO3oV5MFy7mrenPn2R71XljjJYKAkhnrm
+	 UCkaqQqT+OZAhF0CZcDf6w+z1Qt+gQsQ5OCNAxgM1rmArls+WMymb4Mq830RmFCoKO
+	 +qFwvjNxZ5/w+Tx4QkGkdy0DNTUbSSpw6PslUzb5XdvZf0l8UzSKbhwOCZjyb+SnY9
+	 q6L5Zj8WJL2S1/bLsi4d6YQV8UUltZT+eHdIQb3MT8SpdgDLFwbf9U5bSybrLtzkIN
+	 sufR1bq3uvCWQSqMly5wDlwj2bsOCg3IPtP8q6yZFB3HIxEpMDKVAt03sxW/8L9VE6
+	 rHgpPPhwR2yMg==
+Date: Wed, 29 Jan 2025 02:45:18 +0100
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, coresight@lists.linaro.org,
+ linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-hardening@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+ workflows@vger.kernel.org
+Subject: Re: [RFC v2 00/38] Improve ABI documentation generation
+Message-ID: <20250129024518.69c0be81@foz.lan>
+In-Reply-To: <87h65i7e87.fsf@trenco.lwn.net>
+References: <cover.1738020236.git.mchehab+huawei@kernel.org>
+	<87h65i7e87.fsf@trenco.lwn.net>
+X-Mailer: Claws Mail 4.3.0 (GTK 3.24.43; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250128145806.1849977-1-eyal.birger@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 28, 2025 at 06:58:06AM -0800, Eyal Birger wrote:
-> Note: uretprobe isn't supported in i386 and __NR_ia32_rt_tgsigqueueinfo
-> uses the same number as __NR_uretprobe so the syscall isn't forced in the
-> compat bitmap.
+Em Tue, 28 Jan 2025 15:42:00 -0700
+Jonathan Corbet <corbet@lwn.net> escreveu:
 
-So a 64-bit tracer cannot use uretprobe on a 32-bit process? Also is
-uretprobe strictly an x86_64 feature?
-
-> [...]
-> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> index 385d48293a5f..23b594a68bc0 100644
-> --- a/kernel/seccomp.c
-> +++ b/kernel/seccomp.c
-> @@ -734,13 +734,13 @@ seccomp_prepare_user_filter(const char __user *user_filter)
->  
->  #ifdef SECCOMP_ARCH_NATIVE
->  /**
-> - * seccomp_is_const_allow - check if filter is constant allow with given data
-> + * seccomp_is_filter_const_allow - check if filter is constant allow with given data
->   * @fprog: The BPF programs
->   * @sd: The seccomp data to check against, only syscall number and arch
->   *      number are considered constant.
->   */
-> -static bool seccomp_is_const_allow(struct sock_fprog_kern *fprog,
-> -				   struct seccomp_data *sd)
-> +static bool seccomp_is_filter_const_allow(struct sock_fprog_kern *fprog,
-> +					  struct seccomp_data *sd)
->  {
->  	unsigned int reg_value = 0;
->  	unsigned int pc;
-> @@ -812,6 +812,21 @@ static bool seccomp_is_const_allow(struct sock_fprog_kern *fprog,
->  	return false;
->  }
->  
-> +static bool seccomp_is_const_allow(struct sock_fprog_kern *fprog,
-> +				   struct seccomp_data *sd)
-> +{
-> +#ifdef __NR_uretprobe
-> +	if (sd->nr == __NR_uretprobe
-> +#ifdef SECCOMP_ARCH_COMPAT
-> +	    && sd->arch != SECCOMP_ARCH_COMPAT
-> +#endif
-
-I don't like this because it's not future-proof enough. __NR_uretprobe
-may collide with other syscalls at some point. And if __NR_uretprobe_32
-is ever implemented, the seccomp logic will be missing. I think this
-will work now and in the future:
-
-#ifdef __NR_uretprobe
-# ifdef SECCOMP_ARCH_COMPAT
-        if (sd->arch == SECCOMP_ARCH_COMPAT) {
-#  ifdef __NR_uretprobe_32
-                if (sd->nr == __NR_uretprobe_32)
-                        return true;
-#  endif
-        } else
-# endif
-        if (sd->nr == __NR_uretprobe)
-                return true;
-#endif
-
-Instead of doing a function rename dance, I think you can just stick
-the above into seccomp_is_const_allow() after the WARN().
-
-Also please add a KUnit tests to cover this in
-tools/testing/selftests/seccomp/seccomp_bpf.c
-With at least these cases combinations below. Check each of:
-
-	- not using uretprobe passes
-	- using uretprobe passes (and validates that uretprobe did work)
-
-in each of the following conditions:
-
-	- default-allow filter
-	- default-block filter
-	- filter explicitly blocking __NR_uretprobe and nothing else
-	- filter explicitly allowing __NR_uretprobe (and only other
-	  required syscalls)
-
-Hm, is uretprobe expected to work on mips? Because if so, you'll need to
-do something similar to the mode1 checking in the !SECCOMP_ARCH_NATIVE
-version of seccomp_cache_check_allow().
-
-(You can see why I really dislike having policy baked into seccomp!)
-
-> +	   )
-> +		return true;
-> +#endif
-> +
-> +	return seccomp_is_filter_const_allow(fprog, sd);
-> +}
-> +
->  static void seccomp_cache_prepare_bitmap(struct seccomp_filter *sfilter,
->  					 void *bitmap, const void *bitmap_prev,
->  					 size_t bitmap_size, int arch)
-> @@ -1023,6 +1038,9 @@ static inline void seccomp_log(unsigned long syscall, long signr, u32 action,
->   */
->  static const int mode1_syscalls[] = {
->  	__NR_seccomp_read, __NR_seccomp_write, __NR_seccomp_exit, __NR_seccomp_sigreturn,
-> +#ifdef __NR_uretprobe
-> +	__NR_uretprobe,
-> +#endif
-
-It'd be nice to update mode1_syscalls_32 with __NR_uretprobe_32 even
-though it doesn't exist. (Is it _never_ planned to be implemented?) But
-then, maybe the chances of a compat mode1 seccomp process running under
-uretprobe is vanishingly small.
-
->  	-1, /* negative terminated */
->  };
->  
-> -- 
-> 2.43.0
+> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
 > 
+> > Hi Jon/Greg,
+> >
+> > That's the second version of my RFC patches meant to modenize the ABI
+> > parser that I wrote in Perl.  
+> 
+> I have a couple of minor comments on the individual patches, but overall
+> I do like this direction.
+> 
+> It would be nice, though, if the code were a bit more extensively
+> commented.  Parts of it get into the "twistly maze of regexes" mode that
+> can be awfully hard to follow.
 
--Kees
+The regex code is indeed complex, but documenting it is not an easy task.
+Btw, they are (about) the same that the Perl script does. imported also
+the documentation for there. I did some extra cleanups/optimizations there,
+though, after checking the results of some expressions.
 
--- 
-Kees Cook
+The big issue is that we don't have an uniform way of defining What: 
+expressions. So, each subsystem (and/or author) document it in different
+ways.
+
+There are even some ABI symbols with:
+
+	$(readlink)/sys/...
+
+(I intend to send a patch for those later on)
+
+and:
+
+	What: /sys/something/...
+
+	What: .../something_else
+
+(I guess ".../" means "/sys/something/...", but I can't be sure, as this
+is on one driver for a hardware I don't have - so, if I send a patch,
+I may end breaking it)
+
+If you want to understand how the whole set of regexes work, you can
+run:
+
+	$ ./scripts/get_abi.py -d 16 undefined --dry-run >/dev/null
+...
+	[DEBUG] /sys/kernel/mm/damon/admin/kdamonds/\w+/contexts/\w+/schemes/\w+/quotas/goals/\w+/current_value <== /sys/kernel/mm/damon/admin/kdamonds/<K>/contexts/<C>/schemes/<S>/quotas/goals/<G>/current_value
+	[DEBUG] /sys/kernel/mm/damon/admin/kdamonds/\w+/contexts/\w+/schemes/\w+/quotas/goals/\w+/target_metric <== /sys/kernel/mm/damon/admin/kdamonds/<K>/contexts/<C>/schemes/<S>/quotas/goals/<G>/target_metric
+	[DEBUG] /sys/kernel/mm/damon/admin/kdamonds/\w+/contexts/\w+/schemes/\w+/quotas/goals/\w+/target_value <== /sys/kernel/mm/damon/admin/kdamonds/<K>/contexts/<C>/schemes/<S>/quotas/goals/<G>/target_value
+	[DEBUG] /sys/kernel/mm/damon/admin/kdamonds/\w+/contexts/\w+/schemes/\w+/quotas/goals/nr_goals     <== /sys/kernel/mm/damon/admin/kdamonds/<K>/contexts/<C>/schemes/<S>/quotas/goals/nr_goals
+	[DEBUG] /sys/kernel/mm/damon/admin/kdamonds/\w+/contexts/\w+/schemes/\w+/quotas/ms                 <== /sys/kernel/mm/damon/admin/kdamonds/<K>/contexts/<C>/schemes/<S>/quotas/ms
+	[DEBUG] /sys/kernel/mm/damon/admin/kdamonds/\w+/contexts/\w+/schemes/\w+/quotas/reset_interval_ms  <== /sys/kernel/mm/
+...
+
+This will place at stderr all regular expressions that are currently
+parsed (they're currently used only for /sys symbols).
+
+Yet, instead of spending too much time documenting them, IMO we shold
+do the do the reverse: use the AbiRegex class to convert "What:" into
+a new tag (like "Regex:") and use it as much as possible (we'll still
+need "What:" for some things that aren't devnodes), as, with regular
+expressions, symbols can be clearly documented. As on python match groups
+can be named with:
+
+	(?P<name>...)
+
+this could be used to better describe some arguments, e.g. (picking an
+easy case):
+
+	What: /sys/module/<MODULENAME>/srcversion
+
+could be described, instead, as:
+
+	Regex: /sys/module/(?P<MODULENAME>[\w\-]+)/srcversion
+
+The Kernel_abi extension (actually AbiParser class) can either display it
+as-is (my personal preference), or even replace:
+	(?P<MODULENAME>[\w\-]+)
+with:
+	MODULENAME
+
+and still output this at html/pdf output as before, e. g.:
+
+	What: /sys/module/<MODULENAME>/srcversion
+
+Yet, doing it on a consistent way.
+
+This is easier said than done, as if we do some automatic conversion,
+subsystem reviewers/maintainers will need to double-check if the
+converted expressions make sense.
+
+
+> > On this series we have:
+> >
+> > patches 1 to 11: several bug fixes addressing issues at ABI symbols;  
+> 
+> 1-3 aren't needed - it seems you already upstreamed #2?
+> 
+> For the rest, is there any reason to not apply them right away?  They
+> just seem like worthwhile fixes.
+> 
+> > patch 12: a fix for scripts/documentation-file-ref-check
+> > patches 13-15: create new script with rest and search logic and 
+> >   minimally integrate with kernel_abi Sphinx extension(phase 1);
+> > patches 16-19: implement phase 2: class integration (phase 2);
+> > patch 20: fix a bug at kernel_abi: the way it splits lines is buggy;
+> > patches  21-24: rewrite kernel_abi logic to make it simpler and more
+> >   robust;
+> > patches 25-27: add cross-reference support at automarkup;
+> > patches 28-36: several ABI cleanups to cope with the improvements;
+> > patch 37: implement undefined command;
+> > patch 38: get rid of the old Perl script.
+> >
+> > To make it easier to review/apply, I may end breaking the next version
+> > on a couple of different patchsets. Still it would be nice to have more
+> > people testing it and providing some feedback.  
+> 
+> I've looked over everything, though with limited depth. 
+
+> My testing hasn't turned up any problems.  
+
+Great!
+
+> I've only tested with current Sphinx,
+> have you tried this with the more ancient versions we support?
+
+Not yet, but I double-checked at Sphinx documentation to be sure that
+I won't be using any newer methods: I just kept using the same Sphinx
+API as used by other extensions at the Kernel.
+
+For instance this loop:
+
+    def do_parse(self, content, node):
+        with switch_source_input(self.state, content):
+            self.state.nested_parse(content, 0, node, match_titles=1)
+
+was changed on Sphinx 7.4[1], and even nested_parse(match_titles=1) is
+not the recommended code for versions < 7.4, as there is this 
+replacement function:
+
+	nested_parse_with_titles()
+
+Yet, as they're working fine at least up to version 8.1.3, we can
+keep using the old way.
+
+In any case, I'll do a test before sending the final version to see if
+it works fine with our minimal version.
+
+[1] See: https://www.sphinx-doc.org/en/master/extdev/markupapi.html
+
+- 
+
+On a separate discussion, I noticed one potential compatibility issue
+we may have with future Python versions, due to some ascii texts
+formatted as unicode. I'll send later a patch fixing them.
+
+Additionally, automarkup has backward-compatible code with Python 2.7.
+ Can I send patches dropping 2.7 support from Sphinx extensions?
+
+> [It's probably time to raise our minimum version again, especially now
+> that current Sphinx has better performance.]
+
+Agreed. 
+
+IMO, we should also increase Python's minimal version.
+
+> I don't see a whole lot of reasons not to apply this set shortly after
+> the merge window; anybody disagree?
+
+Thanks,
+Mauro
 
