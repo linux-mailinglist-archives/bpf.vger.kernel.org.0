@@ -1,108 +1,121 @@
-Return-Path: <bpf+bounces-50021-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50022-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 140C3A217E2
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 08:09:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55C91A217F5
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 08:19:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36DEE3A21E6
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 07:09:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CC041881C31
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2025 07:19:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FBE6194AF9;
-	Wed, 29 Jan 2025 07:09:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBAE8194C9E;
+	Wed, 29 Jan 2025 07:19:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="gxyCXZdp"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ue0nY9pB"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29157189916;
-	Wed, 29 Jan 2025 07:09:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D11D9179BC
+	for <bpf@vger.kernel.org>; Wed, 29 Jan 2025 07:19:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738134553; cv=none; b=bDb73kcVdAP19yETQm9qkbviqRkk3ikwNamxfZqPchgCI8dMLcNVu7yEQ2JKR1UDmNQVWnCFWLRWTJDOodSkyzE+D7uYBlo7MqTwW5LFRkjzZ1VTYRQea/dpvoIryWipqLCyFNExaoYOojKU1ETKM2ufx2n6v2RfHXbihUlvNC8=
+	t=1738135159; cv=none; b=Rpu6D9RMZiWjCK+wkBDPgPhXFIhPU2mKHUF3QK4Thu5CkPwunvpHu53TQwSYi/OYGURvJpEv0nlN3iI0nc+PVezYSaxi0JLU0OUDKcSckZ96QbUGJQg1EybU/cQ+8TQQ+UD8oQT3c0bQduHfanEficLXeW6rznnEj92GbtGCPuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738134553; c=relaxed/simple;
-	bh=7lBXA8t5dwNr4+zwOWOzpvCYQjYnrBwJAFA/fBlItnM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZcMSQnE1JpUFqScxyX6Y26PzG9F2nwyoekUeu5ZgKOwa3WBwbIxwv/7+F1pnXnRnmIu/mgFY/n48+9CuOWCUOakjllsBXcL4Op60U+C9C20bd570A5pDo4pKu/OjrodDNtwuYVQowyZFIkQrnMziAik0mEZ9r4QeqrjUHPZw4AQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=gxyCXZdp; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id EB0DE4327F;
-	Wed, 29 Jan 2025 07:09:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1738134543;
+	s=arc-20240116; t=1738135159; c=relaxed/simple;
+	bh=/JRg8wT6bLVapHrvU2diywTnXgm1LrV/x0XHglzXt6o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JFwyyMeEvvUGTNZSi3n/MTlcgn5Xg892lMHtJeij9rvNjazcAuRkIWcHlNYmDxHcQ1xGNNi5qCwD2gfA3aoTDs5vs089wpF34+UFavY4GhF3u76TkJmPqjFu8kWoKPlcjvG36MRPTu/X5kvHMfWGroxBcTqhBu42Qf8p1jLDZaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ue0nY9pB; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1738135156;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=X7e0+ZackKd23zhnfHS3GkxLoieKfwiTjezy8zO/3VQ=;
-	b=gxyCXZdpJRKTpZWwuRy/yIS5xsJ+NdOU/yo7td2e5wotg/aUfTn/8hsLskA7ky1Au31Lgb
-	7kGp9Pnj0T8nfSOZ44B6/VqYDP1R9U4kktKbcVg6X0P+Cp7E6RyVKDge53pts+Ui281EpB
-	IBIXqmipeIiXh/7uLLOpCDNJZuOEO2LTrLX1tP9RnhTQjvAsPHzxI6WjzvZMfSPudA7YNh
-	EEd1tYL8Q0NMQ0a0koe0g3F4RKUpW6j9tOy01kichT1h0rNEsMhE4g9Bgxf/9A7ZZ89fa5
-	Kh8vDO/XUsTNQzVWf6obeev9241fpYr1zLn91eb5jm5S9NXjvqQRpJks2PG9+Q==
-Message-ID: <6641f585-38bc-4536-a788-560fd700d646@bootlin.com>
-Date: Wed, 29 Jan 2025 08:08:59 +0100
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=+DEG/qJWgMITwb5a8q+oCSsM9uuHMf8EwMG1aZjuGcg=;
+	b=Ue0nY9pBypPF9VXzXwv6tQTJY8M9LJAt4U17tVYPjEHUQdPyJUcI9lwuIhYjes1yEjOf3q
+	pPxV0yoYJd5zP6u3OAv5sIwRxtpYeAKFmtLD8N1IAMc2Qez7WhEAv/gbhS/OgNFpdllCZ2
+	ybd7I++KQO4a/lDEYhoY+OqeMbT07w4=
+Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-2-f3irhiwfM1COcRJT4hORow-1; Wed,
+ 29 Jan 2025 02:19:10 -0500
+X-MC-Unique: f3irhiwfM1COcRJT4hORow-1
+X-Mimecast-MFC-AGG-ID: f3irhiwfM1COcRJT4hORow
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 21EA619560AB;
+	Wed, 29 Jan 2025 07:19:08 +0000 (UTC)
+Received: from vmalik-fedora.redhat.com (unknown [10.45.224.79])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 1E5851800352;
+	Wed, 29 Jan 2025 07:19:01 +0000 (UTC)
+From: Viktor Malik <vmalik@redhat.com>
+To: bpf@vger.kernel.org
+Cc: Quentin Monnet <qmo@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Viktor Malik <vmalik@redhat.com>
+Subject: [PATCH bpf-next] bpftool: Fix readlink usage in get_fd_type
+Date: Wed, 29 Jan 2025 08:18:57 +0100
+Message-ID: <20250129071857.75182-1-vmalik@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 12/14] selftests/bpf: test_xdp_veth: Add XDP
- broadcast redirection tests
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller"
- <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
- Alexis Lothore <alexis.lothore@bootlin.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250128-redirect-multi-v3-0-c1ce69997c01@bootlin.com>
- <20250128-redirect-multi-v3-12-c1ce69997c01@bootlin.com>
- <f0eb6d62-695b-461c-9a45-3926f590e413@linux.dev>
-Content-Language: en-US
-From: Bastien Curutchet <bastien.curutchet@bootlin.com>
-In-Reply-To: <f0eb6d62-695b-461c-9a45-3926f590e413@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvfeeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomhepuegrshhtihgvnhcuvehurhhuthgthhgvthcuoegsrghsthhivghnrdgtuhhruhhttghhvghtsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpefhheeggfetffekheevuedvkedvvdeufeegjeevgfelveevveetffevfefgheeijeenucfkphepvdgrtddumegtsgduleemkedvheefmeguuddttdemfhelvgdumeeftgejudemjeeitdgtmedutggsrgenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvrgdtudemtggsudelmeekvdehfeemugdutddtmehflegvudemfegtjedumeejiedttgemudgtsggrpdhhvghloheplgfkrfggieemvdgrtddumegtsgduleemkedvheefmeguuddttdemfhelvgdumeeftgejudemjeeitdgtmedutggsrggnpdhmrghilhhfrhhomhepsggrshhtihgvnhdrtghurhhuthgthhgvthessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepvdefpdhrtghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghvpdhrtghpthhtoheprghstheskhgvrhhnvghlrdhorhhgp
- dhrtghpthhtohepuggrnhhivghlsehiohhgvggrrhgsohigrdhnvghtpdhrtghpthhtohepuggrvhgvmhesuggrvhgvmhhlohhfthdrnhgvthdprhgtphhtthhopehkuhgsrgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgrfihksehkvghrnhgvlhdrohhrghdprhgtphhtthhopehjohhhnhdrfhgrshhtrggsvghnugesghhmrghilhdrtghomhdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhg
-X-GND-Sasl: bastien.curutchet@bootlin.com
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
-Hi Martin,
+The `readlink(path, buf, sizeof(buf))` call reads at most sizeof(buf)
+bytes and *does not* append null-terminator to buf. With respect to
+that, fix two pieces in get_fd_type:
 
-On 1/29/25 12:03 AM, Martin KaFai Lau wrote:
-> On 1/28/25 1:57 AM, Bastien Curutchet (eBPF Foundation) wrote:
->> Set the tests to run serially to avoid conflicts with
->> test_xdp_veth_redirect
-> 
-> I think this has been fixed in v3?
->
+1. Change the truncation check to contain sizeof(buf) rather than
+   sizeof(path).
+2. Append null-terminator to buf.
 
-Indeed, I forgot to update the commit log ...
+Reported by Coverity.
 
-> Others lgtm also. Thanks for working on this.
-> 
+Signed-off-by: Viktor Malik <vmalik@redhat.com>
+---
+ tools/bpf/bpftool/common.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Great, I'll send a V4 soon then, thank you.
+diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+index 9b75639434b8..0a764426d935 100644
+--- a/tools/bpf/bpftool/common.c
++++ b/tools/bpf/bpftool/common.c
+@@ -461,10 +461,11 @@ int get_fd_type(int fd)
+ 		p_err("can't read link type: %s", strerror(errno));
+ 		return -1;
+ 	}
+-	if (n == sizeof(path)) {
++	if (n == sizeof(buf)) {
+ 		p_err("can't read link type: path too long!");
+ 		return -1;
+ 	}
++	buf[n] = '\0';
+ 
+ 	if (strstr(buf, "bpf-map"))
+ 		return BPF_OBJ_MAP;
+-- 
+2.48.1
 
-
-Best regards,
-Bastien
 
