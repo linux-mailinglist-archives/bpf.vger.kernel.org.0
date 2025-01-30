@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-50161-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50162-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A20D9A234EC
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 21:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 42474A234EF
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 21:13:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32F4B1621EC
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 20:13:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EF6016274E
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 20:13:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEB451F1300;
-	Thu, 30 Jan 2025 20:12:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC4901F130F;
+	Thu, 30 Jan 2025 20:12:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kmuO6WOC"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EupBivTd"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C6E91EEA43
-	for <bpf@vger.kernel.org>; Thu, 30 Jan 2025 20:12:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4635E1F12F6
+	for <bpf@vger.kernel.org>; Thu, 30 Jan 2025 20:12:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738267974; cv=none; b=YCbsk+IP8R8IQvpdjpv032TH9jQS7jnf/iBbAcF9BrJM6DSj87mVfyffXvVxtcxVtbuD8WEZ5fdMhvuTf+yNz+qGbX8ZT3l+yUklKz5oW5cjmbFsb9nIzzTIgJnviynQg+PoNIDUvX1c8cxWg+PdoVrzrJymNiEhZuKh8PIWi4Y=
+	t=1738267976; cv=none; b=G8aje8OgKnI0QHDirH+DVgnv2Eq/QE59HvQVZcqnxrq80oZzDOWoSZmGN7xpODw3gI2BqgppXI7P2wv54/9EtEDZxsHMeXThXbylH5p+xiaMTi7DIFm188ykJjMEiAb4uOL6trVa15GsOnRDP7xv/dRwvmRa0f20uM2utZxIKSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738267974; c=relaxed/simple;
-	bh=zo98IgL3cy95gvAzq1lWy2F83iimb5lczNHVBMLc4V0=;
+	s=arc-20240116; t=1738267976; c=relaxed/simple;
+	bh=B92LvmOIAAFSN2zQQwTA3voQ8fbb1BwwbNNtKSSpzhI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nLewj6ZTvd0L/uyV7AHtWsGCnRHJLqHgCEPFE3Dp8WE0438rrsDuYDwmTDYSN5W77I8ymzawbF591/H9U7HRvlJ6iOz993Hzk4Q9fRqU4qZFGoK8bnA4lyikv1AiqoobRfDKmonC/ileXp1CQ/EWgJKnpLWMyecB962kgcs92pA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kmuO6WOC; arc=none smtp.client-ip=95.215.58.178
+	 MIME-Version; b=Zvxvp2Scy88i6IDv79BSNwkYhEkE14FoHV18tsZwaqrNYONAyzB1W3XghkAlfJxQM9h4uXay9rYJo4lwF2FPNk7MVLDiHlH+EYuNeeGwb2jHoh1PY50qkkNGGfjEP/2V0iQp5b3ZxvutcK7/jVEjxGnGgbWohqDjPiKTULM+0bQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EupBivTd; arc=none smtp.client-ip=95.215.58.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1738267970;
+	t=1738267972;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=WLo2SMSF7WbHZA/gHLajoQxi/lzquozNwzWWOGRJta8=;
-	b=kmuO6WOCRdrtlUl1wPjiHFZ/9JVFBazZfsfHFcKdc0O7YQ/71laazzrt/8SWi6VxjtOU2w
-	j1czGSw6TWVYIuUtVgTgJdKsyytFPllqEJhda3jQdnHwBfCnK7g3OpykJ05zYIzS+0Yufw
-	S0C5IWZsEzPzAv8XU1a2fUm52MPoAm0=
+	bh=IokzxnFxvpZsPXWuVgG6JsXMUZ8+nxC3sHMEoJFy5nk=;
+	b=EupBivTdV77bmTyQPn6Yp6z2ziWnqTuKvyrlGRdLW+1avEjIyXxOIBKRO2XWZmK6GsTIJu
+	dIALhSQWorgFBQE9JgeNs8iWdn0hw2j1qbu8y/oAncUgxSvPPyeajARCuwrHPP7B1iJopg
+	MertC1wKecI/JKKbuBHWc8NC3wPpuIA=
 From: Ihor Solodrai <ihor.solodrai@linux.dev>
 To: bpf@vger.kernel.org
 Cc: andrii@kernel.org,
@@ -50,9 +50,9 @@ Cc: andrii@kernel.org,
 	eddyz87@gmail.com,
 	mykolal@fb.com,
 	jose.marchesi@oracle.com
-Subject: [PATCH bpf-next v3 4/6] selftests/bpf: add a btf_dump test for type_tags
-Date: Thu, 30 Jan 2025 12:12:37 -0800
-Message-ID: <20250130201239.1429648-5-ihor.solodrai@linux.dev>
+Subject: [PATCH bpf-next v3 5/6] bpf: allow kind_flag for BTF type and decl tags
+Date: Thu, 30 Jan 2025 12:12:38 -0800
+Message-ID: <20250130201239.1429648-6-ihor.solodrai@linux.dev>
 In-Reply-To: <20250130201239.1429648-1-ihor.solodrai@linux.dev>
 References: <20250130201239.1429648-1-ihor.solodrai@linux.dev>
 Precedence: bulk
@@ -64,218 +64,127 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Factor out common routines handling custom BTF from
-test_btf_dump_incremental. Then use them in the
-test_btf_dump_type_tags.
+BTF type tags and decl tags now may have info->kflag set to 1,
+changing the semantics of the tag.
 
-test_btf_dump_type_tags verifies that a type tag is dumped correctly
-with respect to its kflag.
+Change BTF verification to permit BTF that makes use of this feature:
+  * remove kflag check in btf_decl_tag_check_meta(), as both values
+    are valid
+  * allow kflag to be set for BTF_KIND_TYPE_TAG type in
+    btf_ref_type_check_meta()
+
+Make sure kind_flag is NOT set when checking for specific BTF tags,
+such as "kptr", "user" etc.
+
+Modify a selftest checking for kflag in decl_tag accordingly.
 
 Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- .../selftests/bpf/prog_tests/btf_dump.c       | 147 +++++++++++++-----
- 1 file changed, 110 insertions(+), 37 deletions(-)
+ kernel/bpf/btf.c                             | 26 +++++++++-----------
+ tools/testing/selftests/bpf/prog_tests/btf.c |  4 +--
+ 2 files changed, 13 insertions(+), 17 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-index b293b8501fd6..c0a776feec23 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-@@ -126,26 +126,69 @@ static int test_btf_dump_case(int n, struct btf_dump_test_case *t)
- 	return err;
- }
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 9de6acddd479..9433b6467bbe 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -2575,7 +2575,7 @@ static int btf_ref_type_check_meta(struct btf_verifier_env *env,
+ 		return -EINVAL;
+ 	}
  
--static char *dump_buf;
--static size_t dump_buf_sz;
--static FILE *dump_buf_file;
-+struct test_ctx {
-+	struct btf *btf;
-+	struct btf_dump *d;
-+	char *dump_buf;
-+	size_t dump_buf_sz;
-+	FILE *dump_buf_file;
-+};
- 
--static void test_btf_dump_incremental(void)
-+static void test_ctx__free(struct test_ctx *t)
+-	if (btf_type_kflag(t)) {
++	if (btf_type_kflag(t) && !btf_type_is_type_tag(t)) {
+ 		btf_verifier_log_type(env, t, "Invalid btf_info kind_flag");
+ 		return -EINVAL;
+ 	}
+@@ -3332,6 +3332,8 @@ static int btf_find_kptr(const struct btf *btf, const struct btf_type *t,
+ 			 u32 off, int sz, struct btf_field_info *info, u32 field_mask)
  {
--	struct btf *btf = NULL;
--	struct btf_dump *d = NULL;
--	int id, err, i;
-+	fclose(t->dump_buf_file);
-+	free(t->dump_buf);
-+	btf_dump__free(t->d);
-+	btf__free(t->btf);
-+}
+ 	enum btf_field_type type;
++	const char *tag_value;
++	bool is_type_tag;
+ 	u32 res_id;
  
--	dump_buf_file = open_memstream(&dump_buf, &dump_buf_sz);
--	if (!ASSERT_OK_PTR(dump_buf_file, "dump_memstream"))
--		return;
--	btf = btf__new_empty();
--	if (!ASSERT_OK_PTR(btf, "new_empty"))
-+static int test_ctx__init(struct test_ctx *t)
-+{
-+	t->dump_buf_file = open_memstream(&t->dump_buf, &t->dump_buf_sz);
-+	if (!ASSERT_OK_PTR(t->dump_buf_file, "dump_memstream"))
-+		return -1;
-+	t->btf = btf__new_empty();
-+	if (!ASSERT_OK_PTR(t->btf, "new_empty"))
- 		goto err_out;
--	d = btf_dump__new(btf, btf_dump_printf, dump_buf_file, NULL);
--	if (!ASSERT_OK(libbpf_get_error(d), "btf_dump__new"))
-+	t->d = btf_dump__new(t->btf, btf_dump_printf, t->dump_buf_file, NULL);
-+	if (!ASSERT_OK(libbpf_get_error(t->d), "btf_dump__new"))
- 		goto err_out;
+ 	/* Permit modifiers on the pointer itself */
+@@ -3341,19 +3343,20 @@ static int btf_find_kptr(const struct btf *btf, const struct btf_type *t,
+ 	if (!btf_type_is_ptr(t))
+ 		return BTF_FIELD_IGNORE;
+ 	t = btf_type_by_id(btf, t->type);
+-
+-	if (!btf_type_is_type_tag(t))
++	is_type_tag = btf_type_is_type_tag(t) && !btf_type_kflag(t);
++	if (!is_type_tag)
+ 		return BTF_FIELD_IGNORE;
+ 	/* Reject extra tags */
+ 	if (btf_type_is_type_tag(btf_type_by_id(btf, t->type)))
+ 		return -EINVAL;
+-	if (!strcmp("kptr_untrusted", __btf_name_by_offset(btf, t->name_off)))
++	tag_value = __btf_name_by_offset(btf, t->name_off);
++	if (!strcmp("kptr_untrusted", tag_value))
+ 		type = BPF_KPTR_UNREF;
+-	else if (!strcmp("kptr", __btf_name_by_offset(btf, t->name_off)))
++	else if (!strcmp("kptr", tag_value))
+ 		type = BPF_KPTR_REF;
+-	else if (!strcmp("percpu_kptr", __btf_name_by_offset(btf, t->name_off)))
++	else if (!strcmp("percpu_kptr", tag_value))
+ 		type = BPF_KPTR_PERCPU;
+-	else if (!strcmp("uptr", __btf_name_by_offset(btf, t->name_off)))
++	else if (!strcmp("uptr", tag_value))
+ 		type = BPF_UPTR;
+ 	else
+ 		return -EINVAL;
+@@ -4944,11 +4947,6 @@ static s32 btf_decl_tag_check_meta(struct btf_verifier_env *env,
+ 		return -EINVAL;
+ 	}
  
-+	return 0;
-+
-+err_out:
-+	test_ctx__free(t);
-+	return -1;
-+}
-+
-+static void test_ctx__dump_and_compare(struct test_ctx *t,
-+				       const char *expected_output,
-+				       const char *message)
-+{
-+	int i, err;
-+
-+	for (i = 1; i < btf__type_cnt(t->btf); i++) {
-+		err = btf_dump__dump_type(t->d, i);
-+		ASSERT_OK(err, "dump_type_ok");
-+	}
-+
-+	fflush(t->dump_buf_file);
-+	t->dump_buf[t->dump_buf_sz] = 0; /* some libc implementations don't do this */
-+
-+	ASSERT_STREQ(t->dump_buf, expected_output, message);
-+}
-+
-+static void test_btf_dump_incremental(void)
-+{
-+	struct test_ctx t = {};
-+	struct btf *btf;
-+	int id, err;
-+
-+	if (test_ctx__init(&t))
-+		return;
-+
-+	btf = t.btf;
-+
- 	/* First, generate BTF corresponding to the following C code:
- 	 *
- 	 * enum x;
-@@ -182,15 +225,7 @@ static void test_btf_dump_incremental(void)
- 	err = btf__add_field(btf, "x", 4, 0, 0);
- 	ASSERT_OK(err, "field_ok");
- 
--	for (i = 1; i < btf__type_cnt(btf); i++) {
--		err = btf_dump__dump_type(d, i);
--		ASSERT_OK(err, "dump_type_ok");
+-	if (btf_type_kflag(t)) {
+-		btf_verifier_log_type(env, t, "Invalid btf_info kind_flag");
+-		return -EINVAL;
 -	}
 -
--	fflush(dump_buf_file);
--	dump_buf[dump_buf_sz] = 0; /* some libc implementations don't do this */
--
--	ASSERT_STREQ(dump_buf,
-+	test_ctx__dump_and_compare(&t,
- "enum x;\n"
- "\n"
- "enum x {\n"
-@@ -221,7 +256,7 @@ static void test_btf_dump_incremental(void)
- 	 * enum values don't conflict;
- 	 *
- 	 */
--	fseek(dump_buf_file, 0, SEEK_SET);
-+	fseek(t.dump_buf_file, 0, SEEK_SET);
+ 	component_idx = btf_type_decl_tag(t)->component_idx;
+ 	if (component_idx < -1) {
+ 		btf_verifier_log_type(env, t, "Invalid component_idx");
+@@ -6743,7 +6741,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+ 	info->btf_id = t->type;
+ 	t = btf_type_by_id(btf, t->type);
  
- 	id = btf__add_struct(btf, "s", 4);
- 	ASSERT_EQ(id, 7, "struct_id");
-@@ -232,14 +267,7 @@ static void test_btf_dump_incremental(void)
- 	err = btf__add_field(btf, "s", 6, 64, 0);
- 	ASSERT_OK(err, "field_ok");
+-	if (btf_type_is_type_tag(t)) {
++	if (btf_type_is_type_tag(t) && !btf_type_kflag(t)) {
+ 		tag_value = __btf_name_by_offset(btf, t->name_off);
+ 		if (strcmp(tag_value, "user") == 0)
+ 			info->reg_type |= MEM_USER;
+@@ -7002,7 +7000,7 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
  
--	for (i = 1; i < btf__type_cnt(btf); i++) {
--		err = btf_dump__dump_type(d, i);
--		ASSERT_OK(err, "dump_type_ok");
--	}
--
--	fflush(dump_buf_file);
--	dump_buf[dump_buf_sz] = 0; /* some libc implementations don't do this */
--	ASSERT_STREQ(dump_buf,
-+	test_ctx__dump_and_compare(&t,
- "struct s___2 {\n"
- "	enum x x;\n"
- "	enum {\n"
-@@ -248,11 +276,53 @@ static void test_btf_dump_incremental(void)
- "	struct s s;\n"
- "};\n\n" , "c_dump1");
- 
--err_out:
--	fclose(dump_buf_file);
--	free(dump_buf);
--	btf_dump__free(d);
--	btf__free(btf);
-+	test_ctx__free(&t);
-+}
-+
-+static void test_btf_dump_type_tags(void)
-+{
-+	struct test_ctx t = {};
-+	struct btf *btf;
-+	int id, err;
-+
-+	if (test_ctx__init(&t))
-+		return;
-+
-+	btf = t.btf;
-+
-+	/* Generate BTF corresponding to the following C code:
-+	 *
-+	 * struct s {
-+	 *   void __attribute__((btf_type_tag(\"void_tag\"))) *p1;
-+	 *   void __attribute__((void_attr)) *p2;
-+	 * };
-+	 *
-+	 */
-+
-+	id = btf__add_type_tag(btf, "void_tag", 0);
-+	ASSERT_EQ(id, 1, "type_tag_id");
-+	id = btf__add_ptr(btf, id);
-+	ASSERT_EQ(id, 2, "void_ptr_id1");
-+
-+	id = btf__add_type_attr(btf, "void_attr", 0);
-+	ASSERT_EQ(id, 3, "type_attr_id");
-+	id = btf__add_ptr(btf, id);
-+	ASSERT_EQ(id, 4, "void_ptr_id2");
-+
-+	id = btf__add_struct(btf, "s", 8);
-+	ASSERT_EQ(id, 5, "struct_id");
-+	err = btf__add_field(btf, "p1", 2, 0, 0);
-+	ASSERT_OK(err, "field_ok1");
-+	err = btf__add_field(btf, "p2", 4, 0, 0);
-+	ASSERT_OK(err, "field_ok2");
-+
-+	test_ctx__dump_and_compare(&t,
-+"struct s {\n"
-+"	void __attribute__((btf_type_tag(\"void_tag\"))) *p1;\n"
-+"	void __attribute__((void_attr)) *p2;\n"
-+"};\n\n", "dump_and_compare");
-+
-+	test_ctx__free(&t);
- }
- 
- #define STRSIZE				4096
-@@ -874,6 +944,9 @@ void test_btf_dump() {
- 	if (test__start_subtest("btf_dump: incremental"))
- 		test_btf_dump_incremental();
- 
-+	if (test__start_subtest("btf_dump: type_tags"))
-+		test_btf_dump_type_tags();
-+
- 	btf = libbpf_find_kernel_btf();
- 	if (!ASSERT_OK_PTR(btf, "no kernel BTF found"))
- 		return;
+ 			/* check type tag */
+ 			t = btf_type_by_id(btf, mtype->type);
+-			if (btf_type_is_type_tag(t)) {
++			if (btf_type_is_type_tag(t) && !btf_type_kflag(t)) {
+ 				tag_value = __btf_name_by_offset(btf, t->name_off);
+ 				/* check __user tag */
+ 				if (strcmp(tag_value, "user") == 0)
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
+index e63d74ce046f..aab9ad88c845 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf.c
+@@ -3866,7 +3866,7 @@ static struct btf_raw_test raw_tests[] = {
+ 	.err_str = "vlen != 0",
+ },
+ {
+-	.descr = "decl_tag test #8, invalid kflag",
++	.descr = "decl_tag test #8, tag with kflag",
+ 	.raw_types = {
+ 		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),	/* [1] */
+ 		BTF_VAR_ENC(NAME_TBD, 1, 0),			/* [2] */
+@@ -3881,8 +3881,6 @@ static struct btf_raw_test raw_tests[] = {
+ 	.key_type_id = 1,
+ 	.value_type_id = 1,
+ 	.max_entries = 1,
+-	.btf_load_err = true,
+-	.err_str = "Invalid btf_info kind_flag",
+ },
+ {
+ 	.descr = "decl_tag test #9, var, invalid component_idx",
 -- 
 2.48.1
 
