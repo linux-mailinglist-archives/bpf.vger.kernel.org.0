@@ -1,401 +1,255 @@
-Return-Path: <bpf+bounces-50172-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50173-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 476C9A236DA
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 22:38:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D028BA236FB
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 22:54:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA0693A06F0
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 21:37:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0752716508D
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 21:54:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD8271F3D37;
-	Thu, 30 Jan 2025 21:36:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E69C1F153B;
+	Thu, 30 Jan 2025 21:53:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WaHAZjAp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MljO4/1x"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5729A1F190A;
-	Thu, 30 Jan 2025 21:36:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35C1A1DA5F;
+	Thu, 30 Jan 2025 21:53:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738273001; cv=none; b=QV1KXxNmt3s6ofgThLlh2kdZu1zf96ht8f8byvxoIz/oeen+Vrx6Ok8Uxa//qBzE1lmqewHqK+/Mb7FbldV1jY8aVitnJ91Wcbglbe12RMsiI2qrFc2tYTKn0xyFmKOLd4oeIPhldwOwm5wgdHMf2o03ivUBf1AyX5IHzFTfkMQ=
+	t=1738274035; cv=none; b=WRwX80/F1SOd6Yne8xpTPBSpJPydKCRt0iPeqrUjlZP3o9l7k9CwASIRQ1Y6egMyHNx9hG4D/px0DsiwR+xx/9W1TU8iXW5KG5I/W2aOuM5vtwx5cY7N4WsDKp2JAYmaSaMITeIhVhFE1CxxwM3j+r3T8zQs2GME1CGIGKDr2H8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738273001; c=relaxed/simple;
-	bh=fuGYW/1zNIvvDw4pAzEC/dfR1GTOdiw8eWV8eiTYGLY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SKx+fdT9qfBpawNM2fTCxSpD5TnkAoKTPGu0nSzXkIGsyQaqfDgeOALUkx6khIYucPcvLKUXB3TfTTkIYXawJ5r5q+Hq6fiaAZdL24OnT39EbnJvD9RlHMQ/HRjj7sxu1ZjBElf1c6uI5FlWOfgWfHRKnhtlBWrqsWVhmovaWhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WaHAZjAp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63595C4CED3;
-	Thu, 30 Jan 2025 21:36:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738273001;
-	bh=fuGYW/1zNIvvDw4pAzEC/dfR1GTOdiw8eWV8eiTYGLY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WaHAZjApLLBWGQmZ870hDnGvANj0DU3tWSRh5DMJtjXd6XHOesBGOBcdyJFigBPAf
-	 nxgLRX57gpece+bhWdKEMeoxZXwS5z9BhRwyR6egZFotYpeDZBUZd9MyzOHrhm0Map
-	 hP4VRoGtqGoKeTUyGQ3fBwSrExPdwBXoaXQTRBxEs19i1OoTqUg6zP4EvrmniYiRxY
-	 lEDawkV1yLvdNk7AoSDD2LHnehFQ/QvrSgMEfTCmZUi1AlHy6m8Sd7iDmV3RPu0DJP
-	 oXMriDMLAAqnIMANtXWtyCB3M/8J5M25j0yi/AJ05DaU2vV1aMe/TQLZLgyGOptIGE
-	 78c1Msgk9NunQ==
-From: Song Liu <song@kernel.org>
-To: bpf@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org
-Cc: kernel-team@meta.com,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	kpsingh@kernel.org,
-	mattbobrowski@google.com,
-	liamwisehart@meta.com,
-	shankaran@meta.com,
-	Song Liu <song@kernel.org>
-Subject: [PATCH v12 bpf-next 5/5] selftests/bpf: Test kfuncs that set and remove xattr from BPF programs
-Date: Thu, 30 Jan 2025 13:35:49 -0800
-Message-ID: <20250130213549.3353349-6-song@kernel.org>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20250130213549.3353349-1-song@kernel.org>
-References: <20250130213549.3353349-1-song@kernel.org>
+	s=arc-20240116; t=1738274035; c=relaxed/simple;
+	bh=BlisCc4UQ53UOk7mUSn+L0PAgkzzYubPamyOMdZ/dbw=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Iw/j186Fcgywogk75f4uI/XVREZyjWZF0a6E6cqPD9oeiCt5oQU3bHJAGPOUF0LOT7dyUIJWJfZ70Uk+HmuyOFtfgmpRA2xe67+K5HBqS+VJqUXeB1DEHNPvs9JcvBAcZyEF/1eVj6DLuqokLw68petGQl5tdKmVF+zGqA8S264=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MljO4/1x; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3863c36a731so1042024f8f.1;
+        Thu, 30 Jan 2025 13:53:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738274030; x=1738878830; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=SElByFX55HRRZEi5sy6VH1uZg/J2K83OEEcHgYpO8qo=;
+        b=MljO4/1xMEpoMlflKETNVosK0MR2+hbcv7QJqvU/UG1bM+GqE5ZAuLU1ftIuwneNyt
+         cVXu3TwgDbM+ot+FQN2elkLI+fd/2lobHrDpr2DbNnO59Qe17lUnTfl87hP1gQF3AnI8
+         GPOg8JMEm3N5zpQIXRvH1q7X06OzY8BPmH3XtnUykmUZNiwXrht/JbBYI5WsbZndTz6T
+         o1a9eETYyr7Sa0+NnGwa9Vp77KbkKbMtVFbd9DSQnAcRYl4No5pjvS4nuhPPNZcMIY5b
+         zooql22dy1ALxnufx7qlDgcUbUXQUg4zmraR93mn+dbmYuhHKrPs5olgyGWay6I7EJ4f
+         u4yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738274030; x=1738878830;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SElByFX55HRRZEi5sy6VH1uZg/J2K83OEEcHgYpO8qo=;
+        b=acNvMw0yQ1hAdKLFXj+1dt5fM1Npt08cHzTcq6Fit02s1JK9KAIW/0RkD9gZmuu6Uq
+         g7+VKJQSVYj0aNKnSRwB1M6QZCAyUctSyIzFxpNNSJ8FPQLc2FAR+FkT+wNy09Xq/moD
+         X9WdPZEgoIdlIjJIlTUeIQQmrw5u35NQJLGu66HWezfxnLSRS/XGdl9yNAwZPHomEvpD
+         QmfEX0ykVkby53diB7cOrKS1/XqhWIVSKcCvsmd3H4pHcu0LOxfSHhY8/a+Og/4jnpoy
+         6mKtpEiPEVy4NjZesOxmyffsd9ce87s244sWBdZtyY/9RVadNrFSjXE76ChhAdnUQZS8
+         gRNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUeHTA07fxL6J/ZTjOFXXlkPIO1KdpkZlw/ot4gvvWt3IM43Q734bRXV1Lz0NAmrM6VvAc=@vger.kernel.org, AJvYcCW5jEjnRVEQkSdREKmLyHYaIU5F+CTRpw+1ttsStFoHVKpwDWEiuo2T6776O/Ir8ZAQRIzJsFIJ@vger.kernel.org, AJvYcCWAXHJFEvk0Jinm+PkPTOKOgWZDVJYdwFRyOyMObWG+pY1asrC//p/x10DziIILmSvYZOwWc3SfAE/5iBnW@vger.kernel.org, AJvYcCWWYQzrqp+DwajXyK7nlXsWCa16nylSwQI+yfJEVezzOEMuTDdRBq6I4Dg7hyzGhC1VZ351gFh58rI+@vger.kernel.org, AJvYcCXXIvoTmse6LHuuN1C+XRbq563FziPVOeUR46oquoznclbZFKzDKY+YvaN0xDICnAld5l3MrifzYD8Z2WLlsRYyMJx8@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKt6W3N5TZcJbV5amaQi1hZr4QQeEniXqiG8BoswUsWTcU8GlI
+	bNPa7bFj6a/62RmW/lswQ/BHJ+z1bGfnM6w2GxHjgJCEYbQC7ckD
+X-Gm-Gg: ASbGncv7aOW000pZS5BvD0KSYSWqh4L3hbIsnz5qburUJCNfjLkSZuOFhZ0HaJHKcyJ
+	8y5gbEUGC4m6dhpHXN2o5I7sA9r+BYG5hgrH/S95H8b1R/JM/tU3epeBVezVC0LPfzVfUzNLEMC
+	X+5lMKOovUi0rV1zsp1E/AtNihNNEw7tTmYmdILAKyIlcsJQ2HhBcWZwf9z41OZScPRNx6kHDcS
+	LFGYQwkVYc0hfsVPG6O029IpJmQe6+NF9l6g/SJQGEwGS8f5FNtM29LdSnW1HHcV0vrqxI9vLCF
+	Xdel/JSUx+vrpcU3Tas=
+X-Google-Smtp-Source: AGHT+IEh6os44BnNcNnrkansmGStdkdiA/EweUgFYf4Q/Kzk+a8Jf2qrIaH2MEgysghthnExU6q14A==
+X-Received: by 2002:a5d:588d:0:b0:38a:68f4:66a2 with SMTP id ffacd0b85a97d-38c51b600f7mr7386249f8f.31.1738274030038;
+        Thu, 30 Jan 2025 13:53:50 -0800 (PST)
+Received: from krava (85-193-35-4.rib.o2.cz. [85.193.35.4])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38c5c1b57b6sm3042176f8f.72.2025.01.30.13.53.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jan 2025 13:53:49 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 30 Jan 2025 22:53:47 +0100
+To: Eyal Birger <eyal.birger@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Kees Cook <kees@kernel.org>,
+	luto@amacapital.net, wad@chromium.org, oleg@redhat.com,
+	mhiramat@kernel.org, andrii@kernel.org,
+	alexei.starovoitov@gmail.com, cyphar@cyphar.com,
+	songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+	peterz@infradead.org, tglx@linutronix.de, bp@alien8.de,
+	daniel@iogearbox.net, ast@kernel.org, andrii.nakryiko@gmail.com,
+	rostedt@goodmis.org, rafi@rbk.io, shmulik.ladkani@gmail.com,
+	bpf@vger.kernel.org, linux-api@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2] seccomp: passthrough uretprobe systemcall without
+ filtering
+Message-ID: <Z5v063xNVJfXCnKV@krava>
+References: <20250128145806.1849977-1-eyal.birger@gmail.com>
+ <202501281634.7F398CEA87@keescook>
+ <CAHsH6Gsv3DB0O5oiEDsf2+Go4O1+tnKm-Ab0QPyohKSaroSxxA@mail.gmail.com>
+ <Z5s3S5X8FYJDAHfR@krava>
+ <CAHsH6GvsGbZ4a=-oSpD1j8jx11T=Y4SysAtkzAu+H4_Gh7v3Qg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHsH6GvsGbZ4a=-oSpD1j8jx11T=Y4SysAtkzAu+H4_Gh7v3Qg@mail.gmail.com>
 
-Two sets of tests are added to exercise the not _locked and _locked
-version of the kfuncs. For both tests, user space accesses xattr
-security.bpf.foo on a testfile. The BPF program is triggered by user
-space access (on LSM hook inode_[set|get]_xattr) and sets or removes
-xattr security.bpf.bar. Then user space then validates that xattr
-security.bpf.bar is set or removed as expected.
+On Thu, Jan 30, 2025 at 07:05:42AM -0800, Eyal Birger wrote:
+> On Thu, Jan 30, 2025 at 12:24 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> >
+> > On Wed, Jan 29, 2025 at 09:27:49AM -0800, Eyal Birger wrote:
+> > > Hi,
+> > >
+> > > Thanks for the review!
+> > >
+> > > On Tue, Jan 28, 2025 at 5:41 PM Kees Cook <kees@kernel.org> wrote:
+> > > >
+> > > > On Tue, Jan 28, 2025 at 06:58:06AM -0800, Eyal Birger wrote:
+> > > > > Note: uretprobe isn't supported in i386 and __NR_ia32_rt_tgsigqueueinfo
+> > > > > uses the same number as __NR_uretprobe so the syscall isn't forced in the
+> > > > > compat bitmap.
+> > > >
+> > > > So a 64-bit tracer cannot use uretprobe on a 32-bit process? Also is
+> > > > uretprobe strictly an x86_64 feature?
+> > > >
+> > >
+> > > My understanding is that they'd be able to do so, but use the int3 trap
+> > > instead of the uretprobe syscall.
+> > >
+> > > > > [...]
+> > > > > diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> > > > > index 385d48293a5f..23b594a68bc0 100644
+> > > > > --- a/kernel/seccomp.c
+> > > > > +++ b/kernel/seccomp.c
+> > > > > @@ -734,13 +734,13 @@ seccomp_prepare_user_filter(const char __user *user_filter)
+> > > > >
+> > > > >  #ifdef SECCOMP_ARCH_NATIVE
+> > > > >  /**
+> > > > > - * seccomp_is_const_allow - check if filter is constant allow with given data
+> > > > > + * seccomp_is_filter_const_allow - check if filter is constant allow with given data
+> > > > >   * @fprog: The BPF programs
+> > > > >   * @sd: The seccomp data to check against, only syscall number and arch
+> > > > >   *      number are considered constant.
+> > > > >   */
+> > > > > -static bool seccomp_is_const_allow(struct sock_fprog_kern *fprog,
+> > > > > -                                struct seccomp_data *sd)
+> > > > > +static bool seccomp_is_filter_const_allow(struct sock_fprog_kern *fprog,
+> > > > > +                                       struct seccomp_data *sd)
+> > > > >  {
+> > > > >       unsigned int reg_value = 0;
+> > > > >       unsigned int pc;
+> > > > > @@ -812,6 +812,21 @@ static bool seccomp_is_const_allow(struct sock_fprog_kern *fprog,
+> > > > >       return false;
+> > > > >  }
+> > > > >
+> > > > > +static bool seccomp_is_const_allow(struct sock_fprog_kern *fprog,
+> > > > > +                                struct seccomp_data *sd)
+> > > > > +{
+> > > > > +#ifdef __NR_uretprobe
+> > > > > +     if (sd->nr == __NR_uretprobe
+> > > > > +#ifdef SECCOMP_ARCH_COMPAT
+> > > > > +         && sd->arch != SECCOMP_ARCH_COMPAT
+> > > > > +#endif
+> > > >
+> > > > I don't like this because it's not future-proof enough. __NR_uretprobe
+> > > > may collide with other syscalls at some point.
+> > >
+> > > I'm not sure I got this point.
+> > >
+> > > > And if __NR_uretprobe_32
+> > > > is ever implemented, the seccomp logic will be missing. I think this
+> > > > will work now and in the future:
+> > > >
+> > > > #ifdef __NR_uretprobe
+> > > > # ifdef SECCOMP_ARCH_COMPAT
+> > > >         if (sd->arch == SECCOMP_ARCH_COMPAT) {
+> > > > #  ifdef __NR_uretprobe_32
+> > > >                 if (sd->nr == __NR_uretprobe_32)
+> > > >                         return true;
+> > > > #  endif
+> > > >         } else
+> > > > # endif
+> > > >         if (sd->nr == __NR_uretprobe)
+> > > >                 return true;
+> > > > #endif
+> > >
+> > > I don't know if implementing uretprobe syscall for compat binaries is
+> > > planned or makes sense - I'd appreciate Jiri's and others opinion on that.
+> > > That said, I don't mind adding this code for the sake of future proofing.
+> >
+> > as Andrii wrote in the other email ATM it's just strictly x86_64,
+> > but let's future proof it
+> 
+> Thank you. So I'm ok with using the suggestion above, but more on this below.
+> 
+> >
+> > AFAIK there was an attempt to do similar on arm but it did not show
+> > any speed up
+> >
+> > >
+> > > >
+> > > > Instead of doing a function rename dance, I think you can just stick
+> > > > the above into seccomp_is_const_allow() after the WARN().
+> > >
+> > > My motivation for the renaming dance was that you mentioned we might add
+> > > new syscalls to this as well, so I wanted to avoid cluttering the existing
+> > > function which seems to be well defined.
+> > >
+> > > >
+> > > > Also please add a KUnit tests to cover this in
+> > > > tools/testing/selftests/seccomp/seccomp_bpf.c
+> > >
+> > > I think this would mean that this test suite would need to run as
+> > > privileged. Is that Ok? or maybe it'd be better to have a new suite?
+> > >
+> > > > With at least these cases combinations below. Check each of:
+> > > >
+> > > >         - not using uretprobe passes
+> > > >         - using uretprobe passes (and validates that uretprobe did work)
+> > > >
+> > > > in each of the following conditions:
+> > > >
+> > > >         - default-allow filter
+> > > >         - default-block filter
+> > > >         - filter explicitly blocking __NR_uretprobe and nothing else
+> > > >         - filter explicitly allowing __NR_uretprobe (and only other
+> > > >           required syscalls)
+> > >
+> > > Ok.
+> >
+> > please let me know if I can help in any way with tests
+> 
+> Thanks! Is there a way to partition this work? I'd appreciate the help
+> if we can find some way of doing so.
 
-Note that, in both tests, the BPF programs use the not _locked kfuncs.
-The verifier picks the proper kfuncs based on the calling context.
+sure, I'll check the seccomp selftests and let you know
 
-Signed-off-by: Song Liu <song@kernel.org>
----
- tools/testing/selftests/bpf/bpf_kfuncs.h      |   5 +
- .../selftests/bpf/prog_tests/fs_kfuncs.c      | 125 ++++++++++++++++
- .../bpf/progs/test_set_remove_xattr.c         | 133 ++++++++++++++++++
- 3 files changed, 263 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/test_set_remove_xattr.c
+> 
+> >
+> > >
+> > > >
+> > > > Hm, is uretprobe expected to work on mips? Because if so, you'll need to
+> > > > do something similar to the mode1 checking in the !SECCOMP_ARCH_NATIVE
+> > > > version of seccomp_cache_check_allow().
+> > >
+> > > I don't know if uretprobe syscall is expected to run on mips. Personally
+> > > I'd avoid adding this dead code.
+> 
+> Jiri, what is your take on this one?
 
-diff --git a/tools/testing/selftests/bpf/bpf_kfuncs.h b/tools/testing/selftests/bpf/bpf_kfuncs.h
-index 2eb3483f2fb0..8215c9b3115e 100644
---- a/tools/testing/selftests/bpf/bpf_kfuncs.h
-+++ b/tools/testing/selftests/bpf/bpf_kfuncs.h
-@@ -87,4 +87,9 @@ struct dentry;
-  */
- extern int bpf_get_dentry_xattr(struct dentry *dentry, const char *name,
- 			      struct bpf_dynptr *value_ptr) __ksym __weak;
-+
-+extern int bpf_set_dentry_xattr(struct dentry *dentry, const char *name__str,
-+				const struct bpf_dynptr *value_p, int flags) __ksym __weak;
-+extern int bpf_remove_dentry_xattr(struct dentry *dentry, const char *name__str) __ksym __weak;
-+
- #endif
-diff --git a/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c b/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
-index 419f45b56472..43a26ec69a8e 100644
---- a/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
-@@ -8,6 +8,7 @@
- #include <unistd.h>
- #include <test_progs.h>
- #include "test_get_xattr.skel.h"
-+#include "test_set_remove_xattr.skel.h"
- #include "test_fsverity.skel.h"
- 
- static const char testfile[] = "/tmp/test_progs_fs_kfuncs";
-@@ -72,6 +73,127 @@ static void test_get_xattr(const char *name, const char *value, bool allow_acces
- 	remove(testfile);
- }
- 
-+/* xattr value we will set to security.bpf.foo */
-+static const char value_foo[] = "hello";
-+
-+static void read_and_validate_foo(struct test_set_remove_xattr *skel)
-+{
-+	char value_out[32];
-+	int err;
-+
-+	err = getxattr(testfile, skel->rodata->xattr_foo, value_out, sizeof(value_out));
-+	ASSERT_EQ(err, sizeof(value_foo), "getxattr size foo");
-+	ASSERT_EQ(strncmp(value_out, value_foo, sizeof(value_foo)), 0, "strncmp value_foo");
-+}
-+
-+static void set_foo(struct test_set_remove_xattr *skel)
-+{
-+	ASSERT_OK(setxattr(testfile, skel->rodata->xattr_foo, value_foo, strlen(value_foo) + 1, 0),
-+		  "setxattr foo");
-+}
-+
-+static void validate_bar_match(struct test_set_remove_xattr *skel)
-+{
-+	char value_out[32];
-+	int err;
-+
-+	err = getxattr(testfile, skel->rodata->xattr_bar, value_out, sizeof(value_out));
-+	ASSERT_EQ(err, sizeof(skel->data->value_bar), "getxattr size bar");
-+	ASSERT_EQ(strncmp(value_out, skel->data->value_bar, sizeof(skel->data->value_bar)), 0,
-+		  "strncmp value_bar");
-+}
-+
-+static void validate_bar_removed(struct test_set_remove_xattr *skel)
-+{
-+	char value_out[32];
-+	int err;
-+
-+	err = getxattr(testfile, skel->rodata->xattr_bar, value_out, sizeof(value_out));
-+	ASSERT_LT(err, 0, "getxattr size bar should fail");
-+}
-+
-+static void test_set_remove_xattr(void)
-+{
-+	struct test_set_remove_xattr *skel = NULL;
-+	int fd = -1, err;
-+
-+	fd = open(testfile, O_CREAT | O_RDONLY, 0644);
-+	if (!ASSERT_GE(fd, 0, "create_file"))
-+		return;
-+
-+	close(fd);
-+	fd = -1;
-+
-+	skel = test_set_remove_xattr__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_set_remove_xattr__open_and_load"))
-+		return;
-+
-+	/* Set security.bpf.foo to "hello" */
-+	err = setxattr(testfile, skel->rodata->xattr_foo, value_foo, strlen(value_foo) + 1, 0);
-+	if (err && errno == EOPNOTSUPP) {
-+		printf("%s:SKIP:local fs doesn't support xattr (%d)\n"
-+		       "To run this test, make sure /tmp filesystem supports xattr.\n",
-+		       __func__, errno);
-+		test__skip();
-+		goto out;
-+	}
-+
-+	if (!ASSERT_OK(err, "setxattr"))
-+		goto out;
-+
-+	skel->bss->monitored_pid = getpid();
-+	err = test_set_remove_xattr__attach(skel);
-+	if (!ASSERT_OK(err, "test_set_remove_xattr__attach"))
-+		goto out;
-+
-+	/* First, test not _locked version of the kfuncs with getxattr. */
-+
-+	/* Read security.bpf.foo and trigger test_inode_getxattr. This
-+	 * bpf program will set security.bpf.bar to "world".
-+	 */
-+	read_and_validate_foo(skel);
-+	validate_bar_match(skel);
-+
-+	/* Read security.bpf.foo and trigger test_inode_getxattr again.
-+	 * This will remove xattr security.bpf.bar.
-+	 */
-+	read_and_validate_foo(skel);
-+	validate_bar_removed(skel);
-+
-+	ASSERT_TRUE(skel->bss->set_security_bpf_bar_success, "set_security_bpf_bar_success");
-+	ASSERT_TRUE(skel->bss->remove_security_bpf_bar_success, "remove_security_bpf_bar_success");
-+	ASSERT_TRUE(skel->bss->set_security_selinux_fail, "set_security_selinux_fail");
-+	ASSERT_TRUE(skel->bss->remove_security_selinux_fail, "remove_security_selinux_fail");
-+
-+	/* Second, test _locked version of the kfuncs, with setxattr */
-+
-+	/* Set security.bpf.foo and trigger test_inode_setxattr. This
-+	 * bpf program will set security.bpf.bar to "world".
-+	 */
-+	set_foo(skel);
-+	validate_bar_match(skel);
-+
-+	/* Set security.bpf.foo and trigger test_inode_setxattr again.
-+	 * This will remove xattr security.bpf.bar.
-+	 */
-+	set_foo(skel);
-+	validate_bar_removed(skel);
-+
-+	ASSERT_TRUE(skel->bss->locked_set_security_bpf_bar_success,
-+		    "locked_set_security_bpf_bar_success");
-+	ASSERT_TRUE(skel->bss->locked_remove_security_bpf_bar_success,
-+		    "locked_remove_security_bpf_bar_success");
-+	ASSERT_TRUE(skel->bss->locked_set_security_selinux_fail,
-+		    "locked_set_security_selinux_fail");
-+	ASSERT_TRUE(skel->bss->locked_remove_security_selinux_fail,
-+		    "locked_remove_security_selinux_fail");
-+
-+out:
-+	close(fd);
-+	test_set_remove_xattr__destroy(skel);
-+	remove(testfile);
-+}
-+
- #ifndef SHA256_DIGEST_SIZE
- #define SHA256_DIGEST_SIZE      32
- #endif
-@@ -161,6 +283,9 @@ void test_fs_kfuncs(void)
- 	if (test__start_subtest("security_selinux_xattr_error"))
- 		test_get_xattr("security.selinux", "hello", false);
- 
-+	if (test__start_subtest("set_remove_xattr"))
-+		test_set_remove_xattr();
-+
- 	if (test__start_subtest("fsverity"))
- 		test_fsverity();
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_set_remove_xattr.c b/tools/testing/selftests/bpf/progs/test_set_remove_xattr.c
-new file mode 100644
-index 000000000000..6a612cf168d3
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_set_remove_xattr.c
-@@ -0,0 +1,133 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include <errno.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_kfuncs.h"
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+__u32 monitored_pid;
-+
-+const char xattr_foo[] = "security.bpf.foo";
-+const char xattr_bar[] = "security.bpf.bar";
-+static const char xattr_selinux[] = "security.selinux";
-+char value_bar[] = "world";
-+char read_value[32];
-+
-+bool set_security_bpf_bar_success;
-+bool remove_security_bpf_bar_success;
-+bool set_security_selinux_fail;
-+bool remove_security_selinux_fail;
-+
-+char name_buf[32];
-+
-+static inline bool name_match_foo(const char *name)
-+{
-+	bpf_probe_read_kernel(name_buf, sizeof(name_buf), name);
-+
-+	return !bpf_strncmp(name_buf, sizeof(xattr_foo), xattr_foo);
-+}
-+
-+/* Test bpf_set_dentry_xattr and bpf_remove_dentry_xattr */
-+SEC("lsm.s/inode_getxattr")
-+int BPF_PROG(test_inode_getxattr, struct dentry *dentry, char *name)
-+{
-+	struct bpf_dynptr value_ptr;
-+	__u32 pid;
-+	int ret;
-+
-+	pid = bpf_get_current_pid_tgid() >> 32;
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	/* Only do the following for security.bpf.foo */
-+	if (!name_match_foo(name))
-+		return 0;
-+
-+	bpf_dynptr_from_mem(read_value, sizeof(read_value), 0, &value_ptr);
-+
-+	/* read security.bpf.bar */
-+	ret = bpf_get_dentry_xattr(dentry, xattr_bar, &value_ptr);
-+
-+	if (ret < 0) {
-+		/* If security.bpf.bar doesn't exist, set it */
-+		bpf_dynptr_from_mem(value_bar, sizeof(value_bar), 0, &value_ptr);
-+
-+		ret = bpf_set_dentry_xattr(dentry, xattr_bar, &value_ptr, 0);
-+		if (!ret)
-+			set_security_bpf_bar_success = true;
-+		ret = bpf_set_dentry_xattr(dentry, xattr_selinux, &value_ptr, 0);
-+		if (ret)
-+			set_security_selinux_fail = true;
-+	} else {
-+		/* If security.bpf.bar exists, remove it */
-+		ret = bpf_remove_dentry_xattr(dentry, xattr_bar);
-+		if (!ret)
-+			remove_security_bpf_bar_success = true;
-+
-+		ret = bpf_remove_dentry_xattr(dentry, xattr_selinux);
-+		if (ret)
-+			remove_security_selinux_fail = true;
-+	}
-+
-+	return 0;
-+}
-+
-+bool locked_set_security_bpf_bar_success;
-+bool locked_remove_security_bpf_bar_success;
-+bool locked_set_security_selinux_fail;
-+bool locked_remove_security_selinux_fail;
-+
-+/* Test bpf_set_dentry_xattr_locked and bpf_remove_dentry_xattr_locked.
-+ * It not necessary to differentiate the _locked version and the
-+ * not-_locked version in the BPF program. The verifier will fix them up
-+ * properly.
-+ */
-+SEC("lsm.s/inode_setxattr")
-+int BPF_PROG(test_inode_setxattr, struct mnt_idmap *idmap,
-+	     struct dentry *dentry, const char *name,
-+	     const void *value, size_t size, int flags)
-+{
-+	struct bpf_dynptr value_ptr;
-+	__u32 pid;
-+	int ret;
-+
-+	pid = bpf_get_current_pid_tgid() >> 32;
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	/* Only do the following for security.bpf.foo */
-+	if (!name_match_foo(name))
-+		return 0;
-+
-+	bpf_dynptr_from_mem(read_value, sizeof(read_value), 0, &value_ptr);
-+
-+	/* read security.bpf.bar */
-+	ret = bpf_get_dentry_xattr(dentry, xattr_bar, &value_ptr);
-+
-+	if (ret < 0) {
-+		/* If security.bpf.bar doesn't exist, set it */
-+		bpf_dynptr_from_mem(value_bar, sizeof(value_bar), 0, &value_ptr);
-+
-+		ret = bpf_set_dentry_xattr(dentry, xattr_bar, &value_ptr, 0);
-+		if (!ret)
-+			locked_set_security_bpf_bar_success = true;
-+		ret = bpf_set_dentry_xattr(dentry, xattr_selinux, &value_ptr, 0);
-+		if (ret)
-+			locked_set_security_selinux_fail = true;
-+	} else {
-+		/* If security.bpf.bar exists, remove it */
-+		ret = bpf_remove_dentry_xattr(dentry, xattr_bar);
-+		if (!ret)
-+			locked_remove_security_bpf_bar_success = true;
-+
-+		ret = bpf_remove_dentry_xattr(dentry, xattr_selinux);
-+		if (ret)
-+			locked_remove_security_selinux_fail = true;
-+	}
-+
-+	return 0;
-+}
--- 
-2.43.5
+uretprobe syscall is not expected to work on mips, atm it's strictly x86_64
 
+jirka
 
