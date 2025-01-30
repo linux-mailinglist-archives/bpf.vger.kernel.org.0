@@ -1,179 +1,210 @@
-Return-Path: <bpf+bounces-50177-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50178-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF64DA237B6
-	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2025 00:17:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78369A237CA
+	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2025 00:25:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A0F71642CC
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 23:17:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D838E164848
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 23:25:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 521D01F03DB;
-	Thu, 30 Jan 2025 23:16:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63EC21F03DB;
+	Thu, 30 Jan 2025 23:25:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F5VVkaEC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ftVWxxYc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F3551AE01B;
-	Thu, 30 Jan 2025 23:16:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 847FD1BEF63
+	for <bpf@vger.kernel.org>; Thu, 30 Jan 2025 23:25:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738279018; cv=none; b=eka3HERzqDxb6hHXIl0fHcxSKWEeWgDcA7VgR8U31kjnQYAuPVIiCO8Kpm4sMdQeQcHSOXS+ckDuhL0rXhVdPzP9WGd9QjcEkowNI1a0UK0ff1hw5W0E5UfA+TaK4dz43SqW08LY9wQBl1L0j/CSY4p+7G15DrU4NPtpGKpcA+w=
+	t=1738279508; cv=none; b=Qw3kB//KBlfjSjroP3PfXmt7M9LGdJ2bZEYnMjy2my7Zv8iA3E6nrBy+/6gyWgxGvPaVJxgm1+2SpwfZMhWwAzU/dxxxUvWqDkdFe5Gz7Hezwkx+HjTBSP7Tf2VHMk1DfKlEA0/hrX8NM/RJYcwZ5F9+ZqwHfC4D2QEbZUNroIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738279018; c=relaxed/simple;
-	bh=wo+wStWFEQrrBjO1OBO/vWO6WU339RRuHvfA7tbjhlk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OPaH0lXLe5/1atNy9lKDVlAOe+3DpNAHVX/B43iflgGaQqvr1gC0/ERRp7QsIoO72j+O4k7bftq9a2ymy97PKSzP3H5XaZteTiVGvw28aOk4X47g0MTF4Dje6fo1cL6Irlh1va1br4QvEBBgdF0D6/xjA2BUAvXbrP+Yct7CG9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F5VVkaEC; arc=none smtp.client-ip=209.85.214.178
+	s=arc-20240116; t=1738279508; c=relaxed/simple;
+	bh=xV9qx1XHUphAUNHwVx8wOuoP3ZpbNtYcYyYcNNfFXqQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=rxg2QQ/7ZIMCvK+Y+T+7rfOALoctY5sikt5D+hWllcvbE2mhs9zwzDyqcJ/j3FSvdzXNNP6jwehaNMgC9C7Qp8nHGmK6+G98iuBSD5RHuQGWHYS0kHKG1201FYwPxraSgUKSSsn05dtO3e24nUxcgiWWEaPkyCQVhN1wsiCDzUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ftVWxxYc; arc=none smtp.client-ip=209.85.216.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2166360285dso23421475ad.1;
-        Thu, 30 Jan 2025 15:16:57 -0800 (PST)
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2f13acbe29bso3942825a91.1
+        for <bpf@vger.kernel.org>; Thu, 30 Jan 2025 15:25:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738279017; x=1738883817; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Tbqava3jtlaDprzajGDs9SGnWXc8v9IpGNHGKUCgKIc=;
-        b=F5VVkaECbA7pvOzbCFpwTSeGVTZ6/fWt11sGfCW+YvJLxjHJDMvN4MnzQ2HhF5TVij
-         18qJ3okTM5tacy2k3ul0CvZKJYu0xwnSYmG2OGwOHWR6K911xWFKA2aWYNrSz3T12C6B
-         4uIc+WyD8dViP+bQuqwFy8C9ifMX3ncq9XJ9KA8oLBB2aqU7ivpIB92rbpj7PHvhkm7A
-         ATGCPqeBe8Rfymxojv75rCHldHApp809/JzD8vZfhfivk2yMq49uT53lpDaI+s7TYJJE
-         JVsFZYKUf3TOzkwOP1vv7rkHxK5Z/d/Lfh4tLxsbN4jGpVUpOsvetuL/65yoLja8IoxU
-         6mVQ==
+        d=gmail.com; s=20230601; t=1738279505; x=1738884305; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=rEsd5DweQ9RKHveqCV/87KCiNoseqKxhg8AyJFjYtdk=;
+        b=ftVWxxYccT/bjEPj2+Gw7rwVg/CsdasTQQ1B9/xpKkQ403OW7hCg3hpdlUHL7Go+La
+         SSs/LBI+Ymwcno1iVLAHZ2Rd7tSHscL82zFlODYoTWDCrT1SOX868WIR8NOMrVKli0Kz
+         run042NddCCbQVfmf0jeT0pgDgUouX3qztJd2UHpQTHRgFUtBz7b1jqBV87TA6PZn0Mk
+         AiMaGUwBJYBsltI9i2ZRP4TxjnFaoIQdq+bXyK3ORsKp4YpVHMa8gpBcXGTEVV+4S7FW
+         naLXeOfq8jN/FZYARIwxzAhNKMyzNU3NO2RdX9tc7jb3ogD1IrgMY5Z+5FmQnkaGtr6F
+         NGiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738279017; x=1738883817;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tbqava3jtlaDprzajGDs9SGnWXc8v9IpGNHGKUCgKIc=;
-        b=sPaznHmHvqJEs9n54g3KknE/E35M0yLh0Vb1d9i8r6Gwq1JeluIcSkxOqZ1QEGZ/nD
-         jRf9rDWF84N2SdHyuDAUEnoBW9mZrNxTZKq00s5IYlQl1oOBYV/OgVmFwsrW7fahFVUj
-         x+BTldaG0aP2VTuXB6G+iiVatDxGomITdkrNxYo5V5B8kVDORljuUbDeNGANXZAyoiq7
-         E2VgY8uPLJqL+3lxXAHo7OX5J/qzEHfrJ3tq1GZezJz6WvH54nBa3tRaGiypfOieyH5p
-         PQ7+yOkMzpM1ZrUrc4OKayna+W+vrSA3AS+m7H/0Paulju8WdqOC+yWIPzidejr36OZj
-         cx3w==
-X-Forwarded-Encrypted: i=1; AJvYcCVmQqb+K8E+wdeO1vIKXCJEAZdTmr/xVXhS9mbGtjVw35XzBitjWDHnF5gxfuqmOyr1Iwo=@vger.kernel.org, AJvYcCW590mvGS21k8foh+qfk07pgPJvp0+hrsQdUh3UPgG8sR6k+BqzGZsjIcDeFg74frFBME6LChOsGQWYbwGz@vger.kernel.org
-X-Gm-Message-State: AOJu0YyGKXf7H320lzeYi+JCwGPAvx8716+G4FKLOPfLkAXLshKd3wft
-	nNiPiZgQqoSaon00uraVmGg2T8qskU9eJF0qqvH+dtrzXIPcGrbHbyox
-X-Gm-Gg: ASbGncs6K//hHnGUq9vwVL4ARvBeuRXL2F5It60JNE5x9M04DDM9M93M9unE6V3qYDp
-	xjPBdaHMkYTiNJF37wHpfQ6wXXvv6Ka/yCqwnLCB2UFNv1Rry9IlCqT/cVhScWKT/eGIj2xmNNW
-	He8iDRwzxhm8xk1q8FtunWN3Tb2eQRnB7h8q0b/oIuKU36lND6UFghi3QvsznL4uP8GA0cGHEdM
-	saV/iVvKk8DVX8Vpau2x+9sD2v6p6YRPao8QtmsoRi8BPdnbK/JaFMO5vcWaFX8GlRZHcHrr1Gg
-	Xt5XfScKAfVW2xU=
-X-Google-Smtp-Source: AGHT+IE6hCBfx4/xoaxPyXHXQbecrCD/hL19H6rR5ZPSMy1Iv75zVThdZOL2MTyzyF8zrr40aso6SA==
-X-Received: by 2002:a05:6a21:3388:b0:1e0:d1db:4d8a with SMTP id adf61e73a8af0-1ed7a5f6ea8mr12515356637.10.1738279016578;
-        Thu, 30 Jan 2025 15:16:56 -0800 (PST)
-Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-72fe69ba38bsm2054920b3a.90.2025.01.30.15.16.56
+        d=1e100.net; s=20230601; t=1738279505; x=1738884305;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rEsd5DweQ9RKHveqCV/87KCiNoseqKxhg8AyJFjYtdk=;
+        b=PveFginqhZNenpJLV7yEqax1QYjAWQybTwETDrvFioDYVn6QUl5MhhpbFbtKyzXvL8
+         /99ooEfaypdnUtGTTygmyt2iaV3Pjnw7PU2ZOVQp/zlY9Hqk++ZukYutWnyASag9fO2K
+         2B2F8KiDOWz2Ptnyb6NJ9Dtp2NdepFfGFOzZSambgqWziMCsGA7RHfYIQKl3PT2a2nUm
+         TtZgwsyT3Z7PllelTbSJmdEUlsbK0+9Se6FarYTB7Q5pE3+Bl7585+mrNJTmve8I6jTm
+         O6RpaHezaYk+9TDlG/goH74SC+XBqS6Web8yiiqs1eRTskTUaRokU9oBglJJ0OtXoduv
+         ZPqw==
+X-Forwarded-Encrypted: i=1; AJvYcCUSywoduDU0lxilkW+kzt/GkNqKe6+fHUtzS/Cp+SSFOWbtwN4cMRv+NE4Pn+u8u4QR/Dc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxnvI5WlgG8PjoUTurkxrLwHm8ShNyqzWmaGMb5qzTvq7X7c8qt
+	WpXWfJJDwjqlVKILO0kSWYOOXydfsV5xwZ5K63RiltIpXmr07Wt9
+X-Gm-Gg: ASbGnctsj83tYuYeIqTIuf52Zx/xJWnLqxogsQ7NzMW8po/KujwGH1UIxFjr9tn1ykE
+	D40FWMcdIEJgg5sJ9sDHE6RFYan3dJpIhHCDj1e3Y8Z7IfKHbf1+IlG+kqfMGhgeiz/Xoiw8irV
+	d951LSJp7MbY/HNg7mt0pR2T6VIMxg/xtuoIMK6tD/0uCAJn+dUYY44QWclmh4UtCX1lLbE219q
+	oTzCWUUDQ5eYKsxeIxHu5SZf+XtlvU128pR0zukBxkrGTlhmWnutXEtvOL+zwHuPnXHl9VGOwUo
+	Xa7AIinckP0L
+X-Google-Smtp-Source: AGHT+IG8cyu4Y2oSPaVAlDa0yXVCmbETzxOiet6DbKA+TkN15AbsfFlHE2eplpX4/HjDJQqKxytJAg==
+X-Received: by 2002:a05:6a00:808e:b0:725:cd8b:d798 with SMTP id d2e1a72fcca58-72ff2c2f881mr2094446b3a.9.1738279504204;
+        Thu, 30 Jan 2025 15:25:04 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72fe653ab13sm2045467b3a.83.2025.01.30.15.25.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jan 2025 15:16:56 -0800 (PST)
-Date: Thu, 30 Jan 2025 15:16:55 -0800
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, willemdebruijn.kernel@gmail.com,
-	jasowang@redhat.com, andrew+netdev@lunn.ch, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-	john.fastabend@gmail.com
-Subject: Re: [PATCH 1/1] net: tun: add XDP metadata support
-Message-ID: <Z5wIZ2LAjz0wTWg5@mini-arch>
-References: <20250130171614.1657224-1-marcus.wichelmann@hetzner-cloud.de>
- <20250130171614.1657224-2-marcus.wichelmann@hetzner-cloud.de>
+        Thu, 30 Jan 2025 15:25:03 -0800 (PST)
+Message-ID: <99c5181efc1fccb90bb04190abe174abfce8354a.camel@gmail.com>
+Subject: Re: [PATCH v0 2/3] bpf: verifier: Simplify register sign extension
+ with tnum_scast
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Dimitar Kanaliev <dimitar.kanaliev@siteground.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>,  John Fastabend <john.fastabend@gmail.com>, Andrii
+ Nakryiko <andrii@kernel.org>, Martin KaFai Lau	 <martin.lau@linux.dev>,
+ Song Liu <song@kernel.org>, KP Singh <kpsingh@kernel.org>,  Stanislav
+ Fomichev	 <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>,  Mykola Lysenko	 <mykolal@fb.com>, Yonghong Song
+ <yonghong.song@linux.dev>, Shung-Hsi Yu	 <shung-hsi.yu@suse.com>
+Date: Thu, 30 Jan 2025 15:24:58 -0800
+In-Reply-To: <20250130112342.69843-3-dimitar.kanaliev@siteground.com>
+References: <20250130112342.69843-1-dimitar.kanaliev@siteground.com>
+	 <20250130112342.69843-3-dimitar.kanaliev@siteground.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250130171614.1657224-2-marcus.wichelmann@hetzner-cloud.de>
 
-On 01/30, Marcus Wichelmann wrote:
-> Enable the support for bpf_xdp_adjust_meta for XDP buffers initialized
-> by the tun driver. This is useful to pass metadata from an XDP program
-> that's attached to a tap device to following XDP/TC programs.
-> 
-> When used together with vhost_net, the batched XDP buffers were already
-> initialized with metadata support by the vhost_net driver, but the
-> metadata was not yet passed to the skb on XDP_PASS. So this also adds
-> the required skb_metadata_set calls.
+On Thu, 2025-01-30 at 13:23 +0200, Dimitar Kanaliev wrote:
 
-Can you expand more on what kind of metadata is present with vhost_net
-and who fills it in? Is it virtio header stuff? I wonder how you
-want to consume it..
+[...]
 
-Can you also add a selftest to use this new functionality?
-
-> Signed-off-by: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-> ---
->  drivers/net/tun.c | 23 ++++++++++++++++++-----
->  1 file changed, 18 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-> index e816aaba8..d3cfea40a 100644
-> --- a/drivers/net/tun.c
-> +++ b/drivers/net/tun.c
-> @@ -1600,7 +1600,8 @@ static bool tun_can_build_skb(struct tun_struct *tun, struct tun_file *tfile,
->  
->  static struct sk_buff *__tun_build_skb(struct tun_file *tfile,
->  				       struct page_frag *alloc_frag, char *buf,
-> -				       int buflen, int len, int pad)
-> +				       int buflen, int len, int pad,
-> +				       int metasize)
+>  static void coerce_reg_to_size_sx(struct bpf_reg_state *reg, int size)
 >  {
->  	struct sk_buff *skb = build_skb(buf, buflen);
->  
-> @@ -1609,6 +1610,8 @@ static struct sk_buff *__tun_build_skb(struct tun_file *tfile,
->  
->  	skb_reserve(skb, pad);
->  	skb_put(skb, len);
-> +	if (metasize)
-> +		skb_metadata_set(skb, metasize);
->  	skb_set_owner_w(skb, tfile->socket.sk);
->  
->  	get_page(alloc_frag->page);
-> @@ -1668,6 +1671,7 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
->  	char *buf;
->  	size_t copied;
->  	int pad = TUN_RX_PAD;
-> +	int metasize = 0;
->  	int err = 0;
->  
->  	rcu_read_lock();
-> @@ -1695,7 +1699,7 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
->  	if (hdr->gso_type || !xdp_prog) {
->  		*skb_xdp = 1;
->  		return __tun_build_skb(tfile, alloc_frag, buf, buflen, len,
-> -				       pad);
-> +				       pad, metasize);
+> -	s64 init_s64_max, init_s64_min, s64_max, s64_min, u64_cval;
+> -	u64 top_smax_value, top_smin_value;
+> -	u64 num_bits =3D size * 8;
+> +	u64 s =3D size * 8 - 1;
+> +	u64 sign_mask =3D 1ULL << s;
+> +	s64 smin_value, smax_value;
+> +	u64 umax_value;
+> =20
+> -	if (tnum_is_const(reg->var_off)) {
+> -		u64_cval =3D reg->var_off.value;
+> -		if (size =3D=3D 1)
+> -			reg->var_off =3D tnum_const((s8)u64_cval);
+> -		else if (size =3D=3D 2)
+> -			reg->var_off =3D tnum_const((s16)u64_cval);
+> -		else
+> -			/* size =3D=3D 4 */
+> -			reg->var_off =3D tnum_const((s32)u64_cval);
+> -
+> -		u64_cval =3D reg->var_off.value;
+> -		reg->smax_value =3D reg->smin_value =3D u64_cval;
+> -		reg->umax_value =3D reg->umin_value =3D u64_cval;
+> -		reg->s32_max_value =3D reg->s32_min_value =3D u64_cval;
+> -		reg->u32_max_value =3D reg->u32_min_value =3D u64_cval;
+> +	if (size >=3D 8)
+>  		return;
+> -	}
+> =20
+> -	top_smax_value =3D ((u64)reg->smax_value >> num_bits) << num_bits;
+> -	top_smin_value =3D ((u64)reg->smin_value >> num_bits) << num_bits;
+> +	reg->var_off =3D tnum_scast(reg->var_off, size);
+> =20
+> -	if (top_smax_value !=3D top_smin_value)
+> -		goto out;
+> -
+> -	/* find the s64_min and s64_min after sign extension */
+> -	if (size =3D=3D 1) {
+> -		init_s64_max =3D (s8)reg->smax_value;
+> -		init_s64_min =3D (s8)reg->smin_value;
+> -	} else if (size =3D=3D 2) {
+> -		init_s64_max =3D (s16)reg->smax_value;
+> -		init_s64_min =3D (s16)reg->smin_value;
+> +	if (reg->var_off.mask & sign_mask) {
+> +		smin_value =3D -(1LL << s);
+> +		smax_value =3D (1LL << s) - 1;
+>  	} else {
+> -		init_s64_max =3D (s32)reg->smax_value;
+> -		init_s64_min =3D (s32)reg->smin_value;
+> +		smin_value =3D (s64)(reg->var_off.value);
+> +		smax_value =3D (s64)(reg->var_off.value | reg->var_off.mask);
+
+Note the following code in __update_reg64_bounds():
+
+static void __update_reg64_bounds(struct bpf_reg_state *reg)
+{
+	/* min signed is max(sign bit) | min(other bits) */
+	reg->smin_value =3D max_t(s64, reg->smin_value,
+				reg->var_off.value | (reg->var_off.mask & S64_MIN));
+	/* max signed is min(sign bit) | max(other bits) */
+	reg->smax_value =3D min_t(s64, reg->smax_value,
+				reg->var_off.value | (reg->var_off.mask & S64_MAX));
+	reg->umin_value =3D max(reg->umin_value, reg->var_off.value);
+	reg->umax_value =3D min(reg->umax_value,
+			      reg->var_off.value | reg->var_off.mask);
+}
+
+Is it possible to set {u,s}min/{u,s}max to {U,S}64_MIN/{U,S}64_MAX and rely=
+ on
+__update_reg64_bounds() for this computation?
+
 >  	}
->  
->  	*skb_xdp = 0;
-> @@ -1709,7 +1713,7 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
->  		u32 act;
->  
->  		xdp_init_buff(&xdp, buflen, &tfile->xdp_rxq);
-> -		xdp_prepare_buff(&xdp, buf, pad, len, false);
-> +		xdp_prepare_buff(&xdp, buf, pad, len, true);
->  
->  		act = bpf_prog_run_xdp(xdp_prog, &xdp);
->  		if (act == XDP_REDIRECT || act == XDP_TX) {
-> @@ -1730,12 +1734,16 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
->  
->  		pad = xdp.data - xdp.data_hard_start;
->  		len = xdp.data_end - xdp.data;
-> +
-> +		metasize = xdp.data - xdp.data_meta;
+> =20
+> -	s64_max =3D max(init_s64_max, init_s64_min);
+> -	s64_min =3D min(init_s64_max, init_s64_min);
+> +	reg->smin_value =3D smin_value;
+> +	reg->smax_value =3D smax_value;
+> =20
+> -	/* both of s64_max/s64_min positive or negative */
+> -	if ((s64_max >=3D 0) =3D=3D (s64_min >=3D 0)) {
+> -		reg->s32_min_value =3D reg->smin_value =3D s64_min;
+> -		reg->s32_max_value =3D reg->smax_value =3D s64_max;
+> -		reg->u32_min_value =3D reg->umin_value =3D s64_min;
+> -		reg->u32_max_value =3D reg->umax_value =3D s64_max;
+> -		reg->var_off =3D tnum_range(s64_min, s64_max);
+> -		return;
+> -	}
+> +	reg->umin_value =3D reg->var_off.value;
+> +	umax_value =3D reg->var_off.value | reg->var_off.mask;
+> +	reg->umax_value =3D umax_value;
+> =20
+> -out:
+> -	set_sext64_default_val(reg, size);
 
-[..]
+After this commit the functions set_sext64_default_val() and
+set_sext32_default_val() are never called.
 
-> +		metasize = metasize > 0 ? metasize : 0;
+> +	reg->s32_min_value =3D (s32)smin_value;
+> +	reg->s32_max_value =3D (s32)smax_value;
+> +	reg->u32_min_value =3D (u32)reg->umin_value;
+> +	reg->u32_max_value =3D (u32)umax_value;
+>  }
 
-Why is this part needed?
+[...]
+
 
