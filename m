@@ -1,411 +1,284 @@
-Return-Path: <bpf+bounces-50077-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50078-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10996A22727
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 01:20:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8045CA2273D
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 01:32:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EF027A2D3C
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 00:19:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9C6C188655D
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 00:32:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 460A979CF;
-	Thu, 30 Jan 2025 00:20:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C51857464;
+	Thu, 30 Jan 2025 00:32:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PjvzBCi4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fta9FzCi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 382B9256D
-	for <bpf@vger.kernel.org>; Thu, 30 Jan 2025 00:19:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C848F64;
+	Thu, 30 Jan 2025 00:32:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738196400; cv=none; b=OEMWmiT11+TZYS/NwXF8yeefmagXF3lbUDP2ys2B4gTVK97yZKUnAob/Hzyn67kfx8pOAoXDuKAbDjNBpf+sa2oa5HqzMThZ+ztMwN2gk3xoRW1CWwam6N58Mc5gsj6i5nuPPm1TVh1nQH7TVoL+kzsxgrR99qJUwRlVfFM1bD4=
+	t=1738197164; cv=none; b=ACnvzDqTCKchIGOMqGmmeEYwr1OdPnS79Kvo3cL258pIRrO5YXdGnnNQZlNDWb7PUwpdY2w7HM7aYZ9Zzxlp/PgJCruMrCRkFkVhvo3MoA5IzlaAuIO7DFCtkzH9VtFEds5n0H0HKC74uTJ70wmMbwtKcxTn686rBtrf2GGmFRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738196400; c=relaxed/simple;
-	bh=nE3ezhE0ORUpCvqCobzfUnHXUqFDFn51RbDdP8kbTTI=;
+	s=arc-20240116; t=1738197164; c=relaxed/simple;
+	bh=DDB7bg56NMUnL0uBNcrrhWdgBIpdvW8qwY9az36IAfg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mQ3X4KzaxpJUYotZtPOHzTBOgnreakbS44Ths95N/KQLH+4Emj6B8KJ/sxDLKaKS165mENQtreN//UiDNvMJWo5vp4N7IgiA9Uh1VfT5Hb9ZhMZXTSKVmv/XG32LamedVvPuYgNgGp+N8A4OAovdlfZw0gKW5xFtOa8a/w2GkQU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PjvzBCi4; arc=none smtp.client-ip=209.85.214.169
+	 To:Cc:Content-Type; b=o7abOcasJdg+PaHDPNfswIPc6cej98549PU1pqYCisbftnhkUG+lNHJDXwSpVjpxTmRnzdpEKAS4QYsbCm5HLX0/e6BSE2G19may1IlH6yiPHaGek5asN1ZMhjPHorvZH4JOTFLZJyM85O44JhUv1D69fVo/v7QBgY5CwT9L0L8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fta9FzCi; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2161eb94cceso2317045ad.2
-        for <bpf@vger.kernel.org>; Wed, 29 Jan 2025 16:19:58 -0800 (PST)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4361c705434so1148515e9.3;
+        Wed, 29 Jan 2025 16:32:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738196398; x=1738801198; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1738197161; x=1738801961; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6AMh6nFsScnlaxd8YC2LQqnUdnaSzHiT4jf6slLXshc=;
-        b=PjvzBCi4kntnDb4IQXkMZbcXQFTcRDku6KYTEb/0hoHWAm82zEVqbWXajtMSTSxmjp
-         LOfHvDxL0Fibliveu5H7du4HZTOmPmUOdYHE0xw0z0ubqE0BTf9cPR163Zfms7cc75Lg
-         54MWk5RUPr5tjuDg0gTyi7oVZGLophHVAFDPEwgYa0ZJjZYCrS4whyaXDmArVJCpjVky
-         wPbN55yu2C8DzkD0tIEMLi5vcRWnmSA3NuXsyA8SOImQEvG0zTgHWLKkYDAkq7rk3oSP
-         7x9QuMIYtNNnVn/UnTKyhyKMMCdxoX7M1Uulg24ZCxSLVAoIP/dnlhWGM/LuIepC6LJO
-         OA/w==
+        bh=BNzfEvmIosIfU1ngPn58wZoWxqS9wyN0+JhAfuT1oug=;
+        b=Fta9FzCiGATtqLCWiQGJ4rLgYLEKRB3UIId2CFBHrFARsdSELM/hfaBGa/he8btNGO
+         H79IZaMkdTTclIK5RQNeH4LC4cTTs1n84KCg7uQuV30vngfEyj1Z14OcQvRVDyUydzSx
+         rmTQz6j0Rh4DIUMiKrWVe+4VqNEkLJO4TBvEBOcCgVuU9J+u88JUTuQVoUz+CDz7ZcGt
+         zttCPyn+VcO38DHIRfxHyNYjnjJ+BQG0XACv2R//ZTK1Gj6Vl8RUeuoEsoOoOrdrADII
+         FE4RsNw4+EuMnc/1I6ZpaVt26cF2vMh2L1LjdImmm+C4bljLeBagOthiE+0I+J1eEqSs
+         FgdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738196398; x=1738801198;
+        d=1e100.net; s=20230601; t=1738197161; x=1738801961;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6AMh6nFsScnlaxd8YC2LQqnUdnaSzHiT4jf6slLXshc=;
-        b=qX4b1vm8qM56cD6cLiRDpJKPZ01LKdV37+wckS1+iREq8IyEIrieh+Yq3yf32lT2oE
-         ru961lyXb5uQ96/i+/TpppXVLAEITvD7BbLmHLA7Q5DOecBm51o0UYFKkgNZz+gtIdUl
-         O/sXLSnugFQG/1+zIayOj3ivVNRueOmwMAJ9Y1n25AOX+YUOdbLzTHpOvB89xNE/COYu
-         EkzBkpaL2P/uIWlaMsb6ywn02QiP/R/+0xcnS2Vtt5Te5J3pfic53cwUcyasRuF5uTBT
-         BJdx9ge8K05CXbcO5AVU3wgK6Uz8KN908Qjgukb+SrL5DeFeBxnjTH81evibfnztV9DK
-         kCWA==
-X-Gm-Message-State: AOJu0YxMgKByZDT0wwkgySSoITI04c7lXlPXgT1hV2ImhLk46f0CsXIY
-	UD1iqK476PZY2/tmPVdtDMHvUCvE3I40nGk42XZW6KSowwz1ZG6uBR3V6HruVoNE1Tmb6lhvjtI
-	E/pKKxop5a37N5+4uhPxRFtBrfkM=
-X-Gm-Gg: ASbGncsz6n71ikUJilR+61RTq7mmGyrLorwtl5QQxRkTrT2K45eeXB4jFoQ81iiEdBV
-	1J/uMHZGkgDZ9j4N89LXkWdvdegqwpp0dXfV1FJ6Lny0Sl9FhRmmHfPL+oiJC+Y91cHp9F1eAel
-	mzfKHZrQEcbpqn
-X-Google-Smtp-Source: AGHT+IEWbSlMkZ5Mw89iU2qXlIjzZXpHahbdfaQoRbtPhTaFUQtOSWvv+SrxUpHVnmQ3LYEDqKbO08pevESaNYb+5/8=
-X-Received: by 2002:a05:6a20:c91c:b0:1e1:f281:8d07 with SMTP id
- adf61e73a8af0-1ed7a5efb7fmr7402768637.10.1738196398239; Wed, 29 Jan 2025
- 16:19:58 -0800 (PST)
+        bh=BNzfEvmIosIfU1ngPn58wZoWxqS9wyN0+JhAfuT1oug=;
+        b=FmK+n5bQ9Ow8rn5Adew4IxTOp6jwYNRaYfzLkpo8mRSYHNU+Zz/Oeb5VLMMDl/7sGU
+         0kfchtpYLRyplw/rHVwtPXidEploo3pNBjxN5mb6u88YzdHlxW/7sC3sDVomsY6dVO+W
+         Ufnh501y535kzrl2vwpENcyofXSeXjyltszTd5PWiYD8FAtG+FGe6g1t2iNVF4DoRoR/
+         bbeazNEWha8gMlgrscAF+g2wUH5Oo8C/7rxidgvLtGOwtARwYUQv29eLOw/fp86exr4C
+         wsTQFLnsjZG3czNUiblm+bPyWm9JFkyNb/7jn9JfvF0iGOHsaPAMPoKqeT+tZiVEk4Mf
+         Hj2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUd/9pPpmZZYY3qoFARzvfk92KbCbIW5fX6K2wEqiEGPMt8/wjhNZ9GQl1fnOjiuPN3q/I=@vger.kernel.org, AJvYcCVyerlau0Em0GoWQ4G4NmfdL0eggwoKQCAHaie/TH3gxnCtxW3nxj26wZtQUv1XeUjd7Zy2ExkWvxpLmcwL@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxt2wwRhwkQw1lA3UOoI9FwGLpnp/r7Crbr1GMgLtsO3WdMUq+W
+	y1RHwLP1XZHwCcufeD9QCBXfHUoLaGgTEw4hZhPFq8sN+d4Cl36DZEzry29a9t6xenRoGYNbWXJ
+	UBwaZoN0Q2geD8aGFGN/NTp+olYE=
+X-Gm-Gg: ASbGnctKzt4Io+z0V1TsjCoe9tGffUGgvc23MlP1/uH1lXcyEg2LdiQSmpa9vrKGWnd
+	WsB2a01obYhJ4qs3F9yF31j2XlnqEF8HthY89xctHupfwTF1Ixr3arkHDf+WEK9ZAjFPLZxMW9r
+	f7hN9PAhTDZuu9aK6BEOkNj4GjVEs2
+X-Google-Smtp-Source: AGHT+IEeFINjC/PS45B3CX1IvC3COG13SjBgpFW6KdRZ53J9i76fzk41QBl+YeP3YC6GTiac3T6gmvBce6S9cZmsyY0=
+X-Received: by 2002:a05:600c:3d96:b0:434:fe3c:c67c with SMTP id
+ 5b1f17b1804b1-438dc41d7b0mr39398365e9.26.1738197160384; Wed, 29 Jan 2025
+ 16:32:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250128224352.3808460-1-linux@jordanrome.com>
-In-Reply-To: <20250128224352.3808460-1-linux@jordanrome.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 29 Jan 2025 16:19:44 -0800
-X-Gm-Features: AWEUYZnKIr_x5jBe8dUdIMZTkUYqxsK0hZXP8wHi6oSpzQDU6UMn2eP25IZoNrg
-Message-ID: <CAEf4BzbpnHOULxRyWhNU30HknYmZpfAT0zdi1OekxMV4ZHydYQ@mail.gmail.com>
-Subject: Re: [bpf-next v6 1/3] mm: add copy_remote_vm_str
-To: Jordan Rome <linux@jordanrome.com>
-Cc: bpf@vger.kernel.org, linux-mm@kvack.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Kernel Team <kernel-team@fb.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Alexander Potapenko <glider@google.com>
+References: <AM6PR03MB5080C05323552276324C4B4C991A2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <AM6PR03MB50802A825536C00D2B53333C991A2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <CAADnVQLidcL-WU-VWXZtBph=qjJfAhoyrsYWyL7JwB0ZEH5KFQ@mail.gmail.com> <AM6PR03MB508053DF89CDFEB95CBEB20C99E32@AM6PR03MB5080.eurprd03.prod.outlook.com>
+In-Reply-To: <AM6PR03MB508053DF89CDFEB95CBEB20C99E32@AM6PR03MB5080.eurprd03.prod.outlook.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 29 Jan 2025 16:32:29 -0800
+X-Gm-Features: AWEUYZlwuECsWL28zSlFQ_NeuuPdVQ0K8Lec8PolHq1YLAepHv0utvfsqH1Vnpw
+Message-ID: <CAADnVQJN+C2Bdoe1w62vmDrPhcoweBxBy8Ck4a_SWrd5k=493A@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 6/7] sched_ext: Make SCX use BPF capabilities
+To: Juntong Deng <juntong.deng@outlook.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 28, 2025 at 2:44=E2=80=AFPM Jordan Rome <linux@jordanrome.com> =
-wrote:
+On Fri, Jan 24, 2025 at 2:45=E2=80=AFPM Juntong Deng <juntong.deng@outlook.=
+com> wrote:
 >
-> Similar to `access_process_vm` but specific to strings.
-> Also chunks reads by page and utilizes `strscpy`
-> for handling null termination.
+> On 2025/1/24 04:52, Alexei Starovoitov wrote:
+> > On Thu, Jan 16, 2025 at 11:47=E2=80=AFAM Juntong Deng <juntong.deng@out=
+look.com> wrote:
+> >>
+> >> This patch modifies SCX to use BPF capabilities.
+> >>
+> >> Make all SCX kfuncs register to BPF capabilities instead of
+> >> BPF_PROG_TYPE_STRUCT_OPS.
+> >>
+> >> Add bpf_scx_bpf_capabilities_adjust as bpf_capabilities_adjust
+> >> callback function.
+> >>
+> >> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+> >> ---
+> >>   kernel/sched/ext.c | 74 ++++++++++++++++++++++++++++++++++++++------=
+--
+> >>   1 file changed, 62 insertions(+), 12 deletions(-)
+> >>
+> >> diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
+> >> index 7fff1d045477..53cc7c3ed80b 100644
+> >> --- a/kernel/sched/ext.c
+> >> +++ b/kernel/sched/ext.c
+> >> @@ -5765,10 +5765,66 @@ bpf_scx_get_func_proto(enum bpf_func_id func_i=
+d, const struct bpf_prog *prog)
+> >>          }
+> >>   }
+> >
+> > 'capabilities' name doesn't fit.
+> > The word already has its meaning in the kernel.
+> > It cannot be reused for a different purpose.
+> >
+> >> +static int bpf_scx_bpf_capabilities_adjust(unsigned long *bpf_capabil=
+ities,
+> >> +                                          u32 context_info, bool ente=
+r)
+> >> +{
+> >> +       if (enter) {
+> >> +               switch (context_info) {
+> >> +               case offsetof(struct sched_ext_ops, select_cpu):
+> >> +                       ENABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CA=
+P_SCX_KF_SELECT_CPU);
+> >> +                       ENABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CA=
+P_SCX_KF_ENQUEUE);
+> >> +                       break;
+> >> +               case offsetof(struct sched_ext_ops, enqueue):
+> >> +                       ENABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CA=
+P_SCX_KF_ENQUEUE);
+> >> +                       break;
+> >> +               case offsetof(struct sched_ext_ops, dispatch):
+> >> +                       ENABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CA=
+P_SCX_KF_DISPATCH);
+> >> +                       break;
+> >> +               case offsetof(struct sched_ext_ops, running):
+> >> +               case offsetof(struct sched_ext_ops, stopping):
+> >> +               case offsetof(struct sched_ext_ops, enable):
+> >> +                       ENABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CA=
+P_SCX_KF_REST);
+> >> +                       break;
+> >> +               case offsetof(struct sched_ext_ops, init):
+> >> +               case offsetof(struct sched_ext_ops, exit):
+> >> +                       ENABLE_BPF_CAPABILITY(bpf_capabilities, BPF_CA=
+P_SCX_KF_UNLOCKED);
+> >> +                       break;
+> >> +               default:
+> >> +                       return -EINVAL;
+> >> +               }
+> >> +       } else {
+> >> +               switch (context_info) {
+> >> +               case offsetof(struct sched_ext_ops, select_cpu):
+> >> +                       DISABLE_BPF_CAPABILITY(bpf_capabilities, BPF_C=
+AP_SCX_KF_SELECT_CPU);
+> >> +                       DISABLE_BPF_CAPABILITY(bpf_capabilities, BPF_C=
+AP_SCX_KF_ENQUEUE);
+> >> +                       break;
+> >> +               case offsetof(struct sched_ext_ops, enqueue):
+> >> +                       DISABLE_BPF_CAPABILITY(bpf_capabilities, BPF_C=
+AP_SCX_KF_ENQUEUE);
+> >> +                       break;
+> >> +               case offsetof(struct sched_ext_ops, dispatch):
+> >> +                       DISABLE_BPF_CAPABILITY(bpf_capabilities, BPF_C=
+AP_SCX_KF_DISPATCH);
+> >> +                       break;
+> >> +               case offsetof(struct sched_ext_ops, running):
+> >> +               case offsetof(struct sched_ext_ops, stopping):
+> >> +               case offsetof(struct sched_ext_ops, enable):
+> >> +                       DISABLE_BPF_CAPABILITY(bpf_capabilities, BPF_C=
+AP_SCX_KF_REST);
+> >> +                       break;
+> >> +               case offsetof(struct sched_ext_ops, init):
+> >> +               case offsetof(struct sched_ext_ops, exit):
+> >> +                       DISABLE_BPF_CAPABILITY(bpf_capabilities, BPF_C=
+AP_SCX_KF_UNLOCKED);
+> >> +                       break;
+> >> +               default:
+> >> +                       return -EINVAL;
+> >> +               }
+> >> +       }
+> >> +       return 0;
+> >> +}
+> >
+> > and this callback defeats the whole point of u32 bitmask.
+> >
 >
-> Signed-off-by: Jordan Rome <linux@jordanrome.com>
-> ---
->  include/linux/mm.h |   3 ++
->  mm/memory.c        | 119 +++++++++++++++++++++++++++++++++++++++++++++
->  mm/nommu.c         |  74 ++++++++++++++++++++++++++++
->  3 files changed, 196 insertions(+)
+> Yes, you are right, I agree that procedural callbacks defeat the purpose
+> of BPF capabilities.
 >
-
-The logic looks good, but I have a bunch of stylistic nits below. It
-would be nice for someone from mm side to take a look as well.
-
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index f02925447e59..f3a05b3eb2f2 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2485,6 +2485,9 @@ extern int access_process_vm(struct task_struct *ts=
-k, unsigned long addr,
->  extern int access_remote_vm(struct mm_struct *mm, unsigned long addr,
->                 void *buf, int len, unsigned int gup_flags);
+> > In earlier patch
+> > env->context_info =3D __btf_member_bit_offset(t, member) / 8; // moff
+> >
+> > is also wrong.
+> > The context_info name is too generic and misleading.
+> > and 'env' isn't a right place to save moff.
+> >
+> > Let's try to implement what was discussed earlier:
+> >
+> > 1
+> > After successful check_struct_ops_btf_id() save moff in
+> > prog->aux->attach_st_ops_member_off.
+> >
+> > 2
+> > Add .filter callback to sched-ext kfunc registration path and
+> > let it allow/deny kfuncs based on st_ops attach point.
+> >
+> > 3
+> > Remove scx_kf_allow() and current->scx.kf_mask.
+> >
+> > That will be a nice perf win and will prove that
+> > this approach works end-to-end.
 >
-> +extern int copy_remote_vm_str(struct task_struct *tsk, unsigned long add=
-r,
-> +               void *buf, int len, unsigned int gup_flags);
-> +
->  long get_user_pages_remote(struct mm_struct *mm,
->                            unsigned long start, unsigned long nr_pages,
->                            unsigned int gup_flags, struct page **pages,
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 398c031be9ba..7f6e74a99984 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -6714,6 +6714,125 @@ int access_process_vm(struct task_struct *tsk, un=
-signed long addr,
->  }
->  EXPORT_SYMBOL_GPL(access_process_vm);
+> I am trying, but I found a problem (bug?) when I added test cases
+> to bpf_testmod.c.
 >
-> +/*
-> + * Copy a string from another process's address space as given in mm.
-> + * If there is any error return -EFAULT.
-> + */
-> +static int __copy_remote_vm_str(struct mm_struct *mm, unsigned long addr=
-,
-> +                             void *buf, int len, unsigned int gup_flags)
-> +{
-> +       void *old_buf =3D buf;
-> +       int err =3D 0;
-
-empty line between variables and statements
-
-> +       ((char *)buf)[0] =3D '\0';
-
-nit: this would be probably a bit more "canonical": *(char *)buf =3D '\0';
-
-> +
-> +       if (mmap_read_lock_killable(mm))
-> +               return -EFAULT;
-> +
-> +       /* Untag the address before looking up the VMA */
-> +       addr =3D untagged_addr_remote(mm, addr);
-> +
-> +       /* Avoid triggering the temporary warning in __get_user_pages */
-> +       if (!vma_lookup(mm, addr)) {
-> +               err =3D -EFAULT;
-> +               goto out;
-> +       }
-> +
-> +       while (len) {
-> +               int bytes, offset, retval;
-> +               void *maddr;
-> +               struct page *page;
-> +               struct vm_area_struct *vma =3D NULL;
-> +
-> +               page =3D get_user_page_vma_remote(mm, addr, gup_flags, &v=
-ma);
-> +
-> +               if (IS_ERR(page)) {
-> +                       /*
-> +                        * Treat as a total failure for now until we deci=
-de how
-> +                        * to handle the CONFIG_HAVE_IOREMAP_PROT case an=
-d
-> +                        * stack expansion.
-> +                        */
-> +                       ((char *)buf)[0] =3D '\0';
-> +                       err =3D -EFAULT;
-> +                       goto out;
-> +               }
-> +
-> +               bytes =3D len;
-> +               offset =3D addr & (PAGE_SIZE - 1);
-> +               if (bytes > PAGE_SIZE - offset)
-> +                       bytes =3D PAGE_SIZE - offset;
-> +
-> +               maddr =3D kmap_local_page(page);
-> +               retval =3D strscpy(buf, maddr + offset, bytes);
-> +
-> +               if (retval < 0) {
-> +                       buf +=3D (bytes - 1);
-
-nit: unnecessary ()
-
-another nit: you could have had `addr +=3D bytes - 1;` here, to keep
-addr and buf adjustment code close
-
-
-> +                       /*
-> +                        * Because strscpy always NUL terminates we need =
-to
-> +                        * copy the last byte in the page if we are going=
- to
-> +                        * load more pages
-> +                        */
-> +                       if (bytes !=3D len) {
-> +                               addr +=3D (bytes - 1);
-> +                               copy_from_user_page(vma, page, addr, buf,
-> +                                               maddr + (PAGE_SIZE - 1), =
-1);
-> +
-> +                               buf +=3D 1;
-> +                               addr +=3D 1;
-> +                       }
-> +                       len -=3D bytes;
-> +               }
-> +
-> +               unmap_and_put_page(page, maddr);
-> +
-> +               if (retval >=3D 0) {
-> +                       /* Found the end of the string */
-> +                       buf +=3D retval;
-> +                       goto out;
-> +               }
-
-it's not incorrect, but it would be nice not to have to re-check
-retval twice. Why not this structure:
-
-ret =3D strscpy(...)
-if (retval >=3D 0) {
-    unmap_and_put_page(page, maddr);
-    buf +=3D retval;
-    break;
-}
-
-/* this is -E2BIG case */
-
-buf +=3D bytes - 1;
-addr +=3D bytes - 1;
-
-if (bytes !=3D len) { copy, buf +=3D 1, addr +=3D 1 }
-
-unmap_and_put_page(page, maddr);
-
-
-
-Note that you don't need goto, break is fine. And yes, I don't think
-duplicating unmap_and_put_page() is a problem.
-
-
-> +       }
-> +
-> +out:
-> +       mmap_read_unlock(mm);
-> +       if (err)
-> +               return err;
-> +
-> +       return buf - old_buf;
-> +}
-> +
-> +/**
-> + * copy_remote_vm_str - copy a string from another process's address spa=
-ce.
-> + * @tsk:       the task of the target address space
-> + * @addr:      start address to read from
-> + * @buf:       destination buffer
-> + * @len:       number of bytes to copy
-> + * @gup_flags: flags modifying lookup behaviour
-> + *
-> + * The caller must hold a reference on @mm.
-> + *
-> + * Return: number of bytes copied from @addr (source) to @buf (destinati=
-on);
-> + * not including the trailing NUL. Always guaranteed to leave NUL-termin=
-ated
-> + * buffer. On any error, return -EFAULT.
-> + */
-> +int copy_remote_vm_str(struct task_struct *tsk, unsigned long addr,
-> +               void *buf, int len, unsigned int gup_flags)
-> +{
-> +       struct mm_struct *mm;
-> +       int ret;
-> +
-> +       mm =3D get_task_mm(tsk);
-> +       if (!mm) {
-> +               ((char *)buf)[0] =3D '\0';
-> +               return -EFAULT;
-> +       }
-> +
-> +       ret =3D __copy_remote_vm_str(mm, addr, buf, len, gup_flags);
-> +
-> +       mmput(mm);
-> +
-> +       return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(copy_remote_vm_str);
-> +
->  /*
->   * Print the name of a VMA.
->   */
-> diff --git a/mm/nommu.c b/mm/nommu.c
-> index 9cb6e99215e2..4d83d0813eb8 100644
-> --- a/mm/nommu.c
-> +++ b/mm/nommu.c
-> @@ -1701,6 +1701,80 @@ int access_process_vm(struct task_struct *tsk, uns=
-igned long addr, void *buf, in
->  }
->  EXPORT_SYMBOL_GPL(access_process_vm);
+> Filters currently do not work with kernel modules.
 >
-> +/*
-> + * Copy a string from another process's address space as given in mm.
-> + * If there is any error return -EFAULT.
-> + */
-> +static int __copy_remote_vm_str(struct mm_struct *mm, unsigned long addr=
-,
-> +                             void *buf, int len)
-> +{
-> +       uint64_t tmp;
-
-s/uint64_t/unsigned long/
-
-also tmp -> addr_end ?
-
-> +       struct vm_area_struct *vma;
-> +
-
-nit: no empty line here, why?
-
-> +       int ret =3D -EFAULT;
-> +
-> +       ((char *)buf)[0] =3D '\0';
-> +
-> +       if (mmap_read_lock_killable(mm))
-> +               return ret;
-> +
-> +       /* the access must start within one of the target process's mappi=
-ngs */
-> +       vma =3D find_vma(mm, addr);
-> +       if (!vma)
-> +               goto out;
-> +
-> +       if (check_add_overflow(addr, len, &tmp))
-> +               goto out;
-> +       /* don't overrun this mapping */
-> +       if (tmp >=3D vma->vm_end)
-
-nit: strictly speaking only `tmp > vma->vm_end` needs special handling
-
-> +               len =3D vma->vm_end - addr;
-> +
-> +       /* only read mappings where it is permitted */
-> +       if (vma->vm_flags & VM_MAYREAD) {
-> +               ret =3D strscpy(buf, (char *)addr, len);
-> +               if (ret < 0)
-> +                       ret =3D len - 1;
-> +       }
-> +
-> +out:
-> +       mmap_read_unlock(mm);
-> +       return ret;
-> +}
-> +
-> +/**
-> + * copy_remote_vm_str - copy a string from another process's address spa=
-ce.
-> + * @tsk:       the task of the target address space
-> + * @addr:      start address to read from
-> + * @buf:       destination buffer
-> + * @len:       number of bytes to copy
-> + * @gup_flags: flags modifying lookup behaviour (unused)
-> + *
-> + * The caller must hold a reference on @mm.
-> + *
-> + * Return: number of bytes copied from @addr (source) to @buf (destinati=
-on);
-> + * not including the trailing NUL. Always guaranteed to leave NUL-termin=
-ated
-> + * buffer. On any error, return -EFAULT.
-> + */
-> +int copy_remote_vm_str(struct task_struct *tsk, unsigned long addr,
-> +               void *buf, int len, unsigned int gup_flags)
-> +{
-> +       struct mm_struct *mm;
-> +       int ret;
-> +
-> +       mm =3D get_task_mm(tsk);
-> +       if (!mm) {
-> +               ((char *)buf)[0] =3D '\0';
-> +               return -EFAULT;
-> +       }
-> +
-> +       ret =3D __copy_remote_vm_str(mm, addr, buf, len);
-> +
-> +       mmput(mm);
-> +
-> +       return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(copy_remote_vm_str);
-> +
->  /**
->   * nommu_shrink_inode_mappings - Shrink the shared mappings on an inode
->   * @inode: The inode to check
-> --
-> 2.43.5
+> Filters rely heavily on (bpf_fs_kfunc_set_ids as an example)
 >
+> if (!btf_id_set8_contains(&bpf_fs_kfunc_set_ids, kfunc_id)
+>
+> exclude kfuncs that are not part of its own set
+> (__btf_kfunc_id_set_contains performs all the filters for each kfunc),
+> otherwise it will result in false rejects.
+>
+> But this method cannot be used in kernel modules because the BTF ids of
+> all kfuncs are relocated.
+>
+> The BTF ids of all kfuncs in the kernel module will be relocated by
+> btf_relocate_id in btf_populate_kfunc_set.
+>
+> This results in the kfunc_id passed into the filter being different from
+> the BTF id in set_ids.
+>
+> One possible solution is to export btf_relocate_id and
+> btf_get_module_btf, and let the kernel module do the relocation itself.
+>
+> But I am not sure exporting them is a good idea.
+>
+> Do you have any suggestions?
+
+That's not a problem to fix today.
+Currently only sched-ext needs this new ->filter() logic
+and it's builtin.
+Let's prototype the steps 1,2,3 end-to-end and see whether
+anything big is missing.
+The lack of bpf_testmod can be addressed later if the whole
+approach works for sched-ext.
+
+> In addition, BTF_KFUNC_FILTER_MAX_CNT is currently 16, which is not a
+> large enough size.
+>
+> If we use filters to enforce restrictions on struct_ops for different
+> contexts, then each different context needs a filter.
+>
+> All filters for scenarios using struct_ops (SCX, HID, TCP congestion,
+> etc.) are placed in the same struct btf_kfunc_hook_filter
+> (filters array).
+>
+> It is foreseeable that the 16 slots will be exhausted soon.
+>
+> Should we change it to a linked list?
+
+No. Don't fix what is not broken.
+We have a concrete run-time inefficiency on sched-ext side
+let's address that first and deal with everything later.
+Not the other way around.
 
