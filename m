@@ -1,271 +1,357 @@
-Return-Path: <bpf+bounces-50136-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50137-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA2AAA23391
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 19:08:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DC21A233F6
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 19:42:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 314827A1851
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 18:07:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EAC11888292
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 18:42:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AE661F03FF;
-	Thu, 30 Jan 2025 18:08:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E8451F0E4D;
+	Thu, 30 Jan 2025 18:42:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="DItxLIQv"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="SIYI2UPc";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="sGJxb52a"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC11B3B19A;
-	Thu, 30 Jan 2025 18:08:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.153.30
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738260500; cv=fail; b=I4PNts9XCPwToqukVfDu6Wgwj+wLW0QAZuUXBlo9xQuDYwibUehrc0aJBSvEXI3TUS6lmkUlSheNKO1tC8AmsFbkdjQbA292K5Gdes18KWStUtAGK6+pGAouZwudGh9NUpAEEXzP1POxk8wb6zfpuh2xndE8gt2//KUYqOSJ3L4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738260500; c=relaxed/simple;
-	bh=ODXZsSLK0XiwM0GVfBo+54gBJjhT6I2fHOqDXvexy48=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=bnMDtTMEiLPRvZiDttwo6Y+JojBdaGOptW5osoRPJde0LnYXkhvlbI9yIL2cqNmbJ9q+ZIcMHiXPT2qesS8LOwhEazYH/VLaChq1NzqyD27G9DJdLuctQDOrKyLzEPrbF63kB3j6/Az6KgsSMdXZRbMK8fymMVV+hvInVAfqTwk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=DItxLIQv; arc=fail smtp.client-ip=67.231.153.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 50UHbR7P014712;
-	Thu, 30 Jan 2025 10:08:17 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
-	:content-id:content-transfer-encoding:content-type:date:from
-	:in-reply-to:message-id:mime-version:references:subject:to; s=
-	s2048-2021-q4; bh=ODXZsSLK0XiwM0GVfBo+54gBJjhT6I2fHOqDXvexy48=; b=
-	DItxLIQvzB3pd+mIcHgUEyT8mfmZTVrgGWfyYgiW4h4L+r3aNUPsFikzIRKjWt26
-	7daDHQpY8MDVfP3hrf19QvnCqq3jGNGz16Qn2TPmuzx3mNY2Et5pJkeOgbkZWDc6
-	M5lEH5T30wqTtGFUV9IP3G2tlHLsQgndwLuOF+zckunKejj+1jBwTktYhutXEAiT
-	6sYbVJ+BsFnv+G9GJsUCnsJbfj4MQUEJWuUhLCzzEBRQL3DwphGOX1+ep/ATWyqe
-	1aNpo1wCLgDuy4NtjOXHuvAemnk9HIMVEbXTTYHCZWE6JMgvqSOoWNKW5Hqr8Kln
-	H9uF8fpYWNaSlEnKPI/W5w==
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2046.outbound.protection.outlook.com [104.47.66.46])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 44gdghrg77-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 30 Jan 2025 10:08:17 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Uq2Cgx1rq6WzoXk/96hULiLeQAzZXdDFd5Wxcwosw0Ab3XzePYgTRlislG1UzWx+SX0D6/yEe8ecUQykJzIsO5uJVZE0l49bwB1nejnPPde5TOQ9LfsyEE2suFnIZ6zkFoZjR5WCgkbYfmEYIaVaXwzrusgu1hZixDvrsZlHlybdk6JrlN92UcxPn5qxS2Ksvxc/9pdSFqcUzZxTjEI0+XKkW4g/atpvtdCo+hwTKz47Rqewx+sxHJ0lpn+oWToDEwJvxyqZwVncQz47KwOBJuyTqys48wO6upSvtBej//m95eDbAKcnsbo6qI3pFR8caTDZPqef0/FetndvJZWMBw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ODXZsSLK0XiwM0GVfBo+54gBJjhT6I2fHOqDXvexy48=;
- b=SNuTePBRQaV7h7fOrn1OktYVRVKOBeHeXmSQxQGw40jH4JT4fkYcRrcoj93WfzzSQZqNih8LZFWINMJQEjBppXrnaGZO4R+PW7c+jDgQU5/7Qi3r7JcRROIpdEsyR5lABl9OAawQ/8vaZJvJzlTtd3qn3WuxgItpPCgx0NrtUb80QmJjNEpCpi8gTBzs1xll8oTHTWaUyY0RQzb3EwPxg9yHH0A9Ns0VIVccZn7f8lD7WlrWLvh1QGh+P/UFrP5RIEkj2fbosJz77qo3oj6J7W3UNv3q9RKpNtfSnICaB4j9oirMFi+OVe/plkCPkBCU8JhDrqZ1YmBjvmmMmI/mvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by DM6PR15MB4008.namprd15.prod.outlook.com (2603:10b6:5:2b9::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8398.18; Thu, 30 Jan
- 2025 18:08:14 +0000
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::662b:d7bd:ab1b:2610]) by SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::662b:d7bd:ab1b:2610%4]) with mapi id 15.20.8398.020; Thu, 30 Jan 2025
- 18:08:14 +0000
-From: Song Liu <songliubraving@meta.com>
-To: Matt Bobrowski <mattbobrowski@google.com>
-CC: Song Liu <song@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org"
-	<linux-security-module@vger.kernel.org>,
-        Kernel Team <kernel-team@meta.com>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "eddyz87@gmail.com"
-	<eddyz87@gmail.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "martin.lau@linux.dev"
-	<martin.lau@linux.dev>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        Liam Wisehart
-	<liamwisehart@meta.com>,
-        Shankaran Gnanashanmugam <shankaran@meta.com>
-Subject: Re: [PATCH v11 bpf-next 1/7] fs/xattr: bpf: Introduce security.bpf.
- xattr name prefix
-Thread-Topic: [PATCH v11 bpf-next 1/7] fs/xattr: bpf: Introduce security.bpf.
- xattr name prefix
-Thread-Index: AQHbcpDSdFdOhb20hkeR7DZegKEq0rMvJmeAgAB4RoA=
-Date: Thu, 30 Jan 2025 18:08:14 +0000
-Message-ID: <7F32DAA4-1B0D-4702-AAE3-AA742092F192@fb.com>
-References: <20250129205957.2457655-1-song@kernel.org>
- <20250129205957.2457655-2-song@kernel.org> <Z5tbH13qK6rLJVUI@google.com>
-In-Reply-To: <Z5tbH13qK6rLJVUI@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-mailer: Apple Mail (2.3826.300.87.4.3)
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR15MB5109:EE_|DM6PR15MB4008:EE_
-x-ms-office365-filtering-correlation-id: 61a7dd0d-1890-498a-b9ce-08dd415910bc
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|10070799003|1800799024|376014|7416014|366016|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?NWFPOFVCVzFnbGhXZUljMXpoaVZRT0RNdVRyNFlESGxIN2xlcmowMU50Z2NY?=
- =?utf-8?B?L0JTdXBRU0s5MHgrMFJ1V1E3Tys1dXBwbTFzek83NCtkdFR5RlluY2dVRDlF?=
- =?utf-8?B?b3pyVG91MThJTDZXUDg5NXpnNDB1REhjb29LWFdsdHNZdzF5a2UxUFZQSE5s?=
- =?utf-8?B?cHV4ZDZaeEhKN2FzNU4xVmJPWk5mN2dqcXo1emswbk41ZWNDa284L2hBdmFr?=
- =?utf-8?B?ekNaK1ZSdko5R0dXSVFMNW5wQ3NLdEZtV2dFRTlVVUZVQk95UGtoSDhyaVVV?=
- =?utf-8?B?Tkw5dC96Znh5SkNHVWdOMTR4YjVjWnpQbFVraFllVm5EVWtPa2NKTmxMY1FJ?=
- =?utf-8?B?M0hSa0lxVlhFUGFJdEhmc2xjQzc4OWJTV2dCZXprUyttcnd4Yi9icDZYalpO?=
- =?utf-8?B?MFR1ZDVWMjdHY0NoVHJ3dXhXR1NyY0VzQldRaWNMR0U5QzNwVVV5KzZPclJD?=
- =?utf-8?B?cmtwRXI0YzVrblpLK05XUGFCSHNTR2hMTWx0R3JIMVFnVHh3UGh4bDJMUTZq?=
- =?utf-8?B?bTA2L2xsblpjdDRIY09zMFhJVlJhUHpFb0xPeFZITjhrc2tnUWxmV3VCS0JJ?=
- =?utf-8?B?WUlHcW1PVFNxL1dwdllGQjJXTnlyd3BFZkp4VEFLTXhTaEpndTlpNGUraUt2?=
- =?utf-8?B?YWRTSFRnMWwra1VidDkvdlZxcGNLL0hTZmZQM0J4aU1oTlU4RWVMZTVtZzc2?=
- =?utf-8?B?aWNtNWVSalVtc2NmQnVxYTBBbDNyQU00TzVuN0tGdDZIdGJBNmxTalhsQnJu?=
- =?utf-8?B?WStJRVkxZURzWS91MVNHOWQ2NlV1bVNwM1k3dDhVZGFnNDNNYnVoK29BUzlE?=
- =?utf-8?B?YlF5SlhNNk8zczhYMzR0L3J5bjB3V2RVWHllQVdUTU1ZUEdSczU3T2NybXZP?=
- =?utf-8?B?T1pUMGp1M2lFOGFTK2YwTExSR1ROVk1DQVdPS0d4UzU4ZzRhVTRUZkZUNSsz?=
- =?utf-8?B?UC9MUGwzR1ZLUWNWVDBVMHhaQm5uTk9GZ2tOYjVVT3ROWUI3VDZLOXUzbFFB?=
- =?utf-8?B?bnVQMWlFWlRHWnluVFBabUlPWnZPM0czU1gyOFBHN0xRNXhoQTNaTms3MTY1?=
- =?utf-8?B?RXcyTmhGMkNhbnExMFdXcmJRSnJZeGxRY04zcEFIS2hYRjBKT0dialJNYytV?=
- =?utf-8?B?N2IzU1Y5QWpKY0FGcERuMnREb05sTk5mcys4dEplVUY1RU01Wk5FWHAzbVBH?=
- =?utf-8?B?OTVPeVRLSFc2cVZ1RVdFVWk3NlJReWo0N0ZtZC90aE9QQlJIRWErTTZNbGJs?=
- =?utf-8?B?MmxKRFRVUlpVcjZvdzRUclNoVmdSamxVUDlmTXdvam5YVDFvVmdOYkVmb21Y?=
- =?utf-8?B?Y2xmWk1DMXNIWk42bHlVL2ZMQ0pkRmM2SUEvVmRqbnZzSjR6Y080NzUyQlk3?=
- =?utf-8?B?akl2NHdWVFBQOHduam5xcHFmTldOeit0M3hTTE02TkRxUmROS0U5aC9GaWZl?=
- =?utf-8?B?T3FrbmVJc25lRU80a2d3cG5OdDAyT3JDOXI2bE1HRld5YlRaWDFub0Q4SGpl?=
- =?utf-8?B?Vlk1TkhISkRDWUpiMWNLYlI2RTlURE4xTUdPUllWZDRGTVI5SS9uLzhJMnRn?=
- =?utf-8?B?NnVjVXVhT3MyMzFjZWN5Q3VJYXduczZBY3QzaDBDUUNkd3VIai9vTXdqa0dk?=
- =?utf-8?B?aFBTY3U0VkVYTHA1S0s2VTZXeVdva2RRSmk3MmdXOERQcmoya3EzMWt5TVRV?=
- =?utf-8?B?Ynh5UU4rQkhqNDZDMTg5Rnk0MkVhcjBENmFONllLUTY5VkRJUWZYQ2Jyak5v?=
- =?utf-8?B?cUErb2RuL2tjOE4rWGNhcVhKcnp1aHB6YTZENkNUbWM1VWNBTXhsUDQ5RnJT?=
- =?utf-8?B?alhiZDBCZWIwY2haWm1waitXRDd3UU9BUUpmQ1JQNlJ2bWFHMTBaMHpWRjN4?=
- =?utf-8?B?blI5a3k0emtsTkU1ejFkKy9LTko2YXAzVnZ3QldqTXgrOThET0s4NG8zOUo0?=
- =?utf-8?Q?qd0IgtFyVeYQT6ZldHE/nO4+i2EeqKyu?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(10070799003)(1800799024)(376014)(7416014)(366016)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?RkZicWVQUUR2ZXkxR0Z1SmdYMFNJWDJzUS81QTc3Y1RKbVltYzJiQU9wNHMz?=
- =?utf-8?B?U0dFSG91ZE92MWw3Wlgwc2YvRldrQXZFU3FHTXVSM2Q5cytZVWlXN2lXRUQ1?=
- =?utf-8?B?YXVmdWhrdlJRMEo5d2hHYm4ySWV0VXpqeGE0VFJ2UlVOMUhSbFc0TzZheHJs?=
- =?utf-8?B?K21FR0ZOZHgzVnF5Tzg2cmVDL1FldGhJdnRwdjV0OVd1ajN6RUUxY2lHMTFq?=
- =?utf-8?B?eHhvb3FFM1FEdG1maUNpOElOOFE2TEExQ0xnSnBuNDFYMlBKRHRhZEZnTFAz?=
- =?utf-8?B?Y2RkZFRNMGRBSlVCZkg1TnQvT0pOSUhuS0dyNTMySGpzcGs1RkhlcjJlMmdD?=
- =?utf-8?B?ZDRES0FVTFVqbEoyb2ovc21aWEg4Ti9WazBjL08xZ012am5FMitXRThJSll2?=
- =?utf-8?B?NmIwNDM5ellrQ3R6NTk0OU5Oc2tQVStXYnpMTEwrUExKeVQ3MHlMRmVoSUs3?=
- =?utf-8?B?TGlKQTg4RTZ4b05haTNBMnBsYUNOZENxRm9lSlY5TldmSXNMNnRsd3BBbTJB?=
- =?utf-8?B?L0hsSjkyNCtCWHZPZmhTOU5RRTd1QTdEdFhPVmlRSXU1ZUxweGRsOEtRbGEr?=
- =?utf-8?B?UGhzMk04K0ErdWg4VTJoOVlyYmNKSzJtRUZrcGpPcEl3ZzN0VkwyZFkxdHA5?=
- =?utf-8?B?VU5MdnV0N0h5Y1ZjVGRXeldSQk16U1dlSDV0eHVZRFpCRGJMbk9kaGhuZlFE?=
- =?utf-8?B?dk1aaHlDZElmcTFFOTZ2SmJhbzlnMmJxTU5CRStHQWFRdGRvWjVieW5ERUk3?=
- =?utf-8?B?Nys1dU1BZy9YY29rbnBXVjQyRU95T2lhejY2MGltRnpKV09xTlM2UWFMajJP?=
- =?utf-8?B?TXNDSllkdTRwVCtlc3NaSUpuM1gzOGxGYWRvaUxtRVE2enRmblBTem82RzBI?=
- =?utf-8?B?SmJ6b1dHRk9TSHdCU0hpZ0dMWjBINXR4QS9OMTBxQzZQc3RHa294V25vQ0hu?=
- =?utf-8?B?VG9XUGNhM0ZQNUVIREVnWnN1WTJXbnliZk91bHpNVktPZWRrdGVYR0xjY3Zr?=
- =?utf-8?B?SHRoYmZNRTdXWTlUdloxbkhVMHFFU082WEszYnFUS2FRQ294dDl5eXhtT2RV?=
- =?utf-8?B?QUlZZVArTVNnVWhtTHJ3bmtBWGptOFBQSjl3S1J1NWp5cmQxTTJTUG5wcHhu?=
- =?utf-8?B?c2dIRXlMa1JhZ2N6S1ZzK3NrbW5nTjhLakZiSU9DZ3FvcWZWQXZsOFRRcDB0?=
- =?utf-8?B?dEhyUXVKWVdBKzFqck1zV21DaXlFampCNXRvb0NnYnZTSWIxMlFNYkoycHlt?=
- =?utf-8?B?NnU2L1J1bXp1cUdIMnJMVHA3enp2SzYwaFd2U1BWdzJLekM4U25PdUtaN3pv?=
- =?utf-8?B?c0lCN21TWlhPK1BTb3hRVktBZlo1R3NiK3B2ejdNcWJXdmFNNkt4aktMZTdO?=
- =?utf-8?B?cm1sOHhFNWhGVWh1aGR4QWY5cDdLKys4U0hmakVmU1dpSW1HRGgzVi9ubEZk?=
- =?utf-8?B?bUtldDZHM1RIUGxySUZSdjRxdHF3WXg2dC9xQjBYTEluQy9YZEhudmhGTUZZ?=
- =?utf-8?B?emFaQXVFTmRuRWlLZ3N5eUl6WXhqNUhNdFR2NEVIU0JKLzNUbkR4U1U3Njdr?=
- =?utf-8?B?REoyNFZhcWRZOU5LbzdDWktkcjJ6OUY1Wmh5bk9ieFBLYVdkNEphNURsOW9M?=
- =?utf-8?B?N1Y5K0g1a1E1UEhFeTFTc1dLeG1zSkZoKzhGWERMZjZyYkVWNjJmMFhwNTZP?=
- =?utf-8?B?b3BXYWp1N1lyaTVaOXhoS1dCc0ZpbkhBNkdZWEVtY2p5WDEzS1kyMjlvdkNF?=
- =?utf-8?B?QXEwRUVEeE5Uam16MWowTCsyMkdqUVZoMlVHUklPaU1qQjcrbTV1N2ZweG8y?=
- =?utf-8?B?dXJycVhnTk16UUpoT2F3bi80S0I1K2VoT3VoQ0NYbE1hWm1hNXZTaStnYTV0?=
- =?utf-8?B?Mm9kdWZZQ3RWZFY1NWxCZDVxUWx2Z0VDNis4TWxuc0FldmxWS0k2eUIyZU4x?=
- =?utf-8?B?UHpZNW00ZXBLdnpZdyt0V1dVK2FNOFV1Y1J4MXplWkx4aGQ1azc2L1hUK0dI?=
- =?utf-8?B?bGtXeEJBWnRSZXJBaEpPTUtac2IzMmhXUWcrUmUvNXN1aFZhaWo1ZExYUzVa?=
- =?utf-8?B?OTF3RlM4S2IyKzVJN0ZVQlp4b1JQT01WbDdGNDlzbzA2dW1nT2QzS2JYYnNB?=
- =?utf-8?B?aTZJVU5kblZHYWhscEtUZ3YrM2wzU0pBQ3pXTjdNNVorUVRtbmJJS0xNSlBR?=
- =?utf-8?Q?aIdjUZbajckOtxXNTw+7UOk=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5129AE4B4381B242808CD3F44DD125E4@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28DD21487E1;
+	Thu, 30 Jan 2025 18:42:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1738262543; cv=none; b=cfA/6ydnkhOjQV8Jl26h+L5XtGn+nuImMo64Xf4rrHLUPLQZj0zv4eClyi1W4GZSO66rHwcNtkE1Gf+EVllrnRJh8E3DDaJmvKoKA5EV0Fjiu9caJZAQm6/ZmM2yTE1q1K2ltw5v4JfRKrl+uiKLa4cuUvbIIkLYli9DSNAeCuw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1738262543; c=relaxed/simple;
+	bh=g0IQwxMYVVFXX2ZDTdvXAiamvpAiO+krIPQp++uGEec=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=IEozjyoJ8ronrm9fHZYyzb7A+KBRy6hN1heIQscCdxtetfdrRv2+nFhUJyDM99r30TujernIuudrxEfnlJhv2YB9MoOB+29bwwNO6jNec8iBDR93hOfSAVyOt4UcCyb/kRGYQ6A93bDT+Q9SM2071AHN4pVdX3hh4BVm336p5+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=SIYI2UPc; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=sGJxb52a; arc=none smtp.client-ip=202.12.124.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfout.stl.internal (Postfix) with ESMTP id B84081140100;
+	Thu, 30 Jan 2025 13:42:19 -0500 (EST)
+Received: from phl-imap-08 ([10.202.2.84])
+  by phl-compute-03.internal (MEProxy); Thu, 30 Jan 2025 13:42:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1738262539;
+	 x=1738348939; bh=Z9bH9AOEMGGz/NR9FlqFzvsaqJ/UrZx/S0LGxttDpvc=; b=
+	SIYI2UPcEjF5HcjpRsfjFTPQtwe4jgR0bCGFcHSXiCla5Y4y5khnAIvv9WvEi3Cb
+	BRmVtf28CvGbosSqlN6IQJk411SGJOgIjInQ4ng5b+jQST1eQZu1dRULmRqTss4X
+	lsWuuoj111SWFawQsVJlWLylFEKts71PPuExgplx50sWKIckMtm25KJKZZkPVzC8
+	eQ1U5iOPTfRRkoFE4C+p62S3zXPmCxtE3lXXH1Kj1VBBByhwDHcixtN8rEsl7Wqm
+	nPbytlFrXRt3STtHhwSZt9b/SBik+HH06bNameG8y8jFD2xIbCpZt13kdMFKmt8H
+	24mIEynV+euJyPLVw/bpQg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1738262539; x=
+	1738348939; bh=Z9bH9AOEMGGz/NR9FlqFzvsaqJ/UrZx/S0LGxttDpvc=; b=s
+	GJxb52aQpaiX/9m91Wv6xvjGVh0l0GocgdN6Bwbu+FafDvkGHryzLBMrZvUpBJWq
+	v6AAnV8SCL5JFaSJZcDDlS8DkKlJvOlAssGE5/DpzGhuINekfNBqJG4JmuUiUdxx
+	2yDMpZJM5ami4SUkD1wz7qnASkmsVmKGjocno8VUPUrSC82xNi50mCHl2psS8rig
+	ge3fS7hAgY/aPTGMIYJC7aD1htDQ8lD6IJOoDbOLXnl0R9C9AgCBFcXzfDnuhB5g
+	3kJMC5luvUZjCheGvhubMwDfslLJvBuapb6ilO1HiCoU/lcQtGocXrKQL+dPrqC+
+	jHh0nG9gbLooX4wNvkQ2w==
+X-ME-Sender: <xms:CsibZ0RCX2RniUwj5NA7a-JRF5VLBxDb5JWyxAY84gbexV4aqsYkrA>
+    <xme:CsibZxxrvqiEd0LFmGPM1m-fFF3mp_lP_rM3o4s8l_AYKNbDn2N8y4eeROz33F3g-
+    uuAgy-3dbFhnKmwqQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeiheejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnegfrhhlucfvnfffucdlfeehmdenucfjughrpefoggffhffvvefk
+    jghfufgtgfesthhqredtredtjeenucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugi
+    husegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeeikeduveeiffekveffieeh
+    hfdtffdtveetjeefieevveffveevudetkeffffelleenucffohhmrghinhepghhithhhuh
+    gsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhho
+    mhepugiguhesugiguhhuuhdrgiihiidpnhgspghrtghpthhtohepudelpdhmohguvgepsh
+    hmthhpohhuthdprhgtphhtthhopehmhihkohhlrghlsehfsgdrtghomhdprhgtphhtthho
+    pehsughfsehfohhmihgthhgvvhdrmhgvpdhrtghpthhtohepvgguugihiiekjeesghhmrg
+    hilhdrtghomhdprhgtphhtthhopehjohhhnhdrfhgrshhtrggsvghnugesghhmrghilhdr
+    tghomhdprhgtphhtthhopehhrgholhhuohesghhoohhglhgvrdgtohhmpdhrtghpthhtoh
+    epuggrnhhivghlsehiohhgvggrrhgsohigrdhnvghtpdhrtghpthhtoheprghnughrihhi
+    sehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrghdprh
+    gtphhtthhopehjohhlshgrsehkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:CsibZx0bf-oM7sRzQD2nQwp7CJxC32Z_awPJdUTEMa4p64dcG3vJwQ>
+    <xmx:CsibZ4AFGnRDSnGphGEfzvlMo9fxFMRxUFDTJcaG2x8tKmP9GTng5w>
+    <xmx:CsibZ9gbSR6KnXYZ7FykB_EqKbxNURAdWMKoINs36Qn2BVCy8YT81w>
+    <xmx:CsibZ0qHKxDFCm0uDWMH62yEde5v1vR9vVd_9UQykZVJ2BSUc6u95w>
+    <xmx:C8ibZ2ZkX53eIRsKzYFQJnsDHp84WSNOKVoG9X0ZBwDYaAnn9eT46acm>
+Feedback-ID: i6a694271:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id C1E0B18A006B; Thu, 30 Jan 2025 13:42:18 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 61a7dd0d-1890-498a-b9ce-08dd415910bc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2025 18:08:14.4649
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: eCVMDFtdxXWlgp27ncSi1kz0Ez6TaxfJScUFwt0BNe7CPNYUt82wleVJzojIn4SZaCTWD8JqwcZa9Kyu9oJK+w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB4008
-X-Proofpoint-GUID: Cth7LMe67zO_CM-IRKfEiLMVEr8ULkyk
-X-Proofpoint-ORIG-GUID: Cth7LMe67zO_CM-IRKfEiLMVEr8ULkyk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-01-30_08,2025-01-30_01,2024-11-22_01
+Date: Thu, 30 Jan 2025 10:41:58 -0800
+From: "Daniel Xu" <dxu@dxuuu.xyz>
+To: "Ilya Leoshkevich" <iii@linux.ibm.com>
+Cc: "Shuah Khan" <shuah@kernel.org>, "Eduard Zingerman" <eddyz87@gmail.com>,
+ "Alexei Starovoitov" <ast@kernel.org>,
+ "Daniel Borkmann" <daniel@iogearbox.net>,
+ "Andrii Nakryiko" <andrii@kernel.org>,
+ "John Fastabend" <john.fastabend@gmail.com>,
+ "Martin KaFai Lau" <martin.lau@linux.dev>, "Song Liu" <song@kernel.org>,
+ "Yonghong Song" <yonghong.song@linux.dev>, "KP Singh" <kpsingh@kernel.org>,
+ "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>,
+ "Jiri Olsa" <jolsa@kernel.org>, "Mykola Lysenko" <mykolal@fb.com>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, "Marc Hartmayer" <mhartmay@linux.ibm.com>
+Message-Id: <20f56c02-688d-4f22-97dc-cc5b3800de3f@app.fastmail.com>
+In-Reply-To: <ae5e32ff2269eb4c190aeb882b17cb1bb8e6c70d.camel@linux.ibm.com>
+References: <cover.1736886479.git.dxu@dxuuu.xyz>
+ <68f3ea96ff3809a87e502a11a4bd30177fc5823e.1736886479.git.dxu@dxuuu.xyz>
+ <78b2e750b4568e294b5fc5a33cf4bc8f62fae7f6.camel@linux.ibm.com>
+ <hsgmutuoi4kvjkr7erm5ty2fdrhdrjpz4fpp5doe65l3pzguxv@lcbmvmjpyykq>
+ <f7rhmwrp3fgx3qd7gn3pzczxeztvsg45u4vrl6ls3ylcvflapx@3yi3shfnrmb3>
+ <ae5e32ff2269eb4c190aeb882b17cb1bb8e6c70d.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next v7 4/5] bpf: verifier: Support eliding map lookup nullness
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-SGkgTWF0dCwNCg0KPiBPbiBKYW4gMzAsIDIwMjUsIGF0IDI6NTfigK9BTSwgTWF0dCBCb2Jyb3dz
-a2kgPG1hdHRib2Jyb3dza2lAZ29vZ2xlLmNvbT4gd3JvdGU6DQo+IA0KPiBPbiBXZWQsIEphbiAy
-OSwgMjAyNSBhdCAxMjo1OTo1MVBNIC0wODAwLCBTb25nIExpdSB3cm90ZToNCj4+IEludHJvZHVj
-dCBuZXcgeGF0dHIgbmFtZSBwcmVmaXggc2VjdXJpdHkuYnBmLiwgYW5kIGVuYWJsZSByZWFkaW5n
-IHRoZXNlDQo+PiB4YXR0cnMgZnJvbSBicGYga2Z1bmNzIGJwZl9nZXRfW2ZpbGV8ZGVudHJ5XV94
-YXR0cigpLg0KPj4gDQo+PiBBcyB3ZSBhcmUgb24gaXQsIGNvcnJlY3QgdGhlIGNvbW1lbnRzIGZv
-ciByZXR1cm4gdmFsdWUgb2YNCj4+IGJwZl9nZXRfW2ZpbGV8ZGVudHJ5XV94YXR0cigpLCBpLmUu
-IHJldHVybiBsZW5ndGggdGhlIHhhdHRyIHZhbHVlIG9uDQo+PiBzdWNjZXNzLg0KPiANCj4gUmV2
-aWV3ZWQtYnk6IE1hdHQgQm9icm93c2tpIDxtYXR0Ym9icm93c2tpQGdvb2dsZS5jb20+DQoNClRo
-YW5rcyBmb3IgdGhlIHJldmlldyENCg0KWy4uLl0NCj4gDQo+PiAtICogUmV0dXJuOiAwIG9uIHN1
-Y2Nlc3MsIGEgbmVnYXRpdmUgdmFsdWUgb24gZXJyb3IuDQo+PiArICogUmV0dXJuOiBsZW5ndGgg
-b2YgdGhlIHhhdHRyIHZhbHVlIG9uIHN1Y2Nlc3MsIGEgbmVnYXRpdmUgdmFsdWUgb24gZXJyb3Iu
-DQo+PiAgKi8NCj4+IF9fYnBmX2tmdW5jIGludCBicGZfZ2V0X2RlbnRyeV94YXR0cihzdHJ1Y3Qg
-ZGVudHJ5ICpkZW50cnksIGNvbnN0IGNoYXIgKm5hbWVfX3N0ciwNCj4+ICAgICBzdHJ1Y3QgYnBm
-X2R5bnB0ciAqdmFsdWVfcCkNCj4+IEBAIC0xMTcsNyArMTIzLDkgQEAgX19icGZfa2Z1bmMgaW50
-IGJwZl9nZXRfZGVudHJ5X3hhdHRyKHN0cnVjdCBkZW50cnkgKmRlbnRyeSwgY29uc3QgY2hhciAq
-bmFtZV9fc3QNCj4+IGlmIChXQVJOX09OKCFpbm9kZSkpDQo+PiByZXR1cm4gLUVJTlZBTDsNCj4+
-IA0KPj4gLSBpZiAoc3RybmNtcChuYW1lX19zdHIsIFhBVFRSX1VTRVJfUFJFRklYLCBYQVRUUl9V
-U0VSX1BSRUZJWF9MRU4pKQ0KPj4gKyAvKiBBbGxvdyByZWFkaW5nIHhhdHRyIHdpdGggdXNlci4g
-YW5kIHNlY3VyaXR5LmJwZi4gcHJlZml4ICovDQo+PiArIGlmIChzdHJuY21wKG5hbWVfX3N0ciwg
-WEFUVFJfVVNFUl9QUkVGSVgsIFhBVFRSX1VTRVJfUFJFRklYX0xFTikgJiYNCj4+ICsgICAgIW1h
-dGNoX3NlY3VyaXR5X2JwZl9wcmVmaXgobmFtZV9fc3RyKSkNCj4gDQo+IEkgdGhpbmsgaXQgd291
-bGQgYmUgY2xlYW5lciB0byBoYXZlIHNpbmdsZSBmdW5jdGlvbg0KPiBpLmUuIGlzX2FsbG93ZWRf
-eGF0dHJfcHJlZml4KGNvbnN0IGNoYXIgKm5hbWVfX3N0cikgd2hpY2ggc2ltcGx5DQo+IGNoZWNr
-cyBhbGwgdGhlIGFsbG93ZWQgeGF0dHIgcHJlZml4ZXMgdGhhdCBjYW4gYmUgcmVhZCBieSB0aGlz
-IEJQRg0KPiBrZnVuYy4NCg0KU3VyZSwgd2UgY2FuIGFkZCBicGZfeGF0dHJfcmVhZF9wZXJtaXNz
-aW9uKCkgd2hpY2ggcGFpcnMgd2l0aCANCmJwZl94YXR0cl93cml0ZV9wZXJtaXNzaW9uKCkuIA0K
-DQpUaGFua3MsDQpTb25nDQoNCj4gDQo+PiByZXR1cm4gLUVQRVJNOw0KPj4gDQo+PiB2YWx1ZV9s
-ZW4gPSBfX2JwZl9keW5wdHJfc2l6ZSh2YWx1ZV9wdHIpOw0KPj4gQEAgLTEzOSw5ICsxNDcsMTAg
-QEAgX19icGZfa2Z1bmMgaW50IGJwZl9nZXRfZGVudHJ5X3hhdHRyKHN0cnVjdCBkZW50cnkgKmRl
-bnRyeSwgY29uc3QgY2hhciAqbmFtZV9fc3QNCj4+ICAqDQo+PiAgKiBHZXQgeGF0dHIgKm5hbWVf
-X3N0ciogb2YgKmZpbGUqIGFuZCBzdG9yZSB0aGUgb3V0cHV0IGluICp2YWx1ZV9wdHIqLg0KPj4g
-ICoNCj4+IC0gKiBGb3Igc2VjdXJpdHkgcmVhc29ucywgb25seSAqbmFtZV9fc3RyKiB3aXRoIHBy
-ZWZpeCAidXNlci4iIGlzIGFsbG93ZWQuDQo+PiArICogRm9yIHNlY3VyaXR5IHJlYXNvbnMsIG9u
-bHkgKm5hbWVfX3N0ciogd2l0aCBwcmVmaXggInVzZXIuIiBvcg0KPiAgICAgICAgICAgICAgICAg
-ICAgICBeIHByZWZpeGVzDQo+IA0KPj4gKyAqICJzZWN1cml0eS5icGYuIiBpcyBhbGxvd2VkLg0K
-PiAgICAgICAgICAgIF4gYXJlDQo+IA0KPj4gLSAqIFJldHVybjogMCBvbiBzdWNjZXNzLCBhIG5l
-Z2F0aXZlIHZhbHVlIG9uIGVycm9yLg0KPj4gKyAqIFJldHVybjogbGVuZ3RoIG9mIHRoZSB4YXR0
-ciB2YWx1ZSBvbiBzdWNjZXNzLCBhIG5lZ2F0aXZlIHZhbHVlIG9uIGVycm9yLg0KPj4gICovDQo+
-PiBfX2JwZl9rZnVuYyBpbnQgYnBmX2dldF9maWxlX3hhdHRyKHN0cnVjdCBmaWxlICpmaWxlLCBj
-b25zdCBjaGFyICpuYW1lX19zdHIsDQo+PiAgIHN0cnVjdCBicGZfZHlucHRyICp2YWx1ZV9wKQ0K
-Pj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvdWFwaS9saW51eC94YXR0ci5oIGIvaW5jbHVkZS91YXBp
-L2xpbnV4L3hhdHRyLmgNCj4+IGluZGV4IDk4NTRmOWNmZjNjNi4uYzdjODViYjUwNGJhIDEwMDY0
-NA0KPj4gLS0tIGEvaW5jbHVkZS91YXBpL2xpbnV4L3hhdHRyLmgNCj4+ICsrKyBiL2luY2x1ZGUv
-dWFwaS9saW51eC94YXR0ci5oDQo+PiBAQCAtODMsNiArODMsMTAgQEAgc3RydWN0IHhhdHRyX2Fy
-Z3Mgew0KPj4gI2RlZmluZSBYQVRUUl9DQVBTX1NVRkZJWCAiY2FwYWJpbGl0eSINCj4+ICNkZWZp
-bmUgWEFUVFJfTkFNRV9DQVBTIFhBVFRSX1NFQ1VSSVRZX1BSRUZJWCBYQVRUUl9DQVBTX1NVRkZJ
-WA0KPj4gDQo+PiArI2RlZmluZSBYQVRUUl9CUEZfTFNNX1NVRkZJWCAiYnBmLiINCj4+ICsjZGVm
-aW5lIFhBVFRSX05BTUVfQlBGX0xTTSAoWEFUVFJfU0VDVVJJVFlfUFJFRklYIFhBVFRSX0JQRl9M
-U01fU1VGRklYKQ0KPj4gKyNkZWZpbmUgWEFUVFJfTkFNRV9CUEZfTFNNX0xFTiAoc2l6ZW9mKFhB
-VFRSX05BTUVfQlBGX0xTTSkgLSAxKQ0KPj4gKw0KPj4gI2RlZmluZSBYQVRUUl9QT1NJWF9BQ0xf
-QUNDRVNTICAicG9zaXhfYWNsX2FjY2VzcyINCj4+ICNkZWZpbmUgWEFUVFJfTkFNRV9QT1NJWF9B
-Q0xfQUNDRVNTIFhBVFRSX1NZU1RFTV9QUkVGSVggWEFUVFJfUE9TSVhfQUNMX0FDQ0VTUw0KPj4g
-I2RlZmluZSBYQVRUUl9QT1NJWF9BQ0xfREVGQVVMVCAgInBvc2l4X2FjbF9kZWZhdWx0Ig0KPj4g
-LS0gDQo+PiAyLjQzLjUNCj4+IA0KDQo=
+Hi Ilya,
+
+On Thu, Jan 30, 2025, at 2:06 AM, Ilya Leoshkevich wrote:
+> On Wed, 2025-01-29 at 10:45 -0700, Daniel Xu wrote:
+>> On Wed, Jan 29, 2025 at 09:49:12AM -0700, Daniel Xu wrote:
+>> > Hi Ilya,
+>> >=20
+>> > On Wed, Jan 29, 2025 at 03:58:54PM +0100, Ilya Leoshkevich wrote:
+>> > > On Tue, 2025-01-14 at 13:28 -0700, Daniel Xu wrote:
+>> > > > This commit allows progs to elide a null check on statically
+>> > > > known
+>> > > > map
+>> > > > lookup keys. In other words, if the verifier can statically
+>> > > > prove
+>> > > > that
+>> > > > the lookup will be in-bounds, allow the prog to drop the null
+>> > > > check.
+>> > > >=20
+>> > > > This is useful for two reasons:
+>> > > >=20
+>> > > > 1. Large numbers of nullness checks (especially when they
+>> > > > cannot
+>> > > > fail)
+>> > > > =C2=A0=C2=A0 unnecessarily pushes prog towards
+>> > > > BPF_COMPLEXITY_LIMIT_JMP_SEQ.
+>> > > > 2. It forms a tighter contract between programmer and verifier.
+>> > > >=20
+>> > > > For (1), bpftrace is starting to make heavier use of percpu
+>> > > > scratch
+>> > > > maps. As a result, for user scripts with large number of
+>> > > > unrolled
+>> > > > loops,
+>> > > > we are starting to hit jump complexity verification errors.=C2=A0
+>> > > > These
+>> > > > percpu lookups cannot fail anyways, as we only use static key
+>> > > > values.
+>> > > > Eliding nullness probably results in less work for verifier as
+>> > > > well.
+>> > > >=20
+>> > > > For (2), percpu scratch maps are often used as a larger stack,
+>> > > > as the
+>> > > > currrent stack is limited to 512 bytes. In these situations, it
+>> > > > is
+>> > > > desirable for the programmer to express: "this lookup should
+>> > > > never
+>> > > > fail,
+>> > > > and if it does, it means I messed up the code". By omitting the
+>> > > > null
+>> > > > check, the programmer can "ask" the verifier to double check
+>> > > > the
+>> > > > logic.
+>> > > >=20
+>> > > > Tests also have to be updated in sync with these changes, as
+>> > > > the
+>> > > > verifier is more efficient with this change. Notable, iters.c
+>> > > > tests
+>> > > > had
+>> > > > to be changed to use a map type that still requires null
+>> > > > checks, as
+>> > > > it's
+>> > > > exercising verifier tracking logic w.r.t iterators.
+>> > > >=20
+>> > > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+>> > > > ---
+>> > > > =C2=A0kernel/bpf/verifier.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 92
+>> > > > ++++++++++++++++++-
+>> > > > =C2=A0tools/testing/selftests/bpf/progs/iters.c=C2=A0=C2=A0=C2=A0=
+=C2=A0 | 14 +--
+>> > > > =C2=A0.../selftests/bpf/progs/map_kptr_fail.c=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 |=C2=A0 2 +-
+>> > > > =C2=A0.../selftests/bpf/progs/verifier_map_in_map.c |=C2=A0 2 +-
+>> > > > =C2=A0.../testing/selftests/bpf/verifier/map_kptr.c |=C2=A0 2 +-
+>> > > > =C2=A05 files changed, 99 insertions(+), 13 deletions(-)
+>> > >=20
+>> > > [...]
+>> > >=20
+>> > > > @@ -9158,6 +9216,7 @@ static int check_func_arg(struct
+>> > > > bpf_verifier_env *env, u32 arg,
+>> > > > =C2=A0	enum bpf_arg_type arg_type =3D fn->arg_type[arg];
+>> > > > =C2=A0	enum bpf_reg_type type =3D reg->type;
+>> > > > =C2=A0	u32 *arg_btf_id =3D NULL;
+>> > > > +	u32 key_size;
+>> > > > =C2=A0	int err =3D 0;
+>> > > > =C2=A0
+>> > > > =C2=A0	if (arg_type =3D=3D ARG_DONTCARE)
+>> > > > @@ -9291,8 +9350,13 @@ static int check_func_arg(struct
+>> > > > bpf_verifier_env *env, u32 arg,
+>> > > > =C2=A0			verbose(env, "invalid map_ptr to
+>> > > > access map-
+>> > > > > key\n");
+>> > > > =C2=A0			return -EACCES;
+>> > > > =C2=A0		}
+>> > > > -		err =3D check_helper_mem_access(env, regno,
+>> > > > meta-
+>> > > > > map_ptr->key_size,
+>> > > > -					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BPF_READ, false,
+>> > > > NULL);
+>> > > > +		key_size =3D meta->map_ptr->key_size;
+>> > > > +		err =3D check_helper_mem_access(env, regno,
+>> > > > key_size,
+>> > > > BPF_READ, false, NULL);
+>> > > > +		if (err)
+>> > > > +			return err;
+>> > > > +		meta->const_map_key =3D
+>> > > > get_constant_map_key(env, reg,
+>> > > > key_size);
+>> > > > +		if (meta->const_map_key < 0 && meta-
+>> > > > >const_map_key
+>> > > > !=3D -EOPNOTSUPP)
+>> > > > +			return meta->const_map_key;
+>> > >=20
+>> > > Mark Hartmayer reported a problem that after this commit the
+>> > > verifier
+>> > > started refusing to load libvirt's virCgroupV2DevicesLoadProg(),
+>> > > which
+>> > > contains the following snippet:
+>> > >=20
+>> > > 53: (b7) r1 =3D -1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 ; R1_w=3D-1
+>> > > 54: (7b) *(u64 *)(r10 -8) =3D r1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 ; R1_w=3D-1 R10=3Dfp0 fp-8_w=3D-1
+>> > > 55: (bf) r2 =3D r10=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ ; R2_w=3Dfp0 R10=3Dfp0
+>> > > 56: (07) r2 +=3D -8=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ ; R2_w=3Dfp-8
+>> > > 57: (18) r1 =3D 0x9553c800=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ; R1_w=3Dmap_ptr(ks=3D8,vs=3D4)
+>> > > 59: (85) call bpf_map_lookup_elem#1
+>> > >=20
+>> > > IIUC here the actual constant value is -1, which this code
+>> > > confuses
+>> > > with an error.
+>> >=20
+>> > Thanks for reporting. I think I know what the issue is - will send
+>> > a
+>> > patch shortly.
+>> >=20
+>> > Daniel
+>> >=20
+>>=20
+>> I cribbed the source from [0] and tested before and after. I think
+>> this
+>> should work. Mind giving it a try?
+>>=20
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index 9971c03adfd5..e9176a5ce215 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -9206,6 +9206,8 @@ static s64 get_constant_map_key(struct
+>> bpf_verifier_env *env,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return reg->var_off.value;
+>> =C2=A0}
+>>=20
+>> +static bool can_elide_value_nullness(enum bpf_map_type type);
+>> +
+>> =C2=A0static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 struct bpf_call_arg_meta *meta,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 const struct bpf_func_proto *fn,
+>> @@ -9354,9 +9356,11 @@ static int check_func_arg(struct
+>> bpf_verifier_env *env, u32 arg,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 err =3D check_helper_mem_access(env, regno, key_si=
+ze,
+>> BPF_READ, false, NULL);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 if (err)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 re=
+turn err;
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 meta->const_map_key =3D get_constant_map_key(env, reg,
+>> key_size);
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 if (meta->const_map_key < 0 && meta->const_map_key !=3D
+>> -EOPNOTSUPP)
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return m=
+eta->const_map_key;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 if (can_elide_value_nullness(meta->map_ptr-
+>> >map_type)) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 meta->co=
+nst_map_key =3D
+>> get_constant_map_key(env, reg, key_size);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (meta=
+->const_map_key < 0 && meta-
+>> >const_map_key !=3D -EOPNOTSUPP)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return meta->const_map_key;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 }
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 break;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case ARG_PTR_TO_MAP_VALUE:
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 if (type_may_be_null(arg_type) &&
+>> register_is_null(reg))
+>>=20
+>> Thanks,
+>> Daniel
+>>=20
+>>=20
+>> [0]:
+>> https://github.com/libvirt/libvirt/blob/c1166be3475a0269f5164d87fec62=
+27d6cb34b47/src/util/vircgroupv2devices.c#L66-L135
+>
+> Thanks, I tried this in isolation and it fixed the issue for me.
+> I talked to Mark and he will try it with his libvirt scenario.
+
+Thanks for testing!=20
+
+>
+> The code looks reasonable to me, but I have a small concern regarding
+> what will happen if the BPF code uses a -EOPNOTSUPP immediate with an
+> array. Unlike other immediates, IIUC this will cause check_func_arg()
+> to return 0. Is there a reason to have this special?
+
+That's a good point. Lemme check on that.
+
+Thanks,
+Daniel
 
