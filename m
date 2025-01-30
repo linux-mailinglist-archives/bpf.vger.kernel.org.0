@@ -1,241 +1,171 @@
-Return-Path: <bpf+bounces-50128-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50129-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9258DA23175
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 17:05:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57426A231D2
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 17:30:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B522C1622BC
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 16:04:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCB7B1889A26
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 16:29:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D992C1EC00C;
-	Thu, 30 Jan 2025 16:04:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F2561EE7CE;
+	Thu, 30 Jan 2025 16:29:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MxhCyZfl"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="tY7tASqR"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53B1F1EBA02;
-	Thu, 30 Jan 2025 16:04:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 489581EE01F
+	for <bpf@vger.kernel.org>; Thu, 30 Jan 2025 16:29:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738253090; cv=none; b=rRpvFiZPGksRGtx6S5MECt2UNFEGU77Mf9uEIm/zO+QlvbnotkmLhGAMpgjcThLb0G1B2g4c7k7dh8v/WVozaKKW1/LeqoRpjDgJKnzW5NpG+u7sIcYiuG9p/OyeLzERqVtr8wW9cKtVogHyVUOXlgiOITPull9X+XpTPGFGtxQ=
+	t=1738254564; cv=none; b=GDKCNvWdHAg0o9OJWt/OJBI1zn0WNSMfk6ugSaFcdFcHhlsD3gG4plQ0VQEU/IgKcn5/94hfPY/e9i1kJYXoNdtXYI3oPy4IO4kiFWqhgVSPQBatqkz5doNPaLZxfs7kiaP9LW2UHzgwwvSloGbYqjg3r9s4qOfekkZFPZoUwGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738253090; c=relaxed/simple;
-	bh=AYLbUouqbK4R93QojCgMLxCHxiD6mQwuOuctmWkMZN8=;
+	s=arc-20240116; t=1738254564; c=relaxed/simple;
+	bh=t83gBk3R1gJYHaKAAfvjNUShPqKhN3qh0uSgLbPTP6Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Dv23VnxLZBAJAg/IAkyuLlnL6Vk23qfnR7/HWhPzu1lU+Qt90U6Nwvy4bV7sp9yBbvDbNrGkbDPcLmNg7i2BqCRjcxfqQ7/kV5hwi5KlYDt1facGM+KwnfsFIB1fpu5MWVDo4Wt6W7rdZLnVPfBq51YUD04GJQWC3j73hM55JqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MxhCyZfl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B2F5C4CEE0;
-	Thu, 30 Jan 2025 16:04:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738253089;
-	bh=AYLbUouqbK4R93QojCgMLxCHxiD6mQwuOuctmWkMZN8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MxhCyZfly9ODkHR1ppVjmGHyov234mPSuLrEnnC5wKSSpiNnqZZoiYi/bDd2+wYDt
-	 F9T5ylsfregi7IGtidlH8AEN/x9OztuTWC3ENbBDsXikIhf+4Bcuv/0jeG/0zpJay2
-	 GymoMwgfCrQR4R2ALs9hRgAd7pmHH+hRQmkOP8vlJ3PiG4nL6mZXYDgD0As9sfcwT0
-	 hsHJroU80G20/ld0tUkx7S3tybnkDGr0kk65ELqTDc1IJ+Y6UvyXM/TAcdqDSzOyWY
-	 P+VWGlDF6Y5cr3JqqdUkNNg8g5Xlg6d/MbVCWW2rHkp3bw4H5nAF99SmOB7W/UQfye
-	 aKpQq38z+uaOw==
-Date: Thu, 30 Jan 2025 17:04:42 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Juntong Deng <juntong.deng@outlook.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Linus Torvalds <torvalds@linux-foundation.org>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, 
-	jolsa@kernel.org, memxor@gmail.com, snorcht@gmail.com, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v9 1/5] bpf: Introduce task_file open-coded
- iterator kfuncs
-Message-ID: <20250130-hautklinik-quizsendung-d36d8146bc7b@brauner>
-References: <AM6PR03MB50801990BD93BFA2297A123599EC2@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <AM6PR03MB50802EA81C89D22791CCF09099EC2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=B8aitm6JCjlAxJzt9+oSmEiSkA43AHOM7FqB9csN+8U87efm88T1JzHb9ceRRHijkevQwkfnVUZo7r7movV/jZ8RWNLC3w2oLNtg3c+7mwFeHvQmIuWJpaBmRa2vGiuPE/EWEURCpA0tbqRy4W7ApJL8EEgiWBYjp2+QIz2ZcKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=tY7tASqR; arc=none smtp.client-ip=209.85.160.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-467b74a1754so12534561cf.1
+        for <bpf@vger.kernel.org>; Thu, 30 Jan 2025 08:29:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1738254561; x=1738859361; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PaELnFzz9aRPiHl2MvgwZe5wGfHA1Rh3SyrWRVQiS98=;
+        b=tY7tASqRwmsVr0Dhlx1A8MFyV/JSYFFol9/Bes0rqSbY9GWcaUPkgNkGRpWEcPlo5B
+         878X5HvRTANi1bsYLe16QeRnx8iNkiTevyzI9fEjA8b5QeGYtIdM1GbI5wr4+hi/Keyj
+         2iZu1umLxJx+cXQ55F/Bmm2r7ALCuowRI7rjw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738254561; x=1738859361;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PaELnFzz9aRPiHl2MvgwZe5wGfHA1Rh3SyrWRVQiS98=;
+        b=l+yu/MNjE7tdM01frwW/0+qt4TZ+iQUD33T5TC4bqL5h0SPYAk19sm5ZpOsHUiQhDA
+         Ojyq6leKrzEDhkf4XFZNwajqbhjR3jd13OMKifzL0tUbVu7D2oDiVY8NLnMAo1ke14BJ
+         8VueZVaXtOVgzzKMFdvvDwy8SaGqL+JZ4THBqxzZmxLWqpY1AbIJfa2pkabHl0Ra9++f
+         Pi5F0avQAWzZXVKzsadgWwTD5qxR4xseyCxZN8TlrRGQm7dnLwqExievD6i3u+gGrA78
+         2eo3extToDfmaTYL3HsrwGGgk+uX/9qzw8TbfMD5g/WraiE5lDP2fFXoaAA/jYpV/rvO
+         RMOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVR1yQVeNgSpFgC25pE3HDZEmeVXjDwy+GYoQPR77b24l86mKD5QBFRLZXt28Yg5GFBhQc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxnnVS+a+P7vwPE6FTef+4e4ZPNmbcGwq9agB3qgCsfVHg0DIZE
+	/VyArUxsbbefBoy/JRKFT/TUaDqhGwFFdi5/+kb5dTiAcg0YqCyoC3jc1quXjUY=
+X-Gm-Gg: ASbGncsAIs4/76Xrh01uW38xF2I5G4/1GzlipxzuvUGe93bc5WomuPoD2wzRgVDxmyt
+	XfpWipckSYTFM3Cqc8hFfb5VT4QGr+bUpI8b2hKV4Rna+7C/h3BY/LrkKRXLizFjQEzuDyYcbC9
+	x6AT2SUH4WnoX1JhlO79yeddbR9pO6AOR62N13LM6dgR7oyZJoTH6seU7VyVOJiwkLuQLQbCol7
+	a+IC61vXI8ebRm2HwstIy8YIfktPWFNfUgCMkmXWYdMqXdlQ2mMbHM4EBoaAyhrXMaWVJrBtIKZ
+	/uOt8DaRa4XMRDGJUImd
+X-Google-Smtp-Source: AGHT+IFMhjJxwdWrG2OptdCx16imUHT/yVI/4gwEFDkVKpzed2hScRedqGpI22WePJd4xDb4S84Whg==
+X-Received: by 2002:a05:622a:114d:b0:46c:791f:bf3e with SMTP id d75a77b69052e-46fd0ba20c4mr121048431cf.48.1738254561168;
+        Thu, 30 Jan 2025 08:29:21 -0800 (PST)
+Received: from LQ3V64L9R2 ([208.64.28.18])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-46fdf0e0d5fsm8544561cf.44.2025.01.30.08.29.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jan 2025 08:29:20 -0800 (PST)
+Date: Thu, 30 Jan 2025 11:29:18 -0500
+From: Joe Damato <jdamato@fastly.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, sridhar.samudrala@intel.com,
+	Shuah Khan <shuah@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>
+Subject: Re: [RFC net-next 2/2] selftests: drv-net: Test queue xsk attribute
+Message-ID: <Z5uo3ugZB13k1aKW@LQ3V64L9R2>
+Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
+	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+	sridhar.samudrala@intel.com, Shuah Khan <shuah@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>
+References: <20250129172431.65773-1-jdamato@fastly.com>
+ <20250129172431.65773-3-jdamato@fastly.com>
+ <20250129180751.6d30c8c4@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <AM6PR03MB50802EA81C89D22791CCF09099EC2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+In-Reply-To: <20250129180751.6d30c8c4@kernel.org>
 
-On Mon, Jan 27, 2025 at 11:46:50PM +0000, Juntong Deng wrote:
-> This patch adds the open-coded iterator style process file iterator
-> kfuncs bpf_iter_task_file_{new,next,destroy} that iterates over all
-> files opened by the specified process.
+On Wed, Jan 29, 2025 at 06:07:51PM -0800, Jakub Kicinski wrote:
+> On Wed, 29 Jan 2025 17:24:25 +0000 Joe Damato wrote:
+> > Test that queues which are used for AF_XDP have the xsk attribute set.
 > 
-> bpf_iter_task_file_next returns a pointer to bpf_iter_task_file_item,
-> which currently contains *task, *file, fd. This is an extensible
-> structure that enables compatibility with different versions
-> through CO-RE.
+> > diff --git a/tools/testing/selftests/drivers/.gitignore b/tools/testing/selftests/drivers/.gitignore
+> > index 09e23b5afa96..3c109144f7ff 100644
+> > --- a/tools/testing/selftests/drivers/.gitignore
+> > +++ b/tools/testing/selftests/drivers/.gitignore
+> > @@ -1,3 +1,4 @@
+> >  # SPDX-License-Identifier: GPL-2.0-only
+> >  /dma-buf/udmabuf
+> >  /s390x/uvdevice/test_uvdevice
+> > +/net/xdp_helper
 > 
-> The reference to struct file acquired by the previous
-> bpf_iter_task_file_next() is released in the next
-> bpf_iter_task_file_next(), and the last reference is released in the
-> last bpf_iter_task_file_next() that returns NULL.
+> Let's create our own gitignore, under drivers/net
+> we'll get conflicts with random trees if we add to the shared one
+
+OK, SGTM.
+
+> >  def sys_get_queues(ifname, qtype='rx') -> int:
+> >      folders = glob.glob(f'/sys/class/net/{ifname}/queues/{qtype}-*')
+> > @@ -21,6 +24,31 @@ def nl_get_queues(cfg, nl, qtype='rx'):
+> >          return len([q for q in queues if q['type'] == qtype])
+> >      return None
+> >  
+> > +def check_xdp(cfg, nl, xdp_queue_id=0) -> None:
+> > +    test_dir = os.path.dirname(os.path.realpath(__file__))
+> > +    xdp = subprocess.Popen([f"{test_dir}/xdp_helper", f"{cfg.ifindex}", f"{xdp_queue_id}"],
+> > +                           stdin=subprocess.PIPE, stdout=subprocess.PIPE, bufsize=1,
+> > +                           text=True)
 > 
-> In the bpf_iter_task_file_destroy(), if the iterator does not iterate to
-> the end, then the last struct file reference is released at this time.
+> add:
+> 	defer(xdp.kill)
 > 
-> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
-> ---
+> here, to make sure test cleanup will always try to kill the process,
+> then you can remove the xdp.kill() at the end
 
-I deeply dislike that this allows bpf programs to iterate through
-another tasks files more than what is already possible with the
-task_file_seq_* bpf api.
+OK, will do.
 
-This here means that bpf programs have access to all file types that
-exist in the kernel. From general simple filesystem files to pidfds, kvm
-fd, epoll fd, drm fds - anything you can think of. And then do arbitrary
-and ever expanding stuff with those files from the iterator with less
-restrictions (if I'm reading this right) than the task_file_seq_*
-iterator.
-
-Possibly even keeping that reference for a long time leading to weird
-EBUSY issues for filesystem shutdown and similar problems.
-
-This is a bad idea. Even in the kernel we only allow this type of
-iteration for procfs and procfs-like usage and there we hold references
-to files from another task for a very short time when we e.g., access
-/proc/<PID>/fd/.
-
-And you already have an iterator for that with task_file_seq_get_*()
-even if it is more work.
-
-I'm also not at all swayed by the fact that this is coming out of an
-effort to move CRIU into bpf just to make things easier. Not a selling
-point as we do have CRIU and I don't think we need to now put more CRIU
-related stuff into the kernel.
-
-So this will not get an ACK from me. I'm putting Al and Linus here as
-well as they might have opinions on this and might disagree with me.
-
->  kernel/bpf/helpers.c   |  3 ++
->  kernel/bpf/task_iter.c | 90 ++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 93 insertions(+)
+> > +    stdout, stderr = xdp.communicate(timeout=10)
+> > +    rx = tx = False
+> > +
+> > +    queues = nl.queue_get({'ifindex': cfg.ifindex}, dump=True)
+> > +    if queues:
 > 
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index f27ce162427a..359c5bbf4814 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -3157,6 +3157,9 @@ BTF_ID_FLAGS(func, bpf_iter_css_destroy, KF_ITER_DESTROY)
->  BTF_ID_FLAGS(func, bpf_iter_task_new, KF_ITER_NEW | KF_TRUSTED_ARGS | KF_RCU_PROTECTED)
->  BTF_ID_FLAGS(func, bpf_iter_task_next, KF_ITER_NEXT | KF_RET_NULL)
->  BTF_ID_FLAGS(func, bpf_iter_task_destroy, KF_ITER_DESTROY)
-> +BTF_ID_FLAGS(func, bpf_iter_task_file_new, KF_ITER_NEW | KF_TRUSTED_ARGS)
-> +BTF_ID_FLAGS(func, bpf_iter_task_file_next, KF_ITER_NEXT | KF_RET_NULL)
-> +BTF_ID_FLAGS(func, bpf_iter_task_file_destroy, KF_ITER_DESTROY)
->  BTF_ID_FLAGS(func, bpf_dynptr_adjust)
->  BTF_ID_FLAGS(func, bpf_dynptr_is_null)
->  BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
-> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> index 98d9b4c0daff..24a5af67e6c8 100644
-> --- a/kernel/bpf/task_iter.c
-> +++ b/kernel/bpf/task_iter.c
-> @@ -1027,6 +1027,96 @@ __bpf_kfunc void bpf_iter_task_destroy(struct bpf_iter_task *it)
->  {
->  }
->  
-> +struct bpf_iter_task_file_item {
-> +	struct task_struct *task;
-> +	struct file *file;
-> +	unsigned int fd;
-> +};
-> +
-> +struct bpf_iter_task_file {
-> +	__u64 __opaque[4];
-> +} __aligned(8);
-> +
-> +struct bpf_iter_task_file_kern {
-> +	struct bpf_iter_task_file_item item;
-> +	unsigned int next_fd;
-> +} __aligned(8);
-> +
-> +/**
-> + * bpf_iter_task_file_new() - Initialize a new task file iterator for a task,
-> + * used to iterate over all files opened by a specified task
-> + *
-> + * @it: the new bpf_iter_task_file to be created
-> + * @task: a pointer pointing to the task to be iterated over
-> + */
-> +__bpf_kfunc int bpf_iter_task_file_new(struct bpf_iter_task_file *it, struct task_struct *task)
-> +{
-> +	struct bpf_iter_task_file_kern *kit = (void *)it;
-> +	struct bpf_iter_task_file_item *item = &kit->item;
-> +
-> +	BUILD_BUG_ON(sizeof(struct bpf_iter_task_file_kern) > sizeof(struct bpf_iter_task_file));
-> +	BUILD_BUG_ON(__alignof__(struct bpf_iter_task_file_kern) !=
-> +		     __alignof__(struct bpf_iter_task_file));
-> +
-> +	item->task = get_task_struct(task);
-> +	item->file = NULL;
-> +	item->fd = 0;
-> +	kit->next_fd = 0;
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * bpf_iter_task_file_next() - Get the next file in bpf_iter_task_file
-> + *
-> + * bpf_iter_task_file_next acquires a reference to the struct file.
-> + *
-> + * The reference to struct file acquired by the previous
-> + * bpf_iter_task_file_next() is released in the next bpf_iter_task_file_next(),
-> + * and the last reference is released in the last bpf_iter_task_file_next()
-> + * that returns NULL.
-> + *
-> + * @it: the bpf_iter_task_file to be checked
-> + *
-> + * @returns a pointer to bpf_iter_task_file_item
-> + */
-> +__bpf_kfunc struct bpf_iter_task_file_item *bpf_iter_task_file_next(struct bpf_iter_task_file *it)
-> +{
-> +	struct bpf_iter_task_file_kern *kit = (void *)it;
-> +	struct bpf_iter_task_file_item *item = &kit->item;
-> +
-> +	if (item->file)
-> +		fput(item->file);
-> +
-> +	item->file = fget_task_next(item->task, &kit->next_fd);
-> +	if (!item->file)
-> +		return NULL;
-> +
-> +	item->fd = kit->next_fd;
-> +	kit->next_fd++;
-> +
-> +	return item;
-> +}
-> +
-> +/**
-> + * bpf_iter_task_file_destroy() - Destroy a bpf_iter_task_file
-> + *
-> + * If the iterator does not iterate to the end, then the last
-> + * struct file reference is released at this time.
-> + *
-> + * @it: the bpf_iter_task_file to be destroyed
-> + */
-> +__bpf_kfunc void bpf_iter_task_file_destroy(struct bpf_iter_task_file *it)
-> +{
-> +	struct bpf_iter_task_file_kern *kit = (void *)it;
-> +	struct bpf_iter_task_file_item *item = &kit->item;
-> +
-> +	if (item->file)
-> +		fput(item->file);
-> +
-> +	put_task_struct(item->task);
-> +}
-> +
->  __bpf_kfunc_end_defs();
->  
->  DEFINE_PER_CPU(struct mmap_unlock_irq_work, mmap_unlock_work);
-> -- 
-> 2.39.5
+> if not queues:
+> 	raise KsftSkipEx("Netlink reports no queues")
 > 
+> That said only reason I can think of for no queues to be reported would
+> be that the device is down, which is very weird and we could as well
+> crash. So maybe the check for queues is not necessary ?
+
+I kind of feel like raising is slightly more verbose, which I tend
+to slightly prefer over just a crash that might leave a future
+person confused.
+
+I'll go with the raise as you suggested instead.
 
