@@ -1,161 +1,160 @@
-Return-Path: <bpf+bounces-50175-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50176-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18467A23746
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 23:34:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0F9DA23760
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 23:49:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 965D63A03EC
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 22:34:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA30F1672B2
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 22:49:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 881D41F12F5;
-	Thu, 30 Jan 2025 22:34:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBE771BC9F4;
+	Thu, 30 Jan 2025 22:48:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="4u2cZ8hj";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="w0qeQ0xh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XkKBaZUx"
 X-Original-To: bpf@vger.kernel.org
-Received: from flow-b6-smtp.messagingengine.com (flow-b6-smtp.messagingengine.com [202.12.124.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADFDE1465AB;
-	Thu, 30 Jan 2025 22:34:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 177141B4156
+	for <bpf@vger.kernel.org>; Thu, 30 Jan 2025 22:48:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738276451; cv=none; b=sz0U6XdhNvBuBivtqd44k87pgLCAEh9yC0/UFsT/v8IAUWlAJ4QdtSjuJsjGjgAuZniD0xIHNXRDtBnow4fmaXHOtNh/wpOSGC5Voslw4X5CaS2czxNzeVttApP6mN7+qBrkLH4f8VPN0JxsEFQ5/e6zKbRRrwbbSX5VSXLbTbM=
+	t=1738277337; cv=none; b=agacxVpA47+0yQh+sIYk3E3osHf1f6TmHv9hZ7Ywy6dFo9UxGK3kJLgvbsOvMy2i/Skwkbxz07ZjUnq22AENgmINDJ1IFpHTKGn8Ei/LOxq7Pxfwnj/5D7BDV6dPk8DCrvY7ymVadNlGKv468l4hbNhs7Wo34hD574dth3RJJNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738276451; c=relaxed/simple;
-	bh=SBI0Gy9KUpzrrtm5Bgw3GKLY1+5MIQEuxMKqii/TIcc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tqnwubWVMoPPmTe0onB4Xp46RTabhzIrPce/V4/1tAwBEPVd1ibaLgiio9JkkBzagGmVInI4xxdJqDsiJN8FiVX1sLruBdQvErXQaI81B2iRhFGZ0f3XVaKPpHC6A5oxyK27LgAZLgGqCzYSae1Cmh/iG2zN2PWVIIyhmEbutJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=4u2cZ8hj; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=w0qeQ0xh; arc=none smtp.client-ip=202.12.124.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
-	by mailflow.stl.internal (Postfix) with ESMTP id 2238F1D40D4D;
-	Thu, 30 Jan 2025 17:34:07 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-02.internal (MEProxy); Thu, 30 Jan 2025 17:34:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm2; t=1738276446; x=1738283646; bh=pYA5QQ2gujW7NKTZMydkI
-	F3TfLqgo5o+zoRfFMxUleo=; b=4u2cZ8hjS0JGuwpIDpefzkUA+sq9dWUSJfY3B
-	tkR7nGgog15o18cS3pO7A1AV5ePNoj0UN2RjHYucnx2lWZnwFUAHVwrVk/68ZKcH
-	yrtLGStZlcOfw8VUM9LWzs1ZUpCIwHppZjj9yTkrTT5myEf92e/tOW/oEwmBBsgj
-	59ZdRwNjdb8ciCYRI2gGfxyhaDMpAzIkyN8uBLlc6GcIdakdbmjyWCErd7fp9dpV
-	VmSOXFBWxMUrgdLSGPjAnSMJKjNMsEVouta5hLe5or7BOYLuIYZsRbxq22ezX2mu
-	qPAyrf9MGxULk4AffQShCdwc6Aojklv7xO7xc0wV1UeLOix+g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1738276446; x=1738283646; bh=pYA5QQ2gujW7NKTZMydkIF3TfLqgo5o+zoR
-	fFMxUleo=; b=w0qeQ0xhO7gK8Gk7umXljf1tPU2Qoq9VrZDo2B0TulUXub0XOCz
-	go4Kr+mkC8/oSPFcySFSwka8oUucp/LO0gEonRTM5lAWmOQ6KRdic0TBM+nMlwt/
-	0kg/rL85KM++S//Y5AkCJYnGOVfAaWWJMi4khKAplp9h5Emsnp/QdP71YqJ8mcRy
-	A7MuXGBxHibUWIYBzBCPmci+RhyyRdLMwx5/oJvtfHA8pdljwy4+Tg3zkt1l99vl
-	yRHwPqJevPaPzI+qiLRLR8Tc5DakjPiSKJEdyvIbrO5Ge1VyjVfJ9tQM+1BiJsFJ
-	c37M/j7kKjdFiCrEMtIQPJQinvWij201wfA==
-X-ME-Sender: <xms:Xv6bZ0p9k0Gj5MNxpb2Y_5wOp-e5GdhxEP-Pk0gsQRDROrMBTzMFpw>
-    <xme:Xv6bZ6rwimJfJ_hrE30_abgkMw4BTaujkQ-2kbKz9RHJD48i-l2fQ0MzisK8ip2gM
-    MvWRI4GxEWbsbS93A>
-X-ME-Received: <xmr:Xv6bZ5OMeQnpb2VpefvnX6-j8DNGTwMVpyOMOrTxlOELJe5g7qYfFL9cbCsf_E9s1HFv985gsG8Jpt5VTW3Vcy-GwNTq4yHs1PAp44VNArQgP1YjCLhF>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdejtdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlje
-    dtmdenucfjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghn
-    ihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepvd
-    eggfetgfelhefhueefkeduvdfguedvhfegleejudduffffgfetueduieeikeejnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguh
-    huuhdrgiihiidpnhgspghrtghpthhtohepvddvpdhmohguvgepshhmthhpohhuthdprhgt
-    phhtthhopehshhhurghhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhgurhhiih
-    eskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepvgguugihiiekjeesghhmrghilhdrtgho
-    mhdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehnrghthh
-    grnheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlsehiohhgvggrrhgs
-    ohigrdhnvghtpdhrtghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghvpd
-    hrtghpthhtohepshhonhhgsehkvghrnhgvlhdrohhrghdprhgtphhtthhopeihohhnghhh
-    ohhnghdrshhonhhgsehlihhnuhigrdguvghv
-X-ME-Proxy: <xmx:Xv6bZ75YdJMsDtWl2x4mtYZrzhoo8sDlVNvgLzUw8esaJfEc1_xyrw>
-    <xmx:Xv6bZz5BsB9hFnvDXetb0uoN5jRlPto2Rm3_UmhAlt-OQqiaCsCqrQ>
-    <xmx:Xv6bZ7gXuEIefgA9NZJZGZS9_EN_eiFm3oIa9Gc1h3vtXIiydB9RvA>
-    <xmx:Xv6bZ9767q2HgJpX4o3JCuNmZsaiZV3ECAaRhMKPCHs3reMT3QPnWg>
-    <xmx:Xv6bZ9vwx9199PgLQiqGuO7gd6Dh9AUHuyDb3vRPc2c_ZbSJtJNFvsNs>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 30 Jan 2025 17:34:00 -0500 (EST)
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: shuah@kernel.org,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	ast@kernel.org,
-	nathan@kernel.org,
-	daniel@iogearbox.net
-Cc: martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mykolal@fb.com,
-	ndesaulniers@google.com,
-	morbo@google.com,
-	justinstitt@google.com,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH] selftests: bpf: Support dynamic linking LLVM if static not available
-Date: Thu, 30 Jan 2025 15:33:45 -0700
-Message-ID: <872b64e93de9a6cd6a7a10e6a5c5e7893704f743.1738276344.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.47.1
+	s=arc-20240116; t=1738277337; c=relaxed/simple;
+	bh=iveAOxx7F7q5CjEqukAcJIkEKzzMfWgyHu9hnhbf7JI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=bsRpsuSxdnooGhit1Yfc7+pE/Rw0kC+KIvFp5MFrHNqEun5/n+pQgqwPX6XHOZ1OUPsqk3YncRNH1N4GPnvPTTJ4tThRYvmlXteIOJt2bAIz8teTawzHOdLRa/P1psefRxef3YUU3Ta31o8KaCXQILODYk/eG1V+wVwjECuZfeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XkKBaZUx; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2eec9b3a1bbso1841035a91.3
+        for <bpf@vger.kernel.org>; Thu, 30 Jan 2025 14:48:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738277334; x=1738882134; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=LZ6xl2HIYNRJ4FHQ+tVQ7Y8ejHjKn5fNAcerWncwMG0=;
+        b=XkKBaZUxmseO9q04aJdoWtc4g90bxxHM0GrR03TOXr56/+iWhDICZqyuTR2nM2PYxM
+         9R6piuIY3Kavi1F96GpRezngvayQx3VXZpGT1mliM6M6wTIX9qLCrSDP2CmpQ4ctE9wK
+         aG4NiAvAxfPz4a1yiQVnQ+NAHlQqyDWmUZErvLntecyvxFWokBVMrqd8BUiyDHYIf2d3
+         eisB6SHc1TDD/9FCpOCmfifUrKZdiheG8JfA0pnrNJh/qlz2QUHxtoz5ySGdOuIbS7HP
+         MHObEaRP/aqvscF6FC+6Av8NGZHRXuunCz/b+8S39myfyghiQ2KR0sxcZa1rP9N8n6Ci
+         jaAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738277334; x=1738882134;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LZ6xl2HIYNRJ4FHQ+tVQ7Y8ejHjKn5fNAcerWncwMG0=;
+        b=HCqFmeJr0TEnQE+nLo8Y8tqhEVZkzmnXobyzXnANYrsL5/oK/0g/86/AtRpS7cmXKt
+         DeEnorEkWyqCnXEu+cQkUblm5qoaa0aFnq59f3k2eOk6dC9yuFigkGZX6nJi7fQ2Egv9
+         i93MoL30nP15VCByS2eKZCz80ZEP1Xcr47HfC1Lh1JjIxmNa5EGkf8dvfFQT4hoT7a0W
+         GWCeLjFzFFmxYjKTOveLjwFUI3QbVDDnvqAIcVchDgcbOYaqaDFv5CbIFVQncf/5p+OV
+         1mLwztBU5depD4CR5/seFvls4BLUSF4hCwH9SLNYNDu2Djo25TEghT0hHPzRVh51gZXc
+         CVgw==
+X-Forwarded-Encrypted: i=1; AJvYcCUqynD40Dn1Vpu5VSbwCOQYGztoQZhDo7wNX27ezOipAC/a34fFdoOE009j8CwFY6oq4N8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzQEqYsgz3CqsEY9arLDQUqQfFE47wh6SHE9L/4M/V3PhaJEYZ5
+	uKuTG02H2XqRsmRGpohTGjNKTbQNrly+J7/xfMD16gO0VFJtnjri
+X-Gm-Gg: ASbGncvw0dzdUMpJHbjJ8y3WW8SyyKX1WHNID8VVV2catIzvp7mwIzrbjaa6TMrg17Z
+	RKJqN7xg5rjKp+wP98zQAIABi02W9vERvwNpnDjeQQRp/rIQzw3/wBpJ3LIvq/V/PfL92u/2oXH
+	I42s+/0SVjSJm8vVfAlDlUI/LVyYODbgd131/5Sfr3nNGLub4ss01adQhoAkHzTx8S0R5F08p/f
+	td2B6YuuTskd3x8N21lQUXjbIngKNAPGtJj29ATR4++ZDYUhQWAIlB+QHTJE+M9cEkkA94SNWgd
+	09GQaxq4U65F
+X-Google-Smtp-Source: AGHT+IFtG4NbvcEozNTQOCDE/aobKjgKK9QIrwiA9UsVpB2ttJJu3m9YHE1rA6s4Oy7JUVA382mkew==
+X-Received: by 2002:a17:90b:2dca:b0:2ee:b666:d14a with SMTP id 98e67ed59e1d1-2f83ac00cf5mr14593491a91.17.1738277334259;
+        Thu, 30 Jan 2025 14:48:54 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21de32ea7cbsm18940065ad.151.2025.01.30.14.48.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jan 2025 14:48:53 -0800 (PST)
+Message-ID: <1622c76ba2b780105de3c25502357a527b18b4d8.camel@gmail.com>
+Subject: Re: [PATCH v0 3/3] selftests/bpf: Extend tests with more coverage
+ for sign extension
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Dimitar Kanaliev <dimitar.kanaliev@siteground.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>,  John Fastabend <john.fastabend@gmail.com>, Andrii
+ Nakryiko <andrii@kernel.org>, Martin KaFai Lau	 <martin.lau@linux.dev>,
+ Song Liu <song@kernel.org>, KP Singh <kpsingh@kernel.org>,  Stanislav
+ Fomichev	 <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>,  Mykola Lysenko	 <mykolal@fb.com>, Yonghong Song
+ <yonghong.song@linux.dev>, Shung-Hsi Yu	 <shung-hsi.yu@suse.com>
+Date: Thu, 30 Jan 2025 14:48:48 -0800
+In-Reply-To: <20250130112342.69843-4-dimitar.kanaliev@siteground.com>
+References: <20250130112342.69843-1-dimitar.kanaliev@siteground.com>
+	 <20250130112342.69843-4-dimitar.kanaliev@siteground.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Since 67ab80a01886 ("selftests/bpf: Prefer static linking for LLVM
-libraries"), only statically linking test_progs is supported. However,
-some distros only provide a dynamically linkable LLVM.
+On Thu, 2025-01-30 at 13:23 +0200, Dimitar Kanaliev wrote:
+> This commit adds a few more tests related to tnum_scast that explicitly
+> check cases with known / unknown sign bit, as well as values that cross
+> zero (going from negative to positive).
+>=20
+> Signed-off-by: Dimitar Kanaliev <dimitar.kanaliev@siteground.com>
+> ---
+>  .../selftests/bpf/progs/verifier_movsx.c      | 73 +++++++++++++++++++
+>  1 file changed, 73 insertions(+)
+>=20
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_movsx.c b/tools/t=
+esting/selftests/bpf/progs/verifier_movsx.c
+> index 994bbc346d25..20abeec09dee 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_movsx.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_movsx.c
+> @@ -327,6 +327,79 @@ label_%=3D: 	                                       =
+ \
+>  	: __clobber_all);
+>  }
+> =20
+> +SEC("socket")
+> +__description("MOV64SX, S8, unknown value")
+> +__success __success_unpriv __retval(1)
 
-This commit adds a fallback for dynamically linking LLVM if static
-linking is not available. If both options are available, static linking
-is chosen.
+Note: __retval() annotation is needed when one wants to execute the
+      test using libbpf's bpf_prog_test_run_opts().
+      The changes for register range tracking should not affect
+      runtime behaviour (unless there is a bug in and some dead code
+      elimination is done incorrectly).
+      I suggest to add __log_level(2) annotation and check verifier
+      log output using __msg() annotations to check what range is
+      inferred for specific registers.
+      As-is these new tests are passing on master as well,
+      so the feature is effectively untested.
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- tools/testing/selftests/bpf/Makefile | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+> +__naked void mov64sx_s8_unknown(void)
+> +{
+> +	asm volatile ("                                      \
+> +	call %[bpf_get_prandom_u32];                         \
+> +	r1 =3D r0;                                             \
+> +	r1 &=3D 0xFF;      			             \
+> +	r1 =3D (s8)r1;  					     \
+> +	if r1 s>=3D -128 goto l0_%=3D;                           \
+> +	r0 =3D 0;                                              \
+> +	exit;                                                \
+> +l0_%=3D:                                                       \
+> +	if r1 s<=3D 127 goto l1_%=3D;                            \
+> +	r0 =3D 0;                                              \
+> +	exit;                                                \
+> +l1_%=3D:                                                       \
+> +	r0 =3D 1;                                              \
+> +	exit;                                                \
+> +"	:
+> +	: __imm(bpf_get_prandom_u32)
+> +	: __clobber_all);
+> +}
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 6722080b2107..da514030a153 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -184,9 +184,14 @@ ifeq ($(feature-llvm),1)
-   LLVM_CONFIG_LIB_COMPONENTS := mcdisassembler all-targets
-   # both llvm-config and lib.mk add -D_GNU_SOURCE, which ends up as conflict
-   LLVM_CFLAGS  += $(filter-out -D_GNU_SOURCE,$(shell $(LLVM_CONFIG) --cflags))
--  LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --link-static --libs $(LLVM_CONFIG_LIB_COMPONENTS))
--  LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --link-static --system-libs $(LLVM_CONFIG_LIB_COMPONENTS))
--  LLVM_LDLIBS  += -lstdc++
-+  # Prefer linking statically if it's available, otherwise fallback to shared
-+  ifeq ($(shell $(LLVM_CONFIG) --link-static --libs &> /dev/null && echo static),static)
-+    LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --link-static --libs $(LLVM_CONFIG_LIB_COMPONENTS))
-+    LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --link-static --system-libs $(LLVM_CONFIG_LIB_COMPONENTS))
-+    LLVM_LDLIBS  += -lstdc++
-+  else
-+    LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --link-shared --libs $(LLVM_CONFIG_LIB_COMPONENTS))
-+  endif
-   LLVM_LDFLAGS += $(shell $(LLVM_CONFIG) --ldflags)
- endif
- 
--- 
-2.47.1
+[...]
 
 
