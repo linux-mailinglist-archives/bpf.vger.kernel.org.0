@@ -1,171 +1,411 @@
-Return-Path: <bpf+bounces-50076-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50077-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0639FA22718
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 01:03:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10996A22727
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 01:20:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA4D83A6E45
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 00:03:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EF027A2D3C
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 00:19:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E2752F5B;
-	Thu, 30 Jan 2025 00:03:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 460A979CF;
+	Thu, 30 Jan 2025 00:20:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YPvEluGN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PjvzBCi4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E668C256D
-	for <bpf@vger.kernel.org>; Thu, 30 Jan 2025 00:03:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 382B9256D
+	for <bpf@vger.kernel.org>; Thu, 30 Jan 2025 00:19:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738195391; cv=none; b=sOi0MkpxZW0QAcxc6BAaSJrd1uBkTX6DgHioQFZ/ToOIvpN46AwNQPgs4df52sD8FYtzUGI8BgajdVfCpM8rvvGukMckCccSFxNsIBT6ebgq48sFjkB2KnU3asdwXqhNJ7KGp7QtsE9iywwPy6OKs3KAh2q6gJsZchwWpzwSDLU=
+	t=1738196400; cv=none; b=OEMWmiT11+TZYS/NwXF8yeefmagXF3lbUDP2ys2B4gTVK97yZKUnAob/Hzyn67kfx8pOAoXDuKAbDjNBpf+sa2oa5HqzMThZ+ztMwN2gk3xoRW1CWwam6N58Mc5gsj6i5nuPPm1TVh1nQH7TVoL+kzsxgrR99qJUwRlVfFM1bD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738195391; c=relaxed/simple;
-	bh=Sj+Xftkj+qlU0BJkHbd30+qFOwtKIfmhoQgIOQHpgUI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XapVuG3GbwLAR3bqwjFgjZXiKVBdbXU6Gikm6DcIzKMdUd0kaQ9AMkgMM3kOZpQpx5yq/3En9lblrpjGCYii975VYMKcQpPxHwRcoAdVMojJQa3T3JS4AU1bS6gURCsoTnqZn1OeHAINH3JhUqKWAnzr8LIcgcMB7If+u/eFgG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YPvEluGN; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2163affd184so31275ad.1
-        for <bpf@vger.kernel.org>; Wed, 29 Jan 2025 16:03:08 -0800 (PST)
+	s=arc-20240116; t=1738196400; c=relaxed/simple;
+	bh=nE3ezhE0ORUpCvqCobzfUnHXUqFDFn51RbDdP8kbTTI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mQ3X4KzaxpJUYotZtPOHzTBOgnreakbS44Ths95N/KQLH+4Emj6B8KJ/sxDLKaKS165mENQtreN//UiDNvMJWo5vp4N7IgiA9Uh1VfT5Hb9ZhMZXTSKVmv/XG32LamedVvPuYgNgGp+N8A4OAovdlfZw0gKW5xFtOa8a/w2GkQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PjvzBCi4; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2161eb94cceso2317045ad.2
+        for <bpf@vger.kernel.org>; Wed, 29 Jan 2025 16:19:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1738195388; x=1738800188; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=s/sWxNAPnxEZbenKOf7N+j5g5zHNpFBMXZn1jjqHCpE=;
-        b=YPvEluGNgyFZPEEjR70NUgr6F8+rXep+nPfIJUmbXr8s0VwoEKbQIBg5PvdfGN2Plp
-         dMxEu7Pasf3JHqG0bTQi21iiNH/4klD0turhBl4E34BpBlCuxOvacqA37hfF/eTZDQFR
-         8llJS176B7SKQd1j7kwKR57hUNB50wTzVX/nLIhPMQWJr5BiEO3fWujd64fovw4UiAq2
-         IQUKZVwe/BovKE2WvBaS7UoZcsbzXunY+GPjas4e2IWIAdBAyUymLU4ZnW20ZvIeh2lY
-         6rUqolYMD36OllrH1vj44NnnPHmPrturxiLPV8vJBrMS8loA0vsso5JvO/HaX18SlAWn
-         mz9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738195388; x=1738800188;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1738196398; x=1738801198; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=s/sWxNAPnxEZbenKOf7N+j5g5zHNpFBMXZn1jjqHCpE=;
-        b=o5MWDGdFZYTQbaIFppSz5n3/Rn9M37d1SAN2J9VwIIT2UNcKwac9XsrLgpiFU6j6Nk
-         fRaBR4sSRanm3hJkVBD0pMziTG1cqHd8JGZPONHeGstsO0G/9q26pJgaG8wdxcRWAu1Z
-         bpUJCPZbQP41ltOJrtyqj//0tuDK7QaG6yKr8PTjx4H1xYpYHbUZbEi6YLTS3MPvR/EY
-         ei0r5/ohZ2ze4MR7WYvurEhv8IVz/vMeo5hoer3WfMBMEsKQjps2CUpN4hVhKYTNv553
-         w0TJiSp9lCQTpS2bE79bdce23mlj3+empJG2qUGZ7pm/GCtt9nB3Cy3KdPCnN+MY3FjI
-         waFg==
-X-Gm-Message-State: AOJu0Yzz01Zm4O/Irx96ICupY+EyMcuFG9oOzKiUmxADtxKU5rCVTDe5
-	/k6zOeb1IrqIAqcT6tLmv3H2vGIWiotgP7wNEvuHsR81ECKy935qXha9qryMGQ==
-X-Gm-Gg: ASbGncsUAJb3YXWXnp1I2/Bo3AvO/msvLv4IjmMWszr2QtnRtR1Pmzt1j43JZIktoGe
-	Z6SAnJoj3O8WWDL8peWwdAG1IvShosdeeCCAJiBmV9l9KRpQtdLEktjBvW0SQ2vWBuuqB/bR8MC
-	ik7wzjcoxcf2CMlA+GI84wskdJrqyuSabfMf10uh4fxDKK+ihNYZjnEP1/WIKdCiuZEsD2Dtzvb
-	J3qdRtFHBNbx9WAhjC9a2fkztUlVArPEX1vfxRcxBM6xLA4+FRxKQawjX+qSnJwedcr8IPh6Ew1
-	njcyOYVF+AEYXaTwN0nWwhITGPlmfAhxKZ7bQJdaaj+O9WQ+plA=
-X-Google-Smtp-Source: AGHT+IE/F0VzN3ET6T5NQ93cCyrPvlKbgWQX6l9EQyxxToYjZ5gVa1o2Iroc9xQVHfCVOmJeGyKC/g==
-X-Received: by 2002:a17:902:7447:b0:21a:5501:9d3 with SMTP id d9443c01a7336-21de36ce371mr481865ad.21.1738195387986;
-        Wed, 29 Jan 2025 16:03:07 -0800 (PST)
-Received: from google.com (55.131.16.34.bc.googleusercontent.com. [34.16.131.55])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f83bccc8a5sm2405786a91.17.2025.01.29.16.03.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jan 2025 16:03:07 -0800 (PST)
-Date: Thu, 30 Jan 2025 00:03:03 +0000
-From: Peilin Ye <yepeilin@google.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org, bpf@ietf.org,
-	Xu Kuohai <xukuohai@huaweicloud.com>,
-	David Vernet <void@manifault.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Quentin Monnet <qmo@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>,
-	Neel Natu <neelnatu@google.com>,
-	Benjamin Segall <bsegall@google.com>, linux-kernel@vger.kernel.org,
-	Ihor Solodrai <ihor.solodrai@linux.dev>
-Subject: Re: [PATCH bpf-next v1 7/8] selftests/bpf: Add selftests for
- load-acquire and store-release instructions
-Message-ID: <Z5rBtxNnGHjJaZEt@google.com>
-References: <cover.1737763916.git.yepeilin@google.com>
- <3f2de7c6e5d2def7bdfb091347c1dacea0915974.1737763916.git.yepeilin@google.com>
- <131a817f7f2749e78e527a251ca7971588cf62f8.camel@gmail.com>
+        bh=6AMh6nFsScnlaxd8YC2LQqnUdnaSzHiT4jf6slLXshc=;
+        b=PjvzBCi4kntnDb4IQXkMZbcXQFTcRDku6KYTEb/0hoHWAm82zEVqbWXajtMSTSxmjp
+         LOfHvDxL0Fibliveu5H7du4HZTOmPmUOdYHE0xw0z0ubqE0BTf9cPR163Zfms7cc75Lg
+         54MWk5RUPr5tjuDg0gTyi7oVZGLophHVAFDPEwgYa0ZJjZYCrS4whyaXDmArVJCpjVky
+         wPbN55yu2C8DzkD0tIEMLi5vcRWnmSA3NuXsyA8SOImQEvG0zTgHWLKkYDAkq7rk3oSP
+         7x9QuMIYtNNnVn/UnTKyhyKMMCdxoX7M1Uulg24ZCxSLVAoIP/dnlhWGM/LuIepC6LJO
+         OA/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738196398; x=1738801198;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6AMh6nFsScnlaxd8YC2LQqnUdnaSzHiT4jf6slLXshc=;
+        b=qX4b1vm8qM56cD6cLiRDpJKPZ01LKdV37+wckS1+iREq8IyEIrieh+Yq3yf32lT2oE
+         ru961lyXb5uQ96/i+/TpppXVLAEITvD7BbLmHLA7Q5DOecBm51o0UYFKkgNZz+gtIdUl
+         O/sXLSnugFQG/1+zIayOj3ivVNRueOmwMAJ9Y1n25AOX+YUOdbLzTHpOvB89xNE/COYu
+         EkzBkpaL2P/uIWlaMsb6ywn02QiP/R/+0xcnS2Vtt5Te5J3pfic53cwUcyasRuF5uTBT
+         BJdx9ge8K05CXbcO5AVU3wgK6Uz8KN908Qjgukb+SrL5DeFeBxnjTH81evibfnztV9DK
+         kCWA==
+X-Gm-Message-State: AOJu0YxMgKByZDT0wwkgySSoITI04c7lXlPXgT1hV2ImhLk46f0CsXIY
+	UD1iqK476PZY2/tmPVdtDMHvUCvE3I40nGk42XZW6KSowwz1ZG6uBR3V6HruVoNE1Tmb6lhvjtI
+	E/pKKxop5a37N5+4uhPxRFtBrfkM=
+X-Gm-Gg: ASbGncsz6n71ikUJilR+61RTq7mmGyrLorwtl5QQxRkTrT2K45eeXB4jFoQ81iiEdBV
+	1J/uMHZGkgDZ9j4N89LXkWdvdegqwpp0dXfV1FJ6Lny0Sl9FhRmmHfPL+oiJC+Y91cHp9F1eAel
+	mzfKHZrQEcbpqn
+X-Google-Smtp-Source: AGHT+IEWbSlMkZ5Mw89iU2qXlIjzZXpHahbdfaQoRbtPhTaFUQtOSWvv+SrxUpHVnmQ3LYEDqKbO08pevESaNYb+5/8=
+X-Received: by 2002:a05:6a20:c91c:b0:1e1:f281:8d07 with SMTP id
+ adf61e73a8af0-1ed7a5efb7fmr7402768637.10.1738196398239; Wed, 29 Jan 2025
+ 16:19:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <131a817f7f2749e78e527a251ca7971588cf62f8.camel@gmail.com>
+References: <20250128224352.3808460-1-linux@jordanrome.com>
+In-Reply-To: <20250128224352.3808460-1-linux@jordanrome.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 29 Jan 2025 16:19:44 -0800
+X-Gm-Features: AWEUYZnKIr_x5jBe8dUdIMZTkUYqxsK0hZXP8wHi6oSpzQDU6UMn2eP25IZoNrg
+Message-ID: <CAEf4BzbpnHOULxRyWhNU30HknYmZpfAT0zdi1OekxMV4ZHydYQ@mail.gmail.com>
+Subject: Re: [bpf-next v6 1/3] mm: add copy_remote_vm_str
+To: Jordan Rome <linux@jordanrome.com>
+Cc: bpf@vger.kernel.org, linux-mm@kvack.org, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Kernel Team <kernel-team@fb.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Alexander Potapenko <glider@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 28, 2025 at 05:06:03PM -0800, Eduard Zingerman wrote:
-> On Sat, 2025-01-25 at 02:19 +0000, Peilin Ye wrote:
-> > All new tests depend on the pre-defined __BPF_FEATURE_LOAD_ACQ_STORE_REL
-> > feature macro, which implies -mcpu>=v4.
-> 
-> This restriction would mean that tests are skipped on BPF CI, as it
-> currently runs using llvm 17 and 18. Instead, I suggest using some
-> macro hiding an inline assembly as below:
-> 
-> 	asm volatile (".8byte %[insn];"
-> 	              :
-> 	              : [insn]"i"(*(long *)&(BPF_RAW_INSN(...)))
-> 	              : /* correct clobbers here */);
-> 
-> See the usage of the __imm_insn() macro in the test suite.
+On Tue, Jan 28, 2025 at 2:44=E2=80=AFPM Jordan Rome <linux@jordanrome.com> =
+wrote:
+>
+> Similar to `access_process_vm` but specific to strings.
+> Also chunks reads by page and utilizes `strscpy`
+> for handling null termination.
+>
+> Signed-off-by: Jordan Rome <linux@jordanrome.com>
+> ---
+>  include/linux/mm.h |   3 ++
+>  mm/memory.c        | 119 +++++++++++++++++++++++++++++++++++++++++++++
+>  mm/nommu.c         |  74 ++++++++++++++++++++++++++++
+>  3 files changed, 196 insertions(+)
+>
 
-I see, I'll do this in v2.
+The logic looks good, but I have a bunch of stylistic nits below. It
+would be nice for someone from mm side to take a look as well.
 
-> Also, "BPF_ATOMIC loads from R%d %s is not allowed\n" and
->       "BPF_ATOMIC stores into R%d %s is not allowed\n"
-> situations are not tested.
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index f02925447e59..f3a05b3eb2f2 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -2485,6 +2485,9 @@ extern int access_process_vm(struct task_struct *ts=
+k, unsigned long addr,
+>  extern int access_remote_vm(struct mm_struct *mm, unsigned long addr,
+>                 void *buf, int len, unsigned int gup_flags);
+>
+> +extern int copy_remote_vm_str(struct task_struct *tsk, unsigned long add=
+r,
+> +               void *buf, int len, unsigned int gup_flags);
+> +
+>  long get_user_pages_remote(struct mm_struct *mm,
+>                            unsigned long start, unsigned long nr_pages,
+>                            unsigned int gup_flags, struct page **pages,
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 398c031be9ba..7f6e74a99984 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -6714,6 +6714,125 @@ int access_process_vm(struct task_struct *tsk, un=
+signed long addr,
+>  }
+>  EXPORT_SYMBOL_GPL(access_process_vm);
+>
+> +/*
+> + * Copy a string from another process's address space as given in mm.
+> + * If there is any error return -EFAULT.
+> + */
+> +static int __copy_remote_vm_str(struct mm_struct *mm, unsigned long addr=
+,
+> +                             void *buf, int len, unsigned int gup_flags)
+> +{
+> +       void *old_buf =3D buf;
+> +       int err =3D 0;
 
-Thanks!
+empty line between variables and statements
 
-> > --- a/tools/testing/selftests/bpf/prog_tests/atomics.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/atomics.c
-> > @@ -162,6 +162,56 @@ static void test_xchg(struct atomics_lskel *skel)
-> >  	ASSERT_EQ(skel->bss->xchg32_result, 1, "xchg32_result");
-> >  }
-> 
-> Nit: Given the tests in verifier_load_acquire.c and verifier_store_release.c
->      that use __retval annotation, are these tests really necessary?
->      (assuming that verifier_store_release.c tests are modified to read
->       stored location into r0 before exit).
-> 
-> > +static void test_load_acquire(struct atomics_lskel *skel)
+> +       ((char *)buf)[0] =3D '\0';
 
-Ah, right.  I'll drop them and modify verifier_store_release.c
-accordingly.
+nit: this would be probably a bit more "canonical": *(char *)buf =3D '\0';
 
-> > --- a/tools/testing/selftests/bpf/progs/arena_atomics.c
-> > +++ b/tools/testing/selftests/bpf/progs/arena_atomics.c
-> [...]
-> 
-> > +SEC("raw_tp/sys_enter")
-> > +int load_acquire(const void *ctx)
-> > +{
-> > +	if (pid != (bpf_get_current_pid_tgid() >> 32))
-> > +		return 0;
-> 
-> Nit: This check is not needed, since bpf_prog_test_run_opts() is used
->      to run the tests.
+> +
+> +       if (mmap_read_lock_killable(mm))
+> +               return -EFAULT;
+> +
+> +       /* Untag the address before looking up the VMA */
+> +       addr =3D untagged_addr_remote(mm, addr);
+> +
+> +       /* Avoid triggering the temporary warning in __get_user_pages */
+> +       if (!vma_lookup(mm, addr)) {
+> +               err =3D -EFAULT;
+> +               goto out;
+> +       }
+> +
+> +       while (len) {
+> +               int bytes, offset, retval;
+> +               void *maddr;
+> +               struct page *page;
+> +               struct vm_area_struct *vma =3D NULL;
+> +
+> +               page =3D get_user_page_vma_remote(mm, addr, gup_flags, &v=
+ma);
+> +
+> +               if (IS_ERR(page)) {
+> +                       /*
+> +                        * Treat as a total failure for now until we deci=
+de how
+> +                        * to handle the CONFIG_HAVE_IOREMAP_PROT case an=
+d
+> +                        * stack expansion.
+> +                        */
+> +                       ((char *)buf)[0] =3D '\0';
+> +                       err =3D -EFAULT;
+> +                       goto out;
+> +               }
+> +
+> +               bytes =3D len;
+> +               offset =3D addr & (PAGE_SIZE - 1);
+> +               if (bytes > PAGE_SIZE - offset)
+> +                       bytes =3D PAGE_SIZE - offset;
+> +
+> +               maddr =3D kmap_local_page(page);
+> +               retval =3D strscpy(buf, maddr + offset, bytes);
+> +
+> +               if (retval < 0) {
+> +                       buf +=3D (bytes - 1);
 
-Got it!
+nit: unnecessary ()
 
-Thanks,
-Peilin Ye
+another nit: you could have had `addr +=3D bytes - 1;` here, to keep
+addr and buf adjustment code close
 
+
+> +                       /*
+> +                        * Because strscpy always NUL terminates we need =
+to
+> +                        * copy the last byte in the page if we are going=
+ to
+> +                        * load more pages
+> +                        */
+> +                       if (bytes !=3D len) {
+> +                               addr +=3D (bytes - 1);
+> +                               copy_from_user_page(vma, page, addr, buf,
+> +                                               maddr + (PAGE_SIZE - 1), =
+1);
+> +
+> +                               buf +=3D 1;
+> +                               addr +=3D 1;
+> +                       }
+> +                       len -=3D bytes;
+> +               }
+> +
+> +               unmap_and_put_page(page, maddr);
+> +
+> +               if (retval >=3D 0) {
+> +                       /* Found the end of the string */
+> +                       buf +=3D retval;
+> +                       goto out;
+> +               }
+
+it's not incorrect, but it would be nice not to have to re-check
+retval twice. Why not this structure:
+
+ret =3D strscpy(...)
+if (retval >=3D 0) {
+    unmap_and_put_page(page, maddr);
+    buf +=3D retval;
+    break;
+}
+
+/* this is -E2BIG case */
+
+buf +=3D bytes - 1;
+addr +=3D bytes - 1;
+
+if (bytes !=3D len) { copy, buf +=3D 1, addr +=3D 1 }
+
+unmap_and_put_page(page, maddr);
+
+
+
+Note that you don't need goto, break is fine. And yes, I don't think
+duplicating unmap_and_put_page() is a problem.
+
+
+> +       }
+> +
+> +out:
+> +       mmap_read_unlock(mm);
+> +       if (err)
+> +               return err;
+> +
+> +       return buf - old_buf;
+> +}
+> +
+> +/**
+> + * copy_remote_vm_str - copy a string from another process's address spa=
+ce.
+> + * @tsk:       the task of the target address space
+> + * @addr:      start address to read from
+> + * @buf:       destination buffer
+> + * @len:       number of bytes to copy
+> + * @gup_flags: flags modifying lookup behaviour
+> + *
+> + * The caller must hold a reference on @mm.
+> + *
+> + * Return: number of bytes copied from @addr (source) to @buf (destinati=
+on);
+> + * not including the trailing NUL. Always guaranteed to leave NUL-termin=
+ated
+> + * buffer. On any error, return -EFAULT.
+> + */
+> +int copy_remote_vm_str(struct task_struct *tsk, unsigned long addr,
+> +               void *buf, int len, unsigned int gup_flags)
+> +{
+> +       struct mm_struct *mm;
+> +       int ret;
+> +
+> +       mm =3D get_task_mm(tsk);
+> +       if (!mm) {
+> +               ((char *)buf)[0] =3D '\0';
+> +               return -EFAULT;
+> +       }
+> +
+> +       ret =3D __copy_remote_vm_str(mm, addr, buf, len, gup_flags);
+> +
+> +       mmput(mm);
+> +
+> +       return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(copy_remote_vm_str);
+> +
+>  /*
+>   * Print the name of a VMA.
+>   */
+> diff --git a/mm/nommu.c b/mm/nommu.c
+> index 9cb6e99215e2..4d83d0813eb8 100644
+> --- a/mm/nommu.c
+> +++ b/mm/nommu.c
+> @@ -1701,6 +1701,80 @@ int access_process_vm(struct task_struct *tsk, uns=
+igned long addr, void *buf, in
+>  }
+>  EXPORT_SYMBOL_GPL(access_process_vm);
+>
+> +/*
+> + * Copy a string from another process's address space as given in mm.
+> + * If there is any error return -EFAULT.
+> + */
+> +static int __copy_remote_vm_str(struct mm_struct *mm, unsigned long addr=
+,
+> +                             void *buf, int len)
+> +{
+> +       uint64_t tmp;
+
+s/uint64_t/unsigned long/
+
+also tmp -> addr_end ?
+
+> +       struct vm_area_struct *vma;
+> +
+
+nit: no empty line here, why?
+
+> +       int ret =3D -EFAULT;
+> +
+> +       ((char *)buf)[0] =3D '\0';
+> +
+> +       if (mmap_read_lock_killable(mm))
+> +               return ret;
+> +
+> +       /* the access must start within one of the target process's mappi=
+ngs */
+> +       vma =3D find_vma(mm, addr);
+> +       if (!vma)
+> +               goto out;
+> +
+> +       if (check_add_overflow(addr, len, &tmp))
+> +               goto out;
+> +       /* don't overrun this mapping */
+> +       if (tmp >=3D vma->vm_end)
+
+nit: strictly speaking only `tmp > vma->vm_end` needs special handling
+
+> +               len =3D vma->vm_end - addr;
+> +
+> +       /* only read mappings where it is permitted */
+> +       if (vma->vm_flags & VM_MAYREAD) {
+> +               ret =3D strscpy(buf, (char *)addr, len);
+> +               if (ret < 0)
+> +                       ret =3D len - 1;
+> +       }
+> +
+> +out:
+> +       mmap_read_unlock(mm);
+> +       return ret;
+> +}
+> +
+> +/**
+> + * copy_remote_vm_str - copy a string from another process's address spa=
+ce.
+> + * @tsk:       the task of the target address space
+> + * @addr:      start address to read from
+> + * @buf:       destination buffer
+> + * @len:       number of bytes to copy
+> + * @gup_flags: flags modifying lookup behaviour (unused)
+> + *
+> + * The caller must hold a reference on @mm.
+> + *
+> + * Return: number of bytes copied from @addr (source) to @buf (destinati=
+on);
+> + * not including the trailing NUL. Always guaranteed to leave NUL-termin=
+ated
+> + * buffer. On any error, return -EFAULT.
+> + */
+> +int copy_remote_vm_str(struct task_struct *tsk, unsigned long addr,
+> +               void *buf, int len, unsigned int gup_flags)
+> +{
+> +       struct mm_struct *mm;
+> +       int ret;
+> +
+> +       mm =3D get_task_mm(tsk);
+> +       if (!mm) {
+> +               ((char *)buf)[0] =3D '\0';
+> +               return -EFAULT;
+> +       }
+> +
+> +       ret =3D __copy_remote_vm_str(mm, addr, buf, len);
+> +
+> +       mmput(mm);
+> +
+> +       return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(copy_remote_vm_str);
+> +
+>  /**
+>   * nommu_shrink_inode_mappings - Shrink the shared mappings on an inode
+>   * @inode: The inode to check
+> --
+> 2.43.5
+>
 
