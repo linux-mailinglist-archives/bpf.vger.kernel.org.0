@@ -1,161 +1,197 @@
-Return-Path: <bpf+bounces-50085-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50086-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF6EEA2274E
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 01:48:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C74DAA22756
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 01:51:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF9E518873F4
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 00:48:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DCE6164434
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 00:51:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DF979475;
-	Thu, 30 Jan 2025 00:48:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E7E61F16B;
+	Thu, 30 Jan 2025 00:51:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E1SjEEfh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="buuoEBfU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B11067464
-	for <bpf@vger.kernel.org>; Thu, 30 Jan 2025 00:48:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A88688BEC;
+	Thu, 30 Jan 2025 00:51:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738198110; cv=none; b=SHliDeWsBophAvXEQodcuhtT81ULphZUd4HAOeyNJRn85XX/rh2kK5SESPzsgicnhK8I3MtgspqcIC7YQqWb4fqxMkkybHHq15u+0GzmMw72xJR/+Bfkn6MGO9B5Bveee5a2DSGC6VJWG4r+4YbFh23Clpvc3VhSSS9DTXT1NBg=
+	t=1738198280; cv=none; b=tfQQmJtAOZLZBNuotAsXxrcTHr2hf2k3SWkOhNB+Z4yYfT2L5YavXuZ/CwhJi59/gMgTt+c9fSy/T+DnMmCy2vmWd+ZrhbSQK7QcYnRRvvr1XlpnBkh/wd+5ueYOis0iDgrq16P8Z1oFaW8rpYqZczDvgGtqXCHKpPD5zfVrANA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738198110; c=relaxed/simple;
-	bh=OWV+1fXXSXpjJunoQZInOTk7XyZKTjyjDg8hdQ7AriI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d+h2RucO8wyAwMrQZPEoDHB4+I/EmadC4bNYhjSVGD6LdcTPD1A+RIdVSif6BW8ZnjdZd9vsRRW7TSNoAnW18dsDeHo/3kchmixSYOjdGAArwAXcXIEQlISr+m4nrJM6HwlehahX1odDvcXbuLRmfDgWpL0nlRPWadDyXK9rMn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E1SjEEfh; arc=none smtp.client-ip=209.85.214.176
+	s=arc-20240116; t=1738198280; c=relaxed/simple;
+	bh=jCfUknLaS1CyXTihImqPVo1F8ohfKeiPfI+MZmVjZ7g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JwPIf6NH4+SaZrR9GDSBRF9RuRoGG87vfNodLtZbbTy+j4BEel+VWEZ+A0Y3MKhMdY3TqnykK+VB6JkqH1G6XLNTHmcjdvFa2u625x7T+thG1sp/JflYFwKnOCL2Ar937cjJcBG6WGHvxlmjP/ulfCMZ3jsQi8dI0muyuE9r7a0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=buuoEBfU; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-21634338cfdso5044455ad.2
-        for <bpf@vger.kernel.org>; Wed, 29 Jan 2025 16:48:28 -0800 (PST)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2156e078563so3006845ad.2;
+        Wed, 29 Jan 2025 16:51:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738198108; x=1738802908; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Ret6pTU3336+/26QOPrLJSeUu+2Mt+uc37UNhPyUjJo=;
-        b=E1SjEEfheEjPNAqUGopkneVs+KzniHZR4BYDbA3a4eEB5mV3qyaMOtTuJ1xZWbtvpc
-         7e2Wx8o2DcrP5aytyJhMzvyZdksFU/fusbwPnRiMFshCN8t65VBiolglR/Ij0Cj+7knM
-         GrpdE2EDEu5iqhe80nfF0BkcHLFptz/yqQFL5iErE8Mvre5iAl+J9D4r0LQekcTuBlbh
-         vMOjl+xsd1MaaZZN3hPToH1It7wpoeTIRQOtLBL9CoK4y94C0NBx0yIOYOx/AMQVHd9m
-         PQAqnZnVxbdBacKNklcbC/ybdxlOY1BCJb7ixwUku4Ej202zRkcP+frYl+7CivIBM3FL
-         OY4g==
+        d=gmail.com; s=20230601; t=1738198277; x=1738803077; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UfbNo5NJ7RPH7bh4Cu1MrHcyTN0KV+XSd/Gkhk5up30=;
+        b=buuoEBfUp/fBzkOHNnYZUOPDqNNYXeIV4UqFgGUlzuwln176QUJrROqSJWjJmY9d3i
+         I5WXLg/GX9i8G35t00qZ4w4DLeGhMzBtqajl15GZ0+p0kSLtgsGFXLAd3/yTbpZ/9CUQ
+         HXfnSailYKCs5uS/aL24O8Ei1mNVxFc/ZVU/XTKAsYniZr5BGfy2LKJ93lmF799nXfYL
+         sBrXlxustn5LkW1b7gV2HSkCrShmaxinuuU4CU0SO0FWetagGSui6LkP/koxZCdXKEPZ
+         WA1BoDTov4uScaT4blqBZNzYZYO+/v07yMBXvZlHPEWSmHvYCashw/XHeBxum9nUD+/c
+         aUfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738198108; x=1738802908;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ret6pTU3336+/26QOPrLJSeUu+2Mt+uc37UNhPyUjJo=;
-        b=aY1IfyTYpS8FQOTekidchOFJaiXU2m2Psh6g06mkFj1cKgCrGpX7sFh62HR6MjN12Q
-         XxEND2Gj56E2+RBpLui8fdeG+/IcNO+STLr5OHgy1n39Vv0jPxq/VD5vGsJiS+l2VNvf
-         eeCzEJHXCSXhyqcCtO05f1k0zhd46XD60VLSrXuk55605bJazjqL6Vtu5VMKbVIEqsVh
-         b/ChbUk7IrJXd9s/NhmooMbZ5NSIjnPHmfFix0qy44eK1zoRLqZc61Zt5pGaXTtKu0hx
-         zGeFCvo/nsQgNfFISmlnTZcZUTXdA4ASrDX8tkBZgVZuFb1lk+LMEo1jFL6dpQg3rvLm
-         y61g==
-X-Forwarded-Encrypted: i=1; AJvYcCX1tLJWreC4bxx9xa/xMBv6VK8Ha7rQBsE0F+bMGraPzMkuPteRsFCZ6JoBdio0rXnrmQs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzUW76koom8MU17IvqFsmRck2t0H+uQDYhr5Tac6UUAByhd/pbB
-	KSSwYhby9XvJp7niY3drHBjYUKy5zbginjleemwhfUEOqU9FPux3
-X-Gm-Gg: ASbGncsmzDHeL2hReHZClKmKWLS2ekWXAJOKliMN8LAbvaIKCwnp9CpJYNwbzF5MNRz
-	c8Q186K6LEvHS2SlLN2wd6R//pdFatSdXi2X+8UfDwqiaEtpk+077xGBd1t3QkH0SRyhn1pAADG
-	x+D2NV+19HkCKUkAs9TzbnmZZfi7spZq5W9Sh1uhf9y/z4GPiExcTyZGslN8xuHqiNcZZf4uxQU
-	hn5DqEEBf6qj43i56+ex+8Gj/c0f1XkLfj4IiVFjZjCXwiySkSM/iIqnKWUFebYml+Y1u62/y1z
-	6c2TK8KcM+Vg/EIVJiyh/Q==
-X-Google-Smtp-Source: AGHT+IG9ipYo/6a9WD8Pz3CEH4dgk43QpDNtVnKGE14HBYWEJLvpWjnzfR1fOZIV3f14wlr402PhOQ==
-X-Received: by 2002:a17:903:11cd:b0:215:7719:24f6 with SMTP id d9443c01a7336-21dd7d788ffmr72709155ad.23.1738198107875;
-        Wed, 29 Jan 2025 16:48:27 -0800 (PST)
-Received: from localhost ([2601:647:6881:9060:4529:d22b:21ed:27d4])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21de31f80c2sm2168715ad.72.2025.01.29.16.48.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jan 2025 16:48:26 -0800 (PST)
-Date: Wed, 29 Jan 2025 16:48:25 -0800
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: lsf-pc <lsf-pc@lists.linux-foundation.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [LSF/MM/BPF TOPIC] Two-Phase eBPF Program Signing
-Message-ID: <Z5rMWZgivyCCcq1t@pop-os.localdomain>
-References: <CAM_iQpXiQQ8Pv03ubsfq0=2h0XQ7xLAVDvhWFZjt-7M2OqxhhA@mail.gmail.com>
- <CAADnVQ+wPK1KKZhCgb-Nnf0Xfjk8M1UpX5fnXC=cBzdEYbv_kg@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1738198277; x=1738803077;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UfbNo5NJ7RPH7bh4Cu1MrHcyTN0KV+XSd/Gkhk5up30=;
+        b=NUgK5HkeBxdzSz6vpd5Gm7WLbO8w8Vq3B6rxlQeQCQfpeukQrQaI9P8dqUpQLP89+i
+         0VY0k9Fvc50QkXjxfrvrzCXziEVMpkywmqUiotaSTk71POpVQsXNn1rqz6GReteyvHHc
+         2f1nSwxQte4BgZSVX+d9BZ4+fW2S/lVKV8CxmLA4M2kh+rJ9EhxAjwcbMzd/3/U+62Qg
+         yQRpdLa6XEMMAC5tPs+VSLRgu5M6PnQVmQav8OPk8T7oHa6Abn1+cei46fkST6vW1NnY
+         s+kt4LetIq35G3tjxNAplczVqbkjvw48onhrZ9hqpX+HtLgQ45ES6UnGwQkqBymx2SVK
+         mK6w==
+X-Forwarded-Encrypted: i=1; AJvYcCUkkHx9Q14QjUN+0bEDc6kTxIOvE1dCNfeYHdmdZo008VS+4J+vEbU57kAkZRrh1kRWBcjAKC1ArojTkWmF@vger.kernel.org, AJvYcCUtQhebWLThWl73qsmOpe51VCZjQrS1y3srX4wCoC5XuCyMQcQ9hQneynNMF6XY3tktD7eNLNOea48qLZU=@vger.kernel.org, AJvYcCVyodWruTKBs6E86KBK5GSK2G3YS0CwKrQKA4QjS/B/hLp1hduxicx+g5+71kfsp5PfZNc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy8ZGZ+RwkPFH+KOhf7LbAExcIy+2cufwwAq4lGJaztcJHmd8Mk
+	3X6KVvdea+faCzNafZHpR622Te4XKk9mN73FlhZDt9Qp2ZsfVZEmHn0FJpg7+f31DR6KW1AALht
+	APj8a4h1ZPY7P02k6UBS9IJMGo5M=
+X-Gm-Gg: ASbGnctv21NgM4SxELKXZCU1bfU7DnzksnqLH1eqy1FMy6NXs9fI/fl41YaGj746xi5
+	PV5iZfl/8emqt3WzGfS9gQ+AHiwwCWdsCLkSKMwaS7NKxxY9U0wCUScuSn6QY3ZER/V1Zu93pLu
+	jkrRWYHiDFchpn
+X-Google-Smtp-Source: AGHT+IGgaBMbfH+DAGW8rfwUFWjT/jC/KKLsk8AdYQ5680s3xyLzrfazlu6u+aG3v6IXn4AndfWzjwNBFBA528z2ehc=
+X-Received: by 2002:a05:6a20:9c8e:b0:1e1:b1bb:87a0 with SMTP id
+ adf61e73a8af0-1ed7a6b79d7mr11003646637.34.1738198276838; Wed, 29 Jan 2025
+ 16:51:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQ+wPK1KKZhCgb-Nnf0Xfjk8M1UpX5fnXC=cBzdEYbv_kg@mail.gmail.com>
+References: <20250123081950.173588-1-jinghao7@illinois.edu>
+ <20250123081950.173588-3-jinghao7@illinois.edu> <CAEf4BzbCm4=NLV4DOyRxvxEtZUONzqmXBOFMp5cg=4hPEEYUtA@mail.gmail.com>
+ <2sxhtfdzspkn5umtfpxiueb67v4jhl3nad6i66qtfry52o7sip@nm5oeplybppa> <501166cc-02fe-431c-9258-c2f44227ebc4@illinois.edu>
+In-Reply-To: <501166cc-02fe-431c-9258-c2f44227ebc4@illinois.edu>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 29 Jan 2025 16:51:02 -0800
+X-Gm-Features: AWEUYZn8HiygP7sKOljXPFeDY8nAwVLLg472aD4TUx7AZvMx7otTHm9d20Mh5j4
+Message-ID: <CAEf4BzbYUsPzyVkDOKYhKc+Gs4O=mZExJ1_gc=t1siMz8kvn2Q@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 2/2] samples/{bpf,hid}: fix broken vmlinux path for VMLINUX_BTF
+To: Jinghao Jia <jinghao7@illinois.edu>
+Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Jiri Kosina <jikos@kernel.org>, 
+	Masahiro Yamada <masahiroy@kernel.org>, Nicolas Schier <n.schier@avm.de>, Ruowen Qin <ruqin@redhat.com>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-input@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jan 25, 2025 at 09:33:38AM -0800, Alexei Starovoitov wrote:
-> On Fri, Jan 24, 2025 at 7:06 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+On Wed, Jan 29, 2025 at 2:06=E2=80=AFAM Jinghao Jia <jinghao7@illinois.edu>=
+ wrote:
+>
+>
+>
+> On 1/24/25 2:04 PM, Benjamin Tissoires wrote:
+> > On Jan 24 2025, Andrii Nakryiko wrote:
+> >> On Thu, Jan 23, 2025 at 12:20=E2=80=AFAM Jinghao Jia <jinghao7@illinoi=
+s.edu> wrote:
+> >>>
+> >>> Commit 13b25489b6f8 ("kbuild: change working directory to external
+> >>> module directory with M=3D") changed kbuild working directory of bpf =
+and
+> >>> hid samples to samples/{bpf,hid}, which broke the vmlinux path for
+> >>> VMLINUX_BTF, as the Makefiles assume the current work directory to be
+> >>> the kernel output directory and use a relative path (i.e., ./vmlinux)=
+:
+> >>>
+> >>>   Makefile:316: *** Cannot find a vmlinux for VMLINUX_BTF at any of "=
+  /path/to/linux/samples/bpf/vmlinux", build the kernel or set VMLINUX_BTF =
+like "VMLINUX_BTF=3D/sys/kernel/btf/vmlinux" or VMLINUX_H variable.  Stop.
+> >>>
+> >>> Correctly refer to the kernel output directory using $(objtree).
+> >>>
+> >>> Fixes: 13b25489b6f8 ("kbuild: change working directory to external mo=
+dule directory with M=3D")
+> >>> Tested-by: Ruowen Qin <ruqin@redhat.com>
+> >>> Signed-off-by: Jinghao Jia <jinghao7@illinois.edu>
+> >>> ---
+> >>>  samples/bpf/Makefile | 2 +-
+> >>>  samples/hid/Makefile | 2 +-
+> >>>  2 files changed, 2 insertions(+), 2 deletions(-)
+> >>>
+> >>
+> >> can you please split samples/bpf from samples/hid changes, so we can
+> >> land samples/bpf fix through bpf-next tree independently from other
+> >> changes?
 > >
-> > The naive approach to signing eBPF programs faces a critical
-> > limitation: programs undergo mandatory modifications by libbpf before
-> > kernel loading, which invalidates conventional signatures. We present
-> > Two-Phase Signing, a solution that implements sequential verification
-> > aligned with the eBPF program lifecycle.
+> > FWIW, I don't mind if this goes through the bpf-next tree all at once.
 > >
-> > Our approach establishes a baseline signature during initial
-> > compilation, followed by a secondary signature that encompasses both
-> > the modified program and initial signature. This creates a verifiable
-> > chain of trust while accommodating essential libbpf modifications such
-> > as relocations and map file descriptor updates. This approach enables
-> > precise failure diagnosis by distinguishing between compromised
-> > original programs and unauthorized post-compilation modifications.
+> > Acked-by: Benjamin Tissoires <bentiss@kernel.org>
 > >
-> > The Two-Phase Signing method balances security with practicality,
-> > allowing necessary binary modifications while maintaining integrity
-> > verification throughout the program's lifecycle. This approach
-> > provides granular audit capabilities and clear identification of
-> > potential security breaches in the signing chain.
+> > Cheers,
+> > Benjamin
 > >
-> > We invite discussion on the implications, trade-offs, and potential
-> > improvements of this approach for securing eBPF programs in production
-> > environments, particularly focusing on practical impact and
-> > integration challenges with existing eBPF frameworks.
-> 
-> This is certainly an important topic, but there is already a solution:
-> light skeleton.
-> 
-> Pls join the discussion:
-> https://lore.kernel.org/bpf/bqxgv2tqk3hp3q3lcdqsw27btmlwqfkhyg6kohsw7lwdgbeol7@nkbxnrhpn7qr/
-> 
-> No need to delay it to lsfmm.
+>
+> I wonder how we are going to move forward with this fix? Do we want to le=
+t
+> it go through bpf tree at once or split the changes?
 
-I appreciate you highlighting the significance of this matter.
+I'd prefer the split and routing through respective trees. Is there
+any reason not to do that?
 
-I didn't notice the above work until seeing your email. From my quick
-glance, it looks like another attempt to bring eBPF program loader into
-the kernel.
-
-In my own opinion, the biggest advantage of my proposal is that it
-requires *no* kernel changes at all, which in turn means:
-
-1) We still maintain the clear separation between userspace and kernel space, as it is now.
-
-2) More flexible: It is always easier to update libbpf without kernel updates
-
-3) Smaller kernel attack surface since complex relocation logic stays in userspace
-
-4) Better compatibility with existing toolchains and build systems
-
-5) Easier debugging of loading issues since more visibility in userspace
-
-You can find more details in my github repo below.
-
-> 
-> If you believe that your double-sign algorithm is superior,
-> please explain it in that email thread.
-
-I have put everything together in my github repo here:
-https://github.com/congwang/ebpf-2-phase-signing
-including the design, the advantages, a proof-of-concept which already
-works. Please take a look and let me know what you think.
-
-Thanks a lot!
+>
+> Best,
+> Jinghao
+>
+> >>
+> >> pw-bot: cr
+> >>
+> >>> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> >>> index 96a05e70ace3..f5865fbbae62 100644
+> >>> --- a/samples/bpf/Makefile
+> >>> +++ b/samples/bpf/Makefile
+> >>> @@ -307,7 +307,7 @@ $(obj)/$(TRACE_HELPERS): TPROGS_CFLAGS :=3D $(TPR=
+OGS_CFLAGS) -D__must_check=3D
+> >>>
+> >>>  VMLINUX_BTF_PATHS ?=3D $(abspath $(if $(O),$(O)/vmlinux))           =
+                     \
+> >>>                      $(abspath $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)=
+/vmlinux)) \
+> >>> -                    $(abspath ./vmlinux)
+> >>> +                    $(abspath $(objtree)/vmlinux)
+> >>>  VMLINUX_BTF ?=3D $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATH=
+S))))
+> >>>
+> >>>  $(obj)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL)
+> >>> diff --git a/samples/hid/Makefile b/samples/hid/Makefile
+> >>> index 69159c81d045..db5a077c77fc 100644
+> >>> --- a/samples/hid/Makefile
+> >>> +++ b/samples/hid/Makefile
+> >>> @@ -164,7 +164,7 @@ $(obj)/hid_surface_dial.o: $(obj)/hid_surface_dia=
+l.skel.h
+> >>>
+> >>>  VMLINUX_BTF_PATHS ?=3D $(abspath $(if $(O),$(O)/vmlinux))           =
+                     \
+> >>>                      $(abspath $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)=
+/vmlinux)) \
+> >>> -                    $(abspath ./vmlinux)
+> >>> +                    $(abspath $(objtree)/vmlinux)
+> >>>  VMLINUX_BTF ?=3D $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATH=
+S))))
+> >>>
+> >>>  $(obj)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL)
+> >>> --
+> >>> 2.48.1
+> >>>
+>
 
