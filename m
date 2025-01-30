@@ -1,134 +1,212 @@
-Return-Path: <bpf+bounces-50114-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50115-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9154A22BEA
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 11:49:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 461BEA22C0C
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 11:57:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FDF77A0637
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 10:48:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FA2B3A6B62
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 10:57:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A20321C07C8;
-	Thu, 30 Jan 2025 10:49:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D0111C07CF;
+	Thu, 30 Jan 2025 10:57:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="pXsco+d6"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gXB+OxBF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDE1F1BEF91;
-	Thu, 30 Jan 2025 10:49:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B44E41BEF75
+	for <bpf@vger.kernel.org>; Thu, 30 Jan 2025 10:57:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738234161; cv=none; b=kNWLVf9qo2T5QkCmcz5CThltMXH7Oa5e1DiHdarOUz+gRiw2W0JoT6bmvIJrTjeXnpt81bgeZwo7xV1hfpvRlEwHweAEJBk4ZutvGaaQlvLBa5uF/SzJvDGKulf8h/lNFO2f38h8yIcT1InHUZ0sbWnh0vzhCiPyzJOZ87lRRxY=
+	t=1738234665; cv=none; b=e4wfJD90oE3zuTHvdDzPxXX2AirgqubTHiyXWRPzLJb813ZC3YfyYmqQnae2iXY6N/EnxMSku0nKTcrUr5Qvug6b5B9DojcvzNSrUho6eUPV/QsbWXAkqEeHoEj58M+YZHLAbyc9Z2jX/YAhWwdJhCbDBOaNJXtZw2y8yDjRuvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738234161; c=relaxed/simple;
-	bh=K/7NsZgIrjKsuEex5ZvC88K7F2tkcUpl+oNZ/6zISaM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=IdqO/O5Fd91jtqYtKqgKYf3yR28Cin0DVNDVXo+PxNRrh5hFGYtS0Rk/QX3C/zWocQUcoP+SZfME672DnSgz8poQ3ebqW2HhHs6UoXbRn3xLrCDLcWt7Kgc+s7wHx3+CVB4DMllCoSaEuqceEbxjT8u0BPipPLqsZwL5QbSBF/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=pXsco+d6; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 50U17pAr028982;
-	Thu, 30 Jan 2025 10:48:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=K/7NsZ
-	gIrjKsuEex5ZvC88K7F2tkcUpl+oNZ/6zISaM=; b=pXsco+d6ocPYaR8/WOHSbg
-	velSBjxr/03t4VCDPTmYw6mEL1Ch0PZyS5EWZIXktVbtXhWVmw+VNm4Eq+rV2Mw/
-	MoOsaUYDug8XAKUxDrsIXYpdq/j3FmHgo2hx2E7VntWCw22j9YYEh+yG0ZakMiHH
-	ayKrbo3ccmcF/+P5B8m6h4NXZINJUGCohMVS9j/Fy5yXQVrN4WQfQiLqIkdaW9OF
-	9mxvv2YcJ98DKGgKYgJjdv6q6YTMxZ4904QgUWnhZohRNQwXDjDswqIGLMHV3O5P
-	F8N1xk5FLdD+XRE/j01cEicQX7t9WB+49kC1jDm9ht29AfBZRQceUWJbQjkfUlQg
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44fyg9a6uv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 30 Jan 2025 10:48:51 +0000 (GMT)
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 50UAUAum030383;
-	Thu, 30 Jan 2025 10:48:51 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44fyg9a6uh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 30 Jan 2025 10:48:51 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 50U71YNx012476;
-	Thu, 30 Jan 2025 10:48:49 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 44danydvb7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 30 Jan 2025 10:48:49 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 50UAmlQo27263592
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 30 Jan 2025 10:48:47 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B4E91200BD;
-	Thu, 30 Jan 2025 10:48:47 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B47CC200BB;
-	Thu, 30 Jan 2025 10:48:46 +0000 (GMT)
-Received: from li-1de7cd4c-3205-11b2-a85c-d27f97db1fe1.ibm.com (unknown [9.171.93.188])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Thu, 30 Jan 2025 10:48:46 +0000 (GMT)
-From: "Marc Hartmayer" <mhartmay@linux.ibm.com>
-To: Daniel Xu <dxu@dxuuu.xyz>, Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: shuah@kernel.org, eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, john.fastabend@gmail.com, martin.lau@linux.dev,
-        song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org,
-        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v7 4/5] bpf: verifier: Support eliding map
- lookup nullness
-In-Reply-To: <f7rhmwrp3fgx3qd7gn3pzczxeztvsg45u4vrl6ls3ylcvflapx@3yi3shfnrmb3>
-References: <cover.1736886479.git.dxu@dxuuu.xyz>
- <68f3ea96ff3809a87e502a11a4bd30177fc5823e.1736886479.git.dxu@dxuuu.xyz>
- <78b2e750b4568e294b5fc5a33cf4bc8f62fae7f6.camel@linux.ibm.com>
- <hsgmutuoi4kvjkr7erm5ty2fdrhdrjpz4fpp5doe65l3pzguxv@lcbmvmjpyykq>
- <f7rhmwrp3fgx3qd7gn3pzczxeztvsg45u4vrl6ls3ylcvflapx@3yi3shfnrmb3>
-Date: Thu, 30 Jan 2025 11:48:45 +0100
-Message-ID: <87v7twk25u.fsf@linux.ibm.com>
+	s=arc-20240116; t=1738234665; c=relaxed/simple;
+	bh=nNu9Wao+7prXi/lZmkqsyM/BD7Vjd0eXW4mg6ypLdK8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uB2MSaMRv1sPoOFqLMQ16mhaYfWpywkcLqJgQ2Om27aY2bhUQ5OWz/X9p2e7/jTv2MG4IDD5yad+DvTHUO+V4aJvp48Hc6a6iQPdhyuzhv+P/9Vcy1iEOXestgRQmGQqP1tXOcd/KKqV0F2qwTwjjQAI/L0Yi6jFqihBb371Enw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gXB+OxBF; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a9e44654ae3so108501166b.1
+        for <bpf@vger.kernel.org>; Thu, 30 Jan 2025 02:57:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1738234661; x=1738839461; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4buYOzRn3STaO6q6gOT5tyrD4opUgcG/7dM/VZkAIwU=;
+        b=gXB+OxBFJi6AUs+RjuIWleNEHOJI5ToBBhj7tAFTZFT+uLl3uY3O5TAQrhPLZCNpAD
+         CIddkVjlXfGiNwL5dgRxaxBpG/aooAGPaRircb3uLcjZ9bcsTQwYd2VHXhwMAWxIqPtH
+         ukYK6VdxWx/gUi/wnJEoyO95sAwH94A6bwhu0RpnlcWW9zYx2aYmEZnN94eErUqKpGMd
+         Hx1JFS9/rrRLFG+5RhG200NEsvnuLfivsRm5/xu/R6iy8I9EfuzUiqjb269UOKd3QV1U
+         kKeropsbO5cR0NJ7czMWJXo3J4g3ef4VKUIuR4nRGH5DS77t0LOs9NYUSopdrkEAPuI2
+         13Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738234661; x=1738839461;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4buYOzRn3STaO6q6gOT5tyrD4opUgcG/7dM/VZkAIwU=;
+        b=KGJygL1NMTaRN/r+DrAfV/x3t+MhxRq4Nrs1hspOQ5abqyHE3f68uX/O3SJNv3NWOn
+         e5L1i4m6bD4CaAzsVxVoiISQQlp0A4n8JrRV3jHEAVgIszCDs8Exigd0QVdTqyt4LlZw
+         AxdcFCZpnOAK4ERbKelldor/HaZF6j0m5Ky9QmB5bOVonRYo9He6FzYu44Esj914BGp0
+         R7bzh8Qa6ietchF/EWSbM+Hsf/lusf4C9de59KmUoVluJJoUOaNwxJUaG/sqfaIP9ML9
+         IiRXpLnau4+S8y+xoKUeyEHpvkKwMjotANSU1XRmIHGRgAMoSrrSUh3TDOiU4912/9jH
+         3lPA==
+X-Gm-Message-State: AOJu0YzBOJxifZTz6GHgwq+erHU5lk/Jis3h+kkftuPfsLD/AkFaHz/U
+	oe6Wdv+y4m5G2ebskapJOGlEP72l9WEMnqHH3zA0EegAhTnVYKBOK7cqMxvKxQ==
+X-Gm-Gg: ASbGncvE5v+ADLUab4uyv7Bb6tPYhhcSxbPi18wdWGJkS4aT3CmFOigCD8l//Pwvo8X
+	hDCR+DhES7GUcGdUYe57dvSzlEEAAuHxkRy3EZFxVjjh5Oevp3/edE25d4nfL1039dxG5Xczsyu
+	ox9UxKCOB1uYvA2fpXMPFDgqIBdARfOpEmuPdVPecB3u4SfToGhOrgqZPnmtcmzfEkifxKUw2dT
+	1wC/z/DRFIGPJeoemJ5xgWXZuS79sBfhw19tzlbZUXNo+SW+3VbWtZlsuJmr//LJnHI/Y2DsULZ
+	+Mxvzk2gP50XY73E7Ahqtr5nhs0Yew+4fwFKTJsmZrJHoy0ipcC0dpln9g==
+X-Google-Smtp-Source: AGHT+IFtF+henE/8ZRauZhMwrPj3UgPcvyIRaqNYReNS1dcsHzGE0KZapxpRvfWEVPtVflrXOmEgNw==
+X-Received: by 2002:a17:907:94cd:b0:ab6:3633:13e with SMTP id a640c23a62f3a-ab6cfdbd071mr781688366b.41.1738234660778;
+        Thu, 30 Jan 2025 02:57:40 -0800 (PST)
+Received: from google.com (201.31.90.34.bc.googleusercontent.com. [34.90.31.201])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5dc723efc45sm871854a12.32.2025.01.30.02.57.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jan 2025 02:57:40 -0800 (PST)
+Date: Thu, 30 Jan 2025 10:57:35 +0000
+From: Matt Bobrowski <mattbobrowski@google.com>
+To: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
+	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com,
+	ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
+	kpsingh@kernel.org, liamwisehart@meta.com, shankaran@meta.com
+Subject: Re: [PATCH v11 bpf-next 1/7] fs/xattr: bpf: Introduce security.bpf.
+ xattr name prefix
+Message-ID: <Z5tbH13qK6rLJVUI@google.com>
+References: <20250129205957.2457655-1-song@kernel.org>
+ <20250129205957.2457655-2-song@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: rbcTz21OcV-kXIN5hrfaK2av094Ai-Fz
-X-Proofpoint-GUID: JJk2nesWaLPlyEjwN1he4ky6oOUdvs_l
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-01-30_06,2025-01-30_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=800
- priorityscore=1501 suspectscore=0 spamscore=0 mlxscore=0 malwarescore=0
- clxscore=1011 phishscore=0 impostorscore=0 lowpriorityscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2411120000
- definitions=main-2501300081
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250129205957.2457655-2-song@kernel.org>
 
-On Wed, Jan 29, 2025 at 10:45 AM -0700, Daniel Xu <dxu@dxuuu.xyz> wrote:
-> On Wed, Jan 29, 2025 at 09:49:12AM -0700, Daniel Xu wrote:
->> Hi Ilya,
->>=20
+On Wed, Jan 29, 2025 at 12:59:51PM -0800, Song Liu wrote:
+> Introduct new xattr name prefix security.bpf., and enable reading these
+> xattrs from bpf kfuncs bpf_get_[file|dentry]_xattr().
+> 
+> As we are on it, correct the comments for return value of
+> bpf_get_[file|dentry]_xattr(), i.e. return length the xattr value on
+> success.
 
-[=E2=80=A6snip=E2=80=A6]
+Reviewed-by: Matt Bobrowski <mattbobrowski@google.com>
 
->
-> I cribbed the source from [0] and tested before and after. I think this
-> should work. Mind giving it a try?
+> Signed-off-by: Song Liu <song@kernel.org>
+> Acked-by: Christian Brauner <brauner@kernel.org>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> ---
+>  fs/bpf_fs_kfuncs.c         | 19 ++++++++++++++-----
+>  include/uapi/linux/xattr.h |  4 ++++
+>  2 files changed, 18 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/bpf_fs_kfuncs.c b/fs/bpf_fs_kfuncs.c
+> index 3fe9f59ef867..8a65184c8c2c 100644
+> --- a/fs/bpf_fs_kfuncs.c
+> +++ b/fs/bpf_fs_kfuncs.c
+> @@ -93,6 +93,11 @@ __bpf_kfunc int bpf_path_d_path(struct path *path, char *buf, size_t buf__sz)
+>  	return len;
+>  }
+>  
+> +static bool match_security_bpf_prefix(const char *name__str)
+> +{
+> +	return !strncmp(name__str, XATTR_NAME_BPF_LSM, XATTR_NAME_BPF_LSM_LEN);
+> +}
 
-Hi Daniel,
+I think this can also just be match_xattr_prefix(const char
+*name__str, const char *prefix, size_t len) such that we can do the
+same checks for aribitrary xattr prefixes i.e. XATTR_USER_PREFIX,
+XATTR_NAME_BPF_LSM.
 
-thanks for the fix! I=E2=80=99ve tested the fix and it fixed the problem.
+>  /**
+>   * bpf_get_dentry_xattr - get xattr of a dentry
+>   * @dentry: dentry to get xattr from
+> @@ -101,9 +106,10 @@ __bpf_kfunc int bpf_path_d_path(struct path *path, char *buf, size_t buf__sz)
+>   *
+>   * Get xattr *name__str* of *dentry* and store the output in *value_ptr*.
+>   *
+> - * For security reasons, only *name__str* with prefix "user." is allowed.
+> + * For security reasons, only *name__str* with prefix "user." or
+      	  	   	    	 	     	  ^ prefixes
+						  
+> + * "security.bpf." is allowed.
+                      ^ are
 
-Tested-by: Marc Hartmayer <mhartmay@linux.ibm.com>
+Out of curiosity, what is the security reasoning here? This isn't
+obvious to me, and I'd like to understand this better. Is it simply
+frowned upon to read arbitrary xattr values from the context of a BPF
+LSM program, or has it got something to do with the backing xattr
+handler that ends up being called once we step into __vfs_getxattr()
+and such?  Also, just so that it's clear, I don't have anything
+against this allow listing approach either, I just genuinely don't
+understand the security implications.
 
-[=E2=80=A6snip=E2=80=A6]
+> - * Return: 0 on success, a negative value on error.
+> + * Return: length of the xattr value on success, a negative value on error.
+>   */
+>  __bpf_kfunc int bpf_get_dentry_xattr(struct dentry *dentry, const char *name__str,
+>  				     struct bpf_dynptr *value_p)
+> @@ -117,7 +123,9 @@ __bpf_kfunc int bpf_get_dentry_xattr(struct dentry *dentry, const char *name__st
+>  	if (WARN_ON(!inode))
+>  		return -EINVAL;
+>  
+> -	if (strncmp(name__str, XATTR_USER_PREFIX, XATTR_USER_PREFIX_LEN))
+> +	/* Allow reading xattr with user. and security.bpf. prefix */
+> +	if (strncmp(name__str, XATTR_USER_PREFIX, XATTR_USER_PREFIX_LEN) &&
+> +	    !match_security_bpf_prefix(name__str))
+
+I think it would be cleaner to have single function
+i.e. is_allowed_xattr_prefix(const char *name__str) which simply
+checks all the allowed xattr prefixes that can be read by this BPF
+kfunc.
+
+>  		return -EPERM;
+>  
+>  	value_len = __bpf_dynptr_size(value_ptr);
+> @@ -139,9 +147,10 @@ __bpf_kfunc int bpf_get_dentry_xattr(struct dentry *dentry, const char *name__st
+>   *
+>   * Get xattr *name__str* of *file* and store the output in *value_ptr*.
+>   *
+> - * For security reasons, only *name__str* with prefix "user." is allowed.
+> + * For security reasons, only *name__str* with prefix "user." or
+      	  	   	    	 	     	  ^ prefixes
+
+> + * "security.bpf." is allowed.
+      		      ^ are
+
+> - * Return: 0 on success, a negative value on error.
+> + * Return: length of the xattr value on success, a negative value on error.
+>   */
+>  __bpf_kfunc int bpf_get_file_xattr(struct file *file, const char *name__str,
+>  				   struct bpf_dynptr *value_p)
+> diff --git a/include/uapi/linux/xattr.h b/include/uapi/linux/xattr.h
+> index 9854f9cff3c6..c7c85bb504ba 100644
+> --- a/include/uapi/linux/xattr.h
+> +++ b/include/uapi/linux/xattr.h
+> @@ -83,6 +83,10 @@ struct xattr_args {
+>  #define XATTR_CAPS_SUFFIX "capability"
+>  #define XATTR_NAME_CAPS XATTR_SECURITY_PREFIX XATTR_CAPS_SUFFIX
+>  
+> +#define XATTR_BPF_LSM_SUFFIX "bpf."
+> +#define XATTR_NAME_BPF_LSM (XATTR_SECURITY_PREFIX XATTR_BPF_LSM_SUFFIX)
+> +#define XATTR_NAME_BPF_LSM_LEN (sizeof(XATTR_NAME_BPF_LSM) - 1)
+> +
+>  #define XATTR_POSIX_ACL_ACCESS  "posix_acl_access"
+>  #define XATTR_NAME_POSIX_ACL_ACCESS XATTR_SYSTEM_PREFIX XATTR_POSIX_ACL_ACCESS
+>  #define XATTR_POSIX_ACL_DEFAULT  "posix_acl_default"
+> -- 
+> 2.43.5
+> 
 
