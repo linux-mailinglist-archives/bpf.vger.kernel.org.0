@@ -1,171 +1,127 @@
-Return-Path: <bpf+bounces-50129-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50130-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57426A231D2
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 17:30:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4215BA231D1
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 17:30:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCB7B1889A26
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 16:29:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FF5A3A280C
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 16:29:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F2561EE7CE;
-	Thu, 30 Jan 2025 16:29:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B2381EE7A5;
+	Thu, 30 Jan 2025 16:29:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="tY7tASqR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LKBUF8Kf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 489581EE01F
-	for <bpf@vger.kernel.org>; Thu, 30 Jan 2025 16:29:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 201221EBFF5;
+	Thu, 30 Jan 2025 16:29:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738254564; cv=none; b=GDKCNvWdHAg0o9OJWt/OJBI1zn0WNSMfk6ugSaFcdFcHhlsD3gG4plQ0VQEU/IgKcn5/94hfPY/e9i1kJYXoNdtXYI3oPy4IO4kiFWqhgVSPQBatqkz5doNPaLZxfs7kiaP9LW2UHzgwwvSloGbYqjg3r9s4qOfekkZFPZoUwGo=
+	t=1738254579; cv=none; b=ho4dGrMMTpV5IxmqhAnYu2ogkSMqv/GCzlFxdTLzuVPMUhT1UmNSaLvuFYuQir/sFScsSvKSErmllI/mCZplfJIEhYVevSKsggpy7pKDGbKl2JhtJ6m9kcfj0lxwku/4oZLl6b3QtMl6Q5CEjsm7HIxWmOUx4zkyrkoqZMUCkFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738254564; c=relaxed/simple;
-	bh=t83gBk3R1gJYHaKAAfvjNUShPqKhN3qh0uSgLbPTP6Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B8aitm6JCjlAxJzt9+oSmEiSkA43AHOM7FqB9csN+8U87efm88T1JzHb9ceRRHijkevQwkfnVUZo7r7movV/jZ8RWNLC3w2oLNtg3c+7mwFeHvQmIuWJpaBmRa2vGiuPE/EWEURCpA0tbqRy4W7ApJL8EEgiWBYjp2+QIz2ZcKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=tY7tASqR; arc=none smtp.client-ip=209.85.160.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-467b74a1754so12534561cf.1
-        for <bpf@vger.kernel.org>; Thu, 30 Jan 2025 08:29:22 -0800 (PST)
+	s=arc-20240116; t=1738254579; c=relaxed/simple;
+	bh=wV/Q4iMIyNa09eZLXS9ucj44Nq4AD7AejWCP2xM+dVo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NfY+rU+yXvvbF4CPwiAJlI5f/NFrYzI7aMETgHSt+F8SEZXs1Rrk/jn2y+Eh5rs7lStY1cXMHDdbmLDWSQoTHQcDQZiOWZSWVPswZcBjYEBXp5+XFMInXDHQ981qjjkKOOMJPTE0Ct45boxM6cvxrnnGACj9T+oGNbQHhhnfIaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LKBUF8Kf; arc=none smtp.client-ip=209.85.160.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-2b33aabfe46so388002fac.2;
+        Thu, 30 Jan 2025 08:29:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1738254561; x=1738859361; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PaELnFzz9aRPiHl2MvgwZe5wGfHA1Rh3SyrWRVQiS98=;
-        b=tY7tASqRwmsVr0Dhlx1A8MFyV/JSYFFol9/Bes0rqSbY9GWcaUPkgNkGRpWEcPlo5B
-         878X5HvRTANi1bsYLe16QeRnx8iNkiTevyzI9fEjA8b5QeGYtIdM1GbI5wr4+hi/Keyj
-         2iZu1umLxJx+cXQ55F/Bmm2r7ALCuowRI7rjw=
+        d=gmail.com; s=20230601; t=1738254577; x=1738859377; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wV/Q4iMIyNa09eZLXS9ucj44Nq4AD7AejWCP2xM+dVo=;
+        b=LKBUF8KfJs+mGVroF5YcSvUhHCs8X7IKB+CzGesqhxu14K0HF+lyw6Mjq9dQcK27I7
+         lP4VRAQTpMqVRrfR5s4wjW6EEQ6ZiHwhuDiVxYK7uVhmQCJvoe3Z9jwG+MkvOGL90xRo
+         HE3VVo/CnSgLrwVC6v/Huio8sZbgUX9ROAZuhbcMTeZQ/gE4QrQ87IjqciF7ReyRznXr
+         kcURbIvQJd9+RB/LDlXkhKOYABYKi7PWOhy+Gtzko2tbq31fiO3H84GV6CkgHNh3YSDE
+         42GHJmNQa3MkO3Z8q5NdOgksIylqDrXn+vw9rchxZtAH50svW1jHD55ArfvGpxylDsXv
+         znaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738254561; x=1738859361;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PaELnFzz9aRPiHl2MvgwZe5wGfHA1Rh3SyrWRVQiS98=;
-        b=l+yu/MNjE7tdM01frwW/0+qt4TZ+iQUD33T5TC4bqL5h0SPYAk19sm5ZpOsHUiQhDA
-         Ojyq6leKrzEDhkf4XFZNwajqbhjR3jd13OMKifzL0tUbVu7D2oDiVY8NLnMAo1ke14BJ
-         8VueZVaXtOVgzzKMFdvvDwy8SaGqL+JZ4THBqxzZmxLWqpY1AbIJfa2pkabHl0Ra9++f
-         Pi5F0avQAWzZXVKzsadgWwTD5qxR4xseyCxZN8TlrRGQm7dnLwqExievD6i3u+gGrA78
-         2eo3extToDfmaTYL3HsrwGGgk+uX/9qzw8TbfMD5g/WraiE5lDP2fFXoaAA/jYpV/rvO
-         RMOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVR1yQVeNgSpFgC25pE3HDZEmeVXjDwy+GYoQPR77b24l86mKD5QBFRLZXt28Yg5GFBhQc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxnnVS+a+P7vwPE6FTef+4e4ZPNmbcGwq9agB3qgCsfVHg0DIZE
-	/VyArUxsbbefBoy/JRKFT/TUaDqhGwFFdi5/+kb5dTiAcg0YqCyoC3jc1quXjUY=
-X-Gm-Gg: ASbGncsAIs4/76Xrh01uW38xF2I5G4/1GzlipxzuvUGe93bc5WomuPoD2wzRgVDxmyt
-	XfpWipckSYTFM3Cqc8hFfb5VT4QGr+bUpI8b2hKV4Rna+7C/h3BY/LrkKRXLizFjQEzuDyYcbC9
-	x6AT2SUH4WnoX1JhlO79yeddbR9pO6AOR62N13LM6dgR7oyZJoTH6seU7VyVOJiwkLuQLQbCol7
-	a+IC61vXI8ebRm2HwstIy8YIfktPWFNfUgCMkmXWYdMqXdlQ2mMbHM4EBoaAyhrXMaWVJrBtIKZ
-	/uOt8DaRa4XMRDGJUImd
-X-Google-Smtp-Source: AGHT+IFMhjJxwdWrG2OptdCx16imUHT/yVI/4gwEFDkVKpzed2hScRedqGpI22WePJd4xDb4S84Whg==
-X-Received: by 2002:a05:622a:114d:b0:46c:791f:bf3e with SMTP id d75a77b69052e-46fd0ba20c4mr121048431cf.48.1738254561168;
-        Thu, 30 Jan 2025 08:29:21 -0800 (PST)
-Received: from LQ3V64L9R2 ([208.64.28.18])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-46fdf0e0d5fsm8544561cf.44.2025.01.30.08.29.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jan 2025 08:29:20 -0800 (PST)
-Date: Thu, 30 Jan 2025 11:29:18 -0500
-From: Joe Damato <jdamato@fastly.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, sridhar.samudrala@intel.com,
-	Shuah Khan <shuah@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
-	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>
-Subject: Re: [RFC net-next 2/2] selftests: drv-net: Test queue xsk attribute
-Message-ID: <Z5uo3ugZB13k1aKW@LQ3V64L9R2>
-Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
-	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-	sridhar.samudrala@intel.com, Shuah Khan <shuah@kernel.org>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
-	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>
-References: <20250129172431.65773-1-jdamato@fastly.com>
- <20250129172431.65773-3-jdamato@fastly.com>
- <20250129180751.6d30c8c4@kernel.org>
+        d=1e100.net; s=20230601; t=1738254577; x=1738859377;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wV/Q4iMIyNa09eZLXS9ucj44Nq4AD7AejWCP2xM+dVo=;
+        b=aqBSue2j8/xT0eNjMNysFVGx19xrg6Rgb30lmsYRZmupaAQsjBdStApqOmm87OQ8Jd
+         1TGjqPmw0XrU2DcAu5oRje19m9aTdfwZYD28wH1q3SzYtEiCp9RN5yxSJ9cMFdOhDfPD
+         8eRyH1hdB8cEM0FPRgp9d48DR0SLZynktstBVLGwSjzDKLy5W2+gmvXkVOtLtnP2mHs8
+         kEtCkzS65GOfJsxqVhZMlm3MYntwO+tkIhLXK+1WbtXRTBTCWgWWvz4gQB3a68Vs6PUB
+         9QdTZBfRNA/iCQ48IIFndhlQICh7S/FV0DCk7GriG9dx3g45bG8K7Ev8nCabaAatw6oF
+         MGwA==
+X-Forwarded-Encrypted: i=1; AJvYcCU3G6OJka3A7DySYse+evSaqi8DH4TXMhFjH1517bX2OJ71RAhZ7L31KUYWLiCHvLFi8qRdRPWIX4PVvodw@vger.kernel.org, AJvYcCUHGWeX+n5sbZ1YIlwoCXCiY5zBzGBmFt+mFCVqbZGXk8LE1ARTbNJO8kj1x6PfegvVEOo=@vger.kernel.org, AJvYcCW2Pf7MZMLagU2cu4/xfWIhnkGH2JHlipMq58mf/sd+e2IcotJzSvx+O9HGWtZW09NkB8SgGCJjc/Pt@vger.kernel.org, AJvYcCWTt92WVHqA6URj7omATtFpg1NadXUwIJBQKFeo4v+yHV+FTC2+Zvxfb/+dxYzZBow7P8r7XqAf@vger.kernel.org, AJvYcCXc7ttGFgykYGtBMI+zIfFiHQ0bsVy/vVThLWpJ2hn/wxhKyFt8seH+q06gSwTDDdu9OKUTmGbl+LdiF3IenOUwVp2+@vger.kernel.org
+X-Gm-Message-State: AOJu0YxavZHDTTAfQJfG9VT7CtIs1U6XhgRO4TIaGicNMK3yP9Oj/+0h
+	goVZ+iZ5n73eCvfzFEA/lVpYYSZjdnrJbhHRjmV9x9ISbKDmUOXERmM6cXqL97EgpXaqKfrbhIz
+	IFlLNjD3i5NC89eceMcHEjcUm3fI=
+X-Gm-Gg: ASbGncvsRb7vqQpplHYn4XZX4YneMwBnTiJywvkf9G8Q1uFePQWBKUmomy6st78A+PT
+	F4LZtXs+nMPhcZexwM5xjzOoL/Fehki6aLOO1a3eCyY5MnHGObkZcR6p1Bz44jL+p7MaWr0M/
+X-Google-Smtp-Source: AGHT+IFLXKEHXdRPQKtUlKTpFBClwElqtFujRaNDgCR0uhVSeBfcTyfd9C16ez7NSn2yoATksDGc2lFC57sQlENrOYs=
+X-Received: by 2002:a05:6870:3d97:b0:29e:5894:9de7 with SMTP id
+ 586e51a60fabf-2b32f2db94dmr5035404fac.33.1738254577059; Thu, 30 Jan 2025
+ 08:29:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250129180751.6d30c8c4@kernel.org>
+References: <20250128145806.1849977-1-eyal.birger@gmail.com>
+ <202501281634.7F398CEA87@keescook> <CAHsH6Gsv3DB0O5oiEDsf2+Go4O1+tnKm-Ab0QPyohKSaroSxxA@mail.gmail.com>
+ <Z5s3S5X8FYJDAHfR@krava> <CAHsH6GvsGbZ4a=-oSpD1j8jx11T=Y4SysAtkzAu+H4_Gh7v3Qg@mail.gmail.com>
+ <202501300756.E473D10@keescook>
+In-Reply-To: <202501300756.E473D10@keescook>
+From: Eyal Birger <eyal.birger@gmail.com>
+Date: Thu, 30 Jan 2025 08:29:26 -0800
+X-Gm-Features: AWEUYZkFf6jiFjy1lLBN3N8px6ZFQpM6-6omMJVzu5RFALoYk-pKTHZMkVyiPjY
+Message-ID: <CAHsH6GtmcDFzxtju1qpE9nyXya3JkKXcyGfvE1MS4UtdyRsHnw@mail.gmail.com>
+Subject: Re: [PATCH v2] seccomp: passthrough uretprobe systemcall without filtering
+To: Kees Cook <kees@kernel.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, luto@amacapital.net, wad@chromium.org, 
+	oleg@redhat.com, mhiramat@kernel.org, andrii@kernel.org, 
+	alexei.starovoitov@gmail.com, cyphar@cyphar.com, songliubraving@fb.com, 
+	yhs@fb.com, john.fastabend@gmail.com, peterz@infradead.org, 
+	tglx@linutronix.de, bp@alien8.de, daniel@iogearbox.net, ast@kernel.org, 
+	andrii.nakryiko@gmail.com, rostedt@goodmis.org, rafi@rbk.io, 
+	shmulik.ladkani@gmail.com, bpf@vger.kernel.org, linux-api@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 29, 2025 at 06:07:51PM -0800, Jakub Kicinski wrote:
-> On Wed, 29 Jan 2025 17:24:25 +0000 Joe Damato wrote:
-> > Test that queues which are used for AF_XDP have the xsk attribute set.
-> 
-> > diff --git a/tools/testing/selftests/drivers/.gitignore b/tools/testing/selftests/drivers/.gitignore
-> > index 09e23b5afa96..3c109144f7ff 100644
-> > --- a/tools/testing/selftests/drivers/.gitignore
-> > +++ b/tools/testing/selftests/drivers/.gitignore
-> > @@ -1,3 +1,4 @@
-> >  # SPDX-License-Identifier: GPL-2.0-only
-> >  /dma-buf/udmabuf
-> >  /s390x/uvdevice/test_uvdevice
-> > +/net/xdp_helper
-> 
-> Let's create our own gitignore, under drivers/net
-> we'll get conflicts with random trees if we add to the shared one
+On Thu, Jan 30, 2025 at 7:57=E2=80=AFAM Kees Cook <kees@kernel.org> wrote:
+>
+> On Thu, Jan 30, 2025 at 07:05:42AM -0800, Eyal Birger wrote:
+> > So if we go with the suggestion above, we'll support the theoretical
+> > __NR_uretprobe_32 for filtered seccomp, but not for strict seccomp, and
+> > that's ok because strict seccomp is less common?
+>
+> It's so uncommon I regularly consider removing it entirely. :)
+>
+> > Personally I'd prefer to limit the scope of this fix to the problem we
+> > are aware of, and not possible problems should someone decide to reimpl=
+ement
+> > uretprobes on different archs in a different way. Especially as this fi=
+x needs
+> > to be backmerged to stable kernels.
+> > So my personal preference would be to avoid __NR_uretprobe_32 in this p=
+atch
+> > and deal with it if it ever gets implemented.
+>
+> That's fine, but I want the exception to be designed to fail closed
+> instead of failing open. I think my proposed future-proof check does
+> this.
 
-OK, SGTM.
+I think it does. I think the code in the patch does too, since it
+avoids the special handling for compat, so defaults to the existing
+behavior which blocks the syscall.
 
-> >  def sys_get_queues(ifname, qtype='rx') -> int:
-> >      folders = glob.glob(f'/sys/class/net/{ifname}/queues/{qtype}-*')
-> > @@ -21,6 +24,31 @@ def nl_get_queues(cfg, nl, qtype='rx'):
-> >          return len([q for q in queues if q['type'] == qtype])
-> >      return None
-> >  
-> > +def check_xdp(cfg, nl, xdp_queue_id=0) -> None:
-> > +    test_dir = os.path.dirname(os.path.realpath(__file__))
-> > +    xdp = subprocess.Popen([f"{test_dir}/xdp_helper", f"{cfg.ifindex}", f"{xdp_queue_id}"],
-> > +                           stdin=subprocess.PIPE, stdout=subprocess.PIPE, bufsize=1,
-> > +                           text=True)
-> 
-> add:
-> 	defer(xdp.kill)
-> 
-> here, to make sure test cleanup will always try to kill the process,
-> then you can remove the xdp.kill() at the end
-
-OK, will do.
-
-> > +    stdout, stderr = xdp.communicate(timeout=10)
-> > +    rx = tx = False
-> > +
-> > +    queues = nl.queue_get({'ifindex': cfg.ifindex}, dump=True)
-> > +    if queues:
-> 
-> if not queues:
-> 	raise KsftSkipEx("Netlink reports no queues")
-> 
-> That said only reason I can think of for no queues to be reported would
-> be that the device is down, which is very weird and we could as well
-> crash. So maybe the check for queues is not necessary ?
-
-I kind of feel like raising is slightly more verbose, which I tend
-to slightly prefer over just a crash that might leave a future
-person confused.
-
-I'll go with the raise as you suggested instead.
+Eyal.
 
