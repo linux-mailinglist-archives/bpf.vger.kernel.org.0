@@ -1,95 +1,241 @@
-Return-Path: <bpf+bounces-50127-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50128-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 638FEA2314C
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 16:58:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9258DA23175
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 17:05:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 457807A2FCB
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 15:57:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B522C1622BC
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 16:04:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 169671EE00A;
-	Thu, 30 Jan 2025 15:57:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D992C1EC00C;
+	Thu, 30 Jan 2025 16:04:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WZELX68b"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MxhCyZfl"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 795421E9B03;
-	Thu, 30 Jan 2025 15:57:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53B1F1EBA02;
+	Thu, 30 Jan 2025 16:04:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738252677; cv=none; b=S3wOnlTOG99cZF4CYxKji5B+TqdEiYAvr/R6PCFTAjlUlFaOHs895N3RiPJegLOJNCqEk8vI1KHbzRUiB1sMpPicg9otLTwUT9WfvdUta7f1y+gKCSmParLCWnH1zuUfW1QFlDH/5Nxoo7vYXXB000H9yJx9nUIXjQ7gCNLpgNk=
+	t=1738253090; cv=none; b=rRpvFiZPGksRGtx6S5MECt2UNFEGU77Mf9uEIm/zO+QlvbnotkmLhGAMpgjcThLb0G1B2g4c7k7dh8v/WVozaKKW1/LeqoRpjDgJKnzW5NpG+u7sIcYiuG9p/OyeLzERqVtr8wW9cKtVogHyVUOXlgiOITPull9X+XpTPGFGtxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738252677; c=relaxed/simple;
-	bh=i8cfMs/k9HJ5wm5pHq74kZZOQOiERYPHzA6jXp4N03Y=;
+	s=arc-20240116; t=1738253090; c=relaxed/simple;
+	bh=AYLbUouqbK4R93QojCgMLxCHxiD6mQwuOuctmWkMZN8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mvKrdX0PsfShrVqjgBnQ2P/yvjgGUjZwAYe/F+IG70/qcE8vnc7XJQ9QJAaMErhx9pkMzQ+ZkM8SrWY3s7XcE+tjBr+SzG8jgdnWRpqODVovSrMn4JLNpSdJkE6Y1UaF2OY0p+khU2HkSx7SBKOt2FKvmaeYiGcteCdUU9UnPeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WZELX68b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D945CC4CED2;
-	Thu, 30 Jan 2025 15:57:56 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Dv23VnxLZBAJAg/IAkyuLlnL6Vk23qfnR7/HWhPzu1lU+Qt90U6Nwvy4bV7sp9yBbvDbNrGkbDPcLmNg7i2BqCRjcxfqQ7/kV5hwi5KlYDt1facGM+KwnfsFIB1fpu5MWVDo4Wt6W7rdZLnVPfBq51YUD04GJQWC3j73hM55JqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MxhCyZfl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B2F5C4CEE0;
+	Thu, 30 Jan 2025 16:04:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738252676;
-	bh=i8cfMs/k9HJ5wm5pHq74kZZOQOiERYPHzA6jXp4N03Y=;
+	s=k20201202; t=1738253089;
+	bh=AYLbUouqbK4R93QojCgMLxCHxiD6mQwuOuctmWkMZN8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WZELX68b1BuCFZFTBIT8CsfTVp+E2ZrNN2lIxjJ6tyVa9RuX8hvCLlIhnkXR2114P
-	 eQnACD+XRvnBaXMLOIm65loKNnxebwjCS9q7AMp1in4a1fpL0bpQX1Btsow7GloeeE
-	 I0109i9lEDz3KIeVbkmprvXVJTPlsyfUg0l4ZF67bDcFLHL4m8E3xmO0a4CtfcoVPH
-	 534AknVwXmLiPmaj3rPfIfcjohMgeAlceGre0tani0Yt5NZPBOJOzWr8uPkQygz+CB
-	 Xq8TvGil3tVyjTuqbu0hDgbwa9wA942lBrXj058azAM3IpsvRfZ+SiChT4izoZ0aoY
-	 INpOo2br4hsMw==
-Date: Thu, 30 Jan 2025 07:57:52 -0800
-From: Kees Cook <kees@kernel.org>
-To: Eyal Birger <eyal.birger@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, luto@amacapital.net, wad@chromium.org,
-	oleg@redhat.com, mhiramat@kernel.org, andrii@kernel.org,
-	alexei.starovoitov@gmail.com, cyphar@cyphar.com,
-	songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-	peterz@infradead.org, tglx@linutronix.de, bp@alien8.de,
-	daniel@iogearbox.net, ast@kernel.org, andrii.nakryiko@gmail.com,
-	rostedt@goodmis.org, rafi@rbk.io, shmulik.ladkani@gmail.com,
-	bpf@vger.kernel.org, linux-api@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2] seccomp: passthrough uretprobe systemcall without
- filtering
-Message-ID: <202501300756.E473D10@keescook>
-References: <20250128145806.1849977-1-eyal.birger@gmail.com>
- <202501281634.7F398CEA87@keescook>
- <CAHsH6Gsv3DB0O5oiEDsf2+Go4O1+tnKm-Ab0QPyohKSaroSxxA@mail.gmail.com>
- <Z5s3S5X8FYJDAHfR@krava>
- <CAHsH6GvsGbZ4a=-oSpD1j8jx11T=Y4SysAtkzAu+H4_Gh7v3Qg@mail.gmail.com>
+	b=MxhCyZfly9ODkHR1ppVjmGHyov234mPSuLrEnnC5wKSSpiNnqZZoiYi/bDd2+wYDt
+	 F9T5ylsfregi7IGtidlH8AEN/x9OztuTWC3ENbBDsXikIhf+4Bcuv/0jeG/0zpJay2
+	 GymoMwgfCrQR4R2ALs9hRgAd7pmHH+hRQmkOP8vlJ3PiG4nL6mZXYDgD0As9sfcwT0
+	 hsHJroU80G20/ld0tUkx7S3tybnkDGr0kk65ELqTDc1IJ+Y6UvyXM/TAcdqDSzOyWY
+	 P+VWGlDF6Y5cr3JqqdUkNNg8g5Xlg6d/MbVCWW2rHkp3bw4H5nAF99SmOB7W/UQfye
+	 aKpQq38z+uaOw==
+Date: Thu, 30 Jan 2025 17:04:42 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Juntong Deng <juntong.deng@outlook.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Linus Torvalds <torvalds@linux-foundation.org>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, 
+	jolsa@kernel.org, memxor@gmail.com, snorcht@gmail.com, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v9 1/5] bpf: Introduce task_file open-coded
+ iterator kfuncs
+Message-ID: <20250130-hautklinik-quizsendung-d36d8146bc7b@brauner>
+References: <AM6PR03MB50801990BD93BFA2297A123599EC2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <AM6PR03MB50802EA81C89D22791CCF09099EC2@AM6PR03MB5080.eurprd03.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHsH6GvsGbZ4a=-oSpD1j8jx11T=Y4SysAtkzAu+H4_Gh7v3Qg@mail.gmail.com>
+In-Reply-To: <AM6PR03MB50802EA81C89D22791CCF09099EC2@AM6PR03MB5080.eurprd03.prod.outlook.com>
 
-On Thu, Jan 30, 2025 at 07:05:42AM -0800, Eyal Birger wrote:
-> So if we go with the suggestion above, we'll support the theoretical
-> __NR_uretprobe_32 for filtered seccomp, but not for strict seccomp, and
-> that's ok because strict seccomp is less common?
+On Mon, Jan 27, 2025 at 11:46:50PM +0000, Juntong Deng wrote:
+> This patch adds the open-coded iterator style process file iterator
+> kfuncs bpf_iter_task_file_{new,next,destroy} that iterates over all
+> files opened by the specified process.
+> 
+> bpf_iter_task_file_next returns a pointer to bpf_iter_task_file_item,
+> which currently contains *task, *file, fd. This is an extensible
+> structure that enables compatibility with different versions
+> through CO-RE.
+> 
+> The reference to struct file acquired by the previous
+> bpf_iter_task_file_next() is released in the next
+> bpf_iter_task_file_next(), and the last reference is released in the
+> last bpf_iter_task_file_next() that returns NULL.
+> 
+> In the bpf_iter_task_file_destroy(), if the iterator does not iterate to
+> the end, then the last struct file reference is released at this time.
+> 
+> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+> ---
 
-It's so uncommon I regularly consider removing it entirely. :)
+I deeply dislike that this allows bpf programs to iterate through
+another tasks files more than what is already possible with the
+task_file_seq_* bpf api.
 
-> Personally I'd prefer to limit the scope of this fix to the problem we
-> are aware of, and not possible problems should someone decide to reimplement
-> uretprobes on different archs in a different way. Especially as this fix needs
-> to be backmerged to stable kernels.
-> So my personal preference would be to avoid __NR_uretprobe_32 in this patch
-> and deal with it if it ever gets implemented.
+This here means that bpf programs have access to all file types that
+exist in the kernel. From general simple filesystem files to pidfds, kvm
+fd, epoll fd, drm fds - anything you can think of. And then do arbitrary
+and ever expanding stuff with those files from the iterator with less
+restrictions (if I'm reading this right) than the task_file_seq_*
+iterator.
 
-That's fine, but I want the exception to be designed to fail closed
-instead of failing open. I think my proposed future-proof check does
-this.
+Possibly even keeping that reference for a long time leading to weird
+EBUSY issues for filesystem shutdown and similar problems.
 
--- 
-Kees Cook
+This is a bad idea. Even in the kernel we only allow this type of
+iteration for procfs and procfs-like usage and there we hold references
+to files from another task for a very short time when we e.g., access
+/proc/<PID>/fd/.
+
+And you already have an iterator for that with task_file_seq_get_*()
+even if it is more work.
+
+I'm also not at all swayed by the fact that this is coming out of an
+effort to move CRIU into bpf just to make things easier. Not a selling
+point as we do have CRIU and I don't think we need to now put more CRIU
+related stuff into the kernel.
+
+So this will not get an ACK from me. I'm putting Al and Linus here as
+well as they might have opinions on this and might disagree with me.
+
+>  kernel/bpf/helpers.c   |  3 ++
+>  kernel/bpf/task_iter.c | 90 ++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 93 insertions(+)
+> 
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index f27ce162427a..359c5bbf4814 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -3157,6 +3157,9 @@ BTF_ID_FLAGS(func, bpf_iter_css_destroy, KF_ITER_DESTROY)
+>  BTF_ID_FLAGS(func, bpf_iter_task_new, KF_ITER_NEW | KF_TRUSTED_ARGS | KF_RCU_PROTECTED)
+>  BTF_ID_FLAGS(func, bpf_iter_task_next, KF_ITER_NEXT | KF_RET_NULL)
+>  BTF_ID_FLAGS(func, bpf_iter_task_destroy, KF_ITER_DESTROY)
+> +BTF_ID_FLAGS(func, bpf_iter_task_file_new, KF_ITER_NEW | KF_TRUSTED_ARGS)
+> +BTF_ID_FLAGS(func, bpf_iter_task_file_next, KF_ITER_NEXT | KF_RET_NULL)
+> +BTF_ID_FLAGS(func, bpf_iter_task_file_destroy, KF_ITER_DESTROY)
+>  BTF_ID_FLAGS(func, bpf_dynptr_adjust)
+>  BTF_ID_FLAGS(func, bpf_dynptr_is_null)
+>  BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
+> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+> index 98d9b4c0daff..24a5af67e6c8 100644
+> --- a/kernel/bpf/task_iter.c
+> +++ b/kernel/bpf/task_iter.c
+> @@ -1027,6 +1027,96 @@ __bpf_kfunc void bpf_iter_task_destroy(struct bpf_iter_task *it)
+>  {
+>  }
+>  
+> +struct bpf_iter_task_file_item {
+> +	struct task_struct *task;
+> +	struct file *file;
+> +	unsigned int fd;
+> +};
+> +
+> +struct bpf_iter_task_file {
+> +	__u64 __opaque[4];
+> +} __aligned(8);
+> +
+> +struct bpf_iter_task_file_kern {
+> +	struct bpf_iter_task_file_item item;
+> +	unsigned int next_fd;
+> +} __aligned(8);
+> +
+> +/**
+> + * bpf_iter_task_file_new() - Initialize a new task file iterator for a task,
+> + * used to iterate over all files opened by a specified task
+> + *
+> + * @it: the new bpf_iter_task_file to be created
+> + * @task: a pointer pointing to the task to be iterated over
+> + */
+> +__bpf_kfunc int bpf_iter_task_file_new(struct bpf_iter_task_file *it, struct task_struct *task)
+> +{
+> +	struct bpf_iter_task_file_kern *kit = (void *)it;
+> +	struct bpf_iter_task_file_item *item = &kit->item;
+> +
+> +	BUILD_BUG_ON(sizeof(struct bpf_iter_task_file_kern) > sizeof(struct bpf_iter_task_file));
+> +	BUILD_BUG_ON(__alignof__(struct bpf_iter_task_file_kern) !=
+> +		     __alignof__(struct bpf_iter_task_file));
+> +
+> +	item->task = get_task_struct(task);
+> +	item->file = NULL;
+> +	item->fd = 0;
+> +	kit->next_fd = 0;
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * bpf_iter_task_file_next() - Get the next file in bpf_iter_task_file
+> + *
+> + * bpf_iter_task_file_next acquires a reference to the struct file.
+> + *
+> + * The reference to struct file acquired by the previous
+> + * bpf_iter_task_file_next() is released in the next bpf_iter_task_file_next(),
+> + * and the last reference is released in the last bpf_iter_task_file_next()
+> + * that returns NULL.
+> + *
+> + * @it: the bpf_iter_task_file to be checked
+> + *
+> + * @returns a pointer to bpf_iter_task_file_item
+> + */
+> +__bpf_kfunc struct bpf_iter_task_file_item *bpf_iter_task_file_next(struct bpf_iter_task_file *it)
+> +{
+> +	struct bpf_iter_task_file_kern *kit = (void *)it;
+> +	struct bpf_iter_task_file_item *item = &kit->item;
+> +
+> +	if (item->file)
+> +		fput(item->file);
+> +
+> +	item->file = fget_task_next(item->task, &kit->next_fd);
+> +	if (!item->file)
+> +		return NULL;
+> +
+> +	item->fd = kit->next_fd;
+> +	kit->next_fd++;
+> +
+> +	return item;
+> +}
+> +
+> +/**
+> + * bpf_iter_task_file_destroy() - Destroy a bpf_iter_task_file
+> + *
+> + * If the iterator does not iterate to the end, then the last
+> + * struct file reference is released at this time.
+> + *
+> + * @it: the bpf_iter_task_file to be destroyed
+> + */
+> +__bpf_kfunc void bpf_iter_task_file_destroy(struct bpf_iter_task_file *it)
+> +{
+> +	struct bpf_iter_task_file_kern *kit = (void *)it;
+> +	struct bpf_iter_task_file_item *item = &kit->item;
+> +
+> +	if (item->file)
+> +		fput(item->file);
+> +
+> +	put_task_struct(item->task);
+> +}
+> +
+>  __bpf_kfunc_end_defs();
+>  
+>  DEFINE_PER_CPU(struct mmap_unlock_irq_work, mmap_unlock_work);
+> -- 
+> 2.39.5
+> 
 
