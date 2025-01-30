@@ -1,116 +1,131 @@
-Return-Path: <bpf+bounces-50092-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50093-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A519A22785
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 02:43:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 481E3A2279E
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 03:08:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D462C3A693D
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 01:43:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F2F21633FD
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 02:07:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E7C91119A;
-	Thu, 30 Jan 2025 01:43:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D85F24B5AE;
+	Thu, 30 Jan 2025 02:07:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="l4RfYCTM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E0d6ylW6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A3731E4A9
-	for <bpf@vger.kernel.org>; Thu, 30 Jan 2025 01:43:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 415E928F3;
+	Thu, 30 Jan 2025 02:07:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738201390; cv=none; b=FiE/5ra5C54oDlGG275gh6j20sWLQN0Q8+L+nawUM0XIGOLggnu/HaF8x/Dq/owYIuoptoZnpd0gn29OvZGTl90ie1ItAXSVmm4ZMvUgkE5rHHIo2r9LdU1mwQ23FoGSRJhUDus4W8p9MD+sBlqcur9ciEX3yN6xJy6qrcKNCaI=
+	t=1738202873; cv=none; b=CIa8uT9929xbTUeOyD5rlKKHiepvRTteGv8s9q1WJtW5wW0/VHfGHv1T9UBzxKSvzQ1QEG4rQ0UgJZn78CDtuiEu/8+SJgdk/Ukt1WyCOUNvvAXS2wdpCWzVWMe0aVek+1pwuecP/9NmXe+FJAiIJIxmwo+pVI2wS927bXcmCWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738201390; c=relaxed/simple;
-	bh=SBrIDrBBtkF/79w3PecySMmiUHoOKHgSqpgs/0y6hNE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RkS5Wzq4TgFCVMYyw4ZNW7ufyeicyVovfzNiRutRAhqewG4sL2Xn9xvD5WXQQLaXI1mCYlVMH8MG4gKd0ICfmnLqPBTClDU9Da3VrRhAw4ke9ved31B/rL6rslZT0vxiiDI3dak4bSK4qMaTTXp+8dqZ/f9SGLQ6H0dry2U97aE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=l4RfYCTM; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-21625b4f978so61135ad.0
-        for <bpf@vger.kernel.org>; Wed, 29 Jan 2025 17:43:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1738201388; x=1738806188; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SBrIDrBBtkF/79w3PecySMmiUHoOKHgSqpgs/0y6hNE=;
-        b=l4RfYCTMU4Ay5ZjNpBwEmc72auFNJDt9x+iR4WQwpPWMZOFG3yR4gZTP4o90YQKER2
-         gi35B94vJhvWO9SepDxmWn5OIaYdFSjBrxtU6zLLV8+XRCqIo1eSaEZwOgWcq4EFmyhh
-         aijERGNXKUflhCs/MID00jZrqvBgoeAdUc5RfhHjZxi7YLXGvW9Op6DiRjeHyEcvmxBt
-         R5rvYxFdeKKCvweBokpeun4FoDqVcbbyD8o+fWZzYGd1ISC7eM2832PzMJdEhcrQ7/D+
-         OFMXXihfmWWkiwLT/iqeShHldbko/eJIAp0My9yweYuluQuF6ljijkBTD40GM5h7MpWk
-         irVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738201388; x=1738806188;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SBrIDrBBtkF/79w3PecySMmiUHoOKHgSqpgs/0y6hNE=;
-        b=Xbl2ttgSMXx3mVapBd/3QFoIVc9Mk9GWxDoCl0uD/HcHoO4ESJKSjvj338gYfKLwNr
-         eTn8De4+q1l37ewMZ/kdO4QlKR5exBrl2F0MVOKcu5hsiA4Zi7uIWF3B/t6vHs9ykhhg
-         Y5MYCkDh/1mowa7B+fvio6DEEYBe6zHstUkA1B9UU/ngC36u7PeeswocaeojME/0aerI
-         qyXNOznRexbMqCAcCAgBtMZLUMrMKkEclQOOVModQoyJXO7AnnBFj+MePC6Oj4hdBf99
-         LJC/90IR/80CRdF324u+ADFwhKYA4QI8VywfNmBNJMu2+Q1AuzHJy8H9vX+qjU9AxXM9
-         Bbdg==
-X-Forwarded-Encrypted: i=1; AJvYcCU51Oi7QPMEVzoFWWUKZpZbhhI428IstItcIatzU4pwTZlAbJDBGWebtYCl5DDK2aoz4pc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxk2sKqLmP0ofF+ITbw8MG/gF1+ZSHmxNnb3PZ2efOSn7JSrQWF
-	vVcJMBjzUsY4Paox5bCJAMtiu/gXA9E8k2oV2/gfO+X9NwsIXLXqCgU2YTtOhDck3MUiBC8zJMc
-	3ghCXFBo4YxSd9U68dVnx8tvZy6PQ6hoAODah
-X-Gm-Gg: ASbGncugAVMOuspJLFfmWU+9A10K/h/ihy9twHJPZQia2unQsY61/Ax+MY678C+RwsS
-	4neCYSUZS7XFgsVNXzwXMCyiCm2JGWGgK2hshQVI3VZPt7OeoiGHjdpzHi6uydCqxquxahIPhuY
-	oyr1UrQ8UlgiTWS5hCB9g7kK9rGg==
-X-Google-Smtp-Source: AGHT+IFF+EXsap9Y27G6hz0CAJByVSDh+P99ewgvmlhQ71vPlZxj38LxmsstN3A/4vUoyv0Jc3jSEymzYndsjg49I9g=
-X-Received: by 2002:a17:903:1450:b0:215:79b5:aa7e with SMTP id
- d9443c01a7336-21de3697386mr728395ad.13.1738201386787; Wed, 29 Jan 2025
- 17:43:06 -0800 (PST)
+	s=arc-20240116; t=1738202873; c=relaxed/simple;
+	bh=ojgfQkn3Kkd9q23VDwOsl3QP/6qNttcggfPTEkNxGw4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kT5GfJIR/XlTx14o0n5eIB07aYiU91jyJuanKLQbo+NHUMKiL2tloZOhfUiVJp/UmBAaQ0qfHCf31HGImADDF8lY/Rfchz1jzfbRfNM9mF2QXmh+Z2uLPj0gRXjoDvVJF0Hho9XAj79tuhfnB6vbBiGGDacWd+gyJPEaYet9rho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E0d6ylW6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B84FC4CED1;
+	Thu, 30 Jan 2025 02:07:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738202872;
+	bh=ojgfQkn3Kkd9q23VDwOsl3QP/6qNttcggfPTEkNxGw4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=E0d6ylW6U0fPppPk4GxypN0u9hj+bxJyVFUhdZ9GSAxpeM2hNgzum10uUadjMAx/K
+	 PGCbLQRthqGiXRs/PEOwjaCChcGTPx/MAEYIU54b8Ok44L89c+Qhfy1Scs6FaWXhF9
+	 DMtRLTH2TMfB/uJ2jBmmyDkKcsiWXbHJ5jLlWvUcNZjKtp8MCXZ5LVgnVrQMx1ogtk
+	 qnG2THe+cxwufk9rudL1YAmnKs7vGhC8ZueUb+QqrYQtAm7yevCza5fAo9mVj26sYu
+	 pPPiBJUnKLRGxJXF3bK2G2Bo9OUL0EaQUSucKV+Dor6JCTmXMPyElFuauwPSX5J0Bi
+	 69HVOAlvel1XA==
+Date: Wed, 29 Jan 2025 18:07:51 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Joe Damato <jdamato@fastly.com>
+Cc: netdev@vger.kernel.org, sridhar.samudrala@intel.com, Shuah Khan
+ <shuah@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
+ Fastabend <john.fastabend@gmail.com>, linux-kernel@vger.kernel.org (open
+ list), linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST
+ FRAMEWORK), bpf@vger.kernel.org (open list:XDP (eXpress Data
+ Path):Keyword:(?:\b|_)xdp(?:\b|_))
+Subject: Re: [RFC net-next 2/2] selftests: drv-net: Test queue xsk attribute
+Message-ID: <20250129180751.6d30c8c4@kernel.org>
+In-Reply-To: <20250129172431.65773-3-jdamato@fastly.com>
+References: <20250129172431.65773-1-jdamato@fastly.com>
+	<20250129172431.65773-3-jdamato@fastly.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJj2-QEtASHEfiYuoKrfx7n1UjDS1e+aF0LdYB5vhBUUS3cq8g@mail.gmail.com>
- <20250109114847.539237-1-tianmuyang@huawei.com>
-In-Reply-To: <20250109114847.539237-1-tianmuyang@huawei.com>
-From: Yuanchu Xie <yuanchu@google.com>
-Date: Wed, 29 Jan 2025 17:42:50 -0800
-X-Gm-Features: AWEUYZkCm7GZHqoTF_LkSbJKMKMuuvsnPLq00Zdm0WDkQiuhx53xxjCw08WuEgU
-Message-ID: <CAJj2-QFH=8=ggYuy9Wb29VKbW+39GxvSPfQ89JXs=5eNYLxfjg@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/2] mm: multi-gen LRU: per-process heatmaps
-To: Muyang Tian <tianmuyang@huawei.com>
-Cc: Michael@michaellarabel.com, akpm@linux-foundation.org, bpf@vger.kernel.org, 
-	corbet@lwn.net, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	liuxin350@huawei.com, liwei883@huawei.com, wuchangye@huawei.com, 
-	xiesongyang@huawei.com, yanan@huawei.com, yuzhao@google.com, 
-	zhangmingyi5@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 9, 2025 at 3:48=E2=80=AFAM Muyang Tian <tianmuyang@huawei.com> =
-wrote:
->
-> Hi Yuanchu,
->
-> I'm working on observability and the programmable page generation policy =
-of MGLRU based on eBPF, using a similar approach to yours.
-> I'd like to know if there is any related work, such as the application of=
- eBPF in MGLRU?
-Not that I'm aware of. There were some patches fiddling with the
-generation placement of pages but I can't seem to find them.
+On Wed, 29 Jan 2025 17:24:25 +0000 Joe Damato wrote:
+> Test that queues which are used for AF_XDP have the xsk attribute set.
 
-> Also, this RFC provides a user space interface to call run_aging(), which=
- is called periodically in the demo.
-> Do you plan to optimize this, perhaps by calling run_aging() based on pag=
-e access observation results?
-Right now I don't have any plans to optimize this patch series. What
-are your use cases? All I cared about was one off observability of
-accesses and not much thought went into optimizing the tool.
+> diff --git a/tools/testing/selftests/drivers/.gitignore b/tools/testing/selftests/drivers/.gitignore
+> index 09e23b5afa96..3c109144f7ff 100644
+> --- a/tools/testing/selftests/drivers/.gitignore
+> +++ b/tools/testing/selftests/drivers/.gitignore
+> @@ -1,3 +1,4 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  /dma-buf/udmabuf
+>  /s390x/uvdevice/test_uvdevice
+> +/net/xdp_helper
 
-Thanks,
-Yuanchu
+Let's create our own gitignore, under drivers/net
+we'll get conflicts with random trees if we add to the shared one
+
+>  def sys_get_queues(ifname, qtype='rx') -> int:
+>      folders = glob.glob(f'/sys/class/net/{ifname}/queues/{qtype}-*')
+> @@ -21,6 +24,31 @@ def nl_get_queues(cfg, nl, qtype='rx'):
+>          return len([q for q in queues if q['type'] == qtype])
+>      return None
+>  
+> +def check_xdp(cfg, nl, xdp_queue_id=0) -> None:
+> +    test_dir = os.path.dirname(os.path.realpath(__file__))
+> +    xdp = subprocess.Popen([f"{test_dir}/xdp_helper", f"{cfg.ifindex}", f"{xdp_queue_id}"],
+> +                           stdin=subprocess.PIPE, stdout=subprocess.PIPE, bufsize=1,
+> +                           text=True)
+
+add:
+	defer(xdp.kill)
+
+here, to make sure test cleanup will always try to kill the process,
+then you can remove the xdp.kill() at the end
+
+> +    stdout, stderr = xdp.communicate(timeout=10)
+> +    rx = tx = False
+> +
+> +    queues = nl.queue_get({'ifindex': cfg.ifindex}, dump=True)
+> +    if queues:
+
+if not queues:
+	raise KsftSkipEx("Netlink reports no queues")
+
+That said only reason I can think of for no queues to be reported would
+be that the device is down, which is very weird and we could as well
+crash. So maybe the check for queues is not necessary ?
+
+> +        for q in queues:
+> +            if q['id'] == 0:
+> +                if q['type'] == 'rx':
+> +                    rx = True
+> +                if q['type'] == 'tx':
+> +                    tx = True
+> +
+> +                ksft_eq(q['xsk'], 1)
+> +            else:
+> +                ksft_eq(q['xsk'], 0)
+> +
+> +    ksft_eq(rx, True)
+> +    ksft_eq(tx, True)
+> +    xdp.kill()
 
