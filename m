@@ -1,152 +1,151 @@
-Return-Path: <bpf+bounces-50155-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50156-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B07FA2345F
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 20:04:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B9A5A234A2
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 20:22:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9B31166B4B
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 19:04:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB4AB18877EF
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 19:22:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A3B91F2C4F;
-	Thu, 30 Jan 2025 19:03:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CA291F03EE;
+	Thu, 30 Jan 2025 19:22:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GqRWktmD"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Womg4p6g"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 988001F190E;
-	Thu, 30 Jan 2025 19:03:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 717CE1946C8
+	for <bpf@vger.kernel.org>; Thu, 30 Jan 2025 19:22:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738263800; cv=none; b=FOfm6nsEcMOK6mJZ2cltZn+HF8pVb5aDsYept4i+SeWHpig9g+yeEQfmM9gwnWzbEwvAv/J7AnAo43ZZwk1qiSpyv3uFFW2CzZDxNllyinrWyDlev1SMUW0mYtmv5ug3373S0SOhwk6WWJh2QZNCOAHBQx2TJH4q38tOyePd3/k=
+	t=1738264952; cv=none; b=Kgt/TD3MSOeuUW1lVLV59CPrdN/EzkHLarLy5BDIq9kylujA4b0+KTUNyMSOIpOUhtG9F56XdQdX8s2Zw/3OBPo0VUz4/8JlcEDlUZA1TkMhYqCf2nkN3HzhF166dKFqEroBfJ8pHk+onaC9VvqUCAY0hho1jiEuuDdqx89ETys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738263800; c=relaxed/simple;
-	bh=9y2DzeCgvyMVVNxPX0RVQZZ22Kzqmwq2K+TRXJQVSOY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SiZo2apy6p/7+6jzoo+0o+XXF9YHZhnJMVuaW/ctPGCmri1rpMYCIuWQwsTqabcn/yh+uczN87JAIenPZUZW+BKnhAb2j5GzLUuvYm6aQ1G9hwDgaCIjnlXm5VTWNSGONZalePe8BWD0CqgtJzIgXRbpd2JvAvWZOK3FYbTN+dE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GqRWktmD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1006C4CEE7;
-	Thu, 30 Jan 2025 19:03:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738263800;
-	bh=9y2DzeCgvyMVVNxPX0RVQZZ22Kzqmwq2K+TRXJQVSOY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GqRWktmD34aYw8VgnC8lk+5SrM6a0gf+ibzG/raLratfYA2p2BOWwOiZRvmi5C5KH
-	 D0iN5bp4HRXa946NgB1BsyP1WVfkHl8sYqL4fELp2m6zacNqvfD7JHKJHKnqYzDcVK
-	 vn28dp5KcwYIgGtWpxsl47bmcanHNviz/8dXm8k8/39Hnwg4lkolyYcX33XT0VxGtt
-	 rjWxQkVhfyPFsbGgEMF+r8GO559DsDi0xpNOIPoaOYCWmBDOZBAPEfT+g3bUXcv9d4
-	 3NR/h6ocy9O5IR5/O+grCedkOEAzH2WXRuSnfPPsQnvFGR9NBok64RbjX+9lgcLA6i
-	 IfVAmBI694oHg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 12516CE3991; Thu, 30 Jan 2025 11:03:19 -0800 (PST)
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	bpf@vger.kernel.org
-Subject: [PATCH rcu v2] 19/20] srcu: Add srcu_down_read_fast() and srcu_up_read_fast()
-Date: Thu, 30 Jan 2025 11:03:16 -0800
-Message-Id: <20250130190317.1652481-19-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <1034ef54-b6b3-42bb-9bd8-4c37c164950d@paulmck-laptop>
-References: <1034ef54-b6b3-42bb-9bd8-4c37c164950d@paulmck-laptop>
+	s=arc-20240116; t=1738264952; c=relaxed/simple;
+	bh=/aXGolVDaF89KuwFQW6YStqg8fmce1uptGjA3T/4oR0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=AHC9XWmvg5a+sExcu3eDsH/dUjFPhOCarXNxhYV9S7s5CMMoWXXK7rTmhAhxnoJfr/oWzVtNHBmfPigkumflSFSjw5ieKeQ33flOyO2hIIgFexAcMPQJuUSSk14NibB34GkHoaSQe3yCMbmsDUHPv8wuX0UoGlJhyR8TARiIPGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Womg4p6g; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from narnia (unknown [167.220.2.28])
+	by linux.microsoft.com (Postfix) with ESMTPSA id C67FA2050D86;
+	Thu, 30 Jan 2025 11:22:27 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C67FA2050D86
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1738264951;
+	bh=1Wxtgc+rWjpEWpro0orsbTWfBz150ZJKvr8BwpGNbJI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=Womg4p6gNQ4DpkA25AF+Cv3TeyZNWNACETAqpm08u8/VB/79lvowIhiANf8NzFXMH
+	 Nu2TDt7EyERk/JpVl1+nEVVUIcoCxrbXEMZURirZ2CV85k8+7kPzrslyMktEvbCHrx
+	 KKeRZtO+ep2G9bk96EJmHp1A5t9DVDBYcgZh84CU=
+From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+To: Cong Wang <xiyou.wangcong@gmail.com>
+Cc: bpf@vger.kernel.org, nkapron@google.com, teknoraver@meta.com,
+ roberto.sassu@huawei.com, gregkh@linuxfoundation.org, paul@paul-moore.com,
+ code@tyhicks.com, flaniel@linux.microsoft.com,
+ alexei.starovoitov@gmail.com, daniel@iogearbox.net,
+ john.fastabend@gmail.com
+Subject: Re: [POC][RFC][PATCH] bpf: in-kernel bpf relocations on raw elf files
+In-Reply-To: <Z5rSIaXf4Fm5jeRf@pop-os.localdomain>
+References: <20250109214617.485144-1-bboscaccy@linux.microsoft.com>
+ <Z5rSIaXf4Fm5jeRf@pop-os.localdomain>
+Date: Thu, 30 Jan 2025 11:22:24 -0800
+Message-ID: <874j1gf6of.fsf@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-A pair of matching srcu_read_lock_fast() and srcu_read_unlock_fast()
-invocations must take place within the same context, for example, within
-the same task.  Otherwise, lockdep complains, as is the right thing to
-do for most use cases.
+Cong Wang <xiyou.wangcong@gmail.com> writes:
 
-However, there are use cases involving tracing (for example, uretprobes)
-in which an SRCU reader needs to begin in one task and end in a
-timer handler, which might interrupt some other task.  This commit
-therefore supplies the semaphore-like srcu_down_read_fast() and
-srcu_up_read_fast() functions, which act like srcu_read_lock_fast() and
-srcu_read_unlock_fast(), but permitting srcu_up_read_fast() to be invoked
-in a different context than was the matching srcu_down_read_fast().
+> Hello Blaise,
+>
 
-Neither srcu_down_read_fast() nor srcu_up_read_fast() may be invoked
-from an NMI handler.
+Hi!
 
-Reported-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: <bpf@vger.kernel.org>
----
- include/linux/srcu.h | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+> On Thu, Jan 09, 2025 at 01:43:42PM -0800, Blaise Boscaccy wrote:
+>> 
+>> This is a proof-of-concept, based off of bpf-next-6.13. The
+>> implementation will need additional work. The goal of this prototype was
+>> to be able load raw elf object files directly into the kernel and have
+>> the kernel perform all the necessary instruction rewriting and
+>> relocation calculations. Having a file descriptor tied to a bpf program
+>> allowed us to have tighter integration with the existing LSM
+>> infrastructure. Additionally, it opens the door for signature and provenance
+>> checking, along with loading programs without a functioning userspace.
+>> 
+>> The main goal of this RFC is to get some feedback on the overall
+>> approach and feasibility of this design.
+>> 
+>> A new subcommand BPF_LOAD_FD is introduced. This subcommand takes a file
+>> descriptor to an elf object file, along with an array of map fds, and a
+>> sysfs entry to associate programs and metadata with. The kernel then
+>> performs all the relocation calculations and instruction rewriting
+>> inside the kernel. Later BPF_PROG_LOAD can reference this sysfs entry
+>> and load/attach previously loaded programs by name. Userspace is
+>> responsible for generating and populating maps.
+>> 
+>> CO-RE relocation support already existed in the kernel. Support for
+>> everything else, maps, externs, etc., was added. In the same vein as
+>> 29db4bea1d10 ("bpf: Prepare relo_core.c for kernel duty.")
+>> this prototype directly uses code from libbpf.
+>> 
+>> One of the challenges encountered was having different elf and btf
+>> abstractions utilized in the kernel vs libpf. Missing btf functionality
+>> was ported over to the kernel while trying to minimize the number of
+>> changes required to the libpf code. As a result, there is some code
+>> duplication and obvious refactoring opportunities. Additionally, being
+>> able to directly share code between userspace and kernelspace in a
+>> similar fashion to relo_core.c would be a TODO.
+>
+> I recently became aware of this patchset through Alexei's reference
+> in another thread, and I apologize for my delayed involvement.
+>
+> Upon reviewing your proposed changes, I have concerns about the scope
+> of the kernel modifications. This implementation appears to introduce
+> substantial code changes to the kernel (estimated at approximately
+> 1,000+ lines, though a git diff stat wasn't provided).
+>
 
-diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-index 317eab82a5f0..900b0d5c05f5 100644
---- a/include/linux/srcu.h
-+++ b/include/linux/srcu.h
-@@ -281,6 +281,24 @@ static inline struct srcu_ctr __percpu *srcu_read_lock_fast(struct srcu_struct *
- 	return retval;
- }
- 
-+/**
-+ * srcu_down_read_fast - register a new reader for an SRCU-protected structure.
-+ * @ssp: srcu_struct in which to register the new reader.
-+ *
-+ * Enter a semaphore-like SRCU read-side critical section, but for
-+ * a light-weight smp_mb()-free reader.  See srcu_read_lock_fast() and
-+ * srcu_down_read() for more information.
-+ *
-+ * The same srcu_struct may be used concurrently by srcu_down_read_fast()
-+ * and srcu_read_lock_fast().
-+ */
-+static inline struct srcu_ctr __percpu *srcu_down_read_fast(struct srcu_struct *ssp) __acquires(ssp)
-+{
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && in_nmi());
-+	srcu_check_read_flavor_force(ssp, SRCU_READ_FLAVOR_FAST);
-+	return __srcu_read_lock_fast(ssp);
-+}
-+
- /**
-  * srcu_read_lock_lite - register a new reader for an SRCU-protected structure.
-  * @ssp: srcu_struct in which to register the new reader.
-@@ -400,6 +418,22 @@ static inline void srcu_read_unlock_fast(struct srcu_struct *ssp, struct srcu_ct
- 	__srcu_read_unlock_fast(ssp, scp);
- }
- 
-+/**
-+ * srcu_up_read_fast - unregister a old reader from an SRCU-protected structure.
-+ * @ssp: srcu_struct in which to unregister the old reader.
-+ * @scp: return value from corresponding srcu_read_lock_fast().
-+ *
-+ * Exit an SRCU read-side critical section, but not necessarily from
-+ * the same context as the maching srcu_down_read_fast().
-+ */
-+static inline void srcu_up_read_fast(struct srcu_struct *ssp, struct srcu_ctr __percpu *scp)
-+	__releases(ssp)
-+{
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && in_nmi());
-+	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_FAST);
-+	__srcu_read_unlock_fast(ssp, scp);
-+}
-+
- /**
-  * srcu_read_unlock_lite - unregister a old reader from an SRCU-protected structure.
-  * @ssp: srcu_struct in which to unregister the old reader.
--- 
-2.40.1
+Yes, it ended up way bigger than I anticipated. The ultimate goal of
+that was to be able to conditionally compile parts of libbpf directly
+into the kernel and unify the btf and elf libraries. That refactoring
+work was way out of scope for a PoC. 
 
+> If the primary objective is eBPF program signing, I would like to
+> propose an alternative approach: a two-phase signing mechanism that
+> eliminates the need for kernel modifications. My solution leverages
+> the existing eBPF infrastructure, particularly the BPF LSM framework.
+> So the fundamental architectural difference between these two approaches
+> is pretty much kernel-based versus userspace implementation, which has
+> been extensively discussed and debated within the kernel community.
+>
+
+Code signing, secure system design and supply-chain attack mitigations
+are some active research areas that we are exploring. BPF programs have
+some interesting ramifications on those topics. Attacks that were
+previously demonstrated in CVE-2021-3444 are an area of interest as
+well. 
+
+> I have also developed a proof-of-concept implementation, which is
+> available for review at: https://github.com/congwang/ebpf-2-phase-signing
+>
+
+Sweet, I'll take a look. It sounds super interesting! At a quick
+glance, it looks like your approach would probably benefit from John's
+suggestions for early-boot un-unloadable bpf programs. 
+
+What are your use cases for signature verification if you don't mind me
+asking?
+
+> I welcome your thoughts and feedback on this alternative approach.
+>
+> Thanks!
+
+-blaise
 
