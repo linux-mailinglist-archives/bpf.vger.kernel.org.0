@@ -1,197 +1,133 @@
-Return-Path: <bpf+bounces-50086-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50087-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C74DAA22756
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 01:51:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4385A22758
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 01:54:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DCE6164434
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 00:51:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00F413A3981
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 00:54:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E7E61F16B;
-	Thu, 30 Jan 2025 00:51:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30EDB182BC;
+	Thu, 30 Jan 2025 00:54:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="buuoEBfU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f9bMUtUo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A88688BEC;
-	Thu, 30 Jan 2025 00:51:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B0547482
+	for <bpf@vger.kernel.org>; Thu, 30 Jan 2025 00:54:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738198280; cv=none; b=tfQQmJtAOZLZBNuotAsXxrcTHr2hf2k3SWkOhNB+Z4yYfT2L5YavXuZ/CwhJi59/gMgTt+c9fSy/T+DnMmCy2vmWd+ZrhbSQK7QcYnRRvvr1XlpnBkh/wd+5ueYOis0iDgrq16P8Z1oFaW8rpYqZczDvgGtqXCHKpPD5zfVrANA=
+	t=1738198450; cv=none; b=RGa90hG0BhEgyggx/Ckzy3Vft2FVhrrNn7v1ygB+sI3v0rHCIfEMVa8ZuKaSTSvuxkH1NFG8xgh4CwS7MXe6gaaavXw6thPDE7Wr3tvkPlTcAH4zhp3mcClRz854se05pZEgwWbQqo51L5iNk2s5XxAEidzDx6bP5rX1jlAC7bI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738198280; c=relaxed/simple;
-	bh=jCfUknLaS1CyXTihImqPVo1F8ohfKeiPfI+MZmVjZ7g=;
+	s=arc-20240116; t=1738198450; c=relaxed/simple;
+	bh=iAtJTU92MnDiRlu74jBo3Jthapsj0P4EQtYv39B6I0Y=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JwPIf6NH4+SaZrR9GDSBRF9RuRoGG87vfNodLtZbbTy+j4BEel+VWEZ+A0Y3MKhMdY3TqnykK+VB6JkqH1G6XLNTHmcjdvFa2u625x7T+thG1sp/JflYFwKnOCL2Ar937cjJcBG6WGHvxlmjP/ulfCMZ3jsQi8dI0muyuE9r7a0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=buuoEBfU; arc=none smtp.client-ip=209.85.214.175
+	 To:Cc:Content-Type; b=LbiLeP8mzGw+H+6KREyzY9O4HBoSuFmhPzMyKwbQLbl8Ut/eNU5Efs+DQ3jw8rUXJFVZAJyZ2MbFFCMKrTU0BRhjKoHr75keKYCm+kl9dP4UByQ5EVDLvJERj43LiDCco4/X9+gY15G1v/GZ44sVUt0dshv8xQjduX+h2ItKCQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f9bMUtUo; arc=none smtp.client-ip=209.85.221.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2156e078563so3006845ad.2;
-        Wed, 29 Jan 2025 16:51:17 -0800 (PST)
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-385e1fcb0e1so120252f8f.2
+        for <bpf@vger.kernel.org>; Wed, 29 Jan 2025 16:54:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738198277; x=1738803077; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1738198447; x=1738803247; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UfbNo5NJ7RPH7bh4Cu1MrHcyTN0KV+XSd/Gkhk5up30=;
-        b=buuoEBfUp/fBzkOHNnYZUOPDqNNYXeIV4UqFgGUlzuwln176QUJrROqSJWjJmY9d3i
-         I5WXLg/GX9i8G35t00qZ4w4DLeGhMzBtqajl15GZ0+p0kSLtgsGFXLAd3/yTbpZ/9CUQ
-         HXfnSailYKCs5uS/aL24O8Ei1mNVxFc/ZVU/XTKAsYniZr5BGfy2LKJ93lmF799nXfYL
-         sBrXlxustn5LkW1b7gV2HSkCrShmaxinuuU4CU0SO0FWetagGSui6LkP/koxZCdXKEPZ
-         WA1BoDTov4uScaT4blqBZNzYZYO+/v07yMBXvZlHPEWSmHvYCashw/XHeBxum9nUD+/c
-         aUfg==
+        bh=72JoaOAIxiFEEkcXBAjJ6H5RaF5TUObKLM9qdY59p8s=;
+        b=f9bMUtUoq3yVpUwSb9ymEL4koulPbrQiI+SrMxrgNZBQF5pxOa3ykl01foZymLzXct
+         jq6ZKGPiDCI7rEOP4QZOBGNmyjHAF2P8w1ZUg4IpjR+Eo2C21K8VBGtNJ76bUIpWmOOP
+         sh/p315B5eJeml32CVYaukPl5Brw886nXOfSYT6/INC5rNeBEVUPTc+BwwrXNXPdKMZA
+         ERmvmcvWSLg8V0VXYQYoZQSfBNDHp4Jjrw+0mX8+FvuWM5Da6u3C+AK5L4DJRmFyrVau
+         6lOFbQhsRDwan9JpcJ9OsGhUNuO8UuIo3n3qAiHGXDa20aPKLNL9HEuuLHVyK/JfjP3G
+         Gj2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738198277; x=1738803077;
+        d=1e100.net; s=20230601; t=1738198447; x=1738803247;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UfbNo5NJ7RPH7bh4Cu1MrHcyTN0KV+XSd/Gkhk5up30=;
-        b=NUgK5HkeBxdzSz6vpd5Gm7WLbO8w8Vq3B6rxlQeQCQfpeukQrQaI9P8dqUpQLP89+i
-         0VY0k9Fvc50QkXjxfrvrzCXziEVMpkywmqUiotaSTk71POpVQsXNn1rqz6GReteyvHHc
-         2f1nSwxQte4BgZSVX+d9BZ4+fW2S/lVKV8CxmLA4M2kh+rJ9EhxAjwcbMzd/3/U+62Qg
-         yQRpdLa6XEMMAC5tPs+VSLRgu5M6PnQVmQav8OPk8T7oHa6Abn1+cei46fkST6vW1NnY
-         s+kt4LetIq35G3tjxNAplczVqbkjvw48onhrZ9hqpX+HtLgQ45ES6UnGwQkqBymx2SVK
-         mK6w==
-X-Forwarded-Encrypted: i=1; AJvYcCUkkHx9Q14QjUN+0bEDc6kTxIOvE1dCNfeYHdmdZo008VS+4J+vEbU57kAkZRrh1kRWBcjAKC1ArojTkWmF@vger.kernel.org, AJvYcCUtQhebWLThWl73qsmOpe51VCZjQrS1y3srX4wCoC5XuCyMQcQ9hQneynNMF6XY3tktD7eNLNOea48qLZU=@vger.kernel.org, AJvYcCVyodWruTKBs6E86KBK5GSK2G3YS0CwKrQKA4QjS/B/hLp1hduxicx+g5+71kfsp5PfZNc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy8ZGZ+RwkPFH+KOhf7LbAExcIy+2cufwwAq4lGJaztcJHmd8Mk
-	3X6KVvdea+faCzNafZHpR622Te4XKk9mN73FlhZDt9Qp2ZsfVZEmHn0FJpg7+f31DR6KW1AALht
-	APj8a4h1ZPY7P02k6UBS9IJMGo5M=
-X-Gm-Gg: ASbGnctv21NgM4SxELKXZCU1bfU7DnzksnqLH1eqy1FMy6NXs9fI/fl41YaGj746xi5
-	PV5iZfl/8emqt3WzGfS9gQ+AHiwwCWdsCLkSKMwaS7NKxxY9U0wCUScuSn6QY3ZER/V1Zu93pLu
-	jkrRWYHiDFchpn
-X-Google-Smtp-Source: AGHT+IGgaBMbfH+DAGW8rfwUFWjT/jC/KKLsk8AdYQ5680s3xyLzrfazlu6u+aG3v6IXn4AndfWzjwNBFBA528z2ehc=
-X-Received: by 2002:a05:6a20:9c8e:b0:1e1:b1bb:87a0 with SMTP id
- adf61e73a8af0-1ed7a6b79d7mr11003646637.34.1738198276838; Wed, 29 Jan 2025
- 16:51:16 -0800 (PST)
+        bh=72JoaOAIxiFEEkcXBAjJ6H5RaF5TUObKLM9qdY59p8s=;
+        b=iFti7OWhMjLV18aNsqdxP9ycvbqKfTmf5kGL5hOq8seiAm5qI7vtFCWItI5cgA+iTx
+         nEKgEdMu3pS7BgXhKKuHaa3L1QxHTpUG0DJzAMZfhYH8siJAf0S63yI+hHFZmrN5Ap8W
+         ylqeU9VlQU7109UCmOkUGtfvaKhkayAuQB2ViNYctMaBPfvAHgS9gYNWAto/6ijujRGf
+         nqxYu3g3Hx40kAdcC67ajRSIvi2Hhc6ssLUT141unIo8LkH+8VxIhPnJDW1S+ps6bhLg
+         Yqnm/cBWGJzLIe2lAttxcxhhlWeH0wuS/afRqJDeBXxxEEG7pfx0w1Jwt3ucdXTaj74J
+         tEEw==
+X-Forwarded-Encrypted: i=1; AJvYcCV6y6Z2aihM1lfRPrLt9ueyQJqcNqrMugu8hlicLJHivEqzCSnGQCZYvxinH6VpxWf9Z5s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YybQvNGFDG4B1Qbi0RJuKvpWCi5CwBOXz5WmZplbHFnApU7VK/m
+	RG++5/zDretWx8C5KxyeXaOukByrHQ/Os8UD2YQN6f2g4uHDVqwYWQ08z3XxwkrAPGSchquMQIS
+	OHMrZUVgsbFI1+yq7qOUu+t5ZGOu7ru1E
+X-Gm-Gg: ASbGncvTLKYJ5FetW/ug0WfGqwRgiNT4jlN+T1d30zGRL0MYFZBfWiJGcyY8tabLbqq
+	FIHG5x1VDPJ6uTOSW0EbQct43CVfQmAR2pDvJrZGlS1V+AG0StnlCWFYJD35sVj6Xivx4ZXH6Jr
+	x8DdyTJsFkm4NpVKX8Fq3MxPa7eXzI
+X-Google-Smtp-Source: AGHT+IHKATYhSehRnXa8c5MNH5ecqyLXPQ48/NRKsR+rTSaZtkPDStbrNIlTRorxD6AK5ATmoYORiDavRArlF/NwsDM=
+X-Received: by 2002:a5d:47c8:0:b0:385:ef39:6cd5 with SMTP id
+ ffacd0b85a97d-38c51930cfdmr4188949f8f.1.1738198446796; Wed, 29 Jan 2025
+ 16:54:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250123081950.173588-1-jinghao7@illinois.edu>
- <20250123081950.173588-3-jinghao7@illinois.edu> <CAEf4BzbCm4=NLV4DOyRxvxEtZUONzqmXBOFMp5cg=4hPEEYUtA@mail.gmail.com>
- <2sxhtfdzspkn5umtfpxiueb67v4jhl3nad6i66qtfry52o7sip@nm5oeplybppa> <501166cc-02fe-431c-9258-c2f44227ebc4@illinois.edu>
-In-Reply-To: <501166cc-02fe-431c-9258-c2f44227ebc4@illinois.edu>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 29 Jan 2025 16:51:02 -0800
-X-Gm-Features: AWEUYZn8HiygP7sKOljXPFeDY8nAwVLLg472aD4TUx7AZvMx7otTHm9d20Mh5j4
-Message-ID: <CAEf4BzbYUsPzyVkDOKYhKc+Gs4O=mZExJ1_gc=t1siMz8kvn2Q@mail.gmail.com>
-Subject: Re: [PATCH bpf v2 2/2] samples/{bpf,hid}: fix broken vmlinux path for VMLINUX_BTF
-To: Jinghao Jia <jinghao7@illinois.edu>
-Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Jiri Kosina <jikos@kernel.org>, 
-	Masahiro Yamada <masahiroy@kernel.org>, Nicolas Schier <n.schier@avm.de>, Ruowen Qin <ruqin@redhat.com>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-input@vger.kernel.org
+References: <eac5f55f-8aeb-4a6d-9aca-820c5ad4c3a7@linux.dev>
+In-Reply-To: <eac5f55f-8aeb-4a6d-9aca-820c5ad4c3a7@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 29 Jan 2025 16:53:55 -0800
+X-Gm-Features: AWEUYZllKPgiR4uW7aB6o9CPG77cl1pq1X9-_-FM9-JQp4PJMG9Aw-7O-j_Mg0g
+Message-ID: <CAADnVQKmi0+_=BMLXXyv5YaUrfDoHVb+zW1Ns6mx40wYLH83Zw@mail.gmail.com>
+Subject: Re: [LSF/MM/BPF TOPIC] Uninitialized Variable In BPF Programs
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: lsf-pc <lsf-pc@lists.linux-foundation.org>, bpf <bpf@vger.kernel.org>, 
+	Eddy Z <eddyz87@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, 
+	=?UTF-8?B?TWFyYyBTdcOxw6k=?= <marc.sune@isovalent.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 29, 2025 at 2:06=E2=80=AFAM Jinghao Jia <jinghao7@illinois.edu>=
- wrote:
+On Tue, Jan 28, 2025 at 1:42=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
 >
+> If bpf program has an uninitialized variable, clang compiler
+> may take advantage of it to do some optimization. The resulted
+> bpf program may still survive verification but get wrong result.
+> Users then may take quite some time to understand the real
+> reason by inspecting asm codes.
 >
+> The compiler flags '-Wall -Werror' are supposed to issue errors
+> if an uninitialized variable impacts the final result. But in
+> reality, since compiler may not be 100% sure a variable is
+> uninitalized due to limited analysis, the error may not be emitted.
+> gcc has '-Wmaybe-uninitialized' flag to issue warnings for some
+> possible uninit variables but still may miss some others.
+> clang does not support '-Wmaybe-uninitialized' flag.
 >
-> On 1/24/25 2:04 PM, Benjamin Tissoires wrote:
-> > On Jan 24 2025, Andrii Nakryiko wrote:
-> >> On Thu, Jan 23, 2025 at 12:20=E2=80=AFAM Jinghao Jia <jinghao7@illinoi=
-s.edu> wrote:
-> >>>
-> >>> Commit 13b25489b6f8 ("kbuild: change working directory to external
-> >>> module directory with M=3D") changed kbuild working directory of bpf =
-and
-> >>> hid samples to samples/{bpf,hid}, which broke the vmlinux path for
-> >>> VMLINUX_BTF, as the Makefiles assume the current work directory to be
-> >>> the kernel output directory and use a relative path (i.e., ./vmlinux)=
-:
-> >>>
-> >>>   Makefile:316: *** Cannot find a vmlinux for VMLINUX_BTF at any of "=
-  /path/to/linux/samples/bpf/vmlinux", build the kernel or set VMLINUX_BTF =
-like "VMLINUX_BTF=3D/sys/kernel/btf/vmlinux" or VMLINUX_H variable.  Stop.
-> >>>
-> >>> Correctly refer to the kernel output directory using $(objtree).
-> >>>
-> >>> Fixes: 13b25489b6f8 ("kbuild: change working directory to external mo=
-dule directory with M=3D")
-> >>> Tested-by: Ruowen Qin <ruqin@redhat.com>
-> >>> Signed-off-by: Jinghao Jia <jinghao7@illinois.edu>
-> >>> ---
-> >>>  samples/bpf/Makefile | 2 +-
-> >>>  samples/hid/Makefile | 2 +-
-> >>>  2 files changed, 2 insertions(+), 2 deletions(-)
-> >>>
-> >>
-> >> can you please split samples/bpf from samples/hid changes, so we can
-> >> land samples/bpf fix through bpf-next tree independently from other
-> >> changes?
-> >
-> > FWIW, I don't mind if this goes through the bpf-next tree all at once.
-> >
-> > Acked-by: Benjamin Tissoires <bentiss@kernel.org>
-> >
-> > Cheers,
-> > Benjamin
-> >
+> There are already some discussion in llvm community for this ([1]).
+> I would like to elaborate more with some examples, e.g. how llvm
+> internal handle uninit variables, and discuss how we could do
+> something to expose harmful uninit variable earlier.
 >
-> I wonder how we are going to move forward with this fix? Do we want to le=
-t
-> it go through bpf tree at once or split the changes?
+>    [1] https://discourse.llvm.org/t/detect-undefined-behavior-due-to-unin=
+itialized-variables-in-bpf-programs/84116?u=3Dyonghong-song
+>
 
-I'd prefer the split and routing through respective trees. Is there
-any reason not to do that?
+Compilers maliciously making advantage of unint vars is a tip
+of the iceberg. They do equally nasty "optimizations" for all
+undefined things. It's a real issue for all backends.
+We can experiment -ftrivial-auto-var-init=3Dzero and/or
+introduce similar workarounds.
+The problem is clearly not limited to bpf.
 
->
-> Best,
-> Jinghao
->
-> >>
-> >> pw-bot: cr
-> >>
-> >>> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-> >>> index 96a05e70ace3..f5865fbbae62 100644
-> >>> --- a/samples/bpf/Makefile
-> >>> +++ b/samples/bpf/Makefile
-> >>> @@ -307,7 +307,7 @@ $(obj)/$(TRACE_HELPERS): TPROGS_CFLAGS :=3D $(TPR=
-OGS_CFLAGS) -D__must_check=3D
-> >>>
-> >>>  VMLINUX_BTF_PATHS ?=3D $(abspath $(if $(O),$(O)/vmlinux))           =
-                     \
-> >>>                      $(abspath $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)=
-/vmlinux)) \
-> >>> -                    $(abspath ./vmlinux)
-> >>> +                    $(abspath $(objtree)/vmlinux)
-> >>>  VMLINUX_BTF ?=3D $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATH=
-S))))
-> >>>
-> >>>  $(obj)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL)
-> >>> diff --git a/samples/hid/Makefile b/samples/hid/Makefile
-> >>> index 69159c81d045..db5a077c77fc 100644
-> >>> --- a/samples/hid/Makefile
-> >>> +++ b/samples/hid/Makefile
-> >>> @@ -164,7 +164,7 @@ $(obj)/hid_surface_dial.o: $(obj)/hid_surface_dia=
-l.skel.h
-> >>>
-> >>>  VMLINUX_BTF_PATHS ?=3D $(abspath $(if $(O),$(O)/vmlinux))           =
-                     \
-> >>>                      $(abspath $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)=
-/vmlinux)) \
-> >>> -                    $(abspath ./vmlinux)
-> >>> +                    $(abspath $(objtree)/vmlinux)
-> >>>  VMLINUX_BTF ?=3D $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATH=
-S))))
-> >>>
-> >>>  $(obj)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL)
-> >>> --
-> >>> 2.48.1
-> >>>
->
+But the main concern is that this discussion cannot happen without
+llvm and gcc involvement, but only gcc folks might be present at lsfmm.
+
+We also still have an issue of missing suffixes when llvm optimizes
+funcs, compilers doing things that messes with the verifier,
+gcc is still missing decl_tag support, etc.
+
+I suggest to fold the status update (not a discussion) into one
+slot that will cover all outstanding gcc and llvm issues.
 
