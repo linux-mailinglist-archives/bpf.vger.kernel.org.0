@@ -1,124 +1,122 @@
-Return-Path: <bpf+bounces-50179-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50180-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CAD3A23803
-	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2025 00:42:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEEE3A23855
+	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2025 01:48:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FDF13A73F1
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2025 23:42:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D827E165BC3
+	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2025 00:48:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C49D1F236A;
-	Thu, 30 Jan 2025 23:42:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 861F1E571;
+	Fri, 31 Jan 2025 00:48:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="njBD4Cqe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vv3OgX2O"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D7CD1537C6;
-	Thu, 30 Jan 2025 23:42:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B609B219FC;
+	Fri, 31 Jan 2025 00:48:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738280565; cv=none; b=Z+qiGuLARqZHt8OAlL0yRv339yMcz/ySJXPpzfjrsp013IAwXvc13WliwOKafT1tL/1X5ngV3ytviBOYkFQXhM99rzX3/YNkTodIFM+yU0LmD8PYJJEmF+Ckcv1ypekJD1lmVl1DGjFDtBGVrfj+glq0hQwFSuJBCmEONcgbpf4=
+	t=1738284510; cv=none; b=STgWX51uq3RTRcc85ngagNodexcXmlbGSiFpDfpziBXvtE+0ZHbenO8BXzKaDc9nVgUugBdErGrd73P8KGCJwscccOr6oYDqqm1z60FCAn9ocClM2LmyLZ27f/3TyvnK9kx+dQt7XNqels2a6S5rR84issAsTr4OmCKj+YS9KG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738280565; c=relaxed/simple;
-	bh=SNgWdW0+w8g7zWzmvBJ6hqxTIrMFupouLSnDTRPedqs=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=J0Cf9nrwbfYy1nk/OPvNKgmUxvVCpf1YGyn6cb2AZiHbMd7YNcxJHdu8ePWpuObn6tDGsA590kB/e3gqJf18T1JVX/oeB7+ggUpJPutMGJ5+BwO+viR+3O9Q7J5/RAlSqPu6mWalSOZfunnJLukeAIVZBfYEhhrew1Rze2UvkN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=njBD4Cqe; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738280564; x=1769816564;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=SNgWdW0+w8g7zWzmvBJ6hqxTIrMFupouLSnDTRPedqs=;
-  b=njBD4CqeB5D6xy51Tc8bVyUbpf5GhYjisE/+RIUI25Dnsi7knQt37i8z
-   //ijX4l6nYKHHS0knmhUaRKBvco9pV0iarSJuxZiyu+5SezGAvDMIM5Wp
-   ZebOAruyR7yqYNWyBgB+8QvxPNhS3svWXqCR+52c2YqLUYR74D8l2Q84/
-   pCmMfO0mKFOpQ4vocePBpmNlezhf/mtWNCM/Q5G0aJVj2IkyYocXzXbar
-   06Z5WWdawqfu5mnVYRxKJXPqZqq7Ygu8v0fokcd9mA1JmlvYZoLDXEzUk
-   r+kX2xXFiXUlnvL0BF162Gw11lvWf2qEnJ6vCpVf8UpKOR8sRFWDMd6QT
-   w==;
-X-CSE-ConnectionGUID: MFZdPN7BRiOJxwDUgsSmuA==
-X-CSE-MsgGUID: osTrCAaoTqugUPDE/80O4A==
-X-IronPort-AV: E=McAfee;i="6700,10204,11331"; a="56392369"
-X-IronPort-AV: E=Sophos;i="6.13,246,1732608000"; 
-   d="scan'208";a="56392369"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2025 15:42:43 -0800
-X-CSE-ConnectionGUID: AX6mNGHhQwWBZd3qMSmH6A==
-X-CSE-MsgGUID: tg0EZPT9SgeNGo2EEfp3cg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="114081720"
-Received: from johunt-mobl9.ger.corp.intel.com (HELO vcostago-mobl3) ([10.124.222.4])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2025 15:42:41 -0800
-From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To: Zdenek Bouska <zdenek.bouska@siemens.com>, Tony Nguyen
- <anthony.l.nguyen@intel.com>, Przemek Kitszel
- <przemyslaw.kitszel@intel.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
- Fastabend <john.fastabend@gmail.com>, Florian Bezdeka
- <florian.bezdeka@siemens.com>, Jan Kiszka <jan.kiszka@siemens.com>, Song
- Yoong Siang <yoong.siang.song@intel.com>
-Cc: intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, Zdenek Bouska
- <zdenek.bouska@siemens.com>
-Subject: Re: [PATCH] igc: Fix HW RX timestamp when passed by ZC XDP
-In-Reply-To: <20250128-igc-fix-hw-rx-timestamp-when-passed-by-zc-xdp-v1-1-b765d3e972de@siemens.com>
-References: <20250128-igc-fix-hw-rx-timestamp-when-passed-by-zc-xdp-v1-1-b765d3e972de@siemens.com>
-Date: Thu, 30 Jan 2025 15:42:41 -0800
-Message-ID: <87r04jc1hq.fsf@intel.com>
+	s=arc-20240116; t=1738284510; c=relaxed/simple;
+	bh=+xMaN9yAbIcURitIBFnND01fmgks3Cq4Ks6qF6WqJ7o=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=F6hwy26WbUQRJLvShla1x/7lVxF6e6TpZwSlnLlb32oF8NcRXwPv0EdoYoZTffdAO41hAgL22uvM5mvy6UoTZxkZjMTO0gCs7lT1sxI/Ix0kKvFy12ICcYId88XCl1R7HIkv0x59FD/CPMRxHj4cGWKO6Ni+16s6RuXy/0PFy0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vv3OgX2O; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-21628b3fe7dso26676625ad.3;
+        Thu, 30 Jan 2025 16:48:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738284508; x=1738889308; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=YtPvCO6S0II/KJMCKKK9WhQP/vAJCYUBd1iffzSjO/w=;
+        b=Vv3OgX2O/w1Bf1lKEAbhZ9o0oNJ1N+rn/LlMTdKq5EnzlNTW8TGwPAMRSEBn2LwYeM
+         VgacG6gvP1coBsdX7aZBZrJ2GT883nhAYHKsiYV48IjKD8dkBQNYYiP3oRSEhgtvztVg
+         9mBW8X6X4Mmokndml5BhBGX+3CIq+YYUs5ekwv3BTV/pKnUb4w6gtxOSAvIkoIZHWDRD
+         K0cwdEVP0I+6JfXQn7z+uUZJ78mG6ZC7RYtSbwNH2VEGVCSkPWe0NGvFXOA8vameG3aI
+         b/OW/biwzy4o9Tj4Qoq4jMi6cvckMQfUnkuJ91Lw20PNmMZA8RLEJzRM2a01OPVH4KlD
+         OImA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738284508; x=1738889308;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YtPvCO6S0II/KJMCKKK9WhQP/vAJCYUBd1iffzSjO/w=;
+        b=MTPSzDx7eMT2qK9crEf13K1pQzbDA2VE4qlywcryqThaiISKeOJIwplMpZ2+HlBb1S
+         JemlkL9qyGRXPqdVCtQ5OYCv11NBVVJKIX5KuyuWgYmlqU95yJK2AjzwEz6UaY4PYYzg
+         c8NztRVKC6gIWIaXIeYqmLlOcdjOo1frxeVmvDhuqn5pUqeApLJYyRGwmvMZ1BH94HoH
+         DhuMR/77A0Jef2QEqzjoylNbMPTetnFSngyHA0ockz3zexQnFQeizdGcRPyEjflMH6CQ
+         r3bYG65bY5k5T7b8anHDq8OoFzlj8jBmI+5bMBuj4JfUAxpJyPqWU9vjO6plrqCWQN0B
+         zl6w==
+X-Forwarded-Encrypted: i=1; AJvYcCUbSfOouG9BSadtSKqU8koFJd7jm5+As2LLUZIQayvIV6ZM7/pz28Txr9s6rLqrBDhu5bc7kelBGPEWyLTq@vger.kernel.org, AJvYcCV6+364UpWvcxJ9x7zpoYNNkxi6var499sr+IOd1V19BW+a4aT6JdRFKyNkmdMbYjnv0q8rAMaVeG7kBV2/uSXO@vger.kernel.org, AJvYcCXnIhX5JrdGide4H7x/7Dgk+j4PMRLRV//A1n+sPnq8SvQhEYQKggJyIO9Zqj5Q960b/ZA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyUdzi1goAJ936DQZITVD1vrbt+0lGmLrSeur2avf5KBr2hAukd
+	HNXuyUaHAMbJh0uCamE/KPy3VXT/lbbNMVYM1gvQDahoUuKRSyMJ
+X-Gm-Gg: ASbGncsP1gQqptUNtH0ThRf2fGRNGtqBd5bnnt6OmsQfNjHFvcDZemB7Gva7i8G48bZ
+	5T9KAWvSjVLj+l1JSi7PEUKhm0supwblDQ7ocY6OuzmFcycgxzttkz+5IzLSwS7bgfd5IP9JzLv
+	sjoppXJowghq5zCeRTro12XMsicvIbJunjQHpSlP6NUL1FcLx8rBnu591MYkK3B56rmjORdYoB7
+	nzjQAPs9soRiyCtEjmp7t9az5Hjr8eaHSiF3xvGk2dYZf8NppVcEeqPH3p/Xa+F10lfdskJx8z9
+	mfVXx6PUFjLX
+X-Google-Smtp-Source: AGHT+IFF6eAT5w1vWPhpPcgEgSxowVdJfEet3pFu4xTXuLB5i+viKrOreK5sdyh578g1EBtx5geEAg==
+X-Received: by 2002:a05:6a20:8415:b0:1e1:e2d9:3f31 with SMTP id adf61e73a8af0-1ed7a5fafe9mr12744457637.16.1738284507892;
+        Thu, 30 Jan 2025 16:48:27 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72fe69ba2d6sm2128078b3a.109.2025.01.30.16.48.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jan 2025 16:48:27 -0800 (PST)
+Message-ID: <f70c352b558742a328449e941dc33237900fc74d.camel@gmail.com>
+Subject: Re: [PATCH] selftests: bpf: Support dynamic linking LLVM if static
+ not available
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Daniel Xu <dxu@dxuuu.xyz>, shuah@kernel.org, andrii@kernel.org, 
+	ast@kernel.org, nathan@kernel.org, daniel@iogearbox.net
+Cc: martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, 	jolsa@kernel.org, mykolal@fb.com,
+ ndesaulniers@google.com, morbo@google.com, 	justinstitt@google.com,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Date: Thu, 30 Jan 2025 16:48:22 -0800
+In-Reply-To: <872b64e93de9a6cd6a7a10e6a5c5e7893704f743.1738276344.git.dxu@dxuuu.xyz>
+References: 
+	<872b64e93de9a6cd6a7a10e6a5c5e7893704f743.1738276344.git.dxu@dxuuu.xyz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
 
-Zdenek Bouska <zdenek.bouska@siemens.com> writes:
+On Thu, 2025-01-30 at 15:33 -0700, Daniel Xu wrote:
+> Since 67ab80a01886 ("selftests/bpf: Prefer static linking for LLVM
+> libraries"), only statically linking test_progs is supported. However,
+> some distros only provide a dynamically linkable LLVM.
+>=20
+> This commit adds a fallback for dynamically linking LLVM if static
+> linking is not available. If both options are available, static linking
+> is chosen.
+>=20
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
 
-> Fixes HW RX timestamp in the following scenario:
-> - AF_PACKET socket with enabled HW RX timestamps is created
-> - AF_XDP socket with enabled zero copy is created
-> - frame is forwarded to the BPF program, where the timestamp should
->   still be readable (extracted by igc_xdp_rx_timestamp(), kfunc
->   behind bpf_xdp_metadata_rx_timestamp())
-> - the frame got XDP_PASS from BPF program, redirecting to the stack
-> - AF_PACKET socket receives the frame with HW RX timestamp
->
-> Moves the skb timestamp setting from igc_dispatch_skb_zc() to
-> igc_construct_skb_zc() so that igc_construct_skb_zc() is similar to
-> igc_construct_skb().
->
-> This issue can also be reproduced by running:
->  # tools/testing/selftests/bpf/xdp_hw_metadata enp1s0
-> When a frame with the wrong port 9092 (instead of 9091) is used:
->  # echo -n xdp | nc -u -q1 192.168.10.9 9092
-> then the RX timestamp is missing and xdp_hw_metadata prints:
->  skb hwtstamp is not found!
->
-> With this fix or when copy mode is used:
->  # tools/testing/selftests/bpf/xdp_hw_metadata -c enp1s0
-> then RX timestamp is found and xdp_hw_metadata prints:
->  found skb hwtstamp = 1736509937.852786132
->
-> Fixes: 069b142f5819 ("igc: Add support for PTP .getcyclesx64()")
-> Signed-off-by: Zdenek Bouska <zdenek.bouska@siemens.com>
+Tested in two configuration:
+- when both static and dynamic libraries are available
+  (linked against static);
+- when only static libraries are available.
 
-Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Tested-by: Eduard Zingerman <eddyz87@gmail.com>
 
+[...]
 
-Cheers,
--- 
-Vinicius
 
