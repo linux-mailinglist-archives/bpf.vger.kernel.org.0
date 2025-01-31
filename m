@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-50188-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50189-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42611A23981
-	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2025 07:22:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13D3EA23986
+	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2025 07:28:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B94A3A9C8D
-	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2025 06:22:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD67F1889EDE
+	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2025 06:28:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 031DC10E0;
-	Fri, 31 Jan 2025 06:22:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFD3D14A0B7;
+	Fri, 31 Jan 2025 06:28:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZmNxUlJY"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EX5+aK/6"
 X-Original-To: bpf@vger.kernel.org
 Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBD2618AFC
-	for <bpf@vger.kernel.org>; Fri, 31 Jan 2025 06:22:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B75A7B3E1
+	for <bpf@vger.kernel.org>; Fri, 31 Jan 2025 06:28:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738304563; cv=none; b=WmM45+0FjZX8B3SI4+MtVtEkndjUp+Z9Y4sTkyveDpkagQLoV2/kOVtzsjot4Bx1T55bnmnIPGsKHR0B2V1E2QI0YYHzferr7IQnSLpM52ZC33luOyaIvSoxaeCnNQo9dmUfuwBlAFZnMc36fOPSltfnTExjPnObNesrkDGHf+U=
+	t=1738304903; cv=none; b=aPLxfa/EPc++/1SBdS0nRLEExeoIn8LlfPxSfumg9yQ9ZrU3fx5OI68LPZA3SlSyXaO0rjBqrE0Zz9qLdapta1g09voJLJsEMjjF4qalZfO+1as+BqyN9VlwvB+Zkq/DdGU5Er4cQpBpleyDAUe6/DQiGAEq0jXux2lqhpKnxhA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738304563; c=relaxed/simple;
-	bh=txktSzkB8qp+h7B6PL4XI68VaK515PGsGP9PT1XlBzs=;
+	s=arc-20240116; t=1738304903; c=relaxed/simple;
+	bh=BNwj/cu2eiUOIuXNgpw6rKDwrnR4+fv5e/EebXhTC3A=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SZsExWVB9xMo6hMiG4MUm8zWTEfPuu2C8vF4HeNqNcPIHPkbIe2Rd0SqiKOV8O2IIxgAC1HkIsJ8I8wfgJD2+7sUcwnsQenMYcevjQe/sKODOxm/lwUAVAjyguiHBbDJceV00k4cQWbQ1g+63iekzj6cMUXgnUb1MX3Rmgc9r0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZmNxUlJY; arc=none smtp.client-ip=95.215.58.173
+	 In-Reply-To:Content-Type; b=kk6tqK0DHuNEd+fs7LSB9MrkvoPOaEm0uvi8/g4TnIrHsVNX467HoSluJenxgnGLCh6kuDKOgWLRKWqXHBhn72HMDM4cLvPx/NGLElQq9mEZV2aNtdFslENgngIWirCRDZ3Yd0KPXo9/ZnUJEI6t2KwF0y+gg8tnrxkX6IywOOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EX5+aK/6; arc=none smtp.client-ip=95.215.58.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <16e32444-61b0-44f0-9466-b4041dc57267@linux.dev>
+Message-ID: <2d4773f9-c3a4-4512-9c5c-92f841c326f5@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1738304558;
+	t=1738304898;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=txktSzkB8qp+h7B6PL4XI68VaK515PGsGP9PT1XlBzs=;
-	b=ZmNxUlJYHMZ1rhYSA3hiwxINUeEVAOjZWa0GMnN21OpVCny8XY6jQn674Z4yvwi3j1UDI4
-	ReWLms9BGaWp+hW997jA/MO/WGIw4jAqKbZuk/UTEYdGwK9J4paf77ayVWMrAAhwZeO7Pk
-	silrX2nMGFP8LBtkt6JQbSMsliaLIl8=
-Date: Thu, 30 Jan 2025 22:22:28 -0800
+	bh=Z6nr90zQBuI/mRmsANmm014cd25JJit1RNWXmjt1m1g=;
+	b=EX5+aK/6Og8svexi1PHU/CPZfYtsrcZHXTgeg9bnG1usrUIJepcjKdWtJ/vJ+z5PSfA0Ea
+	MYY6LzwY6152AJXDF6jRg00V/i185IwtKOBncbtJB79yqcLIICAmKfsHmLz20dhOxXom8c
+	BjwZCJDZHUWd8kVY2hIrVZW9D6iceTA=
+Date: Thu, 30 Jan 2025 22:28:11 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -81,9 +81,49 @@ On 1/30/25 2:33 PM, Daniel Xu wrote:
 > is chosen.
 >
 > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>   tools/testing/selftests/bpf/Makefile | 11 ++++++++---
+>   1 file changed, 8 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 6722080b2107..da514030a153 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -184,9 +184,14 @@ ifeq ($(feature-llvm),1)
+>     LLVM_CONFIG_LIB_COMPONENTS := mcdisassembler all-targets
+>     # both llvm-config and lib.mk add -D_GNU_SOURCE, which ends up as conflict
+>     LLVM_CFLAGS  += $(filter-out -D_GNU_SOURCE,$(shell $(LLVM_CONFIG) --cflags))
+> -  LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --link-static --libs $(LLVM_CONFIG_LIB_COMPONENTS))
+> -  LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --link-static --system-libs $(LLVM_CONFIG_LIB_COMPONENTS))
+> -  LLVM_LDLIBS  += -lstdc++
+> +  # Prefer linking statically if it's available, otherwise fallback to shared
+> +  ifeq ($(shell $(LLVM_CONFIG) --link-static --libs &> /dev/null && echo static),static)
+> +    LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --link-static --libs $(LLVM_CONFIG_LIB_COMPONENTS))
+> +    LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --link-static --system-libs $(LLVM_CONFIG_LIB_COMPONENTS))
+> +    LLVM_LDLIBS  += -lstdc++
+> +  else
+> +    LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --link-shared --libs $(LLVM_CONFIG_LIB_COMPONENTS))
+> +  endif
+>     LLVM_LDFLAGS += $(shell $(LLVM_CONFIG) --ldflags)
+>   endif
 
-LGTM.
+Although your change looks good, but maybe you can look at bpftool Makefile?
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
+   # If LLVM is available, use it for JIT disassembly
+   CFLAGS  += -DHAVE_LLVM_SUPPORT
+   LLVM_CONFIG_LIB_COMPONENTS := mcdisassembler all-targets
+   # llvm-config always adds -D_GNU_SOURCE, however, it may already be in CFLAGS
+   # (e.g. when bpftool build is called from selftests build as selftests
+   # Makefile includes lib.mk which sets -D_GNU_SOURCE) which would cause
+   # compilation error due to redefinition. Let's filter it out here.
+   CFLAGS  += $(filter-out -D_GNU_SOURCE,$(shell $(LLVM_CONFIG) --cflags))
+   LIBS    += $(shell $(LLVM_CONFIG) --libs $(LLVM_CONFIG_LIB_COMPONENTS))
+   ifeq ($(shell $(LLVM_CONFIG) --shared-mode),static)
+     LIBS += $(shell $(LLVM_CONFIG) --system-libs $(LLVM_CONFIG_LIB_COMPONENTS))
+     LIBS += -lstdc++
+   endif
+   LDFLAGS += $(shell $(LLVM_CONFIG) --ldflags)
+
+It would be great if the selftests shared library handling to be the same as bpftool's.
 
 
