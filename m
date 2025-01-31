@@ -1,74 +1,76 @@
-Return-Path: <bpf+bounces-50221-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50222-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37393A2433F
-	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2025 20:29:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 940A0A24341
+	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2025 20:29:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7429B7A21D6
-	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2025 19:28:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 342B03A598D
+	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2025 19:29:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C0561F2C49;
-	Fri, 31 Jan 2025 19:29:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25A461F37AD;
+	Fri, 31 Jan 2025 19:29:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B8p3jlwK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OQeCjnS1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 097CF28373;
-	Fri, 31 Jan 2025 19:29:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A6671F1316;
+	Fri, 31 Jan 2025 19:29:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738351764; cv=none; b=Tcr/qm1ZYQoyfqlBFbMxATt7Z4MtA7oGikKfy1FL2vIFMNlgrDyRWJJQY83vFwvC0egxl7HF7T8UDmytIs7ntYOO3eXqbaNQ2wCw0lORw+qPBRF1Sz/c5fiJEtYmJ5KZ7NmZaI0cksE5DfwkZRrdmlweMvJ9KJWnJrIPLlW/JlE=
+	t=1738351765; cv=none; b=HlkxfuX0a0vRtY6Ia9ZHe0irS0vAds2Kz8QSwSluSBRwqr+6qqa+kYC7j5OKm1g+TyEfwl3y0SeB6ZJ6XW16SC29EAJzWWvi7LkKi5WxAMA53vQLOQPpVsPlOr5xMLM7fbgQzhB4frBenG9QwyJugJxgTPg8mvuZoas4AoZ7ZjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738351764; c=relaxed/simple;
-	bh=OTVrl/urKp7UKsbMSz/tUkgnZXeTehmKqXpyA0M5OPo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=rWbjCueea52168hT61J4mCNfXQ2TtLJVCRd0CdGwGtg/T/6AMfJ3pMdVo4M2vG8HiaQya4vUC13sGEylFInxVBqvcBmkTky4HPJ3+kRzP7wBQUmNCSKVoC3mbiwL/rYPZvK9wDkiMHJKm+0UVupCtRdeHSKy2TyR2AgghJKAAQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B8p3jlwK; arc=none smtp.client-ip=209.85.216.54
+	s=arc-20240116; t=1738351765; c=relaxed/simple;
+	bh=HHGh55qBNDJfyTtks9UxNN5CoO2OyTy41mW6UiHUHOU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=H+8cs3TtObhDH1Yacp4aWsA0bfgfLu+MvyrYnPtY82A63efwKwLHXZiYxquKbDV+wiNQwNtD01KvCr9ofjiDQONCc2uv8DeOcRZ3VdfWUz+gCWSFiQ8BQuGTZTFV32CU8xOMRkb0e4Jw6oXU9gellT3/yKZ3YxJvrCmVPYD9K+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OQeCjnS1; arc=none smtp.client-ip=209.85.216.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2ef87d24c2dso3234149a91.1;
-        Fri, 31 Jan 2025 11:29:22 -0800 (PST)
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2ee709715d9so3282626a91.3;
+        Fri, 31 Jan 2025 11:29:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738351762; x=1738956562; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OE74VXVgKsND8FJVRh0NyaG5p+rk7onmLT7r/29eV6M=;
-        b=B8p3jlwKYVq9oUc1C3NO2/HtlEx5XneQOiOWL7jDHDfXmoS6K6h4m44/bcXQY45ECq
-         GAA/FVz0WR/zN5cTEAa+AW8Rw+/tkElBpVu1AdBbuL5JQFOeSMeiLqRdJsnp2DdypGu1
-         SK1VeIhZR5gOmVsA9IO9gllWfpsH02vHYtPA5+/jkWlof1yRbWl1roD7f9enlgvK2D3J
-         IwqcWEkKrbwJ9TCySOGO949GDw1XF8yT10vG7Qs+C36wciZPzbCdHzr8V4j+drNQgVZE
-         91kYEbjzxpoxzRpGEPdI9KJQsQjyafzHa112eE396b7moln6t7nfe9qbvVW4jgKxtGLi
-         745w==
+        d=gmail.com; s=20230601; t=1738351763; x=1738956563; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xEPaZV1umqoPhyWbc+D1akpU5i5CCQxx/9lrNiXUvwY=;
+        b=OQeCjnS1/CH2JFdd5zfolzDyyebb5ep6q3I+PSXUckWo2qWVl8BiB0H1q6Tw5ZNK5Y
+         u1z8xxvEDI/IwxsKBYVFLiMhwqVb6pO8BRv1H8varkHKr8AKzHJkBk86KzNmfYnfWng6
+         rtQStvRZxDpVkP/0EWIG/Uvjb2+O4J7SWdEdA87MWLCU/x6J4JyW+PNrtKmMRH7avDO1
+         BLYWPCp442ihkxpfRLzFbJmkuN2mAtoj0gLOk9nyx2inqNc8Jica9Fkh3D/Ip49Q6s9c
+         O/Ef5tomf/OcYYCQM491zrLc9Hl1ytlV4n1JSKzrHoxQ2sP7+u/RWdACfipPUhlgCLyg
+         0vhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738351762; x=1738956562;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OE74VXVgKsND8FJVRh0NyaG5p+rk7onmLT7r/29eV6M=;
-        b=INb5LuXqDouyJU1GXE1/898LNVbHjxgTXL/dYM/DPJuaVterRqiqF04UiWUTX62MKx
-         G8RtlyolUuw09BGICVWSMzd+ABAaVYlbGjbd0s3+iblFpT794Y9e+hmmWdiK2TBrniEk
-         bnYEwXu2k3qFvOq4AqhYoDU3C0RENHhWFbAmxvhywBL43ssTP8p5oLMKDCYPgvciWNEZ
-         xg9GWuy0G14Eb9DpVFMblL6vJwA48RZnGJ2xl70VIeonYwYAeMfQohfQNUeGlF869FNg
-         i1m7d8MWd3sde1lxchjRq5wUQHi5XTl8x2o8iregYUJ6MFVstW0DVWjWtBYcZD97ly4J
-         pzzw==
-X-Gm-Message-State: AOJu0YwxdugHi/NeoX2MXyegZ0vbRIaFPT0/Dt0rhZtb8IFb6S9mhn+t
-	xu57Fkf9iZt3VwrOZH+JHCdWMCTp/2zlD9XJIzRhRtumIB12GjSfyROBpeSHwQk=
-X-Gm-Gg: ASbGncuo87O/SMz1pPBVuy7TVXOv4TRlThJcwnz6l4EKnyKYlTG0EeC6uLigkaCfOEO
-	Vdj0/mP9z47Dn0/30QzDtO5sW8eNaDPnyGyTPKdi1xPV5pY4ZbQ78rlLRRe8lm0PNBMSxbbiZSa
-	nwGD/gNcKkXP20vfZQVefaxzICfvn2JbUWmTqmrklR86gNAZfHmu3GoH9VNhyXUqqR8md8UKdOm
-	2klCD+KnJJWEr6TDtxqrFSFQyYQP+pmufYmlXeAh/FsZc0SJCCz4aW9q+UKq+Z4YOxza/tk8iJv
-	XRb70On1ZhcT2dgwnYLw/eKASZuK8I8F+YOzZZw7b44k9I7gLdEpDPcu/RlnlZ0pgA==
-X-Google-Smtp-Source: AGHT+IGoyNvi4mUwcU4D+y3mxehUk+PFdxscWg5q4fAKcIVTsN21XF0hKZCrPXgqzsjlZ8W9yOyRHA==
-X-Received: by 2002:a17:90b:1f88:b0:2ee:9d36:6821 with SMTP id 98e67ed59e1d1-2f83ac8c273mr17186969a91.27.1738351761998;
-        Fri, 31 Jan 2025 11:29:21 -0800 (PST)
+        d=1e100.net; s=20230601; t=1738351763; x=1738956563;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xEPaZV1umqoPhyWbc+D1akpU5i5CCQxx/9lrNiXUvwY=;
+        b=ndE/8hi3ilYGl8e5JGWAOUINMKmdcEPr6+rTWuwNKxrVkd1tEN5XYiHDsH7ixRcPc+
+         U/4mxbF3QdbSDXQUFS8QvOGrlvhdfWSI5h+mDxqBJccWxVvvqQqdCKXPHjdlMT+NIUyg
+         s/RSkSxL+KeDMTxqc3VNWQOT47UGW8P2R8KNWdga1mCWY6dQLIw5yUal96kHxmy/J0DX
+         sOVvRMuHN5Ukir03xXF8t4VhefSFWvV/y3Qm1fPe2QyV8IApYY54Soobje07s0VqvHQj
+         aKkDi9YGSn8rJW8XRxj1nubshaTKIQkv8RMoPukSWVoKKgHxHUgCXW1rCiicmy930I8T
+         yGOA==
+X-Gm-Message-State: AOJu0YwNTRQOWG1zfby56UjDrMDa6PwykzndqbQp9vCkzFPkY9x/MGot
+	4FlDH6fVYtYyfAPvJ97vyl0/T3IPuMuHLYfn+2CqdosXQizeTai8b12SfTY6hJM=
+X-Gm-Gg: ASbGnctN5cVznRk5y0rFZiIw/OFh7PSnvC1bz6jtUfLtuoH4gM1UIV397/PJEwY4MIf
+	6C1cEAxKFgfpnJTLsBlESGvUSs9S1sPZtmsD8ufGfTB/ajDmHP9QhmhRGM3Uey2r99XpDGfzbWm
+	AM+Q5wo/liSKLQ+gpqpS1Gvk1mOOqLDq39BusQC6BtMSKgvbVM1TAG5mQQXHLCP9CR8hkzVl+YS
+	Kq6A5Qg/qemKoy2bMt/Tdl44DxDnPFUeyh1A8m8fXF6DFhn2abat7w867cj1rIlM51X/bQQnvjb
+	M1X4HY4+Gn60zmFKXwZT/vDz7CLvZC83us6Q7oF5t1EfW1vNzjEaReFNKyBTAWgZgA==
+X-Google-Smtp-Source: AGHT+IHk9/VYv/sdDhW2qzX0iEWN6upUJyUWKgytAV9sZ+8oQ/3t7aPgONPSmsiqmHfRGh5SUwJvMg==
+X-Received: by 2002:a17:90b:4ec8:b0:2ee:f677:aa14 with SMTP id 98e67ed59e1d1-2f83abea7c9mr18137238a91.13.1738351763030;
+        Fri, 31 Jan 2025 11:29:23 -0800 (PST)
 Received: from localhost.localdomain (c-76-146-13-146.hsd1.wa.comcast.net. [76.146.13.146])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f8489d3707sm4072471a91.23.2025.01.31.11.29.21
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f8489d3707sm4072471a91.23.2025.01.31.11.29.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jan 2025 11:29:21 -0800 (PST)
+        Fri, 31 Jan 2025 11:29:22 -0800 (PST)
 From: Amery Hung <ameryhung@gmail.com>
 To: netdev@vger.kernel.org
 Cc: bpf@vger.kernel.org,
@@ -91,268 +93,165 @@ Cc: bpf@vger.kernel.org,
 	ameryhung@gmail.com,
 	ming.lei@redhat.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v3 00/18] bpf qdisc
-Date: Fri, 31 Jan 2025 11:28:39 -0800
-Message-ID: <20250131192912.133796-1-ameryhung@gmail.com>
+Subject: [PATCH bpf-next v3 01/18] bpf: Make every prog keep a copy of ctx_arg_info
+Date: Fri, 31 Jan 2025 11:28:40 -0800
+Message-ID: <20250131192912.133796-2-ameryhung@gmail.com>
 X-Mailer: git-send-email 2.47.1
+In-Reply-To: <20250131192912.133796-1-ameryhung@gmail.com>
+References: <20250131192912.133796-1-ameryhung@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Hi all,
+Currently, ctx_arg_info is read-only in the view of the verifier since
+it is shared among programs of the same attach type. Make each program
+have their own copy of ctx_arg_info so that we can use it to store
+program specific information.
 
-This patchset aims to support implementing qdisc using bpf struct_ops.
-This version takes a step back and only implements the minimum support
-for bpf qdisc. 1) support of adding skb to bpf_list and bpf_rbtree
-directly and 2) classful qdisc are deferred to future patchsets. In
-addition, we only allow attaching bpf qdisc to root or mq for now.
-This is to prevent accidentally breaking exisiting classful qdiscs
-that rely on data in a child qdisc. This limit may be lifted in the
-future after careful inspection.
+In the next patch where we support acquiring a referenced kptr through a
+struct_ops argument tagged with "__ref", ctx_arg_info->ref_obj_id will
+be used to store the unique reference object id of the argument. This
+avoids creating a requirement in the verifier that "__ref" tagged
+arguments must be the first set of references acquired [0].
 
-* Overview *
+[0] https://lore.kernel.org/bpf/20241220195619.2022866-2-amery.hung@gmail.com/
 
-This series supports implementing qdisc using bpf struct_ops. bpf qdisc
-aims to be a flexible and easy-to-use infrastructure that allows users to
-quickly experiment with different scheduling algorithms/policies. It only
-requires users to implement core qdisc logic using bpf and implements the
-mundane part for them. In addition, the ability to easily communicate
-between qdisc and other components will also bring new opportunities for
-new applications and optimizations.
-
-* struct_ops changes *
-
-To make struct_ops works better with bpf qdisc, two new changes are
-introduced to bpf specifically for struct_ops programs. Frist, we
-introduce "__ref" postfix for arguments in stub functions in patch 1-2.
-It allows Qdisc_ops->enqueue to acquire an unique referenced kptr to the
-skb argument. Through the reference object tracking mechanism in
-the verifier, we can make sure that the acquired skb will be either
-enqueued or dropped. Besides, no duplicate references can be acquired.
-Then, we allow a referenced kptr to be returned from struct_ops programs
-so that we can return an skb naturally. This is done and tested in patch 3
-and 4.
-
-* Performance of bpf qdisc *
-
-This patchset includes two qdisc examples, bpf_fifo and bpf_fq, for
-__testing__ purposes. For performance test, we compare selftests and their
-kernel counterparts to give you a sense of the performance of qdisc
-implemented in bpf.
-
-The implementation of bpf_fq is fairly complex and slightly different from
-fq so later we only compare the two fifo qdiscs. bpf_fq implements a 
-scheduling algorithm similar to fq before commit 29f834aa326e ("net_sched:
-sch_fq: add 3 bands and WRR scheduling") was introduced. bpf_fifo uses a
-single bpf_list as a queue instead of three queues for different
-priorities in pfifo_fast. The time complexity of fifo however should be
-similar since the queue selection time is negligible.
-
-Test setup:
-
-    client -> qdisc ------------->  server
-    ~~~~~~~~~~~~~~~                 ~~~~~~
-    nested VM1 @ DC1               VM2 @ DC2
-
-Throghput: iperf3 -t 600, 5 times
-
-      Qdisc        Average (GBits/sec)
-    ----------     -------------------
-    pfifo_fast       12.52 ± 0.26
-    bpf_fifo         11.72 ± 0.32 
-    fq               10.24 ± 0.13
-    bpf_fq           11.92 ± 0.64 
-
-Latency: sockperf pp --tcp -t 600, 5 times
-
-      Qdisc        Average (usec)
-    ----------     --------------
-    pfifo_fast      244.58 ± 7.93
-    bpf_fifo        244.92 ± 15.22
-    fq              234.30 ± 19.25
-    bpf_fq          221.34 ± 10.76
-
-Looking at the two fifo qdiscs, the 6.4% drop in throughput in the bpf
-implementatioin is consistent with previous observation (v8 throughput
-test on a loopback device). This should be able to be mitigated by
-supporting adding skb to bpf_list or bpf_rbtree directly in the future.
-
-* Clean up skb in bpf qdisc during reset *
-
-The current implementation relies on bpf qdisc implementors to correctly
-release skbs in queues (bpf graphs or maps) in .reset, which might not be
-a safe thing to do. The solution as Martin has suggested would be
-supporting private data in struct_ops. This can also help simplifying
-implementation of qdisc that works with mq. For examples, qdiscs in the
-selftest mostly use global data. Therefore, even if user add multiple
-qdisc instances under mq, they would still share the same queue. 
-
-* Misc *
-
-This patchset has grown a bit in this iteration. I can split the kptr
-acquire/release mechanism for struct_ops into another set if that makes
-sense and helps people review.
-
-The performance numbers will be updated again when the set gets closer to
-landing.
-
+Signed-off-by: Amery Hung <ameryhung@gmail.com>
 ---
-v3:
-  * Rebase to bpf-next/master
-  * Remove the requirement in the verifier that "__ref arguments must
-    acquire ref_obj_id first" by making each prog keeping a copy of
-    arg_ctx_info and saving ref_obj_id in it.
-  * Generalize prog_ops_moff() to work with any struct_op (now called
-    bpf_struct_ops_prog_moff())
-  * Use bpf_struct_ops_prog_moff(prog) instead of
-    prog->aux->attach_func_name to infer the ops of a program
-  * Limit attach to root and mq for now and add corresponding selftests
-  * Simplify qdisc selftests with network_helper
-  * Fix fq_remove_flow() not deleting the stashed flow
+ include/linux/bpf.h   |  7 +++++--
+ kernel/bpf/bpf_iter.c | 13 ++++++-------
+ kernel/bpf/verifier.c | 25 +++++++++++++++----------
+ 3 files changed, 26 insertions(+), 19 deletions(-)
 
-v2: Rebase to bpf-next/master
-
-    Patch 1-4
-        Remove the use of ctx_arg_info->ref_obj_id when acquiring referenced kptr from struct_ops arg
-        Improve type comparison when checking kptr return from struct_ops
-        Simplify selftests with test_loader and nomerge attribute
-    Patch 5
-        Remove redundant checks in qdisc_init
-        Disallow tail_call
-    Patch 6
-        Improve kfunc ops availabilty filter by
-        i) Checking struct_ops->type
-        ii) Defining op-specific kfunc set
-    Patch 7
-        Search and add bpf_kfunc_desc after gen_prologue/epilogue
-    Patch 8
-        Use gen_prologue/epilogue to init/cancel watchdog timer
-    Patch 12
-        Mark read-only func arg and struct member const in libbpf
-    Link: https://lore.kernel.org/bpf/20241220195619.2022866-1-amery.hung@gmail.com/
-
-v1:
-    Fix struct_ops referenced kptr acquire/return mechanisms
-    Allow creating dynptr from skb
-    Add bpf qdisc kfunc filter
-    Support updating bstats and qstats
-    Update qdiscs in selftest to update stats
-    Add gc, handle hash collision and fix bugs in fq_bpf
-    Link: https://lore.kernel.org/bpf/20241213232958.2388301-1-amery.hung@bytedance.com/
-
-past RFCs
-
-v9: Drop classful qdisc operations and kfuncs
-    Drop support of enqueuing skb directly to bpf_rbtree/list
-    Link: https://lore.kernel.org/bpf/20240714175130.4051012-1-amery.hung@bytedance.com/
-
-v8: Implement support of bpf qdisc using struct_ops
-    Allow struct_ops to acquire referenced kptr via argument
-    Allow struct_ops to release and return referenced kptr
-    Support enqueuing sk_buff to bpf_rbtree/list
-    Move examples from samples to selftests
-    Add a classful qdisc selftest
-    Link: https://lore.kernel.org/netdev/20240510192412.3297104-15-amery.hung@bytedance.com/
-
-v7: Reference skb using kptr to sk_buff instead of __sk_buff
-    Use the new bpf rbtree/link to for skb queues
-    Add reset and init programs
-    Add a bpf fq qdisc sample
-    Add a bpf netem qdisc sample
-    Link: https://lore.kernel.org/netdev/cover.1705432850.git.amery.hung@bytedance.com/
-
-v6: switch to kptr based approach
-
-v5: mv kernel/bpf/skb_map.c net/core/skb_map.c
-    implement flow map as map-in-map
-    rename bpf_skb_tc_classify() and move it to net/sched/cls_api.c
-    clean up eBPF qdisc program context
-
-v4: get rid of PIFO, use rbtree directly
-
-v3: move priority queue from sch_bpf to skb map
-    introduce skb map and its helpers
-    introduce bpf_skb_classify()
-    use netdevice notifier to reset skb's
-    Rebase on latest bpf-next
-
-v2: Rebase on latest net-next
-    Make the code more complete (but still incomplete)
-
-Amery Hung (18):
-  bpf: Make every prog keep a copy of ctx_arg_info
-  bpf: Support getting referenced kptr from struct_ops argument
-  selftests/bpf: Test referenced kptr arguments of struct_ops programs
-  bpf: Allow struct_ops prog to return referenced kptr
-  selftests/bpf: Test returning referenced kptr from struct_ops programs
-  bpf: Prepare to reuse get_ctx_arg_idx
-  bpf: Generalize finding member offset of struct_ops prog
-  bpf: net_sched: Support implementation of Qdisc_ops in bpf
-  bpf: net_sched: Add basic bpf qdisc kfuncs
-  bpf: Search and add kfuncs in struct_ops prologue and epilogue
-  bpf: net_sched: Add a qdisc watchdog timer
-  bpf: net_sched: Support updating bstats
-  bpf: net_sched: Support updating qstats
-  bpf: net_sched: Allow writing to more Qdisc members
-  libbpf: Support creating and destroying qdisc
-  selftests/bpf: Add a basic fifo qdisc test
-  selftests/bpf: Add a bpf fq qdisc to selftest
-  selftests/bpf: Test attaching bpf qdisc to mq and non root
-
- include/linux/bpf.h                           |  12 +-
- include/linux/btf.h                           |   1 +
- include/linux/filter.h                        |  10 +
- kernel/bpf/bpf_iter.c                         |  13 +-
- kernel/bpf/bpf_struct_ops.c                   |  53 +-
- kernel/bpf/btf.c                              |   7 +-
- kernel/bpf/verifier.c                         | 121 ++-
- net/ipv4/bpf_tcp_ca.c                         |  23 +-
- net/sched/Kconfig                             |  12 +
- net/sched/Makefile                            |   1 +
- net/sched/bpf_qdisc.c                         | 447 +++++++++++
- net/sched/sch_api.c                           |  14 +-
- net/sched/sch_generic.c                       |   3 +-
- tools/lib/bpf/libbpf.h                        |   5 +-
- tools/lib/bpf/netlink.c                       |  20 +-
- tools/testing/selftests/bpf/config            |   2 +
- .../selftests/bpf/prog_tests/bpf_qdisc.c      | 210 +++++
- .../prog_tests/test_struct_ops_kptr_return.c  |  16 +
- .../prog_tests/test_struct_ops_refcounted.c   |  12 +
- .../selftests/bpf/progs/bpf_qdisc_common.h    |  27 +
- .../selftests/bpf/progs/bpf_qdisc_fifo.c      | 117 +++
- .../selftests/bpf/progs/bpf_qdisc_fq.c        | 720 ++++++++++++++++++
- .../bpf/progs/struct_ops_kptr_return.c        |  30 +
- ...uct_ops_kptr_return_fail__invalid_scalar.c |  26 +
- .../struct_ops_kptr_return_fail__local_kptr.c |  34 +
- ...uct_ops_kptr_return_fail__nonzero_offset.c |  25 +
- .../struct_ops_kptr_return_fail__wrong_type.c |  30 +
- .../bpf/progs/struct_ops_refcounted.c         |  31 +
- ...ruct_ops_refcounted_fail__global_subprog.c |  39 +
- .../struct_ops_refcounted_fail__ref_leak.c    |  22 +
- .../selftests/bpf/test_kmods/bpf_testmod.c    |  15 +
- .../selftests/bpf/test_kmods/bpf_testmod.h    |   6 +
- 32 files changed, 2038 insertions(+), 66 deletions(-)
- create mode 100644 net/sched/bpf_qdisc.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_kptr_return.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_refcounted.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__invalid_scalar.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__local_kptr.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__nonzero_offset.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__wrong_type.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_refcounted.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_refcounted_fail__global_subprog.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_refcounted_fail__ref_leak.c
-
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index f3f50e29d639..f4df39e8c735 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1507,7 +1507,7 @@ struct bpf_prog_aux {
+ 	u32 max_rdonly_access;
+ 	u32 max_rdwr_access;
+ 	struct btf *attach_btf;
+-	const struct bpf_ctx_arg_aux *ctx_arg_info;
++	struct bpf_ctx_arg_aux *ctx_arg_info;
+ 	void __percpu *priv_stack_ptr;
+ 	struct mutex dst_mutex; /* protects dst_* pointers below, *after* prog becomes visible */
+ 	struct bpf_prog *dst_prog;
+@@ -1945,6 +1945,9 @@ static inline void bpf_struct_ops_desc_release(struct bpf_struct_ops_desc *st_op
+ 
+ #endif
+ 
++int bpf_prog_ctx_arg_info_init(struct bpf_prog *prog,
++			       const struct bpf_ctx_arg_aux *info, u32 cnt);
++
+ #if defined(CONFIG_CGROUP_BPF) && defined(CONFIG_BPF_LSM)
+ int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
+ 				    int cgroup_atype);
+@@ -2546,7 +2549,7 @@ struct bpf_iter__bpf_map_elem {
+ 
+ int bpf_iter_reg_target(const struct bpf_iter_reg *reg_info);
+ void bpf_iter_unreg_target(const struct bpf_iter_reg *reg_info);
+-bool bpf_iter_prog_supported(struct bpf_prog *prog);
++int bpf_iter_prog_supported(struct bpf_prog *prog);
+ const struct bpf_func_proto *
+ bpf_iter_get_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog);
+ int bpf_iter_link_attach(const union bpf_attr *attr, bpfptr_t uattr, struct bpf_prog *prog);
+diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
+index 106735145948..380e9a7cac75 100644
+--- a/kernel/bpf/bpf_iter.c
++++ b/kernel/bpf/bpf_iter.c
+@@ -335,7 +335,7 @@ static void cache_btf_id(struct bpf_iter_target_info *tinfo,
+ 	tinfo->btf_id = prog->aux->attach_btf_id;
+ }
+ 
+-bool bpf_iter_prog_supported(struct bpf_prog *prog)
++int bpf_iter_prog_supported(struct bpf_prog *prog)
+ {
+ 	const char *attach_fname = prog->aux->attach_func_name;
+ 	struct bpf_iter_target_info *tinfo = NULL, *iter;
+@@ -344,7 +344,7 @@ bool bpf_iter_prog_supported(struct bpf_prog *prog)
+ 	int prefix_len = strlen(prefix);
+ 
+ 	if (strncmp(attach_fname, prefix, prefix_len))
+-		return false;
++		return -EINVAL;
+ 
+ 	mutex_lock(&targets_mutex);
+ 	list_for_each_entry(iter, &targets, list) {
+@@ -360,12 +360,11 @@ bool bpf_iter_prog_supported(struct bpf_prog *prog)
+ 	}
+ 	mutex_unlock(&targets_mutex);
+ 
+-	if (tinfo) {
+-		prog->aux->ctx_arg_info_size = tinfo->reg_info->ctx_arg_info_size;
+-		prog->aux->ctx_arg_info = tinfo->reg_info->ctx_arg_info;
+-	}
++	if (!tinfo)
++		return -EINVAL;
+ 
+-	return tinfo != NULL;
++	return bpf_prog_ctx_arg_info_init(prog, tinfo->reg_info->ctx_arg_info,
++					  tinfo->reg_info->ctx_arg_info_size);
+ }
+ 
+ const struct bpf_func_proto *
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 9971c03adfd5..a41ba019780f 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -22377,6 +22377,18 @@ static void print_verification_stats(struct bpf_verifier_env *env)
+ 		env->peak_states, env->longest_mark_read_walk);
+ }
+ 
++int bpf_prog_ctx_arg_info_init(struct bpf_prog *prog,
++			       const struct bpf_ctx_arg_aux *info, u32 cnt)
++{
++	prog->aux->ctx_arg_info = kcalloc(cnt, sizeof(*info), GFP_KERNEL);
++	if (!prog->aux->ctx_arg_info)
++		return -ENOMEM;
++
++	memcpy(prog->aux->ctx_arg_info, info, sizeof(*info) * cnt);
++	prog->aux->ctx_arg_info_size = cnt;
++	return 0;
++}
++
+ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
+ {
+ 	const struct btf_type *t, *func_proto;
+@@ -22457,17 +22469,12 @@ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
+ 		return -EACCES;
+ 	}
+ 
+-	/* btf_ctx_access() used this to provide argument type info */
+-	prog->aux->ctx_arg_info =
+-		st_ops_desc->arg_info[member_idx].info;
+-	prog->aux->ctx_arg_info_size =
+-		st_ops_desc->arg_info[member_idx].cnt;
+-
+ 	prog->aux->attach_func_proto = func_proto;
+ 	prog->aux->attach_func_name = mname;
+ 	env->ops = st_ops->verifier_ops;
+ 
+-	return 0;
++	return bpf_prog_ctx_arg_info_init(prog, st_ops_desc->arg_info[member_idx].info,
++					  st_ops_desc->arg_info[member_idx].cnt);
+ }
+ #define SECURITY_PREFIX "security_"
+ 
+@@ -22917,9 +22924,7 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ 		prog->aux->attach_btf_trace = true;
+ 		return 0;
+ 	} else if (prog->expected_attach_type == BPF_TRACE_ITER) {
+-		if (!bpf_iter_prog_supported(prog))
+-			return -EINVAL;
+-		return 0;
++		return bpf_iter_prog_supported(prog);
+ 	}
+ 
+ 	if (prog->type == BPF_PROG_TYPE_LSM) {
 -- 
 2.47.1
 
