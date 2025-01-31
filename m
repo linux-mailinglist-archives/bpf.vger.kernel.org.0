@@ -1,444 +1,98 @@
-Return-Path: <bpf+bounces-50209-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50210-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8232FA23B17
-	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2025 10:11:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 79F94A23B50
+	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2025 10:23:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09ED01697B9
-	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2025 09:11:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8DE8162B7F
+	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2025 09:23:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB28E1A8F98;
-	Fri, 31 Jan 2025 09:10:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 590AA18871F;
+	Fri, 31 Jan 2025 09:23:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iJG/yD/i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qcydh1KL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D54681714B2
-	for <bpf@vger.kernel.org>; Fri, 31 Jan 2025 09:10:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE2C916A956;
+	Fri, 31 Jan 2025 09:23:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738314647; cv=none; b=J97Hl1eNe+Hvo8UczRxUMXxmsGsWizQ1tJqsMSF8uD4yalWZ6i5MTOq3W3uwhVPZj4n0+AjUTpAUTBwVj6Audd6F6Cj8f0RbaqgUurhVzugwkSksSEGJaPlVZGXhp/c97yNOXaVVYJr+qnkBE/h/M0apEENLYrFi05KYE1mboSY=
+	t=1738315388; cv=none; b=KSQRm7MUdoszeDUwgr1i1ghQmPiLxbNQDRpveRPyF2idUOEZLwjsa9sirXWoB90a4sX8vJnh1fHMvshG4JXny3MQOq4+OzK1fTFkRJO+7eo4K3UGWTOIn6H2FS/0YHYX9LD42rLof4Tcz15B7jLX47wO6Fds6vV5ttFQHB/+tkg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738314647; c=relaxed/simple;
-	bh=yLTDBmJhoWCRn7SXUdGiGtxeojJyuXuCCJqVI6LNpOI=;
+	s=arc-20240116; t=1738315388; c=relaxed/simple;
+	bh=KeHvGWciRrSfx4bampdiqa3DbAYAgVZ+5Dzn1wpMkn8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C8NzHbpVdKt6E5Pg5UV4CP2fwvXBhsaQ4OCivAwtkoAJVyxZt0DnmLGIvp/V3CwQ9+BhHn1aVuFIysahTu650kGVolkhXGhmL12a1+b4RhmjRAS0VEpUhNUyU5C47vx2t/kYyNoTRMwW38+Oqj9/A3AWKgVrvJR8RXH883fXBqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iJG/yD/i; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-aaec111762bso447359566b.2
-        for <bpf@vger.kernel.org>; Fri, 31 Jan 2025 01:10:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1738314643; x=1738919443; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rpKezhcgl4aZusxTVmVd7sTk1t/+jIVHJbEYbV/832g=;
-        b=iJG/yD/iTbOcR33VeaYxZajniMGXwCTFC8lY7mSDYnmmqHLDyVPzevFYQd5XrXfVW1
-         hnqr8Q32DZQqciccFiEP3RzJG0FlMP0l62dXkXsj0Qn0Tmm06nf/xttynBOY8pep9BlS
-         zPtMnJq4rB25LxVyepwEMV59u5prySANiaJZ0WKE1Eu0xczkRK55jDj0o3UdfqTwv+GD
-         VXFH3qJ4+ldmVHOL+7VUqLlcD6ifm/fdslo7VTlecVdI2Zrk5Q50NOzVREcuoB+Hkdz8
-         MdeAi+tMJp9lWoK7+LmIC8twatAirCSXwehRc/sjIMAuE7C4lmTrutqoqoN53mDaKpc1
-         Ymnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738314643; x=1738919443;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rpKezhcgl4aZusxTVmVd7sTk1t/+jIVHJbEYbV/832g=;
-        b=T6HJhEcITAjBQa2scsEdQTKCc93kqGWODbXWjf/gajszU/v6Qkw1Cv9JNtG7Ma4v+d
-         3w9Fk6JeQlEzPPIv+KaxOOrCGOcZeg3wci6dwExSEq6yDfiIYaS2RDiZNKzVJMnjcHDI
-         SvSlYges1OzHByt+R7IgLP+CrJd/pkhkSRRpL1q8lMv6p9LtPd0cwkVyA4T3RSH+k8Q0
-         dBPtAUV+rVuangAQ9O6Ad7XmjmuMCnxvf7WRg+yxDQj58Bske6s2xsUa2SkWXQhZO1rV
-         ftKJSeUylXhTS+d7oQ51yJxrlfG0f4i5dsPXkVNTSGjbjDRwY1wHW3APmiB6Sj7MDdeQ
-         3sMw==
-X-Gm-Message-State: AOJu0YzmiZTEC9WBO0L2FfuTOCTRGDL0Il3GbHGwgC3WQ6ufYzcr9/Vr
-	6SemvQK8iEegdi3+XDJCa2RiA7RtSak2CW78SbbllWzzZhlNJ94ESQeXgFBLHw==
-X-Gm-Gg: ASbGncsAhmMR8ykqebqBRSMiE4XiQ1gBOhKNSY9fe2XijuDfrlC0LxqRBRrDHi09gCd
-	HzX86VbPG/rAXyYClLckOoYi7N+SMHAfYEi+VBPzPL5UBz4vmMOHVP6NQbTf43SSt+vGC+2DaGi
-	91QI2sTk6XtqKAbf/xiI2jLknCHKX0t/XGuZIDWvcoK4AWCfgPhnph0F6jgYwLQMyRFzKl2wevn
-	C8iG8VWIGUUaRr4/4WyKqhhU32Tj6GlfEoXGaXAhz909dSqsoF3l5uAUGeDwxRhKKzoFc7QiChG
-	6Xwkqj7pOa+7dm9E2V8Lixbg5wfpGbRh4eptpIKEYNV9jRiZYc48Xu5Xtw==
-X-Google-Smtp-Source: AGHT+IFWLObVlSGdtheyOMwGYlaU/ktaLTCYEc/HjjF4uEjsvyRwlVSiu7iRpv7fUA98J11iGQsMAg==
-X-Received: by 2002:a17:907:2ce3:b0:aa6:6a52:970 with SMTP id a640c23a62f3a-ab6cfcb3b92mr1085842566b.1.1738314642919;
-        Fri, 31 Jan 2025 01:10:42 -0800 (PST)
-Received: from google.com (201.31.90.34.bc.googleusercontent.com. [34.90.31.201])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab7010f4d2asm52966266b.75.2025.01.31.01.10.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jan 2025 01:10:42 -0800 (PST)
-Date: Fri, 31 Jan 2025 09:10:38 +0000
-From: Matt Bobrowski <mattbobrowski@google.com>
-To: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
-	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com,
-	ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
-	kpsingh@kernel.org, liamwisehart@meta.com, shankaran@meta.com
-Subject: Re: [PATCH v12 bpf-next 4/5] bpf: fs/xattr: Add BPF kfuncs to set
- and remove xattrs
-Message-ID: <Z5yTjlAigEKwG1fS@google.com>
-References: <20250130213549.3353349-1-song@kernel.org>
- <20250130213549.3353349-5-song@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=MBebwEOyboNfdC3bWJoetE1BTTgCjsLiy2juHNY8LyUzMxsER8YFqhLgdmv0LfQlKKulBWrySEd8IzNug8KPOR72+LQrG1/HJ3EMSo5kPk60/Z6dhd+Ubqs8hOPaoI6SIZcWNaeGkHqVkDpqBRM6ZS8SnfUnNrv8rVhj7JXalCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qcydh1KL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28C43C4CED1;
+	Fri, 31 Jan 2025 09:23:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738315388;
+	bh=KeHvGWciRrSfx4bampdiqa3DbAYAgVZ+5Dzn1wpMkn8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qcydh1KLVhW5vOLrLDl8pPo1/yDX9hLZWajBhUZ/VAbmtdQEUmuJ7jZapLo/s9Atg
+	 7BiqZ3RclVh4m3qYiQvzxDClEHydjQgmvrPb0P4GuKBUQQT0kN132EhLDht4VxofxI
+	 TFD6ljQoTLUBhpMHE3oTmM1RMYhwJWleaAXBmxauUPIaHnk5cy0E67twifeW6hhwXZ
+	 n3dlPrhzhjqvwBh5c7MIX9axMC9ur7VqvrYMHy2PD5qbT6U/enCkuCkRWdWoxnbsGW
+	 Ia9xIP3eSpv28R82lQ/KZ3PSZZKAfowR4lRg+LqGDM2HlK7IoKzwfJmzDUg4G5PXOv
+	 cNK1zka+khWqg==
+Date: Fri, 31 Jan 2025 09:23:03 +0000
+From: Simon Horman <horms@kernel.org>
+To: Sankararaman Jayaraman <sankararaman.jayaraman@broadcom.com>
+Cc: netdev@vger.kernel.org, kuba@kernel.org, alexanderduyck@fb.com,
+	alexandr.lobakin@intel.com, andrew+netdev@lunn.ch, ast@kernel.org,
+	bcm-kernel-feedback-list@broadcom.com, bpf@vger.kernel.org,
+	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+	hawk@kernel.org, john.fastabend@gmail.com, pabeni@redhat.com,
+	ronak.doshi@broadcom.com, u9012063@gmail.com
+Subject: Re: [PATCH net v3] vmxnet3: Fix tx queue race condition with XDP
+Message-ID: <20250131092303.GC24105@kernel.org>
+References: <20250131042340.156547-1-sankararaman.jayaraman@broadcom.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250130213549.3353349-5-song@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250131042340.156547-1-sankararaman.jayaraman@broadcom.com>
 
-On Thu, Jan 30, 2025 at 01:35:48PM -0800, Song Liu wrote:
-> Add the following kfuncs to set and remove xattrs from BPF programs:
+On Fri, Jan 31, 2025 at 09:53:41AM +0530, Sankararaman Jayaraman wrote:
+> If XDP traffic runs on a CPU which is greater than or equal to
+> the number of the Tx queues of the NIC, then vmxnet3_xdp_get_tq()
+> always picks up queue 0 for transmission as it uses reciprocal scale
+> instead of simple modulo operation.
 > 
->   bpf_set_dentry_xattr
->   bpf_remove_dentry_xattr
->   bpf_set_dentry_xattr_locked
->   bpf_remove_dentry_xattr_locked
+> vmxnet3_xdp_xmit() and vmxnet3_xdp_xmit_frame() use the above
+> returned queue without any locking which can lead to race conditions
+> when multiple XDP xmits run in parallel on different CPU's.
 > 
-> The _locked version of these kfuncs are called from hooks where
-> dentry->d_inode is already locked. Instead of requiring the user
-> to know which version of the kfuncs to use, the verifier will pick
-> the proper kfunc based on the calling hook.
-
-Looks good to me, thank you for working on this!
-
-Reviewed-by: Matt Bobrowski <mattbobrowski@google.com>
-
-> Signed-off-by: Song Liu <song@kernel.org>
-> Acked-by: Christian Brauner <brauner@kernel.org>
+> This patch uses a simple module scheme when the current CPU equals or
+> exceeds the number of Tx queues on the NIC. It also adds locking in
+> vmxnet3_xdp_xmit() and vmxnet3_xdp_xmit_frame() functions.
+> 
+> Fixes: 54f00cce1178 ("vmxnet3: Add XDP support.")
+> Signed-off-by: Sankararaman Jayaraman <sankararaman.jayaraman@broadcom.com>
+> Signed-off-by: Ronak Doshi <ronak.doshi@broadcom.com>
 > ---
->  fs/bpf_fs_kfuncs.c      | 189 ++++++++++++++++++++++++++++++++++++++++
->  include/linux/bpf_lsm.h |  18 ++++
->  kernel/bpf/verifier.c   |  21 +++++
->  3 files changed, 228 insertions(+)
+> v3:
+>   - In vmxnet3_xdp_xmit_frame(), use the irq version of spin lock 
+>   - Fixed the ordering of local variables in vmxnet3_xdp_xmit()
+> v2: https://lore.kernel.org/netdev/20250129181703.148027-1-sankararaman.jayaraman@broadcom.com/
+>   - Retained the earlier copyright dates as it is a bug fix
+>   - Used spin_lock()/spin_unlock() instead of spin_lock_irqsave()
+> v1: https://lore.kernel.org/netdev/20250124090211.110328-1-sankararaman.jayaraman@broadcom.com/
 > 
-> diff --git a/fs/bpf_fs_kfuncs.c b/fs/bpf_fs_kfuncs.c
-> index db5c8e855517..08412532db1b 100644
-> --- a/fs/bpf_fs_kfuncs.c
-> +++ b/fs/bpf_fs_kfuncs.c
-> @@ -2,10 +2,12 @@
->  /* Copyright (c) 2024 Google LLC. */
->  
->  #include <linux/bpf.h>
-> +#include <linux/bpf_lsm.h>
->  #include <linux/btf.h>
->  #include <linux/btf_ids.h>
->  #include <linux/dcache.h>
->  #include <linux/fs.h>
-> +#include <linux/fsnotify.h>
->  #include <linux/file.h>
->  #include <linux/mm.h>
->  #include <linux/xattr.h>
-> @@ -168,6 +170,160 @@ __bpf_kfunc int bpf_get_file_xattr(struct file *file, const char *name__str,
->  
->  __bpf_kfunc_end_defs();
->  
-> +static int bpf_xattr_write_permission(const char *name, struct inode *inode)
-> +{
-> +	if (WARN_ON(!inode))
-> +		return -EINVAL;
-> +
-> +	/* Only allow setting and removing security.bpf. xattrs */
-> +	if (!match_security_bpf_prefix(name))
-> +		return -EPERM;
-> +
-> +	return inode_permission(&nop_mnt_idmap, inode, MAY_WRITE);
-> +}
-> +
-> +/**
-> + * bpf_set_dentry_xattr_locked - set a xattr of a dentry
-> + * @dentry: dentry to get xattr from
-> + * @name__str: name of the xattr
-> + * @value_p: xattr value
-> + * @flags: flags to pass into filesystem operations
-> + *
-> + * Set xattr *name__str* of *dentry* to the value in *value_ptr*.
-> + *
-> + * For security reasons, only *name__str* with prefix "security.bpf."
-> + * is allowed.
-> + *
-> + * The caller already locked dentry->d_inode.
-> + *
-> + * Return: 0 on success, a negative value on error.
-> + */
+>  drivers/net/vmxnet3/vmxnet3_xdp.c | 14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
 
-Should we also make a remark about what `flags` corresponds to
-i.e. `flags` which are passed into the *setxattr(2) set of system
-calls?
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-> +int bpf_set_dentry_xattr_locked(struct dentry *dentry, const char *name__str,
-> +				const struct bpf_dynptr *value_p, int flags)
-> +{
-> +
-> +	struct bpf_dynptr_kern *value_ptr = (struct bpf_dynptr_kern *)value_p;
-> +	struct inode *inode = d_inode(dentry);
-> +	const void *value;
-> +	u32 value_len;
-> +	int ret;
-> +
-> +	value_len = __bpf_dynptr_size(value_ptr);
-> +	value = __bpf_dynptr_data(value_ptr, value_len);
-> +	if (!value)
-> +		return -EINVAL;
-> +
-> +	ret = bpf_xattr_write_permission(name__str, inode);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = __vfs_setxattr(&nop_mnt_idmap, dentry, inode, name__str,
-> +			     value, value_len, flags);
-> +	if (!ret) {
-> +		fsnotify_xattr(dentry);
-> +
-> +		/* This xattr is set by BPF LSM, so we do not call
-> +		 * security_inode_post_setxattr. Otherwise, we would
-> +		 * risk deadlocks by calling back to the same kfunc.
-> +		 *
-> +		 * This is the same as security_inode_setsecurity().
-> +		 */
-> +	}
-> +	return ret;
-> +}
-> +
-> +/**
-> + * bpf_remove_dentry_xattr_locked - remove a xattr of a dentry
-> + * @dentry: dentry to get xattr from
-> + * @name__str: name of the xattr
-> + *
-> + * Rmove xattr *name__str* of *dentry*.
-> + *
-> + * For security reasons, only *name__str* with prefix "security.bpf."
-> + * is allowed.
-> + *
-> + * The caller already locked dentry->d_inode.
-> + *
-> + * Return: 0 on success, a negative value on error.
-> + */
-> +int bpf_remove_dentry_xattr_locked(struct dentry *dentry, const char *name__str)
-> +{
-> +	struct inode *inode = d_inode(dentry);
-> +	int ret;
-> +
-> +	ret = bpf_xattr_write_permission(name__str, inode);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = __vfs_removexattr(&nop_mnt_idmap, dentry, name__str);
-> +	if (!ret) {
-> +		fsnotify_xattr(dentry);
-> +
-> +		/* This xattr is removed by BPF LSM, so we do not call
-> +		 * security_inode_post_removexattr. Otherwise, we would
-> +		 * risk deadlocks by calling back to the same kfunc.
-> +		 */
-> +	}
-> +	return ret;
-> +}
-> +
-> +__bpf_kfunc_start_defs();
-> +
-> +/**
-> + * bpf_set_dentry_xattr - set a xattr of a dentry
-> + * @dentry: dentry to get xattr from
-> + * @name__str: name of the xattr
-> + * @value_p: xattr value
-> + * @flags: flags to pass into filesystem operations
-> + *
-> + * Set xattr *name__str* of *dentry* to the value in *value_ptr*.
-> + *
-> + * For security reasons, only *name__str* with prefix "security.bpf."
-> + * is allowed.
-> + *
-> + * The caller has not locked dentry->d_inode.
-> + *
-> + * Return: 0 on success, a negative value on error.
-> + */
-> +__bpf_kfunc int bpf_set_dentry_xattr(struct dentry *dentry, const char *name__str,
-> +				     const struct bpf_dynptr *value_p, int flags)
-> +{
-> +	struct inode *inode = d_inode(dentry);
-> +	int ret;
-> +
-> +	inode_lock(inode);
-> +	ret = bpf_set_dentry_xattr_locked(dentry, name__str, value_p, flags);
-> +	inode_unlock(inode);
-> +	return ret;
-> +}
-> +
-> +/**
-> + * bpf_remove_dentry_xattr - remove a xattr of a dentry
-> + * @dentry: dentry to get xattr from
-> + * @name__str: name of the xattr
-> + *
-> + * Rmove xattr *name__str* of *dentry*.
-> + *
-> + * For security reasons, only *name__str* with prefix "security.bpf."
-> + * is allowed.
-> + *
-> + * The caller has not locked dentry->d_inode.
-> + *
-> + * Return: 0 on success, a negative value on error.
-> + */
-> +__bpf_kfunc int bpf_remove_dentry_xattr(struct dentry *dentry, const char *name__str)
-> +{
-> +	struct inode *inode = d_inode(dentry);
-> +	int ret;
-> +
-> +	inode_lock(inode);
-> +	ret = bpf_remove_dentry_xattr_locked(dentry, name__str);
-> +	inode_unlock(inode);
-> +	return ret;
-> +}
-> +
-> +__bpf_kfunc_end_defs();
-> +
->  BTF_KFUNCS_START(bpf_fs_kfunc_set_ids)
->  BTF_ID_FLAGS(func, bpf_get_task_exe_file,
->  	     KF_ACQUIRE | KF_TRUSTED_ARGS | KF_RET_NULL)
-> @@ -175,6 +331,8 @@ BTF_ID_FLAGS(func, bpf_put_file, KF_RELEASE)
->  BTF_ID_FLAGS(func, bpf_path_d_path, KF_TRUSTED_ARGS)
->  BTF_ID_FLAGS(func, bpf_get_dentry_xattr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
->  BTF_ID_FLAGS(func, bpf_get_file_xattr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
-> +BTF_ID_FLAGS(func, bpf_set_dentry_xattr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
-> +BTF_ID_FLAGS(func, bpf_remove_dentry_xattr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
->  BTF_KFUNCS_END(bpf_fs_kfunc_set_ids)
->  
->  static int bpf_fs_kfuncs_filter(const struct bpf_prog *prog, u32 kfunc_id)
-> @@ -185,6 +343,37 @@ static int bpf_fs_kfuncs_filter(const struct bpf_prog *prog, u32 kfunc_id)
->  	return -EACCES;
->  }
->  
-> +/* bpf_[set|remove]_dentry_xattr.* hooks have KF_TRUSTED_ARGS and
-> + * KF_SLEEPABLE, so they are only available to sleepable hooks with
-> + * dentry arguments.
-> + *
-> + * Setting and removing xattr requires exclusive lock on dentry->d_inode.
-> + * Some hooks already locked d_inode, while some hooks have not locked
-> + * d_inode. Therefore, we need different kfuncs for different hooks.
-> + * Specifically, hooks in the following list (d_inode_locked_hooks)
-> + * should call bpf_[set|remove]_dentry_xattr_locked; while other hooks
-> + * should call bpf_[set|remove]_dentry_xattr.
-> + */
-> +BTF_SET_START(d_inode_locked_hooks)
-> +BTF_ID(func, bpf_lsm_inode_post_removexattr)
-> +BTF_ID(func, bpf_lsm_inode_post_setattr)
-> +BTF_ID(func, bpf_lsm_inode_post_setxattr)
-> +BTF_ID(func, bpf_lsm_inode_removexattr)
-> +BTF_ID(func, bpf_lsm_inode_rmdir)
-> +BTF_ID(func, bpf_lsm_inode_setattr)
-> +BTF_ID(func, bpf_lsm_inode_setxattr)
-> +BTF_ID(func, bpf_lsm_inode_unlink)
-> +#ifdef CONFIG_SECURITY_PATH
-> +BTF_ID(func, bpf_lsm_path_unlink)
-> +BTF_ID(func, bpf_lsm_path_rmdir)
-> +#endif /* CONFIG_SECURITY_PATH */
-> +BTF_SET_END(d_inode_locked_hooks)
-> +
-> +bool bpf_lsm_has_d_inode_locked(const struct bpf_prog *prog)
-> +{
-> +	return btf_id_set_contains(&d_inode_locked_hooks, prog->aux->attach_btf_id);
-> +}
-> +
->  static const struct btf_kfunc_id_set bpf_fs_kfunc_set = {
->  	.owner = THIS_MODULE,
->  	.set = &bpf_fs_kfunc_set_ids,
-> diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
-> index aefcd6564251..643809cc78c3 100644
-> --- a/include/linux/bpf_lsm.h
-> +++ b/include/linux/bpf_lsm.h
-> @@ -48,6 +48,11 @@ void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog, bpf_func_t *bpf_func)
->  
->  int bpf_lsm_get_retval_range(const struct bpf_prog *prog,
->  			     struct bpf_retval_range *range);
-> +int bpf_set_dentry_xattr_locked(struct dentry *dentry, const char *name__str,
-> +				const struct bpf_dynptr *value_p, int flags);
-> +int bpf_remove_dentry_xattr_locked(struct dentry *dentry, const char *name__str);
-> +bool bpf_lsm_has_d_inode_locked(const struct bpf_prog *prog);
-> +
->  #else /* !CONFIG_BPF_LSM */
->  
->  static inline bool bpf_lsm_is_sleepable_hook(u32 btf_id)
-> @@ -86,6 +91,19 @@ static inline int bpf_lsm_get_retval_range(const struct bpf_prog *prog,
->  {
->  	return -EOPNOTSUPP;
->  }
-> +static inline int bpf_set_dentry_xattr_locked(struct dentry *dentry, const char *name__str,
-> +					      const struct bpf_dynptr *value_p, int flags)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +static inline int bpf_remove_dentry_xattr_locked(struct dentry *dentry, const char *name__str)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +static inline bool bpf_lsm_has_d_inode_locked(const struct bpf_prog *prog)
-> +{
-> +	return false;
-> +}
->  #endif /* CONFIG_BPF_LSM */
->  
->  #endif /* _LINUX_BPF_LSM_H */
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 9971c03adfd5..04d1d75d9ff9 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -11766,6 +11766,8 @@ enum special_kfunc_type {
->  	KF_bpf_iter_num_new,
->  	KF_bpf_iter_num_next,
->  	KF_bpf_iter_num_destroy,
-> +	KF_bpf_set_dentry_xattr,
-> +	KF_bpf_remove_dentry_xattr,
->  };
->  
->  BTF_SET_START(special_kfunc_set)
-> @@ -11795,6 +11797,10 @@ BTF_ID(func, bpf_wq_set_callback_impl)
->  #ifdef CONFIG_CGROUPS
->  BTF_ID(func, bpf_iter_css_task_new)
->  #endif
-> +#ifdef CONFIG_BPF_LSM
-> +BTF_ID(func, bpf_set_dentry_xattr)
-> +BTF_ID(func, bpf_remove_dentry_xattr)
-> +#endif
->  BTF_SET_END(special_kfunc_set)
->  
->  BTF_ID_LIST(special_kfunc_list)
-> @@ -11844,6 +11850,13 @@ BTF_ID(func, bpf_local_irq_restore)
->  BTF_ID(func, bpf_iter_num_new)
->  BTF_ID(func, bpf_iter_num_next)
->  BTF_ID(func, bpf_iter_num_destroy)
-> +#ifdef CONFIG_BPF_LSM
-> +BTF_ID(func, bpf_set_dentry_xattr)
-> +BTF_ID(func, bpf_remove_dentry_xattr)
-> +#else
-> +BTF_ID_UNUSED
-> +BTF_ID_UNUSED
-> +#endif
->  
->  static bool is_kfunc_ret_null(struct bpf_kfunc_call_arg_meta *meta)
->  {
-> @@ -20924,6 +20937,14 @@ static void specialize_kfunc(struct bpf_verifier_env *env,
->  		 */
->  		env->seen_direct_write = seen_direct_write;
->  	}
-> +
-> +	if (func_id == special_kfunc_list[KF_bpf_set_dentry_xattr] &&
-> +	    bpf_lsm_has_d_inode_locked(prog))
-> +		*addr = (unsigned long)bpf_set_dentry_xattr_locked;
-> +
-> +	if (func_id == special_kfunc_list[KF_bpf_remove_dentry_xattr] &&
-> +	    bpf_lsm_has_d_inode_locked(prog))
-> +		*addr = (unsigned long)bpf_remove_dentry_xattr_locked;
->  }
->  
->  static void __fixup_collection_insert_kfunc(struct bpf_insn_aux_data *insn_aux,
-> -- 
-> 2.43.5
-> 
 
