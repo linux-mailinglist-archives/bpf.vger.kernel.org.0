@@ -1,151 +1,203 @@
-Return-Path: <bpf+bounces-50278-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50279-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E12BA24BC8
-	for <lists+bpf@lfdr.de>; Sat,  1 Feb 2025 21:12:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE1AAA24BF5
+	for <lists+bpf@lfdr.de>; Sat,  1 Feb 2025 23:24:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D82991886451
-	for <lists+bpf@lfdr.de>; Sat,  1 Feb 2025 20:12:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70A0E3A5BE3
+	for <lists+bpf@lfdr.de>; Sat,  1 Feb 2025 22:24:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 959661CD1FB;
-	Sat,  1 Feb 2025 20:11:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01C471C9DD7;
+	Sat,  1 Feb 2025 22:24:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="fqSBHOzA";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KAxYG7OO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HOjVkkUf"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-b7-smtp.messagingengine.com (fhigh-b7-smtp.messagingengine.com [202.12.124.158])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 656941C548A;
-	Sat,  1 Feb 2025 20:11:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02CDDBA34
+	for <bpf@vger.kernel.org>; Sat,  1 Feb 2025 22:24:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738440717; cv=none; b=ncNpGaIMgavDYc9kIc4DjmfchKb/KObfq8dqjzsGYfBiZZyNxsQHigMzqkyOgFZ3woMjw2AuBij56hHJ66T0YPlTG/IWXI1aYiNW5I1smMjuxnk9GaDXVBn/Rrazc3bjsg08j8915ogOV+v/fcQPmyQf8IcNEV6FaM0A/w6GJDs=
+	t=1738448676; cv=none; b=Lk8yJ11ReLBGiW2GI+rGH8I4fKFrwelFnrQbewE304R1YY6k35UWaDDxYY5aemNWDOhR57eYPjuh9I1ivrgwy7RTZ7ES3IeOa2lT0nfB+i4fRYFxx2WKxiCQ6ubLq0RshvkRa9os+KFDpj0FdORUTcpIFXc7p9HR3Ogr7g58ql4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738440717; c=relaxed/simple;
-	bh=Q5mCq6shSkFpq9lHWiWAJMGvKLBJ8p/R9QS98UXq0vM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=B6FCN9tzV2xdfQ6K+SHjYJHpgqtAkPeiw5Jx5BxUG4cCeo6fOXpR/e3W25Ukku6BWPS23RLPQnjop+gBn+dMw7IFpsDmbbZPWNOz8J9V0PzpCNHmJoHZoxkzM4H4szc+7DB1eU65sGwERe4RtXxhuy2h3Id62geEbq9sXO05F+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=fqSBHOzA; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=KAxYG7OO; arc=none smtp.client-ip=202.12.124.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 5AA8C2540085;
-	Sat,  1 Feb 2025 15:11:54 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Sat, 01 Feb 2025 15:11:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm2; t=1738440714; x=1738527114; bh=/OkNhKrEHdGBSK5Yl02y0
-	WheMNO2aueSwMxSLHTsoTs=; b=fqSBHOzAWu9J4ppBcbBLvH2eEik7WEDcAm5sz
-	ELZ205rzhGGVRO+liNJxxDn8ergBnOyedOocv75BuDXfZ8vfOliATblLEq9JyXzE
-	Bh3x25PLvhrtAdhmaQX0RocdusAkiWR6xZDS80Khf8gk2X8MzgGBETC6vOjgbmRn
-	dt0FIxrkWtNWtR0IwBWBQecNprTVAjRE1sKyNv5mKXNy8znpY7RsGHIqcDqq/8k4
-	S60wlEDTTBgLnsOjzB1Z6T9euPLAnzK2zPYTuGDz0QkhxH06uwsrx6Nf+pWQAySx
-	q5avybuS8MpI+TCfCNicnph729ivnTrcV4jnH3dvrDhpuiPSw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1738440714; x=1738527114; bh=/OkNhKrEHdGBSK5Yl02y0WheMNO2aueSwMx
-	SLHTsoTs=; b=KAxYG7OO1FW10eY6lfCTneBYvOsbATOu4h8+QQeYufi7P3KrzCO
-	lfzfH7+S5Qt+qjRocn5DxzGsGMKDFNoKP4Y4iDuUHqxPLBoV+J6k1MfSPKVHTKAn
-	a2JlOeXt+T05/99/uLkGctSNqDhjAAbtRYKOzfQxgHAybXHs/reOR44oyoEChfs4
-	LipKAE3XK/k2bXGijRhqljqwxG/nzqDuBtBQYW7qJ20SdDfrkkYEiBN3ceeo2E89
-	XPJYsKFhaMHnkeS8BOEvYI3fNef7TKypip6GzcMdeDOIrw6xS5tSOMl8ZRAdJc8l
-	ZootbK8f+OjDDa9TZCaN1w4whNmbgeaDuMw==
-X-ME-Sender: <xms:CYCeZ4A4vc9NsFXqCtZQCizuYa5FHw0HymYPrSmZZJrwhZssNeUoVg>
-    <xme:CYCeZ6gqStIb90kr3gpQJkoksyOCuPI4MRDep6hOQNkkanpHjd6AQm9KAff6JX98Q
-    B9xph3VDLbS8R2kDA>
-X-ME-Received: <xmr:CYCeZ7lxJyaPFp3a7Awio_-CMJUJx79Gydv197ft4ef-1NAhWN-vTrmub9bmfGj_lAHCBENq2g5bGksLejERsoxl-ffuxUjsC24n22GESXCpepZWIcq4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduvdeiiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculd
-    ejtddmnecujfgurhephffvvefufffkofgggfestdekredtredttdenucfhrhhomhepffgr
-    nhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpe
-    dvgefgtefgleehhfeufeekuddvgfeuvdfhgeeljeduudfffffgteeuudeiieekjeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugi
-    huuhhurdighiiipdhnsggprhgtphhtthhopeegpdhmohguvgepshhmthhpohhuthdprhgt
-    phhtthhopehlihhnuhigqdhksghuihhlugesvhhgvghrrdhkvghrnhgvlhdrohhrghdprh
-    gtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdp
-    rhgtphhtthhopegsphhfsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjh
-    holhhsrgeskhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:CoCeZ-wNZzho4StStjA0HFUKwjQIxbVPgsEVDdjQc1q6HKvGgIs3XA>
-    <xmx:CoCeZ9S5NlQ0lB3oKLhXF5alrDoVZ7zZ6ybCz1p3x1Su2DBMAznaiA>
-    <xmx:CoCeZ5YzmK6bhS6Wt5uNwFQ01zJV3semZBLT6qcAkSqT7lLUeHM2Gg>
-    <xmx:CoCeZ2RMDCqGSRh5X1EKqnCqKx7mJTK20Av0IRyM1UkYkNTIblCeGw>
-    <xmx:CoCeZ7ODbYq4lR9dN8OvmVV1NailnhESaGys3tiMkPdBcmn2ysYahdPU>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 1 Feb 2025 15:11:53 -0500 (EST)
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: linux-kbuild@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	jolsa@kernel.org
-Subject: [PATCH] tools/build: Skip jobserver flgas in -s detection
-Date: Sat,  1 Feb 2025 13:11:40 -0700
-Message-ID: <40ab531dfb491020ae1cc07d68dd03b0fb1d1fc8.1738440683.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.47.1
+	s=arc-20240116; t=1738448676; c=relaxed/simple;
+	bh=15k7d6d4AR9GG2gPOXbRap2VUwpchfuj8Ppm2V6GTO0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=de9Hx2m5m2/IqeN13LGvK6ShcZBmV0ar3IxeqL0BboMX8DIbzAIsyOc668a4YXOn2HxPIB7YHzQsHHUutg5cK7n487TF7fAUDh2RdnrndxvvU6db7yWKUfrU3zr/fj6EcooA7TMuZSbYVplPA0zKAoCXlcO8oYhY8PO1Tpz7jL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HOjVkkUf; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-21636268e43so70455635ad.2
+        for <bpf@vger.kernel.org>; Sat, 01 Feb 2025 14:24:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738448674; x=1739053474; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QOO15Ylj2g1k2feudkgueS4IiivubfzxV5zdEl7cbLE=;
+        b=HOjVkkUfe2oSyvhrzt+7sj+AVbCwygNUnjSUlFYrVp+SJ7Ol74kNj3IR2IWFP3Zqz+
+         0DuSSsg8DJLKZ6NoQzEOZZBM0X3apjV7XoLNi04orzJyndSBxOcNAAM4ux7iQPh50JG3
+         8txXzun2/kbQQGnhB7xDyP8l8QuE2X0oFYNhpsdm02/trxm7vxQZrmRMmrznC8XO4vGV
+         Y+FAMSJN+z9WWc+QDN1hI/5Y7dUtrqKKY7Ab5u/YoqTZcSUNdkuXQQMlk5ORBGHBMYKN
+         zGMh76BzA7heZhps0BukPlRpNtH5liJsXcglzquGH6JMWiTWXMX1D1uW0+8rkgym8ED4
+         QJPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738448674; x=1739053474;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QOO15Ylj2g1k2feudkgueS4IiivubfzxV5zdEl7cbLE=;
+        b=Qj+aVJfhophYepmAmH21YXEbPXnXbknc+rOlNAN+L0h89p4mhs+0NWzLY0R5seictP
+         HAen7d9rJInked3HnB2bo2lHSYE6raXeHZOCvVB4UVKvq/TxBozX5OkpnpvTr1HuR5Ls
+         kRHSyLv2DlHkfVNW5/wkGJJmYjiA/mbHhcUjdf/yESoHUk1Y4Yw4DnnbvUahvzWi9RAg
+         af1/4z/nXAfTktj6Wux6L1QO6w2bRBmHPzw/8s4UBsSi3/ZUdo2kQmzMtp8yCEil9IsX
+         0L7LFW0qk9+DeNxlMexA6D6XDtpvi/FqFrdEfntK9gsRFJoAz2cjhUC8owu3Fj949GD/
+         s+nQ==
+X-Gm-Message-State: AOJu0YwqWpavS33TKl32LyROelSGzhha3TdDGXDHdXGQaJiKdJChKfz7
+	Z+wCX1NW0gXc1ZgKWabXf2l6eh1ZJzUA4NOiJXVTnTGet20xtkQU
+X-Gm-Gg: ASbGncvnkDDCYyPa8PdHaoew9ydYGh8oqRKBZFSLPcpk4iV6R/irH3FS1PI9NogBvkl
+	ru29G2e4Qb8NfEp4w6+pCyOwNR67pmBVAEhMkqeEhnfJP2dlAUWDFpwbeufUIX6OkRfnTy5vHq8
+	D3tdFKc/fLFpDqbsiyx8Fm/SvaDf6tPtIBOUMS8Cjj6uTwjx3CA31NXwl4At6LRcPxUZ+BoNWq8
+	RAGMNyu2ePxvMfIercVzu8e+t73DbvSYrtKgeMzDKkE5yrrqgbkYFrZM3ALgAGgB2Ay0gE02uv2
+	xZDbIDcCir1UbKP5DWjdcg==
+X-Google-Smtp-Source: AGHT+IFhSjLBHn0erqTkApIJAK81Bavc38DvNVdpUnCmf/j0AyT9xeXFeJUnYAa2GjoGzPCp3FgbOQ==
+X-Received: by 2002:a17:903:22ce:b0:216:56c7:98a7 with SMTP id d9443c01a7336-21dd7df5fb7mr273092695ad.53.1738448674149;
+        Sat, 01 Feb 2025 14:24:34 -0800 (PST)
+Received: from localhost ([2601:647:6881:9060:1202:22bf:5692:27f2])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21de31ee19esm49545325ad.7.2025.02.01.14.24.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 01 Feb 2025 14:24:33 -0800 (PST)
+Date: Sat, 1 Feb 2025 14:24:32 -0800
+From: Cong Wang <xiyou.wangcong@gmail.com>
+To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+Cc: bpf@vger.kernel.org, nkapron@google.com, teknoraver@meta.com,
+	roberto.sassu@huawei.com, gregkh@linuxfoundation.org,
+	paul@paul-moore.com, code@tyhicks.com, flaniel@linux.microsoft.com,
+	alexei.starovoitov@gmail.com, daniel@iogearbox.net,
+	john.fastabend@gmail.com
+Subject: Re: [POC][RFC][PATCH] bpf: in-kernel bpf relocations on raw elf files
+Message-ID: <Z56fIPr6iNO4l5uJ@pop-os.localdomain>
+References: <20250109214617.485144-1-bboscaccy@linux.microsoft.com>
+ <Z5rSIaXf4Fm5jeRf@pop-os.localdomain>
+ <874j1gf6of.fsf@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <874j1gf6of.fsf@microsoft.com>
 
-Currently there is unnecessarily verbose output:
+On Thu, Jan 30, 2025 at 11:22:24AM -0800, Blaise Boscaccy wrote:
+> Cong Wang <xiyou.wangcong@gmail.com> writes:
+> 
+> > Hello Blaise,
+> >
+> 
+> Hi!
+> 
+> > On Thu, Jan 09, 2025 at 01:43:42PM -0800, Blaise Boscaccy wrote:
+> >> 
+> >> This is a proof-of-concept, based off of bpf-next-6.13. The
+> >> implementation will need additional work. The goal of this prototype was
+> >> to be able load raw elf object files directly into the kernel and have
+> >> the kernel perform all the necessary instruction rewriting and
+> >> relocation calculations. Having a file descriptor tied to a bpf program
+> >> allowed us to have tighter integration with the existing LSM
+> >> infrastructure. Additionally, it opens the door for signature and provenance
+> >> checking, along with loading programs without a functioning userspace.
+> >> 
+> >> The main goal of this RFC is to get some feedback on the overall
+> >> approach and feasibility of this design.
+> >> 
+> >> A new subcommand BPF_LOAD_FD is introduced. This subcommand takes a file
+> >> descriptor to an elf object file, along with an array of map fds, and a
+> >> sysfs entry to associate programs and metadata with. The kernel then
+> >> performs all the relocation calculations and instruction rewriting
+> >> inside the kernel. Later BPF_PROG_LOAD can reference this sysfs entry
+> >> and load/attach previously loaded programs by name. Userspace is
+> >> responsible for generating and populating maps.
+> >> 
+> >> CO-RE relocation support already existed in the kernel. Support for
+> >> everything else, maps, externs, etc., was added. In the same vein as
+> >> 29db4bea1d10 ("bpf: Prepare relo_core.c for kernel duty.")
+> >> this prototype directly uses code from libbpf.
+> >> 
+> >> One of the challenges encountered was having different elf and btf
+> >> abstractions utilized in the kernel vs libpf. Missing btf functionality
+> >> was ported over to the kernel while trying to minimize the number of
+> >> changes required to the libpf code. As a result, there is some code
+> >> duplication and obvious refactoring opportunities. Additionally, being
+> >> able to directly share code between userspace and kernelspace in a
+> >> similar fashion to relo_core.c would be a TODO.
+> >
+> > I recently became aware of this patchset through Alexei's reference
+> > in another thread, and I apologize for my delayed involvement.
+> >
+> > Upon reviewing your proposed changes, I have concerns about the scope
+> > of the kernel modifications. This implementation appears to introduce
+> > substantial code changes to the kernel (estimated at approximately
+> > 1,000+ lines, though a git diff stat wasn't provided).
+> >
+> 
+> Yes, it ended up way bigger than I anticipated. The ultimate goal of
+> that was to be able to conditionally compile parts of libbpf directly
+> into the kernel and unify the btf and elf libraries. That refactoring
+> work was way out of scope for a PoC. 
+> 
+> > If the primary objective is eBPF program signing, I would like to
+> > propose an alternative approach: a two-phase signing mechanism that
+> > eliminates the need for kernel modifications. My solution leverages
+> > the existing eBPF infrastructure, particularly the BPF LSM framework.
+> > So the fundamental architectural difference between these two approaches
+> > is pretty much kernel-based versus userspace implementation, which has
+> > been extensively discussed and debated within the kernel community.
+> >
+> 
+> Code signing, secure system design and supply-chain attack mitigations
+> are some active research areas that we are exploring. BPF programs have
+> some interesting ramifications on those topics. Attacks that were
+> previously demonstrated in CVE-2021-3444 are an area of interest as
+> well. 
 
-    $ make -j8 bzImage
-    mkdir -p /home/dlxu/dev/linux/tools/objtool && make
-      O=/home/dlxu/dev/linux subdir=tools/objtool --no-print-directory -C
-      objtool
-    mkdir -p /home/dlxu/dev/linux/tools/bpf/resolve_btfids && make
-      O=/home/dlxu/dev/linux subdir=tools/bpf/resolve_btfids
-      --no-print-directory -C bpf/resolve_btfids
-      INSTALL libsubcmd_headers
-      INSTALL libsubcmd_headers
-      UPD     include/config/kernel.release
+Thanks for sharing all the information.
 
-The reason this happens is that it seems that make is internally adding
-the following flag to $(MAKEFLAGS):
+> 
+> > I have also developed a proof-of-concept implementation, which is
+> > available for review at: https://github.com/congwang/ebpf-2-phase-signing
+> >
+> 
+> Sweet, I'll take a look. It sounds super interesting! At a quick
+> glance, it looks like your approach would probably benefit from John's
+> suggestions for early-boot un-unloadable bpf programs. 
 
-    ---jobserver-auth=fifo:/tmp/GMfifo1880691
+Oh, mine is unloadable, I just used another eBPF program to do the actual
+signature verification. If we unload it (like other regular eBPF
+programs), the whole signing enforcement is gone.
 
-This breaks -s detection which searches for 's' in $(short-opts), as any
-this entire long flag is treated as a short flag and the presence of any
-'s' triggers silent=1.
+> 
+> What are your use cases for signature verification if you don't mind me
+> asking?
+> 
 
-Fix by filtering out such flags so it's still correct to do a substring
-search for 's'.
+Sure. To be honest, our use case is actually simpler than 2-phase
+signing. What we wanted is merely a centralized way to manage all the
+_internal_ eBPF programs within our data center, therefore, signing the
+original eBPF binary is probably sufficient because we trust our own
+eBPF programs and we just want to use signing as an approval. It should
+not be hard to modify my 2-phase signing to just 1-phase (by skipping
+the 2nd one).
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- tools/scripts/Makefile.include | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The reason why I proposed 2-phase signing is that I found that in the
+past there were multiple attempts in the community trying to solve this
+signing problem, so I looked into it a bit deeper and wanted to see if
+I could find a solution to benefit the whole community (and ourselves
+too).
 
-diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
-index 0aa4005017c7..a413f73a7856 100644
---- a/tools/scripts/Makefile.include
-+++ b/tools/scripts/Makefile.include
-@@ -139,9 +139,9 @@ endif
- # If the user is running make -s (silent mode), suppress echoing of commands
- # make-4.0 (and later) keep single letter options in the 1st word of MAKEFLAGS.
- ifeq ($(filter 3.%,$(MAKE_VERSION)),)
--short-opts := $(firstword -$(MAKEFLAGS))
-+short-opts := $(filter-out ---%,$(firstword -$(MAKEFLAGS)))
- else
--short-opts := $(filter-out --%,$(MAKEFLAGS))
-+short-opts := $(filter-out --% ---%,$(MAKEFLAGS))
- endif
- 
- ifneq ($(findstring s,$(short-opts)),)
--- 
-2.47.1
-
+Thanks!
 
