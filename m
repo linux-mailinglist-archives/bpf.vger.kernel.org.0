@@ -1,141 +1,366 @@
-Return-Path: <bpf+bounces-50271-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50272-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AF4BA247D2
-	for <lists+bpf@lfdr.de>; Sat,  1 Feb 2025 09:56:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FCDDA248D5
+	for <lists+bpf@lfdr.de>; Sat,  1 Feb 2025 13:04:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E522016726C
-	for <lists+bpf@lfdr.de>; Sat,  1 Feb 2025 08:56:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3A161648E7
+	for <lists+bpf@lfdr.de>; Sat,  1 Feb 2025 12:04:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 749D61487C1;
-	Sat,  1 Feb 2025 08:55:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBDEC194A74;
+	Sat,  1 Feb 2025 12:04:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="Cc6GyaHj"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="CrdinWTj";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="jFO81lW9"
 X-Original-To: bpf@vger.kernel.org
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+Received: from fhigh-a2-smtp.messagingengine.com (fhigh-a2-smtp.messagingengine.com [103.168.172.153])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 511EFA935;
-	Sat,  1 Feb 2025 08:55:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A750184A30;
+	Sat,  1 Feb 2025 12:04:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738400154; cv=none; b=rQj+DUJf/YyEnuocad+exk2jQGlX3qDQjqwP4YpXY7ATiiflT6UG7LtlQk/7Fc6PcejOJmcrCaaRCh0WobFpz7E9wVPioKX+5WWmFBrCWMFXgI5OnuDXR7kPNGDr5vWXxFnUM2p73Vy+cGnZzWyiQR/qgRmtfp05e9Cn2mKSEL0=
+	t=1738411479; cv=none; b=Rl4zl6RzV3MEFhAsXMX0BXfF2ocQvqXqZakgBhYYcA+dK3jjuhCPNPdOkRxD2t6Sut5/UBtSiYLcdSpz+HUofdBLzmSqSC5dP1e0b6qx4lH1j/WB5KB0jhQnVSe+9S6aalPpUef9UiTbSpigo+fYbJvxaBNEPvur4SLV+wO7QMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738400154; c=relaxed/simple;
-	bh=sLqe1UM0fRkBMfE6INasFA8BOIgS22SSCi+w6VqaMv4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e+JFl4+a+4iA6Ku23QKUOzhEbZjO0NwoZr6oMUh3y+MSLqcE9mMLv/zQnQAKzhReCqy88FWea9PQldoGVZMzR4em3q7n/yr2h26iqopBzQ17B316Hhted+JWOG9Dw2wW2r6rC3q+MuJ0aME/OcqHZ5Zm+f/ynLcrKUjFl/w4u1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=Cc6GyaHj; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id B9C5C1C01A4; Sat,  1 Feb 2025 09:48:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
-	t=1738399725;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=S9/h32gsK9ywKqz5Lw4yDI62fcqfLayMm/eCbggP/f4=;
-	b=Cc6GyaHjdGK5vJNZmBRJZdW6cD7JZ5/g+lRg3vUYzcbG8jlBBAWeaIwJQ4wfcxU2Rog8nW
-	TmbodGUmcppl4wDtqneQdxt+PgGjRw8EcJj6lizfx+v5JYKlpDWrBg/55HhgDV9snGysTX
-	M1H958VDKPut1DTqxg5ljm2G82rF3Xk=
-Date: Sat, 1 Feb 2025 09:48:45 +0100
-From: Pavel Machek <pavel@ucw.cz>
-To: Armin Wolf <W_Armin@gmx.de>
-Cc: Werner Sembach <wse@tuxedocomputers.com>, hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com, bentiss@kernel.org,
-	dri-devel@lists.freedesktop.org, jelle@vdwaa.nl, jikos@kernel.org,
-	lee@kernel.org, linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-	miguel.ojeda.sandonis@gmail.com, ojeda@kernel.org,
-	onitake@gmail.com, cs@tuxedo.de,
-	platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v5 0/1] platform/x86/tuxedo: Add virtual LampArray for
- TUXEDO NB04 devices
-Message-ID: <Z53f7VNIgUWWFn9l@duo.ucw.cz>
-References: <20250121225510.751444-1-wse@tuxedocomputers.com>
- <aa91e17f-0ea8-4645-a0f9-57c016e36a9e@gmx.de>
+	s=arc-20240116; t=1738411479; c=relaxed/simple;
+	bh=8iKncPFvFN/KqWv1IJCRHmAS1yVFc6ETLBHRNLvI8Kw=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=qKr8rZipwzO5Q2oU343Bc5LOI6iBd5t3FWqACiPGyH8z1WD4xGvXRK7q73+fq9nTxCuy1WYYOluh+7P6N/VlPBqRO/86z3UOyE5yISNYDQzByeRa4Rj71LBET1FK9lVYLZAKtxM9i0MgzJEy8ghtuACPDIoZ4g1+qHwoM50vVOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=CrdinWTj; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=jFO81lW9; arc=none smtp.client-ip=103.168.172.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 96E0511400EE;
+	Sat,  1 Feb 2025 07:04:35 -0500 (EST)
+Received: from phl-imap-08 ([10.202.2.84])
+  by phl-compute-03.internal (MEProxy); Sat, 01 Feb 2025 07:04:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1738411475;
+	 x=1738497875; bh=q94BrnE8GmmvJEToiUwE2COPlRZW+gxKKN9ufHNcoBU=; b=
+	CrdinWTj4j5pemeHmxTFUcHhyq1eVgwwCnGEBCWsKTnDsud/lCeo6RLNw5PM2HU9
+	T4GBS/ADFZkDlXkzFSiQjD2gn6M5WfeRoLuIHCzyqHiVipLlUDaqshyuQImMrUm3
+	1ATdB/7Z0QUOdjgi3Pe+xDJsPOev7O7k2cHkDPiQf4q7k/ruH7yraOdN7stKO3bR
+	Wfky5D16/eFUJUUNVXhGPgjkgBlTr2q7gjmwMIhBwZB8ZT4o++2vF+H+1+sU2SI+
+	qekES0KJaqqDXpf3UA/EmcdStGW9reSVGAFosk+X1OWL6SK/2F5ttSj3VK38pS2M
+	Gvt0L3EydwA1XzY+9TkUfQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1738411475; x=
+	1738497875; bh=q94BrnE8GmmvJEToiUwE2COPlRZW+gxKKN9ufHNcoBU=; b=j
+	FO81lW99zu6h7WGYlOzMkDHp2OHlTYjdjlM/rtXJg/fm/yYlw33QG9X673KPNj/y
+	lh1Lq7Zf5mWkV5KWq+DMRFE26UwhTbaFvkaNTjqLin5JLVQZ2OvFOfikDDLbO5PI
+	Edx66nP07RDLV+zUhm8px7s7dgtfR6rhrlX9UuYTMoFXZmQm+8pdyzXLV/rw+0La
+	r961ZEjNR29+kTNR6flxxVNlgBvY+tl9d4R1cXti1oRXYwJJTwk7xYSQ6fTyU0jD
+	t35mrYX14KLGfs2cKqfFmBreZ+9FPSPYQe1QUYkYT4FSWhQhYwPMqos0XUVVsEDj
+	Xht27mdyIBoxfE4ACNL4w==
+X-ME-Sender: <xms:0Q2eZ7pp_qtJ515r8XXjlmwfTQa8qUS6_ug6Th2SX2Y0lDk6DGu5Jw>
+    <xme:0Q2eZ1o8vtkjRpaEeTY-jVZd2CYhAGZ_lga7gnch168toDUUIWQV0_zSUsMjQ-iUF
+    117wlTMKjRGNu5utA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduudeijecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenfghrlhcuvffnffculdefhedmnecujfgurhepofggfffhvfev
+    kfgjfhfutgfgsehtqhertdertdejnecuhfhrohhmpedfffgrnhhivghlucgiuhdfuceoug
+    iguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepieekudevieffkeevffei
+    hefhtdfftdevteejfeeiveevffevveduteekffffleelnecuffhomhgrihhnpehgihhthh
+    husgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhr
+    ohhmpegugihusegugihuuhhurdighiiipdhnsggprhgtphhtthhopeduledpmhhouggvpe
+    hsmhhtphhouhhtpdhrtghpthhtohepmhihkhholhgrlhesfhgsrdgtohhmpdhrtghpthht
+    ohepshgufhesfhhomhhitghhvghvrdhmvgdprhgtphhtthhopegvugguhiiikeejsehgmh
+    grihhlrdgtohhmpdhrtghpthhtohepjhhohhhnrdhfrghsthgrsggvnhgusehgmhgrihhl
+    rdgtohhmpdhrtghpthhtohephhgrohhluhhosehgohhoghhlvgdrtghomhdprhgtphhtth
+    hopegurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopegrnhgurhhi
+    iheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghstheskhgvrhhnvghlrdhorhhgpd
+    hrtghpthhtohepjhholhhsrgeskhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:0Q2eZ4PmkEZZCfRQH0QUSOYomY2tZj4k-rrRa2CBkJlYFnw_ZIMZPQ>
+    <xmx:0Q2eZ-5Dc5rPjxxcYmDOQfSAk7CPhHXqN5-p8aj97aCkayQ6if33uA>
+    <xmx:0Q2eZ66Ex5HoXENhVU1dhe8FmFOGJ5KecN45xKfIZSPefvgs50hV8A>
+    <xmx:0Q2eZ2hudgihac6f5xZl4T4NpGy4gL3Z49Sjw60FnY8c5pqs5Ok4Nw>
+    <xmx:0w2eZ3xjJH_drhm_Z-Bf3-IlczEH0nLjgB02iSCH4DCDC_Qi1SqJ9IpX>
+Feedback-ID: i6a694271:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id BFC0718A006B; Sat,  1 Feb 2025 07:04:33 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="t+WGy4gS/jMLitDQ"
-Content-Disposition: inline
-In-Reply-To: <aa91e17f-0ea8-4645-a0f9-57c016e36a9e@gmx.de>
-
-
---t+WGy4gS/jMLitDQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Date: Sat, 01 Feb 2025 13:04:13 +0100
+From: "Daniel Xu" <dxu@dxuuu.xyz>
+To: "Ilya Leoshkevich" <iii@linux.ibm.com>
+Cc: "Shuah Khan" <shuah@kernel.org>, "Eduard Zingerman" <eddyz87@gmail.com>,
+ "Alexei Starovoitov" <ast@kernel.org>,
+ "Daniel Borkmann" <daniel@iogearbox.net>,
+ "Andrii Nakryiko" <andrii@kernel.org>,
+ "John Fastabend" <john.fastabend@gmail.com>,
+ "Martin KaFai Lau" <martin.lau@linux.dev>, "Song Liu" <song@kernel.org>,
+ "Yonghong Song" <yonghong.song@linux.dev>, "KP Singh" <kpsingh@kernel.org>,
+ "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>,
+ "Jiri Olsa" <jolsa@kernel.org>, "Mykola Lysenko" <mykolal@fb.com>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, "Marc Hartmayer" <mhartmay@linux.ibm.com>
+Message-Id: <92a6f664-01b8-46bc-8712-6e5a5ac3d851@app.fastmail.com>
+In-Reply-To: <20f56c02-688d-4f22-97dc-cc5b3800de3f@app.fastmail.com>
+References: <cover.1736886479.git.dxu@dxuuu.xyz>
+ <68f3ea96ff3809a87e502a11a4bd30177fc5823e.1736886479.git.dxu@dxuuu.xyz>
+ <78b2e750b4568e294b5fc5a33cf4bc8f62fae7f6.camel@linux.ibm.com>
+ <hsgmutuoi4kvjkr7erm5ty2fdrhdrjpz4fpp5doe65l3pzguxv@lcbmvmjpyykq>
+ <f7rhmwrp3fgx3qd7gn3pzczxeztvsg45u4vrl6ls3ylcvflapx@3yi3shfnrmb3>
+ <ae5e32ff2269eb4c190aeb882b17cb1bb8e6c70d.camel@linux.ibm.com>
+ <20f56c02-688d-4f22-97dc-cc5b3800de3f@app.fastmail.com>
+Subject: Re: [PATCH bpf-next v7 4/5] bpf: verifier: Support eliding map lookup nullness
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-Hi!
 
-> > I now got my feet a little wet with hid-bpf regarding something else, a=
-nd
-> > with that knowledge I would leave the long arrays in the beginning in t=
-he
-> > kernel code for the time being:
-> >=20
-> > sirius_16_ansii_kbl_mapping and sirius_16_iso_kbl_mapping are required
-> > during initialization so they have to exist in the kernel code anyway.
-> >=20
-> > report_descriptor will most likly not change even for future models and
-> > afaik having report_descriptors in kernel drivers is not unheard of.
-> >=20
-> > So the only things that could be meaningfully moved to a hid-bpf program
-> > are the sirius_16_*_kbl_mapping_pos_* arrays. But for these is have to =
-give
-> > out some fallback value anyway for the case where a hid-bpf file is mis=
-sing
-> > or fails to load. So why not use real world values from my test device =
-for
-> > these values?
-> >=20
-> > As soon as there is a future device that can use the same driver with j=
-ust
-> > these pos arrays different, then I would implement that change via a bpf
-> > program instead of a change to the kernel driver.
-> >=20
-> > Let me know if you too think this is a sensefull approach?
-> >=20
-> >=20
-> > Another question: Would this patch need to wait for a userspace
-> > implementation of lamp array before it can get accepted?
->=20
-> It would be nice if you could test the LampArray implementation. But othe=
-r than that
-> userspace can catch up later.
->=20
-> Still, i am interested in the opinion of the LED maintainers
-> regarding the fake HID interface.
 
-Comments from previous review were not addressed.
+On Thu, Jan 30, 2025, at 7:41 PM, Daniel Xu wrote:
+> Hi Ilya,
+>
+> On Thu, Jan 30, 2025, at 2:06 AM, Ilya Leoshkevich wrote:
+>> On Wed, 2025-01-29 at 10:45 -0700, Daniel Xu wrote:
+>>> On Wed, Jan 29, 2025 at 09:49:12AM -0700, Daniel Xu wrote:
+>>> > Hi Ilya,
+>>> >=20
+>>> > On Wed, Jan 29, 2025 at 03:58:54PM +0100, Ilya Leoshkevich wrote:
+>>> > > On Tue, 2025-01-14 at 13:28 -0700, Daniel Xu wrote:
+>>> > > > This commit allows progs to elide a null check on statically
+>>> > > > known
+>>> > > > map
+>>> > > > lookup keys. In other words, if the verifier can statically
+>>> > > > prove
+>>> > > > that
+>>> > > > the lookup will be in-bounds, allow the prog to drop the null
+>>> > > > check.
+>>> > > >=20
+>>> > > > This is useful for two reasons:
+>>> > > >=20
+>>> > > > 1. Large numbers of nullness checks (especially when they
+>>> > > > cannot
+>>> > > > fail)
+>>> > > > =C2=A0=C2=A0 unnecessarily pushes prog towards
+>>> > > > BPF_COMPLEXITY_LIMIT_JMP_SEQ.
+>>> > > > 2. It forms a tighter contract between programmer and verifier.
+>>> > > >=20
+>>> > > > For (1), bpftrace is starting to make heavier use of percpu
+>>> > > > scratch
+>>> > > > maps. As a result, for user scripts with large number of
+>>> > > > unrolled
+>>> > > > loops,
+>>> > > > we are starting to hit jump complexity verification errors.=C2=A0
+>>> > > > These
+>>> > > > percpu lookups cannot fail anyways, as we only use static key
+>>> > > > values.
+>>> > > > Eliding nullness probably results in less work for verifier as
+>>> > > > well.
+>>> > > >=20
+>>> > > > For (2), percpu scratch maps are often used as a larger stack,
+>>> > > > as the
+>>> > > > currrent stack is limited to 512 bytes. In these situations, it
+>>> > > > is
+>>> > > > desirable for the programmer to express: "this lookup should
+>>> > > > never
+>>> > > > fail,
+>>> > > > and if it does, it means I messed up the code". By omitting the
+>>> > > > null
+>>> > > > check, the programmer can "ask" the verifier to double check
+>>> > > > the
+>>> > > > logic.
+>>> > > >=20
+>>> > > > Tests also have to be updated in sync with these changes, as
+>>> > > > the
+>>> > > > verifier is more efficient with this change. Notable, iters.c
+>>> > > > tests
+>>> > > > had
+>>> > > > to be changed to use a map type that still requires null
+>>> > > > checks, as
+>>> > > > it's
+>>> > > > exercising verifier tracking logic w.r.t iterators.
+>>> > > >=20
+>>> > > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+>>> > > > ---
+>>> > > > =C2=A0kernel/bpf/verifier.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 92
+>>> > > > ++++++++++++++++++-
+>>> > > > =C2=A0tools/testing/selftests/bpf/progs/iters.c=C2=A0=C2=A0=C2=
+=A0=C2=A0 | 14 +--
+>>> > > > =C2=A0.../selftests/bpf/progs/map_kptr_fail.c=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 |=C2=A0 2 +-
+>>> > > > =C2=A0.../selftests/bpf/progs/verifier_map_in_map.c |=C2=A0 2 =
++-
+>>> > > > =C2=A0.../testing/selftests/bpf/verifier/map_kptr.c |=C2=A0 2 =
++-
+>>> > > > =C2=A05 files changed, 99 insertions(+), 13 deletions(-)
+>>> > >=20
+>>> > > [...]
+>>> > >=20
+>>> > > > @@ -9158,6 +9216,7 @@ static int check_func_arg(struct
+>>> > > > bpf_verifier_env *env, u32 arg,
+>>> > > > =C2=A0	enum bpf_arg_type arg_type =3D fn->arg_type[arg];
+>>> > > > =C2=A0	enum bpf_reg_type type =3D reg->type;
+>>> > > > =C2=A0	u32 *arg_btf_id =3D NULL;
+>>> > > > +	u32 key_size;
+>>> > > > =C2=A0	int err =3D 0;
+>>> > > > =C2=A0
+>>> > > > =C2=A0	if (arg_type =3D=3D ARG_DONTCARE)
+>>> > > > @@ -9291,8 +9350,13 @@ static int check_func_arg(struct
+>>> > > > bpf_verifier_env *env, u32 arg,
+>>> > > > =C2=A0			verbose(env, "invalid map_ptr to
+>>> > > > access map-
+>>> > > > > key\n");
+>>> > > > =C2=A0			return -EACCES;
+>>> > > > =C2=A0		}
+>>> > > > -		err =3D check_helper_mem_access(env, regno,
+>>> > > > meta-
+>>> > > > > map_ptr->key_size,
+>>> > > > -					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BPF_READ, false,
+>>> > > > NULL);
+>>> > > > +		key_size =3D meta->map_ptr->key_size;
+>>> > > > +		err =3D check_helper_mem_access(env, regno,
+>>> > > > key_size,
+>>> > > > BPF_READ, false, NULL);
+>>> > > > +		if (err)
+>>> > > > +			return err;
+>>> > > > +		meta->const_map_key =3D
+>>> > > > get_constant_map_key(env, reg,
+>>> > > > key_size);
+>>> > > > +		if (meta->const_map_key < 0 && meta-
+>>> > > > >const_map_key
+>>> > > > !=3D -EOPNOTSUPP)
+>>> > > > +			return meta->const_map_key;
+>>> > >=20
+>>> > > Mark Hartmayer reported a problem that after this commit the
+>>> > > verifier
+>>> > > started refusing to load libvirt's virCgroupV2DevicesLoadProg(),
+>>> > > which
+>>> > > contains the following snippet:
+>>> > >=20
+>>> > > 53: (b7) r1 =3D -1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 ; R1_w=3D-1
+>>> > > 54: (7b) *(u64 *)(r10 -8) =3D r1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 ; R1_w=3D-1 R10=3Dfp0 fp-8_w=3D-1
+>>> > > 55: (bf) r2 =3D r10=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 ; R2_w=3Dfp0 R10=3Dfp0
+>>> > > 56: (07) r2 +=3D -8=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 ; R2_w=3Dfp-8
+>>> > > 57: (18) r1 =3D 0x9553c800=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ; R1_w=3Dmap_ptr(ks=3D8,vs=3D4)
+>>> > > 59: (85) call bpf_map_lookup_elem#1
+>>> > >=20
+>>> > > IIUC here the actual constant value is -1, which this code
+>>> > > confuses
+>>> > > with an error.
+>>> >=20
+>>> > Thanks for reporting. I think I know what the issue is - will send
+>>> > a
+>>> > patch shortly.
+>>> >=20
+>>> > Daniel
+>>> >=20
+>>>=20
+>>> I cribbed the source from [0] and tested before and after. I think
+>>> this
+>>> should work. Mind giving it a try?
+>>>=20
+>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>>> index 9971c03adfd5..e9176a5ce215 100644
+>>> --- a/kernel/bpf/verifier.c
+>>> +++ b/kernel/bpf/verifier.c
+>>> @@ -9206,6 +9206,8 @@ static s64 get_constant_map_key(struct
+>>> bpf_verifier_env *env,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return reg->var_off.value;
+>>> =C2=A0}
+>>>=20
+>>> +static bool can_elide_value_nullness(enum bpf_map_type type);
+>>> +
+>>> =C2=A0static int check_func_arg(struct bpf_verifier_env *env, u32 ar=
+g,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 struct bpf_call_arg_meta *meta,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 const struct bpf_func_proto *fn,
+>>> @@ -9354,9 +9356,11 @@ static int check_func_arg(struct
+>>> bpf_verifier_env *env, u32 arg,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 err =3D check_helper_mem_access(env, regno, key_si=
+ze,
+>>> BPF_READ, false, NULL);
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 if (err)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 re=
+turn err;
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 meta->const_map_key =3D get_constant_map_key(env, reg,
+>>> key_size);
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 if (meta->const_map_key < 0 && meta->const_map_key !=3D
+>>> -EOPNOTSUPP)
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return m=
+eta->const_map_key;
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 if (can_elide_value_nullness(meta->map_ptr-
+>>> >map_type)) {
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 meta->co=
+nst_map_key =3D
+>>> get_constant_map_key(env, reg, key_size);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (meta=
+->const_map_key < 0 && meta-
+>>> >const_map_key !=3D -EOPNOTSUPP)
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return meta->const_map_key;
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 }
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 break;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case ARG_PTR_TO_MAP_VALUE:
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 if (type_may_be_null(arg_type) &&
+>>> register_is_null(reg))
+>>>=20
+>>> Thanks,
+>>> Daniel
+>>>=20
+>>>=20
+>>> [0]:
+>>> https://github.com/libvirt/libvirt/blob/c1166be3475a0269f5164d87fec6=
+227d6cb34b47/src/util/vircgroupv2devices.c#L66-L135
+>>
+>> Thanks, I tried this in isolation and it fixed the issue for me.
+>> I talked to Mark and he will try it with his libvirt scenario.
+>
+> Thanks for testing!=20
+>
+>>
+>> The code looks reasonable to me, but I have a small concern regarding
+>> what will happen if the BPF code uses a -EOPNOTSUPP immediate with an
+>> array. Unlike other immediates, IIUC this will cause check_func_arg()
+>> to return 0. Is there a reason to have this special?
+>
+> That's a good point. Lemme check on that.
 
-Most importantly, this is not a way to do kernel interface. We want
-reasonable interface that can be documented and modified as needed. We
-want to pass /dev/input to userspace, not raw HID. This is not ok.
+Seems like the verifier tracks the s32 spill as a u32.=20
 
-Best regards,
-								Pavel
---=20
-People of Russia, stop Putin before his war on Ukraine escalates.
-
---t+WGy4gS/jMLitDQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZ53f7QAKCRAw5/Bqldv6
-8r1XAJ9ybQ25RhK01bbqWLJeDafym4vE7wCfcUwxRi+iQ738e+ZzEgfvabQY5NE=
-=upCv
------END PGP SIGNATURE-----
-
---t+WGy4gS/jMLitDQ--
+So I couldn=E2=80=99t craft a repro for this. But it=E2=80=99ll be a
+good refactor to make anyways.=20
 
