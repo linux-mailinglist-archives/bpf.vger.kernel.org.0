@@ -1,182 +1,203 @@
-Return-Path: <bpf+bounces-50266-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50267-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F862A2470F
-	for <lists+bpf@lfdr.de>; Sat,  1 Feb 2025 05:40:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A12AA247A6
+	for <lists+bpf@lfdr.de>; Sat,  1 Feb 2025 09:14:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAD19166A9C
-	for <lists+bpf@lfdr.de>; Sat,  1 Feb 2025 04:40:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DD953A8404
+	for <lists+bpf@lfdr.de>; Sat,  1 Feb 2025 08:13:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB848762F7;
-	Sat,  1 Feb 2025 04:40:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0296F13DBB6;
+	Sat,  1 Feb 2025 08:13:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="MQIh6QsA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D1CJqPIz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A68217BCE;
-	Sat,  1 Feb 2025 04:40:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEE2C22301;
+	Sat,  1 Feb 2025 08:13:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738384816; cv=none; b=rgtaCBDTe9CaT0KIJZCYf2MWWotm1tPtsjtGxXtX0DpQ7Qx/ohjZtrwsDbHr70Kkc2gkCELAebd+Q8FQvDOkY/lRKZUBz63YF/lup2A9US6YPhWH5QFjgsPHhAyoPaM1vNhF/ZY2qASg2EP/P0Jclu+2e29WCe7tAaPgJcsLqtA=
+	t=1738397638; cv=none; b=IGOfr2+4l5fb8ZmtrGXyjT5azXOIIiXZBVXvquof6tptny/yRvJy5oVE9jPlT9h1IyFtswvPz/AZ1/0Y5NJRxSmhaQDL5DD1DrpKCBkNZt8XfvDpXCl26yh1QWB/EwPF0p9ryyHGFBeLRoT7P5KbzabgK0WzFupKP8kpBPqJ11A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738384816; c=relaxed/simple;
-	bh=xo7/q6vlZdNeRWEWkoAlNw1e0d6k7F8xJ30Ok5ww660=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=J1oF/TfvyQYcWuupYNpfUtQoMMJco5e9Y9BVefvrqo6rvV/qE14Dcyxy5QV7PCpdvY249lOqsZq1Jm7pku1PhSAwnjfotHU86Gk976O92Okw5a4Cut9jo9XlfcXWlJOZ2Fr68HV7o9Qu6HKcQ6Dto3ln+8Y/vB8pI/Bt/0Ub+20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=MQIh6QsA; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1738384794; x=1738989594; i=w_armin@gmx.de;
-	bh=LT750kSE9bF5YLcER4OJ17oUOtS5kE1L/aK//c9KpYI=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=MQIh6QsAP4n0PL5GuCxKJSQGqExqVDlX8C3QweLaIBInAPuSUu5+alz23ie5iJZX
-	 uh12nG66lz5URpJzwQoX/sOmnMRFDG4d+Nac8sQRbTA+b/kIEn0ea0Mam748kIxRZ
-	 +pOHSkrqmvoZ5wLF7TYwJ/BMnnYAsRQXA5lNDAaq/+TyiHB7HIJldx2OVkJ3LEMYH
-	 wCL8an077w8wRcAtbpGzMIcw/Q6l0rM/V9JnhMt9bwpFRi0ytl4F0ZmlTvn+321k1
-	 Ffv2PYhxHQqrNZ0Yu6S6FYebwxjrncDj5mBpeO2f3BxrFHfM4ZLPDe/gauNkCtIK7
-	 GuEfn1+/IAfFX0ks0Q==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.0.69] ([93.202.246.83]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N3bX1-1tVSRe3BeV-00w1d9; Sat, 01
- Feb 2025 05:39:54 +0100
-Message-ID: <aa91e17f-0ea8-4645-a0f9-57c016e36a9e@gmx.de>
-Date: Sat, 1 Feb 2025 05:39:50 +0100
+	s=arc-20240116; t=1738397638; c=relaxed/simple;
+	bh=+o7OpftxvJ7odRvtJQX+1YroFAOXXH5xf2zq8COGls0=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CQ2ls7gmcCZ6wkcST1auN735alpU12cxcSO3sdWwlg0wjMbJ+PJmAQO3axuzXYSmxcBMPMuZo4wT2ST8PCKg4Wvu0M8sLM1pFzdZiVyBSefF40d03OElqt6pdqP9XOr/MY9/j+lMtBoymJ/TwY4a22QuokyVesmjvFdcfao4WZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D1CJqPIz; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4361b0ec57aso28116845e9.0;
+        Sat, 01 Feb 2025 00:13:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738397635; x=1739002435; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=x80V0UokGmNr0H2sgQ1akGR+E+fYoDNPRW/fOWgl3Zk=;
+        b=D1CJqPIzon31BigZ+wYZpnHU/oKKowPIwb7v9qBwvWObhSLMPcDH2yNn+LQ4fpe2l1
+         /iaSMa8/aGe1pq4ELIhsWiVKU8ojLbW9TGceDXgc8nE5ZjX7sZyrJPabsUnIMDQ2QH59
+         BHQqBzlUIt2NsIj9sRrGf/vb2o8eI+5mZIHWNOng2tdrU4yDacFV6Ng0QhgFPlfFRFig
+         l6Q0nXxZFRAsBvccSK2/gduqCa+imVT0VsZlfFkgdemt7hg19MnDjJn+aW/1mgP9ZkAC
+         BDc+hn9lsUhe1hbQFU6RrwEydeQsNSmI0pGWYYJ+qvbLheNQm962HE/9V7mNowTIUQX3
+         Mxfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738397635; x=1739002435;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x80V0UokGmNr0H2sgQ1akGR+E+fYoDNPRW/fOWgl3Zk=;
+        b=V6rwbB9HBQuOzBpdXBxYMYt8CByNCmp1V1EF/nemq1GFTLsNkyocRt3hVm4UFkc3rm
+         wwJOI56QXIWBUibtCDMiVzqHLcEZ4MHEDPSYILBhy56HFsARFpHiyCkSp8FaEw/+wq5Z
+         L71NDjCp15uZ+4j3+V9puay997aj63Qgf9dwag2FzPRKG8Avb4au9y5Ppvb4TKi4TgBV
+         kUrhV4e96DoZGJrpvl08xDnm2j5MQm7T2v4AB2uPIQV3V4C+FJ9OUc993rGsg0Y1/1TR
+         EgQj2cEtj5u5G+gcBKsqNiezCNOQTHTOAHKzTu2+mKwfoYcgQcXfh1boRJsYLpmgQ3r3
+         TTzw==
+X-Forwarded-Encrypted: i=1; AJvYcCU0QZcvOAc/VaY5uscvu5UgktbBjgJZQZuH+TIFFbDbbjcfDAoMUuhkckt4AQbia6G8c+I=@vger.kernel.org, AJvYcCVLVCS39/JNpDr91Du/38DJkI5X7gbtOmXap8nWXon/0NRk+Vx3gg6tRTJdBeHkt4CwJnJoRRdo@vger.kernel.org
+X-Gm-Message-State: AOJu0YxlpDIvG2Wd5jaAFnzSAyL6cX6HCuj1m5nBmKmDbol95ytfI+74
+	Lijl0amzfsm1WZPJeVAiV5cODUu6Ani2coUpVV85DxGJA1iPgHje
+X-Gm-Gg: ASbGnct2kvm23w5jLpIGr9kOK0pMgo9cWcO6CRsPAlnbuudLRu+dI1ENwz/m2g4fbJe
+	/pNx0NCvIE13VR7QbvtHeXinMhjKNa7AgDLy9w/0JkXR13br9EIBSudHsC86im0/9CeDQOpCNnm
+	G3fQ6oOl0C375SY53ew2ZRENVrtebwn0LZtLZ/Ko5MZu3hZWMGyGKYagl6FWgB92Baq1WHEbL98
+	6lhTCJKQP7K2KKiG+7AqYM9MyYU1jkmyVALVrZ+ZPVuNcTcpiLYZ7fUZWtze/90sY9XHsWUaUJr
+	tQ==
+X-Google-Smtp-Source: AGHT+IHdF2pLGF25zRF1FFmiCFDn6JX4P9PDPobDon4OC5r0lF0NMxk1vDLk6CszBDBKJF6/jW5fGg==
+X-Received: by 2002:a05:600c:1c91:b0:436:ed38:5c7f with SMTP id 5b1f17b1804b1-438dc3c38c6mr121893495e9.12.1738397634591;
+        Sat, 01 Feb 2025 00:13:54 -0800 (PST)
+Received: from krava ([193.32.29.227])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-438d7aa296esm97753805e9.1.2025.02.01.00.13.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 01 Feb 2025 00:13:54 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Sat, 1 Feb 2025 09:13:51 +0100
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, Yan Zhai <yan@cloudflare.com>
+Subject: Re: [PATCH v2 bpf] net: Add rx_skb of kfree_skb to
+ raw_tp_null_args[].
+Message-ID: <Z53Xv-okoj3PDT50@krava>
+References: <20250201030142.62703-1-kuniyu@amazon.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/1] platform/x86/tuxedo: Add virtual LampArray for
- TUXEDO NB04 devices
-To: Werner Sembach <wse@tuxedocomputers.com>, hdegoede@redhat.com,
- ilpo.jarvinen@linux.intel.com, bentiss@kernel.org
-Cc: dri-devel@lists.freedesktop.org, jelle@vdwaa.nl, jikos@kernel.org,
- lee@kernel.org, linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-leds@vger.kernel.org, miguel.ojeda.sandonis@gmail.com,
- ojeda@kernel.org, onitake@gmail.com, pavel@ucw.cz, cs@tuxedo.de,
- platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org
-References: <20250121225510.751444-1-wse@tuxedocomputers.com>
-Content-Language: en-US
-From: Armin Wolf <W_Armin@gmx.de>
-In-Reply-To: <20250121225510.751444-1-wse@tuxedocomputers.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:pALTMLKB7mMHQQycS43ma88A2gx+nB8dmXITJNjbom2JBMqBRwE
- yAREBGOKW1CJoi+K++E1AoG5I2TTJ3LGkOF+Q14cht0DRbV1t9GJ6+lHcIVg0oJWMYtkQLK
- BS+43+pJ+E5bHQHrjEidOHxT4AK7lzOO5Tjx7s8SGOOVZSPebrPUL9OVWSV1avdJcvo369N
- zkbXj4deyhIg2gyAkXBMA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:BBsPRm+lS0Q=;NcG0FE4KxwiBnnABDwi8c+B+uPO
- /vV9XuJGHiA78dys94k6fetrooym5vY5GtRjNXq7+TS0XITAK/pINMBIsB23SNsBb5eq+Kp2V
- XMJLniMCtaCwMYJCSgYw6sSQuj9u8bLy9BOrCbo424Z1WMGeO/xSGuO9udGBzdf7XA+Yjaos9
- JEM6oPZNSsGuASq976bBWWqzG6FQ+Zxv2VVfzuin5XMqunOplk4EfhwzPZ9BFBuP1LM40zfeV
- Zf512LtToicTjtomIcdbAOdQ03I7YZ4xOF1gwpMtmCZToST3QOeAJzkrifJXKFdujkd5DOS2o
- sK/APJi3ay1jpAkbGovg1DZpIcIWH4iSRpKDi2EaawzzLi2GrxMdnZRkjMdQ7lQeDI+XaLMmo
- uud8cMSNfmGFhntp4n0HDxnCnrJJ8bRvEF5v4V6iuvavxVFrYmBcZmckhEzSTNEMqft9yorUx
- U6vMjQptJLL7ObBhVmkibA9KQEmFo/svFIpy3Hoz64ByFKwGh2zt9E10epNVeMfcRPAG8Ph16
- 44AJO1ma6eCpjIXFatkJqD9HUF0uvrZdfvLt07IXI1akqsPzQ3/CLXdZXeUdw79jsS4b80tLN
- tXL0O1rhSTiSskxiwygqmG7WRmLMkLOpnxFw03WzrlPWzE0kJWIVfSz6KGKls7InESvzVDJ+J
- X9CnCv+AUbT3M57HSAM6SxX3ipqXr5Wl6Ko+yoxcjqQ8blINi6vslVvXk+Jmy35dGDNu7nR5Y
- 2ZHaBkf4gUsZ/YgKhkGuZ0lwVHBGPi34F9MQWUoQzhopA/OFJ+4VsljX9U9OSlvZKAtU3VQpl
- d5mkaFir9d4fl1CTI5mB9KBmvQ/uS8t9gBbte+MHFB9KOfSi/xjIhh95BeiwthI9Wb6MFBgB2
- Z7C+uHaJe1G0maH1tWwIy9LniKQgjHujVlAejxnGtR6g0qEb+btqtxDEJmq4ozXMrn283ItoL
- Jyio6sANk8uhN2OcgJ1rhIvhoGdMC2DHNlPFCtO7ep8MhPzDl230tmrlyV7wdEP9kPLXmI81V
- ramRIko9M9455Vaf1gJshjEtbDj/jVNJ0UoHKNDAV+AnTY3q1Hq4cB+CFDRtjBa/Kg+4KXSRx
- s0VzBEeY6JSfR6r/HIbiSW5KYX512B4qSKG9vkpidJcWNyMdD1KL+AMmrQf3kSGp3aWydsTRQ
- /Z14IGlLtRhqw3BAuxj4kRF6tpW3xmjx1lPt/zqVZPzh2NfIRWABTseRJ5k9i5TBbkM3kVBZb
- 4e7kDj/3jBJDR7wRMRM3TUVWnCbQ8hSATAd6YTVQNCPYwXWNx2LwIamI/toVCsFZ2bMJHSqJn
- DYTRVR3puZcIR6HBKmtacjDq1RvwmTjOCrw9Zhak+9Ejn8=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250201030142.62703-1-kuniyu@amazon.com>
 
-Am 21.01.25 um 23:31 schrieb Werner Sembach:
+On Fri, Jan 31, 2025 at 07:01:42PM -0800, Kuniyuki Iwashima wrote:
+> Yan Zhai reported a BPF prog could trigger a null-ptr-deref [0]
+> in trace_kfree_skb if the prog does not check if rx_sk is NULL.
+> 
+> Commit c53795d48ee8 ("net: add rx_sk to trace_kfree_skb") added
+> rx_sk to trace_kfree_skb, but rx_sk is optional and could be NULL.
+> 
+> Let's add kfree_skb to raw_tp_null_args[] to let the BPF verifier
+> validate such a prog and prevent the issue.
+> 
+> Now we fail to load such a prog:
+> 
+>   libbpf: prog 'drop': -- BEGIN PROG LOAD LOG --
+>   0: R1=ctx() R10=fp0
+>   ; int BPF_PROG(drop, struct sk_buff *skb, void *location, @ kfree_skb_sk_null.bpf.c:21
+>   0: (79) r3 = *(u64 *)(r1 +24)
+>   func 'kfree_skb' arg3 has btf_id 5253 type STRUCT 'sock'
+>   1: R1=ctx() R3_w=trusted_ptr_or_null_sock(id=1)
+>   ; bpf_printk("sk: %d, %d\n", sk, sk->__sk_common.skc_family); @ kfree_skb_sk_null.bpf.c:24
+>   1: (69) r4 = *(u16 *)(r3 +16)
+>   R3 invalid mem access 'trusted_ptr_or_null_'
+>   processed 2 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
+>   -- END PROG LOAD LOG --
+> 
+> Note this fix requires commit 838a10bd2ebf ("bpf: Augment raw_tp
+> arguments with PTR_MAYBE_NULL").
+> 
+> [0]:
+> BUG: kernel NULL pointer dereference, address: 0000000000000010
+>  PF: supervisor read access in kernel mode
+>  PF: error_code(0x0000) - not-present page
+> PGD 0 P4D 0
+> PREEMPT SMP
+> CPU: 6 UID: 0 PID: 348 Comm: sshd Not tainted 6.12.11 #206
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> RIP: 0010:bpf_prog_5e21a6db8fcff1aa_drop+0x10/0x2d
+> Code: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc 0f 1f 44 00 00 0f 1f 00 55 48 89 e5 48 8b 57 18 <48> 0f b7 4a 10 48 bf 0c 4f e2 c1 ad 90 ff ff be 0c 00 00 00 e8 0f
+> RSP: 0018:ffffa86640b53da8 EFLAGS: 00010202
+> RAX: 0000000000000001 RBX: ffffa866402d1000 RCX: 0000000000000002
+> RDX: 0000000000000000 RSI: ffffa866402d1048 RDI: ffffa86640b53dc8
+> RBP: ffffa86640b53da8 R08: 0000000000000000 R09: 9c908cd09b9c8c91
+> R10: ffff90adc056b540 R11: 0000000000000002 R12: 0000000000000000
+> R13: ffffa86640b53e88 R14: 0000000000000800 R15: fffffffffffffffe
+> FS:  00007f2a27c2b480(0000) GS:ffff90b0efd00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000000010 CR3: 0000000100e69004 CR4: 00000000001726f0
+> Call Trace:
+>  <TASK>
+>  ? __die+0x1f/0x60
+>  ? page_fault_oops+0x148/0x420
+>  ? search_bpf_extables+0x5b/0x70
+>  ? fixup_exception+0x27/0x2c0
+>  ? exc_page_fault+0x75/0x170
+>  ? asm_exc_page_fault+0x22/0x30
+>  ? bpf_prog_5e21a6db8fcff1aa_drop+0x10/0x2d
+>  bpf_trace_run4+0x68/0xd0
+>  ? unix_stream_connect+0x1f4/0x6f0
+>  sk_skb_reason_drop+0x90/0x120
+>  unix_stream_connect+0x1f4/0x6f0
+>  __sys_connect+0x7f/0xb0
+>  __x64_sys_connect+0x14/0x20
+>  do_syscall_64+0x47/0xc30
+>  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+> RIP: 0033:0x7f2a27f296a0
+> Code: 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 80 3d 41 ff 0c 00 00 74 17 b8 2a 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 48 83 ec 18 89 54
+> RSP: 002b:00007ffe29274f58 EFLAGS: 00000202 ORIG_RAX: 000000000000002a
+> 
+> Fixes: c53795d48ee8 ("net: add rx_sk to trace_kfree_skb")
+> Reported-by: Yan Zhai <yan@cloudflare.com>
+> Closes: https://lore.kernel.org/netdev/Z50zebTRzI962e6X@debian.debian/
+> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+> ---
+> v2:
+>   * Add kfree_skb to raw_tp_null_args[] instead of annotating
+>     rx_skb with __nullable
 
-> Hi,
-> after some other work, picked this up again.
-> Only coding style changes vs v4.
->
->
-> I now got my feet a little wet with hid-bpf regarding something else, and
-> with that knowledge I would leave the long arrays in the beginning in the
-> kernel code for the time being:
->
-> sirius_16_ansii_kbl_mapping and sirius_16_iso_kbl_mapping are required
-> during initialization so they have to exist in the kernel code anyway.
->
-> report_descriptor will most likly not change even for future models and
-> afaik having report_descriptors in kernel drivers is not unheard of.
->
-> So the only things that could be meaningfully moved to a hid-bpf program
-> are the sirius_16_*_kbl_mapping_pos_* arrays. But for these is have to give
-> out some fallback value anyway for the case where a hid-bpf file is missing
-> or fails to load. So why not use real world values from my test device for
-> these values?
->
-> As soon as there is a future device that can use the same driver with just
-> these pos arrays different, then I would implement that change via a bpf
-> program instead of a change to the kernel driver.
->
-> Let me know if you too think this is a sensefull approach?
->
->
-> Another question: Would this patch need to wait for a userspace
-> implementation of lamp array before it can get accepted?
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-It would be nice if you could test the LampArray implementation. But other than that
-userspace can catch up later.
+thanks,
+jirka
 
-Still, i am interested in the opinion of the LED maintainers regarding the fake HID interface.
-
-Thanks,
-Armin Wolf
-
->
-> The folder structure and naming scheme with nb04 is im preparation for
-> other parts of tuxedo-drivers to be upstreamed. NB04 is one of the
-> board_vendor dmi strings on TUXEDO devices that aligns with which part of
-> tuxedo-drivers implements the features of that device. They are independent
-> of each other so I plan to put them in different subfolders to reflect
-> that.
->
-> Best regards,
-> Werner Sembach
->
-> Werner Sembach (1):
->    platform/x86/tuxedo: Add virtual LampArray for TUXEDO NB04 devices
->
->   MAINTAINERS                                   |   6 +
->   drivers/platform/x86/Kconfig                  |   2 +
->   drivers/platform/x86/Makefile                 |   3 +
->   drivers/platform/x86/tuxedo/Kbuild            |   6 +
->   drivers/platform/x86/tuxedo/Kconfig           |   6 +
->   drivers/platform/x86/tuxedo/nb04/Kbuild       |   9 +
->   drivers/platform/x86/tuxedo/nb04/Kconfig      |  14 +
->   .../platform/x86/tuxedo/nb04/wmi_ab_init.c    | 103 +++
->   .../platform/x86/tuxedo/nb04/wmi_ab_init.h    |  18 +
->   .../x86/tuxedo/nb04/wmi_ab_virt_lamparray.c   | 772 ++++++++++++++++++
->   .../x86/tuxedo/nb04/wmi_ab_virt_lamparray.h   |  18 +
->   .../platform/x86/tuxedo/nb04/wmi_xx_util.c    |  97 +++
->   .../platform/x86/tuxedo/nb04/wmi_xx_util.h    | 112 +++
->   13 files changed, 1166 insertions(+)
->   create mode 100644 drivers/platform/x86/tuxedo/Kbuild
->   create mode 100644 drivers/platform/x86/tuxedo/Kconfig
->   create mode 100644 drivers/platform/x86/tuxedo/nb04/Kbuild
->   create mode 100644 drivers/platform/x86/tuxedo/nb04/Kconfig
->   create mode 100644 drivers/platform/x86/tuxedo/nb04/wmi_ab_init.c
->   create mode 100644 drivers/platform/x86/tuxedo/nb04/wmi_ab_init.h
->   create mode 100644 drivers/platform/x86/tuxedo/nb04/wmi_ab_virt_lamparray.c
->   create mode 100644 drivers/platform/x86/tuxedo/nb04/wmi_ab_virt_lamparray.h
->   create mode 100644 drivers/platform/x86/tuxedo/nb04/wmi_xx_util.c
->   create mode 100644 drivers/platform/x86/tuxedo/nb04/wmi_xx_util.h
->
+> 
+> v1: https://lore.kernel.org/bpf/20250201001425.42377-1-kuniyu@amazon.com/
+> ---
+>  kernel/bpf/btf.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 9de6acddd479..c3223e0db2f5 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -6507,6 +6507,8 @@ static const struct bpf_raw_tp_null_args raw_tp_null_args[] = {
+>  	/* rxrpc */
+>  	{ "rxrpc_recvdata", 0x1 },
+>  	{ "rxrpc_resend", 0x10 },
+> +	/* skb */
+> +	{"kfree_skb", 0x1000},
+>  	/* sunrpc */
+>  	{ "xs_stream_read_data", 0x1 },
+>  	/* ... from xprt_cong_event event class */
+> -- 
+> 2.39.5 (Apple Git-154)
+> 
+> 
 
