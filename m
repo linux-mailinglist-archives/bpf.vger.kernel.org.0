@@ -1,57 +1,57 @@
-Return-Path: <bpf+bounces-50293-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50294-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8961BA24CF6
-	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2025 08:52:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 373CFA24CFF
+	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2025 08:53:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E58B1887B3A
-	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2025 07:52:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2A857A4116
+	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2025 07:51:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E0261D5178;
-	Sun,  2 Feb 2025 07:50:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F111DB134;
+	Sun,  2 Feb 2025 07:50:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nppct.ru header.i=@nppct.ru header.b="hSZYVmQq"
+	dkim=pass (1024-bit key) header.d=nppct.ru header.i=@nppct.ru header.b="R46ovRpQ"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail.nppct.ru (mail.nppct.ru [195.133.245.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E9BB1D5175
-	for <bpf@vger.kernel.org>; Sun,  2 Feb 2025 07:50:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93CF01DACBA
+	for <bpf@vger.kernel.org>; Sun,  2 Feb 2025 07:50:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.133.245.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738482646; cv=none; b=SRYH1DA4TLeY7ivrL95XJOjLMQvz50uvKB5+fQNLo2urB0CRBkjq4dzH3VGX2MmzXfpngr0HIcKhF94BfoORWk+FNh2TKWX/6Kf7B6APxoWcCDbcV0+PYEK+3YkfNCP98LzAc4pIWQP7YtivGhNRfmAXKrtaaROSYRrjoYAHDQk=
+	t=1738482648; cv=none; b=rHib980LdSEsQlalbYT5T/NzMcWLaIcCjfPupy99bLNOptexllR0pcFb6b+BAjNggCvd/b9xXd//1a1AKLqSIW759JaomTdPG96il7Ftu/2ByFAm7DJEriXFjhFS9kUsmisSXcT1NTIXa+o1GUaEc3ZUKzob14AbrOWNwNt8GYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738482646; c=relaxed/simple;
-	bh=tdneJNNEVJixCG8akPaghX2HSPiSJkAgF1OweEuRbtg=;
+	s=arc-20240116; t=1738482648; c=relaxed/simple;
+	bh=HrphpRGbttodHAsmNDxH56Z6vPt1TIKfPl+JXQcqQj0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=H7RWjRiW621c+KyQNFqbJZEvOq0FdZ7xq5ZYv5OmW9hTtaKENpHYrQx1f/Jc61h3/LQxS95vLfX290DgUfPBRZuLrQ2qYcFKCWRZwCm6cPjwCT9D0V6guKsOCjvU33iJmNzTzEsxw3N1lXgZkPkaH98CYOj0pEJhmO0ii5cxW7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nppct.ru; spf=pass smtp.mailfrom=nppct.ru; dkim=pass (1024-bit key) header.d=nppct.ru header.i=@nppct.ru header.b=hSZYVmQq; arc=none smtp.client-ip=195.133.245.4
+	 MIME-Version; b=IRCM3GnqoFqUWFZEcSpmqmQdl04J9V2pF8NRiul5Ru43EXAQf1OUCjop0YH1z4E8YYa/aHiZHrQ4Vt5Q8JSv/7/a3HEWYGV1XtJ4IGfZOQGESRcXn5fGQeKfSSO81TgFTgR9gZHBcbQUMBVy4pfcN8OL5eM8+2EoTClk0XH7KGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nppct.ru; spf=pass smtp.mailfrom=nppct.ru; dkim=pass (1024-bit key) header.d=nppct.ru header.i=@nppct.ru header.b=R46ovRpQ; arc=none smtp.client-ip=195.133.245.4
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nppct.ru
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nppct.ru
 Received: from mail.nppct.ru (localhost [127.0.0.1])
-	by mail.nppct.ru (Postfix) with ESMTP id 547E41C19E0
-	for <bpf@vger.kernel.org>; Sun,  2 Feb 2025 10:50:42 +0300 (MSK)
+	by mail.nppct.ru (Postfix) with ESMTP id 115AF1C242D
+	for <bpf@vger.kernel.org>; Sun,  2 Feb 2025 10:50:45 +0300 (MSK)
 Authentication-Results: mail.nppct.ru (amavisd-new); dkim=pass (1024-bit key)
 	reason="pass (just generated, assumed good)" header.d=nppct.ru
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nppct.ru; h=
 	content-transfer-encoding:mime-version:references:in-reply-to
 	:x-mailer:message-id:date:date:subject:subject:to:from:from; s=
-	dkim; t=1738482641; x=1739346642; bh=tdneJNNEVJixCG8akPaghX2HSPi
-	SJkAgF1OweEuRbtg=; b=hSZYVmQqnR3LyN1YeNTW6Xf1LEAAB1seiLHdb4CLvTv
-	8CkanRqwgxp9FMNOccQ0YRXa2URAszzVmevc0saqwfLx9mJjRAPaRNjhJXg5aByc
-	ZE8ve7QFG7MBeGyezI/w+ITzqnrf3tby60W9Lf8P/+nRDd1l9ZdxrTjPmX97kVL8
+	dkim; t=1738482644; x=1739346645; bh=HrphpRGbttodHAsmNDxH56Z6vPt
+	1TIKfPl+JXQcqQj0=; b=R46ovRpQdr7mHywGQRqMDqh1N26aJkXVWtZGWY2BHKg
+	v3mt1un/HrmpKuDpCPISy7tCW0z3gULfxAX+QCP6fYZtk8V5xhd2HU/7tGklIakr
+	5kkFUoOCz+MJcX9Pf3X5ltZVqIDeRKh07wbYl3dL/Zsj2iYaHXkds6cIIguU1kW0
 	=
 X-Virus-Scanned: Debian amavisd-new at mail.nppct.ru
 Received: from mail.nppct.ru ([127.0.0.1])
 	by mail.nppct.ru (mail.nppct.ru [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id VnbaVgbwcmgA for <bpf@vger.kernel.org>;
-	Sun,  2 Feb 2025 10:50:41 +0300 (MSK)
+	with ESMTP id R7Cw7lQtbRbI for <bpf@vger.kernel.org>;
+	Sun,  2 Feb 2025 10:50:44 +0300 (MSK)
 Received: from localhost.localdomain (unknown [87.249.24.51])
-	by mail.nppct.ru (Postfix) with ESMTPSA id 4394E1C2427;
-	Sun,  2 Feb 2025 10:50:22 +0300 (MSK)
+	by mail.nppct.ru (Postfix) with ESMTPSA id 244C51C2441;
+	Sun,  2 Feb 2025 10:50:23 +0300 (MSK)
 From: Alexey Nepomnyashih <sdl@nppct.ru>
 To: stable@vger.kernel.org,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
@@ -78,11 +78,10 @@ Cc: Alexey Nepomnyashih <sdl@nppct.ru>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org,
-	Hou Tao <houtao1@huawei.com>
-Subject: [PATCH 6.1 11/16] bpf: Introduce bpf_mem_free_rcu() similar to kfree_rcu().
-Date: Sun,  2 Feb 2025 07:46:48 +0000
-Message-ID: <20250202074709.932174-12-sdl@nppct.ru>
+	lvc-project@linuxtesting.org
+Subject: [PATCH 6.1 12/16] rcu: Fix missing nocb gp wake on rcu_barrier()
+Date: Sun,  2 Feb 2025 07:46:49 +0000
+Message-ID: <20250202074709.932174-13-sdl@nppct.ru>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250202074709.932174-1-sdl@nppct.ru>
 References: <20250202074709.932174-1-sdl@nppct.ru>
@@ -94,265 +93,91 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Alexei Starovoitov <ast@kernel.org>
+From: Frederic Weisbecker <frederic@kernel.org>
 
-commit 5af6807bdb10d1af9d412d7d6c177ba8440adffb upstream.
+commit b8f7aca3f0e0e6223094ba2662bac90353674b04 upstream.
 
-Introduce bpf_mem_[cache_]free_rcu() similar to kfree_rcu().
-Unlike bpf_mem_[cache_]free() that links objects for immediate reuse into
-per-cpu free list the _rcu() flavor waits for RCU grace period and then moves
-objects into free_by_rcu_ttrace list where they are waiting for RCU
-task trace grace period to be freed into slab.
+In preparation for RCU lazy changes, wake up the RCU nocb gp thread if
+needed after an entrain.  This change prevents the RCU barrier callback
+from waiting in the queue for several seconds before the lazy callbacks
+in front of it are serviced.
 
-The life cycle of objects:
-alloc: dequeue free_llist
-free: enqeueu free_llist
-free_rcu: enqueue free_by_rcu -> waiting_for_gp
-free_llist above high watermark -> free_by_rcu_ttrace
-after RCU GP waiting_for_gp -> free_by_rcu_ttrace
-free_by_rcu_ttrace -> waiting_for_gp_ttrace -> slab
-
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Hou Tao <houtao1@huawei.com>
-Link: https://lore.kernel.org/bpf/20230706033447.54696-13-alexei.starovoitov@gmail.com
+Reported-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Alexey Nepomnyashih <sdl@nppct.ru>
 ---
- include/linux/bpf_mem_alloc.h |   2 +
- kernel/bpf/memalloc.c         | 139 +++++++++++++++++++++++++++++++++-
- 2 files changed, 137 insertions(+), 4 deletions(-)
+ kernel/rcu/tree.c      | 11 +++++++++++
+ kernel/rcu/tree.h      |  1 +
+ kernel/rcu/tree_nocb.h |  5 +++++
+ 3 files changed, 17 insertions(+)
 
-diff --git a/include/linux/bpf_mem_alloc.h b/include/linux/bpf_mem_alloc.h
-index 7e7df2c473d2..a57b7fc015fc 100644
---- a/include/linux/bpf_mem_alloc.h
-+++ b/include/linux/bpf_mem_alloc.h
-@@ -20,10 +20,12 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma);
- /* kmalloc/kfree equivalent: */
- void *bpf_mem_alloc(struct bpf_mem_alloc *ma, size_t size);
- void bpf_mem_free(struct bpf_mem_alloc *ma, void *ptr);
-+void bpf_mem_free_rcu(struct bpf_mem_alloc *ma, void *ptr);
- 
- /* kmem_cache_alloc/free equivalent: */
- void *bpf_mem_cache_alloc(struct bpf_mem_alloc *ma);
- void bpf_mem_cache_free(struct bpf_mem_alloc *ma, void *ptr);
-+void bpf_mem_cache_free_rcu(struct bpf_mem_alloc *ma, void *ptr);
- void bpf_mem_cache_raw_free(void *ptr);
- void *bpf_mem_cache_alloc_flags(struct bpf_mem_alloc *ma, gfp_t flags);
- 
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index fb390dcdbdaa..b6aaf92b5259 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -101,6 +101,15 @@ struct bpf_mem_cache {
- 	bool draining;
- 	struct bpf_mem_cache *tgt;
- 
-+	/* list of objects to be freed after RCU GP */
-+	struct llist_head free_by_rcu;
-+	struct llist_node *free_by_rcu_tail;
-+	struct llist_head waiting_for_gp;
-+	struct llist_node *waiting_for_gp_tail;
-+	struct rcu_head rcu;
-+	atomic_t call_rcu_in_progress;
-+	struct llist_head free_llist_extra_rcu;
-+
- 	/* list of objects to be freed after RCU tasks trace GP */
- 	struct llist_head free_by_rcu_ttrace;
- 	struct llist_head waiting_for_gp_ttrace;
-@@ -342,6 +351,69 @@ static void free_bulk(struct bpf_mem_cache *c)
- 	do_call_rcu_ttrace(tgt);
- }
- 
-+static void __free_by_rcu(struct rcu_head *head)
-+{
-+	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
-+	struct bpf_mem_cache *tgt = c->tgt;
-+	struct llist_node *llnode;
-+
-+	llnode = llist_del_all(&c->waiting_for_gp);
-+	if (!llnode)
-+		goto out;
-+
-+	llist_add_batch(llnode, c->waiting_for_gp_tail, &tgt->free_by_rcu_ttrace);
-+
-+	/* Objects went through regular RCU GP. Send them to RCU tasks trace */
-+	do_call_rcu_ttrace(tgt);
-+out:
-+	atomic_set(&c->call_rcu_in_progress, 0);
-+}
-+
-+static void check_free_by_rcu(struct bpf_mem_cache *c)
-+{
-+	struct llist_node *llnode, *t;
-+	unsigned long flags;
-+
-+	/* drain free_llist_extra_rcu */
-+	if (unlikely(!llist_empty(&c->free_llist_extra_rcu))) {
-+		inc_active(c, &flags);
-+		llist_for_each_safe(llnode, t, llist_del_all(&c->free_llist_extra_rcu))
-+			if (__llist_add(llnode, &c->free_by_rcu))
-+				c->free_by_rcu_tail = llnode;
-+		dec_active(c, flags);
-+	}
-+
-+	if (llist_empty(&c->free_by_rcu))
-+		return;
-+
-+	if (atomic_xchg(&c->call_rcu_in_progress, 1)) {
-+		/*
-+		 * Instead of kmalloc-ing new rcu_head and triggering 10k
-+		 * call_rcu() to hit rcutree.qhimark and force RCU to notice
-+		 * the overload just ask RCU to hurry up. There could be many
-+		 * objects in free_by_rcu list.
-+		 * This hint reduces memory consumption for an artificial
-+		 * benchmark from 2 Gbyte to 150 Mbyte.
-+		 */
-+		rcu_request_urgent_qs_task(current);
-+		return;
-+	}
-+
-+	WARN_ON_ONCE(!llist_empty(&c->waiting_for_gp));
-+
-+	inc_active(c, &flags);
-+	WRITE_ONCE(c->waiting_for_gp.first, __llist_del_all(&c->free_by_rcu));
-+	c->waiting_for_gp_tail = c->free_by_rcu_tail;
-+	dec_active(c, flags);
-+
-+	if (unlikely(READ_ONCE(c->draining))) {
-+		free_all(llist_del_all(&c->waiting_for_gp), !!c->percpu_size);
-+		atomic_set(&c->call_rcu_in_progress, 0);
-+	} else {
-+		call_rcu_hurry(&c->rcu, __free_by_rcu);
-+	}
-+}
-+
- static void bpf_mem_refill(struct irq_work *work)
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index dd6e15ca63b0..664ebd2da252 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3962,6 +3962,8 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
  {
- 	struct bpf_mem_cache *c = container_of(work, struct bpf_mem_cache, refill_work);
-@@ -356,6 +428,8 @@ static void bpf_mem_refill(struct irq_work *work)
- 		alloc_bulk(c, c->batch, NUMA_NO_NODE);
- 	else if (cnt > c->high_watermark)
- 		free_bulk(c);
-+
-+	check_free_by_rcu(c);
+ 	unsigned long gseq = READ_ONCE(rcu_state.barrier_sequence);
+ 	unsigned long lseq = READ_ONCE(rdp->barrier_seq_snap);
++	bool wake_nocb = false;
++	bool was_alldone = false;
+ 
+ 	lockdep_assert_held(&rcu_state.barrier_lock);
+ 	if (rcu_seq_state(lseq) || !rcu_seq_state(gseq) || rcu_seq_ctr(lseq) != rcu_seq_ctr(gseq))
+@@ -3970,7 +3972,14 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
+ 	rdp->barrier_head.func = rcu_barrier_callback;
+ 	debug_rcu_head_queue(&rdp->barrier_head);
+ 	rcu_nocb_lock(rdp);
++	/*
++	 * Flush bypass and wakeup rcuog if we add callbacks to an empty regular
++	 * queue. This way we don't wait for bypass timer that can reach seconds
++	 * if it's fully lazy.
++	 */
++	was_alldone = rcu_rdp_is_offloaded(rdp) && !rcu_segcblist_pend_cbs(&rdp->cblist);
+ 	WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies));
++	wake_nocb = was_alldone && rcu_segcblist_pend_cbs(&rdp->cblist);
+ 	if (rcu_segcblist_entrain(&rdp->cblist, &rdp->barrier_head)) {
+ 		atomic_inc(&rcu_state.barrier_cpu_count);
+ 	} else {
+@@ -3978,6 +3987,8 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
+ 		rcu_barrier_trace(TPS("IRQNQ"), -1, rcu_state.barrier_sequence);
+ 	}
+ 	rcu_nocb_unlock(rdp);
++	if (wake_nocb)
++		wake_nocb_gp(rdp, false);
+ 	smp_store_release(&rdp->barrier_seq_snap, gseq);
  }
  
- static void notrace irq_work_raise(struct bpf_mem_cache *c)
-@@ -483,6 +557,9 @@ static void drain_mem_cache(struct bpf_mem_cache *c)
- 	free_all(llist_del_all(&c->waiting_for_gp_ttrace), percpu);
- 	free_all(__llist_del_all(&c->free_llist), percpu);
- 	free_all(__llist_del_all(&c->free_llist_extra), percpu);
-+	free_all(__llist_del_all(&c->free_by_rcu), percpu);
-+	free_all(__llist_del_all(&c->free_llist_extra_rcu), percpu);
-+	free_all(llist_del_all(&c->waiting_for_gp), percpu);
- }
- 
- static void free_mem_alloc_no_barrier(struct bpf_mem_alloc *ma)
-@@ -495,11 +572,20 @@ static void free_mem_alloc_no_barrier(struct bpf_mem_alloc *ma)
- 
- static void free_mem_alloc(struct bpf_mem_alloc *ma)
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index aa16d3cd62ba..43babe7b1fbf 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -442,6 +442,7 @@ static void zero_cpu_stall_ticks(struct rcu_data *rdp);
+ static struct swait_queue_head *rcu_nocb_gp_get(struct rcu_node *rnp);
+ static void rcu_nocb_gp_cleanup(struct swait_queue_head *sq);
+ static void rcu_init_one_nocb(struct rcu_node *rnp);
++static bool wake_nocb_gp(struct rcu_data *rdp, bool force);
+ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 				  unsigned long j);
+ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 7c28d154b094..e8027f4d441c 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1547,6 +1547,11 @@ static void rcu_init_one_nocb(struct rcu_node *rnp)
  {
--	/* waiting_for_gp_ttrace lists was drained, but __free_rcu might
--	 * still execute. Wait for it now before we freeing percpu caches.
-+	/* waiting_for_gp[_ttrace] lists were drained, but RCU callbacks
-+	 * might still execute. Wait for them.
-+	 *
-+	 * rcu_barrier_tasks_trace() doesn't imply synchronize_rcu_tasks_trace(),
-+	 * but rcu_barrier_tasks_trace() and rcu_barrier() below are only used
-+	 * to wait for the pending __free_rcu_tasks_trace() and __free_rcu(),
-+	 * so if call_rcu(head, __free_rcu) is skipped due to
-+	 * rcu_trace_implies_rcu_gp(), it will be OK to skip rcu_barrier() by
-+	 * using rcu_trace_implies_rcu_gp() as well.
- 	 */
--	rcu_barrier_tasks_trace();
--	rcu_barrier();
-+	rcu_barrier(); /* wait for __free_by_rcu */
-+	rcu_barrier_tasks_trace(); /* wait for __free_rcu */
-+	if (!rcu_trace_implies_rcu_gp())
-+		rcu_barrier();
- 	free_mem_alloc_no_barrier(ma);
  }
  
-@@ -553,6 +639,7 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
- 			irq_work_sync(&c->refill_work);
- 			drain_mem_cache(c);
- 			rcu_in_progress += atomic_read(&c->call_rcu_ttrace_in_progress);
-+			rcu_in_progress += atomic_read(&c->call_rcu_in_progress);
- 		}
- 		/* objcg is the same across cpus */
- 		if (c->objcg)
-@@ -569,6 +656,7 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
- 				irq_work_sync(&c->refill_work);
- 				drain_mem_cache(c);
- 				rcu_in_progress += atomic_read(&c->call_rcu_ttrace_in_progress);
-+				rcu_in_progress += atomic_read(&c->call_rcu_in_progress);
- 			}
- 		}
- 		if (c->objcg)
-@@ -653,6 +741,27 @@ static void notrace unit_free(struct bpf_mem_cache *c, void *ptr)
- 		irq_work_raise(c);
- }
- 
-+static void notrace unit_free_rcu(struct bpf_mem_cache *c, void *ptr)
++static bool wake_nocb_gp(struct rcu_data *rdp, bool force)
 +{
-+	struct llist_node *llnode = ptr - LLIST_NODE_SZ;
-+	unsigned long flags;
-+
-+	c->tgt = *(struct bpf_mem_cache **)llnode;
-+
-+	local_irq_save(flags);
-+	if (local_inc_return(&c->active) == 1) {
-+		if (__llist_add(llnode, &c->free_by_rcu))
-+			c->free_by_rcu_tail = llnode;
-+	} else {
-+		llist_add(llnode, &c->free_llist_extra_rcu);
-+	}
-+	local_dec(&c->active);
-+	local_irq_restore(flags);
-+
-+	if (!atomic_read(&c->call_rcu_in_progress))
-+		irq_work_raise(c);
++	return false;
 +}
 +
- /* Called from BPF program or from sys_bpf syscall.
-  * In both cases migration is disabled.
-  */
-@@ -686,6 +795,20 @@ void notrace bpf_mem_free(struct bpf_mem_alloc *ma, void *ptr)
- 	unit_free(this_cpu_ptr(ma->caches)->cache + idx, ptr);
- }
- 
-+void notrace bpf_mem_free_rcu(struct bpf_mem_alloc *ma, void *ptr)
-+{
-+	int idx;
-+
-+	if (!ptr)
-+		return;
-+
-+	idx = bpf_mem_cache_idx(ksize(ptr - LLIST_NODE_SZ));
-+	if (idx < 0)
-+		return;
-+
-+	unit_free_rcu(this_cpu_ptr(ma->caches)->cache + idx, ptr);
-+}
-+
- void notrace *bpf_mem_cache_alloc(struct bpf_mem_alloc *ma)
+ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 				  unsigned long j)
  {
- 	void *ret;
-@@ -702,6 +825,14 @@ void notrace bpf_mem_cache_free(struct bpf_mem_alloc *ma, void *ptr)
- 	unit_free(this_cpu_ptr(ma->cache), ptr);
- }
- 
-+void notrace bpf_mem_cache_free_rcu(struct bpf_mem_alloc *ma, void *ptr)
-+{
-+	if (!ptr)
-+		return;
-+
-+	unit_free_rcu(this_cpu_ptr(ma->cache), ptr);
-+}
-+
- /* Directly does a kfree() without putting 'ptr' back to the free_llist
-  * for reuse and without waiting for a rcu_tasks_trace gp.
-  * The caller must first go through the rcu_tasks_trace gp for 'ptr'
 -- 
 2.43.0
 
