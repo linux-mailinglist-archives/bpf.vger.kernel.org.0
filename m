@@ -1,151 +1,139 @@
-Return-Path: <bpf+bounces-50281-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50282-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90CE4A24CB4
-	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2025 07:22:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6778AA24CD9
+	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2025 08:48:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A7F37A2901
-	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2025 06:21:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0BCA164562
+	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2025 07:48:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 634C71C5D7E;
-	Sun,  2 Feb 2025 06:22:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A773A1D5175;
+	Sun,  2 Feb 2025 07:48:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HYpdriww"
+	dkim=pass (1024-bit key) header.d=nppct.ru header.i=@nppct.ru header.b="duyirvnC"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from mail.nppct.ru (mail.nppct.ru [195.133.245.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7981042AA4;
-	Sun,  2 Feb 2025 06:22:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A23A4A04
+	for <bpf@vger.kernel.org>; Sun,  2 Feb 2025 07:48:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.133.245.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738477345; cv=none; b=fldS49XCA08jYwNPGQ4XUYLQlO5DPAvcBtnsGCtuQD8g59D8qn6Je1OVSXqXAVpG+xMhQnr38ksq8n08mzRydKCjBlFtlsJg92te2sEGsCXFek3HVhhHXu0/+pbERUCIBPUUvXhxO0J3CKta2qoRdsWGLMlpVpCFER4lJP7XvIc=
+	t=1738482511; cv=none; b=pqVd/Moi/jVD9hTVtBF0F1y3JYcv5TvVR1of0tGPiiQuZwi+Tqn6gq1KzJ4niZuRnmNe6NShjEDXz7D2SgE9R0j7/rtFSbTjG0xJ0GlO8gh7uIG0k2w/FP05zGZiQNsPH98Ha0JTJJwU8nQPVQ5eUV66su7Dd64Mr7CVIYFBqzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738477345; c=relaxed/simple;
-	bh=T9jjr5yNJujIiKaW63A2Y58cBrapCoUrLyJT07flpW0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NV1bieVDQzsPFF3gcjqcMUAnY/owTgKbVajQyZFMdgpt1DON5xaC/gAYz8+ufrDR2hRGniNXsTb+aAJtYrEZamZuvYSqIFifEsY9mHE52HSMwKcNYjwdWZHfQawH+tHJHTXjRz9I0hGLd8/tPyrJBQEYyf1Ynw0wjgx1S5uRxA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HYpdriww; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <1b7ae999-c081-45c8-a914-f215c829d57e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1738477335;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VX6SmOLzx1meiUouVUG4j5d233T4zSo6WdF6Bre80cU=;
-	b=HYpdriwwjDJVozqO86kstPzP/UohWn8OJaVLab46/fI1sZkPvasOyAvX5XB6vp04m2j3h+
-	knbMs7p6IPCxJVv6QOcCwXo+4HIRzGoOpF4y9vUlLP6oHvgDayh39EFRq759Vau5mTNm1c
-	9Xbw61w4kJzmKpdV0D6Ek37gw9SuVMc=
-Date: Sat, 1 Feb 2025 22:22:07 -0800
+	s=arc-20240116; t=1738482511; c=relaxed/simple;
+	bh=jBKl9aWHVPRunedWDfDLmp8zjxlO43EB/Sdp/YzUCJk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ti1GAEuXQarQHfr9rY97gUva6myCRZ4TCrrNfbQqd2AJY1YXOCLmGR3eZ4OxJcSTBlqT9ziSE7UXOU9cWQw7JEuF3uNiJh/O42/ZiU7KFFS79ThcE//yxuPdfHuwEoIld5zneeKDh4zxJZnafsCc/ClJCMHP4jiBxS89cZZasco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nppct.ru; spf=pass smtp.mailfrom=nppct.ru; dkim=pass (1024-bit key) header.d=nppct.ru header.i=@nppct.ru header.b=duyirvnC; arc=none smtp.client-ip=195.133.245.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nppct.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nppct.ru
+Received: from mail.nppct.ru (localhost [127.0.0.1])
+	by mail.nppct.ru (Postfix) with ESMTP id BD4BB1C19E1
+	for <bpf@vger.kernel.org>; Sun,  2 Feb 2025 10:48:17 +0300 (MSK)
+Authentication-Results: mail.nppct.ru (amavisd-new); dkim=pass (1024-bit key)
+	reason="pass (just generated, assumed good)" header.d=nppct.ru
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nppct.ru; h=
+	content-transfer-encoding:mime-version:x-mailer:message-id:date
+	:date:subject:subject:to:from:from; s=dkim; t=1738482495; x=
+	1739346496; bh=jBKl9aWHVPRunedWDfDLmp8zjxlO43EB/Sdp/YzUCJk=; b=d
+	uyirvnCH2G8m3v4+0oEZlaoV4xz1ohYyYK4bkSMSMRWPF9/CVlTVUp0CdQFqjviX
+	mhoKMCRxdJRw7fSS/VzWDf42heTau+jMZOYXJ6clAvMRexieNO8cqSXJNVxxAueY
+	bLSY/K4c+u+xg24meHkclVDzSwT6uYFyGV/nBWWtzU=
+X-Virus-Scanned: Debian amavisd-new at mail.nppct.ru
+Received: from mail.nppct.ru ([127.0.0.1])
+	by mail.nppct.ru (mail.nppct.ru [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id wKbxkZjHdp75 for <bpf@vger.kernel.org>;
+	Sun,  2 Feb 2025 10:48:15 +0300 (MSK)
+Received: from localhost.localdomain (unknown [87.249.24.51])
+	by mail.nppct.ru (Postfix) with ESMTPSA id 642871C19DD;
+	Sun,  2 Feb 2025 10:48:13 +0300 (MSK)
+From: Alexey Nepomnyashih <sdl@nppct.ru>
+To: stable@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Alexey Nepomnyashih <sdl@nppct.ru>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org
+Subject: [PATCH 6.1 00/16] Fixes bpf and rcu
+Date: Sun,  2 Feb 2025 07:46:37 +0000
+Message-ID: <20250202074709.932174-1-sdl@nppct.ru>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] selftests: bpf: Support dynamic linking LLVM if static
- not available
-Content-Language: en-GB
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: shuah@kernel.org, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
- nathan@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
- song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
- ndesaulniers@google.com, morbo@google.com, justinstitt@google.com,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-References: <872b64e93de9a6cd6a7a10e6a5c5e7893704f743.1738276344.git.dxu@dxuuu.xyz>
- <2d4773f9-c3a4-4512-9c5c-92f841c326f5@linux.dev>
- <rgcdc7zokwfoars7c2pzredogea3rvolbnzkvko7q6lbgjnvfx@oeyzed5zalpb>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <rgcdc7zokwfoars7c2pzredogea3rvolbnzkvko7q6lbgjnvfx@oeyzed5zalpb>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
+Hi, this series backports fix https://syzkaller.appspot.com/bug?id=d4d4abdb121f42913b3a149f2d846a7dd7eeb7e2 linux-6.1.y
 
+Here is the summary with links:
+  - [6.1 01/16] bpf: Add a few bpf mem allocator functions.
+    https://git.kernel.org/bpf/bpf/c/e65a5c6edbc6
 
+  - [6.1 02/16] bpf: Factor out a common helper free_all().
+    https://git.kernel.org/bpf/bpf/c/aa7881fcfe9d
 
-On 2/1/25 12:23 AM, Daniel Xu wrote:
-> Hi Yonghong,
->
-> On Thu, Jan 30, 2025 at 10:28:11PM -0800, Yonghong Song wrote:
->>
->>
->> On 1/30/25 2:33 PM, Daniel Xu wrote:
->>> Since 67ab80a01886 ("selftests/bpf: Prefer static linking for LLVM
->>> libraries"), only statically linking test_progs is supported. However,
->>> some distros only provide a dynamically linkable LLVM.
->>>
->>> This commit adds a fallback for dynamically linking LLVM if static
->>> linking is not available. If both options are available, static linking
->>> is chosen.
->>>
->>> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
->>> ---
->>>    tools/testing/selftests/bpf/Makefile | 11 ++++++++---
->>>    1 file changed, 8 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
->>> index 6722080b2107..da514030a153 100644
->>> --- a/tools/testing/selftests/bpf/Makefile
->>> +++ b/tools/testing/selftests/bpf/Makefile
->>> @@ -184,9 +184,14 @@ ifeq ($(feature-llvm),1)
->>>      LLVM_CONFIG_LIB_COMPONENTS := mcdisassembler all-targets
->>>      # both llvm-config and lib.mk add -D_GNU_SOURCE, which ends up as conflict
->>>      LLVM_CFLAGS  += $(filter-out -D_GNU_SOURCE,$(shell $(LLVM_CONFIG) --cflags))
->>> -  LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --link-static --libs $(LLVM_CONFIG_LIB_COMPONENTS))
->>> -  LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --link-static --system-libs $(LLVM_CONFIG_LIB_COMPONENTS))
->>> -  LLVM_LDLIBS  += -lstdc++
->>> +  # Prefer linking statically if it's available, otherwise fallback to shared
->>> +  ifeq ($(shell $(LLVM_CONFIG) --link-static --libs &> /dev/null && echo static),static)
->>> +    LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --link-static --libs $(LLVM_CONFIG_LIB_COMPONENTS))
->>> +    LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --link-static --system-libs $(LLVM_CONFIG_LIB_COMPONENTS))
->>> +    LLVM_LDLIBS  += -lstdc++
->>> +  else
->>> +    LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --link-shared --libs $(LLVM_CONFIG_LIB_COMPONENTS))
->>> +  endif
->>>      LLVM_LDFLAGS += $(shell $(LLVM_CONFIG) --ldflags)
->>>    endif
->> Although your change looks good, but maybe you can look at bpftool Makefile?
->>
->>    # If LLVM is available, use it for JIT disassembly
->>    CFLAGS  += -DHAVE_LLVM_SUPPORT
->>    LLVM_CONFIG_LIB_COMPONENTS := mcdisassembler all-targets
->>    # llvm-config always adds -D_GNU_SOURCE, however, it may already be in CFLAGS
->>    # (e.g. when bpftool build is called from selftests build as selftests
->>    # Makefile includes lib.mk which sets -D_GNU_SOURCE) which would cause
->>    # compilation error due to redefinition. Let's filter it out here.
->>    CFLAGS  += $(filter-out -D_GNU_SOURCE,$(shell $(LLVM_CONFIG) --cflags))
->>    LIBS    += $(shell $(LLVM_CONFIG) --libs $(LLVM_CONFIG_LIB_COMPONENTS))
->>    ifeq ($(shell $(LLVM_CONFIG) --shared-mode),static)
->>      LIBS += $(shell $(LLVM_CONFIG) --system-libs $(LLVM_CONFIG_LIB_COMPONENTS))
->>      LIBS += -lstdc++
->>    endif
->>    LDFLAGS += $(shell $(LLVM_CONFIG) --ldflags)
->>
->> It would be great if the selftests shared library handling to be the same as bpftool's.
-> So bpftool is both an internally consumed (from selftests) dependency as
-> well as a tool packaged up by distros. For the latter case, distros
-> prefer dynamic linking.
+  - [6.1 03/16] bpf: Rename few bpf_mem_alloc fields.
+    https://git.kernel.org/bpf/bpf/c/12c8d0f4c870
 
-I hacked llvm to have both static and shared libraries installed and indeed
-`llvm-config --shared-mode` prefers shared mode.
+  - [6.1 04/16] bpf: Let free_all() return the number of freed elements.
+    https://git.kernel.org/bpf/bpf/c/9de3e81521b4
 
-So yes, your existing change looks good. Thanks.
+  - [6.1 05/16] bpf: Refactor alloc_bulk().
+    https://git.kernel.org/bpf/bpf/c/05ae68656a8e
 
->
-> So unfortunately, I think these probably need to be defined separately.
-> The code looks similar but the use cases are different.
->
-> Thanks,
-> Daniel
+  - [6.1 07/16] bpf: Use rcu_trace_implies_rcu_gp() in bpf memory allocator.
+    https://git.kernel.org/bpf/bpf/c/59be91e5e70a
 
+  - [6.1 08/16] bpf: Further refactor alloc_bulk().
+    https://git.kernel.org/bpf/bpf/c/7468048237b8
+
+  - [6.1 09/16] bpf: Change bpf_mem_cache draining process.
+    https://git.kernel.org/bpf/bpf/c/d114dde245f9
+
+  - [6.1 10/16] bpf: Add a hint to allocated objects.
+    https://git.kernel.org/bpf/bpf/c/822fb26bdb55
+
+  - [6.1 11/16] bpf: Introduce bpf_mem_free_rcu() similar to kfree_rcu().
+    https://git.kernel.org/bpf/bpf/c/5af6807bdb10
+
+  - [6.1 12/16] rcu: Fix missing nocb gp wake on rcu_barrier()
+    https://git.kernel.org/bpf/bpf/c/b8f7aca3f0e0
+
+  - [6.1 13/16] rcu: Make call_rcu() lazy to save power
+    https://git.kernel.org/bpf/bpf/c/3cb278e73be5
+
+  - [6.1 14/16] rcu: Export rcu_request_urgent_qs_task()
+    https://git.kernel.org/bpf/bpf/c/43a89baecfe2
+
+  - [6.1 15/16] bpf: Remove unnecessary check when updating LPM trie
+    https://git.kernel.org/bpf/bpf/c/156c977c539e
+
+  - [6.1 16/16] bpf: Switch to bpf mem allocator for LPM trie
+    https://git.kernel.org/bpf/bpf/c/3d8dc43eb2a3
 
