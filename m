@@ -1,110 +1,174 @@
-Return-Path: <bpf+bounces-50306-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50307-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5701FA24FDC
-	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2025 20:46:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 340EDA24FFE
+	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2025 21:51:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E16863A42E6
-	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2025 19:46:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A82D518841A0
+	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2025 20:52:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8077C1FE473;
-	Sun,  2 Feb 2025 19:46:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 445D42147E7;
+	Sun,  2 Feb 2025 20:51:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TC9G/XJR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g30oAvrh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED21101E6
-	for <bpf@vger.kernel.org>; Sun,  2 Feb 2025 19:46:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 310232AEF5;
+	Sun,  2 Feb 2025 20:51:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738525608; cv=none; b=FcZpFFXot6VQ+9DZahfTAFzUXbn73ppeCqhj3Rs/7T3MtLGKFwhzNNmescajhs5z3LkzPNxDAt1dS+iIYb+eK0FxgDvnHEhbTqtpMiqV6gcJJIUpSCLvQ14hbm5AhNMviGZMzh41RpPappNS46iTYr+KwNABpCXW/fP6yTbviNs=
+	t=1738529509; cv=none; b=L3Qd74hDTpfUA6YiCuUxF7xdcYL5+x+ey2rYz89emhpY/CaBO5hgIqmPJarD40d+AHPeKbKNjYja0lXaSDStAAZ5QatetfTKJ67ngjkeCYdgxFjRrf6MAZS7cds/L1a7gt6VAU2tlp+YsyNZY96/L5ANKsXu8jZIPBLjIwY9uFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738525608; c=relaxed/simple;
-	bh=81wkzfIj1c3W5STLN0ewYTEeHx2cEdP2zRQBDyahvbc=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=IEJQmFaUOaYuGzs/uF0g1TfSoXMbaEoARC+yQ+qYoDmB2L2hI2jIo6I94JgVXw4Yhmw1OFNpYkEA2aeq5tbFhpl4UkS5vd70Zj3+/dseSITaLjJL04rl2zyI9pVY1TR3U3VhWkKnszm81h7xwpPwE8gM0QjUvSTzq6eWquwgzv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TC9G/XJR; arc=none smtp.client-ip=209.85.160.179
+	s=arc-20240116; t=1738529509; c=relaxed/simple;
+	bh=lnB5myVrLcTIRNRx1VnpyasSN/I2UAAG/Su6XEQPbTY=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XdKKeK6v1BvZXF+IJI06pJZulIYREEXdayn6XKGmLuIeuVbfvz/1o9h7JCB5rEL9rGpK4268D77/JyXiXqCy3AYHF8xkvKBnePrhtVRy8SOIWuPo7H6shYcrRAZ9pESgllkz7LmVUjBAMwXZzzqMGjpR9lo/W2JWWHwrqSkDJcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g30oAvrh; arc=none smtp.client-ip=209.85.128.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-46785fbb949so44420311cf.3
-        for <bpf@vger.kernel.org>; Sun, 02 Feb 2025 11:46:46 -0800 (PST)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4361f796586so42989525e9.3;
+        Sun, 02 Feb 2025 12:51:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738525605; x=1739130405; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=eYJzPNWnPw7kx8gVC3Px5i7yjDi8l+1nuGi69pqFAUI=;
-        b=TC9G/XJRRBZzbHtTkKgZdOWlcOAmX88EjIiJR+hbUBZktq5XW5wqpgX2j3v+McGolU
-         WqbktCCobq2hNTrJQ5JidCg9gA1rLiU0WMrgSvlU9H3yvjqKMaM9+M8MLIo6ofj/A7kh
-         IuITHH8uyuAd30HZpZc7jJpTriGxPuKcDZY3lSdaANvHTioFvRfKY2b1ST4EBlaBlO3j
-         OyERa2D2FL87baKx78n4jtz4FYFn+VG4vpGcf4leGYUUuJV1fELVEWL56L0fxjy3Oo6U
-         nzHZXqlzLr1mTpnrQz2pXSNkV6sYKlKQhlXTphDV4guKChbS/AHd4R0+iqRR+pgapFpr
-         XvVw==
+        d=gmail.com; s=20230601; t=1738529506; x=1739134306; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9B4xUyH/GM9ZtDsfhVZI5rX/jOFgm/UURyHYF/tgiFE=;
+        b=g30oAvrh0v3tlENz0UZiJWfN4NWyn95nw7KAnx10yOQLSJwno/ANjFAMZBVOZe0+gt
+         +GaDySc3N5hg+P5JhpgrIX8CjdVZX4WOVx3zV9aaqVbrZSLI9sbXf5rRNNnkNHwxml3v
+         k3q5tc80Zk7NC/bm0/YIaPAZzg8WULM4aa0yPSXvncwHBWQRUQPUWD/FvERxW4Yq5Pdp
+         LzI7DK9qTpZBYq8tjAdyqugqbm0IYxujbTMHZUdsUSedREpcNvuUml4BpMxKXI0UTZgr
+         H6r7BvlCPz7Z6Y/IvHLgiOyZl0QNnCerkU4gvv7fttroyGAxGQaAxzWRfgK2lslIljmP
+         Ouug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738525605; x=1739130405;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eYJzPNWnPw7kx8gVC3Px5i7yjDi8l+1nuGi69pqFAUI=;
-        b=GGYIO+IJVcliUftahvq2Ka3zWNGeLOa9cEwrXt5p4CRccy1wosPyusEI/O9E0svtea
-         22M52RqvCEDNcuBf19o4IC7ImIJNs4J01CEEtGnChm2ZbpgtldmVegHUUC1X2Pa3VJvF
-         z1l51Um6pDFF5kcOS5JPTc/qD8NH24cAR6GWMR3TrOSkW9ch1UClXcfsi4w2HdFK4alk
-         Yd2awgSuU9dc4UGV1E66Ho//ZRjC5GKhbbSAKwy5Savih9uz2dwHFjWLotdqSE073YLx
-         3uAUn9hhC4btpgrkaX15HyVH1I1AT4TNphT5yK/dX3lAwJBP1KrSKaW8weeChANr382s
-         a4LA==
-X-Gm-Message-State: AOJu0Yyw/0eP7/lZfpEv0OXyeXdOJV8b3uBnep1UpveGxG/GJ7wChuLs
-	DaCgSwaeWMheG16hIzxMeBSYBqXC4y04+r+PIqvAR4ypqNxKnsk+O308uo9iITM6ut4kx1IQZ5W
-	pi5w5FkBZ5tOZjaDrXV5GwYL9EmBRjbgm
-X-Gm-Gg: ASbGncv2OlciCYCHILE0ZrUYdbjwskX6TgZU3HbNCM04VsAwMstiNCwAsntuqpwoYyX
-	OCgfcBJuU0g8q/DBQfyPzU67OiKGthE7rm1lXfuq+SVS4Ol2CdZJGlAkfa3ayiqk8rfN5WStf
-X-Google-Smtp-Source: AGHT+IHLxE9wK/BN6eVUKH8RU/utBAZ+J1fXORkjzffc1NL4IYcQcxUi9LmjlGJDGtva5P+miCGjt3ArzwOmkcicVGQ=
-X-Received: by 2002:ac8:5f4b:0:b0:467:5712:a69a with SMTP id
- d75a77b69052e-46fd0adcab8mr288164931cf.29.1738525605229; Sun, 02 Feb 2025
- 11:46:45 -0800 (PST)
+        d=1e100.net; s=20230601; t=1738529506; x=1739134306;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9B4xUyH/GM9ZtDsfhVZI5rX/jOFgm/UURyHYF/tgiFE=;
+        b=ST+gjXkp5v+DdasKX53K0PAO4OaJDLx1me+rNF2a/8f/ThMnTBxeX6HiU+ScFWH2mh
+         v8FuT7Fe05vUVH8/IYQCKY3exeGZtCdoysm2w3TY6OrFE/URMkQN8cZz5f7WGLkZIFbz
+         sh9IQyzp0UR38Vt04UcTsnx55ENiZ2OY3kG6ifi4DHFBBakS7umTmOfxqSNTEl5fVpjQ
+         /orakBrqgrqgTgKqTAoTK0u6OyeGNAVawAYerjV23BYQaaGxiYc5iYeuc9sanc3+Lvrk
+         xMI5TeZCKahu/KJZcXH2xFf+aih2vy0A7u14df+BRmYJBWjSKVK9JIbFNOZbPAbCocxg
+         ++Tw==
+X-Forwarded-Encrypted: i=1; AJvYcCUwZErNirj+2QKJNcgJubr9un57qSABxJFdXdPfMCJY3DnsyNfLIo9FLiyJAnuIgWJ+CMJELwzMv67RUA53Pq/W7fry@vger.kernel.org, AJvYcCVqP+gzV+guW7NEY6F8I6NZSozWXpm27SK1GLtAj9bMirtyUjzTpMdcG/S5UyWjFC7iN/PkJKNc/HInhGTT@vger.kernel.org, AJvYcCWjyNlqy9PlwP69vQ6bKZtBFBCv0WiM+FLr7ZTQyV8sWuTjxWkFh9JGpUyUQbaSRAmqDV0=@vger.kernel.org, AJvYcCXIUy6/pMyiNBpa+3FfgC89zdu/gYAIDT/sMMafHipPxJ7yZfqgPQCSwvvcIcOnWCwts0AIfrQ6jgcm@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx1TKa8yWQ9kcy6FBjMF2ONgruPLEE/0/QLbGOQjn6wTLDA4Wao
+	5Ia4YGJaYREhlnn9ElzirceSpVv2bonqgv21QIp0mO2N+bkogL3AWHTmhy+/Bbw=
+X-Gm-Gg: ASbGncvU0Vga5eYt9CxrOX/qhkUSpg5i6egQZQ3Je/mS4zkGmX4AKJ7GBuhs06Ll3b6
+	b8QzUwiutZasbwOG0fdP9wOPSzQkD5jUePICZw1+xf5l8/QoMtUT0ZzhjlSjogkf/4+NfwjnyoJ
+	ELwun10BhFmYNlbUVLt54h8y1TyI/A6u7PglhC/835aXQWx4AVdYZhajeLLak4ke7kthXkg6gFd
+	Ia+A4QcWV96W+F/C9JeH7FZ/TyyBln0Z/mCAcbqk0DgGI03L2rKnT4APtYt+t6aahQz+GRUih7Q
+	5ZOtn7F4Ippsr/PIZwWo/tXFxMhnve6+hq+ATsN48WFWQOcw
+X-Google-Smtp-Source: AGHT+IFjWz65PWK3SQfKwyxv2oDDgUkvBKIfZuV8OxxMy32OA4i5Dbf4ud1G0/rV4VvDGbW9fNcPUw==
+X-Received: by 2002:a05:600c:4fc1:b0:436:1ac2:1acf with SMTP id 5b1f17b1804b1-438dc40d55emr173427055e9.20.1738529506182;
+        Sun, 02 Feb 2025 12:51:46 -0800 (PST)
+Received: from krava (213.11-246-81.adsl-static.isp.belgacom.be. [81.246.11.213])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38c5c139bafsm10984286f8f.58.2025.02.02.12.51.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 Feb 2025 12:51:45 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Sun, 2 Feb 2025 21:51:43 +0100
+To: Eyal Birger <eyal.birger@gmail.com>
+Cc: kees@kernel.org, luto@amacapital.net, wad@chromium.org, oleg@redhat.com,
+	mhiramat@kernel.org, andrii@kernel.org,
+	alexei.starovoitov@gmail.com, olsajiri@gmail.com, cyphar@cyphar.com,
+	songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+	peterz@infradead.org, tglx@linutronix.de, bp@alien8.de,
+	daniel@iogearbox.net, ast@kernel.org, andrii.nakryiko@gmail.com,
+	rostedt@goodmis.org, rafi@rbk.io, shmulik.ladkani@gmail.com,
+	bpf@vger.kernel.org, linux-api@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] selftests/seccomp: validate uretprobe syscall
+ passes through seccomp
+Message-ID: <Z5_a33NQwrVC9n3r@krava>
+References: <20250202162921.335813-1-eyal.birger@gmail.com>
+ <20250202162921.335813-3-eyal.birger@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Vincent Li <vincent.mc.li@gmail.com>
-Date: Sun, 2 Feb 2025 11:46:34 -0800
-X-Gm-Features: AWEUYZlphhc8uGtEDr5CCevh7TS7QVgyHVnCIb90XRUbEbEgTFgnGMQBEjQkQRs
-Message-ID: <CAK3+h2xsd4H-mYmhb4-gwBV9ogXZDK6XaLU=jRfHT9X80=5Oow@mail.gmail.com>
-Subject: [QUESTION] map has to have BTF in order to use bpf_spin_lock
-To: bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250202162921.335813-3-eyal.birger@gmail.com>
 
-Hi
+On Sun, Feb 02, 2025 at 08:29:21AM -0800, Eyal Birger wrote:
 
-I am attempting to load loxilb ebpf load balancer project  ebpf
-program and ran into bpf verifier error like below, the kernel is
-upstream stable release 6.12.5 and has CONFIG_DEBUG_INFO_BTF=y kernel
-config. I tried both clang 18.1.0 and clang 19.1.7. I reported the
-issue to loxilb here [0] with BTF LOAD LOG and PROG LOAD LOG output
-detail. Google search and AI  hasn't been helpful so far :)
+SNIP
 
-8113: (bf) r1 = r8                    ; frame1:
-R1_w=map_value(map=polx_map,ks=4,vs=96)
-R8_w=map_value(map=polx_map,ks=4,vs=96)
-8114: (07) r1 += 16                   ; frame1:
-R1_w=map_value(map=polx_map,ks=4,vs=96,off=16)
-8115: (7b) *(u64 *)(r10 -16) = r1     ; frame1:
-R1_w=map_value(map=polx_map,ks=4,vs=96,off=16) R10=fp0
-fp-16_w=map_value(map=polx_map,ks=4,vs=96,off=16)
-8116: (85) call bpf_spin_lock#93
-map 'polx_map' has to have BTF in order to use bpf_spin_lock
-processed 757 insns (limit 1000000) max_states_per_insn 0 total_states
-24 peak_states 24 mark_read 11
--- END PROG LOAD LOG --
-libbpf: failed to load program 'tc_packet_func'
-libbpf: failed to load object '/opt/loxilb/llb_ebpf_main.o'
-13:12:12 ERROR common_libbpf.c:183: tc: obj load failed
-13:12:12 DEBUG loxilb_libdp.c:3147: llb_link_prop_add: IF-red0 added
-idx 1 type 2
-2025-02-01 13:12:12 ebpf load - 1 error
+> +TEST_F(URETPROBE, uretprobe_default_block)
+> +{
+> +	struct sock_filter filter[] = {
+> +		BPF_STMT(BPF_LD|BPF_W|BPF_ABS,
+> +			offsetof(struct seccomp_data, nr)),
+> +		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_exit_group, 1, 0),
+> +		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_KILL),
+> +		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_ALLOW),
+> +	};
+> +	struct sock_fprog prog = {
+> +		.len = (unsigned short)ARRAY_SIZE(filter),
+> +		.filter = filter,
+> +	};
+> +
+> +	ASSERT_EQ(0, run_probed_with_filter(&prog));
+> +}
+> +
+> +TEST_F(URETPROBE, uretprobe_block_uretprobe_syscall)
+> +{
+> +	struct sock_filter filter[] = {
+> +		BPF_STMT(BPF_LD|BPF_W|BPF_ABS,
+> +			offsetof(struct seccomp_data, nr)),
+> +#ifdef __NR_uretprobe
+> +		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_uretprobe, 0, 1),
+> +#endif
 
-[0] https://github.com/loxilb-io/loxilb/issues/953
+does it make sense to run these tests on archs without __NR_uretprobe ?
+
+jirka
+
+> +		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_KILL),
+> +		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_ALLOW),
+> +	};
+> +	struct sock_fprog prog = {
+> +		.len = (unsigned short)ARRAY_SIZE(filter),
+> +		.filter = filter,
+> +	};
+> +
+> +	ASSERT_EQ(0, run_probed_with_filter(&prog));
+> +}
+> +
+> +TEST_F(URETPROBE, uretprobe_default_block_with_uretprobe_syscall)
+> +{
+> +	struct sock_filter filter[] = {
+> +		BPF_STMT(BPF_LD|BPF_W|BPF_ABS,
+> +			offsetof(struct seccomp_data, nr)),
+> +#ifdef __NR_uretprobe
+> +		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_uretprobe, 2, 0),
+> +#endif
+> +		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_exit_group, 1, 0),
+> +		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_KILL),
+> +		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_ALLOW),
+> +	};
+> +	struct sock_fprog prog = {
+> +		.len = (unsigned short)ARRAY_SIZE(filter),
+> +		.filter = filter,
+> +	};
+> +
+> +	ASSERT_EQ(0, run_probed_with_filter(&prog));
+> +}
+> +
+>  /*
+>   * TODO:
+>   * - expand NNP testing
+> -- 
+> 2.43.0
+> 
 
