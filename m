@@ -1,110 +1,121 @@
-Return-Path: <bpf+bounces-50299-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50300-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F1DAA24D5B
-	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2025 10:52:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB5E3A24D6B
+	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2025 11:06:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB3A31884CFF
-	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2025 09:52:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D07C77A1DD8
+	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2025 10:05:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE0F41D5AA9;
-	Sun,  2 Feb 2025 09:52:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B2871D5ADE;
+	Sun,  2 Feb 2025 10:06:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jrvKhGb1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M3RMa4Pf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69EE54206B;
-	Sun,  2 Feb 2025 09:52:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D8F3155336;
+	Sun,  2 Feb 2025 10:06:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738489944; cv=none; b=GUejdgo0TQ8r0KkvKWTFLL4KXC2NjnsDTAUFDFCfinWIolMDdUIKnMSjPM/TFGkwWgtujF5Dcq4TG0NK/NO9v6iAy9ThyUpSwSuMfEMqeHuOx/nr50Z3tn/s+pMFNMFxrlQQeA6taMLzIn78nnmkPh8HEitJrBM/5wK2BCPwM5Y=
+	t=1738490795; cv=none; b=Oq95r8uOYFfJt6xngy86Sa+ZJmZicvrbL59PjCYQeNiQBFxW76gstvR6gk445KS3IYBThl1dbb3lr6RtxXQYZ+QShGC3J/EmJq/U3w7n8LxMT/OMEvi5V+ZSxsjcfmCRT2m2h/t57++gdNEaaxyrgY0R+U/YHKpJpHhzsfC2kSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738489944; c=relaxed/simple;
-	bh=qb9/DFI9nYoBurqmoPahK1dZb+j4psKvRZX5VB8//Pk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rGQQAP13vOW6tb6i6aTjpA0xTePzdWLD72YMIYKbE3tD+RuKJ14Z3jfFdcF0kexADjshrovFUuqjSiN8E3NoYhngTCMkbM8dKR175PC0AJhceu3Cjz8NifqVIV0uPpxBEKeG10fXNr2yqOmUI7sIUxNu69YSWoRcWku00Yb+vuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jrvKhGb1; arc=none smtp.client-ip=209.85.221.45
+	s=arc-20240116; t=1738490795; c=relaxed/simple;
+	bh=eibt3Lh6er0cl/46qYhA7FxgdPAUMkq76azP7GqyryU=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B9/rmo9s9pLhPnkWkVA+b6rMbjMycpOqkyGl6qOVvrZRAotjyOAkvANl8pXWysSYwXVGHNUgvFxGAy31hQ1XJEdpOxmhA3wQxpVM2lbgKCDBJKyAsGPkyJfQKfIIJ1btORMRiTXhk1hGmZxXoQgRZOuSbEuR6/6UN7wzF+ObsOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M3RMa4Pf; arc=none smtp.client-ip=209.85.218.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-385deda28b3so1788642f8f.0;
-        Sun, 02 Feb 2025 01:52:22 -0800 (PST)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-ab2b29dfc65so553003966b.1;
+        Sun, 02 Feb 2025 02:06:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738489940; x=1739094740; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qb9/DFI9nYoBurqmoPahK1dZb+j4psKvRZX5VB8//Pk=;
-        b=jrvKhGb1Nlm7zK1T4k9FtFJL5h6EjABGtVLVpGJhbFzrgWcHULce2FXWFHvF0yVTRA
-         Lz1DvYGOnbl6mrvUV5qZRLUdlEpjq5sKnzb59Umy0c6ShOKvSje75FAe/Wt2T8MD34nR
-         34UHP+LI8zeyOnNtLpnxgS5lqksglK0/MUx3MXwLegsFQWI5CxIrkps23Rax4nBVnioo
-         Oxp7168QGR/T8tBQbjermaprshL2An6CbGHc2q5g+jN4nsE2CKZcaFTBheKJMJx8tgAX
-         qpvPD2THdZbXGAXJUchInd+uuVv5kW1ZzsAF9vtd6deBKLCVccIXFsSq6GnqTrcWVq/a
-         cJtw==
+        d=gmail.com; s=20230601; t=1738490792; x=1739095592; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=vP80Ll/PNjgw877UXJRsX5g02CC+j9UoNcZ3BPAo0r0=;
+        b=M3RMa4PfDtWbvKfvITB0HKvQXvUUj02LCxqr82t5Uylx/o5Q9+xKJPLmsrkoPeufph
+         BbOZiwEgdUZpXl5KFeUOpOl/QkumTsCyonC7wXqKNv+kIZ7mYGbRy6E1GG8a+1KUTwQk
+         qYJkpRxVEHSy4lnCiRGLaZcy+jZf6m4bWJfni34AhIhNMBF8he/RAGOH7iBkFwynQ7Ux
+         KRoFNXTrY065vmde3A6ArU5c7SQ9Qju5c+B7CIkN0/5LbAeC6kL/aPfvJjDBo+cOErVg
+         4SWFEixL6Zlo4UdBmEPgCpEGB0xwBtpnFuWoeC96uEl3W6L4idR7FS1gHZWTUAXOTrMZ
+         giDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738489940; x=1739094740;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qb9/DFI9nYoBurqmoPahK1dZb+j4psKvRZX5VB8//Pk=;
-        b=YNNZN22G3XweYETXCUM5DIeT05ix8/EoEp8KhHWWORYTI6QRy+rU8qdrxiBqB5AMTA
-         QJBMcbYIbJYyTS4XepVQEjIem8AXcywgoS7z3YNH1K5ydRDf8Ak+mD1geYhBppa95Gwe
-         EZF9pT+nRFQIOwk/bfIlrwkiev9KPUxOgHHE5T+Dl4YvrVFbDv4mgi4Za7CvOM5L3ugz
-         h6XmI0xtLJXzzQo4b8rn+4JZb8USl4OGSW9hct7tvSGnbG9cFKh6EIWhMHsXK0Z/hvhy
-         KEnETdH62s3TlDAVJdzFTfP9gLMZ9sTq5nP2li3QVa0aMrjY/D7VPyk87JF0+rlZBRpO
-         kjCw==
-X-Forwarded-Encrypted: i=1; AJvYcCVo7j3EMQdk3r5/ujs/HzylU4d366h0bNDmMbhH3M2k0OUiPOlrcqnRlbbpqPnzFGBfzEUPD+Q92d4eRJe9@vger.kernel.org, AJvYcCW6RsUHAzghltqbFrJtI7eMoHCGb4LXhDEsuuKR5o99ZoWOor27ZD8S4pu2zev75EeXiAdx@vger.kernel.org, AJvYcCWfIuen48A7Jh7js1Sbqqg4o8YDof7bB1HY/3UoPi5JyYdFNbXbt7b5Tprw5IMuRmK/oEE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw+P+q+6bWNoXqxltiE+LECDbgnFAOyrr7oB1CVYruy/U+DY2lt
-	xLAlcJUgz2KfrKKzrpN45zyAZGEzEoB/USvG5DXB9hE9STLv6oWa/0seOX8RJf4eRiNs425SsW5
-	IdNUEgrhhEENMmDCjX3b1LoFoa/8=
-X-Gm-Gg: ASbGncsn/bosMuda3hWz+6DmPfE58O49kMRzUq3qGayybM037oiNMg+TqhqjB1KcLyt
-	+9Or+nuoh6KMlOq9kAQjnENR3FYHIYGTk/o0yBPkF8FYL2PwIooH51pUlhvsc2k/3Eq4Gn/7kLV
-	27mqUZLlkc2JDQ4Abw+rk7oG7QW3D6
-X-Google-Smtp-Source: AGHT+IHh74jVcHyqF8d8QrChgP4XIqVdns1XbM//mD/sRWjfaIY4kKasYogP6Svz8R7gk0l6/7Xl1/jH4n/ddj+yUIo=
-X-Received: by 2002:a5d:47c9:0:b0:38b:da31:3e3c with SMTP id
- ffacd0b85a97d-38c5194c567mr13301982f8f.20.1738489940362; Sun, 02 Feb 2025
- 01:52:20 -0800 (PST)
+        d=1e100.net; s=20230601; t=1738490792; x=1739095592;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vP80Ll/PNjgw877UXJRsX5g02CC+j9UoNcZ3BPAo0r0=;
+        b=X1oLSwFd7vrSnXsbTuWgvRvvSCnldJrjSHQVr2QEc0vWU/Oq+8zyJhcD+33JP0E4Bn
+         KWnoyHeS2B8Jq0Ag4UvBlzDRusAhmDwU41PFnSEZExg9v/pfZro1KK4TIeuM8L3suLUW
+         szDrR9IyzUYeiqoJ8hQJo7ku4cDqYM/V8ZkHOkZmlWW+rrxR0N0iI+36dVmKRU9V8qG+
+         b7ohnRNe5FCLOl+l8ANIS6FiS6jBG0+zE0D54aJ6t5bNMvpvD1c/fnJ/6Ciu/ZKYBqvK
+         vZ51cMr1yUBtKVnvHAgF6xLCLfBFTqGmjEG7KwXf8jPeBmEQcXmjMWbgPtAVtvQKuUce
+         JdhA==
+X-Forwarded-Encrypted: i=1; AJvYcCUgoRUXyl1voMFg3f1WGM6VtAsRuVLacUdpcSM8yWwxV0gtUnZyctlGXlnMB8jl4dgGa4AuyWi3@vger.kernel.org, AJvYcCWsoUQM+r6S116y8ioF5QbqW+qFpYHwCOII+yOEGp+s5168gO2nLN3uYvZ3p7L+TlVIAeU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YznhxA2u+vc+wwx/zJzhxzz4KvU0iSALVt9AHTDTnEX2epaLZ6E
+	ch6qKU8fN4ClCP07ELa/KaLGe6mTn4hYLQPeGNRUIJwaR2NJ76wC
+X-Gm-Gg: ASbGncvYjOZvGukOuo9a2+EB29jXKFNqs8JBqw4FAIU+z+sp1Hsx1aUyjp43n6s9X2/
+	hRnZWDtd1vMMe4NXMYgY++guBMxMhDjWaDnWNwpYGNFdXNdZA7lb+lJCnUmqPtgd3jbGc+1A+Cm
+	uEilZO886Ua95fZMQeM7Jn4h3xpGmNqToxJs2/WwIH+R9xQ9fQNnZ1f0lldBkV+lOh8a0M1EG31
+	3QxbBFfY8Gt0OkNAsVQlxPyBfoW+QtugGkFjF8ZmQak9MyYbGeh6vSjkKlWjymvtQPhbeVxkqzs
+	X85kW+1gm5HdCcXEBA5Oog==
+X-Google-Smtp-Source: AGHT+IEVXRaEp77yKVNwR7B7xh5bHwyQs7F+LF8dtiFtrTypQ1ye/9BA4YzULDjz+3kyf3Z5nwjPmw==
+X-Received: by 2002:a17:907:948a:b0:aab:f11f:f360 with SMTP id a640c23a62f3a-ab6cfcb39ffmr2052568066b.2.1738490791506;
+        Sun, 02 Feb 2025 02:06:31 -0800 (PST)
+Received: from krava (37-188-150-0.red.o2.cz. [37.188.150.0])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab703a41cb1sm328912766b.103.2025.02.02.02.06.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 Feb 2025 02:06:31 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Sun, 2 Feb 2025 11:06:26 +0100
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Kuniyuki Iwashima <kuniyu@amazon.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Kuniyuki Iwashima <kuni1840@gmail.com>, bpf <bpf@vger.kernel.org>,
+	Network Development <netdev@vger.kernel.org>,
+	Yan Zhai <yan@cloudflare.com>
+Subject: Re: [PATCH v2 bpf] net: Add rx_skb of kfree_skb to
+ raw_tp_null_args[].
+Message-ID: <Z59Donij6yuw9hvB@krava>
+References: <20250201030142.62703-1-kuniyu@amazon.com>
+ <Z53Xv-okoj3PDT50@krava>
+ <CAADnVQJodt1fBaR5d0wTR2pwipJVVdKSd+7_ou_vE-gRMzbT6w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250202074709.932174-1-sdl@nppct.ru>
-In-Reply-To: <20250202074709.932174-1-sdl@nppct.ru>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sun, 2 Feb 2025 10:52:09 +0100
-X-Gm-Features: AWEUYZnW68ZJi44Hyvle3KYWw3hzCaNuW8M1rFmJEn1gz0jQca3CzxgvNpaHW3Y
-Message-ID: <CAADnVQLakHoNDTV8La+TZtJYPtM22cBRJdk8rp498sHjv3+Ctg@mail.gmail.com>
-Subject: Re: [PATCH 6.1 00/16] Fixes bpf and rcu
-To: Alexey Nepomnyashih <sdl@nppct.ru>
-Cc: stable <stable@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, 
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>, Josh Triplett <josh@joshtriplett.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Lai Jiangshan <jiangshanlai@gmail.com>, Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org, 
-	LKML <linux-kernel@vger.kernel.org>, lvc-project@linuxtesting.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQJodt1fBaR5d0wTR2pwipJVVdKSd+7_ou_vE-gRMzbT6w@mail.gmail.com>
 
-On Sun, Feb 2, 2025 at 8:48=E2=80=AFAM Alexey Nepomnyashih <sdl@nppct.ru> w=
-rote:
->
-> Hi, this series backports fix https://syzkaller.appspot.com/bug?id=3Dd4d4=
-abdb121f42913b3a149f2d846a7dd7eeb7e2 linux-6.1.y
->
-> Here is the summary with links:
+On Sat, Feb 01, 2025 at 09:15:28AM +0100, Alexei Starovoitov wrote:
+> On Sat, Feb 1, 2025 at 9:13 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> >
+> > > v2:
+> > >   * Add kfree_skb to raw_tp_null_args[] instead of annotating
+> > >     rx_skb with __nullable
+> >
+> > Acked-by: Jiri Olsa <jolsa@kernel.org>
+> 
+> Jiri, Kumar,
+> how come that we missed it earlier?
+> Is this a new change in the tracepoint?
 
-Nack.
-These are features. Not fixes.
-Not appropriate for backport.
+must have slipped, sry.. I'll double check tracepoints again
+
+jirka
 
