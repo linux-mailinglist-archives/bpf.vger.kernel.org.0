@@ -1,91 +1,92 @@
-Return-Path: <bpf+bounces-50322-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50323-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F264A262CB
-	for <lists+bpf@lfdr.de>; Mon,  3 Feb 2025 19:45:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC6B8A262F7
+	for <lists+bpf@lfdr.de>; Mon,  3 Feb 2025 19:49:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD83B18812FB
-	for <lists+bpf@lfdr.de>; Mon,  3 Feb 2025 18:46:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 870B13A1F40
+	for <lists+bpf@lfdr.de>; Mon,  3 Feb 2025 18:48:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D57161553A3;
-	Mon,  3 Feb 2025 18:45:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADFF91D6DB9;
+	Mon,  3 Feb 2025 18:48:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FV287DvZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hJATIDvr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF29310E0;
-	Mon,  3 Feb 2025 18:45:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 373571925A2;
+	Mon,  3 Feb 2025 18:48:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738608344; cv=none; b=DcU0IvSV0ifr6hkbh6w/rczdZ5fzXPx2f/0LdoylRktpZPH4bgovmYK8pbfj57yH1qG8uMhtfBM0vy+pKKKKZ2qwQj8S+zGV/lrT6a1Pxc9c+5YyAGYcY789F0yfeUOAigAGypK8gNu8zOn4RIkK0+E1cz7wHSL+0FfcfsJHF5k=
+	t=1738608529; cv=none; b=CTFY7psNRgO0vhIjtmDaYR5x163qaQ12JPPXYzTUBwvPylGVqvCIL5mcXyulNcUR2Upw1gsuLsvDzkBMh2pRzBjwv1S0vy1O0i+cQ75xJmxgMy6pTR2nkXb4SkMLkjFWrz7Cd3WjsIebg4behKkoejUHC6nhoBP+nCDFuTS/NFM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738608344; c=relaxed/simple;
-	bh=Sh9JqsMn3+WNjs/UhIQpp+0bQxQfRenxCzV9TC5Mz8k=;
+	s=arc-20240116; t=1738608529; c=relaxed/simple;
+	bh=Lsbd4FEj52HH1IAKgnllNowWn3xfHmVQra2SG9SrUQM=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=rWMGxaovvE+ES1No7m/vfSL3tRnU5sbGCGWr6dqt6UTf9yRyODNaNwHuPAisHXwRC1uN8waF8YU0AvssKWpGxqnfGVH3zmhuRoC+EvpcdB3PBkbZ/b9YUwK+xNIB3MznjTYKbheawNRP7tvIXX9+cerUm8+qzgNyB0kQOC/EyJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FV287DvZ; arc=none smtp.client-ip=209.85.214.180
+	 Content-Type:MIME-Version; b=WaBK7HsgbGB5eGoU1kH5YV+UJFUVEJfBLIej7TPimOzgC163+6yP+a8EDf1WcWxPYcAaon3kiukrpAnL9s4F7TZKZiDRhIAnEN0nLPYGwpRdk9QARAjxvvk8TW+cGjVoTt0hZ3shj3eMj4zuwf75BjNkSv3PnMReOxPecddKskw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hJATIDvr; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2166651f752so95779665ad.3;
-        Mon, 03 Feb 2025 10:45:40 -0800 (PST)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-21634338cfdso17318055ad.2;
+        Mon, 03 Feb 2025 10:48:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738608340; x=1739213140; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1738608526; x=1739213326; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=GF5bCNHsQSd0Et+4UjT6iUc3/eSHGhbwhOmyy8nTBgs=;
-        b=FV287DvZuf7riuMOhmW7hDHvKAEl5Obxw6SG5MtDcu8dGp86Jhkzkv+S0/vJWsGX9F
-         bxA8OsjCc4liekYYIulazqqOlZb/npZTOaAE9//mdzuEh3H7Pw/vTn8uKpstuYQg8gTS
-         d3d/mg2/J1yE8djBEuB33ZQFTldXVD2uoORfNKWqY0Z8YsVUjY3tcQn567j8PZ5ZFTsn
-         9qxZPzAOMM6yqDeV897thTjrwhZ/7pr2xANAJFYGYsAqOqfHcxA2IG9utqidmUaizTaD
-         LI+PFV+BylItIwu1om1sGq7RQPyds8TxeSupBibfGXZALKxdP5XGV+Rc09OPpx3RQyPe
-         owOg==
+        bh=Lsbd4FEj52HH1IAKgnllNowWn3xfHmVQra2SG9SrUQM=;
+        b=hJATIDvrctpi7zYmw10HjVi8cEIfHbYHhmanNT5Jm8FrUJymud8MBgZkFcf/IhSIO1
+         bFJMnmqbNR5sfVf6VE7uXkN0ruAAH46O64tXUo8esB8PmgacNLZASfjW+Y2r4rlTYtex
+         +tIlydrbc2QA1KkbXliHRMtIdc0IBzVTHyESJqVe2fDScwXT0In8aSJTKociYVcD2a4I
+         ECnyYj2zpF8wT2Ht8caGuXdUm5HFJJhq6EcuscEv8hNuS1RWbKp6P0yN7pEmx0JZZuqf
+         mUtKQZIGiidxDYzPnX4Cmmj4ecMCDVCqvQnEhld5EECDy+DleIfvXZP4tDoeDOXX2USo
+         h2xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738608340; x=1739213140;
+        d=1e100.net; s=20230601; t=1738608526; x=1739213326;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=GF5bCNHsQSd0Et+4UjT6iUc3/eSHGhbwhOmyy8nTBgs=;
-        b=KOZXvaVNlGAqA+VZ8CMK74I5kpH/iJ5kWivDvFBJ1BmexSmp47/yEoKHIZemPnh+ng
-         7IuqybTZUGoOzpIrRlnFhxF5T7lII1QnO20HJqSmPPqSomC9N04Sup9ZyxR2SnW0jGQb
-         Y3mUKbGcoVLZxUGkzx4Yxr1aOOiYPxlfBZRSoSRVqi12a9mCWssj8Ff8eMQlBNbNrGn6
-         AntTCukm/o5qjMo5WxUMEyMS4nSDxaTethyx2sCPFOboQLsm7NYI0DPSbQ1C9Bi8ueN9
-         NpaEFGVKxbF5ypCIilx+9wK58u1U+d+G5KtaDoknnbHdPVj8RsLaR0qo6+TFs8+pmpVK
-         hqDA==
-X-Forwarded-Encrypted: i=1; AJvYcCUBoD/MaFho6uGttHN5vJDdmdH9hru8jC2N7ohmo5SlEF171b6ePsyqgIMm+0CFM0aUYNY=@vger.kernel.org, AJvYcCWqSIl4V5szysFylIZ1IMo7cIy5B3tyn/Te2TzCxW0vUg9Dn7nmUzZWm8Efw7X003BGeu3yeqbpPKlW/ek7@vger.kernel.org
-X-Gm-Message-State: AOJu0YyAvUi7iL9b+54IxgjJatTffSajxjZ+hPXiCNKXEbSfGSkKu1uU
-	Eto7pLreySolrY6lcbjraNCB/9myTEAKYFmeaROxwttj1szoCFnO
-X-Gm-Gg: ASbGncv0vRCnggiNqsAt6M4MMzjvNR5kZi2NvSCcfodJBXS4afYVx/VUBNJid86CB7H
-	tnC/1WxU/Bz+3KNMmsjSngHuOaPwVVGS2yc1JusdPgO93EYOi9VQCFE6YjItcvX2TWKC0qP2rok
-	JaQjPChY7hMGJnQJ6l/p+U0g1zhAYYtEZxe4kjZd7Ph27bccEHCA2yNXcbapeSjoINNGyDagVYG
-	bit/bqVJe75kyqoWUt2CqEBV0BXfjCZOmwNE1x38nq5nEoS/eVMTD134Bvan/SMyxEAVD8dLseU
-	QCusH46AGYWJ
-X-Google-Smtp-Source: AGHT+IHi/LhXzMClWbHreZV7J7kdHrZ4MloVmok977ZqERzj4/39svg06fAAaCiNlzrpPRBw5iARKw==
-X-Received: by 2002:a17:903:41cf:b0:216:3c2b:a5e5 with SMTP id d9443c01a7336-21dd7d7bc9emr325633955ad.27.1738608339860;
-        Mon, 03 Feb 2025 10:45:39 -0800 (PST)
+        bh=Lsbd4FEj52HH1IAKgnllNowWn3xfHmVQra2SG9SrUQM=;
+        b=DtNJX3lNb0AI/C9C+lfg2288ncUi/A4CTuT+1t6Tt8xQbywBJAvFPBZv0bXnrI3Umf
+         JR59bnv8aYO7ogu3XvnWbBPSCS8e12nRKtvRdzCT9YxCY18pdTuDJhZC/XTJPhPp+haP
+         OHxCKHPUqU5VaKmqxWQQzsBvhUpfte3D4TKmhSnyj9GYUFFj6qx+tt7tbdH0NFO617zf
+         cRcYZedEk1O1eBYV9jsAylNKQRyVgFxsPPnRJRvjcL95Ul3ZCaRrwgaUqfBY56TS/G/Q
+         7QQGB5pwburLpk5WMly+YIUl2RHsTMw32nbfFwIGgqOdn7XHQX22dIitSK8T4YCjnM0w
+         pF4A==
+X-Forwarded-Encrypted: i=1; AJvYcCV6nJFwm2uk0TpPbfLP6OrxgnTqq7nsZMATZhaPrmhTgO751WJGoI+vfjOYbKOiv0SHlP1aDnQRFim7jtzH3y5e@vger.kernel.org, AJvYcCWsrp0lqSSvoslw2wh8ZtU1gNu82qGDU872KO9rkYNYnC6vOML7rixfDqX4p6hdejqC3H3iHmp/POqC0ddJ@vger.kernel.org, AJvYcCX5M2T0b3v3G4Ti6gM2al9ogH2xRk9vdaOUN4K9IME9AsgWwZ6ESrewPFiP2KdRdVMwYFo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzHL5fKggkf0a8F8Ez9+IrkhZrkt+9l5WnXWosMW4/BzMqoYOSf
+	6GIqh6kA7cvnAfhv5iW7yesCx3bJk5qNwuxOD7hm9JBpRNHPh6P+
+X-Gm-Gg: ASbGncuYfjqOGq2utBumyAY9d9yozHRLj8UDsoti13LOvKMbur/1NP5LyADQhsF9kdS
+	St0nSR5oQJRn+oD2vwDNljDhmnJiz9+ovHkK44F59H9PXqaxy5xxm5Jx752QA5RZc8taTQEW6xl
+	OvFiCeyG7Gzix+iR/irK5KKj7InHpObfBPoJN/OBiRZGDc2ZM9jDu7jGRjFbCQg/XbZPl8qSWFQ
+	9JIz/CmZe4Qeu0CHKnALOr4KmyIpom3qnAqvYzWrszD9tN7Qm8upIR2jAZIoI55gDOlMxW4A/mh
+	fgTRgRTUuQW+
+X-Google-Smtp-Source: AGHT+IFITU2OmUI0zcBfuM11sK28MhKdCTwH1hJZGMSzYYt5FEIw42H+u0k06fjcj+R4/qWCivD79A==
+X-Received: by 2002:a05:6a21:8dc8:b0:1e0:d867:c875 with SMTP id adf61e73a8af0-1ed7a623248mr43239572637.36.1738608526355;
+        Mon, 03 Feb 2025 10:48:46 -0800 (PST)
 Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21de31f80a1sm80499695ad.87.2025.02.03.10.45.38
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-acec096ac4asm8392673a12.63.2025.02.03.10.48.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Feb 2025 10:45:39 -0800 (PST)
-Message-ID: <084abedc8ec36ffe77f97531c0bcebc291547415.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] bpf: verifier: Do not extract constant map
- keys for irrelevant maps
+        Mon, 03 Feb 2025 10:48:45 -0800 (PST)
+Message-ID: <a89075ae0cdd03d94e61a009214cb399ad4f2382.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: selftests: Test constant key
+ extraction on irrelevant maps
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Daniel Xu <dxu@dxuuu.xyz>, daniel@iogearbox.net, andrii@kernel.org, 
-	ast@kernel.org
-Cc: john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, 	jolsa@kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, 	mhartmay@linux.ibm.com, iii@linux.ibm.com
-Date: Mon, 03 Feb 2025 10:45:35 -0800
-In-Reply-To: <ebbf8edf871a6543425b75bb659400221bd28275.1738439839.git.dxu@dxuuu.xyz>
+To: Daniel Xu <dxu@dxuuu.xyz>, daniel@iogearbox.net, shuah@kernel.org, 
+	andrii@kernel.org, ast@kernel.org
+Cc: mykolal@fb.com, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	mhartmay@linux.ibm.com, iii@linux.ibm.com
+Date: Mon, 03 Feb 2025 10:48:40 -0800
+In-Reply-To: <d6f48c9cb8b7981fd037a19a8cfbba5def40f2ea.1738439839.git.dxu@dxuuu.xyz>
 References: <cover.1738439839.git.dxu@dxuuu.xyz>
-	 <ebbf8edf871a6543425b75bb659400221bd28275.1738439839.git.dxu@dxuuu.xyz>
+	 <d6f48c9cb8b7981fd037a19a8cfbba5def40f2ea.1738439839.git.dxu@dxuuu.xyz>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
@@ -97,63 +98,14 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
 On Sat, 2025-02-01 at 12:58 -0700, Daniel Xu wrote:
-> Previously, we were trying to extract constant map keys for all
-> bpf_map_lookup_elem(), regardless of map type. This is an issue if the
-> map has a u64 key and the value is very high, as it can be interpreted
-> as a negative signed value. This in turn is treated as an error value by
-> check_func_arg() which causes a valid program to be incorrectly
-> rejected.
+> Test that very high constant map keys are not interpreted as an error
+> value by the verifier. This would previously fail.
 >=20
-> Fix by only extracting constant map keys for relevant maps. See next
-> commit for an example via selftest.
->=20
-> Reported-by: Marc Hartmayer <mhartmay@linux.ibm.com>
-> Reported-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> Tested-by: Marc Hartmayer <mhartmay@linux.ibm.com>
 > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
 
 Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-Nit:
-  would be good if commit message said something along the lines:
-  ... the fix works because nullness elision is only allowed for
-      {PERCPU_}ARRAY maps, and keys for these are within u32 range ...
-
-> ---
->  kernel/bpf/verifier.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
->=20
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 9971c03adfd5..e9176a5ce215 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -9206,6 +9206,8 @@ static s64 get_constant_map_key(struct bpf_verifier=
-_env *env,
->  	return reg->var_off.value;
->  }
-> =20
-> +static bool can_elide_value_nullness(enum bpf_map_type type);
-> +
->  static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
->  			  struct bpf_call_arg_meta *meta,
->  			  const struct bpf_func_proto *fn,
-> @@ -9354,9 +9356,11 @@ static int check_func_arg(struct bpf_verifier_env =
-*env, u32 arg,
->  		err =3D check_helper_mem_access(env, regno, key_size, BPF_READ, false,=
- NULL);
->  		if (err)
->  			return err;
-> -		meta->const_map_key =3D get_constant_map_key(env, reg, key_size);
-> -		if (meta->const_map_key < 0 && meta->const_map_key !=3D -EOPNOTSUPP)
-> -			return meta->const_map_key;
-> +		if (can_elide_value_nullness(meta->map_ptr->map_type)) {
-> +			meta->const_map_key =3D get_constant_map_key(env, reg, key_size);
-> +			if (meta->const_map_key < 0 && meta->const_map_key !=3D -EOPNOTSUPP)
-> +				return meta->const_map_key;
-> +		}
->  		break;
->  	case ARG_PTR_TO_MAP_VALUE:
->  		if (type_may_be_null(arg_type) && register_is_null(reg))
-
+[...]
 
 
