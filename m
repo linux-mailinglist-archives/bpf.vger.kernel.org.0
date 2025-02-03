@@ -1,135 +1,115 @@
-Return-Path: <bpf+bounces-50313-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50316-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 795B4A2550A
-	for <lists+bpf@lfdr.de>; Mon,  3 Feb 2025 09:56:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 857A1A257F9
+	for <lists+bpf@lfdr.de>; Mon,  3 Feb 2025 12:19:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1227318818F1
-	for <lists+bpf@lfdr.de>; Mon,  3 Feb 2025 08:56:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F1C43A369E
+	for <lists+bpf@lfdr.de>; Mon,  3 Feb 2025 11:19:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F198206F01;
-	Mon,  3 Feb 2025 08:55:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2448B20127C;
+	Mon,  3 Feb 2025 11:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=illinois.edu header.i=@illinois.edu header.b="Zd2H/+Um"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jlkDuF1A"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00007101.pphosted.com (mx0b-00007101.pphosted.com [148.163.139.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5731E202C40;
-	Mon,  3 Feb 2025 08:55:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.139.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1647F2A1A4
+	for <bpf@vger.kernel.org>; Mon,  3 Feb 2025 11:19:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738572954; cv=none; b=SHML77EHtvOHUpn79lVGnkxi0FUCZIJd8fmaueuo43TW7t1cEyc5vnBT3SqtRe2qIaY9QYMI11eLCMHh1HEKnudzroucT3XQOyyUVyAtp0h5EtWeymPR1CN0d5ytu2ygKhXrrHr8K9w0jEyrL66hiCWawrmnYGUj8gPABPWlHzs=
+	t=1738581589; cv=none; b=Zz3YiOO4UIZCgwjbl/wlJcKsVHoDuWboExmOafPceRJSjV++Iqq8ZUVxvL/752C/hrzJAQ4Ooqzl9+yv6qtttPtcmKoq4Nn3JgC4r15DLnqigD0Z2KTC9VBj16yA9xslSlnr6QVXfm8f9oguQcmSGFpA1+dVX2d43+2EYbe/ajM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738572954; c=relaxed/simple;
-	bh=1YTO9INez+CnwjPY9kI4ZOAcWBmKf/Llmb8zbEm1NCA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OCjkLnxfwJkYLINsvCr8lgfPJm6mIpnYlxCeq4dr8O1CMA1vQ/J9sAZFssBmwkac+TTDLGCfd5aXHW5nCcAyyhH1Bx+VsI6CnFfAsY37E5qH0Gu1Vzzq9UzGov3EDcUwwEKk4o1NxsNKkdm4oXbk/310hDz19Eqdc3BzZBlpOBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=illinois.edu; spf=pass smtp.mailfrom=illinois.edu; dkim=pass (2048-bit key) header.d=illinois.edu header.i=@illinois.edu header.b=Zd2H/+Um; arc=none smtp.client-ip=148.163.139.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=illinois.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=illinois.edu
-Received: from pps.filterd (m0272703.ppops.net [127.0.0.1])
-	by mx0b-00007101.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5135Lxn0004344;
-	Mon, 3 Feb 2025 08:55:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=illinois.edu; h=
-	cc:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=campusrelays; bh=RCfMUHG2
-	VmNAH/8CCuKfGREBh8Aoub4r2DhMd+5tnUw=; b=Zd2H/+UmzcjVU2FJnFAWQciM
-	rptV47Fj48QoHSPd0Afw+zR39O2mrobwfbRwpyqm+vBw5Tso1kczntTVEnwXErsz
-	eI3p2tLqnY8MssqxM08uqqBYlvnXvcsa95Ki6uUD9AYUmwE15dqz4tJFv5zzP0Rv
-	ZQ8q7HybQ+Sa/f5r5E6SPwkmXUcEtCKo7dJVMoAHwCiyiN3qIu0UyYJae/hZ+Mwa
-	E+ArBP7VDFpCMPjWjV+SYR2l0N9qjGUMCvoivwo/xhRjlaJME19h5L7EOnpDECrb
-	K+XPMPHCkDH6df7bszzl0oAC66nuZJGKLK7hgwcYlPs/FAi8GTtj9yEoqAMaOQ==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0b-00007101.pphosted.com (PPS) with ESMTPS id 44jjep9xet-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 03 Feb 2025 08:55:13 +0000 (GMT)
-Received: from m0272703.ppops.net (m0272703.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 5138q1nU024616;
-	Mon, 3 Feb 2025 08:55:13 GMT
-Received: from localhost.localdomain (oasis.cs.illinois.edu [130.126.137.13])
-	by mx0b-00007101.pphosted.com (PPS) with ESMTP id 44jjep9xed-4;
-	Mon, 03 Feb 2025 08:55:13 +0000 (GMT)
-From: Jinghao Jia <jinghao7@illinois.edu>
-To: Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <bentiss@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nicolas Schier <n.schier@avm.de>, Ruowen Qin <ruqin@redhat.com>,
-        Jinghao Jia <jinghao7@illinois.edu>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org
-Subject: [PATCH v3 3/3] samples/hid: fix broken vmlinux path for VMLINUX_BTF
-Date: Mon,  3 Feb 2025 02:55:06 -0600
-Message-ID: <20250203085506.220297-4-jinghao7@illinois.edu>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <20250203085506.220297-1-jinghao7@illinois.edu>
-References: <20250203085506.220297-1-jinghao7@illinois.edu>
+	s=arc-20240116; t=1738581589; c=relaxed/simple;
+	bh=GeyuGAU1E/ISgDbUNQvfMXKbws650LnUrlW2pl6Nbhc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ICEvGjirMJTJVC9bZ5ItrgIgzjHKh1AHDtF5ZxLaNdn1hLyYxmADmOvyMYqYgYFrYcHSDnAanLt7nmHYlz2nflARqVF4OH17yz+FvlL378GyxBNdat6/KgZQk59HPBICeaw30E4b/GYxKysWcVytdY1Fx8Cud1qkKbO5foLgGBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jlkDuF1A; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-43625c4a50dso29246295e9.0
+        for <bpf@vger.kernel.org>; Mon, 03 Feb 2025 03:19:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738581586; x=1739186386; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zty+qzW18hF5S9StHQX2210t4xfBPu6YOwLiDcPbz9k=;
+        b=jlkDuF1ApbnxksB1zRMEoyUXUB5NvpWCPEgVuxy1M2LXw/LQvOgok+DChM3Uixufb/
+         bEkAOz2eEHZGW5caSknFBEB/xGSc6JDCOQOzTX4HMdB7z1Mh0Sy7OVpJU6XCUn+bkd1f
+         Au+kYwAMyMT8RbAaGGvwOVVVQVkceo6HTPl5zeRyT5ejsKHVqTX1W5trMV4SK7h8Onb2
+         I/+NbI3C1AoqZbp+dZTy5CApjBU6CEYzuflWPWkifdSrmDn1vFaP1o/KO92uMJLDulDk
+         8u4WoX9pr+m2VigRHPTUTgABzezp6Y3ndkdd9UwNidpEUKC2jrKhBDRCZp+kWUldms4u
+         TcBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738581586; x=1739186386;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Zty+qzW18hF5S9StHQX2210t4xfBPu6YOwLiDcPbz9k=;
+        b=pOvb/V9cd35kjS3grxk2OvVnVDFP89eGFmszyuGyaqdbCqI3Q1EOFrndOvlU8PcBjL
+         xIJPQTZi7PLukKhYZ1kIGlCaZ0Syx2xvkoua7rVzdM1DM/6YoioicAJJLSPHFouvsaiT
+         6/vpASjWemXLhy9y9Xorm0PQgHq3yRMgLjwsDB+EpxUpLgUWOBLgO265OkrMQprKUDUy
+         16LfujKn2NyqvUjV0+XMABAQ0eHpUz+ho/XzeLmjzF9vOsp+vySJpvKp2bRa3VmjFmbB
+         VY1QerrrFy5967Vh3Ys9qCTvUdsjX6h6aDdiXu97hnA8oWHbOhe+B6Az4sMC+i3fQGRM
+         vrmA==
+X-Gm-Message-State: AOJu0YyCQVteV9DxMNqNAkKeR62tFncj0Hk0GvQgivK/XX+UGduwN/8t
+	4v9IS9yv/lN3pJdKtFhN0dpdfxeI3qvvZ7fPFHkm+G5+6HrVR8Asxnrg2mqf90md2GnVWZUFla4
+	gDwwE7k3F4HtP0RAn+7a6jgGjFyI=
+X-Gm-Gg: ASbGncuQRX0ROdMxoyZJiTCicl7RJeYCX6R3YAiCLXmpIPftQVXtajkPfgyu05cJVq4
+	clnSN2nukKrDgA9kQZH1YNf3PwML0GCXdW2oZIBVLiHs8tyKzXWJ4nrY0iUe5O8ZtfaSzzdY4hQ
+	==
+X-Google-Smtp-Source: AGHT+IFkgzE6lSLReRzaq8JDG6I2ZGMKvZqW1eJD41F+Spv1QnjZDmGABZ3MUOxLTvETdG9uknOnNnE10Z0dDU0N7ao=
+X-Received: by 2002:a05:600c:3d9b:b0:434:ff08:202b with SMTP id
+ 5b1f17b1804b1-438dc3c360dmr178549185e9.12.1738581586044; Mon, 03 Feb 2025
+ 03:19:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: OdQjC_8YDZj7se2XaZ61oCTyjWVSYnGU
-X-Proofpoint-GUID: c5o_IbYaaHI99HPpe15OxgXV0rmloE1j
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-02-03_03,2025-01-31_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=cautious_plus_nq_notspam policy=cautious_plus_nq score=0 adultscore=0
- malwarescore=0 clxscore=1015 mlxscore=0 phishscore=0 spamscore=0
- priorityscore=1501 mlxlogscore=887 bulkscore=0 suspectscore=0
- impostorscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2501170000 definitions=main-2502030071
-X-Spam-Score: 0
-X-Spam-OrigSender: jinghao7@illinois.edu
-X-Spam-Bar: 
+References: <CAK3+h2xsd4H-mYmhb4-gwBV9ogXZDK6XaLU=jRfHT9X80=5Oow@mail.gmail.com>
+In-Reply-To: <CAK3+h2xsd4H-mYmhb4-gwBV9ogXZDK6XaLU=jRfHT9X80=5Oow@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 3 Feb 2025 12:19:35 +0100
+X-Gm-Features: AWEUYZm7O5e8PFme0YP6_xeOm5MNlH-1kTpSwMMCCbDEIckDeK5nVV7XvbJG5JQ
+Message-ID: <CAADnVQK01RwKVOZ4aMMXpdMSeD40eV2grXSSD4z4g5C7nEsfLQ@mail.gmail.com>
+Subject: Re: [QUESTION] map has to have BTF in order to use bpf_spin_lock
+To: Vincent Li <vincent.mc.li@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Commit 13b25489b6f8 ("kbuild: change working directory to external
-module directory with M=") changed kbuild working directory of hid-bpf
-sample programs to samples/hid, which broke the vmlinux path for
-VMLINUX_BTF, as the Makefiles assume the current work directory to be
-the kernel output directory and use a relative path (i.e., ./vmlinux):
+On Sun, Feb 2, 2025 at 8:46=E2=80=AFPM Vincent Li <vincent.mc.li@gmail.com>=
+ wrote:
+>
+> Hi
+>
+> I am attempting to load loxilb ebpf load balancer project  ebpf
+> program and ran into bpf verifier error like below, the kernel is
+> upstream stable release 6.12.5 and has CONFIG_DEBUG_INFO_BTF=3Dy kernel
+> config. I tried both clang 18.1.0 and clang 19.1.7. I reported the
+> issue to loxilb here [0] with BTF LOAD LOG and PROG LOAD LOG output
+> detail. Google search and AI  hasn't been helpful so far :)
+>
+> 8113: (bf) r1 =3D r8                    ; frame1:
+> R1_w=3Dmap_value(map=3Dpolx_map,ks=3D4,vs=3D96)
+> R8_w=3Dmap_value(map=3Dpolx_map,ks=3D4,vs=3D96)
+> 8114: (07) r1 +=3D 16                   ; frame1:
+> R1_w=3Dmap_value(map=3Dpolx_map,ks=3D4,vs=3D96,off=3D16)
+> 8115: (7b) *(u64 *)(r10 -16) =3D r1     ; frame1:
+> R1_w=3Dmap_value(map=3Dpolx_map,ks=3D4,vs=3D96,off=3D16) R10=3Dfp0
+> fp-16_w=3Dmap_value(map=3Dpolx_map,ks=3D4,vs=3D96,off=3D16)
+> 8116: (85) call bpf_spin_lock#93
 
-  Makefile:173: *** Cannot find a vmlinux for VMLINUX_BTF at any of "  /path/to/linux/samples/hid/vmlinux", build the kernel or set VMLINUX_BTF or VMLINUX_H variable.  Stop.
+> map 'polx_map' has to have BTF in order to use bpf_spin_lock
 
-Correctly refer to the kernel output directory using $(objtree).
-
-Fixes: 13b25489b6f8 ("kbuild: change working directory to external module directory with M=")
-Tested-by: Ruowen Qin <ruqin@redhat.com>
-Suggested-by: Daniel Borkmann <daniel@iogearbox.net>
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Jinghao Jia <jinghao7@illinois.edu>
----
- samples/hid/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/samples/hid/Makefile b/samples/hid/Makefile
-index 69159c81d045..db5a077c77fc 100644
---- a/samples/hid/Makefile
-+++ b/samples/hid/Makefile
-@@ -164,7 +164,7 @@ $(obj)/hid_surface_dial.o: $(obj)/hid_surface_dial.skel.h
- 
- VMLINUX_BTF_PATHS ?= $(abspath $(if $(O),$(O)/vmlinux))				\
- 		     $(abspath $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux))	\
--		     $(abspath ./vmlinux)
-+		     $(abspath $(objtree)/vmlinux)
- VMLINUX_BTF ?= $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
- 
- $(obj)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL)
--- 
-2.48.1
-
+The message from the verifier is pretty clear.
+The problem is somewhere in loxilb.
+The kernel and clang are fine.
 
