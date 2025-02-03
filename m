@@ -1,291 +1,411 @@
-Return-Path: <bpf+bounces-50328-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50329-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF1BAA265B9
-	for <lists+bpf@lfdr.de>; Mon,  3 Feb 2025 22:34:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD8E8A2672F
+	for <lists+bpf@lfdr.de>; Mon,  3 Feb 2025 23:56:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FA617A0395
-	for <lists+bpf@lfdr.de>; Mon,  3 Feb 2025 21:33:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70D5B3A5069
+	for <lists+bpf@lfdr.de>; Mon,  3 Feb 2025 22:56:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50E3B20E71C;
-	Mon,  3 Feb 2025 21:33:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F4BE211283;
+	Mon,  3 Feb 2025 22:56:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MGRgTysc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LAmiJFK3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB031A31;
-	Mon,  3 Feb 2025 21:33:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1053A1D5CD4
+	for <bpf@vger.kernel.org>; Mon,  3 Feb 2025 22:56:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738618433; cv=none; b=jTGz55vjhi7XKxKnGS+F7eYq510q41+R2jo66dE1im/0d/vJqQoCX0UEZinB1pW8FH9z6N3N8DpY18R2izlqsZLtPOy8IL3gstzZSFcYAMJAcVpkax61lugIhbMWJtVLv7RdiyP/SGZLB/A9tGpX1A9q6NDscW2NrmhNYt2l1ss=
+	t=1738623384; cv=none; b=ECXf+uKZX+p0BgVTvfvOXnKqUp/0NPiokuTR/IY8pFoPZOtdL/yTIOox2ZuumriS/PQpRAjWP0FsA7Ng0Ke2Bks9u7cgn45/sYmKm7W2ujkGItgrABoo6p1BcjE0wqjapXGholR9JBW/fzL9x3qcUO94x85AkgEPA4LQGHGwmNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738618433; c=relaxed/simple;
-	bh=1mlaWCTrBrjSa0L+d8pSQwcBOgfwLLhUqX/gRxJbXYI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=N7GhWa28yj8LI010+982hF8sHGKqkZtZadwsBr2ny9Uq2qGIw2n4VbSkHdaR8+gg+N2xvtFznHZLzqk+HZu/RM0y98u5NxZIqQMdi/GRDgrenJzPN8fI3OyJB9P44Cc0mYcAJE9CT9xupKq/0wJQiAC9cIxJife5NkEYQCLsDBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MGRgTysc; arc=none smtp.client-ip=209.85.128.52
+	s=arc-20240116; t=1738623384; c=relaxed/simple;
+	bh=NLN0srcSPinVGVvzXNISS+XcCDHOS8uMfr4guIqK9Uc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=AO4eml687nKJWlUo0ISMJLu2oqTJEGj1u0HDN7RiBGjcSIeaGRUjBT4Xo3WP+EDurB+4vpUcyipHj0cUj0yVNvtbCZI6iuXVAvAI8EmxSnBg4ygv3XlNdzDhMMMtRKJFLg9M64ICGwAueyVZpwGZkWKOdOhfNQyp+DzQePZ2kdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LAmiJFK3; arc=none smtp.client-ip=209.85.216.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4362bae4d7dso35034075e9.1;
-        Mon, 03 Feb 2025 13:33:51 -0800 (PST)
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2ee50ffcf14so9158972a91.0
+        for <bpf@vger.kernel.org>; Mon, 03 Feb 2025 14:56:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738618430; x=1739223230; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MrVMD2Z2i/6S/QLajy8AAiCtXVC5nD5sHVdo7QcfCdY=;
-        b=MGRgTyscMpcmoK6u3zkKQgZ+FmPV58t26jeNA/Hh40oy6R5lbr7uzCd6mxPaAXKGwm
-         gb5X48ymvaK2DBwhG4ZLkj9iwxjet2okBGNA+LOg+M0rPINTb0dyiO1hfyXtI4Iv2eW2
-         zTWp3fB0+uCQcUQ7PrDqYgMWEA8hGeQeNmnU71VJdi77+Yc3vevaZ0ojxCspt4malqxj
-         iUylOg4A4hradq4j4iHm+0L9iK8qXUarkLFo8HsyGdh/mhMjX+JubWkxbnu68iU0J5bG
-         Nsv1m2CxMs2JI5FVcyO5oC3TKlN+0YtWI5F+XdPa7PttG7Qyelpbm0G+jOFBQo2uFtc6
-         Ui4g==
+        d=gmail.com; s=20230601; t=1738623382; x=1739228182; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=YfcGao7tbqYm4yYrAWnH40UCh/sD4BcXTzPq0hZJ+EY=;
+        b=LAmiJFK3esxImCHBmiefzWD29YcM26SCOn1H9wpuCmUiIUVAweDNOPh57BkQYzy75h
+         TYfgZuE+Rfy1Sfx5sj91z7NjOIlsetFpiKXwsDhuoEjlGwQaBDZJbfEVTbsHvRSlzkBT
+         awHKHNOeinxA56AHUw2BhHUFS3J6kzlHFJUW5IYBtXzOkBgGhq8WlEg0Z1KCzt8vJC1q
+         RMfRVTK7mm9C9pY6I7hk8MbNKOAIbJT6jr5r8lD0fGA3R0f/YXimJcLIaWWsnpFvok1S
+         tm3U6TbWS5lhrpkhuN1OKeCGWUnqpBcpB3Wt6x7eDFs1t/4i50w6rKynRnpe0qqOnUvm
+         poFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738618430; x=1739223230;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MrVMD2Z2i/6S/QLajy8AAiCtXVC5nD5sHVdo7QcfCdY=;
-        b=oFv7enib4xs3fpHu2Kxjs+Vp0sD3TkoCW8QYzpJJ/0yZn+4MEoouysvKgaDDb4V2T+
-         ptu8GWxFS5gDflCozP69CRAIzgOsAzT268lOm2a/nXeijwGl/PtUvaMX7kcrhp2avkW1
-         3xzjxMW7VhWuFT/G/Aq0NUYz7J4nFGmELcEyMfhnj+zccJmLPBVNQ3kARaKxIVWVwhXl
-         WeULwNKgXsZi4kyI6dui6MyZZ3fOWQSFVDVDNQgETv0pAkOgr1iaGS+mA4i6Y2jW/DxF
-         1b/10+7xmhlPYOsUvicB2uSjQY7PFdKFpwKyNp01jKUawIW6QhgMZU1Wj0Exr92GY1q5
-         0LHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUOtmsB1OVnOB2xQeKWML/rsrORZEOsD4fhl3LmjiolTgq46Rr3nFpWP8SR2W2b/v86mykCxPhclHaSEWuV@vger.kernel.org, AJvYcCUXotuVTkaS4fmzuYfa7D0xOFksq7Jxzm3ZfdSdImZ4R9qk2flSogd9Crr46mIiQXm854Y=@vger.kernel.org, AJvYcCWfwwf84pDCmBPyKf4tw2BJYhQCMy8tUmBf6nlL+nGZENgYG+1vqwFuqz7A7ar2MttB3srtsVsMOBRSHw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwhJoY9h5JEw2XGypymwsoLvbBAxJWN3jXFXWwZRCV/meSmwgvM
-	AcVPgdFjlhRGCPqylGdk7QHOSBhjQdr0QqOn+vch5FfWkHBBLnAh
-X-Gm-Gg: ASbGncvHNVdyOSOfkpyyjjVQOxJCUWZz9DQQtN8NJr0lkOPfHolkI9iLQzkCO3q2Q3C
-	pYz3ZYPKZZ5BCS6G2Vy6qEgtd4ujqDEMTDZGMOfI6roPBP/eyh9Zwr+wa8mQa7Qq8NMK0K7Ugs5
-	wh1LJDHZBIgxExU+7ANB/lLpK1c3tSk2FY+Ypy6fg2Dyu1Tt+kkNFN/nfvi1GqigncmYydnzA90
-	L1hfuZGZYRAspwi42/y/ykviegFcObzTLvIXuZKGskOlDMYrT7CbJwgPWS2Z680kpyADmjM/w1i
-	vsrv0qkT8cEAmw2LOtZ+pzXAzfoMA17ipeBbUpWHyXd3t1AYqvYQmA==
-X-Google-Smtp-Source: AGHT+IGSI4NMuXgo3YRTck+DTapndecyGzycBjJbvBcnwmDddI78Rk3ypPub97NycklrivXvcN7N3A==
-X-Received: by 2002:a05:600c:4e52:b0:434:9dfe:20e6 with SMTP id 5b1f17b1804b1-438dc3fc2b0mr196556595e9.23.1738618429820;
-        Mon, 03 Feb 2025 13:33:49 -0800 (PST)
-Received: from ?IPV6:2001:861:73:f8d0:2866:6e4b:d20:c37c? ([2001:861:73:f8d0:2866:6e4b:d20:c37c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-438e23e6181sm166240945e9.18.2025.02.03.13.33.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Feb 2025 13:33:49 -0800 (PST)
-Message-ID: <a87f98bf-45b1-4ef5-aa77-02f7e61203f4@gmail.com>
-Date: Mon, 3 Feb 2025 22:33:48 +0100
+        d=1e100.net; s=20230601; t=1738623382; x=1739228182;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YfcGao7tbqYm4yYrAWnH40UCh/sD4BcXTzPq0hZJ+EY=;
+        b=PnHXtwTQ7I6Hr0Gwx9rCsytvDLnNCmMnIYOfiL5ydxCHYaZrfnmLeLkwSrL3fYTynK
+         0aL+MdW3XbafK48xdwKI6NjlLyridkKBpvCs3CtG7gQgWJlG2nhlVc9OB2DHoj2QP/mS
+         3TteW7/iEv1taqEpbzoUAAmO+3U5CEqNpztJXZUQzIkzuDca0zZaYitVfPKehPuezcIU
+         VnF6kzWLfofP6VBGMg4H7TA04g5H3AACov/eHwuAvlo0838c/XGAt1jYvBK53Ang08Qq
+         3Uv2702WQkXMLBakSyKe0tSaGus8oVox2ynRdM3tZ05C/GLG/yZXPIKXDSCiYGZoDPyh
+         kbUw==
+X-Forwarded-Encrypted: i=1; AJvYcCVPbwARimkCn4bgLT4oxprVIZRvfCgTc5aWHEkHj8lKjlJFK9an/nAQ45MoZGtLB8p4b2c=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyINk9OhBywzP84qxe/FrFt07I5MVVC5S8qlaAYzyWmSRaJdYOS
+	Zwnno/mnmQWzoUpzY17MhOI7pV8oysiekwn2TXVq6SfJBhV3vOPo
+X-Gm-Gg: ASbGncvamvfm8q0rzmGUy5LL8Bm8PK/LTv2VF4WlZzsIYePb+xbAXnunh16AW0Ssl2L
+	89yWgjmSaRABp+w3/LohTXcw2+L+tuI4SW+/mjMi5kGQiSfuTaDG0R/Nu0JubHnXQmPkuf2bW6Q
+	AjfrN2Xnf33YuOQVGrgfao3bs1/82U+0DqWL27mQyUMgEFf6pseyuU3TrIxugzeZmgmL0BAYp2I
+	t+V2hds38R0GqjvCNR/LOfAoynHS6bZVVQLz77sCv6+5VJxoBTGT1Jt0BeoMfSfFRqN5mJwG4du
+	KoNDOwn1l9Vy
+X-Google-Smtp-Source: AGHT+IFM4kiOmYu6Ep6Qlo25qUCwbRAI1Do4SVaMNtc71y/2llo9cTzWNQgho9kfYpCNpth5ZiFAtg==
+X-Received: by 2002:a17:90b:2dc7:b0:2f2:e905:d5ff with SMTP id 98e67ed59e1d1-2f9ba227090mr1706122a91.6.1738623382151;
+        Mon, 03 Feb 2025 14:56:22 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f83bc97d95sm13200041a91.8.2025.02.03.14.56.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Feb 2025 14:56:21 -0800 (PST)
+Message-ID: <9d42c86be3a8057054ffb1e7f7c6af09d5a5d767.camel@gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: implement setting global
+ variables in veristat
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
+	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
+	kernel-team@meta.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Date: Mon, 03 Feb 2025 14:56:16 -0800
+In-Reply-To: <20250203164002.128321-1-mykyta.yatsenko5@gmail.com>
+References: <20250203164002.128321-1-mykyta.yatsenko5@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH v22 19/20] ftrace: Add ftrace_get_symaddr to convert
- fentry_ip to symaddr
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
- Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
- Alan Maguire <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>,
- linux-arch@vger.kernel.org, kernel test robot <lkp@intel.com>,
- Florent Revest <revest@chromium.org>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-References: <173518987627.391279.3307342580035322889.stgit@devnote2>
- <173519011487.391279.5450806886342723151.stgit@devnote2>
-Content-Language: en-US
-From: Gabriel de Perthuis <g2p.code@gmail.com>
-In-Reply-To: <173519011487.391279.5450806886342723151.stgit@devnote2>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
 
-Hello,
-
-I got errors building Linux 6.14-rc1 that were solved by reverting this 
-patch and the one after (19/20 and 20/20).
-
-Errors look like:
-
-In file included from ./arch/x86/include/asm/asm-prototypes.h:2,
-                  from <stdin>:3:
-./arch/x86/include/asm/ftrace.h: In function 'arch_ftrace_get_symaddr':
-./arch/x86/include/asm/ftrace.h:46:21: error: implicit declaration of 
-function 'get_kernel_nofault' [-Wimplicit-function-declaration]
-    46 |                 if (get_kernel_nofault(instr, (u32 *)(fentry_ip 
-- ENDBR_INSN_SIZE)))
-       | ^~~~~~~~~~~~~~~~~~
-
-Will send .config on request if needed.
-
-Le 26/12/2024 à 06:15, Masami Hiramatsu (Google) a écrit :
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
->
-> This introduces ftrace_get_symaddr() which tries to convert fentry_ip
-> passed by ftrace or fgraph callback to symaddr without calling
-> kallsyms API. It returns the symbol address or 0 if it fails to
-> convert it.
->
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202412061423.K79V55Hd-lkp@intel.com/
-> Closes: https://lore.kernel.org/oe-kbuild-all/202412061804.5VRzF14E-lkp@intel.com/
+On Mon, 2025-02-03 at 16:40 +0000, Mykyta Yatsenko wrote:
+> From: Mykyta Yatsenko <yatsenko@meta.com>
+>=20
+> To better verify some complex BPF programs we'd like to preset global
+> variables.
+> This patch introduces CLI argument `--set-global-vars` to veristat, that
+> allows presetting values to global variables defined in BPF program. For
+> example:
+>=20
+> prog.c:
+> ```
+> enum Enum { ELEMENT1 =3D 0, ELEMENT2 =3D 5 };
+> const volatile __s64 a =3D 5;
+> const volatile __u8 b =3D 5;
+> const volatile enum Enum c =3D ELEMENT2;
+> const volatile bool d =3D false;
+>=20
+> char arr[4] =3D {0};
+>=20
+> SEC("tp_btf/sched_switch")
+> int BPF_PROG(...)
+> {
+> 	bpf_printk("%c\n", arr[a]);
+> 	bpf_printk("%c\n", arr[b]);
+> 	bpf_printk("%c\n", arr[c]);
+> 	bpf_printk("%c\n", arr[d]);
+> 	return 0;
+> }
+> ```
+> By default verification of the program fails:
+> ```
+> ./veristat prog.bpf.o
+> ```
+> By presetting global variables, we can make verification pass:
+> ```
+> ./veristat wq.bpf.o  --set-global-vars "a =3D 0; b =3D 1; c =3D 2; d =3D =
+3;"
+> ```
+>=20
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 > ---
->   Changes in v21:
->    - On arm64, fix the macro name to ftrace_get_symaddr() correctly.
->    - Define ftrace_get_symaddr() outside of CONFIG_DYNAMIC_FTRACE.
->   Changes in v19:
->    - Newly added.
-> ---
->   arch/arm64/include/asm/ftrace.h |    2 +
->   arch/arm64/kernel/ftrace.c      |   63 +++++++++++++++++++++++++++++++++++++++
->   arch/x86/include/asm/ftrace.h   |   21 +++++++++++++
->   include/linux/ftrace.h          |   13 ++++++++
->   4 files changed, 99 insertions(+)
->
-> diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
-> index 876e88ad4119..bfe3ce9df197 100644
-> --- a/arch/arm64/include/asm/ftrace.h
-> +++ b/arch/arm64/include/asm/ftrace.h
-> @@ -52,6 +52,8 @@ extern unsigned long ftrace_graph_call;
->   extern void return_to_handler(void);
->   
->   unsigned long ftrace_call_adjust(unsigned long addr);
-> +unsigned long arch_ftrace_get_symaddr(unsigned long fentry_ip);
-> +#define ftrace_get_symaddr(fentry_ip) arch_ftrace_get_symaddr(fentry_ip)
->   
->   #ifdef CONFIG_DYNAMIC_FTRACE_WITH_ARGS
->   #define HAVE_ARCH_FTRACE_REGS
-> diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
-> index 570c38be833c..d7c0d023dfe5 100644
-> --- a/arch/arm64/kernel/ftrace.c
-> +++ b/arch/arm64/kernel/ftrace.c
-> @@ -143,6 +143,69 @@ unsigned long ftrace_call_adjust(unsigned long addr)
->   	return addr;
->   }
->   
-> +/* Convert fentry_ip to the symbol address without kallsyms */
-> +unsigned long arch_ftrace_get_symaddr(unsigned long fentry_ip)
+
+This is super useful, thank you!
+Maybe also add an ability to read variables list from a file?
+(e.g. using -g @file-name syntax as in -f).
+
+Worked fine for my small example, but failed to affect an object file
+with multiple programs, see below.
+
+Also, given that it is non-trivial to see if variable had indeed been set,
+I think it would be useful to add a selftest that does
+system("./veristat -l7 -v -g ...") and matches log output to check that
+values are set correctly, e.g. I used the following simple test:
+
+	const volatile u8  _u8  =3D 0;
+	const volatile u16 _u16 =3D 0;
+	const volatile u32 _u32 =3D 0;
+	const volatile u64 _u64 =3D 0;
+	const volatile s8  _s8  =3D 0;
+	const volatile s16 _s16 =3D 0;
+	const volatile s32 _s32 =3D 0;
+	const volatile s64 _s64 =3D 0;
+
+	SEC("socket")
+	int test_globals(void *ctx)
+	{
+		volatile unsigned long cnt;
+		cnt =3D _u8;
+		cnt =3D _u16;
+		cnt =3D _u32;
+		cnt =3D _u64;
+		cnt =3D _s8;
+		cnt =3D _s16;
+		cnt =3D _s32;
+		cnt =3D _s64;
+		return cnt;
+	}
+
+>  tools/testing/selftests/bpf/veristat.c | 189 +++++++++++++++++++++++++
+>  1 file changed, 189 insertions(+)
+
+[...]
+
+> @@ -1292,6 +1312,169 @@ static int process_prog(const char *filename, str=
+uct bpf_object *obj, struct bpf
+>  	return 0;
+>  };
+> =20
+> +static int parse_var_presets(char *expr, struct var_preset *presets, int=
+ capacity, int *size)
 > +{
-> +	u32 insn;
+> +	char *state;
+> +	char *next;
+> +	int i =3D 0;
 > +
-> +	/*
-> +	 * When using patchable-function-entry without pre-function NOPS, ftrace
-> +	 * entry is the address of the first NOP after the function entry point.
-> +	 *
-> +	 * The compiler has either generated:
-> +	 *
-> +	 * func+00:	func:	NOP		// To be patched to MOV X9, LR
-> +	 * func+04:		NOP		// To be patched to BL <caller>
-> +	 *
-> +	 * Or:
-> +	 *
-> +	 * func-04:		BTI	C
-> +	 * func+00:	func:	NOP		// To be patched to MOV X9, LR
-> +	 * func+04:		NOP		// To be patched to BL <caller>
-> +	 *
-> +	 * The fentry_ip is the address of `BL <caller>` which is at `func + 4`
-> +	 * bytes in either case.
-> +	 */
-> +	if (!IS_ENABLED(CONFIG_DYNAMIC_FTRACE_WITH_CALL_OPS))
-> +		return fentry_ip - AARCH64_INSN_SIZE;
+> +	while ((next =3D strtok_r(i ? NULL : expr, ";", &state))) {
+> +		char *eq_ptr =3D strchr(next, '=3D');
+> +		char *name_ptr =3D next;
+> +		char *name_end =3D eq_ptr - 1;
+> +		char *val_ptr =3D eq_ptr + 1;
 > +
-> +	/*
-> +	 * When using patchable-function-entry with pre-function NOPs, BTI is
-> +	 * a bit different.
-> +	 *
-> +	 * func+00:	func:	NOP		// To be patched to MOV X9, LR
-> +	 * func+04:		NOP		// To be patched to BL <caller>
-> +	 *
-> +	 * Or:
-> +	 *
-> +	 * func+00:	func:	BTI	C
-> +	 * func+04:		NOP		// To be patched to MOV X9, LR
-> +	 * func+08:		NOP		// To be patched to BL <caller>
-> +	 *
-> +	 * The fentry_ip is the address of `BL <caller>` which is at either
-> +	 * `func + 4` or `func + 8` depends on whether there is a BTI.
-> +	 */
+> +		if (!eq_ptr)
+> +			continue;
+
+Nit: error message here?
+
 > +
-> +	/* If there is no BTI, the func address should be one instruction before. */
-> +	if (!IS_ENABLED(CONFIG_ARM64_BTI_KERNEL))
-> +		return fentry_ip - AARCH64_INSN_SIZE;
+> +		if (i >=3D capacity) {
+> +			fprintf(stderr, "Too many global variable presets\n");
+> +			return -EINVAL;
+> +		}
+> +		while (isspace(*name_ptr))
+> +			++name_ptr;
+> +		while (isspace(*name_end))
+> +			--name_end;
 > +
-> +	/* We want to be extra safe in case entry ip is on the page edge,
-> +	 * but otherwise we need to avoid get_kernel_nofault()'s overhead.
-> +	 */
-> +	if ((fentry_ip & ~PAGE_MASK) < AARCH64_INSN_SIZE * 2) {
-> +		if (get_kernel_nofault(insn, (u32 *)(fentry_ip - AARCH64_INSN_SIZE * 2)))
-> +			return 0;
-> +	} else {
-> +		insn = *(u32 *)(fentry_ip - AARCH64_INSN_SIZE * 2);
+> +		*(name_end + 1) =3D '\0';
+> +		presets[i].name =3D strdup(name_ptr);
+> +		errno =3D 0;
+> +		presets[i].value =3D strtoll(val_ptr, NULL, 10);
+
+Nit: using base of 0 would allow to specify values either as decimals or in=
+ hex
+     (using '0x' prefix).
+
+> +		if (errno =3D=3D ERANGE) {
+> +			errno =3D 0;
+> +			presets[i].value =3D strtoull(val_ptr, NULL, 10);
+> +		}
+> +		if (errno) {
+> +			fprintf(stderr, "Could not parse integer value %s\n", val_ptr);
+> +			return -EINVAL;
+> +		}
+> +		++i;
 > +	}
-> +
-> +	if (aarch64_insn_is_bti(le32_to_cpu((__le32)insn)))
-> +		return fentry_ip - AARCH64_INSN_SIZE * 2;
-> +
-> +	return fentry_ip - AARCH64_INSN_SIZE;
+> +	*size =3D i;
+> +	return 0;
 > +}
 > +
->   /*
->    * Replace a single instruction, which may be a branch or NOP.
->    * If @validate == true, a replaced instruction is checked against 'old'.
-> diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-> index cc92c99ef276..f9cb4d07df58 100644
-> --- a/arch/x86/include/asm/ftrace.h
-> +++ b/arch/x86/include/asm/ftrace.h
-> @@ -34,6 +34,27 @@ static inline unsigned long ftrace_call_adjust(unsigned long addr)
->   	return addr;
->   }
->   
-> +static inline unsigned long arch_ftrace_get_symaddr(unsigned long fentry_ip)
+> +static bool is_signed_type(const struct btf_type *type)
 > +{
-> +#ifdef CONFIG_X86_KERNEL_IBT
-> +	u32 instr;
-> +
-> +	/* We want to be extra safe in case entry ip is on the page edge,
-> +	 * but otherwise we need to avoid get_kernel_nofault()'s overhead.
-> +	 */
-> +	if ((fentry_ip & ~PAGE_MASK) < ENDBR_INSN_SIZE) {
-> +		if (get_kernel_nofault(instr, (u32 *)(fentry_ip - ENDBR_INSN_SIZE)))
-> +			return fentry_ip;
-> +	} else {
-> +		instr = *(u32 *)(fentry_ip - ENDBR_INSN_SIZE);
-> +	}
-> +	if (is_endbr(instr))
-> +		fentry_ip -= ENDBR_INSN_SIZE;
-> +#endif
-> +	return fentry_ip;
+> +	if (btf_is_int(type))
+
+Nit: enums could be signed as well.
+
+> +		return btf_int_encoding(type) & BTF_INT_SIGNED;
+> +	return true;
 > +}
-> +#define ftrace_get_symaddr(fentry_ip)	arch_ftrace_get_symaddr(fentry_ip)
 > +
->   #ifdef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
->   
->   #include <linux/ftrace_regs.h>
-> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> index 4c553fe9c026..07092dfb21a4 100644
-> --- a/include/linux/ftrace.h
-> +++ b/include/linux/ftrace.h
-> @@ -622,6 +622,19 @@ enum {
->   	FTRACE_MAY_SLEEP		= (1 << 5),
->   };
->   
-> +/* Arches can override ftrace_get_symaddr() to convert fentry_ip to symaddr. */
-> +#ifndef ftrace_get_symaddr
-> +/**
-> + * ftrace_get_symaddr - return the symbol address from fentry_ip
-> + * @fentry_ip: the address of ftrace location
-> + *
-> + * Get the symbol address from @fentry_ip (fast path). If there is no fast
-> + * search path, this returns 0.
-> + * User may need to use kallsyms API to find the symbol address.
-> + */
-> +#define ftrace_get_symaddr(fentry_ip) (0)
-> +#endif
+> +static const struct btf_type *var_base_type(const struct btf *btf, const=
+ struct btf_type *type)
+> +{
+> +	switch (btf_kind(type)) {
+> +	case BTF_KIND_VAR:
+> +	case BTF_KIND_TYPE_TAG:
+> +	case BTF_KIND_CONST:
+> +	case BTF_KIND_VOLATILE:
+> +	case BTF_KIND_RESTRICT:
+> +	case BTF_KIND_TYPEDEF:
+> +	case BTF_KIND_DECL_TAG:
+> +		return var_base_type(btf, btf__type_by_id(btf, type->type));
+> +	}
+> +	return type;
+> +}
 > +
->   #ifdef CONFIG_DYNAMIC_FTRACE
->   
->   void ftrace_arch_code_modify_prepare(void);
->
->
+> +static bool is_preset_supported(const struct btf_type *t)
+> +{
+> +	return btf_is_int(t) || btf_is_enum(t) || btf_is_enum64(t);
+> +}
+> +
+> +static int set_global_var(struct bpf_object *obj, struct btf *btf, const=
+ struct btf_type *t,
+> +			  struct bpf_map *map, struct btf_var_secinfo *sinfo, long long new_v=
+al)
+> +{
+> +	const struct btf_type *base_type;
+> +	void *ptr;
+> +	size_t size;
+> +
+> +	base_type =3D var_base_type(btf, t);
+> +	if (!is_preset_supported(base_type)) {
+> +		fprintf(stderr, "Setting global variable for btf kind %d is not suppor=
+ted\n",
+> +			btf_kind(base_type));
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Check if value fits into the target variable size */
+> +	if  (sinfo->size < sizeof(new_val)) {
+> +		bool is_signed =3D is_signed_type(base_type);
+> +		__u32 unsigned_bits =3D sinfo->size * 8 - (is_signed ? 1 : 0);
+> +		long long max_val =3D 1ll << unsigned_bits;
+> +
+> +		if (new_val >=3D max_val || new_val < -max_val) {
+> +			fprintf(stderr,
+> +				"Variable %s value %lld is out of range [%lld; %lld]\n",
+> +				btf__name_by_offset(btf, t->name_off), new_val,
+> +				is_signed ? -max_val : 0, max_val - 1);
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	ptr =3D (void *)bpf_map__initial_value(map, &size);
+> +	if (!ptr || (sinfo->offset + sinfo->size > size))
+> +		return -EINVAL;
+> +
+> +	memcpy(ptr + sinfo->offset, &new_val, sinfo->size);
+
+will this work for big endian?
+
+> +	return 0;
+> +}
+> +
+> +static int set_global_vars(struct bpf_object *obj, struct var_preset *pr=
+esets, int npresets)
+> +{
+> +	struct btf_var_secinfo *sinfo;
+> +	const char *sec_name;
+> +	const struct btf_type *type;
+> +	struct bpf_map *map;
+> +	struct btf *btf;
+> +	int i, j, k, n, cnt, err, preset_cnt =3D 0;
+> +
+> +	if (npresets =3D=3D 0)
+> +		return 0;
+> +
+> +	btf =3D bpf_object__btf(obj);
+> +	if (!btf)
+> +		return -EINVAL;
+> +
+> +	cnt =3D btf__type_cnt(btf);
+> +	for (i  =3D 0; i !=3D cnt; ++i) {
+> +		type =3D btf__type_by_id(btf, i);
+> +
+> +		if (!btf_is_datasec(type))
+> +			continue;
+> +
+> +		sinfo =3D btf_var_secinfos(type);
+> +		sec_name =3D btf__name_by_offset(btf, type->name_off);
+> +		map =3D bpf_object__find_map_by_name(obj, sec_name);
+> +		if (!map)
+> +			continue;
+> +
+> +		n =3D btf_vlen(type);
+> +		for (j =3D 0; j < n; ++j, ++sinfo) {
+> +			const struct btf_type *var_type =3D btf__type_by_id(btf, sinfo->type)=
+;
+> +			const char *var_name =3D btf__name_by_offset(btf, var_type->name_off)=
+;
+> +
+> +			if (!btf_is_var(var_type))
+> +				continue;
+> +
+> +			for (k =3D 0; k < npresets; ++k) {
+> +				if (strcmp(var_name, presets[k].name) !=3D 0)
+> +					continue;
+> +
+> +				err =3D set_global_var(obj, btf, var_type, map, sinfo,
+> +						     presets[k].value);
+> +				if (err)
+> +					return err;
+> +
+> +				preset_cnt++;
+> +				break;
+> +			}
+> +		}
+> +	}
+> +	if (preset_cnt !=3D npresets)
+> +		fprintf(stderr, "Some global variable presets have not been applied\n"=
+);
+
+Nit: it would be nice to print which ones were not set.
+
+> +
+> +	return 0;
+> +}
+> +
+>  static int process_obj(const char *filename)
+>  {
+>  	const char *base_filename =3D basename(strdupa(filename));
+> @@ -1338,6 +1521,12 @@ static int process_obj(const char *filename)
+>  		prog_cnt++;
+>  	}
+> =20
+> +	err =3D set_global_vars(obj, env.presets, env.npresets);
+> +	if (err) {
+> +		fprintf(stderr, "Failed to set global variables\n");
+> +		goto cleanup;
+> +	}
+> +
+>  	if (prog_cnt =3D=3D 1) {
+>  		prog =3D bpf_object__next_program(obj, NULL);
+>  		bpf_program__set_autoload(prog, true);
+
+Same needs to happen for the loop below when prog_cnt !=3D 1, e.g.:
+
+@@ -1544,6 +1544,12 @@ static int process_obj(const char *filename)
+                        goto cleanup;
+                }
+=20
++               err =3D set_global_vars(tobj, env.presets, env.npresets);
++               if (err) {
++                       fprintf(stderr, "Failed to set global variables\n")=
+;
++                       goto cleanup;
++               }
++
+                lprog =3D NULL;
+                bpf_object__for_each_program(tprog, tobj) {
+                        const char *tprog_name =3D bpf_program__name(tprog)=
+;
+
+Or, better yet, get rid of the `prog_cnt =3D=3D 1` special case.
+
+
 
