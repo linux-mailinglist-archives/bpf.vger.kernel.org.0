@@ -1,169 +1,160 @@
-Return-Path: <bpf+bounces-50387-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50388-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E26CA26E06
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 10:19:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A798A26E3D
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 10:25:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E78901662DA
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 09:19:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90D5E3A20D6
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 09:25:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C328E207A28;
-	Tue,  4 Feb 2025 09:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5A36207A14;
+	Tue,  4 Feb 2025 09:25:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XcUPcgM1"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="H061pv89"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35C01201009;
-	Tue,  4 Feb 2025 09:19:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C3BC205E26
+	for <bpf@vger.kernel.org>; Tue,  4 Feb 2025 09:25:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738660746; cv=none; b=eO/BgkVtwYLcUrQk4/InyV8MxrM0lZhIN9rtoCvTeXWNeR6eTyW9MRbIoe7hPcoY4V0ZZRm3igYgA3t28tIrNH5RqgR23/Kh4Jv+5yLNOZDNOp6PNFkb0vCGqjzv1SKdduGVc05u+7sGUHAXA93sYwYKKsLE1RpS6+EO4Bkpvxg=
+	t=1738661124; cv=none; b=CQ5gSsNqdJORot5yajMaUD3eYaL9AahsDcltlpAdvMr7S1ZoAagJOvaqzbVw++V0Y+ekFlQonNWqbgPHGmzKiV2koxDopUMV8syYkSzsQ9U31pF+MlKI9fYi3mhqI8Zk+KhckilW3Zsl0yXeeYBRTPR75MtEbq95J4KIQ75m/Jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738660746; c=relaxed/simple;
-	bh=M/0MbWgQomgFkFf342WyucRNwqt3ktrigkPZJGV8u7o=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=d6I93VPR9eIiF4IdivKeCp39dpFTyjZ1ir+aTYDNnLR6F8YMKvIxJFEMJ0qOXqG19/TLvDlfl8fThBGf8kGhysE/l3iACa3bLZ8pdjmizNgbgxHknbX+gO1lQW4Ryrbmxkc/kh/7+9vwrr0KdKyG487NlNGHk1hLgh7lzhrB2Dg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XcUPcgM1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E636C4CEDF;
-	Tue,  4 Feb 2025 09:19:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738660745;
-	bh=M/0MbWgQomgFkFf342WyucRNwqt3ktrigkPZJGV8u7o=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=XcUPcgM1wVGnKVUq9O/4FVPT+8Sf6nQPqbwAf4eoq19Hn39pfgdTS0Sb1xY6GBOsH
-	 BsimP4qt+MEnu+W6Oiu+QYuQsHNsHzS/nPvSKdZQ7dlmdptaBjwV2uqnf3nHERjINI
-	 diw9fFcmkdjmGRFOpK4H3AfhBokTyuBnCddS7dus0fAsNZ2rj1jAwZdwIAyrVTtwkY
-	 wUPnYcrHa7cDUtWNgEy2UIi223mwYPDDboTSuv1Vm+6IscNnJN2XGi3xXhkZj2PpOP
-	 ejPndcE4nr6vLGwKsoIui9Djyce3qkNb7NWFtKa8SFltsYlmYpZey0eRdIK1OFS0+P
-	 v9thTAzkgqsDw==
-Date: Tue, 4 Feb 2025 18:19:02 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Gabriel de Perthuis <g2p.code@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Alexei
- Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Alan Maguire
- <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>,
- linux-arch@vger.kernel.org, kernel test robot <lkp@intel.com>, Florent
- Revest <revest@chromium.org>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>
-Subject: Re: [PATCH v22 19/20] ftrace: Add ftrace_get_symaddr to convert
- fentry_ip to symaddr
-Message-Id: <20250204181902.dd6e02416ff5eeec3ea47a79@kernel.org>
-In-Reply-To: <a87f98bf-45b1-4ef5-aa77-02f7e61203f4@gmail.com>
-References: <173518987627.391279.3307342580035322889.stgit@devnote2>
-	<173519011487.391279.5450806886342723151.stgit@devnote2>
-	<a87f98bf-45b1-4ef5-aa77-02f7e61203f4@gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1738661124; c=relaxed/simple;
+	bh=gt5qra6uYURoBM49GeoCeHQQ+0Y0TccwKw2Ges9W1pc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oCcz4zNV64wpheo4qhfW6GK7noRUsWeSZN6/LPjbvrbMKTcZSGJj9d8vbeQ8AM4CNUCCdII4KEWuCNGOJKUxnNWxoIUY7QONPeEFfKB1XmX1SgEIVMaLklNRKlzA9BN/4oaVn30r3O3CHvQ7npMMZkcbMfH6MXcXaIFhfPDAB5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=H061pv89; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5148tqEf004052;
+	Tue, 4 Feb 2025 09:25:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=corp-2023-11-20; bh=KJVfwe6Hu8RiUSQ1kcGyX4xddSvsE
+	QsgSHGlJRZeK08=; b=H061pv89cN0qWA1DbNkRE+zIIfvR42Vivsp9/i2syPb9w
+	Undkk6Uanfe560xo2ITzOi5l+CdiFHfreoNtHt02ynyDs3a98KcqxJDHdHaRaE+g
+	ZxeUZK3xnK7TY8SViV+skxLY/qj6GFAaKuc69QNA4AQHOqph2d4n2lYWKDqGj/ky
+	yD0137uul62QdilhH3OY6pjpl5KgBem+tshCcrKjaMkux8xBDmFhUTibCuuzxb2K
+	aj3CRryVx2w54mw7QwXgBMPA3+Fs8LOjiYVAp3/LjGsSlZJw2lFI7dKGsqO2WBje
+	wMK1Cjn7NrlndJ3TG9QKFCAou3i9FtEuvJ1pkRdPw==
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 44hfcgvgnr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 04 Feb 2025 09:25:00 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5148kvAb004707;
+	Tue, 4 Feb 2025 09:24:59 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 44j8fnrgpe-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 04 Feb 2025 09:24:58 +0000
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 5149MlAH005579;
+	Tue, 4 Feb 2025 09:24:58 GMT
+Received: from bpf.uk.oracle.com (dhcp-10-175-201-234.vpn.oracle.com [10.175.201.234])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 44j8fnrgnx-1;
+	Tue, 04 Feb 2025 09:24:58 +0000
+From: Alan Maguire <alan.maguire@oracle.com>
+To: ast@kernel.org
+Cc: daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Colm Harrington <colm.harrington@oracle.com>
+Subject: [PATCH bpf] bpf/arena: fix softlockup in arena_map_free on 64k page kernel
+Date: Tue,  4 Feb 2025 09:24:55 +0000
+Message-ID: <20250204092455.3693003-1-alan.maguire@oracle.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-04_04,2025-01-31_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 phishscore=0
+ mlxlogscore=999 bulkscore=0 suspectscore=0 adultscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2501170000
+ definitions=main-2502040075
+X-Proofpoint-GUID: oyTJeb4mh1J9ix5T6gCwr9zkA0Plrlkn
+X-Proofpoint-ORIG-GUID: oyTJeb4mh1J9ix5T6gCwr9zkA0Plrlkn
 
-On Mon, 3 Feb 2025 22:33:48 +0100
-Gabriel de Perthuis <g2p.code@gmail.com> wrote:
+On an aarch64 kernel with CONFIG_PAGE_SIZE_64KB=y (64k pages),
+arena_htab tests cause a segmentation fault and soft lockup.
 
-> Hello,
-> 
-> I got errors building Linux 6.14-rc1 that were solved by reverting this 
-> patch and the one after (19/20 and 20/20).
-> 
-> Errors look like:
-> 
-> In file included from ./arch/x86/include/asm/asm-prototypes.h:2,
->                   from <stdin>:3:
-> ./arch/x86/include/asm/ftrace.h: In function 'arch_ftrace_get_symaddr':
-> ./arch/x86/include/asm/ftrace.h:46:21: error: implicit declaration of 
-> function 'get_kernel_nofault' [-Wimplicit-function-declaration]
->     46 |                 if (get_kernel_nofault(instr, (u32 *)(fentry_ip 
-> - ENDBR_INSN_SIZE)))
->        | ^~~~~~~~~~~~~~~~~~
-> 
-> Will send .config on request if needed.
+$ sudo ./test_progs -t arena_htab
+Caught signal #11!
+Stack trace:
+./test_progs(crash_handler+0x1c)[0x7bd4d8]
+linux-vdso.so.1(__kernel_rt_sigreturn+0x0)[0xffffb34a0968]
+./test_progs[0x420f74]
+./test_progs(htab_lookup_elem+0x3c)[0x421090]
+./test_progs[0x421320]
+./test_progs[0x421bb8]
+./test_progs(test_arena_htab+0x40)[0x421c14]
+./test_progs[0x7bda84]
+./test_progs(main+0x65c)[0x7bf670]
+/usr/lib64/libc.so.6(+0x2caa0)[0xffffb31ecaa0]
+/usr/lib64/libc.so.6(__libc_start_main+0x98)[0xffffb31ecb78]
+./test_progs(_start+0x30)[0x41b4f0]
 
+Message from syslogd@bpfol9aarch64 at Feb  4 08:50:09 ...
+ kernel:watchdog: BUG: soft lockup - CPU#1 stuck for 26s! [kworker/u8:4:7589]
 
-Thanks for the report!
+The same failure is not observed with 4k pages on aarch64.
 
--------<arch/x86/include/asm/asm-prototypes.h>
-/* SPDX-License-Identifier: GPL-2.0 */
-#include <asm/ftrace.h>
-#include <linux/uaccess.h>
------
+Investigating further, it turns out arena_map_free() was calling
+apply_to_existing_page_range() with the address returned by
+bpf_arena_get_kern_vm_start().  If this address is not page-aligned -
+as is the case for a 64k page kernel - we wind up calling apply_to_pte_range()
+with that unaligned address.  The problem is apply_to_pte_range() implicitly
+assumes that the addr passed in is page-aligned, specifically in this loop:
 
-Ah, that's why... get_kernel_nofault() is defined in linux/uaccess.h.
-I also found that is_endbr() is in asm/ibt.h.
+		do {
+                        if (create || !pte_none(ptep_get(pte))) {
+                                err = fn(pte++, addr, data);
+                                if (err)
+                                        break;
+                        }
+                } while (addr += PAGE_SIZE, addr != end);
 
-Can you try this?
+If addr is _not_ page-aligned, it will never equal end exactly.
 
-Thank you,
+One solution is to round up the address returned by bpf_arena_get_kern_vm_start()
+to a page-aligned value.  With that change in place the test passes:
 
-diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-index f9cb4d07df58..d24d7c71253f 100644
---- a/arch/x86/include/asm/ftrace.h
-+++ b/arch/x86/include/asm/ftrace.h
-@@ -16,24 +16,9 @@
- # include <asm/ibt.h>
- /* Add offset for endbr64 if IBT enabled */
- # define FTRACE_MCOUNT_MAX_OFFSET	ENDBR_INSN_SIZE
--#endif
--
--#ifdef CONFIG_DYNAMIC_FTRACE
--#define ARCH_SUPPORTS_FTRACE_OPS 1
--#endif
--
--#ifndef __ASSEMBLY__
--extern void __fentry__(void);
--
--static inline unsigned long ftrace_call_adjust(unsigned long addr)
--{
--	/*
--	 * addr is the address of the mcount call instruction.
--	 * recordmcount does the necessary offset calculation.
--	 */
--	return addr;
--}
+$ sudo ./test_progs -t arena_htab
+Summary: 1/1 PASSED, 1 SKIPPED, 0 FAILED
+
+Reported-by: Colm Harrington <colm.harrington@oracle.com>
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+---
+ kernel/bpf/arena.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+index 870aeb51d70a..07395c55833e 100644
+--- a/kernel/bpf/arena.c
++++ b/kernel/bpf/arena.c
+@@ -54,7 +54,7 @@ struct bpf_arena {
  
-+#include <linux/uaccess.h>
-+/* This only supports fentry based ftrace. */
- static inline unsigned long arch_ftrace_get_symaddr(unsigned long fentry_ip)
+ u64 bpf_arena_get_kern_vm_start(struct bpf_arena *arena)
  {
- #ifdef CONFIG_X86_KERNEL_IBT
-@@ -55,6 +40,24 @@ static inline unsigned long arch_ftrace_get_symaddr(unsigned long fentry_ip)
+-	return arena ? (u64) (long) arena->kern_vm->addr + GUARD_SZ / 2 : 0;
++	return arena ? (u64) round_up((long) arena->kern_vm->addr + GUARD_SZ / 2, PAGE_SIZE) : 0;
  }
- #define ftrace_get_symaddr(fentry_ip)	arch_ftrace_get_symaddr(fentry_ip)
  
-+#endif
-+
-+#ifdef CONFIG_DYNAMIC_FTRACE
-+#define ARCH_SUPPORTS_FTRACE_OPS 1
-+#endif
-+
-+#ifndef __ASSEMBLY__
-+extern void __fentry__(void);
-+
-+static inline unsigned long ftrace_call_adjust(unsigned long addr)
-+{
-+	/*
-+	 * addr is the address of the mcount call instruction.
-+	 * recordmcount does the necessary offset calculation.
-+	 */
-+	return addr;
-+}
-+
- #ifdef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
- 
- #include <linux/ftrace_regs.h>
-
-
+ u64 bpf_arena_get_user_vm_start(struct bpf_arena *arena)
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.43.5
+
 
