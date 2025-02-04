@@ -1,184 +1,122 @@
-Return-Path: <bpf+bounces-50356-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50358-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F0E0A269E0
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 02:34:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9025AA269F5
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 03:00:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C086188622E
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 01:34:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3253E3A5A2C
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 02:00:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB46E8633F;
-	Tue,  4 Feb 2025 01:34:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8DB7139CFF;
+	Tue,  4 Feb 2025 02:00:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ke09ZpVk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LdBpwQgV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B00AEC4;
-	Tue,  4 Feb 2025 01:34:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05595179BD
+	for <bpf@vger.kernel.org>; Tue,  4 Feb 2025 02:00:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738632877; cv=none; b=nCCJe7+NHlsME22FRBwZVWw2tmbh5nkjU5aPoQrKHBEuNpg6FcE6CamlOzE0JFUUzNDAW1f6tg298/8C9OR4VS1Kgc+ogd+6TuCGHT5ztSqv/UoI0EcbKcSkY88EuRDCURgz2JlbmNpT14YbTUXk9hBiAYPD7Tc58YbdlSIw4Tw=
+	t=1738634432; cv=none; b=sHfw0sLHcnVE2mpoX7TM9ZtgQP1OLxkgXU7pM6cTrMzUmtOPQaGUpNqCFzpOad04syCAG0gxyomcdVw9KgX2dsWIWupVWSVUwQuur0K2O9SfUY17ZHd8OhJe4bxLX8qJk0YKEUNePheOIFisz6o+TCvffk3+gqhtSgGveXzOado=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738632877; c=relaxed/simple;
-	bh=cTqZc7KMQfir834dyF7dto20NWb+pLw52qL9bC6G4tA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i2YTTv1W+h2YCof0qVPoQ/fmEUKHGR0C/Uudw4xL8o+rq5GiSr+1f8UV3BQGKUCYhALaC57/kkTUJSHlHbB8W3lEkRkfEdq8bdEvbH8P+Rn2yKXENx1eG6apIG0UftTnx3pv+zeobTq7K5cA+0niFSmsbKoPUq/3772V/eg30aE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ke09ZpVk; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738632876; x=1770168876;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=cTqZc7KMQfir834dyF7dto20NWb+pLw52qL9bC6G4tA=;
-  b=ke09ZpVkdy1U6DPZo1SL0b5+e/FMq/Am8+KXiU3vo5WDMx42rYdf4RZG
-   SUcsllelXGG1HCHKD3j1YD6LcHtPdmBb7LACDvNgtNyQikfK51GYh4+PB
-   3TLIaFOTc6m3g3mcyfkQmMscwggqYwugRGyxkdxACJSpPWZKxOiPmuW68
-   NOa9azDdaXNfw6nARYfUTj5fBx+H0HOEBOuroAyXFQBKUNqw6bmaaSZ/y
-   rpBxqOZj/Ys+LXaKRA/4PDKaWVlDbFklQbv8thbJvVojUe7ry+RiJ1/Kg
-   reZ17PUPr+1yHYP6gdklhu6NiDskD6c/rxYw66ZdRQadQchc1imYIVioM
-   A==;
-X-CSE-ConnectionGUID: Tag1N2hORI2+DE2n+rR1yg==
-X-CSE-MsgGUID: P87jdiaMTjKPjnq1PtVJGg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11335"; a="49795734"
-X-IronPort-AV: E=Sophos;i="6.13,257,1732608000"; 
-   d="scan'208";a="49795734"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2025 17:34:18 -0800
-X-CSE-ConnectionGUID: 4tSta66CTFq8So3/FmHf2g==
-X-CSE-MsgGUID: 907kdKGuTAyI/dVJbUURBQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="115441422"
-Received: from choongyo-mobl.gar.corp.intel.com (HELO [10.247.124.71]) ([10.247.124.71])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2025 17:34:06 -0800
-Message-ID: <e0d34c88-dd8d-402d-bc67-6b9c4f8effaf@linux.intel.com>
-Date: Tue, 4 Feb 2025 09:34:03 +0800
+	s=arc-20240116; t=1738634432; c=relaxed/simple;
+	bh=7xY1Vvh6L3sTjI5GbL9Xme1xscIWowvdH3kqDIXLviI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=N6ezpxs+1hN6xV1NpA/08b/fPjOMzDEJQJOc6/9E4GXfNY1Y8dn4VcjDu2LTjQwJ31vv30KVhm7zZtOFbJeaFHDga4naJS6WJjG1atrWk719YIF9QwntioLfOiJVQIt2JVc4OB5Vw4hyr4HyE3/ZAgfFTDk0mevNY6ZTo40F240=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LdBpwQgV; arc=none smtp.client-ip=209.85.161.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5f2e31139d9so2388703eaf.0
+        for <bpf@vger.kernel.org>; Mon, 03 Feb 2025 18:00:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738634430; x=1739239230; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7xY1Vvh6L3sTjI5GbL9Xme1xscIWowvdH3kqDIXLviI=;
+        b=LdBpwQgVsEDcF/QixJ0Q24s93lEVmrPtAXl6MwPAr6njP8KIFbbOJbrGTFxGaX+Ry1
+         9UWLJuH1fMi9kg0UgShMCW/NkJbExMgBcaqeSIUuud9k0eG2y2hMpLyXkHO58Ry6azrn
+         d3Vx4G/Unqo5GzKS7ub9dLLOmAy3OX3AupRMlIckC9OEBx481T+Kro7o1OOsYVJiTkcg
+         xjaX4WvyYR5bT8dk++qNTbGcESIoSSNAXzpam07q+SneKbUCWRkd6vAZxq540ZouMPcA
+         TBZjjCatAbQrY0pHiQxEjXmTSx+o7Vbp0JucVvcjIerGbp1uMnIwBgY0YhnAfRo8C79q
+         9bJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738634430; x=1739239230;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7xY1Vvh6L3sTjI5GbL9Xme1xscIWowvdH3kqDIXLviI=;
+        b=bJ2qtPY+VaI8rK9GNq/DS274Xbl/MP1BrCtLFgnHvM5T/eD2X3TDWWranz8PdKFa9t
+         mZh5ki2h7zGzSsiZspVcLc2m4949beR55Sh4On2p+KfRRGY6UAfpD72Duu4Y9sSJe6FX
+         idTVRUBusgtFtVpZsBJpfTbEQGz+FGbaoW2kAUhPyipgezUE1dNOhg6tZD1+LEMgMdrC
+         himFBl2AQrhPPZEktrlU10oFY1WRmroMg7yQj8pzgK+UyhUhKkC99Ovp0ZRwqNrj7Bk+
+         H+w8P3R4sHbDyjNrJuUA9bk1q5tCVsSC11hgfTWilQpoUPdAw8QTXnVD7hn7QVZJqya0
+         0MgQ==
+X-Gm-Message-State: AOJu0YwK6GHZ5UYgnLO6FAim7+EGr8slFFb4OTy1zbsQ4WbNY0Ojhb+H
+	mMAHY/lKeJJznEWcIo1cgb/weQJfR2dL1FtLhcs4/+L98y3iQMxi3MZVjFyoNXhFfWY3QAUCiAZ
+	PsCoCVd2tByazXnbH3Igu51WjPPJcTkR+C+M=
+X-Gm-Gg: ASbGncsPZk/TsRYDnVf7suLCMk1JP06AscuNwNDR0e0VAlbDCEMY/3EEfltJs6SUyxl
+	2fbkEkMPrmf59ofIoODPG8BxjiY08YPUDPM71KxOX5p2fhHG+fXOJFrFwwn6FvjVA45tEWaHk68
+	DIVUkW4xtmEj+oft2hIgiz1xHQ1rDKdg==
+X-Google-Smtp-Source: AGHT+IGfrrBgaz9Tft4K85pGPP1VMgAMImvkVzGZDMlpj3PJkP1awOyqY+eBfCyUhtwl2lGlGGpeoIFnRehqB+wTyaA=
+X-Received: by 2002:a4a:e849:0:b0:5f7:3654:4595 with SMTP id
+ 006d021491bc7-5fc0040feffmr15611935eaf.5.1738634429818; Mon, 03 Feb 2025
+ 18:00:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v7 3/5] net: stmmac: Add launch time support to
- XDP ZC
-To: Song Yoong Siang <yoong.siang.song@intel.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Willem de Bruijn <willemb@google.com>,
- Florian Bezdeka <florian.bezdeka@siemens.com>,
- Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- Bjorn Topel <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Jonathan Lemon <jonathan.lemon@gmail.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, Joe Damato <jdamato@fastly.com>,
- Stanislav Fomichev <sdf@fomichev.me>, Xuan Zhuo
- <xuanzhuo@linux.alibaba.com>, Mina Almasry <almasrymina@google.com>,
- Daniel Jurgens <danielj@nvidia.com>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Shuah Khan <shuah@kernel.org>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <joabreu@synopsys.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Faizal Rahim <faizal.abdul.rahim@linux.intel.com>,
- Bouska Zdenek <zdenek.bouska@siemens.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
- xdp-hints@xdp-project.net
-References: <20250204004907.789330-1-yoong.siang.song@intel.com>
- <20250204004907.789330-4-yoong.siang.song@intel.com>
-Content-Language: en-US
-From: Choong Yong Liang <yong.liang.choong@linux.intel.com>
-In-Reply-To: <20250204004907.789330-4-yoong.siang.song@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <CAHnJ_vj-bbZhUqoDrf0wXEh8gEUVwq34WMXfHRo5=nx5FAL4OA@mail.gmail.com>
+In-Reply-To: <CAHnJ_vj-bbZhUqoDrf0wXEh8gEUVwq34WMXfHRo5=nx5FAL4OA@mail.gmail.com>
+From: Aryan Kaushik <aryankaushik666@gmail.com>
+Date: Tue, 4 Feb 2025 02:00:19 +0000
+X-Gm-Features: AWEUYZn1GQVRcWLOdtQ0nQ1fVyeCTIHPKdX7OqqgW-V7d1OaLZnakvGSDY4zmjk
+Message-ID: <CAHnJ_vhEwtqFtjjEX3DN03e1_vKSBu4e2cOAdinzgtrs2aPjUw@mail.gmail.com>
+Subject: Fwd: LSF/MM + BPF ATTEND - Topic 1 for discussion
+To: bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi Team
 
+Hope this mail find you well.
 
-On 4/2/2025 8:49 am, Song Yoong Siang wrote:
-> Enable launch time (Time-Based Scheduling) support for XDP zero copy via
-> the XDP Tx metadata framework.
-> 
-> This patch has been tested with tools/testing/selftests/bpf/xdp_hw_metadata
-> on Intel Tiger Lake platform. Below are the test steps and result.
-> 
-> Test 1: Send a single packet with the launch time set to 1 s in the future.
-> 
-> Test steps:
-> 1. On the DUT, start the xdp_hw_metadata selftest application:
->     $ sudo ./xdp_hw_metadata enp0s30f4 -l 1000000000 -L 1
-> 
-> 2. On the Link Partner, send a UDP packet with VLAN priority 1 to port 9091
->     of the DUT.
-> 
-> Result:
-> When the launch time is set to 1 s in the future, the delta between the
-> launch time and the transmit hardware timestamp is 16.963 us, as shown in
-> printout of the xdp_hw_metadata application below.
->    0x55b5864717a8: rx_desc[4]->addr=88100 addr=88100 comp_addr=88100 EoP
->    No rx_hash, err=-95
->    HW RX-time:   1734579065767717328 (sec:1734579065.7677)
->                  delta to User RX-time sec:0.0004 (375.624 usec)
->    XDP RX-time:   1734579065768004454 (sec:1734579065.7680)
->                   delta to User RX-time sec:0.0001 (88.498 usec)
->    No rx_vlan_tci or rx_vlan_proto, err=-95
->    0x55b5864717a8: ping-pong with csum=5619 (want 0000)
->                    csum_start=34 csum_offset=6
->    HW RX-time:   1734579065767717328 (sec:1734579065.7677)
->                  delta to HW Launch-time sec:1.0000 (1000000.000 usec)
->    0x55b5864717a8: complete tx idx=4 addr=4018
->    HW Launch-time:   1734579066767717328 (sec:1734579066.7677)
->                      delta to HW TX-complete-time sec:0.0000 (16.963 usec)
->    HW TX-complete-time:   1734579066767734291 (sec:1734579066.7677)
->                           delta to User TX-complete-time sec:0.0001
->                           (130.408 usec)
->    XDP RX-time:   1734579065768004454 (sec:1734579065.7680)
->                   delta to User TX-complete-time sec:0.9999
->                  (999860.245 usec)
->    HW RX-time:   1734579065767717328 (sec:1734579065.7677)
->                  delta to HW TX-complete-time sec:1.0000 (1000016.963 usec)
->    0x55b5864717a8: complete rx idx=132 addr=88100
-> 
-> Test 2: Send 1000 packets with a 10 ms interval and the launch time set to
->          500 us in the future.
-> 
-> Test steps:
-> 1. On the DUT, start the xdp_hw_metadata selftest application:
->     $ sudo chrt -f 99 ./xdp_hw_metadata enp0s30f4 -l 500000 -L 1 > \
->       /dev/shm/result.log
-> 
-> 2. On the Link Partner, send 1000 UDP packets with a 10 ms interval and
->     VLAN priority 1 to port 9091 of the DUT.
-> 
-> Result:
-> When the launch time is set to 500 us in the future, the average delta
-> between the launch time and the transmit hardware timestamp is 13.854 us,
-> as shown in the analysis of /dev/shm/result.log below. The XDP launch time
-> works correctly in sending 1000 packets continuously.
->    Min delta: 08.410 us
->    Avr delta: 13.854 us
->    Max delta: 17.076 us
->    Total packets forwarded: 1000
-> 
-> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+Topic 1: Practical Applications of WebAssembly (WASM) in Filesystems,
+Memory Management, and eBPF
 
-Reviewed-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+Description: WebAssembly (WASM) is emerging as a powerful technology
+for secure, efficient execution in various computing environments.
+This session will focus on how WASM can be leveraged in filesystems,
+memory management, and eBPF.
+
+Key discussion points include:
+
+1. WASM=E2=80=99s lightweight execution model and its impact on memory effi=
+ciency
+2. How WASM interacts with filesystems and operates within sandboxed
+environments
+3. Potential synergies between WASM and eBPF for secure, efficient
+execution in cloud-native and kernel-space applications
+4. Real-world examples of WASM implementations in security and
+performance-critical environments
+5. Challenges and opportunities in integrating WASM into Linux subsystems
+
+My Contribution: Given my interest in both WASM and security-focused
+computing, I=E2=80=99d like to explore how WASM can enhance performance and
+security in system-level applications.
+I=E2=80=99m particularly interested in discussing its potential for secure
+execution, memory isolation, and integration with eBPF for
+next-generation cloud and kernel-space workloads.
+
+Please feel free to share your insights on this topic.
+
+Regards
+Aryan
 
