@@ -1,284 +1,133 @@
-Return-Path: <bpf+bounces-50384-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50385-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBC57A26D4D
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 09:30:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD112A26DEB
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 10:08:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78DD33A84BE
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 08:30:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A463218876D9
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 09:08:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A6A5207A06;
-	Tue,  4 Feb 2025 08:29:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 707A2207A0B;
+	Tue,  4 Feb 2025 09:08:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DiT9NoRt"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="zNCoxmRP";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MKluuBC0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-b5-smtp.messagingengine.com (fhigh-b5-smtp.messagingengine.com [202.12.124.156])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 261AD206F15;
-	Tue,  4 Feb 2025 08:29:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B602B206F12;
+	Tue,  4 Feb 2025 09:08:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738657785; cv=none; b=G0GULsXbDzpICEgTMTrKIq1JBCBq11d5dtHjk42e7wULzgB16sIgQ2DwnG0QjEUg2rGw3qf+TzSCKMYWPsTFiEf3KrJWTl6kkOqGzJ2SDO5CWlI1gn7IWs7Z3MRt3wzPZW5ELoOMVhL1ckIrCC3u9wn5GXnqJk6iJxPRe1iXAcM=
+	t=1738660087; cv=none; b=Aclzr5nbtcDev/yUaEAYrk5ftUxVYsp2IctTBWw4SQeyfXqvXSgTjQ722FgrXZNWY7DoXGnE1aAE3P0yuLI/DaJHnrtOSU+b1VxKDENbSV/Tm3jprCPJq8IKXXErlFedDKlEnEjRZHChKf6Ff4h4aN0VXv0zRpNKRSgPXHNj0dw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738657785; c=relaxed/simple;
-	bh=grBlq7AtrDzJznDIIMWKhUXEENML1Ru70TG8QouqedA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mqNvAMFWmVXikmc0icMKywCXCOjMTk4YFWbRQ9zq9lhqhA/EjQnQB1/9lpbUahUXS3a7yhNGExFSMrJVD3Vv/Oijfa4KEMdmb7MBP/64V7gs+NmP0b50oWDqaT5u9UfKU7gOrB/UUgcrMO6amaPVShHspfn79EA1NJDInqJxzts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DiT9NoRt; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2efe25558ddso6702491a91.2;
-        Tue, 04 Feb 2025 00:29:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738657783; x=1739262583; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8/rXpZZJDHG/iORGqfX0hjTAkoUOQszW7vZ0F9giU4M=;
-        b=DiT9NoRt60TNAAmfpjYk7s21YIoCogrBQ4/J2Ng9vZwpX6t91FlQoOOBnY0KvYziDj
-         dBjfxwhtb5BGs6O5eOo7Ve8yyZwd2FiDfmQPKlbIbtgjFvqlgbGN3JPRW8hCdIlLTDL+
-         inIJDQ86j/Huz5GQkeoQDAwcpHsBgGE8wiZNNwp/noD/ePbL5TQ79MKswqeclWtkOezu
-         Dl07t1bSLPutkxxVcEXeBcpAfU8s7I2bd7gUN/cGnQ5wVXLgYSsooL5JvIWMl7Jn6Mtw
-         nCxftWaepUEDMbaLHmGXUJr7eFkxV8ExgJ+IrEFp/XSJU6c6MjYhaj6Z1aq+LIg1CSw2
-         Lo5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738657783; x=1739262583;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8/rXpZZJDHG/iORGqfX0hjTAkoUOQszW7vZ0F9giU4M=;
-        b=f19XxGdU8skAqO0cV15nZzIsQY4nX8VQrxO21e7gVQFFNxbySB4GL5ANoARX6JWl4q
-         UDfNhsTErPjoV622JMYVP+zafeaFGn4aOc1mFPPuxlvwChV8JvTHpN1hwvFFAAc5cmS+
-         ovC3TneS5SzAsBoX27UXDo9vrIIEKBxRixBSqN/VPCTuJ265wQ+JU6uE0oW2vp774oWq
-         lIgKtAS/XHnUsjtzX7YvtFRzkccNnCxtEf5anrQBtNUVpEwUam6y8y9qfEbJsUMR6e9Z
-         FCXtSi04BWFdxFyF/uUJKLz0t2FfsCVqhD9uLRB5pNuqjudvhjUfIXZcFdnjQPYUFFvl
-         UY1g==
-X-Forwarded-Encrypted: i=1; AJvYcCXo61JcqT0pQV+/U3amwC8k+GodQ8ZxvZ9iwZnMeLX4zCxctUhkpF9bT7CaQEr+M43DL/E=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyEX6ZAVIYrlMZGxLciR8/ltMkOHyPymNhZUibh1tL+cI4jlNc7
-	L9L/WCyIr1mL7nKwynrhuwf0IL3lzLkYA0U7XWRrn6Jbe/RjdpOMBpVtX26JLXvfIw==
-X-Gm-Gg: ASbGncuPL3O9AnFoqjImfhik8BhmvsUtKS4CtUReTX9iLUPzEUj5zajwM2kD/MFKmlQ
-	ca8vPJr/mC2l2eiesfxoU2X78Olj6XMFTQfWATVZULY8jbKeGXKITyu9pu3hhS4/USTuXFMqCNr
-	1ob3nuhrfXxiVNdgBfxZ2wKpsWgrBZ3z4C94BicxkRuBuBsOqE9sySUqZI+UybB8M+iWlsi2lxb
-	9bQ/b9grDmUWYyBkney/bFXUuCBsek4+uVNVw5uZA5DQfDzec6lRfgjRJJwU3m9yZw3VGkp6Htk
-	NiiiSxErnCSs
-X-Google-Smtp-Source: AGHT+IE7qoevV/2Nueo/bysoZM0pFqAonau//1OeJSs0qmWUP13x2qewRIwThpkyE4IkwtRkidfEYw==
-X-Received: by 2002:a17:90b:2585:b0:2f2:ab09:c256 with SMTP id 98e67ed59e1d1-2f83ac8bb24mr40935768a91.33.1738657782854;
-        Tue, 04 Feb 2025 00:29:42 -0800 (PST)
-Received: from fedora.. ([183.156.115.252])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21de32ea80csm90826685ad.140.2025.02.04.00.29.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Feb 2025 00:29:42 -0800 (PST)
-From: Hou Tao <hotforest@gmail.com>
-To: bpf@vger.kernel.org,
-	rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	houtao1@huawei.com,
-	hotforest@gmail.com
-Subject: [PATCH bpf-next 3/3] selftests/bpf: Add test case for atomic htab update
-Date: Tue,  4 Feb 2025 16:28:48 +0800
-Message-ID: <20250204082848.13471-4-hotforest@gmail.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250204082848.13471-1-hotforest@gmail.com>
-References: <20250204082848.13471-1-hotforest@gmail.com>
+	s=arc-20240116; t=1738660087; c=relaxed/simple;
+	bh=3N8rmBt6w6IC+UE2Gj0l+DTcCjz26v0tcDsJCToYJX8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o/g+qxg2foLD/f7RLh5YMgbNgVInrzhiOOpcZ4nJARTzHBeLbQP6bGY+OrktIqcSKJx/ZM7sXVTHJBnYrDE5Nefm69mO98RCiWrpEH7q2UO7uMtHBwqwX31RyXsEDCSBz2sbARmZxzNamTEGqLeoM/zmxjBbOad1wcDHBHU3STk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=zNCoxmRP; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=MKluuBC0; arc=none smtp.client-ip=202.12.124.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 353FF25401A9;
+	Tue,  4 Feb 2025 04:08:04 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-12.internal (MEProxy); Tue, 04 Feb 2025 04:08:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1738660084; x=1738746484; bh=tYEY8qzXf6
+	wnHopVhFrMUfqLhkQ0l8tLQeb8HZj4fvw=; b=zNCoxmRPHA2QnazFXQ6xlT/GhU
+	MT9fQx2QSPuElIewg/obAPl8nY4wLYjM4tXsx3oynLuBZWTbKiSEaNu7PlzdpZRI
+	2kfJJtcqWvXSe7X8mz8KW8AwkJJwLTM5EdUjNukWgC2BUQta7dnfEzCBtwJvwjk4
+	dOJzQ7W9+m7L23RpL6eWPn0LQd+zB+brA8HL7pOWPNRSahCBN5kJ3dSsCFNZBQZA
+	p/ItPNdOLTSykEtaKHlIkcJxKADcooQt22g+WC9Oo5g1dTM6Sk/xSk3DeVbb2NMd
+	WXK/QQ/XxpjPhURfDS0Z27NEDOZt1QgoWaaW6xgdTDY0HVZFQS+VuVF9+VmQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1738660084; x=1738746484; bh=tYEY8qzXf6wnHopVhFrMUfqLhkQ0l8tLQeb
+	8HZj4fvw=; b=MKluuBC0wyYgxhwvW+gcmASnG/kEfm8LKGgFX2GfMgDHMCLmL/w
+	3vgWyxXO8fitbkR1v1oGXb5eXdJGhy2949K/HpgJxWNZS8m/oR4VJerpG4KtL/5z
+	pDiCNenHFaRdGgHj7fin36Q8S3aUnDz0pIBEKCUJSwcdNGTpJIZ8mWVCFEcpQHhT
+	OKX6ifVOrWnRjflqgAvmDUbdSkobE+eVTLaNAmSRl7nisCOF99WBUu1ie6xfF7Ml
+	EkXGWhr0hIUN7T/UTEA4C939VqPaCv5cCp63h49BxwTijr+td0cKvkMQO1Mld3Il
+	hnBgXlvHwVj6WKJh/pTvo46qZmrdDJ0/rIg==
+X-ME-Sender: <xms:89ihZ3N4_l6lIbTb0n62hkbhrLQTgQQGCiNdr1_bUjdqk-VU_6UQ3w>
+    <xme:89ihZx-3ih5ae-l9ZQ3JhiK79gfmKIVwaLwAC0ONIolPR1BM4atlk0PVH0UzOuISZ
+    IbKFwpoErLIdkgbvA>
+X-ME-Received: <xmr:89ihZ2Qqikvk_ojNh0Dc-bNn1h6JzIO_f7KrEv5di4RGvRGfL2qa_RuqaCFUTjoTSi2y07xKP9Sdyc0t-wK7VKi-u4Ex2BvY9AYfs6dfNWHDtA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvtdduvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenfghrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffk
+    fhggtggujgesthdtsfdttddtvdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihuse
+    gugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgleetueetkeegieekheethfff
+    leetkeeiiefgueffhedvveeiteehkeffgeduveenucffohhmrghinhepkhgvrhhnvghlrd
+    horhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
+    ugiguhesugiguhhuuhdrgiihiidpnhgspghrtghpthhtohepudehpdhmohguvgepshhmth
+    hpohhuthdprhgtphhtthhopehrshifohhrkhhtvggthhesohhuthhlohhokhdrtghomhdp
+    rhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghsth
+    eskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlsehiohhgvggrrhgsohig
+    rdhnvghtpdhrtghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghvpdhrtg
+    hpthhtohepvgguugihiiekjeesghhmrghilhdrtghomhdprhgtphhtthhopehsohhnghes
+    khgvrhhnvghlrdhorhhgpdhrtghpthhtohephihonhhghhhonhhgrdhsohhngheslhhinh
+    hugidruggvvhdprhgtphhtthhopehjohhhnhdrfhgrshhtrggsvghnugesghhmrghilhdr
+    tghomh
+X-ME-Proxy: <xmx:89ihZ7tQ_Vw39PbGyPnjluY_t7Y4sR-9Grgs6v0e0bIABZ_QIlqy9A>
+    <xmx:89ihZ_clCwFSrOYzRFRBerHXH7Ghv6Yc9R87aKaHhq4POLXTJmNc2w>
+    <xmx:89ihZ32wdShWkQ9-zeTPUpzaUy42o9Nxlv13eNNP7Heqm5BCorSHBw>
+    <xmx:89ihZ78EhoIazPHox1T6sfZD37mb2ZmDBAEHEvSq8mTCy-LbRkSPCg>
+    <xmx:9NihZ3_7k2pFTAan3rbPyKVJozFfY19x-rm1CKNBVGpH4bSQN1TDvscC>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 4 Feb 2025 04:08:01 -0500 (EST)
+Date: Tue, 4 Feb 2025 02:07:59 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: rsworktech@outlook.com
+Cc: Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next] bpf: Add comment about helper freeze
+Message-ID: <vu3n3wgsuclwv66mnjdkvs4bm76fbyalvgytwn7mpgdyw4u7qs@k4rrcqc7c47b>
+References: <20250204-bpf-helper-freeze-v1-1-46efd9ff20dc@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250204-bpf-helper-freeze-v1-1-46efd9ff20dc@outlook.com>
 
-Add a test case to verify the atomic update of existing element in hash
-map. The test proceeds in three steps:
-1) fill the map with keys in the range [0, 63]
-2) create 8 threads to lookup these keys concurrently
-3) create 2 threads to overwrite these keys concurrently
+On Tue, Feb 04, 2025 at 10:00:21AM +0800, Levi Zim via B4 Relay wrote:
+> From: Levi Zim <rsworktech@outlook.com>
+> 
+> Put a comment after the bpf helper list in uapi bpf.h to prevent people
+> from trying to add new helpers there and direct them to kfuncs.
+> 
+> Link: https://lore.kernel.org/bpf/CAEf4BzZvQF+QQ=oip4vdz5A=9bd+OmN-CXk5YARYieaipK9s+A@mail.gmail.com/
+> Link: https://lore.kernel.org/bpf/20221231004213.h5fx3loccbs5hyzu@macbook-pro-6.dhcp.thefacebook.com/
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Levi Zim <rsworktech@outlook.com>
+> ---
+> Put a comment after the bpf helper list in uapi bpf.h to prevent people
+> from trying to add new helpers there and direct them to kfuncs.
+> ---
+>  include/uapi/linux/bpf.h | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
 
-Without atomic update support, the lookup operation may return -ENOENT
-error and the test will fail. After the atomic-update change, the lookup
-operation will always return 0 and the test will succeed.
-
-Signed-off-by: Hou Tao <hotforest@gmail.com>
----
- .../selftests/bpf/prog_tests/htab_lookup.c    | 130 ++++++++++++++++++
- .../testing/selftests/bpf/progs/htab_lookup.c |  13 ++
- 2 files changed, 143 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_lookup.c
- create mode 100644 tools/testing/selftests/bpf/progs/htab_lookup.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/htab_lookup.c b/tools/testing/selftests/bpf/prog_tests/htab_lookup.c
-new file mode 100644
-index 000000000000..ef9036827439
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/htab_lookup.c
-@@ -0,0 +1,130 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+#include <stdbool.h>
-+#include <test_progs.h>
-+#include "htab_lookup.skel.h"
-+
-+struct htab_op_ctx {
-+	int fd;
-+	int loop;
-+	unsigned int entries;
-+	bool stop;
-+};
-+
-+static void *htab_lookup_fn(void *arg)
-+{
-+	struct htab_op_ctx *ctx = arg;
-+	int i = 0;
-+
-+	while (i++ < ctx->loop && !ctx->stop) {
-+		unsigned int j;
-+
-+		for (j = 0; j < ctx->entries; j++) {
-+			unsigned long key = j, value;
-+			int err;
-+
-+			err = bpf_map_lookup_elem(ctx->fd, &key, &value);
-+			if (err) {
-+				ctx->stop = true;
-+				return (void *)(long)err;
-+			}
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
-+static void *htab_update_fn(void *arg)
-+{
-+	struct htab_op_ctx *ctx = arg;
-+	int i = 0;
-+
-+	while (i++ < ctx->loop && !ctx->stop) {
-+		unsigned int j;
-+
-+		for (j = 0; j < ctx->entries; j++) {
-+			unsigned long key = j, value = j;
-+			int err;
-+
-+			err = bpf_map_update_elem(ctx->fd, &key, &value, BPF_EXIST);
-+			if (err) {
-+				if (err == -ENOMEM)
-+					continue;
-+				ctx->stop = true;
-+				return (void *)(long)err;
-+			}
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
-+static int setup_htab(int fd, unsigned int entries)
-+{
-+	unsigned int i;
-+
-+	for (i = 0; i < entries; i++) {
-+		unsigned long key = i, value = i;
-+		int err;
-+
-+		err = bpf_map_update_elem(fd, &key, &value, 0);
-+		if (!ASSERT_OK(err, "init update"))
-+			return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+void test_htab_lookup(void)
-+{
-+	unsigned int i, wr_nr = 2, rd_nr = 8;
-+	pthread_t tids[wr_nr + rd_nr];
-+	struct htab_lookup *skel;
-+	struct htab_op_ctx ctx;
-+	int err;
-+
-+	skel = htab_lookup__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "htab_lookup__open_and_load"))
-+		return;
-+
-+	ctx.fd = bpf_map__fd(skel->maps.htab);
-+	ctx.loop = 50;
-+	ctx.stop = false;
-+	ctx.entries = 64;
-+
-+	err = setup_htab(ctx.fd, ctx.entries);
-+	if (err)
-+		goto destroy;
-+
-+	memset(tids, 0, sizeof(tids));
-+	for (i = 0; i < wr_nr; i++) {
-+		err = pthread_create(&tids[i], NULL, htab_update_fn, &ctx);
-+		if (!ASSERT_OK(err, "pthread_create")) {
-+			ctx.stop = true;
-+			goto reap;
-+		}
-+	}
-+	for (i = 0; i < rd_nr; i++) {
-+		err = pthread_create(&tids[i + wr_nr], NULL, htab_lookup_fn, &ctx);
-+		if (!ASSERT_OK(err, "pthread_create")) {
-+			ctx.stop = true;
-+			goto reap;
-+		}
-+	}
-+
-+reap:
-+	for (i = 0; i < wr_nr + rd_nr; i++) {
-+		void *ret = NULL;
-+		char desc[32];
-+
-+		if (!tids[i])
-+			continue;
-+
-+		snprintf(desc, sizeof(desc), "thread %u", i + 1);
-+		err = pthread_join(tids[i], &ret);
-+		ASSERT_OK(err, desc);
-+		ASSERT_EQ(ret, NULL, desc);
-+	}
-+destroy:
-+	htab_lookup__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/htab_lookup.c b/tools/testing/selftests/bpf/progs/htab_lookup.c
-new file mode 100644
-index 000000000000..baa30fa5b84f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/htab_lookup.c
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 64);
-+	__type(key, unsigned long);
-+	__type(value, unsigned long);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+} htab SEC(".maps");
--- 
-2.48.1
-
+Acked-by: Daniel Xu <dxu@dxuuu.xyz>
 
