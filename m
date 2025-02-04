@@ -1,395 +1,198 @@
-Return-Path: <bpf+bounces-50335-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50336-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66AB1A26861
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 01:15:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 50BA1A26869
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 01:19:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E62B23A47D2
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 00:15:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 870C13A572C
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 00:19:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B41FF5228;
-	Tue,  4 Feb 2025 00:15:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAAC34A29;
+	Tue,  4 Feb 2025 00:19:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pQvJXSQK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X27qFVUg"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ECE710E4;
-	Tue,  4 Feb 2025 00:15:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5B307494;
+	Tue,  4 Feb 2025 00:19:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738628127; cv=none; b=Ne05WCNNxJlT8B8O9mIqQQaigNwlo2mTL6mOmUwRPzgI5blhQVk8IF3k31Zde2ZKo9GO8qzQ3cRxRxEUry/YOuHzILTP18sqTJMUWtLTj7e9QCv2GTYARRfZqqvxu2E4fh3YMxXFAabtcTh2bmsjKeDZlMAvDSHetY5vw2W87+o=
+	t=1738628355; cv=none; b=tBR+N7frqNLuSLtLcPeM5W2/pvvssvfN9afELiXlvuAple5aRgfkv6bc0eAZkCFgzgYmAQISDvZBxLYJrPviwF4iQgZPt0gZiy7+pnc0LkKGecFdYoh+63w3hyAt86oyThb8tNKn70O+2kMNENHpG9yWyZyDCElxysJl90lkQzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738628127; c=relaxed/simple;
-	bh=HSBBPHSRySft93VMDFAlm5Nh2uxXqHIGgDGqpVBNikI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jEMf8BJ9FUFSF7c/ooCsOEfLIzUkdis3z8ODZgvFHxqb8DELuILOzElzjHAD5Mek1S+viCoTlXgMTRsae19HgkPIgm2mnub3JfmujivTIk9Xt3UdWp2QWwnwRyDlNNTtBeABH7JpP/x4epiY1kvxPs7h8sEWWZ3zW/OO4O9T39I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pQvJXSQK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD784C4CEE0;
-	Tue,  4 Feb 2025 00:15:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738628126;
-	bh=HSBBPHSRySft93VMDFAlm5Nh2uxXqHIGgDGqpVBNikI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pQvJXSQKkHtaOqErh8m/Mk12HBTBJQL3vFiuySM54vIoeUdg+OURN9nGIGFtsyk8v
-	 4FOmAxm3fwtVecQcgF/AvuiBXDIbTlCQ1rd8miY5/ma9hEy7sHT2KdJemj+DM5YtwS
-	 M1SB+B/hDLu92YY/XxZAsB45rHhiEapv6j/3Qy5Bu+l/mVzU6B3BmpNEKm9l7CRluI
-	 QykUEgzjTWOrjKd0H3WzEWv4c6EsKCJsEQe/VLvctriRckXbMK3IjIHQAb0mA/uTJP
-	 SWQVxr2QOXj+JeKE91xqup/jzRdbHwtCBO2SWaY1j92HPbk11oh8oEdi6q3JSBDKlt
-	 9IcRON4SP2CQw==
-Date: Mon, 3 Feb 2025 16:15:24 -0800
-From: Namhyung Kim <namhyung@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Atish Kumar Patra <atishp@rivosinc.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	James Clark <james.clark@linaro.org>, Ze Gao <zegao2021@gmail.com>,
-	Weilin Wang <weilin.wang@intel.com>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Jean-Philippe Romain <jean-philippe.romain@foss.st.com>,
-	Junhao He <hejunhao3@huawei.com>, linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	Aditya Bodkhe <Aditya.Bodkhe1@ibm.com>, Leo Yan <leo.yan@arm.com>,
-	Beeman Strong <beeman@rivosinc.com>,
-	Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH v5 4/4] perf parse-events: Reapply "Prefer sysfs/JSON
- hardware events over legacy"
-Message-ID: <Z6FcHJFYGc7HzSna@google.com>
-References: <CAP-5=fVYMK6tnKH0QU_RPUaogpsDmhmXn+=4P1uXg-moX2QMDw@mail.gmail.com>
- <Z4WNT_UX9eMD_txf@google.com>
- <CAP-5=fXxMmn31iep6tdvaUGzZccR+_D1L4RbjaNiRdEau2NZ9g@mail.gmail.com>
- <CAP-5=fXdq2oSgTnNJJydAnBdSg5WeaPy6zjaink5+bsyXLoPiw@mail.gmail.com>
- <Z4f3fDXemAMpBNMS@google.com>
- <CAP-5=fWS8AzSo=vxcCFUaYMMth7FNMPNbCXjYOGApQ0AitqA2Q@mail.gmail.com>
- <Z5qjwRG5jX9zAGtf@google.com>
- <CAHBxVyHL4CO1xGpzkNfvxk71gUYdVyrXZkqZHZ+ZV2VxeGFf8w@mail.gmail.com>
- <Z51RxQslsfSrW2ub@google.com>
- <CAP-5=fWzzWqNAgmrDHav63Z+HMnSP0RZJ3Q7PQpuzP7Tf_HP7g@mail.gmail.com>
+	s=arc-20240116; t=1738628355; c=relaxed/simple;
+	bh=56scHuL7V2Tr/CgoMTaRCAv5MZTVRhaW5ovJ82v7jEY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Bco8F74xpgKYlFWMukQERC32/RWKPWJCphZFfaPLlAqcebJ62WtrvrqgnS+E65FU2LXDze6zUvUYzs/mY3H5ydcafk2MXSkEsglWFKm7LaCzUY6ojG6AG7bE+eHLFi+zDGxGxu7ZnR4ev6ZU2YOz2rfCDdOKyURgO+jQgPgS8MM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X27qFVUg; arc=none smtp.client-ip=209.85.166.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-3a8160382d4so11772795ab.0;
+        Mon, 03 Feb 2025 16:19:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738628352; x=1739233152; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rniXA2nD8BRjTtQAs1lRtAmqvSNTwh4cAEiLG2TUYlE=;
+        b=X27qFVUgm0854WaecAo3lD9ccZKe4eTlx5BS805WUL/5rMOvogDwjUKLmpje+s8sF3
+         3qrC8eZ//W2fb+fPvKqRMsZJiJmz/OrViNvG5okL26GU6jYJDw4Qlben2avnH3VNi7rq
+         7ebuf8TInOTJZaiDwVvvw+P8guN9ReTyPH2gY5d10C4oGN1+Grs/nORa4rAeSzJ2N0xe
+         uCOrgpxA8GRLdWAGXmFIezvCxMnwDL4/S+sKXRydRlDpuPo1ZodFIFuSqCpMTgJVpyev
+         mFoGahmdiUPl/HciWUl7C9su62BuUpJFfstdGpBgK5sdyE72dvXe7/g/zv55XMENKIGl
+         v08w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738628352; x=1739233152;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rniXA2nD8BRjTtQAs1lRtAmqvSNTwh4cAEiLG2TUYlE=;
+        b=AjgwB0FpEB9qOfBctb3igYWSU3bjt54ltJEE5W4siy+tsKZBFJJlGZd/RwijPU7//Q
+         rixJ5OmWsv5VIqtWQUmygUsaUYXEgfn9W4c2P5mH7i6BxnYsizscDlKD5Cc9MFz00U1l
+         yTFtQVtvkWcdd1o0ag7m9Iq5ou0/KJw3zeMXbMSdfPPGOTU+GBY5V5qfp5sHMIfpmVNw
+         NeC9bk8Jf3/BIaYORCRN/YvNj/bEkcNbOs2jD7nLyUrP7gv1btNF4ULuGbu7T+/4A0yl
+         UK843bNw0/X9T028mPqGY4re5nT/8GOeT1tlK5t89gI0rV6zoImN33jMpAMv8fxYhTYf
+         Hogw==
+X-Forwarded-Encrypted: i=1; AJvYcCU0d0WFr2UPPRNwfYEuAbaPa2XEIDSiiw5R9dY3cxqSU5ugZWe8PotOmLQegm0ZLdxequDv7TTe@vger.kernel.org, AJvYcCXX5YqGj9RbvlgI/YdQk7NGo5ARgABRXVUU/9xdD0Mdb3GhVevxm6eTLXgEWHn+1bC2KvU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yztyu83qd/zsJalKYM5UnIkbTers3RfKhx2teEdJDaJff37EMLF
+	OEQ4nAZiqvmlj4NdgdM9EIRS8DahbB8BJwFKAo440adDJ8QMbCkjCfR7cATwZaBziDh3MB7nH+x
+	B3AHiF2ww1xLg6cZP1XjJCbMQGyI=
+X-Gm-Gg: ASbGncvqy+pL3XDzMEHNvZ/9HDzI9woOyROy8scRBUxqTi9HnNW9Z30Ba+hQPyDOG/0
+	D9L0eXBedvjDxEhCiBwd18RVgChnlGEiwvsfDKposDLpNeuo7H01fcCF2l91JKCXErLeOxUnm
+X-Google-Smtp-Source: AGHT+IFnqU9zhGK0ivdkfRMSATeojf7CM4y+2MI822oCnvQEQb8+IXhD5S0Owq3GD9rWYj4TETKOJ1dLgTJWITogd0k=
+X-Received: by 2002:a92:cda7:0:b0:3cf:b365:dcf0 with SMTP id
+ e9e14a558f8ab-3cffe43240cmr191685345ab.19.1738628352591; Mon, 03 Feb 2025
+ 16:19:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fWzzWqNAgmrDHav63Z+HMnSP0RZJ3Q7PQpuzP7Tf_HP7g@mail.gmail.com>
+References: <20250128084620.57547-1-kerneljasonxing@gmail.com>
+ <20250128084620.57547-6-kerneljasonxing@gmail.com> <3b3e0cdf-9c2b-4423-b638-0a79b238eb93@linux.dev>
+In-Reply-To: <3b3e0cdf-9c2b-4423-b638-0a79b238eb93@linux.dev>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Tue, 4 Feb 2025 08:18:36 +0800
+X-Gm-Features: AWEUYZlgN0Wqak8xZpH_B6NW1krO6jxlSKLjEXa092plsNAO4QSvUix8B5RfUQE
+Message-ID: <CAL+tcoALoyfc7wL7odJ9uzsuD0D6BJ4qFpNJgxsAOHE21i_LAA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 05/13] net-timestamp: prepare for isolating
+ two modes of SO_TIMESTAMPING
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com, 
+	willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, horms@kernel.org, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Feb 01, 2025 at 12:45:04AM -0800, Ian Rogers wrote:
-> On Fri, Jan 31, 2025 at 2:42 PM Namhyung Kim <namhyung@kernel.org> wrote:
+On Tue, Feb 4, 2025 at 7:14=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.d=
+ev> wrote:
+>
+> On 1/28/25 12:46 AM, Jason Xing wrote:
+> > No functional changes here. I add skb_enable_app_tstamp() to test
+> > if the orig_skb matches the usage of application SO_TIMESTAMPING
+> > and skb_sw_tstamp_tx() to distinguish the software and hardware
+>
+> There is no skb_sw_tstamp_tx() in the code. An outdated commit message?
+
+Thanks. I'll update it and double check before reposting.
+
+>
+> > timestamp when tsflag is SCM_TSTAMP_SND.
 > >
-> > On Wed, Jan 29, 2025 at 10:12:14PM -0800, Atish Kumar Patra wrote:
-> > > On Wed, Jan 29, 2025 at 1:55 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> > > >
-> > > > On Wed, Jan 15, 2025 at 01:20:32PM -0800, Ian Rogers wrote:
-> > > > > On Wed, Jan 15, 2025 at 9:59 AM Namhyung Kim <namhyung@kernel.org> wrote:
-> > > > > >
-> > > > > > > On Mon, Jan 13, 2025 at 2:51 PM Ian Rogers <irogers@google.com> wrote:
-> > > > > > > > There was an explicit, and reviewed by Jiri and Arnaldo, intent with
-> > > > > > > > the hybrid work that using a legacy event with a hybrid PMU, even
-> > > > > > > > though the PMU doesn't advertise through json or sysfs the legacy
-> > > > > > > > event, the perf tool supports it.
-> > > > > >
-> > > > > > I thought legacy events on hybrid were converted to PMU events.
-> > > > >
-> > > > > No, when BIG.little was created nothing changed in perf events but
-> > > > > when Intel did hybrid they wanted to make the hybrid CPUs (atom and
-> > > > > performance) appear as if they were one type. The PMU event encodings
-> > > > > vary a lot for this on Intel, ARM has standards for the encoding.
-> > > > > Intel extended the legacy format to take a PMU type id:
-> > > > > https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/include/uapi/linux/perf_event.h?h=perf-tools-next#n41
-> > > > > "EEEEEEEE: PMU type ID"
-> > > > > that is in the top 32-bits of the config.
-> > > >
-> > > > Oh right, I forgot the extended type thing.  Then we can keep the legacy
-> > > > encoding with it on hybrid systems when users give well-known names (w/o
-> > > > PMU) for legacy event.
-> > > >
-> > > > >
-> > > > > > > >
-> > > > > > > > Making it so that events without PMUs are only legacy events just
-> > > > > > > > doesn't work. There are far too many existing uses of non-legacy
-> > > > > > > > events without PMU, the metrics contain 100s of examples.
-> > > > > >
-> > > > > > That's unfortunate.  It'd be nice if metrics were written with PMU
-> > > > > > names.
-> > > > >
-> > > > > But then we'd end up with things like on Intel:
-> > > > > UNC_CHA_TOR_OCCUPANCY.IA_MISS_DRD
-> > > > > becoming:
-> > > > > uncore_cha/UNC_CHA_TOR_OCCUPANCY.IA_MISS_DRD/
-> > > > > or just:
-> > > > > cha/UNC_CHA_TOR_OCCUPANCY.IA_MISS_DRD/
-> > > > > As a user the first works for me and doesn't have any ambiguity over
-> > > > > PMUs as the event name already encodes the PMU. AMD similarly place
-> > > > > the part of a pipeline into event names. Were we to break everybody by
-> > > > > requiring the PMU we'd also need to explain which PMU to use. Sites
-> > > > > with event lists (like https://perfmon-events.intel.com/) don't
-> > > > > explain the PMU and it'd be messy as on Intel you have a CHA PMU for
-> > > > > server chips but a CBOX on client chips, etc.
-> > > >
-> > > > While I prefer having PMU names in the JSON events/metrics, it may not
-> > > > be pratical to change them all.  Probably we can allow them without PMU
-> > > > and hope that they have unique prefixes.
-> > > >
-> > > > >
-> > > > > > I have a question.  What if an event name in a metric matches to
-> > > > > > multiple unrelated PMUs?
-> > > > >
-> > > > > The metric may break or we'd aggregate the unrelated counts together.
-> > > >
-> > > > Ok, then they should use unique names.
-> > > >
-> > > >
-> > > > > Take a metric like IPC as "instructions/cycles", that metric should
-> > > > > work on a hybrid system as they have instructions and cycles. If you
-> > > > > used an event for instructions like inst_retired.any then maybe the
-> > > > > metric will fail on one kind of core that didn't have that event. Now
-> > > >
-> > > > The metrics is for specific CPU model then the vendor should be
-> > > > responsible to provide accurate metrics using approapriate PMU/events
-> > > > IMHO.
-> > > >
-> > > >
-> > > > > if we have accelerators advertising instructions and cycles events, we
-> > > > > should be able to compute the metric for the accelerator. What could
-> > > > > happen today is that the accelerator will have a cpumask of a single
-> > > > > CPU, we could aggregate the accelerator counter into the CPU event
-> > > > > with the same CPU as the cpumask, we'd end up with a weird quasi CPU
-> > > > > and accelerator IPC metric for that CPU. What should happen is that we
-> > > > > get an IPC for the accelerator and IPC for each hybrid core
-> > > > > independently, but the way we handle evsels, CPUs, PMUs is not really
-> > > > > set up for that. Hopefully getting a set of PMUs into the evsel will
-> > > > > clear that up. Assuming all of that is cleared up, is it wrong if the
-> > > > > IPC metric is computed for the accelerator if it was originally
-> > > > > written as a CPU metric? Not really. Could there be metrics where that
-> > > > > is the case?
-> > > >
-> > > > Yes, I think there should be separate metrics for the accelerators.
-> > > >
-> > > >
-> > > > > Probably, and specifying PMUs in the event names would be
-> > > > > a fix. There have also been proposals that we restrict the PMUs for
-> > > > > certain metrics. As event names are currently so distinct it isn't a
-> > > > > problem we've faced yet and it is not clear it is a problem other than
-> > > > > highlighting tech debt in areas of the tool like aggregation.
-> > > > >
-> > > > > > > >
-> > > > > > > > Prior to switching json/sysfs to being the priority when a PMU is
-> > > > > > > > specified, it was the case that all encodings were the same, with or
-> > > > > > > > without a PMU.
-> > > > > > > >
-> > > > > > > > I don't think there is anything natural about assuming things about
-> > > > > > > > event names. Take cycles, cpu-cycles and cpu_cycles:
-> > > > > > > >  - cycles on x86 is only encoded via a legacy event;
-> > > > > > > >  - cpu-cycles on Intel exists as a sysfs event, but cpu-cycles is also
-> > > > > > > > a legacy event name;
-> > > > > > > >  - cpu_cycles exists as a sysfs event on ARM but doesn't have a
-> > > > > > > > corresponding legacy event name.
-> > > > > >
-> > > > > > I think the behavior should be:
-> > > > > >
-> > > > > >   cycles -> PERF_COUNT_HW_CPU_CYCLES
-> > > > > >   cpu-cycles -> PERF_COUNT_HW_CPU_CYCLES
-> > > > > >   cpu_cycles -> no legacy -> sysfs or json
-> > > > > >   cpu/cycles/ -> sysfs or json
-> > > > > >   cpu/cpu-cycles/ -> sysfs or json
-> > > > >
-> > > > > So I disagree as if you add a PMU to an event name the encoding
-> > > > > shouldn't change:
-> > > > > 1) This historically was perf's behavior.
-> > > >
-> > > > Well.. I'm not sure about the history.  I believe the logic I said above
-> > > > is the historic and (I think) right behavior.
-> > > >
-> > > > > 2) Different event encodings can have different behaviors (broken in
-> > > > > some notable cases).
-> > > >
-> > > > Yep, let's make it clear.
-> > > >
-> > > > > 3) Intuitively what wildcarding does is try to open "*/event/" where *
-> > > > > is every possible PMU name. Having different event encodings is
-> > > > > breaking that intuition it could also break situations where you try
-> > > > > to assert equivalence based on type/config.
-> > > >
-> > > > While I don't like the wildcard matching, I think it doesn't matter as
-> > > > long as we keep the above behavior.  If it can find a legacy name, then
-> > > > go with it, done.  If not, try all PMUs as if it's given with PMU name
-> > > > in the event.
-> > > >
-> > > > > 4) The legacy encodings were (are?) broken on ARM Apple M? CPUs,
-> > > > > that's why the priority was changed.
-> > > >
-> > > > I guess that why they use cpu_cycles.
-> > > >
-> > > > > 5) RISC-V would like the tool tackle the legacy to config mapping
-> > > > > challenge, rather than the PMU driver, given the potential diversity
-> > > > > of hardware implementations.
-> > > >
-> > > > I hope they can find a better solution. :)
-> > > >
-> > >
-> > > Sorry for reposing. Gmail converted it to html for some reason.
-> > >
-> > > I have posted the latest support here.
-> > > https://lore.kernel.org/kvm/20250127-counter_delegation-v3-12-64894d7e16d5@rivosinc.com/T/
-> > >
-> > > As of now, we have adopted a hybrid approach where a vendor can decide
-> > > whether to encode the legacy events
-> > > in the json or in the driver (if this series is merged). In absence of
-> > > that, every vendor has to define it in the driver.
-> > > We will deal with the fall out of the exploding driver when the
-> > > situation arrives.
+> > Also, I deliberately distinguish the the software and hardware
+> > SCM_TSTAMP_SND timestamp by passing 'sw' parameter in order to
+> > avoid such a case where hardware may go wrong and pass a NULL
+> > hwstamps, which is even though unlikely to happen. If it really
+> > happens, bpf prog will finally consider it as a software timestamp.
+> > It will be hardly recognized. Let's make the timestamping part
+> > more robust.
 > >
-> > I don't know how hard it'd be cause I'm not familiar with RISC-V.  But
-> > basically you only need to maintain 9 legacy encodings (PERF_COUNT_HW_*)
-> > and a few dozen combinations of supported cache events (PERF_COUNT_HW_
-> > CACHE_*) for each vendor.  All others can go to json anyway.
+> > After this patch, I will soon add checks about bpf SO_TIMESTAMPING.
+>
+> This needs to be updated also. BPF does not use the SO_TIMESTAMPING socke=
+t option.
+>
+> > In this way, we can support two modes parallelly.
+>
+> s/parallely/in parallel/
+
+Will fix it.
+
+>
 > >
-> > I think this is what all other archs (including x86) do.
-> 
-> This is well known to the people involved.
-> 
-> While the PMU driver needs to encode or avoid these event names, they
-> become special "legacy" names inside the perf tool. Magically a name
-> like cpu_cycles will wildcard match (match on >1 PMU) whilst a name
-> like cpu-cycles won't (only matching on core PMUs). This is completely
-> confusing to users. It is even more confusing when you are saying the
-> tool should intentionally use two different encodings.
+> > Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
+> > ---
+> >   include/linux/skbuff.h | 13 +++++++------
+> >   net/core/dev.c         |  2 +-
+> >   net/core/skbuff.c      | 32 ++++++++++++++++++++++++++++++--
+> >   net/ipv4/tcp_input.c   |  3 ++-
+> >   4 files changed, 40 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> > index bb2b751d274a..dfc419281cc9 100644
+> > --- a/include/linux/skbuff.h
+> > +++ b/include/linux/skbuff.h
+> > @@ -39,6 +39,7 @@
+> >   #include <net/net_debug.h>
+> >   #include <net/dropreason-core.h>
+> >   #include <net/netmem.h>
+> > +#include <uapi/linux/errqueue.h>
+> >
+> >   /**
+> >    * DOC: skb checksums
+> > @@ -4533,18 +4534,18 @@ void skb_complete_tx_timestamp(struct sk_buff *=
+skb,
+> >
+> >   void __skb_tstamp_tx(struct sk_buff *orig_skb, const struct sk_buff *=
+ack_skb,
+> >                    struct skb_shared_hwtstamps *hwtstamps,
+> > -                  struct sock *sk, int tstype);
+> > +                  struct sock *sk, bool sw, int tstype);
+> >
+> >   /**
+> > - * skb_tstamp_tx - queue clone of skb with send time stamps
+> > + * skb_tstamp_tx - queue clone of skb with send HARDWARE timestamps
+> >    * @orig_skb:       the original outgoing packet
+> >    * @hwtstamps:      hardware time stamps, may be NULL if not availabl=
+e
+> >    *
+> >    * If the skb has a socket associated, then this function clones the
+> >    * skb (thus sharing the actual data and optional structures), stores
+> > - * the optional hardware time stamping information (if non NULL) or
+> > - * generates a software time stamp (otherwise), then queues the clone
+>
+> This line is removed. Does it mean no software timestamp now after this c=
+hange?
 
-The legacy encoding is a part of the ABI, and it's natural to use it.
-We historically used 'cycles' and 'cpu-cycles' as legacy events and it
-should remain as is IMHO.  I'm not sure why ARM uses 'cpu_cycles', but
-I guess they don't want to use the legacy encoding for some reason.
+Right, _software_ timestamp will enter skb_tx_timestamp() then call
+__skb_tstamp_tx() instead of this skb_tx_timestamp().
 
-> 
-> The perf event enum types are limited but the tool recognizes more
-> event names and then uses legacy encodings. I have yet to hear a
-> sensible list of what are legacy event names, is cpu-cycles in there
-> or just cycles? Why on earth would you want to keep synonyms like LLC
-> meaning L2 cache?
-
-I think it's clear what are legacy events: `perf list hw`.
-
-In fact, it doesn't matter for tools what LLC means.  I think it's the
-drivers' respensibility to match sensible events to legacy encoding.
-We only need to use the event as they prepared.
-
-> 
-> The intention with "pmu syntax" for events is that the PMU clarifies
-> the type in the perf_event_attr. Previously it was assumed that the
-> PMU type would be raw (4), and the x86 PMUs even use that as their
-> type number. Pretending these days we don't now have hybrid core PMUs,
-> 10s of uncore PMUs. Doing that work had to reinvent event parsing and
-> encoding.
-> 
-> If you look at the matching as it is today:
-> cpu_cycles -> tries to match on all PMUs
-> */cpu_cycles/ -> tries to match on all PMUs
-> arm*/cpu_cycles/ -> tries matches on all PMUs that have arm at the start
-> armv8_pmuv3/cpu_cycles/ -> matches only the armv8_pmuv3 PMU
-
-I didn't realize we can use '*'.  Then I guess we can disable the
-default wildcard match.  Users can add '*/.../' easily if they really
-want it, right?  I still think all of this problem comes from the
-wildcard behavior.
-
-Probably we need to do these for events without PMU name:
-1. use legacy event if it's the well-known name, if not
-2. check core PMU (cpu) for sysfs events, if not
-3. search all JSON events (not to break metrics)
-
-> 
-> I don't see why it isn't obvious that the behavior of no PMU and the
-> PMU being * is expected to be exactly the same - it really is today
-> and that is what the code does, please try it. There just isn't a
-> notion of not having a PMU because even for legacy events we have to
-> reinvent the PMUs to inject the correct extended type information
-> otherwise we'd profile just a fraction of the cores. We add PMUs when
-> we display events to make the events more readable. There isn't a
-> notion of these events being legacy and not, they are just assumed to
-> be the same, PMU or not.
-
-Yes, it's confusing.  So I think we'd better make cycles != */cycles/.
-
-> 
-> As I've explained to you, I plan to transition the metric code to use
-> event parsing and to union evlists rather than use strings and hash
-> tables. This is to fix tracepoints appearing incorrectly to always
-> have suffixes in the "metric-id" calculation. Recognizing modifiers
-> properly would end up reinventing event parsing, so let's just make
-> use of what we have and parse events early. It makes sense when
-> unioning evsels in an evlist to do it off of the perf_event_attr, this
-> will allow Intel's slots and topdown.slots to be correctly detected as
-> aliases in metrics, something of a pain in formulas today. Why would
-> the behavior of an event like cycles be different in non-hybrid
-> metrics (where PMUs generally aren't specified) and in hybrid metrics
-> (where PMUs generally are specified)? Events may not be recognized as
-> aliases because ones without a PMU in the metric will get a legacy
-> encoding. In your change:
-> https://lore.kernel.org/r/20221018020227.85905-16-namhyung@kernel.org
-> you assume all events with the same name are in fact the same event,
-> but that is making wild assumptions about what is placed in the evsel
-> name and I am trying to fix it in:
-> https://lore.kernel.org/lkml/20250201074320.746259-1-irogers@google.com/
-> You did similar with your proposal for hwmon events and I rejected it.
-> The fact that the name term in an event configuration clobbers an
-> evsel's name, its just the intent of the thing and the name was never
-> supposed to have some sacred legacy or whatever meaning.
-
-Thanks for the fix!
-
-> 
-> I still see no sense in:
-> perf stat -e cpu_cycles ...
-> meaning:
-> perf stat -e */cpu_cycles/ ...
-> and:
-> perf stat -e cpu-cycles ...
-> trying to mean close to:
-> perf stat -e cpu/cpu-cycles/ ...
-> why one is implicitly a * and the other a core PMU, I mean it is the
-> definition of confusing. And in the latter cpu-cycles case you want
-> those two events to be encoded differently.
-
-Yep, I agree it's confusing.  So my opinion is to use legacy encoding
-and no default wildcard. :)
-
-> 
-> All of this is overlooking that we have 1 event that is a problem on 1
-> PMU on 1 architecture. If it weren't for that event we'd already have
-> this patch landed and consistent event encodings. By not taking the
-> patch it hurts Apple M, RISC-V users and my own work.
-
-Well, I'm not talking about the specific event or an architecture.  What
-I'm focusing on is what the sensible behavior is.
-
-> 
-> Please can you explain why keeping the current encoding is good and if
-> we like legacy events so much, can we revert the changes to prioritize
-> sysfs/json when a PMU name is present. I'm afraid what you are
-> explaining makes no sense to me, breaks existing platforms (Apple M)
-> and is a blockage to future work. Saying everyone should rewrite
-> everything, that's not a workable solution - not least because in some
-> situations (old PMU drivers on Apple M) we lack a time machine.
-
-It's not clear to me if we have a problem on Apple M as of now.
-
-And I don't have a problem with 'pmu/event/' case.  I hope to find a way
-to support what I described without rewriting all metrics.
-
-Thanks,
-Namhyung
-
+>
+> > - * to the error queue of the socket.  Errors are silently ignored.
+> > + * the optional hardware time stamping information (if non NULL) then
+> > + * queues the clone to the error queue of the socket.  Errors are
+> > + * silently ignored.
+> >    */
+> >   void skb_tstamp_tx(struct sk_buff *orig_skb,
+> >                  struct skb_shared_hwtstamps *hwtstamps);
+> > @@ -4565,7 +4566,7 @@ static inline void skb_tx_timestamp(struct sk_buf=
+f *skb)
+> >   {
+> >       skb_clone_tx_timestamp(skb);
+> >       if (skb_shinfo(skb)->tx_flags & SKBTX_SW_TSTAMP)
+> > -             skb_tstamp_tx(skb, NULL);
+> > +             __skb_tstamp_tx(skb, NULL, NULL, skb->sk, true, SCM_TSTAM=
+P_SND);
+> >   }
+>
+>
 
