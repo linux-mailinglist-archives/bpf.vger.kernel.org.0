@@ -1,184 +1,184 @@
-Return-Path: <bpf+bounces-50355-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50356-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE012A269DA
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 02:30:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F0E0A269E0
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 02:34:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D22E7A29A6
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 01:29:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C086188622E
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 01:34:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F37286323;
-	Tue,  4 Feb 2025 01:30:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB46E8633F;
+	Tue,  4 Feb 2025 01:34:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DgSroyYF"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ke09ZpVk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AADA578F37
-	for <bpf@vger.kernel.org>; Tue,  4 Feb 2025 01:29:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B00AEC4;
+	Tue,  4 Feb 2025 01:34:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738632601; cv=none; b=Zn9lDccsmRF03z1chaOuH+S0eqm0dTRUeXAMaFWkchY8XacNfmZYEpiEWwYockHuYC0NjBBPifknVsTro8hRJvBwm/acKvOQ5Hu44W97wwrhSlogmOqj28MKznAv1gsPwvnuIJizTSMHH5WbQJ7Uk/7UTXRvacEW03zaWLHXyB4=
+	t=1738632877; cv=none; b=nCCJe7+NHlsME22FRBwZVWw2tmbh5nkjU5aPoQrKHBEuNpg6FcE6CamlOzE0JFUUzNDAW1f6tg298/8C9OR4VS1Kgc+ogd+6TuCGHT5ztSqv/UoI0EcbKcSkY88EuRDCURgz2JlbmNpT14YbTUXk9hBiAYPD7Tc58YbdlSIw4Tw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738632601; c=relaxed/simple;
-	bh=1CSFQ+ydcdLecFubxFtMF9SlqEvCyjwJEBoso/Dy1DY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rwe9V6qreNR3MLgv6ghuqGIRbrYY9q9+yXmDkoUSrXbE6f7ypL8q+clgNgtKhXSItNpYZaY9VPXd19t7nRzWCDmuKM8QsGzG+Bk5b+K8MKu/Z4Mt0YLb4R5I8iaxFc6GS1PrurRLOtYhgDnEtVOv4ewsm/S2Lgp+QkpRREh+bL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DgSroyYF; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-219f6ca9a81so24855ad.1
-        for <bpf@vger.kernel.org>; Mon, 03 Feb 2025 17:29:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1738632599; x=1739237399; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Cgs22GMIvih+rvIPBu4CVSrVFT+Ext8GsAWJW9535gA=;
-        b=DgSroyYFEtUdX23m7XMdf8MQ49UeKKYPWGmKmrQnx83rDVABBzykYDbyQuFqXoEZJG
-         VzCcr90s6aZfb5YUtLOIwTcNi/p/LlsiQZQiO95uMEACqLqc03t4t0OMj3SKCxqEFhVY
-         FgZxhy/HbyiQsS2ukYwGd4eALN4QCzSBMWeADI3t+HNfXMRBjBt0gKdpf9ccuzgHe2NJ
-         T+v99152ke7xaTvAYO96lOWZqLL8nW6Izo3Jlk8miz3IM5V9cpb4pLDZARwEshQloDgs
-         aY8yYS41VTukGh5b7FoINq9FvoKmj3N7SjOPdWVnoohmZRZcwDhLwbu10zfQBFBemBq1
-         zDfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738632599; x=1739237399;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Cgs22GMIvih+rvIPBu4CVSrVFT+Ext8GsAWJW9535gA=;
-        b=tuvDNcfeGLJKmrWmMy9DIQc1aRU5a/PzCUrZinpjjrYV+BJKQ0I6KF//8hAZiY8HyD
-         N2AedojXQcDRO4M2VkRTu4TZs73oiRky/va3RfsPb/aTFFRPQlNxzbJlU1rG6+E3dttW
-         DcTUd9IRQ015g+NfjV1W7bG0HmmEIYTJCsqnw0//wsFaoI5uQbdUN943QgHc09CEUv9u
-         wBAeOuh+DI9sI0PC7uOQUeUSBa7OjjACk/WdVafb/2l5Z/FZwfx2BkkSPfkcnLAMPZLH
-         5EA1v1mZ0kQ+YyKaXZVS49WOeErZz7hZFoy7q9mu3XSRF9aNCU3H50dcsi/GidFvVcKL
-         PEHQ==
-X-Gm-Message-State: AOJu0Yx/iWF807FcYSur7j5uWP0UmuziQHmpPbjE6z6IhyksCc3NmeAb
-	rs1gid2jSJtFeyYfIzq3tYWVsv9ljUMW9WSvkgqbyoae+LzvGT2gZVfUitbp7A==
-X-Gm-Gg: ASbGncuZB5J6gbhBHcXDNE3yRh424/fzggMUWvRu7MpRtyWU5kaMTP+YPKjECTKpEcZ
-	I4H5qH1xJRmpQ/2hlRsEU+Qd0yVVVQQOPppn7uGDZZRiiwnhDDUdDaGs/gtPIQr0uppVl90t9az
-	NzABQO1bZrpTG0dDZGJ03XKYcGmHJZoC+YlcJavYWmXnXxslhx8SsZE0KwKuFj/geJlr5KdgzSu
-	rDwsavbbiFomWVzkNfkvLlJpxifbS6OkRjdgNjHTNSs+tNU9ONgvZtUOxktjMr1tDQRVnYLi+Rc
-	L6y+2Zt06gy81EdQ7nWNLrzSc51x1lG4TgbLj1h8c8HWtOyz1EwVlTI=
-X-Google-Smtp-Source: AGHT+IHWUc7R5dlQvBOepVJMbNATdkSv/zYRIZ13MFf9lk+DkYICE0KTYJsxO5+u8NDbE883OqLPNA==
-X-Received: by 2002:a17:902:bc8a:b0:215:86bf:7e46 with SMTP id d9443c01a7336-21f03b3c62dmr686735ad.7.1738632598666;
-        Mon, 03 Feb 2025 17:29:58 -0800 (PST)
-Received: from google.com (147.141.16.34.bc.googleusercontent.com. [34.16.141.147])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21de331fabdsm83432105ad.221.2025.02.03.17.29.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Feb 2025 17:29:58 -0800 (PST)
-Date: Tue, 4 Feb 2025 01:29:53 +0000
-From: Peilin Ye <yepeilin@google.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org, bpf@ietf.org,
-	Xu Kuohai <xukuohai@huaweicloud.com>,
-	David Vernet <void@manifault.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Quentin Monnet <qmo@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>,
-	Neel Natu <neelnatu@google.com>,
-	Benjamin Segall <bsegall@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v1 7/8] selftests/bpf: Add selftests for
- load-acquire and store-release instructions
-Message-ID: <Z6FtkchYQjgjdv1x@google.com>
-References: <cover.1737763916.git.yepeilin@google.com>
- <3f2de7c6e5d2def7bdfb091347c1dacea0915974.1737763916.git.yepeilin@google.com>
- <131a817f7f2749e78e527a251ca7971588cf62f8.camel@gmail.com>
- <Z6Ffquq8IORjCqrI@google.com>
- <dead664fa11ac274db00b509931c533883dd4fdf.camel@gmail.com>
+	s=arc-20240116; t=1738632877; c=relaxed/simple;
+	bh=cTqZc7KMQfir834dyF7dto20NWb+pLw52qL9bC6G4tA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=i2YTTv1W+h2YCof0qVPoQ/fmEUKHGR0C/Uudw4xL8o+rq5GiSr+1f8UV3BQGKUCYhALaC57/kkTUJSHlHbB8W3lEkRkfEdq8bdEvbH8P+Rn2yKXENx1eG6apIG0UftTnx3pv+zeobTq7K5cA+0niFSmsbKoPUq/3772V/eg30aE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ke09ZpVk; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1738632876; x=1770168876;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=cTqZc7KMQfir834dyF7dto20NWb+pLw52qL9bC6G4tA=;
+  b=ke09ZpVkdy1U6DPZo1SL0b5+e/FMq/Am8+KXiU3vo5WDMx42rYdf4RZG
+   SUcsllelXGG1HCHKD3j1YD6LcHtPdmBb7LACDvNgtNyQikfK51GYh4+PB
+   3TLIaFOTc6m3g3mcyfkQmMscwggqYwugRGyxkdxACJSpPWZKxOiPmuW68
+   NOa9azDdaXNfw6nARYfUTj5fBx+H0HOEBOuroAyXFQBKUNqw6bmaaSZ/y
+   rpBxqOZj/Ys+LXaKRA/4PDKaWVlDbFklQbv8thbJvVojUe7ry+RiJ1/Kg
+   reZ17PUPr+1yHYP6gdklhu6NiDskD6c/rxYw66ZdRQadQchc1imYIVioM
+   A==;
+X-CSE-ConnectionGUID: Tag1N2hORI2+DE2n+rR1yg==
+X-CSE-MsgGUID: P87jdiaMTjKPjnq1PtVJGg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11335"; a="49795734"
+X-IronPort-AV: E=Sophos;i="6.13,257,1732608000"; 
+   d="scan'208";a="49795734"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2025 17:34:18 -0800
+X-CSE-ConnectionGUID: 4tSta66CTFq8So3/FmHf2g==
+X-CSE-MsgGUID: 907kdKGuTAyI/dVJbUURBQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
+   d="scan'208";a="115441422"
+Received: from choongyo-mobl.gar.corp.intel.com (HELO [10.247.124.71]) ([10.247.124.71])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2025 17:34:06 -0800
+Message-ID: <e0d34c88-dd8d-402d-bc67-6b9c4f8effaf@linux.intel.com>
+Date: Tue, 4 Feb 2025 09:34:03 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dead664fa11ac274db00b509931c533883dd4fdf.camel@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v7 3/5] net: stmmac: Add launch time support to
+ XDP ZC
+To: Song Yoong Siang <yoong.siang.song@intel.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Willem de Bruijn <willemb@google.com>,
+ Florian Bezdeka <florian.bezdeka@siemens.com>,
+ Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
+ Bjorn Topel <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Jonathan Lemon <jonathan.lemon@gmail.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Joe Damato <jdamato@fastly.com>,
+ Stanislav Fomichev <sdf@fomichev.me>, Xuan Zhuo
+ <xuanzhuo@linux.alibaba.com>, Mina Almasry <almasrymina@google.com>,
+ Daniel Jurgens <danielj@nvidia.com>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Shuah Khan <shuah@kernel.org>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <joabreu@synopsys.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ Faizal Rahim <faizal.abdul.rahim@linux.intel.com>,
+ Bouska Zdenek <zdenek.bouska@siemens.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
+ xdp-hints@xdp-project.net
+References: <20250204004907.789330-1-yoong.siang.song@intel.com>
+ <20250204004907.789330-4-yoong.siang.song@intel.com>
+Content-Language: en-US
+From: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+In-Reply-To: <20250204004907.789330-4-yoong.siang.song@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 03, 2025 at 04:52:52PM -0800, Eduard Zingerman wrote:
-> > > > --- a/tools/testing/selftests/bpf/progs/arena_atomics.c
-> > > > +++ b/tools/testing/selftests/bpf/progs/arena_atomics.c
-> > > [...]
-> > > 
-> > > > +SEC("raw_tp/sys_enter")
-> > > > +int load_acquire(const void *ctx)
-> > > > +{
-> > > > +	if (pid != (bpf_get_current_pid_tgid() >> 32))
-> > > > +		return 0;
-> > > 
-> > > Nit: This check is not needed, since bpf_prog_test_run_opts() is used
-> > >      to run the tests.
-> > 
-> > Could you explain a bit more why it's not needed?
-> > 
-> > I read commit 0f4feacc9155 ("selftests/bpf: Adding pid filtering for
-> > atomics test") which added those 'pid' checks to atomics/ tests.  The
-> > commit message [1] says the purpose was to "make atomics test able to
-> > run in parallel with other tests", which I couldn't understand.
-> > 
-> > How using bpf_prog_test_run_opts() makes those 'pid' checks unnecessary?
-> > 
-> > [1] https://lore.kernel.org/bpf/20211006185619.364369-11-fallentree@fb.com/#r
-> 
-> Hi Peilin,
-> 
-> The entry point for the test looks as follows:
-> 
->     void test_arena_atomics(void)
->     {
->     	...
->     	skel = arena_atomics__open();
->     	if (!ASSERT_OK_PTR(skel, "arena atomics skeleton open"))
->     		return;
->     
->     	if (skel->data->skip_tests) { ... }
->     	err = arena_atomics__load(skel);
->     	if (!ASSERT_OK(err, "arena atomics skeleton load"))
->     		return;
->     	skel->bss->pid = getpid();
->     
->     	if (test__start_subtest("add"))
->     		test_add(skel);
->             ...
->     
->     cleanup:
->     	arena_atomics__destroy(skel);
->     }
-> 
-> Note arena_atomics__{open,load} calls but absence of the
-> arena_atomics__attach call. W/o arena_atomics__attach call the
-> programs would not be hooked to the designated extension points,
-> e.g. "raw_tp/sys_enter".
-> 
-> The bpf_prog_test_run_opts() invokes BPF_PROG_TEST_RUN command of the
-> bpf system call, which does not attach the program either,
-> but executes jitted code directly with fake context.
-> (See bpf_prog_ops->test_run callback (method?) and
->  bpf_prog_test_run_raw_tp()).
-> 
-> Same happens in prog{,_tests}/arena.c: no attachment happens after
-> commit [2]. Commit [1] is unnecessary after [2].
-> 
-> [2] commit 04fcb5f9a104 ("selftests/bpf: Migrate from bpf_prog_test_run")
 
-I see.  Thanks for the quick reply as always!
 
-Peilin Ye
+On 4/2/2025 8:49 am, Song Yoong Siang wrote:
+> Enable launch time (Time-Based Scheduling) support for XDP zero copy via
+> the XDP Tx metadata framework.
+> 
+> This patch has been tested with tools/testing/selftests/bpf/xdp_hw_metadata
+> on Intel Tiger Lake platform. Below are the test steps and result.
+> 
+> Test 1: Send a single packet with the launch time set to 1 s in the future.
+> 
+> Test steps:
+> 1. On the DUT, start the xdp_hw_metadata selftest application:
+>     $ sudo ./xdp_hw_metadata enp0s30f4 -l 1000000000 -L 1
+> 
+> 2. On the Link Partner, send a UDP packet with VLAN priority 1 to port 9091
+>     of the DUT.
+> 
+> Result:
+> When the launch time is set to 1 s in the future, the delta between the
+> launch time and the transmit hardware timestamp is 16.963 us, as shown in
+> printout of the xdp_hw_metadata application below.
+>    0x55b5864717a8: rx_desc[4]->addr=88100 addr=88100 comp_addr=88100 EoP
+>    No rx_hash, err=-95
+>    HW RX-time:   1734579065767717328 (sec:1734579065.7677)
+>                  delta to User RX-time sec:0.0004 (375.624 usec)
+>    XDP RX-time:   1734579065768004454 (sec:1734579065.7680)
+>                   delta to User RX-time sec:0.0001 (88.498 usec)
+>    No rx_vlan_tci or rx_vlan_proto, err=-95
+>    0x55b5864717a8: ping-pong with csum=5619 (want 0000)
+>                    csum_start=34 csum_offset=6
+>    HW RX-time:   1734579065767717328 (sec:1734579065.7677)
+>                  delta to HW Launch-time sec:1.0000 (1000000.000 usec)
+>    0x55b5864717a8: complete tx idx=4 addr=4018
+>    HW Launch-time:   1734579066767717328 (sec:1734579066.7677)
+>                      delta to HW TX-complete-time sec:0.0000 (16.963 usec)
+>    HW TX-complete-time:   1734579066767734291 (sec:1734579066.7677)
+>                           delta to User TX-complete-time sec:0.0001
+>                           (130.408 usec)
+>    XDP RX-time:   1734579065768004454 (sec:1734579065.7680)
+>                   delta to User TX-complete-time sec:0.9999
+>                  (999860.245 usec)
+>    HW RX-time:   1734579065767717328 (sec:1734579065.7677)
+>                  delta to HW TX-complete-time sec:1.0000 (1000016.963 usec)
+>    0x55b5864717a8: complete rx idx=132 addr=88100
+> 
+> Test 2: Send 1000 packets with a 10 ms interval and the launch time set to
+>          500 us in the future.
+> 
+> Test steps:
+> 1. On the DUT, start the xdp_hw_metadata selftest application:
+>     $ sudo chrt -f 99 ./xdp_hw_metadata enp0s30f4 -l 500000 -L 1 > \
+>       /dev/shm/result.log
+> 
+> 2. On the Link Partner, send 1000 UDP packets with a 10 ms interval and
+>     VLAN priority 1 to port 9091 of the DUT.
+> 
+> Result:
+> When the launch time is set to 500 us in the future, the average delta
+> between the launch time and the transmit hardware timestamp is 13.854 us,
+> as shown in the analysis of /dev/shm/result.log below. The XDP launch time
+> works correctly in sending 1000 packets continuously.
+>    Min delta: 08.410 us
+>    Avr delta: 13.854 us
+>    Max delta: 17.076 us
+>    Total packets forwarded: 1000
+> 
+> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
 
+Reviewed-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
 
