@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-50377-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50378-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F056AA26BA3
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 06:59:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61B18A26BA5
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 06:59:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B287F7A265B
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 05:58:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A6D27A487A
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 05:58:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E27571FFC54;
-	Tue,  4 Feb 2025 05:58:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B66021FFC75;
+	Tue,  4 Feb 2025 05:59:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dugeHlr5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LN6SOxyA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5977B158558;
-	Tue,  4 Feb 2025 05:58:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F198F1FF1CE;
+	Tue,  4 Feb 2025 05:59:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738648736; cv=none; b=YkC9/4IYR4eQZjqNZ3Z52OrvcwqxYGGFumNZQUrv7sG6I/FlbbMHY+rrd6osxmqyTgYSNMl087bekMSW4ptVVTlieCHE7uH6k9s7oKUy2E8z7+6kLU1hIQxPyo8QGfaMHt0mOpdcKYDBsChE9ELdIFqX4tuAZuew2XdI1F+5SDM=
+	t=1738648748; cv=none; b=cKWVgFdc4gxYQ6DMXDA2Ybwhj7iH5B4SVLQV6oFGfKpZT8D/AbLf4rW4WfSyjbuAbQQx8MbjNSj80siJYl5l1tqb6OSzRjVfH4j2ZNICWobpFcpQUTPbIx0Oh+nLIzUZuhAZ+i97p0judWqbgd58j3ZlzjZAj/2kmkQa66iBVxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738648736; c=relaxed/simple;
-	bh=Mcl8svOJgCl0ZHJ/RMQOfuumyrGthpsMWmfu0nBHLPU=;
+	s=arc-20240116; t=1738648748; c=relaxed/simple;
+	bh=ybLRHyYfFf1hecYOks1SBw6qj0bwIS2jA69BBqhE3l8=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=a1RokD4aOWcummaTkzG0iWYODTSHdNBqHi4TSbfU+GuMGrxQc2zFChT6HJWSm3akOQ0FR/Qlabe1KaMcFPv4fLRAwfMu0/DAle06qCsDoEUKn9vyYhNnGfqxkTYFiYOWus620MQb+nPy/HFBKrdMov/tHio59vhBgEpagr0O19E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dugeHlr5; arc=none smtp.client-ip=209.85.214.173
+	 Content-Type:MIME-Version; b=h/TB8IPuHujckEWsKNJG/bPL506GMqliuBDxFkYPpN6KF/ETZu3oMuKLCoZabL9rOxCTb6C6zrthuBr5JWLjwtrvur6gYAOVU7GxvQ0q2OKPZUUIhsOxnev6jRzX4dPfV5SxJgK+0oQJzOHE+4O9TWXvpQgNGNRrcVZtr2pVGiE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LN6SOxyA; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2166651f752so3348125ad.3;
-        Mon, 03 Feb 2025 21:58:54 -0800 (PST)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-21ddab8800bso72577165ad.3;
+        Mon, 03 Feb 2025 21:59:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738648733; x=1739253533; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1738648746; x=1739253546; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=Mcl8svOJgCl0ZHJ/RMQOfuumyrGthpsMWmfu0nBHLPU=;
-        b=dugeHlr5mfHcOjgmUpyF732sFrhjLmzJVQ4v7LRekKg3fwG0GSDpWDKV56mYdaFgEm
-         1YqOgr6JUYpsTeZBry6DGLFeSuXSioe3KD2Bc1xCfHNP3DEFn/3kcnACMIdUP6iNNKJ4
-         9FWyuCaLREB6YeQeZZPyf3Lahp3ZOS3l314XkQbH1sl6YH+HTL691z15owQzv4CmrA5u
-         HGadiimDfIXrMQP+zLc1L1zvSWM/piFdStucZQPUyDWW2oEw90cSCRdRXrtV9y85WIYB
-         Z/YYDxziAFSBQv44NmRWQss5Te1C9VPnwqcvhtI2k/Fb0nuqUvju7SEUFjXTLVDmBhJh
-         oNCA==
+        bh=ybLRHyYfFf1hecYOks1SBw6qj0bwIS2jA69BBqhE3l8=;
+        b=LN6SOxyAZ8Ai1ZI292fT6Hbb5h2huPBgn/wXWP1R9yww1rlc4ya67sV3vTwhfb2dCI
+         XihR/nPqbTI3GmD3GNERpTBWlwUZ6TQ/NARvMR8j2RBCaKSILZOWjab/64OOX76BMXGp
+         d6r2YJhxa+JGV32Bx9giXexyUaL74Yc1S5JEYkSrph7RK+RX5funQqRiXlgUCHdhhKDL
+         SDr+iYN6AGjMB4j+hCB5/4QlUeILRny8xUheFN4NLJVJPPdHEAkL3kwPMZAb7FSE9rSj
+         gOBqBmqFlwVxaqWVYHLqsAZmoc5cs8OSMjaHgqdSBoUUu5T1ISQjpDBIuw1xR5TGd12i
+         UQdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738648733; x=1739253533;
+        d=1e100.net; s=20230601; t=1738648746; x=1739253546;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Mcl8svOJgCl0ZHJ/RMQOfuumyrGthpsMWmfu0nBHLPU=;
-        b=puiWe1EH1JWdKmI75s98sc4liQpT/78dJENqqGbKVn5Y1oH6nWQqMiu/E/wUkNT7Ho
-         Ly4aKfIm7A0Xlvv0tGGnxQcBjeN0d6CMl4wFfdBEwZWSffC/14eBzXn9R/EoyYh0Oulx
-         uP2xw07pI2ZA+SGhbRH1Zw5DxFT2yaWDx+zHZKhzbTwwYUUb4CHGBpOTl0HtmxJiBr2c
-         UFwpDLO4Jfv/opjTfiyPfugZ3gRN9xqXqQK5NVxl3b8gyhQPRAT+rZwmO/+jeKBbtHpm
-         A1+yPy2IY0AFNZpwG0DszjUunHZGQZFLjjAzDj8TJE4XWtUnTQd3CIXVr9jwnFITh46h
-         8WHw==
-X-Forwarded-Encrypted: i=1; AJvYcCUvRiCwR1dIZpmrtptLhyvG6mhUrlc4N5RIgpa+DQ1yQ8J4JYqOpxjbpNJufilNBn84wne4fr0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzxZnC1NWJUNSlc3wWKTvYARITSBA+8Ko5jSJQ3cmygLFpL1mIy
-	7njMMgO27w50YQe1BsnRdqkJ9HBDsg7ClNoKJzAiQgFBKc1gC3Kg
-X-Gm-Gg: ASbGncsxxF1qm6XuIgfftpjtJfw5haUWK6aslh0OpcQfJXvm1844FxUUgmOHISyqVkN
-	L1eP0diK61aIbBndc1YYyPIAvvyjAwzc1AXnyb+V7mmcvycU0VnzmhPKpqacJ1flTbDaJLXbodF
-	cgUohj7qIyz/j1+OJsM2wTw8W+t7IKav2G1zgt4l5CMhv17w0p2YOPZkJMK/5NkMA6i5MEpDmaw
-	skokP7EzcVTtuULB/0XpPEE27SiCVKfttXGb5X/lPd70Zy/S+C2sw8HiKNsBryAZJkPC+njoJmj
-	uznI7kHecrU1
-X-Google-Smtp-Source: AGHT+IEv9TlfKByklRKOO/1nGncspakqcK3wtITD0R/TDRgDpShcdagLUUkSw4k02m2n/J19wWYmzg==
-X-Received: by 2002:a17:903:1252:b0:216:69ca:770b with SMTP id d9443c01a7336-21dd7c6625emr415299795ad.12.1738648733615;
-        Mon, 03 Feb 2025 21:58:53 -0800 (PST)
+        bh=ybLRHyYfFf1hecYOks1SBw6qj0bwIS2jA69BBqhE3l8=;
+        b=GToPEOx4M1EyNItcZMKVroKpi2vwpRubLjJNdcwICsfuXscrbKu3kdk6529oEREFWZ
+         BerMaYmALR7XJDWIu2Dm00ASmTgaEIxvPeMHXWjcyASxDIffmJcb3N1mZRc8XqVw7Pm7
+         EiHQSEsEUslEmX6ZkE+Wpt6sHJ3/QuCJTFaG8gOGNPEs8dF5CqdSw9uu74RLwA9d2Lhp
+         U4J1hYWfTARgNLG4r8al2FMTOQz/nsfRuZVcFoA/XLK8vvEbg4DE2rcIeIXeNw0RzS1O
+         VsBaIwuDUael78l08+1ttEuSnfFMBwcXu9vzxLq0h4Kzs70YMbSyixT56qQr/7+bpdIT
+         KcYw==
+X-Forwarded-Encrypted: i=1; AJvYcCV0b0Fdj/tzyi9vagNxBpUCB2vvRJkFR8y059ky9W5N2PM4GHfvBPCb7aXhrbQWFcuW2MYxmiw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwA4ZSJzD5lxucaGGEpYblAfmHlCRPomGju1ce6oDu5JW8ydPzV
+	5GY3U39BGIV1W4tBCOFtQCVJNWCsUiL49sf5C3o0BaVADrP3Og7E
+X-Gm-Gg: ASbGncvvUHF/T4RFpqbWXmPqLppqEKGf3W43mgnHmp6dlE/1Go3dPTYYcRhEYpnxfbT
+	ENl6v0qH/lYC6iQFBUt6xduYagqO4tiECgDApf9A2BvCFwaW2DbU1/lkSzuRzxcWtLHrNjXSAp0
+	YzUPtv2C2GMPzVGhRx8Yb3mOLM2SLOK0LSgid+JleQZvTDeRGxjNJ0eVCa65hHBC2XOyFro9mWI
+	P1pqV9kGBuQpKmsvEuN/ywhkD7UhJ3f9RkG1zVprFJ+2+OpaMg4YHkb8DNuiubKgz+i2TQXaQkQ
+	5EHUIN3b4tgE
+X-Google-Smtp-Source: AGHT+IFDYLruy3Xhw89PDhmdIFs6KtMomvvQkHFLkPOYKg+kfwZmmjublAytRQh4fhpJXDDEgMAJrQ==
+X-Received: by 2002:a05:6a20:9c8b:b0:1e1:aef4:9cdd with SMTP id adf61e73a8af0-1ed7a5b5399mr36557110637.1.1738648746176;
+        Mon, 03 Feb 2025 21:59:06 -0800 (PST)
 Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21de3302e63sm86256525ad.172.2025.02.03.21.58.51
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-acec0479887sm9061875a12.52.2025.02.03.21.59.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Feb 2025 21:58:53 -0800 (PST)
-Message-ID: <97d9f2b5c570e9581c8a13956897357459f65618.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 05/18] selftests/bpf: Test returning
- referenced kptr from struct_ops programs
+        Mon, 03 Feb 2025 21:59:05 -0800 (PST)
+Message-ID: <1e1b18b0ed90cd675543c17b837e7a18e8110ab6.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v3 07/18] bpf: Generalize finding member offset
+ of struct_ops prog
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Amery Hung <ameryhung@gmail.com>, netdev@vger.kernel.org
 Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
@@ -84,10 +84,10 @@ Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
 	stfomichev@gmail.com, ekarani.silvestre@ccc.ufcg.edu.br,
  yangpeihao@sjtu.edu.cn, 	yepeilin.cs@gmail.com, ming.lei@redhat.com,
  kernel-team@meta.com
-Date: Mon, 03 Feb 2025 21:58:47 -0800
-In-Reply-To: <20250131192912.133796-6-ameryhung@gmail.com>
+Date: Mon, 03 Feb 2025 21:59:00 -0800
+In-Reply-To: <20250131192912.133796-8-ameryhung@gmail.com>
 References: <20250131192912.133796-1-ameryhung@gmail.com>
-		 <20250131192912.133796-6-ameryhung@gmail.com>
+		 <20250131192912.133796-8-ameryhung@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
@@ -99,15 +99,10 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
 On Fri, 2025-01-31 at 11:28 -0800, Amery Hung wrote:
-> From: Amery Hung <amery.hung@bytedance.com>
+> Generalize prog_ops_moff() so that we can use it to retrieve a struct_ops
+> program's offset for different ops.
 >=20
-> Test struct_ops programs returning referenced kptr. When the return type
-> of a struct_ops operator is pointer to struct, the verifier should
-> only allow programs that return a scalar NULL or a non-local kptr with th=
-e
-> correct type in its unmodified form.
->=20
-> Signed-off-by: Amery Hung <amery.hung@bytedance.com>
+> Signed-off-by: Amery Hung <ameryhung@gmail.com>
 > ---
 
 Acked-by: Eduard Zingerman <eddyz87@gmail.com>
