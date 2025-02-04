@@ -1,197 +1,133 @@
-Return-Path: <bpf+bounces-50425-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50426-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AA27A27808
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 18:11:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DD75A2781D
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 18:16:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6D22160B53
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 17:11:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A980164103
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 17:16:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2061215F63;
-	Tue,  4 Feb 2025 17:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 446352153D2;
+	Tue,  4 Feb 2025 17:16:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X+ykwxy9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DjHkC+sZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC63C20C494;
-	Tue,  4 Feb 2025 17:11:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 197A12144AD
+	for <bpf@vger.kernel.org>; Tue,  4 Feb 2025 17:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738689107; cv=none; b=j255P3vC5WHrO0S4Q67kFtWbcAtMo6RK8+7+2XCK5kXYmJFm3td67NbJ93mVr9Cr0ZVfsx1/i83XafG4P6RpdhvSFs5euGfP3EzklAKwaUlPSSBugbV4hUxz1X/RoUButiL77swkRu08zVeydOmrhAKyLBHc025nyYhMmLQsf1s=
+	t=1738689365; cv=none; b=Fqk6lFHcNNVPtHc3fMO1p4w6GJc3lrrwOChcKPzejRds/ejGaq5JaTUr0j9ddqG6D15nZmTyax3VIfgp1SjsPOspcDM5BqZmO+J8aV/uFPh3V58YITXX8mg5vZSqzaMMtBcOK1Xx6+zdkM9irA/bx4repZqDOB+CMw21bSspgVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738689107; c=relaxed/simple;
-	bh=byCYM8qSkT1AzKT0+shndeX3NZuiL6f+7MpBXusWsB8=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=TTBho+685zIyn3u4vkZpubEraRTr9fB1e+JhvfeSYamc/Q702Qxf3HtV8pdh8n3mkIImM4L8jQZASb5A4HIp2JHLBKE6mhxd7OkR4S4OSSimHehbXC/T1zv0kk2JceqaiBfxshb9z3m5DD6lgn+cAJ0EdU9a+0xj6hVs/SO9e3o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X+ykwxy9; arc=none smtp.client-ip=209.85.219.43
+	s=arc-20240116; t=1738689365; c=relaxed/simple;
+	bh=1gJRhbGbAMNEA88gf7rhV7SJBebHJW3hPLMwxD+NuEw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QrmjUew775/P3Be/+EvJA0vq40bdoQnbs8mWZFH/HLM30pdmypQeTsHQXLoJpgzaK+DKRcEAqX/sOuf+oKsNXMXOhaWMOMBkNfEXVAXBi1IiTBWn5769SAZiRS/gIzpKIxT93wY3YJsg18kh4xBrSbeORrN4zISpFLrUdMFYb6k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DjHkC+sZ; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6dfbc45355bso61844326d6.2;
-        Tue, 04 Feb 2025 09:11:45 -0800 (PST)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-435f8f29f8aso43798055e9.2
+        for <bpf@vger.kernel.org>; Tue, 04 Feb 2025 09:16:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738689105; x=1739293905; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1738689362; x=1739294162; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=byCYM8qSkT1AzKT0+shndeX3NZuiL6f+7MpBXusWsB8=;
-        b=X+ykwxy9RmOxYg7JWeUFXbQ3XbG6F6CnyGdsiiMt+HgdRLNu5Qf/yb7yRY5OPn3Tj7
-         KES+wQ4N5DRjmx05g1W2YznzsboIgPrehg0qIVxnSaPC4VM2jMfvc7g+S9ZHsfj+5EZ0
-         6xGdNZyKssAyNONaQXXcBFAaYjZmR0qPGREGgHdOonNHS36DEDzHoyuUehGSDiyTAq7o
-         fCZgzidWOS/aWJZ9DvJCIPM6ijwtBecWP/Mb/xIlOHryKPmbKtleYdo3ck58G0DTUyP8
-         pkDYU+4hR9FRwjXvIaSdp7IJaGv7/V8Rq/rYFOO1IRUWkU/vSVWxhrlUGzi1C50fuMCX
-         EH4g==
+        bh=1gJRhbGbAMNEA88gf7rhV7SJBebHJW3hPLMwxD+NuEw=;
+        b=DjHkC+sZOaTuBaYV3EDge418g28zT5lUy0Ix8EsBYlI96lYijhYKVFs/WiwMLMN6zM
+         3AnT4iM6hcDTz5wxT2xrs8bPEhDXDPkaUjSx9MVvVMY3mDik9jiVPC1yC8n7F/1vJSkL
+         o3EgQL3fh7galaf38lsiPvuLhuBSKdPqsQZ5Kfz/fv64tXBclhFN+ZtJUS6MUCTOQF2Y
+         NLoXH+qBgdmQvKdn37TanMCGv/8mp2Ig++epyS9EHEesfGkRZA0ULx0AgilgvzE3mCXe
+         xIP0M30AZEyPx4KcQX6r0NzKCzDwdsoqbftgaznMcZm3zZyyLIrklV8jaaYX6TESFa9T
+         QMsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738689105; x=1739293905;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=byCYM8qSkT1AzKT0+shndeX3NZuiL6f+7MpBXusWsB8=;
-        b=O+uXd3KWXz6alte50mqivhSvjJ6jj6Tr4zWPXkqcnNOohc/Bm53rHc/2Dg5Um2jTd8
-         Uyl27ahmYdzf9TK0nxXS+PSB6Ny8KvEIMlwRsrjFKl4W2wUWmzWW2lZ4nJgxTSrVJBj9
-         2Mou33/Mw1dqMmglF/JN16PG589dr6K3VtJ0vDrh8UYPJacH2oUBug/ykoWJ5pA7UkJQ
-         26wb0vY2tO25lQBxAmiIE2I1LqKZDjHJt7YxmcqUSpsDUi/xTLe/hUxDQyxYzjHRZKsn
-         bngZKVTbSm/Xn9QtzlxLtjTDhOrdB2IQZso3cXlZdfAnF8M99aD/or49mOrgYsHxLN+L
-         ahjw==
-X-Forwarded-Encrypted: i=1; AJvYcCUhs0cUz46XRsFmle/3uimuqjlOcENNMyEdF8m2z/3EH83HFEB+3bMj4CXJDZZSVtD7pHOGbh8X@vger.kernel.org, AJvYcCWsmzIzyHCsTMDVvIbkReL1xF53guwuAejfYUk4D7Z5J/lgJhubisSe7BfJkRGG8nAJa40=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywyk/Xv1XFaxb5qZudVMn1oYlCU5rIySnn8PzGUaFwUcHkbkfxf
-	AoKbGIk6tFuuJNZ2aAmG/MxaPB8kueo4u07Tk/msOJIagfnvkrFT
-X-Gm-Gg: ASbGncsdIQgjcLU2SNG+DT0mLs9ZsWD5qMoZXjfqNBCL7VtLcnMhFjp8xKQl+Za1eCa
-	4Te+1OtTvincmmppwgT/9HHhfF09Xu5vF5M4aAHc7WbrqXjJNUYRNeSx/H5LziMrO+Wso3nyTL0
-	zeYR6O3gSZ9sXbPAeWKp7Ee9mZ2PiCq5+3Yyu4gK2XiBoNAJjY/wCp/0tTscOxLI/d+qZlpftcY
-	VwTzQH33e9z/mVBB7WDbO9/Nca063DaEnO44fUfNDHU2vBjo9IAbE+3G1EXEJZ4WD16JtMhtGH8
-	TXVTJSjPulN2ouJmjzCjlATYj4ESVOKKr6Rgtz51eJDgAO3LmHI14I/aOGxlrFw=
-X-Google-Smtp-Source: AGHT+IF0NWi0SfgtxSzHK8dL969JfFqbPxpCygn0d74NlnzAwmc6agXzx4b2jHOUcZWEo0CsU2Kbcg==
-X-Received: by 2002:ad4:5bec:0:b0:6e4:2d90:37ed with SMTP id 6a1803df08f44-6e42d9048d3mr8453546d6.18.1738689104528;
-        Tue, 04 Feb 2025 09:11:44 -0800 (PST)
-Received: from localhost (15.60.86.34.bc.googleusercontent.com. [34.86.60.15])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e2549225e8sm63603586d6.88.2025.02.04.09.11.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Feb 2025 09:11:43 -0800 (PST)
-Date: Tue, 04 Feb 2025 12:11:43 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Jason Xing <kerneljasonxing@gmail.com>, 
- Martin KaFai Lau <martin.lau@linux.dev>
-Cc: davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- dsahern@kernel.org, 
- willemdebruijn.kernel@gmail.com, 
- willemb@google.com, 
- ast@kernel.org, 
- daniel@iogearbox.net, 
- andrii@kernel.org, 
- eddyz87@gmail.com, 
- song@kernel.org, 
- yonghong.song@linux.dev, 
- john.fastabend@gmail.com, 
- kpsingh@kernel.org, 
- sdf@fomichev.me, 
- haoluo@google.com, 
- jolsa@kernel.org, 
- horms@kernel.org, 
- bpf@vger.kernel.org, 
- netdev@vger.kernel.org
-Message-ID: <67a24a4f8af27_bb566294bd@willemb.c.googlers.com.notmuch>
-In-Reply-To: <CAL+tcoAXcDuAsy6rqGBh3Sb1dkdZ0xn6YFCQec-K6QSPyaVwEA@mail.gmail.com>
-References: <20250128084620.57547-1-kerneljasonxing@gmail.com>
- <2706706c-3d85-4f43-ad91-d04bbb4f2b92@linux.dev>
- <CAL+tcoAXcDuAsy6rqGBh3Sb1dkdZ0xn6YFCQec-K6QSPyaVwEA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 00/13] net-timestamp: bpf extension to equip
- applications transparently
+        d=1e100.net; s=20230601; t=1738689362; x=1739294162;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1gJRhbGbAMNEA88gf7rhV7SJBebHJW3hPLMwxD+NuEw=;
+        b=TLaILm0Dz9bItyHltE1QMkXnuOdmzPL/51n7HIg9NpTzsXVXiPVyjIr1NlDSxefpc6
+         ium2fvRPZUy1SrFmpgAFXnFR+bm6y2EIf47RjYvS5enCELnS9cfVzGWuIBKW7XC0MBFR
+         KSKykKGI6zXeOe2oi3zh5G2Yo8ygXhVsNkjnqdmjbzmp+GPgAgRkpiTGmvamH9vrNKHc
+         ijIzWtrxVB132fLHM23PWlJkA+8rcSsfY0ntzflRHeuo/HBYnCnezdUd+oYe/YG4OQem
+         A7Y4sdVBFKxvFy09r8Gpqo37R2S2dFUdHDN8JDFsJRpwF5Ern2htNUAYIkHdh0gHEUsg
+         5YLw==
+X-Gm-Message-State: AOJu0YwSAsUkozKHtoe9aNch47RlCIdir1kl5K3ZwaKctEpnE70JIvST
+	+LMNFi8Ig8Tzx5M1+b5vzS7cvKb0PJzvtEtyhFQGTE5wU8n+jo0GJm+wj7Y4WEbei+klFgeXcZR
+	86Y7e6SVyEEzyoeL8xezGIzEK9s4=
+X-Gm-Gg: ASbGncu1WostDO7nsuKyFZRMfS87GXrmFDo8APYElaIc/h9+VSYdwiJy+J8y1vcFSX4
+	xOUvv64jyPK3gz3xgFuIy4yyeIDLQ8TGX4IBLj7qhE6W18wjWgFFmu6A7n6hnSZDKuXc7+XI+sp
+	G4ecnNPOS1u0JX
+X-Google-Smtp-Source: AGHT+IE8UbxUR7hQRLpoliJ1l0K8c/FQPBKDmJArLv5xVEqORCcvnRDk8Cn5zG4uzUOwSLNz4r3ZwpQ0Ks6zssGTI1Q=
+X-Received: by 2002:a5d:5586:0:b0:385:e429:e59e with SMTP id
+ ffacd0b85a97d-38c520b03d6mr16107393f8f.52.1738689361994; Tue, 04 Feb 2025
+ 09:16:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+MIME-Version: 1.0
+References: <CAHnJ_vj-bbZhUqoDrf0wXEh8gEUVwq34WMXfHRo5=nx5FAL4OA@mail.gmail.com>
+ <CAHnJ_vhEwtqFtjjEX3DN03e1_vKSBu4e2cOAdinzgtrs2aPjUw@mail.gmail.com>
+In-Reply-To: <CAHnJ_vhEwtqFtjjEX3DN03e1_vKSBu4e2cOAdinzgtrs2aPjUw@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 4 Feb 2025 17:15:51 +0000
+X-Gm-Features: AWEUYZkQb9MA1vN0dHVxYn7XvYV6lwBxx6ioSFDt_a29X7wH-0fAzpsR4srqv5w
+Message-ID: <CAADnVQ+MWfoeJCUSyRka8uAOQs=aqMppV3EiqT8jzRrfFkw0Uw@mail.gmail.com>
+Subject: Re: LSF/MM + BPF ATTEND - Topic 1 for discussion
+To: Aryan Kaushik <aryankaushik666@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Jason Xing wrote:
-> On Tue, Feb 4, 2025 at 10:27=E2=80=AFAM Martin KaFai Lau <martin.lau@li=
-nux.dev> wrote:
-> >
-> > On 1/28/25 12:46 AM, Jason Xing wrote:
-> > > "Timestamping is key to debugging network stack latency. With
-> > > SO_TIMESTAMPING, bugs that are otherwise incorrectly assumed to be
-> > > network issues can be attributed to the kernel." This is extracted
-> > > from the talk "SO_TIMESTAMPING: Powering Fleetwide RPC Monitoring"
-> > > addressed by Willem de Bruijn at netdevconf 0x17).
-> > >
-> > > There are a few areas that need optimization with the consideration=
- of
-> > > easier use and less performance impact, which I highlighted and mai=
-nly
-> > > discussed at netconf 2024 with Willem de Bruijn and John Fastabend:=
+On Tue, Feb 4, 2025 at 2:00=E2=80=AFAM Aryan Kaushik <aryankaushik666@gmail=
+.com> wrote:
+>
+> Hi Team
+>
+> Hope this mail find you well.
+>
+> Topic 1: Practical Applications of WebAssembly (WASM) in Filesystems,
+> Memory Management, and eBPF
+>
+> Description: WebAssembly (WASM) is emerging as a powerful technology
+> for secure, efficient execution in various computing environments.
+> This session will focus on how WASM can be leveraged in filesystems,
+> memory management, and eBPF.
+>
+> Key discussion points include:
+>
+> 1. WASM=E2=80=99s lightweight execution model and its impact on memory ef=
+ficiency
+> 2. How WASM interacts with filesystems and operates within sandboxed
+> environments
+> 3. Potential synergies between WASM and eBPF for secure, efficient
+> execution in cloud-native and kernel-space applications
+> 4. Real-world examples of WASM implementations in security and
+> performance-critical environments
+> 5. Challenges and opportunities in integrating WASM into Linux subsystems
+>
+> My Contribution: Given my interest in both WASM and security-focused
+> computing, I=E2=80=99d like to explore how WASM can enhance performance a=
+nd
+> security in system-level applications.
+> I=E2=80=99m particularly interested in discussing its potential for secur=
+e
+> execution, memory isolation, and integration with eBPF for
+> next-generation cloud and kernel-space workloads.
 
-> > > uAPI compatibility, extra system call overhead, and the need for
-> > > application modification. I initially managed to solve these issues=
-
-> > > by writing a kernel module that hooks various key functions. Howeve=
-r,
-> > > this approach is not suitable for the next kernel release. Therefor=
-e,
-> > > a BPF extension was proposed. During recent period, Martin KaFai La=
-u
-> > > provides invaluable suggestions about BPF along the way. Many thank=
-s
-> > > here!
-> > >
-> > > In this series, I only support foundamental codes and tx for TCP.
-> >
-> > *fundamental*.
-> >
-> > May be just "only tx time stamping for TCP is supported..."
-> >
-> > > This approach mostly relies on existing SO_TIMESTAMPING feature, us=
-ers
-> > > only needs to pass certain flags through bpf_setsocktopt() to a sep=
-arate
-> > > tsflags. Please see the last selftest patch in this series.
-> > >
-> > > After this series, we could step by step implement more advanced
-> > > functions/flags already in SO_TIMESTAMPING feature for bpf extensio=
-n.
-> >
-> > Patch 1-4 and 6-11 can use an extra "bpf:" tag in the subject line. P=
-atch 13
-> > should be "selftests/bpf:" instead of "bpf:" in the subject.
-> >
-> > Please revisit the commit messages of this patch set to check for out=
-dated
-> > comments from the earlier revisions. I may have missed some of them.
-> =
-
-> Roger that, sir. Thanks for your help!
-> =
-
-> >
-> > Overall, it looks close. I will review at your replies later.
-> >
-> > Willem, could you also take a look? Thanks.
-> =
-
-> Right, some related parts need reviews from netdev experts as well.
-> =
-
-> Willem, please help me review this when you're available. No rush :)
-
-I won't have much to add for the BPF side, to be clear.
-
-One small high level commit message point: as submitting-patches
-suggests, use imperative mood: "adds X" when the patch introduces a
-feature, not "I add". And "caller gets" rather than "we get".
-
-Specific case, with capitalization issue: "we need to Introduce".
-
-I'll respond to a few inline code elements later. Nothing huge.
-Also feel free to post the next version and I'll respond to that, if
-you prefer.
+These topics sound like an interesting academic research,
+but it's not clear how any of it is applicable to linux kernel development.
+There is no wasm in the kernel.
+If the goal is to introduce wasm in the kernel then it should be
+stated as such.
+If it's all user space related then lsfmmbpf conference is not
+the right forum for such discussion.
+It can happen on bpf mailing list or elsewhere instead.
 
