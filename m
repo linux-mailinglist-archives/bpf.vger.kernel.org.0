@@ -1,133 +1,142 @@
-Return-Path: <bpf+bounces-50426-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50427-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DD75A2781D
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 18:16:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38D72A27825
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 18:19:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A980164103
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 17:16:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4BF43A28CF
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 17:19:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 446352153D2;
-	Tue,  4 Feb 2025 17:16:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 376FF21638A;
+	Tue,  4 Feb 2025 17:18:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DjHkC+sZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Styy6zuo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 197A12144AD
-	for <bpf@vger.kernel.org>; Tue,  4 Feb 2025 17:16:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F184E175A5;
+	Tue,  4 Feb 2025 17:18:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738689365; cv=none; b=Fqk6lFHcNNVPtHc3fMO1p4w6GJc3lrrwOChcKPzejRds/ejGaq5JaTUr0j9ddqG6D15nZmTyax3VIfgp1SjsPOspcDM5BqZmO+J8aV/uFPh3V58YITXX8mg5vZSqzaMMtBcOK1Xx6+zdkM9irA/bx4repZqDOB+CMw21bSspgVk=
+	t=1738689536; cv=none; b=Wgg61sSiTrp9xDzEaP33de8RYpTlQhwO/KexTdhDs7okb38aPBh7qLprK7xeKZlkQxuCXQzj133P93h8pmnmGQH2okze9c8dQ8SP4sqk5T15NZrISYq2fgNX3nVHSPVyzyGKMilUEjruuQtRsDHFXHhHk6sXI6a23q6zJGl30+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738689365; c=relaxed/simple;
-	bh=1gJRhbGbAMNEA88gf7rhV7SJBebHJW3hPLMwxD+NuEw=;
+	s=arc-20240116; t=1738689536; c=relaxed/simple;
+	bh=iCKigJ0HZA68QSj6vDaNOuse7H6mg4VWTsT+3IwbyPk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QrmjUew775/P3Be/+EvJA0vq40bdoQnbs8mWZFH/HLM30pdmypQeTsHQXLoJpgzaK+DKRcEAqX/sOuf+oKsNXMXOhaWMOMBkNfEXVAXBi1IiTBWn5769SAZiRS/gIzpKIxT93wY3YJsg18kh4xBrSbeORrN4zISpFLrUdMFYb6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DjHkC+sZ; arc=none smtp.client-ip=209.85.128.45
+	 To:Cc:Content-Type; b=lGcS3L3FFeBmRGSx7au4r0xNew4wO14gjc8EZ5iDVDmu7HpgTWxmHqSZPHyUtqml9ZIDNqxnSvGrNaMDhN8rjZwJkD4Zo6PTbqyzSdc0Gyi3qRJ5FceUcGODyDH+8fkyBfneXCCWFnzOiAPXnpycNfk/HFYnSd31fjgWCCQ7Hbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Styy6zuo; arc=none smtp.client-ip=209.85.221.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-435f8f29f8aso43798055e9.2
-        for <bpf@vger.kernel.org>; Tue, 04 Feb 2025 09:16:03 -0800 (PST)
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-38db104d35eso499019f8f.1;
+        Tue, 04 Feb 2025 09:18:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738689362; x=1739294162; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1738689533; x=1739294333; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1gJRhbGbAMNEA88gf7rhV7SJBebHJW3hPLMwxD+NuEw=;
-        b=DjHkC+sZOaTuBaYV3EDge418g28zT5lUy0Ix8EsBYlI96lYijhYKVFs/WiwMLMN6zM
-         3AnT4iM6hcDTz5wxT2xrs8bPEhDXDPkaUjSx9MVvVMY3mDik9jiVPC1yC8n7F/1vJSkL
-         o3EgQL3fh7galaf38lsiPvuLhuBSKdPqsQZ5Kfz/fv64tXBclhFN+ZtJUS6MUCTOQF2Y
-         NLoXH+qBgdmQvKdn37TanMCGv/8mp2Ig++epyS9EHEesfGkRZA0ULx0AgilgvzE3mCXe
-         xIP0M30AZEyPx4KcQX6r0NzKCzDwdsoqbftgaznMcZm3zZyyLIrklV8jaaYX6TESFa9T
-         QMsQ==
+        bh=48HwAkSZSqOHaazP0j1e1zula7SeoySs4jwygMRaYcc=;
+        b=Styy6zuoeNY1rVOs32hbk92+/+d8XxGrmBv9Mu1/eIO+agBiYrqnENjR2qLz61AMNe
+         vGqA5UIhSMtaPBkIzjYAb2qTyNxzsVAD2XgEj02bSAu31ZI98pSussP1rNeRy8Yx6S4V
+         s3OPHf0lvpd7NwzEjev8GdJqdNfURt/s9D9of24JvnZCsBKVx/vLOZEBfXshaoHU1FJq
+         J1orbpS8ixwpoSMVsmbJe508+tPXXQV/8Y8CmMnPaJc8gNVi7CgXLG43OXTbsHzdvJOf
+         mRWo0Y4GlwHZPw8/EEkq1Oi7dm1bAxa66qZCDXafcykY+HLICpcLLkUuhqiCG8qjZwAD
+         2DKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738689362; x=1739294162;
+        d=1e100.net; s=20230601; t=1738689533; x=1739294333;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1gJRhbGbAMNEA88gf7rhV7SJBebHJW3hPLMwxD+NuEw=;
-        b=TLaILm0Dz9bItyHltE1QMkXnuOdmzPL/51n7HIg9NpTzsXVXiPVyjIr1NlDSxefpc6
-         ium2fvRPZUy1SrFmpgAFXnFR+bm6y2EIf47RjYvS5enCELnS9cfVzGWuIBKW7XC0MBFR
-         KSKykKGI6zXeOe2oi3zh5G2Yo8ygXhVsNkjnqdmjbzmp+GPgAgRkpiTGmvamH9vrNKHc
-         ijIzWtrxVB132fLHM23PWlJkA+8rcSsfY0ntzflRHeuo/HBYnCnezdUd+oYe/YG4OQem
-         A7Y4sdVBFKxvFy09r8Gpqo37R2S2dFUdHDN8JDFsJRpwF5Ern2htNUAYIkHdh0gHEUsg
-         5YLw==
-X-Gm-Message-State: AOJu0YwSAsUkozKHtoe9aNch47RlCIdir1kl5K3ZwaKctEpnE70JIvST
-	+LMNFi8Ig8Tzx5M1+b5vzS7cvKb0PJzvtEtyhFQGTE5wU8n+jo0GJm+wj7Y4WEbei+klFgeXcZR
-	86Y7e6SVyEEzyoeL8xezGIzEK9s4=
-X-Gm-Gg: ASbGncu1WostDO7nsuKyFZRMfS87GXrmFDo8APYElaIc/h9+VSYdwiJy+J8y1vcFSX4
-	xOUvv64jyPK3gz3xgFuIy4yyeIDLQ8TGX4IBLj7qhE6W18wjWgFFmu6A7n6hnSZDKuXc7+XI+sp
-	G4ecnNPOS1u0JX
-X-Google-Smtp-Source: AGHT+IE8UbxUR7hQRLpoliJ1l0K8c/FQPBKDmJArLv5xVEqORCcvnRDk8Cn5zG4uzUOwSLNz4r3ZwpQ0Ks6zssGTI1Q=
-X-Received: by 2002:a5d:5586:0:b0:385:e429:e59e with SMTP id
- ffacd0b85a97d-38c520b03d6mr16107393f8f.52.1738689361994; Tue, 04 Feb 2025
- 09:16:01 -0800 (PST)
+        bh=48HwAkSZSqOHaazP0j1e1zula7SeoySs4jwygMRaYcc=;
+        b=n4XogT8eNgCIZZrI2rI5LI2/XECexyaN+aEF5HiO8bB5vmss+dOoPtO3B+Tyqz21/D
+         xuIo2PigaTBwVD7DSnTnWCK5pTCnTyexGhaQCrcFOhGXwBk4kqGcA5v+pH2kK2Whd8qF
+         EnAKa8T6zwEVKuOZZXOjChdmVyIeBqSN70tIDAWO4MGRSNj3d9A/dEVx7I8y1aPZoE2v
+         mDsCBS/TdqCi6CE9Olk+A7XcSFhIbJOxKzcKDb2atPUE9Ko+QNo3+vB4k8DYktXAbW+v
+         p9j5kM74huF0gjQxhOJ22EmStUEV4P0zk+2aRlF0oe3dIXEBSxITyejiXBpzXt6evtw0
+         fEcw==
+X-Forwarded-Encrypted: i=1; AJvYcCU2zjjZl9V2vzmT9+CShM1CNCj7Pxw4NJxfk348QIxYBOUKrUT/M06kmiOnR9U3IsJbie0=@vger.kernel.org, AJvYcCUuVOr+sXNs44Iala61CGYxmuLi70E4Sn+i1db+FcQz3RZWPZ1NQeVgjzXH/6RXsxI05zn0y8m3k94QT0Fc7yAzLw==@vger.kernel.org, AJvYcCVA0elEs7IQiweSJJFRJMU90C5qFO0UVVeFdpCIMk3ofeYG5EB+WLv0sFXzUNQE9Zv+pGU8pmp4fK2vgQjNYg+cygyV@vger.kernel.org, AJvYcCVLb93l1v9mtfQiBAjh4hWbGebVDx4OQX6szuZzC9FHLuBcuzuEMavj+X4gdIXRVPrLKCpc3Mrd5qTywSFe@vger.kernel.org, AJvYcCVh7WyvinaBGXVoMaNvXeZIJkPt7S11Ecs6Vx5JQDtD7Ggo1ZBIdT0JwM6HnkejV91pja1RiORkFGZ4xMo=@vger.kernel.org, AJvYcCW92UNRtt550k0Jn395byJcMBz4bgSx3IM1adyjhMNh9YqTht1Ib+JmaLrmbMKXlNme5rebejZ4gzMpu24uZdR4@vger.kernel.org, AJvYcCXSXDcWV1EQj+Vxv9/v6o8KKTt6DqWOJ2WnvG+wQgArQTTWwr0z53KtBOIOXoYhI5a3sKPwGT+fOfg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw4HgOgFgWeoaQHunkBOkximaU+kqdySKHIbJnCH19GC2clg7to
+	RPjR7E+QQtxKuapk16nfDjZNGWABecMDxLrlE0YHXmtANVS2J9LDt0eOA5YhpDDfY5zpJhkSHtm
+	y+C0v57GXccdgtLRkQqW+tkKmsJs=
+X-Gm-Gg: ASbGncsQY+UrkVcmm60TEbE8sajvqO9SVBteO8nNIQqmOEDvU0HT6dhlbKcLDGlmdgq
+	R75oiuWzZstReSgltWzZDy5w8RDrFLh2pskuR0gUn2UY+qJ9R4NxNc4Xah7tBsgt9gvigONCU+z
+	dSxhVQIY13z/AX
+X-Google-Smtp-Source: AGHT+IEXetkSjzbQZIwp25yXpZlrJ0E0C2WLKrhLJmskRoaWd8NBYMuAQjs4C4NMhIU3irD5IAyKftnklG5C+REE50Q=
+X-Received: by 2002:a05:6000:1a86:b0:38a:888c:7df0 with SMTP id
+ ffacd0b85a97d-38c519380demr24381826f8f.1.1738689533094; Tue, 04 Feb 2025
+ 09:18:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAHnJ_vj-bbZhUqoDrf0wXEh8gEUVwq34WMXfHRo5=nx5FAL4OA@mail.gmail.com>
- <CAHnJ_vhEwtqFtjjEX3DN03e1_vKSBu4e2cOAdinzgtrs2aPjUw@mail.gmail.com>
-In-Reply-To: <CAHnJ_vhEwtqFtjjEX3DN03e1_vKSBu4e2cOAdinzgtrs2aPjUw@mail.gmail.com>
+References: <20250203-quiet_tools-v1-0-d25c8956e59a@rivosinc.com>
+In-Reply-To: <20250203-quiet_tools-v1-0-d25c8956e59a@rivosinc.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 4 Feb 2025 17:15:51 +0000
-X-Gm-Features: AWEUYZkQb9MA1vN0dHVxYn7XvYV6lwBxx6ioSFDt_a29X7wH-0fAzpsR4srqv5w
-Message-ID: <CAADnVQ+MWfoeJCUSyRka8uAOQs=aqMppV3EiqT8jzRrfFkw0Uw@mail.gmail.com>
-Subject: Re: LSF/MM + BPF ATTEND - Topic 1 for discussion
-To: Aryan Kaushik <aryankaushik666@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>
+Date: Tue, 4 Feb 2025 17:18:42 +0000
+X-Gm-Features: AWEUYZntw4tyOlfb-7X3bQw5d_xFnYc5vrj6eRh2uvuHo7xJkIfniobyMxPX5XQ
+Message-ID: <CAADnVQKTqRBQBA-yxB9EYPMgayP3rOE4iDhg+QD++2d=jxfY=Q@mail.gmail.com>
+Subject: Re: [PATCH 0/2] tools: Unify top-level quiet infrastructure
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Quentin Monnet <qmo@kernel.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, 
+	Josh Poimboeuf <jpoimboe@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <bentiss@kernel.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	"linux-perf-use." <linux-perf-users@vger.kernel.org>, 
+	Linux Power Management <linux-pm@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
+	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 4, 2025 at 2:00=E2=80=AFAM Aryan Kaushik <aryankaushik666@gmail=
-.com> wrote:
+On Tue, Feb 4, 2025 at 12:10=E2=80=AFAM Charlie Jenkins <charlie@rivosinc.c=
+om> wrote:
 >
-> Hi Team
+> The quiet infrastructure was moved out of Makefile.build to accomidate
+> the new syscall table generation scripts in perf. Syscall table
+> generation wanted to also be able to be quiet, so instead of again
+> copying the code to set the quiet variables, the code was moved into
+> Makefile.perf to be used globally. This was not the right solution. It
+> should have been moved even further upwards in the call chain.
+> Makefile.include is imported in many files so this seems like a proper
+> place to put it.
 >
-> Hope this mail find you well.
+> To:
 >
-> Topic 1: Practical Applications of WebAssembly (WASM) in Filesystems,
-> Memory Management, and eBPF
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> ---
+> Charlie Jenkins (2):
+>       tools: Unify top-level quiet infrastructure
+>       tools: Remove redundant quiet setup
 >
-> Description: WebAssembly (WASM) is emerging as a powerful technology
-> for secure, efficient execution in various computing environments.
-> This session will focus on how WASM can be leveraged in filesystems,
-> memory management, and eBPF.
->
-> Key discussion points include:
->
-> 1. WASM=E2=80=99s lightweight execution model and its impact on memory ef=
-ficiency
-> 2. How WASM interacts with filesystems and operates within sandboxed
-> environments
-> 3. Potential synergies between WASM and eBPF for secure, efficient
-> execution in cloud-native and kernel-space applications
-> 4. Real-world examples of WASM implementations in security and
-> performance-critical environments
-> 5. Challenges and opportunities in integrating WASM into Linux subsystems
->
-> My Contribution: Given my interest in both WASM and security-focused
-> computing, I=E2=80=99d like to explore how WASM can enhance performance a=
-nd
-> security in system-level applications.
-> I=E2=80=99m particularly interested in discussing its potential for secur=
-e
-> execution, memory isolation, and integration with eBPF for
-> next-generation cloud and kernel-space workloads.
+>  tools/arch/arm64/tools/Makefile           |  6 -----
+>  tools/bpf/Makefile                        |  6 -----
+>  tools/bpf/bpftool/Documentation/Makefile  |  6 -----
+>  tools/bpf/bpftool/Makefile                |  6 -----
+>  tools/bpf/resolve_btfids/Makefile         |  2 --
+>  tools/bpf/runqslower/Makefile             |  5 +---
+>  tools/build/Makefile                      |  8 +-----
+>  tools/lib/bpf/Makefile                    | 13 ----------
 
-These topics sound like an interesting academic research,
-but it's not clear how any of it is applicable to linux kernel development.
-There is no wasm in the kernel.
-If the goal is to introduce wasm in the kernel then it should be
-stated as such.
-If it's all user space related then lsfmmbpf conference is not
-the right forum for such discussion.
-It can happen on bpf mailing list or elsewhere instead.
+Nack.
+libbpf and bpftool are synced independently to github
+and released from there.
+This change breaks it.
 
