@@ -1,170 +1,139 @@
-Return-Path: <bpf+bounces-50457-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50458-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A731A27F3A
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 00:03:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B959AA27F6F
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 00:18:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50BBF1887889
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 23:03:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D3231627FC
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2025 23:18:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D22A121C9EC;
-	Tue,  4 Feb 2025 23:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C66D121B8F8;
+	Tue,  4 Feb 2025 23:18:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dUk8M4eu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RfO1s+bl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A11341FF7A5;
-	Tue,  4 Feb 2025 23:02:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F9822054E3
+	for <bpf@vger.kernel.org>; Tue,  4 Feb 2025 23:17:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738710177; cv=none; b=a9rHeG1jir3xBbmRh4SF7FD1FuyJD3hdh3AdTJ1wU/mleYi+cJultz7LJIm0AV/iqX1u8xBSVKmFasW/pkJv6S3HB9IXiaZHLJs8psh/Sxvzt01bOmEaP1zOEnXRE4UCivzAGCMMqM6XI2nC9prhoY8lDJse3wslLfj2VpoDS70=
+	t=1738711081; cv=none; b=GEKUpyFTUZNhBkrCtip3MRoIhzJ48A2myBfy+VahvpkSXvROdc5V1vfE0iwzkfW0LLvh7od4afd00+nq1xcEwLRfbVnj+3wnYPxf+y9f9r8AOUcOea1UM84xLxaHjVHVljeZ8DgMsz/4TpvJvg201GHMbqBGqGh/rfkFztyauKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738710177; c=relaxed/simple;
-	bh=4chpXDmqz5lXX5/+XxyEMN/H71iHm9gxiF5XFQT7cTY=;
+	s=arc-20240116; t=1738711081; c=relaxed/simple;
+	bh=wGKdjZNm1QVwCE/Q+7CiPjP7g4TvimkNV6CEEU6LW+g=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Lo4pojSp+KSSj6KBxczUz3a0cMhaunv7JC70dnvJGjZpRTI24+lXhIgXOwV4IxzcWb5OfXa9ofH8FgAg314t8Z3FPxat0wfDG6+sDzXN4yspUaK1e1gXAqzYriv0QD+KLRymPM2AeF10Kjo9S2MjC3mUAyNKfsVxvR2l0qYgido=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dUk8M4eu; arc=none smtp.client-ip=209.85.221.47
+	 To:Cc:Content-Type; b=FKr95wFtNqdH6swN1SDw8zB8G1Xf/iOqRvLdXlWAi+T9VCsPDElVE7lNlIID0wkU5PsvdIYeoXbDRnWrnGQVrpANW6lmlNnNEeNQrhthRjC+447xQ1imz4+u8wNdohDDbf+NtxwfKLAvg60C5Dt6Pf39U1DMFoJ0fUGLBdrK128=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RfO1s+bl; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-38db10ab86cso570510f8f.3;
-        Tue, 04 Feb 2025 15:02:55 -0800 (PST)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-436281c8a38so43754525e9.3
+        for <bpf@vger.kernel.org>; Tue, 04 Feb 2025 15:17:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738710174; x=1739314974; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1738711078; x=1739315878; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IhWUg+d3sCFwJhzK5U92SB6xZl56i8PiqJiND+AD1bg=;
-        b=dUk8M4eu1llzfiD1mVJ6Ij7draREF0DbUyY0v2MifbdaN9pfJ1+id0C9F8RBENijmR
-         Lde0wrIb1iMsfbPIQ30jSp8aAlyuJrUu4YcLODXbmkNTrXeY+jCqf+hjBg7Emj4/tLy2
-         iZPhITz8DnKBUwsgb86Y8/VHKNa9XAUrfCJkMAiH/3nsCRIZK0v5etZBA+xL3vLv7sKh
-         TYI5DYYfgDJtvfhiN3KRe+D7Ngz7wVgNh2PP2icoOCWFRP4w2Gufo599ikK74FhwsVI+
-         q/bbYXdb9vbRRaIkOa1+2fHNmolurGOcZ7ueDLSL8vwB09GAaU6hMKe238SMFRhYbz4S
-         yZlQ==
+        bh=7BYDLCiGGHLj95qSdJWi2bKJiSb3Y+kFZJZ0UHIbKp8=;
+        b=RfO1s+blb56gfq5ZLVXW+oQ1sXIdJC23YFlVKDoKPWIrDzlcZD11onROLQpnpr1NmD
+         xBdDoGDwIdEoUeOom8BOnQlCAnazwnDt7WQ8826vp/LroJ/9D/bCX2YQDTNnPPSgUomp
+         gGfeZW2uaI/f1s74otIHr/DsfkX9iD7xHNrAtMfh4TWwnCkrSUJwH2PdHU5kmx6m4vIH
+         3f4XszyrtDZp4l34B/WtluRAbMJSCvmQSfnGp+xF+glm0fA8Nf4SQKFBtZy1YDeSRmje
+         52+OaOjxbuC/Hl7LhNLtMB+HCH4/m0clRHnsoTtlrUZBpwBGgwk+B8W06bFzArjWw4IO
+         4+Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738710174; x=1739314974;
+        d=1e100.net; s=20230601; t=1738711078; x=1739315878;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IhWUg+d3sCFwJhzK5U92SB6xZl56i8PiqJiND+AD1bg=;
-        b=BpScS6wa6YJRZWtOEY0csTwsg4fwINdiTT75V7F3LN6V4jALuK4nNrWhDcnLbYiGNl
-         zXNpv9uRrYsqs7MHF9z8x8JraNQiUISOSAYnrrgvrXQxkvyApe/B24GWaudccvv8Nvrb
-         zer1uPzJjjVJEgfFeQL4EMGXQEqALgr56LhXGOMbJmDRkAM6iPhr3wBa0QU4DsnoPl0d
-         MvMEL0xaFCkBzFj12oivU/UEefiqSA1TO2oFHZxQzsGqqEynwiWrwYDgvIDvcMiy7S+8
-         SMhXR7MJFdee8ngsIaj8wGEAZp1aZ65li822BVEKb31n6PXd3qaqB0YBgxzNYBxrRg4+
-         UqSg==
-X-Forwarded-Encrypted: i=1; AJvYcCVAnqCiaGVWifGgKYoB7x0gPXtO320m4pqcVol0p13/YpS6aapXP+M174AN2/i7WfPfe49Z8Z1R+A/II7aa@vger.kernel.org, AJvYcCW+aenhEO1n4RP9C1dUOxI1aWouTSN08kzUcI9g6x97Q90Cv/QwoZDg82TYbwIeuuIVLuGplnxXvZI9GCB6Bn96gD8p@vger.kernel.org, AJvYcCWNE8e38yv8wWzFJzoV/VjwG4mmNYLvLtvoN5w/TXGYUfpuwrrUN0wFmToYlyG4MmWVsE0oj08/0EY=@vger.kernel.org, AJvYcCWQjQKMWeFHjdyU6SwWuizR6nGKzjnbms51D13USRj7drF1es7dd1BpqXEFdGwiA8CU/OY=@vger.kernel.org, AJvYcCWYg2xlEOlBmTmp4fETDPmxigchcYB1vmLR1/5ho1xDh+9kbwL7OK7PubYDlOkOnZlbrDhlvd8tkXp6Dp6MC55q@vger.kernel.org, AJvYcCXFRfdv7qTzU9MjbaagtfI1PXvCCnCniPn1Oq0vJ+2jqB1sUFPRXBSN9n/UDGv1dMz1bfECq11kZWW4Uf1BkkXQqQ==@vger.kernel.org, AJvYcCXqkSQdQYBluuTHTrmrFVE7KGTREFyeS4iRQ3oIN9/0uFYYrG8ykQB2y9ZYOtIMnY5M6gedbUxMav27lmQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YydjOCPiah1msFc729uQoKSoVZFoTanL8+9y1AV4SQJIXD+e8z5
-	Sydwq4vueWnJ5841tSBFBgJgeBoRM8WTPejTo1fzv+J75oC42FWqVRnKAZOhHtARJMPQE+vPNcS
-	TuNFchsJ0XZCEwkMcpwGGANri5jM=
-X-Gm-Gg: ASbGnctPPPItwq0EVanpqJGT0frvj3gXJtv4oDmYFIF4giQTq/vF/JBBMXVVS50FWv1
-	wbDvidjBukLfLrIDUhPzD6ITkn6I9BrmAo3misoKiRSdN2oNwwprcvuwk7SEhCltw3ZB2RSCK
-X-Google-Smtp-Source: AGHT+IGyAesYgSc23Slj9Jv3XtZGRWcCp0H3F9Kqsj8a9rDodsyQAVoifJDYZlGi89eBGwL+TzarCw79qmfJ114u8NM=
-X-Received: by 2002:a5d:69c8:0:b0:386:37f5:99e7 with SMTP id
- ffacd0b85a97d-38db48f3787mr319907f8f.33.1738710173606; Tue, 04 Feb 2025
- 15:02:53 -0800 (PST)
+        bh=7BYDLCiGGHLj95qSdJWi2bKJiSb3Y+kFZJZ0UHIbKp8=;
+        b=On1pTaqb/r8tkDABXLyHlIovpdEPQvXLayvjjZ9AiS7+puoRQMkwf8g6FfXN69Z7LS
+         JFzichA/UbiYz2/C8QzgmFtTo8l7OME5wpP+aHCFFeWotfT2GgtByttBVpDeW6/2bjgo
+         PtK8LOTrN8SKpB5hlLXmebMwXljd0Iw8ooMP3NLOVIUKuTy5BP6HdRVZxPakpUT9ckX/
+         vbpv732n2ECqS7kDoegm5hupW50A32cF2gGKcNCmMhs0LoqdzcHG4+Odyb7pVPkjAiBe
+         B0ZG79BLERKo5Tm8y2efr062eA2/jyMss82YEahYO5epzpX8VZNsjULCoNFLeEtNQAcW
+         6XwQ==
+X-Gm-Message-State: AOJu0YzTVphMNXhRGJmFrMMbWDEz07zPS4h/cqrWZLdeQkiFR/kPcwwS
+	8LVswdi7kdV5L6sfyWS/mCGxysOfU+Aa/3Op6ml+I5iP7baSxlMvrENlzFVPrAQ2bhIiCG53Sul
+	NeBqOF//+TBF0LrGzygctQ/iEQPU=
+X-Gm-Gg: ASbGncsrtu+Cajp+MvdpWQksi/mpAp5R0k/QHTgnvdChHUgdLk6li5mekSec5h4yfLn
+	JsxtjAyeumommsXHRXWyiO7PeDq0jqXlJfF2SYjyjVk6M1OeWYV/SVRgYKtr2CvE2qKZKYnH0
+X-Google-Smtp-Source: AGHT+IHXYSdoONdPlNMCFrufrSIWc0eFcBlqgFZGkdQ+gdmkP13UuMHYV2mB7oFj2Ep0WAnyeHAXXJc5aOo2pE8cpDE=
+X-Received: by 2002:a05:600c:4b8a:b0:434:fdbc:5ce5 with SMTP id
+ 5b1f17b1804b1-4390d5a3a04mr2865485e9.29.1738711077490; Tue, 04 Feb 2025
+ 15:17:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250203-quiet_tools-v1-0-d25c8956e59a@rivosinc.com>
- <CAADnVQKTqRBQBA-yxB9EYPMgayP3rOE4iDhg+QD++2d=jxfY=Q@mail.gmail.com>
- <Z6JdwSsAk1xCiSrn@ghost> <Z6JksXDRh8OSAh-u@google.com>
-In-Reply-To: <Z6JksXDRh8OSAh-u@google.com>
+References: <20250125111109.732718-1-houtao@huaweicloud.com> <20250125111109.732718-2-houtao@huaweicloud.com>
+In-Reply-To: <20250125111109.732718-2-houtao@huaweicloud.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 4 Feb 2025 23:02:42 +0000
-X-Gm-Features: AWEUYZlmDbliSpI2sm1GIy7yJu4eHOxWwrFAjie_1pp1QQTtFuZzNJaDrMgxEhU
-Message-ID: <CAADnVQKmKf6wY3dg+PfAxtrrFWGO7D-m83dEndjWksPfWDt5wQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2] tools: Unify top-level quiet infrastructure
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Charlie Jenkins <charlie@rivosinc.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Quentin Monnet <qmo@kernel.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
-	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <bentiss@kernel.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	"linux-perf-use." <linux-perf-users@vger.kernel.org>, 
-	Linux Power Management <linux-pm@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
-	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
+Date: Tue, 4 Feb 2025 23:17:46 +0000
+X-Gm-Features: AWEUYZn4W7CBqW2pFjRgiKf9yGhenMX-6LxexW5TBTiQ1J3jxs2yfJB3690Ly9I
+Message-ID: <CAADnVQLep5NrLfJkWbtQsBSZZq-BhBJOVcZ4US7EAZ56D27MhQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 01/20] bpf: Add two helpers to facilitate the
+ parsing of bpf_dynptr
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	Hou Tao <houtao1@huawei.com>, Xu Kuohai <xukuohai@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 4, 2025 at 7:04=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
+On Sat, Jan 25, 2025 at 10:59=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> w=
 rote:
 >
-> Hello,
+> From: Hou Tao <houtao1@huawei.com>
 >
-> On Tue, Feb 04, 2025 at 10:34:41AM -0800, Charlie Jenkins wrote:
-> > On Tue, Feb 04, 2025 at 05:18:42PM +0000, Alexei Starovoitov wrote:
-> > > On Tue, Feb 4, 2025 at 12:10=E2=80=AFAM Charlie Jenkins <charlie@rivo=
-sinc.com> wrote:
-> > > >
-> > > > The quiet infrastructure was moved out of Makefile.build to accomid=
-ate
-> > > > the new syscall table generation scripts in perf. Syscall table
-> > > > generation wanted to also be able to be quiet, so instead of again
-> > > > copying the code to set the quiet variables, the code was moved int=
-o
-> > > > Makefile.perf to be used globally. This was not the right solution.=
- It
-> > > > should have been moved even further upwards in the call chain.
-> > > > Makefile.include is imported in many files so this seems like a pro=
-per
-> > > > place to put it.
-> > > >
-> > > > To:
-> > > >
-> > > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > > > ---
-> > > > Charlie Jenkins (2):
-> > > >       tools: Unify top-level quiet infrastructure
-> > > >       tools: Remove redundant quiet setup
-> > > >
-> > > >  tools/arch/arm64/tools/Makefile           |  6 -----
-> > > >  tools/bpf/Makefile                        |  6 -----
-> > > >  tools/bpf/bpftool/Documentation/Makefile  |  6 -----
-> > > >  tools/bpf/bpftool/Makefile                |  6 -----
-> > > >  tools/bpf/resolve_btfids/Makefile         |  2 --
-> > > >  tools/bpf/runqslower/Makefile             |  5 +---
-> > > >  tools/build/Makefile                      |  8 +-----
-> > > >  tools/lib/bpf/Makefile                    | 13 ----------
-> > >
-> > > Nack.
-> > > libbpf and bpftool are synced independently to github
-> > > and released from there.
-> > > This change breaks it.
+> Add BPF_DYNPTR in btf_field_type to support bpf_dynptr in map key. The
+> parsing of bpf_dynptr in btf will be done in the following patch, and
+> the patch only adds two helpers: btf_new_bpf_dynptr_record() creates an
+> btf record which only includes a bpf_dynptr and btf_type_is_dynptr()
+> checks whether the btf_type is a bpf_dynptr or not.
 >
-> Sorry, I overlooked this part and merged a change that touched the
-> common files into the perf tree.
+> With the introduction of BPF_DYNPTR, BTF_FIELDS_MAX is changed from 11
+> to 13, therefore, update the hard-coded number in cpumask test as well.
 >
-> f2868b1a66d4f40f ("perf tools: Expose quiet/verbose variables in Makefile=
-.perf")
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> ---
+>  include/linux/bpf.h                           |  5 ++-
+>  include/linux/btf.h                           |  2 +
+>  kernel/bpf/btf.c                              | 42 ++++++++++++++++---
+>  .../selftests/bpf/progs/cpumask_common.h      |  2 +-
+>  4 files changed, 43 insertions(+), 8 deletions(-)
 >
-> Unfortunately, it's already in v6.14-rc1.
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index feda0ce90f5a3..0ee14ae30100f 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -184,8 +184,8 @@ struct bpf_map_ops {
+>  };
 >
-> >
-> > Can you explain how it breaks it? Currently bpftool and resolve_btfids
-> > don't build quietly so this was an attempt to fix that.
->
-> So I think you will need something like this for v6.14.  Again, sorry
-> about the trouble.
+>  enum {
+> -       /* Support at most 11 fields in a BTF type */
+> -       BTF_FIELDS_MAX     =3D 11,
+> +       /* Support at most 13 fields in a BTF type */
+> +       BTF_FIELDS_MAX     =3D 13,
 
-Just revert f2868b1a66d4f40f that created this mess.
+BTF_FIELDS_MAX doesn't need to be incremented when btf_field_type
+learns about a new type.
+The number of fields per map value is independent
+from a number of types that the verifier recognizes.
+The patch that incremented it last time slipped through
+by accident.
+Do you really need to increase it?
+If so, why 13 and not 32 ?
+
+pw-bot: cr
 
