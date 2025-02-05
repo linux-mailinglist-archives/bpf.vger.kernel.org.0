@@ -1,177 +1,164 @@
-Return-Path: <bpf+bounces-50495-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50496-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0370CA2868C
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 10:30:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5926A286C9
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 10:40:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A0A21612EE
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 09:30:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72CB33A8A42
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 09:39:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3B9722A1CD;
-	Wed,  5 Feb 2025 09:30:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCAF322A7FC;
+	Wed,  5 Feb 2025 09:39:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V0ouUcBU"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E27121A427;
-	Wed,  5 Feb 2025 09:30:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B77FD22A7E4;
+	Wed,  5 Feb 2025 09:39:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738747827; cv=none; b=efoSLQ5djPRhM5PjfZTlCP1tCczyl82M8r/cHwIm5NNaOGq2e7oRH4eSgvvViUq8DfAMWmrgfYK3XS1KLFjoK/2J73xPEFavC3sNtRP4EfFYqjp6N0digamT5Fnd3GFmg/Hth0TOV83iro7g6nRst0Svq3BhQbf9/1VIfgHjNx8=
+	t=1738748352; cv=none; b=WdALuk7SNfeIr1BISfIOEuHZADOH11s7MdyQt34Sj2npzRJ0OQ1M9ModD5/sBDs7a3jrZEAltP4zr34bgxmf0Mw5SPqJkwGzFRuCPLOECqAaur0lfpKEB3odg0eEgLkyNF8yb8LWofN5D4MIrs4Y7bctc/Y9bSepBPHeFzGBmG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738747827; c=relaxed/simple;
-	bh=KSvuNW4NaX9Wu27x971kTxNlQDfGsgCINQIRim9EfBw=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=R98zf476FdNIHMXibHNU6ghcYrMD+4pL/pGiSFXx0gM+pTA1JGhifkbfgIeuDynkt9CJsATDB0Zl2iaULubiCPSY2JN9KqsPYnMb3Ds5KVb8UThMy688U5w+jMJ6RsRqJo1C1THD7UlmaP4YwjJ23+JJq8jjNzI83fJPYKuTsqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Ynw1f4WPKz4f3jYL;
-	Wed,  5 Feb 2025 17:29:58 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id B82CE1A11AF;
-	Wed,  5 Feb 2025 17:30:19 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP2 (Coremail) with SMTP id Syh0CgC3c2anL6NnaHbUCw--.14822S2;
-	Wed, 05 Feb 2025 17:30:19 +0800 (CST)
-Subject: Re: [PATCH bpf-next v1 2/2] bpf: sockopt_sk: fix 'undeclared'
- definition error
-To: Jason Xing <kerneljasonxing@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com,
- martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, shuah@kernel.org
-References: <20250204023946.16031-1-kerneljasonxing@gmail.com>
- <20250204023946.16031-3-kerneljasonxing@gmail.com>
- <99ccf971-cae5-9c45-5dff-2c8563a7879f@huaweicloud.com>
- <CAL+tcoAkyjDQd48wKuA8V_RE6j1OYTL2iGxT8HdVKpryD3SaUA@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <b13c3602-69b8-7452-f342-8204287cea4d@huaweicloud.com>
-Date: Wed, 5 Feb 2025 17:30:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1738748352; c=relaxed/simple;
+	bh=Rxon6PTD7daRJg0+aVySuS+0sANyOmpEYks80AvCv/M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gu7OZ8/t4UARtQyycKijBQwwoPZfOOTjB1WJMO/3NHVnFfkR5xHJni8zNMkM4J3myfTxANF3HBB7VCgXj01CcBTlzmvjlQp3D+8BcdHz9WobaQhWptffhKaMK+Vqwhnlh75r/dFm98iXJVi0CNU0fxLQB0tOI+tzuikRbFLtnHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V0ouUcBU; arc=none smtp.client-ip=209.85.166.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3cfce97a3d9so20992335ab.2;
+        Wed, 05 Feb 2025 01:39:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738748350; x=1739353150; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kJCR/SfTU0C0sRJZd2HUPVpgMo5fZYOkbmZsnQM0lUA=;
+        b=V0ouUcBU1aIelrb7ruT2TvTk4Ai07ufN+bvUMhjt8sA//himWgPv2csUSK3BFAR8mM
+         UGUhUZeqRDKyrIbKKOvFlNRiTwaNSXLA4UDJt3VtoQixVsM56ZCv7vEJmd76hvs88dom
+         4GuTo4XwAPL3DcW20vZe3H5YOBl6Ijt0Ty0CCnjzQw25zqgSeu0E5JoL8GHRjKUjQI04
+         j7CcsDAm9ZQJIwMdceeFuNxYIP/PygTn5tbDL8l3lpTRr3RR/mE+vhCBJvzhjGUq/fpW
+         HiQYiMUH6e561z/sit2PjVXAUIFMSRULblPKEc/MLRB7/KJGDBwx3SZnVntvt6QBeRbJ
+         6q0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738748350; x=1739353150;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kJCR/SfTU0C0sRJZd2HUPVpgMo5fZYOkbmZsnQM0lUA=;
+        b=F5hyFMgbBBdfmrI16MqdeLF1u7oAJCEMU4vLdW0uNEZZ0D2AVXg1HApg9tlCQUqqjd
+         9LMcSQ45MXKkqHhG3g1AxKRr7NtCBJFrHzwR0F8+NPjFHSVM8JaClmthXRMGleXiFt9X
+         s7SaVr5RUd8Vmz7huVsnfckhsNh6JpmDmFI76MYjDzJpR8ejEpoEQaEiAgY8kCu6A5do
+         IjzFNMFgFmO43FfV/sDg7HlQEuX2fF2DLkRAkaKr6VMURIgNUoA5cptQjvjTr0vYcx5M
+         ZnF5N1aTFW+IFoqOPWCX2ZOA3IOTWGLiZ3kw5dJqQSUYuRo4IjpC+Yq47HlMVkpBNPp2
+         i0UQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXieftqypiJe0em1um5vNd7tUHC+lzv0KWtrzxR9wE/0EdydmwNrJaSKzVy2z09xUpibfcopJmDvAPOIihepho=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywqol2Jp/FOtY/9f5Wh1GI0opIRlPZCTG2APwBv3/2Lg8gp/z1V
+	JK2ajp/LOxkLKQisGO790IS/Mbhr9uBncxZ49Zk2734zOykuO8YO+8XJow0Sq5Jt2aXkZGtTYrJ
+	z99VOTqTDL7kKVu5p1LPmAeg5DR0=
+X-Gm-Gg: ASbGnctdj7NJPO4wtFfv7Nys2zDmiYy+fdIokfgRrzrSMsDJ/vtEfT/FuG6MHqiuA+H
+	VjSopJXqmS17wkLXVWR5G6U9F2yBir0iyiQ5adoaa6s/+YP+Prc2Z/GEU7pzKV3Nnb5Tq1TRq
+X-Google-Smtp-Source: AGHT+IEjYWCRfmKIJ3npYCWHVcL0hG2R2j79Cy2iuxGpfdAhG+/yDIjpTXPZJXWiyh1Q8y4VsdFPMVD5a03ggM/VZ2I=
+X-Received: by 2002:a92:c565:0:b0:3d0:47cf:869c with SMTP id
+ e9e14a558f8ab-3d04f93131amr19140435ab.19.1738748349747; Wed, 05 Feb 2025
+ 01:39:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAL+tcoAkyjDQd48wKuA8V_RE6j1OYTL2iGxT8HdVKpryD3SaUA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:Syh0CgC3c2anL6NnaHbUCw--.14822S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw4kXr4xAw1xtrW7tr4rAFb_yoW5tF1kpa
-	48A3WUKay8CFW5Zwn7Jr42vF1xKr48Jryj9rWvqry3ZF17WFyxGFW7KrWY9FnagrZIvr4F
-	v347KF93ua1kZFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU92b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCYjI0SjxkI62AI
-	1cAE67vIY487MxkF7I0En4kS14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFV
-	Cjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWl
-	x4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r
-	1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_
-	JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYx
-	BIdaVFxhVjvjDU0xZFpf9x07jIksgUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20250204023946.16031-1-kerneljasonxing@gmail.com>
+ <20250204023946.16031-3-kerneljasonxing@gmail.com> <99ccf971-cae5-9c45-5dff-2c8563a7879f@huaweicloud.com>
+ <CAL+tcoAkyjDQd48wKuA8V_RE6j1OYTL2iGxT8HdVKpryD3SaUA@mail.gmail.com> <b13c3602-69b8-7452-f342-8204287cea4d@huaweicloud.com>
+In-Reply-To: <b13c3602-69b8-7452-f342-8204287cea4d@huaweicloud.com>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Wed, 5 Feb 2025 17:38:33 +0800
+X-Gm-Features: AWEUYZltfuwHeJsbk39oiKI_AKRp6YWEhV_JaOvLDAIa7t1PFt-2HYxOZvdcX9M
+Message-ID: <CAL+tcoC3eQew6R2Q=nZSus6p5d2pvF3kFbe_=ibPrPvzmjiD3Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 2/2] bpf: sockopt_sk: fix 'undeclared'
+ definition error
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com, 
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Wed, Feb 5, 2025 at 5:30=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wro=
+te:
+>
+> Hi,
+>
+> On 2/5/2025 11:27 AM, Jason Xing wrote:
+> > On Wed, Feb 5, 2025 at 10:57=E2=80=AFAM Hou Tao <houtao@huaweicloud.com=
+> wrote:
+> >> Hi,
+> >>
+> >> On 2/4/2025 10:39 AM, Jason Xing wrote:
+> >>> Error messages:
+> >>> selftests/bpf/prog_tests/sockopt_sk.c: In function =E2=80=98getsetsoc=
+kopt=E2=80=99:
+> >>> selftests/bpf/prog_tests/sockopt_sk.c:22:31: error: field =E2=80=98zc=
+=E2=80=99 has incomplete type
+> >>>    struct tcp_zerocopy_receive zc;
+> >>>                                ^~
+> >>> selftests/bpf/prog_tests/sockopt_sk.c:169:32: error: =E2=80=98TCP_ZER=
+OCOPY_RECEIVE=E2=80=99 undeclared (first use in this function)
+> >>>   err =3D getsockopt(fd, SOL_TCP, TCP_ZEROCOPY_RECEIVE, &buf, &optlen=
+);
+> >>>                                 ^~~~~~~~~~~~~~~~~~~~
+> >>>
+> >>> Fix it by introducing the right header.
+> >>>
+> >>> Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
+> >>> ---
+> >>>  tools/testing/selftests/bpf/prog_tests/sockopt_sk.c | 2 +-
+> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c b/to=
+ols/testing/selftests/bpf/prog_tests/sockopt_sk.c
+> >>> index ba6b3ec1156a..e0a9785ffcdc 100644
+> >>> --- a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
+> >>> +++ b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
+> >>> @@ -2,7 +2,7 @@
+> >>>  #include <test_progs.h>
+> >>>  #include "cgroup_helpers.h"
+> >>>
+> >>> -#include <netinet/tcp.h>
+> >>> +#include <uapi/linux/tcp.h>
+> >> Should it be <linux/tcp.h> instead ?
+> > I thought that too, but I altered my thoughts after reading this
+> > commit[1], totally without knowing why the tcp part should be changed.
+> > Should I change it back?
+>
+> Thanks for pointing the commit to me. Under my local environment, it
+> seems both netinet/tcp.h and linux/tcp define tcp_zerocopy_receive and
+> tcphdr, and I think that is the reason why the commit changes tcp as
+> well. For the following build error:
+>
+> selftests/bpf/prog_tests/sockopt_sk.c:22:31: error: field =E2=80=98zc=E2=
+=80=99 has
+> incomplete type
+>    struct tcp_zerocopy_receive zc;
+>
+> I think maybe your local environment is a bit out-of-date. I prefer to
+> keep it as-is.
 
-On 2/5/2025 11:27 AM, Jason Xing wrote:
-> On Wed, Feb 5, 2025 at 10:57 AM Hou Tao <houtao@huaweicloud.com> wrote:
->> Hi,
->>
->> On 2/4/2025 10:39 AM, Jason Xing wrote:
->>> Error messages:
->>> selftests/bpf/prog_tests/sockopt_sk.c: In function ‘getsetsockopt’:
->>> selftests/bpf/prog_tests/sockopt_sk.c:22:31: error: field ‘zc’ has incomplete type
->>>    struct tcp_zerocopy_receive zc;
->>>                                ^~
->>> selftests/bpf/prog_tests/sockopt_sk.c:169:32: error: ‘TCP_ZEROCOPY_RECEIVE’ undeclared (first use in this function)
->>>   err = getsockopt(fd, SOL_TCP, TCP_ZEROCOPY_RECEIVE, &buf, &optlen);
->>>                                 ^~~~~~~~~~~~~~~~~~~~
->>>
->>> Fix it by introducing the right header.
->>>
->>> Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
->>> ---
->>>  tools/testing/selftests/bpf/prog_tests/sockopt_sk.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
->>> index ba6b3ec1156a..e0a9785ffcdc 100644
->>> --- a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
->>> +++ b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
->>> @@ -2,7 +2,7 @@
->>>  #include <test_progs.h>
->>>  #include "cgroup_helpers.h"
->>>
->>> -#include <netinet/tcp.h>
->>> +#include <uapi/linux/tcp.h>
->> Should it be <linux/tcp.h> instead ?
-> I thought that too, but I altered my thoughts after reading this
-> commit[1], totally without knowing why the tcp part should be changed.
-> Should I change it back?
+Thanks for your review.
 
-Thanks for pointing the commit to me. Under my local environment, it
-seems both netinet/tcp.h and linux/tcp define tcp_zerocopy_receive and
-tcphdr, and I think that is the reason why the commit changes tcp as
-well. For the following build error:
+Right, but I believe many users can't manage to upgrade to the latest
+version for the whole system. The selftests are supposed to be
+compatible, I reckon. It's surely not bad to consider the
+compatibility after adjusting the header file.
 
-selftests/bpf/prog_tests/sockopt_sk.c:22:31: error: field ‘zc’ has
-incomplete type
-   struct tcp_zerocopy_receive zc;
-
-I think maybe your local environment is a bit out-of-date. I prefer to
-keep it as-is.
->
->> Directly including uapi header file
->> in application seems weird.
-> After greping the tools/testing/selftests/bpf, we see some similar
-> usage like including a uapi header file.
->
-> [1]
-> commit a2f482c34a52176ae89d143979bbc9e7a72857c8
-> Author: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
-> Date:   Wed Nov 20 08:43:21 2024 +0100
->
->     selftests/bpf: use the same udp and tcp headers in tests under test_progs
->
->     Trying to add udp-dedicated helpers in network_helpers involves
->     including some udp header, which makes multiple test_progs tests build
->     fail:
->
->     In file included from ./progs/test_cls_redirect.h:13,
->                      from [...]/prog_tests/cls_redirect.c:15:
->     [...]/usr/include/linux/udp.h:23:8: error: redefinition of ‘struct udphdr’
->        23 | struct udphdr {
->           |        ^~~~~~
->     In file included from ./network_helpers.h:17,
->                      from [...]/prog_tests/cls_redirect.c:13:
->     [...]/usr/include/netinet/udp.h:55:8: note: originally defined here
->        55 | struct udphdr
->           |        ^~~~~~
->
->     This error is due to struct udphdr being defined in both <linux/udp.h>
->     and <netinet/udp.h>.
->
->     Use only <netinet/udp.h> in every test. While at it, perform the same
->     for tcp.h. For some tests, the change needs to be done in the eBPF
->     program part as well, because of some headers sharing between both
->     sides.
->
-> Thanks,
-> Jason
->
-> .
-
+Thanks,
+Jason
 
