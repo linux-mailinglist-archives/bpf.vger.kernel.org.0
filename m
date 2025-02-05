@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-50537-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50538-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0156A29695
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 17:47:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B11EA2969F
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 17:48:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F50E3A7F55
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 16:47:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32EA13A72CD
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 16:47:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB191FC109;
-	Wed,  5 Feb 2025 16:46:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 178B41FCFC6;
+	Wed,  5 Feb 2025 16:46:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J5lAJcFX"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U2mn2Xls"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E6EC1DC9B3;
-	Wed,  5 Feb 2025 16:46:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53B341DF242;
+	Wed,  5 Feb 2025 16:46:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738774003; cv=none; b=eOZPmhKK1mmpeQhCRE/PYOWeC3R7h2FWcpgrdyHXgywqebFMdqWWhdoFO6J4qlWaMKzq8FBVBShk7G0/9QUvkZFMbFpy6ZWEmav2HkU4lrzRm57sk0LlGC/+0JDmuY+sJy1FXsy7axf2D2i+3J8+GT5w/VWy6n6MWsBUYZPF9hw=
+	t=1738774005; cv=none; b=W9wlz5OhcMvF400mJEuLJJtxtKesGOAxrpmLLnP1HcQxc4Dck7u+BOoVZQIP0+SyXUN/JgS+5Nz86IBZ13Zla7KUPjjT4QODnF1ar4LCCWvh2WBMCthYwJLQziiO3r9S8RYH6ey+ivdfdQHMevth9mUdZbpUHbX0LLLisl63W/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738774003; c=relaxed/simple;
-	bh=NHJVJjgmFUzTIgQmgstoUzfkHlS6ur0aEm7F2vGSbR8=;
+	s=arc-20240116; t=1738774005; c=relaxed/simple;
+	bh=IvnjDQh7UZAMI+TirlbcH5qxYIQfFE7GLFGMTzd8fM8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iWKkWb2Mif3xOOS+57FR8OD69Pf4XO6tXMnp+gjz3CKzIKXVtUGRfkkNzahMl4HwnwKwi73KL31DX01huesT0mJ84v02OCtcaREacc4z/CBGlRUrS8IJlPxxqlEaywMhhWFk6vJn8aBTcwz8Vbv2/mzij18bPQT+CD8te6Nwj5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J5lAJcFX; arc=none smtp.client-ip=198.175.65.12
+	 MIME-Version:Content-Type; b=MDDgG+bbHlts5on0dZFpVVFn8XV7QqId1wGg+8HvQeiuUVxk4LlOdjbGY9U7geYZewpRGO+fdY4l4gqd07mrcFdLs93sAofzAwoIhhcPRbPt/qqI2lT7R76cduzmeSxNDirXcRrHOt9SO/ryDB4yfi5RtbDqvk+XXQU6D8Q1FmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U2mn2Xls; arc=none smtp.client-ip=198.175.65.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738774002; x=1770310002;
+  t=1738774004; x=1770310004;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=NHJVJjgmFUzTIgQmgstoUzfkHlS6ur0aEm7F2vGSbR8=;
-  b=J5lAJcFXsajRKuAI+K7cq4ZJMCaJcq5I5fgEl9K/Q3xEW2M3VEyLM8DP
-   FKfUtoqPrJis+5kKzvLjovVEQFVRHos0SLj0uvQYw1FnVdRgPiu2+XEIw
-   wgoXSrzYN8cAJHGG1PNmlopCybFs0hfVcWusJersaAj75pyVrBOec4N5T
-   pPvmR7NCYz2ibmn5ioHpKlB1Pln6mrB5IfQ6t4o/zhmX5Y+iJIOFy6BJH
-   OPqlqkUsIbta0R/oubKBy9FmGEZHn8iMs6bh3qMUC++O9hCV+Q6zvbybD
-   4ZOsbkpQyLpvNgZRRs25CviEfiO8Q8N4XGWvS8C2GeO3A8Vtzxi4OX+/8
-   w==;
-X-CSE-ConnectionGUID: SR5OKob4Riq3eLmQM2c+/Q==
-X-CSE-MsgGUID: tGDrMrffQ26Nreoer+DIRQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11336"; a="50741113"
+  bh=IvnjDQh7UZAMI+TirlbcH5qxYIQfFE7GLFGMTzd8fM8=;
+  b=U2mn2Xlsrd0yHw+qX3vrg8PBE3Wu7uCGG4XzvA6izjObLiuozAnk3tLm
+   b/8BCOpQUyeaYcuMOrCzzoS/k1A/tDvpbJ1QLN6n9cHTSIiR9R6OSOedv
+   Ed12j57+4TpE9/R5AahxglvLLnmFKZmqmTJZqEiiOZnOD6p/GhEczRbMK
+   QyvVMy7rs+4xHr3QKQHo6g4tg/q1FoyxyYSf0Nq9ol6cqtw9HNyv1w9eW
+   oNp5xKuHmGqCZK9GXpvZOK3ITbsS6XGpzaV0EO/iDHVzHSEH9sp8eEGL2
+   NnknOZzEsFKc8ixYMMEDdl7VpZFsjCikvCIMJkdXqQImgb53b58/dFcLE
+   g==;
+X-CSE-ConnectionGUID: /XRcG7y3Q/2AFhoojr6f+g==
+X-CSE-MsgGUID: /QOH6mBLTkGiR+WZv93z4Q==
+X-IronPort-AV: E=McAfee;i="6700,10204,11336"; a="50741126"
 X-IronPort-AV: E=Sophos;i="6.13,262,1732608000"; 
-   d="scan'208";a="50741113"
+   d="scan'208";a="50741126"
 Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2025 08:39:57 -0800
-X-CSE-ConnectionGUID: RB60J3L0Sd+Fud51p2ZTsw==
-X-CSE-MsgGUID: Or7bCBZkQZy8+5nlawdYBg==
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2025 08:40:02 -0800
+X-CSE-ConnectionGUID: JBg3clvCSWeTjPhIsILSAw==
+X-CSE-MsgGUID: Nb6dUDVgTx6OUb6IJZtUmw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.13,262,1732608000"; 
-   d="scan'208";a="110741783"
+   d="scan'208";a="110741832"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa009.jf.intel.com with ESMTP; 05 Feb 2025 08:39:51 -0800
+  by orviesa009.jf.intel.com with ESMTP; 05 Feb 2025 08:39:57 -0800
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: Andrew Lunn <andrew+netdev@lunn.ch>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -78,9 +78,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: [PATCH net-next v4 3/8] bpf: cpumap: switch to GRO from netif_receive_skb_list()
-Date: Wed,  5 Feb 2025 17:36:04 +0100
-Message-ID: <20250205163609.3208829-4-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next v4 4/8] bpf: cpumap: reuse skb array instead of a linked list to chain skbs
+Date: Wed,  5 Feb 2025 17:36:05 +0100
+Message-ID: <20250205163609.3208829-5-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250205163609.3208829-1-aleksander.lobakin@intel.com>
 References: <20250205163609.3208829-1-aleksander.lobakin@intel.com>
@@ -93,137 +93,261 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-cpumap has its own BH context based on kthread. It has a sane batch
-size of 8 frames per one cycle.
-GRO can be used here on its own. Adjust cpumap calls to the upper stack
-to use GRO API instead of netif_receive_skb_list() which processes skbs
-by batches, but doesn't involve GRO layer at all.
-In plenty of tests, GRO performs better than listed receiving even
-given that it has to calculate full frame checksums on the CPU.
-As GRO passes the skbs to the upper stack in the batches of
-@gro_normal_batch, i.e. 8 by default, and skb->dev points to the
-device where the frame comes from, it is enough to disable GRO
-netdev feature on it to completely restore the original behaviour:
-untouched frames will be being bulked and passed to the upper stack
-by 8, as it was with netif_receive_skb_list().
+cpumap still uses linked lists to store a list of skbs to pass to the
+stack. Now that we don't use listified Rx in favor of
+napi_gro_receive(), linked list is now an unneeded overhead.
+Inside the polling loop, we already have an array of skbs. Let's reuse
+it for skbs passed to cpumap (generic XDP) and keep there in case of
+XDP_PASS when a program is installed to the map itself. Don't list
+regular xdp_frames after converting them to skbs as well; store them
+in the mentioned array (but *before* generic skbs as the latters have
+lower priority) and call gro_receive_skb() for each array element after
+they're done.
 
 Tested-by: Daniel Xu <dxu@dxuuu.xyz>
 Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- kernel/bpf/cpumap.c | 46 ++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 43 insertions(+), 3 deletions(-)
+ kernel/bpf/cpumap.c | 119 +++++++++++++++++++++++---------------------
+ 1 file changed, 61 insertions(+), 58 deletions(-)
 
 diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index 774accbd4a22..f0909736eaa5 100644
+index f0909736eaa5..85936f09d8d7 100644
 --- a/kernel/bpf/cpumap.c
 +++ b/kernel/bpf/cpumap.c
-@@ -33,8 +33,8 @@
- #include <trace/events/xdp.h>
- #include <linux/btf_ids.h>
+@@ -134,22 +134,23 @@ static void __cpu_map_ring_cleanup(struct ptr_ring *ring)
+ 	}
+ }
  
--#include <linux/netdevice.h>   /* netif_receive_skb_list */
--#include <linux/etherdevice.h> /* eth_type_trans */
-+#include <linux/netdevice.h>
-+#include <net/gro.h>
+-static void cpu_map_bpf_prog_run_skb(struct bpf_cpu_map_entry *rcpu,
+-				     struct list_head *listp,
+-				     struct xdp_cpumap_stats *stats)
++static u32 cpu_map_bpf_prog_run_skb(struct bpf_cpu_map_entry *rcpu,
++				    void **skbs, u32 skb_n,
++				    struct xdp_cpumap_stats *stats)
+ {
+-	struct sk_buff *skb, *tmp;
+ 	struct xdp_buff xdp;
+-	u32 act;
++	u32 act, pass = 0;
+ 	int err;
  
- /* General idea: XDP packets getting XDP redirected to another CPU,
-  * will maximum be stored/queued for one driver ->poll() call.  It is
-@@ -68,6 +68,7 @@ struct bpf_cpu_map_entry {
+-	list_for_each_entry_safe(skb, tmp, listp, list) {
++	for (u32 i = 0; i < skb_n; i++) {
++		struct sk_buff *skb = skbs[i];
++
+ 		act = bpf_prog_run_generic_xdp(skb, &xdp, rcpu->prog);
+ 		switch (act) {
+ 		case XDP_PASS:
++			skbs[pass++] = skb;
+ 			break;
+ 		case XDP_REDIRECT:
+-			skb_list_del_init(skb);
+ 			err = xdp_do_generic_redirect(skb->dev, skb, &xdp,
+ 						      rcpu->prog);
+ 			if (unlikely(err)) {
+@@ -158,7 +159,7 @@ static void cpu_map_bpf_prog_run_skb(struct bpf_cpu_map_entry *rcpu,
+ 			} else {
+ 				stats->redirect++;
+ 			}
+-			return;
++			break;
+ 		default:
+ 			bpf_warn_invalid_xdp_action(NULL, rcpu->prog, act);
+ 			fallthrough;
+@@ -166,12 +167,15 @@ static void cpu_map_bpf_prog_run_skb(struct bpf_cpu_map_entry *rcpu,
+ 			trace_xdp_exception(skb->dev, rcpu->prog, act);
+ 			fallthrough;
+ 		case XDP_DROP:
+-			skb_list_del_init(skb);
+-			kfree_skb(skb);
++			napi_consume_skb(skb, true);
+ 			stats->drop++;
+-			return;
++			break;
+ 		}
+ 	}
++
++	stats->pass += pass;
++
++	return pass;
+ }
  
- 	struct bpf_cpumap_val value;
- 	struct bpf_prog *prog;
-+	struct gro_node gro;
+ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
+@@ -205,7 +209,6 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
+ 				stats->drop++;
+ 			} else {
+ 				frames[nframes++] = xdpf;
+-				stats->pass++;
+ 			}
+ 			break;
+ 		case XDP_REDIRECT:
+@@ -229,48 +232,44 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
+ 	}
  
- 	struct completion kthread_running;
- 	struct rcu_work free_work;
-@@ -261,10 +262,36 @@ static int cpu_map_bpf_prog_run(struct bpf_cpu_map_entry *rcpu, void **frames,
+ 	xdp_clear_return_frame_no_direct();
++	stats->pass += nframes;
+ 
  	return nframes;
  }
  
-+static void cpu_map_gro_receive(struct bpf_cpu_map_entry *rcpu,
-+				struct list_head *list)
-+{
-+	struct sk_buff *skb, *tmp;
-+
-+	list_for_each_entry_safe(skb, tmp, list, list) {
-+		skb_list_del_init(skb);
-+		gro_receive_skb(&rcpu->gro, skb);
-+	}
-+}
-+
-+static void cpu_map_gro_flush(struct bpf_cpu_map_entry *rcpu, bool empty)
-+{
-+	/*
-+	 * If the ring is not empty, there'll be a new iteration soon, and we
-+	 * only need to do a full flush if a tick is long (> 1 ms).
-+	 * If the ring is empty, to not hold GRO packets in the stack for too
-+	 * long, do a full flush.
-+	 * This is equivalent to how NAPI decides whether to perform a full
-+	 * flush.
-+	 */
-+	gro_flush(&rcpu->gro, !empty && HZ >= 1000);
-+	gro_normal_list(&rcpu->gro);
-+}
-+
- static int cpu_map_kthread_run(void *data)
- {
- 	struct bpf_cpu_map_entry *rcpu = data;
- 	unsigned long last_qs = jiffies;
-+	u32 packets = 0;
+ #define CPUMAP_BATCH 8
  
- 	complete(&rcpu->kthread_running);
- 	set_current_state(TASK_INTERRUPTIBLE);
-@@ -282,6 +309,7 @@ static int cpu_map_kthread_run(void *data)
+-static int cpu_map_bpf_prog_run(struct bpf_cpu_map_entry *rcpu, void **frames,
+-				int xdp_n, struct xdp_cpumap_stats *stats,
+-				struct list_head *list)
++struct cpu_map_ret {
++	u32 xdp_n;
++	u32 skb_n;
++};
++
++static void cpu_map_bpf_prog_run(struct bpf_cpu_map_entry *rcpu, void **frames,
++				 void **skbs, struct cpu_map_ret *ret,
++				 struct xdp_cpumap_stats *stats)
+ {
+ 	struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
+-	int nframes;
+ 
+ 	if (!rcpu->prog)
+-		return xdp_n;
++		goto out;
+ 
+ 	rcu_read_lock_bh();
+ 	bpf_net_ctx = bpf_net_ctx_set(&__bpf_net_ctx);
+ 
+-	nframes = cpu_map_bpf_prog_run_xdp(rcpu, frames, xdp_n, stats);
++	ret->xdp_n = cpu_map_bpf_prog_run_xdp(rcpu, frames, ret->xdp_n, stats);
++	if (unlikely(ret->skb_n))
++		ret->skb_n = cpu_map_bpf_prog_run_skb(rcpu, skbs, ret->skb_n,
++						      stats);
+ 
+ 	if (stats->redirect)
+ 		xdp_do_flush();
+ 
+-	if (unlikely(!list_empty(list)))
+-		cpu_map_bpf_prog_run_skb(rcpu, list, stats);
+-
+ 	bpf_net_ctx_clear(bpf_net_ctx);
+ 	rcu_read_unlock_bh(); /* resched point, may call do_softirq() */
+ 
+-	return nframes;
+-}
+-
+-static void cpu_map_gro_receive(struct bpf_cpu_map_entry *rcpu,
+-				struct list_head *list)
+-{
+-	struct sk_buff *skb, *tmp;
+-
+-	list_for_each_entry_safe(skb, tmp, list, list) {
+-		skb_list_del_init(skb);
+-		gro_receive_skb(&rcpu->gro, skb);
+-	}
++out:
++	if (unlikely(ret->skb_n) && ret->xdp_n)
++		memmove(&skbs[ret->xdp_n], skbs, ret->skb_n * sizeof(*skbs));
+ }
+ 
+ static void cpu_map_gro_flush(struct bpf_cpu_map_entry *rcpu, bool empty)
+@@ -305,10 +304,10 @@ static int cpu_map_kthread_run(void *data)
+ 		struct xdp_cpumap_stats stats = {}; /* zero stats */
+ 		unsigned int kmem_alloc_drops = 0, sched = 0;
+ 		gfp_t gfp = __GFP_ZERO | GFP_ATOMIC;
+-		int i, n, m, nframes, xdp_n;
++		struct cpu_map_ret ret = { };
  		void *frames[CPUMAP_BATCH];
  		void *skbs[CPUMAP_BATCH];
- 		LIST_HEAD(list);
-+		bool empty;
+-		LIST_HEAD(list);
++		u32 i, n, m;
+ 		bool empty;
  
  		/* Release CPU reschedule checks */
- 		if (__ptr_ring_empty(rcpu->queue)) {
-@@ -361,7 +389,16 @@ static int cpu_map_kthread_run(void *data)
+@@ -334,7 +333,7 @@ static int cpu_map_kthread_run(void *data)
+ 		 */
+ 		n = __ptr_ring_consume_batched(rcpu->queue, frames,
+ 					       CPUMAP_BATCH);
+-		for (i = 0, xdp_n = 0; i < n; i++) {
++		for (i = 0; i < n; i++) {
+ 			void *f = frames[i];
+ 			struct page *page;
+ 
+@@ -342,11 +341,11 @@ static int cpu_map_kthread_run(void *data)
+ 				struct sk_buff *skb = f;
+ 
+ 				__ptr_clear_bit(0, &skb);
+-				list_add_tail(&skb->list, &list);
++				skbs[ret.skb_n++] = skb;
+ 				continue;
+ 			}
+ 
+-			frames[xdp_n++] = f;
++			frames[ret.xdp_n++] = f;
+ 			page = virt_to_page(f);
+ 
+ 			/* Bring struct page memory area to curr CPU. Read by
+@@ -357,39 +356,43 @@ static int cpu_map_kthread_run(void *data)
+ 		}
+ 
+ 		/* Support running another XDP prog on this CPU */
+-		nframes = cpu_map_bpf_prog_run(rcpu, frames, xdp_n, &stats, &list);
+-		if (nframes) {
+-			m = kmem_cache_alloc_bulk(net_hotdata.skbuff_cache,
+-						  gfp, nframes, skbs);
+-			if (unlikely(m == 0)) {
+-				for (i = 0; i < nframes; i++)
+-					skbs[i] = NULL; /* effect: xdp_return_frame */
+-				kmem_alloc_drops += nframes;
+-			}
++		cpu_map_bpf_prog_run(rcpu, frames, skbs, &ret, &stats);
++		if (!ret.xdp_n) {
++			local_bh_disable();
++			goto stats;
++		}
++
++		m = kmem_cache_alloc_bulk(net_hotdata.skbuff_cache, gfp,
++					  ret.xdp_n, skbs);
++		if (unlikely(m < ret.xdp_n)) {
++			for (i = m; i < ret.xdp_n; i++)
++				xdp_return_frame(frames[i]);
++
++			if (ret.skb_n)
++				memmove(&skbs[m], &skbs[ret.xdp_n],
++					ret.skb_n * sizeof(*skbs));
++
++			kmem_alloc_drops += ret.xdp_n - m;
++			ret.xdp_n = m;
+ 		}
+ 
+ 		local_bh_disable();
+-		for (i = 0; i < nframes; i++) {
++		for (i = 0; i < ret.xdp_n; i++) {
+ 			struct xdp_frame *xdpf = frames[i];
+-			struct sk_buff *skb = skbs[i];
+-
+-			skb = __xdp_build_skb_from_frame(xdpf, skb,
+-							 xdpf->dev_rx);
+-			if (!skb) {
+-				xdp_return_frame(xdpf);
+-				continue;
+-			}
+ 
+-			list_add_tail(&skb->list, &list);
++			/* Can fail only when !skb -- already handled above */
++			__xdp_build_skb_from_frame(xdpf, skbs[i], xdpf->dev_rx);
+ 		}
+ 
++stats:
+ 		/* Feedback loop via tracepoint.
+ 		 * NB: keep before recv to allow measuring enqueue/dequeue latency.
+ 		 */
  		trace_xdp_cpumap_kthread(rcpu->map_id, n, kmem_alloc_drops,
  					 sched, &stats);
  
--		netif_receive_skb_list(&list);
-+		cpu_map_gro_receive(rcpu, &list);
-+
-+		/* Flush either every 64 packets or in case of empty ring */
-+		packets += n;
-+		empty = __ptr_ring_empty(rcpu->queue);
-+		if (packets >= NAPI_POLL_WEIGHT || empty) {
-+			cpu_map_gro_flush(rcpu, empty);
-+			packets = 0;
-+		}
-+
- 		local_bh_enable(); /* resched point, may call do_softirq() */
- 	}
- 	__set_current_state(TASK_RUNNING);
-@@ -430,6 +467,7 @@ __cpu_map_entry_alloc(struct bpf_map *map, struct bpf_cpumap_val *value,
- 	rcpu->cpu    = cpu;
- 	rcpu->map_id = map->id;
- 	rcpu->value.qsize  = value->qsize;
-+	gro_init(&rcpu->gro);
+-		cpu_map_gro_receive(rcpu, &list);
++		for (i = 0; i < ret.xdp_n + ret.skb_n; i++)
++			gro_receive_skb(&rcpu->gro, skbs[i]);
  
- 	if (fd > 0 && __cpu_map_load_bpf_program(rcpu, map, fd))
- 		goto free_ptr_ring;
-@@ -458,6 +496,7 @@ __cpu_map_entry_alloc(struct bpf_map *map, struct bpf_cpumap_val *value,
- 	if (rcpu->prog)
- 		bpf_prog_put(rcpu->prog);
- free_ptr_ring:
-+	gro_cleanup(&rcpu->gro);
- 	ptr_ring_cleanup(rcpu->queue, NULL);
- free_queue:
- 	kfree(rcpu->queue);
-@@ -487,6 +526,7 @@ static void __cpu_map_entry_free(struct work_struct *work)
- 
- 	if (rcpu->prog)
- 		bpf_prog_put(rcpu->prog);
-+	gro_cleanup(&rcpu->gro);
- 	/* The queue should be empty at this point */
- 	__cpu_map_ring_cleanup(rcpu->queue);
- 	ptr_ring_cleanup(rcpu->queue, NULL);
+ 		/* Flush either every 64 packets or in case of empty ring */
+ 		packets += n;
 -- 
 2.48.1
 
