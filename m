@@ -1,163 +1,93 @@
-Return-Path: <bpf+bounces-50545-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50546-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BA03A296E9
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 18:01:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00823A296FA
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 18:10:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A72EA16481B
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 17:01:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB6B31884BC4
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 17:10:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE7921DC998;
-	Wed,  5 Feb 2025 17:01:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 745CF1DDC36;
+	Wed,  5 Feb 2025 17:10:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="I9uOZTer"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lfsMBNo5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9802AF507
-	for <bpf@vger.kernel.org>; Wed,  5 Feb 2025 17:01:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E83A24C76;
+	Wed,  5 Feb 2025 17:09:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738774886; cv=none; b=pH77tAegJviTmR3O1OFqvk+gUbO1myDU4Z2pDGhumNIpze1tyy46ywQ0bXOHeJpZ9K+kB7EU5Hanv5vnLxHSEq93pcWFsuJJBPwSU/ZaqryCypmdBavGgS2i1XPv1u/7+Z0QG8oic+t68wMcdUNjwMFuvWQPg6JScxlnKgcrgK4=
+	t=1738775400; cv=none; b=EybbwPNAtbfJ3bqHsjc+RH9n4Jobp90modmniduEnA7lnH1xxidahREvZGq6vILSIiCQlmTpRgHieyOh/sOJC8fayeAwN/Jo6R9jc+hWmUYfDl78/WaiJE61aejDBo6fRmOyE+WxbJxew+5qgxq6IMB5XBZU0FMxl7GRsM3OWP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738774886; c=relaxed/simple;
-	bh=VQWEnSGMI57IQ1cuwhwvsYrMRPlhM3mBzZp++GRr7oo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gzBufAOtkrGBXPwru4DM0z2RQo1p7zm4erfEWK0goC0JJZ4HY3d16tVwt9GIEesl57Tx4bydjR9Snu+MXZ5l5RVlU6+Zi4qfU83/9ZxUmUJIXv57ia0DA2C7PmQleg5Z6KyYIUM7Vt28Hamy09BHLcZ6bGcJZPYSCtVgL3V3+v4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=I9uOZTer; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 515Gfip3009552;
-	Wed, 5 Feb 2025 17:01:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=corp-2023-11-20; bh=2n8KYG1scOzWYcX4p2dBNysIC40FJ
-	zK0Kpp2ctj1T9k=; b=I9uOZTerjGZNL2rd+x8eWs0uZAl3EkNse3aKernhfiEDJ
-	TieehrMcfLC7p6mECBBg32YOqABOnPMNVj2nwuhcZAKRSnAvZ8N8D3aAIs984/pL
-	fs4UL/vgmepzRCIwYflEuzmhh11OoKcLHZ4PW+Oo41hlEvRzvJoo1mX7LkZpxA4J
-	k+NvA89GE7J5CuyF/O2f47y8suk2hSqUJ8JFDK16UOZG+Q5YLdM+h8OiqVFKx6iP
-	diSKEI3+jnVH3Uwnrs6CeJcybjl+yFue4/umYumFc/2jgrKyadrDvkZB2CvXiXCL
-	ANObDfoiUWSa3bCdxtUjyJZCDhfP+/Cg89yApaRjg==
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 44kku4tt76-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 05 Feb 2025 17:01:03 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 515GOqLw027841;
-	Wed, 5 Feb 2025 17:01:02 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 44j8dnwsm6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 05 Feb 2025 17:01:02 +0000
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 515H10V2013304;
-	Wed, 5 Feb 2025 17:01:01 GMT
-Received: from bpf.uk.oracle.com (dhcp-10-154-48-77.vpn.oracle.com [10.154.48.77])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 44j8dnwsh1-1;
-	Wed, 05 Feb 2025 17:01:01 +0000
-From: Alan Maguire <alan.maguire@oracle.com>
-To: ast@kernel.org
-Cc: daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Colm Harrington <colm.harrington@oracle.com>
-Subject: [PATCH v2 bpf] bpf/arena: fix softlockup in arena_map_free on 64k page kernel
-Date: Wed,  5 Feb 2025 17:00:59 +0000
-Message-ID: <20250205170059.427458-1-alan.maguire@oracle.com>
-X-Mailer: git-send-email 2.43.5
+	s=arc-20240116; t=1738775400; c=relaxed/simple;
+	bh=5b2MkPkMbbj3UTEjR7NeO1U4/9xMA9aB79imAaglNAA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bJF08f/dRfo5YvyAqucoGgNarureneE9uZhGCMQX4bPPXUAaP9FYmJViSVcl6Odta9toPROe18d3ryXy+0iNAzsmrkkK3p6C6j4EqDiToSIU+JByjOUeURFpnmmrKTfgBWEH/4gy7zVtba7fU46k30SJYEsTmMhrGDosIfIu8uM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lfsMBNo5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6551C4CED1;
+	Wed,  5 Feb 2025 17:09:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738775399;
+	bh=5b2MkPkMbbj3UTEjR7NeO1U4/9xMA9aB79imAaglNAA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=lfsMBNo5hrfuPqTd3FAELItcIVojV0ZTHXMNQLPcvpImVTf9M7BTlQpiR+aUbM95p
+	 pC3IlaJ4JtNqUTxV2aF0Pg5e8Y3USgPi+0YJ2v/gYLG5kos5/vmG50ic5CXyDy9o6I
+	 jahOGqCGvaA2Gs41RlUqhIdIqz9d4xp2c4VQIRszWQfVvtTz7+M3A3M8p41+VtBb2z
+	 jgVFeabYdkDIhEloOiPumtv6mP7f3/o79++4srMEDtYUtkFrx5r6vwDDFgULOHzeuo
+	 Douy+8U6efDkSxw/t4OPbbE2OBa5TfuZKwgg27RAv4Kkp7npn7ekgToESs72j7Wp7a
+	 KprVhvT38VC4g==
+Date: Wed, 5 Feb 2025 09:09:58 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Amit Cohen <amcohen@nvidia.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Petr Machata
+ <petrm@nvidia.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Andrew Lunn
+ <andrew+netdev@lunn.ch>, Network Development <netdev@vger.kernel.org>, Ido
+ Schimmel <idosch@nvidia.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, bpf <bpf@vger.kernel.org>, mlxsw
+ <mlxsw@nvidia.com>
+Subject: Re: [PATCH net-next 00/12] mlxsw: Preparations for XDP support
+Message-ID: <20250205090958.278ffaff@kernel.org>
+In-Reply-To: <BL1PR12MB5922564282DA2C2C5CA671C1CBF42@BL1PR12MB5922.namprd12.prod.outlook.com>
+References: <cover.1738665783.git.petrm@nvidia.com>
+	<CAADnVQKMN4+Zg9ZG4FpH9pJw4KdmwWmT2d4BiJgHUUQ-Hd7OkQ@mail.gmail.com>
+	<BL1PR12MB59225F7D902ACBC6A91511C3CBF42@BL1PR12MB5922.namprd12.prod.outlook.com>
+	<CAADnVQLJfd201t_-bgWHRJRDHm4FQDNapbmAQhPd18OEFq_QdA@mail.gmail.com>
+	<BL1PR12MB5922564282DA2C2C5CA671C1CBF42@BL1PR12MB5922.namprd12.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-02-05_06,2025-02-05_03,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 bulkscore=0
- mlxlogscore=999 adultscore=0 suspectscore=0 mlxscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2501170000
- definitions=main-2502050130
-X-Proofpoint-GUID: 9BAve4wghOu_DoFwLgjFHh-aFFMatuPc
-X-Proofpoint-ORIG-GUID: 9BAve4wghOu_DoFwLgjFHh-aFFMatuPc
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On an aarch64 kernel with CONFIG_PAGE_SIZE_64KB=y (64k pages),
-arena_htab tests cause a segmentation fault and soft lockup.
+On Tue, 4 Feb 2025 17:26:43 +0000 Amit Cohen wrote:
+> > > You're right, most of packets should be handled by HW, XDP is
+> > > mainly useful for telemetry.  
+> > 
+> > Why skb path is not enough?  
+> 
+> We get better packet rates using XDP, this can be useful to redirect
+> packets to a server for analysis for example.
 
-$ sudo ./test_progs -t arena_htab
-Caught signal #11!
-Stack trace:
-./test_progs(crash_handler+0x1c)[0x7bd4d8]
-linux-vdso.so.1(__kernel_rt_sigreturn+0x0)[0xffffb34a0968]
-./test_progs[0x420f74]
-./test_progs(htab_lookup_elem+0x3c)[0x421090]
-./test_progs[0x421320]
-./test_progs[0x421bb8]
-./test_progs(test_arena_htab+0x40)[0x421c14]
-./test_progs[0x7bda84]
-./test_progs(main+0x65c)[0x7bf670]
-/usr/lib64/libc.so.6(+0x2caa0)[0xffffb31ecaa0]
-/usr/lib64/libc.so.6(__libc_start_main+0x98)[0xffffb31ecb78]
-./test_progs(_start+0x30)[0x41b4f0]
+TBH I also feel a little ambivalent about adding advanced software
+features to mlxsw. You have a dummy device off which you hang the NAPIs,
+the page pools, and now the RXQ objects. That already works poorly with
+our APIs. How are you going to handle the XDP side? Program per port, 
+I hope? But the basic fact remains that only fallback traffic goes thru
+the XDP program which is not the normal Linux model, routing is after
+XDP.
 
-Message from syslogd@bpfol9aarch64 at Feb  4 08:50:09 ...
- kernel:watchdog: BUG: soft lockup - CPU#1 stuck for 26s! [kworker/u8:4:7589]
-
-The same failure is not observed with 4k pages on aarch64.
-
-Investigating further, it turns out arena_map_free() was calling
-apply_to_existing_page_range() with the address returned by
-bpf_arena_get_kern_vm_start().  If this address is not page-aligned -
-as is the case for a 64k page kernel - we wind up calling apply_to_pte_range()
-with that unaligned address.  The problem is apply_to_pte_range() implicitly
-assumes that the addr passed in is page-aligned, specifically in this loop:
-
-		do {
-                        if (create || !pte_none(ptep_get(pte))) {
-                                err = fn(pte++, addr, data);
-                                if (err)
-                                        break;
-                        }
-                } while (addr += PAGE_SIZE, addr != end);
-
-If addr is _not_ page-aligned, it will never equal end exactly.
-
-One solution is to round up GUARD_SZ to PAGE_SIZE << 1 so that the
-division by 2 in bpf_arena_get_kern_vm_start() returns a page-aligned
-value.  With that change in place, the test passes:
-
-$ sudo ./test_progs -t arena_htab
-Summary: 1/1 PASSED, 1 SKIPPED, 0 FAILED
-
-Fixes: 317460317a02 ("bpf: Introduce bpf_arena.")
-Reported-by: Colm Harrington <colm.harrington@oracle.com>
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- kernel/bpf/arena.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
-index 870aeb51d70a..095a9554e1de 100644
---- a/kernel/bpf/arena.c
-+++ b/kernel/bpf/arena.c
-@@ -39,7 +39,7 @@
-  */
- 
- /* number of bytes addressable by LDX/STX insn with 16-bit 'off' field */
--#define GUARD_SZ (1ull << sizeof_field(struct bpf_insn, off) * 8)
-+#define GUARD_SZ round_up(1ull << sizeof_field(struct bpf_insn, off) * 8, PAGE_SIZE << 1)
- #define KERN_VM_SZ (SZ_4G + GUARD_SZ)
- 
- struct bpf_arena {
--- 
-2.43.5
-
+On one hand it'd be great if upstream switch drivers could benefit from
+the advanced features. On the other the HW is clearly not capable of
+delivering in line with how NICs work, so we're signing up for a stream
+of corner cases, bugs and incompatibility. Dunno.
 
