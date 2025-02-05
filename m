@@ -1,135 +1,124 @@
-Return-Path: <bpf+bounces-50475-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50476-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 106D5A281AE
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 03:19:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5C6AA281EE
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 03:41:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E1D1164219
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 02:19:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BC273A47D2
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 02:41:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B28CD20E316;
-	Wed,  5 Feb 2025 02:19:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EF6C211A09;
+	Wed,  5 Feb 2025 02:41:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LUDvyDh6"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0005825A65D
-	for <bpf@vger.kernel.org>; Wed,  5 Feb 2025 02:19:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9459B200A3;
+	Wed,  5 Feb 2025 02:41:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738721965; cv=none; b=b4vHaK9Y0xNsJeEwG3KiVZ4REaHIWN6GMleN9D1AoHhDc8WEjeAnNVEvBMu/8g5BdYZ+R5QAedUi86CAnYdfun4faeeCnpdKGh12WEjyM96wabSwv/upN4LGSFlt0QpsrcFZQslXmNoypwXuPBhuX1+EirIXMzWxFk6MfpPjzHY=
+	t=1738723281; cv=none; b=tfBdJfiGdwtbIJzOFtStH8Qy4KSQS1XJPSpqxvLz+8AVFvNbUqb5sxLnz5KKf2M1k2jsueYrORs/+q10Vzm8nQm9uxYVEXdN5T20Nl5VXeOtoQJOWh5luRSk+Kkyc+WX6U4Beb4knwS/J/mb4bhlu6H674GJQEH9VTPMaKZGoVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738721965; c=relaxed/simple;
-	bh=otNHFguU2Z3VTf3hhXA66LhmbITSotmyefNImQHmgYk=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=HvlszRrKfgg7t/DDFfwyvVB7m3SbBkkfMQhafXjNpFoKAn2U6XzAljFRmyPLFT2RCyrEeh3wJHzUDZAUymoRix+TErT/MH/mYFuZfEbcVTOXnIPA7eofIhIQbFW+fsFNhABmS66k4LaisIiV95OBwXFgaX71PVflG+vVyiR7GyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YnkSQ34g7z4f3jqj
-	for <bpf@vger.kernel.org>; Wed,  5 Feb 2025 10:19:02 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 45DDA1A12F8
-	for <bpf@vger.kernel.org>; Wed,  5 Feb 2025 10:19:18 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgAninqiyqJnbvydCw--.14062S2;
-	Wed, 05 Feb 2025 10:19:18 +0800 (CST)
-Subject: Re: handling EINTR from bpf_map_lookup_batch
-To: Yan Zhai <yan@cloudflare.com>, bpf@vger.kernel.org
-Cc: kernel-team@cloudflare.com
-References: <Z6JXtA1M5jAZx8xD@debian.debian>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <d8893a20-4211-2fd6-e9d1-b65e81367950@huaweicloud.com>
-Date: Wed, 5 Feb 2025 10:19:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1738723281; c=relaxed/simple;
+	bh=ygXQBi6hr1fOv87CFPNksUPOfVC5MrT9ajNAPt/JaCU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tcNz31gzP59q7aUFynS+cXvZw95LNqUxD/OAog89Y/DbS47i/wFfGot9IN6x+2iKtR7lsin99P8EuQSWg9FEb5nndkcxzyW4pU4nxRaoG2GGuXdBuj89PTctE5pXvKqXq2tCK+OtlHP/VB26T8tR+uRPmaNebJhNGhPjTSmS8ME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LUDvyDh6; arc=none smtp.client-ip=209.85.166.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-3d04aec2b84so6394225ab.2;
+        Tue, 04 Feb 2025 18:41:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738723278; x=1739328078; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w5DTo8ZaJA3jSDo6ZqDYm5jokOLqBcY7Cd18rezzyio=;
+        b=LUDvyDh67CDn8zxQdI6lSsFR7EjXCmbMU/NHXzqSUxfae5vb40RNtc41SE8urL57tN
+         0sxBEQMkPSau4VlrgM8m2AG3SkY6M7JrON4fIbQhQa9Co9VxvhK+fYZtVilR22mSLH51
+         3jJlrzgbWgkK2LL94AKJUhKAuLjvweF7LevQfZi9pSvn6skY2/64EWHplXbz2M6OhwSD
+         2aDpvLNFv0SgNZgwEMvFqWmJMlZTSt675yBiPUenadKQakPZrFuToGsqVf/3f1m4einJ
+         2hGdLgwtZQvZUFtisdgKA37FCi0GYJP+aD8/KTCtBk7L64FoSxRxwKA8xf6Oubfj4sOb
+         a1dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738723278; x=1739328078;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=w5DTo8ZaJA3jSDo6ZqDYm5jokOLqBcY7Cd18rezzyio=;
+        b=q+6HFdvVLnhgUzog8RuSfZJqotPzqBKzO7kPlgRtonndcPhf3FKw9GteW8WtYvo7cA
+         yQ7mQdpwq74tDYjon7pN9qpZkBR9y7T8FuTmVDblKQsLnvqbnwx06PoQiIGkO+yrW851
+         qrZnTMETQvavFQKD2SVr8wdImCWP+CAqNUJi2Hv7yggIY3rxG3SnTqeapBhb3g1cDZli
+         PHuEFkoHku1d3DSujHAMV44QX7kayQK7fAaPJ2IfCzVE6nXMu1MJEeaXZDrcMFLnvo+X
+         gD9PI+LYmbnQbzPwNCTi2JasMEaPYdN6R3VmuRp+n1QQceFq1/p9TDWw4MBuG+AJkb5n
+         AFXg==
+X-Forwarded-Encrypted: i=1; AJvYcCVLG42kZ9Tup5cR/6tDK6+4QB8xXQ2HX/esNHLcYPqnnoaKgWkdLC7nUb1urhj6CHFTMJnfQbVy@vger.kernel.org, AJvYcCWrHiTjr7hkGvNJzotz6hJudzrLlBrm0G6Bhv7Hf7KzTqUfBpenaTsSRb3oSvJJjiR9JKY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyWCRDAHZpkz8zk89FEaUhdCa2ONYlCVvcCdKi8TWxRdYu85GR/
+	vbIuoqrNmrmcbS2x+Fk6/ylBIog69wgA5yOBZOlBPPM4zeTCxhKEGlgSl8DYMBl+GGCOA+wnWz6
+	OksMzHISEs0MWzvP78FrV/m6rqYk=
+X-Gm-Gg: ASbGnctu/2lWNs1/r8UGizBPPV64uIuXx5YITGNIOiu0cv4oxJWlSZ+b3B/HRP852Ys
+	XidY/c9Du3A1tE3xLttRYSwzo/kmzffWkkb/xX764vJgPk8dl2BZeqbn4pRfMnZu5LC69xAY=
+X-Google-Smtp-Source: AGHT+IFTvvq7zCfxfbLnRgtQbgc0zI8ikF+7DaxVM1esUbCPUbronh8I7z4+wUtOHHJoXvtXtE3auMx2j8scU+1YrNo=
+X-Received: by 2002:a05:6e02:3a08:b0:3cf:b26f:ff7c with SMTP id
+ e9e14a558f8ab-3d04f47945amr10299555ab.5.1738723278587; Tue, 04 Feb 2025
+ 18:41:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <Z6JXtA1M5jAZx8xD@debian.debian>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgAninqiyqJnbvydCw--.14062S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFyDWr4fJryDXF4fJF4fXwb_yoW8uryxpF
-	W8GFnrJrnYgw18Zws7X34kCFWYqw4rJws0ka4kX3s0yrnxCr9akr1IgFyYyFWagr4xZr1a
-	va10qF93ua1jga7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
-	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vIr41lIxAIcVC0
-	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
-	k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
-	xVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UE-erUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20250204183024.87508-1-kerneljasonxing@gmail.com>
+ <20250204183024.87508-6-kerneljasonxing@gmail.com> <20250204174750.677e3520@kernel.org>
+In-Reply-To: <20250204174750.677e3520@kernel.org>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Wed, 5 Feb 2025 10:40:42 +0800
+X-Gm-Features: AWEUYZm41rU1SS_veg-pcZR0w-JVoWm-YX2t2NAfjlxUJYC7SQ1k00lo0yZBXcU
+Message-ID: <CAL+tcoDcJd9zNNnsxaCocA1W-eTj+=Ca=B-DoL5Qm6ENfSZ_Fw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v8 05/12] net-timestamp: prepare for isolating
+ two modes of SO_TIMESTAMPING
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: davem@davemloft.net, edumazet@google.com, pabeni@redhat.com, 
+	dsahern@kernel.org, willemdebruijn.kernel@gmail.com, willemb@google.com, 
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, horms@kernel.org, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Wed, Feb 5, 2025 at 9:47=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wro=
+te:
+>
+> On Wed,  5 Feb 2025 02:30:17 +0800 Jason Xing wrote:
+> > @@ -4565,7 +4566,7 @@ static inline void skb_tx_timestamp(struct sk_buf=
+f *skb)
+> >  {
+> >       skb_clone_tx_timestamp(skb);
+> >       if (skb_shinfo(skb)->tx_flags & SKBTX_SW_TSTAMP)
+> > -             skb_tstamp_tx(skb, NULL);
+> > +             __skb_tstamp_tx(skb, NULL, NULL, skb->sk, true, SCM_TSTAM=
+P_SND);
+> >  }
+>
+> Please move skb_tx_timestamp() to net/core/timestamping.c
+> You can make skb_clone_tx_timestamp() static, this is its only caller.
 
-On 2/5/2025 2:08 AM, Yan Zhai wrote:
-> I am getting EINTR when trying to use bpf_map_lookup_batch on an
-> array_of_maps. The error happens when there is a "hole" in the array.
-> For example, say the outer map has max entries of 256, each inner map
-> is used for a transport protocol, and I only populated key 6 and
-> 17 for TCP and UDP. Then when I do batch lookup, I always get EINTR.
-> This so far seems to only happen with array of maps. Does it make
-> sense to allow skipping to the next key for this map type? Something
-> like:
->
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index c420edbfb7c8..83915a8059ef 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -2027,6 +2027,8 @@ int generic_map_lookup_batch(struct bpf_map *map,
->                                          attr->batch.elem_flags);
->
->                 if (err == -ENOENT) {
-> +                       if (IS_FD_ARRAY(map)
-> +                               goto next_key;
+I just tested it and it works after reading your message.
 
-It seems only BPF_MAP_TYPE_ARRAY_OF_MAPS supports batched operation, so
-map->map_type == BPF_MAP_TYPE_ARRAY_OF_MAPS will be enough. It is also
-better to reset err as 0, otherwise generic_map_lookup_batch may return
--ENOENT.
->                         if (retry) {
->                                 retry--;
->                                 continue;
-> @@ -2048,6 +2050,7 @@ int generic_map_lookup_batch(struct bpf_map *map,
->                         goto free_buf;
->                 }
->
-> +next_key:
->                 if (!prev_key)
->                         prev_key = buf_prevkey;
->
+I wonder if we need a separate cleanup after this series about moving
+this kind of functions into net/core/timestamping.c, say,
+__skb_tstamp_tx()?
 
-Make sense.  Please add a selftest for it. Another way is to return id 0
-for these non-existent values in the fd array, but it may break existed
-prog. Just skipping the empty array slot is better.
-> Also the context about my scenario if anyone is curious: I am trying
-> to associate each map to a userspace service in a multi tenant
-> environment. This is an addition to cgroup accounting, in case the
-> creator cgroup goes away, e.g. systemd service restarts always
-> recreate cgroups. And we also want to monitor the utilization level of
-> non-prealloc maps of different tenants. When dealing with inner maps,
-> it is not always trivial. To connect dots I choose to read these IDs
-> periodically and link them to the tenant of the outer map, that's
-> where this EINTR occurred.
->
-> best
-> Yan
->
-> .
+Thanks,
+Jason
 
+> This way on balance we won't be adding any non-inlined calls,
+> and we don't have to drag the linux/errqueue.h include into skbuff.h
 
