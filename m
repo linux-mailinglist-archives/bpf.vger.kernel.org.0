@@ -1,219 +1,126 @@
-Return-Path: <bpf+bounces-50492-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50493-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A794A283B1
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 06:29:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C06FA28539
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 09:03:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0B411887604
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 05:29:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48A79168424
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 08:03:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF18F21D5AB;
-	Wed,  5 Feb 2025 05:29:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75232229B02;
+	Wed,  5 Feb 2025 08:02:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NKYVB7wz"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="A5M+Vvr4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out199-16.us.a.mail.aliyun.com (out199-16.us.a.mail.aliyun.com [47.90.199.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D16DD215175;
-	Wed,  5 Feb 2025 05:29:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03F8320F09B;
+	Wed,  5 Feb 2025 08:02:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=47.90.199.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738733375; cv=none; b=Rgpmj5g62e3p+9YOCQsHleCVlBrG+foH2qhzxiDQHug7smegnYQNXsdALeeJyBv4yR6re+xZNngGMtTyyQN05v/hCIkqxGo9Vm9jsW9u8tCj44wAZcZceSj3S7qjCNu8lItAMLFi0wPl2Cv03rn0mAl3tAyJ+PAazb0h5WWL59k=
+	t=1738742576; cv=none; b=nAkfMoX1rIBY8oWS1WlFQlQ4u7PpkffPzTWMJV5EfIrxG5NvdcTfBzQRp6h0gFMpKeZemPIIg8tEd7L8PAge3p/tvn0v7YXloZNc/daQ2+dhyAPMnqliMCS4d79DHcEiLxr1GVkokybYP/3jMrjF5KLbcZI0FI/K84MUks1vMQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738733375; c=relaxed/simple;
-	bh=Iw3ZqYkAInzv/YtkuUTeED6Mt5mLGRiWR39/xFZzkGs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GbTBQ0CpsmPWQxvNBCC2cpZovVuE52MSvWK/sRwGfCkVAwEPkvZPAZH3GZ3G63ZLTr2NlI9P3fxv+wpbmHaYkh2zRfcQUi/CLqqYCzGxzQ5mNkc+3n/HtYOxb+MLgwjLRxwuYe9jTU6acoFu8z+2Oj8bvZFcAEM52UOk3aVronM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NKYVB7wz; arc=none smtp.client-ip=209.85.166.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3cfc79a8a95so16563665ab.2;
-        Tue, 04 Feb 2025 21:29:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738733373; x=1739338173; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9xCAtFthzUILMlk/nBinSbXdAsksty0ic3+RdeNqlvc=;
-        b=NKYVB7wzuEhG+jGyGDwiw5BJZ/JS0bAmrBi2NkHylHfHHyw+GOBIksRh66teSO8ewJ
-         4sDkgULkE0cQAqVfxu3yQf1sZ1Jw6KLmQbjR+A2lQQ6IKIj7uqQgQc5YyS7eruUHW/xY
-         GAn4BTQvu/T7iIeXFBaE6qcnH/5u9TfWpD9jEYDd6E1sBiu0dK56Ed9RZsID6gKRRpuA
-         mnVq7FhuaAifEhREZqFw+ZjHN1vuN2enWb7nbyMxTJgrU7VwkFjWHCGdtZFxAHK7W1h1
-         6G6+2kLTsQf+U5tR+CeUAWtQcKc3C1MBLw07ikQA+BAN8vi6Wo5RZ2/3UkXKn4nURaL3
-         pNhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738733373; x=1739338173;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9xCAtFthzUILMlk/nBinSbXdAsksty0ic3+RdeNqlvc=;
-        b=SuK2OKgjFEl2QFbZ/l25xCpuyplOYjQBwIXwtBGsUzJly2BN6E/L8TbVJawHgndtJd
-         wLnv97BA3Q9PEfyqang3QxFjmQwZbf3zWBVOuQOXgd7f3mMAoZzitOpJAeytSL/HGDag
-         SjwzB2b3kNQxI29X5qC8pmF2zKRoWzVCtvnEOZm5nB/Tdw1KdQgHC7zYXSbcgBhideLT
-         hni+VqJ1zqirfw9I69WOgIdJeWrfN410nxlyFs3mi2r8uvUdDV/X7KFmlm8meCgvDbqJ
-         a+2ojcAaq9MJ2dfgytFo6zZHsJZE8wAft6p8YWiXPhqMJcIh4IkV5Ze7EmHSuacWRQSg
-         3f5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUCwEF5JzU9ccnu2ep8AMQdakSPgpo7U7dul4zydd5ANUnmp3pc8qISTDPahZvHhn/kciBvGUw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwNLQz6KgD3ddhAmn1zWPHynmdquU7knwDXnYgYla8IR5KB0UKd
-	4VD1pIo85ONcuRLgUjlhfc0soplvB2DSF2HV7+RqItlgW3wIDI6w1BMnjvpTJ3WaHgeHdo85NK+
-	vqP/iidGWMhnqjqQ5j21lCcApJcQ=
-X-Gm-Gg: ASbGncvUEydHuksg2NfnyfcaRQCjHdcr5l0hyE7hLBDYsm7PLVjzt1B0XFGVHXiwRjf
-	wjrImqsRxPa+dUEEXcdETNhOaahKZrHWGXnq81fvh1fl/1NZ6apLYYXhgpNZbC7vu0FJr+GRy
-X-Google-Smtp-Source: AGHT+IHqg4rDuY6UhhQM6VJrr3ELdp0t1sngVP8iIkRlqbHryp800M7/eVfa5URyoiePfXnA0O46a9FMWrLuuluDm3o=
-X-Received: by 2002:a05:6e02:b2c:b0:3d0:10a6:99b9 with SMTP id
- e9e14a558f8ab-3d04f403739mr15033115ab.3.1738733372813; Tue, 04 Feb 2025
- 21:29:32 -0800 (PST)
+	s=arc-20240116; t=1738742576; c=relaxed/simple;
+	bh=u08HtmoR3gjyR8lSKU9dYPRmR+YL7GM5wtJ6j/Ioiac=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nAFGruo0GQ9mTP3mMoVkL1y4rjtKasCwiRGueMkVBC+Dmfg+LL3SbG2uqEgUzwo9dNtsS/IWqz4z3GuFdRgNlmRcjWrzj9YmTWfqDIupkRo4gy8twGpLTYpnFb9i+ZxWg7qC1HfV70Rl2wa04DwGB/F4iTR2FeLdDinWtfb6qQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=A5M+Vvr4; arc=none smtp.client-ip=47.90.199.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1738742551; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=7GaEyfI7UicQBv1sg4JfW3DT68PYKPedGIl8mINzZOI=;
+	b=A5M+Vvr4LhZzusgoy/CzI657NkVXqlFPRS0/8N87W4jY4FvUopy/MqDOSp8jRUhJ62Y7fVG7h721LxbLjrCeGygLWHXdkT/eix259S4g9p+2gLSkAwgJOE4yoDrOqEXRlwfdgskKmffAba8XXmc0O5jjh9ftgqwIjoR1XxOkXHI=
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WOoxC9D_1738742548 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Wed, 05 Feb 2025 16:02:29 +0800
+Date: Wed, 5 Feb 2025 16:02:28 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com    >
+To: Gerd Bayer <gbayer@linux.ibm.com>
+Cc: dust.li@linux.alibaba.com, "D. Wythe" <alibuda@linux.alibaba.com>,
+	kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+	martin.lau@linux.dev, pabeni@redhat.com, song@kernel.org,
+	sdf@google.com, haoluo@google.com, yhs@fb.com, edumazet@google.com,
+	john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
+	guwen@linux.alibaba.com, kuba@kernel.org, davem@davemloft.net,
+	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v7 3/6] net/smc: Introduce generic hook smc_ops
+Message-ID: <20250205080228.GA57822@j66a10360.sqa.eu95>
+References: <20250123015942.94810-1-alibuda@linux.alibaba.com>
+ <20250123015942.94810-4-alibuda@linux.alibaba.com>
+ <20250123073034.GQ89233@linux.alibaba.com>
+ <6685f9266702dcf0a3123f9be7c1c0200a5f4032.camel@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250204183024.87508-1-kerneljasonxing@gmail.com> <20250204183024.87508-12-kerneljasonxing@gmail.com>
-In-Reply-To: <20250204183024.87508-12-kerneljasonxing@gmail.com>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Wed, 5 Feb 2025 13:28:56 +0800
-X-Gm-Features: AWEUYZk_J81XzHsX0m1EILv7L01_T2tFYdbI3uTcLZKcUladNhocpfGSG8tG2dE
-Message-ID: <CAL+tcoCmXcDot-855XYU7PKCiGvJL=O3CQBGuOTRAs2_=Ys=gg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v8 11/12] bpf: add a new callback in tcp_tx_timestamp()
-To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com, 
-	willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, horms@kernel.org
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6685f9266702dcf0a3123f9be7c1c0200a5f4032.camel@linux.ibm.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Wed, Feb 5, 2025 at 2:31=E2=80=AFAM Jason Xing <kerneljasonxing@gmail.co=
-m> wrote:
->
-> Introduce the callback to correlate tcp_sendmsg timestamp with other
-> points, like SND/SW/ACK. let bpf prog trace the beginning of
-> tcp_sendmsg_locked() and then store the sendmsg timestamp at
-> the bpf_sk_storage, so that in tcp_tx_timestamp() we can correlate
-> the timestamp with tskey which can be found in other sending points.
->
-> More details can be found in the selftest:
-> The selftest uses the bpf_sk_storage to store the sendmsg timestamp at
-> fentry/tcp_sendmsg_locked and retrieves it back at tcp_tx_timestamp
-> (i.e. BPF_SOCK_OPS_TS_SND_CB added in this patch).
->
-> Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
-> ---
->  include/uapi/linux/bpf.h       | 7 +++++++
->  net/ipv4/tcp.c                 | 1 +
->  tools/include/uapi/linux/bpf.h | 7 +++++++
->  3 files changed, 15 insertions(+)
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 800122a8abe5..accb3b314fff 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -7052,6 +7052,13 @@ enum {
->                                          * when SK_BPF_CB_TX_TIMESTAMPING
->                                          * feature is on.
->                                          */
-> +       BPF_SOCK_OPS_TS_SND_CB,         /* Called when every sendmsg sysc=
-all
-> +                                        * is triggered. For TCP, it stay=
-s
-> +                                        * in the last send process to
-> +                                        * correlate with tcp_sendmsg tim=
-estamp
-> +                                        * with other timestamping callba=
-cks,
-> +                                        * like SND/SW/ACK.
-> +                                        */
->  };
+On Thu, Jan 23, 2025 at 11:15:21AM +0100, Gerd Bayer wrote:
+> On Thu, 2025-01-23 at 15:30 +0800, Dust Li wrote:
+> > On 2025-01-23 09:59:39, D. Wythe wrote:
+> > > The introduction of IPPROTO_SMC enables eBPF programs to determine
+> > > whether to use SMC based on the context of socket creation, such as
+> > > network namespaces, PID and comm name, etc.
+> > > 
+> > 
+> > I'm still not completely satisfied with the name smc_ops. Since this
+> > will be the API for our users, we need to be carefull on the name.
+> 
+> If I may jump in with a suggestion here:
+> On my first glance, I'd expect SMC_OPS to offer OPS as a general API.
+> The description however suggest that this adds "contol points" or hooks
+> in the SMC code, that eBPF programs can use to tweak the protocol's
+> behavior. Exclusively eBPF programs, it seems.
+> 
+> So how about naming this SMC_EBPF_HOOKS or SMC_EBPF_SUPPORT?
+> 
+> Just my 2ct,
+> Gerd
 
-In case the use of the new flag is buried in many threads, I decide to
-rephrase here to manifest how UDP would use it:
-1. introduce a field ts_opt_id_bpf which works like ts_opt_id[1] to allow
-the bpf program to fully take control of the management of tskey.
-2. use fentry hook udp_sendmsg(), and introduce a callback function
-like BPF_SOCK_OPS_TIMEOUT_INIT in kernel to initialize the
-ts_opt_id_bpf with tskey that bpf prog generates. We can directly use
-BPF_SOCK_OPS_TS_SND_CB.
-3. modify the SCM_TS_OPT_ID logic to support bpf extension so that the
-newly added field ts_opt_id_bpf can be passed to the
-skb_shinfo(skb)->tskey in __ip_append_data().
+Hi all,
 
-In this way, this approach can also be extended for other protocols.
+Thanks for all the suggestion.It seems that the naming of this ops has indeed
+sparked some controversy. However, I still oppose explicitly linking the name
+to BPF. As I mentioned earlier, this ops is not strongly tied to BPF
+implementations, kernel modules can also implement them.
 
-[1]
-commit 4aecca4c76808f3736056d18ff510df80424bc9f
-Author: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Date:   Tue Oct 1 05:57:14 2024 -0700
+I used ChatGPT to generate some potential names, including:
+smc_ops / smc_hook / smc_aug / smc_ext / smc_alert / smc_support
 
-    net_tstamp: add SCM_TS_OPT_ID to provide OPT_ID in control message
+Perhaps these can be used as references.
 
-    SOF_TIMESTAMPING_OPT_ID socket option flag gives a way to correlate TX
-    timestamps and packets sent via socket. Unfortunately, there is no way
-    to reliably predict socket timestamp ID value in case of error returned
-    by sendmsg. For UDP sockets it's impossible because of lockless
-    nature of UDP transmit, several threads may send packets in parallel. I=
-n
-    case of RAW sockets MSG_MORE option makes things complicated. More
-    details are in the conversation [1].
-    This patch adds new control message type to give user-space
-    software an opportunity to control the mapping between packets and
-    values by providing ID with each sendmsg for UDP sockets.
-    The documentation is also added in this patch.
+However, in any case, these changes need to be acked by the SMC
+maintainer, but for what I can tell, the maintainer of SMC is currently on
+leave, so this discussion may still take some time.
 
-    [1] https://lore.kernel.org/netdev/CALCETrU0jB+kg0mhV6A8mrHfTE1D1pr1SD_=
-B9Eaa9aDPfgHdtA@mail.gmail.com/
+Best wishes,
+D. Wythe
 
-Thanks,
-Jason
-
->
->  /* List of TCP states. There is a build check in net/ipv4/tcp.c to detec=
-t
-> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-> index 3df802410ebf..a2ac57543b6d 100644
-> --- a/net/ipv4/tcp.c
-> +++ b/net/ipv4/tcp.c
-> @@ -501,6 +501,7 @@ static void tcp_tx_timestamp(struct sock *sk, struct =
-sockcm_cookie *sockc)
->                 tcb->txstamp_ack_bpf =3D 1;
->                 shinfo->tx_flags |=3D SKBTX_BPF;
->                 shinfo->tskey =3D TCP_SKB_CB(skb)->seq + skb->len - 1;
-> +               bpf_skops_tx_timestamping(sk, skb, BPF_SOCK_OPS_TS_SND_CB=
-);
->         }
->  }
->
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
-f.h
-> index 06e68d772989..384502996cdd 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -7045,6 +7045,13 @@ enum {
->                                          * when SK_BPF_CB_TX_TIMESTAMPING
->                                          * feature is on.
->                                          */
-> +       BPF_SOCK_OPS_TS_SND_CB,         /* Called when every sendmsg sysc=
-all
-> +                                        * is triggered. For TCP, it stay=
-s
-> +                                        * in the last send process to
-> +                                        * correlate with tcp_sendmsg tim=
-estamp
-> +                                        * with other timestamping callba=
-cks,
-> +                                        * like SND/SW/ACK.
-> +                                        */
->  };
->
->  /* List of TCP states. There is a build check in net/ipv4/tcp.c to detec=
-t
-> --
-> 2.43.5
->
+> 
+> > 
+> > It seems like you're aiming to define a common set of operations, but
+> > the implementation appears to be intertwined with BPF. If this is
+> > intended to be a common interface, and if we are using another operation,
+> > there shouldn’t be a need to hold a BPF reference.
+> > 
+> > As your 'help' sugguest, What about smc_hook ?
+> > 
+> > Best regards,
+> > Dust
+> > 
+> > 
 
