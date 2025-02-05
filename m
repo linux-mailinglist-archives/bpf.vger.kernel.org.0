@@ -1,164 +1,150 @@
-Return-Path: <bpf+bounces-50496-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50497-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5926A286C9
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 10:40:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E8E7A28729
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 10:56:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72CB33A8A42
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 09:39:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E00B1882B4B
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 09:57:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCAF322A7FC;
-	Wed,  5 Feb 2025 09:39:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5583E22A4FE;
+	Wed,  5 Feb 2025 09:56:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V0ouUcBU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N/DN2p6D"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B77FD22A7E4;
-	Wed,  5 Feb 2025 09:39:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AD881D7985
+	for <bpf@vger.kernel.org>; Wed,  5 Feb 2025 09:56:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738748352; cv=none; b=WdALuk7SNfeIr1BISfIOEuHZADOH11s7MdyQt34Sj2npzRJ0OQ1M9ModD5/sBDs7a3jrZEAltP4zr34bgxmf0Mw5SPqJkwGzFRuCPLOECqAaur0lfpKEB3odg0eEgLkyNF8yb8LWofN5D4MIrs4Y7bctc/Y9bSepBPHeFzGBmG8=
+	t=1738749412; cv=none; b=qNFSzZoWnW0OCRyg3EugsRKtXrUmdyBP2zDXdu+fff2mqEz7SXCydNQLrE+QxyXL4eREU3GKthLhltcb5rIZADpoIMFzKHKq0BQuKzXJhpcy3355fH+fx0sB2PkShv85Z5G5HoeZd7IKHi3vfR1vM9pPvvrT2MbeIyxnp2ciMlk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738748352; c=relaxed/simple;
-	bh=Rxon6PTD7daRJg0+aVySuS+0sANyOmpEYks80AvCv/M=;
+	s=arc-20240116; t=1738749412; c=relaxed/simple;
+	bh=fHm4aY4H9Wf4L9RYU2LfLKN5f8hnmYNFMJNBfg7Mbiw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gu7OZ8/t4UARtQyycKijBQwwoPZfOOTjB1WJMO/3NHVnFfkR5xHJni8zNMkM4J3myfTxANF3HBB7VCgXj01CcBTlzmvjlQp3D+8BcdHz9WobaQhWptffhKaMK+Vqwhnlh75r/dFm98iXJVi0CNU0fxLQB0tOI+tzuikRbFLtnHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V0ouUcBU; arc=none smtp.client-ip=209.85.166.170
+	 To:Cc:Content-Type; b=uXdjsBBtm4GkS+6IhKNWPp2CGyfunhN9jPKbejCb4M27rIWXpgtoUHb8rpQSB6dLsHMWl3LS0eOsjX5CkD6hiXf8wWUgzZ+dOExqSfcAgGLRcfvwTfDx/ucULmrlYtCe600UoxGpdAHaINvkYC7doiotI84VqmkJcZ8d4HjbtWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N/DN2p6D; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3cfce97a3d9so20992335ab.2;
-        Wed, 05 Feb 2025 01:39:10 -0800 (PST)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-38dae70f5d9so860278f8f.1
+        for <bpf@vger.kernel.org>; Wed, 05 Feb 2025 01:56:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738748350; x=1739353150; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1738749409; x=1739354209; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kJCR/SfTU0C0sRJZd2HUPVpgMo5fZYOkbmZsnQM0lUA=;
-        b=V0ouUcBU1aIelrb7ruT2TvTk4Ai07ufN+bvUMhjt8sA//himWgPv2csUSK3BFAR8mM
-         UGUhUZeqRDKyrIbKKOvFlNRiTwaNSXLA4UDJt3VtoQixVsM56ZCv7vEJmd76hvs88dom
-         4GuTo4XwAPL3DcW20vZe3H5YOBl6Ijt0Ty0CCnjzQw25zqgSeu0E5JoL8GHRjKUjQI04
-         j7CcsDAm9ZQJIwMdceeFuNxYIP/PygTn5tbDL8l3lpTRr3RR/mE+vhCBJvzhjGUq/fpW
-         HiQYiMUH6e561z/sit2PjVXAUIFMSRULblPKEc/MLRB7/KJGDBwx3SZnVntvt6QBeRbJ
-         6q0w==
+        bh=jfp7YVWxhvI4ElaP8pbKiC1S3/RfhpnvTUJiU0DPeuc=;
+        b=N/DN2p6DjHqVh06iOUhHtq5J4XKuptYZSV6iHLDKDidUtCT9ZsIAJr2HF8VGjI68q7
+         3vJIPEUgus1AN/fGKBdQPHNVEjcm4ox+/OOzagYi1gTYvIelNgN93mFahqJa3EKAJ47e
+         xiQRnVOZLJ2Bl8rgZClRiU2fBsF/gLLxBiyvhIvwsIlyLJ5YrEYvnu9HSBVsSQsDv/Kd
+         OXoZ0TsHU4Y1R+fSRHbpjg16uqW+W49W757OnlP/lqdM8AdsiPCUyOU89ddVjFt95tEb
+         M4kBdkt45l54E6dFFEIPetOfLv7KnPsM9kr/jbsO+znHkdQKfn07U2swEtHm2TLKayYu
+         9w6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738748350; x=1739353150;
+        d=1e100.net; s=20230601; t=1738749409; x=1739354209;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kJCR/SfTU0C0sRJZd2HUPVpgMo5fZYOkbmZsnQM0lUA=;
-        b=F5hyFMgbBBdfmrI16MqdeLF1u7oAJCEMU4vLdW0uNEZZ0D2AVXg1HApg9tlCQUqqjd
-         9LMcSQ45MXKkqHhG3g1AxKRr7NtCBJFrHzwR0F8+NPjFHSVM8JaClmthXRMGleXiFt9X
-         s7SaVr5RUd8Vmz7huVsnfckhsNh6JpmDmFI76MYjDzJpR8ejEpoEQaEiAgY8kCu6A5do
-         IjzFNMFgFmO43FfV/sDg7HlQEuX2fF2DLkRAkaKr6VMURIgNUoA5cptQjvjTr0vYcx5M
-         ZnF5N1aTFW+IFoqOPWCX2ZOA3IOTWGLiZ3kw5dJqQSUYuRo4IjpC+Yq47HlMVkpBNPp2
-         i0UQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXieftqypiJe0em1um5vNd7tUHC+lzv0KWtrzxR9wE/0EdydmwNrJaSKzVy2z09xUpibfcopJmDvAPOIihepho=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywqol2Jp/FOtY/9f5Wh1GI0opIRlPZCTG2APwBv3/2Lg8gp/z1V
-	JK2ajp/LOxkLKQisGO790IS/Mbhr9uBncxZ49Zk2734zOykuO8YO+8XJow0Sq5Jt2aXkZGtTYrJ
-	z99VOTqTDL7kKVu5p1LPmAeg5DR0=
-X-Gm-Gg: ASbGnctdj7NJPO4wtFfv7Nys2zDmiYy+fdIokfgRrzrSMsDJ/vtEfT/FuG6MHqiuA+H
-	VjSopJXqmS17wkLXVWR5G6U9F2yBir0iyiQ5adoaa6s/+YP+Prc2Z/GEU7pzKV3Nnb5Tq1TRq
-X-Google-Smtp-Source: AGHT+IEjYWCRfmKIJ3npYCWHVcL0hG2R2j79Cy2iuxGpfdAhG+/yDIjpTXPZJXWiyh1Q8y4VsdFPMVD5a03ggM/VZ2I=
-X-Received: by 2002:a92:c565:0:b0:3d0:47cf:869c with SMTP id
- e9e14a558f8ab-3d04f93131amr19140435ab.19.1738748349747; Wed, 05 Feb 2025
- 01:39:09 -0800 (PST)
+        bh=jfp7YVWxhvI4ElaP8pbKiC1S3/RfhpnvTUJiU0DPeuc=;
+        b=kGY/zBSL2ARpUSs294NazRclxIhARfDn79G/YDYg1BZe3kmKOJHC3xD4iJIIJzQaUD
+         4N0Micd52D+qRAZwHux8uURZsMtW0TzFXqVdZ0pE8y0ASluPfImAIB2uvkgCSvMfycqH
+         C0vIuEWUSX2zLkVyYFpe6SLQYeGCWDFElGScuUJzSnqJ7s8WarXbFGfyLDXoXHx2sP6g
+         +dFl61IeiwrSF6al8YXrrghDirCtwjGn/x8RUPKIyxajja4GLODkT5XCbMdUoQlp+iSY
+         dx5i+D/n7WKbkk86AN92M8Bjk5q1oN2ikXG04hb1z9UTjDwnpmQpS3w+o5w2LYGYY9Mr
+         q95A==
+X-Forwarded-Encrypted: i=1; AJvYcCVPnuzkxrQhF4t/Qp0ZE8e45GQ2KbTkTlxrI2BX//nGhKXfmuEvUh7DLzF9K+fDw4s+eU0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yws0cpeOqziDYF51hoRnOm1AmxRd6Q2KKx6d0Hvj6XGbhPaho7E
+	g7dUbS2uGm8PAwZSaocl1enuDcVKG2lIqDj8G6eYCHaYFXf1aAjGneklidFMPxGTM41H72tRI5T
+	uqVZFx4I52GtQdBQKyycWslA1nSY=
+X-Gm-Gg: ASbGncsHAIbtaXkHfeGHMrHKvOIIL4jeMQzHTTZYBprAuSV5wX8R313PkYhR1BzTn+Q
+	HLkPj7yBCmipv6g9PfMGuoXJpa9pUgReSf5hvJ2ugJugJuCGlX6u+mEWu2942rcmLlkKra79q7v
+	FHZ7S9lpn6S+A+
+X-Google-Smtp-Source: AGHT+IFJUMJ9qW84KLKw9pKgqwGSCRqwMdEwxJ08P5ajTs5dBuYIpaSQB0UO2w6V5i++gmDCWqoo5c4s0MoqdRheueU=
+X-Received: by 2002:a05:6000:156b:b0:386:3dad:8147 with SMTP id
+ ffacd0b85a97d-38db48aca35mr1357294f8f.32.1738749409108; Wed, 05 Feb 2025
+ 01:56:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250204023946.16031-1-kerneljasonxing@gmail.com>
- <20250204023946.16031-3-kerneljasonxing@gmail.com> <99ccf971-cae5-9c45-5dff-2c8563a7879f@huaweicloud.com>
- <CAL+tcoAkyjDQd48wKuA8V_RE6j1OYTL2iGxT8HdVKpryD3SaUA@mail.gmail.com> <b13c3602-69b8-7452-f342-8204287cea4d@huaweicloud.com>
-In-Reply-To: <b13c3602-69b8-7452-f342-8204287cea4d@huaweicloud.com>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Wed, 5 Feb 2025 17:38:33 +0800
-X-Gm-Features: AWEUYZltfuwHeJsbk39oiKI_AKRp6YWEhV_JaOvLDAIa7t1PFt-2HYxOZvdcX9M
-Message-ID: <CAL+tcoC3eQew6R2Q=nZSus6p5d2pvF3kFbe_=ibPrPvzmjiD3Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 2/2] bpf: sockopt_sk: fix 'undeclared'
- definition error
+References: <Z6JXtA1M5jAZx8xD@debian.debian> <d8893a20-4211-2fd6-e9d1-b65e81367950@huaweicloud.com>
+In-Reply-To: <d8893a20-4211-2fd6-e9d1-b65e81367950@huaweicloud.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 5 Feb 2025 09:56:38 +0000
+X-Gm-Features: AWEUYZljcN2jH7bvELLULJSbmeTY1QwIrBFdybUqoZS9WmCFhaUncyXvl59sbFY
+Message-ID: <CAADnVQLNSUOz7kSwMr0dfgT1gk02S1wNgJOhk-5h_d01AM2RbA@mail.gmail.com>
+Subject: Re: handling EINTR from bpf_map_lookup_batch
 To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com, 
-	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, shuah@kernel.org
+Cc: Yan Zhai <yan@cloudflare.com>, bpf <bpf@vger.kernel.org>, 
+	kernel-team <kernel-team@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 5, 2025 at 5:30=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wro=
+On Wed, Feb 5, 2025 at 2:19=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wro=
 te:
 >
 > Hi,
 >
-> On 2/5/2025 11:27 AM, Jason Xing wrote:
-> > On Wed, Feb 5, 2025 at 10:57=E2=80=AFAM Hou Tao <houtao@huaweicloud.com=
-> wrote:
-> >> Hi,
-> >>
-> >> On 2/4/2025 10:39 AM, Jason Xing wrote:
-> >>> Error messages:
-> >>> selftests/bpf/prog_tests/sockopt_sk.c: In function =E2=80=98getsetsoc=
-kopt=E2=80=99:
-> >>> selftests/bpf/prog_tests/sockopt_sk.c:22:31: error: field =E2=80=98zc=
-=E2=80=99 has incomplete type
-> >>>    struct tcp_zerocopy_receive zc;
-> >>>                                ^~
-> >>> selftests/bpf/prog_tests/sockopt_sk.c:169:32: error: =E2=80=98TCP_ZER=
-OCOPY_RECEIVE=E2=80=99 undeclared (first use in this function)
-> >>>   err =3D getsockopt(fd, SOL_TCP, TCP_ZEROCOPY_RECEIVE, &buf, &optlen=
-);
-> >>>                                 ^~~~~~~~~~~~~~~~~~~~
-> >>>
-> >>> Fix it by introducing the right header.
-> >>>
-> >>> Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
-> >>> ---
-> >>>  tools/testing/selftests/bpf/prog_tests/sockopt_sk.c | 2 +-
-> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c b/to=
-ols/testing/selftests/bpf/prog_tests/sockopt_sk.c
-> >>> index ba6b3ec1156a..e0a9785ffcdc 100644
-> >>> --- a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-> >>> +++ b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-> >>> @@ -2,7 +2,7 @@
-> >>>  #include <test_progs.h>
-> >>>  #include "cgroup_helpers.h"
-> >>>
-> >>> -#include <netinet/tcp.h>
-> >>> +#include <uapi/linux/tcp.h>
-> >> Should it be <linux/tcp.h> instead ?
-> > I thought that too, but I altered my thoughts after reading this
-> > commit[1], totally without knowing why the tcp part should be changed.
-> > Should I change it back?
+> On 2/5/2025 2:08 AM, Yan Zhai wrote:
+> > I am getting EINTR when trying to use bpf_map_lookup_batch on an
+> > array_of_maps. The error happens when there is a "hole" in the array.
+> > For example, say the outer map has max entries of 256, each inner map
+> > is used for a transport protocol, and I only populated key 6 and
+> > 17 for TCP and UDP. Then when I do batch lookup, I always get EINTR.
+> > This so far seems to only happen with array of maps. Does it make
+> > sense to allow skipping to the next key for this map type? Something
+> > like:
+> >
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index c420edbfb7c8..83915a8059ef 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -2027,6 +2027,8 @@ int generic_map_lookup_batch(struct bpf_map *map,
+> >                                          attr->batch.elem_flags);
+> >
+> >                 if (err =3D=3D -ENOENT) {
+> > +                       if (IS_FD_ARRAY(map)
+> > +                               goto next_key;
 >
-> Thanks for pointing the commit to me. Under my local environment, it
-> seems both netinet/tcp.h and linux/tcp define tcp_zerocopy_receive and
-> tcphdr, and I think that is the reason why the commit changes tcp as
-> well. For the following build error:
+> It seems only BPF_MAP_TYPE_ARRAY_OF_MAPS supports batched operation, so
+> map->map_type =3D=3D BPF_MAP_TYPE_ARRAY_OF_MAPS will be enough. It is als=
+o
+> better to reset err as 0, otherwise generic_map_lookup_batch may return
+> -ENOENT.
+> >                         if (retry) {
+> >                                 retry--;
+> >                                 continue;
+> > @@ -2048,6 +2050,7 @@ int generic_map_lookup_batch(struct bpf_map *map,
+> >                         goto free_buf;
+> >                 }
+> >
+> > +next_key:
+> >                 if (!prev_key)
+> >                         prev_key =3D buf_prevkey;
+> >
 >
-> selftests/bpf/prog_tests/sockopt_sk.c:22:31: error: field =E2=80=98zc=E2=
-=80=99 has
-> incomplete type
->    struct tcp_zerocopy_receive zc;
->
-> I think maybe your local environment is a bit out-of-date. I prefer to
-> keep it as-is.
+> Make sense.  Please add a selftest for it. Another way is to return id 0
+> for these non-existent values in the fd array, but it may break existed
+> prog. Just skipping the empty array slot is better.
 
-Thanks for your review.
+Let's not invent new magic return values.
 
-Right, but I believe many users can't manage to upgrade to the latest
-version for the whole system. The selftests are supposed to be
-compatible, I reckon. It's surely not bad to consider the
-compatibility after adjusting the header file.
-
-Thanks,
-Jason
+But stepping back... why do we have this EINTR case at all?
+Can we always goto next_key for all map types?
+The command returns and a set of (key, value) pairs.
+It's always better to skip then get stuck in EINTR,
+since EINTR implies that the user space should retry and it
+might be successful next time.
+While here it's not the case.
+I don't see any selftests for EINTR, so I suspect it was added
+as escape path in case retry count exceeds 3 and author assumed
+that it should never happen in practice, so EINTR was expected
+to be 'never happens'. Clearly that's not the case.
 
