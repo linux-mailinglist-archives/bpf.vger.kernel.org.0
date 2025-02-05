@@ -1,135 +1,297 @@
-Return-Path: <bpf+bounces-50533-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50527-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE7DEA29679
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 17:36:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9E26A295AA
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 17:04:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FA7F7A20CC
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 16:35:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFFF3167FE9
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 16:04:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 648961DDA32;
-	Wed,  5 Feb 2025 16:36:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17D9E194094;
+	Wed,  5 Feb 2025 16:04:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b="YHeV919j"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hlep+vtH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00206402.pphosted.com (mx0b-00206402.pphosted.com [148.163.152.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B5A31DAC95;
-	Wed,  5 Feb 2025 16:36:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.152.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01333154C1D;
+	Wed,  5 Feb 2025 16:04:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738773388; cv=none; b=Vv9lO7D7hmk+yrk5qnJQnKNH0zwi3ZZSrQqX0Ce8XNagW1Sx9UzWD7stdNQgB4vDrpO/rqOyg4Xv0wDLjzPcY13H+DiVFPhwbknt3NTFdYIWwrXYPNEQmHOdtS+Q7XAJSb6PQ+mXzS2QHP8yl4r//KblKT9yoVW2XFGDRD7tm44=
+	t=1738771446; cv=none; b=m1nR7gTreuay704VOCK+NJja96Vai5cbmQlFfongZO6tmgzNcPtcIfsPushw+m6/hRpSdLhsuUhdrOPVVbWMF0i9VGFWwBxrAUrFvjIqDoWdqor4YKe6dPAepCLm4LldgiSbWhFYBvpoI0BjUhUqZ4zG/FUovPsfqXL9EVAiaBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738773388; c=relaxed/simple;
-	bh=KQAjdNXPn0DfadHsCm5XjQMXRiXHNgA7KxiZn4px+3o=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=XRN1k6SwbqPu8djkomJyb0EyCRP6d5ISSuhqfMktTtYuxgrUOgUcbiReyXFvhHMY19WiEIyb9dd4UMMEk97If2qQeQa0N8jIZhBkPQR9SGffDwqODFW5E0/kqyQPgYXfT3+arvCVUuehY/t3xPRc/h9zqieLThb3fkB+akjL4tw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com; spf=pass smtp.mailfrom=crowdstrike.com; dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b=YHeV919j; arc=none smtp.client-ip=148.163.152.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crowdstrike.com
-Received: from pps.filterd (m0354655.ppops.net [127.0.0.1])
-	by mx0b-00206402.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 515FQCIx024083;
-	Wed, 5 Feb 2025 16:00:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
-	 h=cc:content-id:content-transfer-encoding:content-type:date
-	:from:in-reply-to:message-id:mime-version:references:subject:to;
-	 s=default; bh=KQAjdNXPn0DfadHsCm5XjQMXRiXHNgA7KxiZn4px+3o=; b=Y
-	HeV919jwJAKBcZ9DZYoJZ746xXdNm2KJ++Nw6WaGqiiyhKDtNfUghTJeY3x/Qdm1
-	lPWXA1t9+oHuXjf8cHgfQFjGwqxzeOhJpV7fzoOSniIPt31uwiTe9145bBzlynWl
-	B1pDyp8D9OLUl38VgOHHHQ6QiUTE1GZrTm2iPvXQWn2qZgzIj2tDY+wM8LyHho4a
-	R945pTtGxTRlhDd7gTWdJiB7wjhwB1X8KYVltOhU6bPZ38VBLAVH1J2HUE5ZgN2x
-	8zqbBuD1EX58SrGkQJNzczp6kffEQ1lN8YnFH2Yzu5PuqFNAnOAaorTzcWLBaXnE
-	q545s4quSSUrqQNnRl2VA==
-Received: from mail.crowdstrike.com (dragosx.crowdstrike.com [208.42.231.60] (may be forged))
-	by mx0b-00206402.pphosted.com (PPS) with ESMTPS id 44mammg3t0-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 05 Feb 2025 16:00:04 +0000 (GMT)
-Received: from 04WPEXCH006.crowdstrike.sys (10.100.11.70) by
- 04WPEXCH005.crowdstrike.sys (10.100.11.69) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Wed, 5 Feb 2025 16:00:00 +0000
-Received: from 04WPEXCH006.crowdstrike.sys ([fe80::a97d:6ad:c239:d138]) by
- 04WPEXCH006.crowdstrike.sys ([fe80::a97d:6ad:c239:d138%11]) with mapi id
- 15.02.1544.009; Wed, 5 Feb 2025 16:00:00 +0000
-From: Martin Kelly <martin.kelly@crowdstrike.com>
-To: "rostedt@goodmis.org" <rostedt@goodmis.org>
-CC: "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "masahiroy@kernel.org"
-	<masahiroy@kernel.org>,
-        "zhengyejian1@huawei.com" <zhengyejian1@huawei.com>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>,
-        "mathieu.desnoyers@efficios.com"
-	<mathieu.desnoyers@efficios.com>,
-        "akpm@linux-foundation.org"
-	<akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>,
-        "nathan@kernel.org" <nathan@kernel.org>,
-        "nicolas@fjasle.eu" <nicolas@fjasle.eu>,
-        "christophe.leroy@csgroup.eu"
-	<christophe.leroy@csgroup.eu>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "jpoimboe@redhat.com" <jpoimboe@redhat.com>
-Subject: Re: Re: [PATCH v2 16/16] scripts/sorttable: ftrace: Do not add weak
- functions to available_filter_functions
-Thread-Topic: Re: [PATCH v2 16/16] scripts/sorttable: ftrace: Do not add weak
- functions to available_filter_functions
-Thread-Index: AQHbd+cCrpRl49KJ0EiNa9urqmBbFA==
-Date: Wed, 5 Feb 2025 16:00:00 +0000
-Message-ID: <c4c7f0931742c8636a82f2ae3b3c492c93266c93.camel@crowdstrike.com>
-References: <20250102232609.529842248@goodmis.org>
-	 <20250102232651.347490863@goodmis.org>
-	 <aba52935dc06a1fe69f05309f5d9828a297ad787.camel@crowdstrike.com>
-	 <20250204193559.1f87b4ea@gandalf.local.home>
-In-Reply-To: <20250204193559.1f87b4ea@gandalf.local.home>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-disclaimer: USA
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E0BB0A2C680BEB4980905CE6486592F2@crowdstrike.sys>
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1738771446; c=relaxed/simple;
+	bh=jCMsc26EHjkKT1Yf7CHEflS4/sV+fTmx0X2C7c36aOs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=E3A9MJAIj4KT2WrIxzOXVFvolhrK7DK0ZZctdq7uXjnP/97K1y9TYO6P9dnIGUhvy9PBnCcvz7Z0tBMu+wDWrd1j/fsaOnEoTmkQgapMQVj52yUk7THkRSj7Mtyez3m3hVkvHEJnWvFBjNb5jteIbL43jHxEiHuBYmjUdgpTB+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Hlep+vtH; arc=none smtp.client-ip=209.85.166.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-3ce7c4115e8so3280065ab.1;
+        Wed, 05 Feb 2025 08:04:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738771444; x=1739376244; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xRvcHeoTr8CvX1P/q28laoAaIqd0ip8jzarxkdM/9ys=;
+        b=Hlep+vtHVemCtLrqrRYL3d53NfR9C0x6fbXy1GEHDIuEHKHF6EtlG2Ky9jT3ST4/2q
+         eofZqUajeSi4QD7RqYuKWx56apNwPMeb2JLguVdoy73WIA7YLcatmXDHAbz90ury8YPu
+         /ufNUrBdw28cZ0GgTzHxZeISwPvthFjSuXMTtVUTmSoIRIm87W8rXMATuLj7A0+Zg7ed
+         nmtAMnCRV3qm4NY/YR1v3bfq5rhW1FqdqpMOIGq50PCPrXcmFdUBRxk8xORS+UGqFvp8
+         uRPrdONqjmD/qd8S6M8JVpCCVA/xkiSI8FP3omLVnpJ0Bxz97BWYYEKKdNaP/DysmpnY
+         LoFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738771444; x=1739376244;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xRvcHeoTr8CvX1P/q28laoAaIqd0ip8jzarxkdM/9ys=;
+        b=bUFuohQ13Lmdj5z2sh25SS0zy4yx0mu/Y9xMwvvxjaZcVRXCHK8JQdNZUqv+IwqVXL
+         nZ9OIBDjUcdmDB+bDK4yI4rzSMDHwpK5W86ju4borrOQpV4r29S6gVZwN8HhMsHt+juP
+         6lVtnRnP530h6ZbbFG9D8YCIT1vDoD4c7sHGa7K1OJzpHfvGPS/CUFdxxc8qImaBp8Ix
+         X4UIMdy+eSzO9FEm/YoirG8MJ5f56P2t19ukb0qGax9ghiuQmi8sfKh00u1OAfX+Crnt
+         SnbDSAfcCt5iGz0kozlfvFzrAgvMEkLKQJn5UhHvNDuVpWac07Q2Y7wd5McKwbN6tsO7
+         ZgHw==
+X-Forwarded-Encrypted: i=1; AJvYcCU/CJ4v1DeZbTDW0bfCpYC861LcMfCs9oCImkjQPVKNS2rFxiHcLR+9MmlmNT5ZmUoMLKzLd5mA@vger.kernel.org, AJvYcCUHa9MsbUGjfJ1xkm87AMXdW5F2LOYihiuRcQ0FWbHXIQ62MOxHvUCTBXu2mCr+BPB4k4w=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzDb4NvxLIl9IglzUwNqIs9s2aQFLRs1f1zPPU9TWUftIK3QUFr
+	jznzVAVguWi6BRc5NotypRtEz6H3n0y+yP55dQMxiooFnD4+PWntjwu2wZUZs8natIn7/IMmqzW
+	SLk4c22Fzo6zpSKzmZHpl9v+7P+fbY6qZRxeePQ==
+X-Gm-Gg: ASbGncsaF1ustbJz8rcPPIuWxYIALxZu17bK38tbusJkSk48h+FaNynkn1k4wdsNa8d
+	ZuS9cQGb4+ZrP2LadGBZ0bC9ijRuuZUfEr5L6VHGrUIvK0jwTNaTClOfN9IFc6ViPXHe2pO8=
+X-Google-Smtp-Source: AGHT+IFqVP7ITB8zV4TPzhIBaOEiz8XqjYcK0xnperSDAVHZNXLPoq7WGkXZNbCl4rsi6F15QEJqyQZOwvgJa24Mjt8=
+X-Received: by 2002:a92:c5a9:0:b0:3d0:194:b1fd with SMTP id
+ e9e14a558f8ab-3d03f545c02mr55086005ab.11.1738771443960; Wed, 05 Feb 2025
+ 08:04:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-ORIG-GUID: 6e_pcGkFVcXTbb8vvYC3lg2INop8zK62
-X-Authority-Analysis: v=2.4 cv=NvQrc9dJ c=1 sm=1 tr=0 ts=67a38b04 cx=c_pps a=1d8vc5iZWYKGYgMGCdbIRA==:117 a=1d8vc5iZWYKGYgMGCdbIRA==:17 a=xqWC_Br6kY4A:10 a=EjBHVkixTFsA:10 a=IkcTkHD0fZMA:10 a=T2h4t0Lz3GQA:10 a=pl6vuDidAAAA:8 a=lqAKrMhzrGgqgS63txUA:9
- a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: 6e_pcGkFVcXTbb8vvYC3lg2INop8zK62
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-02-05_06,2025-02-05_03,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- bulkscore=0 priorityscore=1501 mlxscore=0 clxscore=1015 impostorscore=0
- malwarescore=0 lowpriorityscore=0 adultscore=0 spamscore=0 mlxlogscore=949
- classifier=spam authscore=0 authtc=n/a authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2501170000
- definitions=main-2502050124
+References: <20250204183024.87508-1-kerneljasonxing@gmail.com>
+ <20250204183024.87508-9-kerneljasonxing@gmail.com> <67a3878eaefdf_14e08329415@willemb.c.googlers.com.notmuch>
+In-Reply-To: <67a3878eaefdf_14e08329415@willemb.c.googlers.com.notmuch>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Thu, 6 Feb 2025 00:03:27 +0800
+X-Gm-Features: AWEUYZmaTfBZHHgvm1R_p3Er4ZC6_LfstNyGUYWABNlgBCXDOkbCc8KkagKqps4
+Message-ID: <CAL+tcoAH6OYNOvUg8LDYw_b+ar3bo2AXqq0=oHgb-ogEYAeHZA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v8 08/12] bpf: support hw SCM_TSTAMP_SND of SO_TIMESTAMPING
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, dsahern@kernel.org, willemb@google.com, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, horms@kernel.org, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-T24gVHVlLCAyMDI1LTAyLTA0IGF0IDE5OjM1IC0wNTAwLCBTdGV2ZW4gUm9zdGVkdCB3cm90ZToN
-Cj4gT24gV2VkLCA1IEZlYiAyMDI1IDAwOjEzOjI2ICswMDAwDQo+IE1hcnRpbiBLZWxseSA8bWFy
-dGluLmtlbGx5QGNyb3dkc3RyaWtlLmNvbT4gd3JvdGU6DQo+IA0KPiA+IEknbSBub3QgbmVjZXNz
-YXJpbHkgYSBxdWFsaWZpZWQgcmV2aWV3ZXIgZm9yIHRoaXMgcGF0Y2gsIGJ1dCBJJ20NCj4gPiB2
-ZXJ5DQo+ID4gaW50ZXJlc3RlZCBpbiBzZWVpbmcgaXQgb3IgYSBzaW1pbGFyIHNvbHV0aW9uIGdl
-dCBtZXJnZWQsIGFzIHRoZQ0KPiA+IGltcGFjdA0KPiA+IHdoZW4gaXQgaGl0cyBpcyBzaWduaWZp
-Y2FudCAoc2lsZW50IGZhaWx1cmUpIGFuZCBub3QgZWFzeSB0byBkZXRlY3QNCj4gPiBvcg0KPiA+
-IHdvcmsgYXJvdW5kLiBJcyB0aGVyZSBhbnkgb2JzdGFjbGUgbGVmdCBpbiBnZXR0aW5nIHRoaXMg
-b25lIG1lcmdlZA0KPiA+IG90aGVyIHRoYW4gZnVydGhlciByZXZpZXdzPw0KPiANCj4gQSB2ZXJz
-aW9uIG9mIHRoZSBwYXRjaGVzIDEtMTQgd2FzIG1lcmdlZCB0aGlzIG1lcmdlIHdpbmRvdywgd2l0
-aCBzb21lDQo+IHR3ZWFrcy4gSSBwbGFuIG9uIHJlYmFzaW5nIHBhdGNoZXMgMTUgYW5kIDE2IG9u
-IHRvcCBvZiB0aGF0IGFuZA0KPiByZXN1Ym1pdHRpbmcuIEkganVzdCBoYXZlIHNvbWUgb3RoZXIg
-dGhpbmdzIEknbSBmaW5pc2hpbmcgdXAuDQo+IA0KPiBUaGFua3MsDQo+IA0KPiAtLSBTdGV2ZQ0K
-DQpBd2Vzb21lLCB0aGFua3MhDQo=
+On Wed, Feb 5, 2025 at 11:45=E2=80=AFPM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+>
+> Jason Xing wrote:
+> > Patch finishes the hardware part.
+>
+> For consistency with previous patches, and to make sense of this
+> commit message on its own, when stumbling on it, e.g., through
+> git blame, replace the above with
+>
+> Support hw SCM_TSTAMP_SND case.
+>
+> > Then bpf program can fetch the
+> > hwstamp from skb directly.
+> >
+> > To avoid changing so many callers using SKBTX_HW_TSTAMP from drivers,
+> > use this simple modification like this patch does to support printing
+> > hardware timestamp.
+>
+> Which simple modification? Please state explicitly.
+>
+> > Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
+> > ---
+> >  include/linux/skbuff.h         |  4 +++-
+> >  include/uapi/linux/bpf.h       |  7 +++++++
+> >  net/core/skbuff.c              | 13 +++++++------
+> >  net/dsa/user.c                 |  2 +-
+> >  net/socket.c                   |  2 +-
+> >  tools/include/uapi/linux/bpf.h |  7 +++++++
+> >  6 files changed, 26 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> > index de8d3bd311f5..df2d790ae36b 100644
+> > --- a/include/linux/skbuff.h
+> > +++ b/include/linux/skbuff.h
+> > @@ -471,7 +471,7 @@ struct skb_shared_hwtstamps {
+> >  /* Definitions for tx_flags in struct skb_shared_info */
+> >  enum {
+> >       /* generate hardware time stamp */
+> > -     SKBTX_HW_TSTAMP =3D 1 << 0,
+> > +     __SKBTX_HW_TSTAMP =3D 1 << 0,
+>
+> Perhaps we can have a more descriptive name. SKBTX_HW_TSTAMP_NOBPF?
+
+Good suggestion.
+
+>
+> >
+> >       /* generate software time stamp when queueing packet to NIC */
+> >       SKBTX_SW_TSTAMP =3D 1 << 1,
+> > @@ -495,6 +495,8 @@ enum {
+> >       SKBTX_BPF =3D 1 << 7,
+> >  };
+> >
+> > +#define SKBTX_HW_TSTAMP              (__SKBTX_HW_TSTAMP | SKBTX_BPF)
+> > +
+> >  #define SKBTX_ANY_SW_TSTAMP  (SKBTX_SW_TSTAMP    | \
+> >                                SKBTX_SCHED_TSTAMP | \
+> >                                SKBTX_BPF)
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 6a1083bcf779..4c3566f623c2 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -7040,6 +7040,13 @@ enum {
+> >                                        * to the nic when SK_BPF_CB_TX_T=
+IMESTAMPING
+> >                                        * feature is on.
+> >                                        */
+> > +     BPF_SOCK_OPS_TS_HW_OPT_CB,      /* Called in hardware phase when
+> > +                                      * SK_BPF_CB_TX_TIMESTAMPING feat=
+ure
+> > +                                      * is on. At the same time, hwtst=
+amps
+> > +                                      * of skb is initialized as the
+> > +                                      * timestamp that hardware just
+> > +                                      * generates.
+>
+> "hwtstamp of skb is initialized" is this something new? Or are you
+> just conveying that when this callback is called, skb_hwtstamps(skb)
+> is non-zero? If the latter, drop, because the wording is confusing.
+
+I will update it.
+
+>
+> > +                                      */
+> >  };
+> >
+> >  /* List of TCP states. There is a build check in net/ipv4/tcp.c to det=
+ect
+> > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> > index b22d079e7143..264435f989ad 100644
+> > --- a/net/core/skbuff.c
+> > +++ b/net/core/skbuff.c
+> > @@ -5548,7 +5548,7 @@ static bool skb_enable_app_tstamp(struct sk_buff =
+*skb, int tstype, bool sw)
+> >               flag =3D SKBTX_SCHED_TSTAMP;
+> >               break;
+> >       case SCM_TSTAMP_SND:
+> > -             flag =3D sw ? SKBTX_SW_TSTAMP : SKBTX_HW_TSTAMP;
+> > +             flag =3D sw ? SKBTX_SW_TSTAMP : __SKBTX_HW_TSTAMP;
+> >               break;
+> >       case SCM_TSTAMP_ACK:
+> >               if (TCP_SKB_CB(skb)->txstamp_ack)
+> > @@ -5565,7 +5565,8 @@ static bool skb_enable_app_tstamp(struct sk_buff =
+*skb, int tstype, bool sw)
+> >  }
+> >
+> >  static void skb_tstamp_tx_bpf(struct sk_buff *skb, struct sock *sk,
+> > -                           int tstype, bool sw)
+> > +                           int tstype, bool sw,
+> > +                           struct skb_shared_hwtstamps *hwtstamps)
+> >  {
+> >       int op;
+> >
+> > @@ -5574,9 +5575,9 @@ static void skb_tstamp_tx_bpf(struct sk_buff *skb=
+, struct sock *sk,
+> >               op =3D BPF_SOCK_OPS_TS_SCHED_OPT_CB;
+> >               break;
+> >       case SCM_TSTAMP_SND:
+> > -             if (!sw)
+> > -                     return;
+> > -             op =3D BPF_SOCK_OPS_TS_SW_OPT_CB;
+> > +             op =3D sw ? BPF_SOCK_OPS_TS_SW_OPT_CB : BPF_SOCK_OPS_TS_H=
+W_OPT_CB;
+> > +             if (!sw && hwtstamps)
+> > +                     *skb_hwtstamps(skb) =3D *hwtstamps;
+>
+> Isn't this called by drivers that have actually set skb_hwtstamps?
+
+Oops, somehow my mind has gone blank :( Will remove it. Thanks for
+correcting me!
+
+> >               break;
+> >       default:
+> >               return;
+> > @@ -5599,7 +5600,7 @@ void __skb_tstamp_tx(struct sk_buff *orig_skb,
+> >
+> >       /* bpf extension feature entry */
+> >       if (skb_shinfo(orig_skb)->tx_flags & SKBTX_BPF)
+> > -             skb_tstamp_tx_bpf(orig_skb, sk, tstype, sw);
+> > +             skb_tstamp_tx_bpf(orig_skb, sk, tstype, sw, hwtstamps);
+> >
+> >       /* application feature entry */
+> >       if (!skb_enable_app_tstamp(orig_skb, tstype, sw))
+> > diff --git a/net/dsa/user.c b/net/dsa/user.c
+> > index 291ab1b4acc4..ae715bf0ae75 100644
+> > --- a/net/dsa/user.c
+> > +++ b/net/dsa/user.c
+> > @@ -897,7 +897,7 @@ static void dsa_skb_tx_timestamp(struct dsa_user_pr=
+iv *p,
+> >  {
+> >       struct dsa_switch *ds =3D p->dp->ds;
+> >
+> > -     if (!(skb_shinfo(skb)->tx_flags & SKBTX_HW_TSTAMP))
+> > +     if (!(skb_shinfo(skb)->tx_flags & __SKBTX_HW_TSTAMP))
+> >               return;
+> >
+> >       if (!ds->ops->port_txtstamp)
+> > diff --git a/net/socket.c b/net/socket.c
+> > index 262a28b59c7f..70eabb510ce6 100644
+> > --- a/net/socket.c
+> > +++ b/net/socket.c
+> > @@ -676,7 +676,7 @@ void __sock_tx_timestamp(__u32 tsflags, __u8 *tx_fl=
+ags)
+> >       u8 flags =3D *tx_flags;
+> >
+> >       if (tsflags & SOF_TIMESTAMPING_TX_HARDWARE) {
+> > -             flags |=3D SKBTX_HW_TSTAMP;
+> > +             flags |=3D __SKBTX_HW_TSTAMP;
+> >
+> >               /* PTP hardware clocks can provide a free running cycle c=
+ounter
+> >                * as a time base for virtual clocks. Tell driver to use =
+the
+> > diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/=
+bpf.h
+> > index 9bd1c7c77b17..974b7f61d11f 100644
+> > --- a/tools/include/uapi/linux/bpf.h
+> > +++ b/tools/include/uapi/linux/bpf.h
+> > @@ -7033,6 +7033,13 @@ enum {
+> >                                        * to the nic when SK_BPF_CB_TX_T=
+IMESTAMPING
+> >                                        * feature is on.
+> >                                        */
+> > +     BPF_SOCK_OPS_TS_HW_OPT_CB,      /* Called in hardware phase when
+> > +                                      * SK_BPF_CB_TX_TIMESTAMPING feat=
+ure
+> > +                                      * is on. At the same time, hwtst=
+amps
+> > +                                      * of skb is initialized as the
+> > +                                      * timestamp that hardware just
+> > +                                      * generates.
+> > +                                      */
+> >  };
+> >
+> >  /* List of TCP states. There is a build check in net/ipv4/tcp.c to det=
+ect
+> > --
+> > 2.43.5
+> >
+>
+>
 
