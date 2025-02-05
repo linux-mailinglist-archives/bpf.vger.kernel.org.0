@@ -1,196 +1,180 @@
-Return-Path: <bpf+bounces-50550-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50551-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A1D8A297EF
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 18:49:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B2CEA29837
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 18:59:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98E841889424
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 17:49:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8541D3A2958
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 17:59:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F34EA1FC7CB;
-	Wed,  5 Feb 2025 17:49:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC3E61FC113;
+	Wed,  5 Feb 2025 17:59:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uqpTAfY7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s0iEBmLS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D8B21FDE0B
-	for <bpf@vger.kernel.org>; Wed,  5 Feb 2025 17:49:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C4AB1519AD;
+	Wed,  5 Feb 2025 17:59:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738777745; cv=none; b=HNFNq7Nt0jwmd8YD1os3GSWc6hsrH/0fRyLFvWtEZ1BMlcgEPmPE/qhJofYm30XhzmhSffH4w/cwdIuutFTj6tuPJAJ9pdqtV3jdP2jOIn6T8/7nlc+x+Lbz8weOIQFTiaswmW3kn12ugYMd6aWpnPz/OMOnCnznMXdLDHdaLfs=
+	t=1738778380; cv=none; b=VzOqOgWHDX01hkWXVTrV/Zlu5Ulq0StP18IVrVUDAkVbpqiWrsjk4Lv+7p0KgaYynHHJtcZHEzWRi5MIHyVNHX2dhVxA+MNyOYpy1wJHfTbkJkDYwfs/7ZYd1TLqrJfvGbHmbTmyLT4kOWTLAAPGvDbbRt5N+N5JAYNmQTSc0T4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738777745; c=relaxed/simple;
-	bh=/u62dmBR/ElLvSnF0c2PDOI2w0kdMLqx8LmycyWZfzE=;
+	s=arc-20240116; t=1738778380; c=relaxed/simple;
+	bh=d/ncfLhirm1SzUCcvJRbgrlDISq4qKX8Z31nBH9wVp0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oM1I7dafIJWrFdWYNGXy1ADpJOKLt2/De76dpe2MqI/YR9jMhhWag2twoaKFOwpCxK4e7LhfCjPjqdEuaqUofPXdNEcRvrBEULjjfIAztT1Yie9gPadGafLHqJn993z/hJc3EXyT2EEipbBJQGteG28huiJAYtZ4BAp5WX+zRys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uqpTAfY7; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-ab6fb2940d4so217635066b.1
-        for <bpf@vger.kernel.org>; Wed, 05 Feb 2025 09:49:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1738777742; x=1739382542; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zQSBOXqhcCachV8zft/ScV1fAUdaea+WUZiYV/mWDWA=;
-        b=uqpTAfY72ChwJxTgZzIEtB5RyCziQaK4TMUTFBYYzG8ALRiJI7YiWT3leZb/0EKebT
-         7baWKcC7je1Jy9aqd3Y4dMCgHlaH44ZmVJXlQtw82wDOA7b2YxbDjjr2T6rc4HuJBscp
-         rm2sXXR7VuJUj0kiSiN0OHhJF9G1X1uHmRHi5OWS9QokobsfrJF/KSGF8F9gH3pG720f
-         3m9+hu6UOlVgwNLvLhGXtoHwffmpT7T711s23ZZll9A778BCLgsVdBR6ANVN6iFK5ATv
-         2B6uB/jWkqBRZW07kyst+atf0lbcgAYcrgW2OSHcgiaLkz2u5F6WbvxxThGAkhAZZSxH
-         NiYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738777742; x=1739382542;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zQSBOXqhcCachV8zft/ScV1fAUdaea+WUZiYV/mWDWA=;
-        b=GT2b/GfeODPpgw4ucKaVRXWA1vnqiFenMfiZmlp50L9hPbPxKPymTys8eR6Sle8Tfg
-         FKpH3i7gZyA6+yPTXvhJifYX/Dctw+DdHUiylF+nms6c54nvJlMl2nzJv4qRHrC5SNa3
-         E1i66creVTc8cYZzxlRxV2qRMfwHsO/o8ds7a4n9IQw+xLpeLuFwRE2xMHbbIMEjMWdV
-         AmifiZn8JZiYV9/i+3YNgcmpkPjyEiEHJuK3z5PN99Dkq3ySnNgztdyIevGQKdY0cgDY
-         LBdeurstiadQ5jRLOD/ajSv7COCdIf2p88RCPkwDQ6O7hrR4szmddH9Xr0h+DYXXQ0QH
-         d3VA==
-X-Forwarded-Encrypted: i=1; AJvYcCXvXK8TlHc+SKv86add1IaN8GyaB9KGum0VUGTY8RqOtuB8JKpdZpTzSWD61uvpMVENKfU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxjlXtMm1g3rwm8rE0d6baTlxZwk1w0NSKeVPCjUPGuWKAFUzo6
-	bi6vfoZAOcwi03UDAFqyw8ZOGYonLELi5o4HTPDI2AIXcalEcVIeYm68xsB12HpoQdbDjF7ZBTc
-	Uy1J5aaAescOulyuwEXcQlebh+hPU5Dme769A
-X-Gm-Gg: ASbGncts6QhSrR3ijSYyazTFR1+w13R2A/JcJi1G0z6nK14Hkg5uhMM7ZaIeQBRsrTM
-	NUFsZOJ+TuptNwOQg3LOhqYUwlfPJ8TFgByI/aF+K0j1Ti657i8gDnQCKIht2q8eTgiWGewdb
-X-Google-Smtp-Source: AGHT+IHJ8jmvk2vlvaC+lS/sj7o4RSpBTPngYU6t0we792og/hqSw+9hG/n7P/6UGVrDc5IFt2nzYS57fa68T5dlKVI=
-X-Received: by 2002:a17:907:7fa3:b0:ab6:e04e:b29 with SMTP id
- a640c23a62f3a-ab76e84c376mr17529966b.3.1738777741553; Wed, 05 Feb 2025
- 09:49:01 -0800 (PST)
+	 To:Cc:Content-Type; b=rwybuVZ8jPplo/pSRsSCBB2kWtT/ASNqQ/71tISwtuPg5oJKarlDkXORYBGVpWHXBQ1GkmChd/W9Xb33+HY5XpCt7dVioto/39myf995sRPEZ/9mYaKzlljxNX0z8Qwop9ZA5XU5rNJHx9zc4fNOe0FHZPJPfC2dqACaVVTtTM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s0iEBmLS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7EE3C4CEE9;
+	Wed,  5 Feb 2025 17:59:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738778379;
+	bh=d/ncfLhirm1SzUCcvJRbgrlDISq4qKX8Z31nBH9wVp0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=s0iEBmLSWPsc69rmoXUYoPrJ84IGC9rhr4vFHe7oBKGUjFjcb7j/2hGR+3Y2tf5IO
+	 dtY2MSC+Tca/FV2TIfi+1lw5oGu6wBAbDIK7ayU1nx4hbnlpXhteVHJ2MMu/zMEUpv
+	 3uwXW3NaLE39LnIKm8a2sGi65/LGa3ujSX3BINiFKxJKSL3CWvLjGE8kKMKeo1Jma4
+	 qeCMM+MyLICwcRbXMDKTyZVQr7tFifp6wzlJnhBX9XU0LbNE27F8cchpvsHFA26fTj
+	 JYuFTlSRBWedidVQdbaY19UXwmG2Xyayk0J7NE8HPgdmSUfBWRm4X/aUz1FSkEK06K
+	 Jgd0krfoafd7Q==
+Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-3d04d767d3aso11332265ab.2;
+        Wed, 05 Feb 2025 09:59:39 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUYJ5oMrziHP1fHgRKs4qROOA6VmYBq7dWwsElq0UZvCZqAJRtFChy6yjjW1HdCGcE21tCPSPS50m4JRjEkaw==@vger.kernel.org, AJvYcCUj6ioGAfYUG1w193kA72lOHSEYSM2pVjuIqtvtsYBJLrdhXE/Gl5O204y2Gn7T0F01GrDK4ZDmZ0pyr+Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzVKNITtPzpcq33sAT7G4GX5j0qkiIgjAtJ+7x8slPJ0uvr7CC9
+	dKzcujWF8idZJz9JFrRXIixT3GDtTztMpr3XzcL6fXRWJ/zbPeyA5SswkjYiBZZY9Ch1B+N3qfw
+	ykC+wNfUATgYtZLpwqi8ECU3cliw=
+X-Google-Smtp-Source: AGHT+IHxnrrlP8lTVjIAionLGzfbEycFUWCaTe8sMGWKukqmhdK2GkhnggL8NXpVNzz6zvFZYxb+/1SIODifxNql9Mg=
+X-Received: by 2002:a05:6e02:1d1d:b0:3d0:28d3:e4ba with SMTP id
+ e9e14a558f8ab-3d04f917ccamr34423415ab.18.1738778378925; Wed, 05 Feb 2025
+ 09:59:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250205163609.3208829-1-aleksander.lobakin@intel.com> <20250205163609.3208829-2-aleksander.lobakin@intel.com>
-In-Reply-To: <20250205163609.3208829-2-aleksander.lobakin@intel.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Wed, 5 Feb 2025 18:48:50 +0100
-X-Gm-Features: AWEUYZkuOxhIaitZ5J2JCfpt9TDbTEs11u0nOVrp_WhyR-akpJsCIQE0mTy2wI0
-Message-ID: <CANn89iJjCOThDqwsK4v2O8LfcwAB55YohNZ8T2sR40uM2ZoX5w@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 1/8] net: gro: decouple GRO from the NAPI layer
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, netdev@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+References: <20250127063526.76687-1-laoar.shao@gmail.com> <Z5eOIQ4tDJr8N4UR@pathway.suse.cz>
+ <CALOAHbBZc6ORGzXwBRwe+rD2=YGf1jub5TEr989_GpK54P2o1A@mail.gmail.com>
+ <alpine.LSU.2.21.2501311414281.10231@pobox.suse.cz> <CALOAHbDwsZqo9inSLNV1FQV3NYx2=eztd556rCZqbRvEu+DDFQ@mail.gmail.com>
+ <CAPhsuW4gYKHsmtHsBDUkx7a=apr_tSP_4aFWmmFNfqOJ+3GDGQ@mail.gmail.com> <CALOAHbDYFAntFbwMwGgnXkHh1audSoUwG1wFu_4e8P=c=hwZ0w@mail.gmail.com>
+In-Reply-To: <CALOAHbDYFAntFbwMwGgnXkHh1audSoUwG1wFu_4e8P=c=hwZ0w@mail.gmail.com>
+From: Song Liu <song@kernel.org>
+Date: Wed, 5 Feb 2025 09:59:27 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW4HsTab+w2r23bM52kcM1RBFBKP5ujVdDvxLE9OiqgMdA@mail.gmail.com>
+X-Gm-Features: AWEUYZk3v2MJ4U19GNvPDP61l38zFfek7GS3xv_pglWI5KifR2MidcH72DyIR9A
+Message-ID: <CAPhsuW4HsTab+w2r23bM52kcM1RBFBKP5ujVdDvxLE9OiqgMdA@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/2] livepatch: Add support for hybrid mode
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Miroslav Benes <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>, 
+	jpoimboe@kernel.org, jikos@kernel.org, joe.lawrence@redhat.com, 
+	live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 5, 2025 at 5:46=E2=80=AFPM Alexander Lobakin
-<aleksander.lobakin@intel.com> wrote:
+On Wed, Feb 5, 2025 at 6:43=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com> w=
+rote:
 >
-> In fact, these two are not tied closely to each other. The only
-> requirements to GRO are to use it in the BH context and have some
-> sane limits on the packet batches, e.g. NAPI has a limit of its
-> budget (64/8/etc.).
-> Move purely GRO fields into a new tagged group, &gro_node. Embed it
-> into &napi_struct and adjust all the references. napi_id doesn't
-> really belong to GRO, but:
+> On Tue, Feb 4, 2025 at 5:53=E2=80=AFAM Song Liu <song@kernel.org> wrote:
+> >
+> > On Mon, Feb 3, 2025 at 1:45=E2=80=AFAM Yafang Shao <laoar.shao@gmail.co=
+m> wrote:
+> > [...]
+> > >
+> > > If you=E2=80=99re managing a large fleet of servers, this issue is fa=
+r from negligible.
+> > >
+> > > >
+> > > > > Can you provide examples of companies that use atomic replacement=
+ at
+> > > > > scale in their production environments?
+> > > >
+> > > > At least SUSE uses it as a solution for its customers. No many prob=
+lems
+> > > > have been reported since we started ~10 years ago.
+> >
+> > We (Meta) always use atomic replacement for our live patches.
+> >
+> > >
+> > > Perhaps we=E2=80=99re running different workloads.
+> > > Going back to the original purpose of livepatching: is it designed to=
+ address
+> > > security vulnerabilities, or to deploy new features?
+> > > If it=E2=80=99s the latter, then there=E2=80=99s definitely a lot of =
+room for improvement.
+> >
+> > We only use KLP to fix bugs and security vulnerabilities. We do not use
+> > live patches to deploy new features.
 >
-> 1. struct gro_node has a 4-byte padding at the end anyway. If you
->    leave napi_id outside, struct napi_struct takes additional 8 bytes
->    (u32 napi_id + another 4-byte padding).
-> 2. gro_receive_skb() uses it to mark skbs. We don't want to split it
->    into two functions or add an `if`, as this would be less efficient,
->    but we need it to be NAPI-independent. The current approach doesn't
->    change anything for NAPI-backed GROs; for standalone ones (which
->    are less important currently), the embedded napi_id will be just
->    zero =3D> no-op.
+> +BPF
 >
-> Three Ethernet drivers use napi_gro_flush() not really meant to be
-> exported, so move it to <net/gro.h> and add that include there.
-> napi_gro_receive() is used in more than 100 drivers, keep it
-> in <linux/netdevice.h>.
-> This does not make GRO ready to use outside of the NAPI context
-> yet.
+> Hello Song,
 >
-> Tested-by: Daniel Xu <dxu@dxuuu.xyz>
-> Acked-by: Jakub Kicinski <kuba@kernel.org>
-> Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-> ---
->  include/linux/netdevice.h                  | 26 +++++---
->  include/net/busy_poll.h                    | 11 +++-
->  include/net/gro.h                          | 35 +++++++----
->  drivers/net/ethernet/brocade/bna/bnad.c    |  1 +
->  drivers/net/ethernet/cortina/gemini.c      |  1 +
->  drivers/net/wwan/t7xx/t7xx_hif_dpmaif_rx.c |  1 +
->  net/core/dev.c                             | 60 ++++++++-----------
->  net/core/gro.c                             | 69 +++++++++++-----------
->  8 files changed, 112 insertions(+), 92 deletions(-)
+> Since bpf_fexit also uses trampolines, I was curious about what would
+> happen if I attached do_exit() to fexit. Unfortunately, it triggers a
+> bug in BPF as well. The BPF program is as follows:
 >
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index 2a59034a5fa2..d29b6ebde73f 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -340,8 +340,8 @@ struct gro_list {
->  };
+> SEC("fexit/do_exit")
+> int fexit_do_exit
+> {
+>     return 0;
+> }
 >
->  /*
-> - * size of gro hash buckets, must less than bit number of
-> - * napi_struct::gro_bitmask
-> + * size of gro hash buckets, must be <=3D the number of bits in
-> + * gro_node::bitmask
->   */
->  #define GRO_HASH_BUCKETS       8
+> After the fexit program exits, the trampoline is still left over:
 >
-> @@ -370,7 +370,6 @@ struct napi_struct {
->         unsigned long           state;
->         int                     weight;
->         u32                     defer_hard_irqs_count;
-> -       unsigned long           gro_bitmask;
->         int                     (*poll)(struct napi_struct *, int);
->  #ifdef CONFIG_NETPOLL
->         /* CPU actively polling if netpoll is configured */
-> @@ -379,11 +378,14 @@ struct napi_struct {
->         /* CPU on which NAPI has been scheduled for processing */
->         int                     list_owner;
->         struct net_device       *dev;
-> -       struct gro_list         gro_hash[GRO_HASH_BUCKETS];
->         struct sk_buff          *skb;
-> -       struct list_head        rx_list; /* Pending GRO_NORMAL skbs */
-> -       int                     rx_count; /* length of rx_list */
-> -       unsigned int            napi_id; /* protected by netdev_lock */
-> +       struct_group_tagged(gro_node, gro,
-> +               unsigned long           bitmask;
-> +               struct gro_list         hash[GRO_HASH_BUCKETS];
-> +               struct list_head        rx_list; /* Pending GRO_NORMAL sk=
-bs */
-> +               int                     rx_count; /* length of rx_list */
-> +               u32                     napi_id; /* protected by netdev_l=
-ock */
+> $ bpftool  link show  <<<< nothing output
+> $ grep "bpf_trampoline_[0-9]" /proc/kallsyms
+> ffffffffc04cb000 t bpf_trampoline_6442526459    [bpf]
+
+I think we should first understand why the trampoline is not
+freed.
+
+> We could either add functions annotated as "__noreturn" to the deny
+> list for fexit as follows, or we could explore a more generic
+> solution, such as embedding the "noreturn" information into the BTF
+> and extracting it when attaching fexit.
+
+I personally don't think this is really necessary. It is good to have.
+But a reasonable user should not expect noreturn function to
+generate fexit events.
+
+Thanks,
+Song
+
+> Any thoughts?
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index d77abb87ffb1..37192888473c 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -22742,6 +22742,13 @@ BTF_ID(func, __rcu_read_unlock)
+>  #endif
+>  BTF_SET_END(btf_id_deny)
+>
+> +BTF_SET_START(fexit_deny)
+> +BTF_ID_UNUSED
+> +/* do_exit never returns */
+> +/* TODO: Add other functions annotated with __noreturn or figure out
+> a generic solution */
+> +BTF_ID(func, do_exit)
+> +BTF_SET_END(fexit_deny)
 > +
-
-I am old school, I would prefer a proper/standalone old C construct.
-
-struct gro_node  {
-                unsigned long           bitmask;
-               struct gro_list         hash[GRO_HASH_BUCKETS];
-               struct list_head        rx_list; /* Pending GRO_NORMAL skbs =
-*/
-               int                     rx_count; /* length of rx_list */
-               u32                     napi_id; /* protected by netdev_lock=
- */
-};
-
-Really, what struct_group_tagged() can possibly bring here, other than
-obfuscation ?
-
-Less than 30 uses in the whole kernel tree...
+>  static bool can_be_sleepable(struct bpf_prog *prog)
+>  {
+>         if (prog->type =3D=3D BPF_PROG_TYPE_TRACING) {
+> @@ -22830,6 +22837,9 @@ static int check_attach_btf_id(struct
+> bpf_verifier_env *env)
+>         } else if (prog->type =3D=3D BPF_PROG_TYPE_TRACING &&
+>                    btf_id_set_contains(&btf_id_deny, btf_id)) {
+>                 return -EINVAL;
+> +       } else if (prog->expected_attach_type =3D=3D BPF_TRACE_FEXIT &&
+> +                  btf_id_set_contains(&fexit_deny, btf_id)) {
+> +               return -EINVAL;
+>         }
+>
+>         key =3D bpf_trampoline_compute_key(tgt_prog,
+> prog->aux->attach_btf, btf_id);
 
