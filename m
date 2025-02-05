@@ -1,398 +1,180 @@
-Return-Path: <bpf+bounces-50564-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50565-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C51FA29B92
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 22:02:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5766EA29BD2
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 22:23:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D9CF18853D1
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 21:02:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23286188800D
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 21:23:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 774B2214A6D;
-	Wed,  5 Feb 2025 21:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C03B214A8E;
+	Wed,  5 Feb 2025 21:23:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bI5/mNIv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f1KI0BKU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com [209.85.217.54])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27C411DAC81;
-	Wed,  5 Feb 2025 21:02:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B25D1FECAC
+	for <bpf@vger.kernel.org>; Wed,  5 Feb 2025 21:22:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738789345; cv=none; b=N9mov9Ih+wWLXedU7ctCNkUXv6O64K6xPzOoYBm7oUHwf7NUohVhdrJdOuGczYAf00Z2M1cx2oWv3cZ1SAsUD4PCrwzhNbiqUzIUziZtF6vFUpNWnR5FWyspzS1b2aY4cC21I1zBdVawiPa0HzIMz/fd0yl1E8L2shAnN00Q2vc=
+	t=1738790579; cv=none; b=K/KgHDaWvoohyFL+eMvEevVs17IP3DgW0qqx9z1YWBUMhRxH2hCHlPWyEYTZV4GyM+tVNL624Q/qESq1dLXfBQwxHL7Y4tJpVjDxp4Lcf5Z1kInMy6fr8g9Mx6PiwGjdf5ILpZiaJTn6ZhdYVfRD/rI2xyQZJ+a8T1SR8Y5hpBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738789345; c=relaxed/simple;
-	bh=KMsFijwYbo4VqKigoNROtU/DPdJOYGtLZ4jcjeqAWYc=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=G5E0DsUHcSTV/5Aw5gJ723K7ZsMJdL79rmbJP1/wcb+PB8IGjo/x4zxynl0bVVASrCftYdImiATC/Xy47hVBFD34pHmwMC7YX1KwSHrC31vEOeJn8it7SOTFufmVNNpgf0pnJ9G7B6DypiBxKRMfaEVdE8tm+bx/ReL7k0/k6Lk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bI5/mNIv; arc=none smtp.client-ip=209.85.217.54
+	s=arc-20240116; t=1738790579; c=relaxed/simple;
+	bh=Zh8cop7rgRMwSvQV+SwcdE/N8MrzAsAM5zcvhuTxrYY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PkdmNsfic8JJ9Jd2AFbhpnDQWRyVx1WpBRsbmZuh9ZI+eHfw2G1ETjtkcOCUVWGmwWxxOlezliwn/WkR3UcPZiqRcSVware58AEdPfnfogD6JGcld5gZwtaDN3MaJsvFyrq41kGmHZWaAxSRnIR+u8YjhHqmCxAS6KeeYg9hYk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f1KI0BKU; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f54.google.com with SMTP id ada2fe7eead31-4ba74d1d4a9so20691137.1;
-        Wed, 05 Feb 2025 13:02:22 -0800 (PST)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-21f2cfd821eso4681995ad.3
+        for <bpf@vger.kernel.org>; Wed, 05 Feb 2025 13:22:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738789342; x=1739394142; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1738790577; x=1739395377; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OLo6yyv17ItF+7v8MCtqCyO0qmPNARVyeU1KW74AAgs=;
-        b=bI5/mNIvSU2rRCNlr73KTq5JItqLMzz591wlJ09wpJn+pA3vxeRMp3IQKCAvH/16Ex
-         pq0+V/2TIWJWHRObX9Q41Wl8hAn8m/QQgGu1SHBsiBVk1MQP45ypWVKjux/UfQzvEtHE
-         iizwocs5cHgLVPEWvwmT8yTFadiK8UceQ2GhJcU22oOx/+NuZ3QkU4BHawD2UfA97m/5
-         wmukBQ+aXemqi2W+zNB4XZkfnOjaY5tNvyB9gCm5IV+FmUywOOCWdVPmGoULlha/F4H3
-         z8zPpm2QaC6CgImKtpfEX1XQMIsANIlRckCdPGO0VSqjCHSNk1bFOgHSIV5rO4ilZJ5W
-         VRMQ==
+        bh=n8Ngnhv/F5+lmvZVwYv4fDUuEdpIFvkuCzIcZ+dy/f8=;
+        b=f1KI0BKUEZ1ZA5D4Ym/wUyUABn7yZPq35YqGqOsONFediUw6Ry7eIYN3Ab0zdUs+5k
+         5RMIV43aPJ7jBvg7U+Xt1Y6SZCtg5KsmZzEyYfxYLiqSva3mqdVWUvbMd5ndRqHn4sav
+         R7IQGyyV9ARrNzb9jXuS5rkG4xOo5gI4bCRHzxi0RcFeKZvHm8E9ssCLboYMS0kMxtch
+         8BtiqcY1n8/QJYqLNLaTvw1kX8C9R812Yys2BfjruSwjrDRUXiRipGDIQ8y7GoZrT5W1
+         12Npxtrs8eYH7Kod1XyUURMzWqTw2FtmtffJ9Bmu1a12gelo4iYmJEvGucsFdJYtfOhn
+         N+3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738789342; x=1739394142;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=OLo6yyv17ItF+7v8MCtqCyO0qmPNARVyeU1KW74AAgs=;
-        b=iZW3X7XW+As7meHOlpX56divn+CHT7nRObanKCDelm8UhgjtlPYz3D56u/8/G+nB5/
-         Rc5ewOz9tJ0511aGe/yltxJQt1LcVHAGL1skAOG3lHw+gzvjnMBoN1bpZPPaIEqJAZxj
-         GruoZBwyV7adQSc/HwU7m066mhsqWDOOemQoZHb4s+WX4oNiWuyIOrCzgXqxIIaMSxPF
-         7Suv5S6YE6I6uQsmxXVorF6estzWrgvP8VYvrtpPg7gA/6kNdYzxnR3daAudDOJSNv9k
-         k24sBKdpU+xZAlRuqQ2BbKN8yGNnWinUmRnheggRQ/DA/4eW7WX+3BWBpd1f7tYV8HVx
-         Erdg==
-X-Forwarded-Encrypted: i=1; AJvYcCUSTTMTPessgUAIky0srXpLLmmFPCUeFPdDH3fmXKhLCckZ82BrRM4GiKOGVr2arxS175I=@vger.kernel.org, AJvYcCXwvkLGu5A/8mBIZSaFPaSVN1l9D2NDFYaAQ2c9SXh2t9xVFelXDZbULllH8K1lmmM8oYrINE8X@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy8oscFw9R//LOacIXi0a2uB8Uivv+T9YBLOxnIIUayiT0Oix8Z
-	OU1/Aipj99yy62IqfXjFtnq5KZLACGdiWl/2sx/bP7iM84O4CSON
-X-Gm-Gg: ASbGncugAvJeH1hmwpW+mpckuOj+fgpIABaeMCga8KkpbOPSXQuM8ybY0V0oqr5cDQc
-	pq1dUHJJ7rKum0LeWE27V5FN899ag8Snpr8lIoJO/EpX2rFmOFSla5Ex5wc9WKEtEbr7bqo4Ujp
-	nCwkRSNYI1IznAjQVUGiqaVRXc7gqo6j4AYN1fhWARmv1fg23atcmXHl+yV0Wwhx4GUeHGGwrZW
-	iQ3W6Ac7HcopPclK617A2Is6sQdsvDdOzmSFC9/sWgdEcifBmyfkAqVPQ1imCb8rGPCat4dtdMJ
-	3Dy5sqj6aG2LsqAXXO0CadArW9jgN/4iLxrMdE53V2JW9atsOugmR617EL6IdIU=
-X-Google-Smtp-Source: AGHT+IG8Ajxn+UyTfAOPeS7JkJtr/bYi/YncU0DBwtRCw3v/6Z8UO52WYmQ5u/pB2wxhT/GC7lrQgQ==
-X-Received: by 2002:a05:6102:951:b0:4b2:5d63:ff72 with SMTP id ada2fe7eead31-4ba4791df1fmr3177200137.13.1738789341580;
-        Wed, 05 Feb 2025 13:02:21 -0800 (PST)
-Received: from localhost (15.60.86.34.bc.googleusercontent.com. [34.86.60.15])
-        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-866f274258dsm188533241.9.2025.02.05.13.02.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Feb 2025 13:02:20 -0800 (PST)
-Date: Wed, 05 Feb 2025 16:02:19 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Jason Xing <kerneljasonxing@gmail.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, 
- davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- dsahern@kernel.org, 
- willemb@google.com, 
- ast@kernel.org, 
- daniel@iogearbox.net, 
- andrii@kernel.org, 
- eddyz87@gmail.com, 
- song@kernel.org, 
- yonghong.song@linux.dev, 
- john.fastabend@gmail.com, 
- kpsingh@kernel.org, 
- sdf@fomichev.me, 
- haoluo@google.com, 
- jolsa@kernel.org, 
- horms@kernel.org, 
- bpf@vger.kernel.org, 
- netdev@vger.kernel.org
-Message-ID: <67a3d1dba6803_170d392948c@willemb.c.googlers.com.notmuch>
-In-Reply-To: <CAL+tcoC4E3zn4gB6PC_Kj5jTShNiounu8vjsZbfDCAOn2fNqXw@mail.gmail.com>
-References: <20250128084620.57547-1-kerneljasonxing@gmail.com>
- <20250128084620.57547-12-kerneljasonxing@gmail.com>
- <d2605829-d5c2-4ce2-ac27-9f1df0398ccc@linux.dev>
- <CAL+tcoDZXc56BsO9tYvb1EFDdMHhv3OcBsPwY3ctJ85rvb+OHA@mail.gmail.com>
- <67a24989d7202_bb56629425@willemb.c.googlers.com.notmuch>
- <CAL+tcoA7Efzxg9c-CBn3S0JEQZLUHBaCA+dL=mgWbVh26SukgA@mail.gmail.com>
- <CAL+tcoAeBJ=F8cZ9qYwGF6jmc+DwA2byrrzAZjcpNYzrjT541g@mail.gmail.com>
- <67a381a6bef0b_14e08329474@willemb.c.googlers.com.notmuch>
- <CAL+tcoC4E3zn4gB6PC_Kj5jTShNiounu8vjsZbfDCAOn2fNqXw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 11/13] net-timestamp: add a new callback in
- tcp_tx_timestamp()
+        d=1e100.net; s=20230601; t=1738790577; x=1739395377;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n8Ngnhv/F5+lmvZVwYv4fDUuEdpIFvkuCzIcZ+dy/f8=;
+        b=NZFe2GWk0ASRfCHJeEc1GFIGdLFW/FH2RpkwX08Wtbo/gKspPL45tO1oxC7mPO16+t
+         +Fe3nAfh1kZv7f7CBxicBAfcWcYRabOcNdJ9ZrBpJ3CSq5UDtTYiGLddZoY2ImKt5wUH
+         m6OXm1mrCiqAVqZV4T5Eca16mltb9LYWuWaRAk1weiPM5htu48SqpK3cOOjzzg/pcRHn
+         JFTUhE6T6m/osPj1td71s4ptRpxhCaT8CkTaozo4r+R7hHxFuMdB2wx8wdD7NL69QiMa
+         zA8waXoRMfmTna1dOqnPGyx4+ELvBvUuKkrTzDxaQ2FPz4f+d3ui7ZFnde2vzJS2FG+n
+         wETw==
+X-Gm-Message-State: AOJu0Yx7vPbfg2/ZxmR7l4NhDBnnpTWBVUj9PPL5FhX5ovGmoI2Y5Ie6
+	5HSDOpvI19k+696Q5y4Jl6IZJqKoaqDkHO6qUpTIKBRM5o2wjgqY/ciHO+vbpogNhdUHTjXwI10
+	7MSJjJ8mVlqCsM5odcib+fsX0NZU=
+X-Gm-Gg: ASbGncttgqnFAu1Cfj4jUC/A16Dk6mQkpFUC3R2SCQdcs511fE/kwODXpX8Pt0PuqDC
+	RTd+XhxWK/9X0HC4yugUPXduHClgFyCiptXR1/ICKNOzmjwmIJ556WKVfcnzcdyWpi9ZxPKE7+E
+	TgLmoRCg00dCVh
+X-Google-Smtp-Source: AGHT+IHrCzxBW8qFWLP8b4IkoGVkWitjsIjydVHQT/5p3BmoEJJ7Syn2vIpcggAH4/AFnXTC+THyPANnPKZIaQ6WGEQ=
+X-Received: by 2002:a05:6a20:9e4c:b0:1d9:2b51:3ccd with SMTP id
+ adf61e73a8af0-1ede88105c0mr8611007637.7.1738790577190; Wed, 05 Feb 2025
+ 13:22:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+MIME-Version: 1.0
+References: <20250205190918.2288389-1-bboscaccy@linux.microsoft.com> <20250205190918.2288389-2-bboscaccy@linux.microsoft.com>
+In-Reply-To: <20250205190918.2288389-2-bboscaccy@linux.microsoft.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 5 Feb 2025 13:22:43 -0800
+X-Gm-Features: AWEUYZlV_rtteDNUynGjDSUK73BNJXf5tDCsOTKdazaCWeAg3IROo9W2z5gLyzA
+Message-ID: <CAEf4BzZQUPfA8UcW1Ed9jM0J8z+yGHe=kOM5BwEBuDzJL3B1HA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] libbpf: Convert ELF notes into read-only maps
+To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+Cc: bpf@vger.kernel.org, kapron@google.com, teknoraver@meta.com, 
+	roberto.sassu@huawei.com, paul@paul-moore.com, code@tyhicks.com, 
+	xiyou.wangcong@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Jason Xing wrote:
-> On Wed, Feb 5, 2025 at 11:20=E2=80=AFPM Willem de Bruijn
-> <willemdebruijn.kernel@gmail.com> wrote:
-> >
-> > Jason Xing wrote:
-> > > On Wed, Feb 5, 2025 at 2:09=E2=80=AFAM Jason Xing <kerneljasonxing@=
-gmail.com> wrote:
-> > > >
-> > > > On Wed, Feb 5, 2025 at 1:08=E2=80=AFAM Willem de Bruijn
-> > > > <willemdebruijn.kernel@gmail.com> wrote:
-> > > > >
-> > > > > Jason Xing wrote:
-> > > > > > On Tue, Feb 4, 2025 at 9:16=E2=80=AFAM Martin KaFai Lau <mart=
-in.lau@linux.dev> wrote:
-> > > > > > >
-> > > > > > > On 1/28/25 12:46 AM, Jason Xing wrote:
-> > > > > > > > Introduce the callback to correlate tcp_sendmsg timestamp=
- with other
-> > > > > > > > points, like SND/SW/ACK. We can let bpf trace the beginni=
-ng of
-> > > > > > > > tcp_sendmsg_locked() and fetch the socket addr, so that i=
-n
-> > > > > > >
-> > > > > > > Instead of "fetch the socket addr...", should be "store the=
- sendmsg timestamp at
-> > > > > > > the bpf_sk_storage ...".
-> > > > > >
-> > > > > > I will revise it. Thanks.
-> > > > > >
-> > > > > > >
-> > > > > > > > tcp_tx_timestamp() we can correlate the tskey with the so=
-cket addr.
-> > > > > > >
-> > > > > > >
-> > > > > > > > It is accurate since they are under the protect of socket=
- lock.
-> > > > > > > > More details can be found in the selftest.
-> > > > > > >
-> > > > > > > The selftest uses the bpf_sk_storage to store the sendmsg t=
-imestamp at
-> > > > > > > fentry/tcp_sendmsg_locked and retrieves it back at tcp_tx_t=
-imestamp (i.e.
-> > > > > > > BPF_SOCK_OPS_TS_SND_CB added in this patch).
-> > > > > > >
-> > > > > > > >
-> > > > > > > > Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
-> > > > > > > > ---
-> > > > > > > >   include/uapi/linux/bpf.h       | 7 +++++++
-> > > > > > > >   net/ipv4/tcp.c                 | 1 +
-> > > > > > > >   tools/include/uapi/linux/bpf.h | 7 +++++++
-> > > > > > > >   3 files changed, 15 insertions(+)
-> > > > > > > >
-> > > > > > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linu=
-x/bpf.h
-> > > > > > > > index 800122a8abe5..accb3b314fff 100644
-> > > > > > > > --- a/include/uapi/linux/bpf.h
-> > > > > > > > +++ b/include/uapi/linux/bpf.h
-> > > > > > > > @@ -7052,6 +7052,13 @@ enum {
-> > > > > > > >                                        * when SK_BPF_CB_T=
-X_TIMESTAMPING
-> > > > > > > >                                        * feature is on.
-> > > > > > > >                                        */
-> > > > > > > > +     BPF_SOCK_OPS_TS_SND_CB,         /* Called when ever=
-y sendmsg syscall
-> > > > > > > > +                                      * is triggered. Fo=
-r TCP, it stays
-> > > > > > > > +                                      * in the last send=
- process to
-> > > > > > > > +                                      * correlate with t=
-cp_sendmsg timestamp
-> > > > > > > > +                                      * with other times=
-tamping callbacks,
-> > > > > > > > +                                      * like SND/SW/ACK.=
+On Wed, Feb 5, 2025 at 11:09=E2=80=AFAM Blaise Boscaccy
+<bboscaccy@linux.microsoft.com> wrote:
+>
+> Add a flexible mechanism, using existing ELF constructs, to attach
+> additional metadata to BPF programs for possible use by BPF
+> gatekeepers and skeletons.
+>
+> During object file parsing, note sections are no longer skipped and
+> now treated as read-only data. During libbpf-based loading or skeleton
+> generation, those sections are then transformed into read-only maps
+> which are subsequently passed into the kernel.
 
-> > > > > > >
-> > > > > > > Do you have a chance to look at how this will work at UDP?
-> > > > > >
-> > > > > > Sure, I feel like it could not be useful for UDP. Well, thing=
-s get
-> > > > > > strange because I did write a long paragraph about this thing=
- which
-> > > > > > apparently disappeared...
-> > > > > >
-> > > > > > I manage to find what I wrote:
-> > > > > >     For UDP type, BPF_SOCK_OPS_TS_SND_CB may be not suitable =
-because
-> > > > > >     there are two sending process, 1) lockless path, 2) lock =
-path, which
-> > > > > >     should be handled carefully later. For the former, even t=
-hough it's
-> > > > > >     unlikely multiple threads access the socket to call sendm=
-sg at the
-> > > > > >     same time, I think we'd better not correlate it like what=
- we do to the
-> > > > > >     TCP case because of the lack of sock lock protection. Con=
-sidering SND_CB is
-> > > > > >     uapi flag, I think we don't need to forcely add the 'TCP_=
-' prefix in
-> > > > > >     case we need to use it someday.
-> > > > > >
-> > > > > >     And one more thing is I'd like to use the v5[1] method in=
- the next round
-> > > > > >     to introduce a new tskey_bpf which is good for UDP type. =
-The new field
-> > > > > >     will not conflict with the tskey in shared info which is =
-generated
-> > > > > >     by sk->sk_tskey in __ip_append_data(). It hardly works if=
- both features
-> > > > > >     (so_timestamping and its bpf extension) exists at the sam=
-e time. Users
-> > > > > >     could get confused because sometimes they fetch the tskey=
- from skb,
-> > > > > >     sometimes they don't, especially when we have cmsg featur=
-e to turn it on/
-> > > > > >     off per sendmsg. A standalone tskey for bpf extension wil=
-l be needed.
-> > > > > >     With this tskey_bpf, we can easily correlate the timestam=
-p in sendmsg
-> > > > > >     syscall with other tx points(SND/SW/ACK...).
-> > > > > >
-> > > > > >     [1]: https://lore.kernel.org/all/20250112113748.73504-14-=
-kerneljasonxing@gmail.com/
-> > > > > >
-> > > > > >     If possible, we can leave this question until the UDP sup=
-port series
-> > > > > >     shows up. I will figure out a better solution :)
-> > > > > >
-> > > > > > In conclusion, it probably won't be used by the UDP type. It'=
-s uAPI
-> > > > > > flag so I consider the compatibility reason.
-> > > > >
-> > > > > I don't think this is acceptable. We should aim for an API that=
- can
-> > > > > easily be used across protocols, like SO_TIMESTAMPING.
-> > > >
-> > > > After I revisit the UDP SO_TIMESTAMPING again, my thoughts are
-> > > > adjusted like below:
-> > > >
-> > > > It's hard to provide an absolutely uniform interface or usage to =
-users
-> > > > for TCP and UDP and even more protocols. Cases can be handled one=
- by
-> > > > one.
-> >
-> > We should try hard. SO_TIMESTAMPING is uniform across protocols.
-> > An interface that is not is just hard to use.
-> >
-> > > > The main obstacle is how we can correlate the timestamp in
-> > > > sendmsg syscall with other sending timestamps. It's worth noticin=
-g
-> > > > that for SO_TIMESTAMPING the sendmsg timestamp is collected in th=
-e
-> > > > userspace. For instance, while skb enters the qdisc, we fail to k=
-now
-> > > > which skb belongs to which sendmsg.
-> > > >
-> > > > An idea coming up is to introduce BPF_SOCK_OPS_TS_SND_CB to corre=
-late
-> > > > the sendmsg timestamp with tskey (in tcp_tx_timestamp()) under th=
-e
-> > > > protection of socket lock + syscall as the current patch does. Bu=
-t for
-> > > > UDP, it can be lockless. IIUC, there is a very special case where=
- even
-> > > > SO_TIMESTAMPING may get lost: if multiple threads accessing the s=
-ame
-> > > > socket send UDP packets in parallel, then users could be confused=
+We already have this mechanism, it's .rodata (and
+.rodata.<customname>) section(s). Adding .note sections as BPF maps
+make no sense to me. Just piggy-back on .rodata for storing any
+necessary metadata.
 
-> > > > which tskey matches which sendmsg.
-> >
-> > This is a known issue for lockless datagram sockets.
-> >
-> > With SO_TIMESTAMPING, but the use of timestamping and of concurrent
-> > sendmsg calls is under control of the process, so it only shoots
-> > itself in the foot.
-> >
-> > With BPF timestamping, a process may confuse a third party admin, so
-> > the situation is slightly different.
-> =
+pw-bot: cr
 
-> Agreed.
-> =
-
-> >
-> > > > IIUC, I will not consider this
-> > > > unlikely case, then the UDP case is quite similar to the TCP case=
-.
-> > > >
-> > > > The scenario for the UDP case is:
-> > > > 1) using fentry bpf to hook the udp_sendmsg() to get the timestam=
-p
-> > > > like TCP does in this series.
-> > > > 2) insert BPF_SOCK_OPS_TS_SND_CB into __ip_append_data() near the=
-
-> > > > SO_TIMESTAMPING code snippets to let bpf program correlate the ts=
-key
-> > > > with timestamp.
-> > > > Note: tskey in UDP will be handled carefully in a different way
-> > > > because we should support both modes for socket timestamping at t=
-he
-> > > > same time.
-> > > > It's really similar to TCP regardless of handling tskey.
-> > > >
-> > >
-> > > To be more precise in case you don't have much time to read the abo=
-ve
-> > > long paragraph, BPF_SOCK_OPS_TS_SND_CB is mainly used to correlate
-> > > sendmsg timestamp with corresponding tskey.
-> > >
-> > > 1. For TCP, we can correlate it in tcp_tx_timestamp() like this pat=
-ch does.
-> > >
-> > > 2. For UDP, we can correlate in __ip_append_data() along with those=
-
-> > > tskey initialization, assuming there are no multiple threads callin=
-g
-> > > locklessly ip_make_skb(). Locked path
-> > > (udp_sendmsg()->ip_append_data()) works like TCP under the socket l=
-ock
-> > > protection, so it can be easily handled. Lockless path
-> > > (udp_sendmsg()->ip_make_skb()) can be visited by multiple threads a=
-t
-> > > the same time, which should be handled properly.
-> >
-> > Different hook points is fine, as UDP (and RAW) uses __ip_append_data=
-
-> =
-
-> Then this approach (introducing this new flag) is feasible. Sorry that
-> last night I wrote such a long paragraph which buried something
-> important. Because of that, I rephrase the whole idea about how to let
-> UDP work with this kind of new flag in [patch v8 11/12]. Link is
-> https://lore.kernel.org/all/CAL+tcoCmXcDot-855XYU7PKCiGvJL=3DO3CQBGuOTR=
-As2_=3DYs=3Dgg@mail.gmail.com/
-> =
-
-> > or more importantly ip_send_skb, while TCP uses ip_queue_xmit.
-> =
-
-> For TCP, we use tcp_tx_timestamp to finish the map between sendmsg
-> timestamp and tskey.
-> =
-
-> >
-> > As long as the API is the same: the operation (BPF_SOCK_OPS_TS_SND_CB=
-)
-> > and the behavior of that operation. Subject to the usual distinction
-> > between protocol behavior (bytestream vs datagram).
-> =
-
-> I see your point.
-> =
-
-> >
-> > > I prefer to implement
-> > > the bpf extension for IPCORK_TS_OPT_ID, which should be another top=
-ic,
-> > > I think. This might be the only one corner case, IIUC?
-> >
-> > This sounds like an entirely different topic? Not sure what this is.
-> =
-
-> Not really a different topic. I mean let bpf prog take the whole
-> control of setting the tskey, then with this BPF_SOCK_OPS_TS_SND_CB
-> flag we can correlate the sendmsg timestamp with tskey. So It has
-> something to do with the usage of UDP. Please take a look at that link
-> to patch 11/12. For TCP, we don't need to care about the value of
-> tskey which has already been taken care of by SO_TIMESTAMPING. So it
-> is slightly different. I'm not sure if this kind of usage is
-> acceptable?
-
-Why can TCP rely on SO_TIMESTAMPING to set tskey, but UDP cannot?
-
-BPF will need to set the key for both protocol if SO_TIMESTAMPING is
-not enabled, right?=
+>
+> Signed-off-by: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+> ---
+>  tools/bpf/bpftool/gen.c | 4 ++--
+>  tools/lib/bpf/libbpf.c  | 6 ++++++
+>  2 files changed, 8 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> index 5a4d3240689ed..311d6a3f1c4bb 100644
+> --- a/tools/bpf/bpftool/gen.c
+> +++ b/tools/bpf/bpftool/gen.c
+> @@ -92,7 +92,7 @@ static void get_header_guard(char *guard, const char *o=
+bj_name, const char *suff
+>
+>  static bool get_map_ident(const struct bpf_map *map, char *buf, size_t b=
+uf_sz)
+>  {
+> -       static const char *sfxs[] =3D { ".data", ".rodata", ".bss", ".kco=
+nfig" };
+> +       static const char *sfxs[] =3D { ".data", ".rodata", ".bss", ".kco=
+nfig", ".note" };
+>         const char *name =3D bpf_map__name(map);
+>         int i, n;
+>
+> @@ -117,7 +117,7 @@ static bool get_map_ident(const struct bpf_map *map, =
+char *buf, size_t buf_sz)
+>
+>  static bool get_datasec_ident(const char *sec_name, char *buf, size_t bu=
+f_sz)
+>  {
+> -       static const char *pfxs[] =3D { ".data", ".rodata", ".bss", ".kco=
+nfig" };
+> +       static const char *pfxs[] =3D { ".data", ".rodata", ".bss", ".kco=
+nfig", ".note" };
+>         int i, n;
+>
+>         /* recognize hard coded LLVM section name */
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 194809da51725..be6af0fece040 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -523,6 +523,7 @@ struct bpf_struct_ops {
+>  #define STRUCT_OPS_SEC ".struct_ops"
+>  #define STRUCT_OPS_LINK_SEC ".struct_ops.link"
+>  #define ARENA_SEC ".addr_space.1"
+> +#define NOTE_SEC ".note"
+>
+>  enum libbpf_map_type {
+>         LIBBPF_MAP_UNSPEC,
+> @@ -3977,6 +3978,11 @@ static int bpf_object__elf_collect(struct bpf_obje=
+ct *obj)
+>                         sec_desc->sec_type =3D SEC_BSS;
+>                         sec_desc->shdr =3D sh;
+>                         sec_desc->data =3D data;
+> +               } else if (sh->sh_type =3D=3D SHT_NOTE && (strcmp(name, N=
+OTE_SEC) =3D=3D 0 ||
+> +                                                      str_has_pfx(name, =
+NOTE_SEC "."))) {
+> +                       sec_desc->sec_type =3D SEC_RODATA;
+> +                       sec_desc->shdr =3D sh;
+> +                       sec_desc->data =3D data;
+>                 } else {
+>                         pr_info("elf: skipping section(%d) %s (size %zu)\=
+n", idx, name,
+>                                 (size_t)sh->sh_size);
+> --
+> 2.48.1
+>
 
