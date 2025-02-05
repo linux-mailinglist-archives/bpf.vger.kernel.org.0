@@ -1,198 +1,145 @@
-Return-Path: <bpf+bounces-50462-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50463-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0A9DA27FD6
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 01:00:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74935A28007
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 01:14:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FB5F1886FFA
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 00:00:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F15DD1667E6
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2025 00:14:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A440F21CFFF;
-	Wed,  5 Feb 2025 00:00:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C7C380B;
+	Wed,  5 Feb 2025 00:14:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IGhU6V0J"
+	dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b="xvhANHd6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00206402.pphosted.com (mx0a-00206402.pphosted.com [148.163.148.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49DAC21C9E1;
-	Wed,  5 Feb 2025 00:00:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A0D163;
+	Wed,  5 Feb 2025 00:14:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.148.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738713607; cv=none; b=Z3YhdowFipSlznJRvoE1632CV3SSu/77pwHoKr/cpV0iGl4O3gYhcrxXCTmvTnXvoXaXQ9eaLynwLklmRxwyPGWwsHlcIygytycNf2DyiVHFHA4J8e9EmcNcgzFGurAcn1M0L+SE2fDThFaWN0hbrPinIMCY4DcvAxWZLeuzg7A=
+	t=1738714459; cv=none; b=ZJx6PN+UMQEDqJhdosh4Ee5outJID+FtxlCWDdAf4sartmDxAA6MwUu5sFt3afLygY2XmY05pEYw6DgC7X/E2SXUVrXMygY3XPQU0MK4kpPCANhUB9L1NJ2BAHmubz1m6SjO21k36PQvDjdZN4cWjNQBEQ9KLxpOAUIU3IpU9oI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738713607; c=relaxed/simple;
-	bh=V7Zi/iyAoCK+XZf5LpkEKAQrMiDEAjFGuyxaF5EdJu8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MZN9Jg7Vh53eHUyJRO0AT707sCU4w+sYE25ktqVFbGNKohak0+zDsIPmZeaaARgSXkQzuN9yE6fUQX6VQV0shtbAnELd5JORyDUS9Dn+AnhmxXnrsGXUGqqmWtZL2FP5uSpvLggZKWy6OxEZxENy/VkIjTaYrK2po7UmXn0DdAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IGhU6V0J; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4361dc6322fso43059525e9.3;
-        Tue, 04 Feb 2025 16:00:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738713603; x=1739318403; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w6OYG00+towej2n1JZaA+A6mEnGlJkoM6YIHta1QLfo=;
-        b=IGhU6V0JqvzYZkbSL4kSk1gwavcZdO7zDbqYCjshhpdnsc4ytfdZfNLDd2gJUpkPm9
-         En3dxxqQa/cUiZa82ziNvPGleSVlH4dcO1aKQXxT+D/PPPgduRi4ECjnI4QNbUv5Wp3O
-         gsJ8lieUtQXXSbsikvBaZBMQIad1iPg5+J7aTBgBPXmukn3uS9o9jDnVoe7SUqoYM+42
-         JjFgjF8nC701rpKhBkxXicXAMqR6uTkMSstDOfPTyXew6tQnVtLGJnEJ1Jd84wZ3RC0q
-         49a0djiXm8SshSXMJjGz+mCO7h75Fzr06EkQt/IgSrhNpJhNQbTr7+BOyJZ/lQchmQ2u
-         3B/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738713603; x=1739318403;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w6OYG00+towej2n1JZaA+A6mEnGlJkoM6YIHta1QLfo=;
-        b=J4jzh9yiiTKUCiC03YskSablmtSqfZlC6aWhE1W+Ch8bVJysbxYSZ8uy1bTjtmav86
-         Gpmig0MxIwxYKP8inoo9Y/n7CdRUjOGs4+tBNVpJR25Ci839S5reFWQ7uesfUcCAEO0y
-         P7JLIct3CQj/khXjGRz1aKzpvP1o997Q69mUESve6jChYVellwGgL/3a9v3xdn485vF+
-         V+Hji6MjOkcUZShIkwAoxz3tJR5F+ZFVMAv07NhATNh8GGGOge4sJYJw4hWeR10b0zwP
-         70USCwexG9Sj9Oda0AzRqPbzJG4t7n49jvInZYUb1dKIJjag9BNDi1IMV35cNiof7681
-         eKSA==
-X-Forwarded-Encrypted: i=1; AJvYcCX/VzZuynBxDxy0di6rjHa+8M34AXK1vtgGPzRShdCK0aFg8Wr/uvb4KJQlSLibkjOPtY+PstiHF+L/jwmf@vger.kernel.org, AJvYcCX1AqDKfNghU6HO9UHNEFkR3VpHQs38o1QGaT3M+UkI3D3D+h+ODlX5a9Wtp32OYWW32KU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxRGlrrl/ugZCJDciKjM28GPnAlI+hMj7LcOqyNxOKcW4zxMED5
-	LFY64ACe1HirJuTpmErz6Ho4yr8QOXQQJOaHI9wl4d50kGXe5T3+OiCEZie+je6DV8QxsJqJf9V
-	VtAwdtZbLzk+652ZFU8f1KTnFiQneUM6k
-X-Gm-Gg: ASbGncsstoScVGEJsjvD8sOfzW5zN3jkwwLePMfaf5XKzQevTDAfP4FGLGEPZdZoURA
-	qXoyPTVh2ZtAR/JidOdVrFaLBnTekci0PoMINgc7mXXY3AX3jZl+1YGLvER6M0tpTUpGjVeBnWg
-	==
-X-Google-Smtp-Source: AGHT+IE15lPz2vl/Ev7gc5s/OrrCz4qJC0cA3THIRIUUUeWG45vHMIhtFuZeD/ME96YK8uHiPdeeBkgJmozYYBl0yYk=
-X-Received: by 2002:a05:6000:1561:b0:38d:b18d:8ee7 with SMTP id
- ffacd0b85a97d-38db4920930mr327630f8f.49.1738713603120; Tue, 04 Feb 2025
- 16:00:03 -0800 (PST)
+	s=arc-20240116; t=1738714459; c=relaxed/simple;
+	bh=PoMSsUfaTp2XGK37F2q4r7oB4qwqDq26iNYJKGa7rA0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=sriBq4Ta1qFjAOe7CqWNp5ak3q7FTCenIzg9IRvm92XTs1jAi6jU3Wb4j9Xt+/GwRz9fEg8f7ndQBh9PSs0xpJUMHR8rYmurGNh8bgVR4HvKpU8g6mY/03iJf002AzElsB2XaS23gnTGU+trgMCPwO7kqzLAn1oM2DFRpAyR7nk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com; spf=pass smtp.mailfrom=crowdstrike.com; dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b=xvhANHd6; arc=none smtp.client-ip=148.163.148.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crowdstrike.com
+Received: from pps.filterd (m0354652.ppops.net [127.0.0.1])
+	by mx0a-00206402.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 514N2vfT028175;
+	Wed, 5 Feb 2025 00:13:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
+	 h=cc:content-id:content-transfer-encoding:content-type:date
+	:from:in-reply-to:message-id:mime-version:references:subject:to;
+	 s=default; bh=PoMSsUfaTp2XGK37F2q4r7oB4qwqDq26iNYJKGa7rA0=; b=x
+	vhANHd6RjrEbKAjsS9nlKy7Zeo9MMNhjE4nZ+KwJEnTg7UIeuyP9EDIhqwGG9YqI
+	bIgsRXWRAY8gEzweR6jUfZr80V9Em5RN+d40SHGXQnXkxh04qsdBiPlMwsE0DShU
+	jNXnPsrkofuHPUdnQKn2e5QAv4MsMpn3CVxVBFZXkE4TUHwwoZ9jipab3n8/3NP4
+	hC+miN8ZEoWU5EtaevqDlmaFQaC8BoIoWptQvwZl1TxcVMBGbqI7JuVxqGuqfAQ0
+	2vu1+WLPhU4pd0219wFex7Le40UxZYlOjvY3fsXlzvAmE9V1TbJp+ynx9DHnnjgx
+	0aLzit6ZPoYZ5qyoDPHaA==
+Received: from mail.crowdstrike.com (dragosx.crowdstrike.com [208.42.231.60] (may be forged))
+	by mx0a-00206402.pphosted.com (PPS) with ESMTPS id 44kv7hr57t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 05 Feb 2025 00:13:27 +0000 (GMT)
+Received: from 04WPEXCH006.crowdstrike.sys (10.100.11.70) by
+ 04WPEXCH006.crowdstrike.sys (10.100.11.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Wed, 5 Feb 2025 00:13:26 +0000
+Received: from 04WPEXCH006.crowdstrike.sys ([fe80::a97d:6ad:c239:d138]) by
+ 04WPEXCH006.crowdstrike.sys ([fe80::a97d:6ad:c239:d138%11]) with mapi id
+ 15.02.1544.009; Wed, 5 Feb 2025 00:13:26 +0000
+From: Martin Kelly <martin.kelly@crowdstrike.com>
+To: "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kbuild@vger.kernel.org"
+	<linux-kbuild@vger.kernel.org>
+CC: "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "akpm@linux-foundation.org"
+	<akpm@linux-foundation.org>,
+        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mark.rutland@arm.com"
+	<mark.rutland@arm.com>,
+        "mathieu.desnoyers@efficios.com"
+	<mathieu.desnoyers@efficios.com>,
+        "mhiramat@kernel.org"
+	<mhiramat@kernel.org>,
+        "torvalds@linux-foundation.org"
+	<torvalds@linux-foundation.org>,
+        "nicolas@fjasle.eu" <nicolas@fjasle.eu>,
+        "nathan@kernel.org" <nathan@kernel.org>,
+        "zhengyejian1@huawei.com"
+	<zhengyejian1@huawei.com>,
+        "christophe.leroy@csgroup.eu"
+	<christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH v2 16/16] scripts/sorttable: ftrace: Do not add weak
+ functions to available_filter_functions
+Thread-Topic: [PATCH v2 16/16] scripts/sorttable: ftrace: Do not add weak
+ functions to available_filter_functions
+Thread-Index: AQHbd2LGURzmIpDu8kKWzgK+3/K/Ow==
+Date: Wed, 5 Feb 2025 00:13:26 +0000
+Message-ID: <aba52935dc06a1fe69f05309f5d9828a297ad787.camel@crowdstrike.com>
+References: <20250102232609.529842248@goodmis.org>
+	 <20250102232651.347490863@goodmis.org>
+In-Reply-To: <20250102232651.347490863@goodmis.org>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-disclaimer: USA
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <5F130E4754162E479CB6F51E3DE51EF3@crowdstrike.sys>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <AM6PR03MB5080392CC36DB66E8EA202DE99F42@AM6PR03MB5080.eurprd03.prod.outlook.com>
-In-Reply-To: <AM6PR03MB5080392CC36DB66E8EA202DE99F42@AM6PR03MB5080.eurprd03.prod.outlook.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 4 Feb 2025 23:59:51 +0000
-X-Gm-Features: AWEUYZl9x2Tmu0KHKOSiDT_80No2JLr7K07BgpIWaEaGZF1A3M9cz85eVjq85DU
-Message-ID: <CAADnVQLb--LzFmXZPLPa5V+cD1A9YzTnZSgno9ftcA4-GGTi8w@mail.gmail.com>
-Subject: Re: [RFC] bpf: Rethinking BPF safety, BPF open-coded iterators, and
- possible improvements (runtime protection)
-To: Juntong Deng <juntong.deng@outlook.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, snorcht@gmail.com, 
-	Christian Brauner <brauner@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Authority-Analysis: v=2.4 cv=ZI0tmW7b c=1 sm=1 tr=0 ts=67a2ad27 cx=c_pps a=1d8vc5iZWYKGYgMGCdbIRA==:117 a=1d8vc5iZWYKGYgMGCdbIRA==:17 a=xqWC_Br6kY4A:10 a=EjBHVkixTFsA:10 a=IkcTkHD0fZMA:10 a=T2h4t0Lz3GQA:10 a=meVymXHHAAAA:8 a=AvkiO76Ye04or-2dPXIA:9
+ a=QEXdDO2ut3YA:10 a=2JgSa4NbpEOStq-L5dxp:22
+X-Proofpoint-GUID: wGCdR5zMQzEhVkM0jYhv7VehxaEXwqPp
+X-Proofpoint-ORIG-GUID: wGCdR5zMQzEhVkM0jYhv7VehxaEXwqPp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-04_10,2025-02-04_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ adultscore=0 mlxlogscore=857 malwarescore=0 impostorscore=0
+ lowpriorityscore=0 suspectscore=0 phishscore=0 clxscore=1011 spamscore=0
+ priorityscore=1501 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2501170000
+ definitions=main-2502040181
 
-On Tue, Feb 4, 2025 at 11:35=E2=80=AFPM Juntong Deng <juntong.deng@outlook.=
-com> wrote:
->
-> This discussion comes from the patch series open-coded BPF file
-> iterator, which was Nack-ed and thus ended [0].
->
-> Thanks for the feedback from Christian, Linus, and Al, all very helpful.
->
-> The problems encountered in this patch series may also be encountered in
-> other BPF open-coded iterators to be added in the future, or in other
-> BPF usage scenarios.
->
-> So maybe this is a good opportunity for us to discuss all of this and
-> rethink BPF safety, BPF open coded iterators, and possible improvements.
->
-> [0]:
-> https://lore.kernel.org/bpf/AM6PR03MB50801990BD93BFA2297A123599EC2@AM6PR0=
-3MB5080.eurprd03.prod.outlook.com/T/#t
->
-> What do we expect from BPF safety?
-> ----------------------------------
->
-> Christian points out the important fact that BPF programs can hold
-> references for a long time and cause weird issues.
->
-> This is an inherent flaw in BPF. Since the addition of bpf_loop and
-> BPF open-code iterators, the myth that BPF is "absolutely" safe has
-> been broken.
->
-> The BPF verifier is a static verifier and has no way of knowing how
-> long a BPF program will actually run.
->
-> For example, the following BPF program can freeze your computer, but
-> can pass the BPF verifier smoothly.
->
-> SEC("raw_tp/sched_switch")
-> int BPF_PROG(on_switch)
-> {
->         struct bpf_iter_num it;
->         int *v;
->         bpf_iter_num_new(&it, 0, 100000);
->         while ((v =3D bpf_iter_num_next(&it))) {
->                 struct bpf_iter_num it2;
->                 bpf_iter_num_new(&it2, 0, 100000);
->                 while ((v =3D bpf_iter_num_next(&it2))) {
->                         bpf_printk("BPF Bomb\n");
->                 }
->                 bpf_iter_num_destroy(&it2);
->         }
->         bpf_iter_num_destroy(&it);
->         return 0;
-> }
->
-> This BPF program runs a huge loop at each schedule.
->
-> bpf_iter_num_new is a common iterator that we can use in almost any
-> context, including LSM, sched-ext, tracing, etc.
->
-> We can run large, long loops on any critical code path and freeze the
-> system, since the BPF verifier has no way of knowing how long the
-> iteration will run.
-
-This is completely orthogonal to the issue that Christian explained.
-The long runtime of *malicious* bpf progs is a known issue and
-there are wip patches to address that.
-
-> Then holding references or holding locks in BPF programs doesn't seem
-> to be a problem?
-
-It's a known issue.
-
-> This brings us back to the question at the beginning, what do we expect
-> from BPF safety?
-
-Safety is paramount.
-
-> What do we expect from BPF and BPF open coded iterators?
-
-They are not special. All progs can be exploited if bad actors
-try hard enough. Including unprivileged progs like tcpdump.
-That's why unpriv is disabled by default.
-
-> Would we expect BPF programs to have flexible access to more information
-> in the kernel?
-
-yes, but the tracing progs must be free of side effects.
-
-> Would we expect to have more BPF open-coded iterators allowing BPF
-> programs to iterate through various data structures in the kernel?
-
-true, but it's nuanced.
-
-> What are the boundaries of what we expect BPF to be able to do?
-
-Tracing bpf progs are readonly. If they cause side effects
-they must be fixed.
-
-> Of course, there may be risks, but maybe those risks can be solved by
-> improving BPF?
-
-Please help by contributing patches instead of screaming "fire fire".
+T24gVGh1LCAyMDI1LTAxLTAyIGF0IDE4OjI2IC0wNTAwLCBTdGV2ZW4gUm9zdGVkdCB3cm90ZToN
+Cj4gRnJvbTogU3RldmVuIFJvc3RlZHQgPHJvc3RlZHRAZ29vZG1pcy5vcmc+DQo+IA0KPiBXaGVu
+IGEgZnVuY3Rpb24gaXMgYW5ub3RhdGVkIGFzICJ3ZWFrIiBhbmQgaXMgb3ZlcnJpZGRlbiwgdGhl
+IGNvZGUgaXMNCj4gbm90DQo+IHJlbW92ZWQuIElmIGl0IGlzIHRyYWNlZCwgdGhlIGZlbnRyeS9t
+Y291bnQgbG9jYXRpb24gaW4gdGhlIHdlYWsNCj4gZnVuY3Rpb24NCj4gd2lsbCBiZSByZWZlcmVu
+Y2VkIGJ5IHRoZSAiX19tY291bnRfbG9jIiBzZWN0aW9uLiBUaGlzIHdpbGwgdGhlbiBiZQ0KPiBh
+ZGRlZA0KPiB0byB0aGUgYXZhaWxhYmxlX2ZpbHRlcl9mdW5jdGlvbnMgbGlzdC4gU2luY2Ugb25s
+eSB0aGUgYWRkcmVzcyBvZiB0aGUNCj4gZnVuY3Rpb25zIGFyZSBsaXN0ZWQsIHRvIGZpbmQgdGhl
+IG5hbWUgdG8gc2hvdywgYSBzZWFyY2ggb2Yga2FsbHN5bXMNCj4gaXMNCj4gdXNlZC4NCj4gDQo+
+IFNpbmNlIGthbGxzeW1zIHdpbGwgcmV0dXJuIHRoZSBmdW5jdGlvbiBieSBzaW1wbHkgZmluZGlu
+ZyB0aGUNCj4gZnVuY3Rpb24NCj4gdGhhdCB0aGUgYWRkcmVzcyBpcyBhZnRlciBidXQgYmVmb3Jl
+IHRoZSBuZXh0IGZ1bmN0aW9uLCBhbiBhZGRyZXNzIG9mDQo+IGENCj4gd2VhayBmdW5jdGlvbiB3
+aWxsIHNob3cgdXAgYXMgdGhlIGZ1bmN0aW9uIGJlZm9yZSBpdC4gVGhpcyBpcyBiZWNhdXNlDQo+
+IGthbGxzeW1zIGRvZXMgbm90IHNhdmUgbmFtZXMgb2Ygd2VhayBmdW5jdGlvbnMuIFRoaXMgaGFz
+IGNhdXNlZA0KPiBpc3N1ZXMgaW4NCj4gdGhlIHBhc3QsIGFzIG5vdyB0aGUgdHJhY2VkIHdlYWsg
+ZnVuY3Rpb24gd2lsbCBiZSBsaXN0ZWQgaW4NCj4gYXZhaWxhYmxlX2ZpbHRlcl9mdW5jdGlvbnMg
+d2l0aCB0aGUgbmFtZSBvZiB0aGUgZnVuY3Rpb24gYmVmb3JlIGl0Lg0KPiANCg0KSSdtIG5vdCBu
+ZWNlc3NhcmlseSBhIHF1YWxpZmllZCByZXZpZXdlciBmb3IgdGhpcyBwYXRjaCwgYnV0IEknbSB2
+ZXJ5DQppbnRlcmVzdGVkIGluIHNlZWluZyBpdCBvciBhIHNpbWlsYXIgc29sdXRpb24gZ2V0IG1l
+cmdlZCwgYXMgdGhlIGltcGFjdA0Kd2hlbiBpdCBoaXRzIGlzIHNpZ25pZmljYW50IChzaWxlbnQg
+ZmFpbHVyZSkgYW5kIG5vdCBlYXN5IHRvIGRldGVjdCBvcg0Kd29yayBhcm91bmQuIElzIHRoZXJl
+IGFueSBvYnN0YWNsZSBsZWZ0IGluIGdldHRpbmcgdGhpcyBvbmUgbWVyZ2VkDQpvdGhlciB0aGFu
+IGZ1cnRoZXIgcmV2aWV3cz8NCg==
 
