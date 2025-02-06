@@ -1,309 +1,154 @@
-Return-Path: <bpf+bounces-50618-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50619-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8741A2A0AB
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 07:06:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 241FCA2A0B9
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 07:13:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14212188949F
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 06:06:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35041161F26
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 06:12:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBC6522541C;
-	Thu,  6 Feb 2025 06:05:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4198224893;
+	Thu,  6 Feb 2025 06:12:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mRU9rlOB"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HA1BjPN7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13F702248B5;
-	Thu,  6 Feb 2025 06:05:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E6272E64A
+	for <bpf@vger.kernel.org>; Thu,  6 Feb 2025 06:12:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738821920; cv=none; b=dpfwtLGJO5xQsiPSpqNPQv3RpyRyjJ9+8ayAMVJrMjkEgOc4W/0xVOhr5kwuQcObxhOkKQrDENXDMnn8AIlU6ZGodt/vp+QF95X2MWPQDrlhYCph5d9Ge7aQXCOthIIb8ERJCz+/Az3L9oH1hY0BkF881Va1N14RlyvCtR03DIo=
+	t=1738822373; cv=none; b=PxMO1TC6yMxE+DswFw5KiI1EGpD0iXx8Lu2hn2G4D04KLxJbmQB7pNVdl/fz3P0EK1AnXWrEnpKwpHHqaTrSxk+Olp/8kpTJgk4gBBKJQ+vS+t4G1qwVlIRIpclKFjiyNroR85Z00phkjdrBUNVcv40h1A2vkjcRB1oyDi5jqQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738821920; c=relaxed/simple;
-	bh=h5F9ULWX/IazPkL53mq2S83VDIY5FdzebPtuIVDlMQ0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=sQpQf5m6B0+RgjMFAbMXHcNCAI45S57V2I3YGizk3rAYtXlR8psYZS0bwa+hBxXBdpBbQRiT9aIG5KEvbmt/+4e5JV58tBB9Sav/nE5DhPPi+lWoW9oKJuHYbXMR5OTFBJdAJl4m64nKrL43iMTx/pMKBH1RhyKjKoX5HVRfRKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mRU9rlOB; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738821918; x=1770357918;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=h5F9ULWX/IazPkL53mq2S83VDIY5FdzebPtuIVDlMQ0=;
-  b=mRU9rlOB/W7zYMaaRGcjn7Ok/ARLC5awt3WjQCIzEBJwfdhuf8ENas0g
-   6qQNJEbZfg5pP+Ze2Hj6EKFX2MiD59xSpluTBzfMERkMLbnvdyXFXDQ9N
-   5azKkqGX65b2QVrtGZZ59YE1H3C5qjccijy0BQyw4SHBoYKHasE+LoKCT
-   havTQv3wMJ8qV5VFUGZj5IuFkJJjHPT6D2v0/yMPyaUUbPo3a4tmt1yku
-   5tSrjpISuUx3J2Kf5J4kwSugIked9Oxbtfli1NJozno/i15ydeFjR6WWW
-   09A4MRNxlC1Cavyokvg/Wubgmpb57JHxjSWmUMEM2vcxRCl087JAKDNnI
-   w==;
-X-CSE-ConnectionGUID: CjcbOV9DTO6Lh4Wg7/VRqA==
-X-CSE-MsgGUID: e8C4nPi7S1GVgl1Fv1QPtQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11336"; a="50051192"
-X-IronPort-AV: E=Sophos;i="6.13,263,1732608000"; 
-   d="scan'208";a="50051192"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2025 22:05:16 -0800
-X-CSE-ConnectionGUID: PVvGlUBRQKWV9apBj3Iv9Q==
-X-CSE-MsgGUID: 7AIUXagISJW44G3R9VFWTg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,263,1732608000"; 
-   d="scan'208";a="110944383"
-Received: from p12ill20yoongsia.png.intel.com ([10.88.227.38])
-  by fmviesa006.fm.intel.com with ESMTP; 05 Feb 2025 22:05:05 -0800
-From: Song Yoong Siang <yoong.siang.song@intel.com>
-To: "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Willem de Bruijn <willemb@google.com>,
-	Florian Bezdeka <florian.bezdeka@siemens.com>,
-	Donald Hunter <donald.hunter@gmail.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Bjorn Topel <bjorn@kernel.org>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Joe Damato <jdamato@fastly.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Mina Almasry <almasrymina@google.com>,
-	Daniel Jurgens <danielj@nvidia.com>,
-	Song Yoong Siang <yoong.siang.song@intel.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Faizal Rahim <faizal.abdul.rahim@linux.intel.com>,
-	Choong Yong Liang <yong.liang.choong@linux.intel.com>,
-	Bouska Zdenek <zdenek.bouska@siemens.com>
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	intel-wired-lan@lists.osuosl.org,
-	xdp-hints@xdp-project.net
-Subject: [PATCH bpf-next v9 5/5] igc: Add launch time support to XDP ZC
-Date: Thu,  6 Feb 2025 14:04:08 +0800
-Message-Id: <20250206060408.808325-6-yoong.siang.song@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250206060408.808325-1-yoong.siang.song@intel.com>
-References: <20250206060408.808325-1-yoong.siang.song@intel.com>
+	s=arc-20240116; t=1738822373; c=relaxed/simple;
+	bh=hogkxHDEfpKbYOQm+WoV7gcsiLjVcIZZhSZnar9SZ2M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bhUQ9YSmbjmle5pCy94COfa0s2w1zQec95Suh/lSkIblZL6bitUv3aU9//GU9F6b4wt1Y/V/hlOhY4SHo/AdxtgyDWMujmUx3NwxPNojZIBZFbji+YwoMvITGWFayi3WKZPmrozlwrniHg1vlWAMwbSjkBuWt/0k8WBXj96fRaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HA1BjPN7; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <b158a837-d46c-4ae0-8130-7aa288422182@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1738822359;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fP09qw0fTTx05drYQv3984Q2Z6Ps7338BY1vTUz5Gr0=;
+	b=HA1BjPN7H6pdK3AQPHUWBR9CHXN16ayPkbkeHGvuP2GKpSsCEwT2H2iw6bGpEyB9tWasQe
+	Rk/oV7PeEgmp+rux3MlammoofunRdZXnGozYtW9LE2xOhbOCmu5TQp39Yq2QnfC7p6LTgq
+	zsMyB+R+joci9qA/38YWvfSVpCszJTI=
+Date: Wed, 5 Feb 2025 22:12:29 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v8 10/12] bpf: make TCP tx timestamp bpf
+ extension work
+To: Jason Xing <kerneljasonxing@gmail.com>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net, edumazet@google.com,
+ pabeni@redhat.com, dsahern@kernel.org, willemb@google.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, horms@kernel.org,
+ bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20250204183024.87508-1-kerneljasonxing@gmail.com>
+ <20250204183024.87508-11-kerneljasonxing@gmail.com>
+ <20250204175744.3f92c33e@kernel.org>
+ <e894c427-b4b3-4706-b44c-44fc6402c14c@linux.dev>
+ <CAL+tcoCQ165Y4R7UWG=J=8e=EzwFLxSX3MQPOv=kOS3W1Q7R0A@mail.gmail.com>
+ <0a8e7b84-bab6-4852-8616-577d9b561f4c@linux.dev>
+ <CAL+tcoAp8v49fwUrN5pNkGHPF-+RzDDSNdy3PhVoJ7+MQGNbXQ@mail.gmail.com>
+ <CAL+tcoC5hmm1HQdbDaYiQ1iW1x2J+H42RsjbS_ghyG8mSDgqqQ@mail.gmail.com>
+ <67a424d2aa9ea_19943029427@willemb.c.googlers.com.notmuch>
+ <CAL+tcoCPGAjs=+Hnzr4RLkioUV7nzy=ZmKkTDPA7sBeVP=qzow@mail.gmail.com>
+ <67a42ba112990_19c315294b7@willemb.c.googlers.com.notmuch>
+ <CAL+tcoC_5106onp6yQh-dKnCTLtEr73EZVC31T_YeMtqbZ5KBw@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAL+tcoC_5106onp6yQh-dKnCTLtEr73EZVC31T_YeMtqbZ5KBw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Enable Launch Time Control (LTC) support for XDP zero copy via XDP Tx
-metadata framework.
+On 2/5/25 7:41 PM, Jason Xing wrote:
+> On Thu, Feb 6, 2025 at 11:25 AM Willem de Bruijn
+> <willemdebruijn.kernel@gmail.com> wrote:
+>>
+>>>>> I think we can split the whole idea into two parts: for now, because
+>>>>> of the current series implementing the same function as SO_TIMETAMPING
+>>>>> does, I will implement the selective sample feature in the series.
+>>>>> After someday we finish tracing all the skb, then we will add the
+>>>>> corresponding selective sample feature.
+>>>>
+>>>> Are you saying that you will include selective sampling now or want to
+>>>> postpone it?
+>>>
+>>> A few months ago, I planned to do it after this series. Since you all
+>>> ask, it's not complex to have it included in this series :)
+>>>
+>>> Selective sampling has two kinds of meaning like I mentioned above, so
+>>> in the next re-spin I will implement the cmsg feature for bpf
+>>> extension in this series.
+>>
+>> Great thanks.
+> 
+> I have to rephrase a bit in case Martin visits here soon: I will
+> compare two approaches 1) reply value, 2) bpf kfunc and then see which
+> way is better.
 
-This patch has been tested with tools/testing/selftests/bpf/xdp_hw_metadata
-on Intel I225-LM Ethernet controller. Below are the test steps and result.
+I have already explained in details why the 1) reply value from the bpf prog 
+won't work. Please go back to that reply which has the context.
 
-Test 1: Send a single packet with the launch time set to 1 s in the future.
+> 
+>>
+>>> I'm doing the test right now. And leave
+>>> another selective sampling small feature until the feature of tracing
+>>> all the skbs is implemented if possible.
+>>
+>> Can you elaborate on this other feature?
+> 
+> Do you recall oneday I asked your opinion privately about whether we
+> can trace _all the skbs_ (not the last skb from each sendmsg) to have
+> a better insight of kernel behaviour? I can also see a couple of
+> latency issues in the kernel. If it is approved, then corresponding
+> selective sampling should be supported. It's what I was trying to
+> describe.
+> 
+> The advantage of relying on the timestamping feature is that we can
+> isolate normal flows and monitored flow so that normal flows wouldn't
+> be affected because of enabling the monitoring feature, compared to so
+> many open source monitoring applications I've dug into. They usually
+> directly hook the hot path like __tcp_transmit_skb() or
+> dev_queue_xmit, which will surely influence the normal flows and cause
+> performance degradation to some extent. I noticed that after
+> conducting some tests a few months ago. The principle behind the bpf
+> fentry is to replace some instructions at the very beginning of the
+> hooked function, so every time even normal flows entering the
+> monitored function will get affected.
 
-Test steps:
-1. On the DUT, start the xdp_hw_metadata selftest application:
-   $ sudo ./xdp_hw_metadata enp2s0 -l 1000000000 -L 1
+I sort of guess this while stalled in the traffic... :/
 
-2. On the Link Partner, send a UDP packet with VLAN priority 1 to port 9091
-   of the DUT.
+I was not asking to be able to "selective on all skb of a large msg". This will 
+be a separate topic. If we really wanted to support this case (tbh, I am not 
+convinced) in the future, there is more reason the default behavior should be 
+"off" now for consistency reason.
 
-Result:
-When the launch time is set to 1 s in the future, the delta between the
-launch time and the transmit hardware timestamp is 0.016 us, as shown in
-printout of the xdp_hw_metadata application below.
-  0x562ff5dc8880: rx_desc[4]->addr=84110 addr=84110 comp_addr=84110 EoP
-  rx_hash: 0xE343384 with RSS type:0x1
-  HW RX-time:   1734578015467548904 (sec:1734578015.4675)
-                delta to User RX-time sec:0.0002 (183.103 usec)
-  XDP RX-time:   1734578015467651698 (sec:1734578015.4677)
-                 delta to User RX-time sec:0.0001 (80.309 usec)
-  No rx_vlan_tci or rx_vlan_proto, err=-95
-  0x562ff5dc8880: ping-pong with csum=561c (want c7dd)
-                  csum_start=34 csum_offset=6
-  HW RX-time:   1734578015467548904 (sec:1734578015.4675)
-                delta to HW Launch-time sec:1.0000 (1000000.000 usec)
-  0x562ff5dc8880: complete tx idx=4 addr=4018
-  HW Launch-time:   1734578016467548904 (sec:1734578016.4675)
-                    delta to HW TX-complete-time sec:0.0000 (0.016 usec)
-  HW TX-complete-time:   1734578016467548920 (sec:1734578016.4675)
-                         delta to User TX-complete-time sec:0.0000
-                         (32.546 usec)
-  XDP RX-time:   1734578015467651698 (sec:1734578015.4677)
-                 delta to User TX-complete-time sec:0.9999
-                 (999929.768 usec)
-  HW RX-time:   1734578015467548904 (sec:1734578015.4675)
-                delta to HW TX-complete-time sec:1.0000 (1000000.016 usec)
-  0x562ff5dc8880: complete rx idx=132 addr=84110
-
-Test 2: Send 1000 packets with a 10 ms interval and the launch time set to
-        500 us in the future.
-
-Test steps:
-1. On the DUT, start the xdp_hw_metadata selftest application:
-   $ sudo chrt -f 99 ./xdp_hw_metadata enp2s0 -l 500000 -L 1 > \
-     /dev/shm/result.log
-
-2. On the Link Partner, send 1000 UDP packets with a 10 ms interval and
-   VLAN priority 1 to port 9091 of the DUT.
-
-Result:
-When the launch time is set to 500 us in the future, the average delta
-between the launch time and the transmit hardware timestamp is 0.016 us,
-as shown in the analysis of /dev/shm/result.log below. The XDP launch time
-works correctly in sending 1000 packets continuously.
-  Min delta: 0.005 us
-  Avr delta: 0.016 us
-  Max delta: 0.031 us
-  Total packets forwarded: 1000
-
-Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
----
- drivers/net/ethernet/intel/igc/igc.h      |  1 +
- drivers/net/ethernet/intel/igc/igc_main.c | 57 ++++++++++++++++++++++-
- 2 files changed, 56 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/igc/igc.h b/drivers/net/ethernet/intel/igc/igc.h
-index b8111ad9a9a8..cd1d7b6c1782 100644
---- a/drivers/net/ethernet/intel/igc/igc.h
-+++ b/drivers/net/ethernet/intel/igc/igc.h
-@@ -579,6 +579,7 @@ struct igc_metadata_request {
- 	struct xsk_tx_metadata *meta;
- 	struct igc_ring *tx_ring;
- 	u32 cmd_type;
-+	u16 used_desc;
- };
- 
- struct igc_q_vector {
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index 3df608601a4b..f239f744247d 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -2973,9 +2973,44 @@ static u64 igc_xsk_fill_timestamp(void *_priv)
- 	return *(u64 *)_priv;
- }
- 
-+static void igc_xsk_request_launch_time(u64 launch_time, void *_priv)
-+{
-+	struct igc_metadata_request *meta_req = _priv;
-+	struct igc_ring *tx_ring = meta_req->tx_ring;
-+	__le32 launch_time_offset;
-+	bool insert_empty = false;
-+	bool first_flag = false;
-+
-+	if (!tx_ring->launchtime_enable)
-+		return;
-+
-+	launch_time_offset = igc_tx_launchtime(tx_ring,
-+					       ns_to_ktime(launch_time),
-+					       &first_flag, &insert_empty);
-+	if (insert_empty) {
-+		/* Disregard the launch time request if the required empty frame
-+		 * fails to be inserted.
-+		 */
-+		if (igc_insert_empty_frame(tx_ring))
-+			return;
-+
-+		meta_req->tx_buffer =
-+			&tx_ring->tx_buffer_info[tx_ring->next_to_use];
-+		/* Inserting an empty packet requires two descriptors:
-+		 * one data descriptor and one context descriptor.
-+		 */
-+		meta_req->used_desc += 2;
-+	}
-+
-+	/* Use one context descriptor to specify launch time and first flag. */
-+	igc_tx_ctxtdesc(tx_ring, launch_time_offset, first_flag, 0, 0, 0);
-+	meta_req->used_desc += 1;
-+}
-+
- const struct xsk_tx_metadata_ops igc_xsk_tx_metadata_ops = {
- 	.tmo_request_timestamp		= igc_xsk_request_timestamp,
- 	.tmo_fill_timestamp		= igc_xsk_fill_timestamp,
-+	.tmo_request_launch_time	= igc_xsk_request_launch_time,
- };
- 
- static void igc_xdp_xmit_zc(struct igc_ring *ring)
-@@ -2998,7 +3033,13 @@ static void igc_xdp_xmit_zc(struct igc_ring *ring)
- 	ntu = ring->next_to_use;
- 	budget = igc_desc_unused(ring);
- 
--	while (xsk_tx_peek_desc(pool, &xdp_desc) && budget--) {
-+	/* Packets with launch time require one data descriptor and one context
-+	 * descriptor. When the launch time falls into the next Qbv cycle, we
-+	 * may need to insert an empty packet, which requires two more
-+	 * descriptors. Therefore, to be safe, we always ensure we have at least
-+	 * 4 descriptors available.
-+	 */
-+	while (xsk_tx_peek_desc(pool, &xdp_desc) && budget >= 4) {
- 		struct igc_metadata_request meta_req;
- 		struct xsk_tx_metadata *meta = NULL;
- 		struct igc_tx_buffer *bi;
-@@ -3019,9 +3060,19 @@ static void igc_xdp_xmit_zc(struct igc_ring *ring)
- 		meta_req.tx_ring = ring;
- 		meta_req.tx_buffer = bi;
- 		meta_req.meta = meta;
-+		meta_req.used_desc = 0;
- 		xsk_tx_metadata_request(meta, &igc_xsk_tx_metadata_ops,
- 					&meta_req);
- 
-+		/* xsk_tx_metadata_request() may have updated next_to_use */
-+		ntu = ring->next_to_use;
-+
-+		/* xsk_tx_metadata_request() may have updated Tx buffer info */
-+		bi = meta_req.tx_buffer;
-+
-+		/* xsk_tx_metadata_request() may use a few descriptors */
-+		budget -= meta_req.used_desc;
-+
- 		tx_desc = IGC_TX_DESC(ring, ntu);
- 		tx_desc->read.cmd_type_len = cpu_to_le32(meta_req.cmd_type);
- 		tx_desc->read.olinfo_status = cpu_to_le32(olinfo_status);
-@@ -3039,9 +3090,11 @@ static void igc_xdp_xmit_zc(struct igc_ring *ring)
- 		ntu++;
- 		if (ntu == ring->count)
- 			ntu = 0;
-+
-+		ring->next_to_use = ntu;
-+		budget--;
- 	}
- 
--	ring->next_to_use = ntu;
- 	if (tx_desc) {
- 		igc_flush_tx_descriptors(ring);
- 		xsk_tx_release(pool);
--- 
-2.34.1
+The comment was on the existing tcp_tx_timestamp(). First focus on allowing 
+selective tracking of the skb that the current tcp_tx_timestamp() also tracks 
+because it is the most understood use case. This will allow the bpf prog to 
+select which tcp_sendmsg call it should track/sample. Perhaps the bpf prog will 
+limit tracking X numbers of packets and then will stop there. Perhaps the bpf 
+prog will only allocate X numbers of sample spaces in the bpf_sk_storage to 
+track packet. There are many reasons that bpf prog may want to sample and stop 
+tracking at some point even in the current tcp_tx_timestamp().
 
 
