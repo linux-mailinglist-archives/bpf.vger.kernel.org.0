@@ -1,450 +1,243 @@
-Return-Path: <bpf+bounces-50612-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50613-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB59FA2A081
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 07:04:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BA67A2A088
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 07:04:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCA283A44D3
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 06:03:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5120A3A4566
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 06:04:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1266E1FF1B0;
-	Thu,  6 Feb 2025 06:03:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 161A7224894;
+	Thu,  6 Feb 2025 06:04:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N+X0w6XA"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YuzxF3sc"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 182B52E64A
-	for <bpf@vger.kernel.org>; Thu,  6 Feb 2025 06:03:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A95512E64A;
+	Thu,  6 Feb 2025 06:04:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738821838; cv=none; b=uCdnjUyQwYNU7nAoRrAtHCWSwFLuccqlC7eLqM6CEb7ItXmwbkTApGSDlrFl5uS5pUtvo8eWB51H41oVv+QZ6HtJN53rD3qoHBoNxYHyb52U7QYkrGz0U+bXon8r6DXNLFuPfQeNijrOWYxqLEzYuwVVIQGFK7+7VVy5Gt0TEOg=
+	t=1738821864; cv=none; b=hQJE9fK6jsLkhcJLBYTBYaRlGRjmgLNJ93z5+iIGWCE+Rr/axwSOJRnwsBA4Q8RSkkNvhsJzZKYrp1dfD+IAJsnnqKeVJjnuGmpzOjgXWZmtwTZ/bc7XcncMV2NzlTi99gmaVT+5LeQ45psSK3SgvHsodv6fHz9xDz21EhZMEwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738821838; c=relaxed/simple;
-	bh=EzygjjlXpOwyCmp2/+um0CGPoiVjZZUh7eHmJ/Sy79o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=M1eJjFxkaRY/0U3gpB/SHX3AWQPi6wPBofQgJIvreGvxGOwzikqVM6bGwCxKNI+FiNMvYLbCqWcuKTTz6+V8mWlekXa3ZlXwiyjZ97Jz0xFcoWhSUj3sd2kZLNXasvvF6EMchPIlK5xDrUf/lVoLTBRzyXbR2upO+4NoCJ06kbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N+X0w6XA; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1738821835;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ny9l24N0jRmMCU9/w9kcI7pTSxmMM9zclsDhYuwQT4c=;
-	b=N+X0w6XA49irlG2/qZ2x04zoHr68NwaZoxJ4I6nccjUd0o/980BZAGqHduTkoTeCI3FW45
-	GDzOsQcV7bIaGZbdLLO3li52s0tQGH8biD7QDwLty33hPnBEvKLWXX12SS1wveTNH9qtJq
-	cAGDAUbCFBzP036hYh4VMaGkCPIMxTk=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-617-xRIBQDHBN929Aix-tU0_4w-1; Thu, 06 Feb 2025 01:03:53 -0500
-X-MC-Unique: xRIBQDHBN929Aix-tU0_4w-1
-X-Mimecast-MFC-AGG-ID: xRIBQDHBN929Aix-tU0_4w
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-2165433e229so14458705ad.1
-        for <bpf@vger.kernel.org>; Wed, 05 Feb 2025 22:03:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738821832; x=1739426632;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ny9l24N0jRmMCU9/w9kcI7pTSxmMM9zclsDhYuwQT4c=;
-        b=DdJrji3p271he+4Kbx/9HdUrjY4vSNw62s89bAiPYr48HmSSHgaoNrURmoU6U58g8u
-         dWJk6LUB6IodDlSpJ1s/Eqiwz4B2+a3iK5/TJeAuRYdxpeYaCUhxSZ/vSJw0XVP8zFSE
-         sP23f5NkWR1b3M6Gy5JCfRv1yD0kP3eRZQeNaVMoATFYO+zng8nv7q3lDpdiQQCFgwhO
-         ZkQZNiMtIDm29WqUPYbNfKzIubaI4APOFJRqlBEZ0Vdbxt3uA5WbZnWLnVVeN6ni/f3W
-         Soaur50AsJI9O1kyB9FyMmi1wFMHTD25yKj4kn5x8jwjMN1Sv/CSFlSLg3EHt8WSsg5P
-         jL8g==
-X-Forwarded-Encrypted: i=1; AJvYcCUsHuzE0R7sOxtau7J8YRs33OW+CO+C79wYgXhiYsp5ZSNbmivoReUot3ncAcHnpvoK5BI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxQg9OidXnZCa0isRglYZ0JUEOQm3GurZX5MYgLdrPopgxikii4
-	jcqBIYUXo5J6M1eDLl5+WJZGAZ0wqC9ywvb27wSEg7ODwU3H0yF+Omsmhk459Uy+W0YwQkVmmII
-	iwaKhSxj54RyUUBy3REXlJDtJb6fwkqMvAPJ1hb8WNEyeWmg1Y5TtYREKCDHvUZZcVNQejRdOGd
-	vc1BNtLOY05AtN8B32v3uDsuo/
-X-Gm-Gg: ASbGncvzokMGO3wcdV5A34KLr52S7VnWch8lbvrL7nv2v6Z654t0QTfuy+JNCpUuRd/
-	GKIvVli6M/j6kAIcDxzRXK7kfYfmESM1w4sUikOkbQupJk5wf/00DVrI5x9AV7lk=
-X-Received: by 2002:a17:902:ea0a:b0:212:6187:6a76 with SMTP id d9443c01a7336-21f17e2782cmr95430335ad.14.1738821832263;
-        Wed, 05 Feb 2025 22:03:52 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE7dzc40tSrWKQkq8wlQeWgr9gBjQj7pb5Wb4Tr4grZH+Uw3TcOqk5MXlXo/ixFJP3nQrcLlY7ZaY4hjattlas=
-X-Received: by 2002:a17:902:ea0a:b0:212:6187:6a76 with SMTP id
- d9443c01a7336-21f17e2782cmr95429985ad.14.1738821831851; Wed, 05 Feb 2025
- 22:03:51 -0800 (PST)
+	s=arc-20240116; t=1738821864; c=relaxed/simple;
+	bh=Pe6IaHTX391MqDHCNWa0MVeqtZ4mbqerMM/d7pDOBKw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iI1IV5DTC40iFlTQuuaZvY2leSONgGrJ77muBwAiwx43U+ZFYQ92l6xnvzB2SvZDFq0QlenF4Mlojexo6A2Av2gcmwpXx8IZoK8EUFEWoXmAhlGe6gldrKQmMJz9dozC08fWDW3O2SQg5tmEmjWDdBTa1H9TzGhiS8+4fGrGMdg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YuzxF3sc; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1738821863; x=1770357863;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Pe6IaHTX391MqDHCNWa0MVeqtZ4mbqerMM/d7pDOBKw=;
+  b=YuzxF3sctxxcfpE8tn7EJrXLm9ShCSxfi+RzYrGMutyaRMpDmzxgQFjx
+   tN5xg9who6zK9GErIQ6k6UwUp29xRLItwLEmDIF5KW1rx7sjocEA6d86o
+   q9itZQxqRHmL7sbdsbt8hmxPzxeTlCtMU7TaJzmv+vfdbA3mt/Mnlgxk2
+   f2vkpO2zjvDLdWeQkLQ+ej3rlPEgnMuYNDVMBIhO6a35v8QuvhfejV2Ez
+   hVSSwjp6HJRrQd2lL80EtE63chn6qJI2uf4aE5lphEt5kbfPAPMzH8E77
+   yL0/x6nTjGkK9gNY46a6hKiY7Xs89jhSp8tqlLEvyB7K1cFnby8X7RmaG
+   Q==;
+X-CSE-ConnectionGUID: 7sCdfVUsQdChUQ+6+bKCXw==
+X-CSE-MsgGUID: NItXFjNoRNSsBjg/BTPrCQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11336"; a="50050961"
+X-IronPort-AV: E=Sophos;i="6.13,263,1732608000"; 
+   d="scan'208";a="50050961"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2025 22:04:21 -0800
+X-CSE-ConnectionGUID: 9ShAARQRQrak3ZyvbVEGQw==
+X-CSE-MsgGUID: k80VA+UAT/eMOsZqSnBpKA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,263,1732608000"; 
+   d="scan'208";a="110944343"
+Received: from p12ill20yoongsia.png.intel.com ([10.88.227.38])
+  by fmviesa006.fm.intel.com with ESMTP; 05 Feb 2025 22:04:10 -0800
+From: Song Yoong Siang <yoong.siang.song@intel.com>
+To: "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Willem de Bruijn <willemb@google.com>,
+	Florian Bezdeka <florian.bezdeka@siemens.com>,
+	Donald Hunter <donald.hunter@gmail.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Bjorn Topel <bjorn@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Jonathan Lemon <jonathan.lemon@gmail.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Joe Damato <jdamato@fastly.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Mina Almasry <almasrymina@google.com>,
+	Daniel Jurgens <danielj@nvidia.com>,
+	Song Yoong Siang <yoong.siang.song@intel.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Faizal Rahim <faizal.abdul.rahim@linux.intel.com>,
+	Choong Yong Liang <yong.liang.choong@linux.intel.com>,
+	Bouska Zdenek <zdenek.bouska@siemens.com>
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	intel-wired-lan@lists.osuosl.org,
+	xdp-hints@xdp-project.net
+Subject: [PATCH bpf-next v9 0/5] xsk: TX metadata Launch Time support
+Date: Thu,  6 Feb 2025 14:04:03 +0800
+Message-Id: <20250206060408.808325-1-yoong.siang.song@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250114012831.4883-1-piliu@redhat.com> <20250131184621.12e8e94d@rotkaeppchen>
-In-Reply-To: <20250131184621.12e8e94d@rotkaeppchen>
-From: Pingfan Liu <piliu@redhat.com>
-Date: Thu, 6 Feb 2025 14:03:40 +0800
-X-Gm-Features: AWEUYZmojOLoQ1p_kLgdNcgvpwEF1JC0EK8aXV4Z4XN6wcivUrtnnVGPOsFY8Oo
-Message-ID: <CAF+s44Tw240R8cG4DKr6y_=aiu634ifMZma-FGkDuoEfoNnUtQ@mail.gmail.com>
-Subject: Re: [RFC] kexec: Use bpf to allow kexec to load PE format boot image
-To: Philipp Rudo <prudo@redhat.com>
-Cc: kexec@lists.infradead.org, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Jeremy Linton <jeremy.linton@arm.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Simon Horman <horms@kernel.org>, 
-	Gerd Hoffmann <kraxel@redhat.com>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
-	Jan Hendrik Farr <kernel@jfarr.cc>, Baoquan He <bhe@redhat.com>, Dave Young <dyoung@redhat.com>, 
-	Eric Biederman <ebiederm@xmission.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Philipp,
+This series expands the XDP TX metadata framework to allow user
+applications to pass per packet 64-bit launch time directly to the kernel
+driver, requesting launch time hardware offload support. The XDP TX
+metadata framework will not perform any clock conversion or packet
+reordering.
 
-Thanks for your feedback. Please see my answers below.
+Please note that the role of Tx metadata is just to pass the launch time,
+not to enable the offload feature. Users will need to enable the launch
+time hardware offload feature of the device by using the respective
+command, such as the tc-etf command.
 
-I'm also reaching out to the BPF maintainers with two concerns: how to
-ensure the integrity of BPF programs and whether introducing some
-additional BPF helpers for the kexec subsystem would be acceptable.
-Those helpers are used to exchange the data between BPF and the kexec
-kernel part.
+Although some devices use the tc-etf command to enable their launch time
+hardware offload feature, xsk packets will not go through the etf qdisc.
+Therefore, in my opinion, the launch time should always be based on the PTP
+Hardware Clock (PHC). Thus, i did not include a clock ID to indicate the
+clock source.
 
+To simplify the test steps, I modified the xdp_hw_metadata bpf self-test
+tool in such a way that it will set the launch time based on the offset
+provided by the user and the value of the Receive Hardware Timestamp, which
+is against the PHC. This will eliminate the need to discipline System Clock
+with the PHC and then use clock_gettime() to get the time.
 
-On Sat, Feb 1, 2025 at 1:46=E2=80=AFAM Philipp Rudo <prudo@redhat.com> wrot=
-e:
->
-> Hi Pingfan,
->
-> thanks for sharing your thoughts. Please see my comments below.
->
-> On Tue, 14 Jan 2025 09:28:25 +0800
-> Pingfan Liu <piliu@redhat.com> wrote:
->
-> > Nowadays UEFI PE bootable image is more and more popular on the distrib=
-ution.
-> > But it is still an open issue to load that kind of image by kexec with =
-IMA enabled
-> >
-> > *** A brief review of the history ***
-> > There are two categatories methods to handle this issue.
-> >   -1. UEFI service emulator for UEFI stub
-> >   -2. PE format parser
-> >
-> > For the first one, I have tried a purgatory-style emulator [1]. But it
-> > confronts the hardware scaling trouble.  For the second one, there are =
-two
-> > choices, one is to implement it inside the kernel, the other is inside =
-the user
-> > space.  Both zboot-format [2] and UKI-format [3] parsers are rejected d=
-ue to
-> > the concern that the variant format parsers will inflate the kernel cod=
-e.  And
-> > finally, we have these kinds of parsers in the user space 'kexec-tools'=
-.
-> >
-> >
-> > From the beginning, it has been perceived that the user space parser ca=
-n not
-> > satisfy the requirement of security-boot without an extra embeded signa=
-ture.
-> > This issue was suspended at that time.
-> >
-> > But now, more and more users expect the security feature and want the
-> > kexec_file_load to guarantee it by IMA.  I tried to fix that issue by t=
-he extra
-> > embeded signature method. But it is also disliked.
-> >
-> > Enlighted by Philipp suggestion about implementing systemd-stub in bpf =
-opcode in the discussion to [1],
-> > I turn to the bpf and hope that parsers in bpf-program can resolve this=
- issue.
-> >
-> > [1]: https://lore.kernel.org/lkml/20240819145417.23367-1-piliu@redhat.c=
-om/T/
-> > [2]: https://lore.kernel.org/kexec/20230306030305.15595-1-kernelfans@gm=
-ail.com/
-> > [3]: https://lore.kernel.org/lkml/20230911052535.335770-1-kernel@jfarr.=
-cc/
-> > [4]: https://lore.kernel.org/linux-arm-kernel/20230921133703.39042-2-ke=
-rnelfans@gmail.com/T/
-> >
-> >
-> >
-> >
-> > *** Reflect the problem and a new proposal ***
-> >
-> > The UEFI emulator is anchored at the UEFI spec. That will incur lots of=
- work
-> > due to various hardware support.  For example, to support TPM, the emul=
-ator
-> > should implement PCI/I2C bus protocol.
-> >
-> > But if the problem is confined to the original linux kernel boot protoc=
-ol, it will be simple.
-> > Only three things should be considered: the kernel image, the initrd an=
-d the command line.
-> > If we can get them in a security way, we can tackle the problem.
-> >
-> > The integrity of the file is ensured under the protection of the signat=
-ure
-> > envelope.  If the kexeced files are parsed in the user space, the envel=
-opes are
-> > opened and invalid.  So they should sink into the kernel space, be veri=
-fied and
-> > be manipulated there.  And to manipulate the various format file, we ne=
-ed
-> > bpf-program, which know their format.
-> >
-> > There are three parties in this solution
-> > -1. The kexec-tools itself is protected by IMA, and it creates a bpf-ma=
-p and
-> > update UKI addon file names into the map. Later, the bpf-program will c=
-all
-> > bpf-helper to pad these files into initrd
-> >
-> > -2. The bpf-program is contained in a dedicated '.bpf' section in PE fi=
-le. When
-> > kexec_file_load a PE image, it extract the '.bpf' section and reflect i=
-t to the
-> > user space through procfs. And kexec-tools starts the program.  By this=
- way,
-> > the bpf-program itself is free from tampering.
-> >
-> > The bpf-program completes two things:
-> >       -1.parse the image format
-> >       -2.call bpf kexec helpers to manipulate signed files
-> >
-> > -3. The bpf helpers. There will be three helpers introduced.
-> > The first one for the data exchange between the bpf-program and the ker=
-nel.
-> > The second one for the decompressor.
-> > The third one for the manipulation of the cpio
->
-> I find this design very complicated. Especially I don't like that the
-> bpf program is exported back to user space to be loaded separately.
+Please note that AF_XDP lacks a feedback mechanism to inform the
+application if the requested launch time is invalid. So, users are expected
+to familiar with the horizon of the launch time of the device they use and
+not request a launch time that is beyond the horizon. Otherwise, the driver
+might interpret the launch time incorrectly and react wrongly. For stmmac
+and igc, where modulo computation is used, a launch time larger than the
+horizon will cause the device to transmit the packet earlier that the
+requested launch time.
 
-I wish I could avoid the complexity, but unfortunately, I couldn't.
-I'll explain everything later, all at once.
+Although there is no feedback mechanism for the launch time request
+for now, user still can check whether the requested launch time is
+working or not, by requesting the Transmit Completion Hardware Timestamp.
 
+V9:
+  - Remove the igc_desc_unused() checking (Maciej)
+  - Ensure that skb allocation and DMA mapping work before proceeding to
+    fill in igc_tx_buffer info, context desc, and data desc (Maciej)
+  - Rate limit the error messages (Maciej)
+  - Update the comment to indicate that the 2 descriptors needed by the
+    empty frame are already taken into consideration (Maciej)
+  - Handle the case where the insertion of an empty frame fails and
+    explain the reason behind (Maciej)
+  - put self SOB tag as last tag (Maciej)
 
-> This does not only requires us to protect kexec-tools by IMA but also
-> all the tools and libraries that are involved in running kexec-tools
+V8: https://lore.kernel.org/netdev/20250205024116.798862-1-yoong.siang.song@intel.com/
+  - check the number of used descriptor in xsk_tx_metadata_request()
+    by using used_desc of struct igc_metadata_request, and then decreases
+    the budget with it (Maciej)
+  - submit another bug fix patch to set the buffer type for empty frame (Maciej):
+    https://lore.kernel.org/netdev/20250205023603.798819-1-yoong.siang.song@intel.com/
 
-Yes, that is true. But this may not be so important since all files,
-which are passed in by kexec-tools are protected by signature.
+V7: https://lore.kernel.org/netdev/20250204004907.789330-1-yoong.siang.song@intel.com/
+  - split the refactoring code of igc empty packet insertion into a separate
+    commit (Faizal)
+  - add explanation on why the value "4" is used as igc transmit budget
+    (Faizal)
+  - perform a stress test by sending 1000 packets with 10ms interval and
+    launch time set to 500us in the future (Faizal & Yong Liang)
 
-> (libc, ld, etc.). But even that will probably not be enough when you
-> look at all the different ways user space programs can interact with
-> each other and change each others behavior (see the xz-backdoor for
+V6: https://lore.kernel.org/netdev/20250116155350.555374-1-yoong.siang.song@intel.com/
+  - fix selftest build errors by using asprintf() and realloc(), instead of
+    managing the buffer sizes manually (Daniel, Stanislav)
 
-IIUC, xz-backdoor is not a proper example, which is tampered at the
-source code level.
+V5: https://lore.kernel.org/netdev/20250114152718.120588-1-yoong.siang.song@intel.com/
+  - change netdev feature name from tx-launch-time to tx-launch-time-fifo
+    to explicitly state the FIFO behaviour (Stanislav)
+  - improve the looping of xdp_hw_metadata app to wait for packet tx
+    completion to be more readable by using clock_gettime() (Stanislav)
+  - add launch time setup steps into xdp_hw_metadata app (Stanislav)
 
-> example). So when we would probably need to protect all of user space
-> if we want to use this design in a secure boot environment, which is
-> out of scope for the feature.
->
-> Alternatively, we would need to verify in the kernel that the bpf
-> program loaded by the kexec-tools is identical to the one included in
-> the kernel image. But then what's the point in exporting it in the
-> first place? Especially as already today there is the
-> kernel/bpf/syscall.c:kern_sys_bpf function that allows to run the
-> bpf syscall from within the kernel (with some limitations, but it(
-> allows to load a program).
->
+V4: https://lore.kernel.org/netdev/20250106135506.9687-1-yoong.siang.song@intel.com/
+  - added XDP launch time support to the igc driver (Jesper & Florian)
+  - added per-driver launch time limitation on xsk-tx-metadata.rst (Jesper)
+  - added explanation on FIFO behavior on xsk-tx-metadata.rst (Jakub)
+  - added step to enable launch time in the commit message (Jesper & Willem)
+  - explicitly documented the type of launch_time and which clock source
+    it is against (Willem)
 
-Here, let me explain why I cannot avoid the complexity and how this
-design ensures the integrity of the BPF program:
+V3: https://lore.kernel.org/netdev/20231203165129.1740512-1-yoong.siang.song@intel.com/
+  - renamed to use launch time (Jesper & Willem)
+  - changed the default launch time in xdp_hw_metadata apps from 1s to 0.1s
+    because some NICs do not support such a large future time.
 
-I'm not entirely sure, but the function kern_sys_bpf(int cmd, union
-bpf_attr *attr, unsigned int size) requires a bpf_attr, which is
-typically prepared by libbpf. If the BPF program is invoked directly
-from the kernel, there must be some code to handle what libbpf
-normally does. That would be quite complex.
+V2: https://lore.kernel.org/netdev/20231201062421.1074768-1-yoong.siang.song@intel.com/
+  - renamed to use Earliest TxTime First (Willem)
+  - renamed to use txtime (Willem)
 
-On the other hand, the built-in BPF program is protected by the
-signature of the UKI. When it is loaded by kexec-tools through the BPF
-API, it still undergoes integrity checking (refer to
-kernel/bpf/core.c: bpf_prog_calc_tag()). Based on this, I argue that
-the IMA on kexec-tools is not as critical.
+V1: https://lore.kernel.org/netdev/20231130162028.852006-1-yoong.siang.song@intel.com/
 
-> All in all I think it is better to keep the current design, i.e.
-> kexec-tools only makes one systemcall and the rest is done in the
-> kernel.
->
-As explained above, the main obstruction is to implement the libbpf
-logic inside the kernel.
+Song Yoong Siang (5):
+  xsk: Add launch time hardware offload support to XDP Tx metadata
+  selftests/bpf: Add launch time request to xdp_hw_metadata
+  net: stmmac: Add launch time support to XDP ZC
+  igc: Refactor empty frame insertion for launch time support
+  igc: Add launch time support to XDP ZC
 
-> In addition, while I agree that ideally we include the new feature
-> into kexec_file_load, I think it's better to define a new system call
-> for images containing bpf in the beginning. With that we have a blank
-> slate we can mess with without the need to take care of keeping the old
-> code working. Plus, it leaves us a fallback to load a dump kernel when
-> we mess up. Once we have a working prototype and a better understanding
-> on what is needed we can still merge it back into kexec_file_load.
->
+ Documentation/netlink/specs/netdev.yaml       |   4 +
+ Documentation/networking/xsk-tx-metadata.rst  |  62 +++++++
+ drivers/net/ethernet/intel/igc/igc.h          |   1 +
+ drivers/net/ethernet/intel/igc/igc_main.c     | 141 +++++++++++----
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |   2 +
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |  13 ++
+ include/net/xdp_sock.h                        |  10 ++
+ include/net/xdp_sock_drv.h                    |   1 +
+ include/uapi/linux/if_xdp.h                   |  10 ++
+ include/uapi/linux/netdev.h                   |   3 +
+ net/core/netdev-genl.c                        |   2 +
+ net/xdp/xsk.c                                 |   3 +
+ tools/include/uapi/linux/if_xdp.h             |  10 ++
+ tools/include/uapi/linux/netdev.h             |   3 +
+ tools/testing/selftests/bpf/xdp_hw_metadata.c | 168 +++++++++++++++++-
+ 15 files changed, 394 insertions(+), 39 deletions(-)
 
-A good suggestion, I will try it.
-
-> > ***  Overview of the design in Pseudocode ***
-> >
-> >
-> > ThreadA: kexec thread which invokes kexec_file_load
-> > ThreadB: the dedicated thread in kexec-tools to load bpf-prog
-> > ------
-> > Diag 1. the interaction between bpf-prog loader and its executer
-> >
-> >
-> > ThreadA                                               ThreadB
-> >
-> >                                               wait on eventfd_A
-> >
-> >
-> > expose bpf-prog through procfs
-> > & signal eventfd_A
-> > & wait on eventfd_B
-> >
-> >                                               read the bpf-prog from pr=
-ocfs
-> >                                               & initialize the bpf and =
-install it to the fentry
-> >                                               & signal eventfd_B
-> >                                               & wait on eventfd_A again
-> >
-> > fentry executes bpf-prog to parse image
-> > & generate output for the next stop
-> >
-> >
-> > -------------------
-> > Diag 2. bpf-prog
-> >
-> > SEC("fentry/kexec_pe_parser_hook")
-> > int BPF_PROG(pe_parser, struct kimage *image, ...)
-> > {
-> >
-> >       buf =3D bpf_ringbuf_reserve(rb, size);
-> >       buf_result =3D bpf_ringbuf_reserve(rb, res_sz);
-> >       /* Ask kernel to copy the resource content to here */
-> >       bpf_helper_carrier(resource_name, buf, size, in);
-> >
-> >       /* Parse the format laying on buf */
-> >       ...
-> >       /* call extra bpf-helpers */
-> >       ...
-> >
-> >       /* Ask kernel to copy the resource content from here */
-> >       bpf_helper_carrier(resource_name, buf_result, res_sz, out);
-> >
-> > }
-> >
-> > At present, bpf map functions provides the mechanism to exchange the da=
-ta between the user space and bpf-prog.
-> > But for bpf-prog and the kernel, there is no good choice. So I introduc=
-e a bpf helper function
-> >       bpf_helper_carrier(resource_name, buf, size, in)
-> >
-> > The above code implements the data exchange between the kernel and bpf-=
-prog.
-> > By this way, the data parsing process is not exposed to the user space =
-any longer.
-> >
-> >
-> >
-> > extra bpf-helpers:
-> >
-> >       /* Decompress the compressed kernel image */
-> >       bpf_helper_decompress(src, src_size, dst, dst_sz)
-> >
-> >       /*
-> >        * Verify the signature of @addon_filename, padding it to initrd'=
-s dir @dst_dir
-> >        */
-> >       bpf_helper_supplement_initrd(dst_dir, addon_filename)
->
-> UKI addons can also append entries to the kernel command line. IMHO it
-> will be easiest when we maintain the initrd and command line in the
-> kernel, i.e. the syscall "prepopulates" the initrd and cmdline either
-> from the UKI or what kexec-tools provides. The bpf program then only
-> updates them. That's not ideal but it keeps the bpf program simple in
-> the beginning so we (hopefully) don't run into the limitations bpf
-> programs have. Once we have a working prototype we can still move
-> functionality over to the bpf program.
->
-
-Sorry, but I'm not sure whether I understand you clearly. Are you
-suggesting to pass UKI add-ons through a new kexec syscall API?
-
-> The way I see it this should work with three helper functions.
-> One to read+verify a file and one each to append data to the initrd or
-> command line.
->
-Yes, there should be another helper to manipulate kernel cmdline addons.
-
-> >       Note: Due to the UEFI environment (such as edk2) only providing b=
-asic
-> >         file operations for FAT filesystems, any UEFI-stub PE image (li=
-ke systemd-stub)
-> >         is restricted to these basic operation services.  As a result, =
-the
-> >         functionality of such bpf-kexec helpers is inherently limited.
->
-> Is this limitation really necessary? The way I see it this is a
-> limitation to keep the UEFI environment simple. But when we run kexec
-> the kernel is fully booted. So we can make use of all the file systems
-> included in the kernel.
->
-Yes, as for the capability, we can utilize all file systems. My main
-concern is the stability of the BPF helpers. I believe people are
-reluctant to update them frequently.
-
-Thanks,
-
-Pingfan
-
-> Thanks
-> Philipp
->
-> > *** Thoughts about the basic operation ***
-> >
-> > The basic operations have influence on the stability of bpf-kexec-helpe=
-rs.
-> >
-> > The kexec_file_load faces three kinds of elements: linux-kernel, initrd=
- and cmdline.
-> >
-> > For the kernel, on arm64 or riscv, in order to get the bootable image f=
-rom the compressed data,
-> > there should be a bpf-helper function as a wrapper of __decompress()
-> >
-> > For initrd, systemd-sysext may require padding extra file into initrd
-> >
-> > For cmdline, it may require some string trim or conjoin.
-> >
-> > Overall, these user requirements are foreseeable and straightforward,
-> > suggesting that bpf-kexec-helpers will likely remain stable without sig=
-nificant
-> > changes.
-> >
-> >
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: John Fastabend <john.fastabend@gmail.com>
-> > Cc: Jeremy Linton <jeremy.linton@arm.com>
-> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Simon Horman <horms@kernel.org>
-> > Cc: Gerd Hoffmann <kraxel@redhat.com>
-> > Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> > Cc: Philipp Rudo <prudo@redhat.com>
-> > Cc: Jan Hendrik Farr <kernel@jfarr.cc>
-> > Cc: Baoquan He <bhe@redhat.com>
-> > Cc: Dave Young <dyoung@redhat.com>
-> > Cc: Eric Biederman <ebiederm@xmission.com>
-> > Cc: Pingfan Liu <piliu@redhat.com>
-> > To: kexec@lists.infradead.org
-> > To: bpf@vger.kernel.org
-> >
->
+-- 
+2.34.1
 
 
