@@ -1,261 +1,195 @@
-Return-Path: <bpf+bounces-50702-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50703-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42F1AA2B638
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 00:00:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6628A2B6A4
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 00:39:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32AD47A1FC6
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 22:59:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C385B1887CC6
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 23:39:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895DA2417FC;
-	Thu,  6 Feb 2025 23:00:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAB2622CBF0;
+	Thu,  6 Feb 2025 23:39:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="mEEDcZWA"
 X-Original-To: bpf@vger.kernel.org
-Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2084.outbound.protection.outlook.com [40.107.102.84])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA7CF2417CE
-	for <bpf@vger.kernel.org>; Thu,  6 Feb 2025 23:00:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.179
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738882817; cv=none; b=r4/bbGMuZpzR16dIOcS1hVTdzYmaWvt4odPM3hW0feIepNkJUP56ARyVEg85R5fwCaDcTcNKSvh5Y+tsnQHeostGKpVppb4gu0CE++1GLWot9JFkY9DUpUTADICc/obmOZVl+IkM/EWz0AA/BVgIJiNritci1UJFhiSeGgOP8cQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738882817; c=relaxed/simple;
-	bh=XNVngT1D4PPTvXGnEYIiQJ7ADC9Gt+YT0DY7gCRa4c4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nJMfJkI9P/5lsgL6rP9B2v599omf02kKTfUxlg8f7sCQwOFlTvKHkMI1piWGXSVre94/wwpKX9Gt9mCW+SPpsItBoXhFrObEOD3u70DmfVfVA1NzOzCevs7Ab9FGjetRD7dxFDmm1bHz3xaS4GaOBtTsz3gBMkBcFlo7dVzh6u0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id DD722DD724D0; Thu,  6 Feb 2025 15:00:01 -0800 (PST)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add selftests allowing cgroup prog top-down ordering
-Date: Thu,  6 Feb 2025 15:00:01 -0800
-Message-ID: <20250206230001.3741525-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20250206225956.3740809-1-yonghong.song@linux.dev>
-References: <20250206225956.3740809-1-yonghong.song@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CCE42417EF;
+	Thu,  6 Feb 2025 23:39:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.84
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1738885150; cv=fail; b=R3UFA+TNPBGIXTJJrLxXNhRC6fL9cjTTH0x+bnm+oSSRBkaTv0uXvi6KmRmKUxfaOl4/z9DXbS+/3ylWNYfTEx+1EozOyr6Zph8J7KFaBbGHjNFDpZCCW8QjlDc1o0bdz3agpWpWToQCN5lAP9HpltL6BrlM/DpOoaX+AshwHBY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1738885150; c=relaxed/simple;
+	bh=saTlSIfJKWFP02Hc+StwNdiqWJjRohNxTIgPj/RNDeY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=evxWbIFNH2x2XnD2BSjNUDGKU01c4HWeMN/iUm8ft5I9HKOpkZXPC2Yz4EdkUknDqDvcNUkYmpStEOGisWgTMnBgO1mA/V8rCd3/6I3EH/P1Esf+HG09gFlfkVk892rc6zalTy/UdB+gAQazAQLbD4Nwp0tHkyaSViwO9vaKXUM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=mEEDcZWA; arc=fail smtp.client-ip=40.107.102.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=GZdcQk8MssOmQPvS37vlkORif4XuzcdJEhZy99avvh7gjDWdYC+YXfjAdEuAe/9CEvqpp6VccCKxfiuIMYe6DACtpyPYoZv2E9KCBEsdjGfaed5Jy45nTYDjf/5g8BXDBWTUbUE8lt7fGgRAEwls3HmC0pO+FI8hsrKWcOlzxHCIjdiBR4cdd13zxel7JwHMXGiPw+a43nZsCjzfhR4pMQ3mAT5TzjDL5JSxlXW1fYhyfB9Oxq/AwlHMqeZ5q6UqTkjslIei1GtSfwhnYUlXfR6Ea8DxMGgNqZ79Q+bW379arZfyB/3uDnHpWSETfVhLMrmjVPOfo/+li/Q8zGMC5w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9MkL5dMQYKqc/mOG9OdWw55x5M0GSuDUpxUl+K+Clo4=;
+ b=XM6l4INxWEjzSRsgDF76Z142/oiwC7Y3RhKsWz062wUAXwlWADpPIHEh8uiMnpKjG2Ka0GZjPkSE5GWpnyg8I13itpaQzs4hG1rLRTxnkTAeilOHM3/kRCel5MTStYlZ82AjO5cyugfpgSI/8dCrQ0bnGSFwSiXu19kRrKrwZtq6D/VlcaUmMvG4WcfVp/4CcoPoii2Z4QuLJa8PlOEeytGXV5QAySSI0J3CaZUb+UQjy9EyhY8BfN9czj2SX4+YEgAk9Np173ogEqAsKFW5UBjCdJrZiWV1lPrjBBjwP3A2W2bpzEJZ2ssVkaKKnP1MzmReAqHrssCfXF5/Cg+pPg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9MkL5dMQYKqc/mOG9OdWw55x5M0GSuDUpxUl+K+Clo4=;
+ b=mEEDcZWAb2MzI5dF6eAjP27Y+w4pBvXBiwXIkyh0WPUEpwdkFDkfCPnXI5kW2UzUcDz/rHtIDTnQzJpTpexpDGZi6w/1XGP9xA2njQSEBCfze9m1UGTSyKH7B3WXxEIgWEczBzpMgJ/j2BkcrBq2AfUyi1phrs9QM54mvXMkTjsDwGbKcmPFu7EtVtS7A3Wy9JyZEEYY+syrBWTdtwAymKzMVWlXE0rKyBCvfBoJHHnCQFlo6XhzW72tL5I7uGnSJTADpTHrDktEYrNC8U3uqhtCkZhQYHJe6gy/CixvOC2NDvwekzsIsRL3B/W70VPFEjgyfOQq+aj8tKDxvGZ7EA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CY5PR12MB6405.namprd12.prod.outlook.com (2603:10b6:930:3e::17)
+ by MN2PR12MB4454.namprd12.prod.outlook.com (2603:10b6:208:26c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8422.10; Thu, 6 Feb
+ 2025 23:39:05 +0000
+Received: from CY5PR12MB6405.namprd12.prod.outlook.com
+ ([fe80::2119:c96c:b455:53b5]) by CY5PR12MB6405.namprd12.prod.outlook.com
+ ([fe80::2119:c96c:b455:53b5%6]) with mapi id 15.20.8398.025; Thu, 6 Feb 2025
+ 23:39:04 +0000
+Date: Fri, 7 Feb 2025 00:39:00 +0100
+From: Andrea Righi <arighi@nvidia.com>
+To: Juntong Deng <juntong.deng@outlook.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
+	song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org,
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+	memxor@gmail.com, tj@kernel.org, void@manifault.com,
+	changwoo@igalia.com, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 2/8] sched_ext: Add filter for
+ scx_kfunc_ids_select_cpu
+Message-ID: <Z6VIFPucwML5YLSJ@gpd3>
+References: <AM6PR03MB5080261D024B49D26F3FFF0099F72@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <AM6PR03MB50805D6F4B8710EDB304CF5C99F72@AM6PR03MB5080.eurprd03.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AM6PR03MB50805D6F4B8710EDB304CF5C99F72@AM6PR03MB5080.eurprd03.prod.outlook.com>
+X-ClientProxiedBy: FR0P281CA0260.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:b5::17) To CY5PR12MB6405.namprd12.prod.outlook.com
+ (2603:10b6:930:3e::17)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR12MB6405:EE_|MN2PR12MB4454:EE_
+X-MS-Office365-Filtering-Correlation-Id: 62947cd1-e35c-49b6-0d15-08dd47077126
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|7416014|376014|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?YGcqsH4lkg6X6E0WndFq7WypEOfQ8SpBxtmOrcHpeFj74nXHYfEiethkXlTh?=
+ =?us-ascii?Q?P5xUWFuVf/YJcHXP+4Gs0NmAU0x0P4FDWg2mJoctKvLvT1hQR0k7ERIqUVlU?=
+ =?us-ascii?Q?eYOTEqnHFJl23OTyjFc9DqTsh/y5anyiB6xkJ53V/Cik6XzyWenUPt0nl6ZX?=
+ =?us-ascii?Q?uiGIYonY5LfV2QLJ7hIoNzj2JpObASYthslp/If1SY6RNJGu3UtCOKOrspUJ?=
+ =?us-ascii?Q?gKlgaJiZJQNk9tkhJOmvQfnxZF6pjUfMM3AzOZiffrnr9kkSLIoGQ9LBvCNS?=
+ =?us-ascii?Q?ueLARt5NFUo9ebIQFAgUbDdLagIDSM0kh2lt33cgQFI5z0PqTm+4DHS6onfE?=
+ =?us-ascii?Q?GiaXoYXeuMQFP6T9E6dFbZof46MrpEb4K2MTi5xNiBwy0r3jIhSX0XODstf3?=
+ =?us-ascii?Q?czM+IdKTj2GZnssIX3KZfcyalPBvmOBu+4tUsQhphkHpjR5rXoZk97rg7YAT?=
+ =?us-ascii?Q?afx9DjN6Ljg3rgA7yg/XTO25b27TrtiZ6jAxGDXD0dVChvPmO5VO/bDPL/l6?=
+ =?us-ascii?Q?5K3crNVrSHN7MmnZl8cWwXYNn0Ga5PHx+mM8PoskVZetQ6sfQC8NrlkOR7+P?=
+ =?us-ascii?Q?kLfs2F2EpwnWrk/tObZ99YwORFgmJm/ScOS/Wz8zC1khRF8d/2UdhKJbcctK?=
+ =?us-ascii?Q?2c9obK+7K83YaIoPMi/xIcaiMqg4B0rZX93BHjyvJO1H6b704wi6SP/vwpNn?=
+ =?us-ascii?Q?i04E9MuJF7mPk0bzDKBpHoSCv5Km0x/UA97nnLtaigQEzMJJhhz7qAUk6MbZ?=
+ =?us-ascii?Q?QvgyjR13tun8gqUmSeZG4iwCa3H5EQUu+4sIlCaJ7hY5voUSAb77nQFs0Ahc?=
+ =?us-ascii?Q?H8AGsUjvAJbBfTH3irWvDyLBF0qQ50t8nQgLJVr5isGRmbDLDBQe4EXiyeVI?=
+ =?us-ascii?Q?j914wcRJKa3BQ0aTSNSGCFoFeBsHRRAVN/mrC5Zm7ufHzlMiUYeEur0FYxNx?=
+ =?us-ascii?Q?MhwLeorP4CGZ0IQZpr22XFmcFNp1dn1ulWg9tdddzjVzC1oU8r3WviaL6afq?=
+ =?us-ascii?Q?HjHM9C7IFcy4jKXpNSDf4ODlmQIwpToBNyZfTOnX4JnjMiCq4rHccAOLhWaB?=
+ =?us-ascii?Q?SEWMIgBEgEPGJBFzd5IoJclmIrIAmS5RT3DyYuzKORwdWjIqX43HFHf/Z4xJ?=
+ =?us-ascii?Q?RFZzs8TsxTitovtQA31PhL2inY80WUlT8fi2qfcfGnqWtff45Vm4gD+lmzN5?=
+ =?us-ascii?Q?gSYfOkpgAGqhc1061mnHYr5WRDSdWfY9A23ZXeJxtkn2f4nAvaDINFnT9MoL?=
+ =?us-ascii?Q?MN5EAe2F4EWiOsLGrHbLJ8WGkAtEuqEgkBmgyfscZ8CBWgJG4crKcP/DOszp?=
+ =?us-ascii?Q?7/BZfFoyaUPe1h77l7sV9tZ6Pbanm2s6A7LApL+0gKu3JiX9Ca0s0dNe77jA?=
+ =?us-ascii?Q?BwScNGTlspe04fOJKJC/ZtFfTqK+?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6405.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?YLvKZgd5GyIvESv4MmYDrQFUqZymZ6COrbirLSgVb5FQnKBwtv+Uxm7Tt1EM?=
+ =?us-ascii?Q?SCkCCIiEGONVoODxbYNBsOZQnpGtXchBYXfd1+N3Cw+etLf5279rxLx8BM3k?=
+ =?us-ascii?Q?gTtPUh1cKO9sieQIcXHWnqhPao4o+wCb8DWTExUUg1RzMFgzC3OxvorweoQD?=
+ =?us-ascii?Q?3hI55K/4YF+Y7xx0DdyiiUFU5/uFaB86KHWX0EfjoFhAdgDQ6MOvM01MhWo5?=
+ =?us-ascii?Q?da4dlUQBlgz8YFFUrK8KgbnFMScTGQbitvPQFcHq/XZeAL5V99eOtErF02Yj?=
+ =?us-ascii?Q?/QKhfzQMMSHlIgPdMQdFOP83hhC2Gt3aYztlxAe/h181NNgR1YDHG+fNg+Ey?=
+ =?us-ascii?Q?MsihB7yQdbIRMNYqiJwSvPQZJwMNW+k3Px7P3gzOHOaBHwLLR10B5lvstRhH?=
+ =?us-ascii?Q?ia1iCE//QCgue3bvlG2WizWQJS4+lraMNOrxb24jzAGAXGPs6+Tix/s49ntv?=
+ =?us-ascii?Q?tM4X6V6wa15ImMSeZOlwEQivBdqyovbfLmmePR6Uk7BiyuaK/DQE8jvqTIFf?=
+ =?us-ascii?Q?OiRleadBl06iXLI7LC5bMUTOsZtQdENecZXJhuosgdCiyTxFQybWIq6hSODn?=
+ =?us-ascii?Q?C2tPtENPwogPDc9RYhwXzLXx5zIijeA3YRjZObXfnHf9t0jfBY/dEoFUdz9A?=
+ =?us-ascii?Q?e0GdVPlKBYfoqpJHpZZkSgb/LVrOXAQkTLl17c7lXZ3Ud2oXftxsfZS9P53f?=
+ =?us-ascii?Q?zXNa1QUH9/Rglck86zVFfIqeWefPInbh25sJBhWScd4vfJf02CK7QJZMqvzS?=
+ =?us-ascii?Q?JwXzEpnn+O9IB8knDtgjdPlfX0f7SfY1uC1SdFLgNqdt8IOJ0IICAovApDUi?=
+ =?us-ascii?Q?6Rp/l0akHNlLB/5WhtC5iLIHQJ9lYfZkEy3KNjyvmWEE5XoidMEK+xh7HWZs?=
+ =?us-ascii?Q?QjSLK7W07a8hiaemRzOYVdQXaxpsFzNbYjhFOiDE2mdp2ejH70wAZ/EHteAC?=
+ =?us-ascii?Q?Z3eL3YxO/dsE4REteof1cPzHsYYKuqHczl/OOj/cANH1hz+EgzLAE5tSC/1T?=
+ =?us-ascii?Q?R9J2exAiS+Afxhsp/O3yM7PPwPupVlPi2PkAjGsFUhZ5CNisEzve7OuwimGW?=
+ =?us-ascii?Q?nQnc+JZQvmErtY6RKlxup7Ges7hjW0jwEnAdiPnoPZhThugys68utoBj+fIC?=
+ =?us-ascii?Q?LBbgYQFaTPxs3FokWjRYF7nzVWQRJT1JhBjfucb9wKGnHbqV0GEmYN3ss9Xm?=
+ =?us-ascii?Q?DPtjgJyE+l1rhYr7HJWExHsJ/or5uhhr3KNwcRXLSHqdluyJ6/OZ6TskG/zz?=
+ =?us-ascii?Q?xMa2eR0t+HpzTIrB+G87NkE7iX2p2Lf+hcIoiWj+lWyXkpIYyQIblwfWL/Nz?=
+ =?us-ascii?Q?y/u38rc0Qrlc0YBAsBEU+JyRnXkqJMGSxZcD/ntSNxceante3cOk2xkDLmiS?=
+ =?us-ascii?Q?VA91Z1Gn2S/FaIvTblqN9OMJiL5h2dM8Mfwy4k+0i2upZWYoK5culgBAAtGL?=
+ =?us-ascii?Q?oenNoNmh8JvAfXMJtvYvAyb5zs4eaXGSo08tDfMRhxPx2YXIXbU525w92kcN?=
+ =?us-ascii?Q?Wkrv2pdNUKI5mr9LpWsivL9ThKGV32kC9B2C75Lt4LJxAcmFVM7Hf9CvQHNO?=
+ =?us-ascii?Q?eDNQH0WzqDirU/nEFl7YF7pBj6koLyGcBfZc3/sU?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 62947cd1-e35c-49b6-0d15-08dd47077126
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6405.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2025 23:39:04.6303
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 10EyPKL0/fHNfmoWoVVNetxyWKRycAdvBGfx+npT8Jvcwkv1RpB/HnZYob5u65nX4dQzNSgnnsYexrxEHdv+hQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4454
 
-Add a few selftests which allows cgroup prog top-down ordering.
+On Wed, Feb 05, 2025 at 07:30:14PM +0000, Juntong Deng wrote:
+...
+> +static int scx_kfunc_ids_other_rqlocked_filter(const struct bpf_prog *prog, u32 kfunc_id)
+> +{
+> +	u32 moff = prog->aux->attach_st_ops_member_off;
+> +
+> +	if (moff == offsetof(struct sched_ext_ops, runnable) ||
+> +	    moff == offsetof(struct sched_ext_ops, dequeue) ||
+> +	    moff == offsetof(struct sched_ext_ops, stopping) ||
+> +	    moff == offsetof(struct sched_ext_ops, quiescent) ||
+> +	    moff == offsetof(struct sched_ext_ops, yield) ||
+> +	    moff == offsetof(struct sched_ext_ops, cpu_acquire) ||
+> +	    moff == offsetof(struct sched_ext_ops, running) ||
+> +	    moff == offsetof(struct sched_ext_ops, core_sched_before) ||
+> +	    moff == offsetof(struct sched_ext_ops, set_cpumask) ||
+> +	    moff == offsetof(struct sched_ext_ops, update_idle) ||
+> +	    moff == offsetof(struct sched_ext_ops, tick) ||
+> +	    moff == offsetof(struct sched_ext_ops, enable) ||
+> +	    moff == offsetof(struct sched_ext_ops, set_weight) ||
+> +	    moff == offsetof(struct sched_ext_ops, disable) ||
+> +	    moff == offsetof(struct sched_ext_ops, exit_task) ||
+> +	    moff == offsetof(struct sched_ext_ops, dump_task) ||
+> +	    moff == offsetof(struct sched_ext_ops, dump_cpu))
+> +		return 0;
+> +
+> +	return -EACCES;
 
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
----
- .../selftests/bpf/prog_tests/cgroup_topdown.c | 128 ++++++++++++++++++
- .../selftests/bpf/progs/cgroup_topdown.c      |  41 ++++++
- 2 files changed, 169 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_topdown=
-.c
- create mode 100644 tools/testing/selftests/bpf/progs/cgroup_topdown.c
+Actually, do we need this filter at all?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_topdown.c b/to=
-ols/testing/selftests/bpf/prog_tests/cgroup_topdown.c
-new file mode 100644
-index 000000000000..61e89ab7f6fd
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_topdown.c
-@@ -0,0 +1,128 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#include <test_progs.h>
-+#include "cgroup_helpers.h"
-+#include "cgroup_topdown.skel.h"
-+
-+static int run_getsockopt_test(int cg_parent, int cg_child, int sock_fd,=
- bool all_topdown)
-+{
-+	LIBBPF_OPTS(bpf_prog_attach_opts, opts);
-+	enum bpf_attach_type prog_c_atype, prog_c2_atype, prog_p_atype, prog_p2=
-_atype;
-+	int prog_c_fd, prog_c2_fd, prog_p_fd, prog_p2_fd;
-+	struct cgroup_topdown *skel =3D NULL;
-+	struct bpf_program *prog;
-+	__u8 *result, buf;
-+	socklen_t optlen;
-+	int err =3D 0;
-+
-+	skel =3D cgroup_topdown__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "cgroup_topdown__open_and_load"))
-+		return 0;
-+
-+	buf =3D 0x00;
-+	err =3D setsockopt(sock_fd, SOL_IP, IP_TOS, &buf, 1);
-+	if (!ASSERT_OK(err, "setsockopt"))
-+		goto close_skel;
-+
-+	opts.flags =3D BPF_F_ALLOW_MULTI;
-+	if (all_topdown)
-+		opts.flags |=3D BPF_F_PRIO_TOPDOWN;
-+	prog =3D skel->progs.child;
-+	prog_c_fd =3D bpf_program__fd(prog);
-+	prog_c_atype =3D bpf_program__expected_attach_type(prog);
-+	err =3D bpf_prog_attach_opts(prog_c_fd, cg_child, prog_c_atype, &opts);
-+	if (!ASSERT_OK(err, "bpf_prog_attach_opts-child"))
-+		goto close_skel;
-+
-+	opts.flags =3D BPF_F_ALLOW_MULTI | BPF_F_PRIO_TOPDOWN;
-+	prog =3D skel->progs.child_2;
-+	prog_c2_fd =3D bpf_program__fd(prog);
-+	prog_c2_atype =3D bpf_program__expected_attach_type(prog);
-+	err =3D bpf_prog_attach_opts(prog_c2_fd, cg_child, prog_c2_atype, &opts=
-);
-+	if (!ASSERT_OK(err, "bpf_prog_attach_opts-child_2"))
-+		goto detach_child;
-+
-+	optlen =3D 1;
-+	err =3D getsockopt(sock_fd, SOL_IP, IP_TOS, &buf, &optlen);
-+	if (!ASSERT_OK(err, "getsockopt"))
-+		goto detach_child_2;
-+
-+	result =3D skel->bss->result;
-+	if (all_topdown)
-+		ASSERT_TRUE(result[0] =3D=3D 1 && result[1] =3D=3D 2, "child only");
-+	else
-+		ASSERT_TRUE(result[0] =3D=3D 2 && result[1] =3D=3D 1, "child only");
-+
-+	skel->bss->idx =3D 0;
-+	memset(result, 0, 4);
-+
-+	opts.flags =3D BPF_F_ALLOW_MULTI;
-+	if (all_topdown)
-+		opts.flags |=3D BPF_F_PRIO_TOPDOWN;
-+	prog =3D skel->progs.parent;
-+	prog_p_fd =3D bpf_program__fd(prog);
-+	prog_p_atype =3D bpf_program__expected_attach_type(prog);
-+	err =3D bpf_prog_attach_opts(prog_p_fd, cg_parent, prog_p_atype, &opts)=
-;
-+	if (!ASSERT_OK(err, "bpf_prog_attach_opts-parent"))
-+		goto detach_child_2;
-+
-+	opts.flags =3D BPF_F_ALLOW_MULTI | BPF_F_PRIO_TOPDOWN;
-+	prog =3D skel->progs.parent_2;
-+	prog_p2_fd =3D bpf_program__fd(prog);
-+	prog_p2_atype =3D bpf_program__expected_attach_type(prog);
-+	err =3D bpf_prog_attach_opts(prog_p2_fd, cg_parent, prog_p2_atype, &opt=
-s);
-+	if (!ASSERT_OK(err, "bpf_prog_attach_opts-parent_2"))
-+		goto detach_parent;
-+
-+	err =3D getsockopt(sock_fd, SOL_IP, IP_TOS, &buf, &optlen);
-+	if (!ASSERT_OK(err, "getsockopt"))
-+		goto detach_parent_2;
-+
-+	if (all_topdown)
-+		ASSERT_TRUE(result[0] =3D=3D 3 && result[1] =3D=3D 4 && result[2] =3D=3D=
- 1 && result[3] =3D=3D 2,
-+			    "parent and child");
-+	else
-+		ASSERT_TRUE(result[0] =3D=3D 4 && result[1] =3D=3D 2 && result[2] =3D=3D=
- 1 && result[3] =3D=3D 3,
-+			    "parent and child");
-+
-+detach_parent_2:
-+	ASSERT_OK(bpf_prog_detach2(prog_p2_fd, cg_parent, prog_p2_atype),
-+		  "bpf_prog_detach2-parent_2");
-+detach_parent:
-+	ASSERT_OK(bpf_prog_detach2(prog_p_fd, cg_parent, prog_p_atype),
-+		  "bpf_prog_detach2-parent");
-+detach_child_2:
-+	ASSERT_OK(bpf_prog_detach2(prog_c2_fd, cg_child, prog_c2_atype),
-+		  "bpf_prog_detach2-child_2");
-+detach_child:
-+	ASSERT_OK(bpf_prog_detach2(prog_c_fd, cg_child, prog_c_atype),
-+		  "bpf_prog_detach2-child");
-+close_skel:
-+	cgroup_topdown__destroy(skel);
-+	return err;
-+}
-+
-+void test_cgroup_topdown(void)
-+{
-+	int cg_parent =3D -1, cg_child =3D -1, sock_fd =3D -1;
-+
-+	cg_parent =3D test__join_cgroup("/parent");
-+	if (!ASSERT_GE(cg_parent, 0, "join_cgroup /parent"))
-+		goto out;
-+
-+	cg_child =3D test__join_cgroup("/parent/child");
-+	if (!ASSERT_GE(cg_child, 0, "join_cgroup /parent/child"))
-+		goto out;
-+
-+	sock_fd =3D socket(AF_INET, SOCK_STREAM, 0);
-+	if (!ASSERT_GE(sock_fd, 0, "socket"))
-+		goto out;
-+
-+	ASSERT_OK(run_getsockopt_test(cg_parent, cg_child, sock_fd, false), "ge=
-tsockopt_test_1");
-+	ASSERT_OK(run_getsockopt_test(cg_parent, cg_child, sock_fd, true), "get=
-sockopt_test_2");
-+
-+out:
-+	close(sock_fd);
-+	close(cg_child);
-+	close(cg_parent);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/cgroup_topdown.c b/tools/t=
-esting/selftests/bpf/progs/cgroup_topdown.c
-new file mode 100644
-index 000000000000..4ef6202baa0a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/cgroup_topdown.c
-@@ -0,0 +1,41 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+unsigned int idx;
-+__u8 result[4];
-+
-+SEC("cgroup/getsockopt")
-+int child(struct bpf_sockopt *ctx)
-+{
-+	if (idx < 4)
-+		result[idx++] =3D 1;
-+	return 1;
-+}
-+
-+SEC("cgroup/getsockopt")
-+int child_2(struct bpf_sockopt *ctx)
-+{
-+	if (idx < 4)
-+		result[idx++] =3D 2;
-+	return 1;
-+}
-+
-+SEC("cgroup/getsockopt")
-+int parent(struct bpf_sockopt *ctx)
-+{
-+	if (idx < 4)
-+		result[idx++] =3D 3;
-+	return 1;
-+}
-+
-+SEC("cgroup/getsockopt")
-+int parent_2(struct bpf_sockopt *ctx)
-+{
-+	if (idx < 4)
-+		result[idx++] =3D 4;
-+	return 1;
-+}
---=20
-2.43.5
+I think the other filters in your patch set should be sufficient to
+establish the correct permissions for all kfuncs, as none of them need to
+be called from any rq-locked operations. Or am I missing something?
 
+-Andrea
 
