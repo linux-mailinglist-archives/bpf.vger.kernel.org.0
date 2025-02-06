@@ -1,306 +1,171 @@
-Return-Path: <bpf+bounces-50684-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50685-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78D76A2B140
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 19:36:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B783CA2B14E
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 19:37:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00326160DB7
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 18:35:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F62716A5BA
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 18:37:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99C591D86FB;
-	Thu,  6 Feb 2025 18:30:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E8D91B4132;
+	Thu,  6 Feb 2025 18:34:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QgktsySt"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="SaYVx7D3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A631D63DB;
-	Thu,  6 Feb 2025 18:30:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4390419DF81
+	for <bpf@vger.kernel.org>; Thu,  6 Feb 2025 18:34:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738866649; cv=none; b=M9PCtZB5kwCLUIEfavJsDt1UGQ9b3qiqK86inD982nRcSmOQ65tfj8AVRB3jxyDTSCIbf9v0GypU77OlHC1hI7T/qoE9wMcPHHr4GHhn05tIT5rSWhcG9p/6gFkzFdGu1T2PyaeQeT74DASUan+NsZc6YfT56DssGv4/2qiX994=
+	t=1738866865; cv=none; b=Mb3QoCBP/XTNxDfuNlHL5bQ9z+q0N2yOHOK1rRUfB4SeFGqK4Va8FR/mhVMl87Tk84mTQWvN9cSfXkcm7xPhUUonpul3Qzew+6TpH2IcJiDMu87buSR1apKLDrzYxogURUF7tsF/PVrb8v6lfvZ7/Al74tqYOYGNhiDCRdebXns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738866649; c=relaxed/simple;
-	bh=DH0AgivTe8MS9FAs7iNfl3KHQN3uOqPy3+QRqscL/Ok=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DBSK3st0GnDewqBM237YCndEDdPOQoHnnHoMtBP41MBOtGBd0KOpf7zFCngUXV151+0f1hm9DllY3QREO7XVNPQP7gQsoJvYjgxu+3XqE5C2uemDLWjlzSyqndKDoP801Hvhjs8peCIsTQIlTV9W6lnb4ny9qhLJ2ADButFp9wY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QgktsySt; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738866647; x=1770402647;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=DH0AgivTe8MS9FAs7iNfl3KHQN3uOqPy3+QRqscL/Ok=;
-  b=QgktsyStbg4J5r4KAaFcXgE/aSCQtXO5QdKmBCxsVmu7vkjDm4ApvEdk
-   a0OkZnka5hGJiijxNgMjMSwWZcZvIfNQU/H0jx1ZUJgSLTFjh3opqOotj
-   onvxH3ONo8vCDY0olep8SeV5/5htkBO4IgAf24U3cYMqHMLcFEddVVrh6
-   oTmHyhU37kpYzfeNhxaYqyFICr+tU0XztiWR6w7MdkNMPr+ENeMc/qFFl
-   /EwUBe/y/cjEDNQihl/+WzGCg7lY3pcVWE2LlixsxH0DdMRtkohmVuSME
-   sF9adz2+iVOSZqOSEXmy831K2r5oaHz0DefuQwWL5VhvFP5o7fU9FWr4/
-   Q==;
-X-CSE-ConnectionGUID: P45S6D6FRASMju++BHhZQw==
-X-CSE-MsgGUID: VwbP7lvlS/K2zkZgHlNRFA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11336"; a="49734526"
-X-IronPort-AV: E=Sophos;i="6.13,264,1732608000"; 
-   d="scan'208";a="49734526"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2025 10:30:46 -0800
-X-CSE-ConnectionGUID: YBOvmXwcSfyh3KWrhJRnew==
-X-CSE-MsgGUID: fl6iGoDJSPWASY+NiWusAg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,264,1732608000"; 
-   d="scan'208";a="111065902"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa009.jf.intel.com with ESMTP; 06 Feb 2025 10:30:42 -0800
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-To: Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	"Jose E. Marchesi" <jose.marchesi@oracle.com>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Jason Baron <jbaron@akamai.com>,
-	Casey Schaufler <casey@schaufler-ca.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 4/4] xsk: add helper to get &xdp_desc's DMA and meta pointer in one go
-Date: Thu,  6 Feb 2025 19:26:29 +0100
-Message-ID: <20250206182630.3914318-5-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250206182630.3914318-1-aleksander.lobakin@intel.com>
-References: <20250206182630.3914318-1-aleksander.lobakin@intel.com>
+	s=arc-20240116; t=1738866865; c=relaxed/simple;
+	bh=iM0xBAJhCz6UKAI7YzjkWnlZ1RI2ZxtfcpOc6dHRnqU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=bpcLJF6eRJ3ENrxNiBcZCNn6oLx9NkVrSp238hJPG/YFRMogbkh+yY6HWaLFGnPVpZLTh82V7FT3kBQSedgk9XGd62HAvELqlabYMBHbl8spfmaXFctGZNAEjVEN5eHXQ249v8YMDmJM39hKnQoD541/hZK6C8ekNiOOzrI23JU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=SaYVx7D3; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from narnia (unknown [167.220.2.28])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 706B3203F5B1;
+	Thu,  6 Feb 2025 10:34:11 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 706B3203F5B1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1738866858;
+	bh=GIyXv8Vo7C+qC0PTqBIMmgrMyMdpCItKw4oghu9xrtI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=SaYVx7D36ucSGU57kV4Kp34J5KM8Ep9BR5PnTEZfro+jqVjFVWqyCmaPJLr0qkjka
+	 MUZicsDvX+CKr9y1mlpcJOWhHgT+QgBTu4U2uYgZHxJA0jLwhKzMZvls2gegl3ZJXt
+	 pnSaQhKWe0rwGtqD7CJk/BNNK6ssqAbOtPKEodig=
+From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, nkapron@google.com, teknoraver@meta.com,
+ roberto.sassu@huawei.com, paul@paul-moore.com, code@tyhicks.com,
+ xiyou.wangcong@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
+ song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+ kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org
+Subject: Re: [PATCH 1/1] libbpf: Convert ELF notes into read-only maps
+In-Reply-To: <CAEf4BzZQUPfA8UcW1Ed9jM0J8z+yGHe=kOM5BwEBuDzJL3B1HA@mail.gmail.com>
+References: <20250205190918.2288389-1-bboscaccy@linux.microsoft.com>
+ <20250205190918.2288389-2-bboscaccy@linux.microsoft.com>
+ <CAEf4BzZQUPfA8UcW1Ed9jM0J8z+yGHe=kOM5BwEBuDzJL3B1HA@mail.gmail.com>
+Date: Thu, 06 Feb 2025 10:34:08 -0800
+Message-ID: <874j169b33.fsf@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Currently, when your driver supports XSk Tx metadata and you want to
-send an XSk frame, you need to do the following:
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-* call external xsk_buff_raw_get_dma();
-* call inline xsk_buff_get_metadata(), which calls external
-  xsk_buff_raw_get_data() and then do some inline checks.
+> On Wed, Feb 5, 2025 at 11:09=E2=80=AFAM Blaise Boscaccy
+> <bboscaccy@linux.microsoft.com> wrote:
+>>
+>> Add a flexible mechanism, using existing ELF constructs, to attach
+>> additional metadata to BPF programs for possible use by BPF
+>> gatekeepers and skeletons.
+>>
+>> During object file parsing, note sections are no longer skipped and
+>> now treated as read-only data. During libbpf-based loading or skeleton
+>> generation, those sections are then transformed into read-only maps
+>> which are subsequently passed into the kernel.
+>
+> We already have this mechanism, it's .rodata (and
+> .rodata.<customname>) section(s). Adding .note sections as BPF maps
+> make no sense to me. Just piggy-back on .rodata for storing any
+> necessary metadata.
+>
+> pw-bot: cr
+>
 
-This effectively means that the following piece:
+The ELF specification clearly states:
+"Sometimes a vendor or system builder needs to mark an object file with
+special information that other programs will check for conformance,
+compatibility, etc. Sections of type SHT_NOTE and program header
+elements of type PT_NOTE can be used for this purpose."
 
-addr = pool->unaligned ? xp_unaligned_add_offset_to_addr(addr) : addr;
+Which is exactly what we are trying to do. They make no mention of
+piggy-backing off of .rodata.
 
-is done twice per frame, plus you have 2 external calls per frame, plus
-this:
+Further, one can generally strip away .note sections and be left with an
+object that's still functioning. The same cannot be said about .rodata.=20
 
-	meta = pool->addrs + addr - pool->tx_metadata_len;
-	if (unlikely(!xsk_buff_valid_tx_metadata(meta)))
 
-is always inlined, even if there's no meta or it's invalid.
 
-Add xsk_buff_raw_get_ctx() (xp_raw_get_ctx() to be precise) to do that
-in one go. It returns a small structure with 2 fields: DMA address,
-filled unconditionally, and metadata pointer, non-NULL only if it's
-present and valid. The address correction is performed only once and
-you also have only 1 external call per XSk frame, which does all the
-calculations and checks outside of your hotpath. You only need to
-check `if (ctx.meta)` for the metadata presence.
-To not copy any existing code, derive address correction and getting
-virtual and DMA address into small helpers. bloat-o-meter reports no
-object code changes for the existing functionality.
-
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- include/net/xdp_sock_drv.h  | 43 +++++++++++++++++++++++++++++++---
- include/net/xsk_buff_pool.h |  8 +++++++
- net/xdp/xsk_buff_pool.c     | 46 +++++++++++++++++++++++++++++++++----
- 3 files changed, 90 insertions(+), 7 deletions(-)
-
-diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
-index 784cd34f5bba..15086dcf51d8 100644
---- a/include/net/xdp_sock_drv.h
-+++ b/include/net/xdp_sock_drv.h
-@@ -196,6 +196,23 @@ static inline void *xsk_buff_raw_get_data(struct xsk_buff_pool *pool, u64 addr)
- 	return xp_raw_get_data(pool, addr);
- }
- 
-+/**
-+ * xsk_buff_raw_get_ctx - get &xdp_desc context
-+ * @pool: XSk buff pool desc address belongs to
-+ * @addr: desc address (from userspace)
-+ *
-+ * Wrapper for xp_raw_get_ctx() to be used in drivers, see its kdoc for
-+ * details.
-+ *
-+ * Return: new &xdp_desc_ctx struct containing desc's DMA address and metadata
-+ * pointer, if it is present and valid (initialized to %NULL otherwise).
-+ */
-+static inline struct xdp_desc_ctx
-+xsk_buff_raw_get_ctx(const struct xsk_buff_pool *pool, u64 addr)
-+{
-+	return xp_raw_get_ctx(pool, addr);
-+}
-+
- #define XDP_TXMD_FLAGS_VALID ( \
- 		XDP_TXMD_FLAGS_TIMESTAMP | \
- 		XDP_TXMD_FLAGS_CHECKSUM | \
-@@ -207,20 +224,27 @@ xsk_buff_valid_tx_metadata(const struct xsk_tx_metadata *meta)
- 	return !(meta->flags & ~XDP_TXMD_FLAGS_VALID);
- }
- 
--static inline struct xsk_tx_metadata *xsk_buff_get_metadata(struct xsk_buff_pool *pool, u64 addr)
-+static inline struct xsk_tx_metadata *
-+__xsk_buff_get_metadata(const struct xsk_buff_pool *pool, void *data)
- {
- 	struct xsk_tx_metadata *meta;
- 
- 	if (!pool->tx_metadata_len)
- 		return NULL;
- 
--	meta = xp_raw_get_data(pool, addr) - pool->tx_metadata_len;
-+	meta = data - pool->tx_metadata_len;
- 	if (unlikely(!xsk_buff_valid_tx_metadata(meta)))
- 		return NULL; /* no way to signal the error to the user */
- 
- 	return meta;
- }
- 
-+static inline struct xsk_tx_metadata *
-+xsk_buff_get_metadata(struct xsk_buff_pool *pool, u64 addr)
-+{
-+	return __xsk_buff_get_metadata(pool, xp_raw_get_data(pool, addr));
-+}
-+
- static inline void xsk_buff_dma_sync_for_cpu(struct xdp_buff *xdp)
- {
- 	struct xdp_buff_xsk *xskb = container_of(xdp, struct xdp_buff_xsk, xdp);
-@@ -388,12 +412,25 @@ static inline void *xsk_buff_raw_get_data(struct xsk_buff_pool *pool, u64 addr)
- 	return NULL;
- }
- 
-+static inline struct xdp_desc_ctx
-+xsk_buff_raw_get_ctx(const struct xsk_buff_pool *pool, u64 addr)
-+{
-+	return (struct xdp_desc_ctx){ };
-+}
-+
- static inline bool xsk_buff_valid_tx_metadata(struct xsk_tx_metadata *meta)
- {
- 	return false;
- }
- 
--static inline struct xsk_tx_metadata *xsk_buff_get_metadata(struct xsk_buff_pool *pool, u64 addr)
-+static inline struct xsk_tx_metadata *
-+__xsk_buff_get_metadata(const struct xsk_buff_pool *pool, void *data)
-+{
-+	return NULL;
-+}
-+
-+static inline struct xsk_tx_metadata *
-+xsk_buff_get_metadata(struct xsk_buff_pool *pool, u64 addr)
- {
- 	return NULL;
- }
-diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
-index 50779406bc2d..1dcd4d71468a 100644
---- a/include/net/xsk_buff_pool.h
-+++ b/include/net/xsk_buff_pool.h
-@@ -141,6 +141,14 @@ u32 xp_alloc_batch(struct xsk_buff_pool *pool, struct xdp_buff **xdp, u32 max);
- bool xp_can_alloc(struct xsk_buff_pool *pool, u32 count);
- void *xp_raw_get_data(struct xsk_buff_pool *pool, u64 addr);
- dma_addr_t xp_raw_get_dma(struct xsk_buff_pool *pool, u64 addr);
-+
-+struct xdp_desc_ctx {
-+	dma_addr_t dma;
-+	struct xsk_tx_metadata *meta;
-+};
-+
-+struct xdp_desc_ctx xp_raw_get_ctx(const struct xsk_buff_pool *pool, u64 addr);
-+
- static inline dma_addr_t xp_get_dma(struct xdp_buff_xsk *xskb)
- {
- 	return xskb->dma;
-diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index 1f7975b49657..c263fb7a68dc 100644
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -699,18 +699,56 @@ void xp_free(struct xdp_buff_xsk *xskb)
- }
- EXPORT_SYMBOL(xp_free);
- 
--void *xp_raw_get_data(struct xsk_buff_pool *pool, u64 addr)
-+static u64 __xp_raw_get_addr(const struct xsk_buff_pool *pool, u64 addr)
-+{
-+	return pool->unaligned ? xp_unaligned_add_offset_to_addr(addr) : addr;
-+}
-+
-+static void *__xp_raw_get_data(const struct xsk_buff_pool *pool, u64 addr)
- {
--	addr = pool->unaligned ? xp_unaligned_add_offset_to_addr(addr) : addr;
- 	return pool->addrs + addr;
- }
-+
-+void *xp_raw_get_data(struct xsk_buff_pool *pool, u64 addr)
-+{
-+	return __xp_raw_get_data(pool, __xp_raw_get_addr(pool, addr));
-+}
- EXPORT_SYMBOL(xp_raw_get_data);
- 
--dma_addr_t xp_raw_get_dma(struct xsk_buff_pool *pool, u64 addr)
-+static dma_addr_t __xp_raw_get_dma(const struct xsk_buff_pool *pool, u64 addr)
- {
--	addr = pool->unaligned ? xp_unaligned_add_offset_to_addr(addr) : addr;
- 	return (pool->dma_pages[addr >> PAGE_SHIFT] &
- 		~XSK_NEXT_PG_CONTIG_MASK) +
- 		(addr & ~PAGE_MASK);
- }
-+
-+dma_addr_t xp_raw_get_dma(struct xsk_buff_pool *pool, u64 addr)
-+{
-+	return __xp_raw_get_dma(pool, __xp_raw_get_addr(pool, addr));
-+}
- EXPORT_SYMBOL(xp_raw_get_dma);
-+
-+/**
-+ * xp_raw_get_ctx - get &xdp_desc context
-+ * @pool: XSk buff pool desc address belongs to
-+ * @addr: desc address (from userspace)
-+ *
-+ * Helper for getting desc's DMA address and metadata pointer, if present.
-+ * Saves one call on hotpath, double calculation of the actual address,
-+ * and inline checks for metadata presence and sanity.
-+ *
-+ * Return: new &xdp_desc_ctx struct containing desc's DMA address and metadata
-+ * pointer, if it is present and valid (initialized to %NULL otherwise).
-+ */
-+struct xdp_desc_ctx xp_raw_get_ctx(const struct xsk_buff_pool *pool, u64 addr)
-+{
-+	struct xdp_desc_ctx ret;
-+
-+	addr = __xp_raw_get_addr(pool, addr);
-+
-+	ret.dma = __xp_raw_get_dma(pool, addr);
-+	ret.meta = __xsk_buff_get_metadata(pool, __xp_raw_get_data(pool, addr));
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(xp_raw_get_ctx);
--- 
-2.48.1
-
+>>
+>> Signed-off-by: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+>> ---
+>>  tools/bpf/bpftool/gen.c | 4 ++--
+>>  tools/lib/bpf/libbpf.c  | 6 ++++++
+>>  2 files changed, 8 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+>> index 5a4d3240689ed..311d6a3f1c4bb 100644
+>> --- a/tools/bpf/bpftool/gen.c
+>> +++ b/tools/bpf/bpftool/gen.c
+>> @@ -92,7 +92,7 @@ static void get_header_guard(char *guard, const char *=
+obj_name, const char *suff
+>>
+>>  static bool get_map_ident(const struct bpf_map *map, char *buf, size_t =
+buf_sz)
+>>  {
+>> -       static const char *sfxs[] =3D { ".data", ".rodata", ".bss", ".kc=
+onfig" };
+>> +       static const char *sfxs[] =3D { ".data", ".rodata", ".bss", ".kc=
+onfig", ".note" };
+>>         const char *name =3D bpf_map__name(map);
+>>         int i, n;
+>>
+>> @@ -117,7 +117,7 @@ static bool get_map_ident(const struct bpf_map *map,=
+ char *buf, size_t buf_sz)
+>>
+>>  static bool get_datasec_ident(const char *sec_name, char *buf, size_t b=
+uf_sz)
+>>  {
+>> -       static const char *pfxs[] =3D { ".data", ".rodata", ".bss", ".kc=
+onfig" };
+>> +       static const char *pfxs[] =3D { ".data", ".rodata", ".bss", ".kc=
+onfig", ".note" };
+>>         int i, n;
+>>
+>>         /* recognize hard coded LLVM section name */
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index 194809da51725..be6af0fece040 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -523,6 +523,7 @@ struct bpf_struct_ops {
+>>  #define STRUCT_OPS_SEC ".struct_ops"
+>>  #define STRUCT_OPS_LINK_SEC ".struct_ops.link"
+>>  #define ARENA_SEC ".addr_space.1"
+>> +#define NOTE_SEC ".note"
+>>
+>>  enum libbpf_map_type {
+>>         LIBBPF_MAP_UNSPEC,
+>> @@ -3977,6 +3978,11 @@ static int bpf_object__elf_collect(struct bpf_obj=
+ect *obj)
+>>                         sec_desc->sec_type =3D SEC_BSS;
+>>                         sec_desc->shdr =3D sh;
+>>                         sec_desc->data =3D data;
+>> +               } else if (sh->sh_type =3D=3D SHT_NOTE && (strcmp(name, =
+NOTE_SEC) =3D=3D 0 ||
+>> +                                                      str_has_pfx(name,=
+ NOTE_SEC "."))) {
+>> +                       sec_desc->sec_type =3D SEC_RODATA;
+>> +                       sec_desc->shdr =3D sh;
+>> +                       sec_desc->data =3D data;
+>>                 } else {
+>>                         pr_info("elf: skipping section(%d) %s (size %zu)=
+\n", idx, name,
+>>                                 (size_t)sh->sh_size);
+>> --
+>> 2.48.1
+>>
 
