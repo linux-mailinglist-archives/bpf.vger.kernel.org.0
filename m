@@ -1,111 +1,144 @@
-Return-Path: <bpf+bounces-50578-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50579-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 836AEA29E07
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 01:46:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1802CA29E08
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 01:47:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75B071888DDF
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 00:46:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B7597A337A
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 00:46:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D7421B59A;
-	Thu,  6 Feb 2025 00:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B53C1A296;
+	Thu,  6 Feb 2025 00:47:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YDFA6ljx"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAAC9291E
-	for <bpf@vger.kernel.org>; Thu,  6 Feb 2025 00:46:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE05BDF60
+	for <bpf@vger.kernel.org>; Thu,  6 Feb 2025 00:47:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738802775; cv=none; b=VlemEBnaToFp+ZuJ5L48gFlR0mZf8tEL0B/WQnUjVVvfDB6nXA9G2HX0rqj2hdz1DdOYi7+ffmnDGm5an6wuaYQQ6eUdzJzIIMk+O0Atw7rEa9X7etQs4KbC+v14UmoeCfRuISS40liyiW6ZO5SWTif5iPgG9+9Sdcthc1MTRBY=
+	t=1738802839; cv=none; b=ZisKUEhZvP0g2R+SdNcf8ATqasISeKW822Mw+vdFcuK9u4KTi6U3yuDFPmZmWaxpBG1UUams0yesQR1CfmcGoxfTrgTHJlyaQJEVy1p9VIPtsoCMOU83r9mu01wcdQHN1yfQvZ4bqMO/G6v2ryn+qSnYHwYN9fgl9xdRCaB8W8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738802775; c=relaxed/simple;
-	bh=ksF6ZZ0vSe3dOkS6ABK0nY/9JaPrqWupgSHv1fSbS7E=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=Jx1YFXsKl1eEAB8I5mZjOOG3hcMIDFlQU8gpzpFd6qs2M2AW1sv+itEeD7Kxkxu/sq06Jqizb3/exAvhCFgjYCx+uTtqQbuOMi52CSLQpowwCl57YiTSvPTgkCEGkf4c53OvGV63Dz0NMll3Lj0YiE3Tt4t6BuwbyKnm7WvTwUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YpJLT02yrz4f3jq4
-	for <bpf@vger.kernel.org>; Thu,  6 Feb 2025 08:45:53 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id D8CFE1A14AB
-	for <bpf@vger.kernel.org>; Thu,  6 Feb 2025 08:46:08 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgBXu3tNBqRn6mP2Cw--.1058S2;
-	Thu, 06 Feb 2025 08:46:08 +0800 (CST)
-Subject: Re: handling EINTR from bpf_map_lookup_batch
-To: Yan Zhai <yan@cloudflare.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@cloudflare.com>
-References: <Z6JXtA1M5jAZx8xD@debian.debian>
- <d8893a20-4211-2fd6-e9d1-b65e81367950@huaweicloud.com>
- <CAADnVQLNSUOz7kSwMr0dfgT1gk02S1wNgJOhk-5h_d01AM2RbA@mail.gmail.com>
- <CAO3-Pbqbj_pi3BrA7h3qtRsrcm_wJVLnJwyKwuuNLYg==_QvRA@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <3d906727-1872-ca7e-759c-65c16b0f339f@huaweicloud.com>
-Date: Thu, 6 Feb 2025 08:46:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1738802839; c=relaxed/simple;
+	bh=VxQjeGbQQN+KvByPtNpdah6SCaateHxALZrLBUN8hgI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qpARctB19/M9SYQk+Ek7XGg9FVwudvlXHJE6cWNMF2TQXf8g8HsbGuR9+kXxCQA7nBVFI25FaQ80UBWYU+fn04ql5TH8wDXdd2QvhAhs+fnC8NomKbitWoktLbiZa8L2WHVgf7x5pYzfxY5IdHiGPCyVhHUk5j42crZDqzu+PPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YDFA6ljx; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <0a8e7b84-bab6-4852-8616-577d9b561f4c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1738802833;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GUFWFmqMR+h08Bo4fFsn/LKp8dHIbel6tFLRIU+gSS4=;
+	b=YDFA6ljxAKn2JgWNs1yj/UPBnA8gUq9DbSZjuA79P1g6twiAcUzNG8bFGOLgvlgO1CmAlV
+	KacMGlirODRwISqPlo1lvsO+rrIo4TmsNFlpeeUU/9thTl5H8aj4wxvK2pBDv7lYCUQvsn
+	obnheSQmKcvSvtVtq8VJGumVYXnZBZA=
+Date: Wed, 5 Feb 2025 16:47:04 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAO3-Pbqbj_pi3BrA7h3qtRsrcm_wJVLnJwyKwuuNLYg==_QvRA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v8 10/12] bpf: make TCP tx timestamp bpf
+ extension work
+To: Jason Xing <kerneljasonxing@gmail.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
+ edumazet@google.com, pabeni@redhat.com, dsahern@kernel.org,
+ willemdebruijn.kernel@gmail.com, willemb@google.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, horms@kernel.org,
+ bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20250204183024.87508-1-kerneljasonxing@gmail.com>
+ <20250204183024.87508-11-kerneljasonxing@gmail.com>
+ <20250204175744.3f92c33e@kernel.org>
+ <e894c427-b4b3-4706-b44c-44fc6402c14c@linux.dev>
+ <CAL+tcoCQ165Y4R7UWG=J=8e=EzwFLxSX3MQPOv=kOS3W1Q7R0A@mail.gmail.com>
 Content-Language: en-US
-X-CM-TRANSID:cCh0CgBXu3tNBqRn6mP2Cw--.1058S2
-X-Coremail-Antispam: 1UD129KBjvdXoWruw4xCF43GFykJF1DJw45GFg_yoWkXrc_WF
-	Wv9an7GrsF9F4Fya4DCrs8Zry7XF1vyr1aqa4qq3WfZw18Xay3CF1Ykr97ZryUJw4rJr98
-	ur4Yyasa9rn0vjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbz8YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-	kEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUzsqWUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAL+tcoCQ165Y4R7UWG=J=8e=EzwFLxSX3MQPOv=kOS3W1Q7R0A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-
-Hi,
-
-On 2/6/2025 12:27 AM, Yan Zhai wrote:
-> On Wed, Feb 5, 2025 at 3:56 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
->> Let's not invent new magic return values.
+On 2/5/25 4:12 PM, Jason Xing wrote:
+> On Thu, Feb 6, 2025 at 5:57 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
 >>
->> But stepping back... why do we have this EINTR case at all?
->> Can we always goto next_key for all map types?
->> The command returns and a set of (key, value) pairs.
->> It's always better to skip then get stuck in EINTR,
->> since EINTR implies that the user space should retry and it
->> might be successful next time.
->> While here it's not the case.
->> I don't see any selftests for EINTR, so I suspect it was added
->> as escape path in case retry count exceeds 3 and author assumed
->> that it should never happen in practice, so EINTR was expected
->> to be 'never happens'. Clearly that's not the case.
-> It makes more sense to me if we just goto the next key for all types.
-> At least for current users of generic batch lookup, arrays and
-> lpm_trie, I didn't notice in any case retry would help.
+>> On 2/4/25 5:57 PM, Jakub Kicinski wrote:
+>>> On Wed,  5 Feb 2025 02:30:22 +0800 Jason Xing wrote:
+>>>> +    if (cgroup_bpf_enabled(CGROUP_SOCK_OPS) &&
+>>>> +        SK_BPF_CB_FLAG_TEST(sk, SK_BPF_CB_TX_TIMESTAMPING) && skb) {
+>>>> +            struct skb_shared_info *shinfo = skb_shinfo(skb);
+>>>> +            struct tcp_skb_cb *tcb = TCP_SKB_CB(skb);
+>>>> +
+>>>> +            tcb->txstamp_ack_bpf = 1;
+>>>> +            shinfo->tx_flags |= SKBTX_BPF;
+>>>> +            shinfo->tskey = TCP_SKB_CB(skb)->seq + skb->len - 1;
+>>>> +    }
+>>>
+>>> If BPF program is attached we'll timestamp all skbs? Am I reading this
+>>> right?
+>>
+>> If the attached bpf program explicitly turns on the SK_BPF_CB_TX_TIMESTAMPING
+>> bit of a sock, then all skbs of this sock will be tx timestamp-ed.
+> 
+> Martin, I'm afraid it's not like what you expect. Only the last
+> portion of the sendmsg will enter the above function which means if
+> the size of sendmsg is large, only the last skb will be set SKBTX_BPF
+> and be timestamped.
 
-I think it will break lpm_trie. In lpm_trie, if tries to find the next
-key of a non-existent key, it will restart from the left-mode node.
->
-> best
-> Yan
+Sure. The last skb of a large msg and more skb of small msg (or MSG_EOR).
+
+My point is, only attaching a bpf alone is not enough. The 
+SK_BPF_CB_TX_TIMESTAMPING still needs to be turned on.
+
+> 
+>>
+>>>
+>>> Wouldn't it be better to let BPF_SOCK_OPS_TS_SND_CB return whether it's
+>>> interested in tracing current packet all the way thru the stack?
+>>
+>> I like this idea. It can give the BPF prog a chance to do skb sampling on a
+>> particular socket.
+>>
+>> The return value of BPF_SOCK_OPS_TS_SND_CB (or any cgroup BPF prog return value)
+>> already has another usage, which its return value is currently enforced by the
+>> verifier. It is better not to convolute it further.
+>>
+>> I don't prefer to add more use cases to skops->reply either, which is an union
+>> of args[4], such that later progs (in the cgrp prog array) may lose the args value.
+>>
+>> Jason, instead of always setting SKBTX_BPF and txstamp_ack_bpf in the kernel, a
+>> new BPF kfunc can be added so that the BPF prog can call it to selectively set
+>> SKBTX_BPF and txstamp_ack_bpf in some skb.
+> 
+> Agreed because at netdev 0x19 I have an explicit plan to share the
+> experience from our company about how to trace all the skbs which were
+> completed through a kernel module. It's how we use in production
+> especially for debug or diagnose use.
+
+This is fine. The bpf prog can still do that by calling the kfunc. I don't see 
+why move the bit setting into kfunc makes the whole set won't work.
+
+> I'm not knowledgeable enough about BPF, so I'd like to know if there
+> are some functions that I can take as good examples?
+> 
+> I think it's a standalone and good feature, can I handle it after this series?
+
+Unfortunately, no. Once the default is on, this cannot be changed.
+
+I think Jakub's suggestion to allow bpf prog selectively choose skb to timestamp 
+is useful, so I suggested a way to do it.
 
 
