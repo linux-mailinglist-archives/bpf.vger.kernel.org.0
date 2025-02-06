@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-50592-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50593-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62C63A29EA3
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 03:15:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B06CFA29EE3
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 03:39:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67AB57A3D89
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 02:14:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 001E23A6DB8
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 02:39:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0858C83A14;
-	Thu,  6 Feb 2025 02:15:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE1C413AD18;
+	Thu,  6 Feb 2025 02:39:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OoGDuG+m"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ajp57LRc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FAE823CE;
-	Thu,  6 Feb 2025 02:15:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4227DF60;
+	Thu,  6 Feb 2025 02:39:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738808129; cv=none; b=HqwPsYFKCy8GfV3OJQkZTFzZbi593eU9FHUnniSm0KzPgtL/dtZdeufqxYRzv3dq1e5QqC4ARBcwvKF9EINZDkwz4/czCO7IfDAlqUaRASmgqhAaQNEyqu0cKVShDWDRhO5hGF109F8vJzZU/D6ClXH+G7ExR5oBLctimJxeZeU=
+	t=1738809585; cv=none; b=IknQt2AElhu/7g+GbawAZ1bJQ1aXczLFSltKcpE1pi4zXhKjfQ7jwtg+1Mpj7w80ezie2+LTI+bwK8ogmgwjuYxGR7JgtfVD4upcuRGKr6i1Npa1qa2rIYasWZMKnDxNypmZLi8cYGqlE+DzA0xcTdEqIhQeSFm5e0HdbRmlPbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738808129; c=relaxed/simple;
-	bh=bYtT4kCtOsX9y5HeblxSM9JmLjihn2DIoKDhNk3oqY0=;
+	s=arc-20240116; t=1738809585; c=relaxed/simple;
+	bh=qib+L5QecLhpYpK9BFbnvXVFtUrOM7IY3xfFFVGj1EM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ek8H5oCeQ+u8b9LZfK85+bl7Ay1sy0fdh4G7/g4Ur1/wGFtuou8iD+alOkEJcLHkRqyL3xkipkkAZA9VaNc4IElqAqtOcQ9UNP+Nbp49pPj/jMhfyXWPaJrBD1VFASapbCFgLv/Webut3erGKYzuakTYZ7Rc25XrmHbHEiWI4U4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OoGDuG+m; arc=none smtp.client-ip=209.85.166.50
+	 To:Cc:Content-Type; b=tpxt1Usl4yzV30/2XJfKcHpHbLRIaK9Zgz/dTCDHIB/py+Opybm+qowc4DXKewE2/L5Hb2wLoWGoyEbncMKnwrhkHwuIsFSuO7QAzfwyMmBiMx4s7GIamlHg1FID9vcxq89fOKEHmifWr/72qRlTuSfWEZhPNUDukoIpF3hx5rs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ajp57LRc; arc=none smtp.client-ip=209.85.166.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-84cdacbc373so17418739f.1;
-        Wed, 05 Feb 2025 18:15:27 -0800 (PST)
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-3ce87d31480so1273685ab.2;
+        Wed, 05 Feb 2025 18:39:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738808127; x=1739412927; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1738809583; x=1739414383; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hFJOgQB4BvQz0kFxcSF8bPMGP2TyNp74xWrYgZwxmos=;
-        b=OoGDuG+moqIrAFHE0+9E7mSTaPKnslht8UlPtP2WaFZndKwJLgIJLVxkMqu5LuEA2k
-         zMfhh8/ycLJgzXiu/5nTZwQb11aeoWamLO/qiGC3HRd+eF9LvPime1xM9pLKh4oHLxJB
-         VMSrERoQCg2wQ45WxaABgG+814pw1j2NRz/jbS+ULK5XiUpi897mEJ9K4vDXaXgfLtHK
-         mXybWNp7Le+l6pJyhEgDdtihZmwD5tiQD2e5cXtYPEwIqN9WttNBoaySi/uzdOPKuB24
-         HcpB/NCojyMMEXr4regsHli/EV3u1jCPzGBKVXHScpOvltGSR47mu5ZhbuqwPnBUnO1P
-         KyKg==
+        bh=v2r/k2esHHDOBMYVJXVugTMop5rQCFz6g3dqQigy6JQ=;
+        b=Ajp57LRchXSh7nZsXXPlPkuShxg+nhxaq56uBrj4WvirzpwLw7nTqqd0kkmjvh3Ufh
+         jc4++MvJuvsDI3gdhZtudN/pzOM4LLdzJbVV2UUmAoLxZ4bZyQhbTObmxjbIpP1PHr5V
+         N2zIBGIat87Qro3qrkW3Hks1rS7DCL/iMBAX64JGh3AzFM8fJlZw+YMAwei9s48dDsBv
+         clxUrOuvGDeWuJ2ZYKFRQ8zzzn5783MAXtXRWjhlpOwQ4sZHV47IkbmZpRhNONIOC886
+         t+jstxFoF27ptZwq1bUjPL1GhLxjcpQhmYtVDhjCJ2DR217tSiWPgufl5pJCne4uFAR9
+         9LDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738808127; x=1739412927;
+        d=1e100.net; s=20230601; t=1738809583; x=1739414383;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hFJOgQB4BvQz0kFxcSF8bPMGP2TyNp74xWrYgZwxmos=;
-        b=NoAEypDvroZOnRHO5aO2dHGaQBlJPgmWsdtfnfzpwTuqZasU8HKTqBn7GQ+wpU6D/h
-         mq2NJKSmMjjjs9Ozyd/RYcvRp+xxP3U/K0FON6py6RWNQGhlfESLGqnuS0ACDYodlOpS
-         L+zTbsOBAP7ZRU1vs2Nw8pYR1ze23qtdJKFujHcGvUBdsTVH59klwyIkA4C5WdUNVnEq
-         kbwYP8zClVP8KjieqLldHJpkR5BHiUyjc9iz2KXTw1LBEOPq1k3vfwAJu0yHlaiC/fcI
-         lI96+YJg/4kqNYvT2U4sRGqyS74wpolJfPBnvBkbhS9Iu2Zt0BlLN9U0magcaF94S3xR
-         B4MA==
-X-Forwarded-Encrypted: i=1; AJvYcCWIKUGTrsrFGhxpmUDW5eUGUoMkxqXnS7b9rbzacBueNRNvQeJcdIXBGGhQ8vmBo59UGRY=@vger.kernel.org, AJvYcCWcecteJI8vpDy73/64lMLWBdA7YgJoCjxhZ1MvQoa9AScf5pgvQxm2PHhXN+Vzp4W/+ShdtSm7@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxf/fxCO1hQPygtPx3ylsxT+8CQa0v2924+brWqjripkajD7x7i
-	ZFuzMlo2w+pfbTQ1EC9Wh7wS4RgvONFXCcms2Zdei4qhy5prU3xYpPM+sUIfXF0c5GFFTAfRzN4
-	01ctwxmZg2Q8xhlzdgVRwfK3TEis=
-X-Gm-Gg: ASbGncs7HPP+2gkMkGleCVX4/Pa8WOmMTh1MKi95ET/1eYkpKgNL64WYIMocas+0X3E
-	eF0AlaiiuY/5xGcWCoF7wRMvn6fAdCgRKy3eueR9Su+ZF8xDbSSbMFDawfwNlXtTVo7vZm54=
-X-Google-Smtp-Source: AGHT+IERfaZUcgR+uy6HNwTEwqIlwRlaivLWdsRMVY8O0s/xrypEIiFAy/gsao582++bvkJM6gxt7MJQEOmWHWnefOk=
-X-Received: by 2002:a05:6e02:2188:b0:3cf:b87b:8fd4 with SMTP id
- e9e14a558f8ab-3d04f8f6fd6mr45555505ab.15.1738808127127; Wed, 05 Feb 2025
- 18:15:27 -0800 (PST)
+        bh=v2r/k2esHHDOBMYVJXVugTMop5rQCFz6g3dqQigy6JQ=;
+        b=IFFYq+55AyVjUbVO1v6FIfdANYJt9q05ZC2BIUC1FT+COIHDHLNuDFhEKd+21calHl
+         X+Rs5eWDvlc8xX8ftCqr62D4rC4C8X1dczjDRsu5Y67G4Q+9yPPjlW+Sv/eVR8Z63ILy
+         bc2fzMrfJgPbQfMtB4vw6ik13hs4wcLYXqMA/bZfZcuBB5dRUGKKGUQz9tIYcVGy2THH
+         9wta7XMP7aXynhk0n+fqA/B81OgkWTWDKfJoEvhYZjnf/Rge/8XdlykPvBzgFXKdQ3zG
+         xCBEtAP0Se1/H/2+VITYWB5wuFk7gLKWlBIiebmp9w/VgPGISd+EMW1Ln6TLdPsygT3H
+         a4wg==
+X-Forwarded-Encrypted: i=1; AJvYcCWvsuA+3qfzD9+T81UCnEWk592/Mg/WiRLcti9V2g9vzeDhj+5+ic1c2cffCHiKwgoEjL8i6rAK@vger.kernel.org, AJvYcCXioCZYeigEmg2zaP+kFvC9YFUGtrCQl9pUILApYTBgFjw6yH5yVb2m1m59nd3JtMJbGdU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyXxPEWCOfCIddmDr2lKz0TUd/L2JHbbzk9jy8PakLI8cPOdDCv
+	Vo5Ik9+G3ThHRpmBUChMzdw19AGJ02slSviGjIo8T3HFhweOaUzt/cNpXwMwZYFoa9FfKmutezI
+	v5nulEiuB2o7RZ0v9gP3U3GksJi8=
+X-Gm-Gg: ASbGncst1eUkkov7ykXGcp5CBoE/haGIczHHXe6AE4x1EI0r7+vFyMA+eQJdc5YB7Nz
+	zF+hA7u1/tPG498Zs02u00bV1zhFGI/wAmh7PV2jLqtEmBb2DrfNdTA7y2iVy7Vtgk6pQT9ye
+X-Google-Smtp-Source: AGHT+IErDIEoR2HhHfFpZVwdHMo7Bs+UqubQrx8ZGHT/yrKUu4Cb1uXgxKhGsw68cmEkRepPue69fKEKViPJfJZe8sA=
+X-Received: by 2002:a05:6e02:198e:b0:3d0:137a:8c9d with SMTP id
+ e9e14a558f8ab-3d04f422693mr60280105ab.8.1738809582599; Wed, 05 Feb 2025
+ 18:39:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,18 +74,19 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20250204183024.87508-1-kerneljasonxing@gmail.com>
- <20250204183024.87508-13-kerneljasonxing@gmail.com> <67a389af981b0_14e0832949d@willemb.c.googlers.com.notmuch>
- <CAL+tcoC6egv7dTqESYy8Z80OoacvjgxLvsTXukUZZDgbLxH8AA@mail.gmail.com> <c329a0c1-239b-4ca1-91f2-cb30b8dd2f6a@linux.dev>
-In-Reply-To: <c329a0c1-239b-4ca1-91f2-cb30b8dd2f6a@linux.dev>
+ <20250204183024.87508-11-kerneljasonxing@gmail.com> <20250204175744.3f92c33e@kernel.org>
+ <e894c427-b4b3-4706-b44c-44fc6402c14c@linux.dev> <CAL+tcoCQ165Y4R7UWG=J=8e=EzwFLxSX3MQPOv=kOS3W1Q7R0A@mail.gmail.com>
+ <0a8e7b84-bab6-4852-8616-577d9b561f4c@linux.dev> <CAL+tcoAp8v49fwUrN5pNkGHPF-+RzDDSNdy3PhVoJ7+MQGNbXQ@mail.gmail.com>
+In-Reply-To: <CAL+tcoAp8v49fwUrN5pNkGHPF-+RzDDSNdy3PhVoJ7+MQGNbXQ@mail.gmail.com>
 From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Thu, 6 Feb 2025 10:14:50 +0800
-X-Gm-Features: AWEUYZmbUqaXpJ13vHPGNsCYi8BqO8H9JsV4edkiRf5DcbZvA31ORW4FHZCzy88
-Message-ID: <CAL+tcoCY=03zt3RBJP0G8+8hC1oC+o2h67MdqrmEkjM3-y-gZQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v8 12/12] selftests/bpf: add simple bpf tests in
- the tx path for timestamping feature
+Date: Thu, 6 Feb 2025 10:39:05 +0800
+X-Gm-Features: AWEUYZmQIXkstOeyIJPZP_vVKzMniHYvrfhmVb18rqqOtBKYr5MYe6WYRYCZ5uM
+Message-ID: <CAL+tcoC5hmm1HQdbDaYiQ1iW1x2J+H42RsjbS_ghyG8mSDgqqQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v8 10/12] bpf: make TCP tx timestamp bpf
+ extension work
 To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org, 
+Cc: Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net, edumazet@google.com, 
+	pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com, 
 	willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
 	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
 	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
@@ -94,84 +95,168 @@ Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, davem@davemloft.net,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 6, 2025 at 9:28=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.d=
-ev> wrote:
+On Thu, Feb 6, 2025 at 9:05=E2=80=AFAM Jason Xing <kerneljasonxing@gmail.co=
+m> wrote:
 >
-> On 2/5/25 8:08 AM, Jason Xing wrote:
-> >>> +     switch (skops->op) {
-> >>> +     case BPF_SOCK_OPS_TS_SCHED_OPT_CB:
-> >>> +             delay =3D val->sched_delay =3D timestamp - val->sendmsg=
-_ns;
-> >>> +             break;
-> >>
-> >> For a test this is fine. But just a reminder that in general a packet
-> >> may pass through multiple qdiscs. For instance with bonding or tunnel
-> >> virtual devices in the egress path.
+> On Thu, Feb 6, 2025 at 8:47=E2=80=AFAM Martin KaFai Lau <martin.lau@linux=
+.dev> wrote:
 > >
-> > Right, I've seen this in production (two times qdisc timestamps
-> > because of bonding).
+> > On 2/5/25 4:12 PM, Jason Xing wrote:
+> > > On Thu, Feb 6, 2025 at 5:57=E2=80=AFAM Martin KaFai Lau <martin.lau@l=
+inux.dev> wrote:
+> > >>
+> > >> On 2/4/25 5:57 PM, Jakub Kicinski wrote:
+> > >>> On Wed,  5 Feb 2025 02:30:22 +0800 Jason Xing wrote:
+> > >>>> +    if (cgroup_bpf_enabled(CGROUP_SOCK_OPS) &&
+> > >>>> +        SK_BPF_CB_FLAG_TEST(sk, SK_BPF_CB_TX_TIMESTAMPING) && skb=
+) {
+> > >>>> +            struct skb_shared_info *shinfo =3D skb_shinfo(skb);
+> > >>>> +            struct tcp_skb_cb *tcb =3D TCP_SKB_CB(skb);
+> > >>>> +
+> > >>>> +            tcb->txstamp_ack_bpf =3D 1;
+> > >>>> +            shinfo->tx_flags |=3D SKBTX_BPF;
+> > >>>> +            shinfo->tskey =3D TCP_SKB_CB(skb)->seq + skb->len - 1=
+;
+> > >>>> +    }
+> > >>>
+> > >>> If BPF program is attached we'll timestamp all skbs? Am I reading t=
+his
+> > >>> right?
+> > >>
+> > >> If the attached bpf program explicitly turns on the SK_BPF_CB_TX_TIM=
+ESTAMPING
+> > >> bit of a sock, then all skbs of this sock will be tx timestamp-ed.
+> > >
+> > > Martin, I'm afraid it's not like what you expect. Only the last
+> > > portion of the sendmsg will enter the above function which means if
+> > > the size of sendmsg is large, only the last skb will be set SKBTX_BPF
+> > > and be timestamped.
 > >
-> >>
-> >>> +     case BPF_SOCK_OPS_TS_SW_OPT_CB:
-> >>> +             prior_ts =3D val->sched_delay + val->sendmsg_ns;
-> >>> +             delay =3D val->sw_snd_delay =3D timestamp - prior_ts;
-> >>> +             break;
-> >>> +     case BPF_SOCK_OPS_TS_ACK_OPT_CB:
-> >>> +             prior_ts =3D val->sw_snd_delay + val->sched_delay + val=
-->sendmsg_ns;
-> >>> +             delay =3D val->ack_delay =3D timestamp - prior_ts;
-> >>> +             break;
-> >>
-> >> Similar to the above: fine for a test, but in practice be aware that
-> >> packets may be resent, in which case an ACK might precede a repeat
-> >> SCHED and SND. And erroneous or malicious peers may also just never
-> >> send an ACK. So this can never be relied on in production settings,
-> >> e.g., as the only signal to clear an entry from a map (as done in the
-> >> branch below).
+> > Sure. The last skb of a large msg and more skb of small msg (or MSG_EOR=
+).
+> >
+> > My point is, only attaching a bpf alone is not enough. The
+> > SK_BPF_CB_TX_TIMESTAMPING still needs to be turned on.
 >
-> All good points. I think all these notes should be added as comment to th=
-e test.
-
-Got it, I will add them in the commit message.
-
-> I think as a test, this will be a good start and can use some followup to
-> address the cases.
-
-Good idea.
-
+> Right.
 >
 > >
-> > Agreed. In production, actually what we do is print all the timestamps
-> > and let an agent parse them.
+> > >
+> > >>
+> > >>>
+> > >>> Wouldn't it be better to let BPF_SOCK_OPS_TS_SND_CB return whether =
+it's
+> > >>> interested in tracing current packet all the way thru the stack?
+> > >>
+> > >> I like this idea. It can give the BPF prog a chance to do skb sampli=
+ng on a
+> > >> particular socket.
+> > >>
+> > >> The return value of BPF_SOCK_OPS_TS_SND_CB (or any cgroup BPF prog r=
+eturn value)
+> > >> already has another usage, which its return value is currently enfor=
+ced by the
+> > >> verifier. It is better not to convolute it further.
+> > >>
+> > >> I don't prefer to add more use cases to skops->reply either, which i=
+s an union
+> > >> of args[4], such that later progs (in the cgrp prog array) may lose =
+the args value.
+> > >>
+> > >> Jason, instead of always setting SKBTX_BPF and txstamp_ack_bpf in th=
+e kernel, a
+> > >> new BPF kfunc can be added so that the BPF prog can call it to selec=
+tively set
+> > >> SKBTX_BPF and txstamp_ack_bpf in some skb.
+> > >
+> > > Agreed because at netdev 0x19 I have an explicit plan to share the
+> > > experience from our company about how to trace all the skbs which wer=
+e
+> > > completed through a kernel module. It's how we use in production
+> > > especially for debug or diagnose use.
+> >
+> > This is fine. The bpf prog can still do that by calling the kfunc. I do=
+n't see
+> > why move the bit setting into kfunc makes the whole set won't work.
+> >
+> > > I'm not knowledgeable enough about BPF, so I'd like to know if there
+> > > are some functions that I can take as good examples?
+> > >
+> > > I think it's a standalone and good feature, can I handle it after thi=
+s series?
+> >
+> > Unfortunately, no. Once the default is on, this cannot be changed.
+> >
+> > I think Jakub's suggestion to allow bpf prog selectively choose skb to =
+timestamp
+> > is useful, so I suggested a way to do it.
 >
-> The BPF program that runs in the kernel can provide its own user interfac=
-e that
-> best fits its environment. If a raw printing interface is sufficient, tha=
-t works
-> well and is simple on the BPF program side. If the production system cann=
-ot
-> afford the raw printing cost, the bpf prog can perform some aggregation f=
-irst.
+> Because, sorry, I don't want to postpone this series any longer (blame
+> on me for delaying almost 4 months), only wanting to focus on the
+> extension for SO_TIMESTAMPING so that we can quickly move on with
+> small changes per series.
 >
-> The BPF program should be able to detect when an outgoing skb is re-trans=
-mitted
-> and act accordingly. There is BPF timer to retire entries for which no AC=
-K has
-> been received.
+> Selectively sampling the skbs or sampling all the skbs could be an
+> optional good choice/feature for users instead of mandatory?
+>
+> There are two kinds of monitoring in production: 1) daily monitoring,
+> 2) diagnostic monitoring which I'm not sure if I translate in the
+> right way. For the former that is obviously a light-weight feature, I
+> think we don't need to trace that many skbs, only the last skb is
+> enough which was done in Google because even the selective feature[1]
+> is a little bit heavy. I received some complaints from a few
+> latency-sensitive customers to ask us if we can reduce the monitoring
+> in the kernel because as I mentioned before many issues are caused by
+> the application itself instead of kernel.
+>
+> [1] selective feature consists of two parts, only selectively
+> collecting all the skbs in a certain period or selectively collecting
+> exactly like what SO_TIMESTAMPING does in a certain period. It might
+> need a full discussion, I reckon.
 
-Oh, first time to know the BPF timer.
+I presume you might refer to the former. It works like the cmsg
+feature which can be a good selectively sampling example. It would be
+better to check the value of reply in the BPF_SOCK_OPS_TS_SND_CB
+callback which is nearly the very beginning of each sendmsg syscall
+because I have a hunch we will add more hook points before skb enters
+the qdisc.
 
->
-> Potentially, this data can be aggregated into the individual bpf_sk_stora=
-ge or
-> using a BPF map keyed by a particular IP address prefix.
->
-> I just want to highlight here for people in the future referencing this t=
-hread
-> to look for implementation ideas.
+I think we can split the whole idea into two parts: for now, because
+of the current series implementing the same function as SO_TIMETAMPING
+does, I will implement the selective sample feature in the series.
+After someday we finish tracing all the skb, then we will add the
+corresponding selective sample feature.
 
-Thanks, I think they are useful! I will copy more description in the
-commit message.
+But the default mode is the exact same as SO_TIMESTAMPING instead of
+asking bpf prog to enable the sample feature. Does it make sense to
+you?
+
+With that said, the patch looks like this:
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index 1f528e63bc71..73909dad7ed4 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -497,11 +497,14 @@ static void tcp_tx_timestamp(struct sock *sk,
+struct sockcm_cookie *sockc)
+            SK_BPF_CB_FLAG_TEST(sk, SK_BPF_CB_TX_TIMESTAMPING) && skb) {
+                struct skb_shared_info *shinfo =3D skb_shinfo(skb);
+                struct tcp_skb_cb *tcb =3D TCP_SKB_CB(skb);
++               bool enable_sample =3D true;
+
+-               tcb->txstamp_ack_bpf =3D 1;
+-               shinfo->tx_flags |=3D SKBTX_BPF;
+-               shinfo->tskey =3D TCP_SKB_CB(skb)->seq + skb->len - 1;
+-               bpf_skops_tx_timestamping(sk, skb, BPF_SOCK_OPS_TS_SND_CB);
++               enable_sample =3D bpf_skops_tx_timestamping(sk, skb,
+BPF_SOCK_OPS_TS_SND_CB);
++               if (enable_sample) {
++                       tcb->txstamp_ack_bpf =3D 1;
++                       shinfo->tx_flags |=3D SKBTX_BPF;
++                       shinfo->tskey =3D TCP_SKB_CB(skb)->seq + skb->len -=
+ 1;
++               }
+        }
+ }
 
 Thanks,
 Jason
