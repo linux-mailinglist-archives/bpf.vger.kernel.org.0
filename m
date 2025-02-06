@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-50584-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50585-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C2E8A29E23
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 02:00:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4A10A29E25
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 02:00:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3747B1888D69
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 01:00:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EA3A167B7B
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 01:00:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5948F433CB;
-	Thu,  6 Feb 2025 01:00:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B841A85270;
+	Thu,  6 Feb 2025 01:00:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uc/+9+Zg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ip2Iwstt"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C08FE3B192;
-	Thu,  6 Feb 2025 01:00:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 361E7768FC;
+	Thu,  6 Feb 2025 01:00:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738803608; cv=none; b=n5vE93s2LjI+Q7n91Dz2JFixUOaXQ2bt29AW0708LBZA5JzCgQ6yACwt7k0SkOD8f3Ea+Y//5DiE9790OljmnJEg4dPqxgmUGEof1TJv4v4EoXswtXYNGjnNYL6e2xT4g6FV6BJlVaEsKxmM7k2XQsFCOzaF+/MYH3HGodBMgQM=
+	t=1738803611; cv=none; b=dHBkoaDRvT3zICn/Yx0kYkRJ3xVb29wSfEjIAisoQnoHBG5wx0mt2KDuUYG4ZWklGMs5JEvA7iLyPNzQXjJrvRShFnQhotfJzTcUWyBMIfPVasoo6iko6qzICVRtP+yp0DbA5MNMA2STqdai2ieHW7MCjHz89+RE3iSZn9j8V2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738803608; c=relaxed/simple;
-	bh=JTV6l5lgez3qzu1s8JPV2AKKaABFFkEVLRwzj6agjKk=;
+	s=arc-20240116; t=1738803611; c=relaxed/simple;
+	bh=P7/lRyUDtTea65Xs+PwXbOl2Vx4ZhhEsIK/YykjUdY4=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=DKcGIY7Bm1uc8Shr2nrN4PGmK/V3EiWe8uQ9JgC9NqXQdOIReJ8SOHAsfnYwY091zmAL0i30BOvRdFXdM8WPKLWY/oeZGqj289Pzx+1gRsPYieIaQ9B9SwmIcki4I+mcWrQHLq9vjUyK69wWoZnXE4sT0Xj5EoiFpGHFDHkXehI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uc/+9+Zg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BB8CC4AF09;
-	Thu,  6 Feb 2025 01:00:08 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=l0jfYzX8f9a1iAeLZyOAIWAsRKVStCLc1ZfFgyal1oT1AE//L+i/dYcA7pEwarHXvIa/ISsd2qtLeMU9YdA6zKplub7zXoRy9+w0JCqOqb/uthlvRApDfrW535CPEWcewIcmLZtQx5k6vZX0zW5wq8Wxcx/vBSJcM8aGYXzTbAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ip2Iwstt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A14BEC4CED1;
+	Thu,  6 Feb 2025 01:00:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738803608;
-	bh=JTV6l5lgez3qzu1s8JPV2AKKaABFFkEVLRwzj6agjKk=;
+	s=k20201202; t=1738803609;
+	bh=P7/lRyUDtTea65Xs+PwXbOl2Vx4ZhhEsIK/YykjUdY4=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Uc/+9+ZgTDejQ7URCCA6NsEjG0mZhT+4HRKfz5A3zr+jPFNCORTc7tX1c3bwddHuP
-	 cL+igT3197COM6hLFjNbhNLybsiDAfxxIn+IMzwlPwrUuahAVqJbfRqc+0h1cFUXgD
-	 KCYSRvccJuqIDAINWVWFe+1akSGlID0gyPeMaJcAEUYBDGWr3uxmdPTZKw1sMHYbM4
-	 NVmHmGMNznbEs0yAvFEwyBCrkHQA6TMR2mmoffyam0EceTNBn3Ciqd5Z3oUUX3cChz
-	 tN0rIOJPsmPOxjKqZyydm2T9R/aMxE2qE4LMaMnLTyaZDhSxPGQJGLPQQ9YoWqTpJV
-	 ZJ1d7e2TnJWZg==
+	b=ip2IwsttyCSA67yriFrUsA4EC7qntWYmNz56I2MeUJ0QE+x7Rbo9IsPRC4BllsR6e
+	 ulSlZgMNmHxoj9y9Yg7rfNaJTTGD9oc/Z/o2c1yLlj827C2UeS5sbNHA4q7aRftkdd
+	 Re7UZurOe3IzhTGLvoT/ASQWkj67G925fwBbAi5EjgZKox9uQtbicKT8hvBn9xwQvA
+	 lh9/oi3buvYjhB8mEqHleUTQNo6cRx26mTvK5O5TR+NsCyivb5I07X/Nc/zQgA3mN8
+	 p8Pr2iRSyf/Co41Z3cZ5JLeR11RSI293pBCIBbR7XbPXy+K2NUYE8bXgw2iC8JzkZP
+	 zRhx4kgOXjYVA==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAF9E380AAD0;
-	Thu,  6 Feb 2025 01:00:36 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70E7B380AAD0;
+	Thu,  6 Feb 2025 01:00:38 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,46 +52,41 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 0/3] Makefile fixes for samples/{bpf,hid}
+Subject: Re: [PATCH bpf-next] bpf: Add comment about helper freeze
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <173880363576.959069.2235034336278672667.git-patchwork-notify@kernel.org>
-Date: Thu, 06 Feb 2025 01:00:35 +0000
-References: <20250203085506.220297-1-jinghao7@illinois.edu>
-In-Reply-To: <20250203085506.220297-1-jinghao7@illinois.edu>
-To: Jinghao Jia <jinghao7@illinois.edu>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ <173880363701.959069.14322252522302513524.git-patchwork-notify@kernel.org>
+Date: Thu, 06 Feb 2025 01:00:37 +0000
+References: <20250204-bpf-helper-freeze-v1-1-46efd9ff20dc@outlook.com>
+In-Reply-To: <20250204-bpf-helper-freeze-v1-1-46efd9ff20dc@outlook.com>
+To: Levi Zim via B4 Relay <devnull+rsworktech.outlook.com@kernel.org>
+Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
  martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
  yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, jikos@kernel.org,
- bentiss@kernel.org, masahiroy@kernel.org, n.schier@avm.de, ruqin@redhat.com,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-input@vger.kernel.org
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, rsworktech@outlook.com
 
 Hello:
 
-This series was applied to bpf/bpf-next.git (master)
+This patch was applied to bpf/bpf-next.git (master)
 by Andrii Nakryiko <andrii@kernel.org>:
 
-On Mon,  3 Feb 2025 02:55:03 -0600 you wrote:
-> Hi everyone,
+On Tue, 04 Feb 2025 10:00:21 +0800 you wrote:
+> From: Levi Zim <rsworktech@outlook.com>
 > 
-> Following commit 13b25489b6f8 ("kbuild: change working directory to
-> external module directory with M="), the Makefiles for both bpf and hid
-> samples are broken due to the use of the relative vmlinux path (i.e.,
-> ./vmlinux) when generating vmlinux.h. Additionally, samples/hid experience
-> the same problem that was fixed for samples/bpf in commit 5a6ea7022ff4
-> ("samples/bpf: Remove unnecessary -I flags from libbpf EXTRA_CFLAGS").
+> Put a comment after the bpf helper list in uapi bpf.h to prevent people
+> from trying to add new helpers there and direct them to kfuncs.
+> 
+> Link: https://lore.kernel.org/bpf/CAEf4BzZvQF+QQ=oip4vdz5A=9bd+OmN-CXk5YARYieaipK9s+A@mail.gmail.com/
+> Link: https://lore.kernel.org/bpf/20221231004213.h5fx3loccbs5hyzu@macbook-pro-6.dhcp.thefacebook.com/
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Levi Zim <rsworktech@outlook.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [v3,1/3] samples/hid: remove unnecessary -I flags from libbpf EXTRA_CFLAGS
-    (no matching commit)
-  - [v3,2/3] samples/bpf: fix broken vmlinux path for VMLINUX_BTF
-    https://git.kernel.org/bpf/bpf-next/c/94f53edc64e1
-  - [v3,3/3] samples/hid: fix broken vmlinux path for VMLINUX_BTF
-    (no matching commit)
+  - [bpf-next] bpf: Add comment about helper freeze
+    https://git.kernel.org/bpf/bpf-next/c/0abff462d802
 
 You are awesome, thank you!
 -- 
