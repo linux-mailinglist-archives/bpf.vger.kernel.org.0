@@ -1,116 +1,214 @@
-Return-Path: <bpf+bounces-50698-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50699-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7518BA2B41A
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 22:22:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02E04A2B4BF
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 23:06:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 441E93A9236
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 21:22:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85399168134
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 22:06:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E4C71DFDB4;
-	Thu,  6 Feb 2025 21:22:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3C8723909B;
+	Thu,  6 Feb 2025 22:05:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RyznFpp4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cVcxLZXe"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 049891DF97F;
-	Thu,  6 Feb 2025 21:22:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0406C239094
+	for <bpf@vger.kernel.org>; Thu,  6 Feb 2025 22:04:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738876953; cv=none; b=QpEnGT44BiAnLcqeTBVn/s9cLnkXkVbBMW09t1VoGwQQTH7b8Ps9SmZZxq3bxoydo99+3U7MF3Tn1Okiy6izJmqrbc4XJS/I4+3z98u2v87/44Fekw+wrLSGFkxy+h8CEVlmyK2Ek/SSS0gB3DDOIYVO/Z8PqWgVG0JRkJJNgY0=
+	t=1738879501; cv=none; b=di3cj8arkmsqPNt3dJBSPrXmj9QyNLCp7gl7cZiy44Z4pY/LgF8CPIRNCpPgmguRsh+WbkY9A+fOPqfWiLhWpYfoJaTgtq5c/wbe4brw0CE4DgQERy8233lERXUAIbbUBbx6AHIg8/lreKWznej/QxdyuythozJqTA8DsJKSYaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738876953; c=relaxed/simple;
-	bh=bgzU90sFYWU1zZ8G9qS03xKW0AOUkvVlVRSPKU50ZLo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OOKMReLPqcc1/I1slvgKBzFz9ffbhqCmslHa5K9MeYidjFdkzmEQiPLmQgPDxBYM+CHPjdSVE21v8j1IAOgC28m/xruoK05xbXxM7fmgCiseP4rS7+0ZdVdCOe1BVYC7sKArkvKwkc3+05j6iuIu1Wrb43Sd/kZjkzJOroqY85c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RyznFpp4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67811C4CEDD;
-	Thu,  6 Feb 2025 21:22:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738876951;
-	bh=bgzU90sFYWU1zZ8G9qS03xKW0AOUkvVlVRSPKU50ZLo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RyznFpp4VEj9jYaw0v3MLzV1H3pt2tt9yY7TlU5wXWHfpf1Ce2kqIKqguY4q+xDUW
-	 h7ZjZ3NkcvkWaIUNGoe8SAyOUqc4mm4ddEzq3hEUdFhAqUzfbYlVdM91zfS27OChvj
-	 GkUH1HS/edzMoILemJRGnZ/+IxJslQuHx5qKpRtYfJ4qc6GkmnuanLIOXEnvmydtM1
-	 F+d52JiNR4GDSEDsw5EuciVv0J0CcOTFWwGTFjqVhj31qa1HkBYc4WbFbakEdSN9BO
-	 FVvEk5s/6yRPL97PfcVx3PDCyPFWdfEY4Y6BD+n37jzR9Cjxv6H6X68m2+y4Ht2D1c
-	 cvR1wGCrSumzg==
-From: Kees Cook <kees@kernel.org>
-To: luto@amacapital.net,
-	wad@chromium.org,
-	oleg@redhat.com,
-	mhiramat@kernel.org,
-	andrii@kernel.org,
-	jolsa@kernel.org,
-	Eyal Birger <eyal.birger@gmail.com>
-Cc: Kees Cook <kees@kernel.org>,
-	olsajiri@gmail.com,
-	cyphar@cyphar.com,
-	songliubraving@fb.com,
-	yhs@fb.com,
-	john.fastabend@gmail.com,
-	peterz@infradead.org,
-	tglx@linutronix.de,
-	bp@alien8.de,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	andrii.nakryiko@gmail.com,
-	rostedt@goodmis.org,
-	rafi@rbk.io,
-	shmulik.ladkani@gmail.com,
-	bpf@vger.kernel.org,
-	linux-api@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	x86@kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] seccomp: pass uretprobe system call through seccomp
-Date: Thu,  6 Feb 2025 13:21:34 -0800
-Message-Id: <173887689139.3506371.3849387827240027734.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250202162921.335813-1-eyal.birger@gmail.com>
-References: <20250202162921.335813-1-eyal.birger@gmail.com>
+	s=arc-20240116; t=1738879501; c=relaxed/simple;
+	bh=uHt1jwmQaIOQ0fKqsUoMrcW5H1CPV6TLU0w0/FTxyEc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LfHgU7mKTm5UzvF33AgaOC5EsEDgtf0xL/n0zgFxETe73/aTm6FGWHZA9s5Jbsc2W8sdSLsuuyA1ITi4rB97j5WfxK0T1qkNiH8ZF35VevL4HY9vi4Q61d7Pdq8mazKD3x2f1tMrEszVACJ7dkQJ3onoPB8LlYWf0qNj4a2H3bQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cVcxLZXe; arc=none smtp.client-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2f833af7a09so2030615a91.2
+        for <bpf@vger.kernel.org>; Thu, 06 Feb 2025 14:04:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738879499; x=1739484299; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pKlJV8GxBx4hXYC70UR3aFPMbCGgLeWjf9fzFEimSps=;
+        b=cVcxLZXevdjnsFQN4AF03LrK8XLzwhtfit4pb3syhEvHIfWWM8NcV8qjNIqn2gnkZ+
+         INy5PsbbK+MhNRYJuAhoZuf8BCI90A28f49jaW0iMGXDpvXAbYjL1nd8TmV9zlewW4Tj
+         wBTeExixC8KjkvF1ESHK6KywaIdHb3hWlgU9Fj6bAaQFohRO3V1gEvc8A+gphO4pe9Ra
+         W3KjrqR9wxK0gqkir1MyImi2tFqTAsewsv9HLb0ow+G3jdi7zXnR1gUqVx4RSwEdRuoC
+         HrFf9zYbfwnt2id4KrXl2kZEHhUfKT92kKKSCqbB0jjKHEdZNh4y+CsGSOwgJYZ9/wyu
+         Lg5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738879499; x=1739484299;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pKlJV8GxBx4hXYC70UR3aFPMbCGgLeWjf9fzFEimSps=;
+        b=RvuchtfSu4VPUvYWep7PGV1iY9PqCBosF+LitCqm30ap87Gq6MmxIXx18bV0u0UuqN
+         yiTfOYcKvDHUqwOK5fkT2pzx/mcCEpP9NU1pvujdEEra4B3oG9U0mhLlBlAb5LVNAzwJ
+         N5/VLWZFmVhXoH6t6ZSY9lOROIsAceMQC89rK88ev4vvQtSUEq/4gd9RsR8kCkJzbXeq
+         n+C9qIGxOhiW6zvZeR/0TamfTPqjEEn/+YgqtXVZ298N6DuHwpC3lVo8qLw5rOw7h6c1
+         0VV2oqX7J89+lCfo4AtuS1fXn0ES7scPMtVR7UuItyeNICtFyAwdSjG6IiCgva3jLZvf
+         Dx0A==
+X-Gm-Message-State: AOJu0YweQ4EskwtKpsGyndtQ6nHv9Y9qAr32Y6+n605N4uMM3K5CaYLr
+	XKdkNqmZsiUsQcScyvripnrAT2CKYMKrkN53pGnDNIvOHgzTUBhEN742Bp+uzV0tKVrN26N+dE6
+	mFqGZM+8AfyaHqh1cBscw3t/IUxw=
+X-Gm-Gg: ASbGncsqQpn2oEoq3/1tzKfByN/JeKN/mMrt7H4kzTfvkImYTeTNJ6CuBR8jes2lQmi
+	Ms0M5fCrKDomlrS/cVyAoZuZuUWMVXlnoQnh8a9ZKcUlaiOmIUZTrD424F3HWruwV8HxZL+Prgb
+	/nmMG799PS5baw
+X-Google-Smtp-Source: AGHT+IGlBbKbj3Lcj2Sf70KDvMKXQ2AXDlLpVfMBeFwp0kWuJmQ8wK+hfnBGKM8OTn3MaclwDRHt434mtc8zCfqgBD0=
+X-Received: by 2002:a17:90b:4c02:b0:2ee:a4f2:b311 with SMTP id
+ 98e67ed59e1d1-2fa2406471emr1073873a91.8.1738879498843; Thu, 06 Feb 2025
+ 14:04:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20250205190918.2288389-1-bboscaccy@linux.microsoft.com>
+ <20250205190918.2288389-2-bboscaccy@linux.microsoft.com> <CAEf4BzZQUPfA8UcW1Ed9jM0J8z+yGHe=kOM5BwEBuDzJL3B1HA@mail.gmail.com>
+ <874j169b33.fsf@microsoft.com>
+In-Reply-To: <874j169b33.fsf@microsoft.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 6 Feb 2025 14:04:45 -0800
+X-Gm-Features: AWEUYZl0RLkcmgNp2ppfhI_YVrOVVw9iGuNQzHhsyvGRmXInwhxymBeCgRkr9mk
+Message-ID: <CAEf4Bzb-RfRU=a3U4XPDpQEFoKnT=NYD_C=k42vw1nyh1xJE0g@mail.gmail.com>
+Subject: Re: [PATCH 1/1] libbpf: Convert ELF notes into read-only maps
+To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+Cc: bpf@vger.kernel.org, nkapron@google.com, teknoraver@meta.com, 
+	roberto.sassu@huawei.com, paul@paul-moore.com, code@tyhicks.com, 
+	xiyou.wangcong@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, 02 Feb 2025 08:29:19 -0800, Eyal Birger wrote:
-> uretprobe(2) is an performance enhancement system call added to improve
-> uretprobes on x86_64.
-> 
-> Confinement environments such as Docker are not aware of this new system
-> call and kill confined processes when uretprobes are attached to them.
-> 
-> Since uretprobe is a "kernel implementation detail" system call which is
-> not used by userspace application code directly, pass this system call
-> through seccomp without forcing existing userspace confinement environments
-> to be changed.
-> 
-> [...]
+On Thu, Feb 6, 2025 at 10:34=E2=80=AFAM Blaise Boscaccy
+<bboscaccy@linux.microsoft.com> wrote:
+>
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>
+> > On Wed, Feb 5, 2025 at 11:09=E2=80=AFAM Blaise Boscaccy
+> > <bboscaccy@linux.microsoft.com> wrote:
+> >>
+> >> Add a flexible mechanism, using existing ELF constructs, to attach
+> >> additional metadata to BPF programs for possible use by BPF
+> >> gatekeepers and skeletons.
+> >>
+> >> During object file parsing, note sections are no longer skipped and
+> >> now treated as read-only data. During libbpf-based loading or skeleton
+> >> generation, those sections are then transformed into read-only maps
+> >> which are subsequently passed into the kernel.
+> >
+> > We already have this mechanism, it's .rodata (and
+> > .rodata.<customname>) section(s). Adding .note sections as BPF maps
+> > make no sense to me. Just piggy-back on .rodata for storing any
+> > necessary metadata.
+> >
+> > pw-bot: cr
+> >
+>
+> The ELF specification clearly states:
+> "Sometimes a vendor or system builder needs to mark an object file with
+> special information that other programs will check for conformance,
+> compatibility, etc. Sections of type SHT_NOTE and program header
+> elements of type PT_NOTE can be used for this purpose."
 
-With the changes I mentioned in each patch, I've applied this to
-for-next/seccomp, with the intention of getting them into v6.14-rc2.
+Does ELF specification say anything about "and libbpf should create a
+BPF map for those SHT_NOTE sections"?
 
-Thanks!
+>
+> Which is exactly what we are trying to do. They make no mention of
+> piggy-backing off of .rodata.
 
-[1/2] seccomp: passthrough uretprobe systemcall without filtering
-      https://git.kernel.org/kees/c/cf6cb56ef244
-[2/2] selftests/seccomp: validate uretprobe syscall passes through seccomp
-      https://git.kernel.org/kees/c/c2debdb8544f
+You are trying to redefine non-loadable SHT_NOTE data into loadable
+data backed by a BPF map. I'm not sure how your arguments are
+supporting the hack you are trying to do. We are not going to start
+creating new BPF maps for any random SHT_NOTE section in the BPF
+object file. Use .rodata if you want to get some read-only data into
+the kernel.
 
-Take care,
-
--- 
-Kees Cook
-
+>
+> Further, one can generally strip away .note sections and be left with an
+> object that's still functioning. The same cannot be said about .rodata.
+>
+>
+>
+> >>
+> >> Signed-off-by: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+> >> ---
+> >>  tools/bpf/bpftool/gen.c | 4 ++--
+> >>  tools/lib/bpf/libbpf.c  | 6 ++++++
+> >>  2 files changed, 8 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> >> index 5a4d3240689ed..311d6a3f1c4bb 100644
+> >> --- a/tools/bpf/bpftool/gen.c
+> >> +++ b/tools/bpf/bpftool/gen.c
+> >> @@ -92,7 +92,7 @@ static void get_header_guard(char *guard, const char=
+ *obj_name, const char *suff
+> >>
+> >>  static bool get_map_ident(const struct bpf_map *map, char *buf, size_=
+t buf_sz)
+> >>  {
+> >> -       static const char *sfxs[] =3D { ".data", ".rodata", ".bss", ".=
+kconfig" };
+> >> +       static const char *sfxs[] =3D { ".data", ".rodata", ".bss", ".=
+kconfig", ".note" };
+> >>         const char *name =3D bpf_map__name(map);
+> >>         int i, n;
+> >>
+> >> @@ -117,7 +117,7 @@ static bool get_map_ident(const struct bpf_map *ma=
+p, char *buf, size_t buf_sz)
+> >>
+> >>  static bool get_datasec_ident(const char *sec_name, char *buf, size_t=
+ buf_sz)
+> >>  {
+> >> -       static const char *pfxs[] =3D { ".data", ".rodata", ".bss", ".=
+kconfig" };
+> >> +       static const char *pfxs[] =3D { ".data", ".rodata", ".bss", ".=
+kconfig", ".note" };
+> >>         int i, n;
+> >>
+> >>         /* recognize hard coded LLVM section name */
+> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> >> index 194809da51725..be6af0fece040 100644
+> >> --- a/tools/lib/bpf/libbpf.c
+> >> +++ b/tools/lib/bpf/libbpf.c
+> >> @@ -523,6 +523,7 @@ struct bpf_struct_ops {
+> >>  #define STRUCT_OPS_SEC ".struct_ops"
+> >>  #define STRUCT_OPS_LINK_SEC ".struct_ops.link"
+> >>  #define ARENA_SEC ".addr_space.1"
+> >> +#define NOTE_SEC ".note"
+> >>
+> >>  enum libbpf_map_type {
+> >>         LIBBPF_MAP_UNSPEC,
+> >> @@ -3977,6 +3978,11 @@ static int bpf_object__elf_collect(struct bpf_o=
+bject *obj)
+> >>                         sec_desc->sec_type =3D SEC_BSS;
+> >>                         sec_desc->shdr =3D sh;
+> >>                         sec_desc->data =3D data;
+> >> +               } else if (sh->sh_type =3D=3D SHT_NOTE && (strcmp(name=
+, NOTE_SEC) =3D=3D 0 ||
+> >> +                                                      str_has_pfx(nam=
+e, NOTE_SEC "."))) {
+> >> +                       sec_desc->sec_type =3D SEC_RODATA;
+> >> +                       sec_desc->shdr =3D sh;
+> >> +                       sec_desc->data =3D data;
+> >>                 } else {
+> >>                         pr_info("elf: skipping section(%d) %s (size %z=
+u)\n", idx, name,
+> >>                                 (size_t)sh->sh_size);
+> >> --
+> >> 2.48.1
+> >>
 
