@@ -1,213 +1,319 @@
-Return-Path: <bpf+bounces-50586-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50587-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CC4CA29E2C
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 02:06:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2616AA29E34
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 02:07:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4837D3A7790
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 01:05:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60D327A16DD
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 01:06:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBBA12561D;
-	Thu,  6 Feb 2025 01:05:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A1421CD3F;
+	Thu,  6 Feb 2025 01:07:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f7j2DlMa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kK8dZLuX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0AC910F2;
-	Thu,  6 Feb 2025 01:05:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8CCA38DE0
+	for <bpf@vger.kernel.org>; Thu,  6 Feb 2025 01:07:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738803959; cv=none; b=SgLoVUZ3RM/eGW94ldJjgAiJke1SU1MCXZ34YFbbVr2cKWF7CQfGkVOG1ob+tO8m/4Zgp8a+fZUNkOz4Kfatz4yS3DLqhhcvPCJGkEnZOO867ljufhBTtgCJOg1zYUQThpRjBmZAX8GD5Lrqx/knGLeMUxQGFkyVILRFjqUPYz0=
+	t=1738804034; cv=none; b=J4eLVqHH54MO3IKMkqDpuit2mbexsEAmqj13JkkBd2Cn7w4D3VAzfwdNBMBl+ISJHOtkPLiTW0RP15V/TSIYZ/r4BL98SUSPGwru0w0z3D246IErjy7dB7tRnhXHw0CqsImp9fPvKim8pGRAwMfiVyMXqXJvI13QPjCn9cJGqhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738803959; c=relaxed/simple;
-	bh=KQQ+2XlLbTNF2wY+Xk5Fz7Dbm2FP061v1mkgGcvRKDQ=;
+	s=arc-20240116; t=1738804034; c=relaxed/simple;
+	bh=ld3OKEAetAtSs23DmL4XsAen03gYvkdRWwPi8isizmY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NOueG7h4fdQasMd2gjroNU6Hu0C3xtZ6TB4yoPuU90AkfM/W6LlflPBuvImaH/f3m4YHOb6nTyAWbBkzotPi1DSjKmSEX2elPFAQBlhyX3gcM4BtThJxJabZ0aTzW9eLDCkpTJ1pWFlTG3ue9jMcMz/T9MgO5aQ+mIVu/PaD8os=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f7j2DlMa; arc=none smtp.client-ip=209.85.166.174
+	 To:Cc:Content-Type; b=tqB+vxiAONSwSRvKw4uEmyZHZHRgncjHbpXVzeei/5j1G9zP/JMna3/LeIJLGKVlGkuxJbykRyV9U1H933AOahhdWNTfV7AZYkG6qZX+D5m1Hg3HI4IQDZAvXpFeZoCJGxb+J7pdf65ZGIQd5zsWCvbBQuIxt7NkH48Lvxy/MGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kK8dZLuX; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-3d01dc5a7f6so1016055ab.0;
-        Wed, 05 Feb 2025 17:05:57 -0800 (PST)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-219f8263ae0so8503335ad.0
+        for <bpf@vger.kernel.org>; Wed, 05 Feb 2025 17:07:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738803957; x=1739408757; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1738804031; x=1739408831; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=moH97NtZACXMHwbz4LidFoVFYT00RxbcY8+FwE69LLE=;
-        b=f7j2DlMavr3Zz0ZwUI8cjUx9MZ3Yyhn6DqILwtnU7RT+vuNr6aHXfIxQvgSXOXAeiZ
-         Q9Ln1hWSKRAs9qghTA98XUXdxvZ9KmCvCxXRQPY8X41TzmxNuZNvP+lNUdSHsDDP9CZJ
-         5GtfkAxlrZbIg84LmUTn4WuhC8zInSBClwFUfhn0sUW+mqFga5SZWw4K+w48iQVPutDo
-         d9rkuT9hWyktQehtczz6mVcB5m83ucZ8DM8rObFunCQEGMlSytPMFEZ1pXOvUKja0HYe
-         1Yit45UEzMfQSzkih9Wkg7OwTC+wtGBIhDB2xYBTFTlD1t5MLL+uO28+LejbKgk9Wzp1
-         8jew==
+        bh=sav4fLXnjFIKEtCChFsEGDxJMHM86/qHX4hbypssX6g=;
+        b=kK8dZLuXX+TQswMOZ4jY9xFzkrf5zBqMpu40QkTabgSfqPzyYwsg91vcLJXBMYabJl
+         9W32SP5WMaJJ0PnKMR/Knyljhk9FfMw5xHmnaxZ6ZFB9SGKBNlDl1NLedPf8U0qUZsgH
+         zcwUm7+eRbhLsWLxtHXDr8XXVxXcKBjsgWMs7GjoL6ohDAzG/pWlKQJwHh7u37CuR+La
+         mvVg9M4C0sFxfznpoTPzHGYTtBFF7mM1aTg3IxquU4cOyBgqr7osyMryesuokT3Xj/mb
+         8RSAXOyWiXtM7djguxMAEfwbrW22C0XI4lYVOhkKkOVENE9uOF0uHwS0AV84fCRNM3mF
+         U/VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738803957; x=1739408757;
+        d=1e100.net; s=20230601; t=1738804031; x=1739408831;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=moH97NtZACXMHwbz4LidFoVFYT00RxbcY8+FwE69LLE=;
-        b=MtMyKgQYLfHoOuU13OHiP0I/CjVFaYUIdTfV/NG8qFLbcDtJ4Ml5VBd4EUtsyRHQpe
-         1Oawmg0UNb9UCN0m1QU4I5QM9vLNuvqIOUDLa6ufw8N7laalGojGHEa6sIA/D48ICKSb
-         q95kzroQJ3jDkMBVQoZCwVx6Mh9Faom60NMDv6h7TgZPxs7ddQjs06M2/ruylLx5c1Lh
-         XutQzE33veMQwJoyA6Rhs4XHettD0rbUvd5L8jX1+fEgDZcPDn5gyTvHZPatOd4IdnU0
-         53SKeKvveqNqd9HcYEDO5LcmRRKuBTyifnpDzT+chBOUhlZQwVH8oxlvQgJQiCeNZ5Zm
-         cB8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUtWE5gF5R1UxNkECSctI83NxHl+qofWFfSie1n5/Z6zJI1uWRySjNu16lIyCy2zD3ETvVU012u@vger.kernel.org, AJvYcCXXK7mADdVWk/5PPkiAQL7wViKERj5m6hq4yA0n1Da2L0uiu14iZhZS65i8klzPe92OmS8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwMZ4rfQBgjp+6r0K+Oe5vLj4SkZkW6xzZoFKSIf/hd1xlnJQTz
-	vLR6Zc0qtiqUPD5sJcbV49eesus61bk6gVe3/bLpIRP+HN8LXu7xbjm7+k5bietNxdP/aOoQtVi
-	84UQGnSestInI0ZDROQhKWfavsLI=
-X-Gm-Gg: ASbGncvVYxrSaXs+b3fv5cQ6puAfF1jYj1xWR5ag4MRH4oBXcRb00IARn+cvIXKm/dc
-	KUmnpJS0jtV+N73Ps4wmnPLYAtILRwzVcF1KZWIHWjIuLZ/gK2hVXm8vWfS/F0D4fFUkA0MQ=
-X-Google-Smtp-Source: AGHT+IFjVgo3/WPhNKwo1gXqirRveT2RdB+IMQQt7M3lqpnU78l+JAIxyHeoxmEQKevqNO+mxPU7kQ172sHnDOui7js=
-X-Received: by 2002:a05:6e02:158b:b0:3a7:8720:9de5 with SMTP id
- e9e14a558f8ab-3d04f40350bmr50410485ab.1.1738803956675; Wed, 05 Feb 2025
- 17:05:56 -0800 (PST)
+        bh=sav4fLXnjFIKEtCChFsEGDxJMHM86/qHX4hbypssX6g=;
+        b=umUplBjpqD12+pF+6xKgeMhn7O9maexZhTJsNgCE5zzwQEtfIPMg6QwdMyAm6gTfH7
+         6puO/z/0XEs2DJHFfWUd736u1XCeIFMNfr006rwnCtyG+uGtehqWmMswHuaib9cZnoEm
+         M5mkusljlPB8RsncKvtkC5mptkAUMgbA4hIy8hG95NuRa/zw/eBTUSi/jpQVrkGWqubm
+         j66mpvk2X/hXicy+b8miB5pThejud69du4TBAEYvLGxT0C/NZezVCSjrl4k8WIXITM5J
+         pSIY2pVBuFKqu+41l/17ncfRVy+PHxe+XOGU4fvNL0zK0T6Gi8mSaDh8rAv4787+Q8i3
+         cnVw==
+X-Gm-Message-State: AOJu0YwQOp4/7lP1p/amVWPV5wBC1No6beuCrK5I6SkRds83P11w9LKJ
+	XaA1ANxB7cLu6qI/s4sywsQTTXDlBIJ/0oYZJ99XorpUY2ubjQKpwYv0BEdnH8JFStmaCMQu5Za
+	ZoxPfEfhFmdWhvrBCaqi7oGKirro=
+X-Gm-Gg: ASbGncvwu0bsMq/AaZGvnyiReXu5AhNjRHFffRtbXsgher+unJp0ygS+hRTR1M+Kl8O
+	GFX7H3wO6hsq5SByx7xODueFQ2nj9fEq41FHYoddG9W6svZumAWQj1Ob7G30aecIYkqJTDPJwe1
+	jWjYdZwK9GKQv4
+X-Google-Smtp-Source: AGHT+IFicrAciwQH6dKySW9OzlbT6tdUk1aQrYBsdzfVYLTE3iE36UKcJO5lL/eLIUkpyM4qPG3pmVWepx+Sdft3IK8=
+X-Received: by 2002:a05:6a00:a81:b0:72a:8b90:92e9 with SMTP id
+ d2e1a72fcca58-730350df59emr7968486b3a.5.1738804030862; Wed, 05 Feb 2025
+ 17:07:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250204183024.87508-1-kerneljasonxing@gmail.com>
- <20250204183024.87508-11-kerneljasonxing@gmail.com> <20250204175744.3f92c33e@kernel.org>
- <e894c427-b4b3-4706-b44c-44fc6402c14c@linux.dev> <CAL+tcoCQ165Y4R7UWG=J=8e=EzwFLxSX3MQPOv=kOS3W1Q7R0A@mail.gmail.com>
- <0a8e7b84-bab6-4852-8616-577d9b561f4c@linux.dev>
-In-Reply-To: <0a8e7b84-bab6-4852-8616-577d9b561f4c@linux.dev>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Thu, 6 Feb 2025 09:05:20 +0800
-X-Gm-Features: AWEUYZkYL6GKwqGIG6sxB0YiN0hUC_NT96GIWPkghZSfbk5XHHpikNVDhQ0IgHg
-Message-ID: <CAL+tcoAp8v49fwUrN5pNkGHPF-+RzDDSNdy3PhVoJ7+MQGNbXQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v8 10/12] bpf: make TCP tx timestamp bpf
- extension work
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net, edumazet@google.com, 
-	pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com, 
-	willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, horms@kernel.org, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org
+References: <20250203164002.128321-1-mykyta.yatsenko5@gmail.com>
+In-Reply-To: <20250203164002.128321-1-mykyta.yatsenko5@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 5 Feb 2025 17:06:56 -0800
+X-Gm-Features: AWEUYZlj7TXVZGubRnNcVszGWZhV-snYkNBrbqbrsdzW3qfl0VJe-II3dcf4HAQ
+Message-ID: <CAEf4BzayxsGSj5n3A6HAYgg3QC5xFvNcXrCHgLCqiWMj=0EP6w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: implement setting global
+ variables in veristat
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, 
+	Mykyta Yatsenko <yatsenko@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 6, 2025 at 8:47=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.d=
-ev> wrote:
+On Mon, Feb 3, 2025 at 8:41=E2=80=AFAM Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
 >
-> On 2/5/25 4:12 PM, Jason Xing wrote:
-> > On Thu, Feb 6, 2025 at 5:57=E2=80=AFAM Martin KaFai Lau <martin.lau@lin=
-ux.dev> wrote:
-> >>
-> >> On 2/4/25 5:57 PM, Jakub Kicinski wrote:
-> >>> On Wed,  5 Feb 2025 02:30:22 +0800 Jason Xing wrote:
-> >>>> +    if (cgroup_bpf_enabled(CGROUP_SOCK_OPS) &&
-> >>>> +        SK_BPF_CB_FLAG_TEST(sk, SK_BPF_CB_TX_TIMESTAMPING) && skb) =
-{
-> >>>> +            struct skb_shared_info *shinfo =3D skb_shinfo(skb);
-> >>>> +            struct tcp_skb_cb *tcb =3D TCP_SKB_CB(skb);
-> >>>> +
-> >>>> +            tcb->txstamp_ack_bpf =3D 1;
-> >>>> +            shinfo->tx_flags |=3D SKBTX_BPF;
-> >>>> +            shinfo->tskey =3D TCP_SKB_CB(skb)->seq + skb->len - 1;
-> >>>> +    }
-> >>>
-> >>> If BPF program is attached we'll timestamp all skbs? Am I reading thi=
-s
-> >>> right?
-> >>
-> >> If the attached bpf program explicitly turns on the SK_BPF_CB_TX_TIMES=
-TAMPING
-> >> bit of a sock, then all skbs of this sock will be tx timestamp-ed.
-> >
-> > Martin, I'm afraid it's not like what you expect. Only the last
-> > portion of the sendmsg will enter the above function which means if
-> > the size of sendmsg is large, only the last skb will be set SKBTX_BPF
-> > and be timestamped.
+> From: Mykyta Yatsenko <yatsenko@meta.com>
 >
-> Sure. The last skb of a large msg and more skb of small msg (or MSG_EOR).
+> To better verify some complex BPF programs we'd like to preset global
+> variables.
+> This patch introduces CLI argument `--set-global-vars` to veristat, that
+> allows presetting values to global variables defined in BPF program. For
+> example:
 >
-> My point is, only attaching a bpf alone is not enough. The
-> SK_BPF_CB_TX_TIMESTAMPING still needs to be turned on.
+> prog.c:
+> ```
+> enum Enum { ELEMENT1 =3D 0, ELEMENT2 =3D 5 };
+> const volatile __s64 a =3D 5;
+> const volatile __u8 b =3D 5;
+> const volatile enum Enum c =3D ELEMENT2;
+> const volatile bool d =3D false;
+>
+> char arr[4] =3D {0};
+>
+> SEC("tp_btf/sched_switch")
+> int BPF_PROG(...)
+> {
+>         bpf_printk("%c\n", arr[a]);
+>         bpf_printk("%c\n", arr[b]);
+>         bpf_printk("%c\n", arr[c]);
+>         bpf_printk("%c\n", arr[d]);
+>         return 0;
+> }
+> ```
+> By default verification of the program fails:
+> ```
+> ./veristat prog.bpf.o
+> ```
+> By presetting global variables, we can make verification pass:
+> ```
+> ./veristat wq.bpf.o  --set-global-vars "a =3D 0; b =3D 1; c =3D 2; d =3D =
+3;"
+> ```
+>
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> ---
+>  tools/testing/selftests/bpf/veristat.c | 189 +++++++++++++++++++++++++
+>  1 file changed, 189 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selft=
+ests/bpf/veristat.c
+> index 06af5029885b..65bb8a773d23 100644
+> --- a/tools/testing/selftests/bpf/veristat.c
+> +++ b/tools/testing/selftests/bpf/veristat.c
+> @@ -154,6 +154,11 @@ struct filter {
+>         bool abs;
+>  };
+>
+> +struct var_preset {
+> +       char *name;
+> +       long long value;
+> +};
+> +
+>  static struct env {
+>         char **filenames;
+>         int filename_cnt;
+> @@ -195,6 +200,8 @@ static struct env {
+>         int progs_processed;
+>         int progs_skipped;
+>         int top_src_lines;
+> +       struct var_preset *presets;
+> +       int npresets;
+>  } env;
+>
+>  static int libbpf_print_fn(enum libbpf_print_level level, const char *fo=
+rmat, va_list args)
+> @@ -246,12 +253,14 @@ static const struct argp_option opts[] =3D {
+>         { "test-reg-invariants", 'r', NULL, 0,
+>           "Force BPF verifier failure on register invariant violation (BP=
+F_F_TEST_REG_INVARIANTS program flag)" },
+>         { "top-src-lines", 'S', "N", 0, "Emit N most frequent source code=
+ lines" },
+> +       { "set-global-vars", 'g', "GLOBALS", 0, "Set global variables pro=
+vided in the expression, for example \"var1 =3D 1; var2 =3D 2\"" },
 
-Right.
+nit: this is subjective, but I feel like -G instead of -g would be
+better here to be more noticeable
 
+but main point from me here would be to avoid parsing multiple values,
+it's better to allow repeated -G uses and treat each value as strictly
+single variable initialization. So instead of:
+
+./veristat wq.bpf.o  --set-global-vars "a =3D 0; b =3D 1; c =3D 2; d =3D 3;=
+"
+
+we'll have:
+
+./veristat wq.bpf.o  -G "a =3D 0" -G "b =3D 1" -G "c =3D 2" -G "d =3D 3"
+
+A touch more verbose for many variables, but not significantly so. On
+the other hand, less parsing, and less arbitrary choices of what
+separator (;) to use. WDYT?
+
+pw-bot: cr
+
+>         {},
+>  };
 >
-> >
-> >>
-> >>>
-> >>> Wouldn't it be better to let BPF_SOCK_OPS_TS_SND_CB return whether it=
-'s
-> >>> interested in tracing current packet all the way thru the stack?
-> >>
-> >> I like this idea. It can give the BPF prog a chance to do skb sampling=
- on a
-> >> particular socket.
-> >>
-> >> The return value of BPF_SOCK_OPS_TS_SND_CB (or any cgroup BPF prog ret=
-urn value)
-> >> already has another usage, which its return value is currently enforce=
-d by the
-> >> verifier. It is better not to convolute it further.
-> >>
-> >> I don't prefer to add more use cases to skops->reply either, which is =
-an union
-> >> of args[4], such that later progs (in the cgrp prog array) may lose th=
-e args value.
-> >>
-> >> Jason, instead of always setting SKBTX_BPF and txstamp_ack_bpf in the =
-kernel, a
-> >> new BPF kfunc can be added so that the BPF prog can call it to selecti=
-vely set
-> >> SKBTX_BPF and txstamp_ack_bpf in some skb.
-> >
-> > Agreed because at netdev 0x19 I have an explicit plan to share the
-> > experience from our company about how to trace all the skbs which were
-> > completed through a kernel module. It's how we use in production
-> > especially for debug or diagnose use.
+>  static int parse_stats(const char *stats_str, struct stat_specs *specs);
+>  static int append_filter(struct filter **filters, int *cnt, const char *=
+str);
+>  static int append_filter_file(const char *path);
+> +static int parse_var_presets(char *expr, struct var_preset *presets, int=
+ capacity, int *size);
 >
-> This is fine. The bpf prog can still do that by calling the kfunc. I don'=
-t see
-> why move the bit setting into kfunc makes the whole set won't work.
+>  static error_t parse_arg(int key, char *arg, struct argp_state *state)
+>  {
+> @@ -363,6 +372,17 @@ static error_t parse_arg(int key, char *arg, struct =
+argp_state *state)
+>                         return -ENOMEM;
+>                 env.filename_cnt++;
+>                 break;
+> +       case 'g': {
+> +               char *expr =3D strdup(arg);
+> +
+> +               env.presets =3D calloc(64, sizeof(*env.presets));
+> +               if (parse_var_presets(expr, env.presets, 64, &env.npreset=
+s)) {
+> +                       fprintf(stderr, "Could not parse global variables=
+ preset: %s\n", arg);
+> +                       argp_usage(state);
+> +               }
+> +               free(expr);
+> +               break;
+> +       }
+>         default:
+>                 return ARGP_ERR_UNKNOWN;
+>         }
+> @@ -1292,6 +1312,169 @@ static int process_prog(const char *filename, str=
+uct bpf_object *obj, struct bpf
+>         return 0;
+>  };
 >
-> > I'm not knowledgeable enough about BPF, so I'd like to know if there
-> > are some functions that I can take as good examples?
-> >
-> > I think it's a standalone and good feature, can I handle it after this =
-series?
->
-> Unfortunately, no. Once the default is on, this cannot be changed.
->
-> I think Jakub's suggestion to allow bpf prog selectively choose skb to ti=
-mestamp
-> is useful, so I suggested a way to do it.
+> +static int parse_var_presets(char *expr, struct var_preset *presets, int=
+ capacity, int *size)
+> +{
+> +       char *state;
+> +       char *next;
+> +       int i =3D 0;
+> +
+> +       while ((next =3D strtok_r(i ? NULL : expr, ";", &state))) {
+> +               char *eq_ptr =3D strchr(next, '=3D');
+> +               char *name_ptr =3D next;
+> +               char *name_end =3D eq_ptr - 1;
+> +               char *val_ptr =3D eq_ptr + 1;
+> +
+> +               if (!eq_ptr)
+> +                       continue;
+> +
+> +               if (i >=3D capacity) {
 
-Because, sorry, I don't want to postpone this series any longer (blame
-on me for delaying almost 4 months), only wanting to focus on the
-extension for SO_TIMESTAMPING so that we can quickly move on with
-small changes per series.
+why artificially hard-coding maximum capacity? we have malloc()
 
-Selectively sampling the skbs or sampling all the skbs could be an
-optional good choice/feature for users instead of mandatory?
+> +                       fprintf(stderr, "Too many global variable presets=
+\n");
+> +                       return -EINVAL;
+> +               }
+> +               while (isspace(*name_ptr))
+> +                       ++name_ptr;
+> +               while (isspace(*name_end))
+> +                       --name_end;
+> +
+> +               *(name_end + 1) =3D '\0';
+> +               presets[i].name =3D strdup(name_ptr);
+> +               errno =3D 0;
+> +               presets[i].value =3D strtoll(val_ptr, NULL, 10);
+> +               if (errno =3D=3D ERANGE) {
+> +                       errno =3D 0;
+> +                       presets[i].value =3D strtoull(val_ptr, NULL, 10);
+> +               }
+> +               if (errno) {
+> +                       fprintf(stderr, "Could not parse integer value %s=
+\n", val_ptr);
+> +                       return -EINVAL;
+> +               }
+> +               ++i;
+> +       }
+> +       *size =3D i;
+> +       return 0;
+> +}
+> +
 
-There are two kinds of monitoring in production: 1) daily monitoring,
-2) diagnostic monitoring which I'm not sure if I translate in the
-right way. For the former that is obviously a light-weight feature, I
-think we don't need to trace that many skbs, only the last skb is
-enough which was done in Google because even the selective feature[1]
-is a little bit heavy. I received some complaints from a few
-latency-sensitive customers to ask us if we can reduce the monitoring
-in the kernel because as I mentioned before many issues are caused by
-the application itself instead of kernel.
+it would be nice to be able to specify enums both by name and by value, WDY=
+T?
 
-[1] selective feature consists of two parts, only selectively
-collecting all the skbs in a certain period or selectively collecting
-exactly like what SO_TIMESTAMPING does in a certain period. It might
-need a full discussion, I reckon.
+> +static bool is_signed_type(const struct btf_type *type)
+> +{
+> +       if (btf_is_int(type))
+> +               return btf_int_encoding(type) & BTF_INT_SIGNED;
 
-Thanks,
-Jason
+enum can be signed as well, I think (but different way to specify
+that, through kflag)
+
+> +       return true;
+> +}
+> +
+> +static const struct btf_type *var_base_type(const struct btf *btf, const=
+ struct btf_type *type)
+> +{
+> +       switch (btf_kind(type)) {
+> +       case BTF_KIND_VAR:
+> +       case BTF_KIND_TYPE_TAG:
+> +       case BTF_KIND_CONST:
+> +       case BTF_KIND_VOLATILE:
+> +       case BTF_KIND_RESTRICT:
+> +       case BTF_KIND_TYPEDEF:
+> +       case BTF_KIND_DECL_TAG:
+> +               return var_base_type(btf, btf__type_by_id(btf, type->type=
+));
+
+why recursion, just do a loop?
+
+and libbpf actually has "btf__resolve_type()", see if you can just use that=
+?
+
+> +       }
+> +       return type;
+> +}
+> +
+
+[...]
 
