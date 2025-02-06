@@ -1,93 +1,107 @@
-Return-Path: <bpf+bounces-50663-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50664-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1432A2A71C
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 12:14:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F835A2A7EA
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 12:50:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42B843A06CE
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 11:13:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B42173A3CEA
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 11:49:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B72E227572;
-	Thu,  6 Feb 2025 11:14:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C308822B8CD;
+	Thu,  6 Feb 2025 11:50:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1UkMgayv";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="9pOss34t"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ibGnIqIf"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB8AD1F60A
-	for <bpf@vger.kernel.org>; Thu,  6 Feb 2025 11:13:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F286214209
+	for <bpf@vger.kernel.org>; Thu,  6 Feb 2025 11:50:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738840440; cv=none; b=jlqk59VA1BYWWT9mi5ZqUrr/2673ZFftzaI4O2fOYqM3leTdJQZyerrup6rMKsmAhDpZDBpw+zvY92xS5zF/zJX079hMW6oWDqi5WIFExwMK1YFZSKFnQKZHopmnre2pjF1IB/ZZUrSIZRffoLdFrTPu0vPmHkcY/XR8zurKEKc=
+	t=1738842603; cv=none; b=QOYwdd/dHC2RXB673PJAcY0WfjJTHGbO6LtZIBTxmPWKJRe8qbkMj9aCwlcOeI/6ZeqlqQ0RNa7wcRxI2q5AUoZJ3bt+mxHrNbMdd8fL6urNvLuso+oasH+4O9Xbe755jDUaqZT/Y+/+LaheIa/31IAk0VXunqCt4R19rsQYxqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738840440; c=relaxed/simple;
-	bh=k9j+zI5u4w1yO+Zr2IWFkqv+pfhibIvhx8vYbGsZ0YI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I8lfScHTrAlq2PJuz/UkLYwsYygO3DrRfG33x86/N89F04bpDlsMD4lhigR8ursSeon9u3DJyfulALeLeCWTwusKzzzaVklAWqYJ9wM2TB7bww17ZKw0Zmv4YN+YFAUU5no+vRMjsvAH+mZCx34TC6p/7AMsxcJXC0DsEYKFOWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=1UkMgayv; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=9pOss34t; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 6 Feb 2025 12:13:55 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1738840436;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k9j+zI5u4w1yO+Zr2IWFkqv+pfhibIvhx8vYbGsZ0YI=;
-	b=1UkMgayvE9/Uc/cTrqPZLBa3AXgAQ3Ite0PVStS+LL8VnifaskilXmsZDAKdIDvdaBpwj7
-	UqV1JornFItriB8rWHixQQJdfJMi7M4MhehCfaYxDDOPpbo6wBjwIzXMW4XXRm0VRRCLZ1
-	WXOXVsoqu/RxltzXwfa6FVH/MiDW1qfey3meNkALwQk+Hthiju8FplerxbNYq14HLkB3kI
-	aHJEd11+Ch2MmP1EdUYAwEA6FbheZLLR0lUmObvd4BTBPjVkV48UTC3KV8OaP19PpvaYjh
-	E5Rdd1jlKG60j25WHrKvMeKoCdgOgbRJzGuzi8GG6KrvFItK8wJ1W846gPVeBA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1738840436;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k9j+zI5u4w1yO+Zr2IWFkqv+pfhibIvhx8vYbGsZ0YI=;
-	b=9pOss34tKYuVPVoOmNb4GRsnuGq5rszVBrP0hnFLTKrthSvsrNjGfqs1zpCckHxUOYLlrr
-	/APTmqJXDebMGMAg==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>
-Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Michal Hocko <mhocko@suse.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>,
-	Tejun Heo <tj@kernel.org>, linux-mm <linux-mm@kvack.org>,
-	Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next v6 3/6] locking/local_lock: Introduce
- local_trylock_t and local_trylock_irqsave()
-Message-ID: <20250206111355.9KHYSvQ3@linutronix.de>
-References: <20250124035655.78899-1-alexei.starovoitov@gmail.com>
- <20250124035655.78899-4-alexei.starovoitov@gmail.com>
- <20250128172137.bLPGqHth@linutronix.de>
- <CAADnVQ+6YD=jzx08ynUDo=ptFbD62o17ozymFfycF5WbPb9GbA@mail.gmail.com>
- <20250129081726.vGHs_2kD@linutronix.de>
+	s=arc-20240116; t=1738842603; c=relaxed/simple;
+	bh=EeI9jGgkEEZsw1Tyzxs9vy/9+vAB79PltlCgby1GPpI=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=ZgdVFGZHmdwyyWVPcx+xS4x6YgO7BzBMbnoO+DM0QnpBo+vVRAQSWz9eFbT/KTy7Pcc4FZu7Ryjaxkvl9tZbHgtbCkUwXSGoWvTxm+Te1xAtH1ZIOjve7yaN16ywfdmhNVpgYilAjVlqQYKX3M5ytWXC105iO4nknQQoAy2R7mM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ibGnIqIf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FF8CC4CEDD;
+	Thu,  6 Feb 2025 11:50:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738842602;
+	bh=EeI9jGgkEEZsw1Tyzxs9vy/9+vAB79PltlCgby1GPpI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=ibGnIqIfqvjntglO5zDzXMiaqZM7DV6d/2fRM2eLCVe9FQ9zgV5cqUvOM6SNXMZiT
+	 rKD+lAdmCbixsdHKFM/Ups8biwsFMCAmzRlsDyVjB0GI8z5/htCR2oUvaMnjKMVAVI
+	 gtvotDbHwd86t9KaaclmGSKG/92sqMEMO1oN9XsPOATDE2flXvF5NNkJyN4WPzfmoS
+	 AlvokWZAEeXiphAi9OU+Rjw6CSEcTwlDlnjUDikvZxhP+isf2aY9zKNjO1fLFliNnQ
+	 GOujj4DETWflzzbgp/N1I8XgJkpafnpHb3pX1kuRRyhGucGWtFjBaCGYdxOeV6lgD9
+	 qCva4n7HaVHCA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7120E380AAD9;
+	Thu,  6 Feb 2025 11:50:31 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250129081726.vGHs_2kD@linutronix.de>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 bpf] bpf/arena: fix softlockup in arena_map_free on 64k
+ page kernel
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <173884263027.1450777.2550898579870196871.git-patchwork-notify@kernel.org>
+Date: Thu, 06 Feb 2025 11:50:30 +0000
+References: <20250205170059.427458-1-alan.maguire@oracle.com>
+In-Reply-To: <20250205170059.427458-1-alan.maguire@oracle.com>
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ colm.harrington@oracle.com
 
-On 2025-01-29 09:17:27 [+0100], To Alexei Starovoitov wrote:
-> PeterZ, may I summon you.
-PeterZ, may I summon you.
+Hello:
 
-Sebastian
+This patch was applied to bpf/bpf.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Wed,  5 Feb 2025 17:00:59 +0000 you wrote:
+> On an aarch64 kernel with CONFIG_PAGE_SIZE_64KB=y (64k pages),
+> arena_htab tests cause a segmentation fault and soft lockup.
+> 
+> $ sudo ./test_progs -t arena_htab
+> Caught signal #11!
+> Stack trace:
+> ./test_progs(crash_handler+0x1c)[0x7bd4d8]
+> linux-vdso.so.1(__kernel_rt_sigreturn+0x0)[0xffffb34a0968]
+> ./test_progs[0x420f74]
+> ./test_progs(htab_lookup_elem+0x3c)[0x421090]
+> ./test_progs[0x421320]
+> ./test_progs[0x421bb8]
+> ./test_progs(test_arena_htab+0x40)[0x421c14]
+> ./test_progs[0x7bda84]
+> ./test_progs(main+0x65c)[0x7bf670]
+> /usr/lib64/libc.so.6(+0x2caa0)[0xffffb31ecaa0]
+> /usr/lib64/libc.so.6(__libc_start_main+0x98)[0xffffb31ecb78]
+> ./test_progs(_start+0x30)[0x41b4f0]
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2,bpf] bpf/arena: fix softlockup in arena_map_free on 64k page kernel
+    https://git.kernel.org/bpf/bpf/c/517e8a7835e8
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
