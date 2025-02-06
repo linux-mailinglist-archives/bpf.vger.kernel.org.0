@@ -1,137 +1,86 @@
-Return-Path: <bpf+bounces-50689-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50690-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6341A2B249
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 20:30:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A133CA2B34A
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 21:21:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92FFF3A4C8B
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 19:30:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6143316700A
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 20:21:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05C3C1A841C;
-	Thu,  6 Feb 2025 19:30:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 228811D5CE3;
+	Thu,  6 Feb 2025 20:21:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dOs2YSRQ"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Wju8kCjR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2083.outbound.protection.outlook.com [40.107.244.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 604C114B080;
-	Thu,  6 Feb 2025 19:30:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0AB61CEAB2;
+	Thu,  6 Feb 2025 20:21:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.83
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738870221; cv=fail; b=auo/yo/b00lP/8Zm2mBkIQfripDytuK3hEJPOQH5IqzW0YcfyJZtQRcvKIE5kl72z4mu8xu8CBVcZnCG5ny/4swyFmnOTmnWUrIfhvYQtA/rCA1nkTlMWJpEgISKEWR6WNVuKeNoYuaU8cW/Dnx/uA408Oy/90rWsLqYHEE+RFg=
+	t=1738873300; cv=fail; b=PUPJYUWWo8MHvdjelM4TX77dFI6DDoAtASs7L+TgJFggxvNgvtNkdeZAKB5BfXaU/sXie7R8cdOz8/EyWExy8kaNhPZ6JywTjurVguzhockW9kdT7aEBOHh2RwOHD5/O7BE7qEwYBx6DkfV+DQQEZbkE+AmY6EGpXKs8ne6RmQs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738870221; c=relaxed/simple;
-	bh=x8EQ6FREqmm8xHLQvSitZD70TXkRcpo7fUPiLSnGFGs=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=VZ6TdisXumk9E7NHIzoa4yc/MCCHhdu7jL61n/2Sc9k2f9tU3p09HBp2cAX9BSaOLf+UP8xVttnQPuqV5AZL5/TrHH1GEZEE6d0++/dWWBCxvOCDIo7FbbkNyUYo+2zM5YDYc1OyG511dPkdojttWYgCknpKvOVOAi+dUHV4oNo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dOs2YSRQ; arc=fail smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738870220; x=1770406220;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=x8EQ6FREqmm8xHLQvSitZD70TXkRcpo7fUPiLSnGFGs=;
-  b=dOs2YSRQP3vTeQ2Zb1rec85CZhuKIPrj91FQsWi1nrn03zaa/G+cz2Dx
-   v7QHZMby1Q1IHtycn8F74PfUwUubFECzXLqS5HRBnymH45Irk/4w4jR5V
-   tN/U+ftnofb+xtpgvGiYRdRq9KuzWVlTn+Q04Vo1lX2G6ZrqmA4bCMn5c
-   I12GxkUhGsPAsGnDvzzpLbtyWhDUE/aAcFvwj/2IwjzngBkCTYlzSfH0x
-   nA4FQ83rqmyjHXXL+tMAXCqrKrrqz+VHDGz11rWgw0HaplxyfMq2jjpUi
-   nAWNWKnSWXlcEjA1WK+KeSh61Bml5tlXTYHQMSMNvdaDCXYLgSoOmELas
-   A==;
-X-CSE-ConnectionGUID: kGjYcoknSqe+ZvAET8Lk1A==
-X-CSE-MsgGUID: PnmpbRkNTP+P1xCUWL95OQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11336"; a="38727210"
-X-IronPort-AV: E=Sophos;i="6.13,265,1732608000"; 
-   d="scan'208";a="38727210"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2025 11:30:18 -0800
-X-CSE-ConnectionGUID: C8VqGzRvTkCUUUGWC1RtQw==
-X-CSE-MsgGUID: XV2GVLxeS2uwQ8fVuf1zAw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="142180934"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmviesa001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Feb 2025 11:30:15 -0800
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.44; Thu, 6 Feb 2025 11:30:13 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.44 via Frontend Transport; Thu, 6 Feb 2025 11:30:13 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.41) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.44; Thu, 6 Feb 2025 11:30:13 -0800
+	s=arc-20240116; t=1738873300; c=relaxed/simple;
+	bh=hr9m/SootlXukRF7vjzTunsbwY6kiAON0Zk5YxDFRic=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Xx8FOqvDX9E+18T/8UW/FxS5lmbOrsdCCyFR9EawMNfL4RocwYWyh+7ccEwH7tvMnsOqLLJ88s1tw+aU0V1JqxH01KkjY+Mtr3qjrdUMZ0w+W1LAyfseO2Gan7vRCGvhgOn6+CcFwCK289U+KPkgrLiPW5fa9lBCak5ISW6/9pw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Wju8kCjR; arc=fail smtp.client-ip=40.107.244.83
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=EHGVvrf0krtoNWmEOE13JMCfrLhmTDgWOKCmL+spzY1Y98CZx0qp8JeIzKxL7OAR/kUl/8nSzkkcs5A9L0+xsedVJz5yInUiw4Q9Dv+wxz8kpjLJRh2SZoQGL6SASRjckrXMgVKi8KqpB9p6Y2BjxhJb1ki0XpyCyynKoEwJZ8+kRoXoe502Qo1DxrJ9Arpihr39RqHpve6wuTYbfK8ra8LSJUE8fgKOaBiOZe10mDbg+eDu2p2ePbDlWe6ixht/DM0zNOeqAtZwSiqcWizd+prcxQia7o0f13UBuaw3HUiNVgiJS+aCOLFGszg3R3J6O1gdt8TikLdL7ediI0Ae0w==
+ b=AziKPhTGTt4sLIpNijcP/o10eEcwUFuTxkFRrNBrBBhLRxArSpQWYOZa8K7E9hkqlHE+YU5/X65ewmt+1jpDCHJP9V9Ju80XodCN6WsSjgIIiK2rqdNuAA4z+GVjSL5AJKDMC2HvfMsNOy8JKJ5NOB2aMqeRYZXi1AKLs+u/10dZl/D4FRE7VyPlX+E1YtrDlJjPAsZGV3XrZ3BD8taoZP9K9e6QS7ouXfMhCgZuCvQ0Zz4vTf9I+ghu9WgajRBUyb+cMB1+TIf2obPQFfz93miwueanl1Fw7WqTjqITwVd3bil/EfDzXEGPMIV9vOshblhOBmtkhcCeDlcBnrkp4w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5WCn3VOZD2jPCrlSb9Ra6xtXbzK2u1is7aRuobREnAk=;
- b=PZC1PR/sF37y0ZMC1NHdtk6bJu7gjCMon8ylNAfVqN8pwCJJiFTMIzpQYs9dCG6m7BZMCw6HyaoWyys7HKum4MTwmUSc8M9h9jYAMq0j2D4/zW3Y1PLL2+OFOADUgj9+l/P1XNJgNzsiF7hhQSz/dIPzFS/UNvncfL95rlk+PkQPezn9BWL1/TC1b73bSM9h+e7RoAcAYHuxTbNT+thNa3fIGU+OJIiiihLoZCVr5/FIOEDZM+VCM+FtUSj3LBceygFAWbiCPpHzQYIQMHj8p5j+T6oFbBsYuc6lmji//DaYLqA0NX9Gxx0dygu6QcNxHOAmJFPICt/7ksegUcChrA==
+ bh=C9zorW54y6KSoe4ZGYSLQmJe/3U9LIRK/tBPE9tQkF8=;
+ b=U4faDMpM8E7RetplUW7MxglErvqP/p7EGsWUvgqZajTJ9u1Ws0ClLEm9As2pyyl05k4zuCPHOjGmTWl5i3342CP0HX/TsAKTaWDA6ZLiUadfiLJGj5BFi0obI9BqRU8z05JP8Q8GXS1HjsMnvr26t7nmleLuh3J1E5KjeNIunhBxCrGNiuPLAwQKpSGfLiA32+Cs/DIQmOavn747Qt1Xlw89AjOU1jBAVR2T+XgXN4E2qID89tp8jPp64zVZvOF+T/f0YXvUvm30u1hNa2rQEVlGhqOFW3rsTT7eQ/SF3nW384RcOr21r3oAGfyuPoky1W+2rNBcvAHdXz+svzYA9g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=C9zorW54y6KSoe4ZGYSLQmJe/3U9LIRK/tBPE9tQkF8=;
+ b=Wju8kCjRvZbWJDWnJ8iamqpvv2OaZ7ENkLOIa+RnjVUcXWS+SwdKWwT2hNRbTgSFoHf6OkyXgip0Y0c8/jPlEvh4jlXr24pvSpY6kfTGix7evuItRC2ZAdXxPusRSbvA7qAVSWGSkq7vEVFJ3bpVkEhIbTxeswPCK0De1mIUFWI2INbeYdBpu4VWmNmZ+l6Lva/pAxd1BxufXZgs3yR7TRv+SucXK7zrSUrRf9WH/iSsxmbwFcrD2U0TFSHBCUXax7tcbCOJH1NAJarOmFXRZviOBZuJEpKh3jqKelA8+tn7vqi137yxNFJuqsJ69rPoG3Ab0usTAr4vCLrklxYvRg==
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from IA1PR11MB6097.namprd11.prod.outlook.com (2603:10b6:208:3d7::17)
- by DM4PR11MB8179.namprd11.prod.outlook.com (2603:10b6:8:18e::22) with
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CY5PR12MB6405.namprd12.prod.outlook.com (2603:10b6:930:3e::17)
+ by DS7PR12MB6213.namprd12.prod.outlook.com (2603:10b6:8:97::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8398.23; Thu, 6 Feb
- 2025 19:30:10 +0000
-Received: from IA1PR11MB6097.namprd11.prod.outlook.com
- ([fe80::8f29:c6c9:9eb2:6392]) by IA1PR11MB6097.namprd11.prod.outlook.com
- ([fe80::8f29:c6c9:9eb2:6392%4]) with mapi id 15.20.8398.025; Thu, 6 Feb 2025
- 19:30:09 +0000
-Date: Thu, 6 Feb 2025 20:29:59 +0100
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: Song Yoong Siang <yoong.siang.song@intel.com>
-CC: "David S . Miller" <davem@davemloft.net>, Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Willem de Bruijn
-	<willemb@google.com>, Florian Bezdeka <florian.bezdeka@siemens.com>, "Donald
- Hunter" <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, "Bjorn
- Topel" <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>, Andrew Lunn
-	<andrew+netdev@lunn.ch>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, "John
- Fastabend" <john.fastabend@gmail.com>, Joe Damato <jdamato@fastly.com>,
-	Stanislav Fomichev <sdf@fomichev.me>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Mina Almasry <almasrymina@google.com>, Daniel Jurgens <danielj@nvidia.com>,
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>, Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh
-	<kpsingh@kernel.org>, Hao Luo <haoluo@google.com>, Jiri Olsa
-	<jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Alexandre Torgue
-	<alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, "Maxime
- Coquelin" <mcoquelin.stm32@gmail.com>, Tony Nguyen
-	<anthony.l.nguyen@intel.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Faizal Rahim <faizal.abdul.rahim@linux.intel.com>, Choong Yong Liang
-	<yong.liang.choong@linux.intel.com>, Bouska Zdenek
-	<zdenek.bouska@siemens.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<bpf@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-	<linux-stm32@st-md-mailman.stormreply.com>,
-	<linux-arm-kernel@lists.infradead.org>, <intel-wired-lan@lists.osuosl.org>,
-	<xdp-hints@xdp-project.net>
-Subject: Re: [PATCH bpf-next v9 5/5] igc: Add launch time support to XDP ZC
-Message-ID: <Z6UNt2GatiYYdZIW@boxer>
-References: <20250206060408.808325-1-yoong.siang.song@intel.com>
- <20250206060408.808325-6-yoong.siang.song@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20250206060408.808325-6-yoong.siang.song@intel.com>
-X-ClientProxiedBy: MI0P293CA0005.ITAP293.PROD.OUTLOOK.COM
- (2603:10a6:290:44::19) To IA1PR11MB6097.namprd11.prod.outlook.com
- (2603:10b6:208:3d7::17)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8398.25; Thu, 6 Feb
+ 2025 20:21:35 +0000
+Received: from CY5PR12MB6405.namprd12.prod.outlook.com
+ ([fe80::2119:c96c:b455:53b5]) by CY5PR12MB6405.namprd12.prod.outlook.com
+ ([fe80::2119:c96c:b455:53b5%6]) with mapi id 15.20.8398.025; Thu, 6 Feb 2025
+ 20:21:35 +0000
+From: Andrea Righi <arighi@nvidia.com>
+To: Tejun Heo <tj@kernel.org>,
+	David Vernet <void@manifault.com>,
+	Changwoo Min <changwoo@igalia.com>
+Cc: Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Ian May <ianm@nvidia.com>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCHSET v9 sched_ext/for-6.15] sched_ext: split global idle cpumask into per-NUMA cpumasks
+Date: Thu,  6 Feb 2025 21:15:30 +0100
+Message-ID: <20250206202109.384179-1-arighi@nvidia.com>
+X-Mailer: git-send-email 2.48.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: FR2P281CA0016.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a::26) To CY5PR12MB6405.namprd12.prod.outlook.com
+ (2603:10b6:930:3e::17)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -139,268 +88,220 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR11MB6097:EE_|DM4PR11MB8179:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4a5a15a0-6fb4-470d-c4c5-08dd46e4ab50
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-TrafficTypeDiagnostic: CY5PR12MB6405:EE_|DS7PR12MB6213:EE_
+X-MS-Office365-Filtering-Correlation-Id: a87c5812-3443-4754-d117-08dd46ebda78
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?CLfeb1LG0az28WISm+ZStfMkdQFtPmAYauXkRrJ4qiI+hCao7/IhdGuL3Jp0?=
- =?us-ascii?Q?RiDx442vsVL1ZFO1cbpBSaLzy75PEKvAXLJgOY1D/08XJgb5MQGF2Uya24vI?=
- =?us-ascii?Q?wkwGg/g7NFfUCVxkQD1d9aJGj+HilDKy4UgE1wcRqdjRzWvMblwD8NZqLIgd?=
- =?us-ascii?Q?GLeS2WAhkOoeW68ZjxozsPTaVQgu9yTVLeyBJtuuDKsA4aXSpCrA/BAZn9X7?=
- =?us-ascii?Q?17JxRuofrDvCTQurQI2XG+9XK5I9v3Ps7zAFtSMWF09X4EgMC9p98XQcQAC8?=
- =?us-ascii?Q?QUQzC/sJ1tRWlnlwm1zxfAPcoDxJYmUM+TH+KGCKwg8wB/17FGZD4S8gZTN3?=
- =?us-ascii?Q?qZs818C0tp+bWgaa7KderVI+V5XIbRfPjnpna8/H5YIAdEr67hRapHNzc1sW?=
- =?us-ascii?Q?tJBiKzvyFuB/EO1S5MXSAHz3E2tr0rS8NVyM0q30mH4De43pWB0XjwxH7Mvi?=
- =?us-ascii?Q?b9BiuxytRbY1kxvp18nNilV+k2fh5SOOChTnPrbuUwqaUi3AvAqx9B82/9md?=
- =?us-ascii?Q?Beo2rkBUoHD2Kc2iKvV5i3iOeXYPUajL8GchNaP3wQlBH7OYQfoRi1Ylw0fQ?=
- =?us-ascii?Q?yUR7f9zptwJblhzReYyZiVNn9lQcjst4EUGbDPpfBlR9zouSC8b7uQT4B7nN?=
- =?us-ascii?Q?fapElXqCDIrJI4pK1JUGwNjmsFdJunVaD+rV1JRAC60RB73z+DBjfJfqErvm?=
- =?us-ascii?Q?GTr1qjoxZl50e0YXF3LGr9KdcxZ7LZ3/c+C3FxwQocuPvrMQkT7VuqwjrbYg?=
- =?us-ascii?Q?HDrXQz2aP/E1qff7nfhfnfb2OCJjSeVEnXVAXGXghfadkbglt6OOXJ4M2W0b?=
- =?us-ascii?Q?Z3zvSX64y7JRhw4HjgvabtX5njUXly63DOqpfsRW40HuvfdFsLvYC0QtXRUO?=
- =?us-ascii?Q?ILxWmomPa0Qqfi4fUspqPyU7SghwsHxUxWI7jJGg+qqaQmMamYI3x0Ci4Ski?=
- =?us-ascii?Q?JdSzLJbVK8E9p0DLUFTGVXEptbv1Es2gM/Zw04kWBLeUc1y1uUxStJLM0o4v?=
- =?us-ascii?Q?Mhv/Pdjll194DD39Hzff2oakDtyfSXBLovzr3eNcfGaXTALU2qYckIvRr5RD?=
- =?us-ascii?Q?04Y5m/GSwAhU6k6Rul4t1ODFfkXEzo2R1z/8/m8EVYb2zHavP0xTAwvom5VC?=
- =?us-ascii?Q?Yp2J0rLsRfi7BzBso7n/L1X3eraMYSRpa7tH0kqJmwczuQQNkzboEb48LXqE?=
- =?us-ascii?Q?UYHZqHABOUj42MCZTLRLLKfmUJNCIiYxxzob9a/1wt7oXH4hSMe+vRlF1EXp?=
- =?us-ascii?Q?sTvlHIWGdaeMIgqyq0d+BnZuUQqhWVcTt8RZJRlUzK27FzhqN3En+dToMZkk?=
- =?us-ascii?Q?G+HlgXoXJxNPofoascR24UawvUqJVtETrKmiQdL9Z9hEbb2uxdn+BUMe8HGE?=
- =?us-ascii?Q?32Co04rZXzXAX+dlO8PBp9S4xs/J?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6097.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|7416014|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?eqcR+obY3nKLHIuqnOsY66pqoy8QWILXiyjRmRVxdIi1sZyQ7b1RMKt8LcNf?=
+ =?us-ascii?Q?Oh28OWkJHknH2bsqxpfunoOVCsp0OwMDZNkMul4ew4GZCoTIcG1TVF7YJihU?=
+ =?us-ascii?Q?HOwSyuoDkWAqbTD+qwUvEGDexaM2Hei9wyKEYmUKBgfuTTvdrH7IfqTXG3NN?=
+ =?us-ascii?Q?IUxTjwbGXhIEMwkrxWzrP7dMX3iF/vG5GiZDHNj7UtEptJsrxFS33gLbjzEM?=
+ =?us-ascii?Q?o6eJ3yvMSQ8TWwzAyI1mK+lkZDu9+cWCEI4zZ8E9SEzPKMo9ntxscQaUHcQ+?=
+ =?us-ascii?Q?y8ixV6nXNyO1Ss4h9kKN+V9ma7Xq3U8CjfGzF3Zs0q5tI88qnBH0zMaSHkAK?=
+ =?us-ascii?Q?Erwf+ZEu+NuQUW3gCZlZjDnW+N+7GQ2VV8/qvR9+IZ0m0vwoPJB+z0XcI8B+?=
+ =?us-ascii?Q?PwG2Xr8lnGUymECxsPNhCU0kq438Y/sVREQJ21pnRnq0uPDAmxwTxJr9a8mf?=
+ =?us-ascii?Q?qgqYVF7P7S9DSnEqHndas7LcEJZh6rsSn2p7g1XA6npjYVKKlmjBB/njty3K?=
+ =?us-ascii?Q?sqfCGzChNEIl/zl1IRqCg9unQAEtKAslIFrEah1XaAf27Y5cEGeMt04VwMRQ?=
+ =?us-ascii?Q?fCTFg6GNbN1oN9jVCZWj5wRLqI7LuZvAmh5HlRphZ/43s0dtrdHdkjuS0diE?=
+ =?us-ascii?Q?cyhehHCWoMzDTNMbohrwFCI5fkWYn61Irwr0F0lPaaWYKplCU4dsnzFroIF8?=
+ =?us-ascii?Q?Ykt76bs+fG2FOMoYzvdeDvTEVPZIpgeV4PZ7L2IrMNmyaCVCsI3fdsvG8ul1?=
+ =?us-ascii?Q?jhdML8c+pln3HjtAjg7TUlRVqSlKLb8+uIJ34d4ne3WXp6sGEdfgaBV9OaXd?=
+ =?us-ascii?Q?rbCWCyS9Yy6Q210ZJL5HsSLUTLovHZolsJR58c/3ZMyhtO04Je6pidjo2eTm?=
+ =?us-ascii?Q?tZJbqZ9bVQChA8eOZ0jYBJNAAirIm6ItBaAeYBfh/lfOYlfDyd47uFvJTjSA?=
+ =?us-ascii?Q?X/L2GGyTYMgmk9e8LmC2XDu8yEnAUmkfy8qsx1rE+hi9GaZMFzICLQaj2KhZ?=
+ =?us-ascii?Q?nxv2URGHW6YVaqjfF0OpaRvVoQkU4YgI9ZfmO+xpsozm/8QoEZ1BLHwaMqTX?=
+ =?us-ascii?Q?VXpIko5a58v3oied3P1yqIy549k85rpOYGjaHPXo/odu8zeWoC5iwkkXBKPq?=
+ =?us-ascii?Q?asp9ooCbKqMrQB+lQE2+VxcEm8WneHo3hO6HgFvevmQFNX7y/kNMd5X2GLrG?=
+ =?us-ascii?Q?w4r9OgENZ2pbv4UVfdUfyDdB3+m6e5+68nx5Uw9QvMzKbgTEYxZEotrGQ9Fs?=
+ =?us-ascii?Q?cPhnJoxrZ7IFLFFBbER5wZY6trcnI7gqSe+lae9M0JGHp+/rHpEsCG5qlhxD?=
+ =?us-ascii?Q?BlgifAoarvydq6+3N2X3S+KWdkYrEUjzwhP81BwwZem+CQkHo8fe4dxmnNUb?=
+ =?us-ascii?Q?M4Qu9uItbx1jQVEtRCqgilnRJ3eL?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6405.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?33/mPiTMAL+9iZSHapgnPiLYlGsGlrRX8y5AgLRNzbhwrk+v+AoFBPQUlUJM?=
- =?us-ascii?Q?/EJMZG6+Kk3JFcQs4kSW3JMuWtQuJDA7xISFQeaiSzEEAvzqPNpUSrIECFDy?=
- =?us-ascii?Q?cX/XKSUqZVCNHS8mXGeE/RSih8csDlTL2FeE5+egzHsBtWib+y7fIX31OEzG?=
- =?us-ascii?Q?0mEtO0g358m/y6QmMhcUWxBTY540RixK6LFvGgDlfi8k2XXJSn8J6stkjUTF?=
- =?us-ascii?Q?1qlcuc39aUaCm+OVV93L8T2EB8dq4KTw3MDKWBDWRrBJJQF2Ptpbcht9+m3H?=
- =?us-ascii?Q?pxNuvO5pqFobmYhk3MYaYrI6MlAnW6Ma7NFflcMEwcqhA0h/dSfYMdPy1bX7?=
- =?us-ascii?Q?yv8hwhou7OuyXevvyWxbptqeDHOnnen95TI+mqJUUXNG98dnFP9BzoP+7g3l?=
- =?us-ascii?Q?NVoYuQZUxAK7OrfUTIZxJ6LWHSjhYwuM7swdqTVNFEYamxYBJXLxuBasM2g/?=
- =?us-ascii?Q?IdkXWa5JTmn86G0aNWjlye99F54yHMWzpv1DxoXd/qhNRXbjOoWWTpCeMypK?=
- =?us-ascii?Q?rvk1deTLivFmM+XAKYJjOcXhKraUuuI3gkVD5fDJP/YBR9i3z/ffs1eH0bxi?=
- =?us-ascii?Q?F+xg+UvJIFCv4AC5+81dFa9OOwFNLoKz83VSmQ27fgGpv7wq7VYXfOoYhC05?=
- =?us-ascii?Q?PXwq+/vRAaI6J3Ir0DzgB82r6bI7QaiLUtoOj+FCW2AjieitRngWgLE+ugSy?=
- =?us-ascii?Q?rd81ej2TIySuM9E3UExtT4GHdClq8kQ9UjxOc0h2LDRrKTg88UOAY+q0Jj8q?=
- =?us-ascii?Q?0L2STFfa0Gl8gJ4ot4dDQpuGwLEevSUhhXd9FppAz/M0oO10TAFBoEelsn+b?=
- =?us-ascii?Q?KEvwSYQsWIdBg2oa3BWYEA6nsIH/kOjQWOT0QsJTs+bnrqUoTCRjtv3bFInY?=
- =?us-ascii?Q?zSDcvorMZz4rHZ8E18fp3rVxsl0VWDOfT8ERDyKMWUYJ1LhyuSmdzMf+5ndq?=
- =?us-ascii?Q?HAdSl4d785YFBE43EODo7aUQP3gm0vspqGwx//5z/+mdCUHaolZw11j1Gv3E?=
- =?us-ascii?Q?kvLskRH/Hs8FBMM6oAWkRkpBm6BjetQREbx37aboWDcLSofRdyNodZEIhwpz?=
- =?us-ascii?Q?kJJ7Flj/9evNdagx8mSx2jREVFRTxbPtT1szEnSTC+swsW1R0YEWu62u82jH?=
- =?us-ascii?Q?mrzi2+BeubjIAHVKeu7TAA1TgJbir3C3Sz3G+vQoYiCWKjLGwaikjnn0GV23?=
- =?us-ascii?Q?LH7D0k8aoCxE63Ab/6XqXzOig66f9g2v7Vvw8vzOSN1D6msEItRo9zcGP0HZ?=
- =?us-ascii?Q?vHbL+utPfmUOrYnFpV5xbP5wwkdbMNopxavVIltmbqtgxXwTUYZPU3ywG2Cl?=
- =?us-ascii?Q?LBqwdyxpAQEHGu8AO0kDoy5wCuYCFE6K1Kp/oU8It4b3MktQPU+yiW8SULoz?=
- =?us-ascii?Q?9vIZ+RPvJR6Rt4CPCGQs2as0rcHwbvata/pdzCjpJv1s52Jx1PqMZcC7669y?=
- =?us-ascii?Q?OGE7qSrVcmDUUTHJbFD/tmkAVXMJoVe8okjKc9evYC2KbSjRQpkLzUinkGcd?=
- =?us-ascii?Q?GhzcTfCR+51S542z7K5koen1JNsQJP11QflIOJN/u3Iypcj7kqh7O3SdiKyv?=
- =?us-ascii?Q?Zay/o48finw6MPC8hI4LZF1XU6tuSDbkeHDLuurcrpu9ze1tpQZ3Lq8o3IFg?=
- =?us-ascii?Q?4g=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a5a15a0-6fb4-470d-c4c5-08dd46e4ab50
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6097.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?S8XyPMAZQzQ1k62GQSTHCatj0YE6UNmgWsSi2ONT5m+o4xpoJb8r8HIiEtUI?=
+ =?us-ascii?Q?sPGYAnM5jaY2w9Djz/DnsgebuKirAoP5eYrqMArkuzlYMLQ9TdudagPqY+Eg?=
+ =?us-ascii?Q?ZJW55m1g9Wv6veZclvQGtSw2AW0Tl+R4hNes9YfxC816uPMjRr40ED9ZEA3E?=
+ =?us-ascii?Q?DrgRNhoXKWnqKt38J8BAWcVutVMG/gmGC+sjIzhJ2oaiHAy4gcKLmUDPetEe?=
+ =?us-ascii?Q?NxgGF1PfTAEUvJKVGoJ8IItosiFlhoclCHpwd1d3GXl0ywDHFwp0tots6GXZ?=
+ =?us-ascii?Q?oAWjcYwcmKjgAgxy9jTmNviZsIojSmh5Smqv/p6h2qYnbP9RL/UEuiURrgV0?=
+ =?us-ascii?Q?cfw1TZyycH6z4goSd7ULobMKPf7lKb3QxbHT+U1Ht7qfAWqxrCLIoiCkRbgl?=
+ =?us-ascii?Q?+Ugptl8XLHiHls28XOSVXbPjhsS00D9gqK01ykokosqW1wyaihyLZfY3Sj1p?=
+ =?us-ascii?Q?41+S5yUMGRf7Yc4zx8i1TjYDoesY3+AFpu09TxX9M7Ud2BURzjJ4LihcFP6E?=
+ =?us-ascii?Q?tLo9rGxvn22EYul4YxHllVzMrcNlJaWf3ur7ym/2yfGrzfZIM7Skr5b7jT6e?=
+ =?us-ascii?Q?6WMs1IQg6wTx14D7JBu+oVIxkOuLqLommSNgAe/iFxSLLJwrN1DM+ajXKCFe?=
+ =?us-ascii?Q?bwqhynqAJPiEgW/ErFOTxaKBL5Ihk0q5UtJPGZUI7Z6PuF7JMONKZBTd+1oU?=
+ =?us-ascii?Q?NUDSvSFw/ibYZQmv42AXrJQa5mkCDMKANsDBmVX0PRhZTd7x1Y3MPUnjxl7u?=
+ =?us-ascii?Q?j4J2HkQ9UBE2CBv6uMeMdyyAT4LC19kL/1o4RzuVfe/gdIhcfMS8Yi2nQn5J?=
+ =?us-ascii?Q?T04rYbJA9q2sbakHCIKgABaZEX0Uht665hKxhim7HNxf0q2lu7j71TN6OsIw?=
+ =?us-ascii?Q?MQzGWUDwCXbRwzgKsKWTLPuR83HKrpCEehz1T2hJgJU/GHGnPNBOpLrJ4Lzf?=
+ =?us-ascii?Q?BbBSkMZ2JHUPI23KMn3uLVTDqJ5y19rWX8GpYQZS5uV4rmLInPP9fYJ662o0?=
+ =?us-ascii?Q?cmbe420eXMmWm95t7b2R96R+NvIFTMPTqc3o0h6dvLzBU9S/GcxcMjfx314o?=
+ =?us-ascii?Q?A1PDbgBa6ooXtIJwf73wB8ny8q/n4YeqWP+Uxn2RuuWTBMb2E3EL7DKPbUh5?=
+ =?us-ascii?Q?2Iqbk7fwezJ7ZfqawI1SbcpILghIrboS01+pPvgEr7d6y3frZX55HWvhUj3J?=
+ =?us-ascii?Q?FG2Nwi2UtxlWYq7UkZh7oP2lcgWXkgc+CkPDS+a9+n4pQnvBw2bybZlQEAOd?=
+ =?us-ascii?Q?+0p+TXwWEiQHMlkj9xILGpfHKICa5Fw0miYELqFikmTt32DUY/5vyphTA4dv?=
+ =?us-ascii?Q?hl2S5bYQdSFM7RdxueASDvrlWjw3N5j2f8yIiZwiiPHelKVo1LP1a8bvXePl?=
+ =?us-ascii?Q?HMPcJ3t/KaXQUNRutKyPEgFK7LksqCOUQDqQTE+n1idM9F3Uay9kisG0pSU/?=
+ =?us-ascii?Q?pep4U7+6Teq5Ad0VT2VevBJpmxifg3dsOlLbyTGXvzn7z1+tvqf8b6nRITgM?=
+ =?us-ascii?Q?HMe99F5icy1ZjqGNVHpuqoGGC1/fb8BMwLUDV5L3H8TSMWkeJuaHKVHLUpF5?=
+ =?us-ascii?Q?hbdu/2kPMKayspwMJXWHsnXiAQ9BHUeRZVuG1BYd?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a87c5812-3443-4754-d117-08dd46ebda78
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6405.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2025 19:30:09.8545
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2025 20:21:35.4142
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: upA/9QYYkylxdvL10NXhw6FsxLFBInI6q1mhIARbBeDT+Ar44NcKEvtIDgko7dR7vKr6BPJV+heHqKKTkXnPXtnDcFvAH4sB40MvKWAuIxI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB8179
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-UserPrincipalName: o77OlMwG7tcqhQ/fE0mkKgI6t0SupEU0GWDspfZIltZ9oFBzZKYk011Ce2oT4uDmHQKng5t3RTYaA+lbIiGv+A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6213
 
-On Thu, Feb 06, 2025 at 02:04:08PM +0800, Song Yoong Siang wrote:
-> Enable Launch Time Control (LTC) support for XDP zero copy via XDP Tx
-> metadata framework.
-> 
-> This patch has been tested with tools/testing/selftests/bpf/xdp_hw_metadata
-> on Intel I225-LM Ethernet controller. Below are the test steps and result.
-> 
-> Test 1: Send a single packet with the launch time set to 1 s in the future.
-> 
-> Test steps:
-> 1. On the DUT, start the xdp_hw_metadata selftest application:
->    $ sudo ./xdp_hw_metadata enp2s0 -l 1000000000 -L 1
-> 
-> 2. On the Link Partner, send a UDP packet with VLAN priority 1 to port 9091
->    of the DUT.
-> 
-> Result:
-> When the launch time is set to 1 s in the future, the delta between the
-> launch time and the transmit hardware timestamp is 0.016 us, as shown in
-> printout of the xdp_hw_metadata application below.
->   0x562ff5dc8880: rx_desc[4]->addr=84110 addr=84110 comp_addr=84110 EoP
->   rx_hash: 0xE343384 with RSS type:0x1
->   HW RX-time:   1734578015467548904 (sec:1734578015.4675)
->                 delta to User RX-time sec:0.0002 (183.103 usec)
->   XDP RX-time:   1734578015467651698 (sec:1734578015.4677)
->                  delta to User RX-time sec:0.0001 (80.309 usec)
->   No rx_vlan_tci or rx_vlan_proto, err=-95
->   0x562ff5dc8880: ping-pong with csum=561c (want c7dd)
->                   csum_start=34 csum_offset=6
->   HW RX-time:   1734578015467548904 (sec:1734578015.4675)
->                 delta to HW Launch-time sec:1.0000 (1000000.000 usec)
->   0x562ff5dc8880: complete tx idx=4 addr=4018
->   HW Launch-time:   1734578016467548904 (sec:1734578016.4675)
->                     delta to HW TX-complete-time sec:0.0000 (0.016 usec)
->   HW TX-complete-time:   1734578016467548920 (sec:1734578016.4675)
->                          delta to User TX-complete-time sec:0.0000
->                          (32.546 usec)
->   XDP RX-time:   1734578015467651698 (sec:1734578015.4677)
->                  delta to User TX-complete-time sec:0.9999
->                  (999929.768 usec)
->   HW RX-time:   1734578015467548904 (sec:1734578015.4675)
->                 delta to HW TX-complete-time sec:1.0000 (1000000.016 usec)
->   0x562ff5dc8880: complete rx idx=132 addr=84110
-> 
-> Test 2: Send 1000 packets with a 10 ms interval and the launch time set to
->         500 us in the future.
-> 
-> Test steps:
-> 1. On the DUT, start the xdp_hw_metadata selftest application:
->    $ sudo chrt -f 99 ./xdp_hw_metadata enp2s0 -l 500000 -L 1 > \
->      /dev/shm/result.log
-> 
-> 2. On the Link Partner, send 1000 UDP packets with a 10 ms interval and
->    VLAN priority 1 to port 9091 of the DUT.
-> 
-> Result:
-> When the launch time is set to 500 us in the future, the average delta
-> between the launch time and the transmit hardware timestamp is 0.016 us,
-> as shown in the analysis of /dev/shm/result.log below. The XDP launch time
-> works correctly in sending 1000 packets continuously.
->   Min delta: 0.005 us
->   Avr delta: 0.016 us
->   Max delta: 0.031 us
->   Total packets forwarded: 1000
-> 
-> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+= Overview =
 
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+As discussed during the sched_ext office hours, using a global cpumask to
+keep track of the idle CPUs can be inefficient and it may not scale really
+well on large NUMA systems.
 
-also with one nit. Thanks!
+Therefore, split the idle cpumask into multiple per-NUMA node cpumasks to
+improve scalability and performance on such large systems.
 
-> ---
->  drivers/net/ethernet/intel/igc/igc.h      |  1 +
->  drivers/net/ethernet/intel/igc/igc_main.c | 57 ++++++++++++++++++++++-
->  2 files changed, 56 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/igc/igc.h b/drivers/net/ethernet/intel/igc/igc.h
-> index b8111ad9a9a8..cd1d7b6c1782 100644
-> --- a/drivers/net/ethernet/intel/igc/igc.h
-> +++ b/drivers/net/ethernet/intel/igc/igc.h
-> @@ -579,6 +579,7 @@ struct igc_metadata_request {
->  	struct xsk_tx_metadata *meta;
->  	struct igc_ring *tx_ring;
->  	u32 cmd_type;
-> +	u16 used_desc;
->  };
->  
->  struct igc_q_vector {
-> diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-> index 3df608601a4b..f239f744247d 100644
-> --- a/drivers/net/ethernet/intel/igc/igc_main.c
-> +++ b/drivers/net/ethernet/intel/igc/igc_main.c
-> @@ -2973,9 +2973,44 @@ static u64 igc_xsk_fill_timestamp(void *_priv)
->  	return *(u64 *)_priv;
->  }
->  
-> +static void igc_xsk_request_launch_time(u64 launch_time, void *_priv)
-> +{
-> +	struct igc_metadata_request *meta_req = _priv;
-> +	struct igc_ring *tx_ring = meta_req->tx_ring;
-> +	__le32 launch_time_offset;
-> +	bool insert_empty = false;
-> +	bool first_flag = false;
-> +
-> +	if (!tx_ring->launchtime_enable)
-> +		return;
-> +
-> +	launch_time_offset = igc_tx_launchtime(tx_ring,
-> +					       ns_to_ktime(launch_time),
-> +					       &first_flag, &insert_empty);
-> +	if (insert_empty) {
-> +		/* Disregard the launch time request if the required empty frame
-> +		 * fails to be inserted.
-> +		 */
-> +		if (igc_insert_empty_frame(tx_ring))
-> +			return;
-> +
-> +		meta_req->tx_buffer =
-> +			&tx_ring->tx_buffer_info[tx_ring->next_to_use];
-> +		/* Inserting an empty packet requires two descriptors:
-> +		 * one data descriptor and one context descriptor.
-> +		 */
-> +		meta_req->used_desc += 2;
+Scalability issues seem to be more noticeable on Intel Sapphire Rapids
+dual-socket architectures.
 
-tiny nit: you could accumulate the amount of used descs in local variable
-and update the igc_metadata_request::used_desc once.
+= Test =
 
-> +	}
-> +
-> +	/* Use one context descriptor to specify launch time and first flag. */
-> +	igc_tx_ctxtdesc(tx_ring, launch_time_offset, first_flag, 0, 0, 0);
-> +	meta_req->used_desc += 1;
-> +}
-> +
->  const struct xsk_tx_metadata_ops igc_xsk_tx_metadata_ops = {
->  	.tmo_request_timestamp		= igc_xsk_request_timestamp,
->  	.tmo_fill_timestamp		= igc_xsk_fill_timestamp,
-> +	.tmo_request_launch_time	= igc_xsk_request_launch_time,
->  };
->  
->  static void igc_xdp_xmit_zc(struct igc_ring *ring)
-> @@ -2998,7 +3033,13 @@ static void igc_xdp_xmit_zc(struct igc_ring *ring)
->  	ntu = ring->next_to_use;
->  	budget = igc_desc_unused(ring);
->  
-> -	while (xsk_tx_peek_desc(pool, &xdp_desc) && budget--) {
-> +	/* Packets with launch time require one data descriptor and one context
-> +	 * descriptor. When the launch time falls into the next Qbv cycle, we
-> +	 * may need to insert an empty packet, which requires two more
-> +	 * descriptors. Therefore, to be safe, we always ensure we have at least
-> +	 * 4 descriptors available.
-> +	 */
-> +	while (xsk_tx_peek_desc(pool, &xdp_desc) && budget >= 4) {
->  		struct igc_metadata_request meta_req;
->  		struct xsk_tx_metadata *meta = NULL;
->  		struct igc_tx_buffer *bi;
-> @@ -3019,9 +3060,19 @@ static void igc_xdp_xmit_zc(struct igc_ring *ring)
->  		meta_req.tx_ring = ring;
->  		meta_req.tx_buffer = bi;
->  		meta_req.meta = meta;
-> +		meta_req.used_desc = 0;
->  		xsk_tx_metadata_request(meta, &igc_xsk_tx_metadata_ops,
->  					&meta_req);
->  
-> +		/* xsk_tx_metadata_request() may have updated next_to_use */
-> +		ntu = ring->next_to_use;
-> +
-> +		/* xsk_tx_metadata_request() may have updated Tx buffer info */
-> +		bi = meta_req.tx_buffer;
-> +
-> +		/* xsk_tx_metadata_request() may use a few descriptors */
-> +		budget -= meta_req.used_desc;
-> +
->  		tx_desc = IGC_TX_DESC(ring, ntu);
->  		tx_desc->read.cmd_type_len = cpu_to_le32(meta_req.cmd_type);
->  		tx_desc->read.olinfo_status = cpu_to_le32(olinfo_status);
-> @@ -3039,9 +3090,11 @@ static void igc_xdp_xmit_zc(struct igc_ring *ring)
->  		ntu++;
->  		if (ntu == ring->count)
->  			ntu = 0;
-> +
-> +		ring->next_to_use = ntu;
-> +		budget--;
->  	}
->  
-> -	ring->next_to_use = ntu;
->  	if (tx_desc) {
->  		igc_flush_tx_descriptors(ring);
->  		xsk_tx_release(pool);
-> -- 
-> 2.34.1
-> 
+Hardware:
+ - System: DGX B200
+    - CPUs: 224 SMT threads (112 physical cores)
+    - Processor: INTEL(R) XEON(R) PLATINUM 8570
+    - 2 NUMA nodes
+
+Scheduler:
+ - scx_simple [1] (so that we can focus at the built-in idle selection
+   policy and not at the scheduling policy itself)
+
+Test:
+ - Run a parallel kernel build `make -j $(nproc)` and measure the average
+   elapsed time over 10 runs:
+
+          avg time | stdev
+          ---------+------
+ before:   52.431s | 2.895
+  after:   50.342s | 2.895
+
+= Conclusion =
+
+Splitting the global cpumask into multiple per-NUMA cpumasks helped to
+achieve a speedup of approximately +4% with this particular architecture
+and test case.
+
+The same test on a DGX-1 (40 physical cores, Intel Xeon E5-2698 v4 @
+2.20GHz, 2 NUMA nodes) shows a speedup of around 1.5-3%.
+
+On smaller systems, I haven't noticed any measurable regressions or
+improvements with the same test (parallel kernel build) and scheduler
+(scx_simple).
+
+Moreover, with a modified scx_bpfland that uses the new NUMA-aware APIs I
+observed an additional +2-2.5% performance improvement in the same test.
+
+NOTE: splitting the global cpumask into multiple cpumasks may increase the
+overhead of scx_bpf_pick_idle_cpu() or ops.select_cpu() (for schedulers
+relying on the built-in CPU idle selection policy) in presence of multiple
+NUMA nodes, particularly under high system load, since we may have to
+access multiple cpumasks to find an idle CPU.
+
+However, this increased overhead seems to be highly compensated by a lower
+overhead when updating the idle state and by the fact that CPUs are more
+likely operating within their local idle cpumask, reducing the stress on
+the cache coherency protocol.
+
+= References =
+
+[1] https://github.com/sched-ext/scx/blob/main/scheds/c/scx_simple.bpf.c
+
+ChangeLog v8 -> v9:
+ - drop some preliminary refactoring patches that are now applied to
+   sched_ext/for-6.15
+ - rename SCX_PICK_IDLE_NODE -> SCX_PICK_IDLE_IN_NODE
+ - use NUMA_NO_NODE to reference to the global idle cpumask (and drop
+   NUMA_FLAT_NODE)
+ - do not implicitly translate NUMA_NO_NODE to the current node
+ - rename struct idle_cpumask -> idle_cpus
+ - drop "get_" prefix from the idle cpumask helpers
+ - rename for_each_numa_hop_node() -> for_each_numa_node()
+ - return MAX_NUMNODES from for_each_numa_node() at the end of the loop
+   (for coherency with other node iterators)
+ - do not get rid of the scx_selcpu_topo_numa logic (since it can still be
+   used when per-node cpumasks are not enabled)
+
+ChangeLog v7 -> v8:
+ - patch set refactoring: move ext_idle.c as first patch and introduce more
+   preparation patches
+ - introduce SCX_PICK_IDLE_NODE to restrict idle CPU selection to a single
+   specified node
+ - trigger scx_ops_error() when the *_node() kfunc's are used without
+   enbling SCX_OPS_NODE_BUILTIN_IDLE
+ - check for node_possible() in validate_node()
+ - do node validation in the kfunc's (instead of the internal kernel
+   functions) and trigger scx_ops_error in case of failure
+ - rename idle_masks -> scx_idle_masks
+ - drop unused CL_ALIGNED_IF_ONSTACK
+ - drop unnecessary rcu_read_lock/unlock() when iterating NUMA nodes
+
+ChangeLog v6 -> v7:
+ - addressed some issues based on Yury's review (thanks!)
+ - introduced a new iterator to navigate the NUMA nodes in order of
+   increasing distance
+
+ChangeLog v5 -> v6:
+ - refactor patch set to introduce SCX_OPS_NODE_BUILTIN_IDLE before
+   the per-node cpumasks
+ - move idle CPU selection policy to a separate file (ext_idle.c)
+   (no functional change, just some code shuffling)
+
+ChangeLog v4 -> v5:
+ - introduce new scx_bpf_cpu_to_node() kfunc
+ - provide __COMPAT_*() helpers for the new kfunc's
+
+ChangeLog v3 -> v4:
+ - introduce SCX_OPS_NODE_BUILTIN_IDLE to select multiple per-node
+   cpumasks or single flat cpumask
+ - introduce new kfuncs to access per-node idle cpumasks information
+ - use for_each_numa_hop_mask() to traverse NUMA nodes in increasing
+   distance
+ - dropped nodemask helpers (not needed anymore)
+ - rebase to sched_ext/for-6.14
+
+ChangeLog v2 -> v3:
+  - introduce for_each_online_node_wrap()
+  - re-introduce cpumask_intersects() in test_and_clear_cpu_idle() (to
+    reduce memory writes / cache coherence pressure)
+  - get rid of the redundant scx_selcpu_topo_numa logic
+  [test results are pretty much identical, so I haven't updated them from v2]
+
+ChangeLog v1 -> v2:
+  - renamed for_each_node_mask|state_from() -> for_each_node_mask|state_wrap()
+  - misc cpumask optimizations (thanks to Yury)
+
+Andrea Righi (5):
+      sched/topology: Introduce for_each_numa_node() iterator
+      sched_ext: idle: Introduce SCX_OPS_BUILTIN_IDLE_PER_NODE
+      sched_ext: idle: introduce SCX_PICK_IDLE_IN_NODE
+      sched_ext: idle: Per-node idle cpumasks
+      sched_ext: idle: Introduce node-aware idle cpu kfunc helpers
+
+ include/linux/topology.h                 |  31 ++-
+ kernel/sched/ext.c                       |  22 +-
+ kernel/sched/ext_idle.c                  | 390 ++++++++++++++++++++++++++-----
+ kernel/sched/ext_idle.h                  |  17 +-
+ kernel/sched/topology.c                  |  42 ++++
+ tools/sched_ext/include/scx/common.bpf.h |   4 +
+ tools/sched_ext/include/scx/compat.bpf.h |  19 ++
+ 7 files changed, 462 insertions(+), 63 deletions(-)
 
