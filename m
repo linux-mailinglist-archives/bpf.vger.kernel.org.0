@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-50649-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50650-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46E95A2A67D
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 11:58:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F01E6A2A67F
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 11:58:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30FAF1889383
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 10:58:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EB0F166A93
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 10:58:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC10223099C;
-	Thu,  6 Feb 2025 10:55:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A79230D05;
+	Thu,  6 Feb 2025 10:55:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MBk2H9hP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AUwiQWGK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com [209.85.221.66])
+Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com [209.85.221.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642E322E400;
-	Thu,  6 Feb 2025 10:55:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66691230270;
+	Thu,  6 Feb 2025 10:55:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738839302; cv=none; b=KsJELJGzsZg3Lp94ZkZeEYC5WUVyY708HqLGRFNUwsSxbFhMEfSu0kyr+tyLcW8+gst9l84yhO/UXYZ86mqEiIUKTmrpOwsQw/SQfP61vyV1tTNf0pktq9W+gPochMt2MgAmaPtetnRrR+5yokFwP78qpaBo5Smn4175DVd4Eyw=
+	t=1738839303; cv=none; b=kBY7wG1wrMnM9heoBEBrW8EwAUd8xShafnkGTCFSFv3c0zdqWs4ysUFx6IYa0HqwDu/bTVUtQ8L6HzsmtYEWiOrF0d35kwLOuRtVTB5dI00bPqEUZ91HnL+FDpXJyBx+SAQ+EJ1mOB1sx7Ngr0K/HMmgdhttd4gk0tlimmNXR2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738839302; c=relaxed/simple;
-	bh=itMjJLB45N5MLJdgdgQDHOOS7VmFDUaHlV/BKezdr3U=;
+	s=arc-20240116; t=1738839303; c=relaxed/simple;
+	bh=lkeMxyDGnEWVT4+0Paf/jS31tLo0YsbXyTnTYAfMTz8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DUXxM2wY8tnrwxHdSbqNhzZtcs2euyIvOpfKUnlRF6zwaU5bggm0xhCRjTOjXKCva0cvG0VaUE/CHyenn1Ey5mzwIR1gc4UV9ZbPFRj4EBic6S73JDk32qvALnIt7eu08hRUZsOYWBDqd+2yKJubJqyBcMYzWPK3QBXfLAwgu1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MBk2H9hP; arc=none smtp.client-ip=209.85.221.66
+	 MIME-Version; b=kAZ+NFgiQ4HPUFkUqVCcj49el2+uOli9pKgZmRa1w+0WG6nXVDazyKzkhMIesII5HFU48yRDghU6HQgg3yHRHaTgMbpjtl+BNWZhwGpAGV1gIMyEOTmZuQpLDZPwvX4Noy+3th8FkdZ6Ma1hHhAibD+8kKtSX+vBIZs2uJwj75g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AUwiQWGK; arc=none smtp.client-ip=209.85.221.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f66.google.com with SMTP id ffacd0b85a97d-38da72cc47bso558595f8f.2;
-        Thu, 06 Feb 2025 02:55:00 -0800 (PST)
+Received: by mail-wr1-f65.google.com with SMTP id ffacd0b85a97d-38dbaae68a2so598307f8f.3;
+        Thu, 06 Feb 2025 02:55:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738839298; x=1739444098; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1738839299; x=1739444099; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0X1+UYLXLNf68smwsb01lX6eFqtHiz/IPso40v3JOxM=;
-        b=MBk2H9hPtikCu9S4CJ1dc393fliGxfmwrKgiBA16IPei5Iqxnc/k8lsCXyw70xc93O
-         M4tb+HdP8o6evN9tGF7g4bIJaIZmKxzbyb+yId5roUDQyieuTN5NSZnzy/pxrWyLp7I/
-         JHHmOacm0xxME0fVbCDZBDfPL8G+6wn+ws6Xan1Q4/v5zm2Hwr3DX96WccDNchoA7969
-         lWAt7CMDctFRuKnPihjFe7F6VIi2wnkXHjD9vFIdfsglBT0RiMLuLQFup0X+CvYji55L
-         63MMy06QmDVzhQEBlqK8VxbTfRxl1vKwowtPS3n11+2iSBvoaHcrzhhpHXdLB1OGUZsN
-         kgag==
+        bh=v/27xKgFdSZVO2eLH/O6emznfiz3pieZcJIn5kKU89M=;
+        b=AUwiQWGKHYnXNO5BoV419wqq5G+Viauj5tWbYjWWnXKiDsndyh7M/CrPbWQf0a8abP
+         x++4EnNktkQ3l/zvc4oqVOLpdSZsDZ2ByjlV+8G9yJ7Y1D0CQVuBXgjCTWxBVKntO+j4
+         mSpWEoZ9tmCUgw7NFVBZI29dP9xchkrhV7R/IX3EdXe2HOvHfBS8eHOKCOR3ZqqbQq9P
+         HREWXRPOAGmAmNHl1cY95rYuFNljKFd8YZLBblVHtKhnQkgSsncoEH8mWZtGV0qtOJSr
+         X2SWAEefwZCNya70k+Zihbxdvzoe/AhbOIOZ+RAkMz08WQ3QVBfFoqSDgx2AiwtDGI/D
+         3LwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738839298; x=1739444098;
+        d=1e100.net; s=20230601; t=1738839299; x=1739444099;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0X1+UYLXLNf68smwsb01lX6eFqtHiz/IPso40v3JOxM=;
-        b=Iv+xWJJ8D+1dqxP2YIrgJLKFfVHaZHhYOXA/485ycE+LBDS9Zt7BMLTJf33GgZ3vmH
-         KPoy0CjUT2uYm9PbDQqiukE8RVBMD/tCfLzT/NRBn/nU6EHcy3h5/LxDh+ic3our6UF7
-         4KJHTC3P8X4s0QzaPQHfLNjEsx5aysExytjL9G2naR2dVkI7nyAsDlpQ7S4/0UyWXfSc
-         HZ5k68RZItEacn89rlDuzcRGTuqRSLiULMtli+H9XGk+qekd7Ejh7rLKoewX3HK7gtxH
-         bghP1f21Aykn600tCyGFwa1jvMegpW/lcr2SZUpPxRe4QKL1kD+veMx0ip1VCEkV0aqU
-         DsQg==
-X-Forwarded-Encrypted: i=1; AJvYcCXeXiAR0d4u1J7G2S29wFwLvp3t8Ltn3ht/apt1Ol+XSKhE1cK3/vxINJCqJ/Z5wv9AoC0+CYSUyMGw6Ps=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxnlPL1KYMU3ooWMszTcwAxEJJxCd2w1aul9iYlqaBczNVj+9bn
-	ki2X06075b4qV61pYWPEhsCEvCnyP0PXSggcNjjCMAPLeRnrj/1iULnckjNMeKU=
-X-Gm-Gg: ASbGncsQai+W4u/0CGlG7WhOLcFY5ctB8rwbymPC5WLCqIHfwVJSj86bNMFCgu1zkTn
-	asttklAGomAp368am6Eshkiv2xonPR+4Sxd6dmva4e/2OFzcbxNjcKT55b4t9ut4bUX4ZDG4EF5
-	6Inm4oHfhHIpmBjzK5h5E+TE/SkUTndghg3eVU6rIiF09o0UQnzq3yT104vvri9Tshpt48faDFu
-	TxbEFzfJibC2HEd7gT1SjXui1qc51YBv4jDHTsy5BGyOZ5UX3CYqLUvEtls9rplFqAMA2xKbqBv
-	m7e1lg==
-X-Google-Smtp-Source: AGHT+IHFPsmZFGzMQgNIZxyin0+PS7DDeJ1kbh/KGqhqHLUU4fvdAQOI2sLLSlmyZkzlKcZIDN7WyQ==
-X-Received: by 2002:a5d:5222:0:b0:38d:b051:5a0e with SMTP id ffacd0b85a97d-38db495f8c3mr3602518f8f.49.1738839297924;
-        Thu, 06 Feb 2025 02:54:57 -0800 (PST)
-Received: from localhost ([2a03:2880:31ff:16::])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38dbdd36776sm1432693f8f.32.2025.02.06.02.54.57
+        bh=v/27xKgFdSZVO2eLH/O6emznfiz3pieZcJIn5kKU89M=;
+        b=Hjw8G6LQ6Ut/ONWr37xZQejIrHcU2PCc9XQvZSYknmxpEFrRN8o4ybJqiHnZkmk9Y6
+         XgfjZQShwoaQoS/3C8XmJSncRXp3itGN8zZm0QcEIAVOtH0pULexky+TVZ728ZY1Uo5T
+         VdUhbbz/BSHu/JHskmFzW2Gwe/Wd9kBgeX813Pkx0/ZfmxH4yoFafiXcsuvzViSMRWpq
+         6FBUxyOeR9L5uyN1R5/6lEm3iAL11EjGRk+6fSRbIYxE0FnBOrKWW98baNFskZgVmBQn
+         GEHKFgwKgvkuylg/970iZE/Jx7emImEWpXJUBstGghvf0s0ysxGRz6UzDSnLGFgcrOpo
+         Aeug==
+X-Forwarded-Encrypted: i=1; AJvYcCUIT0G6mH/dmX2TMq2lOpkO/UI3xe8ysBX3ar05hu6yBxCm5/dR4ZyoigR5/H+H7CPIRXNLBEEI7akVnhA=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw0hRxakGQL3BG3donNbrbzrCJz+v2NRNAbSK8WNe/6ky/ZEZIw
+	VYly6vJkExmMTuKUtrS2uiMrf0jrKr1o7YkxeuTzY8qnWFYkUienvZD6GoTGChQ=
+X-Gm-Gg: ASbGncsFHa7USPN7082XEKa1V5Xkn0/ut8LTd1Yp5A2aLxh6YtZDspEortmeS006KMf
+	djykXZV6ka9xvfJM0h7mqz1db2sDX4e1HlXAlaEd8JuuAxhUV9NhFSNDJbHohero3lJ6EaWxv7Q
+	KKdCq9VxavFMpanw4aVBH4bZRR78H7weJtL97IqHFTq1iTqfsUMrJMZ0TT041JEmMsx1Ya0Nmsl
+	euNVmtx7A6X0XuYfkwbjJs+mV7lPuyaE3G+wbpevrwGgPS8rN0gT7hKKQg15chdC74ZXDb13hcl
+	e0Oc
+X-Google-Smtp-Source: AGHT+IEaxBrKjdya80s5GTFvJ53ssNGQMjtcN2JFoVjdVKyNSB8TPhmiwUVzhaT6kIG4/mzrT4zfQg==
+X-Received: by 2002:adf:f9ce:0:b0:386:3835:9fec with SMTP id ffacd0b85a97d-38db492a155mr4449175f8f.44.1738839299377;
+        Thu, 06 Feb 2025 02:54:59 -0800 (PST)
+Received: from localhost ([2a03:2880:31ff:4::])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38dbdc30fbbsm1419486f8f.0.2025.02.06.02.54.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Feb 2025 02:54:57 -0800 (PST)
+        Thu, 06 Feb 2025 02:54:58 -0800 (PST)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -91,9 +91,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Dohyun Kim <dohyunkim@google.com>,
 	linux-arm-kernel@lists.infradead.org,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v2 15/26] rqspinlock: Add macros for rqspinlock usage
-Date: Thu,  6 Feb 2025 02:54:23 -0800
-Message-ID: <20250206105435.2159977-16-memxor@gmail.com>
+Subject: [PATCH bpf-next v2 16/26] rqspinlock: Add locktorture support
+Date: Thu,  6 Feb 2025 02:54:24 -0800
+Message-ID: <20250206105435.2159977-17-memxor@gmail.com>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20250206105435.2159977-1-memxor@gmail.com>
 References: <20250206105435.2159977-1-memxor@gmail.com>
@@ -103,103 +103,100 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3270; h=from:subject; bh=itMjJLB45N5MLJdgdgQDHOOS7VmFDUaHlV/BKezdr3U=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnpJRmSdisG+iOEzxKLgDdJjXZN/mncOFg8pv5dO3d bZNJg+GJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ6SUZgAKCRBM4MiGSL8RyqPRD/ 9gG2FU1oHAJPUn4UJ3fwKsuQm4i95ajoiPlT/m5kT+DPF9gSa+xO4hKuGYliwEJvf+nuxUe7FMhCUo nbsTx4KiQesdJvFLBEyC8lMRvIh0qaD//aym3Fhb4D5zAgaUBULNbyDh5gj/mVvu5FLRbI+DT3LJmw r1bostFusx1GdFieKe+yhrTChSjrfqKbnpY9R/8w5UkGN/g+vLsyykEbwnbgHhL0Ycvk+yqbXaob++ hWud3ejpfkcyQRqDBeycTn+q3cMN4T33wASR6VfBgNAggDQplTQ0NL97l+Dn3qdgtj1L8+PzWkyEy7 uzYnLPsU1re215zb4P38apAspYJP0lf30MOhhmObWuxKLqtviREsn0uOBZNsmdc4R3mfydqsDy2K3i fXrNShGCY4YJFjLqUeWDnW9g2IHVA0Y3GNq49DhGgN8ZGExFHkkLHKfWWt1vd80tJx+3FcaAcbrHN6 jqnPSeoZw9H/Gv0GIoXD05hjLkUhPcZYt3gM2eUbE0LjEPwU3A1PAq0320Z5j0ZxsuHnEQt80v5ElR 1N2IG2VJNeILB6c4gNBsyn59IW7xvMo0y6wnEpgTgAJHBxYZqffi0Js1mYt58TEIo6iaH05Sdjgvz5 U5PZ/7rUM15c0KeEcHBAwD6NKswh6LfL192Y9X7h+EChg4E+eQnBkpyXm7gw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2978; h=from:subject; bh=lkeMxyDGnEWVT4+0Paf/jS31tLo0YsbXyTnTYAfMTz8=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnpJRmHQ2YyiZ2nANvO6JQtZoHC62f1PKXDNjawAxK mKA8GLiJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ6SUZgAKCRBM4MiGSL8RyjR0D/ 9UxpQJ303fRMoYR6fqKrESf9af9KoWduUW16ytQ8cl8LUmJvwPsQA2RBgUKdWqIjIitbNFRK0ahuL2 G3ZxiZ7lVlv6kVhyOprX9Rp9/1KXJb9AssTbXNvRGsblLw0VJWdbOxKA4CzRsqXHpyhAZw+crjWaAi e76bz8XD/UpVFVgPBoDM6XHvEU2CQz9W0Mujyrr8fIKId/Ly9v+BzlYwvJ5Dwiq0pKOjO1wJSs2GSe xJNqUgPJbtFFLsbyNGsWDMGgSm+PQL9V4lY/frjPS48Pxdu+urR1lOEEV933OLvUjCojgSyeFrQFi4 C7ca0HI9k7+q8frWCz+Je2IqiCXf7yXlCIM2WkxiNzINim/wLLzaPdOeueZFq4MdMjMZBhCcUB1Rbe mRdSVBLs7X7Zpm/3jue63s7r1/T5Zdd+FnKnX9Mx1pbvmw8d+u28kL4LxsLFp3fBS3zeo5fKA1b74I aPnMh8oLweieJCNzHBtJmoA+8bROXjIbWCktLpZ6wtoxPmkgKNC65kw8ylP9OD9mtdz/bYC6djzAq0 WjHL34MT7pIHjgbJe86Kbe4rqIKg2p+NIDSL06kM7XS11ju9ee0SrcJYHqw/rvOlMJqzWxf4Nv/Lcw tVGq7vh2z1O7XmMCOh+d4cORBxDlJ4pqO/LdJnm3CeCaaMqsWEXlmgSV6ZRA==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-Introduce helper macros that wrap around the rqspinlock slow path and
-provide an interface analogous to the raw_spin_lock API. Note that
-in case of error conditions, preemption and IRQ disabling is
-automatically unrolled before returning the error back to the caller.
-
-Ensure that in absence of CONFIG_QUEUED_SPINLOCKS support, we fallback
-to the test-and-set implementation.
+Introduce locktorture support for rqspinlock using the newly added
+macros as the first in-kernel user and consumer.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/asm-generic/rqspinlock.h | 71 ++++++++++++++++++++++++++++++++
- 1 file changed, 71 insertions(+)
+ kernel/locking/locktorture.c | 51 ++++++++++++++++++++++++++++++++++++
+ kernel/locking/rqspinlock.c  |  1 +
+ 2 files changed, 52 insertions(+)
 
-diff --git a/include/asm-generic/rqspinlock.h b/include/asm-generic/rqspinlock.h
-index bbe049dcf70d..46119fc768b8 100644
---- a/include/asm-generic/rqspinlock.h
-+++ b/include/asm-generic/rqspinlock.h
-@@ -134,4 +134,75 @@ static __always_inline void release_held_lock_entry(void)
- 	smp_wmb();
- }
+diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
+index cc33470f4de9..a055ff38d1f5 100644
+--- a/kernel/locking/locktorture.c
++++ b/kernel/locking/locktorture.c
+@@ -362,6 +362,56 @@ static struct lock_torture_ops raw_spin_lock_irq_ops = {
+ 	.name		= "raw_spin_lock_irq"
+ };
  
-+#ifdef CONFIG_QUEUED_SPINLOCKS
++#include <asm/rqspinlock.h>
++static rqspinlock_t rqspinlock;
 +
-+/**
-+ * res_spin_lock - acquire a queued spinlock
-+ * @lock: Pointer to queued spinlock structure
-+ */
-+static __always_inline int res_spin_lock(rqspinlock_t *lock)
++static int torture_raw_res_spin_write_lock(int tid __maybe_unused)
 +{
-+	int val = 0;
-+
-+	if (likely(atomic_try_cmpxchg_acquire(&lock->val, &val, _Q_LOCKED_VAL))) {
-+		grab_held_lock_entry(lock);
-+		return 0;
-+	}
-+	return resilient_queued_spin_lock_slowpath(lock, val, RES_DEF_TIMEOUT);
++	raw_res_spin_lock(&rqspinlock);
++	return 0;
 +}
 +
-+#else
-+
-+#define res_spin_lock(lock) resilient_tas_spin_lock(lock, RES_DEF_TIMEOUT)
-+
-+#endif /* CONFIG_QUEUED_SPINLOCKS */
-+
-+static __always_inline void res_spin_unlock(rqspinlock_t *lock)
++static void torture_raw_res_spin_write_unlock(int tid __maybe_unused)
 +{
-+	struct rqspinlock_held *rqh = this_cpu_ptr(&rqspinlock_held_locks);
-+
-+	if (unlikely(rqh->cnt > RES_NR_HELD))
-+		goto unlock;
-+	WRITE_ONCE(rqh->locks[rqh->cnt - 1], NULL);
-+unlock:
-+	this_cpu_dec(rqspinlock_held_locks.cnt);
-+	/*
-+	 * Release barrier, ensures correct ordering. See release_held_lock_entry
-+	 * for details.  Perform release store instead of queued_spin_unlock,
-+	 * since we use this function for test-and-set fallback as well. When we
-+	 * have CONFIG_QUEUED_SPINLOCKS=n, we clear the full 4-byte lockword.
-+	 */
-+	smp_store_release(&lock->locked, 0);
++	raw_res_spin_unlock(&rqspinlock);
 +}
 +
-+#ifdef CONFIG_QUEUED_SPINLOCKS
-+#define raw_res_spin_lock_init(lock) ({ *(lock) = (rqspinlock_t)__ARCH_SPIN_LOCK_UNLOCKED; })
-+#else
-+#define raw_res_spin_lock_init(lock) ({ *(lock) = (rqspinlock_t){0}; })
-+#endif
++static struct lock_torture_ops raw_res_spin_lock_ops = {
++	.writelock	= torture_raw_res_spin_write_lock,
++	.write_delay	= torture_spin_lock_write_delay,
++	.task_boost     = torture_rt_boost,
++	.writeunlock	= torture_raw_res_spin_write_unlock,
++	.readlock       = NULL,
++	.read_delay     = NULL,
++	.readunlock     = NULL,
++	.name		= "raw_res_spin_lock"
++};
 +
-+#define raw_res_spin_lock(lock)                    \
-+	({                                         \
-+		int __ret;                         \
-+		preempt_disable();                 \
-+		__ret = res_spin_lock(lock);	   \
-+		if (__ret)                         \
-+			preempt_enable();          \
-+		__ret;                             \
-+	})
++static int torture_raw_res_spin_write_lock_irq(int tid __maybe_unused)
++{
++	unsigned long flags;
 +
-+#define raw_res_spin_unlock(lock) ({ res_spin_unlock(lock); preempt_enable(); })
++	raw_res_spin_lock_irqsave(&rqspinlock, flags);
++	cxt.cur_ops->flags = flags;
++	return 0;
++}
 +
-+#define raw_res_spin_lock_irqsave(lock, flags)    \
-+	({                                        \
-+		int __ret;                        \
-+		local_irq_save(flags);            \
-+		__ret = raw_res_spin_lock(lock);  \
-+		if (__ret)                        \
-+			local_irq_restore(flags); \
-+		__ret;                            \
-+	})
++static void torture_raw_res_spin_write_unlock_irq(int tid __maybe_unused)
++{
++	raw_res_spin_unlock_irqrestore(&rqspinlock, cxt.cur_ops->flags);
++}
 +
-+#define raw_res_spin_unlock_irqrestore(lock, flags) ({ raw_res_spin_unlock(lock); local_irq_restore(flags); })
++static struct lock_torture_ops raw_res_spin_lock_irq_ops = {
++	.writelock	= torture_raw_res_spin_write_lock_irq,
++	.write_delay	= torture_spin_lock_write_delay,
++	.task_boost     = torture_rt_boost,
++	.writeunlock	= torture_raw_res_spin_write_unlock_irq,
++	.readlock       = NULL,
++	.read_delay     = NULL,
++	.readunlock     = NULL,
++	.name		= "raw_res_spin_lock_irq"
++};
 +
- #endif /* __ASM_GENERIC_RQSPINLOCK_H */
+ static DEFINE_RWLOCK(torture_rwlock);
+ 
+ static int torture_rwlock_write_lock(int tid __maybe_unused)
+@@ -1168,6 +1218,7 @@ static int __init lock_torture_init(void)
+ 		&lock_busted_ops,
+ 		&spin_lock_ops, &spin_lock_irq_ops,
+ 		&raw_spin_lock_ops, &raw_spin_lock_irq_ops,
++		&raw_res_spin_lock_ops, &raw_res_spin_lock_irq_ops,
+ 		&rw_lock_ops, &rw_lock_irq_ops,
+ 		&mutex_lock_ops,
+ 		&ww_mutex_lock_ops,
+diff --git a/kernel/locking/rqspinlock.c b/kernel/locking/rqspinlock.c
+index 93f928bc4e9c..49b4f3c75a3e 100644
+--- a/kernel/locking/rqspinlock.c
++++ b/kernel/locking/rqspinlock.c
+@@ -86,6 +86,7 @@ struct rqspinlock_timeout {
+ #define RES_TIMEOUT_VAL	2
+ 
+ DEFINE_PER_CPU_ALIGNED(struct rqspinlock_held, rqspinlock_held_locks);
++EXPORT_SYMBOL_GPL(rqspinlock_held_locks);
+ 
+ static bool is_lock_released(rqspinlock_t *lock, u32 mask, struct rqspinlock_timeout *ts)
+ {
 -- 
 2.43.5
 
