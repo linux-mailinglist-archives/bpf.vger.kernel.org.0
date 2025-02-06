@@ -1,293 +1,406 @@
-Return-Path: <bpf+bounces-50622-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50623-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61017A2A292
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 08:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 520DAA2A30F
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 09:20:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A426B3A145F
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 07:45:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 757323A66CB
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 08:20:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 791782253E4;
-	Thu,  6 Feb 2025 07:45:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 351E722541C;
+	Thu,  6 Feb 2025 08:20:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OldlMHlR"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="ATwaph+K"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FC701FE45E
-	for <bpf@vger.kernel.org>; Thu,  6 Feb 2025 07:45:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FF6D224B1B
+	for <bpf@vger.kernel.org>; Thu,  6 Feb 2025 08:20:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738827912; cv=none; b=XZOTTPYmBQG6m6YohRk82oiK9qFw+ZdqZHTJYx4PbudyWD4KGh3XI5vNDHsLf4YO72fnVBAW9yDlLgQXmWjg4iPKT8Qo9WHiFXgf6IGWhnl2kc2RDzmJj49nIJiAxeHeJ8kWuVz3I/lCgbl4BypSQkujqpe69y9v/4ALpyKJ2ec=
+	t=1738830017; cv=none; b=gdlsY6LHFXXz3yBHFD4NMiOds/ODOOdRbmFnyXXpuE1Tnrayu3SlsAQ8I+9xtT59sh0UuLD6/nZj7rJ1Btn1dHnxtFeF6/1RsxUfSM1uEZQ7Nht8EREaKqcBIisDXKCmoWmswJdK7Ni2BtaDKjBv9E7PpD0/kDR3JO0KNKmaqHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738827912; c=relaxed/simple;
-	bh=pd2E4DkV0kM5i7jjzzBFsQlRTZYRdJDV3yWx8ktjtsI=;
+	s=arc-20240116; t=1738830017; c=relaxed/simple;
+	bh=rBPgLdYbPihyaky2hnQ8FQF68vDmlGkVz0ysOpo0/7E=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=suZcdce+D0FWln+2OKJcMou2mLyAhOjBB+PsrumpBtj96tVc1bEtxV4Qu2kVSIa/MOioYUPTxZ+yhdbNM84EsHQtIyHSu4+gfI+tGpLyup7DuLs4l9wh5W962USjQdM6A+gK+URvpZ2ZSSDKehXQ1tro7/gXgNw36Au3d0zhc0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OldlMHlR; arc=none smtp.client-ip=209.85.166.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-3d05815e89dso74815ab.1
-        for <bpf@vger.kernel.org>; Wed, 05 Feb 2025 23:45:09 -0800 (PST)
+	 To:Cc:Content-Type; b=umorm4nskUVwfh8R6V6D6rJTzTw9HYRgpjWlZPMmbqUr/el0Fu22oNlDBUlEz0F87EGchNVR6uzevuTx/j3WPYj0dRctoU6CiSw7d7CNdTgatlWx1TyWMmjmld+F+n965sDJbwIsVFHOlCD+aSTNO7wu1ApIzb0EUvsrPMwe8YI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=ATwaph+K; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-aaf3c3c104fso126053066b.1
+        for <bpf@vger.kernel.org>; Thu, 06 Feb 2025 00:20:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1738827909; x=1739432709; darn=vger.kernel.org;
+        d=cloudflare.com; s=google09082023; t=1738830014; x=1739434814; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JFjhp4JAR0g63YXhg7OTrrhc+8ZhArGsV0puAPZUzIE=;
-        b=OldlMHlRdUWPrBNdhdrB4HmhGhhopxxT5XGtsyHy47JcyAEPKg24FyahkA5KPDJ10G
-         BH1VBGqqYCBmLgOkc2I7rfPT/0pgCmLK3Sw8RBjxzSkOtFlFErfMlG0AhUIrUw5tq3M3
-         dV4+HIt8MV54c8CkB9rfPmbZcWMH3ENzNYK/68dqX1CPRq/EfEYXolfBRdKo/UH0A01R
-         1YjDlHutqBs69RKdYNV3Oy48HOVr1eUDbgyCsdC3Fs/hZwAEPtl+EQre22yibOUp+CJR
-         +U68P4MLjgJlR4SSiW4mss0anOgjI40j5yAEhsiQXYXkEDfbq+rPCOrYGDjvMFhy4H6t
-         yTBg==
+        bh=+KKFRxvTKkIRVzPWFS+gc9L0xlnhlH0bcVyfiDKtFtA=;
+        b=ATwaph+KPWd55Fmd42l0m2iWqQfm/73qjFySUo77TbBrTAfFZzWh99ijOWD+pEB2YY
+         N5aNtjV9QWBJe/nOXszM/6bHAWDlF+5nLT7tKPu0CY0Qnf4ztN6QFtDBKIA9/7LtM27l
+         Vd1aw0j61e5sXrBL3nVaycEEKZWlLjEF6KVXMKViIf+iamlh0fAwNQs3hex3f9TP6iVG
+         ULihiHdCsOgWIvfo/7iN/4yNbgsJakxaEEtIaIlr0I5oaaWr2T9UWwNoaCMgyjh9GV7v
+         /j2UIS6UypwdzGnmbLnSb1xGj447/9bXiEL1HkZ9k7SITWhIrixi16i9TgRfK5YSLpAD
+         tAHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738827909; x=1739432709;
+        d=1e100.net; s=20230601; t=1738830014; x=1739434814;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JFjhp4JAR0g63YXhg7OTrrhc+8ZhArGsV0puAPZUzIE=;
-        b=utGmAQWCEHTHThXAiRonAqHqRMA1hA9TXMUIuzgWf0CzeOnvgjSwqdmhFe/dB72X7o
-         YBlG9GfMLbne2pwcWpO9bwIbf41g+GnImroOwGalwyQyLJBKAx77L43q0gX2i4Mcwx1y
-         1YyK3e2seDdMBM29FhDyfNsccy6lVmUiW5sSIW4TY2OKU0LDhOV7dONsVCLax0NjufXR
-         VA91jf2FU+uqLwrNRXM8BC8tOUAIwtb2HwqHOgxn3DRAlY7wCkrqicrHGg8+xv0txVvW
-         olu1cZKtmjrx90dQ5pKPiHnDD7zDncrKQCnvFFI4S/3797U3rk5jHkQuBQUckyDZcUFe
-         rVCA==
-X-Forwarded-Encrypted: i=1; AJvYcCXRR7J/SG35/Ta7kjizkYDesXvyOu/c+6j8PA/6FFO+CcPB4Iu3eRHsdoTjXjmgxeOmvTI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxnMMwl6v3Be9mpivvuFFVgDR4VFH/yrMFx2J5unrSVZUTlJIl5
-	VYFZXmSq8bYAU24NFrMxC/w2Eni+QTkUiynKk67eAJIn7Fln2H9OeBogafvkSVpX/umqkOex35e
-	bAx1frF2yzC3dyhvknDOivoQODlC5Omqh7+nx
-X-Gm-Gg: ASbGnctEkCO0giI1WqutUq2inRCqJfDfYT1O+chiWixcdIdrnTGU7+iO/F8Z3bflUE/
-	cY4uRBBMbAfrKNijLPR5BeEDia2TNl+22u3zrETz6wyaB/+57j/7nIkulpzHG/iJHB78k5bNEhQ
-	==
-X-Google-Smtp-Source: AGHT+IFEkhAzhQt7bj284mzDkh6CvlLNsFBpXO81ntvqDy54Y2oL2L3N7xGnIq0lEfwpyQHxL/BIaNQW4c3RciaASB4=
-X-Received: by 2002:a05:6e02:12c4:b0:3a7:cd21:493f with SMTP id
- e9e14a558f8ab-3d05d76e874mr1496745ab.26.1738827909071; Wed, 05 Feb 2025
- 23:45:09 -0800 (PST)
+        bh=+KKFRxvTKkIRVzPWFS+gc9L0xlnhlH0bcVyfiDKtFtA=;
+        b=R7cH/45gclk8n0gYaZpS60kxx64lT06LtR1l35w05MeoC3u5Sxbh0D8wITdp+9MEGK
+         h8r05s3TgFyOj4lqna07ht/USzisbQ4jyxdiiUb8Yp7Ni8HkrxkRtB26PuoeXKdLMd6b
+         cBU6xvnYWHU7Q4lEcZIeeGcwSLmeeq+y0WpjOyfVolvfeQFqq6RBcNkoNvmOM65WcvSH
+         O6AJtfP2J8n1BInu2NWSogxB/ySmUdBHWDo5f63IQYsR9sYOv/JOMECQ4ZWJOCBlQIc/
+         BYAWGMx9q5YijoNK8CYqur/G0/vtpBvNwu5K+5PUKNgV49VAu+NX6TdWqYDlpsa6YkQs
+         hDvg==
+X-Gm-Message-State: AOJu0YxNLcDPxvBe8kyuSJY9W+UaH9ibECM8gwrXKnfMPiow9N7I2sM+
+	vCOokONIjwwfP5SnCzjBuq12j4EHXFfdK6TLRs0RjHL6OCDvJn4VHahdQ+pDWCE0iGfTUxNK/Pg
+	mbmqRHBNVQBCdGiH6B25GxUkdfo3w4wkeyp9wNQ==
+X-Gm-Gg: ASbGncspIUASrXMS7AArsLVVC14fZnjbzhTRZkvyVpFNgHr5x4VGJZIb/lDcbTIavA7
+	8or1RDVksx1S111gJS4y+ASRy9xTYu7OYSDG7IQVKES25eHJVZ/+SJWtg1Dnx2vGR+g9u3hsAAt
+	ehomlAjxL5gNzjycw=
+X-Google-Smtp-Source: AGHT+IEDiIJNdCd57ZfdtaEVN/3xhTrCwYfUmuU+1JMnppeSE8LzhQi+CD/IlSePCDmwgvmwDpW8jib+Im13pkW5O7c=
+X-Received: by 2002:a17:907:3e11:b0:a9a:bbcc:5092 with SMTP id
+ a640c23a62f3a-ab75e2f15ffmr684125066b.39.1738830013673; Thu, 06 Feb 2025
+ 00:20:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <Z4f3fDXemAMpBNMS@google.com> <CAP-5=fWS8AzSo=vxcCFUaYMMth7FNMPNbCXjYOGApQ0AitqA2Q@mail.gmail.com>
- <Z5qjwRG5jX9zAGtf@google.com> <CAHBxVyHL4CO1xGpzkNfvxk71gUYdVyrXZkqZHZ+ZV2VxeGFf8w@mail.gmail.com>
- <Z51RxQslsfSrW2ub@google.com> <CAP-5=fWzzWqNAgmrDHav63Z+HMnSP0RZJ3Q7PQpuzP7Tf_HP7g@mail.gmail.com>
- <Z6FcHJFYGc7HzSna@google.com> <CAP-5=fW9f2mxuTV2FGCdhKm7M9g8v6VsLJJXTPTLRr5tUv9rOA@mail.gmail.com>
- <Z6LFp5jiED7_-weN@google.com> <CAP-5=fU6WSOK_N0NoLcMSSdaWAkdC2DUBwLqsLn_KA7m6dJyeQ@mail.gmail.com>
- <Z6RD7NuT9IPhOkIV@google.com>
-In-Reply-To: <Z6RD7NuT9IPhOkIV@google.com>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 5 Feb 2025 23:44:57 -0800
-X-Gm-Features: AWEUYZlERHrl9VStVAsu-lGlLnxk56tAdGd4eYDpAnruJOulDK3g982GeFJgu28
-Message-ID: <CAP-5=fV8rRMQyMDuy1vcxyEX9Gf8x0QJdVEP-K5krBec_A7mpA@mail.gmail.com>
-Subject: Re: [PATCH v5 4/4] perf parse-events: Reapply "Prefer sysfs/JSON
- hardware events over legacy"
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Atish Kumar Patra <atishp@rivosinc.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	James Clark <james.clark@linaro.org>, Ze Gao <zegao2021@gmail.com>, 
-	Weilin Wang <weilin.wang@intel.com>, Dominique Martinet <asmadeus@codewreck.org>, 
-	Jean-Philippe Romain <jean-philippe.romain@foss.st.com>, Junhao He <hejunhao3@huawei.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, Aditya Bodkhe <Aditya.Bodkhe1@ibm.com>, Leo Yan <leo.yan@arm.com>, 
-	Beeman Strong <beeman@rivosinc.com>, Arnaldo Carvalho de Melo <acme@redhat.com>
+References: <Z6OYbS4WqQnmzi2z@debian.debian> <5f6610a1-3cd0-764e-0f49-91af1004ea50@huaweicloud.com>
+In-Reply-To: <5f6610a1-3cd0-764e-0f49-91af1004ea50@huaweicloud.com>
+From: Yan Zhai <yan@cloudflare.com>
+Date: Thu, 6 Feb 2025 02:20:02 -0600
+X-Gm-Features: AWEUYZkiuqjywIeCSpX91jAJl2VLTme8PWd3srM8kIfgaH60HCogFdWij-XCr0I
+Message-ID: <CAO3-PbrGR-U0+TxgeUUZHSwvNw2Dx=o6_EYf60ND7BLiLA-xWQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: skip non existing key in generic_map_lookup_batch
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, Brian Vazquez <brianvv@google.com>, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	kernel-team@cloudflare.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 5, 2025 at 9:09=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
+On Thu, Feb 6, 2025 at 12:40=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wr=
+ote:
 >
-> On Tue, Feb 04, 2025 at 08:48:20PM -0800, Ian Rogers wrote:
-> > On Tue, Feb 4, 2025 at 5:58=E2=80=AFPM Namhyung Kim <namhyung@kernel.or=
-g> wrote:
-> You mean the -z flag which is documented in the man page and also it the
-> help message (perf top -h).  Anyone can read the doc can know it's
-> there.  Of course, people would prefer reading zines than man pages. :)
-
-I link to the patch. My point is that something as minor as making
-"perf top" behave as "top" does was too big a (user command line)
-regression to land - I strongly suspect nobody would notice. Your
-proposal breaks all non-core events on every perf command that takes
-PMU events. It is a bigger change.
-
-> > So, it would seem to me that
-> > changing something as fundamental as how all non-core events behave
-> > would be seen as a regression.
+> Hi,
 >
-> Yep, it'd be a regression.
-
-Agreed, you are arguing for a regression.
-
-> Which suffix do you mean?
-
-It's off topic. ARM added hex suffixes to PMUs representing physical
-memory addresses of memory controllers but then that makes cortex_a72
-look like it has a 3 character suffix. So perf assumes hex digits more
-than 4 characters long is a hex suffix, which of course it wouldn't be
-for a1000 (which is also somewhat close to being an old Acorn
-archimedes machine number ;-) ).
-
-> Anyway, the person looked up the intel webpage would be eager to learn
-> about performance related things.  Can we also assume if they also want
-> to learn about the perf tool itself? :)
-
-I'm not sure how turning data_read into
-uncore_imc_free_running/data_read/ is in anyway helping people
-understand perf? They want an event name that matches the
-documentation, manual, web site. It is what the vendors I've spoken to
-want as they use the event names across tools (fwiw oprofile doesn't
-even have a notion of a PMU). To my knowledge the PMU names are the
-wild west, often illogical and never mentioned in any kind of
-documentation. I have a hard time explaining how the suffixes work and
-I believe there are more conventions in the works where there can be
-multiple what we are currently calling suffixes.
-
-> If it's not the case, we have this:
->
->   $ perf record -e xxx
->   event syntax error: 'xxx'
->                        \___ Bad event name
->
->   Unable to find event on a PMU of 'xxx'
->   Run 'perf list' for a list of valid events
->
->    Usage: perf record [<options>] [<command>]
->       or: perf record [<options>] -- <command> [<options>]
->
->       -e, --event <event>   event selector. use 'perf list' to list avail=
-able events
->
-> So it says twice to run 'perf list' to see the events.  Then they can
-> run either:
->
->   $ perf list | grep xxx
->
-> or
->
->   $ perf list xxx
->
-> to see the actual name of the event available in the perf tool.
-
-Why was adding a PMU to an event name, working around ARM's PMU bug,
-such an unsurmontable problem that the original change was reverted?
-Because 1 person didn't want to have to write a PMU prefix and
-considered it a monumental regression having to do so.
-
-> >
-> > Even with this what would be the behavior of core events? You want
-> > legacy events to have priority over sysfs/json when there is no PMU.
-> > You know, and have stated not caring, RISC-V wants different and that
-> > it breaks Apple-M's PMUs for a fairly large range of kernel releases
-> > including 1 LTS kernel - the only reason I'm writing patches in this
-> > area in the 1st place. Software is soft and you can go fix software
-> > anywhere in the stack. Listening to vendors and not breaking everyone
-> > is the point-of-view these patches have been coming from. I find it
-> > very hard to have a conversation where this is just forgotten about
-> > and we're working on hypotheticals which seem to be both unwanted and
-> > implausible.
->
-> Sorry I don't want to repeat that too.  Correct me if I'm wrong:
-
-You are wrong.
-
-> 1. RISC-V is working on a solution with the current status and it's not
->    absoluted needed to change the current behavior.
-
-They said to you directly it was what they wanted, that's why I
-reposted this change and it is, has always been, in the cover letter.
-They've then followed up expressing their desire for this behavior but
-having to have a plan b as the original change was reverted and you
-are blocking this change landing.
-
-> 2. Apple-M is fixed already.
-
-No, James tried to repro the bug on a Juno board, not an Apple M, and
-didn't succeed. I don't know what kernel he tried. I was told by Mark
-Rutland (at LPC) that the tool fix was absolutely necessary and the
-PMU driver wouldn't be fixed, hence the series flipping behavior that
-I thought Intel would most likely block and wasn't keen to do in the
-1st place (not least wade through all the test behavior changes and
-the bug tail). All of this was premised on a threat of reverting all
-of the hybrid support so that Apple M could be made to work again, and
-I was trying to do a less worse alternative.
-https://lore.kernel.org/r/20231123042922.834425-1-irogers@google.com
-
-> >
-> > I don't know why people (yourself, Linus) keep wanting to show me the
-> > perf list output. It is arbitrary. I rewrote it and changed the
-> > behavior of all uncore PMUs within it (we didn't used to deduplicate
-> > based on the PMU suffix). It is nice that people think it reads like
-> > some religious text.
->
-> I think it's what we want users to know how to use the events.
-
-I don't understand what you are trying to say. I'm saying the behavior
-of perf list in its output is arbitrary. We use the same printing code
-for every kind of event. An aesthetic decision to put things on a line
-does not imply that it is more valid to use or not use a PMU, it just
-happens to be what the tool does. Did I break perf list as if you look
-in old perf list you see:
-```
-$ perf list
-List of pre-defined events (to be used in -e or -M):
-
- duration_time                                      [Tool event]
-...
-```
-while now you see:
-```
-$ perf list
-List of pre-defined events (to be used in -e or -M):
-...
-tool:
- duration_time
-      [Wall clock interval time in nanoseconds. Unit: tool]
-...
-```
-I'm hoping people find it useful to have the unit documented.
-
-> > Why is the formatting different in perf list for
-> > json specified events? Well it is because json events have
-> > descriptions and the events you are showing with a PMU don't have a
-> > description. I think because there is no description, an effort was
-> > made to keep the output compact and put the PMU and event name
-> > together. It wasn't trying to enter some kind of long lasting marriage
-> > that the event name should only ever be used with the PMU.
->
-> I like the description but I don't like the formatting.  I think I
-> understand why it looks like that but it could be different.  Anyway,
-> I don't think showing PMU name is related to having descriptions.
-
-No, it has more to do with how I was feeling about filling in two
-string fields called name and alias when rewriting the perf list code.
-I added aliases containing the PMU name just to add a little bit more
-detail when there seemed to be little documentation with certain
-events. I never intended placing the PMU names into any events to be a
-commitment that all non-core PMU events would need a PMU prefix and to
-break all such people using those events.
-
-> > What happens if an event is both in sysfs and json? Well the sysfs even=
+> On 2/6/2025 12:57 AM, Yan Zhai wrote:
+> > The generic_map_lookup_batch currently returns EINTR if it fails with
+> > ENOENT and retries several times on bpf_map_copy_value. The next batch
+> > would start from the same location, presuming it's a transient issue.
+> > This is incorrect if a map can actually have "holes", i.e.
+> > "get_next_key" can return a key that does not point to a valid value. A=
 t
-> > will get the description from the json and then I believe it won't
-> > behave as you show. Did the event get broken, as perf list no longer
-> > shows it with a PMU, by having a json description written? I think not
-> > and I think having descriptions with events is a good thing.
+> > least the array of maps type may contain such holes legitly. Right now
+> > these holes show up, generic batch lookup cannot proceed any more. It
+> > will always fail with EINTR errors.
+> >
+> > Rather, do not retry in generic_map_lookup_batch. If it finds a non
+> > existing element, skip to the next key.
+> >
+> > Fixes: cb4d03ab499d ("bpf: Add generic support for lookup batch op")
+> > Closes: https://lore.kernel.org/bpf/Z6JXtA1M5jAZx8xD@debian.debian/
+> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
+> > ---
+> >  kernel/bpf/syscall.c                          | 16 ++----
+> >  .../bpf/map_tests/map_in_map_batch_ops.c      | 54 ++++++++++++++-----
+> >  2 files changed, 45 insertions(+), 25 deletions(-)
+> >
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index c420edbfb7c8..5691fc0d370d 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -1979,7 +1979,7 @@ int generic_map_lookup_batch(struct bpf_map *map,
+> >       void __user *values =3D u64_to_user_ptr(attr->batch.values);
+> >       void __user *keys =3D u64_to_user_ptr(attr->batch.keys);
+> >       void *buf, *buf_prevkey, *prev_key, *key, *value;
+> > -     int err, retry =3D MAP_LOOKUP_RETRIES;
+> > +     int err;
+> >       u32 value_size, cp, max_count;
+> >
+> >       if (attr->batch.elem_flags & ~BPF_F_LOCK)
+> > @@ -2026,14 +2026,8 @@ int generic_map_lookup_batch(struct bpf_map *map=
+,
+> >               err =3D bpf_map_copy_value(map, key, value,
+> >                                        attr->batch.elem_flags);
+> >
+> > -             if (err =3D=3D -ENOENT) {
+> > -                     if (retry) {
+> > -                             retry--;
+> > -                             continue;
+> > -                     }
+> > -                     err =3D -EINTR;
+> > -                     break;
+> > -             }
+> > +             if (err =3D=3D -ENOENT)
+> > +                     goto next_key;
+> >
+> >               if (err)
+> >                       goto free_buf;
+> > @@ -2048,12 +2042,12 @@ int generic_map_lookup_batch(struct bpf_map *ma=
+p,
+> >                       goto free_buf;
+> >               }
+> >
+> > +             cp++;
+> > +next_key:
+> >               if (!prev_key)
+> >                       prev_key =3D buf_prevkey;
+> >
+> >               swap(prev_key, key);
+> > -             retry =3D MAP_LOOKUP_RETRIES;
+> > -             cp++;
+> >               cond_resched();
+> >       }
+> >
 >
-> That's bad.  Probably we should fix it takes only one of the sources and
-> change the JSON event not to clash with sysfs.
+> Let's move the new thread for further discussion.
+>
+> >We are probably not on the same page. Let me clarify:
+>
+> >By "retry logic" I mean this code snippet:
+> >               if (err =3D=3D -ENOENT) {
+> >                       if (retry) {
+> >                               retry--;
+> >                               continue;
+> >                       }
+> >                       err =3D -EINTR;
+> >                       break;
+> >               }
+>
+>
+> Yes, the retry logic doesn't change the previous key. Thanks for the
+> clarifying.
+> > And by "skipping to the next key", it's simply
+> >
+> >   if (err =3D=3D -ENOENT)
+> >        goto next_key;
+> >
+> > Note the "next_key" label was not in the current codebase. It is only
+> > in my posted patch. I don't think this would break lpm_trie unless I
+> > missed something.
+>
+> I was trying to say that the proposed patch may break the lookup_batch
+> operation for lpm_trie, and let me explain step by step:
+>
+> For LPM trie map:
+> (1) ->map_get_next_key(map, prev_key, key) returns a valid key
+>
+> (2) bpf_map_copy_value() return -ENOMENT
+> It means the key must be deleted concurrently.
+>
 
-No, you are talking about breaking everything already, let's not break
-it yet further - not least as we lack a reasonable way to test it. I
-think if you are serious about having such breaking changes then it is
-best you add a new command line option, like with libpfm events.
+I see what you mean now, thanks for the detailed explanation!
 
-Thanks,
-Ian
+So for lpm_trie, if an element is deleted between get_next_key and
+copy_value, then retry would still proceed to its next tree node. But
+with or without retry, I think we cannot prevent the key from cycling
+back to the beginning: an element can be deleted after copy_value, so
+the key becomes invalid. After swap with prev_key and call
+bpf_get_next_key, it cycles back to the leftmost. Similar can happen
+if during retry the prev_key also gets invalidated. IIUC the rcu
+locking in lookup really cannot prevent the tree structure from
+changes.
+
+On the other hand, bpf_map_get_next_key manual already specifies "If a
+key is not found, the operation returns zero and sets the next_key
+pointer to the key of the first element.". IMHO it probably makes more
+sense that, regardless of normal or batch lookup, it is ultimately the
+user's responsibility to properly synchronize, or deduplicate what is
+returned from the kernel. I intend to keep the "skip to next" to save
+the unnecessary complexity here, unless there are strong objections
+that I should not.
+
+> (3) goto next_key
+> It swaps the prev_key and key
+>
+> (4) ->map_get_next_key(map, prev_key, key) again
+> prev_key points to a non-existing key, for LPM trie it will treat just
+> like prev_key=3DNULL case, the returned key will be duplicated.
+>
+>
+> > diff --git a/tools/testing/selftests/bpf/map_tests/map_in_map_batch_ops=
+.c b/tools/testing/selftests/bpf/map_tests/map_in_map_batch_ops.c
+> > index 66191ae9863c..b38be71f06be 100644
+>
+> It is better to split the update of map_tests into a separated patch and
+> it will be more friendly for stable backport.
+
+Sure I can do that.
+
+> > --- a/tools/testing/selftests/bpf/map_tests/map_in_map_batch_ops.c
+> > +++ b/tools/testing/selftests/bpf/map_tests/map_in_map_batch_ops.c
+> > @@ -120,11 +120,12 @@ static void validate_fetch_results(int outer_map_=
+fd,
+> >
+> >  static void fetch_and_validate(int outer_map_fd,
+> >                              struct bpf_map_batch_opts *opts,
+> > -                            __u32 batch_size, bool delete_entries)
+> > +                            __u32 batch_size, bool delete_entries,
+> > +                            bool has_holes)
+> >  {
+> > +     int err, max_entries =3D OUTER_MAP_ENTRIES - !!has_holes;
+> >       __u32 *fetched_keys, *fetched_values, total_fetched =3D 0;
+> >       __u32 batch_key =3D 0, fetch_count, step_size;
+> > -     int err, max_entries =3D OUTER_MAP_ENTRIES;
+> >       __u32 value_size =3D sizeof(__u32);
+> >
+> >       /* Total entries needs to be fetched */
+> > @@ -135,9 +136,9 @@ static void fetch_and_validate(int outer_map_fd,
+> >             "error=3D%s\n", strerror(errno));
+> >
+> >       for (step_size =3D batch_size;
+> > -          step_size <=3D max_entries;
+> > +          step_size < max_entries + batch_size; /* allow read partial =
+*/
+> >            step_size +=3D batch_size) {
+> > -             fetch_count =3D step_size;
+> > +             fetch_count =3D batch_size;
+>
+> The change "fetch_count =3D batch_size" may fail the lookup batch
+> operation of hash table, because the element in one bucket may be
+> greater than batch_size and it will return -ENOSPC constantly. And it
+> seems the original implementation of fetch_and_validate() is buggy,
+> because for hash map, the returned fetched_count may be less than the
+> passed count when there are too many elements in the same bucket. I
+> don't know the reason why the bug doesn't show up.
+
+ACK on the ENOSPC part. Should indeed increase the fetch size. The
+original code was buggy, my patch failed BPF CI for the unrelated hash
+of maps case. The fetch loop should not have assumed a full batch
+being returned. But it's purely luck whether tests would fail in
+practice, my local vmtests all passed >.< I will fix this in V2.
+
+> >               err =3D delete_entries
+> >                     ? bpf_map_lookup_and_delete_batch(outer_map_fd,
+> >                                     total_fetched ? &batch_key : NULL,
+> > @@ -184,18 +185,19 @@ static void fetch_and_validate(int outer_map_fd,
+> >  }
+> >
+> >  static void _map_in_map_batch_ops(enum bpf_map_type outer_map_type,
+> > -                               enum bpf_map_type inner_map_type)
+> > +                               enum bpf_map_type inner_map_type,
+> > +                               bool has_holes)
+> >  {
+> > +     __u32 max_entries =3D OUTER_MAP_ENTRIES - !!has_holes;
+> >       __u32 *outer_map_keys, *inner_map_fds;
+> > -     __u32 max_entries =3D OUTER_MAP_ENTRIES;
+> >       LIBBPF_OPTS(bpf_map_batch_opts, opts);
+> >       __u32 value_size =3D sizeof(__u32);
+> >       int batch_size[2] =3D {5, 10};
+> >       __u32 map_index, op_index;
+> >       int outer_map_fd, ret;
+> >
+> > -     outer_map_keys =3D calloc(max_entries, value_size);
+> > -     inner_map_fds =3D calloc(max_entries, value_size);
+> > +     outer_map_keys =3D calloc(OUTER_MAP_ENTRIES, value_size);
+> > +     inner_map_fds =3D calloc(OUTER_MAP_ENTRIES, value_size);
+> >       CHECK((!outer_map_keys || !inner_map_fds),
+> >             "Memory allocation failed for outer_map_keys or inner_map_f=
+ds",
+> >             "error=3D%s\n", strerror(errno));
+> > @@ -209,6 +211,24 @@ static void _map_in_map_batch_ops(enum bpf_map_typ=
+e outer_map_type,
+> >                       ((outer_map_type =3D=3D BPF_MAP_TYPE_ARRAY_OF_MAP=
+S)
+> >                        ? 9 : 1000) - map_index;
+> >
+> > +     /* This condition is only meaningful for array of maps.
+> > +      *
+> > +      * max_entries =3D=3D OUTER_MAP_ENTRIES - 1 if it is true. Say
+> > +      * max_entries is short for n, then outer_map_keys looks like:
+> > +      *
+> > +      *   [n, n-1, ... 2, 1]
+> > +      *
+> > +      * We change it to
+> > +      *
+> > +      *   [n, n-1, ... 2, 0]
+> > +      *
+> > +      * So it will leave key 1 as a hole. It will serve to test the
+> > +      * correctness when batch on an array: a "non-exist" key might be
+> > +      * actually allocated and returned from key iteration.
+> > +      */
+> > +     if (has_holes)
+> > +             outer_map_keys[max_entries - 1]--;
+> > +
+> >       /* batch operation - map_update */
+> >       ret =3D bpf_map_update_batch(outer_map_fd, outer_map_keys,
+> >                                  inner_map_fds, &max_entries, &opts);
+> > @@ -219,12 +239,14 @@ static void _map_in_map_batch_ops(enum bpf_map_ty=
+pe outer_map_type,
+> >       /* batch operation - map_lookup */
+> >       for (op_index =3D 0; op_index < 2; ++op_index)
+> >               fetch_and_validate(outer_map_fd, &opts,
+> > -                                batch_size[op_index], false);
+> > +                                batch_size[op_index], false,
+> > +                                has_holes);
+> >
+> >       /* batch operation - map_lookup_delete */
+> >       if (outer_map_type =3D=3D BPF_MAP_TYPE_HASH_OF_MAPS)
+> >               fetch_and_validate(outer_map_fd, &opts,
+> > -                                max_entries, true /*delete*/);
+> > +                                max_entries, true /*delete*/,
+> > +                                has_holes);
+> >
+> >       /* close all map fds */
+> >       for (map_index =3D 0; map_index < max_entries; map_index++)
+>
+> OUTER_MAP_ENTRIES instead of max_entries ?
+
+Good catch!
+
+thanks
+Yan
+
+> > @@ -237,16 +259,20 @@ static void _map_in_map_batch_ops(enum bpf_map_ty=
+pe outer_map_type,
+> >
+> >  void test_map_in_map_batch_ops_array(void)
+> >  {
+> > -     _map_in_map_batch_ops(BPF_MAP_TYPE_ARRAY_OF_MAPS, BPF_MAP_TYPE_AR=
+RAY);
+> > +     _map_in_map_batch_ops(BPF_MAP_TYPE_ARRAY_OF_MAPS, BPF_MAP_TYPE_AR=
+RAY, false);
+> >       printf("%s:PASS with inner ARRAY map\n", __func__);
+> > -     _map_in_map_batch_ops(BPF_MAP_TYPE_ARRAY_OF_MAPS, BPF_MAP_TYPE_HA=
+SH);
+> > +     _map_in_map_batch_ops(BPF_MAP_TYPE_ARRAY_OF_MAPS, BPF_MAP_TYPE_HA=
+SH, false);
+> >       printf("%s:PASS with inner HASH map\n", __func__);
+> > +     _map_in_map_batch_ops(BPF_MAP_TYPE_ARRAY_OF_MAPS, BPF_MAP_TYPE_AR=
+RAY, true);
+> > +     printf("%s:PASS with inner ARRAY map with holes\n", __func__);
+> > +     _map_in_map_batch_ops(BPF_MAP_TYPE_ARRAY_OF_MAPS, BPF_MAP_TYPE_HA=
+SH, true);
+> > +     printf("%s:PASS with inner HASH map with holes\n", __func__);
+> >  }
+> >
+> >  void test_map_in_map_batch_ops_hash(void)
+> >  {
+> > -     _map_in_map_batch_ops(BPF_MAP_TYPE_HASH_OF_MAPS, BPF_MAP_TYPE_ARR=
+AY);
+> > +     _map_in_map_batch_ops(BPF_MAP_TYPE_HASH_OF_MAPS, BPF_MAP_TYPE_ARR=
+AY, false);
+> >       printf("%s:PASS with inner ARRAY map\n", __func__);
+> > -     _map_in_map_batch_ops(BPF_MAP_TYPE_HASH_OF_MAPS, BPF_MAP_TYPE_HAS=
+H);
+> > +     _map_in_map_batch_ops(BPF_MAP_TYPE_HASH_OF_MAPS, BPF_MAP_TYPE_HAS=
+H, false);
+> >       printf("%s:PASS with inner HASH map\n", __func__);
+> >  }
+>
 
