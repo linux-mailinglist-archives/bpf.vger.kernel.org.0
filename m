@@ -1,79 +1,88 @@
-Return-Path: <bpf+bounces-50679-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50680-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CC90A2AFD0
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 19:07:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4F84A2B131
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 19:34:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 718547A3727
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 18:06:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D501C7A3127
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2025 18:33:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D77319DF4F;
-	Thu,  6 Feb 2025 18:06:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1227919D062;
+	Thu,  6 Feb 2025 18:30:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NYiy6Hrz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22A7719D062;
-	Thu,  6 Feb 2025 18:06:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD11518B03;
+	Thu,  6 Feb 2025 18:30:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738865165; cv=none; b=Q9y64jH62ps48mwH1o7FTpggmBpHKk9gAMDHUSMo7tz0PkeRvq3JEa3wM0qYRiePKL55mk/xYeu7llvbW9gsN6YxhqOnOKjHAWaSiCklEYoMlWnFH/3Tr4K6s6Wefv/b9cV3iWAHFMIAqy+9UQ2oUpfy8OjfhczI2F6Cj42N0s4=
+	t=1738866627; cv=none; b=OhlDJQJVRYA8+JC+cqI6ysb0rICF+qiNcmAHJ/QIhd5u0uFB8nGCv3uOZ/3RnXLXHrVVmkdsv+Fo+8ZtqYtjpoQLak7gJkLH+r8njaGw4XSISM3gltk44QgoAIFQqjGRSJ+w+e19QFoh/TehZefBNj1xOUm/hu7RCTahX7vg1Hg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738865165; c=relaxed/simple;
-	bh=RCN4JyDQaZ/01O2yrW7rKLv42aK+2wGHcwKxrJeCgjI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XAkCBVi75R6l+lhtSogxT42AnyaeP3p6bJemLeb7mK+9JwZupDUw5qS9yPHJwgEsXfzpAi4KDl0kdK464ztb+/7rIWh9MdMzccuEHht5Nic28dUgNXUB0sYSAD4I/aHc68q9bxvoYamZPyAy74bLfLjI5NlCrtlEhl4u1nOpRfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=ecsmtp.an.intel.com; spf=none smtp.mailfrom=ecsmtp.an.intel.com; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=ecsmtp.an.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ecsmtp.an.intel.com
-X-CSE-ConnectionGUID: Avbi0IbgRMSbS4pkmo51EQ==
-X-CSE-MsgGUID: KiZv3842RVaIkiSWacAJTQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11336"; a="38716727"
+	s=arc-20240116; t=1738866627; c=relaxed/simple;
+	bh=BnYJlH4rr0VHSY3PpIvQ/yYitDxtWFPagarnTGQOlhg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OLcIp49m/XMr8r/JIkg3zy/G9MW6WMq3UeRMpUO9TwN8Z7KJNGoh2eCQrcH+ipnspJNs1U6F6VNPmGFu7VyOnygCP5Cvn5RImDKXD3rKzESZObxyfPk8NwfQnvHgYsRKWSq/4r4yAeRvAqMCcPgoAc1Z+NE9Yn1zKpCGofGCK4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NYiy6Hrz; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1738866626; x=1770402626;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=BnYJlH4rr0VHSY3PpIvQ/yYitDxtWFPagarnTGQOlhg=;
+  b=NYiy6HrzbTGjiHoqQNRi/BK0AsGlKKursNw20KG5Ax/GKC24wwq9sLIS
+   ldlksF+5SA0tUv+wS+F3Xb5wiEQEU6IdjOOG40tqAB2fxQg3tbPSeruTk
+   k1ypIuTuLlKjF/VEOqUvy5hnz3/4mWC+lFnCkoCKJChbmk3Be38wmtm8+
+   y8dc3DR1vypPvqicFQMkNQK7l0FrtSsPsSjdWeDmiDL0SsseeIvkkwjOQ
+   GNeG2T4YQ0rUc4svFkOdX20FEhIbzmETwg/RCFxpOdeuni5ewWrhoyeDD
+   X6y3pdyB42bfL3tCy++PnSC77B77Xgm0TEGZmdJ/jmk6zhZyliQhdZoQU
+   Q==;
+X-CSE-ConnectionGUID: AG7DGk9GSTmATS5uhoIj3A==
+X-CSE-MsgGUID: aU24Cst3QzyNjgyQpgAYgA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11336"; a="49734400"
 X-IronPort-AV: E=Sophos;i="6.13,264,1732608000"; 
-   d="scan'208";a="38716727"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2025 10:06:04 -0800
-X-CSE-ConnectionGUID: bMMqnKo8SrutgQUqD9zgVA==
-X-CSE-MsgGUID: GEU7bGbAS363/pVUtu1vDg==
+   d="scan'208";a="49734400"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2025 10:30:24 -0800
+X-CSE-ConnectionGUID: xcGUcqkbS0SgQC+pW8peeg==
+X-CSE-MsgGUID: WgcGRZxOROayyX7uKsLYgg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="134527257"
-Received: from anls2093.an.intel.com ([10.123.15.112])
-  by fmviesa002.fm.intel.com with ESMTP; 06 Feb 2025 10:06:03 -0800
-Received: from aus-labsrv3.an.intel.com (aus-labsrv3.an.intel.com [10.123.116.23])
-	by anls2093.an.intel.com (Postfix) with SMTP id 555DA1007560;
-	Thu,  6 Feb 2025 12:06:01 -0600 (CST)
-Received: by aus-labsrv3.an.intel.com (sSMTP sendmail emulation); Thu, 06 Feb 2025 12:06:01 -0600
-From: "sreedevi.joshi" <joshisre@ecsmtp.an.intel.com>
-To: edumazet@gmail.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net
-Cc: magnus.karlsson@intel.com,
-	maciej.fijalkowski@intel.com,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	almasrymina@google.com,
-	asml.silence@gmail.com,
-	lorenzo@kernel.org,
-	aleksander.lobakin@intel.com,
-	chopps@labn.net,
-	bigeasy@linutronix.de,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
+X-IronPort-AV: E=Sophos;i="6.13,264,1732608000"; 
+   d="scan'208";a="111065865"
+Received: from newjersey.igk.intel.com ([10.102.20.203])
+  by orviesa009.jf.intel.com with ESMTP; 06 Feb 2025 10:30:19 -0800
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+To: Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	"Jose E. Marchesi" <jose.marchesi@oracle.com>,
+	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Jason Baron <jbaron@akamai.com>,
+	Casey Schaufler <casey@schaufler-ca.com>,
+	Nathan Chancellor <nathan@kernel.org>,
 	bpf@vger.kernel.org,
-	Sreedevi Joshi <sreedevi.joshi@intel.com>
-Subject: [RFC PATCH net 1/1] net: check transport_header before adding offset
-Date: Thu,  6 Feb 2025 12:05:51 -0600
-Message-Id: <20250206180551.1716413-2-sreedevi.joshi@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20250206180551.1716413-1-sreedevi.joshi@intel.com>
-References: <20250206180551.1716413-1-sreedevi.joshi@intel.com>
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/4] xsk: the lost bits from Chapter III
+Date: Thu,  6 Feb 2025 19:26:25 +0100
+Message-ID: <20250206182630.3914318-1-aleksander.lobakin@intel.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,50 +91,41 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Sreedevi Joshi <sreedevi.joshi@intel.com>
+Before introducing libeth_xdp, we need to add a couple more generic
+helpers. Notably:
 
-skb_headers_offset_update() adds offset to the transport_header
-of skb without checking if it was set. When the transport header
-is not set, it's value is 65535. Adding offset to this causes it to
-roll over and makes the transport_header value to be less than
-network_header.
-When a tc ingress hook is attached and it invokes bpf_skb_change_tail()
-(to strip off extra bytes at the end of packet or to attach some
-extra bytes), the logic in __bpf_skb_change_tail() that calculates
-the min_len fails due to the transport_header being incorrectly set.
+* 01: add generic loop unrolling hint helpers;
+* 04: add helper to get both xdp_desc's DMA address and metadata
+  pointer in one go, saving several cycles and hotpath object
+  code size in drivers (especially when unrolling).
 
-This issue was discovered when testing with veth interface with both xdp and
-tc ingress hooks are attached. veth_convert_skb_to_xdp_buff() calls
-skb_pp_cow_data() and it results in this function being called. Since
-transport_header is incremented without checking, it results in the condition
-where transport_header < network_header. __netif_receive_skb_core() when it
-receives this skb, skips reset of the transport header as it is already set.
+Bonus:
 
-This is specific to XDP path. When there is no XDP hook, the logic takes a
-different route (__netif_rx()) and the reset of the transport header happens in
-__netif_receive_skb_core() before it reaches tc ingress hook.
+* 02, 03: convert two drivers which were using custom macros to
+  generic unrolled_count() (trivial, no object code changes).
 
-Fixes: f5b1729443fd ("net: Add skb_headers_offset_update helper function.")
-Signed-off-by: Sreedevi Joshi <sreedevi.joshi@intel.com>
+Alexander Lobakin (4):
+  unroll: add generic loop unroll helpers
+  i40e: use generic unrolled_count() macro
+  ice: use generic unrolled_count() macro
+  xsk: add helper to get &xdp_desc's DMA and meta pointer in one go
+
+ drivers/net/ethernet/intel/i40e/i40e_xsk.h | 10 +----
+ drivers/net/ethernet/intel/ice/ice_xsk.h   |  8 ----
+ include/linux/unroll.h                     | 44 +++++++++++++++++++++
+ include/net/xdp_sock_drv.h                 | 43 ++++++++++++++++++--
+ include/net/xsk_buff_pool.h                |  8 ++++
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c |  4 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c   |  4 +-
+ net/xdp/xsk_buff_pool.c                    | 46 ++++++++++++++++++++--
+ 8 files changed, 141 insertions(+), 26 deletions(-)
+
 ---
- net/core/skbuff.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index a441613a1e6c..79b10abd95f1 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -2098,7 +2098,8 @@ void skb_headers_offset_update(struct sk_buff *skb, int off)
- 	if (skb->ip_summed == CHECKSUM_PARTIAL)
- 		skb->csum_start += off;
- 	/* {transport,network,mac}_header and tail are relative to skb->head */
--	skb->transport_header += off;
-+	if (skb_transport_header_was_set(skb))
-+		skb->transport_header += off;
- 	skb->network_header   += off;
- 	if (skb_mac_header_was_set(skb))
- 		skb->mac_header += off;
+Note: 04 had reviews already; in this series, I reused the existing
+helpers instead of copying them and eliminated the compound
+assignment in favor of a field-by-field one, which generates
+the same Asm code (requested by Jakub).
 -- 
-2.25.1
+2.48.1
 
 
