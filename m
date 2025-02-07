@@ -1,274 +1,279 @@
-Return-Path: <bpf+bounces-50772-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50773-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23484A2C54E
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 15:31:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88B77A2C61A
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 15:50:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02C7618885B3
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 14:31:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FCE916B9FF
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 14:49:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 943AE23FC52;
-	Fri,  7 Feb 2025 14:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6A01240602;
+	Fri,  7 Feb 2025 14:46:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KpTOFOPk"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Qt/Q3gl0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCC4921E08D;
-	Fri,  7 Feb 2025 14:30:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738938629; cv=fail; b=Yv416boGx8ICVcNL8q8Ar4ed6pIpSLR7h9tpxbuh8/RSmiWVsQ5ZHoAiUw9Hfi7xx/u2t6hDL62+XO1dH5QB1KW6CAqZCoXIkEIOB1eStyQnYuu3ZHMWflPwluX29YQdQFSFpf/emfoO8Isxr1+IZNddKiwBDVAaWTPFm11mK+Q=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738938629; c=relaxed/simple;
-	bh=NEQef56yIKEFJVV/7+rRfdFUvsXcLkQ+/gP1B+xMMAA=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=jwktbg/gHC0lcBAYpus97ZXnLc5Jlomd9MwYuXRyun8/mtSmwb1XCdm+SDjXAjFRkziKrVWNuA9E92PUaljOIYrtssSHKYjlKMKGaH4n4xuvEx3DhJl2HnLAD/mKRaofVGiRov5R5sZHK/j7CNoTpUi7jJhTkaerJHZR2I7IkOQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KpTOFOPk; arc=fail smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE5F53DAC13;
+	Fri,  7 Feb 2025 14:46:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1738939584; cv=none; b=n8WYqTGMxuN7Hkd1RV1dKMAXF/VD762e7djRjrfd9dG3Fnz+DjLzbwssccYEoTAR9TxxPTXoflebq3vMFnpAYLTJIOTfXS73WcUexGly7L1YNmI+ICtu8LRmrOWvSRWAdWWBm+EWmGfg2RUSwykoACvAqjAqA9OILoHbo6M3+rk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1738939584; c=relaxed/simple;
+	bh=vC/OWDm/dfWU9Rdnb1rw4VdhifWMLCVsGEWZ1Y/wwg0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p5PjKVELA3p7dyNcfErBMcHXABQcZyrIByfSUZTFk2I5oKp7E2qQXcpxrNKibb4+FVZA3i9XlkVQgYlQ2+3rohohUzbLi54wFpCjqu2ohAkM/Y3u9908x27jBPhOnkQ6w4D1kWlekRQD+nZNVOjNL29pH9czg64uEvIZUyzINYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Qt/Q3gl0; arc=none smtp.client-ip=198.175.65.10
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738938627; x=1770474627;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=NEQef56yIKEFJVV/7+rRfdFUvsXcLkQ+/gP1B+xMMAA=;
-  b=KpTOFOPk+UxIaCPJKYthDSPMJXTEohR8fNdzEXzmATpmzpq0vR6qxFcp
-   5g9DtNUxpoPJdXtg5PozWj89KpW74W2zZS955cDgH2+Kgrxg6WrytGvwv
-   KRKGLyfpUx2LZWxkeYHZod7Hky7L8850ACnBZoT8urHntR4KCduM2VPIN
-   ovWTQlz95OqSeuHRPc19Phf8B3Svs0P5NOBcZAYlyp+rgrxV1mo1a6PwE
-   UgkF9+psDg93zp3FtpAiRJtDkMOJchlfEGlxTn9ovabb/ZltmJF4DGtyP
-   8vyl0mOTqES0sE1oE/E8Jg0xSL3MdOxBH60Qz8ltl7R1OMVbzk/lzAU51
-   A==;
-X-CSE-ConnectionGUID: tNuTaoRyQqSunGAfZXw9bg==
-X-CSE-MsgGUID: x5UGZWILSPuZCJ6HoVrM1Q==
-X-IronPort-AV: E=McAfee;i="6700,10204,11338"; a="50218884"
+  t=1738939581; x=1770475581;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vC/OWDm/dfWU9Rdnb1rw4VdhifWMLCVsGEWZ1Y/wwg0=;
+  b=Qt/Q3gl0kRxvGbxX3H59VkodAfn2jAMCMOYt3EohJ4NHw1TMvBShN4Rx
+   78x4aUaR1nV9LQBgCSx8xEpxSs0zsVUtAxBI5AL7Ex16vvwcNehnThJR0
+   29PX7GWUsNa9inPrMNJ45DKMbNXSOYzL8mk6CxFrQckVva/Vp4Tbki/Vh
+   Qa7XTLSiwpk7eWNKI4kCRVNyvgrljwhUPVtGkRgiScSv/+EgT/mM4F+wW
+   ymnCRtCa6EfAHAmIyrLJnI0+DGdAWLBY836oQK/eVpxfhH+iV4Du7QLAe
+   5RGsMBCsyYgTHrvdPYWksQdfifRlJgr+p+DRcGptFFiNePdZHblVnbSsd
+   w==;
+X-CSE-ConnectionGUID: h/ZDeoKVRp2oMWf6x7PWYA==
+X-CSE-MsgGUID: 0Tl35fpmTmqvjJndwqleWQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11338"; a="56997470"
 X-IronPort-AV: E=Sophos;i="6.13,267,1732608000"; 
-   d="scan'208";a="50218884"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 06:30:18 -0800
-X-CSE-ConnectionGUID: eZ5y5owbRGGMR9idiuCcNQ==
-X-CSE-MsgGUID: u5YLIjBkSJ+v/+Pxa66O8w==
+   d="scan'208";a="56997470"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 06:46:21 -0800
+X-CSE-ConnectionGUID: PLb9YVuETr67WQ2KncdH5Q==
+X-CSE-MsgGUID: 4WBlToFGQvOsbbsT4/3MBQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="116146535"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmviesa005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Feb 2025 06:30:15 -0800
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.44; Fri, 7 Feb 2025 06:30:14 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.44 via Frontend Transport; Fri, 7 Feb 2025 06:30:14 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.44; Fri, 7 Feb 2025 06:30:14 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Mq8h8GA5zFkviEGCoFph8v7+zAkDATwDm+HjFPOympw5C/iKGDEtojjRqKlVi14HIEZ+c5Q8OlFUTaj9hVuEOHJZly6NwJuvnM1RW0eQjmjNWoZI7/UqUMiVeiKgYslHli4MTFRqqtk1vanpoYqMjsUFgDkUq3y5A/yZZa6RyzbEFehISrNf71hCD1Cn7wvT0hwATogLySQ3IucPtyEn7r+Xf1AZe6X2CgyR9Jb++7hCygUxWF38rXS2lTK8RH/zsBvMRqnu4FwZM3KRGtDmxSXqx5Oz0e6KzcNZzNlz21hY/QyE+9DawcBXP5xhhptJwNP9UZf+Rqy4y2UKJKuwGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EfjROpaZSgsVlv9+Fx91/FaLBuLBchiSiT2zqIRiGBI=;
- b=H3+5kdLVHnTsgusfILpmqgdsFbAfZPuHX3kwSp9QjONmxiQFycsBaPs17NaA49u6ACK/GxBIJpNwTkEInJ3o+GQ1QFBwhADOPcr4IYVPTZGHqt12UedFyngxP80BFXcUSV+DOtkwwNLbJjKB2ftmdTTFLjYPiDDYFlGq/zIHXOrmBku/BaKYw8Yr6Mbnw0gDiZfxW95pFkIBVs+f9i3PaXYKhsfMwhjb7qTlSPkFo6FKFNQNkHC8vTh5w4FxhBY1YBgjWBthwPbAJ1TczpyvGSGEesYfQEPgEzmCls3qsdWMKXyfn8PDXjT8i7mGb2WchSeubyQbByrtqHtWIOLTvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from IA1PR11MB6289.namprd11.prod.outlook.com (2603:10b6:208:3e7::9)
- by SA1PR11MB8253.namprd11.prod.outlook.com (2603:10b6:806:250::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8422.11; Fri, 7 Feb
- 2025 14:30:11 +0000
-Received: from IA1PR11MB6289.namprd11.prod.outlook.com
- ([fe80::ec3c:2931:b0e8:c5b5]) by IA1PR11MB6289.namprd11.prod.outlook.com
- ([fe80::ec3c:2931:b0e8:c5b5%4]) with mapi id 15.20.8422.009; Fri, 7 Feb 2025
- 14:30:11 +0000
-From: "Joshi, Sreedevi" <sreedevi.joshi@intel.com>
-To: sreedevi.joshi <joshisre@ecsmtp.an.intel.com>, "edumazet@gmail.com"
-	<edumazet@gmail.com>, "kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>, "horms@kernel.org"
-	<horms@kernel.org>, "ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net"
-	<daniel@iogearbox.net>
-CC: "Karlsson, Magnus" <magnus.karlsson@intel.com>, "Fijalkowski, Maciej"
-	<maciej.fijalkowski@intel.com>, "hawk@kernel.org" <hawk@kernel.org>,
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-	"almasrymina@google.com" <almasrymina@google.com>, "asml.silence@gmail.com"
-	<asml.silence@gmail.com>, "lorenzo@kernel.org" <lorenzo@kernel.org>,
-	"Lobakin, Aleksander" <aleksander.lobakin@intel.com>, "chopps@labn.net"
-	<chopps@labn.net>, "bigeasy@linutronix.de" <bigeasy@linutronix.de>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: RE: [RFC PATCH net 1/1] net: check transport_header before adding
- offset
-Thread-Topic: [RFC PATCH net 1/1] net: check transport_header before adding
- offset
-Thread-Index: AQHbeMHc0THX0Up++Eu0q/bXqBFYb7M75/qg
-Date: Fri, 7 Feb 2025 14:30:11 +0000
-Message-ID: <IA1PR11MB6289CFC1875FB14C00F31FB689F12@IA1PR11MB6289.namprd11.prod.outlook.com>
-References: <20250206180551.1716413-1-sreedevi.joshi@intel.com>
- <20250206180551.1716413-2-sreedevi.joshi@intel.com>
-In-Reply-To: <20250206180551.1716413-2-sreedevi.joshi@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: IA1PR11MB6289:EE_|SA1PR11MB8253:EE_
-x-ms-office365-filtering-correlation-id: 09df5cda-253e-4213-0b6d-08dd4783edc8
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|7416014|376014|366016|38070700018;
-x-microsoft-antispam-message-info: =?us-ascii?Q?oo5VgUP20LtgPfWty0ayxDi+V+5sgxsUO5W0h6KKsXx4u4hhsFr7XHV0cJ1W?=
- =?us-ascii?Q?D0QhR8TZnzBZ2Fih36iXYIxAOkVB+5bmF8BVv1EMMzQcpQYhsiSKx8753WlR?=
- =?us-ascii?Q?W2BvwXkWd8o8VTeGSHsyy6NhYpXFMPu6pRMmTNt0Hu/KJhzB0tEyA9WZOf8J?=
- =?us-ascii?Q?Uc/u9/NQMKD/6ppYEYyf6f+t3JzT4CBJdVcu9OlzmNGnoGkNKedaWDZloSS5?=
- =?us-ascii?Q?dBHEUagTDja1NweyR7KM3bvbQTLemzRusgwCYSeaEtoYcB89+RU7Rzx1AAiI?=
- =?us-ascii?Q?lJewi+FkXlhVHg3G0jZS9MO/DuW5n0pI6oh1Es94ZO0EdMpbrCVoYj0U+Rm/?=
- =?us-ascii?Q?WIJiRWZvTrBjzzx2kr70R31hkYSeznzJ0CXkAEVQfPrx98yJIpExxMowPgoS?=
- =?us-ascii?Q?XpZkYYAuI+jV8ip7KVaDyLyTwWG53kRlISIha0H100dYJHKZvawaDAnfeiiQ?=
- =?us-ascii?Q?fluzaOyS8fgZPP0u06UEguPJ8R/BeDghcrkl1GDPXUhz+TzDx1aVEQZkPQ6q?=
- =?us-ascii?Q?zJr1AQfNSfMZ0rYPOhegaWBwwqprWQtwX3g2MXgGHE7NqatPVLIs6wZCx4f5?=
- =?us-ascii?Q?cj2RgWc25eGBffDkZJto40ADicGnv6jPYoaAbtZtR76BIvdfYDF8Bo8CcvcU?=
- =?us-ascii?Q?cyJOOX7pDfqGDXVgaeFqXNo3HBCGlKOHBIiXF2I4ZCe+p2v51T20Y17iR++Y?=
- =?us-ascii?Q?sRSeFgIQ/mHBj7tlaQamCaKkLTBYJoVjSwfftD6X1+3Vx20/QW4pk3pPwuYx?=
- =?us-ascii?Q?PJgfnF3H803oYyJhhH7f1OtEQbrTNqmn1+T8wHV0J9sQ6DRuNIkcJHtDaC/r?=
- =?us-ascii?Q?QNHGBWezQO9/eH3uwswD0sHsNLnkeO4uLDBSrcD+8fZFy/ut5XpDgNj9AOqO?=
- =?us-ascii?Q?RTtOyMhAWuH21V7NfFgztCzXknkqOZiYSPnBsiJEr8CjO5Mqw0m9q3A3NwKw?=
- =?us-ascii?Q?c7Q3rW62e/A4hFtXguXGIHi2hMwaVTSJjferusOMjrKioAidYvm+KO0rlKx1?=
- =?us-ascii?Q?0TeB+tgT+mMJ3uiLeMfEDa3zZQFejAHE3nZxkzQ4jQcExlEKimztBbejvpp7?=
- =?us-ascii?Q?1yYxkfFdcWsJFd9BvPc+EVXUcmnqYaCjexyb0RP0xpjvDmAHKcPjU5Rtp9Th?=
- =?us-ascii?Q?OO4kjyQP2AWj6XztPTdQhEWp1J6uz4s4zFE4Qvc1+TdcaI6zDJQkBoF9TAtN?=
- =?us-ascii?Q?95JbbJvZ66wTC8j9A4DystZn0KLE0oHMLTqXmlNDbExrYv99k09anPeEEYGc?=
- =?us-ascii?Q?kdWz76K3C4wnlXsOrX3MByyyzl9FN0NtlF4cx186N229GQbPS2DPsSdL8SN/?=
- =?us-ascii?Q?xLYOQCCl3VmKepErW/LION1jvt4rbKXoVeu97aowPbVqyoqi/slIOP+or8uQ?=
- =?us-ascii?Q?0a2nqVrl2ytU2Z16uQEwlaATj3Kha82hYP5+1pcWoiQUwtKaaaqBedlqbkZN?=
- =?us-ascii?Q?kje4h1L3AItAaJDD+L3cyijKV5j59x4N?=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6289.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?MwuU0gGCdJyfvTuevyRA8ZMq3T4UaomFU5fM2G50R3STJja54/spb9jau+mp?=
- =?us-ascii?Q?654kFi3NrnkEjeQShlGyB6fK8ne81qqbslK0n8QlnY2S5NF8l2ZadR5czX0A?=
- =?us-ascii?Q?gIDnB4x88Q22yaiMzPjfLLmT1wOpqiPTl2/2ruxdQsCk2kOzIoSPRi2mW7ef?=
- =?us-ascii?Q?XNEO2/i1ibYPu7cxb16dDJrppPSQ1SYjxbEm+K9R5bq1y5n/mwg/gSXORcV+?=
- =?us-ascii?Q?HjpIG/zy4QJd+aBoiU86V4/JZt8RH5awtXEvlTCkpS7RX7YZITSsKNRFHhUK?=
- =?us-ascii?Q?m6h2hVz4GKZ8oteExvSlErXXeRy/dyLT+YOKvgnbJrA+12ksmr06nCoQiNqZ?=
- =?us-ascii?Q?b8ZP6Nlqf3hsdLjSTiNGe+TA2rDq4Y+oiu21vKh5XNa5XCnPV9CIkmRgID4q?=
- =?us-ascii?Q?r5GsAVd4dqXk/vaTEOGNFyHSKefljWKEpuqPr4dWJmBX3L+d9DtO1Rq/SVcb?=
- =?us-ascii?Q?Mjy81sdwa3/0RT4ZqAn4ZALXZLK9rwrTf5Txyp2eUUesR6oaWlh3RlQvv7/e?=
- =?us-ascii?Q?lIB1CYGPdgnGuiV4UTtwUiqDEzFj2VNrCFmPeNL+zVXk2mRCDwr0U9y4whIR?=
- =?us-ascii?Q?hRO+1fKh5pOMbbkeI67lc/tH9KRGBbI1oqyBp/ypwjLA8//Ru0e976ZmIgUs?=
- =?us-ascii?Q?QPSn79rVIwWAvEGTFDzaSPdfpRVta20Zg1YbTEtgTQc/5gKt7PfWyvkocOag?=
- =?us-ascii?Q?0sKTx1S87BaMoZ1/Kxh/afknvBcZ1Y9LPzaPYmRLd2lcwKx/8n08PtNNEPKd?=
- =?us-ascii?Q?F16K+Ocqw64N1nos9miHmVSERkYihCvVnS0S89BAJAZoganqwGZm3Ftg8cU1?=
- =?us-ascii?Q?DMapgeTH+JT0w3kDtj350vblCC31brhmYIfH08c+7a+FQAlgVo9nQOs95REu?=
- =?us-ascii?Q?UNqlz6NmxK1wxe0e4to+8rSOcZGNqoDFLyJkUdLDNy2ZvaQwHrnUE4KYrZP2?=
- =?us-ascii?Q?7OinzrBrMEG0gqLI1pEOZWJK27awJ5FvcJPrgMgoV4YFFmJdsM2iULEo/vEm?=
- =?us-ascii?Q?7WDAeDF9J1SOdWkRTsH7+wi1jysN0CVbzK7AbDAX18Gn3UpW6RcmhUWIeqSp?=
- =?us-ascii?Q?dhdeGLzaJu0fgHy4H3smjsA5GYQRPiYzcYz7q6S3AxbLGOXcGXcKP6CYNuiq?=
- =?us-ascii?Q?tSnedQvPbEyL6OaAimyb9UMrQw2Yt4evycBeaeFQ60eMBZjRh3S6knLKdEHg?=
- =?us-ascii?Q?ieDFOVcrxUKUnR4WHsiLhtXzPeYMac+VXqAbXoVEe31/udNEysq4Y3OwwKJQ?=
- =?us-ascii?Q?Y3mkroy2SzWzDOousl88E5dydXkyXp1wW3bBUBNsWtlgODiPkZQ4jzM0/quB?=
- =?us-ascii?Q?/m7Dl/3E/4PVYiWXtVeUQalzxC5s+Fzhgb95oF9cB7/wZbRTwp0PbSthcIBI?=
- =?us-ascii?Q?jCwua8NyMaw2xUzE7mozYw4wTmFKgBrIVnyPUUSbAIV5jt7bt1/4yrz2X99K?=
- =?us-ascii?Q?AAv88l2mJYMq2gb+OKAH/s8mrG5mrpLV2TU6C7BFGiKR8RcBtQLbX6eCskZc?=
- =?us-ascii?Q?Du5AeUxFAm5nqyFPHIlTqOLOv91cDIH0GJgaCPrZWoqebWIKStM3RF8d0KmB?=
- =?us-ascii?Q?iufGryNEyiutePT7InSrrDKPKDDNMMIuyO5nhbA/?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+X-IronPort-AV: E=Sophos;i="6.13,267,1732608000"; 
+   d="scan'208";a="111461551"
+Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
+  by fmviesa007.fm.intel.com with ESMTP; 07 Feb 2025 06:46:16 -0800
+Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tgPcU-000yTX-08;
+	Fri, 07 Feb 2025 14:46:14 +0000
+Date: Fri, 7 Feb 2025 22:45:31 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, Peter Zijlstra <peterz@infradead.org>,
+	Will Deacon <will@kernel.org>, Waiman Long <llong@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
+	Barret Rhoden <brho@google.com>, Josh Don <joshdon@google.com>,
+	Dohyun Kim <dohyunkim@google.com>,
+	linux-arm-kernel@lists.infradead.org, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next v2 18/26] rqspinlock: Add entry to Makefile,
+ MAINTAINERS
+Message-ID: <202502072210.Fzbbpkun-lkp@intel.com>
+References: <20250206105435.2159977-19-memxor@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6289.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 09df5cda-253e-4213-0b6d-08dd4783edc8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Feb 2025 14:30:11.1956
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: IbIT02E1HSFiAGRTlOAp/88rcDW3aezciXVSB7l6+EUvX5F3s7mmcWu/mLmCIF6aDEi0gFDKCDLFiuh+z48kD4b0cN3RN3iDARGsdCtU/ws=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB8253
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250206105435.2159977-19-memxor@gmail.com>
 
-> -----Original Message-----
-> From: sreedevi.joshi <joshisre@ecsmtp.an.intel.com>
-> Sent: Thursday, February 6, 2025 1:06 PM
-> To: edumazet@gmail.com; kuba@kernel.org; pabeni@redhat.com; horms@kernel.=
-org; ast@kernel.org; daniel@iogearbox.net
-> Cc: Karlsson, Magnus <magnus.karlsson@intel.com>; Fijalkowski, Maciej <ma=
-ciej.fijalkowski@intel.com>; hawk@kernel.org;
-> john.fastabend@gmail.com; almasrymina@google.com; asml.silence@gmail.com;=
- lorenzo@kernel.org; Lobakin, Aleksander
-> <aleksander.lobakin@intel.com>; chopps@labn.net; bigeasy@linutronix.de; n=
-etdev@vger.kernel.org; linux-kernel@vger.kernel.org;
-> bpf@vger.kernel.org; Joshi, Sreedevi <sreedevi.joshi@intel.com>
-> Subject: [RFC PATCH net 1/1] net: check transport_header before adding of=
-fset
->=20
-> From: Sreedevi Joshi <sreedevi.joshi@intel.com>
->=20
-> skb_headers_offset_update() adds offset to the transport_header
-> of skb without checking if it was set. When the transport header
-> is not set, it's value is 65535. Adding offset to this causes it to
-> roll over and makes the transport_header value to be less than
-> network_header.
-> When a tc ingress hook is attached and it invokes bpf_skb_change_tail()
-> (to strip off extra bytes at the end of packet or to attach some
-> extra bytes), the logic in __bpf_skb_change_tail() that calculates
-> the min_len fails due to the transport_header being incorrectly set.
->=20
-> This issue was discovered when testing with veth interface with both xdp =
-and
-> tc ingress hooks are attached. veth_convert_skb_to_xdp_buff() calls
-> skb_pp_cow_data() and it results in this function being called. Since
-> transport_header is incremented without checking, it results in the condi=
-tion
-> where transport_header < network_header. __netif_receive_skb_core() when =
-it
-> receives this skb, skips reset of the transport header as it is already s=
-et.
->=20
-> This is specific to XDP path. When there is no XDP hook, the logic takes =
-a
-> different route (__netif_rx()) and the reset of the transport header happ=
-ens in
-> __netif_receive_skb_core() before it reaches tc ingress hook.
->=20
-> Fixes: f5b1729443fd ("net: Add skb_headers_offset_update helper function.=
-")
-> Signed-off-by: Sreedevi Joshi <sreedevi.joshi@intel.com>
-> ---
->  net/core/skbuff.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index a441613a1e6c..79b10abd95f1 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -2098,7 +2098,8 @@ void skb_headers_offset_update(struct sk_buff *skb,=
- int off)
->  	if (skb->ip_summed =3D=3D CHECKSUM_PARTIAL)
->  		skb->csum_start +=3D off;
->  	/* {transport,network,mac}_header and tail are relative to skb->head */
-> -	skb->transport_header +=3D off;
-> +	if (skb_transport_header_was_set(skb))
-> +		skb->transport_header +=3D off;
->  	skb->network_header   +=3D off;
->  	if (skb_mac_header_was_set(skb))
->  		skb->mac_header +=3D off;
-> --
-> 2.25.1
+Hi Kumar,
 
-[] resending due to mail server issues.
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on 0abff462d802a352c87b7f5e71b442b09bf9cfff]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Kumar-Kartikeya-Dwivedi/locking-Move-MCS-struct-definition-to-public-header/20250206-190258
+base:   0abff462d802a352c87b7f5e71b442b09bf9cfff
+patch link:    https://lore.kernel.org/r/20250206105435.2159977-19-memxor%40gmail.com
+patch subject: [PATCH bpf-next v2 18/26] rqspinlock: Add entry to Makefile, MAINTAINERS
+config: arm-randconfig-001-20250207 (https://download.01.org/0day-ci/archive/20250207/202502072210.Fzbbpkun-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250207/202502072210.Fzbbpkun-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202502072210.Fzbbpkun-lkp@intel.com/
+
+All error/warnings (new ones prefixed by >>):
+
+   In file included from kernel/locking/rqspinlock.c:77:
+>> kernel/locking/mcs_spinlock.h:57:27: warning: 'struct mcs_spinlock' declared inside parameter list will not be visible outside of this definition or declaration
+      57 | void mcs_spin_lock(struct mcs_spinlock **lock, struct mcs_spinlock *node)
+         |                           ^~~~~~~~~~~~
+   kernel/locking/mcs_spinlock.h: In function 'mcs_spin_lock':
+>> kernel/locking/mcs_spinlock.h:62:13: error: invalid use of undefined type 'struct mcs_spinlock'
+      62 |         node->locked = 0;
+         |             ^~
+   kernel/locking/mcs_spinlock.h:63:13: error: invalid use of undefined type 'struct mcs_spinlock'
+      63 |         node->next   = NULL;
+         |             ^~
+   In file included from <command-line>:
+   kernel/locking/mcs_spinlock.h:83:24: error: invalid use of undefined type 'struct mcs_spinlock'
+      83 |         WRITE_ONCE(prev->next, node);
+         |                        ^~
+   include/linux/compiler_types.h:522:23: note: in definition of macro '__compiletime_assert'
+     522 |                 if (!(condition))                                       \
+         |                       ^~~~~~~~~
+   include/linux/compiler_types.h:542:9: note: in expansion of macro '_compiletime_assert'
+     542 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/asm-generic/rwonce.h:36:9: note: in expansion of macro 'compiletime_assert'
+      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
+         |         ^~~~~~~~~~~~~~~~~~
+   include/asm-generic/rwonce.h:36:28: note: in expansion of macro '__native_word'
+      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
+         |                            ^~~~~~~~~~~~~
+   include/asm-generic/rwonce.h:60:9: note: in expansion of macro 'compiletime_assert_rwonce_type'
+      60 |         compiletime_assert_rwonce_type(x);                              \
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/locking/mcs_spinlock.h:83:9: note: in expansion of macro 'WRITE_ONCE'
+      83 |         WRITE_ONCE(prev->next, node);
+         |         ^~~~~~~~~~
+   kernel/locking/mcs_spinlock.h:83:24: error: invalid use of undefined type 'struct mcs_spinlock'
+      83 |         WRITE_ONCE(prev->next, node);
+         |                        ^~
+   include/linux/compiler_types.h:522:23: note: in definition of macro '__compiletime_assert'
+     522 |                 if (!(condition))                                       \
+         |                       ^~~~~~~~~
+   include/linux/compiler_types.h:542:9: note: in expansion of macro '_compiletime_assert'
+     542 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/asm-generic/rwonce.h:36:9: note: in expansion of macro 'compiletime_assert'
+      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
+         |         ^~~~~~~~~~~~~~~~~~
+   include/asm-generic/rwonce.h:36:28: note: in expansion of macro '__native_word'
+      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
+         |                            ^~~~~~~~~~~~~
+   include/asm-generic/rwonce.h:60:9: note: in expansion of macro 'compiletime_assert_rwonce_type'
+      60 |         compiletime_assert_rwonce_type(x);                              \
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/locking/mcs_spinlock.h:83:9: note: in expansion of macro 'WRITE_ONCE'
+      83 |         WRITE_ONCE(prev->next, node);
+         |         ^~~~~~~~~~
+   kernel/locking/mcs_spinlock.h:83:24: error: invalid use of undefined type 'struct mcs_spinlock'
+      83 |         WRITE_ONCE(prev->next, node);
+         |                        ^~
+   include/linux/compiler_types.h:522:23: note: in definition of macro '__compiletime_assert'
+     522 |                 if (!(condition))                                       \
+         |                       ^~~~~~~~~
+   include/linux/compiler_types.h:542:9: note: in expansion of macro '_compiletime_assert'
+     542 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/asm-generic/rwonce.h:36:9: note: in expansion of macro 'compiletime_assert'
+      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
+         |         ^~~~~~~~~~~~~~~~~~
+   include/asm-generic/rwonce.h:36:28: note: in expansion of macro '__native_word'
+      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
+         |                            ^~~~~~~~~~~~~
+   include/asm-generic/rwonce.h:60:9: note: in expansion of macro 'compiletime_assert_rwonce_type'
+      60 |         compiletime_assert_rwonce_type(x);                              \
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/locking/mcs_spinlock.h:83:9: note: in expansion of macro 'WRITE_ONCE'
+      83 |         WRITE_ONCE(prev->next, node);
+         |         ^~~~~~~~~~
+   kernel/locking/mcs_spinlock.h:83:24: error: invalid use of undefined type 'struct mcs_spinlock'
+      83 |         WRITE_ONCE(prev->next, node);
+         |                        ^~
+   include/linux/compiler_types.h:522:23: note: in definition of macro '__compiletime_assert'
+     522 |                 if (!(condition))                                       \
+         |                       ^~~~~~~~~
+   include/linux/compiler_types.h:542:9: note: in expansion of macro '_compiletime_assert'
+     542 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/asm-generic/rwonce.h:36:9: note: in expansion of macro 'compiletime_assert'
+      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
+         |         ^~~~~~~~~~~~~~~~~~
+   include/asm-generic/rwonce.h:36:28: note: in expansion of macro '__native_word'
+      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
+         |                            ^~~~~~~~~~~~~
+   include/asm-generic/rwonce.h:60:9: note: in expansion of macro 'compiletime_assert_rwonce_type'
+      60 |         compiletime_assert_rwonce_type(x);                              \
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/locking/mcs_spinlock.h:83:9: note: in expansion of macro 'WRITE_ONCE'
+      83 |         WRITE_ONCE(prev->next, node);
+         |         ^~~~~~~~~~
+   kernel/locking/mcs_spinlock.h:83:24: error: invalid use of undefined type 'struct mcs_spinlock'
+      83 |         WRITE_ONCE(prev->next, node);
+         |                        ^~
+   include/linux/compiler_types.h:522:23: note: in definition of macro '__compiletime_assert'
+     522 |                 if (!(condition))                                       \
+         |                       ^~~~~~~~~
+   include/linux/compiler_types.h:542:9: note: in expansion of macro '_compiletime_assert'
+     542 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/asm-generic/rwonce.h:36:9: note: in expansion of macro 'compiletime_assert'
+
+
+vim +62 kernel/locking/mcs_spinlock.h
+
+e207552e64ea05 include/linux/mcs_spinlock.h  Will Deacon     2014-01-21  39  
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21  40  /*
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21  41   * Note: the smp_load_acquire/smp_store_release pair is not
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21  42   * sufficient to form a full memory barrier across
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21  43   * cpus for many architectures (except x86) for mcs_unlock and mcs_lock.
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21  44   * For applications that need a full barrier across multiple cpus
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21  45   * with mcs_unlock and mcs_lock pair, smp_mb__after_unlock_lock() should be
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21  46   * used after mcs_lock.
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21  47   */
+5faeb8adb956a5 include/linux/mcs_spinlock.h  Jason Low       2014-01-21  48  
+5faeb8adb956a5 include/linux/mcs_spinlock.h  Jason Low       2014-01-21  49  /*
+5faeb8adb956a5 include/linux/mcs_spinlock.h  Jason Low       2014-01-21  50   * In order to acquire the lock, the caller should declare a local node and
+5faeb8adb956a5 include/linux/mcs_spinlock.h  Jason Low       2014-01-21  51   * pass a reference of the node to this function in addition to the lock.
+5faeb8adb956a5 include/linux/mcs_spinlock.h  Jason Low       2014-01-21  52   * If the lock has already been acquired, then this will proceed to spin
+5faeb8adb956a5 include/linux/mcs_spinlock.h  Jason Low       2014-01-21  53   * on this node->locked until the previous lock holder sets the node->locked
+5faeb8adb956a5 include/linux/mcs_spinlock.h  Jason Low       2014-01-21  54   * in mcs_spin_unlock().
+5faeb8adb956a5 include/linux/mcs_spinlock.h  Jason Low       2014-01-21  55   */
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21  56  static inline
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21 @57  void mcs_spin_lock(struct mcs_spinlock **lock, struct mcs_spinlock *node)
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21  58  {
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21  59  	struct mcs_spinlock *prev;
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21  60  
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21  61  	/* Init node */
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21 @62  	node->locked = 0;
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21  63  	node->next   = NULL;
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21  64  
+920c720aa5aa39 kernel/locking/mcs_spinlock.h Peter Zijlstra  2016-02-01  65  	/*
+920c720aa5aa39 kernel/locking/mcs_spinlock.h Peter Zijlstra  2016-02-01  66  	 * We rely on the full barrier with global transitivity implied by the
+920c720aa5aa39 kernel/locking/mcs_spinlock.h Peter Zijlstra  2016-02-01  67  	 * below xchg() to order the initialization stores above against any
+920c720aa5aa39 kernel/locking/mcs_spinlock.h Peter Zijlstra  2016-02-01  68  	 * observation of @node. And to provide the ACQUIRE ordering associated
+920c720aa5aa39 kernel/locking/mcs_spinlock.h Peter Zijlstra  2016-02-01  69  	 * with a LOCK primitive.
+920c720aa5aa39 kernel/locking/mcs_spinlock.h Peter Zijlstra  2016-02-01  70  	 */
+920c720aa5aa39 kernel/locking/mcs_spinlock.h Peter Zijlstra  2016-02-01  71  	prev = xchg(lock, node);
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21  72  	if (likely(prev == NULL)) {
+5faeb8adb956a5 include/linux/mcs_spinlock.h  Jason Low       2014-01-21  73  		/*
+5faeb8adb956a5 include/linux/mcs_spinlock.h  Jason Low       2014-01-21  74  		 * Lock acquired, don't need to set node->locked to 1. Threads
+5faeb8adb956a5 include/linux/mcs_spinlock.h  Jason Low       2014-01-21  75  		 * only spin on its own node->locked value for lock acquisition.
+5faeb8adb956a5 include/linux/mcs_spinlock.h  Jason Low       2014-01-21  76  		 * However, since this thread can immediately acquire the lock
+5faeb8adb956a5 include/linux/mcs_spinlock.h  Jason Low       2014-01-21  77  		 * and does not proceed to spin on its own node->locked, this
+5faeb8adb956a5 include/linux/mcs_spinlock.h  Jason Low       2014-01-21  78  		 * value won't be used. If a debug mode is needed to
+5faeb8adb956a5 include/linux/mcs_spinlock.h  Jason Low       2014-01-21  79  		 * audit lock status, then set node->locked value here.
+5faeb8adb956a5 include/linux/mcs_spinlock.h  Jason Low       2014-01-21  80  		 */
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21  81  		return;
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21  82  	}
+4d3199e4ca8e66 kernel/locking/mcs_spinlock.h Davidlohr Bueso 2015-02-22  83  	WRITE_ONCE(prev->next, node);
+e207552e64ea05 include/linux/mcs_spinlock.h  Will Deacon     2014-01-21  84  
+e207552e64ea05 include/linux/mcs_spinlock.h  Will Deacon     2014-01-21  85  	/* Wait until the lock holder passes the lock down. */
+e207552e64ea05 include/linux/mcs_spinlock.h  Will Deacon     2014-01-21  86  	arch_mcs_spin_lock_contended(&node->locked);
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21  87  }
+e72246748ff006 include/linux/mcs_spinlock.h  Tim Chen        2014-01-21  88  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
