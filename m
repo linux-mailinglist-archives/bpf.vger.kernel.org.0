@@ -1,129 +1,87 @@
-Return-Path: <bpf+bounces-50780-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50779-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17AD0A2C7CB
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 16:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F1A90A2C79B
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 16:46:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69AB118875BE
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 15:48:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11B38188AD24
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 15:45:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0648724819A;
-	Fri,  7 Feb 2025 15:46:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0C701EB1A7;
+	Fri,  7 Feb 2025 15:44:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="M3K+oeNQ"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="D76Dx9t7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2047.outbound.protection.outlook.com [40.107.237.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 445F42475CE;
-	Fri,  7 Feb 2025 15:46:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3129C1EB1BC;
+	Fri,  7 Feb 2025 15:44:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.47
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738943217; cv=fail; b=oHpDdpB8/ctWXRPN60n8N0/Jafnfs9sHhORl0AX4BWHs9iLrdrbeAhSr4dk4P2FZhb8R+RVaA3XSC9n+HRUILvM2F1T5KMVdLnEbElJOMpbOQMRN6pN1Vl/cJwHRNFse9rxARLhMv+3950WkhJBJ2u+RYXLh3aU6lKn3quoBFPA=
+	t=1738943060; cv=fail; b=rsyretB1oPqOcKbZgxNM7Si7z2zqyUh/teif3tNrfCeHU5eIs6Rn0Jml3ZCWJCBTLhuiriy6ljS/rmxgqmyaLGhhbe+D4cOYVaXLRIIE/wCVIu6SEhqKvuoK+ULnWieQEpe4XJXZtKaH1K0zIcxlY/J/RyIAG2K27zXiv8G26Y0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738943217; c=relaxed/simple;
-	bh=LaUFH5tQMLYxm6+re67HvrdiVogQKtuuhh/3qKNAI8A=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=IjOJMrWylKXLiToihz3VNrqxpt4khqW/e5vIYERh2DS/9Izm1lhyza1U8llB/wqP3mNNr2nIEu6oDA7jQSaVPakjdZqKI1zMGDVij+8v12eadsW8qdoHzH2pKmgD/+FnU1yf4B0GPFscSxPMFNgSdBG39d6KB9xkqKJpGjq14y8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=M3K+oeNQ; arc=fail smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738943215; x=1770479215;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=LaUFH5tQMLYxm6+re67HvrdiVogQKtuuhh/3qKNAI8A=;
-  b=M3K+oeNQI7RhWVM+NOc0F6mXSh2QNInq/WE+/0gGgPkMWQiGbY5WcRW5
-   c/+8wm/Fel92um5NUfgbjLJInk3Dy5pRQp7lIUt72NeUDZVqYGWrfdlwx
-   /rIvLNz6bEnmFUJZbW/eapnhzSaH/IStQd8KrkCOFl6t6YYGuiSL4/aKS
-   9NA8GLOtO0wWJRxMfo4gYCR3zlJ1k2UGRYPfsdrU/o5wADts4pvx/Q+82
-   lkp5d/jO10v1yCZbOFBmZg5DLnXwjzDPcna2M/+CqHQe+n1AAWCH6Rpb0
-   RrPC78o50M1v6dkLqJaWqrAjiLNr4ofl/0hltei7zylAcQvEy4uOWlDc8
-   w==;
-X-CSE-ConnectionGUID: DxczygNhTV+xqFX+Ao6ung==
-X-CSE-MsgGUID: eenwZHjmRoyYdX4tLVXRSw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11338"; a="62064771"
-X-IronPort-AV: E=Sophos;i="6.13,267,1732608000"; 
-   d="scan'208";a="62064771"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 07:46:54 -0800
-X-CSE-ConnectionGUID: LgoAG+znSb6uCBW5/yubEw==
-X-CSE-MsgGUID: 4CGKy0IRTCWX0cPAKwMSQw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="112452869"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orviesa008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Feb 2025 07:46:54 -0800
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.44; Fri, 7 Feb 2025 07:46:53 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.44 via Frontend Transport; Fri, 7 Feb 2025 07:46:53 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.171)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.44; Fri, 7 Feb 2025 07:46:52 -0800
+	s=arc-20240116; t=1738943060; c=relaxed/simple;
+	bh=Q8jDRl5nJhSBAWhNjjQxydqMYyF63gRSr2twXRHVGiQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=J7KB5MX3znN+5dODWtVSWUuYl6Ez9gPOxD22YQFiJRwQMuEjTZAQp/ul2IIaE1a6Mi7fy4urfak5/bQqYGXrhbM+bBoLPcfGNRviaie7OQsfL7w1AuQHrij9ecC8Iv37ZAz7BC9g82qGpckCceVOOzMP8YPXu5OjQyLiyU6/r4U=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=D76Dx9t7; arc=fail smtp.client-ip=40.107.237.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=gjyWY+w9A45nfArMFBf6D0HcyHRxKxUMIgAQCnYOU0pOor3i61g3kmtN8b/9lSBbolz8+IarJCd5f+C/YHMe8+Fo5EchMuZ8ZfeQuKIM6t4PPjLZuFe4l7uKXO2UZ0dInsfsUmDqKNmkJ2kVezy+8xGaMvFF8hwdc/0WoJOL624LADCrDQda/YnYqOUVnxXvjtKE15u7WgOhpUgKBGv+ng3E9XfykPlffwvdgiMdcAUFW3sB3l54xYvKE3cSiY77rezAORDMBBlfV4yctNMfYBRPez9YNnivZJ6NcOaAX+FwU2voOrnAlzxBGCAPhjW/lk3DSaxEkb1GcrbOHmokjA==
+ b=NVNMk1y/XwNI2XcLNrhV30zwl9Mi/Rg4AWMQb7dkb6+C5wPXFPugKC1zMjN+tz3R8ioSakDXsRf2mJLbY6b2d78doD25Sjbi/psqhqm9zCLzSR7HWF0SyGveoiyJhXTAWqgy0U5FRjpBsWV0iGZKKsdRsh5NDQpIuEGdUoVmCZHO7HMaa8rx030VBXOeBBuXRT7zi+FzLCy27MeviP6SThjl0lH5xwE9XzetGBLnq3K+JbkifCBtGgFTGva/Lqbks+DxGD/vR90Tbp+0jCZKJOOxSpPsyYMR9nBpiAlYWICXdjhfc9EULkeHsr52BwDwo43JB+s+ifmf+zhp6YaXHA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LaUFH5tQMLYxm6+re67HvrdiVogQKtuuhh/3qKNAI8A=;
- b=rNUOYXUgGb8V6gRe/UzPQF5E74cBMTK5wr3CtrSQ43fxkozz+t5yXtAYGqTWRMfC01pedqATARW85D66VZk2YD7EWLmoLLoCXxE5SLa+O3Nm8r1Pem13PJ/z1FTTKcTVfI65xHrL3FiJcOXvAQMfcOAd0JkURljy7dSnIZ3jBbLiZQQjVZ+j5DQ+OSfK9NdR4fL33yoPdNo/crklk0RHgPycrvm40bfkBV4idxkiw/jQPqGo5+TO8vBgHpM7uMNnSq4+7rA01MzRTQapbe1/MWZShyc/mDHnUQVcfo1jQp9xvAzABItEyHuunA3MKrs+0aQCFcJGof0agVh+l/F4MQ==
+ bh=Y4UjQRSYQSZjtNR07ZXuR2aAZLU/PbSyZRRJevlvozs=;
+ b=g+uhKLn8KFDWMBFnFnLVrBFCx6KRzY3gr1ITJL8dsEOpvhU46v3YiPGh6Gnh8gdkk5+pkVH1eyBi9DNalfAC6WzyYWn3Oz1b0djULyfjjQ/hGrrAmxHFyvnzjbnOok/ozMvbqKjrrrzS6QtgqiRzzn/CGlS+ag0z0Cr2bjXBEgkiNe7lqTd90sATJvBj3zhMDo5x4rJfnuk9KdrUW0/7EbaWmRtvYFRHDSfsj70ifsD59/6JepfUzDPdw3cOwXAX+ApIXlue1PwGx6gFAKPFwRysy1W+Nv1ROy6Bab7GWJPmQPMqTsUcSigz35mYMJhdnuPard9ryt1VugXw0apcIw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y4UjQRSYQSZjtNR07ZXuR2aAZLU/PbSyZRRJevlvozs=;
+ b=D76Dx9t7jU7oNSKTYhKal474vqk+WnxVZ3+wto9sQP8NxkYEIhZ3c0ZyQPTXLUFZggBUy8FwSoMWxmlzd0dGi34/5WLZ6e864+mrQZAV4urfIN3uJR0wgFzJBodStqVTWRSNK9ihP38Bah2Asz5ivRbf4+w6GlC1LRImF9f/tOOE3mtWH/5hihKVmlwzvTVKH2BgOfvyFnkuqkg2vIoSpZlPRlB1e3WxLyjrr40/DHbl6PMWUcE+/f89t8kpXrvtQJN5JzscRawRq62BEf+2r22ekPFHdOUcyB3QvQA6pE0EKP3ots1uymwwVleZYB2aj3JgGKKFFgFSdZFPHVIYBQ==
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
- by SA3PR11MB8075.namprd11.prod.outlook.com (2603:10b6:806:303::19) with
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CY5PR12MB6405.namprd12.prod.outlook.com (2603:10b6:930:3e::17)
+ by SN7PR12MB6911.namprd12.prod.outlook.com (2603:10b6:806:261::8) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8422.12; Fri, 7 Feb
- 2025 15:46:50 +0000
-Received: from DS0PR11MB8718.namprd11.prod.outlook.com
- ([fe80::4b3b:9dbe:f68c:d808]) by DS0PR11MB8718.namprd11.prod.outlook.com
- ([fe80::4b3b:9dbe:f68c:d808%6]) with mapi id 15.20.8398.021; Fri, 7 Feb 2025
- 15:46:49 +0000
-Message-ID: <19f5473b-e7a3-4d39-a534-6ab2da2b16cf@intel.com>
-Date: Fri, 7 Feb 2025 16:43:19 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v4 1/8] net: gro: decouple GRO from the NAPI
- layer
-To: Eric Dumazet <edumazet@google.com>
-CC: Kees Cook <kees@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
- S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, "Paolo
- Abeni" <pabeni@redhat.com>, Lorenzo Bianconi <lorenzo@kernel.org>, Daniel Xu
-	<dxu@dxuuu.xyz>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, John Fastabend
-	<john.fastabend@gmail.com>, =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?=
-	<toke@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, Martin KaFai Lau
-	<martin.lau@linux.dev>, <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?=
-	<toke@redhat.com>
-References: <20250205163609.3208829-1-aleksander.lobakin@intel.com>
- <20250205163609.3208829-2-aleksander.lobakin@intel.com>
- <CANn89iJjCOThDqwsK4v2O8LfcwAB55YohNZ8T2sR40uM2ZoX5w@mail.gmail.com>
- <fe1b0def-89d1-4db3-bf98-7d6c61ff5361@intel.com>
- <CANn89iJr1R4BGK2Qd+OEgsE7kEPi7X8tgyxjHnYoU7VOU_wgfA@mail.gmail.com>
- <3decafb9-34fe-4fb7-9203-259b813f810c@intel.com>
- <CANn89iJNq2VC55c-DcA6YC-2EHYZoyov7EUXTHKF2fYy8-wW+w@mail.gmail.com>
- <65176426-3ad0-455f-8afd-f53f48bbecb3@intel.com>
- <CANn89iKSw2QOeOzP8dke0X7cHheKdx=T9aQ7q7d8OemMNN8u7g@mail.gmail.com>
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-Content-Language: en-US
-In-Reply-To: <CANn89iKSw2QOeOzP8dke0X7cHheKdx=T9aQ7q7d8OemMNN8u7g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DB9PR06CA0006.eurprd06.prod.outlook.com
- (2603:10a6:10:1db::11) To DS0PR11MB8718.namprd11.prod.outlook.com
- (2603:10b6:8:1b9::20)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8398.24; Fri, 7 Feb
+ 2025 15:44:12 +0000
+Received: from CY5PR12MB6405.namprd12.prod.outlook.com
+ ([fe80::2119:c96c:b455:53b5]) by CY5PR12MB6405.namprd12.prod.outlook.com
+ ([fe80::2119:c96c:b455:53b5%7]) with mapi id 15.20.8422.010; Fri, 7 Feb 2025
+ 15:44:12 +0000
+Date: Fri, 7 Feb 2025 16:44:07 +0100
+From: Andrea Righi <arighi@nvidia.com>
+To: Yury Norov <yury.norov@gmail.com>
+Cc: Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>,
+	Changwoo Min <changwoo@igalia.com>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>, Ian May <ianm@nvidia.com>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] sched/topology: Introduce for_each_numa_node()
+ iterator
+Message-ID: <Z6YqRw_DJ-Czply8@gpd3>
+References: <20250206202109.384179-1-arighi@nvidia.com>
+ <20250206202109.384179-2-arighi@nvidia.com>
+ <Z6WEllH4yvzkWCYG@thinkpad>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z6WEllH4yvzkWCYG@thinkpad>
+X-ClientProxiedBy: FR2P281CA0014.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a::24) To CY5PR12MB6405.namprd12.prod.outlook.com
+ (2603:10b6:930:3e::17)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -131,127 +89,294 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB8718:EE_|SA3PR11MB8075:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7c9267f0-4800-4a8d-5cae-08dd478ea291
+X-MS-TrafficTypeDiagnostic: CY5PR12MB6405:EE_|SN7PR12MB6911:EE_
+X-MS-Office365-Filtering-Correlation-Id: f57a1ba3-5f44-4553-09d4-08dd478e44c2
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014|7053199007;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?Vy9DUi9qbnNwNUNsS0JCd1VLOE9yUkwyOFlwYy9hMXJPSnlXaUVVMlZPN3NG?=
- =?utf-8?B?NWYzVzBQMjFIOEtxdUFFQW1SaEVUMjMvWi9WVUZ2TGZkWDM5Vk1wbHIyUlpF?=
- =?utf-8?B?MzQvVXB5U3JYUnRxVkIvSGVjSHM2U2Y4dHErWFlwcjl5Rjl5d0NweVMwcjhs?=
- =?utf-8?B?NXQ0Qk9qd1E0b0xsYUM0V3c2bHFiVFBibXZRT3R2dkxnL0pXVlI5ZTUydFdn?=
- =?utf-8?B?dWRCSHJJWkpWN2xXYTBNT0JxK3JkeDAveVJ3WExhRnY5cUZoZHZVTjh6b05U?=
- =?utf-8?B?K2tmZkJ2empvK1J1eFFuSVJFK1RTWVhpbGtOSDVtL3kyTlRaQzBzRXd1M2t1?=
- =?utf-8?B?T2ZYWWVvRHJ3ZUwxV3hCVStSNVNZRHB3aVF6ZXVac0JPbVNWRVJTd3ZwVXJW?=
- =?utf-8?B?NnBPMXJzNWxPMFJOd0NhMzQwRzJ2K0NpZ1I4cWtyMy92bitlR0lzV0xXa3Fy?=
- =?utf-8?B?di84TnpPaWh4UStwQlBMMm9xOWNBZ2pqUmJSWS9YRGVBMFNRZk1tN3lyMC9z?=
- =?utf-8?B?NDhXSDVBeTNKbitoaDNDUkp6MmZMOStqNU4wOFRhZFBGQ3BSVWFPcVZMVG13?=
- =?utf-8?B?QWhLYzdnbmtDcjQvUHR3a2tKSkNzaGlscm9PUEhIMDQ0UGMwajZIRTBsMy84?=
- =?utf-8?B?U3JnUXkzWmljanNpYzhMbkZaMSt5NUtVTis2bWdBR041UlNDYm9QbzgvVjZZ?=
- =?utf-8?B?QVpTb3dtWWEza0E1YmtRN0w1cUl0SGcyWjhaVEg5N1JQNWRIS1A4dy82UkR3?=
- =?utf-8?B?eVFBRnlOekdVazh0TXYxWXlDdFg4TDFEdFV2R1d1clFrd3g0V1BGQWp6cGtT?=
- =?utf-8?B?dlFKdm1hZVA1MmJOejk1UThjcXJHWFcweEU4bDB4ckNUMk5HUlhDRlZUNkFi?=
- =?utf-8?B?azE1U2NzN1MrOGRDdGFQQkJOSHE2RjNWQTBhZ3hKRWQrRk1yK2lTVDJhdTYv?=
- =?utf-8?B?K09ZYTAyT1ZFQStwYlhMbnNSbHB4eHFkQm8rUFQ4MzhxWXVFWWR2NmFUc0ly?=
- =?utf-8?B?VWtNR1dvak5YS3hRUllyQWJvUkxoUnlPNXYwbWM5WFpRWEp1TnpHS250K0hW?=
- =?utf-8?B?QVhTN1JjQlZ1cUc3VXA0WSs4eFJjQ3Jmek5UV0UzNGViUXlyNG9sTHFSTG9T?=
- =?utf-8?B?UHRkeDl3OWVFOXNGaHphZEl0MG1vRmdxdGNTSFJwK3o3d094bjlnaGRPY3hj?=
- =?utf-8?B?a3FzWGs4Y2plMURkeFprcWdlcnZtdjVXRndTSGc0djgyZVlEVW13SklGVzYx?=
- =?utf-8?B?K3Y0M1BHTVY4RDFGci81SzNURnN4Zm5DaWtvdDlkL1g2YUp3SDVpVGhieWND?=
- =?utf-8?B?eVVOeUhtV2FDYlJxWjVFZG1FYVdQT05nOVhFOFliUGhwcWc3dzJFdEFhQmZ1?=
- =?utf-8?B?NVlPc0VaaHJYa2k3WWwzTDdtT1AxTkFOQlpOR1hYV1N3SDVjTUU4QkZQQVNn?=
- =?utf-8?B?NzBvbkMxSzE3QUtTdlV3R25seWlSbHRHTUZhYi9FUXJ3aUhqNDVHanIwSS9w?=
- =?utf-8?B?L2hNQjN0cHZwajdNUDB3WXVKTHo3Nnc3MzFVd3N6UksrNHpJNUZJSFF0bGdr?=
- =?utf-8?B?bFBpeDJncWlzajF4UkpZTUdWTjNHZkpGZGtqTncrVzg1SlB1RWtRWGxNeGZT?=
- =?utf-8?B?WWJ4YzNVYkNqS09FNXpnUTdMdHowSWRVTWxtMVF3VjRUNkNhcnVWQlJPcmNj?=
- =?utf-8?B?VU9wRk0vdGxOZHRFbHY2bjhndlMzT1NFVVlURTI5bW9vK1kwU2FCZVpaR2hK?=
- =?utf-8?B?Zmlhdkg2NXUyU3IrUTVhc0hXZ1pOSUdBVXFTYTNZSUd4WUtUd2hZR2g5Y2Ru?=
- =?utf-8?B?NWpERmtBRGVRbm5GWlRTdnh3Q2VyZkpMOGQ3QXRKaXBHaHBKMWp2dkhzSEdm?=
- =?utf-8?Q?H57t9pG9z/3xI?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014)(7053199007);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?l6P62/D4XOBa4pjQ36Wd772m5VONpNfEPVIqfIggMlgPi94EgbbEyjjjj50v?=
+ =?us-ascii?Q?9PqnRoggTXtQ6r8lfYaaNTcT88OSv52cGzkZxXINySP0hLFz/rK5+c5DDA8Z?=
+ =?us-ascii?Q?NDX1r8w+/q0eg+rL3UAHPFJ7DtfgSsDqaeWzOtWiajEqOH1uWec+iQg1emHN?=
+ =?us-ascii?Q?oVYy7Gh0PQUzekAYcBRGb8CSjiJfS6Rl78ZFMxY7d+e5DSUZpGkvs9bPM5GG?=
+ =?us-ascii?Q?cFTL1SzZmBI5ZIqJWPKDOPhnIRTw1GIvUs7jKcU/R30pxyP1DEfoPvO3Sqin?=
+ =?us-ascii?Q?ecawZ/mdoqjv4vF+fiCCpWiNKMfwzTEPgSIzDazQjhYOS39hySO7ckoNI7Ae?=
+ =?us-ascii?Q?cXIgJwqUYbTOWI1dDg3by6bMxSfC7089PqFGxN+PBt2/MDwVoxDQsRKW78Uk?=
+ =?us-ascii?Q?pteMb6p5ak4Rw3PKiZ53QN4YfqK11cDPik6yRwpzzn5D+po0O8tPBThvpd0T?=
+ =?us-ascii?Q?Bd0ME3TgmY7BPt0MNXYsz7p/upPGuoSdUzv7GFeyawHygqPQj2bhrQsw+fxv?=
+ =?us-ascii?Q?wOmK1Wpy4zLKRdFPZ667flASZR6vYTiRvfBQL3gnBPUtMxWHBGnMl95UjUcm?=
+ =?us-ascii?Q?LLYeQCamDx9LxNspn/XVH9v3zlOTWy1JUQlxUZ2HACZaz3j2ddJ63vZMOx60?=
+ =?us-ascii?Q?fPjS97CVKU2DHZOn9cMWBtY9V7mi3K//vupH5yaP1II77B0dYcyBoU8tBq9q?=
+ =?us-ascii?Q?hfeIWQQEaUDuB8yOAGFYNltNM/66GoGZ3jk15zcYLxS6KPx35FKgUNTzrX09?=
+ =?us-ascii?Q?VkpTw0zGOX96WlfeTJnsVIm2hB4+2ShuAC+L7TAvboOgxsUv3qBpBRcbLTNh?=
+ =?us-ascii?Q?cbOsys40IMrhe80ybreihdyGl4uTVxUA0pKIR6DUMNe/6ucO6dwSIfsWy3bT?=
+ =?us-ascii?Q?iEwcLX4ApJEOSeCVRagi3UCV49DQFOGjT3T8/eb3ZfW7cnOA5T29EDvSeIBT?=
+ =?us-ascii?Q?FK7KRHWRqeemJ1uqGtskHuYhn4u4Yshv3vgt/nqQ/E3/Lk2wTANC6w8gF3gW?=
+ =?us-ascii?Q?7ygrD5yTFSktNQQtxffvESLCEwQtQakXPeo9qsHB/cX1NnHZji3+qequlMiU?=
+ =?us-ascii?Q?7rP6a6L0LIcDZCwE7xvHc2qnZ9z4bFPV88/72dozW4FoHm7bJsDigBtiR/ZG?=
+ =?us-ascii?Q?9YJkd3YDunY1DoyB2qEv++ZOXDu5V7xzzPNKH+gSHTVm0UMXkyvlLunvQCWB?=
+ =?us-ascii?Q?YVVikjlq/FQhMpTAMO1D9AqIsu2u8Y3YImbS6pxSM86d13gKYNIvUTMcFfZ8?=
+ =?us-ascii?Q?9ySzXGcfzzKS6f3QRQRCE5FvqQIVO9oNK5at/hbyYOjnAqjrqYYL09w56Aut?=
+ =?us-ascii?Q?eLgnpoa5P6DRlo3WozkqGJQfJ9JhceK8yKzFUXbqc6fAQFMt8PqxpS2KizYn?=
+ =?us-ascii?Q?yqDabk+pTpQnSR9XnjnRh3e2D/4R?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6405.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SnQ3MUZrTlhVWGNCanQ5MXlMcEZ1aGd3cFoyaDNkTlpCRHpVd3FBRVJVYnUv?=
- =?utf-8?B?b3F2dHBSY1FlRC9iWXpzMTBVRUQyMUY4eXovZHhTRGhzM0NUUmFVWFRmM25v?=
- =?utf-8?B?UVBXWVNYOVM1a3VLVVFwZ0RkM2xmbTRUaWZpeFVRbnJUS081MWdzbThXYk0z?=
- =?utf-8?B?Q0JwRlRGQmRGUHJFTGVFTlZuaXJqQVEvbEZudU9LaE9PTnFsajJSYTZFWGI1?=
- =?utf-8?B?YUhVcjlSM3BaL0pUZEF1TElldSsvVmY1UmVKRHN1bWE1Q3NtN3dYeitSbmxL?=
- =?utf-8?B?ekpiSUZrdWJIckw4R0VrZHBQck5laU9NdmdQNERrd0ZvaStvMlVqUXhNMmgx?=
- =?utf-8?B?TnVoMk1PdDVPM3I4aU5PWnkvbjRJcXVLWlBSRzZSOWU4ZDMwV1FZNVJMSGJ1?=
- =?utf-8?B?TmJvUGxMNmRJbHAzbDg2MDJOQ3NDY1dQaHBPMitKK3RZTTI3dnBwNE5CSEl4?=
- =?utf-8?B?TjROcjdBeTFMREMxSWRuWUxPSWlzQXNVUVFhR210eEhObDk0TTBXUWg2YVJp?=
- =?utf-8?B?dXlkb3BRR1kyeVJmWFVoQUp0MC9obVVucWZCdUdjVGYyalBCWTdYTytHeE8w?=
- =?utf-8?B?cU5KM2ZsVnkrZnhTdjZ3bExLTWN6WTRDRTM5TWdjYXNnaXAwN0xaM29QOWZ2?=
- =?utf-8?B?RmMvN3JzMGdWM0dRYWY4UmdjVytvemUyTVJ4dy84SDNLQXUwTWxOOW5nWUlk?=
- =?utf-8?B?aWJSSnBhVytFSUM5VnExanpXeWpFRUxFaFRTWHpIQ3ZwOUM1ZnJLMjBpbDRn?=
- =?utf-8?B?VnhOYzlreUJlcWpzS3pkWUpHOFRGN01vNDNlVmlHSHY3ZG1MVERQUFZXWEJS?=
- =?utf-8?B?UVovMTA4S1A1WFQ2NlJZWGxwcEtRWURFRmIvWGdHT1dLUDh3bXdoWFB0Tk5W?=
- =?utf-8?B?MUJ4UjArdG5OTVdFUXhsVGNTdkg1ZW9pUHdXb2tFKzNyb25oY0V2a0NGU3hK?=
- =?utf-8?B?ZDhRMDVRNjlYcXJreEhKQllzWlF3cm8yTjIzNnRiYTJ4czhSUlN3VVFrYXh3?=
- =?utf-8?B?M2lPVTZodHBBT2dLemgxS1RsL2VPT2dyMExkRHBkM29tc2p0VDZVMTRlb1Q4?=
- =?utf-8?B?Zk43ZXR4eWpTaXdraDNBbm5ocURJT3lzaTVOTlNtNXkrVHY3TlI0QmtsRUs2?=
- =?utf-8?B?N21heGpLYlR3UGt2aHV3aE5UWDdacnBHSmZmTTZqOGhYRTVqTzVhV2NiWUo2?=
- =?utf-8?B?RnQxaUxaczBRSFJOVGxIVllNOVBjMFFiYkY3ZEtYVTZwTG84M3Q1VDAxcEhX?=
- =?utf-8?B?Q1FHb0luNjl0bGRzcFBTRS9sNWcxcE01TzJSQzNIbUtJcXExM0pVbWV3aEYr?=
- =?utf-8?B?WnFnSGYxQmk0SndoMHpNeWluOXkzRjU2dG5KMGw0K0V6eTl0RE1YZHpxOVlr?=
- =?utf-8?B?bS9QODlvNmZYZzFCa1QwYWk4VkllQWEyc1A5bmszb25aYVhnWkFHMHJwRExz?=
- =?utf-8?B?alFZRUQwN3B4RngrcEwxazJoYTN5a2JwMkhTcUgyRmdobG1zV01GYmNDQVJ5?=
- =?utf-8?B?UXdiNllLdVBhSXZGSHBpelFvOWhzbis3Wk0wZTZHWlRsRDJTcGxHRi9KcDlp?=
- =?utf-8?B?RXV6dndhMVdLS1lycFNKT1RSRUdBZUpYR1dZVmZuNUpqUkU4WEdEZnA2QWVB?=
- =?utf-8?B?ckhBeEM0V3JaZ001dXdncWp6TlZ2VVM2QkdzVVJOMFB4NlI3VG5Sb0NZVE5m?=
- =?utf-8?B?Z1JqZXFwRGpuQkxQcGlaVWIwTXF4TTlLcHZabHJBb1puSlI4TTJ5ajBmem41?=
- =?utf-8?B?cUFjSWwzMHpOVkx3T001QU9nRFZyVUcxUktFUU5QQTJBRklqYzZHRlAxQzFK?=
- =?utf-8?B?c2VKK05zN1o3eHVWZUNuOEhsNmRBV3RVaXVOakhZcVh4MjNKb01YM05scnJo?=
- =?utf-8?B?WjZqdFlaUW9sT01pTVhjNVhKaWUrNStIb2RzQkg1d21FTEJUNFdKYWhQT1FU?=
- =?utf-8?B?ZXh2bkowcTJ0S2RzWWtiaytJTXREU1diSk90OGlCeHdjVkVxdmVNZVE4S25n?=
- =?utf-8?B?S2hZVGg5S1RBZkhhQXJORTc2cnJnL0tNNHVyODN1bWhuSTB1YVNFaEl6MVM0?=
- =?utf-8?B?MnRvS2JPbTl5VFpZeUVSRGxwdWc5Y0x0MFliaDN0U281RGVEQlViSmJjZG1M?=
- =?utf-8?B?N1gzSzRoNi9EdGdSR0NubVRiRGFyeWZJSVZQRXJ3bk9xcS9JdUl5di80RHh2?=
- =?utf-8?B?akE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7c9267f0-4800-4a8d-5cae-08dd478ea291
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8718.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?vTFhhDsq0eUPM13cJ73VeAWYefuOZ44PaCclzOCOPE+cI/FvQXF8DdRD22C9?=
+ =?us-ascii?Q?8iYJDHCM0Y53VBdZhip9Sw1pLLbTIsiEssSrexCttKpWpivPfvpk+EIWaj4y?=
+ =?us-ascii?Q?Bn0C3/4HZbY4U72UmE55Bd1buVpSBMN8KALWiYJzKsHSFKiGZ2Kzl/PYlKOz?=
+ =?us-ascii?Q?PPNeOZQRSzVmiOdMytS5u+iiEK35OtpM6IZL2VIBVekTxVqPdXhkoPmZ773/?=
+ =?us-ascii?Q?7v0rn+LBckQHikUfBnYBEta2hld14wodb5wjywp1Ef8caZ64atGRErmPn3N7?=
+ =?us-ascii?Q?/WKZJWh3EmwDzEX0YPFcCeWuktb8NJJVsSO5qBkPWfC+Uzd9hYOftjqAvPod?=
+ =?us-ascii?Q?0fkCK5Hkz9Z6sbDGEyc69RvRIgYXUV06nQkXdDjxtFg7qZ9GMhDQzmJ91gM3?=
+ =?us-ascii?Q?IVPTxWlfNt4Pzl6B1JE7vXrhJonb9VA2PYLPfa5XYsyMXg0ofCw+hVnla8Vp?=
+ =?us-ascii?Q?IPBPpGAwyn/9vb3HnnhzlLCNcYa00bj948OTC348UAF+2TsDS2az+aFMbgLe?=
+ =?us-ascii?Q?3DCi38vrDq3itUtEBXEsKh6erEB8dcaEwPxu+pQudgUK0ySWhfcB+pvcjthF?=
+ =?us-ascii?Q?jq+byHxlVx+ak7x1HFCtZmdqPip2WzX9YQqpNEyBHynVyH/cVtn5VZgZwtLP?=
+ =?us-ascii?Q?C4lTHaG89GPwhlzAcGnqO1ArIwCMBM6KLM4UOSy5l88JwrAhmVqT88Yj3TIz?=
+ =?us-ascii?Q?ssDz7nJzgXSMuGmCvO+07nH6qnL8LO6w2xjzISxqHNqjli8PNO14qNmCtex6?=
+ =?us-ascii?Q?VlUHA5filGjIlIPVuYr/gcpzIDOQ7j7kIu3epJ17M6Cwmn8hDYpo9KL+nnz7?=
+ =?us-ascii?Q?23IfstkpOerkHv7XPPEEAkWw/F7mmXm/IwgAsW0h0649GPeV+lqu9gXkZbdG?=
+ =?us-ascii?Q?uG/cOV8TieZx57gYGQXJhklSocOOcwFejf4w2GaGyM2G0/dYq25QFcqBGi0r?=
+ =?us-ascii?Q?XHFGzmCxUiqedjLjCVEeNMpDkCZUhEQfXa4F/ZgVWXDFK25+PFsphtVkqlWR?=
+ =?us-ascii?Q?MvLcjG+sNZ15Z+12StZDxulBvaSupw+drgoorbNfXRTsBepXxmk9mrdKSbg0?=
+ =?us-ascii?Q?qTusTn+nVvf0UrHhjWv+YrBB1qyK8AHD9XQhrHMSJWEsFO8i4ZQsaxVMWuYQ?=
+ =?us-ascii?Q?yjEXSzraxret2v3YUhrlIm1xKNEUF9BlWOrNGxZ5qIEPQEtg7W/+lM11vVTL?=
+ =?us-ascii?Q?JxUn+aoz8x7GiB/qX+kPj3Gm0Pfh9KoxPByTAYOjBl34dVt+ikiAMvIb+t/O?=
+ =?us-ascii?Q?kyh5z74a65Uk07Trxlp4q6B9KGqyTMTlfbfDNaFGYpoXgujkd3EQuh6S5Gpf?=
+ =?us-ascii?Q?PU7IiaOu8f/tybuHkICKZR/zcXkNKFg2v9JtC5GT5ikgzmuFCmhiHjl3Keyt?=
+ =?us-ascii?Q?ZhvvfIZjlXDEWJE4mObGoRwGjwL8w3jG7ThaFbstQAF5DwmlONjp2y9HqQyP?=
+ =?us-ascii?Q?DnsaIAtW9PWmGRYs0eBWKBVcXQIVgfPeADB8pdicu31bbubi/xj4fVgmNk1z?=
+ =?us-ascii?Q?ZqYMgM37O588NXHzREGEiTi4NtVnsCuIZW+4OcS/Rfo+FRIpQK8k773hV3MO?=
+ =?us-ascii?Q?ZS/nEpoT5mVgdTh2u10dtNANfPT8vqZyw7NQJvTK?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f57a1ba3-5f44-4553-09d4-08dd478e44c2
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6405.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2025 15:46:49.7539
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2025 15:44:12.3699
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KNVEeFTg50NPgLJSrP1+K6ovxee2wIYeUbe3dQSaULDJ1orC+3q6KWMYvD1jYSOlRJ+BqXMDSoa1OWH8Q8cHIpmr2F9/sYR2ozG/fJmWQHo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB8075
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-UserPrincipalName: eUW/jDXw4x6BiKDfbuIsNbUdMzLTtrT5qoRIwRd9YKpPD/B7jrCxhzTatVoPb+cfP4OSZiD22mWVvTxWLw06Yg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6911
 
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 7 Feb 2025 16:28:05 +0100
+Hi Yury,
 
-> OK, it seems there is not much to say.
-
-I just asked for reading the details and my explanations, which I gave
-several times, for your arguments and propositions for improving the
-code. You know better than me that single a "I don't like this" doesn't
-work here on LKML.
-
-Since for now this is 1:1 disagreement which you don't seem to want to
-resolve, anyone else can join this discussion and share his vision
-(again, with arguments and propositions what wouldn't hurt hotpath).
-I'm always glad to hear critics and improve code I write (I never mind
-sending v5, v10 etc., which sometimes happens), but only when this would
-actually give benefits to the code / perf / etc.
-
-Putting gro_node out of napi_struct, moving napi_id back to napi_struct,
-different approaches to handle fetching this ID to the skb we want to
-pass to the GRO engine -- I tried all this and each of them hurts.
-I don't mind sharing bloat-o-meter, pahole output etc etc, but I thought
-the explanation in the commitmsg and the discussions in previous threads
-explained enough.
-
+On Thu, Feb 06, 2025 at 10:57:19PM -0500, Yury Norov wrote:
+> On Thu, Feb 06, 2025 at 09:15:31PM +0100, Andrea Righi wrote:
 ...
+> > @@ -261,6 +267,29 @@ sched_numa_hop_mask(unsigned int node, unsigned int hops)
+> >  }
+> >  #endif	/* CONFIG_NUMA */
+> >  
+> > +/**
+> > + * for_each_numa_node - iterate over NUMA nodes at increasing hop distances
+> > + *                      from a given starting node.
+> > + * @node: the iteration variable, representing the current NUMA node.
+> > + * @start: the NUMA node to start the iteration from.
+> > + * @visited: a nodemask_t to track the visited nodes.
+> 
+> nit: s/nodemask_t/nodemask
 
-Off the topic, but back in 2020 (or 2021) you were very against my idea
-of using NAPI percpu caches to cache struct sk_buff there to lower MM
-layer pressure when calling build_skb(). Convincing me that it doesn't
-make sense, doesn't give anything etc. Now grep for 'napi_build_skb' and
-look how many vendors/drivers use it. IIRC Mellanox reported +15%
-switching from build_skb() some time ago.
+The type is actually nodemask_t, do you think it's better to mention
+nodemask instead?
 
-Thanks,
-Olek
+> 
+> > + * @state: state of NUMA nodes to iterate.
+> > + *
+> > + * This macro iterates over NUMA nodes in increasing distance from
+> > + * @start_node and yields MAX_NUMNODES when all the nodes have been
+> > + * visited.
+> > + *
+> > + * The difference between for_each_node() and for_each_numa_node() is that
+> > + * the former allows to iterate over nodes in no particular order, whereas
+> > + * the latter iterates over nodes in increasing order of distance.
+> 
+> for_each_node iterates them in numerical order. 
+
+Oh yes, much better. :)
+
+> 
+> > + *
+> > + * Requires rcu_lock to be held.
+> > + */
+> 
+> Please mention complexity here, which is O(N^2). 
+
+Ok. Will also add a comment to describe why it's O(N^2).
+
+> 
+> > +#define for_each_numa_node(node, start, visited, state)				\
+> > +	for (node = start;							\
+> > +	     node != MAX_NUMNODES;						\
+> > +	     node = sched_numa_node(&(visited), start, state))
+> 
+> Please braces around parameters.
+
+Ok.
+
+> 
+> 'node < MAX_NUMNODES' is better. It will cost you nothing but will give
+> some guarantee that if user passes broken start value, we don't call
+> sched_numa_node().
+
+Good point.
+
+> 
+> What about:
+>         start = -EINVAL;
+>         foe_each_numa_node(node, start, visited, N_ONLINE)
+>                 do_something(node);
+> 
+> Whatever garbage user puts in 'start', at the very first iteration,
+> do_something() will be executed against it. Offline node, -EINVAL or
+> NUMA_NO_NODE are the examples.
+
+So, my idea was actually to use start == NUMA_NO_NODE for all the cases
+where the starting node doesn't matter, for example when calling
+scx_bpf_pick_idle_cpu(), that doesn't have a prev_cpu context.
+
+Should we implicitly fallback to for_each_node() when
+start == NUMA_NO_NODE? And if it's complete garbage maybe just break and
+never execute do_something(node)?
+
+> 
+> > +
+> >  /**
+> >   * for_each_numa_hop_mask - iterate over cpumasks of increasing NUMA distance
+> >   *                          from a given node.
+> > diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> > index da33ec9e94ab2..e1d0a33415fb5 100644
+> > --- a/kernel/sched/topology.c
+> > +++ b/kernel/sched/topology.c
+> > @@ -2183,6 +2183,48 @@ int sched_numa_find_nth_cpu(const struct cpumask *cpus, int cpu, int node)
+> >  }
+> >  EXPORT_SYMBOL_GPL(sched_numa_find_nth_cpu);
+> >  
+> > +/**
+> > + * sched_numa_node - Find the NUMA node at the closest distance from
+> > + *		     node @start.
+> > + *
+> > + * @visited: a pointer to a nodemask_t representing the visited nodes.
+> > + * @start: the node to start the search from.
+> 
+> Maybe just 'node' The 'start' is only meaningful in the caller. Here
+> we don't start, we just look for a node that is the most nearest to a
+> given one.
+
+Ok.
+
+> 
+> What if NOMA_NO_NODE is passed?
+
+We could return the first non-visited node in numerical order. And still
+fallback to for_each_node() from for_each_numa_node() when
+start == NUMA_NO_NODE.
+
+> 
+> > + * @state: the node state to filter nodes by.
+> > + *
+> > + * This function iterates over all nodes in the given state and calculates
+> > + * the distance to the starting node. It returns the node that is the
+> > + * closest in terms of distance that has not already been considered (not
+> > + * set in @visited and not the starting node). If the node is found, it is
+> > + * marked as visited in the @visited node mask.
+> > + *
+> > + * Returns the node ID closest in terms of hop distance from the @start
+> > + * node, or MAX_NUMNODES if no node is found (or all nodes have been
+> > + * visited).
+> > + */
+> > +int sched_numa_node(nodemask_t *visited, int start, unsigned int state)
+> 
+> The name is somewhat confusing. Sched_numa_node what? If you're looking
+> for a closest node, call your function find_closest_node().
+> 
+> We already have numa_nearest_node(). The difference between this one
+> and what you're implementing here is that you add an additional mask.
+> So, I'd suggest something like
+> 
+>  int numa_nearest_node_andnot(int node, unsigned int state, nodemask_t *mask)
+> 
+> Also, there's about scheduler her, so I'd suggest to place it next to
+> numa_nearest_node() in mm/mempolicy.c.
+
+Makes sense, and I agree that mm/mempolicy.c is a better place for this.
+
+> 
+> > +{
+> > +	int dist, n, min_node, min_dist;
+> > +
+> > +	min_node = MAX_NUMNODES;
+> > +	min_dist = INT_MAX;
+> > +
+> > +	/* Find the nearest unvisted node */
+> 
+> If you name it properly, you don't need to explain your intentions in
+> the code. Also, at this level of abstraction, the 'visited' name may
+> be too specific. Let's refer to it as just a mask containing nodes
+> that user wants to skip for whatever reason. 
+
+Ok.
+
+> 
+> 
+> > +	for_each_node_state(n, state) {
+> > +		if (n == start || node_isset(n, *visited))
+> > +			continue;
+> 
+> Nah.
+> 
+> 1. Skipping start node is wrong. The very first call should return
+> 'start' exactly. Then it will be masked out, so the traversing will
+> move forward. 
+> 2. This should be for_each_node_state_andnot(n, state, mask).
+> 
+> This way you'll be able to drop the above condition entirely.
+
+Yeah, I agree, I'll revisit this, also considering the comments above.
+
+> 
+> > +		dist = node_distance(start, n);
+> > +		if (dist < min_dist) {
+> > +			min_dist = dist;
+> > +			min_node = n;
+> > +		}
+> > +	}
+> > +	if (min_node != MAX_NUMNODES)
+> > +		node_set(min_node, *visited);
+> 
+> Is it possible to set the 'visited' bit in caller code? This way we'll
+> make the function pure, like other bitmap search functions.
+> 
+> Would something like this work? 
+> 
+> int numa_nearest_node_andnot(int node, unsigned int state, const nodemask_t *mask);
+> #define for_each_numa_node(node, visited, state)			                      \
+> 	for (int start = (node), n = numa_nearest_node_andnot(start, (state), &(visited));    \
+> 	     n < MAX_NUMNODES;					                      \
+>              node_set(n, (visited)), n = numa_nearest_node_andnot(start, (state), &(visited)))
+> 
+> One other option to think about is that we can introduce numa_nearest_nodemask()
+> and use it like this
+> 
+>   nodemask_t nodes;
+> 
+>   nodes_complement(nodes, node_states[N_ONLINE];
+>   for_each_numa_node(node, unvisited)
+>         do_something();
+> 
+> Where:
+> 
+> int numa_nearest_nodemask(int node, const nodemask_t *mask);
+> #define for_each_numa_node(node, unvisited)			                      \
+> 	for (int start = (node), n = numa_nearest_nodemask(start, &(unvisited));    \
+> 	     n < MAX_NUMNODES;					                      \
+>              node_clear(n, (visited)), n = numa_nearest_nodemask(start, &(visited)))
+
+I like the numa_nearest_nodemask() idea, I'll do some experiemnts with it.
+
+Thanks!
+-Andrea
 
