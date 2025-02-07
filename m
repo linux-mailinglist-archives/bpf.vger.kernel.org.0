@@ -1,203 +1,187 @@
-Return-Path: <bpf+bounces-50782-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50783-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A323A2C94A
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 17:50:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D8EDA2C966
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 17:57:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C63A416196D
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 16:50:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5039E188AD01
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 16:57:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8805B18FDAA;
-	Fri,  7 Feb 2025 16:50:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC598190696;
+	Fri,  7 Feb 2025 16:57:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qH1qA4gk"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="j6T8XvNs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53EC818DB2A
-	for <bpf@vger.kernel.org>; Fri,  7 Feb 2025 16:50:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DF6618DB2D;
+	Fri,  7 Feb 2025 16:57:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738947048; cv=none; b=rLH971hFjKuqnyI84S7LgTZsx0Ny8MnRNo5vhRb265IeskXMyVLzD31bSvWukEHC4IEvA6dTs4tcSidDujIobhW+FY3M3m067MPQSasa02QKHFBfvf7bS6v7Qvc/t1c927cUevQI6kgPQB03lOD/Xkq5SGVHLlgDAflEUCR6sfM=
+	t=1738947425; cv=none; b=TNcXbvIwNOansIsF0nzk+Ut7dZQx4kMVt5WaoM5mJdn+hLoV1Ff6KQOMxc1/G1X+VZSqQZ13TLlU1Uyd6kJL4ZhG99WWh9j47hV9WOniz34KvmaLk+tt5CMBK0QrPeVpDNgvSTjpz0vVwk+6oknGWLQDxxrKGcQjHzLuLF6MwLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738947048; c=relaxed/simple;
-	bh=aPBkZDl/m4Qspl14MEY6KN0Fw6qRKdLc63tzwqiKBVM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X+wv7yRhGAyc7dVJBqHi/zzp2SKUZfFHTpGFnoGaxKkYiZ44Ncxy7w7A6WEXgQ95uSqEWHaIft7kK6FW9iIBClBJYWbQiOs9mAO7CEgqk6TEvldi92nC7PiNz/GM63xFCmWDB6xjQXbZKQCDiKrT2Otjde2aMmOm6KEZs8a5jnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qH1qA4gk; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5dbfc122b82so12061a12.0
-        for <bpf@vger.kernel.org>; Fri, 07 Feb 2025 08:50:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1738947043; x=1739551843; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aPBkZDl/m4Qspl14MEY6KN0Fw6qRKdLc63tzwqiKBVM=;
-        b=qH1qA4gkY/CpOnT5oAPiRTR5tiqxMHvnqiUPVNtE6fVOAgm4z6HZxjUKoLFujQZVtb
-         aHu0ZE+flOC7tJve/ZF67alkV/6ISN2mX9BClB2TrokRiD9D/Zut/RbzZGZq8VOyWu2B
-         5T39ZTsx0aGKKqyUWQXpmwWEedfLoCG4eN2poODUs3N7rqF9F3CIMShBNldvFbm7wWrz
-         H74I9BU5q3hey8sSJb0EHSnQPfSdMFu/huzJUZPVedr93v8KuH/UR3/oLlYlQUeUMtp1
-         2FhPPb+ju249TqmGroFgiOIP31jAGam1Rm1xeIA4F43EVNwdX5kg41db6dggWGB42/3/
-         xf8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738947043; x=1739551843;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aPBkZDl/m4Qspl14MEY6KN0Fw6qRKdLc63tzwqiKBVM=;
-        b=vBMsoNzx/GH+RC5OipI1MAwTjGBloIShWn5xTUdQlBKPnCI9hyKv2SYwVMarJDMP47
-         89VMkPmLOTRFHlSXTIXp2Zji/v98bMqZ4LnnZ95/dePTHvmeBbeHIvjdMJ3VU2jpePW2
-         v/ttTpBbzwzpVOEMcGwn5q3KyIWuCONxVATgy8CTUvbt3osZ8VZVfx+fLYYKfSObKYml
-         Bqu3Op5ubJdqeVJj8LXLf+m4x9klJR2BKULpo5C4/xajJ7TihvMZyV4xBEe6JknwfN39
-         hmNQ8zbPa8R/S5iA7PYvgsvgCWUwtBoi50QM+QA1R0apRIle6lZaJMhWK8TEsbZTaG30
-         oMog==
-X-Forwarded-Encrypted: i=1; AJvYcCV08paJVR5eJPka9dRUepazfVGKRKcklApR35UkL4xn8vg3martfWj9IZXtxIwvCZXtAsE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzbsKW81tbaXiNcV+eFeBZ/2+O2ywoOwvvNHnHWxCoA8+CN2xYy
-	eNSfYsjKwX+O2MlT+zNXyn5Xnr8I0IbyYKer+yAyU1PVyhvXQH0yfZNo9UfAoBL3K5WkzLX2yXS
-	iKYlDNDkzOdo1BjJeVK2AsHxmwtFT0+GQANYe
-X-Gm-Gg: ASbGncsRO5fQDhSbtp5+QCBmLlz43R/Tmfu6ftPKnLOB3M76Zn4GqwGwlD6pf+qden6
-	qgashVE8bwO7JDyvqBGvql6pAEWTKaUBoquf0LXbacQCxuOb4se6uY9D7MsbwCQYrPYWK/58aLS
-	euGkTl7a9biX7bS6LLFLfJOd4=
-X-Google-Smtp-Source: AGHT+IEF6TMgHg91uuYvMyntZQJrsyMXP7NnVk9IAG0elRzcK8gPqLJatjsvPJxCYVqWs5mWaF1xWRYMHmsCfe0F4NQ=
-X-Received: by 2002:aa7:d441:0:b0:5de:38e7:c864 with SMTP id
- 4fb4d7f45d1cf-5de46900143mr124485a12.4.1738947043132; Fri, 07 Feb 2025
- 08:50:43 -0800 (PST)
+	s=arc-20240116; t=1738947425; c=relaxed/simple;
+	bh=yi+lqoiaOf90NYBk5ORhTmBVwnJwPtvDSnNF5mudk+g=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type; b=iWbypfqGUxt+hM4oXZmhTdLCbZpilfCIVLI1ddMIMwbsIP4DtDKNxJorTeBWbGoovH6CdUFYKc/YXib7OGx48dcCaIHLckKtjxX99qb51TAqelySVNg7UIqN0GvPjAj88KHIugGRqLXTCiukrQQhWsE/pJ/+NRJO9ELKVJe6gvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=j6T8XvNs; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1738947424; x=1770483424;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=yi+lqoiaOf90NYBk5ORhTmBVwnJwPtvDSnNF5mudk+g=;
+  b=j6T8XvNsrvlBhFTX8bkndeB4C3O358LEoTsm3Zgwx+gUNtSkytlqSAib
+   Cw2gwQsy8f4cbKBYOX9Y2LadQ5e9JvKPwSLaefO3NzSvalxvJO8DdI6fJ
+   dRpPWsGnwkBg3YAL4FDsTUf/7h2UhQgZpXvO7aixdc9XTv+DYqZGclgtq
+   xdxKwHo6gIqRfLgK9Jl75xijWIadAsLhe0e6harqEySwy2+ZxHtzU9lAf
+   Ya7ASdXpafSh1lKe2MoUGr5KIeQgC2lxjrcUIFHZPp5sSWG9ExKuYpp6t
+   hHtiRZSflCyt3dsdLNCYzXqO7vZ7cm5S7BOIR0ZDCFEQkQUT/tXpThKa8
+   Q==;
+X-CSE-ConnectionGUID: Q+p8C7OyR2SsnripfjjtIw==
+X-CSE-MsgGUID: UufdQyGbR9auzOel1/dbkA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11338"; a="39722840"
+X-IronPort-AV: E=Sophos;i="6.13,267,1732608000"; 
+   d="scan'208";a="39722840"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 08:57:03 -0800
+X-CSE-ConnectionGUID: n988hgUKQKeTWgip6bqsFQ==
+X-CSE-MsgGUID: nVQxFxGYRYCqIs7rWWjTuQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,267,1732608000"; 
+   d="scan'208";a="111534437"
+Received: from mohdfai2-ilbpg12-1.png.intel.com ([10.88.227.73])
+  by orviesa006.jf.intel.com with ESMTP; 07 Feb 2025 08:56:53 -0800
+From: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
+To: Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Simon Horman <horms@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Furong Xu <0x1207@gmail.com>,
+	Russell King <rmk+kernel@armlinux.org.uk>,
+	Vladimir Oltean <vladimir.oltean@nxp.com>,
+	Serge Semin <fancer.lancer@gmail.com>,
+	Xiaolei Wang <xiaolei.wang@windriver.com>,
+	Suraj Jaiswal <quic_jsuraj@quicinc.com>,
+	Kory Maincent <kory.maincent@bootlin.com>,
+	Gal Pressman <gal@nvidia.com>,
+	Jesper Nilsson <jesper.nilsson@axis.com>,
+	Andrew Halaney <ahalaney@redhat.com>,
+	Choong Yong Liang <yong.liang.choong@linux.intel.com>,
+	Faizal Rahim <faizal.abdul.rahim@linux.intel.com>,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	bpf@vger.kernel.org
+Subject: [PATCH iwl-next v3 0/9] igc: Add support for Frame Preemption feature in IGC
+Date: Fri,  7 Feb 2025 11:56:40 -0500
+Message-Id: <20250207165649.2245320-1-faizal.abdul.rahim@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250202162921.335813-1-eyal.birger@gmail.com>
- <CAG48ez1Pj6MT=RV-sogtNbw7WLLmCrC-3TkNfRjpcCif8iNGkA@mail.gmail.com> <CAHsH6GtiwCGJevfkE5=VzzuQcusKp-ugnRD+AD+5a+8kqOGyZA@mail.gmail.com>
-In-Reply-To: <CAHsH6GtiwCGJevfkE5=VzzuQcusKp-ugnRD+AD+5a+8kqOGyZA@mail.gmail.com>
-From: Jann Horn <jannh@google.com>
-Date: Fri, 7 Feb 2025 17:50:06 +0100
-X-Gm-Features: AWEUYZmXc_6bGyGXPbhUQLG44CKNvo7X6skdH1pv_MYBSLuJ5OXxGW_nuazaMbM
-Message-ID: <CAG48ez0c-n1K=Ui-Awp+pGq-k6QvaWarjqz0znyKi5HO5R5P7A@mail.gmail.com>
-Subject: Re: [PATCH v3 0/2] seccomp: pass uretprobe system call through seccomp
-To: Eyal Birger <eyal.birger@gmail.com>
-Cc: jolsa@kernel.org, kees@kernel.org, luto@amacapital.net, wad@chromium.org, 
-	oleg@redhat.com, mhiramat@kernel.org, andrii@kernel.org, 
-	alexei.starovoitov@gmail.com, olsajiri@gmail.com, cyphar@cyphar.com, 
-	songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com, 
-	peterz@infradead.org, tglx@linutronix.de, bp@alien8.de, daniel@iogearbox.net, 
-	ast@kernel.org, andrii.nakryiko@gmail.com, rostedt@goodmis.org, rafi@rbk.io, 
-	shmulik.ladkani@gmail.com, bpf@vger.kernel.org, linux-api@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 7, 2025 at 5:20=E2=80=AFPM Eyal Birger <eyal.birger@gmail.com> =
-wrote:
-> On Fri, Feb 7, 2025 at 7:27=E2=80=AFAM Jann Horn <jannh@google.com> wrote=
-:
-> >
-> > On Sun, Feb 2, 2025 at 5:29=E2=80=AFPM Eyal Birger <eyal.birger@gmail.c=
-om> wrote:
-> > > uretprobe(2) is an performance enhancement system call added to impro=
-ve
-> > > uretprobes on x86_64.
-> > >
-> > > Confinement environments such as Docker are not aware of this new sys=
-tem
-> > > call and kill confined processes when uretprobes are attached to them=
-.
-> >
-> > FYI, you might have similar issues with Syscall User Dispatch
-> > (https://docs.kernel.org/admin-guide/syscall-user-dispatch.html) and
-> > potentially also with ptrace-based sandboxes, depending on what kinda
-> > processes you inject uprobes into. For Syscall User Dispatch, there is
-> > already precedent for a bypass based on instruction pointer (see
-> > syscall_user_dispatch()).
->
-> Thanks. This is interesting.
->
-> Do you know of confinement environments using this?
+Introduces support for the FPE feature in the IGC driver.
 
-Not for Syscall User Dispatch; I think that was mostly intended for
-stuff like emulating Windows syscalls in WINE. I'm not sure who
-actually uses it, I just know a bit about the kernel side of it.
+The patches aligns with the upstream FPE API:
+https://patchwork.kernel.org/project/netdevbpf/cover/20230220122343.1156614-1-vladimir.oltean@nxp.com/
+https://patchwork.kernel.org/project/netdevbpf/cover/20230119122705.73054-1-vladimir.oltean@nxp.com/
 
-From what I know, ptrace sandboxing is a technique used by some
-configurations of gVisor
-(https://gvisor.dev/docs/architecture_guide/platforms/#ptrace), though
-now I see that that page says that this configuration is no longer
-supported. I am also not sure whether you'd ever have uprobes
-installed in files from which instructions are executed in this
-environment.
+It builds upon earlier work:
+https://patchwork.kernel.org/project/netdevbpf/cover/20220520011538.1098888-1-vinicius.gomes@intel.com/
 
-> > > Since uretprobe is a "kernel implementation detail" system call which=
- is
-> > > not used by userspace application code directly, pass this system cal=
-l
-> > > through seccomp without forcing existing userspace confinement enviro=
-nments
-> > > to be changed.
-> >
-> > This makes me feel kinda uncomfortable. The purpose of seccomp() is
-> > that you can create a process that is as locked down as you want; you
-> > can use it for some light limits on what a process can do (like in
-> > Docker), or you can use it to make a process that has access to
-> > essentially nothing except read(), write() and exit_group(). Even
-> > stuff like restart_syscall() and rt_sigreturn() is not currently
-> > excepted from that.
->
-> Yes, this has been discussed at length in the threads mentioned
-> in the "Link" tags.
->
-> >
-> > I guess your usecase is a little special in that you were already
-> > calling from userspace into the kernel with SWBP before, which is also
-> > not subject to seccomp; and the syscall is essentially an
-> > arch-specific hack to make the SWBP a little faster.
->
-> Indeed. The uretprobe mechanism wasn't enforced by seccomp before
-> this syscall. This change preserves this.
->
-> >
-> > If we do this, we should at least ensure that there is absolutely no
-> > way for anything to happen in sys_uretprobe when no uretprobes are
-> > configured for the process - the first check in the syscall
-> > implementation almost does that, but the implementation could be a bit
-> > stricter. It checks for "regs->ip !=3D trampoline_check_ip()", but if n=
-o
-> > uprobe region exists for the process, trampoline_check_ip() returns
-> > `-1 + (uretprobe_syscall_check - uretprobe_trampoline_entry)`. So
-> > there is a userspace instruction pointer near the bottom of the
-> > address space that is allowed to call into the syscall if uretprobes
-> > are not set up. Though the mmap minimum address restrictions will
-> > typically prevent creating mappings there, and
-> > uprobe_handle_trampoline() will SIGILL us if we get that far without a
-> > valid uretprobe.
->
-> I'm not sure I understand your point. If creating mappings in that
-> area is prevented, what is the issue?
+The patch series adds the following functionalities to the IGC driver:
+a) Configure FPE using `ethtool --set-mm`.
+b) Display FPE settings via `ethtool --show-mm`.
+c) View FPE statistics using `ethtool --include-statistics --show-mm'.
+e) Enable preemptible/express queue with `fp`:
+   tc qdisc add ... root taprio \
+   fp E E P P
 
-It is usually prevented, not always - root can do it depending on
-system configuration.
+Change Log:
+v2 -> v3:
+- Implement configure_tx() mmsv callback (Vladimir)
+- Use static_branch_inc() and static_branch_dec() (Vladimir)
+- Add adapter->fpe.mmsv.pmac_enabled as extra check (Vladimir)
+- Remove unnecessary error check in igc_fpe_init_tx_descriptor() (Vladimir)
+- Additional places to use FIELD_PREP() instead of manual bit manipulation (Vladimir)
+- IGC_TXD_POPTS_SMD_V and IGC_TXD_POPTS_SMD_R type change to enum (Vladimir)
+- Remove unnecessary netif_running() check in igc_fpe_xmit_frame (Vladimir)
+- Rate limit print in igc_fpe_send_mpacket (Vladimir)
 
-Also, in a syscall like this that will be reachable in every sandbox,
-I think we should try to be more careful about edge cases and avoid
-things like this offset calculation on address -1.
+v1 -> v2:
+- Extract the stmmac verification logic into a common library (Vladimir)
+- igc to use common library for verification (Vladimir)
+- Fix syntax for kernel-doc to use "Return:" (Vladimir)
+- Use FIELD_GET instead of manual bit masking (Vladimir)
+- Don't assign 0 to statistics counter in igc_ethtool_get_mm_stats() (Vladimir)
+- Use pmac-enabled as a condition to allow MAC address value 0 (Vladimir)
+- Define macro register value in increasing value order (Vladimir)
+- Fix tx-min-frag-size handling for igc (Vladimir)
+- Handle link state changes with verification in igc (Vladimir)
+- Add static key for fast path code (Vladimir)
+- rx_min_frag_size get from constant (Vladimir)
 
-> also, this would be related to the
-> uretprobe syscall implementation in general, no?
+v1: https://patchwork.kernel.org/project/netdevbpf/cover/20241216064720.931522-1-faizal.abdul.rahim@linux.intel.com/
+v2: https://patchwork.kernel.org/project/netdevbpf/cover/20250205100524.1138523-1-faizal.abdul.rahim@linux.intel.com/
 
-Yes. I just think it is relevant to the seccomp change because
-excepting a syscall from seccomp makes it more important that that
-syscall is robust and correct.
+Faizal Rahim (8):
+  igc: Rename xdp_get_tx_ring() for non-xdp usage
+  igc: Optimize the TX packet buffer utilization
+  igc: Set the RX packet buffer size for TSN mode
+  igc: Add support for frame preemption verification
+  igc: Add support to set tx-min-frag-size
+  igc: Add support for preemptible traffic class in taprio
+  igc: Add support to get MAC Merge data via ethtool
+  igc: Add support to get frame preemption statistics via ethtool
 
-> To me this seems unrelated to the seccomp change.
-> Jiri, do you have any input on this?
->
-> Thanks!
-> Eyal.
+Vladimir Oltean (1):
+  net: ethtool: mm: extract stmmac verification logic into common
+    library
+
+ drivers/net/ethernet/intel/igc/igc.h          |  18 +-
+ drivers/net/ethernet/intel/igc/igc_base.h     |   1 +
+ drivers/net/ethernet/intel/igc/igc_defines.h  |  16 +-
+ drivers/net/ethernet/intel/igc/igc_ethtool.c  |  76 ++++++
+ drivers/net/ethernet/intel/igc/igc_main.c     | 101 +++++++-
+ drivers/net/ethernet/intel/igc/igc_regs.h     |  16 ++
+ drivers/net/ethernet/intel/igc/igc_tsn.c      | 220 ++++++++++++++++-
+ drivers/net/ethernet/intel/igc/igc_tsn.h      |  34 +++
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  16 +-
+ .../ethernet/stmicro/stmmac/stmmac_ethtool.c  |  41 +---
+ .../net/ethernet/stmicro/stmmac/stmmac_fpe.c  | 174 +++-----------
+ .../net/ethernet/stmicro/stmmac/stmmac_fpe.h  |   5 -
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |   8 +-
+ include/linux/ethtool.h                       |  61 +++++
+ net/ethtool/mm.c                              | 224 +++++++++++++++++-
+ 15 files changed, 794 insertions(+), 217 deletions(-)
+
+--
+2.34.1
+
 
