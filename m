@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-50808-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50809-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E280BA2CEF7
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 22:23:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 95EBAA2CF06
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 22:30:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FFE716CF88
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 21:23:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F4E416D358
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 21:30:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F8031B4151;
-	Fri,  7 Feb 2025 21:23:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1A891B87CE;
+	Fri,  7 Feb 2025 21:30:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="20PyrTKW"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aINefycw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A75C194C6A
-	for <bpf@vger.kernel.org>; Fri,  7 Feb 2025 21:23:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA6191B040E
+	for <bpf@vger.kernel.org>; Fri,  7 Feb 2025 21:30:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738963408; cv=none; b=nsffOQ9hxx3uH/7N4/y9x4VXLfDVcoU3B0IRkRgSo/X0adJmoQcEttgsDtHnD7KHNILNQiw9KoFPdEa1gIApTpF0GGBrL4iYNAwoOIOlDfJYs90xeACD1ZVtOHhBrq0x9yLuT0dZOTZQQ0vA298bJBtWpFVELWaeY+HMDCkNJJg=
+	t=1738963803; cv=none; b=otqHcBL8M5kgqwlQ8lMPke7o4yzu8CRBb/zKlCOP4feUXhwILnQmSEv818kQ2lZ4Q5Df0Mg787d7+8TsmKbDpD7NgSpy/WdpqczQMSMEmfDxF9nVCvRipZKjTXtesueu00YprkxEZ4muxfCRGB1zx4bSoz2Lhpjbks8P3am02GI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738963408; c=relaxed/simple;
-	bh=2fnqc0zpuTZ1osqRxouJu28UD5i3KWjrsuvBjj0eF4A=;
+	s=arc-20240116; t=1738963803; c=relaxed/simple;
+	bh=8dRlDI5WmSmXm0KKjj2yjaKPB4VGUf/sFQBj7bC46Ns=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YIkPeRLUR/gZMS1uT6V+wSd2N4FFdZjLVIlRJQtv6WZVRzQmyhrcBTkhJSFnjxsSKxaaIoR1bJh/cDXG9zBCqL5V84jmwhDhFX+Qu8ErZVq6isYcM8QfxUEB6I3zu/GoE06UCnIf0L19JRtIXw1sHTa+2pm1eq9UBlfYmZi0GQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=20PyrTKW; arc=none smtp.client-ip=209.85.214.176
+	 Content-Type:Content-Disposition:In-Reply-To; b=ax+1OOgiXrGfbHaDj4LPJUeO5nUGUGgJyYmgbQIv32SypjbrgZAgQF0IkWZtUK7DWE1jO0VbSpfJEqc5oOvGmoex36j2IXhW+XY31VBzdOJ+GxjPrBOn+y8NKEtsBHYDxDErGVpQs3VtNm1WrY3xzETm0jdHEv0DML4a/FvLbNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aINefycw; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-21625b4f978so35705ad.0
-        for <bpf@vger.kernel.org>; Fri, 07 Feb 2025 13:23:27 -0800 (PST)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-21f032484d4so45655ad.0
+        for <bpf@vger.kernel.org>; Fri, 07 Feb 2025 13:30:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1738963406; x=1739568206; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1738963801; x=1739568601; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z6XMDBGWHjm28kopyGkEygbqgRtjfyapFQf4AL4yI3g=;
-        b=20PyrTKWYuw50ZT1kPwxapjyW9iW7udIXrHvcBY9hTrF8f3G1uK6+YvCprS9nwR3Tp
-         uZtdswUZipSlGPPeBe3XlOwn8SM14dCBFFOMEBIUsURIIjlwa98wFJjfmKCsdSZYopyb
-         rqY13dAxpJH5NkC5GTnwnC5nA1Ca/RLvxyj83xB53UatRjF7g9ZgIPTHvNfyYWdwQNDo
-         NPqJd9FUCjPwCjQEcRhX63e6AMBtk7R+43T8XJKhpplAXuOIjte65alGUsWLCxveJHHG
-         6aVw1p3nkucz3UHEB6i/8++1SnKxyjnBuZ9oP/0e52YzExUsoZkAByQ/u9yZvWqzBnbA
-         Hd4w==
+        bh=WpmqbDlVKgWI46RiBOd7cmqJb5HFtWlucmHwOHZfM5g=;
+        b=aINefycwRwhIpwSPcrB9tIHeZv0hVncY+2bhaCAQ/ZMYfNpbj0+V4jqPbASXrjG6BT
+         SIPR7C9pQRRJrXfVzPPeeTQLul4lJHXaaRGcOOO3pvL4+CB41W+6CC2/yzhTe2tYMHVv
+         WfevarCD3iKkWXmysP9HpH4bml8KtI3Gp9OqKSvt5LAFDTf8Gi6lTkpZOyXdixAGGBfk
+         cXx6EmZmeRlfS9Lv/yBK3hf1RSgqPE+kvudXMbZkBKSYLpZpcvBkt8sogLkRL7toH75G
+         psZ578OvlI0W4R/u1e+a8dwm8utPs+ZbJgY2Zf3XTKf6s4kf74lBI2e8LHJRK8wsyZVs
+         Eb4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738963406; x=1739568206;
+        d=1e100.net; s=20230601; t=1738963801; x=1739568601;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Z6XMDBGWHjm28kopyGkEygbqgRtjfyapFQf4AL4yI3g=;
-        b=b5MmsJ6p2sLsskHo1cA4AlmE2YECd4RdQjzfzwng0JpRqtNf5UmA6bTrOYZ8gUXEWm
-         lx2U5s72RvIIPgJmPYnq1SRxVjrXKNNCwedqhjjPzrNFiLgDJZYnU9iM21WmjAslg0eX
-         rL/FnbeUcCa+pdS1w/XOD41k9fQ3UnPbQGRyFWHR+ae/sDbz3k4BmBto9qJsi1GI0yol
-         0gSAYMVDqDTIvsfWeEGI8bZxBB/5Hf6ewY/S7iTNUO84VYeTSWbhaauVgbduL0s/EtJF
-         acN74/sMPaLfxPXEFOttyfI/pm7Pc7qKRoGw5yulOrA8SyuwWRlDAqvl8Y9mO/UA56bk
-         QvcQ==
-X-Gm-Message-State: AOJu0Yy2kLU7/ou8GYxtdlDbLI4cf2YffFnaRDiJuiykqG2MZUb5mRNq
-	hgUP06umhUEIHYcNk+t2sRG4zYJ0WeB2Sw+LshPu8qptAopfgDA7JUNJW8dGzg==
-X-Gm-Gg: ASbGncu8S1AVVG6IwL0Pqye9m+Z76qYJHErPyYdoe0M0IUDnDZhP4GY88GtWRnKjqXM
-	Ffy9qpmFTTtU1fSdM2r8rAzpqZM/peWli3cmE6m1H3RGBYI0urzTUlgDRmkZHT2FoYHFNtfSAZM
-	L//eg3s46cL8BwhKRJ88IOGGLBcz3ZDe8w8DnoWnoJa/7YKN47DwTEQ3tvz75eCO+0Sk9x/y6Rh
-	AK8FL6yvDA6VMWc1TpqoZ3AHTRulpzljHdOABJxlRwwFM6ktyskZS53IppKa88KFu+MNot+28/V
-	Yl8PdFc/QrQJzHIvPjPVs/MDqA2aoFPQuJSPeMLHvgY6dXykQnBrcw==
-X-Google-Smtp-Source: AGHT+IHso8RJPb+vtNaFlFpohsHAMYbmR3QFQJHAAenGlRgMQKXQ54uhWmZuUpEKK6ELwZyS2450Bw==
-X-Received: by 2002:a17:903:3348:b0:216:201e:1b63 with SMTP id d9443c01a7336-21f69f35c2dmr461955ad.11.1738963406326;
-        Fri, 07 Feb 2025 13:23:26 -0800 (PST)
+        bh=WpmqbDlVKgWI46RiBOd7cmqJb5HFtWlucmHwOHZfM5g=;
+        b=XlOdW49qtuABjVQWrhOxNyuvWtyS4J7YZqsB3EtMNXVjaO9PvRMmUPUMgqp/8U++hR
+         FdlaQIulF8pyP02W+CPvyszzkeuov7dIolJ6cMsdb+MA9DOfn8f4SjaS6oOEnIkhZ2Gm
+         lXY2ORR++wFT4gcMh4lyHBFCTGtJL6GzqxERzTHexB8/s3FHEefUOQoKIrd/9zdi+Put
+         nWnejsErMK0g+9JHN1a51PyheK8bEMKzdbQsjgD8+e56Xa7eAkyICXL9xK6VbEs1Yozx
+         0jTH7B7JXoHJrX1bbdQbi/02wzAtaPQYUqRCtY9zCNc0tMLq7H+o7M93B5T47cDosjY0
+         XBwQ==
+X-Gm-Message-State: AOJu0YwdbtmeGbuqmWrrGUWK0jtjIjinCeY74w7Evb3oRymeDRkbfQsb
+	EPaZjxDNQm2DdHjh8aeLEPRjLsuKtWIG5GucYcOFnXRpfHcY9+lF56p4509Y3p/wAU38Tww4avH
+	EjC8b
+X-Gm-Gg: ASbGnctyUmm3Q0yDHmbV1dbCbGThZMLgityv0xz3sYG24BTILUaKuTNPJehOxep2Tdh
+	HBKw7Kjb9syrK/st/8YoHGIk5Ucxm/hWOXoyo+zTY3moc8fsSDOrEA/4IyTEkSCnx8fsSW1IxWm
+	kh3s0df12CQgmP7ZiWHFNRo2EmjW0njclj+X1MIlWeGScRG6dqAmH1ifZTK1IHqProX7Nd9tOqM
+	eBf7yo5d8B22lH9ddo3TTQwwcRLNMcbgJ3QbC4APbWZPGjS3laHjH0JAdXkXZQk3pkRBt9JkFn8
+	oqR5YaSl3dKojo52MhtCkn8HLjjjQ1QPQ67iRIjEmEtVLnTODt9LRQ==
+X-Google-Smtp-Source: AGHT+IHP6x7/nnWTD43CmRO0CpbJGNj6KB/SNxwdoOzxC7LfXgdBO2BKOfnZMBUjldNgUy6Lg8WukQ==
+X-Received: by 2002:a17:902:aa08:b0:20c:f40e:6ec3 with SMTP id d9443c01a7336-21f69e34933mr559535ad.22.1738963800724;
+        Fri, 07 Feb 2025 13:30:00 -0800 (PST)
 Received: from google.com (147.141.16.34.bc.googleusercontent.com. [34.16.141.147])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73048bf1504sm3593423b3a.108.2025.02.07.13.23.24
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fa2d831a1csm1670429a91.44.2025.02.07.13.29.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Feb 2025 13:23:25 -0800 (PST)
-Date: Fri, 7 Feb 2025 21:23:20 +0000
+        Fri, 07 Feb 2025 13:29:59 -0800 (PST)
+Date: Fri, 7 Feb 2025 21:29:54 +0000
 From: Peilin Ye <yepeilin@google.com>
-To: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org, bpf@ietf.org,
-	Xu Kuohai <xukuohai@huaweicloud.com>,
+To: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: bpf@ietf.org, Xu Kuohai <xukuohai@huaweicloud.com>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	David Vernet <void@manifault.com>,
 	Alexei Starovoitov <ast@kernel.org>,
@@ -88,6 +88,7 @@ Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org, bpf@ietf.org,
 	Jonathan Corbet <corbet@lwn.net>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
 	Puranjay Mohan <puranjay@kernel.org>,
+	Ilya Leoshkevich <iii@linux.ibm.com>,
 	Heiko Carstens <hca@linux.ibm.com>,
 	Vasily Gorbik <gor@linux.ibm.com>,
 	Catalin Marinas <catalin.marinas@arm.com>,
@@ -98,12 +99,10 @@ Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org, bpf@ietf.org,
 	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>,
 	Neel Natu <neelnatu@google.com>,
 	Benjamin Segall <bsegall@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 4/9] bpf: Introduce load-acquire and
- store-release instructions
-Message-ID: <Z6Z5yLETaJ38TvqR@google.com>
+Subject: Re: [PATCH bpf-next v2 0/9] Introduce load-acquire and store-release
+ BPF instructions
+Message-ID: <Z6Z7UsB-AGD_Xhdq@google.com>
 References: <cover.1738888641.git.yepeilin@google.com>
- <d03d8c3305e311c6cb29924119b5eecae8370bbc.1738888641.git.yepeilin@google.com>
- <cff3dc9eaa592dbe634e336eb83f9bb47dd9705a.camel@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -112,40 +111,49 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cff3dc9eaa592dbe634e336eb83f9bb47dd9705a.camel@linux.ibm.com>
+In-Reply-To: <cover.1738888641.git.yepeilin@google.com>
 
-Hi Ilya,
+On Fri, Feb 07, 2025 at 02:04:54AM +0000, Peilin Ye wrote:
+> Peilin Ye (9):
+>   bpf/verifier: Factor out atomic_ptr_type_ok()
+>   bpf/verifier: Factor out check_atomic_rmw()
+>   bpf/verifier: Factor out check_load_mem() and check_store_reg()
+>   bpf: Introduce load-acquire and store-release instructions
+>   arm64: insn: Add BIT(23) to {load,store}_ex's mask
+>   arm64: insn: Add load-acquire and store-release instructions
+>   bpf, arm64: Support load-acquire and store-release instructions
+>   selftests/bpf: Add selftests for load-acquire and store-release
+>     instructions
+>   bpf, docs: Update instruction-set.rst for load-acquire and
+>     store-release instructions
+> 
+>  .../bpf/standardization/instruction-set.rst   | 114 ++++++--
+>  arch/arm64/include/asm/insn.h                 |  12 +-
+>  arch/arm64/lib/insn.c                         |  29 ++
+>  arch/arm64/net/bpf_jit.h                      |  20 ++
+>  arch/arm64/net/bpf_jit_comp.c                 |  87 +++++-
+>  arch/s390/net/bpf_jit_comp.c                  |  14 +-
+>  arch/x86/net/bpf_jit_comp.c                   |   4 +
+>  include/linux/bpf.h                           |  11 +
+>  include/linux/filter.h                        |   2 +
+>  include/uapi/linux/bpf.h                      |  13 +
+>  kernel/bpf/core.c                             |  63 ++++-
+>  kernel/bpf/disasm.c                           |  12 +
+>  kernel/bpf/verifier.c                         | 234 +++++++++++-----
+>  tools/include/uapi/linux/bpf.h                |  13 +
+>  .../selftests/bpf/prog_tests/arena_atomics.c  |  50 ++++
+>  .../selftests/bpf/prog_tests/verifier.c       |   4 +
+>  .../selftests/bpf/progs/arena_atomics.c       |  88 ++++++
+>  .../bpf/progs/verifier_load_acquire.c         | 190 +++++++++++++
+>  .../selftests/bpf/progs/verifier_precision.c  |  47 ++++
+>  .../bpf/progs/verifier_store_release.c        | 262 ++++++++++++++++++
+>  20 files changed, 1164 insertions(+), 105 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/verifier_load_acquire.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/verifier_store_release.c
 
-On Fri, Feb 07, 2025 at 12:28:43PM +0100, Ilya Leoshkevich wrote:
-> Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
-
-Thanks!
-
-> s390x has a strong memory model, and the regular load and store
-> instructions are atomic as long as operand addresses are aligned.
-
-I see.
-
-> IIUC the verifier already enforces this unless BPF_F_ANY_ALIGNMENT
-> is set, in which case whoever loaded the program is responsible for the
-> consequences: memory accesses that happen to be unaligned would
-> not trigger an exception, but they would not be atomic either.
-
-The verifier rejects misaligned BPF_ATOMIC instructions since commit
-ca36960211eb ("bpf: allow xadd only on aligned memory"), even if
-BPF_F_ANY_ALIGNMENT is set - so this patch makes the verifier reject
-misaligned load-acquires and store-releases, too, to keep the behaviour
-consistent:
-
-Specifically, check_atomic_load() calls check_load_mem() (and
-check_atomic_store() calls check_store_reg()) with the
-@strict_alignment_once argument equals true.  See also selftests
-load_acquire_misaligned() and store_release_misaligned() in PATCH 8/9.
-
-> So I can implement the new instructions as normal loads/stores after
-> this series is merged.
-
-That would be great!
+Looks like the llvm-18 CI job passed but the llvm-17/gcc ones failed.
+I'll debug with llvm-17 and see if I need different #ifdef guards for
+the new tests.
 
 Thanks,
 Peilin Ye
