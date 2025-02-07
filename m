@@ -1,211 +1,197 @@
-Return-Path: <bpf+bounces-50798-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50799-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D642EA2CB96
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 19:41:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80952A2CD0C
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 20:49:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E8F31886C4A
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 18:41:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3777A7A3F69
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 19:47:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 858491DF244;
-	Fri,  7 Feb 2025 18:38:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF1A2195FE5;
+	Fri,  7 Feb 2025 19:48:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NlQrJCsw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V/vpbVTB"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD3661A3151;
-	Fri,  7 Feb 2025 18:38:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0220923C8CB
+	for <bpf@vger.kernel.org>; Fri,  7 Feb 2025 19:48:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738953481; cv=none; b=XZFp9K9j5bKoPMwtI4M2Wo+/+Ygtr5r76v4wXiemjgCbBeF+0Q7363lH35iRSzyjv/xhSDnYzP6JCNRAhgtInJ91iKh2zYpgF5KUTXHyzu+WRzYZwoXMsizddVb53ODckKn6n1JkOcWm1SECxQO539oO+P4Mb3X1Ur7CPy5BN6w=
+	t=1738957726; cv=none; b=YMo4cfikDNm2Pw/dVtrr9KPRibKm+xYI6FTVWVv9zVtOM7JNSTe+n+13ntIq1ouI48aNMKXD8gCPAlWuE3PegGNGm926scxxvGMMgnDmMv8arQB3fqomP299teNjRUHGQKHBrwfSuA8KpvWzpA3bZC5ATMhqWNThbllWgnqziMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738953481; c=relaxed/simple;
-	bh=nKtIeXe1WybNWDzZwu5Tk8fpz5emsmZs04c0W6ceGA0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cNKK9BE6dJJ9kfoMlkKCYQ8z+S9zw5e1ZQcdq31v7aRWhz7Nlks5z2yoaVTAUeWZlqFzVzL3uCZIUzP69fhhtie0FMi+X1z/Y1Rx2qz3Qx+B214kspC7nP4U71oZ3qRFEBtttt5aj/CfLo8cqtmnUzBeAhQBHeR/fJi5ngS1m4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NlQrJCsw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4FB8C4CED1;
-	Fri,  7 Feb 2025 18:37:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738953480;
-	bh=nKtIeXe1WybNWDzZwu5Tk8fpz5emsmZs04c0W6ceGA0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NlQrJCswb2tfBHdOL//Nqi1duhWdmo0hhnvyFyfXR+kDIctwxBbNZGMh0uVXpdrpn
-	 VtrsS32dlVeABXURIIGFmPTMZ88JEy/aky3D6z70pfkEKIebKtTmA3OIqxmZ3iDcEH
-	 trWQP7mjMuGosKO+a09FIi/HB1+rytKm2YepWGLYPhGRvhc49fQbsTVEVzSz1vy8KY
-	 6YWoxRaVR88tPNIw47TXvof69pWZuIN0NCuUntVn/ixzcMSAUzD+pD+us46BW7ocRi
-	 X6a7pzBJZI/SEPEJ2Eua3jvdWjb6R21icBFzIt4mEif2XISSYrHb7WAcNTWLbqa0Er
-	 f0yIWw7KhrZxA==
-Date: Fri, 7 Feb 2025 19:37:57 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
-	virtualization@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
-	linux-riscv@lists.infradead.org, linux-perf-users@vger.kernel.org,
-	xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
-	linux-arch@vger.kernel.org, rcu@vger.kernel.org,
-	linux-hardening@vger.kernel.org, linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-	bcm-kernel-feedback-list@broadcom.com,
-	Juergen Gross <jgross@suse.com>,
-	Ajay Kaher <ajay.kaher@broadcom.com>,
-	Alexey Makhalov <alexey.amakhalov@broadcom.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	"Liang, Kan" <kan.liang@linux.intel.com>,
-	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Jason Baron <jbaron@akamai.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Clark Williams <williams@redhat.com>,
-	Yair Podemsky <ypodemsk@redhat.com>,
-	Tomas Glozar <tglozar@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Kees Cook <kees@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl <aliceryhl@google.com>,
-	"Mike Rapoport (Microsoft)" <rppt@kernel.org>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Rong Xu <xur@google.com>,
-	Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Yosry Ahmed <yosryahmed@google.com>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-	Jinghao Jia <jinghao7@illinois.edu>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH v4 22/30] context_tracking: Exit CT_STATE_IDLE upon
- irq/nmi entry
-Message-ID: <Z6ZTBXUiEOLVcSKp@pavilion.home>
-References: <20250114175143.81438-1-vschneid@redhat.com>
- <20250114175143.81438-23-vschneid@redhat.com>
- <Z5A6NPqVGoZ32YsN@pavilion.home>
- <xhsmh5xm0pkuo.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <xhsmhbjvdk7kq.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	s=arc-20240116; t=1738957726; c=relaxed/simple;
+	bh=BJ5lLRFOvNTulNImcJq7+FS7Ec9HsSngTA6h+9G9yxU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OXkE78h69cVXncmUOGy7JhvEjyvk5WlmfVEifsmk7ZfoFh9v7TAa9ky3UpkotXpS6sZmUjxSpjAL1viMQMk7C6RE9y9Vu7wjPhxi2joX+S9bZ49Kfjm44HLkY/mbvEQRih8Jylj8PY75EWc46LQfMjCS7xVQNudVBDSt/IUcrPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V/vpbVTB; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2fa2c456816so1369532a91.1
+        for <bpf@vger.kernel.org>; Fri, 07 Feb 2025 11:48:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738957724; x=1739562524; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kb8Pmi1XA2CDlxVbSjrKqeQUu5L/teAkA/sUNwNJnpw=;
+        b=V/vpbVTBU9PryDj3QFobp8Thklj+Jkwk0Nmr+5UTCBgEt71L7jGN0ynAWtCNeUSCHl
+         yz8rixq81AUTP9h+BlXXaziNyFkzHhnnulvvO3KYTPNVCHy3cmTXasHXIp7KkmejkUb5
+         AxpV7mrHESw+Cs/qDbfFaQoOmSMyOL11lBWIHqNcjL8uWZB1yFg96q8pM9Spgj1LsUCg
+         VsyzRXQSuzvglUuMMga9F0rASRGXnnD0M/qMDDp284oAj7n+f4lsXSa0lXCPUjQdAyly
+         yqEiiXKCvUfoIf4EgkncR55AhehkbpzDLW1Yc63fh1pOINXAVlZG/u1fcOK07IKIPp4D
+         cPPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738957724; x=1739562524;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kb8Pmi1XA2CDlxVbSjrKqeQUu5L/teAkA/sUNwNJnpw=;
+        b=aynngpSWIf7wuVJzxtEUf0KOLyVTiyx6ISqMewhP/pp7nbgZ8O645l5LzzK0n+Jwzy
+         69i67dHbXjEZy4/WDgFwXUbaOkNZz9xtdKyF9XFJAkPFRsLZUu0sDauLx3h44XKpUNPL
+         1UUvzSxdMwroN0Nm31CjxvxNoY5tqi2XhodzZfZu9exxq1wuw3RkufVrmlR1myxNxqCl
+         sVLbnBw/0M6H12DwjB5/WUH+103zwhBlKjxvYv01RfhjBkoJMZTlJLmMBq66a641HTMe
+         U1FiRZDIMswi04xrkVxomBbUO1RjB+dQvPEsj7ibKIC3wIPISMOcLVMUvZGPShJx5le4
+         FrHw==
+X-Gm-Message-State: AOJu0YwBtHN6Y954ALKYkkyPHKJj2R5lZl6ogkssAg7ZvOtXABbGthyF
+	QYOuEnlsIeoI9ZgbvyedTrcXBSfANdfkkBinyWDAE3J4UHppZL6SuRaiyA5BQkfd+hPYl0IPEOn
+	PHUnDsKUiYYtczc3tqWjnFOqNgK/AmuyH
+X-Gm-Gg: ASbGnctKKCN8OZMy5iDHuaU3n9TZh0lO+Y+kjfgXimPRP5TEn52kH94Nw0rwNMCEUzm
+	0EMMPyG/Uvq2/angTTcLk82ajAiLRM4MFwjxLYGQIsKwTJ/20oeXxe2aJDAgS/onixyOLQVoMIF
+	YZSPMK13ww2fOt
+X-Google-Smtp-Source: AGHT+IF9F2IZIGdFRimDbsMbHveKYa/69yl5PUTtIN8T1MGapeSswoEqj9uN1Rk+4d/3Ck+jpgPdfGjOID3JqVFRJCc=
+X-Received: by 2002:a17:90b:4cd1:b0:2f9:d9fe:e72e with SMTP id
+ 98e67ed59e1d1-2fa24166e90mr7252434a91.16.1738957724115; Fri, 07 Feb 2025
+ 11:48:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <xhsmhbjvdk7kq.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+References: <20250127162158.84906-1-leon.hwang@linux.dev> <20250127162158.84906-5-leon.hwang@linux.dev>
+ <CAEf4BzYXCQi4HMvegMmsx-ppxprwNVyKohJgka8gY_B+gMy+mQ@mail.gmail.com> <8e25e1e9-37a0-4d4c-8af9-c2d5e12af65f@linux.dev>
+In-Reply-To: <8e25e1e9-37a0-4d4c-8af9-c2d5e12af65f@linux.dev>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 7 Feb 2025 11:48:32 -0800
+X-Gm-Features: AWEUYZm9rsRL1r3G2StlH4uGoYkoPYnF0KOcpGxxPFmwC9pURlsI4onBWG31_o0
+Message-ID: <CAEf4BzYeKcaYH8ZYpMo0XRyS4UYWaSZB5bMJ6FK0pUX1SUmgqg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: Add a case to test global
+ percpu data
+To: Leon Hwang <leon.hwang@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, yonghong.song@linux.dev, song@kernel.org, 
+	eddyz87@gmail.com, qmo@kernel.org, dxu@dxuuu.xyz, kernel-patches-bot@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Le Fri, Feb 07, 2025 at 06:06:45PM +0100, Valentin Schneider a écrit :
-> On 27/01/25 12:17, Valentin Schneider wrote:
-> > On 22/01/25 01:22, Frederic Weisbecker wrote:
-> >> And NMIs interrupting userspace don't call
-> >> enter_from_user_mode(). In fact they don't call irqentry_enter_from_user_mode()
-> >> like regular IRQs but irqentry_nmi_enter() instead. Well that's for archs
-> >> implementing common entry code, I can't speak for the others.
+On Fri, Feb 7, 2025 at 2:00=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> wr=
+ote:
+>
+>
+>
+> On 6/2/25 08:09, Andrii Nakryiko wrote:
+> > On Mon, Jan 27, 2025 at 8:22=E2=80=AFAM Leon Hwang <leon.hwang@linux.de=
+v> wrote:
 > >>
-> >
-> > That I didn't realize, so thank you for pointing it out. Having another
-> > look now, I mistook DEFINE_IDTENTRY_RAW(exc_int3) for the general case
-> > when it really isn't :(
-> >
-> >> Unifying the behaviour between user and idle such that the IRQs/NMIs exit the
-> >> CT_STATE can be interesting but I fear this may not come for free. You would
-> >> need to save the old state on IRQ/NMI entry and restore it on exit.
+> >> If the arch, like s390x, does not support percpu insn, this case won't
+> >> test global percpu data by checking -EOPNOTSUPP when load prog.
 > >>
-> >
-> > That's what I tried to avoid, but it sounds like there's no nice way around it.
-> >
-> >> Do we really need it?
+> >> The following APIs have been tested for global percpu data:
+> >> 1. bpf_map__set_initial_value()
+> >> 2. bpf_map__initial_value()
+> >> 3. generated percpu struct pointer that points to internal map's data
+> >> 4. bpf_map__lookup_elem() for global percpu data map
 > >>
-> >
-> > Well, my problem with not doing IDLE->KERNEL transitions on IRQ/NMI is that
-> > this leads the IPI deferral logic to observe a technically-out-of-sync sate
-> > for remote CPUs. Consider:
-> >
-> >   CPUx            CPUy
-> >                     state := CT_STATE_IDLE
-> >                     ...
-> >                     ~>IRQ
-> >                     ...
-> >                     ct_nmi_enter()
-> >                     [in the kernel proper by now]
-> >
-> >   text_poke_bp_batch()
-> >     ct_set_cpu_work(CPUy, CT_WORK_SYNC)
-> >       READ CPUy ct->state
-> >       `-> CT_IDLE_STATE
-> >       `-> defer IPI
-> >
-> >
-> > I thought this meant I would need to throw out the "defer IPIs if CPU is
-> > idle" part, but AIUI this also affects CT_STATE_USER and CT_STATE_GUEST,
-> > which is a bummer :(
-> 
-> Soooo I've been thinking...
-> 
-> Isn't
-> 
->   (context_tracking.state & CT_RCU_WATCHING)
-> 
-> pretty much a proxy for knowing whether a CPU is executing in kernelspace,
-> including NMIs?
+> >> cd tools/testing/selftests/bpf; ./test_progs -t global_percpu_data
+> >> 124     global_percpu_data_init:OK
+> >> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+> >>
+> >> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+> >> ---
+> >>  .../bpf/prog_tests/global_data_init.c         | 89 ++++++++++++++++++=
+-
+> >>  .../bpf/progs/test_global_percpu_data.c       | 21 +++++
+> >>  2 files changed, 109 insertions(+), 1 deletion(-)
+> >>  create mode 100644 tools/testing/selftests/bpf/progs/test_global_perc=
+pu_data.c
+> >>
 
-You got it!
+[...]
 
-> 
-> NMI interrupts userspace/VM/idle -> ct_nmi_enter()   -> it becomes true
-> IRQ interrupts idle              -> ct_irq_enter()   -> it becomes true
-> IRQ interrupts userspace         -> __ct_user_exit() -> it becomes true
-> IRQ interrupts VM                -> __ct_user_exit() -> it becomes true
-> 
-> IOW, if I gate setting deferred work by checking for this instead of
-> explicitely CT_STATE_KERNEL, "it should work" and prevent the
-> aforementioned issue? Or should I be out drinking instead? :-)
+> >> +void test_global_percpu_data_init(void)
+> >> +{
+> >> +       struct test_global_percpu_data *skel =3D NULL;
+> >> +       u64 *percpu_data =3D NULL;
+> >
+> > there is that test_global_percpu_data__percpu type you are declaring
+> > in the BPF skeleton, right? We should try using it here.
+> >
+>
+> No. bpftool does not generate test_global_percpu_data__percpu. The
+> struct for global variables is embedded into skeleton struct.
+>
+> Should we generate type for global variables?
 
-Exactly it should work! Now that doesn't mean you can't go out
-for a drink :-)
+we already have custom skeleton-specific type for .data, .rodata,
+.bss, so we should provide one for .percpu as well, yes
 
-Thanks.
+>
+> > And for that array access, we should make sure that it's __aligned(8),
+> > so indexing by CPU index works correctly.
+> >
+>
+> Ack.
+>
+> > Also, you define per-CPU variable as int, but here it is u64, what's
+> > up with that?
+> >
+>
+> Like __aligned(8), it's to make sure 8-bytes aligned. It's better to use
+> __aligned(8).
+
+It's hacky, and it won't work correctly on big-endian architectures.
+But you shouldn't need that if we have a struct representing this
+.percpu memory image. Just make sure that struct has 8 byte alignment
+(from bpftool side during skeleton generation, probably).
+
+[...]
+
+> > at least one of BPF programs (don't remember which one, could be
+> > raw_tp) supports specifying CPU index to run on, it would be nice to
+> > loop over CPUs, triggering BPF program on each one and filling per-CPU
+> > variable with current CPU index. Then we can check that all per-CPU
+> > values have expected values.
+> >
+>
+> Do you mean prog_tests/perf_buffer.c::trigger_on_cpu()?
+>
+
+No, look at `cpu` field of `struct bpf_test_run_opts`. We should have
+a selftest using it, so you can work backwards from that.
+
+> Your suggestion looks good to me. I'll do it.
+>
+> >
+> >> +       ASSERT_OK(err, "update_percpu_data");
+> >> +       ASSERT_EQ(topts.retval, 0, "update_percpu_data retval");
+> >> +
+> >> +       key =3D 0;
+> >> +       err =3D bpf_map__lookup_elem(map, &key, sizeof(key), percpu_da=
+ta,
+> >> +                                  value_sz, 0);
+> >> +       if (!ASSERT_OK(err, "bpf_map__lookup_elem"))
+> >> +               goto out;
+> >> +
+>
+> [...]
+>
+> Thanks,
+> Leon
+>
+>
 
