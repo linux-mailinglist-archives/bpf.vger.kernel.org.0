@@ -1,101 +1,97 @@
-Return-Path: <bpf+bounces-50737-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50738-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31B98A2B972
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 04:09:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AAB5A2B979
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 04:10:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FEF63A4157
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 03:09:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 845B6188997D
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 03:10:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CB3D15E5B8;
-	Fri,  7 Feb 2025 03:09:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4E9918DB0C;
+	Fri,  7 Feb 2025 03:09:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="CL0Nds8c"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="ro0LhLYG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BAA013B29F
-	for <bpf@vger.kernel.org>; Fri,  7 Feb 2025 03:09:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93EA818BBB0
+	for <bpf@vger.kernel.org>; Fri,  7 Feb 2025 03:09:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738897780; cv=none; b=UoPPTaWrwgyuSs3tyE5y3TK/pLn7xvM4Zp7mjCYQclrAAVSmsOsE5KPw3I2g2FM5j8w4mmExSHwy0FtBXu3y9jGz7cB7wqYhBDiRIW3FHHRWyzx/+zCeddbn5yOH8vmFZVlxFjdQgpatZYsDHYKQB8rcH2etiv99wVtJIqaf7KA=
+	t=1738897791; cv=none; b=YGh/gM8d9iW+jn3wBhEdHJmqOCzHUQLMXXtaRLo1pgQ30GcbQnfWMPIK+gGr0F+vYMnjbuZij2ibMJfEPDPRO7Wt47eBBvq7Xz9cv/iUG9wlplJNiTbcqoBTACD55tLL1j/bqqScKH7JxOocxO9cGkKNU7CFMZFH2Wfs9Jb4+0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738897780; c=relaxed/simple;
-	bh=KiRmZ8DqIcR+OnxxKrGOWfmmDrYw/NqG0k5zMUReZ/Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fTYQ/QipsRxFxi38FwgUEEwhx7/KBbFooelLvKcGFbR3Lh2HRYL1tNdNI8zRaBSoS/SReUdwGQ9zMIx61DuN/eCGxHXlCxmOxPdskMHW30+r8OHycMt4eGp5P/xQiJzVfqqJ+Chw9c4JaZ8tAQhmul2apIa+OGENj/ogaQFTk1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=CL0Nds8c; arc=none smtp.client-ip=209.85.216.41
+	s=arc-20240116; t=1738897791; c=relaxed/simple;
+	bh=TmFrieKafs0y9qgWW4DLzVPuAlNlJxW158B1qIqoulU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=uQiWGFd5N4zexfqIrUXdICoquPKX5rKQdAPZCWh+uBm8W28k1kgn5zcXH0IFAww4wykFY1Ip9ivRHSWrpIzuYQ5Wwrd6R/8rSbqAcnAfMJ/arzAKf9uACWdSnRcpMhC0oOiBYuCCwK5dEd9VUXE73AbDhrvspQDVoZ4eyEY9zcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=ro0LhLYG; arc=none smtp.client-ip=209.85.216.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2fa1a3c88c5so1349687a91.3
-        for <bpf@vger.kernel.org>; Thu, 06 Feb 2025 19:09:38 -0800 (PST)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2fa286ea7e8so218333a91.2
+        for <bpf@vger.kernel.org>; Thu, 06 Feb 2025 19:09:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1738897778; x=1739502578; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SsfXGpXzuZR+ErsjE42epoWXJKBH7x41dbTr/ZlyETw=;
-        b=CL0Nds8cxZLB3AGY38Nt+6TyEPHhZhThMLLo/ew9tN8dHqOH9rWEpv2gJpA5IK2NwE
-         2zFDOCqMAXwhKCmvX20GFwer02ZllS0Cn9pAptPSdhZ9w4P8vVS+v+MY2OTB2mYjmbwv
-         H04PylbBwbuCSyJnLSlmEuaRDbB1fxoBNSGQM=
+        d=fastly.com; s=google; t=1738897789; x=1739502589; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r7RUZIqHwLPt1JPkc0hYqOZYvl0G8thAspfJu2yEGWI=;
+        b=ro0LhLYGYhuzHAu/hNKV84xL1bFap2uUJXzsNfNRVLTFYRZwarmHfbdLqqXMt/E0YS
+         Uf81+eq8lqLvIUOlf5yQ69S0TQiNyOx7UQBq3w/7Oc6VyNpV2TW0RhZr2+FoTmpUbev0
+         DO2hVT7JH5LIjT2lHGD3CbpO9vCipb/DlUsQs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738897778; x=1739502578;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SsfXGpXzuZR+ErsjE42epoWXJKBH7x41dbTr/ZlyETw=;
-        b=n+YuM+H/LThS6FJKZNlBu9KrKCHuSumvwEKR3FKa/mlQ0jKC5v1K7VLNMU6swu7XVR
-         8fegOTrglMp0bE4fLNQkKUCRPDl4awdIDxqweRmjbvn712awwWoSjuCfGEuR2UASdJ4y
-         mbkM2ZkWn9pi3rA35D3Hs4oaBA9LkSZNHdrBc55UH9LXuHOUAO8/QflA4+WHS4xyf9bc
-         tBMu69dY9RbU2mHUwzzYuEogCqLt+bUtomJTgDwhAl0pQdZmhRwN/YJ5gzh7VUxJuJCh
-         TBLq2iI9h5YUelbnatpvPFLpMg9IUsHOZsMR12QJbaTxev/NLkZqrfkH/tXL9Ea3g+hK
-         UfMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXwMCCJvgUBU0soKogZNLsulNlmn27P6N7/fP6iuT54BYGWUahEjAuNis/0t+2rHbACrVg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz1yD0cIOiHFfdcd4oL2uu+jTAs6s5X0mCO/f9EACuiObxxtk5l
-	/n/+/2LMkEzeNyeboEqbGojAvrBS4Iz500wcfQ9aUASYgsvfGi4XKyebDkVXpTM=
-X-Gm-Gg: ASbGncvjvMAElXemLFBrjuIg1exwtBUM9brEtUpCKpjRS/DK0WLsLB2c5Pm02s5B8xj
-	RKmaPhv1U8Eq5E79S4xF9Fd6KVr8aOcwN4jjf0ifRcLYGSaqf7K0mbnYeqfN/Ag7gep9eCuGOYP
-	4F2VZdubX0+NgYcnH7P9fRCU5qnlUJxj278mctWQ0fRTvc+1EwKbYOTHwa1ry8rjji0PY4vqRd0
-	3GFK+iBsz2z1lmu9aLx1BJ/qg+gP5XAXMNLGYB4pZz07DC9kfv/xv0iH32Dqro4njqOZsWBLgLE
-	BPgjGbG1Y5kGr1aCrAPkJWg=
-X-Google-Smtp-Source: AGHT+IE4lvGn74SnqtWPP7mNowI1TaEf4zYmlVSufnzq0vzK1BA2GeuK39LAyo8UDxpds6tdfwMaiA==
-X-Received: by 2002:a17:90b:38c3:b0:2ee:f687:6ad5 with SMTP id 98e67ed59e1d1-2fa23f5eb89mr2550060a91.2.1738897777676;
-        Thu, 06 Feb 2025 19:09:37 -0800 (PST)
+        d=1e100.net; s=20230601; t=1738897789; x=1739502589;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=r7RUZIqHwLPt1JPkc0hYqOZYvl0G8thAspfJu2yEGWI=;
+        b=OPjI677Cl56/4BsyjFtHmHzvfjke5ULHrPXsJN7q+9TaKaDw4lTueZX4nhO0Xp589P
+         XpnjRCTMLclQtG6ExX8NOTe/jcEPNhcjU0aYhyAcDWykheAeeeQTtefDyLF9gJvZF45P
+         wXhc1kcAS9t3++gado9AKvlT8HUxNMxYwRddAC3aIa6Ex3v37MKGbJkTghW9r5vYmwP0
+         p4C3n8mLg5vx8kPWFW5iS5VchxZyDkZddrDg8/j7SbylFdKDW2avrruhzzoEkTam6znn
+         2cuD7rzG5YDLu4HHO64iP2nLjErLhLkdEOTkcTUDpBeewJD4cq6nNfikPvP9k0XNkC9y
+         doWw==
+X-Forwarded-Encrypted: i=1; AJvYcCXGX6326NhFgz96MUNVcJKgwUcety+KFsKW3MEPuXMgpvhUuN7b5Q4zQVb4N+qMcQwFV6U=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzYxTJJUcieTXrf0dgdZ+PlpCPnB6Z+B8+sYWSZP3fYlV9StBVT
+	soCwmy272J/NEkkyC1pTLSRFk35uvIkTtg8aFZz0BegIxDlOMHxkhQ7DNav4KuQ=
+X-Gm-Gg: ASbGncsUi32mrj2AtwlTbA/y5H+zx09VNEaMY56W1VI593UsLB9ctWBwUAqaKNCN9XB
+	ud8dkyydRa5eBX8LkqV+yfHSaXnKrjeFCu5cjWWpaLq1oXylLoGBFxr+wSuX/FGN/2j0dNjZPfT
+	VbvlF3bEZKZi/voCYaj2z0rmg1IchjaqbikHeXXObjuKpqJKX5BMpMMmYNR+gnl31icUWzElCQn
+	W9SYDP3yQrAQd6hTlWhr0QzLXL93OXMYtelGXX4FKBkOGhqtgPtUKRhBbadbIjgDutuvqDFtpto
+	pXTia1wZ98fAnYcRTklegiY=
+X-Google-Smtp-Source: AGHT+IE/mTf+RgI6SASTcTKQhP0AQNPSWXueq68RE7gGuzT1ocUjhsKBGM/Nermff6/ehihz9yHN/g==
+X-Received: by 2002:a17:90b:234e:b0:2f4:4500:bb4d with SMTP id 98e67ed59e1d1-2fa24175d44mr2496123a91.20.1738897788831;
+        Thu, 06 Feb 2025 19:09:48 -0800 (PST)
 Received: from localhost.localdomain ([2620:11a:c019:0:65e:3115:2f58:c5fd])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21f368ab196sm20348955ad.222.2025.02.06.19.09.36
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21f368ab196sm20348955ad.222.2025.02.06.19.09.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Feb 2025 19:09:37 -0800 (PST)
+        Thu, 06 Feb 2025 19:09:48 -0800 (PST)
 From: Joe Damato <jdamato@fastly.com>
 To: netdev@vger.kernel.org
 Cc: pabeni@redhat.com,
 	edumazet@google.com,
 	sridhar.samudrala@intel.com,
 	Joe Damato <jdamato@fastly.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	bpf@vger.kernel.org (open list:XDP (eXpress Data Path):Keyword:(?:\b|_)xdp(?:\b|_)),
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Daniel Jurgens <danielj@nvidia.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Wei <dw@davidwei.uk>,
-	Donald Hunter <donald.hunter@gmail.com>,
 	Jakub Kicinski <kuba@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Shuah Khan <shuah@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
 	Jesper Dangaard Brouer <hawk@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
 	linux-kernel@vger.kernel.org (open list),
 	linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
-	Martin Karsten <mkarsten@uwaterloo.ca>,
-	Mina Almasry <almasrymina@google.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Simon Horman <horms@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH net-next v4 0/3] netdev-genl: Add an xsk attribute to queues
-Date: Fri,  7 Feb 2025 03:08:52 +0000
-Message-ID: <20250207030916.32751-1-jdamato@fastly.com>
+	bpf@vger.kernel.org (open list:XDP (eXpress Data Path):Keyword:(?:\b|_)xdp(?:\b|_))
+Subject: [PATCH net-next v4 3/3] selftests: drv-net: Test queue xsk attribute
+Date: Fri,  7 Feb 2025 03:08:55 +0000
+Message-ID: <20250207030916.32751-4-jdamato@fastly.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20250207030916.32751-1-jdamato@fastly.com>
+References: <20250207030916.32751-1-jdamato@fastly.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -104,72 +100,211 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Greetings:
+Test that queues which are used for AF_XDP have the xsk nest attribute.
+The attribute is currently empty, but its existence means the AF_XDP is
+being used for the queue.
 
-Welcome to v4. Small functional change, which makes the code cleaner
-(see changelog) and tests pass on my machine with mlx5 and netdevsim.
+Signed-off-by: Joe Damato <jdamato@fastly.com>
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+---
+ v3:
+   - Change comment style of helper C program to avoid kdoc warnings as
+     suggested by Jakub. No other changes.
 
-This is an attempt to followup on something Jakub asked me about [1],
-adding an xsk attribute to queues and more clearly documenting which
-queues are linked to NAPIs...
+ v2:
+   - Updated the Python test after changes to patch 1 which expose an
+     empty nest
+   - Updated Python test with general Python coding feedback
 
-After the RFC [2], Jakub suggested creating an empty nest for queues
-which have a pool, so I've adjusted this version to work that way.
-
-The nest can be extended in the future to express attributes about XSK
-as needed. Queues which are not used for AF_XDP do not have the xsk
-attribute present.
-
-I've run the included test on:
-  - my mlx5 machine (via NETIF=)
-  - without setting NETIF
-
-And the test seems to pass in both cases.
-
-Thanks,
-Joe
-
-[1]: https://lore.kernel.org/netdev/20250113143109.60afa59a@kernel.org/
-[2]: https://lore.kernel.org/netdev/20250129172431.65773-1-jdamato@fastly.com/
-
-v4:
-  - Add patch 1, as suggested by Jakub, which adds an empty nest helper.
-  - Use the helper in patch 2, which makes the code cleaner and prevents
-    a possible bug.
-
-v3: https://lore.kernel.org/netdev/20250204191108.161046-1-jdamato@fastly.com/
-  - Change comment format in patch 2 to avoid kdoc warnings. No other
-    changes.
-
-v2: https://lore.kernel.org/all/20250203185828.19334-1-jdamato@fastly.com/
-  - Switched from RFC to actual submission now that net-next is open
-  - Adjusted patch 1 to include an empty nest as suggested by Jakub
-  - Adjusted patch 2 to update the test based on changes to patch 1, and
-    to incorporate some Python feedback from Jakub :)
-
-rfc: https://lore.kernel.org/netdev/20250129172431.65773-1-jdamato@fastly.com/
-
-
-Joe Damato (3):
-  netlink: Add nla_put_empty_nest helper
-  netdev-genl: Add an XSK attribute to queues
-  selftests: drv-net: Test queue xsk attribute
-
- Documentation/netlink/specs/netdev.yaml       | 13 ++-
- include/net/netlink.h                         | 15 ++++
- include/uapi/linux/netdev.h                   |  6 ++
- net/core/netdev-genl.c                        | 12 +++
- tools/include/uapi/linux/netdev.h             |  6 ++
  .../testing/selftests/drivers/net/.gitignore  |  2 +
  tools/testing/selftests/drivers/net/Makefile  |  3 +
  tools/testing/selftests/drivers/net/queues.py | 35 +++++++-
  .../selftests/drivers/net/xdp_helper.c        | 89 +++++++++++++++++++
- 9 files changed, 178 insertions(+), 3 deletions(-)
+ 4 files changed, 127 insertions(+), 2 deletions(-)
  create mode 100644 tools/testing/selftests/drivers/net/.gitignore
  create mode 100644 tools/testing/selftests/drivers/net/xdp_helper.c
 
-
-base-commit: f3eba8edd885db439f4bfaa2cf9d766bad1ae6c5
+diff --git a/tools/testing/selftests/drivers/net/.gitignore b/tools/testing/selftests/drivers/net/.gitignore
+new file mode 100644
+index 000000000000..ec746f374e85
+--- /dev/null
++++ b/tools/testing/selftests/drivers/net/.gitignore
+@@ -0,0 +1,2 @@
++# SPDX-License-Identifier: GPL-2.0-only
++xdp_helper
+diff --git a/tools/testing/selftests/drivers/net/Makefile b/tools/testing/selftests/drivers/net/Makefile
+index c7f1c443f2af..81961c6e059d 100644
+--- a/tools/testing/selftests/drivers/net/Makefile
++++ b/tools/testing/selftests/drivers/net/Makefile
+@@ -1,10 +1,13 @@
+ # SPDX-License-Identifier: GPL-2.0
++CFLAGS += $(KHDR_INCLUDES)
+ 
+ TEST_INCLUDES := $(wildcard lib/py/*.py) \
+ 		 $(wildcard lib/sh/*.sh) \
+ 		 ../../net/net_helper.sh \
+ 		 ../../net/lib.sh \
+ 
++TEST_GEN_PROGS := xdp_helper
++
+ TEST_PROGS := \
+ 	netcons_basic.sh \
+ 	netcons_fragmented_msg.sh \
+diff --git a/tools/testing/selftests/drivers/net/queues.py b/tools/testing/selftests/drivers/net/queues.py
+index 38303da957ee..55c2b296ad3c 100755
+--- a/tools/testing/selftests/drivers/net/queues.py
++++ b/tools/testing/selftests/drivers/net/queues.py
+@@ -8,7 +8,10 @@ from lib.py import NetDrvEnv
+ from lib.py import cmd, defer, ip
+ import errno
+ import glob
+-
++import os
++import socket
++import struct
++import subprocess
+ 
+ def sys_get_queues(ifname, qtype='rx') -> int:
+     folders = glob.glob(f'/sys/class/net/{ifname}/queues/{qtype}-*')
+@@ -21,6 +24,34 @@ def nl_get_queues(cfg, nl, qtype='rx'):
+         return len([q for q in queues if q['type'] == qtype])
+     return None
+ 
++def check_xdp(cfg, nl, xdp_queue_id=0) -> None:
++    test_dir = os.path.dirname(os.path.realpath(__file__))
++    xdp = subprocess.Popen([f"{test_dir}/xdp_helper", f"{cfg.ifindex}", f"{xdp_queue_id}"],
++                           stdin=subprocess.PIPE, stdout=subprocess.PIPE, bufsize=1,
++                           text=True)
++    defer(xdp.kill)
++
++    stdout, stderr = xdp.communicate(timeout=10)
++    rx = tx = False
++
++    queues = nl.queue_get({'ifindex': cfg.ifindex}, dump=True)
++    if not queues:
++        raise KsftSkipEx("Netlink reports no queues")
++
++    for q in queues:
++        if q['id'] == 0:
++            if q['type'] == 'rx':
++                rx = True
++            if q['type'] == 'tx':
++                tx = True
++
++            ksft_eq(q['xsk'], {})
++        else:
++            if 'xsk' in q:
++                _fail("Check failed: xsk attribute set.")
++
++    ksft_eq(rx, True)
++    ksft_eq(tx, True)
+ 
+ def get_queues(cfg, nl) -> None:
+     snl = NetdevFamily(recv_size=4096)
+@@ -81,7 +112,7 @@ def check_down(cfg, nl) -> None:
+ 
+ def main() -> None:
+     with NetDrvEnv(__file__, queue_count=100) as cfg:
+-        ksft_run([get_queues, addremove_queues, check_down], args=(cfg, NetdevFamily()))
++        ksft_run([get_queues, addremove_queues, check_down, check_xdp], args=(cfg, NetdevFamily()))
+     ksft_exit()
+ 
+ 
+diff --git a/tools/testing/selftests/drivers/net/xdp_helper.c b/tools/testing/selftests/drivers/net/xdp_helper.c
+new file mode 100644
+index 000000000000..b04d4e0ea30a
+--- /dev/null
++++ b/tools/testing/selftests/drivers/net/xdp_helper.c
+@@ -0,0 +1,89 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++#include <sys/mman.h>
++#include <sys/socket.h>
++#include <linux/if_xdp.h>
++#include <linux/if_link.h>
++#include <net/if.h>
++#include <inttypes.h>
++
++#define UMEM_SZ (1U << 16)
++#define NUM_DESC (UMEM_SZ / 2048)
++
++/* this is a simple helper program that creates an XDP socket and does the
++ * minimum necessary to get bind() to succeed.
++ *
++ * this test program is not intended to actually process packets, but could be
++ * extended in the future if that is actually needed.
++ *
++ * it is used by queues.py to ensure the xsk netlinux attribute is set
++ * correctly.
++ */
++int main(int argc, char **argv)
++{
++	struct xdp_umem_reg umem_reg = { 0 };
++	struct sockaddr_xdp sxdp = { 0 };
++	int num_desc = NUM_DESC;
++	void *umem_area;
++	int ifindex;
++	int sock_fd;
++	int queue;
++	char byte;
++
++	if (argc != 3) {
++		fprintf(stderr, "Usage: %s ifindex queue_id", argv[0]);
++		return 1;
++	}
++
++	sock_fd = socket(AF_XDP, SOCK_RAW, 0);
++	if (sock_fd < 0) {
++		perror("socket creation failed");
++		return 1;
++	}
++
++	ifindex = atoi(argv[1]);
++	queue = atoi(argv[2]);
++
++	umem_area = mmap(NULL, UMEM_SZ, PROT_READ | PROT_WRITE, MAP_PRIVATE |
++			MAP_ANONYMOUS, -1, 0);
++	if (umem_area == MAP_FAILED)
++		return -1;
++
++	umem_reg.addr = (uintptr_t)umem_area;
++	umem_reg.len = UMEM_SZ;
++	umem_reg.chunk_size = 2048;
++	umem_reg.headroom = 0;
++
++	setsockopt(sock_fd, SOL_XDP, XDP_UMEM_REG, &umem_reg,
++		   sizeof(umem_reg));
++	setsockopt(sock_fd, SOL_XDP, XDP_UMEM_FILL_RING, &num_desc,
++		   sizeof(num_desc));
++	setsockopt(sock_fd, SOL_XDP, XDP_UMEM_COMPLETION_RING, &num_desc,
++		   sizeof(num_desc));
++	setsockopt(sock_fd, SOL_XDP, XDP_RX_RING, &num_desc, sizeof(num_desc));
++
++	sxdp.sxdp_family = AF_XDP;
++	sxdp.sxdp_ifindex = ifindex;
++	sxdp.sxdp_queue_id = queue;
++	sxdp.sxdp_flags = 0;
++
++	if (bind(sock_fd, (struct sockaddr *)&sxdp, sizeof(sxdp)) != 0) {
++		perror("bind failed");
++		close(sock_fd);
++		return 1;
++	}
++
++	/* give the parent program some data when the socket is ready*/
++	fprintf(stdout, "%d\n", sock_fd);
++
++	/* parent program will write a byte to stdin when its ready for this
++	 * helper to exit
++	 */
++	read(STDIN_FILENO, &byte, 1);
++
++	close(sock_fd);
++	return 0;
++}
 -- 
 2.43.0
 
