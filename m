@@ -1,289 +1,403 @@
-Return-Path: <bpf+bounces-50818-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50819-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E276BA2D167
-	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 00:19:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21B8FA2D16A
+	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 00:21:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84C7B7A20FE
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 23:18:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E397188FBA0
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 23:21:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 516161D6DBF;
-	Fri,  7 Feb 2025 23:18:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89FE21D619F;
+	Fri,  7 Feb 2025 23:21:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="WIzErQ/Y"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lIBRU8xI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B19818FDAE
-	for <bpf@vger.kernel.org>; Fri,  7 Feb 2025 23:18:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D3719CD13;
+	Fri,  7 Feb 2025 23:21:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738970329; cv=none; b=a7GRq4QFcMUhGXfW9bihGFWaIxzttWvSA1gVaVyOjtBSeXfkeKnf+Q7aO67NBSrljDsfe+3dro6JTFbWQyoItHNv+EgHnXdSmAeryrkKsQ4uhqP6mzWSxYBLOMYvxcOudq17fEo+2ORUrUfzVViwrUXzCgeZ44KnP1VFunvlppY=
+	t=1738970491; cv=none; b=jI0ap8eHrIW3q7bkciVDNw3X0nS0/IsbxDfDeAj5Nd2t91jCXXjQxxOLai+sNTJhNug25tJUA63NuNkXN2SJ08z500KXk4GGRw1UIaA32Td9Un654Vz7D5ynBu/giRI4Gy6kHTrinzIi3QDeQ173Ia0Mk8YOr7DVaWBOIXqmJ5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738970329; c=relaxed/simple;
-	bh=5alaaO9ZmgYiym0NIgk6g51qicM9iKUSAXoTtk1qvFg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W51SFWXUm4Lf2Zkkbv0BAmRLZQ/UuxhkWVouTOj+CJzDWvJ8mE5NGNN0QG6JKw4+IuLk6ghQcP3FfISB7X9h1dMe9PCfWic20HbAGsl0ete88HI1IzcocDt+2Wgh/NVuC9ZeNpfQljASa3V7QhZLLdpwyLylyszn/0R6aOd3A7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=WIzErQ/Y; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2f9bac7699aso3871151a91.1
-        for <bpf@vger.kernel.org>; Fri, 07 Feb 2025 15:18:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1738970327; x=1739575127; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=lf5q0aCThbD/KqnjYKMD+mKT7WtkPBbfBE6IAIgCFz8=;
-        b=WIzErQ/YHIv0bM/a8V/+XDx+YLcFcT/Q+K9OXIHcjRGwt2eRnvDvYBARFDz2HpRL4W
-         owynB+0ftBZ52dXVKn3oP5LVnzojvNzgpSmRy/4G4bRnbfTYPfYVrr2aXrNZnfugCt9p
-         GWVTcHmcIAITiZSxAh4OKMiVh5FkP4AgY+8zg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738970327; x=1739575127;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lf5q0aCThbD/KqnjYKMD+mKT7WtkPBbfBE6IAIgCFz8=;
-        b=UdMGiNdlbvxE6P0yMW0NmSQWmwSliV34Yqz56qMK/eyHB5DuisD9q0YkimsRqm72Y9
-         2zvrMr0U3J60mQhQIWMsPos0RbR/TNWaXzT47NrBDkgmNtYmKcZuMtcYc8gsdxVu4KHY
-         JTdfdMjANWQ3QISfuLDEk6VKp8Eite9soXyNNUOE7MIlDGZ+IwKuXSWrMOgb7Zi24Y9T
-         eZHmzFQQLIvvdKVpEZ3YMSWBoMDVqNjmoS2j751kE+XazsWq3+fj0BI+A7hogXPdJvMo
-         4bBojCOv6i1YKp8RaCCnFGuOBDAAPN3natLz+6BTgpT00qJm1IH/Y38dt+9o7z+fLv/8
-         LjhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVBhXh0Yl+1QjG4xq1Zp9k6gdu8BL42kml8Fz4uu8HjY75jZH3oorsS+7pe3NhWZPmDyq4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywsm6zbxFwL2ZBgIupIvY+7xk5E04smv1weY6qsV76u2cvPe7MQ
-	Ql/Wp5WPexMxKB96D2PlWJxhG6q8rYYHKsGBepjXd3xlKcWHf3NO/WWSEID092ObNkJBn0j4qBp
-	Ga7RfoZ9UuVMooKuC8w3cqHB5iqhW7SM7j/MF
-X-Gm-Gg: ASbGncvzVawfVCP7VZQlzqwNzj24dDSdcuVBuHhUTzlPoPYJccYaAvpcG0DitfZasPk
-	69cupdFIbqdEbiK+EiylqdgmONMimAeqlAMQF/UFIpr4XvSMnV/qNg2UPLupiHjNi02kznqhGVA
-	==
-X-Google-Smtp-Source: AGHT+IE4lfz9Fh5v9JdiZ5M0ffjh4tLJUafbDcqw7fPxWUhBu63mA74BrOYKCI8Qj5LacoCaI86AvHrc9JedA4ysMaA=
-X-Received: by 2002:a17:90b:3fc3:b0:2ee:8008:b583 with SMTP id
- 98e67ed59e1d1-2fa24274b87mr8579382a91.16.1738970327542; Fri, 07 Feb 2025
- 15:18:47 -0800 (PST)
+	s=arc-20240116; t=1738970491; c=relaxed/simple;
+	bh=Om09NgReZe+VkQbi9KsRs0AlCp6znfQUvuT1wpV5vjM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X1n5SvutQuepmhYhg400Z/3Z96osDJ1EF7H/6r7/9oSuaT6ajjh3FjleAUxBLPg07BBZKjmHBCNDTXliBq93VxUhuXWzcgwbNrHN5HI8tiqplZsjrqjR0DkCiD4Z0T1lRZuKK19l5v6E+KG2KtPyxd46d7K34k/m+ibBSH0a26s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lIBRU8xI; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1738970487; x=1770506487;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Om09NgReZe+VkQbi9KsRs0AlCp6znfQUvuT1wpV5vjM=;
+  b=lIBRU8xI4SJlhnhL9Qyr0hotACH8JTS49jLWBMPhVFmzykZpP5zNdkpR
+   neiIAws1PmC9OyQTrNK8jUuMBgNoWWPmBgwfar5c/mBef38WN57LCP798
+   ZoK0FcpSinRfu2ONBCkFH0SEBHlu0+LiOkzQoVPRKgohK5QyNonuMve1K
+   5ByOQ0VYWV6fYN1nJ0QMYzzi/70+sQMEflMR+SAMNufENJipLysD/V6au
+   VdflUQOKt12BJcAejqwd/I4e9AvbkHbviN5WbHU9dYPammCMYplC0/hu5
+   UkEllTfSmOrk/D5Kw4vuoFMz+HmCMg5Q7T02ElWIUYc6chAYlwceNSX/b
+   w==;
+X-CSE-ConnectionGUID: jsFEHarmR4aQjPRE+rQQ4A==
+X-CSE-MsgGUID: il/ij6VXTl6yhVvLyGkw6A==
+X-IronPort-AV: E=McAfee;i="6700,10204,11338"; a="39647944"
+X-IronPort-AV: E=Sophos;i="6.13,268,1732608000"; 
+   d="scan'208";a="39647944"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 15:21:27 -0800
+X-CSE-ConnectionGUID: ES1XdqWNSGauLADhTV6F3g==
+X-CSE-MsgGUID: kMTqZrBpS7+3UnZSHzWbkQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,268,1732608000"; 
+   d="scan'208";a="111481510"
+Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
+  by fmviesa006.fm.intel.com with ESMTP; 07 Feb 2025 15:21:22 -0800
+Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tgXey-000zAh-16;
+	Fri, 07 Feb 2025 23:21:20 +0000
+Date: Sat, 8 Feb 2025 07:21:15 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, Barret Rhoden <brho@google.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Will Deacon <will@kernel.org>, Waiman Long <llong@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
+	Josh Don <joshdon@google.com>, Dohyun Kim <dohyunkim@google.com>,
+	linux-arm-kernel@lists.infradead.org, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next v2 02/26] locking: Move common qspinlock helpers
+ to a private header
+Message-ID: <202502080738.raao5j60-lkp@intel.com>
+References: <20250206105435.2159977-3-memxor@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241018205332.525595-1-jitendra.vegiraju@broadcom.com>
- <CAMdnO-+FjsRX4fjbCE_RVNY4pEoArD68dAWoEM+oaEZNJiuA3g@mail.gmail.com> <67919001-1cb7-4e9b-9992-5b3dd9b03406@quicinc.com>
-In-Reply-To: <67919001-1cb7-4e9b-9992-5b3dd9b03406@quicinc.com>
-From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
-Date: Fri, 7 Feb 2025 15:18:35 -0800
-X-Gm-Features: AWEUYZkdCDRaHgbK79-4_vZ3Z-i97Aw1Rvr0Mirz3m8-Wj2cdRiP6FpmPRGkkRc
-Message-ID: <CAMdnO-+HwXf7c=igt2j6VHcki3cYanXpFApZDcEe7DibDz810g@mail.gmail.com>
-Subject: Re: [PATCH net-next v6 0/5] net: stmmac: Add PCI driver support for BCM8958x
-To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-Cc: netdev@vger.kernel.org, alexandre.torgue@foss.st.com, joabreu@synopsys.com, 
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	mcoquelin.stm32@gmail.com, bcm-kernel-feedback-list@broadcom.com, 
-	richardcochran@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
-	hawk@kernel.org, john.fastabend@gmail.com, fancer.lancer@gmail.com, 
-	rmk+kernel@armlinux.org.uk, ahalaney@redhat.com, xiaolei.wang@windriver.com, 
-	rohan.g.thomas@intel.com, Jianheng.Zhang@synopsys.com, 
-	linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org, andrew@lunn.ch, 
-	linux@armlinux.org.uk, horms@kernel.org, florian.fainelli@broadcom.com
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000ab6cf4062d9594fa"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250206105435.2159977-3-memxor@gmail.com>
 
---000000000000ab6cf4062d9594fa
-Content-Type: multipart/alternative; boundary="000000000000a62238062d9594fb"
+Hi Kumar,
 
---000000000000a62238062d9594fb
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+kernel test robot noticed the following build warnings:
 
-Hi Abhishek,
+[auto build test WARNING on 0abff462d802a352c87b7f5e71b442b09bf9cfff]
 
-On Fri, Feb 7, 2025 at 10:21=E2=80=AFAM Abhishek Chauhan (ABC) <
-quic_abchauha@quicinc.com> wrote:
+url:    https://github.com/intel-lab-lkp/linux/commits/Kumar-Kartikeya-Dwivedi/locking-Move-MCS-struct-definition-to-public-header/20250206-190258
+base:   0abff462d802a352c87b7f5e71b442b09bf9cfff
+patch link:    https://lore.kernel.org/r/20250206105435.2159977-3-memxor%40gmail.com
+patch subject: [PATCH bpf-next v2 02/26] locking: Move common qspinlock helpers to a private header
+config: x86_64-randconfig-121-20250207 (https://download.01.org/0day-ci/archive/20250208/202502080738.raao5j60-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250208/202502080738.raao5j60-lkp@intel.com/reproduce)
 
->
->
-> On 11/5/2024 8:12 AM, Jitendra Vegiraju wrote:
-> > Hi netdev team,
-> >
-> > On Fri, Oct 18, 2024 at 1:53=E2=80=AFPM <jitendra.vegiraju@broadcom.com=
-> wrote:
-> >>
-> >> From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
-> >>
-> >> This patchset adds basic PCI ethernet device driver support for Broadc=
-om
-> >> BCM8958x Automotive Ethernet switch SoC devices.
-> >>
-> >
-> > I would like to seek your guidance on how to take this patch series
-> forward.
-> > Thanks to your feedback and Serge's suggestions, we made some forward
-> > progress on this patch series.
-> > Please make any suggestions to enable us to upstream driver support
-> > for BCM8958x.
->
-> Jitendra,
->          Have we resent this patch or got it approved ? I dont see any
-> updates after this patch.
->
->
-Thank you for inquiring about the status of this patch.
-As stmmac driver is going through a maintainer transition, we wanted to
-wait until a new maintainer is identified.
-We would like to send the updated patch as soon as possible.
-Thanks,
-Jitendra
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202502080738.raao5j60-lkp@intel.com/
 
---000000000000a62238062d9594fb
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+sparse warnings: (new ones prefixed by >>)
+>> kernel/locking/qspinlock.c:285:41: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct qnode *qnodes @@     got struct qnode [noderef] __percpu * @@
+   kernel/locking/qspinlock.c:285:41: sparse:     expected struct qnode *qnodes
+   kernel/locking/qspinlock.c:285:41: sparse:     got struct qnode [noderef] __percpu *
+   kernel/locking/qspinlock.c: note: in included file:
+>> kernel/locking/qspinlock.h:67:16: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct mcs_spinlock * @@
+   kernel/locking/qspinlock.h:67:16: sparse:     expected void const [noderef] __percpu *__vpp_verify
+   kernel/locking/qspinlock.h:67:16: sparse:     got struct mcs_spinlock *
 
-<div dir=3D"ltr"><div>Hi Abhishek,</div><br><div class=3D"gmail_quote gmail=
-_quote_container"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, Feb 7, 2025=
- at 10:21=E2=80=AFAM Abhishek Chauhan (ABC) &lt;<a href=3D"mailto:quic_abch=
-auha@quicinc.com">quic_abchauha@quicinc.com</a>&gt; wrote:<br></div><blockq=
-uote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1p=
-x solid rgb(204,204,204);padding-left:1ex"><br>
-<br>
-On 11/5/2024 8:12 AM, Jitendra Vegiraju wrote:<br>
-&gt; Hi netdev team,<br>
-&gt; <br>
-&gt; On Fri, Oct 18, 2024 at 1:53=E2=80=AFPM &lt;<a href=3D"mailto:jitendra=
-.vegiraju@broadcom.com" target=3D"_blank">jitendra.vegiraju@broadcom.com</a=
->&gt; wrote:<br>
-&gt;&gt;<br>
-&gt;&gt; From: Jitendra Vegiraju &lt;<a href=3D"mailto:jitendra.vegiraju@br=
-oadcom.com" target=3D"_blank">jitendra.vegiraju@broadcom.com</a>&gt;<br>
-&gt;&gt;<br>
-&gt;&gt; This patchset adds basic PCI ethernet device driver support for Br=
-oadcom<br>
-&gt;&gt; BCM8958x Automotive Ethernet switch SoC devices.<br>
-&gt;&gt;<br>&gt; <br>
-&gt; I would like to seek your guidance on how to take this patch series fo=
-rward.<br>
-&gt; Thanks to your feedback and Serge&#39;s suggestions, we made some forw=
-ard<br>
-&gt; progress on this patch series.<br>
-&gt; Please make any suggestions to enable us to upstream driver support<br=
->
-&gt; for BCM8958x.<br>
-<br>
-Jitendra,<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Have we resent this patch or got it appro=
-ved ? I dont see any updates after this patch. <br><br></blockquote><div><b=
-r></div><div>Thank you for inquiring about the status of this patch.</div><=
-div>As stmmac driver is going through a maintainer transition, we wanted to=
- wait until a new maintainer is identified.</div><div>We would like to send=
- the updated patch as soon as possible.</div><div>Thanks,</div><div>Jitendr=
-a</div><div><br></div></div></div>
+vim +285 kernel/locking/qspinlock.c
 
---000000000000a62238062d9594fb--
+   108	
+   109	/**
+   110	 * queued_spin_lock_slowpath - acquire the queued spinlock
+   111	 * @lock: Pointer to queued spinlock structure
+   112	 * @val: Current value of the queued spinlock 32-bit word
+   113	 *
+   114	 * (queue tail, pending bit, lock value)
+   115	 *
+   116	 *              fast     :    slow                                  :    unlock
+   117	 *                       :                                          :
+   118	 * uncontended  (0,0,0) -:--> (0,0,1) ------------------------------:--> (*,*,0)
+   119	 *                       :       | ^--------.------.             /  :
+   120	 *                       :       v           \      \            |  :
+   121	 * pending               :    (0,1,1) +--> (0,1,0)   \           |  :
+   122	 *                       :       | ^--'              |           |  :
+   123	 *                       :       v                   |           |  :
+   124	 * uncontended           :    (n,x,y) +--> (n,0,0) --'           |  :
+   125	 *   queue               :       | ^--'                          |  :
+   126	 *                       :       v                               |  :
+   127	 * contended             :    (*,x,y) +--> (*,0,0) ---> (*,0,1) -'  :
+   128	 *   queue               :         ^--'                             :
+   129	 */
+   130	void __lockfunc queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
+   131	{
+   132		struct mcs_spinlock *prev, *next, *node;
+   133		u32 old, tail;
+   134		int idx;
+   135	
+   136		BUILD_BUG_ON(CONFIG_NR_CPUS >= (1U << _Q_TAIL_CPU_BITS));
+   137	
+   138		if (pv_enabled())
+   139			goto pv_queue;
+   140	
+   141		if (virt_spin_lock(lock))
+   142			return;
+   143	
+   144		/*
+   145		 * Wait for in-progress pending->locked hand-overs with a bounded
+   146		 * number of spins so that we guarantee forward progress.
+   147		 *
+   148		 * 0,1,0 -> 0,0,1
+   149		 */
+   150		if (val == _Q_PENDING_VAL) {
+   151			int cnt = _Q_PENDING_LOOPS;
+   152			val = atomic_cond_read_relaxed(&lock->val,
+   153						       (VAL != _Q_PENDING_VAL) || !cnt--);
+   154		}
+   155	
+   156		/*
+   157		 * If we observe any contention; queue.
+   158		 */
+   159		if (val & ~_Q_LOCKED_MASK)
+   160			goto queue;
+   161	
+   162		/*
+   163		 * trylock || pending
+   164		 *
+   165		 * 0,0,* -> 0,1,* -> 0,0,1 pending, trylock
+   166		 */
+   167		val = queued_fetch_set_pending_acquire(lock);
+   168	
+   169		/*
+   170		 * If we observe contention, there is a concurrent locker.
+   171		 *
+   172		 * Undo and queue; our setting of PENDING might have made the
+   173		 * n,0,0 -> 0,0,0 transition fail and it will now be waiting
+   174		 * on @next to become !NULL.
+   175		 */
+   176		if (unlikely(val & ~_Q_LOCKED_MASK)) {
+   177	
+   178			/* Undo PENDING if we set it. */
+   179			if (!(val & _Q_PENDING_MASK))
+   180				clear_pending(lock);
+   181	
+   182			goto queue;
+   183		}
+   184	
+   185		/*
+   186		 * We're pending, wait for the owner to go away.
+   187		 *
+   188		 * 0,1,1 -> *,1,0
+   189		 *
+   190		 * this wait loop must be a load-acquire such that we match the
+   191		 * store-release that clears the locked bit and create lock
+   192		 * sequentiality; this is because not all
+   193		 * clear_pending_set_locked() implementations imply full
+   194		 * barriers.
+   195		 */
+   196		if (val & _Q_LOCKED_MASK)
+   197			smp_cond_load_acquire(&lock->locked, !VAL);
+   198	
+   199		/*
+   200		 * take ownership and clear the pending bit.
+   201		 *
+   202		 * 0,1,0 -> 0,0,1
+   203		 */
+   204		clear_pending_set_locked(lock);
+   205		lockevent_inc(lock_pending);
+   206		return;
+   207	
+   208		/*
+   209		 * End of pending bit optimistic spinning and beginning of MCS
+   210		 * queuing.
+   211		 */
+   212	queue:
+   213		lockevent_inc(lock_slowpath);
+   214	pv_queue:
+   215		node = this_cpu_ptr(&qnodes[0].mcs);
+   216		idx = node->count++;
+   217		tail = encode_tail(smp_processor_id(), idx);
+   218	
+   219		trace_contention_begin(lock, LCB_F_SPIN);
+   220	
+   221		/*
+   222		 * 4 nodes are allocated based on the assumption that there will
+   223		 * not be nested NMIs taking spinlocks. That may not be true in
+   224		 * some architectures even though the chance of needing more than
+   225		 * 4 nodes will still be extremely unlikely. When that happens,
+   226		 * we fall back to spinning on the lock directly without using
+   227		 * any MCS node. This is not the most elegant solution, but is
+   228		 * simple enough.
+   229		 */
+   230		if (unlikely(idx >= _Q_MAX_NODES)) {
+   231			lockevent_inc(lock_no_node);
+   232			while (!queued_spin_trylock(lock))
+   233				cpu_relax();
+   234			goto release;
+   235		}
+   236	
+   237		node = grab_mcs_node(node, idx);
+   238	
+   239		/*
+   240		 * Keep counts of non-zero index values:
+   241		 */
+   242		lockevent_cond_inc(lock_use_node2 + idx - 1, idx);
+   243	
+   244		/*
+   245		 * Ensure that we increment the head node->count before initialising
+   246		 * the actual node. If the compiler is kind enough to reorder these
+   247		 * stores, then an IRQ could overwrite our assignments.
+   248		 */
+   249		barrier();
+   250	
+   251		node->locked = 0;
+   252		node->next = NULL;
+   253		pv_init_node(node);
+   254	
+   255		/*
+   256		 * We touched a (possibly) cold cacheline in the per-cpu queue node;
+   257		 * attempt the trylock once more in the hope someone let go while we
+   258		 * weren't watching.
+   259		 */
+   260		if (queued_spin_trylock(lock))
+   261			goto release;
+   262	
+   263		/*
+   264		 * Ensure that the initialisation of @node is complete before we
+   265		 * publish the updated tail via xchg_tail() and potentially link
+   266		 * @node into the waitqueue via WRITE_ONCE(prev->next, node) below.
+   267		 */
+   268		smp_wmb();
+   269	
+   270		/*
+   271		 * Publish the updated tail.
+   272		 * We have already touched the queueing cacheline; don't bother with
+   273		 * pending stuff.
+   274		 *
+   275		 * p,*,* -> n,*,*
+   276		 */
+   277		old = xchg_tail(lock, tail);
+   278		next = NULL;
+   279	
+   280		/*
+   281		 * if there was a previous node; link it and wait until reaching the
+   282		 * head of the waitqueue.
+   283		 */
+   284		if (old & _Q_TAIL_MASK) {
+ > 285			prev = decode_tail(old, qnodes);
+   286	
+   287			/* Link @node into the waitqueue. */
+   288			WRITE_ONCE(prev->next, node);
+   289	
+   290			pv_wait_node(node, prev);
+   291			arch_mcs_spin_lock_contended(&node->locked);
+   292	
+   293			/*
+   294			 * While waiting for the MCS lock, the next pointer may have
+   295			 * been set by another lock waiter. We optimistically load
+   296			 * the next pointer & prefetch the cacheline for writing
+   297			 * to reduce latency in the upcoming MCS unlock operation.
+   298			 */
+   299			next = READ_ONCE(node->next);
+   300			if (next)
+   301				prefetchw(next);
+   302		}
+   303	
+   304		/*
+   305		 * we're at the head of the waitqueue, wait for the owner & pending to
+   306		 * go away.
+   307		 *
+   308		 * *,x,y -> *,0,0
+   309		 *
+   310		 * this wait loop must use a load-acquire such that we match the
+   311		 * store-release that clears the locked bit and create lock
+   312		 * sequentiality; this is because the set_locked() function below
+   313		 * does not imply a full barrier.
+   314		 *
+   315		 * The PV pv_wait_head_or_lock function, if active, will acquire
+   316		 * the lock and return a non-zero value. So we have to skip the
+   317		 * atomic_cond_read_acquire() call. As the next PV queue head hasn't
+   318		 * been designated yet, there is no way for the locked value to become
+   319		 * _Q_SLOW_VAL. So both the set_locked() and the
+   320		 * atomic_cmpxchg_relaxed() calls will be safe.
+   321		 *
+   322		 * If PV isn't active, 0 will be returned instead.
+   323		 *
+   324		 */
+   325		if ((val = pv_wait_head_or_lock(lock, node)))
+   326			goto locked;
+   327	
+   328		val = atomic_cond_read_acquire(&lock->val, !(VAL & _Q_LOCKED_PENDING_MASK));
+   329	
+   330	locked:
+   331		/*
+   332		 * claim the lock:
+   333		 *
+   334		 * n,0,0 -> 0,0,1 : lock, uncontended
+   335		 * *,*,0 -> *,*,1 : lock, contended
+   336		 *
+   337		 * If the queue head is the only one in the queue (lock value == tail)
+   338		 * and nobody is pending, clear the tail code and grab the lock.
+   339		 * Otherwise, we only need to grab the lock.
+   340		 */
+   341	
+   342		/*
+   343		 * In the PV case we might already have _Q_LOCKED_VAL set, because
+   344		 * of lock stealing; therefore we must also allow:
+   345		 *
+   346		 * n,0,1 -> 0,0,1
+   347		 *
+   348		 * Note: at this point: (val & _Q_PENDING_MASK) == 0, because of the
+   349		 *       above wait condition, therefore any concurrent setting of
+   350		 *       PENDING will make the uncontended transition fail.
+   351		 */
+   352		if ((val & _Q_TAIL_MASK) == tail) {
+   353			if (atomic_try_cmpxchg_relaxed(&lock->val, &val, _Q_LOCKED_VAL))
+   354				goto release; /* No contention */
+   355		}
+   356	
+   357		/*
+   358		 * Either somebody is queued behind us or _Q_PENDING_VAL got set
+   359		 * which will then detect the remaining tail and queue behind us
+   360		 * ensuring we'll see a @next.
+   361		 */
+   362		set_locked(lock);
+   363	
+   364		/*
+   365		 * contended path; wait for next if not observed yet, release.
+   366		 */
+   367		if (!next)
+   368			next = smp_cond_load_relaxed(&node->next, (VAL));
+   369	
+   370		arch_mcs_spin_unlock_contended(&next->locked);
+   371		pv_kick_node(lock, next);
+   372	
+   373	release:
+   374		trace_contention_end(lock, 0);
+   375	
+   376		/*
+   377		 * release the node
+   378		 */
+   379		__this_cpu_dec(qnodes[0].mcs.count);
+   380	}
+   381	EXPORT_SYMBOL(queued_spin_lock_slowpath);
+   382	
 
---000000000000ab6cf4062d9594fa
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-tJVewHuOmXgWQxNWV7Oiszu1d9xAcqyj65s1PrEIIaHnxEM3eTK+teecLEy8QymZjjDTrCHg4x36
-2AczdlQAIiq5TSAucGja5VP8g1zTnfL/RAxEZvLS471GABptArolXY2hMVHdVEYcTduZlu8aHARc
-phXveOB5/l3bPqpMVf2aFalv4ab733Aw6cPuQkbtwpMFifp9Y3s/0HGBfADomK4OeDTDJfuvCp8g
-a907E48SjOJBGkh6c6B3ace2XH+CyB7+WBsoK6hsrV5twAXSe7frgP4lN/4Cm2isQl3D7vXM3PBQ
-ddI2aZzmewTfbgZptt4KCUhZh+t7FGB6ZKppQ++Rx0zsGN1s71MtjJnhXvJyPs9UyL1n7KQPTEX/
-07kwIwdMjxC/hpbZmVq0mVccpMy7FYlTuiwFD+TEnhmxGDTVTJ267fcfrySVBHioA7vugeXaX3yL
-SqGQdCWnsz5LyCxWvcfI7zjiXJLwefechLp0LWEBIH5+0fJPB1lfiy1DUutGDJTh9WZHeXfVVFsf
-rSQ3y0VaTqBESMjYsJnFFYQJ9tZJScBluOYacW6gqPGC6EU+bNYC1wpngwVayaQQMIIGbTCCBFWg
-AwIBAgIMGHX6KxYK3WW2YyprMA0GCSqGSIb3DQEBCwUAMFIxCzAJBgNVBAYTAkJFMRkwFwYDVQQK
-ExBHbG9iYWxTaWduIG52LXNhMSgwJgYDVQQDEx9HbG9iYWxTaWduIEdDQyBSNiBTTUlNRSBDQSAy
-MDIzMB4XDTI0MDkyNTEzNTAzMVoXDTI2MDkyNjEzNTAzMVowgbMxCzAJBgNVBAYTAlVTMRMwEQYD
-VQQIEwpDYWxpZm9ybmlhMREwDwYDVQQHEwhTYW4gSm9zZTEZMBcGA1UEYRMQTlRSVVMrREUtNjYx
-MDExNzEWMBQGA1UEChMNQlJPQURDT00gSU5DLjEaMBgGA1UEAxMRSml0ZW5kcmEgVmVnaXJhanUx
-LTArBgkqhkiG9w0BCQEWHmppdGVuZHJhLnZlZ2lyYWp1QGJyb2FkY29tLmNvbTCCASIwDQYJKoZI
-hvcNAQEBBQADggEPADCCAQoCggEBAKWV+9PYvG4njqRsbQas79f8Q46VL7b1ZxvWT6ik6VMbdRZx
-tfpfZalVXksqcb02/N1H7UA9V04cV2q97FkSr/KxeFLMetPb3cVJZICg23IRO2NTPdmgPFzwkPTo
-35h9h/OYLgh3/9a1nTsC2xqJa8GtohD5+42rsskGcI57U4n1r1L4R5IL9ypSqDxX/xVEAdGI5FTj
-VgvoZC6iuEbnez+yO8TT3wun9b/PQowOB5P0CwIFv7ERW0S1s6B8yrbsoaTrz0vQaEA786k1pZkg
-ykC1+zXq/iTyZuPP4B4RkzFd43Pw+GAH0Tt2nx5V4rNisJHeAVNU92Gj01cEg0I+FnsCAwEAAaOC
-Ad8wggHbMA4GA1UdDwEB/wQEAwIFoDCBkwYIKwYBBQUHAQEEgYYwgYMwRgYIKwYBBQUHMAKGOmh0
-dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjZzbWltZWNhMjAyMy5jcnQw
-OQYIKwYBBQUHMAGGLWh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjZzbWltZWNhMjAy
-MzBlBgNVHSAEXjBcMAkGB2eBDAEFAwEwCwYJKwYBBAGgMgEoMEIGCisGAQQBoDIKAwIwNDAyBggr
-BgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIw
-ADBBBgNVHR8EOjA4MDagNKAyhjBodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjZzbWlt
-ZWNhMjAyMy5jcmwwKQYDVR0RBCIwIIEeaml0ZW5kcmEudmVnaXJhanVAYnJvYWRjb20uY29tMBMG
-A1UdJQQMMAoGCCsGAQUFBwMEMB8GA1UdIwQYMBaAFAApNp5ceroPry1QLdugI4UYsKCSMB0GA1Ud
-DgQWBBRq5Jlxz3MqC+zEgUxK566xEc2g3DANBgkqhkiG9w0BAQsFAAOCAgEARXrmeeWA31pp9Tr0
-M6mOlMv+Pr2raES4GzPSyftvxf6tBQCBNaqi6LSbyusDYOj3mG9bp6VeVn+68OxNY9iNAk+ujtId
-f3+30BlZOQ1v8z9u2peUOUtWI60y2MxhdH0X0n2H+BCGvUOFqs5z440jqqy1HsscZTXHB7FEZmVP
-fyD+0Z6cxyh7WNC6+BgLiFwf8iqmAbu7Yb1sGTUGyS5gfYEjJbF2PJfwNUcJDd7eS4w5Ju5mK5y7
-spgjH2/JmDgbkpSk9JyuWfjGZIg4ah/q2nb6UMd1XJb6gLQZuzPOI3SgXPvd8MHGjKZrX2BHOBSC
-bJJ8rp4w4a9QMS6dde2MFObusxkZAft4tUnwo+ProchHs7iA85sL7sWEZhAmjmKKCpECpEfZm0+/
-hpvKQV3AZp5vBstb4IVL8QmLj8beDVHYnNhEicsSiG1wW7zSYyBnmGbFRrFQIJnJDWPjTZOlVEyp
-T1ShrXRCtqJpOt6rgg+rFEY3D8j6/bAkJXnmKnE2LZ0YyrrKk7eC6UfNNimx38w3NWchtcGY8zJn
-Y/1/C9Jv/mWm/2lK8nvusOFxhKmbG83Hx8toQdZ5F1kYk6zAWjfB7lwXr/En9mCmLieJ18hen9EK
-qbYyUkmCmuoLi5GXFMJy+iQv6DgMVQ7CACagybU6FUrmL9lVa+A6caBEEh4xggJkMIICYAIBATBi
-MFIxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSgwJgYDVQQDEx9HbG9i
-YWxTaWduIEdDQyBSNiBTTUlNRSBDQSAyMDIzAgwYdforFgrdZbZjKmswDQYJYIZIAWUDBAIBBQCg
-gdQwLwYJKoZIhvcNAQkEMSIEIACLRu++4+XaqPmKtMtKpJYU2j5rKyoV7Ufg8GaNA86VMBgGCSqG
-SIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDIwNzIzMTg0N1owaQYJKoZI
-hvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG
-9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEF
-AASCAQBPrNla8/0W+0X6MCVu8XWhB/XD5b2kylwc5oOfOLfCww/ssj/BxUwgvcT4TL8hWI9ftTTC
-vjbsPuzYDumkHgCy8MqTTwLs7DO/Iss+cnnHRUQJVqcE//ODTxXgD5WL0jwVpIIUb2F+gHqMyrBE
-y35Hh/5bJdKcWjFrQnq65gXJ9PXsfFo1r3oK2kRvPGpApzWeNTsG41ymp3KelC0HSUZ/yWbeHzoS
-06MwoEa5I1jMHFHA+pa1PvMAc9t2k6obTeV7ZO3YYuHTRB1rtuZNyhHMK0/y+2Oo2d61/AYvhlh2
-ywrHdRWBwIbLEHiDfYuiVKg2pwwaSkf9anfaDAVc9WUQ
---000000000000ab6cf4062d9594fa--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
