@@ -1,161 +1,176 @@
-Return-Path: <bpf+bounces-50809-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50810-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95EBAA2CF06
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 22:30:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 075AEA2CFF3
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 22:45:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F4E416D358
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 21:30:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B43097A1468
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 21:45:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1A891B87CE;
-	Fri,  7 Feb 2025 21:30:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CFEC1AAA10;
+	Fri,  7 Feb 2025 21:45:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aINefycw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YSIM32Hf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA6191B040E
-	for <bpf@vger.kernel.org>; Fri,  7 Feb 2025 21:30:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63BE018FC7B
+	for <bpf@vger.kernel.org>; Fri,  7 Feb 2025 21:45:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738963803; cv=none; b=otqHcBL8M5kgqwlQ8lMPke7o4yzu8CRBb/zKlCOP4feUXhwILnQmSEv818kQ2lZ4Q5Df0Mg787d7+8TsmKbDpD7NgSpy/WdpqczQMSMEmfDxF9nVCvRipZKjTXtesueu00YprkxEZ4muxfCRGB1zx4bSoz2Lhpjbks8P3am02GI=
+	t=1738964747; cv=none; b=qHiRpJYQQQD/HU+c6GOqCdectXjfZJtc/4FT52cTgGGdY4GM4j1UliNdSaOR6aNARwxjfpi0LxnFsp2Fel0EQq7cThjo9T7XoGos1f6pCnVaQejvi9nivF6hp3k1bDG+Piprj3w468J6/0cv1ZgLDz11BID/4I8WckYPote69Mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738963803; c=relaxed/simple;
-	bh=8dRlDI5WmSmXm0KKjj2yjaKPB4VGUf/sFQBj7bC46Ns=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ax+1OOgiXrGfbHaDj4LPJUeO5nUGUGgJyYmgbQIv32SypjbrgZAgQF0IkWZtUK7DWE1jO0VbSpfJEqc5oOvGmoex36j2IXhW+XY31VBzdOJ+GxjPrBOn+y8NKEtsBHYDxDErGVpQs3VtNm1WrY3xzETm0jdHEv0DML4a/FvLbNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aINefycw; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-21f032484d4so45655ad.0
-        for <bpf@vger.kernel.org>; Fri, 07 Feb 2025 13:30:01 -0800 (PST)
+	s=arc-20240116; t=1738964747; c=relaxed/simple;
+	bh=YAGXei3uIb2xstssswdfDLaO16tDnZyZbrPIHqD+Yjc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=YIDlylGlqzIbP7IalGlAtA4QOPs42MVz4T2f/S1YB4VtU31G3m29ns4QP+/esygMREjoWRDGNo4lvr/vAQAEC9JWG6hvWAFxczTg1wgFjXaeNtffowjHGONMRwY2hANPhElKXsdMm2GLApDB7AzjljK3/GzjbNj/yrVK4OXJ+mI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YSIM32Hf; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-21c2f1b610dso63281955ad.0
+        for <bpf@vger.kernel.org>; Fri, 07 Feb 2025 13:45:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1738963801; x=1739568601; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WpmqbDlVKgWI46RiBOd7cmqJb5HFtWlucmHwOHZfM5g=;
-        b=aINefycwRwhIpwSPcrB9tIHeZv0hVncY+2bhaCAQ/ZMYfNpbj0+V4jqPbASXrjG6BT
-         SIPR7C9pQRRJrXfVzPPeeTQLul4lJHXaaRGcOOO3pvL4+CB41W+6CC2/yzhTe2tYMHVv
-         WfevarCD3iKkWXmysP9HpH4bml8KtI3Gp9OqKSvt5LAFDTf8Gi6lTkpZOyXdixAGGBfk
-         cXx6EmZmeRlfS9Lv/yBK3hf1RSgqPE+kvudXMbZkBKSYLpZpcvBkt8sogLkRL7toH75G
-         psZ578OvlI0W4R/u1e+a8dwm8utPs+ZbJgY2Zf3XTKf6s4kf74lBI2e8LHJRK8wsyZVs
-         Eb4w==
+        d=gmail.com; s=20230601; t=1738964745; x=1739569545; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=xjWvW7s4b+iC4IQG7CWaGbPnbtG7PfnL6I0B6U/ZmRU=;
+        b=YSIM32HfLWjr4Sc7/3kh1F56zceXYiUlD5BhASr4mZ/ZjpCrHLpykPEtPWKgGsW9c/
+         jLp7G4KqPFPMKboWsN/cC4zBw/E8bAwQDzjZg36yaZKLhF415qMeBgaLexHu7k3Zf2Jv
+         71cd0B04QP0e6kXLnfzY9bl5W3C1XtDlfspMI8XFkYtuNwtD/oxbwVbbEDQEAQ+KjMUS
+         6KiSrHK8c3k3eZNopIoCFAxzXKB158MMPveLVPGCbZA5VIdmRnVgpIwtyruj+gST5P1q
+         fs2fzqSKzoDNdCBLgjMT1JKgdF9b+BQ3I7mAPRhtBNNGOhm4/CPijOTAfToWnJ535dEH
+         7MAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738963801; x=1739568601;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WpmqbDlVKgWI46RiBOd7cmqJb5HFtWlucmHwOHZfM5g=;
-        b=XlOdW49qtuABjVQWrhOxNyuvWtyS4J7YZqsB3EtMNXVjaO9PvRMmUPUMgqp/8U++hR
-         FdlaQIulF8pyP02W+CPvyszzkeuov7dIolJ6cMsdb+MA9DOfn8f4SjaS6oOEnIkhZ2Gm
-         lXY2ORR++wFT4gcMh4lyHBFCTGtJL6GzqxERzTHexB8/s3FHEefUOQoKIrd/9zdi+Put
-         nWnejsErMK0g+9JHN1a51PyheK8bEMKzdbQsjgD8+e56Xa7eAkyICXL9xK6VbEs1Yozx
-         0jTH7B7JXoHJrX1bbdQbi/02wzAtaPQYUqRCtY9zCNc0tMLq7H+o7M93B5T47cDosjY0
-         XBwQ==
-X-Gm-Message-State: AOJu0YwdbtmeGbuqmWrrGUWK0jtjIjinCeY74w7Evb3oRymeDRkbfQsb
-	EPaZjxDNQm2DdHjh8aeLEPRjLsuKtWIG5GucYcOFnXRpfHcY9+lF56p4509Y3p/wAU38Tww4avH
-	EjC8b
-X-Gm-Gg: ASbGnctyUmm3Q0yDHmbV1dbCbGThZMLgityv0xz3sYG24BTILUaKuTNPJehOxep2Tdh
-	HBKw7Kjb9syrK/st/8YoHGIk5Ucxm/hWOXoyo+zTY3moc8fsSDOrEA/4IyTEkSCnx8fsSW1IxWm
-	kh3s0df12CQgmP7ZiWHFNRo2EmjW0njclj+X1MIlWeGScRG6dqAmH1ifZTK1IHqProX7Nd9tOqM
-	eBf7yo5d8B22lH9ddo3TTQwwcRLNMcbgJ3QbC4APbWZPGjS3laHjH0JAdXkXZQk3pkRBt9JkFn8
-	oqR5YaSl3dKojo52MhtCkn8HLjjjQ1QPQ67iRIjEmEtVLnTODt9LRQ==
-X-Google-Smtp-Source: AGHT+IHP6x7/nnWTD43CmRO0CpbJGNj6KB/SNxwdoOzxC7LfXgdBO2BKOfnZMBUjldNgUy6Lg8WukQ==
-X-Received: by 2002:a17:902:aa08:b0:20c:f40e:6ec3 with SMTP id d9443c01a7336-21f69e34933mr559535ad.22.1738963800724;
-        Fri, 07 Feb 2025 13:30:00 -0800 (PST)
-Received: from google.com (147.141.16.34.bc.googleusercontent.com. [34.16.141.147])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fa2d831a1csm1670429a91.44.2025.02.07.13.29.58
+        d=1e100.net; s=20230601; t=1738964745; x=1739569545;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xjWvW7s4b+iC4IQG7CWaGbPnbtG7PfnL6I0B6U/ZmRU=;
+        b=qoclzkXS/6pH3SBhpHqMGObhOzix4GrBhUTmXYj8j4QU/DyNzAlZjiAhkEGTjusVDU
+         WbZcxyiZrBbIOSANjifRz7zo7dJA66S4RMAFLTr6OavvO0DTvSF/jUSmZtwlHVY6lt5u
+         JcNVvV9OQbr25l2REIEVbeUdwBDdxIju+Z+TRirEm+LFZfZU9UvCOYxlRywa1tu09Su7
+         nKC+7V9yv0hZlJvAcQCZ8EjpBKPESSNiwuhzzBP9sND5HthUneo2yFh0y8izXrJ2Uvap
+         oIm7W5eaIegEsvKSOaKRaivZeACdpJCVS44C21ST3imIw9MkU5roc2LOcRbc8oEKb3jr
+         ASrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUghj1UNV7TcltIZHGT7HohmobzeUHI3A5fgR/1Xkq25PueSeLvavptJEItgEeO8B/JmgA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwfqqhMW6t4I0np5Ty8QwE+xsmk85sNfoc4LnXTECT3gB31aVj+
+	Hl0BrPqLg/lDC5ipEVIesZE8T0X6nwqY5ZujZIkDpBZe6xDik1eqhGZQnA==
+X-Gm-Gg: ASbGncskNaiMykdMxdur2EvQVfae7Wu8MS/L4TTmLqW/NmrubriGbs8sOZ4AvQJd9qc
+	wMZQbNOmaCjD5zSDShnYXA6AevWGQgQweP20yJ4pHoTvKuRY2oW1erP4Qi+BRcZo9Smi65xSQhm
+	DbpAQX3hblATRnYrG9W7pRKpXVJoz+YL5RPgSbHPP9MwhNkXsO++kR+f1Z60iHZqt48Wg2xxXHw
+	xuo0UoSJlnZ0AHkNY9tyY1y5VCVFbEIdkAsDOJ4amRidU+HsXguIsZBC69xz3XHTG6D5bthWD5K
+	tIJuaqa/PQ6/
+X-Google-Smtp-Source: AGHT+IFfL4LrYSOBBO+ewJYNQ3VIfQnHvEqqfeXqjZ39xxAqgaNUSgvtO/0DghT/nZJ9d+RGtz7BqA==
+X-Received: by 2002:a17:902:ce8f:b0:216:6769:9eea with SMTP id d9443c01a7336-21f4e798090mr73163875ad.37.1738964745419;
+        Fri, 07 Feb 2025 13:45:45 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fa2716c1ecsm2007903a91.25.2025.02.07.13.45.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Feb 2025 13:29:59 -0800 (PST)
-Date: Fri, 7 Feb 2025 21:29:54 +0000
-From: Peilin Ye <yepeilin@google.com>
-To: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: bpf@ietf.org, Xu Kuohai <xukuohai@huaweicloud.com>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	David Vernet <void@manifault.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Ilya Leoshkevich <iii@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Quentin Monnet <qmo@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Ihor Solodrai <ihor.solodrai@linux.dev>,
-	Yingchi Long <longyingchi24s@ict.ac.cn>,
-	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>,
-	Neel Natu <neelnatu@google.com>,
-	Benjamin Segall <bsegall@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 0/9] Introduce load-acquire and store-release
- BPF instructions
-Message-ID: <Z6Z7UsB-AGD_Xhdq@google.com>
-References: <cover.1738888641.git.yepeilin@google.com>
+        Fri, 07 Feb 2025 13:45:44 -0800 (PST)
+Message-ID: <58436ca32a9ba1fb1cad6d822d6dbbd926ac2375.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] libbpf: fix LDX/STX/ST CO-RE relocation
+ size adjustment logic
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ ast@kernel.org, 	daniel@iogearbox.net, martin.lau@kernel.org
+Cc: kernel-team@meta.com, Emil Tsalapatis <emil@etsalapatis.com>
+Date: Fri, 07 Feb 2025 13:45:39 -0800
+In-Reply-To: <20250207014809.1573841-1-andrii@kernel.org>
+References: <20250207014809.1573841-1-andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1738888641.git.yepeilin@google.com>
 
-On Fri, Feb 07, 2025 at 02:04:54AM +0000, Peilin Ye wrote:
-> Peilin Ye (9):
->   bpf/verifier: Factor out atomic_ptr_type_ok()
->   bpf/verifier: Factor out check_atomic_rmw()
->   bpf/verifier: Factor out check_load_mem() and check_store_reg()
->   bpf: Introduce load-acquire and store-release instructions
->   arm64: insn: Add BIT(23) to {load,store}_ex's mask
->   arm64: insn: Add load-acquire and store-release instructions
->   bpf, arm64: Support load-acquire and store-release instructions
->   selftests/bpf: Add selftests for load-acquire and store-release
->     instructions
->   bpf, docs: Update instruction-set.rst for load-acquire and
->     store-release instructions
-> 
->  .../bpf/standardization/instruction-set.rst   | 114 ++++++--
->  arch/arm64/include/asm/insn.h                 |  12 +-
->  arch/arm64/lib/insn.c                         |  29 ++
->  arch/arm64/net/bpf_jit.h                      |  20 ++
->  arch/arm64/net/bpf_jit_comp.c                 |  87 +++++-
->  arch/s390/net/bpf_jit_comp.c                  |  14 +-
->  arch/x86/net/bpf_jit_comp.c                   |   4 +
->  include/linux/bpf.h                           |  11 +
->  include/linux/filter.h                        |   2 +
->  include/uapi/linux/bpf.h                      |  13 +
->  kernel/bpf/core.c                             |  63 ++++-
->  kernel/bpf/disasm.c                           |  12 +
->  kernel/bpf/verifier.c                         | 234 +++++++++++-----
->  tools/include/uapi/linux/bpf.h                |  13 +
->  .../selftests/bpf/prog_tests/arena_atomics.c  |  50 ++++
->  .../selftests/bpf/prog_tests/verifier.c       |   4 +
->  .../selftests/bpf/progs/arena_atomics.c       |  88 ++++++
->  .../bpf/progs/verifier_load_acquire.c         | 190 +++++++++++++
->  .../selftests/bpf/progs/verifier_precision.c  |  47 ++++
->  .../bpf/progs/verifier_store_release.c        | 262 ++++++++++++++++++
->  20 files changed, 1164 insertions(+), 105 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/verifier_load_acquire.c
->  create mode 100644 tools/testing/selftests/bpf/progs/verifier_store_release.c
+On Thu, 2025-02-06 at 17:48 -0800, Andrii Nakryiko wrote:
+> Libbpf has a somewhat obscure feature of automatically adjusting the
+> "size" of LDX/STX/ST instruction (memory store and load instructions),
+> based on originally recorded access size (u8, u16, u32, or u64) and the
+> actual size of the field on target kernel. This is meant to facilitate
+> using BPF CO-RE on 32-bit architectures (pointers are always 64-bit in
+> BPF, but host kernel's BTF will have it as 32-bit type), as well as
+> generally supporting safe type changes (unsigned integer type changes
+> can be transparently "relocated").
+>=20
+> One issue that surfaced only now, 5 years after this logic was
+> implemented, is how this all works when dealing with fields that are
+> arrays. This isn't all that easy and straightforward to hit (see
+> selftests that reproduce this condition), but one of sched_ext BPF
+> programs did hit it with innocent looking loop.
+>=20
+> Long story short, libbpf used to calculate entire array size, instead of
+> making sure to only calculate array's element size. But it's the element
+> that is loaded by LDX/STX/ST instructions (1, 2, 4, or 8 bytes), so
+> that's what libbpf should check. This patch adjusts the logic for
+> arrays and fixed the issue.
+>=20
+> Reported-by: Emil Tsalapatis <emil@etsalapatis.com>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
 
-Looks like the llvm-18 CI job passed but the llvm-17/gcc ones failed.
-I'll debug with llvm-17 and see if I need different #ifdef guards for
-the new tests.
+Do I understand correctly, that for nested arrays relocation size
+would be resolved to the innermost element size?
+To allow e.g.:
 
-Thanks,
-Peilin Ye
+    struct { int a[2][3]; }
+    ...
+    int *a =3D __builtin_preserve_access_index(({ in->a; }));
+    a[0] =3D 42;
+
+With a justification that nothing useful could be done with 'int **a'
+type when dimensions are not known?
+I guess this makes sense.
+
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>?
+
+>  tools/lib/bpf/relo_core.c | 24 ++++++++++++++++++++----
+>  1 file changed, 20 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
+> index 7632e9d41827..2b83c98a1137 100644
+> --- a/tools/lib/bpf/relo_core.c
+> +++ b/tools/lib/bpf/relo_core.c
+> @@ -683,7 +683,7 @@ static int bpf_core_calc_field_relo(const char *prog_=
+name,
+>  {
+>  	const struct bpf_core_accessor *acc;
+>  	const struct btf_type *t;
+> -	__u32 byte_off, byte_sz, bit_off, bit_sz, field_type_id;
+> +	__u32 byte_off, byte_sz, bit_off, bit_sz, field_type_id, elem_id;
+>  	const struct btf_member *m;
+>  	const struct btf_type *mt;
+>  	bool bitfield;
+> @@ -706,8 +706,14 @@ static int bpf_core_calc_field_relo(const char *prog=
+_name,
+>  	if (!acc->name) {
+>  		if (relo->kind =3D=3D BPF_CORE_FIELD_BYTE_OFFSET) {
+>  			*val =3D spec->bit_offset / 8;
+> -			/* remember field size for load/store mem size */
+> -			sz =3D btf__resolve_size(spec->btf, acc->type_id);
+> +			/* remember field size for load/store mem size;
+> +			 * note, for arrays we care about individual element
+> +			 * sizes, not the overall array size
+> +			 */
+> +			t =3D skip_mods_and_typedefs(spec->btf, acc->type_id, &elem_id);
+> +			while (btf_is_array(t))
+> +				t =3D skip_mods_and_typedefs(spec->btf, btf_array(t)->type, &elem_id=
+);
+> +			sz =3D btf__resolve_size(spec->btf, elem_id);
+
+Nit: while trying to figure out what this change is about
+     I commented out the above hunk and this did not trigger any test failu=
+res.
+
+[...]
 
 
