@@ -1,256 +1,172 @@
-Return-Path: <bpf+bounces-50755-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50756-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38E94A2C015
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 11:00:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7549A2C166
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 12:16:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BDDC3A391F
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 10:00:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D44D57A389D
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 11:15:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7549D1D63EB;
-	Fri,  7 Feb 2025 10:00:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A60C1DE4D8;
+	Fri,  7 Feb 2025 11:16:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GMLJn49r"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KUmUbQcv"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2612318FDD8
-	for <bpf@vger.kernel.org>; Fri,  7 Feb 2025 10:00:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DF6163D;
+	Fri,  7 Feb 2025 11:16:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738922426; cv=none; b=Lz4Ne2R8mMQdARXVNkdDWmPslYfKVXaUOW+YjFLWXXjDDqBEh879uvE2G/g0XVtfuFMC9MNEBmRHvzoR1Plo4QNSMWEyBTvzv4s7tK7lxJoC7jICqV5hJvqQ1hjtN1sozNvd7y60S404WZE6aghoRiR+4bp/eQJTvB/6uyedTCo=
+	t=1738926973; cv=none; b=hQk/pO9kKSNZGuU+QQSyMzseh9ESH10CejR33cMh1XcxiJROxEiO+IWOeKsIfNVtBQPiyCs9FjP056+7UOVqkp51+ZzzizA2dHDBlwKJ+lR/PNdaETdGctEbMw9aNRWJXKtWWZpv6TDyuHLbqgR8VZvruguiIP2TyuU8GcxPDzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738922426; c=relaxed/simple;
-	bh=NAuXT/JMwzWMgYCXMuUTtoJ019ZU6m9hBh2ollc//ic=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tWOMiGN+Mt3KByegD+5+6BbbB0BmDcyqNNrGNQy3e22uvh7w2bioY8S/HUJRLlQpnnwcyLyjtIMQ5vJRmS5SS5tuj2+vDg4IWJ6GUIPIm7/Dr7CCvJChrJxfuQQv0sGkKeQ1rJ+7G37z4PRhkNqdy/NmDjgpejY2L0dl/NOd4rM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GMLJn49r; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <8e25e1e9-37a0-4d4c-8af9-c2d5e12af65f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1738922419;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6VQy07xF3mUJXO3v99TsIHqW0uzkTmTb6YWZTO7bx1s=;
-	b=GMLJn49rJqY2SoFUCo9m8jPZJEZV0CXzmN27aaDNnh7Imd7TmyARKNF/nCLwh3vFQc96OD
-	OJNzqGm3oDJWbdeO/ONcquEu6g/2Ecjxj+h8Gi08x06POp35TW/gqCc9vHim1YKBtZB7M5
-	caQOynq6sWMv3hIMT2zo39wEvz74a50=
-Date: Fri, 7 Feb 2025 18:00:05 +0800
+	s=arc-20240116; t=1738926973; c=relaxed/simple;
+	bh=lELPM0gFKqIpB6TQGOsF4JiNvRvpg+B2tbFqtHlFImM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=a3TiUUULI1X2lppwvxR56xUXw0l8m/BH6AW7B73DdH70FC39AaIB1FcxE0p4l0Kt+6qzGDfPCLJhUhM+nYOZ7CwPiXdZse/yshbpe/syBg5sz7CcSwCrJdo0SVDAxV+Spvp3NniK0zZHGlVA3QvT0MMbq7T4vEWuViDwM2YNeyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KUmUbQcv; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-6f6ca3e8cdbso14234487b3.3;
+        Fri, 07 Feb 2025 03:16:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738926971; x=1739531771; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lELPM0gFKqIpB6TQGOsF4JiNvRvpg+B2tbFqtHlFImM=;
+        b=KUmUbQcvg/grOqta5ghglC2YstsSIKDYmtxvH+RbuQKcuNaVOP6tL0OEjothmv/aHn
+         ki5fYSqStaA4WDeGzb+z88CmJt4YlmKhIZ97r+xH1qORP4mi2ETAvRoKnKNd4u2XoYWb
+         zAm6pIGYqdMMMInXDZYLLTUnn455kyzP/TzbDYvQUpMcuBga+1emxNlxM/0XQPmOQEF7
+         yhv/LxC8Gt25vkzjY0+FVkdbI7CcPRYvdXtFe56nC4sYsn/O3fxkVA3mwrp993Citbwo
+         ZXR20J4ikSItrEIK4ExhGkT7T8cd55SxcYZ/HCXdh24svYrTu45PncTNsxyhK6O6CmSJ
+         Au7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738926971; x=1739531771;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lELPM0gFKqIpB6TQGOsF4JiNvRvpg+B2tbFqtHlFImM=;
+        b=Ml2b25xZJqJbj76GJw6fsnmc477EtH76qea2g8t9mpqZambwrCqULvYNPREiawdjBY
+         FYs93r6K2PgkBOr/8YwoS4h34O75v+sXnSe/nZL8unt4wz9h5qcIME62zJVB1dHTnxGM
+         4/0I9vSLtplxPvu/Rk+DcHvre17oH8EqmnpJtsUxMRcksDschDZ7g3m3dUa6BRWKs0A5
+         eXw2TcHH8AKz7Rm+2V76oJG94y/dfnZyZG55aazlil5YU1S9tYh2RZMSKwyOex260NDQ
+         QaYVvtzzSHG5KpXXYqNSPQcYna+wOCd8DbsKj7c9Ga/3fMc5vxGccIqWgVl5qTUVCZYY
+         4hdw==
+X-Forwarded-Encrypted: i=1; AJvYcCW0DHr6Jvh0ooq9aReQnLbIvBkeBIwvhwWvgtQ9Rg5RfsiNZQcCNwWXasdwkMxWUVh67Lo=@vger.kernel.org, AJvYcCXrqBV0m76D2TVIs3ZCbtt0ql5LwPN12K+zuJ1I/czx+HChdorRFuJU7jo3JP3FoJywW7zdFzNCQnXsFtw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyxh4DnjGV8OQTh9U3lHSz8CUiyIIzNGWYF3BpdDUikcQsosFDG
+	aOJL/fhXPZl0U1OjbDS5eDkf0+gu00h3BBa7q3tKkn9rd0CsM+NKS2gODa5KT/C3LQQ4LgXolyb
+	sOtB1sCXcUNranFBTtnpS8DnIIro=
+X-Gm-Gg: ASbGncvdVNTDOZbDPwKFZJGJJ5OucXIuOuN1gFfvxnz9YpV4doZHHYbldI4hoIMYhb+
+	+Xjz6bizoVH5KMpZuFRax/6+JPUY5grhrvi2bWaKhmYJvpvf2ypfrw/DI3TmEV6wiV05fz0M3EP
+	0=
+X-Google-Smtp-Source: AGHT+IFFVSHnPt+eL5wAiG6E+J60NEM+2l3Y5dSqvOtEam+TtljaI/VuuJrH8GhWVebw58UUdhZPJ1qQFPNm2Mx4w64=
+X-Received: by 2002:a05:690c:6890:b0:6f0:23da:49a3 with SMTP id
+ 00721157ae682-6f9b2802330mr22270597b3.8.1738926970909; Fri, 07 Feb 2025
+ 03:16:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: Add a case to test global
- percpu data
-Content-Language: en-US
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, yonghong.song@linux.dev, song@kernel.org,
- eddyz87@gmail.com, qmo@kernel.org, dxu@dxuuu.xyz, kernel-patches-bot@fb.com
-References: <20250127162158.84906-1-leon.hwang@linux.dev>
- <20250127162158.84906-5-leon.hwang@linux.dev>
- <CAEf4BzYXCQi4HMvegMmsx-ppxprwNVyKohJgka8gY_B+gMy+mQ@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Leon Hwang <leon.hwang@linux.dev>
-In-Reply-To: <CAEf4BzYXCQi4HMvegMmsx-ppxprwNVyKohJgka8gY_B+gMy+mQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <CAJHDoJac2Qa6QjhDFi7YZf0D05=Svc13ZQyX=92KsM7pkkVbJA@mail.gmail.com>
+ <CAPhsuW7+ORExwn5fkRykEmEp-wm0YE788Tkd39rK5cZ-Q3dfUw@mail.gmail.com>
+ <CAJHDoJYESDzDf9KJgfSfGGit6JPyxtf3miNbnM7BzNfjOi7CQw@mail.gmail.com>
+ <CAPhsuW6W=08Vf=W6GZ9DCzwu4wq_AgNOayo50vxvqFMr9CcDcg@mail.gmail.com>
+ <677c56994576b_f58f29445@dwillia2-xfh.jf.intel.com.notmuch>
+ <CAJHDoJZ5rFhgu-R_N6e82bqkY43S-sXKVs2khnnnZrqJH1vcHw@mail.gmail.com> <Z6Vqlo3s3sK6d0ng@fedora>
+In-Reply-To: <Z6Vqlo3s3sK6d0ng@fedora>
+From: Vishnu ks <ksvishnu56@gmail.com>
+Date: Fri, 7 Feb 2025 16:45:59 +0530
+X-Gm-Features: AWEUYZkRQC9nK96x4IHETx4pwTTJEBBjwQxJocZ-yPlBoO60Z-qgsBSnuBIAuvQ
+Message-ID: <CAJHDoJaaO8eG5pJLLZkL2iEywVkccUdgN1eRatuvJw6JHCqLug@mail.gmail.com>
+Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC] Improving Block Layer Tracepoints for
+ Next-Generation Backup Systems
+To: Ming Lei <ming.lei@redhat.com>
+Cc: Dan Williams <dan.j.williams@intel.com>, 
+	Song Liu via Lsf-pc <lsf-pc@lists.linux-foundation.org>, hch@infradead.org, yanjun.zhu@linux.dev, 
+	linux-block@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-nvme@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 
+Thanks Ming for the insightful suggestion about struct_ops pairs for
+bio handling. Moving these operations to eBPF aligns perfectly with
+the goal of keeping non-essential business logic outside the kernel.
 
+As mentioned previously, I've open-sourced our implementation (blxrep)
+which demonstrates this approach. While simple in implementation, it's
+proven effective for capturing incremental changes on data disks with
+sync frequencies above 3 minutes:
 
-On 6/2/25 08:09, Andrii Nakryiko wrote:
-> On Mon, Jan 27, 2025 at 8:22 AM Leon Hwang <leon.hwang@linux.dev> wrote:
->>
->> If the arch, like s390x, does not support percpu insn, this case won't
->> test global percpu data by checking -EOPNOTSUPP when load prog.
->>
->> The following APIs have been tested for global percpu data:
->> 1. bpf_map__set_initial_value()
->> 2. bpf_map__initial_value()
->> 3. generated percpu struct pointer that points to internal map's data
->> 4. bpf_map__lookup_elem() for global percpu data map
->>
->> cd tools/testing/selftests/bpf; ./test_progs -t global_percpu_data
->> 124     global_percpu_data_init:OK
->> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
->>
->> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
->> ---
->>  .../bpf/prog_tests/global_data_init.c         | 89 ++++++++++++++++++-
->>  .../bpf/progs/test_global_percpu_data.c       | 21 +++++
->>  2 files changed, 109 insertions(+), 1 deletion(-)
->>  create mode 100644 tools/testing/selftests/bpf/progs/test_global_percpu_data.c
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/global_data_init.c b/tools/testing/selftests/bpf/prog_tests/global_data_init.c
->> index 8466332d7406f..a5d0890444f67 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/global_data_init.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/global_data_init.c
->> @@ -1,5 +1,6 @@
->>  // SPDX-License-Identifier: GPL-2.0
->>  #include <test_progs.h>
->> +#include "test_global_percpu_data.skel.h"
->>
->>  void test_global_data_init(void)
->>  {
->> @@ -8,7 +9,7 @@ void test_global_data_init(void)
->>         __u8 *buff = NULL, *newval = NULL;
->>         struct bpf_object *obj;
->>         struct bpf_map *map;
->> -        __u32 duration = 0;
->> +       __u32 duration = 0;
->>         size_t sz;
->>
->>         obj = bpf_object__open_file(file, NULL);
->> @@ -60,3 +61,89 @@ void test_global_data_init(void)
->>         free(newval);
->>         bpf_object__close(obj);
->>  }
->> +
->> +void test_global_percpu_data_init(void)
->> +{
->> +       struct test_global_percpu_data *skel = NULL;
->> +       u64 *percpu_data = NULL;
-> 
-> there is that test_global_percpu_data__percpu type you are declaring
-> in the BPF skeleton, right? We should try using it here.
-> 
+BPF implementation:
+https://github.com/xmigrate/blxrep/blob/main/bpf/trace-blocks.c
+Documentation: https://blxrep.xmigrate.cloud/
 
-No. bpftool does not generate test_global_percpu_data__percpu. The
-struct for global variables is embedded into skeleton struct.
-
-Should we generate type for global variables?
-
-> And for that array access, we should make sure that it's __aligned(8),
-> so indexing by CPU index works correctly.
-> 
-
-Ack.
-
-> Also, you define per-CPU variable as int, but here it is u64, what's
-> up with that?
-> 
-
-Like __aligned(8), it's to make sure 8-bytes aligned. It's better to use
-__aligned(8).
-
->> +       struct bpf_map *map;
->> +       size_t init_data_sz;
->> +       char buff[128] = {};
->> +       int init_value = 2;
->> +       int key, value_sz;
->> +       int prog_fd, err;
->> +       int *init_data;
->> +       int num_cpus;
->> +
-> 
-> nit: LIBBPF_OPTS below is variable declaration, so there shouldn't be
-> an empty line here (and maybe group those int variables a bit more
-> tightly?)
-> 
-
-Ack.
-
->> +       LIBBPF_OPTS(bpf_test_run_opts, topts,
->> +                   .data_in = buff,
->> +                   .data_size_in = sizeof(buff),
->> +                   .repeat = 1,
->> +       );
->> +
->> +       num_cpus = libbpf_num_possible_cpus();
->> +       if (!ASSERT_GT(num_cpus, 0, "libbpf_num_possible_cpus"))
->> +               return;
->> +
->> +       percpu_data = calloc(num_cpus, sizeof(*percpu_data));
->> +       if (!ASSERT_FALSE(percpu_data == NULL, "calloc percpu_data"))
-> 
-> ASSERT_OK_PTR()
-> 
-
-Ack.
-
->> +               return;
->> +
->> +       value_sz = sizeof(*percpu_data) * num_cpus;
->> +       memset(percpu_data, 0, value_sz);
-> 
-> you calloc()'ed it, it's already zero-initialized
-> 
-
-Ack. Thanks. I should check "man calloc" to use it.
-
-> 
->> +
->> +       skel = test_global_percpu_data__open();
->> +       if (!ASSERT_OK_PTR(skel, "test_global_percpu_data__open"))
->> +               goto out;
->> +
->> +       ASSERT_EQ(skel->percpu->percpu_data, -1, "skel->percpu->percpu_data");
->> +
->> +       map = skel->maps.percpu;
->> +       err = bpf_map__set_initial_value(map, &init_value,
->> +                                        sizeof(init_value));
->> +       if (!ASSERT_OK(err, "bpf_map__set_initial_value"))
->> +               goto out;
->> +
->> +       init_data = bpf_map__initial_value(map, &init_data_sz);
->> +       if (!ASSERT_OK_PTR(init_data, "bpf_map__initial_value"))
->> +               goto out;
->> +
->> +       ASSERT_EQ(*init_data, init_value, "initial_value");
->> +       ASSERT_EQ(init_data_sz, sizeof(init_value), "initial_value size");
->> +
->> +       if (!ASSERT_EQ((void *) init_data, (void *) skel->percpu, "skel->percpu"))
->> +               goto out;
->> +       ASSERT_EQ(skel->percpu->percpu_data, init_value, "skel->percpu->percpu_data");
->> +
->> +       err = test_global_percpu_data__load(skel);
->> +       if (err == -EOPNOTSUPP)
->> +               goto out;
->> +       if (!ASSERT_OK(err, "test_global_percpu_data__load"))
->> +               goto out;
->> +
->> +       ASSERT_EQ(bpf_map__type(map), BPF_MAP_TYPE_PERCPU_ARRAY,
->> +                 "bpf_map__type");
->> +
->> +       prog_fd = bpf_program__fd(skel->progs.update_percpu_data);
->> +       err = bpf_prog_test_run_opts(prog_fd, &topts);
-> 
-> at least one of BPF programs (don't remember which one, could be
-> raw_tp) supports specifying CPU index to run on, it would be nice to
-> loop over CPUs, triggering BPF program on each one and filling per-CPU
-> variable with current CPU index. Then we can check that all per-CPU
-> values have expected values.
-> 
-
-Do you mean prog_tests/perf_buffer.c::trigger_on_cpu()?
-
-Your suggestion looks good to me. I'll do it.
-
-> 
->> +       ASSERT_OK(err, "update_percpu_data");
->> +       ASSERT_EQ(topts.retval, 0, "update_percpu_data retval");
->> +
->> +       key = 0;
->> +       err = bpf_map__lookup_elem(map, &key, sizeof(key), percpu_data,
->> +                                  value_sz, 0);
->> +       if (!ASSERT_OK(err, "bpf_map__lookup_elem"))
->> +               goto out;
->> +
-
-[...]
+Your suggestion about generic bio/bvec kfuncs is particularly
+interesting. Would you be open to providing feedback on our current
+BPF program structure, particularly regarding how we could better
+leverage these proposed bio handling capabilities? I would also like
+to hear what others think about this approach.
 
 Thanks,
-Leon
+Vishnu KS
+
+On Fri, 7 Feb 2025 at 07:36, Ming Lei <ming.lei@redhat.com> wrote:
+>
+> On Mon, Jan 13, 2025 at 11:01:30PM +0530, Vishnu ks wrote:
+> > Thanks everyone for the detailed technical feedback and clarifications
+> > - they've been extremely valuable in understanding the fundamental
+> > challenges and existing solutions.
+> >
+> > I appreciate the points about md-cluster and DRBD's network RAID
+> > capabilities. While these are robust solutions for network-based
+> > replication, I'm particularly interested in the point-in-time recovery
+> > capability for scenarios like ransomware recovery, where being able to
+> > roll back to a specific point before encryption occurred would be
+> > valuable.
+> >
+> > Regarding blk_filter - I've been exploring it since it was mentioned,
+> > and it indeed seems to be the right approach for what we're trying to
+> > achieve. However, I've found that many of our current requirements can
+> > actually be implemented using eBPF without additional kernel modules.
+> > I plan to create a detailed demonstration video to share my findings
+> > with this thread. Additionally, I'll be cleaning up and open-sourcing
+> > our replicator utility implementation for community feedback.
+> >
+> > I would very much like to attend the LSF/MM/BPF summit to discuss
+> > these ideas in person and learn more about blk_filter and proper block
+> > layer fundamentals. Would it be possible for someone to help me with
+> > an invitation?
+>
+> If one pair of bpf struct_ops are added for attaching to submit_bio()
+> and ->bi_end_io() in bio_endio(), lots of cases can be covered:
+>
+> - blk filter
+>
+> - bio interposer
+>
+> - blk-snap
+>
+> - easier IO trace
+>
+> ...
+>
+> Then both bio and request based devices can be covered.
+>
+> It shouldn't be hard to figure out generic bio/bvec kfuncs for helping block IO
+> bpf prog to do more valuable things & fun.
+>
+> Thanks,
+> Ming
+>
 
 
+--
+Vishnu KS,
+Opensource contributor and researcher,
+https://iamvishnuks.com
 
