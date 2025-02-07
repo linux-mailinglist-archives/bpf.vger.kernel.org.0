@@ -1,137 +1,249 @@
-Return-Path: <bpf+bounces-50730-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50731-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D0ABA2B8C6
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 03:19:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37FF1A2B8D7
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 03:20:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8BCE3A81AF
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 02:19:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFC44167636
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 02:20:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3170C1632FE;
-	Fri,  7 Feb 2025 02:18:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 335F3187325;
+	Fri,  7 Feb 2025 02:19:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Eioajcph"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IyCWPb54"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f169.google.com (mail-il1-f169.google.com [209.85.166.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AF38155321;
-	Fri,  7 Feb 2025 02:18:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D364F1494DD;
+	Fri,  7 Feb 2025 02:19:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738894734; cv=none; b=EmzVV0ji6/Hr/M95ZmzIEF7l+E/PLLsvjNj9YvPzj+CYa1JtEOuNkSLRcFkhkCkxtc3yegOQ7d/3CxzNr3AGRi/t5KkpaaMX3bZJUtDgpoZ7Of4QcromRSI4SvEdXdvqyynAYYht+azX81f2A9UdEp3aJikAyp6aSMYyVB6xsks=
+	t=1738894797; cv=none; b=JnHTcMMkvmTZadA/F7B06zlDPHJimx+F/ckCZTfeju+FK8IQHasfCxpgIYNvx5qq5u4VBNOuSFCze9nWh1SqvO/m9V6gvftQepvPNJLzaTC3v/OMp/fgbOIFOKuEIWMhBjC2eSCGVPPS8rqQ8CXbh+CzXuAUBJDGT8dNVP6f5UY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738894734; c=relaxed/simple;
-	bh=KmwZr5sT2NjPMDMmE/d/YlIe/CoYmK1UTGkMCk91UOE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YHCAFhgF4pWaoqlIXDb4CiKgBTRsAKx44oah9fNwi+ycRU/f+YdeGsiHZ4v9Zi195HYKpGf+Nftog7a1LxyoU2McRi20/zcKRTc1g5B+g4+vtrjJRBa57XzBSYHZgTeiH7NV/IDxsU5PmZ3m+OGBtxwgsD6BateYp/fJ2MUiFsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Eioajcph; arc=none smtp.client-ip=209.85.166.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-3cf82bd380bso12264755ab.0;
-        Thu, 06 Feb 2025 18:18:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738894732; x=1739499532; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KmwZr5sT2NjPMDMmE/d/YlIe/CoYmK1UTGkMCk91UOE=;
-        b=Eioajcph3pmeOBwMWP0ySjM9FXITW/T8LNfoW/dI26Ih/AUSLSKu94UUBshAkUDsI5
-         QWjxjoS0vDNFhUpjtGSOA1kO4cMlYgNEM3nJLuYnij+O7FZbL4+K4Mkty4zHkRZ7QT1e
-         pxVWR644oELs8gjFJShR0ncGS7jDkxZprkvZrbfihRFPcy72o156VQ70uyMN2fUzuCon
-         U0qWSQpket+qy2UUga0N7ImM2sGGGKtfkRPxpn+mx+sEkDh+tGnTgx+fOnXta0gYrwle
-         dJfXftSrc422w23LnmpXDPn5zhixzG+C8wV0+Eqm2T0kC/1ZWnNjfBle9AOMfM5JrLIy
-         8tYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738894732; x=1739499532;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KmwZr5sT2NjPMDMmE/d/YlIe/CoYmK1UTGkMCk91UOE=;
-        b=TCltDe+gPkjsXQWtl5I0aSIH/eaL+ooWCW8VO2nU+O2DEX2p6NN51lFMFN0ynwZ9/q
-         ukb6TZlvWvjzan3NhWJAMBurub8yDDdeCA6meOjkLGle3kQpmQitTPqziShEZxzDpW2S
-         ibEAXPl/oerdxeR4WFDb0TCr38LM7U3mkYewtFwAQtqpbFWN1sucumyWKsOH8SsyHo1r
-         DGn0lzzW2A1sSZT+6phoc79YA3PYN5xMDxPc1HaKTDTZXjUiHXY5VYrGiC6A5ac/jwox
-         Xuy5R9YXXDGs/4dP68i7eh9CbF4KbrS8pwN6c05xQQOm9oowVXTcawj7At17Sdk/RQnx
-         OCMw==
-X-Forwarded-Encrypted: i=1; AJvYcCWVkUnW6J2mpAl1xKfkrhWLb4nBv0t8iQWaxlwe9IA1Iozg4yZFxC+Pf5Tf+RBg5BtoUZI=@vger.kernel.org, AJvYcCWnkDRlOylqpUYkkv/Zl7H+Pe8IRVADLQKGYwyAPB6EpyVaWTGImBbX5quyp62XN0CGXgdcjTag@vger.kernel.org
-X-Gm-Message-State: AOJu0YxVOjHs1znhKIGwlfdxUgZjdH4Ad+M/pvMBngI6ZPxgLi/03Dir
-	CUbdJXCT2oirbfly0JnK6d/H9Tt+SlOF+wdXVsMqQytyOgoCSzcBZdWqjpH1lXrdJK5f6a64UXI
-	GGQWPyxyOuLgz0i4sdMFjIL4Z9L4=
-X-Gm-Gg: ASbGncvCowKvw5gJN5Z/BJZyVDL4f2wmKJsp2FOAyeU544YrMHRRWGNtoQUyupiE3wJ
-	t1Lcwok/SsKbS4SREqGjwQLdsKwbiEsC+Pbz+he3SFwlQxUoKWXbrG1QHzguolN+dT23jQ7wm
-X-Google-Smtp-Source: AGHT+IH7edokaLdkL19wcu3HtxjuxMkGzZpyMABrC9vgmJTIrKdeEopLKAESdWhlr0Uudn5UNwopeqdxtF5x5zdUm5E=
-X-Received: by 2002:a05:6e02:20c8:b0:3d0:2280:ce30 with SMTP id
- e9e14a558f8ab-3d13dd2a3f2mr13590755ab.8.1738894732304; Thu, 06 Feb 2025
- 18:18:52 -0800 (PST)
+	s=arc-20240116; t=1738894797; c=relaxed/simple;
+	bh=o8/+Lc618OLdOSjzAD+1vV0H+hG1wNYsHkBcA5JqIXk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tY1MfeRFwK4QNsWyku5PwvDtNBRV+AjHdlb7DVLa51ZeJnS8cEEEC1b0Cz4O5nFhbiRjwiNp6lSsq6tkWbwZXqJ/Xg+Ri2HgbkQXRopj5gpW+FozcImNV4hWtQz2Ye3M3cNExqRLe99kI83erPiu8RtinpebVt6Eraoqs72uh+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IyCWPb54; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1738894796; x=1770430796;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=o8/+Lc618OLdOSjzAD+1vV0H+hG1wNYsHkBcA5JqIXk=;
+  b=IyCWPb54JB7uHaSIYXE721IaCIGCOMz1cJGWTZlZVYhzZ9yZF9dJpkyr
+   PiRDorqeUNCTzGFyFBrh31a7OY1xpazD1azF0EK1JmORQx0qna7rZb/br
+   7cToDemQu63P2qqe6RnycE+8F9me6D0k4k1RTRt7P//pa8BBOvyWw07dm
+   tJYa8NtRL9ewpcVvQBUQT1FSXbvod/d4m0U7Hd7idsRxmehEU4fcNkI5g
+   6xIx6yc3jPIUjDRZvRvZ5j/1H42jLwiyACDMf+jT401Lou50tevjHaXd4
+   VZfiZWQpa3nqtViyDVa50DM+wq22RGb94BE7NWnFK9wxLprUiIioZOaSa
+   g==;
+X-CSE-ConnectionGUID: iAhrEjZOTQqprjnVrVlBqw==
+X-CSE-MsgGUID: c8zyGnIORKq4luiaMGLnQw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11336"; a="50917525"
+X-IronPort-AV: E=Sophos;i="6.13,266,1732608000"; 
+   d="scan'208";a="50917525"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2025 18:19:55 -0800
+X-CSE-ConnectionGUID: toRI9yyTTJSdqx8lCbIjhg==
+X-CSE-MsgGUID: ylL/OW4zQj+Kgz4bWh7PmQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="148615301"
+Received: from p12ill20yoongsia.png.intel.com ([10.88.227.38])
+  by orviesa001.jf.intel.com with ESMTP; 06 Feb 2025 18:19:42 -0800
+From: Song Yoong Siang <yoong.siang.song@intel.com>
+To: "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Willem de Bruijn <willemb@google.com>,
+	Florian Bezdeka <florian.bezdeka@siemens.com>,
+	Donald Hunter <donald.hunter@gmail.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Bjorn Topel <bjorn@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Jonathan Lemon <jonathan.lemon@gmail.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Joe Damato <jdamato@fastly.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Mina Almasry <almasrymina@google.com>,
+	Daniel Jurgens <danielj@nvidia.com>,
+	Song Yoong Siang <yoong.siang.song@intel.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Faizal Rahim <faizal.abdul.rahim@linux.intel.com>,
+	Choong Yong Liang <yong.liang.choong@linux.intel.com>,
+	Bouska Zdenek <zdenek.bouska@siemens.com>
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	intel-wired-lan@lists.osuosl.org,
+	xdp-hints@xdp-project.net
+Subject: [PATCH bpf-next v10 0/5] xsk: TX metadata Launch Time support
+Date: Fri,  7 Feb 2025 10:19:38 +0800
+Message-Id: <20250207021943.814768-1-yoong.siang.song@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250204183024.87508-1-kerneljasonxing@gmail.com>
- <20250204183024.87508-11-kerneljasonxing@gmail.com> <20250204175744.3f92c33e@kernel.org>
- <e894c427-b4b3-4706-b44c-44fc6402c14c@linux.dev> <CAL+tcoCQ165Y4R7UWG=J=8e=EzwFLxSX3MQPOv=kOS3W1Q7R0A@mail.gmail.com>
- <0a8e7b84-bab6-4852-8616-577d9b561f4c@linux.dev> <CAL+tcoAp8v49fwUrN5pNkGHPF-+RzDDSNdy3PhVoJ7+MQGNbXQ@mail.gmail.com>
- <CAL+tcoC5hmm1HQdbDaYiQ1iW1x2J+H42RsjbS_ghyG8mSDgqqQ@mail.gmail.com>
- <67a424d2aa9ea_19943029427@willemb.c.googlers.com.notmuch>
- <CAL+tcoCPGAjs=+Hnzr4RLkioUV7nzy=ZmKkTDPA7sBeVP=qzow@mail.gmail.com>
- <67a42ba112990_19c315294b7@willemb.c.googlers.com.notmuch>
- <CAL+tcoC_5106onp6yQh-dKnCTLtEr73EZVC31T_YeMtqbZ5KBw@mail.gmail.com>
- <b158a837-d46c-4ae0-8130-7aa288422182@linux.dev> <CAL+tcoCUjxvE-DaQ8AMxMgjLnV+J1jpYMh7BCOow4AohW1FFSg@mail.gmail.com>
- <739d6f98-8a44-446e-85a4-c499d154b57b@linux.dev>
-In-Reply-To: <739d6f98-8a44-446e-85a4-c499d154b57b@linux.dev>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Fri, 7 Feb 2025 10:18:16 +0800
-X-Gm-Features: AWEUYZnxJVBLz5gsPxeZ6r4_kovja0PiytsLg4mDciHz9gby5YynZ5wu7fqw3ds
-Message-ID: <CAL+tcoA14HKQmG9dtMdRVqgJJ87hcvynPjqVLkAbHnDcsq-RzQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v8 10/12] bpf: make TCP tx timestamp bpf
- extension work
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Jakub Kicinski <kuba@kernel.org>, 
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com, 
-	dsahern@kernel.org, willemb@google.com, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, horms@kernel.org, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 7, 2025 at 10:07=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
->
-> On 2/5/25 10:56 PM, Jason Xing wrote:
-> >>> I have to rephrase a bit in case Martin visits here soon: I will
-> >>> compare two approaches 1) reply value, 2) bpf kfunc and then see whic=
-h
-> >>> way is better.
-> >>
-> >> I have already explained in details why the 1) reply value from the bp=
-f prog
-> >> won't work. Please go back to that reply which has the context.
-> >
-> > Yes, of course I saw this, but I said I need to implement and dig more
-> > into this on my own. One of my replies includes a little code snippet
-> > regarding reply value approach. I didn't expect you to misunderstand
-> > that I would choose reply value, so I rephrase it like above :)
->
-> I did see the code snippet which is incomplete, so I have to guess. afaik=
-, it is
-> not going to work. I was hoping to save some time without detouring to th=
-e
-> reply-value path in case my earlier message was missed. I will stay quiet=
- and
-> wait for v9 first then to avoid extending this long thread further.
+This series expands the XDP TX metadata framework to allow user
+applications to pass per packet 64-bit launch time directly to the kernel
+driver, requesting launch time hardware offload support. The XDP TX
+metadata framework will not perform any clock conversion or packet
+reordering.
 
-I see. I'm grateful that you point out the right path. I'm still
-investigating to find a good existing example in selftests and how to
-support kfunc.
+Please note that the role of Tx metadata is just to pass the launch time,
+not to enable the offload feature. Users will need to enable the launch
+time hardware offload feature of the device by using the respective
+command, such as the tc-etf command.
 
-Thanks,
-Jaosn
+Although some devices use the tc-etf command to enable their launch time
+hardware offload feature, xsk packets will not go through the etf qdisc.
+Therefore, in my opinion, the launch time should always be based on the PTP
+Hardware Clock (PHC). Thus, i did not include a clock ID to indicate the
+clock source.
+
+To simplify the test steps, I modified the xdp_hw_metadata bpf self-test
+tool in such a way that it will set the launch time based on the offset
+provided by the user and the value of the Receive Hardware Timestamp, which
+is against the PHC. This will eliminate the need to discipline System Clock
+with the PHC and then use clock_gettime() to get the time.
+
+Please note that AF_XDP lacks a feedback mechanism to inform the
+application if the requested launch time is invalid. So, users are expected
+to familiar with the horizon of the launch time of the device they use and
+not request a launch time that is beyond the horizon. Otherwise, the driver
+might interpret the launch time incorrectly and react wrongly. For stmmac
+and igc, where modulo computation is used, a launch time larger than the
+horizon will cause the device to transmit the packet earlier that the
+requested launch time.
+
+Although there is no feedback mechanism for the launch time request
+for now, user still can check whether the requested launch time is
+working or not, by requesting the Transmit Completion Hardware Timestamp.
+
+v10:
+  - use net_err_ratelimited(), instead of net_ratelimit() (Maciej)
+  - accumulate the amount of used descs in local variable and update the
+    igc_metadata_request::used_desc once (Maciej)
+  - Ensure reverse christmas tree rule (Maciej)
+
+V9: https://lore.kernel.org/netdev/20250206060408.808325-1-yoong.siang.song@intel.com/
+  - Remove the igc_desc_unused() checking (Maciej)
+  - Ensure that skb allocation and DMA mapping work before proceeding to
+    fill in igc_tx_buffer info, context desc, and data desc (Maciej)
+  - Rate limit the error messages (Maciej)
+  - Update the comment to indicate that the 2 descriptors needed by the
+    empty frame are already taken into consideration (Maciej)
+  - Handle the case where the insertion of an empty frame fails and
+    explain the reason behind (Maciej)
+  - put self SOB tag as last tag (Maciej)
+
+V8: https://lore.kernel.org/netdev/20250205024116.798862-1-yoong.siang.song@intel.com/
+  - check the number of used descriptor in xsk_tx_metadata_request()
+    by using used_desc of struct igc_metadata_request, and then decreases
+    the budget with it (Maciej)
+  - submit another bug fix patch to set the buffer type for empty frame (Maciej):
+    https://lore.kernel.org/netdev/20250205023603.798819-1-yoong.siang.song@intel.com/
+
+V7: https://lore.kernel.org/netdev/20250204004907.789330-1-yoong.siang.song@intel.com/
+  - split the refactoring code of igc empty packet insertion into a separate
+    commit (Faizal)
+  - add explanation on why the value "4" is used as igc transmit budget
+    (Faizal)
+  - perform a stress test by sending 1000 packets with 10ms interval and
+    launch time set to 500us in the future (Faizal & Yong Liang)
+
+V6: https://lore.kernel.org/netdev/20250116155350.555374-1-yoong.siang.song@intel.com/
+  - fix selftest build errors by using asprintf() and realloc(), instead of
+    managing the buffer sizes manually (Daniel, Stanislav)
+
+V5: https://lore.kernel.org/netdev/20250114152718.120588-1-yoong.siang.song@intel.com/
+  - change netdev feature name from tx-launch-time to tx-launch-time-fifo
+    to explicitly state the FIFO behaviour (Stanislav)
+  - improve the looping of xdp_hw_metadata app to wait for packet tx
+    completion to be more readable by using clock_gettime() (Stanislav)
+  - add launch time setup steps into xdp_hw_metadata app (Stanislav)
+
+V4: https://lore.kernel.org/netdev/20250106135506.9687-1-yoong.siang.song@intel.com/
+  - added XDP launch time support to the igc driver (Jesper & Florian)
+  - added per-driver launch time limitation on xsk-tx-metadata.rst (Jesper)
+  - added explanation on FIFO behavior on xsk-tx-metadata.rst (Jakub)
+  - added step to enable launch time in the commit message (Jesper & Willem)
+  - explicitly documented the type of launch_time and which clock source
+    it is against (Willem)
+
+V3: https://lore.kernel.org/netdev/20231203165129.1740512-1-yoong.siang.song@intel.com/
+  - renamed to use launch time (Jesper & Willem)
+  - changed the default launch time in xdp_hw_metadata apps from 1s to 0.1s
+    because some NICs do not support such a large future time.
+
+V2: https://lore.kernel.org/netdev/20231201062421.1074768-1-yoong.siang.song@intel.com/
+  - renamed to use Earliest TxTime First (Willem)
+  - renamed to use txtime (Willem)
+
+V1: https://lore.kernel.org/netdev/20231130162028.852006-1-yoong.siang.song@intel.com/
+
+Song Yoong Siang (5):
+  xsk: Add launch time hardware offload support to XDP Tx metadata
+  selftests/bpf: Add launch time request to xdp_hw_metadata
+  net: stmmac: Add launch time support to XDP ZC
+  igc: Refactor empty frame insertion for launch time support
+  igc: Add launch time support to XDP ZC
+
+ Documentation/netlink/specs/netdev.yaml       |   4 +
+ Documentation/networking/xsk-tx-metadata.rst  |  62 +++++++
+ drivers/net/ethernet/intel/igc/igc.h          |   1 +
+ drivers/net/ethernet/intel/igc/igc_main.c     | 143 +++++++++++----
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |   2 +
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |  13 ++
+ include/net/xdp_sock.h                        |  10 ++
+ include/net/xdp_sock_drv.h                    |   1 +
+ include/uapi/linux/if_xdp.h                   |  10 ++
+ include/uapi/linux/netdev.h                   |   3 +
+ net/core/netdev-genl.c                        |   2 +
+ net/xdp/xsk.c                                 |   3 +
+ tools/include/uapi/linux/if_xdp.h             |  10 ++
+ tools/include/uapi/linux/netdev.h             |   3 +
+ tools/testing/selftests/bpf/xdp_hw_metadata.c | 168 +++++++++++++++++-
+ 15 files changed, 396 insertions(+), 39 deletions(-)
+
+-- 
+2.34.1
+
 
