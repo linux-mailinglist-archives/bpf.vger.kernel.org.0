@@ -1,164 +1,196 @@
-Return-Path: <bpf+bounces-50766-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50767-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A479EA2C3C3
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 14:36:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73CC8A2C403
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 14:44:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B51DE3AA788
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 13:35:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EA267A5568
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 13:43:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B4441F4191;
-	Fri,  7 Feb 2025 13:35:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03F621F5617;
+	Fri,  7 Feb 2025 13:44:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kGdcbgRM"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UJcrWYj8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B36C11A5BB1;
-	Fri,  7 Feb 2025 13:35:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A515E1E98F4;
+	Fri,  7 Feb 2025 13:44:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738935312; cv=none; b=t1ijPaKvDZuAwXFSjiWinIPrs06/BdY6Z46YKYaQxrbg+3xGwTCyvIFVbtm0+2XW+Q/WdUCmyXLMl3+ZcoYp++za7G5azLHSuyWSzXuQqx0E4yGL89kUiyn/hAd6YudMd0ei8L0ybF+GDtT7UP+bXeyy4NRH5BENA6TrhfzvxFg=
+	t=1738935857; cv=none; b=X3m4acHs1YJ2p6jSL+O7EYtV2oFawZ+aSRe1uQWvPoan7rsexDhlbwCrHElCOr+beI26AkMiEvRtlt4CgOg8V8BUQQ9exr8VMuTO1ije0QfDljYJlzDkkavUNaT1VK0CG67YsjY0qvaUOp16nWkFeYIlt3mpfgldQ5Y/ZYoRHCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738935312; c=relaxed/simple;
-	bh=vY1bOS/eum+ZjHSSi6snToo0JUebutpJNRJprO0sdOg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W9/sMMFF9lIBDK+u/puxnqTw1hbcGQr30a4qpQ8dzzQO8+/fuZyYiSyNVpVEoYySdKy7scEOfhzTjzLIfIQGgf+fCmVRM8D2SSWEbOb9OzPtvWcRl0W++xzS1ENfC5r61kM7Jydn9RvfCAXPDGNDnTfVR5uzxtQ867n5lfKEBmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kGdcbgRM; arc=none smtp.client-ip=209.85.166.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-3d04d655fefso17446875ab.3;
-        Fri, 07 Feb 2025 05:35:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738935310; x=1739540110; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v1rbN1kyJhZtSFWy60iFcf++JcmL12EiVI3WC4zT40U=;
-        b=kGdcbgRMqK0sy6kpPKmPLDjwtzUvxmI8HaqG8fR6Y9RJUtvoRWXHZWOzFi46w+AWf+
-         6C9QU1jefXrnRLjfEHERDJ60TXlYAHr6Mptz+J1iEh/N0WLqEzjMecmnbqoF99YsLnjH
-         blo8HxsQdYnRKMYKJ2oFS3GJTdcT7EYlFPNaEve3d9cUdhuxER+B/gzD/a0cI69dmVZG
-         syXOATgNWEVh1U82us+Zs0uIv2EJNTNTKofhoZv/Uu75VwZOtckQwqLYYWOKgx4c3Rl5
-         8vkI5KA55rkDybH8cIGjYMQkUudGrWaslAlp4pIcdSVPB8HA+0FjsBgQnyBMCpDSos2w
-         WchA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738935310; x=1739540110;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=v1rbN1kyJhZtSFWy60iFcf++JcmL12EiVI3WC4zT40U=;
-        b=Hfl5YX1BVjcQ6QbhjuBsdqtTnkMD8+WWbYrVeyQMG7b10o37tJ5rGo3OYQ2bm7TERC
-         Qn1KQvnW+bF9ZAUtaM33c863xsgljthqGc5yE/4tS7QmSwnECmu6FWlSwi4lfn2atDaF
-         /CTJDkgZdRQ6N5Kysba3sBkN1bs9Vs13C6SXDtclT5dmSFAR9hT5NYNxSa0cPfBV+fEd
-         xpUQS9c9s0SN/zjIv1ytoISqJ6T573yTWBkN7CxNex7eddliz0kRWR4fPmDbC+q8oWks
-         qV6kQX4bXrOhXbrAno8I8ionktJ/uAFyx8kXzs6QVoEXatRI3J9RcOjaznayhAMn7ZAl
-         oZ5g==
-X-Forwarded-Encrypted: i=1; AJvYcCVewL3vKA6I6vGjNWQnJYkad5BS9z36ujADX5BoJA1R0Voa9tEUKAF8uuJleDNzhpxx+X+ms7is@vger.kernel.org, AJvYcCXNNM0WoN1x6FrU5wStx447dgIUV9hvKGZhXjpjdhhq44iyAGH9BmDWsqRlYSPSZsqdvk4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzmZzmL5oKxEgdnMW+4kCNcd3r3Bru7JiRtVziIheLTI6VaCEQj
-	4tv93hI53gS4vPE2qsI2xlVdL4QriFqTk3zBtaFf2C1eGKeD/sUG47k14D69eOBR1BX74WP3mB+
-	no0tdzkTrT4Lbij7TOyQjZH8PDnjzMQNwIOCV7w==
-X-Gm-Gg: ASbGncs5mr1DcJSGbeb+qM4pwK2/IgtFdl55vUXZxFFcZUr4m3HcJ5NuZ5nRS2Zw8lZ
-	wcTrnFei02F9Xo52DliGbb8pDppVu5La9ypS70fg9I9fQE5nxC0cHDNBDI1BkmCYJ8nRZmDhc
-X-Google-Smtp-Source: AGHT+IES5rVLZOf/UVlLT9BZGHdOYu6CE+b8aXL5spCx4XiVOrbok6X4DRYffGjknCfdHTLqo5gBwe9gHu9v+bnBxhk=
-X-Received: by 2002:a92:c263:0:b0:3cf:f88b:b51a with SMTP id
- e9e14a558f8ab-3d13dcfce6cmr25963575ab.2.1738935309702; Fri, 07 Feb 2025
- 05:35:09 -0800 (PST)
+	s=arc-20240116; t=1738935857; c=relaxed/simple;
+	bh=yvDb/9al0b5cbGYGz+egPFvQ2z5zm9IAuwXMbV2aY9g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NCV45qB507VuFAcO3DYHJmiRvTwL3WFIiKhj6Z7pm5sLjIbEJWcvqQ+gub6HojVgQmYaWHam3uBqk3708hvHoloOzCOvYXZKdw045P4zDOlqbZz2WX36xY98glacjEwyhyhIYfkFSR93PylcrMoOTTRpN4HEyHRhYY1lnFDf9NM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UJcrWYj8; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1738935856; x=1770471856;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=yvDb/9al0b5cbGYGz+egPFvQ2z5zm9IAuwXMbV2aY9g=;
+  b=UJcrWYj8vxwHNBuwzgZYTu4L3Gr4BSKf/1Tje0gr+JbAW655GQPLKk6A
+   ZIoZZ+q9WBlkNn7CULRyzZKdSbSWimV8jQ/AxbSVGamcWzO5UqHuc/S12
+   GTt/UuSimA5N+cGjxLo/9lJurXQv+vtCKqQ37/QIYruOceGxk5NuIbwWn
+   YNcj+gQYnHT2Htf1bki//aRd9giraY8q3WQE29lJtVxNwgjj2vWYFE4Dj
+   HP/iMhWXflyix+2Y+nWZf1naWby1IUzgIFUqGAYTZPuNH69bEcenZgvth
+   lsERRQBWqgx37XCBohXJr+zFzPZvlkFC9avTCZT4gW7SH3fnPcSEvLj2T
+   w==;
+X-CSE-ConnectionGUID: 9xHJAJrXSgOU5j+m+aPSzQ==
+X-CSE-MsgGUID: pIfWsmu6TgaTzgdEglFd+Q==
+X-IronPort-AV: E=McAfee;i="6700,10204,11338"; a="39448796"
+X-IronPort-AV: E=Sophos;i="6.13,267,1732608000"; 
+   d="scan'208";a="39448796"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 05:44:15 -0800
+X-CSE-ConnectionGUID: YD3vx1NJSq2zirfoHgButQ==
+X-CSE-MsgGUID: ndUXSvlTQgKqyCDXne74cw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,267,1732608000"; 
+   d="scan'208";a="116533405"
+Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
+  by orviesa004.jf.intel.com with ESMTP; 07 Feb 2025 05:44:10 -0800
+Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tgOeN-000yPD-1L;
+	Fri, 07 Feb 2025 13:44:07 +0000
+Date: Fri, 7 Feb 2025 21:43:45 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Peter Zijlstra <peterz@infradead.org>,
+	Will Deacon <will@kernel.org>, Waiman Long <llong@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
+	Barret Rhoden <brho@google.com>, Josh Don <joshdon@google.com>,
+	Dohyun Kim <dohyunkim@google.com>,
+	linux-arm-kernel@lists.infradead.org, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next v2 22/26] bpf: Introduce rqspinlock kfuncs
+Message-ID: <202502072155.DbOeX8Le-lkp@intel.com>
+References: <20250206105435.2159977-23-memxor@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250204183024.87508-1-kerneljasonxing@gmail.com>
- <20250204183024.87508-11-kerneljasonxing@gmail.com> <20250204175744.3f92c33e@kernel.org>
- <e894c427-b4b3-4706-b44c-44fc6402c14c@linux.dev> <CAL+tcoCQ165Y4R7UWG=J=8e=EzwFLxSX3MQPOv=kOS3W1Q7R0A@mail.gmail.com>
- <0a8e7b84-bab6-4852-8616-577d9b561f4c@linux.dev> <CAL+tcoAp8v49fwUrN5pNkGHPF-+RzDDSNdy3PhVoJ7+MQGNbXQ@mail.gmail.com>
- <CAL+tcoC5hmm1HQdbDaYiQ1iW1x2J+H42RsjbS_ghyG8mSDgqqQ@mail.gmail.com>
- <67a424d2aa9ea_19943029427@willemb.c.googlers.com.notmuch>
- <CAL+tcoCPGAjs=+Hnzr4RLkioUV7nzy=ZmKkTDPA7sBeVP=qzow@mail.gmail.com>
- <67a42ba112990_19c315294b7@willemb.c.googlers.com.notmuch>
- <CAL+tcoC_5106onp6yQh-dKnCTLtEr73EZVC31T_YeMtqbZ5KBw@mail.gmail.com>
- <b158a837-d46c-4ae0-8130-7aa288422182@linux.dev> <CAL+tcoCUjxvE-DaQ8AMxMgjLnV+J1jpYMh7BCOow4AohW1FFSg@mail.gmail.com>
- <739d6f98-8a44-446e-85a4-c499d154b57b@linux.dev>
-In-Reply-To: <739d6f98-8a44-446e-85a4-c499d154b57b@linux.dev>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Fri, 7 Feb 2025 21:34:33 +0800
-X-Gm-Features: AWEUYZm6WNHjuSs7mQCHIFvotgjIiK9WGdoU-XRw6scHDKV5BZ2JZ1tEgyb7RQk
-Message-ID: <CAL+tcoCEw7ppu7OvgOhcb=oeJLi4ZwhVdCHuHVSkhP8gEcpVDg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v8 10/12] bpf: make TCP tx timestamp bpf
- extension work
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Jakub Kicinski <kuba@kernel.org>, 
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com, 
-	dsahern@kernel.org, willemb@google.com, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, horms@kernel.org, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250206105435.2159977-23-memxor@gmail.com>
 
-On Fri, Feb 7, 2025 at 10:07=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
->
-> On 2/5/25 10:56 PM, Jason Xing wrote:
-> >>> I have to rephrase a bit in case Martin visits here soon: I will
-> >>> compare two approaches 1) reply value, 2) bpf kfunc and then see whic=
-h
-> >>> way is better.
-> >>
-> >> I have already explained in details why the 1) reply value from the bp=
-f prog
-> >> won't work. Please go back to that reply which has the context.
-> >
-> > Yes, of course I saw this, but I said I need to implement and dig more
-> > into this on my own. One of my replies includes a little code snippet
-> > regarding reply value approach. I didn't expect you to misunderstand
-> > that I would choose reply value, so I rephrase it like above :)
->
-> I did see the code snippet which is incomplete, so I have to guess. afaik=
-, it is
-> not going to work. I was hoping to save some time without detouring to th=
-e
-> reply-value path in case my earlier message was missed. I will stay quiet=
- and
-> wait for v9 first then to avoid extending this long thread further.
+Hi Kumar,
 
-FYI, the code I adjusted works, a little bit ugly though.
+kernel test robot noticed the following build errors:
 
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index ad4f056aff22..44b4f8655668 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -498,10 +498,13 @@ static void tcp_tx_timestamp(struct sock *sk,
-struct sockcm_cookie *sockc)
-                struct skb_shared_info *shinfo =3D skb_shinfo(skb);
-                struct tcp_skb_cb *tcb =3D TCP_SKB_CB(skb);
+[auto build test ERROR on 0abff462d802a352c87b7f5e71b442b09bf9cfff]
 
--               tcb->txstamp_ack =3D 2;
--               shinfo->tx_flags |=3D SKBTX_BPF;
-                shinfo->tskey =3D TCP_SKB_CB(skb)->seq + skb->len - 1;
--               bpf_skops_tx_timestamping(sk, skb, BPF_SOCK_OPS_TS_SND_CB);
-+               if (bpf_skops_tx_timestamping(sk, skb,
-BPF_SOCK_OPS_TS_SND_CB)) {
-+                       tcb->txstamp_ack =3D 2;
-+                       shinfo->tx_flags |=3D SKBTX_BPF;
-+               } else {
-+                       shinfo->tskey =3D 0;
-+               }
-        }
- }
+url:    https://github.com/intel-lab-lkp/linux/commits/Kumar-Kartikeya-Dwivedi/locking-Move-MCS-struct-definition-to-public-header/20250206-190258
+base:   0abff462d802a352c87b7f5e71b442b09bf9cfff
+patch link:    https://lore.kernel.org/r/20250206105435.2159977-23-memxor%40gmail.com
+patch subject: [PATCH bpf-next v2 22/26] bpf: Introduce rqspinlock kfuncs
+config: x86_64-buildonly-randconfig-004-20250207 (https://download.01.org/0day-ci/archive/20250207/202502072155.DbOeX8Le-lkp@intel.com/config)
+compiler: clang version 19.1.3 (https://github.com/llvm/llvm-project ab51eccf88f5321e7c60591c5546b254b6afab99)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250207/202502072155.DbOeX8Le-lkp@intel.com/reproduce)
 
-I'm not sure if it meets your requirement? The reason why I resorted
-to this method is because I failed to attempt to use kfunc and
-struggled to read many btf codes :(
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202502072155.DbOeX8Le-lkp@intel.com/
 
-So please provide more hints so that I can start again. Thanks.
+All errors (new ones prefixed by >>):
 
-Thanks,
-Jason
+   In file included from fs/timerfd.c:26:
+   In file included from include/linux/syscalls.h:94:
+   In file included from include/trace/syscall.h:7:
+   In file included from include/linux/trace_events.h:10:
+   In file included from include/linux/perf_event.h:62:
+   In file included from include/linux/security.h:35:
+   In file included from include/linux/bpf.h:33:
+   In file included from arch/x86/include/asm/rqspinlock.h:27:
+>> include/asm-generic/rqspinlock.h:40:12: error: conflicting types for 'resilient_tas_spin_lock'
+      40 | extern int resilient_tas_spin_lock(rqspinlock_t *lock, u64 timeout);
+         |            ^
+   arch/x86/include/asm/rqspinlock.h:17:12: note: previous declaration is here
+      17 | extern int resilient_tas_spin_lock(struct qspinlock *lock, u64 timeout);
+         |            ^
+   1 error generated.
+--
+   In file included from fs/splice.c:27:
+   include/linux/mm_inline.h:47:41: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+      47 |         __mod_lruvec_state(lruvec, NR_LRU_BASE + lru, nr_pages);
+         |                                    ~~~~~~~~~~~ ^ ~~~
+   include/linux/mm_inline.h:49:22: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+      49 |                                 NR_ZONE_LRU_BASE + lru, nr_pages);
+         |                                 ~~~~~~~~~~~~~~~~ ^ ~~~
+   In file included from fs/splice.c:31:
+   In file included from include/linux/syscalls.h:94:
+   In file included from include/trace/syscall.h:7:
+   In file included from include/linux/trace_events.h:10:
+   In file included from include/linux/perf_event.h:62:
+   In file included from include/linux/security.h:35:
+   In file included from include/linux/bpf.h:33:
+   In file included from arch/x86/include/asm/rqspinlock.h:27:
+>> include/asm-generic/rqspinlock.h:40:12: error: conflicting types for 'resilient_tas_spin_lock'
+      40 | extern int resilient_tas_spin_lock(rqspinlock_t *lock, u64 timeout);
+         |            ^
+   arch/x86/include/asm/rqspinlock.h:17:12: note: previous declaration is here
+      17 | extern int resilient_tas_spin_lock(struct qspinlock *lock, u64 timeout);
+         |            ^
+   2 warnings and 1 error generated.
+--
+   In file included from fs/aio.c:20:
+   In file included from include/linux/syscalls.h:94:
+   In file included from include/trace/syscall.h:7:
+   In file included from include/linux/trace_events.h:10:
+   In file included from include/linux/perf_event.h:62:
+   In file included from include/linux/security.h:35:
+   In file included from include/linux/bpf.h:33:
+   In file included from arch/x86/include/asm/rqspinlock.h:27:
+>> include/asm-generic/rqspinlock.h:40:12: error: conflicting types for 'resilient_tas_spin_lock'
+      40 | extern int resilient_tas_spin_lock(rqspinlock_t *lock, u64 timeout);
+         |            ^
+   arch/x86/include/asm/rqspinlock.h:17:12: note: previous declaration is here
+      17 | extern int resilient_tas_spin_lock(struct qspinlock *lock, u64 timeout);
+         |            ^
+   In file included from fs/aio.c:29:
+   include/linux/mman.h:159:9: warning: division by zero is undefined [-Wdivision-by-zero]
+     159 |                _calc_vm_trans(flags, MAP_SYNC,       VM_SYNC      ) |
+         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/mman.h:137:21: note: expanded from macro '_calc_vm_trans'
+     137 |    : ((x) & (bit1)) / ((bit1) / (bit2))))
+         |                     ^ ~~~~~~~~~~~~~~~~~
+   include/linux/mman.h:160:9: warning: division by zero is undefined [-Wdivision-by-zero]
+     160 |                _calc_vm_trans(flags, MAP_STACK,      VM_NOHUGEPAGE) |
+         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/mman.h:137:21: note: expanded from macro '_calc_vm_trans'
+     137 |    : ((x) & (bit1)) / ((bit1) / (bit2))))
+         |                     ^ ~~~~~~~~~~~~~~~~~
+   2 warnings and 1 error generated.
+
+
+vim +/resilient_tas_spin_lock +40 include/asm-generic/rqspinlock.h
+
+c34e46edef2a89 Kumar Kartikeya Dwivedi 2025-02-06  39  
+7a9d3b27f7bf9c Kumar Kartikeya Dwivedi 2025-02-06 @40  extern int resilient_tas_spin_lock(rqspinlock_t *lock, u64 timeout);
+7a9d3b27f7bf9c Kumar Kartikeya Dwivedi 2025-02-06  41  #ifdef CONFIG_QUEUED_SPINLOCKS
+6516ce00a1482f Kumar Kartikeya Dwivedi 2025-02-06  42  extern int resilient_queued_spin_lock_slowpath(rqspinlock_t *lock, u32 val, u64 timeout);
+7a9d3b27f7bf9c Kumar Kartikeya Dwivedi 2025-02-06  43  #endif
+6516ce00a1482f Kumar Kartikeya Dwivedi 2025-02-06  44  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
