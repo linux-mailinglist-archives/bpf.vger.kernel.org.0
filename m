@@ -1,119 +1,328 @@
-Return-Path: <bpf+bounces-50749-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50750-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81A56A2BBCD
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 07:49:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDB9EA2BD74
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 09:06:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94977188788D
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 06:49:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B0993AAB4D
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 08:06:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8377B18C930;
-	Fri,  7 Feb 2025 06:49:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3A03233D86;
+	Fri,  7 Feb 2025 08:05:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nrLnlCV0"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XZBaek1B"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B1B014A4F0;
-	Fri,  7 Feb 2025 06:49:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45037233D64
+	for <bpf@vger.kernel.org>; Fri,  7 Feb 2025 08:05:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738910977; cv=none; b=c7Fh53/fxZdR4XWKfi1fFX8HXolNN5H1KBhpK/BJfLeKKF1b6PsmHeaxLpaPFd5BVypvrYo6MfHpC8WbJDWHsNf8o6Lrtw0uQdKINyMoNZMPcyAraP8sUlXrtmOdLsX8kLapyHRBs1jEZGMN7eRM3ToZF+d9fYQiOjziwdiyjOc=
+	t=1738915502; cv=none; b=IxOJGTN/oLwt6rcB87S6vSMFGkx1jRdYsi/KPfVTE51MLyKopiGYAbIfUduMyq6VJ4Zm7IYD2oWcbg7tRb8ceY+C1yXwF3LHqOrcqJK6W2BG4TvgjBXsKOepo7kVOgMKUNMjaqP/PWLMeuvDJySgM6VMufVcYDRnwaSaur066sk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738910977; c=relaxed/simple;
-	bh=cuBBZ7Jd8w735y7vZBgoCsfnvsDNzJSaLzMyJc/FSM4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ekLBibid2GxoE3c7aM7lDuBkvBArjKDRtN1MJSHYsTEmbTlE8YkMbfi2wCRsN1nlecZtKV0oZiFHRgnTJ8FqA0pWY0zyIkkmTC18iII2cGzU1yTk/IrjLLvRLQrPwYUy9Xn7jqsjW9puYEIRMXjSG5XbBnpCOzsuLEbT33Db05I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nrLnlCV0; arc=none smtp.client-ip=209.85.166.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3cfc79a8a95so5379855ab.2;
-        Thu, 06 Feb 2025 22:49:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738910974; x=1739515774; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=samJguVg29xPNPhl39k0sFbJm2g3iV5+Y8a1y8Fqnkw=;
-        b=nrLnlCV0NRDdYg5bsEvIoFktLiV1lt1Dg2a4FgYjgpgCjbHa/uuQKSJBhdBguLZu/z
-         W8QWLoN/PHGUDT+j6Mp1Y4w6/98bOVYOkFDYMF+Y06+GmftIE291vI7kljqyI75B2961
-         5pcRJixBQNrNQGBzn+ioyQLX51oHxwNQZTWAtS5IfKJlO+MxION8ixKtDk6PS0sZapES
-         KtBH8G3Vu1rw6vXLE1BlgJEx9vzKyVjY413gJQ/ToX+DBc6MFv/dPhZjZ+DYHyiQ0+XT
-         YRSsDaXOtWegzF2cU0uvxT1AGb3VobUxdZPpo+BggmHN3Irk1aqzLUvLwpgLi3r8TdIC
-         i3gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738910974; x=1739515774;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=samJguVg29xPNPhl39k0sFbJm2g3iV5+Y8a1y8Fqnkw=;
-        b=bMXe9sksO6rAc6sGYbHg0Yki912acmUrSLNPhIqF3D+Pt9VEmLaM3QQNb8jjnK7NT8
-         YW5DsS0TFLRklXbhPR8Uhoxmj3QYTGNB9sD6+th99xjUDLN7wgKza6gyhfu8t3NeE/E4
-         DvQrgI259hVS+12dJOP0wNBwr0vccfIyrmXwtvjOEQHOyaBSjGZiz0fT00l1Cilx206V
-         P6TuMjB0Y1GgIV2Rz425RtuQQsTuGGxmclJ3Fgts0fG7I1564AoOMBm8XUd6Irlrm7uO
-         +k0N2n5eNLtSmeENmhcaL4UkzCIE6IAlXIAL7AUVWSOGkBFhgXud05Ob8r2F7wHZuWDA
-         7B2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUdg6jRl79o74y17rWJancT22CoPZ5ejbMrHG/bpbUSSJZlHtthtOecz0WMq659eA6/aSw=@vger.kernel.org, AJvYcCXWw3dOZWRERGZgO0NJ6s8cAQtCLpE8xZiCu/jYOH/k5dgRMXl4D1O4WkmnhsK5QP9yD6nEpGB/5sO5I4pu7CTe@vger.kernel.org
-X-Gm-Message-State: AOJu0YyvIs3ki7bajVnj9kMMhs0VTmRm7aYkwboffHrnAJ44ipRfRgO9
-	GuSG3VQyHZxXpDw/qINdN0N6w03kDUwIuT0OtMHyE/sSfIUI09IwnskZe8SJTjzgxWOSHdOTaZL
-	BbeyRrJo+Gpwo8b3FATZxixwAmrkrTQ21f1gXAQ==
-X-Gm-Gg: ASbGnctFckr9y2fi4p+ezeXmiDhOIDkoHRUAJoD/fnmzMaVGn7k2lyncKRoloOaeMkd
-	e61uA2oihptzLzIz+FvKhR603i743q5PKoi+La7QQrovmHuCvVZZdkU/WKdZjUyqGSLnhjIQ=
-X-Google-Smtp-Source: AGHT+IG0D4d7wxd7XN6lbusi1BMaL2bDy+8jdzYwLphp/L0mBulIcdxB5SXFAyqeTVFH2QTwvNQo2IEx9KCpKPucZy8=
-X-Received: by 2002:a05:6e02:20c8:b0:3d0:21aa:a752 with SMTP id
- e9e14a558f8ab-3d13dd2c035mr15943555ab.2.1738910974015; Thu, 06 Feb 2025
- 22:49:34 -0800 (PST)
+	s=arc-20240116; t=1738915502; c=relaxed/simple;
+	bh=8Dg1edHtzpGjPoUJj1U8Rm0XiMWeIXtGAvfeQc0xIyw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PExIrnKBi7NvffV1MSQaxPi4wJhM64015f2SdkMwa7iJAQS+tohonsYO3zb2P7DvOd93cUb5DC/0k6u6CpKKq7Np7mem9BMmqCJ8V7lMGOSUmlt/j4cnUdvoE6vTwuWlBwkyACykG23EVkiLwpCeTGxxwPAFtJXwpLwL8QcQrhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XZBaek1B; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1738915499;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=CY4Wvi20EGqS3EzyUzAA1xdoQD2kiUj7fdKbqPTL8ds=;
+	b=XZBaek1BeeRDwILzLJUQaY34nRNWl6zZviZwox9wbtXJUPyEeAVewBLHHNbmQXR8cTGQzc
+	BfSxEMykpNl1nuJHd6gj74Dt1mILMx7sCbtGQVhXmFpVZq/hti9dvffJpqvzuHWb0mwOSH
+	sACY5g9TnHSro8Ni+BkIsJBAN1OZIk0=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-265-R6Q2vGL-PlmbOlAOfY5kyw-1; Fri,
+ 07 Feb 2025 03:04:57 -0500
+X-MC-Unique: R6Q2vGL-PlmbOlAOfY5kyw-1
+X-Mimecast-MFC-AGG-ID: R6Q2vGL-PlmbOlAOfY5kyw
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 5A55A1801A10;
+	Fri,  7 Feb 2025 08:04:56 +0000 (UTC)
+Received: from gmonaco-thinkpadt14gen3.rmtit.com (unknown [10.45.224.67])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id D1BA118004A7;
+	Fri,  7 Feb 2025 08:04:53 +0000 (UTC)
+From: Gabriele Monaco <gmonaco@redhat.com>
+To: linux-kernel@vger.kernel.org,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: Gabriele Monaco <gmonaco@redhat.com>
+Subject: [PATCH 1/2] perf ftrace latency: variable histogram buckets
+Date: Fri,  7 Feb 2025 09:04:44 +0100
+Message-ID: <20250207080446.77630-1-gmonaco@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250204023946.16031-1-kerneljasonxing@gmail.com>
- <20250204023946.16031-2-kerneljasonxing@gmail.com> <7b348ab7-7378-40bc-98e7-98eb1377f9c2@linux.dev>
-In-Reply-To: <7b348ab7-7378-40bc-98e7-98eb1377f9c2@linux.dev>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Fri, 7 Feb 2025 14:48:57 +0800
-X-Gm-Features: AWEUYZl6nZR380Ih9p0XjeuA67cvdJbvPefw64JmabsuDQHjcptMKBBZCfXEn-I
-Message-ID: <CAL+tcoA2wV1CvAV1TZAvrRuxOntb0fEDpgOsC2-FVtYr-go=1w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/2] bpf: changes_pkt_data: correct the 'main' error
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, 
-	mykolal@fb.com, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
-On Fri, Feb 7, 2025 at 2:04=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.d=
-ev> wrote:
->
-> On 2/3/25 6:39 PM, Jason Xing wrote:
-> > When compiling the selftests, the following error is printed out:
-> > selftests/bpf/prog_tests/changes_pkt_data.c: In function =E2=80=98test_=
-aux=E2=80=99:
-> > selftests/bpf/prog_tests/changes_pkt_data.c:22:27: error: =E2=80=98main=
-=E2=80=99 is usually a function [-Werror=3Dmain]
-> >    struct changes_pkt_data *main =3D NULL;
->
-> The bpf CI has been testing this piece with different compilers. I also d=
-on't
-> see it in my environment. How to reproduce it and which compiler?
+The max-latency value can make the histogram smaller, but not larger, we
+have a maximum of 22 buckets and specifying a max-latency that would
+require more buckets has no effect.
 
-The gcc version is "gcc version 8.5.0" which is an old one. Yep, there
-are some cases sometimes where bpf CI doesn't report because the
-compilation relies on the system environment? Sorry that I have no
-clue about this happening. One thing I know is that if using some old
-distros and cloud services, it's not hard to see this.
+Dynamically allocate the buckets and compute the bucket number from the
+max latency as (max-min) / range + 2
 
-In this series, rename it to avoid error messages which could stop the
-local compilation.
+If the maximum is not specified, we still set the bucket number to 22
+and compute the maximum accordingly.
 
-Thanks,
-Jason
+Fail if the maximum is smaller than min+range, this way we make sure we
+always have 3 buckets: those below min, those above max and one in the
+middle.
+
+Since max-latency is not available in log2 mode, always use 22 buckets.
+
+Signed-off-by: Gabriele Monaco <gmonaco@redhat.com>
+---
+ tools/perf/builtin-ftrace.c                 | 57 +++++++++++++++------
+ tools/perf/util/bpf_ftrace.c                |  6 ++-
+ tools/perf/util/bpf_skel/func_latency.bpf.c |  7 +--
+ tools/perf/util/ftrace.h                    |  1 +
+ 4 files changed, 51 insertions(+), 20 deletions(-)
+
+diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
+index cfd770ec72867..4f76094ea06d4 100644
+--- a/tools/perf/builtin-ftrace.c
++++ b/tools/perf/builtin-ftrace.c
+@@ -733,6 +733,7 @@ static void make_histogram(struct perf_ftrace *ftrace, int buckets[],
+ {
+ 	int min_latency = ftrace->min_latency;
+ 	int max_latency = ftrace->max_latency;
++	unsigned int bucket_num = ftrace->bucket_num;
+ 	char *p, *q;
+ 	char *unit;
+ 	double num;
+@@ -797,10 +798,10 @@ static void make_histogram(struct perf_ftrace *ftrace, int buckets[],
+ 			if (num > 0) // 1st entry: [ 1 unit .. bucket_range units ]
+ 				i = num / ftrace->bucket_range + 1;
+ 			if (num >= max_latency - min_latency)
+-				i = NUM_BUCKET -1;
++				i = bucket_num -1;
+ 		}
+-		if (i >= NUM_BUCKET)
+-			i = NUM_BUCKET - 1;
++		if ((unsigned)i >= bucket_num)
++			i = bucket_num - 1;
+ 
+ 		num += min_latency;
+ do_inc:
+@@ -820,13 +821,14 @@ static void display_histogram(struct perf_ftrace *ftrace, int buckets[])
+ {
+ 	int min_latency = ftrace->min_latency;
+ 	bool use_nsec = ftrace->use_nsec;
+-	int i;
++	unsigned int bucket_num = ftrace->bucket_num;
++	unsigned int i;
+ 	int total = 0;
+ 	int bar_total = 46;  /* to fit in 80 column */
+ 	char bar[] = "###############################################";
+ 	int bar_len;
+ 
+-	for (i = 0; i < NUM_BUCKET; i++)
++	for (i = 0; i < bucket_num; i++)
+ 		total += buckets[i];
+ 
+ 	if (total == 0) {
+@@ -843,7 +845,7 @@ static void display_histogram(struct perf_ftrace *ftrace, int buckets[])
+ 	       0, min_latency ?: 1, use_nsec ? "ns" : "us",
+ 	       buckets[0], bar_len, bar, bar_total - bar_len, "");
+ 
+-	for (i = 1; i < NUM_BUCKET - 1; i++) {
++	for (i = 1; i < bucket_num - 1; i++) {
+ 		unsigned int start, stop;
+ 		const char *unit = use_nsec ? "ns" : "us";
+ 
+@@ -881,11 +883,11 @@ static void display_histogram(struct perf_ftrace *ftrace, int buckets[])
+ 		       bar_total - bar_len, "");
+ 	}
+ 
+-	bar_len = buckets[NUM_BUCKET - 1] * bar_total / total;
++	bar_len = buckets[bucket_num - 1] * bar_total / total;
+ 	if (!ftrace->bucket_range) {
+ 		printf("  %4d - %-4s %s", 1, "...", use_nsec ? "ms" : "s ");
+ 	} else {
+-		unsigned int upper_outlier = (NUM_BUCKET - 2) * ftrace->bucket_range + min_latency;
++		unsigned int upper_outlier = (bucket_num - 2) * ftrace->bucket_range + min_latency;
+ 		if (upper_outlier > ftrace->max_latency)
+ 			upper_outlier = ftrace->max_latency;
+ 
+@@ -897,7 +899,7 @@ static void display_histogram(struct perf_ftrace *ftrace, int buckets[])
+ 			printf("  %4d - %4s %s", upper_outlier, "...", use_nsec ? "ns" : "us");
+ 		}
+ 	}
+-	printf(" | %10d | %.*s%*s |\n", buckets[NUM_BUCKET - 1],
++	printf(" | %10d | %.*s%*s |\n", buckets[bucket_num - 1],
+ 	       bar_len, bar, bar_total - bar_len, "");
+ 
+ 	printf("\n# statistics  (in %s)\n", ftrace->use_nsec ? "nsec" : "usec");
+@@ -997,7 +999,7 @@ static int __cmd_latency(struct perf_ftrace *ftrace)
+ 	struct pollfd pollfd = {
+ 		.events = POLLIN,
+ 	};
+-	int buckets[NUM_BUCKET] = { };
++	int *buckets;
+ 
+ 	trace_fd = prepare_func_latency(ftrace);
+ 	if (trace_fd < 0)
+@@ -1011,6 +1013,12 @@ static int __cmd_latency(struct perf_ftrace *ftrace)
+ 
+ 	evlist__start_workload(ftrace->evlist);
+ 
++	buckets = calloc(ftrace->bucket_num, sizeof(*buckets));
++	if (buckets == NULL) {
++		pr_err("failed to allocate memory for the buckets\n");
++		goto out;
++	}
++
+ 	line[0] = '\0';
+ 	while (!done) {
+ 		if (poll(&pollfd, 1, -1) < 0)
+@@ -1030,7 +1038,7 @@ static int __cmd_latency(struct perf_ftrace *ftrace)
+ 	if (workload_exec_errno) {
+ 		const char *emsg = str_error_r(workload_exec_errno, buf, sizeof(buf));
+ 		pr_err("workload failed: %s\n", emsg);
+-		goto out;
++		goto out_free_buckets;
+ 	}
+ 
+ 	/* read remaining buffer contents */
+@@ -1045,6 +1053,8 @@ static int __cmd_latency(struct perf_ftrace *ftrace)
+ 
+ 	display_histogram(ftrace, buckets);
+ 
++out_free_buckets:
++	free(buckets);
+ out:
+ 	close(trace_fd);
+ 	cleanup_func_latency(ftrace);
+@@ -1634,7 +1644,7 @@ int cmd_ftrace(int argc, const char **argv)
+ 	OPT_UINTEGER(0, "min-latency", &ftrace.min_latency,
+ 		    "Minimum latency (1st bucket). Works only with --bucket-range."),
+ 	OPT_UINTEGER(0, "max-latency", &ftrace.max_latency,
+-		    "Maximum latency (last bucket). Works only with --bucket-range and total buckets less than 22."),
++		    "Maximum latency (last bucket). Works only with --bucket-range."),
+ 	OPT_PARENT(common_options),
+ 	};
+ 	const struct option profile_options[] = {
+@@ -1751,10 +1761,25 @@ int cmd_ftrace(int argc, const char **argv)
+ 			ret = -EINVAL;
+ 			goto out_delete_filters;
+ 		}
+-		if (ftrace.bucket_range && !ftrace.max_latency) {
+-			/* default max latency should depend on bucket range and num_buckets */
+-			ftrace.max_latency = (NUM_BUCKET - 2) * ftrace.bucket_range +
+-						ftrace.min_latency;
++		if (ftrace.bucket_range && ftrace.max_latency &&
++		    ftrace.max_latency < ftrace.min_latency + ftrace.bucket_range) {
++			/* we need at least 1 bucket excluding min and max buckets */
++			pr_err("--max-latency must be larger than min-latency + bucket-range\n");
++			parse_options_usage(ftrace_usage, options,
++					    "max-latency", /*short_opt=*/false);
++			ret = -EINVAL;
++			goto out_delete_filters;
++		}
++		/* set default unless max_latency is set and valid */
++		ftrace.bucket_num = NUM_BUCKET;
++		if (ftrace.bucket_range) {
++			if (ftrace.max_latency)
++				ftrace.bucket_num = (ftrace.max_latency - ftrace.min_latency) /
++							ftrace.bucket_range + 2;
++			else
++				/* default max latency should depend on bucket range and num_buckets */
++				ftrace.max_latency = (NUM_BUCKET - 2) * ftrace.bucket_range +
++							ftrace.min_latency;
+ 		}
+ 		cmd_func = __cmd_latency;
+ 		break;
+diff --git a/tools/perf/util/bpf_ftrace.c b/tools/perf/util/bpf_ftrace.c
+index 25fc280e414ac..51f407a782d6c 100644
+--- a/tools/perf/util/bpf_ftrace.c
++++ b/tools/perf/util/bpf_ftrace.c
+@@ -39,6 +39,10 @@ int perf_ftrace__latency_prepare_bpf(struct perf_ftrace *ftrace)
+ 
+ 	skel->rodata->bucket_range = ftrace->bucket_range;
+ 	skel->rodata->min_latency = ftrace->min_latency;
++	skel->rodata->bucket_num = ftrace->bucket_num;
++	if (ftrace->bucket_range && ftrace->bucket_num) {
++		bpf_map__set_max_entries(skel->maps.latency, ftrace->bucket_num);
++	}
+ 
+ 	/* don't need to set cpu filter for system-wide mode */
+ 	if (ftrace->target.cpu_list) {
+@@ -138,7 +142,7 @@ int perf_ftrace__latency_read_bpf(struct perf_ftrace *ftrace __maybe_unused,
+ 	if (hist == NULL)
+ 		return -ENOMEM;
+ 
+-	for (idx = 0; idx < NUM_BUCKET; idx++) {
++	for (idx = 0; idx < skel->rodata->bucket_num; idx++) {
+ 		err = bpf_map_lookup_elem(fd, &idx, hist);
+ 		if (err) {
+ 			buckets[idx] = 0;
+diff --git a/tools/perf/util/bpf_skel/func_latency.bpf.c b/tools/perf/util/bpf_skel/func_latency.bpf.c
+index fb144811b34fc..09e70d40a0f4d 100644
+--- a/tools/perf/util/bpf_skel/func_latency.bpf.c
++++ b/tools/perf/util/bpf_skel/func_latency.bpf.c
+@@ -50,6 +50,7 @@ const volatile int use_nsec = 0;
+ const volatile unsigned int bucket_range;
+ const volatile unsigned int min_latency;
+ const volatile unsigned int max_latency;
++const volatile unsigned int bucket_num = NUM_BUCKET;
+ 
+ SEC("kprobe/func")
+ int BPF_PROG(func_begin)
+@@ -124,16 +125,16 @@ int BPF_PROG(func_end)
+ 			if (delta > 0) { // 1st entry: [ 1 unit .. bucket_range units )
+ 				// clang 12 doesn't like s64 / u32 division
+ 				key = (__u64)delta / bucket_range + 1;
+-				if (key >= NUM_BUCKET ||
++				if (key >= bucket_num ||
+ 					delta >= max_latency - min_latency)
+-					key = NUM_BUCKET - 1;
++					key = bucket_num - 1;
+ 			}
+ 
+ 			delta += min_latency;
+ 			goto do_lookup;
+ 		}
+ 		// calculate index using delta
+-		for (key = 0; key < (NUM_BUCKET - 1); key++) {
++		for (key = 0; key < (bucket_num - 1); key++) {
+ 			if (delta < (cmp_base << key))
+ 				break;
+ 		}
+diff --git a/tools/perf/util/ftrace.h b/tools/perf/util/ftrace.h
+index 5dee2caba0fe4..395f97b203ead 100644
+--- a/tools/perf/util/ftrace.h
++++ b/tools/perf/util/ftrace.h
+@@ -24,6 +24,7 @@ struct perf_ftrace {
+ 	unsigned int		bucket_range;
+ 	unsigned int		min_latency;
+ 	unsigned int		max_latency;
++	unsigned int		bucket_num;
+ 	int			graph_depth;
+ 	int			func_stack_trace;
+ 	int			func_irq_info;
+
+base-commit: 92514ef226f511f2ca1fb1b8752966097518edc0
+-- 
+2.48.1
+
 
