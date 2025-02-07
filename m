@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-50786-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50787-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A046A2C981
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 17:58:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50362A2C982
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 17:58:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15F147A3DE4
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 16:57:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6EC41882E17
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 16:58:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B656919AD8C;
-	Fri,  7 Feb 2025 16:57:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBAAC19DF4D;
+	Fri,  7 Feb 2025 16:57:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UEDn7Tvi"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GEIcKBga"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D45C7191F98;
-	Fri,  7 Feb 2025 16:57:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1A7B19047A;
+	Fri,  7 Feb 2025 16:57:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738947449; cv=none; b=QJCCpSvxKE4Az21OpZQuXbm9sO1Ysz/ylQxYqzhkMuVbLtG5CDN+fktNWAA7mUT30b52uo7Y47V6Kd3BYTF/jawVSwGZdGylcYK17h7EJOEz9nwHkNjsnwasunWyvzaIUMzOwQa7Mgg3t8WogB/RU/TIppzc9zuZUYe6/E9RgwE=
+	t=1738947457; cv=none; b=IbsLeaVM2s/+a01YUrihFZ6O47db+QFperc/7l5FkyKIYBsbL4J8EHb7Uik/OqZXw+J78q78ZPvNIZU3UIVsMzCpTTwFifeqlLkN5HBC3Z0us9ImOzXwdbXhDkgErUsQBlzh9w88yqsN7iKHECE7Cba+ZJpGcyL2DL2PyMA5D7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738947449; c=relaxed/simple;
-	bh=0OdUdx+lahN2+LUJ2jOFDFj83SCLzyn+8zKWv0oeisM=;
+	s=arc-20240116; t=1738947457; c=relaxed/simple;
+	bh=2Msp7YoBmanu425m0MXmljH1/c1Or8M2lkzZSA8x+50=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JcApgmtyLKNzSYIGs87haWof2xTP1GqUK2T+SiQc/vVdYMGWCoydZkjdZR9x+/+SQu1aO5W2aC7ptA+0Qn5LjmP+NTKa3XP/svqCB9gL93NXQxFWFmd3lJZYnZpuNuF7jHOaY3kSZnibPxg/Xoe5q27DCoRcfQPyp4LZDtWH8Q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UEDn7Tvi; arc=none smtp.client-ip=198.175.65.16
+	 MIME-Version; b=cFhDuUZs1a8XZt2tY4X2WbCM75ZFyVJCGzyRgAMHERZuYDA6GrepVxdVbuu/3Nhi3A9IfHxBBXqd6E6ZTDLG4Xb+eSYV7F9PLHI0Tpw7maCxB4ADZ6xrv7vVMMD21yOx2kXuBXkgnGjTTWHxKm3yQBsDLfcWH2ENtllQyfkiglM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GEIcKBga; arc=none smtp.client-ip=198.175.65.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738947448; x=1770483448;
+  t=1738947456; x=1770483456;
   h=from:to:subject:date:message-id:in-reply-to:references:
    mime-version:content-transfer-encoding;
-  bh=0OdUdx+lahN2+LUJ2jOFDFj83SCLzyn+8zKWv0oeisM=;
-  b=UEDn7Tvif7BVU3NXJAn4lfnrDS73EOgFbMvQwlmV7/oe69gqBjwDcCPA
-   ZNSN8lhdYZTidswa2vNbbucHkEfKB5FP5JoTNaleMZpq0BTqAGv1HU6qI
-   KZxhAvRNOzp54dii+ysbdIVOu3IpMjXQbVanxpY1RjCGGZMTlUAZdpFlE
-   28AACvB3k5JnU0fh4nBA5Z4m7nMHtRYk/ao9wjmiaJ+F+QNvE1tcDjmzc
-   tfDFdhSZZTU1/oefE/cOiT0uXboSnBeG+9ZbGr1TenQDBUjsftaOipoGi
-   rJKxBmdzws5AKZW8up1qgBYFsndV7G8i+3AXp8zosBsGuUfywLNuVExrE
-   Q==;
-X-CSE-ConnectionGUID: CLl3RvV0R9yf6eLR12d0Hw==
-X-CSE-MsgGUID: O++QnD5SQVqAdUTtW5o6Yw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11338"; a="39722916"
+  bh=2Msp7YoBmanu425m0MXmljH1/c1Or8M2lkzZSA8x+50=;
+  b=GEIcKBgatRoTiJM3DnlkFwlg542psR6Ao3yl7V9MH8g+DjnnDsHR5y8Z
+   DR2zDzEB3VEdNH2bkyDdfPMUnjgpCX3wXV1e3cOo/clZAuld31y8D3zgC
+   RJNzTOuHpNoSksdFwo/CZgcJdIM1yTHFSeGOTgA7MUMBEKxd0Ac8FRhoU
+   s96ceukUx58+EaFhOxaXRbcipQvP7XtoJ77wGvuvQaDfuY7ohuI6QbHqt
+   qpOwdsNTTQ5kbLwceh80sDIBycBVu0BexA5ihjqylXg04iaGvYqlvqWu4
+   WSnDOCpP2YL7v/0f9e3kQkz/fTou7ws+0KxFbVqPtcMox9TUW8pgvoLA0
+   g==;
+X-CSE-ConnectionGUID: FMlzxsPjRP6NrO6Vs7rULA==
+X-CSE-MsgGUID: 8lwTVpU4QiWNhtQ6lptAKw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11338"; a="39722941"
 X-IronPort-AV: E=Sophos;i="6.13,267,1732608000"; 
-   d="scan'208";a="39722916"
+   d="scan'208";a="39722941"
 Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 08:57:27 -0800
-X-CSE-ConnectionGUID: A6FhkeyxRMqPRpN3MXExzg==
-X-CSE-MsgGUID: j9JtHEfBTN+2pNOtEYixKA==
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 08:57:36 -0800
+X-CSE-ConnectionGUID: PZJIpWyVRA+0JIxlRWHxig==
+X-CSE-MsgGUID: YFpvCDh6S+uRlVpJfaMrgQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.13,267,1732608000"; 
-   d="scan'208";a="111534539"
+   d="scan'208";a="111534559"
 Received: from mohdfai2-ilbpg12-1.png.intel.com ([10.88.227.73])
-  by orviesa006.jf.intel.com with ESMTP; 07 Feb 2025 08:57:19 -0800
+  by orviesa006.jf.intel.com with ESMTP; 07 Feb 2025 08:57:27 -0800
 From: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
 To: Tony Nguyen <anthony.l.nguyen@intel.com>,
 	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
@@ -94,9 +94,9 @@ To: Tony Nguyen <anthony.l.nguyen@intel.com>,
 	linux-stm32@st-md-mailman.stormreply.com,
 	linux-arm-kernel@lists.infradead.org,
 	bpf@vger.kernel.org
-Subject: [PATCH iwl-next v3 3/9] igc: Optimize the TX packet buffer utilization
-Date: Fri,  7 Feb 2025 11:56:43 -0500
-Message-Id: <20250207165649.2245320-4-faizal.abdul.rahim@linux.intel.com>
+Subject: [PATCH iwl-next v3 4/9] igc: Set the RX packet buffer size for TSN mode
+Date: Fri,  7 Feb 2025 11:56:44 -0500
+Message-Id: <20250207165649.2245320-5-faizal.abdul.rahim@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250207165649.2245320-1-faizal.abdul.rahim@linux.intel.com>
 References: <20250207165649.2245320-1-faizal.abdul.rahim@linux.intel.com>
@@ -108,30 +108,77 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Packet buffers (RX + TX) total 64KB. Neither RX or TX buffers can be
-larger than 34KB. So divide the buffer equally, 32KB for each.
+In preparation for supporting frame preemption, when entering TSN mode
+set the receive packet buffer to 16KB for the Express MAC, 16KB for
+the Preemptible MAC and 2KB for the BMC, according to the datasheet
+section 7.1.3.2.
 
 Co-developed-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
 Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
 Signed-off-by: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
 ---
- drivers/net/ethernet/intel/igc/igc_defines.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/igc/igc_defines.h |  3 +++
+ drivers/net/ethernet/intel/igc/igc_tsn.c     | 13 +++++++++++--
+ 2 files changed, 14 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/ethernet/intel/igc/igc_defines.h b/drivers/net/ethernet/intel/igc/igc_defines.h
-index 8e449904aa7d..516ef70c98e9 100644
+index 516ef70c98e9..b19ac6f30dac 100644
 --- a/drivers/net/ethernet/intel/igc/igc_defines.h
 +++ b/drivers/net/ethernet/intel/igc/igc_defines.h
-@@ -400,7 +400,8 @@
- #define I225_TXPBSIZE_DEFAULT	0x04000014 /* TXPBSIZE default */
- #define IGC_RXPBS_CFG_TS_EN	0x80000000 /* Timestamp in Rx buffer */
+@@ -402,6 +402,9 @@
  
--#define IGC_TXPBSIZE_TSN	0x04145145 /* 5k bytes buffer for each queue */
-+ /* 7KB bytes buffer for each tx queue (total 4 queues) + 4KB for BMC*/
-+#define IGC_TXPBSIZE_TSN	0x041c71c7
+  /* 7KB bytes buffer for each tx queue (total 4 queues) + 4KB for BMC*/
+ #define IGC_TXPBSIZE_TSN	0x041c71c7
++/* 15KB for EXP + 15KB for BE + 2KB for BMC */
++#define IGC_RXPBSIZE_TSN	0x0000f08f
++#define IGC_RXPBSIZE_SIZE_MASK	0x0001FFFF
  
  #define IGC_DTXMXPKTSZ_TSN	0x19 /* 1600 bytes of max TX DMA packet size */
  #define IGC_DTXMXPKTSZ_DEFAULT	0x98 /* 9728-byte Jumbo frames */
+diff --git a/drivers/net/ethernet/intel/igc/igc_tsn.c b/drivers/net/ethernet/intel/igc/igc_tsn.c
+index 1e44374ca1ff..f0213cfce07d 100644
+--- a/drivers/net/ethernet/intel/igc/igc_tsn.c
++++ b/drivers/net/ethernet/intel/igc/igc_tsn.c
+@@ -132,13 +132,17 @@ static int igc_tsn_disable_offload(struct igc_adapter *adapter)
+ {
+ 	u16 queue_per_tc[4] = { 3, 2, 1, 0 };
+ 	struct igc_hw *hw = &adapter->hw;
+-	u32 tqavctrl;
++	u32 tqavctrl, rxpbs;
+ 	int i;
+ 
+ 	wr32(IGC_GTXOFFSET, 0);
+ 	wr32(IGC_TXPBS, I225_TXPBSIZE_DEFAULT);
+ 	wr32(IGC_DTXMXPKTSZ, IGC_DTXMXPKTSZ_DEFAULT);
+ 
++	rxpbs = rd32(IGC_RXPBS) & ~IGC_RXPBSIZE_SIZE_MASK;
++	rxpbs |= I225_RXPBSIZE_DEFAULT;
++	wr32(IGC_RXPBS, rxpbs);
++
+ 	if (igc_is_device_id_i226(hw))
+ 		igc_tsn_restore_retx_default(adapter);
+ 
+@@ -194,7 +198,7 @@ static int igc_tsn_enable_offload(struct igc_adapter *adapter)
+ {
+ 	struct igc_hw *hw = &adapter->hw;
+ 	u32 tqavctrl, baset_l, baset_h;
+-	u32 sec, nsec, cycle;
++	u32 sec, nsec, cycle, rxpbs;
+ 	ktime_t base_time, systim;
+ 	int i;
+ 
+@@ -202,6 +206,11 @@ static int igc_tsn_enable_offload(struct igc_adapter *adapter)
+ 	wr32(IGC_DTXMXPKTSZ, IGC_DTXMXPKTSZ_TSN);
+ 	wr32(IGC_TXPBS, IGC_TXPBSIZE_TSN);
+ 
++	rxpbs = rd32(IGC_RXPBS) & ~IGC_RXPBSIZE_SIZE_MASK;
++	rxpbs |= IGC_RXPBSIZE_TSN;
++
++	wr32(IGC_RXPBS, rxpbs);
++
+ 	if (igc_is_device_id_i226(hw))
+ 		igc_tsn_set_retx_qbvfullthreshold(adapter);
+ 
 -- 
 2.34.1
 
