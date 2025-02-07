@@ -1,242 +1,148 @@
-Return-Path: <bpf+bounces-50757-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50758-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 930E0A2C17C
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 12:30:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDB11A2C1C1
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 12:41:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84CD61887842
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 11:30:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE6653AA2BA
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2025 11:41:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13DBB1DED48;
-	Fri,  7 Feb 2025 11:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B6381DEFCC;
+	Fri,  7 Feb 2025 11:41:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="mxl3GauP"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="E+3Ktxd6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1926F154C05;
-	Fri,  7 Feb 2025 11:29:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26DA31A83F5;
+	Fri,  7 Feb 2025 11:41:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738927793; cv=none; b=F7ck61Ff32PsTnFjcdFGDqPj4RzxLF5nww3Z34yGMaJJ5V9pP90L1K/99GjOBJ7M7cqaihaQgDxYW2vNvHkzDkcDHldcRv9Rp9IeZ9YlBdp5RweSUSGyqnJHcK1/Jam7+LW9MP00NkN+oPk4Pn/F88ECy1a+ujXX3m54e8QdP7s=
+	t=1738928463; cv=none; b=bNCCMwe1A72NwymtWQbe11shwXJom0/lWs4w2n5KU6EeATZBEWmlngNW4zgDjdCyNk591MxZpUt+MAADF7eqv74X/cue+bTxt45koaKdAUEyTs7aFnqdkT6zHnK03iqS5+HOPUeSjx6Lq+ppNSXUk4wTl4bEj0u4PHywRL2601I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738927793; c=relaxed/simple;
-	bh=H2y5D/PM5tYq3BpNaRBiJG8iQwkDq/AIoKQCoGOFvkI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=UdFUjnsmrMZD94t7WFtUpRvPFMbkoqVRwadAPzuaJJNR85pdobSkAGio07lxA6JZpgLljHByVh1PAV+Jf6aEpLLBuEV3DWDL5jouZfLCmgCzD3EQwWHbksAwkTssAsr4MMSwtdpXcMo+RqdO/fc7tylExFYkv1ZSKUCjvnbiPTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=mxl3GauP; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5175OffB030394;
-	Fri, 7 Feb 2025 11:29:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=H2y5D/
-	PM5tYq3BpNaRBiJG8iQwkDq/AIoKQCoGOFvkI=; b=mxl3GauPqUZLJtd+33HcpY
-	s4iWRKsCSYfQ99QxbBGgs/gB5WFyQ6qED06APzMm3S+vUuZ2YbKHwEojQeeQl+JL
-	Y35MfyBIbdsbGAAF2++5s9t4y92SbG3llXF5Omh5n9k1UGUGQR58t0PYVMUdXwj6
-	x/RhouZJA9BfSbnoejLLFnVTFgnwx7HjjgmNBRZAF4nnsFK1JfHWvR6j/k7HyviJ
-	om6eOsE2sSc1EE+0BuFC0BpdWdKuJoytBGRsMkTWKh3+DSBS74rzoQqaqWWT6UAI
-	hceCK4H9qqXvhMDsq3bwwifsmzDQJzuF8Z5BDbaJ85cuV0If4FOms4FVmReR+kiA
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44nc08hndc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 07 Feb 2025 11:29:08 +0000 (GMT)
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 517BT77s016888;
-	Fri, 7 Feb 2025 11:29:07 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44nc08hncm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 07 Feb 2025 11:29:07 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5179oG8g016391;
-	Fri, 7 Feb 2025 11:28:49 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 44hwxsugjk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 07 Feb 2025 11:28:49 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 517BSkqZ60031420
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 7 Feb 2025 11:28:46 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 032A720169;
-	Fri,  7 Feb 2025 11:28:46 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 20C1520165;
-	Fri,  7 Feb 2025 11:28:44 +0000 (GMT)
-Received: from [127.0.0.1] (unknown [9.152.108.100])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  7 Feb 2025 11:28:44 +0000 (GMT)
-Message-ID: <cff3dc9eaa592dbe634e336eb83f9bb47dd9705a.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf-next v2 4/9] bpf: Introduce load-acquire and
- store-release instructions
-From: Ilya Leoshkevich <iii@linux.ibm.com>
-To: Peilin Ye <yepeilin@google.com>, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc: bpf@ietf.org, Xu Kuohai <xukuohai@huaweicloud.com>,
-        Eduard Zingerman
- <eddyz87@gmail.com>,
-        David Vernet <void@manifault.com>,
-        Alexei Starovoitov
- <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko
- <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
- <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend
- <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Paul E. McKenney"
- <paulmck@kernel.org>,
-        Puranjay Mohan <puranjay@kernel.org>,
-        Heiko Carstens
- <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Catalin Marinas
- <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Quentin Monnet
- <qmo@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan
- <shuah@kernel.org>,
-        Ihor Solodrai <ihor.solodrai@linux.dev>,
-        Yingchi Long
- <longyingchi24s@ict.ac.cn>,
-        Josh Don <joshdon@google.com>, Barret Rhoden
- <brho@google.com>,
-        Neel Natu <neelnatu@google.com>, Benjamin Segall
- <bsegall@google.com>,
-        linux-kernel@vger.kernel.org
-Date: Fri, 07 Feb 2025 12:28:43 +0100
-In-Reply-To: <d03d8c3305e311c6cb29924119b5eecae8370bbc.1738888641.git.yepeilin@google.com>
-References: <cover.1738888641.git.yepeilin@google.com>
-	 <d03d8c3305e311c6cb29924119b5eecae8370bbc.1738888641.git.yepeilin@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
+	s=arc-20240116; t=1738928463; c=relaxed/simple;
+	bh=Kr3VE9NUyZO8hS9QqWqW3tBkPoYkI+NxTJxvWVkvBkA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=At1e8l77Um540pNmXO/N7Cmqouy3khTM+ruvgy8iCGnWXpX/MNmAFw2SeMzK0FO6uF7O5qYh4hVQ3IjtKG1PPZmmKp8I+ovCdXeQmpkukspqxnFD9vy9FX5Ra0a44It/6RITWcAIpkGFU8DPS0/Ilsfz2eiwKpcCyAO/2B2abAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=E+3Ktxd6; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1738928462; x=1770464462;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Kr3VE9NUyZO8hS9QqWqW3tBkPoYkI+NxTJxvWVkvBkA=;
+  b=E+3Ktxd6ld7bk0PZqL1XlsaV/l1FDW/wJDBjvjip+lY7m4mjNZ4TQL8B
+   Cytb2XuwFlUqkMrPS35M9H8fngyL5cNNew2EonMHjeCzfBtsmtqz56kwe
+   JFakJ5Nl2OH4aK/Fz4lfz0iC6w+LWnw5PtHMdL3xZOPn00V3w0yYqoj7z
+   rauFCMQ3UdWUcmpf51GcJKG4XsxX16z4tDZCrdI8h3yiFDodBCM15EXxS
+   d5M61J02J+jbenrBJssgW3cbrF8GgOHsbYO6AkUkpaSs63918KQrYpd5V
+   T7S/4U85c7PJJ9jEFd3J6CPGrcpoD6Xr6wSkhSpkiHk+/WVmjRQZL5Zss
+   A==;
+X-CSE-ConnectionGUID: a5Z5cfmsQSCal/R5udKozw==
+X-CSE-MsgGUID: Jef3ZS/KQCK3lujza3IRSQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11336"; a="50204716"
+X-IronPort-AV: E=Sophos;i="6.13,266,1732608000"; 
+   d="scan'208";a="50204716"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 03:41:01 -0800
+X-CSE-ConnectionGUID: KPH5yCU9QtuhzEinvrTVsw==
+X-CSE-MsgGUID: LxkwO1UyTTKjfONVxwkKqw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,266,1732608000"; 
+   d="scan'208";a="111290324"
+Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
+  by orviesa009.jf.intel.com with ESMTP; 07 Feb 2025 03:40:56 -0800
+Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tgMj6-000yF9-36;
+	Fri, 07 Feb 2025 11:40:52 +0000
+Date: Fri, 7 Feb 2025 19:40:10 +0800
+From: kernel test robot <lkp@intel.com>
+To: Suman Ghosh <sumang@marvell.com>, horms@kernel.org,
+	sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
+	hkelam@marvell.com, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, lcherian@marvell.com,
+	jerinj@marvell.com, john.fastabend@gmail.com, bbhushan2@marvell.com,
+	hawk@kernel.org, andrew+netdev@lunn.ch, ast@kernel.org,
+	daniel@iogearbox.net, bpf@vger.kernel.org, larysa.zaremba@intel.com
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Suman Ghosh <sumang@marvell.com>
+Subject: Re: [net-next PATCH v5 6/6] octeontx2-pf: AF_XDP zero copy transmit
+ support
+Message-ID: <202502071925.3T93J9MM-lkp@intel.com>
+References: <20250206085034.1978172-7-sumang@marvell.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 2vqE_S-ZCmh4StDB4kvU9q_CRNjPQL4t
-X-Proofpoint-GUID: o5rg8snT-IXIrJ5LScYMNJP6aBEmf57u
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-02-07_05,2025-02-07_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=884 bulkscore=0
- malwarescore=0 spamscore=0 lowpriorityscore=0 mlxscore=0 adultscore=0
- suspectscore=0 impostorscore=0 priorityscore=1501 clxscore=1011
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2501170000 definitions=main-2502070088
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250206085034.1978172-7-sumang@marvell.com>
 
-On Fri, 2025-02-07 at 02:05 +0000, Peilin Ye wrote:
-> Introduce BPF instructions with load-acquire and store-release
-> semantics, as discussed in [1].=C2=A0 The following new flags are defined=
-:
->=20
-> =C2=A0 BPF_ATOMIC_LOAD=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x=
-10
-> =C2=A0 BPF_ATOMIC_STORE=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x20
-> =C2=A0 BPF_ATOMIC_TYPE(imm)=C2=A0=C2=A0=C2=A0 ((imm) & 0xf0)
->=20
-> =C2=A0 BPF_RELAXED=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x0
-> =C2=A0 BPF_ACQUIRE=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x1
-> =C2=A0 BPF_RELEASE=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x2
-> =C2=A0 BPF_ACQ_REL=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x3
-> =C2=A0 BPF_SEQ_CST=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x4
->=20
-> =C2=A0 BPF_LOAD_ACQ=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (BPF_ATOMIC_LOAD =
-| BPF_ACQUIRE)
-> =C2=A0 BPF_STORE_REL=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (BPF_ATOMIC_STORE | BP=
-F_RELEASE)
->=20
-> A "load-acquire" is a BPF_STX | BPF_ATOMIC instruction with the 'imm'
-> field set to BPF_LOAD_ACQ (0x11).
->=20
-> Similarly, a "store-release" is a BPF_STX | BPF_ATOMIC instruction
-> with
-> the 'imm' field set to BPF_STORE_REL (0x22).
->=20
-> Unlike existing atomic operations that only support BPF_W (32-bit)
-> and
-> BPF_DW (64-bit) size modifiers, load-acquires and store-releases also
-> support BPF_B (8-bit) and BPF_H (16-bit).=C2=A0 An 8- or 16-bit load-
-> acquire
-> zero-extends the value before writing it to a 32-bit register, just
-> like
-> ARM64 instruction LDARH and friends.
->=20
-> As an example, consider the following 64-bit load-acquire BPF
-> instruction:
->=20
-> =C2=A0 db 10 00 00 11 00 00 00=C2=A0 r0 =3D load_acquire((u64 *)(r1 + 0x0=
-))
->=20
-> =C2=A0 opcode (0xdb): BPF_ATOMIC | BPF_DW | BPF_STX
-> =C2=A0 imm (0x00000011): BPF_LOAD_ACQ
->=20
-> Similarly, a 16-bit BPF store-release:
->=20
-> =C2=A0 cb 21 00 00 22 00 00 00=C2=A0 store_release((u16 *)(r1 + 0x0), w2)
->=20
-> =C2=A0 opcode (0xcb): BPF_ATOMIC | BPF_H | BPF_STX
-> =C2=A0 imm (0x00000022): BPF_STORE_REL
->=20
-> In arch/{arm64,s390,x86}/net/bpf_jit_comp.c, have
-> bpf_jit_supports_insn(..., /*in_arena=3D*/true) return false for the
-> new
-> instructions, until the corresponding JIT compiler supports them.
->=20
-> [1]
-> https://lore.kernel.org/all/20240729183246.4110549-1-yepeilin@google.com/
->=20
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> Signed-off-by: Peilin Ye <yepeilin@google.com>
-> ---
-> =C2=A0arch/arm64/net/bpf_jit_comp.c=C2=A0 |=C2=A0 4 +++
-> =C2=A0arch/s390/net/bpf_jit_comp.c=C2=A0=C2=A0 | 14 +++++---
-> =C2=A0arch/x86/net/bpf_jit_comp.c=C2=A0=C2=A0=C2=A0 |=C2=A0 4 +++
-> =C2=A0include/linux/bpf.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 | 11 ++++++
-> =C2=A0include/linux/filter.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 |=C2=A0 2 ++
-> =C2=A0include/uapi/linux/bpf.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 13 +=
-++++++
-> =C2=A0kernel/bpf/core.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 63 ++++++++++++++++++++++++++++++--
-> --
-> =C2=A0kernel/bpf/disasm.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 | 12 +++++++
-> =C2=A0kernel/bpf/verifier.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 | 45 ++++++++++++++++++++++--
-> =C2=A0tools/include/uapi/linux/bpf.h | 13 +++++++
-> =C2=A010 files changed, 168 insertions(+), 13 deletions(-)
+Hi Suman,
 
-Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+kernel test robot noticed the following build warnings:
 
-s390x has a strong memory model, and the regular load and store
-instructions are atomic as long as operand addresses are aligned.
+[auto build test WARNING on net-next/main]
 
-IIUC the verifier already enforces this unless BPF_F_ANY_ALIGNMENT
-is set, in which case whoever loaded the program is responsible for the
-consequences: memory accesses that happen to be unaligned would
-not trigger an exception, but they would not be atomic either.
+url:    https://github.com/intel-lab-lkp/linux/commits/Suman-Ghosh/octeontx2-pf-use-xdp_return_frame-to-free-xdp-buffers/20250206-165634
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20250206085034.1978172-7-sumang%40marvell.com
+patch subject: [net-next PATCH v5 6/6] octeontx2-pf: AF_XDP zero copy transmit support
+config: x86_64-buildonly-randconfig-006-20250207 (https://download.01.org/0day-ci/archive/20250207/202502071925.3T93J9MM-lkp@intel.com/config)
+compiler: clang version 19.1.3 (https://github.com/llvm/llvm-project ab51eccf88f5321e7c60591c5546b254b6afab99)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250207/202502071925.3T93J9MM-lkp@intel.com/reproduce)
 
-So I can implement the new instructions as normal loads/stores after
-this series is merged.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202502071925.3T93J9MM-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c:112:6: warning: variable 'iova' set but not used [-Wunused-but-set-variable]
+     112 |         u64 iova;
+         |             ^
+   1 warning generated.
+
+
+vim +/iova +112 drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+
+   104	
+   105	static void otx2_xdp_snd_pkt_handler(struct otx2_nic *pfvf,
+   106					     struct otx2_snd_queue *sq,
+   107					     struct nix_cqe_tx_s *cqe,
+   108					     int *xsk_frames)
+   109	{
+   110		struct nix_send_comp_s *snd_comp = &cqe->comp;
+   111		struct sg_list *sg;
+ > 112		u64 iova;
+   113	
+   114		sg = &sq->sg[snd_comp->sqe_id];
+   115	
+   116		if (sg->flags & OTX2_AF_XDP_FRAME) {
+   117			(*xsk_frames)++;
+   118			return;
+   119		}
+   120	
+   121		iova = sg->dma_addr[0];
+   122		if (sg->flags & OTX2_XDP_REDIRECT)
+   123			otx2_dma_unmap_page(pfvf, sg->dma_addr[0], sg->size[0], DMA_TO_DEVICE);
+   124		xdp_return_frame((struct xdp_frame *)sg->skb);
+   125		sg->skb = (u64)NULL;
+   126	}
+   127	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
