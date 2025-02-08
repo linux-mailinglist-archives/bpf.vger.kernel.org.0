@@ -1,169 +1,155 @@
-Return-Path: <bpf+bounces-50874-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50875-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F92AA2D8AF
-	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 21:35:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E897A2D8F3
+	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 22:31:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F37D7A3560
-	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 20:34:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43C053A4C3E
+	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 21:30:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0541E1A3151;
-	Sat,  8 Feb 2025 20:35:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A65E1487D5;
+	Sat,  8 Feb 2025 21:31:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NisdrG5a"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bxdR39B4"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75EE8243946;
-	Sat,  8 Feb 2025 20:35:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40C71244E8E;
+	Sat,  8 Feb 2025 21:30:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739046945; cv=none; b=QQOepBAqx8EemkCCbHVTQnw3EUlLxn+Cs/Y4MWjL4Zj8vqEvK54cA+W00Gi8WB68Z9JOo5man3Vyg1ddFLlVIEi6PlSlpd9bGKXs95tAEGK6ck6gu22JPlbwn9FPKl94YN3aIRNB7iYTWGBqg/ixYBN8WsRxu5+RFZPJqkFLVBM=
+	t=1739050260; cv=none; b=sqwDP8V1QvDRS6qS9tHkJSxOSAZAXN+HbvK7eLn8Hd1WXqH/Rr1JR/mlR7vFbjPEw5N3fcKoMuEfWbK05dXmz2OZrXeX3mU1lRwLIRFf7zyhQK4WC/KNl013cUzhl8VobzzhYAyar6a+n7D9de7DPavnHTi3qRnPQRDtaeY59bE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739046945; c=relaxed/simple;
-	bh=f41av73b1EZpNR+Lr0++naKxVjrR8Ngu/ynWj0FCoqQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EpgTpgqd1HJlPhJjI1x/WHNr46Shr6y43AlK+QmgGoagdxW+Mp1EGrJo3wamel6CbEpWLDJdHJ04l0CheUWbKuef7oXLXRGfVUFoDJTQCaSQhSnXPn8U4kSSitrOmMUnXByb7vclNWg6Kyp36MA/e/WTKXe0p8+lVhS0a2sxKGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NisdrG5a; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFDEBC4CED6;
-	Sat,  8 Feb 2025 20:35:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739046943;
-	bh=f41av73b1EZpNR+Lr0++naKxVjrR8Ngu/ynWj0FCoqQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NisdrG5aBDlsBrsD9yS6DZule39nLIVGrT+MgtCCiSOcP+xGQEmsEODscrS7Z8tJc
-	 IwK3mzj8u8xyMw5afnJCxibubjlbO8kBBfEQfZNH7U2oWdL5Np98g+VT9AUsCtPYOA
-	 s1XoG5i2CKZaOhJ+zLBWu4S9ltbc6cwXhn/iVd9K1rXDoD7u2eM6fTYSGPtfBVaZbs
-	 pG0FAMsUX31aBKycwOZLSEX7jNNW+evBbB2KU6pYA28EYsuFW5ZQ/9hHySld0u62vI
-	 0AzLU+sQ2jAfU+3ZxB1+DCFxiPuzDK90DNtBn/LH0148l9U/3Bscf7EpYH+6VGFmAT
-	 7WELnuBemArbQ==
-Date: Sat, 8 Feb 2025 12:35:43 -0800
-From: Kees Cook <kees@kernel.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Jann Horn <jannh@google.com>, Eyal Birger <eyal.birger@gmail.com>,
-	luto@amacapital.net, wad@chromium.org, oleg@redhat.com,
-	mhiramat@kernel.org, andrii@kernel.org,
-	alexei.starovoitov@gmail.com, cyphar@cyphar.com,
-	songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-	peterz@infradead.org, tglx@linutronix.de, bp@alien8.de,
-	daniel@iogearbox.net, ast@kernel.org, andrii.nakryiko@gmail.com,
-	rostedt@goodmis.org, rafi@rbk.io, shmulik.ladkani@gmail.com,
-	bpf@vger.kernel.org, linux-api@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] seccomp: pass uretprobe system call through
- seccomp
-Message-ID: <202502081235.5A6F352985@keescook>
-References: <20250202162921.335813-1-eyal.birger@gmail.com>
- <CAG48ez1Pj6MT=RV-sogtNbw7WLLmCrC-3TkNfRjpcCif8iNGkA@mail.gmail.com>
- <Z6afa2Z4IYlIAbJ2@krava>
+	s=arc-20240116; t=1739050260; c=relaxed/simple;
+	bh=I7TWitL6B3XzA7VM4K4Rc8PviMZKmMeCw+xeYSM60uA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cHeftgd0bcNZFl3IXgGbe0nL4sT1EtNmT2FJwy18I/v4mTZJnhiQMlDK41IHcXHJWv2pWC226dHrHNIFwqJIDrEPShI7f7WWpm/rZ3tgU5mR1u2cSSkKBv9y9peiD8ZLhmOlYdSZbAbWxl0GcHFXcZ6buHf1bf2p6WQC1p3YF40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bxdR39B4; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4361815b96cso21121445e9.1;
+        Sat, 08 Feb 2025 13:30:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739050257; x=1739655057; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MeLogvOTrg3hgl5TU48qPOFJSwSkerHCTCM95+nKuv0=;
+        b=bxdR39B4ypKR/Vn0RyKZ9gjL/vYvnS7C3QPgwG/+KdBm8CL+2PogljgPPCqtK+U12i
+         ToYIhhsduxzEYdqHFNvNf/Zprtgkfo2vhx2XcDla30g9CpFOBlMqbViVE/WR041UiJ1g
+         6BJd4zqkocgw4daOgQ4PP+O8EczjenW28ipFjWpYJqVEQ5EwKRGKs1qc1/txaQyzZP8c
+         /GPwucAMfLU5JQ1kuyDX+hGC499ekQYcLXEJggVjv4fBUwpaPXoyyq9l7LYPhHAPWNC2
+         XGLdQRy2/3NLlQ+Sd+IGwlwDwl/3Y/FV3Y2FQOAJPwK5v7MdgG4oPmHy/A5WsUzL8fEy
+         4QkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739050257; x=1739655057;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MeLogvOTrg3hgl5TU48qPOFJSwSkerHCTCM95+nKuv0=;
+        b=OXqPLdkYQEy+XMkFGQROr5Gaht334kmKhHxBPtzVpEWLXUFUAVMsfydzJG1JKqZx+5
+         g9c7NMhOy598tEWlghY5qdoNmTMZGVotU1j7u4aKfTEwuQTfkUdvKN5eQ5efCFr8btPX
+         jiUK2ZhMxZGiIRNdlFcz0RZ1aLQ77GXUJtp16UH2IODsLxz/kjjb7a4gTaFAX99DtAqa
+         yQ8XiNZ8+XkH7zootwXtB0cP7AWz8d31NLmYcDVCpZzyHBAdG1DAcQ1N+hOjp0Jgx3Hh
+         7F7fWH1Cj1jL0Yti75t0tjn8ty7aGXk4SfipBWSemWjg4rO+P8cgGoLbFP3MqXpcZ7kz
+         12Sg==
+X-Forwarded-Encrypted: i=1; AJvYcCUsrJHnXRYYJ1uffYzkvEht4gcZDTYyiXABbNKtlGgNQBjrfTLQ9mjt6VxVv5knwfK2A7nZPcku2Topg+A=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzDM0lMGuYDNTAHpKEx5Pyr4VXmRzjuReouJRScvwl/CP71r//k
+	FRkJlrBIxeUMsjmoKTRedherxbxJW5yRAvkfvanKsEMVCNSYPRF4n/sLa8l5kcwXzzkqweG53nL
+	23yal9lJUE6tv+mGBgZr6fNx2AgA=
+X-Gm-Gg: ASbGncuFlD5hMChqEI5qEHj5IuXBqWuucEytZzrpOapbKJfLs+7+9MMupURBBrICr0j
+	eB0EMMZgf+ifKdjOHLY/Ltq42+qvj9SqXPt+ipH5xS/t1YpZQzEi3ZTS06XR+iStoZ7aFvS1vxF
+	nRWCbvrSyjDu90v82eMAHwfp+p1KuG
+X-Google-Smtp-Source: AGHT+IEP0vhMZghv54Q+6Voz3luuHMi0bOzgdsxcCEz++Zjhl9x/NdVS4KE4GKQfNkGM7Bwk01RIJ1lfPbZtfTdWZPQ=
+X-Received: by 2002:a5d:6d04:0:b0:38d:d9b3:5916 with SMTP id
+ ffacd0b85a97d-38dd9b359ddmr121320f8f.1.1739050257177; Sat, 08 Feb 2025
+ 13:30:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Z6afa2Z4IYlIAbJ2@krava>
+References: <cover.1738888641.git.yepeilin@google.com> <d03d8c3305e311c6cb29924119b5eecae8370bbc.1738888641.git.yepeilin@google.com>
+In-Reply-To: <d03d8c3305e311c6cb29924119b5eecae8370bbc.1738888641.git.yepeilin@google.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sat, 8 Feb 2025 13:30:46 -0800
+X-Gm-Features: AWEUYZkrJWmpVXeIIF_fMq9Qy1erCPKH-mY9gn4_cLquOtiI9oiPRGGrxOURbaQ
+Message-ID: <CAADnVQ+L0h8qXfYkC3+ORyQkXFJ2MgO8FDHr_Ha0QMAtS_ujag@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/9] bpf: Introduce load-acquire and
+ store-release instructions
+To: Peilin Ye <yepeilin@google.com>
+Cc: bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, bpf@ietf.org, 
+	Xu Kuohai <xukuohai@huaweicloud.com>, Eduard Zingerman <eddyz87@gmail.com>, 
+	David Vernet <void@manifault.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
+	Ilya Leoshkevich <iii@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Quentin Monnet <qmo@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>, Yingchi Long <longyingchi24s@ict.ac.cn>, 
+	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>, Neel Natu <neelnatu@google.com>, 
+	Benjamin Segall <bsegall@google.com>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Feb 08, 2025 at 01:03:55AM +0100, Jiri Olsa wrote:
-> On Fri, Feb 07, 2025 at 04:27:09PM +0100, Jann Horn wrote:
-> > On Sun, Feb 2, 2025 at 5:29 PM Eyal Birger <eyal.birger@gmail.com> wrote:
-> > > uretprobe(2) is an performance enhancement system call added to improve
-> > > uretprobes on x86_64.
-> > >
-> > > Confinement environments such as Docker are not aware of this new system
-> > > call and kill confined processes when uretprobes are attached to them.
-> > 
-> > FYI, you might have similar issues with Syscall User Dispatch
-> > (https://docs.kernel.org/admin-guide/syscall-user-dispatch.html) and
-> > potentially also with ptrace-based sandboxes, depending on what kinda
-> > processes you inject uprobes into. For Syscall User Dispatch, there is
-> > already precedent for a bypass based on instruction pointer (see
-> > syscall_user_dispatch()).
-> > 
-> > > Since uretprobe is a "kernel implementation detail" system call which is
-> > > not used by userspace application code directly, pass this system call
-> > > through seccomp without forcing existing userspace confinement environments
-> > > to be changed.
-> > 
-> > This makes me feel kinda uncomfortable. The purpose of seccomp() is
-> > that you can create a process that is as locked down as you want; you
-> > can use it for some light limits on what a process can do (like in
-> > Docker), or you can use it to make a process that has access to
-> > essentially nothing except read(), write() and exit_group(). Even
-> > stuff like restart_syscall() and rt_sigreturn() is not currently
-> > excepted from that.
-> > 
-> > I guess your usecase is a little special in that you were already
-> > calling from userspace into the kernel with SWBP before, which is also
-> > not subject to seccomp; and the syscall is essentially an
-> > arch-specific hack to make the SWBP a little faster.
-> > 
-> > If we do this, we should at least ensure that there is absolutely no
-> > way for anything to happen in sys_uretprobe when no uretprobes are
-> > configured for the process - the first check in the syscall
-> > implementation almost does that, but the implementation could be a bit
-> > stricter. It checks for "regs->ip != trampoline_check_ip()", but if no
-> > uprobe region exists for the process, trampoline_check_ip() returns
-> > `-1 + (uretprobe_syscall_check - uretprobe_trampoline_entry)`. So
-> > there is a userspace instruction pointer near the bottom of the
-> > address space that is allowed to call into the syscall if uretprobes
-> > are not set up. Though the mmap minimum address restrictions will
-> > typically prevent creating mappings there, and
-> > uprobe_handle_trampoline() will SIGILL us if we get that far without a
-> > valid uretprobe.
-> 
-> nice catch, I think change below should fix that
+On Thu, Feb 6, 2025 at 6:06=E2=80=AFPM Peilin Ye <yepeilin@google.com> wrot=
+e:
+>
+> Introduce BPF instructions with load-acquire and store-release
+> semantics, as discussed in [1].  The following new flags are defined:
+>
+>   BPF_ATOMIC_LOAD         0x10
+>   BPF_ATOMIC_STORE        0x20
+>   BPF_ATOMIC_TYPE(imm)    ((imm) & 0xf0)
+>
+>   BPF_RELAXED        0x0
+>   BPF_ACQUIRE        0x1
+>   BPF_RELEASE        0x2
+>   BPF_ACQ_REL        0x3
+>   BPF_SEQ_CST        0x4
 
-Thanks! Please backport this to -stable too. :)
+I still don't like this.
 
--Kees
+Earlier you said:
 
-> 
-> thanks,
-> jirka
-> 
-> 
-> ---
-> diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-> index 0c74a4d4df65..9b8837d8f06e 100644
-> --- a/arch/x86/kernel/uprobes.c
-> +++ b/arch/x86/kernel/uprobes.c
-> @@ -368,19 +368,21 @@ void *arch_uretprobe_trampoline(unsigned long *psize)
->  	return &insn;
->  }
->  
-> -static unsigned long trampoline_check_ip(void)
-> +static unsigned long trampoline_check_ip(unsigned long tramp)
->  {
-> -	unsigned long tramp = uprobe_get_trampoline_vaddr();
-> -
->  	return tramp + (uretprobe_syscall_check - uretprobe_trampoline_entry);
->  }
->  
->  SYSCALL_DEFINE0(uretprobe)
->  {
->  	struct pt_regs *regs = task_pt_regs(current);
-> -	unsigned long err, ip, sp, r11_cx_ax[3];
-> +	unsigned long err, ip, sp, r11_cx_ax[3], tramp;
-> +
-> +	tramp = uprobe_get_trampoline_vaddr();
-> +	if (tramp == -1)
-> +		goto sigill;
->  
-> -	if (regs->ip != trampoline_check_ip())
-> +	if (regs->ip != trampoline_check_ip(tramp))
->  		goto sigill;
->  
->  	err = copy_from_user(r11_cx_ax, (void __user *)regs->sp, sizeof(r11_cx_ax));
+> If yes, I think we either:
+>
+>  (a) add more flags to imm<4-7>: maybe LOAD_SEQ_CST (0x3) and
+>      STORE_SEQ_CST (0x6); need to skip OR (0x4) and AND (0x5) used by
+>      RMW atomics
+>  (b) specify memorder in imm<0-3>
+>
+> I chose (b) for fewer "What would be a good numerical value so that RMW
+> atomics won't need to use it in imm<4-7>?" questions to answer.
+>
+> If we're having dedicated fields for memorder, I think it's better to
+> define all possible values once and for all, just so that e.g. 0x2 will
+> always mean RELEASE in a memorder field.  Initially I defined all six of
+> them [2], then Yonghong suggested dropping CONSUME [3].
 
--- 
-Kees Cook
+I don't think we should be defining "all possible values",
+since these are the values that llvm and C model supports,
+but do we have any plans to support anything bug ld_acq/st_rel ?
+I haven't heard anything.
+What even the meaning of BPF_ATOMIC_LOAD | BPF_ACQ_REL ?
+
+What does the verifier suppose to do? reject for now? and then what?
+Map to what insn?
+
+These values might imply that bpf infra is supposed to map all the values
+to cpu instructions, but that's not what we're doing here.
+We're only dealing with two specific instructions.
+We're not defining a memory model for all future new instructions.
+
+pw-bot: cr
 
