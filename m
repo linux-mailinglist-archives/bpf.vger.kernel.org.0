@@ -1,95 +1,94 @@
-Return-Path: <bpf+bounces-50831-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50832-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D95D5A2D2C6
-	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 02:58:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FB90A2D2D7
+	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 03:03:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB3987A3524
-	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 01:57:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E5271684A3
+	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 02:03:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CBAA13AA2A;
-	Sat,  8 Feb 2025 01:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE45919AD8D;
+	Sat,  8 Feb 2025 02:01:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mc9jNFyT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cmnB8Qh/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B4FC8F64;
-	Sat,  8 Feb 2025 01:58:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93BD21891AB;
+	Sat,  8 Feb 2025 02:01:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738979900; cv=none; b=gEpqbuStLtI8XXc72Y01EvGhC5gj/QQKvLAh5Ukx65+7c1qq+BtPdvkHpx8C92Wnmm1aRImggAneAVE7OyuXfirdriT7TegL15Ie0YtvAhdDlQwrE/nfNDU0M8vEGwauuI3Hjeqa9o/ICxr0uP4bmNcSN98WuRC9FE9aqgc2CaI=
+	t=1738980091; cv=none; b=f7esbLgB24uSDLscosl/0UHl6Z9T6CvqvXM+zbH5rzc/Xx3syt3KUbLjLAIj/1XE+uRdoOpH2Bjdi0GV8q5yA8hw56ZBBnaW4IOPNmvl67CCo7Xamw2Cz46rZSRY3WXLlVlLqVXQTAk8sAq0gg/cZCZDwPYONGJBNLwXTMYl94U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738979900; c=relaxed/simple;
-	bh=nWMliomx2baI3+qy7TLQMS5Gw7XaI+beAEQREQbn8n8=;
+	s=arc-20240116; t=1738980091; c=relaxed/simple;
+	bh=OS4CA+OBtLQhST1mmHsn/UlqfYyYFGggFfg0gQckuoM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kIGrALVASdzl0+fQnDW0vFcSrZk9cnPQw0ui1urcewBx5W9QI95GZ0B9lbXTJJy6Wnvt/kJOiATuLWIe1sHbucQRWpGoYs1X2roynz9IgTO+B5ePQQFNEJ/ZXi9oFdXxHdexrw7G/a2fXclEIA5iNiOUs1g0FK1Db8WVj/lVYsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mc9jNFyT; arc=none smtp.client-ip=209.85.221.41
+	 To:Cc:Content-Type; b=TU9DLvVkL5xs8/xQObGAA7Al/rDCymCwFQRyKDAnJ3iv0+db/s0DOwCBlr42JUXpPP4cwRPlgxkIr2J5GHJyXc8gT5jJIXnO9CZ+EG3kHRib/Ce3ePXgq6wPM90+YTvY51bwWaXjAWOreFMzu417a3VWI9LBf9zeH7fd/+MLUzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cmnB8Qh/; arc=none smtp.client-ip=209.85.221.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-38dc6d55ebaso939582f8f.1;
-        Fri, 07 Feb 2025 17:58:17 -0800 (PST)
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-38dcae0d6dcso691765f8f.1;
+        Fri, 07 Feb 2025 18:01:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738979896; x=1739584696; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1738980088; x=1739584888; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=p1YcpkTOPRywGB38WZqSFXRMZdWBJFK04OWzPaUWZ0U=;
-        b=mc9jNFyTZT59tz3I+jTH3e7Zm1CcwO7lkdqJqV9NaWrRTSoa0l9Ol9ePjnXSjES3MA
-         4YdKNolZxexSRsNBexPnj9gw1nrDsgSq8um05NYC6Kn1/eoztQrIWBt+3KLlz0RwsHTq
-         Fi3lK+GV+jRJ6HpJzN0+R3gkf+CzcgVu1Ct2E7mJZCLlkFTHH+MsQ2OZ2vJAywzUJ8+7
-         RwBBa8bkW1muOTbiYbN5I9yYWbZ2E6WXGwhQSDLgJlH5LqZ6jxq0PFas182B94zs6Qvz
-         nsAKzvWdMQwhN/1KKHoS6uP6lyCMS9NdnGsNGpi4YR1ahnxVQUHD7mYzCTfNjYOql8UB
-         2xiA==
+        bh=iGIrEua9iQ8bHgGdDw3wNHVLDjJrs0blGd4Py+scUxE=;
+        b=cmnB8Qh/L0GTYP1f32KDHDYLGh2eWrE2T1HF5sP3uexlqq8735BfjpG4ezJjOp9jL3
+         zLwZyykbe61NvFFPNFRHl7Hkp93BAKkIz+2EJz8do+6veSrp4M0DgyYByQctldEMsNWo
+         HW1g3l+AAjE4qvC2SpYe9ruW7bUTMDq7R5ob2mUEYwebK5zqFGT4tkyZDjaNOVHf7InS
+         qiqLfEW40YyHkoIKC26OOrRG+ONBDcRiaqmzxWetyc8YNZ1lR39eVB6RdmbREgKK/L8N
+         8Q2Re3mkEBBO22XvRaygiTgPSN+aCkLFBMZ3+IVVlXdF+Z3SCETJ5TxOAyI0R3R9Z/CP
+         /IKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738979896; x=1739584696;
+        d=1e100.net; s=20230601; t=1738980088; x=1739584888;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=p1YcpkTOPRywGB38WZqSFXRMZdWBJFK04OWzPaUWZ0U=;
-        b=ronDVI7C8mVLgNdn/nFx3iV8lFGpAsiklrip7/BgGOtBP/WtHnmXPVpZzq9Vl5qfnt
-         fi1zHK1RsqZkPYlJouQsk8R9WrNSvLoRMi/Yzm9dF/AXNi80mvzKKPxEell34uFjY4Iw
-         KK3jOLsSZ176+uCJLFQGxHdXzWUsbxYrp/fQItKH9gF1oum4KwScT5aYzHGEc+QULru1
-         ckfe4dwL+CLVroS9+ckjNZEr0gjsS9rCi4CD8YxDulHtHIsQS5pfIYw4JMZDbUNpsyh0
-         guX1nZrPJeHQdihE5bNgC2llm+ypnrKrjm72hZR22Y6PBU4oVBqjrh3HOPWDwbrJLZoX
-         2d8w==
-X-Forwarded-Encrypted: i=1; AJvYcCV1uvhNy52rejn3MzYWyYkss04zzu+z5vF5wF7sGM2uJ92LB3906LsTzFLoEFCoRRpTB9a9CVTOn43RRew=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwB8PSdNdAqlSHmRa6HwxxKLTHvldS8huwEHLD2iFVGO6gKw9Rd
-	+6fL2RniMjBvtV+zgZmzZ/U04TFf9mk/BtMiPCrr3TMUp+8FcZtt4IDa3M5h7Wh+mWLeCDzBbF+
-	NfEvMQTfuOIZRabTamSlx5TQVaSI=
-X-Gm-Gg: ASbGnctQD7Pa1t1ztSJ6WCpXH4K9dJFCu4NZcf3pkfMwwREIkTncgDHJwYw4bZMT6Ig
-	TmoQMtMB3ybAOxLUPnrYwqiP8oB3wJE/efXVC0dqSEba0hVYqD0Mit7Joqjvtq0wsZm/2S2pwmZ
-	ZZyttECaKP5/bffhzTjXcyG1IZZzWa
-X-Google-Smtp-Source: AGHT+IHpQgX94A0FosDyS+sPj+7+y0MjVyp5Vl8pFYoOt0ryrG7ep2EbT2QWb1VNe2LbKYkHGL+NGYYFucNAFeoNlL0=
-X-Received: by 2002:a05:6000:1889:b0:38b:f4e6:21aa with SMTP id
- ffacd0b85a97d-38dc99095a5mr3468207f8f.5.1738979896380; Fri, 07 Feb 2025
- 17:58:16 -0800 (PST)
+        bh=iGIrEua9iQ8bHgGdDw3wNHVLDjJrs0blGd4Py+scUxE=;
+        b=P5/JPm0Ys4nz39Xqsvh2tMag1xL0GwzC5gl1jCGZPupX6nzsRKkAb7+0LJ+20Ly8Zs
+         pF4Lq5wJF3JBwzVcLt/PmCXTrwuTvyeOXeKCJcVVD9G4A6QE4iZk1DW0aoEyNQsnOacA
+         9h3+oFz+PNInCgZemDuGM0wHF6QZRpPxpZ/B2IuCCymZN0eAKrd3yCcGug4LTHkJRhdr
+         5opwAgg87Z7tx5IP9na/4jkjvIZhtDX7VTLKRGQQaFfTQw9UwZG+pbptCM82aK16Mo5d
+         VmgfV71GbyNBj972+edsjkQISyxAKNzQKfGUVuOW7ztTTMUnoqrPHebT9l3bzp8RLnQZ
+         TQAw==
+X-Forwarded-Encrypted: i=1; AJvYcCVh+RLYFyMitzi2cse3AlYAqyMtpU3oE6nNmSfnt94JwSyqPwDhQQWZF1eoLUrY11sW29Lm/CYsAKZqE7o=@vger.kernel.org
+X-Gm-Message-State: AOJu0YykCOxUbE5WoV0K2kWTxd1rdhmYuu6lK/4UAWRUQdxoqJej8o5J
+	rapLMhavOJjsTvA+QKMHCzyTXJKXxXz4MbaofX5xvKl8A/Kt8HFla6ZJlowRf5RqGxPOfijm87h
+	o5WHpl7sjA4ydU3ZZ4Cdke3vAZdY=
+X-Gm-Gg: ASbGncvL9SBIYgZHkCLQF7mFviBXZ4qs0d3v0A1XtnZZVyoBMJYuXoEGYM7pdWV/Gpr
+	3UPqLq9eaDKySjLLR/MRYL7cFC88SbpGh73hhBCxuSLRYeAzbQHgvTmhdnnfDkcMSu0ull7Op7B
+	wvM7cM8DNXXnSoBA8zKV5WDwFhV2oG
+X-Google-Smtp-Source: AGHT+IEoZCtmd/odsNY1AueL2/BylkudMbYiLPnq+yVpZr8qNoJRC0tBlsOa6xLF9KZbqMlXnsMGY+t/Q+QTxpioknQ=
+X-Received: by 2002:a05:6000:1865:b0:38d:bf57:f371 with SMTP id
+ ffacd0b85a97d-38dc9373270mr4376973f8f.48.1738980087553; Fri, 07 Feb 2025
+ 18:01:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250206105435.2159977-1-memxor@gmail.com> <20250206105435.2159977-18-memxor@gmail.com>
-In-Reply-To: <20250206105435.2159977-18-memxor@gmail.com>
+References: <20250206105435.2159977-1-memxor@gmail.com> <20250206105435.2159977-20-memxor@gmail.com>
+In-Reply-To: <20250206105435.2159977-20-memxor@gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 7 Feb 2025 17:58:05 -0800
-X-Gm-Features: AWEUYZnChx1s7fxsHJqTe9Us5tAvAetd4ErFLCNbt2tgL6nIpdAsrcoarJ_P1Lw
-Message-ID: <CAADnVQJFRgidWdA72Op762HXg9y1s4CJQB_5rmB9iqCNzGEuWg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 17/26] rqspinlock: Hardcode cond_acquire loops
- to asm-generic implementation
+Date: Fri, 7 Feb 2025 18:01:16 -0800
+X-Gm-Features: AWEUYZnUTy2itNVn48BldfC4LoMr601PCDOaBo1fZL0B5Yg1x-9oEAhlPjMvVFU
+Message-ID: <CAADnVQLNovQYGy6_zGDi75vmNHfZ-hKz4G=gWF4Bis8b6iTYew@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 19/26] bpf: Convert hashtab.c to rqspinlock
 To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc: bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Ankur Arora <ankur.a.arora@oracle.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Will Deacon <will@kernel.org>, Waiman Long <llong@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>, 
-	Barret Rhoden <brho@google.com>, Josh Don <joshdon@google.com>, Dohyun Kim <dohyunkim@google.com>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Will Deacon <will@kernel.org>, Waiman Long <llong@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>, Barret Rhoden <brho@google.com>, 
+	Josh Don <joshdon@google.com>, Dohyun Kim <dohyunkim@google.com>, 
 	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
@@ -97,66 +96,32 @@ Content-Transfer-Encoding: quoted-printable
 On Thu, Feb 6, 2025 at 2:55=E2=80=AFAM Kumar Kartikeya Dwivedi <memxor@gmai=
 l.com> wrote:
 >
-> Currently, for rqspinlock usage, the implementation of
-> smp_cond_load_acquire (and thus, atomic_cond_read_acquire) are
-> susceptible to stalls on arm64, because they do not guarantee that the
-> conditional expression will be repeatedly invoked if the address being
-> loaded from is not written to by other CPUs. When support for
-> event-streams is absent (which unblocks stuck WFE-based loops every
-> ~100us), we may end up being stuck forever.
+> Convert hashtab.c from raw_spinlock to rqspinlock, and drop the hashed
+> per-cpu counter crud from the code base which is no longer necessary.
 >
-> This causes a problem for us, as we need to repeatedly invoke the
-> RES_CHECK_TIMEOUT in the spin loop to break out when the timeout
-> expires.
->
-> Hardcode the implementation to the asm-generic version in rqspinlock.c
-> until support for smp_cond_load_acquire_timewait [0] lands upstream.
->
->   [0]: https://lore.kernel.org/lkml/20250203214911.898276-1-ankur.a.arora=
-@oracle.com
->
-> Cc: Ankur Arora <ankur.a.arora@oracle.com>
 > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > ---
->  kernel/locking/rqspinlock.c | 41 ++++++++++++++++++++++++++++++++++---
->  1 file changed, 38 insertions(+), 3 deletions(-)
+>  kernel/bpf/hashtab.c | 102 ++++++++++++++-----------------------------
+>  1 file changed, 32 insertions(+), 70 deletions(-)
 >
-> diff --git a/kernel/locking/rqspinlock.c b/kernel/locking/rqspinlock.c
-> index 49b4f3c75a3e..b4cceeecf29c 100644
-> --- a/kernel/locking/rqspinlock.c
-> +++ b/kernel/locking/rqspinlock.c
-> @@ -325,6 +325,41 @@ int __lockfunc resilient_tas_spin_lock(rqspinlock_t =
-*lock, u64 timeout)
+> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> index 4a9eeb7aef85..9b394e147967 100644
+> --- a/kernel/bpf/hashtab.c
+> +++ b/kernel/bpf/hashtab.c
+> @@ -16,6 +16,7 @@
+>  #include "bpf_lru_list.h"
+>  #include "map_in_map.h"
+>  #include <linux/bpf_mem_alloc.h>
+> +#include <asm/rqspinlock.h>
+>
+>  #define HTAB_CREATE_FLAG_MASK                                          \
+>         (BPF_F_NO_PREALLOC | BPF_F_NO_COMMON_LRU | BPF_F_NUMA_NODE |    \
+> @@ -78,7 +79,7 @@
 >   */
->  static DEFINE_PER_CPU_ALIGNED(struct qnode, qnodes[_Q_MAX_NODES]);
->
-> +/*
-> + * Hardcode smp_cond_load_acquire and atomic_cond_read_acquire implement=
-ations
-> + * to the asm-generic implementation. In rqspinlock code, our conditiona=
-l
-> + * expression involves checking the value _and_ additionally a timeout. =
-However,
-> + * on arm64, the WFE-based implementation may never spin again if no sto=
-res
-> + * occur to the locked byte in the lock word. As such, we may be stuck f=
-orever
-> + * if event-stream based unblocking is not available on the platform for=
- WFE
-> + * spin loops (arch_timer_evtstrm_available).
-> + *
-> + * Once support for smp_cond_load_acquire_timewait [0] lands, we can dro=
-p this
-> + * workaround.
-> + *
-> + * [0]: https://lore.kernel.org/lkml/20250203214911.898276-1-ankur.a.aro=
-ra@oracle.com
-> + */
+>  struct bucket {
+>         struct hlist_nulls_head head;
+> -       raw_spinlock_t raw_lock;
+> +       rqspinlock_t raw_lock;
 
-It's fine as a workaround for now to avoid being blocked
-on Ankur's set (which will go via different tree too),
-but in v3 pls add an extra patch that demonstrates the final result
-with WFE stuff working as designed without amortizing
-in RES_CHECK_TIMEOUT() macro.
-Guessing RES_CHECK_TIMEOUT will have some ifdef to handle that case?
+Pls add known syzbot reports as 'Closes:' to commit log.
 
