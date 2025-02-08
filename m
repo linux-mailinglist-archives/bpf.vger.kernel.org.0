@@ -1,204 +1,143 @@
-Return-Path: <bpf+bounces-50868-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50869-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26A9AA2D6EB
-	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 16:37:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17C5AA2D706
+	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 16:47:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23DAB3A79A9
-	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 15:37:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADE711674B4
+	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 15:47:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F39E12500AF;
-	Sat,  8 Feb 2025 15:37:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2FC12500A5;
+	Sat,  8 Feb 2025 15:47:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AZHw5krk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C7RUtNAF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC7FD13EFE3;
-	Sat,  8 Feb 2025 15:37:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEB731ACEC2;
+	Sat,  8 Feb 2025 15:47:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739029063; cv=none; b=NHj2h5wzw515e4BBPeXfyfEx94UPS3JJntIxppREV89Z9UFdCb/LXwSr81dYt/+kNapwDaKuocpN4fdgVM2iihKSpY/kMvmlcfmCaihRNRrzWrySi16awB6J73sQ6GzPY0P+spcE3Hn8hax+oGVI5renOr3r0GNDZ4/2BRocyZ4=
+	t=1739029646; cv=none; b=hzkKhzJhaFZ1WQ+P+Uzza1bSqmogBqVgX7IZKU/EL/p0IBySRjEM7C1UawfQ46yljTeVKrQIO7JurWYRHX2yeh2aK5tbUMqQfgi2bkbsi7dxqxhZlHG34Jou+zLr5RhgRPiu7s2/egMTJU5suz/v7SsaXqDEjV7wgQx8zhqa2j0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739029063; c=relaxed/simple;
-	bh=VWCQV1asK8mkBC5s9MXTmP3MYrgvswMj5EQIzW1lZ+w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qZata5OxdjV5FEnNPNW+wD/Oxto/rJLreP6TYwx0YCPz4VAVYqxKDYxon8xEBij1CFrRox+Zwh9z3y8H4lnR3o3Wbwy85NT0NaCpELbEz5BQVW66DgSom2KqfZ7++OGGnkGlo6mfxis+uCDYeIsaTNK6qg0uuXnHvBTX0xJBmcE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AZHw5krk; arc=none smtp.client-ip=209.85.216.53
+	s=arc-20240116; t=1739029646; c=relaxed/simple;
+	bh=q+MDvtLlIi69K27ReX3lDDeT3LJLFUyE4Y1+7Huku2o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=A3vPS6/sSl/UpJJQlEdsq2fKqpNcwdntG4vmuBDIEmFbkfJhL0UvnORgxgo7hcm/V0w8QllRumQK+0dGA21p68SGY5VfVrwBjYhUo4gmmeeVXRGs6QrJIzopR/foseQs8XLfEhPZZoomBEZivMdazOf8yRPHOjRu0nIAwDItFhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C7RUtNAF; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2fa44590eebso1197901a91.3;
-        Sat, 08 Feb 2025 07:37:41 -0800 (PST)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4362f61757fso29297355e9.2;
+        Sat, 08 Feb 2025 07:47:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739029061; x=1739633861; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1739029643; x=1739634443; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tkMGKQ7AKClIujpM9LEQv3XkqSpczhRaDa7fxIiDIII=;
-        b=AZHw5krk9RHxrj2N0FBYEJUwbM5D8EnIWdaiBC0dJFAXL1/z4YsG4xFG6cz33iN6pL
-         jZQpycoMnc5RLOzrgBlOBrg7GYfkGtlR/Bym0okuw96C+l+pGIHcOV155/U9Cz17f8Uk
-         0G5pl1bXQODCM5/O4jtAWyWi7fCkhJEE6/I5FfoX/uoIlp3PDJJX4o+mYhdf9UD7LZlK
-         Vg44Njvpc2bRaGP9FVv9DPey7IODqiBbHMs7XS4msgge/a/Ww+CdLJGMqfMoLY4cLYNH
-         UgPta1cHn+5Nd74cunYXhKcSWzbs8NcI33FO47GEg8uv2JHk0yM1RoRuEPfm0qcpNdLq
-         qWrw==
+        bh=4Ucm5nxe8cgExY3vq78pW2gU4Ws9xivfjS2fHeRhYTY=;
+        b=C7RUtNAF2QE3MngF0Ifhi9i9YnNw5keGDk0rF+wdb++ZIxVB0L/j3jSGahYbMUv6S9
+         MbKoNEi3u7W2VHOTlgm7EN5SeSa3ghAaJwAuv9uMtqmk36s6xygRi1funrIZsz79FY3j
+         I1sgDESFeCNEMs/M09vVusLUykilZubNxnJOt+XAGBQV1LGvYzMRp9cYDwHgGiScdAT2
+         x2o/VLxZmS8LRuKQ4vRgGVVNWgDnaalyvFmxO7ExSN6jt+BLiJ8oT8TupRHC7hkHopVn
+         w0+VK2cKjdQnxtnIjk9Bs3hHFGL7k+0ZDJHgzY2byYGQ6/Hj4v7MGlo7x+P31FwO8IY/
+         kaGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739029061; x=1739633861;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=tkMGKQ7AKClIujpM9LEQv3XkqSpczhRaDa7fxIiDIII=;
-        b=Hgg4XnFmkwsXw5Ho374+Z7EN2UPCCx4LEL2maCU6E67l/a167iAp9lQjykiKelmx/0
-         7yIu5UA/FUS8wZqgCg8mQQ7JwyFNOzj+qq4lp+IJNgJks/yqzFwpOoaPb0dhSH5xTIZ6
-         KPPVpuxuQnd4BWT9DYp74nw3s6q9h7io9keuiLiv0NYS2vnkG07qddnIpxFPGFDkjVJg
-         KClwmtf7K5NTtIq2UrPZTUIKIdscoW/aiR74nMiAoS6L59VkuRe1oUMu7mQnbnKwhDq/
-         DLmeJPTC+n0fIWRBGMiEBO0iF31f1MOzeIgTUwn1JMEt82ac3lTuLsuodhAbtEGy1yg2
-         a2Pw==
-X-Forwarded-Encrypted: i=1; AJvYcCWDVeJWUYHGmUaxLmLkK0eF7PyVwFtudv4J3PBa9YypLz+khsIR7bGxLs9IPYRQT98XY9XanK56aaazMtk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzOC5IzYds1PSQans7Wy/BnmAYzu6PtP/bXd+CM3fIxiJgM7vne
-	aKLomfd1rOpB+Zrd2yySuEqtspxSNHtwNc5RWgmVBjaN8/rePD8A
-X-Gm-Gg: ASbGncs4qyBiCpekFNHngPBIZHu+WetsNU7FXfL0z5zRfh7wiHVKM9ELOa1vw3mvz/Y
-	uIzJ/1vK+XwoL2pMmxmdnKjO6KPbPl7dbalM0udd+uwXGXMbU1S7OEzN0oKQgiM/JOb4P6EE4mc
-	6i/f/bNSzN53BwLt+109srw6d9P8xH442I6kIZXAFfTIr+mkP54QbDoj8zmFJHcy8hUONpw4P39
-	BRPWXRoCrmNzfQuT+uzLLdxCDLfefi6Uok/ZBqtnYEraIINlD1vifcto2eMCKAHZJPzh6NhhB8S
-	cQpYA85p4R1gCY81XkxwC0X6Emx0wSSzTw==
-X-Google-Smtp-Source: AGHT+IEBiOdQixE/sEDSsEkCVBnZLT/H+JJ+GndkTmkOgrdPvikWjN62GqJMO8StduJyqgmGsrZUHQ==
-X-Received: by 2002:a05:6a00:c92:b0:725:df1a:27c with SMTP id d2e1a72fcca58-7305d4956ccmr11579244b3a.14.1739029060886;
-        Sat, 08 Feb 2025 07:37:40 -0800 (PST)
-Received: from [192.168.50.123] ([117.147.91.64])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73048a9d4d7sm4883411b3a.16.2025.02.08.07.37.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 08 Feb 2025 07:37:40 -0800 (PST)
-Message-ID: <be935464-8a36-4019-851a-881f82b2343e@gmail.com>
-Date: Sat, 8 Feb 2025 23:37:13 +0800
+        d=1e100.net; s=20230601; t=1739029643; x=1739634443;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4Ucm5nxe8cgExY3vq78pW2gU4Ws9xivfjS2fHeRhYTY=;
+        b=MGvZRlYPgLeLAbP0WXKmYqIsCjy/DOePz/3azZBXA6RQnWThfnYG7IucgogfqkbgSc
+         XyJkFudORRp+lRW1TuDjlNeSGwVStioJfh/Z5fCKfhJkwsQDG01QAKKZG4E+6B0nuE10
+         eRkMzEODOpmKK6OWpX65xxtl2w1Ws3dp9TAna+UQaKFX1eSpceOwXk/cAJNcLvw/rCbA
+         WEgks1RqTuKFg7eWOE0GHo0ur1b26fLsa2sIzXo2+FyDbsbM4kLT/SUIeNRpb2LeIF3l
+         aI0SJU4riDV0bl+d5VnicoLQPD8YvT60otdS5LXKnz8jbqo7xYdLIbvvEps37c6vyOAV
+         Wwrg==
+X-Forwarded-Encrypted: i=1; AJvYcCUZMNqFy8uuDtNTBHEMuwKUpM908gkeif3Dkn7VjpNxRxdjyr6FEi8cpIi0/soHcgONJeoVmejyGmvCh0YkAw==@vger.kernel.org, AJvYcCVnPggbLtR2UhxJbmeORsFaxVwSktfPSUD+SWIvbOjcRbf4VqACI3tL5LgkFZUWV1/GlS5YtqaITobkEaUX@vger.kernel.org, AJvYcCWgKCrUpP+s8IhtATWBAq5/zOSPXxRYQKx73aOaOeN03L0T2QGmqGGFjUI5KEYdLss/874=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwjemRxTIy9qUnyvsv5b4XOruhUoz5RMoYOQNnjIcVbwLiX97ny
+	1cGC8GcwAZZFbJoj+shIOf0hV7QuovROYx6m9FR3r5BQik32IQ3o5GyCoY9qkAdVlUKW9AsyLGu
+	1doA79psUayKKPNrNdkm1C+yxmhw=
+X-Gm-Gg: ASbGncsZmkr8xlh0NFQRtvrEyxOqzDxu5qLCpsFQlJNRhu5sTVcsS+jM88ktyqb8eKj
+	5uOgi2Qij3ogV4SQgfZhcLnUhwUtZIh04a8HL8X8HQrpBQGJN6PsKRWfpOwc5ETpKWlu252mzt0
+	rL7bUoYIeiOhUb6XEX50f1h7v+bCx3
+X-Google-Smtp-Source: AGHT+IHhaqyd4g185PU4eVAqjVQtrJsSiS+LXstK8Loa3UCPWLCPxC+cz3OYe2OCF/ugN6bwdBMmPNV9TnSir4OMJvg=
+X-Received: by 2002:a05:600c:3b8e:b0:42c:b9c8:2bb0 with SMTP id
+ 5b1f17b1804b1-4392497c946mr53277355e9.4.1739029642917; Sat, 08 Feb 2025
+ 07:47:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v4 3/4] libbpf: Add libbpf_probe_bpf_kfunc API
-To: Eduard Zingerman <eddyz87@gmail.com>, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, haoluo@google.com,
- jolsa@kernel.org, qmo@kernel.org
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250206051557.27913-1-chen.dylane@gmail.com>
- <20250206051557.27913-4-chen.dylane@gmail.com>
- <7d667c037e7396fb88cf243162c5aa8a537858bb.camel@gmail.com>
-From: Tao Chen <chen.dylane@gmail.com>
-In-Reply-To: <7d667c037e7396fb88cf243162c5aa8a537858bb.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20250127063526.76687-1-laoar.shao@gmail.com> <Z5eOIQ4tDJr8N4UR@pathway.suse.cz>
+ <CALOAHbBZc6ORGzXwBRwe+rD2=YGf1jub5TEr989_GpK54P2o1A@mail.gmail.com>
+ <alpine.LSU.2.21.2501311414281.10231@pobox.suse.cz> <CALOAHbDwsZqo9inSLNV1FQV3NYx2=eztd556rCZqbRvEu+DDFQ@mail.gmail.com>
+ <CAPhsuW4gYKHsmtHsBDUkx7a=apr_tSP_4aFWmmFNfqOJ+3GDGQ@mail.gmail.com>
+ <CALOAHbDYFAntFbwMwGgnXkHh1audSoUwG1wFu_4e8P=c=hwZ0w@mail.gmail.com>
+ <CAPhsuW4HsTab+w2r23bM52kcM1RBFBKP5ujVdDvxLE9OiqgMdA@mail.gmail.com>
+ <CALOAHbAJBwSYju3-XEQwy0O1DNPawuEgmhrV5ECTrL9J388yDw@mail.gmail.com>
+ <CAPhsuW51E4epDCrdNcQCG+SzHiyGhE+AocjmXoD-G0JExs9N1A@mail.gmail.com> <CALOAHbAaCbvr=F6PBJ+gnQa1WNidELzZW-P2_HmBsZ1tJd6FFg@mail.gmail.com>
+In-Reply-To: <CALOAHbAaCbvr=F6PBJ+gnQa1WNidELzZW-P2_HmBsZ1tJd6FFg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sat, 8 Feb 2025 07:47:12 -0800
+X-Gm-Features: AWEUYZlDgwJ7w9RtugurSHUaVGNWz4hZIXfuHiwIgOVVJOukfqJCOGpHVpr1kvs
+Message-ID: <CAADnVQJZCE-Rh4xghLrruY8DW00cRUq9-ct6d=qfKk8Yc+8=pQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/2] livepatch: Add support for hybrid mode
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Miroslav Benes <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Jiri Kosina <jikos@kernel.org>, Joe Lawrence <joe.lawrence@redhat.com>, 
+	live-patching@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-在 2025/2/8 06:35, Eduard Zingerman 写道:
-> On Thu, 2025-02-06 at 13:15 +0800, Tao Chen wrote:
-> 
-> [...]
-> 
->>   LIBBPF_API int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type,
->>   				       enum bpf_func_id helper_id, const void *opts);
->> -
->> +/**
->> + * @brief **libbpf_probe_bpf_kfunc()** detects if host kernel supports the
->> + * use of a given BPF kfunc from specified BPF program type.
->> + * @param prog_type BPF program type used to check the support of BPF kfunc
->> + * @param kfunc_id The btf ID of BPF kfunc to check support for
->> + * @param btf_fd The module BTF FD, if kfunc is defined in kernel module,
->> + * btf_fd is used to point to module's BTF, 0 means kfunc defined in vmlinux.
-> 
-> Regarding '0' as special value:
-> in general FD is considered invalid only if it's negative, 0 is a valid FD.
-> Andrii, I remember there was a lengthy discussion about FD==0 and BPF,
-> but I don't remember the conclusion.
-> 
->> + * @param opts reserved for future extensibility, should be NULL
->> + * @return 1, if given combination of program type and kfunc is supported; 0,
->> + * if the combination is not supported; negative error code if feature
->> + * detection for provided input arguments failed or can't be performed
->> + *
->> + * Make sure the process has required set of CAP_* permissions (or runs as
->> + * root) when performing feature checking.
->> + */
->> +LIBBPF_API int libbpf_probe_bpf_kfunc(enum bpf_prog_type prog_type,
->> +				      int kfunc_id, int btf_fd, const void *opts);
->>   /**
->>    * @brief **libbpf_num_possible_cpus()** is a helper function to get the
->>    * number of possible CPUs that the host kernel supports and expects.
->> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
->> index a8b2936a1646..e93fae101efd 100644
->> --- a/tools/lib/bpf/libbpf.map
->> +++ b/tools/lib/bpf/libbpf.map
->> @@ -436,4 +436,5 @@ LIBBPF_1.6.0 {
->>   		bpf_linker__add_buf;
->>   		bpf_linker__add_fd;
->>   		bpf_linker__new_fd;
->> +		libbpf_probe_bpf_kfunc;
-> 
-> This is now in conflict with bpf-next.
-> 
+On Fri, Feb 7, 2025 at 10:42=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> =
+wrote:
+>
+> On Fri, Feb 7, 2025 at 2:01=E2=80=AFAM Song Liu <song@kernel.org> wrote:
+> >
+> > On Wed, Feb 5, 2025 at 6:55=E2=80=AFPM Yafang Shao <laoar.shao@gmail.co=
+m> wrote:
+> > [...]
+> > > > I think we should first understand why the trampoline is not
+> > > > freed.
+> > >
+> > > IIUC, the fexit works as follows,
+> > >
+> > >   bpf_trampoline
+> > >     + __bpf_tramp_enter
+> > >        + percpu_ref_get(&tr->pcref);
+> > >
+> > >     + call do_exit()
+> > >
+> > >     + __bpf_tramp_exit
+> > >        + percpu_ref_put(&tr->pcref);
+> > >
+> > > Since do_exit() never returns, the refcnt of the trampoline image is
+> > > never decremented, preventing it from being freed.
+> >
+> > Thanks for the explanation. In this case, I think it makes sense to
+> > disallow attaching fexit programs on __noreturn functions. I am not
+> > sure what is the best solution for it though.
+>
+> There is a tools/objtool/noreturns.h. Perhaps we could create a
+> similar noreturns.h under kernel/bpf and add all relevant functions to
+> the fexit deny list.
 
-My bad, i will rebase the repo.
+Pls avoid copy paste if possible.
+Something like:
 
->>   } LIBBPF_1.5.0;
->> diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
->> index e142130cb83c..c7f2b2dfbcf1 100644
->> --- a/tools/lib/bpf/libbpf_probes.c
->> +++ b/tools/lib/bpf/libbpf_probes.c
->> @@ -433,6 +433,61 @@ static bool can_probe_prog_type(enum bpf_prog_type prog_type)
->>   	return true;
->>   }
->>   
->> +int libbpf_probe_bpf_kfunc(enum bpf_prog_type prog_type, int kfunc_id, int btf_fd,
->> +			   const void *opts)
->> +{
->> +	struct bpf_insn insns[] = {
->> +		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, btf_fd, kfunc_id),
->> +		BPF_EXIT_INSN(),
->> +	};
->> +	const size_t insn_cnt = ARRAY_SIZE(insns);
->> +	char buf[4096];
->> +	int *fd_array = NULL;
->> +	size_t fd_array_cnt = 0, fd_array_cap = fd_array_cnt;
->> +	int ret;
->> +
->> +	if (opts)
->> +		return libbpf_err(-EINVAL);
->> +
->> +	if (!can_probe_prog_type(prog_type))
->> +		return -EOPNOTSUPP;
->> +
->> +	if (btf_fd) {
->> +		ret = libbpf_ensure_mem((void **)&fd_array, &fd_array_cap,
->> +					sizeof(int), fd_array_cnt + btf_fd);
-> 
-> Please take a look at the tools/testing/selftests/bpf/prog_tests/fd_array.c,
-> e.g. test case check_fd_array_cnt__fd_array_ok(). The offset field of the
-> call instruction does not have to be an fd (as it only has 16 bits),
-> instead it's an offset inside the fd_array.
-> Here it would be sufficient to allocate a small array on stack.
-> 
+BTF_SET_START(fexit_deny)
+#define NORETURN(fn) BTF_ID(func, fn)
+#include "../../tools/objtool/noreturns.h"
 
-Good idea，thanks for your guidance，I'll make the modifications in the 
-next version.
+Should work?
 
->> +		if (ret)
->> +			return ret;
->> +
->> +		/* In kernel, obtain the btf fd by means of the offset of
->> +		 * the fd_array, and the offset is the btf fd.
->> +		 */
->> +		fd_array[btf_fd] = btf_fd;
->> +	}
-> 
-> [...]
-> 
-
-
--- 
-Best Regards
-Dylane Chen
+Josh,
+maybe we should move noreturns.h to some common location?
 
