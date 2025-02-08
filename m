@@ -1,224 +1,147 @@
-Return-Path: <bpf+bounces-50829-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50830-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58491A2D282
-	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 02:14:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19D02A2D2C4
+	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 02:54:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6854F3AD295
-	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 01:14:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B3F6188D499
+	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 01:54:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ED8035968;
-	Sat,  8 Feb 2025 01:14:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B40B613B7A3;
+	Sat,  8 Feb 2025 01:54:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b="Jb6j2BoJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lvA2GE9P"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00206402.pphosted.com (mx0b-00206402.pphosted.com [148.163.152.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 151636FBF;
-	Sat,  8 Feb 2025 01:14:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.152.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7363B19A;
+	Sat,  8 Feb 2025 01:54:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738977264; cv=none; b=LuGDuSOryRrYr6KYWuIMVrEuGo+PCyWzQUU/R5pca97in6q9usBmVVBas9hoXHiGXqD1orwv6YGClyEazJ8UtqAkl9cBt7J1Dwa9wMY2SukXmy3fgeAMVlbtL0BQZUg5dW7EtNyDfXsgz6TxzCyvJ8X2STvnGbS4Wwm+l9aeAFU=
+	t=1738979643; cv=none; b=lngSU06wRlyO1KX/W9NkMte4Dbq3Y7tQ/cpLL9rpQJjclasnjxlkMa179TT8bTjU74LS8g+ERJ0Y7hTbMS1LH5Erz9d/t3NFiuiqwIqiYQNfat2JQih10nRRU8APzjHf3dmUzkymMS2VoACT7qCMrd07NCVZWJVL2QnUZ5c1a4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738977264; c=relaxed/simple;
-	bh=jNCpAzIcqev4f9UQb2eDkAlzLe9BucpDS3pd8CHTFXA=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=nB2aDpSpzPpVuBtam3MoDv+AfACp6weDAyHSZxQckr/CLPGeR4shG4Yo18hcOPL3trpHLJ/QPhLlZgCPxz+Fur4+lgKClRz0sLTpF1MFWtBDVk+3NGfQeDrCRbFH3bs+Un3WvX7BBqjaLF0mLBfMCI+eEp0TSDFC2DSPQ5cFd04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com; spf=pass smtp.mailfrom=crowdstrike.com; dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b=Jb6j2BoJ; arc=none smtp.client-ip=148.163.152.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crowdstrike.com
-Received: from pps.filterd (m0354653.ppops.net [127.0.0.1])
-	by mx0b-00206402.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51812QQU029920;
-	Sat, 8 Feb 2025 01:13:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
-	 h=cc:content-id:content-transfer-encoding:content-type:date
-	:from:in-reply-to:message-id:mime-version:references:subject:to;
-	 s=default; bh=jNCpAzIcqev4f9UQb2eDkAlzLe9BucpDS3pd8CHTFXA=; b=J
-	b6j2BoJIHWQURpER6VKDgj7NIRM+EeSn+ax0SlXkdDN6ka2MA3FXZVX7GV6HJHLn
-	fcbIH3TI63FK9SJOi8BNybEVOE4RgUkbU+ay4yfM/vmVuIC6+YG7aPHOqnarulNX
-	h2rZ5N2mBt6xor7XnQkC6ROL5XtTOZGUzBKoOWjyGEVhF4/4fxZ5phSZfohUFCJm
-	wS/PPaSwgoWvFbaxdKfBYLCkGsktzMOW/P4furA6EvI1o3N7OCxztckxk6qcGl8n
-	c2th3puMdfC9GHxjZfm3ythyOSodMGynGE9VQOKjd9yFRTcjK7b9a9s0u80PNrAH
-	TcwAu1ggnG1Qh4K3xzbjQ==
-Received: from mail.crowdstrike.com (dragosx.crowdstrike.com [208.42.231.60] (may be forged))
-	by mx0b-00206402.pphosted.com (PPS) with ESMTPS id 44nw8nr0m1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 08 Feb 2025 01:13:41 +0000 (GMT)
-Received: from 04WPEXCH006.crowdstrike.sys (10.100.11.70) by
- 04WPEXCH010.crowdstrike.sys (10.100.11.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Sat, 8 Feb 2025 01:13:40 +0000
-Received: from 04WPEXCH006.crowdstrike.sys ([fe80::a97d:6ad:c239:d138]) by
- 04WPEXCH006.crowdstrike.sys ([fe80::a97d:6ad:c239:d138%11]) with mapi id
- 15.02.1544.009; Sat, 8 Feb 2025 01:13:40 +0000
-From: Martin Kelly <martin.kelly@crowdstrike.com>
-To: "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>
-CC: "mykolal@fb.com" <mykolal@fb.com>, "shuah@kernel.org" <shuah@kernel.org>,
-        "eddyz87@gmail.com" <eddyz87@gmail.com>,
-        "song@kernel.org" <song@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "john.fastabend@gmail.com"
-	<john.fastabend@gmail.com>,
-        "yonghong.song@linux.dev"
-	<yonghong.song@linux.dev>,
-        Mark Fontana <mark.fontana@crowdstrike.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "martin.lau@linux.dev" <martin.lau@linux.dev>,
-        "bpf@vger.kernel.org"
-	<bpf@vger.kernel.org>,
-        "sdf@fomichev.me" <sdf@fomichev.me>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Slava
- Imameev" <slava.imameev@crowdstrike.com>,
-        "jolsa@kernel.org"
-	<jolsa@kernel.org>,
-        "haoluo@google.com" <haoluo@google.com>
-Subject: Re: Re: Re: [PATCH 2/2] libbpf: BPF programs dynamic loading and
- attaching
-Thread-Topic: Re: Re: [PATCH 2/2] libbpf: BPF programs dynamic loading and
- attaching
-Thread-Index: AQHbecav9nRBOq2DfUeSAbcgaw09bA==
-Date: Sat, 8 Feb 2025 01:13:40 +0000
-Message-ID: <e55a1441252079e73b2abdf3635efcebda6b47c1.camel@crowdstrike.com>
-References: <20250122215206.59859-1-slava.imameev@crowdstrike.com>
-	 <20250122215206.59859-2-slava.imameev@crowdstrike.com>
-	 <CAEf4Bzajxh4xvg-aCaBhLQdNOZdhwceYUD2UsCcWku4ZBca_Hw@mail.gmail.com>
-	 <8831ed8fa183f76fefd71244360fa0ca35b11910.camel@crowdstrike.com>
-	 <CAEf4BzYWe0KCzA4-qwAGp5n_ydJ0_zyLSO=Crr_vewFHzZ0t6Q@mail.gmail.com>
-In-Reply-To: <CAEf4BzYWe0KCzA4-qwAGp5n_ydJ0_zyLSO=Crr_vewFHzZ0t6Q@mail.gmail.com>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-disclaimer: USA
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <90FF9234E64F0B49B5C32B384A37DD60@crowdstrike.sys>
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1738979643; c=relaxed/simple;
+	bh=XS33MVhIjfVKk8upTaLO5OR1KiRd8GIcCgqMSRLT0VA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=k/1nSmab7F4gkhTWnBzCNWlR03fZ7oQ6U+EbwGUA9fjxCMCvcKAWYHtMLleowVyiRuPwHKyTdzs0l1tjazpHh6NPC+G7MYpWQlVNCJA0kk4aVb9aPM+NwceTC5B83Yx7zlK2Z7XPbzoHHf8n6dTXBU6J4p8rwe2ECP5fybFNrb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lvA2GE9P; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4361f664af5so28903955e9.1;
+        Fri, 07 Feb 2025 17:54:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738979640; x=1739584440; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/goMiwoZ9a2nGgXHy/KgywCzCXPCOrvFLwPlIkrV3lQ=;
+        b=lvA2GE9PGg16050w0Wz3CvC/I7hCbdYWHYaWZLy4JPergRHJ0cZzoA6lDLor4WVetI
+         scc27wKFfpHOHH9Jk7Wi1ry77gYo23B9Sttg8mZabdcUqN51svTEV48vcZCbC2Xg3MD2
+         ZdKr4wRWbnupooLlzIrOpmKI6unYojKg1njGusUfLa5xhfiNlCiGciLgntEPfKOei4H8
+         veJuE2wd+j8jZfybt8bDFEvAhZNnFLXJIg/mo8IQQVJZRxXm5eCDHIt/xmJsdftpZLrj
+         vJXtq4Vwsa/IuvwKbVN4T008xpfwzNcj9bc6/Fr12MAl93wGm3jxlW07mS16EDby6ENl
+         EZtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738979640; x=1739584440;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/goMiwoZ9a2nGgXHy/KgywCzCXPCOrvFLwPlIkrV3lQ=;
+        b=e4OuT08zkz2x51ZmbQ1HytnzQuVCCKwtMIqVfMViXfEJywIkMxqoPzhgpAHAkN1chk
+         YHlIKH3cKLzEBuGYo8/Ggv8is1xtUa0+QdjtCOmiSZAW9/jRznY+8uKCBjIkchKqcv1k
+         S6N7sliM0A20XJ/nr4Aank30mBfZLDDUcy5JhNshSINwf7CrUqT/NllJuccwUB6yBaAj
+         yO6Z7m28OHYkjuHrvxPOqPSPfFA9GJmAANyU3vWvQgDd9k4YOBX0R5Ty2FmeV62ikzeH
+         FA4scj94N+kIRTDQ9Dr8arxfbtGLUG6sxTAc7InfhdVorfJxpxsDFM21YqfUFO6c3ucY
+         35gA==
+X-Forwarded-Encrypted: i=1; AJvYcCX0RcmWyLo/eShXKeu337atRo1hTkaIPYEjIG9Nf2JvV8u9VXeSTwpuMtSDUTVzIainaFZOxMqm5pqhP50=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyAzGJ9OfdjzpgmR+z7VgTtkYcMXgXVwXR57rJTqORs9vhno4Z4
+	iwM7sqYgfkAAozTmIyveoZxugDRf0t6f2OCga6StlOlHJOXI9E3PRS8OG/dh+rh+gSceGJ2oC4V
+	FDVaU2ELRiGN9Q3qYuNSpu1Q9hnU=
+X-Gm-Gg: ASbGnctlq/QXTwdJkx6DK+wZCdAA9MhGct7A3J8hY5wB+zsFmFj/9w4t1XiRxFrNXZc
+	3GKbDM4HQyyt+RRW9juJ4mlJoFRLhPODla/7jzFnsiV4XWOEx6LgXQOfALLzXR3wqd7YlWur8E7
+	IuZZKA2lyqLGfbGgkG1D7WtOHJTWFw
+X-Google-Smtp-Source: AGHT+IG9ncxhWb1JDjWrffjcJaSLE/cGisHt3doGbPXfB2uc5syeNwNjChl7mOFipKQ8YpOR06lQMAWoY36G1lYyN2E=
+X-Received: by 2002:a05:6000:1041:b0:385:f0c9:4b66 with SMTP id
+ ffacd0b85a97d-38dc8dec2f6mr3125108f8f.33.1738979639593; Fri, 07 Feb 2025
+ 17:53:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Authority-Analysis: v=2.4 cv=RKRJH5i+ c=1 sm=1 tr=0 ts=67a6afc5 cx=c_pps a=1d8vc5iZWYKGYgMGCdbIRA==:117 a=1d8vc5iZWYKGYgMGCdbIRA==:17 a=xqWC_Br6kY4A:10 a=EjBHVkixTFsA:10 a=IkcTkHD0fZMA:10 a=T2h4t0Lz3GQA:10 a=2lv7Y3VLJWSzW0Zh9XgA:9 a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: vFE_OMtF5u_BGEUe2um5qLCyLQAkJugg
-X-Proofpoint-ORIG-GUID: vFE_OMtF5u_BGEUe2um5qLCyLQAkJugg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-02-07_11,2025-02-07_03,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 phishscore=0 adultscore=0 lowpriorityscore=0
- mlxlogscore=999 impostorscore=0 bulkscore=0 clxscore=1015 malwarescore=0
- spamscore=0 mlxscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2501170000
- definitions=main-2502080006
+References: <20250206105435.2159977-1-memxor@gmail.com> <20250206105435.2159977-12-memxor@gmail.com>
+In-Reply-To: <20250206105435.2159977-12-memxor@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 7 Feb 2025 17:53:48 -0800
+X-Gm-Features: AWEUYZnAQdSbylvQFKH-kduRkJgF7cpFCzktTKz3eyY2jqCF3QQ_ePHqKFyE-Ks
+Message-ID: <CAADnVQL=E3F5-Uwa5_508e+OKzLnLGJGtAMhv1WW8kHobzBMgQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 11/26] rqspinlock: Add deadlock detection and recovery
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Will Deacon <will@kernel.org>, Waiman Long <llong@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>, Barret Rhoden <brho@google.com>, 
+	Josh Don <joshdon@google.com>, Dohyun Kim <dohyunkim@google.com>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-T24gV2VkLCAyMDI1LTAyLTA1IGF0IDE0OjMzIC0wODAwLCBBbmRyaWkgTmFrcnlpa28gd3JvdGU6
-DQo+ID4gPiA+IA0KPiA+ID4gPiBJIHNlZSB0d28gd2F5cyBmb3J3YXJkIGZvciB5b3UuIEVpdGhl
-ciB5b3UgY2FuIGJyZWFrIGFwYXJ0IHlvdXINCj4gPiA+ID4gQlBGDQo+ID4gPiA+IG9iamVjdCBv
-ZiB+MTAwIEJQRiBwcm9ncmFtcyBpbnRvIG1vcmUgaW5kZXBlbmRlbnQgQlBGIG9iamVjdHMgPg0K
-PiA+ID4gPiA+IChzZWVpbmcNCj4gPiA+ID4gdGhhdCBwcm9ncmFtcyBjYW4gYmUgaW5kZXBlbmRl
-bnRseSBsb2FkZWQvdW5sb2FkZWQgZGVwZW5kaW5nIG9uDQo+ID4gPiA+IGNvbmZpZ3VyYXRpb24s
-IHNlZW1zIGxpa2UgeW91IGRvIGhhdmUgYSBidW5jaCBvZiBsb2dpYyA+ID4NCj4gPiA+ID4gaW5k
-ZXBlbmRlbmNlLA0KPiA+ID4gPiByaWdodD8pLiBJIGFzc3VtZSBzaGFyZWQgQlBGIG1hcHMgYXJl
-IHRoZSBiaWdnZXN0IHJlYXNvbiB0bw0KPiA+ID4gPiBrZWVwID4gPiBhbGwNCj4gPiA+ID4gdGhv
-c2UgcHJvZ3JhbXMgdG9nZXRoZXIgaW4gb25lIEJQRiBvYmplY3QuIFRvIHNoYXJlIEJQRiBtYXBz
-ID4NCj4gPiA+ID4gPiBiZXR3ZWVuDQo+ID4gPiA+IG11bHRpcGxlIEJQRiBvYmplY3RzIGxpYmJw
-ZiBwcm92aWRlcyB0d28gY29tcGxlbWVudGFyeQ0KPiA+ID4gPiBpbnRlcmZhY2VzOg0KPiA+ID4g
-PiANCj4gPiA+ID4gwqAgLSBicGZfbWFwX19yZXVzZV9mZCgpIGZvciBtYW51YWwgY29udHJvbA0K
-PiA+ID4gPiDCoCAtIEJQRiBtYXAgcGlubmluZyAoY291bGQgYmUgZGVjbGFyYXRpdmUgb3IgbWFu
-dWFsKQ0KPiA+ID4gPiANCj4gPiA+ID4gVGhpcyB3YXkgeW91IGNhbiBlbnN1cmUgdGhhdCBhbGwg
-QlBGIG9iamVjdHMgd291bGQgdXNlIHRoZSBzYW1lDQo+ID4gPiA+IEJQRg0KPiA+ID4gPiBtYXAs
-IHdoZXJlIG5lY2Vzc2FyeS4NCj4gPiA+ID4gDQoNCkkgdGhpbmsgdGhpcyBhcHByb2FjaCAqY291
-bGQqIHdvcmsgYnV0IGNvdWxkIGVhc2lseSBiZWNvbWUgY29tcGxleCBmb3INCnVzIGJlY2F1c2Ug
-d2UnZCBuZWVkIHRvIHRyYWNrIGFsbCB0aGUgZGVwZW5kZW5jaWVzIGJldHdlZW4gcHJvZ3JhbXMg
-YW5kDQptYXBzLCBhbmQgYW55dGhpbmcgbWlzc2VkIGNvdWxkIGxlYWQgdG8gZGlmZmljdWx0IHJl
-ZmNvdW50IGJ1Z3MuDQoNCkZ1cnRoZXIsIHNwbGl0dGluZyBpbnRvIG9iamVjdHMgaW5jdXJzIHNv
-bWUgcGVyZm9ybWFuY2UgYW5kIG1lbW9yeSBjb3N0DQpiZWNhdXNlIGJwZl9vYmplY3RfX2xvYWRf
-dm1saW51eF9idGYgd2lsbCBiZSBjYWxsZWQgZm9yIGVhY2ggb2JqZWN0LA0KYW5kIHRoZXJlJ3Mg
-Y3VycmVudGx5IG5vIHdheSB0byBzaGFyZSBCVEYgZGF0YSBhY3Jvc3MgdGhlIG9iamVjdHMuDQpI
-YXZpbmcgYSBzaW5nbGUgQlBGIG9iamVjdCBhdm9pZHMgdGhpcyBpc3N1ZS4gUG90ZW50aWFsbHks
-IGxpYmJwZiBjb3VsZA0KY2FjaGUgc29tZSBCVEYgZGF0YSB0byBtYWtlIGxlc3NlbiB0aGUgaW1w
-YWN0Lg0KDQo+ID4gPiA+IEFsdGVybmF0aXZlbHksIHdlIGNhbiBsb29rIGF0IHRoaXMgcHJvYmxl
-bSBhcyBuZWVkaW5nIGxpYmJwZiB0bw0KPiA+ID4gPiA+ID4gb25seQ0KPiA+ID4gPiBwcmVwYXJl
-IEJQRiBwcm9ncmFtIGNvZGUgKGRvaW5nIGFsbCB0aGUgcmVsb2NhdGlvbnMgYW5kIHN0dWZmDQo+
-ID4gPiA+IGxpa2UNCj4gPiA+ID4gdGhhdCksIGJ1dCB0aGVuIGFwcGxpY2F0aW9uIGFjdHVhbGx5
-IHRha2luZyBjYXJlIG9mID4gPg0KPiA+ID4gPiBsb2FkaW5nL3VubG9hZGluZw0KPiA+ID4gPiBC
-UEYgcHJvZ3JhbSB3aXRoIGJwZl9wcm9nX2xvYWQoKSBvdXRzaWRlIG9mIGJwZl9vYmplY3QNCj4g
-PiA+ID4gYWJzdHJhY3Rpb24uDQo+ID4gPiA+IEkndmUgaGFkIGFuIGFsbW9zdCByZWFkeSBwYXRj
-aGVzIHNwbGl0dGluZyBicGZfb2JqZWN0X19sb2FkKCkNCj4gPiA+ID4gaW50byA+ID4gPiB0d28N
-Cj4gPiA+ID4gc3RlcHM6IGJwZl9vYmplY3RfX3ByZXBhcmUoKSBhbmQgYnBmX29iamVjdF9fbG9h
-ZCgpIGFmdGVyIHRoYXQuDQo+ID4gPiA+ICJwcmVwYXJlIiBzdGVwIHdvdWxkIGNyZWF0ZSBCUEYg
-bWFwcywgbG9hZCBCVEYgaW5mb3JtYXRpb24sDQo+ID4gPiA+IHBlcmZvcm0NCj4gPiA+ID4gbmVj
-ZXNzYXJ5IHJlbG9jYXRpb25zIGFuZCBhcnJpdmUgYXQgZmluYWwgc3RhdGUgb2YgQlBGIHByb2dy
-YW0NCj4gPiA+ID4gY29kZQ0KPiA+ID4gPiAod2hpY2ggeW91IGNhbiBnZXQgd2l0aCBicGZfcHJv
-Z3JhbV9faW5zbnMoKSBBUEkpLCBidXQgc3RvcHBpbmcNCj4gPiA+ID4gPiA+IGp1c3QNCj4gPiA+
-ID4gc2hvcnQgb2YgYWN0dWFsbHkgZG9pbmcgYnBmX3Byb2dfbG9hZCgpIHN0ZXAuDQo+ID4gPiA+
-IA0KPiA+ID4gPiBUaGlzIHNlZW1zIGxpa2UgaXQgd291bGQgc29sdmUgeW91ciBwcm9ibGVtIGFz
-IHdlbGwuIFlvdSdkIHVzZQ0KPiA+ID4gPiA+ID4gbGliYnBmDQo+ID4gPiA+IHRvIGRvIGFsbCB0
-aGUgbG93LWxldmVsIEVMRiBwcm9jZXNzaW5nIGFuZCByZWxvY2F0aW9uLCBidXQgdGhlbg0KPiA+
-ID4gPiA+ID4gdGFrZQ0KPiA+ID4gPiBvdmVyIG1hbmFnaW5nIEJQRiBwcm9ncmFtIGxpZmV0aW1l
-LiBMb2FkaW5nL3VubG9hZGluZyBhcyB5b3UNCj4gPiA+ID4gc2VlID4gPiBmaXQsDQo+ID4gPiA+
-IGluY2x1ZGluZyBpbiBwYXJhbGxlbC4NCj4gPiA+ID4gDQo+ID4gPiA+IElzIHRoaXMgc29tZXRo
-aW5nIHRoYXQgd291bGQgd29yayBmb3IgeW91Pw0KPiA+ID4gPiANCg0KSSB0aGluayB0aGlzIEFQ
-SSBjb3VsZCB3b3JrLCB0aG91Z2ggSSB0aGluayB3ZSB3b3VsZCBuZWVkIGEgZmV3IG90aGVyDQpt
-b2RpZmljYXRpb25zIGFzIHdlbGwgaW4gb3JkZXIgdG8gY29ycmVjdGx5IGhhbmRsZSBwcm9ncmFt
-L21hcA0KZGVwZW5kZW5jaWVzIGFuZCBhY2NvdW50IGZvciByZWxvY2F0aW9ucy4gQXQgYSBoaWdo
-IGxldmVsLCBJIHRoaW5rIHdlJ2QNCm5lZWQgc29tZXRoaW5nIHRoYXQgaW5jbHVkZXM6DQoNCjEp
-IEEgd2F5IHRvIGFzc29jaWF0ZSBlYWNoIEJQRiBwcm9ncmFtIHdpdGggYWxsIHRoZSBtYXBzIGl0
-IHdpbGwgdXNlDQooYXNzb2NpYXRpb24gb2Ygc3RydWN0IGJwZl9wcm9ncmFtICogLS0+IGxpc3Qg
-b2Ygc3RydWN0IGJwZl9tYXAgKiBpbg0Kc29tZSBmb3JtKS4gVGhpcyBpcyBzbyB0aGF0IHdlIGNh
-biBsb2FkL3VubG9hZCBhc3NvY2lhdGVkIG1hcHMgd2hlbiB3ZQ0KbG9hZC91bmxvYWQgYSBwcm9n
-cmFtLg0KDQoyKSBBbiBBUEkgdG8gY3JlYXRlIGEgQlBGIG1hcCwgaW4gY2FzZSBhIG5ldyBtYXAg
-bmVlZHMgdG8gYmUgbG9hZGVkDQphZnRlciBpbml0aWFsIHN0YXJ0dXAuDQoNCjMpIEFuIEFQSSB0
-byBhbGxvdyB1bmxvYWRpbmcgYSBtYXAgd2hpbGUga2VlcGluZyBtYXAtPmZkIHJlc2VydmVkLiBU
-aGlzDQppcyBpbXBvcnRhbnQgYmVjYXVzZSB0aGUgZmQgdmFsdWUgaXMgdXNlZCBieSBCUEYgcHJv
-Z3JhbSBpbnN0cnVjdGlvbnMsDQpzbyB3aXRob3V0IHNvbWV0aGluZyBsaWtlIHRoaXMsIHdlJ2Qg
-aGF2ZSB0byByZWRvIHRoZSByZWxvY2F0aW9uDQpwcm9jZXNzIGZvciBhbnkgb3RoZXIgQlBGIHBy
-b2dyYW1zIHRoYXQgYWNjZXNzIHRoaXMgbWFwIChhbmQgdGh1cw0KcmVsb2FkIHRob3NlIHByb2dy
-YW1zIHRvbykuIFRoaXMgQVBJIGNvdWxkIGJlIGltcGxlbWVudGVkIGJ5IGR1cCdpbmcgYQ0KcGxh
-Y2Vob2xkZXIgZmQuDQoNCkFsdGVybmF0aXZlbHksIGlmIGxpYmJwZiBjb3VsZCBhdXRvbWF0aWNh
-bGx5IHJlZmNvdW50IG1hcHMgYWNyb3NzDQptdWx0aXBsZSBCUEYgb2JqZWN0cyB0byBsb2FkL3Vu
-bG9hZCB0aGVtIG9uIGRlbWFuZCwgdGhlbiBhbGwgb2YgdGhlDQphYm92ZSB3b3JrIGNvdWxkIGhh
-cHBlbiBiZWhpbmQgdGhlIHNjZW5lcy4gVGhpcyB3b3VsZCBiZSBzaW1pbGFyIHRvIHRoZQ0Kb3Ro
-ZXIgYXBwcm9hY2ggeW91IG1lbnRpb25lZCwgYnV0IHdpdGggbGliYnBmIGRvaW5nIHRoZSByZWZj
-b3VudGluZw0KaGVhdnkgbGlmdGluZyBpbnN0ZWFkIG9mIGxlYXZpbmcgdGhhdCB0byBlYWNoIGFw
-cGxpY2F0aW9uLCB0aHVzIG1vcmUNCnJvYnVzdCBhbmQgZWxlZ2FudC4gVGhpcyB3b3VsZCBtZWFu
-IGNoYW5naW5nIGxpYmJwZiB0byAoYSkgc3luY2hyb25pemUNCmFjY2VzcyB0byBzb21lIG1hcCBm
-dW5jdGlvbnMgYW5kIChiKSBhbGxvd2luZyBzdHJ1Y3QgYnBmX21hcCAqIHRvIGJlDQpzaGFyZWQg
-YWNyb3NzIEJQRiBvYmplY3RzLiBQZXJoYXBzIGEgY29uY2VwdCBvZiBhICJjb2xsZWN0aW9uIG9m
-IEJQRg0Kb2JqZWN0cyIgbWlnaHQgYWxsb3cgZm9yIHRoaXMuDQoNCj4gPiA+ID4gPiA+ID4gPiAN
-Cj4gPiA+ID4gPiA+ID4gPiBUaGlzIHBhdGNoIHNldCBhbHNvIHBlcm1pdHMgbG9hZGluZyBCUEYg
-cHJvZ3JhbXMgaW4NCj4gPiA+ID4gPiA+ID4gPiBwYXJhbGxlbCBpZiA+ID4gPiA+IHRoZQ0KPiA+
-ID4gPiA+ID4gPiA+IGFwcGxpY2F0aW9uIHdpc2hlcy4gV2UgdGVzdGVkIHBhcmFsbGVsIGxvYWRp
-bmcgd2l0aA0KPiA+ID4gPiA+ID4gPiA+IDIwMCsgQlBGID4gPiA+ID4gPiA+IHByb2dyYW1zDQo+
-ID4gPiA+ID4gPiA+ID4gYW5kIGZvdW5kIHRoZSBsb2FkIHRpbWUgZHJvcHBlZCBmcm9tIDE4IHNl
-Y29uZHMgdG8gNQ0KPiA+ID4gPiA+ID4gPiA+IHNlY29uZHMgPiA+ID4gPiB3aGVuID4gPiBkb25l
-DQo+ID4gPiA+ID4gPiA+ID4gaW4gcGFyYWxsZWwgb24gYSA2Ljgga2VybmVsLg0KPiA+ID4gPiAN
-Cj4gPiA+ID4gYnBmX29iamVjdCBpcyBpbnRlbnRpb25hbGx5IHNpbmdsZS10aHJlYWRlZCwgc28g
-SSBkb24ndCB0aGluaw0KPiA+ID4gPiB3ZSdsbCA+ID4gPiBiZQ0KPiA+ID4gPiBzdXBwb3J0aW5n
-IHBhcmFsbGVsIEJQRiBwcm9ncmFtIGxvYWRpbmcgaW4gdGhlIHBhcmFkaWdtIG9mID4gPg0KPiA+
-ID4gPiBicGZfb2JqZWN0DQo+ID4gPiA+IChidXQgc2VlIHRoZSBicGZfb2JqZWN0X19wcmVwYXJl
-KCkgcHJvcG9zYWwpLiBFdmVuIGZyb20gQVBJID4gPg0KPiA+ID4gPiA+IHN0YW5kcG9pbnQNCj4g
-PiA+ID4gdGhpcyBpcyBwcm9ibGVtYXRpYyB3aXRoIGxvZ2dpbmcgYW5kIGxvZyBidWZmZXJzIGJh
-c2ljYWxseQ0KPiA+ID4gPiBhc3N1bWluZw0KPiA+ID4gPiBzaW5nbGUtdGhyZWFkZWQgZXhlY3V0
-aW9uIG9mIEJQRiBwcm9ncmFtIGxvYWRpbmcuDQo+ID4gPiA+IA0KPiA+ID4gPiBBbGwgdGhhdCBj
-b3VsZCBiZSBjaGFuZ2VkIG9yIHdvcmtlZCBhcm91bmQsIGJ1dCB5b3VyIHVzZSBjYXNlDQo+ID4g
-PiA+IGlzID4gPiBub3QNCj4gPiA+ID4gcmVhbGx5IGEgdHlwaWNhbCBjYXNlLCBzbyBJJ20gYSBi
-aXQgaGVzaXRhbnQgYXQgdGhpcyBwb2ludC4NCj4gPiA+ID4gDQo+ID4gPiA+ID4gPiA+ID4gDQoN
-CkkgY2FuIHVuZGVyc3RhbmQgd2hlcmUgeW91J3JlIGNvbWluZyBmcm9tIGlmIG5vIG9uZSBlbHNl
-IGhhcyBtZW50aW9uZWQNCmEgdXNlIGNhc2UgbGlrZSB0aGlzLiBXZSBjYW4gZG8gcGFyYWxsZWwg
-bG9hZGluZyBieSBzcGxpdHRpbmcgb3VyDQpwcm9ncmFtcyBpbnRvIEJQRiBvYmplY3RzLCBidXQg
-dW5sZXNzIHRoZSBvYmplY3RzIGFyZSBzcGxpdCB2ZXJ5DQpldmVubHksIHRoaXMgcmVzdWx0cyBp
-biBsZXNzIG9wdGltYWwgbG9hZCB0aW1lLiBGb3IgZXhhbXBsZSwgaWYgMTAwDQpwcm9ncmFtcyBh
-cmUgc3BsaXQgaW50byAyIG9iamVjdHMgYW5kIG9uZSBvYmplY3QgaGFzIDgwIHByb2dyYW1zIHdo
-aWxlDQp0aGUgb3RoZXIgaGFzIDIwLCB0aGVuIHRoZSBvbmUgd2l0aCA4MCBwcm9ncmFtcyBjcmVh
-dGVzIGEgYm90dGxlbmVjay4NCj4gDQo=
+On Thu, Feb 6, 2025 at 2:54=E2=80=AFAM Kumar Kartikeya Dwivedi <memxor@gmai=
+l.com> wrote:
+>
+> +/*
+> + * It is possible to run into misdetection scenarios of AA deadlocks on =
+the same
+> + * CPU, and missed ABBA deadlocks on remote CPUs when this function pops=
+ entries
+> + * out of order (due to lock A, lock B, unlock A, unlock B) pattern. The=
+ correct
+> + * logic to preserve right entries in the table would be to walk the arr=
+ay of
+> + * held locks and swap and clear out-of-order entries, but that's too
+> + * complicated and we don't have a compelling use case for out of order =
+unlocking.
+> + *
+> + * Therefore, we simply don't support such cases and keep the logic simp=
+le here.
+> + */
+
+The comment looks obsolete from the old version of this patch.
+Patch 25 is now enforces the fifo order in the verifier
+and code review will do the same for use of res_spin_lock()
+in bpf internals. So pls drop the comment or reword.
+
+> +static __always_inline void release_held_lock_entry(void)
+> +{
+> +       struct rqspinlock_held *rqh =3D this_cpu_ptr(&rqspinlock_held_loc=
+ks);
+> +
+> +       if (unlikely(rqh->cnt > RES_NR_HELD))
+> +               goto dec;
+> +       WRITE_ONCE(rqh->locks[rqh->cnt - 1], NULL);
+> +dec:
+> +       this_cpu_dec(rqspinlock_held_locks.cnt);
+
+..
+> +        * We don't have a problem if the dec and WRITE_ONCE above get re=
+ordered
+> +        * with each other, we either notice an empty NULL entry on top (=
+if dec
+> +        * succeeds WRITE_ONCE), or a potentially stale entry which canno=
+t be
+> +        * observed (if dec precedes WRITE_ONCE).
+> +        */
+> +       smp_wmb();
+
+since smp_wmb() is needed to address ordering weakness vs try_cmpxchg_acqui=
+re()
+would it make sense to move it before this_cpu_dec() to address
+the 2nd part of the harmless race as well?
 
