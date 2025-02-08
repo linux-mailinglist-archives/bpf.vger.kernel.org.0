@@ -1,157 +1,130 @@
-Return-Path: <bpf+bounces-50847-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50848-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B2C1A2D441
-	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 07:23:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 25383A2D44B
+	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 07:42:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B2397A502D
-	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 06:22:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E467C7A2ECF
+	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 06:41:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FA0D1A2543;
-	Sat,  8 Feb 2025 06:22:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5A3C1A707A;
+	Sat,  8 Feb 2025 06:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HvsqJvHC"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 230D54437A
-	for <bpf@vger.kernel.org>; Sat,  8 Feb 2025 06:22:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DECD7157E6B;
+	Sat,  8 Feb 2025 06:42:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738995778; cv=none; b=RkmaOKaYrYIQqwl2aCcvpVv+ve9fzvFsG9h9HzWRyCA+hPTwH7mUtkmdwo3BadWLKVCON2gFae7saesCNXf4yp4ve86Js/WNm/MPAAp476/scb4F7gSiNAW5G03+w6BK9LiI2GbfuUQ+tkZH5td5eWbeCeeUlkVHJHsOQEhDWaA=
+	t=1738996925; cv=none; b=ukHx2G38CIrBbJVyJevTv97UQZR0Sbp79yc1ufzZTvODwXJ3U2QYEvj1GqXbmwuVL3O5uPa+iM+T51sjZBpwGsj3hEpIZYSJqCsD+IiMDhYqINlH3nl+O1uHx9KpsHxJH6drV6fdiFWPp1JHNgCNkd3FBa07D6owuIsN3mH112k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738995778; c=relaxed/simple;
-	bh=CFPMSQ/xK4hza2UlSvoE86VYMRSuM65bg3bZnqD7H/A=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=jM8lEHMOJz5wRGce84WEtNR0HjYSWPynxim9uFreP+KUVCId1B7r5ipbiyO7PKm3UbjwMoRilmP67u21is4rtzm5pEuSFjsPxdhcUu4GSrB6IBFbYJJD0JPh7KiyNmWZFeQrmBFwOXbSqlOPM4fRUiGDA/y+tO0SRJjccDWlT/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Yqgjq2Sf5z4f3jLp
-	for <bpf@vger.kernel.org>; Sat,  8 Feb 2025 14:22:23 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id E3BCA1A138E
-	for <bpf@vger.kernel.org>; Sat,  8 Feb 2025 14:22:45 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP3 (Coremail) with SMTP id _Ch0CgBXqcMw+KZnTXnGDA--.40243S2;
-	Sat, 08 Feb 2025 14:22:43 +0800 (CST)
-Subject: Re: Poor performance of bpf_map_update_elem() for
- BPF_MAP_TYPE_HASH_OF_MAPS / BPF_MAP_TYPE_ARRAY_OF_MAPS
-To: Ritesh Oedayrajsingh Varma <ritesh@superluminal.eu>, bpf@vger.kernel.org
-Cc: Jelle van der Beek <jelle@superluminal.eu>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-References: <CAH6OuBR=w2kybK6u7aH_35B=Bo1PCukeMZefR=7V4Z2tJNK--Q@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <db6b3fb9-bcb7-7670-6cb2-1ef5406e81c4@huaweicloud.com>
-Date: Sat, 8 Feb 2025 14:22:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1738996925; c=relaxed/simple;
+	bh=wWMaU7kgqaQKoYCnX/AS8gqZVoCu0I4JE4OFgye+g8E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WOo+Z7gIQIa+AHx7i1352f9D/JrU27ZYtThcuq/c0AjdapTbMqzKg7QCJZN1WlS9wRIcb05U9Ib3E+ybz+We0koV/rDB5WS+Z+INIWl1px4OWfWuff5wcdwz+2KEvGxam5tYOZunTopwryPMlggyEk84rAEnTutDRocFLmQEeHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HvsqJvHC; arc=none smtp.client-ip=209.85.219.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6e442b79de4so18806156d6.2;
+        Fri, 07 Feb 2025 22:42:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738996923; x=1739601723; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KNoF24EWj8YqX5r+Yb0JvKHiF3XwnsqNhDQYoay6GVM=;
+        b=HvsqJvHCYRRcgEhpZVy6X7g2H4ET4jp0UXf3e/O4cHeXbO1Ke51NDcsD4Y8t6Jts93
+         RTj1A4h63aGdha8NHOkDvw4LrHoUYOvahqJOrCaZw2EDZpFu85HYFZ18zAF297aIlBaY
+         V3Q5kG0GyyNSgfFR8JR6pV2hV6RhLbc2Ma35YqZZSUQRKVo97fX8Z7MIet81kAp2nfmX
+         a40yeTUl3aCTiIN7kaefhqeKyh+IG45GbMEXxkWYuirNnGEdGk86Mpi9XmnTc8JSqmdK
+         jojXLoXQcPNRpOKPFrDusUeLP3TGMz+/BLSEcMywRAu/qM8V0yPkOICOU/19oq1FLDEW
+         prbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738996923; x=1739601723;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KNoF24EWj8YqX5r+Yb0JvKHiF3XwnsqNhDQYoay6GVM=;
+        b=rnbYILwK8v6Ax7f6su67vswc6h7RhuJQF+tH5kXDAfk5HW268k64I7S9hZATLzyoNA
+         O6Mtk2PLK0wsan4e8qKUMarX/yjBPN5++ecS8bAahoRE8EsxZrgNbjbf8g+qChnkXjNR
+         QfveaZiazqktsMwUaZcCXdnJ2Ou3nnQBVAcKSPRWrfLTf23M6Z8IfklRc9ycwo0wizDV
+         0CFL6DrN4+VyiWSlh9Qo+FdgqI6o/nnqEZIzurJ6wr1WZoh0ejqUndYb/2Nc43C9+g5F
+         SQruL7MtBptN9nm8m76HiBQpJ7Wnwxx6bpWaH0yV8p6PpxBSVHTtoSh3uHT1v1zn8Iwy
+         I+sQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVP0GQfukhZOG146+5VfTvJVpYjHwD+9gAzX5fJIIuizuWG5XJuljSGLEN4eTk369SoMmVkpi7CfsupEPItvg==@vger.kernel.org, AJvYcCVe/KQozHTLNBPHhU5DPQxC9am1O+8hClj0t6/xNQmAFrAZOsMxTrmQhypqxycC6uuX6Hz6MVtdaeJKsTM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyfevUmOZ5YYyhXCIGBlxa8edjfv8MnqJ88oWf+0VVN405uBvLA
+	iTGq51iCMCHp11KowcgcBMYS4pEgoY2Q3F0PlWmedm3zLANhSCpK8zEM117AxJ52Au91efMz4wb
+	nwYSNuMVTMt7Ale06mHzBhW0AXpc=
+X-Gm-Gg: ASbGncuxwNC7K0ayhjln+w+1mpK11DBEQ8fIa90JyT5R6ro1s9594zXnlAquEypDjxO
+	Xazk/M2C5A1dXkrUnlpp+XEE2dNBhylmB4/Mg6krimwcDEEFjmwNkV+ik9vhmvDsquNf+Mlvcvk
+	M=
+X-Google-Smtp-Source: AGHT+IEs9HDzxbSnf4IuE2Us6jRZq5uN6GtBF34aMoCTWAhmW49kkqa8vONjcSMbO5sJv9M9Po/b4dEo6KUDYdx+FNc=
+X-Received: by 2002:a05:6214:c6e:b0:6d8:9e16:d08e with SMTP id
+ 6a1803df08f44-6e445684b70mr70874766d6.26.1738996922769; Fri, 07 Feb 2025
+ 22:42:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAH6OuBR=w2kybK6u7aH_35B=Bo1PCukeMZefR=7V4Z2tJNK--Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:_Ch0CgBXqcMw+KZnTXnGDA--.40243S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGFWxXryUJr4fCF47ZFy5Arb_yoW5tw48pF
-	Z5K34UKFnFgr4ayr4av3yfXw40qrs5Gry3Zwn5GrW5ZrZ0kFn7ur1I9a15ZF90vrsxGa10
-	qryIvr97Cr1rA3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
-	7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUzsqWUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20250127063526.76687-1-laoar.shao@gmail.com> <Z5eOIQ4tDJr8N4UR@pathway.suse.cz>
+ <CALOAHbBZc6ORGzXwBRwe+rD2=YGf1jub5TEr989_GpK54P2o1A@mail.gmail.com>
+ <alpine.LSU.2.21.2501311414281.10231@pobox.suse.cz> <CALOAHbDwsZqo9inSLNV1FQV3NYx2=eztd556rCZqbRvEu+DDFQ@mail.gmail.com>
+ <CAPhsuW4gYKHsmtHsBDUkx7a=apr_tSP_4aFWmmFNfqOJ+3GDGQ@mail.gmail.com>
+ <CALOAHbDYFAntFbwMwGgnXkHh1audSoUwG1wFu_4e8P=c=hwZ0w@mail.gmail.com>
+ <CAPhsuW4HsTab+w2r23bM52kcM1RBFBKP5ujVdDvxLE9OiqgMdA@mail.gmail.com>
+ <CALOAHbAJBwSYju3-XEQwy0O1DNPawuEgmhrV5ECTrL9J388yDw@mail.gmail.com> <CAPhsuW51E4epDCrdNcQCG+SzHiyGhE+AocjmXoD-G0JExs9N1A@mail.gmail.com>
+In-Reply-To: <CAPhsuW51E4epDCrdNcQCG+SzHiyGhE+AocjmXoD-G0JExs9N1A@mail.gmail.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Sat, 8 Feb 2025 14:41:26 +0800
+X-Gm-Features: AWEUYZnkfqwAOyDcshbUwDrxk7zHdHKhEWMZwGV_f1rXNLE-APUdHuKjOXI0J5I
+Message-ID: <CALOAHbAaCbvr=F6PBJ+gnQa1WNidELzZW-P2_HmBsZ1tJd6FFg@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/2] livepatch: Add support for hybrid mode
+To: Song Liu <song@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, Miroslav Benes <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>, 
+	jpoimboe@kernel.org, jikos@kernel.org, joe.lawrence@redhat.com, 
+	live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Fri, Feb 7, 2025 at 2:01=E2=80=AFAM Song Liu <song@kernel.org> wrote:
+>
+> On Wed, Feb 5, 2025 at 6:55=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com>=
+ wrote:
+> [...]
+> > > I think we should first understand why the trampoline is not
+> > > freed.
+> >
+> > IIUC, the fexit works as follows,
+> >
+> >   bpf_trampoline
+> >     + __bpf_tramp_enter
+> >        + percpu_ref_get(&tr->pcref);
+> >
+> >     + call do_exit()
+> >
+> >     + __bpf_tramp_exit
+> >        + percpu_ref_put(&tr->pcref);
+> >
+> > Since do_exit() never returns, the refcnt of the trampoline image is
+> > never decremented, preventing it from being freed.
+>
+> Thanks for the explanation. In this case, I think it makes sense to
+> disallow attaching fexit programs on __noreturn functions. I am not
+> sure what is the best solution for it though.
 
-On 2/5/2025 8:58 PM, Ritesh Oedayrajsingh Varma wrote:
-> Hi,
->
-> We are in a situation where we're frequently updating a
-> BPF_MAP_TYPE_HASH_OF_MAPS with new data for a given key via
-> bpf_map_update_elem(). During profiling, we've noticed that
-> bpf_map_update_elem() on such maps is _very_ expensive. In our tests,
-> the average time is ~9ms per call, with spikes to ~45ms per call:
->
-> Function Name:   bpf_map_update_elem
-> Number of calls:  1213
-> Total time:            11s 880ms 994µs
-> Maximum:            45ms 431µs
-> Top Quartile:        11ms 660µs
-> Average:              9ms 794µs
-> Median:                9ms 218µs
-> Bottom Quartile:   7ms 363µs
-> Minimum:             23µs
->
-> The cause of this poor performance is the wait for the RCU grace
-> period when map_update_elem() is called: after the update has
-> completed without errors, it calls maybe_wait_bpf_programs() which in
-> turn calls synchronize_rcu() for BPF_MAP_TYPE_HASH_OF_MAPS (and
-> BPF_MAP_TYPE_ARRAY_OF_MAPS).
->
-> As I understand from the commit that introduced this [1], the RCU GP
-> wait was added to ensure that user space could be guaranteed that
-> after the update, no BPF programs are still looking at the old value
-> of the map [2]. When this commit was introduced, the RCU GP wait also
-> covered a potential UAF when updating the outer map while a BPF
-> program was still looking at the old inner map. That UAF was (much)
-> later addressed by a different patchset [3] and the discussion in that
-> patchset [4] mentions that maybe_wait_bpf_programs() is not needed
-> anymore with the UAF fixes:
->
->> So, you're correct, maybe_wait_bpf_programs() is not sufficient any more,
->> but we cannot delete it, since it addresses user space assumptions
->> on what bpf progs see when the inner map is replaced.
-> Given this, while it's not possible to remove the wait entirely
-> without breaking user space, I was wondering if it would be
-> possible/acceptable to add a way to opt-out of this behavior for
-> programs like ours that don't care about this. One way to do so could
-> be to add an additional flag to the BPF_MAP_CREATE flags, perhaps
-> something like BPF_F_INNER_MAP_NO_SYNC. There are already map-specific
-> flags in there (for example, BPF_F_NO_COMMON_LRU or
-> BPF_F_STACK_BUILD_ID), so it would fit with that pattern;
-> maybe_wait_bpf_programs() could then check the map flags and only
-> perform the wait if the flag is not set (which is the default).
->
-> In our case, we don't care if running BPF programs are still working
-> with the old map, but for the thousands of bpf_map_update_elem() calls
-> we're doing in certain situations, we're spending _seconds_ waiting on
-> the RCU GP, so adding something like this would greatly improve the
-> latency in our scenarios.
->
-> If this sounds like something that would be acceptable, I'd be happy
-> to make the change and send a patch, of course. Any thoughts on this
-> are appreciated!
+There is a tools/objtool/noreturns.h. Perhaps we could create a
+similar noreturns.h under kernel/bpf and add all relevant functions to
+the fexit deny list.
 
-If the time used for synchronize_rcu() is too long, maybe we could
-switch to synchronize_rcu_expedited() instead. Could you please check
-the average map update time for synchronize_rcu_expedited() ?
->
-> [1] commit 1ae80cf31938 ("bpf: wait for running BPF programs when
-> updating map-in-map")
-> [2] https://lore.kernel.org/lkml/20181111221706.032923266@linuxfoundation.org/
-> [3] https://lore.kernel.org/bpf/20231113123324.3914612-1-houtao@huaweicloud.com/
-> [4] https://lore.kernel.org/bpf/CAADnVQK=tJRhQY1zfLK2n7_tPA5+vN8+KqWmSLqjubUuh6UFAw@mail.gmail.com/
->
-> Cheers,
-> Ritesh
->
->
-> .
-
+--
+Regards
+Yafang
 
