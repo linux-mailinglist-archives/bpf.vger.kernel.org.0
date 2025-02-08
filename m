@@ -1,188 +1,204 @@
-Return-Path: <bpf+bounces-50867-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50868-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB087A2D5A7
-	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 11:49:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26A9AA2D6EB
+	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 16:37:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1D4C188B1B3
-	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 10:49:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23DAB3A79A9
+	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 15:37:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E6D01AAE0B;
-	Sat,  8 Feb 2025 10:49:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F39E12500AF;
+	Sat,  8 Feb 2025 15:37:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=superluminal.eu header.i=@superluminal.eu header.b="KfcODDyJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AZHw5krk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C3A23C8D0
-	for <bpf@vger.kernel.org>; Sat,  8 Feb 2025 10:49:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC7FD13EFE3;
+	Sat,  8 Feb 2025 15:37:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739011776; cv=none; b=WiFg0Piw5anX/sDsOgR66MYSNJ1QfQku1kCsJ1Z7QoL9hS+FlRxxKjjFyPc5OxLu6m+bK/HtvQz2Q7VdPbeXzAArI63Z7lIkc47IQpoeHFqAzlDpJefGif2cSlYReUwh/Cu5zLNjOTAkLHUZZMllZ5RBrM6t0MGmDs6N8mJO3K4=
+	t=1739029063; cv=none; b=NHj2h5wzw515e4BBPeXfyfEx94UPS3JJntIxppREV89Z9UFdCb/LXwSr81dYt/+kNapwDaKuocpN4fdgVM2iihKSpY/kMvmlcfmCaihRNRrzWrySi16awB6J73sQ6GzPY0P+spcE3Hn8hax+oGVI5renOr3r0GNDZ4/2BRocyZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739011776; c=relaxed/simple;
-	bh=1VEKiB8On80JRb2DLFLbRlVcjuDPaq78iqYPh6B5XBc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aKiCYR0pT8+RqHIld8xTJPLfwmkhUAHPC4LTGPa5rlRVFmcOrxsn69PvQgypNPtk54wBjMEn2R4jg7hNml9Gzjp/AB6Wl4ObAAXaSrMCaf9mMp4pu3ol/B0yaFK1sALB6gFqDMvxxDEzVeNC5UHJVO7tO9BQyHJMfi8747X2Hvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=superluminal.eu; spf=pass smtp.mailfrom=superluminal.eu; dkim=pass (2048-bit key) header.d=superluminal.eu header.i=@superluminal.eu header.b=KfcODDyJ; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=superluminal.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=superluminal.eu
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2fa1a3c88c5so3297488a91.3
-        for <bpf@vger.kernel.org>; Sat, 08 Feb 2025 02:49:32 -0800 (PST)
+	s=arc-20240116; t=1739029063; c=relaxed/simple;
+	bh=VWCQV1asK8mkBC5s9MXTmP3MYrgvswMj5EQIzW1lZ+w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qZata5OxdjV5FEnNPNW+wD/Oxto/rJLreP6TYwx0YCPz4VAVYqxKDYxon8xEBij1CFrRox+Zwh9z3y8H4lnR3o3Wbwy85NT0NaCpELbEz5BQVW66DgSom2KqfZ7++OGGnkGlo6mfxis+uCDYeIsaTNK6qg0uuXnHvBTX0xJBmcE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AZHw5krk; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2fa44590eebso1197901a91.3;
+        Sat, 08 Feb 2025 07:37:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=superluminal.eu; s=google; t=1739011772; x=1739616572; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1739029061; x=1739633861; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=B55h9ee7AnjhNLjdYhLNggeuWJSGljlMlfkcZt6sxOo=;
-        b=KfcODDyJSxHq20hM/Xl7ZqdU6b7VhYJ5riIgs/g9NYiNN9qxUZqQKXsvYRB5pqYMpu
-         +LfmbbHJwRODUs1+KCk6szyfc1gon8/PY8MAC8RbG8YwiTqykHiknnoEolQcAB7o0bv/
-         YkPsIqVrtjkLKsDLzZIOe198HRT1iIhXN/eukp9gULCK3dnVSu+RUt7KhAvvEXBkU3HV
-         Aryty0jB/SgkDNDwM+6NKBaV4SaPpMT7nI0ikH7piluNCcPIPNBoCiSMTsArrJq1QXkr
-         UQOAa5HUzRZ/Bv5BOvZexk/WmTKD6OIhaEfG3oiwwQRIf8XoYFIfLHx/IembY61MEJOf
-         19Iw==
+        bh=tkMGKQ7AKClIujpM9LEQv3XkqSpczhRaDa7fxIiDIII=;
+        b=AZHw5krk9RHxrj2N0FBYEJUwbM5D8EnIWdaiBC0dJFAXL1/z4YsG4xFG6cz33iN6pL
+         jZQpycoMnc5RLOzrgBlOBrg7GYfkGtlR/Bym0okuw96C+l+pGIHcOV155/U9Cz17f8Uk
+         0G5pl1bXQODCM5/O4jtAWyWi7fCkhJEE6/I5FfoX/uoIlp3PDJJX4o+mYhdf9UD7LZlK
+         Vg44Njvpc2bRaGP9FVv9DPey7IODqiBbHMs7XS4msgge/a/Ww+CdLJGMqfMoLY4cLYNH
+         UgPta1cHn+5Nd74cunYXhKcSWzbs8NcI33FO47GEg8uv2JHk0yM1RoRuEPfm0qcpNdLq
+         qWrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739011772; x=1739616572;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=B55h9ee7AnjhNLjdYhLNggeuWJSGljlMlfkcZt6sxOo=;
-        b=Vunjm0B1ytJPfSXNzxqwdJhTGpd7FxRmD33I3Mpcs9oEDLcvBvjqSW997UBjHzyQCC
-         iPzl3+yNC4YNQ/oivk3TAxev6ymr2eyLrqB+ZGlSxOOSqjOCoaFbfCOSExppuGtE7UO9
-         ovK/n9r8ZW0HbNWGcHs7jQKAmP6bKPMZB7pFyC2fpg6XR1lJWRZf+Z211KmgMQVnHWsA
-         52L4GdPDunvxJH+w3dgbPS+DOdy7mKZ8pZGxT66KfaIu8ibSXnesgfPHTSNb35iD44vM
-         DJUWWCQwY1TU+dfbFRyESK6G8nDdHETJtCRKrvzUHVFmNIb4otJCrinT1Wp4MRcd2Aws
-         I6EA==
-X-Gm-Message-State: AOJu0Yztnjlp35ApRGvRsLzzXwEd+IWI0p4jYnjwB0CP72MWOTkMjNSI
-	kq2+HAvq33UhWwPGU8ErqOYkNsIrG9Et9EnxxnPNtEHnhi3DxX8BNQvhQ3wZj2dNgYEK15jtrHJ
-	f8z7DMVUbN62PBsKNkT52zM4DKAFa1T/ietQEwg==
-X-Gm-Gg: ASbGncuev90kMwGnRK08T+ZHX2Z04rNODRO4HdxWbMl8XS5M13iOEf7RYxWD8kW3NZB
-	GUAf0kzvEaCbQjboxXoEamovDildv7Id58JqRlZNsb6LdXkyFliEgwGiWmqTff9kRgMjf70zu77
-	BK21P5whH500TOs0UNZcM3q7Kpr4y3v88=
-X-Google-Smtp-Source: AGHT+IHZk8E7W4Vebi3hrCTslEqXXGgiAkux4BTvUMnxpgR6BqkNWlPLhvxpIE8NdwUxjv3TtCr7D6F5CaeQiTyvWkQ=
-X-Received: by 2002:a17:90b:4a86:b0:2fa:226e:8491 with SMTP id
- 98e67ed59e1d1-2fa2406baa8mr10395006a91.9.1739011771986; Sat, 08 Feb 2025
- 02:49:31 -0800 (PST)
+        d=1e100.net; s=20230601; t=1739029061; x=1739633861;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=tkMGKQ7AKClIujpM9LEQv3XkqSpczhRaDa7fxIiDIII=;
+        b=Hgg4XnFmkwsXw5Ho374+Z7EN2UPCCx4LEL2maCU6E67l/a167iAp9lQjykiKelmx/0
+         7yIu5UA/FUS8wZqgCg8mQQ7JwyFNOzj+qq4lp+IJNgJks/yqzFwpOoaPb0dhSH5xTIZ6
+         KPPVpuxuQnd4BWT9DYp74nw3s6q9h7io9keuiLiv0NYS2vnkG07qddnIpxFPGFDkjVJg
+         KClwmtf7K5NTtIq2UrPZTUIKIdscoW/aiR74nMiAoS6L59VkuRe1oUMu7mQnbnKwhDq/
+         DLmeJPTC+n0fIWRBGMiEBO0iF31f1MOzeIgTUwn1JMEt82ac3lTuLsuodhAbtEGy1yg2
+         a2Pw==
+X-Forwarded-Encrypted: i=1; AJvYcCWDVeJWUYHGmUaxLmLkK0eF7PyVwFtudv4J3PBa9YypLz+khsIR7bGxLs9IPYRQT98XY9XanK56aaazMtk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzOC5IzYds1PSQans7Wy/BnmAYzu6PtP/bXd+CM3fIxiJgM7vne
+	aKLomfd1rOpB+Zrd2yySuEqtspxSNHtwNc5RWgmVBjaN8/rePD8A
+X-Gm-Gg: ASbGncs4qyBiCpekFNHngPBIZHu+WetsNU7FXfL0z5zRfh7wiHVKM9ELOa1vw3mvz/Y
+	uIzJ/1vK+XwoL2pMmxmdnKjO6KPbPl7dbalM0udd+uwXGXMbU1S7OEzN0oKQgiM/JOb4P6EE4mc
+	6i/f/bNSzN53BwLt+109srw6d9P8xH442I6kIZXAFfTIr+mkP54QbDoj8zmFJHcy8hUONpw4P39
+	BRPWXRoCrmNzfQuT+uzLLdxCDLfefi6Uok/ZBqtnYEraIINlD1vifcto2eMCKAHZJPzh6NhhB8S
+	cQpYA85p4R1gCY81XkxwC0X6Emx0wSSzTw==
+X-Google-Smtp-Source: AGHT+IEBiOdQixE/sEDSsEkCVBnZLT/H+JJ+GndkTmkOgrdPvikWjN62GqJMO8StduJyqgmGsrZUHQ==
+X-Received: by 2002:a05:6a00:c92:b0:725:df1a:27c with SMTP id d2e1a72fcca58-7305d4956ccmr11579244b3a.14.1739029060886;
+        Sat, 08 Feb 2025 07:37:40 -0800 (PST)
+Received: from [192.168.50.123] ([117.147.91.64])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73048a9d4d7sm4883411b3a.16.2025.02.08.07.37.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 08 Feb 2025 07:37:40 -0800 (PST)
+Message-ID: <be935464-8a36-4019-851a-881f82b2343e@gmail.com>
+Date: Sat, 8 Feb 2025 23:37:13 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAH6OuBR=w2kybK6u7aH_35B=Bo1PCukeMZefR=7V4Z2tJNK--Q@mail.gmail.com>
- <db6b3fb9-bcb7-7670-6cb2-1ef5406e81c4@huaweicloud.com>
-In-Reply-To: <db6b3fb9-bcb7-7670-6cb2-1ef5406e81c4@huaweicloud.com>
-From: Ritesh Oedayrajsingh Varma <ritesh@superluminal.eu>
-Date: Sat, 8 Feb 2025 11:49:21 +0100
-X-Gm-Features: AWEUYZmez93xhEEHiGPAyWk0SATg_PS_YGMlxuprgK8kgxy4wm5Y6hiVUha66Y4
-Message-ID: <CAH6OuBSfRve-uTW4AJd+7xKmwseauwfZLsq1jBbeye4z+61PBg@mail.gmail.com>
-Subject: Re: Poor performance of bpf_map_update_elem() for BPF_MAP_TYPE_HASH_OF_MAPS
- / BPF_MAP_TYPE_ARRAY_OF_MAPS
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Jelle van der Beek <jelle@superluminal.eu>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v4 3/4] libbpf: Add libbpf_probe_bpf_kfunc API
+To: Eduard Zingerman <eddyz87@gmail.com>, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, haoluo@google.com,
+ jolsa@kernel.org, qmo@kernel.org
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250206051557.27913-1-chen.dylane@gmail.com>
+ <20250206051557.27913-4-chen.dylane@gmail.com>
+ <7d667c037e7396fb88cf243162c5aa8a537858bb.camel@gmail.com>
+From: Tao Chen <chen.dylane@gmail.com>
+In-Reply-To: <7d667c037e7396fb88cf243162c5aa8a537858bb.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sat, Feb 8, 2025 at 7:22=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wro=
-te:
->
-> Hi,
->
-> On 2/5/2025 8:58 PM, Ritesh Oedayrajsingh Varma wrote:
-> > Hi,
-> >
-> > We are in a situation where we're frequently updating a
-> > BPF_MAP_TYPE_HASH_OF_MAPS with new data for a given key via
-> > bpf_map_update_elem(). During profiling, we've noticed that
-> > bpf_map_update_elem() on such maps is _very_ expensive. In our tests,
-> > the average time is ~9ms per call, with spikes to ~45ms per call:
-> >
-> > Function Name:   bpf_map_update_elem
-> > Number of calls:  1213
-> > Total time:            11s 880ms 994=C2=B5s
-> > Maximum:            45ms 431=C2=B5s
-> > Top Quartile:        11ms 660=C2=B5s
-> > Average:              9ms 794=C2=B5s
-> > Median:                9ms 218=C2=B5s
-> > Bottom Quartile:   7ms 363=C2=B5s
-> > Minimum:             23=C2=B5s
-> >
-> > The cause of this poor performance is the wait for the RCU grace
-> > period when map_update_elem() is called: after the update has
-> > completed without errors, it calls maybe_wait_bpf_programs() which in
-> > turn calls synchronize_rcu() for BPF_MAP_TYPE_HASH_OF_MAPS (and
-> > BPF_MAP_TYPE_ARRAY_OF_MAPS).
-> >
-> > As I understand from the commit that introduced this [1], the RCU GP
-> > wait was added to ensure that user space could be guaranteed that
-> > after the update, no BPF programs are still looking at the old value
-> > of the map [2]. When this commit was introduced, the RCU GP wait also
-> > covered a potential UAF when updating the outer map while a BPF
-> > program was still looking at the old inner map. That UAF was (much)
-> > later addressed by a different patchset [3] and the discussion in that
-> > patchset [4] mentions that maybe_wait_bpf_programs() is not needed
-> > anymore with the UAF fixes:
-> >
-> >> So, you're correct, maybe_wait_bpf_programs() is not sufficient any mo=
-re,
-> >> but we cannot delete it, since it addresses user space assumptions
-> >> on what bpf progs see when the inner map is replaced.
-> > Given this, while it's not possible to remove the wait entirely
-> > without breaking user space, I was wondering if it would be
-> > possible/acceptable to add a way to opt-out of this behavior for
-> > programs like ours that don't care about this. One way to do so could
-> > be to add an additional flag to the BPF_MAP_CREATE flags, perhaps
-> > something like BPF_F_INNER_MAP_NO_SYNC. There are already map-specific
-> > flags in there (for example, BPF_F_NO_COMMON_LRU or
-> > BPF_F_STACK_BUILD_ID), so it would fit with that pattern;
-> > maybe_wait_bpf_programs() could then check the map flags and only
-> > perform the wait if the flag is not set (which is the default).
-> >
-> > In our case, we don't care if running BPF programs are still working
-> > with the old map, but for the thousands of bpf_map_update_elem() calls
-> > we're doing in certain situations, we're spending _seconds_ waiting on
-> > the RCU GP, so adding something like this would greatly improve the
-> > latency in our scenarios.
-> >
-> > If this sounds like something that would be acceptable, I'd be happy
-> > to make the change and send a patch, of course. Any thoughts on this
-> > are appreciated!
->
-> If the time used for synchronize_rcu() is too long, maybe we could
-> switch to synchronize_rcu_expedited() instead. Could you please check
-> the average map update time for synchronize_rcu_expedited() ?
+在 2025/2/8 06:35, Eduard Zingerman 写道:
+> On Thu, 2025-02-06 at 13:15 +0800, Tao Chen wrote:
+> 
+> [...]
+> 
+>>   LIBBPF_API int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type,
+>>   				       enum bpf_func_id helper_id, const void *opts);
+>> -
+>> +/**
+>> + * @brief **libbpf_probe_bpf_kfunc()** detects if host kernel supports the
+>> + * use of a given BPF kfunc from specified BPF program type.
+>> + * @param prog_type BPF program type used to check the support of BPF kfunc
+>> + * @param kfunc_id The btf ID of BPF kfunc to check support for
+>> + * @param btf_fd The module BTF FD, if kfunc is defined in kernel module,
+>> + * btf_fd is used to point to module's BTF, 0 means kfunc defined in vmlinux.
+> 
+> Regarding '0' as special value:
+> in general FD is considered invalid only if it's negative, 0 is a valid FD.
+> Andrii, I remember there was a lengthy discussion about FD==0 and BPF,
+> but I don't remember the conclusion.
+> 
+>> + * @param opts reserved for future extensibility, should be NULL
+>> + * @return 1, if given combination of program type and kfunc is supported; 0,
+>> + * if the combination is not supported; negative error code if feature
+>> + * detection for provided input arguments failed or can't be performed
+>> + *
+>> + * Make sure the process has required set of CAP_* permissions (or runs as
+>> + * root) when performing feature checking.
+>> + */
+>> +LIBBPF_API int libbpf_probe_bpf_kfunc(enum bpf_prog_type prog_type,
+>> +				      int kfunc_id, int btf_fd, const void *opts);
+>>   /**
+>>    * @brief **libbpf_num_possible_cpus()** is a helper function to get the
+>>    * number of possible CPUs that the host kernel supports and expects.
+>> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+>> index a8b2936a1646..e93fae101efd 100644
+>> --- a/tools/lib/bpf/libbpf.map
+>> +++ b/tools/lib/bpf/libbpf.map
+>> @@ -436,4 +436,5 @@ LIBBPF_1.6.0 {
+>>   		bpf_linker__add_buf;
+>>   		bpf_linker__add_fd;
+>>   		bpf_linker__new_fd;
+>> +		libbpf_probe_bpf_kfunc;
+> 
+> This is now in conflict with bpf-next.
+> 
 
-I'm not very familiar with synchronize_rcu_expedited(), but does it
-provide similar guarantees as synchronize_rcu()? If not, it would be a
-breaking change.  Reading up on it, it also seems to have a different
-effect on the system regarding efficiency/disturbance from
-synchronize_rcu().
-Either way, I can attempt to test it, but I'll need to see when I can
-schedule in some time for it.
+My bad, i will rebase the repo.
 
-That all being said, even if synchronize_rcu_expedited() is faster
-than synchronize_rcu(), a flag to skip it entirely would still be
-faster, so I think it'd make sense to make both changes.
+>>   } LIBBPF_1.5.0;
+>> diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
+>> index e142130cb83c..c7f2b2dfbcf1 100644
+>> --- a/tools/lib/bpf/libbpf_probes.c
+>> +++ b/tools/lib/bpf/libbpf_probes.c
+>> @@ -433,6 +433,61 @@ static bool can_probe_prog_type(enum bpf_prog_type prog_type)
+>>   	return true;
+>>   }
+>>   
+>> +int libbpf_probe_bpf_kfunc(enum bpf_prog_type prog_type, int kfunc_id, int btf_fd,
+>> +			   const void *opts)
+>> +{
+>> +	struct bpf_insn insns[] = {
+>> +		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, btf_fd, kfunc_id),
+>> +		BPF_EXIT_INSN(),
+>> +	};
+>> +	const size_t insn_cnt = ARRAY_SIZE(insns);
+>> +	char buf[4096];
+>> +	int *fd_array = NULL;
+>> +	size_t fd_array_cnt = 0, fd_array_cap = fd_array_cnt;
+>> +	int ret;
+>> +
+>> +	if (opts)
+>> +		return libbpf_err(-EINVAL);
+>> +
+>> +	if (!can_probe_prog_type(prog_type))
+>> +		return -EOPNOTSUPP;
+>> +
+>> +	if (btf_fd) {
+>> +		ret = libbpf_ensure_mem((void **)&fd_array, &fd_array_cap,
+>> +					sizeof(int), fd_array_cnt + btf_fd);
+> 
+> Please take a look at the tools/testing/selftests/bpf/prog_tests/fd_array.c,
+> e.g. test case check_fd_array_cnt__fd_array_ok(). The offset field of the
+> call instruction does not have to be an fd (as it only has 16 bits),
+> instead it's an offset inside the fd_array.
+> Here it would be sufficient to allocate a small array on stack.
+> 
 
-> >
-> > [1] commit 1ae80cf31938 ("bpf: wait for running BPF programs when
-> > updating map-in-map")
-> > [2] https://lore.kernel.org/lkml/20181111221706.032923266@linuxfoundati=
-on.org/
-> > [3] https://lore.kernel.org/bpf/20231113123324.3914612-1-houtao@huaweic=
-loud.com/
-> > [4] https://lore.kernel.org/bpf/CAADnVQK=3DtJRhQY1zfLK2n7_tPA5+vN8+KqWm=
-SLqjubUuh6UFAw@mail.gmail.com/
-> >
-> > Cheers,
-> > Ritesh
-> >
-> >
-> > .
->
+Good idea，thanks for your guidance，I'll make the modifications in the 
+next version.
+
+>> +		if (ret)
+>> +			return ret;
+>> +
+>> +		/* In kernel, obtain the btf fd by means of the offset of
+>> +		 * the fd_array, and the offset is the btf fd.
+>> +		 */
+>> +		fd_array[btf_fd] = btf_fd;
+>> +	}
+> 
+> [...]
+> 
+
+
+-- 
+Best Regards
+Dylane Chen
 
