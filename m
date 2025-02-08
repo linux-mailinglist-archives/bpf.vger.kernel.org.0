@@ -1,322 +1,293 @@
-Return-Path: <bpf+bounces-50849-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50850-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8654A2D454
-	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 07:54:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E1BBA2D4EA
+	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 09:47:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09FC016C6A7
-	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 06:54:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24DCA1628AF
+	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2025 08:47:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3B911AC43A;
-	Sat,  8 Feb 2025 06:54:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9741A2C11;
+	Sat,  8 Feb 2025 08:47:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jmwxPUy4"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="QEbMZmpA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2061.outbound.protection.outlook.com [40.107.93.61])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9448913D28F;
-	Sat,  8 Feb 2025 06:54:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738997672; cv=none; b=UQ4klDmD83lBs2KHEWfXkea45Ct+MoXsKJINl/YyIQePk/nQZa1okCWQW+fmrRtcy2JQck93QzPMdwdX4PJ4rUQd4q04g0QB7ogkLg82QvcziDjUFzt9OjRiDVTB5lv3jFneMSphIrPQ4djToZmNX4pxZK5BJ5TktyY5bgHl6dM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738997672; c=relaxed/simple;
-	bh=GOqFq08kb4mAjnpjZ7dY8tvP/9Sl5M2IAyaDMDSQ1mA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ntKa18UGdnl7pWJAE9RJL6XShby75jdAHKiDqNNEuRmnCJKEbAT9o1VJxdW4eKtT0uLORdDJtHmq1yX7aTa3pKSqZVxyql9pEyKhBOAznOPGzN0m7BiioMGF+yDT0WEcI7RH6PTwrF2mbS2aFKUUsE3zoj3I/6My/eVAeaku4G4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jmwxPUy4; arc=none smtp.client-ip=209.85.166.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3d146df0afeso7314095ab.3;
-        Fri, 07 Feb 2025 22:54:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738997669; x=1739602469; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E9Z9VrVCWbmpLh+Hg7PlddvN+/xuMtc+jiEOiugtVTs=;
-        b=jmwxPUy4DTJn+N0dftY0j44Mc0GgqIQnGrXtJgmQMkMBtTROL2Vsx0JePVO8w5UgHH
-         KpNGHmEF27sdSAvsvo+iJFOoVt8zy1wGzap+SNCI9OVFsX/6vd8zYz6avqGdabMmGQF0
-         2CM5UAiEj8NWAIdMjzGihf+k6tvd5GfaSilxRoUXZRqPPJF1w5HIqGeqvBiNwDDwadP2
-         PF5q/nfEZxrouxtFiXSRJnFM+LIw41QQKYEyBe2rujWzfRjesoIZQcQGMnkPuCYqKQFy
-         jVKpTLqN/rWCB+gX9R6l6/MI9zlzuyMJCanyhL6mcCG7XCGGMyfrJsdpNoDBSe2aP926
-         qe3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738997669; x=1739602469;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E9Z9VrVCWbmpLh+Hg7PlddvN+/xuMtc+jiEOiugtVTs=;
-        b=lmYgAOuUqJfX4xcgapsn5t42b6ApWHrGn/McoEIKi7FoxF15EAzmubiPwvy0PWY3QW
-         HR8n0yaurc0sRiksGjVYPkvXOM+ruyQxG3FZxIxTw0y7uLRrqkKBZugiDjjguyfm97LZ
-         Sn7fH/161Ilml+GI+JUrQc/lORgc9OdK563MXEKGSuyhsK5sHhjgJtYQbo7IJOaj0dyY
-         5PKabpBihayX2INxlrSjh5T2iYA5XbuQxJ90S2ruhstKNNDTXDK7Vgm1Dw2JNfZPVBvm
-         eDC+xJQWJHmuzkvA2YY8ccbkE2nkcEIpT9VPwU3HNkleMLbs6od7MqOqXxh0NyrO5vOz
-         6Naw==
-X-Forwarded-Encrypted: i=1; AJvYcCVEl5Y4UZBDUHUAgeP5Gv/Lic5RKGJgreEIECPvEdeBGO+vUvOIOYmUxru45XcWo2GVFBKBsW60@vger.kernel.org, AJvYcCXr7TwGUg31bQOG+vwz5tknd4/q8VK19A0iJ34ZjY+fMDa3NHrUX/cGx0K1+HXS1vL/izY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwX65qAzTi/cnFV3iq5q5v1Rx/hrjmfa1Fo8TtfUxHeZaym75fN
-	QIeMJQEdJyr/ce8ntmwnW0iYseTAq4e8Pg3U00u1xcTs1qj9ivIUcRy8QDwRiQctbwNFGjf/AKE
-	D1Wk4hxZDjLDxYjPYbiiqyMvBmWU=
-X-Gm-Gg: ASbGncu/iF39zxeWRzApo59t7Aov5J2PK/sAaho29KokAp4IedOqhnu3F5CzZvGWEVy
-	h9WJUWtWCgL1qdWYkqLgfWe9ajyzhkAzOIAD4bzibzE6l+zsS9JMnJsLIo0dWjiCIFjPUrQdE
-X-Google-Smtp-Source: AGHT+IETM5eUX+Mc36jJh/HPLV5bCdv++TDdM6wxgrbSZP4F+Zk2pQHUfgeuB1AojRIfFpGo0NUu7GHut+HzQ9GLV/g=
-X-Received: by 2002:a05:6e02:3785:b0:3d0:4e57:bbd9 with SMTP id
- e9e14a558f8ab-3d13dd4d375mr46814125ab.10.1738997669607; Fri, 07 Feb 2025
- 22:54:29 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B7BC522F;
+	Sat,  8 Feb 2025 08:47:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.61
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1739004446; cv=fail; b=pG92JT0Zu0rJl/fI6hlDr+ycDOFGao8/RK9HMQiI1lrv03skvHIG/JVESaMnQZw3MC0w02aQKoUBhXwHWxDKkSkPhc7WlS7suJTWRJeqpqepUkads8eU5HM1KWjCJqgLbP4GuqENrx4J+R4dhAiJAgoD7KllILutAD8zs0hQPk8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1739004446; c=relaxed/simple;
+	bh=Ep7kvDN+tQoH2ifjKCoGiKPUM/J9nH8zE5cgSMTCCro=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=DKSXltRlXMLG0bksOjcPAlRiIUMx2+Hj1UXZyIKpqQXYBNx5Eyesyd5r+qDzMgPRS9BLNteyAsSF+ayaHCz9ufjNA7VQz7V9oAIOw3YONMKIqsUepT7B8OZCn4FE1DxFrp+bv5jQMlYTwDZcFoKG3/rIC72xU4FMINUR0mLB+sk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=QEbMZmpA; arc=fail smtp.client-ip=40.107.93.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=O/BjEfSPCX9lIv1tMcNgk2f64MQ/x0MtAWVUPBNj2YoLH0xpLUBLh4c5t9mZ8677TfDCaA2KTzn0z8UCCMUrv9Li+ecHNve8WIx+FDcTknACvpab4eIwWpm9bAkIxaIurX+ydyFappgytLrfXpPj7eOWjCJn6bX/jdnmP721EwOZyax6hhSJ20pGDSgTEPCcRv3ZTFZzafLI8IFbmwEUl+5mkG5CR0vi/nSdO6M3RSL8rjeSl/4qaAEhkQxQQedgFY6MJMKwc7i/GTniMKpkZut9tVlQQSXbh+zjUSxjHSjsMVq3G5s2Luu4Xz3ONaQdOa412om/GJiAklN+fso6mw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=G2gT7SgpUm3Ea0OeSsqaVyE0SOyaSiJmQrOyanCrvpE=;
+ b=RLKfBtY5bGcqR1s434ZQ2RdvwnxYm8Q0ddjiKl9nWUmmWKGx4thG2EcoIVK+q8zmb9BtNADvUwAMLjWLftK93VyPTQ5d0o7szN1h48r5dB+0wJsXEMrku/qYXGWELZ9N6vl/AZVPCFvQmD5tYSJXB7AQ+LQ59Tovp2oKbN1+tnhTXFGsLv0x5q/FZpWqFuCaBGR8KfIGgxdR8MJD/4XtskgEOl2yr6dqIeczP8db1srCK1u6N+J9BubCt8cJtNE5tn8rznSxzIgP2tCByyx1tva6HhmZkjmh4BHyuE90mQP7ohFW8AIGTmiYSpSCUcJndtknlpSg4q+yub5zx6XuIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G2gT7SgpUm3Ea0OeSsqaVyE0SOyaSiJmQrOyanCrvpE=;
+ b=QEbMZmpAoMWqnE/zFrNB5E9YdXltUwy05+9Dcyw/hxo7AbAFIe3cSm8nDOPZ6Zd43/EqjjY62WBhNzfjA24u0tIjhJrqr75DXm1tkzMV39JPYbjfo7BDKJNLLax70aKHyxE/Z7ZxnjVXU0wE2C1T8ilUhdQ+c9GJawTLq4Z275h5LOJxcdheEJdK4yKg2HyxgjIvqxReeee3UxNUFqAuylVJOVXRoqFRrEPJutaq+YUNDLlMX5P4B0XCbw/DronAG3SJnLpSmpMsiadSSK0VdxqtC94WcJpVQpYJY+FERsuhQzY9BnPhVppT+XIJHdynDnhCnQOY3kxwF31LmXAspA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CY5PR12MB6405.namprd12.prod.outlook.com (2603:10b6:930:3e::17)
+ by BY5PR12MB4290.namprd12.prod.outlook.com (2603:10b6:a03:20e::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8422.12; Sat, 8 Feb
+ 2025 08:47:20 +0000
+Received: from CY5PR12MB6405.namprd12.prod.outlook.com
+ ([fe80::2119:c96c:b455:53b5]) by CY5PR12MB6405.namprd12.prod.outlook.com
+ ([fe80::2119:c96c:b455:53b5%7]) with mapi id 15.20.8422.010; Sat, 8 Feb 2025
+ 08:47:19 +0000
+Date: Sat, 8 Feb 2025 09:47:15 +0100
+From: Andrea Righi <arighi@nvidia.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: David Vernet <void@manifault.com>, Changwoo Min <changwoo@igalia.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>, Ian May <ianm@nvidia.com>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/6] sched_ext: idle: Per-node idle cpumasks
+Message-ID: <Z6caE43btbZZthiw@gpd3>
+References: <20250207211104.30009-1-arighi@nvidia.com>
+ <20250207211104.30009-6-arighi@nvidia.com>
+ <Z6aJjTFNJKjDfG77@slm.duckdns.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z6aJjTFNJKjDfG77@slm.duckdns.org>
+X-ClientProxiedBy: MI1P293CA0002.ITAP293.PROD.OUTLOOK.COM (2603:10a6:290:2::9)
+ To CY5PR12MB6405.namprd12.prod.outlook.com (2603:10b6:930:3e::17)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250204183024.87508-1-kerneljasonxing@gmail.com>
- <20250204175744.3f92c33e@kernel.org> <e894c427-b4b3-4706-b44c-44fc6402c14c@linux.dev>
- <CAL+tcoCQ165Y4R7UWG=J=8e=EzwFLxSX3MQPOv=kOS3W1Q7R0A@mail.gmail.com>
- <0a8e7b84-bab6-4852-8616-577d9b561f4c@linux.dev> <CAL+tcoAp8v49fwUrN5pNkGHPF-+RzDDSNdy3PhVoJ7+MQGNbXQ@mail.gmail.com>
- <CAL+tcoC5hmm1HQdbDaYiQ1iW1x2J+H42RsjbS_ghyG8mSDgqqQ@mail.gmail.com>
- <67a424d2aa9ea_19943029427@willemb.c.googlers.com.notmuch>
- <CAL+tcoCPGAjs=+Hnzr4RLkioUV7nzy=ZmKkTDPA7sBeVP=qzow@mail.gmail.com>
- <67a42ba112990_19c315294b7@willemb.c.googlers.com.notmuch>
- <CAL+tcoC_5106onp6yQh-dKnCTLtEr73EZVC31T_YeMtqbZ5KBw@mail.gmail.com>
- <b158a837-d46c-4ae0-8130-7aa288422182@linux.dev> <CAL+tcoCUjxvE-DaQ8AMxMgjLnV+J1jpYMh7BCOow4AohW1FFSg@mail.gmail.com>
- <739d6f98-8a44-446e-85a4-c499d154b57b@linux.dev> <CAL+tcoA14HKQmG9dtMdRVqgJJ87hcvynPjqVLkAbHnDcsq-RzQ@mail.gmail.com>
- <CAL+tcoD9qZvbo53QsUcC27Dp=tJshBFdjoM9RCHxHEsYjwaXWg@mail.gmail.com> <1ef7e85b-03b7-4baa-aca2-3c18bf1e16e2@linux.dev>
-In-Reply-To: <1ef7e85b-03b7-4baa-aca2-3c18bf1e16e2@linux.dev>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Sat, 8 Feb 2025 14:53:53 +0800
-X-Gm-Features: AWEUYZl3FKcsSheniI0jLgCpjJA6LfsQQKBq81BqJz3BsKZDt6w5Nh2uauHRO6c
-Message-ID: <CAL+tcoAQt0LYucAah_=Kighv9AcdBg4ZZFzwZx9q9=5NBXP21Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v8 10/12] bpf: make TCP tx timestamp bpf
- extension work
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Jakub Kicinski <kuba@kernel.org>, 
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com, 
-	dsahern@kernel.org, willemb@google.com, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, horms@kernel.org, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR12MB6405:EE_|BY5PR12MB4290:EE_
+X-MS-Office365-Filtering-Correlation-Id: dc453a8f-772f-4045-590d-08dd481d328b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|7416014|376014|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?KYeqU+xY8IpgatVZYlsiJYRkeJg7kB+fV7TpfcK4ED8xhwxMZQ7WrDvIoYwe?=
+ =?us-ascii?Q?IhHFr9GVbU/W32CzkzoiAWGofFe0z4Y1Ceu+qu2qhZLwF2BUvghTPJCNd5Mz?=
+ =?us-ascii?Q?iN25NJwpyjoyETkBuNqYCizBp9+Px0TMMuDgmY8B4EyQ9WTSVzAZvXXrSnEz?=
+ =?us-ascii?Q?kkEv9ZueWTTV3gvWtcePOUYIHmlwcSxT9QItU1UiYVQdMwcwl26/LNU8tuLC?=
+ =?us-ascii?Q?x9I1tl1nOXClDl5Fd797uCn7k1YpQ9l3aIbLl1BxcjZDNwBKiA/ba2hRIBfY?=
+ =?us-ascii?Q?i/e5NVcYRWwXobZ8MUtnvs1wNu2uC0Nxq0i+KPTenBwOR+3yuBQEEP7zgaNV?=
+ =?us-ascii?Q?h7zip57C+Rk90qYpUpif57z9N5xqc8D99hSK54kdGs/sijkmetogeYuarWD8?=
+ =?us-ascii?Q?I6mrmaKqu/QPDGATM95IE+Ub+A9bn6MHrxBgDMmR+on6Q82GXwiJkGNSQnI1?=
+ =?us-ascii?Q?joyDRe/dQmYIza0nWZN7Y7pDDeOH/KH/hj7lq2Rds/ocazdlPpGiDhtXwtby?=
+ =?us-ascii?Q?gT4QAro87m8Hwv82LROAv+xg0zWxnSzTanm4GgR5AQIXdBxs93bgUPzEfeaL?=
+ =?us-ascii?Q?wIRQxjfXDYMyw5N5c7PLkTiimn9vp3ELnl8VqgK7dph/2VmxNrHDxUxMOPEn?=
+ =?us-ascii?Q?Bi1Y/Oy2lYd/8fwzJJS2vqyb57uv0xl+BUPtJ0cSoKavJuFrHMFAGBQ37gj9?=
+ =?us-ascii?Q?1NaCsfgSSsWvQtZsAGxvk0jr4jq0TxeR7e156TZIz7uGb/nBfeM9esUDwfec?=
+ =?us-ascii?Q?oHmlMAD5fi89zNtz+eNz3qJk2qga5Z7xysYhBipaCLaLpyt+JtMG43whzemE?=
+ =?us-ascii?Q?cdr/ud+53o6cJ0hh4WK1PWthC53c5TA1IDMoDSqHiD5ojSoGW1sPJ71+Tt4c?=
+ =?us-ascii?Q?Czv73YIGwTfI21G1UiJ5RytJK/D2//GEoEZF6E6OKfDt4W0Hhge0BgB8DQYK?=
+ =?us-ascii?Q?1Tmv7AWylhc0XTpyfT35XWUU/tvRi5GpPTKoDZIrseC/9IobAcsFZBjtvACG?=
+ =?us-ascii?Q?zaZQ1VIXgAhV1S9BG+W69jA9UJqIsYnHLCXZqqs33JsRjYx2K3TSpfh5NkqJ?=
+ =?us-ascii?Q?FYCq6Yn1lFBxosTVOYwn72yVWoThe7CKx2CtUlQmdiDYVZfLcSZhGDYltabl?=
+ =?us-ascii?Q?KABekrqyoEsl3Vf0OcPEnTU11dH6kS6FO87CxrPtrgGDt0SKk+QpQpPt0Yfi?=
+ =?us-ascii?Q?xCM3niUUNK8Bx1etFkLqFMPWhOrqZio9LOZ/WK6OUuZeU8Qw/xHF0HDPlwte?=
+ =?us-ascii?Q?uDekQzxqCTN3CXAuvANtA/Dre+YTs5SjUv804V5UTUgyItMBuH6YzLxLx6Dm?=
+ =?us-ascii?Q?8b4g8lQCZvnLCFGonel0zljHrI862C55vpclQUbVSPwrZwzgi3IuwCUDgTXJ?=
+ =?us-ascii?Q?Hm/JQ3MBov1FQ5qNuDQ/D6HTuyb3?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6405.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?4IU4ZJRt/ljRgcasTjomCj4x4Dd52Omn8gCKxMzYRXoaLdrNq/PBsE5aIMGl?=
+ =?us-ascii?Q?ZIOUjQUyuC0hihDDBm0s5EXtHKnydKCBWGhz3JX3MQh57cd+szNRmGh5SQk0?=
+ =?us-ascii?Q?G3MvaX5K3WfjuY8ccpwkrGYCowGGhCQPmpOMGU3uONCt8HelNznJIBVKIjsB?=
+ =?us-ascii?Q?7WDgzlFEkv35Jmyl9cgep6hnxg3aftvSjRR6dgkTa3xrZYXy4HAyU8mYaqbJ?=
+ =?us-ascii?Q?MttRJef0/BbpnyhwtP4cjsLFG3Ih/quzAYHpNi5hDVXhSE5m0v8Re0d5svJx?=
+ =?us-ascii?Q?SkTtMxdL8w68PMgr/GxvvQWf3f6Th2y0XR+lQ631gA2txrVCiDLt81pftCrp?=
+ =?us-ascii?Q?6IknSgevN6mLoGpRyiIlMhMkzvRkTJNgDHK7WFrHHnbNQRcsxsCS37mq+ZCj?=
+ =?us-ascii?Q?AXUCYQVNon3O4mN4wxD0aYkQTK3Em+LeipBi/ADwVBoQ1AFsrhUEAbJdJcjp?=
+ =?us-ascii?Q?wCWqEJHzKYb1ufuvLTpwDoyOuyfypBw1y6cTwKUcHdiiVuQixBpPnnyVGaOr?=
+ =?us-ascii?Q?MqMRBKNLJP9Xyua+yOC/zb7zTV/zLSQFChxtacP+OwMHdgNiJgFfpCvE0spm?=
+ =?us-ascii?Q?uxGarqoTmpkjeiDkhmkxzuQt3IIgfDFuUcgqBcUteXSm5o8k1RXpFN+HodHt?=
+ =?us-ascii?Q?VoRQCnMEOusEkyHDOKzOq0w6GL5P/p5WUea8qD4gzvmEQZKhWETVJXzLYymM?=
+ =?us-ascii?Q?4W0RU29P2iZeYSHsqcjL/VQH80+T647XKAG+Z7J+YVsn4mR+ZwqjNmIb3QRZ?=
+ =?us-ascii?Q?c2NWKO9OWyhtRfYAuQAlcKpTiSyBQQRrJ0sMRUrdqKOptLSG7wsN8/HfsIbr?=
+ =?us-ascii?Q?KYIDXHf8yUJc52JEwikAVOwvZxnwlGQu2U4zuMnl1Q0gfWZk9MwYK1T13P93?=
+ =?us-ascii?Q?JjvgVvqdLaFspfhUkEBkFebo9esU82dbixze8A0gQ9FAAU0xy7gfVwN2MiVd?=
+ =?us-ascii?Q?OzCEBf6nnuPK6ZZpztnhMyjHj3QpwD0vrxFK9Et4sVx3mG8RScU2UhGAhxQg?=
+ =?us-ascii?Q?m5a13VqBq0Sf6Fm4f0con+wt7WSagMb3RAvNnKmb+RnoxIZ3Ck5IhzwJIOLI?=
+ =?us-ascii?Q?qegbw4ogTvhoX0jLwRxch+CLRBSo3bdUsBp8y5G/AAFliNkmeyeiaCtcu5y1?=
+ =?us-ascii?Q?bWQbL9IivOXfVN4jvQ2NcLnU8L7Q42d8bA7YB72CSMyInZOmp+QPzn/BOB2Y?=
+ =?us-ascii?Q?e9eWI05+n0vup+RGmTjC+LdEZb6wuClcaUwC3jTV3pzHEVvrAMRnelvFHi6S?=
+ =?us-ascii?Q?sCyqcWGFocbhprMdClPptK2lYqx3K50ofhCYaBdev08OlQ3kNE6a8Q08Nqzu?=
+ =?us-ascii?Q?01BfLvYraj0FZSb8DztE6j5BvnOXSB6C89rd2zZ9WAl88c3OZ3kiHPO6s8z1?=
+ =?us-ascii?Q?FMaiHhUoBye+H4XCwDCQa8BGfQrIouBJglvyTBFgchTw89PuVEVezenF35iY?=
+ =?us-ascii?Q?d6hpPsw5txMnXfswNb+Y8NovWEs6TQCBCIUt7yriT6tOwiNE5yu0Ahqz6hnV?=
+ =?us-ascii?Q?Qs9bT6kUgbAbCot5m36ndPmOl7D/Kn1o8IRBqkHrlwV2pb0QNRzt7GLvh6dz?=
+ =?us-ascii?Q?jo1yr+Ee0yDIpxW5kiMhldAj737BrW6U0BkB97Tr?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dc453a8f-772f-4045-590d-08dd481d328b
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6405.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2025 08:47:19.8584
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xSRY+KG10T5YzM4Q+Nu7aiRXUg/f4/Lb6hgEyd0sAfP/BL3rPO+47zgIvgKgJAhHnuxtX6QMtloPcCy6eJoymg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4290
 
-On Sat, Feb 8, 2025 at 10:11=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
->
-> On 2/7/25 4:07 AM, Jason Xing wrote:
-> > On Fri, Feb 7, 2025 at 10:18=E2=80=AFAM Jason Xing <kerneljasonxing@gma=
-il.com> wrote:
-> >>
-> >> On Fri, Feb 7, 2025 at 10:07=E2=80=AFAM Martin KaFai Lau <martin.lau@l=
-inux.dev> wrote:
-> >>>
-> >>> On 2/5/25 10:56 PM, Jason Xing wrote:
-> >>>>>> I have to rephrase a bit in case Martin visits here soon: I will
-> >>>>>> compare two approaches 1) reply value, 2) bpf kfunc and then see w=
-hich
-> >>>>>> way is better.
-> >>>>>
-> >>>>> I have already explained in details why the 1) reply value from the=
- bpf prog
-> >>>>> won't work. Please go back to that reply which has the context.
-> >>>>
-> >>>> Yes, of course I saw this, but I said I need to implement and dig mo=
-re
-> >>>> into this on my own. One of my replies includes a little code snippe=
-t
-> >>>> regarding reply value approach. I didn't expect you to misunderstand
-> >>>> that I would choose reply value, so I rephrase it like above :)
-> >>>
-> >>> I did see the code snippet which is incomplete, so I have to guess. a=
-faik, it is
-> >>> not going to work. I was hoping to save some time without detouring t=
-o the
-> >>> reply-value path in case my earlier message was missed. I will stay q=
-uiet and
-> >>> wait for v9 first then to avoid extending this long thread further.
-> >>
-> >> I see. I'm grateful that you point out the right path. I'm still
-> >> investigating to find a good existing example in selftests and how to
-> >> support kfunc.
-> >
-> > Martin, sorry to revive this thread.
-> >
-> > It's a little bit hard for me to find a proper example to follow. I
-> > tried to call __bpf_kfunc in the BPF_SOCK_OPS_TS_SND_CB callback and
-> > then failed because kfunc is not supported in the sock_ops case.
-> > Later, I tried to kprobe to hook a function, say,
-> > tcp_tx_timestamp_bpf(), passed the skb parameter to the kfunc and then
-> > got an error.
-> >
-> > Here is code snippet:
-> > 1) net/ipv4/tcp.c
-> > +__bpf_kfunc static void tcp_init_tx_timestamp(struct sk_buff *skb)
-> > +{
-> > +       struct skb_shared_info *shinfo =3D skb_shinfo(skb);
-> > +       struct tcp_skb_cb *tcb =3D TCP_SKB_CB(skb);
-> > +
-> > +       printk(KERN_ERR "jason: %d, %d\n\n", tcb->txstamp_ack,
-> > shinfo->tx_flags);
-> > +       /*
-> > +       tcb->txstamp_ack =3D 2;
-> > +       shinfo->tx_flags |=3D SKBTX_BPF;
-> > +       shinfo->tskey =3D TCP_SKB_CB(skb)->seq + skb->len - 1;
-> > +       */
-> > +}
-> > Note: I skipped copying some codes like BTF_ID_FLAGS...
->
-> This part is missing, so I can only guess again. This BTF_ID_FLAGS
-> and the kfunc registration part went wrong when trying to add the
-> new kfunc for the sock_ops program. There are kfunc examples for
-> netdev related bpf prog in filter.c. e.g. bpf_sock_addr_set_sun_path.
->
-> [ The same goes for another later message where the changes in
->    bpf_skops_tx_timestamping is missing, so I won't comment there. ]
->
-> >
-> > 2) bpf prog
-> > SEC("kprobe/tcp_tx_timestamp_bpf") // I wrote a new function/wrapper to=
- hook
-> > int BPF_KPROBE(kprobe__tcp_tx_timestamp_bpf, struct sock *sk, struct
-> > sk_buff *skb)
-> > {
-> >          tcp_init_tx_timestamp(skb);
-> >          return 0;
-> > }
-> >
-> > Then running the bpf prog, I got the following message:
-> > ; tcp_init_tx_timestamp(skb); @ so_timestamping.c:281
-> > 1: (85) call tcp_init_tx_timestamp#120682
-> > arg#0 pointer type STRUCT sk_buff must point to scalar, or struct with =
-scalar
-> > processed 2 insns (limit 1000000) max_states_per_insn 0 total_states 0
-> > peak_states 0 mark_read 0
-> > -- END PROG LOAD LOG --
-> > libbpf: prog 'kprobe__tcp_tx_timestamp_bpf': failed to load: -22
-> > libbpf: failed to load object 'so_timestamping'
-> > libbpf: failed to load BPF skeleton 'so_timestamping': -22
-> > test_so_timestamping:FAIL:open and load skel unexpected error: -22
-> >
-> > If I don't pass any parameter in the kfunc, it can work.
-> >
-> > Should we support the sock_ops for __bpf_kfunc?
->
-> sock_ops does support kfunc. The patch 12 selftest is using the
-> bpf_cast_to_kern_ctx() and it is a kfunc:
->
-> --------8<--------
-> BTF_KFUNCS_START(common_btf_ids)
-> BTF_ID_FLAGS(func, bpf_cast_to_kern_ctx, KF_FASTCALL)
-> -------->8--------
->
-> It just the new kfunc is not registered at the right place, so the verifi=
-er
-> cannot find it.
->
-> Untested code on top of your v8, so I don't have your latest
-> changes on the txstamp_ack_bpf bits...etc.
-
-Thanks for sharing your great understanding of BPF. And it's working!
-Many thanks here.
-
->
-> diff --git i/kernel/bpf/btf.c w/kernel/bpf/btf.c
-> index 9433b6467bbe..740210f883dc 100644
-> --- i/kernel/bpf/btf.c
-> +++ w/kernel/bpf/btf.c
-> @@ -8522,6 +8522,7 @@ static int bpf_prog_type_to_kfunc_hook(enum bpf_pro=
-g_type prog_type)
->         case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
->         case BPF_PROG_TYPE_CGROUP_SOCKOPT:
->         case BPF_PROG_TYPE_CGROUP_SYSCTL:
-> +       case BPF_PROG_TYPE_SOCK_OPS:
-
-The above line is exactly what I want (before this, I had no clue
-about how to write this part), causing my whole kfunc feature not to
-work.
-
->                 return BTF_KFUNC_HOOK_CGROUP;
->         case BPF_PROG_TYPE_SCHED_ACT:
->                 return BTF_KFUNC_HOOK_SCHED_ACT;
-> diff --git i/net/core/filter.c w/net/core/filter.c
-> index d3395ffe058e..3bad67eb5c9e 100644
-> --- i/net/core/filter.c
-> +++ w/net/core/filter.c
-> @@ -12102,6 +12102,30 @@ __bpf_kfunc int bpf_sk_assign_tcp_reqsk(struct _=
-_sk_buff *s, struct sock *sk,
->   #endif
->   }
->
-> +enum {
-> +       BPF_SOCK_OPS_TX_TSTAMP_TCP_ACK =3D 1 << 0,
-> +};
-
-Could I remove this flag since we have BPF_SOCK_OPS_TS_ACK_OPT_CB to
-control whether to report or not?
-
-
-> +
-> +__bpf_kfunc int bpf_sock_ops_enable_tx_tstamp(struct bpf_sock_ops_kern *=
-skops, int flags)
-> +{
-> +       struct sk_buff *skb;
-> +
-> +       if (skops->op !=3D BPF_SOCK_OPS_TS_SND_CB)
-> +               return -EOPNOTSUPP;
-> +
-> +       if (flags & ~BPF_SOCK_OPS_TX_TSTAMP_TCP_ACK)
-> +               return -EINVAL;
-> +
-> +       skb =3D skops->skb;
-> +       /* [REMOVE THIS COMMENT]: sk_is_tcp check will be needed in the f=
-uture */
-> +       if (flags & BPF_SOCK_OPS_TX_TSTAMP_TCP_ACK)
-> +               TCP_SKB_CB(skb)->txstamp_ack_bpf =3D 1;
-> +       skb_shinfo(skb)->tx_flags |=3D SKBTX_BPF;
-> +       skb_shinfo(skb)->tskey =3D TCP_SKB_CB(skb)->seq + skb->len - 1;
-> +
-> +       return 0;
-> +}
-> +
->   __bpf_kfunc_end_defs();
->
->   int bpf_dynptr_from_skb_rdonly(struct __sk_buff *skb, u64 flags,
-> @@ -12135,6 +12159,10 @@ BTF_KFUNCS_START(bpf_kfunc_check_set_tcp_reqsk)
->   BTF_ID_FLAGS(func, bpf_sk_assign_tcp_reqsk, KF_TRUSTED_ARGS)
->   BTF_KFUNCS_END(bpf_kfunc_check_set_tcp_reqsk)
->
-> +BTF_KFUNCS_START(bpf_kfunc_check_set_sock_ops)
-> +BTF_ID_FLAGS(func, bpf_sock_ops_enable_tx_tstamp, KF_TRUSTED_ARGS)
-> +BTF_KFUNCS_END(bpf_kfunc_check_set_sock_ops)
-> +
->   static const struct btf_kfunc_id_set bpf_kfunc_set_skb =3D {
->         .owner =3D THIS_MODULE,
->         .set =3D &bpf_kfunc_check_set_skb,
-> @@ -12155,6 +12183,11 @@ static const struct btf_kfunc_id_set bpf_kfunc_s=
-et_tcp_reqsk =3D {
->         .set =3D &bpf_kfunc_check_set_tcp_reqsk,
+On Fri, Feb 07, 2025 at 12:30:37PM -1000, Tejun Heo wrote:
+> Hello,
+> 
+> On Fri, Feb 07, 2025 at 09:40:52PM +0100, Andrea Righi wrote:
+> > +/*
+> > + * cpumasks to track idle CPUs within each NUMA node.
+> > + *
+> > + * If SCX_OPS_BUILTIN_IDLE_PER_NODE is not enabled, a single global cpumask
+> > + * from is used to track all the idle CPUs in the system.
+> > + */
+> > +struct idle_cpus {
+> >  	cpumask_var_t cpu;
+> >  	cpumask_var_t smt;
+> > -} idle_masks CL_ALIGNED_IF_ONSTACK;
+> > +};
+> 
+> Can you prefix the type name with scx_?
+> 
+> Unrelated to this series but I wonder whether we can replace "smt" with
+> "core" in the future to become more consistent with how the terms are used
+> in the kernel:
+> 
+>   struct scx_idle_masks {
+>           cpumask_var_t   cpus;
+>           cpumask_var_t   cores;
 >   };
->
-> +static const struct btf_kfunc_id_set bpf_kfunc_set_sock_ops =3D {
-> +       .owner =3D THIS_MODULE,
-> +       .set =3D &bpf_kfunc_check_set_sock_ops,
-> +};
-> +
->   static int __init bpf_kfunc_init(void)
->   {
->         int ret;
-> @@ -12173,6 +12206,7 @@ static int __init bpf_kfunc_init(void)
->         ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &bpf_=
-kfunc_set_xdp);
->         ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SOC=
-K_ADDR,
->                                                &bpf_kfunc_set_sock_addr);
-> +       ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SOCK_OPS, =
-&bpf_kfunc_set_sock_ops);
->         return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, =
-&bpf_kfunc_set_tcp_reqsk);
+> 
+> We expose "smt" name through kfuncs but we can rename that to "core" through
+> compat macros later too.
+> 
+> > +/*
+> > + * Find the best idle CPU in the system, relative to @node.
+> > + */
+> > +s32 scx_pick_idle_cpu(const struct cpumask *cpus_allowed, int node, u64 flags)
+> > +{
+> > +	nodemask_t unvisited = NODE_MASK_ALL;
+> > +	s32 cpu = -EBUSY;
+> > +
+> > +	if (!static_branch_maybe(CONFIG_NUMA, &scx_builtin_idle_per_node))
+> > +		return pick_idle_cpu_from_node(cpus_allowed, NUMA_NO_NODE, flags);
+> > +
+> > +	/*
+> > +	 * If an initial node is not specified, start with the current
+> > +	 * node.
+> > +	 */
+> > +	if (node == NUMA_NO_NODE)
+> > +		node = numa_node_id();
+> > +
+> > +	/*
+> > +	 * Traverse all nodes in order of increasing distance, starting
+> > +	 * from @node.
+> > +	 *
+> > +	 * This loop is O(N^2), with N being the amount of NUMA nodes,
+> > +	 * which might be quite expensive in large NUMA systems. However,
+> > +	 * this complexity comes into play only when a scheduler enables
+> > +	 * SCX_OPS_BUILTIN_IDLE_PER_NODE and it's requesting an idle CPU
+> > +	 * without specifying a target NUMA node, so it shouldn't be a
+> > +	 * bottleneck is most cases.
+> > +	 *
+> > +	 * As a future optimization we may want to cache the list of hop
+> > +	 * nodes in a per-node array, instead of actually traversing them
+> > +	 * every time.
+> > +	 */
+> > +	for_each_numa_node(node, unvisited, N_POSSIBLE) {
+> > +		cpu = pick_idle_cpu_from_node(cpus_allowed, node, flags);
+> 
+> Maybe rename pick_idle_cpu_in_node() to stay in sync with
+> SCX_PICK_IDLE_IN_NODE? It's not like pick_idle_cpu_from_node() walks from
+> the node, right? It just picks within the node.
+> 
+> > @@ -460,38 +582,50 @@ s32 scx_select_cpu_dfl(struct task_struct *p, s32 prev_cpu, u64 wake_flags, bool
+> >  
+> >  void scx_idle_reset_masks(void)
+> >  {
+> > +	int node;
+> > +
+> > +	if (!static_branch_maybe(CONFIG_NUMA, &scx_builtin_idle_per_node)) {
+> > +		cpumask_copy(idle_cpumask(NUMA_NO_NODE)->cpu, cpu_online_mask);
+> > +		cpumask_copy(idle_cpumask(NUMA_NO_NODE)->smt, cpu_online_mask);
+> > +		return;
+> > +	}
+> > +
+> >  	/*
+> >  	 * Consider all online cpus idle. Should converge to the actual state
+> >  	 * quickly.
+> >  	 */
+> > -	cpumask_copy(idle_masks.cpu, cpu_online_mask);
+> > -	cpumask_copy(idle_masks.smt, cpu_online_mask);
+> > -}
+> > +	for_each_node(node) {
+> > +		const struct cpumask *node_mask = cpumask_of_node(node);
+> > +		struct cpumask *idle_cpus = idle_cpumask(node)->cpu;
+> > +		struct cpumask *idle_smts = idle_cpumask(node)->smt;
+> > -void scx_idle_init_masks(void)
+> > -{
+> > -	BUG_ON(!alloc_cpumask_var(&idle_masks.cpu, GFP_KERNEL));
+> > -	BUG_ON(!alloc_cpumask_var(&idle_masks.smt, GFP_KERNEL));
+> > +		cpumask_and(idle_cpus, cpu_online_mask, node_mask);
+> > +		cpumask_copy(idle_smts, idle_cpus);
+> > +	}
+> 
+> nitpick: Maybe something like the following is more symmetric with the
+> global case and easier to read?
+> 
+>   for_each_node(node) {
+>         const struct cpumask *node_mask = cpumask_of_node(node);
+>         cpumask_and(idle_cpumask(node)->cpu, cpu_online_mask, node_mask);
+>         cpumask_and(idle_cpumask(node)->smt, cpu_online_mask, node_mask);
 >   }
+> 
+> >  }
+> >  
+> >  static void update_builtin_idle(int cpu, bool idle)
+> >  {
+> > -	assign_cpu(cpu, idle_masks.cpu, idle);
+> > +	int node = idle_cpu_to_node(cpu);
+
+Ok to all of the above.
+
+> 
+> minor: I wonder whether idle_cpu_to_node() name is a bit confusing - why
+> does a CPU being idle have anything to do with its node mapping? If there is
+> a better naming convention, great. If not, it is what it is.
+
+Maybe scx_cpu_to_node()? At the end it's just a wrapper to cpu_to_node(),
+but from the scx perspective, so if NUMA-awareness is not enabled in scx,
+it'd return NUMA_NO_NODE.
+
+Thanks,
+-Andrea
 
