@@ -1,176 +1,183 @@
-Return-Path: <bpf+bounces-50879-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50880-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94062A2DAAF
-	for <lists+bpf@lfdr.de>; Sun,  9 Feb 2025 04:47:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73B5EA2DAB9
+	for <lists+bpf@lfdr.de>; Sun,  9 Feb 2025 04:57:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 869AC3A6A86
-	for <lists+bpf@lfdr.de>; Sun,  9 Feb 2025 03:47:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8434718864B5
+	for <lists+bpf@lfdr.de>; Sun,  9 Feb 2025 03:57:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA4FC18E25;
-	Sun,  9 Feb 2025 03:47:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 551581F94A;
+	Sun,  9 Feb 2025 03:57:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QSARVwGe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CtmT0bJj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9326018AE2;
-	Sun,  9 Feb 2025 03:47:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FCEC14F70;
+	Sun,  9 Feb 2025 03:57:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739072829; cv=none; b=VarxsSJHLMGakDNtPBEyBOqg23kcOSwOQGWEMEZ5zJAV0AUXa5MgeUIokamV8L1yHVjyeaCjYe2AGyfjtXzdaITJLEO6MyoAS7U6F3UnQ1g+YwUDdfNspurAfJQB8/apOl77p2+G2eFBAbF1RdtXLDLd9q/B1j7x8jKRBcdclq4=
+	t=1739073425; cv=none; b=tyJnwPtVFjShuYaqagyCDOaW3Wi2CeMG3ciN07UiDsb43/gParU9onJ6cMOONVBI9CPlL0LA7iB3xNiQdqCCRVS+GM+zg6O4IUrFjwXAg34X6imBra8evlBlfgGb26lF3GI7pWpvz0a2fUBWhNHw/VMXnQVrRIF8NgKYFuopRMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739072829; c=relaxed/simple;
-	bh=pAbTcBcqnkEDr++cvXShfYLcz9ZAMkFCjXF1DdPj4tc=;
+	s=arc-20240116; t=1739073425; c=relaxed/simple;
+	bh=abo4VuyuuChxbEXDy2RGRYYYHBxzQJgpTOdZ1NYxoSQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QCXXv91CYbcSmiyVtHM19TVz7CRf4Q1w1X5hCC+fFB1FHqfrxVXM7/ePaSu6OtdnGf2ChUn6bYNk+jdykyq9tE9jPaF2E9ZpY4Fh0P+ulj5HgEgk0R2FVXAA/hzWIpm2eBkOT72/lVC01BqpgZ/8hdSqHOlZABQso5148MmRF20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QSARVwGe; arc=none smtp.client-ip=209.85.221.50
+	 To:Cc:Content-Type; b=sbOXcOmDOle3J8hmyrPN5Fh3RwqP5mU6cnJix8apEXIAid3BsU7h88671dBILF2iDXfiJR8mYG6BUHUeE2QamPovcaMkpweH5SvIUkC6QP8W1s2zLobFthCHoE1ki/bFGwBOq+CIKEf62JyMA5DkE0734c1giQ+Mh6Yc/WePRYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CtmT0bJj; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-38633b5dbcfso3297294f8f.2;
-        Sat, 08 Feb 2025 19:47:07 -0800 (PST)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-38dd0dc2226so1164343f8f.2;
+        Sat, 08 Feb 2025 19:57:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739072826; x=1739677626; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739073422; x=1739678222; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=G9QGCEe4s4f07RDG6bDFRWUa5WupjjYHN4Gq0S0QTJU=;
-        b=QSARVwGetdR8idy9Y+0bL6sJtw3uRr/61pQ/n4aPtoNQrQQQpGLuHMdxAoqI9/x9Yu
-         6+r1SP3xoYXLnO/itGL7YZhbRV0hSiCc2X0vlaMybKkalfqh+/hXqfomMHiCPMPOc/9h
-         XbXJUfsr+zXDqjxb3tjSrrCFkazMaWUtS31GSGrgRzdKLR32cTBJ8ADbshZAaAUVD4eM
-         rXIruBmVpYy89gik4B/P+InXX6W8fighzE8Kk5cGUYSbe9dUlXpy1qFd+c0uJ0hJBDQu
-         XTmLfy1Pvck6zxkSmoKhJkEWqBad3znMpz6t4s0qN/96ApqEeVBuqFvAJcOchAhkS6gD
-         MYlg==
+        bh=tEfu0T4M+EpepKDscRwBKRkl9O4AhIe/Wi41/MnZPsc=;
+        b=CtmT0bJjcAw72pVLILbNZsD69fVeZaPGWSmofUeU2pnVtRGnqfSDZLafNITbyTMhbq
+         URO1SOd8m9KyG9Kpkge7xvradmlYSvmm7Q0E5MlmIRq5eFezD7OPMSGAr24hxmy0tfjv
+         FjIdFPHJx1Vl9YnVg8cKrDxp6xH/NvhbvctfMGSJ78pEhTM2/RCf3LNa5acamqUen/T5
+         0O+1W9O9t60yuCt5pNQB1/1xYus6iugb3YNP2JIDCImQhFbLpfR8ZRSX14SabiLuWipf
+         cW2bIhn4U2vY6AXQQSa5OWESNi+v73X/hlRC5x509DSP6doFVZ9t4uAFRoiBavIBST5H
+         K8Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739072826; x=1739677626;
+        d=1e100.net; s=20230601; t=1739073422; x=1739678222;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=G9QGCEe4s4f07RDG6bDFRWUa5WupjjYHN4Gq0S0QTJU=;
-        b=giVnelTHvOrF1SCZRfUb57Nyqdi96f/GScDklFzGVoIzwBi5zcDjVx8u5mFeBjUDL4
-         ONUb1BC7NzQeXnyjWgcp7S5wSVw1pVxvYPsSUTH9qzmIH6z3ZRzVM4unWQX7XzMqnPSe
-         BHXOMbOlgq7rvJMFOKjuxNIe2RF4iwhEa1o0w9Z/2PLjDZXAyPeGjcza0eqCe5zEqQG3
-         1y8kotUjEcwPCmwSKltM7hVJy1iXYtj5lQvzhWrTZRURAY055RjJR+dAIs5fb16KRbrM
-         P7Sv7zB3GHXkmCtuXwnJiCXFdCjvFlJnT0MLCF2rLZAOAnmtC+QwulgiPiTs65QJUXP/
-         NeHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVoBW+96Lq4wAejMZOuISHMNP3rb27bCp7WEjHn2mypyoAXbjKzn0jOHi/JoJgOEl2lobYCyEw+B9IieQ0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxiI7KwpPUQcmYldctznlJ1pk3LkP1BElBoEnJlMUA1Gj03M0E7
-	ylrPAfPDF5Zh/di5GLEw1PT1eHCeGGKrvrKKZG65iIUuHm7Sfy8/6lbNbKI6tFbA6mk8tTm9qjx
-	P1W795dnpWzGg7xcG92C43thx2oY=
-X-Gm-Gg: ASbGnctPO92wblzgzJzNeYykTXAjh1jAmMjTVA6brEWHEMQzOUmIA7vPn0y+bKxgDY3
-	ekj4mX7PZ00qQ7ZBCOzDS3EmcUVpqfdN5QO2ADoh5dlN68fKg4ZdOGO0OpAzCxP1IhbBKYL9enw
-	RupsIHfbnbX2vCVMTLEzuIGUROFY4A
-X-Google-Smtp-Source: AGHT+IF8qpP7A+++uJooWGB2HYk2iXUbQzNwWZlU1Ir/ZBmmG/NjHXNgAp0R6jE703cBXGA5ZDTGWW24Bz9vvqWovbY=
-X-Received: by 2002:a05:6000:2c2:b0:385:ee3f:5cbf with SMTP id
- ffacd0b85a97d-38dc8ddc464mr7061834f8f.20.1739072825622; Sat, 08 Feb 2025
- 19:47:05 -0800 (PST)
+        bh=tEfu0T4M+EpepKDscRwBKRkl9O4AhIe/Wi41/MnZPsc=;
+        b=r2XVKLD7+f8koRPC1dC/JB1Vytth0+Wm681d8REO+yab7ELhIID09Fc42VFqCkZBvK
+         +m/Ldj3GvY64uea/bgcwBmhpgs5MKcv33r6tZkdH3wCBeuL2l4OqG4Z7o9PYk9CsQ6kP
+         tf3/ncykMxYcRwTbC7WxHOdD/YN1fNNa0J14vUfRX4G/RKLKAxtwFMNu+hioDRTRsPJd
+         +hGTkk2PJwJyGkXDYMgE/1g4u+pVoM2jEXs3iIZnUMoHALDqv9WP0IubS5JDAMl3BMOZ
+         VwKVWnCX8CrwinhU+ZtyPToT4+7DFr7ynkJE0AZrFcbMzxPW3mxWwwKosTZQHybSAbrG
+         kF0A==
+X-Forwarded-Encrypted: i=1; AJvYcCXdD61RBO+X06XwOy1GsszITac2ueMtfmd56SDH7sk9aDUBml6A8zstLYgHV18pOOdrDVc=@vger.kernel.org, AJvYcCXgC6l/PGUYiEThDmreX3VLJQH9u5diBi0x6uHEzXU82CQ0mnRSDMxQBPVpPxPfbEPKX1xzDS9R5zJyj1Sq@vger.kernel.org, AJvYcCXlem2zJMWKjKH1rWq7KHgvHupeb8JRx3PyUcASMN9TQP2NK40W2E6aT6LsIwhLidDaioPaAW6MMHOqQsOF7A==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyNsL+GCh0seIZIsygcSzKaOmFQEV4xmPozM7CmtYfrmDg4eVZv
+	LEpBMVzCfbyN0uBc4jf3SR1dAzHxFhbnbNrqF9Cj/xcQdqs6H/nmJD0HJIXgvoRaRdy4cQFpZwV
+	VbLbE6/5ts+YaRpCxIiJS/e9E/Ek=
+X-Gm-Gg: ASbGncuOrWcsItdhAuiLURSji9t01qknY26hXUw03/nY/iXoxIA6YGA5AFmhek8/4XL
+	ypmOXRlr9L71tYYZPAhcwsSmxahcoQTCgE5jZ7TMTYd5Cq/edr5qMdgjW2koBxmbgMjMQ13JFqb
+	eQ27T/azjiFtI3jwdfHJxi8vdP8ZPd
+X-Google-Smtp-Source: AGHT+IFVdKm/TbRZBCUYcxfboKUecCnZzAtotdQ9hdNs8NDSOP5z+PAwZ9Es9sIm9jwZJAHaojI3AdLsMmi+L7AZFNc=
+X-Received: by 2002:a05:6000:1a85:b0:38d:d906:dbb0 with SMTP id
+ ffacd0b85a97d-38dd906dcbcmr832823f8f.7.1739073422435; Sat, 08 Feb 2025
+ 19:57:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1738888641.git.yepeilin@google.com> <d03d8c3305e311c6cb29924119b5eecae8370bbc.1738888641.git.yepeilin@google.com>
- <CAADnVQ+L0h8qXfYkC3+ORyQkXFJ2MgO8FDHr_Ha0QMAtS_ujag@mail.gmail.com> <Z6gRHDLfA7cjnlSn@google.com>
-In-Reply-To: <Z6gRHDLfA7cjnlSn@google.com>
+References: <CALOAHbBZc6ORGzXwBRwe+rD2=YGf1jub5TEr989_GpK54P2o1A@mail.gmail.com>
+ <alpine.LSU.2.21.2501311414281.10231@pobox.suse.cz> <CALOAHbDwsZqo9inSLNV1FQV3NYx2=eztd556rCZqbRvEu+DDFQ@mail.gmail.com>
+ <CAPhsuW4gYKHsmtHsBDUkx7a=apr_tSP_4aFWmmFNfqOJ+3GDGQ@mail.gmail.com>
+ <CALOAHbDYFAntFbwMwGgnXkHh1audSoUwG1wFu_4e8P=c=hwZ0w@mail.gmail.com>
+ <CAPhsuW4HsTab+w2r23bM52kcM1RBFBKP5ujVdDvxLE9OiqgMdA@mail.gmail.com>
+ <CALOAHbAJBwSYju3-XEQwy0O1DNPawuEgmhrV5ECTrL9J388yDw@mail.gmail.com>
+ <CAPhsuW51E4epDCrdNcQCG+SzHiyGhE+AocjmXoD-G0JExs9N1A@mail.gmail.com>
+ <CALOAHbAaCbvr=F6PBJ+gnQa1WNidELzZW-P2_HmBsZ1tJd6FFg@mail.gmail.com>
+ <CAADnVQJZCE-Rh4xghLrruY8DW00cRUq9-ct6d=qfKk8Yc+8=pQ@mail.gmail.com> <20250208193237.w3zjcyovgurrin55@jpoimboe>
+In-Reply-To: <20250208193237.w3zjcyovgurrin55@jpoimboe>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sat, 8 Feb 2025 19:46:54 -0800
-X-Gm-Features: AWEUYZmrws4n9Tklxz5TlDMfaZkKg_EoOGMe8Vohc-FDZY-WZlDb1JfHtCemc_I
-Message-ID: <CAADnVQLkHA9LGv99k2TZOJEGUU=dw=q6nVurJ=aoh0v6cFS6zQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/9] bpf: Introduce load-acquire and
- store-release instructions
-To: Peilin Ye <yepeilin@google.com>
-Cc: bpf <bpf@vger.kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, bpf@ietf.org, 
-	Xu Kuohai <xukuohai@huaweicloud.com>, Eduard Zingerman <eddyz87@gmail.com>, 
-	David Vernet <void@manifault.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
-	Ilya Leoshkevich <iii@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Quentin Monnet <qmo@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Ihor Solodrai <ihor.solodrai@linux.dev>, Yingchi Long <longyingchi24s@ict.ac.cn>, 
-	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>, Neel Natu <neelnatu@google.com>, 
-	Benjamin Segall <bsegall@google.com>, LKML <linux-kernel@vger.kernel.org>
+Date: Sat, 8 Feb 2025 19:56:51 -0800
+X-Gm-Features: AWEUYZniDJypeymOyz7fFdjC93KTr-2QZvKTC8wuH--pd8yPgT5EFAzAHC-HqLc
+Message-ID: <CAADnVQKXgPTQsjUDB3tjZ46aPWvoEcxBCnDXro8WPtNhkGNFyg@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/2] livepatch: Add support for hybrid mode
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: Yafang Shao <laoar.shao@gmail.com>, Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Miroslav Benes <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>, Jiri Kosina <jikos@kernel.org>, 
+	Joe Lawrence <joe.lawrence@redhat.com>, live-patching@vger.kernel.org, 
+	LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Feb 8, 2025 at 6:21=E2=80=AFPM Peilin Ye <yepeilin@google.com> wrot=
-e:
+On Sat, Feb 8, 2025 at 11:32=E2=80=AFAM Josh Poimboeuf <jpoimboe@kernel.org=
+> wrote:
 >
-> Hi Alexei,
+> On Sat, Feb 08, 2025 at 07:47:12AM -0800, Alexei Starovoitov wrote:
+> > On Fri, Feb 7, 2025 at 10:42=E2=80=AFPM Yafang Shao <laoar.shao@gmail.c=
+om> wrote:
+> > >
+> > > On Fri, Feb 7, 2025 at 2:01=E2=80=AFAM Song Liu <song@kernel.org> wro=
+te:
+> > > >
+> > > > On Wed, Feb 5, 2025 at 6:55=E2=80=AFPM Yafang Shao <laoar.shao@gmai=
+l.com> wrote:
+> > > > [...]
+> > > > > > I think we should first understand why the trampoline is not
+> > > > > > freed.
+> > > > >
+> > > > > IIUC, the fexit works as follows,
+> > > > >
+> > > > >   bpf_trampoline
+> > > > >     + __bpf_tramp_enter
+> > > > >        + percpu_ref_get(&tr->pcref);
+> > > > >
+> > > > >     + call do_exit()
+> > > > >
+> > > > >     + __bpf_tramp_exit
+> > > > >        + percpu_ref_put(&tr->pcref);
+> > > > >
+> > > > > Since do_exit() never returns, the refcnt of the trampoline image=
+ is
+> > > > > never decremented, preventing it from being freed.
+> > > >
+> > > > Thanks for the explanation. In this case, I think it makes sense to
+> > > > disallow attaching fexit programs on __noreturn functions. I am not
+> > > > sure what is the best solution for it though.
+> > >
+> > > There is a tools/objtool/noreturns.h. Perhaps we could create a
+> > > similar noreturns.h under kernel/bpf and add all relevant functions t=
+o
+> > > the fexit deny list.
+> >
+> > Pls avoid copy paste if possible.
+> > Something like:
+> >
+> > BTF_SET_START(fexit_deny)
+> > #define NORETURN(fn) BTF_ID(func, fn)
+> > #include "../../tools/objtool/noreturns.h"
+> >
+> > Should work?
+> >
+> > Josh,
+> > maybe we should move noreturns.h to some common location?
 >
-> On Sat, Feb 08, 2025 at 01:30:46PM -0800, Alexei Starovoitov wrote:
-> > > Introduce BPF instructions with load-acquire and store-release
-> > > semantics, as discussed in [1].  The following new flags are defined:
-> > >
-> > >   BPF_ATOMIC_LOAD         0x10
-> > >   BPF_ATOMIC_STORE        0x20
-> > >   BPF_ATOMIC_TYPE(imm)    ((imm) & 0xf0)
-> > >
-> > >   BPF_RELAXED        0x0
-> > >   BPF_ACQUIRE        0x1
-> > >   BPF_RELEASE        0x2
-> > >   BPF_ACQ_REL        0x3
-> > >   BPF_SEQ_CST        0x4
-> >
-> > I still don't like this.
-> >
-> > Earlier you said:
-> >
-> > > If yes, I think we either:
-> > >
-> > >  (a) add more flags to imm<4-7>: maybe LOAD_SEQ_CST (0x3) and
-> > >      STORE_SEQ_CST (0x6); need to skip OR (0x4) and AND (0x5) used by
-> > >      RMW atomics
-> > >  (b) specify memorder in imm<0-3>
-> > >
-> > > I chose (b) for fewer "What would be a good numerical value so that R=
-MW
-> > > atomics won't need to use it in imm<4-7>?" questions to answer.
-> > >
-> > > If we're having dedicated fields for memorder, I think it's better to
-> > > define all possible values once and for all, just so that e.g. 0x2 wi=
-ll
-> > > always mean RELEASE in a memorder field.  Initially I defined all six=
- of
-> > > them [2], then Yonghong suggested dropping CONSUME [3].
-> >
-> > I don't think we should be defining "all possible values",
-> > since these are the values that llvm and C model supports,
-> > but do we have any plans to support anything bug ld_acq/st_rel ?
-> > I haven't heard anything.
-> > What even the meaning of BPF_ATOMIC_LOAD | BPF_ACQ_REL ?
-> >
-> > What does the verifier suppose to do? reject for now? and then what?
-> > Map to what insn?
-> >
-> > These values might imply that bpf infra is supposed to map all the valu=
-es
-> > to cpu instructions, but that's not what we're doing here.
-> > We're only dealing with two specific instructions.
-> > We're not defining a memory model for all future new instructions.
+> The tools code is meant to be independent from the kernel, but it could
+> be synced by copying it to both include/linux and tools/include/linux,
+> and then make sure it stays in sync with tools/objtool/sync-check.sh.
 >
-> Got it!  In v3, I'll change it back to:
+> However, noreturns.h is manually edited, and only for some arches.  And
+> even for those arches it's likely not exhaustive: we only add to it when
+> we notice an objtool warning, and not all calls to noreturns will
+> necessarily trigger a warning.  So I'd be careful about relying on that.
 >
->   #define BPF_LOAD_ACQ   0x10
->   #define BPF_STORE_REL  0x20
+> Also that file is intended to be temporary, there have been proposals to
+> add compiler support for annotating noreturns.  That hasn't been
+> implemented yet, help wanted!
+>
+> I think the noreturn info is available in DWARF, can that be converted
+> to BTF?
 
-why not 1 and 2 ?
-All other bits are reserved and the verifier will make sure they're zero,
-so when/if we need to extend it then it wouldn't matter whether
-lower 4 bits are reserved or other bits.
-Say, we decide to support cmpwait_relaxed as a new insn.
-It can take the value 3 and arm64 JIT will map it to ldxr+wfe+...
+There are 30k+ noreturn funcs in dwarf. So pahole would need to have
+some heuristic to filter out the noise.
+It's doable, but we need to stop the bleeding the simplest way
+and the fix would need to be backported too.
+We can copy paste noreturns.h or #include it from the current location
+for now and think of better ways for -next.
 
-Then with this new load_acq and cmpwait_relaxed we can efficiently
-implement both smp_cond_load_relaxed and smp_cond_load_acquire.
+> Or is there some way to release outstanding trampolines in do_exit()?
+
+we can walk all trampolines in do_exit,
+but we'd still need to:
+if (trampoline->func.addr =3D=3D do_exit || ...addr =3D=3D __x64_sys_exit |=
+|
+before dropping the refcnt.
+which is the same thing, but worse.
 
