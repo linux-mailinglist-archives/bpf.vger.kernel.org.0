@@ -1,177 +1,176 @@
-Return-Path: <bpf+bounces-50878-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50879-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CBC3A2DA64
-	for <lists+bpf@lfdr.de>; Sun,  9 Feb 2025 03:21:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94062A2DAAF
+	for <lists+bpf@lfdr.de>; Sun,  9 Feb 2025 04:47:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5792188801A
-	for <lists+bpf@lfdr.de>; Sun,  9 Feb 2025 02:21:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 869AC3A6A86
+	for <lists+bpf@lfdr.de>; Sun,  9 Feb 2025 03:47:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C93688F4C;
-	Sun,  9 Feb 2025 02:21:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA4FC18E25;
+	Sun,  9 Feb 2025 03:47:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tqGf/1aj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QSARVwGe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF3271392
-	for <bpf@vger.kernel.org>; Sun,  9 Feb 2025 02:21:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9326018AE2;
+	Sun,  9 Feb 2025 03:47:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739067684; cv=none; b=tl+svFATXz/tsIVZ4odEKHIzSh/AuuZTmC5ljLuAaRXiF/fdldkUkFYivvq+lYB2xXR6de3mxzzhM+7SKI2H6QgPNzIzXqy2HDaqEasR9rDLycpVE10mwfkOwoojQjI+9xc7C12ylyFPxkQjmwBjoOO0HNWKAs6o4r4EjPNlbCM=
+	t=1739072829; cv=none; b=VarxsSJHLMGakDNtPBEyBOqg23kcOSwOQGWEMEZ5zJAV0AUXa5MgeUIokamV8L1yHVjyeaCjYe2AGyfjtXzdaITJLEO6MyoAS7U6F3UnQ1g+YwUDdfNspurAfJQB8/apOl77p2+G2eFBAbF1RdtXLDLd9q/B1j7x8jKRBcdclq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739067684; c=relaxed/simple;
-	bh=oLJie9UWNJxd9BkkGwaeRdy2QSgvFMiToNByFI6z9Rs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VlVlfZVb/7EqW9Z27LWT3bhLZLVoA8W0sWeAjzXuF630vUSSCA6hG5hl5dn6/nKAaq6FZ4xRoxRXd9Nc7Qrh/WGvFC/+ICZEKk46CGO58YtXXrxSefLXf+7iuyBtWwdM4QTGcUwk+VtQPEe1+mQ6U3w3tw0CnnVKuahLIoe9G/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tqGf/1aj; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2163affd184so96895ad.1
-        for <bpf@vger.kernel.org>; Sat, 08 Feb 2025 18:21:22 -0800 (PST)
+	s=arc-20240116; t=1739072829; c=relaxed/simple;
+	bh=pAbTcBcqnkEDr++cvXShfYLcz9ZAMkFCjXF1DdPj4tc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QCXXv91CYbcSmiyVtHM19TVz7CRf4Q1w1X5hCC+fFB1FHqfrxVXM7/ePaSu6OtdnGf2ChUn6bYNk+jdykyq9tE9jPaF2E9ZpY4Fh0P+ulj5HgEgk0R2FVXAA/hzWIpm2eBkOT72/lVC01BqpgZ/8hdSqHOlZABQso5148MmRF20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QSARVwGe; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-38633b5dbcfso3297294f8f.2;
+        Sat, 08 Feb 2025 19:47:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1739067682; x=1739672482; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aPYRBH8N0cFSlMms6AVV4eSsR5UK0yhiANnm0hFSLXo=;
-        b=tqGf/1aj/fi6ZXNkBJhuns+7xcKAHeM0jgyENdye4OKMs6uRx+LE0G25XKHPRYCJGo
-         aPjOrENbZV1Ozys6+eNlcxRPUuZ14UNwoM+j9tKVR2sala4AVVXz6Z9+9BcEkxfUNfpD
-         7eer4AbJoke921pxMvM33ZxC+VvzphFXMxMrzye98DzVIGItZys54fXo7q5ffbuE+sxf
-         5JbXIl83pEiQlUoFXbnCJLmvfcRZsdQu6bux+uijssiSq+4MKTx5K4M6fKobplpSwgFV
-         7vPuam4HEVkIK1zvd+GDxlb8484Q67aAak7aB0u1uaWtgD9MQgNtrMalLvtxkhQskJvD
-         /esw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739067682; x=1739672482;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1739072826; x=1739677626; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aPYRBH8N0cFSlMms6AVV4eSsR5UK0yhiANnm0hFSLXo=;
-        b=n9kYrpnECKRy4UQ4RuoSfMsq7WPiDj3/x45E++mIBmi5+LrCc6Rae5D+xZzvn/0EAC
-         euXR47HrWhVXiQO9gGMmFqLLDpb3kuHJKlLJTRYdyiH6ss26CMehFfzZiBPDxh1p6SBf
-         FaPKvxSWRno4xYQAC+m1Gk53fgal25iR+gPgPiyuPApWzKOehq4wlK4wn+1TKGzHv5q4
-         KE2exo5d75SpBV8KvLlx01ixAx8WP83vvlcXujmLtIcjCQ4nAd3UMFt88UdaqEW7SCvK
-         lszcEcAjwCNX4O8eOm0LRx/hr5VjpihvOvVmIvDL2bS5y7WqkzyP6Q3Dl3JUB7796R7C
-         AMYQ==
-X-Gm-Message-State: AOJu0Yx4VQ+/BarZP5KkT61sGURMe3EiuHqFtGPmjBqnJ2RxWcYI0J3w
-	PW+ldBUMpMDb35PPJVerA3QWXHfkKWYZBlv8pPLnhj3N39vYiG2I8Cwg36HUcw==
-X-Gm-Gg: ASbGncvEWP6xqgwu2URpslS3J6lntt2q74wq2L6tZTdsqkqrGIl8s4rqdMRljcvPY02
-	1q6/3v/4X/Q787szGzkdD0WBYBX9SPD2R7QNy7FEdtF5q85RSteHpCdZFR/McySzFmHK31t+SCF
-	2iJm1BLNSriF2w68Ye55G3Zdrhgn7gyJ7x0EnUI+ULREoJgwVkBIJlrOLJmQmlT/HO+I8u5usZ0
-	F9ZABOpyClw2inbaYgfgcy5KtHcijXwczSxRTF455iNLnabcsHo6v7MNxXrcA22isCMU6Qrfm9v
-	p5IVG1BUMZDKuEKZ0ssVlOUwfJm816yyvXvAAWg3XN1qDcppQWI04Q==
-X-Google-Smtp-Source: AGHT+IEowLr0ODuJvhhRX0k3wQ9ChkhKhAElhUwga2QcQJLk+imc7mKSniosyKtNBmFd0SxXKu92Ag==
-X-Received: by 2002:a17:903:144b:b0:21f:3e29:9cd4 with SMTP id d9443c01a7336-21f69e53acdmr2101805ad.20.1739067681888;
-        Sat, 08 Feb 2025 18:21:21 -0800 (PST)
-Received: from google.com (147.141.16.34.bc.googleusercontent.com. [34.16.141.147])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73048c15baesm5148861b3a.121.2025.02.08.18.21.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 Feb 2025 18:21:21 -0800 (PST)
-Date: Sun, 9 Feb 2025 02:21:16 +0000
-From: Peilin Ye <yepeilin@google.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-	bpf@ietf.org, Xu Kuohai <xukuohai@huaweicloud.com>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	David Vernet <void@manifault.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Ilya Leoshkevich <iii@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Quentin Monnet <qmo@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Ihor Solodrai <ihor.solodrai@linux.dev>,
-	Yingchi Long <longyingchi24s@ict.ac.cn>,
-	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>,
-	Neel Natu <neelnatu@google.com>,
-	Benjamin Segall <bsegall@google.com>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v2 4/9] bpf: Introduce load-acquire and
- store-release instructions
-Message-ID: <Z6gRHDLfA7cjnlSn@google.com>
-References: <cover.1738888641.git.yepeilin@google.com>
- <d03d8c3305e311c6cb29924119b5eecae8370bbc.1738888641.git.yepeilin@google.com>
- <CAADnVQ+L0h8qXfYkC3+ORyQkXFJ2MgO8FDHr_Ha0QMAtS_ujag@mail.gmail.com>
+        bh=G9QGCEe4s4f07RDG6bDFRWUa5WupjjYHN4Gq0S0QTJU=;
+        b=QSARVwGetdR8idy9Y+0bL6sJtw3uRr/61pQ/n4aPtoNQrQQQpGLuHMdxAoqI9/x9Yu
+         6+r1SP3xoYXLnO/itGL7YZhbRV0hSiCc2X0vlaMybKkalfqh+/hXqfomMHiCPMPOc/9h
+         XbXJUfsr+zXDqjxb3tjSrrCFkazMaWUtS31GSGrgRzdKLR32cTBJ8ADbshZAaAUVD4eM
+         rXIruBmVpYy89gik4B/P+InXX6W8fighzE8Kk5cGUYSbe9dUlXpy1qFd+c0uJ0hJBDQu
+         XTmLfy1Pvck6zxkSmoKhJkEWqBad3znMpz6t4s0qN/96ApqEeVBuqFvAJcOchAhkS6gD
+         MYlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739072826; x=1739677626;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=G9QGCEe4s4f07RDG6bDFRWUa5WupjjYHN4Gq0S0QTJU=;
+        b=giVnelTHvOrF1SCZRfUb57Nyqdi96f/GScDklFzGVoIzwBi5zcDjVx8u5mFeBjUDL4
+         ONUb1BC7NzQeXnyjWgcp7S5wSVw1pVxvYPsSUTH9qzmIH6z3ZRzVM4unWQX7XzMqnPSe
+         BHXOMbOlgq7rvJMFOKjuxNIe2RF4iwhEa1o0w9Z/2PLjDZXAyPeGjcza0eqCe5zEqQG3
+         1y8kotUjEcwPCmwSKltM7hVJy1iXYtj5lQvzhWrTZRURAY055RjJR+dAIs5fb16KRbrM
+         P7Sv7zB3GHXkmCtuXwnJiCXFdCjvFlJnT0MLCF2rLZAOAnmtC+QwulgiPiTs65QJUXP/
+         NeHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVoBW+96Lq4wAejMZOuISHMNP3rb27bCp7WEjHn2mypyoAXbjKzn0jOHi/JoJgOEl2lobYCyEw+B9IieQ0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxiI7KwpPUQcmYldctznlJ1pk3LkP1BElBoEnJlMUA1Gj03M0E7
+	ylrPAfPDF5Zh/di5GLEw1PT1eHCeGGKrvrKKZG65iIUuHm7Sfy8/6lbNbKI6tFbA6mk8tTm9qjx
+	P1W795dnpWzGg7xcG92C43thx2oY=
+X-Gm-Gg: ASbGnctPO92wblzgzJzNeYykTXAjh1jAmMjTVA6brEWHEMQzOUmIA7vPn0y+bKxgDY3
+	ekj4mX7PZ00qQ7ZBCOzDS3EmcUVpqfdN5QO2ADoh5dlN68fKg4ZdOGO0OpAzCxP1IhbBKYL9enw
+	RupsIHfbnbX2vCVMTLEzuIGUROFY4A
+X-Google-Smtp-Source: AGHT+IF8qpP7A+++uJooWGB2HYk2iXUbQzNwWZlU1Ir/ZBmmG/NjHXNgAp0R6jE703cBXGA5ZDTGWW24Bz9vvqWovbY=
+X-Received: by 2002:a05:6000:2c2:b0:385:ee3f:5cbf with SMTP id
+ ffacd0b85a97d-38dc8ddc464mr7061834f8f.20.1739072825622; Sat, 08 Feb 2025
+ 19:47:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQ+L0h8qXfYkC3+ORyQkXFJ2MgO8FDHr_Ha0QMAtS_ujag@mail.gmail.com>
+References: <cover.1738888641.git.yepeilin@google.com> <d03d8c3305e311c6cb29924119b5eecae8370bbc.1738888641.git.yepeilin@google.com>
+ <CAADnVQ+L0h8qXfYkC3+ORyQkXFJ2MgO8FDHr_Ha0QMAtS_ujag@mail.gmail.com> <Z6gRHDLfA7cjnlSn@google.com>
+In-Reply-To: <Z6gRHDLfA7cjnlSn@google.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sat, 8 Feb 2025 19:46:54 -0800
+X-Gm-Features: AWEUYZmrws4n9Tklxz5TlDMfaZkKg_EoOGMe8Vohc-FDZY-WZlDb1JfHtCemc_I
+Message-ID: <CAADnVQLkHA9LGv99k2TZOJEGUU=dw=q6nVurJ=aoh0v6cFS6zQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/9] bpf: Introduce load-acquire and
+ store-release instructions
+To: Peilin Ye <yepeilin@google.com>
+Cc: bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, bpf@ietf.org, 
+	Xu Kuohai <xukuohai@huaweicloud.com>, Eduard Zingerman <eddyz87@gmail.com>, 
+	David Vernet <void@manifault.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
+	Ilya Leoshkevich <iii@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Quentin Monnet <qmo@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>, Yingchi Long <longyingchi24s@ict.ac.cn>, 
+	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>, Neel Natu <neelnatu@google.com>, 
+	Benjamin Segall <bsegall@google.com>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Alexei,
-
-On Sat, Feb 08, 2025 at 01:30:46PM -0800, Alexei Starovoitov wrote:
-> > Introduce BPF instructions with load-acquire and store-release
-> > semantics, as discussed in [1].  The following new flags are defined:
+On Sat, Feb 8, 2025 at 6:21=E2=80=AFPM Peilin Ye <yepeilin@google.com> wrot=
+e:
+>
+> Hi Alexei,
+>
+> On Sat, Feb 08, 2025 at 01:30:46PM -0800, Alexei Starovoitov wrote:
+> > > Introduce BPF instructions with load-acquire and store-release
+> > > semantics, as discussed in [1].  The following new flags are defined:
+> > >
+> > >   BPF_ATOMIC_LOAD         0x10
+> > >   BPF_ATOMIC_STORE        0x20
+> > >   BPF_ATOMIC_TYPE(imm)    ((imm) & 0xf0)
+> > >
+> > >   BPF_RELAXED        0x0
+> > >   BPF_ACQUIRE        0x1
+> > >   BPF_RELEASE        0x2
+> > >   BPF_ACQ_REL        0x3
+> > >   BPF_SEQ_CST        0x4
 > >
-> >   BPF_ATOMIC_LOAD         0x10
-> >   BPF_ATOMIC_STORE        0x20
-> >   BPF_ATOMIC_TYPE(imm)    ((imm) & 0xf0)
+> > I still don't like this.
 > >
-> >   BPF_RELAXED        0x0
-> >   BPF_ACQUIRE        0x1
-> >   BPF_RELEASE        0x2
-> >   BPF_ACQ_REL        0x3
-> >   BPF_SEQ_CST        0x4
-> 
-> I still don't like this.
-> 
-> Earlier you said:
-> 
-> > If yes, I think we either:
+> > Earlier you said:
 > >
-> >  (a) add more flags to imm<4-7>: maybe LOAD_SEQ_CST (0x3) and
-> >      STORE_SEQ_CST (0x6); need to skip OR (0x4) and AND (0x5) used by
-> >      RMW atomics
-> >  (b) specify memorder in imm<0-3>
+> > > If yes, I think we either:
+> > >
+> > >  (a) add more flags to imm<4-7>: maybe LOAD_SEQ_CST (0x3) and
+> > >      STORE_SEQ_CST (0x6); need to skip OR (0x4) and AND (0x5) used by
+> > >      RMW atomics
+> > >  (b) specify memorder in imm<0-3>
+> > >
+> > > I chose (b) for fewer "What would be a good numerical value so that R=
+MW
+> > > atomics won't need to use it in imm<4-7>?" questions to answer.
+> > >
+> > > If we're having dedicated fields for memorder, I think it's better to
+> > > define all possible values once and for all, just so that e.g. 0x2 wi=
+ll
+> > > always mean RELEASE in a memorder field.  Initially I defined all six=
+ of
+> > > them [2], then Yonghong suggested dropping CONSUME [3].
 > >
-> > I chose (b) for fewer "What would be a good numerical value so that RMW
-> > atomics won't need to use it in imm<4-7>?" questions to answer.
+> > I don't think we should be defining "all possible values",
+> > since these are the values that llvm and C model supports,
+> > but do we have any plans to support anything bug ld_acq/st_rel ?
+> > I haven't heard anything.
+> > What even the meaning of BPF_ATOMIC_LOAD | BPF_ACQ_REL ?
 > >
-> > If we're having dedicated fields for memorder, I think it's better to
-> > define all possible values once and for all, just so that e.g. 0x2 will
-> > always mean RELEASE in a memorder field.  Initially I defined all six of
-> > them [2], then Yonghong suggested dropping CONSUME [3].
-> 
-> I don't think we should be defining "all possible values",
-> since these are the values that llvm and C model supports,
-> but do we have any plans to support anything bug ld_acq/st_rel ?
-> I haven't heard anything.
-> What even the meaning of BPF_ATOMIC_LOAD | BPF_ACQ_REL ?
-> 
-> What does the verifier suppose to do? reject for now? and then what?
-> Map to what insn?
-> 
-> These values might imply that bpf infra is supposed to map all the values
-> to cpu instructions, but that's not what we're doing here.
-> We're only dealing with two specific instructions.
-> We're not defining a memory model for all future new instructions.
+> > What does the verifier suppose to do? reject for now? and then what?
+> > Map to what insn?
+> >
+> > These values might imply that bpf infra is supposed to map all the valu=
+es
+> > to cpu instructions, but that's not what we're doing here.
+> > We're only dealing with two specific instructions.
+> > We're not defining a memory model for all future new instructions.
+>
+> Got it!  In v3, I'll change it back to:
+>
+>   #define BPF_LOAD_ACQ   0x10
+>   #define BPF_STORE_REL  0x20
 
-Got it!  In v3, I'll change it back to:
+why not 1 and 2 ?
+All other bits are reserved and the verifier will make sure they're zero,
+so when/if we need to extend it then it wouldn't matter whether
+lower 4 bits are reserved or other bits.
+Say, we decide to support cmpwait_relaxed as a new insn.
+It can take the value 3 and arm64 JIT will map it to ldxr+wfe+...
 
-  #define BPF_LOAD_ACQ   0x10
-  #define BPF_STORE_REL  0x20
-
-Thanks,
-Peilin Ye
-
+Then with this new load_acq and cmpwait_relaxed we can efficiently
+implement both smp_cond_load_relaxed and smp_cond_load_acquire.
 
