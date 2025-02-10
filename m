@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-51008-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51009-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D6FDA2F581
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 18:44:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57F32A2F583
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 18:44:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11A8B1884B78
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 17:44:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64222166CB9
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 17:44:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BB03255E5F;
-	Mon, 10 Feb 2025 17:43:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF96F2566DA;
+	Mon, 10 Feb 2025 17:43:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B3ItClt9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YXgebGcq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 965AC255E33;
-	Mon, 10 Feb 2025 17:43:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A78C7255E44;
+	Mon, 10 Feb 2025 17:43:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739209430; cv=none; b=R8LWZG2u5K487eIznpExHnB5hc2rvN/GIq4IL27G5OCB0zIloRld5NaLyZyOLpVAVUTyCUCSsZaqBa5Xd9LBZ8rbG8YTeO/EgwSyYSQ1mAsNYU7CTByWvK5zX1hofGnWyVe6OkB1ahNEdFtN1Pu+TIkgxIDHvPoRYBLFWTd5CzM=
+	t=1739209431; cv=none; b=Z0eKPGYgvwVNqk3d4mUrbV5oQRnYX/HctxCPqwciVq6jfusz/7rtgPOWnUQhbnJ3Nm9QuuEc8AmcqIbq3oIdaYdXiJGjiMovhk7jPqxa9Emflm8D1KCn1LwWBambl2XVmKv5lg0PeEnQzqwqJNjjOhfEQJY3BgxIGhkIGqBMU5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739209430; c=relaxed/simple;
-	bh=T6e3c/PMYgXS4OKgRSQdlouBBcdvjHT4HakbLjxQBZQ=;
+	s=arc-20240116; t=1739209431; c=relaxed/simple;
+	bh=yeZJv/5oACo15YEXXmcTwVJDy89oXjHZmA6y15XJmEc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=u7Hll8lUg1lXqyKAzrzUKJE0lLP3V4SH1EbZ7pBFS0dTk5LHIRl7/6TEJWI69NglrenDzPGmHpm3dCzsE8Wg1VYNG5JpGEKBBO707Ub6zWqoJBcV8O7vIYgk+gRJZbnfTsJAIbwYDjMXvn1Q0lx4R4+t7UKpguDE0+H6FWGQQME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B3ItClt9; arc=none smtp.client-ip=209.85.216.52
+	 MIME-Version; b=pRm1f9+l1Pv1LBXT8+ZQtwSZrwkaLkO3P5JksaJmquwo3m9jWlQB7SUBf1/h4VC48eqwutjhurRX0f4bCKc0z2fNJHVXdNfbcuvwCbLoYmdkl3qHM72oBCS+SE3wcLM8PmYSdFO796iV3uVpjsI3RzjohV8Pl5X1Cmi1gR5K8Xc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YXgebGcq; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2f9bac7699aso6826494a91.1;
-        Mon, 10 Feb 2025 09:43:48 -0800 (PST)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2fa1e25e337so5620140a91.1;
+        Mon, 10 Feb 2025 09:43:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739209428; x=1739814228; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739209429; x=1739814229; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=97lx6pYZgJTlQmKaYcz/MNGoRDCTIp3Q81k8vsbjFMQ=;
-        b=B3ItClt9F/vHdCEUta6j2ZhLlYNB7uFKqtJj9POw1tuH+Isx9sX8ymwoAn4Eckbe9U
-         SE9frsE6q6GU6cqtbHCI2zMfzUN4n3yoZ6/b6yWVqEidqccl39UDUyXYOJpZdVj0t5+D
-         35KFpcofJXYM7scrmo5l+RGWt6KLag/xNp7IoOoCA4eJmGaJTkar9DxzF8duM7b2f7j4
-         YtEuKLdeHXefuB2AVZhWJR8bowVC9nVtslhFpYf/RWX94tlFnv3Pcl/OAhTk3Avb7AvP
-         z2kyNG5skE/lUHGmdKxdrctbhE/vpKQmp12ygWsPSrP4+kAffCgWTv92e/hjkcBY2y4M
-         uTaw==
+        bh=eol6oaMq93kxYk9VK5G7LDWWkiciy0WsGg/oN96JGJ0=;
+        b=YXgebGcqPivO4uqF+gA0Y+DghHOJKxIOHl3TmVj/sKvVqnlWF5Og+GuGHthTe7rbpN
+         J/pcP1hZqY3gjwoRMPHAxpi/j389dv2n1tFAPaDYQs/qDPUC8vCP9GzxQsI3egDrkdrY
+         tRmQOaTtlL70VbUL3aRpmvJuGR15YwaAGW0K7Tkyrm3asSU/Lw6sI+GF0olLpyKZshOs
+         XqS9hRZJnLtApAjkZ0SWU0U5/SxAPe+qiordjwKOYOlsrZxH4gwGvQ8JNG9pIsX9CueT
+         7XZBzcyAxJRjN2ujoU17nN2ozQMRFf93BBVthKVlGvvNBLFGXJCJ9B71tvB7He4Dbia8
+         YvOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739209428; x=1739814228;
+        d=1e100.net; s=20230601; t=1739209429; x=1739814229;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=97lx6pYZgJTlQmKaYcz/MNGoRDCTIp3Q81k8vsbjFMQ=;
-        b=qldTSme5H1jmRv5cY+4iTLflB4par7ebmI8Qy21duN/GllEQdPAkRprR6iv/4xgXl0
-         UNM0x9C/Ihvsej33X3UXR1GfuwLLl8l/cS00ZHzGzga5xetZiIVedTPnKQumCfHAg+qV
-         +J/F6B+62U9NNilPBWt8Fa3DxBoxHpYkRU/qASPitn3z15vKpT+UTnaKeVnXMPwOAZa9
-         pIF+zjB1QuKq1zqwSSiplnQLPTJmRtA+CNnmSMpSXgY6cq/I4TGRHR4Ptb4wK0AjUXGB
-         Jpha9HoUgxkgxFTqWBvmvzeQPOxWx6e5JfpbDtqNqCfDrNXDpneIEsOyP+0bCLUGC7pF
-         k57A==
-X-Gm-Message-State: AOJu0YwZX5rudiqvF4SHEJTnN2vduYzljcvFnMoU3LAtnMDJ2EIO9ase
-	u7/pek6wC779gwO9FinbMRfHOgMsQhr38rY7F4Ghb0E94LJKMLMgyPLc+8Dt
-X-Gm-Gg: ASbGncvkAO0Yk4OWvStpPuBS3rnnBk8mAJy3OBv18PYQxseOxf27RTqnhEQRS6L/1Jk
-	9ZoaMnFnlAE0wyaqLq/uH+THM5BSsUqH6mo1ZGNKChjKDQnNGdARTEZ0GMJcyZw2WvpXpJc5yrv
-	BEnTPQ24aPEI3ln4+7H/w7A4FyCEvIg/22+uvli/3mDwAXLtsEmRO+gjoFB6YQTkH+sO1AH6P4O
-	SWzDJrlYsFfZbZu2v8nD3xZopO9lTICsLne5OPolbGUgemJOXTdc+wkuJyw7X+pU5l2FMIdZ8J3
-	lRKgCziKOADvOAmbUogQXlvkEYU8k70KTgUFvAoEDyZLPJzQM3dMSEeKrzUPCxdMwA==
-X-Google-Smtp-Source: AGHT+IFIO3TkyEZrtc6D2jlRpAD3Rc/qSd+vcW8XfYQ5NgtcW76LUcNKoN7UcfkqwMTceJfcPIpG/A==
-X-Received: by 2002:a17:90b:548b:b0:2f4:47fc:7f18 with SMTP id 98e67ed59e1d1-2fa9ed7b2b1mr626002a91.10.1739209427538;
-        Mon, 10 Feb 2025 09:43:47 -0800 (PST)
+        bh=eol6oaMq93kxYk9VK5G7LDWWkiciy0WsGg/oN96JGJ0=;
+        b=vBK5HiuGDvwWDYKbt9CtpTQBg9CKuFYR26AnMqZ4c46P0xh1NEfaq14wfnHr8tg+3p
+         WVD8UVPwnBuSrvjkNTTpkqrE38PZo89pYqfpkqwYmeClZNQgb2z/QEo1QnBMvtQag+tZ
+         QZAJyB4LUDcU6d7qFOO2RzvOJC5eRl6RfE6oTTpg0cRiiUn0EnSmYf7ruJb99gq9oHLj
+         A3jOltO1zzGhaQGZyK+ceuOGjYb+dUe+O5WUy62ef70Pnvqs7j3n627kUf+InrJShZcI
+         ILGHcfNuj3Tmx+PDOrfaEd8OT98zAi+b5OQW2rVkhRjXdPo8EsQQdEAIIj3nrrCIGUgP
+         jzFQ==
+X-Gm-Message-State: AOJu0Yy2/rhE/6n8DKxYJhrQWcLkoxgYEcPDYE6I7gPKq209mAuN5Lhi
+	ONanHavb2l01a4k5oQBq1Q8p/Tw+d5MpiLwCkrpjUh/wyWAnZPk4AlBVPIPO
+X-Gm-Gg: ASbGncuQ0UBu0e1ayD6xxiQjMQUgYPr54DjWTXEqZ9VVkXTMgYbVBPmTHyUIK5eJc7P
+	dR7eKLSZf/j8Q7X4k0X9DluRdX8JoUwvTfkW5LHOW6CCY8pEcR1haOHa4nG1UKVirEDkfszgP6e
+	dQVpArgt8KnMqtuBdwHkY/zj1yK4TyxIEbvQuXvyeFp0YYp/a/4BpzdgpqZv2wPMzOqgRMZU1xS
+	V4YNDbDK/aA1Ulo8QEdhHBotj4at8jr226n0NKgMkvfQeXK6t2yrIE1xI2M8sKPXJkx4y3sBySk
+	Q8haohmSbdEKfTF5GJf+5IzvOcuginoQJSyAL7+X//Da4q/87TUtORoYVrAEaJbonQ==
+X-Google-Smtp-Source: AGHT+IHSgGlsSo0aoMHwfyGSVGqp0CIqGkVlF/KgpHykwHEdvevhjCkdWGp7AhejMggeDJEXLxYWPA==
+X-Received: by 2002:a17:90b:3c0e:b0:2f2:ab09:c256 with SMTP id 98e67ed59e1d1-2fa243ee52dmr25009848a91.33.1739209428645;
+        Mon, 10 Feb 2025 09:43:48 -0800 (PST)
 Received: from localhost.localdomain (c-76-146-13-146.hsd1.wa.comcast.net. [76.146.13.146])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fa3fb55dcasm5554961a91.4.2025.02.10.09.43.46
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fa3fb55dcasm5554961a91.4.2025.02.10.09.43.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Feb 2025 09:43:47 -0800 (PST)
+        Mon, 10 Feb 2025 09:43:48 -0800 (PST)
 From: Amery Hung <ameryhung@gmail.com>
 To: netdev@vger.kernel.org
 Cc: bpf@vger.kernel.org,
@@ -92,9 +92,9 @@ Cc: bpf@vger.kernel.org,
 	yepeilin.cs@gmail.com,
 	ameryhung@gmail.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v4 01/19] bpf: Make every prog keep a copy of ctx_arg_info
-Date: Mon, 10 Feb 2025 09:43:15 -0800
-Message-ID: <20250210174336.2024258-2-ameryhung@gmail.com>
+Subject: [PATCH bpf-next v4 02/19] bpf: Support getting referenced kptr from struct_ops argument
+Date: Mon, 10 Feb 2025 09:43:16 -0800
+Message-ID: <20250210174336.2024258-3-ameryhung@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250210174336.2024258-1-ameryhung@gmail.com>
 References: <20250210174336.2024258-1-ameryhung@gmail.com>
@@ -106,152 +106,238 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, ctx_arg_info is read-only in the view of the verifier since
-it is shared among programs of the same attach type. Make each program
-have their own copy of ctx_arg_info so that we can use it to store
-program specific information.
+From: Amery Hung <amery.hung@bytedance.com>
 
-In the next patch where we support acquiring a referenced kptr through a
-struct_ops argument tagged with "__ref", ctx_arg_info->ref_obj_id will
-be used to store the unique reference object id of the argument. This
-avoids creating a requirement in the verifier that "__ref" tagged
-arguments must be the first set of references acquired [0].
+Allows struct_ops programs to acqurie referenced kptrs from arguments
+by directly reading the argument.
 
-[0] https://lore.kernel.org/bpf/20241220195619.2022866-2-amery.hung@gmail.com/
+The verifier will acquire a reference for struct_ops a argument tagged
+with "__ref" in the stub function in the beginning of the main program.
+The user will be able to access the referenced kptr directly by reading
+the context as long as it has not been released by the program.
 
-Signed-off-by: Amery Hung <ameryhung@gmail.com>
+This new mechanism to acquire referenced kptr (compared to the existing
+"kfunc with KF_ACQUIRE") is introduced for ergonomic and semantic reasons.
+In the first use case, Qdisc_ops, an skb is passed to .enqueue in the
+first argument. This mechanism provides a natural way for users to get a
+referenced kptr in the .enqueue struct_ops programs and makes sure that a
+qdisc will always enqueue or drop the skb.
+
+Signed-off-by: Amery Hung <amery.hung@bytedance.com>
 Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- include/linux/bpf.h   |  7 +++++--
- kernel/bpf/bpf_iter.c | 13 ++++++-------
- kernel/bpf/verifier.c | 25 +++++++++++++++----------
- 3 files changed, 26 insertions(+), 19 deletions(-)
+ include/linux/bpf.h         |  3 +++
+ kernel/bpf/bpf_struct_ops.c | 26 ++++++++++++++++++++------
+ kernel/bpf/btf.c            |  1 +
+ kernel/bpf/verifier.c       | 35 ++++++++++++++++++++++++++++++++---
+ 4 files changed, 56 insertions(+), 9 deletions(-)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index f3f50e29d639..f4df39e8c735 100644
+index f4df39e8c735..15164787ce7f 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -1507,7 +1507,7 @@ struct bpf_prog_aux {
- 	u32 max_rdonly_access;
- 	u32 max_rdwr_access;
- 	struct btf *attach_btf;
--	const struct bpf_ctx_arg_aux *ctx_arg_info;
-+	struct bpf_ctx_arg_aux *ctx_arg_info;
- 	void __percpu *priv_stack_ptr;
- 	struct mutex dst_mutex; /* protects dst_* pointers below, *after* prog becomes visible */
- 	struct bpf_prog *dst_prog;
-@@ -1945,6 +1945,9 @@ static inline void bpf_struct_ops_desc_release(struct bpf_struct_ops_desc *st_op
+@@ -968,6 +968,7 @@ struct bpf_insn_access_aux {
+ 		struct {
+ 			struct btf *btf;
+ 			u32 btf_id;
++			u32 ref_obj_id;
+ 		};
+ 	};
+ 	struct bpf_verifier_log *log; /* for verbose logs */
+@@ -1481,6 +1482,8 @@ struct bpf_ctx_arg_aux {
+ 	enum bpf_reg_type reg_type;
+ 	struct btf *btf;
+ 	u32 btf_id;
++	u32 ref_obj_id;
++	bool refcounted;
+ };
  
- #endif
- 
-+int bpf_prog_ctx_arg_info_init(struct bpf_prog *prog,
-+			       const struct bpf_ctx_arg_aux *info, u32 cnt);
-+
- #if defined(CONFIG_CGROUP_BPF) && defined(CONFIG_BPF_LSM)
- int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
- 				    int cgroup_atype);
-@@ -2546,7 +2549,7 @@ struct bpf_iter__bpf_map_elem {
- 
- int bpf_iter_reg_target(const struct bpf_iter_reg *reg_info);
- void bpf_iter_unreg_target(const struct bpf_iter_reg *reg_info);
--bool bpf_iter_prog_supported(struct bpf_prog *prog);
-+int bpf_iter_prog_supported(struct bpf_prog *prog);
- const struct bpf_func_proto *
- bpf_iter_get_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog);
- int bpf_iter_link_attach(const union bpf_attr *attr, bpfptr_t uattr, struct bpf_prog *prog);
-diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
-index 106735145948..380e9a7cac75 100644
---- a/kernel/bpf/bpf_iter.c
-+++ b/kernel/bpf/bpf_iter.c
-@@ -335,7 +335,7 @@ static void cache_btf_id(struct bpf_iter_target_info *tinfo,
- 	tinfo->btf_id = prog->aux->attach_btf_id;
+ struct btf_mod_pair {
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index 9b7f3b9c5262..68df8d8b6db3 100644
+--- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -146,6 +146,7 @@ void bpf_struct_ops_image_free(void *image)
  }
  
--bool bpf_iter_prog_supported(struct bpf_prog *prog)
-+int bpf_iter_prog_supported(struct bpf_prog *prog)
+ #define MAYBE_NULL_SUFFIX "__nullable"
++#define REFCOUNTED_SUFFIX "__ref"
+ 
+ /* Prepare argument info for every nullable argument of a member of a
+  * struct_ops type.
+@@ -174,11 +175,13 @@ static int prepare_arg_info(struct btf *btf,
+ 			    struct bpf_struct_ops_arg_info *arg_info)
  {
- 	const char *attach_fname = prog->aux->attach_func_name;
- 	struct bpf_iter_target_info *tinfo = NULL, *iter;
-@@ -344,7 +344,7 @@ bool bpf_iter_prog_supported(struct bpf_prog *prog)
- 	int prefix_len = strlen(prefix);
+ 	const struct btf_type *stub_func_proto, *pointed_type;
++	bool is_nullable = false, is_refcounted = false;
+ 	const struct btf_param *stub_args, *args;
+ 	struct bpf_ctx_arg_aux *info, *info_buf;
+ 	u32 nargs, arg_no, info_cnt = 0;
+ 	char ksym[KSYM_SYMBOL_LEN];
+ 	const char *stub_fname;
++	const char *suffix;
+ 	s32 stub_func_id;
+ 	u32 arg_btf_id;
+ 	int offset;
+@@ -223,12 +226,19 @@ static int prepare_arg_info(struct btf *btf,
+ 	info = info_buf;
+ 	for (arg_no = 0; arg_no < nargs; arg_no++) {
+ 		/* Skip arguments that is not suffixed with
+-		 * "__nullable".
++		 * "__nullable or __ref".
+ 		 */
+-		if (!btf_param_match_suffix(btf, &stub_args[arg_no],
+-					    MAYBE_NULL_SUFFIX))
++		is_nullable = btf_param_match_suffix(btf, &stub_args[arg_no],
++						     MAYBE_NULL_SUFFIX);
++		is_refcounted = btf_param_match_suffix(btf, &stub_args[arg_no],
++						       REFCOUNTED_SUFFIX);
++		if (!is_nullable && !is_refcounted)
+ 			continue;
  
- 	if (strncmp(attach_fname, prefix, prefix_len))
--		return false;
-+		return -EINVAL;
++		if (is_nullable)
++			suffix = MAYBE_NULL_SUFFIX;
++		else if (is_refcounted)
++			suffix = REFCOUNTED_SUFFIX;
+ 		/* Should be a pointer to struct */
+ 		pointed_type = btf_type_resolve_ptr(btf,
+ 						    args[arg_no].type,
+@@ -236,7 +246,7 @@ static int prepare_arg_info(struct btf *btf,
+ 		if (!pointed_type ||
+ 		    !btf_type_is_struct(pointed_type)) {
+ 			pr_warn("stub function %s has %s tagging to an unsupported type\n",
+-				stub_fname, MAYBE_NULL_SUFFIX);
++				stub_fname, suffix);
+ 			goto err_out;
+ 		}
  
- 	mutex_lock(&targets_mutex);
- 	list_for_each_entry(iter, &targets, list) {
-@@ -360,12 +360,11 @@ bool bpf_iter_prog_supported(struct bpf_prog *prog)
+@@ -254,11 +264,15 @@ static int prepare_arg_info(struct btf *btf,
+ 		}
+ 
+ 		/* Fill the information of the new argument */
+-		info->reg_type =
+-			PTR_TRUSTED | PTR_TO_BTF_ID | PTR_MAYBE_NULL;
+ 		info->btf_id = arg_btf_id;
+ 		info->btf = btf;
+ 		info->offset = offset;
++		if (is_nullable) {
++			info->reg_type = PTR_TRUSTED | PTR_TO_BTF_ID | PTR_MAYBE_NULL;
++		} else if (is_refcounted) {
++			info->reg_type = PTR_TRUSTED | PTR_TO_BTF_ID;
++			info->refcounted = true;
++		}
+ 
+ 		info++;
+ 		info_cnt++;
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 9de6acddd479..fd3470fbd144 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -6677,6 +6677,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+ 			info->reg_type = ctx_arg_info->reg_type;
+ 			info->btf = ctx_arg_info->btf ? : btf_vmlinux;
+ 			info->btf_id = ctx_arg_info->btf_id;
++			info->ref_obj_id = ctx_arg_info->refcounted ? ctx_arg_info->ref_obj_id : 0;
+ 			return true;
+ 		}
  	}
- 	mutex_unlock(&targets_mutex);
- 
--	if (tinfo) {
--		prog->aux->ctx_arg_info_size = tinfo->reg_info->ctx_arg_info_size;
--		prog->aux->ctx_arg_info = tinfo->reg_info->ctx_arg_info;
--	}
-+	if (!tinfo)
-+		return -EINVAL;
- 
--	return tinfo != NULL;
-+	return bpf_prog_ctx_arg_info_init(prog, tinfo->reg_info->ctx_arg_info,
-+					  tinfo->reg_info->ctx_arg_info_size);
- }
- 
- const struct bpf_func_proto *
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 9971c03adfd5..a41ba019780f 100644
+index a41ba019780f..a0f51903e977 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -22377,6 +22377,18 @@ static void print_verification_stats(struct bpf_verifier_env *env)
- 		env->peak_states, env->longest_mark_read_walk);
+@@ -1543,6 +1543,17 @@ static void release_reference_state(struct bpf_verifier_state *state, int idx)
+ 	return;
  }
  
-+int bpf_prog_ctx_arg_info_init(struct bpf_prog *prog,
-+			       const struct bpf_ctx_arg_aux *info, u32 cnt)
++static bool find_reference_state(struct bpf_verifier_state *state, int ptr_id)
 +{
-+	prog->aux->ctx_arg_info = kcalloc(cnt, sizeof(*info), GFP_KERNEL);
-+	if (!prog->aux->ctx_arg_info)
-+		return -ENOMEM;
++	int i;
 +
-+	memcpy(prog->aux->ctx_arg_info, info, sizeof(*info) * cnt);
-+	prog->aux->ctx_arg_info_size = cnt;
-+	return 0;
++	for (i = 0; i < state->acquired_refs; i++)
++		if (state->refs[i].id == ptr_id)
++			return true;
++
++	return false;
 +}
 +
- static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
+ static int release_lock_state(struct bpf_verifier_state *state, int type, int id, void *ptr)
  {
- 	const struct btf_type *t, *func_proto;
-@@ -22457,17 +22469,12 @@ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
- 		return -EACCES;
+ 	int i;
+@@ -5981,7 +5992,8 @@ static int check_packet_access(struct bpf_verifier_env *env, u32 regno, int off,
+ /* check access to 'struct bpf_context' fields.  Supports fixed offsets only */
+ static int check_ctx_access(struct bpf_verifier_env *env, int insn_idx, int off, int size,
+ 			    enum bpf_access_type t, enum bpf_reg_type *reg_type,
+-			    struct btf **btf, u32 *btf_id, bool *is_retval, bool is_ldsx)
++			    struct btf **btf, u32 *btf_id, bool *is_retval, bool is_ldsx,
++			    u32 *ref_obj_id)
+ {
+ 	struct bpf_insn_access_aux info = {
+ 		.reg_type = *reg_type,
+@@ -6003,8 +6015,16 @@ static int check_ctx_access(struct bpf_verifier_env *env, int insn_idx, int off,
+ 		*is_retval = info.is_retval;
+ 
+ 		if (base_type(*reg_type) == PTR_TO_BTF_ID) {
++			if (info.ref_obj_id &&
++			    !find_reference_state(env->cur_state, info.ref_obj_id)) {
++				verbose(env, "invalid bpf_context access off=%d. Reference may already be released\n",
++					off);
++				return -EACCES;
++			}
++
+ 			*btf = info.btf;
+ 			*btf_id = info.btf_id;
++			*ref_obj_id = info.ref_obj_id;
+ 		} else {
+ 			env->insn_aux_data[insn_idx].ctx_field_size = info.ctx_field_size;
+ 		}
+@@ -7367,7 +7387,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ 		struct bpf_retval_range range;
+ 		enum bpf_reg_type reg_type = SCALAR_VALUE;
+ 		struct btf *btf = NULL;
+-		u32 btf_id = 0;
++		u32 btf_id = 0, ref_obj_id = 0;
+ 
+ 		if (t == BPF_WRITE && value_regno >= 0 &&
+ 		    is_pointer_value(env, value_regno)) {
+@@ -7380,7 +7400,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ 			return err;
+ 
+ 		err = check_ctx_access(env, insn_idx, off, size, t, &reg_type, &btf,
+-				       &btf_id, &is_retval, is_ldsx);
++				       &btf_id, &is_retval, is_ldsx, &ref_obj_id);
+ 		if (err)
+ 			verbose_linfo(env, insn_idx, "; ");
+ 		if (!err && t == BPF_READ && value_regno >= 0) {
+@@ -7411,6 +7431,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ 				if (base_type(reg_type) == PTR_TO_BTF_ID) {
+ 					regs[value_regno].btf = btf;
+ 					regs[value_regno].btf_id = btf_id;
++					regs[value_regno].ref_obj_id = ref_obj_id;
+ 				}
+ 			}
+ 			regs[value_regno].type = reg_type;
+@@ -22148,6 +22169,7 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
+ {
+ 	bool pop_log = !(env->log.level & BPF_LOG_LEVEL2);
+ 	struct bpf_subprog_info *sub = subprog_info(env, subprog);
++	struct bpf_prog_aux *aux = env->prog->aux;
+ 	struct bpf_verifier_state *state;
+ 	struct bpf_reg_state *regs;
+ 	int ret, i;
+@@ -22255,6 +22277,13 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
+ 		mark_reg_known_zero(env, regs, BPF_REG_1);
  	}
  
--	/* btf_ctx_access() used this to provide argument type info */
--	prog->aux->ctx_arg_info =
--		st_ops_desc->arg_info[member_idx].info;
--	prog->aux->ctx_arg_info_size =
--		st_ops_desc->arg_info[member_idx].cnt;
--
- 	prog->aux->attach_func_proto = func_proto;
- 	prog->aux->attach_func_name = mname;
- 	env->ops = st_ops->verifier_ops;
- 
--	return 0;
-+	return bpf_prog_ctx_arg_info_init(prog, st_ops_desc->arg_info[member_idx].info,
-+					  st_ops_desc->arg_info[member_idx].cnt);
- }
- #define SECURITY_PREFIX "security_"
- 
-@@ -22917,9 +22924,7 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
- 		prog->aux->attach_btf_trace = true;
- 		return 0;
- 	} else if (prog->expected_attach_type == BPF_TRACE_ITER) {
--		if (!bpf_iter_prog_supported(prog))
--			return -EINVAL;
--		return 0;
-+		return bpf_iter_prog_supported(prog);
- 	}
- 
- 	if (prog->type == BPF_PROG_TYPE_LSM) {
++	/* Acquire references for struct_ops program arguments tagged with "__ref" */
++	if (!subprog && env->prog->type == BPF_PROG_TYPE_STRUCT_OPS) {
++		for (i = 0; i < aux->ctx_arg_info_size; i++)
++			aux->ctx_arg_info[i].ref_obj_id = aux->ctx_arg_info[i].refcounted ?
++							  acquire_reference(env, 0) : 0;
++	}
++
+ 	ret = do_check(env);
+ out:
+ 	/* check for NULL is necessary, since cur_state can be freed inside
 -- 
 2.47.1
 
