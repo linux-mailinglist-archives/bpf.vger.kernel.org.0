@@ -1,118 +1,125 @@
-Return-Path: <bpf+bounces-50999-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51000-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1E2DA2F364
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 17:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E1758A2F3CF
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 17:41:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B70D33A2A2D
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 16:25:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB7233A7835
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 16:41:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20D4C2580FB;
-	Mon, 10 Feb 2025 16:25:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FEBF24BD1F;
+	Mon, 10 Feb 2025 16:41:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A3XnPEH5"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="V6guh7cP"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9364A2580D6;
-	Mon, 10 Feb 2025 16:25:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36CDD1F4634
+	for <bpf@vger.kernel.org>; Mon, 10 Feb 2025 16:41:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739204750; cv=none; b=CfIf53/MgNRjogw7ZzB/X9TCmrzY/FGkxu36a4IT48/UPYtnReQiseJ9bQ8sYuHoAy1H/zS0jzQqkMyY62pwZKB6mckvBWUrn4UxglmUoAdxdWym0VpRoa6/4+nSHAxjN9pKFR9fOOij98MGJsAWYPGEKP+2wsxpCFJ15GGEwxA=
+	t=1739205674; cv=none; b=Ui9GFa7SEuhSWt3CLbTKZ4Adpbe7F6HX603l+gQVt4fiG8AVNdrNior1jEy1liOFLhslGV1EwhBJn31OG63E9Lm5gechNEHb2nHU3THDtPQ7kn3S1wUwX3sqmqYYFRjhQYdg8NxaEHYrM7uNNiQKZLfUmYG9nyPLeXw01C51uaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739204750; c=relaxed/simple;
-	bh=48RpgmHD1hoBrZcm4gSDbROrUBR/h5yG6mfOKRTppm4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DeQbs8VT3o0nnIXcTs74zHe+qn+NsJRdp88YzIivxEyqbaATJtdljPmd/DnkErX2RorqYx7Gw+gk+MXA0GiM0u26sebHb0Y3WE2ulb7Mjv+rJtEngMOpc0BfTNN3UHT3e/4TOdH0VKQNmceS1bvwsd9O7sXgmELbdTEGgaJy1ds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A3XnPEH5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26691C4CED1;
-	Mon, 10 Feb 2025 16:25:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739204750;
-	bh=48RpgmHD1hoBrZcm4gSDbROrUBR/h5yG6mfOKRTppm4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=A3XnPEH5cn1vz9o7echKUcZ/LbuRSpi8TJAzRBzzQPtQdVwnGQnvCOEF+r2h9wEI4
-	 2aIBf5nEz7ibAQBTAlI31MlOQddU+VsUVRQN14RaHmnSJhBQZ2OtUxK8BTTs83BO0g
-	 gLbl+ThDA2Re7Sf+lx2ajw8Qy5ZI2s6x6gEt66E1wDBv4tfh3rAYliL3dfNUaRUGT2
-	 1daiqLv2OeOApjTYk86uTSmtGzNqAAhVu7PVLiuYh51SECmFo7QvrEOsugpnwpuRF9
-	 PVa0Xbd7S0zZ42KBDotfTEu3woITZq/NIAl6ZxgOpDqd95SjZ3P2yToMCYOfm7TS8R
-	 WvdZbMPUPiIOg==
-Date: Mon, 10 Feb 2025 16:25:43 +0000
-From: Simon Horman <horms@kernel.org>
-To: Suman Ghosh <sumang@marvell.com>
-Cc: sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
-	hkelam@marvell.com, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, lcherian@marvell.com,
-	jerinj@marvell.com, john.fastabend@gmail.com, bbhushan2@marvell.com,
-	hawk@kernel.org, andrew+netdev@lunn.ch, ast@kernel.org,
-	daniel@iogearbox.net, bpf@vger.kernel.org, larysa.zaremba@intel.com
-Subject: Re: [net-next PATCH v5 1/6] octeontx2-pf: use xdp_return_frame() to
- free xdp buffers
-Message-ID: <20250210162543.GF554665@kernel.org>
-References: <20250206085034.1978172-1-sumang@marvell.com>
- <20250206085034.1978172-2-sumang@marvell.com>
+	s=arc-20240116; t=1739205674; c=relaxed/simple;
+	bh=rqymZ0NurZ4uwh32hr1IPMHTuWwsGkx6A3GbSMGR6Pg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EWnBG9jxBFOZA8nBz60CVrFt06mitn6plhre2P5wBCRhSJ9hfyY5YorUSl4wA96jTpEao5913z2N7hhu3saVXpX5PLLTlt2H2OS3W+KGDAHEpTz2twYdmemdm+UFZ8un/LzMrJKDEywkOaLDro5fD4qyglXlO9fkodScd34D0i8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=V6guh7cP; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <cab1d59c-4dac-4a5b-8dfa-43c2ac03b675@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1739205668;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PLKGhgf5O0fUKKbSlKGAihHeN6U7qrQ5l3EDkpVZISY=;
+	b=V6guh7cPGDO66uUcdvNqRSqMaULGvA+Qft0V/aGzvtm0qN+vVAro0jceFR2y0A3QPrti+R
+	4Vkk8U2ufOnStWo84Fv4ONxpbj68tL48y//OSkQEE25rMAlaX/gu2Ym8GzJ/d/F46TTIHQ
+	Nfj5mxf90dLgCQESDZ2yaBJd9PhmEWI=
+Date: Mon, 10 Feb 2025 08:41:00 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250206085034.1978172-2-sumang@marvell.com>
+Subject: Re: [PATCH v7 5/6] kernfs: Use RCU to access kernfs_node::parent.
+Content-Language: en-GB
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Hillf Danton <hdanton@sina.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Marco Elver <elver@google.com>, Tejun Heo <tj@kernel.org>,
+ tglx@linutronix.de, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+ bpf@vger.kernel.org
+References: <20250203135023.416828-1-bigeasy@linutronix.de>
+ <20250203135023.416828-6-bigeasy@linutronix.de>
+ <20250210084331.IJB3qKdl@linutronix.de>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20250210084331.IJB3qKdl@linutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Feb 06, 2025 at 02:20:29PM +0530, Suman Ghosh wrote:
-> xdp_return_frames() will help to free the xdp frames and their
-> associated pages back to page pool.
-> 
-> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-> Signed-off-by: Suman Ghosh <sumang@marvell.com>
 
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-> index 224cef938927..d46f05993d3f 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-> @@ -96,20 +96,22 @@ static unsigned int frag_num(unsigned int i)
->  
->  static void otx2_xdp_snd_pkt_handler(struct otx2_nic *pfvf,
->  				     struct otx2_snd_queue *sq,
-> -				 struct nix_cqe_tx_s *cqe)
-> +				     struct nix_cqe_tx_s *cqe)
->  {
->  	struct nix_send_comp_s *snd_comp = &cqe->comp;
->  	struct sg_list *sg;
->  	struct page *page;
-> -	u64 pa;
-> +	u64 pa, iova;
->  
->  	sg = &sq->sg[snd_comp->sqe_id];
->  
-> -	pa = otx2_iova_to_phys(pfvf->iommu_domain, sg->dma_addr[0]);
-> -	otx2_dma_unmap_page(pfvf, sg->dma_addr[0],
-> -			    sg->size[0], DMA_TO_DEVICE);
-> +	iova = sg->dma_addr[0];
-> +	pa = otx2_iova_to_phys(pfvf->iommu_domain, iova);
->  	page = virt_to_page(phys_to_virt(pa));
-> -	put_page(page);
 
-Hi Suman,
+On 2/10/25 12:43 AM, Sebastian Andrzej Siewior wrote:
+> On 2025-02-03 14:50:22 [+0100], To cgroups@vger.kernel.org wrote:
+>> kernfs_rename_lock is used to obtain stable kernfs_node::{name|parent}
+>> pointer. This is a preparation to access kernfs_node::parent under RCU
+>> and ensure that the pointer remains stable under the RCU lifetime
+>> guarantees.
+> …
+>
+> The robot complained that the selftests for bpf broke. As it turns out,
+> the tests access kernfs_node::{parent|name} and after the rename
+> ::parent is gone so it does not compile.
+> If there are no objections, I would merge this into 5/6 and repost.
+> "test_progs -a test_profiler" passes.
+>
+> diff --git a/tools/testing/selftests/bpf/progs/profiler.inc.h b/tools/testing/selftests/bpf/progs/profiler.inc.h
+> index 8bd1ebd7d6afd..a4f518ee5f4de 100644
+> --- a/tools/testing/selftests/bpf/progs/profiler.inc.h
+> +++ b/tools/testing/selftests/bpf/progs/profiler.inc.h
+> @@ -223,7 +223,7 @@ static INLINE void* read_full_cgroup_path(struct kernfs_node* cgroup_node,
+>   		if (bpf_cmp_likely(filepart_length, <=, MAX_PATH)) {
+>   			payload += filepart_length;
+>   		}
+> -		cgroup_node = BPF_CORE_READ(cgroup_node, parent);
+> +		cgroup_node = BPF_CORE_READ(cgroup_node, __parent);
+>   	}
+>   	return payload;
+>   }
+> @@ -300,6 +300,7 @@ static INLINE void* populate_cgroup_info(struct cgroup_data_t* cgroup_data,
+>   	cgroup_data->cgroup_proc_length = 0;
+>   	cgroup_data->cgroup_full_length = 0;
+>   
+> +	bpf_rcu_read_lock();
+>   	size_t cgroup_root_length =
+>   		bpf_probe_read_kernel_str(payload, MAX_PATH,
+>   					  BPF_CORE_READ(root_kernfs, name));
+> @@ -323,6 +324,7 @@ static INLINE void* populate_cgroup_info(struct cgroup_data_t* cgroup_data,
+>   		cgroup_data->cgroup_full_length = payload_end_pos - payload;
+>   		payload = payload_end_pos;
+>   	}
+> +	bpf_rcu_read_unlock();
 
-With this patch applied page is assigned but otherwise unused in this
-function. So unless there are some side effects of the above, I think
-page and in turn pa and iova can be removed.
+All programs calling this function populate_cgroup_info() is not sleepable program
+so the whole prog is protected by rcu and there is no need for above
+bpf_rcu_read_{lock,unlock}().
 
-> +	if (sg->flags & XDP_REDIRECT)
-> +		otx2_dma_unmap_page(pfvf, sg->dma_addr[0], sg->size[0], DMA_TO_DEVICE);
-> +	xdp_return_frame((struct xdp_frame *)sg->skb);
-> +	sg->skb = (u64)NULL;
->  }
->  
->  static void otx2_snd_pkt_handler(struct otx2_nic *pfvf,
+>   
+>   	return (void*)payload;
+>   }
 
-...
 
