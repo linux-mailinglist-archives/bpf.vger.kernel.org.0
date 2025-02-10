@@ -1,212 +1,268 @@
-Return-Path: <bpf+bounces-51066-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51067-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EC8BA2FE7E
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 00:37:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AC40A2FE88
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 00:40:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0829162FAD
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 23:37:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC6311656A2
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 23:40:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2737025A2AD;
-	Mon, 10 Feb 2025 23:37:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB75E260A42;
+	Mon, 10 Feb 2025 23:40:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qHdmZz6B"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="lNhPluWa"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05olkn2075.outbound.protection.outlook.com [40.92.91.75])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C81EB249F9
-	for <bpf@vger.kernel.org>; Mon, 10 Feb 2025 23:37:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739230652; cv=none; b=SFskAl8wmHm7Kyuqj+lfjwj2Icm7NaGxuHBhLjn/yV6G8zvE3oN3OAJcwxgGsJxOcnM/3XvN2+qlFsRS5RYxRzLgDR2kBJo1iSP56QO4RUyXlDTbSyH/yL1xlMnwraw/1rBQE9PYAzGcjm4yggGbVq7T38K7mY9S0GZ2ur+usmA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739230652; c=relaxed/simple;
-	bh=1qtdn71ObmNp9aZBVtrHNeaseGZ29P4U495yM4Hk614=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XYSMkxFouD3aXxSCGdBQOS8uW1CuW6+KzR46wKGy8exj1w4pWODrYeOC82PfxMsBcQNSAIjQJH6oknP0dqan/ZuXrjx/wFaq/H53SkwzY+xmPkjKeuu4KvU033AJsef8jpdBR7QTkuYKOR3v88QFne4SuGpiBrjMekNS2jK6kIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qHdmZz6B; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a483c1dd-f593-4f6b-9afe-bfb6d43647bf@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1739230647;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LoxrzS3D8x66wVSwChufAa4JKS4tQcWHhbVBM+VizHo=;
-	b=qHdmZz6BkihEfFJQPCLSythTec0ZxYsj15eya/WS4hdXQ/sK11Q9mInWFzDedpfukuC4Tr
-	V9/Lv8BFR15kAVRNAwI0gAv2hqTLOFBkIDDV17No2b1iBytR7s9Jzrqs+VtuDJ3uH/hPCY
-	hTbhGXUneag0fDU0i06CFn+EllVs4Kk=
-Date: Mon, 10 Feb 2025 15:37:19 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D20D253356;
+	Mon, 10 Feb 2025 23:40:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.91.75
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1739230830; cv=fail; b=Sy+hpVTvc+foNkLCrqwo1zGz3GbEUVwRQ03KWCo7KVbyzW1hoHf36bGTQFGUcU/n/x05ysHSfBrTXPMdR88C5zvVhoTaV8/P/9TnMloUbdED6NEv3XV5C/faa540TaiRdXHy21evJ42bBsDG9QeUU8Nxni9ZdR7Tj83nswcTx9Y=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1739230830; c=relaxed/simple;
+	bh=VpHt0cuiurkkGsDADJENIP3mxjTXm7pRmFKhzOEI3Wo=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=ETdaf0oZP1j0hOxbMsSfBbUlZ/7fJX/ZVBwyT8OV2N03CiJue3g+aY5IKXAqr+ylgZxfMmw8xhDhyOX4CxBnEkvMjxGNxoItMQjsaY/6mbUrv+1KKbdJgBw+hPznxFf8qbm1yMhRxsb3kcFlxNUyhtGZOgOGxdeeYmshi5NuV3M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=lNhPluWa; arc=fail smtp.client-ip=40.92.91.75
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Vu3VGokOhYIjZIuPerkBUGMx3VhWncFGWp3AyfOnbDiR4cCi7BRt1PtH76+rxxmsQ4Njdx+1sJbMl6efZ5peBkHR7vivaNmfBuMCbCIfA4aLRK2gVRqj/RFDY7HdySsgJ0dwZ7cx7m7jr/JpUmvvwUfo1j8Goou9OyB4M3NDt1wfBwdgWEfKmgsO7bUpHB/ayXOyzBNYtL+kcs5O2niVPPqXHj603Yp5KS3K+xdINUQviXr9Eu5NUOHS7SDCvPbBYPEK4fkL6tJNMcY9nv4ny8HU6kJJqqXrl05mG/0lm6QdaTnz+z9cbQscHh+yQPyvXJQFfl+ERNKLgGg2Sh6faQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NMDPDd/iZNebyGG8kdvQs1YTyGLuwcsdaWMCpYVtJDo=;
+ b=u+ZSZ6MAG+N/re7JPu0qzSdwUjFKjPRfkS85xz2cXh7/NBcSKgtVWD6RTWmyZV29acdxo4CzVbWYmnQFZRoflyYdYUe5uFgGMOTkW0QHtOGebvQjx2E3na9iQhel1wpLwd4+Sjq7FQ2CgZRfeXv0D9aiZhiPjb9edW4NLJ2zIk7FfOM9PzBPivyC55B+abH78p7zlTWtqJC3BL2alut0QisTIVg+ix3+zqC9pbt5vH6MmQOh+QYkflBoA8tc1KayO07OT3dg+uioi0LlPVUG2hXdcMbFD2Ez46vlg/BxbKNe+QW83tbVW9Mkq3dyGVqm535foNDuFF9rK4RcCrQIvw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NMDPDd/iZNebyGG8kdvQs1YTyGLuwcsdaWMCpYVtJDo=;
+ b=lNhPluWa0qR1W+nre3gGlqHoY2EodDrydTGufo/3hsfVzMX9UqR8Ld0PgOGDAEBmC5zZNDqDf+fHfjAxCv53CsqXQWtswwar+ODA6MuvU39iomPZiWuGZ0bZ+yduRh+i2gDJuVk2qAMwm/dQ4oyTRrrgOK5cHhFcRwxsGviC611j0q9m3x4sNsBXh6ZFuoBCStY4Q/2gVYwV6iBuZorRZM/aw4Pejo9jU6q+Q+3eGcWF4FWHpBDGiq7Ilt+6HZZVLDKzF0csPTXT1/UCRNJEz5Y6lN2yJHWbZPEORChs0RFnCC2/OVxOUuTSnrYAcxuggNaQYipg5yaDdO8OTZr7yQ==
+Received: from AM6PR03MB5080.eurprd03.prod.outlook.com (2603:10a6:20b:90::20)
+ by AS8PR03MB8042.eurprd03.prod.outlook.com (2603:10a6:20b:346::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8422.19; Mon, 10 Feb
+ 2025 23:40:26 +0000
+Received: from AM6PR03MB5080.eurprd03.prod.outlook.com
+ ([fe80::a16:9eb8:6868:f6d8]) by AM6PR03MB5080.eurprd03.prod.outlook.com
+ ([fe80::a16:9eb8:6868:f6d8%4]) with mapi id 15.20.8422.015; Mon, 10 Feb 2025
+ 23:40:26 +0000
+Message-ID:
+ <AM6PR03MB5080933CC30F9105A617351E99F22@AM6PR03MB5080.eurprd03.prod.outlook.com>
+Date: Mon, 10 Feb 2025 23:40:02 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH bpf-next 6/8] sched_ext: Add filter for
+ scx_kfunc_ids_unlocked
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>,
+ David Vernet <void@manifault.com>, Andrea Righi <arighi@nvidia.com>,
+ changwoo@igalia.com, bpf <bpf@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <AM6PR03MB5080261D024B49D26F3FFF0099F72@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <AM6PR03MB5080EDA5E2E2FDB96C98F72F99F72@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <CAADnVQJZnNj3KGcy-MKz_F2KEiKWGpXchxVx1zuGA-5g3SO=HQ@mail.gmail.com>
+Content-Language: en-US
+From: Juntong Deng <juntong.deng@outlook.com>
+In-Reply-To: <CAADnVQJZnNj3KGcy-MKz_F2KEiKWGpXchxVx1zuGA-5g3SO=HQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: LO4P123CA0471.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:1a8::8) To AM6PR03MB5080.eurprd03.prod.outlook.com
+ (2603:10a6:20b:90::20)
+X-Microsoft-Original-Message-ID:
+ <afa5543c-a17f-4564-8757-4de2f1930070@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v9 00/12] net-timestamp: bpf extension to equip
- applications transparently
-To: Jason Xing <kerneljasonxing@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com,
- willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, horms@kernel.org, bpf@vger.kernel.org,
- netdev@vger.kernel.org
-References: <20250208103220.72294-1-kerneljasonxing@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20250208103220.72294-1-kerneljasonxing@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR03MB5080:EE_|AS8PR03MB8042:EE_
+X-MS-Office365-Filtering-Correlation-Id: abac90c3-618d-493b-da47-08dd4a2c499d
+X-Microsoft-Antispam:
+	BCL:0;ARA:14566002|15080799006|19110799003|5072599009|461199028|6090799003|8060799006|56899033|440099028|3412199025|41001999003;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?SG15MlpGSnpDdlpnckJxWjFlZEsxNzB3NGQ2QWZhVS8yRlVua0lZVDB3ME1n?=
+ =?utf-8?B?b0JnVDFhNjB2bXpaMDh0bVVhbzN4eDNxVXlHSGczelpwSCt3bGVnaVVTL2tu?=
+ =?utf-8?B?aGZ6ckVad0ErQXltV0tUS0UrOHJvc3FSWWR2dzM2aldTVHV1TWRtVXpjdHJz?=
+ =?utf-8?B?L0gzbGJmaVpXN252WmJTZHBWZ016N0UyeGphdENRRFJKYnhDdzQ1MzBGQzNl?=
+ =?utf-8?B?MEp1czUzQkxzVDRxMVNLRW5lQndpNVo1akZRalN0T0N0RnllNEFOVnFid0Jq?=
+ =?utf-8?B?SjZ4djcxR1p6MlFhTU5qNFc5Z0N3YXVRQmVVemRTbGFyUnorVU54NDBHZlRu?=
+ =?utf-8?B?alFHZDdvODBtUHp0MkU2eTVkMGJUQjFkZVJNbnZWUFRFdGx1RUFBcTJUeXpm?=
+ =?utf-8?B?ak1ZWUMwblE5RXEvUFNQQStsVjJsSUNjK3Y3K3UvaFBLVnhyNDlGRTdaYzJE?=
+ =?utf-8?B?VHBWU2NtaXFJV0U5Sm1EODFwQllrR2wvejZkRW1aUGp4WjcxYmZ0VXNDdnEw?=
+ =?utf-8?B?dDZyMFdhZ01Dd1ZkL3VEbWNhNDVXc25NUlhwS1habzd2SXlmZlVmaFNNVEdX?=
+ =?utf-8?B?SHhvQVcycHFXWDRtejFpUEZNZUxONkR1RlpwOHEyL0FCTlZrYW8yWG5uWWwy?=
+ =?utf-8?B?SVRWc3NnTUJkWFJIQXFYNmo0aGI1UGIzMHl4RTJnSWpQbmpyRFZwU28rMHF4?=
+ =?utf-8?B?S3ZPdVArMGVZdnlOM2Y0TkFwQXUrbUFlSzVTc0VhWGEvOUdNdzQwclk0QXJV?=
+ =?utf-8?B?ellad3FDVnBmYWVtTWFOOE1uc3AyUEtVZmlyYktjUHF5eEw1aDZPeHk2VDFk?=
+ =?utf-8?B?K0FBUW5pVzVLVHA4ZVdUeVJVN1dFV3NSU2RuTWkydmJtZS9Zbm9WS3dEWEJC?=
+ =?utf-8?B?SFEzRkl6QlN0SGdCeGUvUWJBZ1FtajF2SzN6T3pKb2srZm9KMHMzOXF2RjAv?=
+ =?utf-8?B?NThVdHpsZGZkUnZ0QjZnYTA1cWxUSkpPM1h1MGZ6TzVZZ3NZbzgxU1EzU283?=
+ =?utf-8?B?bjlXR1JoMFNVWlVPd09UWVVQZFNzUFJEVnc2NjRsaHFiTE5zY09nbUVVNmZH?=
+ =?utf-8?B?ZW9qYWZGK1BHWUhic2FSWm1FbDE5VjdJM2tpUm9FSThzaXlpSzQydkZGQU5w?=
+ =?utf-8?B?THV6RGJwcFZlMFpHdTlnZXBEY0RDWHZSQWZDT2JteEkwS3A4Q0VENmdaNVlW?=
+ =?utf-8?B?YVlCUVlZUEl5dWpRQTRKTmk5SVAydytEd1VuQ3Jad0dON1lGU0RKNVlpL2dl?=
+ =?utf-8?B?dGJaOWJvbWVPMTVzWjhBSk5jWVRZWW9jQnRlMlgvbjkrT3hoV0tURVJvdDEv?=
+ =?utf-8?B?VElBdlJVQndOVWt5a0JHeEwxaDJBWTZxZ2EzVWJ4ZU85RkVVOHFPSHZDWVh6?=
+ =?utf-8?B?MjdYdTQ2RUVPaHN1Qm9WanBHSDVrL0hvL25sWVc0NzlXdDFoRU9uTmprMWxD?=
+ =?utf-8?B?WlcxNjR1RDJ3am1BbTM3UXYxUFpUZjJHeDdGa0tlQW9IK0Fvc0wyZnUxcmpR?=
+ =?utf-8?Q?fUCELg=3D?=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?eEdpY0RBOEdwWnI5U0xaVEFpc2VKZVpJUU1RcUZ6d0ZFNUJDcjNVWjJCeEEw?=
+ =?utf-8?B?dWpQaG1kY09SSEFrWDVyeHdBaGxlLytneFJOUjhWUlZlK3FsenM0VVFGZytQ?=
+ =?utf-8?B?TVlmZlVFdjMyRU53NytXN25YQndmSC9rcFN6VWVyV0xxQ3ZSZm43OTFwUTln?=
+ =?utf-8?B?QWJQU2tKMThnWlBWTFlwKzB3TS9McDlKUE5qZE1RQ1paMlJGeHo0UFBWbG1G?=
+ =?utf-8?B?UTR3MHU0Q2JIL29OREFIUUQwQ0xPM2lZT2x2ejBpWUZ5SVhTNU12ekNzTE16?=
+ =?utf-8?B?RFBydzR5UjduaTQ4MEFkT3MvbVVza29JUFRiZEM1cUZETkVDbTdJbUI2NHZ4?=
+ =?utf-8?B?aldhakFTMUx6eWpVK2FydEt4NysrMFBGZ0w0VDZUbytoNkVVeGR0ZElJS2Za?=
+ =?utf-8?B?Z2NYcERFZHc5Y1ErTU5zVmI2ME94aXUzM2dKTXBJRW5mendVNTRTUEJqbERh?=
+ =?utf-8?B?TDR4a1V2WTlKazRQV09HOW96SWpoc3p6R21GVWZrY3c1TWlWdzZzcjZESHk0?=
+ =?utf-8?B?OG14TFlvNnAwbk9IeGJHa2JjeDlhTUJ4bmVMaWRwWXRIRTdXWEtyS1hRckFX?=
+ =?utf-8?B?NVN1bzhVTUpZM0twWm03VGVhc05pazJualdRWU5xcHRzUmJqTlU0aWsra3N2?=
+ =?utf-8?B?OVAxNjE3d1RLanRGNjM1N0UyWlpoK3FlbEdDMG1WaHo3anF6ZVV3aktFeFFn?=
+ =?utf-8?B?MWFvSXk3R25Dald1RTJWbk9uV0NaSG93WHF5R3h6ak5WSSt0eFlySE5SZTlv?=
+ =?utf-8?B?UkdhdVV0VjB1Ty9wMFl6dkNsV3hXbmpyUm4zZHZlQkJlOVFGYmR5YWlYUXRE?=
+ =?utf-8?B?SFZGNjB4eGtHVHZucXcwWlAzbjlkRFRZOVp3S0FFKytRa2w0RlZJaFZ3YXlT?=
+ =?utf-8?B?aEZ2UVdNRkhObEFmSEtmb1VLSDJTZGZGeml1QVppdEpYSERlOVVlWFBHVTlH?=
+ =?utf-8?B?YkNpSEpmQVVHeC9zYWhKdXM1bjJxenlCei9CMHdGdmx3L2xyMzd2UzBoUmVJ?=
+ =?utf-8?B?OE01WmtDS0d2OVdSbzE0QWZnV0ZocktmcnQ3a0RtdjVLZ0RSTXRsb3JpS0NM?=
+ =?utf-8?B?dWp5bUdVVEo4Vkgram1TMkhHclpLazQ0eDhzMm1xalFmV3hzYWRlbEJiamxD?=
+ =?utf-8?B?S0luc0lJcmdhNEUrZlFNZHFMUVFsUnMxRnBpZW5JUFdtekE2dHJjbWYyeUJj?=
+ =?utf-8?B?Nk4vWlRXYUpKdWl0NGh4VWhuS1VpNkJJcWs5SVQxMjdSNUxneTJ6ZFRadjJ4?=
+ =?utf-8?B?ZlFIUWlGaXNJNGM3R1cwTWpkb3BQdWVlVEM0Q0MyV0JEU2IyRmprSXdTYmxZ?=
+ =?utf-8?B?T2wrVU1rUlNmU0VvWVIzTVd6dGNCa3B6aW1sNnBjdkVwbkFraHBVUDBLUWhz?=
+ =?utf-8?B?TmZ4eStkdld6MUxvOVlmTWFEQ25aZUQ1ZWEwZ0FMRDROMjJlL3RlVEowK0k3?=
+ =?utf-8?B?ZE8vaEIrZ3ltMzRMOWNMKzQwYnEvVEVRcnZ2VGpUb3c1Y2xsdFJhUUpQQ28z?=
+ =?utf-8?B?MUhIRTdFdjBqVmt0VktwZ0RWT3h6aytmRlhHSndSUzBWRWg4SHdVWGR4V1h0?=
+ =?utf-8?B?V3MyQkN0MlQ5ZFUyOFQvM3ZRTnRDWlpiRG1kUWM0aHdKaDBEbTFYbGV0QXA1?=
+ =?utf-8?B?dGZGTjRVRkkwbXRCYnJYWllSZDhGTVBSNGxzMHFtU0o1NzliaHMzWVNuQVc4?=
+ =?utf-8?Q?JNyLNggy0o2eE/DV/EXk?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: abac90c3-618d-493b-da47-08dd4a2c499d
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5080.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2025 23:40:23.9529
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR03MB8042
 
-On 2/8/25 2:32 AM, Jason Xing wrote:
-> "Timestamping is key to debugging network stack latency. With
-> SO_TIMESTAMPING, bugs that are otherwise incorrectly assumed to be
-> network issues can be attributed to the kernel." This is extracted
-> from the talk "SO_TIMESTAMPING: Powering Fleetwide RPC Monitoring"
-> addressed by Willem de Bruijn at netdevconf 0x17).
+On 2025/2/8 03:37, Alexei Starovoitov wrote:
+> On Wed, Feb 5, 2025 at 11:35 AM Juntong Deng <juntong.deng@outlook.com> wrote:
+>>
+>> This patch adds filter for scx_kfunc_ids_unlocked.
+>>
+>> The kfuncs in the scx_kfunc_ids_unlocked set can be used in init, exit,
+>> cpu_online, cpu_offline, init_task, dump, cgroup_init, cgroup_exit,
+>> cgroup_prep_move, cgroup_cancel_move, cgroup_move, cgroup_set_weight
+>> operations.
+>>
+>> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+>> ---
+>>   kernel/sched/ext.c | 30 ++++++++++++++++++++++++++++++
+>>   1 file changed, 30 insertions(+)
+>>
+>> diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
+>> index 7f039a32f137..955fb0f5fc5e 100644
+>> --- a/kernel/sched/ext.c
+>> +++ b/kernel/sched/ext.c
+>> @@ -7079,9 +7079,39 @@ BTF_ID_FLAGS(func, scx_bpf_dispatch_from_dsq, KF_RCU)
+>>   BTF_ID_FLAGS(func, scx_bpf_dispatch_vtime_from_dsq, KF_RCU)
+>>   BTF_KFUNCS_END(scx_kfunc_ids_unlocked)
+>>
+>> +static int scx_kfunc_ids_unlocked_filter(const struct bpf_prog *prog, u32 kfunc_id)
+>> +{
+>> +       u32 moff;
+>> +
+>> +       if (!btf_id_set8_contains(&scx_kfunc_ids_unlocked, kfunc_id) ||
+>> +           prog->aux->st_ops != &bpf_sched_ext_ops)
+>> +               return 0;
+>> +
+>> +       moff = prog->aux->attach_st_ops_member_off;
+>> +       if (moff == offsetof(struct sched_ext_ops, init) ||
+>> +           moff == offsetof(struct sched_ext_ops, exit) ||
+>> +           moff == offsetof(struct sched_ext_ops, cpu_online) ||
+>> +           moff == offsetof(struct sched_ext_ops, cpu_offline) ||
+>> +           moff == offsetof(struct sched_ext_ops, init_task) ||
+>> +           moff == offsetof(struct sched_ext_ops, dump))
+>> +               return 0;
+>> +
+>> +#ifdef CONFIG_EXT_GROUP_SCHED
+>> +       if (moff == offsetof(struct sched_ext_ops, cgroup_init) ||
+>> +           moff == offsetof(struct sched_ext_ops, cgroup_exit) ||
+>> +           moff == offsetof(struct sched_ext_ops, cgroup_prep_move) ||
+>> +           moff == offsetof(struct sched_ext_ops, cgroup_cancel_move) ||
+>> +           moff == offsetof(struct sched_ext_ops, cgroup_move) ||
+>> +           moff == offsetof(struct sched_ext_ops, cgroup_set_weight))
+>> +               return 0;
+>> +#endif
+>> +       return -EACCES;
+>> +}
+>> +
+>>   static const struct btf_kfunc_id_set scx_kfunc_set_unlocked = {
+>>          .owner                  = THIS_MODULE,
+>>          .set                    = &scx_kfunc_ids_unlocked,
+>> +       .filter                 = scx_kfunc_ids_unlocked_filter,
+>>   };
 > 
-> There are a few areas that need optimization with the consideration of
-> easier use and less performance impact, which I highlighted and mainly
-> discussed at netconf 2024 with Willem de Bruijn and John Fastabend:
-> uAPI compatibility, extra system call overhead, and the need for
-> application modification. I initially managed to solve these issues
-> by writing a kernel module that hooks various key functions. However,
-> this approach is not suitable for the next kernel release. Therefore,
-> a BPF extension was proposed. During recent period, Martin KaFai Lau
-> provides invaluable suggestions about BPF along the way. Many thanks
-> here!
+> why does sched-ext use so many id_set-s ?
 > 
-> In this series, only support foundamental codes and tx for TCP.
+>          if ((ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
+>                                               &scx_kfunc_set_select_cpu)) ||
+>              (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
+> 
+> &scx_kfunc_set_enqueue_dispatch)) ||
+>              (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
+>                                               &scx_kfunc_set_dispatch)) ||
+>              (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
+>                                               &scx_kfunc_set_cpu_release)) ||
+>              (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
+>                                               &scx_kfunc_set_unlocked)) ||
+> 
+> Can they all be rolled into one id_set then
+> the patches 2-6 will be collapsed into one patch and
+> one filter callback that will describe allowed hook/kfunc combinations?
 
-typo: fundamental.... This had been brought up before (in v7?).
+Yes, I agree that it would be ideal to put all kfuncs in the one id_set,
+but I am not sure that this is better in implementation.
 
-By fundamental, I suspect you meant (?) bpf timestamping infrastructure, like: 
-"This series adds the BPF networking timestamping infrastructure. This series 
-also adds TX timestamping support for TCP. The RX timestamping and UDP support 
-will be added in the future."
+For filters, the only kfunc-related information that can be known is
+the kfunc_id.
 
-> This approach mostly relies on existing SO_TIMESTAMPING feature, users
+kfunc_id is not a stable value, for example, when we add a new kfunc to
+the kernel, it may cause the kfunc_id of other kfuncs to change.
 
-It reuses most of the tx timestamping callback that is currently enabled by the 
-SO_TIMESTAMPING. However, I don't think there is a lot of overlap in term of the 
-SO_TIMESTAMPING api which does feel like API reuse when first reading this comment.
+A simple experiment is to add a bpf_task_from_aaa kfunc, and then we
+will find that the kfunc_id of bpf_task_from_pid has changed.
 
-> only needs to pass certain flags through bpf_setsocktopt() to a separate
-> tsflags. Please see the last selftest patch in this series.
-> 
-> ---
-> v8
-> Link: https://lore.kernel.org/all/20250128084620.57547-1-kerneljasonxing@gmail.com/
-> 1. adjust some commit messages and titles
-> 2. add sk cookie in selftests
-> 3. handle the NULL pointer in hwstamp
-> 4. use kfunc to do selective sampling
-> 
-> v7
-> Link: https://lore.kernel.org/all/20250121012901.87763-1-kerneljasonxing@gmail.com/
-> 1. target bpf-next tree
-> 2. simplely and directly stop timestamping callbacks calling a few BPF
-> CALLS due to safety concern.
-> 3. add more new testcases and adjust the existing testcases
-> 4. revise some comments of new timestamping callbacks
-> 5. remove a few BPF CGROUP locks
-> 
-> RFC v6
-> In the meantime, any suggestions and reviews are welcome!
-> Link: https://lore.kernel.org/all/20250112113748.73504-1-kerneljasonxing@gmail.com/
-> 1. handle those safety problem by using the correct method.
-> 2. support bpf_getsockopt.
-> 3. adjust the position of BPF_SOCK_OPS_TS_TCP_SND_CB
-> 4. fix mishandling the hardware timestamp error
-> 5. add more corresponding tests
-> 
-> v5
-> Link: https://lore.kernel.org/all/20241207173803.90744-1-kerneljasonxing@gmail.com/
-> 1. handle the safety issus when someone tries to call unrelated bpf
-> helpers.
-> 2. avoid adding direct function call in the hot path like
-> __dev_queue_xmit()
-> 3. remove reporting the hardware timestamp and tskey since they can be
-> fetched through the existing helper with the help of
-> bpf_skops_init_skb(), please see the selftest.
-> 4. add new sendmsg callback in tcp_sendmsg, and introduce tskey_bpf used
-> by bpf program to correlate tcp_sendmsg with other hook points in patch [13/15].
-> 
-> v4
-> Link: https://lore.kernel.org/all/20241028110535.82999-1-kerneljasonxing@gmail.com/
-> 1. introduce sk->sk_bpf_cb_flags to let user use bpf_setsockopt() (Martin)
-> 2. introduce SKBTX_BPF to enable the bpf SO_TIMESTAMPING feature (Martin)
-> 3. introduce bpf map in tests (Martin)
-> 4. I choose to make this series as simple as possible, so I only support
-> most cases in the tx path for TCP protocol.
-> 
-> v3
-> Link: https://lore.kernel.org/all/20241012040651.95616-1-kerneljasonxing@gmail.com/
-> 1. support UDP proto by introducing a new generation point.
-> 2. for OPT_ID, introducing sk_tskey_bpf_offset to compute the delta
-> between the current socket key and bpf socket key. It is desiged for
-> UDP, which also applies to TCP.
-> 3. support bpf_getsockopt()
-> 4. use cgroup static key instead.
-> 5. add one simple bpf selftest to show how it can be used.
-> 6. remove the rx support from v2 because the number of patches could
-> exceed the limit of one series.
-> 
-> V2
-> Link: https://lore.kernel.org/all/20241008095109.99918-1-kerneljasonxing@gmail.com/
-> 1. Introduce tsflag requestors so that we are able to extend more in the
-> future. Besides, it enables TX flags for bpf extension feature separately
-> without breaking users. It is suggested by Vadim Fedorenko.
-> 2. introduce a static key to control the whole feature. (Willem)
-> 3. Open the gate of bpf_setsockopt for the SO_TIMESTAMPING feature in
-> some TX/RX cases, not all the cases.
-> 
-> Jason Xing (12):
->    bpf: add support for bpf_setsockopt()
->    bpf: prepare for timestamping callbacks use
->    bpf: stop unsafely accessing TCP fields in bpf callbacks
->    bpf: stop calling some sock_op BPF CALLs in new timestamping callbacks
->    net-timestamp: prepare for isolating two modes of SO_TIMESTAMPING
->    bpf: support SCM_TSTAMP_SCHED of SO_TIMESTAMPING
->    bpf: support sw SCM_TSTAMP_SND of SO_TIMESTAMPING
->    bpf: support hw SCM_TSTAMP_SND of SO_TIMESTAMPING
->    bpf: support SCM_TSTAMP_ACK of SO_TIMESTAMPING
->    bpf: add a new callback in tcp_tx_timestamp()
->    bpf: support selective sampling for bpf timestamping
->    selftests/bpf: add simple bpf tests in the tx path for timestamping
->      feature
-> 
->   include/linux/filter.h                        |   1 +
->   include/linux/skbuff.h                        |  12 +-
->   include/net/sock.h                            |  10 +
->   include/net/tcp.h                             |   5 +-
->   include/uapi/linux/bpf.h                      |  30 ++
->   kernel/bpf/btf.c                              |   1 +
->   net/core/dev.c                                |   3 +-
->   net/core/filter.c                             |  75 ++++-
->   net/core/skbuff.c                             |  48 ++-
->   net/core/sock.c                               |  15 +
->   net/dsa/user.c                                |   2 +-
->   net/ipv4/tcp.c                                |   4 +
->   net/ipv4/tcp_input.c                          |   2 +
->   net/ipv4/tcp_output.c                         |   2 +
->   net/socket.c                                  |   2 +-
->   tools/include/uapi/linux/bpf.h                |  23 ++
->   .../bpf/prog_tests/so_timestamping.c          |  79 +++++
->   .../selftests/bpf/progs/so_timestamping.c     | 312 ++++++++++++++++++
->   18 files changed, 612 insertions(+), 14 deletions(-)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/so_timestamping.c
->   create mode 100644 tools/testing/selftests/bpf/progs/so_timestamping.c
-> 
+This means that it is simple for us to implement kfuncs grouping via
+id_set because we only need to check if kfunc_id exists in a specific
+id_set, we do not need to care about what kfunc_id is.
+
+But if we implement grouping only in the filter, we may need to first
+get the btf type of the corresponding kfunc based on the kfunc_id via
+btf_type_by_id, and then further get the kfunc name, and then group
+based on the kfunc name in the filter, which seems more complicated.
 
 
