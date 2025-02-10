@@ -1,117 +1,127 @@
-Return-Path: <bpf+bounces-51035-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51036-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1743A2F6D2
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 19:22:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BC35A2F715
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 19:31:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5E623A6445
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 18:22:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4441B7A321D
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 18:30:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01A2F2566EE;
-	Mon, 10 Feb 2025 18:22:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E76452566CA;
+	Mon, 10 Feb 2025 18:30:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="b1olh1jz"
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="PxFnHkEK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E78622257D
-	for <bpf@vger.kernel.org>; Mon, 10 Feb 2025 18:22:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E52625B668;
+	Mon, 10 Feb 2025 18:30:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739211745; cv=none; b=fuWlzaJc1dSL71JYKjQYEk9OfG2HlI2PvXcQ0Y2uncxUN+OiIOLRBQty2/YbT2mCOClRY2SkpMgF56QFkMsaeY/HfqZ1BjfpEnJzi794KBKtvnSjRO0FETUIVO3QS6R+nPhMfMewYouIB6F6tq3dVeIXw2tLcrDqEFMWdhZrTd8=
+	t=1739212249; cv=none; b=ICbZJaJZKOTKwPBnvm557xT1Uij+e/8xohTFORwZ/JM4lZMEjh8sH2aBxcSbQLP3yWDNI/BX9poLGFPbswr9nu9x0rQJjHiYezuNdYXUyPwFS2z5qZlwf59X1tu5k5mP5WcqsvPliCrNH6Mz429v382yoDJqsnqEVRsAl/1Rx0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739211745; c=relaxed/simple;
-	bh=IcdrIqs90CcLCAGhFUsmvv1jkxcaZyMPFUeEij+QgGg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=rHA5kXujflw8lJIzcfRYXO0kvn99AYoNIhs7+CYraDQwymtQbXn/CPsJfVuqPQdq8/BntYpaw/YdlV+aBGpMKuK5JCWglWnMN8B5rlo//ECxlSFjgZSmwqHWinsbmk7XHvGkO3TIw7TdYC6qGUaaZoBhAR8mA8ocL/6dxdqJtl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=b1olh1jz; arc=none smtp.client-ip=209.85.166.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-3d13fe99d03so5495ab.0
-        for <bpf@vger.kernel.org>; Mon, 10 Feb 2025 10:22:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1739211743; x=1739816543; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IcdrIqs90CcLCAGhFUsmvv1jkxcaZyMPFUeEij+QgGg=;
-        b=b1olh1jzEupzU/TXA4iKTVqgf6+0E7yYWLgFM6zHR4n16dH78YZ83whPBcdbsqpTLB
-         hXKq6pWb0LEq8PCN1LRR6lA2p7i8yw1FpFQsSFlqDWme2rsi4Nf0y7AWVpeWBmKTr5YI
-         Ic5LLI/PWhjIIhRc6GMHnHEE9yIJjIGa+eLMKy77bR2UGCGBz+vRVvKKJPbWCVqTlQ9O
-         fKX/GEMTOH9ky3QLZqzyu3MUzIzW6D+knSZuk4wzWDc75JD+ev0skfcRnGBfzjBFRo3+
-         fuMfxZYL9gt5TlKLo/QY/5XaEqeTRtyWr+Q0smWjjb9/IjzB6lG1ST96rSeX+jUmOM1k
-         +6HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739211743; x=1739816543;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IcdrIqs90CcLCAGhFUsmvv1jkxcaZyMPFUeEij+QgGg=;
-        b=p1mQy/I609+3WnelC3VqJhpKrotKugo1SDe+pUs9fBzZcBic5mufbcP6gspcSvkEg7
-         CMFIloMeW24G4J5BhbJcFBl9RiUzNwVUm5ViHRyQ0YZW9EVV+xSPnd5sDm13F/cVM6f9
-         bYKrOdTpe7LnVIrsUPUgnlnP6fE0+gfjwtB1fd92iNn78WY0ZLF2pjQ5E/n+eanBrp9W
-         NM/3F3VJUdtqZ7RXqsPdLMYqnAUtPljuEhQ3Z/076pc+RLu409CZYpyrFMJ92dtDwTBE
-         FhLmywQnEON6yaoUOWULyDdRcs5+tq+8URhouW67a9vbeIx+/rGrCLwNx47cXQ/PlrkL
-         Sm7g==
-X-Forwarded-Encrypted: i=1; AJvYcCWsKHbiUoZinqe1YAxWXX3cXlofNBPM4rIo4uep7dgwUB+dpwkxbuzl00gW2TU4WTEvLsc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwtM9Yvfe4+I+ALCU5jam5KnFqF0gDaaRePfUsWPREgx+CB/UYR
-	kQ466l/kJACblYIsQpQpmbFTReWOs/DSWbVRhKC6nCd82WH4uuEizdzVYarmCx3OP1iAlewoBFI
-	67+pQGtzdb8TQK+0KJzn24Idd5wuS/2Rw6lgV
-X-Gm-Gg: ASbGncsq+EVGe72N0zi8xXqpZN0GDKOEFuSzOXZ59cBvMuFx1uy7poeMO/ZVNUd+DSF
-	smgksRvebU/Ip9ZE97gXnUULuNa2kT7PbvOTPpYm9mxS7X8ad/AJd/nU2Ug0RnWMFTRjAjw9rnB
-	Rv7DYLtYdp5asDpc4EhPgZQ+62
-X-Google-Smtp-Source: AGHT+IFTAuNfiw/XhQoBcYu+J9Hya4qnn2jHdbkYvCPw3zBjIRxktXB1NTEFecewpM4GA6NHDMZjZHi5G1f5cYQe1Cg=
-X-Received: by 2002:a05:6e02:2491:b0:3d0:62be:12c3 with SMTP id
- e9e14a558f8ab-3d14efbfcd0mr7274625ab.1.1739211743085; Mon, 10 Feb 2025
- 10:22:23 -0800 (PST)
+	s=arc-20240116; t=1739212249; c=relaxed/simple;
+	bh=vlbv0FSFlLbSmcwi0qSd9c4OoNOyoJGUgwl16y4Fj8k=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=F2cZDSOqy5UrMrWngEG1BnwAANdue9+ivOJQcFxUMAVS9vgSB02FS0sRPIY5jJ9+nk4ComR/KLws1zi9YZiGvrv+JmBRGB2yZA486H0qYNwaGZyDCIWsz8zZym+3Ur/oByuiQVoKmrb+NC4Xxfsy05xvx5XzaHQNKIdIqvtvn9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=PxFnHkEK; arc=none smtp.client-ip=45.79.88.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 0D1D5411A1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1739212247; bh=vlbv0FSFlLbSmcwi0qSd9c4OoNOyoJGUgwl16y4Fj8k=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=PxFnHkEKSZrBYbzFpew/UljRdQUkTOX+qKIpKomAZlWSWpxide9l4c2bxkwdMwNWF
+	 sWHrza4QeD17HbEJ1GVDgKEHsQ4J5fGszAooe0rUMV8SpHN2AnJh5s+msApTtSueTq
+	 kldvsJD8z29V82iGnnNsIvc0IpF/n5AUf1V7EwE15mOEBZuS5tkWNvoYAelEzc0LtF
+	 9A/zQoFU1JnwlyetVPR6L3frzztdtk0XDVlSCAuejySkEp8NEq0ylr0UsJ5g1a1OZE
+	 Vo03pIkLZ7JlMiGrr1nPdfsokPnHNxFSVgl0KcZB06VxFdKHkJg6ydIZAOvztgFrBm
+	 SzjyXR5yVqF2g==
+Received: from localhost (unknown [IPv6:2601:280:5e00:625::1fe])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 0D1D5411A1;
+	Mon, 10 Feb 2025 18:30:46 +0000 (UTC)
+From: Jonathan Corbet <corbet@lwn.net>
+To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>, Linux Doc Mailing
+ List <linux-doc@vger.kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>, Mauro Carvalho Chehab
+ <mchehab+huawei@kernel.org>, linux-kernel@vger.kernel.org, "Guilherme G.
+ Piccoli" <gpiccoli@igalia.com>, Chao Yu <mchehab+huawei@kernel.org>,
+ Jaegeuk Kim <mchehab+huawei@kernel.org>, James Clark
+ <james.clark@linaro.org>, Johannes Berg <johannes@sipsolutions.net>, Mike
+ Leach <mike.leach@linaro.org>, Suzuki K Poulose <suzuki.poulose@arm.com>,
+ Tony Luck <tony.luck@intel.com>, bpf@vger.kernel.org,
+ coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-hardening@vger.kernel.org,
+ linux-wireless@vger.kernel.org
+Subject: Re: [PATCH 00/27] Improve ABI documentation generation
+In-Reply-To: <cover.1739182025.git.mchehab+huawei@kernel.org>
+References: <cover.1739182025.git.mchehab+huawei@kernel.org>
+Date: Mon, 10 Feb 2025 11:30:46 -0700
+Message-ID: <87h651zm7d.fsf@trenco.lwn.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250106215443.198633-1-irogers@google.com>
-In-Reply-To: <20250106215443.198633-1-irogers@google.com>
-From: Ian Rogers <irogers@google.com>
-Date: Mon, 10 Feb 2025 10:22:12 -0800
-X-Gm-Features: AWEUYZmXHIPhU1yc2AP2lYcBo-6OHxpX8oMootUclJA7tttmBpiUKue4uJ9MEFM
-Message-ID: <CAP-5=fWvsy74obPj7Fs2ghUHNVu1A5ywkpjOU6ibC7vvWu2b0w@mail.gmail.com>
-Subject: Re: [PATCH v1] tools build: Fix a number of Wconversion warnings
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, James Clark <james.clark@linaro.org>, 
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Leo Yan <leo.yan@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Mon, Jan 6, 2025 at 1:54=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
-e:
->
-> There's some expressed interest in having the compiler flag
-> -Wconversion detect at build time certain kinds of potential problems:
-> https://lore.kernel.org/lkml/20250103182532.GB781381@e132581.arm.com/
->
-> As feature detection passes -Wconversion from CFLAGS when set, the
-> feature detection compile tests need to not fail because of
-> -Wconversion as the failure will be interpretted as a missing
-> feature. Switch various types to avoid the -Wconversion issue, the
-> exact meaning of the code is unimportant as it is typically looking
-> for header file definitions.
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
 
-Ping. Also:
-Reviewed-by: James Clark <james.clark@linaro.org>
-Would be nice to be cleaner wrt compiler warnings.
+> Hi Jon/Greg,
+>
+> This series replace get_abi.pl with a Python version.
+>
+> I originally started it due to some issues I noticed when searching for
+> ABI symbols. While I could just go ahead and fix the already existing
+> script, I noticed that the script maintainance didn't have much care over
+> all those years, probably because it is easier to find Python programmers
+> those days.
+>
+> Also, the code is complex and was not using modules or classes and
+> were using lots of global variables.
+>
+> So, I decided to rewrite it in Python. I started with a manual conversion
+> for each function. Yet, to avoid future maintainership issues, I opted to
+> divide the main code on three classes, each on a sepaparate file.
+>
+> Just like the original RFC, I opted to keep the Sphinx kernel-abi module
+> on three different phases:
+>
+> - call get_abi.py as an exec file;
+> - import AbiParser on a minimal integration scenario;
+> - cleanup the code to avoid needing to parse line numbers from the text.
+>
+> This way, if something goes wrong, it would be easier to just revert any
+> offending patches, It also provides a better rationale about what each
+> logical change is doing.
+>
+> The initial patches on this series do some preparation work and
+> cleans some ABI symbol bugs that lack ":" delimiter.
+>
+> I opted to place on this series the Sphinx and Python version updates.
+>
+> I still have ~10 patches here with additional cleanups, from the original
+> series I sent as RFC but let's get the main changes merged first.
+
+OK, I have applied this set - it seems to work for me, though it does
+lead to some changes in the organization of
+Documentation/admin-guide/abi.html in the output.
+
+It would be nice if, eventually, we could put the README link up at the
+top rather than under "ABI file", or even just include its contents
+there directly.
+
+Anyway, let's see how this goes :)
 
 Thanks,
-Ian
+
+jon
 
