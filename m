@@ -1,98 +1,193 @@
-Return-Path: <bpf+bounces-50948-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50949-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45BE4A2E8E1
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 11:17:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 32600A2E8F9
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 11:18:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98C2F1887C5F
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 10:17:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0365D188B0F7
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 10:18:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 628A91C68B6;
-	Mon, 10 Feb 2025 10:17:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28B351DE3CA;
+	Mon, 10 Feb 2025 10:18:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="uIlOErQU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PX0+CSSl"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C64C1C5F10;
-	Mon, 10 Feb 2025 10:17:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C2361C68A6;
+	Mon, 10 Feb 2025 10:18:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739182657; cv=none; b=LyreaE6au40nrPv43+l2VNElWkZ00YGN0egnXN6zdCWXzjIVczM7QWn6wjAWQXgQF/11ezOsUz7kJT4lAl708ABP31U3T0+tki3sQTN3omxQXbnDlRP3/72YvdEynNChj1dchAe7BGjCQv79lJLJgxnp8bU65r70E8zi2ogE7Zk=
+	t=1739182704; cv=none; b=j+5Ec3I5e8ZwSPl10H8WO6Wx5VGnGA+98uTJi6GYASy6NykD0guxHr/R3WynguYN5wKTtDAgQQoXdQozOrqdy2pRFPayuC25Yv8nqG9c6u7QjtYq6aVCB7BpEQrR350gl6rRNEQNDjULkzwjZ0e6RNgESEFhlSKHS7+b5BLl+HE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739182657; c=relaxed/simple;
-	bh=chcLcB8hz8GUsz1gFUvwiKFZFNUYY3DArotzQhXQtmg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q0wbQiMdFfL0A0/zeaa4TB11CpJi5y5nKutXbZ/lUKJfjzCc8x73MbfPq3upnaN6pvgjSzeFifwG+HFchjQBH2RmpVJvL7NU8U1M1bItvcYtXm3lwOYALTp4fT3FBXBkCm17SwPkrL3zoMBlIprI4so5fTIIRUHogzHPA8QczyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=uIlOErQU; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=hhiCR0AgFIOeF4HS1CGKAOPDrkDo1F+m8u6AqUimqbQ=; b=uIlOErQUY2LA378P/b/PjPuCU6
-	eBtpaJwVQemWIrRTzDEZa2HvMYuGsObheoeeoV/VTHEvLinm9P8vrqY2kdzlYKZ0QLuL0fMaknLTp
-	YsIUtz50FTonOihHSFcLSSrrS7emKN9ATUu1G1g6mJMk3OEY/268GHKDwqxru2cgTt2blqIQdSbHE
-	2sJL9+f7qXT9jEQr1tIeN95XMKhBEapQiUAdVo/HU5tqwrFNGhwlsrNMnZPSm+ksf1wakZ69nV96j
-	1iRIFZmmC52W5dW8stnEHgMXq4Bw2uR9iKPilcWVLryWA6gb+shYWcQSYxb6HC8zHHaFaCJJyB81G
-	lWHTLsKg==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1thQr5-0000000FWDr-05HJ;
-	Mon, 10 Feb 2025 10:17:31 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 9079E300318; Mon, 10 Feb 2025 11:17:30 +0100 (CET)
-Date: Mon, 10 Feb 2025 11:17:30 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Barret Rhoden <brho@google.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Will Deacon <will@kernel.org>, Waiman Long <llong@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
-	Josh Don <joshdon@google.com>, Dohyun Kim <dohyunkim@google.com>,
-	linux-arm-kernel@lists.infradead.org, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next v2 09/26] rqspinlock: Protect waiters in queue
- from stalls
-Message-ID: <20250210101730.GI10324@noisy.programming.kicks-ass.net>
-References: <20250206105435.2159977-1-memxor@gmail.com>
- <20250206105435.2159977-10-memxor@gmail.com>
+	s=arc-20240116; t=1739182704; c=relaxed/simple;
+	bh=p8iRm7Gznn3ekKIRR91V/psR21ij9bK+0II7DymWAjA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MSgn0I/gDmkRJrmgJoypVHV/o6sYc3/UEzm5QukM40winVb7dBBdDIOMlNQ8BZXGSc/XB7qEnpHRry4j/fcBaRxsC3whfdJuN4cV9ho+2CXhhzcOrJ6/BjyHp3TiN2Od0CCK44E83hOTtGXwDG4g6m/N/uAL+lzYTXbIP8fwho0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PX0+CSSl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C56D2C4CEE6;
+	Mon, 10 Feb 2025 10:18:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739182703;
+	bh=p8iRm7Gznn3ekKIRR91V/psR21ij9bK+0II7DymWAjA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=PX0+CSSljZXtmDbUPsW3q/1UEAZkcJHQHMj/eR0Q8uSPrNmrv7jqsd3H+YWo1xOM/
+	 HjMrHdx6LlY4VekopfJmqAvseecf+sebvVrDYeBP2E4GKMMrmkGAF7v22e90DTf2Ge
+	 mjxsRdCf7qv3lINGQIUrTR/CKUR1x2WI5IgNnSnIRO7tiHp3FFc+3cqvsj/9hsWnKh
+	 QUvK4DWNq98U6G9Jmn/ZLIwMSS34I6YncKIZUQdrGDo3GiokB90neYSGG7qvgPEeX+
+	 u8zr8PFfVeA+4pAnIe0oPCCKpjgmBbYQ3zyMgD9kNY5qkMBCxcJD7jQPVUsrPO+vlG
+	 qr78nANSqX06Q==
+Received: from mchehab by mail.kernel.org with local (Exim 4.98)
+	(envelope-from <mchehab+huawei@kernel.org>)
+	id 1thQrt-00000006Ci9-3Zgs;
+	Mon, 10 Feb 2025 11:18:21 +0100
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	Jonathan Corbet <corbet@lwn.net>,
+	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+	Chao Yu <mchehab+huawei@kernel.org>,
+	Jaegeuk Kim <mchehab+huawei@kernel.org>,
+	James Clark <james.clark@linaro.org>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Mike Leach <mike.leach@linaro.org>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Tony Luck <tony.luck@intel.com>,
+	bpf@vger.kernel.org,
+	coresight@lists.linaro.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-hardening@vger.kernel.org,
+	linux-wireless@vger.kernel.org
+Subject: [PATCH 00/27] Improve ABI documentation generation
+Date: Mon, 10 Feb 2025 11:17:49 +0100
+Message-ID: <cover.1739182025.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250206105435.2159977-10-memxor@gmail.com>
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-On Thu, Feb 06, 2025 at 02:54:17AM -0800, Kumar Kartikeya Dwivedi wrote:
-> Implement the wait queue cleanup algorithm for rqspinlock. There are
-> three forms of waiters in the original queued spin lock algorithm. The
-> first is the waiter which acquires the pending bit and spins on the lock
-> word without forming a wait queue. The second is the head waiter that is
-> the first waiter heading the wait queue. The third form is of all the
-> non-head waiters queued behind the head, waiting to be signalled through
-> their MCS node to overtake the responsibility of the head.
-> 
-> In this commit, we are concerned with the second and third kind. First,
-> we augment the waiting loop of the head of the wait queue with a
-> timeout. When this timeout happens, all waiters part of the wait queue
-> will abort their lock acquisition attempts. 
+Hi Jon/Greg,
 
-Why? Why terminate the whole wait-queue?
+This series replace get_abi.pl with a Python version.
 
-I *think* I understand, but it would be good to spell out. Also, in the
-comment.
+I originally started it due to some issues I noticed when searching for
+ABI symbols. While I could just go ahead and fix the already existing
+script, I noticed that the script maintainance didn't have much care over
+all those years, probably because it is easier to find Python programmers
+those days.
+
+Also, the code is complex and was not using modules or classes and
+were using lots of global variables.
+
+So, I decided to rewrite it in Python. I started with a manual conversion
+for each function. Yet, to avoid future maintainership issues, I opted to
+divide the main code on three classes, each on a sepaparate file.
+
+Just like the original RFC, I opted to keep the Sphinx kernel-abi module
+on three different phases:
+
+- call get_abi.py as an exec file;
+- import AbiParser on a minimal integration scenario;
+- cleanup the code to avoid needing to parse line numbers from the text.
+
+This way, if something goes wrong, it would be easier to just revert any
+offending patches, It also provides a better rationale about what each
+logical change is doing.
+
+The initial patches on this series do some preparation work and
+cleans some ABI symbol bugs that lack ":" delimiter.
+
+I opted to place on this series the Sphinx and Python version updates.
+
+I still have ~10 patches here with additional cleanups, from the original
+series I sent as RFC but let's get the main changes merged first.
+
+Mauro Carvalho Chehab (27):
+  docs: sphinx: remove kernellog.py file
+  docs: sphinx/kernel_abi: adjust coding style
+  docs: admin-guide: abi: add SPDX tags to ABI files
+  ABI: sysfs-class-rfkill: fix kernelversion tags
+  ABI: sysfs-bus-coresight-*: fix kernelversion tags
+  ABI: sysfs-driver-dma-idxd: fix date tags
+  ABI: sysfs-fs-f2fs: fix date tags
+  ABI: sysfs-power: fix a what tag
+  scripts/documentation-file-ref-check: don't check perl/python scripts
+  scripts/get_abi.py: add a Python tool to generate ReST output
+  scripts/get_abi.py: add support for symbol search
+  docs: use get_abi.py for ABI generation
+  scripts/lib/abi/abi_parser.py: optimize parse_abi() function
+  scripts/lib/abi/abi_parser.py: use an interactor for ReST output
+  docs: sphinx/kernel_abi: use AbiParser directly
+  docs: sphinx/kernel_abi: reduce buffer usage for ABI messages
+  docs: sphinx/kernel_abi: properly split lines
+  scripts/get_abi.pl: Add filtering capabilities to rest output
+  scripts/get_abi.pl: add support to parse ABI README file
+  docs: sphinx/kernel_abi: parse ABI files only once
+  docs: admin-guide/abi: split files from symbols
+  docs: sphinx/automarkup: add cross-references for ABI
+  docs: sphinx/kernel_abi: avoid warnings during Sphinx module init
+  scripts/lib/abi/abi_parser.py: Rename title name for ABI files
+  scripts/lib/abi/abi_parser.py: make it backward-compatible with Python
+    3.6
+  scripts/get_abi.py: add support for undefined ABIs
+  scripts/get_abi.pl: drop now obsoleted script
+
+ Documentation/ABI/removed/sysfs-class-rfkill  |    2 +-
+ Documentation/ABI/stable/sysfs-class-rfkill   |   12 +-
+ .../ABI/stable/sysfs-driver-dma-idxd          |    4 +-
+ .../testing/sysfs-bus-coresight-devices-cti   |   78 +-
+ .../testing/sysfs-bus-coresight-devices-tpdm  |   52 +-
+ Documentation/ABI/testing/sysfs-fs-f2fs       |    4 +-
+ Documentation/ABI/testing/sysfs-power         |    2 +-
+ .../admin-guide/abi-obsolete-files.rst        |    7 +
+ Documentation/admin-guide/abi-obsolete.rst    |    6 +-
+ Documentation/admin-guide/abi-readme-file.rst |    6 +
+ .../admin-guide/abi-removed-files.rst         |    7 +
+ Documentation/admin-guide/abi-removed.rst     |    6 +-
+ .../admin-guide/abi-stable-files.rst          |    7 +
+ Documentation/admin-guide/abi-stable.rst      |    6 +-
+ .../admin-guide/abi-testing-files.rst         |    7 +
+ Documentation/admin-guide/abi-testing.rst     |    6 +-
+ Documentation/admin-guide/abi.rst             |   17 +
+ Documentation/sphinx/automarkup.py            |   47 +
+ Documentation/sphinx/kernel_abi.py            |  162 ++-
+ Documentation/sphinx/kerneldoc.py             |   14 +-
+ Documentation/sphinx/kernellog.py             |   22 -
+ Documentation/sphinx/kfigure.py               |   81 +-
+ scripts/documentation-file-ref-check          |    2 +-
+ scripts/get_abi.pl                            | 1103 -----------------
+ scripts/get_abi.py                            |  214 ++++
+ scripts/lib/abi/abi_parser.py                 |  628 ++++++++++
+ scripts/lib/abi/abi_regex.py                  |  234 ++++
+ scripts/lib/abi/helpers.py                    |   38 +
+ scripts/lib/abi/system_symbols.py             |  378 ++++++
+ 29 files changed, 1830 insertions(+), 1322 deletions(-)
+ create mode 100644 Documentation/admin-guide/abi-obsolete-files.rst
+ create mode 100644 Documentation/admin-guide/abi-readme-file.rst
+ create mode 100644 Documentation/admin-guide/abi-removed-files.rst
+ create mode 100644 Documentation/admin-guide/abi-stable-files.rst
+ create mode 100644 Documentation/admin-guide/abi-testing-files.rst
+ delete mode 100644 Documentation/sphinx/kernellog.py
+ delete mode 100755 scripts/get_abi.pl
+ create mode 100755 scripts/get_abi.py
+ create mode 100644 scripts/lib/abi/abi_parser.py
+ create mode 100644 scripts/lib/abi/abi_regex.py
+ create mode 100644 scripts/lib/abi/helpers.py
+ create mode 100644 scripts/lib/abi/system_symbols.py
+
+-- 
+2.48.1
+
+
 
