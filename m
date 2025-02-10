@@ -1,133 +1,177 @@
-Return-Path: <bpf+bounces-50991-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50992-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B250A2F050
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 15:53:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17E9DA2F0FF
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 16:12:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5D4F166C22
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 14:53:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3139163A94
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 15:12:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB11C23CEFD;
-	Mon, 10 Feb 2025 14:52:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BDD8204861;
+	Mon, 10 Feb 2025 15:12:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qYojaCmr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LnzQrgKR"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5883D1F8BCC;
-	Mon, 10 Feb 2025 14:52:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 335571CA84;
+	Mon, 10 Feb 2025 15:12:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739199156; cv=none; b=HY5FueCRI/KgbKA9IA/WxZ2Jqtx7qF/HfoBz5+/KCqRGe6VmFjoYM72idsv7B7WxwlYcUZhRLsipQ9MaLJGhQwkIaHZg2Xnwq6vXOYyLCPgUYpHoelqU8ynUVsaZjB3La0NrFMDZrnAeZ43pNLSlpnzZnw1qjtrnTqA8bWMZ45E=
+	t=1739200325; cv=none; b=PVz+EGXtRCxPwu32MXv9HgfVaEwWXeSOXNi4FWv4p20T7QT5u3nHdmPw7gliTioW7T1yjnMDJPzAu7R3GxX5O0VCQE7by+kBIZHiI9sU/qqyzIWpxJMEk2TL9oCYsbBBu1JTMUsauGlyUGLbII/Z4wIH4SSoiOpJ84VWWkZqhwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739199156; c=relaxed/simple;
-	bh=HNcbYnzHO18TyVd6ABCg4Wajlo8GzqSxCWV3Zsn7hkg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=mRvFjbnjuT+bofvC1utpCHucvfY/A7s4lbKzUlZF3PeLZ00EyqQpcL3iMKgqKpjj+MkTyFNovwAD6DAJapCIVanhljQeG91MCQZdmZ81qnZFPUcYXPDzX1U8w/4Z31fdaHwSkOz4rDvcd9Ns3bDwE5Q+i3+GLLrj5NZNI/CqLuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qYojaCmr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 023C1C4CEE6;
-	Mon, 10 Feb 2025 14:52:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739199155;
-	bh=HNcbYnzHO18TyVd6ABCg4Wajlo8GzqSxCWV3Zsn7hkg=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=qYojaCmrwCxldnXH3qTBYPOqlqPPcOVrgt9Rtw9THaL8Xu6GZ155qUg5omCvMilbC
-	 QYLZhiY871+nZi4k6avHqC8xgThwyZ/Dg/3mWUPzas72IONB1GuXYRVw7cBHWfMwLA
-	 akDl+SXI0eeuXvlk4T9m0MUK2B99yiahxg+UYSMIRZcJg5HnsIWleXPb0jmtcf3gH5
-	 elApzBHvDuZJIuZEXNxQS6eNAwg+nR/NG9e2S6NG3hUkTkFwBy9iBHwm4imfeMkTZV
-	 VZAkuboF+wcFLBKM5NuY8DbWj9jbGpcVpdRRLoSe2RTu9ZP16A5+6dmpBF8Q2t9dq9
-	 7X9tZWNMnF/UA==
-From: Roger Quadros <rogerq@kernel.org>
-Date: Mon, 10 Feb 2025 16:52:17 +0200
-Subject: [PATCH net 3/3] net: ethernet: ti: am65_cpsw: fix tx_cleanup for
- XDP case
+	s=arc-20240116; t=1739200325; c=relaxed/simple;
+	bh=x/7S1tchuBT4T48aebrLbaQ1SbEdg8BOEkE3/s6U9BU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EEzd4YW8/3CQ5VQ82JSMxG9iOHy4ihLfnuzCWF0miauq0+6C9P3KoYFb/xFH9yg6QDXIxAneXMgxf+7JkTq19NcQR1XMSztQNKuLcfHZ1jgsYh0sfP7/4UWw3LPENOZVCBhz1olhcTiOxaDQZ9pileMpr2MjFKUpxU+1I/kvsqo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LnzQrgKR; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-21f48ab13d5so71272015ad.0;
+        Mon, 10 Feb 2025 07:12:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739200323; x=1739805123; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TwlaKob5aPZVu9GIo5whxhxN00CNR1c8p78BFmqhxnQ=;
+        b=LnzQrgKRdfaTmMRArDXvyKysBqe1l8weQzneVQ2m7jlTNetAHJ8AZ5bEGMkQPJGHwg
+         eEMzjbRysqZV0TwR6wDulKtHDjvVfQ09VCvWSz80pFjkuz8GiHKmCt1bOKp2FoK1CT1o
+         EtAZNtY5fEVXMRf7D2in3TuyGXOsjDk7myDRGoNUKOWxeTiR/MpjaetgCa3L5ybWucbn
+         DshoHXlChRzZkcknZ7pqVSSYhGWPGbj+z3Vo7pb3VtxqlM28Q2HFVzKhC0wOZ5ALfoJV
+         95IsXdfNMLwI3S/vHgkO33fbqlqNwdyBXxdvlLgKwtJG5Cpgfj+kQphkYoKByUrJ3cSK
+         ZxEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739200323; x=1739805123;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=TwlaKob5aPZVu9GIo5whxhxN00CNR1c8p78BFmqhxnQ=;
+        b=OFAA8epRDWeDXx/Emh9LeTiY2TBnFDvZtE0smc/tDLUO1k5NeJyQR5K3hBkplgiedK
+         AWyj5+GoX8WSCYjKa2U/C2F7fEt7CA0zFUGAWzAv7qWqvq5NDtynCf1pzgjXCpDQHrYd
+         tmcFkCTb4BI3Ow+SWrUwxYscAGXMCTOI6Bx1T0OyMtiHDFmDtKLBeXjjMLtszpZTHaQA
+         g4iv19DIBaUKN97n3tmIMQvXq5dn6UB+YIDJczTs/ofdZfCjpQFIibs+zlicLC0jZ3mI
+         Fhkx1HCu+TSNV+Vev8LPo9ZfY+1VR5PkUHXY7XlfSHshXQRl70h6m865HH/ZKh+bIpal
+         8X2A==
+X-Forwarded-Encrypted: i=1; AJvYcCXYRw3UMUCpf4F1hQXja4B00GfOE4QfeCWO2oyena8tkyu8IC0jl0pUZ+Ni+42KUBwuH57ihX4XhvtIXN6k@vger.kernel.org, AJvYcCXkWFoxMkylK/uww5RF5qk70zAaxo6QZrgep9rGsgawih2G/Tw05epD7OqIag7786T/P7g=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx6uxPnbK8dWULM2Yz9wt5NFs2OdREX56xFUqZCHr1xoFESNhDB
+	IGFQ2NEiL85lx5RKHJKax6lmEWx8+zGWrOt4eW32uA9P8ndVjbihZqoz+g==
+X-Gm-Gg: ASbGncs+DXZWOSxZd+Pqdj0gEkrr3vfQgLDEt7CfW34IxyuzbokECMBrZ32rvDUx4u0
+	KcTLOZJgh3SRJxr2ZkWDk4uvBAtewoMTP3XedSkwighOdjCqZ1rsaBJk+9OwUJpsGJgYlylJ8K/
+	mDe2nYIvO+MrCjg7PioHZqMqV/ck76vzDqFILxtAyce+63eKBeYNBCALT0qlWCffhnX3ZCwEtAS
+	xHYeGA1W8lo4WMF7pPzV5aAnOfgr2YBDmVAH/rX2Es/Voj+vHMcoTddpGTy3yCKN/F+LL5EqCLL
+	VKuj2jMqXDP3
+X-Google-Smtp-Source: AGHT+IHRU7SfP3/WrS2oIjmCiGCsoVPhbHW8Xu9AvHFvJV4J1y32M+1ILa6ZWYEGUWW4UaGRYenVcQ==
+X-Received: by 2002:a17:902:ec84:b0:21f:85d0:828 with SMTP id d9443c01a7336-21f85d00ac1mr104164225ad.41.1739200323218;
+        Mon, 10 Feb 2025 07:12:03 -0800 (PST)
+Received: from [0.0.0.0] ([5.34.218.148])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-ad53de9ee79sm3573749a12.40.2025.02.10.07.11.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 Feb 2025 07:12:02 -0800 (PST)
+Message-ID: <179645b8-fd74-415b-8522-9de13e84c883@gmail.com>
+Date: Mon, 10 Feb 2025 23:11:57 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250210-am65-cpsw-xdp-fixes-v1-3-ec6b1f7f1aca@kernel.org>
-References: <20250210-am65-cpsw-xdp-fixes-v1-0-ec6b1f7f1aca@kernel.org>
-In-Reply-To: <20250210-am65-cpsw-xdp-fixes-v1-0-ec6b1f7f1aca@kernel.org>
-To: Andrew Lunn <andrew+netdev@lunn.ch>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Julien Panis <jpanis@baylibre.com>, Jacob Keller <jacob.e.keller@intel.com>
-Cc: danishanwar@ti.com, s-vadapalli@ti.com, srk@ti.com, 
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
- Roger Quadros <rogerq@kernel.org>
-X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1578; i=rogerq@kernel.org;
- h=from:subject:message-id; bh=HNcbYnzHO18TyVd6ABCg4Wajlo8GzqSxCWV3Zsn7hkg=;
- b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBnqhKiCPZFRwQQnzzDX1Za3HRlmO8EtOYKxR4Eq
- dxKAmLUEe2JAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZ6oSogAKCRDSWmvTvnYw
- k17xEADEofTjt0PuuvMAa+WeaALn9lkbgeG6I6m4p/gMSoZUDWNdaavMSHHFzqcgiIMfyvp2d3U
- hgZvSLtm/Bzd2oufPS053gCX7CusrMbYO9yfig690PoqpNahgYmlW+ScgsIxQl1dclZSEoA3Hci
- duBsU62mtRtOr36NLTsL96n2f71m83+oMg+blKg45LE62mkW2qU0XWWWoBZ/GzZ/kLV4dzq0icA
- LvBp/pl+hv2vKz8+X2hIXl4wprNMdPnr+Hg+KyyZsir6ZEv5Al+bDddQ8ISaLMouuinivH0EHZn
- +Th9wYFW12S4xmIYxUCmJYbFmqsT0nC0hPZl17M/Y6GF2wPHL7I55I+fqnsHueOBrE0BdmtFCIB
- RvqpJAMglI32znRg6DN/LBFp3yYC3jAM/n0QFeQ8IxSn7gyiJFmBv/3o1indiGBU4xQdq7f3UdD
- 0JLeRG8kEzUuhAcY5Y7iisgK48R3GVs/RXBzIzFc3AW1iUCf6cz/zC207yqQKiP1hKyoIHnQfUE
- lcWMza1HOFrVf6XwjaXcNfuHxS/wcPsEoC7MK3NYIOoxOpintNupRPYkih1XHWusJ08/ab4nKyv
- 8Qc9DCrl9+46HUvbuB2Y0Fo3l3E1vjYTMU0KreyeEpIlLItxL+drFbA0QubFHQZD+tgNE4KTQth
- UpTZqleGUGXg1VA==
-X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
- fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v5 4/4] selftests/bpf: Add libbpf_probe_bpf_kfunc
+ API selftests
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ eddyz87@gmail.com, haoluo@google.com, qmo@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20250210055945.27192-1-chen.dylane@gmail.com>
+ <20250210055945.27192-5-chen.dylane@gmail.com> <Z6oDXNpqmwHo6lKh@krava>
+From: Tao Chen <chen.dylane@gmail.com>
+In-Reply-To: <Z6oDXNpqmwHo6lKh@krava>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-For XDP transmit case, swdata doesn't contain SKB but the
-XDP Frame. Infer the correct swdata based on buffer type
-and return the XDP Frame for XDP transmit case.
+在 2025/2/10 21:47, Jiri Olsa 写道:
+> On Mon, Feb 10, 2025 at 01:59:45PM +0800, Tao Chen wrote:
+>> Add selftests for prog_kfunc feature probing.
+>>
+>>   ./test_progs -t libbpf_probe_kfuncs
+>>   #153     libbpf_probe_kfuncs:OK
+>>   Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+>>
+>> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
+>> ---
+>>   .../selftests/bpf/prog_tests/libbpf_probes.c  | 118 ++++++++++++++++++
+>>   1 file changed, 118 insertions(+)
+>>
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c b/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
+>> index 4ed46ed58a7b..fc4c9dc2cbed 100644
+>> --- a/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
+>> +++ b/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
+>> @@ -126,3 +126,121 @@ void test_libbpf_probe_helpers(void)
+>>   		ASSERT_EQ(res, d->supported, buf);
+>>   	}
+>>   }
+>> +
+>> +static int module_btf_fd(char *module)
+>> +{
+>> +	int fd, err;
+>> +	__u32 id = 0, len;
+>> +	struct bpf_btf_info info;
+>> +	char name[64];
+>> +
+>> +	while (true) {
+>> +		err = bpf_btf_get_next_id(id, &id);
+>> +		if (err && (errno == ENOENT || errno == EPERM))
+>> +			return 0;
+>> +		if (err) {
+>> +			err = -errno;
+>> +			return err;
+>> +		}
+>> +		fd = bpf_btf_get_fd_by_id(id);
+>> +		if (fd < 0) {
+>> +			if (errno == ENOENT)
+>> +				continue;
+>> +			err = -errno;
+>> +			return err;
+> 
+> nit, return -errno ?
+> 
+> jirka
+> 
 
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
-Fixes: 8acacc40f733 ("net: ethernet: ti: am65-cpsw: Add minimal XDP support")
----
- drivers/net/ethernet/ti/am65-cpsw-nuss.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+Ack.
 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index bee2d66b9ccf..a2b6a30918f6 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -828,16 +828,24 @@ static void am65_cpsw_nuss_xmit_free(struct am65_cpsw_tx_chn *tx_chn,
- static void am65_cpsw_nuss_tx_cleanup(void *data, dma_addr_t desc_dma)
- {
- 	struct am65_cpsw_tx_chn *tx_chn = data;
-+	enum am65_cpsw_tx_buf_type buf_type;
- 	struct cppi5_host_desc_t *desc_tx;
-+	struct xdp_frame *xdpf;
- 	struct sk_buff *skb;
- 	void **swdata;
- 
- 	desc_tx = k3_cppi_desc_pool_dma2virt(tx_chn->desc_pool, desc_dma);
- 	swdata = cppi5_hdesc_get_swdata(desc_tx);
--	skb = *(swdata);
--	am65_cpsw_nuss_xmit_free(tx_chn, desc_tx);
-+	buf_type = am65_cpsw_nuss_buf_type(tx_chn, desc_dma);
-+	if (buf_type == AM65_CPSW_TX_BUF_TYPE_SKB) {
-+		skb = *(swdata);
-+		dev_kfree_skb_any(skb);
-+	} else {
-+		xdpf = *(swdata);
-+		xdp_return_frame(xdpf);
-+	}
- 
--	dev_kfree_skb_any(skb);
-+	am65_cpsw_nuss_xmit_free(tx_chn, desc_tx);
- }
- 
- static struct sk_buff *am65_cpsw_build_skb(void *page_addr,
+>> +		}
+>> +		len = sizeof(info);
+>> +		memset(&info, 0, sizeof(info));
+>> +		info.name = ptr_to_u64(name);
+>> +		info.name_len = sizeof(name);
+>> +		err = bpf_btf_get_info_by_fd(fd, &info, &len);
+>> +		if (err) {
+>> +			err = -errno;
+>> +			goto err_out;
+>> +		}
+>> +		/* find target module btf */
+>> +		if (!strcmp(name, module))
+>> +			break;
+>> +
+>> +		close(fd);
+>> +	}
+>> +
+>> +	return fd;
+>> +err_out:
+>> +	close(fd);
+>> +	return err;
+>> +}
+> 
+> SNIP
+
 
 -- 
-2.34.1
-
+Best Regards
+Dylane Chen
 
