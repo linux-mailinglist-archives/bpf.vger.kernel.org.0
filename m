@@ -1,261 +1,161 @@
-Return-Path: <bpf+bounces-51052-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51053-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 448B1A2FC89
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 22:54:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 609F2A2FCA2
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 23:09:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6AB31679F6
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 21:54:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 265423A36C1
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 22:09:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4573C24E4AD;
-	Mon, 10 Feb 2025 21:54:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A43724FBF8;
+	Mon, 10 Feb 2025 22:09:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="f65VgwxR"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Er4k8Jgg"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDD2824C675
-	for <bpf@vger.kernel.org>; Mon, 10 Feb 2025 21:54:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B9824E4AD
+	for <bpf@vger.kernel.org>; Mon, 10 Feb 2025 22:09:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739224475; cv=none; b=Yz8BXUUMhN3oBuFlylgD3hhz4tj3fmDLHju3Avqx6EOiNq7bTxN6bwGFj7OEuNNDiURWX8LGbnScz03OfHB4kn+q7vx61iFB3au0vhgn50BwlCTUMO5o0Hfo7JKpyiueLI9zf5pp6H3/QHHgNU+wwZcdYI7l909uMpgmkXVP0II=
+	t=1739225377; cv=none; b=G7+fUggHs9b3n6uDyN1pjab3otn9nGW+gqogmn6vtS94nIA+rM4ozOEkoC+tHFUj8UCvsDPsPOgCEabGHTlB0XVotrmInqoLzg+elWKJgbtGkLU1EFO3R7d7/xFSTRG9n5bwJdNEp+yem44HPPuQnkRtCiwuBO3sqvikWh/LzuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739224475; c=relaxed/simple;
-	bh=AyQraTfsD0eAKJNbpAIj37781+CGfi6OdK1JVn5lhT4=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=aK9LAL0YLBCoJfxK4BjzwDB/mw67YuS/3w8pcw0hrlTt9aAMv9UyYKIhBfWWrmS9jtLVFg1xdRJkILldNz0Q1Q9R51VISG2uZPuZu6UbXqc7S5NHHAscxQllJRcLK1celBa2x8ahICsGAUZ1XsqY0n/sa8+Gzymhf6wRQ5XSDiQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=f65VgwxR; arc=none smtp.client-ip=91.218.175.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1739225377; c=relaxed/simple;
+	bh=44AOn8KPG/5b/gwXWVMZM4o0cSu0C5gCOO/mytEsVzc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=L6Nfu8VSCAlVE4W7gyi2cIVys0tfzsAr9MsL9DQgIF4J6EbULm12F9oZYXJQTqqi/2VZis6AFUXEhbPfZPV0z8C/8x54UV2TBG2vIaA1rNka2xYajvW1synGqxiY9NdUJPUAC/vuQlGsfik/p7dFM4VHDizLxG4HemJz1QfRsDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Er4k8Jgg; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5de6d412ee9so943a12.1
+        for <bpf@vger.kernel.org>; Mon, 10 Feb 2025 14:09:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1739225374; x=1739830174; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=44AOn8KPG/5b/gwXWVMZM4o0cSu0C5gCOO/mytEsVzc=;
+        b=Er4k8Jggi+SM4CnJwm27bFFKeQkowgsaqOyOh89teRf+uRTV8W9l50Gr/9vDaBFO2l
+         DdtALmmisHwzd0PONwPMwil4vpdlJoTeTDFTI3ixQL7x7X8vLAV4839xH0GVspld/V+6
+         96JBHWoYyIJDLDlzGZC/6SyFOwuKXU6qjZY/YzEQ8WeXnGJ1AsmfW2qXHUaA2we5g0v/
+         ArIgVC/8Sq4RykAHj7LkOYAzsNPoLcj/bsq01O5TmO1a6pxI+7SI8q9/zDIrXXSR8D6Y
+         AZAXikH7tZA/LJrwUl9A5DHiVLl+THQrcU87unLFsk16627Gmr4dY3LrCGoj8FQzh2mc
+         KLnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739225374; x=1739830174;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=44AOn8KPG/5b/gwXWVMZM4o0cSu0C5gCOO/mytEsVzc=;
+        b=ZjG+Ub3GBuBz3F8OzXsEs5rkfcMXJ3wpjUJJ+igPmWLeoAFDmntn7f1K3DpY2uio7T
+         rsoANKIPpAucqO3ZZpSz78fkbCjQ0RG921OQXOoSfkVZTiBkt1w7cIuv5fDxlId7BvDy
+         59+1A2OPUO/SZud2ZaSKFeuuOgbm29zwCIjXBEHr4yiTRSbAG4Yft5o2C+kvA9RzMfhU
+         uTS3mFTR+osluSvpo5RMiUGNdRyWct6KQKaVSFlCMI2K0RLvYpHqL7VJ0/ur2/9JmkSn
+         vZcHoWFDylD80EB1P2TE7Y/SVxsuUFinaF2zjXXTV9ccvr89Dw6UdyGp8c81E/wQeYW7
+         Xgkw==
+X-Forwarded-Encrypted: i=1; AJvYcCUBWXrh07K9PJXSZNxCw0/wKu0HAWw+r7GWAXeN659rwHhESCLPlGWsf5IDGXzcIniOSIY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwaNYJRx5kuApjMCXWRrWHfsbje8LR4p06ajNxWZX14aEubFWgk
+	NIRa7J7QhhnQumViYy7de0QWBdbzKqGfyq+lCA5/JvaIJmBlDe0E2UGWyzXJoBLsCAhdSiI/Agm
+	QAArRtJmApMBQps2uLsUikAJZwy5GDZBp1FJB
+X-Gm-Gg: ASbGncu1m9YY3SVUdGfBPga6Qq5wJLT5rLpDS+D5cAyPQxnrXiUekNq20oIKqTVJzqg
+	ljfMtjAUpc9PNHb2B9WK+MOn9BdOrIeN/i+4Dn/Oz8q1AUPxqAL4LSDqpAIcQXmnOM4JZViOMJu
+	b+gZA4tKbjP9An1kBE4XRMVNE=
+X-Google-Smtp-Source: AGHT+IG6JmQxBrqAHiHQy9r7fd0aAn9Heiw/iaJpJbhcsh707Pq8kG+sl2h6STthD8Ujnt3Wdn5OEmJdDMQ5PMlBL9s=
+X-Received: by 2002:a50:aa93:0:b0:5dc:d08e:e128 with SMTP id
+ 4fb4d7f45d1cf-5dea05e7838mr1520a12.5.1739225373121; Mon, 10 Feb 2025 14:09:33
+ -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1739224461;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=41Jhkvba1WFpStcLbcComfly4EhWKsI/5ZXXHmjcCPc=;
-	b=f65VgwxRDwvtEdsu7NuNmtX7Cgk1A2R7ciEt77+LFeoEdkDCJpP46zQl/tiWsPH6GSyHXV
-	3BH4gtWmgsJ/ZkYujW+eU7UhgmO9yYvbv9BNFhJxWx7L9V32PfS1aGM82g5GOAQqkBbJN7
-	tc0lxdvFecc/O7MqyUewFbtWj8ltvmk=
-Date: Mon, 10 Feb 2025 21:54:19 +0000
-Content-Type: text/plain; charset="utf-8"
+References: <20250114175143.81438-1-vschneid@redhat.com> <20250114175143.81438-30-vschneid@redhat.com>
+ <CAG48ez1Mh+DOy0ysOo7Qioxh1W7xWQyK9CLGNU9TGOsLXbg=gQ@mail.gmail.com>
+ <xhsmh34hhh37q.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <CAG48ez3H8OVP1GxBLdmFgusvT1gQhwu2SiXbgi8T9uuCYVK52w@mail.gmail.com> <xhsmh5xlhk5p2.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+In-Reply-To: <xhsmh5xlhk5p2.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+From: Jann Horn <jannh@google.com>
+Date: Mon, 10 Feb 2025 23:08:55 +0100
+X-Gm-Features: AWEUYZmtdNVDV_xq3vvo5TVQ7aaS79EFzdycTCfl72XGpztchND9QHjN9zcxWNo
+Message-ID: <CAG48ez1EAATYcX520Nnw=P8XtUDSr5pe+qGH1YVNk3xN2LE05g@mail.gmail.com>
+Subject: Re: [PATCH v4 29/30] x86/mm, mm/vmalloc: Defer flush_tlb_kernel_range()
+ targeting NOHZ_FULL CPUs
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org, 
+	virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	loongarch@lists.linux.dev, linux-riscv@lists.infradead.org, 
+	linux-perf-users@vger.kernel.org, xen-devel@lists.xenproject.org, 
+	kvm@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kselftest@vger.kernel.org, bpf@vger.kernel.org, 
+	bcm-kernel-feedback-list@broadcom.com, Juergen Gross <jgross@suse.com>, 
+	Ajay Kaher <ajay.kaher@broadcom.com>, Alexey Makhalov <alexey.amakhalov@broadcom.com>, 
+	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	"Liang, Kan" <kan.liang@linux.intel.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, 
+	Josh Poimboeuf <jpoimboe@kernel.org>, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, 
+	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Frederic Weisbecker <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Jason Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Ard Biesheuvel <ardb@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+	Joel Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli <juri.lelli@redhat.com>, 
+	Clark Williams <williams@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>, 
+	Tomas Glozar <tglozar@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, 
+	Mel Gorman <mgorman@suse.de>, Kees Cook <kees@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Christoph Hellwig <hch@infradead.org>, 
+	Shuah Khan <shuah@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, 
+	Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl <aliceryhl@google.com>, 
+	"Mike Rapoport (Microsoft)" <rppt@kernel.org>, Samuel Holland <samuel.holland@sifive.com>, Rong Xu <xur@google.com>, 
+	Nicolas Saenz Julienne <nsaenzju@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Yosry Ahmed <yosryahmed@google.com>, 
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, 
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, 
+	Luis Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>, 
+	Tiezhu Yang <yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Ihor Solodrai" <ihor.solodrai@linux.dev>
-Message-ID: <8d8a5d5b00688ea553b106db690e8a01f15b1410@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH] netfs: Add retry stat counters
-To: "David Howells" <dhowells@redhat.com>
-Cc: dhowells@redhat.com, "Marc Dionne" <marc.dionne@auristor.com>, "Steve
- French" <stfrench@microsoft.com>, "Eric Van Hensbergen"
- <ericvh@kernel.org>, "Latchesar  Ionkov" <lucho@ionkov.net>, "Dominique
- Martinet" <asmadeus@codewreck.org>, "Christian Schoenebeck"
- <linux_oss@crudebyte.com>, "Paulo Alcantara" <pc@manguebit.com>, "Jeff
- Layton" <jlayton@kernel.org>, "Christian Brauner" <brauner@kernel.org>,
- v9fs@lists.linux.dev, linux-cifs@vger.kernel.org, netfs@lists.linux.dev,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- ast@kernel.org, bpf@vger.kernel.org
-In-Reply-To: <2986469.1739185956@warthog.procyon.org.uk>
-References: <335ad811ae2cf5ebdfc494c185b9f02e9ca40c3e@linux.dev>
- <3173328.1738024385@warthog.procyon.org.uk>
- <3187377.1738056789@warthog.procyon.org.uk>
- <2986469.1739185956@warthog.procyon.org.uk>
-X-Migadu-Flow: FLOW_OUT
 
-On 2/10/25 2:57 AM, David Howells wrote:
-> Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
->
->> I recommend trying to reproduce with steps I shared in my initial repo=
-rt:
->> https://lore.kernel.org/bpf/a7x33d4dnMdGTtRivptq6S1i8btK70SNBP2XyX_xwD=
-AhLvgQoPox6FVBOkifq4eBinfFfbZlIkMZBe3QarlWTxoEtHZwJCZbNKtaqrR7PvI=3D@pm.m=
-e/
->>
->> I know it may not be very convenient due to all the CI stuff,
->
-> That's an understatement. :-)
->
->> but you should be able to use it to iterate on the kernel source local=
-ly and
->> narrow down the problem.
->
-> Can you share just the reproducer without all the docker stuff?=20=20
+On Mon, Feb 10, 2025 at 7:36=E2=80=AFPM Valentin Schneider <vschneid@redhat=
+.com> wrote:
+> What if isolated CPUs unconditionally did a TLBi as late as possible in
+> the stack right before returning to userspace? This would mean that upon
+> re-entering the kernel, an isolated CPU's TLB wouldn't contain any kernel
+> range translation - with the exception of whatever lies between the
+> last-minute flush and the actual userspace entry, which should be feasibl=
+e
+> to vet? Then AFAICT there wouldn't be any work/flush to defer, the IPI
+> could be entirely silenced if it targets an isolated CPU.
 
-I=20wrote a couple of shell scripts with a gist of what's happening on
-CI: build kernel, build selftests and run. You may try them.
+Two issues with that:
 
-Pull this branch from my github:
-https://github.com/theihor/bpf/tree/netfs-debug
+1. I think the "Common not Private" feature Will Deacon referred to is
+incompatible with this idea:
+<https://developer.arm.com/documentation/101811/0104/Address-spaces/Common-=
+not-Private>
+says "When the CnP bit is set, the software promises to use the ASIDs
+and VMIDs in the same way on all processors, which allows the TLB
+entries that are created by one processor to be used by another"
 
-It's the kernel source in a broken state with the scripts.
-Inlining the scripts here:
-
-## ./reproducer.sh
-
-#!/bin/bash
-
-set -euo pipefail
-
-export KBUILD_OUTPUT=3D$(realpath kbuild-output)
-mkdir -p $KBUILD_OUTPUT
-
-cp -f repro.config $KBUILD_OUTPUT/.config
-make olddefconfig
-make -j$(nproc) all
-make -j$(nproc) headers
-
-# apt install lsb-release wget software-properties-common gnupg
-# bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
-export LLVM_VERSION=3D18
-
-make -C tools/testing/selftests/bpf \
-     CLANG=3Dclang-${LLVM_VERSION} \
-     LLC=3Dllc-${LLVM_VERSION} \
-     LLVM_STRIP=3Dllvm-strip-${LLVM_VERSION} \
-     -j$(nproc) test_progs-no_alu32
-
-# wget https://github.com/danobi/vmtest/releases/download/v0.15.0/vmtest-=
-x86_64
-# chmod +x vmtest-x86_64
-./vmtest-x86_64 -k $KBUILD_OUTPUT/$(make -s image_name) ./run-bpf-selftes=
-ts.sh | tee test.log
-
-## end of ./reproducer.sh
-
-## ./run-bpf-selftests.sh
-
-#!/bin/bash
-
-/bin/mount bpffs /sys/fs/bpf -t bpf
-ip link set lo up
-
-echo 10 > /proc/sys/kernel/hung_task_timeout_secs
-echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_read/enable
-echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_write/enable
-echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_write_iter/enable
-echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_rreq/enable
-echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_rreq_ref/enable
-echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_sreq/enable
-echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_sreq_ref/enable
-echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_failure/enable
-
-function tail_proc {
-    src=3D$1
-    dst=3D$2
-    echo -n > $dst
-    while true; do
-        echo >> $dst
-        cat $src >> $dst
-        sleep 1
-    done
-}
-export -f tail_proc
-
-nohup bash -c 'tail_proc /proc/fs/netfs/stats netfs-stats.log' & disown
-nohup bash -c 'tail_proc /proc/fs/netfs/requests netfs-requests.log' & di=
-sown
-nohup bash -c 'trace-cmd show -p > trace-cmd.log' & disown
-
-cd tools/testing/selftests/bpf
-./test_progs-no_alu32
-
-## end of ./run-bpf-selftests.sh
-
-One of the reasons for suggesting docker is that all the dependencies
-are pre-packaged in the image, and so the environment is pretty close
-to the actual CI environment. With only shell scripts you will have to
-detect and install missing dependencies on your system and hope
-package versions are more or less the same and don't affect the issue.
-
-Notable things: LLVM 18, pahole, qemu, qemu-guest-agent, vmtest tool.
-
-> Is this one
-> of those tests that requires 9p over virtio?  I have a different enviro=
-nment
-> for that.
-
-We run the tests via vmtest tool: https://github.com/danobi/vmtest
-This is essentially a qemu wrapper.
-
-I am not familiar with its internals, but for sure it is using 9p.
-
-
-On 2/10/25 3:12 AM, David Howells wrote:
-> Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
->
->> Bash piece starting a process collecting /proc/fs/netfs/stats:
->>
->>     function tail_netfs {
->>         echo -n > /mnt/vmtest/netfs-stats.log
->>         while true; do
->>             echo >> /mnt/vmtest/netfs-stats.log
->>             cat /proc/fs/netfs/stats >> /mnt/vmtest/netfs-stats.log
->>             sleep 1
->>         done
->>     }
->>     export -f tail_netfs
->>     nohup bash -c 'tail_netfs' & disown
->
-> I'm afraid, intermediate snapshots of this file aren't particularly use=
-ful -
-> just the last snapshot:
-
-The reason I wrote it like this is because the test runner hangs, and
-so I have to kill qemu to stop it (with no ability to run
-post-processing within qemu instance; well, at least I don't know how
-to do it).
-
->
-> [...]
->
-> Could you collect some tracing:
->
-> echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_read/enable
-> echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_write/enable
-> echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_write_iter/enable
-> echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_rreq/enable
-> echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_rreq_ref/enable
-> echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_sreq/enable
-> echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_sreq_ref/enable
-> echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_failure/enable
->
-> and then collect the tracelog:
->
-> trace-cmd show | bzip2 >some_file_somewhere.bz2
->
-> And if you could collect /proc/fs/netfs/requests as well, that will sho=
-w the
-> debug IDs of the hanging requests.  These can be used to grep the trace=
- by
-> prepending "R=3D".  For example, if you see:
->
-> 	REQUEST  OR REF FL ERR  OPS COVERAGE
-> 	=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D =3D=3D=3D =3D=3D =3D=3D=3D=3D =3D=3D=
-=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D
-> 	00000043 WB   1 2120    0   0 @34000000 0/0
->
-> then:
->
-> 	trace-cmd show | grep R=3D00000043
-
-Done. I pushed the logs to the previously mentioned github branch:
-https://github.com/kernel-patches/bpf/commit/699a3bb95e2291d877737438fb64=
-1628702fd18f
-
-Let me know if I can help with anything else.
-
->
-> Thanks,
-> David
->
+2. It's wrong to assume that TLB entries are only populated for
+addresses you access - thanks to speculative execution, you have to
+assume that the CPU might be populating random TLB entries all over
+the place.
 
