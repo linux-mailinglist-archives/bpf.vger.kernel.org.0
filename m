@@ -1,163 +1,106 @@
-Return-Path: <bpf+bounces-50961-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50962-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F1F2A2EACB
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 12:13:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33023A2EC4B
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 13:08:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61FBA3A3294
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 11:12:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEABE1889AD0
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 12:08:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E80881DF98B;
-	Mon, 10 Feb 2025 11:12:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5703221D8B;
+	Mon, 10 Feb 2025 12:07:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XsAWhBjl"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PFJ4T1bq"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1492199384
-	for <bpf@vger.kernel.org>; Mon, 10 Feb 2025 11:12:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0E392206B7
+	for <bpf@vger.kernel.org>; Mon, 10 Feb 2025 12:07:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739185974; cv=none; b=g6xmFzejcs7GOK6qbamzlm90ntcow7M+a/bZPq1WWLRtqR6Yli2ql0MhiY6D0iayD2Qt97QD0kYEo3daCkvxMCsMV9VXUXvkrs73bPnJLfI4J6a5Re3Eeyii/eTdG3NnHCGcpxAXBOtGzxguGUHaqvP++it0mkrw8O5G0ixtrsg=
+	t=1739189275; cv=none; b=Mh1JQI9FkUqdkQw5P2+nmyN1w6+QchBhZavwOV9oyXjMOC8/h0h0IvVsbVn8YyuDvSn0qQMt7uRzOOevmy3FCIsggPomAgPMh4Vxu3bhsjLRaUOtketlKmrfcDzyBGIbXirn4LEOSYOlX2gG5u1sC5SIs1yjERwpDkUjz5iITIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739185974; c=relaxed/simple;
-	bh=kLa245Ex+g41bu7Cp8rMbIVdC/gRWBdIQ6HQlDIJzmE=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=epgCYVCA6JPThlz8VmwnqFNfttY4hE4V7nKcmidpm8J4s+/jSGLQM1foGoK/USzfJb1R9CgnRmxVBvWJKcZEhTDyTpTYUBZBybnU6Zn/59R4SEolmkiqkMUJWi932F95oWvoxp56ElnM8VTaKwggE03qoUeP98/EST2lUIpyLhc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XsAWhBjl; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1739189275; c=relaxed/simple;
+	bh=BtQ9N1MvirivDuLCQDNFtrplYfp2RM+U8t6UQeof8HE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bOB1QpUrmsa7ult81uzfNsQrfvdQkk09bc4PBBJlJ1f9zV9THEF50dT65fxusRO8WQZawmVuDBPVmU+3E7+NKct5SGG/s1X0Dhm9SLeXliUOf3RqRgJK+scDwP+5IXxBSpV3j3p02VAiB13g8Qg2r9P44R+yDtDYnni1zXbJuTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PFJ4T1bq; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1739185971;
+	s=mimecast20190719; t=1739189272;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XghnrJPPKnRqzZD+n1h385B8O5oGF3rpRLFRKp+cnJM=;
-	b=XsAWhBjlPplAcp1sFgiBfypBQobWpfft7MINt4kdVTOrsTnXqJ/RC6jyFjERrrRvtgkrJV
-	MhV4Sit+rBxcx6uWYxzCTMOm/Vj4TVJlmKM87d/31ch0gqfg4wZvUSWTv6Z7STk+++/22m
-	AFSDVfo5Lz0nWj7sL/am+Y1xAy39PTE=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+	bh=TNwsmie5gRPqqyVCLb3IhqDqH4N/saJWdmlC5n8Dh5I=;
+	b=PFJ4T1bqs3jrSk3fKB0EIoSm4GaHiXw65N27M1G1Wiq2KWpasrBMSZTBN2yp888mlCtfmd
+	pTt+gqWYHMdKmP1ixwdZCDVwQnd5M16mn6wD5AeNxI1kfWjqtf/TtWbwCJxDIIG7OC2NM9
+	cGByEL1VsAonjLQm6hlnpjqVgto8+vk=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-435-lL-aKo8QNE22K11qKeSweQ-1; Mon,
- 10 Feb 2025 06:12:46 -0500
-X-MC-Unique: lL-aKo8QNE22K11qKeSweQ-1
-X-Mimecast-MFC-AGG-ID: lL-aKo8QNE22K11qKeSweQ
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-240-jW7P-b8EOCOzDHiXADTIjw-1; Mon,
+ 10 Feb 2025 07:07:49 -0500
+X-MC-Unique: jW7P-b8EOCOzDHiXADTIjw-1
+X-Mimecast-MFC-AGG-ID: jW7P-b8EOCOzDHiXADTIjw
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id EEA431800873;
-	Mon, 10 Feb 2025 11:12:42 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.92])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id D41DB195608D;
-	Mon, 10 Feb 2025 11:12:37 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <335ad811ae2cf5ebdfc494c185b9f02e9ca40c3e@linux.dev>
-References: <335ad811ae2cf5ebdfc494c185b9f02e9ca40c3e@linux.dev> <3173328.1738024385@warthog.procyon.org.uk> <3187377.1738056789@warthog.procyon.org.uk>
-To: "Ihor Solodrai" <ihor.solodrai@linux.dev>
-Cc: dhowells@redhat.com, "Marc Dionne" <marc.dionne@auristor.com>,
-    "Steve French" <stfrench@microsoft.com>,
-    "Eric Van Hensbergen" <ericvh@kernel.org>,
-    "Latchesar
- Ionkov" <lucho@ionkov.net>,
-    "Dominique Martinet" <asmadeus@codewreck.org>,
-    "Christian Schoenebeck" <linux_oss@crudebyte.com>,
-    "Paulo Alcantara" <pc@manguebit.com>,
-    "Jeff Layton" <jlayton@kernel.org>,
-    "Christian Brauner" <brauner@kernel.org>, v9fs@lists.linux.dev,
-    linux-cifs@vger.kernel.org, netfs@lists.linux.dev,
-    linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-    ast@kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] netfs: Add retry stat counters
+	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 98008195608E;
+	Mon, 10 Feb 2025 12:07:45 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.113])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 811B8180035E;
+	Mon, 10 Feb 2025 12:07:38 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Mon, 10 Feb 2025 13:07:19 +0100 (CET)
+Date: Mon, 10 Feb 2025 13:07:10 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>, Kees Cook <kees@kernel.org>,
+	Eyal Birger <eyal.birger@gmail.com>, stable@vger.kernel.org,
+	Jann Horn <jannh@google.com>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+	x86@kernel.org, bpf@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>,
+	Deepak Gupta <debug@rivosinc.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH bpf-next] uprobes: Harden uretprobe syscall trampoline
+ check
+Message-ID: <20250210120710.GB32480@redhat.com>
+References: <20250209220515.2554058-1-jolsa@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2986468.1739185956.1@warthog.procyon.org.uk>
-Date: Mon, 10 Feb 2025 11:12:36 +0000
-Message-ID: <2986469.1739185956@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250209220515.2554058-1-jolsa@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
-Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
+On 02/09, Jiri Olsa wrote:
+>
+> [1] https://lore.kernel.org/bpf/202502081235.5A6F352985@keescook/T/#m9d416df341b8fbc11737dacbcd29f0054413cbbf
+> Cc: Kees Cook <kees@kernel.org>
+> Cc: Eyal Birger <eyal.birger@gmail.com>
+> Cc: stable@vger.kernel.org
+> Reported-by: Jann Horn <jannh@google.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  arch/x86/kernel/uprobes.c | 14 +++++++++-----
+>  1 file changed, 9 insertions(+), 5 deletions(-)
 
-> Bash piece starting a process collecting /proc/fs/netfs/stats:
-> 
->     function tail_netfs {
->         echo -n > /mnt/vmtest/netfs-stats.log
->         while true; do
->             echo >> /mnt/vmtest/netfs-stats.log
->             cat /proc/fs/netfs/stats >> /mnt/vmtest/netfs-stats.log
->             sleep 1
->         done
->     }
->     export -f tail_netfs
->     nohup bash -c 'tail_netfs' & disown
-
-I'm afraid, intermediate snapshots of this file aren't particularly useful -
-just the last snapshot:
-
-> Last recored /proc/fs/netfs/stats (note 0 retries):
-> 
->     Reads  : DR=0 RA=15184 RF=5 RS=0 WB=0 WBZ=0
->     Writes : BW=488 WT=0 DW=0 WP=488 2C=0
->     ZeroOps: ZR=7964 sh=0 sk=0
->     DownOps: DL=15189 ds=15189 df=0 di=0
->     CaRdOps: RD=0 rs=0 rf=0
->     UpldOps: UL=488 us=488 uf=0
->     CaWrOps: WR=0 ws=0 wf=0
->     Retries: rq=0 rs=0 wq=0 ws=0
->     Objs   : rr=2 sr=1 foq=1 wsc=0
->     WbLock : skip=0 wait=0
->     -- FS-Cache statistics --
->     Cookies: n=0 v=0 vcol=0 voom=0
->     Acquire: n=0 ok=0 oom=0
->     LRU    : n=0 exp=0 rmv=0 drp=0 at=0
->     Invals : n=0
->     Updates: n=0 rsz=0 rsn=0
->     Relinqs: n=0 rtr=0 drop=0
->     NoSpace: nwr=0 ncr=0 cull=0
->     IO     : rd=0 wr=0 mis=0
-
-Could you collect some tracing:
-
-echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_read/enable
-echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_write/enable
-echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_write_iter/enable
-echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_rreq/enable
-echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_rreq_ref/enable
-echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_sreq/enable
-echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_sreq_ref/enable
-echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_failure/enable
-
-and then collect the tracelog:
-
-trace-cmd show | bzip2 >some_file_somewhere.bz2
-
-And if you could collect /proc/fs/netfs/requests as well, that will show the
-debug IDs of the hanging requests.  These can be used to grep the trace by
-prepending "R=".  For example, if you see:
-
-	REQUEST  OR REF FL ERR  OPS COVERAGE
-	======== == === == ==== === =========
-	00000043 WB   1 2120    0   0 @34000000 0/0
-
-then:
-
-	trace-cmd show | grep R=00000043
-
-Thanks,
-David
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
 
 
