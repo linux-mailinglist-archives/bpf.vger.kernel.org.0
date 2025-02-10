@@ -1,78 +1,79 @@
-Return-Path: <bpf+bounces-51038-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51039-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2D17A2F72D
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 19:35:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 376D5A2F732
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 19:35:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6D013A3473
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 18:35:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E9897A1BCF
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 18:34:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F8F9255E23;
-	Mon, 10 Feb 2025 18:35:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51626257439;
+	Mon, 10 Feb 2025 18:35:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="wdvvakOT"
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="eoYEbEe3"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2B64192B86
-	for <bpf@vger.kernel.org>; Mon, 10 Feb 2025 18:35:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11464192B86
+	for <bpf@vger.kernel.org>; Mon, 10 Feb 2025 18:35:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739212503; cv=none; b=goSBgOzqnhrTLk76+LkTO977WHeOLjcyCUD801Ug3ZcsGV9Cuu08BxdVZHpBaqN8VvRAEFeQ410hWkvCljj0IRfXVD4DTxAMwTDUc7UPpALKYdJJKY4iOjhzBTWaGo0GxC/o482PPdu56QhDVtKb0lxKV5YsC3ENV8fXE+gX2Rg=
+	t=1739212505; cv=none; b=fPVLa11ZxoOCP+GrDuSTwWrZj54qIIAnfE98bVHSvT9bvl2LElNSv+/HQBbO8ZwBX7QHH+tjxsEKjWq4wq2ydW5ljUKb0Dek4hMA37dSvYi9yf4ScyFpxNB4Ulw7J1LEz+Ige1BmTcz7lhUSlN5uu7ZxXDUvM81+LmGj/mJiO0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739212503; c=relaxed/simple;
-	bh=Fet6okgf36tAqXpewfQLTQxQKGOhhrsK1Q0AOZ9/Pjs=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=bqM21boh7BgkCUTNyH67CesKNN1Qr2uk3bmKsfXOwLphCXEeQozASnnhFMfY96ipv5RGSs7boBd4nlKlepu0U9WHmR/rsktNwwgulV8NhQR7W8+/SEdgapDyNdOrFjS1hk037/Va7AhjQGV/wxHxwN22X66N8XzSOooFfrViiog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=wdvvakOT; arc=none smtp.client-ip=209.85.214.172
+	s=arc-20240116; t=1739212505; c=relaxed/simple;
+	bh=m6vPvto3/8VAhwSYAOsb0B0lfqjzn/c3aN5DgiXezEc=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=B7IphTEXDAWOM+t6qAUw+lroAtbx4tY+JmJB8plhddnZtp5wf2Z2JtmMqYpx8YkY5Y4AIZ7OHZX5HYM8vm+n7u5DY09818eKmbMPOX2MHg1JDQrvOqWoFxu5mIe8siQWBZ1xbqV4aULhl0Aus+btUkqk0jkREAfgm8hcG9c9ypI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=eoYEbEe3; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-21f7f03d7c0so37189665ad.3
-        for <bpf@vger.kernel.org>; Mon, 10 Feb 2025 10:35:01 -0800 (PST)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-21fa56e1583so16861105ad.3
+        for <bpf@vger.kernel.org>; Mon, 10 Feb 2025 10:35:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1739212501; x=1739817301; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RhlEJGyqamWG33JWVRBIx1wW5JbkDOwIRtN2Z4M+TTw=;
-        b=wdvvakOT5i4wkWWew3IxRKeLgj5OCrPzweUevk8Iq3hGLguyraFOVVBHGkq1VZ4rxx
-         xsNUzog/f+xrfJAVSm04dRMGghOwEYCnOXK37PtvD7+C/uEd8iZLCoFQ98ZPns0s+p14
-         napg0JFTAN2KpQVdZDMIIczO8J8JCkBzHyOigUQp5Ur0lWjNBdruSVzCvYFGDHo3ok2G
-         ZM7X4QqrBB1Yt8PMmkL49JVY5WA4jpABlcJxi3gIFEco7VjqK83RSMe1Q2eNKBCr/oHt
-         2oXw8/tzg5tzQ0HU34XdbN9PB+YkHGWXEzbMfjvqOy7tpm6rIqPGtsOE072YFdwnX3XQ
-         ORQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739212501; x=1739817301;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1739212503; x=1739817303; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=RhlEJGyqamWG33JWVRBIx1wW5JbkDOwIRtN2Z4M+TTw=;
-        b=P/LrviTxXXa2VUpec79lpD0QgTls/DmHE6dUP5U61SU9c8eaRzGTQTQN0mcTb1/rOn
-         ljpTu7pSQx1WZhP2Y1tABN6m09fXgWkgLrwcoDmiyrQJDw3pFmtr9g1R4TtnjzL6eAnA
-         iOA0lfh0dlbCtEpIiG499N3X8Ky5IcrGH9nyeyWEo5LJlDwBQt2n11Vd/rb3Zb+keazj
-         YYxQ9A92JqaqH3yrXd88hoUkQXa8yX/CvlP+YMP8rxWbmVi7ximU6IvnlswS50HC3Xxh
-         om9lMJHdQaqKR7N/iah0HDtiQDTmDTU3g3I7eADQouICBW5keG2ciAG8PMD7gtOD00D5
-         ckCA==
-X-Gm-Message-State: AOJu0Yz4tdRYRKMugepZO4Et3fbYtXdK6TMhnlr9WIdw8Flr66gOpsr0
-	cS3eK1iAld1FMWNyKa7vYyZm0EydBQVE9sNkrHfZqY/7vQG4Dzx/z9HDp9/DLIM=
-X-Gm-Gg: ASbGnctrYRjIORQjCT7LYdvAUsCCGXJ4bFMZs7EwhtTrjGWGecvYi9eXk3w1rzfxaoK
-	+PIYSdBn1tipR8r17+FxdKMrGCvzT9b+a63G41dR6iVyMjHeLSFJV/ubhm8NsJBiowG+XfZfX4K
-	nU4NPMv/NfDmZADd+77idiIrWS+J72Xywokmgw9w5xEZlMtHM6REkG+RVaD1jXqeYjwv9Jd6aJy
-	gxE2v9gE1YqKbUc/hMRSOHQPHsU1zO8+OS5T3e1o1jQnj6AuuyQ/45lG3FzyG+q5r7cXWpOem2/
-	k45iDNJJlVp2w8MVFJ9+/zczLrQ39KI=
-X-Google-Smtp-Source: AGHT+IGcshiyYeyUumTAxl/O5zl1bGxAtjZfhKbFcjYP8aCSk0OlMXDbqBJ+Y4zN2NdWMp46o5bnIA==
-X-Received: by 2002:a17:902:dac7:b0:21f:b404:5110 with SMTP id d9443c01a7336-21fb40451d5mr20090975ad.34.1739212500849;
-        Mon, 10 Feb 2025 10:35:00 -0800 (PST)
+        bh=vp4U5RjZNMaLfDL8FhGoAp2lWpVtDVf1/5CCeKs7dXI=;
+        b=eoYEbEe3PbIZxg7miQabqeR5BEYTfaoDPioosHFjvmskgJbDMsdaI+3W3LtsMQO/hv
+         9qym1BnbAbvHathgSt8ii+ELgBPKwVpxaHWdrxgw5E97kxHQLotEtTjTsJslTL3X0cJY
+         HoGIYFNOtrzk/H+YCrlGO9YsRxU8vVwqUDK1HKKUIQ+WzRR8pOeFBou9f91loeP3OSal
+         U/O2KWs3oxTfTXQAEZxsDriyVz0Q88rdt1j2pLg1tX22nswKShr1+hnNEYXhnxiDIrh5
+         RWtOpYtRaU6pGSu/F0EFd90djrU3Rlqe2pVERN+o81eg+DautBss+41uJ1dBEHxbb5Hv
+         dMFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739212503; x=1739817303;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vp4U5RjZNMaLfDL8FhGoAp2lWpVtDVf1/5CCeKs7dXI=;
+        b=swRKIUrQkWy0mryNAcmLOuWUi4tCuhcOeIWWW5FWx2xaZvflmpUmaqsKy3CUdNkctq
+         DLAHrYJDXfqjEweEfiweKucTYYbrnQw/b5xtVnTxuUgsak8fY6NepxQj42dlV/Vq2AET
+         BDBPOnn1W0N3TfHUV8UayGRfyxeK2GrhQEZ4LuSCBjdKETNz+L3XGeYQXri/ACIILl7a
+         FUjSvY3fegSMsQZQKHIZ9vpaCGVEW/glXC/TU1G4I9znbyOm2vBoM+vwjbEw3rudEnch
+         bgKuYJB0tMI2DIDcCJEp/b5AgmSqCSWe2tRGouE+QVQ9xcjIAMQv9IrQnE7b6f/Mdb6O
+         M2/Q==
+X-Gm-Message-State: AOJu0YyEYCvaF1FOOWqPaUE7F0p83po1Cb2KtlykTfB83NcwzpAmUQ+m
+	9KWHVY7uRLjQckkxd1YVrxOuIPJAc2uNQA3kRfuqKFjSN7nBx3ZPQCwyFL8zdII=
+X-Gm-Gg: ASbGncvipMru5OE3wkk6iMVc5K6aWcXQtU0ZwFemH4cCIDPzbz12suKqaHbMyiisZgv
+	ttc3HN70LfUJRfo0YlUkOQPBdBNjwOqtbG0B30Y1KMwpIDajFCCaoxnu/5pkg6HzUCh/ulV+j7s
+	lK9bv1plW9xQzQE4FdKi9/igtDVuEY3sl1tNjHJkQdpCbwZ5iikrTlmwha7NAXk/41PvqE/N1an
+	cEAGBubdSIPcH6ZXH+JFAnTPGLPwBc+EFMIeBwu9I2j+r9/fdqGsh3AH7PsMp2A/y0w2T0Dhyhh
+	PXe/dX2dxn6XsZ9+UeSHc8bdSOQYRZE=
+X-Google-Smtp-Source: AGHT+IGhadsK8o0zywnt3E3VuQTTrNcoOsyBwprzXa7M/vo7zyIHtpYN9nvJLck9Wi1ntjXoOtMSKQ==
+X-Received: by 2002:a17:902:e547:b0:215:5935:7eef with SMTP id d9443c01a7336-21f4e6b1204mr276368625ad.22.1739212503138;
+        Mon, 10 Feb 2025 10:35:03 -0800 (PST)
 Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21f3650e6b5sm82534815ad.46.2025.02.10.10.34.58
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21f3650e6b5sm82534815ad.46.2025.02.10.10.35.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Feb 2025 10:35:00 -0800 (PST)
+        Mon, 10 Feb 2025 10:35:02 -0800 (PST)
 From: Charlie Jenkins <charlie@rivosinc.com>
-Subject: [PATCH v2 0/2] tools: Unify top-level quiet infrastructure
-Date: Mon, 10 Feb 2025 10:34:41 -0800
-Message-Id: <20250210-quiet_tools-v2-0-b2f18cbf72af@rivosinc.com>
+Date: Mon, 10 Feb 2025 10:34:42 -0800
+Subject: [PATCH v2 1/2] tools: Unify top-level quiet infrastructure
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -81,10 +82,9 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAMFGqmcC/23M0QoCIRCF4VdZ5jrDNZTsqveIJUSndqC0HJNi8
- d2zve7yP3C+BRgzIcNhWCBjJaYUe6jNAH528YqCQm9QUmmp5E48X4TlXFK6sbDOoLPBaDda6I9
- Hxgu9V+009Z6JS8qfFa/jb/3v1FFIEZT2e6sNauuOmWpiin7r0x2m1toXG5jhDKkAAAA=
-X-Change-ID: 20250203-quiet_tools-9a6ea9d65a19
+Message-Id: <20250210-quiet_tools-v2-1-b2f18cbf72af@rivosinc.com>
+References: <20250210-quiet_tools-v2-0-b2f18cbf72af@rivosinc.com>
+In-Reply-To: <20250210-quiet_tools-v2-0-b2f18cbf72af@rivosinc.com>
 To: Alexei Starovoitov <ast@kernel.org>, 
  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
  Martin KaFai Lau <martin.lau@linux.dev>, 
@@ -108,59 +108,156 @@ Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-kselftest@vger.kernel.org, linux-input@vger.kernel.org, 
  linux-trace-kernel@vger.kernel.org, Charlie Jenkins <charlie@rivosinc.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2111; i=charlie@rivosinc.com;
- h=from:subject:message-id; bh=Fet6okgf36tAqXpewfQLTQxQKGOhhrsK1Q0AOZ9/Pjs=;
- b=owGbwMvMwCXWx5hUnlvL8Y3xtFoSQ/oqt1NPEzb84l/zyGE146GrwY9bFd7J1Dz3FjzpdTzr9
- dSmlEsXOkpZGMS4GGTFFFl4rjUwt97RLzsqWjYBZg4rE8gQBi5OAZjITgaG/9HW/y407VmbHOFu
- tFAyYTOXt7S4nZ4Nq+R7RasCqdXyMowMS3fb1G+rypyu+E5kzUbPPp1a85cX3rrwNm+x/jG595A
- wPwA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4587; i=charlie@rivosinc.com;
+ h=from:subject:message-id; bh=m6vPvto3/8VAhwSYAOsb0B0lfqjzn/c3aN5DgiXezEc=;
+ b=owGbwMvMwCXWx5hUnlvL8Y3xtFoSQ/oqt0vxR7caCa0+ZyG9dZKngbLdN+5YvRDHjY1PZjzMm
+ /m1dc/pjlIWBjEuBlkxRRaeaw3MrXf0y46Klk2AmcPKBDKEgYtTACaySIvhf9Xljw4mVvlWBVbt
+ LR5LFnT/kHJ3/WTcEvg1nEV1bdaJFYwMF3+lXJiW9+7i3rQpEcq7T6yNUPJoX36jOKJlUrlO7Gp
+ JFgA=
 X-Developer-Key: i=charlie@rivosinc.com; a=openpgp;
  fpr=7D834FF11B1D8387E61C776FFB10D1F27D6B1354
 
-The quiet infrastructure was moved out of Makefile.build to accomidate
-the new syscall table generation scripts in perf. Syscall table
-generation wanted to also be able to be quiet, so instead of again
-copying the code to set the quiet variables, the code was moved into
-Makefile.perf to be used globally. This was not the right solution. It
-should have been moved even further upwards in the call chain.
-Makefile.include is imported in many files so this seems like a proper
-place to put it.
+Commit f2868b1a66d4 ("perf tools: Expose quiet/verbose variables in
+Makefile.perf") moved the quiet infrastructure out of
+tools/build/Makefile.build and into the top-level Makefile.perf file so
+that the quiet infrastructure could be used throughout perf and not just
+in Makefile.build.
+
+Extract out the quiet infrastructure into Makefile.include so that it
+can be leveraged outside of perf.
 
 Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+Fixes: f2868b1a66d4 ("perf tools: Expose quiet/verbose variables in Makefile.perf")
 ---
-Changes in v2:
-- Fix spacing around Q= (Andrii)
-- Link to v1: https://lore.kernel.org/r/20250203-quiet_tools-v1-0-d25c8956e59a@rivosinc.com
+ tools/build/Makefile           |  8 +-------
+ tools/perf/Makefile.perf       | 41 -----------------------------------------
+ tools/scripts/Makefile.include | 31 ++++++++++++++++++++++++++++++-
+ 3 files changed, 31 insertions(+), 49 deletions(-)
 
----
-Charlie Jenkins (2):
-      tools: Unify top-level quiet infrastructure
-      tools: Remove redundant quiet setup
+diff --git a/tools/build/Makefile b/tools/build/Makefile
+index 18ad131f6ea74aebfc3fd6aa6dddfdc00634b66c..63ef2187876169d8daaeed6f7a4ff27e4b610271 100644
+--- a/tools/build/Makefile
++++ b/tools/build/Makefile
+@@ -17,13 +17,7 @@ $(call allow-override,LD,$(CROSS_COMPILE)ld)
+ 
+ export HOSTCC HOSTLD HOSTAR
+ 
+-ifeq ($(V),1)
+-  Q =
+-else
+-  Q = @
+-endif
+-
+-export Q srctree CC LD
++export srctree CC LD
+ 
+ MAKEFLAGS := --no-print-directory
+ build     := -f $(srctree)/tools/build/Makefile.build dir=. obj
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 55d6ce9ea52fb2a57b8632cc6d0ddc501e29cbfc..05c083bb11220486e3246896af4fa0051f048832 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -161,47 +161,6 @@ export VPATH
+ SOURCE := $(shell ln -sf $(srctree)/tools/perf $(OUTPUT)/source)
+ endif
+ 
+-# Beautify output
+-# ---------------------------------------------------------------------------
+-#
+-# Most of build commands in Kbuild start with "cmd_". You can optionally define
+-# "quiet_cmd_*". If defined, the short log is printed. Otherwise, no log from
+-# that command is printed by default.
+-#
+-# e.g.)
+-#    quiet_cmd_depmod = DEPMOD  $(MODLIB)
+-#          cmd_depmod = $(srctree)/scripts/depmod.sh $(DEPMOD) $(KERNELRELEASE)
+-#
+-# A simple variant is to prefix commands with $(Q) - that's useful
+-# for commands that shall be hidden in non-verbose mode.
+-#
+-#    $(Q)$(MAKE) $(build)=scripts/basic
+-#
+-# To put more focus on warnings, be less verbose as default
+-# Use 'make V=1' to see the full commands
+-
+-ifeq ($(V),1)
+-  quiet =
+-  Q =
+-else
+-  quiet=quiet_
+-  Q=@
+-endif
+-
+-# If the user is running make -s (silent mode), suppress echoing of commands
+-# make-4.0 (and later) keep single letter options in the 1st word of MAKEFLAGS.
+-ifeq ($(filter 3.%,$(MAKE_VERSION)),)
+-short-opts := $(firstword -$(MAKEFLAGS))
+-else
+-short-opts := $(filter-out --%,$(MAKEFLAGS))
+-endif
+-
+-ifneq ($(findstring s,$(short-opts)),)
+-  quiet=silent_
+-endif
+-
+-export quiet Q
+-
+ # Do not use make's built-in rules
+ # (this improves performance and avoids hard-to-debug behaviour);
+ MAKEFLAGS += -r
+diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
+index 0aa4005017c72f10bb7c5e47bc78ec81718c47ef..71703a39f8bc29074eb257d5df8e01ff151ba23d 100644
+--- a/tools/scripts/Makefile.include
++++ b/tools/scripts/Makefile.include
+@@ -136,6 +136,33 @@ else
+ NO_SUBDIR = :
+ endif
+ 
++# Beautify output
++# ---------------------------------------------------------------------------
++#
++# Most of build commands in Kbuild start with "cmd_". You can optionally define
++# "quiet_cmd_*". If defined, the short log is printed. Otherwise, no log from
++# that command is printed by default.
++#
++# e.g.)
++#    quiet_cmd_depmod = DEPMOD  $(MODLIB)
++#          cmd_depmod = $(srctree)/scripts/depmod.sh $(DEPMOD) $(KERNELRELEASE)
++#
++# A simple variant is to prefix commands with $(Q) - that's useful
++# for commands that shall be hidden in non-verbose mode.
++#
++#    $(Q)$(MAKE) $(build)=scripts/basic
++#
++# To put more focus on warnings, be less verbose as default
++# Use 'make V=1' to see the full commands
++
++ifeq ($(V),1)
++  quiet =
++  Q =
++else
++  quiet = quiet_
++  Q = @
++endif
++
+ # If the user is running make -s (silent mode), suppress echoing of commands
+ # make-4.0 (and later) keep single letter options in the 1st word of MAKEFLAGS.
+ ifeq ($(filter 3.%,$(MAKE_VERSION)),)
+@@ -145,9 +172,11 @@ short-opts := $(filter-out --%,$(MAKEFLAGS))
+ endif
+ 
+ ifneq ($(findstring s,$(short-opts)),)
+-  silent=1
++  quiet=silent_
+ endif
+ 
++export quiet Q
++
+ #
+ # Define a callable command for descending to a new directory
+ #
 
- tools/arch/arm64/tools/Makefile           |  6 -----
- tools/bpf/Makefile                        |  6 -----
- tools/bpf/bpftool/Documentation/Makefile  |  6 -----
- tools/bpf/bpftool/Makefile                |  6 -----
- tools/bpf/resolve_btfids/Makefile         |  2 --
- tools/bpf/runqslower/Makefile             |  5 +---
- tools/build/Makefile                      |  8 +-----
- tools/lib/bpf/Makefile                    | 13 ----------
- tools/lib/perf/Makefile                   | 13 ----------
- tools/lib/thermal/Makefile                | 13 ----------
- tools/objtool/Makefile                    |  6 -----
- tools/perf/Makefile.perf                  | 41 -------------------------------
- tools/scripts/Makefile.include            | 31 ++++++++++++++++++++++-
- tools/testing/selftests/bpf/Makefile.docs |  6 -----
- tools/testing/selftests/hid/Makefile      |  2 --
- tools/thermal/lib/Makefile                | 13 ----------
- tools/tracing/latency/Makefile            |  6 -----
- tools/tracing/rtla/Makefile               |  6 -----
- tools/verification/rv/Makefile            |  6 -----
- 19 files changed, 32 insertions(+), 163 deletions(-)
----
-base-commit: 2014c95afecee3e76ca4a56956a936e23283f05b
-change-id: 20250203-quiet_tools-9a6ea9d65a19
 -- 
-- Charlie
+2.43.0
 
 
