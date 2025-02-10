@@ -1,191 +1,141 @@
-Return-Path: <bpf+bounces-50909-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50910-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43D29A2E24C
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 03:40:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33779A2E3EE
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 07:01:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BA541887394
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 02:40:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10DFD3A9E03
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 06:00:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55AB242048;
-	Mon, 10 Feb 2025 02:39:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3BCD19D882;
+	Mon, 10 Feb 2025 06:00:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ahFLupzQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B9SD7OGn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D1A23596A;
-	Mon, 10 Feb 2025 02:39:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3BE4199FBA;
+	Mon, 10 Feb 2025 06:00:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739155198; cv=none; b=PE2XOJL1lgpo4GlCUqDctd2R1ukGR7qo4JIMsI+rhZSF8aqnJ1R94ABXtfZdc8euSMXu0CxSMqNtin2otuQWvuGwHUfmtlOm4shOp5kOPfCBVaFX1vKX1lPzxeqG6JcT2WvvvKpC4EWIp6jXFwaWxfjD9zBH6QqooKfnBA53k0A=
+	t=1739167206; cv=none; b=ZSfDJ1N5DBYVGfOozXwiOHLOtoWaochaM10bkej0IkYqmZqkH05uaKRm+r5aSavI5T06PhmDi5c4LOQuInZVSMDP2IMOqQgBLrE970aa7VjIYdFMP2M58suEZ0/etlG86dN19pad1G9zLVk8jPFnUcFr0DGF6Sf0keTOr7TL2ow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739155198; c=relaxed/simple;
-	bh=UhFTGgwzcnw5Nbv7fzNfdqujcOVb1PoFfj1hZWJwqLo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sBclgL/RtFN+34QwGjhIK8bO5M3iHiX7bAU7gOmGn++u3ZbpPxpVq4rUe3ADlrEYxZ62mcegOLwasNBMJxSvgOUfixyWPSyYRxpcpfktKUONoLDX74yYwtQVgJwX4GE3GIxQVRHo2Xri0/134sL7YX9aLGOjF3307F08halJELY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ahFLupzQ; arc=none smtp.client-ip=209.85.219.43
+	s=arc-20240116; t=1739167206; c=relaxed/simple;
+	bh=JTGPCLc+TlheKyWQPI9FBCXUAAOWLK0jpbNJkDD0Y+g=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=n5W4iolmUAg6mWU+3BqC0WufZ1Yl+cPYAjFABYvFyiQm5IR2QrLhoyYcnn1Mg6SCyehCYGDYTbqDODezb1PRhZR4bSHQcDa9zPWD4zAi6jwMJzCAybXrIp3Q7zVeC9qmyCRI0ZQ5eaLknsTSBJrgfEG9hYTdl325SVmobDwuR7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B9SD7OGn; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6e432beabbdso29188626d6.3;
-        Sun, 09 Feb 2025 18:39:56 -0800 (PST)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-21f62cc4088so32200585ad.3;
+        Sun, 09 Feb 2025 22:00:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739155196; x=1739759996; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1739167204; x=1739772004; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uTr+ihH+SIThNdHSUEBbV3Pz5Z6x2IToXzqKj18NNvI=;
-        b=ahFLupzQHL/NeNJXJdYJ8tnsbjO/omqebcY5tFixRZxV5vbHOrYnJx3GpbDwNQOCot
-         SzYqo38ODzrImJiVviYnreOX+IZvLAvCMV1UKrnd/zTu1a6jxeZhQW9uO7nVsHLsZRgo
-         2xsue7AXAY3wlvlqsRYLbfmkzyX/lCPxZ0lPxjTa9MxME8skYYXi9hkL6hf7JR7X2Qja
-         wdJD1ZXYkvLF3RxiZWHnMe0KSSXaXP+ZZ+nT9S4r8t15Su4ocJlD0tshyW+YFJ2LQSCA
-         QYMcPer0QPaHXvbAkhSITAG16XTZyHtymQAf6B4IQcAiWiPkmI3R4LU4Xyq4N0a36lUD
-         5ctw==
+        bh=xXA76by7k9KEcBmeahyuiTnqNISZNAapJLV8/EFhixs=;
+        b=B9SD7OGncHt7RXqf7vQKEt6cwXNddlvKB/NyLAcBiT5l4m/Fvq7DHlP9DuSAm1JGh+
+         8EtIdCJmWRCI4H+i9tx8O2egw6LzQJuvZkrGCuKV+LANDABcR1AcmYFu8UuJebHtK3N4
+         MDHHeb3fEE0k6n9WJQ6zwpVeNLicrqSSe4gDCfmOlx0DNyGf70C5TW8Fq2Bqwt13/JKf
+         VNsbh9DBkTBoH8Sq2KcLgxwgRQNVYHkqaklY68GV0091stXXYKteo7o361YeXFat3yRl
+         +oinZlaPKwtn3XuJbpLGWkls7JHkQZ2CHgapHObYZVagf+LXpYNV6yl+lufBz1Q1Dd+x
+         nOhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739155196; x=1739759996;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1739167204; x=1739772004;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=uTr+ihH+SIThNdHSUEBbV3Pz5Z6x2IToXzqKj18NNvI=;
-        b=Pi8LvYAGNh06mXKYTLS+FtlispBO2NXUr04KvNqVYU3VQYYYU9i/hrGy8E95fjzQh0
-         +uCMnPBcSsaTrU0xXc4JF9lRmXBJMA2nf4bSkfXVV/e72XHsiDfzfR/gn6fYZJxarTE1
-         xNCVRHgKNfld6jQBss7p9miAeHEIM+cPgCPrFBTXIBj+T2UxUyp8cY4mg6xQGzWZ7bM0
-         weyRdBa+FHjPwReG4nRhkQUu4XiokYHCDCOF+rtULiFWfU3W4KfFFTkOX5QAgqQODnbs
-         t6ijOt/KlthcO6wLWkN60wOpdly35Qkpb1cB2mMCojhTm3tIEXA/NvhchgvqX6fbPemo
-         g9cg==
-X-Forwarded-Encrypted: i=1; AJvYcCUeya9YS9zNI5mqVfLu/RfMvg+v9d2Aag8GUSLfBQrSuRjgw66ZcBTbKKh+Udh2reTajVM+13Du2JFnDLUr@vger.kernel.org, AJvYcCVcBSPFBd/HtdbItQ1RjC2WLoGvxDGA9OKVumhSEUMtb5Av+1MXYEI+MBYLGDucLGHvVL4=@vger.kernel.org, AJvYcCVo8W9Yx5qxcSVCww2c65gG/P4rv6em6BoTpo5pPaoxqoog5fX6iiezJPIxUpXdGn2zfrjyjKXvsIfry0ty7w==@vger.kernel.org
-X-Gm-Message-State: AOJu0YybTTdLTJ/vMy63+0QJVfYWaB2Rd1lDEo7eXb2/6hc73z7qB4PX
-	YwKJM4DOXngaktjkfaHn3aA/s2MOAP9t3fm8pQ3hFguydsu+l1qP9dWEbUhj+7/3hWGaMNMoc1R
-	HzhM9WF0xHjIJDaJDEDCEI7Mrufo=
-X-Gm-Gg: ASbGncu10nwAmfvVXt/dt67/qgAextLbr6gUMLrOW11xhMye+JHLgAZmPQwvTz/Nlam
-	QG4w+OVq8cDtkx3sNV9ncqCAYQ5j0p9LU2SNXp6QYKH9wR2UAQ2cW3GuTTnhHzaMjkE6Ru5n4kg
-	==
-X-Google-Smtp-Source: AGHT+IFLrFBz6Qp5UmsNcvQKbR+6E4Vb1a1I8rs9sYIdfJy934iEvNVJWhKe/odmZj33+Zxi6aLCSljLajjPpFIrbC4=
-X-Received: by 2002:ad4:5caf:0:b0:6da:dc79:a3cd with SMTP id
- 6a1803df08f44-6e4453fdde1mr190364136d6.0.1739155196103; Sun, 09 Feb 2025
- 18:39:56 -0800 (PST)
+        bh=xXA76by7k9KEcBmeahyuiTnqNISZNAapJLV8/EFhixs=;
+        b=VmroeoRnxWrwJl8EkmwclEpXpwyjSkoakLVoQk50WxomwpD9DoFzcbvMbpMgw43Oip
+         6vBBmRU/YnPtYDPSoiNN7WbPiED58v0d08H2X3zZJ9H6Nmvb3axaHJf27yQfuFnYCNZt
+         W6N4s/Fclw1F7C/EJVQfeMJ37CGXWg8V9T9aM/ZUtgwtdHn936qqHtYoCCBlvEEa9x8K
+         mDcPeOfHywUBy9JQadqWpqIMATkWHpO+uwLF7hG5LChhozR353Tp9Z0mO7zC/amJ+1Dj
+         8DY3bKmG8RazXYW+4Ak0ZECkKdgheZdQ8CfbsbCCuBxs7kAxOQGOqfETzWdMnsEl4cje
+         AEpg==
+X-Forwarded-Encrypted: i=1; AJvYcCWWa8rOGHxw0ie8snQkHCKYTtok4GkxEI9Y4uY7snwuCFzARc/NImErm+nX624hOJoWFQ4FYAE8FrXgIPI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwB+1XxcQ2AyQd+cu8pcaFqtnXoEuN2acRpmC8Cc4ZIx7kkCWDA
+	5qE7RFI71kBytV+Jt+XsDP8Uqi1pWR0boxdNTCAcaT1DyISPHGV4
+X-Gm-Gg: ASbGnctP9OwFztPyFaDjGBkYKPYQaWy1ZH6GR69MILgXEquxmuK3vo33iIv2XBXF4CE
+	gHRR8OUKGQQv7f5HMzMUL8Ya3zklamTRFLKEwNZv04XfoJ7i9G07Mn1h+Oz0k+vsC/YENGeEKXb
+	NZFNd5uc1L3Sy6Sv5rEi0CrasCvQur1ecKoaXfAqlAqyIttpTOy0oWcL5C4MQJURGFX5HBLRQmk
+	XU6CUzVl46DyPWh183MPwmoFw8nZq3iujNd/XcpB3hUfpi5jhj3GtMh3F5p+P7RTVWEtr4LYfqF
+	Thn3mArKQlMKM+C/
+X-Google-Smtp-Source: AGHT+IEQIxw5kFBpp6lSdPoJPNjjTuWEHJ2U3CC/OCa5A1s3D6jBs5T/Yl9Ytg2o8i/m2tyaffvFMw==
+X-Received: by 2002:a17:902:e802:b0:21f:4c8b:c514 with SMTP id d9443c01a7336-21f4e76391amr187472835ad.45.1739167202976;
+        Sun, 09 Feb 2025 22:00:02 -0800 (PST)
+Received: from localhost ([111.229.209.227])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f9e1e239eesm9958278a91.30.2025.02.09.22.00.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 09 Feb 2025 22:00:02 -0800 (PST)
+From: Tao Chen <chen.dylane@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	qmo@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	chen.dylane@gmail.com
+Subject: [PATCH bpf-next v5 0/4] Add prog_kfunc feature probe
+Date: Mon, 10 Feb 2025 13:59:41 +0800
+Message-Id: <20250210055945.27192-1-chen.dylane@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <CALOAHbBZc6ORGzXwBRwe+rD2=YGf1jub5TEr989_GpK54P2o1A@mail.gmail.com>
- <alpine.LSU.2.21.2501311414281.10231@pobox.suse.cz> <CALOAHbDwsZqo9inSLNV1FQV3NYx2=eztd556rCZqbRvEu+DDFQ@mail.gmail.com>
- <CAPhsuW4gYKHsmtHsBDUkx7a=apr_tSP_4aFWmmFNfqOJ+3GDGQ@mail.gmail.com>
- <CALOAHbDYFAntFbwMwGgnXkHh1audSoUwG1wFu_4e8P=c=hwZ0w@mail.gmail.com>
- <CAPhsuW4HsTab+w2r23bM52kcM1RBFBKP5ujVdDvxLE9OiqgMdA@mail.gmail.com>
- <CALOAHbAJBwSYju3-XEQwy0O1DNPawuEgmhrV5ECTrL9J388yDw@mail.gmail.com>
- <CAPhsuW51E4epDCrdNcQCG+SzHiyGhE+AocjmXoD-G0JExs9N1A@mail.gmail.com>
- <CALOAHbAaCbvr=F6PBJ+gnQa1WNidELzZW-P2_HmBsZ1tJd6FFg@mail.gmail.com>
- <CAADnVQJZCE-Rh4xghLrruY8DW00cRUq9-ct6d=qfKk8Yc+8=pQ@mail.gmail.com>
- <20250208193237.w3zjcyovgurrin55@jpoimboe> <CAADnVQKXgPTQsjUDB3tjZ46aPWvoEcxBCnDXro8WPtNhkGNFyg@mail.gmail.com>
-In-Reply-To: <CAADnVQKXgPTQsjUDB3tjZ46aPWvoEcxBCnDXro8WPtNhkGNFyg@mail.gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Mon, 10 Feb 2025 10:39:20 +0800
-X-Gm-Features: AWEUYZmgld-_uIP6BOREIBxqILTdQPJGEJW8vgOokSCTnEDDFnCrZ3Rg66itDXg
-Message-ID: <CALOAHbA3b8GOxKn9FkbiWEBDkXJ+kY=pVkYMruQyki_0K=1DtQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/2] livepatch: Add support for hybrid mode
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Josh Poimboeuf <jpoimboe@kernel.org>, Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Miroslav Benes <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>, Jiri Kosina <jikos@kernel.org>, 
-	Joe Lawrence <joe.lawrence@redhat.com>, live-patching@vger.kernel.org, 
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Feb 9, 2025 at 11:57=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Sat, Feb 8, 2025 at 11:32=E2=80=AFAM Josh Poimboeuf <jpoimboe@kernel.o=
-rg> wrote:
-> >
-> > On Sat, Feb 08, 2025 at 07:47:12AM -0800, Alexei Starovoitov wrote:
-> > > On Fri, Feb 7, 2025 at 10:42=E2=80=AFPM Yafang Shao <laoar.shao@gmail=
-.com> wrote:
-> > > >
-> > > > On Fri, Feb 7, 2025 at 2:01=E2=80=AFAM Song Liu <song@kernel.org> w=
-rote:
-> > > > >
-> > > > > On Wed, Feb 5, 2025 at 6:55=E2=80=AFPM Yafang Shao <laoar.shao@gm=
-ail.com> wrote:
-> > > > > [...]
-> > > > > > > I think we should first understand why the trampoline is not
-> > > > > > > freed.
-> > > > > >
-> > > > > > IIUC, the fexit works as follows,
-> > > > > >
-> > > > > >   bpf_trampoline
-> > > > > >     + __bpf_tramp_enter
-> > > > > >        + percpu_ref_get(&tr->pcref);
-> > > > > >
-> > > > > >     + call do_exit()
-> > > > > >
-> > > > > >     + __bpf_tramp_exit
-> > > > > >        + percpu_ref_put(&tr->pcref);
-> > > > > >
-> > > > > > Since do_exit() never returns, the refcnt of the trampoline ima=
-ge is
-> > > > > > never decremented, preventing it from being freed.
-> > > > >
-> > > > > Thanks for the explanation. In this case, I think it makes sense =
-to
-> > > > > disallow attaching fexit programs on __noreturn functions. I am n=
-ot
-> > > > > sure what is the best solution for it though.
-> > > >
-> > > > There is a tools/objtool/noreturns.h. Perhaps we could create a
-> > > > similar noreturns.h under kernel/bpf and add all relevant functions=
- to
-> > > > the fexit deny list.
-> > >
-> > > Pls avoid copy paste if possible.
-> > > Something like:
-> > >
-> > > BTF_SET_START(fexit_deny)
-> > > #define NORETURN(fn) BTF_ID(func, fn)
-> > > #include "../../tools/objtool/noreturns.h"
-> > >
-> > > Should work?
-> > >
-> > > Josh,
-> > > maybe we should move noreturns.h to some common location?
-> >
-> > The tools code is meant to be independent from the kernel, but it could
-> > be synced by copying it to both include/linux and tools/include/linux,
-> > and then make sure it stays in sync with tools/objtool/sync-check.sh.
-> >
-> > However, noreturns.h is manually edited, and only for some arches.  And
-> > even for those arches it's likely not exhaustive: we only add to it whe=
-n
-> > we notice an objtool warning, and not all calls to noreturns will
-> > necessarily trigger a warning.  So I'd be careful about relying on that=
-.
-> >
-> > Also that file is intended to be temporary, there have been proposals t=
-o
-> > add compiler support for annotating noreturns.  That hasn't been
-> > implemented yet, help wanted!
-> >
-> > I think the noreturn info is available in DWARF, can that be converted
-> > to BTF?
->
-> There are 30k+ noreturn funcs in dwarf. So pahole would need to have
-> some heuristic to filter out the noise.
-> It's doable, but we need to stop the bleeding the simplest way
-> and the fix would need to be backported too.
-> We can copy paste noreturns.h or #include it from the current location
-> for now and think of better ways for -next.
+More and more kfunc functions are being added to the kernel.
+Different prog types have different restrictions when using kfunc.
+Therefore, prog_kfunc probe is added to check whether it is supported,
+and the use of this api will be added to bpftool later.
 
-It seems like the simplest way at present.
-I will send a patch.
+Change list:
+- v4 -> v5:
+  - use fd_array on stack
+  - declare the scope of use of btf_fd
+- v4
+  https://lore.kernel.org/bpf/20250206051557.27913-1-chen.dylane@gmail.com/
+  
+- v3 -> v4:
+  - add fd_array init for kfunc in mod btf
+  - add test case for kfunc in mod btf
+  - refactor common part as prog load type check for
+    libbpf_probe_bpf_{helper,kfunc}
+- v3
+  https://lore.kernel.org/bpf/20250124144411.13468-1-chen.dylane@gmail.com
 
+- v2 -> v3:
+  - rename parameter off with btf_fd
+  - extract the common part for libbpf_probe_bpf_{helper,kfunc}
+- v2
+  https://lore.kernel.org/bpf/20250123170555.291896-1-chen.dylane@gmail.com
 
---
-Regards
-Yafang
+- v1 -> v2:
+  - check unsupported prog type like probe_bpf_helper
+  - add off parameter for module btf
+  - check verifier info when kfunc id invalid
+- v1
+  https://lore.kernel.org/bpf/20250122171359.232791-1-chen.dylane@gmail.com
+
+Tao Chen (4):
+  libbpf: Extract prog load type check from libbpf_probe_bpf_helper
+  libbpf: Init fd_array when prog probe load
+  libbpf: Add libbpf_probe_bpf_kfunc API
+  selftests/bpf: Add libbpf_probe_bpf_kfunc API selftests
+
+ tools/lib/bpf/libbpf.h                        |  19 ++-
+ tools/lib/bpf/libbpf.map                      |   1 +
+ tools/lib/bpf/libbpf_probes.c                 |  84 +++++++++++--
+ .../selftests/bpf/prog_tests/libbpf_probes.c  | 118 ++++++++++++++++++
+ 4 files changed, 208 insertions(+), 14 deletions(-)
+
+-- 
+2.43.0
+
 
