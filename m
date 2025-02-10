@@ -1,165 +1,119 @@
-Return-Path: <bpf+bounces-50959-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50960-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06F35A2E9F2
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 11:50:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B93E9A2EA43
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 11:58:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77858166431
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 10:50:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25E1E188BFCA
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 10:58:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6344F1DDC3F;
-	Mon, 10 Feb 2025 10:49:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A71C01DE896;
+	Mon, 10 Feb 2025 10:58:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="mC4fAAuc"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="boPdFcxG"
 X-Original-To: bpf@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06D3A1CC8AE;
-	Mon, 10 Feb 2025 10:49:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E1F71CD1FD
+	for <bpf@vger.kernel.org>; Mon, 10 Feb 2025 10:58:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739184581; cv=none; b=iB8vY/UIzJYyegvELRQbzkyODnjqGHogV7Ubwzg4LsY94nwHs9E4m3CfwN1wdqzM9BdE8/OFbcjP8Eh6U6cXeLDtKpAhPQmgKO6s11eJwynuyUrwQSpBEOgvJSwWK/AsVsvhqRK5C1grqpb/RJBxY7a0NQRT2KxHCfcF1yjzRuo=
+	t=1739185087; cv=none; b=QL7LhnCGmo7hWO9QoaI+1RqxNyGmSa9X+2UKkrhjyk2hr9+uSDqme3T6rg6dWQBz4ydGhtBHyRcrejS8dMNuBIH6NEwHZyuvvs/NyV2zTVB78qlT8Oa8au5VmfGxjGgColaBGgkmzhxzkM5kGLE6ZW0byjaYDRwhwToxBXXFYJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739184581; c=relaxed/simple;
-	bh=vqaPtBe2lpI01lWukY3VkenZTfW9VVESMP58mrA4fgg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oGMO4vEdimeSNwDabz7afJbnQZHGh7PE7GKokwjiJ6AG5bpOU5HH2iSa60Q5GfPZt67iP43rjLuCL0QaDlE6xbkBvVDy2pdQFEYKqAbWtscJuaOUSMeFcItC0tR0EbfdG6KpFDa/EZdxqF0/E47K/G9Va0PGWj2fjsmqNJhhN7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=mC4fAAuc; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=nH3pvSNUkRlhL4+G+UMDC3b1XyL6w6N3TYBSbml6HW4=; b=mC4fAAucdktIJs1dcferucyMCq
-	iUodFybqvGDFlBZzy1zrhMimjKL7I0TbxG2cd8C08ej2aLQ+93uVGBNzJDRzVxPSbAwx7u9Ajj/nJ
-	ZjhAhHc2iZ6jdS3v+LTGwoUx+zA/cr6kSl7uJygXyMDcnvWjjQ8F1lplnLyfwApXuNnp0l3iaWPJq
-	/qKbdmAqaGV+O3vhvDBFvMbLtNyEO5KrtOH077D/qCozXqswghktIN9PdUNJKsiIRKxxz4yp2tk2N
-	LN6xOwsTYMhHKwNE5WckDEVNbQcAmvBv+5cd6cJJl7DAHn1L5mcbVLqpkjVk9t8y78FR08cKAw8dN
-	jcINHt5A==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1thRM4-000000007Pm-2dgV;
-	Mon, 10 Feb 2025 10:49:32 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 2B580300318; Mon, 10 Feb 2025 11:49:31 +0100 (CET)
-Date: Mon, 10 Feb 2025 11:49:31 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Will Deacon <will@kernel.org>, Waiman Long <llong@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
-	Barret Rhoden <brho@google.com>, Josh Don <joshdon@google.com>,
-	Dohyun Kim <dohyunkim@google.com>,
-	linux-arm-kernel@lists.infradead.org, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next v2 00/26] Resilient Queued Spin Lock
-Message-ID: <20250210104931.GE31462@noisy.programming.kicks-ass.net>
-References: <20250206105435.2159977-1-memxor@gmail.com>
- <20250210093840.GE10324@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1739185087; c=relaxed/simple;
+	bh=vWv7UNywuHbbX95H499CJg9o/VWBHM3d/g4SWjJwcx0=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=mcjZ6nkykmbA4uhQWCOibXZLXY1d9mQfndEIcVrk2bUQErzGduO9lxhYe+typz9XmoZ1idCMMMQ+wPKQtBa+c0/e3nqupCKba0ZHEnd0r5UtAkDjsfsSLQ7eQOnlLGVf/hjQMmS2ZMjinLDZp2FmwBgmUz4lGJO898GQxKBOnV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=boPdFcxG; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1739185084;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qyNTaqn/k/Z/XNNjhpEEGmhvU1IQLM++33YHYodhCTg=;
+	b=boPdFcxGDFdOkYBon7p9CxXE4eNYFQpt0UwH9x+qJ1VthhxPeuPzI+A0xHmr8PAiexsOJV
+	siTD7JLgyWZeZ76FCee/fiGPpt0udkbsx+yhnnNX6r8Kth/TSPX8f7FMcPQs7iENK4agpl
+	dGBD0PI/LdAldk1yWv6Z+t99ZUF5Jno=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-44-CEEK-4T5M4mNX5PdTFK0ug-1; Mon,
+ 10 Feb 2025 05:58:00 -0500
+X-MC-Unique: CEEK-4T5M4mNX5PdTFK0ug-1
+X-Mimecast-MFC-AGG-ID: CEEK-4T5M4mNX5PdTFK0ug
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 4747A195604F;
+	Mon, 10 Feb 2025 10:57:57 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.92])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id E900218004A7;
+	Mon, 10 Feb 2025 10:57:51 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <335ad811ae2cf5ebdfc494c185b9f02e9ca40c3e@linux.dev>
+References: <335ad811ae2cf5ebdfc494c185b9f02e9ca40c3e@linux.dev> <3173328.1738024385@warthog.procyon.org.uk> <3187377.1738056789@warthog.procyon.org.uk>
+To: "Ihor Solodrai" <ihor.solodrai@linux.dev>
+Cc: dhowells@redhat.com, "Marc Dionne" <marc.dionne@auristor.com>,
+    "Steve French" <stfrench@microsoft.com>,
+    "Eric Van Hensbergen" <ericvh@kernel.org>,
+    "Latchesar
+ Ionkov" <lucho@ionkov.net>,
+    "Dominique Martinet" <asmadeus@codewreck.org>,
+    "Christian Schoenebeck" <linux_oss@crudebyte.com>,
+    "Paulo Alcantara" <pc@manguebit.com>,
+    "Jeff Layton" <jlayton@kernel.org>,
+    "Christian Brauner" <brauner@kernel.org>, v9fs@lists.linux.dev,
+    linux-cifs@vger.kernel.org, netfs@lists.linux.dev,
+    linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+    ast@kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] netfs: Add retry stat counters
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250210093840.GE10324@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2985986.1739185070.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 10 Feb 2025 10:57:50 +0000
+Message-ID: <2985987.1739185070@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
-On Mon, Feb 10, 2025 at 10:38:41AM +0100, Peter Zijlstra wrote:
-> On Thu, Feb 06, 2025 at 02:54:08AM -0800, Kumar Kartikeya Dwivedi wrote:
-> 
-> 
-> > Deadlock Detection
-> > ~~~~~~~~~~~~~~~~~~
-> > We handle two cases of deadlocks: AA deadlocks (attempts to acquire the
-> > same lock again), and ABBA deadlocks (attempts to acquire two locks in
-> > the opposite order from two distinct threads). Variants of ABBA
-> > deadlocks may be encountered with more than two locks being held in the
-> > incorrect order. These are not diagnosed explicitly, as they reduce to
-> > ABBA deadlocks.
-> > 
-> > Deadlock detection is triggered immediately when beginning the waiting
-> > loop of a lock slow path.
-> > 
-> > While timeouts ensure that any waiting loops in the locking slow path
-> > terminate and return to the caller, it can be excessively long in some
-> > situations. While the default timeout is short (0.5s), a stall for this
-> > duration inside the kernel can set off alerts for latency-critical
-> > services with strict SLOs.  Ideally, the kernel should recover from an
-> > undesired state of the lock as soon as possible.
-> > 
-> > A multi-step strategy is used to recover the kernel from waiting loops
-> > in the locking algorithm which may fail to terminate in a bounded amount
-> > of time.
-> > 
-> >  * Each CPU maintains a table of held locks. Entries are inserted and
-> >    removed upon entry into lock, and exit from unlock, respectively.
-> >  * Deadlock detection for AA locks is thus simple: we have an AA
-> >    deadlock if we find a held lock entry for the lock we’re attempting
-> >    to acquire on the same CPU.
-> >  * During deadlock detection for ABBA, we search through the tables of
-> >    all other CPUs to find situations where we are holding a lock the
-> >    remote CPU is attempting to acquire, and they are holding a lock we
-> >    are attempting to acquire. Upon encountering such a condition, we
-> >    report an ABBA deadlock.
-> >  * We divide the duration between entry time point into the waiting loop
-> >    and the timeout time point into intervals of 1 ms, and perform
-> >    deadlock detection until timeout happens. Upon entry into the slow
-> >    path, and then completion of each 1 ms interval, we perform detection
-> >    of both AA and ABBA deadlocks. In the event that deadlock detection
-> >    yields a positive result, the recovery happens sooner than the
-> >    timeout.  Otherwise, it happens as a last resort upon completion of
-> >    the timeout.
-> > 
-> > Timeouts
-> > ~~~~~~~~
-> > Timeouts act as final line of defense against stalls for waiting loops.
-> > The ‘ktime_get_mono_fast_ns’ function is used to poll for the current
-> > time, and it is compared to the timestamp indicating the end time in the
-> > waiter loop. Each waiting loop is instrumented to check an extra
-> > condition using a macro. Internally, the macro implementation amortizes
-> > the checking of the timeout to avoid sampling the clock in every
-> > iteration.  Precisely, the timeout checks are invoked every 64k
-> > iterations.
-> > 
-> > Recovery
-> > ~~~~~~~~
-> 
-> I'm probably bad at reading, but I failed to find anything that
-> explained how you recover from a deadlock.
-> 
-> Do you force unload the BPF program?
+Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
 
-Even the simple AB-BA case,
+> I recommend trying to reproduce with steps I shared in my initial report=
+:
+> https://lore.kernel.org/bpf/a7x33d4dnMdGTtRivptq6S1i8btK70SNBP2XyX_xwDAh=
+LvgQoPox6FVBOkifq4eBinfFfbZlIkMZBe3QarlWTxoEtHZwJCZbNKtaqrR7PvI=3D@pm.me/
+> =
 
-  CPU0		CPU1
-  lock-A	lock-B
-  lock-B	lock-A <-
+> I know it may not be very convenient due to all the CI stuff,
 
-just having a random lock op return -ETIMO doesn't actually solve
-anything. Suppose CPU1's lock-A will time out; it will have to unwind
-and release lock-B before CPU0 can make progress.
+That's an understatement. :-)
 
-Worse, if CPU1 isn't quick enough to unwind and release B, then CPU0's
-lock-B will also time out.
+> but you should be able to use it to iterate on the kernel source locally=
+ and
+> narrow down the problem.
 
-At which point they'll both try again and you're stuck in the same
-place, no?
+Can you share just the reproducer without all the docker stuff?  Is this o=
+ne
+of those tests that requires 9p over virtio?  I have a different environme=
+nt
+for that.
 
-Given you *have* to unwind to make progress; why not move the entire
-thing to a wound-wait style lock? Then you also get rid of the whole
-timeout mess.
+David
 
 
