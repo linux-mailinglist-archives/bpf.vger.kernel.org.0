@@ -1,176 +1,95 @@
-Return-Path: <bpf+bounces-51059-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51060-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91B42A2FCFD
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 23:28:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86AF9A2FD8E
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 23:43:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3D1318881C2
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 22:28:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57923165CE8
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 22:43:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37DD8250BE0;
-	Mon, 10 Feb 2025 22:28:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F3D5253F2B;
+	Mon, 10 Feb 2025 22:39:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZhoEDTaB"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RGlsLEGe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08A7024C69B;
-	Mon, 10 Feb 2025 22:28:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22B3A253F17
+	for <bpf@vger.kernel.org>; Mon, 10 Feb 2025 22:39:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739226497; cv=none; b=sDkfnOLnX3uuCTuTvx1PFbjLl7bnr4OH/1QyVcWn7Rg49p2kISVLqUIs1+JAmGb8SvXGwV3INdeCyzbVpRD6tX+9B4VIvaoyS6yzWz2ACMxFC6dhsIKeJndYRQ0/zIS+Runc2dw1cJ+BI42c95HPcGt+qT+QDzyHo15nXGQfzSw=
+	t=1739227195; cv=none; b=fB5JBj6jbD0GwDAHhYL/8NolAa1dBhb3LuNnGWMG0vuwP/3SSM/T38sJnTDrqa7s+DcZShm+7kB917C4R98enFKaoDTperCpwMsRYaqzKvdW8usYygp0QKfA1L7YtnWqi/FrkunZedKBjN1uKX4A2vvVnrUDzh9skKL9mxEiMG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739226497; c=relaxed/simple;
-	bh=ndLubKwFBHWtlTDCPdx1r2RbDgFfGS3iAmUDE2AS1Vw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bKXA1OaXbhjq+JD3dYhGK24FidqAkQvtwxFP7NeZu2vwslz+0quOrwMVZmc10adrYvRnKzmsj8kH9+NGhSH5f9OSUWJ1fCiQY/ZU+xCxpDyhN7I0AH2Ucg9+FSAdyVgBF6YVSdN8G0+Dpnmlb2nxZ/E6Q9MnCNNDe+759wiTB64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZhoEDTaB; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-436345cc17bso33993285e9.0;
-        Mon, 10 Feb 2025 14:28:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739226494; x=1739831294; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qkWWMjBJ1/YRt3lwgOfr2tNA5D2acLgDBlTp/Ye7Oa8=;
-        b=ZhoEDTaBXqehH8mcLxQAJ+MlyetSpm6uDuUpb+RX7HFB7qOCdZZv4uvK6GPaDYCeQp
-         2mSEo/6ok3aDLG9+DuWNZQSHqFibw0N+HY/VlJco1VVnPcM5UFxuGbsXbUHTJz5EE0X4
-         eIlvskZCxsCzK4tOzWS7KmEjFVK2nTe9mx6hubyal4PqJVdZSEqVW7OSeKd9NyJT2ijZ
-         MzJRNOpepCZQ1868xWtE5rLFBrb6/8Wp/VlP5KaNDSRSECDrEKkcKNnFZjVNnOpor+kU
-         xOgiXYtRuhfmhC2vL0nMoHB18Jq9soqo8o4MC1YgUhzu6oES/+mByRdUIsGjOhAHSFWg
-         /tGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739226494; x=1739831294;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qkWWMjBJ1/YRt3lwgOfr2tNA5D2acLgDBlTp/Ye7Oa8=;
-        b=Q2RqAuTJTW7dRtu/fgwUJemHOZdePj6xVrI0k7GfyCh9SAgyHtVjFVFr2IT6Uuj6yH
-         h5kBbG5eZY0nbfLBQkfSeZDSieTjNJ2/pElMPYMczGDagiUfX/dUO8J2Fo3uMEDH3wzG
-         rZK/01uzQkVgXMQDrlbB3eszId+mKqbAJr7W62NRmYMJ0jgtmp4YaZD1NGJf4ykvkcQH
-         ziMYnBmoe4g7wxt/Xyrq4e9/mv7u98M4EWm2KptsjB4AVsL7wbHH777I6uTgDwgKZ4qr
-         VAxN/x6+s8JtlK5s/5a+3k/xBVmeDrLbn1w6gO3Y1951WKxIuYxKZKQ++tLy+CX+a85n
-         45pA==
-X-Forwarded-Encrypted: i=1; AJvYcCVtHYv6+1ERM5iWfoFfGi5gru7V2dRbVoHuLNIiX+F3e70cg/I1SnEWEVh0P7bJ68z/JCQ=@vger.kernel.org, AJvYcCXeMhqmgulTOWQUxUcwSo9uf9CggIsyFQjpxf7zwVf8KuoMu5xNZlD/FExlFx75ZyhuWd9q1lYy@vger.kernel.org, AJvYcCXzC6vzdXgh1Q7szSLg6GiIg2HgjCvLqxq+qbw8bljMTb1J06nI7rVu395PNsLNpXnyjBexdeCb8NlrHMH6@vger.kernel.org
-X-Gm-Message-State: AOJu0YxE2nOOni+76oB1qFqns6f4pZ5N0nfK8JF9LFhn9TAn1+jT4wSk
-	H7w87V9fYJyLn0Ipe0C/UFapOU8VihU5jIRlkqhPsK22Mceskl2QUMrW/Q==
-X-Gm-Gg: ASbGncvNPdJXUAsQMMg4o1pZ0JdaWfCbL6SPyF51Bm92HltlDEHjAK68YmtMlWm+Wre
-	j02oye2vSG2H1brr2pNqVTfbckBR1X4ruOZOIIc9LhtiSXak7lsbj5sV9CEFRFL6o/BXVGc44T+
-	+WPBSO8w3KCsD6XyLgge0h/+kDGblioj3eA2vSOmgpkqY0QNZ5WiT12lVxNgRFqFzZodf5ab4Hi
-	6k8tYZdjc2FvlTIKiTIo2A4mWZTZ/l3oLn8lh5/uojv3Ei47jNSEJowbmt46jcvcFn2iJumX0xe
-	tbZZdVBQJ+J1sDyKnb6dtmtYYEJfb4J9RaSUjSuYuB0FA+WRQxa1/w==
-X-Google-Smtp-Source: AGHT+IHN7gLlSgITrNkUYlErBuW/66QbgQ6hSOX+j8FGt+/mR40pZI3bKrEQ0DY8izu56Um9ILmDrg==
-X-Received: by 2002:a05:600c:cce:b0:434:f131:1e64 with SMTP id 5b1f17b1804b1-4394c815898mr12942205e9.9.1739226493939;
-        Mon, 10 Feb 2025 14:28:13 -0800 (PST)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38dc0c5a894sm12940620f8f.95.2025.02.10.14.28.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Feb 2025 14:28:13 -0800 (PST)
-Date: Mon, 10 Feb 2025 22:28:12 +0000
-From: David Laight <david.laight.linux@gmail.com>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
- <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
- <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, "Jose E.
- Marchesi" <jose.marchesi@oracle.com>, Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdl?=
- =?UTF-8?B?bnNlbg==?= <toke@redhat.com>, Magnus Karlsson
- <magnus.karlsson@intel.com>, Maciej Fijalkowski
- <maciej.fijalkowski@intel.com>, Przemek Kitszel
- <przemyslaw.kitszel@intel.com>, Jason Baron <jbaron@akamai.com>, Casey
- Schaufler <casey@schaufler-ca.com>, Nathan Chancellor <nathan@kernel.org>,
- bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 2/4] i40e: use generic unrolled_count() macro
-Message-ID: <20250210222812.1d0479a4@pumpkin>
-In-Reply-To: <20250206182630.3914318-3-aleksander.lobakin@intel.com>
-References: <20250206182630.3914318-1-aleksander.lobakin@intel.com>
-	<20250206182630.3914318-3-aleksander.lobakin@intel.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	s=arc-20240116; t=1739227195; c=relaxed/simple;
+	bh=0P72uV3pB6pL+48smtl0CFdO6pvz1q048WmjWhaF7qs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XZUkqHccugeUr53x8I6h5S54zNxX1jmkeotxXe5tFeyllQbkTTQWxpT6I1tWWqTg6J7Zfy5aZRzSKYqmJiK0fIdT0KMxlwFMfKZcYzLmqoSEEcS1m8keDihQV8iM9IJBQYe5GQVWALTNMcxIZddjGDOdZB172HcrjXe617DzZmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RGlsLEGe; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <e6f2c489-85a9-436e-8d05-4b3063c133fd@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1739227191;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7w3YMgpbpcGG8afYcxZb7YRFBy/TyESQsnHPgNHSTkE=;
+	b=RGlsLEGeTnWUkDTC9wQAypdqYsh8qtet+1va35o9zoMOBuawDjwC8mqQd23mYwzZHqCAbU
+	23geRR9gDZeJ/fjszBBCoaY19udtJnuD89hrxP+aOVBN5di1J23JOg58tbZ6rgjNpnsMSk
+	WDs450dJTfGwCgWBKgEf1u3id+7TSz8=
+Date: Mon, 10 Feb 2025 14:39:44 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH bpf-next v8 08/12] bpf: support hw SCM_TSTAMP_SND of
+ SO_TIMESTAMPING
+To: Jason Xing <kerneljasonxing@gmail.com>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, dsahern@kernel.org, willemb@google.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, horms@kernel.org,
+ bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20250204183024.87508-1-kerneljasonxing@gmail.com>
+ <20250204183024.87508-9-kerneljasonxing@gmail.com>
+ <67a3878eaefdf_14e08329415@willemb.c.googlers.com.notmuch>
+ <CAL+tcoAH6OYNOvUg8LDYw_b+ar3bo2AXqq0=oHgb-ogEYAeHZA@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAL+tcoAH6OYNOvUg8LDYw_b+ar3bo2AXqq0=oHgb-ogEYAeHZA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu,  6 Feb 2025 19:26:27 +0100
-Alexander Lobakin <aleksander.lobakin@intel.com> wrote:
+On 2/5/25 8:03 AM, Jason Xing wrote:
+>>> @@ -5574,9 +5575,9 @@ static void skb_tstamp_tx_bpf(struct sk_buff *skb, struct sock *sk,
+>>>                op = BPF_SOCK_OPS_TS_SCHED_OPT_CB;
+>>>                break;
+>>>        case SCM_TSTAMP_SND:
+>>> -             if (!sw)
+>>> -                     return;
+>>> -             op = BPF_SOCK_OPS_TS_SW_OPT_CB;
+>>> +             op = sw ? BPF_SOCK_OPS_TS_SW_OPT_CB : BPF_SOCK_OPS_TS_HW_OPT_CB;
+>>> +             if (!sw && hwtstamps)
+>>> +                     *skb_hwtstamps(skb) = *hwtstamps;
+>> Isn't this called by drivers that have actually set skb_hwtstamps?
+> Oops, somehow my mind has gone blank 🙁 Will remove it. Thanks for
+> correcting me!
 
-> i40e, as well as ice, has a custom loop unrolling macro for unrolling
-> Tx descriptors filling on XSk xmit.
-> Replace i40e defs with generic unrolled_count(), which is also more
-> convenient as it allows passing defines as its argument, not hardcoded
-> values, while the loop declaration will still be a usual for-loop.
-..
->  #define PKTS_PER_BATCH 4
->  
-> -#ifdef __clang__
-> -#define loop_unrolled_for _Pragma("clang loop unroll_count(4)") for
-> -#elif __GNUC__ >= 8
-> -#define loop_unrolled_for _Pragma("GCC unroll 4") for
-> -#else
-> -#define loop_unrolled_for for
-> -#endif
-...
-> @@ -529,7 +530,8 @@ static void i40e_xmit_pkt_batch(struct i40e_ring *xdp_ring, struct xdp_desc *des
->  	dma_addr_t dma;
->  	u32 i;
->  
-> -	loop_unrolled_for(i = 0; i < PKTS_PER_BATCH; i++) {
-> +	unrolled_count(PKTS_PER_BATCH)
-> +	for (i = 0; i < PKTS_PER_BATCH; i++) {
->  		u32 cmd = I40E_TX_DESC_CMD_ICRC | xsk_is_eop_desc(&desc[i]);
->  
->  		dma = xsk_buff_raw_get_dma(xdp_ring->xsk_pool, desc[i].addr);
+I just noticed I missed this thread when reviewing v9.
 
-The rest of that code is:
-
-
-		tx_desc = I40E_TX_DESC(xdp_ring, ntu++);
-		tx_desc->buffer_addr = cpu_to_le64(dma);
-		tx_desc->cmd_type_offset_bsz = build_ctob(cmd, 0, desc[i].len, 0);
-
-		*total_bytes += desc[i].len;
-	}
-
-	xdp_ring->next_to_use = ntu;
-}
-
-static void i40e_fill_tx_hw_ring(struct i40e_ring *xdp_ring, struct xdp_desc *descs, u32 nb_pkts,
-				 unsigned int *total_bytes)
-{
-	u32 batched, leftover, i;
-
-	batched = nb_pkts & ~(PKTS_PER_BATCH - 1);
-	leftover = nb_pkts & (PKTS_PER_BATCH - 1);
-	for (i = 0; i < batched; i += PKTS_PER_BATCH)
-		i40e_xmit_pkt_batch(xdp_ring, &descs[i], total_bytes);
-	for (i = batched; i < batched + leftover; i++)
-		i40e_xmit_pkt(xdp_ring, &descs[i], total_bytes);
-}
-
-If it isn't a silly question why all the faffing with unrolling?
-It isn't as though the loop body is trivial - it contains real function calls.
-Unrolling loops is so 1980s - unless you are trying to get the absolute
-max performance from a very short loop and need to unroll once (maybe twice)
-to get enough spare instruction execution slots to run the loop control
-code in parallel with the body.
-
-In this case it looks like the 'batched' loop contains an inlined copy of
-the function called for the remainder.
-I can't see anything else.
-You'd probably gain more by getting rid of the 'int *total bytes' and using
-the function return value - that is what it is fot.
-
-	David
-
+I looked at a few drivers, e.g. the mlx5e_consume_skb(). It does not necessarily 
+set the skb_hwtstamps(skb) before calling skb_tstamp_tx(). The __skb_tstamp_tx() 
+is also setting skb_hwtstamps(skb) after testing "if (hwtstamps)", so I think 
+this assignment is still needed here?
 
