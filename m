@@ -1,50 +1,50 @@
-Return-Path: <bpf+bounces-50989-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50990-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 303B5A2F048
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 15:52:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECD7FA2F04C
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 15:53:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 028AD18884AA
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 14:53:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 616371888328
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 14:53:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55961236A7C;
-	Mon, 10 Feb 2025 14:52:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AC8220487E;
+	Mon, 10 Feb 2025 14:52:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ekKWUl7h"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RM59dYvI"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD430230987;
-	Mon, 10 Feb 2025 14:52:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBD6A204874;
+	Mon, 10 Feb 2025 14:52:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739199147; cv=none; b=EussdtS0klIiznlxoNuKLW4kvznUfrvA3EIMAWGyLC62w0G/qo/Lj9UXGMhBe+Qwv3Sc+AIOknS/ppdg/+05ppo8Z5upNeEzCVh/wXwVytST4rACqKGS8gAvF61g4rXm35mskR+myTfDrFBgqr07POefOz2u9Bjb6GEf2mNFzhc=
+	t=1739199152; cv=none; b=rreImj8JoBTmKCEDeldVTGrt4ZjJX/eqrUq/PTpuMOTeoJZHviLGhCzowPueK3GQ8HAXwjXmGHd7tPKvT1GEwSCASSiZa1/qfo/JjQAdbSBaqRlBKfG7IpL1JC5dWOa6MWFmvDalI9v1CLdttlfjdYZ9/gwEHnXpCe1Wkn0wPJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739199147; c=relaxed/simple;
-	bh=P2BvZfapl8SmRLSM8MJDVRi7Xewr105bmnDY2wj9fKY=;
+	s=arc-20240116; t=1739199152; c=relaxed/simple;
+	bh=lncTpqRYnczSkh5p/M+nCdG+y49YXkzek6zKzkRyYvI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=U6J/Np4mUltquWfPuMgGIxqSPQyOj5vaHRIro/rssfQC9swdEutodh5I2z88/DrqIy+E3U1UJcI/lOlrVeDYE+rKF5DF33e6I+jIW7pkqWnHeHkNpaR/8Vfjo4+uba9MSb5tqwfoI7ATaGqxZ/iG/lDYYerbCuGz2jHZ0NCa9UA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ekKWUl7h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77B60C4CED1;
-	Mon, 10 Feb 2025 14:52:23 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=pZHBEYb7GJfD6fhXtJea3+FTWfRGIYEAtjnqDcGjOfJ6DHSqTgUieEKz5fSK3c2OmU12uJomNo6Ijihdjm22qb171Uq/LtUARYpfE7e0XfOZGQa7HjXlarCogLcM9a7rYatgkv2Gifdfqvgb5p50pH1KGZwiYL6q1F/+H2ZSt3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RM59dYvI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B67FDC4CEDF;
+	Mon, 10 Feb 2025 14:52:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739199147;
-	bh=P2BvZfapl8SmRLSM8MJDVRi7Xewr105bmnDY2wj9fKY=;
+	s=k20201202; t=1739199151;
+	bh=lncTpqRYnczSkh5p/M+nCdG+y49YXkzek6zKzkRyYvI=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=ekKWUl7hKagb5yzfZh7Z8xq78ero9ZoFnrnQu2Kh7ZGBlj0kuT4fQVCoTLuasvzEy
-	 4+uszB2XjnXDGIMdOqVzhrzEHQwtzOJ5nxfu3FT86h1QsWR3mifsMgFSS4zqrhuMgU
-	 qZe16vwl/GXqNoAVM75FdsHRaMSYeVv7ibl+yBeY+yMNUpP/FVlpAkIsZEdkEwm782
-	 fFn9FzBmm0446RgoMMo4Fv4YhTHVtSo4yAK+myw2nsSe3b7rUvdznCqEt+ccj+intz
-	 ZGy9Vus+w1KfFnFR5Btli9EoSJWnz0HiQK/QHlTXg4o3/dCr1eN4lJM+GvcAV4JWYO
-	 MS9ToUA0IEtGw==
+	b=RM59dYvIaqXJxUL+ip70YoOyaT1aZRc4WxkdrkI3Xv2Vsym4Qu/GzIkkV1gSxBBS+
+	 MMp9m2Zbtr+uxZYu3uLKD2CINeQ/w98+vfgz3cgtGWrGMsC5RrKq89ot+VOWvMb0lC
+	 oPEnc6lhe0cNZQv1ye+GGXfhYZWXMMGSAax3qAwOS8oBU1pUTY966KxeNM9w1TyDS2
+	 yeUXot3yn2qSi3RUxKR8d9gFbjp0fkkd9R0hChCS4/kwtco64b+xFebNDmmfkM0IMR
+	 YfonO2tOHlgzZdo8yc8sCsgYUsqyRueRa7VwZSRlpa29UJMy5CsRLvKoc5Sc29+w7L
+	 bHViJg9LLz21g==
 From: Roger Quadros <rogerq@kernel.org>
-Date: Mon, 10 Feb 2025 16:52:15 +0200
-Subject: [PATCH net 1/3] net: ethernet: ti: am65-cpsw: fix memleak in
- certain XDP cases
+Date: Mon, 10 Feb 2025 16:52:16 +0200
+Subject: [PATCH net 2/3] net: ethernet: ti: am65-cpsw: fix RX & TX
+ statistics for XDP_TX case
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -53,7 +53,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250210-am65-cpsw-xdp-fixes-v1-1-ec6b1f7f1aca@kernel.org>
+Message-Id: <20250210-am65-cpsw-xdp-fixes-v1-2-ec6b1f7f1aca@kernel.org>
 References: <20250210-am65-cpsw-xdp-fixes-v1-0-ec6b1f7f1aca@kernel.org>
 In-Reply-To: <20250210-am65-cpsw-xdp-fixes-v1-0-ec6b1f7f1aca@kernel.org>
 To: Andrew Lunn <andrew+netdev@lunn.ch>, 
@@ -67,109 +67,83 @@ Cc: danishanwar@ti.com, s-vadapalli@ti.com, srk@ti.com,
  netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
  Roger Quadros <rogerq@kernel.org>
 X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2991; i=rogerq@kernel.org;
- h=from:subject:message-id; bh=P2BvZfapl8SmRLSM8MJDVRi7Xewr105bmnDY2wj9fKY=;
- b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBnqhKizQ8izCA0GIpx7TxLLwJmjawOHkmFQ8EJA
- n+3TDc+tXaJAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZ6oSogAKCRDSWmvTvnYw
- kybpD/9e7yy9viq0JZrLr/Rw/n7xLj+mV6YfSvh2rJvCIKubZ4dNl9Ng5/r3OQ9o0fNGrbWsF/o
- yfRa4Wx6jtxEjq/BO6zvepjUzd7eVPGi7uY/k24LzlqMtMJHJ48B17JaIwbXGOruPFTeubp1FoM
- Bocpyh3KqL4rgYLq0TAJ0Xo8uTbu55GREpgIfTrVvc16JXv1Itg09gIAjFQL6dMT5MBaxDKwQFG
- mVOcSOsUI4Ql585QVRCWdV8AHRJ3gGxplmL1a/J+d7qvtQgXbyzQNmNMBMXXomOtO8YIWINQ0h0
- fxj6OBh01qi0AzDmXwJAtcec2BxpmFVG5q1jfEQZ8NiQON8cdNSW5Gq/+XRdHWdwGjM2m/H+OLD
- /Wv7rKHdZTh0kgW1hNotDjERrx+qyyr62ciO5W1tkfb9qLTnrx45H+kZV2IUaIP7ynHIxCvZaku
- gzcJ+MoJnFX4Ys8TwtKS7xZLhzqlUwz3Zl72070tc4NjOKIxFaccx8jWKhM2emW+RB15p43xxYQ
- G3eqekjTaH6zshyFiF4+Nh5ckIQNb+kYOoT/QsjAqAvgQiWRs7fJ/0I07Fc01XY/EOL0i8jHN+i
- 8KYLWd62PDVVUn4JJF0AUxtBKA9dTrRD4YMYXzjrw39Vm5ZJw/Qz6VDLRWhgydwdGNMwUeKQZGE
- V0wMW7Iy90CKW7w==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1990; i=rogerq@kernel.org;
+ h=from:subject:message-id; bh=lncTpqRYnczSkh5p/M+nCdG+y49YXkzek6zKzkRyYvI=;
+ b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBnqhKi4MYM1qAWQ/XNJhpMHhpMX/8HUSd1n1jKn
+ ZGAkOTZkleJAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZ6oSogAKCRDSWmvTvnYw
+ k6TnD/9IaCfbKplT9k8Nm/4UtuCKaGAFBtKLfdgPjexNjUZBA9vvfR6X8DsLsCs3FqE6+vFV5VW
+ 1AbNNnRzAeI/JOf+d0FvJTzKuXF18sKTP8MuOwgWjuXYS+o1ct8BDD3Z2F7WUXRhpwPMTv4hj01
+ a/tzI0w3ZOPzK6Z5YmnjP1urqPbup032Sng7geG+PdK9NjREX2YwHiTLfpxsBrwCTkNMt9j+MUu
+ w2EuzZuKHVw8f6nQ0xw5Sl24guCeEneu8vQlC+EuyZ9ENAWgHI2rL2cJzoS4PyFlEul7CW8aUdc
+ +rK5udQUy3zYWNqqcyjIxrF1jDwY/WDMHQuhMhUE5d+rqTbSys959wBgX59thA1iF+czlUl3Utt
+ fteRXPkJgMjDdo9JO/z36/43Y/2gisVrNxOvW9IDKA1LzfcvsSwJ2jSrrxHB5SEQMLR8yFBjW1/
+ eimiTkNBaloKBrpRsIm/nHm92t2LTXsiESchxTz/z3xrvIQX3x/jBLYvDpQLHJ2ENhN06wyyCQ5
+ wE4nziW71Ha8xPOHNk85+iyui2fA58rh5viyw7uQ8pE1tZq1kryMTW/birNviUoOPnwiXJCMag6
+ 4nUX+/a/DGwuEl3WhW6U/ONil3lp7C/k/yXBco1MpxfNLBytIqRsfbnXeX8Kh8AoJTm4HnO9qSw
+ KAHraiR/xuU2PFg==
 X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
  fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
 
-If the XDP program doesn't result in XDP_PASS then we leak the
-memory allocated by am65_cpsw_build_skb().
+For successful XDP_TX and XDP_REDIRECT cases, the packet was received
+successfully so update RX statistics. Use original received
+packet length for that.
 
-It is pointless to allocate SKB memory before running the XDP
-program as we would be wasting CPU cycles for cases other than XDP_PASS.
-Move the SKB allocation after evaluating the XDP program result.
+TX packets statistics are incremented on TX completion so don't
+update it while TX queueing.
 
-This fixes the memleak. A performance boost is seen for XDP_DROP test.
+If xdp_convert_buff_to_frame() fails, increment tx_dropped.
 
-XDP_DROP test:
-Before: 460256 rx/s                  0 err/s
-After:  784130 rx/s                  0 err/s
-
-Fixes: 8acacc40f733 ("net: ethernet: ti: am65-cpsw: Add minimal XDP support")
 Signed-off-by: Roger Quadros <rogerq@kernel.org>
+Fixes: 8acacc40f733 ("net: ethernet: ti: am65-cpsw: Add minimal XDP support")
 ---
- drivers/net/ethernet/ti/am65-cpsw-nuss.c | 26 ++++++++++++--------------
- 1 file changed, 12 insertions(+), 14 deletions(-)
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index b663271e79f7..e26c6dc02648 100644
+index e26c6dc02648..bee2d66b9ccf 100644
 --- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
 +++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -842,7 +842,8 @@ static void am65_cpsw_nuss_tx_cleanup(void *data, dma_addr_t desc_dma)
+@@ -1170,9 +1170,11 @@ static int am65_cpsw_run_xdp(struct am65_cpsw_rx_flow *flow,
+ 	struct xdp_frame *xdpf;
+ 	struct bpf_prog *prog;
+ 	struct page *page;
++	int pkt_len;
+ 	u32 act;
+ 	int err;
  
- static struct sk_buff *am65_cpsw_build_skb(void *page_addr,
- 					   struct net_device *ndev,
--					   unsigned int len)
-+					   unsigned int len,
-+					   unsigned int headroom)
- {
- 	struct sk_buff *skb;
++	pkt_len = *len;
+ 	prog = READ_ONCE(port->xdp_prog);
+ 	if (!prog)
+ 		return AM65_CPSW_XDP_PASS;
+@@ -1190,8 +1192,10 @@ static int am65_cpsw_run_xdp(struct am65_cpsw_rx_flow *flow,
+ 		netif_txq = netdev_get_tx_queue(ndev, tx_chn->id);
  
-@@ -852,7 +853,7 @@ static struct sk_buff *am65_cpsw_build_skb(void *page_addr,
- 	if (unlikely(!skb))
- 		return NULL;
+ 		xdpf = xdp_convert_buff_to_frame(xdp);
+-		if (unlikely(!xdpf))
++		if (unlikely(!xdpf)) {
++			ndev->stats.tx_dropped++;
+ 			goto drop;
++		}
  
--	skb_reserve(skb, AM65_CPSW_HEADROOM);
-+	skb_reserve(skb, headroom);
- 	skb->dev = ndev;
+ 		__netif_tx_lock(netif_txq, cpu);
+ 		err = am65_cpsw_xdp_tx_frame(ndev, tx_chn, xdpf,
+@@ -1200,14 +1204,14 @@ static int am65_cpsw_run_xdp(struct am65_cpsw_rx_flow *flow,
+ 		if (err)
+ 			goto drop;
  
- 	return skb;
-@@ -1277,7 +1278,7 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_rx_flow *flow,
- 	u32 flow_idx = flow->id;
- 	struct sk_buff *skb;
- 	struct xdp_buff	xdp;
--	int headroom, ret;
-+	int headroom = AM65_CPSW_HEADROOM, ret;
- 	void *page_addr;
- 	u32 *psdata;
+-		dev_sw_netstats_tx_add(ndev, 1, *len);
++		dev_sw_netstats_rx_add(ndev, pkt_len);
+ 		ret = AM65_CPSW_XDP_CONSUMED;
+ 		goto out;
+ 	case XDP_REDIRECT:
+ 		if (unlikely(xdp_do_redirect(ndev, xdp, prog)))
+ 			goto drop;
  
-@@ -1315,16 +1316,8 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_rx_flow *flow,
- 	dev_dbg(dev, "%s rx csum_info:%#x\n", __func__, csum_info);
- 
- 	dma_unmap_single(rx_chn->dma_dev, buf_dma, buf_dma_len, DMA_FROM_DEVICE);
--
- 	k3_cppi_desc_pool_free(rx_chn->desc_pool, desc_rx);
- 
--	skb = am65_cpsw_build_skb(page_addr, ndev,
--				  AM65_CPSW_MAX_PACKET_SIZE);
--	if (unlikely(!skb)) {
--		new_page = page;
--		goto requeue;
--	}
--
- 	if (port->xdp_prog) {
- 		xdp_init_buff(&xdp, PAGE_SIZE, &port->xdp_rxq[flow->id]);
- 		xdp_prepare_buff(&xdp, page_addr, AM65_CPSW_HEADROOM,
-@@ -1334,9 +1327,14 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_rx_flow *flow,
- 		if (*xdp_state != AM65_CPSW_XDP_PASS)
- 			goto allocate;
- 
--		/* Compute additional headroom to be reserved */
--		headroom = (xdp.data - xdp.data_hard_start) - skb_headroom(skb);
--		skb_reserve(skb, headroom);
-+		headroom = xdp.data - xdp.data_hard_start;
-+	}
-+
-+	skb = am65_cpsw_build_skb(page_addr, ndev,
-+				  AM65_CPSW_MAX_PACKET_SIZE, headroom);
-+	if (unlikely(!skb)) {
-+		new_page = page;
-+		goto requeue;
- 	}
- 
- 	ndev_priv = netdev_priv(ndev);
+-		dev_sw_netstats_rx_add(ndev, *len);
++		dev_sw_netstats_rx_add(ndev, pkt_len);
+ 		ret = AM65_CPSW_XDP_REDIRECT;
+ 		goto out;
+ 	default:
 
 -- 
 2.34.1
