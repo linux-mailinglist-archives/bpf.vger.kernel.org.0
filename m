@@ -1,224 +1,95 @@
-Return-Path: <bpf+bounces-50936-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50937-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 505E9A2E77C
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 10:20:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F1EAA2E7B7
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 10:32:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F17331668D7
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 09:20:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 352E23A8C1D
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 09:32:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CA541C1F08;
-	Mon, 10 Feb 2025 09:19:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E917C15B543;
+	Mon, 10 Feb 2025 09:31:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rr20On+J"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Lj6juPHd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 444FA19D072;
-	Mon, 10 Feb 2025 09:19:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 715BB1C1F3B;
+	Mon, 10 Feb 2025 09:31:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739179191; cv=none; b=o+520OIQnI2htSyY3+pDkEdnCOe9YGBdTPxvQGae9GIts6E3t+dby/uSBuylxvPn4kUqn37W4Fu4ZJHpZgknEyFGT+trYF0zBGqRADUHASRQCIsIkyBp9+sqc9S2NTZ+9slIv8ObPiH2uxBRPM1eLTrslUCXFz4p1/7fq6KI9cQ=
+	t=1739179897; cv=none; b=TuHH5IzXn59csZ7EfpgffTRSfo2VyPkrv28g8Qn5DPNFfDUdq1apXpmpjjyG3pNRs8kDsjR9Sxrw+EalqrhiOrH+CPtXL7JYXhCI0w5abkDZCRaB0jlwF1X7sGwua8UJeW8p6aguYF+e8U8WhsXeTYV30cpC0ufy1VOpwd3ciTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739179191; c=relaxed/simple;
-	bh=HAv8mkXs22nJ9qO9Ygj1yVJPwqs0ZDo+F21aqZ7BJFE=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AMMahfBOMqhCUhNPAP9YAMpU4bGIvbhfLqjE6tuhZbCsDTyS4QVV2t3NcZEBkNC18CMgrHglKDSfniNIlpCrqj91m9CHCRxPskQGabVC1zTJYQd+asoyN0X/WkpRrIoBXh79cemHd8lcd9AKzWZ51E8LIql836rlX9KbOslzJa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rr20On+J; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-43618283dedso40533565e9.3;
-        Mon, 10 Feb 2025 01:19:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739179187; x=1739783987; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SUqRsgayv98ELGejV6zmw9ZnEwHxjQ0BZzJqfeUUpT8=;
-        b=Rr20On+JdJMM/zcnOLkNBZA7ufl1OcUgi4gzbNxAd/jEftC6zukbBQKrVwzvWI+uag
-         VAOrpi4hqamfFatm61Aew8RdqLZBdUnCGGrbpH8hq/Nllk2T05R4PHKYBvdW8flokwlx
-         xifV6AcxY5BIH/ZFi91Glyy0QX0UKXKbzi+BFI0DvZoaumrCOcuV6Z+Qho72yLI2/TC5
-         j/2OSLCunHA8WMsthHrP84miLvCkG3K9DA85bWmdivVnJyrtGHsYVpsI1bBg1oxMsiwX
-         HM6P880Udw8Xhh9pPFN9s3KcAbnPB3nWhrWwvHwiqKPC9G0Mm0HfjginnWR6KZUKTt8i
-         FSEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739179187; x=1739783987;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SUqRsgayv98ELGejV6zmw9ZnEwHxjQ0BZzJqfeUUpT8=;
-        b=SI5HIO2s8osXGe0uJOFvkxXBcliZQr7wloaGLZJWleO3PFL3aS3jrFDIg6F+lHeqar
-         qX60rKvlYuL/6fNRt0IYcL5zppKmyZDwlraNNVG/UgYNufVhDSJ69WGlSCwwkzGht/2Y
-         AKPCqCXvgKRz7AkHRnc6uI6ju+k0xc942qmK69knCu8IZ30e/FIb6xhN79mq090AM7OM
-         Y8Or3lkL5uwSA6A0bK5jtR0MHF23BmDh+/+lgConHNvg9PNtkpfbzY/0CF+ErpdMUZ/N
-         Z1LfIhOlbl5gMJM9x/zgRRJdNMnN/e/2L7Wwgst18Pv+j6r4RJWRDrvwV1CM0DeLg0ot
-         aJhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWHs9q3ETMZUXGtEfNRjpWbf1gKMqXb6VhCHxEgsJP6pSWgCPcOCJtnXAXDh+/sLZ2pduN+hN31s246l50=@vger.kernel.org, AJvYcCXMVDb9iw3W7JUh6v5Ebuzcn0F7VbCV/MdKrp5zbiPXhsnNACJ9oUWbsUIQLhMf0u6eLy8mrURNkQV37k8EJaq3@vger.kernel.org
-X-Gm-Message-State: AOJu0YyLvuVnblyAwFKmiK/8HJBN7sfyxfbMXipwTdEh86FqbSSdN22F
-	5tE/hKHN/PvkHT40Peyn5ZACWbdUBxBf11i+o7QKldMWgyHsX9L6
-X-Gm-Gg: ASbGncs+KGnfiXlH0pSNw439HMnjJSH7T6LXL6bUpNkTngoqrqby/3BxULH747hr6Ex
-	7hp5FGW/DcWkiRiUkLYWf1E/rSSvcn/eF5JRdCrvLZWnfnG0bbQio/NJ86EGzqWGkK5NHyz36v0
-	dEYvuJdml5B78P+v/gFmL4RM12j3ZYR/+EFjsfi1nuZfjL4F4vPeXmzwIs/R4sCR014CepsEbIX
-	dx69r0dNoO1ck4xblMjcIimvJry8r4FhOd8ESltCmgvCKmRUw5Xerqtwvkg818fOr7OCL21uxp1
-	Cg==
-X-Google-Smtp-Source: AGHT+IGNHvLL2+ZUcGcgn9qFHqbaFk1iBN1I2yhBLhXj6vo3pWLFrd2eocJ5X3XFyAArm5ulZ3axKA==
-X-Received: by 2002:a05:600c:3c87:b0:438:c18c:5ad8 with SMTP id 5b1f17b1804b1-439249d189cmr103632795e9.31.1739179187157;
-        Mon, 10 Feb 2025 01:19:47 -0800 (PST)
-Received: from krava ([173.38.220.45])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4390daf3c70sm174197545e9.26.2025.02.10.01.19.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Feb 2025 01:19:46 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 10 Feb 2025 10:19:44 +0100
-To: Yan Zhai <yan@cloudflare.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
+	s=arc-20240116; t=1739179897; c=relaxed/simple;
+	bh=pXGxIo5hn5kOmvtAgHj2x3TMkl0BfhjgSsLMST5UZsk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fqVG7DboH7qPW5AoSPQd+EnAm1tONwjXlEI+lmWH5PpY158h/TXdCsyLM1AQJbTdeSQ2lwrKk9B6G1IuXtr4Msn3Qrg9eFSCEcTc+dht/3v5mXaqIRD4Phy3OqDge5CZiEBZXZt0x7EuON6JZlFjtBDGh2qbNLv7bAqdoCeuJnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Lj6juPHd; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=Csho2nHTJojR4kG1I27uhgWuIKghIgeeXA2mkBpOoks=; b=Lj6juPHdtwNkVoknQTMeTyGjbu
+	ESHY2wLJ/UG7qaJrJI1BNxOOU3YcTaJkDbs7PsZpK6Q0TMFnGr6Bf8zIGMDCPYxeYMYejSgboF2lc
+	xTArcGjyj21uefzndwThQM3TUxqVT9PECXaZcsu7uhVzU74aBVdGvt3afMR88sZexWiq+0Ka2MYPi
+	SQl46T8AvehS2MoevhlPLsiqPU/sFgJ//oneCsEjkJfrvZyVMTyp8St6+GDOvqpv5uaNn8XnK8om1
+	jnljKIpjGo9sAxVyoX/V0WJvJnsndn2PYoj5eslhh+872qTWAxgH+xryS1HN6v6aB/CItLPrY8YrC
+	fEy10S6w==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1thQ8W-000000006lL-1e85;
+	Mon, 10 Feb 2025 09:31:28 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id EE9B43003E1; Mon, 10 Feb 2025 10:31:27 +0100 (CET)
+Date: Mon, 10 Feb 2025 10:31:27 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Will Deacon <will@kernel.org>, Waiman Long <llong@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>, Brian Vazquez <brianvv@google.com>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	kernel-team@cloudflare.com, Hou Tao <houtao@huaweicloud.com>
-Subject: Re: [PATCH v3 bpf 1/2] bpf: skip non exist keys in
- generic_map_lookup_batch
-Message-ID: <Z6nEsGSbWqCSaVp3@krava>
-References: <cover.1739171594.git.yan@cloudflare.com>
- <85618439eea75930630685c467ccefeac0942e2b.1739171594.git.yan@cloudflare.com>
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
+	Barret Rhoden <brho@google.com>, Josh Don <joshdon@google.com>,
+	Dohyun Kim <dohyunkim@google.com>,
+	linux-arm-kernel@lists.infradead.org, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next v2 00/26] Resilient Queued Spin Lock
+Message-ID: <20250210093127.GD10324@noisy.programming.kicks-ass.net>
+References: <20250206105435.2159977-1-memxor@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <85618439eea75930630685c467ccefeac0942e2b.1739171594.git.yan@cloudflare.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250206105435.2159977-1-memxor@gmail.com>
 
-On Sun, Feb 09, 2025 at 11:22:35PM -0800, Yan Zhai wrote:
-> The generic_map_lookup_batch currently returns EINTR if it fails with
-> ENOENT and retries several times on bpf_map_copy_value. The next batch
-> would start from the same location, presuming it's a transient issue.
-> This is incorrect if a map can actually have "holes", i.e.
-> "get_next_key" can return a key that does not point to a valid value. At
-> least the array of maps type may contain such holes legitly. Right now
-> these holes show up, generic batch lookup cannot proceed any more. It
-> will always fail with EINTR errors.
-> 
-> Rather, do not retry in generic_map_lookup_batch. If it finds a non
-> existing element, skip to the next key. This simple solution comes with
-> a price that transient errors may not be recovered, and the iteration
-> might cycle back to the first key under parallel deletion. For example,
+On Thu, Feb 06, 2025 at 02:54:08AM -0800, Kumar Kartikeya Dwivedi wrote:
 
-probably stupid question, but why not keep the retry logic and when
-it fails then instead of returning EINTR just jump to the next key
+> Additionally, eBPF programs attached to different parts of the kernel
+> can introduce new control flow into the kernel, which increases the
+> likelihood of deadlocks in code not written to handle reentrancy. There
+> have been multiple syzbot reports surfacing deadlocks in internal kernel
+> code due to the diverse ways in which eBPF programs can be attached to
+> different parts of the kernel.  By switching the BPF subsystem’s lock
+> usage to rqspinlock, all of these issues can be mitigated at runtime.
 
-jirka
+Only if the called stuff is using this new lock. IIRC we've had a number
+of cases where eBPF was used to tie together 'normal' kernel functions
+in a way that wasn't sound. You can't help there.
 
-
-> Hou Tao <houtao@huaweicloud.com> pointed out a following scenario:
-> 
-> For LPM trie map:
-> (1) ->map_get_next_key(map, prev_key, key) returns a valid key
-> 
-> (2) bpf_map_copy_value() return -ENOMENT
-> It means the key must be deleted concurrently.
-> 
-> (3) goto next_key
-> It swaps the prev_key and key
-> 
-> (4) ->map_get_next_key(map, prev_key, key) again
-> prev_key points to a non-existing key, for LPM trie it will treat just
-> like prev_key=NULL case, the returned key will be duplicated.
-> 
-> With the retry logic, the iteration can continue to the key next to the
-> deleted one. But if we directly skip to the next key, the iteration loop
-> would restart from the first key for the lpm_trie type.
-> 
-> However, not all races may be recovered. For example, if current key is
-> deleted after instead of before bpf_map_copy_value, or if the prev_key
-> also gets deleted, then the loop will still restart from the first key
-> for lpm_tire anyway. For generic lookup it might be better to stay
-> simple, i.e. just skip to the next key. To guarantee that the output
-> keys are not duplicated, it is better to implement map type specific
-> batch operations, which can properly lock the trie and synchronize with
-> concurrent mutators.
-> 
-> Fixes: cb4d03ab499d ("bpf: Add generic support for lookup batch op")
-> Closes: https://lore.kernel.org/bpf/Z6JXtA1M5jAZx8xD@debian.debian/
-> Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> Acked-by: Hou Tao <houtao1@huawei.com>
-> ---
-> v2->v3: deleted a used macro
-> v1->v2: incorporate more useful information inside commit message.
-> ---
->  kernel/bpf/syscall.c | 18 +++++-------------
->  1 file changed, 5 insertions(+), 13 deletions(-)
-> 
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index c420edbfb7c8..e5f1c7fd0ba7 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -1968,8 +1968,6 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
->  	return err;
->  }
->  
-> -#define MAP_LOOKUP_RETRIES 3
-> -
->  int generic_map_lookup_batch(struct bpf_map *map,
->  				    const union bpf_attr *attr,
->  				    union bpf_attr __user *uattr)
-> @@ -1979,8 +1977,8 @@ int generic_map_lookup_batch(struct bpf_map *map,
->  	void __user *values = u64_to_user_ptr(attr->batch.values);
->  	void __user *keys = u64_to_user_ptr(attr->batch.keys);
->  	void *buf, *buf_prevkey, *prev_key, *key, *value;
-> -	int err, retry = MAP_LOOKUP_RETRIES;
->  	u32 value_size, cp, max_count;
-> +	int err;
->  
->  	if (attr->batch.elem_flags & ~BPF_F_LOCK)
->  		return -EINVAL;
-> @@ -2026,14 +2024,8 @@ int generic_map_lookup_batch(struct bpf_map *map,
->  		err = bpf_map_copy_value(map, key, value,
->  					 attr->batch.elem_flags);
->  
-> -		if (err == -ENOENT) {
-> -			if (retry) {
-> -				retry--;
-> -				continue;
-> -			}
-> -			err = -EINTR;
-> -			break;
-> -		}
-> +		if (err == -ENOENT)
-> +			goto next_key;
->  
->  		if (err)
->  			goto free_buf;
-> @@ -2048,12 +2040,12 @@ int generic_map_lookup_batch(struct bpf_map *map,
->  			goto free_buf;
->  		}
->  
-> +		cp++;
-> +next_key:
->  		if (!prev_key)
->  			prev_key = buf_prevkey;
->  
->  		swap(prev_key, key);
-> -		retry = MAP_LOOKUP_RETRIES;
-> -		cp++;
->  		cond_resched();
->  	}
->  
-> -- 
-> 2.39.5
-> 
-> 
+As an example, eBPF calling strncpy_from_user(), which ends up in fault
+injection and badness happens -- this has been since fixed, but still.
 
