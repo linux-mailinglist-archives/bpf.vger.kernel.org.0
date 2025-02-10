@@ -1,64 +1,64 @@
-Return-Path: <bpf+bounces-50943-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-50945-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1809DA2E848
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 10:53:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E588A2E856
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 10:55:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CA8918874AD
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 09:53:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0734B16739E
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2025 09:55:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54DD21C549F;
-	Mon, 10 Feb 2025 09:53:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 885D41C5F29;
+	Mon, 10 Feb 2025 09:54:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fxyEoupx"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZoCYTq3D"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36B911C3C01;
-	Mon, 10 Feb 2025 09:53:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73A551C4A0E;
+	Mon, 10 Feb 2025 09:54:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739181213; cv=none; b=GXj2jZXy/C6w0AyKgPiAMmavY8GFc1txq9dIOva53iZvCzr1e7FqxpBEjFoUAtM5mHZBj1YZnYXJGWRkXo5mmReG+oMxVmgV1R6OJQt6ws5KXiwPQi2AV+X/XJxSccFGowYfPebN76JKJob+axzmxubGVssf+1wAAzYAwdYgi24=
+	t=1739181286; cv=none; b=lMzv1kiJsKJPDr52rzeyB0LdQ18y1sO3xPZ+lqMkWXyE72rtn+XcZEDPRoibNLFKJBOxmW26X5Fl3CkB7NC3Y3MExJbz33J0qIeeijVvwOqDb83jf4w6lqXq1u78MmxGTww56wqf0JVqey5jgovBxvE2U3fWLOWHXEw61cuZNhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739181213; c=relaxed/simple;
-	bh=Cs4DIpiDZFbONHrR/b3pzJ9QiKq0CYJfxV6A+hW40Tk=;
+	s=arc-20240116; t=1739181286; c=relaxed/simple;
+	bh=ho9n3VcfJkszLgQBZ71Nls4seClP+D2Y17joOZ6Dau0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EbK8icaDTpLMOC3qYr20NyAXHIEQokhNRaQMDWi+CNXHbxtVtX56ir4D14f2YNsuHzf6vibeAzxQ+KhOZ1MturgJQWLgYErrYdvqWn7Fg9ecU70iw9s0EmGjgp5sk/Vre7Hy8Wxfw9rVtSJjKpfaOj7JYmtqAGKTqajv4U2NYbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fxyEoupx; arc=none smtp.client-ip=198.175.65.15
+	 Content-Type:Content-Disposition:In-Reply-To; b=exkExM+CTYGiWaYNysdhV5vpqD/AlePoP7su3MAm7xj4QZYXGTZXMZyupadp1KsoeyNf3so/DEkivwvG7d3CwvyJOe06xtqW3j8VdlJpttBsyZWpq+03KCPPlcryjAv3fGBjfDkYXe9nlsiEBHjTbJSGsDsdteYCc9N/p5+5s48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZoCYTq3D; arc=none smtp.client-ip=192.198.163.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1739181213; x=1770717213;
+  t=1739181284; x=1770717284;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=Cs4DIpiDZFbONHrR/b3pzJ9QiKq0CYJfxV6A+hW40Tk=;
-  b=fxyEoupx4fA85MGKyd2pTKekjRTlCeRH1ZHoahsYpwz50pgOOvzSbERv
-   ZvAlnLItE2AEWT9br+5eoCobhKwbRgyFWE1cYuMiRNnIE2sW3tscfq8VF
-   bV6vSBY0j4aXp1HHCxtHgh478t8VzkVCPwZ/Pq6MaDe4KnCovtjsRMSbZ
-   4lezSgboFXguynMSiVXaveoDrtt4WAMXdFFI8M8pOaFtjQIWAYHhwVp4x
-   7SphqXc/qsoRZKoDI+nodDn3lgaMuImrlZCj+ZHl4s30Fu+3tLLrvCVNK
-   EysqYnNE9XkwC3F4v0TQ2GuFEjbz9Ug+qUwmr8t0Fnw8Vo+ZSSMs4W2oE
-   w==;
-X-CSE-ConnectionGUID: ag4Sww0XQZSC4tI1SJVJ5g==
-X-CSE-MsgGUID: Tl7OP7tQQV6YZPA8XXXGxw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11340"; a="43414892"
+  bh=ho9n3VcfJkszLgQBZ71Nls4seClP+D2Y17joOZ6Dau0=;
+  b=ZoCYTq3D2HtrRlS1qjz1lnrEIUUlggNsCdARqjSzAwBiZuL51ncOn7mW
+   bu3zCQ9/KtvZPkvaAjt9siLd8BzZ317djkS751SZeV6NTHp5HaPoii9Y8
+   xNqOQvorZbx9Ptz/aTJ5IrHzmswrRqh9eM+pJIw7jjBjKNZvVOuC6wdqO
+   Phzj6KlZHOxgtqhZAvwyfoAQ6hrLAtu2//QvsbtbGk5rEkjoNbfd2qpFQ
+   kTzYyoUmEqtaez7opa7PjgJFTO5axlxlUBkbPBTwMBM3VXnuA5L8sJBly
+   qZP1eBXbeDobwsjPF2gGmzwt02oWHcZCROPON1QEBPNvkeNI1OOSA6tpR
+   A==;
+X-CSE-ConnectionGUID: 3ciKh5CGQy+TqSzQO75toQ==
+X-CSE-MsgGUID: rriZIlVATjKobi0U4tgHvQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11340"; a="50392912"
 X-IronPort-AV: E=Sophos;i="6.13,274,1732608000"; 
-   d="scan'208";a="43414892"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2025 01:53:31 -0800
-X-CSE-ConnectionGUID: k8qiI+q8Tpa/U0n5AhEbdQ==
-X-CSE-MsgGUID: Km2MynZTS2S3HcHczkCaFw==
+   d="scan'208";a="50392912"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2025 01:54:43 -0800
+X-CSE-ConnectionGUID: suYm/ui8Qh6NIvYsBsUajg==
+X-CSE-MsgGUID: x2SrYlPpQQyEY6kS13ph6w==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="117077825"
+X-IronPort-AV: E=Sophos;i="6.13,274,1732608000"; 
+   d="scan'208";a="111977801"
 Received: from mev-dev.igk.intel.com ([10.237.112.144])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2025 01:53:24 -0800
-Date: Mon, 10 Feb 2025 10:49:49 +0100
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2025 01:54:38 -0800
+Date: Mon, 10 Feb 2025 10:51:02 +0100
 From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
 To: Tariq Toukan <tariqt@nvidia.com>
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -78,12 +78,12 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	Richard Cochran <richardcochran@gmail.com>,
 	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
 	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	William Tu <witu@nvidia.com>, Bodong Wang <bodong@nvidia.com>
-Subject: Re: [PATCH net-next 07/15] net/mlx5e: reduce rep rxq depth to 256
- for ECPF
-Message-ID: <Z6nLtN5rn68kY4i0@mev-dev.igk.intel.com>
+	William Tu <witu@nvidia.com>, Daniel Jurgens <danielj@nvidia.com>
+Subject: Re: [PATCH net-next 08/15] net/mlx5e: set the tx_queue_len for
+ pfifo_fast
+Message-ID: <Z6nMBi26yyFjQQJK@mev-dev.igk.intel.com>
 References: <20250209101716.112774-1-tariqt@nvidia.com>
- <20250209101716.112774-8-tariqt@nvidia.com>
+ <20250209101716.112774-9-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -92,72 +92,39 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250209101716.112774-8-tariqt@nvidia.com>
+In-Reply-To: <20250209101716.112774-9-tariqt@nvidia.com>
 
-On Sun, Feb 09, 2025 at 12:17:08PM +0200, Tariq Toukan wrote:
+On Sun, Feb 09, 2025 at 12:17:09PM +0200, Tariq Toukan wrote:
 > From: William Tu <witu@nvidia.com>
 > 
-> By experiments, a single queue representor netdev consumes kernel
-> memory around 2.8MB, and 1.8MB out of the 2.8MB is due to page
-> pool for the RXQ. Scaling to a thousand representors consumes 2.8GB,
-> which becomes a memory pressure issue for embedded devices such as
-> BlueField-2 16GB / BlueField-3 32GB memory.
-> 
-> Since representor netdevs mostly handles miss traffic, and ideally,
-> most of the traffic will be offloaded, reduce the default non-uplink
-> rep netdev's RXQ default depth from 1024 to 256 if mdev is ecpf eswitch
-> manager. This saves around 1MB of memory per regular RQ,
-> (1024 - 256) * 2KB, allocated from page pool.
-> 
-> With rxq depth of 256, the netlink page pool tool reports
-> $./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
-> 	 --dump page-pool-get
->  {'id': 277,
->   'ifindex': 9,
->   'inflight': 128,
->   'inflight-mem': 786432,
->   'napi-id': 775}]
-> 
-> This is due to mtu 1500 + headroom consumes half pages, so 256 rxq
-> entries consumes around 128 pages (thus create a page pool with
-> size 128), shown above at inflight.
-> 
-> Note that each netdev has multiple types of RQs, including
-> Regular RQ, XSK, PTP, Drop, Trap RQ. Since non-uplink representor
-> only supports regular rq, this patch only changes the regular RQ's
-> default depth.
+> By default, the mq netdev creates a pfifo_fast qdisc. On a
+> system with 16 core, the pfifo_fast with 3 bands consumes
+> 16 * 3 * 8 (size of pointer) * 1024 (default tx queue len)
+> = 393KB. The patch sets the tx qlen to representor default
+> value, 128 (1<<MLX5E_REP_PARAMS_DEF_LOG_SQ_SIZE), which
+> consumes 16 * 3 * 8 * 128 = 49KB, saving 344KB for each
+> representor at ECPF.
 > 
 > Signed-off-by: William Tu <witu@nvidia.com>
-> Reviewed-by: Bodong Wang <bodong@nvidia.com>
-> Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
+> Reviewed-by: Daniel Jurgens <danielj@nvidia.com>
 > Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 > ---
->  drivers/net/ethernet/mellanox/mlx5/core/en_rep.c | 3 +++
->  1 file changed, 3 insertions(+)
+>  drivers/net/ethernet/mellanox/mlx5/core/en_rep.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-> index fdff9fd8a89e..da399adc8854 100644
+> index da399adc8854..07f38f472a27 100644
 > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
 > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-> @@ -65,6 +65,7 @@
->  #define MLX5E_REP_PARAMS_DEF_LOG_SQ_SIZE \
->  	max(0x7, MLX5E_PARAMS_MINIMUM_LOG_SQ_SIZE)
->  #define MLX5E_REP_PARAMS_DEF_NUM_CHANNELS 1
-> +#define MLX5E_REP_PARAMS_DEF_LOG_RQ_SIZE 0x8
+> @@ -889,6 +889,8 @@ static void mlx5e_build_rep_netdev(struct net_device *netdev,
+>  	netdev->ethtool_ops = &mlx5e_rep_ethtool_ops;
 >  
->  static const char mlx5e_rep_driver_name[] = "mlx5e_rep";
+>  	netdev->watchdog_timeo    = 15 * HZ;
+> +	if (mlx5_core_is_ecpf(mdev))
+> +		netdev->tx_queue_len = 1 << MLX5E_REP_PARAMS_DEF_LOG_SQ_SIZE;
 >  
-> @@ -855,6 +856,8 @@ static void mlx5e_build_rep_params(struct net_device *netdev)
->  
->  	/* RQ */
->  	mlx5e_build_rq_params(mdev, params);
-> +	if (!mlx5e_is_uplink_rep(priv) && mlx5_core_is_ecpf(mdev))
-> +		params->log_rq_mtu_frames = MLX5E_REP_PARAMS_DEF_LOG_RQ_SIZE;
->  
->  	/* If netdev is already registered (e.g. move from nic profile to uplink,
->  	 * RTNL lock must be held before triggering netdev notifiers.
-
-Thanks for detailed commit message.
+>  #if IS_ENABLED(CONFIG_MLX5_CLS_ACT)
+>  	netdev->hw_features    |= NETIF_F_HW_TC;
 
 Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
 
