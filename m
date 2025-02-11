@@ -1,134 +1,187 @@
-Return-Path: <bpf+bounces-51084-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51086-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D8A4A2FF3D
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 01:39:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74C62A2FFBD
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 01:55:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2D3F3A649E
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 00:39:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78DDC1885499
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 00:55:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 294098615A;
-	Tue, 11 Feb 2025 00:39:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B966914AD29;
+	Tue, 11 Feb 2025 00:54:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sxfIxgxv"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xew9GMqb"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D2DD524F;
-	Tue, 11 Feb 2025 00:39:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B9FE3EA98
+	for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 00:54:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739234361; cv=none; b=twjRde47JFh05Cv5PlT2/WjCB4zxhg+Xb7GnOBX2NY9plyth71DOgXureUvVpfQyYN9FU2iX9goaj0P2AH3nJS0G7WxUSyMiLoPSLOPX3dNNEkw0KT1KA2OYo1OkAM5pI+xAYuZ6rRGxldjfY5idTBMKBmobjJGtXqRV1wSzkCs=
+	t=1739235289; cv=none; b=DqFwI7JpUyHclF8nOL5NOcvhUDgjZZf2rUT2UwKmpCE5gPQHTG5xZdRQJfokdDKGRMqDfxkzzvQ547LBkF7XGzjsmDQxF1dHEz4JDnShNLIuYGt1uyhzcG/M9AJ7qEu8Gurp98iJXZrBd8Zr8omfHGSelGg/Lzfey1Y3vYkTvjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739234361; c=relaxed/simple;
-	bh=TMgXkr3cTJRM3MaW/W4X97Rj0sxwJzv7gAxKX00QO1Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UgmBh+G9KekBgvf2p/dkw5zxwakG3KQHtTDBfwD0HGOPwDAG8IXh6pQQNk5GRczLFUvk+/MQ9B2xVx5TCm/TOs3zQf3bqeI1DwPo+CfKV0N8EWqqlP6Ih9kplJdbVPMUyzC/WJ61p6i2QsvjidXioCsogNYzBCNVn1sPU/ixhTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sxfIxgxv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73B1FC4CED1;
-	Tue, 11 Feb 2025 00:39:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739234361;
-	bh=TMgXkr3cTJRM3MaW/W4X97Rj0sxwJzv7gAxKX00QO1Y=;
-	h=From:To:Cc:Subject:Date:From;
-	b=sxfIxgxvhA8w8i81tp/pr+hr3QM2+JGG1brPpQ3oP5nMA2sqjuo8hQ4wpvw2GX3tq
-	 p98c5dLO6f6cU0SCIsTWPckGZP3IiMbgrK90cpaL7gBYbfdmfTR0paX+uYBUAJote3
-	 HOhzFZVfMaVhUYtAukx7TCojSWQcrq87DyrYIUMQvT3wSDYtYdPVI//j1pdIkTlgOs
-	 gSnYGyFegbt5T3nI2Tp37BsPCtN1BrIk734CSdNzOKKO+cxp6FpceAMfVeiNx8ZrUe
-	 JAPdw/5qf29tzhSP1e7eXdM/exH/G/yu7x9D5iIAkal3V89MONweyyD7dG5eZFj3Nq
-	 CY0ls6jhoNw7w==
-From: Masahiro Yamada <masahiroy@kernel.org>
-To: linux-kbuild@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@redhat.com>,
-	Borislav Petkov <bp@suse.de>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	bpf@vger.kernel.org
-Subject: [PATCH] tools: fix annoying "mkdir -p ..." logs when building tools in parallel
-Date: Tue, 11 Feb 2025 09:39:12 +0900
-Message-ID: <20250211003914.1866689-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1739235289; c=relaxed/simple;
+	bh=RZ8eFCh4V/SoIarOEinEaswqTqbkgU8QuFJ1FEXGQGA=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=Ekhj7geXqslKkajrLTHv/7KQjlk8+OREgHRh2CDIuJgUptQ6JTpLbmXWsjEiL6l6JaK5xStzACj8n1X6d7AiVh8TSG2RuD7lmznkAl8WBJG4kq6jeXB+InTkdodWFDUWmqtQ1gQKumBCJpMbDXasgz4RA77ehSXxcjDh6OpHGmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xew9GMqb; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1739235275;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7MPriy2oqUpTiqI5i/JMHT2p0Ii9dY/LdlrCBRZmpjw=;
+	b=xew9GMqbE8xgfZEKcOax9eSSQELiDijA9iX4/o7RWAzh2FD5urcg1Ckw0eT4oaE0/Vdy0Z
+	thqkfNrnWUvFd7y15LAKQN8Ljb0LhHlRH4wHDEJ8A2uSh34mAwN60nWGZ/7A7CWvfXzEmJ
+	q18pvZYn8j7/kOTrKU7g8tQDKcfDM1c=
+Date: Tue, 11 Feb 2025 00:54:33 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Ihor Solodrai" <ihor.solodrai@linux.dev>
+Message-ID: <84a8e6737fca05dd3ec234760f1c77901d915ef9@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH] netfs: Add retry stat counters
+To: "David Howells" <dhowells@redhat.com>
+Cc: dhowells@redhat.com, "Marc Dionne" <marc.dionne@auristor.com>, "Steve 
+ French" <stfrench@microsoft.com>, "Eric Van Hensbergen"
+ <ericvh@kernel.org>, "Latchesar  Ionkov" <lucho@ionkov.net>, "Dominique
+ Martinet" <asmadeus@codewreck.org>, "Christian Schoenebeck"
+ <linux_oss@crudebyte.com>, "Paulo Alcantara" <pc@manguebit.com>, "Jeff
+ Layton" <jlayton@kernel.org>, "Christian Brauner" <brauner@kernel.org>,
+ v9fs@lists.linux.dev, linux-cifs@vger.kernel.org, netfs@lists.linux.dev,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ ast@kernel.org, bpf@vger.kernel.org
+In-Reply-To: <3210864.1739229537@warthog.procyon.org.uk>
+References: <8d8a5d5b00688ea553b106db690e8a01f15b1410@linux.dev>
+ <335ad811ae2cf5ebdfc494c185b9f02e9ca40c3e@linux.dev>
+ <3173328.1738024385@warthog.procyon.org.uk>
+ <3187377.1738056789@warthog.procyon.org.uk>
+ <2986469.1739185956@warthog.procyon.org.uk>
+ <3210864.1739229537@warthog.procyon.org.uk>
+X-Migadu-Flow: FLOW_OUT
 
-When CONFIG_OBJTOOL=y or CONFIG_DEBUG_INFO_BTF=y, parallel builds
-show awkward "mkdir -p ..." logs.
+On 2/10/25 3:18 PM, David Howells wrote:
+> Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
+>
+>> Done. I pushed the logs to the previously mentioned github branch:
+>> https://github.com/kernel-patches/bpf/commit/699a3bb95e2291d877737438f=
+b641628702fd18f
+>
+> Perfect, thanks.
+>
+> Looking at the last record of /proc/fs/netfs/requests, I see:
+>
+> 	REQUEST  OR REF FL ERR  OPS COVERAGE
+> 	=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D =3D=3D=3D =3D=3D =3D=3D=3D=3D =3D=3D=
+=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D
+> 	00000a98 RA   1 2001    0   0 @0000 2000/2000
+>
+> So the request of interest is R=3D00000a98 in the trace.  Grepping for =
+that, I
+> see (with a few columns cut out):
+>
+>  test_progs-no_a-97: netfs_rreq_ref: R=3D00000a98 NEW         r=3D1
+>  test_progs-no_a-97: netfs_read: R=3D00000a98 READAHEAD c=3D00000000 ni=
+=3D2ec02f16 s=3D0 l=3D2000 sz=3D17a8
+>  test_progs-no_a-97: netfs_rreq_ref: R=3D00000a98 GET SUBREQ  r=3D2
+>  test_progs-no_a-97: netfs_sreq: R=3D00000a98[1] DOWN TERM  f=3D192 s=
+=3D0 17a8/17a8 s=3D1 e=3D0
+>  test_progs-no_a-97: netfs_rreq_ref: R=3D00000a98 GET WORK    r=3D3
+>  test_progs-no_a-97: netfs_sreq_ref: R=3D00000a98[1] PUT TERM    r=3D1
+>  test_progs-no_a-97: netfs_rreq_ref: R=3D00000a98 GET SUBREQ  r=3D4
+>  test_progs-no_a-97: netfs_sreq: R=3D00000a98[2] ZERO SUBMT f=3D00 s=3D=
+17a8 0/858 s=3D0 e=3D0
+>     kworker/u8:2-36: netfs_rreq_ref: R=3D00000a98 SEE WORK    r=3D4
+>     kworker/u8:2-36: netfs_rreq: R=3D00000a98 RA COLLECT f=3D2021
+>     kworker/u8:2-36: netfs_sreq: R=3D00000a98[1] DOWN DSCRD f=3D92 s=3D=
+0 17a8/17a8 s=3D1 e=3D0
+>     kworker/u8:2-36: netfs_sreq_ref: R=3D00000a98[1] PUT DONE    r=3D0
+>     kworker/u8:2-36: netfs_sreq: R=3D00000a98[1] DOWN FREE  f=3D92 s=3D=
+0 17a8/17a8 s=3D1 e=3D0
+>     kworker/u8:2-36: netfs_rreq_ref: R=3D00000a98 PUT SUBREQ  r=3D3
+>     kworker/u8:2-36: netfs_rreq: R=3D00000a98 RA COMPLET f=3D2021
+>     kworker/u8:2-36: netfs_rreq: R=3D00000a98 RA WAKE-IP f=3D2021
+>     kworker/u8:2-36: netfs_rreq: R=3D00000a98 RA DONE    f=3D2001
+>     kworker/u8:2-36: netfs_rreq_ref: R=3D00000a98 PUT WORK    r=3D2
+>  test_progs-no_a-97: netfs_sreq: R=3D00000a98[2] ZERO TERM  f=3D102 s=
+=3D17a8 858/858 s=3D1 e=3D0
+>  test_progs-no_a-97: netfs_rreq_ref: R=3D00000a98 GET WORK    r=3D3
+>  test_progs-no_a-97: netfs_sreq_ref: R=3D00000a98[2] PUT TERM    r=3D1
+>  test_progs-no_a-97: netfs_rreq_ref: R=3D00000a98 PUT RETURN  r=3D2
+>     kworker/u8:2-36: netfs_rreq_ref: R=3D00000a98 SEE WORK    r=3D2
+>     kworker/u8:2-36: netfs_rreq_ref: R=3D00000a98 PUT WORK    r=3D1
+>
+> You can see subrequest 1 completes fine, the subrequest is freed and th=
+e ref
+> it had on the request is put:
+>
+> 	netfs_sreq: R=3D00000a98[1] DOWN FREE  f=3D92 s=3D0 17a8/17a8 s=3D1 e=
+=3D0
+> 	netfs_rreq_ref: R=3D00000a98 PUT SUBREQ  r=3D3
+>
+> Subrequest 2, however isn't collected:
+>
+> 	netfs_sreq: R=3D00000a98[2] ZERO SUBMT f=3D00 s=3D17a8 0/858 s=3D0 e=
+=3D0
+> 	netfs_sreq: R=3D00000a98[2] ZERO TERM  f=3D102 s=3D17a8 858/858 s=3D1 =
+e=3D0
+> 	netfs_sreq_ref: R=3D00000a98[2] PUT TERM    r=3D1
+>
+> and the work happens again in kworker/u8:2-36 right at the end:
+>
+> 	netfs_rreq_ref: R=3D00000a98 SEE WORK    r=3D2
+> 	netfs_rreq_ref: R=3D00000a98 PUT WORK    r=3D1
+>
+> but this doesn't do anything.
+>
+> The excess buffer clearance happened in the app thread (test_progs-no_a=
+-97):
+>
+> 	netfs_sreq: R=3D00000a98[2] ZERO TERM  f=3D102 s=3D17a8 858/858 s=3D1 =
+e=3D0
+>
+>> Let me know if I can help with anything else.
+>
+> Can you add some more tracepoints?
+>
+> echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_collect/enable
+> echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_collect_sreq/enabl=
+e
+> echo 1 >/sys/kernel/debug/tracing/events/netfs/netfs_collect_state/enab=
+le
 
-  $ make -j16
-    [ snip ]
-  mkdir -p /home/masahiro/ref/linux/tools/objtool && make O=/home/masahiro/ref/linux subdir=tools/objtool --no-print-directory -C objtool
-  mkdir -p /home/masahiro/ref/linux/tools/bpf/resolve_btfids && make O=/home/masahiro/ref/linux subdir=tools/bpf/resolve_btfids --no-print-directory -C bpf/resolve_btfids
+See here: https://github.com/kernel-patches/bpf/commit/517f51d1f6c09ebab9=
+df3e3d17bb669601ab14ef
 
-Defining MAKEFLAGS=<value> on the command line wipes out command line
-switches from the resultant MAKEFLAGS definition, even though the command
-line switches are active. [1]
+Beware, uncompressed trace-cmd.log is 37Mb
 
-The first word of $(MAKEFLAGS) is a possibly empty group of characters
-representing single-letter options that take no argument. However, this
-breaks if MAKEFLAGS=<value> is given on the command line.
+>
+> However, I think I may have spotted the issue: I'm mixing
+> clear_and_wake_up_bit() for NETFS_RREQ_IN_PROGRESS (which will use a co=
+mmon
+> system waitqueue) with waiting on an rreq-specific waitqueue in such as
+> netfs_wait_for_read().
+>
+> I'll work up a fix patch for that tomorrow.
 
-The tools/ and tools/% targets set MAKEFLAGS=<value> on the command
-line, which breaks the following code in tools/scripts/Makefile.include:
+Great! Thank you.
 
-    short-opts := $(firstword -$(MAKEFLAGS))
-
-If MAKEFLAGS really needs modification, it should be done through the
-environment variable, as follows:
-
-    MAKEFLAGS=<value> $(MAKE) ...
-
-That said, I question whether modifying MAKEFLAGS is necessary here.
-The only flag we might want to exclude is --no-print-directory, as the
-tools build system changes the working directory. However, people might
-find the "Entering/Leaving directory" logs annoying.
-
-I simply removed the offending MAKEFLAGS=.
-
-[1]: https://savannah.gnu.org/bugs/?62469
-
-Fixes: a50e43332756 ("perf tools: Honor parallel jobs")
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- Makefile | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index 89628e354ca7..52207bcb1a9d 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1421,18 +1421,13 @@ ifneq ($(wildcard $(resolve_btfids_O)),)
- 	$(Q)$(MAKE) -sC $(srctree)/tools/bpf/resolve_btfids O=$(resolve_btfids_O) clean
- endif
- 
--# Clear a bunch of variables before executing the submake
--ifeq ($(quiet),silent_)
--tools_silent=s
--endif
--
- tools/: FORCE
- 	$(Q)mkdir -p $(objtree)/tools
--	$(Q)$(MAKE) LDFLAGS= MAKEFLAGS="$(tools_silent) $(filter --j% -j,$(MAKEFLAGS))" O=$(abspath $(objtree)) subdir=tools -C $(srctree)/tools/
-+	$(Q)$(MAKE) LDFLAGS= O=$(abspath $(objtree)) subdir=tools -C $(srctree)/tools/
- 
- tools/%: FORCE
- 	$(Q)mkdir -p $(objtree)/tools
--	$(Q)$(MAKE) LDFLAGS= MAKEFLAGS="$(tools_silent) $(filter --j% -j,$(MAKEFLAGS))" O=$(abspath $(objtree)) subdir=tools -C $(srctree)/tools/ $*
-+	$(Q)$(MAKE) LDFLAGS= O=$(abspath $(objtree)) subdir=tools -C $(srctree)/tools/ $*
- 
- # ---------------------------------------------------------------------------
- # Kernel selftest
--- 
-2.43.0
-
+>
+> Thanks,
+> David
+>
 
