@@ -1,171 +1,143 @@
-Return-Path: <bpf+bounces-51186-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51187-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B512FA31862
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 23:07:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA50DA31881
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 23:21:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1925318873B0
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 22:07:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E4A0168635
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 22:21:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECEC1268C65;
-	Tue, 11 Feb 2025 22:07:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 177C426A093;
+	Tue, 11 Feb 2025 22:21:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fWrcTIAc"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VmXuRd7M"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 137CD2641DF
-	for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 22:07:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3A03268FE6;
+	Tue, 11 Feb 2025 22:21:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739311665; cv=none; b=Uyvyd2CCUMNE2G45SfxgV/EWAQ8/Tef0SproXnHtc566ssnoXG7PxBKzW4sZAI5xgetQzapJzRCta+RcCvg44h9BEUjCDAMGaPYDNmngZgJiSSVbeNx0oW+7x9phLXeuTL5AEY9XJCRcnUog/bVShUb8Vf53ltIA1to2RgdMpng=
+	t=1739312482; cv=none; b=WNvUkUEPVeA/4b0nRZlqsE61qEzN7nLHJjKq3SDE2vDH1Ze03Wv03sZU1rgE7XexqNjClynbkNerNU0tTNF+ZvyoitgQ/8WT/I3l5+1QvKRVr/bhDUAy/D9AVDXwwJWLNHdrMgpkW3aj0oPdAeKgpZr/y/hsHOx4on+ZL6pjoj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739311665; c=relaxed/simple;
-	bh=CYAh2c2dZoAQx3f5xwOPPv/5Z2qKqxVOaJarm1MX5uk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=shv4vOQm3hODfAjja98dHnGkjMDH/4TJSxHL0nl4aylmDskzajSUMbnTf/E8NGBK1QkdC0Th/dhBMB+YbElrCpnidACBx0VeN2gmiCm9jL0uwu4g/LiQ5Y+fn5BfJVYM5yVvTFQ/ODl7ny9SpnaY1GBfh7ZZ/gv1Rn8wOFFb54E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fWrcTIAc; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2f9b91dff71so9357810a91.2
-        for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 14:07:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739311663; x=1739916463; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NQiEQp2Wn/UFj5VBH1YBC/NtW/rLtpkeM2JH3Gt3fog=;
-        b=fWrcTIAc26sodYXthshua1KEi0eHJJcFz2r/M1RZsgEy8be8sprc5ycMpp6RfFLBjy
-         mZ1UM/BBzxrdVB8KN9jNepyQRtcjdO4BHSLnHXZ9Pr2yBsXmwvH1/mAapu7Ae5hhFLyR
-         tZNgrnu0YjxRuyv9kvwEBfHfQLx/uE/IG/h74wvFD/hXHxQF1dmD+VJwMV/YbtBAYqkG
-         VfSdQb6jHD4vU5uIOYA4C1nPGzHd7iaF/0yyPOmy4UF+FnGUcqY22hv+jaqEQQR4mz6g
-         52WVwRxoGZ4+sBvmBGk+v5Wkv0kD1Rkurz2trLVemmHCW8/tMnJDh7NesETmwvoCTk+X
-         pKiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739311663; x=1739916463;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NQiEQp2Wn/UFj5VBH1YBC/NtW/rLtpkeM2JH3Gt3fog=;
-        b=AToRjHuQtv2s7byMyMTYVuWChYKYKeg8Oz7lEf3g56yrasx3dPyXgsPqZIl7AY0a9w
-         nxm1NDrg/RwKMpfNAoz7p7sfDNRP3XvfsXTVrAIssqNVMMRfZoG2UrG8CbNc80dqUNci
-         0cHAe+WHweJQfa/ur3dKY8k+wyqjpDzKAltoSp945eE/P4dbAjybEzEXYLfHdRn3gRYA
-         rPnHeNCL7UQahq1gfLC+o0GP7PKVEzHtJ9w6gFI+lTg60fNvzs6Zr3IRMZaC54y9CIEB
-         e8mR4r2P3Lc00TMjpi5w3n8WUuV7DjSUW94ymvQvxijJ6oMpK3kYI9TRs9aTnublNp6b
-         yCjg==
-X-Gm-Message-State: AOJu0YwIy1nUbTp/mb/6bmXof35nEga2slaqLA63BQUMoIFofa5+93ad
-	syWHoY2dqUV1ZaH5H/3ocaFGXfX5k/7PMI6d1uIBoE/DZddB9PicZSmBOQnRIcACIdtHmwe1mi+
-	UWbGf1NfqMloSdvSq1jjkxvC7R4g=
-X-Gm-Gg: ASbGnctCGB+ox9e4zpUO3KyMXA8gVLUn//FncOIXJ7gvbFXfdUhDfyr/eqSrX0yT5kq
-	5j2TswgL0/9Y+SmzoAEAaDRdKuG3PJ/3mtuIEUf/sUf0u4/y/DtN2JEo8HXIBD4hDp9Lalln+jX
-	5bsfkDlDsK+GXd
-X-Google-Smtp-Source: AGHT+IEmrBMr+a0of/VHbtYIuWcJLPwUnCBRjOwFLE73bzk8Ek2S2SSnXzCAvwMnY4pnDVNfeiFTFty8THMIKy/eSi4=
-X-Received: by 2002:a17:90b:4d0c:b0:2ee:bbe0:98c6 with SMTP id
- 98e67ed59e1d1-2fbf5be093fmr1152423a91.8.1739311663210; Tue, 11 Feb 2025
- 14:07:43 -0800 (PST)
+	s=arc-20240116; t=1739312482; c=relaxed/simple;
+	bh=KmQ+tXg/m4ZK8Xhj8IZwShtRHzkqTHlubFqibbJilzM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hmTBT6ATO8APNP35FcFNB7PKlbywArkpSrliFJMiESUut9DDfMMVRlPAzjHj4sc8VdZtEpXpUEZPA77tVHyLbfoMNooevdeR0E+Z99CPpl18cVSZJGi+NsTdYVMIZ98Vd5n6ttXY2JrqJZMq5lMh2ZPJylj9ruQScEg6v4YSm3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VmXuRd7M; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1739312480; x=1770848480;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KmQ+tXg/m4ZK8Xhj8IZwShtRHzkqTHlubFqibbJilzM=;
+  b=VmXuRd7M+lRQwSnB/3n2J0WqOpiKZqOOi0EFt+uUMC7nDJ0ZVx+LH6uH
+   NcPZ0t0AyNQ/Av0z1m3gcLWvVPNELxzc3FY0Z1oLP+5EahDRtm7Lbq6tU
+   pNK4s4lRiu+n4rWLoF2JraRB8IR0BhJPpO7RVaCVjFE2ZD/IsIUVgZ7G9
+   XF217Q4mPXezhPHd8KZTQof5TA7kmkBnnYLWUpyffCvvDnp/vH8f9fZBS
+   VUtou+U1Wlv7eyrH22/pY9WMMZ85cROfIkHGxnrirhfWKkLRZni1vy2OM
+   SM3+TkxVNJCPOfdoTU2X+Pc6pcCB/jH/jIU1iKO5W4DeXM9kh8byojBdt
+   w==;
+X-CSE-ConnectionGUID: xeUpkHVhRROW5iMq123JDQ==
+X-CSE-MsgGUID: tRSaIwW5Tw6P9DFbnW721w==
+X-IronPort-AV: E=McAfee;i="6700,10204,11342"; a="50938308"
+X-IronPort-AV: E=Sophos;i="6.13,278,1732608000"; 
+   d="scan'208";a="50938308"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2025 14:21:19 -0800
+X-CSE-ConnectionGUID: Mnc4Nd50QAuuH5O4SxIE9A==
+X-CSE-MsgGUID: 2ZhjGQPqQMavXeVcEpA1iQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="113529562"
+Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
+  by orviesa008.jf.intel.com with ESMTP; 11 Feb 2025 14:21:12 -0800
+Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1thycv-0014lb-2H;
+	Tue, 11 Feb 2025 22:21:09 +0000
+Date: Wed, 12 Feb 2025 06:20:14 +0800
+From: kernel test robot <lkp@intel.com>
+To: Meghana Malladi <m-malladi@ti.com>, rogerq@kernel.org,
+	danishanwar@ti.com, pabeni@redhat.com, kuba@kernel.org,
+	edumazet@google.com, davem@davemloft.net, andrew+netdev@lunn.ch
+Cc: oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, u.kleine-koenig@baylibre.com,
+	krzysztof.kozlowski@linaro.org, dan.carpenter@linaro.org,
+	m-malladi@ti.com, schnelle@linux.ibm.com, glaroque@baylibre.com,
+	rdunlap@infradead.org, diogo.ivo@siemens.com,
+	jan.kiszka@siemens.com, john.fastabend@gmail.com, hawk@kernel.org,
+	daniel@iogearbox.net, ast@kernel.org, srk@ti.com,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH net-next v2 3/3] net: ti: icssg-prueth: Add XDP support
+Message-ID: <202502120546.Y6ri4qi6-lkp@intel.com>
+References: <20250210103352.541052-4-m-malladi@ti.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250210221626.2098522-1-linux@jordanrome.com>
-In-Reply-To: <20250210221626.2098522-1-linux@jordanrome.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 11 Feb 2025 14:07:31 -0800
-X-Gm-Features: AWEUYZlxg4NzGPm-M8G-0JJNSC3Y57lhia17wLJsu33851-u1Q0W3oihNFBnOPo
-Message-ID: <CAEf4BzYjsLnrCV9PK8gmyiFw8idXea5ckPRvCqhFbyEU5Wcd9w@mail.gmail.com>
-Subject: Re: [bpf-next v7 1/3] mm: add copy_remote_vm_str
-To: Jordan Rome <linux@jordanrome.com>
-Cc: bpf@vger.kernel.org, linux-mm@kvack.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Kernel Team <kernel-team@fb.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Alexander Potapenko <glider@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250210103352.541052-4-m-malladi@ti.com>
 
-On Mon, Feb 10, 2025 at 2:23=E2=80=AFPM Jordan Rome <linux@jordanrome.com> =
-wrote:
->
-> Similar to `access_process_vm` but specific to strings.
-> Also chunks reads by page and utilizes `strscpy`
-> for handling null termination.
->
-> Signed-off-by: Jordan Rome <linux@jordanrome.com>
-> ---
->  include/linux/mm.h |   3 ++
->  mm/memory.c        | 119 +++++++++++++++++++++++++++++++++++++++++++++
->  mm/nommu.c         |  73 +++++++++++++++++++++++++++
->  3 files changed, 195 insertions(+)
->
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 7b1068ddcbb7..aee23d84ce01 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2486,6 +2486,9 @@ extern int access_process_vm(struct task_struct *ts=
-k, unsigned long addr,
->  extern int access_remote_vm(struct mm_struct *mm, unsigned long addr,
->                 void *buf, int len, unsigned int gup_flags);
->
-> +extern int copy_remote_vm_str(struct task_struct *tsk, unsigned long add=
-r,
-> +               void *buf, int len, unsigned int gup_flags);
-> +
->  long get_user_pages_remote(struct mm_struct *mm,
->                            unsigned long start, unsigned long nr_pages,
->                            unsigned int gup_flags, struct page **pages,
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 539c0f7c6d54..e9d8584a7f56 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -6803,6 +6803,125 @@ int access_process_vm(struct task_struct *tsk, un=
-signed long addr,
->  }
->  EXPORT_SYMBOL_GPL(access_process_vm);
->
-> +/*
-> + * Copy a string from another process's address space as given in mm.
-> + * If there is any error return -EFAULT.
-> + */
-> +static int __copy_remote_vm_str(struct mm_struct *mm, unsigned long addr=
-,
-> +                             void *buf, int len, unsigned int gup_flags)
-> +{
-> +       void *old_buf =3D buf;
-> +       int err =3D 0;
-> +
-> +       *(char *)buf =3D '\0';
+Hi Meghana,
 
-LGTM overall:
+kernel test robot noticed the following build errors:
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+[auto build test ERROR on acdefab0dcbc3833b5a734ab80d792bb778517a0]
 
-But note that all this unconditional buf access will be incorrect if
-len =3D=3D 0. So either all of that has to be guarded with `if (len)`,
-just dropped, or declared unsupported, depending on what mm folks
-think. BPF helper won't ever call with len =3D=3D 0, so that's why my ack.
+url:    https://github.com/intel-lab-lkp/linux/commits/Meghana-Malladi/net-ti-icssg-prueth-Use-page_pool-API-for-RX-buffer-allocation/20250210-183805
+base:   acdefab0dcbc3833b5a734ab80d792bb778517a0
+patch link:    https://lore.kernel.org/r/20250210103352.541052-4-m-malladi%40ti.com
+patch subject: [PATCH net-next v2 3/3] net: ti: icssg-prueth: Add XDP support
+config: arm64-defconfig (https://download.01.org/0day-ci/archive/20250212/202502120546.Y6ri4qi6-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250212/202502120546.Y6ri4qi6-lkp@intel.com/reproduce)
 
-(And yes, it would be nice to hear from someone from the MM side at
-this point, thank you!).
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202502120546.Y6ri4qi6-lkp@intel.com/
 
-> +
-> +       if (mmap_read_lock_killable(mm))
-> +               return -EFAULT;
-> +
-> +       /* Untag the address before looking up the VMA */
-> +       addr =3D untagged_addr_remote(mm, addr);
-> +
-> +       /* Avoid triggering the temporary warning in __get_user_pages */
-> +       if (!vma_lookup(mm, addr)) {
-> +               err =3D -EFAULT;
-> +               goto out;
-> +       }
-> +
+All errors (new ones prefixed by >>):
 
-[...]
+   drivers/net/ethernet/ti/icssg/icssg_prueth.c: In function 'prueth_create_xdp_rxqs':
+>> drivers/net/ethernet/ti/icssg/icssg_prueth.c:568:55: error: 'struct xdp_rxq_info' has no member named 'napi_id'
+     568 |         ret = xdp_rxq_info_reg(rxq, emac->ndev, 0, rxq->napi_id);
+         |                                                       ^~
+
+
+vim +568 drivers/net/ethernet/ti/icssg/icssg_prueth.c
+
+   561	
+   562	static int prueth_create_xdp_rxqs(struct prueth_emac *emac)
+   563	{
+   564		struct xdp_rxq_info *rxq = &emac->rx_chns.xdp_rxq;
+   565		struct page_pool *pool = emac->rx_chns.pg_pool;
+   566		int ret;
+   567	
+ > 568		ret = xdp_rxq_info_reg(rxq, emac->ndev, 0, rxq->napi_id);
+   569		if (ret)
+   570			return ret;
+   571	
+   572		ret = xdp_rxq_info_reg_mem_model(rxq, MEM_TYPE_PAGE_POOL, pool);
+   573		if (ret)
+   574			xdp_rxq_info_unreg(rxq);
+   575	
+   576		return ret;
+   577	}
+   578	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
