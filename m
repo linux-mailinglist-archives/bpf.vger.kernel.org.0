@@ -1,264 +1,190 @@
-Return-Path: <bpf+bounces-51072-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51073-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D5A3A2FECA
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 01:06:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5EABA2FED3
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 01:08:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FF4A3A3B64
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 00:06:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83E6C166B5C
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 00:08:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7601329A0;
-	Tue, 11 Feb 2025 00:06:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4164928EA;
+	Tue, 11 Feb 2025 00:08:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z/4b9N2X"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VQfjM9D7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23C4D801;
-	Tue, 11 Feb 2025 00:06:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B58B3C0B;
+	Tue, 11 Feb 2025 00:08:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739232405; cv=none; b=CeupjLbwBFYFIxa60XIRjcxyP4RRrom0BKRAcHPBdMchdGyM/CKGZbi7/ftvHxDSeXBlS6iwZvHNSolSJcVEnTnW3I5edeXAMekpVZo4qnX80lW5W80E8b4S7Wvio4lhONV4Pp7NKlznbJTRigcPX8tG5aUAGLNtUNvKmWBJF84=
+	t=1739232532; cv=none; b=nJInPRN+/Ill7243mXWnCF8kwsppcd9SA+7vuCB/GPF36ST7r9VFgOmcR0umttGyHP5KFb00MsoslbUB2rQ1IFKHlxglRWNwz+DtAKuAuPsq3syWCudo+10I9aPTu+gyf90D1KuANp3cIom0evWxm/Wkm86Uhd0x7eLKUfe5dbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739232405; c=relaxed/simple;
-	bh=ndRCU9kUZEOJ6DChJUaanLcQB6QwrKKxofqia2w44YU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FcyKYmxuf22Az8EwMRsqD4cIjQV1aI+c4K3ITJ8ccC25ded8SZxyi+YoebfF4MlAGVoVQUjpn79lL4iWjmmNcH7Fd9eI3Oq7R2j+zINvoCMGAFkJCAi3RaBdIrvrHWU0oer7Ek96fO8nL+6nPBTuWDQHzCokuY7lIqRkY+0fS7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z/4b9N2X; arc=none smtp.client-ip=209.85.218.47
+	s=arc-20240116; t=1739232532; c=relaxed/simple;
+	bh=h25Y+GJslj1osPPwzBp6g5ITvcIe6KA9nGKAC1tMkHI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=l+2820iY/5XLX9H0t8sv1YLHSbC9OI0ThwO547S1Vrbp8ntovGSyZo84TJ+WIpi2lSE6jIhecyTZlosdsJ+CwD3Hcc9w+B9G3+j3++Ht0DxZeDCaC8XxlCYWK3QsB4why2aij6XBrRVXECg63s7j1MpS4Hs23alcfp2awkC8Zi4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VQfjM9D7; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-aaecf50578eso982970566b.2;
-        Mon, 10 Feb 2025 16:06:42 -0800 (PST)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-21f50895565so53148035ad.2;
+        Mon, 10 Feb 2025 16:08:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739232401; x=1739837201; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eGG5ngyl14ZIlnl7tSYxVC/wFQzcXTGOTAcki9qZ1og=;
-        b=Z/4b9N2XqRnofx1WrmTciErfB53buCZQjo8r1ey27770SH/Xz70n0p8zKI1ENLPDG7
-         BEDDvw+j0mLxpmxTkmx1LdaXHlDfl7UhGUMmVMKDb1pu5Pku+v5NSgTKbcDq3x6Sqdq4
-         SaUx5WXSPoNM1AhVxLDYbiYPiSS6PcUjfT9WxwutEDmA3GMOq3QlRGYUirkat17zmSy0
-         P3BfTI3p/Mftbcpb86N9FONpxXV3mloDR+T1a/pasw/28PPplA/2b7qmLjud/HwPBcn3
-         O3irYVFrHZD8315T6e5RD7HYNPpgnyYQIUtaU4d06vZsnPmuHTJsLLLLMXEJ+BK0QiCx
-         O8xg==
+        d=gmail.com; s=20230601; t=1739232530; x=1739837330; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=uQyUJBqo+jTXiMiWvhStxEYM9tCoQv2ZIzt9rc3LsXM=;
+        b=VQfjM9D7aRGlyOO59wRRmbawBXD8uy05WwvyMR4YHkzLZRyJcv2LWlmKYT6eDv780W
+         wqviwHDYrrvDExxqgsAXyq7faMpOEmRFjJ19o42p9QIGLWTNrLCecBJormuqrM80cH3f
+         UMCiKC/pV7Ch1PeGaJwxHev27s2tZd/AbplUWOx9y9dYg9FTDTwZNhNg20EYJqgzCS11
+         VhT24iznSuQPlBE8YvSCgFr3LMcHHoZD5kbdevBYbXJcTdHe/vH5sqoK8yiF1Wc0uXLS
+         ukSQ+PE2xarxsqizedsVr7nuvylToLSjcY+eZVy1+EL5H3tde/L6tCEICEaAkQ3CZ4tf
+         +Vjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739232401; x=1739837201;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eGG5ngyl14ZIlnl7tSYxVC/wFQzcXTGOTAcki9qZ1og=;
-        b=SRrUB76ceZBhwaNAzfLMTcF+VZt+Xbk58/UgEZk+KzeRomcuCPZTepP8dZB/4CKbQ0
-         X9Q8gWnk1paCQcDTZMRSH/iQvnYc81MVFIMl6Ih72Cgw6Lw6v2nCm9Euba3jVn8O5xhT
-         8e2wgGyQmC8qySahoJoJGRu2BZ1V63a45nKNW/eSXPImfMDW2hrp6ZLhrcKgkEeFjuec
-         sMvcU117+BQlusbbXz/MExJowvWbN+/otoGmHuf0GjCCsps258zSx91tQJJR7hm/ElUT
-         W33EbvMlPnqGZVUWtMaJek2sG39ybRaJeJwV8ecfJ4RL1bGK20nIS6umunkbD6rnjInB
-         8Y1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV22k1gyKSRY6RniFpo25WdYj99kPvDH/TxW2Zm3KDepWCWJEQrUNMhnaoTMnMG/ZOb7+I=@vger.kernel.org, AJvYcCVUZ7T/jvomxSmtjvGYqEJh6GYjCH9/beCasaPFMwZIOGWHDkgZlwqOXgoek1BocVNINrNxb8IH9yoojhEYMYEI@vger.kernel.org, AJvYcCWYqUATvuvwc3krnm2vbj+yzyNUzeNnnKki7JqLccusaCez44vlfpZ7+PjxLfF1oEKoAtKvICfe/XY83kpx@vger.kernel.org
-X-Gm-Message-State: AOJu0YxCQkkvKKmnV589sIl2R8JNOeG4COx8WiijG5Nk5FxvhbA26WqT
-	bMwYG6Oq363MAqZAn82xX6C21vI6nC56nRsDqCHB0HK5L1HjXGBHl+8jzG8BFEmkgUujTCWaHdH
-	AKFI29VHS+cxVtId14wbKdzIKUvg=
-X-Gm-Gg: ASbGncuBYQYsV0Wi8TeSYtc6+zUoydI2iNy9fllruXI0rgvYNTc+9rZ8DS8NA7a+YdH
-	SkaF+4EbdKXZTdvKzqW6Q/8C3HXFEcta5T8PDFsFXH95MwxVTG8x1PSkmiiFvoSvANVW7QhoLIr
-	BttXIgEPlCJGZx
-X-Google-Smtp-Source: AGHT+IG8RjLeGYPoss2EA3HXx1Elc1kGh8E1ib6/lNJ3+X88DmzqaCCkoGpCiqcBRKMjg1RimYN0rWwd9w978kACMes=
-X-Received: by 2002:a17:907:d389:b0:ab7:dec1:b368 with SMTP id
- a640c23a62f3a-ab7dec1cfdemr46071366b.36.1739232401017; Mon, 10 Feb 2025
- 16:06:41 -0800 (PST)
+        d=1e100.net; s=20230601; t=1739232530; x=1739837330;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uQyUJBqo+jTXiMiWvhStxEYM9tCoQv2ZIzt9rc3LsXM=;
+        b=uEiyqfbkmR+nPUXZYlTIMStVYmamYCqBJ4AYKEza6jP2IVxhWajDvL4aohUQ4ZHBEs
+         u7V3mYfmhi3E50JqAT79729bfkA9z58r3L/or9YGfr9PhcAkkKceTRG0CSjqXyQsxnbX
+         3dfhrrUpIeAUrwkCeO4ET0rano1Qx3x0j49hAdEb0bsQhaB2aGwyMCIICgbteYuKMq0H
+         F150CAwzndn2OlXlkTBllPuKrVQjFleTpbJY7dwJnhen6RfKzBQ25IY3QmfE6+1wSI+k
+         I9IHpL1k8Oli6vHdBBfToDgon+hvojt4oZufxE3Jt0it4050bAkZoD8jdabuIrEU9ems
+         wcLw==
+X-Forwarded-Encrypted: i=1; AJvYcCUmhg4BnbCnCTtfXSX8i+rG53v5y/KaFiIcjcFAnFzeAUyyxDwWISJMOxD2rbbTNS9Xxlc=@vger.kernel.org, AJvYcCVLUFZs4FJrCA9JKFC1S4ku51GCGAM9RRYRn1ygG+YXh0+JU/bcVxo8RS2TJw54Q7vHwFJoqkgoLwVaY+Ne@vger.kernel.org
+X-Gm-Message-State: AOJu0YyrOsgXULS64AyKcKFODJnlRNUc/ml1mpkyp/Sl5avxnHRTbdDk
+	KDDXKs5V25/UWUqGXVDtavdiAVQOwp3az29/0uOuAFcazN38KSKJ
+X-Gm-Gg: ASbGncuYsdr5PC4RjsVx+E55cjMZ1eSgX1v4s7FD4nbrM2gpgfEyqZI6q+EDWlL6+B3
+	Kg2SgWdpUEN5HyIJTy7XjkzwYi3KUxzdN3zPbLyb5cljfv7mF37m8fb6EcR+c5yJBI1ThcmVdZP
+	mPL11Y80wjb3Gi6X3IjUn/lhx1bsPj+XZdal0Mhyn5xwkf9qxhb9ct0vwlFuyu8zVeDtNxEzmXs
+	AHAayTGCjyewHZhL7NfaFDXMK7YbJB4z9moVac+hpSqfIkAzDaj7Cfh5PAMbnnNl2HbCwGLQbEt
+	tJI6blNUkfdk
+X-Google-Smtp-Source: AGHT+IGDiHUAa707fZSIiz13RbPklkC1h9XML1rywNVdLJb0wY4Mp/STxHikL/FhaHi8cHMzHDo6oA==
+X-Received: by 2002:a17:903:2bcb:b0:216:4a06:e87a with SMTP id d9443c01a7336-21fb64a5fe6mr23698975ad.40.1739232530464;
+        Mon, 10 Feb 2025 16:08:50 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21f368afde8sm84249775ad.223.2025.02.10.16.08.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Feb 2025 16:08:49 -0800 (PST)
+Message-ID: <6976077bc2d417169a437bc582a72defd1dec3d4.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 8/9] selftests/bpf: Add selftests for
+ load-acquire and store-release instructions
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Peilin Ye <yepeilin@google.com>, bpf@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org
+Cc: bpf@ietf.org, Xu Kuohai <xukuohai@huaweicloud.com>, David Vernet	
+ <void@manifault.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann	
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau	 <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song	
+ <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh	 <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo	
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet	
+ <corbet@lwn.net>, "Paul E. McKenney" <paulmck@kernel.org>, Puranjay Mohan	
+ <puranjay@kernel.org>, Ilya Leoshkevich <iii@linux.ibm.com>, Heiko Carstens
+	 <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Catalin Marinas	
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Quentin Monnet	
+ <qmo@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan
+ <shuah@kernel.org>,  Ihor Solodrai <ihor.solodrai@linux.dev>, Yingchi Long
+ <longyingchi24s@ict.ac.cn>, Josh Don <joshdon@google.com>,  Barret Rhoden
+ <brho@google.com>, Neel Natu <neelnatu@google.com>, Benjamin Segall
+ <bsegall@google.com>, 	linux-kernel@vger.kernel.org
+Date: Mon, 10 Feb 2025 16:08:44 -0800
+In-Reply-To: <3ac854ac5cc62e78fadd2a7f1af9087ec3fc7a9c.1738888641.git.yepeilin@google.com>
+References: <cover.1738888641.git.yepeilin@google.com>
+	 <3ac854ac5cc62e78fadd2a7f1af9087ec3fc7a9c.1738888641.git.yepeilin@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250122215206.59859-1-slava.imameev@crowdstrike.com>
- <20250122215206.59859-2-slava.imameev@crowdstrike.com> <CAEf4Bzajxh4xvg-aCaBhLQdNOZdhwceYUD2UsCcWku4ZBca_Hw@mail.gmail.com>
- <8831ed8fa183f76fefd71244360fa0ca35b11910.camel@crowdstrike.com>
- <CAEf4BzYWe0KCzA4-qwAGp5n_ydJ0_zyLSO=Crr_vewFHzZ0t6Q@mail.gmail.com> <e55a1441252079e73b2abdf3635efcebda6b47c1.camel@crowdstrike.com>
-In-Reply-To: <e55a1441252079e73b2abdf3635efcebda6b47c1.camel@crowdstrike.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 10 Feb 2025 16:06:17 -0800
-X-Gm-Features: AWEUYZnGim-q59AbQiZ9KCmoSthQdPC6EDh2PHdQ6isbMTZWAMyZo5ZVx9OZ878
-Message-ID: <CAEf4BzZ8H0nQMEMaDGMfyngb15zMFEduy_R_ajakrdjGGtiOQA@mail.gmail.com>
-Subject: Re: Re: Re: [PATCH 2/2] libbpf: BPF programs dynamic loading and attaching
-To: Martin Kelly <martin.kelly@crowdstrike.com>
-Cc: "mykolal@fb.com" <mykolal@fb.com>, "shuah@kernel.org" <shuah@kernel.org>, 
-	"eddyz87@gmail.com" <eddyz87@gmail.com>, "song@kernel.org" <song@kernel.org>, 
-	"andrii@kernel.org" <andrii@kernel.org>, "john.fastabend@gmail.com" <john.fastabend@gmail.com>, 
-	"yonghong.song@linux.dev" <yonghong.song@linux.dev>, Mark Fontana <mark.fontana@crowdstrike.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "kpsingh@kernel.org" <kpsingh@kernel.org>, 
-	"ast@kernel.org" <ast@kernel.org>, "martin.lau@linux.dev" <martin.lau@linux.dev>, 
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "sdf@fomichev.me" <sdf@fomichev.me>, 
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, 
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, 
-	Slava Imameev <slava.imameev@crowdstrike.com>, "jolsa@kernel.org" <jolsa@kernel.org>, 
-	"haoluo@google.com" <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 7, 2025 at 5:13=E2=80=AFPM Martin Kelly
-<martin.kelly@crowdstrike.com> wrote:
->
-> On Wed, 2025-02-05 at 14:33 -0800, Andrii Nakryiko wrote:
-> > > > >
-> > > > > I see two ways forward for you. Either you can break apart your
-> > > > > BPF
-> > > > > object of ~100 BPF programs into more independent BPF objects >
-> > > > > > (seeing
-> > > > > that programs can be independently loaded/unloaded depending on
-> > > > > configuration, seems like you do have a bunch of logic > >
-> > > > > independence,
-> > > > > right?). I assume shared BPF maps are the biggest reason to
-> > > > > keep > > all
-> > > > > those programs together in one BPF object. To share BPF maps >
-> > > > > > between
-> > > > > multiple BPF objects libbpf provides two complementary
-> > > > > interfaces:
-> > > > >
-> > > > >   - bpf_map__reuse_fd() for manual control
-> > > > >   - BPF map pinning (could be declarative or manual)
-> > > > >
-> > > > > This way you can ensure that all BPF objects would use the same
-> > > > > BPF
-> > > > > map, where necessary.
-> > > > >
->
-> I think this approach *could* work but could easily become complex for
-> us because we'd need to track all the dependencies between programs and
-> maps, and anything missed could lead to difficult refcount bugs.
->
-> Further, splitting into objects incurs some performance and memory cost
-> because bpf_object__load_vmlinux_btf will be called for each object,
-> and there's currently no way to share BTF data across the objects.
-> Having a single BPF object avoids this issue. Potentially, libbpf could
-> cache some BTF data to make lessen the impact.
->
-> > > > > Alternatively, we can look at this problem as needing libbpf to
-> > > > > > > only
-> > > > > prepare BPF program code (doing all the relocations and stuff
-> > > > > like
-> > > > > that), but then application actually taking care of > >
-> > > > > loading/unloading
-> > > > > BPF program with bpf_prog_load() outside of bpf_object
-> > > > > abstraction.
-> > > > > I've had an almost ready patches splitting bpf_object__load()
-> > > > > into > > > two
-> > > > > steps: bpf_object__prepare() and bpf_object__load() after that.
-> > > > > "prepare" step would create BPF maps, load BTF information,
-> > > > > perform
-> > > > > necessary relocations and arrive at final state of BPF program
-> > > > > code
-> > > > > (which you can get with bpf_program__insns() API), but stopping
-> > > > > > > just
-> > > > > short of actually doing bpf_prog_load() step.
-> > > > >
-> > > > > This seems like it would solve your problem as well. You'd use
-> > > > > > > libbpf
-> > > > > to do all the low-level ELF processing and relocation, but then
-> > > > > > > take
-> > > > > over managing BPF program lifetime. Loading/unloading as you
-> > > > > see > > fit,
-> > > > > including in parallel.
-> > > > >
-> > > > > Is this something that would work for you?
-> > > > >
->
-> I think this API could work, though I think we would need a few other
-> modifications as well in order to correctly handle program/map
-> dependencies and account for relocations. At a high level, I think we'd
-> need something that includes:
->
-> 1) A way to associate each BPF program with all the maps it will use
-> (association of struct bpf_program * --> list of struct bpf_map * in
-> some form). This is so that we can load/unload associated maps when we
-> load/unload a program.
+On Fri, 2025-02-07 at 02:06 +0000, Peilin Ye wrote:
+> Add several ./test_progs tests:
+>=20
+>   - arena_atomics/load_acquire
+>   - arena_atomics/store_release
+>   - verifier_load_acquire/*
+>   - verifier_store_release/*
+>   - verifier_precision/bpf_load_acquire
+>   - verifier_precision/bpf_store_release
+>=20
+> The last two tests are added to check if backtrack_insn() handles the
+> new instructions correctly.
+>=20
+> Additionally, the last test also makes sure that the verifier
+> "remembers" the value (in src_reg) we store-release into e.g. a stack
+> slot.  For example, if we take a look at the test program:
+>=20
+>     #0:  r1 =3D 8;
+>       /* store_release((u64 *)(r10 - 8), r1); */
+>     #1:  .8byte %[store_release];
+>     #2:  r1 =3D *(u64 *)(r10 - 8);
+>     #3:  r2 =3D r10;
+>     #4:  r2 +=3D r1;
+>     #5:  r0 =3D 0;
+>     #6:  exit;
+>=20
+> At #1, if the verifier doesn't remember that we wrote 8 to the stack,
+> then later at #4 we would be adding an unbounded scalar value to the
+> stack pointer, which would cause the program to be rejected:
+>=20
+>   VERIFIER LOG:
+>   =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> ...
+>   math between fp pointer and register with unbounded min value is not al=
+lowed
+>=20
+> All new tests depend on #ifdef ENABLE_ATOMICS_TESTS.  Currently they
+> only run for arm64.
+>=20
+> Signed-off-by: Peilin Ye <yepeilin@google.com>
+> ---
 
-Tracking associated maps for a program is not necessary. As long as
-the last BPF program using the BPF map is unloaded, the kernel will
-automatically free not-anymore-referenced BPF map. Note that
-bpf_object itself will keep FDs for BPF maps, so you'd need to make
-sure to do bpf_object__close() to release those references.
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-But if you are going to ask to re-create BPF maps next time BPF
-program is loaded... Well, I'll say you are asking for a bit too much,
-tbh. If you want to be *that* sophisticated, it shouldn't be too hard
-for you to get all this information from BPF program's instructions.
+[...]
 
->
-> 2) An API to create a BPF map, in case a new map needs to be loaded
-> after initial startup.
+> +++ b/tools/testing/selftests/bpf/progs/verifier_load_acquire.c
+> @@ -0,0 +1,190 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include "../../../include/linux/filter.h"
+> +#include "bpf_misc.h"
+> +
+> +#if defined(ENABLE_ATOMICS_TESTS) && defined(__TARGET_ARCH_arm64)
 
-bpf_map_create()?
+[...]
 
->
-> 3) An API to allow unloading a map while keeping map->fd reserved. This
-> is important because the fd value is used by BPF program instructions,
-> so without something like this, we'd have to redo the relocation
-> process for any other BPF programs that access this map (and thus
-> reload those programs too). This API could be implemented by dup'ing a
-> placeholder fd.
->
+> +#else
+> +
+> +SEC("socket")
+> +__description("load-acquire is not supported by compiler or jit, use a d=
+ummy test")
+> +__success
+> +int dummy_test(void)
+> +{
+> +	return 0;
+> +}
 
-dup2() or dup3()? (heh, and yeah, you did ask what I was anticipating above=
- ;) )
+Nit: why is dummy_test() necessary?
 
-> Alternatively, if libbpf could automatically refcount maps across
-> multiple BPF objects to load/unload them on demand, then all of the
-> above work could happen behind the scenes. This would be similar to the
-> other approach you mentioned, but with libbpf doing the refcounting
-> heavy lifting instead of leaving that to each application, thus more
-> robust and elegant. This would mean changing libbpf to (a) synchronize
-> access to some map functions and (b) allowing struct bpf_map * to be
-> shared across BPF objects. Perhaps a concept of a "collection of BPF
-> objects" might allow for this.
+> +
+> +#endif
+> +
+> +char _license[] SEC("license") =3D "GPL";
 
-bpf_object is the unit of coherence in libbpf, so I don't see us
-refcounting maps between bpf_objects. Kernel is doing refcounting
-based on FDs, so see if you can use that.
+[...]
 
->
-> > > > > > > > >
-> > > > > > > > > This patch set also permits loading BPF programs in
-> > > > > > > > > parallel if > > > > the
-> > > > > > > > > application wishes. We tested parallel loading with
-> > > > > > > > > 200+ BPF > > > > > > programs
-> > > > > > > > > and found the load time dropped from 18 seconds to 5
-> > > > > > > > > seconds > > > > when > > done
-> > > > > > > > > in parallel on a 6.8 kernel.
-> > > > >
-> > > > > bpf_object is intentionally single-threaded, so I don't think
-> > > > > we'll > > > be
-> > > > > supporting parallel BPF program loading in the paradigm of > >
-> > > > > bpf_object
-> > > > > (but see the bpf_object__prepare() proposal). Even from API > >
-> > > > > > standpoint
-> > > > > this is problematic with logging and log buffers basically
-> > > > > assuming
-> > > > > single-threaded execution of BPF program loading.
-> > > > >
-> > > > > All that could be changed or worked around, but your use case
-> > > > > is > > not
-> > > > > really a typical case, so I'm a bit hesitant at this point.
-> > > > >
-> > > > > > > > >
->
-> I can understand where you're coming from if no one else has mentioned
-> a use case like this. We can do parallel loading by splitting our
-> programs into BPF objects, but unless the objects are split very
-> evenly, this results in less optimal load time. For example, if 100
-> programs are split into 2 objects and one object has 80 programs while
-> the other has 20, then the one with 80 programs creates a bottleneck.
-> >
-
-Is 100 just a nicely looking rather large number, or do you really
-have 100 different BPF programs? Why so many and are they really all
-unique?
-
-Asking because if it's just a way to attach BPF program doing more or
-less uniform set of actions for different hooks, then perhaps there
-are better ways to do this without having to duplicating BPF programs
-so much (like BPF cookie, multi-kprobes, etc, etc)
 
