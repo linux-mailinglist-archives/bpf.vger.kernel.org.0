@@ -1,292 +1,141 @@
-Return-Path: <bpf+bounces-51081-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51082-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B923A2FF32
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 01:35:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 348EBA2FF33
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 01:35:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 390B8163FC1
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 00:35:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAA44163E4A
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 00:35:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB2DD70808;
-	Tue, 11 Feb 2025 00:34:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57AE3635;
+	Tue, 11 Feb 2025 00:35:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gBk39A+a"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QP2dquum"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2405BA3D
-	for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 00:34:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CCEB1F956;
+	Tue, 11 Feb 2025 00:35:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739234052; cv=none; b=jHq+zbvX/h+yR0/LYgEsndse5Wt9KfRrPxPZhaA+SPslX4qV8RS6B7TMcI395QY+h77VgFLG2iVVaVqCmxUGdx36DzqzKdIEDv4JNzG/gh/Y4GffNKbQNaEub9QTFfNKrK9taybEXsrv7byYbGwJHiSpi17FnA1Rkpn8PVpIsfE=
+	t=1739234128; cv=none; b=IjIdGNu8re4x2bXZjQMw4DEq9cZaXnwFgmSfPng1B6n7pmeAgp9VUgAOlRBc7KKtgGZl4DIiGNll8hlivvyMglqULtilXsxds40b7xY912xIKLfq0PSqR6fEXRlR4gJyWM4XP1fL4yzgw350WPQVICWOYjboJj1ofZweYdzjxak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739234052; c=relaxed/simple;
-	bh=WDfDTfHtqeIzToQTmmFnN6+NL2xAph6kR6zVbJmk7tE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZCP9yed4/5TryXxjZ2xlaNDAwCaoIf8x17bok+NoMPEtWmvOz2u5N1mjw4TDLA/R5KkxNUR797TChyt2pH5bp4rFs86evXRTMY6qZaU4YoSOe+Sjy1i+2bx4Dj4RLpYTNH1smKMR/X9AhVYuuG01qXrEnBcE5Gaog1vNoP2m7kg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gBk39A+a; arc=none smtp.client-ip=209.85.216.46
+	s=arc-20240116; t=1739234128; c=relaxed/simple;
+	bh=kxXIj5fKLWK4js5lh3rSfV7I0TlaOhDceJTtsvtYSeE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=GfSfIdmSn/Vqha09cyx3z7lN34TvgtG7N+8CS3AUDwwa1TydlXnJKucKAe6yys5Zx5pbqn5eJeHTTfdxX2GW5SKiTaEu/Wwg7RXK9SS2SiwJgoj0qb2kdAEc/ykkPCSOhZBLMa93UW7RWQ/tgYQb9aVjA+nZXhO76yA3LiIy5Do=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QP2dquum; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2fa5af6d743so3245237a91.3
-        for <bpf@vger.kernel.org>; Mon, 10 Feb 2025 16:34:10 -0800 (PST)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-21f78b1fb7dso33044445ad.3;
+        Mon, 10 Feb 2025 16:35:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739234050; x=1739838850; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kuEeWJhMrC3RqWADueoUEaqzgg5vT8D4pacwtpolI2M=;
-        b=gBk39A+aHTmKmmSq0Fmn69wyQCPd551wWsQKpNxbnymM3APMr5/5SYNKX+lmIFZ7Ck
-         7Kd/AekQjTx8P8QoALyjjit4f2BEJGFjLkPENvVfIM/uOQMeaBVeRk/oTd0lqJehduEY
-         0Z3CxBZnck/DT0REkp7+upGAqsfa9GAecMZkzB81M7Wie6XBIyUYLFwfv/Vr0F6m9s1K
-         rI6qEkQQXSaeyExiYyD4bcI3u4YSW7Bs+0RqD+UuoJ/bovFlWkaSjfj+3IjIz4uP7zDa
-         Jq8M9QA2jHu5ddaYSC0KcFl+r+YCTD3EIx30FyDgBs/67sckksvdBw1lAs9wlxxdOKsa
-         949Q==
+        d=gmail.com; s=20230601; t=1739234127; x=1739838927; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=VxUDobe983gjq42l5etMnUQOudv1Q5z/oGZgl3Z73n4=;
+        b=QP2dquumng9rypA5x+jHtJ/ZeEmgXudZcBia/nWOQuAmeiDXPcpr0mrtpuO/q5+27o
+         zfh2pThTBZACR4K56xi871KJDoc7Jqk/rViMQfqcwMO+TiCpl9pe4I8M6O61OW0ttEga
+         w23TgkznyZ/svqOvzNiQFAWKZXpMEuYFVdRMFU5Uzq67sAj2mdhSMYEgKBzJK9nsapn9
+         t1Xh4loACRh+ROj4bH3S2cBv+nsTvALjLX03bVA7whMlWfSfOY6at1QS+Gc+J11D6D9o
+         wIXBwncd9N7glafEhsJRvnNSPKRgkWmPKdiMIM6448qJMqUvoaeQDSCbg/uX/IPSDj8o
+         3Nfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739234050; x=1739838850;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kuEeWJhMrC3RqWADueoUEaqzgg5vT8D4pacwtpolI2M=;
-        b=pPSRh5+THH4tjPAPuQOVVCJiZCi/i0SIz+phRPFVUJt7OdndTh3k1K9Hkr3HrAZBBM
-         Saqwgz7Du8RRRttbr7jZOAvfHFroxTbPHMJ0m92Y+qjbpmruguVHwSiEkxGPgSCD1RA5
-         4J8y/OGdgM22uNfBjFSpAQ56XNAmOciGhtdTrhZg8gX07DEsjdam3UgCBzSHysHR64Vb
-         siIoH1WKHWrwEO7TAgKsg39+TLoh0KgNRhVUFf6r/iFbvdZBbcT6QoEW8XJf02gl39Rf
-         Mesycsx0NUeHPFKUsjmYf+pBgjga/Gz7hhIaniXjNGm7flxZfVlEA1zEAu7PuUDYmR9T
-         bhSg==
-X-Forwarded-Encrypted: i=1; AJvYcCWHPHoocTtIuWDtdP1jG7gfVehL/XiDcT1Olz1WHvt3nCS45QcN8yCQ0TNLC4iNzl2Lrac=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy/bMvU6ctXGPJNhvN+9dSt+6cvpXdGEpzm7GiFZVHGDSmPvejb
-	raxamOVm6oSScetEpLVpDikgEyEH0gT3ozVu4o3lWk/Mlwl6SLGqcPF+2j8L0ZHkJz8QFPTuuOU
-	HyBRLFm4hDmwX8+ljqKMVI6e7jyg=
-X-Gm-Gg: ASbGnctimonMOoeoG3bSDQG5eEjJ1VGOYHjRZSV05xeIJAK2UscZ7NiuU9qgHFe3+LV
-	oaMUIZHdliid85m2DEXTY7cLxSQeRrpQDQhBbtKgFJdcE5i3mMDgg8IjoX/pn/2fZM3zUyNURaC
-	3UHLLbamBmrGHL
-X-Google-Smtp-Source: AGHT+IFe7MCt3tMy8UJnCFcTCDJ7Ws9aSGX9GZLsZKm8TXGecMHmJJdHGw5Lw4vx1Y8cmCvlQpVBvadNgzfTIk1Y+cI=
-X-Received: by 2002:a17:90b:3596:b0:2ee:bf84:4fe8 with SMTP id
- 98e67ed59e1d1-2fa243eaa37mr21305490a91.30.1739234049785; Mon, 10 Feb 2025
- 16:34:09 -0800 (PST)
+        d=1e100.net; s=20230601; t=1739234127; x=1739838927;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VxUDobe983gjq42l5etMnUQOudv1Q5z/oGZgl3Z73n4=;
+        b=WzLCqEYfd/yHyrI9AsRCUe+ut7iINmPy2Hc590plVZmPKrOYYlDZdOrDseeb/5xmSz
+         Y+2R+aFrv5kDM5uJT4P7SUFD62YSZ0aE5IzCp+JYBEZR2/G6YI74gjuSIkRdNcRdnVFP
+         7vE8FN7woVFdDsObR44qT9INXkSJD7KbQRKWqwyfQaGSVKBlGLJyStcU17pKl5KpCmSW
+         mWL/x5Jogivu58I2//9KqSJCz4Pb2vZTFuSCKVQFiq0ChIkX4ShFYb1VbPplnfNQWItw
+         C5nzTpgjNCSctl83+vyi1Sw49Q1KLE9zFlbzkpq3yGTIvjNqUKEN8sOq8NoLUwnVGPlN
+         9YOw==
+X-Forwarded-Encrypted: i=1; AJvYcCV48ICsl/dgc6cA8+9INcr141RQyv8CiIGKTwkxlLdbUS6s8tjo+W0XKNf+8LD45xo5q9k=@vger.kernel.org, AJvYcCWM1y7f6TeV60IC3j7DQJ0EmgXzGIftysigMvAVIcQxjSv/NuYC3qX082UTFPk9cQ7p1ZBDU8Zmyw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyhGZA/G2qjsmzPdVbF8PSRuuSXST3W+edYsaDd8+BOnerboPH4
+	txTYXSJc4CDXw+Ic49Lp1QbTXSrb38UDSGCVxUCHnyme7zuZO7Re
+X-Gm-Gg: ASbGncuur6czLG016nVL7/bBXHwjKiFTe3kxvjO3xR5571EYkp7TUTqHFYZ1VI8FZQj
+	+XdiOIn+xMpmixnczJaIKfbBh78/JTYlYHuT2B1rpml8cZYH0UldrxDFhAR6/MTMhxXor2E+THW
+	0TgKap3f6FlqeSCpUtbsXiAHa7e6Ssx++UP9M3xn2SZeA70xs8DktxfBWbcodZfdCUMgB5pa+xE
+	NUYvnNXlr0214J/PaP1bWz8ut2w6w9ZziKJi6oBIdil4ohELU8tT+sMA0dB51C4T6QE8aBnN2PY
+	ib48pFhX6lak
+X-Google-Smtp-Source: AGHT+IEsx0WcVCysC5AGZgMiPmqH2d5wj68nOmggL8XmpkyPaD56ix2CdPhqYrnBirZJQiUHylp7Ig==
+X-Received: by 2002:a17:903:251:b0:21f:14e3:165d with SMTP id d9443c01a7336-21f4e777d88mr269247235ad.44.1739234126690;
+        Mon, 10 Feb 2025 16:35:26 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21f3687c68asm85754115ad.172.2025.02.10.16.35.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Feb 2025 16:35:26 -0800 (PST)
+Message-ID: <d54c6bf8e627b41e6628b2759de3acaf268590cc.camel@gmail.com>
+Subject: Re: [PATCH dwarves 1/3] btf_encoder: collect kfuncs info in
+ btf_encoder__new
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Ihor Solodrai <ihor.solodrai@linux.dev>, dwarves@vger.kernel.org, 
+	bpf@vger.kernel.org
+Cc: acme@kernel.org, alan.maguire@oracle.com, ast@kernel.org,
+ andrii@kernel.org, 	mykolal@fb.com, kernel-team@meta.com
+Date: Mon, 10 Feb 2025 16:35:21 -0800
+In-Reply-To: <20a49b2ada87ce106607e1ca8c98a76e826dccd1@linux.dev>
+References: <20250207021442.155703-1-ihor.solodrai@linux.dev>
+	 <20250207021442.155703-2-ihor.solodrai@linux.dev>
+	 <3782640a577e6945c86d6330bc8a05018a1e5c52.camel@gmail.com>
+	 <20a49b2ada87ce106607e1ca8c98a76e826dccd1@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250207014809.1573841-1-andrii@kernel.org> <20250207014809.1573841-2-andrii@kernel.org>
- <3313c853-9ed7-4498-b78d-96713ff7b50d@oracle.com>
-In-Reply-To: <3313c853-9ed7-4498-b78d-96713ff7b50d@oracle.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 10 Feb 2025 16:33:57 -0800
-X-Gm-Features: AWEUYZkwlwYCpvPHBOHgdSVriKWqbR5OXZpKN3pJ7jDG1TmexpF2vAFVGl7pwGI
-Message-ID: <CAEf4BzZAOJMm7pdaM6DYn=_nhL9qA2h29V-itpQx=RvgyMsodw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: add test for LDX/STX/ST
- relocations over array field
-To: Cupertino Miranda <cupertino.miranda@oracle.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com, 
-	Emil Tsalapatis <emil@etsalapatis.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 10, 2025 at 12:13=E2=80=AFPM Cupertino Miranda
-<cupertino.miranda@oracle.com> wrote:
->
-> Hi Andrii,
->
-> On 07-02-2025 01:48, Andrii Nakryiko wrote:
-> > Add a simple repro for the issue of miscalculating LDX/STX/ST CO-RE
-> > relocation size adjustment when the CO-RE relocation target type is an
-> > ARRAY.
-> >
-> > We need to make sure that compiler generates LDX/STX/ST instruction wit=
-h
-> > CO-RE relocation against entire ARRAY type, not ARRAY's element. With
-> > the code pattern in selftest, we get this:
-> >
-> >        59:       61 71 00 00 00 00 00 00 w1 =3D *(u32 *)(r7 + 0x0)
-> >                  00000000000001d8:  CO-RE <byte_off> [5] struct core_re=
-loc_arrays::a (0:0)
-> >
-> > Where offset of `int a[5]` is embedded (through CO-RE relocation) into =
-memory
-> > load instruction itself.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >   tools/testing/selftests/bpf/prog_tests/core_reloc.c    |  6 ++++--
-> >   ...f__core_reloc_arrays___err_bad_signed_arr_elem_sz.c |  3 +++
-> >   tools/testing/selftests/bpf/progs/core_reloc_types.h   | 10 +++++++++=
-+
-> >   .../selftests/bpf/progs/test_core_reloc_arrays.c       |  5 +++++
-> >   4 files changed, 22 insertions(+), 2 deletions(-)
-> >   create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_=
-arrays___err_bad_signed_arr_elem_sz.c
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tool=
-s/testing/selftests/bpf/prog_tests/core_reloc.c
-> > index e10ea92c3fe2..08963c82f30b 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-> > @@ -85,11 +85,11 @@ static int duration =3D 0;
-> >   #define NESTING_ERR_CASE(name) {                                    \
-> >       NESTING_CASE_COMMON(name),                                      \
-> >       .fails =3D true,                                                 =
- \
-> > -     .run_btfgen_fails =3D true,                                      =
-                 \
-> > +     .run_btfgen_fails =3D true,                                      =
- \
-> >   }
-> >
-> >   #define ARRAYS_DATA(struct_name) STRUCT_TO_CHAR_PTR(struct_name) {  \
-> > -     .a =3D { [2] =3D 1 },                                            =
-   \
-> > +     .a =3D { [2] =3D 1, [3] =3D 11 },                                =
-     \
-> >       .b =3D { [1] =3D { [2] =3D { [3] =3D 2 } } },                    =
-       \
-> >       .c =3D { [1] =3D { .c =3D  3 } },                                =
-     \
-> >       .d =3D { [0] =3D { [0] =3D { .d =3D 4 } } },                     =
-       \
-> > @@ -108,6 +108,7 @@ static int duration =3D 0;
-> >       .input_len =3D sizeof(struct core_reloc_##name),                 =
- \
-> >       .output =3D STRUCT_TO_CHAR_PTR(core_reloc_arrays_output) {       =
- \
-> >               .a2   =3D 1,                                             =
- \
-> > +             .a3   =3D 12,                                            =
- \
-> >               .b123 =3D 2,                                             =
- \
-> >               .c1c  =3D 3,                                             =
- \
-> >               .d00d =3D 4,                                             =
- \
-> > @@ -602,6 +603,7 @@ static const struct core_reloc_test_case test_cases=
-[] =3D {
-> >       ARRAYS_ERR_CASE(arrays___err_non_array),
-> >       ARRAYS_ERR_CASE(arrays___err_wrong_val_type),
-> >       ARRAYS_ERR_CASE(arrays___err_bad_zero_sz_arr),
-> > +     ARRAYS_ERR_CASE(arrays___err_bad_signed_arr_elem_sz),
-> >
-> >       /* enum/ptr/int handling scenarios */
-> >       PRIMITIVES_CASE(primitives),
-> > diff --git a/tools/testing/selftests/bpf/progs/btf__core_reloc_arrays__=
-_err_bad_signed_arr_elem_sz.c b/tools/testing/selftests/bpf/progs/btf__core=
-_reloc_arrays___err_bad_signed_arr_elem_sz.c
-> > new file mode 100644
-> > index 000000000000..21a560427b10
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/btf__core_reloc_arrays___err_ba=
-d_signed_arr_elem_sz.c
-> > @@ -0,0 +1,3 @@
-> > +#include "core_reloc_types.h"
-> > +
-> > +void f(struct core_reloc_arrays___err_bad_signed_arr_elem_sz x) {}
-> > diff --git a/tools/testing/selftests/bpf/progs/core_reloc_types.h b/too=
-ls/testing/selftests/bpf/progs/core_reloc_types.h
-> > index fd8e1b4c6762..5760ae015e09 100644
-> > --- a/tools/testing/selftests/bpf/progs/core_reloc_types.h
-> > +++ b/tools/testing/selftests/bpf/progs/core_reloc_types.h
-> > @@ -347,6 +347,7 @@ struct core_reloc_nesting___err_too_deep {
-> >    */
-> >   struct core_reloc_arrays_output {
-> >       int a2;
-> > +     int a3;
-> >       char b123;
-> >       int c1c;
-> >       int d00d;
-> > @@ -455,6 +456,15 @@ struct core_reloc_arrays___err_bad_zero_sz_arr {
-> >       struct core_reloc_arrays_substruct d[1][2];
-> >   };
-> >
-> > +struct core_reloc_arrays___err_bad_signed_arr_elem_sz {
-> > +     /* int -> short (signed!): not supported case */
-> > +     short a[5];
-> > +     char b[2][3][4];
-> > +     struct core_reloc_arrays_substruct c[3];
-> > +     struct core_reloc_arrays_substruct d[1][2];
-> > +     struct core_reloc_arrays_substruct f[][2];
-> > +};
-> > +
-> >   /*
-> >    * PRIMITIVES
-> >    */
-> > diff --git a/tools/testing/selftests/bpf/progs/test_core_reloc_arrays.c=
- b/tools/testing/selftests/bpf/progs/test_core_reloc_arrays.c
-> > index 51b3f79df523..448403634eea 100644
-> > --- a/tools/testing/selftests/bpf/progs/test_core_reloc_arrays.c
-> > +++ b/tools/testing/selftests/bpf/progs/test_core_reloc_arrays.c
-> > @@ -15,6 +15,7 @@ struct {
-> >
-> >   struct core_reloc_arrays_output {
-> >       int a2;
-> > +     int a3;
-> >       char b123;
-> >       int c1c;
-> >       int d00d;
-> > @@ -41,6 +42,7 @@ int test_core_arrays(void *ctx)
-> >   {
-> >       struct core_reloc_arrays *in =3D (void *)&data.in;
-> >       struct core_reloc_arrays_output *out =3D (void *)&data.out;
-> > +     int *a;
-> >
-> >       if (CORE_READ(&out->a2, &in->a[2]))
-> >               return 1;
-> > @@ -53,6 +55,9 @@ int test_core_arrays(void *ctx)
-> >       if (CORE_READ(&out->f01c, &in->f[0][1].c))
-> >               return 1;
-> >
-> > +     a =3D __builtin_preserve_access_index(({ in->a; }));
-> > +     out->a3 =3D a[0] + a[1] + a[2] + a[3];
-> Just to try to understand what seems to be the expectation from the
-> compiler and CO-RE in this case.
-> Do you expect that all those a[n] accesses would be generating CO-RE
-> relocations assuming the size for the elements in in->a ?
->
+On Mon, 2025-02-10 at 22:42 +0000, Ihor Solodrai wrote:
+> On 2/10/25 12:57 PM, Eduard Zingerman wrote:
+> > On Thu, 2025-02-06 at 18:14 -0800, Ihor Solodrai wrote:
+> > > From: Ihor Solodrai <ihor.solodrai@pm.me>
+> > >=20
+> > > btf_encoder__tag_kfuncs() is a post-processing step of BTF encoding,
+> > > executed right before BTF is deduped and dumped to the output.
+> > >=20
+> > > Split btf_encoder__tag_kfuncs() routine in two parts:
+> > >   * btf_encoder__collect_kfuncs()
+> > >   * btf_encoder__tag_kfuncs()
+> > >=20
+> > > [...]
+> >=20
+> > Tbh, I don't think this split is necessary, modifying btf_type
+> > in-place should be fine (and libbpf does it at-least in one place).
+> > E.g. like here:
+> > https://github.com/acmel/dwarves/compare/master...eddyz87:dwarves:arena=
+-attrs-no-split
+> > I like it because it keeps the change a bit more contained,
+> > but I do not insist.
+>=20
+> There are a couple of reasons this split makes sense to me.
+>=20
+> First, I wanted to avoid modifying BTF. Having btf_encoder only
+> appending things to BTF is easy to reason about. But you're saying
+> modification does happen somewhere already?
 
-Well, I only care to get LDX instruction with associated in->a CO-RE
-relocation. This is what Clang currently generates for this piece of
-code. You can see that it combines both LDX+CO-RE relo for a[0], and
-then non-CO-RE relocated LDX for a[1], a[2], a[3], where the base was
-relocated with CO-RE a bit earlier.
+See tools/lib/bpf/libbpf.c:bpf_object__sanitize_btf().
+A set of small in-place rewrites for compatibility with old kernels.
 
-      44:       18 07 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r7 =3D 0x0 =
-ll
-                0000000000000160:  R_BPF_64_64  data
+> The second reason is that the input for kfunc tagging is ELF, and so
+> it can be read at around the same time other ELF data is read (such as
+> for fucntions table). This has an additional benefit of running in
+> parallel to dwarf encoders (because one of the dwarf workers is
+> creating btf_encoder struct), as opposed to a sequential
+> post-processing step.
 
-...
+Makes sense.
 
-      55:       b7 01 00 00 00 00 00 00 r1 =3D 0x0
-                00000000000001b8:  CO-RE <byte_off> [5] struct
-core_reloc_arrays::a (0:0)
-      56:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r2 =3D 0x0 =
-ll
-                00000000000001c0:  R_BPF_64_64  data
-      58:       0f 12 00 00 00 00 00 00 r2 +=3D r1
-      59:       61 71 00 00 00 00 00 00 w1 =3D *(u32 *)(r7 + 0x0)
-                00000000000001d8:  CO-RE <byte_off> [5] struct
-core_reloc_arrays::a (0:0)
-      60:       61 23 04 00 00 00 00 00 w3 =3D *(u32 *)(r2 + 0x4)
-      61:       0c 13 00 00 00 00 00 00 w3 +=3D w1
-      62:       61 21 08 00 00 00 00 00 w1 =3D *(u32 *)(r2 + 0x8)
-      63:       0c 13 00 00 00 00 00 00 w3 +=3D w1
-      64:       61 21 0c 00 00 00 00 00 w1 =3D *(u32 *)(r2 + 0xc)
-      65:       0c 13 00 00 00 00 00 00 w3 +=3D w1
-      66:       63 37 04 01 00 00 00 00 *(u32 *)(r7 + 0x104) =3D w3
+[...]
 
-Clang might change code generation pattern in the future, of course,
-but at least as of right now I know I did test this logic :) Ideally
-I'd be able to generate embedded asm with CO-RE relocation, but I'm
-not sure that's supported today.
-
-> > +
-> >       return 0;
-> >   }
-> >
->
 
