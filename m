@@ -1,259 +1,203 @@
-Return-Path: <bpf+bounces-51134-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51135-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8280CA30993
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 12:13:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25E7AA30997
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 12:13:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9D207A3E63
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 11:11:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78CAA7A4456
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 11:12:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E5181F4262;
-	Tue, 11 Feb 2025 11:09:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D438C1F8916;
+	Tue, 11 Feb 2025 11:10:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QZBlU3Ff"
+	dkim=pass (2048-bit key) header.d=superluminal.eu header.i=@superluminal.eu header.b="HFaXDlOX"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0DE11FA854
-	for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 11:09:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68FD91C9EAA
+	for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 11:10:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739272198; cv=none; b=iQXDf5+hYDnn18RZcDYXhKuOF2i/PGm8pvm9wfAf4re6uExHUHc5maessvvlEYiTD+QcD3qeUZr5aPOnPofctvfuSvcg0p81p1xReGNZje7IJv00akw4LBjeBUROXDrr4Ni51b94Du4cIEtjhLhL93Ducffw3w8XhHK9zZqXAlA=
+	t=1739272237; cv=none; b=i6xnJt2i2FGvbhvD+BhilZR8fGX1LRpP8Ka/qCFbTA18+2vxzbuylxklBDsQsoIQ2Br/500Gw33jKZ8qn5CB5mKGvXMmv6UQgX/Va3acOgVn9LXzcyxXOBWbp7UjPmFB79AiVWc6+xTEVaRfSbcEsMtkbx/gF/GlHGYtJUTHP/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739272198; c=relaxed/simple;
-	bh=rpSIJr2tTA1mlR4YLGpeZyR2NSRJg92WBS/isaUQecs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=X75KIT4LFPfgPtOMYwYxRtqH6iORm/4Vre2dh3iGpr7gSE9B8k0Q4BXfJDCu0S+V8wF12QP0TbsWCDLGM3bRUAlzU/6TrUSNzCQFAUw0FDH1yzeB6Dm5tP33Jbjtqq0IIulzRTtmeoAj3LyNEteYP3hqwTgPf4PlK/xYiGEXI3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QZBlU3Ff; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1739272195;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Y7ZAQ07RxJ7O5uwhTtT4Uoh1NwPTNjnj401gSfYgfTY=;
-	b=QZBlU3FfPLoI3p8Yjz4Xs/nl9U417yAB6wu/giRTdj6Z/w9t5Axvl7RK+nu/biTSmOXUqb
-	hQTBvdJf8BfVEi9dkWGDrZ4OLNk1Ety37Qk1Z0YUY0qL+AEv7Bu8uR8lR7v/T0/6j7UUX2
-	kMp3xMB4VqlP345+MhPTUMO6B/LeWzA=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-66-nc3-mflXMFywcmajiJuBhg-1; Tue, 11 Feb 2025 06:09:54 -0500
-X-MC-Unique: nc3-mflXMFywcmajiJuBhg-1
-X-Mimecast-MFC-AGG-ID: nc3-mflXMFywcmajiJuBhg_1739272193
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-43943bd1409so14315755e9.3
-        for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 03:09:54 -0800 (PST)
+	s=arc-20240116; t=1739272237; c=relaxed/simple;
+	bh=8cbJ0j8CaPNzMqLL97bzWA01nIw1cLsBpVdgRagGWAM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZCv3/cfH7IxI+N3m+opG2FWhbp6pAMgODEaOWKt9uqG2+jaob2dfxfLyIpYxy/WqNVHGeQwnRx3XuDdYsj178B/NFBjTdCNsIAYJe0XG7JDgodMPPLzEuT9DvzXSgo9OpK03ShoqWWPkaKzcLK1YRkbc27oEdzMKDBY6kzeYHU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=superluminal.eu; spf=pass smtp.mailfrom=superluminal.eu; dkim=pass (2048-bit key) header.d=superluminal.eu header.i=@superluminal.eu header.b=HFaXDlOX; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=superluminal.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=superluminal.eu
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2f42992f608so8197940a91.0
+        for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 03:10:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=superluminal.eu; s=google; t=1739272233; x=1739877033; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CSDIez2Rh9c72m8yN12QT8Ya/AxQN7YdwUSks3gyp2Y=;
+        b=HFaXDlOXRnKFMZi13tbfvhVsFi1+LBjzYmTEFU1xDtC+3rWhINvsVVDJpGLFeN2M2d
+         i/4HyoU35PRoAwIhBBywDsbzn/VaJw4ZjXLAk4QSrzeViKL7erHvThY2bt76oMxAK68i
+         dGL2PMSgrIaoo6XScP3B1KdWr1rTLgj30ZrLlaNBsCIwaui4H1Z1a2uvBu4aqVKw+sNC
+         JLGmSizxZg/V3nhTNyncH/D2PjAnJPAEmLTjt3w5Kfywfr4qeK3mtWsELwKAHs6kGQst
+         yz6A4y6oA8WupKM6tZWzk+11gF/sRyhG1qiA7cE75inPF6cww4breDJcyuFFc2npp93M
+         HNrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739272193; x=1739876993;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y7ZAQ07RxJ7O5uwhTtT4Uoh1NwPTNjnj401gSfYgfTY=;
-        b=oOR4AStWveqSs2wy2f9IcqTEgXiKveDPCr8ch9ExxQRlDigWKoX/u9kxxKlhp52sOV
-         aw9Q9zYRO+fTth/MSOCqB5R/4e51Do+UGs2bC5cAaBqFZXK3jBDhk2XVSJzMB0Sf85kD
-         KBfTLsBZ7AAliAVJjr8Zbh0b8FslglF/aqUPXZPjk+fnDAkphMEwNN1qQV8DZ8ilvclt
-         3qU0nMxr0K8K9CfK6RpHxc95ABcHRUMMVasfr8WHz3g8nzbSGaGstEi2u1rARgdQf7Lg
-         7sE0rb96hkKbiu6zGGC9SXstjS90sEYvDuNO+mEXfRYboMZ1T2HynKobZ4i4/vkzx7zz
-         6RXA==
-X-Forwarded-Encrypted: i=1; AJvYcCUDYIZC5Aecq3PZOcP51j57A4cttIaJhos09PWw3hvYkP+FmAJvOwwDvJiH+kxOpeWQ0EA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwiY/25I557Y/3M3WYB3o9+ul3jfnY82ppKR02OwCBQIAINuxlQ
-	fF1Trlpd9SKJJj356S7HvyZ1MsTI/siJjX0XFEYbunjEHcJHnZ3hkzO01QZLRAt9z2UamYX0JAZ
-	FoN4wdlOIXDqTDP/LNb6hk+batHqWUlCcnSLV/cNmBXtzOh7oDA==
-X-Gm-Gg: ASbGncvHtKzh4YB5zGcZyf5rUVuRDt19oGFgcjCHBxwwBfLsjgbxCQ6tcwZD4GTR9kp
-	Nsae1zyb+ec96nlG4QtbWE/QtAE4/gVRlVmFq9uMUyRiThFTriQ8Jmc2s9BQmJ195hJ3saQpj/2
-	AHtf9AGN/IzNWMzD+nZzoDEGwinKot13TCf7+XFMjL2+NjBvN/r8XjFIVNFwtSltwN+4AyUJqDh
-	uYRMdLQ0H/E4lFkJPGA5vJ85FYFc5uxrw5V2cjSL2SrbEQwyOwgJORk2toqaxcYMuDSdWK8V4th
-	QOp1Trz5U8gOQe5qCwm52SgFKgGFc3A9LfY=
-X-Received: by 2002:a05:600c:1c92:b0:439:4589:1abc with SMTP id 5b1f17b1804b1-43945891eaemr64632605e9.14.1739272192985;
-        Tue, 11 Feb 2025 03:09:52 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGRBY/4tHNCW+QPAjUDCl4IZPK/+epAOWrGOIX9oOcIs3K9+fGAdS9SP2ebLTN01yGe5jkbBA==
-X-Received: by 2002:a05:600c:1c92:b0:439:4589:1abc with SMTP id 5b1f17b1804b1-43945891eaemr64632275e9.14.1739272192560;
-        Tue, 11 Feb 2025 03:09:52 -0800 (PST)
-Received: from [192.168.88.253] (146-241-31-160.dyn.eolo.it. [146.241.31.160])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38dd6080926sm8461760f8f.83.2025.02.11.03.09.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Feb 2025 03:09:52 -0800 (PST)
-Message-ID: <13afab27-2066-4912-b8f6-15ee4846e802@redhat.com>
-Date: Tue, 11 Feb 2025 12:09:50 +0100
+        d=1e100.net; s=20230601; t=1739272233; x=1739877033;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CSDIez2Rh9c72m8yN12QT8Ya/AxQN7YdwUSks3gyp2Y=;
+        b=qDk3FTofEk1bH+pFgPG6oJxKZGuxdebBVcYRAFsacUQpXdIB/DQSFeo7IRECUfTP0S
+         d1SJJcnLfK0lGviOE8bf+bY70awJ4kffXmjRBvy07miZVlDI2TFD6d+KJZkE56mRZJmD
+         uLY0y9YGWRxuOd9Bh7dVfzd9wUQ+hC2qzpuTjBQ9ltoYZcEQ5SRq9SyhQ4N3vza4g3pI
+         /7CZg4O3c1DCRYcKFEhXpvAjaOnkutM3zC41RS1TBZ5KU/U6QK3V6SZR3V2qUd9L0gVi
+         cNchQL8zHuyaJ3vgupHSAp91UHogto/v/gNNwK2vsXCMxLKGyAOy2cfkp79SuSpvH+WP
+         Fb/g==
+X-Forwarded-Encrypted: i=1; AJvYcCXVPs55oHgPcza0rBQgDYwfvxYiXytaTz5kNQ63/JC+TVL7AeWkkhUEH1QYEhbLcS5dyzw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy53DeGawRoLmWCm34BEKTU+ews+nO5ID/l6WLPrxI7oUK5RbUq
+	AxE1V+ER3nuMD5qkr3qcQCaZOgaLlXtEZhTnqXWXTk2TvYIdS2QacoMBnTqVUl2WfSc0XI5MXQz
+	cbzMplwkT/QAs1ARw2n1+PbAi6L1Qsfj3pIr7ow==
+X-Gm-Gg: ASbGnctfM25YNhxoyRxfF9SBFXACp3K1he18IsQLfT8fL6RasCq5R2dacOtwdRPRRQi
+	8aVjeYl1Kq+xIWoWtcanG03orfK6cKN5Qi54NjhskXCFLnDaALqzaglqSR8F55RnC3YFI3LsoHs
+	IYWnOlZ9Jb55IKEYQj539qIZpdHt2w/7E=
+X-Google-Smtp-Source: AGHT+IEXWyOWn8aMBXGy8OUxzr1mrJhrvcug/VyN8sb7TyuJc7LwcgMY0H8DaerTKOIzP0ZPDpN0SEizO6COp0W7nbI=
+X-Received: by 2002:a17:90b:4a43:b0:2f5:747:cbd with SMTP id
+ 98e67ed59e1d1-2fa2416707cmr29510783a91.18.1739272233279; Tue, 11 Feb 2025
+ 03:10:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v6 3/3] selftests: drv-net: Test queue xsk
- attribute
-To: Joe Damato <jdamato@fastly.com>, netdev@vger.kernel.org
-Cc: stfomichev@gmail.com, horms@kernel.org, kuba@kernel.org,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- open list <linux-kernel@vger.kernel.org>,
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
- "open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)"
- <bpf@vger.kernel.org>
-References: <20250210193903.16235-1-jdamato@fastly.com>
- <20250210193903.16235-4-jdamato@fastly.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20250210193903.16235-4-jdamato@fastly.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <CAH6OuBR=w2kybK6u7aH_35B=Bo1PCukeMZefR=7V4Z2tJNK--Q@mail.gmail.com>
+ <CAADnVQ+FJA6jBRxCagAR6GuW0uRysfmgCnGk=ym1-rV0DPHPJg@mail.gmail.com>
+ <CAH6OuBQa2QbCXzksiy5PhTCEYBf6m=w0ZKAUzTptxjgqKC25Mw@mail.gmail.com> <Z6ejZh/7jJCHbdVi@pop-os.localdomain>
+In-Reply-To: <Z6ejZh/7jJCHbdVi@pop-os.localdomain>
+From: Ritesh Oedayrajsingh Varma <ritesh@superluminal.eu>
+Date: Tue, 11 Feb 2025 12:10:21 +0100
+X-Gm-Features: AWEUYZkU4x6M4a--FTcE1p0jhgUIs8GjZqXAA4xICh3mL5jpId6pJ2FHw4R6PR4
+Message-ID: <CAH6OuBR7zS2x0B_opzoXQcRVTY-txpwDWL4U+M4kN8rk4kG9BA@mail.gmail.com>
+Subject: Re: Poor performance of bpf_map_update_elem() for BPF_MAP_TYPE_HASH_OF_MAPS
+ / BPF_MAP_TYPE_ARRAY_OF_MAPS
+To: Cong Wang <xiyou.wangcong@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Jelle van der Beek <jelle@superluminal.eu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/10/25 8:38 PM, Joe Damato wrote:
-> +def check_xdp(cfg, nl, xdp_queue_id=0) -> None:
-> +    test_dir = os.path.dirname(os.path.realpath(__file__))
-> +    xdp = subprocess.Popen([f"{test_dir}/xdp_helper", f"{cfg.ifindex}", f"{xdp_queue_id}"],
-> +                           stdin=subprocess.PIPE, stdout=subprocess.PIPE, bufsize=1,
-> +                           text=True)
-> +    defer(xdp.kill)
-> +
-> +    stdout, stderr = xdp.communicate(timeout=10)
-> +    rx = tx = False
-> +
-> +    queues = nl.queue_get({'ifindex': cfg.ifindex}, dump=True)
-> +    if not queues:
-> +        raise KsftSkipEx("Netlink reports no queues")
-> +
-> +    for q in queues:
-> +        if q['id'] == 0:
-> +            if q['type'] == 'rx':
-> +                rx = True
-> +            if q['type'] == 'tx':
-> +                tx = True
-> +
-> +            ksft_eq(q['xsk'], {})
-> +        else:
-> +            if 'xsk' in q:
-> +                _fail("Check failed: xsk attribute set.")
-> +
-> +    ksft_eq(rx, True)
-> +    ksft_eq(tx, True)
+On Sat, Feb 8, 2025 at 7:33=E2=80=AFPM Cong Wang <xiyou.wangcong@gmail.com>=
+ wrote:
+>
+> On Sat, Feb 08, 2025 at 11:39:31AM +0100, Ritesh Oedayrajsingh Varma wrot=
+e:
+> > On Sat, Feb 8, 2025 at 4:58=E2=80=AFAM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Wed, Feb 5, 2025 at 4:58=E2=80=AFAM Ritesh Oedayrajsingh Varma
+> > > <ritesh@superluminal.eu> wrote:
+> > > >
+> > > > Given this, while it's not possible to remove the wait entirely
+> > > > without breaking user space, I was wondering if it would be
+> > > > possible/acceptable to add a way to opt-out of this behavior for
+> > > > programs like ours that don't care about this. One way to do so cou=
+ld
+> > > > be to add an additional flag to the BPF_MAP_CREATE flags, perhaps
+> > > > something like BPF_F_INNER_MAP_NO_SYNC.
+> > >
+> > > Sounds reasonable.
+> > > The flag name is a bit cryptic, BPF_F_UPDATE_INNER_MAP_NO_WAIT
+> > > is a bit more explicit, but I'm not sure whether it's better.
+> >
+> > I agree the name is a bit cryptic. A related question is whether the
+> > optimization to skip the RCU wait should only apply to the update, or
+> > also to delete. I think it would make sense for it to apply to all
+> > operations. What do you think?
+>
+> Exposing kernel-behavior to user-space is not a good idea, since users
+> have to understand kernel details to know how to safely use this flag.
 
-This causes self-test failures:
+I agree it's not ideal, but I don't really see another option that
+doesn't involve breaking user-space, and the current brute force sync
+in maybe_wait_bpf_programs() is quite heavy-handed for a guarantee
+that at least some percentange of users (like us) don't care about.
+Given that it's an *opt-out* and not an opt-in, I think it's okay,
+because everything will just continue functioning as before if you
+don't use the flag; if you *do* use the flag, then presumably you've
+spent time to understand what (and why) it does (and we can of course
+add a comment to the new flag with explanation).
 
-https://netdev-3.bots.linux.dev/vmksft-net-drv/results/987742/4-queues-py/stdout
+>
+> >
+> > I also realized the flag should technically apply to the *outer* map,
+> > since that's the map that's actually being modified and synced on, not
+> > the inner map. So I don't think "inner" should be part of the name in
+> > retrospect. Perhaps BPF_F_MAP_OF_MAPS_NO_WAIT or
+> > BPF_F_MAP_IN_MAP_NO_WAIT? I'm slightly leaning towards the latter
+> > because the map of maps support code is also located in map_in_map.c,
+> > so that matches nicely. They're both a bit long though. Either way,
+> > the definition of the outer map when using this flag would become
+> > something like:
+> >
+> > struct {
+> >     __uint(type, BPF_MAP_TYPE_HASH_OF_MAPS);
+> >     __uint(max_entries, 4096);
+> >     __type(key, u64);
+> >     __type(value, u32);
+> >     __uint(map_flags, BPF_F_MAP_IN_MAP_NO_WAIT);
+> > } mapInMap SEC(".maps");
+> >
+> > > Also have you considered a batched update? There will be
+> > > only one sync_rcu() for the whole batch.
+> >
+> > We have, yes, but in our case, these updates are a result of another
+> > system generating events, and it is a bit hard to batch them together:
+> > it would involve waiting for multiple events to arrive, instead of
+> > processing events as they come in, which introduces an additional
+> > layer of latency by itself.
+> >
+> > Regarding batched update, we've found that it is also very slow when
+> > inserting a large number of elements. In one example where we inserted
+> > ~1.2 million 16-byte elements, we found it took 4-500 milliseconds to
+> > update the map via batched update. This is due to the overhead of
+> > generic_map_update_batch() individually copying each element to be
+> > inserted from user space via copy_from_user(); almost all time is
+> > going to __check_object_size() called by copy_from_user(). I suspect
+> > this one is hard to fix though, due to how the elements in a map are
+> > laid out in memory; it would be hard to change such batched updates
+> > into a single copy. But perhaps that's something for a different
+> > thread (and we can easily work around it on our side).
+>
+> I think there are rooms to improve this:
+>
+> 1) As you mentioned, for hash-based or any other non-linear maps, it is
+> indeed hard to optimize. However, for linear ones like array map, it is
+> possible to copy the whole memory from user-space once.
 
-but I really haven't done any real investigation here.
+It is possible yes, but it would have the effect that memory usage
+would be (temporarily) higher than before as there would have to be a
+temporary copy of the full array in kernel-space, whereas right now
+there is only temporary space required for a single element. For large
+arrays like we're talking about, that could be quite a lot of memory.
 
-/P
+>
+> 2) There are actualy two copies here, one is from user-space to a tempora=
+ry
+> kernel memory, the other is from this temporary memory to the actual map
+> key/value memory. _I speculate_ it is possible to optimize them down to
+> one copy, at least for simple cases.
+>
+> Just my two cents.
+>
+> Thanks!
 
->  
->  def get_queues(cfg, nl) -> None:
->      snl = NetdevFamily(recv_size=4096)
-> @@ -81,7 +112,7 @@ def check_down(cfg, nl) -> None:
->  
->  def main() -> None:
->      with NetDrvEnv(__file__, queue_count=100) as cfg:
-> -        ksft_run([get_queues, addremove_queues, check_down], args=(cfg, NetdevFamily()))
-> +        ksft_run([get_queues, addremove_queues, check_down, check_xdp], args=(cfg, NetdevFamily()))
->      ksft_exit()
->  
->  
-> diff --git a/tools/testing/selftests/drivers/net/xdp_helper.c b/tools/testing/selftests/drivers/net/xdp_helper.c
-> new file mode 100644
-> index 000000000000..b04d4e0ea30a
-> --- /dev/null
-> +++ b/tools/testing/selftests/drivers/net/xdp_helper.c
-> @@ -0,0 +1,89 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <unistd.h>
-> +#include <sys/mman.h>
-> +#include <sys/socket.h>
-> +#include <linux/if_xdp.h>
-> +#include <linux/if_link.h>
-> +#include <net/if.h>
-> +#include <inttypes.h>
-> +
-> +#define UMEM_SZ (1U << 16)
-> +#define NUM_DESC (UMEM_SZ / 2048)
-> +
-> +/* this is a simple helper program that creates an XDP socket and does the
-> + * minimum necessary to get bind() to succeed.
-> + *
-> + * this test program is not intended to actually process packets, but could be
-> + * extended in the future if that is actually needed.
-> + *
-> + * it is used by queues.py to ensure the xsk netlinux attribute is set
-> + * correctly.
-> + */
-> +int main(int argc, char **argv)
-> +{
-> +	struct xdp_umem_reg umem_reg = { 0 };
-> +	struct sockaddr_xdp sxdp = { 0 };
-> +	int num_desc = NUM_DESC;
-> +	void *umem_area;
-> +	int ifindex;
-> +	int sock_fd;
-> +	int queue;
-> +	char byte;
-> +
-> +	if (argc != 3) {
-> +		fprintf(stderr, "Usage: %s ifindex queue_id", argv[0]);
-> +		return 1;
-> +	}
-> +
-> +	sock_fd = socket(AF_XDP, SOCK_RAW, 0);
-> +	if (sock_fd < 0) {
-> +		perror("socket creation failed");
-> +		return 1;
-> +	}
-> +
-> +	ifindex = atoi(argv[1]);
-> +	queue = atoi(argv[2]);
-> +
-> +	umem_area = mmap(NULL, UMEM_SZ, PROT_READ | PROT_WRITE, MAP_PRIVATE |
-> +			MAP_ANONYMOUS, -1, 0);
-> +	if (umem_area == MAP_FAILED)
-> +		return -1;
-> +
-> +	umem_reg.addr = (uintptr_t)umem_area;
-> +	umem_reg.len = UMEM_SZ;
-> +	umem_reg.chunk_size = 2048;
-> +	umem_reg.headroom = 0;
-> +
-> +	setsockopt(sock_fd, SOL_XDP, XDP_UMEM_REG, &umem_reg,
-> +		   sizeof(umem_reg));
-> +	setsockopt(sock_fd, SOL_XDP, XDP_UMEM_FILL_RING, &num_desc,
-> +		   sizeof(num_desc));
-> +	setsockopt(sock_fd, SOL_XDP, XDP_UMEM_COMPLETION_RING, &num_desc,
-> +		   sizeof(num_desc));
-> +	setsockopt(sock_fd, SOL_XDP, XDP_RX_RING, &num_desc, sizeof(num_desc));
-> +
-> +	sxdp.sxdp_family = AF_XDP;
-> +	sxdp.sxdp_ifindex = ifindex;
-> +	sxdp.sxdp_queue_id = queue;
-> +	sxdp.sxdp_flags = 0;
-> +
-> +	if (bind(sock_fd, (struct sockaddr *)&sxdp, sizeof(sxdp)) != 0) {
-> +		perror("bind failed");
-> +		close(sock_fd);
-> +		return 1;
-> +	}
-> +
-> +	/* give the parent program some data when the socket is ready*/
-> +	fprintf(stdout, "%d\n", sock_fd);
-> +
-> +	/* parent program will write a byte to stdin when its ready for this
-> +	 * helper to exit
-> +	 */
-> +	read(STDIN_FILENO, &byte, 1);
-> +
-> +	close(sock_fd);
-> +	return 0;
-> +}
-
+This is something I looked at, but I don't see a way to do this
+without significantly changing the code. As mentioned in the other
+thread, this is not an active problem for us as we can work around
+this quite easily on our end, so it's not something we'll be pursuing
+further.
 
