@@ -1,250 +1,606 @@
-Return-Path: <bpf+bounces-51151-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51152-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1FA9A30EB0
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 15:45:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 61024A30EFA
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 16:01:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 208CF18878C1
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 14:45:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F068218868C2
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 15:01:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4998E22DFAB;
-	Tue, 11 Feb 2025 14:45:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C89BF250C13;
+	Tue, 11 Feb 2025 15:00:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="X6o3g3ti"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dSas8dQf"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2063.outbound.protection.outlook.com [40.107.102.63])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B9231F2367;
-	Tue, 11 Feb 2025 14:45:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.63
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739285125; cv=fail; b=ETaecpfCsNLeYzO0UBj4t0zSUDZJN5zPnyQLhnjbNLtRil5EIP0YydsbKm0m/dHdRt7YB/zo31J9BX9o+cr94SiU9PQtC5lL5M3kwOO/5uZnPUBJgJOolJBd7FYCHVubjbEp0vEw+5VM39hTXNoUwyrPuFB/NCjou/+ewE+tfUQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739285125; c=relaxed/simple;
-	bh=udsg0Zv8ux7d0TtCFteMb76Ia3++uqfn+H0bKrRJVWo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=dKnH0KJ6aEe44SJ5Ft+piit1zn/kT0qeQ0dllShTfgCAkEnsKsfZzyGbZ3gYMHDDv681IO9GTV20FJUwVgxQjMBWmja8/MbFnLUsQkerDpRD/wBYLm/ax96XiMeDxdQDC34mxnMXTxfXTX6jTEVMtjz71mzAuV/NqrYjsiOTI6s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=X6o3g3ti; arc=fail smtp.client-ip=40.107.102.63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=NLS4/oCG+BxPbmTXRMh2ciykBSuRUopwOOqk9HxHhW2XznjHPlLVcvSfkCgg9q8rYUwK4KH2wF3o/xwvjOsNkclarhl8TeMIbEKMVONC+MZ2WLgQva+vGKCKs1UtCObjLvIRx7YAvxrJAkg/mPVOHCjPnC7UvZ+zrNgkZsQQBRbp4VLtwF5fO9qBtErtyCV7y7ZTzsZRdeSS0Q97xXY8DBf8TNoLSm7z4NO7AaAC67bFhNpfDScaa4ebRX4AonjX0DELfGlylD/DPkwQphQFSNSrnUCEPmWbSTCoyCC/uosN0eHtAPHKSE+IuQgWqaZaw0OkaacmGaxiX/MlCd5F1w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jDuoJG2cl0HqdNgGVwEUKhgY421DgGbcfa2U6G/w7H4=;
- b=T1RRqC7ARkFuABdNXP/qOi+1ImQhss6odkctpKRk8G8BxeBTvPlDglMwCkpkEZUH2SkV4MZiWXley/j9ZSR9j43TcpJp4b8g6ijxMSBrf4l9cohUIznQ2pFVUUz1y3F7XQblv2/B8GM62bvmwd19FcpKDY8iltPg81vXcpj2rerFCWtSAjBCiRyYOR3XDsidDw3n4VhhrpuPyfw2QrY4Ku6xLnyuYVA1FDmrtHqUNR+x8PSXM7l9iJ8W1RdFTuLZ5YZKB7neBkDyV1GOcsGhd1DQyz912MVbWT1vameqeu5QHRMEv8hNsKS2hPDbyaJwHrpg0XuHqtbOfm6QvK+A7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jDuoJG2cl0HqdNgGVwEUKhgY421DgGbcfa2U6G/w7H4=;
- b=X6o3g3tia8ld07EIFpycXqtb9tUiUhximnjU65nkxTM2h4zliQU0bFL2pS6oD/zcZvt/gAg8VIR8mI+VIV0PogZ+bsj5LiVUtK+u53bMFj6mSFBdNcgoKOuMERG1MyhPvsvLlxWg+4oZw1iWSHTrlU5RHBkRi/YBB16m/aP3hqymFqP2CAdTT+3NF96Pg3rPfcBj3O2Ez3oVAR+B1EnxyJyFZVWuqmLSXi1unsq1zIVasPHcyX4L9ZeWoqVO+GhkUlmLZY7Cn+/i19vfHOvCEu2OMhFMIc4ZMrBIgXv7Q45MUSWWsNuPppsDww0OjjyUKkGMz9r671glWNk5mWfbpg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CY5PR12MB6405.namprd12.prod.outlook.com (2603:10b6:930:3e::17)
- by SJ2PR12MB8181.namprd12.prod.outlook.com (2603:10b6:a03:4f6::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8422.16; Tue, 11 Feb
- 2025 14:45:21 +0000
-Received: from CY5PR12MB6405.namprd12.prod.outlook.com
- ([fe80::2119:c96c:b455:53b5]) by CY5PR12MB6405.namprd12.prod.outlook.com
- ([fe80::2119:c96c:b455:53b5%7]) with mapi id 15.20.8422.015; Tue, 11 Feb 2025
- 14:45:21 +0000
-Date: Tue, 11 Feb 2025 15:45:15 +0100
-From: Andrea Righi <arighi@nvidia.com>
-To: Yury Norov <yury.norov@gmail.com>
-Cc: Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>,
-	Changwoo Min <changwoo@igalia.com>, Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>, Ian May <ianm@nvidia.com>,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/6] sched_ext: idle: Per-node idle cpumasks
-Message-ID: <Z6tie5F-AkGkiV74@gpd3>
-References: <20250207211104.30009-1-arighi@nvidia.com>
- <20250207211104.30009-6-arighi@nvidia.com>
- <Z6ju7vFK5TpJamn5@thinkpad>
- <Z6owBvYiArjXvIGC@thinkpad>
- <Z6r9H6JukZi19dQP@gpd3>
- <Z6r_NZui9GibrQHY@gpd3>
- <Z6sddk2otmAVrfcb@gpd3>
- <Z6tciKa58iqWZ3eM@thinkpad>
- <Z6tf3Rn0pamy3g1_@gpd3>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z6tf3Rn0pamy3g1_@gpd3>
-X-ClientProxiedBy: FR2P281CA0157.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:99::18) To CY5PR12MB6405.namprd12.prod.outlook.com
- (2603:10b6:930:3e::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E93583D69
+	for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 15:00:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1739286055; cv=none; b=WjN49ksM93oIcsHSn25cb8zoHvpFA+7e7qgXVnV81I/yvhRbOmGR+lCBuO6VM6XURR2JpfI/7K21IX8w/9NMyEGanwupjeDV02r0svLI8HGO3Z1YlTNt8YYZgJQ7O6g0bHgnxiJbID8+mEX3d08ysI71bo9TC7aocrR9pIGfqMM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1739286055; c=relaxed/simple;
+	bh=gv8DRz5+1+Qk5BNkttYcl2ki1BPduqMl2fM8oWJ+BKs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NmCnKmsCFHcwTk4wPVm7Tlpvvw6HRDnQS0Qb96dgOz1bdIHVWlbXxeZKIPT03VnGszQSO01BMFj1r1WRW72zguuokDTcc7g94FlfT2zNDn+RI+fgZOf7hunoEga5JU4BKMvUutTeuSgYxK2aL8p6GG3xNB8wxBuwj++gnqAfPrI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dSas8dQf; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5de6ff9643fso4874611a12.3
+        for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 07:00:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739286051; x=1739890851; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RDtiBCUe6sRYKx6S1068DbZ/Qluolk/gvzw0MPRaui8=;
+        b=dSas8dQfi4qT5UazZvRYSq5lKhJmqa9PDZb6bWWEpW6skQSSZCemiQafFuqhE4D+Cd
+         T2Uq1OS7nyxSKaCv90VVodLx1CLiktnD/iSDON2KrK3gfZyAnDZnzWXi40IsTiC5RIk8
+         FUhy+7sS9qWNwEzQgCYP+CgI6eQnrTgeDGHwTXYWI+0VvKx+WD7VKcca0zr0rjQS2uvq
+         F/S+ha6lKD95XLExsWbtRjlIa0UV8M1XUjin9b9qcBkB4OklNBzDoIJtGn1TCGsWAyHv
+         JMxrJ8Wg24NNpZcV1UhMX/crwa+2h+n4Ebyv12109/2SESl1a7Paa9gNZa/3HUpVmp7K
+         j5fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739286051; x=1739890851;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RDtiBCUe6sRYKx6S1068DbZ/Qluolk/gvzw0MPRaui8=;
+        b=Ws1D3GTHvvOSikIKDSnyqxjtMd0wL93k3S+OFdx9FIjXPcXyZmrozTQsJjABKEmpW7
+         pb04Ae2XSWmfy6zxmTVpw/pfGRg4Zn9IoM1ao86fD+fPozg0sV0f8Gr2gTXz5F9Vymra
+         1PqPiVv06hVG088C95DIaEkRCk24j2Xk2c/ooki+pha1uZL5pyYfhufdu5ZS56sXPdVu
+         pHkQGldKSk27EEZXGGbLf2QM+jycwWcvZvlDvvzbCkr0zZVfcnek3q/8FQVRu+JZj7AL
+         PgPPRJtJMQHRcGVBdLs7IrN80S63WgEBUHeLQ0yXYyQrT9AXb1X46T+LoqxeoeEizYCk
+         5Myw==
+X-Gm-Message-State: AOJu0YxRmaR+wHbzGUp5kCDizfxRSWjCA1QYehISjnUao7X1njYiqHZw
+	Rt6tuMU9vxIxGWbeeIM6SXg8d6j+js/lLBL817QQzOjcGKDm00qa
+X-Gm-Gg: ASbGncsGHFrYW6h7bke3eIhHZJmXkxbwkdf7MeT9ZT+RvTKBoAdTJCL0YxxB/nqfSCo
+	hj4EtTJbHS4wiN+TK5FpGAGXPL0sWZlA5Ur5w8VvDp34gXuCrW2Fs9wPprTbwuXtUiohakwZXTY
+	GnaQl0TLC6wR671PyGVTa46t8LCtEC0RyGrPsrk2APK33YYyVvoU0uk7nsbEeOyrd52sJCZOpJ6
+	pb33kOFD/gjYeienHCtQpJEi4ae5vkz7ut1QqiHUjwpQ0/Dg2euWHrRUQjYXScYsjvIL+xgw0tS
+	wTT5bw2qG+ywPnUxCoS+QUNwXZqkWKZGP7Mg5B+u8rW8MJR6eJWz
+X-Google-Smtp-Source: AGHT+IECrtp+a9AwlSiCLwLOKJJYwHVduFmOFRWIC7oIlYZy3El2B6byDQnVuQxIUGYUAONxV0iE2A==
+X-Received: by 2002:a05:6402:2383:b0:5d2:723c:a568 with SMTP id 4fb4d7f45d1cf-5de45003940mr17539405a12.10.1739286050749;
+        Tue, 11 Feb 2025 07:00:50 -0800 (PST)
+Received: from ?IPV6:2a03:83e0:1126:3:8dd1:e06e:70b9:d7dc? ([2620:10d:c092:500::4:1255])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5de38c0e993sm9006023a12.12.2025.02.11.07.00.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Feb 2025 07:00:49 -0800 (PST)
+Message-ID: <e2f5ec85-f3ba-4bd5-bc04-e6d9bc8945e8@gmail.com>
+Date: Tue, 11 Feb 2025 15:00:46 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR12MB6405:EE_|SJ2PR12MB8181:EE_
-X-MS-Office365-Filtering-Correlation-Id: 73175de0-3674-4339-fdc5-08dd4aaab592
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|7416014|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?Y3Ll+zdspKDdw9PBehFiGBNxhQqlmW0iyXvQkmzqG05VEexVIel3f+8hO0vX?=
- =?us-ascii?Q?nYQPhVpyBP7fI8sW1mjvfP5mNoZXU2dETDuDV3viYUd6qzvSJR3lb9f5c1/t?=
- =?us-ascii?Q?UszZ7xNlgqCXfsvjM4bvZyEPgOwnNNHSm7fUPKZ4AB73TS59VKbwfWZL9lzN?=
- =?us-ascii?Q?BD2aPDS0Fe/AxFFKPzmUeKmpowtMHMihSjWSe41JGC6Hmayi/hR43QGWoIud?=
- =?us-ascii?Q?Oe7hniaEIt9eyjkz+z54AxROqYwXv6aUg9Kc00gjR01F+YdAqJB/x9hmIdZI?=
- =?us-ascii?Q?MzCl+JQ9ZCGrAkgwZJYc8aZfhIA5DyZfDOJ4hapmY/qvAYcUoc16RaDaRi1a?=
- =?us-ascii?Q?8Bvtzc+cMh9r5AmFQg6IvnHzt/h3siRnNgzJemyrQ6o7CcxALTQe09iImr7o?=
- =?us-ascii?Q?Sc8RwctlPUtAAIrFdDrdgLqsP1F6pFRM8LXSNtjwwnYTSefIuaOtedum8OQL?=
- =?us-ascii?Q?B7IruNk6aEHZ22zCWVsyEpBmMQYLmxIa2KEbNais8X60Snt8sqJrNwd7r0UD?=
- =?us-ascii?Q?yBhK5r7C/Nw0WDvOiligjsu2cYLywu30YCjX0WUlPlYwRaMpOMCJqzrnupcS?=
- =?us-ascii?Q?K12USitBHcliwDaR0pl90NtX1FUhO/0Ei+XhXdgmcdVvtI0EjB8+Q/RERNsT?=
- =?us-ascii?Q?XSZe+Itkq+U4ATfoed22t+rAL2s1hNQHaexW1aibNVApcvmtGrYHWdLhB1Ih?=
- =?us-ascii?Q?AVPFP9nGTh0+KEvQ88hFvTaefyDq29mB5wgep4FkCBTiDxJrgty1yI1hS1lg?=
- =?us-ascii?Q?QwatnxWnWfySWTQuo7IG6tdhFV9SqpabP7GcXjKZxS52G620jnyZtA38ahTy?=
- =?us-ascii?Q?pNLRZGw0+ds+ggQ2onQ+pQoOn3HoyJb5fRdk7ZKdYrmMqUZ1jc9hG89hjB+d?=
- =?us-ascii?Q?2s3p95w1N5i6fv9/JAJ9SZC6O2vYLc4oIdxb9gTcyIL3RdNxY8aNKrC9je05?=
- =?us-ascii?Q?zilm/OL0YbFJlRsTIwBUOiYqOHFxdoudfMiIZ0/oKdMPh0Nvq47wnEkOiFDn?=
- =?us-ascii?Q?numBh8tyLBxLT14DKCt4Mo2ZdBtfqVZaz0At9U6f8PjybdS8hHnaxqiBw0Rh?=
- =?us-ascii?Q?xBMLGpmbHhUigsH7GrYWxJ/nRHtbqRXKZe+M1p76fieHzTh+NYZ1lLyBYLqz?=
- =?us-ascii?Q?y3yApitIdnWAsndJQxSn8Hfb2DZx7ABN7cJAWosEsSN7i1pG5Bzv8K7EhUmo?=
- =?us-ascii?Q?Y5mmfuStzHKDVDnNTqjzMGIKUS6G80/uSugZ1OWL6Oz982SJrn8AekagZwyK?=
- =?us-ascii?Q?3/b4l0ad6ttxs5RqTuj9lRPzhp+lZEaKTItEJTWuzA4D/AUqc/rJTB2XlYQs?=
- =?us-ascii?Q?JlpMFIXMKn5MtfIvZ0hEDZGuHq1Q7WFFf6B1Xvn2oRWKWubQizMa7jHNs3NU?=
- =?us-ascii?Q?UKLyyqhm/8+/GV1WzJtp6tmrd0gJ?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6405.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?PdU52cm7VxhCwlr3pixxCem9kQkYAipuchrOMpgIDLfz+TzBF0YDU2/p1ubt?=
- =?us-ascii?Q?NPqELCZD3pCoruDk2WjOO33II/46nHit4KAp0bT8xsh17e/qbIxXUQiKYZnt?=
- =?us-ascii?Q?q8rpCCXYZgxOmtbNbGPhBTRNvQPrEcDOVlts/lL+RvnjIBenmxHYx4uwcxu/?=
- =?us-ascii?Q?CcSh0FuYyZ0elEo2edGMqLAc8C4WvtBcRiHa74EVtTyIgJ7ki0pN3x4quF+c?=
- =?us-ascii?Q?eI/ErdK5hSznFeq77D3S8itYIn+rwP866X8rIgf6TlY6EFj7gsqq2g00d24M?=
- =?us-ascii?Q?7IVWKuau/iXwB3hSd3kAl3kg3lLgRKmkOSi2n+N9r7xKUv4PwrDw8YFyaF1p?=
- =?us-ascii?Q?30hbVKb2yPCj1w0GGaGqLMj6sh+6K/4WyXL5fGb+Co25IKIdHaVMK/1vrAKB?=
- =?us-ascii?Q?Gqct2n2OzX7Qtge9PX/9VGwxKtdntyKy/LYCn8DOAJf0HCEIgjvbTLv55DBT?=
- =?us-ascii?Q?A+UIMbx+LmF4QzQZnjI6cAZnH2iK9EDLznzpfnOEzqJNG2jsk5c35S/QMHKs?=
- =?us-ascii?Q?2NceIPy6JNJUADJkO+xo9yWTsoK+SYTWc5oCz+ZgRr7LdpaEvimXszY2RU8w?=
- =?us-ascii?Q?US2ozccXKVUP/q9ukRQaUr+ZsfwrUng9ltP2+hnCaGcdvsZJ1Ti3mF3vNE2w?=
- =?us-ascii?Q?bPjwOPgtwG/GQ8uD88TYUlWJFN98nCJrOj+yfmve3CWP8gsZADegGrih08Vw?=
- =?us-ascii?Q?teu8KG9jl1BD+5ynBmR+DgiaISU5E9y0xWpVmNiwQF32ZiMa76BNNf0+cNL2?=
- =?us-ascii?Q?UYrYpQmkAGnkFnFBWtEbxdcRgdQF7IwhIjwwK5ctqD5uGEz1hzLM20ePesRj?=
- =?us-ascii?Q?jMJWCTHdz3Pkt0tdzyqWmIXs7r69oAms9l6VpxWg+AdPVjhGDr1IYKyZiJQM?=
- =?us-ascii?Q?4YoKMgLWVLblO3MKabs9/c+mkT/hXdxWVzPEvablWXu2zguOGR5shC9EE7LB?=
- =?us-ascii?Q?PnzSqEVuWnzahYT7+NVbkx0S0/CD7Rq4qtafzJwzwVzCo+SKTBQ7frGPkfZ4?=
- =?us-ascii?Q?sL9nHIBsVNLrARqOG225ZWPG/FkyEr1brHnuEMI3b/xJxa479NfJBicrtF3c?=
- =?us-ascii?Q?/oUkTy/qvdGYXzem8pgzboIzLE4a1+Lj90EHJ0tmp2FcBIHqVt06uYy8eOo7?=
- =?us-ascii?Q?jikcq95drm6Cvq7vMnXCikIHdO7EwYlsxPGUuyqI/87fJcSVeXWaNg7hTWM8?=
- =?us-ascii?Q?jIxlAAcjbzkSNySwzqsoyWVfRf4stzHbqnzYzLAiTpyCbXyzjda1hhuBQHSW?=
- =?us-ascii?Q?onnzp/yePoNDd8SIRSa1pdQr+IsyUAzYON/rO4oucU3YcnioNE3QqvVDIVI4?=
- =?us-ascii?Q?qspNhzlUyfmKLyafAVwJUsixVFsNxjIxZ/iiheOkRYB2scNSG3T5vK+29jnH?=
- =?us-ascii?Q?geHfw+bX/OQjJfLvO3rmiRcmABUahtzO7XyMVHzNalooobQl9Cp/e5p5fFMW?=
- =?us-ascii?Q?9UYdVTozrZ8NQGg6WWjltKZe//9Ub4y8euG9L/4H/xEpo6/Z699ORNPYd55C?=
- =?us-ascii?Q?HEiPS8HDryLKC/ikxuytrmVNQ5aPvUq94VoVsqUJzGW+PlKYiVPzF9o1l+li?=
- =?us-ascii?Q?e4pgxW+tHdY+i0XVDIVKubITk58uRdOnQjX8n5y/?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 73175de0-3674-4339-fdc5-08dd4aaab592
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6405.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2025 14:45:21.0406
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BKkD0/7nFrledudXmpUA9Q0mJnlKQu5cgt7H+av68sCCjcRsiKHiVvj1qkLS4HajG903tG/lso74tkHGinmo5g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8181
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2 1/2] selftests/bpf: implement setting global
+ variables in veristat
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
+ eddyz87@gmail.com, Mykyta Yatsenko <yatsenko@meta.com>
+References: <20250210135129.719119-1-mykyta.yatsenko5@gmail.com>
+ <20250210135129.719119-2-mykyta.yatsenko5@gmail.com>
+ <CAEf4BzYVWSogUYk8pEPGs0N4eNb5fcXtmFMLkicokmqHPpbZCg@mail.gmail.com>
+Content-Language: en-US
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+In-Reply-To: <CAEf4BzYVWSogUYk8pEPGs0N4eNb5fcXtmFMLkicokmqHPpbZCg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 11, 2025 at 03:34:11PM +0100, Andrea Righi wrote:
-> On Tue, Feb 11, 2025 at 09:19:52AM -0500, Yury Norov wrote:
-> > On Tue, Feb 11, 2025 at 10:50:46AM +0100, Andrea Righi wrote:
-> > > On Tue, Feb 11, 2025 at 08:41:45AM +0100, Andrea Righi wrote:
-> > > > On Tue, Feb 11, 2025 at 08:32:51AM +0100, Andrea Righi wrote:
-> > > > > On Mon, Feb 10, 2025 at 11:57:42AM -0500, Yury Norov wrote:
-> > > > > ...
-> > > > > > > > +/*
-> > > > > > > > + * Find the best idle CPU in the system, relative to @node.
-> > > > > > > > + */
-> > > > > > > > +s32 scx_pick_idle_cpu(const struct cpumask *cpus_allowed, int node, u64 flags)
-> > > > > > > > +{
-> > > > > > > > +	nodemask_t unvisited = NODE_MASK_ALL;
-> > > > > > 
-> > > > > > This should be a NODEMASK_ALLOC(). We don't want to eat up too much of the
-> > > > > > stack, right?
-> > > > > 
-> > > > > Ok, and if I want to initialize unvisited to all online nodes, is there a
-> > > > > better than doing:
-> > > > > 
-> > > > >   nodemask_clear(*unvisited);
-> > > > >   nodemask_or(*unvisited, *unvisited, node_states[N_ONLINE]);
-> > > > > 
-> > > > > We don't have nodemask_copy() right?
-> > > > 
-> > > > Sorry, and with that I mean nodes_clear() / nodes_or() / nodes_copy().
-> > > 
-> > > Also, it might be problematic to use NODEMASK_ALLOC() here, since we're
-> > > potentially holding raw spinlocks. Maybe we could use per-cpu nodemask_t,
-> > > but then we need to preempt_disable() the entire loop, since
-> > > scx_pick_idle_cpu() can be be called potentially from any context.
-> > > 
-> > > Considering that the maximum value for NODE_SHIFT is 10 with CONFIG_MAXSMP,
-> > > nodemask_t should be 128 bytes at most, that doesn't seem too bad... Maybe
-> > > we can accept to have it on the stack in this case?
-> > 
-> > If you expect calling this in strict SMP lock-held or IRQ contexts, You
-> > need to be careful about stack overflow even mode. We've got GFP_ATOMIC
-> > for that:
-> >      non sleeping allocation with an expensive fallback so it can access
-> >      some portion of memory reserves. Usually used from interrupt/bottom-half
-> >      context with an expensive slow path fallback.
-> > 
-> > Check Documentation/core-api/memory-allocation.rst for other options.
-> > You may be interested in __GFP_NORETRY as well.
-> 
-> I know about GFP_ATOMIC, but even with that I'm hitting some bugs.
-> Will try with __GFP_NORETRY.
+On 11/02/2025 01:13, Andrii Nakryiko wrote:
+> On Mon, Feb 10, 2025 at 5:51 AM Mykyta Yatsenko
+> <mykyta.yatsenko5@gmail.com> wrote:
+>> From: Mykyta Yatsenko <yatsenko@meta.com>
+>>
+>> To better verify some complex BPF programs we'd like to preset global
+>> variables.
+>> This patch introduces CLI argument `--set-global-vars` or `-G` to
+>> veristat, that allows presetting values to global variables defined
+>> in BPF program. For example:
+>>
+>> prog.c:
+>> ```
+>> enum Enum { ELEMENT1 = 0, ELEMENT2 = 5 };
+>> const volatile __s64 a = 5;
+>> const volatile __u8 b = 5;
+>> const volatile enum Enum c = ELEMENT2;
+>> const volatile bool d = false;
+>>
+>> char arr[4] = {0};
+>>
+>> SEC("tp_btf/sched_switch")
+>> int BPF_PROG(...)
+>> {
+>>          bpf_printk("%c\n", arr[a]);
+>>          bpf_printk("%c\n", arr[b]);
+>>          bpf_printk("%c\n", arr[c]);
+>>          bpf_printk("%c\n", arr[d]);
+>>          return 0;
+>> }
+>> ```
+>> By default verification of the program fails:
+>> ```
+>> ./veristat prog.bpf.o
+>> ```
+>> By presetting global variables, we can make verification pass:
+>> ```
+>> ./veristat wq.bpf.o  -G "a = 0" -G "b = 1" -G "c = 2" -G "d = 3"
+>> ```
+>>
+>> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+>> ---
+>>   tools/testing/selftests/bpf/veristat.c | 319 ++++++++++++++++++++++++-
+>>   1 file changed, 307 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
+>> index 06af5029885b..b4521ebb6e6a 100644
+>> --- a/tools/testing/selftests/bpf/veristat.c
+>> +++ b/tools/testing/selftests/bpf/veristat.c
+>> @@ -154,6 +154,15 @@ struct filter {
+>>          bool abs;
+>>   };
+>>
+>> +struct var_preset {
+>> +       char *name;
+>> +       enum { INTEGRAL, NAME } type;
+>> +       union {
+>> +               long long ivalue;
+>> +               char *svalue;
+>> +       };
+>> +};
+>> +
+>>   static struct env {
+>>          char **filenames;
+>>          int filename_cnt;
+>> @@ -195,6 +204,8 @@ static struct env {
+>>          int progs_processed;
+>>          int progs_skipped;
+>>          int top_src_lines;
+>> +       struct var_preset *presets;
+>> +       int npresets;
+>>   } env;
+>>
+>>   static int libbpf_print_fn(enum libbpf_print_level level, const char *format, va_list args)
+>> @@ -246,12 +257,16 @@ static const struct argp_option opts[] = {
+>>          { "test-reg-invariants", 'r', NULL, 0,
+>>            "Force BPF verifier failure on register invariant violation (BPF_F_TEST_REG_INVARIANTS program flag)" },
+>>          { "top-src-lines", 'S', "N", 0, "Emit N most frequent source code lines" },
+>> +       { "set-global-vars", 'G', "GLOBALS", 0, "Set global variables provided in the expression, for example \"var1 = 1\"" },
+>>          {},
+>>   };
+>>
+>>   static int parse_stats(const char *stats_str, struct stat_specs *specs);
+>>   static int append_filter(struct filter **filters, int *cnt, const char *str);
+>>   static int append_filter_file(const char *path);
+>> +static int parse_var_presets(char *expr, struct var_preset **presets, int *capacity, int *size);
+>> +static int parse_var_presets_from_file(const char *filename, struct var_preset **presets,
+>> +                                      int *capacity, int *size);
+> nit: append_filter vs append_filter_file would imply this should be
+> parse_var_presets vs parse_var_presets_file, no?
+Sure, makes sense.
+>>   static error_t parse_arg(int key, char *arg, struct argp_state *state)
+>>   {
+>> @@ -363,6 +378,24 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
+>>                          return -ENOMEM;
+>>                  env.filename_cnt++;
+>>                  break;
+>> +       case 'G': {
+>> +               static int presets_cap;
+>> +               char *expr = strdup(arg);
+>> +
+>> +               if (expr[0] == '@') {
+>> +                       if (parse_var_presets_from_file(expr + 1, &env.presets,
+>> +                                                       &presets_cap, &env.npresets)) {
+>> +                               fprintf(stderr, "Could not parse global variables preset: %s\n",
+>> +                                       arg);
+>> +                               argp_usage(state);
+>> +                       }
+>> +               } else if (parse_var_presets(expr, &env.presets, &presets_cap, &env.npresets)) {
+>> +                       fprintf(stderr, "Could not parse global variables preset: %s\n", arg);
+>> +                       argp_usage(state);
+>> +               }
+>> +               free(expr);
+>> +               break;
+>> +       }
+> Can you please follow the append_filter pattern here? Consistency is
+> good. I don't think we want presets_cap and expr here as well. Don't
+> micro-optimize, it's ok to call realloc() for each entry for
+> non-performance critical code. Internally libc won't really reallocate
+> every single time.
+>
+>>          default:
+>>                  return ARGP_ERR_UNKNOWN;
+>>          }
+>> @@ -1292,6 +1325,273 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
+>>          return 0;
+>>   };
+>>
+>> +static int parse_var_presets(char *expr, struct var_preset **presets, int *capacity, int *size)
+>> +{
+>> +       char *eq_ptr = strchr(expr, '=');
+>> +       char *name_ptr = expr;
+>> +       char *name_end = eq_ptr - 1;
+>> +       char *val_ptr = eq_ptr + 1;
+>> +       long long value;
+>> +
+>> +       if (!eq_ptr) {
+>> +               fprintf(stderr, "No assignment in expression\n");
+>> +               return -EINVAL;
+>> +       }
+>> +
+>> +       while (isspace(*name_ptr))
+>> +               ++name_ptr;
+>> +       while (isspace(*name_end))
+>> +               --name_end;
+>> +       while (isspace(*val_ptr))
+>> +               ++val_ptr;
+> here's  a pro tip: scanf() is pretty useful and powerful parser for
+> simple stuff. scanf(" %s = %[^\n]\n") will trim spaces around variable
+> name and equality and will capture the rest of string. Or if you do "
+> %s = %s\n" it will trim spaces and do the right thing as long as we
+> don't expect whitespace to be valid value (we can start there for now,
+> because it's true for integers and enums)
+>
+>> +
+>> +       if (name_ptr > name_end) {
+>> +               fprintf(stderr, "Empty variable name in expression %s\n", expr);
+>> +               return -EINVAL;
+>> +       }
+>> +
+>> +       if (*size >= *capacity) {
+>> +               *capacity = max(*capacity * 2, 1);
+>> +               *presets = realloc(*presets, *capacity * sizeof(**presets));
+>> +       }
+>> +
+> as I mentioned above, don't bother optimizing and keeping track of
+> capacity, just realloc() every single time, it's fine
+>
+>> +       if (isalpha(*val_ptr)) {
+>> +               char *value_end = val_ptr + strlen(val_ptr) - 1;
+>> +
+>> +               while (isspace(*value_end))
+>> +                       --value_end;
+>> +               *(value_end + 1) = '\0';
+>> +
+>> +               (*presets)[*size].svalue = strdup(val_ptr);
+>> +               (*presets)[*size].type = NAME;
+>> +       } else if (*val_ptr == '-' || isdigit(*val_ptr)) {
+>> +               errno = 0;
+>> +               value = strtoll(val_ptr, NULL, 0);
+>> +               if (errno == ERANGE) {
+>> +                       errno = 0;
+>> +                       value = strtoull(val_ptr, NULL, 0);
+>> +               }
+>> +               (*presets)[*size].ivalue = value;
+>> +               (*presets)[*size].type = INTEGRAL;
+>> +               if (errno) {
+>> +                       fprintf(stderr, "Could not parse integer value %s\n", val_ptr);
+>> +                       return -EINVAL;
+>> +               }
+>> +       } else {
+>> +               fprintf(stderr, "Could not parse value %s\n", val_ptr);
+>> +               return -EINVAL;
+>> +       }
+>> +       *(name_end + 1) = '\0';
+>> +       (*presets)[*size].name = strdup(name_ptr);
+>> +       (*size)++;
+> ... maybe let's do something simpler and dumber? Try to parse provided
+> string as integer, if it succeeds (and consumes entire string) --
+> great, if not -- assume it's enum or true/false (if you support that)?
+>
+> btw, see scanf()'s %i modifier, it can parse both hex and dec numbers.
+> You can just try with '-' and without.
+>
+> Basically, let's keep it straightforward, even if it's, technically
+> speaking, suboptimal performance-wise.
+>
+>> +       return 0;
+>> +}
+>> +
+>> +static int parse_var_presets_from_file(const char *filename, struct var_preset **presets,
+>> +                                      int *capacity, int *size)
+>> +{
+>> +       FILE *f;
+>> +       char line[256];
+>> +       int err = 0;
+>> +
+>> +       f = fopen(filename, "rt");
+>> +       if (!f) {
+>> +               fprintf(stderr, "Could not open file %s\n", filename);
+>> +               return -EINVAL;
+>> +       }
+>> +
+>> +       while (fgets(line, sizeof(line), f)) {
+>> +               int err = parse_var_presets(line, presets, capacity, size);
+>> +
+>> +               if (err)
+>> +                       goto cleanup;
+>> +       }
+>> +
+>> +cleanup:
+>> +       fclose(f);
+>> +       return err;
+>> +}
+> see append_filter_file(), we do similar stuff there, keep it consistent
+>
+>> +
+>> +static bool is_signed_type(const struct btf_type *t)
+>> +{
+>> +       if (btf_is_int(t))
+>> +               return btf_int_encoding(t) & BTF_INT_SIGNED;
+>> +       if (btf_is_enum(t))
+>> +               return btf_kflag(t);
+> there is also enum64, use btf_is_any_enum()
+>
+>> +       return true;
+>> +}
+>> +
+>> +static int enum_value_from_name(const struct btf *btf, const struct btf_type *t,
+>> +                               const char *evalue, long long *retval)
+>> +{
+>> +       if (btf_is_enum(t)) {
+>> +               struct btf_enum *e = btf_enum(t);
+>> +               int i, n = btf_vlen(t);
+>> +
+>> +               for (i = 0; i < n; ++i) {
+>> +                       const char *cur_name = btf__name_by_offset(btf, e[i].name_off);
+>> +
+>> +                       if (strcmp(cur_name, evalue) == 0) {
+>> +                               *retval = e[i].val;
+>> +                               return 0;
+>> +                       }
+>> +               }
+>> +       } else if (btf_is_enum64(t)) {
+>> +               struct btf_enum64 *e = btf_enum64(t);
+>> +               int i, n = btf_vlen(t);
+>> +
+>> +               for (i = 0; i < n; ++i) {
+>> +                       struct btf_enum64 *cur = e + i;
+>> +                       const char *cur_name = btf__name_by_offset(btf, cur->name_off);
+> you have two conceptually identical loops, but in one you do `cur = e
+> + i` and in another you do `e[i]` access... why?
+The difference is that for e64 case we get value by the 
+`btf_enum64_value` function, which accepts pointer to `btf_enum64`,
+I think it is a bit cleaner to have an explicit assignment `struct 
+btf_enum64 *cur = e + i;`, instead of passing `&e[i]`
+into  btf_enum64_value. Though, let's make both loops more consistent.
+>> +                       __u64 value =  btf_enum64_value(cur);
+>> +
+>> +                       if (strcmp(cur_name, evalue) == 0) {
+>> +                               *retval = value;
+>> +                               return 0;
+>> +                       }
+>> +               }
+>> +       }
+>> +       return -EINVAL;
+>> +}
+>> +
+>> +static bool is_preset_supported(const struct btf_type *t)
+>> +{
+>> +       return btf_is_int(t) || btf_is_enum(t) || btf_is_enum64(t);
+>> +}
+>> +
+>> +static int set_global_var(struct bpf_object *obj, struct btf *btf, const struct btf_type *t,
+>> +                         struct bpf_map *map, struct btf_var_secinfo *sinfo,
+>> +                         struct var_preset *preset)
+>> +{
+>> +       const struct btf_type *base_type;
+>> +       void *ptr;
+>> +       size_t size;
+>> +
+>> +       base_type = btf__type_by_id(btf, btf__resolve_type(btf, t->type));
+>> +       if (!base_type) {
+>> +               fprintf(stderr, "Could not resolve type %d\n", t->type);
+>> +               return -EINVAL;
+>> +       }
+>> +       if (!is_preset_supported(base_type)) {
+>> +               fprintf(stderr, "Setting global variable for btf kind %d is not supported\n",
+>> +                       btf_kind(base_type));
+>> +               return -EINVAL;
+>> +       }
+>> +
+>> +       if (preset->type == NAME && btf_is_any_enum(base_type)) {
+>> +               /* Convert enum element name into integer */
+>> +               long long ivalue;
+>> +
+>> +               if (enum_value_from_name(btf, base_type, preset->svalue, &ivalue) != 0) {
+>> +                       fprintf(stderr, "Could not find integer value for enum element %s\n",
+>> +                               preset->svalue);
+>> +                       return -EINVAL;
+>> +               }
+>> +               free(preset->svalue);
+>> +               preset->ivalue = ivalue;
+>> +               preset->type = INTEGRAL;
+> but for different object file this value can change? You can cache for
+> the same BTF, but once BTF changes, you'll have to recalculate it (I'd
+> keep it simple and look it up every single time, for now)
+>
+>> +       }
+>> +
+>> +       /* Check if value fits into the target variable size */
+>> +       if  (sinfo->size < sizeof(preset->ivalue)) {
+>> +               bool is_signed = is_signed_type(base_type);
+>> +               __u32 unsigned_bits = sinfo->size * 8 - (is_signed ? 1 : 0);
+>> +               long long max_val = 1ll << unsigned_bits;
+> what about u64? 1 << 64 ?
 
-...which is basically this (with GFP_ATOMIC):
+This should not be executed for u64, check `if (sinfo->size < 
+sizeof(preset->ivalue))` is there for that.
 
-[   11.829079] =============================
-[   11.829109] [ BUG: Invalid wait context ]
-[   11.829146] 6.13.0-virtme #51 Not tainted
-[   11.829185] -----------------------------
-[   11.829243] fish/344 is trying to lock:
-[   11.829285] ffff9659bec450b0 (&c->lock){..-.}-{3:3}, at: ___slab_alloc+0x66/0x1510
-[   11.829380] other info that might help us debug this:
-[   11.829450] context-{5:5}
-[   11.829494] 8 locks held by fish/344:
-[   11.829534]  #0: ffff965a409c70a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x28/0x60
-[   11.829643]  #1: ffff965a409c7130 (&tty->atomic_write_lock){+.+.}-{4:4}, at: file_tty_write.isra.0+0xa1/0x330
-[   11.829765]  #2: ffff965a409c72e8 (&tty->termios_rwsem/1){++++}-{4:4}, at: n_tty_write+0x9e/0x510
-[   11.829871]  #3: ffffbc6d01433380 (&ldata->output_lock){+.+.}-{4:4}, at: n_tty_write+0x1f1/0x510
-[   11.829979]  #4: ffffffffb556b5c0 (rcu_read_lock){....}-{1:3}, at: __queue_work+0x59/0x680
-[   11.830173]  #5: ffff9659800f0018 (&pool->lock){-.-.}-{2:2}, at: __queue_work+0xd7/0x680
-[   11.830286]  #6: ffff9659801bcf60 (&p->pi_lock){-.-.}-{2:2}, at: try_to_wake_up+0x56/0x920
-[   11.830396]  #7: ffffffffb556b5c0 (rcu_read_lock){....}-{1:3}, at: scx_select_cpu_dfl+0x56/0x460
+>
+>> +
+>> +               if (preset->ivalue >= max_val || preset->ivalue < -max_val) {
+>> +                       fprintf(stderr,
+>> +                               "Variable %s value %lld is out of range [%lld; %lld]\n",
+>> +                               btf__name_by_offset(btf, t->name_off), preset->ivalue,
+>> +                               is_signed ? -max_val : 0, max_val - 1);
+>> +                       return -EINVAL;
+>> +               }
+>> +       }
+>> +
+>> +       ptr = (void *)bpf_map__initial_value(map, &size);
+>> +       if (!ptr || (sinfo->offset + sinfo->size > size))
+>> +               return -EINVAL;
+>> +
+>> +       if (__BYTE_ORDER == __LITTLE_ENDIAN) {
+>> +               memcpy(ptr + sinfo->offset, &preset->ivalue, sinfo->size);
+>> +       } else if (__BYTE_ORDER == __BIG_ENDIAN) {
+>> +               __u8 src_offset = sizeof(preset->ivalue) - sinfo->size;
+>> +
+>> +               memcpy(ptr + sinfo->offset, (void *)&preset->ivalue + src_offset, sinfo->size);
+>> +       }
+>> +       return 0;
+>> +}
+>> +
+>> +static int set_global_vars(struct bpf_object *obj, struct var_preset *presets, int npresets)
+>> +{
+>> +       struct btf_var_secinfo *sinfo;
+>> +       const char *sec_name;
+>> +       const struct btf_type *type;
+>> +       struct bpf_map *map;
+>> +       struct btf *btf;
+>> +       bool *set_var;
+>> +       int i, j, k, n, cnt, err = 0;
+>> +
+>> +       if (npresets == 0)
+>> +               return 0;
+>> +
+>> +       btf = bpf_object__btf(obj);
+>> +       if (!btf)
+>> +               return -EINVAL;
+>> +
+>> +       set_var = calloc(npresets, sizeof(bool));
+>> +       for (i = 0; i < npresets; ++i)
+>> +               set_var[i] = false;
+> calloc() is zero-initializing, no need to set to false
+>
+>> +
+>> +       cnt = btf__type_cnt(btf);
+>> +       for (i  = 0; i != cnt; ++i) {
+> double space
+>
+>> +               type = btf__type_by_id(btf, i);
+> nit: type -> t, we use that convention when working with BTF types
+> quite consistently (btw, zero is always VOID, so you can always skip
+> it with `i = 1`)
+>
+>> +
+>> +               if (!btf_is_datasec(type))
+>> +                       continue;
+>> +
+>> +               sinfo = btf_var_secinfos(type);
+>> +               sec_name = btf__name_by_offset(btf, type->name_off);
+>> +               map = bpf_object__find_map_by_name(obj, sec_name);
+>> +               if (!map)
+>> +                       continue;
+>> +
+>> +               n = btf_vlen(type);
+>> +               for (j = 0; j < n; ++j, ++sinfo) {
+>> +                       const struct btf_type *var_type = btf__type_by_id(btf, sinfo->type);
+>> +                       const char *var_name = btf__name_by_offset(btf, var_type->name_off);
+> it's kind of bad style, IMO, to look something up for
+> var_type->name_off before you are sure it's what you care about
+> (btf_is_var()), move assignment to after the if?
+Agree.
+>> +
+>> +                       if (!btf_is_var(var_type))
+>> +                               continue;
+>> +
+>> +                       for (k = 0; k < npresets; ++k) {
+>> +                               if (strcmp(var_name, presets[k].name) != 0)
+>> +                                       continue;
+>> +
+>> +                               if (set_var[k]) {
+> maybe just have an extra counter in preset itself, which you can clear
+> between BPF program loads? Less trouble with extra dynamic memory
+> allocation
+>
+>> +                                       fprintf(stderr, "Variable %s is set more than once",
+>> +                                               var_name);
+> I'd error out in this case, tbh (it's either user error or static
+> global variables, which I'm sure is unintentional in 99% of cases)
+>
+>> +                               }
+>> +
+>> +                               err = set_global_var(obj, btf, var_type, map, sinfo, presets + k);
+>> +                               if (err)
+>> +                                       goto out;
+>> +
+>> +                               set_var[k] = true;
+>> +                               break;
+>> +                       }
+>> +               }
+>> +       }
+>> +       for (i = 0; i < npresets; ++i) {
+>> +               if (!set_var[i]) {
+>> +                       fprintf(stderr, "Global variable preset %s has not been applied\n",
+>> +                               presets[i].name);
+>> +               }
+>> +       }
+>> +out:
+>> +       free(set_var);
+>> +       return err;
+>> +}
+>> +
+>>   static int process_obj(const char *filename)
+>>   {
+>>          const char *base_filename = basename(strdupa(filename));
+>> @@ -1299,7 +1599,7 @@ static int process_obj(const char *filename)
+>>          struct bpf_program *prog, *tprog, *lprog;
+>>          libbpf_print_fn_t old_libbpf_print_fn;
+>>          LIBBPF_OPTS(bpf_object_open_opts, opts);
+>> -       int err = 0, prog_cnt = 0;
+>> +       int err = 0;
+>>
+>>          if (!should_process_file_prog(base_filename, NULL)) {
+>>                  if (env.verbose)
+>> @@ -1334,17 +1634,6 @@ static int process_obj(const char *filename)
+>>
+>>          env.files_processed++;
+>>
+>> -       bpf_object__for_each_program(prog, obj) {
+>> -               prog_cnt++;
+>> -       }
+>> -
+>> -       if (prog_cnt == 1) {
+>> -               prog = bpf_object__next_program(obj, NULL);
+>> -               bpf_program__set_autoload(prog, true);
+>> -               process_prog(filename, obj, prog);
+>> -               goto cleanup;
+>> -       }
+>> -
+> I think this was an optimization to avoid a heavy-weight ELF parsing
+> twice, why would we want to remove it?..
+Thanks for explaining, this looked like unnecessary code duplication, 
+I'll revert it.
+> pw-bot: cr
+>
+>>          bpf_object__for_each_program(prog, obj) {
+>>                  const char *prog_name = bpf_program__name(prog);
+>>
+>> @@ -1355,6 +1644,12 @@ static int process_obj(const char *filename)
+>>                          goto cleanup;
+>>                  }
+>>
+>> +               err = set_global_vars(tobj, env.presets, env.npresets);
+>> +               if (err) {
+>> +                       fprintf(stderr, "Failed to set global variables\n");
+>> +                       goto cleanup;
+>> +               }
+>> +
+>>                  lprog = NULL;
+>>                  bpf_object__for_each_program(tprog, tobj) {
+>>                          const char *tprog_name = bpf_program__name(tprog);
+>> --
+>> 2.48.1
+>>
 
-And I think that's because:
-
- * %GFP_ATOMIC users can not sleep and need the allocation to succeed. A lower
- * watermark is applied to allow access to "atomic reserves".
- * The current implementation doesn't support NMI and few other strict
- * non-preemptive contexts (e.g. raw_spin_lock). The same applies to %GFP_NOWAIT.
-
-So I guess we the only viable option is to preallocate nodemask_t and
-protect it somehow, hoping that it doesn't add too much overhead...
-
--Andrea
 
