@@ -1,74 +1,74 @@
-Return-Path: <bpf+bounces-51137-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51138-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81292A309CC
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 12:19:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BACD5A309C8
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 12:19:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17DE63A4231
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 11:19:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E7C516196D
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 11:19:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B58E1F7569;
-	Tue, 11 Feb 2025 11:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82BF21F9F61;
+	Tue, 11 Feb 2025 11:19:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ONGXSZVc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UPg+GKGh"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A28391CEACB;
-	Tue, 11 Feb 2025 11:19:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A80B91F8BB0;
+	Tue, 11 Feb 2025 11:19:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739272746; cv=none; b=kP1oVX75fCFBPEZpoA+b8T1t0nSUo8Xzo0Vv4I692Dcu2wwwiA9NJ5W8nEq1y/z1Z44OBby/tXwhgnPKz7kandI1bUZGhjkfoPn6VSWCRmyI2gKOFPJM2WxG+JrEDR5AZXxEwm6H0BHZdfOUCwN1SNcP122KI4MxQGeLguTgYQw=
+	t=1739272749; cv=none; b=LeXPtNOTr9mqW/eHBMgaEhFQF7UFGkGcWfahobYgtUNl25v6aR+GtglO4OgsTmCH0yhOapd4DvF5teldE/vziB4axRJMAZGQonteFYqxe3mtv52txg0PuOYDLM01NiS+0ykqg/Ybha8Qv52j1QVDWhdcZTJoOCUXoit3RMSy4DI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739272746; c=relaxed/simple;
-	bh=m90Uo35ohboEs5VBqY3BSSvXLDhE3Jh/m2Ly9HyGYIQ=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=mUoN8oJtnOmGJqv8g9RvTksF9Sk/1ip8O0V8yS636yFfUXiIjY4yqkyZ/gnBACczvzzca8O2YFTl1E3cDXoG2IVMfYK9+S70IEECGOCBqxfXvvMBKA4sqeaQKulPGFbucVa/Agvg5OS2Ee4Ev5Gy+szWESY+nU71uksvRjC25cA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ONGXSZVc; arc=none smtp.client-ip=209.85.214.169
+	s=arc-20240116; t=1739272749; c=relaxed/simple;
+	bh=gCSkhghV4FSQv8s+RD3+Va+foCnFjyb66eHvLgkiuWw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=Hx7LsADR+F0YcnpKH48VduY7nmGC3hSc4sY329l2RWvHK0cCKa3+Khs9ztMIntuzfhSxo030VlY7PYg2xEuuxDXEDQdjMLPtzjwoqiQqwubObUok6Oyr7NM9FMIK07upMP3MuWVpm7XFy9V0SlZyDkXLTGjsJqh/QNNbk2DLyUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UPg+GKGh; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-21f7f03d7c0so50703395ad.3;
-        Tue, 11 Feb 2025 03:19:04 -0800 (PST)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-21f48ab13d5so88106965ad.0;
+        Tue, 11 Feb 2025 03:19:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739272744; x=1739877544; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sq6lIc1bo9c0QqvPBAEag1o830/WQ7+wfRJEwYT/u6o=;
-        b=ONGXSZVcdL1wYvHpCwLnTI9OEaHg4WUYKCQqESBNOXS8PrNBB15GN3y/6CtTZ1QUvJ
-         oYbfJOw9oLuHRC594AZIHiiMCcT785Tc8ibueLbDfh8uqP42BouCIFKSkMeslJgXusLn
-         8NfWlM7lyNqpiOVb/omgrX5CqP/C1doVBTkOLQfaqS5uBh0gujUrmw6+UPK3vhQhbFBA
-         R6cURQWt7qysOLHBEvStAwTCn8cXttB4xvIYDdp79UQzleNvRYYVyzopMr1IKHZXxXNY
-         XSnusO8kjtxsg2ouNQI9i4sN+Jxi1zxm0bwtZW3ILqAHvyMX9ClwEyKxSQGs6paRUwQw
-         xAhg==
+        d=gmail.com; s=20230601; t=1739272747; x=1739877547; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3SRCkrYu/UmXO72yLMKra7PMrlLBZ+7UhvcccuRgDqg=;
+        b=UPg+GKGh719LyRpa4SQpnVKZgO3x2IeOrJdgcvGqeNaq1oTV3P+jjg0iFOuPh76Wjc
+         2DXxhuM53+J1Y3XDOaYDucW0U9rgZvp8lQ0XtD78el8ThMGkwgIxMT6GCeyHgYR+IX7O
+         O297IWqHNFhxhD0CAym+yi3r61zHkZ5KW+4K0fZkN/alIEouNmyAAz+baX3vO3NFFOCJ
+         gT2doIWvtxmdJVo+U5O1lbffIbyfO2bfiTOI1u3Oi5GGJrhk7SiGX9DFJgylMbBp2OP+
+         acYl8dzKK/Up6QrouaIGMPDJBzDDPRGFMgARWgk87XLxsns6SdsY1RFWsDc3D2sMMIZw
+         eksw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739272744; x=1739877544;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sq6lIc1bo9c0QqvPBAEag1o830/WQ7+wfRJEwYT/u6o=;
-        b=piK5aQdNkoZWrW1qA8jwr5ODtYDalndF5MbksQgWOvGq7CM3LEogvZpI4r4LHzEcIB
-         jt8h9MDQyUljgEeP7XXFNo4FEyZQUg039hhcCPNpCNkKMKfO3VIVBo1c/qBDo816mVxn
-         LGWY1Y1avhz03lCgGyVhfnBnrPdtMhyqBdJL7F+EIZPtyal866xKbrk/8Fhi5wlJNeZ5
-         55A7do5h0+wA1AhJLfWXCNK0jJu6V7PT/q54ebfw07tSb5sGnYKfTPQxo4phRAAQxBWo
-         +Zu02RLcRxitooL5FVx6ZBEyk6wnTWCIRaZX1ZkzjY7Ku49prFr+Z0KU9f0Z2LmkzkRU
-         UEsA==
-X-Forwarded-Encrypted: i=1; AJvYcCWsCJwSlvLMpWJDmtUtdWLUnxN/3miOfLw11icjdfAbw5yCP2W3v/HHfdo0JKRIDgHlpmOsnPSkLxgmR5o=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwjbKpa7ugd2DaNUXtjBkRXKE+1e2pCQN7Zt43m4gr5bK23JQJ1
-	/sgyazLQ2oj1DyM6XXtIDEQLFL/+LRYRNYW9mIaVfPCNi2dyw7py
-X-Gm-Gg: ASbGnctHBpDa9lgRS5jgWIwulspVI8ntiE2WlalgPm0nkSUfS+vtAneVqvroIcaGrlc
-	zunKlKek9y9DKyACrrw0PNZzG54K6omGEFz6PPQXG/VZoEJ9dIIZU9oPie6TSl/8qcqBsQ4p58W
-	+KCTZNiFta8iBxYgImjahfHZSsgRV7dG6BlFrYdi3+BqD4xAsdntOBocahbWuoTMt/uqMy1Exfy
-	M/EmFtD1KgnUrac/gNARgwwT/3h5gMv/5VGpBun/7o7sXufVvRKH3fhDfdKGL4XEN5urJI1p8dT
-	brCnXdji5jw7h3np
-X-Google-Smtp-Source: AGHT+IGEwyIDegUedvAshshUsBUv70DQuEhl5077bGg3Qq4E7P7WjPswXyRx1aPPegslZOQl1sjKWQ==
-X-Received: by 2002:a17:902:eccd:b0:21f:1bd:efd4 with SMTP id d9443c01a7336-21f4e6ab27amr262937295ad.19.1739272743631;
-        Tue, 11 Feb 2025 03:19:03 -0800 (PST)
+        d=1e100.net; s=20230601; t=1739272747; x=1739877547;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3SRCkrYu/UmXO72yLMKra7PMrlLBZ+7UhvcccuRgDqg=;
+        b=COWdmaZshTPdRfpv8R3mO7QvDASgxJjZvr3zGUT3YoM3ZBIBjJUsxbZVoE6rDkh44b
+         vt/IgxvLadkIlQmwfRMOct9RwoDY/z6Fy0meTLsibFEnTXX1n84jQM9kenw47Rxa/BH6
+         5leSROKRpQbvF/TI7CVwdMb+tW63UMiMsOx1lvXn3tLbHnyrHqb/pSk7Ov5epSoHL/JD
+         LcVul9H5IuKiBBRlLN4oh+2vKgwqr4Oa9M9+SA95iMWHSAUOLA/I2W4+f4IvEeuVsenv
+         MnueBY5gWKXjBPoRh+wH2pHx6fyaj+TDe13u2m7Gal9eKBXuKwCpGD6pX/vchpDFBu7g
+         MKvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW7J8KthWIDK20N/5N5TsuspVzBcTFNp0etm76n4UGQZQvhcqouN+wzwzM8Jk1v5IpKuD+ao8X85UycPQs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyhRp7Gb4gdFI/c9f2NfGo/RXURyDAggghSbotQWFZnFy5chPR2
+	A6/1IpIC15VyOpaEuPFLkIPmUpco/NqdC0tGGphHulwL0AzLkgrqttCpUw==
+X-Gm-Gg: ASbGncu8tQrukNic08giaCKSvqjDuPZrxdR0qHUTg9Pz8wZHjduuWIKNzxkR/pCMC84
+	yocjld+gvwNO4eGt1+dxO5RmLjIZI5rrlZbSGjWesJQVXO3FgxxxQhjITMQJzv2v6659AK1cvY4
+	G3Z4ui8P+mutt+b01gtYxjHFih0UeoSNvf6bp7N+BuiGMVDPqHtEgQXV4I/7r7qtNJma4ULJxML
+	5DzceTshzWZe+I8ZuBfR9ketwAA6oKatpre2lsYyZsdH+t2UeHwamtgRUH6bGNOJREtFSRNVqpT
+	BUFzCK+CwXGK/rCk
+X-Google-Smtp-Source: AGHT+IFXhoTlIoHXmMzobJotR7aBVRNPcGpCrw35HZLZvwdW4hmBcdiTCXeN5GkhSYrEE09urKBSAQ==
+X-Received: by 2002:a17:902:ea0d:b0:21d:dae6:d956 with SMTP id d9443c01a7336-21f4e6e1eb8mr285806775ad.24.1739272746717;
+        Tue, 11 Feb 2025 03:19:06 -0800 (PST)
 Received: from localhost ([111.229.209.227])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21f8c2d9d71sm40207305ad.148.2025.02.11.03.19.02
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fa09b3ee47sm10406298a91.39.2025.02.11.03.19.05
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 11 Feb 2025 03:19:03 -0800 (PST)
+        Tue, 11 Feb 2025 03:19:06 -0800 (PST)
 From: Tao Chen <chen.dylane@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -80,67 +80,75 @@ To: ast@kernel.org,
 Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	chen.dylane@gmail.com
-Subject: [PATCH bpf-next v6 0/4] Add prog_kfunc feature probe
-Date: Tue, 11 Feb 2025 19:18:55 +0800
-Message-Id: <20250211111859.6029-1-chen.dylane@gmail.com>
+Subject: [PATCH bpf-next v6 1/4] libbpf: Extract prog load type check from libbpf_probe_bpf_helper
+Date: Tue, 11 Feb 2025 19:18:56 +0800
+Message-Id: <20250211111859.6029-2-chen.dylane@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20250211111859.6029-1-chen.dylane@gmail.com>
+References: <20250211111859.6029-1-chen.dylane@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 
-More and more kfunc functions are being added to the kernel.
-Different prog types have different restrictions when using kfunc.
-Therefore, prog_kfunc probe is added to check whether it is supported,
-and the use of this api will be added to bpftool later.
+Extract prog load type check part from libbpf_probe_bpf_helper
+suggested by Andrii, which will be used in both
+libbpf_probe_bpf_{helper, kfunc}.
 
-Change list:
-- v5 -> v6:
-  - remove fd_array_cnt
-  - test case clean code
-- v5
-  https://lore.kernel.org/bpf/20250210055945.27192-1-chen.dylane@gmail.com
+Signed-off-by: Tao Chen <chen.dylane@gmail.com>
+---
+ tools/lib/bpf/libbpf_probes.c | 29 ++++++++++++++++++-----------
+ 1 file changed, 18 insertions(+), 11 deletions(-)
 
-- v4 -> v5:
-  - use fd_array on stack
-  - declare the scope of use of btf_fd
-- v4
-  https://lore.kernel.org/bpf/20250206051557.27913-1-chen.dylane@gmail.com/
-
-- v3 -> v4:
-  - add fd_array init for kfunc in mod btf
-  - add test case for kfunc in mod btf
-  - refactor common part as prog load type check for
-    libbpf_probe_bpf_{helper,kfunc}
-- v3
-  https://lore.kernel.org/bpf/20250124144411.13468-1-chen.dylane@gmail.com
-
-- v2 -> v3:
-  - rename parameter off with btf_fd
-  - extract the common part for libbpf_probe_bpf_{helper,kfunc}
-- v2
-  https://lore.kernel.org/bpf/20250123170555.291896-1-chen.dylane@gmail.com
-
-- v1 -> v2:
-  - check unsupported prog type like probe_bpf_helper
-  - add off parameter for module btf
-  - check verifier info when kfunc id invalid
-- v1
-  https://lore.kernel.org/bpf/20250122171359.232791-1-chen.dylane@gmail.com
-
-Tao Chen (4):
-  libbpf: Extract prog load type check from libbpf_probe_bpf_helper
-  libbpf: Init fd_array when prog probe load
-  libbpf: Add libbpf_probe_bpf_kfunc API
-  selftests/bpf: Add libbpf_probe_bpf_kfunc API selftests
-
- tools/lib/bpf/libbpf.h                        |  19 ++-
- tools/lib/bpf/libbpf.map                      |   1 +
- tools/lib/bpf/libbpf_probes.c                 |  84 ++++++++++---
- .../selftests/bpf/prog_tests/libbpf_probes.c  | 111 ++++++++++++++++++
- 4 files changed, 200 insertions(+), 15 deletions(-)
-
+diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
+index 9dfbe7750f56..aeb4fd97d801 100644
+--- a/tools/lib/bpf/libbpf_probes.c
++++ b/tools/lib/bpf/libbpf_probes.c
+@@ -413,6 +413,23 @@ int libbpf_probe_bpf_map_type(enum bpf_map_type map_type, const void *opts)
+ 	return libbpf_err(ret);
+ }
+ 
++static bool can_probe_prog_type(enum bpf_prog_type prog_type)
++{
++	/* we can't successfully load all prog types to check for BPF helper
++	 * and kfunc support.
++	 */
++	switch (prog_type) {
++	case BPF_PROG_TYPE_TRACING:
++	case BPF_PROG_TYPE_EXT:
++	case BPF_PROG_TYPE_LSM:
++	case BPF_PROG_TYPE_STRUCT_OPS:
++		return false;
++	default:
++		break;
++	}
++	return true;
++}
++
+ int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type, enum bpf_func_id helper_id,
+ 			    const void *opts)
+ {
+@@ -427,18 +444,8 @@ int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type, enum bpf_func_id helpe
+ 	if (opts)
+ 		return libbpf_err(-EINVAL);
+ 
+-	/* we can't successfully load all prog types to check for BPF helper
+-	 * support, so bail out with -EOPNOTSUPP error
+-	 */
+-	switch (prog_type) {
+-	case BPF_PROG_TYPE_TRACING:
+-	case BPF_PROG_TYPE_EXT:
+-	case BPF_PROG_TYPE_LSM:
+-	case BPF_PROG_TYPE_STRUCT_OPS:
++	if (!can_probe_prog_type(prog_type))
+ 		return -EOPNOTSUPP;
+-	default:
+-		break;
+-	}
+ 
+ 	buf[0] = '\0';
+ 	ret = probe_prog_load(prog_type, insns, insn_cnt, buf, sizeof(buf));
 -- 
 2.43.0
 
