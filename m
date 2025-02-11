@@ -1,261 +1,194 @@
-Return-Path: <bpf+bounces-51188-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51189-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAF44A31891
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 23:24:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0B8EA318AF
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 23:37:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72FE21687EE
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 22:24:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 187C0188A552
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 22:37:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18871268FDC;
-	Tue, 11 Feb 2025 22:24:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2F89268FFA;
+	Tue, 11 Feb 2025 22:37:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BZidp6tz"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="faCHSE5A"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 196DA267714;
-	Tue, 11 Feb 2025 22:24:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E08EB267715
+	for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 22:37:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739312656; cv=none; b=TB/I0+9M+23t5olI6c1N2GEXj2rA9q3Y422Av0ThxI/MBzBH49lV3NBzHXMVAnftA6HNTS1Z7e+KCxiUsPcsfwk8DOq7U01n/79L6CvztCvOfupbxaZl2OgnMP3YtG0ucXCV6vsCEh/Tfaz0fMtnTWnr0ITM8HknG2bdpc48GEE=
+	t=1739313429; cv=none; b=e4Rfu161/U3MyxqQDpfxtxYvmXMizU8VzjfCQNxplA5zkHO5RorEN05xb90bCqy7Edo106IHZdJQV5vlqe5YME3J9yTHnZu691U/wC+r/PvCco+RmeIKLIaSDDmXlSlueDW7jU4o7Mgud2WMmf+3UtG1JbwYZzP9q/JNZLDR3o8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739312656; c=relaxed/simple;
-	bh=0qiEksKdGYOJmGD9Mjny+GHXBvFNEMW7GuR40DN0oCU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rYGxok28RvqQq0qzKcFzppC3T1uYuh6PncGx4KwmoMwCX3AdQNUZVXjPRugvZT7nLi9L2uBmoTuw2eQ8FUnuzyivpS9yhZLemDrZ8GOdejoBNA8FFcG40oynZSjzCBzyhN79D+9gW5DBIuH3kSjVAcpXsO89lIwlLEDbszSRv8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BZidp6tz; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-21f48ebaadfso103769915ad.2;
-        Tue, 11 Feb 2025 14:24:14 -0800 (PST)
+	s=arc-20240116; t=1739313429; c=relaxed/simple;
+	bh=q1sN3kNwFoYv6srTktzz9x4Q+lTtCQc0zhJJvewJyGk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YS82t6sim75e6MN1vt6dsQjLOglItgd7Z7GTDPnU1pxLjgGFM7lVfY+jmg4Add94qMDYFdtuVRve5v7N0ITs9iibuAVPooPnt4NQn8yPs+Mpsjfj73WkwEeH+Jbz2Bj2BRi6ljP/7nFwC4xP0JHerG9ZlW6Og58vLTExpwsRbo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=faCHSE5A; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2fa3fe04dd2so5847056a91.0
+        for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 14:37:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739312654; x=1739917454; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WbEiKzr8IwTOSc3q8xjyBSjMXv9mfiu/xaNUlmv8nQE=;
-        b=BZidp6tz6nZJIHP4pMpgavjoCNuzt4rlFOhZZcru8o3UCA09vCkQIlrbCseQelfPg8
-         3c6vH6BOmh0fqydbZgNIvxZxtdK+DG+rBQj17/ivkAguAMYJXPIVDHnKDgbvayY9qXNW
-         58FRLaKl6hRoDLl5eiBm8h4JvqG9eYVBTmGK2wXenTtZZlMt0aJnkdVfkrgMFUeEQuVn
-         z3K3qJSnjqab2UNOXqVa8zzf5eKlFNiRIYVq2LhvkzDU6uM3Q9nV4oN7zarKOv1ARjlC
-         Kb+ZGHXDKc09wQZQs9iudtsOO06MFUAxvIixwpQve8/MKekKkZunT87R4AvRPvlfh191
-         Rnzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739312654; x=1739917454;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=fastly.com; s=google; t=1739313427; x=1739918227; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WbEiKzr8IwTOSc3q8xjyBSjMXv9mfiu/xaNUlmv8nQE=;
-        b=aFIy5t4uUzWzMpv6XT7DvJJRDw7ne3RgUq8uJznkmVSVp3FzTUUo4+FTMIFoYe84Wt
-         bXwtcEgIILAqzHLAalX100Gl4lk0/Cz6r6sGdr6U1R5IjANGrtmtvNG8ODWIuITIo1x6
-         0uj6UxAjx7TPH7PHlnRtJaPDrWAwSNGyDljqQsCgZ281JLbHTNTqoKt7dIIOVuTUGKgy
-         xsUj3yPyxrlPZ0G8gI4TTKGGvaW3yuOcO14H2qKuYOLARZnUT29XOV3Vl8frI2UmrgEH
-         etL7t4dkKTM6Mlii5ane0Gv8S3jfEftT6dupWntJT/xRCxckxkTv5p5sNdVYF0RmMXe+
-         U8qw==
-X-Forwarded-Encrypted: i=1; AJvYcCUiF0nxfGukZdQ17o4FkoIQdGIRE5NZowfTA1SAf/hqMx0oIwArvXtnYmA0Z7gV/MTXkL0=@vger.kernel.org, AJvYcCVhyVY1gXahM848Y76zy93fqCW2ClhbRaGpOH46JO9uogrYanLwabqYLyHyqRDgPRDr8rdbmfUJyffvzDC8@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx5Pz7rQwOyWdUFS5Ey3p+ITkkN2yhpiGKsCmVdruiEzNLtelIp
-	gNQMVvW78tgAh8vdoAcaYkbPEoTC/pcyUb/+rwI50lFYFOWDDIIWZXGYG5VNfYlFMQ1vwqvvLFA
-	0i1Opn71xhjf55ozDEM1fsXhvpcE=
-X-Gm-Gg: ASbGncuVq/fye5+qTcx+u7AUv7luBiga4X83UeddNP+tVyEJu5sj+Vxn5CEMWkROkNt
-	eaYxSermJYmsGrXTs3YLcsxHL35mR1jb2GnXCaOpW6iw/bCN36uqtcl8yug2L7pQRZt1tqYJT2d
-	akJRiM1qpGQUc+
-X-Google-Smtp-Source: AGHT+IF8+uq8JTQnius6fGGs/WSVKgGjeg+Ow4Q/x5jXaN0Gde1xbyB/GDJblIEfXuwwEjlAbWe6McGUXE8qla3J8Ho=
-X-Received: by 2002:a05:6a00:3d41:b0:730:9424:ea3e with SMTP id
- d2e1a72fcca58-7322c39c2d9mr1347968b3a.11.1739312654338; Tue, 11 Feb 2025
- 14:24:14 -0800 (PST)
+        bh=Zqgo0vzIUKhLbJdiVtuoHIz5/r7b8o5h5B5NAwoEKTY=;
+        b=faCHSE5A4Z3Dr+go34j0gmTWQHw/sNVarD1wLQstYyfPXs1B9Q1tsd3XOH7PNg/nVr
+         3uTo6XvuEeSc8QpA8ZsAunYcDTtsI+BS1v8hjNUTXzr5W3ntKy+n/A6nkwNJzRzPvHBF
+         0G+p2+12BYak4tp25+6QPjRVZ3eRDRVkKT6jE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739313427; x=1739918227;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zqgo0vzIUKhLbJdiVtuoHIz5/r7b8o5h5B5NAwoEKTY=;
+        b=DVNdQpGdrLWy7Qiwc8Acf8W65vJaZgYeO1eFbmEtb1+woek91xusI6nKkeSDvGcpND
+         e66w73ozpgWtYYfyyi6d2A+I4qMlmmsx4skYeTqa6jBbOUEGjHtfz4oJs4g61o2T6y+k
+         2ZuI2QdRR4MKYlIiRC85MQUHJziw3+/E1d8louGJ6c0KZeDdbLx/EGUyMTftzYHwzLSs
+         js1Tm5pHzJA0UOTsag7wmJkTaifOwNzAjtVbZ8e1uJXZtEodGKVSt/tY6JpAIi5N1vmW
+         JjWyIri7+JR3APZvaPDIgnS54FsTovxeOb5qpPZtJTa/29iH/yazjUW1eFUKcBvcxTYb
+         W6Og==
+X-Forwarded-Encrypted: i=1; AJvYcCXo0fsoSm3We8iQ7rXB+0Zd0af1qw7dHDr7TurhMxGenGlZe5xpZNs38QJqxwOeeZ5S3jM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxdKMncFta0M00ylfMmiIwN+OTc0lXDKSfCBDYMlIOJdW9G/LHP
+	7vQ0J7guBh1ZKWpOmAd9tiSPVuRNKk1kUUPoMZTfKrzuK7r6jrc6GVHyAjPBETU=
+X-Gm-Gg: ASbGncsa4/tgrqdi+DxTUWuprrdhvraKRbBuaiL6JbJ9eOrqJCK3v7XLz6SQPzI36Z3
+	wF+B2Z/QlQ/Czy+Y3ss196cXavTBy+nPmNkkkfRZ3i2IDYa7SE4LwgwU/G5YDvAyDp5AnR2GlzF
+	XMXbCxjgec45BnvBSWbUKaib40UryWRGUJLfgcV+IVBPbqx/EqYLP5MGH+Y3kFPS4oP78zCmffO
+	PdHJWouXTsdqi32e7RK1ut3g0Yd182DI6GSWE3/oEpyF9sxYnmg0HHi0VVazYKbCETnUGTr5Fi9
+	iPsziMksaHKFZQwxUm2wK7n4+tgzST1yxPmfWJt4NDWDwyGwV3PXDe2bqw==
+X-Google-Smtp-Source: AGHT+IF2E+oD8rBAN01jy8O5/Q4OjPQUXJDe986T7YWkvAoRYx6xoB7ddaApRGSCt08+uRl+E8LH+Q==
+X-Received: by 2002:a17:90b:1f82:b0:2ee:3cc1:793a with SMTP id 98e67ed59e1d1-2fbf5c6d3eamr1174780a91.29.1739313427133;
+        Tue, 11 Feb 2025 14:37:07 -0800 (PST)
+Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21f36560c94sm99647275ad.91.2025.02.11.14.37.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Feb 2025 14:37:06 -0800 (PST)
+Date: Tue, 11 Feb 2025 14:37:03 -0800
+From: Joe Damato <jdamato@fastly.com>
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+	horms@kernel.org, kuba@kernel.org,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Shuah Khan <shuah@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next v6 3/3] selftests: drv-net: Test queue xsk
+ attribute
+Message-ID: <Z6vRD0agypHWDGkG@LQ3V64L9R2>
+Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
+	Stanislav Fomichev <stfomichev@gmail.com>,
+	Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+	horms@kernel.org, kuba@kernel.org,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Shuah Khan <shuah@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>
+References: <20250210193903.16235-1-jdamato@fastly.com>
+ <20250210193903.16235-4-jdamato@fastly.com>
+ <13afab27-2066-4912-b8f6-15ee4846e802@redhat.com>
+ <Z6uM1IDP9JgvGvev@LQ3V64L9R2>
+ <Z6urp3d41nvBoSbG@LQ3V64L9R2>
+ <Z6usZlrFJShn67su@mini-arch>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250211111859.6029-1-chen.dylane@gmail.com> <20250211111859.6029-4-chen.dylane@gmail.com>
-In-Reply-To: <20250211111859.6029-4-chen.dylane@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 11 Feb 2025 14:24:01 -0800
-X-Gm-Features: AWEUYZmu1NKIZ_eQHXqGz5mFJn4es42uTbEcRc-H3RNlbf532lVlL2NVXPNqA-4
-Message-ID: <CAEf4BzbQv4D65kuYRr+i8aqGqUY+YT7oKGJNNBxSUUBsj+Zhrw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 3/4] libbpf: Add libbpf_probe_bpf_kfunc API
-To: Tao Chen <chen.dylane@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, 
-	haoluo@google.com, jolsa@kernel.org, qmo@kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Tao Chen <dylane.chen@didiglobal.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z6usZlrFJShn67su@mini-arch>
 
-On Tue, Feb 11, 2025 at 3:19=E2=80=AFAM Tao Chen <chen.dylane@gmail.com> wr=
-ote:
->
-> Similarly to libbpf_probe_bpf_helper, the libbpf_probe_bpf_kfunc
-> used to test the availability of the different eBPF kfuncs on the
-> current system.
->
-> Cc: Tao Chen <dylane.chen@didiglobal.com>
-> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
-> ---
->  tools/lib/bpf/libbpf.h        | 19 +++++++++++++-
->  tools/lib/bpf/libbpf.map      |  1 +
->  tools/lib/bpf/libbpf_probes.c | 48 +++++++++++++++++++++++++++++++++++
->  3 files changed, 67 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index 3020ee45303a..e796e38cf255 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -1680,7 +1680,24 @@ LIBBPF_API int libbpf_probe_bpf_map_type(enum bpf_=
-map_type map_type, const void
->   */
->  LIBBPF_API int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type,
->                                        enum bpf_func_id helper_id, const =
-void *opts);
-> -
-> +/**
-> + * @brief **libbpf_probe_bpf_kfunc()** detects if host kernel supports t=
-he
-> + * use of a given BPF kfunc from specified BPF program type.
-> + * @param prog_type BPF program type used to check the support of BPF kf=
-unc
-> + * @param kfunc_id The btf ID of BPF kfunc to check support for
-> + * @param btf_fd The module BTF FD, if kfunc is defined in kernel module=
-,
-> + * btf_fd is used to point to module's BTF, which is >=3D 0, and -1 mean=
-s kfunc
-> + * defined in vmlinux.
-> + * @param opts reserved for future extensibility, should be NULL
-> + * @return 1, if given combination of program type and kfunc is supporte=
-d; 0,
-> + * if the combination is not supported; negative error code if feature
-> + * detection for provided input arguments failed or can't be performed
-> + *
-> + * Make sure the process has required set of CAP_* permissions (or runs =
-as
-> + * root) when performing feature checking.
-> + */
-> +LIBBPF_API int libbpf_probe_bpf_kfunc(enum bpf_prog_type prog_type,
-> +                                     int kfunc_id, int btf_fd, const voi=
-d *opts);
->  /**
->   * @brief **libbpf_num_possible_cpus()** is a helper function to get the
->   * number of possible CPUs that the host kernel supports and expects.
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index b5a838de6f47..3bbfe13aeb6a 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -438,4 +438,5 @@ LIBBPF_1.6.0 {
->                 bpf_linker__new_fd;
->                 btf__add_decl_attr;
->                 btf__add_type_attr;
-> +               libbpf_probe_bpf_kfunc;
->  } LIBBPF_1.5.0;
-> diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.=
-c
-> index 8ed92ea922b3..ab5591c385de 100644
-> --- a/tools/lib/bpf/libbpf_probes.c
-> +++ b/tools/lib/bpf/libbpf_probes.c
-> @@ -431,6 +431,54 @@ static bool can_probe_prog_type(enum bpf_prog_type p=
-rog_type)
->         return true;
->  }
->
-> +int libbpf_probe_bpf_kfunc(enum bpf_prog_type prog_type, int kfunc_id, i=
-nt btf_fd,
-> +                          const void *opts)
-> +{
-> +       struct bpf_insn insns[] =3D {
-> +               BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL=
-, 1, kfunc_id),
-> +               BPF_EXIT_INSN(),
-> +       };
-> +       const size_t insn_cnt =3D ARRAY_SIZE(insns);
-> +       char buf[4096];
-> +       int fd_array[2] =3D {-1};
-> +       int ret;
-> +
-> +       if (opts)
-> +               return libbpf_err(-EINVAL);
-> +
-> +       if (!can_probe_prog_type(prog_type))
-> +               return -EOPNOTSUPP;
+On Tue, Feb 11, 2025 at 12:00:38PM -0800, Stanislav Fomichev wrote:
+> On 02/11, Joe Damato wrote:
+> > On Tue, Feb 11, 2025 at 09:45:56AM -0800, Joe Damato wrote:
+> > > On Tue, Feb 11, 2025 at 12:09:50PM +0100, Paolo Abeni wrote:
+> > > > On 2/10/25 8:38 PM, Joe Damato wrote:
 
-libbpf_err() here
+[...]
 
-pw-bot: cr
+> > > > 
+> > > > This causes self-test failures:
+> > > > 
+> > > > https://netdev-3.bots.linux.dev/vmksft-net-drv/results/987742/4-queues-py/stdout
+> > > > 
+> > > > but I really haven't done any real investigation here.
+> > > 
+> > > I think it's because the test kernel in this case has
+> > > CONFIG_XDP_SOCKETS undefined [1].
+> > > 
+> > > The error printed in the link you mentioned:
+> > > 
+> > >   socket creation failed: Address family not supported by protocol
+> > > 
+> > > is coming from the C program, which fails to create the AF_XDP
+> > > socket.
+> > > 
+> > > I think the immediate reaction is to add more error checking to the
+> > > python to make sure that the subprocess succeeded and if it failed,
+> > > skip.
+> > > 
+> > > But, we may want it to fail for other error states instead of
+> > > skipping? Not sure if there's general guidance on this, but my plan
+> > > was to have the AF_XDP socket creation failure return a different
+> > > error code (I dunno maybe -1?) and only skip the test in that case.
+> > > 
+> > > Will that work or is there a better way? I only want to skip if
+> > > AF_XDP doesn't exist in the test kernel.
+> > > 
+> > > [1]: https://netdev-3.bots.linux.dev/vmksft-net-drv/results/987742/config
+> > 
+> > I'll give it a few more hours incase anyone has comments before I
+> > resend, but I got something working (tested on kernels with and
+> > without XDP sockets).
+> > 
+> > xdp_helper returns -1 if (errno == EAFNOSUPPORT). All other error
+> > cases return 1.
+> > 
+> > Updated the python to do this:
+> > 
+> >   if xdp.returncode == 255:
+> >       raise KsftSkipEx('AF_XDP unsupported')
+> >   elif xdp.returncode > 0:
+> >       raise KsftFailEx('unable to create AF_XDP socket')
+> > 
+> > Which seems to work on both types of kernels?
+> > 
+> > Happy to take feedback; will hold off on respinning for a bit just
+> > incase there's a better way I don't know about.
+> 
+> Any reason not to enable CONFIG_XDP_SOCKETS on NIPA kernels? Seems a bit
+> surprising that we run networking tests without XSKs enabled.
 
-> +
-> +       if (btf_fd >=3D 0) {
-> +               fd_array[1] =3D btf_fd;
-> +       } else if (btf_fd =3D=3D -1) {
+I can't comment on NIPA because I have no idea how it works. Maybe
+there is a kernel with some options enabled and other kernels with
+various options disabled?
 
-let's not hard-code the equality, use < 0 (though I'd follow
-verifier's offset =3D=3D 0 convention for vmlinux BTF here as well to stay
-conceptually consistent)
+I wonder if that's a separate issue though?
 
-> +               /* insn.off =3D 0, means vmlinux btf */
-> +               insns[0].off =3D 0;
-> +       } else {
-> +               return libbpf_err(-EINVAL);
-> +       }
-> +
-> +       buf[0] =3D '\0';
-> +       ret =3D probe_prog_load(prog_type, insns, insn_cnt, btf_fd >=3D 0=
- ? fd_array : NULL,
-> +                             buf, sizeof(buf));
-> +       if (ret < 0)
-> +               return libbpf_err(ret);
-> +
-> +       /* If BPF verifier recognizes BPF kfunc but it's not supported fo=
-r
-> +        * given BPF program type, it will emit "calling kernel function
-> +        * bpf_cpumask_create is not allowed", if the kfunc id is invalid=
-,
+In other words: maybe writing the test as I've mentioned above so it
+works regardless of whether CONFIG_XDP_SOCKETS is set or not is a
+good idea just on its own?
 
-bpf_cpumask_create -> <name> to keep comments generic?
-
-> +        * it will emit "kernel btf_id 4294967295 is not a function". If =
-btf fd
-
-same as above, use <id> placeholder instead of specific number?
-
-and keep BTF (all caps) use consistent, please
-
-> +        * invalid in module btf, it will emit "invalid module BTF fd spe=
-cified" or
-
-ditto, btf -> BTF
-
-> +        * "negative offset disallowed for kernel module function call"
-> +        */
-> +       if (ret =3D=3D 0 && (strstr(buf, "not allowed") || strstr(buf, "n=
-ot a function") ||
-> +                       (strstr(buf, "invalid module BTF fd")) ||
-> +                       (strstr(buf, "negative offset disallowed"))))
-
-stylistically, given amount of checks, I'd probably go with the
-following structure
-
-if (ret > 0)
-    return 1;
-
-if (strstr(buf, "not allowed") ||
-    strstr(buf, "not a function") ||
-...)
-    return 0;
-
-> +               return 0;
-> +
-> +       return 1; /* assume supported */
-> +}
-> +
->  int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type, enum bpf_func_=
-id helper_id,
->                             const void *opts)
->  {
-> --
-> 2.43.0
->
+I'm just not sure if there's some other pattern I should be
+following other than what I proposed above. I'm hesitant to re-spin
+until I get feedback on the proposed approach.
 
