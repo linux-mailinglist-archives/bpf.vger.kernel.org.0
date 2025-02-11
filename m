@@ -1,161 +1,132 @@
-Return-Path: <bpf+bounces-51090-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51091-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05748A300AE
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 02:41:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CBB86A3011B
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 02:50:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D75A1882C64
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 01:41:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46FE618834E9
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 01:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ACB61E5710;
-	Tue, 11 Feb 2025 01:32:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9888B1D47A6;
+	Tue, 11 Feb 2025 01:44:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QoR0j2mX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A7hinud3"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B4C81FCF7C;
-	Tue, 11 Feb 2025 01:31:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0C433EA76
+	for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 01:44:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739237522; cv=none; b=VmzwjkMvvuJdMFn6lJEL23ERsYXmvoRuFIW8uOlEnPX2VToAhl8AQnEdMVsQrH6pjTRpNTjxXEiTIsKPJFLLHsEK9F6ixq1VzbAjULoK5NHxbjwYfVzAFhLXVIeOUivDg9JMB0LUGER50Drx/MKOeGmt2US77gGsjMQfftWnW4c=
+	t=1739238289; cv=none; b=fQotl1MfEsSvUrS57UdPTtLxihRdfWpUUcqnag3jzugAEbUXu5KUVr/Yrys9fpLLIX2AppiQnkaqo4mzGvjBwOrCnyR/8rgknPsWxwQi9/hMGKxnqDQebuxLVol34TZ2ijTBEiCjIWh9XIf/qLY/Ppe8ZL6d0eVx+IkZEZYtHek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739237522; c=relaxed/simple;
-	bh=/e1SyLOssKabt8BWs4Fdn+h3tz+FrLEdRnMxGzAdqmc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=euErGBCdztt4Tw8eiq7TfoPzrjhY+jNOzO3FiuKPqQONl2+zt5z1xFPyvy9TOCOFgQoGIVET4xolPhIoVw+vDoJbcXobRAhcCdKxWVqz8Y2jB39C5VbWsiK2lDLERDDyKkwzray4NAjgEtpjoA/RiZqYwYQGusKxx/+0JgEzj1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QoR0j2mX; arc=none smtp.client-ip=91.218.175.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <fb1111fc-6a4e-4388-860c-0077910e814f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1739237518;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=neP0SKgEI+w95/65Hgd9dc1j+6tueIdAR6FbJXn0Es0=;
-	b=QoR0j2mXfye/7Z10EAc2fVguGdEyTDrQTEln593Lre3frbvHmURUVT5DYyBF17V2Lx2ZTh
-	IIerLadkiBIleLirYwoy/Rr2nqAu9Lb5iZ3t/87ig95NfV8djqgKBzM6xNK459njVNDhj8
-	sTcDWQL38FRcKstKtO2dfirRO9BlYtc=
-Date: Mon, 10 Feb 2025 17:31:50 -0800
+	s=arc-20240116; t=1739238289; c=relaxed/simple;
+	bh=JYLZ8Q6zEhwggtmfYgX/O3GolTJ5UVFkoftRp9PeVZE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=MiXN1+4HS9I9E9sEHCaFUwNkqy9Mr6NgieH7d5hfVvvk1Q4KhZeVwPTudbxaXLA2swrCDwjhYoceFY6kZEgsczj8jzllLEJeiJ/N81tmm9CG8QyZ3FBDBveqj1fnIiL/K8oo7+WAeJLPKbNBl5nu3nJIXjIOrJmGFmYudrAo6lk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A7hinud3; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-21f4af4f9ddso56895755ad.1
+        for <bpf@vger.kernel.org>; Mon, 10 Feb 2025 17:44:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739238287; x=1739843087; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=S5JLi+/6txbi8k2zUqtJWHlza6ir67Ess1zh2873FdQ=;
+        b=A7hinud398QKflUyp0irKdlgqVUXWqR4RLWsT6dRYX6TSu40/RE/fZ+CnkaFj9CgVP
+         uSzPgfHjuc2+ujX7P25UAPs5EqHaxDqGQx+tFLmL/YJm4H08ar5sws/yoNzurxJfXCU3
+         kDceLfpTBBNVrL7Ss18FJC+0EuOGpcjXc0PkXUmN1Cd37toaz7BBonjEohEyPArVyScX
+         zHEPx7lCIvdUh9fc/d7r409OMn5TulTBAGGKgOV4dYWxcQgnsb+YJvTmTDgkTyjyplMx
+         b9XFfNy4ewBbPz/4X+LmBfnkBrEVYycXEr5vZ/ag7DDtqeG+xOsA7wHrMWcWymmsg9yw
+         PXOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739238287; x=1739843087;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=S5JLi+/6txbi8k2zUqtJWHlza6ir67Ess1zh2873FdQ=;
+        b=gqnyccjuAYzKAA16T1HG08blfZJQc4ykBSAsgyDfF6j0pQEcPUCe8qBTFwflru97fy
+         S+gdIq7/mkgDuK0SAtzaVUUp8xRud9VBtB+QelMEAx1BRu/yQXOgJQmfV8FDyNBORoPU
+         eAFjdOEodCkANWnohATlHArpBO3Q+k6h+fLU3YUwCjvIc8cIfRnvz8//KqyZvmsbwl0+
+         YYYTufYs8/HdPsdZbuTr9eZ/tNnxh7kqIwt4XYI4yPxXQLbAr4cx4chVaopBq6+LDyyy
+         XxfHj3gkAyMi5QxsTryDmwt6gToDMzIYfIu6abZUUDm3pUslHY5cCjg9/chthqcIIBbv
+         pmtA==
+X-Gm-Message-State: AOJu0Yx51hM8FwuOcm7wV5UBoFCj2F8zu9XeJfrrEg+rPY6wAa1MDmMb
+	4d0wYEaofs8UTlJj6cpMJz4DKAQkEcnVr1vCE2w5EoGROzaztzZ4
+X-Gm-Gg: ASbGnctXrAMTkIsAhnXmG8nxoBEHKEiDqYWS/nhJR7tQJlLw2hAJkxkpmc+CvQmlwhT
+	Vrvqe56Cw8jadIcTsPDLtsgxy+SeoRrDNXuCwCmDjccBmP9K7ShU18nn5+CE+5noZwzL/hav2SR
+	/XGgcCOMbf2LeiX/qPDGlOfYa67dV3tBjHLiSIIFu/QgmBdk4Q0B80nX4Hemy6/n5GtifIvw1sX
+	+ryOqlxt8C4Yt5ifgQ54HUTY7PeKqYEHBaSbTN3xHMUdK4CBN7TT13KWM7Fz07vtOMZnskeiEuW
+	JYY4MiDlm98U
+X-Google-Smtp-Source: AGHT+IG/Xo1aeasa5ZnL5MMN9Ee5P7mAPjBHaHxE5cOukyBQ2wONY4X+hGie5/utuodThyQDA2nvhQ==
+X-Received: by 2002:a17:902:f60a:b0:21f:6c3:aefb with SMTP id d9443c01a7336-21f4e75a349mr277293335ad.35.1739238287017;
+        Mon, 10 Feb 2025 17:44:47 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21f368cff88sm85301975ad.242.2025.02.10.17.44.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Feb 2025 17:44:46 -0800 (PST)
+Message-ID: <fba26c0939c3de14527774cd3d466b2f7ca33192.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] selftests/bpf: implement setting global
+ variables in veristat
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Mykyta Yatsenko
+	 <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, 	kafai@meta.com, kernel-team@meta.com, Mykyta
+ Yatsenko <yatsenko@meta.com>
+Date: Mon, 10 Feb 2025 17:44:41 -0800
+In-Reply-To: <CAEf4BzYVWSogUYk8pEPGs0N4eNb5fcXtmFMLkicokmqHPpbZCg@mail.gmail.com>
+References: <20250210135129.719119-1-mykyta.yatsenko5@gmail.com>
+	 <20250210135129.719119-2-mykyta.yatsenko5@gmail.com>
+	 <CAEf4BzYVWSogUYk8pEPGs0N4eNb5fcXtmFMLkicokmqHPpbZCg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v9 02/12] bpf: prepare for timestamping callbacks
- use
-To: Jason Xing <kerneljasonxing@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com,
- willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, horms@kernel.org, bpf@vger.kernel.org,
- netdev@vger.kernel.org
-References: <20250208103220.72294-1-kerneljasonxing@gmail.com>
- <20250208103220.72294-3-kerneljasonxing@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20250208103220.72294-3-kerneljasonxing@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-On 2/8/25 2:32 AM, Jason Xing wrote:
-> Later, four callback points to report information to user space
-> based on this patch will be introduced.
-> 
-> As to skb initialization here, users can follow these three steps
-> as below to fetch the shared info from the exported skb in the bpf
-> prog:
-> 1. skops_kern = bpf_cast_to_kern_ctx(skops);
-> 2. skb = skops_kern->skb;
-> 3. shinfo = bpf_core_cast(skb->head + skb->end, struct skb_shared_info);
-> 
-> More details can be seen in the last selftest patch of the series.
+On Mon, 2025-02-10 at 17:13 -0800, Andrii Nakryiko wrote:
 
-This BPF program example is not useful in this commit message. It is not how 
-this change will be used in the kernel. People will naturally be required to 
-look at the selftest to see how the bpf prog can get to the skb and tskey, etc.
+[...]
 
-The commit message should focus on explaining "what" has changed and "why" it is 
-necessary. The "why" part ("four callback points to report...") is mostly 
-present but could be clearer.
+> > @@ -1334,17 +1634,6 @@ static int process_obj(const char *filename)
+> >=20
+> >         env.files_processed++;
+> >=20
+> > -       bpf_object__for_each_program(prog, obj) {
+> > -               prog_cnt++;
+> > -       }
+> > -
+> > -       if (prog_cnt =3D=3D 1) {
+> > -               prog =3D bpf_object__next_program(obj, NULL);
+> > -               bpf_program__set_autoload(prog, true);
+> > -               process_prog(filename, obj, prog);
+> > -               goto cleanup;
+> > -       }
+> > -
+>=20
+> I think this was an optimization to avoid a heavy-weight ELF parsing
+> twice, why would we want to remove it?..
+>=20
+> pw-bot: cr
 
-Subject: bpf: Prepare the sock_ops ctx and call bpf prog for TX timestamping
+The v1 of this patch missed the case that globals have to be set in
+both cases, when prog_cnt =3D=3D 1 and prog_cnt !=3D 1. I remember making
+same mistake when debugging something unrelated. Hence I suggested
+removing this special case.
 
-(What)
-This patch introduces a new bpf_skops_tx_timestamping() function that prepares 
-the "struct bpf_sock_ops" ctx and then executes the sockops BPF program.
-
-(Why)
-The subsequent patch will utilize bpf_skops_tx_timestamping() at the existing TX 
-timestamping kernel callbacks (__sk_tstamp_tx specifically) to call the sockops 
-BPF program.
-
-
-> 
-> Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
-> ---
->   include/net/sock.h |  7 +++++++
->   net/core/sock.c    | 15 +++++++++++++++
->   2 files changed, 22 insertions(+)
-> 
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index 7916982343c6..6f4d54faba92 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -2923,6 +2923,13 @@ int sock_set_timestamping(struct sock *sk, int optname,
->   			  struct so_timestamping timestamping);
->   
->   void sock_enable_timestamps(struct sock *sk);
-> +#if defined(CONFIG_CGROUP_BPF)
-> +void bpf_skops_tx_timestamping(struct sock *sk, struct sk_buff *skb, int op);
-> +#else
-> +static inline void bpf_skops_tx_timestamping(struct sock *sk, struct sk_buff *skb, int op)
-> +{
-> +}
-> +#endif
->   void sock_no_linger(struct sock *sk);
->   void sock_set_keepalive(struct sock *sk);
->   void sock_set_priority(struct sock *sk, u32 priority);
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index eae2ae70a2e0..41db6407e360 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -948,6 +948,21 @@ int sock_set_timestamping(struct sock *sk, int optname,
->   	return 0;
->   }
->   
-> +#if defined(CONFIG_CGROUP_BPF)
-> +void bpf_skops_tx_timestamping(struct sock *sk, struct sk_buff *skb, int op)
-> +{
-> +	struct bpf_sock_ops_kern sock_ops;
-> +
-> +	memset(&sock_ops, 0, offsetof(struct bpf_sock_ops_kern, temp));
-> +	sock_ops.op = op;
-> +	sock_ops.is_fullsock = 1;
-> +	sock_ops.sk = sk;
-> +	bpf_skops_init_skb(&sock_ops, skb, 0);
-> +	/* Timestamping bpf extension supports only TCP and UDP full socket */
-
-nit: After our earlier discussions, it's clear that the above is_fullsock = 1; 
-is always true for all sk here. This comment has become redundant. Let's remove it.
-
-> +	__cgroup_bpf_run_filter_sock_ops(sk, &sock_ops, CGROUP_SOCK_OPS);
-> +}
-> +#endif
-> +
->   void sock_set_keepalive(struct sock *sk)
->   {
->   	lock_sock(sk);
+> >         bpf_object__for_each_program(prog, obj) {
+> >                 const char *prog_name =3D bpf_program__name(prog);
+> >=20
 
 
