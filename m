@@ -1,287 +1,202 @@
-Return-Path: <bpf+bounces-51075-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51076-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B89A4A2FEE6
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 01:11:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA942A2FEED
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 01:16:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D27C3A05A0
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 00:11:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C5D918891AF
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 00:16:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E347EC5;
-	Tue, 11 Feb 2025 00:11:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90B8011CBA;
+	Tue, 11 Feb 2025 00:15:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xfF0AZzQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FujE22I1"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA6743D69
-	for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 00:11:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63B55264617
+	for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 00:15:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739232694; cv=none; b=LjL0lSq39FUbsLBZX8wpMW9GoYS1ggqAQUvPc6tv7xAYKq/ZlSqUqU5IyJABlU6uvQUtu3TBk9swjLhvnfNruv54JWFMljonf0U+Pz9sHD9FeSYwOqsamJOwKIAqYjjPImp3S5nMwy6PaEi8cId63V2qeXCguewmizwVaYgL+Yc=
+	t=1739232957; cv=none; b=k+KyIbPoOwis/v+EukApGgUroqbAGt+p/8OU7bLYxtFzcUpOUxOw+QqoSJeOSF8eFKXEj6nOwJC+cULIfAITQe+MRSD6iyX+HIDZURzmoKRdf7Q0NY6rNxBcbA1uH+JyYVbVjGVmINuJYgTNJseuoRWVSRy+Jbz2pvQru2C78rg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739232694; c=relaxed/simple;
-	bh=zwLzHCcwqz8/HxUAdZg0S41Jd6OTpDyTTMBxXXBmjCk=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=evdam5zF2evzv7g5b30RpydqiLdQi6kAke75mVNW0tqkdem5vsZ8+uEuPuAYKyN6ayaxqudmFMMouqK/VCsfdZgssE39313MHZF/8ldt+adRDN1vcPkAwCAFV59GZLfonyTptsOatbfEwdQIiWulAlbt5KCat3JJaD8x3h3XjQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xfF0AZzQ; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1739232957; c=relaxed/simple;
+	bh=T0X+BaSLWNU9L2mXHAH7CXqI2HDO4iZfT8nsxFzJ6JI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oX5JITJ8hq3yRklUmdLq/zkcllca5LOGlbZcx54fqEiHhzXBaHk8YaYC88DAHl7dxwE0kU7hF63AsXb6nlEuR5cdgqlmsRp0Zj+TUrDmhr73A2jS98MAsZRPI8xu0Hq4tObyfESVtTT5qz4OdGfnc4rFR53WNb2fIY4yuwdubEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FujE22I1; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-aaecf50578eso984093566b.2
+        for <bpf@vger.kernel.org>; Mon, 10 Feb 2025 16:15:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739232954; x=1739837754; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b1+wKBVGAaGDcdNdECIFBcLyPokk92FR1wp5+VoJHzg=;
+        b=FujE22I17v+VzCzOMLj19+UcS1XF1hOqkIJPtrBL2aSidTlc3QHWOKd3OL93BqWtDw
+         7ILHdGkL5sMdq12WOVA7W1P1xmsOMfTKJgeyorN5+AgQRWXBEZANYSZJJq3RJQ9ubQG6
+         yxuAqDFC/kjW8d5qfDYN+AiaAuxaJKob+g0qT5A0eWOP0fIm2YBMtnCb0WY2F1d0vTKJ
+         dAa7C4TeCIz3JN6d0EijOTpKV2Dq+Ed3Gj/XBz5bTYh5hob9zBl2JL+5660vcOYqELXP
+         ZUa2qfue/nC06JLHGMrG2o3duOT8dZtUBUQkkXhRxkxpfNBG+FYhpj1KyFTBpQejz/jH
+         MOdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739232954; x=1739837754;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b1+wKBVGAaGDcdNdECIFBcLyPokk92FR1wp5+VoJHzg=;
+        b=DdphgfyZIm5P6d6jyCQRXvXz7BjyhCCS/MioO/O5X6Fds9AbzmxHNOUbirUi4m7zLr
+         KaUtsppoOf6sIrGzCRFnhi8UwlM/JCbg2q8tKDAVima0XepCdOPSocRRBPhhzJc2M/3M
+         M+PEYjx0xLE9dwNikHs/x03Pe/sGuhyfHy+PFEioB5ehsZH2X0ryad42Jod3QRhs5T7W
+         tx3VeEICt5gVyPbZ+3sURZcpmt+ssBSzKS22xn/Yd7866tQyGpM01IWunOFnLphm5i5k
+         1NZmARwsbJ1cJ8XTxjXoOlAoJkwvBoqfFV8Z7XCiJHY6NGeCkLcIycbWtStDjLvGsrn7
+         04Rg==
+X-Gm-Message-State: AOJu0YzlxH6+uF2Zc4AYU5FPVWseZHYcyIm8Eelmr43NX9zW+NdJoMqr
+	LpnGLocJXCP583HOjMOn0U8+D3JygfIyZ7T1sSpu3vSs4Q20Gq0vmSjtA1Cd1OSihdkueZTBrOy
+	DXtQkV60knv5bayVpipLFJ9Rja0o=
+X-Gm-Gg: ASbGnctcIx2UKi+dzO+MDDiCA0KzN084uZSlIVTDI2q/0V3Yajra+FrjNBaeEFhHlED
+	R2iC7a0lGdBKzf/M44gwDGyB0LukTWPzq3hb3bfUJm1+Z4YzOQMH9gw8ZtAyyHF63oe1NSXTPYM
+	0NCfVumIOivRj+
+X-Google-Smtp-Source: AGHT+IFZYTm9YdbJ0VykginTR6KHKGfzNO0jo1utcgRAJ7bewdckwLMQaEky+ASspdPmMxxSM5U8fe67wcBrbCuFUck=
+X-Received: by 2002:a17:906:7949:b0:ab7:b5f2:ba86 with SMTP id
+ a640c23a62f3a-ab7b5f2baf1mr806202866b.29.1739232953424; Mon, 10 Feb 2025
+ 16:15:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1739232680;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OolEkZ/FdPUJ9j0mb0T7tBplyl7y+5t/7HL9VsccyGA=;
-	b=xfF0AZzQJzREIFJcdJMof3kFvC4+2XUs6IjnkeL9XLG6WLQwXyIGLCFHUz0FVS84j5AFlw
-	xUUD/FAbw2M26gr9C50ndMYby5K7OvZdxyXH2Q5SS5SiNpP0P2Wu86R0dLgzelURyQ4Bc5
-	jIjTMwugzsFrFm5qaJe6IdCcWj3jYcw=
-Date: Tue, 11 Feb 2025 00:11:15 +0000
-Content-Type: text/plain; charset="utf-8"
+References: <20250127162158.84906-1-leon.hwang@linux.dev> <20250127162158.84906-5-leon.hwang@linux.dev>
+ <CAEf4BzYXCQi4HMvegMmsx-ppxprwNVyKohJgka8gY_B+gMy+mQ@mail.gmail.com>
+ <8e25e1e9-37a0-4d4c-8af9-c2d5e12af65f@linux.dev> <CAEf4BzYeKcaYH8ZYpMo0XRyS4UYWaSZB5bMJ6FK0pUX1SUmgqg@mail.gmail.com>
+ <cab242ad-a557-430f-a466-7816811aea5e@linux.dev>
+In-Reply-To: <cab242ad-a557-430f-a466-7816811aea5e@linux.dev>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 10 Feb 2025 16:15:29 -0800
+X-Gm-Features: AWEUYZkcG0u-UyIpLB10UJk4KDQt1T8QeoKgYFjx9551bMTZ2mUS1-oG7cGvR3A
+Message-ID: <CAEf4BzanEFT8fq2iRp0C4E3dqXue3hZ2YHGxvLMo0RAi07V1rA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: Add a case to test global
+ percpu data
+To: Leon Hwang <leon.hwang@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, yonghong.song@linux.dev, song@kernel.org, 
+	eddyz87@gmail.com, qmo@kernel.org, dxu@dxuuu.xyz, kernel-patches-bot@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Ihor Solodrai" <ihor.solodrai@linux.dev>
-Message-ID: <a78e27341fbc150d767589f6dddbf932e91dc41c@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH dwarves 2/3] btf_encoder: emit type tags for bpf_arena
- pointers
-To: "Alan Maguire" <alan.maguire@oracle.com>, dwarves@vger.kernel.org,
- bpf@vger.kernel.org
-Cc: acme@kernel.org, ast@kernel.org, andrii@kernel.org, eddyz87@gmail.com,
- mykolal@fb.com, kernel-team@meta.com
-In-Reply-To: <f2b54a36-cea3-4729-bc5b-8524a5be50fa@oracle.com>
-References: <20250207021442.155703-1-ihor.solodrai@linux.dev>
- <20250207021442.155703-3-ihor.solodrai@linux.dev>
- <f2b54a36-cea3-4729-bc5b-8524a5be50fa@oracle.com>
-X-Migadu-Flow: FLOW_OUT
 
-On 2/10/25 2:11 PM, Alan Maguire wrote:
-> On 07/02/2025 02:14, Ihor Solodrai wrote:
->> When adding a kfunc prototype to BTF, check for the flags indicating
->> bpf_arena pointers and emit a type tag encoding
->> __attribute__((address_space(1))) for them. This also requires
->> updating BTF type ids in the btf_encoder_func_state, which is done as
->> a side effect in the tagging functions.
->>
->> This feature depends on recent update in libbpf, supporting arbitrarty
->> attribute encoding [1].
->>
->> [1] https://lore.kernel.org/bpf/20250130201239.1429648-1-ihor.solodrai=
-@linux.dev/
->>
->> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+On Mon, Feb 10, 2025 at 1:52=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
+rote:
 >
-> a few minor issues below, but
 >
-> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
 >
->> ---
->>  btf_encoder.c | 97 ++++++++++++++++++++++++++++++++++++++++++++++++++=
--
->>  1 file changed, 96 insertions(+), 1 deletion(-)
->>
->> diff --git a/btf_encoder.c b/btf_encoder.c
->> index e9f4baf..d7837c2 100644
->> --- a/btf_encoder.c
->> +++ b/btf_encoder.c
->> @@ -40,7 +40,13 @@
->>  #define BTF_SET8_KFUNCS		(1 << 0)
->>  #define BTF_KFUNC_TYPE_TAG	"bpf_kfunc"
->>  #define BTF_FASTCALL_TAG       "bpf_fastcall"
->> -#define KF_FASTCALL            (1 << 12)
->> +#define BPF_ARENA_ATTR         "address_space(1)"
->> +
->> +/* kfunc flags, see include/linux/btf.h in the kernel source */
->> +#define KF_FASTCALL   (1 << 12)
->> +#define KF_ARENA_RET  (1 << 13)
->> +#define KF_ARENA_ARG1 (1 << 14)
->> +#define KF_ARENA_ARG2 (1 << 15)
->>=20=20
->>=20 struct btf_id_and_flag {
->>  	uint32_t id;
->> @@ -743,6 +749,91 @@ static int32_t btf_encoder__tag_type(struct btf_e=
-ncoder *encoder, uint32_t tag_t
->>  	return encoder->type_id_off + tag_type;
->>  }
->>=20=20
->>=20+static inline struct kfunc_info* btf_encoder__kfunc_by_name(struct =
-btf_encoder *encoder, const char *name) {
->> +	struct kfunc_info *kfunc;
->> +
->> +	list_for_each_entry(kfunc, &encoder->kfuncs, node) {
->> +		if (strcmp(kfunc->name, name) =3D=3D 0)
->> +			return kfunc;
->> +	}
->> +	return NULL;
->> +}
->> +
+> On 8/2/25 03:48, Andrii Nakryiko wrote:
+> > On Fri, Feb 7, 2025 at 2:00=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev=
+> wrote:
+> >>
+> >>
+> >>
+> >> On 6/2/25 08:09, Andrii Nakryiko wrote:
+> >>> On Mon, Jan 27, 2025 at 8:22=E2=80=AFAM Leon Hwang <leon.hwang@linux.=
+dev> wrote:
+> >>>>
 >
-> above function is only used within #if statement below, right? Should
-> probably move it there to avoid warnings.
+> [...]
+>
+> >>>> +void test_global_percpu_data_init(void)
+> >>>> +{
+> >>>> +       struct test_global_percpu_data *skel =3D NULL;
+> >>>> +       u64 *percpu_data =3D NULL;
+> >>>
+> >>> there is that test_global_percpu_data__percpu type you are declaring
+> >>> in the BPF skeleton, right? We should try using it here.
+> >>>
+> >>
+> >> No. bpftool does not generate test_global_percpu_data__percpu. The
+> >> struct for global variables is embedded into skeleton struct.
+> >>
+> >> Should we generate type for global variables?
+> >
+> > we already have custom skeleton-specific type for .data, .rodata,
+> > .bss, so we should provide one for .percpu as well, yes
+> >
+>
+> Yes, I've generated it. But it should not add '__aligned(8)' to it. Or
+> bpf_map__set_initial_value() will fails because the aligned size is
+> different from the actual spec's value size.
+>
+> If the actual value size is not __aligned(8), how should we lookup
+> element from percpu_array map?
 
-Right. I think some of these functions may go away, given Eduard's
-suggestions.
+for .percpu libbpf can ensure that map is created with correct value
+size that matches __aligned(8) size? It's an error-prone corner case
+to non-multiple-of-8 size anyways (for per-CPU data), so just prevent
+the issue altogether?...
 
 >
->> +#if LIBBPF_MAJOR_VERSION >=3D 1 && LIBBPF_MINOR_VERSION >=3D 6
->> +static int btf_encoder__tag_bpf_arena_ptr(struct btf *btf, int ptr_id=
-)
->> +{
->> +	const struct btf_type *ptr;
->> +	int tagged_type_id;
->> +
->> +	ptr =3D btf__type_by_id(btf, ptr_id);
->> +	if (!btf_is_ptr(ptr))
->> +		return -EINVAL;
->> +
->> +	tagged_type_id =3D btf__add_type_attr(btf, BPF_ARENA_ATTR, ptr->type=
-);
->> +	if (tagged_type_id < 0)
->> +		return tagged_type_id;
->> +
->> +	return btf__add_ptr(btf, tagged_type_id);
->> +}
->> +
->> +static int btf_encoder__tag_bpf_arena_arg(struct btf *btf, struct btf=
-_encoder_func_state *state, int idx)
->> +{
->> +	int id;
->> +
->> +	if (state->nr_parms <=3D idx)
->> +		return -EINVAL;
->> +
->> +	id =3D btf_encoder__tag_bpf_arena_ptr(btf, state->parms[idx].type_id=
-);
->> +	if (id < 0) {
->> +		btf__log_err(btf, BTF_KIND_TYPE_TAG, BPF_ARENA_ATTR, true, id,
->> +			"Error adding BPF_ARENA_ATTR for an argument of kfunc '%s'", state=
-->elf->name);
+> The doc[0] does not provide a good practice for this case.
 >
-> nit: since we call this for arguments + return value, should we reflect
-> that in the function name/error message? maybe pass in the KF_ARENA_*
-> flag or something?
-
-It is what's happening. btf_encoder__tag_bpf_arena_ptr is called from
-btf_encoder__tag_bpf_arena_arg and separately for a return type:
-
-	if (KF_ARENA_RET & kfunc->flags) {
-		ret_type_id =3D btf_encoder__tag_bpf_arena_ptr(encoder->btf, state->ret=
-_type_id);
-
-In both cases the return value is checked and the error message is
-different.
-
-I factored out *_arg version of this operation because it has to be
-done twice: for _ARG1 and _ARG2.
-
-Maybe I misunderstood you question? lmk
-
+> [0] https://docs.kernel.org/bpf/map_array.html#bpf-map-type-percpu-array
 >
->> +		return id;
->> +	}
->> +	state->parms[idx].type_id =3D id;
->> +
->> +	return id;
->> +}
->> +
->> +static int btf_encoder__add_bpf_arena_type_tags(struct btf_encoder *e=
-ncoder, struct btf_encoder_func_state *state)
->> +{
->> +	struct kfunc_info *kfunc =3D NULL;
->> +	int ret_type_id;
->> +	int err =3D 0;
->> +
->> +	if (!state || !state->elf || !state->elf->kfunc)
->> +		goto out;
->> +
->> +	kfunc =3D btf_encoder__kfunc_by_name(encoder, state->elf->name);
->> +	if (!kfunc)
->> +		goto out;
->> +
->> +	if (KF_ARENA_RET & kfunc->flags) {
->> +		ret_type_id =3D btf_encoder__tag_bpf_arena_ptr(encoder->btf, state-=
->ret_type_id);
->> +		if (ret_type_id < 0) {
->> +			btf__log_err(encoder->btf, BTF_KIND_TYPE_TAG, BPF_ARENA_ATTR, true=
-, ret_type_id,
->> +				"Error adding BPF_ARENA_ATTR for return type of kfunc '%s'", stat=
-e->elf->name);
->> +			err =3D ret_type_id;
->> +			goto out;
->> +		}
->> +		state->ret_type_id =3D ret_type_id;
->> +	}
->> +
->> +	if (KF_ARENA_ARG1 & kfunc->flags) {
->> +		err =3D btf_encoder__tag_bpf_arena_arg(encoder->btf, state, 0);
->> +		if (err < 0)
->> +			goto out;
->> +	}
->> +
->> +	if (KF_ARENA_ARG2 & kfunc->flags) {
->> +		err =3D btf_encoder__tag_bpf_arena_arg(encoder->btf, state, 1);
->> +		if (err < 0)
->> +			goto out;
->> +	}
->> +out:
->> +	return err;
+> >>
+> >>> And for that array access, we should make sure that it's __aligned(8)=
+,
+> >>> so indexing by CPU index works correctly.
+> >>>
+> >>
+> >> Ack.
+> >>
+> >>> Also, you define per-CPU variable as int, but here it is u64, what's
+> >>> up with that?
+> >>>
+> >>
+> >> Like __aligned(8), it's to make sure 8-bytes aligned. It's better to u=
+se
+> >> __aligned(8).
+> >
+> > It's hacky, and it won't work correctly on big-endian architectures.
+> > But you shouldn't need that if we have a struct representing this
+> > .percpu memory image. Just make sure that struct has 8 byte alignment
+> > (from bpftool side during skeleton generation, probably).
+> >
+> > [...]
+> >
+> >>> at least one of BPF programs (don't remember which one, could be
+> >>> raw_tp) supports specifying CPU index to run on, it would be nice to
+> >>> loop over CPUs, triggering BPF program on each one and filling per-CP=
+U
+> >>> variable with current CPU index. Then we can check that all per-CPU
+> >>> values have expected values.
+> >>>
+> >>
+> >> Do you mean prog_tests/perf_buffer.c::trigger_on_cpu()?
+> >>
+> >
+> > No, look at `cpu` field of `struct bpf_test_run_opts`. We should have
+> > a selftest using it, so you can work backwards from that.
+> >
 >
-> not sure we need goto outs here; there are no resources to free etc so
-> we can just return err/return 0 where appropriate.
+> By referencing raw_tp, which uses `opts.cpu`, if use it to test global
+> percpu data, it will fail to test on non-zero CPU, because
+> bpf_prog_test_run_skb() disallows setting `opts.cpu`.
+>
+> Then, when `setaffinity` like perf_buffer.c::trigger_on_cpu(), it's OK
+> to run the adding selftests on all CPUs.
+>
+> So, should I use `setaffinity` or change the bpf prog type from tc to
+> raw_tp to use `opts.cpu`?
 
-ack
+Is it a problem to use raw_tp (we do it a lot)? If not, I'd go with
+raw_tp and opts.cpu.
 
 >
->> +}
->> +#endif // LIBBPF_MAJOR_VERSION >=3D 1 && LIBBPF_MINOR_VERSION >=3D 6
->> +
->>  static int32_t btf_encoder__add_func_proto(struct btf_encoder *encode=
-r, struct ftype *ftype,
->>  					   struct btf_encoder_func_state *state)
->>  {
->> @@ -762,6 +853,10 @@ static int32_t btf_encoder__add_func_proto(struct=
- btf_encoder *encoder, struct f
->>  		nr_params =3D ftype->nr_parms + (ftype->unspec_parms ? 1 : 0);
->>  		type_id =3D btf_encoder__tag_type(encoder, ftype->tag.type);
->>  	} else if (state) {
->> +#if LIBBPF_MAJOR_VERSION >=3D 1 && LIBBPF_MINOR_VERSION >=3D 6
->> +		if (btf_encoder__add_bpf_arena_type_tags(encoder, state) < 0)
+> Thanks,
+> Leon
 >
-> kind of a nit I guess, but I think it might be clearer to make explicit
-> the work we only have to do for kfuncs, i.e.
->
-> 		if (state->elf && state->elf->kfunc) {
-> 			/* do kfunc-specific work like arena ptr tag */
->
-> 		}
->
-> I know the function has checks for this internally but I think it makes
-> it a bit clearer that it's only needed for a small subset of functions,
-> what do you think?
-
-Actually I did write it like that first. IIRC tagging has to be done
-before `type_id =3D state->ret_type_id;` and only when `state` is
-passed.
-
-Anyways, I agree it should be clearer that this happens just for some
-functions.
-
->
->
->> +			return -1;
->> +#endif
->>  		encoder =3D state->encoder;
->>  		btf =3D state->encoder->btf;
->>  		nr_params =3D state->nr_parms;
 
