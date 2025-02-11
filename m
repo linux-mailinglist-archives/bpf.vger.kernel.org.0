@@ -1,175 +1,130 @@
-Return-Path: <bpf+bounces-51103-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51104-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E427A3028E
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 05:37:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1FE8A302A1
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 05:56:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02C3B168ADE
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 04:37:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54900165E9A
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 04:56:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8143D1D79B8;
-	Tue, 11 Feb 2025 04:37:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 947AF1D90CD;
+	Tue, 11 Feb 2025 04:56:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G2IZRZc3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j9Uhky7d"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C2B326BDB9;
-	Tue, 11 Feb 2025 04:37:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF601D7E26;
+	Tue, 11 Feb 2025 04:56:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739248642; cv=none; b=I2ShM/B1OzOLIbadSlLxZ8+v/zHJEH9xwcx0kIdSApL7CEc+i0CkA/GPFjnPRnR7iSejQGbFgzhFgQn9nekM+90UY8enEbNlD5AriHOtYITljYpA/HUJMP1QoKUehRi3TOSILWbWPfo9EZdPn37R0M6rCT7Vklfes4NdXxgfAM4=
+	t=1739249771; cv=none; b=HbNjCbISlVQfvbKlSy65Z/8pEVbQiYe/KfN9Nx8vyBq+am+hS/9QBRBMEl6p9w9crN0j21wnhpCD07iC1LSARqXB/xRq/yhaiqSffaXq6F7kXDgeo+qOxu0yYbbpyOd4i+jP2I+JFo6ca4zvXV0J94dJ+Kz+y1FcVVpxxMwfigU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739248642; c=relaxed/simple;
-	bh=iiD3hFv4/MGf8LpuTJ3yO1d/xx2v3nf6evB3IjbCFLY=;
+	s=arc-20240116; t=1739249771; c=relaxed/simple;
+	bh=Dd8pJU4mAkz8oOTBw+33Ba9v2QIfFz/TQnaizVzJwyE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=H8AeKmgRvA9CBW1TmzgNCkGfKO50yXJSl5W55lfYILkAFaGG9DRhh2LS1fVs14hIkPRWvt+vdPH2M2jeIdmjZUElGaT2uE/qjIxP66Yehsom64wYJEX48jOqAOQ1Aw0hypKZWS24Mpc7jN3tCmD4YKzSBABl7KpJhFya+6cYf7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G2IZRZc3; arc=none smtp.client-ip=209.85.128.48
+	 To:Cc:Content-Type; b=WR4OzGU5ZIAbd0lFkh2llyZTZS5GHIW2Z9HcdPlsLm52UlrF1rLZxKzWiRBMW6t6xBkUVAyXWhuj2Pj4xcn+8dLuNpW1doz1WcrUT5crt7EsjuiTWvYnYNu8pExogTfG9f9seb2Nk6NqXePgB991dfHkQipfJRVyeiDUoOzwqdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j9Uhky7d; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4394345e4d5so12454565e9.0;
-        Mon, 10 Feb 2025 20:37:19 -0800 (PST)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-436281c8a38so33476675e9.3;
+        Mon, 10 Feb 2025 20:56:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739248638; x=1739853438; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739249768; x=1739854568; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xWpfdB70sbWftAcYj4ejbqqRA/4AsMF0XJbVpkeKv2U=;
-        b=G2IZRZc3lN0oMzFj+c5OTst/db9R7smsii+Av03qPbRVSyl3yVjeT/ytrymYHX8f0q
-         fM4GOhErObrIssEKVaFqveE4sfz++UghT0diPadnGLaShmajoRTooT07Bjb+qKiMECrN
-         CtQtrQtEHucW3KTacC25/L8kAqWwWWphNqSiKYU/bkxqNmpYsbcKwrABjTHnRsjlMcmM
-         JBQ8Da7nWViH7+KtbdK+UlpYw3cCDs4GEpu+tgdKerERyhfZtWRfVu7ioD5fADQcKkHY
-         MsuExbxrTEB+OiB6wPGo7r/HKCxIEnO8cdPMLKxuNksImqZ+TNv5cvvzp5C7vm9KrWNH
-         9Jtw==
+        bh=YvlqG2mdUySN91b26Hc4Mi8+p6b99eBWTzCbfUz6Rb0=;
+        b=j9Uhky7dAVu9rHGTiRy6s0XgQ1wTh5aW5ypBvjovFl6mQt+nvrTo6KMrECVPuK98ka
+         VZkH6EK/SIfXkklBy7o5NLa9K34tkgVcsPuw5yzd6rza5XT6UpYaG2lEVAqaR5fU7Awg
+         dC1rapn/witJEkXCZ3NqKKlGnq3tvFn4Z3IjTbX0MsALMCQzIPF7DdO+bQ+YvH7DNoSP
+         A0UofhaUkDlIbho/mww3c1I9jLVgPWHD7XHDhfPdPYBHrMHPDrZtKQVWghQmbmWKvSDX
+         7+YwOiVK8gs2eLqR3zeJje/WX9uevjOfG2mQV3k6WASkBYa3cze1UM9KcRCT0epa8l8T
+         Tuhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739248638; x=1739853438;
+        d=1e100.net; s=20230601; t=1739249768; x=1739854568;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xWpfdB70sbWftAcYj4ejbqqRA/4AsMF0XJbVpkeKv2U=;
-        b=xJ074SlNZDmyRoeQ8v6mj8quQeuxXUGuPFeBSA4HbAGQ/JI6tntKEDzD/251A4ydCj
-         ggMBoaTUo6A6stAfBForn3xtJdvBIgCJz5sg/DvH2a/qYYkRkX1HbWnikY3OVjCt7Vzh
-         r8zqGNBzLd+JRke335LvbFdAXgHdCRXBnVvxlo38nZUW5vIo2CyYTRGExnvJmsv85C91
-         yjSNhRf1a+YN6QfYxKKJQgBLM/rsLt9seGC1RoLn+PTufxF0bdOAtvmDzlraR+JeD99V
-         v/GwzeFYboXU8qsK0pL/GNs8DplZP0Mu3/RDlTN1CqAhMAOVbvdxs+SlHjA8sVRSLXPx
-         adXw==
-X-Forwarded-Encrypted: i=1; AJvYcCUz1FkTQ+ZG1VMHSkNITsu3UGRb6qo/jytejlzaMKegw3Z+EC+lczx1/lyU6Q1STCGKHlk=@vger.kernel.org, AJvYcCW/YqzoAE8896Y19myOC8ywaIvqqf5zrA6Tl10yxfd9LJA02Y5GvSB36J26X+ao4vlXrKvfCmgFEK/jEvFS@vger.kernel.org
-X-Gm-Message-State: AOJu0YxW6u+mjB9ZXV2zzpgtgXtVzDYOPH6vPdUZuDKDLPkUlKlGwLNY
-	3uleRXuyHEbC1Q55xjAxnCBpONI+CEszYaHEPvTPwQC3gimQfuHiUmF42Qoel+iABd2yAFIcnWw
-	hWToc+2J0f7P/ujpYBcCr1702WMI=
-X-Gm-Gg: ASbGncuud97vvJqRSPJcrsFwmhvPfZ8mrWFHYDabKmWwoUPAuUUKi0kJbMvYOhWXZaq
-	B1QpfXPu5Q7ufCJkw1tJopCfpUQen7sQmmrgHvVWTXVPFXMeVoMytzmyCX8+1K23VKiGI0suhL/
-	pdIlZAQ5renPSv4apCMCxjXPTBc9Ot
-X-Google-Smtp-Source: AGHT+IGRefKznhz5yHKjcgGgQFbE9mcQJ89SBHVOVNja4lptmvxdcQaOzzSj54C/Z2QjZl52i6rOHwKdMoqDioHBQj0=
-X-Received: by 2002:a5d:64ef:0:b0:38d:e6f4:5a88 with SMTP id
- ffacd0b85a97d-38de6f45ebemr99163f8f.12.1739248638184; Mon, 10 Feb 2025
- 20:37:18 -0800 (PST)
+        bh=YvlqG2mdUySN91b26Hc4Mi8+p6b99eBWTzCbfUz6Rb0=;
+        b=jdFkxiSodNFEaZ2tYS9Yb9qArN9hSQ1IFDIbir/Yzz5aQ5cqfRuUaHlVNgNwgniFP6
+         br2cZhJhCMkf+1U0Lza4plAKuyfncbv1amBE0uHEE9galdjWUVVyIHQNXDyFO6aZENzE
+         YW07c55wiJYHlUeDHvnE5Fn5y/q79XrWh+n1iCHFcCBcpcFLNEtjR/aoysuGZnKoCUiB
+         TqQT00D/SbDP4fOBP/pkqrcm0nkR6KphTPAV4X1ZWAMB6Gj5G4VHa2BtmziXE1wr0tjc
+         xUP26oFpKKlRXOERu8JsU8jdA6gPDmvC3zo+Fep8O3fXdFnaUrpupybMTVDyGdw9F6wj
+         WzRA==
+X-Forwarded-Encrypted: i=1; AJvYcCUOJlEFdFNhjQRaEeFqoc2BiNRc71HxX18yaUEluvMUTUcNV3/pfLn44Ktl/39SK+0UE5E=@vger.kernel.org, AJvYcCVWi2HG7IDTMlvJL8e+NO7brtL1Uk3fHTFdDr8/qmmDymGJXep+wHabhV8pjBx2Hac9Oxj/S2qiY68Nw87i@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw73cirIG5XMrfA2eVhabJ2X5tlkYIXoy020upZFbR6VokoL2uH
+	iGxwH450dS44hnX/rYhy4b9loEa7hnOLqhQHb6F1sY5zH/wP2XXCUGVDJsWobU8mAaXbg8bC/0x
+	9QbwkmYuNSaAh9jquI1N0Jnj2120=
+X-Gm-Gg: ASbGncsEPrMn/meeE9Ojxs8ScBMQIVd5YH8QMRK9jJbp8ZGSkopaBN9aXGzWjHqmyaA
+	naolh/CSxl3MhmnB1ubl75jeVFR+rVCO8OOn7Q4vxRV0pj4ay9KxmhcPktF1iMDpuPbqOeSTNVe
+	PMwhsT5sYypKGq0MGqUwdERm3fatcY
+X-Google-Smtp-Source: AGHT+IHVPH3y5XcET08qxG5mfIoe0bM1mbFDx4OVs43sslrkWwEXHC/aB8TK7KhECghuwskKJMQ5E/+WP1m+09AjE1g=
+X-Received: by 2002:a05:600c:1e02:b0:434:9e1d:7626 with SMTP id
+ 5b1f17b1804b1-439249c02e2mr103937525e9.25.1739249767385; Mon, 10 Feb 2025
+ 20:56:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250206105435.2159977-1-memxor@gmail.com> <20250210093840.GE10324@noisy.programming.kicks-ass.net>
- <20250210104931.GE31462@noisy.programming.kicks-ass.net>
-In-Reply-To: <20250210104931.GE31462@noisy.programming.kicks-ass.net>
+References: <20250206105435.2159977-1-memxor@gmail.com> <20250206105435.2159977-8-memxor@gmail.com>
+ <20250210095607.GH10324@noisy.programming.kicks-ass.net>
+In-Reply-To: <20250210095607.GH10324@noisy.programming.kicks-ass.net>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 10 Feb 2025 20:37:06 -0800
-X-Gm-Features: AWEUYZkr9lC8NBO_G3nOjJwjSNmxpru73XcllQ0zpalWtpIGmw6oAJpxSMv3-wg
-Message-ID: <CAADnVQ+3wu0WB2pXs4cccxfkbTb3TK8Z+act5egytiON+qN9tA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 00/26] Resilient Queued Spin Lock
+Date: Mon, 10 Feb 2025 20:55:56 -0800
+X-Gm-Features: AWEUYZm_Ui-VlaR__Qfx0UBZP1wEkQULBhyDCk20ZqOu4LAS3ChHbdZQZd4xhLk
+Message-ID: <CAADnVQKefT6iQVQ66QTCeRCMs_am4cC3pBt1Ym1fxfeeQVDDWA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 07/26] rqspinlock: Add support for timeouts
 To: Peter Zijlstra <peterz@infradead.org>
 Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Barret Rhoden <brho@google.com>, 
 	Linus Torvalds <torvalds@linux-foundation.org>, Will Deacon <will@kernel.org>, 
 	Waiman Long <llong@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
 	Eduard Zingerman <eddyz87@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>, 
-	Barret Rhoden <brho@google.com>, Josh Don <joshdon@google.com>, Dohyun Kim <dohyunkim@google.com>, 
+	Josh Don <joshdon@google.com>, Dohyun Kim <dohyunkim@google.com>, 
 	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 10, 2025 at 2:49=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
+On Mon, Feb 10, 2025 at 1:56=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
 g> wrote:
+>
+> On Thu, Feb 06, 2025 at 02:54:15AM -0800, Kumar Kartikeya Dwivedi wrote:
+> > @@ -68,6 +71,44 @@
 > >
-> > Do you force unload the BPF program?
-
-Not yet. As you can imagine, cancelling bpf program is much
-harder than sending sigkill to the user space process.
-The prog needs to safely free all the resources it holds.
-This work was ongoing for a couple years now with numerous discussions.
-Many steps in-between are being considered as well.
-Including detaching misbehaving prog, but there is always a counter
-argument.
-
-> Even the simple AB-BA case,
+> >  #include "mcs_spinlock.h"
+> >
+> > +struct rqspinlock_timeout {
+> > +     u64 timeout_end;
+> > +     u64 duration;
+> > +     u16 spin;
+> > +};
+> > +
+> > +static noinline int check_timeout(struct rqspinlock_timeout *ts)
+> > +{
+> > +     u64 time =3D ktime_get_mono_fast_ns();
 >
->   CPU0          CPU1
->   lock-A        lock-B
->   lock-B        lock-A <-
->
-> just having a random lock op return -ETIMO doesn't actually solve
-> anything. Suppose CPU1's lock-A will time out; it will have to unwind
-> and release lock-B before CPU0 can make progress.
->
-> Worse, if CPU1 isn't quick enough to unwind and release B, then CPU0's
-> lock-B will also time out.
->
-> At which point they'll both try again and you're stuck in the same
-> place, no?
+> This is only sane if you have a TSC clocksource. If you ever manage to
+> hit the HPET fallback, you're *really* sad.
 
-Not really. You're missing that deadlock is not a normal case.
-As soon as we have cancellation logic working we will be "sigkilling"
-prog where deadlock was detected.
-In this patch the verifier guarantees that the prog must check
-the return value from bpf_res_spin_lock().
-The prog cannot keep re-trying.
-The only thing it can do is to exit.
-Failing to grab res_spin_lock() is not a normal condition.
-The prog has to implement a fallback path for it,
-but it has the look and feel of normal spin_lock and algorithms
-are written assuming that the lock will be taken.
-If res_spin_lock errors, it's a bug in the prog or the prog
-was invoked from an unexpected context.
-
-Same thing for patches 19,20,21 where we're addressing years
-of accumulated tech debt in the bpf core parts, like bpf hashmap.
-Once res_spin_lock() fails in kernel/bpf/hashtab.c
-the bpf_map_update_elem() will return EBUSY
-(just like it does now when it detects re-entrance on bucket lock).
-This is no retry.
-If res_spin_lock fails in bpf hashmap it's 99% case of syzbot
-doing "clever" attaching of bpf progs to bpf internals and
-trying hard to break things.
-
-> Given you *have* to unwind to make progress; why not move the entire
-> thing to a wound-wait style lock? Then you also get rid of the whole
-> timeout mess.
-
-We looked at things like ww_mutex_lock, but they don't fit.
-wound-wait is for databases where deadlock is normal and expected.
-The transaction has to be aborted and retried.
-res_spin_lock is different. It's kinda safe spin_lock that doesn't
-brick the kernel.
-To be a drop in replacement it has to perform at the same speed
-as spin_lock. Hence the massive benchmarking effort that
-you see in the cover letter. That's also the reason to keep it 4 bytes.
-We don't want to increase it to 8 or whatever unless it's absolutely
-necessary.
-
-In the other email you say:
-
-> And it seems to me this thing might benefit somewhat significantly from
-> adding this little extra bit.
-
-referring to optimization that 8 byte res_spin_lock can potentially
-do O(1) ABBA deadlock detection instead of O(NR_CPUS).
-That was a conscious trade-off. Deadlocks are not normal.
-If it takes a bit longer to detect it's fine.
-The res_spin_lock is optimized to proceed as normal qspinlock.
+ktime_get_mono_fast_ns() is the best NMI safe time source we're aware of.
+perf, rcu, even hardlockup detector are using it.
+The clock source can drop to hpet on buggy hw and everything is indeed
+sad in that case, but not like we have a choice.
+Note that the timeout detection is the last resort.
+The logic goes through AA and ABBA detection first.
+So timeout means that the locking dependency is quite complex.
+Periodically checking "are we spinning too long" via
+ktime_get_mono_fast_ns() is what lets us abort the lock.
+Maybe I'm missing the concern.
+Should we use
+__arch_get_hw_counter(VDSO_CLOCKMODE_TSC, NULL) instead ?
 
