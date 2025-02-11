@@ -1,104 +1,107 @@
-Return-Path: <bpf+bounces-51167-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51168-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F23C1A31360
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 18:45:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D45BA3136E
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 18:46:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FCE33A4AE3
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 17:45:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BAD21889E86
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 17:46:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC25419AD99;
-	Tue, 11 Feb 2025 17:45:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8215261564;
+	Tue, 11 Feb 2025 17:46:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="LujDI75O";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="yPqDjUvv"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="XH1xgEOh"
 X-Original-To: bpf@vger.kernel.org
-Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53A9A156C69;
-	Tue, 11 Feb 2025 17:45:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5CA426157E
+	for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 17:46:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739295929; cv=none; b=aqof9ZibqftIp2TG+xPgiZBZz2CUHqnJKMcSwC8UBP1UVvnUoKvCqbcux5oZ17UvHBOqgJszYIpanSe3bhhIp49SOyhEPB5dbEAid0pa0pfJTX4LBHWtGTx+UTJsMEKMfhXG5owF0XwbCZSzgu6qtMrbyiM7d6gNs/QyN8g8Osc=
+	t=1739295962; cv=none; b=mmsA7tkmzd9otaEKYcQfyYqTzyO6RyB4LM7SU8sYRuuBxEfMKH0Ebs5IOz8Z6AYf0SadaYTNoV3wWj1kLftuplzVLqMfIc7UHYNIScD+g/vGWZ2MR1qX33w0H8Unfp+jdpu3sPBNTJvAibw6G9ACruz8T/qBqWhIssDRColCdxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739295929; c=relaxed/simple;
-	bh=Cyr8xNX4CD2amZmI5NG6bxTs4j3Nl6bQnMObGiScGQY=;
+	s=arc-20240116; t=1739295962; c=relaxed/simple;
+	bh=u0XrVF8iTTm5UaCKcKl+IQNCx5OX+tUX5xKCetplVyo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rp79P5ZoSHhxmYsCp8NPL5o/AbC2yeKDjwUlskCBycknZf72zKXo0ROxkAU8x5PmPYI7ygj2QKS7zWz8wQIqk94S0YwyJuv8zL7hwiBjz3S6tJ0B0tGbHP3oFjJiY0m1exZdny290neoN+HV6eGvksGqjiaf33gh2GXQu4VP1pw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=LujDI75O; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=yPqDjUvv; arc=none smtp.client-ip=202.12.124.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
-	by mailfout.stl.internal (Postfix) with ESMTP id 271D3114012F;
-	Tue, 11 Feb 2025 12:45:26 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-12.internal (MEProxy); Tue, 11 Feb 2025 12:45:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1739295926; x=1739382326; bh=TfcLRWsOlI
-	eIaKdeFDqkhNFH2enF1gy8hw8yD6zvWOY=; b=LujDI75Oe869hpGwb7PsRhdVN6
-	IVZ+NX7yd/e1q7IiG3t77U39aRufSlnd5h7kz6WgMBf0dIrXX+Izo6IEALVxrNcn
-	R54BsfdAlq4UM4n46mg2sWjoGm8lg0GBnPsJfJ0fa3iwxnrMprmD9CVtpABo+J2l
-	RmP+8bRE13OSU2OPYxLNjNKCv0cC55hb0GDQeKqnAxFv1yHcnJbE2RLg4tghxL18
-	P81FFM9ZIN+FimEsoMVubT8i/7mXksEeMdn+QLj55mnP5mOKztXtlvegNNqIi8xD
-	Kscjndv0fOrWx44TFawsGxEG78ts1YiseUn6cio2OLhQu0nj5ac9UeCZ8gig==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1739295926; x=1739382326; bh=TfcLRWsOlIeIaKdeFDqkhNFH2enF1gy8hw8
-	yD6zvWOY=; b=yPqDjUvvuEz6SxsQ3qtSUctSU3vrMFrc0yI56GqfrOifN3Ffrwg
-	r8JoSxuTj/Tc7hLdJaAnaCNzc5VxgEa+Zdfjnv9fLhSt0eYDYkHL5k22D8eIjCNx
-	gAzwVa7azCKZVPsD/vvR3TONxdy77Y9F8qw+izJBbQAcsD6pjeV2KlaNF3o8FrFW
-	KUhKGIdDuE5BirLXJquYbiDVzFkbhNTZjBl9i/qPG7Nal0GUtogzNvO2K/uAV0vd
-	KSfdw5XUocNjzsYcz4+VWKtvmeFg7HVgjBc4JYs+utWjlE87sO3U2wij4IZ8pAbi
-	x7qqe0JPJaS5NVuTwxnfNSd7muyDTbgNMCA==
-X-ME-Sender: <xms:tYyrZ6RvoyBV4PKemeOuhaxXhrEwaM2FfacHDC2Ikq6MOwXo-WkZ4A>
-    <xme:tYyrZ_z8CSdDZsTJon_ChSazZGkHi9FCQTzKSVxmFOr_zUWoDuqR-B5_UglJ57L2Z
-    E_Au0L-vs-YJNmMSg>
-X-ME-Received: <xmr:tYyrZ313O1DyBNymkY_GaG2rKJUjVeNZzU9YN-h5N1UrLovvk0nmU0WWmuOwFuNJYeQmWdr6S8p-ZsUPC1AvtIq96Nkg7EfUzswPJvphYrrGvg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdegudeifecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenfghrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffk
-    fhggtggujgesthdtsfdttddtvdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihuse
-    gugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeefhfffhfehgfefgfevvdeiheev
-    gfetudeifeetueehudefledutdekveekgeffgfenucffohhmrghinhepghhnuhdrohhrgh
-    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihu
-    segugihuuhhurdighiiipdhnsggprhgtphhtthhopedutddpmhhouggvpehsmhhtphhouh
-    htpdhrtghpthhtohepmhgrshgrhhhirhhohieskhgvrhhnvghlrdhorhhgpdhrtghpthht
-    ohepfhhrrghnkhdrsghinhhnshesihhmghhtvggtrdgtohhmpdhrtghpthhtohepmhgrth
-    htrdgtohhsthgvrhesihhmghhtvggtrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgv
-    rhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprggtmhgvsehrvg
-    guhhgrthdrtghomhdprhgtphhtthhopegsphesshhushgvrdguvgdprhgtphhtthhopehn
-    rghthhgrnheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepnhhitgholhgrshesfhhjrg
-    hslhgvrdgvuhdprhgtphhtthhopegsphhfsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:tYyrZ2Cay2gQABQWSPPkNM8HOnaiu4jrL4Wc6YDukFMEPz2-bExCjw>
-    <xmx:tYyrZzi_Jli-GvmMwwxEQP1VXLkWjBeQVSQvHT2tbOhUG_9a_biOmw>
-    <xmx:tYyrZypX0rB0KnglFWN-7h_u8JQAZDB56FJuKy74YZDZjr7CdNgNOw>
-    <xmx:tYyrZ2hqNH0_nk9MJqhATXC_xYKMTu1MA0wXny75iueEUlrsr1_NXg>
-    <xmx:tYyrZ4aPG-UJeDmEUJgduFymhbFcnXzDrazHS7R3l8_2GxZoI5OE7hdG>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 11 Feb 2025 12:45:23 -0500 (EST)
-Date: Tue, 11 Feb 2025 10:45:22 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Frank Binns <frank.binns@imgtec.com>, 
-	Matt Coster <matt.coster@imgtec.com>, linux-kernel@vger.kernel.org, 
-	Arnaldo Carvalho de Melo <acme@redhat.com>, Borislav Petkov <bp@suse.de>, 
-	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, bpf@vger.kernel.org, 
-	linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH] tools: fix annoying "mkdir -p ..." logs when building
- tools in parallel
-Message-ID: <6bwwjyvhajytkvwumbjbj5glk27w3cqf4ylobfyhhclioypsfs@hen3m6i2cdga>
-References: <20250211002930.1865689-1-masahiroy@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ktdGQE2wVNY2fQJwkXyKduFxph6T0NxNgocnFOrNHY7T6LLKi92UMzsvEDwCKcEkj/MaNgAaY3PbEf9oxTrqPHdw0D/wPl/5bWZxjiGSWpQg+aeYYq1jge1aDWnj/ky79uR2d4fQRcvCqp6B5PESHpMZCR0ObWZ/hbiqEAaEoi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=XH1xgEOh; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-21f4af4f9ddso69268785ad.1
+        for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 09:46:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1739295960; x=1739900760; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hU0k36QB1XU8Cts/gsb6V0Pakg2qWpL/o6Sf1GbitsM=;
+        b=XH1xgEOhDENpheNQveaJb4KLCeCzJm9EjxEHmPPgRbHIlriRz0vak7hBRdxK78EmDE
+         QknjrOid6eSGRIryu48ME5qnumlV0sB/N5AE3QUuKPLmeH0IlkIe6/zUn7N15Vqa56wj
+         rPYydxek/8UkSZLtb1IWkvb1MByGX9M7ORXjE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739295960; x=1739900760;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hU0k36QB1XU8Cts/gsb6V0Pakg2qWpL/o6Sf1GbitsM=;
+        b=eTD8f0om16FTUWpR2rJFzOipSOJtpX322RKGq/rvCzEQItSPrbpvh0IvwKl4Ak3tHW
+         h5O8rTRnlZ+RzhDXtqtYInx+dDywLt0R7Mnb6K7x6Fz7DooF4P8OzpZXPfJRR4s8GSkL
+         SuajoAg1MTqePMHEhfRNIjgCepBT0vfSTu2f2Ma4KWgqb8lhTgnByLlOHyIsRZPLzjLE
+         jS33GxxpSAE9Pk8iAPDqPRTrtmqHtbA1AA1mLIWx0HukgvHoZWzaF/OkJ2BnM4jmGAA8
+         XNWCvZvg4yr6mZDza/wPVUab6H1j4qVBvX4HBz9jMS34EC+9Wm+GFiX89pXULEsfx8zf
+         chrw==
+X-Forwarded-Encrypted: i=1; AJvYcCVyck9dMCc9rvyrWMTpky4C4dVnkbq72hg20mXfmXX1AuBY4ltOTzDsl55w5Sm1ngqWAxw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzMLNsaFZJYizOmFrL1wrPV5+1/mPO2ZAxgc5hodoAVbNrfjDg4
+	7X0g7xx5CUGV8EOzy9KEFbYcoKGbowwKDeOlsEPJRMOa/5JhP4Zyti22YoW7JAs=
+X-Gm-Gg: ASbGnctlckknPvJ2SlTSplKVSUqRHpSvFOoFkgDkvt8OVG3ay/nQx4X+BnG5+Im4uAw
+	HFvSmHbq7/YTTxoPz4j533r+Nq/TxMKHDPO++sQzfJGFyvoeZ2/K/pmwzqbsuV2YChAqBd6Pk13
+	p34XNASAtHbrXGYpjuJAB39AIEKgAuxoxncyKY3G6JIht7S5H7o5lmb0sN1EM+qLsCiq1CtYYX2
+	m0lkSMYskt439uTkSnBQKNpWPUIYSPiOl1NvWNNOmk59VYhMiFGR/e8DUN4kRxDeqdljNtN2P3Y
+	kBHcc32LGN81CMVoVqEJxok08YjlNKIRep49mX1NzNlMsfZbb42tflzpwQ==
+X-Google-Smtp-Source: AGHT+IG3/CAcTS3CiCjU9yipQAdPsOj3aLbPkEZBQL3ZsInksDgw155tgyytgR1Oc/LgBs+GNy+uXQ==
+X-Received: by 2002:a17:902:e846:b0:215:9470:7e82 with SMTP id d9443c01a7336-220bbb112e9mr2596865ad.4.1739295959965;
+        Tue, 11 Feb 2025 09:45:59 -0800 (PST)
+Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-ad51aecd55esm9673581a12.29.2025.02.11.09.45.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Feb 2025 09:45:59 -0800 (PST)
+Date: Tue, 11 Feb 2025 09:45:56 -0800
+From: Joe Damato <jdamato@fastly.com>
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org, stfomichev@gmail.com, horms@kernel.org,
+	kuba@kernel.org, Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Shuah Khan <shuah@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next v6 3/3] selftests: drv-net: Test queue xsk
+ attribute
+Message-ID: <Z6uM1IDP9JgvGvev@LQ3V64L9R2>
+Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
+	Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+	stfomichev@gmail.com, horms@kernel.org, kuba@kernel.org,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Shuah Khan <shuah@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>
+References: <20250210193903.16235-1-jdamato@fastly.com>
+ <20250210193903.16235-4-jdamato@fastly.com>
+ <13afab27-2066-4912-b8f6-15ee4846e802@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -107,50 +110,66 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250211002930.1865689-1-masahiroy@kernel.org>
+In-Reply-To: <13afab27-2066-4912-b8f6-15ee4846e802@redhat.com>
 
-Hi Masahiro,
+On Tue, Feb 11, 2025 at 12:09:50PM +0100, Paolo Abeni wrote:
+> On 2/10/25 8:38 PM, Joe Damato wrote:
+> > +def check_xdp(cfg, nl, xdp_queue_id=0) -> None:
+> > +    test_dir = os.path.dirname(os.path.realpath(__file__))
+> > +    xdp = subprocess.Popen([f"{test_dir}/xdp_helper", f"{cfg.ifindex}", f"{xdp_queue_id}"],
+> > +                           stdin=subprocess.PIPE, stdout=subprocess.PIPE, bufsize=1,
+> > +                           text=True)
+> > +    defer(xdp.kill)
+> > +
+> > +    stdout, stderr = xdp.communicate(timeout=10)
+> > +    rx = tx = False
+> > +
+> > +    queues = nl.queue_get({'ifindex': cfg.ifindex}, dump=True)
+> > +    if not queues:
+> > +        raise KsftSkipEx("Netlink reports no queues")
+> > +
+> > +    for q in queues:
+> > +        if q['id'] == 0:
+> > +            if q['type'] == 'rx':
+> > +                rx = True
+> > +            if q['type'] == 'tx':
+> > +                tx = True
+> > +
+> > +            ksft_eq(q['xsk'], {})
+> > +        else:
+> > +            if 'xsk' in q:
+> > +                _fail("Check failed: xsk attribute set.")
+> > +
+> > +    ksft_eq(rx, True)
+> > +    ksft_eq(tx, True)
+> 
+> This causes self-test failures:
+> 
+> https://netdev-3.bots.linux.dev/vmksft-net-drv/results/987742/4-queues-py/stdout
+> 
+> but I really haven't done any real investigation here.
 
-Thanks for looking into this! Much better than my attempt :P
+I think it's because the test kernel in this case has
+CONFIG_XDP_SOCKETS undefined [1].
 
-On Tue, Feb 11, 2025 at 09:29:06AM +0900, Masahiro Yamada wrote:
-> When CONFIG_OBJTOOL=y or CONFIG_DEBUG_INFO_BTF=y, parallel builds
-> show awkward "mkdir -p ..." logs.
-> 
->   $ make -j16
->     [ snip ]
->   mkdir -p /home/masahiro/ref/linux/tools/objtool && make O=/home/masahiro/ref/linux subdir=tools/objtool --no-print-directory -C objtool
->   mkdir -p /home/masahiro/ref/linux/tools/bpf/resolve_btfids && make O=/home/masahiro/ref/linux subdir=tools/bpf/resolve_btfids --no-print-directory -C bpf/resolve_btfids
-> 
-> Defining MAKEFLAGS=<value> on the command line wipes out command line
-> switches from the resultant MAKEFLAGS definition, even though the command
-> line switches are active. [1]
-> 
-> The first word of $(MAKEFLAGS) is a possibly empty group of characters
-> representing single-letter options that take no argument. However, this
-> breaks if MAKEFLAGS=<value> is given on the command line.
-> 
-> The tools/ and tools/% targets set MAKEFLAGS=<value> on the command
-> line, which breaks the following code in tools/scripts/Makefile.include:
-> 
->     short-opts := $(firstword -$(MAKEFLAGS))
-> 
-> If MAKEFLAGS really needs modification, it should be done through the
-> environment variable, as follows:
-> 
->     MAKEFLAGS=<value> $(MAKE) ...
-> 
-> That said, I question whether modifying MAKEFLAGS is necessary here.
-> The only flag we might want to exclude is --no-print-directory, as the
-> tools build system changes the working directory. However, people might
-> find the "Entering/Leaving directory" logs annoying.
-> 
-> I simply removed the offending MAKEFLAGS=.
-> 
-> [1]: https://savannah.gnu.org/bugs/?62469
-> 
-> Fixes: a50e43332756 ("perf tools: Honor parallel jobs")
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+The error printed in the link you mentioned:
 
-Tested-by: Daniel Xu <dxu@dxuuu.xyz>
+  socket creation failed: Address family not supported by protocol
+
+is coming from the C program, which fails to create the AF_XDP
+socket.
+
+I think the immediate reaction is to add more error checking to the
+python to make sure that the subprocess succeeded and if it failed,
+skip.
+
+But, we may want it to fail for other error states instead of
+skipping? Not sure if there's general guidance on this, but my plan
+was to have the AF_XDP socket creation failure return a different
+error code (I dunno maybe -1?) and only skip the test in that case.
+
+Will that work or is there a better way? I only want to skip if
+AF_XDP doesn't exist in the test kernel.
+
+[1]: https://netdev-3.bots.linux.dev/vmksft-net-drv/results/987742/config
 
