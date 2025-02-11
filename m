@@ -1,93 +1,103 @@
-Return-Path: <bpf+bounces-51092-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51093-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ABB0A3012F
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 02:57:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D1CDA30138
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 03:00:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 585307A154F
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 01:56:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB4C83A5F98
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 02:00:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63049134B0;
-	Tue, 11 Feb 2025 01:56:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6F961420DD;
+	Tue, 11 Feb 2025 02:00:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GBG0xO58"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tSvOVYiY"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3FB8B676;
-	Tue, 11 Feb 2025 01:56:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30E5214A629;
+	Tue, 11 Feb 2025 02:00:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739239017; cv=none; b=LRHQk/ChpeY79PuDss07rpMATbEuy3enr55U9dNppe+m+OIHoXrS2yj2iqHMHJeK+0OZONxrRLLUMyuCaXUb7mW3kd2t1u/nMxMCapq6N2zBFcLxlPnnQkQScE/EC0TFPGjSr3S2DuIJUcfz4g0R4SQYXTo2AibTLMDHU0dCP3E=
+	t=1739239206; cv=none; b=fZN1tUI0NO+/YNJtp9Y49CKJatsaG4igGKQBv4hC2NBtUAS4tDXZ3DX9WlH5us3SrdLP3XqNTPpDx7MUCH6+hfBk58zNO7W4vt3aHGDVQRtAnKrtZ8DJLA3ymnqOZx1CMgW8IGWTuwgv7f4UkLLYve10ll1yO4sw9Od9op/f2j4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739239017; c=relaxed/simple;
-	bh=JBSsbLlRcnXVLndhpHzyIz4BCKHwBTs9BNQ8fcPk/8U=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DJKY3mMpnc4OuFXbGo4KQNyraN6goQqMkz0CuZQVheOXHJDsYaHhl1IWaoJzpXWr/kshIYtJXlPNw18DnlLrMPLLVuHc5i0UpdDXKXyyyUn8yRmwlVIk8nSYsCX9koLJ9HazU5/LnRlaU+itpCZb+GDs3Gy2nWoPanUa+8gVtTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GBG0xO58; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEEF9C4CED1;
-	Tue, 11 Feb 2025 01:56:56 +0000 (UTC)
+	s=arc-20240116; t=1739239206; c=relaxed/simple;
+	bh=kFUJr5TD/M4NAgCQXUCTrLJ56MU+Zqi0WBhtlptFbD0=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=DezfutNKqOpbXQ0HqTn86i8lELNNqnzQxNRj1hQ4+SbOf4Y+0M3NwtrHAE6lkda+Z/Pfm45jNipePYROUexVWJ8EIjHld9wxvvRcV7zU2UH3GIujkcnHFzjgEkOxKii5zw8pB8hkGLimZ0nifboZ1IAI9V9FVXX3mhLm0bgrwKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tSvOVYiY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EC28C4CED1;
+	Tue, 11 Feb 2025 02:00:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739239017;
-	bh=JBSsbLlRcnXVLndhpHzyIz4BCKHwBTs9BNQ8fcPk/8U=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=GBG0xO58q4NUw7aNkm5a+Hg66ElniqttFVbAOoOmcwHHYUS7HzxtDQodv3vY6ZgmH
-	 0x5cbyHaOdfzeOWDkxPZMidZ+qnOpawdfJw5n/wInSgPoiLXBpNblCpIoTyn18vKCx
-	 evTS97adKqeiApOdy6hAJQyxYarTkWmpOoL11MaV10kgv99niiOrFKRCHo+cskkbF/
-	 WSxv1XAgNpcszYYD3lPWffiVVmFSB/dBLeOTRZCsYCnguSWLRJDwipQvJ+GRkSR2p8
-	 +9qu4hGiVWfFsEhXh7gE2We5OMp4MJm+D1qRNFrXPxxYXK2q921KlG2zNTVG31TsAZ
-	 n21w7XenYDp+g==
-Date: Mon, 10 Feb 2025 17:56:55 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Simon Horman <horms@kernel.org>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>, Andrew Lunn
- <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John
- Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>,
- "Jose E. Marchesi" <jose.marchesi@oracle.com>, Toke =?UTF-8?B?SMO4aWxh?=
- =?UTF-8?B?bmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>, Magnus Karlsson
- <magnus.karlsson@intel.com>, Maciej Fijalkowski
- <maciej.fijalkowski@intel.com>, Przemek Kitszel
- <przemyslaw.kitszel@intel.com>, Jason Baron <jbaron@akamai.com>, Casey
- Schaufler <casey@schaufler-ca.com>, Nathan Chancellor <nathan@kernel.org>,
- bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/4] unroll: add generic loop unroll helpers
-Message-ID: <20250210175655.15c5fbe5@kernel.org>
-In-Reply-To: <20250210210819.GF554665@kernel.org>
-References: <20250206182630.3914318-1-aleksander.lobakin@intel.com>
-	<20250206182630.3914318-2-aleksander.lobakin@intel.com>
-	<20250209110725.GB554665@kernel.org>
-	<fa01e28e-b75d-4d60-b10a-ccf3e544ff1e@intel.com>
-	<20250210210819.GF554665@kernel.org>
+	s=k20201202; t=1739239205;
+	bh=kFUJr5TD/M4NAgCQXUCTrLJ56MU+Zqi0WBhtlptFbD0=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=tSvOVYiYXQm8Hn9Y3tri5ZIKFUwf2TDB0mOBv/ajJiE9nRPTsd4sESh6IZ90NGJzT
+	 2wehiDd0FjHr33vOKT/gax7foWX5K7NkS1LVHcCCUMwGxXGaVxJhYVd+1VGyZ9J56v
+	 cpVlkvaVHME6kenmQ++ljPajjTd6gsdiAX6plLvdMK1gznI/oQmKaK2zMeLOFcF+Yh
+	 FbPRft7BTKC8pVJ+B2dJUkn5Kqg2zoyko9oPZnbgXjuYRN3HT6pIHbueRk/2Cq+PU1
+	 FAAAl4maHBO4JBAGmn6ljIBh370UZKd9X2YXYrfdDfXIw8DqWl51CYo0NNU0VIt4Wp
+	 5QwVMOWHBmkhg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 71193380AA7A;
+	Tue, 11 Feb 2025 02:00:35 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/4] xsk: the lost bits from Chapter III
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <173923923427.3912925.6550641983549468638.git-patchwork-notify@kernel.org>
+Date: Tue, 11 Feb 2025 02:00:34 +0000
+References: <20250206182630.3914318-1-aleksander.lobakin@intel.com>
+In-Reply-To: <20250206182630.3914318-1-aleksander.lobakin@intel.com>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+ john.fastabend@gmail.com, andrii@kernel.org, jose.marchesi@oracle.com,
+ toke@redhat.com, magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+ przemyslaw.kitszel@intel.com, jbaron@akamai.com, casey@schaufler-ca.com,
+ nathan@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
-On Mon, 10 Feb 2025 21:08:19 +0000 Simon Horman wrote:
-> > > This patch adds four variants of the unrolled helper.  But as far as I can
-> > > tell the patch-set only makes use of one of them, unrolled_count().
-> > > 
-> > > I think it would be best if this patch only added helpers that are used.  
-> > 
-> > I thought they might help people in future.
-> > I can remove them if you insist. BTW the original patch from Jose also
-> > added several variants.  
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Thu,  6 Feb 2025 19:26:25 +0100 you wrote:
+> Before introducing libeth_xdp, we need to add a couple more generic
+> helpers. Notably:
 > 
-> I do slightly prefer only adding what is used.
+> * 01: add generic loop unrolling hint helpers;
+> * 04: add helper to get both xdp_desc's DMA address and metadata
+>   pointer in one go, saving several cycles and hotpath object
+>   code size in drivers (especially when unrolling).
+> 
+> [...]
 
-Hm, I'm a bit on the fence. IDK how trivial it is to figure out how 
-to get the equivalent behavior from the compilers... 
+Here is the summary with links:
+  - [net-next,1/4] unroll: add generic loop unroll helpers
+    https://git.kernel.org/netdev/net-next/c/c6594d642717
+  - [net-next,2/4] i40e: use generic unrolled_count() macro
+    (no matching commit)
+  - [net-next,3/4] ice: use generic unrolled_count() macro
+    (no matching commit)
+  - [net-next,4/4] xsk: add helper to get &xdp_desc's DMA and meta pointer in one go
+    https://git.kernel.org/netdev/net-next/c/23d9324a27a4
 
-Let's keep it, if someone feels strongly I guess they could post 
-a patch to delete the unused variants.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
