@@ -1,203 +1,138 @@
-Return-Path: <bpf+bounces-51135-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51136-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25E7AA30997
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 12:13:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0F40A309B7
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 12:17:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78CAA7A4456
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 11:12:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58A2E188B850
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 11:17:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D438C1F8916;
-	Tue, 11 Feb 2025 11:10:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C35C1FECA7;
+	Tue, 11 Feb 2025 11:16:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=superluminal.eu header.i=@superluminal.eu header.b="HFaXDlOX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DkhO3twI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68FD91C9EAA
-	for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 11:10:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7649D1F4E38;
+	Tue, 11 Feb 2025 11:16:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739272237; cv=none; b=i6xnJt2i2FGvbhvD+BhilZR8fGX1LRpP8Ka/qCFbTA18+2vxzbuylxklBDsQsoIQ2Br/500Gw33jKZ8qn5CB5mKGvXMmv6UQgX/Va3acOgVn9LXzcyxXOBWbp7UjPmFB79AiVWc6+xTEVaRfSbcEsMtkbx/gF/GlHGYtJUTHP/Q=
+	t=1739272566; cv=none; b=OIRmM78zzCYtMeLupdtXxKwtejNAOdfAfkpkvCVKSj9QZIGL7h2msVVDIW9P/C2PB5l91WtHSp8GmxaNqBuzCsYi9k6F7bBSYcug7yKejaWE3tSH10Ujbu173LqtG7h7L9mRQhtM6EeoFeN/bv+kW6F6OfMiwXJumgA9zqHoGqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739272237; c=relaxed/simple;
-	bh=8cbJ0j8CaPNzMqLL97bzWA01nIw1cLsBpVdgRagGWAM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZCv3/cfH7IxI+N3m+opG2FWhbp6pAMgODEaOWKt9uqG2+jaob2dfxfLyIpYxy/WqNVHGeQwnRx3XuDdYsj178B/NFBjTdCNsIAYJe0XG7JDgodMPPLzEuT9DvzXSgo9OpK03ShoqWWPkaKzcLK1YRkbc27oEdzMKDBY6kzeYHU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=superluminal.eu; spf=pass smtp.mailfrom=superluminal.eu; dkim=pass (2048-bit key) header.d=superluminal.eu header.i=@superluminal.eu header.b=HFaXDlOX; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=superluminal.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=superluminal.eu
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2f42992f608so8197940a91.0
-        for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 03:10:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=superluminal.eu; s=google; t=1739272233; x=1739877033; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CSDIez2Rh9c72m8yN12QT8Ya/AxQN7YdwUSks3gyp2Y=;
-        b=HFaXDlOXRnKFMZi13tbfvhVsFi1+LBjzYmTEFU1xDtC+3rWhINvsVVDJpGLFeN2M2d
-         i/4HyoU35PRoAwIhBBywDsbzn/VaJw4ZjXLAk4QSrzeViKL7erHvThY2bt76oMxAK68i
-         dGL2PMSgrIaoo6XScP3B1KdWr1rTLgj30ZrLlaNBsCIwaui4H1Z1a2uvBu4aqVKw+sNC
-         JLGmSizxZg/V3nhTNyncH/D2PjAnJPAEmLTjt3w5Kfywfr4qeK3mtWsELwKAHs6kGQst
-         yz6A4y6oA8WupKM6tZWzk+11gF/sRyhG1qiA7cE75inPF6cww4breDJcyuFFc2npp93M
-         HNrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739272233; x=1739877033;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CSDIez2Rh9c72m8yN12QT8Ya/AxQN7YdwUSks3gyp2Y=;
-        b=qDk3FTofEk1bH+pFgPG6oJxKZGuxdebBVcYRAFsacUQpXdIB/DQSFeo7IRECUfTP0S
-         d1SJJcnLfK0lGviOE8bf+bY70awJ4kffXmjRBvy07miZVlDI2TFD6d+KJZkE56mRZJmD
-         uLY0y9YGWRxuOd9Bh7dVfzd9wUQ+hC2qzpuTjBQ9ltoYZcEQ5SRq9SyhQ4N3vza4g3pI
-         /7CZg4O3c1DCRYcKFEhXpvAjaOnkutM3zC41RS1TBZ5KU/U6QK3V6SZR3V2qUd9L0gVi
-         cNchQL8zHuyaJ3vgupHSAp91UHogto/v/gNNwK2vsXCMxLKGyAOy2cfkp79SuSpvH+WP
-         Fb/g==
-X-Forwarded-Encrypted: i=1; AJvYcCXVPs55oHgPcza0rBQgDYwfvxYiXytaTz5kNQ63/JC+TVL7AeWkkhUEH1QYEhbLcS5dyzw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy53DeGawRoLmWCm34BEKTU+ews+nO5ID/l6WLPrxI7oUK5RbUq
-	AxE1V+ER3nuMD5qkr3qcQCaZOgaLlXtEZhTnqXWXTk2TvYIdS2QacoMBnTqVUl2WfSc0XI5MXQz
-	cbzMplwkT/QAs1ARw2n1+PbAi6L1Qsfj3pIr7ow==
-X-Gm-Gg: ASbGnctfM25YNhxoyRxfF9SBFXACp3K1he18IsQLfT8fL6RasCq5R2dacOtwdRPRRQi
-	8aVjeYl1Kq+xIWoWtcanG03orfK6cKN5Qi54NjhskXCFLnDaALqzaglqSR8F55RnC3YFI3LsoHs
-	IYWnOlZ9Jb55IKEYQj539qIZpdHt2w/7E=
-X-Google-Smtp-Source: AGHT+IEXWyOWn8aMBXGy8OUxzr1mrJhrvcug/VyN8sb7TyuJc7LwcgMY0H8DaerTKOIzP0ZPDpN0SEizO6COp0W7nbI=
-X-Received: by 2002:a17:90b:4a43:b0:2f5:747:cbd with SMTP id
- 98e67ed59e1d1-2fa2416707cmr29510783a91.18.1739272233279; Tue, 11 Feb 2025
- 03:10:33 -0800 (PST)
+	s=arc-20240116; t=1739272566; c=relaxed/simple;
+	bh=9ZbJmMaSmPWAbfa1NYstLThBZ/6nU/1AYKOuhITOhfY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=liz6VGFGDe8EZFgdnPSd6iv1/54kJfhSgKAlXElyC9s8NWm9fFtunNDHyBmFriyTlKaff0ccWinQdu5knrWBpv/5eZIWPTUyh4BbfNqV/FMvoMT4YQOIO5nRNfORtFnSU4OeCbujGAsrINbsby2vpt4GdZe0NkFqKL8k233+Cms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DkhO3twI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F052C4CEE4;
+	Tue, 11 Feb 2025 11:16:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739272565;
+	bh=9ZbJmMaSmPWAbfa1NYstLThBZ/6nU/1AYKOuhITOhfY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=DkhO3twIQ5FjUExRyGH0tjaE6f2pFWEtJXwTpz2M7/z7hufEaDy42nvA2Z1zuRjkL
+	 pgvz8za8qNP1ymdwmseJjw5CBHq0NUN1CWGH8yD/7HLeTCquFjc+sF3/9orMjYBAfC
+	 yyxvh38Tw5kvbErh62JqQaceUgI9tWvAjYZYnpOnNnN7chOog4IcGEnXOp4aVKothu
+	 8zxrHBlCQw6Yj1bBi9zBjVI1b3749WnsD4bakKgnUIrFZEBDYjKeZYX4V0e4CFY8e0
+	 N1ptcvTUi5NhAvem2gOrKx4fD8xAX+rXXQEe83wexeXqehOGvnjUtpZWnDp8wJPwCV
+	 CNkdghXxsahhg==
+From: Jiri Olsa <jolsa@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: Kees Cook <kees@kernel.org>,
+	Eyal Birger <eyal.birger@gmail.com>,
+	stable@vger.kernel.org,
+	Jann Horn <jannh@google.com>,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org,
+	x86@kernel.org,
+	bpf@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Deepak Gupta <debug@rivosinc.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCHv2 perf/core] uprobes: Harden uretprobe syscall trampoline check
+Date: Tue, 11 Feb 2025 12:15:59 +0100
+Message-ID: <20250211111559.2984778-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAH6OuBR=w2kybK6u7aH_35B=Bo1PCukeMZefR=7V4Z2tJNK--Q@mail.gmail.com>
- <CAADnVQ+FJA6jBRxCagAR6GuW0uRysfmgCnGk=ym1-rV0DPHPJg@mail.gmail.com>
- <CAH6OuBQa2QbCXzksiy5PhTCEYBf6m=w0ZKAUzTptxjgqKC25Mw@mail.gmail.com> <Z6ejZh/7jJCHbdVi@pop-os.localdomain>
-In-Reply-To: <Z6ejZh/7jJCHbdVi@pop-os.localdomain>
-From: Ritesh Oedayrajsingh Varma <ritesh@superluminal.eu>
-Date: Tue, 11 Feb 2025 12:10:21 +0100
-X-Gm-Features: AWEUYZkU4x6M4a--FTcE1p0jhgUIs8GjZqXAA4xICh3mL5jpId6pJ2FHw4R6PR4
-Message-ID: <CAH6OuBR7zS2x0B_opzoXQcRVTY-txpwDWL4U+M4kN8rk4kG9BA@mail.gmail.com>
-Subject: Re: Poor performance of bpf_map_update_elem() for BPF_MAP_TYPE_HASH_OF_MAPS
- / BPF_MAP_TYPE_ARRAY_OF_MAPS
-To: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Jelle van der Beek <jelle@superluminal.eu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sat, Feb 8, 2025 at 7:33=E2=80=AFPM Cong Wang <xiyou.wangcong@gmail.com>=
- wrote:
->
-> On Sat, Feb 08, 2025 at 11:39:31AM +0100, Ritesh Oedayrajsingh Varma wrot=
-e:
-> > On Sat, Feb 8, 2025 at 4:58=E2=80=AFAM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Wed, Feb 5, 2025 at 4:58=E2=80=AFAM Ritesh Oedayrajsingh Varma
-> > > <ritesh@superluminal.eu> wrote:
-> > > >
-> > > > Given this, while it's not possible to remove the wait entirely
-> > > > without breaking user space, I was wondering if it would be
-> > > > possible/acceptable to add a way to opt-out of this behavior for
-> > > > programs like ours that don't care about this. One way to do so cou=
-ld
-> > > > be to add an additional flag to the BPF_MAP_CREATE flags, perhaps
-> > > > something like BPF_F_INNER_MAP_NO_SYNC.
-> > >
-> > > Sounds reasonable.
-> > > The flag name is a bit cryptic, BPF_F_UPDATE_INNER_MAP_NO_WAIT
-> > > is a bit more explicit, but I'm not sure whether it's better.
-> >
-> > I agree the name is a bit cryptic. A related question is whether the
-> > optimization to skip the RCU wait should only apply to the update, or
-> > also to delete. I think it would make sense for it to apply to all
-> > operations. What do you think?
->
-> Exposing kernel-behavior to user-space is not a good idea, since users
-> have to understand kernel details to know how to safely use this flag.
+Jann reported [1] possible issue when trampoline_check_ip returns
+address near the bottom of the address space that is allowed to
+call into the syscall if uretprobes are not set up.
 
-I agree it's not ideal, but I don't really see another option that
-doesn't involve breaking user-space, and the current brute force sync
-in maybe_wait_bpf_programs() is quite heavy-handed for a guarantee
-that at least some percentange of users (like us) don't care about.
-Given that it's an *opt-out* and not an opt-in, I think it's okay,
-because everything will just continue functioning as before if you
-don't use the flag; if you *do* use the flag, then presumably you've
-spent time to understand what (and why) it does (and we can of course
-add a comment to the new flag with explanation).
+Though the mmap minimum address restrictions will typically prevent
+creating mappings there, let's make sure uretprobe syscall checks
+for that.
 
->
-> >
-> > I also realized the flag should technically apply to the *outer* map,
-> > since that's the map that's actually being modified and synced on, not
-> > the inner map. So I don't think "inner" should be part of the name in
-> > retrospect. Perhaps BPF_F_MAP_OF_MAPS_NO_WAIT or
-> > BPF_F_MAP_IN_MAP_NO_WAIT? I'm slightly leaning towards the latter
-> > because the map of maps support code is also located in map_in_map.c,
-> > so that matches nicely. They're both a bit long though. Either way,
-> > the definition of the outer map when using this flag would become
-> > something like:
-> >
-> > struct {
-> >     __uint(type, BPF_MAP_TYPE_HASH_OF_MAPS);
-> >     __uint(max_entries, 4096);
-> >     __type(key, u64);
-> >     __type(value, u32);
-> >     __uint(map_flags, BPF_F_MAP_IN_MAP_NO_WAIT);
-> > } mapInMap SEC(".maps");
-> >
-> > > Also have you considered a batched update? There will be
-> > > only one sync_rcu() for the whole batch.
-> >
-> > We have, yes, but in our case, these updates are a result of another
-> > system generating events, and it is a bit hard to batch them together:
-> > it would involve waiting for multiple events to arrive, instead of
-> > processing events as they come in, which introduces an additional
-> > layer of latency by itself.
-> >
-> > Regarding batched update, we've found that it is also very slow when
-> > inserting a large number of elements. In one example where we inserted
-> > ~1.2 million 16-byte elements, we found it took 4-500 milliseconds to
-> > update the map via batched update. This is due to the overhead of
-> > generic_map_update_batch() individually copying each element to be
-> > inserted from user space via copy_from_user(); almost all time is
-> > going to __check_object_size() called by copy_from_user(). I suspect
-> > this one is hard to fix though, due to how the elements in a map are
-> > laid out in memory; it would be hard to change such batched updates
-> > into a single copy. But perhaps that's something for a different
-> > thread (and we can easily work around it on our side).
->
-> I think there are rooms to improve this:
->
-> 1) As you mentioned, for hash-based or any other non-linear maps, it is
-> indeed hard to optimize. However, for linear ones like array map, it is
-> possible to copy the whole memory from user-space once.
+[1] https://lore.kernel.org/bpf/202502081235.5A6F352985@keescook/T/#m9d416df341b8fbc11737dacbcd29f0054413cbbf
+Cc: Kees Cook <kees@kernel.org>
+Cc: Eyal Birger <eyal.birger@gmail.com>
+Cc: stable@vger.kernel.org
+Fixes: ff474a78cef5 ("uprobe: Add uretprobe syscall to speed up return probe")
+Reported-by: Jann Horn <jannh@google.com>
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+Reviewed-by: Kees Cook <kees@kernel.org>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+v2 changes:
+- adding UPROBE_NO_TRAMPOLINE_VADDR macro (Andrii)
+- rebased on top of perf/core
 
-It is possible yes, but it would have the effect that memory usage
-would be (temporarily) higher than before as there would have to be a
-temporary copy of the full array in kernel-space, whereas right now
-there is only temporary space required for a single element. For large
-arrays like we're talking about, that could be quite a lot of memory.
+ arch/x86/kernel/uprobes.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
->
-> 2) There are actualy two copies here, one is from user-space to a tempora=
-ry
-> kernel memory, the other is from this temporary memory to the actual map
-> key/value memory. _I speculate_ it is possible to optimize them down to
-> one copy, at least for simple cases.
->
-> Just my two cents.
->
-> Thanks!
+diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+index 5a952c5ea66b..e8d3c59aa9f7 100644
+--- a/arch/x86/kernel/uprobes.c
++++ b/arch/x86/kernel/uprobes.c
+@@ -357,19 +357,25 @@ void *arch_uprobe_trampoline(unsigned long *psize)
+ 	return &insn;
+ }
+ 
+-static unsigned long trampoline_check_ip(void)
++static unsigned long trampoline_check_ip(unsigned long tramp)
+ {
+-	unsigned long tramp = uprobe_get_trampoline_vaddr();
+-
+ 	return tramp + (uretprobe_syscall_check - uretprobe_trampoline_entry);
+ }
+ 
++#define UPROBE_NO_TRAMPOLINE_VADDR ((unsigned long)-1)
++
+ SYSCALL_DEFINE0(uretprobe)
+ {
+ 	struct pt_regs *regs = task_pt_regs(current);
+-	unsigned long err, ip, sp, r11_cx_ax[3];
++	unsigned long err, ip, sp, r11_cx_ax[3], tramp;
++
++	/* If there's no trampoline, we are called from wrong place. */
++	tramp = uprobe_get_trampoline_vaddr();
++	if (tramp == UPROBE_NO_TRAMPOLINE_VADDR)
++		goto sigill;
+ 
+-	if (regs->ip != trampoline_check_ip())
++	/* Make sure the ip matches the only allowed sys_uretprobe caller. */
++	if (regs->ip != trampoline_check_ip(tramp))
+ 		goto sigill;
+ 
+ 	err = copy_from_user(r11_cx_ax, (void __user *)regs->sp, sizeof(r11_cx_ax));
+-- 
+2.48.1
 
-This is something I looked at, but I don't see a way to do this
-without significantly changing the code. As mentioned in the other
-thread, this is not an active problem for us as we can work around
-this quite easily on our end, so it's not something we'll be pursuing
-further.
 
