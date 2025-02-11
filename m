@@ -1,163 +1,196 @@
-Return-Path: <bpf+bounces-51175-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51176-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5AC2A31585
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 20:41:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 586E2A31631
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 20:57:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C76E17A3928
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 19:40:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE54116571C
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 19:57:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84F0326E636;
-	Tue, 11 Feb 2025 19:41:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC38F265625;
+	Tue, 11 Feb 2025 19:57:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VkZFzhb5"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="wYsvPKyB"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A01CF26E621;
-	Tue, 11 Feb 2025 19:41:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84D31265617
+	for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 19:57:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739302870; cv=none; b=fltXNECbRGxZ36OR6/0ttYOsinpZtuftGVVeBkeYs6ocqY+cBqna30AiNOqr68loJ+r2vGr57VpsVeaYv6tbCefz89XnFSe8pDfy4tt7IVBzTVnB62qUsC8aVcOQRyeXtlb2Iv8kxM+2qLnsLlS0ISGqs1Fp4Dd6E5mO5qmN4JY=
+	t=1739303853; cv=none; b=JZyp8bj7364lNfiObjp/5WkfyezAddPeNjQFz5cDWGcsqWdicJq1IhZRp5mMgT6NJ1LWl6j5nAf0XHilETmq+KjgfbPCh7fjW7M6EV/tko0JmdzjSoz5gpywqF0Uvp0G1qsx5uAsd5UN1bRmBFjxkPkVaNVim1dYEUC4997J658=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739302870; c=relaxed/simple;
-	bh=ZFzoSlR2ABVZdSZFbH32Uk1CGJgXQvrURkJH7rAhfmU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BxUR9uNq3iK9gXU/mFTqEI3Wmj+jqGo9Kdn7a5O0tTutL1vEL0Z2L3aKWh0Uvk2DG4uHST0Jyw37lZgKQswQwjhGTyDv34Cwv8Z6JinqqP72ojWIcs6zglL82dn5KQK88Uy+J9FhC0XtuVCH8La7nhp+S2bAmvoCArYajHmzxnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VkZFzhb5; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <8c9b4179-cacc-42b6-ae6a-4b786bef8b60@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1739302865;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qHvAoOMhYrBIe1CrjgBIQvJn/BEujyMWnlTDgZxlFPs=;
-	b=VkZFzhb5aJu+bal9LTOem1IRLNqvsRirXU0bdIziXLS34oFGO2Jh+83DH7uAEUwdER+n7H
-	qlavdmbDpYrnz66lv7fltmJg53/dJmpP7uFXCPqLzJcYdes2xVHVOaJR1hS70nIYHCddII
-	MO88Vx9rDdmaOCpU+86m7Jn/mTtjcnM=
-Date: Tue, 11 Feb 2025 11:40:58 -0800
+	s=arc-20240116; t=1739303853; c=relaxed/simple;
+	bh=4L1l3nbsQwxG4dhopMpRTZTo6TywqvNfWe0By30mxKA=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IwGui/mIQfgtnvMuJ6sfId49tMq7k3X8e1DZay/4rmuQZysG1FBA0D9W6POV1zShMvP/gZlOujd7CW8IJ0MkCqPrSZVNg4+SEQLbMpK73OOf6jB1iBd19wD2mYkDXXUaaw94/BcYzFw2Q9z6dwe9IgIJiOjLun9l8rgzWjkSKPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=wYsvPKyB; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-21f7f03d856so57342975ad.1
+        for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 11:57:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1739303851; x=1739908651; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=LZz21PoK7ESpRyCP00gJn2627gqZOHRBJZHWL/EIwBo=;
+        b=wYsvPKyBkoDXAYAkV39HQmlK8TOoSuLUE6ER8pM+sKGn78lxAmujZPT9cYAIlhtZDo
+         o1z8M1XBvBIrRDEmndONT4C68fO8Xyl0V4BjRVs3xfyI0eLoxQfVNJX1yfmfNi8uzNMB
+         Z7MptZhHeLUgnv0bJeXlV0/5rhe6vHGoFdBYQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739303851; x=1739908651;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LZz21PoK7ESpRyCP00gJn2627gqZOHRBJZHWL/EIwBo=;
+        b=Ctuc6UVn9qpVquS24zm5OhrxqvACUQqDO6RC1efTjK/eMfVNSk6dzOpsF4J+zQpQTW
+         GnTRwMdEAb3ndOlQfKgBbC6Lq5Ln5QkbLyGfiZfB9meRDoZWOZmx1449defkt1/KjgX3
+         yRD0RuxQ4RUrjdIjD3V/d68zUzkaEZF5xLhKYE2g9las6b5if666oiiOGx60Dhz0v6WX
+         H4HD1+/CEgrNNRchkM8VeEnVZzhHMAk+s7HGhYHrzwdA7Rc6e4jZiCKbjz5nd7IYP1d8
+         k3LFrFn2Tf72xYbmO6I3Gx7wV/TTtgO/moNprYHjLbCb3u7my8HmgdyC84dzp8964lIQ
+         a5Vw==
+X-Forwarded-Encrypted: i=1; AJvYcCUEqzqVyJT33YRvlBGnaEWG+KrCY3Rk4ktqhoVcD4xvNgnvom45Ovg0ZKTOOkh0pFzF0ys=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx2Syg1prAX9Wo8gLMsta3an4y2KjuGBEjjJcAS4FqjPMxSO1rz
+	6nLZY3ZaeJb8oDAqYs+KhMbqjxHkng51x0SqezdiogvS9yTynrKNF7q6h9dsAMw=
+X-Gm-Gg: ASbGncvtnvNjnRRR0+tQMAVwN65RO+rdlJwfryZxtPUh7mqnYJQWGyIY5QoTwzb07qv
+	jR1g3QGbfItiy+SsuDIZWEhzHM8rnPgkyAX1sfRDbIqbThUS8y//Vb54U06o+OF04bDE2kCNXkV
+	WD2P9/Yh+LTs2b5+SQf21M3GoYWm2z1O4q0avwkCI6pvXjESFHvoczEbRw3ioQABZ+0x6F5YAVz
+	czO8te5xXAXlYzxH+Q0mdrg/yhCcLqpNl7ZSYRp2TqEGHsV6LvVJmhLIll0aJ6eDiv62zSMbiH0
+	G8hpchxpok+0wOD1HEGPgV80tYEz20dWkMrBeYLySCSsnZsXwlVd6GoNtQ==
+X-Google-Smtp-Source: AGHT+IHGm6N7udAh5kUmRKYI+y4WUkbVC6Seg2Hl1n1knL0KkTOJXLUEmjJNH2ogtVLi5OCw8cUlqg==
+X-Received: by 2002:a05:6a21:7001:b0:1ed:534e:38b1 with SMTP id adf61e73a8af0-1ee5c85fa2cmr1060630637.41.1739303850821;
+        Tue, 11 Feb 2025 11:57:30 -0800 (PST)
+Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-ad53f481ec4sm5371235a12.9.2025.02.11.11.57.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Feb 2025 11:57:30 -0800 (PST)
+Date: Tue, 11 Feb 2025 11:57:27 -0800
+From: Joe Damato <jdamato@fastly.com>
+To: Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+	stfomichev@gmail.com, horms@kernel.org, kuba@kernel.org,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Shuah Khan <shuah@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next v6 3/3] selftests: drv-net: Test queue xsk
+ attribute
+Message-ID: <Z6urp3d41nvBoSbG@LQ3V64L9R2>
+Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
+	Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+	stfomichev@gmail.com, horms@kernel.org, kuba@kernel.org,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Shuah Khan <shuah@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>
+References: <20250210193903.16235-1-jdamato@fastly.com>
+ <20250210193903.16235-4-jdamato@fastly.com>
+ <13afab27-2066-4912-b8f6-15ee4846e802@redhat.com>
+ <Z6uM1IDP9JgvGvev@LQ3V64L9R2>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v1 2/2] bpf: sockopt_sk: fix 'undeclared'
- definition error
-To: Jason Xing <kerneljasonxing@gmail.com>
-Cc: bpf@vger.kernel.org, Hou Tao <houtao@huaweicloud.com>,
- linux-kselftest@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org
-References: <20250204023946.16031-1-kerneljasonxing@gmail.com>
- <20250204023946.16031-3-kerneljasonxing@gmail.com>
- <99ccf971-cae5-9c45-5dff-2c8563a7879f@huaweicloud.com>
- <CAL+tcoAkyjDQd48wKuA8V_RE6j1OYTL2iGxT8HdVKpryD3SaUA@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAL+tcoAkyjDQd48wKuA8V_RE6j1OYTL2iGxT8HdVKpryD3SaUA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z6uM1IDP9JgvGvev@LQ3V64L9R2>
 
-On 2/4/25 7:27 PM, Jason Xing wrote:
-> On Wed, Feb 5, 2025 at 10:57 AM Hou Tao <houtao@huaweicloud.com> wrote:
->>
->> Hi,
->>
->> On 2/4/2025 10:39 AM, Jason Xing wrote:
->>> Error messages:
->>> selftests/bpf/prog_tests/sockopt_sk.c: In function ‘getsetsockopt’:
->>> selftests/bpf/prog_tests/sockopt_sk.c:22:31: error: field ‘zc’ has incomplete type
->>>     struct tcp_zerocopy_receive zc;
->>>                                 ^~
->>> selftests/bpf/prog_tests/sockopt_sk.c:169:32: error: ‘TCP_ZEROCOPY_RECEIVE’ undeclared (first use in this function)
->>>    err = getsockopt(fd, SOL_TCP, TCP_ZEROCOPY_RECEIVE, &buf, &optlen);
->>>                                  ^~~~~~~~~~~~~~~~~~~~
->>>
->>> Fix it by introducing the right header.
->>>
->>> Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
->>> ---
->>>   tools/testing/selftests/bpf/prog_tests/sockopt_sk.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
->>> index ba6b3ec1156a..e0a9785ffcdc 100644
->>> --- a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
->>> +++ b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
->>> @@ -2,7 +2,7 @@
->>>   #include <test_progs.h>
->>>   #include "cgroup_helpers.h"
->>>
->>> -#include <netinet/tcp.h>
->>> +#include <uapi/linux/tcp.h>
->>
->> Should it be <linux/tcp.h> instead ?
+On Tue, Feb 11, 2025 at 09:45:56AM -0800, Joe Damato wrote:
+> On Tue, Feb 11, 2025 at 12:09:50PM +0100, Paolo Abeni wrote:
+> > On 2/10/25 8:38 PM, Joe Damato wrote:
+> > > +def check_xdp(cfg, nl, xdp_queue_id=0) -> None:
+> > > +    test_dir = os.path.dirname(os.path.realpath(__file__))
+> > > +    xdp = subprocess.Popen([f"{test_dir}/xdp_helper", f"{cfg.ifindex}", f"{xdp_queue_id}"],
+> > > +                           stdin=subprocess.PIPE, stdout=subprocess.PIPE, bufsize=1,
+> > > +                           text=True)
+> > > +    defer(xdp.kill)
+> > > +
+> > > +    stdout, stderr = xdp.communicate(timeout=10)
+> > > +    rx = tx = False
+> > > +
+> > > +    queues = nl.queue_get({'ifindex': cfg.ifindex}, dump=True)
+> > > +    if not queues:
+> > > +        raise KsftSkipEx("Netlink reports no queues")
+> > > +
+> > > +    for q in queues:
+> > > +        if q['id'] == 0:
+> > > +            if q['type'] == 'rx':
+> > > +                rx = True
+> > > +            if q['type'] == 'tx':
+> > > +                tx = True
+> > > +
+> > > +            ksft_eq(q['xsk'], {})
+> > > +        else:
+> > > +            if 'xsk' in q:
+> > > +                _fail("Check failed: xsk attribute set.")
+> > > +
+> > > +    ksft_eq(rx, True)
+> > > +    ksft_eq(tx, True)
+> > 
+> > This causes self-test failures:
+> > 
+> > https://netdev-3.bots.linux.dev/vmksft-net-drv/results/987742/4-queues-py/stdout
+> > 
+> > but I really haven't done any real investigation here.
 > 
-> I thought that too, but I altered my thoughts after reading this
-> commit[1], totally without knowing why the tcp part should be changed.
-> Should I change it back?
+> I think it's because the test kernel in this case has
+> CONFIG_XDP_SOCKETS undefined [1].
+> 
+> The error printed in the link you mentioned:
+> 
+>   socket creation failed: Address family not supported by protocol
+> 
+> is coming from the C program, which fails to create the AF_XDP
+> socket.
+> 
+> I think the immediate reaction is to add more error checking to the
+> python to make sure that the subprocess succeeded and if it failed,
+> skip.
+> 
+> But, we may want it to fail for other error states instead of
+> skipping? Not sure if there's general guidance on this, but my plan
+> was to have the AF_XDP socket creation failure return a different
+> error code (I dunno maybe -1?) and only skip the test in that case.
+> 
+> Will that work or is there a better way? I only want to skip if
+> AF_XDP doesn't exist in the test kernel.
+> 
+> [1]: https://netdev-3.bots.linux.dev/vmksft-net-drv/results/987742/config
 
-afaik, uapi/ or not does not make a difference.
+I'll give it a few more hours incase anyone has comments before I
+resend, but I got something working (tested on kernels with and
+without XDP sockets).
 
-> 
->> Directly including uapi header file
->> in application seems weird.
-> 
-> After greping the tools/testing/selftests/bpf, we see some similar
-> usage like including a uapi header file.
-> 
-> [1]
-> commit a2f482c34a52176ae89d143979bbc9e7a72857c8
-> Author: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
-> Date:   Wed Nov 20 08:43:21 2024 +0100
-> 
->      selftests/bpf: use the same udp and tcp headers in tests under test_progs
-> 
->      Trying to add udp-dedicated helpers in network_helpers involves
->      including some udp header, which makes multiple test_progs tests build
->      fail:
-> 
->      In file included from ./progs/test_cls_redirect.h:13,
->                       from [...]/prog_tests/cls_redirect.c:15:
->      [...]/usr/include/linux/udp.h:23:8: error: redefinition of ‘struct udphdr’
->         23 | struct udphdr {
->            |        ^~~~~~
->      In file included from ./network_helpers.h:17,
->                       from [...]/prog_tests/cls_redirect.c:13:
->      [...]/usr/include/netinet/udp.h:55:8: note: originally defined here
->         55 | struct udphdr
->            |        ^~~~~~
+xdp_helper returns -1 if (errno == EAFNOSUPPORT). All other error
+cases return 1.
 
-e.g. this will happen to the tcphdr also when sockopt_sk.c starts including 
-network_helpers.h.
+Updated the python to do this:
 
-> 
->      This error is due to struct udphdr being defined in both <linux/udp.h>
->      and <netinet/udp.h>.
-> 
->      Use only <netinet/udp.h> in every test. While at it, perform the same
->      for tcp.h. For some tests, the change needs to be done in the eBPF
+  if xdp.returncode == 255:
+      raise KsftSkipEx('AF_XDP unsupported')
+  elif xdp.returncode > 0:
+      raise KsftFailEx('unable to create AF_XDP socket')
 
-This patch just undo exactly what this commit a2f482c34a52 tries to solve for 
-tcp.h also, no?
+Which seems to work on both types of kernels?
 
-pw-bot: cr
-
->      program part as well, because of some headers sharing between both
->      sides.
-> 
-> Thanks,
-> Jason
-
+Happy to take feedback; will hold off on respinning for a bit just
+incase there's a better way I don't know about.
 
