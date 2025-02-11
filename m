@@ -1,155 +1,156 @@
-Return-Path: <bpf+bounces-51166-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51167-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46D7FA312D2
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 18:24:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F23C1A31360
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 18:45:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 304DE3A1341
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 17:23:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FCE33A4AE3
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 17:45:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC68262D1F;
-	Tue, 11 Feb 2025 17:23:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC25419AD99;
+	Tue, 11 Feb 2025 17:45:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tow8y5Qe"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="LujDI75O";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="yPqDjUvv"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 331B52505A8
-	for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 17:23:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53A9A156C69;
+	Tue, 11 Feb 2025 17:45:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739294620; cv=none; b=AzfLdZHMUSwdwD/+3vhLXYUcL/Av+7bvFyIUkit14pYVLNyOTXL5RcwkC9EDLXLrqr8qwcybMEScaIxG+xvduzUHgL+9TruQzYjAWTv+wTprrPZGIb7xcES/O0ReeNDqNB+m9nwqQuP292ue5rPKts6B7LggAzNfRZIGtrOHNKY=
+	t=1739295929; cv=none; b=aqof9ZibqftIp2TG+xPgiZBZz2CUHqnJKMcSwC8UBP1UVvnUoKvCqbcux5oZ17UvHBOqgJszYIpanSe3bhhIp49SOyhEPB5dbEAid0pa0pfJTX4LBHWtGTx+UTJsMEKMfhXG5owF0XwbCZSzgu6qtMrbyiM7d6gNs/QyN8g8Osc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739294620; c=relaxed/simple;
-	bh=9+eL+nIt4iCtFIgP9YQ2UO9+R8rTw4qseu4S8nex/aI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=u8ULoxTChxfL3596trUANWLnVTdC7r6vjRoplVi3m32Bjq6jWT2FXuzdFOZKZEQsprpw8ha3pLnRXCbMxqJGrn0HMcd0dPPyxiGlKHbjUOXsPmVnvmYgSC1eaihl3gqHwOFQ6HPas7d4caVb0SR+QwRuxZ2qgu/lvsrjr1piEpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tow8y5Qe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 972E0C4CEDD
-	for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 17:23:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739294619;
-	bh=9+eL+nIt4iCtFIgP9YQ2UO9+R8rTw4qseu4S8nex/aI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Tow8y5QeOW9Xj1wY6lUUvS42OGwo0Re6kflVqnG+dyWYLZQ0RSu9RSry6Yr0rDtbW
-	 V18mse+nTIzOfbzGC+tXhvV5OfaDuVcf7+0OtMGPTx7pxiToEdFWrWeggTp7I0ci/i
-	 FN/rHO5X5+Qx4DSE1CuV+RqNUkyk1c+xSPtGlY4nGTcrMBVzzGsiT7CmksavHTdgj/
-	 uWW3xNZyD2DzVBxht28757hdae1jOO3uGmrN47JaLP/PSf1mOJgMakpW/VEe45eqlf
-	 vnCVf3wrIl4jsuWhqktHR1vTVr/7DEYGGlePJP0awYE/99B0S+bsEG/zShmnfk23nJ
-	 SiuHjOqfHvYJA==
-Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-855309015fdso54513739f.1
-        for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 09:23:39 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVyXeL70o0z9c+YTDTDmjbsti4h2ZdtCwcUf/y9EryC3ebulTP/x3a09xhjMDoNawrBaQg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw9Vr6HfQ2RD9LihJNnfBv66M/Yi1qpdUQhPlpMCFRa+aF95h1i
-	SCE5XMbXU+tgO3JeUiBHMx6wB7OP0oWMoazgwKphGnIusno4Du4I8XnXe8l+BakblDF37+x7CW+
-	OAE2CiACDBj+Qzl0gUU8OS3G6r7g=
-X-Google-Smtp-Source: AGHT+IH02AiUlIH0FJ84jc4HQqeV+sA+og4AktRF8yPa6QdnF8WweJsilU8eud43mU5AZP1+IDvRPOIny0F8hRllYsQ=
-X-Received: by 2002:a92:c54c:0:b0:3d0:4e2b:9bbb with SMTP id
- e9e14a558f8ab-3d17c006af6mr2046225ab.21.1739294619038; Tue, 11 Feb 2025
- 09:23:39 -0800 (PST)
+	s=arc-20240116; t=1739295929; c=relaxed/simple;
+	bh=Cyr8xNX4CD2amZmI5NG6bxTs4j3Nl6bQnMObGiScGQY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rp79P5ZoSHhxmYsCp8NPL5o/AbC2yeKDjwUlskCBycknZf72zKXo0ROxkAU8x5PmPYI7ygj2QKS7zWz8wQIqk94S0YwyJuv8zL7hwiBjz3S6tJ0B0tGbHP3oFjJiY0m1exZdny290neoN+HV6eGvksGqjiaf33gh2GXQu4VP1pw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=LujDI75O; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=yPqDjUvv; arc=none smtp.client-ip=202.12.124.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
+	by mailfout.stl.internal (Postfix) with ESMTP id 271D3114012F;
+	Tue, 11 Feb 2025 12:45:26 -0500 (EST)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-12.internal (MEProxy); Tue, 11 Feb 2025 12:45:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1739295926; x=1739382326; bh=TfcLRWsOlI
+	eIaKdeFDqkhNFH2enF1gy8hw8yD6zvWOY=; b=LujDI75Oe869hpGwb7PsRhdVN6
+	IVZ+NX7yd/e1q7IiG3t77U39aRufSlnd5h7kz6WgMBf0dIrXX+Izo6IEALVxrNcn
+	R54BsfdAlq4UM4n46mg2sWjoGm8lg0GBnPsJfJ0fa3iwxnrMprmD9CVtpABo+J2l
+	RmP+8bRE13OSU2OPYxLNjNKCv0cC55hb0GDQeKqnAxFv1yHcnJbE2RLg4tghxL18
+	P81FFM9ZIN+FimEsoMVubT8i/7mXksEeMdn+QLj55mnP5mOKztXtlvegNNqIi8xD
+	Kscjndv0fOrWx44TFawsGxEG78ts1YiseUn6cio2OLhQu0nj5ac9UeCZ8gig==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1739295926; x=1739382326; bh=TfcLRWsOlIeIaKdeFDqkhNFH2enF1gy8hw8
+	yD6zvWOY=; b=yPqDjUvvuEz6SxsQ3qtSUctSU3vrMFrc0yI56GqfrOifN3Ffrwg
+	r8JoSxuTj/Tc7hLdJaAnaCNzc5VxgEa+Zdfjnv9fLhSt0eYDYkHL5k22D8eIjCNx
+	gAzwVa7azCKZVPsD/vvR3TONxdy77Y9F8qw+izJBbQAcsD6pjeV2KlaNF3o8FrFW
+	KUhKGIdDuE5BirLXJquYbiDVzFkbhNTZjBl9i/qPG7Nal0GUtogzNvO2K/uAV0vd
+	KSfdw5XUocNjzsYcz4+VWKtvmeFg7HVgjBc4JYs+utWjlE87sO3U2wij4IZ8pAbi
+	x7qqe0JPJaS5NVuTwxnfNSd7muyDTbgNMCA==
+X-ME-Sender: <xms:tYyrZ6RvoyBV4PKemeOuhaxXhrEwaM2FfacHDC2Ikq6MOwXo-WkZ4A>
+    <xme:tYyrZ_z8CSdDZsTJon_ChSazZGkHi9FCQTzKSVxmFOr_zUWoDuqR-B5_UglJ57L2Z
+    E_Au0L-vs-YJNmMSg>
+X-ME-Received: <xmr:tYyrZ313O1DyBNymkY_GaG2rKJUjVeNZzU9YN-h5N1UrLovvk0nmU0WWmuOwFuNJYeQmWdr6S8p-ZsUPC1AvtIq96Nkg7EfUzswPJvphYrrGvg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdegudeifecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenfghrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffk
+    fhggtggujgesthdtsfdttddtvdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihuse
+    gugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeefhfffhfehgfefgfevvdeiheev
+    gfetudeifeetueehudefledutdekveekgeffgfenucffohhmrghinhepghhnuhdrohhrgh
+    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihu
+    segugihuuhhurdighiiipdhnsggprhgtphhtthhopedutddpmhhouggvpehsmhhtphhouh
+    htpdhrtghpthhtohepmhgrshgrhhhirhhohieskhgvrhhnvghlrdhorhhgpdhrtghpthht
+    ohepfhhrrghnkhdrsghinhhnshesihhmghhtvggtrdgtohhmpdhrtghpthhtohepmhgrth
+    htrdgtohhsthgvrhesihhmghhtvggtrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgv
+    rhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprggtmhgvsehrvg
+    guhhgrthdrtghomhdprhgtphhtthhopegsphesshhushgvrdguvgdprhgtphhtthhopehn
+    rghthhgrnheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepnhhitgholhgrshesfhhjrg
+    hslhgvrdgvuhdprhgtphhtthhopegsphhfsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:tYyrZ2Cay2gQABQWSPPkNM8HOnaiu4jrL4Wc6YDukFMEPz2-bExCjw>
+    <xmx:tYyrZzi_Jli-GvmMwwxEQP1VXLkWjBeQVSQvHT2tbOhUG_9a_biOmw>
+    <xmx:tYyrZypX0rB0KnglFWN-7h_u8JQAZDB56FJuKy74YZDZjr7CdNgNOw>
+    <xmx:tYyrZ2hqNH0_nk9MJqhATXC_xYKMTu1MA0wXny75iueEUlrsr1_NXg>
+    <xmx:tYyrZ4aPG-UJeDmEUJgduFymhbFcnXzDrazHS7R3l8_2GxZoI5OE7hdG>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 11 Feb 2025 12:45:23 -0500 (EST)
+Date: Tue, 11 Feb 2025 10:45:22 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Frank Binns <frank.binns@imgtec.com>, 
+	Matt Coster <matt.coster@imgtec.com>, linux-kernel@vger.kernel.org, 
+	Arnaldo Carvalho de Melo <acme@redhat.com>, Borislav Petkov <bp@suse.de>, 
+	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, bpf@vger.kernel.org, 
+	linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH] tools: fix annoying "mkdir -p ..." logs when building
+ tools in parallel
+Message-ID: <6bwwjyvhajytkvwumbjbj5glk27w3cqf4ylobfyhhclioypsfs@hen3m6i2cdga>
+References: <20250211002930.1865689-1-masahiroy@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250211023359.1570-1-laoar.shao@gmail.com> <20250211023359.1570-4-laoar.shao@gmail.com>
-In-Reply-To: <20250211023359.1570-4-laoar.shao@gmail.com>
-From: Song Liu <song@kernel.org>
-Date: Tue, 11 Feb 2025 09:23:28 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW6bbbmQFpEX_xHTb9PDq+Xf_p0FH62NwzN6PcPKzi0MrA@mail.gmail.com>
-X-Gm-Features: AWEUYZkZkAjrlCyBWGbauNKc422-OTqQcvKTpQwrWZSXuUtNcqt0ELE81hB-zEA
-Message-ID: <CAPhsuW6bbbmQFpEX_xHTb9PDq+Xf_p0FH62NwzN6PcPKzi0MrA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: Add selftest for attaching
- fexit to __noreturn functions
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, jpoimboe@kernel.org, 
-	peterz@infradead.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250211002930.1865689-1-masahiroy@kernel.org>
 
-On Mon, Feb 10, 2025 at 6:34=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> =
-wrote:
->
-> The reuslt:
->
->   $ tools/testing/selftests/bpf/test_progs --name=3Dfexit_noreturns
->   #99      fexit_noreturns:OK
->   Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
->
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> ---
->  .../selftests/bpf/prog_tests/fexit_noreturns.c      | 13 +++++++++++++
->  tools/testing/selftests/bpf/progs/fexit_noreturns.c | 13 +++++++++++++
->  2 files changed, 26 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/fexit_noreturn=
-s.c
->  create mode 100644 tools/testing/selftests/bpf/progs/fexit_noreturns.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_noreturns.c b/t=
-ools/testing/selftests/bpf/prog_tests/fexit_noreturns.c
-> new file mode 100644
-> index 000000000000..588362275ed7
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/fexit_noreturns.c
-> @@ -0,0 +1,13 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <test_progs.h>
-> +#include "fexit_noreturns.skel.h"
-> +
-> +void test_fexit_noreturns(void)
-> +{
-> +       struct fexit_noreturns *fexit_skel;
-> +
-> +       fexit_skel =3D fexit_noreturns__open_and_load();
-> +       ASSERT_NULL(fexit_skel, "fexit_load");
-> +       ASSERT_EQ(errno, EINVAL, "can't load fexit_noreturns");
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/fexit_noreturns.c b/tools/=
-testing/selftests/bpf/progs/fexit_noreturns.c
-> new file mode 100644
-> index 000000000000..003aafe2b896
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/fexit_noreturns.c
-> @@ -0,0 +1,13 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +char _license[] SEC("license") =3D "GPL";
-> +
-> +SEC("fexit/do_exit")
+Hi Masahiro,
 
-We can add:
+Thanks for looking into this! Much better than my attempt :P
 
-__failure __msg(<verifier log added in 2/3>)
+On Tue, Feb 11, 2025 at 09:29:06AM +0900, Masahiro Yamada wrote:
+> When CONFIG_OBJTOOL=y or CONFIG_DEBUG_INFO_BTF=y, parallel builds
+> show awkward "mkdir -p ..." logs.
+> 
+>   $ make -j16
+>     [ snip ]
+>   mkdir -p /home/masahiro/ref/linux/tools/objtool && make O=/home/masahiro/ref/linux subdir=tools/objtool --no-print-directory -C objtool
+>   mkdir -p /home/masahiro/ref/linux/tools/bpf/resolve_btfids && make O=/home/masahiro/ref/linux subdir=tools/bpf/resolve_btfids --no-print-directory -C bpf/resolve_btfids
+> 
+> Defining MAKEFLAGS=<value> on the command line wipes out command line
+> switches from the resultant MAKEFLAGS definition, even though the command
+> line switches are active. [1]
+> 
+> The first word of $(MAKEFLAGS) is a possibly empty group of characters
+> representing single-letter options that take no argument. However, this
+> breaks if MAKEFLAGS=<value> is given on the command line.
+> 
+> The tools/ and tools/% targets set MAKEFLAGS=<value> on the command
+> line, which breaks the following code in tools/scripts/Makefile.include:
+> 
+>     short-opts := $(firstword -$(MAKEFLAGS))
+> 
+> If MAKEFLAGS really needs modification, it should be done through the
+> environment variable, as follows:
+> 
+>     MAKEFLAGS=<value> $(MAKE) ...
+> 
+> That said, I question whether modifying MAKEFLAGS is necessary here.
+> The only flag we might want to exclude is --no-print-directory, as the
+> tools build system changes the working directory. However, people might
+> find the "Entering/Leaving directory" logs annoying.
+> 
+> I simply removed the offending MAKEFLAGS=.
+> 
+> [1]: https://savannah.gnu.org/bugs/?62469
+> 
+> Fixes: a50e43332756 ("perf tools: Honor parallel jobs")
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-here.
-> +int BPF_PROG(noreturns)
-> +{
-> +       return 0;
-> +}
-> --
-> 2.43.5
->
-
-Then, test_fexit_noreturns above can simply be:
-
-void test_fexit_noreturns(void)
-{
-        RUN_TESTS(fexit_noreturns);
-}
-
-Thanks,
-Song
+Tested-by: Daniel Xu <dxu@dxuuu.xyz>
 
