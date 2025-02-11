@@ -1,160 +1,214 @@
-Return-Path: <bpf+bounces-51099-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51100-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE00FA30188
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 03:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 627A5A301F8
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 04:02:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 985673A6209
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 02:34:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A72123A90FD
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2025 03:02:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 833ED1B6CE9;
-	Tue, 11 Feb 2025 02:34:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 487771D6DC4;
+	Tue, 11 Feb 2025 03:01:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z7PqNWge"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nNW0CKPD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9424426BD94
-	for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 02:34:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57653374EA
+	for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 03:01:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739241266; cv=none; b=s9D9lS0Lsfa/WYdqG4oNTKfQDCgnNCzlJK7wlTN3FYuONOHRpYib/0Oj992H9QjEhtZBgyczN3zoqAAoRZ6xCyFca6Ym+kkf4bF6SVpaibdK7/IBOdqchCJEipJNd2q62WuqWfngfwP3LbhwyetM8kF2Hek2dOS3qNL50NTNp9A=
+	t=1739242908; cv=none; b=XZmxwYohxJQYzIwYywZXswNDw45hsu/M1jcfPWum6XAp0e7HW9/TN7HS4QD6WYwdXGCm6UjeC6japvcsGbfQNruNjcQToi5ReYEnaT1KMKa3pk47kd6QBP9CdBZM6KuqQSU5uYlE6N97u3PEqBenyYWOTBXsx22x+9YaS+BTYiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739241266; c=relaxed/simple;
-	bh=BZE/PnKDYiblZMpK5N3AdzMB3oXuOh3Zs/4Is1lkYgk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hZMaMCwobNLyyBFkYMNakI2y5TmFBavyXbu2GoyMkhRuxMRp/D4tqGJG7Cnr6cn9ZcefgTKXslRapM2i1XL7206v2tleiJMUlGV/6RfAJ3cuT0kiKMYNxXK1FzL/T608Mb8XSm2VJTIBuYJpRQfumDf+a03de6OCkLbdM5t/9JE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z7PqNWge; arc=none smtp.client-ip=209.85.216.47
+	s=arc-20240116; t=1739242908; c=relaxed/simple;
+	bh=4vPEyx/Cxi2crA92ocKOKDwNgtr/Pk8d/P0twqkcyyc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=aYq2Zz/zv2AinJPi6t9GnVHrvMqXqtb70dx2BGlb1kQvF63mMEZROrrOOdJtBHA45hBKW6/yF7PW1Y8MGtkzKONzYLjLxJVpNBv4RYho4CHVO2Zb12JYr2NiH4xwkETekN2o0RQz+jJ5guZti7n3rZhzAqatTb/dCFS8Ze6aZvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nNW0CKPD; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2fa40c0bab2so5291842a91.0
-        for <bpf@vger.kernel.org>; Mon, 10 Feb 2025 18:34:24 -0800 (PST)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2fa19e1d027so6414060a91.0
+        for <bpf@vger.kernel.org>; Mon, 10 Feb 2025 19:01:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739241264; x=1739846064; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rD5rT0twMykd2U4kyjeY+B65VBV99nUN8mk8Lm7kf1g=;
-        b=Z7PqNWge/hFr+MKGw/m16V6mpFoFezDVhTAg6LF5/2BXHM85i2cQ1OTyxKbX48prFt
-         7FT4YD7r2a0fHePrPRAn+6KXDzQ+1vdLKeRsDWq0OpOEYilNTvghMcPohLUB4ONJSXeN
-         16H4g/SStKcEgWSDFq5qG0J3BxY1DShTtOvwwDyum6PZTwDLF+wmz45Uz+Zypz37VpiM
-         Jeu80piEIpBnyNdIXdGaNaaCO3xTa5UIelfINM10bc86gf7fDMXLwRLDWlLIsNCyoU+C
-         kf+jaSDyBzLDABjlhJwHTauTwkJjm22GSq2bIeGoKwFb7jT8UkEHC4W4nqyboFn3IRIU
-         V5AA==
+        d=gmail.com; s=20230601; t=1739242906; x=1739847706; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=swUpt3MGMWVmL6Fia0zHUWcytltlJ5MCz+nrBrJfCjA=;
+        b=nNW0CKPDmajZnquYIb6VdvmKFgi6UNybtcltEHc0W1ELGy7gqsdE3HlMmFJD36nV3e
+         Dv8tHnv3ZgnzYCLGvYIAMqczDVe2itEsVfU8sZ8yXcYcuBGxpxtFDLg7RkNVjL7WDyYr
+         T4zb0qdfuagJjlUSdpxUdB2hEP6B7dQR6z66mlgEv5CbpmBw7yzWSTjPM4syK/Dv97x8
+         qR6IYXI60B6sA0RmAIki/TmqiGy9hctgSVs41iRLboMOt1b2ulmjd20S9CuXw7HdHjIV
+         PN6TfsP9cojQDPE0N681t6MT8b9nUku7X8ccwNFVDAZ1ipoPBQMe1Yp0mA1xacrQIxzx
+         7Ncw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739241264; x=1739846064;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rD5rT0twMykd2U4kyjeY+B65VBV99nUN8mk8Lm7kf1g=;
-        b=DKADYDOBVuyRQ7RiDLtbnLNWH8FoUdt14CaXHQnazi6eG8UtRxOGfV/VJd4YYnBghB
-         +8xLrkTYGNQ116EOJNN387CLQg5hr9EY68FiMmRTj66jtUnG1QNQhzpg4IH0e5AOzXgV
-         NeQtnoEX9lQuw3fX6bh75EuGBIWzzgYl79K1bNSN+Hs7KlkI3yKO1RAWt3GZUJ7pkwcF
-         cpXoxw6yuzl+BhtaMWtd8l9dwaREnPnlrZ8ilS6KXDWE2uH12wwUanzJZePwn0O9XHxv
-         8YllncNIFQ5wvSsDUKMD4hEN9l4tsuOhh4yZVwcUYlxmp7khkpbWtPN6QGPV11oNPMrb
-         9vUQ==
-X-Gm-Message-State: AOJu0YxZAnXi61K9CnP+xR/kXkH2bm0r++h5eU65PDScgIJ7t9VlyF0V
-	Oz2q+yjm/k3cGk3HUmP+y/B/aai1XT3oUz8gR45weVFQPUKJE66M
-X-Gm-Gg: ASbGncufnYsv42GxaN8d14MHCPlRJg8xa/tygSgLBtqNeMrRzCKatFGD1y3MUNSxgQM
-	HRLDX5FagfOGLFNx+FdsXqRXx9z+V0LsBBL/Dj/GOqAh6P0I+snggLsjDgSRUlxF+vhlYS4Hu75
-	l/pFmDn06ERTtSmvEObxHiZn1d3GAUX9WSPdQY6QtgR9FdC3ggvLR67VZ8Xj0UsczFe4K9R6mNI
-	0mL/4XojfxonE1LQ/Fk/3F5gqcEq2rFkRHXxvTWsfHUrs8VgRVpr+05Qa2FctamDskp/g5Jy8VC
-	1am0k30sfOr+veO2DWSWZvGYlde/SNWE6cqlvsk=
-X-Google-Smtp-Source: AGHT+IGrt8+Z/m0kj5uJo/dBtmQTwo98sB546lXpfGZMs+AmI9f4xNxoOEzt+Xhv160mNEcK5rjx4g==
-X-Received: by 2002:a17:90b:5543:b0:2ee:d63f:d71 with SMTP id 98e67ed59e1d1-2fa24069effmr29079403a91.14.1739241263742;
-        Mon, 10 Feb 2025 18:34:23 -0800 (PST)
-Received: from localhost.localdomain ([58.37.132.225])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21f8dc43971sm30916315ad.66.2025.02.10.18.34.19
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 10 Feb 2025 18:34:23 -0800 (PST)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	jpoimboe@kernel.org,
-	peterz@infradead.org
-Cc: bpf@vger.kernel.org,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next 3/3] selftests/bpf: Add selftest for attaching fexit to __noreturn functions
-Date: Tue, 11 Feb 2025 10:33:59 +0800
-Message-Id: <20250211023359.1570-4-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-In-Reply-To: <20250211023359.1570-1-laoar.shao@gmail.com>
-References: <20250211023359.1570-1-laoar.shao@gmail.com>
+        d=1e100.net; s=20230601; t=1739242906; x=1739847706;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=swUpt3MGMWVmL6Fia0zHUWcytltlJ5MCz+nrBrJfCjA=;
+        b=TwvzGS4h40q5yBiYrvY8WfRJ4zrJJBQjigVmSgfHYkcY/uagO4rh733aXkQtRiAu1w
+         aF03TtAGQzMRrD/3LJtajlylr2Wq9FfdHvGk7/LNsAEARwzUQ+wTUR3cxiHmbzeDIBLk
+         /7lEdWQVSiIWainN0PdwzXRdoVm4nyErxLFZ8wUyfYstI9xQXe0RHQcOoPOzxoBKWjwc
+         ZDaWn/4nwqi4JY4kUOwGBGIABoIOkA6oAUx/fSFLiOlbIsU6PEQBvhmSlK82RC1gMRzt
+         A953sRoCT379rwReJhoV0059o8tLkVvrE0Dy+6Xhv7qph7Kv3DmWIIGfqzuw6s8f7wSH
+         daGw==
+X-Forwarded-Encrypted: i=1; AJvYcCWwbYFmdlSm19Po4zctKXFYBc1veCg34863nsHR4kaDqHB/RAcvN8aSDdh4ZIgKdYwW19k=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwLX2hdQhSYgDW4O1GgldPs+o2J5kWhJu6xSq3uIN3Zg0BbSI7m
+	ullrPkcJOSG1tLl2AtHSsBdApP/g1UJMr5wwsxkmM7tlFVE+98S5wk9qwaOf
+X-Gm-Gg: ASbGnctuTAk0IIbSt7vukxsEXHDdIeUNjHk+HUUmvTQBaaXi5JAqffvYx6fxEA/K8XI
+	fLpruHYuQsi3zhIuZdXmAC3qLXvwsjiLsoeWNeolVu311QwHBiJjgGYFR7bhKsT6xtEm0QRCzxb
+	Tw2rDKwqEUgolnygMbthuFDVQwoPNJWu2Gd1VyqB8dbtJQ73j1jIhV3AM+H5MarfIWzUyCzSQOB
+	ihb3p++cPT6kJbPTTEpJG1wpnCooD1gDJ/DPp9fh7l//YeooYXPGqxcHz19JviPnWRGTS7CyOgW
+	OEd4VTbtA5/t
+X-Google-Smtp-Source: AGHT+IEwv0VyjAm4W5GVia+h3ePgqZKBA2uGYHmtL1cCJc3oMouoPzWm0EfrwgcDF0JyE12B+fiN8w==
+X-Received: by 2002:a05:6a00:1383:b0:730:7d3f:8c6c with SMTP id d2e1a72fcca58-7307d3f929emr15399209b3a.22.1739242906429;
+        Mon, 10 Feb 2025 19:01:46 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-730949924cdsm2179863b3a.95.2025.02.10.19.01.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Feb 2025 19:01:45 -0800 (PST)
+Message-ID: <37033e12b0aad918a1787d2e0ef4a8b5e67c7413.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: introduce veristat test
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
+	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
+	kernel-team@meta.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Date: Mon, 10 Feb 2025 19:01:41 -0800
+In-Reply-To: <20250210135129.719119-3-mykyta.yatsenko5@gmail.com>
+References: <20250210135129.719119-1-mykyta.yatsenko5@gmail.com>
+	 <20250210135129.719119-3-mykyta.yatsenko5@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-The reuslt:
+On Mon, 2025-02-10 at 13:51 +0000, Mykyta Yatsenko wrote:
 
-  $ tools/testing/selftests/bpf/test_progs --name=fexit_noreturns
-  #99      fexit_noreturns:OK
-  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+[...]
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
----
- .../selftests/bpf/prog_tests/fexit_noreturns.c      | 13 +++++++++++++
- tools/testing/selftests/bpf/progs/fexit_noreturns.c | 13 +++++++++++++
- 2 files changed, 26 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/fexit_noreturns.c
- create mode 100644 tools/testing/selftests/bpf/progs/fexit_noreturns.c
+> +void test_veristat_set_global_vars_succeeds(void)
+> +{
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_noreturns.c b/tools/testing/selftests/bpf/prog_tests/fexit_noreturns.c
-new file mode 100644
-index 000000000000..588362275ed7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/fexit_noreturns.c
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+#include "fexit_noreturns.skel.h"
-+
-+void test_fexit_noreturns(void)
-+{
-+	struct fexit_noreturns *fexit_skel;
-+
-+	fexit_skel = fexit_noreturns__open_and_load();
-+	ASSERT_NULL(fexit_skel, "fexit_load");
-+	ASSERT_EQ(errno, EINVAL, "can't load fexit_noreturns");
-+}
-diff --git a/tools/testing/selftests/bpf/progs/fexit_noreturns.c b/tools/testing/selftests/bpf/progs/fexit_noreturns.c
-new file mode 100644
-index 000000000000..003aafe2b896
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/fexit_noreturns.c
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+SEC("fexit/do_exit")
-+int BPF_PROG(noreturns)
-+{
-+	return 0;
-+}
--- 
-2.43.5
+test_progs based tests are usually organized as a hierarchy of tests and su=
+b-tests.
+E.g. take a look at tools/testing/selftests/bpf/prog_tests/ksyms_btf.c:
+- it defines an entry point test_ksyms_btf;
+- and a bunch of sub-tests declared as static void functions,
+  called from entry point;
+- test__start_subtest() function is used to check if sub-test has to
+  be executed.
+
+> +	char command[512];
+> +	struct fixture *fix =3D init_fixture();
+> +
+> +	snprintf(command, sizeof(command),
+> +		 "./veristat set_global_vars.bpf.o"\
+> +		 " -G \"var_s64 =3D 0xf000000000000001\" "\
+> +		 " -G \"var_u64 =3D 0xfedcba9876543210\" "\
+> +		 " -G \"var_s32 =3D -0x80000000\" "\
+> +		 " -G \"var_u32 =3D 0x76543210\" "\
+> +		 " -G \"var_s16 =3D -32768\" "\
+> +		 " -G \"var_u16 =3D 60652\" "\
+> +		 " -G \"var_s8 =3D -128\" "\
+> +		 " -G \"var_u8 =3D 255\" "\
+> +		 " -G \"var_ea =3D EA2\" "\
+> +		 " -G \"var_eb =3D EB2\" "\
+> +		 " -G \"var_ec =3D EC2\" "\
+> +		 " -G \"var_b =3D 1\" "\
+> +		 "-vl2 > %s", fix->tmpfile);
+> +	if (!ASSERT_EQ(0, system(command), "command"))
+> +		goto out;
+
+Nit: there is SYS macro in test_progs.h, it combines
+     snprintf/system/ASSERT_OK/goto.
+
+> +
+> +	read(fix->fd, fix->output, fix->sz);
+
+Nit: check error for read() call (same read()/write() in tests below).
+
+> +	ASSERT_NEQ(NULL, strstr(fix->output, "_w=3D0xf000000000000001 "),
+> +		   "var_s64 =3D 0xf000000000000001");
+
+Nit: I'd do these checks as below:
+
+#define __CHECK_STR(str, name) \
+	if (!ASSERT_HAS_SUBSTR(fix->output, (str), (str))) goto out
+        __CHECK_STR("_w=3D0xf000000000000001 ");
+        ...
+#undef __CHECK_STR
+
+     this way fix->output would be printed if sub-string is not found.
+     For other tests I suggest using ASSERT_HAS_SUBSTR as well,
+     as it prints the string where sub-string was looked for.
+
+> +	ASSERT_NEQ(NULL, strstr(fix->output, "_w=3D0xfedcba9876543210 "),
+> +		   "var_u64 =3D 0xfedcba9876543210");
+> +	ASSERT_NEQ(NULL, strstr(fix->output, "_w=3D0x80000000 "), "var_s32 =3D =
+-0x80000000");
+> +	ASSERT_NEQ(NULL, strstr(fix->output, "_w=3D0x76543210 "), "var_u32 =3D =
+0x76543210");
+> +	ASSERT_NEQ(NULL, strstr(fix->output, "_w=3D0x8000 "), "var_s16 =3D -327=
+68");
+> +	ASSERT_NEQ(NULL, strstr(fix->output, "_w=3D0xecec "), "var_u16 =3D 6065=
+2");
+> +	ASSERT_NEQ(NULL, strstr(fix->output, "_w=3D128 "), "var_s8 =3D -128");
+> +	ASSERT_NEQ(NULL, strstr(fix->output, "_w=3D255 "), "var_u8 =3D 255");
+> +	ASSERT_NEQ(NULL, strstr(fix->output, "_w=3D11 "), "var_ea =3D EA2");
+> +	ASSERT_NEQ(NULL, strstr(fix->output, "_w=3D12 "), "var_eb =3D EB2");
+> +	ASSERT_NEQ(NULL, strstr(fix->output, "_w=3D13 "), "var_ec =3D EC2");
+> +	ASSERT_NEQ(NULL, strstr(fix->output, "_w=3D1 "), "var_b =3D 1");
+> +
+> +out:
+> +	teardown_fixture(fix);
+> +}
+> +
+> +void test_veristat_set_global_vars_from_file_succeeds(void)
+> +{
+> +	struct fixture *fix =3D init_fixture();
+> +	char command[512];
+> +	char input_file[80];
+> +	const char *vars =3D "var_s16 =3D -32768\nvar_u16 =3D 60652";
+> +	int fd;
+> +
+> +	snprintf(input_file, sizeof(input_file), "/tmp/veristat_input.XXXXXX");
+> +	fd =3D mkstemp(input_file);
+> +	if (!ASSERT_GT(fd, 0, "valid fd"))
+
+Nit: ASSERT_GE.
+
+> +		goto out;
+> +
+> +	write(fd, vars, strlen(vars));
+> +	snprintf(command, sizeof(command),
+> +		 "./veristat set_global_vars.bpf.o -G \"@%s\" -vl2 > %s",
+> +		 input_file, fix->tmpfile);
+> +
+> +	ASSERT_EQ(0, system(command), "command");
+> +	read(fix->fd, fix->output, fix->sz);
+> +	ASSERT_NEQ(NULL, strstr(fix->output, "_w=3D0x8000 "), "var_s16 =3D -327=
+68");
+> +	ASSERT_NEQ(NULL, strstr(fix->output, "_w=3D0xecec "), "var_u16 =3D 6065=
+2");
+> +
+> +out:
+> +	close(fd);
+> +	remove(input_file);
+> +	teardown_fixture(fix);
+> +}
+
+[...]
+
 
 
