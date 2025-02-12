@@ -1,631 +1,236 @@
-Return-Path: <bpf+bounces-51219-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51220-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A7D6A31EA5
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 07:21:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79BC3A31F52
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 07:45:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA5733A9122
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 06:20:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8A4C188C520
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 06:45:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C3D21FF1A3;
-	Wed, 12 Feb 2025 06:20:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1E921FF1C5;
+	Wed, 12 Feb 2025 06:45:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dxi9KlMI"
+	dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="HGDNcowZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D22751FC7E6;
-	Wed, 12 Feb 2025 06:20:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739341215; cv=none; b=RGXx0onDmwwudCiJdrQ9uaAmPjBlqk8an0QGNZN4yhKGIx7qOAj1oRmbV+XfFKeeZuqnfCs5+VgfMgNZOudO8o4KBSwcEdHGoyleZzqCmSZW0GalTHGORO48BmlzbzvDO6gUqXHLzCqgt1mbvIgjrj7oYQjU3ZM10Ci/lcDW7gE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739341215; c=relaxed/simple;
-	bh=Nd9Mnp3wcTiXYfdo/0yJYA8WYGTxK7m2qjZF+iR2p+Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mkx8QcxKp69FQSNyguM38eilUminqt6Q0I+5oZxFAwFEsGEiI1nPKzzxv1uN89OcT4ZUW5dHgw2CKcjWsSUvxH6CSPud11i9jOmvrx9pa/yffSRg1NPi4kN8b5QxDZcrAqKE+Dz7B5vcCoY8WukWaSHeiq5DniPANygTEw64TNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dxi9KlMI; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-220bfdfb3f4so6366405ad.2;
-        Tue, 11 Feb 2025 22:20:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739341213; x=1739946013; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8HcrWAqvgwDqLBJmnhyxw1if59WWrRJdLalmBU6VEIo=;
-        b=Dxi9KlMIh8zimRQSIItzITRfMtZiZTU1QK4QuqvKsfXM4R5ILn6U/JUhs7KPy/o+zY
-         batTHpXE0SeFZnD03aLF5rBwPBy4U+cX/trygP/vxpGhTOznYJ2nr4SCGVYkHU84sWCs
-         7nq4zf9PQ+XsAhP/TiFMJQvGUbs1Acuhwg9nrhOV1Tce6hx1dFgq4w/I7BKfzGo5rx+L
-         D4aI+NkcF4fMRb7f+kswOggVveX3uzj7iBJmeDF0vZdCLI+SCdL5uoEASg/l5RJXvHzA
-         kgDqKKcfa638DOt0AV6pTiYf+RKhnvgVLftK4Lt4IQEutXjUtcLtKK/HckjwuEzuQqkL
-         NSWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739341213; x=1739946013;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8HcrWAqvgwDqLBJmnhyxw1if59WWrRJdLalmBU6VEIo=;
-        b=v2PMtTcW+0aYYE1SuM3MIdb9OxfjH9/SI2Wl91FBcA5l5iiUAPldNhXLUJwHe/wsHt
-         BqyZYGfzTqBJzwY8STclRt3FA4kdcgkqZw8ow6Nr7M2IgPEWNre5opT0NpHjsfF4Z4OE
-         mYY5HRFLDK/YYR3RDBQ2pdnAY/3KtaLqjJeI4wucpTPhHwm0DBwJ6/bW6vKSnI7y3gvh
-         zZ690PDNG2w4d5/oaBCPGvGHfUgUQISuUmJsvMhNhczDzCrIlQQjXYUL1lD/tYSAWOLg
-         4216I+wBbOzVXMeJ5O7pac5VwdmEY18e2RwV5fbTJaArAHgo0hhzhWxhdZoPHTKBYjyP
-         DxPg==
-X-Forwarded-Encrypted: i=1; AJvYcCU5FmdiLTdmJO35olurkym0XQwLtX5RPVLddu+mJ4bqOJtT1TyI8C9jiYXDC8/ljEze9GThvig=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyaEVI5coW6IiFjZtSFy6IglQV/3cGg+teaaTat1a66OnJBAJJj
-	uKxB/V6o0omZWpONT5PutNrl7IL2Uq24XW3kSmzCifrtg5aOJfQy
-X-Gm-Gg: ASbGncu1YuQyJS2zHAsNmJNPs7TNN5SvQefJyh+EbR82gFJYd+2bYTIijgjkvw8kIh8
-	Ttx65V6nsnhUTSm3hFRzcbqbwGiNnO+gYOvVl350yvYyDr/RMz8AkWWBhieruE8N5xH92m0KRyw
-	+a1Vqn/nJl1DC/dv5zHU3MAjLwzklvmtZFY0exoOTZj4vdlv/O/YjGvnc0q6fPZiRIOsk9ceK4/
-	pYxyHIrgHiuu7EeOkb9rCW812mb6fyAupnnl71rmFldLFuWuHUh2mZG5gGQu1AxoYQzPtBeExVf
-	GO8yRvSVVuHqP4HvHWbZdjLnUOtfhnsvE+wjRGjLM4f6J82NuSNNNhCBCL/3VsQ=
-X-Google-Smtp-Source: AGHT+IECRi2o3JNE0SDCsaCRP1UNJ2Yngga9k1BIv8WRNJrHywdc8YD2XHtvrVA5vS+BLZz/bt0CbQ==
-X-Received: by 2002:a17:903:41d2:b0:216:3633:36e7 with SMTP id d9443c01a7336-220bbb08de9mr31818365ad.26.1739341213128;
-        Tue, 11 Feb 2025 22:20:13 -0800 (PST)
-Received: from KERNELXING-MB0.tencent.com ([43.132.141.20])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21f3683dac7sm105277835ad.142.2025.02.11.22.20.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Feb 2025 22:20:12 -0800 (PST)
-From: Jason Xing <kerneljasonxing@gmail.com>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	dsahern@kernel.org,
-	willemdebruijn.kernel@gmail.com,
-	willemb@google.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	shuah@kernel.org,
-	ykolal@fb.com
-Cc: bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Jason Xing <kerneljasonxing@gmail.com>
-Subject: [PATCH bpf-next v10 12/12] selftests/bpf: add simple bpf tests in the tx path for timestamping feature
-Date: Wed, 12 Feb 2025 14:18:55 +0800
-Message-Id: <20250212061855.71154-13-kerneljasonxing@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20250212061855.71154-1-kerneljasonxing@gmail.com>
-References: <20250212061855.71154-1-kerneljasonxing@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 951901FE46B;
+	Wed, 12 Feb 2025 06:45:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.148.174
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1739342704; cv=fail; b=akT5uyP7yuKdB8SnPzQhzwZHV4AG1FXjqLALfmszdhMeddHWXVYM4vVFiYeeKJ/4BTfKRj3yyGPjTpjxMnMsLSzYlvVp8/ivkBS9Bu8Rhktbi++pbUagHVi+D9+Y7yEDKsF9KmOH0StqPSw+QuQkvUwA3CcEZTOymvF+kx8LV80=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1739342704; c=relaxed/simple;
+	bh=WtXrsNcGNofPITSVOlJuEkdF8aaLi/GBUNuOFzCJVSc=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=YQsYO7mXlB7sAPuyK1LSa9ZwKPOYcx/tGC1llLkp27XBYeWwgyJRfBDGXwPriChNpPRtMzMfPjblEcbMv3CV+9ZQwYGGunl57oRuDa+xSSrcaGsXuSp4lpbf/K+Gg+Pt0FHoOWaa5YbD6SW/d5nIxrSBWvUAySD8jn+sOJGeG6g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=HGDNcowZ; arc=fail smtp.client-ip=67.231.148.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0431384.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51C41KO6002226;
+	Tue, 11 Feb 2025 22:44:28 -0800
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2043.outbound.protection.outlook.com [104.47.66.43])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 44rm8789ab-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 11 Feb 2025 22:44:28 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=ZjS0B4wCbp6g9PjLR3pAnNUc7C8/limvqRvF3hIzm3yedZeBNmZwcWGufRszS28TS2pFmSpoVouMVKX0A7Qa27cj5Fadss6Vh4VRr9l3rGXGIexsYbG4GAN0zfjOONYA6NnvG9J8Ix+8vO085NZqFDQMJF6AwzlAkxdI9tb6IWkiwgAm4PRf6bTtU9i7Y9NvjOoSgGcp/JlgUMJlY6EnU+9WEydFCFgjCxSm2Gu2z5Qo1vaCryF6Jm6kiV6ZmMYvWzllJW6TXQFN7xt5DLn1jJEG9ZaPxTyUBuHVAv967sclroBQopRjg/ZaaFi0USwcNZ+TOEcADm/WuRvEayZRnA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WtXrsNcGNofPITSVOlJuEkdF8aaLi/GBUNuOFzCJVSc=;
+ b=ClucK2jLHDYmolZMdvymMloWUNzQgEdRciS3bTrx7+x928TlS/AedF8uo/kEQmOOFPLoO0O4pZK11MY16OyCtXWndf3z3bZOYNriJ1Muv/ZJyAaw7VmGDjszQBk5snHjkbgcfc6ctHpJjYvT4/OOZnmMGIvLTDH4pP77wj05+JS+8O4Xium+mC5DX9G4xzBUqsjEPbXJNuii3mfN9moCy7Dmf5BELcagWKBht/PBPmdpPi9BhEVaycuhPuVWX35Jr0pp8AvLunUOS3JQJDo6CDpwKSV543YsFaQwKpbVsHXbPYhgrdVA6iE1q3Ye2WOTEMQLXWZXsaP14xoEEj4cuA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WtXrsNcGNofPITSVOlJuEkdF8aaLi/GBUNuOFzCJVSc=;
+ b=HGDNcowZ0ZvKIkvEcnVXHa0H1+h2CdSKOUvytwuvCsyXUkhz66/kXwOKqTU6E6TVqerSb+xeAT25J/TexeRYZua15Ha4BGrfiuhGRgRVEcVldowCHVg8kIr2aenK92QmmnpXrUtHxrYn9HF1tu5+6N71vzKAxe34gJoZxUbAKH4=
+Received: from SJ0PR18MB5216.namprd18.prod.outlook.com (2603:10b6:a03:430::6)
+ by LV8PR18MB5654.namprd18.prod.outlook.com (2603:10b6:408:186::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8445.11; Wed, 12 Feb
+ 2025 06:44:26 +0000
+Received: from SJ0PR18MB5216.namprd18.prod.outlook.com
+ ([fe80::2bf5:960a:a348:fad1]) by SJ0PR18MB5216.namprd18.prod.outlook.com
+ ([fe80::2bf5:960a:a348:fad1%4]) with mapi id 15.20.8422.012; Wed, 12 Feb 2025
+ 06:44:26 +0000
+From: Suman Ghosh <sumang@marvell.com>
+To: Simon Horman <horms@kernel.org>
+CC: Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        Geethasowjanya Akula
+	<gakula@marvell.com>,
+        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
+        Hariprasad Kelam <hkelam@marvell.com>,
+        "davem@davemloft.net"
+	<davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linu Cherian
+	<lcherian@marvell.com>, Jerin Jacob <jerinj@marvell.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        Bharat Bhushan
+	<bbhushan2@marvell.com>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>,
+        "ast@kernel.org"
+	<ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "larysa.zaremba@intel.com"
+	<larysa.zaremba@intel.com>
+Subject: RE: [EXTERNAL] Re: [net-next PATCH v5 1/6] octeontx2-pf: use
+ xdp_return_frame() to free xdp buffers
+Thread-Topic: [EXTERNAL] Re: [net-next PATCH v5 1/6] octeontx2-pf: use
+ xdp_return_frame() to free xdp buffers
+Thread-Index: AQHbeHRMkvDltmfsOk27Y2q9umEI8rNAv/OAgAKCGtA=
+Date: Wed, 12 Feb 2025 06:44:26 +0000
+Message-ID:
+ <SJ0PR18MB5216D06F41966F59F06E6A0BDBFC2@SJ0PR18MB5216.namprd18.prod.outlook.com>
+References: <20250206085034.1978172-1-sumang@marvell.com>
+ <20250206085034.1978172-2-sumang@marvell.com>
+ <20250210162543.GF554665@kernel.org>
+In-Reply-To: <20250210162543.GF554665@kernel.org>
+Accept-Language: en-IN, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ0PR18MB5216:EE_|LV8PR18MB5654:EE_
+x-ms-office365-filtering-correlation-id: ffd7b326-ee9a-4a94-04c8-08dd4b30b14d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|7416014|1800799024|366016|376014|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?RVc1cVFMcEcxZ1RCKzA2ZjN3blNtMCtKWTRnbTJ0UHl3UDVDcEJ0NVhJSHNs?=
+ =?utf-8?B?TDhpZElhMElsTjQxU09ZSW51cWpJWVRMTUtZaE5sYmt6QUtTcEQ3VEFNUmpm?=
+ =?utf-8?B?eE5zbm15K0Q5RmUrdmozZ1packRmQlpZS2xjaVhtZW5hczhqSjZJSlU4WkRQ?=
+ =?utf-8?B?b3kxaU11L3FYRmVvd1JOcllOcHZvaTRiMWZReVZQc1c3SjBEN2FoQTNsRGpF?=
+ =?utf-8?B?czc2d1VscSs1M2l3R3dDMHV5Yi9vZWdUOU5yRURWN2VHU0VsMVVmL2FMY3I0?=
+ =?utf-8?B?b2daWVFPdVd5NDVYeUlJY2NXaWk1aGY2eFh4R2V2NDNUbDFJNXl6UFdYOW4z?=
+ =?utf-8?B?VWZ1MnZVRGNOZG5XTENab1JwZzdNZ2FQU3R4SUxoZG1QdkFPS3lyUGx4Z3dv?=
+ =?utf-8?B?VTNxWWMvQ3NoT2ZpNFo2UmVnUE5kOXVKN3g3aHNuTVBuKzJMUVlnb1ZJcU1y?=
+ =?utf-8?B?eVpGWjUvSDE2WDZGZkp3Q3FrRjZyOFRRLzNMMW9LaGFMbEViMzdxY05GSUEv?=
+ =?utf-8?B?Q1d2bVpkZ3BUcE9mMmJNNXFzVzB2QVhwcXJWTFVvUkRkMU5RS3JUSTNYV3Fj?=
+ =?utf-8?B?ZXByKzVWQ3FOMzdLYVJKSkVLbWt1ZFhpNnNiOGo3dDJJbWxaUlJSVDBNbkdu?=
+ =?utf-8?B?VG9PTGxsbzNlZlJ3TXgvSUc3bGxzaXljVkh3azYybUFxK3JwS2JjbjFLU0l2?=
+ =?utf-8?B?SWlCWStIRlhxSDhIRUJ0ZEdHK2d0RDR3ZjdwempPMUJaSFl4VDVLcTZkYVRL?=
+ =?utf-8?B?QnFkdTFVWVJVRVVJMkd6eEd5QkFnV1graWFYVmVtaUpSOW9kVFVTcktnTCtw?=
+ =?utf-8?B?N1pOMThzSVZ1T0l6dDVFNTdpbUJzNjloWkRXRDR2L2d3NFN3bnJuc1pXOHF6?=
+ =?utf-8?B?U0lFbzhjNUQzVEFYYkNaYnZQK1BJZ3NCM2JjS1p3eGNwWDdEdEw2bHIwbElO?=
+ =?utf-8?B?ZEdkL1o1Zkp1eDBKV0lnbEV2NXVUbVg1Vlg1YkwveWp4K1RJZkZRclRaT1NG?=
+ =?utf-8?B?eG82UTBkWE5lWHZwcno4eUgwcmJHcm9IOUI5N005NnM3SFlLT3NzSGZPZGpu?=
+ =?utf-8?B?bVhrekNFeW5QTENzRitBYUlkWHdiUUZhT2VvOHBWRkh6Um1tcWl5SUFEb2p5?=
+ =?utf-8?B?K29pK0E4Y2k3V0JVVFJnZ1hwV1VGeXlhemFFOTc1REFBWnErWS84YXFqTXcv?=
+ =?utf-8?B?cE41Q0p5VUo5QzRkdEd5WFBlV3h6cGZYMUU2VVYvT3oxVUpSNjdIdFBQVUhB?=
+ =?utf-8?B?bU5CUWw4c05sUEFZVWlxbnlRU2J1VVFEN3ExUk1NTCtaTk1VVXNzSk92SzBF?=
+ =?utf-8?B?TVJaSjRwc1pDUm1tZ2tYOGo0akRXYXUxTmVubk1VK0tOUjJKQVBYeHpDU3Vp?=
+ =?utf-8?B?dlI0Sm9ZbUdxbEpESEs0TnYrTWR5KzJTNHl2bjJ4ZEJqMjF0QU9peURzaXJ2?=
+ =?utf-8?B?eFJORHkrU0lMUW80QnVuWXpCbmF1ekd0b0FScElKYVRlMXZ3dUtyRnZhSzJq?=
+ =?utf-8?B?RHVYVXpOeHUzUUFyck9oZTdYaXU3aUtXU1ZJNy83dWNjTzRTV2ZyWG5rVTNi?=
+ =?utf-8?B?ZVpzRGlYM0F2RXA4eU0wNU5xYTBwWDZ2RCtUK0tkZFFCbHkrNVlTTExOK21Q?=
+ =?utf-8?B?VlA3aHdHaE1NbytUR2RLREZQVG4rWnY0Rko3ajJJcXR2WSsyNm1tTkh2Mkxj?=
+ =?utf-8?B?QXpMRkhwT01UK25VSXoxaG0ydHpHSytGeWhZMld3bkN4ajhNTXV5UndEWjlK?=
+ =?utf-8?B?ZUdIemZSL2R1RmxyQ0VSbXJaK2d1ZzFCMnZGRno2QTBHZXh3Qk8wcDlHN291?=
+ =?utf-8?B?b0luaEVzUGp4dFpSM3doVkVYR3lNT0tyejYwS2lXTVEwZmNLYkM4dENodW5y?=
+ =?utf-8?B?RjRmQU9NTXJYeGhUTHVkYVZYSzc5NU5EMDhUNW1MRGhBQUlaay9UZkdOaVo4?=
+ =?utf-8?Q?G7PdtY9obhF3t9+DHHJDA5bca0hAbxbS?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR18MB5216.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(1800799024)(366016)(376014)(38070700018);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?STNDRmx6VmsxRTJWdDhMVlRaQlhMQmlBM3IxMzZQdlBJZlNEaUFYdHRHWm9v?=
+ =?utf-8?B?SkdvOFJXNjROUGx2bGFOM0xhdEtsOW10Z2VkTEV6bFpyMXdud1BaQnZCNTNu?=
+ =?utf-8?B?ck1nemFBUGs0djRPNEhPanM2NHhoa3A3VXVnMktKc3MyNUxJNFhVcUVqdDFE?=
+ =?utf-8?B?VlVmRi9oU3QwNWEydURraEl6NXBoQXhZeVJXd1Q3MnN2dE5QZWswS1hHY1I5?=
+ =?utf-8?B?WC9NUzlGd3VJdlgxa00rNWNjcDhGTTV3WmxNQ1VrTGEzRldxRlBpTnJOZFhQ?=
+ =?utf-8?B?SDNhWWdnNmp2NmNpTmtmWitHb1FOTEErTHprNVhtUVdjc1FTRFpZQU1hajJn?=
+ =?utf-8?B?UFYvL0dHbU41NkJ6VzdqSmk4RGNpcDZOODlJQlNLbmxKQS9RWWdDV0ZKZ3c3?=
+ =?utf-8?B?emJxZlBkeFFqV1dsSWlYZ3pFYWtab0V1VlphWXMzUysyRndHSTM5TlhuYjk3?=
+ =?utf-8?B?YzkzR21wWm1FaUpOMTRORDI2MWxSa0JSQnBFVkRIWVJmR2NoMDlRaUM3RElw?=
+ =?utf-8?B?a3VtTzVuTTh3aXJ6eXlhdHRPT0VzaFdjTXVWTzY3aG13K3RZNm40QUtVcnJD?=
+ =?utf-8?B?TExVbWtWUXVQMU5QZld1dFBMNWRRZ2QxUUlvN2JyMlh2VFg4dUw3SWFwTXZa?=
+ =?utf-8?B?eXpGTENqWmRCVC84MVJ6SURPUDR1VmExNW5ibkRNajQ3UFAyc01BQ2tiaURS?=
+ =?utf-8?B?djkxemp0MHBJaS94dWJ2Zm1Zc0srS2g3V0ttL3gwQjJNaEtFb1dCeWtnd0FV?=
+ =?utf-8?B?V2NPZzdmdkZqOXo4d2x6amM4bCs4ZVljZ0t6YWdDY1lTamgxMVJuRGpsMENo?=
+ =?utf-8?B?U0UyOGNVTkZOOXg0QVc3Y1M4MklRbFFxK1FxVmVKVHJOcUhFT2lpV045bTlS?=
+ =?utf-8?B?d0hHcUZ4djY5S0x1VXBHSHZzN21ycWFxUkFkeXI1dlVrMTBvSkRUelJCRmhY?=
+ =?utf-8?B?U3FNRFRNWlh4Tm4zYXZjUlJTRlhxVkJrbFlQWkppYitXWmM0NVU2YUg3d0NB?=
+ =?utf-8?B?NXVUZ2hhQkJnZ2hQOG9nekZNb1k4VWZ3TFFYUGh1Ymk2SE8xaWhkd0paWEZq?=
+ =?utf-8?B?NlVmblRHazAydW04dzA2R0R2RzUwT3ZGdmVYZ080Y2xGd05PRkZSNUtxMlU4?=
+ =?utf-8?B?ZGFNVFFCbS9va2JsRXpHSkl0YkRjN1U3ck5oNDdiQW5VY3VxV3cvRm9LSDdx?=
+ =?utf-8?B?TEphcEY5MDdKUkNKRlRZVGxqUnY0RDFVOHlmV2NBNjdYdmw3Sm9kNTFBa2Vr?=
+ =?utf-8?B?WVdlcXVKYm9Db3Z4M3FoMWMxY1gxKzZGR3FTaEtuUUJkZ20veDVYNktoZHhi?=
+ =?utf-8?B?L2hpd0x1STk2Q2hRMlQwQUtWTVFDZjR6WmY0UEl6MUE0b2E2ZmlBZ2lnWUh4?=
+ =?utf-8?B?WWxzSXdISVhqLzUzRTRxWldxcVdDamdZNU9TWWthbmQ3OTh5RzNuTlNiK0lT?=
+ =?utf-8?B?OEsxMnFPNjVkL0piMWk1NnM1Q0dReGI5QXRpaWJkWXc0Y2JOWVY5dFlhb1lB?=
+ =?utf-8?B?VlN1UHEyNS9ycnZNMmlEbEtnSm1PSWxhOUFSQTY0OGw2OGhyWCtuRkgzWThW?=
+ =?utf-8?B?VFlPNkZ4K3o3T0djaEExcFU0emdGaVBqdTZyVGJRZTEvcmw5dVdLM29qbzcx?=
+ =?utf-8?B?Tmo4bkhzT1hhOXpJQkkxbE56UXpSZ09tNnlkb2Y4TEhrZG8wOVNxeGZCaDVX?=
+ =?utf-8?B?aDN5U2ZkMi9TK3Q0TVFvVnAyS2RRWTZYWWJqdjN2SzZaQ1dsUTlCcUZKeENG?=
+ =?utf-8?B?ZjRLN3B3YkMxZnlNaHNWbllBSGxHemd5OVFrWTA1b2lheWoyL0hIb3J3QUZZ?=
+ =?utf-8?B?VFdMWnNOR1RaZ1hqUzVLR09YenhiYmZSUEdBaWhwNWIrVGZISHNPODBOT3FV?=
+ =?utf-8?B?UUd3RGF1bGhNbUdWbytXS2dBczRRSHBLUk4zTlF5Qk05UlJYdDZXcndJWmpV?=
+ =?utf-8?B?YzZCeldWRFZiemRlQ3lDYkRXbjV6QjhyeFpLSEJCdzBZTVdPTHRaNFdLRjc3?=
+ =?utf-8?B?UFkrMUZtZXlMaXJ6OXJtVmxTRHNWa2VYVEd1TVptMGxWU2xoVnBCUyt0eENQ?=
+ =?utf-8?B?cmtNM21JZGk2VWFSVk9ldWFhdkZhU0d1RmR5QjM0blYrSXZmVXJrYTdmckt1?=
+ =?utf-8?Q?tvzY=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR18MB5216.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ffd7b326-ee9a-4a94-04c8-08dd4b30b14d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Feb 2025 06:44:26.1163
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6uZFnkhDKGsdfbG3gpmKct+gzbX00WsQwSadOOrSFRRnWQGeAETC+Dqwtv+IR+KZAm7yafMjfzjbCaVOMezAtg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR18MB5654
+X-Proofpoint-GUID: mOqwfK9z3ctl3ZRUEap2aU9Q68IdluZi
+X-Proofpoint-ORIG-GUID: mOqwfK9z3ctl3ZRUEap2aU9Q68IdluZi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-12_02,2025-02-11_01,2024-11-22_01
 
-BPF program calculates a couple of latency deltas between each tx
-timestamping callbacks. It can be used in the real world to diagnose
-the kernel behaviour in the tx path.
-
-Check the safety issues by accessing a few bpf calls in
-bpf_test_access_bpf_calls() which are implemented in the patch 3 and 4.
-
-Check if the bpf timestamping can co-exist with socket timestamping.
-
-There remains a few realistic things[1][2] to highlight:
-1. in general a packet may pass through multiple qdiscs. For instance
-with bonding or tunnel virtual devices in the egress path.
-2. packets may be resent, in which case an ACK might precede a repeat
-SCHED and SND.
-3. erroneous or malicious peers may also just never send an ACK.
-
-[1]: https://lore.kernel.org/all/67a389af981b0_14e0832949d@willemb.c.googlers.com.notmuch/
-[2]: https://lore.kernel.org/all/c329a0c1-239b-4ca1-91f2-cb30b8dd2f6a@linux.dev/
-
-Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
----
- .../bpf/prog_tests/net_timestamping.c         | 231 +++++++++++++++++
- .../selftests/bpf/progs/net_timestamping.c    | 244 ++++++++++++++++++
- 2 files changed, 475 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/net_timestamping.c
- create mode 100644 tools/testing/selftests/bpf/progs/net_timestamping.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/net_timestamping.c b/tools/testing/selftests/bpf/prog_tests/net_timestamping.c
-new file mode 100644
-index 000000000000..dcdc40473a7d
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/net_timestamping.c
-@@ -0,0 +1,231 @@
-+#include <linux/net_tstamp.h>
-+#include <sys/time.h>
-+#include <linux/errqueue.h>
-+#include "test_progs.h"
-+#include "network_helpers.h"
-+#include "net_timestamping.skel.h"
-+
-+#define CG_NAME "/net-timestamping-test"
-+#define NSEC_PER_SEC    1000000000LL
-+
-+static const char addr4_str[] = "127.0.0.1";
-+static const char addr6_str[] = "::1";
-+static struct net_timestamping *skel;
-+static int cfg_payload_len = 30;
-+static struct timespec usr_ts;
-+static u64 delay_tolerance_nsec = 10000000000; /* 10 seconds */
-+int SK_TS_SCHED;
-+int SK_TS_TXSW;
-+int SK_TS_ACK;
-+
-+static int64_t timespec_to_ns64(struct timespec *ts)
-+{
-+	return ts->tv_sec * NSEC_PER_SEC + ts->tv_nsec;
-+}
-+
-+static void validate_key(int tskey, int tstype)
-+{
-+	static int expected_tskey = -1;
-+
-+	if (tstype == SCM_TSTAMP_SCHED)
-+		expected_tskey = cfg_payload_len - 1;
-+
-+	ASSERT_EQ(expected_tskey, tskey, "tskey mismatch");
-+
-+	expected_tskey = tskey;
-+}
-+
-+static void validate_timestamp(struct timespec *cur, struct timespec *prev)
-+{
-+	int64_t cur_ns, prev_ns;
-+
-+	cur_ns = timespec_to_ns64(cur);
-+	prev_ns = timespec_to_ns64(prev);
-+
-+	ASSERT_TRUE((cur_ns - prev_ns) < delay_tolerance_nsec, "latency");
-+}
-+
-+static void test_socket_timestamp(struct scm_timestamping *tss, int tstype,
-+				  int tskey)
-+{
-+	static struct timespec *prev_ts = &usr_ts;
-+
-+	validate_key(tskey, tstype);
-+
-+	switch (tstype) {
-+	case SCM_TSTAMP_SCHED:
-+		validate_timestamp(&tss->ts[0], prev_ts);
-+		SK_TS_SCHED = 1;
-+		SK_TS_TXSW = SK_TS_ACK = 0;
-+		break;
-+	case SCM_TSTAMP_SND:
-+		validate_timestamp(&tss->ts[0], prev_ts);
-+		SK_TS_TXSW = 1;
-+		break;
-+	case SCM_TSTAMP_ACK:
-+		validate_timestamp(&tss->ts[0], prev_ts);
-+		SK_TS_ACK = 1;
-+		break;
-+	}
-+
-+	prev_ts = &tss->ts[0];
-+}
-+
-+static void test_recv_errmsg_cmsg(struct msghdr *msg)
-+{
-+	struct sock_extended_err *serr = NULL;
-+	struct scm_timestamping *tss = NULL;
-+	struct cmsghdr *cm;
-+
-+	for (cm = CMSG_FIRSTHDR(msg);
-+	     cm && cm->cmsg_len;
-+	     cm = CMSG_NXTHDR(msg, cm)) {
-+		if (cm->cmsg_level == SOL_SOCKET &&
-+		    cm->cmsg_type == SCM_TIMESTAMPING) {
-+			tss = (void *) CMSG_DATA(cm);
-+		} else if ((cm->cmsg_level == SOL_IP &&
-+			    cm->cmsg_type == IP_RECVERR) ||
-+			   (cm->cmsg_level == SOL_IPV6 &&
-+			    cm->cmsg_type == IPV6_RECVERR) ||
-+			   (cm->cmsg_level == SOL_PACKET &&
-+			    cm->cmsg_type == PACKET_TX_TIMESTAMP)) {
-+			serr = (void *) CMSG_DATA(cm);
-+			ASSERT_EQ(serr->ee_origin, SO_EE_ORIGIN_TIMESTAMPING,
-+				    "cmsg type");
-+		}
-+
-+		if (serr && tss)
-+			test_socket_timestamp(tss, serr->ee_info,
-+					      serr->ee_data);
-+	}
-+}
-+
-+static bool socket_recv_errmsg(int fd)
-+{
-+	static char ctrl[1024 /* overprovision*/];
-+	char data[cfg_payload_len];
-+	static struct msghdr msg;
-+	struct iovec entry;
-+	int n = 0;
-+
-+	memset(&msg, 0, sizeof(msg));
-+	memset(&entry, 0, sizeof(entry));
-+	memset(ctrl, 0, sizeof(ctrl));
-+
-+	entry.iov_base = data;
-+	entry.iov_len = cfg_payload_len;
-+	msg.msg_iov = &entry;
-+	msg.msg_iovlen = 1;
-+	msg.msg_name = NULL;
-+	msg.msg_namelen = 0;
-+	msg.msg_control = ctrl;
-+	msg.msg_controllen = sizeof(ctrl);
-+
-+	n = recvmsg(fd, &msg, MSG_ERRQUEUE);
-+	if (n == -1)
-+		ASSERT_EQ(errno, EAGAIN, "recvmsg MSG_ERRQUEUE");
-+
-+	if (n >= 0)
-+		test_recv_errmsg_cmsg(&msg);
-+
-+	return n == -1;
-+
-+}
-+
-+static void test_socket_timestamping(int fd)
-+{
-+	while (!socket_recv_errmsg(fd));
-+
-+	ASSERT_EQ(SK_TS_SCHED, 1, "SCM_TSTAMP_SCHED");
-+	ASSERT_EQ(SK_TS_TXSW, 1, "SCM_TSTAMP_SND");
-+	ASSERT_EQ(SK_TS_ACK, 1, "SCM_TSTAMP_ACK");
-+}
-+
-+static void test_tcp(int family)
-+{
-+	struct net_timestamping__bss *bss = skel->bss;
-+	char buf[cfg_payload_len];
-+	int sfd = -1, cfd = -1;
-+	unsigned int sock_opt;
-+	int ret;
-+
-+	memset(bss, 0, sizeof(*bss));
-+
-+	sfd = start_server(family, SOCK_STREAM,
-+			   family == AF_INET6 ? addr6_str : addr4_str, 0, 0);
-+	if (!ASSERT_OK_FD(sfd, "start_server"))
-+		goto out;
-+
-+	cfd = connect_to_fd(sfd, 0);
-+	if (!ASSERT_OK_FD(cfd, "connect_to_fd_server"))
-+		goto out;
-+
-+	sock_opt = SOF_TIMESTAMPING_SOFTWARE |
-+		   SOF_TIMESTAMPING_OPT_ID |
-+		   SOF_TIMESTAMPING_TX_SCHED |
-+		   SOF_TIMESTAMPING_TX_SOFTWARE |
-+		   SOF_TIMESTAMPING_TX_ACK;
-+	ret = setsockopt(cfd, SOL_SOCKET, SO_TIMESTAMPING,
-+			 (char *) &sock_opt, sizeof(sock_opt));
-+	if (!ASSERT_OK(ret, "setsockopt SO_TIMESTAMPING"))
-+		goto out;
-+
-+	ret = clock_gettime(CLOCK_REALTIME, &usr_ts);
-+	if (!ASSERT_OK(ret, "get user time"))
-+		goto out;
-+
-+	ret = write(cfd, buf, sizeof(buf));
-+	if (!ASSERT_EQ(ret, sizeof(buf), "send to server"))
-+		goto out;
-+
-+	/* Test if socket timestamping works correctly even with bpf
-+	 * extension enabled.
-+	 */
-+	test_socket_timestamping(cfd);
-+
-+	ASSERT_EQ(bss->nr_active, 1, "nr_active");
-+	ASSERT_EQ(bss->nr_snd, 2, "nr_snd");
-+	ASSERT_EQ(bss->nr_sched, 1, "nr_sched");
-+	ASSERT_EQ(bss->nr_txsw, 1, "nr_txsw");
-+	ASSERT_EQ(bss->nr_ack, 1, "nr_ack");
-+
-+out:
-+	if (sfd >= 0)
-+		close(sfd);
-+	if (cfd >= 0)
-+		close(cfd);
-+}
-+
-+void test_net_timestamping(void)
-+{
-+	struct netns_obj *ns;
-+	int cg_fd;
-+
-+	cg_fd = test__join_cgroup(CG_NAME);
-+	if (!ASSERT_OK_FD(cg_fd, "join cgroup"))
-+		return;
-+
-+	ns = netns_new("net_timestamping_ns", true);
-+	if (!ASSERT_OK_PTR(ns, "create ns"))
-+		goto done;
-+
-+	skel = net_timestamping__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open and load skel"))
-+		goto done;
-+
-+	if (!ASSERT_OK(net_timestamping__attach(skel), "attach skel"))
-+		goto done;
-+
-+	skel->links.skops_sockopt =
-+		bpf_program__attach_cgroup(skel->progs.skops_sockopt, cg_fd);
-+	if (!ASSERT_OK_PTR(skel->links.skops_sockopt, "attach cgroup"))
-+		goto done;
-+
-+	test_tcp(AF_INET6);
-+	test_tcp(AF_INET);
-+
-+done:
-+	net_timestamping__destroy(skel);
-+	netns_free(ns);
-+	close(cg_fd);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/net_timestamping.c b/tools/testing/selftests/bpf/progs/net_timestamping.c
-new file mode 100644
-index 000000000000..d3e1da599626
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/net_timestamping.c
-@@ -0,0 +1,244 @@
-+#include "vmlinux.h"
-+#include "bpf_tracing_net.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
-+#include "bpf_kfuncs.h"
-+#include <errno.h>
-+
-+#define SK_BPF_CB_FLAGS 1009
-+#define SK_BPF_CB_TX_TIMESTAMPING 1
-+
-+int nr_active;
-+int nr_snd;
-+int nr_passive;
-+int nr_sched;
-+int nr_txsw;
-+int nr_ack;
-+
-+struct sk_stg {
-+	__u64 sendmsg_ns;	/* record ts when sendmsg is called */
-+};
-+
-+struct sk_tskey {
-+	u64 cookie;
-+	u32 tskey;
-+};
-+
-+struct delay_info {
-+	u64 sendmsg_ns;		/* record ts when sendmsg is called */
-+	u32 sched_delay;	/* SCHED_OPT_CB - sendmsg_ns */
-+	u32 sw_snd_delay;	/* SW_OPT_CB - SCHED_OPT_CB */
-+	u32 ack_delay;		/* ACK_OPT_CB - SW_OPT_CB */
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, struct sk_stg);
-+} sk_stg_map SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__type(key, struct sk_tskey);
-+	__type(value, struct delay_info);
-+	__uint(max_entries, 1024);
-+} time_map SEC(".maps");
-+
-+static u64 delay_tolerance_nsec = 10000000000; /* 10 second as an example */
-+
-+extern int bpf_sock_ops_enable_tx_tstamp(struct bpf_sock_ops_kern *skops, u64 flags) __ksym;
-+
-+static int bpf_test_sockopt(void *ctx, const struct sock *sk, int expected)
-+{
-+	int tmp, new = SK_BPF_CB_TX_TIMESTAMPING;
-+	int opt = SK_BPF_CB_FLAGS;
-+	int level = SOL_SOCKET;
-+
-+	if (bpf_setsockopt(ctx, level, opt, &new, sizeof(new)) != expected)
-+		return 1;
-+
-+	if (bpf_getsockopt(ctx, level, opt, &tmp, sizeof(tmp)) != expected ||
-+	    (!expected && tmp != new))
-+		return 1;
-+
-+	return 0;
-+}
-+
-+static bool bpf_test_access_sockopt(void *ctx, const struct sock *sk)
-+{
-+	if (bpf_test_sockopt(ctx, sk, -EOPNOTSUPP))
-+		return true;
-+	return false;
-+}
-+
-+static bool bpf_test_access_load_hdr_opt(struct bpf_sock_ops *skops)
-+{
-+	u8 opt[3] = {0};
-+	int load_flags = 0;
-+	int ret;
-+
-+	ret = bpf_load_hdr_opt(skops, opt, sizeof(opt), load_flags);
-+	if (ret != -EOPNOTSUPP)
-+		return true;
-+
-+	return false;
-+}
-+
-+static bool bpf_test_access_cb_flags_set(struct bpf_sock_ops *skops)
-+{
-+	int ret;
-+
-+	ret = bpf_sock_ops_cb_flags_set(skops, 0);
-+	if (ret != -EOPNOTSUPP)
-+		return true;
-+
-+	return false;
-+}
-+
-+/* In the timestamping callbacks, we're not allowed to call the following
-+ * BPF CALLs for the safety concern. Return false if expected.
-+ */
-+static bool bpf_test_access_bpf_calls(struct bpf_sock_ops *skops,
-+				     const struct sock *sk)
-+{
-+	if (bpf_test_access_sockopt(skops, sk))
-+		return true;
-+
-+	if (bpf_test_access_load_hdr_opt(skops))
-+		return true;
-+
-+	if (bpf_test_access_cb_flags_set(skops))
-+		return true;
-+
-+	return false;
-+}
-+
-+static bool bpf_test_delay(struct bpf_sock_ops *skops, const struct sock *sk)
-+{
-+	struct bpf_sock_ops_kern *skops_kern;
-+	u64 timestamp = bpf_ktime_get_ns();
-+	struct skb_shared_info *shinfo;
-+	struct delay_info dinfo = {0};
-+	struct sk_tskey key = {0};
-+	struct delay_info *val;
-+	struct sk_buff *skb;
-+	struct sk_stg *stg;
-+	u64 prior_ts, delay;
-+
-+	if (bpf_test_access_bpf_calls(skops, sk))
-+		return false;
-+
-+	skops_kern = bpf_cast_to_kern_ctx(skops);
-+	skb = skops_kern->skb;
-+	shinfo = bpf_core_cast(skb->head + skb->end, struct skb_shared_info);
-+
-+	key.cookie = bpf_get_socket_cookie(skops);
-+	if (!key.cookie)
-+		return false;
-+
-+	if (skops->op == BPF_SOCK_OPS_TS_SND_CB) {
-+		stg = bpf_sk_storage_get(&sk_stg_map, (void *)sk, 0, 0);
-+		if (!stg)
-+			return false;
-+		dinfo.sendmsg_ns = stg->sendmsg_ns;
-+		bpf_sock_ops_enable_tx_tstamp(skops_kern, 0);
-+		key.tskey = shinfo->tskey;
-+		if (!key.tskey)
-+			return false;
-+		bpf_map_update_elem(&time_map, &key, &dinfo, BPF_ANY);
-+		return true;
-+	}
-+
-+	key.tskey = shinfo->tskey;
-+	if (!key.tskey)
-+		return false;
-+
-+	val = bpf_map_lookup_elem(&time_map, &key);
-+	if (!val)
-+		return false;
-+
-+	switch (skops->op) {
-+	case BPF_SOCK_OPS_TS_SCHED_OPT_CB:
-+		delay = val->sched_delay = timestamp - val->sendmsg_ns;
-+		break;
-+	case BPF_SOCK_OPS_TS_SW_OPT_CB:
-+		prior_ts = val->sched_delay + val->sendmsg_ns;
-+		delay = val->sw_snd_delay = timestamp - prior_ts;
-+		break;
-+	case BPF_SOCK_OPS_TS_ACK_OPT_CB:
-+		prior_ts = val->sw_snd_delay + val->sched_delay + val->sendmsg_ns;
-+		delay = val->ack_delay = timestamp - prior_ts;
-+		break;
-+	}
-+
-+	if (delay >= delay_tolerance_nsec)
-+		return false;
-+
-+	/* Since it's the last one, remove from the map after latency check */
-+	if (skops->op == BPF_SOCK_OPS_TS_ACK_OPT_CB)
-+		bpf_map_delete_elem(&time_map, &key);
-+
-+	return true;
-+}
-+
-+SEC("fentry/tcp_sendmsg_locked")
-+int BPF_PROG(trace_tcp_sendmsg_locked, struct sock *sk, struct msghdr *msg, size_t size)
-+{
-+	u64 timestamp = bpf_ktime_get_ns();
-+	u32 flag = sk->sk_bpf_cb_flags;
-+	struct sk_stg *stg;
-+
-+	if (!flag)
-+		return 0;
-+
-+	stg = bpf_sk_storage_get(&sk_stg_map, sk, 0,
-+				 BPF_SK_STORAGE_GET_F_CREATE);
-+	if (!stg)
-+		return 0;
-+
-+	stg->sendmsg_ns = timestamp;
-+	nr_snd += 1;
-+	return 0;
-+}
-+
-+SEC("sockops")
-+int skops_sockopt(struct bpf_sock_ops *skops)
-+{
-+	struct bpf_sock *bpf_sk = skops->sk;
-+	const struct sock *sk;
-+
-+	if (!bpf_sk)
-+		return 1;
-+
-+	sk = (struct sock *)bpf_skc_to_tcp_sock(bpf_sk);
-+	if (!sk)
-+		return 1;
-+
-+	switch (skops->op) {
-+	case BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB:
-+		nr_active += !bpf_test_sockopt(skops, sk, 0);
-+		break;
-+	case BPF_SOCK_OPS_TS_SND_CB:
-+		if (bpf_test_delay(skops, sk))
-+			nr_snd += 1;
-+		break;
-+	case BPF_SOCK_OPS_TS_SCHED_OPT_CB:
-+		if (bpf_test_delay(skops, sk))
-+			nr_sched += 1;
-+		break;
-+	case BPF_SOCK_OPS_TS_SW_OPT_CB:
-+		if (bpf_test_delay(skops, sk))
-+			nr_txsw += 1;
-+		break;
-+	case BPF_SOCK_OPS_TS_ACK_OPT_CB:
-+		if (bpf_test_delay(skops, sk))
-+			nr_ack += 1;
-+		break;
-+	}
-+
-+	return 1;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.43.5
-
+Pj4gIHN0YXRpYyB2b2lkIG90eDJfeGRwX3NuZF9wa3RfaGFuZGxlcihzdHJ1Y3Qgb3R4Ml9uaWMg
+KnBmdmYsDQo+PiAgCQkJCSAgICAgc3RydWN0IG90eDJfc25kX3F1ZXVlICpzcSwNCj4+IC0JCQkJ
+IHN0cnVjdCBuaXhfY3FlX3R4X3MgKmNxZSkNCj4+ICsJCQkJICAgICBzdHJ1Y3Qgbml4X2NxZV90
+eF9zICpjcWUpDQo+PiAgew0KPj4gIAlzdHJ1Y3Qgbml4X3NlbmRfY29tcF9zICpzbmRfY29tcCA9
+ICZjcWUtPmNvbXA7DQo+PiAgCXN0cnVjdCBzZ19saXN0ICpzZzsNCj4+ICAJc3RydWN0IHBhZ2Ug
+KnBhZ2U7DQo+PiAtCXU2NCBwYTsNCj4+ICsJdTY0IHBhLCBpb3ZhOw0KPj4NCj4+ICAJc2cgPSAm
+c3EtPnNnW3NuZF9jb21wLT5zcWVfaWRdOw0KPj4NCj4+IC0JcGEgPSBvdHgyX2lvdmFfdG9fcGh5
+cyhwZnZmLT5pb21tdV9kb21haW4sIHNnLT5kbWFfYWRkclswXSk7DQo+PiAtCW90eDJfZG1hX3Vu
+bWFwX3BhZ2UocGZ2Ziwgc2ctPmRtYV9hZGRyWzBdLA0KPj4gLQkJCSAgICBzZy0+c2l6ZVswXSwg
+RE1BX1RPX0RFVklDRSk7DQo+PiArCWlvdmEgPSBzZy0+ZG1hX2FkZHJbMF07DQo+PiArCXBhID0g
+b3R4Ml9pb3ZhX3RvX3BoeXMocGZ2Zi0+aW9tbXVfZG9tYWluLCBpb3ZhKTsNCj4+ICAJcGFnZSA9
+IHZpcnRfdG9fcGFnZShwaHlzX3RvX3ZpcnQocGEpKTsNCj4+IC0JcHV0X3BhZ2UocGFnZSk7DQo+
+DQo+SGkgU3VtYW4sDQo+DQo+V2l0aCB0aGlzIHBhdGNoIGFwcGxpZWQgcGFnZSBpcyBhc3NpZ25l
+ZCBidXQgb3RoZXJ3aXNlIHVudXNlZCBpbiB0aGlzDQo+ZnVuY3Rpb24uIFNvIHVubGVzcyB0aGVy
+ZSBhcmUgc29tZSBzaWRlIGVmZmVjdHMgb2YgdGhlIGFib3ZlLCBJIHRoaW5rDQo+cGFnZSBhbmQg
+aW4gdHVybiBwYSBhbmQgaW92YSBjYW4gYmUgcmVtb3ZlZC4NCltTdW1hbl0gYWNrLCB3aWxsIHVw
+ZGF0ZSBpbiB2Ng0KPg0KPj4gKwlpZiAoc2ctPmZsYWdzICYgWERQX1JFRElSRUNUKQ0KPj4gKwkJ
+b3R4Ml9kbWFfdW5tYXBfcGFnZShwZnZmLCBzZy0+ZG1hX2FkZHJbMF0sIHNnLT5zaXplWzBdLA0K
+PkRNQV9UT19ERVZJQ0UpOw0KPj4gKwl4ZHBfcmV0dXJuX2ZyYW1lKChzdHJ1Y3QgeGRwX2ZyYW1l
+ICopc2ctPnNrYik7DQo+PiArCXNnLT5za2IgPSAodTY0KU5VTEw7DQo+PiAgfQ0KPj4NCj4+ICBz
+dGF0aWMgdm9pZCBvdHgyX3NuZF9wa3RfaGFuZGxlcihzdHJ1Y3Qgb3R4Ml9uaWMgKnBmdmYsDQo+
+DQo+Li4uDQo=
 
