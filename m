@@ -1,185 +1,219 @@
-Return-Path: <bpf+bounces-51283-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51284-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28B02A32D8E
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 18:34:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BB45A32DCD
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 18:47:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81712164CBF
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 17:34:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B74C0162F91
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 17:47:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A97BC25A33C;
-	Wed, 12 Feb 2025 17:34:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FD3625A2D3;
+	Wed, 12 Feb 2025 17:47:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="z23///Xj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fpEriInt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC85F25A35B
-	for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 17:34:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6495B214A8F
+	for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 17:47:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739381648; cv=none; b=Rhm3H7B2hDISU8r3DNQ3BcSoFXcUO8a3ER9FCxuiBWAGHDhnR4ZWK8Slm+741ZqpOwdMTehOdYx7YZjY41WTX5Y7kW4h1oR9xgH6hQ3j4vb5H/5YbQbgU1wwKFT6WxqQ7opbP/kwqARbYluv+Zv+wtshebzApczdHXd1OM6QDlM=
+	t=1739382432; cv=none; b=FewuhSMONXlBI1RdHsqINhSjKFLPeujPLkKz+Uw5k+iNNc8um21qZyko2E8sla3QMrYcSFTWPvdFUlh94bHsLShUUWpGvYhrjZ4ra0ofUXoZJGW++vdTj9gr5aaXC7LcrEkDTaMLpmgMBj+I9aR5D5z6B6NwTXpzrlBUxrCaJQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739381648; c=relaxed/simple;
-	bh=mSNvi3m8qKMq8CUUEEtGDOuOm6FuX+TxlRcWkNZApYk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Pgfm8SkNGXGY8wD5hEBfX2wkrTrQ8L4V8z6Z9udZRebcgFBTiGapZCa6E1NKe8BhitMrXUKLskq8B4WrK7AvMRuVdWvd0PfkDIFhjMG1DOmnUHrEMaGfucknbyPSiATXAvJ4svwp7HPScfnPe53yK/LXQBA4zFTuIKp0HEnu0wg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=z23///Xj; arc=none smtp.client-ip=74.208.4.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
-	s=s1-ionos; t=1739381639; x=1739986439; i=linux@jordanrome.com;
-	bh=ByANMfm1xiq2Jv/kw72ponfJbhIOJ6j+ZFzbj6o8Vbs=;
-	h=X-UI-Sender-Class:MIME-Version:References:In-Reply-To:From:Date:
-	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=z23///XjGfJD05MLTfofqKhHMcMqYYH+tBAPP2i4tPWam/YiOLqyUGKq+F1pesqz
-	 8Rg+RKO33JAXWVmvPyfTNf9KTfRBdBKcem9eyBKYfoI4dqbaKJA7OUynMg6p0amq4
-	 lnsk2HybRYN0Rre7C0EHmLq79WL/zz1JGsP5gsidgbLlSkQ3mVCtco+rhyscyb/z5
-	 dqa7MsFP6Sy1+zBhvyHuXnbUxPDGiUnGfH83JT3TKhoJO/1UBm/U2EMtNrGYVlB3B
-	 s+G6tLzRat+LbOx4xp1EqCR69udXkBlQsDfJHqtAzjNhex+4atAb6ULQX4w2+HYdJ
-	 MFYikokG3OZVAkihtw==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from mail-il1-f176.google.com ([209.85.166.176]) by
- mrelay.perfora.net (mreueus002 [74.208.5.2]) with ESMTPSA (Nemesis) id
- 0LfkxY-1t2t8n2Gy2-00ZakI for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 18:33:59
- +0100
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-3d04932a36cso61846935ab.1
-        for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 09:33:59 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVaLQMr2Lh1jbikHX7Ufv/y3Q3iTqB7cSXSbElTqIVk3Y0teoF0SVkE5CK+Nt/7Ez+VF+I=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzslx1LJVKILPB378XApIXZbqNyubndGsqAmCbB3me4t1TkwTCO
-	vtPFagTOS1D/zEIcpP/xb7RVTFPKY7NZwDpIDIR2gWi5z5dY/gsxKX8Elxgu2ASqXYq5+eISX89
-	q2WOHUYMTgXN72wB/U3idwMcASkc=
-X-Google-Smtp-Source: AGHT+IHYtYCs1Zfc4tIRaiA2ngDcck6IGsVWQtsvnMOAw58zkYn+teEUY7Jgb74jfFZQqDyi7vAyaxt3u48ic4JRYY0=
-X-Received: by 2002:a05:6e02:17cf:b0:3d0:1fc4:edf0 with SMTP id
- e9e14a558f8ab-3d18c2d5526mr1580435ab.15.1739381639162; Wed, 12 Feb 2025
- 09:33:59 -0800 (PST)
+	s=arc-20240116; t=1739382432; c=relaxed/simple;
+	bh=HHLQzsqMY/qmJK59ClYK+gzpGL81xhW+kb/ULPc1vqA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YyxcT4Z8IgK7yvfNWDOEZDONZCpGDEkm+HxIJVnfhg0iH884wgRpE6QlVs0Ir5Aw/5WbjFM7edA/wLXxwZa8GoS4n08Xoj/38pdgPbFeOLvi24IpSjZIQMY7eQFCzbNy6XwBRDKcExhmSxwwlI7ZEyhVdwkxVneN4eL3FNPeWLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fpEriInt; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-220c92c857aso9918415ad.0
+        for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 09:47:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739382429; x=1739987229; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z9fhO+BS2i5TU/nKnLQ/PI4+KQnCWLkCctf34i7V6S8=;
+        b=fpEriIntaEwVwZgyrtu/nPnhj2yXFQpcqBwHj2yW9nhQEK77p7jAAUGrjCo7ZKYYI6
+         x/etlk9cTvvrvZQAJCroQcgTGn1RX1fyG2RR8f+/o4aZ9rPS8uh8Jb4tjlYHFYiys2ij
+         kLhWRThbUptHerBif0rh5aPvmfKXBMVJvpoLALqSrVh1xNPhBBt0TeiJ3MkfXNinGho4
+         Qyf/5CuqDBiNv6kRYaGFRk4iLqfCcdpTPr1qHE11+45YXw4qgK6gj9CJbHpJZesCG2nP
+         HPKbRzZZq7b6NhZOZfiUMHp8dykL2dzD1TLf8LB8JlijaHfs3N1NkS9zBm0+zbKSRnjF
+         THkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739382429; x=1739987229;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Z9fhO+BS2i5TU/nKnLQ/PI4+KQnCWLkCctf34i7V6S8=;
+        b=Vx3owF5r2Eq2IsuFg2kk8Occ1aXyqlYTpOOc5z5M85P1jdmd7W18qtC000bBsDWhJG
+         HGK7PwH3edyX5FKp1hhOooniI6ebiIfXUBdzqSiCojeCgDKmx2vUpkBvivqq44ohMi1c
+         RgRQP5xzubIgkc2iReQjjryw3VIM6tvTey9HIofyEmlrsgLkZvIdqUr1zXJYm1eWBIny
+         7XjARem7AcCU+nnLgbTgImqAjfIQTIDxDAsm22nB2G49mgVPEmGyWODDqWbDjuSjnl/T
+         6U+HUHATBRrkSrQTEEAy/Ddpjt89+BucKiq0kjAS00aytkay4lEGOMgNLRaWbVlut0H/
+         xqrQ==
+X-Gm-Message-State: AOJu0Yx5dgwaE5wnrhJyO/uQSP5/PEtOMTJ2Scs5PkNzjGiPnOYq14sr
+	3GscUsfm0h/nyRGCrMl8Y3z8HwjtoBXxs66tb5QUmSWc1uY3XfRTwlMxxQ==
+X-Gm-Gg: ASbGncuiWWxO3uiG2dyRIhjJ9b/sxxBdZOKjAhnveNjuFdWcMMyD1akU3YAZcQh2ypr
+	dqhyMzNKbjXCIr5ulT5ZlyyqlbjIvMbBJXQjMAXUB0NVVbkeANkDK8efpd6ZCmy8jjuF9g83a2a
+	3u8BIKQoPboCcdtSfCWQTWjvINrzKX3e6TTaum/hTmBcBdz3gOo1HnTuD8bDGkbHnSMCzYhpXd3
+	YSygovoB/Vj/CNCpU4eQTOBQI01jwI1q8e9ag+UZrKAF8VD8VlkseGRusVEU4LgbMiKL2UoXNOp
+	kpI0BIsQnY7yt5ufXMafG1H/omYS3QG/gfISlJDAlc01oA==
+X-Google-Smtp-Source: AGHT+IGfQoyalWrHQlyLgonx0iOL2TKRU24Gx8Ezpd3Df5XDfW68VP7XADVbj3GjLbQQjGKjYMRRXw==
+X-Received: by 2002:a17:903:22cd:b0:215:a303:24e9 with SMTP id d9443c01a7336-220d1ed05e9mr3495795ad.3.1739382429173;
+        Wed, 12 Feb 2025 09:47:09 -0800 (PST)
+Received: from ast-mac.thefacebook.com ([2620:10d:c090:500::4:c330])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-220c06eb6a7sm14536715ad.43.2025.02.12.09.47.07
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Wed, 12 Feb 2025 09:47:08 -0800 (PST)
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: bpf@vger.kernel.org
+Cc: andrii@kernel.org,
+	memxor@gmail.com,
+	akpm@linux-foundation.org,
+	peterz@infradead.org,
+	vbabka@suse.cz,
+	bigeasy@linutronix.de,
+	rostedt@goodmis.org,
+	houtao1@huawei.com,
+	hannes@cmpxchg.org,
+	mhocko@suse.com,
+	willy@infradead.org,
+	tglx@linutronix.de,
+	jannh@google.com,
+	tj@kernel.org,
+	linux-mm@kvack.org,
+	kernel-team@fb.com
+Subject: [PATCH bpf-next v7 0/6] bpf, mm: Introduce try_alloc_pages()
+Date: Wed, 12 Feb 2025 09:46:59 -0800
+Message-Id: <20250212174705.44492-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250210221626.2098522-1-linux@jordanrome.com>
- <CAEf4BzYjsLnrCV9PK8gmyiFw8idXea5ckPRvCqhFbyEU5Wcd9w@mail.gmail.com> <mvrphlxx4r5mj7cmzsvmx3v6wcuo3pvjpfb5sva2jcmh34ye2p@dzfxxaymvnk3>
-In-Reply-To: <mvrphlxx4r5mj7cmzsvmx3v6wcuo3pvjpfb5sva2jcmh34ye2p@dzfxxaymvnk3>
-From: Jordan Rome <linux@jordanrome.com>
-Date: Wed, 12 Feb 2025 12:33:47 -0500
-X-Gmail-Original-Message-ID: <CA+QiOd5xgBkcfwHq_C+fvLvtWbc_SUjOp9GNsZRm=9OPHyto8w@mail.gmail.com>
-X-Gm-Features: AWEUYZmwFNnaAmfKVyum6PuSMCiemWAIejoB_RcHEEXKSV1pnmDA-bxGONJ6cE0
-Message-ID: <CA+QiOd5xgBkcfwHq_C+fvLvtWbc_SUjOp9GNsZRm=9OPHyto8w@mail.gmail.com>
-Subject: Re: [bpf-next v7 1/3] mm: add copy_remote_vm_str
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org, linux-mm@kvack.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Kernel Team <kernel-team@fb.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Alexander Potapenko <glider@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:hjEXN+VFsHBAQN6z5QtGXCK8R4Nk7E5v/KRbm2USn3JilUTVpvY
- Ch2CDwNnScjRXaE5ntv+Tl6ZGehfUTgMbmecu5Rl1UdfH1hqI9neasiOyn1D/FPbUOfwAL1
- JMz/JcnhRTKeHhWjox9dTpkEE+UUrxJtcLp1gbpBYLx1vSD0ju+6gEFv6EU3LIVI4nyeARU
- Yap09kmW7AiS5z3GbPv9A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:/pvsQllWwzs=;QZh9tdFJNGucHlnuf9+TZqOHXKD
- Wp7a8tXynbNOHuP/yIDBQ4LuEu93wjrICGARO7Om5yK4rv3FR4Rn/9nWJf9AgkGB2v6lc6rFo
- NXJTU4JxgWqsey+dbhgQtoZ3c2ozTS96W9Y/h0WdQoQ3Gj3aaV1VkOSvoLmNgGSLBTtT5aOjF
- +uB/MHsz8uzPs8sbfYS/HkhtKow7vTdvkWrG1oDoOd8Lefk7SMwBFUgNQ0gJfRgI3PpbwlhGc
- 0OyETL5ZLCt2Zqx+tb412ee0IK0d09josI0jvfUnlGxtDHCzdTcUWMAlAFSr6NVvIS2owHMQu
- c4DBDsh+f3y/Mz/e+1lB0S4dMsRIHp5J1jPKA46Wo0Bt1cqaJSZ5g9KPQE7zkEiYBLpmon/GU
- lou5autFXckxLOvcDk/kyA7FqPy4A62uKSfdExhHVBWITlxN0d3C9+k965wc7HlIRTDtS4vcr
- KM3EBMr+ST/5YPQ+HEcGVovhomG7udubL2P1o82KyAZzjFnysrZeJJm/a4QPzRWw5A9jDiryA
- PyUEvzhKPs+OtFhWKoFmzu25VXWdCq+SizAEM+soVIYYa1lpalzrBj3yGLjyEvBWMcgfV78Jj
- jaaldVMgTIEFy6g5JgKT9OeM3RWpDibfQfC3tKv8uXrlUwZH6z2ysrV4EAxDnbbL1GySghgIZ
- 4xl3DAGlGj1H8z/shPSxtyycw0gr3XlrtTbgMdmW+NPCvTRV82u794G9KuZbwq/hgs5l4c0lJ
- UlkYjjxolPCNeVg4l+JXTMUkgFmz3E+jDjv7dy1G9HE7oaGlwJU+vXmFtujAMGR2lg/KzyEBm
- VM6lh+Dl01zobz8B5BQv7L9Ot9t/jLSu9lB7bMRZMWRk2tfmM77yRicXAh6f7JGCKSuxBws2u
- XMcyNd8kfsVhiEhycBcZIUdJ5gt6/3m6TsNBh1cUUggZpVowQaUnN0+z22SzhLu7eBi/N9FhM
- TcJCjS0cwtdH86IcaJ0+9ItxlBaOqjiBWiyi68QPPJj2Ja+yxWaN4s5es1kg9A/d07cIygmGe
- JPlmVNX4uAMhFNEY4dv7pj2j11IOe/sGktGUdfUOgw93yAKUb/7SZuYwCGJWEINsszhgTbq3s
- gy62hy8Qg/wkxm26fizW38iqvOhoH1tAAiSgLvdE3c0yZ01IseVWmnXc6Qo7jatOycvX46vfV
- 0Tdc/m6i/DKL/oY/1QsigJ5r8mTIGyCZkKrR7d0m3UC5rdRztFvyh5n8NPAALwl2YJLKbB2zr
- 44PzmRvd4Pi1FroEmEooRQBPfMHOYZZ1TTSAyiFk/bJaJ3KPmGnVk2ZUK0gQyCJdU+Y/Britc
- fMgkcCoMvRIE0gH1PGUuFr9WG57IOPxOwK2tw2r6Fc6Bvo4yTCi9R+lRlm7xInQkoze
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 11, 2025 at 9:19=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
-v> wrote:
->
-> On Tue, Feb 11, 2025 at 02:07:31PM -0800, Andrii Nakryiko wrote:
-> > On Mon, Feb 10, 2025 at 2:23=E2=80=AFPM Jordan Rome <linux@jordanrome.c=
-om> wrote:
-> > >
-> > > Similar to `access_process_vm` but specific to strings.
-> > > Also chunks reads by page and utilizes `strscpy`
-> > > for handling null termination.
-> > >
-> > > Signed-off-by: Jordan Rome <linux@jordanrome.com>
-> > > ---
-> > >  include/linux/mm.h |   3 ++
-> > >  mm/memory.c        | 119 +++++++++++++++++++++++++++++++++++++++++++=
-++
-> > >  mm/nommu.c         |  73 +++++++++++++++++++++++++++
-> > >  3 files changed, 195 insertions(+)
-> > >
-> > > diff --git a/include/linux/mm.h b/include/linux/mm.h
-> > > index 7b1068ddcbb7..aee23d84ce01 100644
-> > > --- a/include/linux/mm.h
-> > > +++ b/include/linux/mm.h
-> > > @@ -2486,6 +2486,9 @@ extern int access_process_vm(struct task_struct=
- *tsk, unsigned long addr,
-> > >  extern int access_remote_vm(struct mm_struct *mm, unsigned long addr=
-,
-> > >                 void *buf, int len, unsigned int gup_flags);
-> > >
-> > > +extern int copy_remote_vm_str(struct task_struct *tsk, unsigned long=
- addr,
-> > > +               void *buf, int len, unsigned int gup_flags);
-> > > +
-> > >  long get_user_pages_remote(struct mm_struct *mm,
-> > >                            unsigned long start, unsigned long nr_page=
-s,
-> > >                            unsigned int gup_flags, struct page **page=
-s,
-> > > diff --git a/mm/memory.c b/mm/memory.c
-> > > index 539c0f7c6d54..e9d8584a7f56 100644
-> > > --- a/mm/memory.c
-> > > +++ b/mm/memory.c
-> > > @@ -6803,6 +6803,125 @@ int access_process_vm(struct task_struct *tsk=
-, unsigned long addr,
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(access_process_vm);
-> > >
-> > > +/*
-> > > + * Copy a string from another process's address space as given in mm=
-.
-> > > + * If there is any error return -EFAULT.
-> > > + */
-> > > +static int __copy_remote_vm_str(struct mm_struct *mm, unsigned long =
-addr,
-> > > +                             void *buf, int len, unsigned int gup_fl=
-ags)
-> > > +{
-> > > +       void *old_buf =3D buf;
-> > > +       int err =3D 0;
-> > > +
-> > > +       *(char *)buf =3D '\0';
-> >
-> > LGTM overall:
-> >
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> >
-> > But note that all this unconditional buf access will be incorrect if
-> > len =3D=3D 0. So either all of that has to be guarded with `if (len)`,
-> > just dropped, or declared unsupported, depending on what mm folks
-> > think. BPF helper won't ever call with len =3D=3D 0, so that's why my a=
-ck.
->
-> I think early return 0 on len =3D=3D 0 should be fine.
+From: Alexei Starovoitov <ast@kernel.org>
 
-Ack.
+Hi All,
+
+The main motivation is to make alloc page and slab reentrant and
+remove bpf_mem_alloc.
+
+v6->v7:
+- Took Sebastian's patch for localtry_lock_t as-is with minor
+  addition of local_trylock_acquire() for proper LOCKDEP.
+  Kept his authorship.
+- Adjusted patch 4 to use it. The rest is unchanged.
+
+v6:
+https://lore.kernel.org/bpf/20250124035655.78899-1-alexei.starovoitov@gmail.com/
+
+v5->v6:
+- Addressed comments from Sebastian, Vlastimil
+- New approach for local_lock_t in patch 3. Instead of unconditionally
+  increasing local_lock_t size to 4 bytes introduce local_trylock_t
+  and use _Generic() tricks to manipulate active field.
+- Address stackdepot reentrance issues. alloc part in patch 1 and
+  free part in patch 2.
+- Inlined mem_cgroup_cancel_charge() in patch 4 since this helper
+  is being removed.
+- Added Acks.
+- Dropped failslab, kfence, kmemleak patch.
+- Improved bpf_map_alloc_pages() in patch 6 a bit to demo intended usage.
+  It will be refactored further.
+- Considered using __GFP_COMP in try_alloc_pages to simplify
+  free_pages_nolock a bit, but then decided to make it work
+  for all types of pages, since free_pages_nolock() is used by
+  stackdepot and currently it's using non-compound order 2.
+  I felt it's best to leave it as-is and make free_pages_nolock()
+  support all pages.
+
+v5:
+https://lore.kernel.org/all/20250115021746.34691-1-alexei.starovoitov@gmail.com/
+
+v4->v5:
+- Fixed patch 1 and 4 commit logs and comments per Michal suggestions.
+  Added Acks.
+- Added patch 6 to make failslab, kfence, kmemleak complaint
+  with trylock mode. It's a prerequisite for reentrant slab patches.
+
+v4:
+https://lore.kernel.org/bpf/20250114021922.92609-1-alexei.starovoitov@gmail.com/
+
+v3->v4:
+Addressed feedback from Michal and Shakeel:
+- GFP_TRYLOCK flag is gone. gfpflags_allow_spinning() is used instead.
+- Improved comments and commit logs.
+
+v3:
+https://lore.kernel.org/bpf/20241218030720.1602449-1-alexei.starovoitov@gmail.com/
+
+v2->v3:
+To address the issues spotted by Sebastian, Vlastimil, Steven:
+- Made GFP_TRYLOCK internal to mm/internal.h
+  try_alloc_pages() and free_pages_nolock() are the only interfaces.
+- Since spin_trylock() is not safe in RT from hard IRQ and NMI
+  disable such usage in lock_trylock and in try_alloc_pages().
+  In such case free_pages_nolock() falls back to llist right away.
+- Process trylock_free_pages llist when preemptible.
+- Check for things like unaccepted memory and order <= 3 early.
+- Don't call into __alloc_pages_slowpath() at all.
+- Inspired by Vlastimil's struct local_tryirq_lock adopted it in
+  local_lock_t. Extra 4 bytes in !RT in local_lock_t shouldn't
+  affect any of the current local_lock_t users. This is patch 3.
+- Tested with bpf selftests in RT and !RT and realized how much
+  more work is necessary on bpf side to play nice with RT.
+  The urgency of this work got higher. The alternative is to
+  convert bpf bits left and right to bpf_mem_alloc.
+
+v2:
+https://lore.kernel.org/bpf/20241210023936.46871-1-alexei.starovoitov@gmail.com/
+
+v1->v2:
+- fixed buggy try_alloc_pages_noprof() in PREEMPT_RT. Thanks Peter.
+- optimize all paths by doing spin_trylock_irqsave() first
+  and only then check for gfp_flags & __GFP_TRYLOCK.
+  Then spin_lock_irqsave() if it's a regular mode.
+  So new gfp flag will not add performance overhead.
+- patches 2-5 are new. They introduce lockless and/or trylock free_pages_nolock()
+  and memcg support. So it's in usable shape for bpf in patch 6.
+
+v1:
+https://lore.kernel.org/bpf/20241116014854.55141-1-alexei.starovoitov@gmail.com/
+
+Alexei Starovoitov (5):
+  mm, bpf: Introduce try_alloc_pages() for opportunistic page allocation
+  mm, bpf: Introduce free_pages_nolock()
+  memcg: Use trylock to access memcg stock_lock.
+  mm, bpf: Use memcg in try_alloc_pages().
+  bpf: Use try_alloc_pages() to allocate pages for bpf needs.
+
+Sebastian Andrzej Siewior (1):
+  locking/local_lock: Introduce localtry_lock_t
+
+ include/linux/bpf.h                 |   2 +-
+ include/linux/gfp.h                 |  23 ++++
+ include/linux/local_lock.h          |  59 ++++++++
+ include/linux/local_lock_internal.h | 123 +++++++++++++++++
+ include/linux/mm_types.h            |   4 +
+ include/linux/mmzone.h              |   3 +
+ kernel/bpf/arena.c                  |   5 +-
+ kernel/bpf/syscall.c                |  23 +++-
+ lib/stackdepot.c                    |  10 +-
+ mm/internal.h                       |   1 +
+ mm/memcontrol.c                     |  52 +++++---
+ mm/page_alloc.c                     | 200 ++++++++++++++++++++++++++--
+ mm/page_owner.c                     |   8 +-
+ 13 files changed, 472 insertions(+), 41 deletions(-)
+
+-- 
+2.43.5
+
 
