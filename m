@@ -1,105 +1,117 @@
-Return-Path: <bpf+bounces-51203-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51204-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 520DFA31C25
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 03:37:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEEF2A31D36
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 05:05:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8E7A3A5745
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 02:37:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 965A7165DDF
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 04:05:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F1541D54E2;
-	Wed, 12 Feb 2025 02:37:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D2691E5707;
+	Wed, 12 Feb 2025 04:05:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N5AD6OPj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EPIDA6ro"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A91211CAA87;
-	Wed, 12 Feb 2025 02:37:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB8E3271835;
+	Wed, 12 Feb 2025 04:05:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739327828; cv=none; b=Ydo7eAPCs9lWTmxhpdfRddmIwa/KjGlwWyLS2WCuFYY7jOrSqyCHgeDzmNY4TRwha+S8EbcLXhQO3zZ1tbWsYJHDGVbePUGc0dZTB/QxPeh4vpTXzmMF+aZDVlxC558SjtrSj2yASr5YMDVhDOySZjrEPMtqrPWhtW/U8nonX3Q=
+	t=1739333114; cv=none; b=MXVpASojqTRrP6WcSvSOW2NKpz4MVd+Ut6TS1kNko4hxEVg4H2ItT67o63wqpfpwiV0Xj/jlNrrv5+JAMNWXrKftja6RUVMVYNEtiPL1f1AJehZNGsjccwcEZuqam85TbX7MD0L7unyg6Mkbxifn4Pjwjt6zUseeIz9fCnhAK9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739327828; c=relaxed/simple;
-	bh=YaAR5QiuZynmHcyvLV6BKRsvj5JY5bABea9gGeDWeFY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iUafXH21OI30uj1QEBDbimBSznFPeQQ8v1jha3kt9gVi6IveY0T5uToABJcQtkq0G5oFIjRevVZ3sSgBD/EiFIx53DKLoxVF7brCu6z+EvSdGuojNNdD+fpySQrXaF8nzv2YF/VqfmLH4NIEVievp1Vs1L+YdEt+j+xWWKNmmh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N5AD6OPj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6255DC4CEDD;
-	Wed, 12 Feb 2025 02:37:07 +0000 (UTC)
+	s=arc-20240116; t=1739333114; c=relaxed/simple;
+	bh=ybIygu13oOH3MI8QbIfsK7m4pRQxcHlQE2MUTFs9fjQ=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=m4ekgV5a1wuf7R7sz3Ssy50LIvyx2/gWOxwyEAAEuqInziP3zN2rkr76+4yFH4KmKnYiq5oTVC3NQYNFD1ZajckTWuABJrBX466SGnfZsrskMtHvVhVtOUUDZeS9dOglhnHX6MNdNSXCepiocDG8j/qy3KZH191Fxi9w8WaZMPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EPIDA6ro; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3850C4CEDF;
+	Wed, 12 Feb 2025 04:05:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739327828;
-	bh=YaAR5QiuZynmHcyvLV6BKRsvj5JY5bABea9gGeDWeFY=;
+	s=k20201202; t=1739333113;
+	bh=ybIygu13oOH3MI8QbIfsK7m4pRQxcHlQE2MUTFs9fjQ=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=N5AD6OPj27Wkl3Luv+2FQWbuMklKx+34Rn1CtdQ7zsG0l3BSPFpgbnfhOv049+xE3
-	 9IGOPTvYzEW72lzsJFiv4Mkj9ZD4yK2lEADua433cG9lJtFl1MStAzbNaqvdOzvz1U
-	 BQWV5tkZeD3kF8BKP1x2l9IjHq0hj4w7zSJWn8hpzebjQdp52kcVYL9Lu6VhhkvRjk
-	 juBJIrur3mliULP8YoLOx6fB5NDfc6+BmRUTR9DTHudrkd/6whs+4GtlZRVagu0Tpz
-	 n1r/gk1+3jHIg9XDqmtU97wUfq86b0Wm4nyj2scSKQCaiLO463n+M27lcwDEk6W0mN
-	 FfonvHT/opiAA==
-Date: Tue, 11 Feb 2025 18:37:06 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: Joe Damato <jdamato@fastly.com>, Paolo Abeni <pabeni@redhat.com>,
- netdev@vger.kernel.org, horms@kernel.org, Andrew Lunn
- <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Shuah Khan <shuah@kernel.org>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>, open list <linux-kernel@vger.kernel.org>, "open
- list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, "open
- list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)"
- <bpf@vger.kernel.org>
-Subject: Re: [PATCH net-next v6 3/3] selftests: drv-net: Test queue xsk
- attribute
-Message-ID: <20250211183706.5b53ee5e@kernel.org>
-In-Reply-To: <Z6vY_LXp3LTp7qWV@mini-arch>
-References: <20250210193903.16235-1-jdamato@fastly.com>
-	<20250210193903.16235-4-jdamato@fastly.com>
-	<13afab27-2066-4912-b8f6-15ee4846e802@redhat.com>
-	<Z6uM1IDP9JgvGvev@LQ3V64L9R2>
-	<Z6urp3d41nvBoSbG@LQ3V64L9R2>
-	<Z6usZlrFJShn67su@mini-arch>
-	<Z6vRD0agypHWDGkG@LQ3V64L9R2>
-	<Z6vY_LXp3LTp7qWV@mini-arch>
+	b=EPIDA6roMboDSVK9Hu+DMva2D4DI1vs1cARp6GDK4B2UlsWiJOvf6Cmrd/HY1pxcM
+	 XChqNqjTc1JLVAsyOyv6wrJja4l6ggvaFtGZxp900mpKsLQJBGMvH10kSEf8TMYzUI
+	 b7Hqhamm9WhTNgyMFNff6AflhioI1v3WAj0L0cGKrb/Qqn/29w0t+2u8gKv68lVdhv
+	 90ST5Aoxlkp8Y1K1aDxeiI0xd8WkpgB0qVrg48B13y3qVRUY3ExcYPVBJU9waGugCy
+	 LaiXh9hSos/9iZlc8XxztDvszX94Nc/lcPZQ6Oei/ql1wGUjIgYh36Dukq8nbv7kSM
+	 mwc4KLZHdWDCQ==
+Date: Wed, 12 Feb 2025 13:05:09 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrii Nakryiko
+ <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>, Steven Rostedt
+ <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Peter
+ Zijlstra <peterz@infradead.org>, Andrii Nakryiko <andrii@kernel.org>, Kees
+ Cook <kees@kernel.org>, Eyal Birger <eyal.birger@gmail.com>, stable
+ <stable@vger.kernel.org>, Jann Horn <jannh@google.com>, LKML
+ <linux-kernel@vger.kernel.org>, linux-trace-kernel
+ <linux-trace-kernel@vger.kernel.org>, Linux API
+ <linux-api@vger.kernel.org>, X86 ML <x86@kernel.org>, bpf
+ <bpf@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+ <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>, Deepak Gupta
+ <debug@rivosinc.com>, Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCHv2 perf/core] uprobes: Harden uretprobe syscall
+ trampoline check
+Message-Id: <20250212130509.ce1987095c6b17b26d3ee40a@kernel.org>
+In-Reply-To: <20250211165940.GB9174@redhat.com>
+References: <20250211111559.2984778-1-jolsa@kernel.org>
+	<CAEf4BzYPmtUirnO3Bp+3F3d4++4ttL_MZAG+yGcTTKTRK2X2vw@mail.gmail.com>
+	<CAADnVQJ05xkXw+c_T1qB+ECUqO5sJxDVJ3bypjS3KSQCTJb-1g@mail.gmail.com>
+	<20250211165940.GB9174@redhat.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Tue, 11 Feb 2025 15:10:52 -0800 Stanislav Fomichev wrote:
-> > I can't comment on NIPA because I have no idea how it works. Maybe
-> > there is a kernel with some options enabled and other kernels with
-> > various options disabled?  
-> 
-> Sorry, should've been more clear. My suggestion is to add 
-> CONFIG_XDP_SOCKETS to tools/testing/selftests/drivers/net/config
-> to make your new testcase run in a proper environment with XSKs enabled.
+On Tue, 11 Feb 2025 17:59:41 +0100
+Oleg Nesterov <oleg@redhat.com> wrote:
 
-+1 this we need for sure
-
-> > I wonder if that's a separate issue though?
+> On 02/11, Alexei Starovoitov wrote:
 > >
-> > In other words: maybe writing the test as I've mentioned above so it
-> > works regardless of whether CONFIG_XDP_SOCKETS is set or not is a
-> > good idea just on its own?
-> > 
-> > I'm just not sure if there's some other pattern I should be
-> > following other than what I proposed above. I'm hesitant to re-spin
-> > until I get feedback on the proposed approach.  
+> > > > +#define UPROBE_NO_TRAMPOLINE_VADDR ((unsigned long)-1)
+> >
+> > If you respin anyway maybe use ~0UL instead?
+> > In the above and in
+> > uprobe_get_trampoline_vaddr(),
+> > since
+> >
+> > unsigned long trampoline_vaddr = -1;
 > 
-> I'd keep your test as is (fail hard if XSK is not there), but 
-> let's see if Paolo/Jakub have any other suggestions.
+> ... or -1ul in both cases.
+> 
+> I agree, UPROBE_NO_TRAMPOLINE_VADDR has a single user, looks
+> a bit strange...
 
-No strong preference. Stan is right that validating the environment 
-is definitely a non-goal for the upstream tests. But if you already
-added and tested the checks Joe you can keep them, up to you.
+I think both this function and uprobe_get_trampoline_vaddr()
+should use the same macro as a token.
+(and ~0UL is a bit more comfortable for me too :) )
+
+----
+unsigned long uprobe_get_trampoline_vaddr(void)
+{
+	struct xol_area *area;
+	unsigned long trampoline_vaddr = -1;
+----
+
+Thank you,
+
+> 
+> Oleg.
+> 
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
