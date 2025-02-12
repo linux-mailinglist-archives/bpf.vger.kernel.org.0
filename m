@@ -1,192 +1,201 @@
-Return-Path: <bpf+bounces-51205-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51206-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E420A31DC3
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 06:15:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC46CA31DFF
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 06:36:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45CBC165578
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 05:15:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 878BF7A321E
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 05:35:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A951F12EC;
-	Wed, 12 Feb 2025 05:15:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25F351F470E;
+	Wed, 12 Feb 2025 05:35:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iVNOU5+9"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dexJAmPc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8F1112F399
-	for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 05:15:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ED42B67E
+	for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 05:35:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739337315; cv=none; b=fJj7dDEIxY3r2K8HZOG+Jfq2+89bHvATCKNR5Cun142AWO1rvTFf5eErO8YJJAf/M7aEMhXu5rY1SLPLv0nkYWjkbKIaAjcGvTA6yuDam3+hE/8ynzzaDF57HfEL8/HMWOWSznQ5cNerRcTtMNbwA/T6H1JNK/klXNzJeqYWXuo=
+	t=1739338554; cv=none; b=STZy+KHzEGDHchkHhKMJUboTiw2D8JHZ0ZrHdtVcCen74b/cQtznjCtXRbBuZzQoE7pjcexrcfUki5Y+bZ6dtbkFI+FXvEqcdmRkcD48Vtz+W5iEu+BL94z5AOBMxKAGCMr93/TeIBzThZnJXSlOblCSUf+blSvOKwzc9EwqMD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739337315; c=relaxed/simple;
-	bh=WlVpWlFqllmORDX45wwKbUaqqBa8fdbgYsRYUxKe4vU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 Cc:Content-Type; b=Mma/xznPP4xYlThW6uns0gdCTXlGxHi2zqGhlD5v5mHNyTc/KVLNfFh3Gak4HM/yTg8/WxuUi8WTWki6lzbR/j4DDqCA6wltEdH02CcrRhTSAfMXeZd3JA5oeq1+qchH5bCWvmPhM5fSaXxFoeKAO0GHhMXaHY4Jm2kOtPkw8aM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iVNOU5+9; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5de5e3729ecso7771210a12.0
-        for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 21:15:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739337311; x=1739942111; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=by44FCaOVSwUNn2ppN1S+bcPDj+QJGdRf2SWLY8Rlvo=;
-        b=iVNOU5+9D210Csbiy+Bi6M0LRXoQpX3Yiqc2nWTn+rmHBRd9+Q7gOqE5xgh6+2m2Ly
-         TSkHgC/KCPb4k1gVjMO2z0NBivcn13ww/mQF2CUhi/HoiJYgYglM2U8cTZpSg2gPFpQI
-         79yQ0gvsrGcRaYzjr+s9kllLizzZCHwm2GsJUxMBu9NlnhCOIW/r5+Io9Hj6o8qUNjeQ
-         qJBVjALRdYPh7K2y8ELqpJmUg459C9naFCLT09p51OjP80Uai5ckWHtcHGsarExC7M+t
-         dheN51dAI2B8uK2rr7KOFQstmLvouB9rfVpmw3Fm+0FD+Gc0/3F9gGQ19nDAmcdZo61t
-         hZpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739337311; x=1739942111;
-        h=content-transfer-encoding:cc:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=by44FCaOVSwUNn2ppN1S+bcPDj+QJGdRf2SWLY8Rlvo=;
-        b=K4m8vc/RQ23fWr/1mZwBjX6yKx0B5zpnhZxZp8x9Zi1rr9ijnkQutnsXdiKhNPzZQE
-         bk30FvSMKB4e3/Vp7r1puM9k092tsfdEhinV2jT9J3vLav/X46ZQhTevHXLRATbV9K8Y
-         pJfPdzSTHpuUou5gJ2Tn/vJwIXAmRj/P4Nl9pg2dhobsxyPQbhq5MUwmxtS1LVr8GdCq
-         Pb/Vg4ThwT86qn2CI60ksGPazwrtlx7F71BjL8+KggGm9h71bMY1+SnU8AqbdRZ4WjdO
-         jwztg/WjcD3zd8AwOiHDQ/H00f331xSUJvV4t4VPlJHsZnMDjODIVwJeNtOCxlLhg2eC
-         gheg==
-X-Gm-Message-State: AOJu0YzUbBu+81HoZaEvaocr9v/t/pdGnrE7xL+Xz/9X2bNZxAqrNszv
-	zSqvgaSfIdAFfnmHKsNY8nnQeSepEF8pMkjX+nQONUPMqVfVBgff3JehbI281UZ5jzF5VBAGkFy
-	qVOR3f2sLmO03MJq6AwpMcrMBO9nskQORxbs=
-X-Gm-Gg: ASbGncv8InoZ0iW9Vw8cnEZLL+UXd6uTMkUXMJrEoymZ9LfeiYVYOyTab7+EFKeqGwO
-	omYdSLg8CHeMVODX8Txs8yEe/0IHeidfPK2vpJNdpVmYLbZx1lLmQoHWsh3wthwy6v83FOOiC
-X-Received: by 2002:a05:6402:4409:b0:5dc:89e0:8eb3 with SMTP id
- 4fb4d7f45d1cf-5deb08810a7mt822059a12.11.1739337311279; Tue, 11 Feb 2025
- 21:15:11 -0800 (PST)
+	s=arc-20240116; t=1739338554; c=relaxed/simple;
+	bh=7E+7Z3NsHGX6cghxmofGKJOzGrsUllPpziXjt9wybiI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=izzu3yT3qciqbCxfRIef8dSf3hhfkxRmQpTpBMd4HQSvWBk2OELhmXus4S1XMZBAN69QfnjXcZ1Bx1r56PwNZKkhQ81BRJZAY4Iz1wK5DpVMQ8fM+jruU8iwMhv8kKfiyiWE+SWictN+wApH8Qrgt75u1WGj7y/5BvOY2GSM84w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dexJAmPc; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <e5b049d9-630d-44cf-bb7b-180faf5080f8@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1739338549;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KDcNXpwqtHt70y6qnvtr2z2oLnLuYPSTSkl0LmcHIZI=;
+	b=dexJAmPc6D+wzx0aPybn7sbOFe6JSpkQOkTFBydLJ+D61lQrNF0GSnNHJvkzcMEMtj+40E
+	iHwPhmcHHx0hObU2DLgMNAglEL+8LiZbHi7M7AucO7fSXz2HM9hUpIeFZUnTwS5WAaQJoz
+	SHi5zJG15jPf3xQqqbTNio+B/PQlmw8=
+Date: Tue, 11 Feb 2025 21:35:33 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250210060252.59424-1-zegao@tencent.com>
-In-Reply-To: <20250210060252.59424-1-zegao@tencent.com>
-From: Ze Gao <zegao2021@gmail.com>
-Date: Wed, 12 Feb 2025 13:15:00 +0800
-X-Gm-Features: AWEUYZkECkINKdDpeAaWDIXOxJkbqzgALmhirqnl_if-1ttNReBJrcUyOj7fYfw
-Message-ID: <CAD8CoPA84v7ZsoVsCewB64t5s2PJxvK3nywBHsPKK4nBZBxumQ@mail.gmail.com>
-Subject: Re: [PATCH] selftests/sched_ext: Fix false positives of
- init_enable_count test
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Ze Gao <zegao@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next 1/2] bpf: Allow top down cgroup prog ordering
+Content-Language: en-GB
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
+References: <20250206225956.3740809-1-yonghong.song@linux.dev>
+ <CAEf4BzY2F33FT2pDO8Zy1_zuQJVbwSS4OoMbBsEcyBVDTaKSeg@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAEf4BzY2F33FT2pDO8Zy1_zuQJVbwSS4OoMbBsEcyBVDTaKSeg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-I encountered this issue in the middle of backporting scx, which
-no longer exists since
-    a8532fac7b5d sched_ext: TASK_DEAD tasks must be switched into SCX
-on ops_enable
-    61eeb9a90522 sched_ext: TASK_DEAD tasks must be switched out of
-SCX on ops_disable
-cuz TASK_DEAD tasks also go through scx init/exit path.
 
-Thanks for your attention anyway:D
 
-Regards,
-Ze
+On 2/11/25 2:57 PM, Andrii Nakryiko wrote:
+> On Thu, Feb 6, 2025 at 3:00 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>> Currently for bpf progs in a cgroup hierarchy, the effective prog array
+>> is computed from bottom cgroup to upper cgroups. For example, the following
+>> cgroup hierarchy
+>>      root cgroup: p1, p2
+>>          subcgroup: p3, p4
+>> have BPF_F_ALLOW_MULTI for both cgroup levels.
+>> The effective cgroup array ordering looks like
+>>      p3 p4 p1 p2
+>> and at run time, the progs will execute based on that order.
+>>
+>> But in some cases, it is desirable to have root prog executes earlier than
+>> children progs. For example,
+>>    - prog p1 intends to collect original pkt dest addresses.
+>>    - prog p3 will modify original pkt dest addresses to a proxy address for
+>>      security reason.
+>> The end result is that prog p1 gets proxy address which is not what it
+>> wants. Also, putting p1 to every child cgroup is not desirable either as it
+>> will duplicate itself in many child cgroups. And this is exactly a use case
+>> we are encountering in Meta.
+>>
+>> To fix this issue, let us introduce a flag BPF_F_PRIO_TOPDOWN. If the flag
+>> is specified at attachment time, the prog has higher priority and the
+>> ordering with that flag will be from top to bottom. For example, in the
+>> above example,
+>>      root cgroup: p1, p2
+>>          subcgroup: p3, p4
+>> Let us say p1, p2 and p4 are marked with BPF_F_PRIO_TOPDOWN. The final
+> I'm not a big fan of PRIO_TOPDOWN naming, and this example just
+> provides further argument for why. Between p3 and p4 programs in
+> subcgroup, there is no notion of TOPDOWN, they are at the same level
+> of the hierarchy.
+>
+> In graphs, for DFS, PRIO_TOPDOWN semantics corresponds to pre-order vs
+> (current and default) post-order. So why not something like
+> BPF_F_PREORDER or some variation on that?
 
-On Mon, Feb 10, 2025 at 2:02=E2=80=AFPM Ze Gao <zegao2021@gmail.com> wrote:
+BPF_F_PREORDER sounds good to me.
+
 >
-> Tests run in VM might be slow, so that children may exit before bpf
-> programs are loaded. SCX_GE(skel->bss->init_task_cnt, num_pre_forks)
-> would fail in this case.
+> Also, for your example if would be nicer if p1 and p3 were the default
+> post-order attachment, while p2 and p4 were pre-order. Then you'd have
+> p2, p4, p3, p1, where everything is swapped relative to original
+> ordering ;)
+
+Yes, will adjust the test for such scenario!
+
 >
-> For tests working in any env, use signals to control the lifetime of
-> children beyond bpf prog loading deterministically to get expected
-> results.
+>> effective array ordering will be
+>>      p1 p2 p4 p3
+>>
+>> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   include/linux/bpf-cgroup.h     |  1 +
+>>   include/uapi/linux/bpf.h       |  1 +
+>>   kernel/bpf/cgroup.c            | 37 +++++++++++++++++++++++++++++++---
+>>   kernel/bpf/syscall.c           |  3 ++-
+>>   tools/include/uapi/linux/bpf.h |  1 +
+>>   5 files changed, 39 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+>> index 7fc69083e745..3d4f221df9ef 100644
+>> --- a/include/linux/bpf-cgroup.h
+>> +++ b/include/linux/bpf-cgroup.h
+>> @@ -111,6 +111,7 @@ struct bpf_prog_list {
+>>          struct bpf_prog *prog;
+>>          struct bpf_cgroup_link *link;
+>>          struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE];
+>> +       bool is_prio_topdown;
+> let's go with `int flags`, we increase the size of struct
+> bpf_prog_list by 8 bytes anyways, so let's make this a bit more
+> generic?
+
+Ack.
+
 >
-> Signed-off-by: Ze Gao <zegao@tencent.com>
-> ---
->  .../selftests/sched_ext/init_enable_count.c   | 27 ++++++++++++++++++-
->  1 file changed, 26 insertions(+), 1 deletion(-)
+>>   };
+>>
+>>   int cgroup_bpf_inherit(struct cgroup *cgrp);
+>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>> index fff6cdb8d11a..7ae8e8751e78 100644
+>> --- a/include/uapi/linux/bpf.h
+>> +++ b/include/uapi/linux/bpf.h
+>> @@ -1207,6 +1207,7 @@ enum bpf_perf_event_type {
+>>   #define BPF_F_BEFORE           (1U << 3)
+>>   #define BPF_F_AFTER            (1U << 4)
+>>   #define BPF_F_ID               (1U << 5)
+>> +#define BPF_F_PRIO_TOPDOWN     (1U << 6)
+>>   #define BPF_F_LINK             BPF_F_LINK /* 1 << 13 */
+>>
+>>   /* If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
+>> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+>> index 46e5db65dbc8..f31250c6025b 100644
+>> --- a/kernel/bpf/cgroup.c
+>> +++ b/kernel/bpf/cgroup.c
+>> @@ -382,6 +382,21 @@ static u32 prog_list_length(struct hlist_head *head)
+>>          return cnt;
+>>   }
+>>
+>> +static u32 prog_list_length_with_topdown_cnt(struct hlist_head *head, int *topdown_cnt)
+> instead of duplicating prog_list_length(), let's add this `int
+> *topdown_cnt` counter as an optional argument, which prog_list_length
+> will fill out only if it's provided, i.e., you'll just have:
 >
-> diff --git a/tools/testing/selftests/sched_ext/init_enable_count.c b/tool=
-s/testing/selftests/sched_ext/init_enable_count.c
-> index 97d45f1e5597..3b2c8ab8464f 100644
-> --- a/tools/testing/selftests/sched_ext/init_enable_count.c
-> +++ b/tools/testing/selftests/sched_ext/init_enable_count.c
-> @@ -31,6 +31,11 @@ open_load_prog(bool global)
->         return skel;
->  }
+> if (topdown_cnt && pl->is_prio_topdown)
+>     (*topdown_cnt) += 1;
 >
-> +/* Signal handler for children */
-> +void sigusr1_handler(int sig)
-> +{
-> +}
-> +
->  static enum scx_test_status run_test(bool global)
->  {
->         struct init_enable_count *skel;
-> @@ -39,9 +44,15 @@ static enum scx_test_status run_test(bool global)
->         int ret, i, status;
->         struct sched_param param =3D {};
->         pid_t pids[num_pre_forks];
-> +       sigset_t blocked_set;
+> as one extra condition inside the loop?
+
+I thought about this as well. I tried to create a new function since
+prog_list_length() is used in several different places. This
+is not critical path, so yes, I can just add one addititional parameter
+for prog_list_length() as you suggested.
+
 >
->         skel =3D open_load_prog(global);
->
-> +       /* Block SIGUSR1 in parent, children will inherit this*/
-> +       sigemptyset(&blocked_set);
-> +       sigaddset(&blocked_set, SIGUSR1);
-> +       sigprocmask(SIG_BLOCK, &blocked_set, NULL);
-> +
->         /*
->          * Fork a bunch of children before we attach the scheduler so tha=
-t we
->          * ensure (at least in practical terms) that there are more tasks=
- that
-> @@ -52,7 +63,13 @@ static enum scx_test_status run_test(bool global)
->                 pids[i] =3D fork();
->                 SCX_FAIL_IF(pids[i] < 0, "Failed to fork child");
->                 if (pids[i] =3D=3D 0) {
-> -                       sleep(1);
-> +                       signal(SIGUSR1, sigusr1_handler);
-> +                       sigprocmask(SIG_UNBLOCK, &blocked_set, NULL);
-> +                       /*
-> +                        * Wait indefinitely for signal, will be interrup=
-ted
-> +                        * by signal handler.
-> +                        */
-> +                       pause();
->                         exit(0);
->                 }
->         }
-> @@ -60,6 +77,13 @@ static enum scx_test_status run_test(bool global)
->         link =3D bpf_map__attach_struct_ops(skel->maps.init_enable_count_=
-ops);
->         SCX_FAIL_IF(!link, "Failed to attach struct_ops");
->
-> +       /* Give children time to set up handlers */
-> +       sleep(1);
-> +
-> +       /* Send SIGUSR1 to all children */
-> +       for (int i =3D 0; i < num_pre_forks; i++)
-> +               kill(pids[i], SIGUSR1);
-> +
->         for (i =3D 0; i < num_pre_forks; i++) {
->                 SCX_FAIL_IF(waitpid(pids[i], &status, 0) !=3D pids[i],
->                             "Failed to wait for pre-forked child\n");
-> @@ -69,6 +93,7 @@ static enum scx_test_status run_test(bool global)
->         }
->
->         bpf_link__destroy(link);
-> +       SCX_EQ(skel->bss->init_task_cnt, skel->bss->exit_task_cnt);
->         SCX_GE(skel->bss->init_task_cnt, num_pre_forks);
->         SCX_GE(skel->bss->exit_task_cnt, num_pre_forks);
->
-> --
-> 2.41.1
->
+>> +{
+>> +       struct bpf_prog_list *pl;
+>> +       u32 cnt = 0;
+>> +
+>> +       hlist_for_each_entry(pl, head, node) {
+>> +               if (!prog_list_prog(pl))
+>> +                       continue;
+>> +               cnt++;
+>> +               if (pl->is_prio_topdown)
+>> +                       (*topdown_cnt) += 1;
+>> +       }
+>> +       return cnt;
+>> +}
+>> +
+
 
