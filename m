@@ -1,107 +1,165 @@
-Return-Path: <bpf+bounces-51292-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51293-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B650A32EAF
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 19:29:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9547A32EBF
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 19:33:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11AC3162985
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 18:29:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0DE11883F61
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 18:34:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18BF925EFA3;
-	Wed, 12 Feb 2025 18:29:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBBC727180B;
+	Wed, 12 Feb 2025 18:33:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eF44JGYY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uEq1Pq1i"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8942E2116E0;
-	Wed, 12 Feb 2025 18:29:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B60A25D52E;
+	Wed, 12 Feb 2025 18:33:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739384978; cv=none; b=rKvJqCOzJGX8JLKP8kGYGcmPIQ/js1dx16KhOERP8cnASiZVkKKsQ2anFOfCdtvulQC3PxhOwdi1vKIrBMgEDIjshHabrcm3pF3eUMiuByYaEFGFeSveTxDIwYWq47fk61+/i0Sq2d6v547j/FhIGw2begL2JO77YEkO7IjVOBc=
+	t=1739385229; cv=none; b=O9T3zDoWXIdoSPb9xOxlEWKlAqbwd/Nm7fwLtHdtI+8b0JDsuHEVjv6q/gaC3cPaHoeChZfMP2kM2P9lS8CGvhpOJlNFRIo5O4KjmSjLzvXxGd6jzsXTQJGXoCpEmTXJT4+7G7Rg+bAackrbTpvAfTRAPm95iUDFZuoMBJx4T5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739384978; c=relaxed/simple;
-	bh=/sWCr49y4RKiGymT+GIb+7irPIxq1eSs9+acjXDs/Sk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ArrCe2dfCe9MM4Dcz4I1QisX4tgM1BCQfZW26yrSVdhY9ogxciD5WIiQXBnQzqZPTVA94TaUKxaqO+26eivRuVG+Ndne1VaJ+XdTx/gruH/Yh7ss1b8BaqAXKTb9bLREZksxqCSahmZqFqgmkpkjEaBGJJtb3aqKoerTXCv63zI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eF44JGYY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61BF9C4CEDF;
-	Wed, 12 Feb 2025 18:29:37 +0000 (UTC)
+	s=arc-20240116; t=1739385229; c=relaxed/simple;
+	bh=eeT+EqDAJGLasaCpXQp2LHBFYvf+/MKZIDO83RoqgjY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JMrlnHjkfaBg7msFKj+C+5SrKCWlbRiDFKm6WDZGlWnWYJH752QlKp/qV+82lzRPohu5Wod0H+8fQUesWnwA+lnEg6dBahcbvsXtBDdOAUNAxdYQ7Tmu94M4+gm8cuA6cKVYjt5p8X81NsMF5W+SaFS52e2U4jnx1jKTYsJi8EI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uEq1Pq1i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B67DBC4CEEA;
+	Wed, 12 Feb 2025 18:33:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739384978;
-	bh=/sWCr49y4RKiGymT+GIb+7irPIxq1eSs9+acjXDs/Sk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=eF44JGYYDXc5yymVFpeGzq0PrSiCXOlTo/i9DbrI2F/C//8gq+ZsXqdp5uKKoJCen
-	 MQYu05o3kXklsCW1AvkGPoFYi6UPN2JlGWEpgh94QLtTzRrQp6G+Hln0zlwlT7W35L
-	 GSZJ8NPCdQA6w2sYxDGz9/8ELHKDdb2k6oa3otqXOgF1L9+uT5zxKEEixT4PQdK9M3
-	 1Wrm4Iiim0Kj6j4rJ5IINbqvPCwfJRuiHwWtkQ3ex0C3p70q7KXpf18hGZdqAhN2Ic
-	 XuEQ5W/0HH5MsGrlDdOerdd2TOb3g44uU9T63hDCXo1W2HjBK22meNUZSmACH5igLy
-	 f/7IYXHsTgM4g==
-Date: Wed, 12 Feb 2025 10:29:36 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
- Lorenzo Bianconi <lorenzo@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>, "Alexei
- Starovoitov" <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- "Andrii Nakryiko" <andrii@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>, Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?=
- <toke@kernel.org>, "Jesper Dangaard Brouer" <hawk@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, <netdev@vger.kernel.org>,
- <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v4 0/8] bpf: cpumap: enable GRO for XDP_PASS
- frames
-Message-ID: <20250212102936.23617f03@kernel.org>
-In-Reply-To: <1dd14ece-578b-4fe6-8ef1-557b0f5d3144@intel.com>
-References: <20250205163609.3208829-1-aleksander.lobakin@intel.com>
-	<79d05c4b-bcfb-4dd3-84d9-b44e64eb4e66@intel.com>
-	<CANn89iLpDW5GK5WJcKezFY17hENaC2EeUW7BkkbJZuzJc5r5bw@mail.gmail.com>
-	<7003bc18-bbff-4edd-9db5-dd1c17a88cc0@intel.com>
-	<20250210163529.1ba7360a@kernel.org>
-	<0a8aac38-a221-4046-8c8a-a019602e25dc@intel.com>
-	<1dd14ece-578b-4fe6-8ef1-557b0f5d3144@intel.com>
+	s=k20201202; t=1739385228;
+	bh=eeT+EqDAJGLasaCpXQp2LHBFYvf+/MKZIDO83RoqgjY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=uEq1Pq1ibuLV8+W3GivKuwnYO+iLw+Os1qctPBl2dO12jzaqtLVjAgfOnibzYqkVg
+	 sQAMWRlQVR+UDBVR3BK4RrGQoB4b5Zvi7a7mBmBXsKkqNnTv3GE4c6fG3+6prvlIC2
+	 FODKCLLu24aJMy7o4XcbfF4+2LehuEwLaUR7mvVw0brF97NgQkhkFWMCyK4/S9oRbU
+	 JbBssHzPi+co7MQiQJW6E4iKf0Ri7beWjK3DSJf9hLdIIll8rCZI+O7zZD5CUPvVfD
+	 znBUmq0TB4m2sshWHB+MoHA8t/seTGL/AZiRjnxtBbWw/EZyVgrPLcKrxenD3c4ok1
+	 TYuMzTzHjJQzA==
+Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3ce85545983so121465ab.0;
+        Wed, 12 Feb 2025 10:33:48 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUE7sm1jGOclQQSc4QdvVNqoy9VUKYRCJzJM7oZ74KRZEe/o+YiXafUh16Jn2CYmUDqDXgckrfWB6psJkuv@vger.kernel.org, AJvYcCXkF9cqWCLd50BMcOHVwn/Ob1SQdhk6Dc7gBDwMXm7wUiAJnZhFi7h/cqSEySABMVBW8p4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwKaGV2bdfsgwZFLFM0UWfUdfLNMkynT1Gua1ppo7+JGkqidVoZ
+	yWxj+gkf7J423ItKZkhyEBERbzO+6AS/+hzQSXDd4XqOPCA5ODzKlHlMEBYO6dx/0zzLnkSKr5Z
+	35OWpgasOb+AmZuRl/LA2Hm07FK4=
+X-Google-Smtp-Source: AGHT+IF2iZVVNy8GJabUi8Pft49OjkC5CuEnZLN7MPhVV+XB2o0k1FU9/Zv0NaQGayZdZRkUKbD14jIPjA3cVDVcmKM=
+X-Received: by 2002:a05:6e02:221a:b0:3d0:353a:c97e with SMTP id
+ e9e14a558f8ab-3d18c265743mr3858065ab.10.1739385228017; Wed, 12 Feb 2025
+ 10:33:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20250212084851.150169-1-changwoo@igalia.com>
+In-Reply-To: <20250212084851.150169-1-changwoo@igalia.com>
+From: Song Liu <song@kernel.org>
+Date: Wed, 12 Feb 2025 10:33:37 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW44cRU6rfrpnkdd-+6MRm7fbQ2ucnhtueaD9wBKXYnn8Q@mail.gmail.com>
+X-Gm-Features: AWEUYZlm3Cp2aW_DZToa0sCL-JKSuZVSS3LcFsISd6IdJRdcv19AkyN8TWcyhLw
+Message-ID: <CAPhsuW44cRU6rfrpnkdd-+6MRm7fbQ2ucnhtueaD9wBKXYnn8Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Add a retry after refilling the free list
+ when unit_alloc() fails
+To: Changwoo Min <changwoo@igalia.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@linux.dev, eddyz87@gmail.com, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, tj@kernel.org, arighi@nvidia.com, 
+	kernel-dev@igalia.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 12 Feb 2025 16:55:52 +0100 Alexander Lobakin wrote:
-> > You mean to cache napi_id in gro_node?
-> > 
-> > Then we get +8 bytes to sizeof(napi_struct) for little reason...
+On Wed, Feb 12, 2025 at 12:49=E2=80=AFAM Changwoo Min <changwoo@igalia.com>=
+ wrote:
+>
+> When there is no entry in the free list (c->free_llist), unit_alloc()
+> fails even when there is available memory in the system, causing allocati=
+on
+> failure in various BPF calls -- such as bpf_mem_alloc() and
+> bpf_cpumask_create().
+>
+> Such allocation failure can happen, especially when a BPF program tries m=
+any
+> allocations -- more than a delta between high and low watermarks -- in an
+> IRQ-disabled context.
 
-Right but I think the expectation would be that we don't ever touch
-that on the fast path, right? The "real" napi_id would basically
-go down below:
+Can we add a selftests for this scenario?
 
-	/* control-path-only fields follow */
+>
+> To address the problem, when there is no free entry, refill one entry on =
+the
+> free list (alloc_bulk) and then retry the allocation procedure on the fre=
+e
+> list. Note that since some callers of unit_alloc() do not allow to block
+> (e.g., bpf_cpumask_create), allocate the additional free entry in an atom=
+ic
+> manner (atomic =3D true in alloc_bulk).
+>
+> Signed-off-by: Changwoo Min <changwoo@igalia.com>
+> ---
+>  kernel/bpf/memalloc.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+> index 889374722d0a..22fe9cfb2b56 100644
+> --- a/kernel/bpf/memalloc.c
+> +++ b/kernel/bpf/memalloc.c
+> @@ -784,6 +784,7 @@ static void notrace *unit_alloc(struct bpf_mem_cache =
+*c)
+>         struct llist_node *llnode =3D NULL;
+>         unsigned long flags;
+>         int cnt =3D 0;
+> +       bool retry =3D false;
 
-8B of cold data doesn't matter at all. But I haven't checked if
-we need the napi->napi_id access anywhere hot, do we?
+"retry =3D false;" reads weird to me. Maybe rename it as "retried"?
 
-> > Dunno, if you really prefer, I can do it that way.  
-> 
-> Alternative to avoid +8 bytes:
-> 
-> struct napi_struct {
-> 	...
-> 
-> 	union {
-> 		struct gro_node	gro;
-> 		struct {
-> 			u8 pad[offsetof(struct gro_node, napi_id)];
-> 			u32 napi_id;
-> 		};
-> 	};
-> 
-> This is effectively the same what struct_group() does, just more ugly.
-> But allows to declare gro_node separately.
+>
+>         /* Disable irqs to prevent the following race for majority of pro=
+g types:
+>          * prog_A
+> @@ -795,6 +796,7 @@ static void notrace *unit_alloc(struct bpf_mem_cache =
+*c)
+>          * Use per-cpu 'active' counter to order free_list access between
+>          * unit_alloc/unit_free/bpf_mem_refill.
+>          */
+> +retry_alloc:
+>         local_irq_save(flags);
+>         if (local_inc_return(&c->active) =3D=3D 1) {
+>                 llnode =3D __llist_del_first(&c->free_llist);
+> @@ -815,6 +817,13 @@ static void notrace *unit_alloc(struct bpf_mem_cache=
+ *c)
+>          */
+>         local_irq_restore(flags);
+>
+> +       if (unlikely(!llnode && !retry)) {
+> +               int cpu =3D smp_processor_id();
+> +               alloc_bulk(c, 1, cpu_to_node(cpu), true);
+cpu_to_node() is not necessary, we can just do
+
+alloc_bulk(c, 1, NUMA_NO_NODE, true);
+
+Also, maybe we can let alloc_bulk return int (0 or -ENOMEM).
+For -ENOMEM, there is no need to goto retry_alloc.
+
+Does this make sense?
+
+Thanks,
+Song
+
+> +               retry =3D true;
+> +               goto retry_alloc;
+> +       }
+> +
+>         return llnode;
+>  }
+>
+> --
+> 2.48.1
+>
 
