@@ -1,117 +1,192 @@
-Return-Path: <bpf+bounces-51204-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51205-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEEF2A31D36
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 05:05:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E420A31DC3
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 06:15:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 965A7165DDF
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 04:05:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45CBC165578
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 05:15:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D2691E5707;
-	Wed, 12 Feb 2025 04:05:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A951F12EC;
+	Wed, 12 Feb 2025 05:15:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EPIDA6ro"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iVNOU5+9"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB8E3271835;
-	Wed, 12 Feb 2025 04:05:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8F1112F399
+	for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 05:15:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739333114; cv=none; b=MXVpASojqTRrP6WcSvSOW2NKpz4MVd+Ut6TS1kNko4hxEVg4H2ItT67o63wqpfpwiV0Xj/jlNrrv5+JAMNWXrKftja6RUVMVYNEtiPL1f1AJehZNGsjccwcEZuqam85TbX7MD0L7unyg6Mkbxifn4Pjwjt6zUseeIz9fCnhAK9U=
+	t=1739337315; cv=none; b=fJj7dDEIxY3r2K8HZOG+Jfq2+89bHvATCKNR5Cun142AWO1rvTFf5eErO8YJJAf/M7aEMhXu5rY1SLPLv0nkYWjkbKIaAjcGvTA6yuDam3+hE/8ynzzaDF57HfEL8/HMWOWSznQ5cNerRcTtMNbwA/T6H1JNK/klXNzJeqYWXuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739333114; c=relaxed/simple;
-	bh=ybIygu13oOH3MI8QbIfsK7m4pRQxcHlQE2MUTFs9fjQ=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=m4ekgV5a1wuf7R7sz3Ssy50LIvyx2/gWOxwyEAAEuqInziP3zN2rkr76+4yFH4KmKnYiq5oTVC3NQYNFD1ZajckTWuABJrBX466SGnfZsrskMtHvVhVtOUUDZeS9dOglhnHX6MNdNSXCepiocDG8j/qy3KZH191Fxi9w8WaZMPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EPIDA6ro; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3850C4CEDF;
-	Wed, 12 Feb 2025 04:05:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739333113;
-	bh=ybIygu13oOH3MI8QbIfsK7m4pRQxcHlQE2MUTFs9fjQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=EPIDA6roMboDSVK9Hu+DMva2D4DI1vs1cARp6GDK4B2UlsWiJOvf6Cmrd/HY1pxcM
-	 XChqNqjTc1JLVAsyOyv6wrJja4l6ggvaFtGZxp900mpKsLQJBGMvH10kSEf8TMYzUI
-	 b7Hqhamm9WhTNgyMFNff6AflhioI1v3WAj0L0cGKrb/Qqn/29w0t+2u8gKv68lVdhv
-	 90ST5Aoxlkp8Y1K1aDxeiI0xd8WkpgB0qVrg48B13y3qVRUY3ExcYPVBJU9waGugCy
-	 LaiXh9hSos/9iZlc8XxztDvszX94Nc/lcPZQ6Oei/ql1wGUjIgYh36Dukq8nbv7kSM
-	 mwc4KLZHdWDCQ==
-Date: Wed, 12 Feb 2025 13:05:09 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrii Nakryiko
- <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>, Steven Rostedt
- <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Peter
- Zijlstra <peterz@infradead.org>, Andrii Nakryiko <andrii@kernel.org>, Kees
- Cook <kees@kernel.org>, Eyal Birger <eyal.birger@gmail.com>, stable
- <stable@vger.kernel.org>, Jann Horn <jannh@google.com>, LKML
- <linux-kernel@vger.kernel.org>, linux-trace-kernel
- <linux-trace-kernel@vger.kernel.org>, Linux API
- <linux-api@vger.kernel.org>, X86 ML <x86@kernel.org>, bpf
- <bpf@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
- <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>, Deepak Gupta
- <debug@rivosinc.com>, Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCHv2 perf/core] uprobes: Harden uretprobe syscall
- trampoline check
-Message-Id: <20250212130509.ce1987095c6b17b26d3ee40a@kernel.org>
-In-Reply-To: <20250211165940.GB9174@redhat.com>
-References: <20250211111559.2984778-1-jolsa@kernel.org>
-	<CAEf4BzYPmtUirnO3Bp+3F3d4++4ttL_MZAG+yGcTTKTRK2X2vw@mail.gmail.com>
-	<CAADnVQJ05xkXw+c_T1qB+ECUqO5sJxDVJ3bypjS3KSQCTJb-1g@mail.gmail.com>
-	<20250211165940.GB9174@redhat.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1739337315; c=relaxed/simple;
+	bh=WlVpWlFqllmORDX45wwKbUaqqBa8fdbgYsRYUxKe4vU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 Cc:Content-Type; b=Mma/xznPP4xYlThW6uns0gdCTXlGxHi2zqGhlD5v5mHNyTc/KVLNfFh3Gak4HM/yTg8/WxuUi8WTWki6lzbR/j4DDqCA6wltEdH02CcrRhTSAfMXeZd3JA5oeq1+qchH5bCWvmPhM5fSaXxFoeKAO0GHhMXaHY4Jm2kOtPkw8aM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iVNOU5+9; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5de5e3729ecso7771210a12.0
+        for <bpf@vger.kernel.org>; Tue, 11 Feb 2025 21:15:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739337311; x=1739942111; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=by44FCaOVSwUNn2ppN1S+bcPDj+QJGdRf2SWLY8Rlvo=;
+        b=iVNOU5+9D210Csbiy+Bi6M0LRXoQpX3Yiqc2nWTn+rmHBRd9+Q7gOqE5xgh6+2m2Ly
+         TSkHgC/KCPb4k1gVjMO2z0NBivcn13ww/mQF2CUhi/HoiJYgYglM2U8cTZpSg2gPFpQI
+         79yQ0gvsrGcRaYzjr+s9kllLizzZCHwm2GsJUxMBu9NlnhCOIW/r5+Io9Hj6o8qUNjeQ
+         qJBVjALRdYPh7K2y8ELqpJmUg459C9naFCLT09p51OjP80Uai5ckWHtcHGsarExC7M+t
+         dheN51dAI2B8uK2rr7KOFQstmLvouB9rfVpmw3Fm+0FD+Gc0/3F9gGQ19nDAmcdZo61t
+         hZpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739337311; x=1739942111;
+        h=content-transfer-encoding:cc:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=by44FCaOVSwUNn2ppN1S+bcPDj+QJGdRf2SWLY8Rlvo=;
+        b=K4m8vc/RQ23fWr/1mZwBjX6yKx0B5zpnhZxZp8x9Zi1rr9ijnkQutnsXdiKhNPzZQE
+         bk30FvSMKB4e3/Vp7r1puM9k092tsfdEhinV2jT9J3vLav/X46ZQhTevHXLRATbV9K8Y
+         pJfPdzSTHpuUou5gJ2Tn/vJwIXAmRj/P4Nl9pg2dhobsxyPQbhq5MUwmxtS1LVr8GdCq
+         Pb/Vg4ThwT86qn2CI60ksGPazwrtlx7F71BjL8+KggGm9h71bMY1+SnU8AqbdRZ4WjdO
+         jwztg/WjcD3zd8AwOiHDQ/H00f331xSUJvV4t4VPlJHsZnMDjODIVwJeNtOCxlLhg2eC
+         gheg==
+X-Gm-Message-State: AOJu0YzUbBu+81HoZaEvaocr9v/t/pdGnrE7xL+Xz/9X2bNZxAqrNszv
+	zSqvgaSfIdAFfnmHKsNY8nnQeSepEF8pMkjX+nQONUPMqVfVBgff3JehbI281UZ5jzF5VBAGkFy
+	qVOR3f2sLmO03MJq6AwpMcrMBO9nskQORxbs=
+X-Gm-Gg: ASbGncv8InoZ0iW9Vw8cnEZLL+UXd6uTMkUXMJrEoymZ9LfeiYVYOyTab7+EFKeqGwO
+	omYdSLg8CHeMVODX8Txs8yEe/0IHeidfPK2vpJNdpVmYLbZx1lLmQoHWsh3wthwy6v83FOOiC
+X-Received: by 2002:a05:6402:4409:b0:5dc:89e0:8eb3 with SMTP id
+ 4fb4d7f45d1cf-5deb08810a7mt822059a12.11.1739337311279; Tue, 11 Feb 2025
+ 21:15:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20250210060252.59424-1-zegao@tencent.com>
+In-Reply-To: <20250210060252.59424-1-zegao@tencent.com>
+From: Ze Gao <zegao2021@gmail.com>
+Date: Wed, 12 Feb 2025 13:15:00 +0800
+X-Gm-Features: AWEUYZkECkINKdDpeAaWDIXOxJkbqzgALmhirqnl_if-1ttNReBJrcUyOj7fYfw
+Message-ID: <CAD8CoPA84v7ZsoVsCewB64t5s2PJxvK3nywBHsPKK4nBZBxumQ@mail.gmail.com>
+Subject: Re: [PATCH] selftests/sched_ext: Fix false positives of
+ init_enable_count test
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Ze Gao <zegao@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 11 Feb 2025 17:59:41 +0100
-Oleg Nesterov <oleg@redhat.com> wrote:
+I encountered this issue in the middle of backporting scx, which
+no longer exists since
+    a8532fac7b5d sched_ext: TASK_DEAD tasks must be switched into SCX
+on ops_enable
+    61eeb9a90522 sched_ext: TASK_DEAD tasks must be switched out of
+SCX on ops_disable
+cuz TASK_DEAD tasks also go through scx init/exit path.
 
-> On 02/11, Alexei Starovoitov wrote:
-> >
-> > > > +#define UPROBE_NO_TRAMPOLINE_VADDR ((unsigned long)-1)
-> >
-> > If you respin anyway maybe use ~0UL instead?
-> > In the above and in
-> > uprobe_get_trampoline_vaddr(),
-> > since
-> >
-> > unsigned long trampoline_vaddr = -1;
-> 
-> ... or -1ul in both cases.
-> 
-> I agree, UPROBE_NO_TRAMPOLINE_VADDR has a single user, looks
-> a bit strange...
+Thanks for your attention anyway:D
 
-I think both this function and uprobe_get_trampoline_vaddr()
-should use the same macro as a token.
-(and ~0UL is a bit more comfortable for me too :) )
+Regards,
+Ze
 
-----
-unsigned long uprobe_get_trampoline_vaddr(void)
-{
-	struct xol_area *area;
-	unsigned long trampoline_vaddr = -1;
-----
-
-Thank you,
-
-> 
-> Oleg.
-> 
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Mon, Feb 10, 2025 at 2:02=E2=80=AFPM Ze Gao <zegao2021@gmail.com> wrote:
+>
+> Tests run in VM might be slow, so that children may exit before bpf
+> programs are loaded. SCX_GE(skel->bss->init_task_cnt, num_pre_forks)
+> would fail in this case.
+>
+> For tests working in any env, use signals to control the lifetime of
+> children beyond bpf prog loading deterministically to get expected
+> results.
+>
+> Signed-off-by: Ze Gao <zegao@tencent.com>
+> ---
+>  .../selftests/sched_ext/init_enable_count.c   | 27 ++++++++++++++++++-
+>  1 file changed, 26 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/sched_ext/init_enable_count.c b/tool=
+s/testing/selftests/sched_ext/init_enable_count.c
+> index 97d45f1e5597..3b2c8ab8464f 100644
+> --- a/tools/testing/selftests/sched_ext/init_enable_count.c
+> +++ b/tools/testing/selftests/sched_ext/init_enable_count.c
+> @@ -31,6 +31,11 @@ open_load_prog(bool global)
+>         return skel;
+>  }
+>
+> +/* Signal handler for children */
+> +void sigusr1_handler(int sig)
+> +{
+> +}
+> +
+>  static enum scx_test_status run_test(bool global)
+>  {
+>         struct init_enable_count *skel;
+> @@ -39,9 +44,15 @@ static enum scx_test_status run_test(bool global)
+>         int ret, i, status;
+>         struct sched_param param =3D {};
+>         pid_t pids[num_pre_forks];
+> +       sigset_t blocked_set;
+>
+>         skel =3D open_load_prog(global);
+>
+> +       /* Block SIGUSR1 in parent, children will inherit this*/
+> +       sigemptyset(&blocked_set);
+> +       sigaddset(&blocked_set, SIGUSR1);
+> +       sigprocmask(SIG_BLOCK, &blocked_set, NULL);
+> +
+>         /*
+>          * Fork a bunch of children before we attach the scheduler so tha=
+t we
+>          * ensure (at least in practical terms) that there are more tasks=
+ that
+> @@ -52,7 +63,13 @@ static enum scx_test_status run_test(bool global)
+>                 pids[i] =3D fork();
+>                 SCX_FAIL_IF(pids[i] < 0, "Failed to fork child");
+>                 if (pids[i] =3D=3D 0) {
+> -                       sleep(1);
+> +                       signal(SIGUSR1, sigusr1_handler);
+> +                       sigprocmask(SIG_UNBLOCK, &blocked_set, NULL);
+> +                       /*
+> +                        * Wait indefinitely for signal, will be interrup=
+ted
+> +                        * by signal handler.
+> +                        */
+> +                       pause();
+>                         exit(0);
+>                 }
+>         }
+> @@ -60,6 +77,13 @@ static enum scx_test_status run_test(bool global)
+>         link =3D bpf_map__attach_struct_ops(skel->maps.init_enable_count_=
+ops);
+>         SCX_FAIL_IF(!link, "Failed to attach struct_ops");
+>
+> +       /* Give children time to set up handlers */
+> +       sleep(1);
+> +
+> +       /* Send SIGUSR1 to all children */
+> +       for (int i =3D 0; i < num_pre_forks; i++)
+> +               kill(pids[i], SIGUSR1);
+> +
+>         for (i =3D 0; i < num_pre_forks; i++) {
+>                 SCX_FAIL_IF(waitpid(pids[i], &status, 0) !=3D pids[i],
+>                             "Failed to wait for pre-forked child\n");
+> @@ -69,6 +93,7 @@ static enum scx_test_status run_test(bool global)
+>         }
+>
+>         bpf_link__destroy(link);
+> +       SCX_EQ(skel->bss->init_task_cnt, skel->bss->exit_task_cnt);
+>         SCX_GE(skel->bss->init_task_cnt, num_pre_forks);
+>         SCX_GE(skel->bss->exit_task_cnt, num_pre_forks);
+>
+> --
+> 2.41.1
+>
 
