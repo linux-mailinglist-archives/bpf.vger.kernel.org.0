@@ -1,75 +1,77 @@
-Return-Path: <bpf+bounces-51207-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51208-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 477F1A31E87
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 07:19:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59BB8A31E8A
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 07:19:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D3EC1887082
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 06:19:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60626162F20
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 06:19:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 042E71FBCAF;
-	Wed, 12 Feb 2025 06:19:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAABE1FC0FF;
+	Wed, 12 Feb 2025 06:19:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZYQFowLc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TdxTRy0I"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3CA02D600;
-	Wed, 12 Feb 2025 06:19:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAF631FBEA8;
+	Wed, 12 Feb 2025 06:19:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739341146; cv=none; b=fep/QmFifYs2uqc+qaFM6mLWNshiWK9lMMHUAbnYFqwERxA6/gybHvc63y6QoOnNruj0/Uw/ShlU7VCDYEdMa67zuSRz6WlYAeoMde6jy629rFaj594czabJ3Jv2jWN7CKgMnqATHWiz2SA3bcG3ufiP7mFvyP8yphIyxDgJm1o=
+	t=1739341152; cv=none; b=Ya1WCEyl7PdagC8Kx8oYQHHZFbt62wZGj9gD9k02HfZ/dqIY6pPKpncr2fC6FuFm7310wijLIrRMQ+L+6HHSNZOXg7mayIBPDIqeD+xcatzw+pyKUrafRCCzv/0SptrNXFQhw91edVjuB80b1rwHGY7X8NQbM9nfzRijhAJdMck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739341146; c=relaxed/simple;
-	bh=q2sAhpApAt4ZYGM64hUa3vrSbFZwyMDtvEeXGLo48fM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cLLiQS406Cdwg6907Dv90QggZmopjmxfNh9cc2d7wocRsHQk81j1bmgtKdw4RIdRJnxhKDsDkHR5V0QtXonZnjFlXT14YFo/IuOBoQt7/ZSo9KwXgCUk+VOe4vY9gpg934QelY/H52c4ohWijTDpbIniXSFEE0ikIJ1rdizH30s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZYQFowLc; arc=none smtp.client-ip=209.85.214.180
+	s=arc-20240116; t=1739341152; c=relaxed/simple;
+	bh=DDtM+vZerkMryfJ9Kp2UIWhKVpj3cuPoaYpevaSK4/E=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=JCm4KlpylIsbQeoahr8TiCiptoGqDA4bAa98ob9VPZcySVu9OFB4JUOTdt0/bXSDy2nO87u/W6fADRUyqf5TLHGhMVQVL1ajqti51ZLCwRVuzroH3fQ6BVZHInIYiHK9xpvK4lPIzbEC+7K8LIZbA9fB1bzP74i0cPaWz45kyAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TdxTRy0I; arc=none smtp.client-ip=209.85.216.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-21f4af4f9ddso75815925ad.1;
-        Tue, 11 Feb 2025 22:19:04 -0800 (PST)
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2f83a8afcbbso776066a91.1;
+        Tue, 11 Feb 2025 22:19:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739341144; x=1739945944; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nZIwOt1ZoKNxV0MDBFJTXPKFJJ8/qPKFfO/fgoqzXqU=;
-        b=ZYQFowLcAbmxcrrs862vEM6b5zVsvaZ3uCw+isV/xn4I3coSefba5eKNsqaMMaulAt
-         jTndzVj9Zxp7jd1f8tmM+m1pa0mU1PZgVFCO0gbMGRMnumqMSFH8YS58W1IwFCmshAIp
-         BPaYQsT4k/kkxFhsHBu+RCnvP8Q1ETVx29oCxaAxhk4sGI0YwM2pg23NZB6zqKKQ+HLo
-         1rne9Ky4cuUXI8vWQdvZ3unJReMJv9e3zWz2of6mNBlhCVGrXdb6mYdLvbgMqcfQwSmX
-         nhEdO7eLA1vkcTnG1IHn1+sR1SBz1ITOJfWXWP49GxvkDLVKnALOsNj0uz65QK8IjE2o
-         FCUw==
+        d=gmail.com; s=20230601; t=1739341150; x=1739945950; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Kfb9GI6feOAbgYzfRSzf+rdXBFIMELjuaFO2C7wE51E=;
+        b=TdxTRy0I0ZB5KjVSd6XSLijigXnhgEn2hXbZihiTHlll4dHyaMazblLD/cUzJMPUI2
+         bvgepMjNnnj2OHSxU/LOGxz/+o8yjHnFgykpEaJg+flSxxaFG3e/301tAXA5LGaw4uRR
+         rSRmxzS3KiwFHeLwd1dMQqNqhJ2gl3iJ7wK3z1whpfWQ66ZZvXMBLEhe5RRMMsXzl2yP
+         Jcnm3ierwT5vJGhGM0QOaG+HES/Sr7GrFaL+ji2aqj+03u48oEiUuIBCtNbhmlbidvnr
+         za4eZ5Anz9UVv0o539NbbwmMsKBOfkDZN/TFFXZnuDONjidKlNQBd5d7jgCxJRplxYbS
+         Grcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739341144; x=1739945944;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nZIwOt1ZoKNxV0MDBFJTXPKFJJ8/qPKFfO/fgoqzXqU=;
-        b=w3N65il5kdQZBEAc9yPTSXvD5tEHEmh+vtPay708IWMTYRySwp+WLwNAkkjcZGfQDa
-         gHGmdZ234xcen9huFjtY8BG70fmiMPBnUfBapuAIA11Jw1Nz90+oJwCjn/WNnsU+3gzj
-         n+lCraYDRKqEzY2Zb787HiiAlrH6aJDRGAP2aYQWXKFinGKfa7pSii7WEX44ERe2A7Oz
-         A6+nTyFXTqWq9t9Aj85F0Y0sfmEemoMSjNiDKmX8P+3LmjMTgOvi+yJIN+TA7l2nm50e
-         VG6kegdZAMHXO1TYFNE11hxxFMzn1Eo6rxHHiT8/cp89BypjTINWAoxQAZQjxSSKehBz
-         M4GA==
-X-Forwarded-Encrypted: i=1; AJvYcCXnbDMFpmr5M8v8bu/R2F5S4C4Z3BZjX/JRstvZ5y+eX1DCrXcKI9dZOMbUPvuG7/wDoYr81Vg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwHsswyftA2x2vRQ+UZ2PHOLETgSkLCP8rIug4g20gmUP/o8yx+
-	T/+2eItIK329iWRgHCj3eSrZjo1MNrgCggvc1+j3+wTlzvRG14gx
-X-Gm-Gg: ASbGnctZpyZtRC9ajirMSU/qQsFvsa4Z2+VRvz4qKF8Kl9nqLyWeTiS88s/nKupJcN5
-	n9hggjjnkZyNC0Mlr8V4k8BB/XV0JO4QjMJ2L1VVFhFNulpIRYASkof4uzqK1/CQ//7I7QGN+38
-	u9nPqvP6/1csai33y9m132DtmByPwAqtqdHckaC5jT5DoQ2awWXKGBO4tbnNbFVK42oZiTL5R3E
-	DJ87sdShDTH5b8i0hAKxfzGN3MkTUAV7XCL4YPdrnnld3XJG8ytbiAjkhePvJ/BqtcH2b3MRA9j
-	DTyeFoLnUUA1Y4xDdIolU7JyC//RPpdFOYONBPQg/S2Xe5g/FuhlLFp1zU2hQxc=
-X-Google-Smtp-Source: AGHT+IHpcD8hKpsTRbToGOBz8IYJ11PreYbV6UCC+7ce7KDYktVQi3asz63Xzp0UZ7GhpWDKxqrbNA==
-X-Received: by 2002:a17:902:ebc5:b0:21f:7867:91ac with SMTP id d9443c01a7336-220bbb4f1dbmr33247245ad.26.1739341144097;
-        Tue, 11 Feb 2025 22:19:04 -0800 (PST)
+        d=1e100.net; s=20230601; t=1739341150; x=1739945950;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Kfb9GI6feOAbgYzfRSzf+rdXBFIMELjuaFO2C7wE51E=;
+        b=w6K6dcIdSaJqYmByvQR2yVQHIBWnBMOBAmzM/HKIttCKqv6l6mKr5JDnWF+EAdtV0P
+         WWiukHsnx/9SsuviHbbmNkDu/I13pRy7oB7iCdnLsGDsocZlEsdAkxxbqGzNjbXTrbXK
+         8wef+tv/dFYoCL0cYHhw9P8i8ptGx20GKfLzpovkgoUB2l4NrKKx6hdaaovVv6eyI5gF
+         V1jeteIML4u8ZQJGBoDJioFKxLnNs+Oj2+5zavLodBne2Y0dyEl+PqpoRpMwM5VatMN3
+         GUZB5RiVz/e2z3bvafrpaFoMjwsNCKbMcvIpM+W7OZ115flCZxAgdF6R3LSjmGxAOXOF
+         BA2w==
+X-Forwarded-Encrypted: i=1; AJvYcCUqWe9r9qRZ4ABKBgfIeUO+uaGlrjQwyy/O5/WKN9oJrjjo+ZCd38fGasrdVvFKwtZkjU/Hguo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyEN0rfK1jrYNS2/QNfqCsvXLhqe0akDCcOLv5tEK/R6SPnn4jX
+	iQ5GdDzuNtw37OxCmZl+7KV9iEjoYphinmZi8bLIHz7pHxTvWgPN
+X-Gm-Gg: ASbGncv+SEIAvgYgWahtj/1jOX4BV3XG1RqnXZEgNp6c7weoG1apPwExsqq4NSWBEi4
+	mTlG1+G94wtnY0EgcJpIoZhSQHthNSvYufWCM6ais2WYZkOrHHXOTxArxCM/fx/U7lR+lWT7Soq
+	O4IuuN557hQUqU2wPOjJ/UoyK14EToBkyx/Imr7W6QMusx9EpYx/SGInF8d/aGeqPGWjTsxJOgN
+	4LUanfe/JWnzUY/j2OOARBBXeeFMV1v/ze6WJKbdzLfWaLUoAE2btghZ/h6dc5eY7MLQ/8qSyFA
+	mVkBaLRvBRl2VrbFThUlMp3xVx2lJsgXbQ99zDHnichv4zzLtEP9TWoKNh80t1M=
+X-Google-Smtp-Source: AGHT+IHybyAclk3OGXQFcS5FvranU1MdMldNfqA8eSywS3KLd4M7462uDycv4+78nFedJVfU3orlTQ==
+X-Received: by 2002:a17:90b:3d4c:b0:2e2:c2b0:d03e with SMTP id 98e67ed59e1d1-2fbf5c0d985mr3080294a91.5.1739341150017;
+        Tue, 11 Feb 2025 22:19:10 -0800 (PST)
 Received: from KERNELXING-MB0.tencent.com ([43.132.141.20])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21f3683dac7sm105277835ad.142.2025.02.11.22.18.58
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21f3683dac7sm105277835ad.142.2025.02.11.22.19.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Feb 2025 22:19:03 -0800 (PST)
+        Tue, 11 Feb 2025 22:19:09 -0800 (PST)
 From: Jason Xing <kerneljasonxing@gmail.com>
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -95,10 +97,12 @@ To: davem@davemloft.net,
 Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	Jason Xing <kerneljasonxing@gmail.com>
-Subject: [PATCH bpf-next v10 00/12] net-timestamp: bpf extension to equip applications transparently
-Date: Wed, 12 Feb 2025 14:18:43 +0800
-Message-Id: <20250212061855.71154-1-kerneljasonxing@gmail.com>
+Subject: [PATCH bpf-next v10 01/12] bpf: add networking timestamping support to bpf_get/setsockopt()
+Date: Wed, 12 Feb 2025 14:18:44 +0800
+Message-Id: <20250212061855.71154-2-kerneljasonxing@gmail.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20250212061855.71154-1-kerneljasonxing@gmail.com>
+References: <20250212061855.71154-1-kerneljasonxing@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -107,141 +111,127 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-"Timestamping is key to debugging network stack latency. With
-SO_TIMESTAMPING, bugs that are otherwise incorrectly assumed to be
-network issues can be attributed to the kernel." This is extracted
-from the talk "SO_TIMESTAMPING: Powering Fleetwide RPC Monitoring"
-addressed by Willem de Bruijn at netdevconf 0x17).
+The new SK_BPF_CB_FLAGS and new SK_BPF_CB_TX_TIMESTAMPING are
+added to bpf_get/setsockopt. The later patches will implement the
+BPF networking timestamping. The BPF program will use
+bpf_setsockopt(SK_BPF_CB_FLAGS, SK_BPF_CB_TX_TIMESTAMPING) to
+enable the BPF networking timestamping on a socket.
 
-There are a few areas that need optimization with the consideration of
-easier use and less performance impact, which I highlighted and mainly
-discussed at netconf 2024 with Willem de Bruijn and John Fastabend:
-uAPI compatibility, extra system call overhead, and the need for
-application modification. I initially managed to solve these issues
-by writing a kernel module that hooks various key functions. However,
-this approach is not suitable for the next kernel release. Therefore,
-a BPF extension was proposed. During recent period, Martin KaFai Lau
-provides invaluable suggestions about BPF along the way. Many thanks
-here!
-
-This series adds the BPF networking timestamping infrastructure through
-reusing most of the tx timestamping callback that is currently enabled
-by the SO_TIMESTAMPING.. This series also adds TX timestamping support
-for TCP. The RX timestamping and UDP support will be added in the future.
-
+Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
 ---
-v9
-Link: https://lore.kernel.org/all/20250208103220.72294-1-kerneljasonxing@gmail.com/
-1. set the hwtstamp to skb when the skb enters into the hw SND case
-2. fix co-existence problem in patch 9 and add corresponding check in
-patch 12.
-3. refine some commit messages and titles
+ include/net/sock.h             |  3 +++
+ include/uapi/linux/bpf.h       |  8 ++++++++
+ net/core/filter.c              | 23 +++++++++++++++++++++++
+ tools/include/uapi/linux/bpf.h |  1 +
+ 4 files changed, 35 insertions(+)
 
-v8
-Link: https://lore.kernel.org/all/20250128084620.57547-1-kerneljasonxing@gmail.com/
-1. adjust some commit messages and titles
-2. add sk cookie in selftests
-3. handle the NULL pointer in hwstamp
-4. use kfunc to do selective sampling
-
-v7
-Link: https://lore.kernel.org/all/20250121012901.87763-1-kerneljasonxing@gmail.com/
-1. target bpf-next tree
-2. simplely and directly stop timestamping callbacks calling a few BPF
-CALLS due to safety concern.
-3. add more new testcases and adjust the existing testcases
-4. revise some comments of new timestamping callbacks
-5. remove a few BPF CGROUP locks
-
-RFC v6
-In the meantime, any suggestions and reviews are welcome!
-Link: https://lore.kernel.org/all/20250112113748.73504-1-kerneljasonxing@gmail.com/
-1. handle those safety problem by using the correct method.
-2. support bpf_getsockopt.
-3. adjust the position of BPF_SOCK_OPS_TS_TCP_SND_CB
-4. fix mishandling the hardware timestamp error
-5. add more corresponding tests
-
-v5
-Link: https://lore.kernel.org/all/20241207173803.90744-1-kerneljasonxing@gmail.com/
-1. handle the safety issus when someone tries to call unrelated bpf
-helpers.
-2. avoid adding direct function call in the hot path like
-__dev_queue_xmit()
-3. remove reporting the hardware timestamp and tskey since they can be
-fetched through the existing helper with the help of
-bpf_skops_init_skb(), please see the selftest.
-4. add new sendmsg callback in tcp_sendmsg, and introduce tskey_bpf used
-by bpf program to correlate tcp_sendmsg with other hook points in patch [13/15].
-
-v4
-Link: https://lore.kernel.org/all/20241028110535.82999-1-kerneljasonxing@gmail.com/
-1. introduce sk->sk_bpf_cb_flags to let user use bpf_setsockopt() (Martin)
-2. introduce SKBTX_BPF to enable the bpf SO_TIMESTAMPING feature (Martin)
-3. introduce bpf map in tests (Martin)
-4. I choose to make this series as simple as possible, so I only support
-most cases in the tx path for TCP protocol.
-
-v3
-Link: https://lore.kernel.org/all/20241012040651.95616-1-kerneljasonxing@gmail.com/
-1. support UDP proto by introducing a new generation point.
-2. for OPT_ID, introducing sk_tskey_bpf_offset to compute the delta
-between the current socket key and bpf socket key. It is desiged for
-UDP, which also applies to TCP.
-3. support bpf_getsockopt()
-4. use cgroup static key instead.
-5. add one simple bpf selftest to show how it can be used.
-6. remove the rx support from v2 because the number of patches could
-exceed the limit of one series.
-
-V2
-Link: https://lore.kernel.org/all/20241008095109.99918-1-kerneljasonxing@gmail.com/
-1. Introduce tsflag requestors so that we are able to extend more in the
-future. Besides, it enables TX flags for bpf extension feature separately
-without breaking users. It is suggested by Vadim Fedorenko.
-2. introduce a static key to control the whole feature. (Willem)
-3. Open the gate of bpf_setsockopt for the SO_TIMESTAMPING feature in
-some TX/RX cases, not all the cases.
-
-
-Jason Xing (12):
-  bpf: add networking timestamping support to bpf_get/setsockopt()
-  bpf: prepare the sock_ops ctx and call bpf prog for TX timestamping
-  bpf: prevent unsafe access to the sock fields in the BPF timestamping
-    callback
-  bpf: disable unsafe helpers in TX timestamping callbacks
-  net-timestamp: prepare for isolating two modes of SO_TIMESTAMPING
-  bpf: add BPF_SOCK_OPS_TS_SCHED_OPT_CB callback
-  bpf: add BPF_SOCK_OPS_TS_SW_OPT_CB callback
-  bpf: add BPF_SOCK_OPS_TS_HW_OPT_CB callback
-  bpf: add BPF_SOCK_OPS_TS_ACK_OPT_CB callback
-  bpf: add BPF_SOCK_OPS_TS_SND_CB callback
-  bpf: support selective sampling for bpf timestamping
-  selftests/bpf: add simple bpf tests in the tx path for timestamping
-    feature
-
- include/linux/filter.h                        |   1 +
- include/linux/skbuff.h                        |  12 +-
- include/net/sock.h                            |  10 +
- include/net/tcp.h                             |   7 +-
- include/uapi/linux/bpf.h                      |  30 +++
- kernel/bpf/btf.c                              |   1 +
- net/core/dev.c                                |   3 +-
- net/core/filter.c                             |  80 +++++-
- net/core/skbuff.c                             |  50 ++++
- net/core/sock.c                               |  14 +
- net/dsa/user.c                                |   2 +-
- net/ipv4/tcp.c                                |   6 +-
- net/ipv4/tcp_input.c                          |   2 +
- net/ipv4/tcp_output.c                         |   2 +
- net/socket.c                                  |   2 +-
- tools/include/uapi/linux/bpf.h                |  23 ++
- .../bpf/prog_tests/net_timestamping.c         | 231 +++++++++++++++++
- .../selftests/bpf/progs/net_timestamping.c    | 244 ++++++++++++++++++
- 18 files changed, 706 insertions(+), 14 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/net_timestamping.c
- create mode 100644 tools/testing/selftests/bpf/progs/net_timestamping.c
-
+diff --git a/include/net/sock.h b/include/net/sock.h
+index 8036b3b79cd8..7916982343c6 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -303,6 +303,7 @@ struct sk_filter;
+   *	@sk_stamp: time stamp of last packet received
+   *	@sk_stamp_seq: lock for accessing sk_stamp on 32 bit architectures only
+   *	@sk_tsflags: SO_TIMESTAMPING flags
++  *	@sk_bpf_cb_flags: used in bpf_setsockopt()
+   *	@sk_use_task_frag: allow sk_page_frag() to use current->task_frag.
+   *			   Sockets that can be used under memory reclaim should
+   *			   set this to false.
+@@ -445,6 +446,8 @@ struct sock {
+ 	u32			sk_reserved_mem;
+ 	int			sk_forward_alloc;
+ 	u32			sk_tsflags;
++#define SK_BPF_CB_FLAG_TEST(SK, FLAG) ((SK)->sk_bpf_cb_flags & (FLAG))
++	u32			sk_bpf_cb_flags;
+ 	__cacheline_group_end(sock_write_rxtx);
+ 
+ 	__cacheline_group_begin(sock_write_tx);
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index fff6cdb8d11a..fa666d51dffe 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -6916,6 +6916,13 @@ enum {
+ 	BPF_SOCK_OPS_ALL_CB_FLAGS       = 0x7F,
+ };
+ 
++/* Definitions for bpf_sk_cb_flags */
++enum {
++	SK_BPF_CB_TX_TIMESTAMPING	= 1<<0,
++	SK_BPF_CB_MASK			= (SK_BPF_CB_TX_TIMESTAMPING - 1) |
++					   SK_BPF_CB_TX_TIMESTAMPING
++};
++
+ /* List of known BPF sock_ops operators.
+  * New entries can only be added at the end
+  */
+@@ -7094,6 +7101,7 @@ enum {
+ 	TCP_BPF_SYN_IP		= 1006, /* Copy the IP[46] and TCP header */
+ 	TCP_BPF_SYN_MAC         = 1007, /* Copy the MAC, IP[46], and TCP header */
+ 	TCP_BPF_SOCK_OPS_CB_FLAGS = 1008, /* Get or Set TCP sock ops flags */
++	SK_BPF_CB_FLAGS		= 1009, /* Used to set socket bpf flags */
+ };
+ 
+ enum {
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 2ec162dd83c4..1c6c07507a78 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -5222,6 +5222,25 @@ static const struct bpf_func_proto bpf_get_socket_uid_proto = {
+ 	.arg1_type      = ARG_PTR_TO_CTX,
+ };
+ 
++static int sk_bpf_set_get_cb_flags(struct sock *sk, char *optval, bool getopt)
++{
++	u32 sk_bpf_cb_flags;
++
++	if (getopt) {
++		*(u32 *)optval = sk->sk_bpf_cb_flags;
++		return 0;
++	}
++
++	sk_bpf_cb_flags = *(u32 *)optval;
++
++	if (sk_bpf_cb_flags & ~SK_BPF_CB_MASK)
++		return -EINVAL;
++
++	sk->sk_bpf_cb_flags = sk_bpf_cb_flags;
++
++	return 0;
++}
++
+ static int sol_socket_sockopt(struct sock *sk, int optname,
+ 			      char *optval, int *optlen,
+ 			      bool getopt)
+@@ -5238,6 +5257,7 @@ static int sol_socket_sockopt(struct sock *sk, int optname,
+ 	case SO_MAX_PACING_RATE:
+ 	case SO_BINDTOIFINDEX:
+ 	case SO_TXREHASH:
++	case SK_BPF_CB_FLAGS:
+ 		if (*optlen != sizeof(int))
+ 			return -EINVAL;
+ 		break;
+@@ -5247,6 +5267,9 @@ static int sol_socket_sockopt(struct sock *sk, int optname,
+ 		return -EINVAL;
+ 	}
+ 
++	if (optname == SK_BPF_CB_FLAGS)
++		return sk_bpf_set_get_cb_flags(sk, optval, getopt);
++
+ 	if (getopt) {
+ 		if (optname == SO_BINDTODEVICE)
+ 			return -EINVAL;
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 2acf9b336371..70366f74ef4e 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -7091,6 +7091,7 @@ enum {
+ 	TCP_BPF_SYN_IP		= 1006, /* Copy the IP[46] and TCP header */
+ 	TCP_BPF_SYN_MAC         = 1007, /* Copy the MAC, IP[46], and TCP header */
+ 	TCP_BPF_SOCK_OPS_CB_FLAGS = 1008, /* Get or Set TCP sock ops flags */
++	SK_BPF_CB_FLAGS		= 1009, /* Used to set socket bpf flags */
+ };
+ 
+ enum {
 -- 
 2.43.5
 
