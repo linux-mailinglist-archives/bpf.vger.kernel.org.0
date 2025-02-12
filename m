@@ -1,380 +1,245 @@
-Return-Path: <bpf+bounces-51257-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51258-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 826C3A32824
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 15:12:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B824FA3285E
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 15:27:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4AFB188408C
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 14:12:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB21A167C71
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 14:27:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BD8A20F084;
-	Wed, 12 Feb 2025 14:12:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 369D621018C;
+	Wed, 12 Feb 2025 14:27:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="esuZAgZd"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GdiuqqNr"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D27DC20E329;
-	Wed, 12 Feb 2025 14:12:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739369532; cv=none; b=XVfXkOKGseAy/z9kiwwLWcxdTGM3u0uk1COUgbp79DAQLA/aOXO2/hLSqq+iBrjUsncmvACcYAcCXRJZJs3xihrFy/NM9lgKjnUpCMVaudxEH/Otz9f+PTyH5RwpMgfzn0y+LY5WdFWOf82EF3DAMT/Kd5JdL7bF0pQIN55meZs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739369532; c=relaxed/simple;
-	bh=JLM4qBRwSKvd/BUAUKnUFh6BdMIQHqqA45JvJjEBQio=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DPnrk9fvZloKbNF+/2p7Yk7kk0xk6zPeoJm+aCTO3SP0AZGhjTMYOa6J+WsS6TIt/ofxxVOMjy8RpgVHwYMIiVt/ZsXlvDWkKsDyZ0QZMwH1aHGfwCpFHjytazXVyPpjniq2mNGrhkO5H2V63CFoeQTgW0SXHKfYJdyxLTQDT9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=esuZAgZd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDB7EC4CEDF;
-	Wed, 12 Feb 2025 14:12:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739369532;
-	bh=JLM4qBRwSKvd/BUAUKnUFh6BdMIQHqqA45JvJjEBQio=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=esuZAgZd3GiaHENSDZtVrJtKKknfaDVJyGkkqUfnO655pThLgtCRm2vXaZ+oraTgs
-	 SZvEGA1/1buIkSK8chDi1Zsy58qHwDYeUzaIksw93D8Wk9N7ETiR3B1x/rkOxX8jCT
-	 vAhDlR9RLTxOtVHCefNZGIwhuzrmXXR5T6fnRJ4jn7MGAohI6tFCCTYS0Wv7+RWthL
-	 73SUUhK5GMIgdmlBvRlzx6/8TfUxhKYybmk9j4D/jpcQxbIAY1Gww+aBsM8Iq2xpRJ
-	 frzQVI82xJxyMDZGwpsMbOjQyYYICtG60iaHOiE8FuoDeeoUXnid2bbAs1YJSbQQ8T
-	 1cN1lNmND8SMg==
-Message-ID: <b807f2ae-b92b-433f-af4c-f0fd9a83bc1f@kernel.org>
-Date: Wed, 12 Feb 2025 16:12:04 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D08492063CD;
+	Wed, 12 Feb 2025 14:27:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.8
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1739370445; cv=fail; b=i/Xd7hMO3dhm3ASDbwzbeCnuNlzpX4Xn+PQ4Kx2+41WlzNHNR4qLsD4ZcwOkxwM2jkX6MFVAI8gR/DwY9nS9Sy0w2JWtIE6CSXua9e4K4ktoqGIYq0cr3v/8VTU7s2IGUQXgcHN9aXUMFlcQXjl2MSPNXYzTPwFalDJNzkWqA7c=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1739370445; c=relaxed/simple;
+	bh=v9M4FMXl32DEzCvj5By3fcXxLDPkpD1NBs7TorKjjVU=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=WRnHToRtk+VkPlrahQ8oRh2lCSZ71NsuY7SZwki8c0Wgvqml2gzlItSaqeBTI+PHHXZQQp2qYNkpXNKvr1ZspCjPQderXcNytfJnZsQvlW4vxDnx9So25m2bmWULMcFrR0KAKDClbXJZimjjQYJPfHTtmaqioX8HtH6y7/ocxMk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GdiuqqNr; arc=fail smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1739370444; x=1770906444;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=v9M4FMXl32DEzCvj5By3fcXxLDPkpD1NBs7TorKjjVU=;
+  b=GdiuqqNrR1O78Kk+CPIgzFeh8eZAVs008bveu1JeZavb89tjxQY2S4XW
+   DHJoqxhMlN/ZRqpRWh+YCPCZgAtC8v+jPcpTDXJGBhD4neJ9cN+Lk09YO
+   6CVfPloXY59sGyWc4pxGgU90HiLY2gJGANcCkKJfzIifc+Ah9W0R5i0JG
+   jUDWFpdlei9TpK5gY67BXDKuSfHg1No+5nRQx8AvTkjBa5GxqQvDUFsdE
+   VHrW2t4jE6RKsl5RTWqmV95giDTb1asBEZeyXjIO8HYbtp7RYBSJFAucw
+   M/8PIhZ4mSrOyKgcDAUzvWkS1GZXfsxCtWB/wFZkJ0e3TK1qiVRZTtJ1k
+   g==;
+X-CSE-ConnectionGUID: XG7+9T0fT+G3EfocQ+nWew==
+X-CSE-MsgGUID: 4h3UqSQvTISNMu8StxyGkQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11342"; a="57560287"
+X-IronPort-AV: E=Sophos;i="6.13,280,1732608000"; 
+   d="scan'208";a="57560287"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2025 06:27:23 -0800
+X-CSE-ConnectionGUID: HEmhf0NJSxq8iqN6tma2Ig==
+X-CSE-MsgGUID: J1miuQT+QgOLYFhM2MY9Hw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,280,1732608000"; 
+   d="scan'208";a="143689616"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Feb 2025 06:27:23 -0800
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44; Wed, 12 Feb 2025 06:27:22 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44 via Frontend Transport; Wed, 12 Feb 2025 06:27:22 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.174)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Wed, 12 Feb 2025 06:27:21 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=LE+K3BkKMo9dmw7nmFUuQC8hJeijY+uDozUyN8yNd3bGj6iuzZuMxH+Epg+KoXmJ1/hCbSr5EAZzyTqSW96UzZxWzxdI2OEJD/zrd58V2T1eupkikB1KfN2Ww3TGLFoU8J6ZBGh+rX/Lhhupx9PAtzuwJQF03gPfxiPYzDkfNo04N2o6j7El6rHBpz8uUqWe/COGdfvm742g1jKQU5ZYOdRR+fj7YU2Rjhn02ELiJSNXDBLlgyEf+o69UrTj9qJf4wcSGj5J0C8MVhvU1esk7sRHoyjVgTvcZwt/fX9LUy/60HDZu+ra8BiHC13kdo4OPq5B4vNGi2VKt/nCzBtxug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7i5IDY5yKRMmwxzUcsdcjtu1d7X+ri9xKJk1CGKkPoM=;
+ b=j6BNUeOHH8u2uyd+yHP57qKdcx3v9ed+0sX3xrQ0K46Qg3rfGE1FPt/8RXY732DCxsQ6jiLYHrW+AL9DGagYvYjYlAX1tMv8GvdZNIRjRDLGwb9gi2/JDuhtLADTp47xmqzhdi1HhZrP33kO5+DcPtgWI7Wg8zD+NGVr0XSwIlmJed4pl5rm8vbcNSfcHqWMx3TUUJ6A/n5j1dcuSoi8uOWA3hhezYsMhErc4m0bLyFNCjfBcd0vi6yJcjKwzNPwEghofP+cgtcXkyaIutBVGkPEEN63Q5Ei0jhXBrELBmbKR1BlSu0QNSw7JbDeJDDTAwbhejdzfcuK0kmvGCLIGQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
+ by CY5PR11MB6284.namprd11.prod.outlook.com (2603:10b6:930:20::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8445.13; Wed, 12 Feb
+ 2025 14:27:05 +0000
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::4b3b:9dbe:f68c:d808]) by DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::4b3b:9dbe:f68c:d808%4]) with mapi id 15.20.8422.015; Wed, 12 Feb 2025
+ 14:27:05 +0000
+Message-ID: <0a8aac38-a221-4046-8c8a-a019602e25dc@intel.com>
+Date: Wed, 12 Feb 2025 15:22:55 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v4 0/8] bpf: cpumap: enable GRO for XDP_PASS
+ frames
+To: Jakub Kicinski <kuba@kernel.org>
+CC: Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+	Lorenzo Bianconi <lorenzo@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>, "Alexei
+ Starovoitov" <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+	"Andrii Nakryiko" <andrii@kernel.org>, John Fastabend
+	<john.fastabend@gmail.com>, =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?=
+	<toke@kernel.org>, "Jesper Dangaard Brouer" <hawk@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20250205163609.3208829-1-aleksander.lobakin@intel.com>
+ <79d05c4b-bcfb-4dd3-84d9-b44e64eb4e66@intel.com>
+ <CANn89iLpDW5GK5WJcKezFY17hENaC2EeUW7BkkbJZuzJc5r5bw@mail.gmail.com>
+ <7003bc18-bbff-4edd-9db5-dd1c17a88cc0@intel.com>
+ <20250210163529.1ba7360a@kernel.org>
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+Content-Language: en-US
+In-Reply-To: <20250210163529.1ba7360a@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: ZR0P278CA0067.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:21::18) To DS0PR11MB8718.namprd11.prod.outlook.com
+ (2603:10b6:8:1b9::20)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 2/3] net: ti: icssg-prueth: introduce and use
- prueth_swdata struct for SWDATA
-To: Meghana Malladi <m-malladi@ti.com>, danishanwar@ti.com,
- pabeni@redhat.com, kuba@kernel.org, edumazet@google.com,
- davem@davemloft.net, andrew+netdev@lunn.ch
-Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- u.kleine-koenig@baylibre.com, krzysztof.kozlowski@linaro.org,
- dan.carpenter@linaro.org, schnelle@linux.ibm.com, glaroque@baylibre.com,
- rdunlap@infradead.org, diogo.ivo@siemens.com, jan.kiszka@siemens.com,
- john.fastabend@gmail.com, hawk@kernel.org, daniel@iogearbox.net,
- ast@kernel.org, srk@ti.com, Vignesh Raghavendra <vigneshr@ti.com>
-References: <20250210103352.541052-1-m-malladi@ti.com>
- <20250210103352.541052-3-m-malladi@ti.com>
-Content-Language: en-US
-From: Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20250210103352.541052-3-m-malladi@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB8718:EE_|CY5PR11MB6284:EE_
+X-MS-Office365-Filtering-Correlation-Id: aa858b3b-d91b-4050-915b-08dd4b715318
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|7416014|366016|7053199007;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?MEZUWHVKRnd4VUJBNG5YU2VCLzd4aElRRmtzeXZUcDRUSEsyME5vY1hRaHYx?=
+ =?utf-8?B?bUdWYk9SVHpIRkJWMXBNZ2xCa2RXc0xtZFE5MHE0NnBOR0xzdURsVzBrQnZY?=
+ =?utf-8?B?SVFGN2J0aHNqL1BCTTEyZUFYMFdHMkJ0Nnc1eGFsdzcvSDN3bUxSdWNJNlVv?=
+ =?utf-8?B?VjU2VEs2ZVNmQjFoR2hNYUo1YUN0ekJkREdKVkRFV0RhZ1l5SU5mNE5iaUtG?=
+ =?utf-8?B?Y09FUGlMMkhYU0xOVFB4dlFZTjJVRm9yd1BhaE04WGVtTW9OcVRsNm8yN0dy?=
+ =?utf-8?B?YmgvMWxGaGJlT3RjY0lkSytSOGZzellUZGpMQ0xjMHc0ZkxacU9ya2RBU09q?=
+ =?utf-8?B?dEx5U3BtamVXOXl5WmV2ZWhLeW4rcEhzSzcrZ3E0VWdFOGxZenl3V2xOK2Rx?=
+ =?utf-8?B?MCthMEtjZ2dLelRvaitYZjN6SDdLOFFvR2RvUmVLTWRvdDVxenZzdGxGc2xH?=
+ =?utf-8?B?MHB1aGRuY1IyTGpNNE9hVTZqaWVtVlRUM3VRdExPU24vY3E4am9WV2E0UUh3?=
+ =?utf-8?B?aWc2TTlNQUlkMTI2bjAzK2MxbDdiSHRZQW9kbGttUS9SS1ZFWGczQnVyaE9N?=
+ =?utf-8?B?YWFGYjNVK0VncjVrM1dQdWRMOWxqS3YvYUdZVVhKUDZNclFVWFphVFZmc3RV?=
+ =?utf-8?B?REZlbjhjOS9FWTBPOUdFZmhhV3I2RmorZ1FOeFVUSjRIbTdraVI1aUtONTh0?=
+ =?utf-8?B?bUZyOXZpeXhaazlkV3BJZ3dSK0Jxejg4c0ZYdGZFR1JTdGczNm5SWHpEUjlw?=
+ =?utf-8?B?RjliRFhvMWNZMHJYWStBMXlFclVteCtYakFFeTJwSHg0cmc1MUR5YnRMdVU0?=
+ =?utf-8?B?eld1V3NTMWt0SEp3eFFlbFg1QUVLdUl6Rm95WVBEN2YwRmtDQndBKyt4ZUs4?=
+ =?utf-8?B?bWJGalhjZVlqKzlHR2RIZllpV3JGSHNtUnNSWEFTaU5kbWg0N2V4eENUNmpL?=
+ =?utf-8?B?YWlwWVFLMmMvZW5zVStlODJONU9yWU5BQjlKNEdsNGhoVFBVMS9uQXFnNjhl?=
+ =?utf-8?B?Sk1icWxCSittWk90V3JmMHJSS3NiUWZVMHRuNzR4ZmtnNUh3YW1raURUdDh6?=
+ =?utf-8?B?T05IUlNKUEN0MFRpcklrRkdCYnBMWUxXQml1aXBCS0FXWDEzcU9nZzRkVHZN?=
+ =?utf-8?B?MmhOS0lOaTlNZ2tlS0ZWYWJWVGtlaW1oZG1PbFJkUUZEM29MZ0FycDc3M1JW?=
+ =?utf-8?B?QjJwNWF6UXJPVm5qMW1wTlh3aHRLQ2o1ZlZqM3hnUUErVHB4VjQ5V3NNNXQy?=
+ =?utf-8?B?cTBSaVFsQzNHazlVdEY5cTIvYnNGNXVjYTg2M3NqWU95dGxWTnZ2a1NLdkVa?=
+ =?utf-8?B?SWQ0T0NmL0hUT2xFNzQ1TzRQMFoxYTVNT3djTnBTN0J3Vk15eTN2alBRN0tT?=
+ =?utf-8?B?QWtCMG9hcnB2UVMwQmlvY1Fjd2RlNVY3Z2FxRGVFc3J3Uy96a29SZTBVS1ZE?=
+ =?utf-8?B?TlA1WXkvRjJYV3VSWm15ODVxbWo4U3hxdVVpRnBXWWcwcUVITlMzdmExekNu?=
+ =?utf-8?B?bEI4YmFGckp0U2lMNWhwZlNLbEhEcUtkaitFcWhXZFVKRUFkOExla3lFempP?=
+ =?utf-8?B?RHpmU0djNVdxdnBwQ1dqazRha2pPMkQrTnNvaDFJMlV1OHQ3UzVKRWNlZkMx?=
+ =?utf-8?B?YXhXRnRwVktGV3lubS9EOWZFNmo4VFJUR3dGdW5vNUpjTDFHZXhVZkVYZTcw?=
+ =?utf-8?B?dVU5cGt0N0hNSTFLUjdkZEhkQlptV21yUVBKR21FQWdRc0FBSERMZ29jaTFQ?=
+ =?utf-8?B?Y0R4ZnZ0OWp6SVA4TXh3TFM5MExuSU9SZng4SzZjdlpMcHFMT0dEMEdXY3ZO?=
+ =?utf-8?B?WXFNNkhSbUt3aEw2V0dCRkU4WHZRUEE1dGI0U2IvMFp5bU04YnVqcVQ0Wlly?=
+ =?utf-8?Q?obFUd+cj8WoUU?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cVpITk1YK2ZCWXdxQ3h6cVE0MHdtb0o3eXQ1N0xvTWRmeTYxNk5KRjJTMmdy?=
+ =?utf-8?B?eDFVTUUwbkp5Sklld3ZGYUpSTHREZkRyQ1NZczJXc1k5T3pmV0R4MmkrTW1V?=
+ =?utf-8?B?ME4zNVEwVkIvRHZTQTE4SXVsdi93WkNueFF1M3cwY05GakpEZkpKdWdockVV?=
+ =?utf-8?B?NkNFYU9sT09wN0NFRDdIbmpPenBlU3BOU2lYM3E0RVFzamdJWmlZUHQ0NVFN?=
+ =?utf-8?B?S2VGdUtQcmFxQTZ2NVQ1L0FISzRJanBDZDRPN2IzYndzdXRSZVJpdDVlRitp?=
+ =?utf-8?B?MjQ1WFlrMW1URm93N0xtMm1yNGMvdURnbWJxWVQ1RVVRR2k4WU1xNTRYcGJu?=
+ =?utf-8?B?M09MaHpjcXdHSDI0NGZNT3NCeSt6Ui9jSG9nQytkeHJxREg4bzBaTTRGYlBQ?=
+ =?utf-8?B?Mmgxb29HTGJuYmNhN1ZLYTdUcC9NZUNxRGtvQmVkV1JRTTJJK3RBeGlramJh?=
+ =?utf-8?B?b05iQVdIakIwd1p4Z0JxdWE5R2VaNWpSN2NSR3VSbDlFMVovMDFsTVV2N0Ji?=
+ =?utf-8?B?czNDSy84L3pPSnIxNWorU2IvNUJ3Qnc2RXgyMnY4MTRFRy9JVC9nZ2plTWha?=
+ =?utf-8?B?c1pYOFBjVzRzNWRTZHIwV1BENlNRVU1JUW5YL2o4NFFGbDRMZm5WZHowRFEy?=
+ =?utf-8?B?TWVZL1VSRzZkeG5NRWplc3JlQ2Jyd2pXZEpDVUl3Q2VyM1lpcDc0MHdtZ1dw?=
+ =?utf-8?B?eloybndLWFhqZFViamRoREJZY3ZjYjBaaFRUTTdUQ1FRVmZnLzFrUit2MkxO?=
+ =?utf-8?B?OVM1bFNLbG40RGhIcHZOc1N6c0tNUEl2SSt2cWU3R3R4VHd3RGcrelpxR0tK?=
+ =?utf-8?B?aTlGaEcxNm1xLzByM0dNOGFVOGR0amkrN3Npai9XMFE3QUhRbHFEbmY5Tm9N?=
+ =?utf-8?B?SHY1bmJjaEpiVHA1cTVGQTVIbDFZL241VHI2OWh6dUk5UmsrMFdCM3ZJemw4?=
+ =?utf-8?B?QmFEU1EwaXM4TTdzd2VtcjdmdkRYNmJtcDNBZ2FKWjhvRzJxWHUzdG9vaXRM?=
+ =?utf-8?B?WTVScTF2dUhZTSsrNDY2TE1IbU8yM3FyRG9aK1lIUW11a0lmTndhVHllQ0tj?=
+ =?utf-8?B?ZWQvdmFJcTFQT1FCZTBLcUdzQXRlazROcHNBdFZSL0t1dlRoaXBRQi8rM0hB?=
+ =?utf-8?B?Y0UrVmFjbndaOXdPeW1PU2p5TXhxOEI3OHJpQ1VyUEk5NWdwSWk1RWV4SDRN?=
+ =?utf-8?B?dzlNSDlLU1dtcmRud2lWYk93Umswd0dBZEg2UFhKcE8vVEFIeS9rR2FaU3lC?=
+ =?utf-8?B?c05MM2EveUZCL21OdkwxMnhROUdhRFhZTk5PV1BxUWR1NTNvM1dOYmRMMmlR?=
+ =?utf-8?B?V0RHOXRCVWZXSkVFaFR0aEhhemZFeTRETDdMUzQyc3pkY211SkY1N0kwZTJo?=
+ =?utf-8?B?ZXp5dW56bDRXcCtHeEw4LzRsaDBCTnA5TjZuWTUvSE1GNTdmekNBZkl6TTZU?=
+ =?utf-8?B?ZURUMDMzak1FZkV3OEdOZWFwMHdYSXdabnpKblRHL2taNi9tUUJudDVqdzNs?=
+ =?utf-8?B?azl6dXNZVGZFOUthQ3J1QWpGU0ZzaENxNHFweTF0SHJkUGpFZUNkVDA0aWQ5?=
+ =?utf-8?B?cWd0TjRaOWRSdjBWOCs1QXJxUGJDc2swbHg5WkpraWppM0xZTUs2T2MxMzBS?=
+ =?utf-8?B?OFhnQUtyTkhZN1IwR1M0dTdaOTIraHlkNDRxTHlGN3owcXdUZTBkaDAydGJn?=
+ =?utf-8?B?VHJoNlVYaVdmTlRyNlhpT282L0lIZy9aWWlUMlF4VFp1T2ErckVrRkR2MEV4?=
+ =?utf-8?B?cVNkbmZLbU53ZXBCNi91RlFLcjZ0di8rZnMwT2tQU2hFQWZQMHZ3d0pJZkFa?=
+ =?utf-8?B?UkNIWDd2LzdRSGEvcVErcWVxd3NramNyeVZVNmZpVm1IVnRKN21idllqbTBJ?=
+ =?utf-8?B?c3BjSmZjVGp6dkcwZ3JpWmI2a0VRTW9PdmJRcVVpZUN1dHZnWHNiRlZTcUVL?=
+ =?utf-8?B?eUFWRjhhNHZTNWxOYWtSdEZPcGRWS1NWK0JNd0JmVDhwa2JsNElzbUVOaDg1?=
+ =?utf-8?B?TW1VOUdJT1FwOVFhcHVObm0rWkZsbVdHVWh6R3l5Ymp0Qy9pY2xtMTlqMW9z?=
+ =?utf-8?B?d01xK0NHZzNYbWl0QTNVSnl3U1h4S1RLK1cxbEJMUU1IS0JQekxnaXhEMVdL?=
+ =?utf-8?B?NndmOTlzcnBHTE45azd2MkwxY01jak1oakdPYmJKZmJMQzNHdXRRSXJ6RHFj?=
+ =?utf-8?B?RXc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: aa858b3b-d91b-4050-915b-08dd4b715318
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8718.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2025 14:27:05.6455
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wtwTsl7cTxIP4w9/YRDClyeTGzw4QE9EZCXWt2hSyOnZE5DNTz36YMFgEDCmwtz7fRRpq58gOFRxDH8a4QDm5OVLcY/NTLjCnrLO9PBN3bY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6284
+X-OriginatorOrg: intel.com
 
-Hi Meghana,
+From: Jakub Kicinski <kuba@kernel.org>
+Date: Mon, 10 Feb 2025 16:35:29 -0800
 
-On 10/02/2025 12:33, Meghana Malladi wrote:
-> From: Roger Quadros <rogerq@kernel.org>
+> On Mon, 10 Feb 2025 16:31:52 +0100 Alexander Lobakin wrote:
+>> This was rejected by Kuba in v2.
+>> He didn't like to have napi_id two times within napi_struct (one inside
+>> gro_node, one outside).
 > 
-> We have different cases for SWDATA (skb, page, cmd, etc)
-> so it is better to have a dedicated data structure for that.
-> We can embed the type field inside the struct and use it
-> to interpret the data in completion handlers.
+> Do you mean:
 > 
-> Increase SWDATA size to 48 so we have some room to add
-> more data if required.
+>   the napi_id in gro sticks out..
 > 
-> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
-> Signed-off-by: Meghana Malladi <m-malladi@ti.com>
-> ---
-> v1: https://lore.kernel.org/all/20250122124951.3072410-1-m-malladi@ti.com/
+> https://lore.kernel.org/netdev/20250113130104.5c2c02e0@kernel.org/ ?
 > 
-> Changes since v1 (v2-v1): None
-> 
->  drivers/net/ethernet/ti/icssg/icssg_common.c  | 47 ++++++++++++-------
->  drivers/net/ethernet/ti/icssg/icssg_config.h  |  2 +-
->  drivers/net/ethernet/ti/icssg/icssg_prueth.c  |  6 +++
->  drivers/net/ethernet/ti/icssg/icssg_prueth.h  | 18 +++++++
->  .../net/ethernet/ti/icssg/icssg_prueth_sr1.c  |  4 +-
->  5 files changed, 58 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/ti/icssg/icssg_common.c b/drivers/net/ethernet/ti/icssg/icssg_common.c
-> index c3c1e2bf461e..a124c5773551 100644
-> --- a/drivers/net/ethernet/ti/icssg/icssg_common.c
-> +++ b/drivers/net/ethernet/ti/icssg/icssg_common.c
-> @@ -136,12 +136,12 @@ int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
->  	struct net_device *ndev = emac->ndev;
->  	struct cppi5_host_desc_t *desc_tx;
->  	struct netdev_queue *netif_txq;
-> +	struct prueth_swdata *swdata;
->  	struct prueth_tx_chn *tx_chn;
->  	unsigned int total_bytes = 0;
->  	struct sk_buff *skb;
->  	dma_addr_t desc_dma;
->  	int res, num_tx = 0;
-> -	void **swdata;
->  
->  	tx_chn = &emac->tx_chns[chn];
->  
-> @@ -163,12 +163,18 @@ int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
->  		swdata = cppi5_hdesc_get_swdata(desc_tx);
->  
->  		/* was this command's TX complete? */
-> -		if (emac->is_sr1 && *(swdata) == emac->cmd_data) {
-> +		if (emac->is_sr1 && (void *)(swdata) == emac->cmd_data) {
->  			prueth_xmit_free(tx_chn, desc_tx);
->  			continue;
->  		}
->  
-> -		skb = *(swdata);
-> +		if (swdata->type != PRUETH_SWDATA_SKB) {
-> +			netdev_err(ndev, "tx_complete: invalid swdata type %d\n", swdata->type);
-> +			budget++;
-> +			continue;
+> That's more of a nudge to try harder than a "no". We explored 
+> the alternatives, there's no perfect way to layer this. I think 
+> Eric's suggestion is probably as clean as we can get.
 
-We are leaking the tx descriptor here. need to call prueth_xmit_free(tx_chn, desc_tx)?
+You mean to cache napi_id in gro_node?
 
-> +		}
-> +
-> +		skb = swdata->data.skb;
->  		prueth_xmit_free(tx_chn, desc_tx);
->  
->  		ndev = skb->dev;
-> @@ -472,9 +478,9 @@ int prueth_dma_rx_push_mapped(struct prueth_emac *emac,
->  {
->  	struct net_device *ndev = emac->ndev;
->  	struct cppi5_host_desc_t *desc_rx;
-> +	struct prueth_swdata *swdata;
->  	dma_addr_t desc_dma;
->  	dma_addr_t buf_dma;
-> -	void **swdata;
->  
->  	buf_dma = page_pool_get_dma_addr(page) + PRUETH_HEADROOM;
->  	desc_rx = k3_cppi_desc_pool_alloc(rx_chn->desc_pool);
-> @@ -490,7 +496,8 @@ int prueth_dma_rx_push_mapped(struct prueth_emac *emac,
->  	cppi5_hdesc_attach_buf(desc_rx, buf_dma, buf_len, buf_dma, buf_len);
->  
->  	swdata = cppi5_hdesc_get_swdata(desc_rx);
-> -	*swdata = page;
-> +	swdata->type = PRUETH_SWDATA_PAGE;
-> +	swdata->data.page = page;
->  
->  	return k3_udma_glue_push_rx_chn(rx_chn->rx_chn, PRUETH_RX_FLOW_DATA,
->  					desc_rx, desc_dma);
-> @@ -539,11 +546,11 @@ static int emac_rx_packet(struct prueth_emac *emac, u32 flow_id)
->  	u32 buf_dma_len, pkt_len, port_id = 0;
->  	struct net_device *ndev = emac->ndev;
->  	struct cppi5_host_desc_t *desc_rx;
-> +	struct prueth_swdata *swdata;
->  	dma_addr_t desc_dma, buf_dma;
->  	struct page *page, *new_page;
->  	struct page_pool *pool;
->  	struct sk_buff *skb;
-> -	void **swdata;
->  	u32 *psdata;
->  	void *pa;
->  	int ret;
-> @@ -561,7 +568,11 @@ static int emac_rx_packet(struct prueth_emac *emac, u32 flow_id)
->  
->  	desc_rx = k3_cppi_desc_pool_dma2virt(rx_chn->desc_pool, desc_dma);
->  	swdata = cppi5_hdesc_get_swdata(desc_rx);
-> -	page = *swdata;
-> +	if (swdata->type != PRUETH_SWDATA_PAGE) {
-> +		netdev_err(ndev, "rx_pkt: invalid swdata->type %d\n", swdata->type);
+Then we get +8 bytes to sizeof(napi_struct) for little reason... Dunno,
+if you really prefer, I can do it that way.
 
-what about freeing the rx descriptor?
+OTOH you gave Acked-by on struct_group(), then Eric appeared and you
+took your ack back :D
 
-> +		return 0;
-> +	}
-
-need new line.
-
-> +	page = swdata->data.page;
->  
-drop new line.
-
->  	page_pool_dma_sync_for_cpu(pool, page, 0, PAGE_SIZE);
->  	cppi5_hdesc_get_obuf(desc_rx, &buf_dma, &buf_dma_len);
-> @@ -627,16 +638,18 @@ static void prueth_rx_cleanup(void *data, dma_addr_t desc_dma)
->  {
->  	struct prueth_rx_chn *rx_chn = data;
->  	struct cppi5_host_desc_t *desc_rx;
-> +	struct prueth_swdata *swdata;
->  	struct page_pool *pool;
->  	struct page *page;
-> -	void **swdata;
->  
->  	pool = rx_chn->pg_pool;
->  
->  	desc_rx = k3_cppi_desc_pool_dma2virt(rx_chn->desc_pool, desc_dma);
->  	swdata = cppi5_hdesc_get_swdata(desc_rx);
-> -	page = *swdata;
-> -	page_pool_recycle_direct(pool, page);
-> +	if (swdata->type == PRUETH_SWDATA_PAGE) {
-> +		page = swdata->data.page;
-> +		page_pool_recycle_direct(pool, page);
-> +	}
-
-need new line.
-
->  	k3_cppi_desc_pool_free(rx_chn->desc_pool, desc_rx);
->  }
->  
-> @@ -673,13 +686,13 @@ enum netdev_tx icssg_ndo_start_xmit(struct sk_buff *skb, struct net_device *ndev
->  	struct prueth_emac *emac = netdev_priv(ndev);
->  	struct prueth *prueth = emac->prueth;
->  	struct netdev_queue *netif_txq;
-> +	struct prueth_swdata *swdata;
->  	struct prueth_tx_chn *tx_chn;
->  	dma_addr_t desc_dma, buf_dma;
->  	u32 pkt_len, dst_tag_id;
->  	int i, ret = 0, q_idx;
->  	bool in_tx_ts = 0;
->  	int tx_ts_cookie;
-> -	void **swdata;
->  	u32 *epib;
->  
->  	pkt_len = skb_headlen(skb);
-> @@ -741,7 +754,8 @@ enum netdev_tx icssg_ndo_start_xmit(struct sk_buff *skb, struct net_device *ndev
->  	k3_udma_glue_tx_dma_to_cppi5_addr(tx_chn->tx_chn, &buf_dma);
->  	cppi5_hdesc_attach_buf(first_desc, buf_dma, pkt_len, buf_dma, pkt_len);
->  	swdata = cppi5_hdesc_get_swdata(first_desc);
-> -	*swdata = skb;
-> +	swdata->type = PRUETH_SWDATA_SKB;
-> +	swdata->data.skb = skb;
->  
->  	/* Handle the case where skb is fragmented in pages */
->  	cur_desc = first_desc;
-> @@ -844,15 +858,16 @@ static void prueth_tx_cleanup(void *data, dma_addr_t desc_dma)
->  {
->  	struct prueth_tx_chn *tx_chn = data;
->  	struct cppi5_host_desc_t *desc_tx;
-> +	struct prueth_swdata *swdata;
->  	struct sk_buff *skb;
-> -	void **swdata;
->  
->  	desc_tx = k3_cppi_desc_pool_dma2virt(tx_chn->desc_pool, desc_dma);
->  	swdata = cppi5_hdesc_get_swdata(desc_tx);
-> -	skb = *(swdata);
-> +	if (swdata->type == PRUETH_SWDATA_SKB) {
-> +		skb = swdata->data.skb;
-> +		dev_kfree_skb_any(skb);
-> +	}
-
-need new line.
-
->  	prueth_xmit_free(tx_chn, desc_tx);
-> -
-> -	dev_kfree_skb_any(skb);
->  }
->  
->  irqreturn_t prueth_rx_irq(int irq, void *dev_id)
-> diff --git a/drivers/net/ethernet/ti/icssg/icssg_config.h b/drivers/net/ethernet/ti/icssg/icssg_config.h
-> index c884e9fa099e..eab84e11d80e 100644
-> --- a/drivers/net/ethernet/ti/icssg/icssg_config.h
-> +++ b/drivers/net/ethernet/ti/icssg/icssg_config.h
-> @@ -20,7 +20,7 @@ struct icssg_flow_cfg {
->  
->  #define PRUETH_PKT_TYPE_CMD	0x10
->  #define PRUETH_NAV_PS_DATA_SIZE	16	/* Protocol specific data size */
-> -#define PRUETH_NAV_SW_DATA_SIZE	16	/* SW related data size */
-> +#define PRUETH_NAV_SW_DATA_SIZE	48	/* SW related data size */
-
-Why do you need 48? I think it should fit in 16.
-
->  #define PRUETH_MAX_TX_DESC	512
->  #define PRUETH_MAX_RX_DESC	512
->  #define PRUETH_MAX_RX_FLOWS	1	/* excluding default flow */
-> diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.c b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-> index 00ed97860547..e5e4efe485f6 100644
-> --- a/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-> +++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-> @@ -1522,6 +1522,12 @@ static int prueth_probe(struct platform_device *pdev)
->  
->  	np = dev->of_node;
->  
-> +	if (sizeof(struct prueth_swdata) > PRUETH_NAV_SW_DATA_SIZE) {
-> +		dev_err(dev, "insufficient SW_DATA size: %d vs %ld\n",
-> +			PRUETH_NAV_SW_DATA_SIZE, sizeof(struct prueth_swdata));
-> +		return -ENOMEM;
-> +	}
-> +
-
-Can this be made a build time check instead of runtime?
-
->  	prueth = devm_kzalloc(dev, sizeof(*prueth), GFP_KERNEL);
->  	if (!prueth)
->  		return -ENOMEM;
-> diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.h b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
-> index c7b906de18af..2c8585255b7c 100644
-> --- a/drivers/net/ethernet/ti/icssg/icssg_prueth.h
-> +++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
-> @@ -136,6 +136,24 @@ struct prueth_rx_chn {
->  	struct page_pool *pg_pool;
->  };
->  
-> +enum prueth_swdata_type {
-> +	PRUETH_SWDATA_INVALID = 0,
-> +	PRUETH_SWDATA_SKB,
-> +	PRUETH_SWDATA_PAGE,
-> +	PRUETH_SWDATA_CMD,
-> +};
-> +
-> +union prueth_data {
-> +	struct sk_buff *skb;
-> +	struct page *page;
-> +	u32 cmd;
-> +};
-> +
-> +struct prueth_swdata {
-> +	union prueth_data data;
-> +	enum prueth_swdata_type type;
-> +};
-
-Can we re-write this like so with type first and union embedded inside?
-
-struct prueth_swdata {
-	enum prueth_swdata_type type;
-	union prueth_data {
-		struct sk_buff *skb;
-		struct page *page;
-		u32 cmd;
-	};
-};
-
-
-> +
->  /* There are 4 Tx DMA channels, but the highest priority is CH3 (thread 3)
->   * and lower three are lower priority channels or threads.
->   */
-> diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth_sr1.c b/drivers/net/ethernet/ti/icssg/icssg_prueth_sr1.c
-> index aeeb8a50376b..7bbe0808b3ec 100644
-> --- a/drivers/net/ethernet/ti/icssg/icssg_prueth_sr1.c
-> +++ b/drivers/net/ethernet/ti/icssg/icssg_prueth_sr1.c
-> @@ -275,10 +275,10 @@ static struct sk_buff *prueth_process_rx_mgm(struct prueth_emac *emac,
->  	struct net_device *ndev = emac->ndev;
->  	struct cppi5_host_desc_t *desc_rx;
->  	struct page *page, *new_page;
-> +	struct prueth_swdata *swdata;
->  	dma_addr_t desc_dma, buf_dma;
->  	u32 buf_dma_len, pkt_len;
->  	struct sk_buff *skb;
-> -	void **swdata;
->  	void *pa;
->  	int ret;
->  
-> @@ -301,7 +301,7 @@ static struct sk_buff *prueth_process_rx_mgm(struct prueth_emac *emac,
->  	}
->  
->  	swdata = cppi5_hdesc_get_swdata(desc_rx);
-> -	page = *swdata;
-> +	page = swdata->data.page;
->  	cppi5_hdesc_get_obuf(desc_rx, &buf_dma, &buf_dma_len);
->  	pkt_len = cppi5_hdesc_get_pktlen(desc_rx);
->  
-
--- 
-cheers,
--roger
-
+Thanks,
+Olek
 
