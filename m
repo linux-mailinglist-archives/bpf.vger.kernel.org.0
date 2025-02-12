@@ -1,374 +1,274 @@
-Return-Path: <bpf+bounces-51236-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51229-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56519A322D0
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 10:50:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EEF1A322BB
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 10:48:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58D47167B6C
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 09:50:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E7BA16626C
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 09:48:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBECC2080FE;
-	Wed, 12 Feb 2025 09:49:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 649CF207667;
+	Wed, 12 Feb 2025 09:48:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="ccU0z0og"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Sd02uZrR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 925E81FECB4;
-	Wed, 12 Feb 2025 09:49:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBC4220551D
+	for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 09:48:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739353743; cv=none; b=uCrG1GKED6HqrDB/28rowROY8S1vTZt0PKMqgmRJQV2rR3La6zR6cQ4CMI0tABmxyLT23B510t/I1cr7XtNnBo4006Ntrkuc3WthnWyvYMck3Qbr/MYxWmsjXQ3WjYJI2HAn/9j6M1vo7P7WH8MJdB+XrkQvy6VNPLhoKEDh6BQ=
+	t=1739353693; cv=none; b=DCHrz7ECopRCEtyKnDWF8+s8fy6WQtPKI+KpVvwJjjmVvlUeOkPM39JV7ySTBXVVBSDxNRNVBNMK8Rt+Oqphq1swyWCxr44CD0jf7aFBJGNn82VUrwmTmBPKjblH/RKze/LgvT5R0R+PaZvo0kEvs+5OvHEtMg0wB1eu27x+2FY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739353743; c=relaxed/simple;
-	bh=uRTAv8XptQIHjgayHiImji7ARUTayRdK1vSQu57SrXc=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IkMISj+IO49YWb51M0axlkY9Cp+RRJpYsfE0csEG6t/Zw+0zorx9AgsJBb2IL30R9rMSnNso0I8FveLqDwBdOlA1Q6g/7zOCRkEKW1CKFUnjeXZIDS+XwTJH5YUDNGtBYx/k2YKOAlKNRwrt8alvqdB4BcM4VqwvjElzA4fQjho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=ccU0z0og; arc=none smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0431384.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51C40WaU000328;
-	Wed, 12 Feb 2025 01:48:42 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pfpt0220; bh=8
-	YkjhjoLNh0aL+zMatpNxHBeD4QW4fSboKaE6nCMIrc=; b=ccU0z0ogGnrjbJoY5
-	Ar2/BnCq/UfWEVMbKyWIjZ2QFF61I4IZYkdFklan29Q4abg9L4Dlok4azgeUMhE9
-	/6r1IbUyJrfD1mTMJzrgA7xmWoGwFX50Hf8YBlykRPkAq2AHmiVhWVkUwIt5YaC7
-	0l+8EhZ/OuypUU8YyQX0T5J+VqMqQO2mB2RxktrDduKh4vh8vkTTqTMMagnGutfb
-	AZAdrE2t8UALFPhOS8JylTq900uS4imIm7GwuRZvY3958azsd+JTkQSk3C+HBVif
-	UyCzy+c01gAF/WpB1T/uSL9NOvtE/ZmtL1vwkunwnkOji5CoeOQmzLPxzccO8hTk
-	x/t4Q==
-Received: from dc5-exch05.marvell.com ([199.233.59.128])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 44rm878kad-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 12 Feb 2025 01:48:42 -0800 (PST)
-Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
- DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Wed, 12 Feb 2025 01:48:41 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
- (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Wed, 12 Feb 2025 01:48:41 -0800
-Received: from localhost.localdomain (unknown [10.28.36.166])
-	by maili.marvell.com (Postfix) with ESMTP id 8D0423F708C;
-	Wed, 12 Feb 2025 01:48:35 -0800 (PST)
-From: Suman Ghosh <sumang@marvell.com>
-To: <horms@kernel.org>, <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lcherian@marvell.com>, <jerinj@marvell.com>,
-        <john.fastabend@gmail.com>, <bbhushan2@marvell.com>, <hawk@kernel.org>,
-        <andrew+netdev@lunn.ch>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <bpf@vger.kernel.org>, <larysa.zaremba@intel.com>
-CC: Suman Ghosh <sumang@marvell.com>
-Subject: [net-next PATCH v6 6/6] octeontx2-pf: AF_XDP zero copy transmit support
-Date: Wed, 12 Feb 2025 15:17:38 +0530
-Message-ID: <20250212094738.2671725-7-sumang@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20250212094738.2671725-1-sumang@marvell.com>
-References: <20250212094738.2671725-1-sumang@marvell.com>
+	s=arc-20240116; t=1739353693; c=relaxed/simple;
+	bh=t21f2MlAY3g2CSPYzZV3AriCFj+8Z2TJBntSa10C5sU=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=Z9WI4+Y2pzd6d6XDE5CbWIdkDvm3bpIiGB3eaVquqF6guuimV/zLLNyaw1ySPycYtFzwBuLwcJIC9Hyl8T0M7vxVQspmKW55PAuF8pDm0dunspYcpv2uNNu9m5EbYsMoc6KYfX4btBxjj3t22yNeXaaQuB+1aPUi5Z83llGZ7ZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Sd02uZrR; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1739353689;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7Aijtv05rg723WjyQX24R00qxSJTFgnmIWhfrftmGQQ=;
+	b=Sd02uZrR7CDA2Z5dIeOxqE8lR05TckLsmb+WDVzX0FMCQMFaY8ly+jte7BRl8RUICBD0s1
+	FHMbri3T84Atw/868Uy/CAihsnEbtXYNFDzXLf4wgGLyJfX0KcnsD+Kbbnva91+D11ELwr
+	4McUukz1PPgBIKOmGbChReNQlRHSh2Y=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-65-WxTxF7viNq-keyChg0rYOw-1; Wed,
+ 12 Feb 2025 04:48:06 -0500
+X-MC-Unique: WxTxF7viNq-keyChg0rYOw-1
+X-Mimecast-MFC-AGG-ID: WxTxF7viNq-keyChg0rYOw_1739353684
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 7D9BF19560B2;
+	Wed, 12 Feb 2025 09:48:03 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.92])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 6C11E1800873;
+	Wed, 12 Feb 2025 09:47:57 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <84a8e6737fca05dd3ec234760f1c77901d915ef9@linux.dev>
+References: <84a8e6737fca05dd3ec234760f1c77901d915ef9@linux.dev> <8d8a5d5b00688ea553b106db690e8a01f15b1410@linux.dev> <335ad811ae2cf5ebdfc494c185b9f02e9ca40c3e@linux.dev> <3173328.1738024385@warthog.procyon.org.uk> <3187377.1738056789@warthog.procyon.org.uk> <2986469.1739185956@warthog.procyon.org.uk> <3210864.1739229537@warthog.procyon.org.uk>
+To: "Ihor Solodrai" <ihor.solodrai@linux.dev>
+Cc: dhowells@redhat.com, "Marc Dionne" <marc.dionne@auristor.com>,
+    "Steve
+ French" <stfrench@microsoft.com>,
+    "Eric Van Hensbergen" <ericvh@kernel.org>,
+    "Latchesar  Ionkov" <lucho@ionkov.net>,
+    "Dominique Martinet" <asmadeus@codewreck.org>,
+    "Christian Schoenebeck" <linux_oss@crudebyte.com>,
+    "Paulo Alcantara" <pc@manguebit.com>,
+    "Jeff Layton" <jlayton@kernel.org>,
+    "Christian Brauner" <brauner@kernel.org>, v9fs@lists.linux.dev,
+    linux-cifs@vger.kernel.org, netfs@lists.linux.dev,
+    linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+    ast@kernel.org, bpf@vger.kernel.org
+Subject: [PATCH] netfs: Fix setting NETFS_RREQ_ALL_QUEUED to be after all subreqs queued
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: cbCtyfxqr7u3a_q-O3Mw94MUHA2JgQEF
-X-Proofpoint-ORIG-GUID: cbCtyfxqr7u3a_q-O3Mw94MUHA2JgQEF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-02-12_03,2025-02-11_01,2024-11-22_01
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3459754.1739353676.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 12 Feb 2025 09:47:56 +0000
+Message-ID: <3459755.1739353676@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-This patch implements below changes,
+Hi Ihor,
 
-1. To avoid concurrency with normal traffic uses
-   XDP queues.
-2. Since there are chances that XDP and AF_XDP can
-   fall under same queue uses separate flags to handle
-   dma buffers.
+Okay, the bug you're hitting appears to be a different one to the one I
+thought first.  Can you try the attached patch?  I managed to reproduce it
+with AFS by injecting a delay.
 
-Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-Signed-off-by: Suman Ghosh <sumang@marvell.com>
+Grepping your logs for the stuck request, you can see the issue:
+
+          ip: netfs_rreq_ref: R=3D00002152 NEW         r=3D1
+          ip: netfs_read: R=3D00002152 READAHEAD c=3D00000000 ni=3D1034fe3=
+ s=3D4000 l=3D3000 sz=3D6898
+          ip: netfs_rreq_ref: R=3D00002152 GET SUBREQ  r=3D2
+
+Subrequest 1 completes synchronously and queues the collector work item:
+
+          ip: netfs_sreq: R=3D00002152[1] DOWN TERM  f=3D192 s=3D4000 2898=
+/2898 s=3D2 e=3D0
+          ip: netfs_rreq_ref: R=3D00002152 GET WORK    r=3D3
+kworker/u8:3: netfs_rreq_ref: R=3D00002152 SEE WORK    r=3D3
+          ip: netfs_sreq_ref: R=3D00002152[1] PUT TERM    r=3D1
+          ip: netfs_rreq_ref: R=3D00002152 GET SUBREQ  r=3D4
+
+Then proposed a new subreq to clear the end of the page, but it's not queu=
+ed
+at this point:
+
+          ip: netfs_sreq: R=3D00002152[2] ZERO SUBMT f=3D00 s=3D6898 0/768=
+ s=3D0 e=3D0
+
+(I should probably move the tracepoint to the queue point to make it more
+obvious).  The collector processes the subrequests it can see, and
+NETFS_RREQ_ALL_QUEUED (0x2000) is set in the flags (f=3D2021):
+
+kworker/u8:3: netfs_rreq: R=3D00002152 RA COLLECT f=3D2021
+kworker/u8:3: netfs_collect: R=3D00002152 s=3D4000-7000
+kworker/u8:3: netfs_collect_sreq: R=3D00002152[0:01] s=3D4000 t=3D2898/289=
+8
+kworker/u8:3: netfs_sreq: R=3D00002152[1] DOWN DSCRD f=3D92 s=3D4000 2898/=
+2898 s=3D2 e=3D0
+kworker/u8:3: netfs_sreq_ref: R=3D00002152[1] PUT DONE    r=3D0
+kworker/u8:3: netfs_sreq: R=3D00002152[1] DOWN FREE  f=3D92 s=3D4000 2898/=
+2898 s=3D2 e=3D0
+kworker/u8:3: netfs_rreq_ref: R=3D00002152 PUT SUBREQ  r=3D3
+
+The notes (n=3Dx) indicate that the collector didn't see subreq 2 (bit 0,
+HIT_PENDING, wasn't set)...:
+
+kworker/u8:3: netfs_collect_state: R=3D00002152 col=3D6898 cln=3D7000 n=3D=
+c
+kworker/u8:3: netfs_collect_state: R=3D00002152 col=3D6898 cln=3D7000 n=3D=
+8
+
+... and so it completed the request:
+
+kworker/u8:3: netfs_rreq: R=3D00002152 RA COMPLET f=3D2021
+kworker/u8:3: netfs_rreq: R=3D00002152 RA WAKE-IP f=3D2021
+
+And now, NETFS_RREQ_IN_PROGRESS has been cleared, which means we can't get
+back into the read collector.
+
+kworker/u8:3: netfs_rreq: R=3D00002152 RA DONE    f=3D2001
+kworker/u8:3: netfs_rreq_ref: R=3D00002152 PUT WORK    r=3D2
+
+Then subreq 2 finishes and you can see the worker happen, but do nothing:
+
+          ip: netfs_sreq: R=3D00002152[2] ZERO TERM  f=3D102 s=3D6898 768/=
+768 s=3D2 e=3D0
+          ip: netfs_rreq_ref: R=3D00002152 GET WORK    r=3D3
+kworker/u8:3: netfs_rreq_ref: R=3D00002152 SEE WORK    r=3D3
+kworker/u8:3: netfs_rreq_ref: R=3D00002152 PUT WORK    r=3D2
+
+David
 ---
- .../marvell/octeontx2/nic/otx2_common.c       |  4 ++
- .../marvell/octeontx2/nic/otx2_common.h       |  6 +++
- .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |  2 +-
- .../marvell/octeontx2/nic/otx2_txrx.c         | 49 +++++++++++++++----
- .../marvell/octeontx2/nic/otx2_txrx.h         |  2 +
- .../ethernet/marvell/octeontx2/nic/otx2_xsk.c | 43 +++++++++++++++-
- .../ethernet/marvell/octeontx2/nic/otx2_xsk.h |  3 ++
- 7 files changed, 96 insertions(+), 13 deletions(-)
+netfs: Fix setting NETFS_RREQ_ALL_QUEUED to be after all subreqs queued
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-index 6f7c11d59942..84cd029a85aa 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-@@ -1037,6 +1037,10 @@ int otx2_sq_init(struct otx2_nic *pfvf, u16 qidx, u16 sqb_aura)
- 
- 	sq->stats.bytes = 0;
- 	sq->stats.pkts = 0;
-+	/* Attach XSK_BUFF_POOL to XDP queue */
-+	if (qidx > pfvf->hw.xdp_queues)
-+		otx2_attach_xsk_buff(pfvf, sq, (qidx - pfvf->hw.xdp_queues));
-+
- 
- 	chan_offset = qidx % pfvf->hw.tx_chan_cnt;
- 	err = pfvf->hw_ops->sq_aq_init(pfvf, qidx, chan_offset, sqb_aura);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-index 19e9e2e72233..1e88422825be 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-@@ -129,6 +129,12 @@ enum otx2_errcodes_re {
- 	ERRCODE_IL4_CSUM = 0x22,
- };
- 
-+enum otx2_xdp_action {
-+	OTX2_XDP_TX	  = BIT(0),
-+	OTX2_XDP_REDIRECT = BIT(1),
-+	OTX2_AF_XDP_FRAME = BIT(2),
-+};
-+
- struct otx2_dev_stats {
- 	u64 rx_bytes;
- 	u64 rx_frames;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-index 188ab6b6fb16..47b05a9c3db5 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-@@ -2693,7 +2693,7 @@ static int otx2_xdp_xmit_tx(struct otx2_nic *pf, struct xdp_frame *xdpf,
- 		return -ENOMEM;
- 
- 	err = otx2_xdp_sq_append_pkt(pf, xdpf, dma_addr, xdpf->len,
--				     qidx, XDP_REDIRECT);
-+				     qidx, OTX2_XDP_REDIRECT);
- 	if (!err) {
- 		otx2_dma_unmap_page(pf, dma_addr, xdpf->len, DMA_TO_DEVICE);
- 		xdp_return_frame(xdpf);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-index 9a6c1f1a3ee0..6bc5ce5a9f61 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-@@ -20,6 +20,7 @@
- #include "otx2_txrx.h"
- #include "otx2_ptp.h"
- #include "cn10k.h"
-+#include "otx2_xsk.h"
- 
- #define CQE_ADDR(CQ, idx) ((CQ)->cqe_base + ((CQ)->cqe_size * (idx)))
- #define PTP_PORT	        0x13F
-@@ -103,13 +104,19 @@ static unsigned int frag_num(unsigned int i)
- 
- static void otx2_xdp_snd_pkt_handler(struct otx2_nic *pfvf,
- 				     struct otx2_snd_queue *sq,
--				     struct nix_cqe_tx_s *cqe)
-+				     struct nix_cqe_tx_s *cqe,
-+				     int *xsk_frames)
- {
- 	struct nix_send_comp_s *snd_comp = &cqe->comp;
- 	struct sg_list *sg;
- 
- 	sg = &sq->sg[snd_comp->sqe_id];
--	if (sg->flags & XDP_REDIRECT)
-+	if (sg->flags & OTX2_AF_XDP_FRAME) {
-+		(*xsk_frames)++;
-+		return;
-+	}
-+
-+	if (sg->flags & OTX2_XDP_REDIRECT)
- 		otx2_dma_unmap_page(pfvf, sg->dma_addr[0], sg->size[0], DMA_TO_DEVICE);
- 	xdp_return_frame((struct xdp_frame *)sg->skb);
- 	sg->skb = (u64)NULL;
-@@ -434,6 +441,18 @@ int otx2_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq)
- 	return cnt - cq->pool_ptrs;
+Due to the code that queues a subreq on the active subrequest list getting
+moved to netfs_issue_read(), the NETFS_RREQ_ALL_QUEUED flag may now get se=
+t
+before the list-add actually happens.  This is not a problem if the
+collection worker happens after the list-add, but it's a race - and, for
+9P, where the read from the server is synchronous and done in the
+submitting thread, this is a lot more likely.
+
+The result is that, if the timing is wrong, a ref gets leaked because the
+collector thinks that all the subreqs have completed (because it can't see
+the last one yet) and clears NETFS_RREQ_IN_PROGRESS - at which point, the
+collection worker no longer goes into the collector.
+
+This can be provoked with AFS by injecting an msleep() right before the
+final subreq is queued.
+
+Fix this by splitting the queuing part out of netfs_issue_read() into a ne=
+w
+function, netfs_queue_read(), and calling it separately.  The setting of
+NETFS_RREQ_ALL_QUEUED is then done by netfs_queue_read() whilst it is
+holding the spinlock (that's probably unnecessary, but shouldn't hurt).
+
+It might be better to set a flag on the final subreq, but this could be a
+problem if an error occurs and we can't queue it.
+
+Fixes: e2d46f2ec332 ("netfs: Change the read result collector to only use =
+one work item")
+Reported-by: Ihor Solodrai <ihor.solodrai@pm.me>
+Closes: https://lore.kernel.org/r/a7x33d4dnMdGTtRivptq6S1i8btK70SNBP2XyX_x=
+wDAhLvgQoPox6FVBOkifq4eBinfFfbZlIkMZBe3QarlWTxoEtHZwJCZbNKtaqrR7PvI=3D@pm.=
+me/
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Eric Van Hensbergen <ericvh@kernel.org>
+cc: Latchesar Ionkov <lucho@ionkov.net>
+cc: Dominique Martinet <asmadeus@codewreck.org>
+cc: Christian Schoenebeck <linux_oss@crudebyte.com>
+cc: Marc Dionne <marc.dionne@auristor.com>
+cc: Steve French <stfrench@microsoft.com>
+cc: Paulo Alcantara <pc@manguebit.com>
+cc: Jeff Layton <jlayton@kernel.org>
+cc: v9fs@lists.linux.dev
+cc: linux-cifs@vger.kernel.org
+cc: netfs@lists.linux.dev
+cc: linux-fsdevel@vger.kernel.org
+---
+ fs/netfs/buffered_read.c |   19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
+
+diff --git a/fs/netfs/buffered_read.c b/fs/netfs/buffered_read.c
+index f761d44b3436..0d1b6d35ff3b 100644
+--- a/fs/netfs/buffered_read.c
++++ b/fs/netfs/buffered_read.c
+@@ -155,8 +155,9 @@ static void netfs_read_cache_to_pagecache(struct netfs=
+_io_request *rreq,
+ 			netfs_cache_read_terminated, subreq);
  }
- 
-+static void otx2_zc_submit_pkts(struct otx2_nic *pfvf, struct xsk_buff_pool *xsk_pool,
-+				int *xsk_frames, int qidx, int budget)
-+{
-+	if (*xsk_frames)
-+		xsk_tx_completed(xsk_pool, *xsk_frames);
-+
-+	if (xsk_uses_need_wakeup(xsk_pool))
-+		xsk_set_tx_need_wakeup(xsk_pool);
-+
-+	otx2_zc_napi_handler(pfvf, xsk_pool, qidx, budget);
-+}
-+
- static int otx2_tx_napi_handler(struct otx2_nic *pfvf,
- 				struct otx2_cq_queue *cq, int budget)
+ =
+
+-static void netfs_issue_read(struct netfs_io_request *rreq,
+-			     struct netfs_io_subrequest *subreq)
++static void netfs_queue_read(struct netfs_io_request *rreq,
++			     struct netfs_io_subrequest *subreq,
++			     bool last_subreq)
  {
-@@ -442,16 +461,22 @@ static int otx2_tx_napi_handler(struct otx2_nic *pfvf,
- 	struct nix_cqe_tx_s *cqe;
- 	struct net_device *ndev;
- 	int processed_cqe = 0;
-+	int xsk_frames = 0;
-+
-+	qidx = cq->cq_idx - pfvf->hw.rx_queues;
-+	sq = &pfvf->qset.sq[qidx];
- 
- 	if (cq->pend_cqe >= budget)
- 		goto process_cqe;
- 
--	if (otx2_nix_cq_op_status(pfvf, cq) || !cq->pend_cqe)
-+	if (otx2_nix_cq_op_status(pfvf, cq) || !cq->pend_cqe) {
-+		if (sq->xsk_pool)
-+			otx2_zc_submit_pkts(pfvf, sq->xsk_pool, &xsk_frames,
-+					    qidx, budget);
- 		return 0;
-+	}
- 
- process_cqe:
--	qidx = cq->cq_idx - pfvf->hw.rx_queues;
--	sq = &pfvf->qset.sq[qidx];
- 
- 	while (likely(processed_cqe < budget) && cq->pend_cqe) {
- 		cqe = (struct nix_cqe_tx_s *)otx2_get_next_cqe(cq);
-@@ -461,10 +486,8 @@ static int otx2_tx_napi_handler(struct otx2_nic *pfvf,
- 			break;
+ 	struct netfs_io_stream *stream =3D &rreq->io_streams[0];
+ =
+
+@@ -177,8 +178,17 @@ static void netfs_issue_read(struct netfs_io_request =
+*rreq,
  		}
- 
--		qidx = cq->cq_idx - pfvf->hw.rx_queues;
--
- 		if (cq->cq_type == CQ_XDP)
--			otx2_xdp_snd_pkt_handler(pfvf, sq, cqe);
-+			otx2_xdp_snd_pkt_handler(pfvf, sq, cqe, &xsk_frames);
- 		else
- 			otx2_snd_pkt_handler(pfvf, cq, &pfvf->qset.sq[qidx],
- 					     cqe, budget, &tx_pkts, &tx_bytes);
-@@ -505,6 +528,10 @@ static int otx2_tx_napi_handler(struct otx2_nic *pfvf,
- 		    netif_carrier_ok(ndev))
- 			netif_tx_wake_queue(txq);
  	}
-+
-+	if (sq->xsk_pool)
-+		otx2_zc_submit_pkts(pfvf, sq->xsk_pool, &xsk_frames, qidx, budget);
-+
- 	return 0;
- }
- 
-@@ -1499,8 +1526,10 @@ static bool otx2_xdp_rcv_pkt_handler(struct otx2_nic *pfvf,
- 		qidx += pfvf->hw.tx_queues;
- 		cq->pool_ptrs++;
- 		xdpf = xdp_convert_buff_to_frame(&xdp);
--		return otx2_xdp_sq_append_pkt(pfvf, xdpf, cqe->sg.seg_addr,
--					      cqe->sg.seg_size, qidx, XDP_TX);
-+		return otx2_xdp_sq_append_pkt(pfvf, xdpf,
-+					      cqe->sg.seg_addr,
-+					      cqe->sg.seg_size,
-+					      qidx, OTX2_XDP_TX);
- 	case XDP_REDIRECT:
- 		cq->pool_ptrs++;
- 		if (xsk_buff) {
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-index 8f346fbc8221..acf259d72008 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-@@ -106,6 +106,8 @@ struct otx2_snd_queue {
- 	/* SQE ring and CPT response queue for Inline IPSEC */
- 	struct qmem		*sqe_ring;
- 	struct qmem		*cpt_resp;
-+	/* Buffer pool for af_xdp zero-copy */
-+	struct xsk_buff_pool    *xsk_pool;
- } ____cacheline_aligned_in_smp;
- 
- enum cq_type {
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_xsk.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_xsk.c
-index 3bdee1603fac..ce10caea8511 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_xsk.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_xsk.c
-@@ -140,11 +140,14 @@ int otx2_xsk_pool_disable(struct otx2_nic *pf, u16 qidx)
- {
- 	struct net_device *netdev = pf->netdev;
- 	struct xsk_buff_pool *pool;
-+	struct otx2_snd_queue *sq;
- 
- 	pool = xsk_get_pool_from_qid(netdev, qidx);
- 	if (!pool)
- 		return -EINVAL;
- 
-+	sq = &pf->qset.sq[qidx + pf->hw.tx_queues];
-+	sq->xsk_pool = NULL;
- 	otx2_clean_up_rq(pf, qidx);
- 	clear_bit(qidx, pf->af_xdp_zc_qidx);
- 	xsk_pool_dma_unmap(pool, DMA_ATTR_SKIP_CPU_SYNC | DMA_ATTR_WEAK_ORDERING);
-@@ -171,7 +174,7 @@ int otx2_xsk_wakeup(struct net_device *dev, u32 queue_id, u32 flags)
- 	if (pf->flags & OTX2_FLAG_INTF_DOWN)
- 		return -ENETDOWN;
- 
--	if (queue_id >= pf->hw.rx_queues)
-+	if (queue_id >= pf->hw.rx_queues || queue_id >= pf->hw.tx_queues)
- 		return -EINVAL;
- 
- 	cq_poll = &qset->napi[queue_id];
-@@ -179,8 +182,44 @@ int otx2_xsk_wakeup(struct net_device *dev, u32 queue_id, u32 flags)
- 		return -EINVAL;
- 
- 	/* Trigger interrupt */
--	if (!napi_if_scheduled_mark_missed(&cq_poll->napi))
-+	if (!napi_if_scheduled_mark_missed(&cq_poll->napi)) {
- 		otx2_write64(pf, NIX_LF_CINTX_ENA_W1S(cq_poll->cint_idx), BIT_ULL(0));
-+		otx2_write64(pf, NIX_LF_CINTX_INT_W1S(cq_poll->cint_idx), BIT_ULL(0));
-+	}
- 
- 	return 0;
- }
-+
-+void otx2_attach_xsk_buff(struct otx2_nic *pfvf, struct otx2_snd_queue *sq, int qidx)
-+{
-+	if (test_bit(qidx, pfvf->af_xdp_zc_qidx))
-+		sq->xsk_pool = xsk_get_pool_from_qid(pfvf->netdev, qidx);
-+}
-+
-+void otx2_zc_napi_handler(struct otx2_nic *pfvf, struct xsk_buff_pool *pool,
-+			  int queue, int budget)
-+{
-+	struct xdp_desc *xdp_desc = pool->tx_descs;
-+	int err, i, work_done = 0, batch;
-+
-+	budget = min(budget, otx2_read_free_sqe(pfvf, queue));
-+	batch = xsk_tx_peek_release_desc_batch(pool, budget);
-+	if (!batch)
-+		return;
-+
-+	for (i = 0; i < batch; i++) {
-+		dma_addr_t dma_addr;
-+
-+		dma_addr = xsk_buff_raw_get_dma(pool, xdp_desc[i].addr);
-+		err = otx2_xdp_sq_append_pkt(pfvf, NULL, dma_addr, xdp_desc[i].len,
-+					     queue, OTX2_AF_XDP_FRAME);
-+		if (!err) {
-+			netdev_err(pfvf->netdev, "AF_XDP: Unable to transfer packet err%d\n", err);
-+			break;
-+		}
-+		work_done++;
+ =
+
++	if (last_subreq) {
++		smp_wmb(); /* Write lists before ALL_QUEUED. */
++		set_bit(NETFS_RREQ_ALL_QUEUED, &rreq->flags);
 +	}
 +
-+	if (work_done)
-+		xsk_tx_release(pool);
+ 	spin_unlock(&rreq->lock);
 +}
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_xsk.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_xsk.h
-index 022b3433edbb..8047fafee8fe 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_xsk.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_xsk.h
-@@ -17,5 +17,8 @@ int otx2_xsk_pool_disable(struct otx2_nic *pf, u16 qid);
- int otx2_xsk_pool_alloc_buf(struct otx2_nic *pfvf, struct otx2_pool *pool,
- 			    dma_addr_t *dma, int idx);
- int otx2_xsk_wakeup(struct net_device *dev, u32 queue_id, u32 flags);
-+void otx2_zc_napi_handler(struct otx2_nic *pfvf, struct xsk_buff_pool *pool,
-+			  int queue, int budget);
-+void otx2_attach_xsk_buff(struct otx2_nic *pfvf, struct otx2_snd_queue *sq, int qidx);
- 
- #endif /* OTX2_XSK_H */
--- 
-2.25.1
+ =
+
++static void netfs_issue_read(struct netfs_io_request *rreq,
++			     struct netfs_io_subrequest *subreq)
++{
+ 	switch (subreq->source) {
+ 	case NETFS_DOWNLOAD_FROM_SERVER:
+ 		rreq->netfs_ops->issue_read(subreq);
+@@ -293,11 +303,8 @@ static void netfs_read_to_pagecache(struct netfs_io_r=
+equest *rreq)
+ 		}
+ 		size -=3D slice;
+ 		start +=3D slice;
+-		if (size <=3D 0) {
+-			smp_wmb(); /* Write lists before ALL_QUEUED. */
+-			set_bit(NETFS_RREQ_ALL_QUEUED, &rreq->flags);
+-		}
+ =
+
++		netfs_queue_read(rreq, subreq, size <=3D 0);
+ 		netfs_issue_read(rreq, subreq);
+ 		cond_resched();
+ 	} while (size > 0);
 
 
