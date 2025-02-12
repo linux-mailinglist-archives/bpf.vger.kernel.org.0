@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-51287-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51288-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC552A32DD0
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 18:47:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 087A1A32DD1
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 18:47:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 086E91883D69
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 17:47:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A504F7A2111
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 17:46:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F6C325A2D3;
-	Wed, 12 Feb 2025 17:47:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A822525A653;
+	Wed, 12 Feb 2025 17:47:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NUfWEvd9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Px6cIex+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F52D20F09A
-	for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 17:47:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A522325C6F1
+	for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 17:47:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739382444; cv=none; b=nOPZvYdqjT//KwGh7eGDgF61mgqGji3+tM+7OtA+N3QRFpxjZH1Eptz3OMq2ZmuTmlDaXBg9Aahr71oXxVgQm9xLSc7AkkyABP50iO2v3WN8baJ9FRcIARJEii3xsjUL3yj+YZyG58p8w0IMqiCHeNk0dwzNNPMDC2/Bid91qkc=
+	t=1739382449; cv=none; b=CSOvCuCOimO7JDGXqsbPm5iM2QW6YC5B0d7Ec20rWGddvqnnbLCEtoNj8gbdDlsCojoZIKukz7WOA6J/ire036KoJ1OtHLhemXbFPyDV2YRyiLRe5LwIOKFdg4yJHOxHSfbFN+KMKNY59+5+kkiNOVi3LDzWyeM2VUoO00rpGxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739382444; c=relaxed/simple;
-	bh=U90v5Pk93VeiqRlGaWd3w3TfoItyJk0Pr1aSpT1G4VI=;
+	s=arc-20240116; t=1739382449; c=relaxed/simple;
+	bh=rvkD0voG5AFWPbxH/cFvKKuqBd+a8nG/qfAcky5jsKI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=u73ZhNn7XHB+zXq7fz7kdwKfwes06zp1OHObGM8AQyeQh73Z2ZQTV/g0e9/mdU83nhzGWycghO3L6u3pRzU4m432FW7nQrRQPYJrXSRg9EQv/FnjlkgpLa2DBrh4q7oAqkoeKwGOSKzbetCVUVVKp5G14gF4z3s7S3qVOS/+1vU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NUfWEvd9; arc=none smtp.client-ip=209.85.216.51
+	 MIME-Version; b=Rcm0/2DumftLCK73IQSH1wEdtr6yGlTpGeodCcRkPB6ThjnRPzKxc+QQAAcg3Vq1hn1SYMUe0HGuSrJgJ7JZmCKV3Na5n3CsWoO097AxiMf2mFczNEUMqkzE9epkywf0kv4k1TXVt27D+e/nzHnWv2rptH4E6QeimFszxlLN5sA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Px6cIex+; arc=none smtp.client-ip=209.85.216.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2f833af7a09so62913a91.2
-        for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 09:47:22 -0800 (PST)
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2f9bac7699aso78869a91.1
+        for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 09:47:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739382442; x=1739987242; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739382447; x=1739987247; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Dxu1Rc7/sI72JB4NYxxk9elaSjOiJ9Td89bVV/zMYyc=;
-        b=NUfWEvd9I/BwfrNrsNRizS1dd6sYvY3R/PAumgzHPgUWZfCRqgj1uq3Xdz5j3gIYBo
-         DjVl2a3yn4v2o97TW/qC5HxHcExDdXID00O7qBNVodI+lJObsJsqjnnITseN0IQDK4d4
-         UOSKpl5nZpu4QkGHsKm3jgS6R7mvaEV8ykMdyjYAokzfVEhek28c4A8t7lZjIKpPLitR
-         zEzXLOpIvX2ejGPNjPX3XWQbiyHza/Z200auOPCYKlLglbi1BgxneewZZcr4A87xh4DB
-         5fOS9/AQ7yeaI3i3VrCVh1JyQm4zhI8MMyBki6zKEo3MF9lWEkjfh2XVBE3GhNHE600r
-         3UKg==
+        bh=lgL2WdPUSp9IlhXwRVgFpZY7gPxe7SOzqv/p6kt86b8=;
+        b=Px6cIex+7mP7z7X6xdOOXQdxAFn5OKR84+RXhOv9wooAwgKrsmEM7HV+J/WJFFk+IS
+         1dk0Idq8KnTs/2QW7/28kkjMB4BottzGr/Bk3ifNayRuFznrPuXcjYBU1cDKPmx5l8J2
+         HzDcmi19DrZlzhk5n18n/RHL1PyhGzEuqVpmWh/AjJnXuDH0/q2JYUpKE5+3zaSZTQpK
+         MjYOoWJqj5iVpAzO4rxoeFCMf5ufshoOoUclfDWNeP+iowgnzUCa11VpTmX4x1K69Vke
+         G6XqYRuzvSt1ZPJ7wc2RGnWbnEGRNgkeBcWN8QTQhekOTzpFlIfXTACNvImoSWzVicRA
+         c/Kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739382442; x=1739987242;
+        d=1e100.net; s=20230601; t=1739382447; x=1739987247;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Dxu1Rc7/sI72JB4NYxxk9elaSjOiJ9Td89bVV/zMYyc=;
-        b=Fam220VK4yd+pSM7iU7hRQwyEq+t1b23idF6mO9ACyyToD2RxA6+hPx2HpEjyLp33K
-         G/EmeCxwJ7fWNCDd7sHpH/2OcmgO4Jf/2DwR+s7RVxXx1aPYawivRXdtZbYu/dt9Ur7U
-         3ZEd2Nv8eSIXu52c81z6Ho5dDAepHFrBAV0xqQwL+6OWlnuISXqnP7uVNjiZBGIH8Mbq
-         l7CQKRc2OOA9t7O0lyarDWAgRdqAUQVzL5OBSHLIBIjuPpNfjdmKP6AfToqZqA9QnoVh
-         oJIyzLk6cCU+ESUncaJalfOL70/FHQR1LofwNK9O9rQLmVGqaATncpln9D0z8a7wZ4wT
-         CKcQ==
-X-Gm-Message-State: AOJu0YwIMSRLMiiuixEFnLUiY2WLsgDuvDqZuFCBWNwLOUKB4DR9tAqZ
-	5A4/aUffkf4NZLhuPWfx3E97YwXPyGjOU8D7YAZHsH7eCYEeaS3ddWb40Q==
-X-Gm-Gg: ASbGncscWAhcdl5M4mT3cWToysWrobqgIAi3u/4syrxM+Z1LkvnpPIooope0YDxLUdw
-	kvs9nTDVejDERTae+Q5oNzR8xJyrpXbFdgDyVT5dUgjgwJ1b2cwha2UEukfFscgdPNoVn+UL8O1
-	0TTzaYc6jYJ7qV3qSKynXLJ2gf5Y7JBGaWIPEQ/p+9U4aM51ZJgEnYMqD32hWdNO4d8xhokTN9D
-	q2u6V5tK0sWw6SzXqjXudT6ikzJJvjcEqfzAgtqzIaop7tUJLdJ1mcpfduhSt8uMuopz3wQ4wYV
-	zQkyt8xcUxEDIEJajJoozXSEnvab+qmEhelEER7XHN1kWg==
-X-Google-Smtp-Source: AGHT+IFdzeREzMu6Nvpg1XZZgAM871rh2ju2mt7o2mzuvJjED9/Nt9+adPMlY6ggnat49bQIcDjxPQ==
-X-Received: by 2002:a17:90a:d00e:b0:2ee:d433:7c50 with SMTP id 98e67ed59e1d1-2fbf5c5a06dmr4937863a91.23.1739382441983;
-        Wed, 12 Feb 2025 09:47:21 -0800 (PST)
+        bh=lgL2WdPUSp9IlhXwRVgFpZY7gPxe7SOzqv/p6kt86b8=;
+        b=ZPz2ise4TOj2rOvKhd9DYHjxlWgXO5w5lXrmFVR8Mv/mzZKhJxHY2i7J7+94QzJAxU
+         K5g7hRDMFKBXDK8qUAOe1G8uCH8BWma5leTVKrebAEEQJYLIxDxinlutW9clK96Xwl9m
+         gXuMkNoJLDLese9XD/HjbxM4q6+AU5xMaSO2v5wb3O+KZXanlk5fbcAP8WEtECS2v4WQ
+         WGWR0YegAXXmMovb8YIXQ3wDFKEYlTu9HS0zRUrtaKm8eUiC3JzjqKVBczlNEho16XJj
+         be3B2ngi1MedidblKoO3BsO3CmddSiQvahUsfof0c7sqwhLBmaUm0zRQmi2g1EII34Y6
+         2tMA==
+X-Gm-Message-State: AOJu0YzZSY2Tlzo/aVnGeciKa+i2bjBHInLxawx2b71aQ+03lGM8gjGb
+	UrVY2pAMGO/Vs8NIBinGKJmHMo1s7gup0JFq0FP7t7p3fxNkLhTFY9CqBQ==
+X-Gm-Gg: ASbGncuPgNmhqBkrOjP0obUuvAlueVb6GkJlob0MDVkCfc+QVIqG4yUQBWOcAkJxnrx
+	QsONyMCCOwQjBeDKRYagRZ90zEBEHVNtPVHKHt9pZonX3uagIeavIQESu05XIvgF+mXKWf+v1z+
+	wsMf3Gaxf6d4XB683L7CpwG2TR+UvND1XDp8StXBJuJgvwpiC7yZ6MkNiFrTx0cpPyb3pR41bmT
+	mSA9MDjFfNumab4ppseRWaVb+uL6I/t0c0d1THb9tZ8olHm+B0F8cx1HS/b9vvc/RZpD9uuiY7W
+	wEZ5WUC715P451dzV8+1VDzpTd6mQGSaXTxatfy3MuBu6Q==
+X-Google-Smtp-Source: AGHT+IGEj3NYQQrGwrnzg5FtQkvq3P2X1QMPIINMUYPk4XwQqFltxvoCKJbMwmmlCOqX7njlFq8C2Q==
+X-Received: by 2002:a17:90b:1dcb:b0:2ee:bbd8:2b9d with SMTP id 98e67ed59e1d1-2fbf91358eamr4369795a91.34.1739382446220;
+        Wed, 12 Feb 2025 09:47:26 -0800 (PST)
 Received: from ast-mac.thefacebook.com ([2620:10d:c090:500::4:c330])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fbf9908835sm1805194a91.42.2025.02.12.09.47.20
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21f36896b86sm116452455ad.212.2025.02.12.09.47.24
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 12 Feb 2025 09:47:21 -0800 (PST)
+        Wed, 12 Feb 2025 09:47:25 -0800 (PST)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: bpf@vger.kernel.org
 Cc: andrii@kernel.org,
@@ -89,9 +89,9 @@ Cc: andrii@kernel.org,
 	tj@kernel.org,
 	linux-mm@kvack.org,
 	kernel-team@fb.com
-Subject: [PATCH bpf-next v7 3/6] locking/local_lock: Introduce localtry_lock_t
-Date: Wed, 12 Feb 2025 09:47:02 -0800
-Message-Id: <20250212174705.44492-4-alexei.starovoitov@gmail.com>
+Subject: [PATCH bpf-next v7 4/6] memcg: Use trylock to access memcg stock_lock.
+Date: Wed, 12 Feb 2025 09:47:03 -0800
+Message-Id: <20250212174705.44492-5-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20250212174705.44492-1-alexei.starovoitov@gmail.com>
 References: <20250212174705.44492-1-alexei.starovoitov@gmail.com>
@@ -103,275 +103,189 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: Alexei Starovoitov <ast@kernel.org>
 
-In !PREEMPT_RT local_lock_irqsave() disables interrupts to protect
-critical section, but it doesn't prevent NMI, so the fully reentrant
-code cannot use local_lock_irqsave() for exclusive access.
+Teach memcg to operate under trylock conditions when spinning locks
+cannot be used.
 
-Introduce localtry_lock_t and localtry_lock_irqsave() that
-disables interrupts and sets acquired=1, so localtry_lock_irqsave()
-from NMI attempting to acquire the same lock will return false.
+localtry_trylock might fail and this would lead to charge cache bypass
+if the calling context doesn't allow spinning (gfpflags_allow_spinning).
+In those cases charge the memcg counter directly and fail early if
+that is not possible. This might cause a pre-mature charge failing
+but it will allow an opportunistic charging that is safe from
+try_alloc_pages path.
 
-In PREEMPT_RT local_lock_irqsave() maps to preemptible spin_lock().
-Map localtry_lock_irqsave() to preemptible spin_trylock().
-When in hard IRQ or NMI return false right away, since
-spin_trylock() is not safe due to PI issues.
-
-Note there is no need to use local_inc for acquired variable,
-since it's a percpu variable with strict nesting scopes.
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- include/linux/local_lock.h          |  59 +++++++++++++
- include/linux/local_lock_internal.h | 123 ++++++++++++++++++++++++++++
- 2 files changed, 182 insertions(+)
+ mm/memcontrol.c | 52 ++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 36 insertions(+), 16 deletions(-)
 
-diff --git a/include/linux/local_lock.h b/include/linux/local_lock.h
-index 091dc0b6bdfb..05c254a5d7d3 100644
---- a/include/linux/local_lock.h
-+++ b/include/linux/local_lock.h
-@@ -51,6 +51,65 @@
- #define local_unlock_irqrestore(lock, flags)			\
- 	__local_unlock_irqrestore(lock, flags)
- 
-+/**
-+ * localtry_lock_init - Runtime initialize a lock instance
-+ */
-+#define localtry_lock_init(lock)		__localtry_lock_init(lock)
-+
-+/**
-+ * localtry_lock - Acquire a per CPU local lock
-+ * @lock:	The lock variable
-+ */
-+#define localtry_lock(lock)		__localtry_lock(lock)
-+
-+/**
-+ * localtry_lock_irq - Acquire a per CPU local lock and disable interrupts
-+ * @lock:	The lock variable
-+ */
-+#define localtry_lock_irq(lock)		__localtry_lock_irq(lock)
-+
-+/**
-+ * localtry_lock_irqsave - Acquire a per CPU local lock, save and disable
-+ *			 interrupts
-+ * @lock:	The lock variable
-+ * @flags:	Storage for interrupt flags
-+ */
-+#define localtry_lock_irqsave(lock, flags)				\
-+	__localtry_lock_irqsave(lock, flags)
-+
-+/**
-+ * localtry_trylock_irqsave - Try to acquire a per CPU local lock, save and disable
-+ *			      interrupts if acquired
-+ * @lock:	The lock variable
-+ * @flags:	Storage for interrupt flags
-+ *
-+ * The function can be used in any context such as NMI or HARDIRQ. Due to
-+ * locking constrains it will _always_ fail to acquire the lock on PREEMPT_RT.
-+ */
-+#define localtry_trylock_irqsave(lock, flags)				\
-+	__localtry_trylock_irqsave(lock, flags)
-+
-+/**
-+ * local_unlock - Release a per CPU local lock
-+ * @lock:	The lock variable
-+ */
-+#define localtry_unlock(lock)		__localtry_unlock(lock)
-+
-+/**
-+ * local_unlock_irq - Release a per CPU local lock and enable interrupts
-+ * @lock:	The lock variable
-+ */
-+#define localtry_unlock_irq(lock)		__localtry_unlock_irq(lock)
-+
-+/**
-+ * localtry_unlock_irqrestore - Release a per CPU local lock and restore
-+ *			      interrupt flags
-+ * @lock:	The lock variable
-+ * @flags:      Interrupt flags to restore
-+ */
-+#define localtry_unlock_irqrestore(lock, flags)			\
-+	__localtry_unlock_irqrestore(lock, flags)
-+
- DEFINE_GUARD(local_lock, local_lock_t __percpu*,
- 	     local_lock(_T),
- 	     local_unlock(_T))
-diff --git a/include/linux/local_lock_internal.h b/include/linux/local_lock_internal.h
-index 8dd71fbbb6d2..c1369b300777 100644
---- a/include/linux/local_lock_internal.h
-+++ b/include/linux/local_lock_internal.h
-@@ -15,6 +15,11 @@ typedef struct {
- #endif
- } local_lock_t;
- 
-+typedef struct {
-+	local_lock_t	llock;
-+	unsigned int	acquired;
-+} localtry_lock_t;
-+
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
- # define LOCAL_LOCK_DEBUG_INIT(lockname)		\
- 	.dep_map = {					\
-@@ -31,6 +36,13 @@ static inline void local_lock_acquire(local_lock_t *l)
- 	l->owner = current;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 7b3503d12aaf..f3af615f727c 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1722,7 +1722,7 @@ void mem_cgroup_print_oom_group(struct mem_cgroup *memcg)
  }
  
-+static inline void local_trylock_acquire(local_lock_t *l)
-+{
-+	lock_map_acquire_try(&l->dep_map);
-+	DEBUG_LOCKS_WARN_ON(l->owner);
-+	l->owner = current;
-+}
-+
- static inline void local_lock_release(local_lock_t *l)
+ struct memcg_stock_pcp {
+-	local_lock_t stock_lock;
++	localtry_lock_t stock_lock;
+ 	struct mem_cgroup *cached; /* this never be root cgroup */
+ 	unsigned int nr_pages;
+ 
+@@ -1737,7 +1737,7 @@ struct memcg_stock_pcp {
+ #define FLUSHING_CACHED_CHARGE	0
+ };
+ static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg_stock) = {
+-	.stock_lock = INIT_LOCAL_LOCK(stock_lock),
++	.stock_lock = INIT_LOCALTRY_LOCK(stock_lock),
+ };
+ static DEFINE_MUTEX(percpu_charge_mutex);
+ 
+@@ -1756,7 +1756,8 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
+  *
+  * returns true if successful, false otherwise.
+  */
+-static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
++static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages,
++			  gfp_t gfp_mask)
  {
- 	DEBUG_LOCKS_WARN_ON(l->owner != current);
-@@ -45,11 +57,13 @@ static inline void local_lock_debug_init(local_lock_t *l)
- #else /* CONFIG_DEBUG_LOCK_ALLOC */
- # define LOCAL_LOCK_DEBUG_INIT(lockname)
- static inline void local_lock_acquire(local_lock_t *l) { }
-+static inline void local_trylock_acquire(local_lock_t *l) { }
- static inline void local_lock_release(local_lock_t *l) { }
- static inline void local_lock_debug_init(local_lock_t *l) { }
- #endif /* !CONFIG_DEBUG_LOCK_ALLOC */
+ 	struct memcg_stock_pcp *stock;
+ 	unsigned int stock_pages;
+@@ -1766,7 +1767,11 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+ 	if (nr_pages > MEMCG_CHARGE_BATCH)
+ 		return ret;
  
- #define INIT_LOCAL_LOCK(lockname)	{ LOCAL_LOCK_DEBUG_INIT(lockname) }
-+#define INIT_LOCALTRY_LOCK(lockname)	{ .llock = { LOCAL_LOCK_DEBUG_INIT(lockname.llock) }}
+-	local_lock_irqsave(&memcg_stock.stock_lock, flags);
++	if (!localtry_trylock_irqsave(&memcg_stock.stock_lock, flags)) {
++		if (!gfpflags_allow_spinning(gfp_mask))
++			return ret;
++		localtry_lock_irqsave(&memcg_stock.stock_lock, flags);
++	}
  
- #define __local_lock_init(lock)					\
- do {								\
-@@ -118,6 +132,86 @@ do {								\
- #define __local_unlock_nested_bh(lock)				\
- 	local_lock_release(this_cpu_ptr(lock))
+ 	stock = this_cpu_ptr(&memcg_stock);
+ 	stock_pages = READ_ONCE(stock->nr_pages);
+@@ -1775,7 +1780,7 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+ 		ret = true;
+ 	}
  
-+/* localtry_lock_t variants */
-+
-+#define __localtry_lock_init(lock)				\
-+do {								\
-+	__local_lock_init(&(lock)->llock);			\
-+	WRITE_ONCE(&(lock)->acquired, 0);			\
-+} while (0)
-+
-+#define __localtry_lock(lock)					\
-+	do {							\
-+		localtry_lock_t *lt;				\
-+		preempt_disable();				\
-+		lt = this_cpu_ptr(lock);			\
-+		local_lock_acquire(&lt->llock);			\
-+		WRITE_ONCE(lt->acquired, 1);			\
-+	} while (0)
-+
-+#define __localtry_lock_irq(lock)				\
-+	do {							\
-+		localtry_lock_t *lt;				\
-+		local_irq_disable();				\
-+		lt = this_cpu_ptr(lock);			\
-+		local_lock_acquire(&lt->llock);			\
-+		WRITE_ONCE(lt->acquired, 1);			\
-+	} while (0)
-+
-+#define __localtry_lock_irqsave(lock, flags)			\
-+	do {							\
-+		localtry_lock_t *lt;				\
-+		local_irq_save(flags);				\
-+		lt = this_cpu_ptr(lock);			\
-+		local_lock_acquire(&lt->llock);			\
-+		WRITE_ONCE(lt->acquired, 1);			\
-+	} while (0)
-+
-+#define __localtry_trylock_irqsave(lock, flags)			\
-+	({							\
-+		localtry_lock_t *lt;				\
-+		bool _ret;					\
-+								\
-+		local_irq_save(flags);				\
-+		lt = this_cpu_ptr(lock);			\
-+		if (!READ_ONCE(lt->acquired)) {			\
-+			WRITE_ONCE(lt->acquired, 1);		\
-+			local_trylock_acquire(&lt->llock);	\
-+			_ret = true;				\
-+		} else {					\
-+			_ret = false;				\
-+			local_irq_restore(flags);		\
-+		}						\
-+		_ret;						\
-+	})
-+
-+#define __localtry_unlock(lock)					\
-+	do {							\
-+		localtry_lock_t *lt;				\
-+		lt = this_cpu_ptr(lock);			\
-+		WRITE_ONCE(lt->acquired, 0);			\
-+		local_lock_release(&lt->llock);			\
-+		preempt_enable();				\
-+	} while (0)
-+
-+#define __localtry_unlock_irq(lock)				\
-+	do {							\
-+		localtry_lock_t *lt;				\
-+		lt = this_cpu_ptr(lock);			\
-+		WRITE_ONCE(lt->acquired, 0);			\
-+		local_lock_release(&lt->llock);			\
-+		local_irq_enable();				\
-+	} while (0)
-+
-+#define __localtry_unlock_irqrestore(lock, flags)		\
-+	do {							\
-+		localtry_lock_t *lt;				\
-+		lt = this_cpu_ptr(lock);			\
-+		WRITE_ONCE(lt->acquired, 0);			\
-+		local_lock_release(&lt->llock);			\
-+		local_irq_restore(flags);			\
-+	} while (0)
-+
- #else /* !CONFIG_PREEMPT_RT */
+-	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
++	localtry_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+ 
+ 	return ret;
+ }
+@@ -1814,14 +1819,14 @@ static void drain_local_stock(struct work_struct *dummy)
+ 	 * drain_stock races is that we always operate on local CPU stock
+ 	 * here with IRQ disabled
+ 	 */
+-	local_lock_irqsave(&memcg_stock.stock_lock, flags);
++	localtry_lock_irqsave(&memcg_stock.stock_lock, flags);
+ 
+ 	stock = this_cpu_ptr(&memcg_stock);
+ 	old = drain_obj_stock(stock);
+ 	drain_stock(stock);
+ 	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
+ 
+-	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
++	localtry_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+ 	obj_cgroup_put(old);
+ }
+ 
+@@ -1851,9 +1856,20 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+ {
+ 	unsigned long flags;
+ 
+-	local_lock_irqsave(&memcg_stock.stock_lock, flags);
++	if (!localtry_trylock_irqsave(&memcg_stock.stock_lock, flags)) {
++		/*
++		 * In case of unlikely failure to lock percpu stock_lock
++		 * uncharge memcg directly.
++		 */
++		if (mem_cgroup_is_root(memcg))
++			return;
++		page_counter_uncharge(&memcg->memory, nr_pages);
++		if (do_memsw_account())
++			page_counter_uncharge(&memcg->memsw, nr_pages);
++		return;
++	}
+ 	__refill_stock(memcg, nr_pages);
+-	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
++	localtry_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+ }
  
  /*
-@@ -125,8 +219,10 @@ do {								\
-  * critical section while staying preemptible.
-  */
- typedef spinlock_t local_lock_t;
-+typedef spinlock_t localtry_lock_t;
+@@ -2196,9 +2212,13 @@ int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	unsigned long pflags;
  
- #define INIT_LOCAL_LOCK(lockname) __LOCAL_SPIN_LOCK_UNLOCKED((lockname))
-+#define INIT_LOCALTRY_LOCK(lockname) INIT_LOCAL_LOCK(lockname)
+ retry:
+-	if (consume_stock(memcg, nr_pages))
++	if (consume_stock(memcg, nr_pages, gfp_mask))
+ 		return 0;
  
- #define __local_lock_init(l)					\
- 	do {							\
-@@ -169,4 +265,31 @@ do {								\
- 	spin_unlock(this_cpu_ptr((lock)));			\
- } while (0)
++	if (!gfpflags_allow_spinning(gfp_mask))
++		/* Avoid the refill and flush of the older stock */
++		batch = nr_pages;
++
+ 	if (!do_memsw_account() ||
+ 	    page_counter_try_charge(&memcg->memsw, batch, &counter)) {
+ 		if (page_counter_try_charge(&memcg->memory, batch, &counter))
+@@ -2709,7 +2729,7 @@ static void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+ 	unsigned long flags;
+ 	int *bytes;
  
-+/* localtry_lock_t variants */
-+
-+#define __localtry_lock_init(lock)			__local_lock_init(lock)
-+#define __localtry_lock(lock)				__local_lock(lock)
-+#define __localtry_lock_irq(lock)			__local_lock(lock)
-+#define __localtry_lock_irqsave(lock, flags)		__local_lock_irqsave(lock, flags)
-+#define __localtry_unlock(lock)				__local_unlock(lock)
-+#define __localtry_unlock_irq(lock)			__local_unlock(lock)
-+#define __localtry_unlock_irqrestore(lock, flags)	__local_unlock_irqrestore(lock, flags)
-+
-+#define __localtry_trylock_irqsave(lock, flags)			\
-+	({							\
-+		int __locked;					\
-+								\
-+		typecheck(unsigned long, flags);		\
-+		flags = 0;					\
-+		if (in_nmi() | in_hardirq()) {			\
-+			__locked = 0;				\
-+		} else {					\
-+			migrate_disable();			\
-+			__locked = spin_trylock(this_cpu_ptr((lock)));	\
-+			if (!__locked)				\
-+				migrate_enable();		\
-+		}						\
-+		__locked;					\
-+	})
-+
- #endif /* CONFIG_PREEMPT_RT */
+-	local_lock_irqsave(&memcg_stock.stock_lock, flags);
++	localtry_lock_irqsave(&memcg_stock.stock_lock, flags);
+ 	stock = this_cpu_ptr(&memcg_stock);
+ 
+ 	/*
+@@ -2762,7 +2782,7 @@ static void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+ 	if (nr)
+ 		__mod_objcg_mlstate(objcg, pgdat, idx, nr);
+ 
+-	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
++	localtry_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+ 	obj_cgroup_put(old);
+ }
+ 
+@@ -2772,7 +2792,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+ 	unsigned long flags;
+ 	bool ret = false;
+ 
+-	local_lock_irqsave(&memcg_stock.stock_lock, flags);
++	localtry_lock_irqsave(&memcg_stock.stock_lock, flags);
+ 
+ 	stock = this_cpu_ptr(&memcg_stock);
+ 	if (objcg == READ_ONCE(stock->cached_objcg) && stock->nr_bytes >= nr_bytes) {
+@@ -2780,7 +2800,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+ 		ret = true;
+ 	}
+ 
+-	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
++	localtry_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+ 
+ 	return ret;
+ }
+@@ -2872,7 +2892,7 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+ 	unsigned long flags;
+ 	unsigned int nr_pages = 0;
+ 
+-	local_lock_irqsave(&memcg_stock.stock_lock, flags);
++	localtry_lock_irqsave(&memcg_stock.stock_lock, flags);
+ 
+ 	stock = this_cpu_ptr(&memcg_stock);
+ 	if (READ_ONCE(stock->cached_objcg) != objcg) { /* reset if necessary */
+@@ -2890,7 +2910,7 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+ 		stock->nr_bytes &= (PAGE_SIZE - 1);
+ 	}
+ 
+-	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
++	localtry_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+ 	obj_cgroup_put(old);
+ 
+ 	if (nr_pages)
 -- 
 2.43.5
 
