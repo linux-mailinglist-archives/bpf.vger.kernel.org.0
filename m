@@ -1,152 +1,156 @@
-Return-Path: <bpf+bounces-51248-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51249-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34AD4A3264C
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 13:52:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20D93A32722
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 14:31:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E21301691E6
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 12:52:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A2EA1882800
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 13:30:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B26B620D4E1;
-	Wed, 12 Feb 2025 12:52:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560E420E709;
+	Wed, 12 Feb 2025 13:30:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="RnqjVrAS"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="bI9eezHu"
 X-Original-To: bpf@vger.kernel.org
-Received: from out162-62-57-137.mail.qq.com (out162-62-57-137.mail.qq.com [162.62.57.137])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C5102046B5;
-	Wed, 12 Feb 2025 12:52:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.137
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55830205ABC
+	for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 13:30:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739364743; cv=none; b=hMWR0f7z0J+zKPwUN+UKMevUL9hZukRbKzvJ7+kGuaytHXkrheeie/70GnnyeYnDVz9OuOG0FHEdzLb6Qnejc3dnrGII5WIJM5xt3XkTTojtfOkLK47saeyLI/fcrHr5cIaSZo7nLCFvZZSj5HCkO2MsXPyZZL2wiurw0I+1Xxc=
+	t=1739367031; cv=none; b=fGhr3B6jmxxrEcIask1BEz2e3ZOHwm0oZq0rIxNF4LR0tTnC2bDp6NqtyKS5cXcyBLajrBKB3bJZ81z641bUv3NyRVlKOnNksqlFwWNz2OSyEbxspz6vpDV9Pk6mkyKGCJSqK4eeQ9z35O6W/wnVn5wiolwKf2h0GQnH7rUn5zM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739364743; c=relaxed/simple;
-	bh=0HUJCUu1wgMcgDDTi7Bg/sYak+QPi7iL6RR8eCGvuUM=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=iGGWjDV7quwpi3PELMdnY2thArirOPwwfvq8GfWCbZsQs66sLIUUXaTE4iR/7WA/07oQhKRpyuenH54cK8CBMxjg1W5AbaLY7Z73R0/iCLAqTZZ/8svtM62EjvpUXjlSXwhr+qwbn2tdnDJFqWFErKqDw+lYQJ7Q8+jA1QrAdGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=RnqjVrAS; arc=none smtp.client-ip=162.62.57.137
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1739364726;
-	bh=+XIDPqjGUvxmjKTI7q2+Nz1Yuu2Dud+hxdGsctS0pCM=;
-	h=From:To:Cc:Subject:Date;
-	b=RnqjVrAS5ToUAMZ4e/ATqtEkPmwTFWL50N/eICCOaGWR2nGcwxX+0Dz/JR2muHLqJ
-	 LxPI+vG6m7gSJzEHOJUzTi6scc8Imauk61Ud+KGSZ5eJahyDt6EqZmXg74pC++TGnq
-	 MsAUWPcpDxI27GAlsLkLOJL/SxTwdnZz/k6TbydY=
-Received: from f41.lan ([240e:305:1b95:d110:7285:c2ff:fe86:1af4])
-	by newxmesmtplogicsvrszc13-0.qq.com (NewEsmtp) with SMTP
-	id B758387A; Wed, 12 Feb 2025 20:45:53 +0800
-X-QQ-mid: xmsmtpt1739364353tcm46gffh
-Message-ID: <tencent_B44B3A95F0D7C2512DC40D831DA1FA2C9907@qq.com>
-X-QQ-XMAILINFO: N2bAIxLK0elnyafZvAS7NlnEeBNBU/rEwUIhb3bMQDt445BhsBLzRZX+Y/XPhu
-	 daivaUk+OV7owFM2QKnC/yqkalI6HNlPutLjgFrFWAsRYcNLdtuTSPkUKapeyd7z1yCKP6ehXYu2
-	 o+u86QgQd102TcsTdtIMD6ZtOU5V2dwYZaryuO5fKPT6BuLfdXzVKAyah7OrQ1fWoIAdsEBGmH4K
-	 bhJ819uxIIEhL+Tp3MJQqovaQGu0jAp/+gsM+bWtxVfcSY7qPAAHEn8cismo9SOTYh/DKwJrJyMd
-	 TofmE45VkmdLXh+S4wyedoXG3S/8zO3ojBDLuUQiz9ChX56OF5Oa/1Kf3uZg8S+Mpd4FkausBwDo
-	 AITFU2CAEOKGeQ4tbhq3Abo+YhwEGRW1GYvwJSEOzxCPYaloEDVXBzYcpKSmv4ScUra9CjxkZdZ3
-	 atyj0QTyhgKzo5SS8WGe4/8wgP5u9kQqDEqPSBrXYRMy9RgvWmkeP8jg6f6/tzoXIH6YeJuKiqL7
-	 qzTs0PxvqfycTokxh8CV2ZMBD4G18eyIb0rSlLtSESPMa/RbiRvrB64dtlHqVO3wa/+LsJCfneDa
-	 O2Som2NC9dHTis5Q/77BL9AjKkseuEmV6rRasW2txq1Z0s8+nB+iOIhcN1wtDLTPa3vgEftCW71B
-	 hxjI9jutCxvYCPBhmeob3KuMQ4PWjDpzMXh6R6QSpK5p64szp5Tf2cX5THaYu7TannLbv/yonjR3
-	 IgBsVG253+ccraaB+m9vK9nyM8Ktxf8itC4zGkIXlqe9nxu5cLSq2PHHs5E4lE8yqAgYPdcGzxrw
-	 9rdsH4Y5k0oaRWSY1xN6C/sloc43k0GnbH6d+rjl7l+DTWXAcD/LilkccLVmXDvakOxT34U5uz2Z
-	 7sBY6alEgm+BWvp/xAMA/TtyRieVZYVObBpsUklNEf0B9AS82UAKDVtmZaKHpEeDyppUTxTZZkH5
-	 TA1ZjMVOp02Ohzs9j2ctGEl0M6nxFHeqOxA/g+CTNp6BkByfVD6mmZOlFDAa4mEgyc5XMBEyw=
-X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
-From: Rong Tao <rtoax@foxmail.com>
-To: andrii@kernel.org,
-	qmo@kernel.org,
-	ast@kernel.org
-Cc: rongtao@cestc.cn,
-	rtoax@foxmail.com,
+	s=arc-20240116; t=1739367031; c=relaxed/simple;
+	bh=cppRDKTH5X7+PhdoGd1D1mSrJYsVfO2+TtgwU+r5HiM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dtsgRoP8V0v9pLIb2uJMBN9gUgLjRwkoVSR6pzGBTieBY3HXtKfhx+vOaPRUQ6ovPR0t++ajr4gHK6srxS0lHxT5I51xgs3GxOkYSkcE8RHT02bKzbv/psFpggjm/x0O1IUbPHpxXhaet7KrqLc1FDPkTMfYJ09t5Cr0riw9r2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=bI9eezHu; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-220c4159f87so6767845ad.0
+        for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 05:30:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1739367029; x=1739971829; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bq7SdSXo+JhFwWwHQa7/twUcE0+PVputBf+G7gcfT+Q=;
+        b=bI9eezHuZ1YRlXLL26JDblxdtNGRFf09dr3q1mu7Lynz47ayzTiLJjJhKXhTy/9k+B
+         0D4ITt6y8zAWEjZ/FVrGl4QY3nS95UcnG7ba0x7HqugSdeMpRZFhqv9YE4C5N+qjDbQe
+         LoFfdGwBDdNyt6mq/GpTEhAdKGpI+BpwLuogA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739367029; x=1739971829;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bq7SdSXo+JhFwWwHQa7/twUcE0+PVputBf+G7gcfT+Q=;
+        b=IPoQf9gVVX/WFJKAxc35DS62iSoSq3RvCCifZ62txPAokX8+OxTyeAdFczYmg3AnYt
+         webU0C3RR67amJCls6u1Are1HWCjlPrzhPpP9viDNZP8S1/9BZRjbYRGD62eVfvnNCkB
+         xvk1ht7IjyYJ+4LNS+5BoC5FicuBQqmGcZKYIb6ZCE4h6G/pv8pLEl8Qr1CS438R7L10
+         T/3ByQeAgrznG81DZ3rJ+MgdsmVxsO28ZKx9QtuoKvkhBqL+ROpb/Sdx7hg7MpzeoSQ/
+         OG4CWhiLFa4mzOC/oOR4y27FZF5+UlR+MyIioc7T7yKQoVxsex5MPT0tCrkVaH13YgN3
+         nBlA==
+X-Forwarded-Encrypted: i=1; AJvYcCWQYl6b3JUF53N5u2NdKFbCbdAvOchnaYuYO2dV4rolHgZZ2ueByo0UWaVROOa61FLC9/U=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw6Lo4Leht5WY277gyGLSFIOc4nm1eFHG4JTLK1ENOnuJqy4lYC
+	IpjWzVtccl59ZOcjURm6CHm6/K+3ctuQ4LpNAiGz81yVK+73uqBZp4gwaxzAsNM=
+X-Gm-Gg: ASbGncu3wCbFM64HZ0NrJhvyCfis1XxLBT1flwb11/WSb52doyFiK98+gsSyEc23bg9
+	vQfBIxiErbyFyjF+6y46ZPpsw2EU9zRW9Pl51A+3jXYKzrKNGmXl7YZlay+Uqao75tqgHleYIa+
+	agisAeprepnskitMJpD9gO/osrqIErV+HJOCBNF/TYlw3dFepUQQRYmKHl/qzgW2lBg9IDqSXUk
+	xt7nZIxyewDTybfiRyy8dbu99Or5HVtVm3yvchyues0hRulq0fLqvinTG73HD7WVFy9uQSVZ7HQ
+	IMYnH5D1ChkAcmALbbNbICovj9YaceIMDS4THoUA67pkrUsvaphIHizA5A==
+X-Google-Smtp-Source: AGHT+IE/UeUsPjMO1gpNMj4yctOpDIpP/4atL2aTr+WokGGBV4mZ/QiJjiwEjLs7hX6m+RhsVtK1Fg==
+X-Received: by 2002:a17:90a:fc46:b0:2fa:1a23:c01d with SMTP id 98e67ed59e1d1-2fbf5c10491mr4674200a91.21.1739367029580;
+        Wed, 12 Feb 2025 05:30:29 -0800 (PST)
+Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fbf98b4c52sm1448513a91.4.2025.02.12.05.30.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Feb 2025 05:30:29 -0800 (PST)
+Date: Wed, 12 Feb 2025 05:30:26 -0800
+From: Joe Damato <jdamato@fastly.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Stanislav Fomichev <stfomichev@gmail.com>,
+	Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+	horms@kernel.org, Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Shuah Khan <shuah@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	bpf@vger.kernel.org (open list:BPF [TOOLING] (bpftool)),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH bpf-next v4] bpftool: Check map name length when map create
-Date: Wed, 12 Feb 2025 20:45:52 +0800
-X-OQ-MSGID: <20250212124552.9247-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.48.1
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next v6 3/3] selftests: drv-net: Test queue xsk
+ attribute
+Message-ID: <Z6yiciovTsNpIAJA@LQ3V64L9R2>
+Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Stanislav Fomichev <stfomichev@gmail.com>,
+	Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+	horms@kernel.org, Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Shuah Khan <shuah@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>
+References: <20250210193903.16235-1-jdamato@fastly.com>
+ <20250210193903.16235-4-jdamato@fastly.com>
+ <13afab27-2066-4912-b8f6-15ee4846e802@redhat.com>
+ <Z6uM1IDP9JgvGvev@LQ3V64L9R2>
+ <Z6urp3d41nvBoSbG@LQ3V64L9R2>
+ <Z6usZlrFJShn67su@mini-arch>
+ <Z6vRD0agypHWDGkG@LQ3V64L9R2>
+ <Z6vY_LXp3LTp7qWV@mini-arch>
+ <20250211183706.5b53ee5e@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250211183706.5b53ee5e@kernel.org>
 
-From: Rong Tao <rongtao@cestc.cn>
+On Tue, Feb 11, 2025 at 06:37:06PM -0800, Jakub Kicinski wrote:
+> On Tue, 11 Feb 2025 15:10:52 -0800 Stanislav Fomichev wrote:
+> > > I can't comment on NIPA because I have no idea how it works. Maybe
+> > > there is a kernel with some options enabled and other kernels with
+> > > various options disabled?  
+> > 
+> > Sorry, should've been more clear. My suggestion is to add 
+> > CONFIG_XDP_SOCKETS to tools/testing/selftests/drivers/net/config
+> > to make your new testcase run in a proper environment with XSKs enabled.
+> 
+> +1 this we need for sure
 
-The size of struct bpf_map::name is BPF_OBJ_NAME_LEN (16).
+OK will do.
+ 
+> > > I wonder if that's a separate issue though?
+> > >
+> > > In other words: maybe writing the test as I've mentioned above so it
+> > > works regardless of whether CONFIG_XDP_SOCKETS is set or not is a
+> > > good idea just on its own?
+> > > 
+> > > I'm just not sure if there's some other pattern I should be
+> > > following other than what I proposed above. I'm hesitant to re-spin
+> > > until I get feedback on the proposed approach.  
+> > 
+> > I'd keep your test as is (fail hard if XSK is not there), but 
+> > let's see if Paolo/Jakub have any other suggestions.
+> 
+> No strong preference. Stan is right that validating the environment 
+> is definitely a non-goal for the upstream tests. But if you already
+> added and tested the checks Joe you can keep them, up to you.
 
-bpf(2) {
-  map_create() {
-    bpf_obj_name_cpy(map->name, attr->map_name, sizeof(attr->map_name));
-  }
-}
-
-When specifying a map name using bpftool map create name, no error is
-reported if the name length is greater than 15.
-
-    $ sudo bpftool map create /sys/fs/bpf/12345678901234567890 \
-        type array key 4 value 4 entries 5 name 12345678901234567890
-
-Users will think that 12345678901234567890 is legal, but this name cannot
-be used to index a map.
-
-    $ sudo bpftool map show name 12345678901234567890
-    Error: can't parse name
-
-    $ sudo bpftool map show
-    ...
-    1249: array  name 123456789012345  flags 0x0
-    	key 4B  value 4B  max_entries 5  memlock 304B
-
-    $ sudo bpftool map show name 123456789012345
-    1249: array  name 123456789012345  flags 0x0
-    	key 4B  value 4B  max_entries 5  memlock 304B
-
-The map name provided in the command line is truncated, but no warning is
-reported. This submission checks the length of the map name.
-
-Reviewed-by: Quentin Monnet <qmo@kernel.org>
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
----
-v3: https://lore.kernel.org/lkml/tencent_AF066A426F591F977D2A73AF00A34A883808@qq.com/
-v2: https://lore.kernel.org/lkml/tencent_26592A2BAF08A3A688A50600421559929708@qq.com/
-v1: https://lore.kernel.org/lkml/tencent_1C4444032C2188ACD04B4995B0D78F510607@qq.com/
----
- tools/bpf/bpftool/map.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-index ed4a9bd82931..81cc668b4b05 100644
---- a/tools/bpf/bpftool/map.c
-+++ b/tools/bpf/bpftool/map.c
-@@ -1270,6 +1270,10 @@ static int do_create(int argc, char **argv)
- 		} else if (is_prefix(*argv, "name")) {
- 			NEXT_ARG();
- 			map_name = GET_ARG();
-+			if (strlen(map_name) > BPF_OBJ_NAME_LEN - 1) {
-+				p_info("Warning: map name is longer than %u characters, it will be truncated.",
-+				      BPF_OBJ_NAME_LEN - 1);
-+			}
- 		} else if (is_prefix(*argv, "key")) {
- 			if (parse_u32_arg(&argc, &argv, &key_size,
- 					  "key size"))
--- 
-2.48.1
-
+OK. I guess I'll just leave them? They are as described earlier in
+the thread.
 
