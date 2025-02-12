@@ -1,743 +1,335 @@
-Return-Path: <bpf+bounces-51273-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51274-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D315A32B13
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 17:03:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8260DA32C71
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 17:51:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE5D3163172
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 16:03:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17026188C49A
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 16:51:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F054211719;
-	Wed, 12 Feb 2025 16:03:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9B37253F0A;
+	Wed, 12 Feb 2025 16:50:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vNAkOXdw"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="KlrPoGZp"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2056.outbound.protection.outlook.com [40.107.243.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF33D1D89E4;
-	Wed, 12 Feb 2025 16:03:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739376231; cv=none; b=j8GjbfMkoOLbbIMtajwAmBfkYhPcP9QKH2/5rz1P7xaUAal6q1aGiSKIo6blcVbBN0u67VwuB12zN/gMfVQnDX7ISU6Eiyu45DBWFiy66TWFF5VAi3fHxGS6uCCzs3XbiPbtBqwqlXs/dIXaeQl08MXM215csNvz7NMtEJb94T4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739376231; c=relaxed/simple;
-	bh=2JKdaQTpWO1Q3gTWst66vYJLHfh8N2qQrRkclzb0nR8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MGTNo//O/ZiNLp2Srdlv4E3wwV8TytLto6XFtPPTxhhsFJonR6eiRu3SyKYOYra98qObuxeistldpDbBxP0JxGmIyWMbCZCOGfeksVC6RbTtOhUEXJ3E/dfwcLwCSgiiOxjfxep+yiZREItErn2zR5ZkOTj32krzCdubcZhJMU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vNAkOXdw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5ABA6C4CEDF;
-	Wed, 12 Feb 2025 16:03:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739376231;
-	bh=2JKdaQTpWO1Q3gTWst66vYJLHfh8N2qQrRkclzb0nR8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=vNAkOXdwDnMgG6kKP0fyQhHC+hJcvkde0NpgpYjoC7OWF68N0l+T1dVgysHxa9CEW
-	 Xw2U7m8TdQuEI2o56CC7IO6qCPFhMLQKMMQri9r/UFN4xETp0otKt2WZQ3xFVAvszS
-	 4xWeRWz+bNwIwMUjzTFi+zz1XzAQfMhx7zV5slaomDMn2utIpoeqjCJJEcIO6havxJ
-	 EB+y8srOlQjhVOybEZMHKwMHzK+mw6QaGOHFeEY08E3T5P0Axb3+NqBW+3mWcxuUcs
-	 CXrBU5teTYEw6EKb3HhtPK0FpF0yEsp91NsRelc1GdYSPQI5xBigqU4sBvsxKS4ueP
-	 /hbuJaKeIIdDQ==
-Message-ID: <85bb807f-7ad6-4245-95cd-ccecbc1817de@kernel.org>
-Date: Wed, 12 Feb 2025 18:03:42 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 653FF253B4B;
+	Wed, 12 Feb 2025 16:50:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.56
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1739379037; cv=fail; b=WfuroiItxdVj2CuhGevNqnT5ckJ9OqR/67INx4kpywL52rZHE5mHbRGOcbhvqY++pk1W/EXB2bgLiNxaJ9+wxnLVnm8++K02AMB5pul+QNBvAoMbQy00Ftk1vbxr1iYQfCTbvmDo1/Bna1PcbjssyLGZ3hvTSSKlvP1gaKu6lM4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1739379037; c=relaxed/simple;
+	bh=lWucKejBs1Lm4z74Gljw96+nGzwFTJN9BWQfjzT+zW0=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=pAd30utJKGzEiC6KBmnDnMPGJ/jGFdEo3uF5tiwbf2oU2aBBCS3aL8ggkweyG4OiB0Ok+IM88yt7dpSYzGP1vvQvy4GiAtoUSTIs7P6DMLsFLqH5GyZCq7X0I8Hv5hGRAKvd04mb8W8MHs8zEXd78jCGeFtA1EN310U8Evn2QxM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=KlrPoGZp; arc=fail smtp.client-ip=40.107.243.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=C0sc85wu6X8s7m0wV74FycrveMMFhSeWZXOoL5FylCi0c9oM9MoOtJvzchrVxHQuWDMoqGJAYjTOSYeEl+eLakd+mksyU3yfmW0ZrS85dFlMRyH/BbCL4yA2OQ47om3sAUY2IZcjAaNhCVILOKKT6/r84qkcb//QIr2Uu9AjTSZHWKPXiReEGleFBVf1hxS4axRw8ioGcF8avwGhdMJQX8+Z/2gMJITq7USoNibMuYBD1HGBTUXpjMODrqGY2Dw/Rqhw7sk8Tp/Ly2DsAhkadMO4YGIqDrPVnyheOg+e2QhfCPKOoC1SM8AtX49AVjfJqSVXULK0FcVcIuNYgx60Bw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8GmhcK041D9yHoJrL9s451HcSI1UCE3IKQNVViwGhDw=;
+ b=ODlEz7/F/RVTNOXuoR2tTQCNhf7OmYD/B0vg1c0S442PMGEVjjmRdrv4wNWJ8noZPzBOJqqubY7/aaS8KTAZQc/N6/X4ZVfvklY0lPYDzz6NSdUmiLd6opYnlD1ntaTZkCl8b5QGjj6nZWSEsJgskB3KT3/t/KSLRfmo1xtH9Z0z2G6aRb10DnW2qJCoOHQH45knqNj0UBKKOncrewmKEf5P6sO0Wt28LI1H9wB5b74imabu/fMefz+RuNvc8E3KlFbQQcgyT9j/aR1UHwtC0sc/HPPxz1Y0MyuLqKYFmEYwOWYkq4qDo6QsKbv61r1VRm+/NypZk678RXXwHXHbVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8GmhcK041D9yHoJrL9s451HcSI1UCE3IKQNVViwGhDw=;
+ b=KlrPoGZpEeWWhWg03Ag+sEyO+iqHIqHL72Lf08pQ70cAZJcssPLNfkEera8Se4XazBWlJs8Dw7z8Rfu/mRdzb63mVBSCwXOyhK2JCzCx1QyVMkLh5igoTvSbycnRv/boV7rTA/p+bBZ5NL1bTphGkx37PD/JNgcw6MSdqrE50E6tiOl/IK+9fGSG/EfllgjR6zoKp94Dr5mST2CcIceA5yYkSZJwuAXAheIilbdPHdSXdd5JdlHsdyEv+7K5AczwoM81/ZTRJTamMV0JQWYnwmpWsfYp3Y6+MUfm+xS5gXeiFmbQ/DZfwuqHatt+vW4B0jnGmqxWxZWQWw4R/+OcVA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CY5PR12MB6405.namprd12.prod.outlook.com (2603:10b6:930:3e::17)
+ by SN7PR12MB7177.namprd12.prod.outlook.com (2603:10b6:806:2a5::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8422.18; Wed, 12 Feb
+ 2025 16:50:29 +0000
+Received: from CY5PR12MB6405.namprd12.prod.outlook.com
+ ([fe80::2119:c96c:b455:53b5]) by CY5PR12MB6405.namprd12.prod.outlook.com
+ ([fe80::2119:c96c:b455:53b5%7]) with mapi id 15.20.8445.013; Wed, 12 Feb 2025
+ 16:50:28 +0000
+From: Andrea Righi <arighi@nvidia.com>
+To: Tejun Heo <tj@kernel.org>,
+	David Vernet <void@manifault.com>,
+	Changwoo Min <changwoo@igalia.com>
+Cc: Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Ian May <ianm@nvidia.com>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCHSET v11 sched_ext/for-6.15] sched_ext: split global idle cpumask into per-NUMA cpumasks
+Date: Wed, 12 Feb 2025 17:48:07 +0100
+Message-ID: <20250212165006.490130-1-arighi@nvidia.com>
+X-Mailer: git-send-email 2.48.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: FR5P281CA0009.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:f2::8) To CY5PR12MB6405.namprd12.prod.outlook.com
+ (2603:10b6:930:3e::17)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 3/3] net: ti: icssg-prueth: Add XDP support
-To: Meghana Malladi <m-malladi@ti.com>, danishanwar@ti.com,
- pabeni@redhat.com, kuba@kernel.org, edumazet@google.com,
- davem@davemloft.net, andrew+netdev@lunn.ch
-Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- u.kleine-koenig@baylibre.com, krzysztof.kozlowski@linaro.org,
- dan.carpenter@linaro.org, schnelle@linux.ibm.com, glaroque@baylibre.com,
- rdunlap@infradead.org, diogo.ivo@siemens.com, jan.kiszka@siemens.com,
- john.fastabend@gmail.com, hawk@kernel.org, daniel@iogearbox.net,
- ast@kernel.org, srk@ti.com, Vignesh Raghavendra <vigneshr@ti.com>
-References: <20250210103352.541052-1-m-malladi@ti.com>
- <20250210103352.541052-4-m-malladi@ti.com>
-Content-Language: en-US
-From: Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20250210103352.541052-4-m-malladi@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR12MB6405:EE_|SN7PR12MB7177:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2ce01dde-9a63-42fd-ff35-08dd4b855afa
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|7416014|1800799024|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?tbKGJAzCooh2uP9ABTWjf6qC0a7PVh9OyE+DxBfOY8BNajae1eqrCO38aR8X?=
+ =?us-ascii?Q?pwAFj9Z6a4NsoUk+NPLOlED6VY79+ue/cn88hKZfZxJTBJC6Lp6j1C6fM6Zm?=
+ =?us-ascii?Q?jmQeSoJ5pQrccjW1MN7kP1FoOLNPglkxgqY/Z6vV+n/+ZWUVaApCv7jzgLeE?=
+ =?us-ascii?Q?Mg+qoCajPqnW9TryILLO/XND2G8cKjFvelSMaKi7hYp+mZKxEjCSTazNEZxs?=
+ =?us-ascii?Q?vwfcRUxe3/UMGafiq6nXCGFTNGLQxklqX4Kj0SIweob9hQeP4+Ld/48f8spB?=
+ =?us-ascii?Q?ytawCOIsM7rs8Lrm4F2Yo411ZxSPNccal52lfYiyvxhg+9k2ZhCm2OMuYiMf?=
+ =?us-ascii?Q?BParJDbHlqmRXsWa1mz17eq5w+6dctMKc7zuC5E7lut/SOv5ssKhW8w6ZIaD?=
+ =?us-ascii?Q?EO+BihtBY3TSw33HxpOhPjJgGe2jZJAUw4thi4hlRTAnGlDiMq0G/KemWg80?=
+ =?us-ascii?Q?yzpj5FZXayBrZeVo6WDlySDu0x3YM1yoxdFrLixYOxEYvHmxNktTRUZUUsnx?=
+ =?us-ascii?Q?hGrypNNJUjBClGaSInxoH16VVJormv2Odg8jn5pMLhIafkVBzyytzAWP1JmB?=
+ =?us-ascii?Q?mjEriQDhpri1CBMc/fsVOR5DJRlkEcL+zXswhrcwaeiTo9Dn6YcM+WjSez6m?=
+ =?us-ascii?Q?qqCZ3oGFAkWN+F1kshS2VknrCZd+/QFF/AGf4kcFBFkG3YVgxTJOP/1LsAL3?=
+ =?us-ascii?Q?Wd0HuFw5PMZXFoY4WEICgA3SF1AqBcGrO/8+H1NT38YHQuWJktADts0fgdme?=
+ =?us-ascii?Q?tJklGWy61JhDe2OJJfOU+xpY3aqFagu4g07SzUfUqIoM/XrcbLeEljryIkD0?=
+ =?us-ascii?Q?ZkGUY7N5oHLMDodInDETYE5tRAG0Q4I+JqS726XgcoZW2QtCJy+2Xab4FklX?=
+ =?us-ascii?Q?6fVz0fbBKhn4ZaiAKNBMYsWtbRIitD4QCgykvG1oZ0JhEBHbi5Oi13ewLd4f?=
+ =?us-ascii?Q?wmvLSBElwCQCbwChxDw3JjJQ8pdj04YaTeLd1Hy633fGZTI7TqRbluAY1eMg?=
+ =?us-ascii?Q?iLyxLtuAWCnzEE1xAYCRO8yZm5/Z6/92yq8OazZ9HxK/T76450oH3LnxmhZC?=
+ =?us-ascii?Q?EUk60EmZZZtAPHAP86/I1rCUTYw89+fyPUF0dqH2r2kfxJ3STx827DmovaS9?=
+ =?us-ascii?Q?9CCcPe4fc1IyHcYHe//boUhOotPh/LFviuW28LhzoZu4ltaKlFGGdCBOeNa+?=
+ =?us-ascii?Q?umh+8oNk/UUDut2L2ZArfg+mfN+7aMzVNwFYV9LgcIHs/E+4GNN0hFiZZP4k?=
+ =?us-ascii?Q?T5evVvmeKWa29DrXpRXqDch6ileP2LQoWJ4cdGUg42Q4nAW7piR5zos3JBW4?=
+ =?us-ascii?Q?cdYlLTAKl+8/rXqrOYc0oycqT2oHwsF6VadlhzRFhh/aHzu+GzTLIOeZ1/IJ?=
+ =?us-ascii?Q?Ss1tTeuyoUSL9Z5FsEhUkLzHy1Ig?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6405.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(1800799024)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?AgNusAMUL5iwnhDjjjfe0C9LoiuNf25DjdusPVMA+N+KEvlwm+CAzUhwdX98?=
+ =?us-ascii?Q?N0H0JaDxMwjiIF/tECrrUDW2UftZxl/BZCWgN+Vg6+TFMeQJXYS0UFOQj4OX?=
+ =?us-ascii?Q?eHHhw8oG1IYGPMgFrL9ohaORDD0EK5Qoy2IqxKScx8OjO0u4S4TT2LHfUdZY?=
+ =?us-ascii?Q?7wNs5OlPrVwgUrZTfkwPeKrgnUIc4dUu3SJnynNuvP3dRuxjCR41U4HojIfA?=
+ =?us-ascii?Q?KphIRvNFYuPTaOqmBHwzboFpJLwcJukEVamW3uHvWPkCtpPTRrwGTFlDW4hd?=
+ =?us-ascii?Q?vTmAEA/EwYHaPSImsg9VqyFq0g2n9Qw1PL6HDncbkGoi5EKZg0wEjz/kn/sT?=
+ =?us-ascii?Q?v5gdl5wo0v18ZQ/8cUY3sjV+xSqhro3WcO0AN9LzPI8gAj1AVJGjEM8arR0R?=
+ =?us-ascii?Q?oVIRekvSyehrF8maoo3DzQmAW+IiLd/l5PpYgE3ikp50rXQEX5jLLO5aAHaA?=
+ =?us-ascii?Q?IhDQ2Ya9o7yDwxN75fTdY3gjwn55VijSGFknORA8tRkuqSNAAECb1P6ak1zC?=
+ =?us-ascii?Q?Jm33zbwc1zvhsWK9fC6JUxvFjsdZS6+lAsZLoysm358H0zD6+kJ/hfpbMPQf?=
+ =?us-ascii?Q?dPbW3+vDoDLMsusAZCvOdcSaZRozqJFkd6sun2kgRdek/8bftx7blLEe1stW?=
+ =?us-ascii?Q?EJd+HLjeE/ekZyhHVPjshYfsZq+CVFWUPwMyth9qf9lMI2Fk1PwImFggY3mt?=
+ =?us-ascii?Q?1SXgjcdeBJxUETFIHoatoFgbej2Mhzkg6ZKh9t9qsKVdUWwSE575LLxcO0mo?=
+ =?us-ascii?Q?xpNHBg7zkPZGvpbSmYroe3yJo27J0rp/TWOnyMaSgP402DV2wu1hGptdFNSR?=
+ =?us-ascii?Q?dm5nXx3mfTP82vhQxtw4qfWCFzihdKPCA40/sbykHPJ329KQnlXWZixkny41?=
+ =?us-ascii?Q?7lWIrYMfYHb1fW9NjmILafvpRb5z87CBifu+HmH4iWkdDF87cDQm1EnL5Rde?=
+ =?us-ascii?Q?S5frp032RC79syajsebXtx0VizX9uwfT6sThJpeDJTlhmL7mgjwqClbjA0rQ?=
+ =?us-ascii?Q?RUlBeG/7j37NgtcFuOomk2mScOsCZTEoOiZ5w+FlqG0ANLqb/Zi1W0iFJGwL?=
+ =?us-ascii?Q?g7JzvzGHVKlwwhkCl/YuV7YuN1B3hryysboL3a/5Lbek2+/z2NkVLnnkf47i?=
+ =?us-ascii?Q?tn1d9aN3iW7daGn3F0vOurIPrIBvfoGO3YbIY5QlGU4yTq7nVxko5Z7yuYGG?=
+ =?us-ascii?Q?dOBzTZ3XZEWAj6osiC02xFV81XS72JJfTNe6QkVYl8YIclgNrvts5eCnMKzn?=
+ =?us-ascii?Q?C/QPnz9xxqUG0VO1/eRtgctNwbMXPLYPQHcil6zhzZS/j0GFjQbX71mHRSic?=
+ =?us-ascii?Q?XlNxIbzhgoMC8LgN3bm25n1uWDKMXp0vCt2Sg2FPAXItX1EW+UGjLxkVWohW?=
+ =?us-ascii?Q?grCw4CvSbx1VfMTto6pWSU7SBkR4XgkXhA6QSYcJlTzk0P90oyKmuwzO3RVX?=
+ =?us-ascii?Q?9fySEeFs7pBR1YuGO6/QXijT+7wslV8zVZ3fWNjpVuYlNOd6PVwTHE6xuiAA?=
+ =?us-ascii?Q?lPT703UXc/i6JH/kwMe0vZH1t4M9UZygimhOl5zDWL+H3+QcJ5G2chwWpDc1?=
+ =?us-ascii?Q?Bua9IjA+jkvQr03h6iIj8AJgl33LlMk7UT2r4jX5?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ce01dde-9a63-42fd-ff35-08dd4b855afa
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6405.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2025 16:50:28.6734
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sPBpihrcHrl5zPAA+xNmqDB7ewMJfqtpqmF+WZxgify6uPUFLCNL5fqBAzMWCMGUB9JYMsZFJvbExPLlXXSCtg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7177
 
+= Overview =
 
+As discussed during the sched_ext office hours, using a global cpumask to
+keep track of the idle CPUs can be inefficient and it may not scale really
+well on large NUMA systems.
 
-On 10/02/2025 12:33, Meghana Malladi wrote:
-> From: Roger Quadros <rogerq@kernel.org>
-> 
-> Add native XDP support. We do not support zero copy yet.
-> 
-> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
-> Signed-off-by: Meghana Malladi <m-malladi@ti.com>
-> ---
-> v1: https://lore.kernel.org/all/20250122124951.3072410-1-m-malladi@ti.com/
-> 
-> Changes since v1 (v2-v1):
-> - Fix XDP typo in the commit message
-> - Add XDP feature flags using xdp_set_features_flag()
-> - Use xdp_build_skb_from_buff() when XDP ran
-> 
-> All the above changes have been suggested by Ido Schimmel <idosch@idosch.org>
-> 
->  drivers/net/ethernet/ti/icssg/icssg_common.c | 226 +++++++++++++++++--
->  drivers/net/ethernet/ti/icssg/icssg_prueth.c | 123 +++++++++-
->  drivers/net/ethernet/ti/icssg/icssg_prueth.h |  18 ++
->  3 files changed, 353 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/ti/icssg/icssg_common.c b/drivers/net/ethernet/ti/icssg/icssg_common.c
-> index a124c5773551..b01750a2d57e 100644
-> --- a/drivers/net/ethernet/ti/icssg/icssg_common.c
-> +++ b/drivers/net/ethernet/ti/icssg/icssg_common.c
-> @@ -98,11 +98,19 @@ void prueth_xmit_free(struct prueth_tx_chn *tx_chn,
->  {
->  	struct cppi5_host_desc_t *first_desc, *next_desc;
->  	dma_addr_t buf_dma, next_desc_dma;
-> +	struct prueth_swdata *swdata;
->  	u32 buf_dma_len;
->  
->  	first_desc = desc;
->  	next_desc = first_desc;
->  
-> +	swdata = cppi5_hdesc_get_swdata(desc);
-> +	if (swdata->type == PRUETH_SWDATA_PAGE) {
-> +		page_pool_recycle_direct(swdata->rx_chn->pg_pool,
-> +					 swdata->data.page);
+Therefore, split the idle cpumask into multiple per-NUMA node cpumasks to
+improve scalability and performance on such large systems.
 
-if swdata->data.page.pp already contains the page_pool then you can avoid
-passing around rx_chn via swdata altogether.
+Scalability issues seem to be more noticeable on Intel Sapphire Rapids
+dual-socket architectures.
 
-> +		goto free_desc;
-> +	}
-> +
->  	cppi5_hdesc_get_obuf(first_desc, &buf_dma, &buf_dma_len);
->  	k3_udma_glue_tx_cppi5_to_dma_addr(tx_chn->tx_chn, &buf_dma);
->  
-> @@ -126,6 +134,7 @@ void prueth_xmit_free(struct prueth_tx_chn *tx_chn,
->  		k3_cppi_desc_pool_free(tx_chn->desc_pool, next_desc);
->  	}
->  
-> +free_desc:
->  	k3_cppi_desc_pool_free(tx_chn->desc_pool, first_desc);
->  }
->  EXPORT_SYMBOL_GPL(prueth_xmit_free);
-> @@ -139,6 +148,7 @@ int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
->  	struct prueth_swdata *swdata;
->  	struct prueth_tx_chn *tx_chn;
->  	unsigned int total_bytes = 0;
-> +	struct xdp_frame *xdpf;
->  	struct sk_buff *skb;
->  	dma_addr_t desc_dma;
->  	int res, num_tx = 0;
-> @@ -168,20 +178,29 @@ int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
->  			continue;
->  		}
->  
-> -		if (swdata->type != PRUETH_SWDATA_SKB) {
-> +		switch (swdata->type) {
-> +		case PRUETH_SWDATA_SKB:
-> +			skb = swdata->data.skb;
-> +			ndev->stats.tx_bytes += skb->len;
-> +			ndev->stats.tx_packets++;
+= Test =
 
-dev_sw_netstats_tx_add() instead?
+Hardware:
+ - System: DGX B200
+    - CPUs: 224 SMT threads (112 physical cores)
+    - Processor: INTEL(R) XEON(R) PLATINUM 8570
+    - 2 NUMA nodes
 
-> +			total_bytes += skb->len;
-> +			napi_consume_skb(skb, budget);
-> +			break;
-> +		case PRUETH_SWDATA_XDPF:
-> +			xdpf = swdata->data.xdpf;
-> +			ndev->stats.tx_bytes += xdpf->len;
-> +			ndev->stats.tx_packets++;
-here too
+Scheduler:
+ - scx_simple [1] (so that we can focus at the built-in idle selection
+   policy and not at the scheduling policy itself)
 
-> +			total_bytes += xdpf->len;
-> +			xdp_return_frame(xdpf);
-> +			break;
-> +		default:
->  			netdev_err(ndev, "tx_complete: invalid swdata type %d\n", swdata->type);
+Test:
+ - Run a parallel kernel build `make -j $(nproc)` and measure the average
+   elapsed time over 10 runs:
 
-ndev->stats.tx_dropped++
+          avg time | stdev
+          ---------+------
+ before:   52.431s | 2.895
+  after:   50.342s | 2.895
 
-> +			prueth_xmit_free(tx_chn, desc_tx);
->  			budget++;
->  			continue;
->  		}
->  
-> -		skb = swdata->data.skb;
->  		prueth_xmit_free(tx_chn, desc_tx);
-> -
-> -		ndev = skb->dev;
-> -		ndev->stats.tx_packets++;
-> -		ndev->stats.tx_bytes += skb->len;
-> -		total_bytes += skb->len;
-> -		napi_consume_skb(skb, budget);
->  		num_tx++;
->  	}
->  
-> @@ -498,6 +517,7 @@ int prueth_dma_rx_push_mapped(struct prueth_emac *emac,
->  	swdata = cppi5_hdesc_get_swdata(desc_rx);
->  	swdata->type = PRUETH_SWDATA_PAGE;
->  	swdata->data.page = page;
-> +	swdata->rx_chn = rx_chn;
->  
->  	return k3_udma_glue_push_rx_chn(rx_chn->rx_chn, PRUETH_RX_FLOW_DATA,
->  					desc_rx, desc_dma);
-> @@ -540,7 +560,156 @@ void emac_rx_timestamp(struct prueth_emac *emac,
->  	ssh->hwtstamp = ns_to_ktime(ns);
->  }
->  
-> -static int emac_rx_packet(struct prueth_emac *emac, u32 flow_id)
-> +/**
-> + * emac_xmit_xdp_frame - transmits an XDP frame
-> + * @emac: emac device
-> + * @xdpf: data to transmit
-> + * @page: page from page pool if already DMA mapped
-> + * @q_idx: queue id
-> + *
-> + * Return: XDP state
-> + */
-> +int emac_xmit_xdp_frame(struct prueth_emac *emac,
-> +			struct xdp_frame *xdpf,
-> +			struct page *page,
-> +			unsigned int q_idx)
-> +{
-> +	struct cppi5_host_desc_t *first_desc;
-> +	struct net_device *ndev = emac->ndev;
-> +	struct prueth_tx_chn *tx_chn;
-> +	dma_addr_t desc_dma, buf_dma;
-> +	struct prueth_swdata *swdata;
-> +	u32 *epib;
-> +	int ret;
-> +
-> +	void *data = xdpf->data;
-> +	u32 pkt_len = xdpf->len;
-> +
-> +	if (q_idx >= PRUETH_MAX_TX_QUEUES) {
-> +		netdev_err(ndev, "xdp tx: invalid q_id %d\n", q_idx);
+= Conclusion =
 
-ndev->stats.tx_dropped++;
+Splitting the global cpumask into multiple per-NUMA cpumasks helped to
+achieve a speedup of approximately +4% with this particular architecture
+and test case.
 
-> +		return ICSSG_XDP_CONSUMED;	/* drop */
-> +	}
-> +
-> +	tx_chn = &emac->tx_chns[q_idx];
-> +
-> +	if (page) { /* already DMA mapped by page_pool */
-> +		buf_dma = page_pool_get_dma_addr(page);
-> +		buf_dma += xdpf->headroom + sizeof(struct xdp_frame);
-> +	} else { /* Map the linear buffer */
-> +		buf_dma = dma_map_single(tx_chn->dma_dev, data, pkt_len, DMA_TO_DEVICE);
-> +		if (dma_mapping_error(tx_chn->dma_dev, buf_dma)) {
-> +			netdev_err(ndev, "xdp tx: failed to map data buffer\n");
+The same test on a DGX-1 (40 physical cores, Intel Xeon E5-2698 v4 @
+2.20GHz, 2 NUMA nodes) shows a speedup of around 1.5-3%.
 
-ndev->stats.tx_dropped++;
+On smaller systems, I haven't noticed any measurable regressions or
+improvements with the same test (parallel kernel build) and scheduler
+(scx_simple).
 
-> +			return ICSSG_XDP_CONSUMED;	/* drop */
-> +		}
-> +	}
-> +
-> +	first_desc = k3_cppi_desc_pool_alloc(tx_chn->desc_pool);
-> +	if (!first_desc) {
-> +		netdev_dbg(ndev, "xdp tx: failed to allocate descriptor\n");
-> +		if (!page)
-> +			dma_unmap_single(tx_chn->dma_dev, buf_dma, pkt_len, DMA_TO_DEVICE);
+Moreover, with a modified scx_bpfland that uses the new NUMA-aware APIs I
+observed an additional +2-2.5% performance improvement in the same test.
 
-Better to do the k3_cppi_desc_pool_alloc() before the DMA mapping
-so it is easier to clean up on failure.
+NOTE: splitting the global cpumask into multiple cpumasks may increase the
+overhead of scx_bpf_pick_idle_cpu() or ops.select_cpu() (for schedulers
+relying on the built-in CPU idle selection policy) in presence of multiple
+NUMA nodes, particularly under high system load, since we may have to
+access multiple cpumasks to find an idle CPU.
 
-> +		goto drop_free_descs;	/* drop */
-> +	}
-> +
-> +	cppi5_hdesc_init(first_desc, CPPI5_INFO0_HDESC_EPIB_PRESENT,
-> +			 PRUETH_NAV_PS_DATA_SIZE);
-> +	cppi5_hdesc_set_pkttype(first_desc, 0);
-> +	epib = first_desc->epib;
-> +	epib[0] = 0;
-> +	epib[1] = 0;
-> +
-> +	/* set dst tag to indicate internal qid at the firmware which is at
-> +	 * bit8..bit15. bit0..bit7 indicates port num for directed
-> +	 * packets in case of switch mode operation
-> +	 */
-> +	cppi5_desc_set_tags_ids(&first_desc->hdr, 0, (emac->port_id | (q_idx << 8)));
-> +	k3_udma_glue_tx_dma_to_cppi5_addr(tx_chn->tx_chn, &buf_dma);
-> +	cppi5_hdesc_attach_buf(first_desc, buf_dma, pkt_len, buf_dma, pkt_len);
-> +	swdata = cppi5_hdesc_get_swdata(first_desc);
-> +	if (page) {
-> +		swdata->type = PRUETH_SWDATA_PAGE;
-> +		swdata->data.page = page;
-> +		/* we assume page came from RX channel page pool */
-> +		swdata->rx_chn = &emac->rx_chns;
-> +	} else {
-> +		swdata->type = PRUETH_SWDATA_XDPF;
-> +		swdata->data.xdpf = xdpf;
-> +	}
-> +
-> +	cppi5_hdesc_set_pktlen(first_desc, pkt_len);
-> +	desc_dma = k3_cppi_desc_pool_virt2dma(tx_chn->desc_pool, first_desc);
-> +
-> +	ret = k3_udma_glue_push_tx_chn(tx_chn->tx_chn, first_desc, desc_dma);
-> +	if (ret) {
-> +		netdev_err(ndev, "xdp tx: push failed: %d\n", ret);
-> +		goto drop_free_descs;
-> +	}
-> +
-> +	return ICSSG_XDP_TX;
-> +
-> +drop_free_descs:
+However, this increased overhead seems to be highly compensated by a lower
+overhead when updating the idle state and by the fact that CPUs are more
+likely operating within their local idle cpumask, reducing the stress on
+the cache coherency protocol.
 
-ndev->stats.tx_dropped++;
+= References =
 
-> +	prueth_xmit_free(tx_chn, first_desc);
+[1] https://github.com/sched-ext/scx/blob/main/scheds/c/scx_simple.bpf.c
 
-this will also unmap the dma_buffer for all cases. So maybe you need
-to add a flag to prueth_xmit_free() to skip unmap for certain cases.
+ChangeLog v10 -> v11:
+ - drop state from numa_nearest_nodemask() and rename it to
+   nearest_node_nodemask()
+ - rename for_each_numa_node() to for_each_node_numadist()
+ - rename pick_idle_cpu_from_node() to pick_idle_cpu_in_node() for better
+   coherency with SCX_PICK_IDLE_IN_NODE
+ - rename idle_cpu_to_node() to scx_cpu_node_if_enabled()
+ - rename scx_bpf_cpu_to_node() to scx_bpf_cpu_node() and trigger an scx
+   error when an invalid CPU is specified
+ - provide compatibility macros for SCX_OPS_BUILTIN_IDLE_PER_NODE and
+   SCX_PICK_IDLE_IN_NODE
+ - always trigger an scx error when a non-numa aware kfunc is used with
+   SCX_OPS_BUILTIN_IDLE_PER_NODE enabled
+ - make all static keys local to ext_idle.c (no need to expose them
+   publicly)
 
-> +	return ICSSG_XDP_CONSUMED;
-> +}
-> +EXPORT_SYMBOL_GPL(emac_xmit_xdp_frame);
-> +
-> +/**
-> + * emac_run_xdp - run an XDP program
-> + * @emac: emac device
-> + * @xdp: XDP buffer containing the frame
-> + * @page: page with RX data if already DMA mapped
-> + *
-> + * Return: XDP state
-> + */
-> +static int emac_run_xdp(struct prueth_emac *emac, struct xdp_buff *xdp,
-> +			struct page *page)
-> +{
-> +	int err, result = ICSSG_XDP_PASS;
-> +	struct bpf_prog *xdp_prog;
-> +	struct xdp_frame *xdpf;
-> +	int q_idx;
-> +	u32 act;
-> +
-> +	xdp_prog = READ_ONCE(emac->xdp_prog);
-> +
-unnecessary new line.
+ChangeLog v9 -> v10:
+ - introduce for_each_numa_node() and numa_nearest_nodemask() helpers
 
-> +	act = bpf_prog_run_xdp(xdp_prog, xdp);
-> +	switch (act) {
-> +	case XDP_PASS:
+ChangeLog v8 -> v9:
+ - drop some preliminary refactoring patches that are now applied to
+   sched_ext/for-6.15
+ - rename SCX_PICK_IDLE_NODE -> SCX_PICK_IDLE_IN_NODE
+ - use NUMA_NO_NODE to reference to the global idle cpumask and drop
+   NUMA_FLAT_NODE (which was quite confusing)
+ - NUMA_NO_NODE is not implicitly translated to the current node
+ - rename struct idle_cpumask -> idle_cpus
+ - drop "get_" prefix from the idle cpumask helpers
+ - rename for_each_numa_hop_node() -> for_each_numa_node()
+ - for_each_numa_node() returns MAX_NUMNODES at the end of the loop
+   (for coherency with other node iterators)
+ - do not get rid of the scx_selcpu_topo_numa logic (since it can still be
+   used when per-node cpumasks are not enabled)
 
-return ICSSG_XDP_PASS;
+ChangeLog v7 -> v8:
+ - patch set refactoring: move ext_idle.c as first patch and introduce more
+   preparation patches
+ - introduce SCX_PICK_IDLE_NODE to restrict idle CPU selection to a single
+   specified node
+ - trigger scx_ops_error() when the *_node() kfunc's are used without
+   enbling SCX_OPS_NODE_BUILTIN_IDLE
+ - check for node_possible() in validate_node()
+ - do node validation in the kfunc's (instead of the internal kernel
+   functions) and trigger scx_ops_error in case of failure
+ - rename idle_masks -> scx_idle_masks
+ - drop unused CL_ALIGNED_IF_ONSTACK
+ - drop unnecessary rcu_read_lock/unlock() when iterating NUMA nodes
 
-> +		break;
-> +	case XDP_TX:
-> +		/* Send packet to TX ring for immediate transmission */
-> +		xdpf = xdp_convert_buff_to_frame(xdp);
-> +		if (unlikely(!xdpf))
-ndev->stats.tx_dropped++;
+ChangeLog v6 -> v7:
+ - addressed some issues based on Yury's review (thanks!)
+ - introduced a new iterator to navigate the NUMA nodes in order of
+   increasing distance
 
-> +			goto drop;
-> +
-> +		q_idx = smp_processor_id() % emac->tx_ch_num;
-> +		result = emac_xmit_xdp_frame(emac, xdpf, page, q_idx);
-> +		if (result == ICSSG_XDP_CONSUMED)
-> +			goto drop;
+ChangeLog v5 -> v6:
+ - refactor patch set to introduce SCX_OPS_NODE_BUILTIN_IDLE before
+   the per-node cpumasks
+ - move idle CPU selection policy to a separate file (ext_idle.c)
+   (no functional change, just some code shuffling)
 
-increment tx stats?
+ChangeLog v4 -> v5:
+ - introduce new scx_bpf_cpu_to_node() kfunc
+ - provide __COMPAT_*() helpers for the new kfunc's
 
-return ICSSG_XDP_TX;
+ChangeLog v3 -> v4:
+ - introduce SCX_OPS_NODE_BUILTIN_IDLE to select multiple per-node
+   cpumasks or single flat cpumask
+ - introduce new kfuncs to access per-node idle cpumasks information
+ - use for_each_numa_hop_mask() to traverse NUMA nodes in increasing
+   distance
+ - dropped nodemask helpers (not needed anymore)
+ - rebase to sched_ext/for-6.14
 
-> +		break;
-> +	case XDP_REDIRECT:
-> +		err = xdp_do_redirect(emac->ndev, xdp, xdp_prog);
-> +		if (err)
-> +			goto drop;
-> +		result = ICSSG_XDP_REDIR;
+ChangeLog v2 -> v3:
+  - introduce for_each_online_node_wrap()
+  - re-introduce cpumask_intersects() in test_and_clear_cpu_idle() (to
+    reduce memory writes / cache coherence pressure)
+  - get rid of the redundant scx_selcpu_topo_numa logic
+  [test results are pretty much identical, so I haven't updated them from v2]
 
-return ICSSG_XDP_REDIR
-> +		break;
-> +	default:
-> +		bpf_warn_invalid_xdp_action(emac->ndev, xdp_prog, act);
-> +		fallthrough;
-> +	case XDP_ABORTED:
-> +drop:
-> +		trace_xdp_exception(emac->ndev, xdp_prog, act);
-> +		fallthrough; /* handle aborts by dropping packet */
-> +	case XDP_DROP:
+ChangeLog v1 -> v2:
+  - renamed for_each_node_mask|state_from() -> for_each_node_mask|state_wrap()
+  - misc cpumask optimizations (thanks to Yury)
 
-ndev->stats.rx_dropped++;
+Andrea Righi (6):
+      mm/numa: Introduce nearest_node_nodemask()
+      sched/topology: Introduce for_each_node_numadist() iterator
+      sched_ext: idle: Make idle static keys private
+      sched_ext: idle: Introduce SCX_OPS_BUILTIN_IDLE_PER_NODE
+      sched_ext: idle: Per-node idle cpumasks
+      sched_ext: idle: Introduce node-aware idle cpu kfunc helpers
 
-> +		result = ICSSG_XDP_CONSUMED;
-> +		page_pool_recycle_direct(emac->rx_chns.pg_pool, page);
-> +		break;
-> +	}
-> +
-> +	return result;
-> +}
-> +
-> +static int emac_rx_packet(struct prueth_emac *emac, u32 flow_id, int *xdp_state)
->  {
->  	struct prueth_rx_chn *rx_chn = &emac->rx_chns;
->  	u32 buf_dma_len, pkt_len, port_id = 0;
-> @@ -551,10 +720,12 @@ static int emac_rx_packet(struct prueth_emac *emac, u32 flow_id)
->  	struct page *page, *new_page;
->  	struct page_pool *pool;
->  	struct sk_buff *skb;
-> +	struct xdp_buff xdp;
->  	u32 *psdata;
->  	void *pa;
->  	int ret;
->  
-> +	*xdp_state = 0;
->  	pool = rx_chn->pg_pool;
->  	ret = k3_udma_glue_pop_rx_chn(rx_chn->rx_chn, flow_id, &desc_dma);
->  	if (ret) {
-> @@ -594,9 +765,21 @@ static int emac_rx_packet(struct prueth_emac *emac, u32 flow_id)
->  		goto requeue;
->  	}
->  
-> -	/* prepare skb and send to n/w stack */
->  	pa = page_address(page);
-> -	skb = napi_build_skb(pa, PAGE_SIZE);
-> +	if (emac->xdp_prog) {
-> +		xdp_init_buff(&xdp, PAGE_SIZE, &rx_chn->xdp_rxq);
-> +		xdp_prepare_buff(&xdp, pa, PRUETH_HEADROOM, pkt_len, false);
-> +
-> +		*xdp_state = emac_run_xdp(emac, &xdp, page);
-> +		if (*xdp_state == ICSSG_XDP_PASS)
-> +			skb = xdp_build_skb_from_buff(&xdp);
-> +		else
-> +			goto requeue;
-> +	} else {
-> +		/* prepare skb and send to n/w stack */
-> +		skb = napi_build_skb(pa, PAGE_SIZE);
-> +	}
-> +
->  	if (!skb) {
->  		ndev->stats.rx_dropped++;
->  		page_pool_recycle_direct(pool, page);
-> @@ -859,14 +1042,25 @@ static void prueth_tx_cleanup(void *data, dma_addr_t desc_dma)
->  	struct prueth_tx_chn *tx_chn = data;
->  	struct cppi5_host_desc_t *desc_tx;
->  	struct prueth_swdata *swdata;
-> +	struct xdp_frame *xdpf;
->  	struct sk_buff *skb;
->  
->  	desc_tx = k3_cppi_desc_pool_dma2virt(tx_chn->desc_pool, desc_dma);
->  	swdata = cppi5_hdesc_get_swdata(desc_tx);
-> -	if (swdata->type == PRUETH_SWDATA_SKB) {
-> +
-> +	switch (swdata->type) {
-> +	case PRUETH_SWDATA_SKB:
->  		skb = swdata->data.skb;
->  		dev_kfree_skb_any(skb);
-> +		break;
-> +	case PRUETH_SWDATA_XDPF:
-> +		xdpf = swdata->data.xdpf;
-> +		xdp_return_frame(xdpf);
-> +		break;
+Yury Norov (1):
+      nodemask: numa: reorganize inclusion path
 
-what about PRUETH_SWDATA_PAGE?
-
-> +	default:
-> +		break;
->  	}
-> +
->  	prueth_xmit_free(tx_chn, desc_tx);
->  }
->  
-> @@ -901,15 +1095,18 @@ int icssg_napi_rx_poll(struct napi_struct *napi_rx, int budget)
->  		PRUETH_RX_FLOW_DATA_SR1 : PRUETH_RX_FLOW_DATA;
->  	int flow = emac->is_sr1 ?
->  		PRUETH_MAX_RX_FLOWS_SR1 : PRUETH_MAX_RX_FLOWS;
-> +	int xdp_state_or = 0;
->  	int num_rx = 0;
->  	int cur_budget;
-> +	int xdp_state;
->  	int ret;
->  
->  	while (flow--) {
->  		cur_budget = budget - num_rx;
->  
->  		while (cur_budget--) {
-> -			ret = emac_rx_packet(emac, flow);
-> +			ret = emac_rx_packet(emac, flow, &xdp_state);
-> +			xdp_state_or |= xdp_state;
->  			if (ret)
->  				break;
->  			num_rx++;
-> @@ -919,6 +1116,9 @@ int icssg_napi_rx_poll(struct napi_struct *napi_rx, int budget)
->  			break;
->  	}
->  
-> +	if (xdp_state_or & ICSSG_XDP_REDIR)
-> +		xdp_do_flush();
-> +
->  	if (num_rx < budget && napi_complete_done(napi_rx, num_rx)) {
->  		if (unlikely(emac->rx_pace_timeout_ns)) {
->  			hrtimer_start(&emac->rx_hrtimer,
-> diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.c b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-> index e5e4efe485f6..a360a1d6f8d7 100644
-> --- a/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-> +++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-> @@ -559,6 +559,33 @@ const struct icss_iep_clockops prueth_iep_clockops = {
->  	.perout_enable = prueth_perout_enable,
->  };
->  
-> +static int prueth_create_xdp_rxqs(struct prueth_emac *emac)
-> +{
-> +	struct xdp_rxq_info *rxq = &emac->rx_chns.xdp_rxq;
-> +	struct page_pool *pool = emac->rx_chns.pg_pool;
-> +	int ret;
-> +
-> +	ret = xdp_rxq_info_reg(rxq, emac->ndev, 0, rxq->napi_id);
-
-but who sets rxq->napi_id?
-
-I think you need to use emac->napi_rx.napi_id
-
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = xdp_rxq_info_reg_mem_model(rxq, MEM_TYPE_PAGE_POOL, pool);
-> +	if (ret)
-> +		xdp_rxq_info_unreg(rxq);
-> +
-> +	return ret;
-> +}
-> +
-> +static void prueth_destroy_xdp_rxqs(struct prueth_emac *emac)
-> +{
-> +	struct xdp_rxq_info *rxq = &emac->rx_chns.xdp_rxq;
-> +
-> +	if (!xdp_rxq_info_is_reg(rxq))
-> +		return;
-> +
-> +	xdp_rxq_info_unreg(rxq);
-> +}
-> +
->  static int icssg_prueth_add_mcast(struct net_device *ndev, const u8 *addr)
->  {
->  	struct net_device *real_dev;
-> @@ -780,10 +807,14 @@ static int emac_ndo_open(struct net_device *ndev)
->  	if (ret)
->  		goto free_tx_ts_irq;
->  
-> -	ret = k3_udma_glue_enable_rx_chn(emac->rx_chns.rx_chn);
-> +	ret = prueth_create_xdp_rxqs(emac);
->  	if (ret)
->  		goto reset_rx_chn;
->  
-> +	ret = k3_udma_glue_enable_rx_chn(emac->rx_chns.rx_chn);
-> +	if (ret)
-> +		goto destroy_xdp_rxqs;
-> +
->  	for (i = 0; i < emac->tx_ch_num; i++) {
->  		ret = k3_udma_glue_enable_tx_chn(emac->tx_chns[i].tx_chn);
->  		if (ret)
-> @@ -809,6 +840,8 @@ static int emac_ndo_open(struct net_device *ndev)
->  	 * any SKB for completion. So set false to free_skb
->  	 */
->  	prueth_reset_tx_chan(emac, i, false);
-> +destroy_xdp_rxqs:
-> +	prueth_destroy_xdp_rxqs(emac);
->  reset_rx_chn:
->  	prueth_reset_rx_chan(&emac->rx_chns, max_rx_flows, false);
->  free_tx_ts_irq:
-> @@ -880,6 +913,8 @@ static int emac_ndo_stop(struct net_device *ndev)
->  
->  	prueth_reset_rx_chan(&emac->rx_chns, max_rx_flows, true);
->  
-Please drop new line.
-
-> +	prueth_destroy_xdp_rxqs(emac);
-> +
-here too.
-
->  	napi_disable(&emac->napi_rx);
->  	hrtimer_cancel(&emac->rx_hrtimer);
->  
-> @@ -1024,6 +1059,90 @@ static int emac_ndo_vlan_rx_del_vid(struct net_device *ndev,
->  	return 0;
->  }
->  
-> +/**
-> + * emac_xdp_xmit - Implements ndo_xdp_xmit
-> + * @dev: netdev
-> + * @n: number of frames
-> + * @frames: array of XDP buffer pointers
-> + * @flags: XDP extra info
-> + *
-> + * Return: number of frames successfully sent. Failed frames
-> + * will be free'ed by XDP core.
-> + *
-> + * For error cases, a negative errno code is returned and no-frames
-> + * are transmitted (caller must handle freeing frames).
-> + **/
-> +static int emac_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
-> +			 u32 flags)
-> +{
-> +	struct prueth_emac *emac = netdev_priv(dev);
-> +	unsigned int q_idx;
-> +	int nxmit = 0;
-> +	int i;
-> +
-> +	q_idx = smp_processor_id() % emac->tx_ch_num;
-> +
-> +	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
-> +		return -EINVAL;
-> +
-> +	for (i = 0; i < n; i++) {
-> +		struct xdp_frame *xdpf = frames[i];
-> +		int err;
-> +
-> +		err = emac_xmit_xdp_frame(emac, xdpf, NULL, q_idx);
-> +		if (err != ICSSG_XDP_TX)
-> +			break;
-> +		nxmit++;
-> +	}
-> +
-> +	return nxmit;
-> +}
-> +
-> +/**
-> + * emac_xdp_setup - add/remove an XDP program
-> + * @emac: emac device
-> + * @bpf: XDP program
-> + *
-> + * Return: Always 0 (Success)
-> + **/
-> +static int emac_xdp_setup(struct prueth_emac *emac, struct netdev_bpf *bpf)
-> +{
-> +	struct bpf_prog *prog = bpf->prog;
-> +	xdp_features_t val;
-> +
-> +	val = NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
-> +	      NETDEV_XDP_ACT_NDO_XMIT;
-> +	xdp_set_features_flag(emac->ndev, val);
-> +
-> +	if (!emac->xdpi.prog && !prog)
-> +		return 0;
-> +
-> +	WRITE_ONCE(emac->xdp_prog, prog);
-> +
-> +	xdp_attachment_setup(&emac->xdpi, bpf);
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * emac_ndo_bpf - implements ndo_bpf for icssg_prueth
-> + * @ndev: network adapter device
-> + * @bpf: XDP program
-> + *
-> + * Return: 0 on success, error code on failure.
-> + **/
-> +static int emac_ndo_bpf(struct net_device *ndev, struct netdev_bpf *bpf)
-> +{
-> +	struct prueth_emac *emac = netdev_priv(ndev);
-> +
-> +	switch (bpf->command) {
-> +	case XDP_SETUP_PROG:
-> +		return emac_xdp_setup(emac, bpf);
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
->  static const struct net_device_ops emac_netdev_ops = {
->  	.ndo_open = emac_ndo_open,
->  	.ndo_stop = emac_ndo_stop,
-> @@ -1038,6 +1157,8 @@ static const struct net_device_ops emac_netdev_ops = {
->  	.ndo_fix_features = emac_ndo_fix_features,
->  	.ndo_vlan_rx_add_vid = emac_ndo_vlan_rx_add_vid,
->  	.ndo_vlan_rx_kill_vid = emac_ndo_vlan_rx_del_vid,
-> +	.ndo_bpf = emac_ndo_bpf,
-> +	.ndo_xdp_xmit = emac_xdp_xmit,
->  };
->  
->  static int prueth_netdev_init(struct prueth *prueth,
-> diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.h b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
-> index 2c8585255b7c..fb8dc8e12c19 100644
-> --- a/drivers/net/ethernet/ti/icssg/icssg_prueth.h
-> +++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
-> @@ -8,6 +8,8 @@
->  #ifndef __NET_TI_ICSSG_PRUETH_H
->  #define __NET_TI_ICSSG_PRUETH_H
->  
-> +#include <linux/bpf.h>
-> +#include <linux/bpf_trace.h>
->  #include <linux/etherdevice.h>
->  #include <linux/genalloc.h>
->  #include <linux/if_vlan.h>
-> @@ -134,6 +136,7 @@ struct prueth_rx_chn {
->  	unsigned int irq[ICSSG_MAX_RFLOWS];	/* separate irq per flow */
->  	char name[32];
->  	struct page_pool *pg_pool;
-> +	struct xdp_rxq_info xdp_rxq;
->  };
->  
->  enum prueth_swdata_type {
-> @@ -141,16 +144,19 @@ enum prueth_swdata_type {
->  	PRUETH_SWDATA_SKB,
->  	PRUETH_SWDATA_PAGE,
->  	PRUETH_SWDATA_CMD,
-> +	PRUETH_SWDATA_XDPF,
->  };
->  
->  union prueth_data {
->  	struct sk_buff *skb;
->  	struct page *page;
->  	u32 cmd;
-> +	struct xdp_frame *xdpf;
->  };
->  
->  struct prueth_swdata {
->  	union prueth_data data;
-> +	struct prueth_rx_chn *rx_chn;
->  	enum prueth_swdata_type type;
->  };
->  
-> @@ -161,6 +167,12 @@ struct prueth_swdata {
->  
->  #define PRUETH_MAX_TX_TS_REQUESTS	50 /* Max simultaneous TX_TS requests */
->  
-> +/* XDP BPF state */
-> +#define ICSSG_XDP_PASS           0
-> +#define ICSSG_XDP_CONSUMED       BIT(0)
-> +#define ICSSG_XDP_TX             BIT(1)
-> +#define ICSSG_XDP_REDIR          BIT(2)
-> +
->  /* Minimum coalesce time in usecs for both Tx and Rx */
->  #define ICSSG_MIN_COALESCE_USECS 20
->  
-> @@ -229,6 +241,8 @@ struct prueth_emac {
->  	unsigned long rx_pace_timeout_ns;
->  
->  	struct netdev_hw_addr_list vlan_mcast_list[MAX_VLAN_ID];
-> +	struct bpf_prog *xdp_prog;
-> +	struct xdp_attachment_info xdpi;
->  };
->  
->  /* The buf includes headroom compatible with both skb and xdpf */
-> @@ -467,5 +481,9 @@ void prueth_put_cores(struct prueth *prueth, int slice);
->  
->  /* Revision specific helper */
->  u64 icssg_ts_to_ns(u32 hi_sw, u32 hi, u32 lo, u32 cycle_time_ns);
-> +int emac_xmit_xdp_frame(struct prueth_emac *emac,
-> +			struct xdp_frame *xdpf,
-> +			struct page *page,
-> +			unsigned int q_idx);
->  
->  #endif /* __NET_TI_ICSSG_PRUETH_H */
-
--- 
-cheers,
--roger
-
+ include/linux/nodemask.h                 |   1 -
+ include/linux/nodemask_types.h           |  11 +-
+ include/linux/numa.h                     |  17 +-
+ include/linux/topology.h                 |  30 ++
+ kernel/sched/ext.c                       |  31 +-
+ kernel/sched/ext_idle.c                  | 504 +++++++++++++++++++++++++++----
+ kernel/sched/ext_idle.h                  |  20 +-
+ mm/mempolicy.c                           |  32 ++
+ tools/sched_ext/include/scx/common.bpf.h |   5 +
+ tools/sched_ext/include/scx/compat.bpf.h |  31 ++
+ tools/sched_ext/include/scx/compat.h     |   6 +
+ 11 files changed, 593 insertions(+), 95 deletions(-)
 
