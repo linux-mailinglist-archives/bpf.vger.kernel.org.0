@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-51306-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51307-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0666BA33097
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 21:16:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61FB9A33098
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 21:16:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 68162188A9C9
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 20:16:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D4823A67CC
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 20:16:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CB2620126B;
-	Wed, 12 Feb 2025 20:16:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B57BE20103D;
+	Wed, 12 Feb 2025 20:16:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oC75Q3RK"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZnABwTop"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E29D201103
-	for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 20:16:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9887E200B99
+	for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 20:16:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739391370; cv=none; b=gS06CemgvYuwGqCMwrpX89vwyHBbpF2g8HkZklgzB+wVKtQJ6jy8AzT+Icn3pgWi8RI1xzQZho+SLm8hvIgN/y+9nSv9kjLTYOlHOn7fwOmDg1wHie6LT+2JAQsBlVWdeNVM/lYds0rWizZIPUWB/0k/EgYZSC4Kq/s8vAKdtTg=
+	t=1739391372; cv=none; b=piAo0+sCOIu3fmzBjyFS50UR8bWemELFSe1TdUaOaOFhYrMcFDmfXH3Tw3PS2ha0YECE+uzhg9CSw2u0DY1D+C5+ZemaEkUilIhcOdyTa/b4g2QI+MmIlZYGuQslaCU2xBqaME+CBaMVPxWRna2vysjjclXrJ+AIv+qCbk1t4Ms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739391370; c=relaxed/simple;
-	bh=DGQmndWFLKnTkonu2cIlV42/moEe+hJ6Kc8YM45CjTE=;
+	s=arc-20240116; t=1739391372; c=relaxed/simple;
+	bh=GFyble7KuoWR/jBfqDDUBdFOzcNGu3Z0y3DubKzEwnU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SZ4rcPThJnQiEJP8an/B3pKGxiIoceSss9wKL+e+lZjzQOuLgKCDrGCkoHklSi/AKsx3pe5txoNE70ynOJiq6veWYORwZxICK9XIrrjiLG4pQowbUHG86DKbfHJ2jVr8ZGK2IS5yibDqSCptAOzKsB4+ndMVxkm2yeEJ8TeRiuA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oC75Q3RK; arc=none smtp.client-ip=91.218.175.182
+	 MIME-Version; b=bh0HTREfR5jrUiLMgtmrzMcpIP+VQS48dTPV1hfieczGlW/l3fAiroJGywr/r1IuYcApuBuLpaBVq9yzF2RNfmwy0GuKb+Wl/AtzwgpbRf4/G3CyBnMK6d5UP8QC1DwxXU4BS+nsRvc2IaPp9diic1vUxNhsHiUnPQdXvtjlIEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZnABwTop; arc=none smtp.client-ip=91.218.175.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1739391364;
+	t=1739391366;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=83y37IhF2PHQMOSXci5MhDQDNg2gnbZ7oyz+TnSEgyg=;
-	b=oC75Q3RKrMqRVvwzc+GUvU2An8caydEVMH0V4/bChDwzu/eVWs0/6/3Np4nIz0H91VFLCc
-	JxuEk/VRDgSSwF/ybi+QcnTfTV6O/bg6TnwdeM3gYuoNy/xaVQ+DJnuXpEbyDfn/JMswRl
-	dcniinn9fS7ARl0E4xbxYXun7SB2NX0=
+	bh=AwQAEFegtRF3r37vnzwyzjrcZBx48QWnNDQGd6H58hc=;
+	b=ZnABwTopJ7G2oAuQaic4rTlahMf3meU+08I6qGVFozFoCdUxD/4osfYVKxo0PFbp2tzX0l
+	1zkW0hLHKbzh5xDITtBRv7uclhTkn91ccfJCrpskt8JRU2SUSQP8M7DQ38iGJiFA7W4M8x
+	DC3oGmuTVIhGZ78Ne7BENXWNbpnxO7U=
 From: Ihor Solodrai <ihor.solodrai@linux.dev>
 To: dwarves@vger.kernel.org,
 	bpf@vger.kernel.org
@@ -52,9 +52,9 @@ Cc: acme@kernel.org,
 	eddyz87@gmail.com,
 	mykolal@fb.com,
 	kernel-team@meta.com
-Subject: [PATCH v2 dwarves 3/4] pahole: introduce --btf_feature=attributes
-Date: Wed, 12 Feb 2025 12:15:51 -0800
-Message-ID: <20250212201552.1431219-4-ihor.solodrai@linux.dev>
+Subject: [PATCH v2 dwarves 4/4] man-pages: describe attributes and remove reproducible_build
+Date: Wed, 12 Feb 2025 12:15:52 -0800
+Message-ID: <20250212201552.1431219-5-ihor.solodrai@linux.dev>
 In-Reply-To: <20250212201552.1431219-1-ihor.solodrai@linux.dev>
 References: <20250212201552.1431219-1-ihor.solodrai@linux.dev>
 Precedence: bulk
@@ -66,109 +66,34 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Add a feature flag "attributes" (default: false) controlling whether
-pahole is allowed to generate BTF attributes: type tags and decl tags
-with kind_flag = 1.
+Add a description of the new --btf_feature=attributes.
 
-This is necessary for backward compatibility, as BPF verifier does not
-recognize tags with kind_flag = 1 prior to (at least) 6.14-rc1 [1].
-
-[1] https://lore.kernel.org/bpf/20250130201239.1429648-1-ihor.solodrai@linux.dev/
+Also remove reproducible_build description, as it is now a moot
+feature flag.
 
 Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
-Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
 ---
- btf_encoder.c |  6 ++++--
- dwarves.h     |  1 +
- pahole.c      | 11 +++++++++++
- 3 files changed, 16 insertions(+), 2 deletions(-)
+ man-pages/pahole.1 | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/btf_encoder.c b/btf_encoder.c
-index 3cec106..fc99ad2 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -136,7 +136,8 @@ struct btf_encoder {
- 			  gen_floats,
- 			  skip_encoding_decl_tag,
- 			  tag_kfuncs,
--			  gen_distilled_base;
-+			  gen_distilled_base,
-+			  encode_attributes;
- 	uint32_t	  array_index_id;
- 	struct elf_secinfo *secinfo;
- 	size_t             seccnt;
-@@ -823,7 +824,7 @@ static int32_t btf_encoder__add_func_proto(struct btf_encoder *encoder, struct f
- 	assert(ftype != NULL || state != NULL);
+diff --git a/man-pages/pahole.1 b/man-pages/pahole.1
+index 39e7b46..3125de3 100644
+--- a/man-pages/pahole.1
++++ b/man-pages/pahole.1
+@@ -327,9 +327,10 @@ Encode BTF using the specified feature list, or specify 'default' for all standa
+ Supported non-standard features (not enabled for 'default')
  
- #if LIBBPF_MAJOR_VERSION >= 1 && LIBBPF_MINOR_VERSION >= 6
--	if (is_kfunc_state(state) && encoder->tag_kfuncs)
-+	if (is_kfunc_state(state) && encoder->tag_kfuncs && encoder->encode_attributes)
- 		if (btf__add_bpf_arena_type_tags(encoder->btf, state) < 0)
- 			return -1;
- #endif
-@@ -2417,6 +2418,7 @@ struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filenam
- 		encoder->skip_encoding_decl_tag	 = conf_load->skip_encoding_btf_decl_tag;
- 		encoder->tag_kfuncs	 = conf_load->btf_decl_tag_kfuncs;
- 		encoder->gen_distilled_base = conf_load->btf_gen_distilled_base;
-+		encoder->encode_attributes = conf_load->btf_attributes;
- 		encoder->verbose	 = verbose;
- 		encoder->has_index_type  = false;
- 		encoder->need_index_type = false;
-diff --git a/dwarves.h b/dwarves.h
-index 8234e1a..99ed783 100644
---- a/dwarves.h
-+++ b/dwarves.h
-@@ -89,6 +89,7 @@ struct conf_load {
- 	bool			reproducible_build;
- 	bool			btf_decl_tag_kfuncs;
- 	bool			btf_gen_distilled_base;
-+	bool			btf_attributes;
- 	uint8_t			hashtable_bits;
- 	uint8_t			max_hashtable_bits;
- 	uint16_t		kabi_prefix_len;
-diff --git a/pahole.c b/pahole.c
-index af3e1cf..0bda249 100644
---- a/pahole.c
-+++ b/pahole.c
-@@ -1152,6 +1152,7 @@ ARGP_PROGRAM_VERSION_HOOK_DEF = dwarves_print_version;
- #define ARG_padding_ge		   347
- #define ARG_padding		   348
- #define ARGP_with_embedded_flexible_array 349
-+#define ARGP_btf_attributes	   350
- 
- /* --btf_features=feature1[,feature2,..] allows us to specify
-  * a list of requested BTF features or "default" to enable all default
-@@ -1210,6 +1211,9 @@ struct btf_feature {
- 	BTF_NON_DEFAULT_FEATURE(distilled_base, btf_gen_distilled_base, false),
- #endif
- 	BTF_NON_DEFAULT_FEATURE(global_var, encode_btf_global_vars, false),
-+#if LIBBPF_MAJOR_VERSION >= 1 && LIBBPF_MINOR_VERSION >= 6
-+	BTF_NON_DEFAULT_FEATURE(attributes, btf_attributes, false),
-+#endif
- };
- 
- #define BTF_MAX_FEATURE_STR	1024
-@@ -1785,6 +1789,11 @@ static const struct argp_option pahole__options[] = {
- 		.key = ARGP_running_kernel_vmlinux,
- 		.doc = "Search for, possibly getting from a debuginfo server, a vmlinux matching the running kernel build-id (from /sys/kernel/notes)"
- 	},
-+	{
-+		.name = "btf_attributes",
-+		.key  = ARGP_btf_attributes,
-+		.doc  = "Allow generation of attributes in BTF. Attributes are the type tags and decl tags with the kind_flag set to 1.",
-+	},
- 	{
- 		.name = NULL,
- 	}
-@@ -1979,6 +1988,8 @@ static error_t pahole__options_parser(int key, char *arg,
- 		show_supported_btf_features(stdout);	exit(0);
- 	case ARGP_btf_features_strict:
- 		parse_btf_features(arg, true);		break;
-+	case ARGP_btf_attributes:
-+		conf_load.btf_attributes = true;	break;
- 	default:
- 		return ARGP_ERR_UNKNOWN;
- 	}
+ .nf
+-	reproducible_build Ensure generated BTF is consistent every time;
+-	                   without this parallel BTF encoding can result in
+-	                   inconsistent BTF ids.
++	attributes         Allow generation of decl_tags and type_tags with
++	                   kind_flag = 1. These tags can be used to encode
++	                   arbitrary compiler attributes in BTF, but are
++	                   backward incompatible.
+ 	decl_tag_kfuncs    Inject a BTF_KIND_DECL_TAG for each discovered kfunc.
+ 	distilled_base     For split BTF, generate a distilled version of
+ 	                   the associated base BTF to support later relocation
 -- 
 2.48.1
 
