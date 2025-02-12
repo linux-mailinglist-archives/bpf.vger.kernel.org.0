@@ -1,89 +1,127 @@
-Return-Path: <bpf+bounces-51294-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51295-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBDEBA32EF0
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 19:53:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 218B6A32F81
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 20:20:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4979D1888DE2
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 18:54:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B3C21660DE
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 19:20:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D58F260A4E;
-	Wed, 12 Feb 2025 18:53:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 541252638B4;
+	Wed, 12 Feb 2025 19:20:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="RQsJzdIo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HCOUI7cR"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54F0D25D558;
-	Wed, 12 Feb 2025 18:53:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0945262819;
+	Wed, 12 Feb 2025 19:20:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739386427; cv=none; b=lceoWFLwHKmyyu6UA/Izs2K62msy/d4wEhzPjASGXsUhIg5LuH0C1JLWHmzWLa5qkX5UAGvkY4aeGTp9ETmcfwUeAgq1dsHKsapLo+49ix9b7n1YFXTTwqtKDkznEjPwf91cZ+RJn8x5KtB3JXNZ80JqxeyQVHFMRR0cfM3RM0g=
+	t=1739388009; cv=none; b=kxjRm/1aK+O4xK8NEEUgIHALHvn4IM3O7wSXRvL4r9uybWCibeR4pGhSLuqLiDb7Zv3ebSOAsLUAoeQhLT3Wc31NcH17RfxVhMpwZvYMcWnbvD1NzEnUdkMocT3hR4vC6UYZWZEx0Njf8NdVyFCqGBTFEGyJM4FBuC5bWwXeBCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739386427; c=relaxed/simple;
-	bh=5tJWQW682yVJHOELemxqrvB3V23kM6i2rx1d75/VJ70=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ryngTr32FwviBEiGkWtW4PkILev51JlYQVx6NkFta+MFD6MZLr5bgie1jk5/sQ+4Rysbg2tVC+z2OPrurT7xPCzQYMxEvQBTit2RmtnmQHidsxUULTlcF5lYbQ56qg9A/9ltvxQPxCNJpJsEr4CERARq/zZq7jSYRnRk2RMzfY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=RQsJzdIo; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=oUOokMrKASXdzZOA3VRoZ7fdfSIasrczhgZC+ARdsyE=; b=RQsJzdIo4sjdvkb3W0fwkdFRaa
-	O57YRtnEq+Dfi18rN1QQwUuBy8dYpnMr5IQlIOiChqEyQR5T5MXOqbangz7v/EBYWW/HkX+P8uxVd
-	idVVcsVuC1PGXaAK7beZ2GFCmN9Y3Y8pSbs17s98gPhCfsWxM/EmI7xjeGTmmG7zZ3FYar1vcZ1GW
-	h55laSfKYbPWaVvzr2P1udrViDnu1von3OwcqpmZgx3g3jQPH5tdQFFtQN3ZwqwAF5L+Oug9GX7y+
-	ZjNB66u0s3SGCr440I3G2m1FDfd3d+xBpNUtfFXpL6XIDVSPSq0qiSv8tjXfWua6lN4yAYuGQBmSo
-	eK0Oz+Zw==;
-Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tiHrZ-00000005dDY-05Hq;
-	Wed, 12 Feb 2025 18:53:33 +0000
-Date: Wed, 12 Feb 2025 18:53:32 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-	zhangkun09@huawei.com, liuyonglong@huawei.com,
-	fanghaiqing@huawei.com,
-	Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Alexander Duyck <alexander.duyck@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	IOMMU <iommu@lists.linux.dev>, MM <linux-mm@kvack.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next v9 0/4] fix the DMA API misuse problem for
- page_pool
-Message-ID: <Z6zuLJU7o_gRsQRu@casper.infradead.org>
-References: <20250212092552.1779679-1-linyunsheng@huawei.com>
+	s=arc-20240116; t=1739388009; c=relaxed/simple;
+	bh=8oGQaUEp785Ksp9CMP5N4KASHqjUgTRlvpoOvmKilvk=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=oXzuDQJSgh5bzVcacAw1gj3W9TZoHXLL34Ylz38J1cc2POocDTumGZyyuearzdF/sLOnc2hPLMW5Yb8D8F2FP7zfUJDkhPU83EbBGmWmh6nFn7EkVbHRDKKVUABYZFr0TtrWjJZRcr7P2Oi6vNMDfGSXPIA/XkBrjcVPmvl+vc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HCOUI7cR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41EC1C4CEE7;
+	Wed, 12 Feb 2025 19:20:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739388009;
+	bh=8oGQaUEp785Ksp9CMP5N4KASHqjUgTRlvpoOvmKilvk=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=HCOUI7cRvY4NdRxik3/fbJopYtRnJ6Ydm/qe5WEWRSnDsU/QzvdRmCySS4ofMjSqN
+	 62qN+9xacWZzon8rV9Qirpdwv14yK+TNGbcC8F4Uceli6NNhlBYJ4A/MN1hH6WIlTr
+	 9uxkKSzEVUzhNVVCpZcBlpd+C2etPEewcuojGjFYmTZvj3eLzLVQUxLV4GBRZKF8e9
+	 pllnVF3KBPCaK5UTKcygHGgNNlDNDAbLrNQX9Nb/GClNObngRgvsQWOzjYw5I+t6MW
+	 7+bEOOKKkuEsEo9RnKfismpWsMYs/e5OU6FrVdQKdx9pBK7bhdrwxX6wWj2IqB6C6+
+	 0YoWFYx+t+q5w==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 72012380CED8;
+	Wed, 12 Feb 2025 19:20:39 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250212092552.1779679-1-linyunsheng@huawei.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 00/15] Rate management on traffic classes + misc
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <173938803799.632131.11441489448633366329.git-patchwork-notify@kernel.org>
+Date: Wed, 12 Feb 2025 19:20:37 +0000
+References: <20250209101716.112774-1-tariqt@nvidia.com>
+In-Reply-To: <20250209101716.112774-1-tariqt@nvidia.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+ edumazet@google.com, andrew+netdev@lunn.ch, netdev@vger.kernel.org,
+ saeedm@nvidia.com, gal@nvidia.com, leonro@nvidia.com, horms@kernel.org,
+ donald.hunter@gmail.com, jiri@resnulli.us, corbet@lwn.net, leon@kernel.org,
+ ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+ john.fastabend@gmail.com, richardcochran@gmail.com,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-rdma@vger.kernel.org, bpf@vger.kernel.org
 
-On Wed, Feb 12, 2025 at 05:25:47PM +0800, Yunsheng Lin wrote:
-> This patchset fix the dma API misuse problem as mentioned in [1].
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Sun, 9 Feb 2025 12:17:01 +0200 you wrote:
+> MIME-Version: 1.0
+> Content-Type: text/plain; charset=UTF-8
+> Content-Transfer-Encoding: 8bit
 > 
-> 1. https://lore.kernel.org/lkml/8067f204-1380-4d37-8ffd-007fc6f26738@kernel.org/T/
+> Hi,
+> 
+> This patchset consists of multiple features from the team to the mlx5
+> core and Eth drivers.
+> 
+> [...]
 
-That's a very long and complicated thread.  I gave up.  You need to
-provide a proper description of the problem.
+Here is the summary with links:
+  - [net-next,01/15] devlink: Extend devlink rate API with traffic classes bandwidth management
+    (no matching commit)
+  - [net-next,02/15] net/mlx5: Add no-op implementation for setting tc-bw on rate objects
+    (no matching commit)
+  - [net-next,03/15] net/mlx5: Add support for setting tc-bw on nodes
+    (no matching commit)
+  - [net-next,04/15] net/mlx5: Add traffic class scheduling support for vport QoS
+    (no matching commit)
+  - [net-next,05/15] net/mlx5: Manage TC arbiter nodes and implement full support for tc-bw
+    (no matching commit)
+  - [net-next,06/15] net/mlx5e: reduce the max log mpwrq sz for ECPF and reps
+    https://git.kernel.org/netdev/net-next/c/e1d68ea58c7e
+  - [net-next,07/15] net/mlx5e: reduce rep rxq depth to 256 for ECPF
+    https://git.kernel.org/netdev/net-next/c/b9cc8f9d7008
+  - [net-next,08/15] net/mlx5e: set the tx_queue_len for pfifo_fast
+    https://git.kernel.org/netdev/net-next/c/a38cc5706fb9
+  - [net-next,09/15] net/mlx5: Rename and move mlx5_esw_query_vport_vhca_id
+    https://git.kernel.org/netdev/net-next/c/38b3d42e5afa
+  - [net-next,10/15] net/mlx5: Expose ICM consumption per function
+    https://git.kernel.org/netdev/net-next/c/b820864335c8
+  - [net-next,11/15] net/mlx5e: Move RQs diagnose to a dedicated function
+    https://git.kernel.org/netdev/net-next/c/913175b3f919
+  - [net-next,12/15] net/mlx5e: Add direct TIRs to devlink rx reporter diagnose
+    https://git.kernel.org/netdev/net-next/c/99c55284e85b
+  - [net-next,13/15] net/mlx5e: Expose RSS via devlink rx reporter diagnose
+    https://git.kernel.org/netdev/net-next/c/896c92aa7429
+  - [net-next,14/15] net/mlx5: Extend Ethtool loopback selftest to support non-linear SKB
+    https://git.kernel.org/netdev/net-next/c/95b9606b15bb
+  - [net-next,15/15] net/mlx5: XDP, Enable TX side XDP multi-buffer support
+    https://git.kernel.org/netdev/net-next/c/1a9304859b3a
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
