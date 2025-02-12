@@ -1,112 +1,155 @@
-Return-Path: <bpf+bounces-51259-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51260-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FA88A32881
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 15:34:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC1DBA329F7
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 16:28:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E54121884F55
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 14:34:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 550AC18899CF
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 15:27:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E63A120F08A;
-	Wed, 12 Feb 2025 14:34:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0571D21170B;
+	Wed, 12 Feb 2025 15:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pQs0rJiJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K0Hm0RQU"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65EFD27180B;
-	Wed, 12 Feb 2025 14:34:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 174061F94D;
+	Wed, 12 Feb 2025 15:26:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739370841; cv=none; b=n8gnlZ6ejqRj/K45T70gImacNEr5wfUlqfH9TSnNitJ8CHK70vUMGCSPe98L88hnPEWGukZICn1i1A4tf3SazQVma+DbO4DVZjEjSuU/frnVcztZbOfF3cUB+11ox775MiiAOy+SBowmMrHmEjAdXd7ElHVPF5mgwofeDOIDnQk=
+	t=1739374007; cv=none; b=e6q7ic/braa7syzfXve2QPzlJ7BQLerPQZE6+QdYyObOmrJOSV63Y2nFVbgvozoSSY9mzXYsgg3Nudx/A+twAd1f3svaTbxiJRFHDzNtaw8mPIERzmi1KZBA0NMJGf+WOS8LLb4rrgJsqcgWtCmwJ27RYqZsNctxuwzIjU865So=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739370841; c=relaxed/simple;
-	bh=QgYvjfxo+X0cHfwEov1X2s9rPdFbVkrA5z+AnagMuOI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kOP8DS7U9nWWrNB1QlgUdW54PFitNl3YzES5Rs9s4O6qHiezhMBjIVJjeEd1CWCRsPw8vtA0YWVYVXK9VQa737qbnr+NG4wbHFwayQ9Pedg8fg8FQ2NuUvEvIIen1dxYZWMQwxArS4h9qzeVX5wlhFaB9w6SiDhR8hlSbkOGOOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pQs0rJiJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F985C4CEE2;
-	Wed, 12 Feb 2025 14:33:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739370840;
-	bh=QgYvjfxo+X0cHfwEov1X2s9rPdFbVkrA5z+AnagMuOI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=pQs0rJiJgEDjvCI0l0pvtk7cVsUWXVzfgvuDvcYJbfawVHOB8VItrau5u1c2Xfmyw
-	 KEloyytS+zW6NNycj2g4xnIIAUPfQSHYxbAjtIX5Pp33ShfIwhkyqkFdDUpfV5pC4z
-	 FzlPZ5Y9mkT2dLBAoUYeojbjtaK6sRjgobKdUGJK7i1H0TL9glkuUEu8hf3haEBvd2
-	 KbENN44fThevG4yHP3DiMjg4whfNu9+u4eNzU7OKtFMCwEu0VJcTcAUxcl0HtReQZO
-	 XLJi9MgFGZe9mHhwiXsEITD1Mew7oS+GhzUlGYjL0GWWYpfk5aLcwQeQrTzZHxATeW
-	 6U+CVlZwTuB8A==
-Message-ID: <1ad40918-8b5b-43fb-bd32-66db7825726e@kernel.org>
-Date: Wed, 12 Feb 2025 14:33:56 +0000
+	s=arc-20240116; t=1739374007; c=relaxed/simple;
+	bh=M4e9amgPQ1W/sWhKkAPkZ0yFUw7/Xhj2SLcMw8OO2EA=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=lB8MEpsgbfY0023aSZCXWSnKpaH3UzakPCB4nz1KY2xG77Va3/S64F6NXXvceVm8APyL41vdz9SLh+eDSiRXIGZ0/ngPUZJDKw7Ra4gq0o+7XVTt2lNyCeyIfMxpCToMQ9/mlbDjIhTmKF7qRCUC52OmUNqcd4klrybmgXCmqp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K0Hm0RQU; arc=none smtp.client-ip=209.85.222.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-7c07838973eso28732885a.2;
+        Wed, 12 Feb 2025 07:26:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739374005; x=1739978805; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xCLu9GAMtbQiKlN6q6l0PfI8pPaYZShBaxcFQFACjL8=;
+        b=K0Hm0RQUNy39/RzdwqG8oF9D0fdnUledgriLAn6X5Ngm3arAsWibGLp6SpU47H5aHv
+         eXhs+DEii19EBWWGI8NOIf8L2sScN6rpRov8AeFaUxSwTO8fPDRA2Vn4RNMMXzdy58f5
+         NEQGPiFU4kwSmYfj9P8Ro+4a0/cLoE8H7TKhzGaWQ69Qc5w6hzC7RDyFQLDU2QswR1vX
+         J82Ul8bP1oTOUg7DFnpn9ZicjG4lb2zpqyaSTR8hMuxd2f+gefB3x7TbLsAcn6uBTjRY
+         YPGOlMAlnvDEDgjD/CDsgBUd+aN1ZnNH7j0EwhZAHvPGX5mzRmGsdnS45Too5MX4HXpq
+         MAcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739374005; x=1739978805;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=xCLu9GAMtbQiKlN6q6l0PfI8pPaYZShBaxcFQFACjL8=;
+        b=u2t06PUuloU4GTQniWkTCG07LHMJxYoqEoXAdF8sKLWGrrxmGUG/JouVr8DnyGnbXQ
+         +lhqw25tqi96TM4W51WauF9LxWLGl8FOE2TrW9fosvzFh+wTvE5r9RiSGjYFgL4Q6yRe
+         s6jHNVCf6vCm+mSv4NmwpLXq5m9CuWcGyv3S8PCZQpTMSIus06cN/+Q7uFA6+nS29VkH
+         eU+y8hNza4GJf5B6o5LoZtmjH0jRsxLUiSWAB7YDxJvhBlqLuc+SUpcmhVJyRhTFaLlI
+         Q8+FLW4+iR1YmPJlULN8PwlA8nw4W9MFV2ODpdkQu+CXjyACMs8uWtAO76l4dZE/q3ku
+         AeiA==
+X-Forwarded-Encrypted: i=1; AJvYcCWoms1P53vQj29D6RXTMsnQPdYD+BLJk3nfGkKBTuQajdS47/Br88CxtTr80o10sD0SRdo3y6o=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwtAbzCnYiixebMo1SOLLQTUed0YFQVebK7y0Iisk7LDvxC7UaD
+	4JYDr/LYxbGheiOuETGbUAVL/1vdohFPCEupT5AnlppvS5071dGy
+X-Gm-Gg: ASbGnctWhnsk/gOKQatHPsQ/9j0ez7hFANPd9PU6l6qFBw9iKcq9CLjg6w8bfWqyw2e
+	br5XgtRhbVXEfgZPDNNbUfk8byU6Cb7Y4gjnEFYf1pqBZiq6a3/hiWxmFMgaXi4oL+M/9gNcONU
+	kpyWOS+Nqro17dDtBxm3jdsSyux1JOP/2vYmpxLl74IRI06/hPHo2Y3Bzozou7F2gjILOUKq8Mw
+	BOYDXE1qP3JZ3krXdmcxxFIwj4s/TqedtIciERKRFZ9hSnBNPxe0MHRXboq162BgtVN3cMjkgIc
+	BBZr/Kd9URO5712Rjk9yeB9geCq86Eod4kVEz88t28QLrg5qY22o7se4uZtMYkE=
+X-Google-Smtp-Source: AGHT+IFkU8Bz2798y0aHdxqnzqu2SZGMIiFES+HmmeNthHQ32yHFP3w9yj6QlCn0Kiq03nnP0SNizg==
+X-Received: by 2002:a05:620a:2b86:b0:7b7:106a:19b7 with SMTP id af79cd13be357-7c06fc69b23mr566963785a.18.1739374004995;
+        Wed, 12 Feb 2025 07:26:44 -0800 (PST)
+Received: from localhost (15.60.86.34.bc.googleusercontent.com. [34.86.60.15])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c07017dc9asm161482185a.83.2025.02.12.07.26.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Feb 2025 07:26:44 -0800 (PST)
+Date: Wed, 12 Feb 2025 10:26:43 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Jason Xing <kerneljasonxing@gmail.com>, 
+ davem@davemloft.net, 
+ edumazet@google.com, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ dsahern@kernel.org, 
+ willemdebruijn.kernel@gmail.com, 
+ willemb@google.com, 
+ ast@kernel.org, 
+ daniel@iogearbox.net, 
+ andrii@kernel.org, 
+ martin.lau@linux.dev, 
+ eddyz87@gmail.com, 
+ song@kernel.org, 
+ yonghong.song@linux.dev, 
+ john.fastabend@gmail.com, 
+ kpsingh@kernel.org, 
+ sdf@fomichev.me, 
+ haoluo@google.com, 
+ jolsa@kernel.org, 
+ shuah@kernel.org, 
+ ykolal@fb.com
+Cc: bpf@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ Jason Xing <kerneljasonxing@gmail.com>
+Message-ID: <67acbdb3be6b5_1bcd3029470@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20250212061855.71154-10-kerneljasonxing@gmail.com>
+References: <20250212061855.71154-1-kerneljasonxing@gmail.com>
+ <20250212061855.71154-10-kerneljasonxing@gmail.com>
+Subject: Re: [PATCH bpf-next v10 09/12] bpf: add BPF_SOCK_OPS_TS_ACK_OPT_CB
+ callback
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v4] bpftool: Check map name length when map
- create
-To: Rong Tao <rtoax@foxmail.com>, andrii@kernel.org, ast@kernel.org
-Cc: rongtao@cestc.cn, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>,
- "open list:BPF [TOOLING] (bpftool)" <bpf@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <tencent_B44B3A95F0D7C2512DC40D831DA1FA2C9907@qq.com>
-From: Quentin Monnet <qmo@kernel.org>
-Content-Language: en-GB
-In-Reply-To: <tencent_B44B3A95F0D7C2512DC40D831DA1FA2C9907@qq.com>
-Content-Type: text/plain; charset=UTF-8
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-2025-02-12 20:45 UTC+0800 ~ Rong Tao <rtoax@foxmail.com>
-> From: Rong Tao <rongtao@cestc.cn>
+Jason Xing wrote:
+> Support the ACK case for bpf timestamping.
 > 
-> The size of struct bpf_map::name is BPF_OBJ_NAME_LEN (16).
+> Add a new sock_ops callback, BPF_SOCK_OPS_TS_ACK_OPT_CB. This
+> callback will occur at the same timestamping point as the user
+> space's SCM_TSTAMP_ACK. The BPF program can use it to get the
+> same SCM_TSTAMP_ACK timestamp without modifying the user-space
+> application.
 > 
-> bpf(2) {
->   map_create() {
->     bpf_obj_name_cpy(map->name, attr->map_name, sizeof(attr->map_name));
->   }
-> }
+> This patch extends txstamp_ack to two bits: 1 stands for
+> SO_TIMESTAMPING mode, 2 bpf extension.
 > 
-> When specifying a map name using bpftool map create name, no error is
-> reported if the name length is greater than 15.
-> 
->     $ sudo bpftool map create /sys/fs/bpf/12345678901234567890 \
->         type array key 4 value 4 entries 5 name 12345678901234567890
-> 
-> Users will think that 12345678901234567890 is legal, but this name cannot
-> be used to index a map.
-> 
->     $ sudo bpftool map show name 12345678901234567890
->     Error: can't parse name
-> 
->     $ sudo bpftool map show
->     ...
->     1249: array  name 123456789012345  flags 0x0
->     	key 4B  value 4B  max_entries 5  memlock 304B
-> 
->     $ sudo bpftool map show name 123456789012345
->     1249: array  name 123456789012345  flags 0x0
->     	key 4B  value 4B  max_entries 5  memlock 304B
-> 
-> The map name provided in the command line is truncated, but no warning is
-> reported. This submission checks the length of the map name.
-> 
-> Reviewed-by: Quentin Monnet <qmo@kernel.org>
-> Signed-off-by: Rong Tao <rongtao@cestc.cn>
+> Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
+> ---
+>  include/net/tcp.h              | 6 ++++--
+>  include/uapi/linux/bpf.h       | 5 +++++
+>  net/core/skbuff.c              | 5 ++++-
+>  net/dsa/user.c                 | 2 +-
+>  net/ipv4/tcp.c                 | 2 +-
+>  net/socket.c                   | 2 +-
+>  tools/include/uapi/linux/bpf.h | 5 +++++
+>  7 files changed, 21 insertions(+), 6 deletions(-)
 
-Looks good to me, thank you!
-Quentin
+> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+> index 0d704bda6c41..aa080f7ccea4 100644
+> --- a/net/ipv4/tcp.c
+> +++ b/net/ipv4/tcp.c
+> @@ -488,7 +488,7 @@ static void tcp_tx_timestamp(struct sock *sk, struct sockcm_cookie *sockc)
+>  
+>  		sock_tx_timestamp(sk, sockc, &shinfo->tx_flags);
+>  		if (tsflags & SOF_TIMESTAMPING_TX_ACK)
+> -			tcb->txstamp_ack = 1;
+> +			tcb->txstamp_ack = TSTAMP_ACK_SK;
+
+Similar to the BPF code, should this by |= TSTAMP_ACK_SK?
+
+Does not matter in practice if the BPF setter can never precede this.
 
