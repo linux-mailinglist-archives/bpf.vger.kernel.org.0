@@ -1,163 +1,185 @@
-Return-Path: <bpf+bounces-51282-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51283-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96BFAA32CEE
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 18:08:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28B02A32D8E
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 18:34:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5785C188BB8A
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 17:07:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81712164CBF
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 17:34:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E17A52586DC;
-	Wed, 12 Feb 2025 17:04:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A97BC25A33C;
+	Wed, 12 Feb 2025 17:34:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hafMovTN"
+	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="z23///Xj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AECAC2580D9;
-	Wed, 12 Feb 2025 17:04:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC85F25A35B
+	for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 17:34:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739379885; cv=none; b=VBckoaSQZgGddGbRdzndS+K+4bwxWme2Seo5OPXxpqwRiI24DgiUeY1YPJdNPxXKsUwhmpaCfgLeJKs8VUIqk/r8hOLNLXtHhOuEoNMH30U9qYQ+FQP3ng8VTKlwWYrOSYOYBumZR2yTxIbM7pNyAiavs0hJcFELWu/LmL/nJNA=
+	t=1739381648; cv=none; b=Rhm3H7B2hDISU8r3DNQ3BcSoFXcUO8a3ER9FCxuiBWAGHDhnR4ZWK8Slm+741ZqpOwdMTehOdYx7YZjY41WTX5Y7kW4h1oR9xgH6hQ3j4vb5H/5YbQbgU1wwKFT6WxqQ7opbP/kwqARbYluv+Zv+wtshebzApczdHXd1OM6QDlM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739379885; c=relaxed/simple;
-	bh=Bfidi7anesqYs999M9Ik6ywb85mPeR+VxYEwuDAAFOU=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q1lmKtz/lGq0lJMUulqXCYcvnIvtXnhWqgCwV7cgFnOkLDn0laal988Vv+QzoEuNebFHWWFG7PYPGYAGO3kZbyu8JHgOkGsM59BFfG/PueEA0mK9bQEZvKUNI5YIcc2WTIbsspGuPUST0mDOfxkVa8jOFd+1HrJl5bTbb3vq4z4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hafMovTN; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4362bae4d7dso47187005e9.1;
-        Wed, 12 Feb 2025 09:04:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739379882; x=1739984682; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+7x9dWz5+kt+yK4VtjE7r4PpL/wI+I4YOt5i78vMh+Y=;
-        b=hafMovTNwM6qiexAvRxMY6gjD6fSWxxxnj+6c5Do/tj5+CGqV0WvEv+Nag5S1PG3cx
-         N3qESwMa/XSgQXEpG9+vvqbSjh4oqvCO6kbHdJMJCr6HU5yduPLmYkoS9TZJD2Ss4Sgz
-         dhZ82TstaGvhry+MS9J+A+v4CnMjKFQB0Q+x9/AJ5hTKGVVaN4d6xJbpUetVLM+aYs2a
-         Id2N2MmqT6ysdE64ucSMhZj2jTVLnFVwYd4wxhlUP1rRZPmDhN9Ia+VNG3RUQfBV4rdI
-         NHbnPajouiQRhm6xm5EdepNfaWaJvrXbgi1+hxqHgZ74rfi0I36XRsxcfHzjqbrHBtGl
-         O/tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739379882; x=1739984682;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+7x9dWz5+kt+yK4VtjE7r4PpL/wI+I4YOt5i78vMh+Y=;
-        b=Ssc6G543a1Hx0MZYKQ268Tje1uOlvnOihBn/rsNj6FO2Kd1Zcp/XBF2aF9pwUrmtU4
-         bCdVIdujJIAMcWVP7FNP1CNdIxufyn7JKHg59cUPTM1QzjlRZLiR5ocAU/2OvpQ9gCJq
-         TRZKd+/1NW2fGndBICQYIH0wkQFfK8Uw9Nl0p/qzeACj+YWaawLKRdAXu4s+RGq/y9pW
-         vzdQHUdLCoFJhKAPiPRbhvcLxEICT9htDOLkohlNJOmvtCnp05j2UjuCxmVCdgrQ4Bxj
-         t0q6gKseYwoWpPiI42fIIoC3HrZAmRg+cEJqVbFk24jBwyrhzfm6EbfGBmWic6VtKtSf
-         1KaA==
-X-Forwarded-Encrypted: i=1; AJvYcCU6UVZVDWkTckMRofvjL5VoGjLlTDCFDSGu/7oPzL2y5gZZGvnNS+arQ5/k7uMvcK1v8zST4zyeg1cx602Q@vger.kernel.org, AJvYcCW+jsk9xUNtsoomrDbKVwau0d7z98uu23qcwozFp0aCt5RH2lJskAc3X/i3q+/5pjnQPc+B0Xq3noKrksryDjHO@vger.kernel.org, AJvYcCX+eoT57ikk2gKU5OkJxBKsdLCL2BffpjEjT4sYzGcrEKJmhXt9Sf94x5PvNZ/AUjzJBsY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyEBqhPnrKgF6+qaRRpXjPDia3hqzw0xiYrEutSXZ3q7a9NwzgV
-	ZJB++O5/j3mQtjvhcru/DTpncDpRLE6ZByiUAy7rXLPkiTtH3l7n
-X-Gm-Gg: ASbGnct3wma8AD6jKDQUf6v48I27d2QGpXhesz9fNrchJugEHWPJ6ppG1R/1vXmBu8Y
-	ILxcMj58ePZbp/9iqBOPVjDaWATlbhdssDGqQr18S4323IiCBdnpdtzm42GUjO+WNlsF2VWlmki
-	xgAucshC1IZu86jbVjbz7oY7IJz3W/4nDU8i2/aejSKHabl0LCgAV4qD+3Ap7SupKVBtR6oIM7m
-	R1YdRjy52Qf0TqPldh8Wg1bFJJV8+bGIvXMbpm7y96Q0IcvGUH3THz0Vdur5RSP+SthtWP8jvpF
-	vsHXKHiESadzXxxMEJSRjfjcm9PAuEw=
-X-Google-Smtp-Source: AGHT+IFDrW6X+85TE5d3qfk8XGG1Z1AhG0IbM9mne5W129Zyv1eca0C1OKyE5SjomlKof7boeX4iEQ==
-X-Received: by 2002:a05:600c:6046:b0:439:5a7e:5c5e with SMTP id 5b1f17b1804b1-4395a7e5f79mr27622725e9.26.1739379881461;
-        Wed, 12 Feb 2025 09:04:41 -0800 (PST)
-Received: from krava (ip4-95-82-160-96.cust.nbox.cz. [95.82.160.96])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38dd2750829sm12883804f8f.7.2025.02.12.09.04.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Feb 2025 09:04:40 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 12 Feb 2025 18:04:38 +0100
-To: Yan Zhai <yan@cloudflare.com>
-Cc: Brian Vazquez <brianvv@google.com>, Jiri Olsa <olsajiri@gmail.com>,
-	bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, kernel-team@cloudflare.com,
-	Hou Tao <houtao@huaweicloud.com>
-Subject: Re: [PATCH v3 bpf 1/2] bpf: skip non exist keys in
- generic_map_lookup_batch
-Message-ID: <Z6zUpt5Y4I1p0A3n@krava>
-References: <cover.1739171594.git.yan@cloudflare.com>
- <85618439eea75930630685c467ccefeac0942e2b.1739171594.git.yan@cloudflare.com>
- <Z6nEsGSbWqCSaVp3@krava>
- <CAMzD94QZQjpwOA8Os3khG32d2zgH8i=Sy1VoudRCGqZudyHkag@mail.gmail.com>
- <CAO3-Pbqa_oOm-u318mTwqPfuRJ2_kdk+ou99BOu53A3O_wEyZg@mail.gmail.com>
+	s=arc-20240116; t=1739381648; c=relaxed/simple;
+	bh=mSNvi3m8qKMq8CUUEEtGDOuOm6FuX+TxlRcWkNZApYk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Pgfm8SkNGXGY8wD5hEBfX2wkrTrQ8L4V8z6Z9udZRebcgFBTiGapZCa6E1NKe8BhitMrXUKLskq8B4WrK7AvMRuVdWvd0PfkDIFhjMG1DOmnUHrEMaGfucknbyPSiATXAvJ4svwp7HPScfnPe53yK/LXQBA4zFTuIKp0HEnu0wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=z23///Xj; arc=none smtp.client-ip=74.208.4.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
+	s=s1-ionos; t=1739381639; x=1739986439; i=linux@jordanrome.com;
+	bh=ByANMfm1xiq2Jv/kw72ponfJbhIOJ6j+ZFzbj6o8Vbs=;
+	h=X-UI-Sender-Class:MIME-Version:References:In-Reply-To:From:Date:
+	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=z23///XjGfJD05MLTfofqKhHMcMqYYH+tBAPP2i4tPWam/YiOLqyUGKq+F1pesqz
+	 8Rg+RKO33JAXWVmvPyfTNf9KTfRBdBKcem9eyBKYfoI4dqbaKJA7OUynMg6p0amq4
+	 lnsk2HybRYN0Rre7C0EHmLq79WL/zz1JGsP5gsidgbLlSkQ3mVCtco+rhyscyb/z5
+	 dqa7MsFP6Sy1+zBhvyHuXnbUxPDGiUnGfH83JT3TKhoJO/1UBm/U2EMtNrGYVlB3B
+	 s+G6tLzRat+LbOx4xp1EqCR69udXkBlQsDfJHqtAzjNhex+4atAb6ULQX4w2+HYdJ
+	 MFYikokG3OZVAkihtw==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from mail-il1-f176.google.com ([209.85.166.176]) by
+ mrelay.perfora.net (mreueus002 [74.208.5.2]) with ESMTPSA (Nemesis) id
+ 0LfkxY-1t2t8n2Gy2-00ZakI for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 18:33:59
+ +0100
+Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-3d04932a36cso61846935ab.1
+        for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 09:33:59 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVaLQMr2Lh1jbikHX7Ufv/y3Q3iTqB7cSXSbElTqIVk3Y0teoF0SVkE5CK+Nt/7Ez+VF+I=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzslx1LJVKILPB378XApIXZbqNyubndGsqAmCbB3me4t1TkwTCO
+	vtPFagTOS1D/zEIcpP/xb7RVTFPKY7NZwDpIDIR2gWi5z5dY/gsxKX8Elxgu2ASqXYq5+eISX89
+	q2WOHUYMTgXN72wB/U3idwMcASkc=
+X-Google-Smtp-Source: AGHT+IHYtYCs1Zfc4tIRaiA2ngDcck6IGsVWQtsvnMOAw58zkYn+teEUY7Jgb74jfFZQqDyi7vAyaxt3u48ic4JRYY0=
+X-Received: by 2002:a05:6e02:17cf:b0:3d0:1fc4:edf0 with SMTP id
+ e9e14a558f8ab-3d18c2d5526mr1580435ab.15.1739381639162; Wed, 12 Feb 2025
+ 09:33:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAO3-Pbqa_oOm-u318mTwqPfuRJ2_kdk+ou99BOu53A3O_wEyZg@mail.gmail.com>
+References: <20250210221626.2098522-1-linux@jordanrome.com>
+ <CAEf4BzYjsLnrCV9PK8gmyiFw8idXea5ckPRvCqhFbyEU5Wcd9w@mail.gmail.com> <mvrphlxx4r5mj7cmzsvmx3v6wcuo3pvjpfb5sva2jcmh34ye2p@dzfxxaymvnk3>
+In-Reply-To: <mvrphlxx4r5mj7cmzsvmx3v6wcuo3pvjpfb5sva2jcmh34ye2p@dzfxxaymvnk3>
+From: Jordan Rome <linux@jordanrome.com>
+Date: Wed, 12 Feb 2025 12:33:47 -0500
+X-Gmail-Original-Message-ID: <CA+QiOd5xgBkcfwHq_C+fvLvtWbc_SUjOp9GNsZRm=9OPHyto8w@mail.gmail.com>
+X-Gm-Features: AWEUYZmwFNnaAmfKVyum6PuSMCiemWAIejoB_RcHEEXKSV1pnmDA-bxGONJ6cE0
+Message-ID: <CA+QiOd5xgBkcfwHq_C+fvLvtWbc_SUjOp9GNsZRm=9OPHyto8w@mail.gmail.com>
+Subject: Re: [bpf-next v7 1/3] mm: add copy_remote_vm_str
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org, linux-mm@kvack.org, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Kernel Team <kernel-team@fb.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Alexander Potapenko <glider@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:hjEXN+VFsHBAQN6z5QtGXCK8R4Nk7E5v/KRbm2USn3JilUTVpvY
+ Ch2CDwNnScjRXaE5ntv+Tl6ZGehfUTgMbmecu5Rl1UdfH1hqI9neasiOyn1D/FPbUOfwAL1
+ JMz/JcnhRTKeHhWjox9dTpkEE+UUrxJtcLp1gbpBYLx1vSD0ju+6gEFv6EU3LIVI4nyeARU
+ Yap09kmW7AiS5z3GbPv9A==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:/pvsQllWwzs=;QZh9tdFJNGucHlnuf9+TZqOHXKD
+ Wp7a8tXynbNOHuP/yIDBQ4LuEu93wjrICGARO7Om5yK4rv3FR4Rn/9nWJf9AgkGB2v6lc6rFo
+ NXJTU4JxgWqsey+dbhgQtoZ3c2ozTS96W9Y/h0WdQoQ3Gj3aaV1VkOSvoLmNgGSLBTtT5aOjF
+ +uB/MHsz8uzPs8sbfYS/HkhtKow7vTdvkWrG1oDoOd8Lefk7SMwBFUgNQ0gJfRgI3PpbwlhGc
+ 0OyETL5ZLCt2Zqx+tb412ee0IK0d09josI0jvfUnlGxtDHCzdTcUWMAlAFSr6NVvIS2owHMQu
+ c4DBDsh+f3y/Mz/e+1lB0S4dMsRIHp5J1jPKA46Wo0Bt1cqaJSZ5g9KPQE7zkEiYBLpmon/GU
+ lou5autFXckxLOvcDk/kyA7FqPy4A62uKSfdExhHVBWITlxN0d3C9+k965wc7HlIRTDtS4vcr
+ KM3EBMr+ST/5YPQ+HEcGVovhomG7udubL2P1o82KyAZzjFnysrZeJJm/a4QPzRWw5A9jDiryA
+ PyUEvzhKPs+OtFhWKoFmzu25VXWdCq+SizAEM+soVIYYa1lpalzrBj3yGLjyEvBWMcgfV78Jj
+ jaaldVMgTIEFy6g5JgKT9OeM3RWpDibfQfC3tKv8uXrlUwZH6z2ysrV4EAxDnbbL1GySghgIZ
+ 4xl3DAGlGj1H8z/shPSxtyycw0gr3XlrtTbgMdmW+NPCvTRV82u794G9KuZbwq/hgs5l4c0lJ
+ UlkYjjxolPCNeVg4l+JXTMUkgFmz3E+jDjv7dy1G9HE7oaGlwJU+vXmFtujAMGR2lg/KzyEBm
+ VM6lh+Dl01zobz8B5BQv7L9Ot9t/jLSu9lB7bMRZMWRk2tfmM77yRicXAh6f7JGCKSuxBws2u
+ XMcyNd8kfsVhiEhycBcZIUdJ5gt6/3m6TsNBh1cUUggZpVowQaUnN0+z22SzhLu7eBi/N9FhM
+ TcJCjS0cwtdH86IcaJ0+9ItxlBaOqjiBWiyi68QPPJj2Ja+yxWaN4s5es1kg9A/d07cIygmGe
+ JPlmVNX4uAMhFNEY4dv7pj2j11IOe/sGktGUdfUOgw93yAKUb/7SZuYwCGJWEINsszhgTbq3s
+ gy62hy8Qg/wkxm26fizW38iqvOhoH1tAAiSgLvdE3c0yZ01IseVWmnXc6Qo7jatOycvX46vfV
+ 0Tdc/m6i/DKL/oY/1QsigJ5r8mTIGyCZkKrR7d0m3UC5rdRztFvyh5n8NPAALwl2YJLKbB2zr
+ 44PzmRvd4Pi1FroEmEooRQBPfMHOYZZ1TTSAyiFk/bJaJ3KPmGnVk2ZUK0gQyCJdU+Y/Britc
+ fMgkcCoMvRIE0gH1PGUuFr9WG57IOPxOwK2tw2r6Fc6Bvo4yTCi9R+lRlm7xInQkoze
 
-On Mon, Feb 10, 2025 at 10:21:38AM -0600, Yan Zhai wrote:
-> Hi Brian, Jiri
-> 
-> thanks for the comments.
-> 
-> On Mon, Feb 10, 2025 at 8:47 AM Brian Vazquez <brianvv@google.com> wrote:
-> >
-> > On Mon, Feb 10, 2025 at 4:19 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+On Tue, Feb 11, 2025 at 9:19=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
+v> wrote:
+>
+> On Tue, Feb 11, 2025 at 02:07:31PM -0800, Andrii Nakryiko wrote:
+> > On Mon, Feb 10, 2025 at 2:23=E2=80=AFPM Jordan Rome <linux@jordanrome.c=
+om> wrote:
 > > >
-> > > On Sun, Feb 09, 2025 at 11:22:35PM -0800, Yan Zhai wrote:
-> > > > The generic_map_lookup_batch currently returns EINTR if it fails with
-> > > > ENOENT and retries several times on bpf_map_copy_value. The next batch
-> > > > would start from the same location, presuming it's a transient issue.
-> > > > This is incorrect if a map can actually have "holes", i.e.
-> > > > "get_next_key" can return a key that does not point to a valid value. At
-> > > > least the array of maps type may contain such holes legitly. Right now
-> > > > these holes show up, generic batch lookup cannot proceed any more. It
-> > > > will always fail with EINTR errors.
-> > > >
-> > > > Rather, do not retry in generic_map_lookup_batch. If it finds a non
-> > > > existing element, skip to the next key. This simple solution comes with
-> > > > a price that transient errors may not be recovered, and the iteration
-> > > > might cycle back to the first key under parallel deletion. For example,
+> > > Similar to `access_process_vm` but specific to strings.
+> > > Also chunks reads by page and utilizes `strscpy`
+> > > for handling null termination.
 > > >
-> > > probably stupid question, but why not keep the retry logic and when
-> > > it fails then instead of returning EINTR just jump to the next key
+> > > Signed-off-by: Jordan Rome <linux@jordanrome.com>
+> > > ---
+> > >  include/linux/mm.h |   3 ++
+> > >  mm/memory.c        | 119 +++++++++++++++++++++++++++++++++++++++++++=
+++
+> > >  mm/nommu.c         |  73 +++++++++++++++++++++++++++
+> > >  3 files changed, 195 insertions(+)
 > > >
-> > > jirka
+> > > diff --git a/include/linux/mm.h b/include/linux/mm.h
+> > > index 7b1068ddcbb7..aee23d84ce01 100644
+> > > --- a/include/linux/mm.h
+> > > +++ b/include/linux/mm.h
+> > > @@ -2486,6 +2486,9 @@ extern int access_process_vm(struct task_struct=
+ *tsk, unsigned long addr,
+> > >  extern int access_remote_vm(struct mm_struct *mm, unsigned long addr=
+,
+> > >                 void *buf, int len, unsigned int gup_flags);
+> > >
+> > > +extern int copy_remote_vm_str(struct task_struct *tsk, unsigned long=
+ addr,
+> > > +               void *buf, int len, unsigned int gup_flags);
+> > > +
+> > >  long get_user_pages_remote(struct mm_struct *mm,
+> > >                            unsigned long start, unsigned long nr_page=
+s,
+> > >                            unsigned int gup_flags, struct page **page=
+s,
+> > > diff --git a/mm/memory.c b/mm/memory.c
+> > > index 539c0f7c6d54..e9d8584a7f56 100644
+> > > --- a/mm/memory.c
+> > > +++ b/mm/memory.c
+> > > @@ -6803,6 +6803,125 @@ int access_process_vm(struct task_struct *tsk=
+, unsigned long addr,
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(access_process_vm);
+> > >
+> > > +/*
+> > > + * Copy a string from another process's address space as given in mm=
+.
+> > > + * If there is any error return -EFAULT.
+> > > + */
+> > > +static int __copy_remote_vm_str(struct mm_struct *mm, unsigned long =
+addr,
+> > > +                             void *buf, int len, unsigned int gup_fl=
+ags)
+> > > +{
+> > > +       void *old_buf =3D buf;
+> > > +       int err =3D 0;
+> > > +
+> > > +       *(char *)buf =3D '\0';
 > >
-> > +1, keeping the retry logic but moving to the next key on error sounds
-> > like a sensible approach.
+> > LGTM overall:
 > >
-> I made the trade off since retry would consistently fail for the array
-> of maps, so it is merely wasting cycles to ever do so. It is already
-> pretty slow to read these maps today from userspace (for us we read
-> them for accounting/monitoring purposes), so it is nice to save a few
-> cycles especially for sparse maps. E.g. We use inner maps to store
-> protocol specific actions in an array of maps with 256 slots, but
-> usually only a few common protocols like TCP/UDP/ICMP are populated,
-> leaving most "holes". On the other hand, I personally feel it is
-> really "fragile" if users rely heavily on this logic to survive
-> concurrent lookup and deletion. Would it make more sense to provide
-> concurrency guarantee with map specific ops like hash map?
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> >
+> > But note that all this unconditional buf access will be incorrect if
+> > len =3D=3D 0. So either all of that has to be guarded with `if (len)`,
+> > just dropped, or declared unsupported, depending on what mm folks
+> > think. BPF helper won't ever call with len =3D=3D 0, so that's why my a=
+ck.
+>
+> I think early return 0 on len =3D=3D 0 should be fine.
 
-Brian, any details on the EINTR path? is that just to survive concurent
-batch-lookup and delete?
-
-if that's important use case I guess the map specific function would be
-possible, because it's broken for maps with holes as you described
-
-thanks,
-jirka
+Ack.
 
