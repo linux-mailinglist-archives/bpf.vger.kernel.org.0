@@ -1,274 +1,233 @@
-Return-Path: <bpf+bounces-51229-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51237-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EEF1A322BB
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 10:48:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87521A32377
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 11:28:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E7BA16626C
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 09:48:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20AC73A4AFA
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 10:28:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 649CF207667;
-	Wed, 12 Feb 2025 09:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0F952080FE;
+	Wed, 12 Feb 2025 10:28:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Sd02uZrR"
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="XN/z+1b9"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from out203-205-221-209.mail.qq.com (out203-205-221-209.mail.qq.com [203.205.221.209])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBC4220551D
-	for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 09:48:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C2F41E500C;
+	Wed, 12 Feb 2025 10:28:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.209
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739353693; cv=none; b=DCHrz7ECopRCEtyKnDWF8+s8fy6WQtPKI+KpVvwJjjmVvlUeOkPM39JV7ySTBXVVBSDxNRNVBNMK8Rt+Oqphq1swyWCxr44CD0jf7aFBJGNn82VUrwmTmBPKjblH/RKze/LgvT5R0R+PaZvo0kEvs+5OvHEtMg0wB1eu27x+2FY=
+	t=1739356104; cv=none; b=N5uGYNt9fRu2nDgwla9KHz+XB+4w3A38KBEP/tLrKtXiyQXjXtG9PR59WPO6R0+qbGRhT6D//JSjfSwvQlUgEQ9ydRTWi7I5ydu7RwTqefIcvhDz2Zd55v8MMkhEPzfZWRjGyugxhyXglOmd5kAZu6GGF9o4XzIngfOQkaii7RY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739353693; c=relaxed/simple;
-	bh=t21f2MlAY3g2CSPYzZV3AriCFj+8Z2TJBntSa10C5sU=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=Z9WI4+Y2pzd6d6XDE5CbWIdkDvm3bpIiGB3eaVquqF6guuimV/zLLNyaw1ySPycYtFzwBuLwcJIC9Hyl8T0M7vxVQspmKW55PAuF8pDm0dunspYcpv2uNNu9m5EbYsMoc6KYfX4btBxjj3t22yNeXaaQuB+1aPUi5Z83llGZ7ZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Sd02uZrR; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1739353689;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7Aijtv05rg723WjyQX24R00qxSJTFgnmIWhfrftmGQQ=;
-	b=Sd02uZrR7CDA2Z5dIeOxqE8lR05TckLsmb+WDVzX0FMCQMFaY8ly+jte7BRl8RUICBD0s1
-	FHMbri3T84Atw/868Uy/CAihsnEbtXYNFDzXLf4wgGLyJfX0KcnsD+Kbbnva91+D11ELwr
-	4McUukz1PPgBIKOmGbChReNQlRHSh2Y=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-65-WxTxF7viNq-keyChg0rYOw-1; Wed,
- 12 Feb 2025 04:48:06 -0500
-X-MC-Unique: WxTxF7viNq-keyChg0rYOw-1
-X-Mimecast-MFC-AGG-ID: WxTxF7viNq-keyChg0rYOw_1739353684
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 7D9BF19560B2;
-	Wed, 12 Feb 2025 09:48:03 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.92])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 6C11E1800873;
-	Wed, 12 Feb 2025 09:47:57 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <84a8e6737fca05dd3ec234760f1c77901d915ef9@linux.dev>
-References: <84a8e6737fca05dd3ec234760f1c77901d915ef9@linux.dev> <8d8a5d5b00688ea553b106db690e8a01f15b1410@linux.dev> <335ad811ae2cf5ebdfc494c185b9f02e9ca40c3e@linux.dev> <3173328.1738024385@warthog.procyon.org.uk> <3187377.1738056789@warthog.procyon.org.uk> <2986469.1739185956@warthog.procyon.org.uk> <3210864.1739229537@warthog.procyon.org.uk>
-To: "Ihor Solodrai" <ihor.solodrai@linux.dev>
-Cc: dhowells@redhat.com, "Marc Dionne" <marc.dionne@auristor.com>,
-    "Steve
- French" <stfrench@microsoft.com>,
-    "Eric Van Hensbergen" <ericvh@kernel.org>,
-    "Latchesar  Ionkov" <lucho@ionkov.net>,
-    "Dominique Martinet" <asmadeus@codewreck.org>,
-    "Christian Schoenebeck" <linux_oss@crudebyte.com>,
-    "Paulo Alcantara" <pc@manguebit.com>,
-    "Jeff Layton" <jlayton@kernel.org>,
-    "Christian Brauner" <brauner@kernel.org>, v9fs@lists.linux.dev,
-    linux-cifs@vger.kernel.org, netfs@lists.linux.dev,
-    linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-    ast@kernel.org, bpf@vger.kernel.org
-Subject: [PATCH] netfs: Fix setting NETFS_RREQ_ALL_QUEUED to be after all subreqs queued
+	s=arc-20240116; t=1739356104; c=relaxed/simple;
+	bh=Wz6iXmcsFrEVmG+EnId6NIbwPCBvteN3+pwH0yeRkCw=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=B8q3vvfaSFSXsC407dlqOWQeNOYOMTZzSuaBZl4biEDLJIuBRwhGbuZ+zVYnofHzauo7bXiuTTNwnad+68qPx6PG9Lwc38UKQ1uzaa9R7SAhpM0hy/n4o8mRV1i6mD+3f1p73Mcshi1zuPjDAtB8Qmvp/hponqGqwv8u9sW2GWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=XN/z+1b9; arc=none smtp.client-ip=203.205.221.209
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1739356098;
+	bh=oSSe/GgjHh0szYlaaSrh9h5S5lfXg+8ynEri0cdnafE=;
+	h=From:To:Cc:Subject:Date;
+	b=XN/z+1b9lnObCyfUBddYK18Quw9q3Oul84P+30onmtZ4zg0TFVI/GXfNNLFJB4FZ2
+	 +Q+umUnph7CR/RKXA7QxwPFg/bzWrvvmDcmC+BJHUkhDapnPleaIbcsmw8uVQqrE9K
+	 aRUG0LOrWCF0b+wVx6XarGl3RrBn7EhBrFzSQq+4=
+Received: from NUC10.. ([39.156.73.10])
+	by newxmesmtplogicsvrszgpua8-1.qq.com (NewEsmtp) with SMTP
+	id 3A13BEE0; Wed, 12 Feb 2025 18:14:33 +0800
+X-QQ-mid: xmsmtpt1739355273tjnp76cxp
+Message-ID: <tencent_515567355C0AA854BDA68C3A219A18040B0A@qq.com>
+X-QQ-XMAILINFO: OIJV+wUmQOUAFZpyS7yx/QaJJ5E7k2RZ6evFMt+32t2NM12PZiwQMFH+K4aC5f
+	 1Tf6QWtScoaM4kvdwK0TnyxmcOVNVR8SI5kQkD8d3tc1i2RzJYO2GEDa34Ikj16eoKMW3VMtV1Np
+	 uMtmNG5yBMXbkpjeJbXYz1lpYXfH6PIaB+5LJq+apOAIxvQTkCbcTlgZ1hY1eVOsfFHIE2A8KN5T
+	 KTlN7R3pB2CCX69SIK9WOOIt4oWkX/I4XaiMRrKhESZ5ljjlFicwDxzJt44Qo3JfEcZR5ojhcbSb
+	 Ao7q9gbQCRcVPLq7FYt6+0yqSddNNOYP3kwMO9f1TWqcQkaj2VBLPLA0tjHydeQrW+yDeExqjFKH
+	 SX9E/JjGZYX4JjNgibNL+NSJynrD7oSt4FDcZw9LMD+6H6uw+/ELlgNPkxkOlNSM12TcTr16ahT/
+	 EDuN+hhRoqFDOVZT9dxSeo9G7RliqLxwpf0OkVG0Ctq6bju/E1LAhyObswmEBQuTfK9tOx1oDdTl
+	 x4C03VQHDEQmjceejL3Y303Cepdk1Ci8keLeMHpuR80xWE90FkvnifoB+P2XuvlMrTrdmdDnMP/A
+	 fvnETyPayttdYyxFcejzyeiRujLomRERYX/k/ZCNfVl2+65y6fkTWFKBDJWkRvr/aEjq415jLSk8
+	 8RV7Q7l/tB6Vh4nF2k6n1Xd6BN1CVauNp/M10oC62WwDUZ2o2bI6Iumtkrltqc9d/qsHDIN0eLsf
+	 tu4hQ0fRbi3Tvu6mbdLG6V37dXVo3GKnxIvpGzqSbX4tsz5O6ujDuBFz0rzAgv4EMWG5OTnqnBPX
+	 0hWC6QRS3ayPrR3WLYV/PIXHUFwjAovFUNu9pyy2fw3HRRxsDGVFnFqE34XdjArdxoA1CfT1FcGW
+	 P+79qZri1+CHVlERhAS48DaFayKkKFwN/axoaTClp5AZEccO1cj6ppAq7MAIj6Jq/rOMMQ02S29b
+	 KH/fEvqWvjAO4Gz/CX/EsRQoS6iNR1LTeVFDr2PTIkKXVD9Ch7/LHiQlwy1Lw3
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+From: Rong Tao <rtoax@foxmail.com>
+To: qmo@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org
+Cc: rongtao@cest.ccn,
+	rtoax@foxmail.com,
+	Rong Tao <rongtao@cestc.cn>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Tao Chen <chen.dylane@gmail.com>,
+	Mykyta Yatsenko <yatsenko@meta.com>,
+	Daniel Xu <dxu@dxuuu.xyz>,
+	bpf@vger.kernel.org (open list:BPF [TOOLING] (bpftool)),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH bpf-next] bpftool: bash-completion: Add nopasswd sudo prefix for bpftool
+Date: Wed, 12 Feb 2025 18:14:30 +0800
+X-OQ-MSGID: <20250212101432.186343-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3459754.1739353676.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 12 Feb 2025 09:47:56 +0000
-Message-ID: <3459755.1739353676@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+Content-Transfer-Encoding: 8bit
 
-Hi Ihor,
+From: Rong Tao <rongtao@cestc.cn>
 
-Okay, the bug you're hitting appears to be a different one to the one I
-thought first.  Can you try the attached patch?  I managed to reproduce it
-with AFS by injecting a delay.
+In the bpftool script of bash-completion, many bpftool commands require
+superuser privileges to execute. Otherwise, Operation not permission will
+be displayed. Here, we check whether ordinary users are exempt from
+entering the sudo password. If so, we need to add the sudo prefix to the
+bpftool command to be executed. In this way, we can obtain the correct
+command completion content instead of the wrong one.
 
-Grepping your logs for the stuck request, you can see the issue:
+For example, when updating array_of_maps, the wrong 'hex' is completed:
 
-          ip: netfs_rreq_ref: R=3D00002152 NEW         r=3D1
-          ip: netfs_read: R=3D00002152 READAHEAD c=3D00000000 ni=3D1034fe3=
- s=3D4000 l=3D3000 sz=3D6898
-          ip: netfs_rreq_ref: R=3D00002152 GET SUBREQ  r=3D2
+    $ sudo bpftool map update name arr_maps key 0 0 0 0 value [tab]
+    $ sudo bpftool map update name arr_maps key 0 0 0 0 value hex
 
-Subrequest 1 completes synchronously and queues the collector work item:
+However, what we need is "id name pinned". Similarly, there is the same
+problem in getting the map 'name' and 'id':
 
-          ip: netfs_sreq: R=3D00002152[1] DOWN TERM  f=3D192 s=3D4000 2898=
-/2898 s=3D2 e=3D0
-          ip: netfs_rreq_ref: R=3D00002152 GET WORK    r=3D3
-kworker/u8:3: netfs_rreq_ref: R=3D00002152 SEE WORK    r=3D3
-          ip: netfs_sreq_ref: R=3D00002152[1] PUT TERM    r=3D1
-          ip: netfs_rreq_ref: R=3D00002152 GET SUBREQ  r=3D4
+    $ sudo bpftool map show name [tab] < get nothing
+    $ sudo bpftool map show id [tab]   < get nothing
 
-Then proposed a new subreq to clear the end of the page, but it's not queu=
-ed
-at this point:
+This commit fixes the issue.
 
-          ip: netfs_sreq: R=3D00002152[2] ZERO SUBMT f=3D00 s=3D6898 0/768=
- s=3D0 e=3D0
+    $ sudo bpftool map update name arr_maps key 0 0 0 0 value [tab]
+    id      name    pinned
 
-(I should probably move the tracepoint to the queue point to make it more
-obvious).  The collector processes the subrequests it can see, and
-NETFS_RREQ_ALL_QUEUED (0x2000) is set in the flags (f=3D2021):
+    $ sudo bpftool map show name
+    arr_maps         cgroup_hash      inner_arr1       inner_arr2
 
-kworker/u8:3: netfs_rreq: R=3D00002152 RA COLLECT f=3D2021
-kworker/u8:3: netfs_collect: R=3D00002152 s=3D4000-7000
-kworker/u8:3: netfs_collect_sreq: R=3D00002152[0:01] s=3D4000 t=3D2898/289=
-8
-kworker/u8:3: netfs_sreq: R=3D00002152[1] DOWN DSCRD f=3D92 s=3D4000 2898/=
-2898 s=3D2 e=3D0
-kworker/u8:3: netfs_sreq_ref: R=3D00002152[1] PUT DONE    r=3D0
-kworker/u8:3: netfs_sreq: R=3D00002152[1] DOWN FREE  f=3D92 s=3D4000 2898/=
-2898 s=3D2 e=3D0
-kworker/u8:3: netfs_rreq_ref: R=3D00002152 PUT SUBREQ  r=3D3
+    $ sudo bpftool map show id
+    11    1383  4091  4096
 
-The notes (n=3Dx) indicate that the collector didn't see subreq 2 (bit 0,
-HIT_PENDING, wasn't set)...:
-
-kworker/u8:3: netfs_collect_state: R=3D00002152 col=3D6898 cln=3D7000 n=3D=
-c
-kworker/u8:3: netfs_collect_state: R=3D00002152 col=3D6898 cln=3D7000 n=3D=
-8
-
-... and so it completed the request:
-
-kworker/u8:3: netfs_rreq: R=3D00002152 RA COMPLET f=3D2021
-kworker/u8:3: netfs_rreq: R=3D00002152 RA WAKE-IP f=3D2021
-
-And now, NETFS_RREQ_IN_PROGRESS has been cleared, which means we can't get
-back into the read collector.
-
-kworker/u8:3: netfs_rreq: R=3D00002152 RA DONE    f=3D2001
-kworker/u8:3: netfs_rreq_ref: R=3D00002152 PUT WORK    r=3D2
-
-Then subreq 2 finishes and you can see the worker happen, but do nothing:
-
-          ip: netfs_sreq: R=3D00002152[2] ZERO TERM  f=3D102 s=3D6898 768/=
-768 s=3D2 e=3D0
-          ip: netfs_rreq_ref: R=3D00002152 GET WORK    r=3D3
-kworker/u8:3: netfs_rreq_ref: R=3D00002152 SEE WORK    r=3D3
-kworker/u8:3: netfs_rreq_ref: R=3D00002152 PUT WORK    r=3D2
-
-David
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
 ---
-netfs: Fix setting NETFS_RREQ_ALL_QUEUED to be after all subreqs queued
+ tools/bpf/bpftool/bash-completion/bpftool | 29 +++++++++++++++--------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
-Due to the code that queues a subreq on the active subrequest list getting
-moved to netfs_issue_read(), the NETFS_RREQ_ALL_QUEUED flag may now get se=
-t
-before the list-add actually happens.  This is not a problem if the
-collection worker happens after the list-add, but it's a race - and, for
-9P, where the read from the server is synchronous and done in the
-submitting thread, this is a lot more likely.
-
-The result is that, if the timing is wrong, a ref gets leaked because the
-collector thinks that all the subreqs have completed (because it can't see
-the last one yet) and clears NETFS_RREQ_IN_PROGRESS - at which point, the
-collection worker no longer goes into the collector.
-
-This can be provoked with AFS by injecting an msleep() right before the
-final subreq is queued.
-
-Fix this by splitting the queuing part out of netfs_issue_read() into a ne=
-w
-function, netfs_queue_read(), and calling it separately.  The setting of
-NETFS_RREQ_ALL_QUEUED is then done by netfs_queue_read() whilst it is
-holding the spinlock (that's probably unnecessary, but shouldn't hurt).
-
-It might be better to set a flag on the final subreq, but this could be a
-problem if an error occurs and we can't queue it.
-
-Fixes: e2d46f2ec332 ("netfs: Change the read result collector to only use =
-one work item")
-Reported-by: Ihor Solodrai <ihor.solodrai@pm.me>
-Closes: https://lore.kernel.org/r/a7x33d4dnMdGTtRivptq6S1i8btK70SNBP2XyX_x=
-wDAhLvgQoPox6FVBOkifq4eBinfFfbZlIkMZBe3QarlWTxoEtHZwJCZbNKtaqrR7PvI=3D@pm.=
-me/
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Eric Van Hensbergen <ericvh@kernel.org>
-cc: Latchesar Ionkov <lucho@ionkov.net>
-cc: Dominique Martinet <asmadeus@codewreck.org>
-cc: Christian Schoenebeck <linux_oss@crudebyte.com>
-cc: Marc Dionne <marc.dionne@auristor.com>
-cc: Steve French <stfrench@microsoft.com>
-cc: Paulo Alcantara <pc@manguebit.com>
-cc: Jeff Layton <jlayton@kernel.org>
-cc: v9fs@lists.linux.dev
-cc: linux-cifs@vger.kernel.org
-cc: netfs@lists.linux.dev
-cc: linux-fsdevel@vger.kernel.org
----
- fs/netfs/buffered_read.c |   19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
-
-diff --git a/fs/netfs/buffered_read.c b/fs/netfs/buffered_read.c
-index f761d44b3436..0d1b6d35ff3b 100644
---- a/fs/netfs/buffered_read.c
-+++ b/fs/netfs/buffered_read.c
-@@ -155,8 +155,9 @@ static void netfs_read_cache_to_pagecache(struct netfs=
-_io_request *rreq,
- 			netfs_cache_read_terminated, subreq);
- }
- =
-
--static void netfs_issue_read(struct netfs_io_request *rreq,
--			     struct netfs_io_subrequest *subreq)
-+static void netfs_queue_read(struct netfs_io_request *rreq,
-+			     struct netfs_io_subrequest *subreq,
-+			     bool last_subreq)
- {
- 	struct netfs_io_stream *stream =3D &rreq->io_streams[0];
- =
-
-@@ -177,8 +178,17 @@ static void netfs_issue_read(struct netfs_io_request =
-*rreq,
- 		}
- 	}
- =
-
-+	if (last_subreq) {
-+		smp_wmb(); /* Write lists before ALL_QUEUED. */
-+		set_bit(NETFS_RREQ_ALL_QUEUED, &rreq->flags);
-+	}
+diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+index 1ce409a6cbd9..25fb859cdfa4 100644
+--- a/tools/bpf/bpftool/bash-completion/bpftool
++++ b/tools/bpf/bpftool/bash-completion/bpftool
+@@ -5,6 +5,15 @@
+ #
+ # Author: Quentin Monnet <quentin.monnet@netronome.com>
+ 
++# In the bpftool script of bash-completion, many bpftool commands require
++# superuser privileges to be executed. Otherwise, EPERM will occur. Here,
++# it is detected whether ordinary users are exempt from sudo passwords. If
++# so, it is necessary to add the "sudo" prefix to the required bpftool
++# command execution.
++if sudo --non-interactive true 2>/dev/null; then
++    _sudo=sudo
++fi
 +
- 	spin_unlock(&rreq->lock);
-+}
- =
-
-+static void netfs_issue_read(struct netfs_io_request *rreq,
-+			     struct netfs_io_subrequest *subreq)
-+{
- 	switch (subreq->source) {
- 	case NETFS_DOWNLOAD_FROM_SERVER:
- 		rreq->netfs_ops->issue_read(subreq);
-@@ -293,11 +303,8 @@ static void netfs_read_to_pagecache(struct netfs_io_r=
-equest *rreq)
- 		}
- 		size -=3D slice;
- 		start +=3D slice;
--		if (size <=3D 0) {
--			smp_wmb(); /* Write lists before ALL_QUEUED. */
--			set_bit(NETFS_RREQ_ALL_QUEUED, &rreq->flags);
--		}
- =
-
-+		netfs_queue_read(rreq, subreq, size <=3D 0);
- 		netfs_issue_read(rreq, subreq);
- 		cond_resched();
- 	} while (size > 0);
+ # Takes a list of words in argument; each one of them is added to COMPREPLY if
+ # it is not already present on the command line. Returns no value.
+ _bpftool_once_attr()
+@@ -46,7 +55,7 @@ _bpftool_one_of_list()
+ 
+ _bpftool_get_map_ids()
+ {
+-    COMPREPLY+=( $( compgen -W "$( bpftool -jp map  2>&1 | \
++    COMPREPLY+=( $( compgen -W "$( ${_sudo} bpftool -jp map  2>&1 | \
+         command sed -n 's/.*"id": \(.*\),$/\1/p' )" -- "$cur" ) )
+ }
+ 
+@@ -54,14 +63,14 @@ _bpftool_get_map_ids()
+ _bpftool_get_map_ids_for_type()
+ {
+     local type="$1"
+-    COMPREPLY+=( $( compgen -W "$( bpftool -jp map  2>&1 | \
++    COMPREPLY+=( $( compgen -W "$( ${_sudo} bpftool -jp map  2>&1 | \
+         command grep -C2 "$type" | \
+         command sed -n 's/.*"id": \(.*\),$/\1/p' )" -- "$cur" ) )
+ }
+ 
+ _bpftool_get_map_names()
+ {
+-    COMPREPLY+=( $( compgen -W "$( bpftool -jp map  2>&1 | \
++    COMPREPLY+=( $( compgen -W "$( ${_sudo} bpftool -jp map  2>&1 | \
+         command sed -n 's/.*"name": \(.*\),$/\1/p' )" -- "$cur" ) )
+ }
+ 
+@@ -69,38 +78,38 @@ _bpftool_get_map_names()
+ _bpftool_get_map_names_for_type()
+ {
+     local type="$1"
+-    COMPREPLY+=( $( compgen -W "$( bpftool -jp map  2>&1 | \
++    COMPREPLY+=( $( compgen -W "$( ${_sudo} bpftool -jp map  2>&1 | \
+         command grep -C2 "$type" | \
+         command sed -n 's/.*"name": \(.*\),$/\1/p' )" -- "$cur" ) )
+ }
+ 
+ _bpftool_get_prog_ids()
+ {
+-    COMPREPLY+=( $( compgen -W "$( bpftool -jp prog 2>&1 | \
++    COMPREPLY+=( $( compgen -W "$( ${_sudo} bpftool -jp prog 2>&1 | \
+         command sed -n 's/.*"id": \(.*\),$/\1/p' )" -- "$cur" ) )
+ }
+ 
+ _bpftool_get_prog_tags()
+ {
+-    COMPREPLY+=( $( compgen -W "$( bpftool -jp prog 2>&1 | \
++    COMPREPLY+=( $( compgen -W "$( ${_sudo} bpftool -jp prog 2>&1 | \
+         command sed -n 's/.*"tag": "\(.*\)",$/\1/p' )" -- "$cur" ) )
+ }
+ 
+ _bpftool_get_prog_names()
+ {
+-    COMPREPLY+=( $( compgen -W "$( bpftool -jp prog 2>&1 | \
++    COMPREPLY+=( $( compgen -W "$( ${_sudo} bpftool -jp prog 2>&1 | \
+         command sed -n 's/.*"name": "\(.*\)",$/\1/p' )" -- "$cur" ) )
+ }
+ 
+ _bpftool_get_btf_ids()
+ {
+-    COMPREPLY+=( $( compgen -W "$( bpftool -jp btf 2>&1 | \
++    COMPREPLY+=( $( compgen -W "$( ${_sudo} bpftool -jp btf 2>&1 | \
+         command sed -n 's/.*"id": \(.*\),$/\1/p' )" -- "$cur" ) )
+ }
+ 
+ _bpftool_get_link_ids()
+ {
+-    COMPREPLY+=( $( compgen -W "$( bpftool -jp link 2>&1 | \
++    COMPREPLY+=( $( compgen -W "$( ${_sudo} bpftool -jp link 2>&1 | \
+         command sed -n 's/.*"id": \(.*\),$/\1/p' )" -- "$cur" ) )
+ }
+ 
+@@ -156,7 +165,7 @@ _bpftool_map_guess_map_type()
+     [[ -z $ref ]] && return 0
+ 
+     local type
+-    type=$(bpftool -jp map show $keyword $ref | \
++    type=$(${_sudo} bpftool -jp map show $keyword $ref | \
+         command sed -n 's/.*"type": "\(.*\)",$/\1/p')
+     [[ -n $type ]] && printf $type
+ }
+-- 
+2.48.1
 
 
