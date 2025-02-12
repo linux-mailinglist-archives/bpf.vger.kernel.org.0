@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-51194-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51195-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E92DA31A2A
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 01:08:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33AAFA31A42
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 01:15:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A082166B70
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 00:08:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A2553A2F89
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 00:14:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBB25A957;
-	Wed, 12 Feb 2025 00:08:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F093123A6;
+	Wed, 12 Feb 2025 00:15:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RGFfO78K"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EPDqqGks"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D51E5A50;
-	Wed, 12 Feb 2025 00:08:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ECD710E0;
+	Wed, 12 Feb 2025 00:14:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739318899; cv=none; b=sAcx4wfO5plNmmICJz3WMB2k3ZZQuFzsp74FXJfsi4/lnhLOZAiAKBuDDnWpSArXGVN1TTgEm9AmDSh1bE6L4imP2Au4Bo138gSwlsl69SFSBNvUuBfPKNM8PyINeGKpHxhX331dxDTIseHKzwUQufzDupWKH4IjPk/Chw0jj3E=
+	t=1739319300; cv=none; b=Kc5h/+vVf8bo6coNH705FZP3FzkbPhn5AH4xBRuzv7ve+IqpJSnqdshDaoK39KhK1Fq4LwdHjX5m6xkedlyULam76oIinoiMcifLbemccZRmyZ9L4G4TmHVH6dQsZoAmJJ5EpKUqWKMuAqsHvvaeEj0UddC6pMpt3Cw1OIRsb9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739318899; c=relaxed/simple;
-	bh=SOiiH8gjnTYqlwwhwyE7E5lB0LJ6lqMXcORsFzst4v0=;
+	s=arc-20240116; t=1739319300; c=relaxed/simple;
+	bh=3AKa/KbMk/yw089tqH3tkLRaF88cQLPcFZ9q4ApzqvY=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=p3uC5QsJXPkMJYGwcdBLxu33/COm9Y33O7Z/SJmN3j7NAyr/CvSbn1CA9FU2uPToZIF2y1DJcSYgTHtvY4wlgmKMk7HPQ2FTKOPbLeOiFZiHIsQoraOoqfi2KQiNaRD0DZOcgexud1l8JVO5d1SKLLQCBF8VHo+jXnYSQJ8Mius=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RGFfO78K; arc=none smtp.client-ip=209.85.216.46
+	 Content-Type:MIME-Version; b=DgZ5J77wo9CkhyVkC5OcGQeyyZ0GCB2u69IJCfNd7GP5QR5fZVyXNMhppgbiQ/qlViYzJ2zrLglz46S1YyWamykepwdGicW+nH816R9YzClMTOF6evrR2XfOIKDV/QB/fMExJ17Lv4eZL5Necjp63PTW6DChHiWJxuKnT/iLAZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EPDqqGks; arc=none smtp.client-ip=209.85.216.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2fa44590eebso7285789a91.3;
-        Tue, 11 Feb 2025 16:08:16 -0800 (PST)
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2fa51743d80so5256382a91.2;
+        Tue, 11 Feb 2025 16:14:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739318896; x=1739923696; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739319298; x=1739924098; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=N5Nlmn6/JbbUIilhIlDhPJ4VAV6ahFXWJyAmErbF/kY=;
-        b=RGFfO78Kcmg5RXn1YrKc97fkMqC1nPREZ5HQLjMQRbcMdRVd/c6u2ecoVspF6N+vq5
-         MTKZiiMiS5dGR9pt41Z/INc49i0scS7Tr8HUs14N/wANtknU+uGlwJJ6zgn4X7SfHBeN
-         mVD7UR7cMaCBoMMmaJFjLxowS8HKd7Gpgr7LlOhwJiadOfdjEwVGYFwRL2pcPt1jAc0a
-         vWQrh5Gx/ip2eJ5K/IugEeotZgV2sz4+qO6SXqfeo2SllwRzdoIxZHdXzV/sJtg+Rmye
-         RndsaBaQ1VccrPzExJSZ/aor/dqCkcQ/WgNfXjR44HaL1IxTgv7VpMS7kxdjppu6WmKk
-         j9Ug==
+        bh=0g64+bAu6IO9b+R8khvsANq0+6GQirg6dDpJG7gTDt8=;
+        b=EPDqqGksWCVcre9kuIi99Xybl5dPUenGcv2TKGRyewIa8e3/VdyoiLRK8l15AV5jS8
+         q1xZ01YyjIWTgfbIlG8485Ep+gq/jz+6NQQ48Nq7pgXI+2QFn8izwQyp5vCUq0ow8XJG
+         SblZoXBYr1m/WxOrSqEFBq4hcuUBqxC3TGbz3eVKivP2foo7UKiG83CNNhQGONSF6Rb5
+         6tNgt913Z3Cjo+ME3c0CG54eLSOOnBxTV+teD0zOkwe40V2WyR2+P4EJ/s+W+0eltoMR
+         gzjx5Qq45ixXt2cspm/gpi8XGGVTs1UuC1dqOKFaI1rZMjjCiL19c7Ga3RTD+7UCVmuP
+         XVHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739318896; x=1739923696;
+        d=1e100.net; s=20230601; t=1739319298; x=1739924098;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=N5Nlmn6/JbbUIilhIlDhPJ4VAV6ahFXWJyAmErbF/kY=;
-        b=YHSika2IwanR0MWiKe7OyzYEcQ3nkv04Ahcx6WQX2x2fBbZMdk8tVyAVZuUNuC8Dys
-         3oW0sXUG/tbXc3TJq1Tvtvs5ZTt4ouUTFdpLPIzSWoXgMkTaSHUD91apRuRFQScCOrIJ
-         yAcPLPo+QLz8JgkWHJA08CvDahljlefTxAaI1M/46gwq+VdpTMF7FesJCZ+FBijLXwfE
-         5HkHQtqlzy/IG6F018mGYiE7HF7PEgWsSmagXL8tMTKVY6e5w89QCMMC9GRVEfsgTC8B
-         ZI9GQgvqBAykOZMbcQV3DJnAYg13jquvGQyNtVP91wzxaBKDkSGcp2+8d1XDT3pku+vx
-         KzAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWVFsjTljFaofKk5/TOfCK/YRBKfPL9+Po+wMhcPVz8f01R7WOcNkE38/8PRJOTjQTZVH/O9Kidlgu0QMu4@vger.kernel.org, AJvYcCXbqTUyWdyx7stX/79j4gV/Osp9qy4k/fgoWoDe5GKPH7M8+/6kIlgvc8535F2eJPoO2/0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx1bdfdnX6cwk/IKq2setzKAnc7kmW8RzJdwW0kKD5EAEtCGz5t
-	wcBTD4ya/8whmsB22HX7PGmRVgGMzET3SkYq9CSyTBFHUDFUCGUx
-X-Gm-Gg: ASbGncui6BE7mxl28trYQcaRvyP9BhhFr4D1Aq0AXQvYNOl5zBgfU+q53gASi5s9RhE
-	e8YOlKwq/p/cq3tDBFbBT+mNShCEWSNbVyjwQkA3Mz7U92ByF1Z0PyibqjqHtkPHFBrYoUY4GGC
-	gnLP1PGddNtuSaXhcyrZbIC18/vHl71S8QQUQ0YhpLU5bywvu+aSzVpMT4n2KT/LvXI5rvXWIw6
-	YTx6l1zRH3s8js/w/GRodh6urNYAGPNCwTaRYfZMmLzmRM39BgQXBMfJfcOhn49jv0vLKT0Qw+9
-	ZSXVW/NOdvYC
-X-Google-Smtp-Source: AGHT+IGu8j/EzScz0NFTYCfLtaLVKyGEmTfu1DpkFlHI3iawnU2/6heLbUWvmDL7IZ0vX/fA3qGKJw==
-X-Received: by 2002:a17:90b:520e:b0:2ee:3cc1:793e with SMTP id 98e67ed59e1d1-2fbf5c6a1b6mr1460208a91.32.1739318895906;
-        Tue, 11 Feb 2025 16:08:15 -0800 (PST)
+        bh=0g64+bAu6IO9b+R8khvsANq0+6GQirg6dDpJG7gTDt8=;
+        b=MHxjFiq+LRG0+rxWZub4rZ4d2JV6LMWOUJMhHIkMirR8W4dVb/xn+XU3f7rxsF3FVR
+         J4fV0xjKjBDeEAqyjTxf52lsQVXwmygXLbrdgAHD9Z3msdoXnImsfnCGJa00ijCI2s4m
+         c+GfO7QN6cEOoHLeeOCc0VmeHfXDErQatqUJyGNmWoAFVmOGq8lBL1mw7VYcBTKMbvMu
+         +CsNg/3AufwBcFijefh0Lp4LmPibJy3SYmp/9ZVNRQFS9CLeTrGgwlKd8QslEetyVQ60
+         l3FcOgmOgbueQiwnyVeFSr5DTm0s4yylpQ24kZJASUdP4gIBUjacOY028nGgHqBvefdN
+         5JNg==
+X-Forwarded-Encrypted: i=1; AJvYcCUW6uVzJ/zZLJQ/gk0CepL6q8lwlfNG/gFzJ5GAbShtcvOeY3FFXIO2vJEhkGczR7PZjMY=@vger.kernel.org, AJvYcCW1renMOEC7qbPa6Zh6nvSq2ayg3E77VeYVSqfODqPjRfF4EyXWtw9FqbyiXrGgJJZoEhNlomRE+byzkB6J@vger.kernel.org
+X-Gm-Message-State: AOJu0YyzFEusmetSGtUA/tBaMIHAeK/feQvUn4ZZ97pviSaBrBQZatu5
+	1fY7ot+kUWOZpS9vAyJjmS/WDM9rlL3Na7RJkwCHBtKZQb8FR/A6
+X-Gm-Gg: ASbGncszGHG6fRSFkwnjzXegyfM01eDUwud7XCYW45Z5qKrcrYG7H10eMjWHTW/kF+X
+	oyscBE9qj/P823AV1SWq5hdjvTY5ZHY3x223FMOaZBDPGwgH3nvu3/8QIuZRepX8gaBhnk66qev
+	mEPzJg/Tk6aQNRHtdwB3Rfzttbd0aMz+oV+R4kZAY3Kq7fjy/i//VrL8pXqzfKKffFmJu/6oZiM
+	faeZ9GnAZc2ErmNFazFpFICQl1lz/zjmEpTZ2637CVJya9NszpHjTZgEOQk+fqCBfkMVUvst7yM
+	9WNpT0Bor3nN
+X-Google-Smtp-Source: AGHT+IGsXIH+f84KqAToP99Sh3SeIBndc/AQvegIuSnt+d3ClLLtcoD2z4mAFZARz+V06Rh95tBDlw==
+X-Received: by 2002:a17:90b:2f0f:b0:2f8:b2c:5ef3 with SMTP id 98e67ed59e1d1-2fbf5c0d99bmr1935952a91.14.1739319298382;
+        Tue, 11 Feb 2025 16:14:58 -0800 (PST)
 Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fbf98d05cesm140479a91.18.2025.02.11.16.08.14
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fbf98b7b20sm176187a91.17.2025.02.11.16.14.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Feb 2025 16:08:14 -0800 (PST)
-Message-ID: <a10a2865242dc217e71de54f75fa4289aefb2fa9.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 24/26] bpf: Implement verifier support for
+        Tue, 11 Feb 2025 16:14:57 -0800 (PST)
+Message-ID: <40cb834c2e034dc991a6b0c8140608dcd2e9e5fb.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 26/26] selftests/bpf: Add tests for
  rqspinlock
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org, 
@@ -86,10 +86,10 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>, Peter Zijlstra
  Tejun Heo	 <tj@kernel.org>, Barret Rhoden <brho@google.com>, Josh Don
  <joshdon@google.com>,  Dohyun Kim <dohyunkim@google.com>,
  linux-arm-kernel@lists.infradead.org, kernel-team@meta.com
-Date: Tue, 11 Feb 2025 16:08:09 -0800
-In-Reply-To: <20250206105435.2159977-25-memxor@gmail.com>
+Date: Tue, 11 Feb 2025 16:14:52 -0800
+In-Reply-To: <20250206105435.2159977-27-memxor@gmail.com>
 References: <20250206105435.2159977-1-memxor@gmail.com>
-	 <20250206105435.2159977-25-memxor@gmail.com>
+	 <20250206105435.2159977-27-memxor@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
@@ -101,166 +101,51 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
 On Thu, 2025-02-06 at 02:54 -0800, Kumar Kartikeya Dwivedi wrote:
-> Introduce verifier-side support for rqspinlock kfuncs. The first step is
-> allowing bpf_res_spin_lock type to be defined in map values and
-> allocated objects, so BTF-side is updated with a new BPF_RES_SPIN_LOCK
-> field to recognize and validate.
->=20
-> Any object cannot have both bpf_spin_lock and bpf_res_spin_lock, only
-> one of them (and at most one of them per-object, like before) must be
-> present. The bpf_res_spin_lock can also be used to protect objects that
-> require lock protection for their kfuncs, like BPF rbtree and linked
-> list.
->=20
-> The verifier plumbing to simulate success and failure cases when calling
-> the kfuncs is done by pushing a new verifier state to the verifier state
-> stack which will verify the failure case upon calling the kfunc. The
-> path where success is indicated creates all lock reference state and IRQ
-> state (if necessary for irqsave variants). In the case of failure, the
-> state clears the registers r0-r5, sets the return value, and skips kfunc
-> processing, proceeding to the next instruction.
->=20
-> When marking the return value for success case, the value is marked as
-> 0, and for the failure case as [-MAX_ERRNO, -1]. Then, in the program,
-> whenever user checks the return value as 'if (ret)' or 'if (ret < 0)'
-> the verifier never traverses such branches for success cases, and would
-> be aware that the lock is not held in such cases.
->=20
-> We push the kfunc state in check_kfunc_call whenever rqspinlock kfuncs
-> are invoked. We introduce a kfunc_class state to avoid mixing lock
-> irqrestore kfuncs with IRQ state created by bpf_local_irq_save.
->=20
-> With all this infrastructure, these kfuncs become usable in programs
-> while satisfying all safety properties required by the kernel.
->=20
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
-
-Apart from a few nits, I think this patch looks good.
-
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
 [...]
 
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index 32c23f2a3086..ed444e44f524 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -115,6 +115,15 @@ struct bpf_reg_state {
->  			int depth:30;
->  		} iter;
-> =20
-> +		/* For irq stack slots */
-> +		struct {
-> +			enum {
-> +				IRQ_KFUNC_IGNORE,
+> +void test_res_spin_lock(void)
+> +{
+> +	if (test__start_subtest("res_spin_lock_success"))
+> +		test_res_spin_lock_success();
+> +	if (test__start_subtest("res_spin_lock_failure"))
+> +		test_res_spin_lock_failure();
+> +}
 
-Is this state ever used?
-mark_stack_slot_irq_flag() is always called with either NATIVE or LOCK.
+Such organization makes it impossible to select sub-tests from
+res_spin_lock_failure using ./test_progs -t.
+I suggest doing something like below:
 
-> +				IRQ_NATIVE_KFUNC,
-> +				IRQ_LOCK_KFUNC,
-> +			} kfunc_class;
-> +		} irq;
-> +
->  		/* Max size from any of the above. */
->  		struct {
->  			unsigned long raw1;
+	@@ -6,7 +6,7 @@
+	 #include "res_spin_lock.skel.h"
+	 #include "res_spin_lock_fail.skel.h"
 
-[...]
+	-static void test_res_spin_lock_failure(void)
+	+void test_res_spin_lock_failure(void)
+	 {
+	        RUN_TESTS(res_spin_lock_fail);
+	 }
+	@@ -30,7 +30,7 @@ static void *spin_lock_thread(void *arg)
+	        pthread_exit(arg);
+	 }
 
-> @@ -8038,36 +8059,53 @@ static int process_spin_lock(struct bpf_verifier_=
-env *env, int regno,
->  	}
-> =20
->  	rec =3D reg_btf_record(reg);
-> -	if (!btf_record_has_field(rec, BPF_SPIN_LOCK)) {
-> -		verbose(env, "%s '%s' has no valid bpf_spin_lock\n", map ? "map" : "lo=
-cal",
-> -			map ? map->name : "kptr");
-> +	if (!btf_record_has_field(rec, is_res_lock ? BPF_RES_SPIN_LOCK : BPF_SP=
-IN_LOCK)) {
-> +		verbose(env, "%s '%s' has no valid %s_lock\n", map ? "map" : "local",
-> +			map ? map->name : "kptr", lock_str);
->  		return -EINVAL;
->  	}
-> -	if (rec->spin_lock_off !=3D val + reg->off) {
-> -		verbose(env, "off %lld doesn't point to 'struct bpf_spin_lock' that is=
- at %d\n",
-> -			val + reg->off, rec->spin_lock_off);
-> +	spin_lock_off =3D is_res_lock ? rec->res_spin_lock_off : rec->spin_lock=
-_off;
-> +	if (spin_lock_off !=3D val + reg->off) {
-> +		verbose(env, "off %lld doesn't point to 'struct %s_lock' that is at %d=
-\n",
-> +			val + reg->off, lock_str, spin_lock_off);
->  		return -EINVAL;
->  	}
->  	if (is_lock) {
->  		void *ptr;
-> +		int type;
-> =20
->  		if (map)
->  			ptr =3D map;
->  		else
->  			ptr =3D btf;
-> =20
-> -		if (cur->active_locks) {
-> -			verbose(env,
-> -				"Locking two bpf_spin_locks are not allowed\n");
-> -			return -EINVAL;
-> +		if (!is_res_lock && cur->active_locks) {
-
-Nit: having '&& cur->active_locks' in this branch but not the one for
-     'is_res_lock' is a bit confusing. As far as I understand this is
-     just an optimization, and active_locks check could be done (or dropped=
-)
-     in both cases.
-
-> +			if (find_lock_state(env->cur_state, REF_TYPE_LOCK, 0, NULL)) {
-> +				verbose(env,
-> +					"Locking two bpf_spin_locks are not allowed\n");
-> +				return -EINVAL;
-> +			}
-> +		} else if (is_res_lock) {
-> +			if (find_lock_state(env->cur_state, REF_TYPE_RES_LOCK, reg->id, ptr))=
- {
-> +				verbose(env, "Acquiring the same lock again, AA deadlock detected\n"=
-);
-> +				return -EINVAL;
-> +			}
->  		}
-
-Nit: there is no branch for find_lock_state(... REF_TYPE_RES_LOCK_IRQ ...),
-     this is not a problem, as other checks catch the imbalance in
-     number of unlocks or unlock of the same lock, but verifier won't
-     report the above "AA deadlock" message for bpf_res_spin_lock_irqsave()=
-.
-
-The above two checks make it legal to take resilient lock while
-holding regular lock and vice versa. This is probably ok, can't figure
-out an example when this causes trouble.
-
-> -		err =3D acquire_lock_state(env, env->insn_idx, REF_TYPE_LOCK, reg->id,=
- ptr);
-> +
-> +		if (is_res_lock && is_irq)
-> +			type =3D REF_TYPE_RES_LOCK_IRQ;
-> +		else if (is_res_lock)
-> +			type =3D REF_TYPE_RES_LOCK;
-> +		else
-> +			type =3D REF_TYPE_LOCK;
-> +		err =3D acquire_lock_state(env, env->insn_idx, type, reg->id, ptr);
->  		if (err < 0) {
->  			verbose(env, "Failed to acquire lock state\n");
->  			return err;
->  		}
->  	} else {
->  		void *ptr;
-> +		int type;
-> =20
->  		if (map)
->  			ptr =3D map;
+	-static void test_res_spin_lock_success(void)
+	+void test_res_spin_lock_success(void)
+	 {
+	        LIBBPF_OPTS(bpf_test_run_opts, topts,
+	                .data_in =3D &pkt_v4,
+	@@ -89,11 +89,3 @@ static void test_res_spin_lock_success(void)
+	        res_spin_lock__destroy(skel);
+	        return;
+	 }
+	-
+	-void test_res_spin_lock(void)
+	-{
+	-       if (test__start_subtest("res_spin_lock_success"))
+	-               test_res_spin_lock_success();
+	-       if (test__start_subtest("res_spin_lock_failure"))
+	-               test_res_spin_lock_failure();
+	-}
 
 [...]
 
