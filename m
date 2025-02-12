@@ -1,62 +1,62 @@
-Return-Path: <bpf+bounces-51276-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51277-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8845A32C77
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 17:52:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B49F6A32C78
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 17:52:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B5833AB317
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 16:51:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88A0016A7A1
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 16:51:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5179C25A343;
-	Wed, 12 Feb 2025 16:50:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0223D256C8E;
+	Wed, 12 Feb 2025 16:50:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="kz4ltnCb"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Y12kYipV"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2056.outbound.protection.outlook.com [40.107.243.56])
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2067.outbound.protection.outlook.com [40.107.237.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37AA2257439;
-	Wed, 12 Feb 2025 16:50:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E89E25B697;
+	Wed, 12 Feb 2025 16:50:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.67
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739379040; cv=fail; b=i9e20bZwibj2S0j7hlDpKJkzAphIQMAXOnF0+Y+XLKCrfXyCziQtRe3SQv+K8lU3ool/P0e3JS0eThPQOJNnpK3rHupBTkDAOmtKTgI2TDHf4AATFKQzpBrzhXwpDGDrPR06oOIy38GeZ3ObzeKW0xh3NPR+BU9bYQq5nV4pwlE=
+	t=1739379045; cv=fail; b=geNO2uIoHKKe1e99+Jxysil4xqoqaX/1KvmYut0mvNJXJErsUNIqWwbC86qYlJb6Lz4ThAhJjTmEa3bMQvYblG1J7U37Ispvmtr+RZspAWGA6YLFlVppRCyg5c/sISgWRZSSyedfpz/etIvhrEgrolfrizCaQRC6oz4Pa3/Nhlk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739379040; c=relaxed/simple;
-	bh=St2v1r5ySAVsGsxeK0bBw50nu+iIUN/8rwO4XeQkIKs=;
+	s=arc-20240116; t=1739379045; c=relaxed/simple;
+	bh=ejyrJgbw1tooeilXrAOvO/FUNS5m/zHDhxDYsEjedf8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=IREQn94MFfU/NsRMKYNRUU4sfpC8pkOOXwPz7dQWCNKgRtnprLwL1hj5urnpCdr/V6DMbhbgXjjcja/c9LgXeoR2O0y72dikjoUzCUSGb4v+nhz2oNY6n0nPCU6sOnjabV+WTNpdpa/yHAbKVEhjvGimmqauPBazOVwnVD9q03Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=kz4ltnCb; arc=fail smtp.client-ip=40.107.243.56
+	 Content-Type:MIME-Version; b=gq/HJnfZlTBdUSA0PxHV9j6VL1eD+64VpdvY0uSUvYhWmGALy5gydzi/qOimp90atAxeV+dz9tcNZEFoUHX0Lpjs/eGou1MLcz1pM6s8JWJRCupFlkdhuOSYjCQQ/T4ZhvyoDZzJ3KtbUhKjbsAP3w920E31zLDbdAnVaSsPBG0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Y12kYipV; arc=fail smtp.client-ip=40.107.237.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=YYhsWaqk0vNlPF21ks0mUZoA5edeb+OXazgGtDDp8OwTjng1gHkINSg7JHin65cT4gEha9+bUQKJ4PJd70v+w9JiF1K8/tTo2FrKZRnpNYyyLAvkt0vkfl6Jpf9nermnfxKjIiXcAQpUjCtvrfEwXDZd3in9YoJ7Kz8f/wGd9bMDjugXXu/X4UPch6EhjESjNZCjY9QT+/RyaFGlyvxSE1RTrHlrhU9K4M46AsWP+H9Ab5wNW2lVDg+AWPvx65k/bD5ivO5ZhH6owb/R3hlcBf30qYzAsUnSXqSlo0Zml9f+zJcHBCvmCN/yXC0hNlCCzmcHDNpbHdcJXRXF0RmkXQ==
+ b=KYVfO/o+TMuk/0sCXEhYfl71lJw2HY6X8Zx7hIAHeIR3n/KeejcCQXRyHkdjac2ZzJ8ykXXxbWobEocm5rrIwXIKZJk9bmVsIqVhdJ97bHZLO5LixX7fJ7BFdnqitE0nVG1DUTiskJC+tEvtTZi3JDszc2InFWeFnqRgS5AbSXbwkSZzwQSGuFAybLYAd7N1Fmo8gcb43yW/xETLKsnwkAv1yCGWn64ukOGVsdOGDSv1KS+OQtXszfWXqxpifFUIlpWVRldt52pTBHzvxvPl2T+M3SMyKJU4wd1yr/SxFlLcywPa0k1G4SW1HsZtRTQpZOW/Dh66g41gNkl+4P9mrw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xVLHWob9pWr5FytegMnz9CiEpRbFdzvOWQmRY/JOmkE=;
- b=KjA+Yyqfecpbyo2t2tHxzyowCxVk2cBZmsXrAxufOpxtAEEN+Klvg3P+NuldViy158hA25jMI+1vudo5c+IPkVdzm/aAqff8n6P4eVarjyYGJF8x1ycDIZyOAsjGoROVhvhndjA9683YVY933ETGUX6naPbHc7a58DH6dMul2v+QDqZPhStyNRl+oGJOcQm0qWV20X8JQccgnuHlqQHjBl6g1LQLw5YcUXj29vyJiNt4BAdn6GGPOBz4QzY+9SZgFkIapDvcAN54cdXMn+ShB0SXxSIlljQFVdiwI1/568kNQGIwqHBilU1wF0ivIpzSaILsl/e9X3dsyQLj2szpFg==
+ bh=8/PRv7ChShaC6L7wToepsAMt/zCk6UJAmPRti5zIHis=;
+ b=t182bNozubk5xp+2lCvViYZX3Ww0o65o8h58stbCFQdDaWTt41u4VeF/lK00F4uuh90d3xGjrDp2iTc59MANlJSrMmsT9vxYYUvCVyGIgPnha9/VyeNVOQCv+XyAZPQOspkyN2tTjaoxxYlYnWSNuzi7zOhAZSrsJebLDJ8oXlL9GxhsEJQ5LiwZhZ7HOpFnTlr+j/26cDVuyDuMqcYqWw1vT2TZHdNWSLaIPugTtHZ/I1ipiFK5XJIdxnYxioZcsWJ8F/hiTv6n71X/7D+9n7b3EObwMHcFDvO/JcsfJ2ZYb8KSiBjMjaSdvePUzfRUKmlfVB9Atshs0xiE+mLSMw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xVLHWob9pWr5FytegMnz9CiEpRbFdzvOWQmRY/JOmkE=;
- b=kz4ltnCb6uYI3nhu7UVXIRw0oHAlUJtR/tOFbLBYmXVYbjqAMxBYIw7GsBM/uesVwF/L1QEq02zxgCEWDVOIGiwDIG/QI52ZUzCRNGIdf2Asa8txxLtx3ikbHzafuFslyS6Om9dL2O6hC5Hw+uS2jfI9O/BfsENOEHw4XCoZc1CC4btMZ+zDzFMbWYyLrpttM5aZgZFr8SjigW5rUSdA6yNBiFAuexJr7Qs6nNjczb0I+fNlnMv1IRGkdH1I4GXsxMwsJS2jhRVOEmZH+C5BvEtUyhTm0bHmQl+VZOjLq8+qopEG7ebTGWx00Gv2ysbpeI6zD3cRoTFwKGfmJlXOvg==
+ bh=8/PRv7ChShaC6L7wToepsAMt/zCk6UJAmPRti5zIHis=;
+ b=Y12kYipVuO3X6DaYARijTKDcqkcKnOUpf43lOLBzxzqQmuj9UcwlllhdJtEqQDUCdpzazsFfMue62oxJOCW4vJvprqcn4nhGKnaJ0bmx+WE9rV4p6MxFshahpLwPz3ZYio/8Umsye4C0bnFmqREJx0kjPcINNLGTOcB6FE+QNKPh1JXlugStDLOJJtreuTFWRubuhDKet0YV2o2R0Vt13HwudVI/bdiBmDZJ+8k23IW00Or6rainENaTTzhQvbCmgiORBmiO3JJ3lk4kqqfqWdTQYx+qBeI+ROezFCyfSymoIpwz5qwHGxbb7OTnxJ4vREEFcUGVCXhIvSx8SiLLOA==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from CY5PR12MB6405.namprd12.prod.outlook.com (2603:10b6:930:3e::17)
  by SN7PR12MB7177.namprd12.prod.outlook.com (2603:10b6:806:2a5::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8422.18; Wed, 12 Feb
- 2025 16:50:36 +0000
+ 2025 16:50:40 +0000
 Received: from CY5PR12MB6405.namprd12.prod.outlook.com
  ([fe80::2119:c96c:b455:53b5]) by CY5PR12MB6405.namprd12.prod.outlook.com
  ([fe80::2119:c96c:b455:53b5%7]) with mapi id 15.20.8445.013; Wed, 12 Feb 2025
- 16:50:36 +0000
+ 16:50:40 +0000
 From: Andrea Righi <arighi@nvidia.com>
 To: Tejun Heo <tj@kernel.org>,
 	David Vernet <void@manifault.com>,
@@ -75,16 +75,16 @@ Cc: Ingo Molnar <mingo@redhat.com>,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Yury Norov <yury.norov@gmail.com>
-Subject: [PATCH 2/7] mm/numa: Introduce nearest_node_nodemask()
-Date: Wed, 12 Feb 2025 17:48:09 +0100
-Message-ID: <20250212165006.490130-3-arighi@nvidia.com>
+Subject: [PATCH 3/7] sched/topology: Introduce for_each_node_numadist() iterator
+Date: Wed, 12 Feb 2025 17:48:10 +0100
+Message-ID: <20250212165006.490130-4-arighi@nvidia.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250212165006.490130-1-arighi@nvidia.com>
 References: <20250212165006.490130-1-arighi@nvidia.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: FR0P281CA0071.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:49::10) To CY5PR12MB6405.namprd12.prod.outlook.com
+X-ClientProxiedBy: FR0P281CA0194.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:ab::18) To CY5PR12MB6405.namprd12.prod.outlook.com
  (2603:10b6:930:3e::17)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -94,158 +94,177 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: CY5PR12MB6405:EE_|SN7PR12MB7177:EE_
-X-MS-Office365-Filtering-Correlation-Id: 06429a17-d16d-4cb4-3dba-08dd4b855f9c
+X-MS-Office365-Filtering-Correlation-Id: 2c29e736-53da-40ce-0ae5-08dd4b856203
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|7416014|1800799024|376014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?iNZkNUTm7m5b6YzHGVp49Eby92nHotE//4iVBEXabtzmq0WUjbklcqIZjk2u?=
- =?us-ascii?Q?rBLrTvFy/1hbvV1iVIr+3jqhzqm3SwJHnvEhkQRYckr/GA1M30wUVtsMILJ+?=
- =?us-ascii?Q?Z6l/cXTaTDcO05P9IkVw6UdXrUuksIalL/gl9ztd5ScC2F0A/CfinixsYaac?=
- =?us-ascii?Q?eqCRA3larpjK7gPLIaMNbS/OYgSpFWMLhZ7eukxHqzJHjvkr6+0a8wH7w7IL?=
- =?us-ascii?Q?ImKsem9ZP7ERZqbyJjhkVjx/Ktx3D9PXYRvlAoYstS0qOHEmreNIQsim171I?=
- =?us-ascii?Q?DF15UmAFw1GH8Urv9qeMRwhpqi5ZQmW1bfxmk2h5FnauAqGJrZkByrj7jfK8?=
- =?us-ascii?Q?bxAf2vW7+gAO1TR3eut8Xy5zMokqswDMS10XxSkP0xZuy4dXBqbDDdT32rtC?=
- =?us-ascii?Q?asfg/mlzaKT9/pGHSQJn+zT5U/DhP8OHGG3ackOJ5vfoquTJobxzChD/pXe7?=
- =?us-ascii?Q?A5whM98AexSGvWersLliAnyjVj7w7cFvzGAXQL6n9HOm0c2bQbIMzoTuMVIK?=
- =?us-ascii?Q?+VzXvTdo8m/QbuEXvkdg+Ir1KkrCWK28hppZ9eJqKgSJGvtxAMZU2uxeUrAs?=
- =?us-ascii?Q?DzoP6Sx8I9S7pQs1M7ihnclDC3VatsYQUakpk+pfv3g2se0P5aD4PP5bea0a?=
- =?us-ascii?Q?z3ErYZnL+yTrCft/w4DvVwsviRiiwBVw8kiiqx0QDHN2+gxVcXtKOFTtmmkm?=
- =?us-ascii?Q?7LA6NarJNRGWKGTWCYfuhFC7Bg+b9NrRcvEzwuXAYXbThh1aa08jibgGyHwf?=
- =?us-ascii?Q?A5bNN1XILKGrEkTgfXEq+mfuQWT8tZO+wbh8mXBmxKLhzYB+Rv45Fve9GW6a?=
- =?us-ascii?Q?t6p5JrPzUgLUw/EWBiSGzTeZWgRNGlHM6X9RbcwvmHWsyqb2HvxiigyFoLtI?=
- =?us-ascii?Q?weVoI1RL60Gmx39ApiQiEm8oSBLM4zwTCO4IljRPQ6IVYYI6s6ABiJn6lEJS?=
- =?us-ascii?Q?GBlUpFHD/uZQfe0riLJmutXFDDci3oGS5ZNoDP22xqGYSuEDt3SCXZddUfE2?=
- =?us-ascii?Q?5SXWWrJ0fP2yI+xhy2GdVabT1JKjWcr7IOnhgJV6P1zr3uOab0LIJSrYOrBg?=
- =?us-ascii?Q?hJQY+qkDNe3rYo59gaCsa6bC/UoTCr5+IpF/X61YqL5NQ/BtsU8CxUwQDBrf?=
- =?us-ascii?Q?6bk3blL8BvAzI2AvdT63XR7F8WtCWeKgXNpw8z3lz+soZ2jtnL/qHgDS16Hd?=
- =?us-ascii?Q?Ud4VDnamJWwk8a3yIxRbBko+55tJd254/lJWdtwJlfSQ9U210idciOY52qy0?=
- =?us-ascii?Q?KPI5hl9FEilMjwOISkTQlDPC9T0eimOvCXP/A2jqODtRJEQBfahQqk9wbnN/?=
- =?us-ascii?Q?F03hchTyr9DOReSKO+VZW0oH8C8c6b4BPlwiE8UtZX3hGWix6J1CeL1K1MQd?=
- =?us-ascii?Q?JJusKFjlsbbxDdj+zWKer6Divn3H?=
+	=?us-ascii?Q?MqqVNFk/pzG5rc7LFvEXUM4/wKujITT/rLLYysj9J8wU7Rh/hcKh85cHD0FY?=
+ =?us-ascii?Q?t11jfnXhjUbUdpVLyO4dwGDRwk4irDSiQ6+GSMHV+3S7brfOHq+XSMvKx1AL?=
+ =?us-ascii?Q?BKzG2mQBsroDrLH231rE62GtXjU4QYTSlrfeLXHsKYt70fFperfT3NTI+/qv?=
+ =?us-ascii?Q?awMCLwbE7GkWAlj6gm0mehNBqk8MiIbIy0MUwbhZadJ54AGplqDx7fvMw5S5?=
+ =?us-ascii?Q?1P3j9Kx/o+Kc2e3zadKfStpQTSr6dmcLNByuzA8T7zowx/yZAhbIder7iszD?=
+ =?us-ascii?Q?toCjGHE36YmK3v2JKHjlVRyWub17IlhIJsrmx2z1Ywk8efSVGNsDrGMoNK0T?=
+ =?us-ascii?Q?GpUrFXGRolEFglRxb6j75Q8+iH2Qsw2Eqt5pxv7TH2/zXcDpdhN92bFyR1lE?=
+ =?us-ascii?Q?8xXQdUnz1tMO2d7FusT7r2yO59hrzakeWN9xx4aM42JbkWhbVGuGXCzKBFt0?=
+ =?us-ascii?Q?CtAsBVOHQJKXJ8yiBfi+bDIdIozHjJaelC8MJbVrfNWNsE443kzRPlwlt5YQ?=
+ =?us-ascii?Q?cMXlutkWLKmV8fzuCBtlcfQLVVAHb2vJu9FjBbRUIPvStwifbqEIAn0D0bbi?=
+ =?us-ascii?Q?Sfz0cRzAGuHzkwZLZC3ZmlLdVg+tjfn7ATCA32JdMQo7+UbTQGQ0U69vGArA?=
+ =?us-ascii?Q?MEun/rRy87/yPzDoIwHYwsV52B3G8f1fnZhEvnEIlT5zuzjaG+vdiFpaafil?=
+ =?us-ascii?Q?znd/55bGul/caJjczGMpDAV5WRGcziWH7Bn1nLRHd0LOLFZft3z8f6JUWbqM?=
+ =?us-ascii?Q?P3GgOs/2c5CmLja8fbYdXd6YXQiAq8GqgNcHtT3JyE0hyjt1N2Y9+1OSFeyZ?=
+ =?us-ascii?Q?6gloRdlpsx1F/SxOXcXWVrYsipE6Wn9TZSpJuOZ7r2BiRlpD/J4zGWFWbs8Z?=
+ =?us-ascii?Q?LOf8fXPkkGabZNnrCo0KbGKu36Z996pqNcCj/wluafXSY+Z1NXlChj0Ih1y4?=
+ =?us-ascii?Q?3J1h+E1hGqfBq9F6p2XXFfckjZh7evQuGE66vM0EPWp1ixi+DYNjDRAxcC6m?=
+ =?us-ascii?Q?7m/FKD2z3OexKGs4Ta+o65ihjpWNmAPhATsbXzVYS/EpRzrnK3zce2uuM+0r?=
+ =?us-ascii?Q?SdUKZ9QIlgbkS/dQxFfK95A/ZWomYyL2Exbj3YBAqLt3kZXzQxGiYXY18vXS?=
+ =?us-ascii?Q?mgvIA5bIREASO+oS3dN6HEK0VWI1jDTSbcIT4Mqx9uE60qVtNM/XPAyVbuyL?=
+ =?us-ascii?Q?ZpFC6kK2ZpUzT9O/PGFNf1IfA1VyxnZjSFSxy74npeHhfxCK0wsIiIzFk+Fy?=
+ =?us-ascii?Q?CySATiHL/Dhy2PIcd+KVgqjzg4ixRVpiENaOtWgw2FQfomGSwKIM/JE05BiA?=
+ =?us-ascii?Q?OBZ56xFVuF13umF8p8vHC1R7xyiLcqEazF+Jo/NuW2ujSTTru9N4edhr6CGE?=
+ =?us-ascii?Q?Jt470NqMEBr5Suf4q7rx+RS6crfF?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6405.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(1800799024)(376014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?NHlbhitbtQwincmYRu0ZFZPcpFzt+QDadUjHgurFe0FlQ210H2/suue8xjWj?=
- =?us-ascii?Q?OBaiZbMTH6LkVVyKwDVJvMu04RqLjhWP5PrQBVVGQUxEdnpIrUM177jOtjhY?=
- =?us-ascii?Q?r07YOqkcq4Sx5xpRkJmKP+OJs6xjrouNnYKM4mIiAWi83gPR6JU9qJQwL1GA?=
- =?us-ascii?Q?H35IwH0TIDnBKqMVofkOyx6KHAfv81GDjjSAx8NevYDKZSafhSQUVeBB08Rf?=
- =?us-ascii?Q?+AmKrLpPhPFnFkzeWWPJIluB+AB0nTV0kgdfLXVwRjtAy6nyi/qh3Ri1BKcP?=
- =?us-ascii?Q?v10Er7BDqMdy/1sNLQOpe63koh4waeJq6yeg5ngeYrTLjI+/sYFfq6gu1/FJ?=
- =?us-ascii?Q?OahfR9eAWAIRmWDh5WcaSYoXRBavzfcWJXB6IbmCgmzzEbuusHflqWf++voP?=
- =?us-ascii?Q?qKKAJlnFbVTOHfnvnrLbaLdMDSc89vJ67vFsvmoHycjCQioHQdMvmEHqxzYG?=
- =?us-ascii?Q?ujMIqUU4TvHS6L7l8Ha0XcsRvntQG8XuBRF+FOik7U1BuCXZ68Uatn2/wT7/?=
- =?us-ascii?Q?i7gIH/2/w8YuT7hhYBKoHgxvTUG9IE9HGmLvW0Hzja93hMAA+wxznwP4d8m9?=
- =?us-ascii?Q?euWB2XWrFcPoiUPyKzSdsGxIF7dkxABZSGaZE+wnAl9nZyI6abMmoY2tZjPh?=
- =?us-ascii?Q?BpX+R2WNv2fIJD/34c2veRgkdaof4G1Zg4mL7nefPgHTq3LcUVKETO6+undp?=
- =?us-ascii?Q?VqjM0OYxAP1NGDfkoZ1ErRb7gADle/yEzOHTNWcZ0xFd8mRXzI5CHy/Jiv6a?=
- =?us-ascii?Q?WS3FC47GGCp+pRHaKBm/nkOEnzS7ZklizfbWyuz1xp6MgR9wQDFg6jyAOsHE?=
- =?us-ascii?Q?L8vIeFmjkX+Xw6CIu/uJ7fUP8DGCbPbqPoq0PsegJqqQXQU8Qqmx1TSVw1D7?=
- =?us-ascii?Q?3OUFGG3YJxoolLwOyiMGLAzFGNfu5TEh7n/Ub1+ESlTVmWfg/b8+S8sJxhY9?=
- =?us-ascii?Q?teh4L56UQZ06hAXIVWt4nRQLuZ8wBrCgqZm/B4ghgTSZ9eMoWlqi2u+GKJyT?=
- =?us-ascii?Q?a/I6vATgYTC0cVR/yJ2YShg6ylIqX1JxZrlKVYtczpkomnxODyIXhE8YRKZG?=
- =?us-ascii?Q?cfXuKbdioUg2SLY9t8lpcHRvNGyJMgf2W7+y2VtG43OE0WfYhJQQvAS+CwIZ?=
- =?us-ascii?Q?122Zi9oXiqQw9Z+kG7abhTu2LXHztwNnZ1NtLTn19qWG2eQjizGRGuwkM6l+?=
- =?us-ascii?Q?rIMp4nCKlBWvrXmjQTC0XaVjhvCWsdq9+oqjaEqSqRpswOx7BVnqrs7WHmoQ?=
- =?us-ascii?Q?hQj9vVjJkWz6ifKhYnoHVcZ7z3TYwnukGWeGRp0pfIqPIzhcC1B1VK3S/P7P?=
- =?us-ascii?Q?gMLfsSx4rU7TBeMkqI9tRvay4VNK+fyJvGoyCzpLI3XFCtFKZzxWd7hYhhzD?=
- =?us-ascii?Q?Z2oYIXP6QsUuCMZEyuI0hamGeVYCVOLNO+6iKIvejKGq/utaFuObb4so+d/b?=
- =?us-ascii?Q?borUKASdswkPwEJ4mrXyHX4YfD0vtU/NXoDoV+5FFAJiRSQmn4wP+fmqmdoK?=
- =?us-ascii?Q?yO3V1p2uuUlTZOXkOl/eJhGHJCzjtS30Ki57ftfJ/hlZqLk/9sPRgowzxydO?=
- =?us-ascii?Q?bFYD5x4JvEjTMIzf2FLQAXsxwebsCi85iES/fhsq?=
+	=?us-ascii?Q?0tTkR7tdbe9W4WDknZCUJdMS2nxEtvLNfp+Sc60YEvwhr+2fLKXDro/wdkzP?=
+ =?us-ascii?Q?hJMvqh4lUjBkV5zYjDPAiTzRNE7QSfFho75KdXIOnqZen05KumxU179AUAUR?=
+ =?us-ascii?Q?xZk6j3nif+4txd8YAc5HgM9UVj5kpePcHZKNfUPVe0MpbbCzwMw/KAvHxs/y?=
+ =?us-ascii?Q?Zp79AjBYmspS5mb0bH3vs03qfSYxdVtgrD+yXwGbDYV0CZRDsdEFNYT0Vn9R?=
+ =?us-ascii?Q?onqcv6mnwe3DAIYGzL3h+cJhSqFNJXowyQGZ4vUL2P+4k8IiMjkn/vQNJGXF?=
+ =?us-ascii?Q?xNdPbEKuLGIC8jYWXbMCLeBJSpVc0b0rGuVzFwrh+uGnECu+OMsoUzqA5iFj?=
+ =?us-ascii?Q?6hkSsS0LljFhTlYZI8F4bwbGu8omlEREP1a8SXVfhBIHR+7fRYgDbv2KnVib?=
+ =?us-ascii?Q?QYy8so6H7fhoAdtRCbgzMBLPn8K4PJWD/BT09fba17kaunH8ts0xDc48wK/A?=
+ =?us-ascii?Q?RQiyByQHGvAdrU3+j34bJwp3ZrlkiUBjNhRyMrQDJz1fR4EdGeV7CfgU3MS7?=
+ =?us-ascii?Q?AWUFEO+ltfgTxZmugV7KhJQ6u1UsW5dbdbMbVd+l44UxxNjYIOjlIgyrY3WD?=
+ =?us-ascii?Q?XaVUX6t+IFCGVzkgdW48g9RpQly5mFLLGs8JxnyLZYmkni/ykbqsJp8UJrLO?=
+ =?us-ascii?Q?FhF/no/nToPXBXWy6S/HgwYBZkoqu4cpp1m90blp0mocPFnB4f1NzsKW9H5U?=
+ =?us-ascii?Q?7joW11TltjifwP1fj0Z4Et580wPhr3Pbelh3VbMRALSh96lM0mjXdrsiGyCc?=
+ =?us-ascii?Q?U4XM9f0Bef899OfULUvRGTFZfW6osI8o6x0QjjHYX8OAbTzAF1Fn5JMNuKaI?=
+ =?us-ascii?Q?NTlQHQj1k/GDqi0lg0suizgIv5/otV6uplum6jYzk1KboCMKDSt+VwSfCvyD?=
+ =?us-ascii?Q?8JPLMzVZ1sVqCkTTlg1oXE4atxD3TKx0gVuYoQQYPeOddTR+wSRxmX/hn+fL?=
+ =?us-ascii?Q?la1aKI0ytEC0scHJY2YR0eHMIE3oRSYeoVLldYeT8DCkfoXzHZd+MAmFrhtV?=
+ =?us-ascii?Q?3K6dkJZhvo+dIqQv3Yq8LidQum7SVOMatSQQd3KB6XQaanFGKw9BjO9R9T41?=
+ =?us-ascii?Q?SHVF84z6eS2EyWPYe5tZOXrVdyRrcGqzAT1higBPSvzVnFLQkuCk+h4LcY5d?=
+ =?us-ascii?Q?TpnruKvE7JYiknsZLxk5XwGxWM06qUYdwKkXLvIXw9cZyzFz7JaOie6tfkpY?=
+ =?us-ascii?Q?nKDOAeW/ZmhENRWbGTxArc4unn5KLsHtfdYsDITvm/Kb7vw8ghiVVYiNcgzV?=
+ =?us-ascii?Q?2K6BS+KbSL2ikncdcqqhfS6XBepYCYg8qosvL+2UFbgNFouS+gT+W3ZikbGv?=
+ =?us-ascii?Q?w9H6gkD127pryuCXDS7uejzEeHTL3Gp5oqeQ+o+YUbYc7acJgZS4ekVtw+Yo?=
+ =?us-ascii?Q?wKLg+oPqkB5jLpNQJT1NHl5f82j0AOQvO1SMnYM5Xewb7xCaaXIxQ9K4hnFx?=
+ =?us-ascii?Q?UgwXRJw/ONF1kuRrl9IIs/oufSc9dy3LG2ediNciRKspxKgxBOjTG2cMgG1S?=
+ =?us-ascii?Q?SjEQ5H398p+3w/E4SUqQ+HLgVTvf7zkvdYfDOZqngcBGG34FERDvp3i/LO8f?=
+ =?us-ascii?Q?tW6hUvO2SqJMd0vUuOBQ2Cu+iDolDft2urUmcrnF?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 06429a17-d16d-4cb4-3dba-08dd4b855f9c
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2c29e736-53da-40ce-0ae5-08dd4b856203
 X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6405.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2025 16:50:36.4170
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2025 16:50:40.5038
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aR5pkTHmHoQPYiB6yfcW32z7W3yoUAILXK7IfR3GfZFr0b76/fBaDZuLx49WwcWlV+t+AT5eHcnUlWsvntQ5Ag==
+X-MS-Exchange-CrossTenant-UserPrincipalName: nHUAj3qVmhPljSciwF08ElJmphyZJn4uLG5wvidXLShNDsDSSbscu2FitJ7QZmb4XOAQwTPSJysRUzYux0IBzA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7177
 
-Introduce the new helper nearest_node_nodemask() to find the closest
-node in a specified nodemask from a given starting node.
+Introduce the new helper for_each_node_numadist() to iterate over node
+IDs in order of increasing NUMA distance from a given starting node.
 
-Returns MAX_NUMNODES if no node is found.
+This iterator is somehow similar to for_each_numa_hop_mask(), but
+instead of providing a cpumask at each iteration, it provides a node ID.
+
+Example usage:
+
+  nodemask_t unvisited = NODE_MASK_ALL;
+  int node, start = cpu_to_node(smp_processor_id());
+
+  node = start;
+  for_each_node_numadist(node, unvisited)
+  	pr_info("node (%d, %d) -> %d\n",
+  		 start, node, node_distance(start, node));
+
+On a system with equidistant nodes:
+
+ $ numactl -H
+ ...
+ node distances:
+ node     0    1    2    3
+    0:   10   20   20   20
+    1:   20   10   20   20
+    2:   20   20   10   20
+    3:   20   20   20   10
+
+Output of the example above (on node 0):
+
+[    7.367022] node (0, 0) -> 10
+[    7.367151] node (0, 1) -> 20
+[    7.367186] node (0, 2) -> 20
+[    7.367247] node (0, 3) -> 20
+
+On a system with non-equidistant nodes (simulated using virtme-ng):
+
+ $ numactl -H
+ ...
+ node distances:
+ node     0    1    2    3
+    0:   10   51   31   41
+    1:   51   10   21   61
+    2:   31   21   10   11
+    3:   41   61   11   10
+
+Output of the example above (on node 0):
+
+ [    8.953644] node (0, 0) -> 10
+ [    8.953712] node (0, 2) -> 31
+ [    8.953764] node (0, 3) -> 41
+ [    8.953817] node (0, 1) -> 51
 
 Cc: Yury Norov <yury.norov@gmail.com>
 Signed-off-by: Andrea Righi <arighi@nvidia.com>
 ---
- include/linux/numa.h |  7 +++++++
- mm/mempolicy.c       | 32 ++++++++++++++++++++++++++++++++
- 2 files changed, 39 insertions(+)
+ include/linux/topology.h | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/include/linux/numa.h b/include/linux/numa.h
-index 31d8bf8a951a7..e6baaf6051bcf 100644
---- a/include/linux/numa.h
-+++ b/include/linux/numa.h
-@@ -31,6 +31,8 @@ void __init alloc_offline_node_data(int nid);
- /* Generic implementation available */
- int numa_nearest_node(int node, unsigned int state);
- 
-+int nearest_node_nodemask(int node, nodemask_t *mask);
-+
- #ifndef memory_add_physaddr_to_nid
- int memory_add_physaddr_to_nid(u64 start);
- #endif
-@@ -47,6 +49,11 @@ static inline int numa_nearest_node(int node, unsigned int state)
- 	return NUMA_NO_NODE;
+diff --git a/include/linux/topology.h b/include/linux/topology.h
+index 52f5850730b3e..932d8b819c1b7 100644
+--- a/include/linux/topology.h
++++ b/include/linux/topology.h
+@@ -261,6 +261,36 @@ sched_numa_hop_mask(unsigned int node, unsigned int hops)
  }
- 
-+static inline int nearest_node_nodemask(int node, nodemask_t *mask)
-+{
-+	return NUMA_NO_NODE;
-+}
-+
- static inline int memory_add_physaddr_to_nid(u64 start)
- {
- 	return 0;
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 162407fbf2bc7..1e2acf187ea3a 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -196,6 +196,38 @@ int numa_nearest_node(int node, unsigned int state)
- }
- EXPORT_SYMBOL_GPL(numa_nearest_node);
+ #endif	/* CONFIG_NUMA */
  
 +/**
-+ * nearest_node_nodemask - Find the node in @mask at the nearest distance
-+ *			   from @node.
++ * for_each_node_numadist() - iterate over nodes in increasing distance
++ *			      order, starting from a given node
++ * @node: the iteration variable and the starting node.
++ * @unvisited: a nodemask to keep track of the unvisited nodes.
 + *
-+ * @node: the node to start the search from.
-+ * @mask: a pointer to a nodemask representing the allowed nodes.
++ * This macro iterates over NUMA node IDs in increasing distance from the
++ * starting @node and yields MAX_NUMNODES when all the nodes have been
++ * visited.
 + *
-+ * This function iterates over all nodes in the given state and calculates
-+ * the distance to the starting node.
++ * Note that by the time the loop completes, the @unvisited nodemask will
++ * be fully cleared, unless the loop exits early.
 + *
-+ * Returns the node ID in @mask that is the closest in terms of distance
-+ * from @node, or MAX_NUMNODES if no node is found.
++ * The difference between for_each_node() and for_each_node_numadist() is
++ * that the former allows to iterate over nodes in numerical order, whereas
++ * the latter iterates over nodes in increasing order of distance.
++ *
++ * This complexity of this iterator is O(N^2), where N represents the
++ * number of nodes, as each iteration involves scanning all nodes to
++ * find the one with the shortest distance.
++ *
++ * Requires rcu_lock to be held.
 + */
-+int nearest_node_nodemask(int node, nodemask_t *mask)
-+{
-+	int dist, n, min_dist = INT_MAX, min_node = MAX_NUMNODES;
++#define for_each_node_numadist(node, unvisited)					\
++	for (int start = (node),						\
++	     node = nearest_node_nodemask((start), &(unvisited));		\
++	     node < MAX_NUMNODES;						\
++	     node_clear(node, (unvisited)),					\
++	     node = nearest_node_nodemask((start), &(unvisited)))
 +
-+	if (node == NUMA_NO_NODE)
-+		return MAX_NUMNODES;
-+
-+	for_each_node_mask(n, *mask) {
-+		dist = node_distance(node, n);
-+		if (dist < min_dist) {
-+			min_dist = dist;
-+			min_node = n;
-+		}
-+	}
-+
-+	return min_node;
-+}
-+EXPORT_SYMBOL_GPL(nearest_node_nodemask);
-+
- struct mempolicy *get_task_policy(struct task_struct *p)
- {
- 	struct mempolicy *pol = p->mempolicy;
+ /**
+  * for_each_numa_hop_mask - iterate over cpumasks of increasing NUMA distance
+  *                          from a given node.
 -- 
 2.48.1
 
