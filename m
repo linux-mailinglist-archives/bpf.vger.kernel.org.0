@@ -1,152 +1,99 @@
-Return-Path: <bpf+bounces-51195-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51196-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33AAFA31A42
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 01:15:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A8C8A31AD1
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 01:50:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A2553A2F89
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 00:14:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E54E8167F86
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2025 00:50:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F093123A6;
-	Wed, 12 Feb 2025 00:15:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D48218C0C;
+	Wed, 12 Feb 2025 00:50:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EPDqqGks"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pIYeM9D/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ECD710E0;
-	Wed, 12 Feb 2025 00:14:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83BB8FBF6;
+	Wed, 12 Feb 2025 00:50:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739319300; cv=none; b=Kc5h/+vVf8bo6coNH705FZP3FzkbPhn5AH4xBRuzv7ve+IqpJSnqdshDaoK39KhK1Fq4LwdHjX5m6xkedlyULam76oIinoiMcifLbemccZRmyZ9L4G4TmHVH6dQsZoAmJJ5EpKUqWKMuAqsHvvaeEj0UddC6pMpt3Cw1OIRsb9o=
+	t=1739321407; cv=none; b=B/soGxeuQJ+SZ6RQGppNNcvMHJhYZSnQmIWQ3r7QVM1gnKrKIdGmY5u0SIgXeEHzwlaffUAuEe6RvUgC55Sg7Nx1yailNg4M9lHd8W1DtCX911lWioVeYd7u0z/PZxA9aSN3X37hwa/GIUNUAJpk6w9eWziEcxBQW3T8JCgvsEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739319300; c=relaxed/simple;
-	bh=3AKa/KbMk/yw089tqH3tkLRaF88cQLPcFZ9q4ApzqvY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=DgZ5J77wo9CkhyVkC5OcGQeyyZ0GCB2u69IJCfNd7GP5QR5fZVyXNMhppgbiQ/qlViYzJ2zrLglz46S1YyWamykepwdGicW+nH816R9YzClMTOF6evrR2XfOIKDV/QB/fMExJ17Lv4eZL5Necjp63PTW6DChHiWJxuKnT/iLAZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EPDqqGks; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2fa51743d80so5256382a91.2;
-        Tue, 11 Feb 2025 16:14:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739319298; x=1739924098; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=0g64+bAu6IO9b+R8khvsANq0+6GQirg6dDpJG7gTDt8=;
-        b=EPDqqGksWCVcre9kuIi99Xybl5dPUenGcv2TKGRyewIa8e3/VdyoiLRK8l15AV5jS8
-         q1xZ01YyjIWTgfbIlG8485Ep+gq/jz+6NQQ48Nq7pgXI+2QFn8izwQyp5vCUq0ow8XJG
-         SblZoXBYr1m/WxOrSqEFBq4hcuUBqxC3TGbz3eVKivP2foo7UKiG83CNNhQGONSF6Rb5
-         6tNgt913Z3Cjo+ME3c0CG54eLSOOnBxTV+teD0zOkwe40V2WyR2+P4EJ/s+W+0eltoMR
-         gzjx5Qq45ixXt2cspm/gpi8XGGVTs1UuC1dqOKFaI1rZMjjCiL19c7Ga3RTD+7UCVmuP
-         XVHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739319298; x=1739924098;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0g64+bAu6IO9b+R8khvsANq0+6GQirg6dDpJG7gTDt8=;
-        b=MHxjFiq+LRG0+rxWZub4rZ4d2JV6LMWOUJMhHIkMirR8W4dVb/xn+XU3f7rxsF3FVR
-         J4fV0xjKjBDeEAqyjTxf52lsQVXwmygXLbrdgAHD9Z3msdoXnImsfnCGJa00ijCI2s4m
-         c+GfO7QN6cEOoHLeeOCc0VmeHfXDErQatqUJyGNmWoAFVmOGq8lBL1mw7VYcBTKMbvMu
-         +CsNg/3AufwBcFijefh0Lp4LmPibJy3SYmp/9ZVNRQFS9CLeTrGgwlKd8QslEetyVQ60
-         l3FcOgmOgbueQiwnyVeFSr5DTm0s4yylpQ24kZJASUdP4gIBUjacOY028nGgHqBvefdN
-         5JNg==
-X-Forwarded-Encrypted: i=1; AJvYcCUW6uVzJ/zZLJQ/gk0CepL6q8lwlfNG/gFzJ5GAbShtcvOeY3FFXIO2vJEhkGczR7PZjMY=@vger.kernel.org, AJvYcCW1renMOEC7qbPa6Zh6nvSq2ayg3E77VeYVSqfODqPjRfF4EyXWtw9FqbyiXrGgJJZoEhNlomRE+byzkB6J@vger.kernel.org
-X-Gm-Message-State: AOJu0YyzFEusmetSGtUA/tBaMIHAeK/feQvUn4ZZ97pviSaBrBQZatu5
-	1fY7ot+kUWOZpS9vAyJjmS/WDM9rlL3Na7RJkwCHBtKZQb8FR/A6
-X-Gm-Gg: ASbGncszGHG6fRSFkwnjzXegyfM01eDUwud7XCYW45Z5qKrcrYG7H10eMjWHTW/kF+X
-	oyscBE9qj/P823AV1SWq5hdjvTY5ZHY3x223FMOaZBDPGwgH3nvu3/8QIuZRepX8gaBhnk66qev
-	mEPzJg/Tk6aQNRHtdwB3Rfzttbd0aMz+oV+R4kZAY3Kq7fjy/i//VrL8pXqzfKKffFmJu/6oZiM
-	faeZ9GnAZc2ErmNFazFpFICQl1lz/zjmEpTZ2637CVJya9NszpHjTZgEOQk+fqCBfkMVUvst7yM
-	9WNpT0Bor3nN
-X-Google-Smtp-Source: AGHT+IGsXIH+f84KqAToP99Sh3SeIBndc/AQvegIuSnt+d3ClLLtcoD2z4mAFZARz+V06Rh95tBDlw==
-X-Received: by 2002:a17:90b:2f0f:b0:2f8:b2c:5ef3 with SMTP id 98e67ed59e1d1-2fbf5c0d99bmr1935952a91.14.1739319298382;
-        Tue, 11 Feb 2025 16:14:58 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fbf98b7b20sm176187a91.17.2025.02.11.16.14.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Feb 2025 16:14:57 -0800 (PST)
-Message-ID: <40cb834c2e034dc991a6b0c8140608dcd2e9e5fb.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 26/26] selftests/bpf: Add tests for
- rqspinlock
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Peter Zijlstra	
- <peterz@infradead.org>, Will Deacon <will@kernel.org>, Waiman Long	
- <llong@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko	
- <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai
- Lau	 <martin.lau@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
- Tejun Heo	 <tj@kernel.org>, Barret Rhoden <brho@google.com>, Josh Don
- <joshdon@google.com>,  Dohyun Kim <dohyunkim@google.com>,
- linux-arm-kernel@lists.infradead.org, kernel-team@meta.com
-Date: Tue, 11 Feb 2025 16:14:52 -0800
-In-Reply-To: <20250206105435.2159977-27-memxor@gmail.com>
-References: <20250206105435.2159977-1-memxor@gmail.com>
-	 <20250206105435.2159977-27-memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+	s=arc-20240116; t=1739321407; c=relaxed/simple;
+	bh=mC7Q3/O7Z/cIOat5QkYiQnYlJ5lqq8d2vDS7X8MEJVw=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Od81sbupAnbCeU9c/7zQy2IEbAuU8Oxd690q1OaVzumKidkFN+k3YA8yYNwDxxlGBmKowFH7TDwmNX1CnXb6sC6scK/3ymhXsBnV/93WEv2YcD0k+d1X0wXGrZ6RTnzXL2DezH8KLLDupEOexASm4bef9X/tcojyxQ22xG9o7BE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pIYeM9D/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E070EC4CEDD;
+	Wed, 12 Feb 2025 00:50:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739321405;
+	bh=mC7Q3/O7Z/cIOat5QkYiQnYlJ5lqq8d2vDS7X8MEJVw=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=pIYeM9D/PYAAnPPlWlIDGCkdHnjcG+7hAzUGTlPgbKBvs7c2NntWQz/SA9YK3MVcI
+	 GhrEHpCKmRPRCHFN8LYWJSckNU91dOelUpUUw752O9AFDhF0S9AeAWxh8aiVqukFLC
+	 y6HITN12z+6CvINyMMvUR5dwNdB4FrQO4OA0MBvLV7Wr84qazewofEGJK95VGFjMXW
+	 00uOy3J7FmTXpz0my93lMQVaEJsM0mRZ+S2N0Wdewi4cfHUeSFx6e84ZMtiIgzWe1x
+	 v+m45tVa5zI1OrQzvDkWKWqzkb/TgbW9eG9JwtmWNfdyXtgo11jd0TC/JCiYv4fBIA
+	 qPc0xzHcg7dZA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB883380AAFB;
+	Wed, 12 Feb 2025 00:50:34 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 1/2] selftests/bpf: Define SYS_PREFIX for powerpc
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <173932143379.54159.8891352448653328324.git-patchwork-notify@kernel.org>
+Date: Wed, 12 Feb 2025 00:50:33 +0000
+References: <7192d6aa9501115dc242435970df82b3d190f257.1738302337.git.skb99@linux.ibm.com>
+In-Reply-To: <7192d6aa9501115dc242435970df82b3d190f257.1738302337.git.skb99@linux.ibm.com>
+To: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, ast@kernel.org, hbathini@linux.ibm.com,
+ andrii@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+ kuba@kernel.org, hawk@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
+ song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+ kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ mykolal@fb.com, shuah@kernel.org
 
-On Thu, 2025-02-06 at 02:54 -0800, Kumar Kartikeya Dwivedi wrote:
+Hello:
 
-[...]
+This series was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-> +void test_res_spin_lock(void)
-> +{
-> +	if (test__start_subtest("res_spin_lock_success"))
-> +		test_res_spin_lock_success();
-> +	if (test__start_subtest("res_spin_lock_failure"))
-> +		test_res_spin_lock_failure();
-> +}
+On Fri, 31 Jan 2025 12:35:21 +0530 you wrote:
+> Since commit 7e92e01b7245 ("powerpc: Provide syscall wrapper")
+> landed in v6.1, syscall wrapper is enabled on powerpc. Commit
+> 94746890202c ("powerpc: Don't add __powerpc_ prefix to syscall
+> entry points") , that drops the prefix to syscall entry points,
+> also landed in the same release. So, add the missing empty
+> SYS_PREFIX prefix definition for powerpc, to fix some fentry
+> and kprobe selftests.
+> 
+> [...]
 
-Such organization makes it impossible to select sub-tests from
-res_spin_lock_failure using ./test_progs -t.
-I suggest doing something like below:
+Here is the summary with links:
+  - [v2,1/2] selftests/bpf: Define SYS_PREFIX for powerpc
+    https://git.kernel.org/bpf/bpf-next/c/650f20bbd9d1
+  - [v2,2/2] selftests/bpf: Select NUMA_NO_NODE to create map
+    https://git.kernel.org/bpf/bpf-next/c/4107a1aeb20e
 
-	@@ -6,7 +6,7 @@
-	 #include "res_spin_lock.skel.h"
-	 #include "res_spin_lock_fail.skel.h"
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-	-static void test_res_spin_lock_failure(void)
-	+void test_res_spin_lock_failure(void)
-	 {
-	        RUN_TESTS(res_spin_lock_fail);
-	 }
-	@@ -30,7 +30,7 @@ static void *spin_lock_thread(void *arg)
-	        pthread_exit(arg);
-	 }
-
-	-static void test_res_spin_lock_success(void)
-	+void test_res_spin_lock_success(void)
-	 {
-	        LIBBPF_OPTS(bpf_test_run_opts, topts,
-	                .data_in =3D &pkt_v4,
-	@@ -89,11 +89,3 @@ static void test_res_spin_lock_success(void)
-	        res_spin_lock__destroy(skel);
-	        return;
-	 }
-	-
-	-void test_res_spin_lock(void)
-	-{
-	-       if (test__start_subtest("res_spin_lock_success"))
-	-               test_res_spin_lock_success();
-	-       if (test__start_subtest("res_spin_lock_failure"))
-	-               test_res_spin_lock_failure();
-	-}
-
-[...]
 
 
