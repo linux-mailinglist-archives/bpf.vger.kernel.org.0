@@ -1,179 +1,132 @@
-Return-Path: <bpf+bounces-51328-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51329-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6BE0A333DB
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 01:10:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F5A7A33432
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 01:44:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A77F13A6A38
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 00:10:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E35511885DB1
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 00:44:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B6924A29;
-	Thu, 13 Feb 2025 00:10:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13D9B70820;
+	Thu, 13 Feb 2025 00:44:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HbvXWEdb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="INZ96AzW"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 724971754B;
-	Thu, 13 Feb 2025 00:10:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 445EE4D8A3;
+	Thu, 13 Feb 2025 00:44:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739405446; cv=none; b=R5ZIyXYAQkII+kGUOIohHBH4h/hoxKaG3F2FFTEOVtzygAT3erjJ9y23dymqeOG3Eq9EiPAQ/MWxf43yCLT6Z3Mm+zLaw3Nyon3+ACzZZ3h1/RZZpDlj70UF2Qi9iOS6rH36syXaOdIXBzJreRWKhgLE9ytGKe+GgKQ3r67V8Z8=
+	t=1739407445; cv=none; b=HcLKlT4ORFTmeMcSAYcGYirxv+NzpaH0/chjqn7FydoxNn2OtPQ8Sowv00TpdNWdpOXAdFHeBxqBho4X4ZND4PSLM6BEstVowvtY/sorvgfGVyid8Z0SaoHwkz6EmpySLuMNFeHjpJ+/vTp5KXCfXW4XYikAm3H0x+X3ElrkkCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739405446; c=relaxed/simple;
-	bh=k0UpztxzmXp3dZXHJw0oYhfBc23L040T2AXt0rcJrWs=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=QfE6H/teT6lZiJqkA3rxG8jNL2Sgtj74pohRyzNyUDkY1kLBjRE9G/p8UR4ErMdQR/5VyVY8mubdfEgne4Eacjf5glGBPA6t4FF5Dzrx+DPn2EMfR40BaMUT7EmS0LFIcMOuGiKqCL0MX5EMAeMP9nY+6vVjKXm/3mFSx1xaH7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HbvXWEdb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD746C4CEE4;
-	Thu, 13 Feb 2025 00:10:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739405444;
-	bh=k0UpztxzmXp3dZXHJw0oYhfBc23L040T2AXt0rcJrWs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=HbvXWEdbv5YXKHAxvnLLO9MRguqiv9BdC2x5i+Rcas/EDQptcDSj5vwafml+0lNYw
-	 HxWgZqKKX6kfYjzbsljjgHd+BbxbFMDNWWuDdiPbK4uZDE1aUpXTSBYBXe8wCRqFO2
-	 sKVElEmzei3vHaB+2nOzri4pMtFVjTKhYX/LZU0JGcigqe26S6vpPZyPJF89zbmHII
-	 gnT50DZ/jvtZfZuWY+kJxt0RUZGgJ8ujzpiYc2PJKi48TzDJB142NVNtc8kI3p4+zE
-	 VVfmI/Ibue6exRPbKFbpWKU0z08g7CODtfNwtIRb5BDFv5u3hLq752VWh+eEz9WOz0
-	 sgJ5Ex8wTcZfw==
-Date: Thu, 13 Feb 2025 09:10:37 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Oleg Nesterov <oleg@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Andrii Nakryiko <andrii@kernel.org>,
- Kees Cook <kees@kernel.org>, Eyal Birger <eyal.birger@gmail.com>,
- stable@vger.kernel.org, Jann Horn <jannh@google.com>,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-api@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org, Thomas
- Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Andy
- Lutomirski <luto@kernel.org>, Deepak Gupta <debug@rivosinc.com>, Stephen
- Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCHv3 perf/core] uprobes: Harden uretprobe syscall
- trampoline check
-Message-Id: <20250213091037.1be1b765f3610d1a3f732e41@kernel.org>
-In-Reply-To: <20250212220433.3624297-1-jolsa@kernel.org>
-References: <20250212220433.3624297-1-jolsa@kernel.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1739407445; c=relaxed/simple;
+	bh=noHOyu9YyI1F/QtIPNZXFq2XOBMNP0ul9/0Laym0Pr8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ie7s4jH9CpuvP0rnuUFwMpd4RoZFnSZfCO3MyiV1eGZaGULPHY+kNz4Zr7TnFNLuIXibdJZ5se7ta9+zhmOXA27wTV1qzTUkgW0imy5Ak9yu5Gf9jtiSfLP5tCw7hY39psWDGM2OT+bklUqcYVeBxv/p2svKjWudJ/CcURzDmV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=INZ96AzW; arc=none smtp.client-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2fa2c456816so581392a91.1;
+        Wed, 12 Feb 2025 16:44:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739407443; x=1740012243; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TKWqLMFQKYun2lq3SINKeigAEDx+Cz3zR58bcom2PV0=;
+        b=INZ96AzWn56PCrI2aNT5ViNflvQXE2dVJ1tiCkC1NMloksLU0rakSsZNiWK/Vg4np+
+         Xn8v8RxUWwwZmnDMIZ6CSlPp7oDTylkRQfY5gn9VWkPwpd6Ua6T1KAWk+CQlbNGujlp0
+         1kLieTukl50m9MzSD797VA9l9fgq4M7U/gzsgPqHot+1YMwsfw9XjvqNTxj6vjt+sBvA
+         7JfDs2zFHhi1si3/xE8Tre62wCgivUoa68GRtqx0F6z8m1TAaN/Np2VHzgEO/nXkD9Pa
+         dwtn15vw7Fp3n8ULQwqZwKSdegsRXYlPZWjyopkU34plrLc9U+yYq3TArPrrmfashlZk
+         1yAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739407443; x=1740012243;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TKWqLMFQKYun2lq3SINKeigAEDx+Cz3zR58bcom2PV0=;
+        b=NtCfJRC/wYrY9lEEOYrxI00JWMMC+dJe65ZQ8xrSYc00WlndBF2EgDhH/AJWxfkCJk
+         jGvS0K9clifP5uJ2ZR9YKPPVZ37EqkaYGwskWM/HT+WgFWne9KYJvBfGU/Ba1c85u3UV
+         vT8YAu3y5XD0u+nDg8ryRqAAmsK5EltL7tDroThDBrFrzDx1cdnZ0QjkC0byysAbZ6Gb
+         tfKfFOEmVD9b6pxw0YMeVRwmWklPNaYCMtwF9ImkBXvBrwuDq3khzsQUy4nDLRvXwBmv
+         nRDbIG3Q9ybdEpeJ91b8/vR536Xs0xcly1sckuDxrj0B2FJT4lwXdov8cwFPhnadnrVu
+         ho5A==
+X-Forwarded-Encrypted: i=1; AJvYcCW7E3lynsxT/5dRCw9uUgk/tPOkIbqVoK2CemLxTF99Xf5ZNghJXUxaDeUE0Aw8KtM9QaBXZn0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz65Czb+OnMQI/gE96Wa+3RTcV0M/VZuoYMmUR4AXngvU8Z1F6o
+	UWWInx5VLQ1NGaGc+vcw7faR6XEOp1YAOeVLFWs0FInN0+PT+cEq
+X-Gm-Gg: ASbGncu2MEHt1rbejgQG0KDq2HRArH8vGxOheMICElEXRrPg6L85TKyKguX2N4F6FGL
+	vd5tszgPGMWV6KDTqlGUVOUn+Fulhus8CrICZqAWuuW5UFRUHGr+zZMI4n5k8MYQ/lqk2jlLf9I
+	ELUyy2UK/jzO9gFbQ3migE0WSR3XAnkindlTZU9T8jut2Ib7Uz/3PtgSx9XS1c7W7Pw+52O4pzF
+	TH4tXSKEsG+XhfV41tsYb7hW5GdSxCDN0PSLD7I9w0yG9tav0LGUmDBJyQg3Gwun4jADy40uS7U
+	HAn46ysYLw1zaAqPPxZR0TWmQWq519Gslphh2ucip//0Gh3C6yuADg==
+X-Google-Smtp-Source: AGHT+IH2xwmtY2xTvS9l4hFg4Gz4V5Twj7yK77nNbDGpQeJ0+RnvgdXfdhHgfuxSPAJcfAlqMFGiGw==
+X-Received: by 2002:a17:90b:38c6:b0:2ee:f80c:6884 with SMTP id 98e67ed59e1d1-2fc0f0db50dmr1910178a91.33.1739407443366;
+        Wed, 12 Feb 2025 16:44:03 -0800 (PST)
+Received: from KERNELXING-MC1.tencent.com ([111.201.25.167])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fc13ad3fb8sm63618a91.26.2025.02.12.16.43.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Feb 2025 16:44:02 -0800 (PST)
+From: Jason Xing <kerneljasonxing@gmail.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	dsahern@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	horms@kernel.org,
+	ncardwell@google.com,
+	kuniyu@amazon.com
+Cc: bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Jason Xing <kerneljasonxing@gmail.com>
+Subject: [PATCH net-next 0/3] bpf: support setting max RTO for bpf_setsockopt
+Date: Thu, 13 Feb 2025 08:43:51 +0800
+Message-Id: <20250213004355.38918-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Wed, 12 Feb 2025 23:04:33 +0100
-Jiri Olsa <jolsa@kernel.org> wrote:
+Support max RTO set by BPF program calling bpf_setsockopt().
+Add corresponding selftests.
 
-> Jann reported [1] possible issue when trampoline_check_ip returns
-> address near the bottom of the address space that is allowed to
-> call into the syscall if uretprobes are not set up.
-> 
-> Though the mmap minimum address restrictions will typically prevent
-> creating mappings there, let's make sure uretprobe syscall checks
-> for that.
-> 
-> [1] https://lore.kernel.org/bpf/202502081235.5A6F352985@keescook/T/#m9d416df341b8fbc11737dacbcd29f0054413cbbf
-> Cc: Kees Cook <kees@kernel.org>
-> Cc: Eyal Birger <eyal.birger@gmail.com>
-> Cc: stable@vger.kernel.org
-> Fixes: ff474a78cef5 ("uprobe: Add uretprobe syscall to speed up return probe")
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> Reported-by: Jann Horn <jannh@google.com>
-> Reviewed-by: Oleg Nesterov <oleg@redhat.com>
-> Reviewed-by: Kees Cook <kees@kernel.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Jason Xing (3):
+  tcp: add TCP_RTO_MAX_MIN_SEC definition
+  bpf: add TCP_BPF_RTO_MAX for bpf_setsockopt
+  selftests/bpf: add rto max for bpf_setsockopt test
 
-Looks good to me.
-
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thank you,
-
-> ---
-> v3 changes:
->  - used ~0UL instead of -1 [Alexei]
->  - used UPROBE_NO_TRAMPOLINE_VADDR in uprobe_get_trampoline_vaddr [Masami]
->  - added unlikely [Andrii]
->  - I kept the review/ack tags, because I think the change is basically
->    the same, please scream otherwise
-> 
->  arch/x86/kernel/uprobes.c | 14 +++++++++-----
->  include/linux/uprobes.h   |  2 ++
->  kernel/events/uprobes.c   |  2 +-
->  3 files changed, 12 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-> index 5a952c5ea66b..9194695662b2 100644
-> --- a/arch/x86/kernel/uprobes.c
-> +++ b/arch/x86/kernel/uprobes.c
-> @@ -357,19 +357,23 @@ void *arch_uprobe_trampoline(unsigned long *psize)
->  	return &insn;
->  }
->  
-> -static unsigned long trampoline_check_ip(void)
-> +static unsigned long trampoline_check_ip(unsigned long tramp)
->  {
-> -	unsigned long tramp = uprobe_get_trampoline_vaddr();
-> -
->  	return tramp + (uretprobe_syscall_check - uretprobe_trampoline_entry);
->  }
->  
->  SYSCALL_DEFINE0(uretprobe)
->  {
->  	struct pt_regs *regs = task_pt_regs(current);
-> -	unsigned long err, ip, sp, r11_cx_ax[3];
-> +	unsigned long err, ip, sp, r11_cx_ax[3], tramp;
-> +
-> +	/* If there's no trampoline, we are called from wrong place. */
-> +	tramp = uprobe_get_trampoline_vaddr();
-> +	if (unlikely(tramp == UPROBE_NO_TRAMPOLINE_VADDR))
-> +		goto sigill;
->  
-> -	if (regs->ip != trampoline_check_ip())
-> +	/* Make sure the ip matches the only allowed sys_uretprobe caller. */
-> +	if (unlikely(regs->ip != trampoline_check_ip(tramp)))
->  		goto sigill;
->  
->  	err = copy_from_user(r11_cx_ax, (void __user *)regs->sp, sizeof(r11_cx_ax));
-> diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-> index a40efdda9052..2e46b69ff0a6 100644
-> --- a/include/linux/uprobes.h
-> +++ b/include/linux/uprobes.h
-> @@ -39,6 +39,8 @@ struct page;
->  
->  #define MAX_URETPROBE_DEPTH		64
->  
-> +#define UPROBE_NO_TRAMPOLINE_VADDR	(~0UL)
-> +
->  struct uprobe_consumer {
->  	/*
->  	 * handler() can return UPROBE_HANDLER_REMOVE to signal the need to
-> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index 597b9e036e5f..c5d6307bc5bc 100644
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -2156,8 +2156,8 @@ void uprobe_copy_process(struct task_struct *t, unsigned long flags)
->   */
->  unsigned long uprobe_get_trampoline_vaddr(void)
->  {
-> +	unsigned long trampoline_vaddr = UPROBE_NO_TRAMPOLINE_VADDR;
->  	struct xol_area *area;
-> -	unsigned long trampoline_vaddr = -1;
->  
->  	/* Pairs with xol_add_vma() smp_store_release() */
->  	area = READ_ONCE(current->mm->uprobes_state.xol_area); /* ^^^ */
-> -- 
-> 2.48.1
-> 
-
+ Documentation/networking/ip-sysctl.rst        |  3 +-
+ include/net/tcp.h                             |  1 +
+ include/uapi/linux/bpf.h                      |  2 ++
+ net/core/filter.c                             |  6 ++++
+ net/ipv4/sysctl_net_ipv4.c                    |  3 +-
+ net/ipv4/tcp.c                                |  3 +-
+ tools/include/uapi/linux/bpf.h                |  2 ++
+ .../bpf/prog_tests/tcp_hdr_options.c          | 28 +++++++++++++------
+ .../bpf/progs/test_tcp_hdr_options.c          | 26 +++++++++++++++++
+ .../selftests/bpf/test_tcp_hdr_options.h      |  3 ++
+ 10 files changed, 66 insertions(+), 11 deletions(-)
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.43.5
+
 
