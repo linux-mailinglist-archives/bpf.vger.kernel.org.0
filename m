@@ -1,41 +1,41 @@
-Return-Path: <bpf+bounces-51445-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51447-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3A9EA34A27
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 17:38:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 182EAA34A99
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 17:48:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 991B5176D88
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 16:33:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAEB53B0A21
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 16:33:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AE8E280A24;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA64828137C;
 	Thu, 13 Feb 2025 16:21:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 115D327FE6B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 835CB280A26;
 	Thu, 13 Feb 2025 16:21:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739463696; cv=none; b=SrFghITmPWY2TiWBFa+0j8ZU5PChtk1RR5rxRet3OwZudh8ZYEICVDF/yM6jJAbJAcBfZAU6F8FSbdXW4dUy/nCXIVu6VGaUn2pQ9khrMx1GYxWrh3IfN91eFLL7o3qbIKRp6U9Ne57hoU8VrmPg9D/Yc2P/bZ3GW3uSRXu4uhg=
+	t=1739463696; cv=none; b=SIXaHKd0b9FfxE3/l0a1TeecwEUfFxrcmHHYidy5veZi7yjstb2J9Csr+jfDacA8AAYXCosgFIqzAe8csl/nEeR1WD6plP85gJkCBrwYd5WghWAeEgviKR1+PS8ZY3IyXuE4h7INDxetKhv1Go+vqL0l4B+XEpWfMgh2ZUUxjeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1739463696; c=relaxed/simple;
-	bh=wZwu3dRXSpsPU781WWc0GLMKXfLrt3NN07IElLsCoJ8=;
+	bh=h5HZDvjlSble8n9tutmQYNXJ8OyrHiQ1Z2innQWa9XE=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=ALZXGRWmUcaj1/dzQb5TNcg2WmtYWsdsEJvgTvZUGvhiYYT0mcFXQcYY1g2LJ0Nz2zlbrmTkPsK9UvPA/rcWC4e+ANi986kW40HLlewBeUI9w9BcjuLaO99H19R7nOfQC6OfbzAib9kLqje6mzMg7vMSQdw/lKLjKstoC5jjE3c=
+	 Content-Type; b=ErB+bdoobo5sTU46GX4z3JdThx62/WS5rf9uawDJKrHu4AnxCbH+MLLfflZEylvnVIrNxGkyh/fpiYoY6iMDpI1AD9EhwJeryoQUW1QZrVwLfc4UwxWkDC5pVIVHVFnjRQNk8paY/TEv4OA+7Mc/tRaqW9Zkd4BrP6D8Wxtx7gE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF2A0C4CED1;
-	Thu, 13 Feb 2025 16:21:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 006D4C4CEE7;
+	Thu, 13 Feb 2025 16:21:36 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.98)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1tibyE-00000001qcT-1IiE;
+	id 1tibyE-00000001qcx-21Ty;
 	Thu, 13 Feb 2025 11:21:46 -0500
-Message-ID: <20250213162146.158076547@goodmis.org>
+Message-ID: <20250213162146.332262157@goodmis.org>
 User-Agent: quilt/0.68
-Date: Thu, 13 Feb 2025 11:20:52 -0500
+Date: Thu, 13 Feb 2025 11:20:53 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org,
@@ -61,7 +61,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Will Deacon <will@kernel.org>,
  Vasily Gorbik <gor@linux.ibm.com>,
  Alexander Gordeev <agordeev@linux.ibm.com>
-Subject: [PATCH v3 5/6] ftrace: Update the mcount_loc check of skipped entries
+Subject: [PATCH v3 6/6] ftrace: Have ftrace pages output reflect freed pages
 References: <20250213162047.306074881@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -73,50 +73,86 @@ Content-Type: text/plain; charset=UTF-8
 
 From: Steven Rostedt <rostedt@goodmis.org>
 
-Now that weak functions turn into skipped entries, update the check to
-make sure the amount that was allocated would fit both the entries that
-were allocated as well as those that were skipped.
+The amount of memory that ftrace uses to save the descriptors to manage
+the functions it can trace is shown at output. But if there are a lot of
+functions that are skipped because they were weak or the architecture
+added holes into the tables, then the extra pages that were allocated are
+freed. But these freed pages are not reflected in the numbers shown, and
+they can even be inconsistent with what is reported:
+
+ ftrace: allocating 57482 entries in 225 pages
+ ftrace: allocated 224 pages with 3 groups
+
+The above shows the number of original entries that are in the mcount_loc
+section and the pages needed to save them (225), but the second output
+reflects the number of pages that were actually used. The two should be
+consistent as:
+
+ ftrace: allocating 56739 entries in 224 pages
+ ftrace: allocated 224 pages with 3 groups
+
+The above also shows the accurate number of entires that were actually
+stored and does not include the entries that were removed.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/ftrace.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+ kernel/trace/ftrace.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index e3f89924f603..55d28c060784 100644
+index 55d28c060784..fa7c3417d995 100644
 --- a/kernel/trace/ftrace.c
 +++ b/kernel/trace/ftrace.c
-@@ -7111,7 +7111,29 @@ static int ftrace_process_locs(struct module *mod,
+@@ -7006,6 +7006,7 @@ static int ftrace_process_locs(struct module *mod,
+ 	unsigned long addr;
+ 	unsigned long kaslr;
+ 	unsigned long flags = 0; /* Shut up gcc */
++	unsigned long pages;
+ 	int ret = -ENOMEM;
  
- 	/* We should have used all pages unless we skipped some */
- 	if (pg_unuse) {
--		WARN_ON(!skipped);
-+		unsigned long pg_remaining, remaining;
-+		unsigned long skip;
+ 	count = end - start;
+@@ -7013,6 +7014,8 @@ static int ftrace_process_locs(struct module *mod,
+ 	if (!count)
+ 		return 0;
+ 
++	pages = DIV_ROUND_UP(count, ENTRIES_PER_PAGE);
 +
-+		/* Count the number of entries unused and compare it to skipped. */
-+		pg_remaining = (ENTRIES_PER_PAGE << pg->order) - pg->index;
+ 	/*
+ 	 * Sorting mcount in vmlinux at build time depend on
+ 	 * CONFIG_BUILDTIME_MCOUNT_SORT, while mcount loc in
+@@ -7125,6 +7128,8 @@ static int ftrace_process_locs(struct module *mod,
+ 				remaining += 1 << pg->order;
+ 			}
+ 
++			pages -= remaining;
 +
-+		if (!WARN(skipped < pg_remaining, "Extra allocated pages for ftrace")) {
-+
-+			skip = skipped - pg_remaining;
-+
-+			for (pg = pg_unuse; pg; pg = pg->next) {
-+				remaining += 1 << pg->order;
-+			}
-+
-+			skip = DIV_ROUND_UP(skip, ENTRIES_PER_PAGE);
-+
-+			/*
-+			 * Check to see if the number of pages remaining would
-+			 * just fit the number of entries skipped.
-+			 */
-+			WARN(skip != remaining, "Extra allocated pages for ftrace: %lu with %lu skipped",
-+			     remaining, skipped);
-+		}
- 		/* Need to synchronize with ftrace_location_range() */
+ 			skip = DIV_ROUND_UP(skip, ENTRIES_PER_PAGE);
+ 
+ 			/*
+@@ -7138,6 +7143,13 @@ static int ftrace_process_locs(struct module *mod,
  		synchronize_rcu();
  		ftrace_free_pages(pg_unuse);
+ 	}
++
++	if (!mod) {
++		count -= skipped;
++		pr_info("ftrace: allocating %ld entries in %ld pages\n",
++			count, pages);
++	}
++
+ 	return ret;
+ }
+ 
+@@ -7783,9 +7795,6 @@ void __init ftrace_init(void)
+ 		goto failed;
+ 	}
+ 
+-	pr_info("ftrace: allocating %ld entries in %ld pages\n",
+-		count, DIV_ROUND_UP(count, ENTRIES_PER_PAGE));
+-
+ 	ret = ftrace_process_locs(NULL,
+ 				  __start_mcount_loc,
+ 				  __stop_mcount_loc);
 -- 
 2.47.2
 
