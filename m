@@ -1,245 +1,267 @@
-Return-Path: <bpf+bounces-51473-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51474-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEDBDA35216
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 00:19:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1CBBA35223
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 00:24:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61B3816A9E3
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 23:19:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFBF83AB870
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 23:24:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9F1222D7AB;
-	Thu, 13 Feb 2025 23:19:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A4BB245B07;
+	Thu, 13 Feb 2025 23:24:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dP6jyFG8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VTmlODvw"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57D7B275400
-	for <bpf@vger.kernel.org>; Thu, 13 Feb 2025 23:19:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA65722D7A7;
+	Thu, 13 Feb 2025 23:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739488774; cv=none; b=KHeuIM8jKFCAXXxkoHK2j0oHDK/c66Utk8tccTCND/JAIP0m5610Q+ecX4GM9C1dqgXQtJlQjSwMqYNx40fyG9ZWuz4PwwbDc7PA1T9VnyPYDSOW481INNSNN4WjRLVm/NhuDOjkm/yMiiOiVpiAHWzpakMlFHjdfLcCi77u0M0=
+	t=1739489058; cv=none; b=ZJyVQ8iR+REP8TNjcNFK7BUGoZ9x65nSHGWQ9Try5gMhs7s7w+UqQjkAxgM0ZSmlJwL0Da5bxuE9AP7RL7HbtbHHKE5T6E9evjOupDn2tCTsMmOAuE/UJTU9oGueDvj2Arg0upxJtdy7WWyiTYqzkPKYUyqyHMp29rzlTWJ5QzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739488774; c=relaxed/simple;
-	bh=mNuwk6eJJ3BTsUjIoxVw5EJ/v1CJeWZ3gHvSoarZpvA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MH7lwcMjLSpCro8x9r/nkO9drYjoYk2TGhNMKxjrdaDGaM0G+kkWTy23s1i41lCeGlHYSy8+Y3A1gMfPz0XLHVJVAC3bX3U5dkG77XKUsoI61wH/V9yxq35qjTGmf1R4nnhCS0/RA385DY6XSyu3d7vWyd8SgjQeFbVgCX11usI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dP6jyFG8; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <4533d108-9617-4021-b7a9-befe209926da@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1739488769;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oSXPrZoxLzPNG/Euhy17lhZtrC9rFIYBlvCtIyCZ97c=;
-	b=dP6jyFG80jsnyy08pXy455fiuID36V4Dtr5F+GP8o7gohIoGF1hfeMl6WBeJeESJUwn6Il
-	g/syUcKlWodHDLSRQ/sBdbsL1r1o2sHuC2vaLjY0/77XVluwijvsAwOR8TYmoi7ySKVUVK
-	QRXRM1Z9CYm/yUc0Kbck9UzH56TQPNc=
-Date: Thu, 13 Feb 2025 15:19:20 -0800
+	s=arc-20240116; t=1739489058; c=relaxed/simple;
+	bh=m4J6f0j7kRwC6fKOMI/NNmOw4izFhiRQ6rDCOl9FEhw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=deTKnoF83nVhUQcwY9/RBc6su+txYjFDb5nVTtLDCKKoMscAdB5UFTowh08AB0n8a5v37imuL681dxnNoxyLmOy0PopR0HGtJzAeqpPPpuBqmoTxGslL4mKu1MDex59/qXLzOdaH+rAB+S13ROuQDDjOI9E17YfQt0W+Luy4m4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VTmlODvw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB3E1C4CED1;
+	Thu, 13 Feb 2025 23:24:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739489057;
+	bh=m4J6f0j7kRwC6fKOMI/NNmOw4izFhiRQ6rDCOl9FEhw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VTmlODvwfC5xZtyRIdTRON2WbisZS478qoGellB7MTuxUVbuzI3nvNUNom7d0taR4
+	 8yizAa3/fDU+rL0chppsTmyFkSwouf89I8HSsSfQuscmmOkmzZyvygFcgij/LnVEdX
+	 SCqLXX2Gd/vGPge5tB/kMDpH+Q6qUaCnP37XI1N0AZpKw/DLY2AbelCrG6oOnNVRsi
+	 O9/XMWNQBTHj3yexY9tBEnwj2EHnvIYZoupQwCxCdkiVrjClzMppihYl2sMm4XCI1N
+	 gZdsvnfTzhW/anzJNnyreAPcLRmn4V4MaEdeSairazeXRvEHZxWHIYKNYTg9D07Uz9
+	 gNXdSFTJcvbYg==
+Date: Thu, 13 Feb 2025 15:24:15 -0800
+From: Namhyung Kim <namhyung@kernel.org>
+To: Chun-Tse Shao <ctshao@google.com>
+Cc: linux-kernel@vger.kernel.org, peterz@infradead.org, mingo@redhat.com,
+	acme@kernel.org, mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+	irogers@google.com, adrian.hunter@intel.com,
+	kan.liang@linux.intel.com, linux-perf-users@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v5 4/5] perf lock: Report owner stack in usermode
+Message-ID: <Z65_H8wCbdF9sQGp@google.com>
+References: <20250212222859.2086080-1-ctshao@google.com>
+ <20250212222859.2086080-5-ctshao@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 2/2] bpf-next: selftest for TCP_ULP in bpf_setsockopt
-To: zhangmingyi <zhangmingyi5@huawei.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
- yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, yanan@huawei.com, wuchangye@huawei.com,
- xiesongyang@huawei.com, liuxin350@huawei.com, liwei883@huawei.com,
- tianmuyang@huawei.com
-References: <20250210134550.3189616-1-zhangmingyi5@huawei.com>
- <20250210134550.3189616-3-zhangmingyi5@huawei.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20250210134550.3189616-3-zhangmingyi5@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250212222859.2086080-5-ctshao@google.com>
 
-On 2/10/25 5:45 AM, zhangmingyi wrote:
-> From: Mingyi Zhang <zhangmingyi5@huawei.com>
+On Wed, Feb 12, 2025 at 02:24:55PM -0800, Chun-Tse Shao wrote:
+> Parse `owner_lock_stat` into a rb tree, and report owner lock stats with
+> stack trace in order.
 > 
-> We try to use bpf_set/getsockopt to set/get TCP_ULP in sockops, and "tls"
-> need connect is established.To avoid impacting other test cases, I have
-> written a separate test case file.
+> Example output:
+>   $ sudo ~/linux/tools/perf/perf lock con -abvo -Y mutex-spin -E3 perf bench sched pipe
+>   ...
+>    contended   total wait     max wait     avg wait         type   caller
 > 
-> Signed-off-by: Mingyi Zhang <zhangmingyi5@huawei.com>
-> Signed-off-by: Xin Liu <liuxin350@huawei.com>
+>          171      1.55 ms     20.26 us      9.06 us        mutex   pipe_read+0x57
+>                           0xffffffffac6318e7  pipe_read+0x57
+>                           0xffffffffac623862  vfs_read+0x332
+>                           0xffffffffac62434b  ksys_read+0xbb
+>                           0xfffffffface604b2  do_syscall_64+0x82
+>                           0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
+>           36    193.71 us     15.27 us      5.38 us        mutex   pipe_write+0x50
+>                           0xffffffffac631ee0  pipe_write+0x50
+>                           0xffffffffac6241db  vfs_write+0x3bb
+>                           0xffffffffac6244ab  ksys_write+0xbb
+>                           0xfffffffface604b2  do_syscall_64+0x82
+>                           0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
+>            4     51.22 us     16.47 us     12.80 us        mutex   do_epoll_wait+0x24d
+>                           0xffffffffac691f0d  do_epoll_wait+0x24d
+>                           0xffffffffac69249b  do_epoll_pwait.part.0+0xb
+>                           0xffffffffac693ba5  __x64_sys_epoll_pwait+0x95
+>                           0xfffffffface604b2  do_syscall_64+0x82
+>                           0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
+> 
+>   === owner stack trace ===
+> 
+>            3     31.24 us     15.27 us     10.41 us        mutex   pipe_read+0x348
+>                           0xffffffffac631bd8  pipe_read+0x348
+>                           0xffffffffac623862  vfs_read+0x332
+>                           0xffffffffac62434b  ksys_read+0xbb
+>                           0xfffffffface604b2  do_syscall_64+0x82
+>                           0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
+>   ...
+> 
+> Signed-off-by: Chun-Tse Shao <ctshao@google.com>
 > ---
->   .../bpf/prog_tests/setget_sockopt_tcp_ulp.c   | 78 +++++++++++++++++++
->   .../bpf/progs/setget_sockopt_tcp_ulp.c        | 33 ++++++++
->   2 files changed, 111 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/setget_sockopt_tcp_ulp.c
->   create mode 100644 tools/testing/selftests/bpf/progs/setget_sockopt_tcp_ulp.c
+>  tools/perf/builtin-lock.c             | 19 ++++++++--
+>  tools/perf/util/bpf_lock_contention.c | 54 +++++++++++++++++++++++++++
+>  tools/perf/util/lock-contention.h     |  7 ++++
+>  3 files changed, 77 insertions(+), 3 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/setget_sockopt_tcp_ulp.c b/tools/testing/selftests/bpf/prog_tests/setget_sockopt_tcp_ulp.c
-> new file mode 100644
-> index 000000000000..748da2c7d255
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/setget_sockopt_tcp_ulp.c
-> @@ -0,0 +1,78 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) Meta Platforms, Inc. and affiliates. */
-
-This is not right.
-
+> diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+> index 9bebc186286f..3dc100cf30ef 100644
+> --- a/tools/perf/builtin-lock.c
+> +++ b/tools/perf/builtin-lock.c
+> @@ -1817,6 +1817,22 @@ static void print_contention_result(struct lock_contention *con)
+>  			break;
+>  	}
+>  
+> +	if (con->owner && con->save_callstack) {
+> +		struct rb_root root = RB_ROOT;
 > +
-> +#define _GNU_SOURCE
-> +#include <net/if.h>
+> +		if (symbol_conf.field_sep)
+> +			fprintf(lock_output, "# owner stack trace:\n");
+> +		else
+> +			fprintf(lock_output, "\n=== owner stack trace ===\n\n");
+> +		while ((st = pop_owner_stack_trace(con)))
+> +			insert_to(&root, st, compare);
 > +
-> +#include "test_progs.h"
-> +#include "network_helpers.h"
-> +
-> +#include "setget_sockopt_tcp_ulp.skel.h"
-> +
-> +#define CG_NAME "/setget-sockopt-tcp-ulp-test"
-> +
-> +static const char addr4_str[] = "127.0.0.1";
-> +static const char addr6_str[] = "::1";
-> +static struct setget_sockopt_tcp_ulp *skel;
-> +static int cg_fd;
-> +
-> +static int create_netns(void)
-> +{
-> +	if (!ASSERT_OK(unshare(CLONE_NEWNET), "create netns"))
-> +		return -1;
-> +	if (!ASSERT_OK(system("ip link set dev lo up"), "set lo up"))
-> +		return -1;
-> +	return 0;
-> +}
-> +
-> +static int modprobe_tls(void)
-> +{
-> +	if (!ASSERT_OK(system("modprobe tls"), "tls modprobe failed"))
-> +		return -1;
-> +	return 0;
-> +}
-> +
-> +static void test_tcp_ulp(int family)
-
-First, the bpf CI still fails to compile for the same reason as v1. You should 
-have received an email from bpf CI bot. Please ensure it is addressed first 
-before reposting. This repeated bpf CI error is an automatic nack.
-
-pw-bot: cr
-
-The subject tagging should be "[PATCH v2 bpf-next ...] selftests/bpf: ... ". 
-There are many examples to follow in the mailing list if it is not clear.
-
-Regarding the v1 comment: "...separate it out into its own BPF program..."
-
-The comment was made at the bpf prog file, "progs/setget_sockopt.c". I meant 
-only create a separate bpf program. The user space part can stay in 
-prog_tests/setget_sockopt.c.
-
-Move this function, test_tcp_ulp, to prog_tests/setget_sockopt.c. Then all the 
-above config preparation codes and the test_setget_sockopt_tcp_ulp() can be 
-saved. modprobe_tls() is not needed also. Do it after the test_ktls().
-Take a look at test_nonstandard_opt() in prog_tests/setget_sockopt.c.
-It is testing another bpf prog in the same prog_tests/setget_sockopt.c.
-
-Also, for the bpf prog, do you really need to test at 
-BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB? If not, just testing at 
-SEC("lsm_cgroup/socket_post_create") will be easier. You can detach the 
-previously attached skel->links.socket_post_create by using bpf_link__destroy() 
-first and then attach yours bpf prog to do the test.
-
-> +{
-> +	struct setget_sockopt_tcp_ulp__bss *bss = skel->bss;
-> +	int sfd, cfd;
-> +
-> +	memset(bss, 0, sizeof(*bss));
-> +	sfd = start_server(family, SOCK_STREAM,
-> +			   family == AF_INET6 ? addr6_str : addr4_str, 0, 0);
-> +	if (!ASSERT_GE(sfd, 0, "start_server"))
-> +		return;
-> +
-> +	cfd = connect_to_fd(sfd, 0);
-> +	if (!ASSERT_GE(cfd, 0, "connect_to_fd_server")) {
-> +		close(sfd);
-> +		return;
+> +		while ((st = pop_from(&root))) {
+> +			print_lock_stat(con, st);
+> +			zfree(st);
+> +		}
 > +	}
-> +	close(sfd);
-> +	close(cfd);
 > +
-> +	ASSERT_EQ(bss->nr_tcp_ulp, 3, "nr_tcp_ulp");
-> +}
-> +
-> +void test_setget_sockopt_tcp_ulp(void)
+>  	if (print_nr_entries) {
+>  		/* update the total/bad stats */
+>  		while ((st = pop_from_result())) {
+> @@ -1962,9 +1978,6 @@ static int check_lock_contention_options(const struct option *options,
+>  		}
+>  	}
+>  
+> -	if (show_lock_owner)
+> -		show_thread_stats = true;
+> -
+>  	return 0;
+>  }
+>  
+> diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
+> index 76542b86e83f..dc83b02c9724 100644
+> --- a/tools/perf/util/bpf_lock_contention.c
+> +++ b/tools/perf/util/bpf_lock_contention.c
+> @@ -549,6 +549,60 @@ static const char *lock_contention_get_name(struct lock_contention *con,
+>  	return name_buf;
+>  }
+>  
+> +struct lock_stat *pop_owner_stack_trace(struct lock_contention *con)
 > +{
-> +	cg_fd = test__join_cgroup(CG_NAME);
-> +	if (cg_fd < 0)
-> +		return;
-> +	if (create_netns() && modprobe_tls())
-> +		goto done;
-> +	skel = setget_sockopt_tcp_ulp__open();
-> +	if (!ASSERT_OK_PTR(skel, "open skel"))
-> +		goto done;
-> +	if (!ASSERT_OK(setget_sockopt_tcp_ulp__load(skel), "load skel"))
-> +		goto done;
-> +	skel->links.skops_sockopt_tcp_ulp =
-> +		bpf_program__attach_cgroup(skel->progs.skops_sockopt_tcp_ulp, cg_fd);
-> +	if (!ASSERT_OK_PTR(skel->links.skops_sockopt_tcp_ulp, "attach_cgroup"))
-> +		goto done;
-> +	test_tcp_ulp(AF_INET);
-> +	test_tcp_ulp(AF_INET6);
-> +done:
-> +	setget_sockopt_tcp_ulp__destroy(skel);
-> +	close(cg_fd);
+> +	int stacks_fd, stat_fd;
+> +	u64 *stack_trace;
+> +	s32 stack_id;
+> +	struct contention_key ckey = {};
+> +	struct contention_data cdata = {};
+> +	size_t stack_size = con->max_stack * sizeof(*stack_trace);
+> +	struct lock_stat *st;
+> +	char name[KSYM_NAME_LEN];
+> +
+> +	stacks_fd = bpf_map__fd(skel->maps.owner_stacks);
+> +	stat_fd = bpf_map__fd(skel->maps.owner_stat);
+> +	if (!stacks_fd || !stat_fd)
+> +		return NULL;
+> +
+> +	stack_trace = zalloc(stack_size);
+> +	if (stack_trace == NULL)
+> +		return NULL;
+> +
+> +	if (bpf_map_get_next_key(stacks_fd, NULL, stack_trace))
+> +		return NULL;
+
+Please free(stack_trace).
+
+> +
+> +	bpf_map_lookup_elem(stacks_fd, stack_trace, &stack_id);
+> +	ckey.stack_id = stack_id;
+> +	bpf_map_lookup_elem(stat_fd, &ckey, &cdata);
+> +
+> +	st = zalloc(sizeof(struct lock_stat));
+> +	if (!st)
+> +		return NULL;
+
+And here too.
+
+> +
+> +	strcpy(name,
+> +	       stack_trace[0] ? lock_contention_get_name(con, NULL, stack_trace, 0) : "unknown");
+> +
+> +	st->name = strdup(name);
+> +	if (!st->name)
+> +		return NULL;
+
+Why not
+
+	if (stack_trace[0])
+		st->name = strdup(lock_contention_get_name(con, NULL, stack_trace, 0));
+	else
+		st->name = strdup("unknown");
+
+	if (st->name == NULL) {
+		free(stack_trace);
+		free(st);
+		return NULL;
+	}
+
+? I don't think you need the name[].
+
+Thanks,
+Namhyung
+
+> +
+> +	st->flags = cdata.flags;
+> +	st->nr_contended = cdata.count;
+> +	st->wait_time_total = cdata.total_time;
+> +	st->wait_time_max = cdata.max_time;
+> +	st->wait_time_min = cdata.min_time;
+> +	st->callstack = stack_trace;
+> +
+> +	if (cdata.count)
+> +		st->avg_wait_time = cdata.total_time / cdata.count;
+> +
+> +	bpf_map_delete_elem(stacks_fd, stack_trace);
+> +	bpf_map_delete_elem(stat_fd, &ckey);
+> +
+> +	return st;
 > +}
-> diff --git a/tools/testing/selftests/bpf/progs/setget_sockopt_tcp_ulp.c b/tools/testing/selftests/bpf/progs/setget_sockopt_tcp_ulp.c
-> new file mode 100644
-> index 000000000000..bd1009766463
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/setget_sockopt_tcp_ulp.c
-> @@ -0,0 +1,33 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) Meta Platforms, Inc. and affiliates. */
-
-Same here.
-
 > +
-> +#include "vmlinux.h"
-> +#include "bpf_tracing_net.h"
-> +#include <bpf/bpf_helpers.h>
+>  int lock_contention_read(struct lock_contention *con)
+>  {
+>  	int fd, stack, err = 0;
+> diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-contention.h
+> index a09f7fe877df..97fd33c57f17 100644
+> --- a/tools/perf/util/lock-contention.h
+> +++ b/tools/perf/util/lock-contention.h
+> @@ -168,6 +168,8 @@ int lock_contention_stop(void);
+>  int lock_contention_read(struct lock_contention *con);
+>  int lock_contention_finish(struct lock_contention *con);
+>  
+> +struct lock_stat *pop_owner_stack_trace(struct lock_contention *con);
 > +
-> +int nr_tcp_ulp;
-> +
-> +SEC("sockops")
-> +int skops_sockopt_tcp_ulp(struct bpf_sock_ops *skops)
+>  #else  /* !HAVE_BPF_SKEL */
+>  
+>  static inline int lock_contention_prepare(struct lock_contention *con __maybe_unused)
+> @@ -187,6 +189,11 @@ static inline int lock_contention_read(struct lock_contention *con __maybe_unuse
+>  	return 0;
+>  }
+>  
+> +struct lock_stat *pop_owner_stack_trace(struct lock_contention *con)
 > +{
-> +	static const char target_ulp[] = "tls";
-> +	char verify_ulp[sizeof(target_ulp)];
-> +
-> +	switch (skops->op) {
-> +	case BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB:
-> +		if (bpf_setsockopt(skops, IPPROTO_TCP, TCP_ULP, (void *)target_ulp,
-> +							sizeof(target_ulp)) != 0)
-> +			return 1;
-> +		nr_tcp_ulp++;
-> +		if (bpf_getsockopt(skops, IPPROTO_TCP, TCP_ULP, verify_ulp,
-> +							sizeof(verify_ulp)) != 0)
-> +			return 1;
-> +		nr_tcp_ulp++;
-> +		if (bpf_strncmp(verify_ulp, sizeof(target_ulp), "tls") != 0)
-> +			return 1;
-> +		nr_tcp_ulp++;
-> +	}
-> +	return 1;
+> +	return NULL;
 > +}
 > +
-> +char _license[] SEC("license") = "GPL";
-> \ No newline at end of file
-
+>  #endif  /* HAVE_BPF_SKEL */
+>  
+>  #endif  /* PERF_LOCK_CONTENTION_H */
+> -- 
+> 2.48.1.502.g6dc24dfdaf-goog
+> 
 
