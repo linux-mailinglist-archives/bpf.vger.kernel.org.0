@@ -1,223 +1,184 @@
-Return-Path: <bpf+bounces-51381-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51382-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BFD5A338D1
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 08:27:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB411A339EE
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 09:28:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC32D188C13B
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 07:27:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2973D188C2BA
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 08:28:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7385F20A5CE;
-	Thu, 13 Feb 2025 07:27:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 696AE20B209;
+	Thu, 13 Feb 2025 08:28:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bA0uauk4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A3ye2SOJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BE81208977;
-	Thu, 13 Feb 2025 07:27:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31927250EC;
+	Thu, 13 Feb 2025 08:27:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739431656; cv=none; b=aEHInfaUGaLQmYYxinZBGSnlAxmTkIyRWwWU9c68tZdB6k1SySSKO7lyZTQ5O4r8HAVCd/l2R1eo4DUFS0mYtqhaXSWQJ/ddhOscgu8g2XLhktQ3842JLc2b+mSjjv89bpKyA042XAFkjMsHYH8bKydg8C01IqZySj2WBEP4VVA=
+	t=1739435281; cv=none; b=QeflDjJfJ4c92g0Qna6g7+XiEBr/6rUvFVbJpZDa2TVNohTvFFrxYJ2DbLS11oXXQIvamlNytOODg9VO2PzPOwvuVRLOkzEX8allXG0AFVF4bckap5TxQQNp9usZudHbd5FcX2DVkxcKL9m00jdx0d3K6hiAebmQ2EKr8O6/5Ec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739431656; c=relaxed/simple;
-	bh=fKzZlZ6u0HAfBmimgwpD4+oytBdpphnWXEvC8TgSgok=;
+	s=arc-20240116; t=1739435281; c=relaxed/simple;
+	bh=SyjaIWe3i0tkwC2EB8hBIa5rxw02yA5yYTi3aTzBhxo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lK8GJZ0nDS+DkjOXBQ8FoisuQqVW6INzD6CqU6hWCfeH8b6FDXAArhTKeEbHxMJcxl74J0M3VSYCTvtR6cWre8ziDQjESPnUcmWUnAY2LJME7cK0EuQL4jlpld4ati9ribIKzBIHDQMBnkUqc+f3APfJ8U7zabxoli2+bNcSFwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bA0uauk4; arc=none smtp.client-ip=209.85.166.178
+	 To:Cc:Content-Type; b=nFJ9PxK9Ocrl2InyN32M57ftpwC5DqcePItvU3hPL+AZUvpE3GXkurpWEVJJGwazzmq8bqKzil/6zvl7X6N8gA2NPmunkOaBW7gtG1fK6wtjmqYgGSjqnIL1H3MG6V0NuQ0Opar/+PtTnUBfM6HX1LQnWey3obHjpYLpp1f8YfM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A3ye2SOJ; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-3d0558c61f4so4868595ab.0;
-        Wed, 12 Feb 2025 23:27:34 -0800 (PST)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-38f265c6cb0so149057f8f.2;
+        Thu, 13 Feb 2025 00:27:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739431653; x=1740036453; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739435278; x=1740040078; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=U6ROb/DtRS/RcEGqtauazqRPKKj1nEiQpgDageTyOEU=;
-        b=bA0uauk4dgyPZYDUB0Rzu0IQdmZWkVwKuLezmn3LO58cQhn9PSKcXVK0vLFWJCiSmL
-         29y9S6sTsDHz3MxJce5Q07wYrnhu3eRNugX47q1qD4gOjNaWRCVrK7Rk8C2snfdcnbGr
-         R386fJpVyH386Rr6zUajy0tKrdVGhQJFo3rR4vgIhJQZA8p6Ki0JgCnqBBUF2EV3kAtJ
-         nPRoZD2/Th9U3EVIMwCYMrgFTdf7YAzEBqg9j4mKgMskQdqt67bsIvRy1qeHAN7dt7mB
-         K19IXs3xYP90a83p+38MALvD3RFcVgFNe6b5Fh6/ghBPM/HWWSU9sG3zY+lFPbuQoot3
-         0gBw==
+        bh=CYDCewrdvYreNRJlqbHeSMs4C/POtyIRcHlnfcP0ZCY=;
+        b=A3ye2SOJB44xTi+FmdYUXU7HtQzXaYbSeqMu+kxZi4F2BA/6a0Lmcfv+nb1CGGpKBe
+         xfzLLY06okJS1eTY5Hyut98obh2g7Z3ZIpwtLON0kwljBMBWMulLPwNFeOMi0qF1a7qT
+         WGz2wg3LleMPTdrcYLLOx9v29VzMQ0E5/dDJoEmF4zWK8K82QrXiNBp6p1rux1pbc6o6
+         AUVuMqPWJw7DfUjPymrQWXvfdhuMnkS0H+F0kb4ODXxnMv8jAML96KcyhAqmfteEyoB2
+         mRsCaRzl/eS1vj7SpJe4QAC6bCZVaUfILNKoih2Ou8pJQVPKKbe7S2EwOWD+COarANi0
+         uQ2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739431653; x=1740036453;
+        d=1e100.net; s=20230601; t=1739435278; x=1740040078;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=U6ROb/DtRS/RcEGqtauazqRPKKj1nEiQpgDageTyOEU=;
-        b=XoeKqATlMgHs8DlM8+tN+7OOdt+uwSdMc29cmc/rh65Da68AGjABBOXLWdQCGu7TOX
-         fD5uXoccEaEuyeWl2GhiE0/glFMN3XUTz5o437VamkztNEA0p6/16mqHnaABCwUqAiK3
-         EpcufiNkrkFkTSk2atodfsL19dsT1heFXeFHYG8nfdydiDqRn8UhxdYFV0H2gjIFxTeV
-         cdds3y9IQEwCgJB4Sitp+9I3RoRqH5zIvf7XBJw0U5ALtOIE68wssyWmB987BlObklQx
-         chlOkBk6HnEy8Ji1F8V5dTCoK0okMmKkQU7B5gL/297HYL4Kh2+tYt/6hMaXUcx1mwAm
-         2PnA==
-X-Forwarded-Encrypted: i=1; AJvYcCWK1PoCK40Dv1PXKX0hUxtol1WL7lXoLFWwbxet5KPjceLq6UroDQ6ddPV2R+QqRr7SHo8=@vger.kernel.org, AJvYcCXOMivFpdDszaV9BWh0dyc1SF30cSt37ahDu7OWnvSkUbL2ljY4T5k59A80LtB1l/tFIo9k5hjp@vger.kernel.org
-X-Gm-Message-State: AOJu0YwGmOSfkIjSuvZfI2K2U2iLSu2DGvDdr7UcrKrYEbbMZa2NNEKE
-	FLaeQcLtTgIISSG5sIbAf7VZoI/8MgpZBCp4cZykQ6g0tJINfh4tYG4T6h4HeR/A0+vonObEI5/
-	sT7GW5e6Y2oKXkSN7rcOLYC1nDPA=
-X-Gm-Gg: ASbGncsNAM+i4V7oHU+Jr8RghDrJTbZmMvlJ8jaflzUovTw7wj+Mdmqt/Z2pqEC5NFj
-	eWkJpI67sOqbkeBwa+Voczc1+3hzXG7+9tUrWmYBLnqvFi/ZGnR0eTt5dXaxFJv5CQRGh36tS
-X-Google-Smtp-Source: AGHT+IE9IF/6vKJAI6GK6gE/5GSc/Clc3joG+RrH+lwkotpYUs0yv5gMBnOeYyF6TbEqUvMHw5AjQZyAcENtAsR/yos=
-X-Received: by 2002:a05:6e02:1aa1:b0:3cf:ba90:6ad9 with SMTP id
- e9e14a558f8ab-3d18d05b3b3mr12162635ab.9.1739431653451; Wed, 12 Feb 2025
- 23:27:33 -0800 (PST)
+        bh=CYDCewrdvYreNRJlqbHeSMs4C/POtyIRcHlnfcP0ZCY=;
+        b=TkK8rDTEgNYcIYiTfpZWCKTSJspC6YxVeCXn3gFMbeF1hhD81/8JiRj+i7xwlgTR8z
+         5svd8ODmlUSu08hysmg0A/kpJt+wtKPULsku346t1881cOqNGC2fNwmkNvSTyTetH49m
+         PDZvn9EQYaTR57soBU0NxdZ+SESDJ+VC8/gya09ld26mwio4mLtOK+uwW1G4jznXND5i
+         h2ZC7d0wVsbyLke+AShcAc21HTrK+tSy7RGnTrIeTPPNcz3M1C3XSfy1ov7fr5S2Akyq
+         hoFXPhF2uxcsWSspTWHoeYtic5c6W6E+dZfZKtJ2mFaqB1zLeq+XR5frW1xSN5FQKizI
+         Xvpg==
+X-Forwarded-Encrypted: i=1; AJvYcCURKmCOO33QVWYjDCRw9XrVAi+Yz67YG58sRnsSbqtI8VMJw98uI6PzPcpvdY3uYRE4rEzRiGqc2cf/mQ==@vger.kernel.org, AJvYcCW/3MkdA5kSdZ0P3fdvMPB+PENbIBCPWi5LfvdT671T16SVVoEBuCunOOO8WWMpuI0PNUWdWA1GpFl8lg==@vger.kernel.org, AJvYcCW6S9HEEr7V78lSla0SUASyt8k1ped+v1sYNgPzSAmHCxaALwI9WXhUl87/qFvPKiunEJjAxOCSvCpZ+tZM@vger.kernel.org, AJvYcCWFtatVQE0OdXevi5Te66/kAwwf5dXoq4d3frTEBQgnbbihbJ4nYYYjbKNvuQVZUHnsNmXcen6vs5vr9CWFI8k=@vger.kernel.org, AJvYcCWSUUq6XjoUdMwDSuU2u1P4W+/zziOoYextG5fSDQiM9OnTzi5sWyghU9pfou/u+jOea7hLWdW2AWri@vger.kernel.org, AJvYcCWcX1CXa6ZjPtNhx1FXprtT3nJu68xkewofyinr5bsNI8M5afIR3KOm50OrOfT/ikHoAJcYX54u@vger.kernel.org, AJvYcCX7YFJAyeqY7iWQbrqhOeHItqLS8YD0GDx+wvm5inTaYD83ztALZxGPaCBco+AkdktOn40=@vger.kernel.org, AJvYcCXP3DsdUvsqtqgWviWOHgZyg703DmoeR9Q6cnKEupV3OX3O211OnwCqlXa7PKAWISTz0EzE04YXh8IVYGONVVdk@vger.kernel.org, AJvYcCXbbPT7HIxUzdB+HOZ5LBhtIfFcQweTtqxbCD6b3nE1lkDZNJip10I2M6uMUS4O51ZE6OiwM5B/JbHQ@vger.kernel.org
+X-Gm-Message-State: AOJu0YzYNFoepgV9sRBdYjILHID0O7pMIzyX1GpSB9nkxqmt4uPHN2cL
+	beQOVM3PHoCAomihREN/SFhKZwJK0SGctQjrqgBXadu4qO/H402Rx4pzYHXDmENnnKeSs2mKI58
+	iO+tgX0D6tmQx0GyPGO0VsuKMsv8=
+X-Gm-Gg: ASbGnctZ07FUMQ9rF2P0TzdYcDfFQU6aRqxIkGR07zQu5FdmsPqmB2KAu01lqzhBpej
+	nRDucgefzTnaONNGNA7bsD5Mxod+SN6JvB6rSMpICkul8asLrXqGZioS3nhR2XBU68t66/QQ=
+X-Google-Smtp-Source: AGHT+IGZE6zJIuhM6pmlASWXo0USdC2hFnASTias2WRNOVzNleb2xd7k0p6fviBFvki3FKkZ15YNMXus/cLozeOxCp8=
+X-Received: by 2002:a5d:598e:0:b0:38f:21ce:aa28 with SMTP id
+ ffacd0b85a97d-38f21ceb0famr3670345f8f.36.1739435278200; Thu, 13 Feb 2025
+ 00:27:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250212061855.71154-1-kerneljasonxing@gmail.com>
- <20250212061855.71154-12-kerneljasonxing@gmail.com> <eb579932-e85e-4241-bfe7-6e0d780ee9d6@linux.dev>
-In-Reply-To: <eb579932-e85e-4241-bfe7-6e0d780ee9d6@linux.dev>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Thu, 13 Feb 2025 15:26:55 +0800
-X-Gm-Features: AWEUYZnjS7Abnqe0oVFKIEDy5nLyP73ntVRFFca-XJpIS0eiccfXjDeDwSW2dxA
-Message-ID: <CAL+tcoBJ0JEKBZUf-vzPCdkAXPb+PEB8FBYb5T6AoV3Hy-vjiA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v10 11/12] bpf: support selective sampling for
- bpf timestamping
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com, 
-	willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, ykolal@fb.com, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20250210133002.883422-6-shaw.leon@gmail.com> <20250213062031.4547-1-kuniyu@amazon.com>
+In-Reply-To: <20250213062031.4547-1-kuniyu@amazon.com>
+From: Xiao Liang <shaw.leon@gmail.com>
+Date: Thu, 13 Feb 2025 16:27:21 +0800
+X-Gm-Features: AWEUYZkYMDLgFWGQwQihDPwSk4qrLNJu_sLyRJOyUa3GWsERW-M3HJO2WaC6w5g
+Message-ID: <CABAhCOSqruMoMTg_=6Apo=gvnfe1j2fptADzoi=Gb8cdJqhgVw@mail.gmail.com>
+Subject: Re: [PATCH net-next v9 05/11] net: ip_tunnel: Use link netns in
+ newlink() of rtnl_link_ops
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: alex.aring@gmail.com, andrew+netdev@lunn.ch, 
+	b.a.t.m.a.n@lists.open-mesh.org, bpf@vger.kernel.org, bridge@lists.linux.dev, 
+	davem@davemloft.net, donald.hunter@gmail.com, dsahern@kernel.org, 
+	edumazet@google.com, herbert@gondor.apana.org.au, horms@kernel.org, 
+	kuba@kernel.org, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-ppp@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-wpan@vger.kernel.org, miquel.raynal@bootlin.com, netdev@vger.kernel.org, 
+	osmocom-net-gprs@lists.osmocom.org, pabeni@redhat.com, shuah@kernel.org, 
+	stefan@datenfreihafen.org, steffen.klassert@secunet.com, 
+	wireguard@lists.zx2c4.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 13, 2025 at 7:49=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
+On Thu, Feb 13, 2025 at 2:20=E2=80=AFPM Kuniyuki Iwashima <kuniyu@amazon.co=
+m> wrote:
 >
-> On 2/11/25 10:18 PM, Jason Xing wrote:
-> > Add the bpf_sock_ops_enable_tx_tstamp kfunc to allow BPF programs to
-> > selectively enable TX timestamping on a skb during tcp_sendmsg().
+> From: Xiao Liang <shaw.leon@gmail.com>
+> Date: Mon, 10 Feb 2025 21:29:56 +0800
+> > When link_net is set, use it as link netns instead of dev_net(). This
+> > prepares for rtnetlink core to create device in target netns directly,
+> > in which case the two namespaces may be different.
 > >
-> > For example, BPF program will limit tracking X numbers of packets
-> > and then will stop there instead of tracing all the sendmsgs of
-> > matched flow all along. It would be helpful for users who cannot
-> > afford to calculate latencies from every sendmsg call probably
-> > due to the performance or storage space consideration.
-> >
-> > Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
-> > ---
-> >   kernel/bpf/btf.c  |  1 +
-> >   net/core/filter.c | 32 +++++++++++++++++++++++++++++++-
-> >   2 files changed, 32 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index 9433b6467bbe..740210f883dc 100644
-> > --- a/kernel/bpf/btf.c
-> > +++ b/kernel/bpf/btf.c
-> > @@ -8522,6 +8522,7 @@ static int bpf_prog_type_to_kfunc_hook(enum bpf_p=
-rog_type prog_type)
-> >       case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
-> >       case BPF_PROG_TYPE_CGROUP_SOCKOPT:
-> >       case BPF_PROG_TYPE_CGROUP_SYSCTL:
-> > +     case BPF_PROG_TYPE_SOCK_OPS:
-> >               return BTF_KFUNC_HOOK_CGROUP;
-> >       case BPF_PROG_TYPE_SCHED_ACT:
-> >               return BTF_KFUNC_HOOK_SCHED_ACT;
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 7f56d0bbeb00..36793c68b125 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -12102,6 +12102,26 @@ __bpf_kfunc int bpf_sk_assign_tcp_reqsk(struct=
- __sk_buff *s, struct sock *sk,
-> >   #endif
-> >   }
-> >
-> > +__bpf_kfunc int bpf_sock_ops_enable_tx_tstamp(struct bpf_sock_ops_kern=
- *skops,
-> > +                                           u64 flags)
-> > +{
-> > +     struct sk_buff *skb;
-> > +     struct sock *sk;
-> > +
-> > +     if (skops->op !=3D BPF_SOCK_OPS_TS_SND_CB)
-> > +             return -EOPNOTSUPP;
+> > Convert common ip_tunnel_newlink() to accept an extra link netns
+> > argument. Don't overwrite ip_tunnel.net in ip_tunnel_init().
 >
-> It still needs to test the "flags" such that it can be used in the future=
-....
+> Why... ?  see a comment below.
 >
->         if (flags)
->                 return -EINVAL;
-
-Will add it.
-
-> > +
-> > +     skb =3D skops->skb;
-> > +     sk =3D skops->sk;
-> > +     skb_shinfo(skb)->tx_flags |=3D SKBTX_BPF;
-> > +     if (sk_is_tcp(sk)) {
 >
-> Unnecessary check like this will only confuse reader. Remove it and revis=
-it when
-> UDP will be supported.
+> [...]
+> > diff --git a/net/ipv4/ip_gre.c b/net/ipv4/ip_gre.c
+> > index 1fe9b13d351c..26d15f907551 100644
+> > --- a/net/ipv4/ip_gre.c
+> > +++ b/net/ipv4/ip_gre.c
+> > @@ -1413,7 +1413,8 @@ static int ipgre_newlink(struct net_device *dev,
+> >       err =3D ipgre_netlink_parms(dev, data, tb, &p, &fwmark);
+> >       if (err < 0)
+> >               return err;
+> > -     return ip_tunnel_newlink(dev, tb, &p, fwmark);
+> > +     return ip_tunnel_newlink(params->link_net ? : dev_net(dev), dev, =
+tb, &p,
+>
+> This is duplicate at all call sites, let's move it into
+> ip_tunnel_newlink() by passing params.
+>
 
-Okay.
-
-Thanks,
-Jason
+Existing tunnels use `params->link_net ? : dev_net(dev)` for
+backward compatibility. But I think we can leave the choice of netns
+to future tunnel drivers because rtnl_newlink_link_net() is preferred
+in general.
 
 >
-> > +             TCP_SKB_CB(skb)->txstamp_ack |=3D TSTAMP_ACK_BPF;
-> > +             skb_shinfo(skb)->tskey =3D TCP_SKB_CB(skb)->seq + skb->le=
-n - 1;
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> >   __bpf_kfunc_end_defs();
+> > +                              fwmark);
+> >  }
 > >
-> >   int bpf_dynptr_from_skb_rdonly(struct __sk_buff *skb, u64 flags,
-> > @@ -12135,6 +12155,10 @@ BTF_KFUNCS_START(bpf_kfunc_check_set_tcp_reqsk=
-)
-> >   BTF_ID_FLAGS(func, bpf_sk_assign_tcp_reqsk, KF_TRUSTED_ARGS)
-> >   BTF_KFUNCS_END(bpf_kfunc_check_set_tcp_reqsk)
+> >  static int erspan_newlink(struct net_device *dev,
 > >
-> > +BTF_KFUNCS_START(bpf_kfunc_check_set_sock_ops)
-> > +BTF_ID_FLAGS(func, bpf_sock_ops_enable_tx_tstamp, KF_TRUSTED_ARGS)
-> > +BTF_KFUNCS_END(bpf_kfunc_check_set_sock_ops)
-> > +
-> >   static const struct btf_kfunc_id_set bpf_kfunc_set_skb =3D {
-> >       .owner =3D THIS_MODULE,
-> >       .set =3D &bpf_kfunc_check_set_skb,
-> > @@ -12155,6 +12179,11 @@ static const struct btf_kfunc_id_set bpf_kfunc=
-_set_tcp_reqsk =3D {
-> >       .set =3D &bpf_kfunc_check_set_tcp_reqsk,
-> >   };
 > >
-> > +static const struct btf_kfunc_id_set bpf_kfunc_set_sock_ops =3D {
-> > +     .owner =3D THIS_MODULE,
-> > +     .set =3D &bpf_kfunc_check_set_sock_ops,
-> > +};
-> > +
-> >   static int __init bpf_kfunc_init(void)
-> >   {
-> >       int ret;
-> > @@ -12173,7 +12202,8 @@ static int __init bpf_kfunc_init(void)
-> >       ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &bpf_=
-kfunc_set_xdp);
-> >       ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SOC=
-K_ADDR,
-> >                                              &bpf_kfunc_set_sock_addr);
-> > -     return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, =
-&bpf_kfunc_set_tcp_reqsk);
-> > +     ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS,=
- &bpf_kfunc_set_tcp_reqsk);
-> > +     return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SOCK_OPS, &=
-bpf_kfunc_set_sock_ops);
-> >   }
-> >   late_initcall(bpf_kfunc_init);
+> > diff --git a/net/ipv4/ip_tunnel.c b/net/ipv4/ip_tunnel.c
+> > index 09b73acf037a..618a50d5c0c2 100644
+> > --- a/net/ipv4/ip_tunnel.c
+> > +++ b/net/ipv4/ip_tunnel.c
+> > @@ -1213,11 +1213,11 @@ void ip_tunnel_delete_nets(struct list_head *ne=
+t_list, unsigned int id,
+> >  }
+> >  EXPORT_SYMBOL_GPL(ip_tunnel_delete_nets);
 > >
+> > -int ip_tunnel_newlink(struct net_device *dev, struct nlattr *tb[],
+> > -                   struct ip_tunnel_parm_kern *p, __u32 fwmark)
+> > +int ip_tunnel_newlink(struct net *net, struct net_device *dev,
+> > +                   struct nlattr *tb[], struct ip_tunnel_parm_kern *p,
+> > +                   __u32 fwmark)
+> >  {
+> >       struct ip_tunnel *nt;
+> > -     struct net *net =3D dev_net(dev);
+> >       struct ip_tunnel_net *itn;
+> >       int mtu;
+> >       int err;
+> > @@ -1326,7 +1326,9 @@ int ip_tunnel_init(struct net_device *dev)
+> >       }
+> >
+> >       tunnel->dev =3D dev;
+> > -     tunnel->net =3D dev_net(dev);
+> > +     if (!tunnel->net)
+> > +             tunnel->net =3D dev_net(dev);
 >
+> Isn't tunnel->net always non-NULL ?
+>
+> ip_tunnel_newlink
+> -> netdev_priv(dev)->net =3D net
+> -> register_netdevice(dev)
+>   -> dev->netdev_ops->ndo_init(dev)
+>     -> ip_tunnel_init(dev)
+>       -> netdev_priv(dev)->net =3D dev_net(dev)
+
+Didn't find a path that can leave tunnel->net to NULL either.
+I think we can remove this.
+
+Thanks.
 
