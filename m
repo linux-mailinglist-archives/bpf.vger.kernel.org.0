@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-51349-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51350-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BEA0A3361F
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 04:36:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 810BCA33621
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 04:36:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A33F5167CAC
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 03:36:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EC503A293B
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 03:36:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C80D204F7E;
-	Thu, 13 Feb 2025 03:36:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D39A9204F88;
+	Thu, 13 Feb 2025 03:36:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kep3VY5Q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TenZdNtw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D381204C30
-	for <bpf@vger.kernel.org>; Thu, 13 Feb 2025 03:36:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E665A2046A0
+	for <bpf@vger.kernel.org>; Thu, 13 Feb 2025 03:36:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739417776; cv=none; b=DHK6OzEpdFEc62y+4DY2nq7vaQzT6tOlsw16M1tHDTTicwX04y8XBtywOUuEXB2M56JfTgg8qxokIVSqTDBf8pi3d/gHNYI6de0YBC7FKkZ3dNTNvMCz+Yl9xQP/q+eTgBZciHOyPOgERo7fjbREc4H5j8Av7OXdAU5oLoB+FPY=
+	t=1739417778; cv=none; b=feHZqjKQVlWxyOEnsz2fmWSoZ/bSqQPGlVBCzNqfWIAUTpQ5lFWLtVWyaWYA1mRzsGkQi0VMCZzfv2307ahEI/WuAJoS1ci/mEuXL2cb1w/ElASYMhRRQo16DG0jKZ12XksTbcAqwoeZqf7HCOTAhiTJ/1+FAPClayjhcj0CWpg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739417776; c=relaxed/simple;
-	bh=ZC2g15cWBHl4xKK3l6VY+Bv903v1M/rGvWQlFD6bb8Y=;
+	s=arc-20240116; t=1739417778; c=relaxed/simple;
+	bh=OXvxRRQ0ldJk6tf+xlfHzw5zM51xSwL/MeJ06bSRpIM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jOh0mNKhd9LDnoOPUyLL7sYDgggczbSMdnhBxvco64FVmYZ8JuatL7h9j2SDM9nhHjZ3w1/TL0I29Ls3EX/t7jVd9gYVlSf+IqhEg7gwyrUA/D85hqt9a1pWUjH5wx0D8Kwkq40I1CP/XOm2RW1Fxe1MrkL6ufFgI+XVWYOfrj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kep3VY5Q; arc=none smtp.client-ip=209.85.214.179
+	 MIME-Version; b=Lo+e28yaJ8Ze3cdpNA5HFHyyA6gykJ6tD4CM/NSj5+5bTRmk2wqBr8siL9fPn19PZX3cuSKSFPkhZtBJyre/J8LOyuxWUBCfblrAImG6dSzEy0BOcHyRGycr7hgI4Taqafgy7Lx85/PWttD82jL/XJAB9R+NW1h88Nn0SV/rzsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TenZdNtw; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-21f818a980cso5066475ad.3
-        for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 19:36:14 -0800 (PST)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-21f49bd087cso5581195ad.0
+        for <bpf@vger.kernel.org>; Wed, 12 Feb 2025 19:36:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739417773; x=1740022573; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739417776; x=1740022576; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UVEemv3fH2Y13Oyfgyz54ddroh/hFIT8TR6MrFMiG5U=;
-        b=kep3VY5QH5G0XU6BUicy7bhB4GYVo5XkAnhnB2uaOmLTHyDrxYyVkZ6bprQ06aDjxQ
-         klUhn5wb4GFJIXwRm2rAOnIdcwauC6lPulNBFMOrGFtmTfpXcI943pDRUtHlEn/tyufb
-         KLjQGGDbOlw4UcnhMEY2RfUzq8TJajmAZvQwVcciEDNW7IiGWu3TUimWyGDc2C/q40gC
-         nXE1EP4A5sO51JgnZdjMp6D/Q67nUZB1orrYxev0eil0yxfR8UUGOlMhncPi+uoMA/Y6
-         GjM5JeqU3AvE09LmrElSQY5/BF6/GfUpnRji3GbWrhmCgJs9xcmG2nStf+OzQWA+7bAW
-         onog==
+        bh=3/v8WJgHJaSQyAqUJ963JkPt7Jj2HKJav5PT9g4jqQk=;
+        b=TenZdNtwAO2kqAzMYvAiV1OquEFziIZ49gD+LTV5o6nZlS4cz3OQiCty26Hgw+vFtb
+         /kCwouPaOh3CVNnvPdfb22MjqyBPBiNyRoBVsGJZMfQjrqDz1kSR+LDYRW2KNcT352me
+         l4bPia4dL2FixxlD3kbWAjpRShSHl5cSlqrrS90lrdDwkcdyEo9Bi0o0OHrL2Bw+pHNn
+         5W3l9ZRu5xoNdImCjkH01ATH/OrQjXczwcbhBTAcAFGt2bytJ0M/9TvVTr1KIs3uQbwy
+         SdCn7+/qWpel3FBW2GTbd3oHKb0NWQoBxYfK7KHe1I/d6DnnpKgslv0MJJzjRTb+Xb1e
+         NxAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739417773; x=1740022573;
+        d=1e100.net; s=20230601; t=1739417776; x=1740022576;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UVEemv3fH2Y13Oyfgyz54ddroh/hFIT8TR6MrFMiG5U=;
-        b=NzhpraGZqOnbHrKXgfuV7g4dsUjHoV0ohg6tVrxAynd+/qctAvfmt5DPtMx1TNth7Z
-         C1y2PwJg/pI+e1BGuGJYGzXAnVitVJQQV9gpQdmIMRDEmWPFMv3QfceBeZKqA94qQNbU
-         gbAX5v10L9M65fqZ31/phwCIu8ua8FoPsccH8QbBpoCFOtfwXS7zpaZkPKWGH2VqYZ6f
-         H0EL8pxSVnuUYR0N82yVHddiof3anFxL+qIrdEo1hiCgleSwnFIMx98pkd3YxPtJFldv
-         bjySGAJFmO2M+HG8yog+TCP+qfx67u5upX0xcV5Z17vGzD3x3LnWI970oC/SaL71yvSg
-         dKAA==
-X-Gm-Message-State: AOJu0YxtVQd0+A6CeLUxawKQGC23oWi0Zb63uYLN5M+WnQbSiCJ/7ZjH
-	sflHdZfam3dTzQACtkSIIf1dFCFLVA72SB3Na1yXRygn9qQd9zhQMElXIA==
-X-Gm-Gg: ASbGnctQ+iGyUQAXxgYzHcqt13wNLwarF20RA0IoElfL8v5Z9iwULN1zyGDgvJOkaKx
-	Vdb/xIerQigUodZTUg3LPkNTfqmukuno6ytZlCzwjBzDKa56rbiZfkJWJVzzvv4iLtQuqJKPYUv
-	LA7FRLFmBLwvx0yCjQG4DNbpqAV8x9hjoaPPFRQLabpsvLZcG2pCw4eP/wcQwtZp28bjl9n12Ri
-	B5biEa37X8LD6KvoaGXqgIh8Qgv8HpdK4B4MCYJxWX1kLxs2T71Z3I9S28m7AczJqbjP1bHFo6j
-	CI66KA9kiv00oeZnH53E8GPUJYUx++VGavhufjgDPoMDIqRiCw==
-X-Google-Smtp-Source: AGHT+IFVpGjNj/vzK1bi6WsgsmwnS7KOtENZ1Nu6FIVShyFexL6xf+cWsUdEjky1AdkIY4WdMWXaMw==
-X-Received: by 2002:a17:902:c942:b0:216:386e:dbc with SMTP id d9443c01a7336-220bbacbb1amr78015995ad.13.1739417772747;
-        Wed, 12 Feb 2025 19:36:12 -0800 (PST)
+        bh=3/v8WJgHJaSQyAqUJ963JkPt7Jj2HKJav5PT9g4jqQk=;
+        b=WvT6IQJZTGfH4xh0j4V1VmY/72dUTBKgL4TiR1Z+KjayBFx7HK5yCOjpZkvnIpH1yX
+         OosfsfJx6RFRwDkuBuPO/MH9zoOeUDDoIpitfanLtSS7W09m9gE/2slhub0HC1WiYtu3
+         npc5wD4OSbc1/wKo0c4Q/AHTg/BUhz+cFS8UXRlECC/2ARX5T5DzF8ZSznWVzqhVzlUy
+         udWf1BmNA+jf/HdWMkPiy49B4mZRvuF07k6htL/m3yrVUZF5XbMXcPbvGoFFKk+67skl
+         TdXZsMtAhUJuwoznfAzqAdUodqvF1kz7pZqxBBISHBIHW8GpKuhMUHFgw0gkKkQM/rxL
+         ysFQ==
+X-Gm-Message-State: AOJu0YzqDQwlq0kdMmu6mzUl+vvtazLNOzA58UBNGg13PHDretuuqgMi
+	pmoqXVDPrMEcd8vsyuZXI+VH8vCkLUuU6x3OwPRTMvpHG5/Gn7fouK9sqg==
+X-Gm-Gg: ASbGncvwcrCXohOQzLvpTd0hUsZnG9S0KVDMQGDCsha34q3a4oz3kZ/ZCE6f/PzEaNn
+	HXiRZKedduaATHxLPaKtrsgNZLjcY/dl8kd9EtjBTgzpMtjuRsTPQ6qY6v0Lu4X+1eL9kVpJ9tq
+	CbWVUWpLM/mO6nUmOSRgOeAJdqIDDjeu1IELQaApX9t/PdkrnqlVCwRpbwD5zh0PhkCindPcw+J
+	d7fh7zOYQsutRv1nQVXqIBqNc49tbI4OhEyTHp7bSfOsWGG1JZ7egtYmGuqDLnAm9LysKT8OR0G
+	QDd3wP9vD3CjxszZlGeya3dYh22OQCQxYYU9N3Nl85AYH8DWnQ==
+X-Google-Smtp-Source: AGHT+IHexcsWqcq7pb6cql8+KDie7vvimoWi/+7jiQiVYLknknAkaUVO0a4xFfFcJbi5waug/L/YFQ==
+X-Received: by 2002:a05:6a20:4311:b0:1eb:48e2:2c2f with SMTP id adf61e73a8af0-1ee6b399c55mr3608181637.30.1739417775940;
+        Wed, 12 Feb 2025 19:36:15 -0800 (PST)
 Received: from macbookpro.lan ([2603:3023:16e:5000:8af:ecd2:44cd:8027])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-220d556d5e6sm2691755ad.173.2025.02.12.19.36.11
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7324256aa6asm227563b3a.60.2025.02.12.19.36.14
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 12 Feb 2025 19:36:12 -0800 (PST)
+        Wed, 12 Feb 2025 19:36:15 -0800 (PST)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: bpf@vger.kernel.org
 Cc: andrii@kernel.org,
@@ -90,9 +90,9 @@ Cc: andrii@kernel.org,
 	tj@kernel.org,
 	linux-mm@kvack.org,
 	kernel-team@fb.com
-Subject: [PATCH bpf-next v8 4/6] memcg: Use trylock to access memcg stock_lock.
-Date: Wed, 12 Feb 2025 19:35:54 -0800
-Message-Id: <20250213033556.9534-5-alexei.starovoitov@gmail.com>
+Subject: [PATCH bpf-next v8 5/6] mm, bpf: Use memcg in try_alloc_pages().
+Date: Wed, 12 Feb 2025 19:35:55 -0800
+Message-Id: <20250213033556.9534-6-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20250213033556.9534-1-alexei.starovoitov@gmail.com>
 References: <20250213033556.9534-1-alexei.starovoitov@gmail.com>
@@ -106,187 +106,43 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Teach memcg to operate under trylock conditions when spinning locks
-cannot be used.
+Unconditionally use __GFP_ACCOUNT in try_alloc_pages().
+The caller is responsible to setup memcg correctly.
+All BPF memory accounting is memcg based.
 
-localtry_trylock might fail and this would lead to charge cache bypass
-if the calling context doesn't allow spinning (gfpflags_allow_spinning).
-In those cases charge the memcg counter directly and fail early if
-that is not possible. This might cause a pre-mature charge failing
-but it will allow an opportunistic charging that is safe from
-try_alloc_pages path.
-
-Acked-by: Michal Hocko <mhocko@suse.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
 Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- mm/memcontrol.c | 52 ++++++++++++++++++++++++++++++++++---------------
- 1 file changed, 36 insertions(+), 16 deletions(-)
+ mm/page_alloc.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 46f8b372d212..7587511b92cc 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1739,7 +1739,7 @@ void mem_cgroup_print_oom_group(struct mem_cgroup *memcg)
- }
- 
- struct memcg_stock_pcp {
--	local_lock_t stock_lock;
-+	localtry_lock_t stock_lock;
- 	struct mem_cgroup *cached; /* this never be root cgroup */
- 	unsigned int nr_pages;
- 
-@@ -1754,7 +1754,7 @@ struct memcg_stock_pcp {
- #define FLUSHING_CACHED_CHARGE	0
- };
- static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg_stock) = {
--	.stock_lock = INIT_LOCAL_LOCK(stock_lock),
-+	.stock_lock = INIT_LOCALTRY_LOCK(stock_lock),
- };
- static DEFINE_MUTEX(percpu_charge_mutex);
- 
-@@ -1773,7 +1773,8 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
-  *
-  * returns true if successful, false otherwise.
-  */
--static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
-+static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages,
-+			  gfp_t gfp_mask)
- {
- 	struct memcg_stock_pcp *stock;
- 	unsigned int stock_pages;
-@@ -1783,7 +1784,11 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
- 	if (nr_pages > MEMCG_CHARGE_BATCH)
- 		return ret;
- 
--	local_lock_irqsave(&memcg_stock.stock_lock, flags);
-+	if (!localtry_trylock_irqsave(&memcg_stock.stock_lock, flags)) {
-+		if (!gfpflags_allow_spinning(gfp_mask))
-+			return ret;
-+		localtry_lock_irqsave(&memcg_stock.stock_lock, flags);
-+	}
- 
- 	stock = this_cpu_ptr(&memcg_stock);
- 	stock_pages = READ_ONCE(stock->nr_pages);
-@@ -1792,7 +1797,7 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
- 		ret = true;
- 	}
- 
--	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
-+	localtry_unlock_irqrestore(&memcg_stock.stock_lock, flags);
- 
- 	return ret;
- }
-@@ -1831,14 +1836,14 @@ static void drain_local_stock(struct work_struct *dummy)
- 	 * drain_stock races is that we always operate on local CPU stock
- 	 * here with IRQ disabled
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 3fbcbeb7de8e..c8068fd2da42 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -7189,7 +7189,8 @@ struct page *try_alloc_pages_noprof(int nid, unsigned int order)
+ 	 * specify it here to highlight that try_alloc_pages()
+ 	 * doesn't want to deplete reserves.
  	 */
--	local_lock_irqsave(&memcg_stock.stock_lock, flags);
-+	localtry_lock_irqsave(&memcg_stock.stock_lock, flags);
+-	gfp_t alloc_gfp = __GFP_NOWARN | __GFP_ZERO | __GFP_NOMEMALLOC;
++	gfp_t alloc_gfp = __GFP_NOWARN | __GFP_ZERO | __GFP_NOMEMALLOC
++			| __GFP_ACCOUNT;
+ 	unsigned int alloc_flags = ALLOC_TRYLOCK;
+ 	struct alloc_context ac = { };
+ 	struct page *page;
+@@ -7233,6 +7234,11 @@ struct page *try_alloc_pages_noprof(int nid, unsigned int order)
  
- 	stock = this_cpu_ptr(&memcg_stock);
- 	old = drain_obj_stock(stock);
- 	drain_stock(stock);
- 	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
+ 	/* Unlike regular alloc_pages() there is no __alloc_pages_slowpath(). */
  
--	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
-+	localtry_unlock_irqrestore(&memcg_stock.stock_lock, flags);
- 	obj_cgroup_put(old);
- }
- 
-@@ -1868,9 +1873,20 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
- {
- 	unsigned long flags;
- 
--	local_lock_irqsave(&memcg_stock.stock_lock, flags);
-+	if (!localtry_trylock_irqsave(&memcg_stock.stock_lock, flags)) {
-+		/*
-+		 * In case of unlikely failure to lock percpu stock_lock
-+		 * uncharge memcg directly.
-+		 */
-+		if (mem_cgroup_is_root(memcg))
-+			return;
-+		page_counter_uncharge(&memcg->memory, nr_pages);
-+		if (do_memsw_account())
-+			page_counter_uncharge(&memcg->memsw, nr_pages);
-+		return;
++	if (memcg_kmem_online() && page &&
++	    unlikely(__memcg_kmem_charge_page(page, alloc_gfp, order) != 0)) {
++		free_pages_nolock(page, order);
++		page = NULL;
 +	}
- 	__refill_stock(memcg, nr_pages);
--	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
-+	localtry_unlock_irqrestore(&memcg_stock.stock_lock, flags);
- }
- 
- /*
-@@ -2213,9 +2229,13 @@ int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	unsigned long pflags;
- 
- retry:
--	if (consume_stock(memcg, nr_pages))
-+	if (consume_stock(memcg, nr_pages, gfp_mask))
- 		return 0;
- 
-+	if (!gfpflags_allow_spinning(gfp_mask))
-+		/* Avoid the refill and flush of the older stock */
-+		batch = nr_pages;
-+
- 	if (!do_memsw_account() ||
- 	    page_counter_try_charge(&memcg->memsw, batch, &counter)) {
- 		if (page_counter_try_charge(&memcg->memory, batch, &counter))
-@@ -2699,7 +2719,7 @@ static void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
- 	unsigned long flags;
- 	int *bytes;
- 
--	local_lock_irqsave(&memcg_stock.stock_lock, flags);
-+	localtry_lock_irqsave(&memcg_stock.stock_lock, flags);
- 	stock = this_cpu_ptr(&memcg_stock);
- 
- 	/*
-@@ -2752,7 +2772,7 @@ static void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
- 	if (nr)
- 		__mod_objcg_mlstate(objcg, pgdat, idx, nr);
- 
--	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
-+	localtry_unlock_irqrestore(&memcg_stock.stock_lock, flags);
- 	obj_cgroup_put(old);
- }
- 
-@@ -2762,7 +2782,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
- 	unsigned long flags;
- 	bool ret = false;
- 
--	local_lock_irqsave(&memcg_stock.stock_lock, flags);
-+	localtry_lock_irqsave(&memcg_stock.stock_lock, flags);
- 
- 	stock = this_cpu_ptr(&memcg_stock);
- 	if (objcg == READ_ONCE(stock->cached_objcg) && stock->nr_bytes >= nr_bytes) {
-@@ -2770,7 +2790,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
- 		ret = true;
- 	}
- 
--	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
-+	localtry_unlock_irqrestore(&memcg_stock.stock_lock, flags);
- 
- 	return ret;
- }
-@@ -2862,7 +2882,7 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
- 	unsigned long flags;
- 	unsigned int nr_pages = 0;
- 
--	local_lock_irqsave(&memcg_stock.stock_lock, flags);
-+	localtry_lock_irqsave(&memcg_stock.stock_lock, flags);
- 
- 	stock = this_cpu_ptr(&memcg_stock);
- 	if (READ_ONCE(stock->cached_objcg) != objcg) { /* reset if necessary */
-@@ -2880,7 +2900,7 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
- 		stock->nr_bytes &= (PAGE_SIZE - 1);
- 	}
- 
--	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
-+	localtry_unlock_irqrestore(&memcg_stock.stock_lock, flags);
- 	obj_cgroup_put(old);
- 
- 	if (nr_pages)
+ 	trace_mm_page_alloc(page, order, alloc_gfp, ac.migratetype);
+ 	kmsan_alloc_page(page, order, alloc_gfp);
+ 	return page;
 -- 
 2.43.5
 
