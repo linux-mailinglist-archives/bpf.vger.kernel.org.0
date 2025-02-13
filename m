@@ -1,140 +1,160 @@
-Return-Path: <bpf+bounces-51413-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51414-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E304CA34007
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 14:16:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8ED3A340D9
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 14:54:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F1843A881B
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 13:16:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62B63168B3C
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 13:54:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B86FE22172B;
-	Thu, 13 Feb 2025 13:16:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B93361487FA;
+	Thu, 13 Feb 2025 13:54:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c/rxmGBy"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dsR7wsI/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BBBA4D8A3;
-	Thu, 13 Feb 2025 13:16:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E33F624BC0D;
+	Thu, 13 Feb 2025 13:54:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739452590; cv=none; b=SfpoTzoQY0qg1bncZElqMuROaP5QK/fQWgOqJI+zIsqBDF/JBdDN28uzrDvJ8Fj59HaW0rh48iQmXYPAbS+vqVFBj84Sc8WJJqPtZuj9+nlOlWWtegiHW5oy8l419Ip0x6wFrfEd7ezNHG//bTPwV5NwaKAC9BjqmLGgiWfd6tE=
+	t=1739454854; cv=none; b=p3KnCbB3m/5u5GrgrztFmt81gnRtvIpLq/aU9BLKf+YhCgPtaUhFClYDdLeTmq86Fnx7sKZNVJHCw/NVtMAL25yhqKQ/vzlZAIYQq8jUVpoREyo44Zom/y+FHzLGsrI56qrotQqoUpIYu6EZmLU+7v4gV0TDo2kna9sJ8n2TSlw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739452590; c=relaxed/simple;
-	bh=3eCKYWe6fbh19Hq5SlKDOM6zLaeIkjczUm0VhjXYiro=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cmLTYwbLnENoI4twtMzaZP5afqsB+RRcx+ZA6FphqHwHlMZn38t3ffL3Fffk/hOT6VYvH0wIJTh/VQCd221GOOi/ioAoHRJBzymhWo5FITtEV4spmmqwep4TbzszIo3NFDTlbqjKlHcAb+irCYWZ6souK8FcjxuY04NNjcFGEuw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c/rxmGBy; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-ab7d58aa674so133526066b.0;
-        Thu, 13 Feb 2025 05:16:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739452587; x=1740057387; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4wIUF5bRe1OT++Cts/lO87ero9KFNDwns7V0gMpPeUI=;
-        b=c/rxmGByuOlZg6x0qSRFW5SUjajgqHAehfhsrt1zf7TJ4L3IG5JTSm4urUiNUyhGd2
-         2XK4WuBEd2OEugeFOcsd9RTV+jMaE6ZTOrYKr3IeRCcAl4x01/O6b1vVrxlRsP8IY3Qv
-         xsjrijoLUmKUtAivJKhkdARA3qUQkrSXdWjdQhfKSYgxmY5gbf2HYseNuzjIt3yLs8Z0
-         Nz6DGVCD+T+flMih2fA3U4Jfn3kVgxMnE1muVKPTBHSNF3YHFOW/TxF0Pipe5AoFHQH+
-         aWNzZ8Jpn/ra6e1tKRb3eckencmAzAhPurAc3MBBcx6iVjUdo6hXxVgNm1XbNEV+E1o8
-         sKkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739452587; x=1740057387;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4wIUF5bRe1OT++Cts/lO87ero9KFNDwns7V0gMpPeUI=;
-        b=rvsAncwNIMh/dfm4jRZHSzUYSyN3f6xry4Wzg20iNDFNzgrrAc8zo+kThqhtKhm6fP
-         gWPoream5byNB5GFxHit4CTIsHcfh3K3fxD95RbuxRikg8vmRzvIKhWdtr6wyVyavgDh
-         0s79P6xAUnuNGL6FEpTQbC/A7mo6ANpOwbfoO3UiIb6RbApLO3JrmITebk36hI4xE2L0
-         HyiiEQF6ufj7kb2enO0VAy+uGX2pE3bpMPYXPe8cU3rA56VbvlpGLN1L7E6hA/OfnP9y
-         F45Fv3zUTgpQUnnQAcda/bN7alhUOSuLQAP3SzH9apYSF6QtFtB4YO0o1bNVrD84ZWzU
-         Odow==
-X-Forwarded-Encrypted: i=1; AJvYcCW7YFZ3jAJATVzkotiIGVxp/nUvpiRpp41tghmc8ZPYgpwxOD6bA4prcFaSwMohtxgehC4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YziKzja9uBa73yHIkaa7eZ0XBW9yK2KjYkXrFQFQkpJUX8p0DW8
-	pOvApQcJs9Ef+gIYuKwrwnikR6OOuXDlAE2FNBxPoLyTLcUwAZCb
-X-Gm-Gg: ASbGncuJFNFFgVeszBPGsg1vKt66AyW07/uQcqwTv4DCWIb/kVDiKYPhUuDOhxGMXvx
-	9uka7WJymtmj4264NUjxUG4KCT1gV+7NJWlkdNF93TB3fwvmk9mAXPaEP/G4jq1VAFLtVCrgW7J
-	INfFgyFqlho+OlH5NfJeYiq8mGry9G8dNUdnCyjXlYKyj6CWh5LyX5YoZsGF1DqHgd410SIDvep
-	4josgRtqLhupao0xgwgQo3BXIoIn0Vpu8gyRPTLcyTk9QQwkhwkXNdNHfB8DENrRg5gfD1YFbHH
-	2Q==
-X-Google-Smtp-Source: AGHT+IH0rY8XRLn/35y8eE7mjNXnWlTVW25Tgqq279T/i9vvqpItmmnnty7HU0DkHN9imhETVUdOrA==
-X-Received: by 2002:a17:907:3e0d:b0:ab7:85e2:18bb with SMTP id a640c23a62f3a-ab7f33781aamr721779266b.6.1739452586471;
-        Thu, 13 Feb 2025 05:16:26 -0800 (PST)
-Received: from krava ([173.38.220.37])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aba53376abbsm130283666b.93.2025.02.13.05.16.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Feb 2025 05:16:26 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 13 Feb 2025 14:16:24 +0100
-To: Ihor Solodrai <ihor.solodrai@linux.dev>
-Cc: dwarves@vger.kernel.org, bpf@vger.kernel.org, acme@kernel.org,
-	alan.maguire@oracle.com, ast@kernel.org, andrii@kernel.org,
-	eddyz87@gmail.com, mykolal@fb.com, kernel-team@meta.com
-Subject: Re: [PATCH v2 dwarves 0/4] btf_encoder: emit type tags for bpf_arena
- pointers
-Message-ID: <Z63wqJlP0QNNsWth@krava>
-References: <20250212201552.1431219-1-ihor.solodrai@linux.dev>
+	s=arc-20240116; t=1739454854; c=relaxed/simple;
+	bh=g5HGHBuqAjMQOceJtIfxFmXU57w01hrdcPk8EKvjSzU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=r/T9Ce0DQCsXxZcpJW6AVT9MgJkkN6d+zlTle5IpY3QhDaS5fQ+7JFih57KDUl5IsC/HSn9PQy0GuPfuL/hmpk11f9Ruato7BZX+KtV7cRGvkz+6hbWitTU9yqiOCshoRRceRCB4fawrAL5zVBRgCP7+4RdeOqEnDp/3GJQivHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dsR7wsI/; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1739454853; x=1770990853;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=g5HGHBuqAjMQOceJtIfxFmXU57w01hrdcPk8EKvjSzU=;
+  b=dsR7wsI/gJFB++j7xyA3eg2TFuAPg61NMoHq3uUMi5HremhdxCfkVzDb
+   mq1BOJ0GdlwVPmUYFnpJe9cFkeBuC+0LHZWKLcNzyI25YZk9g9/3BYa9K
+   dSr8V3DywSt1Jy9DLoi7hWwTpDSnXzL4TA6PjUeVuuwwCX7znMWnTON+4
+   4b9V+7NDpfJCQlc95ztHi07c+UDbU3no1oisQWfIOXAl806JhNlmmsdHp
+   QSDJqTP3uJ29RxtU5UDNQEahA9hZKl8mMd5kS+9aDR2p76rqslsjwK36g
+   mF5c2liwiGvN1x3rQ0l5bsZE7R5Jx+YOU11mdBciIlnDGlq9OxdXiYi3b
+   w==;
+X-CSE-ConnectionGUID: WUtiAvDuSzyTpVB3Vbvs5A==
+X-CSE-MsgGUID: o5M64SCRTZONPQcJtMK42Q==
+X-IronPort-AV: E=McAfee;i="6700,10204,11344"; a="40019842"
+X-IronPort-AV: E=Sophos;i="6.13,282,1732608000"; 
+   d="scan'208";a="40019842"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2025 05:54:12 -0800
+X-CSE-ConnectionGUID: Va5fv8RuSjiYMn+k3238nA==
+X-CSE-MsgGUID: 1CjFB4TaT2qSpWMyGvwtMQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
+   d="scan'208";a="118080787"
+Received: from mohdfai2-mobl.gar.corp.intel.com (HELO [10.247.42.34]) ([10.247.42.34])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2025 05:54:04 -0800
+Message-ID: <1c981aa1-e796-4c53-9853-3eae517f2f6d@linux.intel.com>
+Date: Thu, 13 Feb 2025 21:54:00 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250212201552.1431219-1-ihor.solodrai@linux.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH iwl-next v4 0/9] igc: Add support for Frame Preemption
+ feature in IGC
+To: Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc: Kurt Kanzenbach <kurt@linutronix.de>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S . Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Simon Horman <horms@kernel.org>, Russell King <linux@armlinux.org.uk>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Furong Xu <0x1207@gmail.com>,
+ Russell King <rmk+kernel@armlinux.org.uk>,
+ Serge Semin <fancer.lancer@gmail.com>,
+ Xiaolei Wang <xiaolei.wang@windriver.com>,
+ Suraj Jaiswal <quic_jsuraj@quicinc.com>,
+ Kory Maincent <kory.maincent@bootlin.com>, Gal Pressman <gal@nvidia.com>,
+ Jesper Nilsson <jesper.nilsson@axis.com>,
+ Andrew Halaney <ahalaney@redhat.com>,
+ Choong Yong Liang <yong.liang.choong@linux.intel.com>,
+ Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+ Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+ intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
+References: <20250210070207.2615418-1-faizal.abdul.rahim@linux.intel.com>
+ <20250210070207.2615418-1-faizal.abdul.rahim@linux.intel.com>
+ <20250212220121.ici3qll66pfoov62@skbuf>
+ <b19357dc-590d-458c-9646-ee5993916044@linux.intel.com>
+ <87cyfmnjdh.fsf@kurt.kurt.home>
+ <5902cc28-a649-4ae9-a5ba-83aa265abaf8@linux.intel.com>
+ <20250213130003.nxt2ev47a6ppqzrq@skbuf>
+Content-Language: en-US
+From: "Abdul Rahim, Faizal" <faizal.abdul.rahim@linux.intel.com>
+In-Reply-To: <20250213130003.nxt2ev47a6ppqzrq@skbuf>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 12, 2025 at 12:15:48PM -0800, Ihor Solodrai wrote:
-> This patch series implements emitting appropriate BTF type tags for
-> argument and return types of kfuncs marked with KF_ARENA_* flags.
-> 
-> For additional context see the description of BPF patch
-> "bpf: define KF_ARENA_* flags for bpf_arena kfuncs" [1].
-> 
-> The feature depends on recent changes in libbpf [2].
-> 
-> [1] https://lore.kernel.org/bpf/20250206003148.2308659-1-ihor.solodrai@linux.dev/
-> [2] https://lore.kernel.org/bpf/20250130201239.1429648-1-ihor.solodrai@linux.dev/
-> 
-> v1->v2:
->   * Rewrite patch #1 refactoring btf_encoder__tag_kfuncs(): now the
->     post-processing step is removed entirely, and kfuncs are tagged in
->     btf_encoder__add_func().
->   * Nits and renames in patch #2
->   * Add patch #4 editing man pages
 
-lgtm
 
-Reviewed-by: Jiri Olsa <jolsa@kernel.org>
+On 13/2/2025 9:00 pm, Vladimir Oltean wrote:
+> On Thu, Feb 13, 2025 at 08:54:18PM +0800, Abdul Rahim, Faizal wrote:
+>>> Well, my idea was to move the current mqprio offload implementation from
+>>> legacy TSN Tx mode to the normal TSN Tx mode. Then, taprio and mqprio
+>>> can share the same code (with or without fpe). I have a draft patch
+>>> ready for that. What do you think about it?
+>>
+>> Hi Kurt,
+>>
+>> I’m okay with including it in this series and testing fpe + mqprio, but I’m
+>> not sure if others might be concerned about adding different functional
+>> changes in this fpe series.
+>>
+>> Hi Vladimir,
+>> Any thoughts on this ?
+> 
+> Well, what do you think of my split proposal from here, essentially
+> drawing the line for the first patch set at just ethtool mm?
+> https://lore.kernel.org/netdev/20250213110653.iqy5magn27jyfnwh@skbuf/
+> 
 
-thanks,
-jirka
+Honestly, after reconsidering, I’d prefer to keep the current series as is 
+(without Kurt’s patch), assuming you’re okay with enabling mqprio + fpe 
+later rather than at the same time as taprio + fpe. There likely won’t be 
+any additional work needed for mqprio + fpe after Kurt’s patch is accepted, 
+since it will mostly reuse the taprio code flow.
 
-> 
-> v1: https://lore.kernel.org/dwarves/20250207021442.155703-1-ihor.solodrai@linux.dev/
-> 
-> Ihor Solodrai (4):
->   btf_encoder: refactor btf_encoder__tag_kfuncs()
->   btf_encoder: emit type tags for bpf_arena pointers
->   pahole: introduce --btf_feature=attributes
->   man-pages: describe attributes and remove reproducible_build
-> 
->  btf_encoder.c      | 282 +++++++++++++++++++++++----------------------
->  dwarves.h          |   1 +
->  man-pages/pahole.1 |   7 +-
->  pahole.c           |  11 ++
->  4 files changed, 161 insertions(+), 140 deletions(-)
-> 
-> -- 
-> 2.48.1
-> 
-> 
+If I were to split it, the structure would look something like this:
+First part of fpe series:
+igc: Add support to get frame preemption statistics via ethtool
+igc: Add support to get MAC Merge data via ethtool
+igc: Add support to set tx-min-frag-size
+igc: Add support for frame preemption verification
+igc: Set the RX packet buffer size for TSN mode
+igc: Optimize the TX packet buffer utilization
+igc: Rename xdp_get_tx_ring() for non-XDP usage
+net: ethtool: mm: Extract stmmac verification logic into a common library
+
+Second part of fpe:
+igc: Add support for preemptible traffic class in taprio
+
+I don’t think Kurt’s patch should be included in my second part of fpe, as 
+it’s not logically related. Another approach would be to wait for Kurt’s 
+patch to be accepted first, then submit the second part and verify both 
+taprio + mqprio. However, that would delay i226 from having a basic fpe 
+feature working as a whole, which I'd really like to avoid.
+
 
