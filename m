@@ -1,107 +1,213 @@
-Return-Path: <bpf+bounces-51365-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51366-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0F3CA33786
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 06:49:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B26FA3379B
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 06:56:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E3223A92A5
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 05:49:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F9517A4516
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 05:55:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 719AA207649;
-	Thu, 13 Feb 2025 05:49:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E9BC207640;
+	Thu, 13 Feb 2025 05:55:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="nwD1LstI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iWklfQGN"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A9AEEC4;
-	Thu, 13 Feb 2025 05:49:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.95.49.90
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65FE7204F85;
+	Thu, 13 Feb 2025 05:55:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739425761; cv=none; b=W/gCcg/krm92sU5LgC8PIu257m8uB+JaMZvcmtrHEFnyQBynWylvie1HHuRJKUhVXbhQ3w84+GZZ/gZfjAMw4Dlr8j65da840jUiA+r5ACdMCESUC81Ssqokso9htu73nyA5JX0Xhb2V3WGfJzP3EZ9PmtTpvK/fA7PLmg3xaCk=
+	t=1739426158; cv=none; b=O/8AwdHeM5GztAfzVEGRwCHmFz4y+Pb3O+bB2HoDXqdoy7a7lh5L6/Cq6lYN4WZDk6pufxxJkiFMWNIlPA8CFxqfTzqynY9MTOupLiTzfUxEOQ4nNiLBdweL3W9h1cQguFJhx7If3OHmkmQqjmybVApUjaWaf5h9Ey9mjHxJ6LA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739425761; c=relaxed/simple;
-	bh=JZO8hTv+tJW2aK5aBTAN6q5T0bbD7q/X0NgiV9zstAE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VzLT03bdJi4baPjIoiWkQM/dxnozna6rG+gqZFzrZof0cdsqds2wwaj0+6xY0c7HRxDlgTmTnXPamHsVV5RnalWMWs+kU0AjlIDC8Rtf8CHc9lEPyzPHCk9qNc+7reI7Yln6ai7EnLWx5VMzxVuANZQH+lw58TLMFwjFYuAbqdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=nwD1LstI; arc=none smtp.client-ip=52.95.49.90
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+	s=arc-20240116; t=1739426158; c=relaxed/simple;
+	bh=Wg3PP9aJWpHfVe3nPyR6u8KjM9Y9g9rokv8BwcIlS64=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ke3N6EvchJbBpCjHOMRYNkN38SgvRHP+giIJAF1DZ6tUxKq3nJSyvAUAzYUy5uUtWT1BftrjEDvrvpp/1XiWQm4sDo5DQsvh8tgUyhh1yoaMF12MGJf2wSKTYEvrcM9TXV/EWszC72vGVqE0HRbzUO/zYTcwqg85ivxmdJTdIfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iWklfQGN; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-38f1e8efe82so531845f8f.0;
+        Wed, 12 Feb 2025 21:55:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1739425760; x=1770961760;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=2H6L2IVdEyIK/cEvvFHgSWxdXbDY3pM4JrV+qKQ3oRc=;
-  b=nwD1LstIkQvD8ffPyPrZevRMPI3+41cyFCrQF0TC6xlj8S0pfaFZgLPO
-   3P/XI66tK5WRqgtPMy2aC9JLg11Ma1YuTBr0SYTzuPqhKX8eVenq5pJQP
-   bPbhjwlJJGGGO3+Etl4NIF8hsOXVM0ZZc9LMJ5m2ASxZJfr0tXLJaDGLg
-   g=;
-X-IronPort-AV: E=Sophos;i="6.13,282,1732579200"; 
-   d="scan'208";a="471752672"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2025 05:49:13 +0000
-Received: from EX19MTAUWB001.ant.amazon.com [10.0.38.20:24405]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.23.136:2525] with esmtp (Farcaster)
- id 4661396c-a15f-4263-9318-13d4ea54af5c; Thu, 13 Feb 2025 05:49:12 +0000 (UTC)
-X-Farcaster-Flow-ID: 4661396c-a15f-4263-9318-13d4ea54af5c
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.39;
- Thu, 13 Feb 2025 05:49:12 +0000
-Received: from 6c7e67bfbae3.amazon.com (10.37.244.7) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Thu, 13 Feb 2025 05:49:03 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <shaw.leon@gmail.com>
-CC: <alex.aring@gmail.com>, <andrew+netdev@lunn.ch>,
-	<b.a.t.m.a.n@lists.open-mesh.org>, <bpf@vger.kernel.org>,
-	<bridge@lists.linux.dev>, <davem@davemloft.net>, <donald.hunter@gmail.com>,
-	<dsahern@kernel.org>, <edumazet@google.com>, <herbert@gondor.apana.org.au>,
-	<horms@kernel.org>, <kuba@kernel.org>, <kuniyu@amazon.com>,
-	<linux-can@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-kselftest@vger.kernel.org>, <linux-ppp@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
-	<linux-wpan@vger.kernel.org>, <miquel.raynal@bootlin.com>,
-	<netdev@vger.kernel.org>, <osmocom-net-gprs@lists.osmocom.org>,
-	<pabeni@redhat.com>, <shuah@kernel.org>, <stefan@datenfreihafen.org>,
-	<steffen.klassert@secunet.com>, <wireguard@lists.zx2c4.com>
-Subject: Re: [PATCH net-next v9 04/11] ieee802154: 6lowpan: Validate link netns in newlink() of rtnl_link_ops
-Date: Thu, 13 Feb 2025 14:48:53 +0900
-Message-ID: <20250213054853.285-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
-In-Reply-To: <20250210133002.883422-5-shaw.leon@gmail.com>
-References: <20250210133002.883422-5-shaw.leon@gmail.com>
+        d=gmail.com; s=20230601; t=1739426155; x=1740030955; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cbm99omdbeF2OrhsawYuDgrANSK6CWJAaQSKOaxjXj8=;
+        b=iWklfQGNAOIl223po2YhyFMJGHv900vZXriz3YHRkIgDKIib6x3ITZ175yhOjgwRy2
+         4D6eO9iMXSxno1RP2AgbxldGzBDUvr4g5XoJzu0zPuqzQkt/nOmpDuWe8bShiVDLVVRh
+         nO1aSoYdI+IpJg52udZrWuQQjbBxDnKPfz/IW3oSOYytxNv5Uk9+sWrgYUeiraVvWJpW
+         Wo0zxyHrmmDqszIddRuSVCd2/NTUcr8JNaf+yXq04vYIVmMsrhG2qrvlD94qR11AwTQ6
+         9FiRmj7+gvkGhqOSWtMSQeVX/ZHKnbKhp+DVrSdHI6JCGp9tedV+byK586uentci1IuN
+         onAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739426155; x=1740030955;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cbm99omdbeF2OrhsawYuDgrANSK6CWJAaQSKOaxjXj8=;
+        b=RXVaD3mjFWafB/bnViLcWrG1LjJZNtupH/jFV7khlkvRLVK0vjAp0v9+y0DEcZbbUs
+         wzb1f6hdOAxGKUdtxON340Guot/VY55iMokIJYdxOYqd+5fxQS7U8rBW/yQWxTN1Vfac
+         vtZiuSNk6u/KPypktbfrAEJ+0bQfQ7xOan3Cbf5qDby64H+iUfUayOUdnkZJxAh4mFsu
+         GSNxd1kjuPDF4hGXggeEA7dZL73JqoCBMMSW97tG7F4TgQAoDfSGDyScTvUzmDAOifBf
+         qmGovbVaRKOwU8yqG/jBph1+e+G3dfXOjjmXVJpGWDj2sdi+Qz7k/kXVb8adskubT8Ir
+         xRtA==
+X-Forwarded-Encrypted: i=1; AJvYcCW6jG5frh1mHAZHZ6PuXKr637okjjOPz1l6WVmTNhFCYrVqQW2iSjEET160R64v0oGxXC5tZmeXb8GUxpg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxiNAsKax11Xg3mnckH4Q4GHaCboktWrWKPVKDB9ale8OHHhHI/
+	XZd4sYfkAyUeY1+/LGKWWt0i7HcWwZLKu0lvWM65mwXKbseGHgeR9IYGzrnfk5NRD0PbTddYuAP
+	IbFikph+2ViOHhWaAARuia3oNQXWqsYs6
+X-Gm-Gg: ASbGncsoWSn/H2NCv6vncxu3/hMNspQcb+8VtZp1B7jL4pVuhoQtRyhJwLbJ1uPVqNf
+	Jr5LLyfw1SziyaJr8Dkpik3Ja0EB+B8rJHSkfJWY/na8TR6daXYzWV2FYr2wPxQdUQNLmp4SznT
+	qrUyVJuOyZ+gNm5Sly0xACTIQpT9ks
+X-Google-Smtp-Source: AGHT+IFawGeeYMbjKz90TN1DtLZr67GxcvjTKL036bBzfPWrntnVydBRlcH1fRJZEIe36nuN+kjX6MDuRC/G3AJdku8=
+X-Received: by 2002:a5d:6ad0:0:b0:38d:df29:e14f with SMTP id
+ ffacd0b85a97d-38f24518191mr1433002f8f.43.1739426154568; Wed, 12 Feb 2025
+ 21:55:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D035UWA004.ant.amazon.com (10.13.139.109) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
+References: <cover.1738888641.git.yepeilin@google.com> <d03d8c3305e311c6cb29924119b5eecae8370bbc.1738888641.git.yepeilin@google.com>
+ <CAADnVQ+L0h8qXfYkC3+ORyQkXFJ2MgO8FDHr_Ha0QMAtS_ujag@mail.gmail.com>
+ <Z6gRHDLfA7cjnlSn@google.com> <CAADnVQLkHA9LGv99k2TZOJEGUU=dw=q6nVurJ=aoh0v6cFS6zQ@mail.gmail.com>
+ <Z6qC303CzfUMN8nV@google.com> <Z60dO2sV6VIVNE6t@google.com>
+In-Reply-To: <Z60dO2sV6VIVNE6t@google.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 12 Feb 2025 21:55:43 -0800
+X-Gm-Features: AWEUYZkMIBfgqn-J1QBcK_dOmAe3QSFRdLl9n0tBkJRYU8-4UpfsqB1hdA59AeM
+Message-ID: <CAADnVQ+OyoBPOJk6dcUFozTt0RD-o-hHdR4Dgy+dK2r0uHyC7Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/9] bpf: Introduce load-acquire and
+ store-release instructions
+To: Peilin Ye <yepeilin@google.com>
+Cc: bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, bpf@ietf.org, 
+	Xu Kuohai <xukuohai@huaweicloud.com>, Eduard Zingerman <eddyz87@gmail.com>, 
+	David Vernet <void@manifault.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
+	Ilya Leoshkevich <iii@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Quentin Monnet <qmo@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>, Yingchi Long <longyingchi24s@ict.ac.cn>, 
+	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>, Neel Natu <neelnatu@google.com>, 
+	Benjamin Segall <bsegall@google.com>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Xiao Liang <shaw.leon@gmail.com>
-Date: Mon, 10 Feb 2025 21:29:55 +0800
-> Device denoted by IFLA_LINK is in link_net (IFLA_LINK_NETNSID) or
-> source netns by design, but 6lowpan uses dev_net.
-> 
-> Note dev->netns_local is set to true and currently link_net is
-> implemented via a netns change. These together effectively reject
-> IFLA_LINK_NETNSID.
-> 
-> This patch adds a validation to ensure link_net is either NULL or
-> identical to dev_net. Thus it would be fine to continue using dev_net
-> when rtnetlink core begins to create devices directly in target netns.
-> 
-> Signed-off-by: Xiao Liang <shaw.leon@gmail.com>
+On Wed, Feb 12, 2025 at 2:14=E2=80=AFPM Peilin Ye <yepeilin@google.com> wro=
+te:
+>
+> On Mon, Feb 10, 2025 at 10:51:11PM +0000, Peilin Ye wrote:
+> > > >   #define BPF_LOAD_ACQ   0x10
+> > > >   #define BPF_STORE_REL  0x20
 
-Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+so that was broken then,
+since BPF_SUB 0x10 ?
+
+And original thing was also completely broken for
+BPF_ATOMIC_LOAD | BPF_RELAXED =3D=3D 0x10 =3D=3D BPF_SUB ?
+
+so much for "lets define relaxed, acquire,
+release, acq_rel for completeness".
+:(
+
+> > >
+> > > why not 1 and 2 ?
+> >
+> > I just realized that we can't do 1 and 2 because BPF_ADD | BPF_FETCH
+> > also equals 1.
+> >
+> > > All other bits are reserved and the verifier will make sure they're z=
+ero
+> >
+> > IOW, we can't tell if imm<4-7> is reserved or BPF_ADD (0x00).  What
+> > would you suggest?  Maybe:
+> >
+> >   #define BPF_ATOMIC_LD_ST 0x10
+> >
+> >   #define BPF_LOAD_ACQ      0x1
+> >   #define BPF_STORE_REL     0x2
+
+This is also broken, since
+BPF_ATOMIC_LD_ST | BPF_LOAD_ACQ =3D=3D 0x11 =3D=3D BPF_SUB | BPF_FETCH.
+
+BPF_SUB | BPF_FETCH is invalid at the moment,
+but such aliasing is bad.
+
+> >
+> > ?
+>
+> Or, how about reusing 0xb in imm<4-7>:
+>
+>   #define BPF_ATOMIC_LD_ST 0xb0
+>
+>   #define BPF_LOAD_ACQ      0x1
+>   #define BPF_STORE_REL     0x2
+>
+> 0xb is BPF_MOV in BPFArithOp<>, and we'll never need it for BPF_ATOMIC.
+> Instead of moving values between registers, we now "move" values from/to
+> the memory - if I can think of it that way.
+
+and BPF_ATOMIC_LD_ST | BPF_LOAD_ACQ would =3D=3D BPF_MOV | BPF_FETCH ?
+
+Not pretty and confusing.
+
+BPF_FETCH modifier means that "do whatever opcode says to do,
+like add in memory, but also return the value into insn->src_reg"
+
+Which doesn't fit this BPF_ATOMIC_LD_ST | BPF_LOAD_ACQ semantics
+which loads into _dst_reg_.
+
+How about:
+#define BPF_LOAD_ACQ 2
+#define BPF_STORE_REL 3
+
+and only use them with BPF_MOV like
+
+imm =3D BPF_MOV | BPF_LOAD_ACQ - is actual load acquire
+imm =3D BPF_MOV | BPF_STORE_REL - release
+
+Thought 2 stands on its own,
+it's also equal to BPF_ADD | BPF_LOAD_ACQ
+which is kinda ugly, so I don't like to use 2 alone.
+
+> Or, do we want to start to use the remaining bits of the imm field (i.e.
+> imm<8-31>) ?
+
+Maybe.
+Sort-of.
+Since #define BPF_CMPXCHG     (0xf0 | BPF_FETCH)
+another option would be:
+
+#define BPF_LOAD_ACQ 0x100
+#define BPF_STORE_REL 0x110
+
+essentially extending op type to:
+BPF_ATOMIC_TYPE(imm)    ((imm) & 0x1f0)
+
+All options are not great.
+I feel we need to step back.
+Is there an architecture that has sign extending load acquire ?
+
+Looks like arm doesn't, and I couldn't find any arch that does.
+Then maybe we should reconsider BPF_LDX/STX and use BPF_MODE
+to distinguish from normal ldx/stx
+
+#define BPF_ACQ_REL 0xe0
+
+BPF_LDX | BPF_ACQ_REL | BPF_W
+BPF_STX | BPF_ACQ_REL | BPF_W
+
+?
 
