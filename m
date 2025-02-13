@@ -1,182 +1,173 @@
-Return-Path: <bpf+bounces-51392-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51393-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36829A33BD7
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 11:00:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 631B6A33BE6
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 11:02:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D2333A30B7
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 09:59:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DFBC3A66F6
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 10:01:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA944211494;
-	Thu, 13 Feb 2025 09:59:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99A4C212B09;
+	Thu, 13 Feb 2025 10:01:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WPw+oqHN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F27HBhco"
 X-Original-To: bpf@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BC77211292;
-	Thu, 13 Feb 2025 09:59:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 527FC2066D6;
+	Thu, 13 Feb 2025 10:01:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739440769; cv=none; b=ZwK3Yzx1B2SWD8Nm/qv3klAQAJBT7AQQG0Rqbe/OQMAG0alRV2JWO3RyvCMNo5qtLqYO/2IKOdqQru5i+BkgSFouqbNC985GMlRk2C0Syi2hpMqxfpKiM/nNeBnqY+x50tSPSd2QyQggWpMx7iFXVAcnUbgGfUy2qAtXVqXtyuE=
+	t=1739440901; cv=none; b=RXeuubzBsdSRhAD7TPBIAlYBskSP4cN0ISFmpxQoS6v0oZ5ykwODqiWhIjzzc2Ia0uhqw/19LyWVkSeYqinfMbhrlGRfktr68BQEeoS4p+f59/n0J1IwaLVe+wVKUB8mkMbnv4vkDHDMKIl3y22sVYvGdNDhKpTey82g41QvfRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739440769; c=relaxed/simple;
-	bh=80ywDfww+kmELyRiFn0bexIaEho8JtvhUo8i8AyBu3E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JfAtTBZtW5rV04M4NGsFSBM7q6XYSlYjkdw80YDDsbI4kMimZagAJ2ps3ZLvRhWuGk706HGkLIhOff1zV5WuaCICRd+YRzNyorN8FcXVQdPCjZt13cubJFSeWW2rZBkWQNcJ3cAQ5q6wx7lKsn4TVr2iLdP3GUavbb3BdAIAqrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WPw+oqHN; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=pJc3YrbSrZjb+1WUbDYoQQxBsow526Z2Yq1LAQIerb4=; b=WPw+oqHNIzSpQadkIEozzuYPCc
-	QD+mVmk1T0MZVKzQvFvpAyjOg5GDQgMLWKWtdccpnC1bjnNtDQhUBlhUPK6PLYgFf5h/MJE+3Q/rN
-	oT7aUhrYy6jKadGcY4/mVAtseuFTfUG+b+VBL3V8IM2jqJBow6WoTA/Z48M/5Zsiq8w13GONkf23b
-	1CdwiX6+AZd/lmYib1M8wVMwgzVSK/CsZ7xg2ojI0XO/aSq/W6t1vbYPWm0LeHnMegImCBPK2Jxkg
-	kTopfL/r/vHQQ/fw/VbdzFDH9Prp+iUV6+fwdU2ObBrtzZBqzhC8o/11V9usdg1M0Am5aSWwbbtaT
-	K7W0k1DA==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1tiW07-00000000xD3-0Ago;
-	Thu, 13 Feb 2025 09:59:19 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 9D39A3002E5; Thu, 13 Feb 2025 10:59:18 +0100 (CET)
-Date: Thu, 13 Feb 2025 10:59:18 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Will Deacon <will@kernel.org>, Waiman Long <llong@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
-	Barret Rhoden <brho@google.com>, Josh Don <joshdon@google.com>,
-	Dohyun Kim <dohyunkim@google.com>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-	Kernel Team <kernel-team@meta.com>
-Subject: Re: [PATCH bpf-next v2 00/26] Resilient Queued Spin Lock
-Message-ID: <20250213095918.GB28068@noisy.programming.kicks-ass.net>
-References: <20250206105435.2159977-1-memxor@gmail.com>
- <20250210093840.GE10324@noisy.programming.kicks-ass.net>
- <20250210104931.GE31462@noisy.programming.kicks-ass.net>
- <CAADnVQ+3wu0WB2pXs4cccxfkbTb3TK8Z+act5egytiON+qN9tA@mail.gmail.com>
- <20250211104352.GC29593@noisy.programming.kicks-ass.net>
- <CAADnVQJ=81PE19JWeNjq6aNOy+GM-wo6n7WU9StX1b6kevqCUw@mail.gmail.com>
+	s=arc-20240116; t=1739440901; c=relaxed/simple;
+	bh=iBDt2glmR7cHZRLk9T83XH+ffn4f88bkjS2lrtyqh/4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JR9UU+8MbQLKO4dtmkRZZrRmPzy5O3dzfAioqxon5feqjXNXsNda4uChAvOo0vSrrzFq86j08XYn94bQEQC3Is/scJoc05/gmETs8Bg2qLOayRABLVtJ7xmB5t+3f8U7hEIPfkuMLFZXrTzd/a46sR97M8oeDQ32ZpR2TQDA7ik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F27HBhco; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-38dc5764fc0so564731f8f.3;
+        Thu, 13 Feb 2025 02:01:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739440897; x=1740045697; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QzLT98ZLU5P2fWKiTUzwgsTrlPg66ER6fTAj9aLF8fM=;
+        b=F27HBhcoSLzT3sL8Ku2e7U5GQt/ymD89GKSeWZlf/5QENZWPh+kuLggyLZ/rxwb2kG
+         1lWmSEJFm1nanoZH8lzQYxqzFdv1aT8avZ8CiKMBVadaxBFS5Nhei7I1azcLd3UknIeU
+         7xCN6uF85Bg/byZNEoSGJa7IE92JToAeBbxDZ+N/OHtVkGxfjoQ8B+2ahS3I3he/BRfe
+         voVYcN8Xy+kIhbOxs4jl9NWMinbGuYNk3kSMc0LhPMyQ5lv9oc71ZPVl6d35rHyP34Gc
+         305R481UgfWnLplk1bjNDkEakdTcSswJF9ACcvjc4j6kB9pRpZiLwPIZmx6R7xRvW6gR
+         zhGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739440897; x=1740045697;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QzLT98ZLU5P2fWKiTUzwgsTrlPg66ER6fTAj9aLF8fM=;
+        b=w/4FJa5msYAQJpJhJXwSXY+yhFHB9fC70zQrODeZin4AGk/JLQxCbh1+BmRbNIBJ37
+         v/bW5ResExA5w6DFs/F2y9rek5ApVhSKXcS6lwHZvZxT47RpGqwvr4UIrcXXOZsbutgu
+         H7z7OSIO9FkEaPYVHVvYFrAL9F5wPOWqx4kvpArHvrie0kCL1n4SzR1AyIwNduQNkBHK
+         OqXP7Ylf5m5I+7ChyHVzDhkBtLzho3DAG7P22wVvV/fAtrNLWkRLa4B7x818+74v/+KH
+         AJMKULG9I3RuFvPVmyZ8IG3wolvotA7Mj3eHWYVW3xXmXmihN3URstIjCrdpBXjpgBdn
+         /URQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU1+CJP2buiM8/DxyTwCPZzncnVfzcHgbuW3iKWvO1do77cctij23fXYVMF+zPMUBIlDAWneUmKjYWb@vger.kernel.org, AJvYcCU3xVynTwG8NrgXxLb7gBh4boQSM9N6pAptrklcVVHiMAauHD/DLvj/330EBetonOrcStljQebi@vger.kernel.org, AJvYcCU9RszRKzCoJBNMYdeoEmirhOP+/Z7UvxFkk4miHcL92h/mznww2um2vaB2l21V2mwhB0AMXY6bIkbQ@vger.kernel.org, AJvYcCUlHjPbPYBcFUBnLno3QU/H7ZKwfzUtXeWsLzqgnsUvjI5tp7d/4tLe+AenraLxD7kOF+vfY6QhEqlPQWR4NbKo@vger.kernel.org, AJvYcCV5m1qs3UWLXCzIj0GXli0fon4S2fR94mmwGaf27nnzuEb5bn9tlCloTROXEq9sW6AhAos7aeAa6d9NVg==@vger.kernel.org, AJvYcCVAobNqM+lKxqtaHDsZ3TiXORLTkhwZNVSN0pp2Iewv+c3y0k89ZUaL47DrixFT2Sv9e6Q=@vger.kernel.org, AJvYcCWJfA6NgWgPy/KwsXVIXwhdc0qKrz8imABc7dSy4xwWmneKxn91nCyZard0PfeuVG8G3p3rYz9AQP/wNg==@vger.kernel.org, AJvYcCWuKH9C0H7oOrCWBWyXGhLxS9XWDvAurO6q57+Iaqjuww+4z6zpdpHbc+oLf90dx5alhlvytjTdaTmhjhCt@vger.kernel.org, AJvYcCXKd+b2ZizvRrFEsf16e5WCsJX29pqkNYvM/CvV2eLp2bEFouszvQk3N1/ulCMBfWcWp/yfrTg3obqgTA+ACtI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzsDHQ2ULy/b3H8iPETyqOKkf4JPLz9z4KSNCCA/04557xoG4CO
+	6lCnISj2AVQzeLgwoP7mZe823KPU3kwQ1qEjVA/Q5AdxgvbjZnt0+V91qa8ynycnCERKaZEjPgX
+	8/ePJ1IQFmihptsKGmu7JdZhS9q0=
+X-Gm-Gg: ASbGnct8IV7hqIfFWMa1uEEF3ywnGb75LQi5LuYw616qX3swxvG2KRqgIZ2w+8VpnXp
+	CXcBA54kofPJRtHwBVhF2eyAY4pNByTx0SHMt6d0bDAMn4qDWaiYtZrb3ma2a6/lJUb6DFz4=
+X-Google-Smtp-Source: AGHT+IGNZlywLnJxQSbfEuVU5lxBk1mvVT9ugQLIpGpywWHBNNSM0YY4phrOkk812RGul4zBJlRkLm/hRcXNfYkCEHg=
+X-Received: by 2002:a5d:64e2:0:b0:38f:21eb:5d02 with SMTP id
+ ffacd0b85a97d-38f21eb5f2dmr4477949f8f.22.1739440897336; Thu, 13 Feb 2025
+ 02:01:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQJ=81PE19JWeNjq6aNOy+GM-wo6n7WU9StX1b6kevqCUw@mail.gmail.com>
+References: <20250210133002.883422-3-shaw.leon@gmail.com> <20250213065348.8507-1-kuniyu@amazon.com>
+ <CABAhCOTw+CpiwwRGNtDS3gntTQe7XESNzzi6RXd9ju1xO_a5Hw@mail.gmail.com> <2c294c0a-26c4-4ec5-992d-a2fd98829b16@redhat.com>
+In-Reply-To: <2c294c0a-26c4-4ec5-992d-a2fd98829b16@redhat.com>
+From: Xiao Liang <shaw.leon@gmail.com>
+Date: Thu, 13 Feb 2025 18:01:00 +0800
+X-Gm-Features: AWEUYZkc6f7IS5VLx0dDxpZ4gB9UzsINfw32PuUeMd1tOC9C9cBZAvSRCBGNkQM
+Message-ID: <CABAhCOQLHgiwkydm9vQAkVYZRyrCCu=E9Nh=wwkWFXox0x5uvQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v9 02/11] rtnetlink: Pack newlink() params into struct
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: Kuniyuki Iwashima <kuniyu@amazon.com>, alex.aring@gmail.com, andrew+netdev@lunn.ch, 
+	b.a.t.m.a.n@lists.open-mesh.org, bpf@vger.kernel.org, bridge@lists.linux.dev, 
+	davem@davemloft.net, donald.hunter@gmail.com, dsahern@kernel.org, 
+	edumazet@google.com, herbert@gondor.apana.org.au, horms@kernel.org, 
+	kuba@kernel.org, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-ppp@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-wpan@vger.kernel.org, miquel.raynal@bootlin.com, netdev@vger.kernel.org, 
+	osmocom-net-gprs@lists.osmocom.org, shuah@kernel.org, 
+	stefan@datenfreihafen.org, steffen.klassert@secunet.com, 
+	wireguard@lists.zx2c4.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 11, 2025 at 10:33:00AM -0800, Alexei Starovoitov wrote:
-
-> Ohh. No unpriv here.
-> Since spectre was discovered unpriv bpf died.
-> BPF_UNPRIV_DEFAULT_OFF=y was the default for distros and
-> all hyperscalers for quite some time.
-
-Ah, okay. Time to remove the option then?
-
-> > So much details not clear to me and not explained either :/
-> 
-> Yes. The plan is to "kill" bpf prog when it misbehaves.
-> But this is orthogonal to this res_spin_lock set which is
-> a building block.
-> 
-> > Right, but it might have already modified things, how are you going to
-> > recover from that?
-> 
-> Tracking resources acquisition and release by the bpf prog
-> is a normal verifier job.
-> When bpf prog does bpf_rcu_read_lock() the verifier makes sure
-> that all execution paths from there on have bpf_rcu_read_unlock()
-> before program reaches the exit.
-> Same thing with locks.
-
-Ah, okay, this wasn't stated anywhere. This is rather crucial
-information.
-
-> If bpf_res_spin_lock() succeeds the verifier will make sure
-> there is matching bpf_res_spin_unlock().
-> If some resource was acquired before bpf_res_spin_lock() and
-> it returned -EDEADLK the verifier will not allow early return
-> without releasing all acquired resources.
-
-Good.
-
-> > Have the program structured such that it must acquire all locks before
-> > it does a modification / store -- and have the verifier enforce this.
-> > Then any lock failure can be handled by the bpf core, not the program
-> > itself. Core can unlock all previously acquired locks, and core can
-> > either re-attempt the program or 'skip' it after N failures.
-> 
-> We definitely don't want to bpf core to keep track of acquired resources.
-> That just doesn't scale.
-> There could be rcu_read_locks, all kinds of refcounted objects,
-> locks taken, and so on.
-> The verifier makes sure that the program does the release no matter
-> what the execution path.
-> That's how it scales.
-> On my devserver I have 152 bpf programs running.
-> All of them keep acquiring and releasing resources (locks, sockets,
-> memory) million times a second.
-> The verifier checks that each prog is doing its job individually.
-
-Well, this patch set tracks the held lock stack -- which is required in
-order to do the deadlock thing after all.
-
-> > It does mean the bpf core needs to track the acquired locks -- which you
-> > already do,
-> 
-> We don't. 
-
-This patch set does exactly that. Is required for deadlock analysis.
-
-> The bpf infra does static checks only.
-> The core doesn't track objects at run-time.
-> The only exceptions are map elements.
-> bpf prog might store an acquired object in a map.
-> Only in that case bpf infra will free that object when it frees
-> the whole map.
-> But that doesn't apply to short lived things like RCU CS and
-> locks. Those cannot last long. They must complete within single
-> execution of the prog.
-
-Right. Held lock stack is like that.
-
-> > > That was a conscious trade-off. Deadlocks are not normal.
+On Thu, Feb 13, 2025 at 5:17=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> wro=
+te:
+>
+> On 2/13/25 9:36 AM, Xiao Liang wrote:
+> > On Thu, Feb 13, 2025 at 2:54=E2=80=AFPM Kuniyuki Iwashima <kuniyu@amazo=
+n.com> wrote:
+> > [...]
+> >>> diff --git a/include/linux/if_macvlan.h b/include/linux/if_macvlan.h
+> >>> index 523025106a64..0f7281e3e448 100644
+> >>> --- a/include/linux/if_macvlan.h
+> >>> +++ b/include/linux/if_macvlan.h
+> >>> @@ -59,8 +59,10 @@ static inline void macvlan_count_rx(const struct m=
+acvlan_dev *vlan,
+> >>>
+> >>>  extern void macvlan_common_setup(struct net_device *dev);
+> >>>
+> >>> -extern int macvlan_common_newlink(struct net *src_net, struct net_de=
+vice *dev,
+> >>> -                               struct nlattr *tb[], struct nlattr *d=
+ata[],
+> >>> +struct rtnl_newlink_params;
+> >>
+> >> You can just include <net/rtnetlink.h> and remove it from .c
+> >> files, then this forward declaration will be unnecessary.
 > >
-> > I really do think you should assume they are normal, unpriv and all
-> > that.
-> 
-> No unpriv and no, we don't want deadlocks to be considered normal
-> by bpf users. They need to hear "fix your broken prog" message loud
-> and clear. Patch 14 splat is a step in that direction.
-> Currently it's only for in-kernel res_spin_lock() usage
-> (like in bpf hashtab). Eventually we will deliver the message to users
-> without polluting dmesg. Still debating the actual mechanism.
+> > OK. Was not sure if it's desirable to include include/net files from
+> > include/linux.
+>
+> I think we are better of with the forward declaration instead of adding
+> more intra header dependencies, which will slow down the build and will
+> produces artifacts in the CI runs (increases of reported warning in the
+> incremental build, as any warns from the included header will be
+> 'propagated' to more files).
+>
+> >>> +extern int macvlan_common_newlink(struct net_device *dev,
+> >>> +                               struct rtnl_newlink_params *params,
+> >>>                                 struct netlink_ext_ack *extack);
+> >>>
+> >>>  extern void macvlan_dellink(struct net_device *dev, struct list_head=
+ *head);
+> >>
+> >>
+> >> [...]
+> >>> diff --git a/include/net/rtnetlink.h b/include/net/rtnetlink.h
+> >>> index bc0069a8b6ea..00c086ca0c11 100644
+> >>> --- a/include/net/rtnetlink.h
+> >>> +++ b/include/net/rtnetlink.h
+> >>> @@ -69,6 +69,42 @@ static inline int rtnl_msg_family(const struct nlm=
+sghdr *nlh)
+> >>>               return AF_UNSPEC;
+> >>>  }
+> >>>
+> >>> +/**
+> >>> + *   struct rtnl_newlink_params - parameters of rtnl_link_ops::newli=
+nk()
+> >>
+> >> The '\t' after '*' should be single '\s'.
+> >>
+> >> Same for lines below.
+> >
+> > This is copied from other structs in the same file. Should I change it?
+>
+> https://elixir.bootlin.com/linux/v6.13.2/source/Documentation/process/mai=
+ntainer-netdev.rst#L376
+>
+> In this series, just use the good formatting for the new code.
 
-OK; how is the user supposed to handle locking two hash buckets? Does
-the BPF prog create some global lock to serialize the multi bucket case?
+Got it. Thanks.
 
-
-Anyway, I wonder. Since the verifier tracks all this, it can determine
-lock order for the prog. Can't it do what lockdep does and maintain lock
-order graph of all loaded BPF programs?
-
-This is load-time overhead, rather than runtime.
+>
+> Thanks,
+>
+> Paolo
+>
 
