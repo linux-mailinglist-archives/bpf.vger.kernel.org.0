@@ -1,159 +1,140 @@
-Return-Path: <bpf+bounces-51412-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51413-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57486A34002
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 14:13:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E304CA34007
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 14:16:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5168A188625A
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 13:13:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F1843A881B
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 13:16:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFC8423F430;
-	Thu, 13 Feb 2025 13:13:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B86FE22172B;
+	Thu, 13 Feb 2025 13:16:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Vd+Zz+IZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c/rxmGBy"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 044B523F423;
-	Thu, 13 Feb 2025 13:13:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BBBA4D8A3;
+	Thu, 13 Feb 2025 13:16:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739452401; cv=none; b=W4T4cK4sxWr5k6JKWwTD7ag6m2u0RIkXm9lRSvTLkyUkWy05QjC+pWcx9oq4LIuen5TF3Cr+VE1svKYmBYsvxQeSU3LhpRQ1ALqd+fDknFdST9S8Ry9tBP9fQQvUKTiepgckr1ME7XkZ43cMtL9RzY+NYzFjAknuykLC6SLypfw=
+	t=1739452590; cv=none; b=SfpoTzoQY0qg1bncZElqMuROaP5QK/fQWgOqJI+zIsqBDF/JBdDN28uzrDvJ8Fj59HaW0rh48iQmXYPAbS+vqVFBj84Sc8WJJqPtZuj9+nlOlWWtegiHW5oy8l419Ip0x6wFrfEd7ezNHG//bTPwV5NwaKAC9BjqmLGgiWfd6tE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739452401; c=relaxed/simple;
-	bh=Na0JBBZJQCXe1Ihbx758KpxXCP4Rf018YnQvHAJqe9w=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=J7KW8PbZGIFm3KSrmP3xT1jIxHQdjxrZ5WyayNCrKAHQdIM5JE9z1ARYlWpoprtw3bOtQrO8FIcKfk4WTT1aVfBniRkvGdhrP6lLj204G6j9fr/eYsUxGRyCmEbRb15Q1ZJPxwFCaFBTpGCezaNzN64jRTweLnnPH5gK7HSKYQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Vd+Zz+IZ; arc=none smtp.client-ip=220.197.31.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-ID:MIME-Version; bh=Z7Ach
-	ZSHkCvv6oBVXtD9AdEa2U4JNLLQOD/vEcsngtE=; b=Vd+Zz+IZCoGNdNc+FPtkx
-	jnJTSLXhmnmzYuQUIeyhZ5rJrFQXzZjfMFPiyDRLCZfnx41IA4+gkMTuaI0tm1in
-	miSql6iIT3vJlPYD/wRzwpzqaAgwbdi7TRzFGByH7HEQRi3rfGKQlcuy1WJ6J+T3
-	cdMgNXky1Sj3VW1Y41VJFk=
-Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g1-3 (Coremail) with SMTP id _____wD3N8qv761nJPMJMA--.27324S5;
-	Thu, 13 Feb 2025 21:12:23 +0800 (CST)
-From: Jiayuan Chen <mrpre@163.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org
-Cc: linux-kselftest@vger.kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mykolal@fb.com,
-	shuah@kernel.org,
-	Jiayuan Chen <mrpre@163.com>
-Subject: [PATCH bpf-next v2 3/3] selftests/bpf: Add selftest for may_goto
-Date: Thu, 13 Feb 2025 21:12:14 +0800
-Message-ID: <20250213131214.164982-4-mrpre@163.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250213131214.164982-1-mrpre@163.com>
-References: <20250213131214.164982-1-mrpre@163.com>
+	s=arc-20240116; t=1739452590; c=relaxed/simple;
+	bh=3eCKYWe6fbh19Hq5SlKDOM6zLaeIkjczUm0VhjXYiro=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cmLTYwbLnENoI4twtMzaZP5afqsB+RRcx+ZA6FphqHwHlMZn38t3ffL3Fffk/hOT6VYvH0wIJTh/VQCd221GOOi/ioAoHRJBzymhWo5FITtEV4spmmqwep4TbzszIo3NFDTlbqjKlHcAb+irCYWZ6souK8FcjxuY04NNjcFGEuw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c/rxmGBy; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-ab7d58aa674so133526066b.0;
+        Thu, 13 Feb 2025 05:16:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739452587; x=1740057387; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4wIUF5bRe1OT++Cts/lO87ero9KFNDwns7V0gMpPeUI=;
+        b=c/rxmGByuOlZg6x0qSRFW5SUjajgqHAehfhsrt1zf7TJ4L3IG5JTSm4urUiNUyhGd2
+         2XK4WuBEd2OEugeFOcsd9RTV+jMaE6ZTOrYKr3IeRCcAl4x01/O6b1vVrxlRsP8IY3Qv
+         xsjrijoLUmKUtAivJKhkdARA3qUQkrSXdWjdQhfKSYgxmY5gbf2HYseNuzjIt3yLs8Z0
+         Nz6DGVCD+T+flMih2fA3U4Jfn3kVgxMnE1muVKPTBHSNF3YHFOW/TxF0Pipe5AoFHQH+
+         aWNzZ8Jpn/ra6e1tKRb3eckencmAzAhPurAc3MBBcx6iVjUdo6hXxVgNm1XbNEV+E1o8
+         sKkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739452587; x=1740057387;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4wIUF5bRe1OT++Cts/lO87ero9KFNDwns7V0gMpPeUI=;
+        b=rvsAncwNIMh/dfm4jRZHSzUYSyN3f6xry4Wzg20iNDFNzgrrAc8zo+kThqhtKhm6fP
+         gWPoream5byNB5GFxHit4CTIsHcfh3K3fxD95RbuxRikg8vmRzvIKhWdtr6wyVyavgDh
+         0s79P6xAUnuNGL6FEpTQbC/A7mo6ANpOwbfoO3UiIb6RbApLO3JrmITebk36hI4xE2L0
+         HyiiEQF6ufj7kb2enO0VAy+uGX2pE3bpMPYXPe8cU3rA56VbvlpGLN1L7E6hA/OfnP9y
+         F45Fv3zUTgpQUnnQAcda/bN7alhUOSuLQAP3SzH9apYSF6QtFtB4YO0o1bNVrD84ZWzU
+         Odow==
+X-Forwarded-Encrypted: i=1; AJvYcCW7YFZ3jAJATVzkotiIGVxp/nUvpiRpp41tghmc8ZPYgpwxOD6bA4prcFaSwMohtxgehC4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YziKzja9uBa73yHIkaa7eZ0XBW9yK2KjYkXrFQFQkpJUX8p0DW8
+	pOvApQcJs9Ef+gIYuKwrwnikR6OOuXDlAE2FNBxPoLyTLcUwAZCb
+X-Gm-Gg: ASbGncuJFNFFgVeszBPGsg1vKt66AyW07/uQcqwTv4DCWIb/kVDiKYPhUuDOhxGMXvx
+	9uka7WJymtmj4264NUjxUG4KCT1gV+7NJWlkdNF93TB3fwvmk9mAXPaEP/G4jq1VAFLtVCrgW7J
+	INfFgyFqlho+OlH5NfJeYiq8mGry9G8dNUdnCyjXlYKyj6CWh5LyX5YoZsGF1DqHgd410SIDvep
+	4josgRtqLhupao0xgwgQo3BXIoIn0Vpu8gyRPTLcyTk9QQwkhwkXNdNHfB8DENrRg5gfD1YFbHH
+	2Q==
+X-Google-Smtp-Source: AGHT+IH0rY8XRLn/35y8eE7mjNXnWlTVW25Tgqq279T/i9vvqpItmmnnty7HU0DkHN9imhETVUdOrA==
+X-Received: by 2002:a17:907:3e0d:b0:ab7:85e2:18bb with SMTP id a640c23a62f3a-ab7f33781aamr721779266b.6.1739452586471;
+        Thu, 13 Feb 2025 05:16:26 -0800 (PST)
+Received: from krava ([173.38.220.37])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aba53376abbsm130283666b.93.2025.02.13.05.16.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Feb 2025 05:16:26 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 13 Feb 2025 14:16:24 +0100
+To: Ihor Solodrai <ihor.solodrai@linux.dev>
+Cc: dwarves@vger.kernel.org, bpf@vger.kernel.org, acme@kernel.org,
+	alan.maguire@oracle.com, ast@kernel.org, andrii@kernel.org,
+	eddyz87@gmail.com, mykolal@fb.com, kernel-team@meta.com
+Subject: Re: [PATCH v2 dwarves 0/4] btf_encoder: emit type tags for bpf_arena
+ pointers
+Message-ID: <Z63wqJlP0QNNsWth@krava>
+References: <20250212201552.1431219-1-ihor.solodrai@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3N8qv761nJPMJMA--.27324S5
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Kry8Jw1xJry5JrykZr48Crg_yoW8tFy7p3
-	4kWasI9F1kJw1xK3WxWFyDWFyrJa1kWr15Cr4ftr1rtF1DKrn7Gr1IkF9rXr4aya1fZw45
-	AFZFka9xGw4UJ3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRMrWrUUUUU=
-X-CM-SenderInfo: xpus2vi6rwjhhfrp/xtbBDwHyp2et7vcZ2AAAsJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250212201552.1431219-1-ihor.solodrai@linux.dev>
 
-Add test cases to ensure the maximum stack size can be properly limited to
-512.
+On Wed, Feb 12, 2025 at 12:15:48PM -0800, Ihor Solodrai wrote:
+> This patch series implements emitting appropriate BTF type tags for
+> argument and return types of kfuncs marked with KF_ARENA_* flags.
+> 
+> For additional context see the description of BPF patch
+> "bpf: define KF_ARENA_* flags for bpf_arena kfuncs" [1].
+> 
+> The feature depends on recent changes in libbpf [2].
+> 
+> [1] https://lore.kernel.org/bpf/20250206003148.2308659-1-ihor.solodrai@linux.dev/
+> [2] https://lore.kernel.org/bpf/20250130201239.1429648-1-ihor.solodrai@linux.dev/
+> 
+> v1->v2:
+>   * Rewrite patch #1 refactoring btf_encoder__tag_kfuncs(): now the
+>     post-processing step is removed entirely, and kfuncs are tagged in
+>     btf_encoder__add_func().
+>   * Nits and renames in patch #2
+>   * Add patch #4 editing man pages
 
-Test result:
-echo "0" > /proc/sys/net/core/bpf_jit_enable
-./test_progs -t verifier_stack_ptr
-verifier_stack_ptr/PTR_TO_STACK stack size 512 with may_goto with jit:SKIP
-verifier_stack_ptr/PTR_TO_STACK stack size 512 with may_goto without jit:OK
+lgtm
 
-echo "1" > /proc/sys/net/core/bpf_jit_enable
-verifier_stack_ptr/PTR_TO_STACK stack size 512 with may_goto with jit:OK
-verifier_stack_ptr/PTR_TO_STACK stack size 512 with may_goto without jit:SKIP
+Reviewed-by: Jiri Olsa <jolsa@kernel.org>
 
-Signed-off-by: Jiayuan Chen <mrpre@163.com>
----
- .../selftests/bpf/progs/verifier_stack_ptr.c  | 50 +++++++++++++++++++
- 1 file changed, 50 insertions(+)
+thanks,
+jirka
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_stack_ptr.c b/tools/testing/selftests/bpf/progs/verifier_stack_ptr.c
-index 417c61cd4b19..8ffe5a01d140 100644
---- a/tools/testing/selftests/bpf/progs/verifier_stack_ptr.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_stack_ptr.c
-@@ -481,4 +481,54 @@ l1_%=:	r0 = 42;					\
- 	: __clobber_all);
- }
- 
-+SEC("socket")
-+__description("PTR_TO_STACK stack size > 512")
-+__failure __msg("invalid write to stack R1 off=-520 size=8")
-+__naked void stack_check_size_gt_512(void)
-+{
-+	asm volatile (
-+	"r1 = r10;"
-+	"r1 += -520;"
-+	"r0 = 42;"
-+	"*(u64*)(r1 + 0) = r0;"
-+	"exit;"
-+	::: __clobber_all);
-+}
-+
-+#ifdef __BPF_FEATURE_MAY_GOTO
-+SEC("socket")
-+__description("PTR_TO_STACK stack size 512 with may_goto with jit")
-+__use_jit()
-+__success __retval(42)
-+__naked void stack_check_size_512_with_may_goto_jit(void)
-+{
-+	asm volatile (
-+	"r1 = r10;"
-+	"r1 += -512;"
-+	"r0 = 42;"
-+	"*(u32*)(r1 + 0) = r0;"
-+	"may_goto l0_%=;"
-+	"r2 = 100;"
-+"l0_%=:	exit;"
-+	::: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("PTR_TO_STACK stack size 512 with may_goto without jit")
-+__use_interp()
-+__failure __msg("stack size 520(extra 8) is too large")
-+__naked void stack_check_size_512_with_may_goto(void)
-+{
-+	asm volatile (
-+	"r1 = r10;"
-+	"r1 += -512;"
-+	"r0 = 42;"
-+	"*(u32*)(r1 + 0) = r0;"
-+	"may_goto l0_%=;"
-+	"r2 = 100;"
-+"l0_%=:	exit;"
-+	::: __clobber_all);
-+}
-+#endif
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.47.1
-
+> 
+> v1: https://lore.kernel.org/dwarves/20250207021442.155703-1-ihor.solodrai@linux.dev/
+> 
+> Ihor Solodrai (4):
+>   btf_encoder: refactor btf_encoder__tag_kfuncs()
+>   btf_encoder: emit type tags for bpf_arena pointers
+>   pahole: introduce --btf_feature=attributes
+>   man-pages: describe attributes and remove reproducible_build
+> 
+>  btf_encoder.c      | 282 +++++++++++++++++++++++----------------------
+>  dwarves.h          |   1 +
+>  man-pages/pahole.1 |   7 +-
+>  pahole.c           |  11 ++
+>  4 files changed, 161 insertions(+), 140 deletions(-)
+> 
+> -- 
+> 2.48.1
+> 
+> 
 
