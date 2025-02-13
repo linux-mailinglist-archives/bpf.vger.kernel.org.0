@@ -1,261 +1,157 @@
-Return-Path: <bpf+bounces-51451-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51453-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C239A34AEF
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 17:56:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E680DA34B58
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 18:10:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A29B11896456
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 16:51:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96CBD16C998
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 17:04:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 592DC227EB5;
-	Thu, 13 Feb 2025 16:48:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C3021FF7DD;
+	Thu, 13 Feb 2025 17:04:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="TrCxnxIh"
 X-Original-To: bpf@vger.kernel.org
-Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B299A28A2DB
-	for <bpf@vger.kernel.org>; Thu, 13 Feb 2025 16:48:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.180
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26C728A2A5;
+	Thu, 13 Feb 2025 17:04:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739465308; cv=none; b=emwZzaUP9V8B3oqT7xVg/hbzz2XqRPV13qyd4GY8B3wnHAjQ9u690hQ0KQbeFqsdH9Tqr7h9N70J8eFscWNspgK+LMeytLL/yomRg3ioucUSz6+yMcsfW+WTRn5fIYAxnMXN3iRft0aDrpxl3gUVTetwLqbOtyf6DdIIZOyQwyA=
+	t=1739466243; cv=none; b=GH21qlJkk7+GPyU2Xy2iQG2FHlhG4FiZYBtyRanztKYr2brS4zf+jtgRLCkrtAQbKZlkn7M/wALoA0TThMaBIisAjyKjMxy31mRFwqF/kEdZHdClsp5k4R1qeKejkuukD3CWe6fMFdruFcF2dJbVkLtHiLWgCss7VREGe+Rd3GM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739465308; c=relaxed/simple;
-	bh=Xysqaq9szONXRtVupRuxzfLjySfwAQ3drwc3UKjbI+8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HHEoJLAgJYya4iHrtoc/CSqRpbMqOu52CzzFen3FFbxeom9NbCnahVUIv6rx8ZTSYcGpmvXdnemD0e1gjPP7h1Ikt3IRFCo6O3vtHlSNxfJiwJLCMhpXvlCEPhtKJuusbnmm33mUAiR4VNeNNejiFjcqMoTwiVKCSoNBuLz6sh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
-Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
-	id 20E0E88A003; Thu, 13 Feb 2025 08:48:17 -0800 (PST)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v3 2/2] selftests/bpf: Add selftests allowing cgroup prog pre-ordering
-Date: Thu, 13 Feb 2025 08:48:17 -0800
-Message-ID: <20250213164817.2669096-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20250213164812.2668578-1-yonghong.song@linux.dev>
-References: <20250213164812.2668578-1-yonghong.song@linux.dev>
+	s=arc-20240116; t=1739466243; c=relaxed/simple;
+	bh=pwYagKv24qCrVWptNTz9ll8gBbuAPxwglYcScbxO3vo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XuTf+buVEwZQ180hbe2uCTJNCOF6Ug1pgKRLxSYPGXy7pvxvMABMLSPnpbASYx+P6XVGKgNrxn1puMWqUQw16OJb10TQzwnjopufAqftAsW4LjeYb0alhilX1JO48lKbjQBri9cT5Vnqa95+pSndtaTSAve6cFVm8+DxUGLbGRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=TrCxnxIh; arc=none smtp.client-ip=220.197.31.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
+	Content-Type; bh=cIEJc0/6NZ6IBFRoZ8UFnbtt9VEgUoZ4eneWY8Zk3MI=;
+	b=TrCxnxIhKRcKLEF2CYpvbv8DJk1ZZ4hquDisY3hyFqzzSkY4uvwBzuMb+zU57d
+	T0V2FDaJV6yakYKM45boapK3oaWlU2XM6B8iBGTT42d1F1P082TUKYO2VVBaUInn
+	zQxENpfMQhgwNVMqpvYAxxfS62F+3lF6//Tf6WSCRzfHY=
+Received: from iZj6c3ewsy61ybpk7hrb16Z (unknown [8.217.230.114])
+	by gzsmtp5 (Coremail) with SMTP id QCgvCgD3JeuxJa5nWZdJNw--.31319S2;
+	Fri, 14 Feb 2025 01:02:43 +0800 (CST)
+Date: Fri, 14 Feb 2025 01:02:41 +0800
+From: Jiayuan Chen <mrpre@163.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	syzbot+d2a2c639d03ac200a4f1@syzkaller.appspotmail.com
+Subject: Re: [PATCH bpf-next v2 1/3] bpf: Fix array bounds error with may_goto
+Message-ID: <2ec2qjrwsdvdyr2wdo3gakv4hsikmvrhc47k3kii7nzj2e5tfm@zeiedp7wy3kj>
+References: <20250213131214.164982-1-mrpre@163.com>
+ <20250213131214.164982-2-mrpre@163.com>
+ <CAADnVQ++goV=Yi=dhXNa5F-h0o7uSNEGiPHh0ArODt3TaEeeQg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQ++goV=Yi=dhXNa5F-h0o7uSNEGiPHh0ArODt3TaEeeQg@mail.gmail.com>
+X-CM-TRANSID:QCgvCgD3JeuxJa5nWZdJNw--.31319S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxWryftry5WryUuw13WF17KFg_yoW5Xw43pF
+	WDKa4UAF4DJw48t3s8CF40vr43JF4xtrn0kr43X348uF4UWFWkC3WUKa9Y934fXrn7Jw1x
+	AF4Uurn3CFyay37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UNYFZUUUUU=
+X-CM-SenderInfo: xpus2vi6rwjhhfrp/xtbBDwXyp2euIJizyAAAsV
 
-Add a few selftests with cgroup prog pre-ordering.
+On Thu, Feb 13, 2025 at 08:02:55AM -0800, Alexei Starovoitov wrote:
+> On Thu, Feb 13, 2025 at 5:13 AM Jiayuan Chen <mrpre@163.com> wrote:
+> >
+> > may_goto uses an additional 8 bytes on the stack, which causes the
+> > interpreters[] array to go out of bounds when calculating index by
+> > stack_size.
+> >
+> > 1. If a BPF program is rewritten, re-evaluate the stack size. For non-JIT
+> > cases, reject loading directly.
+> >
+> > 2. For non-JIT cases, calculating interpreters[idx] may still cause
+> > out-of-bounds array access, and just warn about it.
+> >
+> > 3. For jit_requested cases, the execution of bpf_func also needs to be
+> > warned. So Move the definition of function __bpf_prog_ret0_warn out of
+> > the macro definition CONFIG_BPF_JIT_ALWAYS_ON
+> >
+[...]
+> > ---
+> >  EVAL6(PROG_NAME_LIST, 224, 256, 288, 320, 352, 384)
+> >  EVAL4(PROG_NAME_LIST, 416, 448, 480, 512)
+> >  };
+> > +
+> > +#define MAX_INTERPRETERS_CALLBACK (sizeof(interpreters) / sizeof(*interpreters))
+> 
+> There is ARRAY_SIZE macro.
+Thanks, I will use it.
+> 
+> >  #undef PROG_NAME_LIST
+> >  #define PROG_NAME_LIST(stack_size) PROG_NAME_ARGS(stack_size),
+> >  static __maybe_unused
+> > @@ -2290,17 +2293,18 @@ void bpf_patch_call_args(struct bpf_insn *insn, u32 stack_depth)
+> >         insn->code = BPF_JMP | BPF_CALL_ARGS;
+> >  }
+> >  #endif
+> > -#else
+> > +#endif
+> > +
+> >  static unsigned int __bpf_prog_ret0_warn(const void *ctx,
+> >                                          const struct bpf_insn *insn)
+> >  {
+> >         /* If this handler ever gets executed, then BPF_JIT_ALWAYS_ON
+> > -        * is not working properly, so warn about it!
+> > +        * is not working properly, or interpreter is being used when
+> > +        * prog->jit_requested is not 0, so warn about it!
+> >          */
+> >         WARN_ON_ONCE(1);
+> >         return 0;
+> >  }
+> > -#endif
+> >
+> >  bool bpf_prog_map_compatible(struct bpf_map *map,
+> >                              const struct bpf_prog *fp)
+> > @@ -2380,8 +2384,14 @@ static void bpf_prog_select_func(struct bpf_prog *fp)
+> >  {
+> >  #ifndef CONFIG_BPF_JIT_ALWAYS_ON
+> >         u32 stack_depth = max_t(u32, fp->aux->stack_depth, 1);
+> > +       u32 idx = (round_up(stack_depth, 32) / 32) - 1;
+> >
+> > -       fp->bpf_func = interpreters[(round_up(stack_depth, 32) / 32) - 1];
+> > +       if (!fp->jit_requested) {
+> 
+> I don't think above check is necessary.
+> Why not just
+> if (WARN_ON_ONCE(idx >= ARRAY_SIZE(interpreters)))
+>   fp->bpf_func = __bpf_prog_ret0_warn;
+> else
+>   fp->bpf_func = interpreters[idx];
+> 
 
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
----
- .../bpf/prog_tests/cgroup_preorder.c          | 128 ++++++++++++++++++
- .../selftests/bpf/progs/cgroup_preorder.c     |  41 ++++++
- 2 files changed, 169 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_preorde=
-r.c
- create mode 100644 tools/testing/selftests/bpf/progs/cgroup_preorder.c
+When jit_requested is set 1, the stack_depth can still go above 512,
+and we'd end up executing this function, where the index calculation would
+overflow, triggering an array out-of-bounds warning from USCAN or WAR().
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_preorder.c b/t=
-ools/testing/selftests/bpf/prog_tests/cgroup_preorder.c
-new file mode 100644
-index 000000000000..d4d583872fa2
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_preorder.c
-@@ -0,0 +1,128 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#include <test_progs.h>
-+#include "cgroup_helpers.h"
-+#include "cgroup_preorder.skel.h"
-+
-+static int run_getsockopt_test(int cg_parent, int cg_child, int sock_fd,=
- bool all_preorder)
-+{
-+	LIBBPF_OPTS(bpf_prog_attach_opts, opts);
-+	enum bpf_attach_type prog_c_atype, prog_c2_atype, prog_p_atype, prog_p2=
-_atype;
-+	int prog_c_fd, prog_c2_fd, prog_p_fd, prog_p2_fd;
-+	struct cgroup_preorder *skel =3D NULL;
-+	struct bpf_program *prog;
-+	__u8 *result, buf;
-+	socklen_t optlen;
-+	int err =3D 0;
-+
-+	skel =3D cgroup_preorder__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "cgroup_preorder__open_and_load"))
-+		return 0;
-+
-+	buf =3D 0x00;
-+	err =3D setsockopt(sock_fd, SOL_IP, IP_TOS, &buf, 1);
-+	if (!ASSERT_OK(err, "setsockopt"))
-+		goto close_skel;
-+
-+	opts.flags =3D BPF_F_ALLOW_MULTI;
-+	if (all_preorder)
-+		opts.flags |=3D BPF_F_PREORDER;
-+	prog =3D skel->progs.child;
-+	prog_c_fd =3D bpf_program__fd(prog);
-+	prog_c_atype =3D bpf_program__expected_attach_type(prog);
-+	err =3D bpf_prog_attach_opts(prog_c_fd, cg_child, prog_c_atype, &opts);
-+	if (!ASSERT_OK(err, "bpf_prog_attach_opts-child"))
-+		goto close_skel;
-+
-+	opts.flags =3D BPF_F_ALLOW_MULTI | BPF_F_PREORDER;
-+	prog =3D skel->progs.child_2;
-+	prog_c2_fd =3D bpf_program__fd(prog);
-+	prog_c2_atype =3D bpf_program__expected_attach_type(prog);
-+	err =3D bpf_prog_attach_opts(prog_c2_fd, cg_child, prog_c2_atype, &opts=
-);
-+	if (!ASSERT_OK(err, "bpf_prog_attach_opts-child_2"))
-+		goto detach_child;
-+
-+	optlen =3D 1;
-+	err =3D getsockopt(sock_fd, SOL_IP, IP_TOS, &buf, &optlen);
-+	if (!ASSERT_OK(err, "getsockopt"))
-+		goto detach_child_2;
-+
-+	result =3D skel->bss->result;
-+	if (all_preorder)
-+		ASSERT_TRUE(result[0] =3D=3D 1 && result[1] =3D=3D 2, "child only");
-+	else
-+		ASSERT_TRUE(result[0] =3D=3D 2 && result[1] =3D=3D 1, "child only");
-+
-+	skel->bss->idx =3D 0;
-+	memset(result, 0, 4);
-+
-+	opts.flags =3D BPF_F_ALLOW_MULTI;
-+	if (all_preorder)
-+		opts.flags |=3D BPF_F_PREORDER;
-+	prog =3D skel->progs.parent;
-+	prog_p_fd =3D bpf_program__fd(prog);
-+	prog_p_atype =3D bpf_program__expected_attach_type(prog);
-+	err =3D bpf_prog_attach_opts(prog_p_fd, cg_parent, prog_p_atype, &opts)=
-;
-+	if (!ASSERT_OK(err, "bpf_prog_attach_opts-parent"))
-+		goto detach_child_2;
-+
-+	opts.flags =3D BPF_F_ALLOW_MULTI | BPF_F_PREORDER;
-+	prog =3D skel->progs.parent_2;
-+	prog_p2_fd =3D bpf_program__fd(prog);
-+	prog_p2_atype =3D bpf_program__expected_attach_type(prog);
-+	err =3D bpf_prog_attach_opts(prog_p2_fd, cg_parent, prog_p2_atype, &opt=
-s);
-+	if (!ASSERT_OK(err, "bpf_prog_attach_opts-parent_2"))
-+		goto detach_parent;
-+
-+	err =3D getsockopt(sock_fd, SOL_IP, IP_TOS, &buf, &optlen);
-+	if (!ASSERT_OK(err, "getsockopt"))
-+		goto detach_parent_2;
-+
-+	if (all_preorder)
-+		ASSERT_TRUE(result[0] =3D=3D 3 && result[1] =3D=3D 4 && result[2] =3D=3D=
- 1 && result[3] =3D=3D 2,
-+			    "parent and child");
-+	else
-+		ASSERT_TRUE(result[0] =3D=3D 4 && result[1] =3D=3D 2 && result[2] =3D=3D=
- 1 && result[3] =3D=3D 3,
-+			    "parent and child");
-+
-+detach_parent_2:
-+	ASSERT_OK(bpf_prog_detach2(prog_p2_fd, cg_parent, prog_p2_atype),
-+		  "bpf_prog_detach2-parent_2");
-+detach_parent:
-+	ASSERT_OK(bpf_prog_detach2(prog_p_fd, cg_parent, prog_p_atype),
-+		  "bpf_prog_detach2-parent");
-+detach_child_2:
-+	ASSERT_OK(bpf_prog_detach2(prog_c2_fd, cg_child, prog_c2_atype),
-+		  "bpf_prog_detach2-child_2");
-+detach_child:
-+	ASSERT_OK(bpf_prog_detach2(prog_c_fd, cg_child, prog_c_atype),
-+		  "bpf_prog_detach2-child");
-+close_skel:
-+	cgroup_preorder__destroy(skel);
-+	return err;
-+}
-+
-+void test_cgroup_preorder(void)
-+{
-+	int cg_parent =3D -1, cg_child =3D -1, sock_fd =3D -1;
-+
-+	cg_parent =3D test__join_cgroup("/parent");
-+	if (!ASSERT_GE(cg_parent, 0, "join_cgroup /parent"))
-+		goto out;
-+
-+	cg_child =3D test__join_cgroup("/parent/child");
-+	if (!ASSERT_GE(cg_child, 0, "join_cgroup /parent/child"))
-+		goto out;
-+
-+	sock_fd =3D socket(AF_INET, SOCK_STREAM, 0);
-+	if (!ASSERT_GE(sock_fd, 0, "socket"))
-+		goto out;
-+
-+	ASSERT_OK(run_getsockopt_test(cg_parent, cg_child, sock_fd, false), "ge=
-tsockopt_test_1");
-+	ASSERT_OK(run_getsockopt_test(cg_parent, cg_child, sock_fd, true), "get=
-sockopt_test_2");
-+
-+out:
-+	close(sock_fd);
-+	close(cg_child);
-+	close(cg_parent);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/cgroup_preorder.c b/tools/=
-testing/selftests/bpf/progs/cgroup_preorder.c
-new file mode 100644
-index 000000000000..4ef6202baa0a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/cgroup_preorder.c
-@@ -0,0 +1,41 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+unsigned int idx;
-+__u8 result[4];
-+
-+SEC("cgroup/getsockopt")
-+int child(struct bpf_sockopt *ctx)
-+{
-+	if (idx < 4)
-+		result[idx++] =3D 1;
-+	return 1;
-+}
-+
-+SEC("cgroup/getsockopt")
-+int child_2(struct bpf_sockopt *ctx)
-+{
-+	if (idx < 4)
-+		result[idx++] =3D 2;
-+	return 1;
-+}
-+
-+SEC("cgroup/getsockopt")
-+int parent(struct bpf_sockopt *ctx)
-+{
-+	if (idx < 4)
-+		result[idx++] =3D 3;
-+	return 1;
-+}
-+
-+SEC("cgroup/getsockopt")
-+int parent_2(struct bpf_sockopt *ctx)
-+{
-+	if (idx < 4)
-+		result[idx++] =3D 4;
-+	return 1;
-+}
---=20
-2.43.5
+> > +               WARN_ON_ONCE(idx >= MAX_INTERPRETERS_CALLBACK);
+> > +               fp->bpf_func = interpreters[idx];
+> > +       } else {
+> > +               fp->bpf_func = __bpf_prog_ret0_warn;
+> >                         stack_depth_extra = 0;
+> > --
+> > 2.47.1
+> >
 
 
