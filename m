@@ -1,376 +1,287 @@
-Return-Path: <bpf+bounces-51434-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51429-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C34E5A3497C
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 17:19:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A512FA34916
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 17:08:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CA903A75D6
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 16:12:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E03D1648BC
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 16:08:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDC4922157B;
-	Thu, 13 Feb 2025 16:11:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43558200120;
+	Thu, 13 Feb 2025 16:08:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="u3LqFubE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="izoI+zQF"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B2B122156F
-	for <bpf@vger.kernel.org>; Thu, 13 Feb 2025 16:11:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0185A1E7C3A;
+	Thu, 13 Feb 2025 16:08:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739463078; cv=none; b=SoojWVkEG8dnBPZS43TfPNzDm23RwI1tJ8Pf+NVNdU4IGYmxPCiqs0jrX1PLiOQrwwLrnTMnh8xJKiE4zxFsQvkaIysG92tm7iJr+1XGHtoM/np+k91nctmhvyx8q1FbanKm/KLeEE4wf1WucaqXvuUElVhIn5BXcmDkkGtA3cs=
+	t=1739462885; cv=none; b=YnGrttXAJixHaRRbwk/EKBiP0CdoatVsMGj/nc/V99VQH5NC7d0kQywNLsC+h1nEn9xVWJk69kqMfHyreI1mMVQyjhUJNdWB/uVCZUWPbLdAF/jgv/9fdX17ZuXBXHo0vCeAoJAssn4Y87SDBYCPZGbiugGkNcTmbouPIBtdW8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739463078; c=relaxed/simple;
-	bh=MNN9hCDDg6wV9jXGhGNDuYMAHXodJfLaF8ltzjTHhD8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lSzIcEWBMycUGJqwBa15NmIX6du/G+7sU4YoSwD32VzYaIafDiCWGbntxd/CnI3s7AenZIt9SyhQ1Puzu/WHj8TQn6klD52gJSl5G5AdrhNt61jWXAF+octiioPIV2yWTpzpSBx1utjFu8Wm8EZQjhHv6RytW/leGYuP8UtYFEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=u3LqFubE; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1739463073;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JDgHKL2wbRekX18hkt4mfxGfyKEfPJ/OtXXylN7krnk=;
-	b=u3LqFubEPEhidUogZzyd80SZ7CjeQfmINfD7YDlyBPjf+tIfh7fjImkCIlfuY9xoIoXqEN
-	HwIbSrwMJrN5oXNw0MOiUgH5nDbaNYoHgzfIu4u9NMJipd8qa67HLlhCiYtmJvSM/Ph5u8
-	ATXMePqp/8anqgrbky34qQLd4EiMr3c=
-From: Leon Hwang <leon.hwang@linux.dev>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	yonghong.song@linux.dev,
-	song@kernel.org,
-	eddyz87@gmail.com,
-	qmo@kernel.org,
-	dxu@dxuuu.xyz,
-	leon.hwang@linux.dev,
-	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next 4/4] selftests/bpf: Add cases to test global percpu data
-Date: Fri, 14 Feb 2025 00:06:26 +0800
-Message-ID: <20250213160626.34943-5-leon.hwang@linux.dev>
-In-Reply-To: <20250213160626.34943-1-leon.hwang@linux.dev>
-References: <20250213160626.34943-1-leon.hwang@linux.dev>
+	s=arc-20240116; t=1739462885; c=relaxed/simple;
+	bh=XKnMV4c/9lW8YrGisKWsH7fkuPUrHaUQfWvYgOK2Q/U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q2ynbhcZMf1hs0adMVoE9iyurXxvsAQIfSmcDvV+bs8mEEt20Yik82Vxvpc0qnnyxlbSI6cAj9yRNNuJrqng/ao7p3Jk/Xyd7kaFCBdpzfQvx6sQC01trZU/N8JMHqZbVAsBPZdbK/hMwf2z8Ic8lAS+KjznkK+Ia4llPaE/Lsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=izoI+zQF; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-e4930eca0d4so813211276.3;
+        Thu, 13 Feb 2025 08:08:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739462883; x=1740067683; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7ZAo1TJDZkLDk+fZA+GiHiHJ4yB+DY564t+IadhdUJI=;
+        b=izoI+zQFOLc1i7HsT3Oa4HmYSdkstsUE1RR7o0swmwsx870Ves4gkubfrkaW2SzDVg
+         iScSVaG7JBSHg7HA5Z6yqCTo+QZEzJK7uS+cvqH3e2rlwfh5p2PyP8eBlaDJXwhyIUvl
+         1q7Eu0KWblqDhla332H9tSToVXOLRl9WvTQe/aGBuIs8vX5rjjFe533l0ExOVxs3X3Tz
+         5f3gohQUCEgefluix3P2LlLgVygyuAIV6Lw7XYFuCmeYm8KTBx4JJ4hDJcLBaqvbdIyD
+         9JQOwLbodQjzwyB55R/CEFzKAP9OpaF19o7P0hhtbZzCBu/DB1yVACAECW226nK+KKm7
+         6L4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739462883; x=1740067683;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7ZAo1TJDZkLDk+fZA+GiHiHJ4yB+DY564t+IadhdUJI=;
+        b=qHq613uKUFmKNJuoBXPF9dfgPkxzC471xngL31fEkQmmiGHe+VjsQY+LrpH82+hF/B
+         SleGBQnbNfWb00E+slQkJ0MXyQffPLGbn+wTJfxLL9PvsYYgr+Lp6k3K5wo0ZbV7j01F
+         IAbljCqlAQ58EyThA5SgHHu05zn9xjAwzvDQaO2ERJBPFKoYsoU4BUHmbtGP9NGXzI7k
+         OQVQETyCXPNXP6va+WJreKx0SEXMGQkQAdsn/JB87VURloB/uHmKUaXRLGVyotjZ/VCS
+         VsPUh0n9rvUZJXZnToReyZQxRci3r4rj1Uqtd4WilHgn9vfyqiH0Wsx99DnFT4pparhl
+         GFXw==
+X-Forwarded-Encrypted: i=1; AJvYcCWMeC/9AgwfhbbFfnAVCDXSq+6Uc9wEb6+Ni8K9qlNoXR+4NiBjCUHXOjq7L6c+SmkOQbMNQ6WjbgFKK1B8@vger.kernel.org, AJvYcCXJSkChyzItvuJ3kkMWNJCW3hkhhd2XILxBa3DFrc4HLVtKqWxbn91SZ25h7bdsTr0/lRk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzeEosAHVvOGOXXpB6oUQVK9P07IvYlW+GyfGJd/EX+VcvKF2Lp
+	lkS48FksV3kaTWlBIkBhPjHto2J7ipwzZVOds/LcJwFYhTAYb+5n
+X-Gm-Gg: ASbGncsAjOP6GoQuAKGOZk0ZIq8NGxV9M+Q9pnhgKfCF65NpF0DlSBeOJTSB54UEgpc
+	UeQyykrrffyGl49j7r6wGtENBVDVtdPvzDQoWDK1rccdEiecdDti82SOJFTPMOPFVjH+mW93iEW
+	ARe3oE6mO2SLQAE8SuSkMky14mNV7cJIzRpaPgqzbKPMZ64Fe15XOBHTzxarlwRqkhGZ4G3Awce
+	nWbejqaWY/eIbI9L4vSF+WJ1otPcnwtWYDJVTypvXQuHsI9ZDzuLedYSvfJ10OI2o3Xxq342PKS
+	SB6M3bs69hXOUMGkwXC2rZElIPV6u6N0AsfiPBe2tu5Lh925EZ0=
+X-Google-Smtp-Source: AGHT+IHY7R/MPd94BBAIfl5uhtJQLrDW0UnuZiS0Kb5oIDwCzdWLf/xTHTpqV+MzXChqkdMGUGZSOg==
+X-Received: by 2002:a05:6902:2383:b0:e5b:1389:bbd4 with SMTP id 3f1490d57ef6-e5d9f0e9a25mr7190665276.17.1739462882693;
+        Thu, 13 Feb 2025 08:08:02 -0800 (PST)
+Received: from localhost (c-73-224-175-84.hsd1.fl.comcast.net. [73.224.175.84])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e5dadea936dsm465928276.17.2025.02.13.08.08.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Feb 2025 08:08:02 -0800 (PST)
+Date: Thu, 13 Feb 2025 11:08:01 -0500
+From: Yury Norov <yury.norov@gmail.com>
+To: Andrea Righi <arighi@nvidia.com>
+Cc: Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>,
+	Changwoo Min <changwoo@igalia.com>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Joel Fernandes <joel@joelfernandes.org>, Ian May <ianm@nvidia.com>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/7] sched_ext: idle: Introduce
+ SCX_OPS_BUILTIN_IDLE_PER_NODE
+Message-ID: <Z64Y4Sgw30Pdj81J@thinkpad>
+References: <20250212165006.490130-1-arighi@nvidia.com>
+ <20250212165006.490130-6-arighi@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250212165006.490130-6-arighi@nvidia.com>
 
-If the arch, like s390x, does not support percpu insn, this case won't
-test global percpu data by checking -EOPNOTSUPP after loading prog.
+On Wed, Feb 12, 2025 at 05:48:12PM +0100, Andrea Righi wrote:
+> Add the new scheduler flag SCX_OPS_BUILTIN_IDLE_PER_NODE, which allows
+> BPF schedulers to select between using a global flat idle cpumask or
+> multiple per-node cpumasks.
+> 
+> This only introduces the flag and the mechanism to enable/disable this
+> feature without affecting any scheduling behavior.
+> 
+> Cc: Yury Norov <yury.norov@gmail.com>
+> Signed-off-by: Andrea Righi <arighi@nvidia.com>
+> ---
+>  kernel/sched/ext.c                   | 21 ++++++++++++++++++--
+>  kernel/sched/ext_idle.c              | 29 +++++++++++++++++++++-------
+>  kernel/sched/ext_idle.h              |  4 ++--
+>  tools/sched_ext/include/scx/compat.h |  3 +++
+>  4 files changed, 46 insertions(+), 11 deletions(-)
+> 
+> diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
+> index c47e7e2024a94..c3e154f0e8188 100644
+> --- a/kernel/sched/ext.c
+> +++ b/kernel/sched/ext.c
+> @@ -138,6 +138,12 @@ enum scx_ops_flags {
+>  	 */
+>  	SCX_OPS_ENQ_MIGRATION_DISABLED = 1LLU << 4,
+>  
+> +	/*
+> +	 * If set, enable per-node idle cpumasks. If clear, use a single global
+> +	 * flat idle cpumask.
+> +	 */
+> +	SCX_OPS_BUILTIN_IDLE_PER_NODE = 1LLU << 5,
+> +
+>  	/*
+>  	 * CPU cgroup support flags
+>  	 */
+> @@ -148,6 +154,7 @@ enum scx_ops_flags {
+>  				  SCX_OPS_ENQ_EXITING |
+>  				  SCX_OPS_ENQ_MIGRATION_DISABLED |
+>  				  SCX_OPS_SWITCH_PARTIAL |
+> +				  SCX_OPS_BUILTIN_IDLE_PER_NODE |
+>  				  SCX_OPS_HAS_CGROUP_WEIGHT,
+>  };
+>  
+> @@ -3409,7 +3416,7 @@ static void handle_hotplug(struct rq *rq, bool online)
+>  	atomic_long_inc(&scx_hotplug_seq);
+>  
+>  	if (scx_enabled())
+> -		scx_idle_update_selcpu_topology();
+> +		scx_idle_update_selcpu_topology(&scx_ops);
+>  
+>  	if (online && SCX_HAS_OP(cpu_online))
+>  		SCX_CALL_OP(SCX_KF_UNLOCKED, cpu_online, cpu);
+> @@ -5184,6 +5191,16 @@ static int validate_ops(const struct sched_ext_ops *ops)
+>  		return -EINVAL;
+>  	}
+>  
+> +	/*
+> +	 * SCX_OPS_BUILTIN_IDLE_PER_NODE requires built-in CPU idle
+> +	 * selection policy to be enabled.
+> +	 */
+> +	if ((ops->flags & SCX_OPS_BUILTIN_IDLE_PER_NODE) &&
+> +	    (ops->update_idle && !(ops->flags & SCX_OPS_KEEP_BUILTIN_IDLE))) {
+> +		scx_ops_error("SCX_OPS_BUILTIN_IDLE_PER_NODE requires CPU idle selection enabled");
+> +		return -EINVAL;
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> @@ -5308,7 +5325,7 @@ static int scx_ops_enable(struct sched_ext_ops *ops, struct bpf_link *link)
+>  			static_branch_enable_cpuslocked(&scx_has_op[i]);
+>  
+>  	check_hotplug_seq(ops);
+> -	scx_idle_update_selcpu_topology();
+> +	scx_idle_update_selcpu_topology(ops);
+>  
+>  	cpus_read_unlock();
+>  
+> diff --git a/kernel/sched/ext_idle.c b/kernel/sched/ext_idle.c
+> index ed1804506585b..59b9e95238e97 100644
+> --- a/kernel/sched/ext_idle.c
+> +++ b/kernel/sched/ext_idle.c
+> @@ -14,6 +14,9 @@
+>  /* Enable/disable built-in idle CPU selection policy */
+>  static DEFINE_STATIC_KEY_FALSE(scx_builtin_idle_enabled);
+>  
+> +/* Enable/disable per-node idle cpumasks */
+> +static DEFINE_STATIC_KEY_FALSE(scx_builtin_idle_per_node);
+> +
+>  #ifdef CONFIG_SMP
+>  #ifdef CONFIG_CPUMASK_OFFSTACK
+>  #define CL_ALIGNED_IF_ONSTACK
+> @@ -204,7 +207,7 @@ static bool llc_numa_mismatch(void)
+>   * CPU belongs to a single LLC domain, and that each LLC domain is entirely
+>   * contained within a single NUMA node.
+>   */
+> -void scx_idle_update_selcpu_topology(void)
+> +void scx_idle_update_selcpu_topology(struct sched_ext_ops *ops)
+>  {
+>  	bool enable_llc = false, enable_numa = false;
+>  	unsigned int nr_cpus;
+> @@ -237,13 +240,19 @@ void scx_idle_update_selcpu_topology(void)
+>  	 * If all CPUs belong to the same NUMA node and the same LLC domain,
+>  	 * enabling both NUMA and LLC optimizations is unnecessary, as checking
+>  	 * for an idle CPU in the same domain twice is redundant.
+> +	 *
+> +	 * If SCX_OPS_BUILTIN_IDLE_PER_NODE is enabled ignore the NUMA
+> +	 * optimization, as we would naturally select idle CPUs within
+> +	 * specific NUMA nodes querying the corresponding per-node cpumask.
+>  	 */
+> -	nr_cpus = numa_weight(cpu);
+> -	if (nr_cpus > 0) {
+> -		if (nr_cpus < num_online_cpus() && llc_numa_mismatch())
+> -			enable_numa = true;
+> -		pr_debug("sched_ext: NUMA=%*pb weight=%u\n",
+> -			 cpumask_pr_args(numa_span(cpu)), numa_weight(cpu));
+> +	if (!(ops->flags & SCX_OPS_BUILTIN_IDLE_PER_NODE)) {
+> +		nr_cpus = numa_weight(cpu);
+> +		if (nr_cpus > 0) {
+> +			if (nr_cpus < num_online_cpus() && llc_numa_mismatch())
+> +				enable_numa = true;
+> +			pr_debug("sched_ext: NUMA=%*pb weight=%u\n",
+> +				 cpumask_pr_args(numa_span(cpu)), numa_weight(cpu));
 
-The following APIs have been tested for global percpu data:
-1. bpf_map__set_initial_value()
-2. bpf_map__initial_value()
-3. generated percpu struct pointer pointing to internal map's mmaped
-4. bpf_map__lookup_elem() for global percpu data map
-5. bpf_map__is_internal_percpu()
+No need to call numa_weight(cpu) for the 2nd time, right?
 
-At the same time, the case is also tested with 'bpftool gen skeleton -L'.
-
-125     global_percpu_data_init:OK
-126     global_percpu_data_lskel:OK
-Summary: 2/0 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
----
- tools/testing/selftests/bpf/Makefile          |   2 +-
- .../bpf/prog_tests/global_data_init.c         | 218 +++++++++++++++++-
- .../bpf/progs/test_global_percpu_data.c       |  20 ++
- 3 files changed, 238 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_global_percpu_data.c
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 0d552bfcfe7da..7991de79d55c5 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -503,7 +503,7 @@ LSKELS := fentry_test.c fexit_test.c fexit_sleep.c atomics.c 		\
- 
- # Generate both light skeleton and libbpf skeleton for these
- LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c kfunc_call_test.c \
--	kfunc_call_test_subprog.c
-+	kfunc_call_test_subprog.c test_global_percpu_data.c
- SKEL_BLACKLIST += $$(LSKELS)
- 
- test_static_linked.skel.h-deps := test_static_linked1.bpf.o test_static_linked2.bpf.o
-diff --git a/tools/testing/selftests/bpf/prog_tests/global_data_init.c b/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-index 8466332d7406f..f4cb97b7bd63b 100644
---- a/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-+++ b/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-@@ -1,5 +1,9 @@
- // SPDX-License-Identifier: GPL-2.0
-+#include <sched.h>
- #include <test_progs.h>
-+#include "bpf/libbpf_internal.h"
-+#include "test_global_percpu_data.skel.h"
-+#include "test_global_percpu_data.lskel.h"
- 
- void test_global_data_init(void)
- {
-@@ -8,7 +12,7 @@ void test_global_data_init(void)
- 	__u8 *buff = NULL, *newval = NULL;
- 	struct bpf_object *obj;
- 	struct bpf_map *map;
--        __u32 duration = 0;
-+	__u32 duration = 0;
- 	size_t sz;
- 
- 	obj = bpf_object__open_file(file, NULL);
-@@ -60,3 +64,215 @@ void test_global_data_init(void)
- 	free(newval);
- 	bpf_object__close(obj);
- }
-+
-+void test_global_percpu_data_init(void)
-+{
-+	struct test_global_percpu_data__percpu init_value, *init_data, *data, *percpu_data;
-+	int key, prog_fd, err, num_cpus, num_online, comm_fd = -1, i;
-+	struct test_global_percpu_data *skel = NULL;
-+	__u64 args[2] = {0x1234ULL, 0x5678ULL};
-+	size_t elem_sz, init_data_sz;
-+	char buf[] = "new_name";
-+	struct bpf_map *map;
-+	bool *online;
-+	LIBBPF_OPTS(bpf_test_run_opts, topts,
-+		    .ctx_in = args,
-+		    .ctx_size_in = sizeof(args),
-+		    .flags = BPF_F_TEST_RUN_ON_CPU,
-+	);
-+
-+	num_cpus = libbpf_num_possible_cpus();
-+	if (!ASSERT_GT(num_cpus, 0, "libbpf_num_possible_cpus"))
-+		return;
-+
-+	err = parse_cpu_mask_file("/sys/devices/system/cpu/online",
-+				  &online, &num_online);
-+	if (!ASSERT_OK(err, "parse_cpu_mask_file"))
-+		return;
-+
-+	elem_sz = sizeof(*percpu_data);
-+	percpu_data = calloc(num_cpus, elem_sz);
-+	if (!ASSERT_OK_PTR(percpu_data, "calloc percpu_data"))
-+		goto out;
-+
-+	skel = test_global_percpu_data__open();
-+	if (!ASSERT_OK_PTR(skel, "test_global_percpu_data__open"))
-+		goto out;
-+	if (!ASSERT_OK_PTR(skel->percpu, "skel->percpu"))
-+		goto out;
-+
-+	ASSERT_EQ(skel->percpu->data, -1, "skel->percpu->data");
-+	ASSERT_FALSE(skel->percpu->run, "skel->percpu->run");
-+	ASSERT_EQ(skel->percpu->data2, 0, "skel->percpu->data2");
-+
-+	map = skel->maps.percpu;
-+	if (!ASSERT_EQ(bpf_map__type(map), BPF_MAP_TYPE_PERCPU_ARRAY, "bpf_map__type"))
-+		goto out;
-+	if (!ASSERT_TRUE(bpf_map__is_internal_percpu(map), "bpf_map__is_internal_percpu"))
-+		goto out;
-+
-+	init_value.data = 2;
-+	init_value.run = false;
-+	err = bpf_map__set_initial_value(map, &init_value, sizeof(init_value));
-+	if (!ASSERT_OK(err, "bpf_map__set_initial_value"))
-+		goto out;
-+
-+	init_data = bpf_map__initial_value(map, &init_data_sz);
-+	if (!ASSERT_OK_PTR(init_data, "bpf_map__initial_value"))
-+		goto out;
-+
-+	ASSERT_EQ(init_data->data, init_value.data, "initial_value data");
-+	ASSERT_EQ(init_data->run, init_value.run, "initial_value run");
-+	ASSERT_EQ(init_data_sz, sizeof(init_value), "initial_value size");
-+	ASSERT_EQ((void *) init_data, (void *) skel->percpu, "skel->percpu eq init_data");
-+	ASSERT_EQ(skel->percpu->data, init_value.data, "skel->percpu->data");
-+	ASSERT_EQ(skel->percpu->run, init_value.run, "skel->percpu->run");
-+
-+	err = test_global_percpu_data__load(skel);
-+	if (err == -EOPNOTSUPP) {
-+		test__skip();
-+		goto out;
-+	}
-+	if (!ASSERT_OK(err, "test_global_percpu_data__load"))
-+		goto out;
-+
-+	ASSERT_NULL(skel->percpu, "NULL skel->percpu");
-+
-+	err = test_global_percpu_data__attach(skel);
-+	if (!ASSERT_OK(err, "test_global_percpu_data__attach"))
-+		goto out;
-+
-+	comm_fd = open("/proc/self/comm", O_WRONLY|O_TRUNC);
-+	if (!ASSERT_GE(comm_fd, 0, "open /proc/self/comm"))
-+		goto out;
-+
-+	err = write(comm_fd, buf, sizeof(buf));
-+	if (!ASSERT_GE(err, 0, "task rename"))
-+		goto out;
-+
-+	prog_fd = bpf_program__fd(skel->progs.update_percpu_data);
-+
-+	/* run on every CPU */
-+	for (i = 0; i < num_online; i++) {
-+		if (!online[i])
-+			continue;
-+
-+		topts.cpu = i;
-+		topts.retval = 0;
-+		err = bpf_prog_test_run_opts(prog_fd, &topts);
-+		ASSERT_OK(err, "bpf_prog_test_run_opts");
-+		ASSERT_EQ(topts.retval, 0, "bpf_prog_test_run_opts retval");
-+	}
-+
-+	key = 0;
-+	err = bpf_map__lookup_elem(map, &key, sizeof(key), percpu_data,
-+				   elem_sz * num_cpus, 0);
-+	if (!ASSERT_OK(err, "bpf_map__lookup_elem"))
-+		goto out;
-+
-+	for (i = 0; i < num_online; i++) {
-+		if (!online[i])
-+			continue;
-+
-+		data = percpu_data + i;
-+		ASSERT_EQ(data->data, 1, "percpu_data->data");
-+		ASSERT_TRUE(data->run, "percpu_data->run");
-+		ASSERT_EQ(data->data2, 0xc0de, "percpu_data->data2");
-+	}
-+
-+out:
-+	close(comm_fd);
-+	test_global_percpu_data__destroy(skel);
-+	if (percpu_data)
-+		free(percpu_data);
-+	free(online);
-+}
-+
-+void test_global_percpu_data_lskel(void)
-+{
-+	int key, prog_fd, map_fd, err, num_cpus, num_online, comm_fd = -1, i;
-+	struct test_global_percpu_data__percpu *data, *percpu_data;
-+	struct test_global_percpu_data_lskel *lskel = NULL;
-+	__u64 args[2] = {0x1234ULL, 0x5678ULL};
-+	char buf[] = "new_name";
-+	bool *online;
-+	LIBBPF_OPTS(bpf_test_run_opts, topts,
-+		    .ctx_in = args,
-+		    .ctx_size_in = sizeof(args),
-+		    .flags = BPF_F_TEST_RUN_ON_CPU,
-+	);
-+
-+	num_cpus = libbpf_num_possible_cpus();
-+	if (!ASSERT_GT(num_cpus, 0, "libbpf_num_possible_cpus"))
-+		return;
-+
-+	err = parse_cpu_mask_file("/sys/devices/system/cpu/online",
-+				  &online, &num_online);
-+	if (!ASSERT_OK(err, "parse_cpu_mask_file"))
-+		return;
-+
-+	percpu_data = calloc(num_cpus, sizeof(*percpu_data));
-+	if (!ASSERT_OK_PTR(percpu_data, "calloc percpu_data"))
-+		goto out;
-+
-+	lskel = test_global_percpu_data_lskel__open();
-+	if (!ASSERT_OK_PTR(lskel, "test_global_percpu_data_lskel__open"))
-+		goto out;
-+
-+	err = test_global_percpu_data_lskel__load(lskel);
-+	if (err == -EOPNOTSUPP) {
-+		test__skip();
-+		goto out;
-+	}
-+	if (!ASSERT_OK(err, "test_global_percpu_data_lskel__load"))
-+		goto out;
-+
-+	err = test_global_percpu_data_lskel__attach(lskel);
-+	if (!ASSERT_OK(err, "test_global_percpu_data_lskel__attach"))
-+		goto out;
-+
-+	comm_fd = open("/proc/self/comm", O_WRONLY|O_TRUNC);
-+	if (!ASSERT_GE(comm_fd, 0, "open /proc/self/comm"))
-+		goto out;
-+
-+	err = write(comm_fd, buf, sizeof(buf));
-+	if (!ASSERT_GE(err, 0, "task rename"))
-+		goto out;
-+
-+	prog_fd = lskel->progs.update_percpu_data.prog_fd;
-+
-+	/* run on every CPU */
-+	for (i = 0; i < num_online; i++) {
-+		if (!online[i])
-+			continue;
-+
-+		topts.cpu = i;
-+		topts.retval = 0;
-+		err = bpf_prog_test_run_opts(prog_fd, &topts);
-+		ASSERT_OK(err, "bpf_prog_test_run_opts");
-+		ASSERT_EQ(topts.retval, 0, "bpf_prog_test_run_opts retval");
-+	}
-+
-+	key = 0;
-+	map_fd = lskel->maps.percpu.map_fd;
-+	err = bpf_map_lookup_elem(map_fd, &key, percpu_data);
-+	if (!ASSERT_OK(err, "bpf_map_lookup_elem"))
-+		goto out;
-+
-+	for (i = 0; i < num_online; i++) {
-+		if (!online[i])
-+			continue;
-+
-+		data = percpu_data + i;
-+		ASSERT_EQ(data->data, 1, "percpu_data->data");
-+		ASSERT_TRUE(data->run, "percpu_data->run");
-+		ASSERT_EQ(data->data2, 0xc0de, "percpu_data->data2");
-+	}
-+
-+out:
-+	close(comm_fd);
-+	test_global_percpu_data_lskel__destroy(lskel);
-+	if (percpu_data)
-+		free(percpu_data);
-+	free(online);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_global_percpu_data.c b/tools/testing/selftests/bpf/progs/test_global_percpu_data.c
-new file mode 100644
-index 0000000000000..ada292d3a164c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_global_percpu_data.c
-@@ -0,0 +1,20 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright Leon Hwang */
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+int data SEC(".percpu") = -1;
-+int run SEC(".percpu") = 0;
-+int data2 SEC(".percpu");
-+
-+SEC("raw_tp/task_rename")
-+int update_percpu_data(struct __sk_buff *skb)
-+{
-+	data = 1;
-+	run = 1;
-+	data2 = 0xc0de;
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.47.1
-
+> +		}
+>  	}
+>  	rcu_read_unlock();
+>  
+> @@ -530,6 +539,11 @@ void scx_idle_enable(struct sched_ext_ops *ops)
+>  	}
+>  	static_branch_enable(&scx_builtin_idle_enabled);
+>  
+> +	if (ops->flags & SCX_OPS_BUILTIN_IDLE_PER_NODE)
+> +		static_branch_enable(&scx_builtin_idle_per_node);
+> +	else
+> +		static_branch_disable(&scx_builtin_idle_per_node);
+> +
+>  #ifdef CONFIG_SMP
+>  	/*
+>  	 * Consider all online cpus idle. Should converge to the actual state
+> @@ -543,6 +557,7 @@ void scx_idle_enable(struct sched_ext_ops *ops)
+>  void scx_idle_disable(void)
+>  {
+>  	static_branch_disable(&scx_builtin_idle_enabled);
+> +	static_branch_disable(&scx_builtin_idle_per_node);
+>  }
+>  
+>  /********************************************************************************
+> diff --git a/kernel/sched/ext_idle.h b/kernel/sched/ext_idle.h
+> index bbac0fd9a5ddd..339b6ec9c4cb7 100644
+> --- a/kernel/sched/ext_idle.h
+> +++ b/kernel/sched/ext_idle.h
+> @@ -13,12 +13,12 @@
+>  struct sched_ext_ops;
+>  
+>  #ifdef CONFIG_SMP
+> -void scx_idle_update_selcpu_topology(void);
+> +void scx_idle_update_selcpu_topology(struct sched_ext_ops *ops);
+>  void scx_idle_init_masks(void);
+>  bool scx_idle_test_and_clear_cpu(int cpu);
+>  s32 scx_pick_idle_cpu(const struct cpumask *cpus_allowed, u64 flags);
+>  #else /* !CONFIG_SMP */
+> -static inline void scx_idle_update_selcpu_topology(void) {}
+> +static inline void scx_idle_update_selcpu_topology(struct sched_ext_ops *ops) {}
+>  static inline void scx_idle_init_masks(void) {}
+>  static inline bool scx_idle_test_and_clear_cpu(int cpu) { return false; }
+>  static inline s32 scx_pick_idle_cpu(const struct cpumask *cpus_allowed, u64 flags)
+> diff --git a/tools/sched_ext/include/scx/compat.h b/tools/sched_ext/include/scx/compat.h
+> index b50280e2ba2ba..d63cf40be8eee 100644
+> --- a/tools/sched_ext/include/scx/compat.h
+> +++ b/tools/sched_ext/include/scx/compat.h
+> @@ -109,6 +109,9 @@ static inline bool __COMPAT_struct_has_field(const char *type, const char *field
+>  #define SCX_OPS_SWITCH_PARTIAL							\
+>  	__COMPAT_ENUM_OR_ZERO("scx_ops_flags", "SCX_OPS_SWITCH_PARTIAL")
+>  
+> +#define SCX_OPS_BUILTIN_IDLE_PER_NODE						\
+> +	__COMPAT_ENUM_OR_ZERO("scx_ops_flags", "SCX_OPS_BUILTIN_IDLE_PER_NODE")
+> +
+>  static inline long scx_hotplug_seq(void)
+>  {
+>  	int fd;
+> -- 
+> 2.48.1
 
