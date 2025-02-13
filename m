@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-51330-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51331-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39819A33437
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 01:44:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47133A33438
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 01:44:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 006CB3A803A
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 00:44:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E9A07A33DC
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 00:43:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2BC284D13;
-	Thu, 13 Feb 2025 00:44:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD5017346F;
+	Thu, 13 Feb 2025 00:44:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bdBf3Oug"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QNbtrKLZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1422478F39;
-	Thu, 13 Feb 2025 00:44:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E87B810E4;
+	Thu, 13 Feb 2025 00:44:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739407451; cv=none; b=YrmQedMcA6AJ0av+qbzuGE1x+9Pj0bQH273v02+oQZRYBGvcaxJdRd7VnMLau+gkLy7FwGNxCw7vfxMmaZxiwM6uG7+TOl6xazbd/ez7vej0eWKeUqCgFyFmo1ZYpFG+HtOiWgcHkZpFpBnj/OxRvr7KlcTkccFOmQcosewyxnM=
+	t=1739407457; cv=none; b=nsMN9MHsBDJHAbCP8qTH2UVmp7lAHib5EOgDvm2YMykRlJ5Xiy7n71I1EueDxti4gz7TdWVki0Hap3PFWWnh8KSG5tlWGN0V4tz5eUIXB+o9JySIQh7DvmckXquBHDyhNwbW1y4TjJgOYjgbj8u7d/zvBLNP0LkAHP/RSh7+ovA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739407451; c=relaxed/simple;
-	bh=4ZB7lKfheazXc1YfiXI2G/ICBAu5E5fQcKEl4UMlf8s=;
+	s=arc-20240116; t=1739407457; c=relaxed/simple;
+	bh=gRg0dmDhSNl5umDeJNX/yDt3bI0tY5M4cVFXyTsU7k0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mYXkHUU0qMuu3N1TIof5z3R2sCiWW0PXcXb10GD0/pQygmrGX7KbgWNrA1Nr7l7IFQN/uej0alMfDBRMUl5KNdDMc52/GbkMJ3kR7+RQFGOsTC9Gv0qJFJNsX9yU9A8by/iDbJoGAGKoIGN37PuWPywCEGxlPECKOYMNw4g+Z4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bdBf3Oug; arc=none smtp.client-ip=209.85.214.171
+	 MIME-Version; b=J9NxJS8SeKO8kFfqxeQwrAoGcYBNyQruflGleA/LJZnT8wNF6/bLs2J1QoHh+vzWgSZe2q6y/VJ7Rlc08wb0+b0QFg3aU/bax4v9CnSLK3tIXdT0Oq8bKjCq7UAvUfLZ8ctDOIEpfcS3cJ8Q8iH4S93hhA1drP67ArsB0QPxaxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QNbtrKLZ; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-21f5660c2fdso4944975ad.2;
-        Wed, 12 Feb 2025 16:44:09 -0800 (PST)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2fa3fe04dd2so541130a91.0;
+        Wed, 12 Feb 2025 16:44:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739407449; x=1740012249; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739407455; x=1740012255; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xijuzipHBNdGLwUwwHqZ3Q998EyPsGhqmxBLA9ACfbk=;
-        b=bdBf3OugB6adA7AQXSVvyAInbW8lhhTChhO7L4o0pM7EHUT1B8x4Us8sn2roVmHcW4
-         FLs97NcLAHn2YOeNibZp1S0ae9nae08CxRHsRUbVr0a4Juu19kfcSLONOmP/9+rGUlHU
-         PlFDvk4TQHfsxvxWaXsisj1pVH6fhNvRDDvFhn4OsyqMANuH8N+CyiAXCR/aeB5ropOs
-         CWSH9/fMNQubXrE6PJrgVdN9xja4+5YPorEyNy436hH80JS5Kl/mwERtF3jFp7+Ujab5
-         gezVd5UIxJum26vjML9zByBWmteCKYa6RMr6WidfK3v/JXkA3XXSizJvH2L2LK7DEvsG
-         8Zrg==
+        bh=CGMQbUVA6s71dYgqJsnF/GqiIFh2VzMRu5Ark4dBeIs=;
+        b=QNbtrKLZziRGEbjUudB0+VC9nQ1TjKb/IuZ0tMQQt09AwX0rxzZOAL9f4gsQLTFeGo
+         2/d+yePY5paVDy69MIvu/h/4ZQ+N2bQiR/NPXGVeGquY86aNy7gROs2tiL/oIYio6tTB
+         ceGsIuNrPNi8z+SVL/eMOqzINQdtSTU5FDK38/INutkAoB1/t0RLW9/5YMli3DhlsoAe
+         dIWgW7YmthLLUh7rNl4tKAxh//6H/jkQYlGTODQRmpcQ8O25ZowlFc5LJdULY4cS7SZn
+         OLvVHXe2uIIHUhN93YB5rP5tiKG29uT1C417s44QMWCDysqRmwVIA4ZbF3PgLJLLjNhl
+         Vh5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739407449; x=1740012249;
+        d=1e100.net; s=20230601; t=1739407455; x=1740012255;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xijuzipHBNdGLwUwwHqZ3Q998EyPsGhqmxBLA9ACfbk=;
-        b=neT4S3XfUeKJlqKtaQ8Q4jIQBDx17F6epP7epxtCymqx+eUycYNiFTr2iRGEjaNXF6
-         YXt3uE867Aw8KxZgKav7550eGnpbWUvQvKxUuk+HIG5UN4rLo+CqLV0AROKJ2p6Pr1yF
-         CdKGRHcawXXR6zxKT8Kgv1HRWZJFHoYq0MNSXTby7oCds403vznDY7AIvEQTcyJEK9+P
-         pEcDiMUL3mIr77MRp6QT0bToXIcvK+RlyucjYh+RUmDqrD3q8/yzJMESMXOyT+aFeNof
-         fBzp1d8fzy8LEjlGAEHQqQFKjFXO5I5Jze6UK0pZStGmgvkCEYuClWo51dHEsZJtW/A0
-         10LQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUY+8UoC6hNIUyR0vX7Ae+HcGN6HDc9/ZCBaM9/Hi4+JPjatu+/S0vgqLmS1Y6Sv9McJPIst5A=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+yCqq50aueTexzzuhCXLJR4vG6MzWLCU/amMzZ857S7qbWkWv
-	9K0ClNaafXH6gqxoWxku5BwDX6MChGBsNfCrPpUhmf8L4Zdqk57M
-X-Gm-Gg: ASbGncvj6Um1Ry33DY4f11adiX3MPXxKk0BtDinjr666eoSV3d9qEFNTeEM2Fw4BYlA
-	Kvi6mdG9kst8Xo5Zm6Qzax/O/QUlp8DkF9UmqzTQYZRickqBBWi3EBHWNPgeTHgpZUMydMKZag8
-	wO05Eb6ss8VrydD6d3WPEXBQ2HOWcgld4QoOh9j6GTVEIUfhRMwfTSvpDg4kTEzRnoCQdUtienH
-	cIbEM77oXshjb21lGh/LsqbeOL/ta5E22AjZNio1Zl8Bf9HwKBZX6cJyUmXlqRqrsX7ShfCPS+q
-	1CJONbsLZhP4qUE08hBUsgkSbaXlrYQgNYGLbWJDR463XT6wNCulwQ==
-X-Google-Smtp-Source: AGHT+IE8AvQXooKTtwvZmuaozmvTuHWm0dHdQcMxqGUjIHsnV4dAivlBQWHYuQ/f35rmx0keS/8OEA==
-X-Received: by 2002:a17:902:f683:b0:216:53fa:634f with SMTP id d9443c01a7336-220d2126541mr19879295ad.48.1739407449195;
-        Wed, 12 Feb 2025 16:44:09 -0800 (PST)
+        bh=CGMQbUVA6s71dYgqJsnF/GqiIFh2VzMRu5Ark4dBeIs=;
+        b=a7xK5hIB7loWRzPa5NPGOPH/2beDBLDxq/oFKyxtGapKuKq3XiQfrurxsZBdv+btDC
+         Ke3RfQyke5kGNi1aeCVzzDXb8qIEmeu6MK120hyTYGqUUVfOnA8/BfhAtK2cRtOagLyS
+         mJMZQFIY6s7Y8sOBUTgPwJBZQJHIeEjHFx/5oFjQ5oC79fdpyGJoue9V04iPAs4fIW25
+         DPcOi4rtVURawdQ6pgoQFnaitIxV1OZ8LdLKNVZvISyIMq48mXiGjZx8lk+/RjMviBRV
+         cwHHmmEV7fuO2yLSZY8uc6aWA8vRDx+rm8o+ZN48lCb3yLqZCvCTUgX1nnu5grMSFzEb
+         pCdw==
+X-Forwarded-Encrypted: i=1; AJvYcCUSQjaHQ9qdxLuoslPwfsndNiSyun42TDLPJmvOIlGsF1L8I4e1/SrZUQLviZHkA3oj3Say810=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxtcrJaQc1pLj3ycoj/HRe6qEBqEeENSFROOhdI3kpaPxprzk/S
+	mmoYFZ+EIiUgMSXZjj2q151GO/vZKYvnzlaQVYh/Bpk3mggYwGHj
+X-Gm-Gg: ASbGncsavKRfQzhfG5my8O2uOslt3IV2+kQ5+Fgdl4wTW3BCCH1J5vvavyTa3Ciwl24
+	h3JQF2cMnxBJ7IJb4hQ2yTMJ3lO/W+2dKHHoBvW+fitaIGxUaqLu0YZExU9wLBPb1P2n9mQbxl/
+	VKCpwzhUgKV4zzDSEMFl4KGETHippVZn9/FehwIh8iTVsvh3Xl7GT8uiUs808g/Ww7Q1Yco7+th
+	V+RySlMzfCHTxHLZWzwtJkxcxUwm3tUlav6UBK12vomwxjQlb3tuO4t/RWiMGJNLPnQtBWCSiXh
+	j7rAwa5I2VZgX5OLeUEOyrQFLidp42RgAM+8aVtKHf9Iscqo+dUKfw==
+X-Google-Smtp-Source: AGHT+IH/xF/Q9egjOvI2AlKVcbFb3lPEErcPtrDnE7EMAmzH1GNJZx/Vk+rouqQYboBWkfPmbzdN/w==
+X-Received: by 2002:a17:90b:254e:b0:2f6:539:3cd8 with SMTP id 98e67ed59e1d1-2fbf5c0f490mr9245177a91.18.1739407455144;
+        Wed, 12 Feb 2025 16:44:15 -0800 (PST)
 Received: from KERNELXING-MC1.tencent.com ([111.201.25.167])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fc13ad3fb8sm63618a91.26.2025.02.12.16.44.03
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fc13ad3fb8sm63618a91.26.2025.02.12.16.44.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Feb 2025 16:44:08 -0800 (PST)
+        Wed, 12 Feb 2025 16:44:14 -0800 (PST)
 From: Jason Xing <kerneljasonxing@gmail.com>
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -96,9 +96,9 @@ To: davem@davemloft.net,
 Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	Jason Xing <kerneljasonxing@gmail.com>
-Subject: [PATCH net-next 1/3] tcp: add TCP_RTO_MAX_MIN_SEC definition
-Date: Thu, 13 Feb 2025 08:43:52 +0800
-Message-Id: <20250213004355.38918-2-kerneljasonxing@gmail.com>
+Subject: [PATCH net-next 2/3] bpf: add TCP_BPF_RTO_MAX for bpf_setsockopt
+Date: Thu, 13 Feb 2025 08:43:53 +0800
+Message-Id: <20250213004355.38918-3-kerneljasonxing@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20250213004355.38918-1-kerneljasonxing@gmail.com>
 References: <20250213004355.38918-1-kerneljasonxing@gmail.com>
@@ -110,64 +110,88 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add minimum value definition as the lower bound of RTO MAX
-set by users. In the next patch, bpf_sol_tcp_setsockopt()
-will use this in the test statement.
+Support bpf_setsockopt() to set the maximum value of RTO for
+BPF program.
 
 Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
 ---
- include/net/tcp.h          | 1 +
- net/ipv4/sysctl_net_ipv4.c | 3 ++-
- net/ipv4/tcp.c             | 3 ++-
- 3 files changed, 5 insertions(+), 2 deletions(-)
+ Documentation/networking/ip-sysctl.rst | 3 ++-
+ include/uapi/linux/bpf.h               | 2 ++
+ net/core/filter.c                      | 6 ++++++
+ tools/include/uapi/linux/bpf.h         | 2 ++
+ 4 files changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index 7fd2d7fa4532..b6bedbe68636 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -143,6 +143,7 @@ static_assert((1 << ATO_BITS) > TCP_DELACK_MAX);
- #define TCP_DELACK_MIN	4U
- #define TCP_ATO_MIN	4U
- #endif
-+#define TCP_RTO_MAX_MIN_SEC 1
- #define TCP_RTO_MAX_SEC 120
- #define TCP_RTO_MAX	((unsigned)(TCP_RTO_MAX_SEC * HZ))
- #define TCP_RTO_MIN	((unsigned)(HZ / 5))
-diff --git a/net/ipv4/sysctl_net_ipv4.c b/net/ipv4/sysctl_net_ipv4.c
-index 3a43010d726f..53942c225e0b 100644
---- a/net/ipv4/sysctl_net_ipv4.c
-+++ b/net/ipv4/sysctl_net_ipv4.c
-@@ -28,6 +28,7 @@ static int tcp_adv_win_scale_max = 31;
- static int tcp_app_win_max = 31;
- static int tcp_min_snd_mss_min = TCP_MIN_SND_MSS;
- static int tcp_min_snd_mss_max = 65535;
-+static int tcp_rto_max_min = TCP_RTO_MAX_MIN_SEC * MSEC_PER_SEC;
- static int tcp_rto_max_max = TCP_RTO_MAX_SEC * MSEC_PER_SEC;
- static int ip_privileged_port_min;
- static int ip_privileged_port_max = 65535;
-@@ -1590,7 +1591,7 @@ static struct ctl_table ipv4_net_table[] = {
- 		.maxlen		= sizeof(int),
- 		.mode		= 0644,
- 		.proc_handler	= proc_dointvec_minmax,
--		.extra1		= SYSCTL_ONE_THOUSAND,
-+		.extra1		= &tcp_rto_max_min,
- 		.extra2		= &tcp_rto_max_max,
- 	},
+diff --git a/Documentation/networking/ip-sysctl.rst b/Documentation/networking/ip-sysctl.rst
+index 054561f8dcae..78eb0959438a 100644
+--- a/Documentation/networking/ip-sysctl.rst
++++ b/Documentation/networking/ip-sysctl.rst
+@@ -1241,7 +1241,8 @@ tcp_rto_min_us - INTEGER
+ 
+ tcp_rto_max_ms - INTEGER
+ 	Maximal TCP retransmission timeout (in ms).
+-	Note that TCP_RTO_MAX_MS socket option has higher precedence.
++	Note that TCP_BPF_RTO_MAX and TCP_RTO_MAX_MS socket option have the
++	higher precedence for configuring this setting.
+ 
+ 	When changing tcp_rto_max_ms, it is important to understand
+ 	that tcp_retries2 might need a change.
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 2acf9b336371..8ab6ef144217 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -2868,6 +2868,7 @@ union bpf_attr {
+  * 		  **TCP_NODELAY**, **TCP_MAXSEG**, **TCP_WINDOW_CLAMP**,
+  * 		  **TCP_THIN_LINEAR_TIMEOUTS**, **TCP_BPF_DELACK_MAX**,
+  *		  **TCP_BPF_RTO_MIN**, **TCP_BPF_SOCK_OPS_CB_FLAGS**.
++ *		  **TCP_BPF_RTO_MAX**
+  * 		* **IPPROTO_IP**, which supports *optname* **IP_TOS**.
+  * 		* **IPPROTO_IPV6**, which supports the following *optname*\ s:
+  * 		  **IPV6_TCLASS**, **IPV6_AUTOFLOWLABEL**.
+@@ -7091,6 +7092,7 @@ enum {
+ 	TCP_BPF_SYN_IP		= 1006, /* Copy the IP[46] and TCP header */
+ 	TCP_BPF_SYN_MAC         = 1007, /* Copy the MAC, IP[46], and TCP header */
+ 	TCP_BPF_SOCK_OPS_CB_FLAGS = 1008, /* Get or Set TCP sock ops flags */
++	TCP_BPF_RTO_MAX		= 1009, /* Max delay ack in msecs */
  };
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index 992d5c9b2487..2373ab1a1d47 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -3812,7 +3812,8 @@ int do_tcp_setsockopt(struct sock *sk, int level, int optname,
- 					   TCP_RTO_MAX / HZ));
- 		return 0;
- 	case TCP_RTO_MAX_MS:
--		if (val < MSEC_PER_SEC || val > TCP_RTO_MAX_SEC * MSEC_PER_SEC)
-+		if (val < TCP_RTO_MAX_MIN_SEC * MSEC_PER_SEC ||
-+		    val > TCP_RTO_MAX_SEC * MSEC_PER_SEC)
+ 
+ enum {
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 2ec162dd83c4..a21a147e0a86 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -5303,6 +5303,12 @@ static int bpf_sol_tcp_setsockopt(struct sock *sk, int optname,
  			return -EINVAL;
- 		WRITE_ONCE(inet_csk(sk)->icsk_rto_max, msecs_to_jiffies(val));
- 		return 0;
+ 		tp->bpf_sock_ops_cb_flags = val;
+ 		break;
++	case TCP_BPF_RTO_MAX:
++		if (val > TCP_RTO_MAX_SEC * MSEC_PER_SEC ||
++		    val < TCP_RTO_MAX_MIN_SEC * MSEC_PER_SEC)
++			return -EINVAL;
++		inet_csk(sk)->icsk_rto_max = msecs_to_jiffies(val);
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 2acf9b336371..8ab6ef144217 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -2868,6 +2868,7 @@ union bpf_attr {
+  * 		  **TCP_NODELAY**, **TCP_MAXSEG**, **TCP_WINDOW_CLAMP**,
+  * 		  **TCP_THIN_LINEAR_TIMEOUTS**, **TCP_BPF_DELACK_MAX**,
+  *		  **TCP_BPF_RTO_MIN**, **TCP_BPF_SOCK_OPS_CB_FLAGS**.
++ *		  **TCP_BPF_RTO_MAX**
+  * 		* **IPPROTO_IP**, which supports *optname* **IP_TOS**.
+  * 		* **IPPROTO_IPV6**, which supports the following *optname*\ s:
+  * 		  **IPV6_TCLASS**, **IPV6_AUTOFLOWLABEL**.
+@@ -7091,6 +7092,7 @@ enum {
+ 	TCP_BPF_SYN_IP		= 1006, /* Copy the IP[46] and TCP header */
+ 	TCP_BPF_SYN_MAC         = 1007, /* Copy the MAC, IP[46], and TCP header */
+ 	TCP_BPF_SOCK_OPS_CB_FLAGS = 1008, /* Get or Set TCP sock ops flags */
++	TCP_BPF_RTO_MAX		= 1009, /* Max delay ack in msecs */
+ };
+ 
+ enum {
 -- 
 2.43.5
 
