@@ -1,126 +1,197 @@
-Return-Path: <bpf+bounces-51475-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51476-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7040FA3522C
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 00:28:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7736A35236
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 00:32:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 028E87A38F2
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 23:27:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC79D3AB38D
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 23:32:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3E7222D7B3;
-	Thu, 13 Feb 2025 23:28:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C69341C84A6;
+	Thu, 13 Feb 2025 23:32:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lBnbq6ax"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nGeqn/xA"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AF712753F5;
-	Thu, 13 Feb 2025 23:28:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAD592753F0
+	for <bpf@vger.kernel.org>; Thu, 13 Feb 2025 23:32:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739489297; cv=none; b=PE+PNrlAwgcXXvic/zB+Xl68uiiXeqvO+ceXXDqSLRAi8NwSEboJ8PgiIMc6/tql0VSmOR9eRm4GbmBhNM8yj2wbg1jeIT+SVHqI2lrbX89jNDZAnQVuw2MphZlGAUuC/CoOip2UjfKZ7XCBrPSUNH5yMTqmHHJXl1xHWcPmT4c=
+	t=1739489549; cv=none; b=LttgUq5idPQyPsemvKDnrZIHO1xrWEKPJlo1EV1DjX+B/ai4b4CnPDDvPSR1uKLnBG9QzM16HlGVPde6PpSjC+B2EXCYRF7DtZ/yiclKyEn6Kz4jKESS0gepvhTW6oS5/BdL/HbvSpF9C70q/a76tTZeHRwSKvvPy2v7+pDb6ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739489297; c=relaxed/simple;
-	bh=1hpRD32+oTSKw4Be5mPLXZd2/5+RD6HWdyhv83wdPbk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WOVzVhEINGKW7L1IrFN8UL4Am4owZMjPUsSvWDhfDlxX/C5UEtP7psHqTxDyTomXERfpI6MrkZifxBuOC3EztpR6c6CMqZDnSw77fENJOS5YCG+sZoV81Xyrh/TMxu1z7PRA9vTOzM5Fca/d+LUGD96F2c3UR0RuvxFmkVeewcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lBnbq6ax; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00B44C4CED1;
-	Thu, 13 Feb 2025 23:28:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739489295;
-	bh=1hpRD32+oTSKw4Be5mPLXZd2/5+RD6HWdyhv83wdPbk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lBnbq6axyW2OpH9mMeOGuPD2s5C5ZVNFJFk/dL32chk4zb4ivQ3puaxIOWYgoE9j/
-	 TgVEGIz3OwvM3laQ/nPEHYt4Oii8d4jzU6hB2pZJmoc4e+jrRKPnQsD7vXCEob6zxD
-	 qr8dc8jge7yERe168JfcdswqqgErPWXOh7M8sRivDd8zag7J57qC2hbRRy/GPCwiji
-	 ui+r/Sk3gyoSMnxuDGCGn0ylU4zb1g+5SuWfMw0gvOjtc+c9fv82S2fsLEWIi9nb+5
-	 wF5yeuyAkSjzH3D3NJENDYSiCRF6VcnnmEIK7tj53ztpluvjk3nditqs5/2nR+gEOn
-	 q/H6osl59cx9w==
-Date: Thu, 13 Feb 2025 15:28:13 -0800
-From: Namhyung Kim <namhyung@kernel.org>
-To: Chun-Tse Shao <ctshao@google.com>
-Cc: linux-kernel@vger.kernel.org, peterz@infradead.org, mingo@redhat.com,
-	acme@kernel.org, mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-	irogers@google.com, adrian.hunter@intel.com,
-	kan.liang@linux.intel.com, linux-perf-users@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v5 5/5] perf lock: Update documentation for -o option in
- contention mode
-Message-ID: <Z66ADd48l6lJnQSt@google.com>
-References: <20250212222859.2086080-1-ctshao@google.com>
- <20250212222859.2086080-6-ctshao@google.com>
+	s=arc-20240116; t=1739489549; c=relaxed/simple;
+	bh=rZ0m5Fo13yppwYJVpOLvL4WAzvEJB/XhogGIw+I07sk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kLnmmUTmHcUXL6X6XigvroYpRyg2QzDaptVx6RhYPrL90ORTOfRpTZGtAcwjaN/ON8pQlJsVIImFFTP7TlbQyJYV6xp5FGPLfVCsrtvKgg9XvhwK0JC/+5ig4C7DsDhdp1PQND3RFdelkUVdzvJc+yZaoyAZn4TFAlraTFP7A84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nGeqn/xA; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-21f2339dcfdso22483795ad.1
+        for <bpf@vger.kernel.org>; Thu, 13 Feb 2025 15:32:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739489547; x=1740094347; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=70YxyTIVJMFQiNdsJi6x+sRSZ3x+j0i9FEYIP2oo0/U=;
+        b=nGeqn/xAjGOUAm7dgJ4IGLeJIHrfEY1sVqAJt6/3bYjFUo9M7zxo7XUmTZJaneP4Ni
+         rB4rcAv+2E1QA8LCgCt2QpEPSFlQ9VJ6dx+SAxJGbmTagxNtWOIK4xh+pbJGFd1SEeRh
+         9Wq0cKwzvQ5FeEjOqr1Vro9QlW6uCum38LrpcSzsNWSDCFkb7vah1cLoIrTxkDcuVWdY
+         YpEMbBag0krJxQpSVIxM0Q1qxvDquwiJPX16esUquXbUGkB1fdlYUd+p9DdgX6pTym8l
+         bNywvwhvvIb5Gl7f/gZafx2U61wo0+/gWPy9cD2xh3kaKXbBZ/QH2r+qpvyMUSHuIXZx
+         iIFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739489547; x=1740094347;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=70YxyTIVJMFQiNdsJi6x+sRSZ3x+j0i9FEYIP2oo0/U=;
+        b=ZWP4DTFo4hHRGp5vda1ahlgnjywGhO0jxSIJhpggTGoj7xzaqZLQVQK68jBFdG9N1c
+         2I3AokQHypblAUsTTtEbGCsTgu8hnMf112X1mu6fdmG+37kWAe+hT5kJnrBPu9i/6qFD
+         YZKCHbmvjm+22JG9+o+ykDTMxAUos4a902T/oRJ3dKkc8k00yw9BaIn8vPH2vNtbiOkY
+         r2d+lIc2CSr2cvZxNmLTrZ9JZno9Delf8dalmUxNdLF7TBkh6+iMrs99Jv0y/Sxsxdfh
+         toRMM/SrpgUSu+GYhzKeDr16+QJLeqRFCFyWafMpb3Mm8eQFIOvHfnvv9IoR3towcwZx
+         ZruQ==
+X-Gm-Message-State: AOJu0YyZ2RdAiHqv+ftNigpYGvgerXIwFh48uPCM4nrhfUvJhTkKIbTj
+	woFSpfotUsa4s40vZuKlfreR8noqzBAB24977Wm8NcgTJeRwDxCLeJQZPQ==
+X-Gm-Gg: ASbGncsKmK5zhMxxTeMAtyVfHBnU+rZHBNSmoPkmKX3Gpbfb3glCI341T80eopyPhBt
+	ivBc2W/zOrEuWnF8ef9JiBJrIkNsQ9J9FckIKt3KuB3SheOnvmp9/uy+oBtwiwBq0Yk9vwqQ6oB
+	tKV0FiPQr2bJUtP4rzc/fhMMi41+QSrhtxiNAeuo7vOJSmEuOJ78zQnwx402eBbWZimZTrPuOXm
+	XjW8o36sydBgM9z57+snDnT+Kv4GP9qbXuTFE7NiEy1VMRx6PhqlNUdImJBL/qZGUdAlSJuz1TT
+	hBfjGbZ6kUoUGe4sYEkLhJ5Xo8sqO1YN0gDmAM9WBE90OKfk8cDZdh4umfivnKB2rw==
+X-Google-Smtp-Source: AGHT+IH9/Fo4E1B3N07qrOIyuvlR9NadN6XdBBkt5NaTf6P0ZdF1ejYbykA87ynS5mPlFs6NPz15+g==
+X-Received: by 2002:a17:902:c948:b0:216:4676:dfb5 with SMTP id d9443c01a7336-220d374d200mr64972765ad.21.1739489546813;
+        Thu, 13 Feb 2025 15:32:26 -0800 (PST)
+Received: from localhost.localdomain (c-76-146-13-146.hsd1.wa.comcast.net. [76.146.13.146])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-220d5584e4dsm17795675ad.210.2025.02.13.15.32.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Feb 2025 15:32:26 -0800 (PST)
+From: Amery Hung <ameryhung@gmail.com>
+To: bpf@vger.kernel.org
+Cc: daniel@iogearbox.net,
+	andrii@kernel.org,
+	alexei.starovoitov@gmail.com,
+	martin.lau@kernel.org,
+	ameryhung@gmail.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v1] selftests/bpf: Fix stdout race condition in traffic monitor
+Date: Thu, 13 Feb 2025 15:32:17 -0800
+Message-ID: <20250213233217.553258-1-ameryhung@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250212222859.2086080-6-ctshao@google.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 12, 2025 at 02:24:56PM -0800, Chun-Tse Shao wrote:
-> This patch also decouple -o with -t, and shows warning to notify the new
-> behavior for -ov.
+Fix a race condition between the main test_progs thread and the traffic
+monitoring thread. The traffic monitor thread tries to print a line
+using multiple printf and use flockfile() to prevent the line from being
+torn apart. Meanwhile, the main thread doing io redirection can reassign
+or close stdout when going through tests. A deadlock as shown below can
+happen.
 
-I think it's better to squash this commit to the previous.
+       main                      traffic_monitor_thread
+       ====                      ======================
+                                 show_transport()
+                                 -> flockfile(stdout)
 
-> 
-> Signed-off-by: Chun-Tse Shao <ctshao@google.com>
-> ---
->  tools/perf/builtin-lock.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-> index 3dc100cf30ef..e16bda6ce525 100644
-> --- a/tools/perf/builtin-lock.c
-> +++ b/tools/perf/builtin-lock.c
-> @@ -1817,7 +1817,7 @@ static void print_contention_result(struct lock_contention *con)
->  			break;
->  	}
->  
-> -	if (con->owner && con->save_callstack) {
-> +	if (con->owner && con->save_callstack && verbose > 0) {
->  		struct rb_root root = RB_ROOT;
->  
->  		if (symbol_conf.field_sep)
-> @@ -1978,6 +1978,11 @@ static int check_lock_contention_options(const struct option *options,
->  		}
->  	}
->  
-> +	if (show_lock_owner && !show_thread_stats) {
-> +		pr_warning("Now -o try to show owner's callstack instead of pid and comm.\n");
-> +		pr_warning("Please use -t option too to keep the old behavior.\n");
-> +	}
-> +
->  	return 0;
->  }
->  
-> @@ -2569,7 +2574,8 @@ int cmd_lock(int argc, const char **argv)
->  		     "Filter specific address/symbol of locks", parse_lock_addr),
->  	OPT_CALLBACK('S', "callstack-filter", NULL, "NAMES",
->  		     "Filter specific function in the callstack", parse_call_stack),
-> -	OPT_BOOLEAN('o', "lock-owner", &show_lock_owner, "show lock owners instead of waiters"),
-> +	OPT_BOOLEAN('o', "lock-owner", &show_lock_owner, "show lock owners instead of waiters.\n"
-> +		"\t\t\tThis option can be combined with -t, which shows owner's per thread lock stats, or -v, which shows owner's stacktrace"),
+stdio_hijack_init()
+-> stdout = open_memstream(log_buf, log_cnt);
+   ...
+   env.subtest_state->stdout_saved = stdout;
 
-I think this description should go to the man page and leave the option
-as is.  You made it to show the warning when it's actually used.
+                                    ...
+                                    funlockfile(stdout)
+stdio_restore_cleanup()
+-> fclose(env.subtest_state->stdout_saved);
 
-Thanks,
-Namhyung
+After the traffic monitor thread lock stdout, A new memstream can be
+assigned to stdout by the main thread. Therefore, the traffic monitor
+thread later will not be able to unlock the original stdout. As the
+main thread tries to access the old stdout, it will hang indefinitely
+as it is still locked by the traffic monitor thread.
 
+The deadlock can be reproduced by running test_progs repeatedly with
+traffic monitor enabled:
 
->  	OPT_STRING_NOEMPTY('x', "field-separator", &symbol_conf.field_sep, "separator",
->  		   "print result in CSV format with custom separator"),
->  	OPT_BOOLEAN(0, "lock-cgroup", &show_lock_cgroups, "show lock stats by cgroup"),
-> -- 
-> 2.48.1.502.g6dc24dfdaf-goog
-> 
+for ((i=1;i<=100;i++)); do
+  ./test_progs -a flow_dissector_skb* -m '*'
+done
+
+Fix this by only calling printf once and remove flockfile()/funlockfile().
+
+Signed-off-by: Amery Hung <ameryhung@gmail.com>
+---
+ tools/testing/selftests/bpf/network_helpers.c | 33 ++++++++-----------
+ 1 file changed, 13 insertions(+), 20 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
+index 80844a5fb1fe..95e943270f35 100644
+--- a/tools/testing/selftests/bpf/network_helpers.c
++++ b/tools/testing/selftests/bpf/network_helpers.c
+@@ -771,12 +771,13 @@ static const char *pkt_type_str(u16 pkt_type)
+ 	return "Unknown";
+ }
+ 
++#define MAX_FLAGS_STRLEN 21
+ /* Show the information of the transport layer in the packet */
+ static void show_transport(const u_char *packet, u16 len, u32 ifindex,
+ 			   const char *src_addr, const char *dst_addr,
+ 			   u16 proto, bool ipv6, u8 pkt_type)
+ {
+-	char *ifname, _ifname[IF_NAMESIZE];
++	char *ifname, _ifname[IF_NAMESIZE], flags[MAX_FLAGS_STRLEN] = "";
+ 	const char *transport_str;
+ 	u16 src_port, dst_port;
+ 	struct udphdr *udp;
+@@ -817,29 +818,21 @@ static void show_transport(const u_char *packet, u16 len, u32 ifindex,
+ 
+ 	/* TCP or UDP*/
+ 
+-	flockfile(stdout);
++	if (proto == IPPROTO_TCP)
++		snprintf(flags, MAX_FLAGS_STRLEN, "%s%s%s%s",
++			 tcp->fin ? ", FIN" : "",
++			 tcp->syn ? ", SYN" : "",
++			 tcp->rst ? ", RST" : "",
++			 tcp->ack ? ", ACK" : "");
++
+ 	if (ipv6)
+-		printf("%-7s %-3s IPv6 %s.%d > %s.%d: %s, length %d",
++		printf("%-7s %-3s IPv6 %s.%d > %s.%d: %s, length %d%s\n",
+ 		       ifname, pkt_type_str(pkt_type), src_addr, src_port,
+-		       dst_addr, dst_port, transport_str, len);
++		       dst_addr, dst_port, transport_str, len, flags);
+ 	else
+-		printf("%-7s %-3s IPv4 %s:%d > %s:%d: %s, length %d",
++		printf("%-7s %-3s IPv4 %s:%d > %s:%d: %s, length %d%s\n",
+ 		       ifname, pkt_type_str(pkt_type), src_addr, src_port,
+-		       dst_addr, dst_port, transport_str, len);
+-
+-	if (proto == IPPROTO_TCP) {
+-		if (tcp->fin)
+-			printf(", FIN");
+-		if (tcp->syn)
+-			printf(", SYN");
+-		if (tcp->rst)
+-			printf(", RST");
+-		if (tcp->ack)
+-			printf(", ACK");
+-	}
+-
+-	printf("\n");
+-	funlockfile(stdout);
++		       dst_addr, dst_port, transport_str, len, flags);
+ }
+ 
+ static void show_ipv6_packet(const u_char *packet, u32 ifindex, u8 pkt_type)
+-- 
+2.47.1
+
 
