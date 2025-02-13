@@ -1,45 +1,47 @@
-Return-Path: <bpf+bounces-51435-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51436-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2027A34A9E
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 17:48:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F65DA349F5
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 17:35:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D83023B9C5B
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 16:31:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 922F718955D9
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 16:31:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACB3F26982D;
-	Thu, 13 Feb 2025 16:19:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A47EA26982E;
+	Thu, 13 Feb 2025 16:19:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NbWkDZ8F"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CBhevxM/"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BA9719AD93
-	for <bpf@vger.kernel.org>; Thu, 13 Feb 2025 16:19:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1321819AD93
+	for <bpf@vger.kernel.org>; Thu, 13 Feb 2025 16:19:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739463587; cv=none; b=nJkUVgdP8XcZC1ZcrNhp+oJiW0PWaePPY+0QUZAAFeiOaJV3oNAjAQ8kCunfvCHFUHrRZf0PR9KH3cpKop1qsN7rxMrNnju2JKt04Yg5AQ5aZwiGIQwh2DMw4hao1NagRBimtB9VI2zv2XOdnGUZWPacFHSAPQhVsg7vIXQAZn8=
+	t=1739463592; cv=none; b=pAKtpeHyFiaykxH0Ue+7rHeiGnIBdKs0wMH9AzJqJj1tM9KYUclsw5S8kF2tSyZsVTH0XVYKuiBGKpCsV8qANyeozURkxrlbwYNbEI0MkhhHGF8E1QoC5HOISC6MXfMufasIGrjocBBOgWLfGRPExWvwbibBKrDOAYFDUBreHjM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739463587; c=relaxed/simple;
-	bh=i9fvyd1nnBt6pkJ9uW0mpDdYqCUukcCHauR7QuWOaxA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aa9NeqWKtHpQ2Vnpj6rYZmcFYgIFvwjRl53B0O4yzJIv4C9TkDM2E2RoB4HLZE4qNgyldJTgXUqz0vf751qvbqkem1r/88JNRUP7ODtRG5/7RD5iBqaZViqUuTKiL9tIeOP6p2d/xlEOO3qH2dplmK7tpP6WWE4iLqvlza613Cc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NbWkDZ8F; arc=none smtp.client-ip=95.215.58.182
+	s=arc-20240116; t=1739463592; c=relaxed/simple;
+	bh=b5pXM/hCyfBI0zzScCywoS8Sc8Qu0XY8/iY/FIq61Ew=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=XQ/X6Lq/1ozVOV5RdoOgjtP3qYZmOdMj2AuKWctVm/trAuXvgEgMptUzLPtDr0MAN55uI7+G40sS51Bi4u3DokQxfr1rCWHJS45ibnrIN8FTNYA94Q0n3e+JVORcAcSB3EmMoGl9Ondkn/Gg1ZtyabmCXnuTz2gF6/8lXDjNbsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CBhevxM/; arc=none smtp.client-ip=95.215.58.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1739463583;
+	t=1739463588;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=XNCiPavwkyZahavRm0Zdbr7T9n5BIUN1tsEWTlOeLhk=;
-	b=NbWkDZ8FUuMtnB+zoLK1orabwWRI4/2nsz7NZYGwsT8gxPyQJBZkfrXWw4A6QYaN/m76mk
-	8n/DtXhY1GubLNC2xievVIjTN/m6qI0+2clGAz8GHgzPbAvGYdZkGIuR5BguwBidTfbzjq
-	yVsV+2gE0h1rPL9YIE2KUtgSpMRIVr8=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=x8Bkq/9scgmLIGiGX2spCt1PK0to1D6pUXaVqUHZvRs=;
+	b=CBhevxM/NK/f3PBTsgbcJOHGE0l/jQmm7yfKC1Cg4KME6L8KTwB9NoLHnKYCKURZsrnsgq
+	XG4FvgCz2jLlcKffAd+0PkpN1WxEvdp4XipIPxbMfkwZUSQOJWB/ESO9CdSUvVJhbda3+I
+	B9y31WKgSBSw0bnwaK9qigdcK0Vx0s0=
 From: Leon Hwang <leon.hwang@linux.dev>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -52,9 +54,11 @@ Cc: ast@kernel.org,
 	dxu@dxuuu.xyz,
 	leon.hwang@linux.dev,
 	kernel-patches-bot@fb.com
-Subject: [RESEND PATCH bpf-next v2 0/4] bpf: Introduce global percpu data
-Date: Fri, 14 Feb 2025 00:19:27 +0800
-Message-ID: <20250213161931.46399-1-leon.hwang@linux.dev>
+Subject: [RESEND PATCH bpf-next v2 1/4] bpf: Introduce global percpu data
+Date: Fri, 14 Feb 2025 00:19:28 +0800
+Message-ID: <20250213161931.46399-2-leon.hwang@linux.dev>
+In-Reply-To: <20250213161931.46399-1-leon.hwang@linux.dev>
+References: <20250213161931.46399-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,79 +68,193 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Sorry for resending this patch set to add "v2" in subject.
+This patch introduces global percpu data, inspired by commit
+6316f78306c1 ("Merge branch 'support-global-data'"). It enables the
+definition of global percpu variables in BPF, similar to the
+DEFINE_PER_CPU() macro in the kernel[0].
 
-This patch set introduces global percpu data, similar to commit
-6316f78306c1 ("Merge branch 'support-global-data'"), to reduce restrictions
-in C for BPF programs.
+For example, in BPF, it is able to define a global percpu variable like:
 
-With this enhancement, it becomes possible to define and use global percpu
-variables, much like the DEFINE_PER_CPU() macro in the kernel[0].
+int data SEC(".percpu");
 
-The idea stems from the bpflbr project[1], which itself was inspired by
-retsnoop[2]. During testing of bpflbr on the v6.6 kernel, two LBR
-(Last Branch Record) entries were observed related to the
+With this patch, tools like retsnoop[1] and bpflbr[2] can simplify their
+BPF code for handling LBRs. The code can be updated from
+
+static struct perf_branch_entry lbrs[1][MAX_LBR_ENTRIES] SEC(".data.lbrs");
+
+to
+
+static struct perf_branch_entry lbrs[MAX_LBR_ENTRIES] SEC(".percpu.lbrs");
+
+This eliminates the need to retrieve the CPU ID using the
 bpf_get_smp_processor_id() helper.
 
-Since commit 1ae6921009e5 ("bpf: inline bpf_get_smp_processor_id() helper"),
-the bpf_get_smp_processor_id() helper has been inlined on x86_64, reducing
-the overhead and consequently minimizing these two LBR records.
-
-However, the introduction of global percpu data offers a more robust
-solution. By leveraging the percpu_array map and percpu instructions,
-global percpu data can be implemented intrinsically.
-
-This feature also facilitates sharing percpu information between tail
-callers and callees or between freplace callers and callees through a
-shared global percpu variable. Previously, this was achieved using a
-1-entry percpu_array map, which this patch set aims to improve upon.
+Additionally, by reusing global percpu data map, sharing information
+between tail callers and callees or freplace callers and callees becomes
+simpler compared to reusing percpu_array maps.
 
 Links:
 [0] https://github.com/torvalds/linux/blob/fbfd64d25c7af3b8695201ebc85efe90be28c5a3/include/linux/percpu-defs.h#L114
-[1] https://github.com/Asphaltt/bpflbr
-[2] https://github.com/anakryiko/retsnoop
+[1] https://github.com/anakryiko/retsnoop
+[2] https://github.com/Asphaltt/bpflbr
 
-Changes:
-v1 -> v2:
-  * Address comments from Andrii:
-    * Use LIBBPF_MAP_PERCPU and SEC_PERCPU.
-    * Reuse mmaped of libbpf's struct bpf_map for .percpu map data.
-    * Set .percpu struct pointer to NULL after loading skeleton.
-    * Make sure value size of .percpu map is __aligned(8).
-    * Use raw_tp and opts.cpu to test global percpu variables on all CPUs.
-  * Address comments from Alexei:
-    * Test non-zero offset of global percpu variable.
-    * Test case about BPF_PSEUDO_MAP_IDX_VALUE.
+Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+---
+ kernel/bpf/arraymap.c | 41 +++++++++++++++++++++++++++++++++++++--
+ kernel/bpf/verifier.c | 45 +++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 84 insertions(+), 2 deletions(-)
 
-rfc -> v1:
-  * Address comments from Andrii:
-    * Keep one image of global percpu variable for all CPUs.
-    * Reject non-ARRAY map in bpf_map_direct_read(), check_reg_const_str(),
-      and check_bpf_snprintf_call() in verifier.
-    * Split out libbpf changes from kernel-side changes.
-    * Use ".percpu" as PERCPU_DATA_SEC.
-    * Use enum libbpf_map_type to distinguish BSS, DATA, RODATA and
-      PERCPU_DATA.
-    * Avoid using errno for checking err from libbpf_num_possible_cpus().
-    * Use "map '%s': " prefix for error message.
-Leon Hwang (4):
-  bpf: Introduce global percpu data
-  bpf, libbpf: Support global percpu data
-  bpf, bpftool: Generate skeleton for global percpu data
-  selftests/bpf: Add cases to test global percpu data
-
- kernel/bpf/arraymap.c                         |  41 +++-
- kernel/bpf/verifier.c                         |  45 ++++
- tools/bpf/bpftool/gen.c                       |  47 +++-
- tools/lib/bpf/libbpf.c                        | 101 ++++++--
- tools/lib/bpf/libbpf.h                        |   9 +
- tools/lib/bpf/libbpf.map                      |   1 +
- tools/testing/selftests/bpf/Makefile          |   2 +-
- .../bpf/prog_tests/global_data_init.c         | 217 +++++++++++++++++-
- .../bpf/progs/test_global_percpu_data.c       |  20 ++
- 9 files changed, 448 insertions(+), 35 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_global_percpu_data.c
-
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index eb28c0f219ee4..322bd42c0edcb 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -249,6 +249,40 @@ static void *percpu_array_map_lookup_elem(struct bpf_map *map, void *key)
+ 	return this_cpu_ptr(array->pptrs[index & array->index_mask]);
+ }
+ 
++static int percpu_array_map_direct_value_addr(const struct bpf_map *map,
++					      u64 *imm, u32 off)
++{
++	struct bpf_array *array = container_of(map, struct bpf_array, map);
++
++	if (map->max_entries != 1)
++		return -EOPNOTSUPP;
++	if (off >= map->value_size)
++		return -EINVAL;
++	if (!bpf_jit_supports_percpu_insn())
++		return -EOPNOTSUPP;
++
++	*imm = (u64) array->pptrs[0];
++	return 0;
++}
++
++static int percpu_array_map_direct_value_meta(const struct bpf_map *map,
++					      u64 imm, u32 *off)
++{
++	struct bpf_array *array = container_of(map, struct bpf_array, map);
++	u64 base = (u64) array->pptrs[0];
++	u64 range = array->elem_size;
++
++	if (map->max_entries != 1)
++		return -EOPNOTSUPP;
++	if (imm < base || imm >= base + range)
++		return -ENOENT;
++	if (!bpf_jit_supports_percpu_insn())
++		return -EOPNOTSUPP;
++
++	*off = imm - base;
++	return 0;
++}
++
+ /* emit BPF instructions equivalent to C code of percpu_array_map_lookup_elem() */
+ static int percpu_array_map_gen_lookup(struct bpf_map *map, struct bpf_insn *insn_buf)
+ {
+@@ -532,9 +566,10 @@ static int array_map_check_btf(const struct bpf_map *map,
+ {
+ 	u32 int_data;
+ 
+-	/* One exception for keyless BTF: .bss/.data/.rodata map */
++	/* One exception for keyless BTF: .bss/.data/.rodata/.percpu map */
+ 	if (btf_type_is_void(key_type)) {
+-		if (map->map_type != BPF_MAP_TYPE_ARRAY ||
++		if ((map->map_type != BPF_MAP_TYPE_ARRAY &&
++		     map->map_type != BPF_MAP_TYPE_PERCPU_ARRAY) ||
+ 		    map->max_entries != 1)
+ 			return -EINVAL;
+ 
+@@ -815,6 +850,8 @@ const struct bpf_map_ops percpu_array_map_ops = {
+ 	.map_get_next_key = array_map_get_next_key,
+ 	.map_lookup_elem = percpu_array_map_lookup_elem,
+ 	.map_gen_lookup = percpu_array_map_gen_lookup,
++	.map_direct_value_addr = percpu_array_map_direct_value_addr,
++	.map_direct_value_meta = percpu_array_map_direct_value_meta,
+ 	.map_update_elem = array_map_update_elem,
+ 	.map_delete_elem = array_map_delete_elem,
+ 	.map_lookup_percpu_elem = percpu_array_map_lookup_percpu_elem,
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 9971c03adfd5d..5682546b1193e 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -6810,6 +6810,8 @@ static int bpf_map_direct_read(struct bpf_map *map, int off, int size, u64 *val,
+ 	u64 addr;
+ 	int err;
+ 
++	if (map->map_type != BPF_MAP_TYPE_ARRAY)
++		return -EINVAL;
+ 	err = map->ops->map_direct_value_addr(map, &addr, off);
+ 	if (err)
+ 		return err;
+@@ -7322,6 +7324,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ 			/* if map is read-only, track its contents as scalars */
+ 			if (tnum_is_const(reg->var_off) &&
+ 			    bpf_map_is_rdonly(map) &&
++			    map->map_type == BPF_MAP_TYPE_ARRAY &&
+ 			    map->ops->map_direct_value_addr) {
+ 				int map_off = off + reg->var_off.value;
+ 				u64 val = 0;
+@@ -9128,6 +9131,11 @@ static int check_reg_const_str(struct bpf_verifier_env *env,
+ 		return -EACCES;
+ 	}
+ 
++	if (map->map_type != BPF_MAP_TYPE_ARRAY) {
++		verbose(env, "only array map supports direct string value access\n");
++		return -EINVAL;
++	}
++
+ 	err = check_map_access(env, regno, reg->off,
+ 			       map->value_size - reg->off, false,
+ 			       ACCESS_HELPER);
+@@ -10802,6 +10810,11 @@ static int check_bpf_snprintf_call(struct bpf_verifier_env *env,
+ 		return -EINVAL;
+ 	num_args = data_len_reg->var_off.value / 8;
+ 
++	if (fmt_map->map_type != BPF_MAP_TYPE_ARRAY) {
++		verbose(env, "only array map supports snprintf\n");
++		return -EINVAL;
++	}
++
+ 	/* fmt being ARG_PTR_TO_CONST_STR guarantees that var_off is const
+ 	 * and map_direct_value_addr is set.
+ 	 */
+@@ -21381,6 +21394,38 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+ 			goto next_insn;
+ 		}
+ 
++#ifdef CONFIG_SMP
++		if (insn->code == (BPF_LD | BPF_IMM | BPF_DW) &&
++		    (insn->src_reg == BPF_PSEUDO_MAP_VALUE ||
++		     insn->src_reg == BPF_PSEUDO_MAP_IDX_VALUE)) {
++			struct bpf_map *map;
++
++			aux = &env->insn_aux_data[i + delta];
++			map = env->used_maps[aux->map_index];
++			if (map->map_type != BPF_MAP_TYPE_PERCPU_ARRAY)
++				goto next_insn;
++
++			/* Reuse the original ld_imm64 insn. And add one
++			 * mov64_percpu_reg insn.
++			 */
++
++			insn_buf[0] = insn[1];
++			insn_buf[1] = BPF_MOV64_PERCPU_REG(insn->dst_reg, insn->dst_reg);
++			cnt = 2;
++
++			i++;
++			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
++			if (!new_prog)
++				return -ENOMEM;
++
++			delta    += cnt - 1;
++			env->prog = prog = new_prog;
++			insn      = new_prog->insnsi + i + delta;
++
++			goto next_insn;
++		}
++#endif
++
+ 		if (insn->code != (BPF_JMP | BPF_CALL))
+ 			goto next_insn;
+ 		if (insn->src_reg == BPF_PSEUDO_CALL)
 -- 
 2.47.1
 
