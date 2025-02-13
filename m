@@ -1,144 +1,179 @@
-Return-Path: <bpf+bounces-51327-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51328-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 324FCA333CE
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 01:08:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6BE0A333DB
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 01:10:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 567B4166E50
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 00:08:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A77F13A6A38
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2025 00:10:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 077252F44;
-	Thu, 13 Feb 2025 00:07:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B6924A29;
+	Thu, 13 Feb 2025 00:10:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TxriRjKa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HbvXWEdb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E7DB1372;
-	Thu, 13 Feb 2025 00:07:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 724971754B;
+	Thu, 13 Feb 2025 00:10:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739405278; cv=none; b=BCbWHREBKH9mv07sZkGNuLItgge6VAFzN8g7JbDawiNBxJNZoy1IMWLGIMcMnd0qAgJ90fEO2xmZTJdmXOsIolCTBxAHgpnY2kBtUo1bUEw0YL/4tL8xFBgt4QQxBDEQwoFJvX3rXQ0X0DAbyWEiNdI+pt6Rito9Tnj1zv8jhfA=
+	t=1739405446; cv=none; b=R5ZIyXYAQkII+kGUOIohHBH4h/hoxKaG3F2FFTEOVtzygAT3erjJ9y23dymqeOG3Eq9EiPAQ/MWxf43yCLT6Z3Mm+zLaw3Nyon3+ACzZZ3h1/RZZpDlj70UF2Qi9iOS6rH36syXaOdIXBzJreRWKhgLE9ytGKe+GgKQ3r67V8Z8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739405278; c=relaxed/simple;
-	bh=NMznk1UMIYoDm+rJ4hNUbPeS0XxK2OH3LPJoLq98XJA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sDoCoJ3vFyolzHiA9UuXLf5aQX1eb9wC1X7fsvTPHaeUdV6nrICZ/LfaUEq4J9BQ/Kf9QMJKA0UplvfzsxBOlGJRkdywSwq+Pmo0288O+o0h9SuS5lERDh8O4UhdZ/AwBuP1jxJyx/sM56bJT+Wj9/iNqIHohgDO/89CD6DKtsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TxriRjKa; arc=none smtp.client-ip=209.85.166.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-3cf8e017abcso767365ab.1;
-        Wed, 12 Feb 2025 16:07:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739405276; x=1740010076; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UPtlUBpGwdFfdn1u7pzV8qzAKEZ9WNRoW9pxUkJsTYo=;
-        b=TxriRjKacsgCIfuR21YYMxKyEAUP95RDVsr8/SDauXLhXbRMtsvVcOhdodZR8QrnaI
-         zniUmAnM4hF4xuYYLt/1BWQo+gMLu6qe7FaBwMWPk3FkeLivsiO9wMS8HDrh52x9YwXg
-         BtVcBDYe7S3Vv7M+iSTVBb/93CT4Sd0YcXupcGiai9tBg5RNnxITHF4vcDH2/KfKd0K/
-         VbpNhg8BJp5ePxi6kDybs+cagpb2cB1dkiIBkTlnkF7eU/meFD9xCsA/cAAyxfwl4PJy
-         B3bOm+Tc5AxcGNYrsmbsGOc0TyIqwRrxyeuK5vroCbyvu/xeLmIm3yLguob9yDmY3qqN
-         TgPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739405276; x=1740010076;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UPtlUBpGwdFfdn1u7pzV8qzAKEZ9WNRoW9pxUkJsTYo=;
-        b=isdZ+Nj4I9Aop/BnodJUSIDo+q/tlUCiO4fOvZ385R/K+nzLQ8QQKhQnxU5YOGqWlT
-         BhZKTAG2vqSFsZKW7K57kzV6TGa9EWmEcqRp6RGfvxGBx1OK4O8nMGIawvvdQ8zapMfd
-         eBgMvvItLWenV+VQ4MqzdU1LMTVWQPbwZ2JJ8v97f1zUGLU3BO7fXmC5T12/nbt8iCXD
-         Oh+DnAKF3N5IO5B7oYesSnNNVtTJiYjNYN0+8Ybn13NaENlATtegYS08sEMVYVxPOUuJ
-         JFGYUA8KvZHLzeSSevbCPP5jAOdCRCq/lyzb2KZLfw8dfSUZQZtUL/HmjQyjPUUnFWo5
-         ts6g==
-X-Forwarded-Encrypted: i=1; AJvYcCVJloNfDMhdYTbsZ0tE8TiFA/qyp4dUH97QY9gNz2EjfOsqFIj5SrF/7Cc60PJa7HI6NCg=@vger.kernel.org, AJvYcCWLYw1314OdlK82QBDhnj5n0UO5KT8uE548PVxct2tlNmC61NS8SBp/2rPOMvz8+OZnPjXj9JSa@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6LW0qcl55bGWy9P/vgQdf7E+BEr3oY0kyeKIxNZNhUgQ6d5kt
-	nQ+G4GQz96Gbdg++DXa9lP7AvAQYhNfu9/H/HXFDbT6vR21EtQ3ROayVqVEBXdFOOrbVhkBFDbI
-	ah5Ebzf7XEuWpvlx8wRMtcYRvxAA=
-X-Gm-Gg: ASbGnctp0NCEHN77S/IPnLWAwo20gTSC9NBl2dHevbKLbkkN7ZrW1HcvfbvmZ6E0uNd
-	PxKuZ9ifmDaBTIEVPx/s0aq9aVZGiV4xhvVNO/Upc+D1hAt3sQiLEsjrq+MHf9xltSW8mgoQz
-X-Google-Smtp-Source: AGHT+IHne9nz+OCdlWoZXbFkEtWu2p2Eal1UmAvAlfjwRnsUHHvMH3ndvO+Mgvv98hoMOIK3hhKovKvjxAKrVLSatwg=
-X-Received: by 2002:a92:ca48:0:b0:3d1:883c:6e84 with SMTP id
- e9e14a558f8ab-3d18c22f15bmr10433845ab.8.1739405276074; Wed, 12 Feb 2025
- 16:07:56 -0800 (PST)
+	s=arc-20240116; t=1739405446; c=relaxed/simple;
+	bh=k0UpztxzmXp3dZXHJw0oYhfBc23L040T2AXt0rcJrWs=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=QfE6H/teT6lZiJqkA3rxG8jNL2Sgtj74pohRyzNyUDkY1kLBjRE9G/p8UR4ErMdQR/5VyVY8mubdfEgne4Eacjf5glGBPA6t4FF5Dzrx+DPn2EMfR40BaMUT7EmS0LFIcMOuGiKqCL0MX5EMAeMP9nY+6vVjKXm/3mFSx1xaH7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HbvXWEdb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD746C4CEE4;
+	Thu, 13 Feb 2025 00:10:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739405444;
+	bh=k0UpztxzmXp3dZXHJw0oYhfBc23L040T2AXt0rcJrWs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=HbvXWEdbv5YXKHAxvnLLO9MRguqiv9BdC2x5i+Rcas/EDQptcDSj5vwafml+0lNYw
+	 HxWgZqKKX6kfYjzbsljjgHd+BbxbFMDNWWuDdiPbK4uZDE1aUpXTSBYBXe8wCRqFO2
+	 sKVElEmzei3vHaB+2nOzri4pMtFVjTKhYX/LZU0JGcigqe26S6vpPZyPJF89zbmHII
+	 gnT50DZ/jvtZfZuWY+kJxt0RUZGgJ8ujzpiYc2PJKi48TzDJB142NVNtc8kI3p4+zE
+	 VVfmI/Ibue6exRPbKFbpWKU0z08g7CODtfNwtIRb5BDFv5u3hLq752VWh+eEz9WOz0
+	 sgJ5Ex8wTcZfw==
+Date: Thu, 13 Feb 2025 09:10:37 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Oleg Nesterov <oleg@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Kees Cook <kees@kernel.org>, Eyal Birger <eyal.birger@gmail.com>,
+ stable@vger.kernel.org, Jann Horn <jannh@google.com>,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-api@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org, Thomas
+ Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Andy
+ Lutomirski <luto@kernel.org>, Deepak Gupta <debug@rivosinc.com>, Stephen
+ Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCHv3 perf/core] uprobes: Harden uretprobe syscall
+ trampoline check
+Message-Id: <20250213091037.1be1b765f3610d1a3f732e41@kernel.org>
+In-Reply-To: <20250212220433.3624297-1-jolsa@kernel.org>
+References: <20250212220433.3624297-1-jolsa@kernel.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250212061855.71154-1-kerneljasonxing@gmail.com>
- <20250212061855.71154-10-kerneljasonxing@gmail.com> <67acbdb3be6b5_1bcd3029470@willemb.c.googlers.com.notmuch>
-In-Reply-To: <67acbdb3be6b5_1bcd3029470@willemb.c.googlers.com.notmuch>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Thu, 13 Feb 2025 08:07:19 +0800
-X-Gm-Features: AWEUYZlspLNXaO0uwKv0r8brZNX60ofeF66Vz1uXYdOosE6utUXFgpmJXSy5A74
-Message-ID: <CAL+tcoA-5noB0rfHwU=FxANd9yifADFoq-vGkkzW=ZJ=BOnGUA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v10 09/12] bpf: add BPF_SOCK_OPS_TS_ACK_OPT_CB callback
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, dsahern@kernel.org, willemb@google.com, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, ykolal@fb.com, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 12, 2025 at 11:26=E2=80=AFPM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> Jason Xing wrote:
-> > Support the ACK case for bpf timestamping.
-> >
-> > Add a new sock_ops callback, BPF_SOCK_OPS_TS_ACK_OPT_CB. This
-> > callback will occur at the same timestamping point as the user
-> > space's SCM_TSTAMP_ACK. The BPF program can use it to get the
-> > same SCM_TSTAMP_ACK timestamp without modifying the user-space
-> > application.
-> >
-> > This patch extends txstamp_ack to two bits: 1 stands for
-> > SO_TIMESTAMPING mode, 2 bpf extension.
-> >
-> > Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
-> > ---
-> >  include/net/tcp.h              | 6 ++++--
-> >  include/uapi/linux/bpf.h       | 5 +++++
-> >  net/core/skbuff.c              | 5 ++++-
-> >  net/dsa/user.c                 | 2 +-
-> >  net/ipv4/tcp.c                 | 2 +-
-> >  net/socket.c                   | 2 +-
-> >  tools/include/uapi/linux/bpf.h | 5 +++++
-> >  7 files changed, 21 insertions(+), 6 deletions(-)
->
-> > diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-> > index 0d704bda6c41..aa080f7ccea4 100644
-> > --- a/net/ipv4/tcp.c
-> > +++ b/net/ipv4/tcp.c
-> > @@ -488,7 +488,7 @@ static void tcp_tx_timestamp(struct sock *sk, struc=
-t sockcm_cookie *sockc)
-> >
-> >               sock_tx_timestamp(sk, sockc, &shinfo->tx_flags);
-> >               if (tsflags & SOF_TIMESTAMPING_TX_ACK)
-> > -                     tcb->txstamp_ack =3D 1;
-> > +                     tcb->txstamp_ack =3D TSTAMP_ACK_SK;
->
-> Similar to the BPF code, should this by |=3D TSTAMP_ACK_SK?
->
-> Does not matter in practice if the BPF setter can never precede this.
+On Wed, 12 Feb 2025 23:04:33 +0100
+Jiri Olsa <jolsa@kernel.org> wrote:
 
-I gave the same thought on this too. We've already fixed the position
-and order (of using socket timestamping and bpf timestamping).
+> Jann reported [1] possible issue when trampoline_check_ip returns
+> address near the bottom of the address space that is allowed to
+> call into the syscall if uretprobes are not set up.
+> 
+> Though the mmap minimum address restrictions will typically prevent
+> creating mappings there, let's make sure uretprobe syscall checks
+> for that.
+> 
+> [1] https://lore.kernel.org/bpf/202502081235.5A6F352985@keescook/T/#m9d416df341b8fbc11737dacbcd29f0054413cbbf
+> Cc: Kees Cook <kees@kernel.org>
+> Cc: Eyal Birger <eyal.birger@gmail.com>
+> Cc: stable@vger.kernel.org
+> Fixes: ff474a78cef5 ("uprobe: Add uretprobe syscall to speed up return probe")
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Reported-by: Jann Horn <jannh@google.com>
+> Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+> Reviewed-by: Kees Cook <kees@kernel.org>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-I have no strong preference. If you insist, I can surely adjust it.
+Looks good to me.
 
-Thanks,
-Jason
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+Thank you,
+
+> ---
+> v3 changes:
+>  - used ~0UL instead of -1 [Alexei]
+>  - used UPROBE_NO_TRAMPOLINE_VADDR in uprobe_get_trampoline_vaddr [Masami]
+>  - added unlikely [Andrii]
+>  - I kept the review/ack tags, because I think the change is basically
+>    the same, please scream otherwise
+> 
+>  arch/x86/kernel/uprobes.c | 14 +++++++++-----
+>  include/linux/uprobes.h   |  2 ++
+>  kernel/events/uprobes.c   |  2 +-
+>  3 files changed, 12 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+> index 5a952c5ea66b..9194695662b2 100644
+> --- a/arch/x86/kernel/uprobes.c
+> +++ b/arch/x86/kernel/uprobes.c
+> @@ -357,19 +357,23 @@ void *arch_uprobe_trampoline(unsigned long *psize)
+>  	return &insn;
+>  }
+>  
+> -static unsigned long trampoline_check_ip(void)
+> +static unsigned long trampoline_check_ip(unsigned long tramp)
+>  {
+> -	unsigned long tramp = uprobe_get_trampoline_vaddr();
+> -
+>  	return tramp + (uretprobe_syscall_check - uretprobe_trampoline_entry);
+>  }
+>  
+>  SYSCALL_DEFINE0(uretprobe)
+>  {
+>  	struct pt_regs *regs = task_pt_regs(current);
+> -	unsigned long err, ip, sp, r11_cx_ax[3];
+> +	unsigned long err, ip, sp, r11_cx_ax[3], tramp;
+> +
+> +	/* If there's no trampoline, we are called from wrong place. */
+> +	tramp = uprobe_get_trampoline_vaddr();
+> +	if (unlikely(tramp == UPROBE_NO_TRAMPOLINE_VADDR))
+> +		goto sigill;
+>  
+> -	if (regs->ip != trampoline_check_ip())
+> +	/* Make sure the ip matches the only allowed sys_uretprobe caller. */
+> +	if (unlikely(regs->ip != trampoline_check_ip(tramp)))
+>  		goto sigill;
+>  
+>  	err = copy_from_user(r11_cx_ax, (void __user *)regs->sp, sizeof(r11_cx_ax));
+> diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+> index a40efdda9052..2e46b69ff0a6 100644
+> --- a/include/linux/uprobes.h
+> +++ b/include/linux/uprobes.h
+> @@ -39,6 +39,8 @@ struct page;
+>  
+>  #define MAX_URETPROBE_DEPTH		64
+>  
+> +#define UPROBE_NO_TRAMPOLINE_VADDR	(~0UL)
+> +
+>  struct uprobe_consumer {
+>  	/*
+>  	 * handler() can return UPROBE_HANDLER_REMOVE to signal the need to
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index 597b9e036e5f..c5d6307bc5bc 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -2156,8 +2156,8 @@ void uprobe_copy_process(struct task_struct *t, unsigned long flags)
+>   */
+>  unsigned long uprobe_get_trampoline_vaddr(void)
+>  {
+> +	unsigned long trampoline_vaddr = UPROBE_NO_TRAMPOLINE_VADDR;
+>  	struct xol_area *area;
+> -	unsigned long trampoline_vaddr = -1;
+>  
+>  	/* Pairs with xol_add_vma() smp_store_release() */
+>  	area = READ_ONCE(current->mm->uprobes_state.xol_area); /* ^^^ */
+> -- 
+> 2.48.1
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
