@@ -1,96 +1,59 @@
-Return-Path: <bpf+bounces-51564-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51565-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90D4AA35D56
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 13:16:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 187DBA35E91
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 14:17:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46C4C169C1C
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 12:16:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4344C3B023D
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 13:12:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4FE9263C65;
-	Fri, 14 Feb 2025 12:16:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09CB1264A68;
+	Fri, 14 Feb 2025 13:12:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FQaLI2qf";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="h5TLJ/yR";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="m5GE2i1i";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="juy6iCGU"
+	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="eINETwg9"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A482120C00B
-	for <bpf@vger.kernel.org>; Fri, 14 Feb 2025 12:16:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72D0E77102;
+	Fri, 14 Feb 2025 13:12:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739535367; cv=none; b=IAFTiBZX6qa6GccaWttvmMK3wpRjezKCcpWyCO+vpgdB89OBK0EqbMUVvRlNqHo7rvKO76tl8/8DPPHl7XusI8OM6yHLtot0zM1OPHOPBeG0U6/iz3/M6wxm5YXYSPHKCxo0I781WyvFfwKAW3JTleI6ExsT0DwLylFOR7Brr2M=
+	t=1739538751; cv=none; b=g+/O6/B7g9pdHznvRW6mXc62nosxfXV8MWWdeIDgpe/gOtHHqErV6mkbGbsAlBU6CH2WqnSPgkoF7jt5xe2Ahf8tx+n9QlTtQiYE1PZPiPThbmimh/Lsx0FCADxCPa0yA5VAQ3R0pAffTVvYPcCLcfytv8NW03CqEBtFF5fUz0E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739535367; c=relaxed/simple;
-	bh=7kj1SNtGeNW6nG1LGMjV1kZoCaWguhNLCK6pAHoXch8=;
+	s=arc-20240116; t=1739538751; c=relaxed/simple;
+	bh=XIXVUyGiBY4A+dcS7TuTQ6R3Me5Pk5BILkImVMByb9g=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NdSmshStVcgyp99QvEuznYcdAvNwlzrXB7/wq6Y1RQFx8+wBRcq/tjHvf3uaD6N8ratvLb6pSR5BcTSxb6jUaVajXHJr4/x8rLr/Ld/2A7mXXu5afbCIT5kFaHFrpdq2aKCyCnCwZeGcTdgkKkeWaRoKAgM9ZKy+0lQ6eXZwvoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=fail smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FQaLI2qf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=h5TLJ/yR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=m5GE2i1i; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=juy6iCGU; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id CDC6C1F381;
-	Fri, 14 Feb 2025 12:15:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1739535358; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=MCRBSZb2GTeLXeTasvV1zCjb846f5UCPrmAPxfeWHiI=;
-	b=FQaLI2qfQe543aX57A9PFTIVCEoGtYmsrwMm/9WgrXsF7LAYjI2zWQ+U7jPNtGhMSp6BRl
-	gR8fjJEKSS5dc1JcXjQyN4LLIpLOs3HX3Q+dljqKliCShXdi0NpcW7LJzikyCXrUf9+fQe
-	snIfTbWIpfPD8Zu+AhkdY2xYHfb4J1s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1739535358;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=MCRBSZb2GTeLXeTasvV1zCjb846f5UCPrmAPxfeWHiI=;
-	b=h5TLJ/yRjjSKoqyxEiU2nT82J0LGOIksOSzD/FgnIb9mjzc9MnQe8SjhopulJumO7r2Lqh
-	XBysN8s0RkPC5xAg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=m5GE2i1i;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=juy6iCGU
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1739535353; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=MCRBSZb2GTeLXeTasvV1zCjb846f5UCPrmAPxfeWHiI=;
-	b=m5GE2i1imK3MPs25wiegfLN9m71vpB0kYz+hNVF3K7XzC2gF2UrQ7xWjGsbiitb9FChXwV
-	upMfOQoe380lz1FP94Dm6JPL5hp/ZI1l0vb0O1IBZRDTSkPanQXl/flJs3Fu25YbHCFLro
-	fN0UXAZFsMw1aMOFDYdcn/RKz0/S+VI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1739535353;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=MCRBSZb2GTeLXeTasvV1zCjb846f5UCPrmAPxfeWHiI=;
-	b=juy6iCGUnBGucd+NZVGgpp5qsawdB3kTapc+/FSfrg+o6MQMeIqIQNF4FmxcPFj8qCIlKg
-	PZ0nQRP9symDbFCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A699113285;
-	Fri, 14 Feb 2025 12:15:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ZRZdKPkzr2dzcgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 14 Feb 2025 12:15:53 +0000
-Message-ID: <cc82c78c-b878-4d9d-b671-7609fd9e7b81@suse.cz>
-Date: Fri, 14 Feb 2025 13:15:53 +0100
+	 In-Reply-To:Content-Type; b=tNi3CjrBtNI6qMTzYCyJjw5164iw/f9zp3StcIJI/DFTeCsZZUpWvAxFhjIUSB3qAT4JVz3pAe5tSpj/4IPIu9IpSK2M53ltBS/F3BmtfK0FV08yT+3q/HD7F553Cy1CvSK6pq6YyaTj8IkgZxOGGE+tUnLexCS9O8O8f5kkXAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=eINETwg9; arc=none smtp.client-ip=185.226.149.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
+Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
+	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.93)
+	(envelope-from <mhal@rbox.co>)
+	id 1tivUB-005Y7W-Qq; Fri, 14 Feb 2025 14:12:03 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
+	s=selector1; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
+	bh=7RKjrxSTjs2wxXMFts5+FNyeheo3/5tiUUsZ7FW5jK4=; b=eINETwg92U0S+n8qS4eibxE9fW
+	Im2OTWqbq4lh7uZDHwqsnwK9VuGyA2ilWH2udCSKWsVlGsoJegkEkntsXU7BSiPJG/S11LEO7oDM1
+	FN8gAlmTQPQedoMtztuuaZJEthsiTJ3hNAtleq+iS6bNt5LBI6lbkmUEMhGLgm0ZlDZHtt4omC63G
+	LM7uwgGl/Rebj7z2bY74+rDOcZEygNfQGt0Jf9V1WxyKr8bsa7mcZABikeWHawL4yLV5dhH7CjKSC
+	jUatECLWksTRgE9kDGo3Dwz6aNK7sdIRoBBr/TIVSiXLF/O7VF3TYAnpAr5Wd4a33pKl6qCLbLLwO
+	rS3N5T5Q==;
+Received: from [10.9.9.74] (helo=submission03.runbox)
+	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
+	(envelope-from <mhal@rbox.co>)
+	id 1tivU0-0008VT-FI; Fri, 14 Feb 2025 14:11:52 +0100
+Received: by submission03.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.93)
+	id 1tivTy-00DGzu-KW; Fri, 14 Feb 2025 14:11:50 +0100
+Message-ID: <251be392-7cd5-4c69-bc02-12c794ea18a1@rbox.co>
+Date: Fri, 14 Feb 2025 14:11:48 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -98,137 +61,198 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v8 3/6] locking/local_lock: Introduce
- localtry_lock_t
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Sebastian Sewior <bigeasy@linutronix.de>,
- Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Shakeel Butt <shakeel.butt@linux.dev>,
- Michal Hocko <mhocko@suse.com>, Matthew Wilcox <willy@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>,
- Tejun Heo <tj@kernel.org>, linux-mm <linux-mm@kvack.org>,
- Kernel Team <kernel-team@fb.com>
-References: <20250213033556.9534-1-alexei.starovoitov@gmail.com>
- <20250213033556.9534-4-alexei.starovoitov@gmail.com>
- <1fda7391-228d-4e10-8449-189be36eb27c@suse.cz>
- <CAADnVQLHRb8fu9J6Yd63ZDBtJFzZN1oWfwSDA_QXFqzXyr9F5g@mail.gmail.com>
-Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- EP+ylKVEKb0Q2A==
-In-Reply-To: <CAADnVQLHRb8fu9J6Yd63ZDBtJFzZN1oWfwSDA_QXFqzXyr9F5g@mail.gmail.com>
+Subject: Re: [PATCH net 1/4] sockmap, vsock: For connectible sockets allow
+ only connected
+To: John Fastabend <john.fastabend@gmail.com>,
+ Jakub Sitnicki <jakub@cloudflare.com>, Eric Dumazet <edumazet@google.com>,
+ Kuniyuki Iwashima <kuniyu@amazon.com>, Paolo Abeni <pabeni@redhat.com>,
+ Willem de Bruijn <willemb@google.com>, "David S. Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Simon Horman <horms@kernel.org>, Stefano Garzarella <sgarzare@redhat.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ Bobby Eshleman <bobby.eshleman@bytedance.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20250213-vsock-listen-sockmap-nullptr-v1-0-994b7cd2f16b@rbox.co>
+ <20250213-vsock-listen-sockmap-nullptr-v1-1-994b7cd2f16b@rbox.co>
+From: Michal Luczaj <mhal@rbox.co>
+Content-Language: pl-PL, en-GB
+In-Reply-To: <20250213-vsock-listen-sockmap-nullptr-v1-1-994b7cd2f16b@rbox.co>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: CDC6C1F381
-X-Spam-Score: -3.01
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_DN_ALL(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,gmail.com,linux-foundation.org,infradead.org,linutronix.de,goodmis.org,huawei.com,cmpxchg.org,linux.dev,suse.com,google.com,kvack.org,fb.com];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	TAGGED_RCPT(0.00)[];
-	RBL_NIXSPAM_FAIL(0.00)[2a07:de40:b281:104:10:150:64:97:query timed out];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Transfer-Encoding: 7bit
 
-On 2/13/25 16:23, Alexei Starovoitov wrote:
-> On Thu, Feb 13, 2025 at 7:04 AM Vlastimil Babka <vbabka@suse.cz> wrote:
->>
->>
->> > +
->> > +#define __localtry_trylock_irqsave(lock, flags)                      \
->> > +     ({                                                      \
->> > +             int __locked;                                   \
->> > +                                                             \
->> > +             typecheck(unsigned long, flags);                \
->> > +             flags = 0;                                      \
->> > +             if (in_nmi() | in_hardirq()) {                  \
->> > +                     __locked = 0;                           \
->>
->> Because of this, IIUC?
+> ...
+> Another design detail is that listening vsocks are not supposed to have any
+> transport assigned at all. Which implies they are not supported by the
+> sockmap. But this is complicated by the fact that a socket, before
+> switching to TCP_LISTEN, may have had some transport assigned during a
+> failed connect() attempt. Hence, we may end up with a listening vsock in a
+> sockmap, which blows up quickly:
 > 
-> Right.
-> It's part of commit log:
-> + In PREEMPT_RT local_lock_irqsave() maps to preemptible spin_lock().
-> + Map localtry_lock_irqsave() to preemptible spin_trylock().
-> + When in hard IRQ or NMI return false right away, since
-> + spin_trylock() is not safe due to PI issues.
-> 
-> Steven explained it in detail in some earlier thread.
-> 
-> realtime is hard. bpf and realtime together are even harder.
-> Things got much better over the years, but plenty of work ahead.
-> I can go in detail, but offtopic for this thread.
+> KASAN: null-ptr-deref in range [0x0000000000000120-0x0000000000000127]
+> CPU: 7 UID: 0 PID: 56 Comm: kworker/7:0 Not tainted 6.14.0-rc1+
+> Workqueue: vsock-loopback vsock_loopback_work
+> RIP: 0010:vsock_read_skb+0x4b/0x90
+> Call Trace:
+>  sk_psock_verdict_data_ready+0xa4/0x2e0
+>  virtio_transport_recv_pkt+0x1ca8/0x2acc
+>  vsock_loopback_work+0x27d/0x3f0
+>  process_one_work+0x846/0x1420
+>  worker_thread+0x5b3/0xf80
+>  kthread+0x35a/0x700
+>  ret_from_fork+0x2d/0x70
+>  ret_from_fork_asm+0x1a/0x30
 
-Thanks, it's fine. Just that the comment of the function could be more clear
-then, so people don't have to check implementation/commit log/lore
-discussions :)
+Perhaps I should have expanded more on the null-ptr-deref itself.
+
+The idea is: force a vsock into assigning a transport and add it to the
+sockmap (with a verdict program), but keep it unconnected. Then, drop
+the transport and set the vsock to TCP_LISTEN. The moment a new
+connection is established:
+
+virtio_transport_recv_pkt()
+  virtio_transport_recv_listen()
+    sk->sk_data_ready(sk)            i.e. sk_psock_verdict_data_ready()
+      ops->read_skb()                i.e. vsock_read_skb()
+        vsk->transport->read_skb()   vsk->transport is NULL, boom
+
+Here's a stand-alone repro:
+
+/*
+ * # modprobe -a vsock_loopback vhost_vsock
+ * # gcc test.c && ./a.out
+ */
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
+#include <sys/socket.h>
+#include <sys/syscall.h>
+#include <linux/bpf.h>
+#include <linux/vm_sockets.h>
+
+static void die(const char *msg)
+{
+	perror(msg);
+	exit(-1);
+}
+
+static int sockmap_create(void)
+{
+	union bpf_attr attr = {
+		.map_type = BPF_MAP_TYPE_SOCKMAP,
+		.key_size = sizeof(int),
+		.value_size = sizeof(int),
+		.max_entries = 1
+	};
+	int map;
+
+	map = syscall(SYS_bpf, BPF_MAP_CREATE, &attr, sizeof(attr));
+	if (map < 0)
+		die("map_create");
+
+	return map;
+}
+
+static void map_update_elem(int fd, int key, int value)
+{
+	union bpf_attr attr = {
+		.map_fd = fd,
+		.key = (uint64_t)&key,
+		.value = (uint64_t)&value,
+		.flags = BPF_ANY
+	};
+
+	if (syscall(SYS_bpf, BPF_MAP_UPDATE_ELEM, &attr, sizeof(attr)))
+		die("map_update_elem");
+}
+
+static int prog_load(void)
+{
+	/* mov %r0, 1; exit */
+	struct bpf_insn insns[] = {
+		{ .code = BPF_ALU64 | BPF_MOV | BPF_K, .dst_reg = 0, .imm = 1 },
+		{ .code = BPF_JMP | BPF_EXIT }
+	};
+	union bpf_attr attr = {
+		.prog_type = BPF_PROG_TYPE_SK_SKB,
+		.insn_cnt = sizeof(insns)/sizeof(insns[0]),
+		.insns = (long)insns,
+		.license = (long)"",
+	};
+	
+	int prog = syscall(SYS_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
+	if (prog < 0)
+		die("prog_load");
+
+	return prog;
+}
+
+static void link_create(int prog_fd, int target_fd)
+{
+	union bpf_attr attr = {
+		.link_create = {
+			.prog_fd = prog_fd,
+			.target_fd = target_fd,
+			.attach_type = BPF_SK_SKB_VERDICT
+		}
+	};
+
+	if (syscall(SYS_bpf, BPF_LINK_CREATE, &attr, sizeof(attr)) < 0)
+		die("link_create");
+}
+
+int main(void)
+{
+	struct sockaddr_vm addr = {
+		.svm_family = AF_VSOCK,
+		.svm_cid = VMADDR_CID_LOCAL,
+		.svm_port = VMADDR_PORT_ANY
+	};
+	socklen_t alen = sizeof(addr);
+	int s, map, prog, c;
+
+	s = socket(AF_VSOCK, SOCK_SEQPACKET, 0);
+	if (s < 0)
+		die("socket");
+
+	if (bind(s, (struct sockaddr *)&addr, alen))
+		die("bind");
+
+	if (!connect(s, (struct sockaddr *)&addr, alen) || errno != ECONNRESET)
+		die("connect #1");
+
+	map = sockmap_create();
+	prog = prog_load();
+	link_create(prog, map);
+	map_update_elem(map, 0, s);
+
+	addr.svm_cid = 0x42424242; /* non-existing */
+	if (!connect(s, (struct sockaddr *)&addr, alen) || errno != ESOCKTNOSUPPORT)
+		die("connect #2");
+
+	if (listen(s, 1))
+		die("listen");
+
+	if (getsockname(s, (struct sockaddr *)&addr, &alen))
+		die("getsockname");
+
+	c = socket(AF_VSOCK, SOCK_SEQPACKET, 0);
+	if (c < 0)
+		die("socket c");
+
+	if (connect(c, (struct sockaddr *)&addr, alen))
+		die("connect #3");
+
+	return 0;
+}
+
 
