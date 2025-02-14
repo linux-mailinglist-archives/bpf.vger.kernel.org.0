@@ -1,155 +1,167 @@
-Return-Path: <bpf+bounces-51618-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51619-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3269AA3682B
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 23:14:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 305E1A36882
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 23:41:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F4ED1890387
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 22:14:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46D793B30F1
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 22:41:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A8F01FC109;
-	Fri, 14 Feb 2025 22:14:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C46F420E6F9;
+	Fri, 14 Feb 2025 22:38:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EYKGEZP9"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sxcAraYI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 347741DDA18;
-	Fri, 14 Feb 2025 22:14:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D80C20E32F
+	for <bpf@vger.kernel.org>; Fri, 14 Feb 2025 22:38:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739571272; cv=none; b=Qb7ujbdRLk63GM4nAEtHpb36Nzvot3P5ChpIpkFNVX+sQuSVLTI2XC6fTogR3x331Q14d6T0bfebML12UZ/sYbe5pCqQU08dug4TQtIn2fzsWqWXCiy/uTAhWQnIDRIdCeAnq/0jDSZDj0l3KuG18Jd6grVCW1UN4S3Bks2t0X0=
+	t=1739572722; cv=none; b=nqb7Eu52Afwp2pc+aS6Q/mCQ/RmsCb6gBK+Ky1js3U3L7wx4/dKHyDfx0PjqOKWvbVGkNf4uWI36fDh3NertefY0s5iEhL8695znIIf4vV5jG2SV77dRGqNJbxp1YDzbgGw+Pwt5JowqBXLMSGkjviHu6oLcByTWHA8JaK1BQdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739571272; c=relaxed/simple;
-	bh=HIsehv+iWAWVMHHYckz3gqMXnT7YI+cVRjsvqR6vsrQ=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lRpCo9FjoVST6lBK6YWsF8YkGWDIEQWp9xsq6W9QjJ5JFkw62iV195bdi7LxjY6mskY9uEq/Fh5vVGP0WuSI0Qt7xKrpF9Oa638m/Ex96bUkr1q+ZpDOeDi1KYAciVnH2MFO1/FPqUezjxIPgplfox19NhGl7jYVrGUY/B2cFiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EYKGEZP9; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5de4d3bbc76so4090234a12.3;
-        Fri, 14 Feb 2025 14:14:30 -0800 (PST)
+	s=arc-20240116; t=1739572722; c=relaxed/simple;
+	bh=C9A3LWRVVEvM4OBlqT9wYA0yWCdJj2Hpz7Z1pzmG8wU=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=kriKWDgx6R6vqbgs8pWC573l+YyiRfv4+WXWMJyspMpIvaJYugWJTGmHXY8y4pXexb+vyhU26PweBGZiLO3Sw4Ytz6lTypMuVC/ZqgcicVSepsd70tqLurI4z+6ZrkAGSEFtr+jj2lDQdoQaWtUyWcp/kTAY3uM8eXqjKP7Ty9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--joshwash.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sxcAraYI; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--joshwash.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-220ec5c16e9so28384295ad.1
+        for <bpf@vger.kernel.org>; Fri, 14 Feb 2025 14:38:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739571269; x=1740176069; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bEB+wipqpxDExoX7XkJyi7zxDfuglvJ+HC5Ljm+PuFY=;
-        b=EYKGEZP95Mh5IUFfOEHxXs2I9qpTnoCE2q/sbx98ayfP2Kb92NBL7w9N2Q3Y1nisDR
-         ulFPQcJA2mNxp/BiFLODSGtO1X5YZt/6C9nRtYmkKfYuRhp19ab0HR4r2rYhznHq1byD
-         xrXUXr31gPU1MpT4dmPlchcoeLI/EJbxjX8f0bGlDTHORPF1S0Du9GabCvbX+4ohEaRM
-         E954HyhnQnpxWdZsoqyUlO5G9fLJKvyNFngqiIwwVTts2iYavQJAMU177YlYvQCsH8cQ
-         RiR+6W7gfVPKLVk3nL20RxgW9FaEqwt2LUCPjbChbAFNBygt3kTgZ9827DPmlKXklbOg
-         qXhQ==
+        d=google.com; s=20230601; t=1739572720; x=1740177520; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=tUNETmfCcN16mATl/cudDdX8wxXBFFNsGuPJIeAzz7o=;
+        b=sxcAraYIu8e44pbbpWvNWlVzGDnWXj9fvzGXJoI3ud6pQhIXCm3l1OyrxGN97VUurH
+         j69o/zPBGz3+GMwqj26NfTzpsVEsCQj3/9gvxgptvmXPmbewn0l6AEoOwqyacqddFdRG
+         KPT4uL+TfceQGU3IIRu2eWBlGcyMJkLz06GWFP8up+JJOBw18bcFs/D1Cs+WmyyzkrAl
+         fusNzDskDpaR13JYdQDSCit5r/ltMjyhJdTsJxanznqxe9JbsZlM7H1nKOJB8QcZzo1j
+         jEhvfjV4ytx485xPX6MnJVmLf3bjTGsuiKV4BN9V30ZvPMDLuhXIJG0tcglJJk5Q06AL
+         4lkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739571269; x=1740176069;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bEB+wipqpxDExoX7XkJyi7zxDfuglvJ+HC5Ljm+PuFY=;
-        b=B/mXjqKwD7TzZE6AUZXztYny1vlYpi9Yrj8JPC4DhNmJizJMlS+/Qfqz9nQwzaHYgQ
-         oAF2WnRpCdnr6KZP/8EJYdcYFFQnwJJ0T6o9SurcNQNPBA5INphKZZ2C2dtjirFcC/9C
-         QYQXW8JxyQF4+++tnYIoltFcDlEguC6t1o4yo1y/AYLuk50Iiwn+YU4/kjFnU+pkBqEN
-         S+UDs9UcsWV3F+2gHw47iDjxBeZlkH6fLoe3MT+XZPXmnsq2zDJULa1niKuHT1CUSeVj
-         GNqhrcvQ1yow6ena8TxqbPldZG1XodgrUqRyqMie/JpHeK3r0l4ghzqUa5G9dSGQ2QzD
-         MIOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUBNVGf7FF6B6I0k4Rr5WWRtuk+xq3++ip9uZS7K5Wr4ZbRgOJ72WPY8UFIrvKWUK6thhmr+lVrj85eWg==@vger.kernel.org, AJvYcCUBtk0+AVl/cF/Qbul9soD61IUE6n29xpTAQIoKkMccBgbVVqVopaDgdiC1igNrZM/dvGI=@vger.kernel.org, AJvYcCVZq7ROyxVQ7xL1NaOry5yXMnmuMyi9TsUM5GPDDA4nweSSIwAu8dz9DBd0CSzol/gKhLP/hCaLoGBBZZcG@vger.kernel.org, AJvYcCW78kdoJUbcS8Ci6PKzpGQPGj2K1sYN09N93CfyCIDPsIFW8zibRlsCocBlczC2r3E5m76+sx9kpPUIoYk6Rk9gMTIC@vger.kernel.org
-X-Gm-Message-State: AOJu0YwGsfeTYTwNLFispEsCCZDhEZnrNEah6/HwYlXIUXxm4UUvm+4g
-	pdYh/EFMuTSm3xX9lKPHYCoW+KSnuRShtalrdY4Pm7duNp305I1x
-X-Gm-Gg: ASbGncu26dkFW4irT/qU9laTdGnVt+5Jwaiq2AFdjjE8qcYp+NT2Yq2sQ68tPCDw8Br
-	SRSQMebSMuk0+YEA9o28s1wCwDEvAVOkaAwSPUz4fn7EH4hA+mziSkYk5Ho1AFf9q8tIJnKRS1m
-	HuJCQtjh2g8GYF+rpwcuyiqmdVcuNaWjbiJG343huimvzS/nJpdSsy6rDk3X9iSLKnaK/FlLW3I
-	xwAYgp+7RvQP8UH/T5hcFlqk1yOSANRMFEuECEIHDFpOhc7VdWpg/+RnQZ62zM0JAdb8ka3P/0e
-	8DR0+9x6BbYFNBpS9s96FZxPROiXWZymowmN
-X-Google-Smtp-Source: AGHT+IGhKMUt6pQQ2eEdpEq9Kp47Mlkh7KYX18Dx2znHH1AwQvYGHh0IRemg9M7NamftnrBLcT9VIw==
-X-Received: by 2002:a05:6402:5210:b0:5de:dc08:9cc5 with SMTP id 4fb4d7f45d1cf-5e0360a1fb6mr766609a12.7.1739571269178;
-        Fri, 14 Feb 2025 14:14:29 -0800 (PST)
-Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5dece1c46b3sm3547034a12.21.2025.02.14.14.14.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Feb 2025 14:14:28 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 14 Feb 2025 23:14:26 +0100
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-kbuild@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-	linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	Zheng Yejian <zhengyejian1@huawei.com>,
-	Martin Kelly <martin.kelly@crowdstrike.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Josh Poimboeuf <jpoimboe@redhat.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>
-Subject: Re: [PATCH v3 4/6] scripts/sorttable: Zero out weak functions in
- mcount_loc table
-Message-ID: <Z6_AQmaUWAekeB5B@krava>
-References: <20250213162047.306074881@goodmis.org>
- <20250213162145.986887092@goodmis.org>
+        d=1e100.net; s=20230601; t=1739572720; x=1740177520;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tUNETmfCcN16mATl/cudDdX8wxXBFFNsGuPJIeAzz7o=;
+        b=A1J3Orl1fuCeweKHgG0czBbIdRqbJc+vFppGe3UZnmS7TMu8GaAtmLvcVArvVHi94z
+         a1LA+e5t7MmwdhhxIiyZO2G9v4nefCqBgiwDO5m3RxTaAdWZUZZaoGoiE7LA/hz5AjNZ
+         9/gxXzswJGOXjVdrTj/JKIWm1lGjhE57wAROtySVRQ2RY8EShyp5MIxz7BtTYaKHNnEq
+         2iSpTtjaq0KMdaOCGnHeAAXF7bEhd7Lln1yjvj51aHKWVVBROJILOAEaGR4YB2P8/QzO
+         HvH8I46A+lDzivL/F7dWT8ZAnujjeIccWuWPPSVwrZmaVQomJE0q909J5wgczn7hstbD
+         xn+A==
+X-Forwarded-Encrypted: i=1; AJvYcCXszXN/3An3zMTdl3+P8G3H8OuNzpToVwqaLuQ60GnnnbaMKB3qy8+lps4bGkmd+yPdMYA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxQx1h0MaQuakC6LIYQq/q1ljdfQJx/qH0SMGjU8ugsfQPh5r0M
+	nDcEoV0nH50/efzpkJhCanVt282zzkr+arQAIm464XEhFz9HUHO2Owo8AGDKq57U1FAK6lpJzpT
+	+8wkq2delMA==
+X-Google-Smtp-Source: AGHT+IGx5EUUJ6Z4zMDYclDQP+PzCMwRDfETHpFgm91+oQRalpeSgNTUDtjKw58EJXrDOCaT//TmCaudpiMQ9Q==
+X-Received: from pfbdn12.prod.google.com ([2002:a05:6a00:498c:b0:730:92d9:52e3])
+ (user=joshwash job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6a20:1583:b0:1ee:8a27:364c with SMTP id adf61e73a8af0-1ee8cbe7e09mr2160416637.34.1739572719877;
+ Fri, 14 Feb 2025 14:38:39 -0800 (PST)
+Date: Fri, 14 Feb 2025 14:38:10 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250213162145.986887092@goodmis.org>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.48.1.601.g30ceb7b040-goog
+Message-ID: <20250214223829.1195855-1-joshwash@google.com>
+Subject: [PATCH] gve: set xdp redirect target only when it is available
+From: joshwash@google.com
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, kuba@kernel.org, stable@kernel.org, 
+	Joshua Washington <joshwash@google.com>, stable@vger.kernel.org, 
+	Praveen Kaligineedi <pkaligineedi@google.com>, Jeroen de Borst <jeroendb@google.com>, 
+	Harshitha Ramamurthy <hramamurthy@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Willem de Bruijn <willemb@google.com>, Ziwei Xiao <ziweixiao@google.com>, 
+	Shailend Chand <shailend@google.com>, open list <linux-kernel@vger.kernel.org>, 
+	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Feb 13, 2025 at 11:20:51AM -0500, Steven Rostedt wrote:
+From: Joshua Washington <joshwash@google.com>
 
-SNIP
+Before this patch the NETDEV_XDP_ACT_NDO_XMIT XDP feature flag is set by
+default as part of driver initialization, and is never cleared. However,
+this flag differs from others in that it is used as an indicator for
+whether the driver is ready to perform the ndo_xdp_xmit operation as
+part of an XDP_REDIRECT. Kernel helpers
+xdp_features_(set|clear)_redirect_target exist to convey this meaning.
 
-> +static int cmp_funcs(const void *A, const void *B)
-> +{
-> +	const struct func_info *a = A;
-> +	const struct func_info *b = B;
-> +
-> +	if (a->addr < b->addr)
-> +		return -1;
-> +	return a->addr > b->addr;
-> +}
-> +
-> +static int parse_symbols(const char *fname)
-> +{
-> +	FILE *fp;
-> +	char addr_str[20]; /* Only need 17, but round up to next int size */
-> +	char size_str[20];
-> +	char type;
-> +
-> +	fp = fopen(fname, "r");
-> +	if (!fp) {
-> +		perror(fname);
-> +		return -1;
-> +	}
-> +
-> +	while (fscanf(fp, "%16s %16s %c %*s\n", addr_str, size_str, &type) == 3) {
-> +		uint64_t addr;
-> +		uint64_t size;
-> +
-> +		/* Only care about functions */
-> +		if (type != 't' && type != 'T')
-> +			continue;
+This patch ensures that the netdev is only reported as a redirect target
+when XDP queues exist to forward traffic.
 
-hi,
-I think we need the 'W' check in here [1]
+Fixes: 39a7f4aa3e4a ("gve: Add XDP REDIRECT support for GQI-QPL format")
+Cc: stable@vger.kernel.org
+Reviewed-by: Praveen Kaligineedi <pkaligineedi@google.com>
+Reviewed-by: Jeroen de Borst <jeroendb@google.com>
+Signed-off-by: Joshua Washington <joshwash@google.com>
+---
+ drivers/net/ethernet/google/gve/gve.h      | 10 ++++++++++
+ drivers/net/ethernet/google/gve/gve_main.c |  6 +++++-
+ 2 files changed, 15 insertions(+), 1 deletion(-)
 
-jirka
+diff --git a/drivers/net/ethernet/google/gve/gve.h b/drivers/net/ethernet/google/gve/gve.h
+index 8167cc5fb0df..78d2a19593d1 100644
+--- a/drivers/net/ethernet/google/gve/gve.h
++++ b/drivers/net/ethernet/google/gve/gve.h
+@@ -1116,6 +1116,16 @@ static inline u32 gve_xdp_tx_start_queue_id(struct gve_priv *priv)
+ 	return gve_xdp_tx_queue_id(priv, 0);
+ }
+ 
++static inline bool gve_supports_xdp_xmit(struct gve_priv *priv)
++{
++	switch (priv->queue_format) {
++	case GVE_GQI_QPL_FORMAT:
++		return true;
++	default:
++		return false;
++	}
++}
++
+ /* gqi napi handler defined in gve_main.c */
+ int gve_napi_poll(struct napi_struct *napi, int budget);
+ 
+diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
+index 533e659b15b3..92237fb0b60c 100644
+--- a/drivers/net/ethernet/google/gve/gve_main.c
++++ b/drivers/net/ethernet/google/gve/gve_main.c
+@@ -1903,6 +1903,8 @@ static void gve_turndown(struct gve_priv *priv)
+ 	/* Stop tx queues */
+ 	netif_tx_disable(priv->dev);
+ 
++	xdp_features_clear_redirect_target(priv->dev);
++
+ 	gve_clear_napi_enabled(priv);
+ 	gve_clear_report_stats(priv);
+ 
+@@ -1972,6 +1974,9 @@ static void gve_turnup(struct gve_priv *priv)
+ 		napi_schedule(&block->napi);
+ 	}
+ 
++	if (priv->num_xdp_queues && gve_supports_xdp_xmit(priv))
++		xdp_features_set_redirect_target(priv->dev, false);
++
+ 	gve_set_napi_enabled(priv);
+ }
+ 
+@@ -2246,7 +2251,6 @@ static void gve_set_netdev_xdp_features(struct gve_priv *priv)
+ 	if (priv->queue_format == GVE_GQI_QPL_FORMAT) {
+ 		xdp_features = NETDEV_XDP_ACT_BASIC;
+ 		xdp_features |= NETDEV_XDP_ACT_REDIRECT;
+-		xdp_features |= NETDEV_XDP_ACT_NDO_XMIT;
+ 		xdp_features |= NETDEV_XDP_ACT_XSK_ZEROCOPY;
+ 	} else {
+ 		xdp_features = 0;
+-- 
+2.48.1.601.g30ceb7b040-goog
 
-
-[1] https://lore.kernel.org/bpf/20250103071409.47db1479@batman.local.home/
 
