@@ -1,198 +1,228 @@
-Return-Path: <bpf+bounces-51530-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51531-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39940A35766
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 07:50:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E481A35777
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 07:57:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1D0E16A17B
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 06:50:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D278188F9FE
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 06:57:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A869B1DE8B6;
-	Fri, 14 Feb 2025 06:49:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95B63204C17;
+	Fri, 14 Feb 2025 06:57:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TNC6mnMs"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B121E18A6D5
-	for <bpf@vger.kernel.org>; Fri, 14 Feb 2025 06:49:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85B241519A9;
+	Fri, 14 Feb 2025 06:56:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739515797; cv=none; b=atlVo5RmPhy/JEXtOefwkRnibyiVwTBeazSjY+aDI8J15Szz3I1U1jI/GT7aNlXVUWGlCEsrZMfRZyaZIoF5YKu6ulWWG2qCUPiQDVpIhq1e41cTgM1Trps07SkS7FKaxYs0PsD7+b5QSrIXSb15lXpPFIKgtfdXKybyQhm8Wk0=
+	t=1739516221; cv=none; b=Z1i3D61hyZFMr9N2OwfOqhrU7yM2F8u357NaHzSx/xzeX3dk8yKcVy6WknI35xW5L7H1rAD7uviKS9LDKqVjJdpjF/M+ec8w7LFHWJOdTJVnykpp94o538Fl9764nQBnA0z/IGgyWnPA7ooFw9P5bInj6/hRUn7gBXDslsM2XBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739515797; c=relaxed/simple;
-	bh=m71kuhIJPT88/xfdJ4bllZLTthipLIrnjFxrzamvudM=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=hNmS8PPACj9cyJ/OxUHwEOdMzLP9Jmu5xvys5DG/5/NfAgdjpNoU1ro8QPt0fYhj668AGjx6Q02skjOJRS91Jkyi0rnEH6YsO3sMbfRovMoeGaDrVD5mrcuZR63rUlFGSujmINKVYXeB+W49LhFYHEkuDVV8iakITUfUqJ1FQHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YvN2P6s9Bz4f3jt3
-	for <bpf@vger.kernel.org>; Fri, 14 Feb 2025 14:49:33 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 170681A0CCC
-	for <bpf@vger.kernel.org>; Fri, 14 Feb 2025 14:49:50 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP4 (Coremail) with SMTP id gCh0CgC3F1yJ565nND43Dw--.59108S2;
-	Fri, 14 Feb 2025 14:49:49 +0800 (CST)
-Subject: Re: [PATCH bpf-next v2 06/20] bpf: Set BPF_INT_F_DYNPTR_IN_KEY
- conditionally
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
- Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Dan Carpenter <dan.carpenter@linaro.org>, Hou Tao <houtao1@huawei.com>,
- Xu Kuohai <xukuohai@huawei.com>
-References: <20250125111109.732718-1-houtao@huaweicloud.com>
- <20250125111109.732718-7-houtao@huaweicloud.com>
- <CAADnVQL+866m69rv+PC_V1y1-PjL4=w3obTwqLPgW3=kA_BjEg@mail.gmail.com>
- <6223b1f5-b491-fcec-b50c-222f1075f952@huaweicloud.com>
- <CAADnVQ+G9YQyj8-Q7UFT9y26tD1Rud_AgRu-D-s1LruYE03NZQ@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <01e5b3ca-86d3-46a9-742a-3b69f378d141@huaweicloud.com>
-Date: Fri, 14 Feb 2025 14:49:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1739516221; c=relaxed/simple;
+	bh=Fec+rZk/W9gK1K5DEsZiJ8DtC/dCtMvlJ3l5jhOQiwc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cXdsEA543VFSFLe2N26XGBCONyAleL5o72SOW4MBojtID7JmKuEp+7FVwMuZko0ZxtFx62FCmIRVgTaFnMmgBYJSBbtiB1JOq9eiAN6yYlcCOJ6cTfj9FRg0PYXqbfxvxWWNseQs/rmJxhqJGsEVB/CLirdWI30tmCkuJ99hmWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TNC6mnMs; arc=none smtp.client-ip=209.85.166.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-3d03ac846a7so5476345ab.2;
+        Thu, 13 Feb 2025 22:56:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739516218; x=1740121018; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y3UYfrgfI+u6YUZkrJkTzUEiGH4tn/5JLev8v5kxCTI=;
+        b=TNC6mnMsscQZOWy1eoqNCIqJzc0zD82Jpk7/jRfnu5GvkJ6YC0hzvJuqUSlOrmPzh4
+         5pe/nci9iN8MKWdOgzYD2gV1XhkaFan1ZEw682pieFlXTtbYI719ynrj1k/HG9pbg9n6
+         vsU444hw+EAJ9QWMdpujlm0He9z4EsVsxzsQ3DndV72JpnoEEkgG4eFbrnozKQ5X56WS
+         zjjLge+mNFlPeXM9M015sR2JvOv1XpOiHNKBnxZ1ncqI3v8LNJiOdDniGOu9mEBNDAC+
+         OOVLK8eCeoMIR2xLzuXUD+RxjvfW3LAemPg01y2sYolCZPtY+fLM6rtqkQwJ1uaub7vw
+         BdtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739516218; x=1740121018;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y3UYfrgfI+u6YUZkrJkTzUEiGH4tn/5JLev8v5kxCTI=;
+        b=I8UKcVpb/2nbAc9BAU7LrjLeEUvmoP4vLSpTMRqZQNzb4Ar8Duxss+f0naZmBL6PlF
+         y85R73yeN7oqXeCIZoVbVi+U47oEJGCjj/1/GGuhbZnLZEgLTA1u5/G9YIT5kNqLPc5k
+         DjQiKj8Oe9H+BO3emEu1/Rs5Juhol8Bi2tuSClb77DUXNp7Tx+pc86mWoDVUaaqzf7JT
+         yeHJAf9LGQr+cB8lFa/omuh/pNBH/Hv4lfWdK3yf7ynHOB55Hx9J2UuDdje6ozbRetjc
+         WNZSwE2T7q8Qw/0FpdArt8fbZbz3wQnH1yFpch3IBTms/8GF6Drf0gbKUH7hN43w6EFB
+         w/tA==
+X-Forwarded-Encrypted: i=1; AJvYcCUYuKfDG33uCe2Qi1PZHNVi7xruomA0hG2+/Tw/G8mKy7eH9VcRvcjWypQfN1hXXAQ/hMk=@vger.kernel.org, AJvYcCXRrcvvuhYB3vENzcKqY435bmkTVn6/I8WxegNrATJiVV1uVnM5JwalLV+DLKPRL1w70C564oGy@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw6WlDAiwVbZc1aEdZvHTPZ+WAkn2EmthyNYhb6xJtm/VnHzIaH
+	gRAhv0c5ZsjAv5hb74zsaQ8EBrKYNMHgrHnUiEDJl9EIWQRFJO6/Pgc6gtqJaOqCN5FzR+XcCTg
+	pT5fEHgRI001NYWjznm3swcZf5sk=
+X-Gm-Gg: ASbGnctAt9gthsrHpGm7H86Vi/+UBI9+skOfxHjvLcz36xXcDTD9psW2+kV39aGIrsU
+	9I0hIXtPTb4BKAZJuzjm3nOTKgsAJfICIZyZ67qWUMUDjU3KYSUjLhGvKH6R1Lu0gJlzs6KU=
+X-Google-Smtp-Source: AGHT+IEQfgHbwxRW6daC4an8k8SMcE/hiFMd/JCnTmBjOqlVHMmb0vJILox+ZEp8Yp2Nme7V0qRYGXPGNu+FX464/jA=
+X-Received: by 2002:a05:6e02:368a:b0:3d1:a26f:e241 with SMTP id
+ e9e14a558f8ab-3d1a26fe440mr3263835ab.7.1739516218456; Thu, 13 Feb 2025
+ 22:56:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQ+G9YQyj8-Q7UFT9y26tD1Rud_AgRu-D-s1LruYE03NZQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:gCh0CgC3F1yJ565nND43Dw--.59108S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGw1furWrJF47Kw1DWFW5Awb_yoWrZr1fpF
-	4xGF1a9r4kJFnrAw42qa15Wr1Fvw4fGryUCF12gryru3Z8Xryfury0ga15uF9I9F15A3Wa
-	vr45Ka4fC3W7ArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4I
-	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
-	WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
-	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
-	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
-	IYCTnIWIevJa73UjIFyTuYvjxUF1v3UUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20250213004355.38918-1-kerneljasonxing@gmail.com>
+ <20250213004355.38918-3-kerneljasonxing@gmail.com> <Z66DL7uda3fwNQfH@mini-arch>
+ <CAL+tcoATv6HX5G6wOrquGyyj8C7bFgRZNnWBwnPTKD1gb4ZD=g@mail.gmail.com>
+ <039bfa0d-3d61-488e-9205-bef39499db6e@linux.dev> <CAL+tcoBAv5QuGeiGYUakhxBwVEsut7Gaa-96YOH03h57jtTVaQ@mail.gmail.com>
+ <86453e67-d5dc-4565-bdd6-6383273ed819@linux.dev> <CAL+tcoApvV0vyiTKdaMWMp8F=ZWSodUg0zD+eq_F6kp=oh=hmA@mail.gmail.com>
+ <b3f30f7d-e0c3-4064-b27e-6e9a18b90076@linux.dev>
+In-Reply-To: <b3f30f7d-e0c3-4064-b27e-6e9a18b90076@linux.dev>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Fri, 14 Feb 2025 14:56:21 +0800
+X-Gm-Features: AWEUYZmGuuAbDAB7AOdm5fCDp5ql6QQtZvUW4793IHuvA53AYBy76HVgsR7U4cg
+Message-ID: <CAL+tcoB2EO_FJis4wp7WkMdEZQyftwuG2X6z0UrJEFaYnSocNg@mail.gmail.com>
+Subject: Re: [PATCH net-next 2/3] bpf: add TCP_BPF_RTO_MAX for bpf_setsockopt
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Stanislav Fomichev <stfomichev@gmail.com>, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, horms@kernel.org, 
+	ncardwell@google.com, kuniyu@amazon.com, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On 2/14/2025 12:17 PM, Alexei Starovoitov wrote:
-> On Thu, Feb 13, 2025 at 8:12 PM Hou Tao <houtao@huaweicloud.com> wrote:
->> Hi,
->>
->> On 2/14/2025 7:56 AM, Alexei Starovoitov wrote:
->>> On Sat, Jan 25, 2025 at 2:59 AM Hou Tao <houtao@huaweicloud.com> wrote:
->>>> From: Hou Tao <houtao1@huawei.com>
->>>>
->>>> When there is bpf_dynptr field in the map key btf type or the map key
->>>> btf type is bpf_dyntr, set BPF_INT_F_DYNPTR_IN_KEY in map_flags.
->>>>
->>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
->>>> ---
->>>>  kernel/bpf/syscall.c | 36 ++++++++++++++++++++++++++++++++++++
->>>>  1 file changed, 36 insertions(+)
->>>>
->>>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->>>> index 07c67ad1a6a07..46b96d062d2db 100644
->>>> --- a/kernel/bpf/syscall.c
->>>> +++ b/kernel/bpf/syscall.c
->>>> @@ -1360,6 +1360,34 @@ static struct btf *get_map_btf(int btf_fd)
->>>>         return btf;
->>>>  }
->>>>
-
-SNIP
->>>>  #define BPF_MAP_CREATE_LAST_FIELD map_token_fd
->>>>  /* called via syscall */
->>>>  static int map_create(union bpf_attr *attr)
->>>> @@ -1398,6 +1426,14 @@ static int map_create(union bpf_attr *attr)
->>>>                 btf = get_map_btf(attr->btf_fd);
->>>>                 if (IS_ERR(btf))
->>>>                         return PTR_ERR(btf);
->>>> +
->>>> +               err = map_has_dynptr_in_key_type(btf, attr->btf_key_type_id, attr->key_size);
->>>> +               if (err < 0)
->>>> +                       goto put_btf;
->>>> +               if (err > 0) {
->>>> +                       attr->map_flags |= BPF_INT_F_DYNPTR_IN_KEY;
->>> I don't like this inband signaling in the uapi field.
->>> The whole refactoring in patch 4 to do patch 6 and
->>> subsequent bpf_map_has_dynptr_key() in various places
->>> feels like reinventing the wheel.
->>>
->>> We already have map_check_btf() mechanism that works for
->>> existing special fields inside BTF.
->>> Please use it.
->> Yes. However map->key_record is only available after the map is created,
->> but the creation of hash map needs to check it before the map is
->> created. Instead of using an internal flag, how about adding extra
->> argument for both ->map_alloc_check() and ->map_alloc() as proposed in
->> the commit message of the previous patch ?
->>> map_has_dynptr_in_key_type() can be done in map_check_btf()
->>> after map is created, no ?
->> No. both ->map_alloc_check() and ->map_alloc() need to know whether
->> dynptr is enabled (as explained in the previous commit message). Both of
->> these functions are called before the map is created.
-> Is that the explanation?
-> "
-> The reason for an internal map flag is twofolds:
-> 1) user doesn't need to set the map flag explicitly
-> map_create() will use the presence of bpf_dynptr in map key as an
-> indicator of enabling dynptr key.
-> 2) avoid adding new arguments for ->map_alloc_check() and ->map_alloc()
-> map_create() needs to pass the supported status of dynptr key to
-> ->map_alloc_check (e.g., check the maximum length of dynptr data size)
-> and ->map_alloc (e.g., check whether dynptr key fits current map type).
-> Adding new arguments for these callbacks to achieve that will introduce
-> too much churns.
+On Fri, Feb 14, 2025 at 2:40=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
 >
-> Therefore, the patch uses the topmost bit of map_flags as the internal
-> map flag. map_create() checks whether the internal flag is set in the
-> beginning and bpf_map_get_info_by_fd() clears the internal flag before
-> returns the map flags to userspace.
-> "
+> On 2/13/25 10:12 PM, Jason Xing wrote:
+> > On Fri, Feb 14, 2025 at 1:41=E2=80=AFPM Martin KaFai Lau <martin.lau@li=
+nux.dev> wrote:
+> >>
+> >> On 2/13/25 7:09 PM, Jason Xing wrote:
+> >>> On Fri, Feb 14, 2025 at 10:14=E2=80=AFAM Martin KaFai Lau <martin.lau=
+@linux.dev> wrote:
+> >>>>
+> >>>> On 2/13/25 3:57 PM, Jason Xing wrote:
+> >>>>> On Fri, Feb 14, 2025 at 7:41=E2=80=AFAM Stanislav Fomichev<stfomich=
+ev@gmail.com> wrote:
+> >>>>>> On 02/13, Jason Xing wrote:
+> >>>>>>> Support bpf_setsockopt() to set the maximum value of RTO for
+> >>>>>>> BPF program.
+> >>>>>>>
+> >>>>>>> Signed-off-by: Jason Xing<kerneljasonxing@gmail.com>
+> >>>>>>> ---
+> >>>>>>>     Documentation/networking/ip-sysctl.rst | 3 ++-
+> >>>>>>>     include/uapi/linux/bpf.h               | 2 ++
+> >>>>>>>     net/core/filter.c                      | 6 ++++++
+> >>>>>>>     tools/include/uapi/linux/bpf.h         | 2 ++
+> >>>>>>>     4 files changed, 12 insertions(+), 1 deletion(-)
+> >>>>>>>
+> >>>>>>> diff --git a/Documentation/networking/ip-sysctl.rst b/Documentati=
+on/networking/ip-sysctl.rst
+> >>>>>>> index 054561f8dcae..78eb0959438a 100644
+> >>>>>>> --- a/Documentation/networking/ip-sysctl.rst
+> >>>>>>> +++ b/Documentation/networking/ip-sysctl.rst
+> >>>>>>> @@ -1241,7 +1241,8 @@ tcp_rto_min_us - INTEGER
+> >>>>>>>
+> >>>>>>>     tcp_rto_max_ms - INTEGER
+> >>>>>>>          Maximal TCP retransmission timeout (in ms).
+> >>>>>>> -     Note that TCP_RTO_MAX_MS socket option has higher precedenc=
+e.
+> >>>>>>> +     Note that TCP_BPF_RTO_MAX and TCP_RTO_MAX_MS socket option =
+have the
+> >>>>>>> +     higher precedence for configuring this setting.
+> >>>>>> The cover letter needs more explanation about the motivation.
+> >>>>
+> >>>> +1
+> >>>>
+> >>>> I haven't looked at the patches. The cover letter has no word on the=
+ use case.
+> >>
+> >> The question was your _use case_ in bpf. Not what the TCP_RTO_MAX_MS d=
+oes. Your
+> >> current use case is to have bpf setting it after reading the tcp heade=
+r option,
+> >> like the selftest in patch 3?
+> >
+> > Oops, I misunderstood the real situation of the tcp header option
+> > test. My intention is to bpf_setsockopt() just like setget_sockopt
+> > does.
+> >
+> > Thanks for reminding me. I will totally remove the header test in the
+> > next version.
 >
-> As commented in the other patch map_extra can be dropped (I hope).
-> When it's gone, the map can be destroyed after creation in map_check_btf().
-> What am I missing?
+> If your use case was in the header, it is ok although it won't be the fir=
+st
 
-If I understanding correctly, you are suggesting to replace
-(map->map_flags & BPF_INT_F_DYNPTR_IN_KEY) with !!map->key_record, right
-? And you also don't want to move map_check_btf() before the invocation
-of ->map_alloc_check() and ->map_alloc(), right ? However, beside the
-checking of map_extra, ->map_alloc_check() also needs to know whether
-the dynptr-typed key is suitable for current hash map type or map flags.
-->map_alloc() also needs to allocate a bpf mem allocator for the dynptr
-key. So are you proposing the following steps for creating a dynkey hash
-map:
+I was planning to add a simple test to only see if the rto max for bpf
+feature works, so I found the rto min selftests and then did a similar
+one.
 
-1) ->map_alloc_check()
-no change
+> useful place I have in my mind. Regardless, it is useful to say a few wor=
+ds
+> where you are planning to set it in the bpf. During a cb in sockops or du=
+ring
+> socket create ...etc. Without it, we can only guess from the selftest :(
 
-2) ->map_alloc()
-allocate bpf mem allocator for dynptr unconditionally
+I see your point. After evaluating and comparing those two tests, I
+think the setsock_opt is a better place to go. Do we even apply the
+use of rto min to setsock_opt as well?
 
-3) map_check_btf()
-invokes an new map callback (e.g., ->map_alloc_post_check()) to check
-whether the created map is mismatched with the dynptr key and destroy it
-if it is.
+What do you think?
 
-?
+>
+> >
+> >>
+> >>>
+> >>> I will add and copy some words from Eric's patch series :)
+> >>
+> >>
+> >>>>> I am targeting the net-next tree because of recent changes[1] made =
+by
+> >>>>> Eric. It probably hasn't merged into the bpf-next tree.
+> >>>>
+> >>>> There is the bpf-next/net tree. It should have the needed changes.
+> >>>
+> >>> [1] was recently merged in the net-next tree, so the only one branch =
+I
+> >>> can target is net-next.
+> >>>
+> >>> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.=
+git/commit/?id=3Dae9b3c0e79bc
+> >>>
+> >>> Am I missing something?
+> >>
+> >> There is a net branch:
+>                ^^^
+>
+> >> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+> >
+> > But this branch hasn't included the rto max feature. I was trying to
+>
+> Which branch? I was talking about the **net** branch. Not the master bran=
+ch. Try
+> to pull again if your local copy does not have it. The net branch should =
+have
+> the TCP_RTO_MAX_MS patches.
 
+Oh, I always use the master branch, never heard of net branch. You're
+right, I checked out the net branch and then found it. Thanks.
 
+One more thing I have to ask in advance is that in this case what the
+title looks like? [patch bpf] or [patch bpf net]?
+
+Thanks,
+Jason
+
+>
+> > say that what I wrote is based on the rto max feature which only
+> > exists in the net-next tree for now.
+> >
+>
+>
 
