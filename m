@@ -1,62 +1,62 @@
-Return-Path: <bpf+bounces-51591-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51592-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85453A36650
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 20:42:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACEB9A36653
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 20:43:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80593189497F
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 19:42:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFF6A3B290B
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 19:42:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F8AD1DB127;
-	Fri, 14 Feb 2025 19:42:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C01C1DC070;
+	Fri, 14 Feb 2025 19:42:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="fkJc0Ru4"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="QybbOVze"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2067.outbound.protection.outlook.com [40.107.93.67])
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2069.outbound.protection.outlook.com [40.107.92.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E19E51DA31F;
-	Fri, 14 Feb 2025 19:42:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B6801D8E07;
+	Fri, 14 Feb 2025 19:42:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.69
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739562128; cv=fail; b=kFcHaTHr4M+o8ljRLr3Il7IBt5VqdRmKI2L7zhEdvQsfFWNpBT5+bLCL9ra96kFFiQVf69C8A8NW2i62QZTjFaLBTXyWEDC9NjY01mxEy69hFleAfPcwSvthBrBbS3ZwZ6MV06VB7LFQHZYtYwUvcQ8zpuDuMQ9e+hNeFXJVM6A=
+	t=1739562133; cv=fail; b=Y58CDLh7N8N2F0hvoHSxCNm+XrYc4ddzkVscyhr1VKa9KkBKZXjXRJP18MCQz/DoBKbDyOtLLj8xmXrKNc/FyB3dfG48aFpd2Xom707lKQfoPCoK05OvpZmD+KOLKTDDwIOUpuBjyzNXO59sGzjQCYGr8L5S1nFSo78EDrSz7G8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739562128; c=relaxed/simple;
-	bh=pVAiNBUT6jVisQKGQ7Va71KZvIlnoTy2TLlx0HM4OSc=;
+	s=arc-20240116; t=1739562133; c=relaxed/simple;
+	bh=CItsehmqbdTccVtapmnGN5dnL03FZ+kLAg26xi1qK9o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=L7sl+UUgooxgTvpmOKbVTOs3WVZpqZOPCWbqntLPCugVnk6FgSvyFibl2FOtRkb/w37zX2SguRwqgbFEsMP2FQbJhGPNAlx9rMFALC7MfSVFGuFWnbcPQQclzh2hjFxFpP5tL76V2XvU3/G3ww1QLNe87RBiQrO2IhkJfjhK+d8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=fkJc0Ru4; arc=fail smtp.client-ip=40.107.93.67
+	 Content-Type:MIME-Version; b=Cf8PN87bCxitTIMQkcMORSCPgM8fGKpQMzDavdBOo1qBftQx+h70p2Ni8Pa0vF0rac+w4PsJh8TVr5fIwniV6yYyP6nJsuZBAx/RI0HAVAo3aNxTTO85HMl/A3graT443WsqDh40+2nuKrW/rG/VRYPaDOigMwkOO0gItkhILIo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=QybbOVze; arc=fail smtp.client-ip=40.107.92.69
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=kgn25fYO+gBevTF5pxKKuU7/L6vW1zql0PUiPemGvoM/2fl8VMSeAikFD2CKr9tpN8PSR/iiehrW7+RFsAINCjJly7jPo7Mf7tM9z65VEEgcharBooV5mCWWLvcTKklp3onxu6/V0v3UYuhuJKCTrGaTvKkDVjN1QoFFGqULu9VVvOHOuR/sPgWxc5qp3GlQqjEXtggCREzmX4qFAWuhKHm/hROpWwKwXpixZi3Pe7PIwvyrGxMOC7gBPSW9ocoPpdP1gWY286LAFTdFAc0JwmFUNlkk7WF6ZCacDTt4ej9OFlpRZ4vrmfT8xSDkbudoOmNIjX4q5mevOwOqhLQA2Q==
+ b=le+/Ch97s24D3MZcCsj109OLScQqUa043gJ75qb4hpjsIJjGqU1jpmJGnlT0Z6lZFcd9aH8n2rpheuPOfVZFrXHgkJpPFZJnqqgxa8tiEwQEjIgMdHcYc+bWDZwWa4gtynU14MWpNLo33I1U6pU+AXWOe8QTH21sTzWZs+tLEVZxHjTGVmZ3E6fG3DQYPp5RhsbJ0Nbv6O5501qUdmdknZorJfFLvWIjEy5wOuI3Q/odQaVl1SbRW0INVa1DJzztykFGt/lFLlrlG2sJ32cbpkrYReMdNiIh9h/Brd7AZy/SX1JlBMvyRYp4ztMLPA9KH2aNI4ubZTjRplrv1IFIAA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bHIKu4nBCiUgwyvw8fABVAjzYFlRa1GSTcgtMxEW9K0=;
- b=yIY+QTqYk4eDFb1aTJce0kFKwdnEKh/B7oz2kETiwBWCcbRWmXV1Rbx9yBGCBVsDYdQkXY9vpTKKmqlIYsUm4XERf+GTWDmLHGTAjUEWf32bTQLP/8gkVaKq7qNRNvKgD3+tjbVRolzIwcnVLeTMW5HHU66QL6Oooss2BxwI1lLuTDIhxHpKUah2neofxRV+BHY5XfW//nVV11SZUUKSrN+Z3jwh1a8/AENxOlWX0EbPHVca0ncibJo3ZB76Kb7hUpv/wW2giQ5oJ+bgDa5o3MnvyuPLZvnS3IDpDRkH2P5uOZXgHjG/uHjjxj0VSULBARHjvTiFNIBq5NHhcv6EMg==
+ bh=EkYo7l1lX54LOJduEAk6T7PRoCqM4p2mBOaSQz+O2Fs=;
+ b=xrdoXekAbX2So9WVGNNIXx39A1g7RkTCPQiELmJELDubkW975cj2B0vPPmXiOd9H+4ia9uhip4A2X/VTVVqA3QvLsht/IO+YGUF0h8BMjl153Y38edFIMJO8xjlRYNr3HgjPUmQW3KpSXZWBBAQVpmE8KzvfDu141Bmf6PwjJ/w5AMvcgW68RuSVQ0j78NV9c95UToOWgB8ZmvrxlW8ObtuvPYSQQ7/GG0APmEa0XbnB6RrpXLwN/vwICrpKcbkgPEOB9jHhU24Re3hWgrjehpoOxNU03eZiz0QEdgAm2T3yCkODk3qvGWpYycDYW/shEGFNaENXiMJA90Iicr9fWA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bHIKu4nBCiUgwyvw8fABVAjzYFlRa1GSTcgtMxEW9K0=;
- b=fkJc0Ru4yE+/mfS/ZGjh5bQ2YgOzF5kV2M5yfQkcZ2UH2bXr8tQa9XDhxA6Jzu3JL4doD57RzPVelbMBJvTzytqXK7fhgvIPU9qb++45yaSHGPDCCg7vaw5Tw3TQe+HQ6VagRGq3mgl2iLa9ijubnMZeREHKJeEeIhkjjlZ03FWUmWoQYE3lCwPz7EMlWylG37M3QLoGPvz3baWlb60neXF2u2c9Lg41qHt6dSeZUghN68YlkIrWgHsKSMaTiOxX+n6Afe/dtapGOyQjaq4AXTUTxeQUJObLrYo/1VhFtM9cRoTOVoGkMnN6Advu+KnqJLGCQf7Mi2TZyIMWpnwo3A==
+ bh=EkYo7l1lX54LOJduEAk6T7PRoCqM4p2mBOaSQz+O2Fs=;
+ b=QybbOVzeXkS+P8Ok0qDaYzfIlZzA6oQu+oXZy7yKjIeJsYrp91Q7LXvAX72jrmAdBEZ5mb4oW7O4EDsBRT1b8IOzLv+7H9g/VEQ7WRf581UTS414O1yicEce4c0SHHJp3HGNV/UkWZWof90S0+Hrs/V4jMuHyI5D5Eg9nDoEme+u8t6HM377xOyc1XQxZtw3F7M2TtShLPTUIA70w4WUQPRmnylgZB0bj1PWP4gQajhFgYr6sMH7+UyKDux6ZzN5qpExj01o+OfVZ+lVi13zIS3MWkJtlfvycAswXyhTZXrUrCU+rNWp/psKFl146HUFDulT1Pj3WFUyZbfQflEs/g==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from CY5PR12MB6405.namprd12.prod.outlook.com (2603:10b6:930:3e::17)
  by MN2PR12MB4360.namprd12.prod.outlook.com (2603:10b6:208:266::21) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8445.18; Fri, 14 Feb
- 2025 19:42:03 +0000
+ 2025 19:42:07 +0000
 Received: from CY5PR12MB6405.namprd12.prod.outlook.com
  ([fe80::2119:c96c:b455:53b5]) by CY5PR12MB6405.namprd12.prod.outlook.com
  ([fe80::2119:c96c:b455:53b5%7]) with mapi id 15.20.8445.013; Fri, 14 Feb 2025
- 19:42:03 +0000
+ 19:42:07 +0000
 From: Andrea Righi <arighi@nvidia.com>
 To: Tejun Heo <tj@kernel.org>,
 	David Vernet <void@manifault.com>,
@@ -75,16 +75,16 @@ Cc: Yury Norov <yury.norov@gmail.com>,
 	Ian May <ianm@nvidia.com>,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 4/8] sched/topology: Introduce for_each_node_numadist() iterator
-Date: Fri, 14 Feb 2025 20:40:03 +0100
-Message-ID: <20250214194134.658939-5-arighi@nvidia.com>
+Subject: [PATCH 5/8] sched_ext: idle: Make idle static keys private
+Date: Fri, 14 Feb 2025 20:40:04 +0100
+Message-ID: <20250214194134.658939-6-arighi@nvidia.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250214194134.658939-1-arighi@nvidia.com>
 References: <20250214194134.658939-1-arighi@nvidia.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: FR4P281CA0203.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:e5::6) To CY5PR12MB6405.namprd12.prod.outlook.com
+X-ClientProxiedBy: FR4P281CA0201.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:e5::17) To CY5PR12MB6405.namprd12.prod.outlook.com
  (2603:10b6:930:3e::17)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -94,177 +94,227 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: CY5PR12MB6405:EE_|MN2PR12MB4360:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6c72032e-eee2-449d-1598-08dd4d2fa7d8
+X-MS-Office365-Filtering-Correlation-Id: 5dd5258a-0184-4ec7-1716-08dd4d2faa97
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?USYEpbzV9TypuRHFDA2cvoBT5GX6AzjQxMhdBBlZby0/Cw3unrtkOg5Kapuz?=
- =?us-ascii?Q?B1Qtg6Pj97VSULVgcvoneeRKBGpTKHKVFSDzywkgJ38x4O4UP0jTkeJMA2VG?=
- =?us-ascii?Q?Y4YJfK2UxRUORfzLytSKqpmbGnp/QQocA0+PY6cF9eVf1UIZfxbbH8i9qI7n?=
- =?us-ascii?Q?xbCWK1OuqXHmn3uGU8FBn8Cp4OUqA4oHfvdyTHiomzGl5AoWWHGDDvRNY6E7?=
- =?us-ascii?Q?9LyT5QEQTCumw+S361w+RH+cIOJlz7/SsgDKK/OfVeMou7CWrcu5WQidxfoo?=
- =?us-ascii?Q?SRljwT+TY5kev3IvTgkeNJDXWn9wNHtaXtzH0uw67mkzUAyBwKfnwsxdsGlM?=
- =?us-ascii?Q?LHczBr6G/TVbQOyKjQZG7FX41GSwR/PoId+F4j/i0ba7u76bwRKAUXX0kzcb?=
- =?us-ascii?Q?qQw/gjNoW03JanYKWY7ImCvKZ0Iy3D2qTBw14S8fDHF9EpOt/zpr4p5/x44s?=
- =?us-ascii?Q?9Me6gO5af/nXHmcKZRJLhB4sQzPoRF0nmykCawGHkDQcglI9uE+WmVNf9bzz?=
- =?us-ascii?Q?HCsSSrv+7tIuzaXi2uT1061oryslUZMEzs1GXuIwJuSLX6/ZtoqKs0eo/Drx?=
- =?us-ascii?Q?mVxCIbKS83mIpN6M/oVVQ3dfd+YOlKJ8xcKs5Vh/S1vu61Q6JdGtNc9Gezdu?=
- =?us-ascii?Q?3/aZD+ldkZsYDhzPFgixxPwWrFunreTs842qDGRGuFK9CAY5hrMNSQPr/g9L?=
- =?us-ascii?Q?6f7gvuR/imutWfef1Sqe5ziG8bMgmknNC40gQutUyKJyzKsB2JOl7xxsFBUj?=
- =?us-ascii?Q?zUFfZoKWWIybRePhZjEgVeGtKmpL//KANl9qJrP1TnTQlLaPLCz/JpkGTjgN?=
- =?us-ascii?Q?ysuq0eiqFA4zOM+ULs0x/D3UjGQSYS31Ao302myqi/wfYd+U/6O6OTkmGmLH?=
- =?us-ascii?Q?ljT5kRa+U7p+XZWqXuYbOgI9lvIneVoYGEhYCB7UynnOMVJYuF+uwV4EiiRg?=
- =?us-ascii?Q?8EC0onTN6O4DVoGKSZT8E10enU/wMqGxwTqhGup2g+z8tyUZ+yBQ99WSVyDh?=
- =?us-ascii?Q?K+HyMyLVRXVdmMNWgXmm8sIsmeDqXvScoxKBbox4SEP77l9Nnm8BJSHpT020?=
- =?us-ascii?Q?UZUGyiuGpnAnNedoSWJZBmfxZCKbvwa4T7r8Joc0ETo9MwguhFIbVPyKPo7T?=
- =?us-ascii?Q?cxU4xsUWbmxL8hpUrjtVpWj+u/AuHzL4+XqpmhmWSLGUZ1tJDRUF9aqjNxZD?=
- =?us-ascii?Q?edg5SvGkUb/PJ2AYw7jda3KBXVsni054YU2lN7qeh2l+jgprQMltF/Em8g6Z?=
- =?us-ascii?Q?fVhfEUxQNNJf3pP6v3d5NW4cu8PjHfDVH8bnb99Febo6jmQSrm3DHOqLwn/J?=
- =?us-ascii?Q?RORplTuaxXh9LkgAimcMzSQ7l6/JMdFDwAk91hkkaXgrGcz9eVc2It9ow9P3?=
- =?us-ascii?Q?LuXcBWVekGEPf5cQ/KtB3gtW1MQJ?=
+	=?us-ascii?Q?UmumLfuZYnpFuytHPVlr14sDllgvY66x9IoptGAriARla5r+hBiMTpT2vjsi?=
+ =?us-ascii?Q?6gfgB1ZXOH1Ba3cQFD2BFzvJZIliNNEclu//zxlH+Em/CkXrHGlabGNe4ylF?=
+ =?us-ascii?Q?cyAZQkatixje2fDR7e/jYVU8YlZG085EqD9WWdo783qNM5KnMfpEejCArhw+?=
+ =?us-ascii?Q?n7FDVVxA+6w5/EPry8u6+dfPJWqKYJQuJUyJ83qpbYw0EGsFavuu3bnjS4LN?=
+ =?us-ascii?Q?IROJfXlThlBflhYWwPFuiUWlyd+64FnUoH+s5aRtPmHtR4ubw6+rhKqTATyQ?=
+ =?us-ascii?Q?gbDVMRhk9yqa9HZ6rYujI5fn7+s/wBhAGwl47yPFrzb566vTQLDnScPZeyTy?=
+ =?us-ascii?Q?+1WcSXg4ef4k0EIGHvUmtTciqVK3YFfl1szJz/wTket3/lEGBdK2TP1QmZq+?=
+ =?us-ascii?Q?okZvY9YjZUdUuAfvKThqWFI2MPtEvYIzjVUUWHSAdEyByT+J1kfyp9Bmp938?=
+ =?us-ascii?Q?mDwd+kpfFmoK4GhO66isi8N/Y0RT8ZcsSJi0OZAGITilxSK90cZELiSXsx73?=
+ =?us-ascii?Q?QtucCPRrC1k9o14FqIvfUkCPDSYoGJbSbo72fPTKMdt7Mixwl6wpojkbEFcc?=
+ =?us-ascii?Q?O1uNhjY1uvKmvlB94W1rj7ghpOWrwqyM5NQXjhZy4z3+kdxZBxf1O2ozAC/x?=
+ =?us-ascii?Q?A4J/eT7ALnfY3qRTCA3z5pKjeLPXpxElEynosDdV91421TOjTOoZCjGS7p18?=
+ =?us-ascii?Q?xBE4nrcJJ/A9L2n6n856kcJnqjWA8cblgkaP7w1f9tYsc0hv07t2DiKiXJ7v?=
+ =?us-ascii?Q?TcO/a9vz2u0PDV6JtXeLtfYSVo3/ruCdigNbKszyYC2q2LUalcO23+OIP/ye?=
+ =?us-ascii?Q?xqA9iXeolI0c6MX2bciKBhVWamEaqet5VNSoO7gLOgxheiLjZe0znXagoz+w?=
+ =?us-ascii?Q?pCpc1wCF3oqc6oTdGkd/7r/R6TOLcJYIJurZonESKUKaE1NAR26W1RgJ6hC8?=
+ =?us-ascii?Q?0FhzgC0vo5SvL8oYwcl3fv9uIfQWCYCZMzGWH0S7rKCm67cVh43120iOp4vL?=
+ =?us-ascii?Q?hRH0ThUMoDYpHUr+xsZ5Gu+W7xEePgQhVnQg/c9q/p3AGZvWo3Fnsfk3ntaV?=
+ =?us-ascii?Q?6HU5NGQmhmTSCN0iegwxtUEhRWOHgSnKJZJl9jjXaQ3XiGUpS8UT1zbF/geJ?=
+ =?us-ascii?Q?YnT8/X4jcy2n8IXw/d8ijayFSFz89L6kiOg0MG3ak2ZBIFWqAIm3XTA07kUr?=
+ =?us-ascii?Q?WESCXcnb+Gnownf4LxGCzIWVntZ+YraHmx6/yfpYhcw3g1Pjfvmly7aLnN1p?=
+ =?us-ascii?Q?X4YVfagOCuhWS5yscgaVcoOcCKce7Y4vUwXqRnjqlKgFkQpAfIRFzg+QwMXy?=
+ =?us-ascii?Q?/hPqYAOE640xNnBxcdXx2fv0wbbEr5tLZsBn3qmWsx+575MBUfiFAKmkdPfE?=
+ =?us-ascii?Q?VEXypDzOlWLG4Osdpkpc0zrF7pZy?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6405.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?RImc71S43xn+6AkZwNlFPvkTUB+Lai3fyf59otAVjE0LutrIkbJMdCNQm8aj?=
- =?us-ascii?Q?6h1UaoWx/AtWEV/IuOMGOvASdvFlhex1NfmgHx3N/Ru6G0Rstwo3eY9vNvNE?=
- =?us-ascii?Q?5t5AUG6bjO/JKsn+E1TezPW9BOztltVhzhkmAnJjvhxvfRHM+Whi2yIFgEZG?=
- =?us-ascii?Q?Odx5q+LQse6FHFL5uG4YZz6ztcgAoQ1cPSEfrXwW8ZB4JP8CWH3K8sb/TVPQ?=
- =?us-ascii?Q?eXycdk8rTvF+eTH/oNSGe0fQiXMDF0DRJOhdeF2mnHIkRTtJdLlnWeRre/KV?=
- =?us-ascii?Q?wkVLYVUFH4UUVmxlDnvs/MD4Pqz3zVOJmenST4LUO+O6F/yJSA4scRZHQerm?=
- =?us-ascii?Q?d+Nyrjz/uDlNJx6TMWBcIlcjAPs+gllb1bWkBU/AIPNXl8JyW1/LL2Q65T5s?=
- =?us-ascii?Q?hg5wfK1O09tThBQCswF8/Q1yy4Wutbyr/x8NnU+qjouOMA1ApbwdT1hYyZ+v?=
- =?us-ascii?Q?XnCUqW3JxNy1vUN5VSzE98So1PCTojmzr7U0yawFvBKRKg8eklqJR2bWrrSy?=
- =?us-ascii?Q?K79mjVNcoeLft4G2yxINytHzj/XAdLQQ5+2IqisHW3+nBXf2bQKq3qb8VJMt?=
- =?us-ascii?Q?lP/aDdRC71SHTZP3NPStq2zsoAk6VlwJJ9TEtNO1ph/8NUffK7Iy8bc05qXl?=
- =?us-ascii?Q?1NdhGFDarrrplDVbSejwQBoqLjlDVXHhORnU/BGZZVVDFuIbQE2dYBNDazbR?=
- =?us-ascii?Q?8DcsJik8O9GkUBvuGdVGblcxFucREBsxIMLe1wShcFNxhRdpdw7b4qZpHwmF?=
- =?us-ascii?Q?sDzrkgr6TEl4+c9skwt6uEarhsNDvXEwZvsA7JcHcaGOygHAd3Bobxfd40z1?=
- =?us-ascii?Q?sPtOJYpOD7cX3qTcbIKlqU61IXMALWt/EBWv6/r2WRUAY7Y0X/pLsLTjcgGl?=
- =?us-ascii?Q?cv1f0knI0f0F6nfWUjRpk61+/2jqF/dzyNmtRCc3MBL3behshAJRsEn4YzhB?=
- =?us-ascii?Q?sE3tga2zPuD3V4mku5/ofqZHmQBqcHSUStacCSRtdXmFUgumPLP2ECJ/96gQ?=
- =?us-ascii?Q?l/sVaRLol2DQks/jmNhSBGewZ0AHHxllcLAWNIgiEzxg7GBcpuebPSaTHnpm?=
- =?us-ascii?Q?SYvj4g4sv3E9u3qSju4qloyQ8MMSzJuSBsVBmUIaX5qAmtYpjgk9ABctsXHc?=
- =?us-ascii?Q?qRTtNjUnlUHgnDnY2jQ9AE1MAmEjAtBV3LrVfQOyBMMFIAFb3b8MGtJEo3OW?=
- =?us-ascii?Q?krK9xLSY+f71fCBojc9QyL8p7sac6Xg6sTpsuFrfqR4f5z+LDLSjwkSXABGZ?=
- =?us-ascii?Q?OPLSKGwqacp6bW5v0CY6dfs/7zFTTXJID4zAAKCpQTLN4NG108J0XH6MTX03?=
- =?us-ascii?Q?ZwEJtK4F3ciHyztEbOQpbaE8dOWtXew5kgtXOI4cRJcrcnOilkAD7kpNBgy5?=
- =?us-ascii?Q?0wsgUTBxqJkf9WbsxNasNtVDg5hSHOZ+FrEbs2+mmbgHpdwopIxnRrTTv3pN?=
- =?us-ascii?Q?2KSyU/1b/Oier8fzm7cgcGKclWaHfHNYWEaAkcjfVbLYFAJVW9KJ74Tde3tW?=
- =?us-ascii?Q?BtwRDT3kfA1LT3FTYLFWVbdKz/5gUzw5ViYmOn98LE5Fca4dCi4IrUQ31tMu?=
- =?us-ascii?Q?i6xDUizQYfzZovEOfL5BnTc6VQCeynyXl/M/+BbS?=
+	=?us-ascii?Q?yNuIFJusOWomKzmm8iG8p74VX23WZyaVUMJ7RAjm3WHfx8f8FVOz8E5lmkhE?=
+ =?us-ascii?Q?TGKCP7ZEW53Sapr3NkI4RtAQtuk+Q7xHu5qflINN03OL33dinPSfG0bl8jmk?=
+ =?us-ascii?Q?Bn6cRtljIkkhivPe17drYbO3Md7uR7nll6sVWkZa9/W4W1/qrXDZTza3oiwz?=
+ =?us-ascii?Q?4sUZhDBEqfm6726BI8n+gct3+H2TfHFCRsMwmeLNfs+dAVXAV9O3k555gzgE?=
+ =?us-ascii?Q?pXvgTmGFvCX7GYoR41DxCs+hL0RImH5OgNw/075AkX5P17F4JYF6yvziqjN5?=
+ =?us-ascii?Q?oylwoVHj4mZFKbVpJX4WZE6bc32RgIV23+0H1gE3034hr6G4QXI9aGi8pIQ+?=
+ =?us-ascii?Q?cvaAYMDYOQyd1LOjRTkjpi1OSvSsC8Pyb28hfg2eKCa+A6h+nlQAQZ6sGyYR?=
+ =?us-ascii?Q?X1RH+E2Svbufg+Xe8W8t4N6i1D/Tk1iCRUoHDLBx2re6R4SQ/ieMFS0wzHMo?=
+ =?us-ascii?Q?kKWOppUfAdvKNgtxQrjuP7KKH5FGp/SVyQ3AQ9vVHQ/R5RxgVZqjjwWJ9x39?=
+ =?us-ascii?Q?pM0XdKkvfMQ8eEEWgokjPn7uz2amkSMirscqpZRkY7IJxPz+idrb2Ygq0MIw?=
+ =?us-ascii?Q?/av7jlsDPsnB1ZbqkpzY4Wd7mrH2bCieZgehLNRsgdDZRaRyC5yeqBSJq5qr?=
+ =?us-ascii?Q?hz/AqOnfgTTbSw4IFOoYk5fdB1d/L+5bOTTE6HqUIIfqe5HAZmQ7TWkK+JJz?=
+ =?us-ascii?Q?ev/na+SF0s0ExqV9isH289YA78MH5JH5zF7Jo7WKti3y1K8iBzmbBk5FtdrI?=
+ =?us-ascii?Q?TgROmhBVVN4oJ6EEM/NeXf5J4RyUnmk5yMNxliL082QS6l16dFsPy1OwYyHg?=
+ =?us-ascii?Q?BSStARTTQqJJnBueCXoWd+xNmEf+93CnsKBsQYdcEC1yyCF196pibjS45d8G?=
+ =?us-ascii?Q?63BnicFVFHADETnET0eA8tDNAZhjOpfI+iN2EeuGNsgpBgT8inmhXbPTwtV8?=
+ =?us-ascii?Q?me41N3X4n6M4235DjMNFy61tevhQHhARjOD9aPMAsDib6m5vLKUpuzQQ9fOR?=
+ =?us-ascii?Q?fYCT/2Vbj3kaWfWwx10Zkd5DtIKi0aNt0BCfClAbfVr56hPl/rzzUy7jj35C?=
+ =?us-ascii?Q?cW+WX/05Qio6XXs6NpWwkTIvTeBteL6RMpD4OxqC0tcTDuMs1sMX0zNDjUgz?=
+ =?us-ascii?Q?DtIBiTmz1t2+P8ZBXTZFnyLi7JO7AjhmwjHCsuxJOD6awD9Y1WHRZB+gfyyk?=
+ =?us-ascii?Q?rdBiWgxEHyMuNer8eEuCygRk9OJMqlcysUkMUbcfzvXHUBYXTc5wQMX170z2?=
+ =?us-ascii?Q?r05dpoOif88W/4c/yU/pvVP4enZp+7fAYSrjWtAOfGHOaGqjQMgiUqEzDsX8?=
+ =?us-ascii?Q?57l6iLkr+2WaTXjpsIfjI0nq72xO0u9gIISZkH7i1jfdxH/j0hr8hSMWIQQE?=
+ =?us-ascii?Q?qITX0UYkmIk6760H8rpLMI7b3cKbHW10gZZKM45S4JM0tXs2PNe5vLuf5Bcf?=
+ =?us-ascii?Q?Hyd2f8om5YNdGbmwYhtOV/WK9S6mmScVaWZIKv/EN3f6dTKvNE0rNWq4LIjW?=
+ =?us-ascii?Q?KgRX7QlCpN1v0At4w3ASAnmtne0h5wATaT6wvhfGsFmnWASVLdzx+nUScfGH?=
+ =?us-ascii?Q?W00y94bwiGrrRF/nLIeF8L9TRh2ybhlYkFHiOvxI?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6c72032e-eee2-449d-1598-08dd4d2fa7d8
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5dd5258a-0184-4ec7-1716-08dd4d2faa97
 X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6405.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2025 19:42:03.2657
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2025 19:42:07.8156
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Aj+r+qJJMGQ3yTR14tHJWK23rUUy5rXDDVo114GBNLGrKcujBNLz90P2JO1sbk4hB3OfgiSPhML8jTI4i7hcwA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: T1AZuWVTVFnooCxw7AjZnbw23tlefjCcwjAhzd7UmJGZ9YsWH8jLgI6vW/5WCQbHByND7BHweqn0jyDAbMMuhg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4360
 
-Introduce the new helper for_each_node_numadist() to iterate over node
-IDs in order of increasing NUMA distance from a given starting node.
+Make all the static keys used by the idle CPU selection policy private
+to ext_idle.c. This avoids unnecessary exposure in headers and improves
+code encapsulation.
 
-This iterator is somehow similar to for_each_numa_hop_mask(), but
-instead of providing a cpumask at each iteration, it provides a node ID.
-
-Example usage:
-
-  nodemask_t unvisited = NODE_MASK_ALL;
-  int node, start = cpu_to_node(smp_processor_id());
-
-  node = start;
-  for_each_node_numadist(node, unvisited)
-  	pr_info("node (%d, %d) -> %d\n",
-  		 start, node, node_distance(start, node));
-
-On a system with equidistant nodes:
-
- $ numactl -H
- ...
- node distances:
- node     0    1    2    3
-    0:   10   20   20   20
-    1:   20   10   20   20
-    2:   20   20   10   20
-    3:   20   20   20   10
-
-Output of the example above (on node 0):
-
-[    7.367022] node (0, 0) -> 10
-[    7.367151] node (0, 1) -> 20
-[    7.367186] node (0, 2) -> 20
-[    7.367247] node (0, 3) -> 20
-
-On a system with non-equidistant nodes (simulated using virtme-ng):
-
- $ numactl -H
- ...
- node distances:
- node     0    1    2    3
-    0:   10   51   31   41
-    1:   51   10   21   61
-    2:   31   21   10   11
-    3:   41   61   11   10
-
-Output of the example above (on node 0):
-
- [    8.953644] node (0, 0) -> 10
- [    8.953712] node (0, 2) -> 31
- [    8.953764] node (0, 3) -> 41
- [    8.953817] node (0, 1) -> 51
-
-Suggested-by: Yury Norov [NVIDIA] <yury.norov@gmail.com>
+Cc: Yury Norov [NVIDIA] <yury.norov@gmail.com>
 Signed-off-by: Andrea Righi <arighi@nvidia.com>
 ---
- include/linux/topology.h | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ kernel/sched/ext.c      |  9 ++-------
+ kernel/sched/ext_idle.c | 39 ++++++++++++++++++++++++++-------------
+ kernel/sched/ext_idle.h | 12 ++++--------
+ 3 files changed, 32 insertions(+), 28 deletions(-)
 
-diff --git a/include/linux/topology.h b/include/linux/topology.h
-index 52f5850730b3e..a1815f4395ab6 100644
---- a/include/linux/topology.h
-+++ b/include/linux/topology.h
-@@ -261,6 +261,36 @@ sched_numa_hop_mask(unsigned int node, unsigned int hops)
- }
- #endif	/* CONFIG_NUMA */
+diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
+index aec098efd6fbc..7c17e05ed15b1 100644
+--- a/kernel/sched/ext.c
++++ b/kernel/sched/ext.c
+@@ -4765,7 +4765,7 @@ static void scx_ops_disable_workfn(struct kthread_work *work)
+ 	static_branch_disable(&scx_ops_enq_exiting);
+ 	static_branch_disable(&scx_ops_enq_migration_disabled);
+ 	static_branch_disable(&scx_ops_cpu_preempt);
+-	static_branch_disable(&scx_builtin_idle_enabled);
++	scx_idle_disable();
+ 	synchronize_rcu();
  
-+/**
-+ * for_each_node_numadist() - iterate over nodes in increasing distance
-+ *			      order, starting from a given node
-+ * @node: the iteration variable and the starting node.
-+ * @unvisited: a nodemask to keep track of the unvisited nodes.
-+ *
-+ * This macro iterates over NUMA node IDs in increasing distance from the
-+ * starting @node and yields MAX_NUMNODES when all the nodes have been
-+ * visited.
-+ *
-+ * Note that by the time the loop completes, the @unvisited nodemask will
-+ * be fully cleared, unless the loop exits early.
-+ *
-+ * The difference between for_each_node() and for_each_node_numadist() is
-+ * that the former allows to iterate over nodes in numerical order, whereas
-+ * the latter iterates over nodes in increasing order of distance.
-+ *
-+ * This complexity of this iterator is O(N^2), where N represents the
-+ * number of nodes, as each iteration involves scanning all nodes to
-+ * find the one with the shortest distance.
-+ *
-+ * Requires rcu_lock to be held.
-+ */
-+#define for_each_node_numadist(node, unvisited)					\
-+	for (int __start = (node),						\
-+	     (node) = nearest_node_nodemask((__start), &(unvisited));		\
-+	     (node) < MAX_NUMNODES;						\
-+	     node_clear((node), (unvisited)),					\
-+	     (node) = nearest_node_nodemask((__start), &(unvisited)))
+ 	if (ei->kind >= SCX_EXIT_ERROR) {
+@@ -5403,12 +5403,7 @@ static int scx_ops_enable(struct sched_ext_ops *ops, struct bpf_link *link)
+ 	if (scx_ops.cpu_acquire || scx_ops.cpu_release)
+ 		static_branch_enable(&scx_ops_cpu_preempt);
+ 
+-	if (!ops->update_idle || (ops->flags & SCX_OPS_KEEP_BUILTIN_IDLE)) {
+-		scx_idle_reset_masks();
+-		static_branch_enable(&scx_builtin_idle_enabled);
+-	} else {
+-		static_branch_disable(&scx_builtin_idle_enabled);
+-	}
++	scx_idle_enable(ops);
+ 
+ 	/*
+ 	 * Lock out forks, cgroup on/offlining and moves before opening the
+diff --git a/kernel/sched/ext_idle.c b/kernel/sched/ext_idle.c
+index cb981956005b4..ed1804506585b 100644
+--- a/kernel/sched/ext_idle.c
++++ b/kernel/sched/ext_idle.c
+@@ -12,7 +12,7 @@
+ #include "ext_idle.h"
+ 
+ /* Enable/disable built-in idle CPU selection policy */
+-DEFINE_STATIC_KEY_FALSE(scx_builtin_idle_enabled);
++static DEFINE_STATIC_KEY_FALSE(scx_builtin_idle_enabled);
+ 
+ #ifdef CONFIG_SMP
+ #ifdef CONFIG_CPUMASK_OFFSTACK
+@@ -22,10 +22,10 @@ DEFINE_STATIC_KEY_FALSE(scx_builtin_idle_enabled);
+ #endif
+ 
+ /* Enable/disable LLC aware optimizations */
+-DEFINE_STATIC_KEY_FALSE(scx_selcpu_topo_llc);
++static DEFINE_STATIC_KEY_FALSE(scx_selcpu_topo_llc);
+ 
+ /* Enable/disable NUMA aware optimizations */
+-DEFINE_STATIC_KEY_FALSE(scx_selcpu_topo_numa);
++static DEFINE_STATIC_KEY_FALSE(scx_selcpu_topo_numa);
+ 
+ static struct {
+ 	cpumask_var_t cpu;
+@@ -441,16 +441,6 @@ s32 scx_select_cpu_dfl(struct task_struct *p, s32 prev_cpu, u64 wake_flags, bool
+ 	return cpu;
+ }
+ 
+-void scx_idle_reset_masks(void)
+-{
+-	/*
+-	 * Consider all online cpus idle. Should converge to the actual state
+-	 * quickly.
+-	 */
+-	cpumask_copy(idle_masks.cpu, cpu_online_mask);
+-	cpumask_copy(idle_masks.smt, cpu_online_mask);
+-}
+-
+ void scx_idle_init_masks(void)
+ {
+ 	BUG_ON(!alloc_cpumask_var(&idle_masks.cpu, GFP_KERNEL));
+@@ -532,6 +522,29 @@ void __scx_update_idle(struct rq *rq, bool idle, bool do_notify)
+ }
+ #endif	/* CONFIG_SMP */
+ 
++void scx_idle_enable(struct sched_ext_ops *ops)
++{
++	if (ops->update_idle && !(ops->flags & SCX_OPS_KEEP_BUILTIN_IDLE)) {
++		static_branch_disable(&scx_builtin_idle_enabled);
++		return;
++	}
++	static_branch_enable(&scx_builtin_idle_enabled);
 +
- /**
-  * for_each_numa_hop_mask - iterate over cpumasks of increasing NUMA distance
-  *                          from a given node.
++#ifdef CONFIG_SMP
++	/*
++	 * Consider all online cpus idle. Should converge to the actual state
++	 * quickly.
++	 */
++	cpumask_copy(idle_masks.cpu, cpu_online_mask);
++	cpumask_copy(idle_masks.smt, cpu_online_mask);
++#endif
++}
++
++void scx_idle_disable(void)
++{
++	static_branch_disable(&scx_builtin_idle_enabled);
++}
++
+ /********************************************************************************
+  * Helpers that can be called from the BPF scheduler.
+  */
+diff --git a/kernel/sched/ext_idle.h b/kernel/sched/ext_idle.h
+index 7a13a74815ba7..bbac0fd9a5ddd 100644
+--- a/kernel/sched/ext_idle.h
++++ b/kernel/sched/ext_idle.h
+@@ -10,20 +10,15 @@
+ #ifndef _KERNEL_SCHED_EXT_IDLE_H
+ #define _KERNEL_SCHED_EXT_IDLE_H
+ 
+-extern struct static_key_false scx_builtin_idle_enabled;
++struct sched_ext_ops;
+ 
+ #ifdef CONFIG_SMP
+-extern struct static_key_false scx_selcpu_topo_llc;
+-extern struct static_key_false scx_selcpu_topo_numa;
+-
+ void scx_idle_update_selcpu_topology(void);
+-void scx_idle_reset_masks(void);
+ void scx_idle_init_masks(void);
+ bool scx_idle_test_and_clear_cpu(int cpu);
+ s32 scx_pick_idle_cpu(const struct cpumask *cpus_allowed, u64 flags);
+ #else /* !CONFIG_SMP */
+ static inline void scx_idle_update_selcpu_topology(void) {}
+-static inline void scx_idle_reset_masks(void) {}
+ static inline void scx_idle_init_masks(void) {}
+ static inline bool scx_idle_test_and_clear_cpu(int cpu) { return false; }
+ static inline s32 scx_pick_idle_cpu(const struct cpumask *cpus_allowed, u64 flags)
+@@ -33,7 +28,8 @@ static inline s32 scx_pick_idle_cpu(const struct cpumask *cpus_allowed, u64 flag
+ #endif /* CONFIG_SMP */
+ 
+ s32 scx_select_cpu_dfl(struct task_struct *p, s32 prev_cpu, u64 wake_flags, bool *found);
+-
+-extern int scx_idle_init(void);
++void scx_idle_enable(struct sched_ext_ops *ops);
++void scx_idle_disable(void);
++int scx_idle_init(void);
+ 
+ #endif /* _KERNEL_SCHED_EXT_IDLE_H */
 -- 
 2.48.1
 
