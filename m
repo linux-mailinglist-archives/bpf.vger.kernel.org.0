@@ -1,421 +1,190 @@
-Return-Path: <bpf+bounces-51489-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51490-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E1F7A35324
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 01:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A8821A35343
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 01:51:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA3381891382
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 00:42:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D1181890537
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 00:51:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CB05134D4;
-	Fri, 14 Feb 2025 00:40:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84369C8C7;
+	Fri, 14 Feb 2025 00:51:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="lweEzeTt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cY96gbqG"
 X-Original-To: bpf@vger.kernel.org
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03olkn2069.outbound.protection.outlook.com [40.92.59.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85B971863E;
-	Fri, 14 Feb 2025 00:40:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.59.69
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739493625; cv=fail; b=YoohuAwCCap/9ncYFW9M1OC4hgeyayWisybsWqskQRk7FCJyGkOb4+6LwfAd6rAs4gkI9brrmMOsbkFHoUjHFEQw1uLfxLBQRxk+9G+jtSfPX65aiKCh78g8YXiAVeUpjx9EJUeuyemxn6uf/qTDbvDmj5U8TI39Mog4e6OnNNU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739493625; c=relaxed/simple;
-	bh=RHyu8iP9eN84DuDluqXLOKucNdaptC5YwmTdZnn7RWI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Hec5PcK+7EESQI2tpDGV3bT3GGg4Zn0DsBxl8T9JVBTWMTFVMu59O8X767IUpsPpgAPgnyOszKwSids1GGtxXSjvet3G5xNgbd1BbWMsgBaZc/pI6aHlma3RCJoAuAJyG2ZVw0oQz/rCG5cVGzz57Kqei/YxmdT3E93QWL2t9vI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=lweEzeTt; arc=fail smtp.client-ip=40.92.59.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Ol9wg5ddCn0YyuImE441AVA8yWyxUqcaZK4YpHT/44tLDMve6zU5dJAVzBTtGtZcfSDmRfdZZIrvTaRJgujVdP4UTcyCWg6pKuAw+g63DAp4xuEUwhDD0oHvuZDXheBD4Vpe0nU1JIbhpPS9PvfQrk6ICLLJszUzJkVtcnlirUyGzYrpZP/B3/ODo6q7Fo0cMVKXEP8Pb4P2xJhkXYY/qKNc3qKonsTQrXhUhca/heZS3x0BfbaUlxaVsz+pb2eQyuimjKbdkeXpWtSzNy2c2pvR2vypsz9vpEX4DaZCJlWU/tzkDt3jI3SWFsFc0nV8vh+635MEocT7nTkz8Wn0dQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iSaGOC+54QbVHkXb7qIbugj3rZQ0zRzi4tXZEVfEh28=;
- b=hPjxLpJCeuiCCEx1aiEYUm9sSltipysyMnHFJUg8HcyYu/fkKFwgcvckbupgN3NWmwgpQ0oAWgKvBDP99aA+z7oivCRDnaL0XTZ8gkJ8p2N+hLsDWvFECjJjRU9UF5rHf1yGci/6Py3FkoFtzhukD6Ju0jvSsc07QL/vgjp9YXbk1qW+K9rnF+WAxW6IpjX6Ksa3tYP2kXjUIIbDAqNI/PQ7HxvY9E18KGXWmd+Xz7YXmS2tLu9ntzFnMZxpbkzYTyneHxscWqJiFzEJfLV1oKiuk4jW/oT1d+rfkzJRMrXBspSQsiNS/xA0/aHLmCHI+4+RTukPv9P4YQWfQnGd4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iSaGOC+54QbVHkXb7qIbugj3rZQ0zRzi4tXZEVfEh28=;
- b=lweEzeTtkVKNxub6QNh0oQPwLiBR8YU8YgPT8BG6gzejgOwXm1ldkFLTZlGQT9REWGHg8m8ubuDsJxdmhC5mf/QEddy8aq+4O8/PYJE1AQThMzSm6BYf3dkLGkQqP7vjMYTtxWD9cwEdX0rafV3OIUO1CyqL8vacATlA3kwFpHImIJpLkBUU9T22Pf1h9kTRbTwQdI2WcMof2xbfRAfU+1igloPokdGQB3HzNv4e8JvOKtULk3tTiVGkfWssj3afl/oULbUiD33CQOmdWdw6LhpnaTrNp/fq2WrwyeyNaMc5wq7ey3gxw2o3DtEsuOqnOlIEskZNa6zCRN1EXQS8Bg==
-Received: from AM6PR03MB5080.eurprd03.prod.outlook.com (2603:10a6:20b:90::20)
- by AS8PR03MB9817.eurprd03.prod.outlook.com (2603:10a6:20b:61b::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8445.15; Fri, 14 Feb
- 2025 00:40:20 +0000
-Received: from AM6PR03MB5080.eurprd03.prod.outlook.com
- ([fe80::a16:9eb8:6868:f6d8]) by AM6PR03MB5080.eurprd03.prod.outlook.com
- ([fe80::a16:9eb8:6868:f6d8%4]) with mapi id 15.20.8422.015; Fri, 14 Feb 2025
- 00:40:20 +0000
-From: Juntong Deng <juntong.deng@outlook.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	memxor@gmail.com,
-	snorcht@gmail.com
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH bpf-next 6/6] selftests/bpf: Add test cases for demonstrating runtime acquire/release reference tracking
-Date: Fri, 14 Feb 2025 00:26:57 +0000
-Message-ID:
- <AM6PR03MB508078EF9EDA7CAC87E8AC3299FE2@AM6PR03MB5080.eurprd03.prod.outlook.com>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <AM6PR03MB5080513BFAEB54A93CC70D4399FE2@AM6PR03MB5080.eurprd03.prod.outlook.com>
-References: <AM6PR03MB5080513BFAEB54A93CC70D4399FE2@AM6PR03MB5080.eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: LO4P123CA0229.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:1a6::18) To AM6PR03MB5080.eurprd03.prod.outlook.com
- (2603:10a6:20b:90::20)
-X-Microsoft-Original-Message-ID:
- <20250214002657.68279-6-juntong.deng@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F24F3595C;
+	Fri, 14 Feb 2025 00:51:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1739494287; cv=none; b=R4yLvpHtqvRXBNwzVyguJGmgrESmzX4ywR5vPS2r9O+8x8OGhmKrW/G4t+WqWvx9R/5j8e3m4Ex46+mOEm7B20dZjzZYHonOS7wIj9nuqgww9apELHhoeF/A3DD1PhL8cLkAQuBRYG83PJlmdJJOtYC0lP0gBjsTn3/s1ooGTFM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1739494287; c=relaxed/simple;
+	bh=YEWQRyu2N5R3zULdTs4lce/iNreDUskXEtuOzqXScNk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ey0aZBqNDMYotW+8tjQNMVfLwlXEC3tdaMVQIoXBT6SNhy+5KHf3LNLmBQK+Cmkg+xYFkeC1DeCqkjwQB+gZMe3BuBmpOeDqpv8snSGJHeeCFu/SlEuU0Jabidow9wmj71408Vr1x2fdLnBH249AXaUQrVRIOIYJm8cIZesKocw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cY96gbqG; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-439585a067eso15546865e9.3;
+        Thu, 13 Feb 2025 16:51:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739494283; x=1740099083; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RNe7i6RRAcgS6FUQIn8M8mvtZTRYsnLzTdWOgbi9Qek=;
+        b=cY96gbqGuVYwLaSVvIZNbHHCXYoOROOE8ycBgqQX5olwEmx3jz0XZa9AN8TiAzYEb0
+         TXooT9ylWTjhKahhi4TGyGLOHwslqjg2iyvQIorjdJr6AtRceDC5KKo+oBZ55QuOuR3l
+         z+3K3hgXoS2j9fb1V5HcFXofh+oVKyIVv0CAWmKu5p4GlYznBzU0a/kzK8WnkzlQUBa+
+         TdSh0dEMIvWQvvzJyjvPzEzuyLlxbKr5+UF/TphamqIk10FNokzyPlHfi9rcifvl8Dev
+         Ev1wuX+cHLVvpQF68KUV8sfzHdr3i73Y4wVyMeThuUiPnArI8I4O8KZgU8NwNpPzqJaS
+         3fww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739494283; x=1740099083;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RNe7i6RRAcgS6FUQIn8M8mvtZTRYsnLzTdWOgbi9Qek=;
+        b=kcSrRqkFufYYREgAi5crrEn3yoWc7YS3A+Gr57hN703T/9f2714ycZgGxBDHBinwW+
+         3bHUyd3Ka0jBSKO7f8ysEDx0RxGoWVdqagnLbyepVX81/UlcLSdzNEAn0sq1352dyjeu
+         pOe87ftVQVvPFvLyz6tsSWbJjxGrV6IgARZJGHZjlIzN3jj/LQuIFyUOC+jiVGkWoQ0U
+         89fT4rF7g37XmNeG9oy0cja6NUdjtFHLAKw9DFjOavKWXN56AXHVaqHGCs5hy+yBFfpG
+         2PBSbSZolOIU3gwgJQ31Roz0R56w9qRNQI4hkV6auM6ErQh8W7doOWWVmvlZ9oxn2uAK
+         4MHg==
+X-Forwarded-Encrypted: i=1; AJvYcCVJyWHRUL/VMCZDDbvMcr+7DdmAjXur6ESic3b0/U+MTVI5IhPHLH0je662QLaI/MAItU3JPoOJXwMVHjqZ6CY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzx8wFWesXM3zaJrZAL9Ch0sEP6Jtd4fs1qQEbW9BKhwrproQHY
+	WzvlhZggDJrBzTtLgGE1IkYDHP8tu0UKvQWABg3mQpPUs+aEWkQzXeVbxri2oVf3enTkrQHHSV4
+	1dLs/t9NrHVLLmIWOls4FLdksYdc=
+X-Gm-Gg: ASbGncseB+ImPmciPLW/581olukUUqfDs7YlLXEB3UxBpi4q0w2GWWD6nJt4vJckK3W
+	ULP1SDbiAlKx1Y/tOgIu6ysytP4qCc6UflnO4JbQ8ajfUUYCHzsx/i+OuQPeYCC5PT4EOWwiaye
+	u0AokEGha8nPL/RFDa7YIg4le2MYz4
+X-Google-Smtp-Source: AGHT+IGUw+pTsjBbMAlHZ+jaW8T/SetCvsWpZGJJCW4qUdfZmiMeYenLvH/2w3ZOI1JsiOKsnXYC6ZG0atSsxzafMdI=
+X-Received: by 2002:a5d:5289:0:b0:38a:87cc:fb42 with SMTP id
+ ffacd0b85a97d-38dea268ac0mr8385076f8f.21.1739494283326; Thu, 13 Feb 2025
+ 16:51:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR03MB5080:EE_|AS8PR03MB9817:EE_
-X-MS-Office365-Filtering-Correlation-Id: 641a2aac-a60e-416d-a884-08dd4c9028ff
-X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|8060799006|461199028|15080799006|19110799003|5072599009|13041999003|3412199025|41001999003|440099028;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?ssfBHgdWatZ1TkWX9W1Ka6YVd02626Jnvw1eK+h0B2mZWpwoYoBEbZ+6ma7N?=
- =?us-ascii?Q?VCc43qpB8bcSpNWcMoNF/IYiDm1C85KT4g4HZmNHooUyoAa82SfRAz2hn+/7?=
- =?us-ascii?Q?ME0dHoQ7ckwdJws1Z0YLXdHGOENxJG9A0COCQwim2lNKQxqEFDkX9yG4U+mN?=
- =?us-ascii?Q?8EaFh1KC2SIJXJgzmIzCiccfqkKOiRPJKGS2HRmkovPurZ7Tfqt0ZT5MmSLJ?=
- =?us-ascii?Q?aRiWoJdvD7Jve1euTBQ3qDH++JfilaTAXfndIkS/43ZOSvQ3h1zsmH/uAfhK?=
- =?us-ascii?Q?+J12HXyhE5cqOme5aJPOhmIJpQmThKd0rDCji/UA7Z3vx7FkgFN+NxKfF3Mn?=
- =?us-ascii?Q?+62EnDw7fJvcsuuRuPUq9Ix0+E/ILXpBJ4cAbGCPRkkW/Wr0l0tipxsDl0Zt?=
- =?us-ascii?Q?4UIeaCXO3WVo92wDgSO5CzBlqbd+juV8D1BR/rqWIhJIRN13b5drjE3GoGll?=
- =?us-ascii?Q?dt1VJ9HnFECxymInv/IrQ56iUWNJ6lJnqdb97atqUZ3LTP8SdOepSsTB3On/?=
- =?us-ascii?Q?Qn9mtzzO3Kr3cES6cr7qG5+80+hyXi34jAtd62X3wYIVEImRb79d5O4Yq23I?=
- =?us-ascii?Q?NC8cILMQYd9XNW6WE9EQiLLzXvHTna1ArAoV437WpbnPKRBFUIONWejQYlZA?=
- =?us-ascii?Q?nuWGHi9fg2kDqVYSC6PIJ5gnpCSpjbnPSu1oWJOvBk8TTnoyxYJNNY/K3dgB?=
- =?us-ascii?Q?frFv6usdrYVorUPhN77YogZ82JHdeOJ5nG7KmEujNJ6R/0vBIFAmiuEHlYkV?=
- =?us-ascii?Q?S26hQqYpbyMD8foRapvXuErLZSvBRx4jnKhRtAs7RiGU0PLVq67bdsHVGMsJ?=
- =?us-ascii?Q?GXz5l3WgaZgKuZJxWojdRe3U4IJYFMmuBgk9iFRAGvYWDzwWXrrtKtUXePKB?=
- =?us-ascii?Q?6zV6SLrpQEpDtA6+rWPjthlAT9yXitUW1rpy/Ixy9VNFmzfWYFgImydV8Vq8?=
- =?us-ascii?Q?uoSu6FETNfbBnoWMybK2s3/MFn9t8JPPNEFiue8eOpK53IsAP7nUsdvxOPlG?=
- =?us-ascii?Q?pRx4dg34yqQPda5oXHmSSpXJzfolJPPUGgTiX3BIykqWRlCZz66a1uhgxgT4?=
- =?us-ascii?Q?kgEf8UtxeAsqzmEVp68Y7ymlwS28YTH7CCW6T29JqyHb8z2ET1E=3D?=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?f/0p4tQ9c7OBq/BSjUUsyqXW+Kqo7s0rvuQRur/FLn5/m7iuzHhlP/h+sz8o?=
- =?us-ascii?Q?zWcKK1BBMbgLwmiZCY/upESIQ2NW4/aLMQFzboVhAcypH7A+b9Ee9jMzmPZJ?=
- =?us-ascii?Q?7OU89fmyuBE9Ih/8ctaPq3gyOscZ9GiJkj6iFS33xv3Q5V5WpvR09NvqMTlZ?=
- =?us-ascii?Q?CvxqvL5zj5pvs3rtBp9BQuEfoJYIa4aLACdpJ/4bPBn+xT6EpLLbj8dFCGkz?=
- =?us-ascii?Q?VuDGFt4iWNDZwVHYlTFHWn3Ta+P6185w2T4UA8GO0h858A5P/8nXC3LJPUoI?=
- =?us-ascii?Q?aSTXS2bz5sZRhgncIj7edbEIIzTFFBpBoje2WjjHkrOre/W3aLB+N8l1/8w+?=
- =?us-ascii?Q?QfauO0oVzNUq/vli977YB3XAaMC9DObgv4gjSQpRgFsTk0JGqkNkIlITUbla?=
- =?us-ascii?Q?5uYSHg0r91mwiMZPxlSwTK+hpZ66sR8L6qnnlFE9fl/LszqV/c2qRBoxTyRT?=
- =?us-ascii?Q?yw852RjwUVpOfxqbhhieUSaA1/47vtAG5gVELXF0cRR05sOrf3NQpYD8DOEo?=
- =?us-ascii?Q?ma3bxCRaLzjTdBhYagpFbG73MAAsBeADNg2v7uxXB/3UuvS2WM73pPuKqXdH?=
- =?us-ascii?Q?1IBOHFpAI93D9dwRcriKy5X2nJLxlsPG76bGTrC/7aK/avYgObmdqgZgDzDz?=
- =?us-ascii?Q?wF+nN5cJorvrnYqIs4nNIB1Rk757SzsXVUIatCL5DfLMBd//pwmDN+V0yZXd?=
- =?us-ascii?Q?UKEPltDfTGv1K4UYBiJH3j2vLgb1LXNr+3nFLUPDF0wwPEF8vxWIFd3FjNRE?=
- =?us-ascii?Q?Ui9+Lmrlv+fPrsq+px1ABwoRVNXrXMGPpAgF9j2qFlgcAR/ylPcWGBr2RyMo?=
- =?us-ascii?Q?L/JQdu2YMXQ2sGYB4/t6uyOaL4suCzS5b349MeVUIUW7RaitTUTiOB9H+e4g?=
- =?us-ascii?Q?+kSPS6aYPFw2Uf0THup19UBxLl7beOLfeyFFPAE56ZzaQSUWMBNRBXGMnjHg?=
- =?us-ascii?Q?3ophIiu5ZuMJ19NMQ+WtizRU9rNTlxbS19Vv4z3Fb4U4pXFtn5e0YE8217CG?=
- =?us-ascii?Q?fjUSeRlaT5DP5kmFdfly4wPKj2ivDvG9tN7077wgiP92KzEOENvrumbR768g?=
- =?us-ascii?Q?QIeb/UNS3BUe029a22ikjausTQjPrl91bjDNltH474bYQn/5k38l9SpkPD0P?=
- =?us-ascii?Q?BaNC4tHjoPypYsS3HmPE7p2i/bChZE0+H5xXL8/5F2MvnwAq/dQJzwvke/Ym?=
- =?us-ascii?Q?eu4YM3Ov2afLAJvL34z+ERI+7XT9Y9+b7W1SgK7SEhkATopQMd1EPWm2puQk?=
- =?us-ascii?Q?aXMgTYVpBWkiy2/XAC8H?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 641a2aac-a60e-416d-a884-08dd4c9028ff
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5080.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2025 00:40:20.5633
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR03MB9817
+References: <20250213131214.164982-1-mrpre@163.com> <20250213131214.164982-2-mrpre@163.com>
+ <CAADnVQ++goV=Yi=dhXNa5F-h0o7uSNEGiPHh0ArODt3TaEeeQg@mail.gmail.com> <2ec2qjrwsdvdyr2wdo3gakv4hsikmvrhc47k3kii7nzj2e5tfm@zeiedp7wy3kj>
+In-Reply-To: <2ec2qjrwsdvdyr2wdo3gakv4hsikmvrhc47k3kii7nzj2e5tfm@zeiedp7wy3kj>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 13 Feb 2025 16:51:12 -0800
+X-Gm-Features: AWEUYZmpuvUdCicXsdvRYEUGHzbseHF8YmA-TfwT26zSbnqkCB8FTFm6hH07ACo
+Message-ID: <CAADnVQJK_d_pOVmkr6kdo5AYZBnXrH948MFj3xC-1=omf+HOyw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/3] bpf: Fix array bounds error with may_goto
+To: Jiayuan Chen <mrpre@163.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	syzbot+d2a2c639d03ac200a4f1@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This patch adds test cases for demonstrating runtime acquire/release
-reference tracking.
+On Thu, Feb 13, 2025 at 9:03=E2=80=AFAM Jiayuan Chen <mrpre@163.com> wrote:
+>
+> On Thu, Feb 13, 2025 at 08:02:55AM -0800, Alexei Starovoitov wrote:
+> > On Thu, Feb 13, 2025 at 5:13=E2=80=AFAM Jiayuan Chen <mrpre@163.com> wr=
+ote:
+> > >
+> > > may_goto uses an additional 8 bytes on the stack, which causes the
+> > > interpreters[] array to go out of bounds when calculating index by
+> > > stack_size.
+> > >
+> > > 1. If a BPF program is rewritten, re-evaluate the stack size. For non=
+-JIT
+> > > cases, reject loading directly.
+> > >
+> > > 2. For non-JIT cases, calculating interpreters[idx] may still cause
+> > > out-of-bounds array access, and just warn about it.
+> > >
+> > > 3. For jit_requested cases, the execution of bpf_func also needs to b=
+e
+> > > warned. So Move the definition of function __bpf_prog_ret0_warn out o=
+f
+> > > the macro definition CONFIG_BPF_JIT_ALWAYS_ON
+> > >
+> [...]
+> > > ---
+> > >  EVAL6(PROG_NAME_LIST, 224, 256, 288, 320, 352, 384)
+> > >  EVAL4(PROG_NAME_LIST, 416, 448, 480, 512)
+> > >  };
+> > > +
+> > > +#define MAX_INTERPRETERS_CALLBACK (sizeof(interpreters) / sizeof(*in=
+terpreters))
+> >
+> > There is ARRAY_SIZE macro.
+> Thanks, I will use it.
+> >
+> > >  #undef PROG_NAME_LIST
+> > >  #define PROG_NAME_LIST(stack_size) PROG_NAME_ARGS(stack_size),
+> > >  static __maybe_unused
+> > > @@ -2290,17 +2293,18 @@ void bpf_patch_call_args(struct bpf_insn *ins=
+n, u32 stack_depth)
+> > >         insn->code =3D BPF_JMP | BPF_CALL_ARGS;
+> > >  }
+> > >  #endif
+> > > -#else
+> > > +#endif
+> > > +
+> > >  static unsigned int __bpf_prog_ret0_warn(const void *ctx,
+> > >                                          const struct bpf_insn *insn)
+> > >  {
+> > >         /* If this handler ever gets executed, then BPF_JIT_ALWAYS_ON
+> > > -        * is not working properly, so warn about it!
+> > > +        * is not working properly, or interpreter is being used when
+> > > +        * prog->jit_requested is not 0, so warn about it!
+> > >          */
+> > >         WARN_ON_ONCE(1);
+> > >         return 0;
+> > >  }
+> > > -#endif
+> > >
+> > >  bool bpf_prog_map_compatible(struct bpf_map *map,
+> > >                              const struct bpf_prog *fp)
+> > > @@ -2380,8 +2384,14 @@ static void bpf_prog_select_func(struct bpf_pr=
+og *fp)
+> > >  {
+> > >  #ifndef CONFIG_BPF_JIT_ALWAYS_ON
+> > >         u32 stack_depth =3D max_t(u32, fp->aux->stack_depth, 1);
+> > > +       u32 idx =3D (round_up(stack_depth, 32) / 32) - 1;
+> > >
+> > > -       fp->bpf_func =3D interpreters[(round_up(stack_depth, 32) / 32=
+) - 1];
+> > > +       if (!fp->jit_requested) {
+> >
+> > I don't think above check is necessary.
+> > Why not just
+> > if (WARN_ON_ONCE(idx >=3D ARRAY_SIZE(interpreters)))
+> >   fp->bpf_func =3D __bpf_prog_ret0_warn;
+> > else
+> >   fp->bpf_func =3D interpreters[idx];
+> >
+>
+> When jit_requested is set 1, the stack_depth can still go above 512,
+> and we'd end up executing this function, where the index calculation woul=
+d
+> overflow, triggering an array out-of-bounds warning from USCAN or WAR().
 
-Test cases include simple, branch, and loop.
+Ok, then do:
+if (!fp->jit_requested && WARN_ON_ONCE(idx >=3D ARRAY_SIZE(interpreters)))
 
-Simple test case has no branches or loops.
+> > > +               WARN_ON_ONCE(idx >=3D MAX_INTERPRETERS_CALLBACK);
+> > > +               fp->bpf_func =3D interpreters[idx];
 
-Branch test case contains if statements.
-
-Loop test case contains the bpf_iter_num iterator.
-
-Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
----
- tools/testing/selftests/runtime/Makefile     | 20 ++++++++++
- tools/testing/selftests/runtime/branch.bpf.c | 42 ++++++++++++++++++++
- tools/testing/selftests/runtime/branch.c     | 19 +++++++++
- tools/testing/selftests/runtime/loop.bpf.c   | 37 +++++++++++++++++
- tools/testing/selftests/runtime/loop.c       | 19 +++++++++
- tools/testing/selftests/runtime/simple.bpf.c | 35 ++++++++++++++++
- tools/testing/selftests/runtime/simple.c     | 19 +++++++++
- 7 files changed, 191 insertions(+)
- create mode 100644 tools/testing/selftests/runtime/Makefile
- create mode 100644 tools/testing/selftests/runtime/branch.bpf.c
- create mode 100644 tools/testing/selftests/runtime/branch.c
- create mode 100644 tools/testing/selftests/runtime/loop.bpf.c
- create mode 100644 tools/testing/selftests/runtime/loop.c
- create mode 100644 tools/testing/selftests/runtime/simple.bpf.c
- create mode 100644 tools/testing/selftests/runtime/simple.c
-
-diff --git a/tools/testing/selftests/runtime/Makefile b/tools/testing/selftests/runtime/Makefile
-new file mode 100644
-index 000000000000..d03133786a26
---- /dev/null
-+++ b/tools/testing/selftests/runtime/Makefile
-@@ -0,0 +1,20 @@
-+targets = simple branch loop
-+
-+all: $(targets)
-+
-+vmlinux.h:
-+	bpftool btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h
-+
-+%.bpf.o: %.bpf.c vmlinux.h
-+	clang -O2 -g -target bpf -c $*.bpf.c -o $*.bpf.o
-+
-+%.skel.h: %.bpf.o
-+	bpftool gen skeleton $*.bpf.o > $*.skel.h
-+
-+$(targets): %: %.c %.skel.h
-+	clang $< -lelf -lbpf -o $@
-+
-+clean:
-+	rm -f *.o *.skel.h vmlinux.h $(targets)
-+
-+.SECONDARY:
-diff --git a/tools/testing/selftests/runtime/branch.bpf.c b/tools/testing/selftests/runtime/branch.bpf.c
-new file mode 100644
-index 000000000000..87697151299c
---- /dev/null
-+++ b/tools/testing/selftests/runtime/branch.bpf.c
-@@ -0,0 +1,42 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+
-+char LICENSE[] SEC("license") = "GPL";
-+
-+void bpf_task_release(struct task_struct *p) __ksym;
-+struct task_struct *bpf_task_from_pid(s32 pid) __ksym;
-+
-+int test = 5;
-+
-+SEC("syscall")
-+int test_branch(void *arg)
-+{
-+	struct task_struct *task1;
-+
-+	task1 = bpf_task_from_pid(1);
-+
-+	if (test > 2) {
-+		struct task_struct *task2;
-+
-+		task2 = bpf_task_from_pid(2);
-+		if (task2)
-+			bpf_task_release(task2);
-+	}
-+
-+	if (test < 2) {
-+		struct task_struct *task3;
-+
-+		task3 = bpf_task_from_pid(3);
-+		if (task3)
-+			bpf_task_release(task3);
-+	}
-+
-+	if (task1)
-+		bpf_task_release(task1);
-+
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/runtime/branch.c b/tools/testing/selftests/runtime/branch.c
-new file mode 100644
-index 000000000000..3592e14f1f75
---- /dev/null
-+++ b/tools/testing/selftests/runtime/branch.c
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <stdio.h>
-+#include <bpf/libbpf.h>
-+#include <bpf/bpf.h>
-+#include "branch.skel.h"
-+
-+int main(int argc, char **argv)
-+{
-+	struct branch_bpf *skel;
-+	int err, prog_fd;
-+
-+	skel = branch_bpf__open_and_load();
-+	prog_fd = bpf_program__fd(skel->progs.test_branch);
-+	err = bpf_prog_test_run_opts(prog_fd, NULL);
-+
-+	branch_bpf__destroy(skel);
-+	return err;
-+}
-diff --git a/tools/testing/selftests/runtime/loop.bpf.c b/tools/testing/selftests/runtime/loop.bpf.c
-new file mode 100644
-index 000000000000..2b49ec9e1058
---- /dev/null
-+++ b/tools/testing/selftests/runtime/loop.bpf.c
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+
-+char LICENSE[] SEC("license") = "GPL";
-+
-+void bpf_task_release(struct task_struct *p) __ksym;
-+struct task_struct *bpf_task_from_pid(s32 pid) __ksym;
-+
-+SEC("syscall")
-+int test_loop(void *arg)
-+{
-+	struct task_struct *task_loop;
-+	struct task_struct *task1;
-+	int *v;
-+
-+	task1 = bpf_task_from_pid(1);
-+
-+	struct bpf_iter_num it;
-+
-+	bpf_iter_num_new(&it, 1, 3);
-+	while ((v = bpf_iter_num_next(&it))) {
-+		task_loop = bpf_task_from_pid(*v);
-+		if (task_loop)
-+			bpf_task_release(task_loop);
-+	}
-+
-+	bpf_iter_num_destroy(&it);
-+
-+	if (task1)
-+		bpf_task_release(task1);
-+
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/runtime/loop.c b/tools/testing/selftests/runtime/loop.c
-new file mode 100644
-index 000000000000..bde83e5595e4
---- /dev/null
-+++ b/tools/testing/selftests/runtime/loop.c
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <stdio.h>
-+#include <bpf/libbpf.h>
-+#include <bpf/bpf.h>
-+#include "loop.skel.h"
-+
-+int main(int argc, char **argv)
-+{
-+	struct loop_bpf *skel;
-+	int err, prog_fd;
-+
-+	skel = loop_bpf__open_and_load();
-+	prog_fd = bpf_program__fd(skel->progs.test_loop);
-+	err = bpf_prog_test_run_opts(prog_fd, NULL);
-+
-+	loop_bpf__destroy(skel);
-+	return err;
-+}
-diff --git a/tools/testing/selftests/runtime/simple.bpf.c b/tools/testing/selftests/runtime/simple.bpf.c
-new file mode 100644
-index 000000000000..ad7989ebb7d4
---- /dev/null
-+++ b/tools/testing/selftests/runtime/simple.bpf.c
-@@ -0,0 +1,35 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+
-+char LICENSE[] SEC("license") = "GPL";
-+
-+void bpf_task_release(struct task_struct *p) __ksym;
-+struct task_struct *bpf_task_from_pid(s32 pid) __ksym;
-+
-+struct bpf_cpumask *bpf_cpumask_create(void) __ksym;
-+void bpf_cpumask_release(struct bpf_cpumask *cpumask) __ksym;
-+
-+SEC("syscall")
-+int test_simple(void *arg)
-+{
-+	struct task_struct *task;
-+	struct bpf_cpumask *cpumask;
-+
-+	task = bpf_task_from_pid(1);
-+	if (!task)
-+		return 0;
-+
-+	cpumask = bpf_cpumask_create();
-+	if (!cpumask)
-+		goto error_cpumask;
-+
-+	bpf_cpumask_release(cpumask);
-+error_cpumask:
-+	bpf_task_release(task);
-+
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/runtime/simple.c b/tools/testing/selftests/runtime/simple.c
-new file mode 100644
-index 000000000000..e65959aac89b
---- /dev/null
-+++ b/tools/testing/selftests/runtime/simple.c
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <stdio.h>
-+#include <bpf/libbpf.h>
-+#include <bpf/bpf.h>
-+#include "simple.skel.h"
-+
-+int main(int argc, char **argv)
-+{
-+	struct simple_bpf *skel;
-+	int err, prog_fd;
-+
-+	skel = simple_bpf__open_and_load();
-+	prog_fd = bpf_program__fd(skel->progs.test_simple);
-+	err = bpf_prog_test_run_opts(prog_fd, NULL);
-+
-+	simple_bpf__destroy(skel);
-+	return err;
-+}
--- 
-2.39.5
-
+since warning and anyway proceeding to access the array out of bounds
+is just wrong.
 
