@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-51598-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51599-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59C78A366B3
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 21:12:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE10CA366B5
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 21:13:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C7003AAAB3
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 20:11:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5DE17A10A1
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 20:12:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73E891C84B3;
-	Fri, 14 Feb 2025 20:12:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B737E1C84B7;
+	Fri, 14 Feb 2025 20:13:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="j24j73iM"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="cD6pF8Ap"
 X-Original-To: bpf@vger.kernel.org
-Received: from AS8PR04CU009.outbound.protection.outlook.com (mail-westeuropeazolkn19011029.outbound.protection.outlook.com [52.103.33.29])
+Received: from AS8PR04CU009.outbound.protection.outlook.com (mail-westeuropeazolkn19011032.outbound.protection.outlook.com [52.103.33.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33C9B19259E;
-	Fri, 14 Feb 2025 20:11:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.33.29
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BFDC1519AB;
+	Fri, 14 Feb 2025 20:13:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.33.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739563920; cv=fail; b=DbxJlsK+35gZIzOrAPeZ8Zr6rAb+1nA3NjNyRtzawaGZqeemhHcte8bgv196Bp6EyBaOrmPyAn7oH67ABqKPochZFm97JaKWeTkm5T/Oqh0yDcbkSNSvn7t542sbr9xL8KwiHfA8yXd39xF+qXXnu5jjw7mvk0vOg/D6gQ6NLB8=
+	t=1739564001; cv=fail; b=XqLXuD+vxsZ4A5DcVQg9hvLO0sm/fUgeLMaMM4PrdrJ3TDbfRBMvYuwn0/9i1unV6KdOmrVHmsWuWpMSFs07oOOoO9xJdAnNR2GmxA2Q61I8kJRhQ4A9CdVEM2WeIKxPm1frnwc38YMJXPGgvlZkv5M8oWIpof6rTgnyoRqQ/Xw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739563920; c=relaxed/simple;
-	bh=Z1LsCqTZaU1DcBqugsUpvKbcJnWQp5ZI16LeJ3p/r6Y=;
+	s=arc-20240116; t=1739564001; c=relaxed/simple;
+	bh=0e8xQRHW3DcdTEoz3jvxqKrMWf9PuR4t00eCPxc/T8s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=IQTOQNA1qY4WWXyTE/FcQj410SFZE72tSLxse8e+AWMws8q6HwcT1dYvEQTLvC7wR2a772v1Yqsp0OjeEDg4IBFLgU47MYObkL7Logw0Io5+e3YnOjt8Zq3YOtLpR5E/pokfUzxa6R4PvD344gN7yIZHvUzRBkmXPZVKQTm1EnA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=j24j73iM; arc=fail smtp.client-ip=52.103.33.29
+	 Content-Type:MIME-Version; b=aL19tXCCKvKjJ63pqCYUSXp5i4PrPzfCYnSgc2rkqRakjokwvfaWTju5sTZC8p3FhI1g7EoSGH6Y9zJrtxHO7Nd/vO1ZOtEEHFmBNOM5Y8T5Fst09zngHh0JBS+h60vHvvXKjc6w5hHCtMAvYT9i58OJyxo84wEnCsO4VQ/tkcs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=cD6pF8Ap; arc=fail smtp.client-ip=52.103.33.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=cNmgzCXHlRwkEg2eqcdvYM3aJv1ZXjrUM91kToxZhSaI2Qo34QFc6tMwaScjb4wsqVBI9rTcskC3l4ilLA3Wo8jYJ0vmAVOVzYRaSDCJ8Y8ETe+IluRG7n/TwfbrPryzzN1mcuUPSK4RkSvAbjCTxQdv48z2sHfkuKLxpPRFYBndikzK9sBRskACMQK1OuIior/t7rAdEPOuAOfJc779al6GiCTx4cbYthdPD5ALVTqSynFu371ad+Bp+2gPTuqkrY5uiunFdhDKalEUZQ9+0RNljjmUWiLhOEclcD0VE+yzD+eL3wEWjcUmh9wjk5XikytOTwtGLiaps1Znw1GxZg==
+ b=JymqPghAsN9Xe0LTiFY3Jqe7NjijzJsB5I151+2v2lmxPCup0x1SbaE2itAIjpqeW8pGiksPEmabXAcZ7+XIvTPQWphHZl3Tc14dwM0oavXwFcirrNTBb+YNXMi0S/OQcoHOGcT0N3O0K14wUwrFZooOnrzAoQg0i/4mUchjs6po2YqNVzv/7iMVmP5/Z3nkSSXzZ6o/GnFOOvvU1jiqdowoW7L9k1CVWh/x7+ef0dFHK/c/BGAqlgnYUCsFu/9Yd6yZ476ymiGGkJw0ZLeyxZqqniVXHYguXYlI2dCq/4MQl/XY4SP0beRDUq52zkpo8flX3v9A51MdHdr08X5VsQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OgVgrpxT8wpzN7jUhAp4RbhCDAbVsuOjanWmXLLoCKM=;
- b=futwx/gYXZ4BfG9VVzEVKsvkZFFtU4SsxH1xOj4hrceA9Q3+uowG4SYu1YLrd1kWBJUetF1q065rfaRT7p8hTw29JbBPOt7k5bA7/8QBP2CBpzRPzczCTwDshMliMGCDRf9H09MOt0Z1Cm8ayMexQUhDFD/o9uO3oDi7uiDudJSpsJ0rFP9J7Ammr7FXhHS3Y8pp2qOzeqqrcbsQDLXPGzW5YMLMHUYzXkbIAPxMI6iyfT94l15pUDfWUg8xd8MFz2AqzT2mlFQKPci2T39gjp7WpM9E6thufe1YCxNqAD4tavgBRZlU4bkz0k1L4m1IjdA230DWDe4d5BjOMIoC3A==
+ bh=X8RzG6hNBPzT3DnO5qeDp85e0CBrvieEIAVWu+qcCfs=;
+ b=kHndJAE91pve7wZBPnUb3nt8zMuwDr4B+8PoxHiqXo0EVDZsesiRom8YKDw2feNy/jgxZYoY3m/8lnLbLb7EMCc9KvUofFX91/C3/mSXq7gfOji7TLfKnCKaPKiA2n4rs1pYOMBCyxZXmIS8wt/epOcWGnFJTQoYkWlNG6NN4g4pych4VSZ/2CC6Gc9vBlM/6PnFVPOT+vNktkrVwBJQ6rzsXM2M+1p5lOjtCI/3duZZoh1Ikb227aAXIlvJKtqIecq+KLlo8KLqpnXWWSDf2qun4WQ1AANkpYOCnXiBKfwKB51PPlHIgezV2xPr9QNmqzeYKcEKU2cn7uUxdzbv8g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OgVgrpxT8wpzN7jUhAp4RbhCDAbVsuOjanWmXLLoCKM=;
- b=j24j73iM8meCjETL8ZPRZMTR2PGfpWZnrhOF4d92YROFctg3NakJsbKs4n2FazjvjdMKivmHVNNQAH7gCOqKftzWPXs7krcIpvk83iXR8mvaklg2qAcievGYlhuS+1FQK5TtYDK+f6sgR+4wZFLTIbq1xiTF1E8ZlxkSU9wnktW9Du38JyM/03hyeB97rwikxoGz7OoKYlzSbxFuz6de4fJzMt5ZoKO35CF0YqkkWJuwwomy5AYWrICf8EPv2d/uDmhi76gf7yzF8oh2pQ2e/V5P3MaiS/7z5ENi9wVksWUEQFVSDWZzo1vTq84Ie+QwyHZf5bPYLAcOT/BVs89uHg==
+ bh=X8RzG6hNBPzT3DnO5qeDp85e0CBrvieEIAVWu+qcCfs=;
+ b=cD6pF8Ap69bAw6Om3+ZfPFOe4NlUvmeUy3AIwW9ISa1PHiG/Yre6leXTjZOAGYVMibQ4sSxCXsTMxsG40t4HlmDvJFEyuXy8RU+7v8jBhIRWWM49DG0HD5XNaXD9zbVDVLm6Fd1crf9IwgHvT+29FJlBpxSJEpGIP80k+0iGuJrhWptJTO4hq+I60VlbVHeqCA9vaq2yuCt4SDpX6MBtKlwlzn4eOK+0Mv7QV726OBSVjK6pHdI6tzVtEoQNGu/vulYa8bHaD+sfJ892tLw/bO+SVXbpgwDXL57v2gDaVU5NCvUFq+NEWX7ms0UCbtJyMQjLZtPDYhmVrzTgcvJ7gg==
 Received: from AM6PR03MB5080.eurprd03.prod.outlook.com (2603:10a6:20b:90::20)
  by AS2PR03MB9931.eurprd03.prod.outlook.com (2603:10a6:20b:643::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8445.13; Fri, 14 Feb
- 2025 20:11:56 +0000
+ 2025 20:13:16 +0000
 Received: from AM6PR03MB5080.eurprd03.prod.outlook.com
  ([fe80::a16:9eb8:6868:f6d8]) by AM6PR03MB5080.eurprd03.prod.outlook.com
  ([fe80::a16:9eb8:6868:f6d8%4]) with mapi id 15.20.8445.016; Fri, 14 Feb 2025
- 20:11:55 +0000
+ 20:13:16 +0000
 From: Juntong Deng <juntong.deng@outlook.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -74,10 +74,10 @@ To: ast@kernel.org,
 	changwoo@igalia.com
 Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH bpf-next v2 2/5] sched_ext: Declare context-sensitive kfunc groups that can be used by different SCX operations
-Date: Fri, 14 Feb 2025 20:09:26 +0000
+Subject: [RFC PATCH bpf-next v2 3/5] sched_ext: Add scx_kfunc_ids_ops_context for unified filtering of context-sensitive SCX kfuncs
+Date: Fri, 14 Feb 2025 20:09:27 +0000
 Message-ID:
- <AM6PR03MB50806C2E3C50BA1CF2A3257099FE2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <AM6PR03MB5080D59AD7DD5B59E1FB14E599FE2@AM6PR03MB5080.eurprd03.prod.outlook.com>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <AM6PR03MB5080855B90C3FE9B6C4243B099FE2@AM6PR03MB5080.eurprd03.prod.outlook.com>
 References: <AM6PR03MB5080855B90C3FE9B6C4243B099FE2@AM6PR03MB5080.eurprd03.prod.outlook.com>
@@ -87,7 +87,7 @@ X-ClientProxiedBy: LO4P123CA0277.GBRP123.PROD.OUTLOOK.COM
  (2603:10a6:600:195::12) To AM6PR03MB5080.eurprd03.prod.outlook.com
  (2603:10a6:20b:90::20)
 X-Microsoft-Original-Message-ID:
- <20250214200929.190827-2-juntong.deng@outlook.com>
+ <20250214200929.190827-3-juntong.deng@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,58 +97,58 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM6PR03MB5080:EE_|AS2PR03MB9931:EE_
-X-MS-Office365-Filtering-Correlation-Id: 031fd8ff-a139-4156-5cdb-08dd4d33d44b
+X-MS-Office365-Filtering-Correlation-Id: 9c57dcb6-e266-44da-4131-08dd4d340472
 X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|5072599009|19110799003|461199028|15080799006|8060799006|3412199025|13041999003|440099028;
+	BCL:0;ARA:14566002|5072599009|19110799003|461199028|15080799006|8060799006|3412199025|440099028|41001999003;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?BTBGdMseaopMrUlp4murC3+z65A8IVOdZTCH5xY3yzUHni3j/IdWLQMlh5cC?=
- =?us-ascii?Q?nUEvztfXN398fCp6mocQYrHLbjSS6BiPYNJzuW7/rYrAmLTcbNddcYdfbi4C?=
- =?us-ascii?Q?ZXcM58TGNi9Q8A+p08xZ37e8tJZIByBY+7vItChu3MOp+cB88tS0w7hKFHA0?=
- =?us-ascii?Q?Zinin0QX9MGT8Fq0xF/Tk93kWgJuZlEgfPkRkdqZWze3U5LlwnCc/TAN0X+t?=
- =?us-ascii?Q?BbPtHaNyeqcVpJZhSaEjRDq/sghif9vgJSB6akpkax884EZX2XC8VWdXWEHS?=
- =?us-ascii?Q?6mUeAZgGE5OPc34r4zHrd8LtNe7rCWTgsezCPcKDYzb9sF/Ufe/p0ukKuGtb?=
- =?us-ascii?Q?jmmbJmOheK0D9+tGfc8fr/xO9vnFbYfdqslJm7zb94EMO0BZ5jDUz1UPIgsJ?=
- =?us-ascii?Q?ZMbCkPDi+TRQdgugx4izOfvMY7ikLgFQEXoSaUlWf86cFKprMA6vgx/wPEoD?=
- =?us-ascii?Q?wWd7VGi2NRduYIBSFOASAJilQCD3UkH/Hyj4XgrtACIDJGiqNlpNFXYlPL1f?=
- =?us-ascii?Q?dKnaxL/7Ufjdrj4t+Kglj8U4a6fjsVhFuC5hZYnQ92bP56OmW3Gg5GORd96q?=
- =?us-ascii?Q?4PQ4pUfYBQf5z8fhYbn8VgZeAy7aO9WgUciW5dwo5pWR6knTXXtUqO7xktOe?=
- =?us-ascii?Q?l7vMru/kgawF4ZoIZCexmkw0n4jzG66FegPTbYMF8K1tgWPnbRkZKhhFLIrB?=
- =?us-ascii?Q?dziqWwudv4RA1D+/JrKkUr3sBRa1H76KHOlviJUszkjDYW+y/wkcl1k4i5EP?=
- =?us-ascii?Q?KSmPqelFWo6TDLjG1UqNxabAeJIkn6PkPtW+mArE2Y0AmNs+pjcyyY7HXKfO?=
- =?us-ascii?Q?Qo6jCYqV3uiy12a6++FeUdyR2vPSAoxbtIHCrGj9tAkzZacuIMDAIK8C0jNn?=
- =?us-ascii?Q?haP4Bk+GiXE8I5M4X9ZLrVFujRLt7heaRhlqwR3C7f7TUS2NvaiEB8iipJqp?=
- =?us-ascii?Q?4vxiBItiMBbFGXiaoom5zjtmv2LrCzCPrjOvNMWE7WqDD27cOvgqIdYGjjMK?=
- =?us-ascii?Q?CbTdqOyo+zlU2GnJXD5YRun4yZPLFVxKpAU00J3wMQe+UCLGXr8p3lprfB2G?=
- =?us-ascii?Q?N8j0yXg2ieD3Zst4x2KbMxTL3YFtcg=3D=3D?=
+	=?us-ascii?Q?XXp5lC5PgICo2Lu4AT5yQdo/0izl5BwXfw7BiLFcuBTGdFzE2QL/7GSn48dp?=
+ =?us-ascii?Q?NUtWU2pO7VVex+6Q3ovERI+v/vWBYrwHa6Zi21PrIpCN1HA9KZjlK0izuNoE?=
+ =?us-ascii?Q?c7+KRTbmISi0zHnfY336Ql+87Z8cLI22y5U3ZhzJezgAnAhLwAwKK/RSHPFb?=
+ =?us-ascii?Q?uop06tAg8o+OJjOMO03V46waTKWLb5VcJNs6Q4t52I8UfKDCEb4aHLumG1hW?=
+ =?us-ascii?Q?ws7xND7KTH3sjDTHDW4zdC15s3X0Dhr+lAl7G0kWFu1YKt4zYKcCCbYlB6kV?=
+ =?us-ascii?Q?HIK6ECI+/LJsG0mmaJjvS5p3P876W6d0iX4K86IfdlxeKVzGc90DmJVY8Kyg?=
+ =?us-ascii?Q?/ZZJbvN10n02wUDgHC0nRBEys3hS5GJwz6Te1yk9Lh8UWr2uLgpvHLlaI3rI?=
+ =?us-ascii?Q?+UB1O0HcfCm22htqIn94FdLMam33OBkPJVaDTOC+FOoOzG4ducoX4gclOhXQ?=
+ =?us-ascii?Q?xfNjHb7+SSF3WrI1Fe3Eis2T/3PySqnWA7rK8D0LGcSVK13XAcgxzxPNoRlJ?=
+ =?us-ascii?Q?sFrGd6s+vz4XMNs9pUd9WZkjcwIVh0lTH/leSZIH4HinxNzwIPUjC494FAxp?=
+ =?us-ascii?Q?/twJ13l1fmwPAEQcWvHjIxUb0z1uwK01lQucQEU93u7GQfakLhtsm7MMbmw+?=
+ =?us-ascii?Q?DJH44YojjHIlBgfKu1oSObPyjhUtUlcn83csqxL9QtqC5yjjrWTiTxsjWp+b?=
+ =?us-ascii?Q?AkUFcH5N1wCfu/cCzN6HXQ8rK3vzxsXKT2bf5asBLmNHs4YXRqF/h+Wf/TbB?=
+ =?us-ascii?Q?rLq8fQuIg+0E/XYvfFd4xr8Gt1xTdizz8v/YNrnoWsXw1fYWFK39ILyzZZl2?=
+ =?us-ascii?Q?wVqu72LQDGpM3VELMGAo4LTPtfrB22smuGVBdw6YJyO8iImqNcW+DSzhWO0x?=
+ =?us-ascii?Q?Am/jyoCmKfqxk/ZNDblTUOyScpW70DcsMSJN4H+GEODmlh2WWFqzHywpAEoE?=
+ =?us-ascii?Q?+9nK8yI80cUi2eMmS1yr7IWAsbMecKFCFK/+z+m7yhiGjXGhZiHNy+JGy7Ve?=
+ =?us-ascii?Q?+dwQmgfV1eC0mvRkgKhB/aQrHk3X4JVAS7fWn3Xr5UuyJIodNoYPoFzfy7qW?=
+ =?us-ascii?Q?v2cy6ZYBjYbLs4Vrgj7BnQKhO0yfGg=3D=3D?=
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?VYpcfGAhyxhk+Yy5/tpmFVe0Q0/V/7kuc103kB0EqrtSleTLSS9pLHjVLcih?=
- =?us-ascii?Q?DHLBXQYvkPvre1eaZ2oqvgV+m4klsv09KgcUmqwikB9B7IdGrnufX+29GMn5?=
- =?us-ascii?Q?WDYxJjTGop9m4DB2UCFSXv3L3NoJk4TCslP/BkoaiLd5C91qTq9vp3ItLGqF?=
- =?us-ascii?Q?qlf7oV9oFPM4Z0C/d7VtJR/4yQeBqfrPOM+KI7qYPDy6M5vckgiSkBJ/jpIR?=
- =?us-ascii?Q?/WOYDn+KEVmm6eBlC6KNgS67wx23seAA3S7Cs3l+aVix+iNDxLWjtwJE1bZz?=
- =?us-ascii?Q?Nj9sL5VMe1uDWlxO3KG0yQa/mCDAEh9zYM4Ug2ZyhNoeNSnM/YFyH8vWpocF?=
- =?us-ascii?Q?RHxoZTLVj+wh8eHAGX6SnehBXCCXnS4z01jhgiGN13Mv9AAENDs8WYznFJ3h?=
- =?us-ascii?Q?tZTodbGNg6K3c5XZjV0z37hCYcdjpGfEWTketbE5hRlyxgNOcLISgvEnVxSo?=
- =?us-ascii?Q?Q8/pm2uS9KZdu6P8k97dJSWjGmEms1nlwM4t6JhqSQa5HMPW0aLsLoxssJ+w?=
- =?us-ascii?Q?N+qml6YUNdqhYgyP8nvQseXk36cimGBirRshd6YIOZzWbkUl/e4nLPkLadw4?=
- =?us-ascii?Q?QASa/lo5HHqu4UFmmcULPU8OQV9txFHtGloQmGCKUwWWxIJjGODa7pza7Mg9?=
- =?us-ascii?Q?Q+7Abjj1fpfpdGgVGXzO0hFt5gVFioaQq1eGYFrt3fwp+uSB4Ei6eo+naQ/K?=
- =?us-ascii?Q?Np//2ZDsmUarANc7vCXA0/mjDL0DEQ8gbVDMtxfp2VZb3PRZrP1ki28ilOo6?=
- =?us-ascii?Q?v6fu+Jh2EuS4rdiIx3vYstX2SiR89X7/aM3NIv/NZXZtcJKfguWo9/UhlnhI?=
- =?us-ascii?Q?e17RDilCU66oSJbzjQDBKPI0H+NY9lknEqR7jw1OTcBtkejnqtb7g7DnY7Jt?=
- =?us-ascii?Q?n1pzQ6vW1KXfhQX7dJdVYjU98NkhkNMvrhUgBhSeoYOYw1Wa4XZx8srRiPB9?=
- =?us-ascii?Q?ypCEmgMygtJlmq09JobTpiZwhZ+cIqoZqa5rNooHE7N8NWNvEsP5qIWw2q/G?=
- =?us-ascii?Q?aSNJgj5SbTjbsR0VRmBzcUPqt/Yt9AWbdYvJUmhnbZRIjBQ1yrVfszCbQ7Tk?=
- =?us-ascii?Q?3FPzbEyHG6TCGBrcXX+Z12ZpM0+UiMF4+0LzeYzcD9QLx3BXrB0pqTRsMfF3?=
- =?us-ascii?Q?hU23BCm3LSczPMIlp7j8rLhUM8EFbfXDxCp4DGMyU+Xlszo/uZbrckE7ZT0F?=
- =?us-ascii?Q?Q0DL5nUykjtWifj0K05TANYrN52vm5y2xI1yKML4HnKAZFJwdgdk3MtjHhSn?=
- =?us-ascii?Q?ZNLLudHIxOwF+ZG/qDnM?=
+	=?us-ascii?Q?WR+XH8c6auNJdFaiUv2B7uuzb6EcOEEiKQoj+Iji5GEalqX0oQj9D2IyngIY?=
+ =?us-ascii?Q?7FRmYRTdBkFJ9pugg7xtYaeyo4nfC2CAdePqWGzvmdTM3OxFUa+hbqezzmlp?=
+ =?us-ascii?Q?oPkm9vjq4R+6S7VAtP2Ii/5k96IW5uw7QwtIVYrBjQ7DOtpqd5iM6H00NsT1?=
+ =?us-ascii?Q?Q6IfH7aRHXRiY8N0qUsjkUKXUu+xvHwbRy5a/4/8AHAnT58saQja1DpQSpow?=
+ =?us-ascii?Q?bkuiU1hYj1NF3viQSjw66RFCpCXN+zJC0+a0DgC2WJmozFrlcrfac5zzmiil?=
+ =?us-ascii?Q?vMFjdRGgIwDSxki1EQkMisX/Hljw9XLAnDWbgfhlPX0VM4d6/Su+NieYZKs1?=
+ =?us-ascii?Q?tqf+kDmtP9AGesl/S1Uv3KTAkBYH2p0D+WxEhStl+dSWzfynm9q6aR749BQD?=
+ =?us-ascii?Q?LMZuYGv+4G3fb2NdshboFrug6P3c/ISdwf9oQAYlzuTwS8BFvN/Y4nRQTxx6?=
+ =?us-ascii?Q?JtCU6RhTnPVUMBiKh4vcsuxXmNxfUxbGZPrTXnHwgW49EGW2dwanTzqAC5qe?=
+ =?us-ascii?Q?CJuH1hMLtrxumDhAqRaIan8t5iSJyOW1xQUp0hEc4DkOuD3FZUid6uokX2FJ?=
+ =?us-ascii?Q?ykvKGvdTzihVhsMfM3Eb2jez81T/nYQTfur6++38qwbBe9SoQPlew7Z7p3AB?=
+ =?us-ascii?Q?jvKK3KEKilRpHaZrihvQd8mg0AiGQF0WfzoJAcZ6BRaZ7/x7Mqqb9duvId4x?=
+ =?us-ascii?Q?VUP0nKQxOQLAYEyD08LCFYabPFKpbEm48GF5FcSkEIiYmK+23n/pQSaVaXqn?=
+ =?us-ascii?Q?/17zxLHtwfkmSoX1oXfjZqonSDF2cPSBDAght4h+RVlL4ZqCum7FLcYaVz3g?=
+ =?us-ascii?Q?BRmk/yL4WfDUTDqlvh2nibe9GUGimrjXvVqub/Gbcdaq23LDOqQOTRQmfCor?=
+ =?us-ascii?Q?/fIJg/CzDjEobSmGCggSwkdlENp86TDLmX/uyHY0zYUfzNBFu9Rtktd3rs6r?=
+ =?us-ascii?Q?vIqfpG1PNhZ/Po9MYtA2+LASP74e4Eu1O0/VD9NoSSnzCx7FkYie1+v5xNX0?=
+ =?us-ascii?Q?o04JsYUyzpQMVS5mGYLHGcMDmuA0/JtiHtnTkw+t3UVGe+eUH/E0m57SgbNf?=
+ =?us-ascii?Q?rWfIlgobgHj4gL1wrO+lEq02AOcG9BiUFHAXCP5JH9h46E/lZlZiO5IC49Tj?=
+ =?us-ascii?Q?pzTaYXhiYUisKVa6JJpUNUlVEGG2nIa7YDD4cn3VZADtF61M0Bz8i1Z9XMW1?=
+ =?us-ascii?Q?bJwBMJt8XmDmhEkCET65ccI0Kw4NmNmyGsIa36eB9vBAUgxSFen8S14/DHuV?=
+ =?us-ascii?Q?bMWotPGKPuvMm3UmJwru?=
 X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 031fd8ff-a139-4156-5cdb-08dd4d33d44b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c57dcb6-e266-44da-4131-08dd4d340472
 X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5080.eurprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2025 20:11:55.9115
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2025 20:13:16.7187
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -156,89 +156,208 @@ X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
 	00000000-0000-0000-0000-000000000000
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR03MB9931
 
-This patch declare context-sensitive kfunc groups that can be used by
-different SCX operations.
+This patch adds scx_kfunc_ids_ops_context for unified filtering of
+context-sensitive SCX kfuncs.
 
-In SCX, some kfuncs are context-sensitive and can only be used in
-specific SCX operations.
+Currently we need to rely on kfunc id sets to group context-sensitive
+SCX kfuncs.
 
-Currently context-sensitive kfuncs can be grouped into UNLOCKED,
-CPU_RELEASE, DISPATCH, ENQUEUE, SELECT_CPU.
+If we add filters to each group kfunc id set separately, it will be
+cumbersome. A better approach would be to use different kfunc id sets
+for grouping purposes and filtering purposes.
 
-In this patch enum scx_ops_kf_flags was added to represent these groups,
-which is based on scx_kf_mask.
+scx_kfunc_ids_ops_context is a kfunc id set for filtering purposes,
+which contains all context-sensitive SCX kfuncs and implements filtering
+rules for different contexts in the filter (by searching the kfunc id
+sets used for grouping purposes).
 
-SCX_OPS_KF_ANY is a special value that indicates kfuncs can be used in
-any context.
+Now we only need to register scx_kfunc_ids_ops_context, no longer need
+to register multiple context-sensitive kfunc id sets.
 
-scx_ops_context_flags is used to declare the groups of kfuncs that can
-be used by each SCX operation. An SCX operation can use multiple groups
-of kfuncs.
+In addition, this patch adds the SCX_MOFF_IDX macro to facilitate the
+calculation of idx based on moff.
 
 Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
 ---
- kernel/sched/ext.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+ kernel/sched/ext.c | 115 +++++++++++++++++++++++++++++++--------------
+ 1 file changed, 80 insertions(+), 35 deletions(-)
 
 diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index 8857c0709bdd..957a125b129f 100644
+index 957a125b129f..d5eb82eada9c 100644
 --- a/kernel/sched/ext.c
 +++ b/kernel/sched/ext.c
-@@ -689,6 +689,54 @@ struct sched_ext_ops {
- 	char name[SCX_OPS_NAME_LEN];
- };
+@@ -7,6 +7,7 @@
+  * Copyright (c) 2022 David Vernet <dvernet@meta.com>
+  */
+ #define SCX_OP_IDX(op)		(offsetof(struct sched_ext_ops, op) / sizeof(void (*)(void)))
++#define SCX_MOFF_IDX(moff)	(moff / sizeof(void (*)(void)))
  
-+/* Each flag corresponds to a btf kfunc id set */
-+enum scx_ops_kf_flags {
-+	SCX_OPS_KF_ANY			= 0,
-+	SCX_OPS_KF_UNLOCKED		= 1 << 1,
-+	SCX_OPS_KF_CPU_RELEASE		= 1 << 2,
-+	SCX_OPS_KF_DISPATCH		= 1 << 3,
-+	SCX_OPS_KF_ENQUEUE		= 1 << 4,
-+	SCX_OPS_KF_SELECT_CPU		= 1 << 5,
+ enum scx_consts {
+ 	SCX_DSP_DFL_MAX_BATCH		= 32,
+@@ -6449,11 +6450,6 @@ BTF_KFUNCS_START(scx_kfunc_ids_select_cpu)
+ BTF_ID_FLAGS(func, scx_bpf_select_cpu_dfl, KF_RCU)
+ BTF_KFUNCS_END(scx_kfunc_ids_select_cpu)
+ 
+-static const struct btf_kfunc_id_set scx_kfunc_set_select_cpu = {
+-	.owner			= THIS_MODULE,
+-	.set			= &scx_kfunc_ids_select_cpu,
+-};
+-
+ static bool scx_dsq_insert_preamble(struct task_struct *p, u64 enq_flags)
+ {
+ 	if (!scx_kf_allowed(SCX_KF_ENQUEUE | SCX_KF_DISPATCH))
+@@ -6611,11 +6607,6 @@ BTF_ID_FLAGS(func, scx_bpf_dispatch, KF_RCU)
+ BTF_ID_FLAGS(func, scx_bpf_dispatch_vtime, KF_RCU)
+ BTF_KFUNCS_END(scx_kfunc_ids_enqueue_dispatch)
+ 
+-static const struct btf_kfunc_id_set scx_kfunc_set_enqueue_dispatch = {
+-	.owner			= THIS_MODULE,
+-	.set			= &scx_kfunc_ids_enqueue_dispatch,
+-};
+-
+ static bool scx_dsq_move(struct bpf_iter_scx_dsq_kern *kit,
+ 			 struct task_struct *p, u64 dsq_id, u64 enq_flags)
+ {
+@@ -6931,11 +6922,6 @@ BTF_ID_FLAGS(func, scx_bpf_dispatch_from_dsq, KF_RCU)
+ BTF_ID_FLAGS(func, scx_bpf_dispatch_vtime_from_dsq, KF_RCU)
+ BTF_KFUNCS_END(scx_kfunc_ids_dispatch)
+ 
+-static const struct btf_kfunc_id_set scx_kfunc_set_dispatch = {
+-	.owner			= THIS_MODULE,
+-	.set			= &scx_kfunc_ids_dispatch,
+-};
+-
+ __bpf_kfunc_start_defs();
+ 
+ /**
+@@ -6998,11 +6984,6 @@ BTF_KFUNCS_START(scx_kfunc_ids_cpu_release)
+ BTF_ID_FLAGS(func, scx_bpf_reenqueue_local)
+ BTF_KFUNCS_END(scx_kfunc_ids_cpu_release)
+ 
+-static const struct btf_kfunc_id_set scx_kfunc_set_cpu_release = {
+-	.owner			= THIS_MODULE,
+-	.set			= &scx_kfunc_ids_cpu_release,
+-};
+-
+ __bpf_kfunc_start_defs();
+ 
+ /**
+@@ -7035,11 +7016,6 @@ BTF_ID_FLAGS(func, scx_bpf_dispatch_from_dsq, KF_RCU)
+ BTF_ID_FLAGS(func, scx_bpf_dispatch_vtime_from_dsq, KF_RCU)
+ BTF_KFUNCS_END(scx_kfunc_ids_unlocked)
+ 
+-static const struct btf_kfunc_id_set scx_kfunc_set_unlocked = {
+-	.owner			= THIS_MODULE,
+-	.set			= &scx_kfunc_ids_unlocked,
+-};
+-
+ __bpf_kfunc_start_defs();
+ 
+ /**
+@@ -7770,6 +7746,83 @@ __bpf_kfunc u64 scx_bpf_now(void)
+ 
+ __bpf_kfunc_end_defs();
+ 
++BTF_KFUNCS_START(scx_kfunc_ids_ops_context)
++/* scx_kfunc_ids_select_cpu */
++BTF_ID_FLAGS(func, scx_bpf_select_cpu_dfl, KF_RCU)
++/* scx_kfunc_ids_enqueue_dispatch */
++BTF_ID_FLAGS(func, scx_bpf_dsq_insert, KF_RCU)
++BTF_ID_FLAGS(func, scx_bpf_dsq_insert_vtime, KF_RCU)
++BTF_ID_FLAGS(func, scx_bpf_dispatch, KF_RCU)
++BTF_ID_FLAGS(func, scx_bpf_dispatch_vtime, KF_RCU)
++/* scx_kfunc_ids_dispatch */
++BTF_ID_FLAGS(func, scx_bpf_dispatch_nr_slots)
++BTF_ID_FLAGS(func, scx_bpf_dispatch_cancel)
++BTF_ID_FLAGS(func, scx_bpf_dsq_move_to_local)
++BTF_ID_FLAGS(func, scx_bpf_consume)
++/* scx_kfunc_ids_cpu_release */
++BTF_ID_FLAGS(func, scx_bpf_reenqueue_local)
++/* scx_kfunc_ids_unlocked */
++BTF_ID_FLAGS(func, scx_bpf_create_dsq, KF_SLEEPABLE)
++/* Intersection of scx_kfunc_ids_dispatch and scx_kfunc_ids_unlocked */
++BTF_ID_FLAGS(func, scx_bpf_dsq_move_set_slice)
++BTF_ID_FLAGS(func, scx_bpf_dsq_move_set_vtime)
++BTF_ID_FLAGS(func, scx_bpf_dsq_move, KF_RCU)
++BTF_ID_FLAGS(func, scx_bpf_dsq_move_vtime, KF_RCU)
++BTF_ID_FLAGS(func, scx_bpf_dispatch_from_dsq_set_slice)
++BTF_ID_FLAGS(func, scx_bpf_dispatch_from_dsq_set_vtime)
++BTF_ID_FLAGS(func, scx_bpf_dispatch_from_dsq, KF_RCU)
++BTF_ID_FLAGS(func, scx_bpf_dispatch_vtime_from_dsq, KF_RCU)
++BTF_KFUNCS_END(scx_kfunc_ids_ops_context)
++
++static int scx_kfunc_ids_ops_context_filter(const struct bpf_prog *prog, u32 kfunc_id)
++{
++	u32 moff, flags;
++
++	if (!btf_id_set8_contains(&scx_kfunc_ids_ops_context, kfunc_id))
++		return 0;
++
++	if (prog->type == BPF_PROG_TYPE_SYSCALL &&
++	    btf_id_set8_contains(&scx_kfunc_ids_unlocked, kfunc_id))
++		return 0;
++
++	if (prog->type == BPF_PROG_TYPE_STRUCT_OPS &&
++	    prog->aux->st_ops != &bpf_sched_ext_ops)
++		return 0;
++
++	/* prog->type == BPF_PROG_TYPE_STRUCT_OPS && prog->aux->st_ops == &bpf_sched_ext_ops*/
++
++	moff = prog->aux->attach_st_ops_member_off;
++	flags = scx_ops_context_flags[SCX_MOFF_IDX(moff)];
++
++	if ((flags & SCX_OPS_KF_UNLOCKED) &&
++	    btf_id_set8_contains(&scx_kfunc_ids_unlocked, kfunc_id))
++		return 0;
++
++	if ((flags & SCX_OPS_KF_CPU_RELEASE) &&
++	    btf_id_set8_contains(&scx_kfunc_ids_cpu_release, kfunc_id))
++		return 0;
++
++	if ((flags & SCX_OPS_KF_DISPATCH) &&
++	    btf_id_set8_contains(&scx_kfunc_ids_dispatch, kfunc_id))
++		return 0;
++
++	if ((flags & SCX_OPS_KF_ENQUEUE) &&
++	    btf_id_set8_contains(&scx_kfunc_ids_enqueue_dispatch, kfunc_id))
++		return 0;
++
++	if ((flags & SCX_OPS_KF_SELECT_CPU) &&
++	    btf_id_set8_contains(&scx_kfunc_ids_select_cpu, kfunc_id))
++		return 0;
++
++	return -EACCES;
++}
++
++static const struct btf_kfunc_id_set scx_kfunc_set_ops_context = {
++	.owner			= THIS_MODULE,
++	.set			= &scx_kfunc_ids_ops_context,
++	.filter			= scx_kfunc_ids_ops_context_filter,
 +};
 +
-+static const u32 scx_ops_context_flags[] = {
-+	[SCX_OP_IDX(select_cpu)]		= SCX_OPS_KF_SELECT_CPU | SCX_OPS_KF_ENQUEUE,
-+	[SCX_OP_IDX(enqueue)]			= SCX_OPS_KF_ENQUEUE,
-+	[SCX_OP_IDX(dequeue)]			= SCX_OPS_KF_ANY,
-+	[SCX_OP_IDX(dispatch)]			= SCX_OPS_KF_DISPATCH | SCX_OPS_KF_ENQUEUE,
-+	[SCX_OP_IDX(tick)]			= SCX_OPS_KF_ANY,
-+	[SCX_OP_IDX(runnable)]			= SCX_OPS_KF_ANY,
-+	[SCX_OP_IDX(running)]			= SCX_OPS_KF_ANY,
-+	[SCX_OP_IDX(stopping)]			= SCX_OPS_KF_ANY,
-+	[SCX_OP_IDX(quiescent)]			= SCX_OPS_KF_ANY,
-+	[SCX_OP_IDX(yield)]			= SCX_OPS_KF_ANY,
-+	[SCX_OP_IDX(core_sched_before)]		= SCX_OPS_KF_ANY,
-+	[SCX_OP_IDX(set_weight)]		= SCX_OPS_KF_ANY,
-+	[SCX_OP_IDX(set_cpumask)]		= SCX_OPS_KF_ANY,
-+	[SCX_OP_IDX(update_idle)]		= SCX_OPS_KF_ANY,
-+	[SCX_OP_IDX(cpu_acquire)]		= SCX_OPS_KF_ANY,
-+	[SCX_OP_IDX(cpu_release)]		= SCX_OPS_KF_CPU_RELEASE,
-+	[SCX_OP_IDX(init_task)]			= SCX_OPS_KF_UNLOCKED,
-+	[SCX_OP_IDX(exit_task)]			= SCX_OPS_KF_ANY,
-+	[SCX_OP_IDX(enable)]			= SCX_OPS_KF_ANY,
-+	[SCX_OP_IDX(disable)]			= SCX_OPS_KF_ANY,
-+	[SCX_OP_IDX(dump)]			= SCX_OPS_KF_DISPATCH,
-+	[SCX_OP_IDX(dump_cpu)]			= SCX_OPS_KF_ANY,
-+	[SCX_OP_IDX(dump_task)]			= SCX_OPS_KF_ANY,
-+#ifdef CONFIG_EXT_GROUP_SCHED
-+	[SCX_OP_IDX(cgroup_init)]		= SCX_OPS_KF_UNLOCKED,
-+	[SCX_OP_IDX(cgroup_exit)]		= SCX_OPS_KF_UNLOCKED,
-+	[SCX_OP_IDX(cgroup_prep_move)]		= SCX_OPS_KF_UNLOCKED,
-+	[SCX_OP_IDX(cgroup_move)]		= SCX_OPS_KF_UNLOCKED,
-+	[SCX_OP_IDX(cgroup_cancel_move)]	= SCX_OPS_KF_UNLOCKED,
-+	[SCX_OP_IDX(cgroup_set_weight)]		= SCX_OPS_KF_UNLOCKED,
-+#endif	/* CONFIG_EXT_GROUP_SCHED */
-+	[SCX_OP_IDX(cpu_online)]		= SCX_OPS_KF_UNLOCKED,
-+	[SCX_OP_IDX(cpu_offline)]		= SCX_OPS_KF_UNLOCKED,
-+	[SCX_OP_IDX(init)]			= SCX_OPS_KF_UNLOCKED,
-+	[SCX_OP_IDX(exit)]			= SCX_OPS_KF_UNLOCKED,
-+};
-+
- enum scx_opi {
- 	SCX_OPI_BEGIN			= 0,
- 	SCX_OPI_NORMAL_BEGIN		= 0,
+ BTF_KFUNCS_START(scx_kfunc_ids_any)
+ BTF_ID_FLAGS(func, scx_bpf_kick_cpu)
+ BTF_ID_FLAGS(func, scx_bpf_dsq_nr_queued)
+@@ -7823,17 +7876,9 @@ static int __init scx_init(void)
+ 	 * check using scx_kf_allowed().
+ 	 */
+ 	if ((ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
+-					     &scx_kfunc_set_select_cpu)) ||
+-	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
+-					     &scx_kfunc_set_enqueue_dispatch)) ||
+-	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
+-					     &scx_kfunc_set_dispatch)) ||
+-	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
+-					     &scx_kfunc_set_cpu_release)) ||
+-	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
+-					     &scx_kfunc_set_unlocked)) ||
++					     &scx_kfunc_set_ops_context)) ||
+ 	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL,
+-					     &scx_kfunc_set_unlocked)) ||
++					     &scx_kfunc_set_ops_context)) ||
+ 	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
+ 					     &scx_kfunc_set_any)) ||
+ 	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
 -- 
 2.39.5
 
