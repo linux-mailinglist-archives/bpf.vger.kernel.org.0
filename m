@@ -1,355 +1,187 @@
-Return-Path: <bpf+bounces-51608-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51609-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADB8FA3675C
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 22:16:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED02AA3675E
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 22:16:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDCD31737E0
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 21:14:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71A041897013
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 21:15:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 060941DB128;
-	Fri, 14 Feb 2025 21:13:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 002981DACA1;
+	Fri, 14 Feb 2025 21:14:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="Ja0+x4ai"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ihm9rd3q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B33951FC0F5
-	for <bpf@vger.kernel.org>; Fri, 14 Feb 2025 21:13:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED49D1C861D;
+	Fri, 14 Feb 2025 21:14:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739567602; cv=none; b=GPC6VcuNFbtJITMZVnPYqbrfYlfwYqZI1n079p7rd178o3tCla/lPDwNBnBRhdUbQtgPIA1s0rn1Aq66VdyRT0+2vVhxqIwcGTzqNzWKSMVdxthTYTRecO6U/PvFhrtbedS6bTxvg5/InUZ8gvrpllPShQEiDRNWIQgMkN6np8M=
+	t=1739567694; cv=none; b=DBmOALBz2aLXRzSN7XwhHWFcD3Bd1e0XE33PhY4fGLC+cwEuoIOGcKvrWf9CCcAhhMaBcFCXh3udk1VJ+7H+MvQ2X9hvuN0AOZWqfJG7+XZWLDIc7AB/nCrlI2EHQgaBmi9OIU+rLt6A2lPsXKSBxz88SbiwkEeEckFFU13qYzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739567602; c=relaxed/simple;
-	bh=rlrXc4hroYFAQc+w/Ml5h4jot5Mubo3164+XNtZ2tik=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bY/Nq6owwN/6HorYIcZyqmxtG9P1LToQs3+91BHte3lVjZBY1TxuKxXqm/sHYLcqq1xyeog/tBLG64yqHOi1C4h9xu0xDXuTLskWy9ytarWxhyzDT5AqoaUnluYsXFM0CARwBnQeZ+AVtf7//sWBNhnx+jmrFi2rOMG9OfugV4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=Ja0+x4ai; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2fc32756139so1395245a91.1
-        for <bpf@vger.kernel.org>; Fri, 14 Feb 2025 13:13:20 -0800 (PST)
+	s=arc-20240116; t=1739567694; c=relaxed/simple;
+	bh=M4I/lVoL2eoEx86tYBWI0HuYLbF+4WaYKyL8MybyfUY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u64Sy5TCZIHmEmsCZHcrTd+euQTpweHuIZ6oampPSOMjzeXJ+myPifhKMFNMysIUKKcCZp4/kj21a8O/1TVME3dR7eyfq56vuXnwg2O3NZPDTveBKKLw/SCp6IsRDDKRrRnoisfbR7iMt1xPAGXA1SjuVIbnw1bO4p5sjrpEa1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ihm9rd3q; arc=none smtp.client-ip=209.85.219.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-e53a91756e5so2079257276.1;
+        Fri, 14 Feb 2025 13:14:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1739567600; x=1740172400; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dQVAlNj3QbWNBbK5rOU0fAHCX0qfBnwQBa4usEGobZQ=;
-        b=Ja0+x4aisuqZX6j7K6q0RT6PIGWxYXy2CmHnhtzzzpw3Muex46I2n4e1oLXPvuXHZW
-         0Jjptcz42G/ONltGNOd7eDRIqb1hoy98vClaT6yMDQSCHMRMjT7AXOMQv86vN+cyXxqX
-         Bk2Q4QGbGlw/fUM+VEwNj6NsP9xBzzR8EGDWg=
+        d=gmail.com; s=20230601; t=1739567692; x=1740172492; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mNkF78o53Rf+t1jN2LaXRMV13iaPzPVoeIghT/2tY5o=;
+        b=ihm9rd3q62RuZo5QptI1CCwLuUxhYmLGI/Vc8lTBgUrx75axUa3HTM7/b+ARLiwHLr
+         tffo5xsOkDHKW4i77MjlT+oTlozavJ94D1VcqOc4EolU2XvqWpYd0Hn5kQXRlCv4utul
+         3MI14cWpRvg7LygTtLKLhUYf21QOZxeMaZJ4/OdF/AyLyFUsDQA03j+dslt/GeX4mssb
+         jPWzcTEvrafDQUwWUkLE8Z9cdI+1CMcNq25umHMnsaIlyS/62wQo4eX8vqbNEHPQ518M
+         vh2gnjVOPmOM7Rb1ULbuV65P/1/ijZ0sDa8Y13ypysaqps0fPBt+G6NxJF9hlVmc3Jh0
+         /TqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739567600; x=1740172400;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dQVAlNj3QbWNBbK5rOU0fAHCX0qfBnwQBa4usEGobZQ=;
-        b=egqe7TRiZgHMylohI6n8IZsvqVN0UIYGjxE9VnjA5g1ffKp1Slql1iY0TNKgn8sAg4
-         dMIFH0fvtRbeLwoehfdvcxn0Gfuq30tlJGZTD7HPF6Irb8AhJAsVz9WIjTtvN50hQKNk
-         eh0gYpE2SwdMNTe7tEo1yH40Bt6oeZMhUu6oC9iTKkkPg3QQVuTVw8ChvjPfTb13QtUH
-         vwvVl0dm4X94YJj0/K9bR+nijAePcAfSoEvZJxLrGl6YwbgnbQC5oMa62JJ8OR1qyVUq
-         OK9iSHeBNH8JFjYud109gNVyCu6VKapqAk1JU6Dtcem49as2cag+LvACAq85BZnLVj8t
-         iVMA==
-X-Forwarded-Encrypted: i=1; AJvYcCUwUsP4QDWJkx/feylkGSQ8McJMOPVCA6uQYOj3YVGmCYon8SsC4xE9hB8vI/UuoYFb9sQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxKRJjkkSAs4aYjLM+kNnyvZRJy49OFoUTMQUWqI79W+4up4ttC
-	5FD3qlOD24/CjOPXLUsUMUh5xFuovaJ0U57Hv6qw2Zu3OdI9L1CnvPIfnRk5xEc=
-X-Gm-Gg: ASbGncsAdAU4oa+hGKQqyZ1glpqQmmIgiCwx2I4h9LCimpGHpNi0wV1X6dTc0Un7wfD
-	KkyhnhG0DHFFc12vey0MdteqGNGnKTHmSXM8NaVaCROSUUTLnILlAHALo4b6W05/BFN3ces+Due
-	aUjtl21esaJ5hMDmqi1w6s4BXhFRSeUMEw7VgDRbwI6zI3XiAgh/12JWMIODpYUHoXFqzh0U4kw
-	bdULR5DteDOupgAtv5MgKyCEuGoCMDHNOe9k+pBa7HDN8gbhOUmyAlSobLZBpQAN5/lqXhU0gfT
-	trPveYOLf4biK+DAghymC1A=
-X-Google-Smtp-Source: AGHT+IG25rthdsrePVBbc4s0lfFZSqx3GHujdDrq1qGR930P5reQFwnTWK+/n+GUAgL9O+BCHUIXBg==
-X-Received: by 2002:a17:90b:1b0d:b0:2ee:c9b6:4c42 with SMTP id 98e67ed59e1d1-2fc40f22cbamr1022240a91.16.1739567600010;
-        Fri, 14 Feb 2025 13:13:20 -0800 (PST)
-Received: from localhost.localdomain ([2620:11a:c019:0:65e:3115:2f58:c5fd])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-220d55908a7sm33285265ad.240.2025.02.14.13.13.18
+        d=1e100.net; s=20230601; t=1739567692; x=1740172492;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mNkF78o53Rf+t1jN2LaXRMV13iaPzPVoeIghT/2tY5o=;
+        b=G7+/ihiqIZB0i+hWav8hUbHIW/Avtamb3ei2z4E9B6HDaRm7ZinXc1DG2Fci/pB4zz
+         ql4GoJ7SlGBSoqnuT4aI81mK6QoATBcdDb8pswhTGuPaAOaklJrg77OsbC3ihRjruITu
+         cYTeACcAWvU339E1M37nIY+LLq9mJ5MytVITTbgqzkn+fedAc/VLOY+yUxlWOoP/NfGG
+         NeuTpIBEpQQJ0fXAnxpeyoUg+JyjinnR0fztcsPlqLaTCStYJjifhY90OsqrkrBR+oLq
+         V3ppPsLMRH2KLlZVBECNj15H9KggzCOCXA8fYh90LhLcbqWJNbgJfSLbAmVdCabpHrED
+         P7kw==
+X-Forwarded-Encrypted: i=1; AJvYcCWFHPEB2g42JaTQK28s8SYDYoUbRdSSrxhn31l6L+rIncx5jrHUO5EjRl1QxnHAowxhHlM=@vger.kernel.org, AJvYcCXgljtrwAzZTq3InCXJCDl/Ljsn/OELoKJi9VwzzZD8Ht+Nx8v0MWTp37dMy0dfP1TGu1nd4NwE5OPLLJxR@vger.kernel.org
+X-Gm-Message-State: AOJu0YxA8zG3vTgC713dyd0xn0hZxQ2a44NXgWQfY/PgH+/SvIZX/j7C
+	btA4SM+VixxAFnXcI217AzGdQqLHLF63fiJiOvwfXuISaow8gKYN
+X-Gm-Gg: ASbGncuQpEdnTCXT+eYYCcSwFtK/3mxmcpd3I2Xp85vdpg1Am57fJDv3+7cNlYB9+YX
+	tQX0kdi3voabP6sjkVdv1EZPEIjFBY7M1kxKwXZCRjsA4AziAxwr0dT1jFimbg3rG3TP9V9fbIK
+	/4u8TotAvsuC4l73ZiJQnrzsgjCmx2vJgqXld+DZYiVR21ykJhMYJxU29RQDimjdqLacJcfF1G/
+	KqRdDM3DU42pp0GTL9aKVFoyJgJL6X1CuZ8wTp7SdaDx9LjTHg9xRhFQ649w90e3KjPupry5iAT
+	2F91S4Ss1lcGNi9cMe24DVEZxCCbIxAwqJMhTpasb1ExEBDmJTE=
+X-Google-Smtp-Source: AGHT+IHMvCvabfR3FD3eCjD9f/3m5EJVslz8OaZYJZDPQv5zcb5zDlnx+fqTiQggr3kQh3rsAgFyLQ==
+X-Received: by 2002:a05:6902:330e:b0:e58:3b:7ee8 with SMTP id 3f1490d57ef6-e5dc91f557emr720004276.35.1739567691749;
+        Fri, 14 Feb 2025 13:14:51 -0800 (PST)
+Received: from localhost (c-73-224-175-84.hsd1.fl.comcast.net. [73.224.175.84])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e5dae0da261sm1237795276.37.2025.02.14.13.14.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Feb 2025 13:13:19 -0800 (PST)
-From: Joe Damato <jdamato@fastly.com>
-To: netdev@vger.kernel.org
-Cc: stfomichev@gmail.com,
-	horms@kernel.org,
-	kuba@kernel.org,
-	Joe Damato <jdamato@fastly.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	linux-kernel@vger.kernel.org (open list),
-	linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
-	bpf@vger.kernel.org (open list:XDP (eXpress Data Path):Keyword:(?:\b|_)xdp(?:\b|_))
-Subject: [PATCH net-next v8 3/3] selftests: drv-net: Test queue xsk attribute
-Date: Fri, 14 Feb 2025 21:12:31 +0000
-Message-ID: <20250214211255.14194-4-jdamato@fastly.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250214211255.14194-1-jdamato@fastly.com>
-References: <20250214211255.14194-1-jdamato@fastly.com>
+        Fri, 14 Feb 2025 13:14:50 -0800 (PST)
+Date: Fri, 14 Feb 2025 16:14:49 -0500
+From: Yury Norov <yury.norov@gmail.com>
+To: Andrea Righi <arighi@nvidia.com>
+Cc: Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>,
+	Changwoo Min <changwoo@igalia.com>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Joel Fernandes <joel@joelfernandes.org>, Ian May <ianm@nvidia.com>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/8] mm/numa: Introduce nearest_node_nodemask()
+Message-ID: <Z6-ySS7go_dXl5gM@thinkpad>
+References: <20250214194134.658939-1-arighi@nvidia.com>
+ <20250214194134.658939-4-arighi@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250214194134.658939-4-arighi@nvidia.com>
 
-Test that queues which are used for AF_XDP have the xsk nest attribute.
-The attribute is currently empty, but its existence means the AF_XDP is
-being used for the queue. Enable CONFIG_XDP_SOCKETS for
-selftests/drivers/net tests, as well.
+On Fri, Feb 14, 2025 at 08:40:02PM +0100, Andrea Righi wrote:
+> Introduce the new helper nearest_node_nodemask() to find the closest
+> node in a specified nodemask from a given starting node.
+> 
+> Returns MAX_NUMNODES if no node is found.
+> 
+> Suggested-by: Yury Norov [NVIDIA] <yury.norov@gmail.com>
+> Signed-off-by: Andrea Righi <arighi@nvidia.com>
 
-Signed-off-by: Joe Damato <jdamato@fastly.com>
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
----
- v8:
-   - Switch from TEST_GET_PROGS to TEST_GEN_FILES in the Makefile.
-   - Fix codespell spelling issue in xdp_helper.c
+Acked-by: Yury Norov [NVIDIA] <yury.norov@gmail.com>
 
- v7:
-   - Added CONFIG_XDP_SOCKETS=y to selftests/drivers/net/config.
-   - Updated xdp_helper to return -1 on AF_XDP non-existence, 1 for
-     other failures.
-   - Updated queues.py to skip if AF_XDP does not not exist, fail
-     otherwise.
-
- v3:
-   - Change comment style of helper C program to avoid kdoc warnings as
-     suggested by Jakub. No other changes.
-
- v2:
-   - Updated the Python test after changes to patch 1 which expose an
-     empty nest
-   - Updated Python test with general Python coding feedback
-
- .../testing/selftests/drivers/net/.gitignore  |  2 +
- tools/testing/selftests/drivers/net/Makefile  |  3 +
- tools/testing/selftests/drivers/net/config    |  1 +
- tools/testing/selftests/drivers/net/queues.py | 42 +++++++-
- .../selftests/drivers/net/xdp_helper.c        | 98 +++++++++++++++++++
- 5 files changed, 143 insertions(+), 3 deletions(-)
- create mode 100644 tools/testing/selftests/drivers/net/.gitignore
- create mode 100644 tools/testing/selftests/drivers/net/xdp_helper.c
-
-diff --git a/tools/testing/selftests/drivers/net/.gitignore b/tools/testing/selftests/drivers/net/.gitignore
-new file mode 100644
-index 000000000000..ec746f374e85
---- /dev/null
-+++ b/tools/testing/selftests/drivers/net/.gitignore
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+xdp_helper
-diff --git a/tools/testing/selftests/drivers/net/Makefile b/tools/testing/selftests/drivers/net/Makefile
-index 28b6d47f812d..0c95bd944d56 100644
---- a/tools/testing/selftests/drivers/net/Makefile
-+++ b/tools/testing/selftests/drivers/net/Makefile
-@@ -1,10 +1,13 @@
- # SPDX-License-Identifier: GPL-2.0
-+CFLAGS += $(KHDR_INCLUDES)
- 
- TEST_INCLUDES := $(wildcard lib/py/*.py) \
- 		 $(wildcard lib/sh/*.sh) \
- 		 ../../net/net_helper.sh \
- 		 ../../net/lib.sh \
- 
-+TEST_GEN_FILES := xdp_helper
-+
- TEST_PROGS := \
- 	netcons_basic.sh \
- 	netcons_fragmented_msg.sh \
-diff --git a/tools/testing/selftests/drivers/net/config b/tools/testing/selftests/drivers/net/config
-index a2d8af60876d..f27172ddee0a 100644
---- a/tools/testing/selftests/drivers/net/config
-+++ b/tools/testing/selftests/drivers/net/config
-@@ -4,3 +4,4 @@ CONFIG_CONFIGFS_FS=y
- CONFIG_NETCONSOLE=m
- CONFIG_NETCONSOLE_DYNAMIC=y
- CONFIG_NETCONSOLE_EXTENDED_LOG=y
-+CONFIG_XDP_SOCKETS=y
-diff --git a/tools/testing/selftests/drivers/net/queues.py b/tools/testing/selftests/drivers/net/queues.py
-index 38303da957ee..5fdfebc6415f 100755
---- a/tools/testing/selftests/drivers/net/queues.py
-+++ b/tools/testing/selftests/drivers/net/queues.py
-@@ -2,13 +2,16 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- from lib.py import ksft_disruptive, ksft_exit, ksft_run
--from lib.py import ksft_eq, ksft_raises, KsftSkipEx
-+from lib.py import ksft_eq, ksft_raises, KsftSkipEx, KsftFailEx
- from lib.py import EthtoolFamily, NetdevFamily, NlError
- from lib.py import NetDrvEnv
- from lib.py import cmd, defer, ip
- import errno
- import glob
--
-+import os
-+import socket
-+import struct
-+import subprocess
- 
- def sys_get_queues(ifname, qtype='rx') -> int:
-     folders = glob.glob(f'/sys/class/net/{ifname}/queues/{qtype}-*')
-@@ -21,6 +24,39 @@ def nl_get_queues(cfg, nl, qtype='rx'):
-         return len([q for q in queues if q['type'] == qtype])
-     return None
- 
-+def check_xdp(cfg, nl, xdp_queue_id=0) -> None:
-+    test_dir = os.path.dirname(os.path.realpath(__file__))
-+    xdp = subprocess.Popen([f"{test_dir}/xdp_helper", f"{cfg.ifindex}", f"{xdp_queue_id}"],
-+                           stdin=subprocess.PIPE, stdout=subprocess.PIPE, bufsize=1,
-+                           text=True)
-+    defer(xdp.kill)
-+
-+    stdout, stderr = xdp.communicate(timeout=10)
-+    rx = tx = False
-+
-+    if xdp.returncode == 255:
-+        raise KsftSkipEx('AF_XDP unsupported')
-+    elif xdp.returncode > 0:
-+        raise KsftFailEx('unable to create AF_XDP socket')
-+
-+    queues = nl.queue_get({'ifindex': cfg.ifindex}, dump=True)
-+    if not queues:
-+        raise KsftSkipEx("Netlink reports no queues")
-+
-+    for q in queues:
-+        if q['id'] == 0:
-+            if q['type'] == 'rx':
-+                rx = True
-+            if q['type'] == 'tx':
-+                tx = True
-+
-+            ksft_eq(q['xsk'], {})
-+        else:
-+            if 'xsk' in q:
-+                _fail("Check failed: xsk attribute set.")
-+
-+    ksft_eq(rx, True)
-+    ksft_eq(tx, True)
- 
- def get_queues(cfg, nl) -> None:
-     snl = NetdevFamily(recv_size=4096)
-@@ -81,7 +117,7 @@ def check_down(cfg, nl) -> None:
- 
- def main() -> None:
-     with NetDrvEnv(__file__, queue_count=100) as cfg:
--        ksft_run([get_queues, addremove_queues, check_down], args=(cfg, NetdevFamily()))
-+        ksft_run([get_queues, addremove_queues, check_down, check_xdp], args=(cfg, NetdevFamily()))
-     ksft_exit()
- 
- 
-diff --git a/tools/testing/selftests/drivers/net/xdp_helper.c b/tools/testing/selftests/drivers/net/xdp_helper.c
-new file mode 100644
-index 000000000000..cf06a88b830b
---- /dev/null
-+++ b/tools/testing/selftests/drivers/net/xdp_helper.c
-@@ -0,0 +1,98 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <errno.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <sys/mman.h>
-+#include <sys/socket.h>
-+#include <linux/if_xdp.h>
-+#include <linux/if_link.h>
-+#include <net/if.h>
-+#include <inttypes.h>
-+
-+#define UMEM_SZ (1U << 16)
-+#define NUM_DESC (UMEM_SZ / 2048)
-+
-+/* this is a simple helper program that creates an XDP socket and does the
-+ * minimum necessary to get bind() to succeed.
-+ *
-+ * this test program is not intended to actually process packets, but could be
-+ * extended in the future if that is actually needed.
-+ *
-+ * it is used by queues.py to ensure the xsk netlinux attribute is set
-+ * correctly.
-+ */
-+int main(int argc, char **argv)
-+{
-+	struct xdp_umem_reg umem_reg = { 0 };
-+	struct sockaddr_xdp sxdp = { 0 };
-+	int num_desc = NUM_DESC;
-+	void *umem_area;
-+	int ifindex;
-+	int sock_fd;
-+	int queue;
-+	char byte;
-+
-+	if (argc != 3) {
-+		fprintf(stderr, "Usage: %s ifindex queue_id", argv[0]);
-+		return 1;
-+	}
-+
-+	sock_fd = socket(AF_XDP, SOCK_RAW, 0);
-+	if (sock_fd < 0) {
-+		perror("socket creation failed");
-+		/* if the kernel doesn't support AF_XDP, let the test program
-+		 * know with -1. All other error paths return 1.
-+		 */
-+		if (errno == EAFNOSUPPORT)
-+			return -1;
-+		return 1;
-+	}
-+
-+	ifindex = atoi(argv[1]);
-+	queue = atoi(argv[2]);
-+
-+	umem_area = mmap(NULL, UMEM_SZ, PROT_READ | PROT_WRITE, MAP_PRIVATE |
-+			MAP_ANONYMOUS, -1, 0);
-+	if (umem_area == MAP_FAILED) {
-+		perror("mmap failed");
-+		return 1;
-+	}
-+
-+	umem_reg.addr = (uintptr_t)umem_area;
-+	umem_reg.len = UMEM_SZ;
-+	umem_reg.chunk_size = 2048;
-+	umem_reg.headroom = 0;
-+
-+	setsockopt(sock_fd, SOL_XDP, XDP_UMEM_REG, &umem_reg,
-+		   sizeof(umem_reg));
-+	setsockopt(sock_fd, SOL_XDP, XDP_UMEM_FILL_RING, &num_desc,
-+		   sizeof(num_desc));
-+	setsockopt(sock_fd, SOL_XDP, XDP_UMEM_COMPLETION_RING, &num_desc,
-+		   sizeof(num_desc));
-+	setsockopt(sock_fd, SOL_XDP, XDP_RX_RING, &num_desc, sizeof(num_desc));
-+
-+	sxdp.sxdp_family = AF_XDP;
-+	sxdp.sxdp_ifindex = ifindex;
-+	sxdp.sxdp_queue_id = queue;
-+	sxdp.sxdp_flags = 0;
-+
-+	if (bind(sock_fd, (struct sockaddr *)&sxdp, sizeof(sxdp)) != 0) {
-+		munmap(umem_area, UMEM_SZ);
-+		perror("bind failed");
-+		close(sock_fd);
-+		return 1;
-+	}
-+
-+	/* give the parent program some data when the socket is ready*/
-+	fprintf(stdout, "%d\n", sock_fd);
-+
-+	/* parent program will write a byte to stdin when its ready for this
-+	 * helper to exit
-+	 */
-+	read(STDIN_FILENO, &byte, 1);
-+
-+	close(sock_fd);
-+	return 0;
-+}
--- 
-2.43.0
-
+> ---
+>  include/linux/numa.h |  7 +++++++
+>  mm/mempolicy.c       | 31 +++++++++++++++++++++++++++++++
+>  2 files changed, 38 insertions(+)
+> 
+> diff --git a/include/linux/numa.h b/include/linux/numa.h
+> index 31d8bf8a951a7..e6baaf6051bcf 100644
+> --- a/include/linux/numa.h
+> +++ b/include/linux/numa.h
+> @@ -31,6 +31,8 @@ void __init alloc_offline_node_data(int nid);
+>  /* Generic implementation available */
+>  int numa_nearest_node(int node, unsigned int state);
+>  
+> +int nearest_node_nodemask(int node, nodemask_t *mask);
+> +
+>  #ifndef memory_add_physaddr_to_nid
+>  int memory_add_physaddr_to_nid(u64 start);
+>  #endif
+> @@ -47,6 +49,11 @@ static inline int numa_nearest_node(int node, unsigned int state)
+>  	return NUMA_NO_NODE;
+>  }
+>  
+> +static inline int nearest_node_nodemask(int node, nodemask_t *mask)
+> +{
+> +	return NUMA_NO_NODE;
+> +}
+> +
+>  static inline int memory_add_physaddr_to_nid(u64 start)
+>  {
+>  	return 0;
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 162407fbf2bc7..488cad280efb3 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -196,6 +196,37 @@ int numa_nearest_node(int node, unsigned int state)
+>  }
+>  EXPORT_SYMBOL_GPL(numa_nearest_node);
+>  
+> +/**
+> + * nearest_node_nodemask - Find the node in @mask at the nearest distance
+> + *			   from @node.
+> + *
+> + * @node: a valid node ID to start the search from.
+> + * @mask: a pointer to a nodemask representing the allowed nodes.
+> + *
+> + * This function iterates over all nodes in @mask and calculates the
+> + * distance from the starting @node, then it returns the node ID that is
+> + * the closest to @node, or MAX_NUMNODES if no node is found.
+> + *
+> + * Note that @node must be a valid node ID usable with node_distance(),
+> + * providing an invalid node ID (e.g., NUMA_NO_NODE) may result in crashes
+> + * or unexpected behavior.
+> + */
+> +int nearest_node_nodemask(int node, nodemask_t *mask)
+> +{
+> +	int dist, n, min_dist = INT_MAX, min_node = MAX_NUMNODES;
+> +
+> +	for_each_node_mask(n, *mask) {
+> +		dist = node_distance(node, n);
+> +		if (dist < min_dist) {
+> +			min_dist = dist;
+> +			min_node = n;
+> +		}
+> +	}
+> +
+> +	return min_node;
+> +}
+> +EXPORT_SYMBOL_GPL(nearest_node_nodemask);
+> +
+>  struct mempolicy *get_task_policy(struct task_struct *p)
+>  {
+>  	struct mempolicy *pol = p->mempolicy;
+> -- 
+> 2.48.1
 
