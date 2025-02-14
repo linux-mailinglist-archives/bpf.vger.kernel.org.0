@@ -1,96 +1,96 @@
-Return-Path: <bpf+bounces-51563-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51564-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66CD4A35D52
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 13:11:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90D4AA35D56
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 13:16:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D175D7A218C
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 12:10:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46C4C169C1C
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 12:16:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48A7A263C73;
-	Fri, 14 Feb 2025 12:11:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4FE9263C65;
+	Fri, 14 Feb 2025 12:16:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="t3yVCudC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="T2N2PqOx";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="c5zmAyGW";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="U+CEmb/O"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FQaLI2qf";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="h5TLJ/yR";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="m5GE2i1i";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="juy6iCGU"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE7EA2139A8
-	for <bpf@vger.kernel.org>; Fri, 14 Feb 2025 12:11:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A482120C00B
+	for <bpf@vger.kernel.org>; Fri, 14 Feb 2025 12:16:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739535100; cv=none; b=uEAM28KyUwl0FJjbyJou/FV8JtTUeznmA1wWAPgqTc8cTCnGeh7JjZFsg1mPb5oosXMQtDIqh4GPFTJejFJNM1jOl9nszRAqBz0x+vaRw2lYOOTx/72mucLO+L6MO+K8lS4Cyauczpjg6W3oYXZqelVeszR2DObhN3vldZdc2aE=
+	t=1739535367; cv=none; b=IAFTiBZX6qa6GccaWttvmMK3wpRjezKCcpWyCO+vpgdB89OBK0EqbMUVvRlNqHo7rvKO76tl8/8DPPHl7XusI8OM6yHLtot0zM1OPHOPBeG0U6/iz3/M6wxm5YXYSPHKCxo0I781WyvFfwKAW3JTleI6ExsT0DwLylFOR7Brr2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739535100; c=relaxed/simple;
-	bh=g+opLRlvl1TXBQyaULfPhhwGsbKBmjcBMDNwTaixuDk=;
+	s=arc-20240116; t=1739535367; c=relaxed/simple;
+	bh=7kj1SNtGeNW6nG1LGMjV1kZoCaWguhNLCK6pAHoXch8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=k3GuMQ7A2gvoaNKa3ytEjuxH5aVwHdJMUNptV8vvGV+CAD3/h4cDLERRvIPvJnABvmMoceJ/TPfibDjtnhJACUUFPZKht8Kp1etvdmewzIkRlCawm9T6cO/vLMySky7sEUdyGHfYN4XG9qRGYI7ML7i/r3+N8EQwo9E0ZBBB4FY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=fail smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=t3yVCudC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=T2N2PqOx; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=c5zmAyGW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=U+CEmb/O; arc=none smtp.client-ip=195.135.223.130
+	 In-Reply-To:Content-Type; b=NdSmshStVcgyp99QvEuznYcdAvNwlzrXB7/wq6Y1RQFx8+wBRcq/tjHvf3uaD6N8ratvLb6pSR5BcTSxb6jUaVajXHJr4/x8rLr/Ld/2A7mXXu5afbCIT5kFaHFrpdq2aKCyCnCwZeGcTdgkKkeWaRoKAgM9ZKy+0lQ6eXZwvoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=fail smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FQaLI2qf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=h5TLJ/yR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=m5GE2i1i; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=juy6iCGU; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 038B42116D;
-	Fri, 14 Feb 2025 12:11:27 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id CDC6C1F381;
+	Fri, 14 Feb 2025 12:15:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1739535092; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1739535358; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=z4K+C9Eqk0Vm9TBaNOrBKZykA6o6UJw4ZbHyyjKPZ74=;
-	b=t3yVCudCZHOQQkpb967FppG3tQ1N2uGMZIJOVRMORDaX7mLUSUxcYWVoxrDXLXCE27zRYL
-	L2pmAO4EIn7QxVFfF9W6/z1gKNTa866hNL+pdJZx3q0NGwIkd6Qy2ShwSxClLUwRpuIzvj
-	ifWq7zrheuMn3d35gXFzn2ld3h3DvqA=
+	bh=MCRBSZb2GTeLXeTasvV1zCjb846f5UCPrmAPxfeWHiI=;
+	b=FQaLI2qfQe543aX57A9PFTIVCEoGtYmsrwMm/9WgrXsF7LAYjI2zWQ+U7jPNtGhMSp6BRl
+	gR8fjJEKSS5dc1JcXjQyN4LLIpLOs3HX3Q+dljqKliCShXdi0NpcW7LJzikyCXrUf9+fQe
+	snIfTbWIpfPD8Zu+AhkdY2xYHfb4J1s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1739535092;
+	s=susede2_ed25519; t=1739535358;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=z4K+C9Eqk0Vm9TBaNOrBKZykA6o6UJw4ZbHyyjKPZ74=;
-	b=T2N2PqOxkZ2Bmg7JV8NM5eaV1qzUu8Z89WK4x83Lf/l3/vC6sk+6P8rUkHa6r74/G5SmUN
-	SigG+jrjXllG99CQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=c5zmAyGW;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="U+CEmb/O"
+	bh=MCRBSZb2GTeLXeTasvV1zCjb846f5UCPrmAPxfeWHiI=;
+	b=h5TLJ/yRjjSKoqyxEiU2nT82J0LGOIksOSzD/FgnIb9mjzc9MnQe8SjhopulJumO7r2Lqh
+	XBysN8s0RkPC5xAg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=m5GE2i1i;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=juy6iCGU
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1739535087; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1739535353; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=z4K+C9Eqk0Vm9TBaNOrBKZykA6o6UJw4ZbHyyjKPZ74=;
-	b=c5zmAyGWBqR6QjbYs03sZhVl2N8ZS/g9sg06u9qoBJEe5VgWXA2jQDwNgQsqHSTBiSpR0d
-	J/6cWjKyY6ZC9AbWMps654m0yr8z0GWPYq0FE5Tigziw/gaLtH9noSZW6/HIJi+NFPK38L
-	B6Ypbytmh1ICBtKvHzbeyPukhN/KaVI=
+	bh=MCRBSZb2GTeLXeTasvV1zCjb846f5UCPrmAPxfeWHiI=;
+	b=m5GE2i1imK3MPs25wiegfLN9m71vpB0kYz+hNVF3K7XzC2gF2UrQ7xWjGsbiitb9FChXwV
+	upMfOQoe380lz1FP94Dm6JPL5hp/ZI1l0vb0O1IBZRDTSkPanQXl/flJs3Fu25YbHCFLro
+	fN0UXAZFsMw1aMOFDYdcn/RKz0/S+VI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1739535087;
+	s=susede2_ed25519; t=1739535353;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=z4K+C9Eqk0Vm9TBaNOrBKZykA6o6UJw4ZbHyyjKPZ74=;
-	b=U+CEmb/OT3W7jpkJdh9GMkBH76jlueMHwjmOJ6egQHOJYFxqo57MEJZFCdi2G1C8YqjWFw
-	18RUCFCHXfhiMCCg==
+	bh=MCRBSZb2GTeLXeTasvV1zCjb846f5UCPrmAPxfeWHiI=;
+	b=juy6iCGUnBGucd+NZVGgpp5qsawdB3kTapc+/FSfrg+o6MQMeIqIQNF4FmxcPFj8qCIlKg
+	PZ0nQRP9symDbFCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AB51413285;
-	Fri, 14 Feb 2025 12:11:26 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A699113285;
+	Fri, 14 Feb 2025 12:15:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id V1qpKO4yr2fpcAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 14 Feb 2025 12:11:26 +0000
-Message-ID: <efc30cf9-8351-4889-8245-cc4a6893ebf4@suse.cz>
-Date: Fri, 14 Feb 2025 13:11:26 +0100
+	id ZRZdKPkzr2dzcgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 14 Feb 2025 12:15:53 +0000
+Message-ID: <cc82c78c-b878-4d9d-b671-7609fd9e7b81@suse.cz>
+Date: Fri, 14 Feb 2025 13:15:53 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -100,15 +100,23 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH bpf-next v8 3/6] locking/local_lock: Introduce
  localtry_lock_t
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org
-Cc: andrii@kernel.org, memxor@gmail.com, akpm@linux-foundation.org,
- peterz@infradead.org, bigeasy@linutronix.de, rostedt@goodmis.org,
- houtao1@huawei.com, hannes@cmpxchg.org, shakeel.butt@linux.dev,
- mhocko@suse.com, willy@infradead.org, tglx@linutronix.de, jannh@google.com,
- tj@kernel.org, linux-mm@kvack.org, kernel-team@fb.com
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Sebastian Sewior <bigeasy@linutronix.de>,
+ Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, Shakeel Butt <shakeel.butt@linux.dev>,
+ Michal Hocko <mhocko@suse.com>, Matthew Wilcox <willy@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>,
+ Tejun Heo <tj@kernel.org>, linux-mm <linux-mm@kvack.org>,
+ Kernel Team <kernel-team@fb.com>
 References: <20250213033556.9534-1-alexei.starovoitov@gmail.com>
  <20250213033556.9534-4-alexei.starovoitov@gmail.com>
+ <1fda7391-228d-4e10-8449-189be36eb27c@suse.cz>
+ <CAADnVQLHRb8fu9J6Yd63ZDBtJFzZN1oWfwSDA_QXFqzXyr9F5g@mail.gmail.com>
+Content-Language: en-US
 From: Vlastimil Babka <vbabka@suse.cz>
 Autocrypt: addr=vbabka@suse.cz; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -149,207 +157,78 @@ Autocrypt: addr=vbabka@suse.cz; keydata=
  w9XOLH1IIWh7RURU7G1iOfEfmImFeC3cbbS73LQEFGe1urxvIH5K/7vX+FkNcr9ujwWuPE9b
  1C2o4i/yZPLXIVy387EjA6GZMqvQUFuSTs/GeBcv0NjIQi8867H3uLjz+mQy63fAitsDwLmR
  EP+ylKVEKb0Q2A==
-In-Reply-To: <20250213033556.9534-4-alexei.starovoitov@gmail.com>
+In-Reply-To: <CAADnVQLHRb8fu9J6Yd63ZDBtJFzZN1oWfwSDA_QXFqzXyr9F5g@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 038B42116D
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: CDC6C1F381
 X-Spam-Score: -3.01
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
+	BAYES_HAM(-3.00)[99.99%];
 	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
+	TO_DN_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
 	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
 	MIME_TRACE(0.00)[0:+];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
 	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[kernel.org,gmail.com,linux-foundation.org,infradead.org,linutronix.de,goodmis.org,huawei.com,cmpxchg.org,linux.dev,suse.com,google.com,kvack.org,fb.com];
+	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,gmail.com,linux-foundation.org,infradead.org,linutronix.de,goodmis.org,huawei.com,cmpxchg.org,linux.dev,suse.com,google.com,kvack.org,fb.com];
 	RCVD_TLS_ALL(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
 	MID_RHS_MATCH_FROM(0.00)[];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[];
 	DKIM_TRACE(0.00)[suse.cz:+];
+	TAGGED_RCPT(0.00)[];
 	RBL_NIXSPAM_FAIL(0.00)[2a07:de40:b281:104:10:150:64:97:query timed out];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-On 2/13/25 04:35, Alexei Starovoitov wrote:
-> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+On 2/13/25 16:23, Alexei Starovoitov wrote:
+> On Thu, Feb 13, 2025 at 7:04 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>>
+>>
+>> > +
+>> > +#define __localtry_trylock_irqsave(lock, flags)                      \
+>> > +     ({                                                      \
+>> > +             int __locked;                                   \
+>> > +                                                             \
+>> > +             typecheck(unsigned long, flags);                \
+>> > +             flags = 0;                                      \
+>> > +             if (in_nmi() | in_hardirq()) {                  \
+>> > +                     __locked = 0;                           \
+>>
+>> Because of this, IIUC?
 > 
-> In !PREEMPT_RT local_lock_irqsave() disables interrupts to protect
-> critical section, but it doesn't prevent NMI, so the fully reentrant
-> code cannot use local_lock_irqsave() for exclusive access.
+> Right.
+> It's part of commit log:
+> + In PREEMPT_RT local_lock_irqsave() maps to preemptible spin_lock().
+> + Map localtry_lock_irqsave() to preemptible spin_trylock().
+> + When in hard IRQ or NMI return false right away, since
+> + spin_trylock() is not safe due to PI issues.
 > 
-> Introduce localtry_lock_t and localtry_lock_irqsave() that
-> disables interrupts and sets acquired=1, so localtry_lock_irqsave()
-> from NMI attempting to acquire the same lock will return false.
+> Steven explained it in detail in some earlier thread.
 > 
-> In PREEMPT_RT local_lock_irqsave() maps to preemptible spin_lock().
-> Map localtry_lock_irqsave() to preemptible spin_trylock().
-> When in hard IRQ or NMI return false right away, since
-> spin_trylock() is not safe due to PI issues.
-> 
-> Note there is no need to use local_inc for acquired variable,
-> since it's a percpu variable with strict nesting scopes.
-> 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> realtime is hard. bpf and realtime together are even harder.
+> Things got much better over the years, but plenty of work ahead.
+> I can go in detail, but offtopic for this thread.
 
-...
-
->  
-> +/* localtry_lock_t variants */
-> +
-> +#define __localtry_lock_init(lock)				\
-> +do {								\
-> +	__local_lock_init(&(lock)->llock);			\
-> +	WRITE_ONCE(&(lock)->acquired, 0);			\
-
-This needs to be WRITE_ONCE((lock)->acquired, 0);
-
-I'm adopting this implementation for my next slab sheaves RFC. But I'll want
-localtry_trylock() without _irqsave too, so I've added it locally. Posting
-below with the init fix and making the PREEMPT_RT comment clear. Feel free
-to fold everything, it would make it easier for me. Or just the fixes, if
-you don't want code you don't use yourself.
-
-----8<----
-From c4f47afa3d06367d8d54662d6c3a76d3ab6e349d Mon Sep 17 00:00:00 2001
-From: Vlastimil Babka <vbabka@suse.cz>
-Date: Thu, 13 Feb 2025 19:38:31 +0100
-Subject: [PATCH] locking/local_lock: add localtry_trylock()
-
-Add a localtry_trylock() variant without _irqsave that will be used in
-slab sheaves implementation. Thanks to only disabling preemption and not
-irqs, it has a lower overhead. It's not necessary to disable irqs to
-avoid a deadlock if the irq context uses trylock and can handle
-failures.
-
-Also make the comment of localtry_trylock_irqsave() more clear, and fix a
-compilation failure in localtry_lock_init().
-
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- include/linux/local_lock.h          | 13 +++++++++++-
- include/linux/local_lock_internal.h | 31 +++++++++++++++++++++++++----
- 2 files changed, 39 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/local_lock.h b/include/linux/local_lock.h
-index 05c254a5d7d3..1a0bc35839e3 100644
---- a/include/linux/local_lock.h
-+++ b/include/linux/local_lock.h
-@@ -77,6 +77,16 @@
- #define localtry_lock_irqsave(lock, flags)				\
- 	__localtry_lock_irqsave(lock, flags)
- 
-+/**
-+ * localtry_trylock - Try to acquire a per CPU local lock.
-+ * @lock:	The lock variable
-+ *
-+ * The function can be used in any context such as NMI or HARDIRQ. Due to
-+ * locking constrains it will _always_ fail to acquire the lock in NMI or
-+ * HARDIRQ context on PREEMPT_RT.
-+ */
-+#define localtry_trylock(lock)		__localtry_trylock(lock)
-+
- /**
-  * localtry_trylock_irqsave - Try to acquire a per CPU local lock, save and disable
-  *			      interrupts if acquired
-@@ -84,7 +94,8 @@
-  * @flags:	Storage for interrupt flags
-  *
-  * The function can be used in any context such as NMI or HARDIRQ. Due to
-- * locking constrains it will _always_ fail to acquire the lock on PREEMPT_RT.
-+ * locking constrains it will _always_ fail to acquire the lock in NMI or
-+ * HARDIRQ context on PREEMPT_RT.
-  */
- #define localtry_trylock_irqsave(lock, flags)				\
- 	__localtry_trylock_irqsave(lock, flags)
-diff --git a/include/linux/local_lock_internal.h b/include/linux/local_lock_internal.h
-index c1369b300777..67bd13d142fa 100644
---- a/include/linux/local_lock_internal.h
-+++ b/include/linux/local_lock_internal.h
-@@ -137,7 +137,7 @@ do {								\
- #define __localtry_lock_init(lock)				\
- do {								\
- 	__local_lock_init(&(lock)->llock);			\
--	WRITE_ONCE(&(lock)->acquired, 0);			\
-+	WRITE_ONCE((lock)->acquired, 0);			\
- } while (0)
- 
- #define __localtry_lock(lock)					\
-@@ -167,6 +167,24 @@ do {								\
- 		WRITE_ONCE(lt->acquired, 1);			\
- 	} while (0)
- 
-+#define __localtry_trylock(lock)				\
-+	({							\
-+		localtry_lock_t *lt;				\
-+		bool _ret;					\
-+								\
-+		preempt_disable();				\
-+		lt = this_cpu_ptr(lock);			\
-+		if (!READ_ONCE(lt->acquired)) {			\
-+			WRITE_ONCE(lt->acquired, 1);		\
-+			local_trylock_acquire(&lt->llock);	\
-+			_ret = true;				\
-+		} else {					\
-+			_ret = false;				\
-+			preempt_enable();			\
-+		}						\
-+		_ret;						\
-+	})
-+
- #define __localtry_trylock_irqsave(lock, flags)			\
- 	({							\
- 		localtry_lock_t *lt;				\
-@@ -275,12 +293,10 @@ do {								\
- #define __localtry_unlock_irq(lock)			__local_unlock(lock)
- #define __localtry_unlock_irqrestore(lock, flags)	__local_unlock_irqrestore(lock, flags)
- 
--#define __localtry_trylock_irqsave(lock, flags)			\
-+#define __localtry_trylock(lock)				\
- 	({							\
- 		int __locked;					\
- 								\
--		typecheck(unsigned long, flags);		\
--		flags = 0;					\
- 		if (in_nmi() | in_hardirq()) {			\
- 			__locked = 0;				\
- 		} else {					\
-@@ -292,4 +308,11 @@ do {								\
- 		__locked;					\
- 	})
- 
-+#define __localtry_trylock_irqsave(lock, flags)			\
-+	({							\
-+		typecheck(unsigned long, flags);		\
-+		flags = 0;					\
-+		__localtry_trylock(lock);			\
-+	})
-+
- #endif /* CONFIG_PREEMPT_RT */
--- 
-2.48.1
-
-
-
-
+Thanks, it's fine. Just that the comment of the function could be more clear
+then, so people don't have to check implementation/commit log/lore
+discussions :)
 
