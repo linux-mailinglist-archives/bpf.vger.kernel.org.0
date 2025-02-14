@@ -1,135 +1,175 @@
-Return-Path: <bpf+bounces-51572-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51573-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 526E9A36271
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 16:58:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E800A3629F
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 17:04:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBF3C18933DD
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 15:58:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50EAC7A469B
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 16:03:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E0A52673B3;
-	Fri, 14 Feb 2025 15:57:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0406E26738D;
+	Fri, 14 Feb 2025 16:04:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DsRM/3Cp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KnxfsNb3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 333292673AA
-	for <bpf@vger.kernel.org>; Fri, 14 Feb 2025 15:57:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08B8B156C40;
+	Fri, 14 Feb 2025 16:04:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739548658; cv=none; b=s2uGViIBu6EAxjv+4sRq1jZ2AbUkvhnl1yVCr274448MK0xgoT0/5qBQbfWhoMrrwG01mXkGSNsC6Sg+G+ArmReC9N1QsCQW6aTmrmFZIuhENtawGD6Ef/vvuadf8RslllYh9vBGHZLdGp680t4XOf3jJd/50nssr5v+7bOlbh8=
+	t=1739549071; cv=none; b=pz8r0Cmpvh5GfC83OaEMWFAGGIoaUhUjy1x4YKeSs5E5pxlmmabH5Z8iKdBdnAa0akao0BYOitlN/IoCpgrVEWvcLaL0vpfeHug4ZiK6XxwlRHRFiEsePnLa+KRmHDrT1ENdXeSVs3nIw1xPzacMTlu7MnU0OgZeVUe3OefCCR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739548658; c=relaxed/simple;
-	bh=U8/Z+oxCPj9LBx1T9RY6FIGX2FeZO+d7OddQnhxVd2I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EWDSrN0UTANMXFk3d+fKv+Qpsi3MriRTus6uapYjaTMeG0G1+hminowWv8zQjMC2y/njyjjndc19movUl4Alp1VnSWrGtDvuXBPfrdrcKJVMQXLgllPftBmGpLaLd3S5F8IrZ8DT28myUu3kK32c/s1/R98W+7sQJMdLR24lpuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DsRM/3Cp; arc=none smtp.client-ip=209.85.128.48
+	s=arc-20240116; t=1739549071; c=relaxed/simple;
+	bh=40k2bFaPMVCxdWgPTG5Q+U8Nu9Zmh+DnNr+UJ2CsL7Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Kq7EWSlwgXAe9mxZ2UBFLCEA0gtHiZ1l8VNDGGGS28dxm1iBVfVKyYzcJgRIjgB0+osJjJcbeSwKdCeXYhJqVYgpaecFkGul30jHn24B2tYrKIrQBT8M4rRgzg8+tKaTJuMWBLi6QypOr+3FRgosQeS7Yn1pz/QeZWUsmQzbBoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KnxfsNb3; arc=none smtp.client-ip=209.85.219.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4395578be70so23204855e9.2
-        for <bpf@vger.kernel.org>; Fri, 14 Feb 2025 07:57:35 -0800 (PST)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-e549be93d5eso2468673276.1;
+        Fri, 14 Feb 2025 08:04:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739548654; x=1740153454; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U8/Z+oxCPj9LBx1T9RY6FIGX2FeZO+d7OddQnhxVd2I=;
-        b=DsRM/3CpSU9uVHfxULunsUVgzo69GaSPu9MiI5KAdaJzcmfT/y8SNntKKRTkjoXbVv
-         rHZvU/kcZ+asyoLmJH2YhGX4Ym2jU8S2+rHYktwUpo+2KX/zs1vK8DvtAGlYrG3+Z+Zx
-         8h02LYnA3n6y+nrwW1gKIq5g1DTDDmvG+2dq2C7qglWYfKEUW/z1T53iRpGg35DJqsHq
-         oUP0vK6zKN1gT/AjtQP+VvYI3k2MIvaOEGcC7qbo2EDHkBZDCT3tGiF/zFBty7um6RsP
-         NQOlfgzQ7X7NLpd7HZlSVq2hx2v36kA2oy4Ui6SPpG1288xmrD+Mr/49Be4q8hpn5y4L
-         OVMg==
+        d=gmail.com; s=20230601; t=1739549069; x=1740153869; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jg65XI36kch2lKh7M7ZeZJ4/dXm/KQiHYNWC0zJbbwg=;
+        b=KnxfsNb3gLClVUg9bqPT+hLbzwqwHL/zaR2HAZujVJqPpTSGNZRJny21UsbhHtFGEM
+         wpOgrV8qsw3WTvM3yP70aEdpfAOwGS6Tdx3rrhSwrHsAlpJIuBXlhb8mQLH6FOie/DDa
+         zKi6CZtapVDNn38V3hrVlzfbuMunqE8XmTlGjP59AjazU2uK2RLlqFGr6jk1cLeRPtv9
+         Unzbl/NxIaJ8njotjDkCJ6K6WAX6vEP+Ed0a4oAFaXmKdne+ylIkLeAwjSVUbtxXVMx6
+         2HBOEDwihTsu5myM70AlzPXOZWtlT7Sqrpei/xXRfftizkhENygCKrbvHQrl7MUWiV9K
+         BFEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739548654; x=1740153454;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=U8/Z+oxCPj9LBx1T9RY6FIGX2FeZO+d7OddQnhxVd2I=;
-        b=vvAXGJ7ZvRjY6RAnv74TJEtdF5gQU85VChGJAFqezHimS2F3RdH6im+UeUmSkeMg9S
-         p6dfkYc+nJoyDPBr0hApTgQWAEqPOJX8bF29TeZ8Yz24V/bnw1jCEM7IbQDyLT0iGHWG
-         Ljt9Fl01uDCKJ+007rnc42Mos2BsBKcI5uTaFBtX3/qoi0Cbce/KLfdGgRTKSBBIbmhh
-         5En0YQy4sCgEA8E3eMgGO28kyYbKBz/30fixJoyrG0s/ZNqHvIxDldRSOVQBrKjSQUbd
-         s2xh4567+rEC0MADgk4SvIpGCMoUHJoMcpBajpU/xYFMhEHzisnWw+wjXlyd66DcOaqa
-         pgAw==
-X-Gm-Message-State: AOJu0YyAr0oEsYHVbfJAlbzMd/b3+M5W6spnOoXnFq2POOmGvL3aJK1b
-	m+UAqXclwjYVHhk84vuxf03wLtw58CDVVmuquE87rJMhv0mo0azZUYlkZ8TKghb6Lg170SqqURT
-	abWMRjTalF0NLu3M48Pz+/UEx5Us=
-X-Gm-Gg: ASbGncup1KiGLQoEZshhUVrGN5mL/0RICJwOk56yEkd1oaXQfnIpEICHaqtFtupEViS
-	73HaB50RmBgL7T3tgEjcs7blv1ZApxjYDlCZyb+vSUmO8abprhfYHEVsjAPkNdY8vjdmAn/u8IS
-	UpvXXAxlFdBaMOIvnTxCFDuNdv+8V5
-X-Google-Smtp-Source: AGHT+IGs92dYORi0ccBFXIKHuVVbkjqRcGdYKo+6DP/dOwklXDn1pwKg2GnUWrlH49TQdtmGhB0+iBJeOBs/8CEI6Ew=
-X-Received: by 2002:a05:600c:511a:b0:439:6b57:c68 with SMTP id
- 5b1f17b1804b1-4396b570e93mr22245855e9.17.1739548654142; Fri, 14 Feb 2025
- 07:57:34 -0800 (PST)
+        d=1e100.net; s=20230601; t=1739549069; x=1740153869;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Jg65XI36kch2lKh7M7ZeZJ4/dXm/KQiHYNWC0zJbbwg=;
+        b=wZ1axPYshR3ZPxVdfI6S0s3ttjLrlGDiHaR4Z9xiayJmhIwSe/HUOBvNYYFgXZx3AC
+         Tkb0t3r2AGHtKJ1YM9csDVUq+8uFiDYDQuGRXWr64ONLPUoFh35H2uV8/iHtTNUmSotd
+         tWxFNpiCe0hDt1oZVwzE2DlsgAP06zELK7YL6qxk8/RLW0qbpmYSy0mv1YFguXN1kTMz
+         7cjf66VYqyukiTzvzyEcGFrnx9R1D3L9pkhnnhVktMj59eWDbykeVGWFv+FZZRHC4zyX
+         +YjbaS3y2l9OIkeaeXytXnuU7QckIFTQT1oUYTpP/ctTa6hExYZoT6iXUnuTBmOQuPaD
+         0y1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUKL3HuJxXOWtYXYIotXKwccvIVTNOaU3f2Ex5SqGHefnxY1Jum3+XoOUDFpmNEIEqdw7k=@vger.kernel.org, AJvYcCUljlmIhsySALP/O1IYKFDIcIlyTRGPAiyeSoi16cQXdIS0xgYpHPDJwv9v+UZIXuY7vYc3hB350M8xxgQc@vger.kernel.org
+X-Gm-Message-State: AOJu0YxOLQt6xBE9JscrzsJbURBPpMSJ8zz1D5oCUZS6+vj+bIPbtxE9
+	jmUllbhINCRu6MTurTMrJZz6XMz9pkUx204yRdp2wxemM2B+aojg
+X-Gm-Gg: ASbGncvHAd6+y9Z0uou88zt+ukUHp4nfzsgXun+UWAxlVgqm8x/NcxBFl2x0MMFoEUq
+	OvPq69XzJXXYekHgZjUm7Dgx/mlZtIabISAuWzQ0LOpQfExn0j5HpInx95F4JG40QChUJSKvz2l
+	mwQgur6sQPlTatQX3AOfHwNvC4xyxh1ZnT+6Hyp+K04ap+M/1CFya2G7ZmdXiT3H4ZBf6lO8E74
+	Ls1en3lXr0ZmZdGhU4qP/VIYtQCwwYQIgUrfQoQcwMd1X76Ih6J4pLORC/sCZfhlBQWYkRjPCFx
+	AvL0fG1T1EyMjcrDdBACRpewLzcVyn6u0XySnQwmpzmU77QtTAA=
+X-Google-Smtp-Source: AGHT+IEWTnBUObZ6GvHUjh4EkZcsg8NKWXrSgXJJN83DtepcFqo4+s4XqmFyx30JrAF6ZlzyLuDa7A==
+X-Received: by 2002:a05:6902:2304:b0:e57:d3c8:554b with SMTP id 3f1490d57ef6-e5da815c9a7mr7031668276.22.1739549068704;
+        Fri, 14 Feb 2025 08:04:28 -0800 (PST)
+Received: from localhost (c-73-224-175-84.hsd1.fl.comcast.net. [73.224.175.84])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e5dade8c815sm1084946276.10.2025.02.14.08.04.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Feb 2025 08:04:28 -0800 (PST)
+Date: Fri, 14 Feb 2025 11:04:27 -0500
+From: Yury Norov <yury.norov@gmail.com>
+To: Andrea Righi <arighi@nvidia.com>
+Cc: Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>,
+	Changwoo Min <changwoo@igalia.com>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Joel Fernandes <joel@joelfernandes.org>, Ian May <ianm@nvidia.com>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/7] mm/numa: Introduce nearest_node_nodemask()
+Message-ID: <Z69pi2KDLB5eZ29A@thinkpad>
+References: <20250212165006.490130-1-arighi@nvidia.com>
+ <20250212165006.490130-3-arighi@nvidia.com>
+ <Z64WTLPaSxixbE2q@thinkpad>
+ <Z64brsSMAR7cLPUU@gpd3>
+ <Z64oDlh9vzvRYziL@thinkpad>
+ <Z68E_ar8l7vNOxgh@gpd3>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250125111109.732718-1-houtao@huaweicloud.com>
- <20250125111109.732718-8-houtao@huaweicloud.com> <CAADnVQ+D+eZzLX02XmKCGDFvnxCM_za9pKiCzwkrgzUCShCGTA@mail.gmail.com>
- <e61df2a5-d27a-f3f8-8891-48702cc37be5@huaweicloud.com>
-In-Reply-To: <e61df2a5-d27a-f3f8-8891-48702cc37be5@huaweicloud.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 14 Feb 2025 07:57:23 -0800
-X-Gm-Features: AWEUYZmll1dvTZcmYeqW7OLUtp7_EUl0FK5WM3TRmeUJNK_-8cCLwglX9mFEfCw
-Message-ID: <CAADnVQJ9QZyN3gQ3L7134a=7UDYcdcE6X_R2ZRdmuMKFbXxg4Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 07/20] bpf: Use map_extra to indicate the max
- data size of dynptrs in map key
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Dan Carpenter <dan.carpenter@linaro.org>, 
-	Hou Tao <houtao1@huawei.com>, Xu Kuohai <xukuohai@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z68E_ar8l7vNOxgh@gpd3>
 
-On Thu, Feb 13, 2025 at 10:13=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> w=
-rote:
->
-> Hi,
->
-> On 2/14/2025 2:02 AM, Alexei Starovoitov wrote:
-> > On Sat, Jan 25, 2025 at 2:59=E2=80=AFAM Hou Tao <houtao@huaweicloud.com=
-> wrote:
-> >> From: Hou Tao <houtao1@huawei.com>
-> >>
-> >> For map with dynptr key support, it needs to use map_extra to specify
-> >> the maximum data length of these dynptrs. The implementation of the ma=
-p
-> >> will check whether map_extra is smaller than the limitation imposed by
-> >> memory allocation during map creation. It may also use map_extra to
-> >> optimize the memory allocation for dynptr.
-> > Why limit it?
-> > The only piece of code I could find is:
-> >
-> > uptr->size > map->map_extra
-> >
-> > and it doesn't look necessary.
-> > Let it consume whatever necessary ?
-> > .
->
-> It will be usable when trying to iterate keys through ->get_next_key()
-> in kernel (e.g., support map_seq_show_elem in v3), because for now the
-> data memory for dynptr in the map key is allocated by the caller
-> (because the callee hold a rcu read lock). If the max length of dynptr
-> data is unknown, map_iter_alloc()/map_seq_next() may need some logic to
-> probe the max length of dynptr data during the traversal of keys. Will
-> check whether or not it is feasible in v3.
+On Fri, Feb 14, 2025 at 09:55:25AM +0100, Andrea Righi wrote:
+> Hi Yury,
+> 
+> On Thu, Feb 13, 2025 at 12:12:46PM -0500, Yury Norov wrote:
+> ...
+> > > > >  include/linux/numa.h |  7 +++++++
+> > > > >  mm/mempolicy.c       | 32 ++++++++++++++++++++++++++++++++
+> > > > >  2 files changed, 39 insertions(+)
+> > > > > 
+> > > > > diff --git a/include/linux/numa.h b/include/linux/numa.h
+> > > > > index 31d8bf8a951a7..e6baaf6051bcf 100644
+> > > > > --- a/include/linux/numa.h
+> > > > > +++ b/include/linux/numa.h
+> > > > > @@ -31,6 +31,8 @@ void __init alloc_offline_node_data(int nid);
+> > > > >  /* Generic implementation available */
+> > > > >  int numa_nearest_node(int node, unsigned int state);
+> > > > >  
+> > > > > +int nearest_node_nodemask(int node, nodemask_t *mask);
+> > > > > +
+> > > > 
+> > > > See how you use it. It looks a bit inconsistent to the other functions:
+> > > > 
+> > > >   #define for_each_node_numadist(node, unvisited)                                \
+> > > >          for (int start = (node),                                                \
+> > > >               node = nearest_node_nodemask((start), &(unvisited));               \
+> > > >               node < MAX_NUMNODES;                                               \
+> > > >               node_clear(node, (unvisited)),                                     \
+> > > >               node = nearest_node_nodemask((start), &(unvisited)))
+> > > >   
+> > > > 
+> > > > I would suggest to make it aligned with the rest of the API:
+> > > > 
+> > > >   #define node_clear(node, dst) __node_clear((node), &(dst))
+> > > >   static __always_inline void __node_clear(int node, volatile nodemask_t *dstp)
+> > > >   {
+> > > >           clear_bit(node, dstp->bits);
+> > > >   }
+> > > 
+> > > Sorry Yury, can you elaborate more on this? What do you mean with
+> > > inconsistent, is it the volatile nodemask_t *?
+> > 
+> > What I mean is:
+> >   #define nearest_node_nodemask(start, srcp)
+> >                 __nearest_node_nodemask((start), &(srcp))
+> >   int __nearest_node_nodemask(int node, nodemask_t *mask);
+> 
+> This all makes sense assuming that nearest_node_nodemask() is placed in
+> include/linux/nodemask.h and is considered as a nodemask API, but I thought
+> we determined to place it in include/linux/numa.h, since it seems more of a
+> NUMA API, similar to numa_nearest_node(), so under this assumption I was
+> planning to follow the same style of numa_nearest_node().
+> 
+> Or do you think it should go in linux/nodemask.h and follow the style of
+> the other nodemask APIs?
 
-It doesn't have to be:
-next_key =3D kvmalloc(map->key_size, GFP_USER);
-the internal interface can be different.
-It's not a good idea to impose uapi restrictions, because of
-implementation details.
+Ok, I see. I have no strong opinion. I like to have the API looking
+consistent, but I also like to have all functions of the same family
+together. If we move nearest_node_nodemask to linux/nodemask.h, it
+will help with consistency, but will separate it from the sibling
+numa_nearest_node().
+
+So, at your discretion. If you don't want to change anything - I'm OK
+with that.
+
+This is anyways the very final nits, and I feel like the series now is
+in a good shape, almost ready to be merged.
+
+Thanks,
+Yury
 
