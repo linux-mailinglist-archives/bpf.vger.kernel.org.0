@@ -1,103 +1,175 @@
-Return-Path: <bpf+bounces-51549-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51550-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4639EA35A1E
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 10:22:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AECBA35A2E
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 10:24:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 503B01667EC
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 09:22:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EFAF16F55A
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 09:23:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BF8622F3B8;
-	Fri, 14 Feb 2025 09:22:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F96424293C;
+	Fri, 14 Feb 2025 09:23:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="nXvwb20R"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YMRAt9LF"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C228A21B182;
-	Fri, 14 Feb 2025 09:22:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBDFB22D799;
+	Fri, 14 Feb 2025 09:23:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739524938; cv=none; b=J6/Ci0jHb5h7gbDvJKTl/1jDtbpOiD+cA/HZ870tSlmpSGletXSxac5ID1GKu4J/C63SCKCYqd6n2voEq9z3q9Nh8C2VVIEcFh/1e5xa3eIOfEKswSEaRzBZ5Qy11ZNc4aW90a5IBnvAqpjH/ZpdDqA4yxzoZZ1akA0BC09E/Vk=
+	t=1739524989; cv=none; b=Eaz1jWVYhWq7rXLyN7VldzT3IIUNlvRzUzO6VApj01fSvYTemVwxJbsuLRmdujvF+Lr2RxRCsXOZ0+57Xq/c+4jStH8wsdDMvrJlZ7eGzSQVftiAR9PCtSYrp9BoQnlcRM5TWA24QB80Nei55dFu/hVaWkxMj/aHFJ0DtGY7kDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739524938; c=relaxed/simple;
-	bh=pQjK/iwCJO75ufgOTvx8cDDg/C9fbt+wixPYVCFqHfU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S450BJE/MMDCRqmSeqdiyFVqlo/cI5YLzH/zFDHikUwKv40YfsOr8umNwLdwAv3Q/ljLExCFiqidzFknrIMBe8zCdb+zBSVRxJRo8VUYVmeCNO7+qE/2fqKvDrGIMQ5Cwx9RWw7XOTH6N8VNxnR3J1E42Ybk24rZruVnGk08ogI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=nXvwb20R; arc=none smtp.client-ip=115.124.30.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1739524931; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=+D9V3WWQDBd/ZszSS/N9OZirb9lKepZNme5vqrAR1sQ=;
-	b=nXvwb20RU9oNju8SMnPYRFheTB/8zBCFsKKq2yFEhpV8H8EOrpVtT2FkvDhEogd18ikpKNiHOhFgv71Z5xTwUTH/gMaqPOxI2FOvBO1iK/JpimA3gKJqAvpBIpUdXJh6naB28EV3fyHckDrILbH/HF0SAP7G0nDMu0wrzv7zOmg=
-Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WPQIbTz_1739524929 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Fri, 14 Feb 2025 17:22:09 +0800
-Date: Fri, 14 Feb 2025 17:22:09 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com    >
-To: "D. Wythe" <alibuda@linux.alibaba.com>, wenjia@linux.ibm.com,
-	jaka@linux.ibm.com
-Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-	martin.lau@linux.dev, pabeni@redhat.com, song@kernel.org,
-	sdf@google.com, haoluo@google.com, yhs@fb.com, edumazet@google.com,
-	john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
-	guwen@linux.alibaba.com, kuba@kernel.org, davem@davemloft.net,
-	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v7 0/6] net/smc: Introduce smc_ops
-Message-ID: <20250214092209.GA88970@j66a10360.sqa.eu95>
-References: <20250123015942.94810-1-alibuda@linux.alibaba.com>
+	s=arc-20240116; t=1739524989; c=relaxed/simple;
+	bh=+h2GkDj+OoeHXnuD3ME91MATvB8iz1ermwPdmsLVLQg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jHtPFM3/1qY4pRfIWbNR7TJ95kJXF97jommWMs0YaJx2tWN/kDtzeIv5ViB1HdXIBYYojA07hLiVLmwPXaOMtF71hwzobu4KEeT0af1IeF/D/h6PqPD+vg28sQme/fntyLcGX00o93A+h443IEg052mRSEQnxg2LaK4vUxITZrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YMRAt9LF; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-43955067383so12629595e9.0;
+        Fri, 14 Feb 2025 01:23:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739524986; x=1740129786; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k7BNqikEMUFZIk3bGCtvMWc4aGoto03Aq8Yw25jOfXg=;
+        b=YMRAt9LFnElc16Ouol8JFp4gzR3cXZXDALXu5n6ncVKRwdDp9v7DetV8WPqTDh5K73
+         +v9pFEVUe+7jgv7MKXCO81anJm7E0vYVHeDvh3bgpu3tuq86g+WJEHVL/82OnN5qqFrY
+         2T7IWjAfQQRQ0WAdvYi9Nf7A+Av42zLx6BN0BHfCBmBLRt0eAkWu7fmsBZbD+j0kDaUh
+         W8GlWHLWgKas4VSOro2PbVsexv5IopnDECZ+f+DImh710H2/kVaJSn6xNh5eBAhuOwcp
+         wdX7joD6A3GEPq0Aqc0YVDrZgCvXh1S2YvSpZjoGVSrpHJu3kVxmPdhdtvxjTtAKqqdc
+         Gypg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739524986; x=1740129786;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=k7BNqikEMUFZIk3bGCtvMWc4aGoto03Aq8Yw25jOfXg=;
+        b=LfY6sRiHUntAYFQvL0lXHITiPLuOts9iQrrRdjozk32f8ez6204iqb0GBCTdiLn6V3
+         GIBdgLm3fpN/2ZOYpU4VmcI5zKA3cu+s5a9NicLcAHLAgy87BNxd5SJO7HJYyCPeDM+b
+         tzFWIpt3zo7UDZYAjx2Xys2/eT1cCpsfoeq1Yt1DwjAH1G6l9QwPZU9PFOcQY1pqIUd3
+         /DUHGIQV8sSQIULAKk7+5FcrzgFeFiAiLjQcLf6i8FwA7+cdR3FtCvBWSWitMBbr+K/g
+         J8IWVdPuBxR5XpbQZ9w+7RAKSzBSxuYa/9Z/et1dD5NmO75JYjiKj1uGMPmMQmRUUPGe
+         7YZw==
+X-Forwarded-Encrypted: i=1; AJvYcCUnnvSbX2MWFPaAfXYiQbo2HS/d88eYV/KyoNdLJcynlEE/NK5t0a6E1uEMQw75SNBCEZMAX4U2gMhNn/MWTys=@vger.kernel.org, AJvYcCV2Ca/PSqhyZOZzEjL3MYiZpcQnyc0IhEY0OAH0xHc41VB9Y+wvxuHgqyIVuW6JHRODgj2vHQX9@vger.kernel.org, AJvYcCVSB2JKEhtLU5CJnMLkhwhMATfIWOmG3/pcZGGZ3pQBscuFvqGuTV/AE7GJmr5TnC1NpiSOsBaeiNImxg==@vger.kernel.org, AJvYcCVSHp0GqTfGvVd7tqlnKFSERZoNAgYInCRhWJZYlJ8nxWR9ZP7MpYNIfZOBwbEPm8aIIL1oQaokReHk3Q==@vger.kernel.org, AJvYcCVvjyAylXesngMqj81v3+QJyPnokoSiAqxGv1q6g9Jtt2FdJ+YXsW3C+R9K1QXdiLf8DDbqNntAWM6I@vger.kernel.org, AJvYcCVxwGaRuOz/bV7o7/4hc8s0WahLaEHYefU7QAjJD6kI1V8gsIPLfI/S93yQt9RKhZG3dFJ5Hs9iM57s@vger.kernel.org, AJvYcCWtgqdrCtJuhnUnP4oURVgJdnpWMVsMi8UuKlJULRjghQwm8ZmtNGdplC2sgScHT/10F2BASluuiHNF5zuHcT4J@vger.kernel.org, AJvYcCXjKFedsaJetbpF0dFPoertji1xiR1BgGOv61AdmSVO6HdpcrZNJNX9Jf2n4QaP6RFS0qg=@vger.kernel.org, AJvYcCXpdmdRUWBURKezBx6aM1QdA1HOt7XVM1NAhyxNJOnFoEn9J4lmG9u7h0InDDIdQzHQPVRfVaDuyQIj+fzZ@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzv7xnnC5yMcRGieheNtcO55dpuGVPURgkkfOvwVKyvunNzDHiX
+	qqk3NzUB986go9dapYDsW19No6QE9RqMmO4MfSfDuafRzU1dyLCkzhwuLVUroWxyQvxSywts2dl
+	Huom25Jjhf4xDkQjftJgZw/TJHkY=
+X-Gm-Gg: ASbGncvHPs1gO/K5DtrLU3Fc7l8gmHUhw7i+XbRoR1HwIjqzWuPcgJMqb7TXKvfVVSN
+	V0EPvUk1VJRZslgoJYxRg+bXniYbw9eOrqirMLszhKtMMOvJtXQCIF+IDhrS+b0xHmMbWPnU=
+X-Google-Smtp-Source: AGHT+IFc4q5LtCR4oH56B/JnsUWjOnr2P8qnhLaQaAQF/xsTMWgc84lPizP0lboCQWCd1BP4FsSRkQxEWx0I5MF+EcM=
+X-Received: by 2002:a05:6000:18ae:b0:38f:23bc:c19e with SMTP id
+ ffacd0b85a97d-38f23bcc233mr9719529f8f.29.1739524985787; Fri, 14 Feb 2025
+ 01:23:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250123015942.94810-1-alibuda@linux.alibaba.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <CABAhCORgi7Jqu=Aigs6Fc8ewG5OshFvcunye03R43C+Z0ojZyw@mail.gmail.com>
+ <20250213110004.38415-1-kuniyu@amazon.com>
+In-Reply-To: <20250213110004.38415-1-kuniyu@amazon.com>
+From: Xiao Liang <shaw.leon@gmail.com>
+Date: Fri, 14 Feb 2025 17:22:28 +0800
+X-Gm-Features: AWEUYZmC-_4d4WbO4zj0CDnf9myDuv_5df2UqBnW8RiGwAq7tiZ7QonxxL4s5P4
+Message-ID: <CABAhCOSsZqzrsqct+c613TVhGJdubv+_wTDxmjH8z6-PL1Mu2A@mail.gmail.com>
+Subject: Re: [PATCH net-next v9 06/11] net: ipv6: Use link netns in newlink()
+ of rtnl_link_ops
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: alex.aring@gmail.com, andrew+netdev@lunn.ch, 
+	b.a.t.m.a.n@lists.open-mesh.org, bpf@vger.kernel.org, bridge@lists.linux.dev, 
+	davem@davemloft.net, donald.hunter@gmail.com, dsahern@kernel.org, 
+	edumazet@google.com, herbert@gondor.apana.org.au, horms@kernel.org, 
+	kuba@kernel.org, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-ppp@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-wpan@vger.kernel.org, miquel.raynal@bootlin.com, netdev@vger.kernel.org, 
+	osmocom-net-gprs@lists.osmocom.org, pabeni@redhat.com, shuah@kernel.org, 
+	stefan@datenfreihafen.org, steffen.klassert@secunet.com, 
+	wireguard@lists.zx2c4.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 23, 2025 at 09:59:36AM +0800, D. Wythe wrote:
-> This patch aims to introduce BPF injection capabilities for SMC and
-> includes a self-test to ensure code stability.
-> 
-> Since the SMC protocol isn't ideal for every situation, especially
-> short-lived ones, most applications can't guarantee the absence of
-> such scenarios. Consequently, applications may need specific strategies
-> to decide whether to use SMC. For example, an application might limit SMC
-> usage to certain IP addresses or ports.
-> 
-> To maintain the principle of transparent replacement, we want applications
-> to remain unaffected even if they need specific SMC strategies. In other
-> words, they should not require recompilation of their code.
-> 
-> Additionally, we need to ensure the scalability of strategy implementation.
-> While using socket options or sysctl might be straightforward, it could
-> complicate future expansions.
-> 
-> Fortunately, BPF addresses these concerns effectively. Users can write
-> their own strategies in eBPF to determine whether to use SMC, and they can
-> easily modify those strategies in the future.
+On Thu, Feb 13, 2025 at 7:00=E2=80=AFPM Kuniyuki Iwashima <kuniyu@amazon.co=
+m> wrote:
+>
+> From: Xiao Liang <shaw.leon@gmail.com>
+> Date: Thu, 13 Feb 2025 17:55:32 +0800
+> > On Thu, Feb 13, 2025 at 4:37=E2=80=AFPM Xiao Liang <shaw.leon@gmail.com=
+> wrote:
+> > >
+> > > On Thu, Feb 13, 2025 at 3:05=E2=80=AFPM Kuniyuki Iwashima <kuniyu@ama=
+zon.com> wrote:
+> > > >
+> > > [...]
+> > > > > diff --git a/net/ipv6/ip6_gre.c b/net/ipv6/ip6_gre.c
+> > > > > index 863852abe8ea..108600dc716f 100644
+> > > > > --- a/net/ipv6/ip6_gre.c
+> > > > > +++ b/net/ipv6/ip6_gre.c
+> > > > > @@ -1498,7 +1498,8 @@ static int ip6gre_tunnel_init_common(struct=
+ net_device *dev)
+> > > > >       tunnel =3D netdev_priv(dev);
+> > > > >
+> > > > >       tunnel->dev =3D dev;
+> > > > > -     tunnel->net =3D dev_net(dev);
+> > > > > +     if (!tunnel->net)
+> > > > > +             tunnel->net =3D dev_net(dev);
+> > > >
+> > > > Same question as patch 5 for here and other parts.
+> > > > Do we need this check and assignment ?
+> > > >
+> > > > ip6gre_newlink_common
+> > > > -> nt->net =3D dev_net(dev)
+> > > > -> register_netdevice
+> > > >   -> ndo_init / ip6gre_tunnel_init()
+> > > >     -> ip6gre_tunnel_init_common
+> > > >       -> tunnel->net =3D dev_net(dev)
+> > >
+> > > Will remove this line.
+> >
+> > However, fb tunnel of ip6_tunnel, ip6_vti and sit can have
+> > tunnel->net =3D=3D NULL here. Take ip6_tunnel for example:
+> >
+> > ip6_tnl_init_net()
+> >     -> ip6_fb_tnl_dev_init()
+> >     -> register_netdev()
+> >         -> register_netdevice()
+> >             -> ip6_tnl_dev_init()
+> >
+> > This code path (including ip6_fb_tnl_dev_init()) doesn't set
+> > tunnel->net. But for ip6_gre, ip6gre_fb_tunnel_init() does.
+>
+> Ah, okay.  Then, let's set net in a single place, which would
+> be better than spreading net assignment and adding null check
+> in ->ndo_init(), and maybe apply the same to IPv4 tunnels ?
 
-Hi smc folks, @Wenjia @Ian
+Tunnels are created in three ways: a) rtnetlink newlink,
+b) ioctl SIOCADDTUNNEL and c) during per netns init (fb).
+The code paths don't have much in common, and refactoring
+to set net in a single place is somewhat beyond the scope
+of this series. But for now I think we could put a general rule:
+net should be set prior to register_netdevice().
 
-Is there any feedback regarding this patches ? This series of code has
-gone through multiple rounds of community reviews. However, the parts
-related to SMC, including the new sysctl and ops name, really needs
-your input and acknowledgment.
+For IPv4 tunnels, tunnel->net of a) is set in ip_tunnel_newlink().
+b) and c) are set in __ip_tunnel_create():
+ip_tunnel_init_net() -> __ip_tunnel_create()
+ip_tunnel_ctl() -> ip_tunnel_create() -> __ip_tunnel_create()
+So net has already been initialized when register_netdevice()
+is called.
 
-Additionally, this series includes a bug fix for SMC, which is easily
-reproducible in the BPF CI tests.
+But it varies for IPv6 tunnels. Some set net for a) or c) while
+some don't. This patch has "fixed" for a). As for c) we can
+adopt the way of ip6_gre - setting net in *_fb_tunnel_init(),
+then remove the check in ndo_init().
 
-Thanks,
-D. Wythe
+Is it reasonable?
 
+Thanks.
 
