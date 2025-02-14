@@ -1,54 +1,65 @@
-Return-Path: <bpf+bounces-51551-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51552-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70024A35A34
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 10:24:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5ECA4A35A8D
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 10:43:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EDC13AE838
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 09:24:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 503A63AD5EC
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 09:43:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E499A23027C;
-	Fri, 14 Feb 2025 09:24:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E2D9245AE1;
+	Fri, 14 Feb 2025 09:43:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="nOeSA79P"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ViFKXovg"
 X-Original-To: bpf@vger.kernel.org
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 583D323F422;
-	Fri, 14 Feb 2025 09:24:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0868149C7D;
+	Fri, 14 Feb 2025 09:43:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739525068; cv=none; b=rqPSRM1acZ2bHlS0gqrNiUmOW7ZuKO67kccwI4/MDBo5H6Mi3G3lQy7KKACMyMTMXl4MBarqLxiLSFki3zS+ecUjuAt6ulXl571BihvE+/KgLscYF/EWJKIpGVxrE4rbnWgjnjKoX9iIeOthhYIru7SUlbm2hJ1KTovd9tpn9HY=
+	t=1739526214; cv=none; b=X3eZruUpOMiAiaU2lLbdS9XvSVwpfBK6m7udDQBETqFjSlCjaFQIyXnIiS3fSRkXAYvL9ZwZ3TtBmIF+pYUJQhimVRCk6AmwSiz9eKmyEFdM6zIcZIOaf3ZJcIn7ao+Zmo+QiwYwW6DR3TIVIh3x6xoJnFIS2PVAJg8c4x6VQU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739525068; c=relaxed/simple;
-	bh=X/sa3uIY8vGLToJUOET8MPdnJJI3A248eVnXpWF62yo=;
+	s=arc-20240116; t=1739526214; c=relaxed/simple;
+	bh=zLq34zyZ+vn2x8EHLG71uh1H2EfQ4PWpqK69Hy66e7w=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fGgJNFNLBFPFffSVdgpbBbpiDSZXQj4YAbLorjdU3qK+Cnz30LF6tF4nONFI5vZxIG6q7vrF4wGZQjUUBlC2uJAdk8fU3uIzEpz2O3NFNn0WD8+nJOr6H8kLWJEOJbhMddRxlXVE52qjiA28mlOiRGPfXWS6l7L6qmDblV3krAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=nOeSA79P; arc=none smtp.client-ip=178.60.130.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=e87K5BME7QYyxriMEQKz8vW/Cg+m3JIePxp/P/BX5Nk=; b=nOeSA79PVD64loBRv+KHuRaE7f
-	haPG28cMGQU/jxO8oBRjV+BOKLcZstJeK782tbNpjmkpit9RE6ZltRHCa365vqh57N5KOeYb3QoVC
-	PnRKhtt06J7H8Qrd8Q4WVmj2QBM/SKp6peQ4nLMmzBNAmfdcZoYlqf18pnrkLS91tsOHHcr6lm84j
-	+f4Hl3hKEp2FjE+WfGLFSlIZXTtMqc2gKpy49bpW8S3UHx1VbcFYsU1Qx9eQJZt/iMlxIBtMUs8Q/
-	fcjbvKR3YwEx49snD1rUxylwiD5xWsVmGEHDsSMUG/PukufXU0arBaAEoEm3IUuiaZVU/RtPz5oPR
-	cmyfoRdg==;
-Received: from [58.29.143.236] (helo=[192.168.1.6])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1tirvV-00H6fn-Pn; Fri, 14 Feb 2025 10:24:08 +0100
-Message-ID: <4fd39e4b-f2dc-4b7d-a3be-ec3eae8d592a@igalia.com>
-Date: Fri, 14 Feb 2025 18:23:55 +0900
+	 In-Reply-To:Content-Type; b=IKFGWwGtU1z85/o7wpfkp/hn/QqPFHsO8bAv1RYWBtvnJfKSqtfBjeQYQHefToCxdB+Db31x9QeSmkKmMyQdLbWrSO0JSi8rhV9gWQVz/X4RwgQmo94dORIS6SgzBKdl8jIgRT1R+cBDviUeBHlxWzr14wFxzSnQnoYgqEj/42A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ViFKXovg; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1739526212; x=1771062212;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=zLq34zyZ+vn2x8EHLG71uh1H2EfQ4PWpqK69Hy66e7w=;
+  b=ViFKXovgOXOFScFg8+GYrAxPhRy9KrENocku7RpenrL9BzfXvYfaAZRg
+   jQBm7hnEPZCmZFwxjmlZhA1z7C884dKiyWJRzLl8bO3TkrMIBK4CjR3kQ
+   iqurHJTYsCdnfougLXc2YPBCsTovqq8GIgRYMPsOzAkv0cquC2S4DIMU+
+   oOMT3Z1Oe+9e+snzMOfYflKKKQ5C+P8mZeM5socKzbvrqA9r2vppzVmzq
+   WVFF52dfBY+NX/AymnmuoDXRS5tYSoHjzijwYsnEPB/LzYD6/3AYtu8Ig
+   DU1IYpzd/u+Tz0eUOkYtwsCAcpc0pPEI4dRofM6FLOeWYPi9UrF1cONln
+   g==;
+X-CSE-ConnectionGUID: Kq6TxkY1RuiUtW2hdM1HLw==
+X-CSE-MsgGUID: 37DqnfFoQ02HpGKQAJ6h4A==
+X-IronPort-AV: E=McAfee;i="6700,10204,11344"; a="44197299"
+X-IronPort-AV: E=Sophos;i="6.13,285,1732608000"; 
+   d="scan'208";a="44197299"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2025 01:43:30 -0800
+X-CSE-ConnectionGUID: ZO0UWXkJQOin2e28wbPaEw==
+X-CSE-MsgGUID: Hg2vL6gvSzaFtD29bl+/3A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="118036852"
+Received: from mohdfai2-mobl.gar.corp.intel.com (HELO [10.247.89.75]) ([10.247.89.75])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2025 01:43:22 -0800
+Message-ID: <641ab972-e110-4af2-ad9b-6688cee56562@linux.intel.com>
+Date: Fri, 14 Feb 2025 17:43:19 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -56,117 +67,106 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next] bpf: Add a retry after refilling the free list
- when unit_alloc() fails
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Tejun Heo <tj@kernel.org>,
- Andrea Righi <arighi@nvidia.com>, kernel-dev@igalia.com,
- bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20250212084851.150169-1-changwoo@igalia.com>
- <CAADnVQLRrhyOHGPb1O0Ju=7YVCNexdhwtoJaGYrfU9Vh2cBbgw@mail.gmail.com>
-From: Changwoo Min <changwoo@igalia.com>
-Content-Language: en-US, ko-KR, en-US-large, ko
-In-Reply-To: <CAADnVQLRrhyOHGPb1O0Ju=7YVCNexdhwtoJaGYrfU9Vh2cBbgw@mail.gmail.com>
+Subject: Re: [PATCH iwl-next v4 0/9] igc: Add support for Frame Preemption
+ feature in IGC
+To: Kurt Kanzenbach <kurt@linutronix.de>,
+ Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc: Tony Nguyen <anthony.l.nguyen@intel.com>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S . Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Simon Horman <horms@kernel.org>, Russell King <linux@armlinux.org.uk>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Furong Xu <0x1207@gmail.com>,
+ Russell King <rmk+kernel@armlinux.org.uk>,
+ Serge Semin <fancer.lancer@gmail.com>,
+ Xiaolei Wang <xiaolei.wang@windriver.com>,
+ Suraj Jaiswal <quic_jsuraj@quicinc.com>,
+ Kory Maincent <kory.maincent@bootlin.com>, Gal Pressman <gal@nvidia.com>,
+ Jesper Nilsson <jesper.nilsson@axis.com>,
+ Andrew Halaney <ahalaney@redhat.com>,
+ Choong Yong Liang <yong.liang.choong@linux.intel.com>,
+ Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+ Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+ intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
+References: <20250210070207.2615418-1-faizal.abdul.rahim@linux.intel.com>
+ <20250210070207.2615418-1-faizal.abdul.rahim@linux.intel.com>
+ <20250212220121.ici3qll66pfoov62@skbuf>
+ <b19357dc-590d-458c-9646-ee5993916044@linux.intel.com>
+ <87cyfmnjdh.fsf@kurt.kurt.home>
+ <5902cc28-a649-4ae9-a5ba-83aa265abaf8@linux.intel.com>
+ <20250213130003.nxt2ev47a6ppqzrq@skbuf>
+ <1c981aa1-e796-4c53-9853-3eae517f2f6d@linux.intel.com>
+ <877c5undbg.fsf@kurt.kurt.home> <20250213184613.cqc2zhj2wkaf5hn7@skbuf>
+ <87v7td3bi1.fsf@kurt.kurt.home>
+ <b7740709-6b4a-4f44-b4d7-e265bb823aca@linux.intel.com>
+ <874j0wrjk2.fsf@kurt.kurt.home>
+Content-Language: en-US
+From: "Abdul Rahim, Faizal" <faizal.abdul.rahim@linux.intel.com>
+In-Reply-To: <874j0wrjk2.fsf@kurt.kurt.home>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Hello Alexei,
-
-Thank you for the comments! I reordered your comments for ease of 
-explanation.
-
-On 25. 2. 14. 02:45, Alexei Starovoitov wrote:
-> On Wed, Feb 12, 2025 at 12:49 AM Changwoo Min <changwoo@igalia.com> wrote:
-
-> The commit log is too terse to understand what exactly is going on.
-> Pls share the call stack. What is the allocation size?
-> How many do you do in a sequence?
-
-The symptom is that an scx scheduler (scx_lavd) fails to load on
-an ARM64 platform on its first try. The second try succeeds. In
-the failure case, the kernel spits the following messages:
-
-[   27.431380] sched_ext: BPF scheduler "lavd" disabled (runtime error)
-[   27.431396] sched_ext: lavd: ops.init() failed (-12)
-[   27.431401]    scx_ops_enable.isra.0+0x838/0xe48
-[   27.431413]    bpf_scx_reg+0x18/0x30
-[   27.431418]    bpf_struct_ops_link_create+0x144/0x1a0
-[   27.431427]    __sys_bpf+0x1560/0x1f98
-[   27.431433]    __arm64_sys_bpf+0x2c/0x80
-[   27.431439]    do_el0_svc+0x74/0x120
-[   27.431446]    el0_svc+0x80/0xb0
-[   27.431454]    el0t_64_sync_handler+0x120/0x138
-[   27.431460]    el0t_64_sync+0x174/0x178
-
-The ops.init() failed because the 5th bpf_cpumask_create() calls
-failed during the initialization of the BPF scheduler. The exact
-point where bpf_cpumask_create() failed is here [1]. That scx
-scheduler allocates 5 CPU masks to aid its scheduling decision.
-
-Also, it seems that there is no graceful way to handle the
-allocation failure since it happens during the initialization of
-the scx scheduler.
-
-In my digging of the code, bpf_cpumask_create() relies on
-bpf_mem_cache_alloc(), and bpf_mem_alloc_init() prefills only
-4 entries per CPU (prefill_mem_cache), so the 5th allocation of
-the cpumask failed.
-
-Increasing the prefill entries would be a solution, but that
-would cause unnecessary memory overhead in other cases, so
-I avoided that approach.
-
-> But we may do something.
-> Draining free_by_rcu_ttrace and waiting_for_gp_ttrace can be done,
-> but will it address your case?
-
-Unfortunately, harvesting free_by_rcu_ttrace and
-waiting_for_gp_ttrace does not help (I tested it). In my case,
-the memory allocation fails when loading an scx scheduler, so
-free_by_rcu_ttrace and waiting_for_gp_ttrace are empty, and there
-is nothing to harvest.
 
 
-> Why irq-s are disabled? Isn't this for scx ?
-
-In this particular scenario, the IRQ is not disabled. I just
-meant such allocation failure can happen easily with excessive
-allocation when IRQ is disabled.
-
->> (e.g., bpf_cpumask_create), allocate the additional free entry in an atomic
->> manner (atomic = true in alloc_bulk).
+On 14/2/2025 4:56 pm, Kurt Kanzenbach wrote:
+> On Fri Feb 14 2025, Abdul Rahim, Faizal wrote:
+>> On 14/2/2025 3:12 am, Kurt Kanzenbach wrote:
+>>> On Thu Feb 13 2025, Vladimir Oltean wrote:
+>>>> So, confusingly to me, it seems like one operating mode is fundamentally
+>>>> different from the other, and something will have to change if both will
+>>>> be made to behave the same. What will change? You say mqprio will behave
+>>>> like taprio, but I think if anything, mqprio is the one which does the
+>>>> right thing, in igc_tsn_tx_arb(), and taprio seems to use the default Tx
+>>>> arbitration scheme?
+>>>
+>>> Correct. taprio is using the default scheme. mqprio configures it to
+>>> what ever the user provided (in igc_tsn_tx_arb()).
+>>>
+>>>> I don't think I'm on the same page as you guys, because to me, it is
+>>>> just odd that the P traffic classes would be the first ones with
+>>>> mqprio, but the last ones with taprio.
+>>>
+>>> I think we are on the same page here. At the end both have to behave the
+>>> same. Either by using igc_tsn_tx_arb() for taprio too or only using the
+>>> default scheme for both (and thereby keeping broken_mqprio). Whatever
+>>> Faizal implements I'll match the behavior with mqprio.
+>>>
+>>
+>> Hi Kurt & Vladimir,
+>>
+>> After reading Vladimir's reply on tc, hw queue, and socket priority mapping
+>> for both taprio and mqprio, I agree they should follow the same priority
+>> scheme for consistency—both in code and command usage (i.e., taprio,
+>> mqprio, and fpe in both configurations). Since igc_tsn_tx_arb() ensures a
+>> standard mapping of tc, socket priority, and hardware queue priority, I'll
+>> enable taprio to use igc_tsn_tx_arb() in a separate patch submission.
 > 
-> ...
->> +       if (unlikely(!llnode && !retry)) {
->> +               int cpu = smp_processor_id();
->> +               alloc_bulk(c, 1, cpu_to_node(cpu), true);
+> There's one point to consider here: igc_tsn_tx_arb() changes the mapping
+> between priorities and Tx queues. I have no idea how many people rely on
+> the fact that queue 0 has always the highest priority. For example, it
+> will change the Tx behavior for schedules which open multiple traffic
+> classes at the same time. Users may notice.
+
+Yeah, I was considering the impact on existing users too. I hadn’t given it 
+much thought initially and figured they’d just need to adapt to the 
+changes, but now that I think about it, properly communicating this would 
+be tough. taprio on igc (i225, i226) has been around for a while, so a lot 
+of users would be affected.
+
+> OTOH changing mqprio to the broken_mqprio model is easy, because AFAIK
+> there's only one customer using this.
 > 
-> This is broken.
-> Passing atomic doesn't help.
-> unit_alloc() can be called from any context
-> including NMI/IRQ/kprobe deeply nested in slab internals.
-> kmalloc() is not safe from there.
-> The whole point of bpf_mem_alloc() is to be safe from
-> unknown context. If we could do kmalloc(GFP_NOWAIT)
-> everywhere bpf_mem_alloc() would be needed.
 
-I didn't think about the NMI case, where GFP_NOWAIT and GFP_ATOMIC are 
-not safe.
+Hmmmm, now I’m leaning toward keeping taprio as is (hw queue 0 highest 
+priority) and having mqprio follow the default priority scheme (aka 
+broken_mqprio). Even though it’s not the norm, the impact doesn’t seem 
+worth the gain. Open to hearing others' thoughts.
 
-Hmm.. maybe, we can extend 'bpf_mem_alloc_init()' or 'struct
-bpf_mem_alloc' to specify the (initial) prefill count. This way
-we can set a bit larger prefill count (say 8) for bpf cpumask.
-What do you think?
-
-[1] 
-https://github.com/sched-ext/scx/blob/f17985cac0a60ba0136bbafa3f546db2b966cec0/scheds/rust/scx_lavd/src/bpf/main.bpf.c#L1970
-
-Regards,
-Changwoo Min
 
