@@ -1,170 +1,103 @@
-Return-Path: <bpf+bounces-51547-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51549-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8534AA35A10
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 10:19:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4639EA35A1E
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 10:22:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D062A1883949
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 09:19:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 503B01667EC
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 09:22:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43B0722FDEB;
-	Fri, 14 Feb 2025 09:19:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BF8622F3B8;
+	Fri, 14 Feb 2025 09:22:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="PPEEy3b8"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="nXvwb20R"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.2])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DC9222E405;
-	Fri, 14 Feb 2025 09:19:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.2
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C228A21B182;
+	Fri, 14 Feb 2025 09:22:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739524759; cv=none; b=RqHnQvKLhHefVjiwL5XBhkWbE1poNbZR2bM4g34aAu8e4XadhHC4XTIJ1fwAy3b4Ry/l5HZm5KrdQEw5gkWIfD+sY80AEqQLP5+M9gsOYNpSycfEtjzwqA5hPyREsNnSlUA3CLYYLKECkU9qfE81kw4pye4YsNRt7+AyCO7WWII=
+	t=1739524938; cv=none; b=J6/Ci0jHb5h7gbDvJKTl/1jDtbpOiD+cA/HZ870tSlmpSGletXSxac5ID1GKu4J/C63SCKCYqd6n2voEq9z3q9Nh8C2VVIEcFh/1e5xa3eIOfEKswSEaRzBZ5Qy11ZNc4aW90a5IBnvAqpjH/ZpdDqA4yxzoZZ1akA0BC09E/Vk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739524759; c=relaxed/simple;
-	bh=R4TKYRupVCB93Gl+1MTFKEaO6m65aWCRnFvBqyADbJU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eUCL0kkER63MvDmpmZQuyZy/NYV1cpt9wrUQg/buNtQYwQXpf8xrSvk60/OrC3IdaGRxcMsC7htsfR0T6b/Mua4GEyGtgXqdaEk1SY78fwKJdbVriIlNTCqUKbBJOcTiRhzTfWWGj3IXr/cS7Npqb3PqdrjSydnpJQdzYBIixSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=PPEEy3b8; arc=none smtp.client-ip=117.135.210.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-ID:MIME-Version; bh=tPPMm
-	Jd3CtmVukZjPNPlyzL9MmDEtdrVNqX16QbV6Rg=; b=PPEEy3b8m9J3ZMnqXBX5O
-	E2BE7OvPZHSflGzWfGdubpinBEH59yILnHpsiIBR0R6sX+y2kAx9mwpYn4nOtwm0
-	duhkR9h9OhaqfRbGu2XatEWL7zDIGglpblFm3TuCfIK6bGEyHHeyCtvqyvLyNQdG
-	Fc3Nhd50eYY+Iu6JWEd6mU=
-Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g0-4 (Coremail) with SMTP id _____wD3N0RjCq9nqR1PMA--.3071S5;
-	Fri, 14 Feb 2025 17:18:34 +0800 (CST)
-From: Jiayuan Chen <mrpre@163.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org
-Cc: linux-kselftest@vger.kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mykolal@fb.com,
-	shuah@kernel.org,
-	Jiayuan Chen <mrpre@163.com>
-Subject: [PATCH bpf-next v3 3/3] selftests/bpf: Add selftest for may_goto
-Date: Fri, 14 Feb 2025 17:18:23 +0800
-Message-ID: <20250214091823.46042-4-mrpre@163.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250214091823.46042-1-mrpre@163.com>
-References: <20250214091823.46042-1-mrpre@163.com>
+	s=arc-20240116; t=1739524938; c=relaxed/simple;
+	bh=pQjK/iwCJO75ufgOTvx8cDDg/C9fbt+wixPYVCFqHfU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S450BJE/MMDCRqmSeqdiyFVqlo/cI5YLzH/zFDHikUwKv40YfsOr8umNwLdwAv3Q/ljLExCFiqidzFknrIMBe8zCdb+zBSVRxJRo8VUYVmeCNO7+qE/2fqKvDrGIMQ5Cwx9RWw7XOTH6N8VNxnR3J1E42Ybk24rZruVnGk08ogI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=nXvwb20R; arc=none smtp.client-ip=115.124.30.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1739524931; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=+D9V3WWQDBd/ZszSS/N9OZirb9lKepZNme5vqrAR1sQ=;
+	b=nXvwb20RU9oNju8SMnPYRFheTB/8zBCFsKKq2yFEhpV8H8EOrpVtT2FkvDhEogd18ikpKNiHOhFgv71Z5xTwUTH/gMaqPOxI2FOvBO1iK/JpimA3gKJqAvpBIpUdXJh6naB28EV3fyHckDrILbH/HF0SAP7G0nDMu0wrzv7zOmg=
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WPQIbTz_1739524929 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Fri, 14 Feb 2025 17:22:09 +0800
+Date: Fri, 14 Feb 2025 17:22:09 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com    >
+To: "D. Wythe" <alibuda@linux.alibaba.com>, wenjia@linux.ibm.com,
+	jaka@linux.ibm.com
+Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+	martin.lau@linux.dev, pabeni@redhat.com, song@kernel.org,
+	sdf@google.com, haoluo@google.com, yhs@fb.com, edumazet@google.com,
+	john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
+	guwen@linux.alibaba.com, kuba@kernel.org, davem@davemloft.net,
+	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v7 0/6] net/smc: Introduce smc_ops
+Message-ID: <20250214092209.GA88970@j66a10360.sqa.eu95>
+References: <20250123015942.94810-1-alibuda@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3N0RjCq9nqR1PMA--.3071S5
-X-Coremail-Antispam: 1Uf129KBjvJXoW7KryUtFyDCF18Cw4fGr4fAFb_yoW5Jr18p3
-	s7Xasakr18Xw1xKw1xGFWkGFyrZF4kZr1YkFyfXr15JFnrJFn7WFn2kF9rXrsIyFs3Zw4Y
-	vFWqyFZxGw4UJ3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRMrWrUUUUU=
-X-CM-SenderInfo: xpus2vi6rwjhhfrp/1tbiWxTzp2evAb7U8AAAsI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250123015942.94810-1-alibuda@linux.alibaba.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-Added test cases to ensure that programs with stack sizes exceeding 512
-bytes are restricted in non-JITed mode, and can be executed normally in
-JITed mode, even with stack sizes exceeding 512 bytes due to the presence
-of may_goto instructions.
+On Thu, Jan 23, 2025 at 09:59:36AM +0800, D. Wythe wrote:
+> This patch aims to introduce BPF injection capabilities for SMC and
+> includes a self-test to ensure code stability.
+> 
+> Since the SMC protocol isn't ideal for every situation, especially
+> short-lived ones, most applications can't guarantee the absence of
+> such scenarios. Consequently, applications may need specific strategies
+> to decide whether to use SMC. For example, an application might limit SMC
+> usage to certain IP addresses or ports.
+> 
+> To maintain the principle of transparent replacement, we want applications
+> to remain unaffected even if they need specific SMC strategies. In other
+> words, they should not require recompilation of their code.
+> 
+> Additionally, we need to ensure the scalability of strategy implementation.
+> While using socket options or sysctl might be straightforward, it could
+> complicate future expansions.
+> 
+> Fortunately, BPF addresses these concerns effectively. Users can write
+> their own strategies in eBPF to determine whether to use SMC, and they can
+> easily modify those strategies in the future.
 
-Test result:
-echo "0" > /proc/sys/net/core/bpf_jit_enable
-./test_progs -t verifier_stack_ptr
-...
-stack size 512 with may_goto with jit:SKIP
-stack size 512 with may_goto without jit:OK
-...
-Summary: 1/27 PASSED, 25 SKIPPED, 0 FAILED
+Hi smc folks, @Wenjia @Ian
 
-echo "1" > /proc/sys/net/core/bpf_jit_enable
-./test_progs -t verifier_stack_ptr
-...
-stack size 512 with may_goto with jit:OK
-stack size 512 with may_goto without jit:SKIP
-...
-Summary: 1/27 PASSED, 25 SKIPPED, 0 FAILED
+Is there any feedback regarding this patches ? This series of code has
+gone through multiple rounds of community reviews. However, the parts
+related to SMC, including the new sysctl and ops name, really needs
+your input and acknowledgment.
 
-Signed-off-by: Jiayuan Chen <mrpre@163.com>
----
- .../selftests/bpf/progs/verifier_stack_ptr.c  | 52 +++++++++++++++++++
- 1 file changed, 52 insertions(+)
+Additionally, this series includes a bug fix for SMC, which is easily
+reproducible in the BPF CI tests.
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_stack_ptr.c b/tools/testing/selftests/bpf/progs/verifier_stack_ptr.c
-index 417c61cd4b19..24aabc6083fd 100644
---- a/tools/testing/selftests/bpf/progs/verifier_stack_ptr.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_stack_ptr.c
-@@ -481,4 +481,56 @@ l1_%=:	r0 = 42;					\
- 	: __clobber_all);
- }
- 
-+SEC("socket")
-+__description("PTR_TO_STACK stack size > 512")
-+__failure __msg("invalid write to stack R1 off=-520 size=8")
-+__naked void stack_check_size_gt_512(void)
-+{
-+	asm volatile ("					\
-+	r1 = r10;					\
-+	r1 += -520;					\
-+	r0 = 42;					\
-+	*(u64*)(r1 + 0) = r0;				\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+#ifdef __BPF_FEATURE_MAY_GOTO
-+SEC("socket")
-+__description("PTR_TO_STACK stack size 512 with may_goto with jit")
-+__load_if_JITed()
-+__success __retval(42)
-+__naked void stack_check_size_512_with_may_goto_jit(void)
-+{
-+	asm volatile ("					\
-+	r1 = r10;					\
-+	r1 += -512;					\
-+	r0 = 42;					\
-+	*(u32*)(r1 + 0) = r0;				\
-+	may_goto l0_%=;					\
-+	r2 = 100;					\
-+	l0_%=:						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("PTR_TO_STACK stack size 512 with may_goto without jit")
-+__load_if_no_JITed()
-+__failure __msg("stack size 520(extra 8) is too large")
-+__naked void stack_check_size_512_with_may_goto(void)
-+{
-+	asm volatile ("					\
-+	r1 = r10;					\
-+	r1 += -512;					\
-+	r0 = 42;					\
-+	*(u32*)(r1 + 0) = r0;				\
-+	may_goto l0_%=;					\
-+	r2 = 100;					\
-+	l0_%=:						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+#endif
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.47.1
+Thanks,
+D. Wythe
 
 
