@@ -1,106 +1,92 @@
-Return-Path: <bpf+bounces-51506-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51507-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6E71A35384
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 02:08:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 792E7A35385
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 02:10:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CEC516C8EC
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 01:08:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38AA816CBF7
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 01:10:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 818D03595C;
-	Fri, 14 Feb 2025 01:08:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00D403A8C1;
+	Fri, 14 Feb 2025 01:10:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Na8xQlqB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="clrOKDQI"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AC4B6FC5
-	for <bpf@vger.kernel.org>; Fri, 14 Feb 2025 01:08:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 736B06FC5;
+	Fri, 14 Feb 2025 01:10:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739495303; cv=none; b=C+Yg4DusOou7HPrYwHNycXAIjwL0WfItUhqw3GZPXabZrK/7V/CUQTsCmUIFlHJS5rhlNK8MHu8Y5lJTjXcQvRtF78ZlT7upW/mJBt5+5aPYa9imWy3ukh38lefb+AC5uc4J1T83n5iuHWchoD9kgeKBTpwlW38GaQ27AF+n1Sg=
+	t=1739495409; cv=none; b=OEMOAfT7GQfmlZcNaERw/3jFgBhRxR64Hhxyr3HGYem2ARwscqMaFv8u92oMFLau6p/PklinljK8TgECVh8UfOLVHi9g3/yf1+MnPkTkO8pi6OzZVVq1KPxgkvQSehJk6q18jUTdhx60aWPiIjEKUZWYx9IN7mmdBSCPyEBsxtg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739495303; c=relaxed/simple;
-	bh=1xDU4h9kMctteQCnQUnApuwn7/ZAVzH3gfKjm5H6Y5I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=F0/BX0ZKzznX138llBW2D0pMfVcDqi7VHawymkk+zAI+Hd+an9Cvw1ZBQBL+V+3cjfFc/rFjjggcvFLxw7FZuMYhpeAQn/HVePGGRSNl/PD8LQm2qeM9gcovDW96OHVj65ltWWElvTYoeOtjBBMKT5LsvgtQzjhREimUTmKhMHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Na8xQlqB; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e5d5b25f-cee8-436c-ab3a-b92bd417e70e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1739495293;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ezTPseWuvvhzwWsViJMs94/VcBw0KIartZO/PL7ArsM=;
-	b=Na8xQlqBiMSTEUuex+pOP6YVaIGLy4RUdArHuUAtqcaayCHZUNq/D04zZe2kd/n0AAxbNa
-	q3Ujxn3sxGCprh9MtaruZp34h/mpLO9l1kU2DNr9qVpzhgUtAXA3iHvRD/GUWwiArh0WNK
-	+QJa8xW+2bAP2f2CL9GDnu2nPF4sDkc=
-Date: Thu, 13 Feb 2025 17:08:08 -0800
+	s=arc-20240116; t=1739495409; c=relaxed/simple;
+	bh=Tvy9ElEUsaUGq325jlvAH+DarQMjL012qqrFIAa8xnk=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=jZjjcV2+ZQiuwKvQKXCcN/jujcJvps6Q2kIISFdlpi7AEhpVG992N5LJqbLGnaNtwTx0qXlY6kmWWaZjEBU7RjBdGOWiOF3tAt9aO7tw70hPbdwAhcKROvp3j/t1w6pkLGg+sGkgTSFZ1g7AHqCdcMhu+IYrttNUelE+EYTjbs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=clrOKDQI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0281C4CED1;
+	Fri, 14 Feb 2025 01:10:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739495408;
+	bh=Tvy9ElEUsaUGq325jlvAH+DarQMjL012qqrFIAa8xnk=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=clrOKDQIdJQXPIMW+iYiw3whVhrHMg7MbzrvyqtxKfpfBFUlLsDh8i0P8KKJXTPcy
+	 hKbCbP0qSAnE2zp2kFgJySQ24m7d4Sz0fCl+tk6XDjAuqHxLhO8G9MYwk+d22cN/iT
+	 OpZe2BavKj49rECeTUBO7/zHxu5HWtrhO8+Fp9kEqC3REVF/B4TZsIxuLqh7/ZRAnS
+	 tr9ajfFlJ7V/QQ16cy0I4e8jDB33glQma3beItdLOV7ED3HzEe5dA6BcdLdvKR20iN
+	 WdqEWskZYr4mHBSkbvQFpWu4vH06fNBB8bDUXFDZSXhk+Vyqb2COXix+GnwKooq3WG
+	 zorEnCtMT9DwQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70E22380CEF4;
+	Fri, 14 Feb 2025 01:10:39 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v1] selftests/bpf: Fix stdout race condition in
- traffic monitor
-To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- alexei.starovoitov@gmail.com, martin.lau@kernel.org, kernel-team@meta.com
-References: <20250213233217.553258-1-ameryhung@gmail.com>
- <cfe7a83f-a2de-4157-8a43-abbe95968b05@linux.dev>
- <CAMB2axPo5PKKEe3_7opjV4KftCqpDZo9m=iRZZ=g+mUqDeZzqw@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAMB2axPo5PKKEe3_7opjV4KftCqpDZo9m=iRZZ=g+mUqDeZzqw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Subject: Re: [PATCH bpf-next] bpf: Add tracepoints with null-able arguments
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <173949543826.1451727.12982763105090471727.git-patchwork-notify@kernel.org>
+Date: Fri, 14 Feb 2025 01:10:38 +0000
+References: <20250210175913.2893549-1-jolsa@kernel.org>
+In-Reply-To: <20250210175913.2893549-1-jolsa@kernel.org>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ bpf@vger.kernel.org, linux-perf-users@vger.kernel.org, kafai@fb.com,
+ songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+ kpsingh@chromium.org, sdf@fomichev.me, haoluo@google.com, memxor@gmail.com
 
-On 2/13/25 4:19 PM, Amery Hung wrote:
-> On Thu, Feb 13, 2025 at 3:55 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>
->> On 2/13/25 3:32 PM, Amery Hung wrote:
->>> Fix a race condition between the main test_progs thread and the traffic
->>> monitoring thread. The traffic monitor thread tries to print a line
->>> using multiple printf and use flockfile() to prevent the line from being
->>> torn apart. Meanwhile, the main thread doing io redirection can reassign
->>> or close stdout when going through tests. A deadlock as shown below can
->>> happen.
->>>
->>>          main                      traffic_monitor_thread
->>>          ====                      ======================
->>>                                    show_transport()
->>>                                    -> flockfile(stdout)
->>>
->>> stdio_hijack_init()
->>> -> stdout = open_memstream(log_buf, log_cnt);
->>>      ...
->>>      env.subtest_state->stdout_saved = stdout;
->>>
->>>                                       ...
->>>                                       funlockfile(stdout)
->>> stdio_restore_cleanup()
->>> -> fclose(env.subtest_state->stdout_saved);
->>
->> Great debugging.
->>
->> Does it mean that the main thread will start the next test before the
->> traffic_monitor_thread has finished? Meaning the traffic_monitor_stop() does not
->> wait for the traffic_monitor_thread somehow?
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Mon, 10 Feb 2025 18:59:13 +0100 you wrote:
+> Some of the tracepoints slipped when we did the first scan, adding them now.
 > 
-> That part I think is fine. The race condition here happen between
-> subtests within the same "netns_new" scope. For example,
-> test_flow_dissector_skb_less_direct_attach.
+> Fixes: 838a10bd2ebf ("bpf: Augment raw_tp arguments with PTR_MAYBE_NULL")
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  kernel/bpf/btf.c | 99 ++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 99 insertions(+)
 
-Got it. Thanks for the fix. Applied.
+Here is the summary with links:
+  - [bpf-next] bpf: Add tracepoints with null-able arguments
+    https://git.kernel.org/bpf/bpf-next/c/c83e2d970bae
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
