@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-51609-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51610-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED02AA3675E
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 22:16:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 65E91A36764
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 22:17:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71A041897013
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 21:15:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C77CF188F5A5
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 21:17:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 002981DACA1;
-	Fri, 14 Feb 2025 21:14:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82D901DB92A;
+	Fri, 14 Feb 2025 21:16:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ihm9rd3q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PjX//zhP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED49D1C861D;
-	Fri, 14 Feb 2025 21:14:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7594D1DC998;
+	Fri, 14 Feb 2025 21:16:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739567694; cv=none; b=DBmOALBz2aLXRzSN7XwhHWFcD3Bd1e0XE33PhY4fGLC+cwEuoIOGcKvrWf9CCcAhhMaBcFCXh3udk1VJ+7H+MvQ2X9hvuN0AOZWqfJG7+XZWLDIc7AB/nCrlI2EHQgaBmi9OIU+rLt6A2lPsXKSBxz88SbiwkEeEckFFU13qYzQ=
+	t=1739567817; cv=none; b=OWJHc61whV6NNf2i7dOui2micwSyqn1DTbK1abi4t0IuumavFiFFyFQiK1FsNmmXfyOYGIL3NFQxy5HFf/GaUUBFJ9c6LnxAFxtj0RdgJBn7rS8BCWgNG1JnSCv4b/HtxtjvXscDyGS+VhlTITskqXFDYQoelhMF3jyqvYSlZ4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739567694; c=relaxed/simple;
-	bh=M4I/lVoL2eoEx86tYBWI0HuYLbF+4WaYKyL8MybyfUY=;
+	s=arc-20240116; t=1739567817; c=relaxed/simple;
+	bh=kdoCDF691npnxcfSrhhThsuQwDgHrSls1RuILSNL19M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u64Sy5TCZIHmEmsCZHcrTd+euQTpweHuIZ6oampPSOMjzeXJ+myPifhKMFNMysIUKKcCZp4/kj21a8O/1TVME3dR7eyfq56vuXnwg2O3NZPDTveBKKLw/SCp6IsRDDKRrRnoisfbR7iMt1xPAGXA1SjuVIbnw1bO4p5sjrpEa1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ihm9rd3q; arc=none smtp.client-ip=209.85.219.174
+	 Content-Type:Content-Disposition:In-Reply-To; b=LcseGCyWcSNCVs1lGp+K9YiocXGYsDbMk/PbBqsmb7nEyPBWDvmrYTNP3XSzIfAyK2WUIN3X0epUncfxMe8EN3v6antn9X7svzBXUjA7hxE3OgMKFBmLsxKVInRBrIpjY1BGKF65rmGEe8E2Dhw1MOH3iwC3pKGD+0hYhiD+nxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PjX//zhP; arc=none smtp.client-ip=209.85.128.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-e53a91756e5so2079257276.1;
-        Fri, 14 Feb 2025 13:14:52 -0800 (PST)
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-6f6715734d9so23082527b3.3;
+        Fri, 14 Feb 2025 13:16:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739567692; x=1740172492; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739567814; x=1740172614; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mNkF78o53Rf+t1jN2LaXRMV13iaPzPVoeIghT/2tY5o=;
-        b=ihm9rd3q62RuZo5QptI1CCwLuUxhYmLGI/Vc8lTBgUrx75axUa3HTM7/b+ARLiwHLr
-         tffo5xsOkDHKW4i77MjlT+oTlozavJ94D1VcqOc4EolU2XvqWpYd0Hn5kQXRlCv4utul
-         3MI14cWpRvg7LygTtLKLhUYf21QOZxeMaZJ4/OdF/AyLyFUsDQA03j+dslt/GeX4mssb
-         jPWzcTEvrafDQUwWUkLE8Z9cdI+1CMcNq25umHMnsaIlyS/62wQo4eX8vqbNEHPQ518M
-         vh2gnjVOPmOM7Rb1ULbuV65P/1/ijZ0sDa8Y13ypysaqps0fPBt+G6NxJF9hlVmc3Jh0
-         /TqA==
+        bh=F/s0mb5QBHXHZM7mJa9A8yyHBmYLb1JiJn/TLFs2Hoc=;
+        b=PjX//zhPL8QgfOoTqflxo0ZJOR7k1re3UpZ71mEl9uRd2J1RwkrthaZQkcTkBrJP3I
+         LY0rhBU2nw5894G01NRRDzVmQN/wGjoor4Ksk43pmrzcsGgbkDUevzEpZSpozmfkTho+
+         t3xX6U1CIFjv8+QSkBfz2j7jhs9A99DcR977+x4Su/PrcYacVSM9FaRqlLsA/JcXeGXm
+         fVlNMqFwoy3J5UrMLlqzjJg1bfyG5KUNwemXv1mvqEf/wYmAAghPG6lXxSm4KiokN7Mk
+         TPR31MiD5KSTwoRvBXmmpQGQudKmHRGSfLf6xUwMnAvCK1K+iNcgDg4nl93u6Y3Tqbye
+         0eBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739567692; x=1740172492;
+        d=1e100.net; s=20230601; t=1739567814; x=1740172614;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mNkF78o53Rf+t1jN2LaXRMV13iaPzPVoeIghT/2tY5o=;
-        b=G7+/ihiqIZB0i+hWav8hUbHIW/Avtamb3ei2z4E9B6HDaRm7ZinXc1DG2Fci/pB4zz
-         ql4GoJ7SlGBSoqnuT4aI81mK6QoATBcdDb8pswhTGuPaAOaklJrg77OsbC3ihRjruITu
-         cYTeACcAWvU339E1M37nIY+LLq9mJ5MytVITTbgqzkn+fedAc/VLOY+yUxlWOoP/NfGG
-         NeuTpIBEpQQJ0fXAnxpeyoUg+JyjinnR0fztcsPlqLaTCStYJjifhY90OsqrkrBR+oLq
-         V3ppPsLMRH2KLlZVBECNj15H9KggzCOCXA8fYh90LhLcbqWJNbgJfSLbAmVdCabpHrED
-         P7kw==
-X-Forwarded-Encrypted: i=1; AJvYcCWFHPEB2g42JaTQK28s8SYDYoUbRdSSrxhn31l6L+rIncx5jrHUO5EjRl1QxnHAowxhHlM=@vger.kernel.org, AJvYcCXgljtrwAzZTq3InCXJCDl/Ljsn/OELoKJi9VwzzZD8Ht+Nx8v0MWTp37dMy0dfP1TGu1nd4NwE5OPLLJxR@vger.kernel.org
-X-Gm-Message-State: AOJu0YxA8zG3vTgC713dyd0xn0hZxQ2a44NXgWQfY/PgH+/SvIZX/j7C
-	btA4SM+VixxAFnXcI217AzGdQqLHLF63fiJiOvwfXuISaow8gKYN
-X-Gm-Gg: ASbGncuQpEdnTCXT+eYYCcSwFtK/3mxmcpd3I2Xp85vdpg1Am57fJDv3+7cNlYB9+YX
-	tQX0kdi3voabP6sjkVdv1EZPEIjFBY7M1kxKwXZCRjsA4AziAxwr0dT1jFimbg3rG3TP9V9fbIK
-	/4u8TotAvsuC4l73ZiJQnrzsgjCmx2vJgqXld+DZYiVR21ykJhMYJxU29RQDimjdqLacJcfF1G/
-	KqRdDM3DU42pp0GTL9aKVFoyJgJL6X1CuZ8wTp7SdaDx9LjTHg9xRhFQ649w90e3KjPupry5iAT
-	2F91S4Ss1lcGNi9cMe24DVEZxCCbIxAwqJMhTpasb1ExEBDmJTE=
-X-Google-Smtp-Source: AGHT+IHMvCvabfR3FD3eCjD9f/3m5EJVslz8OaZYJZDPQv5zcb5zDlnx+fqTiQggr3kQh3rsAgFyLQ==
-X-Received: by 2002:a05:6902:330e:b0:e58:3b:7ee8 with SMTP id 3f1490d57ef6-e5dc91f557emr720004276.35.1739567691749;
-        Fri, 14 Feb 2025 13:14:51 -0800 (PST)
+        bh=F/s0mb5QBHXHZM7mJa9A8yyHBmYLb1JiJn/TLFs2Hoc=;
+        b=UD1U/eKZvZn4zVtaAsdF387oikTq/AJmkbpZG3N6mUq0GzruAQRRGzlOYY2NiO6VoD
+         sq9XQbRQ63h3HY9LCJJfkwoCulVUlwaNHoOzeoJa3T2G+XPEy00D2nECNtjysAqFPJEm
+         o7ao4QIAW/MNy+lnyjZk4iJilAjgfIGd5ChNhj7eQreJoUsy73uJs++grv89SjQTEzOX
+         VUD0uA+84dpnYPVBHSNSr8RBf9IGi4CgVEeca9aQu8Od5U6Eu7iErzOOeL3OuHd+0Qlw
+         2PEvQ8jL/Q1CZQ9tBt5nrGaL8+pFyhC83DwOtQG/lp1so9ciDjpHrqAoyKqhZOuE2Kwq
+         kqjg==
+X-Forwarded-Encrypted: i=1; AJvYcCUBNhsy8FbXPdIRgQa+Nv1B3oeBaLnn8TEJyuxWgFYfNBaNSwE7YIDOid0sPGMVRNG93JeFRZs9oIo9HTaU@vger.kernel.org, AJvYcCVgGDMPHzymE0YYHkX6bTvfzGp17/KbjvEziWcCrI+jH+V3dLAvky2hnmwbY1U+fnOmOek=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxFWTeHHxbpVqZy1OGdOKVzc2oCnQMpkgpahQjTKFcllQOv7kmY
+	Znnv/T/CuBg/T0zRKobnyyCgBDsMjclNNpLwLlpBh81LCY8uNpcD
+X-Gm-Gg: ASbGncssjWiMAYyOnE23HBwTO9ioE4Il/qZwSPmZ39DPmkDIQBCTO4iAY5WXhFUkTZy
+	cbOrTxA316BFTwS5cJfrAqPpuemjEPYT4wSaj/NMRgTYXSk6FStj+eQ/TIPNaVnhaZmTa/VgLVk
+	NyfcSK8GvGOtfbhvFTkEmKPq4KS+Y2WTcDP8Bd1ix1MWuuzzCRBakdnl/fFa/sr/t/Eel1ezvJK
+	QVz2EyyC/2mIBskHXNsEhZLZgTy51iedrT5IrBBupav5sbmKv8h54AjuitZE16FzxuboEe8LuVg
+	VbVDiAeqXxOwSVvfROcUhEeRWDOL6HvxB+z2mOKdqWkHqJ87cSk=
+X-Google-Smtp-Source: AGHT+IE8JEh8yAC1sU5hyVy0GTo1jz5BgWgWrsAu0Oixm7DD493VWokT9ITeLCSp69fWpGtA5GqTAA==
+X-Received: by 2002:a05:690c:7204:b0:6f9:a6bd:2053 with SMTP id 00721157ae682-6fb5837acdamr10160287b3.34.1739567814283;
+        Fri, 14 Feb 2025 13:16:54 -0800 (PST)
 Received: from localhost (c-73-224-175-84.hsd1.fl.comcast.net. [73.224.175.84])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e5dae0da261sm1237795276.37.2025.02.14.13.14.50
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6fb360922f6sm9308177b3.48.2025.02.14.13.16.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Feb 2025 13:14:50 -0800 (PST)
-Date: Fri, 14 Feb 2025 16:14:49 -0500
+        Fri, 14 Feb 2025 13:16:53 -0800 (PST)
+Date: Fri, 14 Feb 2025 16:16:53 -0500
 From: Yury Norov <yury.norov@gmail.com>
 To: Andrea Righi <arighi@nvidia.com>
 Cc: Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>,
@@ -85,10 +85,11 @@ Cc: Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>,
 	Valentin Schneider <vschneid@redhat.com>,
 	Joel Fernandes <joel@joelfernandes.org>, Ian May <ianm@nvidia.com>,
 	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/8] mm/numa: Introduce nearest_node_nodemask()
-Message-ID: <Z6-ySS7go_dXl5gM@thinkpad>
+Subject: Re: [PATCH 4/8] sched/topology: Introduce for_each_node_numadist()
+ iterator
+Message-ID: <Z6-yxTEbuJZUZW8f@thinkpad>
 References: <20250214194134.658939-1-arighi@nvidia.com>
- <20250214194134.658939-4-arighi@nvidia.com>
+ <20250214194134.658939-5-arighi@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,13 +98,60 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250214194134.658939-4-arighi@nvidia.com>
+In-Reply-To: <20250214194134.658939-5-arighi@nvidia.com>
 
-On Fri, Feb 14, 2025 at 08:40:02PM +0100, Andrea Righi wrote:
-> Introduce the new helper nearest_node_nodemask() to find the closest
-> node in a specified nodemask from a given starting node.
+On Fri, Feb 14, 2025 at 08:40:03PM +0100, Andrea Righi wrote:
+> Introduce the new helper for_each_node_numadist() to iterate over node
+> IDs in order of increasing NUMA distance from a given starting node.
 > 
-> Returns MAX_NUMNODES if no node is found.
+> This iterator is somehow similar to for_each_numa_hop_mask(), but
+> instead of providing a cpumask at each iteration, it provides a node ID.
+> 
+> Example usage:
+> 
+>   nodemask_t unvisited = NODE_MASK_ALL;
+>   int node, start = cpu_to_node(smp_processor_id());
+> 
+>   node = start;
+>   for_each_node_numadist(node, unvisited)
+>   	pr_info("node (%d, %d) -> %d\n",
+>   		 start, node, node_distance(start, node));
+> 
+> On a system with equidistant nodes:
+> 
+>  $ numactl -H
+>  ...
+>  node distances:
+>  node     0    1    2    3
+>     0:   10   20   20   20
+>     1:   20   10   20   20
+>     2:   20   20   10   20
+>     3:   20   20   20   10
+> 
+> Output of the example above (on node 0):
+> 
+> [    7.367022] node (0, 0) -> 10
+> [    7.367151] node (0, 1) -> 20
+> [    7.367186] node (0, 2) -> 20
+> [    7.367247] node (0, 3) -> 20
+> 
+> On a system with non-equidistant nodes (simulated using virtme-ng):
+> 
+>  $ numactl -H
+>  ...
+>  node distances:
+>  node     0    1    2    3
+>     0:   10   51   31   41
+>     1:   51   10   21   61
+>     2:   31   21   10   11
+>     3:   41   61   11   10
+> 
+> Output of the example above (on node 0):
+> 
+>  [    8.953644] node (0, 0) -> 10
+>  [    8.953712] node (0, 2) -> 31
+>  [    8.953764] node (0, 3) -> 41
+>  [    8.953817] node (0, 1) -> 51
 > 
 > Suggested-by: Yury Norov [NVIDIA] <yury.norov@gmail.com>
 > Signed-off-by: Andrea Righi <arighi@nvidia.com>
@@ -111,77 +159,50 @@ On Fri, Feb 14, 2025 at 08:40:02PM +0100, Andrea Righi wrote:
 Acked-by: Yury Norov [NVIDIA] <yury.norov@gmail.com>
 
 > ---
->  include/linux/numa.h |  7 +++++++
->  mm/mempolicy.c       | 31 +++++++++++++++++++++++++++++++
->  2 files changed, 38 insertions(+)
+>  include/linux/topology.h | 30 ++++++++++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
 > 
-> diff --git a/include/linux/numa.h b/include/linux/numa.h
-> index 31d8bf8a951a7..e6baaf6051bcf 100644
-> --- a/include/linux/numa.h
-> +++ b/include/linux/numa.h
-> @@ -31,6 +31,8 @@ void __init alloc_offline_node_data(int nid);
->  /* Generic implementation available */
->  int numa_nearest_node(int node, unsigned int state);
->  
-> +int nearest_node_nodemask(int node, nodemask_t *mask);
-> +
->  #ifndef memory_add_physaddr_to_nid
->  int memory_add_physaddr_to_nid(u64 start);
->  #endif
-> @@ -47,6 +49,11 @@ static inline int numa_nearest_node(int node, unsigned int state)
->  	return NUMA_NO_NODE;
+> diff --git a/include/linux/topology.h b/include/linux/topology.h
+> index 52f5850730b3e..a1815f4395ab6 100644
+> --- a/include/linux/topology.h
+> +++ b/include/linux/topology.h
+> @@ -261,6 +261,36 @@ sched_numa_hop_mask(unsigned int node, unsigned int hops)
 >  }
->  
-> +static inline int nearest_node_nodemask(int node, nodemask_t *mask)
-> +{
-> +	return NUMA_NO_NODE;
-> +}
-> +
->  static inline int memory_add_physaddr_to_nid(u64 start)
->  {
->  	return 0;
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index 162407fbf2bc7..488cad280efb3 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -196,6 +196,37 @@ int numa_nearest_node(int node, unsigned int state)
->  }
->  EXPORT_SYMBOL_GPL(numa_nearest_node);
+>  #endif	/* CONFIG_NUMA */
 >  
 > +/**
-> + * nearest_node_nodemask - Find the node in @mask at the nearest distance
-> + *			   from @node.
+> + * for_each_node_numadist() - iterate over nodes in increasing distance
+> + *			      order, starting from a given node
+> + * @node: the iteration variable and the starting node.
+> + * @unvisited: a nodemask to keep track of the unvisited nodes.
 > + *
-> + * @node: a valid node ID to start the search from.
-> + * @mask: a pointer to a nodemask representing the allowed nodes.
+> + * This macro iterates over NUMA node IDs in increasing distance from the
+> + * starting @node and yields MAX_NUMNODES when all the nodes have been
+> + * visited.
 > + *
-> + * This function iterates over all nodes in @mask and calculates the
-> + * distance from the starting @node, then it returns the node ID that is
-> + * the closest to @node, or MAX_NUMNODES if no node is found.
+> + * Note that by the time the loop completes, the @unvisited nodemask will
+> + * be fully cleared, unless the loop exits early.
 > + *
-> + * Note that @node must be a valid node ID usable with node_distance(),
-> + * providing an invalid node ID (e.g., NUMA_NO_NODE) may result in crashes
-> + * or unexpected behavior.
+> + * The difference between for_each_node() and for_each_node_numadist() is
+> + * that the former allows to iterate over nodes in numerical order, whereas
+> + * the latter iterates over nodes in increasing order of distance.
+> + *
+> + * This complexity of this iterator is O(N^2), where N represents the
+> + * number of nodes, as each iteration involves scanning all nodes to
+> + * find the one with the shortest distance.
+> + *
+> + * Requires rcu_lock to be held.
 > + */
-> +int nearest_node_nodemask(int node, nodemask_t *mask)
-> +{
-> +	int dist, n, min_dist = INT_MAX, min_node = MAX_NUMNODES;
+> +#define for_each_node_numadist(node, unvisited)					\
+> +	for (int __start = (node),						\
+> +	     (node) = nearest_node_nodemask((__start), &(unvisited));		\
+> +	     (node) < MAX_NUMNODES;						\
+> +	     node_clear((node), (unvisited)),					\
+> +	     (node) = nearest_node_nodemask((__start), &(unvisited)))
 > +
-> +	for_each_node_mask(n, *mask) {
-> +		dist = node_distance(node, n);
-> +		if (dist < min_dist) {
-> +			min_dist = dist;
-> +			min_node = n;
-> +		}
-> +	}
-> +
-> +	return min_node;
-> +}
-> +EXPORT_SYMBOL_GPL(nearest_node_nodemask);
-> +
->  struct mempolicy *get_task_policy(struct task_struct *p)
->  {
->  	struct mempolicy *pol = p->mempolicy;
+>  /**
+>   * for_each_numa_hop_mask - iterate over cpumasks of increasing NUMA distance
+>   *                          from a given node.
 > -- 
 > 2.48.1
 
