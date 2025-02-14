@@ -1,111 +1,132 @@
-Return-Path: <bpf+bounces-51523-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51524-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88B94A35678
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 06:41:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD2D4A3567B
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 06:42:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13F6516B0E2
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 05:41:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 428813ABC86
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 05:41:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A38D618A6D7;
-	Fri, 14 Feb 2025 05:40:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C44818A6B7;
+	Fri, 14 Feb 2025 05:41:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="a7z1IruK"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="n3GG1s22"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50F8938DD8;
-	Fri, 14 Feb 2025 05:40:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACA6338DD8
+	for <bpf@vger.kernel.org>; Fri, 14 Feb 2025 05:41:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739511654; cv=none; b=JmT33tcbWl0Sn19c8NQFEne4sBJ4Xu6bJAiYAO3zghUfOAPT4l/SZkYE657yNl7SGvssPSV0qN7B2meOVZVmen1PCic91XC3zgnpKab+kHySmgWeBvSUh3aJLim90uxBIg+mA5UgDOJZK5C4Y4FyHX48dlly+YD2Ye3C48OqQNQ=
+	t=1739511717; cv=none; b=bIIS1j88AskO7o6uLkDmMeXAsIzOjIwxr+7XqQkQfUwhdDZriDVvNUpmoL49OE8s8rwzT6GEot1XKy8IMxGu+yEHB8z1X8Ga1FzQEGKjabMVLLTxVl3jjjyxXo5+EmGt1oEn5eb95jht7XTIcdLX60t4TVIdLexlpIC6rfUsk8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739511654; c=relaxed/simple;
-	bh=Jnmb9v8B62Ir3HXtOoo4/AOPVXEplpHdI7M5yCxr3H0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=R2Z3AYkfpePpq+5fP1e8T5ezJ3hOXmQrT9/+4UVhTVOg41ZkDJWB5N08dz3YkfyxCtwrpZxjzdJ9+j6hwS/WfKKxF+mKQCYas3rS2XpI5v9XX/2/CwnB51s3hIKXbhnI/0Qrq1kQ+Mt0LZ0EgyBmQsY2RgyzSGaecpe781FyPcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=a7z1IruK; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1739511648;
-	bh=+MXpRCfyPu68EMKR4hGNZHlKqujUVXXYRHPgYvj99U8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=a7z1IruKuvW3S2s3rmxahVyAcfHCPMZiD6WvVPlr0dJBYbWrRvN+6TwqV1xZ9rTOI
-	 iNDI/xhmd0/8Ux5LvAEkXaQXz1/B9T0tpk6yLrv1PIm4Uv2CWTaXqfueoY08rgUKbf
-	 3a3xoqOFM7JqJj2p3+KhYzrVOO+Qb1Pt9SlruiAyA0ypir9p5XnaTJU606ZgkK73MF
-	 V7OXfiVgWlMYX+yfS20Lzs2J1grsIK65aPjdgX4J33GW+AFwgD+o7fPtOZFK+hXttq
-	 KNsa+zRZzhtiko/sthuUF5P3qfAEKfBY8J7DYQONXgb52sHKEy6Ox0OE0MkmUaFo+9
-	 XO6GXblFZhXkQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4YvLW4150rz4x2J;
-	Fri, 14 Feb 2025 16:40:47 +1100 (AEDT)
-Date: Fri, 14 Feb 2025 16:40:46 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
- <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa
- <jolsa@kernel.org>, Kuniyuki Iwashima <kuniyu@amazon.com>, bpf
- <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>, Linux Kernel
- Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the bpf-next tree with the bpf tree
-Message-ID: <20250214164046.31cc51af@canb.auug.org.au>
-In-Reply-To: <CAADnVQJhh+An8uorGh-WQfJybqAu84MOREXZtCxep7fZtyMd6A@mail.gmail.com>
-References: <20250214160714.4cd44261@canb.auug.org.au>
-	<CAADnVQJhh+An8uorGh-WQfJybqAu84MOREXZtCxep7fZtyMd6A@mail.gmail.com>
+	s=arc-20240116; t=1739511717; c=relaxed/simple;
+	bh=Xsb9esUm0+ayVJb/etifb2esef39wFPEH3DsH4eTpRg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tSCXb6d3qJNlwBaruC4SotfzILeiJLnpsXq00sUtMluqCgW2xhr75e4+D1k1ckld/6BUEWunwNEHPfYyRWDE2GshFNQLb8BHtCKG9S75Z4aGjLgjcGPcVcTzA/urmIRGXq9vnYrl3DjRe1Grfl0Ado3+CKimI1mDmGdcQOnJ6HY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=n3GG1s22; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <86453e67-d5dc-4565-bdd6-6383273ed819@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1739511702;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TT84hWRPExmXf7e19V6ZT16AxO5/10ghKW9bbPmCyQE=;
+	b=n3GG1s22u+iM51d0721CqUTyJoIipzU023LfZGaFQqgt7RBdmasxi/FVjRZ9CeOzQnIyuO
+	su6bUvdrEyVKDGRCBmq4RvtIJK4Ql1STV5NBEhQgR6McONyFsmHvoRbw3e8feXKsLI5ouq
+	luIxYTjD2sn+9eIs0HUIlclr9Rbsoc0=
+Date: Thu, 13 Feb 2025 21:41:33 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/oHSxmttZ6MrA+_yjnn=t6L3";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Subject: Re: [PATCH net-next 2/3] bpf: add TCP_BPF_RTO_MAX for bpf_setsockopt
+To: Jason Xing <kerneljasonxing@gmail.com>
+Cc: Stanislav Fomichev <stfomichev@gmail.com>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org,
+ ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com,
+ song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+ kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ horms@kernel.org, ncardwell@google.com, kuniyu@amazon.com,
+ bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20250213004355.38918-1-kerneljasonxing@gmail.com>
+ <20250213004355.38918-3-kerneljasonxing@gmail.com>
+ <Z66DL7uda3fwNQfH@mini-arch>
+ <CAL+tcoATv6HX5G6wOrquGyyj8C7bFgRZNnWBwnPTKD1gb4ZD=g@mail.gmail.com>
+ <039bfa0d-3d61-488e-9205-bef39499db6e@linux.dev>
+ <CAL+tcoBAv5QuGeiGYUakhxBwVEsut7Gaa-96YOH03h57jtTVaQ@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <CAL+tcoBAv5QuGeiGYUakhxBwVEsut7Gaa-96YOH03h57jtTVaQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
---Sig_/oHSxmttZ6MrA+_yjnn=t6L3
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2/13/25 7:09 PM, Jason Xing wrote:
+> On Fri, Feb 14, 2025 at 10:14 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>
+>> On 2/13/25 3:57 PM, Jason Xing wrote:
+>>> On Fri, Feb 14, 2025 at 7:41 AM Stanislav Fomichev<stfomichev@gmail.com> wrote:
+>>>> On 02/13, Jason Xing wrote:
+>>>>> Support bpf_setsockopt() to set the maximum value of RTO for
+>>>>> BPF program.
+>>>>>
+>>>>> Signed-off-by: Jason Xing<kerneljasonxing@gmail.com>
+>>>>> ---
+>>>>>    Documentation/networking/ip-sysctl.rst | 3 ++-
+>>>>>    include/uapi/linux/bpf.h               | 2 ++
+>>>>>    net/core/filter.c                      | 6 ++++++
+>>>>>    tools/include/uapi/linux/bpf.h         | 2 ++
+>>>>>    4 files changed, 12 insertions(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/Documentation/networking/ip-sysctl.rst b/Documentation/networking/ip-sysctl.rst
+>>>>> index 054561f8dcae..78eb0959438a 100644
+>>>>> --- a/Documentation/networking/ip-sysctl.rst
+>>>>> +++ b/Documentation/networking/ip-sysctl.rst
+>>>>> @@ -1241,7 +1241,8 @@ tcp_rto_min_us - INTEGER
+>>>>>
+>>>>>    tcp_rto_max_ms - INTEGER
+>>>>>         Maximal TCP retransmission timeout (in ms).
+>>>>> -     Note that TCP_RTO_MAX_MS socket option has higher precedence.
+>>>>> +     Note that TCP_BPF_RTO_MAX and TCP_RTO_MAX_MS socket option have the
+>>>>> +     higher precedence for configuring this setting.
+>>>> The cover letter needs more explanation about the motivation.
+>>
+>> +1
+>>
+>> I haven't looked at the patches. The cover letter has no word on the use case.
 
-Hi Alexei,
+The question was your _use case_ in bpf. Not what the TCP_RTO_MAX_MS does. Your 
+current use case is to have bpf setting it after reading the tcp header option, 
+like the selftest in patch 3?
 
-On Thu, 13 Feb 2025 21:33:11 -0800 Alexei Starovoitov <alexei.starovoitov@g=
-mail.com> wrote:
->
-> what should we do ?
-> I feel that moving c83e2d970bae into bpf tree would be the best ?
+> 
+> I will add and copy some words from Eric's patch series :)
 
-Just remember to mention the conflict to whomever merges the bpf-next
-tree towards Linus' tree.  Its a trivial conflict.  Or merge the bpf
-tree into the bpf-next tree if you feel that you need the bug fixes in
-the bpf-next tree as well.
 
---=20
-Cheers,
-Stephen Rothwell
+>>> I am targeting the net-next tree because of recent changes[1] made by
+>>> Eric. It probably hasn't merged into the bpf-next tree.
+>>
+>> There is the bpf-next/net tree. It should have the needed changes.
+> 
+> [1] was recently merged in the net-next tree, so the only one branch I
+> can target is net-next.
+> 
+> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=ae9b3c0e79bc
+> 
+> Am I missing something?
 
---Sig_/oHSxmttZ6MrA+_yjnn=t6L3
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+There is a net branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmeu114ACgkQAVBC80lX
-0GwmFAf/YSbuHFbUHbi2sgfMDQsDEXIcOnpueFbasGwGxUEe7HPwJEPp7SUWAIa8
-vUcp4NCTZ8bDnO0RUiPJL3VggaD4thapwXY1RHqffTLOVaRWWReyIwnhUPsX+aZn
-KwJVoXGwhNkZ2nlMI/FZKl5eNclWzfyousyqFt1sFbTcIi5a9Bl5Q/JlccvVNAPK
-IRRuSo5YaPhe/jYTWbWC+ykyJ6+8mgmlm3BXW9zg5i8FW3xwe5xyHDs1Y4q7Yf5g
-cwWTWh62tXq3f8bPjsCwqWUrI6clR7IGmsj5rQTQBpMU5zMDKU2kFAt431K5NbM+
-Ty4c6wdi7OqH47PjIuBuy8ACnPGgsw==
-=OOqT
------END PGP SIGNATURE-----
-
---Sig_/oHSxmttZ6MrA+_yjnn=t6L3--
 
