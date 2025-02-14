@@ -1,175 +1,176 @@
-Return-Path: <bpf+bounces-51573-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51574-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E800A3629F
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 17:04:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC99EA36362
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 17:45:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50EAC7A469B
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 16:03:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AAB3188587C
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 16:45:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0406E26738D;
-	Fri, 14 Feb 2025 16:04:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FF1D26772E;
+	Fri, 14 Feb 2025 16:45:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KnxfsNb3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XM/IPhh9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08B8B156C40;
-	Fri, 14 Feb 2025 16:04:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E5B02641CB
+	for <bpf@vger.kernel.org>; Fri, 14 Feb 2025 16:45:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739549071; cv=none; b=pz8r0Cmpvh5GfC83OaEMWFAGGIoaUhUjy1x4YKeSs5E5pxlmmabH5Z8iKdBdnAa0akao0BYOitlN/IoCpgrVEWvcLaL0vpfeHug4ZiK6XxwlRHRFiEsePnLa+KRmHDrT1ENdXeSVs3nIw1xPzacMTlu7MnU0OgZeVUe3OefCCR4=
+	t=1739551532; cv=none; b=ofei4gy/xD75AnjL5lJh0ntX7C7OitfrU8POdTjZ7sy2eu2jJPtrQ3NuFdzqibyIVRmGdOi3U03PuJa3AJlKcsULP5RaIBSaezMsyIBK4bc8W7h4d3oFuRr0YDsqPyVQ8js35rRattw3EYi26zE9/M/gcd7ygoS6SM7vfiVOTJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739549071; c=relaxed/simple;
-	bh=40k2bFaPMVCxdWgPTG5Q+U8Nu9Zmh+DnNr+UJ2CsL7Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Kq7EWSlwgXAe9mxZ2UBFLCEA0gtHiZ1l8VNDGGGS28dxm1iBVfVKyYzcJgRIjgB0+osJjJcbeSwKdCeXYhJqVYgpaecFkGul30jHn24B2tYrKIrQBT8M4rRgzg8+tKaTJuMWBLi6QypOr+3FRgosQeS7Yn1pz/QeZWUsmQzbBoc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KnxfsNb3; arc=none smtp.client-ip=209.85.219.174
+	s=arc-20240116; t=1739551532; c=relaxed/simple;
+	bh=2GTh7jhY8rotk661pFk4m3G/sXhh1xKfbZ2egdahICY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AtTz937jO81BeDI3c+WJzz38L1Lg64TXWzN75HbZD8uS2NVf729qYUmjbXy+ydcFKkYVvodMtgfsXxLA8+jokNwruGnPM7RUMoyf1aTjmN7KuYmPlPIk8ohaobnly+/BZwEklPqfb2E1SxulQKIQxqpP8enSo07OlEX5iqOrsgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XM/IPhh9; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-e549be93d5eso2468673276.1;
-        Fri, 14 Feb 2025 08:04:29 -0800 (PST)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-220dc3831e3so30524475ad.0
+        for <bpf@vger.kernel.org>; Fri, 14 Feb 2025 08:45:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739549069; x=1740153869; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jg65XI36kch2lKh7M7ZeZJ4/dXm/KQiHYNWC0zJbbwg=;
-        b=KnxfsNb3gLClVUg9bqPT+hLbzwqwHL/zaR2HAZujVJqPpTSGNZRJny21UsbhHtFGEM
-         wpOgrV8qsw3WTvM3yP70aEdpfAOwGS6Tdx3rrhSwrHsAlpJIuBXlhb8mQLH6FOie/DDa
-         zKi6CZtapVDNn38V3hrVlzfbuMunqE8XmTlGjP59AjazU2uK2RLlqFGr6jk1cLeRPtv9
-         Unzbl/NxIaJ8njotjDkCJ6K6WAX6vEP+Ed0a4oAFaXmKdne+ylIkLeAwjSVUbtxXVMx6
-         2HBOEDwihTsu5myM70AlzPXOZWtlT7Sqrpei/xXRfftizkhENygCKrbvHQrl7MUWiV9K
-         BFEQ==
+        d=gmail.com; s=20230601; t=1739551530; x=1740156330; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xNQd4NfiwgGrdsgm/6lApi6qvNg/udey62QthYurOjw=;
+        b=XM/IPhh9VMpiF8yL9ptWzspq7E/i5JYO/wHk+oZjm9ba1NzHORoRe1QX/QUF8Dh5V1
+         K5Ck0TgwtGqNihEqoFust/dvPeD3hhvCzk430nW8ZS+7oVklPnkXoZ5lvtyqeeLoDnpS
+         IXLyuuZee2fQrImsWYsbWPUnybhqign7loefm2uKdyfZoo5e6vtXRzQEcbuZiuhWo5ev
+         dnp0SKxOBvMXR0hxVYAIYB3UmLZxST0VJKc/XBKhCrQXL63b7e1CHUi17H0sK630EdDD
+         qXGiDJWMbIsOOLy4sxkP41fuq90Bdrefx4aA7kMUpgkzDssMuM2UkRKqQ/xlV4a53CWy
+         SpMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739549069; x=1740153869;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Jg65XI36kch2lKh7M7ZeZJ4/dXm/KQiHYNWC0zJbbwg=;
-        b=wZ1axPYshR3ZPxVdfI6S0s3ttjLrlGDiHaR4Z9xiayJmhIwSe/HUOBvNYYFgXZx3AC
-         Tkb0t3r2AGHtKJ1YM9csDVUq+8uFiDYDQuGRXWr64ONLPUoFh35H2uV8/iHtTNUmSotd
-         tWxFNpiCe0hDt1oZVwzE2DlsgAP06zELK7YL6qxk8/RLW0qbpmYSy0mv1YFguXN1kTMz
-         7cjf66VYqyukiTzvzyEcGFrnx9R1D3L9pkhnnhVktMj59eWDbykeVGWFv+FZZRHC4zyX
-         +YjbaS3y2l9OIkeaeXytXnuU7QckIFTQT1oUYTpP/ctTa6hExYZoT6iXUnuTBmOQuPaD
-         0y1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUKL3HuJxXOWtYXYIotXKwccvIVTNOaU3f2Ex5SqGHefnxY1Jum3+XoOUDFpmNEIEqdw7k=@vger.kernel.org, AJvYcCUljlmIhsySALP/O1IYKFDIcIlyTRGPAiyeSoi16cQXdIS0xgYpHPDJwv9v+UZIXuY7vYc3hB350M8xxgQc@vger.kernel.org
-X-Gm-Message-State: AOJu0YxOLQt6xBE9JscrzsJbURBPpMSJ8zz1D5oCUZS6+vj+bIPbtxE9
-	jmUllbhINCRu6MTurTMrJZz6XMz9pkUx204yRdp2wxemM2B+aojg
-X-Gm-Gg: ASbGncvHAd6+y9Z0uou88zt+ukUHp4nfzsgXun+UWAxlVgqm8x/NcxBFl2x0MMFoEUq
-	OvPq69XzJXXYekHgZjUm7Dgx/mlZtIabISAuWzQ0LOpQfExn0j5HpInx95F4JG40QChUJSKvz2l
-	mwQgur6sQPlTatQX3AOfHwNvC4xyxh1ZnT+6Hyp+K04ap+M/1CFya2G7ZmdXiT3H4ZBf6lO8E74
-	Ls1en3lXr0ZmZdGhU4qP/VIYtQCwwYQIgUrfQoQcwMd1X76Ih6J4pLORC/sCZfhlBQWYkRjPCFx
-	AvL0fG1T1EyMjcrDdBACRpewLzcVyn6u0XySnQwmpzmU77QtTAA=
-X-Google-Smtp-Source: AGHT+IEWTnBUObZ6GvHUjh4EkZcsg8NKWXrSgXJJN83DtepcFqo4+s4XqmFyx30JrAF6ZlzyLuDa7A==
-X-Received: by 2002:a05:6902:2304:b0:e57:d3c8:554b with SMTP id 3f1490d57ef6-e5da815c9a7mr7031668276.22.1739549068704;
-        Fri, 14 Feb 2025 08:04:28 -0800 (PST)
-Received: from localhost (c-73-224-175-84.hsd1.fl.comcast.net. [73.224.175.84])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e5dade8c815sm1084946276.10.2025.02.14.08.04.27
+        d=1e100.net; s=20230601; t=1739551530; x=1740156330;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xNQd4NfiwgGrdsgm/6lApi6qvNg/udey62QthYurOjw=;
+        b=A0M/T5xXhNSvPlmp0QkYJxHnMRMBlHBJTU+VS4wLuUdZQae1nmaINiTZRrSZK1TvoD
+         KqhBNkNI+5VWwB6hK8HCB9oKdIoJYw6Fb+X8SvcTpmdtM2vqQwczRzSQxhp+0cm/aLsf
+         iTO8C8641IvGBx65MP60dyFqGqhLTuxJoys83Sbf5bQgKThVGAWrKxw9xlzL8MKSbp+L
+         WL7DvjI6AqHAqrPd3LZ3au0BkzyWxXiRPyTjdd43N0HVx5SQ7f/YuDJuYHfDmdbQprLC
+         X2/Fsc4ikWZ8WST/fS1EVIk84FwHnc92OkYIPtd3pnRBJJAZnjJiIX/7R9T2IXyGQxRO
+         9tWw==
+X-Gm-Message-State: AOJu0Ywyecu+3KDv/QhAm3daY6DNtRcHeE44KEHMGHzFKAhjpnRNPx4M
+	zxgYvafjJjyifZQFZGcln7BaGkPdct2K1KJLdm9SIlcdAZs8OXbHEw6z8g==
+X-Gm-Gg: ASbGncv3kTbgOwkELY12Qnvqn3zY/t7Ud8mlP2bovzsk3gyP+7NMOwW3XDwx3eubDuk
+	j1ckiRcqYmDVpt7dyfF5ipT6VBITePt2I5Fm+jKT0Fy4mN9KCkkxlsig3lvF1XQA4M9/3fL/Sbx
+	Dc0odDYhdHk9iuZZp7lV7TuMvXxB0yCMmXCyytzBojleMvfNoIod0SIILfeDIJ9iBuiPHzFxQH5
+	Xip/cnlvtNey3hupP08/gl17Boub7hBI71gFevVtQevIsfdtzIg9O0JR6wAWcJoXfKaWbblwONw
+	/C0G2pz/M6P6kSr0OVWgcacQoPgCSL/6FpnEoyLtJlwGk54vE6/B8oMbcpwffPQQpg==
+X-Google-Smtp-Source: AGHT+IF6CLMf6QFpHRinKB/NoyieEA86YiriPdynvPeQ8YRuN+2XVPK3RU91gll6oM668fXMvLnkDw==
+X-Received: by 2002:a05:6a20:4311:b0:1ee:6aa9:2056 with SMTP id adf61e73a8af0-1ee6c6ad8c4mr11565429637.14.1739551529439;
+        Fri, 14 Feb 2025 08:45:29 -0800 (PST)
+Received: from localhost.localdomain (c-76-146-13-146.hsd1.wa.comcast.net. [76.146.13.146])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-adbf21517eesm2223346a12.13.2025.02.14.08.45.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Feb 2025 08:04:28 -0800 (PST)
-Date: Fri, 14 Feb 2025 11:04:27 -0500
-From: Yury Norov <yury.norov@gmail.com>
-To: Andrea Righi <arighi@nvidia.com>
-Cc: Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>,
-	Changwoo Min <changwoo@igalia.com>, Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Joel Fernandes <joel@joelfernandes.org>, Ian May <ianm@nvidia.com>,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/7] mm/numa: Introduce nearest_node_nodemask()
-Message-ID: <Z69pi2KDLB5eZ29A@thinkpad>
-References: <20250212165006.490130-1-arighi@nvidia.com>
- <20250212165006.490130-3-arighi@nvidia.com>
- <Z64WTLPaSxixbE2q@thinkpad>
- <Z64brsSMAR7cLPUU@gpd3>
- <Z64oDlh9vzvRYziL@thinkpad>
- <Z68E_ar8l7vNOxgh@gpd3>
+        Fri, 14 Feb 2025 08:45:28 -0800 (PST)
+From: Amery Hung <ameryhung@gmail.com>
+To: bpf@vger.kernel.org
+Cc: daniel@iogearbox.net,
+	andrii@kernel.org,
+	alexei.starovoitov@gmail.com,
+	martin.lau@kernel.org,
+	eddyz87@gmail.com,
+	ameryhung@gmail.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v1 0/5] Extend struct_ops support for operators
+Date: Fri, 14 Feb 2025 08:45:15 -0800
+Message-ID: <20250214164520.1001211-1-ameryhung@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z68E_ar8l7vNOxgh@gpd3>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 14, 2025 at 09:55:25AM +0100, Andrea Righi wrote:
-> Hi Yury,
-> 
-> On Thu, Feb 13, 2025 at 12:12:46PM -0500, Yury Norov wrote:
-> ...
-> > > > >  include/linux/numa.h |  7 +++++++
-> > > > >  mm/mempolicy.c       | 32 ++++++++++++++++++++++++++++++++
-> > > > >  2 files changed, 39 insertions(+)
-> > > > > 
-> > > > > diff --git a/include/linux/numa.h b/include/linux/numa.h
-> > > > > index 31d8bf8a951a7..e6baaf6051bcf 100644
-> > > > > --- a/include/linux/numa.h
-> > > > > +++ b/include/linux/numa.h
-> > > > > @@ -31,6 +31,8 @@ void __init alloc_offline_node_data(int nid);
-> > > > >  /* Generic implementation available */
-> > > > >  int numa_nearest_node(int node, unsigned int state);
-> > > > >  
-> > > > > +int nearest_node_nodemask(int node, nodemask_t *mask);
-> > > > > +
-> > > > 
-> > > > See how you use it. It looks a bit inconsistent to the other functions:
-> > > > 
-> > > >   #define for_each_node_numadist(node, unvisited)                                \
-> > > >          for (int start = (node),                                                \
-> > > >               node = nearest_node_nodemask((start), &(unvisited));               \
-> > > >               node < MAX_NUMNODES;                                               \
-> > > >               node_clear(node, (unvisited)),                                     \
-> > > >               node = nearest_node_nodemask((start), &(unvisited)))
-> > > >   
-> > > > 
-> > > > I would suggest to make it aligned with the rest of the API:
-> > > > 
-> > > >   #define node_clear(node, dst) __node_clear((node), &(dst))
-> > > >   static __always_inline void __node_clear(int node, volatile nodemask_t *dstp)
-> > > >   {
-> > > >           clear_bit(node, dstp->bits);
-> > > >   }
-> > > 
-> > > Sorry Yury, can you elaborate more on this? What do you mean with
-> > > inconsistent, is it the volatile nodemask_t *?
-> > 
-> > What I mean is:
-> >   #define nearest_node_nodemask(start, srcp)
-> >                 __nearest_node_nodemask((start), &(srcp))
-> >   int __nearest_node_nodemask(int node, nodemask_t *mask);
-> 
-> This all makes sense assuming that nearest_node_nodemask() is placed in
-> include/linux/nodemask.h and is considered as a nodemask API, but I thought
-> we determined to place it in include/linux/numa.h, since it seems more of a
-> NUMA API, similar to numa_nearest_node(), so under this assumption I was
-> planning to follow the same style of numa_nearest_node().
-> 
-> Or do you think it should go in linux/nodemask.h and follow the style of
-> the other nodemask APIs?
+Hi,
 
-Ok, I see. I have no strong opinion. I like to have the API looking
-consistent, but I also like to have all functions of the same family
-together. If we move nearest_node_nodemask to linux/nodemask.h, it
-will help with consistency, but will separate it from the sibling
-numa_nearest_node().
+I am splitting the bpf qdisc patchset into smaller landable sets and
+this is the first part.
 
-So, at your discretion. If you don't want to change anything - I'm OK
-with that.
+This patchset supports struct_ops operators that acquire kptrs through
+arguments and operators that return a kptr. A coming new struct_ops use
+case, bpf qdisc [0], has two operators that are not yet supported by
+current struct_ops infrastructure. Qdisc_ops::enqueue requires getting
+referenced skb kptr from the argument; Qdisc_ops::dequeue needs to return
+a referenced skb kptr. This patchset will allow bpf qdisc and other
+potential struct_ops implementers to do so.
 
-This is anyways the very final nits, and I feel like the series now is
-in a good shape, almost ready to be merged.
+For struct_ops implementers:
 
-Thanks,
-Yury
+- To get a kptr from an argument, a struct_ops implementer needs to
+  annotate the argument name in the stub function with "__ref" suffix.
+
+- The kptr return will automatically work as we now allow operators that
+  return a struct pointer.
+
+- The verifier allows returning a null pointer. More control can be
+  added later if there is a future struct_ops implementer only expecting
+  valid pointers.
+
+For struct_ops users:
+
+- The referenced kptr acquired through the argument needs to be released
+  or xchged into maps just like ones acquired via kfuncs.
+
+- To return a referenced kptr in struct_ops,
+  1) The type of the pointer must matches the return type
+  2) The pointer must comes from the kernel (not locally allocated), and
+  3) The pointer must be in its unmodified form
+
+
+[0] https://lore.kernel.org/bpf/20250210174336.2024258-1-ameryhung@gmail.com/
+
+---
+v1
+- Fix missing kfree for ctx_arg_info
+
+
+Amery Hung (5):
+  bpf: Make every prog keep a copy of ctx_arg_info
+  bpf: Support getting referenced kptr from struct_ops argument
+  selftests/bpf: Test referenced kptr arguments of struct_ops programs
+  bpf: Allow struct_ops prog to return referenced kptr
+  selftests/bpf: Test returning referenced kptr from struct_ops programs
+
+ include/linux/bpf.h                           | 10 +-
+ kernel/bpf/bpf_iter.c                         | 13 ++-
+ kernel/bpf/bpf_struct_ops.c                   | 38 ++++++--
+ kernel/bpf/btf.c                              |  1 +
+ kernel/bpf/syscall.c                          |  2 +
+ kernel/bpf/verifier.c                         | 96 +++++++++++++++----
+ .../prog_tests/test_struct_ops_kptr_return.c  | 16 ++++
+ .../prog_tests/test_struct_ops_refcounted.c   | 12 +++
+ .../bpf/progs/struct_ops_kptr_return.c        | 30 ++++++
+ ...uct_ops_kptr_return_fail__invalid_scalar.c | 26 +++++
+ .../struct_ops_kptr_return_fail__local_kptr.c | 34 +++++++
+ ...uct_ops_kptr_return_fail__nonzero_offset.c | 25 +++++
+ .../struct_ops_kptr_return_fail__wrong_type.c | 30 ++++++
+ .../bpf/progs/struct_ops_refcounted.c         | 31 ++++++
+ ...ruct_ops_refcounted_fail__global_subprog.c | 39 ++++++++
+ .../struct_ops_refcounted_fail__ref_leak.c    | 22 +++++
+ .../selftests/bpf/test_kmods/bpf_testmod.c    | 15 +++
+ .../selftests/bpf/test_kmods/bpf_testmod.h    |  6 ++
+ 18 files changed, 413 insertions(+), 33 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_kptr_return.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_refcounted.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__invalid_scalar.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__local_kptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__nonzero_offset.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__wrong_type.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_refcounted.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_refcounted_fail__global_subprog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_refcounted_fail__ref_leak.c
+
+-- 
+2.47.1
+
 
