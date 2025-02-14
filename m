@@ -1,250 +1,178 @@
-Return-Path: <bpf+bounces-51553-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51554-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 799DDA35AD1
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 10:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5277AA35B34
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 11:08:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F83818929E6
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 09:50:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C779B1892D6E
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2025 10:08:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2275624501F;
-	Fri, 14 Feb 2025 09:49:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F8A1257AE1;
+	Fri, 14 Feb 2025 10:08:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xfAxKytq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JwS8nXJA"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA2FF24BBEC
-	for <bpf@vger.kernel.org>; Fri, 14 Feb 2025 09:49:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE9BE2505C2;
+	Fri, 14 Feb 2025 10:08:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739526583; cv=none; b=KB6YidduoPtB/3tCorkU2PQhcCGFNnJAHr3Uc8W0Co9w7x2aevV70cTun75l2gb7lOVvUKDZJQBOYklOqc0vIFsRePmDfPgTX9ccq6vZfiWxo2+OJB2tjTkk8qcsc4pzhyFghgAyD3GHajt8fhw9hJaTevHc8jyUMI1a4h0gif0=
+	t=1739527699; cv=none; b=AMTbZtyi7XCN1iRvFvJzxSOPGdphwKYfzFh8SVHyiimNadfuHl2ffqA1eIgQaGCm5CqRBW8VrX5QIl4g9fA+FTNvxE+aAFEH4Yy8oEmzeP+B6lUFAONI/HYvsPnCRx2QLY7yRGn1iF4lbNvgQLNA8FW8ITfeazMBa/j6zLZAZNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739526583; c=relaxed/simple;
-	bh=H8ZIWZ9xOzL7gckXgKEIrMMdyMMmlw56PEVis5DstbU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SeWGdQPnVWbsyJJwtSjOSzZr4ZDvHTjOb98eP9h8pIDx69ta3inlkHUUuzbwsdgX3Z4aqqUlss7sefrfw4g6eU6a27JBsKcpYyHYG/e6gjZv1cIZHwQi3eMK8oQcvHODojRxD4SBL8r2DQnKc23+eKT7e3SYjn616KAHNMEBO6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xfAxKytq; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <07590be4-7809-4636-9bbc-3daa4c6efca1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1739526578;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rT+lmbN6kCidrWmfVLZ5HOBUww0M8yoMHTvHtinFHco=;
-	b=xfAxKytqqgODa116AjGBmJr6nkWG3XantTHyeH7LulV8rYNOLorQP+O8eKTRI1Ps/EuT/H
-	Wc/pqxuizhyhu3D0qdzpFQOCNGNQ+FYt4Cb59cuTy8fHwfvCnod95iFpcIGh4E39FRabtq
-	tV4VNq1Q7yGF+Iqt/u3zeE8QoMzV0ko=
-Date: Fri, 14 Feb 2025 17:49:30 +0800
+	s=arc-20240116; t=1739527699; c=relaxed/simple;
+	bh=Jogrd7O7L0fZyAc7FlJcz8HqG9ZjCfH+uLAxpQ2sT9U=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aObDIdq7kCVzPQtbNhDiuDMEa38Eqw8HPTgMJH3fAOCrguk3V1cZj0ZsdnzmCx47Uontp0OYzkubEiJMe0nrNOKCP0zu8fyN8p1iYG4LDtQnlhnUwbBN1onedZNTjOkvgURYlFZACmEwQbCN341yLgX4wED+JbPbNVuKOjdgGAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JwS8nXJA; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5df07041c24so525530a12.0;
+        Fri, 14 Feb 2025 02:08:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739527696; x=1740132496; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PK881UT06YXsyKuTqU0MnqGvntUnhpOAf0QXivCUVQA=;
+        b=JwS8nXJAylYFB6CYGdNrk9l+KL+k6jl1LvFb3DGhHNjlnrp1ZjkRrPpkYHooeGkk6H
+         veYqjYAurbg2SNw9Cyj8u1lnZUNQ1h5Qor4H6z0sQ2raclA3D/hvba4X1Nn2lp/Q5LlK
+         EjXHSQVBAnbymOpTAqyDTlnxIBQCAA6NVOUweCjtCeS3mOkf+Mod7YVr+c53Ka1EVfpj
+         BgvK64a2rLTj2naopA/xokgvilna+xIXWrDBk6PJYNSP7n4r2zlYNWr5q8wQDcoavRWQ
+         mlbeMSeFtUTxT/epP52thKvgGVNehOp/2mkX/kpKhZRLhTgSvqxVzk65ectNJ4IQYxVs
+         lPLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739527696; x=1740132496;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PK881UT06YXsyKuTqU0MnqGvntUnhpOAf0QXivCUVQA=;
+        b=k6qO9ovJYrPnTePzF5uqtsisvIBjBSj+uFOMzjeXpxhHoT7MDBxh5/OWa/kDKqV/h5
+         4yuRACqt0wrpWjWbJFKlYWslaMjx3rZbY42y6I9Wk+D+DSVmRxOr9IxcwpVMMy59TV9j
+         hpvaoh2OaLM+pDAuaUSgD3dJTQICVsG7XMHxNuJlyOUBEvCuJ5RB8tUoQ8rVmUIo4OPz
+         c6s9QTl+xPAgip/JoMSTzy0iRsX0Q/V0yqX1hfnKobWWb9Fyeio38oIvBkP+bHNMvK3K
+         8P2kjT7bPwhuNDeDc6jFhmfHCuXxUnRRCGGQxN9zXV/WvUX6vBtyT2ZrDct0zOU+XL1Y
+         hmRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW5ObGWxTq3O6Q+hqlQ/KmUbFa6eyJFzLnvsrNnGyA9+m1lxznePc6sbObmaMlZ1RTDSXKUgodqkzBjxThMK+tm9jh7@vger.kernel.org, AJvYcCWVmG/Eqz+0KyEgCqH0PnCi+uHmg+MXFN5tRByZqVjgfImYEgFxGWnkvlCINfzA6FlZL3k5XhDL1wcFdgs=@vger.kernel.org, AJvYcCWnSSnUNbJj4rzrunOzy28ptVtQdy6o1Wjb0ufCaW0NfBbNYBJX2Sz5w2pdXAhGxNqhBK66VET6hgnN6+MesQ46@vger.kernel.org, AJvYcCWvPkUvlh+9k6IDMXoI2jUMKF5RjVlJCWvKwM9nyg33oI2iY13CLgMwukv5XsF484W2XZk=@vger.kernel.org, AJvYcCX4Rs9h/tj+nxYAhRliR8YQLSBN4zjFAG/9VRyxSOcry5PhDKcku5fo9wGmGFTlQsA62tDduUB6NzE8nw5QwuEY3A==@vger.kernel.org, AJvYcCXH1aMSiGO0gzSKKpFqx5hy571KmA7mvHpK9Zo3/HMI5vJR+SCuzy6zQy5pnS5dpvr96Vo7n/KBL4I=@vger.kernel.org, AJvYcCXyREquk7YhI8rtD5ORCdlOYd0P/YHmVfEbpqKbkVuBQHJGlcIfz28IADOE1/Kb2Ksb2t77FUCAjex1HIvu@vger.kernel.org
+X-Gm-Message-State: AOJu0YwKn/DWsz9nGJ49EMr4qjGzAvusowzPO9Wo3LxG7JucMndGg/kW
+	Cr+69FXxSdoZzNbVrv8S2PBGntSIaigPqedwtMh37c3BSpX2InbQ
+X-Gm-Gg: ASbGnctjLX8oQ9BRgk+soUDkzQula6M/uGbOmsAZZFj9OWVmFoR8IPKk18/nL0VOFBs
+	W0tb8nufufyOADI8s2b6dmTuIEFuhIvrRbkBqn1kppmYxoz/ommmYaIrnZnR/mjtIVP/Uv/Ia52
+	w4qrtGyM1yjKbJQTy5HX965e+3IehI8DELwsX2FVL98JD/Hwj3yurO6ufScoub9j/SkKaCbMXKL
+	Vp7Lo+SjNWfNc2pgKmBwZvPCKjU9ynBFShNC1SWjySl6311FPHjO6Df5Qn/RJrQ+JGyGaEdKmdh
+	ZA==
+X-Google-Smtp-Source: AGHT+IHfUA9MbFKK0cGZxcq1fnHrJJMJoWr8y/oBmtSB3GGdubTXz3Fdqd2b5Ipl+F4XZpRsok2xqA==
+X-Received: by 2002:a05:6402:4616:b0:5dc:d8e6:62a7 with SMTP id 4fb4d7f45d1cf-5deadd84b7bmr9556320a12.14.1739527695955;
+        Fri, 14 Feb 2025 02:08:15 -0800 (PST)
+Received: from krava ([173.38.220.59])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5dece1c43a0sm2672253a12.28.2025.02.14.02.08.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Feb 2025 02:08:14 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 14 Feb 2025 11:08:10 +0100
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Quentin Monnet <qmo@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	Jiri Kosina <jikos@kernel.org>,
+	Benjamin Tissoires <bentiss@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	linux-pm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-input@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/2] tools: Unify top-level quiet infrastructure
+Message-ID: <Z68WCtRqdrgqC5iN@krava>
+References: <20250213-quiet_tools-v3-0-07de4482a581@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RESEND PATCH bpf-next v2 3/4] bpf, bpftool: Generate skeleton
- for global percpu data
-Content-Language: en-US
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- yonghong.song@linux.dev, song@kernel.org, eddyz87@gmail.com, qmo@kernel.org,
- dxu@dxuuu.xyz, kernel-patches-bot@fb.com
-References: <20250213161931.46399-1-leon.hwang@linux.dev>
- <20250213161931.46399-4-leon.hwang@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Leon Hwang <leon.hwang@linux.dev>
-In-Reply-To: <20250213161931.46399-4-leon.hwang@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250213-quiet_tools-v3-0-07de4482a581@rivosinc.com>
 
-
-
-On 14/2/25 00:19, Leon Hwang wrote:
-> This patch enhances bpftool to generate skeletons that properly handle
-> global percpu variables. The generated skeleton now includes a dedicated
-> structure for percpu data, allowing users to initialize and access percpu
-> variables more efficiently.
+On Thu, Feb 13, 2025 at 01:06:20PM -0800, Charlie Jenkins wrote:
+> The quiet infrastructure was moved out of Makefile.build to accomidate
+> the new syscall table generation scripts in perf. Syscall table
+> generation wanted to also be able to be quiet, so instead of again
+> copying the code to set the quiet variables, the code was moved into
+> Makefile.perf to be used globally. This was not the right solution. It
+> should have been moved even further upwards in the call chain.
+> Makefile.include is imported in many files so this seems like a proper
+> place to put it.
 > 
-> Changes:
+> To: 
 > 
-> 1. skeleton structure:
-> 
-> For global percpu variables, the skeleton now includes a nested
-> structure, e.g.:
-> 
-> struct test_global_percpu_data {
-> 	struct bpf_object_skeleton *skeleton;
-> 	struct bpf_object *obj;
-> 	struct {
-> 		struct bpf_map *percpu;
-> 	} maps;
-> 	// ...
-> 	struct test_global_percpu_data__percpu {
-> 		int data;
-> 		int run;
-> 		int data2;
-> 	} __aligned(8) *percpu;
-> 
-> 	// ...
-> };
-> 
->   * The "struct test_global_percpu_data__percpu" points to initialized
->     data, which is actually "maps.percpu->data".
->   * Before loading the skeleton, updating the
->     "struct test_global_percpu_data__percpu" modifies the initial value
->     of the corresponding global percpu variables.
->   * After loading the skeleton, accessing or updating this struct is not
->     allowed because this struct pointer has been reset as NULL. Instead,
->     users must interact with the global percpu variables via the
->     "maps.percpu" map.
-> 
-> 2. code changes:
-> 
->   * Added support for ".percpu" sections in bpftool's map identification
->     logic.
->   * Modified skeleton generation to handle percpu data maps
->     appropriately.
->   * Updated libbpf to make "percpu" pointing to "maps.percpu->data".
->   * Set ".percpu" struct points to NULL after loading the skeleton.
-> 
-> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 > ---
->  tools/bpf/bpftool/gen.c | 47 ++++++++++++++++++++++++++++++++---------
->  1 file changed, 37 insertions(+), 10 deletions(-)
+> Changes in v3:
+> - Add back erroneously removed "silent=1" (Jiri)
+> - Link to v2: https://lore.kernel.org/r/20250210-quiet_tools-v2-0-b2f18cbf72af@rivosinc.com
+
+Reviewed-by: Jiri Olsa <jolsa@kernel.org>
+
+thanks,
+jirka
+
 > 
-> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> index 67a60114368f5..f2bf509248718 100644
-> --- a/tools/bpf/bpftool/gen.c
-> +++ b/tools/bpf/bpftool/gen.c
-> @@ -92,7 +92,7 @@ static void get_header_guard(char *guard, const char *obj_name, const char *suff
->  
->  static bool get_map_ident(const struct bpf_map *map, char *buf, size_t buf_sz)
->  {
-> -	static const char *sfxs[] = { ".data", ".rodata", ".bss", ".kconfig" };
-> +	static const char *sfxs[] = { ".data", ".rodata", ".percpu", ".bss", ".kconfig" };
->  	const char *name = bpf_map__name(map);
->  	int i, n;
->  
-> @@ -117,7 +117,7 @@ static bool get_map_ident(const struct bpf_map *map, char *buf, size_t buf_sz)
->  
->  static bool get_datasec_ident(const char *sec_name, char *buf, size_t buf_sz)
->  {
-> -	static const char *pfxs[] = { ".data", ".rodata", ".bss", ".kconfig" };
-> +	static const char *pfxs[] = { ".data", ".rodata", ".percpu", ".bss", ".kconfig" };
->  	int i, n;
->  
->  	/* recognize hard coded LLVM section name */
-> @@ -148,7 +148,8 @@ static int codegen_datasec_def(struct bpf_object *obj,
->  			       struct btf *btf,
->  			       struct btf_dump *d,
->  			       const struct btf_type *sec,
-> -			       const char *obj_name)
-> +			       const char *obj_name,
-> +			       bool is_percpu)
->  {
->  	const char *sec_name = btf__name_by_offset(btf, sec->name_off);
->  	const struct btf_var_secinfo *sec_var = btf_var_secinfos(sec);
-> @@ -228,7 +229,7 @@ static int codegen_datasec_def(struct bpf_object *obj,
->  
->  		off = sec_var->offset + sec_var->size;
->  	}
-> -	printf("	} *%s;\n", sec_ident);
-> +	printf("	}%s *%s;\n", is_percpu ? " __aligned(8)" : "", sec_ident);
->  	return 0;
->  }
->  
-> @@ -279,6 +280,7 @@ static int codegen_datasecs(struct bpf_object *obj, const char *obj_name)
->  	struct bpf_map *map;
->  	const struct btf_type *sec;
->  	char map_ident[256];
-> +	bool is_percpu;
->  	int err = 0;
->  
->  	d = btf_dump__new(btf, codegen_btf_dump_printf, NULL, NULL);
-> @@ -286,8 +288,11 @@ static int codegen_datasecs(struct bpf_object *obj, const char *obj_name)
->  		return -errno;
->  
->  	bpf_object__for_each_map(map, obj) {
-> -		/* only generate definitions for memory-mapped internal maps */
-> -		if (!is_mmapable_map(map, map_ident, sizeof(map_ident)))
-> +		/* only generate definitions for memory-mapped or .percpu internal maps */
-> +		is_percpu = bpf_map__is_internal_percpu(map);
-> +		if (!is_mmapable_map(map, map_ident, sizeof(map_ident)) && !is_percpu)
-> +			continue;
-> +		if (is_percpu && (use_loader || !get_map_ident(map, map_ident, sizeof(map_ident))))
->  			continue;
->  
->  		sec = find_type_for_map(btf, map_ident);
-> @@ -303,7 +308,7 @@ static int codegen_datasecs(struct bpf_object *obj, const char *obj_name)
->  			printf("	struct %s__%s {\n", obj_name, map_ident);
->  			printf("	} *%s;\n", map_ident);
->  		} else {
-> -			err = codegen_datasec_def(obj, btf, d, sec, obj_name);
-> +			err = codegen_datasec_def(obj, btf, d, sec, obj_name, is_percpu);
->  			if (err)
->  				goto out;
->  		}
-> @@ -901,8 +906,9 @@ codegen_maps_skeleton(struct bpf_object *obj, size_t map_cnt, bool mmaped, bool
->  				map->map = &obj->maps.%s;	    \n\
->  			",
->  			i, bpf_map__name(map), ident);
-> -		/* memory-mapped internal maps */
-> -		if (mmaped && is_mmapable_map(map, ident, sizeof(ident))) {
-> +		/* memory-mapped or .percpu internal maps */
-> +		if (mmaped && (is_mmapable_map(map, ident, sizeof(ident)) ||
-> +			       bpf_map__is_internal_percpu(map))) {
->  			printf("\tmap->mmaped = (void **)&obj->%s;\n", ident);
->  		}
->  
-> @@ -1434,7 +1440,28 @@ static int do_skeleton(int argc, char **argv)
->  		static inline int					    \n\
->  		%1$s__load(struct %1$s *obj)				    \n\
->  		{							    \n\
-> -			return bpf_object__load_skeleton(obj->skeleton);    \n\
-> +			int err;					    \n\
-> +									    \n\
-> +			err = bpf_object__load_skeleton(obj->skeleton);	    \n\
-> +			if (err)					    \n\
-> +				return err;				    \n\
-> +									    \n\
-> +		", obj_name);
-> +
-> +	if (map_cnt) {
-> +		bpf_object__for_each_map(map, obj) {
-> +			if (!get_map_ident(map, ident, sizeof(ident)))
-> +				continue;
-> +			if (bpf_map__is_internal(map) &&
-> +			    bpf_map__type(map) == BPF_MAP_TYPE_PERCPU_ARRAY) {
-
-bpf_map__is_internal_percpu(map) is recommended to replace
-bpf_map__is_internal() and map type checking.
-
-Then, these two "if"s can be combined to one:
-
-if (bpf_map__is_internal_percpu(map) && get_map_ident(map, ident,
-sizeof(ident) {
-
-Thanks,
-Leon
-
-> +				printf("\tobj->%s = NULL;\n", ident);
-> +			}
-> +		}
-> +	}
-> +
-> +	codegen("\
-> +		\n\
-> +			return 0;					    \n\
->  		}							    \n\
->  									    \n\
->  		static inline struct %1$s *				    \n\
-
+> Changes in v2:
+> - Fix spacing around Q= (Andrii)
+> - Link to v1: https://lore.kernel.org/r/20250203-quiet_tools-v1-0-d25c8956e59a@rivosinc.com
+> 
+> ---
+> Charlie Jenkins (2):
+>       tools: Unify top-level quiet infrastructure
+>       tools: Remove redundant quiet setup
+> 
+>  tools/arch/arm64/tools/Makefile           |  6 -----
+>  tools/bpf/Makefile                        |  6 -----
+>  tools/bpf/bpftool/Documentation/Makefile  |  6 -----
+>  tools/bpf/bpftool/Makefile                |  6 -----
+>  tools/bpf/resolve_btfids/Makefile         |  2 --
+>  tools/bpf/runqslower/Makefile             |  5 +---
+>  tools/build/Makefile                      |  8 +-----
+>  tools/lib/bpf/Makefile                    | 13 ----------
+>  tools/lib/perf/Makefile                   | 13 ----------
+>  tools/lib/thermal/Makefile                | 13 ----------
+>  tools/objtool/Makefile                    |  6 -----
+>  tools/perf/Makefile.perf                  | 41 -------------------------------
+>  tools/scripts/Makefile.include            | 30 ++++++++++++++++++++++
+>  tools/testing/selftests/bpf/Makefile.docs |  6 -----
+>  tools/testing/selftests/hid/Makefile      |  2 --
+>  tools/thermal/lib/Makefile                | 13 ----------
+>  tools/tracing/latency/Makefile            |  6 -----
+>  tools/tracing/rtla/Makefile               |  6 -----
+>  tools/verification/rv/Makefile            |  6 -----
+>  19 files changed, 32 insertions(+), 162 deletions(-)
+> ---
+> base-commit: 2014c95afecee3e76ca4a56956a936e23283f05b
+> change-id: 20250203-quiet_tools-9a6ea9d65a19
+> -- 
+> - Charlie
+> 
 
