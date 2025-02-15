@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-51650-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51651-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4677A36D8F
-	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 12:04:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36EB2A36D90
+	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 12:04:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 112883B196F
-	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 11:04:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62BA47A4353
+	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 11:03:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2E5C1A8401;
-	Sat, 15 Feb 2025 11:04:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A470B1A9B2C;
+	Sat, 15 Feb 2025 11:04:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SRseqG09"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hQMhKPsl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE80A567D
-	for <bpf@vger.kernel.org>; Sat, 15 Feb 2025 11:04:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5ADC1A7044
+	for <bpf@vger.kernel.org>; Sat, 15 Feb 2025 11:04:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739617474; cv=none; b=VCcVPRjABOJHgyKTNXFCV+5/Jp1Z9638JfqEhswtej38crzRrJE06Cudu/b90qqIcsz3cxD6ZpaFZVDdFIUei/FmVjnmjeBHCRkS5NJvgIvPX4wBHWYDE+f9QDAMSm87XGW+riJ1r004KzBSR0ExrXuBYnh/nau/CUtzZ9GLnXw=
+	t=1739617475; cv=none; b=IvqzJm7xGwLAT1mA1arUQPonkpF0/yDvysrgvgzKu/NSXxfCScmN12WtkabVEXqt2aacp0BHtU0oSooxRKO2lnqv+RJ81For0b0VBSrn68i3GEUojSvQrpeusyeCQ7myX+UTpoZMmz+pOHzatv64BIfiUggfvEL443hC6hP+AHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739617474; c=relaxed/simple;
-	bh=3tF1Xq37jo54OXD9rvanfjQVKZSCBCxDR1nXCrusP28=;
+	s=arc-20240116; t=1739617475; c=relaxed/simple;
+	bh=E7j3SOAv9uvgPzCiplw3O27KVBB/BmeGa6ttCeKsplA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WPTCP0zI0uq4lQfvgwUP1zXLYIzOowxMuXRtfUemiXq6n3lE+Tq8KdS6NJEk6TBja2pLezSRQADZeNyLAQGy5tuzWPUGPpzh7wwKCBJ3BwuP5fij5SL6dtL98ymy7kZYsI9oyXePNxnth4q13MFQlVcla6TakG8CDUD4rDKBeQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SRseqG09; arc=none smtp.client-ip=209.85.214.181
+	 MIME-Version; b=UESCpfjl2LnmDd4YFc6LPGVZyP/BCODEvY9M811tN1mUK7GI7WL5g1bSd0kVBWJCtxQCR8EKOqKTJZGoxdVPY3Ek3NRbPnJ5WX2NCbl8HYFYdMB19tWm3AeZfeTnQZwkvQZJO4DzaTXPpdCcco8o7C1hYzGD+0eknqj3x+b9bb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hQMhKPsl; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-220c8cf98bbso57950955ad.1
-        for <bpf@vger.kernel.org>; Sat, 15 Feb 2025 03:04:32 -0800 (PST)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-221050f3f00so8519105ad.2
+        for <bpf@vger.kernel.org>; Sat, 15 Feb 2025 03:04:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739617472; x=1740222272; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739617473; x=1740222273; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uDb/gdeQU/PSQ/UUil4dmXW1Hd6+EUYI3l5WuidH/TU=;
-        b=SRseqG09ekVMaJIn4//REmZXdeQSTHKqpNmqU7bfHG2AZ+zN6Fg1o67klKXG91f0wR
-         2NAWmJbZFB9L6Ey5+txnD5mgI5lyoSofYQQsoFAkbyaSwq8spCFY7zdjgWLyMDCHykX4
-         kavoUugoPI375LLRy6YOcQU5CnYjVe1CAbiU3IxZpN4FTJnPpvKAlbKBYmL9o/4smzTk
-         hEDCD3UCV8F7cKuF8SRK2Q4GB92GP2iL3CLvfJs/2AxqoRp2hi5ReEUZfPKZgMp9BfyF
-         aQ4aeplrCYBHhNsF9FjIE+QRMcuXuYiS/EdKdtcworaOV7gupDHR5HaWXkUYCCeGDyVT
-         mnVA==
+        bh=F77Gcm2L7f+gFRYtZxeBSlP72OFg0lY7wRA0PQsfy1w=;
+        b=hQMhKPsl6Wr+zK3oeggAXc+hJ0tgeeEWb1507Ywxh6ydGPxaTXyKGR9Z+Tn2m07n8w
+         XES7j86dGH9w6h+YJYFblp7H1UCKj/oeqIlZt/IODrwVluEcJCZ5BRrySm2iYP5Q3GOc
+         3iX3RGW3pJBq0krP3W4xOvFeOrt6ybXORUqickudEeS1HZqm9nRslV1ptEf71/XtFnGp
+         LNJpDHCMOsZw5OP5jHuBwjz8ySk85DYk5n33czLJZbnZAyTTB4m6QaOywgrJL9aR+aYe
+         DuS3ANKhHjU3IXiRXiwCTlf+Izux1Z8URtUrNxwYOtT2x7TqGTWKsubhjBj/XinFQFEP
+         yQYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739617472; x=1740222272;
+        d=1e100.net; s=20230601; t=1739617473; x=1740222273;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=uDb/gdeQU/PSQ/UUil4dmXW1Hd6+EUYI3l5WuidH/TU=;
-        b=ltnh2jiek7coPJB5CjrsWwGO+lBwJuwDhsQLwpNew0MzmtotK2saoQWhRhtzv2zIMt
-         tx+o2wul9/kYvR5v0l5MwMiibBorR2IX3gWSDXFg/3lZLopLYg07VaL5470XcfSflcqj
-         CAzRdp6nwJ6FGxL8kYHcDpxHw8fgWWIVgBZpR/SPHRd/2z4AAyfXp0ZIDJnsYs/KEuir
-         5pgb4PKnX50WL7UMiVjLe9Ped/mfgm+ysMZacWci5uslfxzobKSTM8No5kvKnHdhRHVr
-         bbkKmd0pz8ri+rDZd5xRXiJPcVdxL0wPpemTHLoh719CK3umxajPRvc+LFU9X0zH6WLr
-         KhBQ==
-X-Gm-Message-State: AOJu0YyI3TWF7uFtxu1fDZFve+zUUHCwVs9OKuca3cuhnoTmCQ5H8Z1R
-	y61mtLoGusGKukSqrMkAZ+ZHLjv7kPf6vt2YfE+fkmIyhgc+ay/a6IVgiQ==
-X-Gm-Gg: ASbGncsy/K9QsfH3KEtdv6HzQCA/auNZEf+wPZgPAC2CVUZBoVsNMCcfBfVp2mmMyZl
-	mLrLwob+wJTQ63x/u2Id6Pyx9aqOEdN16RHhytTxqjINCtXwbGOYPzojkSNwMlUj0LzhqS/W6pO
-	qEDqULEbJL8YpjncMD2xAqsJdZ1IZ+ql9avih/hCYxyQGE66kKkOEt0xCWB0YDdQGPGvYos03kX
-	Ul4IpE/Sv2MWYaBRF8VXIJRHZ73YqCxZ5AkE//09oSIHFwgnqrP/RyEHGnWZ3VNBlzHO2xL/1cw
-	f8SPBc7OIok=
-X-Google-Smtp-Source: AGHT+IFSlaD0AncONg+3xUUfqvzoMkINFPuEdpgyn0zfVa2FRV5BktRnHMmRq20kQ7yBhe6mdTimcA==
-X-Received: by 2002:a05:6a20:3948:b0:1ee:64c4:89b9 with SMTP id adf61e73a8af0-1ee8cbe8197mr4010369637.33.1739617471655;
-        Sat, 15 Feb 2025 03:04:31 -0800 (PST)
+        bh=F77Gcm2L7f+gFRYtZxeBSlP72OFg0lY7wRA0PQsfy1w=;
+        b=WAVkEXo8vfkYn8xFUbN19tlVzcI+FKcdL1Slhtw1secltnChtbDYe2rnU1y4HC8aXH
+         pyF12VPgldY8hdWjqEXQwjpCTbMUSZNISICd1rU9bDeP8BtH9kHP5B6Ti9JgukBGsF/O
+         BHWNn0CtJFmF0LU0/jG3zWQ2HjamLhogXWvAmUK2dLDiBHkpOMCHRj2/F7rgoyfnJBfe
+         dS88H2MJY6Fr8afjNt81+OdA7m+6G9l5ibma4jlTFqNFNC3QIvT5ESgcxZDf5affqYfM
+         DINU8cuzgYQ8b77FVYEULzCtRAlyPenCac3H9LiTqXFwbIUQc6O/oR6T4G6sv/8uD6kf
+         mWJg==
+X-Gm-Message-State: AOJu0YxHwOgaaMkqydQ6J3kCu5lti7/Z5vLGyKcH9UQrKCCpsRZVTYZU
+	O7kvDGQy9rSHhJX3dLbKAKaQdlHCNXmxvXgLAeL+S5fGhpYqHKv15BX47w==
+X-Gm-Gg: ASbGncsG0iSikPi3L2PCSs1JvpN/ydhlwDioYncyuptA7/mPKCRlcpQPXUcMLfhJofM
+	xeTFsclSW/ga4Pt9pb828TOf47fLxrirr/wDQzfmvTmQG3J22h7xXPMO4ZSrC31qE9CRgidGyKp
+	sJXABHnkYiHmR8+5PQERSjj8/DaKkE2rj3rDS+y9VtOdgKWxwpxgGOGbqKKCuGc8udfulZQYalj
+	jlgHYVJyDIcAAKCqVbxR4R4sj1fYBGW/r1Lz9ilB9Qt+P2X3IP/H+P/y3cFf1ttbCxRO/kQ1P4k
+	iwbvPgc2j4s=
+X-Google-Smtp-Source: AGHT+IF80Nyjt7jz8cLtIibs2kYG22h214fi8iXqZEYSBJg1DTvldSwhaBmfzq9vge5jtIkvqNVASw==
+X-Received: by 2002:a05:6a00:198c:b0:732:2484:e0ce with SMTP id d2e1a72fcca58-732618c1cf1mr4111530b3a.17.1739617472768;
+        Sat, 15 Feb 2025 03:04:32 -0800 (PST)
 Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7326d58d4d0sm72435b3a.94.2025.02.15.03.04.30
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7326d58d4d0sm72435b3a.94.2025.02.15.03.04.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Feb 2025 03:04:30 -0800 (PST)
+        Sat, 15 Feb 2025 03:04:32 -0800 (PST)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -82,9 +82,9 @@ Cc: andrii@kernel.org,
 	tj@kernel.org,
 	patsomaru@meta.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v1 03/10] bpf: don't do clean_live_states when state->loop_entry->branches > 0
-Date: Sat, 15 Feb 2025 03:03:54 -0800
-Message-ID: <20250215110411.3236773-4-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v1 04/10] selftests/bpf: check states pruning for deeply nested iterator
+Date: Sat, 15 Feb 2025 03:03:55 -0800
+Message-ID: <20250215110411.3236773-5-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250215110411.3236773-1-eddyz87@gmail.com>
 References: <20250215110411.3236773-1-eddyz87@gmail.com>
@@ -96,95 +96,108 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-verifier.c:is_state_visited() uses RANGE_WITHIN states comparison rules
-for cached states that have loop_entry with non-zero branches count
-(meaning that loop_entry's verification is not yet done).
+A test case with ridiculously deep bpf_for() nesting and
+a conditional update of a stack location.
 
-The RANGE_WITHIN rules in regsafe()/stacksafe() require register and
-stack objects types to be identical in current and old states.
+Consider the innermost loop structure:
 
-verifier.c:clean_live_states() replaces registers and stack spills
-with NOT_INIT/STACK_INVALID marks, if these registers/stack spills are
-not read in any child state. This means that clean_live_states() works
-against loop convergence logic under some conditions. See selftest in
-the next patch for a specific example.
+	1: bpf_for(o, 0, 10)
+	2:	if (unlikely(bpf_get_prandom_u32()))
+	3:		buf[0] = 42;
+	4: <exit>
 
-Mitigate this by prohibiting clean_verifier_state() when
-state->loop_entry->branches > 0.
+Assuming that verifier.c:clean_live_states() operates w/o change from
+the previous patch (e.g. as on current master) verification would
+proceed as follows:
+- at (1) state {buf[0]=?,o=drained}:
+  - checkpoint
+  - push visit to (2) for later
+- at (4) {buf[0]=?,o=drained}
+- pop (2) {buf[0]=?,o=active}, push visit to (3) for later
+- at (1) {buf[0]=?,o=active}
+  - checkpoint
+  - push visit to (2) for later
+- at (4) {buf[0]=?,o=drained}
+- pop (2) {buf[0]=?,o=active}, push visit to (3) for later
+- at (1) {buf[0]=?,o=active}:
+  - checkpoint reached, checkpoint's branch count becomes 0
+  - checkpoint is processed by clean_live_states() and
+    becomes {o=active}
+- pop (3) {buf[0]=42,o=active}
+- at (1), {buf[0]=42,o=active}
+  - checkpoint
+  - push visit to (2) for later
+- at (4) {buf[0]=42,o=drained}
+- pop (2) {buf[0]=42,o=active}, push visit to (3) for later
+- at (1) {buf[0]=42,o=active}, checkpoint reached
+- pop (3) {buf[0]=42,o=active}
+- at (1) {buf[0]=42,o=active}:
+  - checkpoint reached, checkpoint's branch count becomes 0
+  - checkpoint is processed by clean_live_states() and
+    becomes {o=active}
+- ...
 
-This undoes negative verification performance impact of the
-copy_verifier_state() fix from the previous patch.
-Below is comparison between master and current patch.
+Note how clean_live_states() converted the checkpoint
+{buf[0]=42,o=active} to {o=active} and it can no longer be matched
+against {buf[0]=<any>,o=active}, because iterator based states
+are compared using stacksafe(... RANGE_WITHIN), that requires
+stack slots to have same types. At the same time there are
+still states {buf[0]=42,o=active} pushed to DFS stack.
 
-selftests:
-
-File                                Program                       Insns (A)  Insns (B)  Insns    (DIFF)  States (A)  States (B)  States  (DIFF)
-----------------------------------  ----------------------------  ---------  ---------  ---------------  ----------  ----------  --------------
-arena_htab.bpf.o                    arena_htab_llvm                     717        423   -294 (-41.00%)          57          37   -20 (-35.09%)
-arena_htab_asm.bpf.o                arena_htab_asm                      597        445   -152 (-25.46%)          47          37   -10 (-21.28%)
-arena_list.bpf.o                    arena_list_add                     1493       1822   +329 (+22.04%)          30          37    +7 (+23.33%)
-arena_list.bpf.o                    arena_list_del                      309        261    -48 (-15.53%)          23          15    -8 (-34.78%)
-iters.bpf.o                         checkpoint_states_deletion        18125      22154  +4029 (+22.23%)         818         918  +100 (+12.22%)
-iters.bpf.o                         iter_nested_deeply_iters            593        367   -226 (-38.11%)          67          43   -24 (-35.82%)
-iters.bpf.o                         iter_nested_iters                   813        772     -41 (-5.04%)          79          72     -7 (-8.86%)
-iters.bpf.o                         iter_subprog_check_stacksafe        155        135    -20 (-12.90%)          15          14     -1 (-6.67%)
-iters.bpf.o                         iter_subprog_iters                 1094        808   -286 (-26.14%)          88          68   -20 (-22.73%)
-iters.bpf.o                         loop_state_deps2                    479        356   -123 (-25.68%)          46          35   -11 (-23.91%)
-iters.bpf.o                         triple_continue                      35         31     -4 (-11.43%)           3           3     +0 (+0.00%)
-kmem_cache_iter.bpf.o               open_coded_iter                      63         59      -4 (-6.35%)           7           6    -1 (-14.29%)
-mptcp_subflow.bpf.o                 _getsockopt_subflow                 501        446    -55 (-10.98%)          25          23     -2 (-8.00%)
-pyperf600_iter.bpf.o                on_event                          12339       6379  -5960 (-48.30%)         441         286  -155 (-35.15%)
-verifier_bits_iter.bpf.o            max_words                            92         84      -8 (-8.70%)           8           7    -1 (-12.50%)
-verifier_iterating_callbacks.bpf.o  cond_break2                         113        192    +79 (+69.91%)          12          21    +9 (+75.00%)
-
-sched_ext:
-
-File               Program                 Insns (A)  Insns (B)  Insns      (DIFF)  States (A)  States (B)  States    (DIFF)
------------------  ----------------------  ---------  ---------  -----------------  ----------  ----------  ----------------
-bpf.bpf.o          layered_dispatch            11485       9039    -2446 (-21.30%)         848         662    -186 (-21.93%)
-bpf.bpf.o          layered_dump                 7422       5022    -2400 (-32.34%)         681         298    -383 (-56.24%)
-bpf.bpf.o          layered_enqueue             16854      13753    -3101 (-18.40%)        1611        1308    -303 (-18.81%)
-bpf.bpf.o          layered_init              1000001       5549  -994452 (-99.45%)       84672         523  -84149 (-99.38%)
-bpf.bpf.o          layered_runnable             3149       1899    -1250 (-39.70%)         288         151    -137 (-47.57%)
-bpf.bpf.o          p2dq_init                    2343       1936     -407 (-17.37%)         201         170     -31 (-15.42%)
-bpf.bpf.o          refresh_layer_cpumasks      16487       1285   -15202 (-92.21%)        1770         120   -1650 (-93.22%)
-bpf.bpf.o          rusty_select_cpu             1937       1386     -551 (-28.45%)         177         125     -52 (-29.38%)
-scx_central.bpf.o  central_dispatch              636        600       -36 (-5.66%)          63          59       -4 (-6.35%)
-scx_central.bpf.o  central_init                  913        632     -281 (-30.78%)          48          39      -9 (-18.75%)
-scx_nest.bpf.o     nest_init                     636        601       -35 (-5.50%)          60          58       -2 (-3.33%)
-scx_pair.bpf.o     pair_dispatch             1000001       1914  -998087 (-99.81%)       58169         142  -58027 (-99.76%)
-scx_qmap.bpf.o     qmap_dispatch                2393       2187      -206 (-8.61%)         196         174     -22 (-11.22%)
-scx_qmap.bpf.o     qmap_init                   16367      22777    +6410 (+39.16%)         603         768    +165 (+27.36%)
-
-'layered_init' and 'pair_dispatch' hit 1M on master, but are verified
-ok with this patch.
+This behaviour becomes exacerbated with multiple nesting levels,
+here are veristat results:
+- nesting level 1: 69 insns
+- nesting level 2: 258 insns
+- nesting level 3: 900 insns
+- nesting level 4: 4754 insns
+- nesting level 5: 35944 insns
+- nesting level 6: 312558 insns
+- nesting level 7: 1M limit
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/verifier.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ tools/testing/selftests/bpf/progs/iters.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 01b31b718f4f..945a13b2cfeb 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -17814,12 +17814,16 @@ static void clean_verifier_state(struct bpf_verifier_env *env,
- static void clean_live_states(struct bpf_verifier_env *env, int insn,
- 			      struct bpf_verifier_state *cur)
- {
-+	struct bpf_verifier_state *loop_entry;
- 	struct bpf_verifier_state_list *sl;
+diff --git a/tools/testing/selftests/bpf/progs/iters.c b/tools/testing/selftests/bpf/progs/iters.c
+index 007831dc8c46..427b72954b87 100644
+--- a/tools/testing/selftests/bpf/progs/iters.c
++++ b/tools/testing/selftests/bpf/progs/iters.c
+@@ -7,6 +7,8 @@
+ #include "bpf_misc.h"
+ #include "bpf_compiler.h"
  
- 	sl = *explored_state(env, insn);
- 	while (sl) {
- 		if (sl->state.branches)
- 			goto next;
-+		loop_entry = get_loop_entry(&sl->state);
-+		if (loop_entry && loop_entry->branches)
-+			goto next;
- 		if (sl->state.insn_idx != insn ||
- 		    !same_callsites(&sl->state, cur))
- 			goto next;
++#define unlikely(x)	__builtin_expect(!!(x), 0)
++
+ static volatile int zero = 0;
+ 
+ int my_pid;
+@@ -1628,4 +1630,25 @@ int iter_destroy_bad_arg(const void *ctx)
+ 	return 0;
+ }
+ 
++SEC("raw_tp")
++__success
++int clean_live_states(const void *ctx)
++{
++	char buf[1];
++	int i, j, k, l, m, n, o;
++
++	bpf_for(i, 0, 10)
++	bpf_for(j, 0, 10)
++	bpf_for(k, 0, 10)
++	bpf_for(l, 0, 10)
++	bpf_for(m, 0, 10)
++	bpf_for(n, 0, 10)
++	bpf_for(o, 0, 10) {
++		if (unlikely(bpf_get_prandom_u32()))
++			buf[0] = 42;
++		bpf_printk("%s", buf);
++	}
++	return 0;
++}
++
+ char _license[] SEC("license") = "GPL";
 -- 
 2.48.1
 
