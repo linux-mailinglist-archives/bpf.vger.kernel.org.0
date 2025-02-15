@@ -1,104 +1,125 @@
-Return-Path: <bpf+bounces-51658-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51659-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89E5AA36EAC
-	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 15:03:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D0D0A36EC4
+	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 15:21:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6246116745F
-	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 14:03:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B24918954A8
+	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 14:22:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57731A9B58;
-	Sat, 15 Feb 2025 14:02:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2F631CDFAC;
+	Sat, 15 Feb 2025 14:21:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bJDDED3L"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hEGS9Kir"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6EB5103F;
-	Sat, 15 Feb 2025 14:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17F1E19CC06;
+	Sat, 15 Feb 2025 14:21:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739628178; cv=none; b=X1ZdtYQec2YNnx7zGOu8disWLfnrU5JeYoSXGcmOBXap9a8U25qH9URLbl/WLPrSwhBUIX2KSa+ARvf/0HDOJnRrmREcAXeoZMFnV7DQuXg61XfSTYPZ8l/FcWb7yXXxXsk8/Peag4SKI60c0ZcB7J7n1FXElBD3h/HEL6Mtc2k=
+	t=1739629311; cv=none; b=fyd5DuR67Sh0kVP5T9ortGu+tMpt4INs/qEKp+racsTtzp5U8A95C7u0HBf+3zC93l/TRqpoOwtkDmT+4jqVOxn4x4rki4Oa0z90XXJY6Sf4m239L/NZ58cqpUP5Fwu+lQHooAgCf2D5NOK3YMizRUzuQkiPzfzfdrpHqXn5yWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739628178; c=relaxed/simple;
-	bh=vNLrGNHqeVoQIeEwsVb8aUGliW0G4Qp5gERyB4+77Es=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oP7Z22QUku0erdxqWy0UfhkjmCP9bz46boB0zJkALbeEzHn2xjTh2yi2gD76+ShYqeWNn0i8DLEN8EqZJEteNd96Ibq0Br1KiohpVCotkOJi562KRN4g6NNUZyxEfrBca86EYcvknudjUBdC+CLh4s8/dwa3aQPH8ci/3kG1RBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bJDDED3L; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6553C4CEE7;
-	Sat, 15 Feb 2025 14:02:54 +0000 (UTC)
+	s=arc-20240116; t=1739629311; c=relaxed/simple;
+	bh=O3b2JU3w/ODuxO3MLy1UzoyGGGaXmBwx1eEl4Fz+mQw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RfEq7dqFwFUy/4Fwms5iZa4E4tzyYYcvH5OvKGKNaaYjJIu48she1vgxrtSnJ15VJxc5urCGh12XGz7dqF4lzx7RJtMO9miaRGNu8Wdhss1DFfF/Z0JYabyyy3ZLvTcyv6/m/vRHjuUuynxNqsT2Ct3g1e6cjSt9XEUkGHDoeVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hEGS9Kir; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 862E6C4CEEB;
+	Sat, 15 Feb 2025 14:21:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739628177;
-	bh=vNLrGNHqeVoQIeEwsVb8aUGliW0G4Qp5gERyB4+77Es=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bJDDED3L0pMJkGG1sSsVGiyfkflCEIjsN/+OQENknmdKORiZTKf/MP/xBvqgqQxNa
-	 iE5zsm41BbaIwh5p21ZCVUbCnER82jL+z9/nC9NzPinDw2m6DURTEep2p3dUG9zva7
-	 Hri/qah13kLoubon11ie7miHcTmeOAk9BAnz3xEBZ3gexsU3YIhUHOGEWNu1EfeTqQ
-	 Cd5BbYlqYxsJah3O18Hiby1DNs9cVy2zz6vO1u0wnIsmd9akEPjBCrccmT+gZ1ITFz
-	 0UCFFSd5FidELQH+0AzwItctqoB24wUnZXRoyUUzioPw5klMrqucOtLeQWJqHOiwi/
-	 GzdtSiVZdYNbQ==
-Date: Sat, 15 Feb 2025 14:02:52 +0000
-From: Simon Horman <horms@kernel.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Amit Cohen <amcohen@nvidia.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Petr Machata <petrm@nvidia.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Network Development <netdev@vger.kernel.org>,
-	Ido Schimmel <idosch@nvidia.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	bpf <bpf@vger.kernel.org>, mlxsw <mlxsw@nvidia.com>
-Subject: Re: [PATCH net-next 00/12] mlxsw: Preparations for XDP support
-Message-ID: <20250215140252.GP1615191@kernel.org>
-References: <cover.1738665783.git.petrm@nvidia.com>
- <CAADnVQKMN4+Zg9ZG4FpH9pJw4KdmwWmT2d4BiJgHUUQ-Hd7OkQ@mail.gmail.com>
- <BL1PR12MB59225F7D902ACBC6A91511C3CBF42@BL1PR12MB5922.namprd12.prod.outlook.com>
- <CAADnVQLJfd201t_-bgWHRJRDHm4FQDNapbmAQhPd18OEFq_QdA@mail.gmail.com>
- <BL1PR12MB5922564282DA2C2C5CA671C1CBF42@BL1PR12MB5922.namprd12.prod.outlook.com>
- <20250205090958.278ffaff@kernel.org>
+	s=k20201202; t=1739629310;
+	bh=O3b2JU3w/ODuxO3MLy1UzoyGGGaXmBwx1eEl4Fz+mQw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=hEGS9Kir7L5VKuSvVoS3WRtvXngeEsvB3GpV/9fjCOCrhy9sYWKacXw8hfRSBUh7K
+	 pQZuyRLi1IsaXGh5mqgZF5yxp82d1nSThvgFxU/3GtN0sZ0D+XmFoeMJGfKfeR0RHa
+	 7UPYmkg7WVu8yxQcGHqTxN7kaaADW1ft3LFhoi82R3muUtYgP4rFVGadux8Ws4CURt
+	 bzfGrVEMPNYAJd+uQmsYUqD6yKPcm8MFiy76nPuP+mdpOoXzwxCaBVLF+sOiJJvhqD
+	 nvgZ5j2uO2rYTsGSomJLxTGBORrHL/rXl9k5ceasmIC1swXfsCfsIAz0jRm5ZnQA7i
+	 ofKhDMDYRJOKA==
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-3072f8dc069so30378011fa.3;
+        Sat, 15 Feb 2025 06:21:50 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUEQa72l7iNrUozyP8ZgDz0DNRQ4PT6+Y1o4wlcQaZFWnCjeQ0MyOKfy8w/RnfMWAE1yDWB4Ed+59Fnk4Cu@vger.kernel.org, AJvYcCVWmcbJcwQJWYqHlSlyGGPSLsJvWTmxMqXfoUIkao1N0orAPWpkdGKYnsRILzTJ2iW/muM=@vger.kernel.org, AJvYcCVhPIneuuIiFaQDmaNRoa3IaGJ7a7xeHTweFxLuencKtPQN1TCi8E5S+lPZcqTNCT9VbDwWLYXFnLJIaUcR2ecn@vger.kernel.org, AJvYcCX3kQWokwX97aythkIvSL6Bj0GZgDOJxfWJKRWfAQTUN+B0dvhmzD1IlmKHxMwI43luUoj8wZ/YzWMYe5oj@vger.kernel.org, AJvYcCXuislqfI/BpS19OwxajBEHBci2Bl4m9TUAKntEqMxCohs3XcxsbiNdSsK5OElbKJJNSJdpKC4WFGv64g==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwgdQAi1vqYReQ5xCYtJB2X/7ZBOGMldOxf3uuZe1H/uid81Mub
+	QNVqFZt+8gkgXoVTzZd1HL0gw11bAQ0IOOKwBT3RVivGcn9uwG0KtB4+79gkrvBTAPIMOSeBA2W
+	YCfWSYlJsMIHI5l6uD2KSfqphrhA=
+X-Google-Smtp-Source: AGHT+IHJAH2llTK/8FUeOa/uyjvPOa+oEZ4jzkPOcw5/nJJ+S7w8Kd3yArGdplvM1hiKKoy+jgbSokUCpMby5X/HYDE=
+X-Received: by 2002:a2e:99d6:0:b0:308:fa1d:1fed with SMTP id
+ 38308e7fff4ca-30927afee15mr9904211fa.34.1739629309211; Sat, 15 Feb 2025
+ 06:21:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250205090958.278ffaff@kernel.org>
+References: <20250207012045.2129841-1-stephen.s.brennan@oracle.com> <20250207012045.2129841-2-stephen.s.brennan@oracle.com>
+In-Reply-To: <20250207012045.2129841-2-stephen.s.brennan@oracle.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sat, 15 Feb 2025 23:21:12 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQokoST0FnByeWywaghTMP2aG7hQaV1T=TcQ=1v4ZLQrg@mail.gmail.com>
+X-Gm-Features: AWEUYZk8XrdR9lJozRpCY9QyaANy91FqaGQymPUxQ0WR6PL3n7MJiW1ZBtl7LX4
+Message-ID: <CAK7LNAQokoST0FnByeWywaghTMP2aG7hQaV1T=TcQ=1v4ZLQrg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kallsyms: output rodata to ".kallsyms_rodata"
+To: Stephen Brennan <stephen.s.brennan@oracle.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Andrii Nakryiko <andrii@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, 
+	Kees Cook <kees@kernel.org>, KP Singh <kpsingh@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Sami Tolvanen <samitolvanen@google.com>, 
+	Eduard Zingerman <eddyz87@gmail.com>, linux-arch@vger.kernel.org, 
+	Stanislav Fomichev <sdf@fomichev.me>, Kent Overstreet <kent.overstreet@linux.dev>, 
+	Pasha Tatashin <pasha.tatashin@soleen.com>, Jiri Olsa <jolsa@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Jann Horn <jannh@google.com>, 
+	Ard Biesheuvel <ardb@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, Hao Luo <haoluo@google.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-kbuild@vger.kernel.org, 
+	Daniel Borkmann <daniel@iogearbox.net>, Nathan Chancellor <nathan@kernel.org>, 
+	linux-debuggers@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Song Liu <song@kernel.org>, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 05, 2025 at 09:09:58AM -0800, Jakub Kicinski wrote:
-> On Tue, 4 Feb 2025 17:26:43 +0000 Amit Cohen wrote:
-> > > > You're right, most of packets should be handled by HW, XDP is
-> > > > mainly useful for telemetry.  
-> > > 
-> > > Why skb path is not enough?  
-> > 
-> > We get better packet rates using XDP, this can be useful to redirect
-> > packets to a server for analysis for example.
-> 
-> TBH I also feel a little ambivalent about adding advanced software
-> features to mlxsw. You have a dummy device off which you hang the NAPIs,
-> the page pools, and now the RXQ objects. That already works poorly with
-> our APIs. How are you going to handle the XDP side? Program per port, 
-> I hope? But the basic fact remains that only fallback traffic goes thru
-> the XDP program which is not the normal Linux model, routing is after
-> XDP.
-> 
-> On one hand it'd be great if upstream switch drivers could benefit from
-> the advanced features. On the other the HW is clearly not capable of
-> delivering in line with how NICs work, so we're signing up for a stream
-> of corner cases, bugs and incompatibility. Dunno.
+On Fri, Feb 7, 2025 at 10:21=E2=80=AFAM Stephen Brennan
+<stephen.s.brennan@oracle.com> wrote:
+>
+> When vmlinux is linked, the rodata from kallsyms is placed arbitrarily
+> within the .rodata section. The linking process is repeated several
+> times, since the kallsyms data size changes, which shifts symbols,
+> requiring re-generating the data and re-linking.
+>
+> BTF is generated during the first link only. For variables, BTF includes
+> a BTF_K_DATASEC for each data section that may contain a variable, which
+> includes the variable's name, type, and offset within the data section.
+> Because the size of kallsyms data changes during later links, the
+> offsets of variables placed after it in .rodata will change. This means
+> that BTF_K_DATASEC information for those variables becomes inaccurate.
+>
+> This is not currently a problem, because BTF currently only generates
+> variable data for percpu variables. However, the next commit will add
+> support for generating BTF for all global variables, including for the
+> .rodata section.
+>
+> We could re-generate BTF each time vmlinux is linked, but this is quite
+> expensive, and should be avoided at all costs. Further as each chunk of
+> data (BTF and kallsyms) are re-generated, there's no guarantee that
+> their sizes will converge anyway.
+>
+> Instead, we can take advantage of the fact that BTF only cares to store
+> the offset of variables from the start of their section. Therefore, so
+> long as the kallsyms data is stored last in the .rodata section, no
+> offsets will be affected. Adjust kallsyms to output to .rodata.kallsyms,
+> and update the linker script to include this at the end of .rodata.
+>
+> Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
+> ---
 
-FWIIW, I do think that as this driver is actively maintained by the vendor,
-and this is a grey zone, it is reasonable to allow the vendor to decide if
-they want the burden of this complexity to gain some performance.
+I am fine if this is helpful for BTF.
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
