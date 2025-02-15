@@ -1,171 +1,104 @@
-Return-Path: <bpf+bounces-51657-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51658-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E607A36D96
-	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 12:05:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89E5AA36EAC
+	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 15:03:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 700511896BB4
-	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 11:05:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6246116745F
+	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 14:03:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AEFA1A5BB8;
-	Sat, 15 Feb 2025 11:04:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57731A9B58;
+	Sat, 15 Feb 2025 14:02:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZanGhunS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bJDDED3L"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7954F1A2385
-	for <bpf@vger.kernel.org>; Sat, 15 Feb 2025 11:04:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6EB5103F;
+	Sat, 15 Feb 2025 14:02:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739617483; cv=none; b=rXpQrAxvMrHV2LcP0RDkjKTJCTokQWnMZzJY4AjQd73u7z6JKRhBc++KChgyCb3kUJI3kwHsrXb/RcysbD32MMAERPxD3DK5By3Md+5lCJ7E9fv7FRr54j8Virom83rg1dc95UyYGaBqck2ncqz6Va245Cdrpmaz07qikxtC1ho=
+	t=1739628178; cv=none; b=X1ZdtYQec2YNnx7zGOu8disWLfnrU5JeYoSXGcmOBXap9a8U25qH9URLbl/WLPrSwhBUIX2KSa+ARvf/0HDOJnRrmREcAXeoZMFnV7DQuXg61XfSTYPZ8l/FcWb7yXXxXsk8/Peag4SKI60c0ZcB7J7n1FXElBD3h/HEL6Mtc2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739617483; c=relaxed/simple;
-	bh=KjcnHc5O6yZ6ppWi6UYnAuBXdE/nWJsH0bTv1HOHTik=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MAkZmrIWnYRyExqEedJotA7oIrDqU+zKEFAulRlvGe277RtLmFx/BW8NJSkJbrQg80pXfSIYm5RPFB3BM/AG9Jfjm9fEIwqt0DR3tGw1T2jBp+xC9/bhv58JRPR7RD3Ay2dCzoN39eaaaE4m5YMlqgOpiS1y5DoSGMHnw0MDeP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZanGhunS; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-221050f3f00so8520025ad.2
-        for <bpf@vger.kernel.org>; Sat, 15 Feb 2025 03:04:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739617480; x=1740222280; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vaPZFkGYvP5xO3AbmsaBLhATdZxWoTWdvu2m54yy0IE=;
-        b=ZanGhunSFN3S6MYe7zEA7pbJKeebAZWOa+btW2tWouhZkArUICpbV2ziNJ+3IWtvZA
-         QbvJJbF26CeQuSMDiuPWFo01YEkAX1Y2qAzXB7WA5Z7ZuJ6kXCC/Df2aS9dbNL+3RZ3h
-         N36rcoDOWp2V71VwfHDLSEWIXaCqaTrV4q0KYNYvMZT3TPimmmw1vy5RNULr2A2d2Rw4
-         fz6XcWVDRGDIQoK2mPTlm1DEcqsGaYmV0KCJvjR+e+b+jc2XtvBOAbSrcrkqJKv70mgX
-         VxV1q+t8zX+y79pAl0rAsDOEOPPsgt9g5wNmLBndWY9ZkpDjoB8UisqoWgGZ21Y+A2BD
-         wfQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739617480; x=1740222280;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vaPZFkGYvP5xO3AbmsaBLhATdZxWoTWdvu2m54yy0IE=;
-        b=qevB/cdKlAkd+AeAukFIKVrP+E4p99gxIvRvuyxDA45YBw3PKBUka1QWobVyDiZg6E
-         TwlJaSoQdJcbcdMZ/Lke8XSqE2f68pgRhollRiZfji2OwoNw3kDUmhVvvnuTsnqpUELG
-         C2dRg6k8/nBcQe3+Bp4g4pcJtt57hetEBrMParO7NGDNjZxK82hqUPLOkjBFPTSfXEF6
-         D63aFAUMtPXSrl7AA8oYsUkjnXyF5DW5ynm88H5M8TBD8fB1AgUanlTFvc/YtINVN8eg
-         PC9jrOmO92feSWd/6YAUW16g9uIiR+hjuoXl0rKtm8Um91lqrX2PIftTC/+/8WklQyR1
-         +reg==
-X-Gm-Message-State: AOJu0YwAZAqHPsLjCcTwZwAPc6EcXmJqC15TlNbJFzKzPBoI5ggJk99c
-	Xqd6zxgenJ+sPXty/J/FOfVAQa4UFHyHnD0tkSoJq9p5X0ugKuiEqVISUA==
-X-Gm-Gg: ASbGncvJa8G7o980z1nCBZghCJ4Udp6XB+No32i6oMODZJU+GQtXeC3BQSIMBu9TO60
-	GFO8hu+MyHeVbQ0XxxlIYcksSGib8waMBm/iO+dSIXKAO4Q5eW84HmUnrVRECx1CogfeUkiOrnM
-	L+lh7wzrZnhcVgNP9IY9TC9vajpnSJeA5qt3tnQCjyh/toBQO9Y43qeOC3wcTGQi2ePKmD/UpJT
-	qmc5oZFNFHNq9aai11cib2DsThI1y3ZgGJWMFhtrPfeC058OgXRNilicf1xN6xqYxq+0X0d9QSw
-	D7jPGbAFjO4=
-X-Google-Smtp-Source: AGHT+IHS1L2hwnJZ0t4yRPC354bW8OH3WLRedIoGORTfHaV8io19mY2P+H+yvQkVNVe7qBTB2MU6BA==
-X-Received: by 2002:a05:6a20:729f:b0:1e1:a716:316a with SMTP id adf61e73a8af0-1ee8cb5d182mr4819128637.10.1739617480457;
-        Sat, 15 Feb 2025 03:04:40 -0800 (PST)
-Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7326d58d4d0sm72435b3a.94.2025.02.15.03.04.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Feb 2025 03:04:39 -0800 (PST)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org
-Cc: andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	kernel-team@fb.com,
-	yonghong.song@linux.dev,
-	tj@kernel.org,
-	patsomaru@meta.com,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v1 10/10] bpf: fix env->peak_states computation
-Date: Sat, 15 Feb 2025 03:04:01 -0800
-Message-ID: <20250215110411.3236773-11-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250215110411.3236773-1-eddyz87@gmail.com>
-References: <20250215110411.3236773-1-eddyz87@gmail.com>
+	s=arc-20240116; t=1739628178; c=relaxed/simple;
+	bh=vNLrGNHqeVoQIeEwsVb8aUGliW0G4Qp5gERyB4+77Es=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oP7Z22QUku0erdxqWy0UfhkjmCP9bz46boB0zJkALbeEzHn2xjTh2yi2gD76+ShYqeWNn0i8DLEN8EqZJEteNd96Ibq0Br1KiohpVCotkOJi562KRN4g6NNUZyxEfrBca86EYcvknudjUBdC+CLh4s8/dwa3aQPH8ci/3kG1RBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bJDDED3L; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6553C4CEE7;
+	Sat, 15 Feb 2025 14:02:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739628177;
+	bh=vNLrGNHqeVoQIeEwsVb8aUGliW0G4Qp5gERyB4+77Es=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bJDDED3L0pMJkGG1sSsVGiyfkflCEIjsN/+OQENknmdKORiZTKf/MP/xBvqgqQxNa
+	 iE5zsm41BbaIwh5p21ZCVUbCnER82jL+z9/nC9NzPinDw2m6DURTEep2p3dUG9zva7
+	 Hri/qah13kLoubon11ie7miHcTmeOAk9BAnz3xEBZ3gexsU3YIhUHOGEWNu1EfeTqQ
+	 Cd5BbYlqYxsJah3O18Hiby1DNs9cVy2zz6vO1u0wnIsmd9akEPjBCrccmT+gZ1ITFz
+	 0UCFFSd5FidELQH+0AzwItctqoB24wUnZXRoyUUzioPw5klMrqucOtLeQWJqHOiwi/
+	 GzdtSiVZdYNbQ==
+Date: Sat, 15 Feb 2025 14:02:52 +0000
+From: Simon Horman <horms@kernel.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Amit Cohen <amcohen@nvidia.com>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Petr Machata <petrm@nvidia.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Network Development <netdev@vger.kernel.org>,
+	Ido Schimmel <idosch@nvidia.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	bpf <bpf@vger.kernel.org>, mlxsw <mlxsw@nvidia.com>
+Subject: Re: [PATCH net-next 00/12] mlxsw: Preparations for XDP support
+Message-ID: <20250215140252.GP1615191@kernel.org>
+References: <cover.1738665783.git.petrm@nvidia.com>
+ <CAADnVQKMN4+Zg9ZG4FpH9pJw4KdmwWmT2d4BiJgHUUQ-Hd7OkQ@mail.gmail.com>
+ <BL1PR12MB59225F7D902ACBC6A91511C3CBF42@BL1PR12MB5922.namprd12.prod.outlook.com>
+ <CAADnVQLJfd201t_-bgWHRJRDHm4FQDNapbmAQhPd18OEFq_QdA@mail.gmail.com>
+ <BL1PR12MB5922564282DA2C2C5CA671C1CBF42@BL1PR12MB5922.namprd12.prod.outlook.com>
+ <20250205090958.278ffaff@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250205090958.278ffaff@kernel.org>
 
-Compute env->peak_states as a maximum value of sum of
-env->explored_states and env->free_list size.
+On Wed, Feb 05, 2025 at 09:09:58AM -0800, Jakub Kicinski wrote:
+> On Tue, 4 Feb 2025 17:26:43 +0000 Amit Cohen wrote:
+> > > > You're right, most of packets should be handled by HW, XDP is
+> > > > mainly useful for telemetry.  
+> > > 
+> > > Why skb path is not enough?  
+> > 
+> > We get better packet rates using XDP, this can be useful to redirect
+> > packets to a server for analysis for example.
+> 
+> TBH I also feel a little ambivalent about adding advanced software
+> features to mlxsw. You have a dummy device off which you hang the NAPIs,
+> the page pools, and now the RXQ objects. That already works poorly with
+> our APIs. How are you going to handle the XDP side? Program per port, 
+> I hope? But the basic fact remains that only fallback traffic goes thru
+> the XDP program which is not the normal Linux model, routing is after
+> XDP.
+> 
+> On one hand it'd be great if upstream switch drivers could benefit from
+> the advanced features. On the other the HW is clearly not capable of
+> delivering in line with how NICs work, so we're signing up for a stream
+> of corner cases, bugs and incompatibility. Dunno.
 
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- include/linux/bpf_verifier.h |  2 ++
- kernel/bpf/verifier.c        | 15 +++++++++++++--
- 2 files changed, 15 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index f920af30eb06..bbd013c38ff9 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -772,6 +772,8 @@ struct bpf_verifier_env {
- 	u32 peak_states;
- 	/* longest register parentage chain walked for liveness marking */
- 	u32 longest_mark_read_walk;
-+	u32 free_list_size;
-+	u32 explored_states_size;
- 	bpfptr_t fd_array;
- 
- 	/* bit mask to keep track of whether a register has been accessed
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index eadd404ab9ab..b92d5eb47083 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1598,6 +1598,14 @@ static struct bpf_reference_state *find_lock_state(struct bpf_verifier_state *st
- 	return NULL;
- }
- 
-+static void update_peak_states(struct bpf_verifier_env *env)
-+{
-+	u32 cur_states;
-+
-+	cur_states = env->explored_states_size + env->free_list_size;
-+	env->peak_states = max(env->peak_states, cur_states);
-+}
-+
- static void free_func_state(struct bpf_func_state *state)
- {
- 	if (!state)
-@@ -1659,7 +1667,7 @@ static void maybe_free_verifier_state(struct bpf_verifier_env *env,
- 		list_del(&sl->node);
- 		free_verifier_state(&sl->state, false);
- 		kfree(sl);
--		env->peak_states--;
-+		env->free_list_size--;
- 		sl = loop_entry_sl;
- 	}
- }
-@@ -18809,6 +18817,8 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
- 			sl->in_free_list = true;
- 			list_del(&sl->node);
- 			list_add(&sl->node, &env->free_list);
-+			env->free_list_size++;
-+			env->explored_states_size--;
- 			maybe_free_verifier_state(env, sl);
- 		}
- 	}
-@@ -18835,7 +18845,8 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
- 	if (!new_sl)
- 		return -ENOMEM;
- 	env->total_states++;
--	env->peak_states++;
-+	env->explored_states_size++;
-+	update_peak_states(env);
- 	env->prev_jmps_processed = env->jmps_processed;
- 	env->prev_insn_processed = env->insn_processed;
- 
--- 
-2.48.1
-
+FWIIW, I do think that as this driver is actively maintained by the vendor,
+and this is a grey zone, it is reasonable to allow the vendor to decide if
+they want the burden of this complexity to gain some performance.
 
