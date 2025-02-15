@@ -1,105 +1,147 @@
-Return-Path: <bpf+bounces-51665-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51666-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C73C1A36F4E
-	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 17:10:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2E12A36F5A
+	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 17:17:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E311F3B1833
-	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 16:10:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 712CF1894A4E
+	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 16:18:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 779311DE2C7;
-	Sat, 15 Feb 2025 16:10:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E50D1DF73D;
+	Sat, 15 Feb 2025 16:17:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V83/Jk4q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iwo7jOPW"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E832F23A9;
-	Sat, 15 Feb 2025 16:10:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FC97D529;
+	Sat, 15 Feb 2025 16:17:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739635846; cv=none; b=Cf1JJPGkNdZwH5s9fRtEQ9USDHOqti/EPUqoS408cly0amp1JkWHawQSTXaJZrpjCEok5QOqc9xntDOSf41BwJsaGuTn6TequswtgcXNVWalIKEnMaHPIBhqtoBX8ZOn5Kq7kH9OCzrilZDg0151nRXOWkkZSatxnc6whKfNRVU=
+	t=1739636272; cv=none; b=OYbQHO0LAIpPxca/stCiC2P3gXeWiE8O32XQUuD2uOXG7hONyJkBDazdNHKRgoriJO8a6OtkN/FCwa+XJO8l+TmnxfmM0ly3S9HTiGUNG41dnACvGosIlkXeR5H6GC44gh3nU7odQQKvxJmagW4GtiNCN/YSr/Q/mtjPgOlIdBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739635846; c=relaxed/simple;
-	bh=9s+IiJsEUk9aU24rG4a7pQ0sKjOHMDHvd8Goa1eO8Lo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=N5F5PGFizcmF9IVidRsx4VrPyTqvydToeFBmHiKuMDqiYYznLa4XEwr0/yeGG/sH3tYLlrSotimFmeYODJN5/uLqXNuMY64tEQAj4TbR90v5jVHp4C0Qfg0SeVj2U/HGgxWHcXbNCunmtiTwvZFK0rivz2FMd6xXk1B42P8DEzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V83/Jk4q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF4B0C4CEDF;
-	Sat, 15 Feb 2025 16:10:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739635845;
-	bh=9s+IiJsEUk9aU24rG4a7pQ0sKjOHMDHvd8Goa1eO8Lo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=V83/Jk4qJm23lCL2iopygF9vkvI/eIYIR5p6ZCe+t2OLD+gMcxXdUgdCKcpxvP/hS
-	 eCs41y3gAcJm5KEix4csue3S8s8z/Ly+PMDhvrMH7N+E+hlMhQOpnEIIdPzpkryADP
-	 UGictaOpb7sxWwLf942PjV5D4QxRIxtzmXNAGlqpTf2Z8QVTgTXIeu1KuJKsuakqol
-	 JeSlcce1czwMpspQAjyDKBkBpCOnbtnnRZYH9wKkADw1AsDBseF5FYh6qhRD/0J0Sf
-	 G7x74L44CVjxmBxsXAW/UDFifjPtwRT2QIlbYznMFGEHhI8BUtFfTBngusuG3cxJ6N
-	 1DIIxrFMe9sUw==
-Date: Sat, 15 Feb 2025 08:10:43 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Simon Horman <horms@kernel.org>
-Cc: Amit Cohen <amcohen@nvidia.com>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, Petr Machata <petrm@nvidia.com>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
- Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Network
- Development <netdev@vger.kernel.org>, Ido Schimmel <idosch@nvidia.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
- Fastabend <john.fastabend@gmail.com>, bpf <bpf@vger.kernel.org>, mlxsw
- <mlxsw@nvidia.com>
-Subject: Re: [PATCH net-next 00/12] mlxsw: Preparations for XDP support
-Message-ID: <20250215081043.063e995a@kernel.org>
-In-Reply-To: <20250215140252.GP1615191@kernel.org>
-References: <cover.1738665783.git.petrm@nvidia.com>
-	<CAADnVQKMN4+Zg9ZG4FpH9pJw4KdmwWmT2d4BiJgHUUQ-Hd7OkQ@mail.gmail.com>
-	<BL1PR12MB59225F7D902ACBC6A91511C3CBF42@BL1PR12MB5922.namprd12.prod.outlook.com>
-	<CAADnVQLJfd201t_-bgWHRJRDHm4FQDNapbmAQhPd18OEFq_QdA@mail.gmail.com>
-	<BL1PR12MB5922564282DA2C2C5CA671C1CBF42@BL1PR12MB5922.namprd12.prod.outlook.com>
-	<20250205090958.278ffaff@kernel.org>
-	<20250215140252.GP1615191@kernel.org>
+	s=arc-20240116; t=1739636272; c=relaxed/simple;
+	bh=dayVkNNZGR/ztmrUza7qBRnosSiK9r2YyAAmKPoW6ZI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Sj2EOuH3I1nXkUH9674GVqBWPAwjULhrT6c8O7D0EdM1N1m11dbgs+R5DXtpZnKqneZcxldnLMGpTqnH4mVKga6HZmOREubWFO3zpdW9b64Tv6GJGtXvtSUuifk6aMhodHnvX0LAG1aF/1tB7mfdb4L5DR/Q5CJR3N7kWtEHLN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iwo7jOPW; arc=none smtp.client-ip=209.85.166.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-3d18f97e98aso20800305ab.3;
+        Sat, 15 Feb 2025 08:17:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739636270; x=1740241070; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jOA2Np671lJOr0TWLfDmbBMv+65AFPM77WOjzSSHMOw=;
+        b=iwo7jOPWmeWpzNFMljJLt12BEaceAgJfD5U7B3DxHMsM0MNLbXNcWvTmPI0lRxk28o
+         4kHhb8rZ1wKzr42acMpJIPRwcHb3i4JP4X3SpMHqWSVFkbE1jDUB0C5hjZFLRELgiab9
+         i3xLiya6axFZy02/rzor5BJKF9S8T8Vts9VLQzWVWOet88oF1EoJ4aKZDY4RDkRYxrlP
+         JGG3petDZ7tKa0H+UXyw/EZqGT9wS2/4s46vKrOomT4Wqc2GMeJNmD6/KpokRB20Trb3
+         cBQgi3J0qXze+aSEfFOz0X/3/bNjlRwTFeeyXogQzVSBBtgJl+ILGd8U/NGAusDzuKC7
+         gk2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739636270; x=1740241070;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jOA2Np671lJOr0TWLfDmbBMv+65AFPM77WOjzSSHMOw=;
+        b=DmWvvrORWvbJWa73y0O8RqCV1M/mODdI4BAU3p1ifQq37cmxCiX3gomjk83gV8UawW
+         mfTPbLY7K+6XpXACdfjPcVog6+0ij0xZsgAxv1F75nDCw+rIGkdAE0FJ4HaqL5j1SR7D
+         SR+Bp/lQnqx+JRI+u3wOJcj3aWPK/kMQGPik10AM15VkiY+oSTzmHHQPeak/73K1V01e
+         80mAXj89yHy5Xx0eKPpaSc7HC3TMeEoKn6djYfbZ79Q/q4kx+vT6oH5zLemRb7c/gHAC
+         4zVwfLlxY9wD+uKDI8njULWwQEtG+CBXdW4qxd3611Gpdn+hR/mHz7vLIy0gKu1BN0ms
+         00wg==
+X-Forwarded-Encrypted: i=1; AJvYcCW3Q4izaOXP/+EVuJ/hUsj2MoYCUQB//dsKyIurEMP9yg7sIqXz4w0FGM7SAZBod2inUdAPqJBd@vger.kernel.org, AJvYcCWH1kjF4bJ/16PSPAkbH+g8+ibxQsoAq/el54UH8/rQNNXthl062WOoUFKsAGbedYklmSs=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx3m491DF8eIw1ZOESE4T6U5igs1wnaUxV31W5FTKJ8sN8yRzi7
+	xazTb4rTaEbQZep1NBJxEPlZzAiz56y1btCCU9l+j7pZADbR8YJnt1xn68kUErc5qG3GOH55gcG
+	9sqYUCPY7szmPFb47bR5Jh+5Y9os=
+X-Gm-Gg: ASbGnctZAL4Dtk0D1PqRl/5Z9fnQHQ1MG97+aZZ5IYXaAWpPtTH22Zl6Q+mDNvciY4K
+	bOdCZcVgnj5YXlyQjQcrOpaqcbTn2iohmu69svVHIQi96+VViAblSHbRN15OTzcgwpNGck5o=
+X-Google-Smtp-Source: AGHT+IEE5YY2mLa2CIBpqghDtMZqiNRefpbZCeiY914w1RyzqtF2FBhtwrM37XYQUWacizdP33t13XkBh4Uez64dDcc=
+X-Received: by 2002:a05:6e02:3981:b0:3cf:b26f:ff7c with SMTP id
+ e9e14a558f8ab-3d28076cc24mr28740565ab.5.1739636270399; Sat, 15 Feb 2025
+ 08:17:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20250214010038.54131-1-kerneljasonxing@gmail.com>
+ <20250214010038.54131-13-kerneljasonxing@gmail.com> <67b0af817bb1b_36e34429417@willemb.c.googlers.com.notmuch>
+In-Reply-To: <67b0af817bb1b_36e34429417@willemb.c.googlers.com.notmuch>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Sun, 16 Feb 2025 00:17:14 +0800
+X-Gm-Features: AWEUYZkU61Pazk67LJ1YG4i3S_0fAsHC5Jx1LEEDIV2HxTCc3CLgB4nUiG9oT-g
+Message-ID: <CAL+tcoAN5EZbAzHDsWLpnzZ0sE5--_3qD5SQfVZf-OSZTw_gGw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v11 12/12] selftests/bpf: add simple bpf tests in
+ the tx path for timestamping feature
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, dsahern@kernel.org, willemb@google.com, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, horms@kernel.org, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 15 Feb 2025 14:02:52 +0000 Simon Horman wrote:
-> > TBH I also feel a little ambivalent about adding advanced software
-> > features to mlxsw. You have a dummy device off which you hang the NAPIs,
-> > the page pools, and now the RXQ objects. That already works poorly with
-> > our APIs. How are you going to handle the XDP side? Program per port, 
-> > I hope? But the basic fact remains that only fallback traffic goes thru
-> > the XDP program which is not the normal Linux model, routing is after
-> > XDP.
-> > 
-> > On one hand it'd be great if upstream switch drivers could benefit from
-> > the advanced features. On the other the HW is clearly not capable of
-> > delivering in line with how NICs work, so we're signing up for a stream
-> > of corner cases, bugs and incompatibility. Dunno.  
-> 
-> FWIIW, I do think that as this driver is actively maintained by the vendor,
-> and this is a grey zone, it is reasonable to allow the vendor to decide if
-> they want the burden of this complexity to gain some performance.
+On Sat, Feb 15, 2025 at 11:15=E2=80=AFPM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+>
+> Jason Xing wrote:
+> > BPF program calculates a couple of latency deltas between each tx
+> > timestamping callbacks. It can be used in the real world to diagnose
+> > the kernel behaviour in the tx path.
+> >
+> > Check the safety issues by accessing a few bpf calls in
+> > bpf_test_access_bpf_calls() which are implemented in the patch 3 and 4.
+> >
+> > Check if the bpf timestamping can co-exist with socket timestamping.
+> >
+> > There remains a few realistic things[1][2] to highlight:
+> > 1. in general a packet may pass through multiple qdiscs. For instance
+> > with bonding or tunnel virtual devices in the egress path.
+> > 2. packets may be resent, in which case an ACK might precede a repeat
+> > SCHED and SND.
+> > 3. erroneous or malicious peers may also just never send an ACK.
+> >
+> > [1]: https://lore.kernel.org/all/67a389af981b0_14e0832949d@willemb.c.go=
+oglers.com.notmuch/
+> > [2]: https://lore.kernel.org/all/c329a0c1-239b-4ca1-91f2-cb30b8dd2f6a@l=
+inux.dev/
+> >
+> > Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
+>
+> > +/* In the timestamping callbacks, we're not allowed to call the follow=
+ing
+> > + * BPF CALLs for the safety concern. Return false if expected.
+> > + */
+> > +static bool bpf_test_access_bpf_calls(struct bpf_sock_ops *skops,
+> > +                                   const struct sock *sk)
+>
+> Is this parameter aligned with the one on the previous line?
+>
+> This line was changed in the latest revision. Still looks off to me.
+> But that may just be how the diff is presented in my vi.
+>
+> > +SEC("fentry/tcp_sendmsg_locked")
+> > +int BPF_PROG(trace_tcp_sendmsg_locked, struct sock *sk, struct msghdr =
+*msg,
+> > +          size_t size)
+>
+> Same
 
-Yes, I left this series in PW for an extra couple of days expecting
-a discussion but I suppose my email was taken as a final judgment.
+Weird. I cannot see the problem from my machine. The CI didn't warn me
+on this alignment either. Probably your vi went wrong? I'm not sure.
 
-The object separation can be faked more accurately, and analyzed
-(in the cover letter) to give us more confidence that the divergence
-won't create problems.
-
-The "actively maintained" part is true and very much appreciated, but
-it's both something that may easily change, and is hard to objectively
-adjudicate. Reporting results to the upstream CI would be much more
-objective and hopefully easier to maintain, were the folks supporting
-mlxsw to "join a startup", or otherwise disengage.
+Thanks,
+Jason
 
