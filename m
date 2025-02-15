@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-51648-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51649-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F124EA36D8D
-	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 12:04:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B98D8A36D8E
+	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 12:04:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE4D0169C90
-	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 11:04:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 896D37A4441
+	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 11:03:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 639381A3168;
-	Sat, 15 Feb 2025 11:04:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AAD71A5BB8;
+	Sat, 15 Feb 2025 11:04:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="csuBRfTs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pk90MTKB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 755FB567D
-	for <bpf@vger.kernel.org>; Sat, 15 Feb 2025 11:04:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BE2E1A2388
+	for <bpf@vger.kernel.org>; Sat, 15 Feb 2025 11:04:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739617471; cv=none; b=fW9iRZaIOk8YVTgOp8Z7/Hfu+pNmXWiW3B6XAjeOunZgk1gmshDZk/YPFfPEZL3O7X1Dsl1D+LvCoCF+2/e5fn1VGEfXDoOULcBrsxxL/+slBlszyA/qn3Vjz8TVcpy6/sQQjen9iykMG5JhYYKZdOiMpQiUdlCsrCHrizwUibc=
+	t=1739617473; cv=none; b=h5P85IxLnAAI9kyyxjLbW94uJN3j6PM1mhlDFMLkQ/6Nug62cXNV61eFQILF06AwAwOgk11l3eX3t4LNFdlSCD0rE7tYBQ8hnxpgJZhfOCDqGq1jFxxf7oYITcFkPUq9z3GZFAnaPHkTUt063z32tS1sqMzD21Ctr3+CtXiZ4qI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739617471; c=relaxed/simple;
-	bh=WkCPlxXztbh4fxcmSu4WiZv7V4WDMRd9RR5F8AEMpBo=;
+	s=arc-20240116; t=1739617473; c=relaxed/simple;
+	bh=wGgISqWd8P9mdDG2yI3hvKfXyLCQ3oDwMXj4bjXEjIQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TZH1oUpyRsb9MdppwgvjROIL/vD7+9fvoED5PXL7I+gk7qI7hi5PlZD7SM9QAKzUdEVKpJCqrtQY2o9enNiF9RsHRtmDSkOyq5nAtO+kBqLluy72O5dMrFTITkjdnC2slM7v816kfyKZuvhubEER/DMKf2pjFW1g+mzem7KlPf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=csuBRfTs; arc=none smtp.client-ip=209.85.214.182
+	 MIME-Version; b=OTbw1ikEecJhf1TAobXztWWCqVOeB3D9fICT2A2HC7yLCXlmDs7E3Wx9RWI6HwMkCyyjkymAMEEAApm1T1rUzY2LaKSZNg+UhkZw8m3JvlJGCW5Dwy4/eV27QMb++/zdUZOUJw2PUpeh/Txuh8TNh03BdmiA0xzticjScgOyqhs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pk90MTKB; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-220d601886fso37846315ad.1
-        for <bpf@vger.kernel.org>; Sat, 15 Feb 2025 03:04:30 -0800 (PST)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-220ecbdb4c2so45342425ad.3
+        for <bpf@vger.kernel.org>; Sat, 15 Feb 2025 03:04:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739617469; x=1740222269; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739617470; x=1740222270; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Al1gouzPQIoojWQkgz4Tm7UeYY8vUvaXcnuySNT5o1A=;
-        b=csuBRfTspUuLLgBROT76Ysf//pWAZFIxR7LObJNDMgwFUopmYP5pPPa8H33gRIeNIL
-         GvmC2SQlq+Z+B9Hsf/MXXP9uw/Yx5QZ2OGgJF0y4liC08i7w1IM6nEMcl7r+txaswTvs
-         H7mDiAT0BUXPnk3UzkrWKzT1CtWBz5DnWWm6+bhHfJQqPvMeWD7wGc+FbZH1O3w0MpNI
-         W9S8halvx1VH7nJeBGIiiILe8BdorH6k6HjKOa3LkmMEvsw6D+A/3b0KfFc259Tl0c3x
-         tUU8EqOREbZTBUu99JQeV215f+CwLNLqrzXpZ0i9ba2YLD1Wols73J89Zl0dved0q6Sn
-         HDBg==
+        bh=+GOCH4mEvoqZ0DCMEaS+DNrb1EkjOaHoe0Dctn/XG64=;
+        b=Pk90MTKBkWNZcSNHOY1EpM6CUkTi9nUpi4+rM7FxHMlehCL9xswAOPiXa3NhijQW81
+         06xn5kSXd7DAkV1GMVkSKvADfvO+AejusC/XXGzu/9VkarcHarP5MSQ0Z87/zMHO17+s
+         YeVzWfkRdLjJT75Ve5ItBEeiB2oG4Zawq2b5G60w8UE5Uz+F8qI7YPbqRtZ6mV2+qANg
+         Vw1A180d06fDdEb0Tjh79MRP29vp5bXBpR9U4RIDS5+/wdvXddcFb5/BCbRoSsGPrVpd
+         DcKwH2OZmDrtlYdQj2ynt7qbZqrj/+SHyKAo7ElIILTsglGe32LQr6sih0YJGsqBkStW
+         76tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739617469; x=1740222269;
+        d=1e100.net; s=20230601; t=1739617470; x=1740222270;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Al1gouzPQIoojWQkgz4Tm7UeYY8vUvaXcnuySNT5o1A=;
-        b=nCWm4JCmszu7MkU7yd2p6qino32X3qAisbp3qiv4nIT+ikqAEyCE9ixeywdVg8emkW
-         0w+kYjqUeVh6NkXikTDsbcvmFL99WoNPF+VEECQE5b8TyiWPVfxOIQWhk08/gmnt4K6/
-         vfhJ0KKmJ0g0p3KrKMDoTkT+nru+HrH91WcAoIHq9PbVy3fP+aA5vWEykNqGXI4fjb1A
-         o6O5L4pHx5tJAJ9Ez5VrrQjPTuzDPID3y3vkVb95wxxwmAjp0HYOVM74u6GamoJgarPG
-         D3+eSry32AmBbC+VHLGAzaidBPA8s+i6eelZ0lBYCaxCcCSQKOZaiy3Bm7YKLMS4r6qH
-         0xhw==
-X-Gm-Message-State: AOJu0Yx7mnWovTOAKq2TM/oL8A7IhAuFk/qEWWSWnWRJp1N/r5ktriTh
-	1r7H2L8J3RrmyB++A3gk6XyVUiVnFPXkyGTtmyaKnSz8wij8gx6S3RFniA==
-X-Gm-Gg: ASbGncsXCeAYWtMy83XjCyBEqcYqRc9rbrI+jp3a5m4s7KiKE9M2vFIoMKFci/BohdU
-	7pfRFxoe/40onuRg8Dqb6bXNWpcza/wVSKSkzPm1a/iz5NzPKs54J9GRWhn6kS7XkNsZPyC0R3M
-	DdRBsXWRsvxIOaBzqazrdXg7q1cWdFD4/28D6IyETHlvj1ijtNfC/ayBxF/WvoM+pxtZXu5bIGO
-	0s7DnD15QEBFcEncvo72ioWqRnpeHLYWvk4IScGooVdQsy3NRW0DVMH1ga2aOIUiDIEXQ3MgRPu
-	oJRIa38KQ6U=
-X-Google-Smtp-Source: AGHT+IG04Sd8tTP3fhqex/mq6o+SojIPDFiV4j4U3Ba2t9hOZs3ZZ99Rfsp55rv3NhRru4cESFs1Ug==
-X-Received: by 2002:a05:6a20:430b:b0:1e0:d87a:f67 with SMTP id adf61e73a8af0-1ee8cb5d455mr4903916637.13.1739617469407;
-        Sat, 15 Feb 2025 03:04:29 -0800 (PST)
+        bh=+GOCH4mEvoqZ0DCMEaS+DNrb1EkjOaHoe0Dctn/XG64=;
+        b=TeBTL3dhWPafwp8t1rQ1LidglVkmT6nldPs5V4M3pKLKhAldKN0j7WGrJy7kIppkjl
+         7JquyzPLSQ4V1LqlEuxH4cwcDXQQLtEXrbGYNpFQl7b3sj5r1jYYA6ajk6f79BhO8gwA
+         hDmGStCVcPwnaVgvHKtrLZRsxpDHXTkpIeMBK+63N2bEp5OCnlkTeQx+MZ6jKvIEWprO
+         X+r662DN858T7E2nPia1+LeKwsM2QIRvFyw9VFkpkNFn+SQpOWpSQsORSfWnoZxbYht/
+         LT+nf/vyAEVs0rBCr5N1tawwqDHXLmynhNP9zRy+EYEvNqAzq3JlMwUf5jopBPlPyuNP
+         inYw==
+X-Gm-Message-State: AOJu0YxWowWUDAnf0ktK0lxZjAZcIxA9kY8OHwgRZZsbfkU+ofHV8iL8
+	TWu6A/ElRolMF38EegBt2pW6o5CZqRQMZySU2VUHsKXNuSpdFY3D9/cnVw==
+X-Gm-Gg: ASbGncvhWiHlDSNzkDsYEPOjHA1L+Joo2C72EGPFTH8M7M8/QnFo3hX3ckSgN3C5viN
+	QbVliuwdlqLVtdBGdxO1KxAuMFcImiexh6cjo8rYB9hryX6Zm0Px3R0Rz3jbBm1B1m1gJMV6b+p
+	2d+QN3cuS1dsYc6JOAnhP4Jiq632o//CUMGgnXlOWEO11osPZR17tbpKH5XTgbr+QFXH9Oxv1yt
+	a9NVQ6rX5LB9nvPAXTOvugFxTgdcqpkGQIoPCZbExsIJ7mOJai38jGdtwdO87VnRaAAS8rIRGkB
+	Hq6+wbAqkgw=
+X-Google-Smtp-Source: AGHT+IGKADK8Dy6y0EMN7F0y6nPNzFx33FOvHf1madq5xIKdxOgXpLB5fMvn8I57zpGzIhvI+3qI6w==
+X-Received: by 2002:a05:6a20:a125:b0:1db:dfc0:d342 with SMTP id adf61e73a8af0-1ee8cb0e82cmr5938379637.7.1739617470482;
+        Sat, 15 Feb 2025 03:04:30 -0800 (PST)
 Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7326d58d4d0sm72435b3a.94.2025.02.15.03.04.28
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7326d58d4d0sm72435b3a.94.2025.02.15.03.04.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Feb 2025 03:04:28 -0800 (PST)
+        Sat, 15 Feb 2025 03:04:29 -0800 (PST)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -82,9 +82,9 @@ Cc: andrii@kernel.org,
 	tj@kernel.org,
 	patsomaru@meta.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v1 01/10] bpf: copy_verifier_state() should copy 'loop_entry' field
-Date: Sat, 15 Feb 2025 03:03:52 -0800
-Message-ID: <20250215110411.3236773-2-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v1 02/10] selftests/bpf: test correct loop_entry update in copy_verifier_state
+Date: Sat, 15 Feb 2025 03:03:53 -0800
+Message-ID: <20250215110411.3236773-3-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250215110411.3236773-1-eddyz87@gmail.com>
 References: <20250215110411.3236773-1-eddyz87@gmail.com>
@@ -96,80 +96,208 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The bpf_verifier_state.loop_entry state should be copied by
-copy_verifier_state(). Otherwise, .loop_entry values from unrelated
-states would poison env->cur_state.
+A somewhat cumbersome test case sensitive to correct copying of
+bpf_verifier_state->loop_entry fields in
+verifier.c:copy_verifier_state().
+W/o the fix from a previous commit the program is accepted as safe.
 
-Additionally, env->stack should not contain any states with
-.loop_entry != NULL. The states in env->stack are yet to be verified,
-while .loop_entry is set for states that reached an equivalent state.
-This means that env->cur_state->loop_entry should always be NULL after
-pop_stack().
+     1:  /* poison block */
+     2:  if (random() != 24) {       // assume false branch is placed first
+     3:    i = iter_new();
+     4:    while (iter_next(i));
+     5:    iter_destroy(i);
+     6:    return;
+     7:  }
+     8:
+     9:  /* dfs_depth block */
+    10:  for (i = 10; i > 0; i--);
+    11:
+    12:  /* main block */
+    13:  i = iter_new();             // fp[-16]
+    14:  b = -24;                    // r8
+    15:  for (;;) {
+    16:    if (iter_next(i))
+    17:      break;
+    18:    if (random() == 77) {     // assume false branch is placed first
+    19:      *(u64 *)(r10 + b) = 7;  // this is not safe when b == -25
+    20:      iter_destroy(i);
+    21:      return;
+    22:    }
+    23:    if (random() == 42) {     // assume false branch is placed first
+    24:      b = -25;
+    25:    }
+    26:  }
+    27:  iter_destroy(i);
 
-See the selftest in the next commit for an example of the program that
-is not safe yet is accepted by verifier w/o this fix.
+The goal of this example is to:
+(a) poison env->cur_state->loop_entry with a state S,
+    such that S->branches == 0;
+(b) set state S as a loop_entry for all checkpoints in
+    /* main block */, thus forcing NOT_EXACT states comparisons;
+(c) exploit incorrect loop_entry set for checkpoint at line 18
+    by first creating a checkpoint with b == -24 and then
+    pruning the state with b == -25 using that checkpoint.
 
-This change has some verification performance impact for selftests:
+The /* poison block */ is responsible for goal (a).
+It forces verifier to first validate some unrelated iterator based
+loop, which leads to an update_loop_entry() call in is_state_visited(),
+which places checkpoint created at line 4 as env->cur_state->loop_entry.
+Starting from line 8, the branch count for that checkpoint is 0.
 
-File                                Program                       Insns (A)  Insns (B)  Insns   (DIFF)  States (A)  States (B)  States (DIFF)
-----------------------------------  ----------------------------  ---------  ---------  --------------  ----------  ----------  -------------
-arena_htab.bpf.o                    arena_htab_llvm                     717        426  -291 (-40.59%)          57          37  -20 (-35.09%)
-arena_htab_asm.bpf.o                arena_htab_asm                      597        445  -152 (-25.46%)          47          37  -10 (-21.28%)
-arena_list.bpf.o                    arena_list_del                      309        279    -30 (-9.71%)          23          14   -9 (-39.13%)
-iters.bpf.o                         iter_subprog_check_stacksafe        155        141    -14 (-9.03%)          15          14    -1 (-6.67%)
-iters.bpf.o                         iter_subprog_iters                 1094       1003    -91 (-8.32%)          88          83    -5 (-5.68%)
-iters.bpf.o                         loop_state_deps2                    479        725  +246 (+51.36%)          46          63  +17 (+36.96%)
-kmem_cache_iter.bpf.o               open_coded_iter                      63         59     -4 (-6.35%)           7           6   -1 (-14.29%)
-verifier_bits_iter.bpf.o            max_words                            92         84     -8 (-8.70%)           8           7   -1 (-12.50%)
-verifier_iterating_callbacks.bpf.o  cond_break2                         113        107     -6 (-5.31%)          12          12    +0 (+0.00%)
+The /* dfs_depth block */ is responsible for goal (b).
+It abuses the fact that update_loop_entry(cur, hdr) only updates
+cur->loop_entry when hdr->dfs_depth <= cur->dfs_depth.
+After line 12 every state has dfs_depth bigger then dfs_depth of
+poisoned env->cur_state->loop_entry. Thus the above condition is never
+true for lines 12-27.
 
-And significant negative impact for sched_ext:
-
-File               Program                 Insns (A)  Insns (B)  Insns         (DIFF)  States (A)  States (B)  States      (DIFF)
------------------  ----------------------  ---------  ---------  --------------------  ----------  ----------  ------------------
-bpf.bpf.o          lavd_init                    7039      14723      +7684 (+109.16%)         490        1139     +649 (+132.45%)
-bpf.bpf.o          layered_dispatch            11485      10548         -937 (-8.16%)         848         762       -86 (-10.14%)
-bpf.bpf.o          layered_dump                 7422    1000001  +992579 (+13373.47%)         681       31178  +30497 (+4478.27%)
-bpf.bpf.o          layered_enqueue             16854      71127     +54273 (+322.02%)        1611        6450    +4839 (+300.37%)
-bpf.bpf.o          p2dq_dispatch                 665        791        +126 (+18.95%)          68          78       +10 (+14.71%)
-bpf.bpf.o          p2dq_init                    2343       2980        +637 (+27.19%)         201         237       +36 (+17.91%)
-bpf.bpf.o          refresh_layer_cpumasks      16487     674760   +658273 (+3992.68%)        1770       65370  +63600 (+3593.22%)
-bpf.bpf.o          rusty_select_cpu             1937      40872    +38935 (+2010.07%)         177        3210   +3033 (+1713.56%)
-scx_central.bpf.o  central_dispatch              636       2687      +2051 (+322.48%)          63         227     +164 (+260.32%)
-scx_nest.bpf.o     nest_init                     636        815        +179 (+28.14%)          60          73       +13 (+21.67%)
-scx_qmap.bpf.o     qmap_dispatch                2393       3580       +1187 (+49.60%)         196         253       +57 (+29.08%)
-scx_qmap.bpf.o     qmap_dump                     233        318         +85 (+36.48%)          22          30        +8 (+36.36%)
-scx_qmap.bpf.o     qmap_init                   16367      17436        +1069 (+6.53%)         603         669       +66 (+10.95%)
-
-Note 'layered_dump' program, which now hits 1M instructions limit.
-This impact would be mitigated in the next patch.
+The /* main block */ is responsible for goal (c).
+Verification proceeds as follows:
+- checkpoint {b=-24,i=active} created at line 16;
+- jump 18->23 is verified first, jump to 19 pushed to stack;
+- jump 23->26 is verified first, jump to 24 pushed to stack;
+- checkpoint {b=-24,i=active} created at line 15;
+- current state is pruned by checkpoint created at line 16,
+  this sets branches count for checkpoint at line 15 to 0;
+- jump to 24 is popped from stack;
+- line 16 is reached in state {b=-25,i=active};
+- this is pruned by a previous checkpoint {b=-24,i=active}:
+  - checkpoint's loop_entry is poisoned and has branch count of 0,
+    hence states are compared using NOT_EXACT rules;
+  - b is not marked precise yet.
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/verifier.c | 3 +++
- 1 file changed, 3 insertions(+)
+ tools/testing/selftests/bpf/progs/iters.c | 116 ++++++++++++++++++++++
+ 1 file changed, 116 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 04d1d75d9ff9..01b31b718f4f 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1659,6 +1659,7 @@ static int copy_verifier_state(struct bpf_verifier_state *dst_state,
- 	dst_state->callback_unroll_depth = src->callback_unroll_depth;
- 	dst_state->used_as_loop_entry = src->used_as_loop_entry;
- 	dst_state->may_goto_depth = src->may_goto_depth;
-+	dst_state->loop_entry = src->loop_entry;
- 	for (i = 0; i <= src->curframe; i++) {
- 		dst = dst_state->frame[i];
- 		if (!dst) {
-@@ -19243,6 +19244,8 @@ static int do_check(struct bpf_verifier_env *env)
- 						return err;
- 					break;
- 				} else {
-+					if (WARN_ON_ONCE(env->cur_state->loop_entry))
-+						env->cur_state->loop_entry = NULL;
- 					do_print_state = true;
- 					continue;
- 				}
+diff --git a/tools/testing/selftests/bpf/progs/iters.c b/tools/testing/selftests/bpf/progs/iters.c
+index 190822b2f08b..007831dc8c46 100644
+--- a/tools/testing/selftests/bpf/progs/iters.c
++++ b/tools/testing/selftests/bpf/progs/iters.c
+@@ -1174,6 +1174,122 @@ __naked int loop_state_deps2(void)
+ 	);
+ }
+ 
++SEC("?raw_tp")
++__failure
++__msg("math between fp pointer and register with unbounded")
++__flag(BPF_F_TEST_STATE_FREQ)
++__naked int loop_state_deps3(void)
++{
++	/* This is equivalent to a C program below.
++	 *
++	 *   if (random() != 24) {       // assume false branch is placed first
++	 *     i = iter_new();           // fp[-8]
++	 *     while (iter_next(i));
++	 *     iter_destroy(i);
++	 *     return;
++	 *   }
++	 *
++	 *   for (i = 10; i > 0; i--);   // increase dfs_depth for child states
++	 *
++	 *   i = iter_new();             // fp[-8]
++	 *   b = -24;                    // r8
++	 *   for (;;) {                  // checkpoint (L)
++	 *     if (iter_next(i))         // checkpoint (N)
++	 *       break;
++	 *     if (random() == 77) {     // assume false branch is placed first
++	 *       *(u64 *)(r10 + b) = 7;  // this is not safe when b == -25
++	 *       iter_destroy(i);
++	 *       return;
++	 *     }
++	 *     if (random() == 42) {     // assume false branch is placed first
++	 *       b = -25;
++	 *     }
++	 *   }
++	 *   iter_destroy(i);
++	 *
++	 * In case of a buggy verifier first loop might poison
++	 * env->cur_state->loop_entry with a state having 0 branches
++	 * and small dfs_depth. This would trigger NOT_EXACT states
++	 * comparison for some states within second loop.
++	 * Specifically, checkpoint (L) might be problematic if:
++	 * - branch with '*(u64 *)(r10 + b) = 7' is not explored yet;
++	 * - checkpoint (L) is first reached in state {b=-24};
++	 * - traversal is pruned at checkpoint (N) setting checkpoint's (L)
++	 *   branch count to 0, thus making it eligible for use in pruning;
++	 * - checkpoint (L) is next reached in state {b=-25},
++	 *   this would cause NOT_EXACT comparison with a state {b=-24}
++	 *   while 'b' is not marked precise yet.
++	 */
++	asm volatile (
++		"call %[bpf_get_prandom_u32];"
++		"if r0 == 24 goto 2f;"
++		"r1 = r10;"
++		"r1 += -8;"
++		"r2 = 0;"
++		"r3 = 5;"
++		"call %[bpf_iter_num_new];"
++	"1:"
++		"r1 = r10;"
++		"r1 += -8;"
++		"call %[bpf_iter_num_next];"
++		"if r0 != 0 goto 1b;"
++		"r1 = r10;"
++		"r1 += -8;"
++		"call %[bpf_iter_num_destroy];"
++		"r0 = 0;"
++		"exit;"
++	"2:"
++		/* loop to increase dfs_depth */
++		"r0 = 10;"
++	"3:"
++		"r0 -= 1;"
++		"if r0 != 0 goto 3b;"
++		/* end of loop */
++		"r1 = r10;"
++		"r1 += -8;"
++		"r2 = 0;"
++		"r3 = 10;"
++		"call %[bpf_iter_num_new];"
++		"r8 = -24;"
++	"main_loop_%=:"
++		"r1 = r10;"
++		"r1 += -8;"
++		"call %[bpf_iter_num_next];"
++		"if r0 == 0 goto main_loop_end_%=;"
++		/* first if */
++		"call %[bpf_get_prandom_u32];"
++		"if r0 == 77 goto unsafe_write_%=;"
++		/* second if */
++		"call %[bpf_get_prandom_u32];"
++		"if r0 == 42 goto poison_r8_%=;"
++		/* iterate */
++		"goto main_loop_%=;"
++	"main_loop_end_%=:"
++		"r1 = r10;"
++		"r1 += -8;"
++		"call %[bpf_iter_num_destroy];"
++		"r0 = 0;"
++		"exit;"
++
++	"unsafe_write_%=:"
++		"r0 = r10;"
++		"r0 += r8;"
++		"r1 = 7;"
++		"*(u64 *)(r0 + 0) = r1;"
++		"goto main_loop_end_%=;"
++
++	"poison_r8_%=:"
++		"r8 = -25;"
++		"goto main_loop_%=;"
++		:
++		: __imm(bpf_get_prandom_u32),
++		  __imm(bpf_iter_num_new),
++		  __imm(bpf_iter_num_next),
++		  __imm(bpf_iter_num_destroy)
++		: __clobber_all
++	);
++}
++
+ SEC("?raw_tp")
+ __success
+ __naked int triple_continue(void)
 -- 
 2.48.1
 
