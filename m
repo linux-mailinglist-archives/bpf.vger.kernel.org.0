@@ -1,130 +1,146 @@
-Return-Path: <bpf+bounces-51638-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51639-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0EB9A36B81
-	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 03:52:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C47C1A36B8B
+	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 04:04:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3ADA1188F444
-	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 02:52:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF3693B0CB2
+	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 03:04:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FA281547E1;
-	Sat, 15 Feb 2025 02:52:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 531BA1519B3;
+	Sat, 15 Feb 2025 03:04:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hDzDBRa6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wewqj8AL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52CC421345;
-	Sat, 15 Feb 2025 02:52:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DA2415198B;
+	Sat, 15 Feb 2025 03:04:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739587962; cv=none; b=TsMLi+jx60NcaqpJEvFr0FmgFCMZWPmojwK0Gq9wtgFKsh8nyELBNM3Ye7zb0hUVFXsEQ2up2CrwvBajL4OtYAJ5SUtDzSjBKMb63EjjPCyP5pmqsosYTvBVlulZPnXD4dNrr1nKczZSh3itFQfakr7N5K68As7kM+tFFQL7N44=
+	t=1739588667; cv=none; b=JCRSPQq9i3EEALAgDP4tN/9LCXcJ/B/yC+adGrXSqH0eWLnUAOKN9xzOff/cPJSQYB9VO9RfRRAyxPS2P1qqsb2lJIcL8Nj9HKy+cGWf223qRH0sFl2QCOU/OsyCRvVVBaxhd1R/XNWtc9QLnjGD+PowjVxbYP3yvSXs2YRf3L4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739587962; c=relaxed/simple;
-	bh=MQ/IrKKgd4ffipfPkaKh1BeYbEvV5qrKB9mEAlTHPak=;
+	s=arc-20240116; t=1739588667; c=relaxed/simple;
+	bh=I9x2MwW2MXiXY0ZFzL5MIBifqfA14vdI95tsEZByDB8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AcYLVsURSqoSi5A54c1IBz7kKYJFjMT4GYnPsXrpYfaOAKGS0QdgtcmACDw49XzTNRmc6OD3qDxPSNg/wyp2nVVRbjRCwOxpz7X4a7l23kdxaKHzW1EUQNDCO7FrWcWT/tbTyTgjgXEl0ojZasM25WatfqC3ePijFcH41IZirzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hDzDBRa6; arc=none smtp.client-ip=209.85.166.179
+	 To:Cc:Content-Type; b=CJviFgjwFunBuoiWvISaihgsx7cnO6YmxPHFvLnOUzwCq0U1WfpwbIxV7farD9na35mvn7dG1bq1DeC+iRem4s37MCBeK6rJWNNBH9sdK/0ph6BHX7bhH8LUzjY2FRC7Jaz8PrQ6K7+B0WPWAhycNxeTk1L8rps2+HKKesHfJj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wewqj8AL; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-3cf8e017abcso7228115ab.1;
-        Fri, 14 Feb 2025 18:52:40 -0800 (PST)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-43967004304so9981365e9.2;
+        Fri, 14 Feb 2025 19:04:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739587960; x=1740192760; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739588664; x=1740193464; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MQ/IrKKgd4ffipfPkaKh1BeYbEvV5qrKB9mEAlTHPak=;
-        b=hDzDBRa6aGrtfv4QFVPFFP6XvdVjInQtwYbwPHTvxd42jgcPkT4S9fA64ZURRNn9ga
-         KM6HzaBfD9GZ2cm3pD9vcdllYBBJrttbA3R3q9xkLSAiINDef2Cfd5DC4tkvK55tvdoP
-         XZK7OGRQhwoqiieLx8WFd5KwkMfy+4uWhuwxdySmsuiJVViRUsK2b2zGra4CeM7B6inN
-         SkpOlAVIubZNkwpI7neLuwTwxzQxXi8RmTR5nn6c2mk7dKocY86O0srrT9yIgCLz2gzQ
-         w2YZI0c5xUrM+v6e29OvMeRv9B+B8u4gzHz+mpYL+Nds3tj+NRZmTeVHWw9GnGp3qQ37
-         l8UQ==
+        bh=D1ke7H8+M8yCjXV+9PJPO/6rsexf+VnewbpjFFNJVx4=;
+        b=Wewqj8AL+l1Ll0CxhhIWwpIrzncEj0Ak39Hz/t710lGokiIuOGlfMNByVIZXodzXRp
+         kjOJEluD9I8F15FpEVr/p+vu6EyAehr71QyYdKplXNYduFoGX0k4OHnhlUdZkXS2CZBs
+         whCcOBmfGonX2DANlhKRZK4GAz1C/lgRZkgI1E+5QxwYUBSDbd1e3gNILiuSBM1JUGKi
+         XGp6LOQIFzfEu+NtXMohinFHa0dAJV0frYGnLW4WUAG3CyTWFqnTEpYgudbV4PD9zJYt
+         yuVSlEwGoed73HA/hgQNO6SJEgabQiLrxy4+Hs+K4Q2SsoIQz2AWds5ufJTH/3gTyPCJ
+         Nybw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739587960; x=1740192760;
+        d=1e100.net; s=20230601; t=1739588664; x=1740193464;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MQ/IrKKgd4ffipfPkaKh1BeYbEvV5qrKB9mEAlTHPak=;
-        b=OjY0h18gy/amaIIU+u/cgXmWyUgWkMyw2h7/GnfrbUFp+6vymUuvDheoJspbHFeYvN
-         V7DRw0NHdXMrxLxLneZPV00uMK3PpGZfSD8mddSNlceqhRDJE2ITmZp1QiUVfv2Hv/fh
-         kcLzT0CLSwrfNb1IKIfh5wTFkhCfghAQjsjUjKJmPh14eX+Q/E/OayTQku+iNLWWqSzd
-         aa4N3Mph8/4yR8uYoMaGzSYdBjNepP4BCbbfRdtai+mxGnqLUXmrTzdzZuXaL50Moz52
-         X3sesKjMvQs3e/rpyiFO63dWekhOVBkV/qKAcpb5YybAGZ1GcmQ369qvxd17AWGvmPlh
-         bKaw==
-X-Forwarded-Encrypted: i=1; AJvYcCUNmQws6d2GNRri1JpjB6CnhCaGOszM4+37Jw78gJai2Z77bxeZDgN4Xo7XHiZHuKmKUOA=@vger.kernel.org, AJvYcCXZtHGtjSY7Tb3R3TlceDR+rIIS7PrZdCSam/kzOh/fluQjheLm8/ok0OKKdhpqtR1x0OnY6uLS@vger.kernel.org
-X-Gm-Message-State: AOJu0YxdkBQn+QNLap+L1mzsmn+vGtmmO46cr6bgiyuGNsvrQrMxg1XX
-	FNb/eqEejk9WPhDSEic3lsps+0JlxxW0s8Tmala4QrPTySweXdT1Zk/+rWA/BcInraBXfnYB5xa
-	JLNoMF8SxxZAML67wuUSlV4vpquo=
-X-Gm-Gg: ASbGncvWeXkgDQTjNnTVGoOXDcmceoJMdD0NZqwcMmH6dWjEn9qP+BJp+i67ohyIHmE
-	aDRjpaN9mx7HlOBbkMlECeRi1sbZh+w0VkQCXareln/lVWG9qHcnv4b1utM69si3eWHl8lXc=
-X-Google-Smtp-Source: AGHT+IF4H3bDyU5fgnXqwsQykN661Q8XK/HSGyM0LBHS+o6Ee1VRuje2S4I3gXwFa+zHKGpCZ3twjD8iAEf49Aj0Cj4=
-X-Received: by 2002:a05:6e02:1a2e:b0:3d0:47cf:869c with SMTP id
- e9e14a558f8ab-3d280949c9emr10998875ab.19.1739587960314; Fri, 14 Feb 2025
- 18:52:40 -0800 (PST)
+        bh=D1ke7H8+M8yCjXV+9PJPO/6rsexf+VnewbpjFFNJVx4=;
+        b=Kda66n2yaBNt8amuX1tQWGMwsS5M8s20FgaFRTLsm+ghVVJx4JOcPuNsv4zTFcgF7b
+         03rDhADJRn5AxY9LBl3YZznNeI5Wr3s+YuX0u4/UBzv8oz+laR4+clRaua99p5N8F+Pq
+         BdKJV8T++X5eIuZZzeVZM8Q/f9LI3BZZz11p3F0x5G+J/C+zbPKtUSyQwICe6JANLC0q
+         gvNKGBE7djPNQtxJf7vnMMA44xWsfOeQw9gkTQXj0Hktwp5Tqi2+eyZgXacuQYVB6Ngr
+         DoNEd8rwZOJSNx2vkviUow9sE7gz9DJxodHZ7OSzYK3JUUwz0RTwdSEW3WnCGiejeDyD
+         8ggg==
+X-Forwarded-Encrypted: i=1; AJvYcCUmzCX61+sa35LL8raoBvbJcWhshYcHO+zZJQmOavm2ntEMl9OdpZlg0opZNuED78iwqK3zV1JYXS1oCoE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxUojlJ3tyA2xnhTbyLOlCw8FZ0zFZXT3H2gjcV9yJ8bN9bMRky
+	8q2DRbiWZ+HONjQDu8lH1iK2WAqhj2tYm6NmXyj6Qu7ctpJHlfMeZs1te7SjN7Auv/slBULXbF0
+	lp+uKlCgOgCpra7EaiiCcvskJ//GMRJit
+X-Gm-Gg: ASbGncsct2V8SMlBeHE+34M8qSnL2BofBOBJF6R5cQt375TrJqzHHtCsL9S5OOT33jy
+	Fgq6LqDzHtsWdqHF0eNqr6hnf4wThZ5Q80ImN/7KMbp6FICCvUTSAbSLN6tR8q3NCsjRv81+D
+X-Google-Smtp-Source: AGHT+IGDmDaemoeZfMeIUnkaZyc8p3ts9pgGPm4BMDfRwRIGcfPCqXQEOelUoI+XwIc4D/xg+4rdj4ZLSWD9udHVlGo=
+X-Received: by 2002:a05:6000:184e:b0:38f:227e:6ff2 with SMTP id
+ ffacd0b85a97d-38f33f1c711mr1918249f8f.14.1739588664456; Fri, 14 Feb 2025
+ 19:04:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250213004355.38918-1-kerneljasonxing@gmail.com>
- <20250213004355.38918-3-kerneljasonxing@gmail.com> <Z66DL7uda3fwNQfH@mini-arch>
- <CAL+tcoATv6HX5G6wOrquGyyj8C7bFgRZNnWBwnPTKD1gb4ZD=g@mail.gmail.com>
- <039bfa0d-3d61-488e-9205-bef39499db6e@linux.dev> <CAL+tcoBAv5QuGeiGYUakhxBwVEsut7Gaa-96YOH03h57jtTVaQ@mail.gmail.com>
- <86453e67-d5dc-4565-bdd6-6383273ed819@linux.dev> <CAL+tcoApvV0vyiTKdaMWMp8F=ZWSodUg0zD+eq_F6kp=oh=hmA@mail.gmail.com>
- <b3f30f7d-e0c3-4064-b27e-6e9a18b90076@linux.dev> <CAL+tcoB2EO_FJis4wp7WkMdEZQyftwuG2X6z0UrJEFaYnSocNg@mail.gmail.com>
- <3dab11ad-5cba-486f-a429-575433a719dc@linux.dev> <CAL+tcoAhQTMBxC=qZO0NpiqRCdfGEkD7iWxSg7Odfs4eO7N_JQ@mail.gmail.com>
- <d7e21933-cd3b-43a2-9678-4f0e592ec87a@linux.dev>
-In-Reply-To: <d7e21933-cd3b-43a2-9678-4f0e592ec87a@linux.dev>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Sat, 15 Feb 2025 10:52:04 +0800
-X-Gm-Features: AWEUYZlBjo95DXXz8WloX8gf6s51YrHtT5FZ6jWNVg6dbS2YBVCCapCb-aVeBfY
-Message-ID: <CAL+tcoDnS2j5nqS_BpbK8=7p8AK=-Jw7dAh3QWbstNOtQRLUyw@mail.gmail.com>
-Subject: Re: [PATCH net-next 2/3] bpf: add TCP_BPF_RTO_MAX for bpf_setsockopt
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Stanislav Fomichev <stfomichev@gmail.com>, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, horms@kernel.org, 
-	ncardwell@google.com, kuniyu@amazon.com, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org
+References: <cover.1738888641.git.yepeilin@google.com> <d03d8c3305e311c6cb29924119b5eecae8370bbc.1738888641.git.yepeilin@google.com>
+ <CAADnVQ+L0h8qXfYkC3+ORyQkXFJ2MgO8FDHr_Ha0QMAtS_ujag@mail.gmail.com>
+ <Z6gRHDLfA7cjnlSn@google.com> <CAADnVQLkHA9LGv99k2TZOJEGUU=dw=q6nVurJ=aoh0v6cFS6zQ@mail.gmail.com>
+ <Z6qC303CzfUMN8nV@google.com> <Z60dO2sV6VIVNE6t@google.com>
+ <CAADnVQ+OyoBPOJk6dcUFozTt0RD-o-hHdR4Dgy+dK2r0uHyC7Q@mail.gmail.com>
+ <Z63aX0Tv_zdw8LOQ@google.com> <Z6_9LgfOMeR18HGe@google.com>
+In-Reply-To: <Z6_9LgfOMeR18HGe@google.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 14 Feb 2025 19:04:13 -0800
+X-Gm-Features: AWEUYZmlNFZtUB1WliSaQIbmQErfRpNsKDqUO-NqyAwWdkRImN9BdvQxTrZQ4H4
+Message-ID: <CAADnVQKZ=pjXjyzB8tJj5Gen4odcj5H5JhXyRtVgphTEDCisTg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/9] bpf: Introduce load-acquire and
+ store-release instructions
+To: Peilin Ye <yepeilin@google.com>
+Cc: bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, bpf@ietf.org, 
+	Xu Kuohai <xukuohai@huaweicloud.com>, Eduard Zingerman <eddyz87@gmail.com>, 
+	David Vernet <void@manifault.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
+	Ilya Leoshkevich <iii@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Quentin Monnet <qmo@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>, Yingchi Long <longyingchi24s@ict.ac.cn>, 
+	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>, Neel Natu <neelnatu@google.com>, 
+	Benjamin Segall <bsegall@google.com>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Feb 15, 2025 at 10:39=E2=80=AFAM Martin KaFai Lau <martin.lau@linux=
-.dev> wrote:
+On Fri, Feb 14, 2025 at 6:34=E2=80=AFPM Peilin Ye <yepeilin@google.com> wro=
+te:
 >
-> On 2/14/25 3:53 PM, Jason Xing wrote:
-> > Another related topic about rto min test, do you think it's necessary
-> > to add TCP_BPF_RTO_MIN into the setget_sockopt test?
+> > On Wed, Feb 12, 2025 at 09:55:43PM -0800, Alexei Starovoitov wrote:
+> > > How about:
+> > > #define BPF_LOAD_ACQ 2
+> > > #define BPF_STORE_REL 3
+> > >
+> > > and only use them with BPF_MOV like
+> > >
+> > > imm =3D BPF_MOV | BPF_LOAD_ACQ - is actual load acquire
+> > > imm =3D BPF_MOV | BPF_STORE_REL - release
 >
-> hmm... not sure why it is related to the existing TCP_BPF_RTO_MIN.
-> I thought this patch is adding the new TCP_RTO_MAX_MS...
+> Based on everything discussed, should we proceed with the above
+> suggestion?  Specifically:
 >
-> or you want to say, while adding a TCP_RTO_MAX_MS test, add a test for th=
-e
-> existing TCP_BPF_RTO_MIN also because it is missing in the setget_sockopt=
-?
-> iirc, I added setget_sockopt.c to test a patch that reuses the kernel
-> do_*_{set,get}sockopt. Thus, it assumes the optname supports both set and=
- get.
-> TCP_BPF_RTO_MIN does not support get, so I suspect setget_sockopt will no=
-t be a
-> good fit. They are unrelated, so I would leave it out of your patch for n=
-ow.
+>   #define BPF_LD_ST     BPF_MOV /* 0xb0 */
 
-From my perspective, rto min or max is quite similar and only related
-to the time limitation of RTO, so I assume they can have the same
-usage... Right, what you said is exactly what I would like to know. As
-you said, handling rto min will not be included in this series.
+The aliasing still bothers me.
+I hated doing it when going from cBPF to eBPF,
+but we only had 8-bit to work with.
+Here we have 32-bit.
+Aliases make disassemblers trickier, since value no longer
+translates to string as-is. It depends on the context.
+There is probably no use for BPF_MOV operation in atomic
+context, but by reusing BPF_ADD, BPF_XOR, etc in atomic
+we signed up ourselves for all of alu ops.
+That's why BPF_XCHG and BPF_CMPXCHG are outside
+of alu op range.
 
-Thanks,
-Jason
+So my preference is to do:
+#define BPF_LOAD_ACQ 0x100
+#define BPF_STORE_REL 0x110
+#define BPF_CMPWAIT_RELAXED   0x120
+
+and keep growing it.
+We burn the first nibble, but so be it.
 
