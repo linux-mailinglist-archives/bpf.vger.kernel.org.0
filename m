@@ -1,193 +1,130 @@
-Return-Path: <bpf+bounces-51637-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51638-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49F07A36B7F
-	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 03:48:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0EB9A36B81
+	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 03:52:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2182F3AE6A7
-	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 02:48:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3ADA1188F444
+	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 02:52:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FA9A13CA9C;
-	Sat, 15 Feb 2025 02:48:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FA281547E1;
+	Sat, 15 Feb 2025 02:52:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A8gftEK3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hDzDBRa6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6126CEACE
-	for <bpf@vger.kernel.org>; Sat, 15 Feb 2025 02:48:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52CC421345;
+	Sat, 15 Feb 2025 02:52:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739587702; cv=none; b=rpmLjPNbGEsjl5DN6YBNKW7qGIeyjEkW0DcmyZZ4phlh6H1zor52U8lQOF+qvRcHG4rFECrl312OrJm5jVbjgi8QEuVKqqHOgfJ7MeBYw6jNPF2mNpfRwSNaTwgYsROikoW1tuui5/Ub19SpYupg4g8CVW5BudJ3TJY3dwkTeh8=
+	t=1739587962; cv=none; b=TsMLi+jx60NcaqpJEvFr0FmgFCMZWPmojwK0Gq9wtgFKsh8nyELBNM3Ye7zb0hUVFXsEQ2up2CrwvBajL4OtYAJ5SUtDzSjBKMb63EjjPCyP5pmqsosYTvBVlulZPnXD4dNrr1nKczZSh3itFQfakr7N5K68As7kM+tFFQL7N44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739587702; c=relaxed/simple;
-	bh=yVmYgeaWxYsuMMDWKR6NTOvo64zucfGfCivFHU5n4C0=;
+	s=arc-20240116; t=1739587962; c=relaxed/simple;
+	bh=MQ/IrKKgd4ffipfPkaKh1BeYbEvV5qrKB9mEAlTHPak=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OaXqTTOq6rOs6arHOuQlWrGhsJFRFG4c6J4Na/POlpnTuuc0MjtIpO9VBDPW2XBFFfaW2S06VBBk8xU0oigHs3H/fQrCQ2VyyT3VLNFh/UT9ti+efPV26JieTpIbgWnZe9lzmi+YHGcePOqa2lmjY7CNM6w2wD8hfENreuy0JSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A8gftEK3; arc=none smtp.client-ip=209.85.221.41
+	 To:Cc:Content-Type; b=AcYLVsURSqoSi5A54c1IBz7kKYJFjMT4GYnPsXrpYfaOAKGS0QdgtcmACDw49XzTNRmc6OD3qDxPSNg/wyp2nVVRbjRCwOxpz7X4a7l23kdxaKHzW1EUQNDCO7FrWcWT/tbTyTgjgXEl0ojZasM25WatfqC3ePijFcH41IZirzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hDzDBRa6; arc=none smtp.client-ip=209.85.166.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-38f29a1a93bso1523457f8f.1
-        for <bpf@vger.kernel.org>; Fri, 14 Feb 2025 18:48:19 -0800 (PST)
+Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-3cf8e017abcso7228115ab.1;
+        Fri, 14 Feb 2025 18:52:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739587698; x=1740192498; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739587960; x=1740192760; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6oR4Jz89VJ2ERrsEZOTehYBu0ZayI5TJyS4IoDijubg=;
-        b=A8gftEK3xu87ph3S/oYFrTjBO4oplQa4O0qzlpNq9uO8AbkCWIuhcrJg0AxG3wb9gx
-         vfr6w3fLE+4dNDH9UrgDoRY7vLPIvTbfprqy311ch2G1rcYaofwFYwgI28Rriui+64JS
-         M56mPANaxAYPrpYKjSHTh7ubtGKX0jhs+RzU/8mKCQRZbSQ77E4iw3bu1xXloxhu6xy9
-         ienrNslqFcI9fp/LM3M1tRzDhb8ItSt3pH+U1EPODr6J8bIQQS32cwnlK32CawlxcJQE
-         ohXQ2lRPfCVLEWa2FGHGo69dSR5UU56W8atyatn1qfIp0dKLFBwLvHnbmShosLDNZ0Rp
-         Yimw==
+        bh=MQ/IrKKgd4ffipfPkaKh1BeYbEvV5qrKB9mEAlTHPak=;
+        b=hDzDBRa6aGrtfv4QFVPFFP6XvdVjInQtwYbwPHTvxd42jgcPkT4S9fA64ZURRNn9ga
+         KM6HzaBfD9GZ2cm3pD9vcdllYBBJrttbA3R3q9xkLSAiINDef2Cfd5DC4tkvK55tvdoP
+         XZK7OGRQhwoqiieLx8WFd5KwkMfy+4uWhuwxdySmsuiJVViRUsK2b2zGra4CeM7B6inN
+         SkpOlAVIubZNkwpI7neLuwTwxzQxXi8RmTR5nn6c2mk7dKocY86O0srrT9yIgCLz2gzQ
+         w2YZI0c5xUrM+v6e29OvMeRv9B+B8u4gzHz+mpYL+Nds3tj+NRZmTeVHWw9GnGp3qQ37
+         l8UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739587698; x=1740192498;
+        d=1e100.net; s=20230601; t=1739587960; x=1740192760;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6oR4Jz89VJ2ERrsEZOTehYBu0ZayI5TJyS4IoDijubg=;
-        b=gjPnrvanwHdNJDWe6C5Tv5WWQdsLi9kZ9kB5wwuL3piXdWKLpD0/nlbiKrK7C1Q/Yl
-         qjP2cQgiaD4J4viQ+8qqrUsI1edsArzZCkHKbFRBDvv3LLNbZFQaR+h7cjdKJ9acJlSx
-         2/ikM/Uu5FXzCOWOui9iw9S0DpVG/YB2hyEUKjq9OxG6YbPhIhraFZHlTJk7LOwW9neW
-         21Aw2mHBaek2hlH4MaO2NEG9qmjYckMdPNLe6XT/KO+3ugbGGBV06dKfpjyPw++wZHPt
-         ibX93YsQZ5YMApdFD45Cu5U1eYw9mnCQ4H0DtKe4CXJLSeGBUg7ldAvJXB+DBTni6FtB
-         Xo9Q==
-X-Gm-Message-State: AOJu0YyuIbs3kjVHr+RNBDNKgtDxQLkBvz5oLZFaV+p6JUco5jM5i5Le
-	OXKOJVSGqPfuURX7IS01mb6QTFTVlY1CgtziCtKie21jdv6vqBg9hVKIXPDDM5DubG0shZcTLGk
-	POtNltUxsOuGOvwyEc3+aesc8p/I=
-X-Gm-Gg: ASbGncsJKOQYcQcSyuo9d5jes1ZIrjESdqlANcvYNXEuVtT6WLGDnB3zt0IS6Heg2rB
-	XnkP41gzzaVPyc3cGvqyrWDvX9ifO6ycdXJi9h6AdVoACWS0zyL17um888qzRAitVS4X3x3HP
-X-Google-Smtp-Source: AGHT+IHtKQ+asV05FN7dQ9w/3QjydnM4+vYHu9xl8giacG8prLpphzh8YPkBX3/+NS5QuLeT6B3sZz/+aBT+kEaBpqw=
-X-Received: by 2002:a5d:5848:0:b0:38f:28a1:501d with SMTP id
- ffacd0b85a97d-38f33f2f4a8mr1934195f8f.25.1739587698255; Fri, 14 Feb 2025
- 18:48:18 -0800 (PST)
+        bh=MQ/IrKKgd4ffipfPkaKh1BeYbEvV5qrKB9mEAlTHPak=;
+        b=OjY0h18gy/amaIIU+u/cgXmWyUgWkMyw2h7/GnfrbUFp+6vymUuvDheoJspbHFeYvN
+         V7DRw0NHdXMrxLxLneZPV00uMK3PpGZfSD8mddSNlceqhRDJE2ITmZp1QiUVfv2Hv/fh
+         kcLzT0CLSwrfNb1IKIfh5wTFkhCfghAQjsjUjKJmPh14eX+Q/E/OayTQku+iNLWWqSzd
+         aa4N3Mph8/4yR8uYoMaGzSYdBjNepP4BCbbfRdtai+mxGnqLUXmrTzdzZuXaL50Moz52
+         X3sesKjMvQs3e/rpyiFO63dWekhOVBkV/qKAcpb5YybAGZ1GcmQ369qvxd17AWGvmPlh
+         bKaw==
+X-Forwarded-Encrypted: i=1; AJvYcCUNmQws6d2GNRri1JpjB6CnhCaGOszM4+37Jw78gJai2Z77bxeZDgN4Xo7XHiZHuKmKUOA=@vger.kernel.org, AJvYcCXZtHGtjSY7Tb3R3TlceDR+rIIS7PrZdCSam/kzOh/fluQjheLm8/ok0OKKdhpqtR1x0OnY6uLS@vger.kernel.org
+X-Gm-Message-State: AOJu0YxdkBQn+QNLap+L1mzsmn+vGtmmO46cr6bgiyuGNsvrQrMxg1XX
+	FNb/eqEejk9WPhDSEic3lsps+0JlxxW0s8Tmala4QrPTySweXdT1Zk/+rWA/BcInraBXfnYB5xa
+	JLNoMF8SxxZAML67wuUSlV4vpquo=
+X-Gm-Gg: ASbGncvWeXkgDQTjNnTVGoOXDcmceoJMdD0NZqwcMmH6dWjEn9qP+BJp+i67ohyIHmE
+	aDRjpaN9mx7HlOBbkMlECeRi1sbZh+w0VkQCXareln/lVWG9qHcnv4b1utM69si3eWHl8lXc=
+X-Google-Smtp-Source: AGHT+IF4H3bDyU5fgnXqwsQykN661Q8XK/HSGyM0LBHS+o6Ee1VRuje2S4I3gXwFa+zHKGpCZ3twjD8iAEf49Aj0Cj4=
+X-Received: by 2002:a05:6e02:1a2e:b0:3d0:47cf:869c with SMTP id
+ e9e14a558f8ab-3d280949c9emr10998875ab.19.1739587960314; Fri, 14 Feb 2025
+ 18:52:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250214164520.1001211-1-ameryhung@gmail.com> <20250214164520.1001211-3-ameryhung@gmail.com>
-In-Reply-To: <20250214164520.1001211-3-ameryhung@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 14 Feb 2025 18:48:07 -0800
-X-Gm-Features: AWEUYZmbtvXYiz8sd620DN_stT5GzxICZguCPt7jLc1wx3cm4PSutNuicg3V3JA
-Message-ID: <CAADnVQJoUpZ8qNKSR7drX9nr1YE_Wcx+fM+FAeyMvXekr=ECDA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 2/5] bpf: Support getting referenced kptr from
- struct_ops argument
-To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
-	Kernel Team <kernel-team@meta.com>
+References: <20250213004355.38918-1-kerneljasonxing@gmail.com>
+ <20250213004355.38918-3-kerneljasonxing@gmail.com> <Z66DL7uda3fwNQfH@mini-arch>
+ <CAL+tcoATv6HX5G6wOrquGyyj8C7bFgRZNnWBwnPTKD1gb4ZD=g@mail.gmail.com>
+ <039bfa0d-3d61-488e-9205-bef39499db6e@linux.dev> <CAL+tcoBAv5QuGeiGYUakhxBwVEsut7Gaa-96YOH03h57jtTVaQ@mail.gmail.com>
+ <86453e67-d5dc-4565-bdd6-6383273ed819@linux.dev> <CAL+tcoApvV0vyiTKdaMWMp8F=ZWSodUg0zD+eq_F6kp=oh=hmA@mail.gmail.com>
+ <b3f30f7d-e0c3-4064-b27e-6e9a18b90076@linux.dev> <CAL+tcoB2EO_FJis4wp7WkMdEZQyftwuG2X6z0UrJEFaYnSocNg@mail.gmail.com>
+ <3dab11ad-5cba-486f-a429-575433a719dc@linux.dev> <CAL+tcoAhQTMBxC=qZO0NpiqRCdfGEkD7iWxSg7Odfs4eO7N_JQ@mail.gmail.com>
+ <d7e21933-cd3b-43a2-9678-4f0e592ec87a@linux.dev>
+In-Reply-To: <d7e21933-cd3b-43a2-9678-4f0e592ec87a@linux.dev>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Sat, 15 Feb 2025 10:52:04 +0800
+X-Gm-Features: AWEUYZlBjo95DXXz8WloX8gf6s51YrHtT5FZ6jWNVg6dbS2YBVCCapCb-aVeBfY
+Message-ID: <CAL+tcoDnS2j5nqS_BpbK8=7p8AK=-Jw7dAh3QWbstNOtQRLUyw@mail.gmail.com>
+Subject: Re: [PATCH net-next 2/3] bpf: add TCP_BPF_RTO_MAX for bpf_setsockopt
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Stanislav Fomichev <stfomichev@gmail.com>, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, horms@kernel.org, 
+	ncardwell@google.com, kuniyu@amazon.com, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 14, 2025 at 8:45=E2=80=AFAM Amery Hung <ameryhung@gmail.com> wr=
-ote:
+On Sat, Feb 15, 2025 at 10:39=E2=80=AFAM Martin KaFai Lau <martin.lau@linux=
+.dev> wrote:
 >
-> +               if (!is_nullable && !is_refcounted)
->                         continue;
+> On 2/14/25 3:53 PM, Jason Xing wrote:
+> > Another related topic about rto min test, do you think it's necessary
+> > to add TCP_BPF_RTO_MIN into the setget_sockopt test?
 >
-> +               if (is_nullable)
-> +                       suffix =3D MAYBE_NULL_SUFFIX;
-> +               else if (is_refcounted)
-> +                       suffix =3D REFCOUNTED_SUFFIX;
+> hmm... not sure why it is related to the existing TCP_BPF_RTO_MIN.
+> I thought this patch is adding the new TCP_RTO_MAX_MS...
+>
+> or you want to say, while adding a TCP_RTO_MAX_MS test, add a test for th=
+e
+> existing TCP_BPF_RTO_MIN also because it is missing in the setget_sockopt=
+?
+> iirc, I added setget_sockopt.c to test a patch that reuses the kernel
+> do_*_{set,get}sockopt. Thus, it assumes the optname supports both set and=
+ get.
+> TCP_BPF_RTO_MIN does not support get, so I suspect setget_sockopt will no=
+t be a
+> good fit. They are unrelated, so I would leave it out of your patch for n=
+ow.
 
-I would remove the first 'if' and add:
-   else
-      continue;
+From my perspective, rto min or max is quite similar and only related
+to the time limitation of RTO, so I assume they can have the same
+usage... Right, what you said is exactly what I would like to know. As
+you said, handling rto min will not be included in this series.
 
->                 /* Should be a pointer to struct */
->                 pointed_type =3D btf_type_resolve_ptr(btf,
->                                                     args[arg_no].type,
-> @@ -236,7 +246,7 @@ static int prepare_arg_info(struct btf *btf,
->                 if (!pointed_type ||
->                     !btf_type_is_struct(pointed_type)) {
->                         pr_warn("stub function %s has %s tagging to an un=
-supported type\n",
-> -                               stub_fname, MAYBE_NULL_SUFFIX);
-> +                               stub_fname, suffix);
->                         goto err_out;
->                 }
->
-> @@ -254,11 +264,15 @@ static int prepare_arg_info(struct btf *btf,
->                 }
->
->                 /* Fill the information of the new argument */
-> -               info->reg_type =3D
-> -                       PTR_TRUSTED | PTR_TO_BTF_ID | PTR_MAYBE_NULL;
->                 info->btf_id =3D arg_btf_id;
->                 info->btf =3D btf;
->                 info->offset =3D offset;
-> +               if (is_nullable) {
-> +                       info->reg_type =3D PTR_TRUSTED | PTR_TO_BTF_ID | =
-PTR_MAYBE_NULL;
-> +               } else if (is_refcounted) {
-> +                       info->reg_type =3D PTR_TRUSTED | PTR_TO_BTF_ID;
-> +                       info->refcounted =3D true;
-> +               }
->
->                 info++;
->                 info_cnt++;
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 9de6acddd479..fd3470fbd144 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -6677,6 +6677,7 @@ bool btf_ctx_access(int off, int size, enum bpf_acc=
-ess_type type,
->                         info->reg_type =3D ctx_arg_info->reg_type;
->                         info->btf =3D ctx_arg_info->btf ? : btf_vmlinux;
->                         info->btf_id =3D ctx_arg_info->btf_id;
-> +                       info->ref_obj_id =3D ctx_arg_info->refcounted ? c=
-tx_arg_info->ref_obj_id : 0;
->                         return true;
->                 }
->         }
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index a41ba019780f..a0f51903e977 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -1543,6 +1543,17 @@ static void release_reference_state(struct bpf_ver=
-ifier_state *state, int idx)
->         return;
->  }
->
-> +static bool find_reference_state(struct bpf_verifier_state *state, int p=
-tr_id)
-> +{
-> +       int i;
-> +
-> +       for (i =3D 0; i < state->acquired_refs; i++)
-> +               if (state->refs[i].id =3D=3D ptr_id)
-> +                       return true;
-> +
-> +       return false;
-> +}
-> +
->  static int release_lock_state(struct bpf_verifier_state *state, int type=
-, int id, void *ptr)
->  {
->         int i;
-> @@ -5981,7 +5992,8 @@ static int check_packet_access(struct bpf_verifier_=
-env *env, u32 regno, int off,
->  /* check access to 'struct bpf_context' fields.  Supports fixed offsets =
-only */
->  static int check_ctx_access(struct bpf_verifier_env *env, int insn_idx, =
-int off, int size,
->                             enum bpf_access_type t, enum bpf_reg_type *re=
-g_type,
-> -                           struct btf **btf, u32 *btf_id, bool *is_retva=
-l, bool is_ldsx)
-> +                           struct btf **btf, u32 *btf_id, bool *is_retva=
-l, bool is_ldsx,
-> +                           u32 *ref_obj_id)
-
-It's ok-ish for now, but 11 arguments in a function is pushing it.
-We've accumulated enough tech debt here.
-Consider a follow up.
+Thanks,
+Jason
 
