@@ -1,167 +1,149 @@
-Return-Path: <bpf+bounces-51663-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51664-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 890B1A36F08
-	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 16:16:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A5A29A36F0A
+	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 16:17:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2BC11894B23
-	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 15:16:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44E411894B48
+	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2025 15:17:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B9A31DE2A5;
-	Sat, 15 Feb 2025 15:16:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F4421DE2A5;
+	Sat, 15 Feb 2025 15:17:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iYMwaUTF"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="dg7opRyJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C23CF1A23A4;
-	Sat, 15 Feb 2025 15:16:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06D7A42AA5;
+	Sat, 15 Feb 2025 15:17:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739632571; cv=none; b=LrZ6XCPfvhhOh2dVkoqSuxT5IOscDnLGWi507rsFYLDlIOxb/BTi0Mgk03eFWD1xPncq/aZb5ia5sBmpnC/Yg7WPcnBSUu1FaopJJJ47qnjbT1pLOYIYvcB4w5/eCnH8nrHTpmf+/tdKYOiCA5woanbYkysiDNfkch1RuTS8FXg=
+	t=1739632645; cv=none; b=tisg8hjK9gcB2hxeQf3en49+6Ve8cBXTe1aOf2qI1aJCWni+SQCduU+7wI55vAX/R9mtfAQUXz3KhXh7LVH/PL8vpXtYZz/qBfnZOyjHkS1zXuzmZ1T0QhDJaLSuDNjO2g2m6HdCS8WAJQNtysJz1viwoZb11E+/D0qqQmfBij4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739632571; c=relaxed/simple;
-	bh=/jJ6wIUWLQG2fXvD2qT7otNEwqosPWjsaTNhP/eM4zw=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=TirdQ9LgXvtWNh4RNxEoWyL78VEwhfh0LGHIjsumLKjYavkjxUur1SrvJ86wo4GNjW+bj6Ujoo7kt/G32v/oAHu8DL5lKWXwtrPrNN0LvDNQjzIn9F0b5X/feBrTHR/Qm9V98zH+Bzuj4zgj+J1h+9vQizBcrnL3WG8vP/R9KOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iYMwaUTF; arc=none smtp.client-ip=209.85.160.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-471bc8eaf3fso26258761cf.2;
-        Sat, 15 Feb 2025 07:16:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739632568; x=1740237368; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uCQx85+CgpyKh7rWon2l13Njv7/1QurANKoAJungb1A=;
-        b=iYMwaUTFhncGYbMUpvuw/wao854x3nquPIN/XKNThFbekMRJhZ75gAx1Ep5CijQWSX
-         xMacW6IRGKEbQIY4DIYLWDeEqtI8cHQ0U74c/bDPMq8p0A7KXeZLLt2Nj9mdIL0uKzyu
-         AmKRKIff0ReQFQACB0ItD0wpliup2mZr4R76Wjk3HvWOBmqDhnTRdatGFwLwjVeCeH8x
-         bsCnUs2GNI2YCiDxyG4LGV4Kul4OihqXzD7P/tn5iDQXP1ceajHFurtcRYcNP3HHXr7O
-         tGK3Umny9Id5QFwifY0b/nV+oYtpy0zMvtiPZYttvchFR2whKi/VUvycWzKNlmMk34IZ
-         TJ6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739632568; x=1740237368;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=uCQx85+CgpyKh7rWon2l13Njv7/1QurANKoAJungb1A=;
-        b=RcbtPeB8Fr1vV/twlFOQNjeyq8S+hA0K6XHaJYf3EfI+QZY+9A7lpWSdkVebbl+R2a
-         2eUKMjvg693KstpYsoH6ZRYH7oUY4UR/Ahlb+qGMRxBUkD8EIZGN2cclNdF002/MiZZ9
-         707VhIHjr2HAG/6meKex35TDYHP+aAl+OuOJZistQLuhSfA395RuMWeMXkYw3tsqFM6N
-         FwSJU0dEmZeDnJnDJqHT7mDWzkxNH7CEdEkUC2K5bmRH7OtafGKsizZPTtJhM7kvBMEc
-         93t++YDj9i5Ku8SIhjL1YzP/h/CgTfTAC+Ji4kGyDaajLnWPWAupmKXKJ+736ifwoG2T
-         VEMw==
-X-Forwarded-Encrypted: i=1; AJvYcCUDjfAbUXavToy/ysRs0ZZxFg+Fk6O00gLQXkXJH+9E4/WNqeluocDD87mwes6UDutDEfFOvaki@vger.kernel.org, AJvYcCX/23EUNRbiNGSEHGQiBYLqkifQR2Lf1vt3MK2yBSOuVEoGaSrJHbDQ8hy0yTsIP4/i2SQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyT1QJK9sHU3nyO9OPZtf4WjmY+3+cSpbyBIukXCTWvqQ1c37cI
-	Dv/LncySdSgHAoZ/psfb8aT9NMD6RbN0+5eVyRI6+4ZPxFkYziJV
-X-Gm-Gg: ASbGncv0iGogip07H6y/1WnsAy7Q1TcbhSi2VFkPWifFKVuxrvJmJ+u7SWnyq+Cn4wm
-	TILoePcWe9dwc2DTjSoDXSykFLyFCi2OEcKxI2kzT3p7RhDbpP1iHUyO1B5Abfo/rCQqe+Hlu4j
-	DobYOr+TGf0txl1hFb3I7ZO1WPCOnvOhnBe24mzIGPaslEj58PWe+csBF4JZ/nOfy5L6+F2TPDX
-	ysHDKBfCDDUSFEg86YmQwmf4ePmFkOssrHFJFazKU7sBb/MsPtkL48uXTvonEqSTEYr/1HxluJz
-	xi1Q5xapN++4h8ZbCJh18kBhLrk4/jr1QiSaMFuImbMIC5ghzCNweNfN15v5Mwc=
-X-Google-Smtp-Source: AGHT+IE4FRciT74k4uxdbuseR6K9Kjbqyad4iFRHkSz18OQiYABaXR/2Jit9ijM9vjzpxYY5karNQg==
-X-Received: by 2002:a05:622a:1a91:b0:471:cc71:da47 with SMTP id d75a77b69052e-471dbe6dc72mr47192721cf.32.1739632568631;
-        Sat, 15 Feb 2025 07:16:08 -0800 (PST)
-Received: from localhost (15.60.86.34.bc.googleusercontent.com. [34.86.60.15])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-471c2af37d2sm28204401cf.63.2025.02.15.07.16.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Feb 2025 07:16:08 -0800 (PST)
-Date: Sat, 15 Feb 2025 10:16:07 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Martin KaFai Lau <martin.lau@linux.dev>, 
- Jason Xing <kerneljasonxing@gmail.com>
-Cc: davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- dsahern@kernel.org, 
- willemdebruijn.kernel@gmail.com, 
- willemb@google.com, 
- ast@kernel.org, 
- daniel@iogearbox.net, 
- andrii@kernel.org, 
- eddyz87@gmail.com, 
- song@kernel.org, 
- yonghong.song@linux.dev, 
- john.fastabend@gmail.com, 
- kpsingh@kernel.org, 
- sdf@fomichev.me, 
- haoluo@google.com, 
- jolsa@kernel.org, 
- horms@kernel.org, 
- bpf@vger.kernel.org, 
- netdev@vger.kernel.org
-Message-ID: <67b0afb7b65d1_36e344294cf@willemb.c.googlers.com.notmuch>
-In-Reply-To: <4ff9b840-9ba1-4217-a332-d5fcd1cf983a@linux.dev>
-References: <20250214010038.54131-1-kerneljasonxing@gmail.com>
- <20250214010038.54131-10-kerneljasonxing@gmail.com>
- <5f6e9e0b-1a5f-4129-9a88-ad612b6c6e3b@linux.dev>
- <CAL+tcoCYcpaBDG8GRyP1Fk8WYHAo4ic1YNhmazXEysYUWSTqxg@mail.gmail.com>
- <4ff9b840-9ba1-4217-a332-d5fcd1cf983a@linux.dev>
-Subject: Re: [PATCH bpf-next v11 09/12] bpf: add BPF_SOCK_OPS_TS_ACK_OPT_CB
- callback
+	s=arc-20240116; t=1739632645; c=relaxed/simple;
+	bh=12D54tSqZYYM94NSTY49DMrJ8u9BJDLtE0yKjHfwIoA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CKmrR34uE1qJD+jeRQhlhQSahUm1HwJf2FiNGxtWQE8ymNaPeVpjo8JPKV1eW0STTiX96xjPnNSJtkVcSwC23WwT5K9d4abHRAzaStBUo8kUB0Y3nOll+2uugGI85QBhqxwDlyw3+lr//EWKZ+Y0/PuHLrpr5Bt4bg5FCTuJNGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=dg7opRyJ; arc=none smtp.client-ip=178.60.130.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=RVHUTIkovelkcVcjpfjCsd7fs8jwD3h1GnA4cAJiVMA=; b=dg7opRyJyzXQS/ijLpY6yVjfse
+	y0xiZSai6ir1hv53xjC04L7tKk7jUwdthNjnu6+3MoZHil9g61/njVIigEWQqplQBwHg4YPCTj69R
+	XVqr2Z8B2+j0RhvgMrVANU81GEWgYuOz6S/FCnQltOY6lUuz53o6cChvNwMU/0XWsP3xAPRlCJVAl
+	0dPikczG5BrOz/p0vm+FIrT4ZtZ7Etf5NCK7RMkCjTZpkYo0SURvtT/JKdYX3Ww9pIHI4FH0o5BIG
+	WW8exkUchA24xaIJ3trqItrV5euoRgM1tiWpFRlb3suc8bysL0NRXjy1geDU6bB4JyrXFvi350FSS
+	TUMvJcMw==;
+Received: from [58.29.143.236] (helo=[192.168.1.6])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1tjJuT-003xbB-B7; Sat, 15 Feb 2025 16:16:55 +0100
+Message-ID: <6632e26d-996c-432e-956f-5be178722e5b@igalia.com>
+Date: Sun, 16 Feb 2025 00:16:43 +0900
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next] bpf: Add a retry after refilling the free list
+ when unit_alloc() fails
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Tejun Heo <tj@kernel.org>,
+ Andrea Righi <arighi@nvidia.com>, kernel-dev@igalia.com,
+ bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20250212084851.150169-1-changwoo@igalia.com>
+ <CAADnVQLRrhyOHGPb1O0Ju=7YVCNexdhwtoJaGYrfU9Vh2cBbgw@mail.gmail.com>
+ <4fd39e4b-f2dc-4b7d-a3be-ec3eae8d592a@igalia.com>
+ <CAADnVQL5dt7_S-zFSh-ps7uPfL2ofYs0vo1fFuFBwiz0=DV2Vw@mail.gmail.com>
+From: Changwoo Min <changwoo@igalia.com>
+Content-Language: en-US, ko-KR, en-US-large, ko
+In-Reply-To: <CAADnVQL5dt7_S-zFSh-ps7uPfL2ofYs0vo1fFuFBwiz0=DV2Vw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Martin KaFai Lau wrote:
-> On 2/14/25 3:16 PM, Jason Xing wrote:
-> > On Sat, Feb 15, 2025 at 4:34=E2=80=AFAM Martin KaFai Lau <martin.lau@=
-linux.dev> wrote:
-> >>
-> >> On 2/13/25 5:00 PM, Jason Xing wrote:
-> >>> diff --git a/net/dsa/user.c b/net/dsa/user.c
-> >>> index 291ab1b4acc4..794fe553dd77 100644
-> >>> --- a/net/dsa/user.c
-> >>> +++ b/net/dsa/user.c
-> >>> @@ -897,7 +897,7 @@ static void dsa_skb_tx_timestamp(struct dsa_use=
-r_priv *p,
-> >>>    {
-> >>>        struct dsa_switch *ds =3D p->dp->ds;
-> >>>
-> >>> -     if (!(skb_shinfo(skb)->tx_flags & SKBTX_HW_TSTAMP))
-> >>> +     if (!(skb_shinfo(skb)->tx_flags & SKBTX_HW_TSTAMP_NOBPF))
-> >>
-> >> This change should be in patch 8.
-> >>
-> >> [ ... ]
-> >>
-> >>> diff --git a/net/socket.c b/net/socket.c
-> >>> index 262a28b59c7f..517de433d4bb 100644
-> >>> --- a/net/socket.c
-> >>> +++ b/net/socket.c
-> >>> @@ -676,7 +676,7 @@ void __sock_tx_timestamp(__u32 tsflags, __u8 *t=
-x_flags)
-> >>>        u8 flags =3D *tx_flags;
-> >>>
-> >>>        if (tsflags & SOF_TIMESTAMPING_TX_HARDWARE) {
-> >>> -             flags |=3D SKBTX_HW_TSTAMP;
-> >>> +             flags |=3D SKBTX_HW_TSTAMP_NOBPF;
-> >>
-> >> Same here.
-> > =
+Hello,
 
-> > Sure, you're right. If you feel it's necessary to re-spin, I will
-> > adjust these two points :)
-> =
+On 25. 2. 15. 12:51, Alexei Starovoitov wrote:
+ > On Fri, Feb 14, 2025 at 1:24 AM Changwoo Min <changwoo@igalia.com> wrote:
+ >>
+ >> Hello Alexei,
+ >>
+ >> Thank you for the comments! I reordered your comments for ease of
+ >> explanation.
+ >>
+ >> On 25. 2. 14. 02:45, Alexei Starovoitov wrote:
+ >>> On Wed, Feb 12, 2025 at 12:49 AM Changwoo Min <changwoo@igalia.com> 
+wrote:
+ >>
+ >>> The commit log is too terse to understand what exactly is going on.
+ >>> Pls share the call stack. What is the allocation size?
+ >>> How many do you do in a sequence?
+ >>
+ >> The symptom is that an scx scheduler (scx_lavd) fails to load on
+ >> an ARM64 platform on its first try. The second try succeeds. In
+ >> the failure case, the kernel spits the following messages:
+ >>
+ >> [   27.431380] sched_ext: BPF scheduler "lavd" disabled (runtime error)
+ >> [   27.431396] sched_ext: lavd: ops.init() failed (-12)
+ >> [   27.431401]    scx_ops_enable.isra.0+0x838/0xe48
+ >> [   27.431413]    bpf_scx_reg+0x18/0x30
+ >> [   27.431418]    bpf_struct_ops_link_create+0x144/0x1a0
+ >> [   27.431427]    __sys_bpf+0x1560/0x1f98
+ >> [   27.431433]    __arm64_sys_bpf+0x2c/0x80
+ >> [   27.431439]    do_el0_svc+0x74/0x120
+ >> [   27.431446]    el0_svc+0x80/0xb0
+ >> [   27.431454]    el0t_64_sync_handler+0x120/0x138
+ >> [   27.431460]    el0t_64_sync+0x174/0x178
+ >>
+ >> The ops.init() failed because the 5th bpf_cpumask_create() calls
+ >> failed during the initialization of the BPF scheduler. The exact
+ >> point where bpf_cpumask_create() failed is here [1]. That scx
+ >> scheduler allocates 5 CPU masks to aid its scheduling decision.
+ >
+ > ...
+ >
+ >> In this particular scenario, the IRQ is not disabled. I just
+ >
+ > since irq-s are not disabled the unit_alloc() should have done:
+ >          if (cnt < c->low_watermark)
+ >                  irq_work_raise(c);
+ >
+ > and alloc_bulk() should have started executing after the first
+ > calloc_cpumask(&active_cpumask);
+ > to refill it from 3 to 64
 
-> That will be good. I would wait a bit to collect Willem's comment first=
-.
+Is there any possibility that irq_work is not scheduled right away on 
+aarch64?
 
-Depends on answers to my few remaining points. =
+ >
+ > What is sizeof(struct bpf_cpumask) in your system?
 
+In my system, sizeof(struct bpf_cpumask) is 1032.
 
+ >
+ > Something doesn't add up. irq_work_queue() should be
+ > instant when irq-s are not disabled.
+ > This is not IRQ_WORK_LAZY.> Are you running PREEMPT_RT ?
 
+No, CONFIG_PREEMPT_RT is not set.
+
+Regards,
+Changwoo Min
 
