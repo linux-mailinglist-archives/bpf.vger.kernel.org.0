@@ -1,214 +1,162 @@
-Return-Path: <bpf+bounces-51695-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51696-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D9FFA374DA
-	for <lists+bpf@lfdr.de>; Sun, 16 Feb 2025 15:49:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6360A37561
+	for <lists+bpf@lfdr.de>; Sun, 16 Feb 2025 17:05:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDC311886AB4
-	for <lists+bpf@lfdr.de>; Sun, 16 Feb 2025 14:49:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5B921887F6A
+	for <lists+bpf@lfdr.de>; Sun, 16 Feb 2025 16:05:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91BB4195B1A;
-	Sun, 16 Feb 2025 14:49:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCBDB198A11;
+	Sun, 16 Feb 2025 16:05:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R6I4ikH0"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="cbmOVPzk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DE1653A7;
-	Sun, 16 Feb 2025 14:49:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFA8ADF78;
+	Sun, 16 Feb 2025 16:04:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739717345; cv=none; b=tCicYJdkMeyjPHMHGxLI+hCm45bcCzsYoORoJTDrRrFQF2pFWjmveV2b66DCr6LiJ2bRz7JUoszulCj8ty1IojWgNyvU0ZKYaAIQ1UzuzaAEf+1w1OZ3vFbe/ysWf3sVsjr8aFZQQECbY96DozAilQeG3JgoEz6vWljGt4HgCwE=
+	t=1739721901; cv=none; b=laJ7b9zRCbXnLwEmPBDc4Uvnq4V5N3Ff3F+P4V2GeEriz9MGxWc+niuwji2KLhKwIwncwJv2WXfSi75+1IGCxOa36OV6Q06GTHb4dfnqZIo5I+cJrA7ihxbMRNeeyuBYcpbcDHUVXpwe4J+HvKXiMXjCM3vgPLJQHaEY6p1lDRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739717345; c=relaxed/simple;
-	bh=v541oYN4LKXknEHBVuJVfB05L2eJ4A19Ug3V3oUP4dA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Cc7ZufJOr7U8a4qXr9qHKgdo1wjTOoTh14jXfAsbkPtw+7CMXlxrn2wuxIsavK0rUEv7y9Gs7862JA72yvjC5I2WE0FFQJLfaTKIEgZcLCKloShd4rSEcq9POS0lrbjETrTiayOEzz5GylAhxrfouuJ7Oo58ex7aAsHuBOMXGZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R6I4ikH0; arc=none smtp.client-ip=209.85.166.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-8558229e184so13307539f.3;
-        Sun, 16 Feb 2025 06:49:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739717343; x=1740322143; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v541oYN4LKXknEHBVuJVfB05L2eJ4A19Ug3V3oUP4dA=;
-        b=R6I4ikH0i7QK0/gmKmNwTK0hvs1MjklRHY3tUtalIWNiecVMAgIfTk7jwKWsVmblln
-         9i9BvsfCeh+5gdGCsJnUrFEbGzmtzG3eF4V1jP8J9sFvmSzXZUYFcmPEH9vMPn6eMDZe
-         cIieIzwgP6cD20MXdKoDgILz5q9RF53wjc0KDoA8tdNJoYRwi46Mf+6XjR/PjTr3dgTc
-         ZgmM7fp00degHX/kDAdl3DCFJCxeWvMJqgyT1DhQohkDIFRnWZY0zaggNhNVm5yV/T3k
-         vRVizS8qoAXxjzCAGzczfDQv2Ro+a18Lg2WpBJQh2bAew1T7VJyHUg8/gN42rRz/eAxc
-         1vZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739717343; x=1740322143;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=v541oYN4LKXknEHBVuJVfB05L2eJ4A19Ug3V3oUP4dA=;
-        b=MyI83i7kB6YAJxvjvL4rAw7h3a38Id0umRnqC9jaDctudk/ZNc7sPOQWRX52GwFlK4
-         T0c6F/xuVHsBjG7qteypxHCNvdVgDKsteGj4eHlpu8eTOrUrqUCqGQU0VMc9AxmchJ3F
-         MGc7OdGfVYI0qAzAif7f8uSF34nXgbr1I+Xrtb4hT+ZvMV9bGCXKVMyR0h7fLM3NYKGN
-         NuLKkQnE8HAN+EWLGgzHHmxnBI9wsyemzL7fH1dlmqMLNu5IDD6EA/lT65jNBtQ/yfb1
-         rFoBuz3K+BDTfIfC1Ipa62U/T3o3DwBNpUzmqLGoRYV6xbS2UKByKCnoIMg+MI6XulFf
-         g8Kw==
-X-Forwarded-Encrypted: i=1; AJvYcCVj3AkSyljNtkomYzTAhXjosJSdm+lQHHj/QbFWenFLj4EIDdNMntxgLpgFLpEXAkQ1QnU=@vger.kernel.org, AJvYcCW9a0/tI7kbKKoekjsW7xo/B1QpK0VmhyGQkubkHMtuBiqa/vMMC/6eA05mYw18KtOV8/2/9LE5@vger.kernel.org
-X-Gm-Message-State: AOJu0YyjW35DNsx9rC8EgWvstTuA5sQabALv+xPz0lk1tkW8uK+O8/pz
-	NxacqkFDqMCEDbe8rjO09rd+LbJC300rQs+J/LVGJrckROxVY0jBZxM0qvp6qPps+n+EM8Sb90u
-	TLqDjYMKGun0/Eq/g0cX0PCWatt4=
-X-Gm-Gg: ASbGncvVYvtFhyu/BLsGge7UaZ9mNdj5VDflIRTRuMe/+YgyhjKrtI0wvo+0CPziZfI
-	uvE4vSr6vvj+kUHRLDhnwhdGkgg/NPlBJ1TogM3EoqUQORsoKp6UCBXoHDIWBf4HwKOavO7On
-X-Google-Smtp-Source: AGHT+IG3/aB3bhu4torf1LTXIS3c28cHadzav4Wvs1rEYQ66BEtV8AkdQBjP0KC1lzbBaxBGAXfMhYQixQpQF4zJbyU=
-X-Received: by 2002:a05:6e02:198d:b0:3d0:4a82:3f42 with SMTP id
- e9e14a558f8ab-3d280946f56mr41335535ab.16.1739717342692; Sun, 16 Feb 2025
- 06:49:02 -0800 (PST)
+	s=arc-20240116; t=1739721901; c=relaxed/simple;
+	bh=2ZaDVlLJ/ti9Ae9cuEdkGgHUJgEfXAaoAFiRBsExjy8=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=FcxCjgQP7wJIsCW2ciQcrLRSRyBRUWCsww7IyGIO8RJsZuO71J4ABeU7UxY+i/7+gG2ZiUiz7h3aIjGGfx3+0FtD74Ty7T1c1cW+1NsDJbB5PrD5ohVafDj4EU5P1ZV2lSXX7aTgWfVdzaFq+4mhOb900+EmKyNLML6rjJLmmcE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=cbmOVPzk; arc=none smtp.client-ip=178.60.130.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:References:
+	Cc:To:From:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=fUJitB9s5rqxO+wH4KzInz9GqX7SWy9xiRXEy3JnYmQ=; b=cbmOVPzkvpZe7FnADVf60GfkvI
+	BD0uvz7oXu+J0pOPe4PfSClIwC+lXQvqe0YjzXDM0EfRW5eWU68e7pgqhHG8fnJFrOAI/LhhQba+M
+	264r5Vkki7ChhLt9RLxr9ypb6qvGOWBI3rbWYRm5PGCoE5FMk2JgUsb0EICruHhhV1UTAat99jr8O
+	QYF4kT7LFdfSuxktOiYHT/EkP52JPEfrUsBNKxIpSlalm/Uc0dmQn5Pbq0aEQOqu5ni3osaQF7NH5
+	TLd6W9qyr/qQbbqzDXzdxXJpArAatp97nwYVCGrekdipUt0zRNNYxe9tVjHpngQkvej7mKMMD9Yw2
+	1uCDPflA==;
+Received: from [58.29.143.236] (helo=[192.168.1.6])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1tjh84-005DKV-DU; Sun, 16 Feb 2025 17:04:30 +0100
+Message-ID: <7ea1165d-d399-4d40-ad5b-fab44e2148ca@igalia.com>
+Date: Mon, 17 Feb 2025 01:04:16 +0900
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250214010038.54131-1-kerneljasonxing@gmail.com>
- <20250214010038.54131-9-kerneljasonxing@gmail.com> <67b0ad8819948_36e344294a7@willemb.c.googlers.com.notmuch>
- <CAL+tcoAJHSfBrfdn-Cmk=9ZkMNSdkGYKJbZ0mynn_=qU9Mp1Ag@mail.gmail.com>
- <67b0d831bf13f_381893294f4@willemb.c.googlers.com.notmuch>
- <CAL+tcoDhtBFjVBMWObHq3LaSNXgJN_UWBVONAqD=t7CRYN_PAg@mail.gmail.com>
- <89989129-9336-4863-a66e-e9c8adc60072@linux.dev> <CAL+tcoDB=Vv=smpP9rUaj3tug2Vt6dQz9Ay8DRxMwAs-Q9iexg@mail.gmail.com>
- <67b1f7f02320f_3f936429436@willemb.c.googlers.com.notmuch> <CAL+tcoCWmzFvz=GtbmfVoDwacTDXi2XeHt-Fc10rxc5S2WMN_Q@mail.gmail.com>
-In-Reply-To: <CAL+tcoCWmzFvz=GtbmfVoDwacTDXi2XeHt-Fc10rxc5S2WMN_Q@mail.gmail.com>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Sun, 16 Feb 2025 22:48:26 +0800
-X-Gm-Features: AWEUYZkiW0AhQrlKaFnBShibTFBGkti51Rwws2qTO_nw13Fy9d17HAjL48LcVjc
-Message-ID: <CAL+tcoAjdaBPZE96T=YrgtZVUZNTmFpXr8C2+iVXLSZKB+01cA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v11 08/12] bpf: add BPF_SOCK_OPS_TS_HW_OPT_CB callback
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org, willemb@google.com, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, 
-	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
-	horms@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next] bpf: Add a retry after refilling the free list
+ when unit_alloc() fails
+From: Changwoo Min <changwoo@igalia.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Tejun Heo <tj@kernel.org>,
+ Andrea Righi <arighi@nvidia.com>, kernel-dev@igalia.com,
+ bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20250212084851.150169-1-changwoo@igalia.com>
+ <CAADnVQLRrhyOHGPb1O0Ju=7YVCNexdhwtoJaGYrfU9Vh2cBbgw@mail.gmail.com>
+ <4fd39e4b-f2dc-4b7d-a3be-ec3eae8d592a@igalia.com>
+ <CAADnVQL5dt7_S-zFSh-ps7uPfL2ofYs0vo1fFuFBwiz0=DV2Vw@mail.gmail.com>
+ <6632e26d-996c-432e-956f-5be178722e5b@igalia.com>
+Content-Language: en-US, ko-KR, en-US-large, ko
+In-Reply-To: <6632e26d-996c-432e-956f-5be178722e5b@igalia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sun, Feb 16, 2025 at 10:45=E2=80=AFPM Jason Xing <kerneljasonxing@gmail.=
-com> wrote:
->
-> On Sun, Feb 16, 2025 at 10:36=E2=80=AFPM Willem de Bruijn
-> <willemdebruijn.kernel@gmail.com> wrote:
-> >
-> > Jason Xing wrote:
-> > > On Sun, Feb 16, 2025 at 6:58=E2=80=AFAM Martin KaFai Lau <martin.lau@=
-linux.dev> wrote:
-> > > >
-> > > > On 2/15/25 2:23 PM, Jason Xing wrote:
-> > > > > On Sun, Feb 16, 2025 at 2:08=E2=80=AFAM Willem de Bruijn
-> > > > > <willemdebruijn.kernel@gmail.com> wrote:
-> > > > >>
-> > > > >> Jason Xing wrote:
-> > > > >>> On Sat, Feb 15, 2025 at 11:06=E2=80=AFPM Willem de Bruijn
-> > > > >>> <willemdebruijn.kernel@gmail.com> wrote:
-> > > > >>>>
-> > > > >>>> Jason Xing wrote:
-> > > > >>>>> Support hw SCM_TSTAMP_SND case for bpf timestamping.
-> > > > >>>>>
-> > > > >>>>> Add a new sock_ops callback, BPF_SOCK_OPS_TS_HW_OPT_CB. This
-> > > > >>>>> callback will occur at the same timestamping point as the use=
-r
-> > > > >>>>> space's hardware SCM_TSTAMP_SND. The BPF program can use it t=
-o
-> > > > >>>>> get the same SCM_TSTAMP_SND timestamp without modifying the
-> > > > >>>>> user-space application.
-> > > > >>>>>
-> > > > >>>>> To avoid increasing the code complexity, replace SKBTX_HW_TST=
-AMP
-> > > > >>>>> with SKBTX_HW_TSTAMP_NOBPF instead of changing numerous calle=
-rs
-> > > > >>>>> from driver side using SKBTX_HW_TSTAMP. The new definition of
-> > > > >>>>> SKBTX_HW_TSTAMP means the combination tests of socket timesta=
-mping
-> > > > >>>>> and bpf timestamping. After this patch, drivers can work unde=
-r the
-> > > > >>>>> bpf timestamping.
-> > > > >>>>>
-> > > > >>>>> Considering some drivers doesn't assign the skb with hardware
-> > > > >>>>> timestamp,
-> > > > >>>>
-> > > > >>>> This is not for a real technical limitation, like the skb perh=
-aps
-> > > > >>>> being cloned or shared?
-> > > > >>>
-> > > > >>> Agreed on this point. I'm kind of familiar with I40E, so I dare=
- to say
-> > > > >>> the reason why it doesn't assign the hwtstamp is because the sk=
-b will
-> > > > >>> soon be destroyed, that is to say, it's pointless to assign the
-> > > > >>> timestamp.
-> > > > >>
-> > > > >> Makes sense.
-> > > > >>
-> > > > >> But that does not ensure that the skb is exclusively owned. Nor =
-that
-> > > > >> the same is true for all drivers using this API (which is not sm=
-all,
-> > > > >> but small enough to manually review if need be).
-> > > > >>
-> > > > >> The first two examples I happened to look at, i40e and bnx2x, bo=
-th use
-> > > > >> skb_get() to get a non-exclusive skb reference for their ptp_tx_=
-skb.
-> > > >
-> > > > I think the existing __skb_tstamp_tx() function is also assigning t=
-o
-> > > > skb_hwtstamps(skb). The skb may be cloned from the orig_skb first, =
-but they
-> > > > still share the same shinfo. My understanding is that this patch is=
- assigning to
-> > > > the shinfo earlier, so it should not have changed the driver's expe=
-ctation on
-> > > > the skb_hwtstamps(skb) after calling __skb_tstamp_tx(). If there ar=
-e drivers
-> > > > assuming exclusive access to the skb_hwtstamps(skb), probably it is=
- something
-> > > > that needs to be addressed regardless and should not be the common =
-case?
-> > >
-> > > Right, it's also what I was trying to say but missed. Thanks for the
-> > > supplementary info:)
-> >
-> > That existing behavior looks dodgy then, too.
-> >
-> > I don't have time to look into it deeply right now. But it seems to go
-> > back all the way to the introduction of hw timestamping in commit
-> > ac45f602ee3d in 2009.
->
-> Right. And hardware timestamping has been used for many years, I presume.
->
-> >
-> > I can see how it works in that nothing else holding a clone will
-> > likely have a reason to touch those fields. But that does not make it
-> > correct.
-> >
-> > Your point that the new code is no worse than today probably is true.
->
-> Right.
->
-> > But when we spot something we prefer to fix it probably. Will need a
-> > deeper look..
->
-> Got it. I added it to my to-do list. If you don't mind, I plan to take
-> a deep look in March and then get back to you because recently I'm
-> occupied by many things. I need to study some of the drivers that
-> don't use skb_get() there.
->
+Hello,
 
-Oh, sorry, I forgot to ask: what should we do next regarding this series ?
+ >  > What is sizeof(struct bpf_cpumask) in your system?
+ >
+ > In my system, sizeof(struct bpf_cpumask) is 1032.
+It was a wrong number. sizeof(struct bpf_cpumask) is actually 16.
 
-Thanks,
-Jason
+On 25. 2. 16. 00:16, Changwoo Min wrote:
+> Hello,
+> 
+> On 25. 2. 15. 12:51, Alexei Starovoitov wrote:
+>  > On Fri, Feb 14, 2025 at 1:24 AM Changwoo Min <changwoo@igalia.com> 
+> wrote:
+>  >>
+>  >> Hello Alexei,
+>  >>
+>  >> Thank you for the comments! I reordered your comments for ease of
+>  >> explanation.
+>  >>
+>  >> On 25. 2. 14. 02:45, Alexei Starovoitov wrote:
+>  >>> On Wed, Feb 12, 2025 at 12:49 AM Changwoo Min <changwoo@igalia.com> 
+> wrote:
+>  >>
+>  >>> The commit log is too terse to understand what exactly is going on.
+>  >>> Pls share the call stack. What is the allocation size?
+>  >>> How many do you do in a sequence?
+>  >>
+>  >> The symptom is that an scx scheduler (scx_lavd) fails to load on
+>  >> an ARM64 platform on its first try. The second try succeeds. In
+>  >> the failure case, the kernel spits the following messages:
+>  >>
+>  >> [   27.431380] sched_ext: BPF scheduler "lavd" disabled (runtime error)
+>  >> [   27.431396] sched_ext: lavd: ops.init() failed (-12)
+>  >> [   27.431401]    scx_ops_enable.isra.0+0x838/0xe48
+>  >> [   27.431413]    bpf_scx_reg+0x18/0x30
+>  >> [   27.431418]    bpf_struct_ops_link_create+0x144/0x1a0
+>  >> [   27.431427]    __sys_bpf+0x1560/0x1f98
+>  >> [   27.431433]    __arm64_sys_bpf+0x2c/0x80
+>  >> [   27.431439]    do_el0_svc+0x74/0x120
+>  >> [   27.431446]    el0_svc+0x80/0xb0
+>  >> [   27.431454]    el0t_64_sync_handler+0x120/0x138
+>  >> [   27.431460]    el0t_64_sync+0x174/0x178
+>  >>
+>  >> The ops.init() failed because the 5th bpf_cpumask_create() calls
+>  >> failed during the initialization of the BPF scheduler. The exact
+>  >> point where bpf_cpumask_create() failed is here [1]. That scx
+>  >> scheduler allocates 5 CPU masks to aid its scheduling decision.
+>  >
+>  > ...
+>  >
+>  >> In this particular scenario, the IRQ is not disabled. I just
+>  >
+>  > since irq-s are not disabled the unit_alloc() should have done:
+>  >          if (cnt < c->low_watermark)
+>  >                  irq_work_raise(c);
+>  >
+>  > and alloc_bulk() should have started executing after the first
+>  > calloc_cpumask(&active_cpumask);
+>  > to refill it from 3 to 64
+> 
+> Is there any possibility that irq_work is not scheduled right away on 
+> aarch64?
+> 
+>  >
+>  > What is sizeof(struct bpf_cpumask) in your system?
+> 
+> In my system, sizeof(struct bpf_cpumask) is 1032.
+> 
+>  >
+>  > Something doesn't add up. irq_work_queue() should be
+>  > instant when irq-s are not disabled.
+>  > This is not IRQ_WORK_LAZY.> Are you running PREEMPT_RT ?
+> 
+> No, CONFIG_PREEMPT_RT is not set.
+> 
+> Regards,
+> Changwoo Min
+> 
+> 
+
 
