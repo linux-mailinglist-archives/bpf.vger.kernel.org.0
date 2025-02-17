@@ -1,167 +1,164 @@
-Return-Path: <bpf+bounces-51717-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51718-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BB53A37A2C
-	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2025 04:44:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3F0FA37ADB
+	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2025 06:21:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0F3C3AF2C2
-	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2025 03:43:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C51FD16CE00
+	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2025 05:21:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F0C416C850;
-	Mon, 17 Feb 2025 03:43:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B5DC17C21E;
+	Mon, 17 Feb 2025 05:21:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JRLcduPR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C3Lom8Zg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B14C71531E9;
-	Mon, 17 Feb 2025 03:43:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA17E142E67;
+	Mon, 17 Feb 2025 05:21:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739763831; cv=none; b=H6r3jHIy9YHgM0JL/O9j7kOROhVt1gv13H2qIlbzO4CdQptbtBwlX9ZTjEe3yoLIOPXoSRZmwT/1XKyOYGEMPm07XHPmfGBD71oHi9hR/nG/f3etDsr9CCdIp6hPDoMI7oWYRAPFdk+VdqzKce+MXG42FNLmJvNCIRvYMdxUw4Y=
+	t=1739769700; cv=none; b=pnvMhpRlxEL7OJuT32LQXP+jxdQvPFfwSFCVk9yLOX3saqYppPLHRgIFHYdmbP4Lc36gFKpBQ8aAKGgES+NPBzEa6kDyXZeXqP8pU83KuZ48IMi2Ecn/X+6K8Ql73RlXAhYhMxPEd1cx47+z7S/Cq4vXhqPjcMeCy03U1P8aYBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739763831; c=relaxed/simple;
-	bh=9QNM3AscLlH25zdbGoqJzoGC3Cbg2xkQ4m6U6PwOPUQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=U1yn4tmLJYjT7qUGvo5D5NK0ETXiVsbYafmUnOnJWbTtCCpFAOeZUM+afb+2w1zaVr378Su8FgpQFfKX/HBAohqCpYFQrUQQvnuyicLFQDgpI+FRl+w2Ow1WDd00B/lY3UJ9l7eF8+disw316AvqZkk2IzF06xCVKHg969UCe2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JRLcduPR; arc=none smtp.client-ip=209.85.216.48
+	s=arc-20240116; t=1739769700; c=relaxed/simple;
+	bh=sjoCwO9d9om7MmK37AEOIfXLwyChaa15G4IG12FPC/M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sXAknWI+f+OBEhQE0ljv/IRO/QcZ//w+0biqYgIvSLwZRCwty9Jbv/IT8oKOODzElzK3UKd38KHvu6h7QPuSitJWFjynREsrRqYnQT1XNR/kro3vsYWl36/2mN+lxaWQ/gr+jOGqjYj3ZmIoIajh2+D9DXpqUiBD8Yu/UXnAgW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C3Lom8Zg; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2fc33aef343so4294649a91.1;
-        Sun, 16 Feb 2025 19:43:49 -0800 (PST)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-221206dbd7eso12952445ad.2;
+        Sun, 16 Feb 2025 21:21:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739763829; x=1740368629; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1739769698; x=1740374498; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=B57NruNT8Me/w38M2LO6Hk9MWp+zWLpI7IL2YwomIyQ=;
-        b=JRLcduPRxMVndTgH4bNxHtVwoD+iwrfIRCMljfkrmD2thgVNbHCtrl0om0TSW6lWfX
-         dYAqzNHMvLprdN00O6z4qGgYx/Wnh3u7ZJ+ewFc/vK/40zgx/SMy1lBR+EIomder+MZP
-         tDYbAUhuo0JCpJHOWljQxFphJosGD4uWnxRbrbVUk32YbIq0pfMCeJlxGuGy3AE9WQR9
-         KlFuHD8gSNviCx1PtcHdEzwccINEFpWdhIJIca+jrbbChwKc1b1Ij9NvBI3g2xmqC5lT
-         uiGIYU6F5aPv074tV7jY4Bcv/YwCkmkRJ7qu85PilqTTB0xkprd8wXUwZTcOwIGXdRgS
-         aZZg==
+        bh=M/XwSW7PHY2f1VnmVU0Y4+WCWXZUOX7V/Jy8Aied84U=;
+        b=C3Lom8Zg+ezlaoA7QDug001cUOfH75Gvtq15Ri4FFXDUqtYrMxtm6dW1X1uLdWH8wy
+         1RRjNq6FOtDmgSd2w7qBePz1LBWevMditJW5b/5abuQ3K0FDPTNybKS/xFOlNO8vjycP
+         EbxpgBF8krW9kv4gTHd5wlfL8R9hJcuahWxCdPAuqWzyurT4l98H0mh/NDM35VLYgJ7X
+         8mFpDGH83b+R0yFTGH4gzq+w5q08HMhtp8qO5XOC82PMhWeiwAdA354NQ6CqGzrrG8a5
+         mQn5BjiAlFIfFQwXZ3suDLkcdBY8ndOsWmQuGqiavZiDpjjfIwZv6bvLYrgc4lkjownd
+         EZrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739763829; x=1740368629;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=B57NruNT8Me/w38M2LO6Hk9MWp+zWLpI7IL2YwomIyQ=;
-        b=svceCUa/HBpZT5piwIpHhjOB2KclIGTSUjMxQeukUgU65Qho+sBWHWmWasxL0EmtZu
-         VQZuOjRLpBbh9iFWg+j1ZJvvsT8LgUPQIGjluz3OU6FwIgaDaRxR4H2r1jd0Jzi5bYG7
-         UOjZQBjHfCIem1GT96YxeLcH81gwAy3USy/sKYY60oovu4P/ys042bEqYe/llehAPKcf
-         n4R/GlbQLIVBm5mVaV5Xj6fksF2DE4X/8wWvSeuYKEhoIRDeBMMXwvgko8gkb6dGV9fd
-         xNL7vjCo1t9DWq5ChSAzA2U3Gssb7qzWr/rKfJ4CV3+GJdXIuwjc7je0crQsa465XzdL
-         1IzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV0Ec9DV6RihFbLi0trAKc5VPwtg9sVG4T9S4xAKYsgSq1a6oAlQLdxqweUEhWkfiBecPwSvY0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzq7rMzWx24t5j1EBVX1ceycf7p4I5/OTypw8B3ML4j4NwfYTIs
-	vCCCKBf/OYv/eRfjErDYvUxRZYpv82O/pL+2xbtHHfLAdr6HdSlJ
-X-Gm-Gg: ASbGncs51Btb2x9gCP6OyNvlYXIjnALcmdgNCHci5Q8/xZ+YOPrc5PwuO9LYyw5x+Vt
-	3FGAc9tg3Wr8iFeMwACdzCtYBX3W4NviNAkg4BA1BWDVz9IgiLl8up3puGc41hUlEy5NrBL5w9C
-	rjzTfXwnhVCnjvIo6DYy8ZdiYy3J94ckWHPMV0szerZE9aut3QwBfwjuXJn/3cMs9irQg8h6Ya5
-	sWYpkPcZwDdkopqWmq/9cG5N6zrnH8qWpIevOgMeyX4UQ1cX8Bo3vp1XjgRbg2zEifK/NOR0oH6
-	NfFjF2giSZeoqz1LouKMDzTE5IqUGU51u3FiFU6eYWSfpyAw7Pn7C2B3L/nxfKc=
-X-Google-Smtp-Source: AGHT+IEs+22WmmhwfGOFkeqzMbKXOL89TanbzvuylQy7Tc3in0VurD10NCuELWaHJjVAvZxQ5QwYog==
-X-Received: by 2002:a17:90b:4a0c:b0:2ee:aed6:9ec2 with SMTP id 98e67ed59e1d1-2fc40f10287mr14653472a91.14.1739763828996;
-        Sun, 16 Feb 2025 19:43:48 -0800 (PST)
-Received: from KERNELXING-MB0.tencent.com ([43.132.141.20])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-220d536b047sm61966585ad.101.2025.02.16.19.43.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Feb 2025 19:43:48 -0800 (PST)
-From: Jason Xing <kerneljasonxing@gmail.com>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	dsahern@kernel.org,
-	kuniyu@amazon.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	shuah@kernel.org,
-	ykolal@fb.com
-Cc: bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Jason Xing <kerneljasonxing@gmail.com>
-Subject: [PATCH bpf-next v2 3/3] selftests/bpf: add rto max for bpf_setsockopt test
-Date: Mon, 17 Feb 2025 11:42:45 +0800
-Message-Id: <20250217034245.11063-4-kerneljasonxing@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20250217034245.11063-1-kerneljasonxing@gmail.com>
-References: <20250217034245.11063-1-kerneljasonxing@gmail.com>
+        d=1e100.net; s=20230601; t=1739769698; x=1740374498;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=M/XwSW7PHY2f1VnmVU0Y4+WCWXZUOX7V/Jy8Aied84U=;
+        b=F3CgZt3G32zkzwtvWafZFWEQkTrS/U/CVLXqaFduMQ7zN0E6O/2tthH4W6TCembike
+         Hyo4qFYsCmQjKB6Bb2kf+DhshtScdtU0hNFQKeV0473GdyEulMp430uwCPr+D3+Bc2Es
+         XD/YsRaj3U5k4h/USS0jpMTy7lg+DU8ewSZ0xpGaGIbwIh+aOsSHM0tKC2yYU4dakhOi
+         iitNWjL211/40fk+Xb5LUDkHfP5TDDztlhOEIpY+gjVbdM0pB5zhnsDf+GABmV1nmyss
+         NKwvT2V1ijP3MKhNdUb9TFOPLE3n0vZMWnjIRKM1dFXwncw86W342V2GMLFrlLd+5nXg
+         sWRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUD2QE1xi9e1x5d14OdKqgkZb8t1bgyMYCIpMapku3aJIJ+KosLbIcCqAx82YShbIKrHnlRAdIfzzf+Agc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxumFYtuwWK9RigBrbPnbi8X9o6rYfe4a/MfnBR5RaR/T862txf
+	I1J6eBiilmWoK23tMrpGIX2vRBw29pw104/yPM36eV1DtGFz6OHI
+X-Gm-Gg: ASbGncvwEWdRtXj+p7kl9bMGz6mnMVu1dp7avOoRAh1woNRlWjbbSUud7Ky9vIQVPsP
+	wQFmWifvdsliWcWxK2X1gQUSi1kA/OYrvV35zx3vXhE5atS6ZpVZ1mvwazH5FaK7GrZV4Wxax2t
+	BR3KMnzoqdXfKZPx1LWyrcIqd/D9zVDFoOZscnzSuPKWjmbAx66gYnV9ikOJWyK0SzbEb52JCdP
+	NovgKWiq26du34fSn6eqObdSG167ea12Qs172KREnDIc5YAl8tLUXENF6d6+O8EZXsqQ+tfziQo
+	PdufWKCxCuzdFYvAitzVi/Yh+fGJ7vjyu0g=
+X-Google-Smtp-Source: AGHT+IF2EKRmwxzMNJLjYC12kbuGYs/1giNDSpyHQvKZ3f91hT57q340+egUNjLJUu60qYSEurb1EQ==
+X-Received: by 2002:a17:902:c943:b0:220:f7bb:849 with SMTP id d9443c01a7336-22103f06486mr127524025ad.13.1739769697769;
+        Sun, 16 Feb 2025 21:21:37 -0800 (PST)
+Received: from [172.23.160.155] ([183.134.211.52])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-220d545d453sm62226065ad.115.2025.02.16.21.21.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 16 Feb 2025 21:21:37 -0800 (PST)
+Message-ID: <2b025df3-144b-4909-a2b4-66356540f71c@gmail.com>
+Date: Mon, 17 Feb 2025 13:21:31 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND bpf-next v7 0/4] Add prog_kfunc feature probe
+To: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ eddyz87@gmail.com, haoluo@google.com, jolsa@kernel.org, qmo@kernel.org
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250212153912.24116-1-chen.dylane@gmail.com>
+From: Tao Chen <chen.dylane@gmail.com>
+In-Reply-To: <20250212153912.24116-1-chen.dylane@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Add TCP_RTO_MAX_MS selftests for active and passive flows
-in various bpf callbacks. Even though the TCP_RTO_MAX_MS
-can be used in established phase, we highly discourage
-to do so because it may trigger unexpected behaviour.
-On the contrary, it's highly recommended that the maximum
-value of RTO is set before first time of transmission, such
-as BPF_SOCK_OPS_{PASSIVE|ACTIVE}_ESTABLISHED_CB,
+在 2025/2/12 23:39, Tao Chen 写道:
+> More and more kfunc functions are being added to the kernel.
+> Different prog types have different restrictions when using kfunc.
+> Therefore, prog_kfunc probe is added to check whether it is supported,
+> and the use of this api will be added to bpftool later.
+> 
+> Change list:
+> - v6 -> v7:
+>    - wrap err with libbpf_err
+>    - comments fix
+>    - handle btf_fd < 0 as vmlinux
+>    - patchset Reviewed-by: Jiri Olsa <jolsa@kernel.org>
+> - v6
+>    https://lore.kernel.org/bpf/20250211111859.6029-1-chen.dylane@gmail.com
+> 
+> - v5 -> v6:
+>    - remove fd_array_cnt
+>    - test case clean code
+> - v5
+>    https://lore.kernel.org/bpf/20250210055945.27192-1-chen.dylane@gmail.com
+> 
+> - v4 -> v5:
+>    - use fd_array on stack
+>    - declare the scope of use of btf_fd
+> - v4
+>    https://lore.kernel.org/bpf/20250206051557.27913-1-chen.dylane@gmail.com/
+> 
+> - v3 -> v4:
+>    - add fd_array init for kfunc in mod btf
+>    - add test case for kfunc in mod btf
+>    - refactor common part as prog load type check for
+>      libbpf_probe_bpf_{helper,kfunc}
+> - v3
+>    https://lore.kernel.org/bpf/20250124144411.13468-1-chen.dylane@gmail.com
+> 
+> - v2 -> v3:
+>    - rename parameter off with btf_fd
+>    - extract the common part for libbpf_probe_bpf_{helper,kfunc}
+> - v2
+>    https://lore.kernel.org/bpf/20250123170555.291896-1-chen.dylane@gmail.com
+> 
+> - v1 -> v2:
+>    - check unsupported prog type like probe_bpf_helper
+>    - add off parameter for module btf
+>    - check verifier info when kfunc id invalid
+> - v1
+>    https://lore.kernel.org/bpf/20250122171359.232791-1-chen.dylane@gmail.com
+> 
+> Tao Chen (4):
+>    libbpf: Extract prog load type check from libbpf_probe_bpf_helper
+>    libbpf: Init fd_array when prog probe load
+>    libbpf: Add libbpf_probe_bpf_kfunc API
+>    selftests/bpf: Add libbpf_probe_bpf_kfunc API selftests
+> 
+>   tools/lib/bpf/libbpf.h                        |  19 ++-
+>   tools/lib/bpf/libbpf.map                      |   1 +
+>   tools/lib/bpf/libbpf_probes.c                 |  86 +++++++++++---
+>   .../selftests/bpf/prog_tests/libbpf_probes.c  | 111 ++++++++++++++++++
+>   4 files changed, 201 insertions(+), 16 deletions(-)
+> 
 
-Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
----
- tools/include/uapi/linux/tcp.h                      | 1 +
- tools/testing/selftests/bpf/progs/bpf_tracing_net.h | 1 +
- tools/testing/selftests/bpf/progs/setget_sockopt.c  | 1 +
- 3 files changed, 3 insertions(+)
+Ping...
 
-diff --git a/tools/include/uapi/linux/tcp.h b/tools/include/uapi/linux/tcp.h
-index 13ceeb395eb8..7989e3f34a58 100644
---- a/tools/include/uapi/linux/tcp.h
-+++ b/tools/include/uapi/linux/tcp.h
-@@ -128,6 +128,7 @@ enum {
- #define TCP_CM_INQ		TCP_INQ
- 
- #define TCP_TX_DELAY		37	/* delay outgoing packets by XX usec */
-+#define TCP_RTO_MAX_MS		44	/* max rto time in ms */
- 
- 
- #define TCP_REPAIR_ON		1
-diff --git a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-index 59843b430f76..eb6ed1b7b2ef 100644
---- a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-@@ -49,6 +49,7 @@
- #define TCP_SAVED_SYN		28
- #define TCP_CA_NAME_MAX		16
- #define TCP_NAGLE_OFF		1
-+#define TCP_RTO_MAX_MS		44
- 
- #define TCP_ECN_OK              1
- #define TCP_ECN_QUEUE_CWR       2
-diff --git a/tools/testing/selftests/bpf/progs/setget_sockopt.c b/tools/testing/selftests/bpf/progs/setget_sockopt.c
-index 6dd4318debbf..106fe430f41b 100644
---- a/tools/testing/selftests/bpf/progs/setget_sockopt.c
-+++ b/tools/testing/selftests/bpf/progs/setget_sockopt.c
-@@ -61,6 +61,7 @@ static const struct sockopt_test sol_tcp_tests[] = {
- 	{ .opt = TCP_NOTSENT_LOWAT, .new = 1314, .expected = 1314, },
- 	{ .opt = TCP_BPF_SOCK_OPS_CB_FLAGS, .new = BPF_SOCK_OPS_ALL_CB_FLAGS,
- 	  .expected = BPF_SOCK_OPS_ALL_CB_FLAGS, },
-+	{ .opt = TCP_RTO_MAX_MS, .new = 2000, .expected = 2000, },
- 	{ .opt = 0, },
- };
- 
+Hi Andrii, Eduard,
+
+I've revised the previous suggestions. Please review it again. Thanks.
+
 -- 
-2.43.5
-
+Best Regards
+Dylane Chen
 
