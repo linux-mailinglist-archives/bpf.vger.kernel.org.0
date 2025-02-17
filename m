@@ -1,100 +1,107 @@
-Return-Path: <bpf+bounces-51740-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51741-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A936A38658
-	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2025 15:29:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3C4DA3875D
+	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2025 16:17:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67EF43BBA58
-	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2025 14:21:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D67643A92C4
+	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2025 15:17:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA6352248BA;
-	Mon, 17 Feb 2025 14:19:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5B6B2248B3;
+	Mon, 17 Feb 2025 15:17:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="AInv2E/P"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="QQiBXNEl";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZzpnzEOP"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB76B223316;
-	Mon, 17 Feb 2025 14:19:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E25B212B3A
+	for <bpf@vger.kernel.org>; Mon, 17 Feb 2025 15:17:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739801976; cv=none; b=UbZhghi152GRZkbn7U4psKInQMOJwyB8z42+DQ61bvNWPF4Fasu64S2PINuyNCG8R/EAKCs6OljriG/E48zqZDAZjGEpXDekZPmNgZli+AGS7WMxZlU69CK6Wc++t6oWTV+xzjuvRn7vPWvoZbgjfhrzIbGNxBIPQcwjDD29AoE=
+	t=1739805463; cv=none; b=FVhueAXfRqlJCnxV1wQPgDrAH89OwMXzNhqa9aW+JDU9T/94zEQN89bj62YTZkVVocOl7rC4ikdgTzR1bbgJnr3Ed3S8lNGXNNilfV5UkPIWZN0PDNgNx4l+hIYDTpUkYZe36P57vjWmEnKm3sYGQ0GEmV6YkQWNXvW1Fa/7T3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739801976; c=relaxed/simple;
-	bh=V9hqS+AXY7AiYLWCPLmQNTLAQOyoxIH0VR7ObxKpZ5Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bJQbrtJN/WqSmXaJV8dtjVVG9Rd/htzyGXvyY7b69XXEDJ1UbPoLv3yCbeKaNudH6m8AazWXpwcMil0YksWG+EwLf8oG1XpuuS8ea8rVicLhMfLT1/iuwGsbEt0mhg2Rn0qa0CW+xPqYzk0qpusQUGBXfMZSvYdDW9eHF/Klzes=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=AInv2E/P; arc=none smtp.client-ip=117.135.210.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=KwLwX
-	O1E7gDZUNC+t9Rm7/a/828TjhQi7X77bBqPp5s=; b=AInv2E/P462zuHdfTxN0Z
-	6rIEtL1CSmGx3d9Ty/nExnq9NmoUhqxaqIwIFhMK+sfvJm/9NXwcoldMh6S421Xc
-	ygxj3wi5siBWs9VRSlQFfrGpNgddyBNTb/Rc2GZUPTGO7s9LzX65+WiHTbdaH8GV
-	Xb3ikicxjgmCWuZc1KjhLE=
-Received: from icess-ProLiant-DL380-Gen10.. (unknown [])
-	by gzga-smtp-mtada-g1-3 (Coremail) with SMTP id _____wD3H+xARbNnCmVpMw--.21229S4;
-	Mon, 17 Feb 2025 22:18:41 +0800 (CST)
-From: Haoxiang Li <haoxiang_li2024@163.com>
-To: kuba@kernel.org,
-	louis.peens@corigine.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	haoxiang_li2024@163.com,
-	qmo@kernel.org,
-	daniel@iogearbox.net
-Cc: bpf@vger.kernel.org,
-	oss-drivers@corigine.com,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH] nfp: bpf: Add check for nfp_app_ctrl_msg_alloc()
-Date: Mon, 17 Feb 2025 22:18:37 +0800
-Message-Id: <20250217141837.2366663-1-haoxiang_li2024@163.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1739805463; c=relaxed/simple;
+	bh=QH4CLyvUtj2myCiL+AGIL8zhxAUpphhLYy3L4Q56YrQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AdoVCWVuiwPYf1lHLDYkYNDGajwW2czr9oOHtqBcw+YGWIL6Q6y84qzjw4g85TonvgcpNYaGy/08VUatUaIFpZTD1VqXOCcvKj5FQn/+NTTeNiz3sH9w4XCH72OSMl0qAdSXQAuFskPWPL+LVdja7v2OlRyM7NgRYMqcR99duXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=QQiBXNEl; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZzpnzEOP; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Mon, 17 Feb 2025 16:17:38 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1739805460;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UXz+1xfA/nUs8zoxifiPbndHLW+oFSXvL5m2c2Ir/W8=;
+	b=QQiBXNElSxw0/N7hWEIE9VvA6tb140yosfDpuj7XKhyOQsuwH7mAXVMSHwNTOxrazHwpM3
+	0GPVRTsvAd2R5C+2UuqaxSICW7NC1sSR399EWNJwmiFfQUSxd3fZVhIx5Tr2QpLVIAK0qw
+	lulZBR+zk5wNeQ+w0MlHh5ZGMvgFVqPTaHgpcZWo1CpOe9XqLYYqLCVD9mBk3qlP5md5eC
+	dqo9zUDdp8r/UtsJs9C6c1TS2g62zrMA/bqy2vt4oAbZKa2ADiZjjNTKr9gkiz7qhtPi+k
+	xQmtcY4k2wLdOXiXw7BOuLsESGGgpaJpn3HPtPeCFh6lEsFZ9219FXOHJj3QwA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1739805460;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UXz+1xfA/nUs8zoxifiPbndHLW+oFSXvL5m2c2Ir/W8=;
+	b=ZzpnzEOPGoGR0ACmokT03YTcyfQ49K/cI01XRDwjOrgKXZUzYJMZvLbaU1FRrKdJO+RTrS
+	wT0f84gmDiX8cRBQ==
+From: Sebastian Sewior <bigeasy@linutronix.de>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Michal Hocko <mhocko@suse.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>,
+	Tejun Heo <tj@kernel.org>, linux-mm <linux-mm@kvack.org>,
+	Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next v8 3/6] locking/local_lock: Introduce
+ localtry_lock_t
+Message-ID: <20250217151738.KQeT4994@linutronix.de>
+References: <20250213033556.9534-1-alexei.starovoitov@gmail.com>
+ <20250213033556.9534-4-alexei.starovoitov@gmail.com>
+ <efc30cf9-8351-4889-8245-cc4a6893ebf4@suse.cz>
+ <CAADnVQKaTg1zxCbX9Kum4ZmcvLkxQJOyDLV8zdUcQWUyOb4Q4A@mail.gmail.com>
+ <69dd9d1b-0a8e-4e39-b37a-20f60d0928b6@suse.cz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3H+xARbNnCmVpMw--.21229S4
-X-Coremail-Antispam: 1Uf129KBjvdXoW7XFy3tr48Zw43Gry7AF4kCrg_yoWfCwbEkF
-	129Fn3C395Kr1Ykr4jgw4avry3trn0qryruFW3KrWSvryUJr48Xr9Y9ryrAF9rWF4xAa9r
-	X3s7JryxAa42qjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRNvtCUUUUUU==
-X-CM-SenderInfo: xkdr5xpdqjszblsqjki6rwjhhfrp/xtbB0gz2bmey5vIHlQADsW
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <69dd9d1b-0a8e-4e39-b37a-20f60d0928b6@suse.cz>
 
-Add check for the return value of nfp_app_ctrl_msg_alloc() in
-nfp_bpf_cmsg_alloc() to prevent null pointer dereference.
+On 2025-02-14 19:48:57 [+0100], Vlastimil Babka wrote:
+> > Since respin is needed, I can fold the above fix/feature and
+> > push it into a branch with stable sha-s that we both can
+> > use as a base ?
+> 
+> I doubt sheaves will be included in 6.15 so it's fine enough for me if you
+> fold this and perhaps order the result as patch 1?
+> 
+> > Or you can push just this one patch into a stable branch and I can pull it
+> > and apply the rest on top.
+> 
+> Ideally we'd have PeterZ blessing before we get to stable commit id's...
 
-Fixes: ff3d43f7568c ("nfp: bpf: implement helpers for FW map ops")
-Cc: stable@vger.kernel.org
-Signed-off-by: Haoxiang Li <haoxiang_li2024@163.com>
----
- drivers/net/ethernet/netronome/nfp/bpf/cmsg.c | 3 +++
- 1 file changed, 3 insertions(+)
+Yes. As noted in the other thread, I'm all fine with the propose
+changes.
 
-diff --git a/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c b/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c
-index 2ec62c8d86e1..09ea1bc72097 100644
---- a/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c
-+++ b/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c
-@@ -20,6 +20,9 @@ nfp_bpf_cmsg_alloc(struct nfp_app_bpf *bpf, unsigned int size)
- 	struct sk_buff *skb;
- 
- 	skb = nfp_app_ctrl_msg_alloc(bpf->app, size, GFP_KERNEL);
-+	if (!skb) {
-+		return NULL;
-+	}
- 	skb_put(skb, size);
- 
- 	return skb;
--- 
-2.25.1
+> Thanks.
 
+Sebastian
 
