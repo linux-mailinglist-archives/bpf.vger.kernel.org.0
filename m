@@ -1,471 +1,158 @@
-Return-Path: <bpf+bounces-51734-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51735-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D154EA38317
-	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2025 13:38:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CF59A3831D
+	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2025 13:39:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FA52188F49A
-	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2025 12:38:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6223F7A4882
+	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2025 12:38:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EFDF21C177;
-	Mon, 17 Feb 2025 12:37:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="GeiSKRgb"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C795E21B1AB;
+	Mon, 17 Feb 2025 12:38:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6629216605;
-	Mon, 17 Feb 2025 12:37:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A62FE215F5F;
+	Mon, 17 Feb 2025 12:38:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739795868; cv=none; b=ED+6NkXSnFvsPfNUUhUw5sGN4bQIWGil+sIL0tULiEWhpa0z1vMFQoPKkaPXjtBlamLZhqaB72kB/KmGdQIC97b9C53GawvFrFV9gK3HBy2MfAk6JmtGE5MANsVH/9VjjXxmNZf3kQTFaMiYpRhsiVqWmHxeBoTzgauUKBBoA7E=
+	t=1739795928; cv=none; b=sGcP9idWRNzKUmEYfraaESN+Vr4fUcxt7UDzSfw+cIlX91MwQkCbPuABBfMte6a3v5x6mVk0S19EQ32AW2AX1xMEcZ4Kh7TkAJkxkJVTaNXSu8kcbEMF1U3YelzDjYrHkT6T27rXR9r3aiC5RTY3FLqsL2hD6V8Xw0B7jOjs0d4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739795868; c=relaxed/simple;
-	bh=dBDzjWo6VKaha93rZaATReYixZ6fjqLkF4Ozu1zlCnU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=aeTDF37TbW2Ff03f3uI2vWBbVvAIVjNsfBCtPlhqyiiJwNRjwBCqKMBl4CzVQSLT7sLdZgSa0AOM4qlg3opTW7opQ/oYicCmVjRTmtRWWevKRpPWz4x6fN2KryEGV0UtM9f2JZBXe+Mu+vjwSjP0tF1+Od9J2LeLcQL8yX45Lpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=GeiSKRgb; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 518C442E76;
-	Mon, 17 Feb 2025 12:37:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1739795863;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W/PSKk2nTtn7RBvDNRW2TtzxymnJUDPRTpmAdQXQeOY=;
-	b=GeiSKRgbqhzzq9tBG8HuVOgywAnYfyI6Pd4xP0zYJXGQdNkXTskTaYUZsiwmWNKAD3PxK6
-	+nRfi5dmcOyPOaz4UK3RpnL7jWquRSUBn0bPdue1Vks2eMyWOEI7QiWDwbDzm6ZV8w4CPd
-	4Aa8r8WIuokpT9dOTModStU3amRJpgx/Uuw/m9L5bsbg8SUGW+Z5JxeSSXOR6vqF3R5iv6
-	TOMdaoD42F8XuC6guVzSOOvTnH3fqIaitnl4q0KvbfxxtmhQdFpw3R81gp6dsx+2rhjdRZ
-	gunywfbnADVNgadfTfU6+NTbMyYIBui+rbCy3HX1bbfq9y2bUe5Uvq2qW3BKlg==
-From: "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
-Date: Mon, 17 Feb 2025 13:37:40 +0100
-Subject: [PATCH bpf-next 3/3] selftests/bpf: tc_links/tc_opts: Serialize
- tests
+	s=arc-20240116; t=1739795928; c=relaxed/simple;
+	bh=L0NxWj2gdbSolslozxMjJ2YOfJlTTcwlTXmsra96jCA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=H8tXRgl8FewnHG6Sl6lgb3IA2lh8H3mBuo83UNHzV93auWieCwIMqFpbgWXS/7kVjxMWFmhBqsusu1navsXNAVFRiv3jdLNX6HwUxzNfyh60hj4zPk66mGK8YGl4EBNGb+qnR0C4ftU/WNKr/7lkrbUglHFQgZhPHR56HkdIkvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4YxMZR1HJvz22t0r;
+	Mon, 17 Feb 2025 20:35:43 +0800 (CST)
+Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
+	by mail.maildlp.com (Postfix) with ESMTPS id 7938B180069;
+	Mon, 17 Feb 2025 20:38:41 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.125) by
+ kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 17 Feb 2025 20:38:40 +0800
+From: Tong Tiangen <tongtiangen@huawei.com>
+To: Masami Hiramatsu <mhiramat@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim
+	<namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander
+ Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
+	"Liang, Kan" <kan.liang@linux.intel.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+	<linux-perf-users@vger.kernel.org>, <bpf@vger.kernel.org>, Tong Tiangen
+	<tongtiangen@huawei.com>, <wangkefeng.wang@huawei.com>
+Subject: [PATCH -next] uprobes: fix two zero old_folio bugs in __replace_page()
+Date: Mon, 17 Feb 2025 20:38:26 +0800
+Message-ID: <20250217123826.88503-1-tongtiangen@huawei.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250217-tc_links-v1-3-27f7965e3dcd@bootlin.com>
-References: <20250217-tc_links-v1-0-27f7965e3dcd@bootlin.com>
-In-Reply-To: <20250217-tc_links-v1-0-27f7965e3dcd@bootlin.com>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Alexis Lothore <alexis.lothore@bootlin.com>, bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
- "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
-X-Mailer: b4 0.14.2
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdehkeegvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephfffufggtgfgkfhfjgfvvefosehtjeertdertdejnecuhfhrohhmpedfuegrshhtihgvnhcuvehurhhuthgthhgvthculdgvuefrhfcuhfhouhhnuggrthhiohhnmddfuceosggrshhtihgvnhdrtghurhhuthgthhgvthessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepgeefudfhuedttdeiffetffeljeffkeevveeiuddtgeejleeftdejgedtjedttdfhnecukfhppeeltddrkeelrdduieefrdduvdejnecuvehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehinhgvthepledtrdekledrudeifedruddvjedphhgvlhhopegludelvddrudeikedrtddrudegngdpmhgrihhlfhhrohhmpegsrghsthhivghnrdgtuhhruhhttghhvghtsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopedvtddprhgtphhtthhopehshhhurghhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghstheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhhohhhnrdhfrghsthgrsggvnhgusehgmhgrihhlrdgtohhmpdhrtghpthhtoheprghnughri
- hhisehkvghrnhgvlhdrohhrghdprhgtphhtthhopehsughfsehfohhmihgthhgvvhdrmhgvpdhrtghpthhtohephihonhhghhhonhhgrdhsohhngheslhhinhhugidruggvvhdprhgtphhtthhopegvugguhiiikeejsehgmhgrihhlrdgtohhm
-X-GND-Sasl: bastien.curutchet@bootlin.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemk500005.china.huawei.com (7.202.194.90)
 
-The tests aren't allowed to be run in parallel while they could be.
+We triggered the following error logs in syzkaller test:
 
-Replace serial_test_*() calls by test_*() ones to allow parallelization
-of these tests.
-Rename some 'subtests' functions to avoid name conflicts with the actual
-tests.
+  BUG: Bad page state in process syz.7.38  pfn:1eff3
+  page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1eff3
+  flags: 0x3fffff00004004(referenced|reserved|node=0|zone=1|lastcpupid=0x1fffff)
+  raw: 003fffff00004004 ffffe6c6c07bfcc8 ffffe6c6c07bfcc8 0000000000000000
+  raw: 0000000000000000 0000000000000000 00000000fffffffe 0000000000000000
+  page dumped because: PAGE_FLAGS_CHECK_AT_FREE flag(s) set
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+  Call Trace:
+   <TASK>
+   dump_stack_lvl+0x32/0x50
+   bad_page+0x69/0xf0
+   free_unref_page_prepare+0x401/0x500
+   free_unref_page+0x6d/0x1b0
+   uprobe_write_opcode+0x460/0x8e0
+   install_breakpoint.part.0+0x51/0x80
+   register_for_each_vma+0x1d9/0x2b0
+   __uprobe_register+0x245/0x300
+   bpf_uprobe_multi_link_attach+0x29b/0x4f0
+   link_create+0x1e2/0x280
+   __sys_bpf+0x75f/0xac0
+   __x64_sys_bpf+0x1a/0x30
+   do_syscall_64+0x56/0x100
+   entry_SYSCALL_64_after_hwframe+0x78/0xe2
 
-Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
+   BUG: Bad rss-counter state mm:00000000452453e0 type:MM_FILEPAGES val:-1
+
+The following syzkaller test case can be used to reproduce:
+
+  r2 = creat(&(0x7f0000000000)='./file0\x00', 0x8)
+  write$nbd(r2, &(0x7f0000000580)=ANY=[], 0x10)
+  r4 = openat(0xffffffffffffff9c, &(0x7f0000000040)='./file0\x00', 0x42, 0x0)
+  mmap$IORING_OFF_SQ_RING(&(0x7f0000ffd000/0x3000)=nil, 0x3000, 0x0, 0x12, r4, 0x0)
+  r5 = userfaultfd(0x80801)
+  ioctl$UFFDIO_API(r5, 0xc018aa3f, &(0x7f0000000040)={0xaa, 0x20})
+  r6 = userfaultfd(0x80801)
+  ioctl$UFFDIO_API(r6, 0xc018aa3f, &(0x7f0000000140))
+  ioctl$UFFDIO_REGISTER(r6, 0xc020aa00, &(0x7f0000000100)={{&(0x7f0000ffc000/0x4000)=nil, 0x4000}, 0x2})
+  ioctl$UFFDIO_ZEROPAGE(r5, 0xc020aa04, &(0x7f0000000000)={{&(0x7f0000ffd000/0x1000)=nil, 0x1000}})
+  r7 = bpf$PROG_LOAD(0x5, &(0x7f0000000140)={0x2, 0x3, &(0x7f0000000200)=ANY=[@ANYBLOB="1800000000120000000000000000000095"], &(0x7f0000000000)='GPL\x00', 0x7, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0, @fallback=0x30, 0xffffffffffffffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10, 0x0, @void, @value}, 0x94)
+  bpf$BPF_LINK_CREATE_XDP(0x1c, &(0x7f0000000040)={r7, 0x0, 0x30, 0x1e, @val=@uprobe_multi={&(0x7f0000000080)='./file0\x00', &(0x7f0000000100)=[0x2], 0x0, 0x0, 0x1}}, 0x40)
+
+The cause is that zero pfn is set to the pte without increasing the rss
+count in mfill_atomic_pte_zeropage() and the refcount of zero folio does
+not increase accordingly. Then, the operation on the same pfn is performed
+in uprobe_write_opcode()->__replace_page() to unconditional decrease the
+rss count and old_folio's refcount.
+
+Therefore, two bugs are introduced:
+1. The rss count is incorrect, when process exit, the check_mm() report
+   error "Bad rss-count".
+2. The reserved folio (zero folio) is freed when folio->refcount is zero,
+   then free_pages_prepare->free_page_is_bad() report error "Bad page state".
+
+To fix it, add zero folio check before rss counter and refcount decrease.
+
+Fixes: 7396fa818d62 ("uprobes/core: Make background page replacement logic account for rss_stat counters")
+Fixes: 2b1444983508 ("uprobes, mm, x86: Add the ability to install and remove uprobes breakpoints")
+Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
 ---
- tools/testing/selftests/bpf/prog_tests/tc_links.c | 40 +++++++++---------
- tools/testing/selftests/bpf/prog_tests/tc_opts.c  | 50 +++++++++++------------
- 2 files changed, 45 insertions(+), 45 deletions(-)
+ kernel/events/uprobes.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tc_links.c b/tools/testing/selftests/bpf/prog_tests/tc_links.c
-index 07a2fc3d44d03e18dd3c715b0b26c7f1ac6d47cb..c94fe1e1687239ed4090f53bff40ede10e501f55 100644
---- a/tools/testing/selftests/bpf/prog_tests/tc_links.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tc_links.c
-@@ -269,7 +269,7 @@ static void test_tc_links_before_target(int target)
- 	assert_mprog_count(target, 0);
- }
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index 46ddf3a2334d..ff5694acfa68 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -213,7 +213,8 @@ static int __replace_page(struct vm_area_struct *vma, unsigned long addr,
+ 		dec_mm_counter(mm, MM_ANONPAGES);
  
--void serial_test_tc_links_before(void)
-+void test_tc_links_before(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -432,7 +432,7 @@ static void test_tc_links_after_target(int target)
- 	assert_mprog_count(target, 0);
- }
+ 	if (!folio_test_anon(old_folio)) {
+-		dec_mm_counter(mm, mm_counter_file(old_folio));
++		if (!is_zero_folio(old_folio))
++			dec_mm_counter(mm, mm_counter_file(old_folio));
+ 		inc_mm_counter(mm, MM_ANONPAGES);
+ 	}
  
--void serial_test_tc_links_after(void)
-+void test_tc_links_after(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -541,7 +541,7 @@ static void test_tc_links_revision_target(int target)
- 	assert_mprog_count(target, 0);
- }
+@@ -227,7 +228,8 @@ static int __replace_page(struct vm_area_struct *vma, unsigned long addr,
+ 	if (!folio_mapped(old_folio))
+ 		folio_free_swap(old_folio);
+ 	page_vma_mapped_walk_done(&pvmw);
+-	folio_put(old_folio);
++	if (!is_zero_folio(old_folio))
++		folio_put(old_folio);
  
--void serial_test_tc_links_revision(void)
-+void test_tc_links_revision(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -654,7 +654,7 @@ static void test_tc_chain_classic(int target, bool chain_tc_old)
- 	assert_mprog_count(target, 0);
- }
- 
--void serial_test_tc_links_chain_classic(void)
-+void test_tc_links_chain_classic(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -891,7 +891,7 @@ static void test_tc_links_replace_target(int target)
- 	assert_mprog_count(target, 0);
- }
- 
--void serial_test_tc_links_replace(void)
-+void test_tc_links_replace(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -1212,7 +1212,7 @@ static void test_tc_links_invalid_target(int target)
- 	assert_mprog_count(target, 0);
- }
- 
--void serial_test_tc_links_invalid(void)
-+void test_tc_links_invalid(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -1377,7 +1377,7 @@ static void test_tc_links_prepend_target(int target)
- 	assert_mprog_count(target, 0);
- }
- 
--void serial_test_tc_links_prepend(void)
-+void test_tc_links_prepend(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -1542,7 +1542,7 @@ static void test_tc_links_append_target(int target)
- 	assert_mprog_count(target, 0);
- }
- 
--void serial_test_tc_links_append(void)
-+void test_tc_links_append(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -1649,7 +1649,7 @@ static void test_tc_links_dev_cleanup_target(int target)
- 	ASSERT_EQ(if_nametoindex("tcx_opts2"), 0, "dev2_removed");
- }
- 
--void serial_test_tc_links_dev_cleanup(void)
-+void test_tc_links_dev_cleanup(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -1762,7 +1762,7 @@ static void test_tc_chain_mixed(int target)
- 	test_tc_link__destroy(skel);
- }
- 
--void serial_test_tc_links_chain_mixed(void)
-+void test_tc_links_chain_mixed(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -1777,7 +1777,7 @@ void serial_test_tc_links_chain_mixed(void)
- 	netns_free(ns);
- }
- 
--static void test_tc_links_ingress(int target, bool chain_tc_old,
-+static void tc_links_ingress(int target, bool chain_tc_old,
- 				  bool tcx_teardown_first)
- {
- 	LIBBPF_OPTS(bpf_tc_opts, tc_opts,
-@@ -1881,7 +1881,7 @@ static void test_tc_links_ingress(int target, bool chain_tc_old,
- 	assert_mprog_count(target, 0);
- }
- 
--void serial_test_tc_links_ingress(void)
-+void test_tc_links_ingress(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -1890,9 +1890,9 @@ void serial_test_tc_links_ingress(void)
- 	if (!ASSERT_OK_PTR(ns, "create and open ns"))
- 		return;
- 
--	test_tc_links_ingress(BPF_TCX_INGRESS, true, true);
--	test_tc_links_ingress(BPF_TCX_INGRESS, true, false);
--	test_tc_links_ingress(BPF_TCX_INGRESS, false, false);
-+	tc_links_ingress(BPF_TCX_INGRESS, true, true);
-+	tc_links_ingress(BPF_TCX_INGRESS, true, false);
-+	tc_links_ingress(BPF_TCX_INGRESS, false, false);
- 
- 	netns_free(ns);
- }
-@@ -1931,7 +1931,7 @@ static int qdisc_replace(int ifindex, const char *kind, bool block)
- 	return err;
- }
- 
--void serial_test_tc_links_dev_chain0(void)
-+void test_tc_links_dev_chain0(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -1963,7 +1963,7 @@ void serial_test_tc_links_dev_chain0(void)
- 	netns_free(ns);
- }
- 
--static void test_tc_links_dev_mixed(int target)
-+static void tc_links_dev_mixed(int target)
- {
- 	LIBBPF_OPTS(bpf_tc_opts, tc_opts, .handle = 1, .priority = 1);
- 	LIBBPF_OPTS(bpf_tc_hook, tc_hook);
-@@ -2070,7 +2070,7 @@ static void test_tc_links_dev_mixed(int target)
- 	ASSERT_EQ(if_nametoindex("tcx_opts2"), 0, "dev2_removed");
- }
- 
--void serial_test_tc_links_dev_mixed(void)
-+void test_tc_links_dev_mixed(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -2079,8 +2079,8 @@ void serial_test_tc_links_dev_mixed(void)
- 	if (!ASSERT_OK_PTR(ns, "create and open ns"))
- 		return;
- 
--	test_tc_links_dev_mixed(BPF_TCX_INGRESS);
--	test_tc_links_dev_mixed(BPF_TCX_EGRESS);
-+	tc_links_dev_mixed(BPF_TCX_INGRESS);
-+	tc_links_dev_mixed(BPF_TCX_EGRESS);
- 
- 	netns_free(ns);
- }
-diff --git a/tools/testing/selftests/bpf/prog_tests/tc_opts.c b/tools/testing/selftests/bpf/prog_tests/tc_opts.c
-index d38376244532026b2b3d505bcf9711c8e7948e17..615048fc3cd7b497b49883bf4c1ba410efce52f0 100644
---- a/tools/testing/selftests/bpf/prog_tests/tc_opts.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tc_opts.c
-@@ -12,7 +12,7 @@
- #include "test_tc_link.skel.h"
- #include "tc_helpers.h"
- 
--void serial_test_tc_opts_basic(void)
-+void test_tc_opts_basic(void)
- {
- 	LIBBPF_OPTS(bpf_prog_attach_opts, opta);
- 	LIBBPF_OPTS(bpf_prog_detach_opts, optd);
-@@ -263,7 +263,7 @@ static void test_tc_opts_before_target(int target)
- 	test_tc_link__destroy(skel);
- }
- 
--void serial_test_tc_opts_before(void)
-+void test_tc_opts_before(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -463,7 +463,7 @@ static void test_tc_opts_after_target(int target)
- 	test_tc_link__destroy(skel);
- }
- 
--void serial_test_tc_opts_after(void)
-+void test_tc_opts_after(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -581,7 +581,7 @@ static void test_tc_opts_revision_target(int target)
- 	test_tc_link__destroy(skel);
- }
- 
--void serial_test_tc_opts_revision(void)
-+void test_tc_opts_revision(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -691,7 +691,7 @@ static void test_tc_chain_classic(int target, bool chain_tc_old)
- 	assert_mprog_count(target, 0);
- }
- 
--void serial_test_tc_opts_chain_classic(void)
-+void test_tc_opts_chain_classic(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -909,7 +909,7 @@ static void test_tc_opts_replace_target(int target)
- 	test_tc_link__destroy(skel);
- }
- 
--void serial_test_tc_opts_replace(void)
-+void test_tc_opts_replace(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -1071,7 +1071,7 @@ static void test_tc_opts_invalid_target(int target)
- 	test_tc_link__destroy(skel);
- }
- 
--void serial_test_tc_opts_invalid(void)
-+void test_tc_opts_invalid(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -1220,7 +1220,7 @@ static void test_tc_opts_prepend_target(int target)
- 	test_tc_link__destroy(skel);
- }
- 
--void serial_test_tc_opts_prepend(void)
-+void test_tc_opts_prepend(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -1369,7 +1369,7 @@ static void test_tc_opts_append_target(int target)
- 	test_tc_link__destroy(skel);
- }
- 
--void serial_test_tc_opts_append(void)
-+void test_tc_opts_append(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -1468,7 +1468,7 @@ static void test_tc_opts_dev_cleanup_target(int target)
- 	ASSERT_EQ(if_nametoindex("tcx_opts2"), 0, "dev2_removed");
- }
- 
--void serial_test_tc_opts_dev_cleanup(void)
-+void test_tc_opts_dev_cleanup(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -1653,7 +1653,7 @@ static void test_tc_opts_mixed_target(int target)
- 	assert_mprog_count(target, 0);
- }
- 
--void serial_test_tc_opts_mixed(void)
-+void test_tc_opts_mixed(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -1741,7 +1741,7 @@ static void test_tc_opts_demixed_target(int target)
- 	assert_mprog_count(target, 0);
- }
- 
--void serial_test_tc_opts_demixed(void)
-+void test_tc_opts_demixed(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -1921,7 +1921,7 @@ static void test_tc_opts_detach_target(int target)
- 	test_tc_link__destroy(skel);
- }
- 
--void serial_test_tc_opts_detach(void)
-+void test_tc_opts_detach(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -2137,7 +2137,7 @@ static void test_tc_opts_detach_before_target(int target)
- 	test_tc_link__destroy(skel);
- }
- 
--void serial_test_tc_opts_detach_before(void)
-+void test_tc_opts_detach_before(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -2362,7 +2362,7 @@ static void test_tc_opts_detach_after_target(int target)
- 	test_tc_link__destroy(skel);
- }
- 
--void serial_test_tc_opts_detach_after(void)
-+void test_tc_opts_detach_after(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -2377,7 +2377,7 @@ void serial_test_tc_opts_detach_after(void)
- 	netns_free(ns);
- }
- 
--static void test_tc_opts_delete_empty(int target, bool chain_tc_old)
-+static void tc_opts_delete_empty(int target, bool chain_tc_old)
- {
- 	LIBBPF_OPTS(bpf_tc_hook, tc_hook, .ifindex = loopback);
- 	LIBBPF_OPTS(bpf_prog_detach_opts, optd);
-@@ -2400,7 +2400,7 @@ static void test_tc_opts_delete_empty(int target, bool chain_tc_old)
- 	assert_mprog_count(target, 0);
- }
- 
--void serial_test_tc_opts_delete_empty(void)
-+void test_tc_opts_delete_empty(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -2409,10 +2409,10 @@ void serial_test_tc_opts_delete_empty(void)
- 	if (!ASSERT_OK_PTR(ns, "create and open ns"))
- 		return;
- 
--	test_tc_opts_delete_empty(BPF_TCX_INGRESS, false);
--	test_tc_opts_delete_empty(BPF_TCX_EGRESS, false);
--	test_tc_opts_delete_empty(BPF_TCX_INGRESS, true);
--	test_tc_opts_delete_empty(BPF_TCX_EGRESS, true);
-+	tc_opts_delete_empty(BPF_TCX_INGRESS, false);
-+	tc_opts_delete_empty(BPF_TCX_EGRESS, false);
-+	tc_opts_delete_empty(BPF_TCX_INGRESS, true);
-+	tc_opts_delete_empty(BPF_TCX_EGRESS, true);
- 
- 	netns_free(ns);
- }
-@@ -2516,7 +2516,7 @@ static void test_tc_chain_mixed(int target)
- 	test_tc_link__destroy(skel);
- }
- 
--void serial_test_tc_opts_chain_mixed(void)
-+void test_tc_opts_chain_mixed(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -2599,7 +2599,7 @@ static void test_tc_opts_max_target(int target, int flags, bool relative)
- 	ASSERT_EQ(if_nametoindex("tcx_opts2"), 0, "dev2_removed");
- }
- 
--void serial_test_tc_opts_max(void)
-+void test_tc_opts_max(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -2910,7 +2910,7 @@ static void test_tc_opts_query_target(int target)
- 	test_tc_link__destroy(skel);
- }
- 
--void serial_test_tc_opts_query(void)
-+void test_tc_opts_query(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-@@ -2978,7 +2978,7 @@ static void test_tc_opts_query_attach_target(int target)
- 	test_tc_link__destroy(skel);
- }
- 
--void serial_test_tc_opts_query_attach(void)
-+void test_tc_opts_query_attach(void)
- {
- 	char ns_name[NS_NAME_MAX_LEN] = NS_NAME;
- 	struct netns_obj *ns;
-
+ 	err = 0;
+  unlock:
 -- 
-2.48.1
+2.25.1
 
 
