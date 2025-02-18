@@ -1,160 +1,112 @@
-Return-Path: <bpf+bounces-51870-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51871-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18BD9A3A849
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 21:00:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01E9EA3A8B7
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 21:25:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05D453A5671
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 20:00:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23BDB174630
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 20:25:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87665270EB7;
-	Tue, 18 Feb 2025 20:00:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2018B1C331E;
+	Tue, 18 Feb 2025 20:25:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jMGDlKev"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 159B521B9C2;
-	Tue, 18 Feb 2025 20:00:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D5011B85CC;
+	Tue, 18 Feb 2025 20:25:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739908801; cv=none; b=EWJhZib5avLNxEDySgbMH/M0saug6g45ulJIeuvFYVH8LcURuvmij//+SLOYmpGlfFDsQlI5ni590ZNsPIpUtMpe3W5KhKUqwZvc3ODJ1gZu3fbhHQdJvhAXgg+Z5H7rJhKwhQgjm3s5uIMhjVi91ho+OjT9uR3kTdHITlRHq6s=
+	t=1739910300; cv=none; b=fvgSfhn3h1MPedsSzF09KGkpnYJ5g61KZF4Wd6vXgiSMKbwla0kNl/GdUbl4a/R31SYYM1T3D7Y7ddgF+BQW93eWyZgG8r2cGOsoKnpoX3hSWx77QSEuGBX/qArwXWim6XACd5gK4jy9cabK3YOpndQlPkyAC9MxQCT/GMRol3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739908801; c=relaxed/simple;
-	bh=QLFTRFzyYuSINdme3xF6V7D+ye8dNm9AD+eKCHO+3HU=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=dgQd9K9dcnf8mfoqVD4f5Gw20ylplkMKAb0m43hDh8hEkRXQNy/AsWXPDn+qmLdYxr5nBrLFTovVGCrv6nlFmEJhjHayMS6Ch1oCqmbSphKm930YCbcZD/8Jl8oXvLCXf6EOCNX1AZs6hH9XtNRfj8dBAfN1HdOkuu0Og2UJxoo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABA4DC4CEEA;
-	Tue, 18 Feb 2025 20:00:00 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.98)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1tkTlX-00000004Arp-1YRM;
-	Tue, 18 Feb 2025 15:00:23 -0500
-Message-ID: <20250218200023.221100846@goodmis.org>
-User-Agent: quilt/0.68
-Date: Tue, 18 Feb 2025 14:59:24 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
+	s=arc-20240116; t=1739910300; c=relaxed/simple;
+	bh=RqfvD49zab00WPi+iJaDRqAfyPdg3UsQrxIpCeME0BU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=W1iPexYQcVdfCruvpdskusLRTw6biTlVCi7C99o/FR0K5od5WM7tP76DJcjFYS1XWHku7QqTba07Q+euhlXFiTABMull1p30us1SBCjHtRkqTo+WffsA4WcF0xRX1IE5Ig9dnD0SZYlYVg8zyUOLrlBNAgiPOHh8ebJxrOWnRqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jMGDlKev; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AC43C4CEE2;
+	Tue, 18 Feb 2025 20:24:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739910300;
+	bh=RqfvD49zab00WPi+iJaDRqAfyPdg3UsQrxIpCeME0BU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=jMGDlKev+Y8BLMXOd4sEeIWSj+D38CZbb7Tyk47ctY2KK7jK1iGwxGzlTGHMO2w/d
+	 g0XRuuJoqxhLxzG4bJt33mEXmhsYiomGD3CAbaTBCD+TTAG2OhVhPbp/6Z5Drenhvx
+	 YK+f3vpfINTnAHbiVL0O5TqYZuFdhTZmVWahvdwGcMaNoMTZgiP426ICT7d3mOyeBx
+	 Wq6HgKNxjpGDra9AG9qzTCZ7umDwepbLP7gy+u7WCi6nH6AwnIqrnJmaAv1TnTvWlt
+	 4TS3j4ZNEAizhgBEsfifyCpJdJoGl/Fe7s3NePuMliWd1nVi9NGHk8xFMY83cPCAmW
+	 pyxiouTQyJAbA==
+From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org,
- linux-kbuild@vger.kernel.org,
- bpf <bpf@vger.kernel.org>,
- linux-arm-kernel@lists.infradead.org,
- linux-s390@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Masahiro Yamada <masahiroy@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>,
- Nicolas Schier <nicolas@fjasle.eu>,
- Zheng Yejian <zhengyejian1@huawei.com>,
- Martin  Kelly <martin.kelly@crowdstrike.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Josh Poimboeuf <jpoimboe@redhat.com>,
- Heiko Carstens <hca@linux.ibm.com>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will@kernel.org>,
- Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>
-Subject: [PATCH v5 6/6] ftrace: Have ftrace pages output reflect freed pages
-References: <20250218195918.255228630@goodmis.org>
+	stable@vger.kernel.org
+Cc: Tejun Heo <tj@kernel.org>,
+	Ihor Solodrai <ihor.solodrai@pm.me>,
+	Andrea Righi <arighi@nvidia.com>,
+	Changwoo Min <changwoo@igalia.com>,
+	Sasha Levin <sashal@kernel.org>,
+	shuah@kernel.org,
+	dvernet@meta.com,
+	vishalc@linux.ibm.com,
+	linux-kselftest@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.13 01/31] sched_ext: selftests/dsp_local_on: Fix sporadic failures
+Date: Tue, 18 Feb 2025 15:24:21 -0500
+Message-Id: <20250218202455.3592096-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.13.3
+Content-Transfer-Encoding: 8bit
 
-From: Steven Rostedt <rostedt@goodmis.org>
+From: Tejun Heo <tj@kernel.org>
 
-The amount of memory that ftrace uses to save the descriptors to manage
-the functions it can trace is shown at output. But if there are a lot of
-functions that are skipped because they were weak or the architecture
-added holes into the tables, then the extra pages that were allocated are
-freed. But these freed pages are not reflected in the numbers shown, and
-they can even be inconsistent with what is reported:
+[ Upstream commit e9fe182772dcb2630964724fd93e9c90b68ea0fd ]
 
- ftrace: allocating 57482 entries in 225 pages
- ftrace: allocated 224 pages with 3 groups
+dsp_local_on has several incorrect assumptions, one of which is that
+p->nr_cpus_allowed always tracks p->cpus_ptr. This is not true when a task
+is scheduled out while migration is disabled - p->cpus_ptr is temporarily
+overridden to the previous CPU while p->nr_cpus_allowed remains unchanged.
 
-The above shows the number of original entries that are in the mcount_loc
-section and the pages needed to save them (225), but the second output
-reflects the number of pages that were actually used. The two should be
-consistent as:
+This led to sporadic test faliures when dsp_local_on_dispatch() tries to put
+a migration disabled task to a different CPU. Fix it by keeping the previous
+CPU when migration is disabled.
 
- ftrace: allocating 56739 entries in 224 pages
- ftrace: allocated 224 pages with 3 groups
+There are SCX schedulers that make use of p->nr_cpus_allowed. They should
+also implement explicit handling for p->migration_disabled.
 
-The above also shows the accurate number of entires that were actually
-stored and does not include the entries that were removed.
-
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Reported-by: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: Andrea Righi <arighi@nvidia.com>
+Cc: Changwoo Min <changwoo@igalia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/ftrace.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ tools/testing/selftests/sched_ext/dsp_local_on.bpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index e657013424aa..27c8def2139d 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -7006,6 +7006,7 @@ static int ftrace_process_locs(struct module *mod,
- 	unsigned long addr;
- 	unsigned long kaslr;
- 	unsigned long flags = 0; /* Shut up gcc */
-+	unsigned long pages;
- 	int ret = -ENOMEM;
+diff --git a/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c b/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c
+index fbda6bf546712..758b479bd1ee1 100644
+--- a/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c
++++ b/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c
+@@ -43,7 +43,7 @@ void BPF_STRUCT_OPS(dsp_local_on_dispatch, s32 cpu, struct task_struct *prev)
+ 	if (!p)
+ 		return;
  
- 	count = end - start;
-@@ -7013,6 +7014,8 @@ static int ftrace_process_locs(struct module *mod,
- 	if (!count)
- 		return 0;
- 
-+	pages = DIV_ROUND_UP(count, ENTRIES_PER_PAGE);
-+
- 	/*
- 	 * Sorting mcount in vmlinux at build time depend on
- 	 * CONFIG_BUILDTIME_MCOUNT_SORT, while mcount loc in
-@@ -7124,6 +7127,8 @@ static int ftrace_process_locs(struct module *mod,
- 			for (pg = pg_unuse; pg; pg = pg->next)
- 				remaining += 1 << pg->order;
- 
-+			pages -= remaining;
-+
- 			skip = DIV_ROUND_UP(skip, ENTRIES_PER_PAGE);
- 
- 			/*
-@@ -7137,6 +7142,13 @@ static int ftrace_process_locs(struct module *mod,
- 		synchronize_rcu();
- 		ftrace_free_pages(pg_unuse);
- 	}
-+
-+	if (!mod) {
-+		count -= skipped;
-+		pr_info("ftrace: allocating %ld entries in %ld pages\n",
-+			count, pages);
-+	}
-+
- 	return ret;
- }
- 
-@@ -7782,9 +7794,6 @@ void __init ftrace_init(void)
- 		goto failed;
- 	}
- 
--	pr_info("ftrace: allocating %ld entries in %ld pages\n",
--		count, DIV_ROUND_UP(count, ENTRIES_PER_PAGE));
--
- 	ret = ftrace_process_locs(NULL,
- 				  __start_mcount_loc,
- 				  __stop_mcount_loc);
+-	if (p->nr_cpus_allowed == nr_cpus)
++	if (p->nr_cpus_allowed == nr_cpus && !p->migration_disabled)
+ 		target = bpf_get_prandom_u32() % nr_cpus;
+ 	else
+ 		target = scx_bpf_task_cpu(p);
 -- 
-2.47.2
-
+2.39.5
 
 
