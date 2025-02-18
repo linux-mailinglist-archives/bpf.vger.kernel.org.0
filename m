@@ -1,116 +1,101 @@
-Return-Path: <bpf+bounces-51824-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51826-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59F73A399EF
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 12:10:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E915A39C57
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 13:38:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2048A16E225
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 11:10:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C40716D6CF
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 12:35:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A271023BF93;
-	Tue, 18 Feb 2025 11:10:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C4AD243959;
+	Tue, 18 Feb 2025 12:35:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DpItD0sM"
+	dkim=pass (2048-bit key) header.d=siemens.com header.i=diogo.ivo@siemens.com header.b="LYnOnoVz"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mta-64-225.siemens.flowmailer.net (mta-64-225.siemens.flowmailer.net [185.136.64.225])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1346B23958C;
-	Tue, 18 Feb 2025 11:10:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC4AA243382
+	for <bpf@vger.kernel.org>; Tue, 18 Feb 2025 12:35:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.136.64.225
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739877001; cv=none; b=N+1SbgJhVnftM8q/DQ0fW0GhWmnjakfRGg1CXreIY1Ydv8zk3sEBEAYENG/ozwRXTfoUkgk+3mBm865PDmQgZNnPVOPO7Xoftsy/MJ7+73Gn00dBsMIUuw2TMaYssuBLDH3Ak6I7rsKlHLf24ypeWZr5KiZvIEOEkID1OntRXEg=
+	t=1739882118; cv=none; b=k+kLHGiQeBsUrGg9fpUXMcrKxvAXugfdAalSLBAcLOhO1Kyu60xKlA9XCyWzH22RFej86hhOwN/GIUi2yBNvuK17Ul61qH/Fq+9GuhBbv9yOYw3nOmXryPrqUNv5LX1FdJdFM/S+jQXTvFWCqPwbnFLg19vAwu2PZx7riur1XqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739877001; c=relaxed/simple;
-	bh=yxYYlJBoiZm+umfoO+u20ai1V04G+CgdbT+PHgCEfM8=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=nfeMLl1TttbAsdwVCMxX02USOCiUjN6KtxozRbEYvd4L9uD8uHorHzqYL3p5rGkXLZZiYOXlILyFpw6IBLBuP9P/zfaoyb+QqA4lBTR5tG97YXEPeD6XTslFnR068U4IdfCYL/0BxngjbzU3XW55c4RfB+NoPTxkUGF+z8ofIPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DpItD0sM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75F11C4CEE2;
-	Tue, 18 Feb 2025 11:10:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739877000;
-	bh=yxYYlJBoiZm+umfoO+u20ai1V04G+CgdbT+PHgCEfM8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=DpItD0sMWHXYQNVy/EjKjs76cbZCsDuh9CDiri4uN4Ds6S+fYWRqlMmR5M1XKVxQf
-	 xGHxZ/4gGYHpLsw8+hr8Svn8sjsa0J1xjrxs1FIxiYjBELDBqNvNw9qzzsV1fw25AQ
-	 RRc1nJqHGK4nA1t5CJjvNCsxf5fsDrpHaUCEZ/HgNcckkOSIVRcJn9utGI4sOoknH/
-	 +PMGrnA2mTjzjSTCw5ko/s5aUumDemFkslTWJAy/jxCPs49cGcDDdpobzn75nQwbcC
-	 I+ATTEvyBngsenxjVzg59qPQmPX7PPQ46I8XW7wRP12705bpGpgiwR7/HC5QRRBL4g
-	 qF99VaZh4kEEQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB759380AA7E;
-	Tue, 18 Feb 2025 11:10:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1739882118; c=relaxed/simple;
+	bh=YhCOzDgUX6Ndgo3HStvHEdN3KMsN1P0sllHKIUBhUIg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Hn5ZzdmBEmACBjWdO5fOnQGYP2kIwwtVQM5tKaZVh95cFdZ5lTc2J4ThbJ4wn4Z+zhUF/1HCTOXUS8W9DyqrU60qsf0I080tenYvCMVBMcR+ZfJ2k9++0hvpvNeCqOMa249NanGcBEAKwxVjgTAdKzzwtZ+NMHDqI80emP4hjHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com; dkim=pass (2048-bit key) header.d=siemens.com header.i=diogo.ivo@siemens.com header.b=LYnOnoVz; arc=none smtp.client-ip=185.136.64.225
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com
+Received: by mta-64-225.siemens.flowmailer.net with ESMTPSA id 20250218122503e92f93a08c4a4ffa40
+        for <bpf@vger.kernel.org>;
+        Tue, 18 Feb 2025 13:25:03 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm2;
+ d=siemens.com; i=diogo.ivo@siemens.com;
+ h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc:References:In-Reply-To;
+ bh=G2Mmqb1Mk7iE4u/cA5jv4vjZ4vx0m26FAwwSyjZdlAQ=;
+ b=LYnOnoVzgyvt12BzEBe4VCAtllZyzgApaONlStzl87LQ29SrPPal3so2Kv7HmCgq4Ld9S7
+ 4JEn/o4WmOcWz+1JMdwklNEOfmMGoLAEo0dAXatefHPXGhGsjnkKkJwuGIsgGd55oQKOGXRC
+ RQm6nZI5WWfQBog8RYiB8xQ8xaXWnR1aNkCA/4UKRLB7xWOVrYVerS8q3NSW93NU2X97sB9+
+ mcf1JZorJoE2dRh9W2+YgEea0iz23kjFC4C/IuOyhvRyKzjQxNQ8UBlqQDSaSBuVP+umSias
+ BDTLqrMQfDqhz26QVFYf9tFU4sJqmeozUU5VMjiYWgCqPol3D0wtN8Kg==;
+Message-ID: <c8bdd93d-5690-4b8a-819f-853756b57a71@siemens.com>
+Date: Tue, 18 Feb 2025 12:24:59 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 0/4] sockmap, vsock: For connectible sockets allow only
- connected
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <173987703076.4044275.12767164064897444183.git-patchwork-notify@kernel.org>
-Date: Tue, 18 Feb 2025 11:10:30 +0000
-References: <20250213-vsock-listen-sockmap-nullptr-v1-0-994b7cd2f16b@rbox.co>
-In-Reply-To: <20250213-vsock-listen-sockmap-nullptr-v1-0-994b7cd2f16b@rbox.co>
-To: Michal Luczaj <mhal@rbox.co>
-Cc: john.fastabend@gmail.com, jakub@cloudflare.com, edumazet@google.com,
- kuniyu@amazon.com, pabeni@redhat.com, willemb@google.com,
- davem@davemloft.net, kuba@kernel.org, horms@kernel.org, sgarzare@redhat.com,
- mst@redhat.com, bobby.eshleman@bytedance.com, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- mykolal@fb.com, shuah@kernel.org, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH net-next v2 1/3] net: ti: icssg-prueth: Use page_pool API
+ for RX buffer allocation
+To: "Malladi, Meghana" <m-malladi@ti.com>, Roger Quadros <rogerq@kernel.org>,
+ danishanwar@ti.com, pabeni@redhat.com, kuba@kernel.org, edumazet@google.com,
+ davem@davemloft.net, andrew+netdev@lunn.ch
+Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ u.kleine-koenig@baylibre.com, krzysztof.kozlowski@linaro.org,
+ dan.carpenter@linaro.org, schnelle@linux.ibm.com, glaroque@baylibre.com,
+ rdunlap@infradead.org, jan.kiszka@siemens.com, john.fastabend@gmail.com,
+ hawk@kernel.org, daniel@iogearbox.net, ast@kernel.org, srk@ti.com,
+ Vignesh Raghavendra <vigneshr@ti.com>, diogo.ivo@siemens.com
+References: <20250210103352.541052-1-m-malladi@ti.com>
+ <20250210103352.541052-2-m-malladi@ti.com>
+ <152b032e-fcd9-4d49-8154-92a475c0670c@kernel.org>
+ <615a2e1f-5ee5-4d80-a499-8ff06596a2fc@ti.com>
+Content-Language: en-US
+From: Diogo Ivo <diogo.ivo@siemens.com>
+In-Reply-To: <615a2e1f-5ee5-4d80-a499-8ff06596a2fc@ti.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Flowmailer-Platform: Siemens
+Feedback-ID: 519:519-1328357:519-21489:flowmailer
 
-Hello:
+Hi Meghana,
 
-This series was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Thu, 13 Feb 2025 12:58:48 +0100 you wrote:
-> Series deals with one more case of vsock surprising BPF/sockmap by being
-> inconsistency about (having an) assigned transport.
+On 2/18/25 10:10 AM, Malladi, Meghana wrote:
+> On 2/12/2025 7:26 PM, Roger Quadros wrote:
+>> Can we get rid of SKB entirely from the management channel code?
+>> The packet received on this channel is never passed to user space so
+>> I don't see why SKB is required.
+>>
 > 
-> KASAN: null-ptr-deref in range [0x0000000000000120-0x0000000000000127]
-> CPU: 7 UID: 0 PID: 56 Comm: kworker/7:0 Not tainted 6.14.0-rc1+
-> Workqueue: vsock-loopback vsock_loopback_work
-> RIP: 0010:vsock_read_skb+0x4b/0x90
-> Call Trace:
->  sk_psock_verdict_data_ready+0xa4/0x2e0
->  virtio_transport_recv_pkt+0x1ca8/0x2acc
->  vsock_loopback_work+0x27d/0x3f0
->  process_one_work+0x846/0x1420
->  worker_thread+0x5b3/0xf80
->  kthread+0x35a/0x700
->  ret_from_fork+0x2d/0x70
->  ret_from_fork_asm+0x1a/0x30
-> 
-> [...]
+> Yes I do agree with you on the fact the SKB here is not passed to the 
+> network stack, hence this is redundant. But honestly I am not sure how 
+> that can be done, because the callers of this function access skb->data
+> from the skb which is returned and the same can't be done with page (how 
+> to pass the same data using page?)
+> Also as you are aware we are not currently supporting SR1 devices 
+> anymore, hence I don't have any SR1 devices handy to test these changes 
+> and ensure nothing is broken if I remove SKB entirely.
 
-Here is the summary with links:
-  - [net,1/4] sockmap, vsock: For connectible sockets allow only connected
-    https://git.kernel.org/netdev/net/c/8fb5bb169d17
-  - [net,2/4] vsock/bpf: Warn on socket without transport
-    https://git.kernel.org/netdev/net/c/857ae05549ee
-  - [net,3/4] selftest/bpf: Adapt vsock_delete_on_close to sockmap rejecting unconnected
-    https://git.kernel.org/netdev/net/c/8350695bfb16
-  - [net,4/4] selftest/bpf: Add vsock test for sockmap rejecting unconnected
-    https://git.kernel.org/netdev/net/c/85928e9c4363
+I have some SR1 devices available and would be happy to test these
+proposed changes in case they are feasible.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Best regards,
+Diogo
 
