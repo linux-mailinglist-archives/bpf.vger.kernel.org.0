@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-51871-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51872-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01E9EA3A8B7
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 21:25:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2163A3A920
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 21:34:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23BDB174630
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 20:25:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E57D1899DF4
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 20:32:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2018B1C331E;
-	Tue, 18 Feb 2025 20:25:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E82B31D9A49;
+	Tue, 18 Feb 2025 20:26:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jMGDlKev"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DV0kAi9b"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D5011B85CC;
-	Tue, 18 Feb 2025 20:25:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 651CF1C6FF8;
+	Tue, 18 Feb 2025 20:26:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739910300; cv=none; b=fvgSfhn3h1MPedsSzF09KGkpnYJ5g61KZF4Wd6vXgiSMKbwla0kNl/GdUbl4a/R31SYYM1T3D7Y7ddgF+BQW93eWyZgG8r2cGOsoKnpoX3hSWx77QSEuGBX/qArwXWim6XACd5gK4jy9cabK3YOpndQlPkyAC9MxQCT/GMRol3Y=
+	t=1739910385; cv=none; b=FZKiGwiPWva8b3FITTby9krSwCfXdz11ttpeTszz2KkZpVzzXtH8ExemxfU0kR5mKSTfgrQdVnWWE0qqd8C0VsWKz+4VuauPIZ1xrivWeD1WkK75f5FhqYD0JiI+cxhnQmeLfmaty4mEFocPTB/gYVGQFgwURzWpG3zM98JX9kg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739910300; c=relaxed/simple;
-	bh=RqfvD49zab00WPi+iJaDRqAfyPdg3UsQrxIpCeME0BU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=W1iPexYQcVdfCruvpdskusLRTw6biTlVCi7C99o/FR0K5od5WM7tP76DJcjFYS1XWHku7QqTba07Q+euhlXFiTABMull1p30us1SBCjHtRkqTo+WffsA4WcF0xRX1IE5Ig9dnD0SZYlYVg8zyUOLrlBNAgiPOHh8ebJxrOWnRqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jMGDlKev; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AC43C4CEE2;
-	Tue, 18 Feb 2025 20:24:59 +0000 (UTC)
+	s=arc-20240116; t=1739910385; c=relaxed/simple;
+	bh=yj7yeckAsn7iveez2V/kKZzDE6FaGZg3nxRZwDhhx+E=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UyqUXiwhVZhnAn/djEaSg4bqwHVC+QomgaJ7YRack+hnjeIns38Igr+8JhPOj1q6+RaccpmKaSnhL43/DNRR3a2BLCNUK5N9CoXHvTKim4J6pMmzPYLJRO8i9JVRhFEb+amfQRA7P0ojsFHZVHat7TRmkY3LPWFTc1YHAFLDQAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DV0kAi9b; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0088BC4CEE2;
+	Tue, 18 Feb 2025 20:26:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739910300;
-	bh=RqfvD49zab00WPi+iJaDRqAfyPdg3UsQrxIpCeME0BU=;
+	s=k20201202; t=1739910385;
+	bh=yj7yeckAsn7iveez2V/kKZzDE6FaGZg3nxRZwDhhx+E=;
 	h=From:To:Cc:Subject:Date:From;
-	b=jMGDlKev+Y8BLMXOd4sEeIWSj+D38CZbb7Tyk47ctY2KK7jK1iGwxGzlTGHMO2w/d
-	 g0XRuuJoqxhLxzG4bJt33mEXmhsYiomGD3CAbaTBCD+TTAG2OhVhPbp/6Z5Drenhvx
-	 YK+f3vpfINTnAHbiVL0O5TqYZuFdhTZmVWahvdwGcMaNoMTZgiP426ICT7d3mOyeBx
-	 Wq6HgKNxjpGDra9AG9qzTCZ7umDwepbLP7gy+u7WCi6nH6AwnIqrnJmaAv1TnTvWlt
-	 4TS3j4ZNEAizhgBEsfifyCpJdJoGl/Fe7s3NePuMliWd1nVi9NGHk8xFMY83cPCAmW
-	 pyxiouTQyJAbA==
+	b=DV0kAi9bxoVXhH/V5gSvUvg+Mbk1cd9RjBaqxvD5rK4wLd0RsrYoc5IMAuQSDPgtk
+	 zgO7www9SXcrOFxt6i4S+/esxKLTTmf3CXwgPU62ROuiXD4aVMYl+Y4WptE53yWum5
+	 nkNWJDuIwSED7BPR8hj/79hIdouvzKsEAA4OeMtOhpEe9GsYFL88Y5Vlt8DmJVIs+j
+	 wW77Dssy5h2X6Sq+ysim3aPVI+W0YHmevqBCP0WSbLIMDUR2ohO2GXWGRXN4aqMyH2
+	 6OXH086kSj+QQfPnioLAndQX58aV4zmx+kkNUnMyoreLXcytM3Ufr+ynvjbrOWM16W
+	 OWKClZwj7mhXQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -53,9 +53,9 @@ Cc: Tejun Heo <tj@kernel.org>,
 	vishalc@linux.ibm.com,
 	linux-kselftest@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.13 01/31] sched_ext: selftests/dsp_local_on: Fix sporadic failures
-Date: Tue, 18 Feb 2025 15:24:21 -0500
-Message-Id: <20250218202455.3592096-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.12 01/31] sched_ext: selftests/dsp_local_on: Fix sporadic failures
+Date: Tue, 18 Feb 2025 15:25:47 -0500
+Message-Id: <20250218202619.3592630-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -65,7 +65,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.13.3
+X-stable-base: Linux 6.12.15
 Content-Transfer-Encoding: 8bit
 
 From: Tejun Heo <tj@kernel.org>
@@ -94,7 +94,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c b/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c
-index fbda6bf546712..758b479bd1ee1 100644
+index c9a2da0575a0f..eea06decb6f59 100644
 --- a/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c
 +++ b/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c
 @@ -43,7 +43,7 @@ void BPF_STRUCT_OPS(dsp_local_on_dispatch, s32 cpu, struct task_struct *prev)
