@@ -1,105 +1,246 @@
-Return-Path: <bpf+bounces-51778-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51779-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A3F6A38DFA
-	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2025 22:29:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66B7AA3900D
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 01:55:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 937D73AA9D0
-	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2025 21:29:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0CD9E7A2D22
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 00:54:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70F9823958D;
-	Mon, 17 Feb 2025 21:29:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE87B1D554;
+	Tue, 18 Feb 2025 00:55:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="gObWIrLK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mj64oeHc"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C858231CAE;
-	Mon, 17 Feb 2025 21:29:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E10A2C8EB;
+	Tue, 18 Feb 2025 00:55:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739827753; cv=none; b=J3FecJTSyvFA76UrzURf1bSn6AjAyCjyfSZ1XsUo0JHm2ICHiEzFJiTjno52AuuIm9o1KmtVSJhL2clibxjVQYeHG5XSmvwXa6fL+NR8MyIN/nOpC3NGMmLJoXI3Xiw6xSBzrMtaEmSSbN0q32/JeIHWhUzwSodDkz0UeLqqTWw=
+	t=1739840143; cv=none; b=sWTai7FHH5Z2xO1j//GlV9CpHbGOMnqm136Njh6Bn2+MHrk7q+BUenpziWvtajAqFuY3vLkbc9UcWETBA7oF47cWxvXm2YXaQdwZLlGMKXqbKobY3L+t3TxIRgKIexF0H1myeEvQ+UlGD1uh4xAEL89scX6tLeTS1Nj5lQgaGGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739827753; c=relaxed/simple;
-	bh=RFXSSpPMrD5aajvlqdUrOH2emqA4VTkdjJsajwFb30A=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FCXCYoD79LGCCQWeBxV4Owk1wUobk2njZ2dCRxAF/KcRymIl+N/6HurunrtEno9pL8aLL0tPNs+ugX5EACW5I1tpk+w5AGOYszzmLUimPsQb+NU2NFqvmm9ssJYoDtQ8Nq9iczHXzXhzi+IQXRNrkZXeqS3ypawyNHa5YNemLGc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=gObWIrLK; arc=none smtp.client-ip=99.78.197.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+	s=arc-20240116; t=1739840143; c=relaxed/simple;
+	bh=v7JweXGcUAvEhBc3So3CIVKPw9foZH3LplK2/v0UvmU=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=CoPGSg9LWsinZ2V2BdKLOmHh4YQ4yzc2viKFA8a46ZFeSiBcufi+BmsTyrxEjRaB1LVr0xHN5LDjYjNJrMpJveOnzmnroI4qRALxut2Uk2CG0M5n6oC045BVoQzolMSSpU7u4kHOA2cer4uoSdqTDo4qqvVZHj1hqzFlqVlgaqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mj64oeHc; arc=none smtp.client-ip=209.85.222.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7c081915cf3so21839085a.1;
+        Mon, 17 Feb 2025 16:55:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1739827751; x=1771363751;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=iubb63uVNsDfJynMk+myiGV+efvOVDBh9K0Klt7gWio=;
-  b=gObWIrLKCNbvcT+YmlVs8Hj1TW2Eks8IZvsiFFOJ9YcV9TmrBMkm2ZBj
-   dRjduB1TyACx3ersZ352v3XmFacWPIcet94ot/1UmkJ/3NwSkYuLPFrfa
-   76NDGFYk+zbeYlH7kTp8q6pnmMkDXNT3GGxO4xH0Pq0bcPHZTanxdX2YF
-   4=;
-X-IronPort-AV: E=Sophos;i="6.13,293,1732579200"; 
-   d="scan'208";a="378180249"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.210])
-  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2025 21:29:09 +0000
-Received: from EX19MTAUWC001.ant.amazon.com [10.0.38.20:23861]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.28.176:2525] with esmtp (Farcaster)
- id 64de6730-b20b-4313-9626-438232c625b8; Mon, 17 Feb 2025 21:29:08 +0000 (UTC)
-X-Farcaster-Flow-ID: 64de6730-b20b-4313-9626-438232c625b8
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.39;
- Mon, 17 Feb 2025 21:29:07 +0000
-Received: from 6c7e67bfbae3.amazon.com (10.88.189.161) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Mon, 17 Feb 2025 21:29:03 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <kerneljasonxing@gmail.com>
-CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <davem@davemloft.net>, <dsahern@kernel.org>,
-	<eddyz87@gmail.com>, <edumazet@google.com>, <haoluo@google.com>,
-	<john.fastabend@gmail.com>, <jolsa@kernel.org>, <kpsingh@kernel.org>,
-	<kuba@kernel.org>, <kuniyu@amazon.com>, <martin.lau@linux.dev>,
-	<netdev@vger.kernel.org>, <pabeni@redhat.com>, <sdf@fomichev.me>,
-	<shuah@kernel.org>, <song@kernel.org>, <ykolal@fb.com>,
-	<yonghong.song@linux.dev>
-Subject: Re: [PATCH bpf-next v2 2/3] bpf: support TCP_RTO_MAX_MS for bpf_setsockopt
-Date: Mon, 17 Feb 2025 13:28:54 -0800
-Message-ID: <20250217212854.62301-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
-In-Reply-To: <20250217034245.11063-3-kerneljasonxing@gmail.com>
-References: <20250217034245.11063-3-kerneljasonxing@gmail.com>
+        d=gmail.com; s=20230601; t=1739840140; x=1740444940; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vRB4QBCBpfFopy2XrFRy9ooLzTy8WDbnYonaIdzEX2w=;
+        b=mj64oeHc4Zi4DQNo9Znue2dzVEnSyCd1EDjt43t3TmCjDtlQL+IV43IMxoo58uVkjP
+         Opju7r6xWyJHqJSK7/O6HUfdsxpog6wZfHTzvecg8deif2oqUcVFkPHRsRVKbao02K+/
+         vUpN3remxFBTzHPfZj7hYwb9vOTYcRZwbleC6eVq4t/sHim5wVOe2v6p44KY0aDVJN2G
+         f59lbO1gVAfDgruVHzZMPWdSy/0D+L9wrjj5stO39AhVvMk6hzGfSa7Qq+w6SbzEW8ye
+         08EKQkG8yWr3AqnqBSR6Ji4JXfdufnzX8Ziwyppoe07mht0Y+znxPxYJ8aIctkbex1a+
+         qZJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739840140; x=1740444940;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=vRB4QBCBpfFopy2XrFRy9ooLzTy8WDbnYonaIdzEX2w=;
+        b=SYIVjrX0YhGiwuL+a3avPnb+nO+dAJln9TiVbplVla5jSaM5fKx6GlZE/wz0xLvkwr
+         grI+A6z6P2fOY5Q6ZOlb7BMKV6zl4sobyhhJC2wZL08Jr+m1uZNqe44CtfOKPMYKB5KG
+         ozCAs8KM8X3FzqyKtg+8Tmj9BZ5RcHFJ9YCYSha1BfUBk/52coSv67v2WqgdytA1EOO0
+         M5TCJ6A1jNKqB9DoRl6FWqRRA+H+4rYraA13amL/zzxoqrssRsvi2QOfqjlytOGKUAgX
+         tSmKUknymgW9JJA/tu2LWSbTN5ecdFwCljirb0hfSWcDwIQi82jbaeDhx86E8xB3eN7a
+         hPcA==
+X-Forwarded-Encrypted: i=1; AJvYcCV5qN1tMHNA34mhlQRkeD4+zr9f6EZQat/E3o6g8kXBl5TOinvfEflsduwb9Qzbvxu7dnxto0t9@vger.kernel.org, AJvYcCXi18+b/Pa/+qPWaZwGZ3isKhbcpNa4MBtehWTCIhYD+UA11tb9Il1Lc3clTNbyUvvKeWc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx8as1WrxseWxtauvc8ki1cTzDtI19cnHvkD457fB6rs8Jtkum0
+	bhPhc6GiFtYb+0V2tPR91MSA2TSuSy17vB9yYx2XFOUZd7TJOhLVnMO7jg==
+X-Gm-Gg: ASbGncuXVqfOKohMd04OXdolXDKQzsMEzZU1LOHb1OJ3E4cunSSKyiUA6uEzUVhcgV1
+	hc3kPNbXEUiTJEmLvQ+MPbauWmCddZOvnprQQAiLbLoYd6ZuwuydZ3y5xnoYgmIk758ylkKAk4j
+	riqSsKiewvg+YsyDkTTqrVMsZBTLVgyvUW7Io0Rf4hGWN+WWDWqun/RFrcDtfhB73QCeV7vKDZa
+	WvWSeoZhlW2hJVzjGxSAcc974r0IAMbM+EEesiwAa7KglC00a82nk8DXj5AVZYMRe6eoBP7ZY4/
+	C7UTOkVQQ264tLQUSy4fr7wKGCvCMekuJ35AkDGsvtZm/o6oC3LSClcIYfw9bpc=
+X-Google-Smtp-Source: AGHT+IG3Vav8gXXJu3BLwFWpmBo+VGwPm6OadL+SaldebSCH+tqGWfmFcbkD0APW5Io9KNL6nl7aZA==
+X-Received: by 2002:a05:620a:444c:b0:7c0:a7aa:58b0 with SMTP id af79cd13be357-7c0a7aa6015mr375731185a.15.1739840139559;
+        Mon, 17 Feb 2025 16:55:39 -0800 (PST)
+Received: from localhost (15.60.86.34.bc.googleusercontent.com. [34.86.60.15])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c0ade609easm18088285a.69.2025.02.17.16.55.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Feb 2025 16:55:38 -0800 (PST)
+Date: Mon, 17 Feb 2025 19:55:37 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Jason Xing <kerneljasonxing@gmail.com>, 
+ Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ davem@davemloft.net, 
+ edumazet@google.com, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ dsahern@kernel.org, 
+ willemb@google.com, 
+ ast@kernel.org, 
+ daniel@iogearbox.net, 
+ andrii@kernel.org, 
+ eddyz87@gmail.com, 
+ song@kernel.org, 
+ yonghong.song@linux.dev, 
+ john.fastabend@gmail.com, 
+ kpsingh@kernel.org, 
+ sdf@fomichev.me, 
+ haoluo@google.com, 
+ jolsa@kernel.org, 
+ horms@kernel.org, 
+ bpf@vger.kernel.org, 
+ netdev@vger.kernel.org
+Message-ID: <67b3da89bc6c7_c0e25294cb@willemb.c.googlers.com.notmuch>
+In-Reply-To: <67b1f7f02320f_3f936429436@willemb.c.googlers.com.notmuch>
+References: <20250214010038.54131-1-kerneljasonxing@gmail.com>
+ <20250214010038.54131-9-kerneljasonxing@gmail.com>
+ <67b0ad8819948_36e344294a7@willemb.c.googlers.com.notmuch>
+ <CAL+tcoAJHSfBrfdn-Cmk=9ZkMNSdkGYKJbZ0mynn_=qU9Mp1Ag@mail.gmail.com>
+ <67b0d831bf13f_381893294f4@willemb.c.googlers.com.notmuch>
+ <CAL+tcoDhtBFjVBMWObHq3LaSNXgJN_UWBVONAqD=t7CRYN_PAg@mail.gmail.com>
+ <89989129-9336-4863-a66e-e9c8adc60072@linux.dev>
+ <CAL+tcoDB=Vv=smpP9rUaj3tug2Vt6dQz9Ay8DRxMwAs-Q9iexg@mail.gmail.com>
+ <67b1f7f02320f_3f936429436@willemb.c.googlers.com.notmuch>
+Subject: Re: [PATCH bpf-next v11 08/12] bpf: add BPF_SOCK_OPS_TS_HW_OPT_CB
+ callback
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D036UWC001.ant.amazon.com (10.13.139.233) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Mon, 17 Feb 2025 11:42:44 +0800
-> Some applications don't want to wait for too long because the
-> time of retransmission increases exponentially and can reach more
-> than 10 seconds, for example. Eric implements the core logic
-> on supporting rto max feature in the stack previously. Based on that,
-> we can support it for BPF use.
-> 
-> This patch reuses the same logic of TCP_RTO_MAX_MS in do_tcp_setsockopt()
-> and do_tcp_getsockopt(). BPF program can call bpf_{set/get}sockopt()
-> to set/get the maximum value of RTO.
-> 
-> It would be good if a BPF program sets max value of RTO before
-> transmission as we can see in the later patch (selftests).
-> 
-> Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
+Willem de Bruijn wrote:
+> Jason Xing wrote:
+> > On Sun, Feb 16, 2025 at 6:58=E2=80=AFAM Martin KaFai Lau <martin.lau@=
+linux.dev> wrote:
+> > >
+> > > On 2/15/25 2:23 PM, Jason Xing wrote:
+> > > > On Sun, Feb 16, 2025 at 2:08=E2=80=AFAM Willem de Bruijn
+> > > > <willemdebruijn.kernel@gmail.com> wrote:
+> > > >>
+> > > >> Jason Xing wrote:
+> > > >>> On Sat, Feb 15, 2025 at 11:06=E2=80=AFPM Willem de Bruijn
+> > > >>> <willemdebruijn.kernel@gmail.com> wrote:
+> > > >>>>
+> > > >>>> Jason Xing wrote:
+> > > >>>>> Support hw SCM_TSTAMP_SND case for bpf timestamping.
+> > > >>>>>
+> > > >>>>> Add a new sock_ops callback, BPF_SOCK_OPS_TS_HW_OPT_CB. This
+> > > >>>>> callback will occur at the same timestamping point as the use=
+r
+> > > >>>>> space's hardware SCM_TSTAMP_SND. The BPF program can use it t=
+o
+> > > >>>>> get the same SCM_TSTAMP_SND timestamp without modifying the
+> > > >>>>> user-space application.
+> > > >>>>>
+> > > >>>>> To avoid increasing the code complexity, replace SKBTX_HW_TST=
+AMP
+> > > >>>>> with SKBTX_HW_TSTAMP_NOBPF instead of changing numerous calle=
+rs
+> > > >>>>> from driver side using SKBTX_HW_TSTAMP. The new definition of=
 
-Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+> > > >>>>> SKBTX_HW_TSTAMP means the combination tests of socket timesta=
+mping
+> > > >>>>> and bpf timestamping. After this patch, drivers can work unde=
+r the
+> > > >>>>> bpf timestamping.
+> > > >>>>>
+> > > >>>>> Considering some drivers doesn't assign the skb with hardware=
+
+> > > >>>>> timestamp,
+> > > >>>>
+> > > >>>> This is not for a real technical limitation, like the skb perh=
+aps
+> > > >>>> being cloned or shared?
+> > > >>>
+> > > >>> Agreed on this point. I'm kind of familiar with I40E, so I dare=
+ to say
+> > > >>> the reason why it doesn't assign the hwtstamp is because the sk=
+b will
+> > > >>> soon be destroyed, that is to say, it's pointless to assign the=
+
+> > > >>> timestamp.
+> > > >>
+> > > >> Makes sense.
+> > > >>
+> > > >> But that does not ensure that the skb is exclusively owned. Nor =
+that
+> > > >> the same is true for all drivers using this API (which is not sm=
+all,
+> > > >> but small enough to manually review if need be).
+> > > >>
+> > > >> The first two examples I happened to look at, i40e and bnx2x, bo=
+th use
+> > > >> skb_get() to get a non-exclusive skb reference for their ptp_tx_=
+skb.
+> > >
+> > > I think the existing __skb_tstamp_tx() function is also assigning t=
+o
+> > > skb_hwtstamps(skb). The skb may be cloned from the orig_skb first, =
+but they
+> > > still share the same shinfo. My understanding is that this patch is=
+ assigning to
+> > > the shinfo earlier, so it should not have changed the driver's expe=
+ctation on
+> > > the skb_hwtstamps(skb) after calling __skb_tstamp_tx(). If there ar=
+e drivers
+> > > assuming exclusive access to the skb_hwtstamps(skb), probably it is=
+ something
+> > > that needs to be addressed regardless and should not be the common =
+case?
+> > =
+
+> > Right, it's also what I was trying to say but missed. Thanks for the
+> > supplementary info:)
+> =
+
+> That existing behavior looks dodgy then, too.
+> =
+
+> I don't have time to look into it deeply right now. But it seems to go
+> back all the way to the introduction of hw timestamping in commit
+> ac45f602ee3d in 2009.
+> =
+
+> I can see how it works in that nothing else holding a clone will
+> likely have a reason to touch those fields. But that does not make it
+> correct.
+> =
+
+> Your point that the new code is no worse than today probably is true.
+> But when we spot something we prefer to fix it probably. Will need a
+> deeper look..
+
+The original commit explains the rationale. It is as I expected: the
+field is newly introduced and for every skb it is therefore known that
+no other path exists that touches that field.
+
+"
+    The new semantic for hardware/software time stamping around
+    ndo_start_xmit() is based on two assumptions about existing
+    network device drivers which don't support hardware time
+    stamping and know nothing about it:
+     - they leave the new skb_shared_tx unmodified
+     - the keep the connection to the originating socket in skb->sk
+       alive, i.e., don't call skb_orphan()
+    =
+
+    Given that skb_shared_tx is new, the first assumption is safe.
+"
+
+I'm not aware of us relying on such soft assurances for other fields
+in skb_shared_info wrt accessing while cloned. But we can assume it
+out of scope for this series.=
 
