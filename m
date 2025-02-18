@@ -1,41 +1,41 @@
-Return-Path: <bpf+bounces-51867-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51868-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D67F2A3A848
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 21:00:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08B8BA3A853
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 21:01:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 816CA7A5543
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 19:59:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8108B16935B
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 20:00:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E089A267384;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F030C26AA92;
 	Tue, 18 Feb 2025 20:00:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 740531F5826;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B94F1F5836;
 	Tue, 18 Feb 2025 20:00:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739908800; cv=none; b=hexE1ZGR8XChyLtg70zvPHvKhBqUwN60XjG4vxmEsob315wwb5Mz56pp7XahvR1hs+J4ZqOPLNl5wmYndBNHgoCGdvVBRNAetMQhGn5SgZG0RkIaXy7fcn9N+wJ6HjcIhJwa7UQm+9Oz6hNnp3c7xhjpgBjTObUkHZO8oJPbkA4=
+	t=1739908800; cv=none; b=uHnG2PN5mNVZJdawrH9Xgee/6pcD69mGTJ3OVtT+HMgBmn72M/1ZX0RvO3HZYIZhCHykJIJALLnwlUxNnq9SM1NRhjvheeTQlBhLYvYyrsINJnBTZ2fC1hG8ewER1LSbiYbNEs3qp4lkQKwtYffwLd26BfjYJUbVDH+PbRM9MmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1739908800; c=relaxed/simple;
-	bh=adWDEN1xA8RJXsxjA7ajZlW+Xp1KGSevPLjjon+DSOA=;
+	bh=fEotcco0/NOOpK03ym9UYHu8+AT+nPxtCtQMo5uAwjs=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=S0PnAUYU3xDc1qKcuNr6+bIMyFQ2JJguwXOXIBE6yXYGV0hl0CSpnifZMkEGARB1WF467UnruzmabHtso8w2isbniUXxM93iSc/+B+geyeR0pduO/Q4XYov+isKzUr6XzThPd34goQcLz/V7aVkjDXwKedFs0hsGdQJCWnlCv0o=
+	 Content-Type; b=i/VqMqaNfBYVh/9chLscVfVG/xUp74h1yqVV+46lC4APg1kGL6W8r84pMmuksn1h7uzhtft2s5LflMgwzr5Z1f2MG9gZoSyu4U0AE11YHP+0U2CSTgEORdL1Kw1nfbQty7XTwoLSluJtN0yAX8xp056ZjrEzAzxuSbIAPjHnvTY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3757FC4CEE2;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E7CAC4CEFA;
 	Tue, 18 Feb 2025 20:00:00 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.98)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1tkTlW-00000004AqJ-3cQ4;
-	Tue, 18 Feb 2025 15:00:22 -0500
-Message-ID: <20250218200022.710676551@goodmis.org>
+	id 1tkTlX-00000004Aqo-0918;
+	Tue, 18 Feb 2025 15:00:23 -0500
+Message-ID: <20250218200022.883095980@goodmis.org>
 User-Agent: quilt/0.68
-Date: Tue, 18 Feb 2025 14:59:21 -0500
+Date: Tue, 18 Feb 2025 14:59:22 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org,
@@ -61,7 +61,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Will Deacon <will@kernel.org>,
  Vasily Gorbik <gor@linux.ibm.com>,
  Alexander Gordeev <agordeev@linux.ibm.com>
-Subject: [PATCH v5 3/6] scripts/sorttable: Always use an array for the mcount_loc sorting
+Subject: [PATCH v5 4/6] scripts/sorttable: Zero out weak functions in mcount_loc table
 References: <20250218195918.255228630@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -73,209 +73,288 @@ Content-Type: text/plain; charset=UTF-8
 
 From: Steven Rostedt <rostedt@goodmis.org>
 
-The sorting of the mcount_loc section is done directly to the section for
-x86 and arm32 but it uses a separate array for arm64 as arm64 has the
-values for the mcount_loc stored in the rela sections of the vmlinux ELF
-file.
+When a function is annotated as "weak" and is overridden, the code is not
+removed. If it is traced, the fentry/mcount location in the weak function
+will be referenced by the "__mcount_loc" section. This will then be added
+to the available_filter_functions list. Since only the address of the
+functions are listed, to find the name to show, a search of kallsyms is
+used.
 
-In order to use the same code to remove weak functions, always use a
-separate array to do the sorting. This requires splitting up the filling
-of the array into one function and the placing the contents of the array
-back into the rela sections or into the mcount_loc section into a separate
-file.
+Since kallsyms will return the function by simply finding the function
+that the address is after but before the next function, an address of a
+weak function will show up as the function before it. This is because
+kallsyms does not save names of weak functions. This has caused issues in
+the past, as now the traced weak function will be listed in
+available_filter_functions with the name of the function before it.
+
+At best, this will cause the previous function's name to be listed twice.
+At worse, if the previous function was marked notrace, it will now show up
+as a function that can be traced. Note that it only shows up that it can
+be traced but will not be if enabled, which causes confusion.
+
+ https://lore.kernel.org/all/20220412094923.0abe90955e5db486b7bca279@kernel.org/
+
+The commit b39181f7c6907 ("ftrace: Add FTRACE_MCOUNT_MAX_OFFSET to avoid
+adding weak function") was a workaround to this by checking the function
+address before printing its name. If the address was too far from the
+function given by the name then instead of printing the name it would
+print: __ftrace_invalid_address___<invalid-offset>
+
+The real issue is that these invalid addresses are listed in the ftrace
+table look up which available_filter_functions is derived from. A place
+holder must be listed in that file because set_ftrace_filter may take a
+series of indexes into that file instead of names to be able to do O(1)
+lookups to enable filtering (many tools use this method).
+
+Even if kallsyms saved the size of the function, it does not remove the
+need of having these place holders. The real solution is to not add a weak
+function into the ftrace table in the first place.
+
+To solve this, the sorttable.c code that sorts the mcount regions during
+the build is modified to take a "nm -S vmlinux" input, sort it, and any
+function listed in the mcount_loc section that is not within a boundary of
+the function list given by nm is considered a weak function and is zeroed
+out.
+
+Note, this does not mean they will remain zero when booting as KASLR
+will still shift those addresses. To handle this, the entries in the
+mcount_loc section will be ignored if they are zero or match the
+kaslr_offset() value.
+
+Before:
+
+ ~# grep __ftrace_invalid_address___ /sys/kernel/tracing/available_filter_functions | wc -l
+ 551
+
+After:
+
+ ~# grep __ftrace_invalid_address___ /sys/kernel/tracing/available_filter_functions | wc -l
+ 0
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- scripts/sorttable.c | 122 ++++++++++++++++++++++++++++++++------------
- 1 file changed, 90 insertions(+), 32 deletions(-)
+ kernel/trace/ftrace.c   |   6 +-
+ scripts/link-vmlinux.sh |   4 +-
+ scripts/sorttable.c     | 128 +++++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 134 insertions(+), 4 deletions(-)
 
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 728ecda6e8d4..e3f89924f603 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -7004,6 +7004,7 @@ static int ftrace_process_locs(struct module *mod,
+ 	unsigned long count;
+ 	unsigned long *p;
+ 	unsigned long addr;
++	unsigned long kaslr;
+ 	unsigned long flags = 0; /* Shut up gcc */
+ 	int ret = -ENOMEM;
+ 
+@@ -7052,6 +7053,9 @@ static int ftrace_process_locs(struct module *mod,
+ 		ftrace_pages->next = start_pg;
+ 	}
+ 
++	/* For zeroed locations that were shifted for core kernel */
++	kaslr = !mod ? kaslr_offset() : 0;
++
+ 	p = start;
+ 	pg = start_pg;
+ 	while (p < end) {
+@@ -7063,7 +7067,7 @@ static int ftrace_process_locs(struct module *mod,
+ 		 * object files to satisfy alignments.
+ 		 * Skip any NULL pointers.
+ 		 */
+-		if (!addr) {
++		if (!addr || addr == kaslr) {
+ 			skipped++;
+ 			continue;
+ 		}
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 56a077d204cf..59b07fe6fd00 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -177,12 +177,14 @@ mksysmap()
+ 
+ sorttable()
+ {
+-	${objtree}/scripts/sorttable ${1}
++	${NM} -S ${1} > .tmp_vmlinux.nm-sort
++	${objtree}/scripts/sorttable -s .tmp_vmlinux.nm-sort ${1}
+ }
+ 
+ cleanup()
+ {
+ 	rm -f .btf.*
++	rm -f .tmp_vmlinux.nm-sort
+ 	rm -f System.map
+ 	rm -f vmlinux
+ 	rm -f vmlinux.map
 diff --git a/scripts/sorttable.c b/scripts/sorttable.c
-index f62a91d8af0a..ec02a2852efb 100644
+index ec02a2852efb..23c7e0e6c024 100644
 --- a/scripts/sorttable.c
 +++ b/scripts/sorttable.c
-@@ -594,31 +594,19 @@ struct elf_mcount_loc {
- 	uint64_t stop_mcount_loc;
- };
- 
--/* Sort the relocations not the address itself */
--static void *sort_relocs(Elf_Ehdr *ehdr, uint64_t start_loc, uint64_t size)
-+/* Fill the array with the content of the relocs */
-+static int fill_relocs(void *ptr, uint64_t size, Elf_Ehdr *ehdr, uint64_t start_loc)
- {
- 	Elf_Shdr *shdr_start;
- 	Elf_Rela *rel;
- 	unsigned int shnum;
--	unsigned int count;
-+	unsigned int count = 0;
- 	int shentsize;
--	void *vals;
--	void *ptr;
--
--	compare_values = long_size == 4 ? compare_values_32 : compare_values_64;
-+	void *array_end = ptr + size;
- 
- 	shdr_start = (Elf_Shdr *)((char *)ehdr + ehdr_shoff(ehdr));
- 	shentsize = ehdr_shentsize(ehdr);
- 
--	vals = malloc(long_size * size);
--	if (!vals) {
--		snprintf(m_err, ERRSTR_MAXSZ, "Failed to allocate sort array");
--		pthread_exit(m_err);
--		return NULL;
--	}
--
--	ptr = vals;
--
- 	shnum = ehdr_shnum(ehdr);
- 	if (shnum == SHN_UNDEF)
- 		shnum = shdr_size(shdr_start);
-@@ -637,22 +625,18 @@ static void *sort_relocs(Elf_Ehdr *ehdr, uint64_t start_loc, uint64_t size)
- 			uint64_t offset = rela_offset(rel);
- 
- 			if (offset >= start_loc && offset < start_loc + size) {
--				if (ptr + long_size > vals + size) {
--					free(vals);
-+				if (ptr + long_size > array_end) {
- 					snprintf(m_err, ERRSTR_MAXSZ,
- 						 "Too many relocations");
--					pthread_exit(m_err);
--					return NULL;
-+					return -1;
- 				}
- 
- 				/* Make sure this has the correct type */
- 				if (rela_info(rel) != rela_type) {
--					free(vals);
- 					snprintf(m_err, ERRSTR_MAXSZ,
- 						"rela has type %lx but expected %lx\n",
- 						(long)rela_info(rel), rela_type);
--					pthread_exit(m_err);
--					return NULL;
-+					return -1;
- 				}
- 
- 				if (long_size == 4)
-@@ -660,13 +644,28 @@ static void *sort_relocs(Elf_Ehdr *ehdr, uint64_t start_loc, uint64_t size)
- 				else
- 					*(uint64_t *)ptr = rela_addend(rel);
- 				ptr += long_size;
-+				count++;
- 			}
- 		}
- 	}
--	count = ptr - vals;
--	qsort(vals, count / long_size, long_size, compare_values);
-+	return count;
-+}
-+
-+/* Put the sorted vals back into the relocation elements */
-+static void replace_relocs(void *ptr, uint64_t size, Elf_Ehdr *ehdr, uint64_t start_loc)
-+{
-+	Elf_Shdr *shdr_start;
-+	Elf_Rela *rel;
-+	unsigned int shnum;
-+	int shentsize;
-+
-+	shdr_start = (Elf_Shdr *)((char *)ehdr + ehdr_shoff(ehdr));
-+	shentsize = ehdr_shentsize(ehdr);
-+
-+	shnum = ehdr_shnum(ehdr);
-+	if (shnum == SHN_UNDEF)
-+		shnum = shdr_size(shdr_start);
- 
--	ptr = vals;
- 	for (int i = 0; i < shnum; i++) {
- 		Elf_Shdr *shdr = get_index(shdr_start, shentsize, i);
- 		void *end;
-@@ -689,8 +688,32 @@ static void *sort_relocs(Elf_Ehdr *ehdr, uint64_t start_loc, uint64_t size)
- 			}
- 		}
- 	}
--	free(vals);
--	return NULL;
-+}
-+
-+static int fill_addrs(void *ptr, uint64_t size, void *addrs)
-+{
-+	void *end = ptr + size;
-+	int count = 0;
-+
-+	for (; ptr < end; ptr += long_size, addrs += long_size, count++) {
-+		if (long_size == 4)
-+			*(uint32_t *)ptr = r(addrs);
-+		else
-+			*(uint64_t *)ptr = r8(addrs);
-+	}
-+	return count;
-+}
-+
-+static void replace_addrs(void *ptr, uint64_t size, void *addrs)
-+{
-+	void *end = ptr + size;
-+
-+	for (; ptr < end; ptr += long_size, addrs += long_size) {
-+		if (long_size == 4)
-+			w(*(uint32_t *)ptr, addrs);
-+		else
-+			w8(*(uint64_t *)ptr, addrs);
-+	}
+@@ -580,6 +580,98 @@ static void rela_write_addend(Elf_Rela *rela, uint64_t val)
+ 	e.rela_write_addend(rela, val);
  }
  
- /* Sort the addresses stored between __start_mcount_loc to __stop_mcount_loc in vmlinux */
-@@ -699,14 +722,49 @@ static void *sort_mcount_loc(void *arg)
- 	struct elf_mcount_loc *emloc = (struct elf_mcount_loc *)arg;
- 	uint64_t offset = emloc->start_mcount_loc - shdr_addr(emloc->init_data_sec)
- 					+ shdr_offset(emloc->init_data_sec);
--	uint64_t count = emloc->stop_mcount_loc - emloc->start_mcount_loc;
-+	uint64_t size = emloc->stop_mcount_loc - emloc->start_mcount_loc;
- 	unsigned char *start_loc = (void *)emloc->ehdr + offset;
-+	Elf_Ehdr *ehdr = emloc->ehdr;
-+	void *e_msg = NULL;
-+	void *vals;
-+	int count;
++struct func_info {
++	uint64_t	addr;
++	uint64_t	size;
++};
 +
-+	vals = malloc(long_size * size);
-+	if (!vals) {
-+		snprintf(m_err, ERRSTR_MAXSZ, "Failed to allocate sort array");
-+		pthread_exit(m_err);
++/* List of functions created by: nm -S vmlinux */
++static struct func_info *function_list;
++static int function_list_size;
++
++/* Allocate functions in 1k blocks */
++#define FUNC_BLK_SIZE	1024
++#define FUNC_BLK_MASK	(FUNC_BLK_SIZE - 1)
++
++static int add_field(uint64_t addr, uint64_t size)
++{
++	struct func_info *fi;
++	int fsize = function_list_size;
++
++	if (!(fsize & FUNC_BLK_MASK)) {
++		fsize += FUNC_BLK_SIZE;
++		fi = realloc(function_list, fsize * sizeof(struct func_info));
++		if (!fi)
++			return -1;
++		function_list = fi;
 +	}
++	fi = &function_list[function_list_size++];
++	fi->addr = addr;
++	fi->size = size;
++	return 0;
++}
++
++/* Only return match if the address lies inside the function size */
++static int cmp_func_addr(const void *K, const void *A)
++{
++	uint64_t key = *(const uint64_t *)K;
++	const struct func_info *a = A;
++
++	if (key < a->addr)
++		return -1;
++	return key >= a->addr + a->size;
++}
++
++/* Find the function in function list that is bounded by the function size */
++static int find_func(uint64_t key)
++{
++	return bsearch(&key, function_list, function_list_size,
++		       sizeof(struct func_info), cmp_func_addr) != NULL;
++}
++
++static int cmp_funcs(const void *A, const void *B)
++{
++	const struct func_info *a = A;
++	const struct func_info *b = B;
++
++	if (a->addr < b->addr)
++		return -1;
++	return a->addr > b->addr;
++}
++
++static int parse_symbols(const char *fname)
++{
++	FILE *fp;
++	char addr_str[20]; /* Only need 17, but round up to next int size */
++	char size_str[20];
++	char type;
++
++	fp = fopen(fname, "r");
++	if (!fp) {
++		perror(fname);
++		return -1;
++	}
++
++	while (fscanf(fp, "%16s %16s %c %*s\n", addr_str, size_str, &type) == 3) {
++		uint64_t addr;
++		uint64_t size;
++
++		/* Only care about functions */
++		if (type != 't' && type != 'T' && type != 'W')
++			continue;
++
++		addr = strtoull(addr_str, NULL, 16);
++		size = strtoull(size_str, NULL, 16);
++		if (add_field(addr, size) < 0)
++			return -1;
++	}
++	fclose(fp);
++
++	qsort(function_list, function_list_size, sizeof(struct func_info), cmp_funcs);
++
++	return 0;
++}
++
+ static pthread_t mcount_sort_thread;
+ static bool sort_reloc;
  
- 	if (sort_reloc)
--		return sort_relocs(emloc->ehdr, emloc->start_mcount_loc, count);
-+		count = fill_relocs(vals, size, ehdr, emloc->start_mcount_loc);
-+	else
-+		count = fill_addrs(vals, size, start_loc);
-+
-+	if (count < 0) {
-+		e_msg = m_err;
-+		goto out;
-+	}
-+
-+	if (count != size / long_size) {
-+		snprintf(m_err, ERRSTR_MAXSZ, "Expected %u mcount elements but found %u\n",
-+			(int)(size / long_size), count);
-+		e_msg = m_err;
-+		goto out;
-+	}
-+
-+	compare_values = long_size == 4 ? compare_values_32 : compare_values_64;
-+
-+	qsort(vals, count, long_size, compare_values);
-+
-+	if (sort_reloc)
-+		replace_relocs(vals, size, ehdr, emloc->start_mcount_loc);
-+	else
-+		replace_addrs(vals, size, start_loc);
-+
-+out:
-+	free(vals);
+@@ -752,6 +844,21 @@ static void *sort_mcount_loc(void *arg)
+ 		goto out;
+ 	}
  
--	qsort(start_loc, count/long_size, long_size, compare_extable);
--	return NULL;
-+	pthread_exit(e_msg);
++	/* zero out any locations not found by function list */
++	if (function_list_size) {
++		for (void *ptr = vals; ptr < vals + size; ptr += long_size) {
++			uint64_t key;
++
++			key = long_size == 4 ? r((uint32_t *)ptr) : r8((uint64_t *)ptr);
++			if (!find_func(key)) {
++				if (long_size == 4)
++					*(uint32_t *)ptr = 0;
++				else
++					*(uint64_t *)ptr = 0;
++			}
++		}
++	}
++
+ 	compare_values = long_size == 4 ? compare_values_32 : compare_values_64;
+ 
+ 	qsort(vals, count, long_size, compare_values);
+@@ -801,6 +908,8 @@ static void get_mcount_loc(struct elf_mcount_loc *emloc, Elf_Shdr *symtab_sec,
+ 		return;
+ 	}
  }
++#else /* MCOUNT_SORT_ENABLED */
++static inline int parse_symbols(const char *fname) { return 0; }
+ #endif
  
- /* Get the address of __start_mcount_loc and __stop_mcount_loc in System.map */
+ static int do_sort(Elf_Ehdr *ehdr,
+@@ -1256,14 +1365,29 @@ int main(int argc, char *argv[])
+ 	int i, n_error = 0;  /* gcc-4.3.0 false positive complaint */
+ 	size_t size = 0;
+ 	void *addr = NULL;
++	int c;
++
++	while ((c = getopt(argc, argv, "s:")) >= 0) {
++		switch (c) {
++		case 's':
++			if (parse_symbols(optarg) < 0) {
++				fprintf(stderr, "Could not parse %s\n", optarg);
++				return -1;
++			}
++			break;
++		default:
++			fprintf(stderr, "usage: sorttable [-s nm-file] vmlinux...\n");
++			return 0;
++		}
++	}
+ 
+-	if (argc < 2) {
++	if ((argc - optind) < 1) {
+ 		fprintf(stderr, "usage: sorttable vmlinux...\n");
+ 		return 0;
+ 	}
+ 
+ 	/* Process each file in turn, allowing deep failure. */
+-	for (i = 1; i < argc; i++) {
++	for (i = optind; i < argc; i++) {
+ 		addr = mmap_file(argv[i], &size);
+ 		if (!addr) {
+ 			++n_error;
 -- 
 2.47.2
 
