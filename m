@@ -1,121 +1,125 @@
-Return-Path: <bpf+bounces-51873-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51874-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 842F7A3AACA
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 22:22:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C8AEA3AB65
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 22:55:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0D5A3A4297
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 21:22:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C591175A39
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 21:55:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D064D1C8618;
-	Tue, 18 Feb 2025 21:22:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F2D91D61BC;
+	Tue, 18 Feb 2025 21:55:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jMRfW8mV"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FXrTptG5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 074141C6FF8;
-	Tue, 18 Feb 2025 21:22:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF7E91C75E2
+	for <bpf@vger.kernel.org>; Tue, 18 Feb 2025 21:55:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739913770; cv=none; b=aci43Mvbjf9P1Az5w2SzSzmuayqlaZqf3N69X1LWYRXfup2Ryokh7tatqisoJ2swqbNOP7TIimvfnadAXCcTf5cmdFimmnGBh9gozKrGcjQ1Fp4TttLAUqiFmx1Y/bL/yTCH3ZIniLqEmc2rimV/+bf0UkyqTl0jaTHHqcr4FeI=
+	t=1739915741; cv=none; b=EJ6Nng2RqlHSKJxVH1zXVhpOks+T/ZM8UUmK+EdPLvhEKApbMVTPf2xCWlnfNopS7P543s3kzRQ8BIK15iCgzXK9t+W9fm+cOIMjtJA7clalR0ukC+fITGeEWMRaGqZIoK8tReWOlJer150tRFmq7VZBglfosauw/4mrYNKT10Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739913770; c=relaxed/simple;
-	bh=mO8/OX+TtD76PNCNMzPQnEVym+SvzLwOvgdAPrx2c0o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cWqH2JcUWRHMEs8DzAB+32gOd6KL0CHcRvBQ0WB8cguR6C6jLFFZw95OalS6UEcQJ9DF0GHnmwKkCFWrbZWE3XNU2bZ+0IbDR8JMTxkfZDT5ivhycc17dR1MDQ3LaEgCe4nePRF98bgTbawGEfwKAVi6OvXyobS3HhRXdqu/yGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jMRfW8mV; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-220e989edb6so120581425ad.1;
-        Tue, 18 Feb 2025 13:22:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739913768; x=1740518568; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MCGLcaBsKIeSx5CrPCdbLx3FeDWUDA+FDmgXn6o6EGw=;
-        b=jMRfW8mVacTmPJChXGxt9gj4vDwAZcFsKXMFXBCDaVFByjyQeESdpy62umQ0/4P1pT
-         GkXWj+Lq/CkAlL+5taXmUHOjKw2MTXVG4f6DRidAtN58nm7L1TaV1aomAobkdJDLYOFS
-         UlgOBE7K0bfNyaxMKFYhlp/SAPRwPPC12S+z6aB3tKPDmx0x9joDtEIb4Z1OGfNyJYRc
-         EGkwhy0jN/lQezjP4ynCUPqTKp+SRVhi50jhWL3azJtzM8tBvjaaesYXyEa5TFAw7B/b
-         ItOjjEHLSzQAQ2LF3rqvnAAKPJWWzhAfuz7bj663A24O7LfY+C7weqHr5uT3zloKiJSc
-         A4WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739913768; x=1740518568;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MCGLcaBsKIeSx5CrPCdbLx3FeDWUDA+FDmgXn6o6EGw=;
-        b=uA9Fqz5oHW5Dsh2pD1maehY57yB3+2iu6ZNI42zjQeAvGX76ZJyDoroPZtUYNPQGe4
-         /GscLHZwUaIkYbZWg2uaVL1nl2LsKip+2vdqoZ3rp0BHjmdIHxz8h1+3/c1tsZy43EPd
-         lgff80lVo+gN+dzaHaYbttDcUhi5elnlqA41ImB0KuN8c7/wtDanKZmWwwjnc+e7CaTx
-         PM6Nd4+rN8dRrL0ZMAIcH53H1w9h1YLeMDHffwgRHcTYTh0U5+2LfiVMmd4WdP7R1u9U
-         aJjRz0n5nL1Elm71Wwx2xJsRx2GJ8wpByaDrJ34zqfQiDSICryWCd98U7Tc89hmZNbpU
-         Xblw==
-X-Forwarded-Encrypted: i=1; AJvYcCVBu7/w2h/6MC3MJD6dzRmVcg2rYGY8VKlK6EsICxJ+gNttqtvrJyDy8HWN0ZOiw+v+ZAY=@vger.kernel.org, AJvYcCVWQnlpHZIZeVvDl9pfztkwQML+NQo1Z11b9frdT8IkUdQN+HuHrGmTdTQy5lu3nLsSHK3DaONXD+63tQ0r@vger.kernel.org, AJvYcCWyIizNYZZ5qi31qq3fl1PejoH2IrfPdmZKmaLL89tKZ109ZvONDIeC8BFgKZkBgwKaYTo/q915yFPmjqawhRtX@vger.kernel.org
-X-Gm-Message-State: AOJu0YxOt5o+UrYjxMmgdBPo6btHf5QHlgA3S8QZTbu7nD5m/0c6ERe7
-	T+yVmLOMGuVx+nlb5KmVmLue2K6cOy0LYZQ/i9+7DPx7P1hzXFM=
-X-Gm-Gg: ASbGncvqYtWkwT8kZEhhvPD2KHbnBskYvek9WEjiUj6N5U+Mkg0oMmODGiuAaGvPtWK
-	tflIYBBkLS8pzPlp9J4KtqDIhfD2wWiZDhFXl8Nk97pNI/Cq3HfXdkwwZ0kjfsKeWT6c9Uh2D0U
-	16aV66H4wyjYMjj2jwJgGMEmJiizmJXtWp6ioADwpcyG8uT9BgAd9K7SeFpoWUdJuilNGtKbV2Q
-	6FoEfoWT2D/gMeCv3Ca7qp6Q3OjOY0QePvnczZLyL1Crwtt/QcSQdYFiYHs+1JAaWn/tlAQ8/IK
-	ZLyqRsAp/tSsq/s=
-X-Google-Smtp-Source: AGHT+IFvRiZC16m7YP1vm9kCqjs9N5vCdVDj1JD3GUfBrBolSBWqxE9kNWL7zcEGz/Ex8QCXBrSg4A==
-X-Received: by 2002:a17:902:f54f:b0:216:4d1f:5c83 with SMTP id d9443c01a7336-221040bf8dfmr257329635ad.47.1739913768239;
-        Tue, 18 Feb 2025 13:22:48 -0800 (PST)
-Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-220d5348f1esm93375405ad.51.2025.02.18.13.22.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Feb 2025 13:22:47 -0800 (PST)
-Date: Tue, 18 Feb 2025 13:22:47 -0800
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Alexis Lothore <alexis.lothore@bootlin.com>, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 0/3] selftests/bpf: tc_links/tc_opts:
- Unserialize tests
-Message-ID: <Z7T6J4BpIrBcsWPM@mini-arch>
-References: <20250217-tc_links-v1-0-27f7965e3dcd@bootlin.com>
+	s=arc-20240116; t=1739915741; c=relaxed/simple;
+	bh=gjrdDypVIdA4haXxU16AKYcenMcRuxwQ6R+WNcHp+vQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b3AT5Pec03XDtZmbbh18iu20JpV8BIulKrscbgEq78PLB0ewZBiLNTPlsOKuZp6GolNVw5QGRqj5ga/UY58i07M5/ofzxtgrTXW6oCMEJoaD15Q6yS1DQFJjdqJc6EnIHlAqRulxjdWFCRHuiweAwdxwkFPwMh4DE1tIVgOUw+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FXrTptG5; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <03553725-648d-467f-9076-0d5c22b3cfb3@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1739915726;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MFvzlj17vF3RfnrA5cUt+/Bc+hy+HetI/JCrxlNw5g4=;
+	b=FXrTptG5kh+rP6vZRg8gcxEpQwM3F41EFaNtvO/rq7gy2uxn7FSERZCnfzWGVDWcoIZ9e2
+	j8EoiTt1EJrzjFGm8klGqnrocYVaRyY+EQZgfL/vlSSSVOj8W8WhELuzyDAqYxfXw4RZK+
+	2ikS3h4YY9IFl33sW3sdTWDo+QIvY7w=
+Date: Tue, 18 Feb 2025 13:55:19 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250217-tc_links-v1-0-27f7965e3dcd@bootlin.com>
+Subject: Re: [PATCH bpf-next v12 01/12] bpf: add networking timestamping
+ support to bpf_get/setsockopt()
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Jason Xing <kerneljasonxing@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, dsahern@kernel.org, willemb@google.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
+ ykolal@fb.com, bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20250218050125.73676-1-kerneljasonxing@gmail.com>
+ <20250218050125.73676-2-kerneljasonxing@gmail.com>
+ <67b497b974fc3_10d6a32948b@willemb.c.googlers.com.notmuch>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <67b497b974fc3_10d6a32948b@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On 02/17, Bastien Curutchet (eBPF Foundation) wrote:
-> Hi all,
+On 2/18/25 6:22 AM, Willem de Bruijn wrote:
+> Jason Xing wrote:
+>> The new SK_BPF_CB_FLAGS and new SK_BPF_CB_TX_TIMESTAMPING are
+>> added to bpf_get/setsockopt. The later patches will implement the
+>> BPF networking timestamping. The BPF program will use
+>> bpf_setsockopt(SK_BPF_CB_FLAGS, SK_BPF_CB_TX_TIMESTAMPING) to
+>> enable the BPF networking timestamping on a socket.
+>>
+>> Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
+>> ---
+>>   include/net/sock.h             |  3 +++
+>>   include/uapi/linux/bpf.h       |  8 ++++++++
+>>   net/core/filter.c              | 23 +++++++++++++++++++++++
+>>   tools/include/uapi/linux/bpf.h |  1 +
+>>   4 files changed, 35 insertions(+)
+>>
+>> diff --git a/include/net/sock.h b/include/net/sock.h
+>> index 8036b3b79cd8..7916982343c6 100644
+>> --- a/include/net/sock.h
+>> +++ b/include/net/sock.h
+>> @@ -303,6 +303,7 @@ struct sk_filter;
+>>     *	@sk_stamp: time stamp of last packet received
+>>     *	@sk_stamp_seq: lock for accessing sk_stamp on 32 bit architectures only
+>>     *	@sk_tsflags: SO_TIMESTAMPING flags
+>> +  *	@sk_bpf_cb_flags: used in bpf_setsockopt()
+>>     *	@sk_use_task_frag: allow sk_page_frag() to use current->task_frag.
+>>     *			   Sockets that can be used under memory reclaim should
+>>     *			   set this to false.
+>> @@ -445,6 +446,8 @@ struct sock {
+>>   	u32			sk_reserved_mem;
+>>   	int			sk_forward_alloc;
+>>   	u32			sk_tsflags;
+>> +#define SK_BPF_CB_FLAG_TEST(SK, FLAG) ((SK)->sk_bpf_cb_flags & (FLAG))
+>> +	u32			sk_bpf_cb_flags;
+>>   	__cacheline_group_end(sock_write_rxtx);
 > 
-> Both tc_links.c and tc_opts.c do their tests on the loopback interface.
-> It prevents from parallelizing their executions.
-> 
-> Use namespaces and the new append_tid() helper to allow this
-> parallelization.
-> 
-> Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
+> So far only one bit is defined. Does this have to be a 32-bit field in
+> every socket?
 
-Acked-by: Stanislav Fomichev <sdf@fomichev.me>
+iirc, I think there were multiple callback (cb) flags/bits in the earlier 
+revisions, but it had been simplified to one bit in the later revisions.
 
-LGTM, thank you! Optionally, if there is more to convert, we can think
-about moving create_and_open_tid_ns to the test_progs itself. For example,
-if the test name starts with ns_, test_progs can probably do the
-create_and_open_tid_ns/netns_free part?
+It's an internal implementation detail. We can reuse some free bits from another 
+variable for now. Probably get a bit from sk_tsflags? SOCKCM_FLAG_TS_OPT_ID uses 
+BIT(31). Maybe a new SK_TS_FLAG_BPF_TX that uses BIT(30)? I don't have a strong 
+preference on the name.
+
+When the BPF program calls bpf_setsockopt(SK_BPF_CB_FLAGS, 
+SK_BPF_CB_TX_TIMESTAMPING), the kernel will set/test the BIT(30) of sk_tsflags.
+
+We can wait until there are more socket-level cb flags in the future (e.g., more 
+SK_BPF_CB_XXX will be needed) before adding a dedicated int field in the sock.
 
