@@ -1,95 +1,96 @@
-Return-Path: <bpf+bounces-51841-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51842-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B7EAA3A0EC
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 16:17:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFA02A3A16A
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 16:37:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 065497A2FFB
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 15:16:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1198188D446
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 15:37:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B12A726B099;
-	Tue, 18 Feb 2025 15:17:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5668926D5C6;
+	Tue, 18 Feb 2025 15:36:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tR845+np";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="r3SEbcEt";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tR845+np";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="r3SEbcEt"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="M/UhEGLU";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QlBU0glQ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZVfGLPsx";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HRB/heOS"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C866E14E2E2
-	for <bpf@vger.kernel.org>; Tue, 18 Feb 2025 15:17:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E965F26D5B8
+	for <bpf@vger.kernel.org>; Tue, 18 Feb 2025 15:36:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739891853; cv=none; b=jwdJJGXtQh+eycm27IcSt9EEjvdgK993BFmerTtgRtvp7gJ4mMoJonEEWFC/2vqUyDazLNbUg6Uq80LzrSo37BHM53WMLHD+CdfAnnmuPmg85rk6sCx+WMK2SnIskIjrgTOaalJ2kjk+8WkStc6nblQk72f6eYHIq16LPoP4LAs=
+	t=1739893018; cv=none; b=XGK1OfByPmtU3qTXPAylbiLGNGlmLeH/U2BTlLOfFSNGVoT4X96+dzPl33dHHYi+Y71P+zDIVJo2VFycRzWPv5LK2E2QktiB9Lq+sne6xR5rQ+QA4y6CRnnrnyQp8pnRk6wfx9vPrzr3G1h7Ra4kvzIdIPdKGGngsWJpl/s05os=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739891853; c=relaxed/simple;
-	bh=qTEFfuljb5Lxp7oI4eJ7dX1JtFsYiLK4VlucDX3wIxY=;
+	s=arc-20240116; t=1739893018; c=relaxed/simple;
+	bh=OZozONMRjPQROB3vJ1IHN6cd6MaS0jPbjI0mxltW1cQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AQAq/q/JoQWeraiFoVs4Jm1RfRwr47LhFUrUSez+reofGWdGVE9j8wXYqFl+Dft5DkKXye0FyGbHVVAzixecD/bwm7yYJ+JCVccDTPG6ydl6IHKhUJKSIUuk0T3RZAqIr/+/PNHI9kwa6EajF3yuk1bLwsSAaVOGSaoORlqFcMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=fail smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tR845+np; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=r3SEbcEt; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tR845+np; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=r3SEbcEt; arc=none smtp.client-ip=195.135.223.131
+	 In-Reply-To:Content-Type; b=mEPtVvmMxIPzEIy1NpNr6ffVC9r6reTyHfkacbp74spZqWTayxx8mbywvPG2qdPi1x/t8WjwYPx6h9gd7wtd4fPlz7N61lZzsLTQsnEe9k4gAc8lKGu5XhYbN6EvdstqWowrMOPgh5lELYDmm7orA0sv6M5pH8hdJkRZtuw2pTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=fail smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=M/UhEGLU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=QlBU0glQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZVfGLPsx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=HRB/heOS; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B87791F396;
-	Tue, 18 Feb 2025 15:17:29 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id DF2CB1F396;
+	Tue, 18 Feb 2025 15:36:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1739891849; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1739893014; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=GSfP9OfO4UmQP2itE5XGZaCFubr9vckyPt4xBYaJ5sw=;
-	b=tR845+np0F2WRzTieK8oe+Xa7gSC+/l1ATEtVsE080+o0gITFOBIdFZll5x1YsHGwUaXi6
-	vWrgn+YkUuoGkmCMfclQSnb4UUxztJeGNnlQUx+H1StFNlfR/2xBjelTuoetWhk29OwtKG
-	gZiCt6ODUg5jwKO2K1Iw2gMIDHSzOe0=
+	bh=7XVfHDnYTGNXta2to7TPE1bHpAn7BKEBdi3qr0AJHLE=;
+	b=M/UhEGLUbhj8BamTZKZEcMbPOE3uEE72TvcLOT2/WMSvoKuTZSYg4uJ+vekwbuVqu6H1dP
+	gzQ4Uq9nPidRy2nRrNxYDcxwgMmZYxnRvRDv5K2kCXoKov23w+BbFaFU8u9n6CkQDmM+p1
+	W8GKoPk+GqVrPoCf/oZRpJlZsRunU8U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1739891849;
+	s=susede2_ed25519; t=1739893014;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=GSfP9OfO4UmQP2itE5XGZaCFubr9vckyPt4xBYaJ5sw=;
-	b=r3SEbcEtI8hdhXaQ5R9/NpOttVahvQr0vj+A4l6fIpGIShSHsBXfYNgFQw2OcstRQn2hGX
-	r0WnZQanpRHuUZAA==
+	bh=7XVfHDnYTGNXta2to7TPE1bHpAn7BKEBdi3qr0AJHLE=;
+	b=QlBU0glQjebA+IxsHC94oxfZ69kcWCoKJAobYGZc4oFkqV3K5vUJFHJ7ViIPNgcPftKqro
+	sgklmayAVgm7wjDg==
 Authentication-Results: smtp-out2.suse.de;
-	none
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ZVfGLPsx;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="HRB/heOS"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1739891849; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1739893013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=GSfP9OfO4UmQP2itE5XGZaCFubr9vckyPt4xBYaJ5sw=;
-	b=tR845+np0F2WRzTieK8oe+Xa7gSC+/l1ATEtVsE080+o0gITFOBIdFZll5x1YsHGwUaXi6
-	vWrgn+YkUuoGkmCMfclQSnb4UUxztJeGNnlQUx+H1StFNlfR/2xBjelTuoetWhk29OwtKG
-	gZiCt6ODUg5jwKO2K1Iw2gMIDHSzOe0=
+	bh=7XVfHDnYTGNXta2to7TPE1bHpAn7BKEBdi3qr0AJHLE=;
+	b=ZVfGLPsxasKDifm5itDF6WoYRs+eLtzs4MnIpgcUjsAd0xNlO7qJpC8jMD8FPMe0OIl/9l
+	RUNaYf5lmYGNaHXW1mKlCVeYU62lynV0DsNyK3PHktaCh/qGq7n2buQMQBObV9Y8/CYdQH
+	M+1x/6RW6q8HU4HEc66+bmNg2rOsV6U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1739891849;
+	s=susede2_ed25519; t=1739893013;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=GSfP9OfO4UmQP2itE5XGZaCFubr9vckyPt4xBYaJ5sw=;
-	b=r3SEbcEtI8hdhXaQ5R9/NpOttVahvQr0vj+A4l6fIpGIShSHsBXfYNgFQw2OcstRQn2hGX
-	r0WnZQanpRHuUZAA==
+	bh=7XVfHDnYTGNXta2to7TPE1bHpAn7BKEBdi3qr0AJHLE=;
+	b=HRB/heOSozxChrHgcKfQsABAuFVvQCKeEKrgT9GljFxrpW5SQhNCuM11UvkeDOyPGU/gEK
+	UZijYq9MCNU3a+AQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8608213A1D;
-	Tue, 18 Feb 2025 15:17:29 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B29BF13A1D;
+	Tue, 18 Feb 2025 15:36:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 4NhfIImktGcncwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 18 Feb 2025 15:17:29 +0000
-Message-ID: <8307f3b1-0e6b-48cf-8553-6e7568e08ed4@suse.cz>
-Date: Tue, 18 Feb 2025 16:17:29 +0100
+	id TNe9KhWptGfreQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 18 Feb 2025 15:36:53 +0000
+Message-ID: <fb983185-a577-405e-8fb4-b506d894cec5@suse.cz>
+Date: Tue, 18 Feb 2025 16:36:53 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,8 +98,8 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v8 3/6] locking/local_lock: Introduce
- localtry_lock_t
+Subject: Re: [PATCH bpf-next v8 6/6] bpf: Use try_alloc_pages() to allocate
+ pages for bpf needs.
 Content-Language: en-US
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org
 Cc: andrii@kernel.org, memxor@gmail.com, akpm@linux-foundation.org,
@@ -107,7 +108,7 @@ Cc: andrii@kernel.org, memxor@gmail.com, akpm@linux-foundation.org,
  mhocko@suse.com, willy@infradead.org, tglx@linutronix.de, jannh@google.com,
  tj@kernel.org, linux-mm@kvack.org, kernel-team@fb.com
 References: <20250213033556.9534-1-alexei.starovoitov@gmail.com>
- <20250213033556.9534-4-alexei.starovoitov@gmail.com>
+ <20250213033556.9534-7-alexei.starovoitov@gmail.com>
 From: Vlastimil Babka <vbabka@suse.cz>
 Autocrypt: addr=vbabka@suse.cz; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -148,64 +149,151 @@ Autocrypt: addr=vbabka@suse.cz; keydata=
  w9XOLH1IIWh7RURU7G1iOfEfmImFeC3cbbS73LQEFGe1urxvIH5K/7vX+FkNcr9ujwWuPE9b
  1C2o4i/yZPLXIVy387EjA6GZMqvQUFuSTs/GeBcv0NjIQi8867H3uLjz+mQy63fAitsDwLmR
  EP+ylKVEKb0Q2A==
-In-Reply-To: <20250213033556.9534-4-alexei.starovoitov@gmail.com>
+In-Reply-To: <20250213033556.9534-7-alexei.starovoitov@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
+X-Rspamd-Queue-Id: DF2CB1F396
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
 	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_RCPT(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,gmail.com,linux-foundation.org,infradead.org,linutronix.de,goodmis.org,huawei.com,cmpxchg.org,linux.dev,suse.com,google.com,kvack.org,fb.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
+	MX_GOOD(-0.01)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCPT_COUNT_TWELVE(0.00)[18];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,linutronix.de:email,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Score: -2.80
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[kernel.org,gmail.com,linux-foundation.org,infradead.org,linutronix.de,goodmis.org,huawei.com,cmpxchg.org,linux.dev,suse.com,google.com,kvack.org,fb.com];
+	RCVD_TLS_ALL(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:dkim]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
+X-Spam-Level: 
 
 On 2/13/25 04:35, Alexei Starovoitov wrote:
-> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> From: Alexei Starovoitov <ast@kernel.org>
 > 
-> In !PREEMPT_RT local_lock_irqsave() disables interrupts to protect
-> critical section, but it doesn't prevent NMI, so the fully reentrant
-> code cannot use local_lock_irqsave() for exclusive access.
+> Use try_alloc_pages() and free_pages_nolock() for BPF needs
+> when context doesn't allow using normal alloc_pages.
+> This is a prerequisite for further work.
 > 
-> Introduce localtry_lock_t and localtry_lock_irqsave() that
-> disables interrupts and sets acquired=1, so localtry_lock_irqsave()
-> from NMI attempting to acquire the same lock will return false.
-> 
-> In PREEMPT_RT local_lock_irqsave() maps to preemptible spin_lock().
-> Map localtry_lock_irqsave() to preemptible spin_trylock().
-> When in hard IRQ or NMI return false right away, since
-> spin_trylock() is not safe due to PI issues.
-> 
-> Note there is no need to use local_inc for acquired variable,
-> since it's a percpu variable with strict nesting scopes.
-> 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+>  include/linux/bpf.h  |  2 +-
+>  kernel/bpf/arena.c   |  5 ++---
+>  kernel/bpf/syscall.c | 23 ++++++++++++++++++++---
+>  3 files changed, 23 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index f3f50e29d639..e1838a341817 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -2348,7 +2348,7 @@ int  generic_map_delete_batch(struct bpf_map *map,
+>  struct bpf_map *bpf_map_get_curr_or_next(u32 *id);
+>  struct bpf_prog *bpf_prog_get_curr_or_next(u32 *id);
+>  
+> -int bpf_map_alloc_pages(const struct bpf_map *map, gfp_t gfp, int nid,
+> +int bpf_map_alloc_pages(const struct bpf_map *map, int nid,
+>  			unsigned long nr_pages, struct page **page_array);
+>  #ifdef CONFIG_MEMCG
+>  void *bpf_map_kmalloc_node(const struct bpf_map *map, size_t size, gfp_t flags,
+> diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+> index 0975d7f22544..8ecc62e6b1a2 100644
+> --- a/kernel/bpf/arena.c
+> +++ b/kernel/bpf/arena.c
+> @@ -287,7 +287,7 @@ static vm_fault_t arena_vm_fault(struct vm_fault *vmf)
+>  		return VM_FAULT_SIGSEGV;
+>  
+>  	/* Account into memcg of the process that created bpf_arena */
+> -	ret = bpf_map_alloc_pages(map, GFP_KERNEL | __GFP_ZERO, NUMA_NO_NODE, 1, &page);
+> +	ret = bpf_map_alloc_pages(map, NUMA_NO_NODE, 1, &page);
+>  	if (ret) {
+>  		range_tree_set(&arena->rt, vmf->pgoff, 1);
+>  		return VM_FAULT_SIGSEGV;
+> @@ -465,8 +465,7 @@ static long arena_alloc_pages(struct bpf_arena *arena, long uaddr, long page_cnt
+>  	if (ret)
+>  		goto out_free_pages;
+>  
+> -	ret = bpf_map_alloc_pages(&arena->map, GFP_KERNEL | __GFP_ZERO,
+> -				  node_id, page_cnt, pages);
+> +	ret = bpf_map_alloc_pages(&arena->map, node_id, page_cnt, pages);
+>  	if (ret)
+>  		goto out;
+>  
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index c420edbfb7c8..a7af8d0185d0 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -569,7 +569,24 @@ static void bpf_map_release_memcg(struct bpf_map *map)
+>  }
+>  #endif
+>  
+> -int bpf_map_alloc_pages(const struct bpf_map *map, gfp_t gfp, int nid,
+> +static bool can_alloc_pages(void)
+> +{
+> +	return preempt_count() == 0 && !irqs_disabled() &&
+> +		!IS_ENABLED(CONFIG_PREEMPT_RT);
+> +}
+> +
 
-I'm not the maintainer of this area, but with the fixes/addition I proposed,
-and having use for this lock variant myself, I think it's fair to add, fwiw:
+I see this is new since v6 and wasn't yet discussed (or I missed it?)
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+I wonder how reliable these preempt/irq_disabled checks are for correctness
+purposes, e.g. we don't have CONFIG_PREEMPT_COUNT enabled always? As longs
+as the callers of bpf_map_alloc_pages() know the context and pass gfp
+accordingly, can't we use i.e. gfpflags_allow_blocking() to determine if
+try_alloc_pages() should be used or not?
 
-Thanks.
+> +static struct page *__bpf_alloc_page(int nid)
+> +{
+> +	if (!can_alloc_pages())
+> +		return try_alloc_pages(nid, 0);
+> +
+> +	return alloc_pages_node(nid,
+> +				GFP_KERNEL | __GFP_ZERO | __GFP_ACCOUNT
+> +				| __GFP_NOWARN,
+> +				0);
+> +}
+> +
+> +int bpf_map_alloc_pages(const struct bpf_map *map, int nid,
+>  			unsigned long nr_pages, struct page **pages)
+>  {
+>  	unsigned long i, j;
+> @@ -582,14 +599,14 @@ int bpf_map_alloc_pages(const struct bpf_map *map, gfp_t gfp, int nid,
+>  	old_memcg = set_active_memcg(memcg);
+>  #endif
+>  	for (i = 0; i < nr_pages; i++) {
+> -		pg = alloc_pages_node(nid, gfp | __GFP_ACCOUNT, 0);
+> +		pg = __bpf_alloc_page(nid);
+>  
+>  		if (pg) {
+>  			pages[i] = pg;
+>  			continue;
+>  		}
+>  		for (j = 0; j < i; j++)
+> -			__free_page(pages[j]);
+> +			free_pages_nolock(pages[j], 0);
+>  		ret = -ENOMEM;
+>  		break;
+>  	}
 
 
