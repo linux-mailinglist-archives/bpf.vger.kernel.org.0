@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-51782-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51783-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3DD4A39041
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 02:20:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FD83A39051
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 02:22:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEB2D17298C
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 01:20:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38C5E18957D2
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 01:20:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1D887404E;
-	Tue, 18 Feb 2025 01:20:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E49B114AD02;
+	Tue, 18 Feb 2025 01:20:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GDq8FG4r"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YI8v6LbE"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57FF12AE74;
-	Tue, 18 Feb 2025 01:20:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55DEC535D8;
+	Tue, 18 Feb 2025 01:20:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739841616; cv=none; b=AgAO07TGwLCrLCOC3D2w7d2eZv8WekNOgNcHpgGSCHlKrNKUXKVmlF1C4Mcav7zOWUsyKTyNFxRrCKdTd0uzQ00kAmL9eT1l0MHC1jwM7v4FA7ysJq4ou0+K9NGW/YoYnJ4EVF5WFZn7arDaZ+H6FfDHyR7vEgn58gupnJH2f0A=
+	t=1739841621; cv=none; b=DV/wpv7OobPVY944MqODoFbE8b5pdfDASJ9zT6Vi8+U+XH/IWuGt3KQ324jmQab/7FqO8Dk3TDKkMfbIZ515jznzCNVzoQjTzWKgh80+cml3TZA3D80aYK9+XxZhWQ9AUt+TunS7X9UGQR8pjkC4aHTpKpWWfHESEXz+ioYhp04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739841616; c=relaxed/simple;
-	bh=Khz7tl3u5dbiKnhDsJZFV1wZh3kwVGNNXQZRygEfelo=;
+	s=arc-20240116; t=1739841621; c=relaxed/simple;
+	bh=8i5EzvgnuwmAcqM63aUDdHmNwVXXBuRgmWGHPilRF9U=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=UaDKBv/e3T40WdvFc7rOKlLp3IHBJqRTOa7MOdC1Pif5s87dVqbOeZVJJ3sP4YhPSbXDNZ/kyfjCdVZa/UgPs2IaD7RSnjPfOXTBCh3QV77wFFB/XCo0Nm3FSbVYMjo0P/84ib+KVkyEW/Z+fctmpsEd9LOWPbgdJR5kxrEOgig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GDq8FG4r; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB9AFC4CED1;
-	Tue, 18 Feb 2025 01:20:15 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=A8LHPbeLyg7lknDlCK8AqCBaNrEKqzsJ7ktp3BPmoFJTZ9CVwNe+ytNBHq+MH1AkDoBs7iFvmk0a58YhPq1VRKXdKbn42EluhSmNt/Kp6uftiqkWVnSn9jaPF9X255AnQYjzdG9CpspMmEeIcbDidluI3wajXc46TOxb2Z6+vQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YI8v6LbE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3120C4CED1;
+	Tue, 18 Feb 2025 01:20:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739841615;
-	bh=Khz7tl3u5dbiKnhDsJZFV1wZh3kwVGNNXQZRygEfelo=;
+	s=k20201202; t=1739841619;
+	bh=8i5EzvgnuwmAcqM63aUDdHmNwVXXBuRgmWGHPilRF9U=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=GDq8FG4rRDiREHlguc/XgQXPosvQjCQLnQloC+JKAU0qZiIT/6qG4NVGMoBBe7xZt
-	 VfzQutpv/hwEnvQkU40XRt05ztYmMEyF9MFxYluvrzvT5xzdoG4lim5BIAj+06B1JZ
-	 807V5A9zULuEttj0oQNr1D2xqqezR6WDmoszFLpuaofvuRQ7siKqTVVboukhX0e7A9
-	 uNbZ8KjIYm/J0NdOkU/PQR7Yrvb5XGPm9nhVRyhcehaBQjn9eHnbk0EqhoFvwu76kr
-	 +dCX5hzBAI6Nm9BVsmvvVFEaOv7CFPrGX95Ht7FxvXCgxYyHvnoo9c3siJYYQdMJU4
-	 RTRe28jK/u7iA==
+	b=YI8v6LbEt33RLv1NqMaX63UvO4n/5ObtU7uXWYJzgXA69ub7rITOB1lWJ0zSZK1g3
+	 6oUDMCTZpoyWV3eQ1245CgZeod/fM1Fie7kVF8kVlssVly1rRKmyjKgLjW5K4hzizp
+	 USSJ+PIUxorkQGN8qZwCdPBbyUYcb/oYRyGTSPT1yPFgGaMye93/WdAO6HtAX9cDwB
+	 6u517jCj0slLG4aePEgcHaHbJf0Xqf0XkGQR9pMdtrDwSPq/IyBY6T/LQWPDyBfUxk
+	 gSvnerONFss+3fGUrg+7ipYnkBLTS9cxyOFOCyJ8H1ZdqAAZiLqKCLTunpcBLIJjw0
+	 +5xSvGZdi3OVw==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33CD1380AAD5;
-	Tue, 18 Feb 2025 01:20:47 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33E53380AAD5;
+	Tue, 18 Feb 2025 01:20:51 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,48 +52,45 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v8 0/3] netdev-genl: Add an xsk attribute to queues
+Subject: Re: [PATCH net-next v2] net: use napi_id_valid helper
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <173984164576.3591662.3668006598092128301.git-patchwork-notify@kernel.org>
-Date: Tue, 18 Feb 2025 01:20:45 +0000
-References: <20250214211255.14194-1-jdamato@fastly.com>
-In-Reply-To: <20250214211255.14194-1-jdamato@fastly.com>
-To: Joe Damato <jdamato@fastly.com>
-Cc: netdev@vger.kernel.org, stfomichev@gmail.com, horms@kernel.org,
- kuba@kernel.org, ast@kernel.org, andrew+netdev@lunn.ch, bpf@vger.kernel.org,
- daniel@iogearbox.net, danielj@nvidia.com, davem@davemloft.net,
- dw@davidwei.uk, donald.hunter@gmail.com, edumazet@google.com,
- hawk@kernel.org, john.fastabend@gmail.com, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, mkarsten@uwaterloo.ca,
- almasrymina@google.com, pabeni@redhat.com, shuah@kernel.org,
- sridhar.samudrala@intel.com, sdf@fomichev.me, xuanzhuo@linux.alibaba.com
+ <173984164983.3591662.13758871479871036513.git-patchwork-notify@kernel.org>
+Date: Tue, 18 Feb 2025 01:20:49 +0000
+References: <20250214181801.931-1-sjordhani@gmail.com>
+In-Reply-To: <20250214181801.931-1-sjordhani@gmail.com>
+To: Stefano Jordhani <sjordhani@gmail.com>
+Cc: netdev@vger.kernel.org, pabeni@redhat.com, jdamato@fastly.com,
+ axboe@kernel.dk, viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, horms@kernel.org,
+ asml.silence@gmail.com, kuniyu@amazon.com, willemb@google.com,
+ bjorn@kernel.org, magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+ jonathan.lemon@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+ hawk@kernel.org, john.fastabend@gmail.com, bigeasy@linutronix.de,
+ aleksander.lobakin@intel.com, xuanzhuo@linux.alibaba.com,
+ almasrymina@google.com, dw@davidwei.uk, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, io-uring@vger.kernel.org, bpf@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net-next.git (main)
+This patch was applied to netdev/net-next.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Fri, 14 Feb 2025 21:12:28 +0000 you wrote:
-> Greetings:
+On Fri, 14 Feb 2025 18:17:51 +0000 you wrote:
+> In commit 6597e8d35851 ("netdev-genl: Elide napi_id when not present"),
+> napi_id_valid function was added. Use the helper to refactor open-coded
+> checks in the source.
 > 
-> Welcome to v8. Minor change, see changelog below. Re-tested on my mlx5
-> system both with and without CONFIG_XDP_SOCKETS enabled and both with
-> and without NETIF set.
-> 
-> This is an attempt to followup on something Jakub asked me about [1],
-> adding an xsk attribute to queues and more clearly documenting which
-> queues are linked to NAPIs...
+> Suggested-by: Paolo Abeni <pabeni@redhat.com>
+> Signed-off-by: Stefano Jordhani <sjordhani@gmail.com>
+> Reviewed-by: Joe Damato <jdamato@fastly.com>
+> Reviewed-by: Jens Axboe <axboe@kernel.dk> # for iouring
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,v8,1/3] netlink: Add nla_put_empty_nest helper
-    https://git.kernel.org/netdev/net-next/c/a127c18462ea
-  - [net-next,v8,2/3] netdev-genl: Add an XSK attribute to queues
-    https://git.kernel.org/netdev/net-next/c/df524c8f5771
-  - [net-next,v8,3/3] selftests: drv-net: Test queue xsk attribute
-    https://git.kernel.org/netdev/net-next/c/788e52e2b668
+  - [net-next,v2] net: use napi_id_valid helper
+    https://git.kernel.org/netdev/net-next/c/b9d752105e5f
 
 You are awesome, thank you!
 -- 
