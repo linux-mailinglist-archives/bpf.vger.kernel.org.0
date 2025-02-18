@@ -1,258 +1,224 @@
-Return-Path: <bpf+bounces-51827-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51828-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 460CAA39CBB
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 14:02:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02F68A39CEE
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 14:08:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD1271754EE
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 13:01:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D9961769F0
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 13:04:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28DEB267B1E;
-	Tue, 18 Feb 2025 13:01:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WCPpaWGH"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6250126A0C8;
+	Tue, 18 Feb 2025 13:02:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB4FA266F19;
-	Tue, 18 Feb 2025 13:01:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739883687; cv=fail; b=QNkh01rH4QS79nibvgJN4Uv2Hm/QJZgin+AXR1ADPR2hwHNtZUsTpWAYQ6tRlqLH/ZQ9Iw6d7Y3q1jATz4FDOrjdShNLzfjEDrZycA3e0pa3RWNu17EK8xqkUbuoKNA9xEd0rENcyReAftyG5DLBj6Qo35bs3T7h/ACBUIaruII=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739883687; c=relaxed/simple;
-	bh=g7yMXstoGrKlaU/8VPlsb1F7o293ZUYoJfXt73MXqk0=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Xmede0J7rFyBLNbcQuk6FHA8wT1yzf215sDfdoMf037xvUzlaYTPfG98uWqjX5Ds3DGHFZ/PZIFfZCOAXZWhM+qlW1MLmp7JqccAmGea8IwjI5Gcdszw/mBUCJevCmGlcULhHiu1sq3uOBFMoIe1g7FcddGH73fYdLP4OWZHoXk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WCPpaWGH; arc=fail smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1739883686; x=1771419686;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=g7yMXstoGrKlaU/8VPlsb1F7o293ZUYoJfXt73MXqk0=;
-  b=WCPpaWGHnYYsptEjQJ/lmwaMZh+KgJNljCMwQI3HxmZs2MX0dWvuWtDq
-   zG1/uxlyrRgKdDbJSmJWOrsEYuHAg92zEMG4XtyEHQ5VrGOz77Xq2e2hs
-   sgfy+qjIYZ0VpZmaT4DzniOOs/X4nHpRw6DS8sPp5zPyClEZYff+VS5jI
-   SH6MoGBFrj5BWELWLGlZECjElMbg7p8beY23fiszOdkBVWoweTN/QH6c7
-   6P3Arpwe0kJicfBy38qur+kNxCQc29H8BjGWHsbUEyUuNVa5b2rpkPDsX
-   WveiT8QuZJb9i0V0UgajOhJgGJ96EDXUo9PRzi5NrtHnTObFJD1j+CQDE
-   w==;
-X-CSE-ConnectionGUID: SnXsl/iKTBqCWm8IKG9X3w==
-X-CSE-MsgGUID: s19VQffoRWC6QWuIoiU9Ow==
-X-IronPort-AV: E=McAfee;i="6700,10204,11348"; a="63053119"
-X-IronPort-AV: E=Sophos;i="6.13,296,1732608000"; 
-   d="scan'208";a="63053119"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2025 05:01:21 -0800
-X-CSE-ConnectionGUID: RzXAepHiSCuyLTxkZiPf4A==
-X-CSE-MsgGUID: p0ubQJeBRkCB9SU5zX4GkA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,296,1732608000"; 
-   d="scan'208";a="114590695"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmviesa008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Feb 2025 05:01:19 -0800
-Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.44; Tue, 18 Feb 2025 05:01:19 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5432826A088;
+	Tue, 18 Feb 2025 13:02:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1739883753; cv=none; b=qk2NURERJQTRcWlQEslQWBD33Ff/RHZFr6WUb5F1Fvdu2ac2WyyB40ON3+WgK6aos1Q3YOgDV+OaXvvT2vreKEye3/WJzepVDprr5kLI9fVbQJmMNRYeXrqz2BlfQAaAxBcXOHIsCRzbsAw85RRqKPj6McGK6RlHJRQpnVNA9fw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1739883753; c=relaxed/simple;
+	bh=6jGygvIpZ+inynCJibhgOfbOLfeSPLHzPo4VOrGkPLg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=cR+RM1uZ2sk2bQ6Xx48dvLZGevYj2WvGo9MQEeioSlYYID/DOtECQOlMhyqiJYygotD58S4oPbBJwAUBdmrocbxiCeyQwyUt928hjg0FE94b49u6csI8+ku8u2RLWQFOH655k8wj10WAuROyP2xszSINRwUnEzQT2gRf/ueCbd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Yy02G6ckbz1wn8K;
+	Tue, 18 Feb 2025 20:58:30 +0800 (CST)
+Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2688E18005F;
+	Tue, 18 Feb 2025 21:02:25 +0800 (CST)
+Received: from [10.174.179.234] (10.174.179.234) by
+ kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14 via Frontend Transport; Tue, 18 Feb 2025 05:01:19 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.175)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.44; Tue, 18 Feb 2025 05:01:17 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=hg0tB5zMFes/Ne2pOdvIRbpH7r/VMG2rrM8o8Mx7rbKZvU/KioCVNzOOc3zK5eiECfiNWBPKtCcQmt89K/1n8XvlpRW5Uilt3bfmuWnbNfYqWsApbwy9xDb9Fa2Is19BEm+1r+BB2qkdmBqjQyDyAcYXNqvtNY/2CsBv7ssjnmmvpAMiBm704+Efd+zU1QvB5xsakP7TrvSiTecKveJ4xmiQdXlK/b37fiL3CR8ZotH/6Pmsv2fZb7tgzLXHBzFrFqCNPf+NfktbJDsMt6vBbXItTIiZP2SvKNQbTNHfm05L+PVv9APQvI0ZdlyMlhltLUdi+NCCtFlt9WhhkBZKTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3tuGUEpYwdv69tlCLeDPoHvXwfHyOxt8uxFJ3lI7Itg=;
- b=Xcq7AWlc5ms875Vri/bNHYMNaN5cHj377cOv06gKdpnVKh5/DEe3vMvSM3BDYFJtpLudbZXD0T2whO4PbzUoRr9zuE8VSebVi5Ks0buWCxc9cP0yWgNMx3NClylCUxRgnnDJ6MaoBjxX8P+q5DK2v7I71onLdOGVKRGujt/Lz4ryexjQ4ORX3T9V2YdEx1awzmTO5TsTQwkDfFIUwTz35VJYrdTngCMDBeqIFquQv7QcivlkkZVUdTHoZNALarZVpw8lRhOrTLewKAExUZunWHwNCcCSUUTvycUYZDh3hnQyAdmMCQCNWG3GyT04Wrzf4DAouGtFmJkG/tAOy2o/NQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from IA1PR11MB6097.namprd11.prod.outlook.com (2603:10b6:208:3d7::17)
- by DM4PR11MB6165.namprd11.prod.outlook.com (2603:10b6:8:ae::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8466.14; Tue, 18 Feb 2025 13:01:15 +0000
-Received: from IA1PR11MB6097.namprd11.prod.outlook.com
- ([fe80::8f29:c6c9:9eb2:6392]) by IA1PR11MB6097.namprd11.prod.outlook.com
- ([fe80::8f29:c6c9:9eb2:6392%7]) with mapi id 15.20.8445.017; Tue, 18 Feb 2025
- 13:01:15 +0000
-Date: Tue, 18 Feb 2025 14:01:09 +0100
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: Suman Ghosh <sumang@marvell.com>
-CC: <horms@kernel.org>, <sgoutham@marvell.com>, <gakula@marvell.com>,
-	<sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<lcherian@marvell.com>, <jerinj@marvell.com>, <john.fastabend@gmail.com>,
-	<bbhushan2@marvell.com>, <hawk@kernel.org>, <andrew+netdev@lunn.ch>,
-	<ast@kernel.org>, <daniel@iogearbox.net>, <bpf@vger.kernel.org>,
-	<larysa.zaremba@intel.com>
-Subject: Re: [net-next PATCH v6 6/6] octeontx2-pf: AF_XDP zero copy transmit
- support
-Message-ID: <Z7SEleIJ636O+XZI@boxer>
-References: <20250213053141.2833254-1-sumang@marvell.com>
- <20250213053141.2833254-7-sumang@marvell.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20250213053141.2833254-7-sumang@marvell.com>
-X-ClientProxiedBy: DB6PR0301CA0069.eurprd03.prod.outlook.com
- (2603:10a6:6:30::16) To IA1PR11MB6097.namprd11.prod.outlook.com
- (2603:10b6:208:3d7::17)
+ 15.2.1544.11; Tue, 18 Feb 2025 21:02:23 +0800
+Message-ID: <24a61833-f389-b074-0d9c-d5ad9efc2046@huawei.com>
+Date: Tue, 18 Feb 2025 21:02:22 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR11MB6097:EE_|DM4PR11MB6165:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7ab6637c-0b46-4d9c-7845-08dd501c53c0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|1800799024|366016|7053199007;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?zQj5pPqDIZso+eHbJOXbR2BklNadjq6nFMqcqUiZykh1SXwmkIyPXvVeieMn?=
- =?us-ascii?Q?eliebBR91L4YCtwGQoUOqVves1/pzfWN9I+AZa9avg6+BfkunYyzM0I7klbY?=
- =?us-ascii?Q?YQ0GNuSzrgq+dCjzWu8/meCbsHNnevstUKZK4buO9MiIyFsaW7yNYk9J3NCX?=
- =?us-ascii?Q?OH2zYZlahu3oumoGQsfZHEKtLXOhN1tmLQzaTHyqgA/8B12ZY5XlpPqukr/P?=
- =?us-ascii?Q?6hhB7Rotu3CU/pYi1PQNvZ0h5Y6JQ2FfzRvSMO3rrzNq7r7WFcp5ol0prYvA?=
- =?us-ascii?Q?02crE0enOyT06JdiZUwGcziCGEKyziMXZqCIKP80/PjsMztxlvyw2hx82vNp?=
- =?us-ascii?Q?3VS3SOdAhoVLEYoakpybfQNDX9C78tZUm1oQmTjoICKczvYSQyybFkWTRbjz?=
- =?us-ascii?Q?xuEuXkdwtFQNxSBeIXpW5d/bMCYO88kt5J/0SFgL7VRz946q1K78l3FvAb2M?=
- =?us-ascii?Q?OVIevrHY7Xo2yJYhGrmx+aobmA7ADKXnzePl5phpZne27aJg1RZo2V+31fFq?=
- =?us-ascii?Q?pxT+jhPHYOYitJ4WIiNRXICZdSv5U1d8gDC3qfHhEc5PwILwm7wA6r0yNNsM?=
- =?us-ascii?Q?QHNJptY4w4IJzERXdFkIWXnPHu84J4j8nUb5z/w7/Gf6PhXe7fpYuJvpSAF0?=
- =?us-ascii?Q?Q8ULLi7M9hEfiKXaZY+OBsR2u66BwcS2BPD1wGbuwrDHKq1tcrvv/QhgdFXa?=
- =?us-ascii?Q?EXLBPN/RSbr0geSwlndyB7BrgvLBKWgf7G5M9qRzKptmPeUpUNnUPlSaoewi?=
- =?us-ascii?Q?hFDICxs5kgBXXwK8a1JHwm4NM5IQvzxFn/7dLp/yvcCwuAQAyQpvsEa223Mx?=
- =?us-ascii?Q?jNtV00BsK9sLWavOS/a62KZzYLJpj0GAU4c+SIz5yg2fh+HG7g9a3xEWeCr0?=
- =?us-ascii?Q?PZg+OiCNsi1SFpOrzvScI/KisgY/c82QCmrMK70gAab9Vf5LFtY58hLty0bB?=
- =?us-ascii?Q?yFS+NErWdBUbhdgMQ6QtM04gyUwSgcnKWCqDLMSehqDq8LX+tYhWBuZ2MCf6?=
- =?us-ascii?Q?qt2eMlOIow2PCBByqUMJqjx0KbIGt+j/4RJ6396+qLoeB/KyZkglZXfCrrDM?=
- =?us-ascii?Q?pCTf86VnQOeHtDGvLKn/90Z2QEx8qXC5TYK44n+vijKN30BNLM1wGhlNV7dC?=
- =?us-ascii?Q?5+jTCAVSSAT8UbvKqCRMauqvkaFpYWtY3oUEFPz556BNsucpOKviLaoqX/TX?=
- =?us-ascii?Q?j8pl0QGyZsPkFi6vdLX0Zffo3uCJgsi9lyrXI4uYh2SsNagFd+Sn0/epxzjK?=
- =?us-ascii?Q?opseD41jKkNUzGt3b8WVTcAvqPjSTx1yfSoEAU5ks+eGu+TYx1bhLq6D2Qt1?=
- =?us-ascii?Q?LSc9FVP6C8UoeT3SJho/rmxfrIOpfbkvYIDGgSFwmPaUiJwyKNP8KPjsWzS0?=
- =?us-ascii?Q?GpYIfTGvn9WYGTAZNNikAi94Aeu+?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6097.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mTTXPPPjc+RRONEuM/RKMsvMe95XZdMU8FI2k4YKqjQVRG5FIM0OuaNlQFf9?=
- =?us-ascii?Q?D1+L8V7RRS7tsQBf2NjiktDe4NxZtn2rbERImtscGzzPWm/zvEWu5KChX6HQ?=
- =?us-ascii?Q?M/3aeguBrDbZuPAdvsVVDyunBqSms7T3QHx7e8Gu8HksoKRcSYhw2cYOoNnI?=
- =?us-ascii?Q?JqN8CNR7sQBUTABo6K2u5vBRxH3irmYz2xGFs2OBG2idPl7YLUHLjgYAYq04?=
- =?us-ascii?Q?YpCcIqirdRlp3TsSNPu5dVMcgQeM4ts3/6iRR+opaFmfmvphEIWdk0jvnCUR?=
- =?us-ascii?Q?Cw/APvSQ1mpvA8WfyKTibpaN8gToSRskIvq4/60SlJCl+ZLzwwPTzGwIRwFf?=
- =?us-ascii?Q?k2mc8ZW6KxNoPsjPdz4u57F7CI8srn7coKCscCpYmTzoXPohZbeP1JlnFzee?=
- =?us-ascii?Q?ZQuZ0RKU+hcX5CYlUTEXmwBeeVT+fBMpa7lcY48om95hPqiOt4CPLvzW8kKa?=
- =?us-ascii?Q?DHU3oDM6NW3PxIPZOwE4r6BmMJO/o9Bx9ZUGQe+Ox9H1NW78Yhm3mAssBmZS?=
- =?us-ascii?Q?ntc8x8NXLaQT+EeMOJJKbaynpeFlR5BZNd77GvRe1vJCIAjOxXVH8SFAFybd?=
- =?us-ascii?Q?Mg1JMpwSBwF+IxlN76AMBjthDY3OcYF6aoW+dnY1M/StFXdqG04AGyYr1R16?=
- =?us-ascii?Q?npvdg+9wQkfCKA5ViAi60AoVBnByOgJMd5GTuJQi14TcKlJkV8qljo4G4nLD?=
- =?us-ascii?Q?IldaPZod8fUh+eq6fACFTljWRCEqO/RMNLUf+XBpUnT6DJi7TLD0KJsUxNel?=
- =?us-ascii?Q?+9HQogXG6AfthD69nxBZYSmE69oVUE+gLFniq+MiKZ3tPEodNNPdKsfehgQ6?=
- =?us-ascii?Q?RjFeWZSBOvL3tnJTpsGAEnY4zEGRDXDFHEC9StQvvqlRZkAzF1rFy3sIOhpF?=
- =?us-ascii?Q?BfYgrBAO3+uHpANiTK5ChVTSNNfWsTQr7LbAPGN4HShBNr4Aoi2VIxQFzX9f?=
- =?us-ascii?Q?/gCYUuSVRQem/iYqHk6nLMrVeeGmsO4toVl6DKzOoG/KA3BCeVRzWbyRXCuz?=
- =?us-ascii?Q?r8mTRdssJ+EA/5Tp2Bk92r3nnxLyTSxiRkN3A0C7Badj85xWJfOt+f+w9Mzw?=
- =?us-ascii?Q?m8KnVphZY85FLg1dJgENJ25WNU3D5O5eASwu6DcwvYEoQf3sg6FiCm6HTPPL?=
- =?us-ascii?Q?byQSO9ZHEn9F5du+phURKYXkTyQna3gU3lGKp7X1vIpxXVl0tFYVgTe68J/O?=
- =?us-ascii?Q?qtHwxLI6vYMcZTPH0e+BSsTxXhAxoxAY/Aj9oFHB3P8PPV0AMeRL0T0Fj5gk?=
- =?us-ascii?Q?5yVDiu5IQIbPQQ7CjOy+AUWhk0CF7qnAON9LKYCHi1nHmFhIOTgtsalmnDbI?=
- =?us-ascii?Q?S/UEHCQOf6xTC6EUm52SJetlJVks5FWNZ5pEuAHC0VpHptwLS0Et0arC3X+8?=
- =?us-ascii?Q?+O/uQFIni4LGSPXkOh4siFTQw3h5fAo5yeNmZshRM1B6O3Ah5wqtOjVSna7+?=
- =?us-ascii?Q?FBooiiLxBDXTch+4QGrDrwzJGcdq73jRbCXrR3jP/SglxfvnIdQditKo+I2B?=
- =?us-ascii?Q?PZcf2mGyb4YXcDDtJBy3IUKJNCFZCzx3rQChpe+GpsR5UOrFK4WKPqpjHcm5?=
- =?us-ascii?Q?8MVZWs8WlQ8q/LqjnSDnt6oGa14gYMo6xfshDnDuEtKsoZRfoFGWUD60SChL?=
- =?us-ascii?Q?YQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7ab6637c-0b46-4d9c-7845-08dd501c53c0
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6097.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2025 13:01:15.2364
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lcQsbruGqBD9v3VzAT5mCKWNUKNEtMH8rLcjQwxUkKZvwxYmGXfdrUwTwij2DQRTXVWWCdR/BvDEHG2S9g/pvWTpisDyJEOAeS/vJ4jIhdk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6165
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: Add Morton,Peter and David for discussion//Re: [PATCH -next]
+ uprobes: fix two zero old_folio bugs in __replace_page()
+To: David Hildenbrand <david@redhat.com>, Masami Hiramatsu
+	<mhiramat@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra
+	<peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de
+ Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland
+	<mark.rutland@arm.com>, Alexander Shishkin
+	<alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian
+ Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, "Liang,
+ Kan" <kan.liang@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>,
+	Peter Xu <peterx@redhat.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+	<linux-perf-users@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<wangkefeng.wang@huawei.com>, linux-mm <linux-mm@kvack.org>
+References: <20250217123826.88503-1-tongtiangen@huawei.com>
+ <c2924e9e-1a42-a4f6-5066-ea2e15477c11@huawei.com>
+ <3b893634-5453-42d0-b8dc-e9d07988e9e9@redhat.com>
+From: Tong Tiangen <tongtiangen@huawei.com>
+In-Reply-To: <3b893634-5453-42d0-b8dc-e9d07988e9e9@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemk500005.china.huawei.com (7.202.194.90)
 
-On Thu, Feb 13, 2025 at 11:01:41AM +0530, Suman Ghosh wrote:
-> This patch implements below changes,
+
+
+在 2025/2/18 16:23, David Hildenbrand 写道:
+> On 18.02.25 03:47, Tong Tiangen wrote:
+>>
+>>
+>> 在 2025/2/17 20:38, Tong Tiangen 写道:
+>>> We triggered the following error logs in syzkaller test:
+>>>
+>>>     BUG: Bad page state in process syz.7.38  pfn:1eff3
+>>>     page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 
+>>> pfn:0x1eff3
+>>>     flags: 
+>>> 0x3fffff00004004(referenced|reserved|node=0|zone=1|lastcpupid=0x1fffff)
+>>>     raw: 003fffff00004004 ffffe6c6c07bfcc8 ffffe6c6c07bfcc8 
+>>> 0000000000000000
+>>>     raw: 0000000000000000 0000000000000000 00000000fffffffe 
+>>> 0000000000000000
+>>>     page dumped because: PAGE_FLAGS_CHECK_AT_FREE flag(s) set
+>>>     Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 
+>>> 1.13.0-1ubuntu1.1 04/01/2014
+>>>     Call Trace:
+>>>      <TASK>
+>>>      dump_stack_lvl+0x32/0x50
+>>>      bad_page+0x69/0xf0
+>>>      free_unref_page_prepare+0x401/0x500
+>>>      free_unref_page+0x6d/0x1b0
+>>>      uprobe_write_opcode+0x460/0x8e0
+>>>      install_breakpoint.part.0+0x51/0x80
+>>>      register_for_each_vma+0x1d9/0x2b0
+>>>      __uprobe_register+0x245/0x300
+>>>      bpf_uprobe_multi_link_attach+0x29b/0x4f0
+>>>      link_create+0x1e2/0x280
+>>>      __sys_bpf+0x75f/0xac0
+>>>      __x64_sys_bpf+0x1a/0x30
+>>>      do_syscall_64+0x56/0x100
+>>>      entry_SYSCALL_64_after_hwframe+0x78/0xe2
+>>>
+>>>      BUG: Bad rss-counter state mm:00000000452453e0 type:MM_FILEPAGES 
+>>> val:-1
+>>>
+>>> The following syzkaller test case can be used to reproduce:
+>>>
+>>>     r2 = creat(&(0x7f0000000000)='./file0\x00', 0x8)
+>>>     write$nbd(r2, &(0x7f0000000580)=ANY=[], 0x10)
+>>>     r4 = openat(0xffffffffffffff9c, &(0x7f0000000040)='./file0\x00', 
+>>> 0x42, 0x0)
+>>>     mmap$IORING_OFF_SQ_RING(&(0x7f0000ffd000/0x3000)=nil, 0x3000, 
+>>> 0x0, 0x12, r4, 0x0)
+>>>     r5 = userfaultfd(0x80801)
+>>>     ioctl$UFFDIO_API(r5, 0xc018aa3f, &(0x7f0000000040)={0xaa, 0x20})
+>>>     r6 = userfaultfd(0x80801)
+>>>     ioctl$UFFDIO_API(r6, 0xc018aa3f, &(0x7f0000000140))
+>>>     ioctl$UFFDIO_REGISTER(r6, 0xc020aa00, 
+>>> &(0x7f0000000100)={{&(0x7f0000ffc000/0x4000)=nil, 0x4000}, 0x2})
+>>>     ioctl$UFFDIO_ZEROPAGE(r5, 0xc020aa04, 
+>>> &(0x7f0000000000)={{&(0x7f0000ffd000/0x1000)=nil, 0x1000}})
+>>>     r7 = bpf$PROG_LOAD(0x5, &(0x7f0000000140)={0x2, 0x3, 
+>>> &(0x7f0000000200)=ANY=[@ANYBLOB="1800000000120000000000000000000095"], &(0x7f0000000000)='GPL\x00', 
+>>> 0x7, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0, @fallback=0x30, 
+>>> 0xffffffffffffffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 
+>>> 0x0, 0x10, 0x0, @void, @value}, 0x94)
+>>>     bpf$BPF_LINK_CREATE_XDP(0x1c, &(0x7f0000000040)={r7, 0x0, 0x30, 
+>>> 0x1e, @val=@uprobe_multi={&(0x7f0000000080)='./file0\x00', 
+>>> &(0x7f0000000100)=[0x2], 0x0, 0x0, 0x1}}, 0x40)
+>>>
+>>> The cause is that zero pfn is set to the pte without increasing the rss
+>>> count in mfill_atomic_pte_zeropage() and the refcount of zero folio does
+>>> not increase accordingly. Then, the operation on the same pfn is 
+>>> performed
+>>> in uprobe_write_opcode()->__replace_page() to unconditional decrease the
+>>> rss count and old_folio's refcount.
+>>>
+>>> Therefore, two bugs are introduced:
+>>> 1. The rss count is incorrect, when process exit, the check_mm() report
+>>>      error "Bad rss-count".
+>>> 2. The reserved folio (zero folio) is freed when folio->refcount is 
+>>> zero,
+>>>      then free_pages_prepare->free_page_is_bad() report error "Bad 
+>>> page state".
+>>>
+>>> To fix it, add zero folio check before rss counter and refcount 
+>>> decrease.
+>>>
+>>> Fixes: 7396fa818d62 ("uprobes/core: Make background page replacement 
+>>> logic account for rss_stat counters")
+>>> Fixes: 2b1444983508 ("uprobes, mm, x86: Add the ability to install 
+>>> and remove uprobes breakpoints")
+>>> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+>>> ---
+>>>    kernel/events/uprobes.c | 6 ++++--
+>>>    1 file changed, 4 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+>>> index 46ddf3a2334d..ff5694acfa68 100644
+>>> --- a/kernel/events/uprobes.c
+>>> +++ b/kernel/events/uprobes.c
+>>> @@ -213,7 +213,8 @@ static int __replace_page(struct vm_area_struct 
+>>> *vma, unsigned long addr,
+>>>            dec_mm_counter(mm, MM_ANONPAGES);
+>>>        if (!folio_test_anon(old_folio)) {
+>>> -        dec_mm_counter(mm, mm_counter_file(old_folio));
+>>> +        if (!is_zero_folio(old_folio))
+>>> +            dec_mm_counter(mm, mm_counter_file(old_folio));
+>>>            inc_mm_counter(mm, MM_ANONPAGES);
+>>>        }
+>>> @@ -227,7 +228,8 @@ static int __replace_page(struct vm_area_struct 
+>>> *vma, unsigned long addr,
+>>>        if (!folio_mapped(old_folio))
+>>>            folio_free_swap(old_folio);
+>>>        page_vma_mapped_walk_done(&pvmw);
+>>> -    folio_put(old_folio);
+>>> +    if (!is_zero_folio(old_folio))
+>>> +        folio_put(old_folio);
+>  >>    >>        err = 0;
+>>>     unlock:
+>>
 > 
-> 1. To avoid concurrency with normal traffic uses
->    XDP queues.
-> 2. Since there are chances that XDP and AF_XDP can
->    fall under same queue uses separate flags to handle
->    dma buffers.
+> The whole "manually replace pages" logic is fragile. I tried to rewrite 
+> it a while back:
 > 
-> Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-> Signed-off-by: Suman Ghosh <sumang@marvell.com>
-> ---
-
-[...]
-
-> +void otx2_zc_napi_handler(struct otx2_nic *pfvf, struct xsk_buff_pool *pool,
-> +			  int queue, int budget)
-> +{
-> +	struct xdp_desc *xdp_desc = pool->tx_descs;
-> +	int err, i, work_done = 0, batch;
-> +
-> +	budget = min(budget, otx2_read_free_sqe(pfvf, queue));
-> +	batch = xsk_tx_peek_release_desc_batch(pool, budget);
-> +	if (!batch)
-> +		return;
-> +
-> +	for (i = 0; i < batch; i++) {
-> +		dma_addr_t dma_addr;
-> +
-> +		dma_addr = xsk_buff_raw_get_dma(pool, xdp_desc[i].addr);
-> +		err = otx2_xdp_sq_append_pkt(pfvf, NULL, dma_addr, xdp_desc[i].len,
-> +					     queue, OTX2_AF_XDP_FRAME);
-> +		if (!err) {
-> +			netdev_err(pfvf->netdev, "AF_XDP: Unable to transfer packet err%d\n", err);
-> +			break;
-> +		}
-> +		work_done++;
-> +	}
-> +
-> +	if (work_done)
-> +		xsk_tx_release(pool);
-
-this is broken actually. the batch api you're using above is doing tx
-release internally for you.
-
-Sorry for not catching this earlier but i was never CCed in this series.
-
-> +}
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_xsk.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_xsk.h
-> index 022b3433edbb..8047fafee8fe 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_xsk.h
-> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_xsk.h
-> @@ -17,5 +17,8 @@ int otx2_xsk_pool_disable(struct otx2_nic *pf, u16 qid);
->  int otx2_xsk_pool_alloc_buf(struct otx2_nic *pfvf, struct otx2_pool *pool,
->  			    dma_addr_t *dma, int idx);
->  int otx2_xsk_wakeup(struct net_device *dev, u32 queue_id, u32 flags);
-> +void otx2_zc_napi_handler(struct otx2_nic *pfvf, struct xsk_buff_pool *pool,
-> +			  int queue, int budget);
-> +void otx2_attach_xsk_buff(struct otx2_nic *pfvf, struct otx2_snd_queue *sq, int qidx);
->  
->  #endif /* OTX2_XSK_H */
-> -- 
-> 2.25.1
+> https://lkml.kernel.org/r/20240604122548.359952-1-david@redhat.com
 > 
+> But didn't get to follow-up yet.
+> 
+> I'm not sure if the page_vma_mapped_walk() really does what we would 
+> expect here.
+> 
+> The folio_remove_rmap_pte(old_folio, old_page, vma); is certainly wrong 
+> as well for ero folios.
+> 
+> 
+> I don't think there is a sane use case right now where we would hit the 
+> shared zeropage.
+> 
+> So for the time being, I think we should just reject them immediately 
+> after get_user_page_vma_remote().
+> 
+> At some point I'll follow up with my rewrite that will clean this 
+> nastiness here up a bit.
+
+OK, Before your rewrite last merged, How about i change the solution to
+just reject them immediately after get_user_page_vma_remote()？
+
+Thanks,
+Tong.
+
 > 
 
