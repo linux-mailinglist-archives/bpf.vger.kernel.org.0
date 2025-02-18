@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-51800-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51802-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FF6BA39247
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 06:02:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B850A3924B
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 06:03:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C971116E6E0
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 05:02:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 724347A1317
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 05:01:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26BAC1A5B98;
-	Tue, 18 Feb 2025 05:02:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 171131B0406;
+	Tue, 18 Feb 2025 05:02:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GDLEyWJv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kET4Ngg6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4418C1AF0B5;
-	Tue, 18 Feb 2025 05:02:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ED6AECF;
+	Tue, 18 Feb 2025 05:02:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739854937; cv=none; b=oztRBTzVTjQIzanGoUBygB9TqO0+ZtKciihcHbblGyrxnqkr7QxVayp6I29YrzreIT1+qPTJog3kvZhYXi72Dy8o+OKS6slZxzFUb0zshKur/cqoLQlSeKlCr5KdAcbHSaChs5cZjaMan4SGiECJVFKdX2mPGERNd491HBPfAIA=
+	t=1739854949; cv=none; b=ib9lQZqt2hiAPYRAGlDfvHk9bhTYnFPp62u7KwMvT61jzG7FQlNm/cx/RNmSpj3HkjupL2dri1LIntMcoPk5b6GOKZjq9dK4VyFlOC5Q93vstJ79N8aAPJupHAF/iWZk6UkEDBWrfU0LsXYQ0hLcXOnXA38QZuDHUwC2WgwJNqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739854937; c=relaxed/simple;
-	bh=xKbudb0FUrth0r9fVulR0YQSW9YlrDYUxAjIB9W3r94=;
+	s=arc-20240116; t=1739854949; c=relaxed/simple;
+	bh=3f4fr3wEVqOkIsOc+1STd0Ns5iBgLGFkFca2uJbMweM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oBRXg+JHPwlenbd2o/1dE6YH1TQAxu2NIscqkq8iF8kH5k4eH2JhF6WlArctMcJZK4pQKbjecKVeyEmgSZAvlvz//0B+RYX3f8lLiT2TK+N5WTFvfgZ3FtWiFrrtury4taGnetvfFuIfaB9v0sHOSRR254lK4xb3rBhCFoI6gIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GDLEyWJv; arc=none smtp.client-ip=209.85.214.179
+	 MIME-Version; b=Ff0hGcYOavJUQifRWv0RqKGL9N6kii3SPGfKS/yP6KuG1FbYxi0beOJiEN/NKGdAEINIaGbXPPp0flQntDDtpWGH6rZ8o8vL+LM2ngZuU2/czk11G+C8U30Mmxt9/8bWxpTGnr52skuFNwVDFYBkdFjciAMLATB4NhPllMM29pY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kET4Ngg6; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-220c8cf98bbso101135775ad.1;
-        Mon, 17 Feb 2025 21:02:15 -0800 (PST)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-22101839807so60018265ad.3;
+        Mon, 17 Feb 2025 21:02:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739854935; x=1740459735; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739854947; x=1740459747; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nCClYBX4dv1juFzLnShvLFoS82zgt+5gs+BbDuAzfbU=;
-        b=GDLEyWJvLOEbe3puWmfBBA1hCImQeI3tUiJGy1ReVIu1qiv6LUbM2YjTrdMhQYtB43
-         34Hz9hWAqHHXiAv9oUbfAb4DIbUu08wMxiirf33Y6KYbsujpCNRWVOa6B4SIc24EdLR+
-         ea4kbKOp8UKO6XMGlYmW72LVxC97N96EYrSb8mdgIA0s930L4dy4YfHUrH3O69mw+RF4
-         hgTG2Yxj/+XqeLvZtwGoS8wdiJ58Qo5XMzk/PT3PZgEFHSP9GZ3Y7SNVjOi3JBTVTYNk
-         eh2MqSBVz+yiqAUCZzN8sgBe/N6p3pLagj8l8R1Mx1rp5vhulS/+zTZ6J0cSHbnBLTRX
-         hdcw==
+        bh=/jcgdad4TkftRTh1q65WudnE3mEROlme3+Pzdel+ZVs=;
+        b=kET4Ngg6A00p2M0ibwTCCWGHPHWqzQwrySLgJ+oXH+hJdsGMxUu1lMtznP6+jvP4d4
+         We4d/fbPaMy2W7nStqCpJltvLGmW894n7osSStuqV4lpOxD9MilE72+ShwGDPvs0Dj1e
+         VpgO4/xI5oV9ItLpkHQWDCbzCOGFd5XZKrfsyFR9zh/qvvvdiodjG3TjRxPKh/T1PaHd
+         OiY3ruCX5C4whmWtOOs244UVf7YZzWJBnyUi5t+z7AWDWuCFg/tADHd01ok2l4mdCVnl
+         HreFCqyByz3HWgcVPpTR0GlDVA6aL9X2sYGt8S/y55XR5vOWR6VpGXPIyNLpFS949X64
+         7MYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739854935; x=1740459735;
+        d=1e100.net; s=20230601; t=1739854947; x=1740459747;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nCClYBX4dv1juFzLnShvLFoS82zgt+5gs+BbDuAzfbU=;
-        b=xCy/NsE+lxSKy50YfvnMCNFnLw5hAuAC8yrZsKeuTMzYo3VecnoSgs70FgFnXw6+0X
-         FsmOO0vleh08DN/643NFg3EQWaz0RF1hcZpETU3KJUcUtbJ830iBnGwJRZPOMnozcKc5
-         eTpZELttxAmxTiEv1YeUIiruQoUA4hZXarCAiM0Qm+1BbpzXX4a6L6Ey8BYlOPeeXocW
-         UDFo92x2wtkGhoJHUxpN7ojaaF7V5DWu0WIwVUpXhDFv2kp5q7cTJzcQJP1RfQpFkqJ6
-         nCzsYSEvdNe//+lNk50/U+lx8OrfROger8Q5VjeIJSIJ9bd9I/rOXIRXg5Tz7ckxsYlA
-         mv5w==
-X-Forwarded-Encrypted: i=1; AJvYcCVcZOFJ5fB3qWKcCq4Nv2VLuqe6Qabx6SiEd8VG09RhKoeoiV0n5BzrYQYCuEZlhAssgt9Vkn8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxvGPNo6TdS2Es84zt6jRdm9DVFHqk6Rgrdas8h2dhQVGOWpQcu
-	QR6rsk55p93Za0m7c8ioBhEj5DTVeiR419iYlEp6qtErKR8fzYF+R47d/mwBi+Ewcw==
-X-Gm-Gg: ASbGncucY2rBg8knDspNP9jpShpvRG11Y705jFgmb78H/HfvMrF7CQHjxgu5GmGscor
-	BZNQ6hjAtXV9xy9X1ZPUA7La1XN56rYEHufodMZFQ3v2NfTmHXBZAIbhXjPznt1vX2A7/diEbiN
-	sRmeCLYF5eJAcs3I0zhxcOhU57A71Sk1cSiOCR1P3PwBngXSkosgVufaytWGDUEnOaatIDy9ZP4
-	htklOPpL9FprTiPfxjF8ErByDYCMwITSaZyW1qw1cr7/nS44S+6C+YOD09eJ3I0Sc/RxizY0lXK
-	0W8G46GRIfJe0VwQ4QEKQDHuwRoaqAUGqzu7/M6LU3/fqT8DDoxEY7IlWIVDtQ4=
-X-Google-Smtp-Source: AGHT+IH/L1/jtW7zZyUJGIuQ9OaKIw5soUDOH3dF6adpivdAR4s+e8QQHBDG80QcRAsDWNgb/IigSQ==
-X-Received: by 2002:a05:6a00:4b16:b0:732:1eb2:7bf3 with SMTP id d2e1a72fcca58-7326190da79mr19491632b3a.21.1739854935456;
-        Mon, 17 Feb 2025 21:02:15 -0800 (PST)
+        bh=/jcgdad4TkftRTh1q65WudnE3mEROlme3+Pzdel+ZVs=;
+        b=dmxNJ9ZksVI9v3EOov3fhbbo/qjP3iB6S5yEYB+dS/z7kvp3RSirqRpH5NqTNpDTtj
+         oTgwMufpwYyk7ZiasrjirMQOmmuveTPnVztQN/TD/fN/uWLuTC7f28dzKEpyA3FcTfv+
+         5sztn8B7pT6ITX0fc5yOiBgZcQkoQ26cFPTvwDN5o+Rxc6/wp4D40rbD08W6te0MonpC
+         Ox2+toAG8oZI1OongjS2An3TfZkUcdKeczpQ/fHdcJG1T/cGwUqbMa8DdBe4lBQWKnWX
+         jOL1tmqCg2rhwsLCvVKp2wscxdyv8BZvAuEObf1VNwcUwo8RFJWU5SnehVYjBMQPzrpf
+         gFNg==
+X-Forwarded-Encrypted: i=1; AJvYcCWtEaJmhdQcKrix4DTdm/MOfd3dx9MpioSn1enSx0uvYgeItq/VANVk3p1yjrgpQxzTc0J76xk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzVEPXna3EWqmK10mokG8rRHrWEcIt8r3ITqb0yr+9xqGtdFzAH
+	bgXPqYXArkRfDzITvrOmJwQYpGbTXrGGUmqYCtcOLYXemu26viSVde91no9TS4ZCcg==
+X-Gm-Gg: ASbGncsv9VLlSGYk4pOd7Gp//9l3EouhHjlTKEpvr93OnCUs6QJJJn9OuHDBPpwqcnZ
+	2uIrbK8gULUWBbyiFlsIgv3LttNYx1NwQARQcG0cP4LuhA/KGAiHQxIFocVZqEaqZCtFu+dFWS7
+	2ORMj83iQQwo7CLXQyfjdcED41iuFCA1/M2I2eq+oR145TflhWBPIzyJomK6r+cBtioiVCTz9T1
+	xhHUjl/qDyn8kgGzqezTXpAJtfQaX5DHVD9ZLnZ+OETExz/07bCq9EfI76TvuoJBfiu6e5lOppz
+	wGdpZVEwZkyIiMDYKaTi87CyWpjSk9EtvR91Vzf8OczmbXmTfybA38cU+/ErfFo=
+X-Google-Smtp-Source: AGHT+IGDlDQtZ2/iCjhv8oUTNh8upPD6clzP6SkxIJRB0Kv9p9JbKOPeLrkNgWpE8H3l9IrFrx8inw==
+X-Received: by 2002:a05:6a21:3994:b0:1ee:6e65:6335 with SMTP id adf61e73a8af0-1ee8cbbd682mr25774380637.29.1739854947482;
+        Mon, 17 Feb 2025 21:02:27 -0800 (PST)
 Received: from KERNELXING-MB0.tencent.com ([43.132.141.20])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-adda5be52f1sm4337938a12.34.2025.02.17.21.02.09
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-adda5be52f1sm4337938a12.34.2025.02.17.21.02.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Feb 2025 21:02:15 -0800 (PST)
+        Mon, 17 Feb 2025 21:02:27 -0800 (PST)
 From: Jason Xing <kerneljasonxing@gmail.com>
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -97,9 +97,9 @@ To: davem@davemloft.net,
 Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	Jason Xing <kerneljasonxing@gmail.com>
-Subject: [PATCH bpf-next v12 02/12] bpf: prepare the sock_ops ctx and call bpf prog for TX timestamping
-Date: Tue, 18 Feb 2025 13:01:15 +0800
-Message-Id: <20250218050125.73676-3-kerneljasonxing@gmail.com>
+Subject: [PATCH bpf-next v12 04/12] bpf: disable unsafe helpers in TX timestamping callbacks
+Date: Tue, 18 Feb 2025 13:01:17 +0800
+Message-Id: <20250218050125.73676-5-kerneljasonxing@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20250218050125.73676-1-kerneljasonxing@gmail.com>
 References: <20250218050125.73676-1-kerneljasonxing@gmail.com>
@@ -111,65 +111,83 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch introduces a new bpf_skops_tx_timestamping() function
-that prepares the "struct bpf_sock_ops" ctx and then executes the
-sockops BPF program.
+New TX timestamping sock_ops callbacks will be added in the
+subsequent patch. Some of the existing BPF helpers will not
+be safe to be used in the TX timestamping callbacks.
 
-The subsequent patch will utilize bpf_skops_tx_timestamping() at
-the existing TX timestamping kernel callbacks (__sk_tstamp_tx
-specifically) to call the sockops BPF program. Later, four callback
-points to report information to user space based on this patch will
-be introduced.
+The bpf_sock_ops_setsockopt, bpf_sock_ops_getsockopt, and
+bpf_sock_ops_cb_flags_set require owning the sock lock. TX
+timestamping callbacks will not own the lock.
+
+The bpf_sock_ops_load_hdr_opt needs the skb->data pointing
+to the TCP header. This will not be true in the TX timestamping
+callbacks.
+
+At the beginning of these helpers, this patch checks the
+bpf_sock->op to ensure these helpers are used by the existing
+sock_ops callbacks only.
 
 Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
 ---
- include/net/sock.h |  7 +++++++
- net/core/sock.c    | 14 ++++++++++++++
- 2 files changed, 21 insertions(+)
+ net/core/filter.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 7916982343c6..6f4d54faba92 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -2923,6 +2923,13 @@ int sock_set_timestamping(struct sock *sk, int optname,
- 			  struct so_timestamping timestamping);
- 
- void sock_enable_timestamps(struct sock *sk);
-+#if defined(CONFIG_CGROUP_BPF)
-+void bpf_skops_tx_timestamping(struct sock *sk, struct sk_buff *skb, int op);
-+#else
-+static inline void bpf_skops_tx_timestamping(struct sock *sk, struct sk_buff *skb, int op)
-+{
-+}
-+#endif
- void sock_no_linger(struct sock *sk);
- void sock_set_keepalive(struct sock *sk);
- void sock_set_priority(struct sock *sk, u32 priority);
-diff --git a/net/core/sock.c b/net/core/sock.c
-index eae2ae70a2e0..bde45569d4da 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -948,6 +948,20 @@ int sock_set_timestamping(struct sock *sk, int optname,
- 	return 0;
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 8631036f6b64..7f56d0bbeb00 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -5523,6 +5523,11 @@ static int __bpf_setsockopt(struct sock *sk, int level, int optname,
+ 	return -EINVAL;
  }
  
-+#if defined(CONFIG_CGROUP_BPF)
-+void bpf_skops_tx_timestamping(struct sock *sk, struct sk_buff *skb, int op)
++static bool is_locked_tcp_sock_ops(struct bpf_sock_ops_kern *bpf_sock)
 +{
-+	struct bpf_sock_ops_kern sock_ops;
-+
-+	memset(&sock_ops, 0, offsetof(struct bpf_sock_ops_kern, temp));
-+	sock_ops.op = op;
-+	sock_ops.is_fullsock = 1;
-+	sock_ops.sk = sk;
-+	bpf_skops_init_skb(&sock_ops, skb, 0);
-+	__cgroup_bpf_run_filter_sock_ops(sk, &sock_ops, CGROUP_SOCK_OPS);
++	return bpf_sock->op <= BPF_SOCK_OPS_WRITE_HDR_OPT_CB;
 +}
-+#endif
 +
- void sock_set_keepalive(struct sock *sk)
+ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
+ 			   char *optval, int optlen)
  {
- 	lock_sock(sk);
+@@ -5673,6 +5678,9 @@ static const struct bpf_func_proto bpf_sock_addr_getsockopt_proto = {
+ BPF_CALL_5(bpf_sock_ops_setsockopt, struct bpf_sock_ops_kern *, bpf_sock,
+ 	   int, level, int, optname, char *, optval, int, optlen)
+ {
++	if (!is_locked_tcp_sock_ops(bpf_sock))
++		return -EOPNOTSUPP;
++
+ 	return _bpf_setsockopt(bpf_sock->sk, level, optname, optval, optlen);
+ }
+ 
+@@ -5758,6 +5766,9 @@ static int bpf_sock_ops_get_syn(struct bpf_sock_ops_kern *bpf_sock,
+ BPF_CALL_5(bpf_sock_ops_getsockopt, struct bpf_sock_ops_kern *, bpf_sock,
+ 	   int, level, int, optname, char *, optval, int, optlen)
+ {
++	if (!is_locked_tcp_sock_ops(bpf_sock))
++		return -EOPNOTSUPP;
++
+ 	if (IS_ENABLED(CONFIG_INET) && level == SOL_TCP &&
+ 	    optname >= TCP_BPF_SYN && optname <= TCP_BPF_SYN_MAC) {
+ 		int ret, copy_len = 0;
+@@ -5800,6 +5811,9 @@ BPF_CALL_2(bpf_sock_ops_cb_flags_set, struct bpf_sock_ops_kern *, bpf_sock,
+ 	struct sock *sk = bpf_sock->sk;
+ 	int val = argval & BPF_SOCK_OPS_ALL_CB_FLAGS;
+ 
++	if (!is_locked_tcp_sock_ops(bpf_sock))
++		return -EOPNOTSUPP;
++
+ 	if (!IS_ENABLED(CONFIG_INET) || !sk_fullsock(sk))
+ 		return -EINVAL;
+ 
+@@ -7609,6 +7623,9 @@ BPF_CALL_4(bpf_sock_ops_load_hdr_opt, struct bpf_sock_ops_kern *, bpf_sock,
+ 	u8 search_kind, search_len, copy_len, magic_len;
+ 	int ret;
+ 
++	if (!is_locked_tcp_sock_ops(bpf_sock))
++		return -EOPNOTSUPP;
++
+ 	/* 2 byte is the minimal option len except TCPOPT_NOP and
+ 	 * TCPOPT_EOL which are useless for the bpf prog to learn
+ 	 * and this helper disallow loading them also.
 -- 
 2.43.5
 
