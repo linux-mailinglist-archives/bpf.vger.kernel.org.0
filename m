@@ -1,176 +1,219 @@
-Return-Path: <bpf+bounces-51787-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51788-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C525A390A2
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 02:57:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26702A390E8
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 03:45:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D5D93B2427
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 01:56:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF35A188F00B
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 02:45:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9506D1487FE;
-	Tue, 18 Feb 2025 01:56:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72D81155A25;
+	Tue, 18 Feb 2025 02:45:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ExNkLFG8"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="e4/E/gfy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94C9F182BD;
-	Tue, 18 Feb 2025 01:56:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77E0814831E
+	for <bpf@vger.kernel.org>; Tue, 18 Feb 2025 02:45:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739843812; cv=none; b=agx7jqxpI4Q7iHTrgHj+MHjeVU1M5IAuKQqvxx2EOun39/g4hZ2Wuk2kB5D4y41BOpM0qmqd6a3GojCpXpWBTbJDjDseyojVbW/sebx9dyznHhXLB33IBBNI9iY43KqAcvLJq5IzEK0pqpC1Ye1flPh0JIJR/zZXx908u+gP+r8=
+	t=1739846703; cv=none; b=P8dm0X5p69MawwmcvGi79WUWYRlJ6Mr6gxZZxwvoeLLGwrJxhtgnhD6gsXTyEz3qFx5d5eHN0Qo60Nf4vGTH7pWLEXJ1qkpEaaHPfpSdYN0peUGmkDsGnYjrKbvUZJRKqr1duJX3TDLAAz9MjoiiGyfsdNbXeB02fg+aTaZ3mSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739843812; c=relaxed/simple;
-	bh=gEIqznjAb5jsVOR2TNWPj6iGQ7+mDmd5lCc8sedBBB0=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=aauiXuHReD/WuNungfjJmPFAMMyaf8kf9XbGwEEmm1WE+byzp4+nbOvlX9iVmWgzoK/WpVbnfQuO5d0F1PBlrveeUvEdrnkJQ/M8N/bvn9bq1btE2O4kV74M81LL3GYyGW897wAqkCgxRPAsyNaqPH2F5gBHL1fRdSFGX2XG7zQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ExNkLFG8; arc=none smtp.client-ip=209.85.219.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-6df83fd01cbso24375286d6.2;
-        Mon, 17 Feb 2025 17:56:50 -0800 (PST)
+	s=arc-20240116; t=1739846703; c=relaxed/simple;
+	bh=I/4R0ISxGbqG/fQ4qBpB9kEdjZ5UTmvm9iMUs46vINg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fazDP+rj6IsSEsn9enCqPv2aiw6g8480mmAiMkGofRilpLGQqHt0u63T0hGEaidTqx6Z0K8NFEVmUQkYUbPcnnsogBDTsmO421PkCvxiquZekDlGvcES4eTFGNirEy75F+CyyDHHvNxa3AS04Got3WwEqDN7XMTMV36mP+pULyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=e4/E/gfy; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-220c8f38febso89222545ad.2
+        for <bpf@vger.kernel.org>; Mon, 17 Feb 2025 18:45:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739843809; x=1740448609; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GqZXNmfQaNC1fzv0a1Hp52rqSG635sNoXcS9SSB5SBc=;
-        b=ExNkLFG8aCD/5ccEgV/JhFtThq+jqlfbNyVbjVQ0ZpqiXe0A0DWE7kGF94qxPaLKyu
-         BsL6L00DWVAbdYHFF9k4Pr0foGwyWHsHHET0sYmic9Uq9aBH3zTrXEhZGics1g7ZsJ4V
-         bzNKsI8Ers6zmFe/vvtVk7HmfLRNkcokot2eMRwBFEnXRm6Q5p1StGO4uFusAcGr+tSg
-         XJY00BjEuOo8YBNO5G7AaLUPeVz6S9o87YR5XOlKGlwFheL5iWbTKvGDlys0VTqGdZHf
-         WGKUIcYq2D/5rilDBXEzwDdOk63XMlZJDxleI7HGbABgrYdObGeKvmON0+CaokPajna4
-         TEcg==
+        d=broadcom.com; s=google; t=1739846700; x=1740451500; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=MzEzPC7Jm+iTT1qY/RtrG6U0q77SRf4N3GCM2bOm/bU=;
+        b=e4/E/gfyOK/qb7E4j0faXXivEmgc7uqvdgqvKWNafsTEc+JGnsrNEJhXFKvJc39375
+         OWRHL5EQ1DE+uIUp440yrNWyJsWEE3T/EzlHyYhwroPLKvag/rAuzkW2mHdp3HxugfXE
+         DqRYvBSgb5/I1R/yqu2cDTMqI0gnEXe3bcrwQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739843809; x=1740448609;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=GqZXNmfQaNC1fzv0a1Hp52rqSG635sNoXcS9SSB5SBc=;
-        b=ptgnXwtKhBwyu08OmNwfFc8aTEHmYnIQhcBXhEuIqR9HPBf8mI7EQKPOvCckBD4RJr
-         TW0wMOnlTXBxH7+vFRBWnFQvl71FI6bJnViFGOn33Y6MZzlBPh6FrJEFsiy9GTjKFd1Z
-         Uhi7Iv94oE5PvsaiHhhk1jsk3pEYNdBXzzY6oM+xHbgY2UbqdOQuTGyS6ywXnkEjV9MF
-         iyxhe/A+vENVntKsn6oERIf/i9BaeMwOeHmtvldJlkZ0LQcwgkiwJpXoufiovMftGe6d
-         QTF+n2K/zPaeDtu5eBNmnehDZMrgiSP3cM8AQROu6xz2LxpgdQmOGLTc4C5VheaA/UgS
-         jbKg==
-X-Forwarded-Encrypted: i=1; AJvYcCV5NN+eOvSx4MmvL4+gnkqhNa3M5Hhp4AG8EFTsxxcPvWqDHy04cwpXuY07QILv0UqQxfA=@vger.kernel.org, AJvYcCVAHeKetwqwE5K1FV1AXRfqhiS5vtjlKVRjYr3Ssd6hnrbnXb68qrjkHSA6W7s7h7VNLoRVoDAqXO4/KT2MVYZb@vger.kernel.org, AJvYcCWb9tel0eDPVlD4Yqrz77PULQOJ6KoHfLXUyfhRLZbM6yGsTDceOC2B2t6gCRhUAWReBhGRROECg2MGNdTV@vger.kernel.org, AJvYcCXPdRBaGL/VrF2/NtWFCjL0gwSMzxEQ1lPx0niy/RdZK+fXhS17Cv00jbacUpTGOjOdmIsJjUN5@vger.kernel.org
-X-Gm-Message-State: AOJu0YwzLPEPtII0GHiXZ8fFF9DeXkJtSeXmZAX2JcAJkx/gtiLSlXvj
-	M2odUI+i/BBt8+H0r0bLM04TU2IS32rdRzb3YAYlt1LWag+sfF50
-X-Gm-Gg: ASbGnctNGt6wOAzUYdmK9M2QBTjBcR5enF2hYOs+uLF79TJ77pt8a5vTizUthbbgTBB
-	46o2QoK9zmF6CVHw3H/6914HesyliDP3wHDFPr2oSwwBeV+BgprT65pO6Ep60HBtYdJXWHvv6ia
-	n95/wOCLMywGQggLPQLgbslZjy9njeY/DmkXvJt5IUwZaxCQ/thy31ybZdxBbnzAFQ9crExz3DG
-	CKODNBnPWITEdjgPSlufvLnN3NXtK1RTyLKy3S8y8hq43qnwEg1n64AxWispTm7PkNXYLifOWY7
-	BZhIehjEuI5H7BpXNdhnKfvnzdYmAbCwtVPzUF+4TGD0TYMEYNAsKgNdwmsX7hA=
-X-Google-Smtp-Source: AGHT+IGFTg9rdSsRYxtYVyFRKD2CsVrIbQvZyhA2EkFXxouO956UIWm0/1JZjIufdgZoz8Vd4rWsVw==
-X-Received: by 2002:a05:6214:f05:b0:6e6:64c1:f80a with SMTP id 6a1803df08f44-6e66cce16bcmr183999636d6.15.1739843809358;
-        Mon, 17 Feb 2025 17:56:49 -0800 (PST)
-Received: from localhost (15.60.86.34.bc.googleusercontent.com. [34.86.60.15])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e65dcf946asm58710166d6.125.2025.02.17.17.56.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Feb 2025 17:56:48 -0800 (PST)
-Date: Mon, 17 Feb 2025 20:56:48 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org
-Cc: willemdebruijn.kernel@gmail.com, 
- jasowang@redhat.com, 
- andrew+netdev@lunn.ch, 
- davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- ast@kernel.org, 
- daniel@iogearbox.net, 
- andrii@kernel.org, 
- martin.lau@linux.dev, 
- eddyz87@gmail.com, 
- song@kernel.org, 
- yonghong.song@linux.dev, 
- john.fastabend@gmail.com, 
- kpsingh@kernel.org, 
- sdf@fomichev.me, 
- haoluo@google.com, 
- jolsa@kernel.org, 
- mykolal@fb.com, 
- shuah@kernel.org, 
- hawk@kernel.org, 
- marcus.wichelmann@hetzner-cloud.de
-Message-ID: <67b3e8e0928fc_c6df0294b8@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20250217172308.3291739-7-marcus.wichelmann@hetzner-cloud.de>
-References: <20250217172308.3291739-1-marcus.wichelmann@hetzner-cloud.de>
- <20250217172308.3291739-7-marcus.wichelmann@hetzner-cloud.de>
-Subject: Re: [PATCH bpf-next v2 6/6] selftests/bpf: fix file descriptor
- assertion in open_tuntap helper
+        d=1e100.net; s=20230601; t=1739846700; x=1740451500;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MzEzPC7Jm+iTT1qY/RtrG6U0q77SRf4N3GCM2bOm/bU=;
+        b=WOM+Z6INEZgIecaY223fx+PpuVji+pj4BbpP2cTwbaziUYm/lE2COTapRCQb4lxgVX
+         KpnN8Yszz15lUwV9kJu7VcgZ0psmOKI3sx7FDmLod6Pf2l48hxK/XApb6VNYx4AAbFMt
+         jBiezYkwe3bPunirxXSS1226iZn6u85lNjVSgzy8wXxrEcRBTLSpT5xSY5SPMlOkMUjC
+         Zsd6Rk3xUQoN6n94s83kDGZy5+D4NAspWycqphd8zRKAbzI8NLjBQkcgbM39jI0kHWbM
+         k80A1A/vFqY8lHbE9ptYJ3pnudYxLzyeTZ3AOKz7HHSADCPQv245jjch1vgkmOKBp1qC
+         OeMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWjJnwit6qSRpKWieGzgVsKe98SHVaeTkwWsDM8LxLfXa4PjvXn/4Gx8P9ZQFsPsJieYZg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw+wYov9CX+DKKZ4f8LXkWY1eYezkbTxHf5NsXL9Oi+JmZRfCyK
+	a0yjV/+gDnjaX4KY0TFEoM2jTzqpxgPnJVeLk1BWmm3dzNUa6GHUVfsKUZpRhMfJlfZhjr8jlUN
+	na6S6Th6hsrwI0urJ/etvHRKpyyjjT4qHBfwL
+X-Gm-Gg: ASbGncsT959Ku6ZeWmNjqVykFJ5/Gp+6nvKvQv0G3T/2gFyy8hYGplFbPZYqNvAB1p0
+	B8mww8l6VTFV0ctioOoDtgb9BrTApKjcjy56pn2y+OxvwjS6O6dKIsjYw9O3SHGe97RzramzqCA
+	==
+X-Google-Smtp-Source: AGHT+IHsgCgSm6nNg/txskIzPw5zW0u+BpByI87vZVJqw2vjhWcaYVR+RDYdoxGsO9EBsPszjEqfbHys3Yw2z0rS43E=
+X-Received: by 2002:a05:6a21:6da7:b0:1ee:5d05:a18f with SMTP id
+ adf61e73a8af0-1ee8cc25a7cmr22275576637.35.1739846700487; Mon, 17 Feb 2025
+ 18:45:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20250218011744.2397726-1-haoxiang_li2024@163.com>
+In-Reply-To: <20250218011744.2397726-1-haoxiang_li2024@163.com>
+From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
+Date: Tue, 18 Feb 2025 08:14:49 +0530
+X-Gm-Features: AWEUYZmy3Rk5IKS-p-8AmZQjs7wZFdI2edboezs4Z5so68a2cH5u9tcTn-tnvmc
+Message-ID: <CAH-L+nP5w7hRbONxPNG7NJtJzb-A0JOEMSq1hKNepM9GpFkt-g@mail.gmail.com>
+Subject: Re: [PATCH v2] nfp: bpf: Add check for nfp_app_ctrl_msg_alloc()
+To: Haoxiang Li <haoxiang_li2024@163.com>
+Cc: kuba@kernel.org, louis.peens@corigine.com, andrew+netdev@lunn.ch, 
+	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com, qmo@kernel.org, 
+	daniel@iogearbox.net, bpf@vger.kernel.org, oss-drivers@corigine.com, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000910043062e61a0da"
 
-Marcus Wichelmann wrote:
-> The open_tuntap helper function uses open() to get a file descriptor for
-> /dev/net/tun.
-> 
-> The open(2) manpage writes this about its return value:
-> 
->   On success, open(), openat(), and creat() return the new file
->   descriptor (a nonnegative integer).  On error, -1 is returned and
->   errno is set to indicate the error.
-> 
-> This means that the fd > 0 assertion in the open_tuntap helper is
-> incorrect and should rather check for fd >= 0.
-> 
-> When running the BPF selftests locally, this incorrect assertion was not
-> an issue, but the BPF kernel-patches CI failed because of this:
-> 
->   open_tuntap:FAIL:open(/dev/net/tun) unexpected open(/dev/net/tun):
->   actual 0 <= expected 0
+--000000000000910043062e61a0da
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Wow. What kind of environment is this that 0 is not assigned stdin.
- 
-> Signed-off-by: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-
-The code makes sense.
-
-I suppose that if this condition can hit, then it can also affect
-existing lwt_* tests and thus should be a fix to commit 43a7c3ef8a15
-("selftests/bpf: Add lwt_xmit tests for BPF_REDIRECT"), sent
-separately to bpf (not bpf-next)?
-
-Since it's a test and no failure was reported so far, maybe fine
-to just merge as part of this bpf-next series, not my call.
-
+On Tue, Feb 18, 2025 at 6:49=E2=80=AFAM Haoxiang Li <haoxiang_li2024@163.co=
+m> wrote:
+>
+> Add check for the return value of nfp_app_ctrl_msg_alloc() in
+> nfp_bpf_cmsg_alloc() to prevent null pointer dereference.
+>
+> Fixes: ff3d43f7568c ("nfp: bpf: implement helpers for FW map ops")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Haoxiang Li <haoxiang_li2024@163.com>
 > ---
->  tools/testing/selftests/bpf/network_helpers.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-> index e1cfa1b37754..9b59bfd5d912 100644
-> --- a/tools/testing/selftests/bpf/network_helpers.c
-> +++ b/tools/testing/selftests/bpf/network_helpers.c
-> @@ -571,7 +571,7 @@ int open_tuntap(const char *dev_name, bool need_mac)
->  	struct ifreq ifr;
->  	int fd = open("/dev/net/tun", O_RDWR);
->  
-> -	if (!ASSERT_GT(fd, 0, "open(/dev/net/tun)"))
-> +	if (!ASSERT_GE(fd, 0, "open(/dev/net/tun)"))
->  		return -1;
->  
->  	ifr.ifr_flags = IFF_NO_PI | (need_mac ? IFF_TAP : IFF_TUN);
-> -- 
-> 2.43.0
-> 
+> Changes in v2:
+> - remove the bracket for one single-statement. Thanks, Guru!
+> ---
+>  drivers/net/ethernet/netronome/nfp/bpf/cmsg.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c b/drivers/net/=
+ethernet/netronome/nfp/bpf/cmsg.c
+> index 2ec62c8d86e1..b02d5fbb8c8c 100644
+> --- a/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c
+> +++ b/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c
+> @@ -20,6 +20,8 @@ nfp_bpf_cmsg_alloc(struct nfp_app_bpf *bpf, unsigned in=
+t size)
+>         struct sk_buff *skb;
+>
+>         skb =3D nfp_app_ctrl_msg_alloc(bpf->app, size, GFP_KERNEL);
+> +       if (!skp)
+> +               return NULL;
+It looks like you did not compile this change.
+
+Also, next time you push a new version, please modify the subject as:
+"[PATCH net v3] xxxx"
+>         skb_put(skb, size);
+>
+>         return skb;
+> --
+> 2.25.1
+>
+>
 
 
+--=20
+Regards,
+Kalesh AP
+
+--000000000000910043062e61a0da
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBWowggRSoAMCAQICDDfBRQmwNSI92mit0zANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAwODI5NTZaFw0yNTA5MTAwODI5NTZaMIGi
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xHzAdBgNVBAMTFkthbGVzaCBBbmFra3VyIFB1cmF5aWwxMjAw
+BgkqhkiG9w0BCQEWI2thbGVzaC1hbmFra3VyLnB1cmF5aWxAYnJvYWRjb20uY29tMIIBIjANBgkq
+hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxnv1Reaeezfr6NEmg3xZlh4cz9m7QCN13+j4z1scrX+b
+JfnV8xITT5yvwdQv3R3p7nzD/t29lTRWK3wjodUd2nImo6vBaH3JbDwleIjIWhDXLNZ4u7WIXYwx
+aQ8lYCdKXRsHXgGPY0+zSx9ddpqHZJlHwcvas3oKnQN9WgzZtsM7A8SJefWkNvkcOtef6bL8Ew+3
+FBfXmtsPL9I2vita8gkYzunj9Nu2IM+MnsP7V/+Coy/yZDtFJHp30hDnYGzuOhJchDF9/eASvE8T
+T1xqJODKM9xn5xXB1qezadfdgUs8k8QAYyP/oVBafF9uqDudL6otcBnziyDBQdFCuAQN7wIDAQAB
+o4IB5DCCAeAwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZC
+aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJj
+YTIwMjAuY3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3Iz
+cGVyc29uYWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcC
+ARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNV
+HR8EQjBAMD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNp
+Z24yY2EyMDIwLmNybDAuBgNVHREEJzAlgSNrYWxlc2gtYW5ha2t1ci5wdXJheWlsQGJyb2FkY29t
+LmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGP
+zzAdBgNVHQ4EFgQUI3+tdStI+ABRGSqksMsiCmO9uDAwDQYJKoZIhvcNAQELBQADggEBAGfe1o9b
+4wUud0FMjb/FNdc433meL15npjdYWUeioHdlCGB5UvEaMGu71QysfoDOfUNeyO9YKp0h0fm7clvo
+cBqeWe4CPv9TQbmLEtXKdEpj5kFZBGmav69mGTlu1A9KDQW3y0CDzCPG2Fdm4s73PnkwvemRk9E2
+u9/kcZ8KWVeS+xq+XZ78kGTKQ6Wii3dMK/EHQhnDfidadoN/n+x2ySC8yyDNvy81BocnblQzvbuB
+a30CvRuhokNO6Jzh7ZFtjKVMzYas3oo6HXgA+slRszMu4pc+fRPO41FHjeDM76e6P5OnthhnD+NY
+x6xokUN65DN1bn2MkeNs0nQpizDqd0QxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYD
+VQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25h
+bFNpZ24gMiBDQSAyMDIwAgw3wUUJsDUiPdpordMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcN
+AQkEMSIEIOJYaTfb/q6TQz9E0jZB6K1GoH+C3oW4TtVP2hbSJtLpMBgGCSqGSIb3DQEJAzELBgkq
+hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDIxODAyNDUwMFowaQYJKoZIhvcNAQkPMVwwWjAL
+BglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG
+9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAl3iTWxMLr
+qU7RGfuZzuM/pGrUT5NZbyX83GtqUbLz6kOlyeYfa+i+vv3W6N+fRJUkFaotJ9Y/kxWrV6s/wt/f
+60YMPLEL+zDpDRsDSz+ORHhqHsLqHh9lMxgfUdOMVNP85MEtZPb4d+6HXA3XV21M/JH6vHYzylzx
+vzxKbmxuixHCsQo1pkRXrwyLhSImaLXVLnPTGKKRMfxBsfcv+bJJCWOu1Jg/yK/8Apu2B2zkLnVs
+BznEqB97n265GQvJZpC1jcu9TSHkTauv/Sz73j0l0ntdqf6wHhnTECBBHTMKH91j3UhNiogZ0HpJ
+EIVReC+14wZOzV/nIPl3MdjDccoz
+--000000000000910043062e61a0da--
 
