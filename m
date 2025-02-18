@@ -1,219 +1,165 @@
-Return-Path: <bpf+bounces-51788-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51789-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26702A390E8
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 03:45:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B59DA390F1
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 03:47:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF35A188F00B
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 02:45:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 279901890405
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 02:48:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72D81155A25;
-	Tue, 18 Feb 2025 02:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="e4/E/gfy"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3085914885D;
+	Tue, 18 Feb 2025 02:47:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77E0814831E
-	for <bpf@vger.kernel.org>; Tue, 18 Feb 2025 02:45:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CBC923DE;
+	Tue, 18 Feb 2025 02:47:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739846703; cv=none; b=P8dm0X5p69MawwmcvGi79WUWYRlJ6Mr6gxZZxwvoeLLGwrJxhtgnhD6gsXTyEz3qFx5d5eHN0Qo60Nf4vGTH7pWLEXJ1qkpEaaHPfpSdYN0peUGmkDsGnYjrKbvUZJRKqr1duJX3TDLAAz9MjoiiGyfsdNbXeB02fg+aTaZ3mSQ=
+	t=1739846868; cv=none; b=ka1FYiOJwqAiJ8dnZm/B7vVZ6AZ29xPayX2GZDVO52goMIaREnvPrqzuIQZd9yBkBRfoeESdPhsCfbAwKT1wn44UIcNkhP263f4zdBfA48mZkKG84qtrx2y/Lh7Rn8zTS7dDwpZc/2jqYwozHIoulUISG/uuwi+Q/QAev/UME/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739846703; c=relaxed/simple;
-	bh=I/4R0ISxGbqG/fQ4qBpB9kEdjZ5UTmvm9iMUs46vINg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fazDP+rj6IsSEsn9enCqPv2aiw6g8480mmAiMkGofRilpLGQqHt0u63T0hGEaidTqx6Z0K8NFEVmUQkYUbPcnnsogBDTsmO421PkCvxiquZekDlGvcES4eTFGNirEy75F+CyyDHHvNxa3AS04Got3WwEqDN7XMTMV36mP+pULyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=e4/E/gfy; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-220c8f38febso89222545ad.2
-        for <bpf@vger.kernel.org>; Mon, 17 Feb 2025 18:45:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1739846700; x=1740451500; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MzEzPC7Jm+iTT1qY/RtrG6U0q77SRf4N3GCM2bOm/bU=;
-        b=e4/E/gfyOK/qb7E4j0faXXivEmgc7uqvdgqvKWNafsTEc+JGnsrNEJhXFKvJc39375
-         OWRHL5EQ1DE+uIUp440yrNWyJsWEE3T/EzlHyYhwroPLKvag/rAuzkW2mHdp3HxugfXE
-         DqRYvBSgb5/I1R/yqu2cDTMqI0gnEXe3bcrwQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739846700; x=1740451500;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MzEzPC7Jm+iTT1qY/RtrG6U0q77SRf4N3GCM2bOm/bU=;
-        b=WOM+Z6INEZgIecaY223fx+PpuVji+pj4BbpP2cTwbaziUYm/lE2COTapRCQb4lxgVX
-         KpnN8Yszz15lUwV9kJu7VcgZ0psmOKI3sx7FDmLod6Pf2l48hxK/XApb6VNYx4AAbFMt
-         jBiezYkwe3bPunirxXSS1226iZn6u85lNjVSgzy8wXxrEcRBTLSpT5xSY5SPMlOkMUjC
-         Zsd6Rk3xUQoN6n94s83kDGZy5+D4NAspWycqphd8zRKAbzI8NLjBQkcgbM39jI0kHWbM
-         k80A1A/vFqY8lHbE9ptYJ3pnudYxLzyeTZ3AOKz7HHSADCPQv245jjch1vgkmOKBp1qC
-         OeMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWjJnwit6qSRpKWieGzgVsKe98SHVaeTkwWsDM8LxLfXa4PjvXn/4Gx8P9ZQFsPsJieYZg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw+wYov9CX+DKKZ4f8LXkWY1eYezkbTxHf5NsXL9Oi+JmZRfCyK
-	a0yjV/+gDnjaX4KY0TFEoM2jTzqpxgPnJVeLk1BWmm3dzNUa6GHUVfsKUZpRhMfJlfZhjr8jlUN
-	na6S6Th6hsrwI0urJ/etvHRKpyyjjT4qHBfwL
-X-Gm-Gg: ASbGncsT959Ku6ZeWmNjqVykFJ5/Gp+6nvKvQv0G3T/2gFyy8hYGplFbPZYqNvAB1p0
-	B8mww8l6VTFV0ctioOoDtgb9BrTApKjcjy56pn2y+OxvwjS6O6dKIsjYw9O3SHGe97RzramzqCA
-	==
-X-Google-Smtp-Source: AGHT+IHsgCgSm6nNg/txskIzPw5zW0u+BpByI87vZVJqw2vjhWcaYVR+RDYdoxGsO9EBsPszjEqfbHys3Yw2z0rS43E=
-X-Received: by 2002:a05:6a21:6da7:b0:1ee:5d05:a18f with SMTP id
- adf61e73a8af0-1ee8cc25a7cmr22275576637.35.1739846700487; Mon, 17 Feb 2025
- 18:45:00 -0800 (PST)
+	s=arc-20240116; t=1739846868; c=relaxed/simple;
+	bh=vh6R4AHkmbR3moZclidczJg93/g+4eY55HePj1+pZ0Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=AdbwTWhV0NnvZvDlmkngK+OlQM9dKjaNJYzXJ4xZ3cSpLdcjk5LuwqC5VY14QbwbVIeQNNAOtNWiirEwSYdAqfdA3dQOIvNK6XsJx7YhXZh2DXcgEQWwZ5KscIjy8T8q07DcA7DKD9OG+I8gLNzD4s0aEcKqxM7agKwvZx6P12A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4YxkP22X9Zz2JYZk;
+	Tue, 18 Feb 2025 10:43:50 +0800 (CST)
+Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6C9611A016C;
+	Tue, 18 Feb 2025 10:47:43 +0800 (CST)
+Received: from [10.174.179.234] (10.174.179.234) by
+ kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 18 Feb 2025 10:47:41 +0800
+Message-ID: <c2924e9e-1a42-a4f6-5066-ea2e15477c11@huawei.com>
+Date: Tue, 18 Feb 2025 10:47:41 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250218011744.2397726-1-haoxiang_li2024@163.com>
-In-Reply-To: <20250218011744.2397726-1-haoxiang_li2024@163.com>
-From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
-Date: Tue, 18 Feb 2025 08:14:49 +0530
-X-Gm-Features: AWEUYZmy3Rk5IKS-p-8AmZQjs7wZFdI2edboezs4Z5so68a2cH5u9tcTn-tnvmc
-Message-ID: <CAH-L+nP5w7hRbONxPNG7NJtJzb-A0JOEMSq1hKNepM9GpFkt-g@mail.gmail.com>
-Subject: Re: [PATCH v2] nfp: bpf: Add check for nfp_app_ctrl_msg_alloc()
-To: Haoxiang Li <haoxiang_li2024@163.com>
-Cc: kuba@kernel.org, louis.peens@corigine.com, andrew+netdev@lunn.ch, 
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com, qmo@kernel.org, 
-	daniel@iogearbox.net, bpf@vger.kernel.org, oss-drivers@corigine.com, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000910043062e61a0da"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Add Morton,Peter and David for discussion//Re: [PATCH -next] uprobes:
+ fix two zero old_folio bugs in __replace_page()
+To: Masami Hiramatsu <mhiramat@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim
+	<namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander
+ Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
+	"Liang, Kan" <kan.liang@linux.intel.com>, Andrew Morton
+	<akpm@linux-foundation.org>, Peter Xu <peterx@redhat.com>, David Hildenbrand
+	<david@redhat.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+	<linux-perf-users@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<wangkefeng.wang@huawei.com>, linux-mm <linux-mm@kvack.org>
+References: <20250217123826.88503-1-tongtiangen@huawei.com>
+From: Tong Tiangen <tongtiangen@huawei.com>
+In-Reply-To: <20250217123826.88503-1-tongtiangen@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemk500005.china.huawei.com (7.202.194.90)
 
---000000000000910043062e61a0da
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 18, 2025 at 6:49=E2=80=AFAM Haoxiang Li <haoxiang_li2024@163.co=
-m> wrote:
->
-> Add check for the return value of nfp_app_ctrl_msg_alloc() in
-> nfp_bpf_cmsg_alloc() to prevent null pointer dereference.
->
-> Fixes: ff3d43f7568c ("nfp: bpf: implement helpers for FW map ops")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Haoxiang Li <haoxiang_li2024@163.com>
+
+在 2025/2/17 20:38, Tong Tiangen 写道:
+> We triggered the following error logs in syzkaller test:
+> 
+>    BUG: Bad page state in process syz.7.38  pfn:1eff3
+>    page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1eff3
+>    flags: 0x3fffff00004004(referenced|reserved|node=0|zone=1|lastcpupid=0x1fffff)
+>    raw: 003fffff00004004 ffffe6c6c07bfcc8 ffffe6c6c07bfcc8 0000000000000000
+>    raw: 0000000000000000 0000000000000000 00000000fffffffe 0000000000000000
+>    page dumped because: PAGE_FLAGS_CHECK_AT_FREE flag(s) set
+>    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+>    Call Trace:
+>     <TASK>
+>     dump_stack_lvl+0x32/0x50
+>     bad_page+0x69/0xf0
+>     free_unref_page_prepare+0x401/0x500
+>     free_unref_page+0x6d/0x1b0
+>     uprobe_write_opcode+0x460/0x8e0
+>     install_breakpoint.part.0+0x51/0x80
+>     register_for_each_vma+0x1d9/0x2b0
+>     __uprobe_register+0x245/0x300
+>     bpf_uprobe_multi_link_attach+0x29b/0x4f0
+>     link_create+0x1e2/0x280
+>     __sys_bpf+0x75f/0xac0
+>     __x64_sys_bpf+0x1a/0x30
+>     do_syscall_64+0x56/0x100
+>     entry_SYSCALL_64_after_hwframe+0x78/0xe2
+> 
+>     BUG: Bad rss-counter state mm:00000000452453e0 type:MM_FILEPAGES val:-1
+> 
+> The following syzkaller test case can be used to reproduce:
+> 
+>    r2 = creat(&(0x7f0000000000)='./file0\x00', 0x8)
+>    write$nbd(r2, &(0x7f0000000580)=ANY=[], 0x10)
+>    r4 = openat(0xffffffffffffff9c, &(0x7f0000000040)='./file0\x00', 0x42, 0x0)
+>    mmap$IORING_OFF_SQ_RING(&(0x7f0000ffd000/0x3000)=nil, 0x3000, 0x0, 0x12, r4, 0x0)
+>    r5 = userfaultfd(0x80801)
+>    ioctl$UFFDIO_API(r5, 0xc018aa3f, &(0x7f0000000040)={0xaa, 0x20})
+>    r6 = userfaultfd(0x80801)
+>    ioctl$UFFDIO_API(r6, 0xc018aa3f, &(0x7f0000000140))
+>    ioctl$UFFDIO_REGISTER(r6, 0xc020aa00, &(0x7f0000000100)={{&(0x7f0000ffc000/0x4000)=nil, 0x4000}, 0x2})
+>    ioctl$UFFDIO_ZEROPAGE(r5, 0xc020aa04, &(0x7f0000000000)={{&(0x7f0000ffd000/0x1000)=nil, 0x1000}})
+>    r7 = bpf$PROG_LOAD(0x5, &(0x7f0000000140)={0x2, 0x3, &(0x7f0000000200)=ANY=[@ANYBLOB="1800000000120000000000000000000095"], &(0x7f0000000000)='GPL\x00', 0x7, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0, @fallback=0x30, 0xffffffffffffffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10, 0x0, @void, @value}, 0x94)
+>    bpf$BPF_LINK_CREATE_XDP(0x1c, &(0x7f0000000040)={r7, 0x0, 0x30, 0x1e, @val=@uprobe_multi={&(0x7f0000000080)='./file0\x00', &(0x7f0000000100)=[0x2], 0x0, 0x0, 0x1}}, 0x40)
+> 
+> The cause is that zero pfn is set to the pte without increasing the rss
+> count in mfill_atomic_pte_zeropage() and the refcount of zero folio does
+> not increase accordingly. Then, the operation on the same pfn is performed
+> in uprobe_write_opcode()->__replace_page() to unconditional decrease the
+> rss count and old_folio's refcount.
+> 
+> Therefore, two bugs are introduced:
+> 1. The rss count is incorrect, when process exit, the check_mm() report
+>     error "Bad rss-count".
+> 2. The reserved folio (zero folio) is freed when folio->refcount is zero,
+>     then free_pages_prepare->free_page_is_bad() report error "Bad page state".
+> 
+> To fix it, add zero folio check before rss counter and refcount decrease.
+> 
+> Fixes: 7396fa818d62 ("uprobes/core: Make background page replacement logic account for rss_stat counters")
+> Fixes: 2b1444983508 ("uprobes, mm, x86: Add the ability to install and remove uprobes breakpoints")
+> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
 > ---
-> Changes in v2:
-> - remove the bracket for one single-statement. Thanks, Guru!
-> ---
->  drivers/net/ethernet/netronome/nfp/bpf/cmsg.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c b/drivers/net/=
-ethernet/netronome/nfp/bpf/cmsg.c
-> index 2ec62c8d86e1..b02d5fbb8c8c 100644
-> --- a/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c
-> +++ b/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c
-> @@ -20,6 +20,8 @@ nfp_bpf_cmsg_alloc(struct nfp_app_bpf *bpf, unsigned in=
-t size)
->         struct sk_buff *skb;
->
->         skb =3D nfp_app_ctrl_msg_alloc(bpf->app, size, GFP_KERNEL);
-> +       if (!skp)
-> +               return NULL;
-It looks like you did not compile this change.
-
-Also, next time you push a new version, please modify the subject as:
-"[PATCH net v3] xxxx"
->         skb_put(skb, size);
->
->         return skb;
-> --
-> 2.25.1
->
->
-
-
---=20
-Regards,
-Kalesh AP
-
---000000000000910043062e61a0da
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBWowggRSoAMCAQICDDfBRQmwNSI92mit0zANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAwODI5NTZaFw0yNTA5MTAwODI5NTZaMIGi
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xHzAdBgNVBAMTFkthbGVzaCBBbmFra3VyIFB1cmF5aWwxMjAw
-BgkqhkiG9w0BCQEWI2thbGVzaC1hbmFra3VyLnB1cmF5aWxAYnJvYWRjb20uY29tMIIBIjANBgkq
-hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxnv1Reaeezfr6NEmg3xZlh4cz9m7QCN13+j4z1scrX+b
-JfnV8xITT5yvwdQv3R3p7nzD/t29lTRWK3wjodUd2nImo6vBaH3JbDwleIjIWhDXLNZ4u7WIXYwx
-aQ8lYCdKXRsHXgGPY0+zSx9ddpqHZJlHwcvas3oKnQN9WgzZtsM7A8SJefWkNvkcOtef6bL8Ew+3
-FBfXmtsPL9I2vita8gkYzunj9Nu2IM+MnsP7V/+Coy/yZDtFJHp30hDnYGzuOhJchDF9/eASvE8T
-T1xqJODKM9xn5xXB1qezadfdgUs8k8QAYyP/oVBafF9uqDudL6otcBnziyDBQdFCuAQN7wIDAQAB
-o4IB5DCCAeAwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZC
-aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJj
-YTIwMjAuY3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3Iz
-cGVyc29uYWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcC
-ARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNV
-HR8EQjBAMD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNp
-Z24yY2EyMDIwLmNybDAuBgNVHREEJzAlgSNrYWxlc2gtYW5ha2t1ci5wdXJheWlsQGJyb2FkY29t
-LmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGP
-zzAdBgNVHQ4EFgQUI3+tdStI+ABRGSqksMsiCmO9uDAwDQYJKoZIhvcNAQELBQADggEBAGfe1o9b
-4wUud0FMjb/FNdc433meL15npjdYWUeioHdlCGB5UvEaMGu71QysfoDOfUNeyO9YKp0h0fm7clvo
-cBqeWe4CPv9TQbmLEtXKdEpj5kFZBGmav69mGTlu1A9KDQW3y0CDzCPG2Fdm4s73PnkwvemRk9E2
-u9/kcZ8KWVeS+xq+XZ78kGTKQ6Wii3dMK/EHQhnDfidadoN/n+x2ySC8yyDNvy81BocnblQzvbuB
-a30CvRuhokNO6Jzh7ZFtjKVMzYas3oo6HXgA+slRszMu4pc+fRPO41FHjeDM76e6P5OnthhnD+NY
-x6xokUN65DN1bn2MkeNs0nQpizDqd0QxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYD
-VQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25h
-bFNpZ24gMiBDQSAyMDIwAgw3wUUJsDUiPdpordMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcN
-AQkEMSIEIOJYaTfb/q6TQz9E0jZB6K1GoH+C3oW4TtVP2hbSJtLpMBgGCSqGSIb3DQEJAzELBgkq
-hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDIxODAyNDUwMFowaQYJKoZIhvcNAQkPMVwwWjAL
-BglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG
-9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAl3iTWxMLr
-qU7RGfuZzuM/pGrUT5NZbyX83GtqUbLz6kOlyeYfa+i+vv3W6N+fRJUkFaotJ9Y/kxWrV6s/wt/f
-60YMPLEL+zDpDRsDSz+ORHhqHsLqHh9lMxgfUdOMVNP85MEtZPb4d+6HXA3XV21M/JH6vHYzylzx
-vzxKbmxuixHCsQo1pkRXrwyLhSImaLXVLnPTGKKRMfxBsfcv+bJJCWOu1Jg/yK/8Apu2B2zkLnVs
-BznEqB97n265GQvJZpC1jcu9TSHkTauv/Sz73j0l0ntdqf6wHhnTECBBHTMKH91j3UhNiogZ0HpJ
-EIVReC+14wZOzV/nIPl3MdjDccoz
---000000000000910043062e61a0da--
+>   kernel/events/uprobes.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index 46ddf3a2334d..ff5694acfa68 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -213,7 +213,8 @@ static int __replace_page(struct vm_area_struct *vma, unsigned long addr,
+>   		dec_mm_counter(mm, MM_ANONPAGES);
+>   
+>   	if (!folio_test_anon(old_folio)) {
+> -		dec_mm_counter(mm, mm_counter_file(old_folio));
+> +		if (!is_zero_folio(old_folio))
+> +			dec_mm_counter(mm, mm_counter_file(old_folio));
+>   		inc_mm_counter(mm, MM_ANONPAGES);
+>   	}
+>   
+> @@ -227,7 +228,8 @@ static int __replace_page(struct vm_area_struct *vma, unsigned long addr,
+>   	if (!folio_mapped(old_folio))
+>   		folio_free_swap(old_folio);
+>   	page_vma_mapped_walk_done(&pvmw);
+> -	folio_put(old_folio);
+> +	if (!is_zero_folio(old_folio))
+> +		folio_put(old_folio);
+>   
+>   	err = 0;
+>    unlock:
 
