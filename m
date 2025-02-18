@@ -1,224 +1,142 @@
-Return-Path: <bpf+bounces-51828-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51829-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02F68A39CEE
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 14:08:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B148FA39DA6
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 14:38:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D9961769F0
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 13:04:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A89F41888AAB
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2025 13:36:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6250126A0C8;
-	Tue, 18 Feb 2025 13:02:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4C97269CE7;
+	Tue, 18 Feb 2025 13:32:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Lz62ZmZg"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5432826A088;
-	Tue, 18 Feb 2025 13:02:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53E2D26982E
+	for <bpf@vger.kernel.org>; Tue, 18 Feb 2025 13:32:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739883753; cv=none; b=qk2NURERJQTRcWlQEslQWBD33Ff/RHZFr6WUb5F1Fvdu2ac2WyyB40ON3+WgK6aos1Q3YOgDV+OaXvvT2vreKEye3/WJzepVDprr5kLI9fVbQJmMNRYeXrqz2BlfQAaAxBcXOHIsCRzbsAw85RRqKPj6McGK6RlHJRQpnVNA9fw=
+	t=1739885532; cv=none; b=oR4oezA/rUpCMwJgnDgD5Pj8UtyyNMqmA7AZSfPZlK2DWmOkVJshxbliNZROu8/3IoTZx6lc6iuOnandPdBqK7KwD3KOfijTiSXQgnftmeHrGdKOlh/7XC5aG4TsYKR/+FJd4cpDa14cxcN5BHVdl+PghqTnZNiE3P47tJQOUQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739883753; c=relaxed/simple;
-	bh=6jGygvIpZ+inynCJibhgOfbOLfeSPLHzPo4VOrGkPLg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=cR+RM1uZ2sk2bQ6Xx48dvLZGevYj2WvGo9MQEeioSlYYID/DOtECQOlMhyqiJYygotD58S4oPbBJwAUBdmrocbxiCeyQwyUt928hjg0FE94b49u6csI8+ku8u2RLWQFOH655k8wj10WAuROyP2xszSINRwUnEzQT2gRf/ueCbd4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Yy02G6ckbz1wn8K;
-	Tue, 18 Feb 2025 20:58:30 +0800 (CST)
-Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2688E18005F;
-	Tue, 18 Feb 2025 21:02:25 +0800 (CST)
-Received: from [10.174.179.234] (10.174.179.234) by
- kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 18 Feb 2025 21:02:23 +0800
-Message-ID: <24a61833-f389-b074-0d9c-d5ad9efc2046@huawei.com>
-Date: Tue, 18 Feb 2025 21:02:22 +0800
+	s=arc-20240116; t=1739885532; c=relaxed/simple;
+	bh=N4g6QUKBv0hrbd2d5K+Izcwtyx7UVmTbogTjheFSivA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sE2hiMfqAnAXlHIoN2L/0rjeUm1hycEXoeSMhsm4PPKeCuPt4FPyMZl9oI7CDQBSyemgSGDIDsyvBn6lvGwVoa8Z9FcAiiIUTmZgmrMpjoECzmYkw2NEQbzRkw71uHyeAAa4/t/Z+RAXEWBSa/hsnyJSwFxRGCF5ipbuND6knvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Lz62ZmZg; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1739885527;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=1owyGoVG+hJEAVjlb29HvV4RQGKZjOiBR9fNEU4IJr4=;
+	b=Lz62ZmZg3QSh0KoZZwM44daV9czYvRMFJ+A0rEcLTqoVZYwUlbZhHmnfWyvN3z0GK3nkEg
+	H0XZjzUDTJxj3R/YLmui5jkFB4ShzJqVIe/QhDMYOXDUm/9p3ZGg8bIz5wA4PfNq/FVGZk
+	s1612+SxahwBJsB83LhhT4EBWxZTsWs=
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: bpf@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: andrew+netdev@lunn.ch,
+	davem@davemloft.ne,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	ricardo@marliere.net,
+	jiayuan.chen@linux.dev,
+	viro@zeniv.linux.org.uk,
+	dmantipov@yandex.ru,
+	aleksander.lobakin@intel.com,
+	linux-ppp@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	mrpre@163.com
+Subject: [PATCH net-next v1 0/1] ppp: Fix KMSAN uninit-value warning
+Date: Tue, 18 Feb 2025 21:31:43 +0800
+Message-ID: <20250218133145.265313-1-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: Add Morton,Peter and David for discussion//Re: [PATCH -next]
- uprobes: fix two zero old_folio bugs in __replace_page()
-To: David Hildenbrand <david@redhat.com>, Masami Hiramatsu
-	<mhiramat@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra
-	<peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de
- Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland
-	<mark.rutland@arm.com>, Alexander Shishkin
-	<alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian
- Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, "Liang,
- Kan" <kan.liang@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>,
-	Peter Xu <peterx@redhat.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
-	<linux-perf-users@vger.kernel.org>, <bpf@vger.kernel.org>,
-	<wangkefeng.wang@huawei.com>, linux-mm <linux-mm@kvack.org>
-References: <20250217123826.88503-1-tongtiangen@huawei.com>
- <c2924e9e-1a42-a4f6-5066-ea2e15477c11@huawei.com>
- <3b893634-5453-42d0-b8dc-e9d07988e9e9@redhat.com>
-From: Tong Tiangen <tongtiangen@huawei.com>
-In-Reply-To: <3b893634-5453-42d0-b8dc-e9d07988e9e9@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemk500005.china.huawei.com (7.202.194.90)
+X-Migadu-Flow: FLOW_OUT
+
+Syzbot caught an "KMSAN: uninit-value" warning [1], which is caused by the
+ppp driver not initializing a 2-byte header when using socket filters.
+
+Here's a detailed explanation:
+
+1. PPP protocol format
+The PPP protocol format looks like this:
+
+|<--------------------------      7 - 1508 bytes      --------------------------->|
++---0x7E---+---0xFF---+---0x03---+----------+---------------+----------+---0x7E----
+|   Flag   | Address  | Control  | Protocol | Information   |   FCS    |   Flag   |
+| 01111110 | 11111111 | 00000011 | 8/16bits |      *        | 16 bits  | 01111110 |
++----------+----------+----------+----------+---------------+----------+-----------
 
 
+2. Normal BPF program
+For example, when filtering IP over PPP, libpcap generates BPF
+instructions like this:
 
-在 2025/2/18 16:23, David Hildenbrand 写道:
-> On 18.02.25 03:47, Tong Tiangen wrote:
->>
->>
->> 在 2025/2/17 20:38, Tong Tiangen 写道:
->>> We triggered the following error logs in syzkaller test:
->>>
->>>     BUG: Bad page state in process syz.7.38  pfn:1eff3
->>>     page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 
->>> pfn:0x1eff3
->>>     flags: 
->>> 0x3fffff00004004(referenced|reserved|node=0|zone=1|lastcpupid=0x1fffff)
->>>     raw: 003fffff00004004 ffffe6c6c07bfcc8 ffffe6c6c07bfcc8 
->>> 0000000000000000
->>>     raw: 0000000000000000 0000000000000000 00000000fffffffe 
->>> 0000000000000000
->>>     page dumped because: PAGE_FLAGS_CHECK_AT_FREE flag(s) set
->>>     Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 
->>> 1.13.0-1ubuntu1.1 04/01/2014
->>>     Call Trace:
->>>      <TASK>
->>>      dump_stack_lvl+0x32/0x50
->>>      bad_page+0x69/0xf0
->>>      free_unref_page_prepare+0x401/0x500
->>>      free_unref_page+0x6d/0x1b0
->>>      uprobe_write_opcode+0x460/0x8e0
->>>      install_breakpoint.part.0+0x51/0x80
->>>      register_for_each_vma+0x1d9/0x2b0
->>>      __uprobe_register+0x245/0x300
->>>      bpf_uprobe_multi_link_attach+0x29b/0x4f0
->>>      link_create+0x1e2/0x280
->>>      __sys_bpf+0x75f/0xac0
->>>      __x64_sys_bpf+0x1a/0x30
->>>      do_syscall_64+0x56/0x100
->>>      entry_SYSCALL_64_after_hwframe+0x78/0xe2
->>>
->>>      BUG: Bad rss-counter state mm:00000000452453e0 type:MM_FILEPAGES 
->>> val:-1
->>>
->>> The following syzkaller test case can be used to reproduce:
->>>
->>>     r2 = creat(&(0x7f0000000000)='./file0\x00', 0x8)
->>>     write$nbd(r2, &(0x7f0000000580)=ANY=[], 0x10)
->>>     r4 = openat(0xffffffffffffff9c, &(0x7f0000000040)='./file0\x00', 
->>> 0x42, 0x0)
->>>     mmap$IORING_OFF_SQ_RING(&(0x7f0000ffd000/0x3000)=nil, 0x3000, 
->>> 0x0, 0x12, r4, 0x0)
->>>     r5 = userfaultfd(0x80801)
->>>     ioctl$UFFDIO_API(r5, 0xc018aa3f, &(0x7f0000000040)={0xaa, 0x20})
->>>     r6 = userfaultfd(0x80801)
->>>     ioctl$UFFDIO_API(r6, 0xc018aa3f, &(0x7f0000000140))
->>>     ioctl$UFFDIO_REGISTER(r6, 0xc020aa00, 
->>> &(0x7f0000000100)={{&(0x7f0000ffc000/0x4000)=nil, 0x4000}, 0x2})
->>>     ioctl$UFFDIO_ZEROPAGE(r5, 0xc020aa04, 
->>> &(0x7f0000000000)={{&(0x7f0000ffd000/0x1000)=nil, 0x1000}})
->>>     r7 = bpf$PROG_LOAD(0x5, &(0x7f0000000140)={0x2, 0x3, 
->>> &(0x7f0000000200)=ANY=[@ANYBLOB="1800000000120000000000000000000095"], &(0x7f0000000000)='GPL\x00', 
->>> 0x7, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0, @fallback=0x30, 
->>> 0xffffffffffffffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 
->>> 0x0, 0x10, 0x0, @void, @value}, 0x94)
->>>     bpf$BPF_LINK_CREATE_XDP(0x1c, &(0x7f0000000040)={r7, 0x0, 0x30, 
->>> 0x1e, @val=@uprobe_multi={&(0x7f0000000080)='./file0\x00', 
->>> &(0x7f0000000100)=[0x2], 0x0, 0x0, 0x1}}, 0x40)
->>>
->>> The cause is that zero pfn is set to the pte without increasing the rss
->>> count in mfill_atomic_pte_zeropage() and the refcount of zero folio does
->>> not increase accordingly. Then, the operation on the same pfn is 
->>> performed
->>> in uprobe_write_opcode()->__replace_page() to unconditional decrease the
->>> rss count and old_folio's refcount.
->>>
->>> Therefore, two bugs are introduced:
->>> 1. The rss count is incorrect, when process exit, the check_mm() report
->>>      error "Bad rss-count".
->>> 2. The reserved folio (zero folio) is freed when folio->refcount is 
->>> zero,
->>>      then free_pages_prepare->free_page_is_bad() report error "Bad 
->>> page state".
->>>
->>> To fix it, add zero folio check before rss counter and refcount 
->>> decrease.
->>>
->>> Fixes: 7396fa818d62 ("uprobes/core: Make background page replacement 
->>> logic account for rss_stat counters")
->>> Fixes: 2b1444983508 ("uprobes, mm, x86: Add the ability to install 
->>> and remove uprobes breakpoints")
->>> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
->>> ---
->>>    kernel/events/uprobes.c | 6 ++++--
->>>    1 file changed, 4 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
->>> index 46ddf3a2334d..ff5694acfa68 100644
->>> --- a/kernel/events/uprobes.c
->>> +++ b/kernel/events/uprobes.c
->>> @@ -213,7 +213,8 @@ static int __replace_page(struct vm_area_struct 
->>> *vma, unsigned long addr,
->>>            dec_mm_counter(mm, MM_ANONPAGES);
->>>        if (!folio_test_anon(old_folio)) {
->>> -        dec_mm_counter(mm, mm_counter_file(old_folio));
->>> +        if (!is_zero_folio(old_folio))
->>> +            dec_mm_counter(mm, mm_counter_file(old_folio));
->>>            inc_mm_counter(mm, MM_ANONPAGES);
->>>        }
->>> @@ -227,7 +228,8 @@ static int __replace_page(struct vm_area_struct 
->>> *vma, unsigned long addr,
->>>        if (!folio_mapped(old_folio))
->>>            folio_free_swap(old_folio);
->>>        page_vma_mapped_walk_done(&pvmw);
->>> -    folio_put(old_folio);
->>> +    if (!is_zero_folio(old_folio))
->>> +        folio_put(old_folio);
->  >>    >>        err = 0;
->>>     unlock:
->>
-> 
-> The whole "manually replace pages" logic is fragile. I tried to rewrite 
-> it a while back:
-> 
-> https://lkml.kernel.org/r/20240604122548.359952-1-david@redhat.com
-> 
-> But didn't get to follow-up yet.
-> 
-> I'm not sure if the page_vma_mapped_walk() really does what we would 
-> expect here.
-> 
-> The folio_remove_rmap_pte(old_folio, old_page, vma); is certainly wrong 
-> as well for ero folios.
-> 
-> 
-> I don't think there is a sane use case right now where we would hit the 
-> shared zeropage.
-> 
-> So for the time being, I think we should just reject them immediately 
-> after get_user_page_vma_remote().
-> 
-> At some point I'll follow up with my rewrite that will clean this 
-> nastiness here up a bit.
+(000) ldh [2]
+(001) jeq #0x21 jt 2 jf 3
+(002) ret #65535
+(003) ret #0
 
-OK, Before your rewrite last merged, How about i change the solution to
-just reject them immediately after get_user_page_vma_remote()？
+2 bytes data are skipped by bpf program and then bpf program reads the
+'Protocol' field to determine if it's an IP packet. Clearly, libpcap
+assumes the packet starts from the Address field, just like the comment in
+'drivers/net/ppp/ppp_generic.c':
+/* the filter instructions are constructed assuming
+   a four-byte PPP header on each packet */
 
-Thanks,
-Tong.
+Corresponding libpcap code is here:
+https://github.com/the-tcpdump-group/libpcap/blob/master/gencode.c#L1421
 
-> 
+
+3. Current problem
+The problem is that the skb->data generated by ppp_write() starts from the
+'Protocol' field.
+
+To correctly use the BPF filter program, a 2-byte header is added to
+simulate the presence of Address and Control fields. And then, after
+running the socket filter, it's restored:
+
+1768 *(u8 *)skb_push(skb, 2) = 1;
+1770 bpf_prog_run()
+1782 skb_pull(skb, 2);
+
+The thing is, only one byte of the new 2-byte header is initialized. For
+normal BPF programs generated by libpcap, uninitialized data won't be
+used, so it's not a problem.
+
+However, for carefully crafted BPF programs, such as those generated by
+syzkaller [2], which start reading from offset 0, the uninitialized data
+will be used and caught by KMSAN.
+
+4. Fix
+The fix is simple: initialize the entire 2-byte header.
+
+[1] https://syzkaller.appspot.com/bug?extid=853242d9c9917165d791
+[2] https://syzkaller.appspot.com/text?tag=ReproC&x=11994913980000
+
+Jiayuan Chen (1):
+  ppp: Fix KMSAN warning by initializing 2-byte header
+
+ drivers/net/ppp/ppp_generic.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+-- 
+2.47.1
+
 
