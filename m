@@ -1,184 +1,242 @@
-Return-Path: <bpf+bounces-51908-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51909-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE51DA3B105
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 06:46:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2974A3B190
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 07:23:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B87D3AF0B1
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 05:45:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 655771890A90
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 06:23:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD8B81B81DC;
-	Wed, 19 Feb 2025 05:46:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 234381BBBDD;
+	Wed, 19 Feb 2025 06:23:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EHOEaCv1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TNZ0cu5z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 172958BF8;
-	Wed, 19 Feb 2025 05:46:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38D2A1B87F1;
+	Wed, 19 Feb 2025 06:23:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739943964; cv=none; b=eGtJlt8XTLi1b9k/Hl75LZ5yg5awExdyujJgZ6sJnMngiq6Tg83mngwxrRHz5g9bkrJ+ymFHDv+MEtQJ4AhcigEo9Q65V6N2P2izMNkYLD6NN0AOrn8KDJuwMYsCJeU/+r4/aL0qZpIQ5iwCjDxqEf47Qt86awy8M3IPU/b/5Ug=
+	t=1739946224; cv=none; b=LbAq7dudiOicWFa37MZZuJV6i9XytPQEFFiK7DVNMbMr9ZmrjZ2yi2IVsgHAph4mwdgCWsnBuZj5VeDlRHAnLkY0/FmoE6nAjeCfDv20lb/oupa/vnWto6eJcmivgAv9o5kugL9QeH7i50Ju0JYjXqGaTA+L0plq/U98LE6fe48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739943964; c=relaxed/simple;
-	bh=dGIMySxz5DRw5VQhH38SnBthnAMpo+67IaAIq75P2uw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=q6lzMZiKq0tt/Ol26vzjUjkuGpud1Q2Dj0p/Xw/YhaVRx93l4GkauH2GzSbKXfEd9SggOpwPhUNf+rd3aS4mgsjUEjqswXV7zRyX5rn8mCggx/e4yJvdGBZKN3sSDvuu4P/RviW1UEIE4Q/TQJVeRNSD3FohVf5iYIyvQ+Vxtbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EHOEaCv1; arc=none smtp.client-ip=209.85.216.52
+	s=arc-20240116; t=1739946224; c=relaxed/simple;
+	bh=g4fn69USjubabP/aaFEa1yeWpIt4/bfFB1okdWo3Dp8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kgGBCMQJIscgqqG0GK2dAPW02xbn99sHCaFDdpO2RbbBjZby80zgFANhOkHxdoR39RIyDIYqbjN/pqR6gbNbCsdl+duBHy95K/KgxrhikJcx5vcuNykwbuAb8DNsnxfknDlhMB2W+tUlRIhxPYab0wJN9rOk82v0Yo2TWRjiGmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TNZ0cu5z; arc=none smtp.client-ip=209.85.216.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2f83a8afcbbso806987a91.1;
-        Tue, 18 Feb 2025 21:46:02 -0800 (PST)
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2fc0026eb79so11935957a91.0;
+        Tue, 18 Feb 2025 22:23:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739943962; x=1740548762; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=OdKRTz2Ka05Q/GPi8WGvAjk/zuWSVlVN/wD5pZqv30Y=;
-        b=EHOEaCv1Qe0bAn7549wD3V3n/lrqn3py70HekebyZ4ZxdiFDT9I5J+HGd1clTEuVcn
-         IJW99FLf6NDGllupSGTBdekdDEy+Qzc6QGxUeXXBcTg6CMVabfs67mzjYrCHaFXcCxTb
-         pkZsCjGGEIgNiXtSxS2K11ZvPdKwBWtlhTmcVeaca8MxZiJFQajLQtVryMZJiXL2KXHf
-         IxoidKMCq2gVeVM40T4WzVtrh+nLv8yKUjS3SUCszJZfHS5NvvGxKV4cQckwUwGQ6agu
-         WWwGCwv1eNusHmD7Y0AVco5DfOftZz2PEVBP1i27wShdB149kOkmBsvz/pQL1hbzamlf
-         sZIQ==
+        d=gmail.com; s=20230601; t=1739946222; x=1740551022; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kzuJPp/o5P7UYg2+VQ3VISzpITM/125GEB4688KsCm0=;
+        b=TNZ0cu5z7J3G2FTVQPTY/DKuWxKF+Oty+nZL8bJIPDwFHXNLUFFmtiB4Q2Fv76zgc+
+         O9pLN6OXG0YT0Nd8hRNNCoaV/rbh+/RhT4bD+IaHki6PjLt1Q+4uqcp/t9+q2HoHj+uB
+         7W+wNcGFXfd8XGQsbQIp8zooGKFfEe5GGVursqkpVfiS1/qqY3xwkm35DQaf+Rsj9yQl
+         B3fY8OTqUkvfcJVPqFFLPGq7jYCmmtkC0Lj3jPnhdPaF0ZzzCPYfV/3XxFeQ9ZZ+b04j
+         sn/J7ePoIFFJavHh6B3rCJqW1TvzSWPcw8xuZ4Qwyq0EhLef3X22vloCVMyAA1txHGvv
+         3/DA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739943962; x=1740548762;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OdKRTz2Ka05Q/GPi8WGvAjk/zuWSVlVN/wD5pZqv30Y=;
-        b=M6QAWiSKMRpg7PfoGgPzzDO1ZOtxuJh3TD9Z7mSDIcZnPP6TgSTUATt9fRsrklLH5o
-         sSv2eHnRyEVrQsss9KRFIIQuwObof/MxGTEYjJVL48KkBOuWmZY89DfKt0l595ku36gN
-         JNQbHUWo3gNL8/cG3TzUTzEmYjjzZ+VAl+otGhmlZybRIY04yjICr0dtnwH/txvxz6Z8
-         wUh/qZt16JkdOI6Q29iKEhadOMKG0KjptAgEdcOiBjALut6vr6RctKdKAasKsiO5PuKo
-         nhcA1FURXTm/HPKidBz/N5zZejwPlAAgdJ+0Ootij8Lqv6P+xA36HczNtMgTA/I8yeBf
-         /PoA==
-X-Forwarded-Encrypted: i=1; AJvYcCV2eJiKTRwaTa9P9z2BdCsxYnJEYy4+t6xINPhcK5eH2hUaFlkfBbbwdaSvAdZOhkNdpgB7d5njzA==@vger.kernel.org, AJvYcCWbu+A93668AbX7mo3W0q3iwpsvk9N1CSCxX0HZt5SkTgnJV6GEkd0fK2QLkB0itUte2ZU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzvAeF9pyDvBn59QK59ywdVdS3e4/5aXyo/9CVUg/Vz+1OnBiwl
-	YCuM5umnNj6Nn4DxxZgIV21Y6QGACjPskxojnCzC5OIJwPaqwnb7
-X-Gm-Gg: ASbGncsiKV4k5taTZg3gck2w1lHIQoiVpricSh2bYzEd9fheMO0RGv4Ul9URwGEsHrz
-	D7vsiMuKutXqwXasNDWorO39pBuX+40NRdL+lrphLX5X7Agy5RkvgSAtUEBypBcgDtodFJ46L/e
-	u7OvHxHIZETb9fNjVX5SWFeEpjuttuJEoIqFJIrkBTeHrnkl0W4EBRmwWU99nmJ6iLEqXvx+CtD
-	KLHO0WOy2ezP2l3lfuvw5gMWhfcPMcYTQgwT0JORaCd6ZmSWCq5R8qZxTjqt5xoWiY4xuBDpBY2
-	rgEOytdnvGTe
-X-Google-Smtp-Source: AGHT+IGLWp10+MouHvHmEbW8dZkzAyZt8k9iM36m7mFL8R6ONKRAvMEdqSmlQSSpOQvYdgz+FP3/RA==
-X-Received: by 2002:a17:90b:1b06:b0:2fa:2252:f436 with SMTP id 98e67ed59e1d1-2fcb4cdb6bcmr4042412a91.3.1739943962345;
-        Tue, 18 Feb 2025 21:46:02 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fc13ba6969sm11125784a91.47.2025.02.18.21.46.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Feb 2025 21:46:01 -0800 (PST)
-Message-ID: <a1ab7ec2ca121105065e84ad0b7b0f58cf1f6fe3.camel@gmail.com>
-Subject: Re: [PATCH v2 dwarves 2/4] btf_encoder: emit type tags for
- bpf_arena pointers
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Ihor Solodrai <ihor.solodrai@linux.dev>, dwarves@vger.kernel.org, 
-	bpf@vger.kernel.org
-Cc: acme@kernel.org, alan.maguire@oracle.com, ast@kernel.org,
- andrii@kernel.org, 	mykolal@fb.com, kernel-team@meta.com
-Date: Tue, 18 Feb 2025 21:45:57 -0800
-In-Reply-To: <8d222fd0f26fdce0193047074e660abab19ffc32.camel@gmail.com>
-References: <20250212201552.1431219-1-ihor.solodrai@linux.dev>
-		 <20250212201552.1431219-3-ihor.solodrai@linux.dev>
-	 <8d222fd0f26fdce0193047074e660abab19ffc32.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+        d=1e100.net; s=20230601; t=1739946222; x=1740551022;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=kzuJPp/o5P7UYg2+VQ3VISzpITM/125GEB4688KsCm0=;
+        b=NS0Jvj6pP36j07lyYLvmdWjhV/ZqZbMbVM8E4qsVtgoPZgMoI1/bTEfivVxU0xj+Yc
+         9QS6sQ0/J+f2YGgH3duAqFOGYAkJRn0Em+pUnwRkMK2aM4G6Ek3N1PoP7e55rS5WeXmu
+         btt55YzsfcygiOS0FR9Vi4a1FwXXQwnZqH6Qci4aZLc2nKusBD3uHoSQ4RJHuacaQAMN
+         hQnkLw/Qh6hWpSr1lfdY8RzwlLAIFpV/DWISkg9Jp4HQ3j63eYrk0XA0kMEzwITeAJNC
+         hxvvuHD5oTDYfu54Ao85cIMXVQ1IG/i1si+Mwx00fOrtbLdxFx798rId7nOryq+MPue7
+         TniQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXwyD5cPyi+7+bLvS2jyrLaBc0d3bknluEXWlbj6iuxsmISHqDRDLw1IiX0Zy0KM1XNeL0ami7W9H6o3kI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwmIwuCuNLp3lLMxUMpAJNw04YMo1iGLrJgVboD4Ov2usPk/BAG
+	1kVqij26CBqfbvQRDt6y7+HTi6AvcXDHFePjAvi0Z6ASG7FORaZf
+X-Gm-Gg: ASbGncu+TxXZSc71Gx4qyopr9d9BOU0rvaPowlNb5FGXJkGFKNBe+1+zTyZG7iNhmWp
+	Mg34nzqDxnSqH3JFJPtDfGPePyGmUKpUiqo2JrXJLEGcDBuwBV8V/EkUWMRfRNSYJGW+3YPDbLO
+	f4ErSopIkr81BRt/tb2830YA1qGxIHMlERAJP8qTO61yD8dn2JyxDbf2suDP9agKBhYOlW+stAv
+	iz93xyCPtAbW8QE4u8uWP+pMSYEuGGji6rjHPuMjaUeoqwQuwznnCSxLBnFLAPprvZoX2zImrli
+	qvSVFMixNkzT2YMVbO36i5KcefwKKq4Jiw==
+X-Google-Smtp-Source: AGHT+IHo/5/0ht8pdeC7qkzHv8YfKPz7ny4UAySp7z6Qsjptp8w1VopWzNuBH4QsBsSGagjgNKBLfA==
+X-Received: by 2002:a17:90b:3886:b0:2ee:edae:75e with SMTP id 98e67ed59e1d1-2fcb5a17cdamr3728032a91.13.1739946222233;
+        Tue, 18 Feb 2025 22:23:42 -0800 (PST)
+Received: from [172.23.161.38] ([183.134.211.52])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-220d53674b1sm98752675ad.98.2025.02.18.22.23.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Feb 2025 22:23:41 -0800 (PST)
+Message-ID: <9df12336-ca00-4d45-a832-24203c334df7@gmail.com>
+Date: Wed, 19 Feb 2025 14:23:35 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] libbpf: Wrap libbpf API direct err with libbpf_err
+To: Eduard Zingerman <eddyz87@gmail.com>, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, haoluo@google.com,
+ jolsa@kernel.org, qmo@kernel.org
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250214141717.26847-1-chen.dylane@gmail.com>
+ <88f0c25cc981f958e46d51560fbf6db7136a3fa0.camel@gmail.com>
+From: Tao Chen <chen.dylane@gmail.com>
+In-Reply-To: <88f0c25cc981f958e46d51560fbf6db7136a3fa0.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, 2025-02-18 at 20:36 -0800, Eduard Zingerman wrote:
-> On Wed, 2025-02-12 at 12:15 -0800, Ihor Solodrai wrote:
->=20
+在 2025/2/19 10:08, Eduard Zingerman 写道:
+> On Fri, 2025-02-14 at 22:17 +0800, Tao Chen wrote:
+>> Just wrap the direct err with libbpf_err, keep consistency
+>> with other APIs.
+>>
+>> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
+>> ---
+> 
+> While at it, I've noticed two more places that need libbpf_err() calls.
+> Could you please check the following locations:
+> 
+> bpf_map__set_value_size:
+>    return -EOPNOTSUPP;       tools/lib/bpf/libbpf.c:10309
+>    return err;               tools/lib/bpf/libbpf.c:10317
+
+Will change it. Thanks
+
+> 
+> ?
+> 
+> Other than that, I agree with changes in this patch.
+> 
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> 
 > [...]
->=20
-> > diff --git a/btf_encoder.c b/btf_encoder.c
-> > index 965e8f0..3cec106 100644
-> > --- a/btf_encoder.c
-> > +++ b/btf_encoder.c
->=20
-> [...]
->=20
-> > +static int btf__tag_bpf_arena_ptr(struct btf *btf, int ptr_id)
-> > +{
-> > +	const struct btf_type *ptr;
-> > +	int tagged_type_id;
-> > +
-> > +	ptr =3D btf__type_by_id(btf, ptr_id);
-> > +	if (!btf_is_ptr(ptr))
-> > +		return -EINVAL;
-> > +
-> > +	tagged_type_id =3D btf__add_type_attr(btf, BPF_ARENA_ATTR, ptr->type)=
-;
-> > +	if (tagged_type_id < 0)
-> > +		return tagged_type_id;
-> > +
-> > +	return btf__add_ptr(btf, tagged_type_id);
-> > +}
->=20
-> I might be confused, but this is a bit strange.
-> The type constructed here is: ptr -> type_tag -> t.
-> However, address_space is an attribute of a pointer, not a pointed type.
-> I think that correct sequence should be: type_tag -> ptr -> t.
-> This would make libbpf emit C declaration as follows:
->=20
->   void * __attribute__((address_space(1))) ptr;
->=20
-> Instead of current:
->=20
->   void __attribute__((address_space(1))) * ptr;
->=20
-> clang generates identical IR for both declarations:
->=20
->   @ptr =3D dso_local global ptr addrspace(1) null, align 8
->=20
-> Thus, imo, this function should be simplified as below:
->=20
->   static int btf__tag_bpf_arena_ptr(struct btf *btf, int ptr_id)
->   {
-> 	const struct btf_type *ptr;
->=20
-> 	ptr =3D btf__type_by_id(btf, ptr_id);
-> 	if (!btf_is_ptr(ptr))
-> 		return -EINVAL;
->=20
-> 	return btf__add_type_attr(btf, BPF_ARENA_ATTR, ptr_id);
->   }
->=20
-> [...]
->
+> 
 
-Ok, this comment can be ignored.
-The following C code:
+I use a simple script, other places may also should be added:
 
-int foo(void * __attribute__((address_space(1))) ptr) {
-  return ptr !=3D 0;
-}
+9727 line: return NUL; (API:libbpf_bpf_attach_type_str)
+9735 line: return NULL; (API: libbpf_bpf_link_type_str)
+9743 line: return NULL; (API: libbpf_bpf_map_type_str)
+9751 line: return NULL; (API: libbpf_bpf_prog_type_str)
+10151 line: return NULL; (API: bpf_map__name)
+10458 line: return NULL; (API: bpf_object__prev_map)
 
-does not compile, with the following error reported:
+-----------------------------------------------
+#!/bin/python3
+import re
 
-test3.c:1:49: error: parameter may not be qualified with an address space
-    1 | int foo(void *__attribute__((address_space(1))) ptr) {
-      |
+LIBBPF_PATH="tools/lib/bpf/"
 
-While the following works:
+def process_functions(file_path, target_functions):
+     """
+     find return err fix
+     Args:
+         file_path: like libbpf.c btf.c etc.
+         target_functions: libbpf APIS
+     """
+     with open(file_path, 'r') as file:
+         lines = file.readlines()
 
-int foo(void __attribute__((address_space(1))) *ptr) {
-  return ptr !=3D 0;
-}
+     function_info = {func: {'start': None, 'end': None, 'code': []} for 
+func in target_functions}
 
-With the following IR generated:
+     in_target_function = False
+     current_function = None
 
-define dso_local i32 @foo(ptr addrspace(1) noundef %0) #0 { ... }
+     for i, line in enumerate(lines):
+         # check the start line
+         for func in target_functions:
+             if re.search(re.escape(func) + r'\s*\(', line):
+                 if ' __' in line:
+                     continue
+                 if '=' in line:
+                     continue
+                 if 'if' in line:
+                     continue
+                 if ';' in line:
+                     continue
+                 if '*' in func:
+                     continue
+                 in_target_function = True
+                 current_function = func
+                 function_info[func]['start'] = i
+                 function_info[func]['code'].append(line)
+                 break
 
-Strange.
+         # check return err in target function
+         if in_target_function and current_function:
+             function_info[current_function]['code'].append(line)
+             if re.search(r'\breturn\b', line):
+                 # check return
+                 if not re.search(r'\breturn\s+0\b', line):  # return 0 
+ignore
+                     if not re.search(r'libbpf_err|libbpf_ptr', line):
+                         print(f"code should fix at {i + 1} line: 
+{line.strip()} (API: {current_function})")
 
+             # check function end line
+             if re.search(r'}', line):
+                 function_info[current_function]['end'] = i
+                 in_target_function = False
+                 current_function = None  # Reset for the next function
+
+
+def extract_libbpf_apis(map_file):
+     """
+     extract APIS from libbpf.map
+     Args:
+         map_file (str): libbpf.map。
+     Returns:
+         list: libbpf APIs。
+     """
+     functions = []
+     inside_global_section = False
+
+     with open(map_file, 'r') as f:
+         for line in f:
+             line = line.strip()
+             if ';' in line and 'LIBBPF' not in line:
+                 functions.append(line.replace(';',''))
+
+     return functions
+
+map_file = "tools/lib/bpf/libbpf.map"
+input_files = ["libbpf.c",
+                "btf.c",
+                "bpf_prog_linfo.c",
+                "btf_dump.c",
+                "btf_iter.c",
+                "btf_relocate.c",
+                "elf.c",
+                "features.c",
+                "gen_loader.c",
+                "hashmap.c",
+                "libbpf_probes.c",
+                "linker.c",
+                "netlink.c",
+                "nlattr.c",
+                "relo_core.c",
+                "usdt.c",
+                "zip.c",
+                "str_error.c",
+                "strset.c"]
+
+target_functions = extract_libbpf_apis(map_file)
+print(f"Target functions extracted: {target_functions}")
+
+for input_file in input_files:
+     print(f"===========check file:{input_file}=============")
+     process_functions(LIBBPF_PATH + input_file, target_functions)
+
+-- 
+Best Regards
+Dylane Chen
 
