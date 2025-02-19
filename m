@@ -1,75 +1,77 @@
-Return-Path: <bpf+bounces-51916-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51917-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55051A3B36B
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 09:14:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B96EAA3B365
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 09:14:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB2733B55B8
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 08:13:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CA6716E359
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 08:14:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B9E21C5D57;
-	Wed, 19 Feb 2025 08:13:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48C3A1C5F01;
+	Wed, 19 Feb 2025 08:13:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dLR55ZkY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c62oO+Q/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 143A41C54AF;
-	Wed, 19 Feb 2025 08:13:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5C981C5D58;
+	Wed, 19 Feb 2025 08:13:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739952828; cv=none; b=FumLYbTOeLcD4z1JZUkcJefc7ZEd97lGIZGQdPvFxZhtoaSan0d85fk9/PoIELSbxgZtjjcVajfdb1b0VK4t+aPXIzEUzxJ1MyD2BFur2n3BKYPnNX9QW1RAkNXybL4dCLi+pWKWG2avew/aHqabtUT3fj+r3w5aKeWwUwhbNFY=
+	t=1739952833; cv=none; b=vDub+7AGl9t1xog9jbaOuPD8DSW4ZIwCOF4zg7hXL/DpieLn0xc9NAH0p1NQBDGzZYqokEPI09Zc/LBqWjX1CxAKJel9dgbZeNv/Lx0YRnw5qyBlUOa7kNU8ZFEr0PFEajR3hABfR6U+zGQumrBFXLuY7/omFtVfxIEXnsUVdr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739952828; c=relaxed/simple;
-	bh=xA6MLc7s1jo+X6j60s9LAgz7kITcrshc4vHKO5l9t2s=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PfNIhv2Ksro+aVnve+pByFKkcYtpC+zX0bmAC5VuoKPPSg3qU7J0cGJMNpSo8IosfxYW8x3mtRaRDQDsSF3iovbp0vsKeyhTD57GAR6zWCpHUwzx+9XEF9lzvUJ75YU6g/oQCQclteIQ98K0L/amBWt99LsobembU4DjJY2OiZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dLR55ZkY; arc=none smtp.client-ip=209.85.214.181
+	s=arc-20240116; t=1739952833; c=relaxed/simple;
+	bh=fWlLmS3POy16CVU84u60Xhbczhhj7lwkqtmeP/FRElw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=iIIsk+ZOvIbiV8d/MWAYJY/BHwzzZXfwo9cBmDgn9f9EFgTjuQKHbK2D2qqnOT8pDKG/OAFsAJctK5fXKMX6SttlZmiR+TSTXhVHNxEO9b1f2P6hYQK1hBARo5xYaiEh3gTDpV3wqLJDGz6okdZDEqrYs8P400XQMnE16tTC5Ws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c62oO+Q/; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-221057b6ac4so67111115ad.2;
-        Wed, 19 Feb 2025 00:13:42 -0800 (PST)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-221057b6ac4so67112195ad.2;
+        Wed, 19 Feb 2025 00:13:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739952822; x=1740557622; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4GY662FMjxQiqIyaysFN4OzKQ1VrBUdJMuXn5bU6EpE=;
-        b=dLR55ZkY4l9zuwAWp27QLeyK7Wk8I2mVzpKzNpbX8jHHIkxL87Vz6Rtmnnx5ewb7ED
-         PB0bw9P3oq24/orSQ0SoV0kkoQmSKkWO0tRhlmoZOpSDaXHVpQRnLNH00skNekaqAGU6
-         tptSKJMDHIJUQpMDUKBt1F0M/90yGgK0tjMoJ9eOLwPOR7HAenEsLgj5tlyWB9QkEOfW
-         /NuhMalofw3zMKK8mFXWvdIWOYEGCKHKuQcQUna31mb93QEajZFH/RyzwzdefkdzWocM
-         Nw+bxQFVzb95M/1W7TeYvjL+2Z354YIuPVpD/GVHBS/Sw88qMsnQTkSL5PnYHoY4LY/C
-         Ff1Q==
+        d=gmail.com; s=20230601; t=1739952828; x=1740557628; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z32zf1WbHd7c9g9e0xi0CDK3G/5o7TlQGTq3+JD+b9A=;
+        b=c62oO+Q/otr6VOeQU3OVwA8/h+jTK2v+zzxUkDqb9SbaOcOWIDIMG0fxsaU2s+EJbq
+         B027jPeKDxq+FUIdJrxTjI5+SAgCRQC3fqhJdKZmzBUtIqh1wBDDncnZO4AiPHhQsXlV
+         PC5FB3LyDhHsH0El+edzSNkalCjmDScBKyHukF7E6indgZbxD9SWLUYaPGzaA3htzpIS
+         DsEVqSHTMNVMLbhNNo6R4d50ejx+4aqQ+jzQnGTZjzRbZLC4foJAEYS57+RhrJWwl3DJ
+         WbsVsef2kthrNCKaBApqYuobpOqdiLYIMVGjaFjbeuBv/3VG0ZoVY/1+tP8pHs5yIODP
+         v66w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739952822; x=1740557622;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4GY662FMjxQiqIyaysFN4OzKQ1VrBUdJMuXn5bU6EpE=;
-        b=RFqE+oSQT7jBDecC7IGTQiivtelxe0pNPiB+FtMTBGQX07JsBzJSllWa54WraxmqrS
-         5xbUUanR9hALP8lqgsSBvmp2pxLsboNhb+ZQeDi2WbB0Ut5o1dQoMbK+/OwoJUO9rbnU
-         HY3ViT7Z/b76Q2VRnwOfc7H6QeiNq+KR5yaX0W2S+Np2AEQYtHJiFih6lF5ZTwJCSv/p
-         6EiqJaPPnaOH9dPutBczAjyhL5Cv547qQ2JmbXGfnfIkf8mVdt0c8LjX/9rsAxgjsSzD
-         I3b/NmPzq3lxHeIF4YhAWlethgx/o/UJWJMA0Rp621YnilL1N/PQdGfLgNmnxPqniBFd
-         RVoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWhi1Z6u/QPbzkqMw+JU3H0CdV455IFQTp0c22D8ZmvO46yPu1h9+CUVxbh32t2cyOFO6kgfQo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw/fx6CGVvf9jAtjzYaSe1GBSZy4mpe6mej3In3zKbcGCz9IxMx
-	7cyTuEgTojfP9cvNVU6f/w7ShviCckKpCX1a6S4Ayk9Sm1bM8RW/
-X-Gm-Gg: ASbGncsUYHoF5tC8tTIRW6zyR0Mden8uSuar/xQ2TNowIP0a6TOt4Dbi6kRb8iz3uWf
-	o4Gi9FBHsm+kpNQzeqGxGFDjrC29OZz9RxPa7IBDftHcilkGdxJ4NPUuB5RjNwdplFKpCnATuhV
-	xuvfMI3Cz1v/x/uzgZ3ZRFWvTLc9XYUvKvnOyIjy6JXltA0VPHWfC5fDWNeIBylHHvniSyRMp55
-	bPXdKjQYCXAX+iCEcFoQLH+sv8SPbudbM0vqBafg8e2VOsQAjXd4ZTowacC9gf/79OlcLoSL707
-	UZnwanxRnQnO83NmXND4Py3pI/OLHs7PRSidOPSfmx8pzmfBFc8NHjvHPbx8zTk=
-X-Google-Smtp-Source: AGHT+IGFRjSfhWMGnmLYZl+rsKQXMQPj8mKnww6w5yOfDWXtkIW3ckJsw2wWEuTwOnKgPPC3rhmUqA==
-X-Received: by 2002:a05:6a00:1707:b0:730:9801:d3e2 with SMTP id d2e1a72fcca58-732617999d0mr32341105b3a.8.1739952822121;
-        Wed, 19 Feb 2025 00:13:42 -0800 (PST)
+        d=1e100.net; s=20230601; t=1739952828; x=1740557628;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z32zf1WbHd7c9g9e0xi0CDK3G/5o7TlQGTq3+JD+b9A=;
+        b=iL7qoGHH84HBxNteAQDabTHHHEcfvOU4GdBgfU3bZbs3B4Da3gKsjyiwCuAeFUAw4o
+         qoKQtVqKOAwuNrm/cyqkz9uGh7DIl6XPBvG7QOKcJSeg8mPdPf0zqSMtrnnM9v0F+tYz
+         P9G/5zeNYeYJbSane9r4rXlYFP/txVe7AMjMpoYDSxE9EIdHoqEjEUl9pz07gdi7dJvi
+         /Utt9ECc7cPIQ1DvxHjeKdXOMM9G2QyVT2+8I+Ame5qJnVuDCRq9q93Ka3esdIITKGoW
+         Hd9LQPJTt6InqMOOmCNRLTGzSi3SGa/tn6VrbbqcErYzLy9D+wOhNChluKwH/MgTyvk9
+         Ui0w==
+X-Forwarded-Encrypted: i=1; AJvYcCXrvpeEFwPsHJTAWWgm/PPFT5onoI6dQulok3M5wfbLl1lWyJrQnCyg3RF9wvWmReZByGAS53M=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwE4mqzGiqQataam2LY0WPkKBAarxYHPxKZWhucfkOcybKUwSyD
+	ye17NKs5R1L7iXRIP3jaPSsI1gCOt3dSj0WN6GT1Vwa4tquqCDI2
+X-Gm-Gg: ASbGnctOr965wYG7zEXwfIu+skq/zGY1+8KLOOa4/xje/xzxRvKPDIt+KQ412HkJiJq
+	c+eq5YV30R2euXzsSr5GYvT4tPtjtJ42fCGHiaYLmLryDrn/ceOhWSQ2DKRXH4c37p0bgLH8yOz
+	/+JVb5L9kXCSGfjeaQSwb9np7KC07QNemSQF9P8673FaV4TPYTIsfji+11a1WTcRle65jpJmFyQ
+	6N9mdhBRR2IvsWygFZ7YX+3+YMsrnHVKRRy3SvZu9vZLoK8wUtIuT1rDFDRvil65Ud0xFGGCrQX
+	hRhYqhPsbggGmOroBQWECKGIPZVsPr7adeuNEwaY55N9nA4dduLGKu9VJ+nvHSE=
+X-Google-Smtp-Source: AGHT+IEY2GP2HtDxIDPMJSxFU8gnxqyUzvjLGAxVpq54gu5qQqTU7Y2HKb3u8CqyT02n+W7Xx65V8Q==
+X-Received: by 2002:a05:6a00:1796:b0:725:df1a:288 with SMTP id d2e1a72fcca58-73261922bbbmr29714610b3a.24.1739952827970;
+        Wed, 19 Feb 2025 00:13:47 -0800 (PST)
 Received: from KERNELXING-MB0.tencent.com ([43.132.141.25])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-732642d908esm7774746b3a.159.2025.02.19.00.13.36
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-732642d908esm7774746b3a.159.2025.02.19.00.13.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Feb 2025 00:13:41 -0800 (PST)
+        Wed, 19 Feb 2025 00:13:47 -0800 (PST)
 From: Jason Xing <kerneljasonxing@gmail.com>
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -94,10 +96,12 @@ To: davem@davemloft.net,
 Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	Jason Xing <kerneljasonxing@gmail.com>
-Subject: [PATCH bpf-next v3 0/2] bpf: support setting max RTO for bpf_setsockopt
-Date: Wed, 19 Feb 2025 16:13:30 +0800
-Message-Id: <20250219081333.56378-1-kerneljasonxing@gmail.com>
+Subject: [PATCH bpf-next v3 1/2] bpf: support TCP_RTO_MAX_MS for bpf_setsockopt
+Date: Wed, 19 Feb 2025 16:13:31 +0800
+Message-Id: <20250219081333.56378-2-kerneljasonxing@gmail.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20250219081333.56378-1-kerneljasonxing@gmail.com>
+References: <20250219081333.56378-1-kerneljasonxing@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -106,18 +110,34 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Support max RTO set by BPF program calling bpf_setsockopt().
-Add corresponding selftests.
+Some applications don't want to wait for too long because the
+time of retransmission increases exponentially and can reach more
+than 10 seconds, for example. Eric implements the core logic
+on supporting rto max feature in the stack previously. Based on that,
+we can support it for BPF use.
 
-Jason Xing (2):
-  bpf: support TCP_RTO_MAX_MS for bpf_setsockopt
-  selftests/bpf: add rto max for bpf_setsockopt test
+This patch reuses the same logic of TCP_RTO_MAX_MS in do_tcp_setsockopt()
+and do_tcp_getsockopt(). BPF program can call bpf_{set/get}sockopt()
+to set/get the maximum value of RTO.
 
- net/core/filter.c                                   | 1 +
- tools/testing/selftests/bpf/progs/bpf_tracing_net.h | 1 +
- tools/testing/selftests/bpf/progs/setget_sockopt.c  | 1 +
- 3 files changed, 3 insertions(+)
+Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
+---
+ net/core/filter.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 2ec162dd83c4..ffec7b4357f9 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -5382,6 +5382,7 @@ static int sol_tcp_sockopt(struct sock *sk, int optname,
+ 	case TCP_USER_TIMEOUT:
+ 	case TCP_NOTSENT_LOWAT:
+ 	case TCP_SAVE_SYN:
++	case TCP_RTO_MAX_MS:
+ 		if (*optlen != sizeof(int))
+ 			return -EINVAL;
+ 		break;
 -- 
 2.43.5
 
