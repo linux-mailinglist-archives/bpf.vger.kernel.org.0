@@ -1,193 +1,165 @@
-Return-Path: <bpf+bounces-51974-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51975-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A266BA3C6F8
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 19:04:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DACFA3C714
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 19:10:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52D681895623
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 18:03:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D24EC16B475
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 18:10:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC745214A83;
-	Wed, 19 Feb 2025 18:03:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2B19214814;
+	Wed, 19 Feb 2025 18:10:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="T+le5hsb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VJ9QfjrM"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f65.google.com (mail-ed1-f65.google.com [209.85.208.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC6D0214A71
-	for <bpf@vger.kernel.org>; Wed, 19 Feb 2025 18:03:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD9BB2147E8
+	for <bpf@vger.kernel.org>; Wed, 19 Feb 2025 18:10:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739988198; cv=none; b=kmN4ltNiToKVuaeU1Mjpv1TkMy9HtodT8MjS0Sl05t9up57p5wqRQz1z5YU/x7d5wXr3I0gpY1AQuQQUyBv7cXoNOgUSrGZzEwc0Q85+Z24HwYFUh2wyw3DfHqYzVnPIvA9oX5SMfjkUJtop/xsQRiHg542BZFSCzQshz7KCoto=
+	t=1739988629; cv=none; b=Hghy2MK5T6yD0yT0UgZU+Y4tif69105hd2Ng3MxQnNBVr2FC4N/e5YyRnDTGgRuZZ/bgtzNf7+ZhUtQk+MQkDZdW42yU3rJnXCpdljI1t8M8mTDQ7JbAvLMjjEZahaay3eqv2zbsvmDNqbG6M5TGCd/JeJwpcppmEy/fVcS+HZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739988198; c=relaxed/simple;
-	bh=xAclfaeUyhpDx3nrIPKGTVcNFvUJht6e7NL+FkN71CY=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=affnqBBNKLY1RVoD54A4X+qT0UyBR/dmYApv0LUTXFEOrhE06duVXOcz5sVAUkq2B/KXPVpwSh3wJ6LHp2Y4uJuImzDaW/++XhE9J7B8SpcV5sdik+o+DQC4ovt6ijTjbNfxSnguLRjAPtyLgqurs/0I9YtHmBoHWHrV1y1Bd5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=T+le5hsb; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1739988629; c=relaxed/simple;
+	bh=5BtvbKsKHt9b0Y39tIlyW9DtXNDFvWAipRyOWiY59kU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZaMpFwVolYKqTGi+ZxkrVy8X42InsLsszlADMPrx63P8I3/jMYmdDRHOxAnvG5nTGq+Bo8eJvhcMOafKcIYYonbxrRy87qQO6maV3j5szA74wkKXYH8dpCLq7wMf+GoeNkcD3NgJuXnf69k2ESb2z1mJv//Vt2x9YtzbACOmJdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VJ9QfjrM; arc=none smtp.client-ip=209.85.208.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f65.google.com with SMTP id 4fb4d7f45d1cf-5e095d47a25so43856a12.0
+        for <bpf@vger.kernel.org>; Wed, 19 Feb 2025 10:10:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739988626; x=1740593426; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8sLnlVjlL8HlJnQjIxe17VDwzm64zLYy+/bDeq7vL2Y=;
+        b=VJ9QfjrMlbbpTt9e9ruFZzSmoi5iN6JIC8Zi3EFB4vFUjOEbEWFb6lAsOrV5Yimhuo
+         MtHkvr1KaFs/yj9RHQGZ8NdBR/eKB9Jb9ZBIT7ccVimMJF5E+Yu4bANeLF1W3zbRQXuN
+         sE8RGpQ0sEz4sZPyJNiN3yS+Hksv08E1d6v1NZoJRkwj6fe3FxPflzLOS1xGbVBQ4DtM
+         Ryvm10LWB1NkIhmd/OOt/7ewF34+GBr53dumnABKqJDWhGmeIxlGCDMsHiw0zMG9+Zop
+         brAYtQMRI8uQ6tj5Mxrv2Y2wEBxGGMIvft6YrJ7uIrn1d2NR0KOCjt4nWmbB2H2Dy/T0
+         8mMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739988626; x=1740593426;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8sLnlVjlL8HlJnQjIxe17VDwzm64zLYy+/bDeq7vL2Y=;
+        b=RDE5WvzzAblsV3gagtgrLRUn5JR79R4S5jpk0NUVpN5wRzR9fPWJNdOMgWasIoRvt/
+         jlSjynLf/vTYrd5FBA7nJxVpAZYNO+sExM1Ww6U16t2zmleGT+i1dBH0GmXaxDutwQNK
+         HFIg5hfQF4Td5qU14XVvZPgyFqiF23GynmPKFV5RgQ88uTRWGIuhgtiFHLJdsU1mERs5
+         e5EknSG+VGsX1Sh4uwloICYxCpRHq6SYPusHyOZC+FA9pa0nl4oBdl+Dk7UT6tEAqX/Q
+         qowZUSP7M+iCcSIu7Mcp/CxrL6+/mnvbhDcn18u1lQwO/d8sOSF0VEqfEqEygeDTnmyf
+         vd4A==
+X-Gm-Message-State: AOJu0YwT1eUfgIzJUE+y1N+8blXY8HWbEEe7JCB1h39R90QIUd6+PiUW
+	qaTMxohEGKy7zKRQIfZZFS+445ysrlF8OsI6Quap5dsZLalwAXYAjdXrEbKeCAXYHEZS0XxgetY
+	GCnlvzwPFTlSsRilw8PlNUWXwLelB2SSsKtI=
+X-Gm-Gg: ASbGnctKFSs0IHXRj1Iojj6ULjCqtIVJRFMr3C9dPhUlqG6X5raSsP2n/+z/VRg8BLe
+	xWrgR0l/aksjahg5Dw3g4F/hF28OF8RU3t3dgbNwNUEEQB5w9yTGBHDh/FE6iIV6wjAcJXJFLtB
+	b5PO2OQ4u3GS1/2u+RYA==
+X-Google-Smtp-Source: AGHT+IEL4xwiX+k5jCIAGbXA/MxZW+b05uXGrQl5zyiDlelGvks7L0d6wU4uAdxX74Krb6STv+5CQY3y7Rri9/fkoK8=
+X-Received: by 2002:a17:906:315b:b0:ab6:d47a:9b20 with SMTP id
+ a640c23a62f3a-abb70c310a8mr1545551866b.31.1739988625776; Wed, 19 Feb 2025
+ 10:10:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1739988182;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P9P36S9nIyxnWpqmgfC5N+Lk6itq2kDM7Sl63r4jGrg=;
-	b=T+le5hsbbVHUEY9E0EK6UYe4dcLkqO/n7N1Gea4cMfDqdiniH/RGeT4Y5RTHFtOUS/g0ZT
-	6RtnIabCOjy1EL4RbOcprRiNmfHgjne6s8bbChAcVD/bQTf5eUStz4wtNnoKuz8RugQ8mI
-	N7P86WheZEhZx0rXmUU9iuTUK6g/10k=
-Date: Wed, 19 Feb 2025 18:03:01 +0000
-Content-Type: text/plain; charset="utf-8"
+References: <20250219125117.1956939-1-memxor@gmail.com> <20250219125117.1956939-2-memxor@gmail.com>
+ <CAADnVQ+TBG+yAxtY1Q5D6HnhbvgusUVrzyRm7-8oF7wYw+Nqfw@mail.gmail.com>
+In-Reply-To: <CAADnVQ+TBG+yAxtY1Q5D6HnhbvgusUVrzyRm7-8oF7wYw+Nqfw@mail.gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Wed, 19 Feb 2025 19:09:49 +0100
+X-Gm-Features: AWEUYZkUyZCKjYE_pssAmDAMmwfdBSkA7pvAIwkEbvv0u5O26f54miZEBpWs3Tg
+Message-ID: <CAP01T74tZudfS8huoz=sP4UkEgs5ipkz9Qjf=6XNVzJvGOFLgQ@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next v1 1/2] bpf: Explore PTR_TO_STACK as R0 for bpf_dynptr_slice_rdwr
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, kkd@meta.com, 
+	Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Ihor Solodrai" <ihor.solodrai@linux.dev>
-Message-ID: <4189ba95819b60fea70eb1771c6c50d0a409d53d@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH v2 dwarves 2/4] btf_encoder: emit type tags for bpf_arena
- pointers
-To: "Eduard Zingerman" <eddyz87@gmail.com>, dwarves@vger.kernel.org,
- bpf@vger.kernel.org
-Cc: acme@kernel.org, alan.maguire@oracle.com, ast@kernel.org,
- andrii@kernel.org, mykolal@fb.com, kernel-team@meta.com
-In-Reply-To: <a1ab7ec2ca121105065e84ad0b7b0f58cf1f6fe3.camel@gmail.com>
-References: <20250212201552.1431219-1-ihor.solodrai@linux.dev>
- <20250212201552.1431219-3-ihor.solodrai@linux.dev>
- <8d222fd0f26fdce0193047074e660abab19ffc32.camel@gmail.com>
- <a1ab7ec2ca121105065e84ad0b7b0f58cf1f6fe3.camel@gmail.com>
-X-Migadu-Flow: FLOW_OUT
 
-On 2/18/25 9:45 PM, Eduard Zingerman wrote:
-> On Tue, 2025-02-18 at 20:36 -0800, Eduard Zingerman wrote:
->> On Wed, 2025-02-12 at 12:15 -0800, Ihor Solodrai wrote:
->>
->> [...]
->>
->>> diff --git a/btf_encoder.c b/btf_encoder.c
->>> index 965e8f0..3cec106 100644
->>> --- a/btf_encoder.c
->>> +++ b/btf_encoder.c
->>
->> [...]
->>
->>> +static int btf__tag_bpf_arena_ptr(struct btf *btf, int ptr_id)
->>> +{
->>> +	const struct btf_type *ptr;
->>> +	int tagged_type_id;
->>> +
->>> +	ptr =3D btf__type_by_id(btf, ptr_id);
->>> +	if (!btf_is_ptr(ptr))
->>> +		return -EINVAL;
->>> +
->>> +	tagged_type_id =3D btf__add_type_attr(btf, BPF_ARENA_ATTR, ptr->typ=
-e);
->>> +	if (tagged_type_id < 0)
->>> +		return tagged_type_id;
->>> +
->>> +	return btf__add_ptr(btf, tagged_type_id);
->>> +}
->>
->> I might be confused, but this is a bit strange.
->> The type constructed here is: ptr -> type_tag -> t.
->> However, address_space is an attribute of a pointer, not a pointed typ=
-e.
->> I think that correct sequence should be: type_tag -> ptr -> t.
->> This would make libbpf emit C declaration as follows:
->>
->>   void * __attribute__((address_space(1))) ptr;
->>
->> Instead of current:
->>
->>   void __attribute__((address_space(1))) * ptr;
-
-I was also confused about this.
-
-The goal I had in mind is reproducing bpf_arena_* function
-declarations, which are:
-
-    void __arena* bpf_arena_alloc_pages(void *map, void __arena *addr, __=
-u32 page_cnt,
-    				    int node_id, __u64 flags) __ksym __weak;
-    void bpf_arena_free_pages(void *map, void __arena *ptr, __u32 page_cn=
-t) __ksym __weak;
-
-AFAIU this is by design. From BTF documentation[1]:
-
-    Currently, BTF_KIND_TYPE_TAG is only emitted for pointer types. It ha=
-s
-    the following btf type chain:
-
-    ptr -> [type_tag]*
-        -> [const | volatile | restrict | typedef]*
-        -> base_type
-
-    Basically, a pointer type points to zero or more type_tag, then zero
-    or more const/volatile/restrict/typedef and finally the base type. Th=
-e
-    base type is one of int, ptr, array, struct, union, enum, func_proto
-    and float types.
-
-So yeah, unintuitively a tagged pointer in BTF is actually a pointer
-to a tagged type. My guess is, it is so because of how C compilers
-interpret type attributes, as evident by an example you've tested.
-
-[1] https://docs.kernel.org/bpf/btf.html#btf-kind-type-tag
-
->>
->> clang generates identical IR for both declarations:
->>
->>   @ptr =3D dso_local global ptr addrspace(1) null, align 8
->>
->> Thus, imo, this function should be simplified as below:
->>
->>   static int btf__tag_bpf_arena_ptr(struct btf *btf, int ptr_id)
->>   {
->> 	const struct btf_type *ptr;
->>
->> 	ptr =3D btf__type_by_id(btf, ptr_id);
->> 	if (!btf_is_ptr(ptr))
->> 		return -EINVAL;
->>
->> 	return btf__add_type_attr(btf, BPF_ARENA_ATTR, ptr_id);
->>   }
->>
->> [...]
->>
+On Wed, 19 Feb 2025 at 18:41, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Ok, this comment can be ignored.
-> The following C code:
+> On Wed, Feb 19, 2025 at 4:51=E2=80=AFAM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> >
+> > For the bpf_dynptr_slice_rdwr kfunc, the verifier may return a pointer
+> > to the underlying packet (if the requested slice is linear), or copy ou=
+t
+> > the data to the buffer passed into the kfunc. The verifier performs
+> > symbolic execution assuming the returned value is a PTR_TO_MEM of a
+> > certain size (passed into the kfunc), and ensures reads and writes are
+> > within bounds.
 >
-> int foo(void * __attribute__((address_space(1))) ptr) {
->   return ptr !=3D 0;
-> }
+> sounds like
+> check_kfunc_mem_size_reg() -> check_mem_size_reg() ->
+> check_helper_mem_access()
+>    case PTR_TO_STACK:
+>       check_stack_range_initialized()
+>          clobber =3D true
+>              if (clobber) {
+>                   __mark_reg_unknown(env, &state->stack[spi].spilled_ptr)=
+;
 >
-> does not compile, with the following error reported:
+> is somehow broken?
 >
-> test3.c:1:49: error: parameter may not be qualified with an address spa=
-ce
->     1 | int foo(void *__attribute__((address_space(1))) ptr) {
->       |
+> ohh. It might be:
+> || !is_kfunc_arg_optional(meta->btf, buff_arg)
 >
-> While the following works:
->
-> int foo(void __attribute__((address_space(1))) *ptr) {
->   return ptr !=3D 0;
-> }
->
-> With the following IR generated:
->
-> define dso_local i32 @foo(ptr addrspace(1) noundef %0) #0 { ... }
->
-> Strange.
->
+> This bit is wrong then.
+> When arg is not-null check_kfunc_mem_size_reg() should be called.
+> The PTR_TO_STACK abuse is a small subset of issues
+> if check_kfunc_mem_size_reg() is indeed not called.
+
+The condition looks ok to me.
+
+The condition to do check_mem_size_reg is !null || !opt.
+So when it's null, and it's opt, it will be skipped.
+When it's null, and it's not opt, the check will happen.
+When arg is not-null, the said function is called, opt does not matter then=
+.
+So the stack slots are marked misc.
+
+In our case we're not passing a NULL pointer in the selftest.
+
+The problem occurs once we spill to that slot _after_ the call, and
+then do a write through returned mem pointer.
+
+The final few lines from the selftest do the dirty thing, where r0 is
+aliasing fp-8, and r1 =3D 0.
+
++ *(u64 *)(r10 - 8) =3D r8; \
++ *(u64 *)(r0 + 0) =3D r1; \
++ r8 =3D *(u64 *)(r10 - 8); \
++ r0 =3D *(u64 *)(r8 + 0); \
+
+The write through r0 must re-mark the stack, but the verifier doesn't
+know it's pointing to the stack.
+push_stack was the conceptually cleaner/simpler fix, but it apparently
+isn't good enough.
+
+Remarking the stack on write to PTR_TO_MEM, or invalidating PTR_TO_MEM
+when r8 is spilled to fp-8 first time after the call are two options.
+Both have some concerns (first, the misaligned stack access is not
+caught, second PTR_TO_MEM may outlive stack frame).
+
+I don't recall if there was a hardware/JIT specific reason to care
+about stack access alignment or not (on some architectures), but
+otherwise we can over approximately mark at 8-byte granularity for any
+slot(s) that overlap with the buffer to cover such a case. The second
+problem is slightly trickier, which makes me lean towards invalidating
+returned PTR_TO_MEM when stack slot is overwritten or frame is
+destroyed.
 
