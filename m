@@ -1,166 +1,125 @@
-Return-Path: <bpf+bounces-51900-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51901-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B8A2A3B008
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 04:26:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 622F6A3B01E
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 04:41:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45FC61896426
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 03:26:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F49E3A9330
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 03:41:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 383BF19D8A9;
-	Wed, 19 Feb 2025 03:25:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4B121A8F9E;
+	Wed, 19 Feb 2025 03:41:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ImRq4q1K"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PmRBnCLp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57DDA17BA5;
-	Wed, 19 Feb 2025 03:25:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 900278F7D;
+	Wed, 19 Feb 2025 03:41:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739935555; cv=none; b=ak+Yx6pfinA3hZ8f2CAIBzZaVjDQnoIM1EMTMhUvD1FhxCPqiq5gXPofDjIc3ygo7KIqSroxrew8m/7rCTM7agaTOylokntyg7z0plhWkqj2GnTrnxK1p6zue3xaI8GO7/aqzkd/eWPRBVrcofrpkEXeYjE+6UEgWeSZDgyfyTE=
+	t=1739936471; cv=none; b=Pz2LIGJfZjg1OYdFyhYvCaBbiebsfeONkxqbDI763Vq6By5GWUKz4YAui0aGJ9IsjP3l9wi0HpFTvcf9HgufYkcwtOfu76P6sKlKNaqZhoSLAwYxCefsj4GLl/5TcPcBawYQvcNm8FBMu/UjF2CvDekTpvxbE8tPpA2hp+Q/AIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739935555; c=relaxed/simple;
-	bh=MaaRbMsd/SMoOsb8lghfhLA2YiRhcJNBHAyoYnOWDr0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=N2/cuek1gUN1tzDrFxtolL75x9jIEOtnIGjkgtmP90GBz79MtJvS8PvFSGZlX4+76xUP5COftO3GHmVyFt6K5y5kRofag3wUwV50xn/zdik9ZL5wN9XFgRo2kBtoV1zRt/+qSEB/w222QaaCxEOiZCv9UruOsQih0aThtcLOvF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ImRq4q1K; arc=none smtp.client-ip=209.85.214.179
+	s=arc-20240116; t=1739936471; c=relaxed/simple;
+	bh=OQJsLAaWRSQtRgT91ofNhEcQyVmljU0Xl6XdqGkLg4M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=E1nVLCmZT9zBOtI19cwjKr1/CUICILofh7wlXU3fr8gOMys4DIlXYm5H3NCqm3PYwUEocE6+sroNdmQ9xQ5/gVlnOWvGYARihWABmcDEaWVOILV2D6BElrh0Guf7gm8fqeish9ehVKdg463IIoLqG/ObAii2TP4gcknFJ77Nivs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PmRBnCLp; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-220ca204d04so85512515ad.0;
-        Tue, 18 Feb 2025 19:25:54 -0800 (PST)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-43937cf2131so41722265e9.2;
+        Tue, 18 Feb 2025 19:41:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739935553; x=1740540353; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VsHh2UfYIF5c9plwhNmEbGRU56oyLElJLZiPhtm6R4A=;
-        b=ImRq4q1KLye1v2T6R7iCplBDN/V+qrTZ5iHTWtCf+4xwjy1K/TnWBsFZccAPLsBNI0
-         x7mNVJ1VdqtpVxqQqrR4SfWk6qrmJ4A9zirWu9+3+uVmH+FQGdqtypKD1mXAvwaH81+o
-         UX1rLXTOfHwPt2wy8kmP2h2hmON8sInE/n3Sa4cvCD9HX/YtfkxwzYnhMUz0N5wf5qvu
-         zViq5/2onk+hoSACRabABP/Rz6h3dS+oJT7EDfv/gefPmbLs7DrgNNDJY7hsqwY4sd6U
-         9/MJBfRF/seECjrx65Jitr3IxC3G73ynWVnajqIwQLQieIta6yQ666ut9LdhXXy7rY4W
-         Yh4g==
+        d=gmail.com; s=20230601; t=1739936468; x=1740541268; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OQJsLAaWRSQtRgT91ofNhEcQyVmljU0Xl6XdqGkLg4M=;
+        b=PmRBnCLphKCuLPLy+Q8mfsRu9Q7W5+EJSwebfGZTcaoppvyrIJrl0IU8A86Ew7Jlat
+         6pJsRhbC3hkALrLLrAKnMJZcNkyv5stq9kJ3hqwWYgcvdX7S0RpwV1X+TQ/D2jrlN+PV
+         QdsMrAYxKbPu6ZfixXIpHEVK0KX4SfK7ZbQofv2Cov2Q+3Stmkh5BVwybPQ6pyA/xeby
+         mDngfb5Gcm04Aa6pOtQNsVXeH25tmDspiF9A3uUkfZx9hN1AO/0A4nzsoXTwAKtcOIFy
+         gVhDfxvzPKXD/0K+IZAn5r/HAoERGMbXkuScRXgoIdvrCZKFu8w32aoVobFyC93vx6jR
+         oQpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739935553; x=1740540353;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VsHh2UfYIF5c9plwhNmEbGRU56oyLElJLZiPhtm6R4A=;
-        b=HFvfd3XoDDZX40dHMKJ76/kxqVWocJGRyb6GDz4SYfp5RfN4wR/AZA89xnlw6C5Mjn
-         XGlV6f3o9OZi6V7FbmA2mj9iyYaLOvYcPI/ULWIyFsWOVp+u1edQCVpYE7DI8t4UjSD0
-         V9y8RMR1dKJlVrIjbK6GLo4F/38UyT3YYJRrAbrx5CoM7zrkt5ee/QT0kEbYseyCKzV5
-         Yq6Z3oNyhzV0iWB8RpiqLq3FTsLEBhzl6z5wUNwQgi+PoCRgYQYe0FhAWr6XBMIR4juH
-         zciNuw0mQfTE+PeAwSrnQXhJAuRCGmeWi3fdweFukGfGzG7XcSDcKeOJkvRKc6txzQVC
-         Oj+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWgCb1p4ydcz3lAa8jvc3GEKxNSf+gAs2I16SJqqepfe9a008BuAwGDLxv0YS2FGWmi7e8=@vger.kernel.org, AJvYcCX1H5sS1B5cPYmPC2lgUyanKZBclCg+Z6ezHg0s2dtFrrSy1l18r2DIU2nmVqw75YS34Q9UMgyXMw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxEHDfLzPWN8LyrNmcr6E9crIlyCibNUgHKdqOFKL5BqE6z/0zs
-	/CDMeFIWHDAKssThOVw8f/rm89MjmMn5Jr9UoFvulX7AepTKFdDS
-X-Gm-Gg: ASbGncvBk5ykmNhLWZJWJd8W7oCtIy8/GkqXgMi35Ucs+QsZcNAN3a4F3AQq8Gvl+T2
-	FDgBJm9O2cOJ+Rl+IvIqYYJCX4UvZEfAAw1yDkFMGyn+BE8SBiAYjUzKEGMiypbeJlv56C+0AU4
-	XsNFP/EZckWxffLWRH7EOKZQ5Yh+uRYMfQFR6klKkNRh6xC4AIKFSqSdHJPYhIckELvGrQFqLzK
-	xmFDggXs2t8J9i26uAg+L9bhlz2oiFQ8AE0z2DbhbgmTABzhby9Bu4Lo6I/8MhDgj01YixtTa9x
-	JwYo45FF+07g
-X-Google-Smtp-Source: AGHT+IHF6Y+irsLKHTt7tog2nw7DSLlfODnoCNYpD5zKT13flMlg9d4Gprni6OBJCAmP8kcWJDMLgQ==
-X-Received: by 2002:a17:903:32c5:b0:21b:d105:26b9 with SMTP id d9443c01a7336-22170968905mr34171455ad.16.1739935553522;
-        Tue, 18 Feb 2025 19:25:53 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-220d55866f9sm94936535ad.230.2025.02.18.19.25.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Feb 2025 19:25:53 -0800 (PST)
-Message-ID: <3717ee0f4ce384311ac551825a455ada6479f16e.camel@gmail.com>
-Subject: Re: [PATCH v2 dwarves 1/4] btf_encoder: refactor
- btf_encoder__tag_kfuncs()
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Ihor Solodrai <ihor.solodrai@linux.dev>, dwarves@vger.kernel.org, 
-	bpf@vger.kernel.org
-Cc: acme@kernel.org, alan.maguire@oracle.com, ast@kernel.org,
- andrii@kernel.org, 	mykolal@fb.com, kernel-team@meta.com
-Date: Tue, 18 Feb 2025 19:25:48 -0800
-In-Reply-To: <20250212201552.1431219-2-ihor.solodrai@linux.dev>
-References: <20250212201552.1431219-1-ihor.solodrai@linux.dev>
-	 <20250212201552.1431219-2-ihor.solodrai@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+        d=1e100.net; s=20230601; t=1739936468; x=1740541268;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OQJsLAaWRSQtRgT91ofNhEcQyVmljU0Xl6XdqGkLg4M=;
+        b=CeoHVBrFcgWYQGdthEyCyi/f+zLIULl/zZBBiD1a1Wwq78ynz8qT3hxdzgU8tHzdMw
+         03wr1yCWGR+iZd/Kb6dLexNHomjdL7dZyahD50/NaOMXCGnVHll/qwq40FNNv4MKgcSp
+         VYZdWlDvnoC8Hk3913M9KMoqgprC5JfEbKePfUkUrF/6tHAbzM8yAPabbSAe3alTKTkU
+         7XxnCT67pxWvxr8cCcQ+GU3jmQ1WoDbeKRa24ZBfqDcYp1P+pbuUpV8PIuRlk6FcoBuf
+         5A1UvPBWZmkJXQ2Dtrocxj0LOjYrEobQYRkv2gi0JShjGg/naxpVW5coGvlfJj1E62UL
+         wGzA==
+X-Forwarded-Encrypted: i=1; AJvYcCVKWGkAQtCnkGHcK6wLZtRFaGYKwqhAwl27RLLo8drG2LgHIUcoKJOBCFBF0OPNEq3efFQ06NCWDSwQZrot@vger.kernel.org, AJvYcCWayh5HpfXMNiS6bxlrlhCcLoXgx2tpl/VbjxGzhs8iq6lEyVDjGjVw8JGzqyMsWLp+FcBftvxOp9QDMFBM17SE@vger.kernel.org, AJvYcCXiOT4CKWpWLpQf7YJeQSGGq6po+gy6B62TdLJSqxugRwYRZk2eAoDpBnuI/726ydsBgK4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzJv+2uX1eYZO/N34mRTjbIMHxFvV/Ydp1xwG8bG3go6YHlTzVO
+	txxLsPsY7hnVTofFU/Jw0U4PSP+D+N2Nf/lHW0Mrm7GqycmBVxyc20hvD+jfkMngRIxGRwNnFRY
+	mqgeh3vOE4v9ARMP/p+GcSgMapM8=
+X-Gm-Gg: ASbGnctbH1LbnbnkTnkPsqP/xZ6f0Kt+xmhwuj+a9YoKdILt4xLvqXEuaJysPZJJRxp
+	cSO8jaPi8dWewRwxWCCv+mVz469xnUaXikqfFEiq5aYGrJtsDrkf7LeyU/3F+vXoOCF/hqUirPP
+	aHtGhy4xLrTQ1KkQjOv+Ca0WD8KqQe
+X-Google-Smtp-Source: AGHT+IEjXtc7cvnTaJFVDADpUCj/f/YPhCe4KyJbf7Wv4CggSX4y1UdOUGuLuRP3XxXmvQzXJMI+K7kra4Ey8mX0t7Y=
+X-Received: by 2002:a05:600c:3b0e:b0:439:987c:2309 with SMTP id
+ 5b1f17b1804b1-439987c256dmr27353475e9.27.1739936467561; Tue, 18 Feb 2025
+ 19:41:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250217-tc_links-v1-0-27f7965e3dcd@bootlin.com> <Z7T6J4BpIrBcsWPM@mini-arch>
+In-Reply-To: <Z7T6J4BpIrBcsWPM@mini-arch>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 18 Feb 2025 19:40:56 -0800
+X-Gm-Features: AWEUYZliZx47mbsjIzoFIXea8OImVxQ_IY8T0Kgs_lM79Babu5crmU41bYtpQeM
+Message-ID: <CAADnVQLktLYJ5_jjve0A=oOWZFRvs3NGfuQUXwpCmw6q+U_Ltw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/3] selftests/bpf: tc_links/tc_opts: Unserialize tests
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Alexis Lothore <alexis.lothore@bootlin.com>, 
+	bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2025-02-12 at 12:15 -0800, Ihor Solodrai wrote:
-> btf_encoder__tag_kfuncs() is a post-processing step of BTF encoding,
-> executed right before BTF is deduped and dumped to the output.
->=20
-> Rewrite btf_encoder__tag_kfuncs() into btf_encoder__collect_kfuncs().
-> Now it only reads the .BTF_ids section of the ELF, collecting kfunc
-> information and adding it to corresponding elf_function structs. It is
-> executed in btf_encoder__new() if tag_kfuncs flag is set. This way
-> kfunc information is available within entire lifetime of the
-> btf_encoder.
->=20
-> BTF decl tags for kfuncs are added immediately after the function is
-> added to BTF in btf_encoder__add_func(). It's done by btf__tag_kfunc()
-> factored out from the btf_encoder__tag_kfunc().
->=20
-> As a result btf_encoder__tag_kfuncs(), its subroutines and struct
+On Tue, Feb 18, 2025 at 1:22=E2=80=AFPM Stanislav Fomichev <stfomichev@gmai=
+l.com> wrote:
+>
+> On 02/17, Bastien Curutchet (eBPF Foundation) wrote:
+> > Hi all,
+> >
+> > Both tc_links.c and tc_opts.c do their tests on the loopback interface.
+> > It prevents from parallelizing their executions.
+> >
+> > Use namespaces and the new append_tid() helper to allow this
+> > parallelization.
+> >
+> > Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@b=
+ootlin.com>
+>
+> Acked-by: Stanislav Fomichev <sdf@fomichev.me>
+>
+> LGTM, thank you! Optionally, if there is more to convert, we can think
+> about moving create_and_open_tid_ns to the test_progs itself. For example=
+,
+> if the test name starts with ns_, test_progs can probably do the
+> create_and_open_tid_ns/netns_free part?
 
-Nit: btf_encoder__collect_btf_funcs() is the one removed,
-     btf_encoder__tag_kfuncs is renamed.
+That's a good idea.
+Let's do it now.
+Otherwise most of the patch 2 will be reverted when it's introduced.
 
-> btf_func type are deleted, as they are no longer necessary.
->=20
-> Link: https://lore.kernel.org/dwarves/3782640a577e6945c86d6330bc8a05018a1=
-e5c52.camel@gmail.com/
->=20
-> Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
-> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
-> ---
-
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-
-[...]
-
->  btf_encoder.c | 192 +++++++++++++++-----------------------------------
->  1 file changed, 57 insertions(+), 135 deletions(-)
->=20
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 511c1ea..965e8f0 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-
-[...]
-
-> @@ -1199,6 +1230,16 @@ static int32_t btf_encoder__add_func(struct btf_en=
-coder *encoder,
->  		       name, btf_fnproto_id < 0 ? "proto" : "func");
->  		return -1;
->  	}
-> +
-> +	if (func->kfunc && encoder->tag_kfuncs && !encoder->skip_encoding_decl_=
-tag) {
-> +		err =3D btf__tag_kfunc(encoder->btf, func, btf_fn_id);
-> +		if (err < 0) {
-> +			fprintf(stderr, "%s: failed to tag kfunc '%s': %d\n",
-> +				__func__, func->name, err);
-
-Nit: btf__tag_kfunc() already prints to stderr in case of an error,
-     this printf is unnecessary.
-
-> +			return err;
-> +		}
-> +	}
-> +
->  	if (state->nr_annots =3D=3D 0)
->  		return 0;
-> =20
-
-[...]
-
+pw-bot: cr
 
