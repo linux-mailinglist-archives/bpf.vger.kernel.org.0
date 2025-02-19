@@ -1,523 +1,247 @@
-Return-Path: <bpf+bounces-51969-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51970-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB326A3C4F1
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 17:27:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08384A3C520
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 17:35:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 515753B5244
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 16:24:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B033189C01C
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 16:33:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 557BB1FDE11;
-	Wed, 19 Feb 2025 16:24:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDD371F8F09;
+	Wed, 19 Feb 2025 16:33:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cCxX2mpy"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="N6kWGOqv"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 888651F417A
-	for <bpf@vger.kernel.org>; Wed, 19 Feb 2025 16:24:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739982294; cv=none; b=PwtRF14V2+HaEcI0AI/4Smub7dnC8rhvIVrl8QTzc1VI8VagQhZhbkNAQIjp3X9UY9AAJit88+BIqiy6NkhJhmp0yawzEIN01ZUX3g2n74Ezgx6HmsNag4MHW1nnP6fgP32kRzgjgMATHqd31XAPzld6ztZ4V7eD6aNNUeg7Xy4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739982294; c=relaxed/simple;
-	bh=WcM1bT6GVc4YZyUFGJk03A9kom2jFjymXkY6It/76Ow=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=adPAngSAy5acbHwQCPSISyiVGayIA1+vNNx1AXnsHYiI5azXpFV9xbQ+Spsj5m/ZcqfSrwQTAOqaao8Fi2P6QW0NxQI/C24ZmygJcyzYG+4NORq2SHhsbik1Fn6eYnVSNIsdam/7zBwo5mNUf5YGSIR+Bi1pyKSt6XMf0QFzr6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cCxX2mpy; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1739982291;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dak24GPrRSQ3RI7wsvf9bZbacjZtLKK09oCw1Vvw57A=;
-	b=cCxX2mpyfFLr6drZYee/A+v713KPdPcAnjNXInQtsQ7kuU5jKUM8h3CMoniPilKAaeQpeL
-	S0oMWLgobBP3pUEBEdB5OTJ+a1U8c1hjKN6Fj9M8JX0BmvfpB1RX16olppGedxqOIRGlKS
-	BehN8TdLbDQztS8Ug3yMbLj1w4MOpdo=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-121-SyWQvucHMjWWkMEFCNoMNQ-1; Wed,
- 19 Feb 2025 11:24:49 -0500
-X-MC-Unique: SyWQvucHMjWWkMEFCNoMNQ-1
-X-Mimecast-MFC-AGG-ID: SyWQvucHMjWWkMEFCNoMNQ_1739982287
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 8A5C71903085;
-	Wed, 19 Feb 2025 16:24:46 +0000 (UTC)
-Received: from rotkaeppchen (unknown [10.44.33.84])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 686C8190C54A;
-	Wed, 19 Feb 2025 16:24:36 +0000 (UTC)
-Date: Wed, 19 Feb 2025 17:24:32 +0100
-From: Philipp Rudo <prudo@redhat.com>
-To: Pingfan Liu <piliu@redhat.com>
-Cc: kexec@lists.infradead.org, bpf@vger.kernel.org, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
- <john.fastabend@gmail.com>, Jeremy Linton <jeremy.linton@arm.com>, Catalin
- Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Mark
- Rutland <mark.rutland@arm.com>, Simon Horman <horms@kernel.org>, Gerd
- Hoffmann <kraxel@redhat.com>, Vitaly Kuznetsov <vkuznets@redhat.com>, Jan
- Hendrik Farr <kernel@jfarr.cc>, Baoquan He <bhe@redhat.com>, Dave Young
- <dyoung@redhat.com>, Eric Biederman <ebiederm@xmission.com>
-Subject: Re: [RFC] kexec: Use bpf to allow kexec to load PE format boot
- image
-Message-ID: <20250219172432.71f2db2e@rotkaeppchen>
-In-Reply-To: <CAF+s44Tw240R8cG4DKr6y_=aiu634ifMZma-FGkDuoEfoNnUtQ@mail.gmail.com>
-References: <20250114012831.4883-1-piliu@redhat.com>
-	<20250131184621.12e8e94d@rotkaeppchen>
-	<CAF+s44Tw240R8cG4DKr6y_=aiu634ifMZma-FGkDuoEfoNnUtQ@mail.gmail.com>
-Organization: Red Hat inc.
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DD3A157A67
+	for <bpf@vger.kernel.org>; Wed, 19 Feb 2025 16:33:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.153.30
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1739982800; cv=fail; b=VX+OkxiSd0Zi7O7n0GNLOCHfRmZ53Gyrx6oQDp3wqjz/gbsLpLypfO01neuOzbNojPxH+1vpN4caLQNdJX8ztJBDiZz74I0eQKfrmCvvisNc3YDRvjPx3RJmm+c+jSZZxe/e2SHVACTztxs/DCac09inoBPF/+wkq+wNK0rknxE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1739982800; c=relaxed/simple;
+	bh=4DPikHNFRlxRRCaghSmYBm5I84n3SIDQpwRD9zFlf5Q=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=T3SvmWwO46AgkxPiI/ytNFEZ3dy11qSkAf1Y/lYu7Llr2TANS6Dg1VM1uf9Ktb5UngluwlDAHS9Ah3AZI24J3Sp6CxBqGY72WJdpmAhjj3QBNeB9tclVHVDMQr5i3AmQXoL9Kr85ncdiDcD15pvcGF1hfOCFcVqjoRX2glvG3Ro=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=N6kWGOqv; arc=fail smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51JDX9SF008698
+	for <bpf@vger.kernel.org>; Wed, 19 Feb 2025 08:33:17 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-id:content-transfer-encoding:content-type:date:from
+	:in-reply-to:message-id:mime-version:references:subject:to; s=
+	s2048-2021-q4; bh=4DPikHNFRlxRRCaghSmYBm5I84n3SIDQpwRD9zFlf5Q=; b=
+	N6kWGOqvTh5ZXZdFXR40Fg8rNs1fe96bSh90m7uv5Ps+WtlNl5foLepQaOxicNgr
+	RSc4EzLhRoG4lQ7QscEtnk+FdqoocjurftdY9PHhHxioGJhBeTNQiVVlfs5ZTUEB
+	03SHqV86BglQw3UZLnPnst+ZOF7q011A7Yb5MI17V7plIXmv1sZSKWkgCJoRoTIa
+	a3p2z6XDtvMoJpNDwmCpTyxi/jdA/D88JahadxgwDkwAY8nvXTia1RwjFOsISqtR
+	SICwy5TTUY2vBVakADDam+yzdwLHeW69NVunxwi4NT0ak833YJqJ7qT3n5QXmeKU
+	3EsUkq4CHusHYCgbAduzyg==
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2176.outbound.protection.outlook.com [104.47.59.176])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 44wg8m9avf-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+	for <bpf@vger.kernel.org>; Wed, 19 Feb 2025 08:33:17 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=o1kPNht/9oCy+FL/+C9crnLkR9cmR/sPZEqvG+TXkGYiUnCX2t1HLzgiE/ReVMwbammuKAJgT0CW6/tKPv4SHYGvj572njKGQYr+yUiPTE4chW5YdnZzCm36ZSTY/XxIP1AGjWFSfft6z7/0RoJAMs+xyc8AS2FNhSPOR52esVUnOsVSpSkNMEn7H1gO/K312UbMpr5eVOOQzXGL4e7JOEZO8aEzaVJKxEUaMN/qy0CRDnYAJbBI4SY9j3vupBwgLgCZbp2SVPSDIWJb4DSJRUi4Ihe6WHDG7BSf6hmS2A+6iB8WanMXz098oREmdopeBNiAp41W2rMbNOtRLBp30A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4DPikHNFRlxRRCaghSmYBm5I84n3SIDQpwRD9zFlf5Q=;
+ b=pFEUd+qEPM+apdQzm4H13s/d1OdRymLMo7uNKd3/Osp/SOQu9jIoDe0rS6lzw/t+Qtn4hgDvSwsY1x0zOUYfifAVIEvhCpnfRZBgNI66rVSeFkSYifoaX57D51lL7HLQyABSCYTPwM+67QIWR3c+erms/MDSTlunr6Le9Oyyd97g0hHLUhpt/kg+oPvwniAENPAPBF5wqDgNxUFUrf/78s/wgUUQK5RkjqYMSGjpzuuu/TNNXxAdh+PTk5u8QZKsq/m17LVj6Oc1m1GTcYv8m5EHvWN4B8BPAy6TOmD+f2Z/SYWdUCVdLxGRF6P4dCz6S599ER0TLKorJo/Vhuxm5A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from BLAPR15MB4052.namprd15.prod.outlook.com (2603:10b6:208:276::22)
+ by MW4PR15MB5251.namprd15.prod.outlook.com (2603:10b6:303:189::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8445.19; Wed, 19 Feb
+ 2025 16:33:14 +0000
+Received: from BLAPR15MB4052.namprd15.prod.outlook.com
+ ([fe80::d42a:8422:b4de:55db]) by BLAPR15MB4052.namprd15.prod.outlook.com
+ ([fe80::d42a:8422:b4de:55db%4]) with mapi id 15.20.8466.015; Wed, 19 Feb 2025
+ 16:33:13 +0000
+From: Daniel Xu <dlxu@meta.com>
+To: Jason Xing <kerneljasonxing@gmail.com>,
+        "bot+bpf-ci@kernel.org"
+	<bot+bpf-ci@kernel.org>
+CC: kernel-ci <kernel-ci@meta.com>, "andrii@kernel.org" <andrii@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "martin.lau@linux.dev"
+	<martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v3 0/2] bpf: support setting max RTO for
+ bpf_setsockopt
+Thread-Topic: [PATCH bpf-next v3 0/2] bpf: support setting max RTO for
+ bpf_setsockopt
+Thread-Index: AQHbgqgrQxWPOlIc6EiT2pyD1EGf7rNOT8kAgACC1oA=
+Date: Wed, 19 Feb 2025 16:33:13 +0000
+Message-ID: <bfc930d1-4a96-47c1-a250-e53dfe7a153f@meta.com>
+References: <20250219081333.56378-1-kerneljasonxing@gmail.com>
+ <38bb5556f4c90c7d4fbe9933ba3984136f5f3d5cf8d95e4f4bc6cbfb02e1e019@mail.kernel.org>
+ <CAL+tcoDZAwZojcMQZ_bc71bxDpdfSE=q5_6eXirZLEWXFnY33w@mail.gmail.com>
+In-Reply-To:
+ <CAL+tcoDZAwZojcMQZ_bc71bxDpdfSE=q5_6eXirZLEWXFnY33w@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BLAPR15MB4052:EE_|MW4PR15MB5251:EE_
+x-ms-office365-filtering-correlation-id: ec68ed53-c7e6-4f9c-37e0-08dd51031b1e
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|376014|366016|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?b0d1OWNUenhNYzVKbzBwQlVKMUp1cUlNRkhCRi9rUFUyQU0yc25oOFJnL2li?=
+ =?utf-8?B?cGd3Uk1xYkJ1Z0tJTENqVGRSQ0oyT2E4T29aZ3Mwc3M5YXpES2EycjU3VWlU?=
+ =?utf-8?B?ZFVsSFk5eFBoT3VLWW5iMkNJN2hnem13MTNObjM5U0MycmFGTHR1Z0E3dmlF?=
+ =?utf-8?B?QTBWWXptQnhaVEhJSEs0dUN2U0EySUpicThaeDRqbGtKR00rRW50RUxxQ3VD?=
+ =?utf-8?B?c3BlWmh3YmNwTDl5c3FndU5OOVBOOE9JVDJVWlNwWG1KbnZsQW9NR2tsY1gr?=
+ =?utf-8?B?T09XbTIvYkxEaHIzN0xOSS9NaTNiWXN0bDR3MVhBdnVCV0Irbm9CRm9oeDNt?=
+ =?utf-8?B?WGNXTzF1NURLbTNmamxjZ2I1NlB3V2d6c1VYU1pML2VodEpkVzBObGNsNzJV?=
+ =?utf-8?B?NzhIUDlENEdEc3NjTHRTblZjWXhiV2FaV1pPNTNQMHhEQkgrMTR1WnNUMktQ?=
+ =?utf-8?B?OUJWMU9TS2pSemx6bG5Vem4xUDRRMmlCUWp0d2FNQllzUVdMZVJVZnQ4Vitw?=
+ =?utf-8?B?LzZkaTBEc1h1dGVGTkhQNUt2Si9DNlhDTnE0dEFQTkw5cnNsTDVxN0RMQU15?=
+ =?utf-8?B?WTBGSU54R3FJR2RIODVuUzhSUkZCVWNLQitGdytyTnhzRzJzRE8yQVYranZF?=
+ =?utf-8?B?VEhrVVJLTFAxSkNvQkM3ejAwRmV2UFk0NXY5YXFNZWxibkcrYlU4NytKS20w?=
+ =?utf-8?B?TkZyaWlHZ0dPM2pMS25XNFUrdGZSYlFBdVNjT1VWQ2JyZHhjbXRnWlV5NkFN?=
+ =?utf-8?B?M2U5NzUzbVBoeHp6ZzIrVXFncnJLdlpMNEp4TDQ5Qms2emtER28zSldFdXJR?=
+ =?utf-8?B?aWVlMnJqOGxJUTdJZ2QwdWVxZmlMWHExQ1Y3cGZNQ0VxZldZR1owT1RqbHBY?=
+ =?utf-8?B?VnJ4OE1pcmU5Z0VMM1F6aUZqWUxINWVtSldXdXI5TGtxZStuTUxVeCtwSUNH?=
+ =?utf-8?B?SThiN2VBL0ZScGFMVEpOV0dSRXJFVVpsaGZnc1BGUllrY1YrdXFXZ05JNW8z?=
+ =?utf-8?B?TDQ5VUtMUUhFUkFNMHlKYWk0bGJrV1dhV1JVclBhOXl3UjJxZDFCZnFpcEZT?=
+ =?utf-8?B?TE8zS2lZUmZxMVMySFhzK0IyT2tqNmdsQyt4SnN0YXloZWVCQWFleGh3aklp?=
+ =?utf-8?B?QXpPUW5sdGdnRTI0SlJCQ3ZURkoxYUxiRGs3cDQza2hQeDBYWnlyOFRtYjg4?=
+ =?utf-8?B?eWI3Y0UwSllBbGJ0UTl6QnB1Z0xoc1pydHRHOXpVVSsrSVBxSm90VE9NeGdN?=
+ =?utf-8?B?YXFtVzdSRkJDa25sOUJzV2ZROVZSbWdqZEVIZjFWb3U2TnJFUGx4dHlFbWhp?=
+ =?utf-8?B?Rm43VlNWZ0VrUTNqNURxcnlPd3ljMEg0NlExeUxHd0VNVjJiVWErSGIvcnkv?=
+ =?utf-8?B?RXJVclExa080dEIxKzhva3VpR3BTUE9KOTJwU1VCdURnSkxmOTJielpVcCtl?=
+ =?utf-8?B?bllQa2lkY29zejQ3NjFaYXhjOU9LWWtEOUZhaXNpZ1NKSHZEV1kyUUp5d3Vn?=
+ =?utf-8?B?WTJrSVJZTnR4Znh1aFhtOHNUWVNyN0ZPZVIySzlQOWx3alI0Njh4ZWhKbldu?=
+ =?utf-8?B?aExkOXYyNHVEWFJnblkzTmRKNzhWSkR2THFvRFoxOUF3WTYrbU44dzE3STFr?=
+ =?utf-8?B?WnBjM3hXYjZaUGlsbGxOUjM0ZUt2aTRmVjMzU3hXbVdkQXpSZEJCNTJLNS9B?=
+ =?utf-8?B?dEVreDM3Z2M3Q0hNRUNNUHBxanZablRSaklDd2o3S05kbXRpV3VvZXREWGc0?=
+ =?utf-8?B?MWpZVk5NM1F4eUZlL0JFMzN6N2s0T1R6TGxzYWFlUW8xQ3VGYVNHbFdiLzdq?=
+ =?utf-8?B?TCtzQ0JGT3oyNEZ5YmJZekdrSWZSNlRpMjhYMlArOHA0VmF3MjltQ3l3d0dr?=
+ =?utf-8?B?akYvbFR0cmtoZyt0VGRNSXE5VEZIamQ5bHBkQis1bEkrQXZ1aWtna2FKYmxQ?=
+ =?utf-8?Q?1DGE3ZMRhkSBbfKD7aTa2hIkv6Zo4zdj?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR15MB4052.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?ZzdqQ0I4Z0huUnMwOFhnaENiUEhTajJtenBjbEZGNkZ4cmFqS2RkQXBuSktB?=
+ =?utf-8?B?Um9iSFVPaDRGRy9GbmlJZnBDcVBMb0ltM1hFWGtUa2NkL1VmOEhCSTRmcjhj?=
+ =?utf-8?B?c2ljclFxQW01N1FhRE9mMU55a0x5Nkhtc1hoTWVZN0R4TjQ5OXJBc3FHQWtM?=
+ =?utf-8?B?ZGZDZ0I2ZytpdDhRbGhFSjd4MVBDYStPWlFzMzhqWXlhL3ZnWXgzZ0JXSVM3?=
+ =?utf-8?B?ODdlTkxTS1V6STZRWmtKa1o0Nm9WUmlyZkdDckRpcU52SmtXaHhPU2tBRWFL?=
+ =?utf-8?B?RWxrVzBITktsV0RvTFlxbUVhWlpHcUpFQis4MEdETTdMVkdmYnNXc2Y0THQ1?=
+ =?utf-8?B?T3p3eS85Mm9kNHYyU242QTZoYnFRL3RJdWlBeHFYRUJxT1h6eXJ6OGRBTlF6?=
+ =?utf-8?B?cXZRN0Z4YjRiZzRKY0FNUkducEQvUzlSeE40Um1UdjFjSmFPOGVZNC9LSzEw?=
+ =?utf-8?B?WXg5MWtYQy9JTjN0NVpJVTAxa3RudlBia1Urajd2ZFRiTTV6UFVWd0d0ZStO?=
+ =?utf-8?B?Y0FISlJxKzBBWnlOTnZwSkw4emtvVU16ZFVxRWVXN3U2NHNYcUhjU3d4OEJ6?=
+ =?utf-8?B?cnR2TmVMa3E0c3RwZm5NcTAxZC80R0xKS2pMelBzdjlLdDR5MFFiTmlXVnZz?=
+ =?utf-8?B?dzFFUE5MWXM0RU5XbDNva01EVG82RlJGKzBPWjRYTGlZV2JvT1oxT1hJSDRZ?=
+ =?utf-8?B?OXlJK0FwRUNHUG5TbkZaY09KUlJ2bXVQZXBVY0hUM0pUdlM4M2d1Ynp4ZGs0?=
+ =?utf-8?B?V3hSRkNMZWdZcmgwaE9BRUsrZ0Z5ekhXcTdFMkhjbnh6V2VFcnkrUGt4Sm84?=
+ =?utf-8?B?SmNsbGVmbm1OYnZQQ2NPaStHZkMwZHpNTjZMK2pZdnM5M2VCK0tmSS9Hd1JT?=
+ =?utf-8?B?ZitmaEZlUEFVbllTaWtURGZmZlA1cUF5K2srTDJBUnUwU2pRUkxTZTQ5OFpU?=
+ =?utf-8?B?YzVRSUtKbTE4VGxobkt2R0tScHpCakRBa0NLWjV3L1Q0SlJCN3FPOU1kR1J2?=
+ =?utf-8?B?dFdTTzduTWZFMjBGaGp2VHFTVkp0NTNkd1pFU2tqc1VOZ0tyNWNzQkZEWHhQ?=
+ =?utf-8?B?WjdSZ01aNVUxRVNTenFCNTNueGx3eGFKaGx4K3RQbC9rbmVGSXJwVWovVFNL?=
+ =?utf-8?B?N0FLM3hsdkxZK2sySjVhYm0wQ0NpMzJSbG45WXhEeUJCdjJRODFpeDBqSExG?=
+ =?utf-8?B?Vm5SVUZJZ01RYmswMHhFbFpqeTFyZXkydGFBMk1VOWRwWkdRYjY1TUtxNWRH?=
+ =?utf-8?B?aWt0YWhXYnR3dEtZbEZzTExPL2FISEM4SElsaWhIdFFzNzhTNHB5cFFBV2ZP?=
+ =?utf-8?B?NmNOZW9zNkMvVjE3Z3pLQTJPSHRLTzdVTGJrYmUzNVF6c0Vpdms4KzhQTlZv?=
+ =?utf-8?B?RnRwUzVkMVJyNWU5NG5uWFRJeHhhR1YzVk43UldSRlN0bE9ZcmtaVkJodEFT?=
+ =?utf-8?B?eWVhVytSSVlIWWtIUklBU3FQdGgvRWtWYmlJRFN1Qlp3TVZqemwwdWpDbWNl?=
+ =?utf-8?B?MHBPL0trdC84YjUzcEVGY3pVemlXTHRkMDdncXlERk1kcDRzWHU3UEE1OC9S?=
+ =?utf-8?B?Y2JiYW9rZVQ0UUNQdS9PeFFVMzg5NkdGUGI0UDN6eHV6TmlFeUJneDY0QVVj?=
+ =?utf-8?B?bm5uS2RRNXJIMFRZc3MzTVNiWHR2UmFnNVlMQkdORWJ5UE92dVBoeXV6MnBo?=
+ =?utf-8?B?c0JBdHVGekxvTUxpOGZNcVhSOVJhc1lDN3JsQ1c2SVFwUHEwalYyWHpaUElU?=
+ =?utf-8?B?U1poVE9IR0E4MXpJZThRL3pvUERHc20vWDFWK0xkNzNyRXNVMHoxU3lpakwz?=
+ =?utf-8?B?NkhzaEE1bHVtU2NpSGQrdzdGRXR6SkVMUnB3cUZEZkxIdU85OWJNMk9mUkxT?=
+ =?utf-8?B?QXp2eUVMUGpUK3lCdUwvRTdlQm9ZbnFUTlI4a3FHQjVnRWpnM3VETk5VaE1E?=
+ =?utf-8?B?UWg1a3YrNWZtRi9EVjlzc0d5c1lIbDBGemZtbnFwMWwrSS9MRUlnT1RiVWVX?=
+ =?utf-8?B?eVpFMTRDc3drK0pSS0k1YzkzaHo1a3FXRXU1OVkyWHZCdlJQZTY0NEtlWFFz?=
+ =?utf-8?B?ZG5UMHVHdjBKQVdrN2lvNFJxMklrUi9WZXUwd0hWclhJbjA5QXZBL2t5S0E1?=
+ =?utf-8?Q?1pJw=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A60129649B89564B9049FE9FC139125F@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR15MB4052.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ec68ed53-c7e6-4f9c-37e0-08dd51031b1e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Feb 2025 16:33:13.8043
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: VrFddufbucpyoXWOCvtauLemQ9vCwIMryuqrj3wsq/RMioTCDvEF4WFLl4bLJEC3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR15MB5251
+X-Proofpoint-ORIG-GUID: fL3fuVDJzlRUSuo5g77I03nYHSCjaCoi
+X-Proofpoint-GUID: fL3fuVDJzlRUSuo5g77I03nYHSCjaCoi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-19_07,2025-02-19_01,2024-11-22_01
 
-Hi Pingfan,
-
-sorry for the late reply.
-
-On Thu, 6 Feb 2025 14:03:40 +0800
-Pingfan Liu <piliu@redhat.com> wrote:
-
-> Hi Philipp,
->=20
-> Thanks for your feedback. Please see my answers below.
->=20
-> I'm also reaching out to the BPF maintainers with two concerns: how to
-> ensure the integrity of BPF programs and whether introducing some
-> additional BPF helpers for the kexec subsystem would be acceptable.
-> Those helpers are used to exchange the data between BPF and the kexec
-> kernel part.
->=20
->=20
-> On Sat, Feb 1, 2025 at 1:46=E2=80=AFAM Philipp Rudo <prudo@redhat.com> wr=
-ote:
-> >
-> > Hi Pingfan,
-> >
-> > thanks for sharing your thoughts. Please see my comments below.
-> >
-> > On Tue, 14 Jan 2025 09:28:25 +0800
-> > Pingfan Liu <piliu@redhat.com> wrote:
-> > =20
-> > > Nowadays UEFI PE bootable image is more and more popular on the distr=
-ibution.
-> > > But it is still an open issue to load that kind of image by kexec wit=
-h IMA enabled
-> > >
-> > > *** A brief review of the history ***
-> > > There are two categatories methods to handle this issue.
-> > >   -1. UEFI service emulator for UEFI stub
-> > >   -2. PE format parser
-> > >
-> > > For the first one, I have tried a purgatory-style emulator [1]. But it
-> > > confronts the hardware scaling trouble.  For the second one, there ar=
-e two
-> > > choices, one is to implement it inside the kernel, the other is insid=
-e the user
-> > > space.  Both zboot-format [2] and UKI-format [3] parsers are rejected=
- due to
-> > > the concern that the variant format parsers will inflate the kernel c=
-ode.  And
-> > > finally, we have these kinds of parsers in the user space 'kexec-tool=
-s'.
-> > >
-> > >
-> > > From the beginning, it has been perceived that the user space parser =
-can not
-> > > satisfy the requirement of security-boot without an extra embeded sig=
-nature.
-> > > This issue was suspended at that time.
-> > >
-> > > But now, more and more users expect the security feature and want the
-> > > kexec_file_load to guarantee it by IMA.  I tried to fix that issue by=
- the extra
-> > > embeded signature method. But it is also disliked.
-> > >
-> > > Enlighted by Philipp suggestion about implementing systemd-stub in bp=
-f opcode in the discussion to [1],
-> > > I turn to the bpf and hope that parsers in bpf-program can resolve th=
-is issue.
-> > >
-> > > [1]: https://lore.kernel.org/lkml/20240819145417.23367-1-piliu@redhat=
-.com/T/
-> > > [2]: https://lore.kernel.org/kexec/20230306030305.15595-1-kernelfans@=
-gmail.com/
-> > > [3]: https://lore.kernel.org/lkml/20230911052535.335770-1-kernel@jfar=
-r.cc/
-> > > [4]: https://lore.kernel.org/linux-arm-kernel/20230921133703.39042-2-=
-kernelfans@gmail.com/T/
-> > >
-> > >
-> > >
-> > >
-> > > *** Reflect the problem and a new proposal ***
-> > >
-> > > The UEFI emulator is anchored at the UEFI spec. That will incur lots =
-of work
-> > > due to various hardware support.  For example, to support TPM, the em=
-ulator
-> > > should implement PCI/I2C bus protocol.
-> > >
-> > > But if the problem is confined to the original linux kernel boot prot=
-ocol, it will be simple.
-> > > Only three things should be considered: the kernel image, the initrd =
-and the command line.
-> > > If we can get them in a security way, we can tackle the problem.
-> > >
-> > > The integrity of the file is ensured under the protection of the sign=
-ature
-> > > envelope.  If the kexeced files are parsed in the user space, the env=
-elopes are
-> > > opened and invalid.  So they should sink into the kernel space, be ve=
-rified and
-> > > be manipulated there.  And to manipulate the various format file, we =
-need
-> > > bpf-program, which know their format.
-> > >
-> > > There are three parties in this solution
-> > > -1. The kexec-tools itself is protected by IMA, and it creates a bpf-=
-map and
-> > > update UKI addon file names into the map. Later, the bpf-program will=
- call
-> > > bpf-helper to pad these files into initrd
-> > >
-> > > -2. The bpf-program is contained in a dedicated '.bpf' section in PE =
-file. When
-> > > kexec_file_load a PE image, it extract the '.bpf' section and reflect=
- it to the
-> > > user space through procfs. And kexec-tools starts the program.  By th=
-is way,
-> > > the bpf-program itself is free from tampering.
-> > >
-> > > The bpf-program completes two things:
-> > >       -1.parse the image format
-> > >       -2.call bpf kexec helpers to manipulate signed files
-> > >
-> > > -3. The bpf helpers. There will be three helpers introduced.
-> > > The first one for the data exchange between the bpf-program and the k=
-ernel.
-> > > The second one for the decompressor.
-> > > The third one for the manipulation of the cpio =20
-> >
-> > I find this design very complicated. Especially I don't like that the
-> > bpf program is exported back to user space to be loaded separately. =20
->=20
-> I wish I could avoid the complexity, but unfortunately, I couldn't.
-> I'll explain everything later, all at once.
->=20
->=20
-> > This does not only requires us to protect kexec-tools by IMA but also
-> > all the tools and libraries that are involved in running kexec-tools =20
->=20
-> Yes, that is true. But this may not be so important since all files,
-> which are passed in by kexec-tools are protected by signature.
-
-True, but that only means that the files are protected when read from
-disk. But the bpf program will change/patch those files. Take zBoot for
-example. The bpf program will parse the image, decompress it and, pass
-the decompressed image back to kexec. For kexec there is no way to
-verify if the decompressed image is genuine. So a malicious bpf program
-could inject code into the image without kexec noticing. That's why we
-need to make sure that the bpf program handling the image is actually
-the one that is parsed from the image.
-
-> > (libc, ld, etc.). But even that will probably not be enough when you
-> > look at all the different ways user space programs can interact with
-> > each other and change each others behavior (see the xz-backdoor for =20
->=20
-> IIUC, xz-backdoor is not a proper example, which is tampered at the
-> source code level.
-
-I disagree, IMHO the xz-backdoor is a good example here. But I should
-have explained it better. You are right, that the malicious code was
-added to the xz sources. But xz was only the vehicle to ship the
-malicious code. The actual target of it was ssh. What makes it worse is
-that there is no dependency of ssh to xz. The attack only worked because
-systemd depended on xz and loaded the library before the sshd was
-started. Similar attacks could also target for the kexec-tools and
-inject a malicious bpf program in your design.
-
-> > example). So when we would probably need to protect all of user space
-> > if we want to use this design in a secure boot environment, which is
-> > out of scope for the feature.
-> >
-> > Alternatively, we would need to verify in the kernel that the bpf
-> > program loaded by the kexec-tools is identical to the one included in
-> > the kernel image. But then what's the point in exporting it in the
-> > first place? Especially as already today there is the
-> > kernel/bpf/syscall.c:kern_sys_bpf function that allows to run the
-> > bpf syscall from within the kernel (with some limitations, but it(
-> > allows to load a program).
-> > =20
->=20
-> Here, let me explain why I cannot avoid the complexity and how this
-> design ensures the integrity of the BPF program:
->=20
-> I'm not entirely sure, but the function kern_sys_bpf(int cmd, union
-> bpf_attr *attr, unsigned int size) requires a bpf_attr, which is
-> typically prepared by libbpf. If the BPF program is invoked directly
-> from the kernel, there must be some code to handle what libbpf
-> normally does. That would be quite complex.
-
-Yes, that's unfortunately true. But we will only need to support a
-small subset of the functionality from libbpf. So the complexity should
-(hopefully) be manageable. At least when you compare it with the
-complexity securing the user space kexec-tools would have.=20
-
-> On the other hand, the built-in BPF program is protected by the
-> signature of the UKI. When it is loaded by kexec-tools through the BPF
-> API, it still undergoes integrity checking (refer to
-> kernel/bpf/core.c: bpf_prog_calc_tag()). Based on this, I argue that
-> the IMA on kexec-tools is not as critical.
-
-Yes, the contained bpf program is protected. But as explained above the
-problem is that we cannot be sure that the bpf program that is loaded
-by kexec-tools is the one contained in the image. And the bpf verifier
-won't help here either as it only guarantees that the program doesn't
-harm the currently running kernel. But it still could harm the kernel
-that is being loaded...
-
-In addition I don't think that the prog->tag will help here. IIUC it is
-used to give each program a unique id but not to protect against
-loading non-desired programs. And I don't think it would make sense to
-use it this way. Especially as the sha1 hash used for the tag is no
-longer considered secure.
-
-> > All in all I think it is better to keep the current design, i.e.
-> > kexec-tools only makes one systemcall and the rest is done in the
-> > kernel.
-> > =20
-> As explained above, the main obstruction is to implement the libbpf
-> logic inside the kernel.
-
-I can fully understand that. But as described above I believe it is the
-easier and better solution. Especially when we only implement the
-subset that is needed for kexec to work.
-
-> > In addition, while I agree that ideally we include the new feature
-> > into kexec_file_load, I think it's better to define a new system call
-> > for images containing bpf in the beginning. With that we have a blank
-> > slate we can mess with without the need to take care of keeping the old
-> > code working. Plus, it leaves us a fallback to load a dump kernel when
-> > we mess up. Once we have a working prototype and a better understanding
-> > on what is needed we can still merge it back into kexec_file_load.
-> > =20
->=20
-> A good suggestion, I will try it.
->=20
-> > > ***  Overview of the design in Pseudocode ***
-> > >
-> > >
-> > > ThreadA: kexec thread which invokes kexec_file_load
-> > > ThreadB: the dedicated thread in kexec-tools to load bpf-prog
-> > > ------
-> > > Diag 1. the interaction between bpf-prog loader and its executer
-> > >
-> > >
-> > > ThreadA                                               ThreadB
-> > >
-> > >                                               wait on eventfd_A
-> > >
-> > >
-> > > expose bpf-prog through procfs
-> > > & signal eventfd_A
-> > > & wait on eventfd_B
-> > >
-> > >                                               read the bpf-prog from =
-procfs
-> > >                                               & initialize the bpf an=
-d install it to the fentry
-> > >                                               & signal eventfd_B
-> > >                                               & wait on eventfd_A aga=
-in
-> > >
-> > > fentry executes bpf-prog to parse image
-> > > & generate output for the next stop
-> > >
-> > >
-> > > -------------------
-> > > Diag 2. bpf-prog
-> > >
-> > > SEC("fentry/kexec_pe_parser_hook")
-> > > int BPF_PROG(pe_parser, struct kimage *image, ...)
-> > > {
-> > >
-> > >       buf =3D bpf_ringbuf_reserve(rb, size);
-> > >       buf_result =3D bpf_ringbuf_reserve(rb, res_sz);
-> > >       /* Ask kernel to copy the resource content to here */
-> > >       bpf_helper_carrier(resource_name, buf, size, in);
-> > >
-> > >       /* Parse the format laying on buf */
-> > >       ...
-> > >       /* call extra bpf-helpers */
-> > >       ...
-> > >
-> > >       /* Ask kernel to copy the resource content from here */
-> > >       bpf_helper_carrier(resource_name, buf_result, res_sz, out);
-> > >
-> > > }
-> > >
-> > > At present, bpf map functions provides the mechanism to exchange the =
-data between the user space and bpf-prog.
-> > > But for bpf-prog and the kernel, there is no good choice. So I introd=
-uce a bpf helper function
-> > >       bpf_helper_carrier(resource_name, buf, size, in)
-> > >
-> > > The above code implements the data exchange between the kernel and bp=
-f-prog.
-> > > By this way, the data parsing process is not exposed to the user spac=
-e any longer.
-> > >
-> > >
-> > >
-> > > extra bpf-helpers:
-> > >
-> > >       /* Decompress the compressed kernel image */
-> > >       bpf_helper_decompress(src, src_size, dst, dst_sz)
-> > >
-> > >       /*
-> > >        * Verify the signature of @addon_filename, padding it to initr=
-d's dir @dst_dir
-> > >        */
-> > >       bpf_helper_supplement_initrd(dst_dir, addon_filename) =20
-> >
-> > UKI addons can also append entries to the kernel command line. IMHO it
-> > will be easiest when we maintain the initrd and command line in the
-> > kernel, i.e. the syscall "prepopulates" the initrd and cmdline either
-> > from the UKI or what kexec-tools provides. The bpf program then only
-> > updates them. That's not ideal but it keeps the bpf program simple in
-> > the beginning so we (hopefully) don't run into the limitations bpf
-> > programs have. Once we have a working prototype we can still move
-> > functionality over to the bpf program.
-> > =20
->=20
-> Sorry, but I'm not sure whether I understand you clearly. Are you
-> suggesting to pass UKI add-ons through a new kexec syscall API?
-
-Yes, that's my idea. IMHO the "ideal" design should look something like
-this
-
-1. user space prepares the required data (e.g. kernel command line,
-   which initrd/addons to use etc.) into a private data structure, e.g.
-   a bpf_map.
-2. user space calls kexec and passes the file descriptor for the image
-   and the "private data".
-3. kexec verifies the image and parses the bpf program from it
-4. kexec loads and runs the bpf program passing the private data to it.
-5. the bpf program does its job and returns the prepared image, initrd
-   and, kernel cmdline back to kexec.
-6. kexec then simply continues with what it already does today.
-
-What I like about this design is that the kernel doesn't need to
-know the exact structure of the "private data". It's something user
-space and the stub need to agree on and thus can be different for each
-image/stub. That gives a lot of flexibility for future changes.
-In a way it's a step back to the legacy kexec_load. With the difference
-that the image isn't prepared in user space but by a bpf program that
-is protected by the image signature and thus works with secureboot.
-
-The downside is that the bpf program would be quite complex. That's why
-I believe its better to start with an approach where kexec implements a
-big portion of the needed functionality. Once that is working we can
-move the functionality over to the bpf program piece by piece and see
-if/where we run into problems with the limitations of bpf programs.
-
-> > The way I see it this should work with three helper functions.
-> > One to read+verify a file and one each to append data to the initrd or
-> > command line.
-> > =20
-> Yes, there should be another helper to manipulate kernel cmdline addons.
->=20
-> > >       Note: Due to the UEFI environment (such as edk2) only providing=
- basic
-> > >         file operations for FAT filesystems, any UEFI-stub PE image (=
-like systemd-stub)
-> > >         is restricted to these basic operation services.  As a result=
-, the
-> > >         functionality of such bpf-kexec helpers is inherently limited=
-. =20
-> >
-> > Is this limitation really necessary? The way I see it this is a
-> > limitation to keep the UEFI environment simple. But when we run kexec
-> > the kernel is fully booted. So we can make use of all the file systems
-> > included in the kernel.
-> > =20
-> Yes, as for the capability, we can utilize all file systems. My main
-> concern is the stability of the BPF helpers. I believe people are
-> reluctant to update them frequently.
-
-Yeah, bpf-helpers need to be stable. But is there a reason not to add a
-bpf-helper that operates on file descriptors? kexec_file_load uses them
-and is part of the uapi. So it has the same (if not higher)
-requirement for stability.
-
-Thanks
-Philipp
-
-> Thanks,
->=20
-> Pingfan
->=20
-> > Thanks
-> > Philipp
-> > =20
-> > > *** Thoughts about the basic operation ***
-> > >
-> > > The basic operations have influence on the stability of bpf-kexec-hel=
-pers.
-> > >
-> > > The kexec_file_load faces three kinds of elements: linux-kernel, init=
-rd and cmdline.
-> > >
-> > > For the kernel, on arm64 or riscv, in order to get the bootable image=
- from the compressed data,
-> > > there should be a bpf-helper function as a wrapper of __decompress()
-> > >
-> > > For initrd, systemd-sysext may require padding extra file into initrd
-> > >
-> > > For cmdline, it may require some string trim or conjoin.
-> > >
-> > > Overall, these user requirements are foreseeable and straightforward,
-> > > suggesting that bpf-kexec-helpers will likely remain stable without s=
-ignificant
-> > > changes.
-> > >
-> > >
-> > > Cc: Alexei Starovoitov <ast@kernel.org>
-> > > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > > Cc: John Fastabend <john.fastabend@gmail.com>
-> > > Cc: Jeremy Linton <jeremy.linton@arm.com>
-> > > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > > Cc: Will Deacon <will@kernel.org>
-> > > Cc: Mark Rutland <mark.rutland@arm.com>
-> > > Cc: Simon Horman <horms@kernel.org>
-> > > Cc: Gerd Hoffmann <kraxel@redhat.com>
-> > > Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> > > Cc: Philipp Rudo <prudo@redhat.com>
-> > > Cc: Jan Hendrik Farr <kernel@jfarr.cc>
-> > > Cc: Baoquan He <bhe@redhat.com>
-> > > Cc: Dave Young <dyoung@redhat.com>
-> > > Cc: Eric Biederman <ebiederm@xmission.com>
-> > > Cc: Pingfan Liu <piliu@redhat.com>
-> > > To: kexec@lists.infradead.org
-> > > To: bpf@vger.kernel.org
-> > > =20
-> > =20
->=20
-
+SGkgSmFzb24sDQoNCk9uIDIvMTkvMjUgMTI6NDQgQU0sIEphc29uIFhpbmcgd3JvdGU6DQo+IE9u
+IFdlZCwgRmViIDE5LCAyMDI1IGF0IDQ6MjfigK9QTSA8Ym90K2JwZi1jaUBrZXJuZWwub3JnPiB3
+cm90ZToNCj4+IERlYXIgcGF0Y2ggc3VibWl0dGVyLA0KPj4NCj4+IENJIGhhcyB0ZXN0ZWQgdGhl
+IGZvbGxvd2luZyBzdWJtaXNzaW9uOg0KPj4gU3RhdHVzOiAgICAgRkFJTFVSRQ0KPj4gTmFtZTog
+ICAgICAgW2JwZi1uZXh0LHYzLDAvMl0gYnBmOiBzdXBwb3J0IHNldHRpbmcgbWF4IFJUTyBmb3Ig
+YnBmX3NldHNvY2tvcHQNCj4+IFBhdGNod29yazogIGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5v
+cmcvcHJvamVjdC9uZXRkZXZicGYvbGlzdC8/c2VyaWVzPTkzNTQ2MyZzdGF0ZT0qDQo+PiBNYXRy
+aXg6ICAgICBodHRwczovL2dpdGh1Yi5jb20va2VybmVsLXBhdGNoZXMvYnBmL2FjdGlvbnMvcnVu
+cy8xMzQwODIzNTk1NA0KPj4NCj4+IEZhaWxlZCBqb2JzOg0KPj4gYnVpbGQtYWFyY2g2NC1nY2M6
+IGh0dHBzOi8vZ2l0aHViLmNvbS9rZXJuZWwtcGF0Y2hlcy9icGYvYWN0aW9ucy9ydW5zLzEzNDA4
+MjM1OTU0L2pvYi8zNzQ1MjI0ODk2MA0KPj4gYnVpbGQtczM5MHgtZ2NjOiBodHRwczovL2dpdGh1
+Yi5jb20va2VybmVsLXBhdGNoZXMvYnBmL2FjdGlvbnMvcnVucy8xMzQwODIzNTk1NC9qb2IvMzc0
+NTIyNDg2MzMNCj4+IGJ1aWxkLXg4Nl82NC1nY2M6IGh0dHBzOi8vZ2l0aHViLmNvbS9rZXJuZWwt
+cGF0Y2hlcy9icGYvYWN0aW9ucy9ydW5zLzEzNDA4MjM1OTU0L2pvYi8zNzQ1MjI0OTI4Nw0KPj4g
+YnVpbGQteDg2XzY0LWxsdm0tMTc6IGh0dHBzOi8vZ2l0aHViLmNvbS9rZXJuZWwtcGF0Y2hlcy9i
+cGYvYWN0aW9ucy9ydW5zLzEzNDA4MjM1OTU0L2pvYi8zNzQ1MjI1MDMzOQ0KPj4gYnVpbGQteDg2
+XzY0LWxsdm0tMTctTzI6IGh0dHBzOi8vZ2l0aHViLmNvbS9rZXJuZWwtcGF0Y2hlcy9icGYvYWN0
+aW9ucy9ydW5zLzEzNDA4MjM1OTU0L2pvYi8zNzQ1MjI1MDY4OA0KPj4gYnVpbGQteDg2XzY0LWxs
+dm0tMTg6IGh0dHBzOi8vZ2l0aHViLmNvbS9rZXJuZWwtcGF0Y2hlcy9icGYvYWN0aW9ucy9ydW5z
+LzEzNDA4MjM1OTU0L2pvYi8zNzQ1MjI1MTAxOA0KPj4gYnVpbGQteDg2XzY0LWxsdm0tMTgtTzI6
+IGh0dHBzOi8vZ2l0aHViLmNvbS9rZXJuZWwtcGF0Y2hlcy9icGYvYWN0aW9ucy9ydW5zLzEzNDA4
+MjM1OTU0L2pvYi8zNzQ1MjI1MTMxMQ0KPj4NCj4+DQo+PiBQbGVhc2Ugbm90ZTogdGhpcyBlbWFp
+bCBpcyBjb21pbmcgZnJvbSBhbiB1bm1vbml0b3JlZCBtYWlsYm94LiBJZiB5b3UgaGF2ZQ0KPj4g
+cXVlc3Rpb25zIG9yIGZlZWRiYWNrLCBwbGVhc2UgcmVhY2ggb3V0IHRvIHRoZSBNZXRhIEtlcm5l
+bCBDSSB0ZWFtIGF0DQo+PiBrZXJuZWwtY2lAbWV0YS5jb20uDQo+IEkgdGhpbmsgdGhlIG9ubHkg
+ZGlmZiBJIG1hZGUgaXMgdGhhdCBJIHJlbW92ZWQgdGhlIGNoYW5nZSBpbg0KPiB0b29scy9pbmNs
+dWRlL3VhcGkvbGludXgvYnBmLmggZnJvbSBWMi4NCj4gZGlmZiAtLWdpdCBhL3Rvb2xzL2luY2x1
+ZGUvdWFwaS9saW51eC90Y3AuaCBiL3Rvb2xzL2luY2x1ZGUvdWFwaS9saW51eC90Y3AuaA0KPiBp
+bmRleCAxM2NlZWIzOTVlYjguLjc5ODllM2YzNGE1OCAxMDA2NDQNCj4gLS0tIGEvdG9vbHMvaW5j
+bHVkZS91YXBpL2xpbnV4L3RjcC5oDQo+ICsrKyBiL3Rvb2xzL2luY2x1ZGUvdWFwaS9saW51eC90
+Y3AuaA0KPiBAQCAtMTI4LDYgKzEyOCw3IEBAIGVudW0gew0KPiAgICNkZWZpbmUgVENQX0NNX0lO
+USAgICAgICAgICAgICBUQ1BfSU5RDQo+DQo+ICAgI2RlZmluZSBUQ1BfVFhfREVMQVkgICAgICAg
+ICAgIDM3ICAgICAgLyogZGVsYXkgb3V0Z29pbmcgcGFja2V0cyBieSBYWCB1c2VjICovDQo+ICsj
+ZGVmaW5lIFRDUF9SVE9fTUFYX01TICAgICAgICAgNDQgICAgICAvKiBtYXggcnRvIHRpbWUgaW4g
+bXMgKi8NCj4NCj4gTGFzdCB0aW1lIGV2ZXJ5dGhpbmcgd2FzIGZpbmUuIEkgZG91YnQgaXQgaGFz
+IHNvbWV0aGluZyB0byBkbyB3aXRoIHRoZQ0KPiBmYWlsdXJlIDpTDQo+DQo+IEJ1dCBJIHRlc3Rl
+ZCBpdCBsb2NhbGx5IGFuZCBjb3VsZCBub3QgcmVwcm9kdWNlIGl0LiBDb3VsZCBpdCBiZSBjYXVz
+ZWQNCj4gYmVjYXVzZSBvZiBhcHBseWluZyB0byBhIHdyb25nIGJyYW5jaD8gSSdtIGFmcmFpZCBu
+b3QsIHJpZ2h0Pw0KDQpJdCBsb29rcyBsaWtlIFRDUF9SVE9fTUFYX01TIGlzIGRlZmluZWQgaW4g
+aW5jbHVkZS91YXBpL2xpbnV4L3RjcC5oLiBCdXQNCg0KSSBkb24ndCBzZWUgYSB1YXBpIGluY2x1
+ZGUgaW4gbmV0L2NvcmUvZmlsdGVyLmMgd2hlcmUgeW91J3JlIHVzaW5nIHRoZSANCmRlZmluaXRp
+b24uDQoNCg0KR2l2ZW4gdGhlIHRyYW5zaXRpdmUgZGVwZW5kZW5jeSwgcGVyaGFwcyBzb21lIG90
+aGVyIGZpbGUgc2hpZnRlZD8gU2VlbXMgDQpiZXR0ZXINCg0KdG8gZGlyZWN0bHkgaW5jbHVkZSB0
+aGUgdWFwaSBoZWFkZXIgaWYgeW91J3JlIGdvaW5nIHRvIHVzZSBpdC4NCg0KDQpUaGFua3MsDQoN
+CkRhbmllbA0KDQo=
 
