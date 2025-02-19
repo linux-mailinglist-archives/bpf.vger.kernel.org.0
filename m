@@ -1,120 +1,144 @@
-Return-Path: <bpf+bounces-51990-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51991-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 748CEA3CB48
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 22:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 81799A3CB9E
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 22:38:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22074189BDCF
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 21:20:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12EE7189BCD9
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 21:38:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50AF6257425;
-	Wed, 19 Feb 2025 21:20:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 944072586DB;
+	Wed, 19 Feb 2025 21:37:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CnqTsfIG"
+	dkim=pass (4096-bit key) header.d=ijzerbout.nl header.i=@ijzerbout.nl header.b="aJHNcKdd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76DC3256C9D
-	for <bpf@vger.kernel.org>; Wed, 19 Feb 2025 21:20:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+Received: from bout3.ijzerbout.nl (bout3.ijzerbout.nl [136.144.140.114])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD91B23536C;
+	Wed, 19 Feb 2025 21:37:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.144.140.114
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740000025; cv=none; b=ne5Nv4S1pn/azDa0XH7q8dRvlMD6yWEjBXIyAeNnDmaOjbzoa5KmjmmLtpBLf6D0FItMEDiA3Z9fgbTrvh+mqesGMeP3aDxcNXStQQ9QPdhDrL5A5TeqYl590s7++e6wplCRdA62WzF+QUnmkK2kMJ3DfBJnt7VB+NQToZCZNK8=
+	t=1740001045; cv=none; b=jjyK0JYClHoEAU6o72G6D+qesE3IFwfIJx3gJRw7E8D0/VrMzab9R1R0vXx+C2g2lcz/PHIqXG9319YqQOoEXV5vnJNbSybXLxKRiyCg/pEN2u/iESVC7XxSNPYcar0nj6nkr6ecduiF3hZ7dTeFOu48MHU5yjMOqUo6Zphn68E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740000025; c=relaxed/simple;
-	bh=1U1wwVvqeULvDXQvc25yATsf3QOi1fC2Y30n1Q0dRxw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=fQ1wqYdMOgJHTI+3xIEYhgFohTAP/KfpJBWyrc8ADBAV+OCOmayAlZ4GeCw/SPZmDt4Dj9volGRkxdBV1624JCCs2L0YowCZMxu2TYHcfcooTDkkl6P364ZZ/N0kBKKzoGORkwTBqD9/7cXr8toyp1OMcyDw8G+Zes1sfvRL/OY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CnqTsfIG; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-220c2a87378so2916235ad.1
-        for <bpf@vger.kernel.org>; Wed, 19 Feb 2025 13:20:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740000024; x=1740604824; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=1U1wwVvqeULvDXQvc25yATsf3QOi1fC2Y30n1Q0dRxw=;
-        b=CnqTsfIG9ROHpKqARG2/FXEjGDLPq6oonY06z7gQCVEkuHFAw6Vdu9m8Rqt56xJYYD
-         4zOlT+42Yz2IFzgcHRhRvH2c/Nclo1l4Cmr3jvZ9teqy7PbE69/cta04aoETNX+O5y7U
-         IbghAAfJlltqJF0zdspUT7st2QZTJs/n4B/ya1aJFM8UBrTcwaA3TLdCHfc5GCkXV109
-         d7+IKInx15I5kIpRKxrFBpc1mjd9f7xjf+XqURxz9KopSV1qwXzFKXdfLc8lrCS6N3Ei
-         o8Tp5Aeqm8XvHsjzTqRt9myAsdR54x+gH78F/ES3H7mW7f0s7cjhsMa/pDXLrl5EcBJw
-         tBkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740000024; x=1740604824;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1U1wwVvqeULvDXQvc25yATsf3QOi1fC2Y30n1Q0dRxw=;
-        b=U2nFU87U7gsTcIK8/jTwMUicMHD6FW0seESE0s7QKvsc77chPtC2FIqYFa4/Z44xGi
-         zatxxd6O9Or6tYnab9oxLdXG4R9z6o2SiM1AzW9e9smwq8cR4MSLj6NVc1hzr5bi1lXP
-         OvbABP/MyMLA50r9ANNm+pclHEwgUsMqWviO/J3DjCO0qSj/0d507TcBNKMo/su95CFs
-         Bh3vQBCyu9aUYrFWLLgAbdvpfWOQrWchh6uGNoFqrtIFbNhL9TLMblLc+ffWO3mxuOka
-         vuFSZzwbh8zRvWrm2qM4qqkw4fLOl9FpEe8Y/XLgAzqAdXjv3hWaKT9tRCVUg/58iJYT
-         REJw==
-X-Forwarded-Encrypted: i=1; AJvYcCUKCcwLPetmAPTPsL2LrwYm3vTxPt9C1WnWlSJMi5DqHqEmeD8F41XTEPl+QuUm1VCO7tA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzPqm1mJdUKY51ErVFyzOGZGhwMhEDwHNtw4VexG2YlIfOxBNch
-	vWUb85jO+g5/jaMKQrnYaRSQzZuLdYvB6CjRMRxxT2QbYVBaDE7N
-X-Gm-Gg: ASbGncsbsI6cRWIjScai8b0wlJCzxB8zfqNKokSOUkmG+WcqONnimhjDpeuR1NILNCY
-	o0gwxhJld1spDCubUZZ6EVYZwBkeL87LQVdbRiupb49I2KobZRgCby19AQrqSyMSWESzpZvDCZN
-	HMlRFullFWBmVZ7I2tUTXrY8JB0MQ6iXfzhfpNTCbn6TzImQqaaYJ4w29ImIfB6oHUYT24hvf9C
-	dVSNOzHIhpvEkH0G9IWnBb4ov1sxc4b+9HUHdBeSYmCTVBaOU/GXjPkATvXcLOD54iOHCAwNdzd
-	q1cfQAzguQAD
-X-Google-Smtp-Source: AGHT+IHCMqHeDA1ield8LQS2nkpqUtOYd6f42v0g58+hkS9EhjktCNGNs9jYWoekYMFlHyH8seA3Yg==
-X-Received: by 2002:a05:6a00:1903:b0:730:75b1:721b with SMTP id d2e1a72fcca58-732618b7d2amr32979986b3a.18.1740000023655;
-        Wed, 19 Feb 2025 13:20:23 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-732547af8acsm10542578b3a.71.2025.02.19.13.20.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Feb 2025 13:20:23 -0800 (PST)
-Message-ID: <c947f2bc7348c62810e398f9a8322abf5ae27ac6.camel@gmail.com>
-Subject: Re: [RFC PATCH bpf-next v1 1/2] bpf: Explore PTR_TO_STACK as R0 for
- bpf_dynptr_slice_rdwr
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai
- Lau <martin.lau@kernel.org>, kkd@meta.com, 	kernel-team@meta.com
-Date: Wed, 19 Feb 2025 13:20:18 -0800
-In-Reply-To: <CAP01T76aV+2Y-U79Csf4+-scG92jc2ZwJUhDC1MQcx1ZJ4vwkw@mail.gmail.com>
-References: <20250219125117.1956939-1-memxor@gmail.com>
-	 <20250219125117.1956939-2-memxor@gmail.com>
-	 <CAP01T76aV+2Y-U79Csf4+-scG92jc2ZwJUhDC1MQcx1ZJ4vwkw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+	s=arc-20240116; t=1740001045; c=relaxed/simple;
+	bh=O6zQw43LAnWXOb2LcFvXhT5c9S8XjaexMimq/8E+fNA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=icSyqtppsHnZ7HId8NODjOV24ZsIB/w4aUlKI7aMXS7pK1uyRdyt5PtmSXKQCLYLuVidDW2TkOgczhqLPWDSe3Kc4EKkK7aQNL2x0hAwpJNRAmVzgilRg6vi6j3+py9Qbm9cwMyDbAr2udm6zO1nxup7KSiqi7Ialr56Fgv3xGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ijzerbout.nl; spf=pass smtp.mailfrom=ijzerbout.nl; dkim=pass (4096-bit key) header.d=ijzerbout.nl header.i=@ijzerbout.nl header.b=aJHNcKdd; arc=none smtp.client-ip=136.144.140.114
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ijzerbout.nl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ijzerbout.nl
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ijzerbout.nl; s=key;
+	t=1740001032; bh=O6zQw43LAnWXOb2LcFvXhT5c9S8XjaexMimq/8E+fNA=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=aJHNcKdd5m9Dac2h4LNAim6W8Hbgi8hGpOM2oSuk/9cL+cIA6aVZocLxesHdXN/jy
+	 wPLcui6hDdwCc82LrLLtL7BlKQ/bM6mduv6fuh88nq9u0K03MqfJZeD+zfS40Hm0No
+	 oA27b0Tpio/DF5EYVUiizXD0GhSzbASAlyFRlp+x+3dNv7DJg1MfzFHQ4BBKOYke18
+	 Ah8HgPKHBCE0d8l2+b23h1JdDcCZKfIs/FPF+kifz8whQKgZO6KVGZSuM8CuqC0eaG
+	 Q4ATkGyls80xHUpYuNg9jTikfRPWrqw0fCPtGO6i9GfslVL6gma8j3lpV+U1hJ1/jd
+	 VHMPpjNVsqscrW0+n6+qmG4Cy6MC9LwHcTJTwdoRMshSjaPrdIQrpuhNt6luGuv0vF
+	 W822OP4j2ObWGZCYOH2FmhK4nSRcVAOLqJy5bKgXJ9QM9jADglgRVyQAHu3/8C2+ox
+	 nxOoyeLNWjAlkESs7tjRHtTA+5x0krjRZM7tgucYDZEEc21GCUzppxwHPDYy2HX1bP
+	 EgKOwQCWOh7QAcfvYsQZbXxTU+e7TFjHXRIZqbvuGJn3b2REFftA0PpJoYwcQRn++L
+	 TM/M4V1seQaa/ZiaRwRDaPIEwYHzfcYZ4o+0VrquwEUALMZupX0AHvHMIV7VHL+cCo
+	 Ejwv2bKCpAu0riLlnMKOLvqk=
+Received: from [IPV6:2a10:3781:99:1:1ac0:4dff:fea7:ec3a] (racer.ijzerbout.nl [IPv6:2a10:3781:99:1:1ac0:4dff:fea7:ec3a])
+	by bout3.ijzerbout.nl (Postfix) with ESMTPSA id 554D01601C1;
+	Wed, 19 Feb 2025 22:36:58 +0100 (CET)
+Message-ID: <4cf65af4-4b86-47b2-bfd0-3dd5a15c91ff@ijzerbout.nl>
+Date: Wed, 19 Feb 2025 22:36:55 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [net-next PATCH v6 3/6] octeontx2-pf: AF_XDP zero copy receive
+ support
+To: Suman Ghosh <sumang@marvell.com>, horms@kernel.org, sgoutham@marvell.com,
+ gakula@marvell.com, sbhatta@marvell.com, hkelam@marvell.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lcherian@marvell.com, jerinj@marvell.com, john.fastabend@gmail.com,
+ bbhushan2@marvell.com, hawk@kernel.org, andrew+netdev@lunn.ch,
+ ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org,
+ larysa.zaremba@intel.com
+References: <20250213053141.2833254-1-sumang@marvell.com>
+ <20250213053141.2833254-4-sumang@marvell.com>
+Content-Language: en-US
+From: Kees Bakker <kees@ijzerbout.nl>
+In-Reply-To: <20250213053141.2833254-4-sumang@marvell.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, 2025-02-19 at 13:56 +0100, Kumar Kartikeya Dwivedi wrote:
-
-[...]
-
-> It also leads to veristat regression (+80-100% in states) in two selftest=
-s.
->=20
-> We probably want to avoid doing push_stack due to the states increase,
-> and instead mark the stack slot instead whenever the returned
-> PTR_TO_MEM is used for writing, but we'll have to keep remarking
-> whenever writes happen, so it requires stashing some stack slot state
-> in the register.
-> The other option is invalidating the returned PTR_TO_MEM when the
-> buffer on the stack is written to (i.e. the stack location gets
-> reused).
-
-Would it be wrong, to always consider r0 to be a pointer to stack if
-buffer is provided? It's like modelling the PTR_TO_MEM with some
-additional precision.
-
-Otherwise, I think push_stack() is fine, as it keeps implementation simple.
-
+Op 13-02-2025 om 06:31 schreef Suman Ghosh:
+> This patch adds support to AF_XDP zero copy for CN10K.
+> This patch specifically adds receive side support. In this approach once
+> a xdp program with zero copy support on a specific rx queue is enabled,
+> then that receive quse is disabled/detached from the existing kernel
+> queue and re-assigned to the umem memory.
+>
+> Signed-off-by: Suman Ghosh <sumang@marvell.com>
+> ---
+>   .../ethernet/marvell/octeontx2/nic/Makefile   |   2 +-
+>   .../ethernet/marvell/octeontx2/nic/cn10k.c    |   7 +-
+>   .../marvell/octeontx2/nic/otx2_common.c       | 114 ++++++++---
+>   .../marvell/octeontx2/nic/otx2_common.h       |   6 +-
+>   .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |  25 ++-
+>   .../marvell/octeontx2/nic/otx2_txrx.c         |  73 +++++--
+>   .../marvell/octeontx2/nic/otx2_txrx.h         |   6 +
+>   .../ethernet/marvell/octeontx2/nic/otx2_vf.c  |  12 +-
+>   .../ethernet/marvell/octeontx2/nic/otx2_xsk.c | 182 ++++++++++++++++++
+>   .../ethernet/marvell/octeontx2/nic/otx2_xsk.h |  21 ++
+>   .../ethernet/marvell/octeontx2/nic/qos_sq.c   |   2 +-
+>   11 files changed, 389 insertions(+), 61 deletions(-)
+>   create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/otx2_xsk.c
+>   create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/otx2_xsk.h
+>
+>
+> [...]
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_xsk.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_xsk.c
+> new file mode 100644
+> index 000000000000..894c1e0aea6f
+> --- /dev/null
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_xsk.c
+>
+> [...]
+> +static void otx2_clean_up_rq(struct otx2_nic *pfvf, int qidx)
+> +{
+> +	struct otx2_qset *qset = &pfvf->qset;
+> +	struct otx2_cq_queue *cq;
+> +	struct otx2_pool *pool;
+> +	u64 iova;
+> +
+> +	/* If the DOWN flag is set SQs are already freed */
+> +	if (pfvf->flags & OTX2_FLAG_INTF_DOWN)
+> +		return;
+> +
+> +	cq = &qset->cq[qidx];
+> +	if (cq)
+> +		otx2_cleanup_rx_cqes(pfvf, cq, qidx);
+The if check makes no sense, cq is always != NULL
+> +
+> [...]
+> +int otx2_xsk_wakeup(struct net_device *dev, u32 queue_id, u32 flags)
+> +{
+> +	struct otx2_nic *pf = netdev_priv(dev);
+> +	struct otx2_cq_poll *cq_poll = NULL;
+> +	struct otx2_qset *qset = &pf->qset;
+> +
+> +	if (pf->flags & OTX2_FLAG_INTF_DOWN)
+> +		return -ENETDOWN;
+> +
+> +	if (queue_id >= pf->hw.rx_queues)
+> +		return -EINVAL;
+> +
+> +	cq_poll = &qset->napi[queue_id];
+> +	if (!cq_poll)
+> +		return -EINVAL;
+cq_poll can never be NULL.
+> [...]
+>
 
