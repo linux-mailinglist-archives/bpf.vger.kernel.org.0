@@ -1,155 +1,430 @@
-Return-Path: <bpf+bounces-51954-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51955-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA8F7A3C354
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 16:16:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA8A0A3C375
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 16:20:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 013D97A57F1
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 15:15:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5569189C0C9
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 15:19:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4510B1F30DE;
-	Wed, 19 Feb 2025 15:15:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kI1Ld7VO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 730911F30DE;
+	Wed, 19 Feb 2025 15:18:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5582319AD8D;
-	Wed, 19 Feb 2025 15:15:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D7B61632DF;
+	Wed, 19 Feb 2025 15:18:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739978150; cv=none; b=tUuXZPSuYF536DRqX6/v/9imv+cYIuDRNKPgRe2tlPlFdy+oJemd3Xa4t9QDPDP1b8IDfAk7Mf/cfPnC4xfT6dDhHrVe55ci1hlBuGC5X46ahAM2gjyrBey538GMaIXghx6WgTkB6i2C6wIt+9NS0iu0Ar4WA9jeNNk/v6HE024=
+	t=1739978320; cv=none; b=OZhDP/a3FFOVgy96USbjWa81Zt1+vc2riX+fvjOXyQ1KlU3UR4MIP9Lhz5T3NcZoLcKXe/7s5TS9plyz0sBZ//vwMJQQ9Psesf66hUQQ3wSoic1j4gUJGgNnGTPKz8icDFk2Gr/qDVRZIobPpAIRSIsI3GHDvaj4XnuxZWDlddY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739978150; c=relaxed/simple;
-	bh=5KRfKV5zScOeINpScp/M+94YFIqjnoMZpAMiuoxF37o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Axq/equuBETPTOwaj5/IYvc8fn25lJMh4c3gAV8TvPc5tKM8LF8Ap4S8EXsXuhjI9SynMpXwCDlPYr6MdnHoAEBlscNNG+cGfo2CLyhpFbTGBkZ0lmTIwd3IjjFnd9nS77lwp3hrAIdIvQ3hOP4ntz/MEa4d7S11SgQ0OHgTbpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kI1Ld7VO; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-220c665ef4cso104024735ad.3;
-        Wed, 19 Feb 2025 07:15:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739978148; x=1740582948; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FFZCvP+VypO5M1ubhfpGlg17yxQ00UK58exZlvQ9tsY=;
-        b=kI1Ld7VODaahym+0kZL5VWIT0Ze439dBmO9+G1P7M+7Dr8qpUAPAZD9q0S2Y/W4yoA
-         6n66u4EyTG3n1zwkCKUcJv48ICfQHEUzHNHMC/YiyvfrbNBYU3MIy7rrnJDSiztGi79S
-         FFAg5m3fy9LHiP4Tw7bIZxu/49PD3hytixlLKd4aC3Pb8n8Dgf/4CC6ckqAmgNoFTX+E
-         fFaWTkDPu7dfprre8GHz1NXGr2ykAbpxYCm9/7DbHDd18TxFvdALQTBDgBJSkgHM1M6a
-         uJKZyitXzmw/D2O2WfXlBbA9TxpzwXqGOqZiyh652+m6Mh3T7YqGWYkS8ogo2XpBroVr
-         saiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739978148; x=1740582948;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=FFZCvP+VypO5M1ubhfpGlg17yxQ00UK58exZlvQ9tsY=;
-        b=UJJ+m/b4vElEixq2Oo94ycrM9N4kJnZYShTLiKuY55UPIDg3OmpgT62C7tYdMF3bau
-         2RNEH1xh01LZDe5GyBaQvhhJWk9WLQy3i7hLA2FgLlJL4SbJz4Kp65ZLtaOeCJS/Tdb0
-         UiZNo3mClrR+UjHGwTu9sJwL82p0jMpMTfScZEzjMXjucqobUHoBaW/oRaiF7APioBK9
-         AsYl9rapBZAl4hA4d1wkB1ZfOd+1cLWXJs/SpU2zuRb4QH7Hog+SzYIZCHroWD/Plysz
-         xqRbq4IuRPlKekeOPNpwf3RADl112w8ovH66fjJ/Cx/MsBTBvXehr90bndBxAzhSp6J8
-         25PA==
-X-Forwarded-Encrypted: i=1; AJvYcCXMZ6HLwuNJ1WS5xXD+KLYXAuzZ0MVXiudpeFtz/NrneKEPop5nKgpFF2NFkfBAco49XrMTnQ+hr2014CQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzFvXX9UmMEOCJJNDYEnKh8Mg+B+VAL2PPi+fzKNRVv1JIAcSFY
-	gB4sp4W/4u2Eo2LefYOoB0x28xwmpuNVYRbXZu/RWiLVRnAgssGa
-X-Gm-Gg: ASbGncvtQzCfsWf2uAyjhrWgMuouGiMM/UybEZQ0V/Y1QvYHZhjm/1/33lmBsUkQgNR
-	R6EnhLuZYtCxcQcD+hZcrXWkMZdzx/+HIK3CURMB+HS3AvbDb/j7kFahP3CSQitX4NfVKAcm4CS
-	H4X4kD4SbedfPiadOuuj53GlsMbp31dzo3sTKl2wy6bpG6ODKUHDPZRLH5TZ+eoRazmrw30XQ44
-	xQ/Si68kJqDN1bnAUKTmnC31icFqzNXqudypU5H0R4q1rl6sTq29eZP9oommCzhfYqXRi8JX2pm
-	fi0kNU8CWdZw5SY8gRGy6e/8iO43hIfTmA==
-X-Google-Smtp-Source: AGHT+IHf97y6BsTdKWRbngclqAs1L8w/TnFdT5LmTK8LFNOkE7K59c60tIj5TJxDiKjZOxroe+9u/Q==
-X-Received: by 2002:a17:902:e841:b0:21f:860:6d0d with SMTP id d9443c01a7336-22103efb488mr312692255ad.5.1739978148310;
-        Wed, 19 Feb 2025 07:15:48 -0800 (PST)
-Received: from [192.168.50.123] ([117.147.90.60])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-220d5586075sm105347415ad.228.2025.02.19.07.15.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Feb 2025 07:15:47 -0800 (PST)
-Message-ID: <b387d566-e460-4cae-bddb-67abe70d9f83@gmail.com>
-Date: Wed, 19 Feb 2025 23:15:24 +0800
+	s=arc-20240116; t=1739978320; c=relaxed/simple;
+	bh=iciMOWjrey3nk4HmBWZp6wXMsDXNf08ONLcDkBIBkP8=;
+	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type; b=ccRgUaafUeiCm7CVbUnSDm3K/no3tpYfhi7InDW4J2b7jRpHuXVvJgFJhJ/6EQg0pY4+Bp85RqTTaE610qYcDh8/0LAzZqXSKO8qF43hvSb2r1DuAfzIyrAjU7z4fNsPl1IvWR4mUvH/d9XdRS0pnYni6RuOUesqrmnTR2ozsNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92E41C4CEE0;
+	Wed, 19 Feb 2025 15:18:39 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.98)
+	(envelope-from <rostedt@goodmis.org>)
+	id 1tklqq-00000004bYo-0TKL;
+	Wed, 19 Feb 2025 10:19:04 -0500
+Message-ID: <20250219151903.966400184@goodmis.org>
+User-Agent: quilt/0.68
+Date: Wed, 19 Feb 2025 10:18:16 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linux-kernel@vger.kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ bpf <bpf@vger.kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Masahiro Yamada <masahiroy@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nicolas Schier <nicolas@fjasle.eu>,
+ Zheng Yejian <zhengyejian1@huawei.com>,
+ Martin  Kelly <martin.kelly@crowdstrike.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Josh Poimboeuf <jpoimboe@redhat.com>,
+ Heiko Carstens <hca@linux.ibm.com>,
+ Will Deacon <will@kernel.org>,
+ Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>
+Subject: [for-next][PATCH 1/6] arm64: scripts/sorttable: Implement sorting mcount_loc at boot for
+ arm64
+References: <20250219151815.734900568@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] libbpf: Wrap libbpf API direct err with libbpf_err
-To: Eduard Zingerman <eddyz87@gmail.com>, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, haoluo@google.com,
- jolsa@kernel.org, qmo@kernel.org
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250214141717.26847-1-chen.dylane@gmail.com>
- <88f0c25cc981f958e46d51560fbf6db7136a3fa0.camel@gmail.com>
- <9df12336-ca00-4d45-a832-24203c334df7@gmail.com>
- <745bb51eb27835c93e7d4d6f1760c920417ad7f4.camel@gmail.com>
-From: Tao Chen <chen.dylane@gmail.com>
-In-Reply-To: <745bb51eb27835c93e7d4d6f1760c920417ad7f4.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
 
-在 2025/2/19 14:34, Eduard Zingerman 写道:
-> On Wed, 2025-02-19 at 14:23 +0800, Tao Chen wrote:
->> 在 2025/2/19 10:08, Eduard Zingerman 写道:
->>> On Fri, 2025-02-14 at 22:17 +0800, Tao Chen wrote:
->>>> Just wrap the direct err with libbpf_err, keep consistency
->>>> with other APIs.
->>>>
->>>> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
->>>> ---
->>>
->>> While at it, I've noticed two more places that need libbpf_err() calls.
->>> Could you please check the following locations:
->>>
->>> bpf_map__set_value_size:
->>>     return -EOPNOTSUPP;       tools/lib/bpf/libbpf.c:10309
->>>     return err;               tools/lib/bpf/libbpf.c:10317
->>
->> Will change it. Thanks
->>
->>>
->>> ?
->>>
->>> Other than that, I agree with changes in this patch.
->>>
->>> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
->>>
->>> [...]
->>>
->>
->> I use a simple script, other places may also should be added:
-> 
-> Yeah, makes sense :)
-> 
->>
->> 9727 line: return NUL; (API:libbpf_bpf_attach_type_str)
->> 9735 line: return NULL; (API: libbpf_bpf_link_type_str)
->> 9743 line: return NULL; (API: libbpf_bpf_map_type_str)
->> 9751 line: return NULL; (API: libbpf_bpf_prog_type_str)
->> 10151 line: return NULL; (API: bpf_map__name)
-> 
-> Sort of makes sense for these.
-> Idk, I'm fine with and without changes to these functions.
-> 
+From: Steven Rostedt <rostedt@goodmis.org>
 
-Well，then I'll still keep these and won't make any modifications.
+The mcount_loc section holds the addresses of the functions that get
+patched by ftrace when enabling function callbacks. It can contain tens of
+thousands of entries. These addresses must be sorted. If they are not
+sorted at compile time, they are sorted at boot. Sorting at boot does take
+some time and does have a small impact on boot performance.
 
->> 10458 line: return NULL; (API: bpf_object__prev_map)
-> 
-> This is not an error, I think.
-> 
-> [...]
-> 
+x86 and arm32 have the addresses in the mcount_loc section of the ELF
+file. But for arm64, the section just contains zeros. The .rela.dyn
+Elf_Rela section holds the addresses and they get patched at boot during
+the relocation phase.
 
+In order to sort these addresses, the Elf_Rela needs to be updated instead
+of the location in the binary that holds the mcount_loc section. Have the
+sorttable code, allocate an array to hold the functions, load the
+addresses from the Elf_Rela entries, sort them, then put them back in
+order into the Elf_rela entries so that they will be sorted at boot up
+without having to sort them during boot up.
 
+Cc: bpf <bpf@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nicolas Schier <nicolas@fjasle.eu>
+Cc: Zheng Yejian <zhengyejian1@huawei.com>
+Cc: Martin  Kelly <martin.kelly@crowdstrike.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>
+Link: https://lore.kernel.org/20250218200022.373319428@goodmis.org
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ arch/arm64/Kconfig  |   1 +
+ scripts/sorttable.c | 185 +++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 183 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 940343beb3d4..4521ecefc031 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -217,6 +217,7 @@ config ARM64
+ 		if DYNAMIC_FTRACE_WITH_ARGS
+ 	select HAVE_SAMPLE_FTRACE_DIRECT
+ 	select HAVE_SAMPLE_FTRACE_DIRECT_MULTI
++	select HAVE_BUILDTIME_MCOUNT_SORT
+ 	select HAVE_EFFICIENT_UNALIGNED_ACCESS
+ 	select HAVE_GUP_FAST
+ 	select HAVE_FTRACE_GRAPH_FUNC
+diff --git a/scripts/sorttable.c b/scripts/sorttable.c
+index 9f41575afd7a..4a34c275123e 100644
+--- a/scripts/sorttable.c
++++ b/scripts/sorttable.c
+@@ -28,6 +28,7 @@
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <stdbool.h>
+ #include <string.h>
+ #include <unistd.h>
+ #include <errno.h>
+@@ -79,10 +80,16 @@ typedef union {
+ 	Elf64_Sym	e64;
+ } Elf_Sym;
+ 
++typedef union {
++	Elf32_Rela	e32;
++	Elf64_Rela	e64;
++} Elf_Rela;
++
+ static uint32_t (*r)(const uint32_t *);
+ static uint16_t (*r2)(const uint16_t *);
+ static uint64_t (*r8)(const uint64_t *);
+ static void (*w)(uint32_t, uint32_t *);
++static void (*w8)(uint64_t, uint64_t *);
+ typedef void (*table_sort_t)(char *, int);
+ 
+ static struct elf_funcs {
+@@ -102,6 +109,10 @@ static struct elf_funcs {
+ 	uint32_t (*sym_name)(Elf_Sym *sym);
+ 	uint64_t (*sym_value)(Elf_Sym *sym);
+ 	uint16_t (*sym_shndx)(Elf_Sym *sym);
++	uint64_t (*rela_offset)(Elf_Rela *rela);
++	uint64_t (*rela_info)(Elf_Rela *rela);
++	uint64_t (*rela_addend)(Elf_Rela *rela);
++	void (*rela_write_addend)(Elf_Rela *rela, uint64_t val);
+ } e;
+ 
+ static uint64_t ehdr64_shoff(Elf_Ehdr *ehdr)
+@@ -262,6 +273,38 @@ SYM_ADDR(value)
+ SYM_WORD(name)
+ SYM_HALF(shndx)
+ 
++#define __maybe_unused			__attribute__((__unused__))
++
++#define RELA_ADDR(fn_name)					\
++static uint64_t rela64_##fn_name(Elf_Rela *rela)		\
++{								\
++	return r8((uint64_t *)&rela->e64.r_##fn_name);		\
++}								\
++								\
++static uint64_t rela32_##fn_name(Elf_Rela *rela)		\
++{								\
++	return r((uint32_t *)&rela->e32.r_##fn_name);		\
++}								\
++								\
++static uint64_t __maybe_unused rela_##fn_name(Elf_Rela *rela)	\
++{								\
++	return e.rela_##fn_name(rela);				\
++}
++
++RELA_ADDR(offset)
++RELA_ADDR(info)
++RELA_ADDR(addend)
++
++static void rela64_write_addend(Elf_Rela *rela, uint64_t val)
++{
++	w8(val, (uint64_t *)&rela->e64.r_addend);
++}
++
++static void rela32_write_addend(Elf_Rela *rela, uint64_t val)
++{
++	w(val, (uint32_t *)&rela->e32.r_addend);
++}
++
+ /*
+  * Get the whole file as a programming convenience in order to avoid
+  * malloc+lseek+read+free of many pieces.  If successful, then mmap
+@@ -341,6 +384,16 @@ static void wle(uint32_t val, uint32_t *x)
+ 	put_unaligned_le32(val, x);
+ }
+ 
++static void w8be(uint64_t val, uint64_t *x)
++{
++	put_unaligned_be64(val, x);
++}
++
++static void w8le(uint64_t val, uint64_t *x)
++{
++	put_unaligned_le64(val, x);
++}
++
+ /*
+  * Move reserved section indices SHN_LORESERVE..SHN_HIRESERVE out of
+  * the way to -256..-1, to avoid conflicting with real section
+@@ -398,13 +451,12 @@ static inline void *get_index(void *start, int entsize, int index)
+ static int extable_ent_size;
+ static int long_size;
+ 
++#define ERRSTR_MAXSZ	256
+ 
+ #ifdef UNWINDER_ORC_ENABLED
+ /* ORC unwinder only support X86_64 */
+ #include <asm/orc_types.h>
+ 
+-#define ERRSTR_MAXSZ	256
+-
+ static char g_err[ERRSTR_MAXSZ];
+ static int *g_orc_ip_table;
+ static struct orc_entry *g_orc_table;
+@@ -499,7 +551,19 @@ static void *sort_orctable(void *arg)
+ #endif
+ 
+ #ifdef MCOUNT_SORT_ENABLED
++
++/* Only used for sorting mcount table */
++static void rela_write_addend(Elf_Rela *rela, uint64_t val)
++{
++	e.rela_write_addend(rela, val);
++}
++
+ static pthread_t mcount_sort_thread;
++static bool sort_reloc;
++
++static long rela_type;
++
++static char m_err[ERRSTR_MAXSZ];
+ 
+ struct elf_mcount_loc {
+ 	Elf_Ehdr *ehdr;
+@@ -508,6 +572,103 @@ struct elf_mcount_loc {
+ 	uint64_t stop_mcount_loc;
+ };
+ 
++/* Sort the relocations not the address itself */
++static void *sort_relocs(Elf_Ehdr *ehdr, uint64_t start_loc, uint64_t size)
++{
++	Elf_Shdr *shdr_start;
++	Elf_Rela *rel;
++	unsigned int shnum;
++	unsigned int count;
++	int shentsize;
++	void *vals;
++	void *ptr;
++
++	shdr_start = (Elf_Shdr *)((char *)ehdr + ehdr_shoff(ehdr));
++	shentsize = ehdr_shentsize(ehdr);
++
++	vals = malloc(long_size * size);
++	if (!vals) {
++		snprintf(m_err, ERRSTR_MAXSZ, "Failed to allocate sort array");
++		pthread_exit(m_err);
++		return NULL;
++	}
++
++	ptr = vals;
++
++	shnum = ehdr_shnum(ehdr);
++	if (shnum == SHN_UNDEF)
++		shnum = shdr_size(shdr_start);
++
++	for (int i = 0; i < shnum; i++) {
++		Elf_Shdr *shdr = get_index(shdr_start, shentsize, i);
++		void *end;
++
++		if (shdr_type(shdr) != SHT_RELA)
++			continue;
++
++		rel = (void *)ehdr + shdr_offset(shdr);
++		end = (void *)rel + shdr_size(shdr);
++
++		for (; (void *)rel < end; rel = (void *)rel + shdr_entsize(shdr)) {
++			uint64_t offset = rela_offset(rel);
++
++			if (offset >= start_loc && offset < start_loc + size) {
++				if (ptr + long_size > vals + size) {
++					free(vals);
++					snprintf(m_err, ERRSTR_MAXSZ,
++						 "Too many relocations");
++					pthread_exit(m_err);
++					return NULL;
++				}
++
++				/* Make sure this has the correct type */
++				if (rela_info(rel) != rela_type) {
++					free(vals);
++					snprintf(m_err, ERRSTR_MAXSZ,
++						"rela has type %lx but expected %lx\n",
++						(long)rela_info(rel), rela_type);
++					pthread_exit(m_err);
++					return NULL;
++				}
++
++				if (long_size == 4)
++					*(uint32_t *)ptr = rela_addend(rel);
++				else
++					*(uint64_t *)ptr = rela_addend(rel);
++				ptr += long_size;
++			}
++		}
++	}
++	count = ptr - vals;
++	qsort(vals, count / long_size, long_size, compare_extable);
++
++	ptr = vals;
++	for (int i = 0; i < shnum; i++) {
++		Elf_Shdr *shdr = get_index(shdr_start, shentsize, i);
++		void *end;
++
++		if (shdr_type(shdr) != SHT_RELA)
++			continue;
++
++		rel = (void *)ehdr + shdr_offset(shdr);
++		end = (void *)rel + shdr_size(shdr);
++
++		for (; (void *)rel < end; rel = (void *)rel + shdr_entsize(shdr)) {
++			uint64_t offset = rela_offset(rel);
++
++			if (offset >= start_loc && offset < start_loc + size) {
++				if (long_size == 4)
++					rela_write_addend(rel, *(uint32_t *)ptr);
++				else
++					rela_write_addend(rel, *(uint64_t *)ptr);
++				ptr += long_size;
++			}
++		}
++	}
++	free(vals);
++	return NULL;
++}
++
+ /* Sort the addresses stored between __start_mcount_loc to __stop_mcount_loc in vmlinux */
+ static void *sort_mcount_loc(void *arg)
+ {
+@@ -517,6 +678,9 @@ static void *sort_mcount_loc(void *arg)
+ 	uint64_t count = emloc->stop_mcount_loc - emloc->start_mcount_loc;
+ 	unsigned char *start_loc = (void *)emloc->ehdr + offset;
+ 
++	if (sort_reloc)
++		return sort_relocs(emloc->ehdr, emloc->start_mcount_loc, count);
++
+ 	qsort(start_loc, count/long_size, long_size, compare_extable);
+ 	return NULL;
+ }
+@@ -866,12 +1030,14 @@ static int do_file(char const *const fname, void *addr)
+ 		r2	= r2le;
+ 		r8	= r8le;
+ 		w	= wle;
++		w8	= w8le;
+ 		break;
+ 	case ELFDATA2MSB:
+ 		r	= rbe;
+ 		r2	= r2be;
+ 		r8	= r8be;
+ 		w	= wbe;
++		w8	= w8be;
+ 		break;
+ 	default:
+ 		fprintf(stderr, "unrecognized ELF data encoding %d: %s\n",
+@@ -887,8 +1053,13 @@ static int do_file(char const *const fname, void *addr)
+ 	}
+ 
+ 	switch (r2(&ehdr->e32.e_machine)) {
+-	case EM_386:
+ 	case EM_AARCH64:
++#ifdef MCOUNT_SORT_ENABLED
++		sort_reloc = true;
++		rela_type = 0x403;
++#endif
++		/* fallthrough */
++	case EM_386:
+ 	case EM_LOONGARCH:
+ 	case EM_RISCV:
+ 	case EM_S390:
+@@ -932,6 +1103,10 @@ static int do_file(char const *const fname, void *addr)
+ 			.sym_name		= sym32_name,
+ 			.sym_value		= sym32_value,
+ 			.sym_shndx		= sym32_shndx,
++			.rela_offset		= rela32_offset,
++			.rela_info		= rela32_info,
++			.rela_addend		= rela32_addend,
++			.rela_write_addend	= rela32_write_addend,
+ 		};
+ 
+ 		e = efuncs;
+@@ -965,6 +1140,10 @@ static int do_file(char const *const fname, void *addr)
+ 			.sym_name		= sym64_name,
+ 			.sym_value		= sym64_value,
+ 			.sym_shndx		= sym64_shndx,
++			.rela_offset		= rela64_offset,
++			.rela_info		= rela64_info,
++			.rela_addend		= rela64_addend,
++			.rela_write_addend	= rela64_write_addend,
+ 		};
+ 
+ 		e = efuncs;
 -- 
-Best Regards
-Tao Chen
+2.47.2
+
+
 
