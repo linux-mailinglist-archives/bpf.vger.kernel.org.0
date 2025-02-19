@@ -1,176 +1,93 @@
-Return-Path: <bpf+bounces-51958-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51962-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA0AAA3C370
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 16:19:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D3F9A3C385
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 16:23:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1E03164DB9
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 15:19:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D81771885DB8
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 15:22:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E2F61F63C3;
-	Wed, 19 Feb 2025 15:18:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D744B19149F;
+	Wed, 19 Feb 2025 15:21:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 859231F462D;
-	Wed, 19 Feb 2025 15:18:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 760A185C5E;
+	Wed, 19 Feb 2025 15:21:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739978320; cv=none; b=T2+htAusYordsWL/8Z4wqCwK4qw3a1WcQdeH91F2VQJt2/fEzGK9sOqDeNfJUuyT/xH2byYy8bIriTU9LDOYnl+mLYi1yjrKbqHHrWIPTYfKpi2eCtlVhusJlhnrdkONcmx1tcnAPJ1iLofdSj+aNsC6Y+X+LJZjpzoaPEov5LQ=
+	t=1739978519; cv=none; b=btjLN5IVQFU9sftt+q15/W2egIiRc2S7CtfkA0HOY3/lEhW3wMO4amz3iDJIfuSF7okohFAlh+EHfP2fQ7HQ/y4TOqohcq86R/RjXlvTNmipYgciqq9zXVvIoHCc4GdbT3usQdnFXkBmC2uzlvRbCKsBEABlZ2AlnaQk5saJIfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739978320; c=relaxed/simple;
-	bh=ZRPURUeCAkTDmo+Kg/vefAHs6hoBKvDj93aPdKVfbJw=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=fQJNMoy6xqmclFm+9czCfEXtFI3IOFaUUsPY23aS3tHW1nkJNVpeVmSuCFrY4CwH9YqJy/bFu+EqA5Ck+EThDa8uNechkU+orC2YLjiLqhu6wx2YnvGdq9EtBPitdWPh8/5vQ6RC2zpCqK4YwVgYOkWcKC8Rtd/FdD/epb/wWuo=
+	s=arc-20240116; t=1739978519; c=relaxed/simple;
+	bh=6PhGFUTZ7jEy7Fueq9ZKSMRknajhNZU7gjTbXc05EUQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=C6KZAUJvOcrh/taEmtS+XfNARZhIgfOYBPKUpwRGOSRDYdbcPXHBsvhNjKeHcY0XC3py8nquHL0SH4s3amo2WjCFkboTsUkU+lXim/9L8HkhWYySztNvgEUoRadEhyIScFm2fppaPngyaxuSdLJhKxj8SqykVXr99nH6SIMcKCo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DE14C4CEE8;
-	Wed, 19 Feb 2025 15:18:40 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.98)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1tklqq-00000004bbG-42cL;
-	Wed, 19 Feb 2025 10:19:04 -0500
-Message-ID: <20250219151904.814826218@goodmis.org>
-User-Agent: quilt/0.68
-Date: Wed, 19 Feb 2025 10:18:21 -0500
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 871CBC4CED1;
+	Wed, 19 Feb 2025 15:21:56 +0000 (UTC)
+Date: Wed, 19 Feb 2025 10:22:20 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- bpf <bpf@vger.kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Masahiro Yamada <masahiroy@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>,
- Nicolas Schier <nicolas@fjasle.eu>,
- Zheng Yejian <zhengyejian1@huawei.com>,
- Martin  Kelly <martin.kelly@crowdstrike.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Josh Poimboeuf <jpoimboe@redhat.com>,
- Heiko Carstens <hca@linux.ibm.com>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will@kernel.org>,
- Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>
-Subject: [for-next][PATCH 6/6] ftrace: Have ftrace pages output reflect freed pages
-References: <20250219151815.734900568@goodmis.org>
+To: Heiko Carstens <hca@linux.ibm.com>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org, Masami
+ Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, Linus
+ Torvalds <torvalds@linux-foundation.org>, Masahiro Yamada
+ <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, Nicolas
+ Schier <nicolas@fjasle.eu>, Zheng Yejian <zhengyejian1@huawei.com>, Martin
+ Kelly <martin.kelly@crowdstrike.com>, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Josh Poimboeuf <jpoimboe@redhat.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev
+ <agordeev@linux.ibm.com>
+Subject: Re: [PATCH v4 0/6] scripts/sorttable: ftrace: Remove place holders
+ for weak functions in available_filter_functions
+Message-ID: <20250219102220.3b79ec5e@gandalf.local.home>
+In-Reply-To: <20250218145836.7740B3b-hca@linux.ibm.com>
+References: <20250217153401.022858448@goodmis.org>
+	<20250218145836.7740B3b-hca@linux.ibm.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: Steven Rostedt <rostedt@goodmis.org>
+On Tue, 18 Feb 2025 15:58:36 +0100
+Heiko Carstens <hca@linux.ibm.com> wrote:
 
-The amount of memory that ftrace uses to save the descriptors to manage
-the functions it can trace is shown at output. But if there are a lot of
-functions that are skipped because they were weak or the architecture
-added holes into the tables, then the extra pages that were allocated are
-freed. But these freed pages are not reflected in the numbers shown, and
-they can even be inconsistent with what is reported:
+> Hi Steven,
+> 
+> > This series removes the place holder __ftrace_invalid_address___ from
+> > the available_filter_functions file.
+> > 
+> > The rewriting of the sorttable.c code to make it more manageable
+> > has already been merged:
+> > 
+> >   https://git.kernel.org/torvalds/c/c0e75905caf368e19aab585d20151500e750de89
+> > 
+> > Now this is only for getting rid of the ftrace invalid function place holders.  
+> 
+> Since you asked me to test this on s390: seems to work with
+> HAVE_BUILDTIME_MCOUNT_SORT enabled; the ftrace selftests still
+> work as before.
 
- ftrace: allocating 57482 entries in 225 pages
- ftrace: allocated 224 pages with 3 groups
+Great!
 
-The above shows the number of original entries that are in the mcount_loc
-section and the pages needed to save them (225), but the second output
-reflects the number of pages that were actually used. The two should be
-consistent as:
+I'm guessing by just adding the support in s390 with what is upstream as
+well as what is in my for-next would work? You can just add that for the
+next merge window then.
 
- ftrace: allocating 56739 entries in 224 pages
- ftrace: allocated 224 pages with 3 groups
+Expect this code to be in linux-next later this week.
 
-The above also shows the accurate number of entires that were actually
-stored and does not include the entries that were removed.
-
-Cc: bpf <bpf@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nicolas Schier <nicolas@fjasle.eu>
-Cc: Zheng Yejian <zhengyejian1@huawei.com>
-Cc: Martin  Kelly <martin.kelly@crowdstrike.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-Link: https://lore.kernel.org/20250218200023.221100846@goodmis.org
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- kernel/trace/ftrace.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index e657013424aa..27c8def2139d 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -7006,6 +7006,7 @@ static int ftrace_process_locs(struct module *mod,
- 	unsigned long addr;
- 	unsigned long kaslr;
- 	unsigned long flags = 0; /* Shut up gcc */
-+	unsigned long pages;
- 	int ret = -ENOMEM;
- 
- 	count = end - start;
-@@ -7013,6 +7014,8 @@ static int ftrace_process_locs(struct module *mod,
- 	if (!count)
- 		return 0;
- 
-+	pages = DIV_ROUND_UP(count, ENTRIES_PER_PAGE);
-+
- 	/*
- 	 * Sorting mcount in vmlinux at build time depend on
- 	 * CONFIG_BUILDTIME_MCOUNT_SORT, while mcount loc in
-@@ -7124,6 +7127,8 @@ static int ftrace_process_locs(struct module *mod,
- 			for (pg = pg_unuse; pg; pg = pg->next)
- 				remaining += 1 << pg->order;
- 
-+			pages -= remaining;
-+
- 			skip = DIV_ROUND_UP(skip, ENTRIES_PER_PAGE);
- 
- 			/*
-@@ -7137,6 +7142,13 @@ static int ftrace_process_locs(struct module *mod,
- 		synchronize_rcu();
- 		ftrace_free_pages(pg_unuse);
- 	}
-+
-+	if (!mod) {
-+		count -= skipped;
-+		pr_info("ftrace: allocating %ld entries in %ld pages\n",
-+			count, pages);
-+	}
-+
- 	return ret;
- }
- 
-@@ -7782,9 +7794,6 @@ void __init ftrace_init(void)
- 		goto failed;
- 	}
- 
--	pr_info("ftrace: allocating %ld entries in %ld pages\n",
--		count, DIV_ROUND_UP(count, ENTRIES_PER_PAGE));
--
- 	ret = ftrace_process_locs(NULL,
- 				  __start_mcount_loc,
- 				  __stop_mcount_loc);
--- 
-2.47.2
-
-
+-- Steve
 
