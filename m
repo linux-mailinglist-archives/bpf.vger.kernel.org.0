@@ -1,207 +1,183 @@
-Return-Path: <bpf+bounces-51951-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-51952-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDC9CA3C33C
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 16:13:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67444A3C341
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 16:13:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58A9F188E501
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 15:13:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D691D7A74DF
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 15:12:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E0B41F419E;
-	Wed, 19 Feb 2025 15:12:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCEE01F4183;
+	Wed, 19 Feb 2025 15:13:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cLK1Mfy9"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GW9GPyek"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A26B61F37C3;
-	Wed, 19 Feb 2025 15:12:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B15471F4189
+	for <bpf@vger.kernel.org>; Wed, 19 Feb 2025 15:13:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739977977; cv=none; b=VZlgCsm5yitvWEg6kwt7xJrMHJKsWX4lAmD3H4NLifAoT8mCinJd1haGXw50wsXoLKBeHWfnDSmy6iAiVu6M1DjIzSmliiLeSiM4EgHdBUAI+k89FCwHmQ/VDZQABC0T/zaWO++nmIpuw9+6EWToUnn0aMZrJuZRYQFOM6qyIiQ=
+	t=1739977989; cv=none; b=OtyQWK43koAvmr0JYOjCTKGH284aGrng+N9kCZ+HDZ+AdJ43C6ydRC+A6WQr4XKUUvaVDtDrzUmaSLT2jUd2QEtLs+ZDDyYO5tQfAjh9ABNCmc+1ztR0i8/iKinLdZL8WLW75SGTuUw6CPljLTBhHuyMg/qrLs2wPMp0QFBdQSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739977977; c=relaxed/simple;
-	bh=4XKcl9PDsS77A34MYCKFCp67OI8caQR836vxK8sI+Sk=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=V2B/PSnS7My4h2LOqGjjE0wWWzIpTc5ukl6s5On8ivN62bq/b8/a+kPSHT95iQdJeqSPpAe37tiXEVqq7TwXOBsj0sWifbUBbKCkbXaGqhB/wQ4RRP/FzoTJyxHviQzC80+2Cct/SkQFQkjQC762LjJyojBkz0rG11d/9RSt4nc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cLK1Mfy9; arc=none smtp.client-ip=209.85.222.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7c0155af484so32631285a.0;
-        Wed, 19 Feb 2025 07:12:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739977974; x=1740582774; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VpO+if+/loa3bPP+te0IoE6zBxpb8bPH3QpUBm0ETo8=;
-        b=cLK1Mfy9/zsg0e77OdHfkVvcH1im4jMBZpEOaGAC51aen4m6rB/OwZW0cGCuWwVWv3
-         vnl6nKiJTtRFijsMA17WlJzlM3cW5nfsz9/5FICcr8ngSXzkhhVuE4Dfz65cAPBDRGtO
-         6WeHLQOHQnVc+UXJNmKvM9ccqjXnxv6DyD8KA/ELKVukLk8kgorRe+diFH7FL8LD2hbF
-         AQPRXB/XX4AHvHST/zfj5/Faj3/17WpEtLkPv+garUUadHVVarxTKdWfoVX4MX55TCfz
-         wFw/qk5jV9N1BoF8ji6qdCQojKaCvGnZrKz9zARA4LQojyihZMZH5pJhDUxbcX6MPRkZ
-         YiUg==
+	s=arc-20240116; t=1739977989; c=relaxed/simple;
+	bh=YEDFkhBYjRhP5Z93Fy/FXNH8qcO0tYdixMhBiEsACWQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ERSmJ+lB583A6mMspK40mrkHw7sIFcsCVEzhKlrT0JgUY6jvdtMv6B32MkbAnF12ARjdtOG3YdLRJE77KYhILm/XA2UzAe6azxKPkN4O0X/z3Hsik5iqyo/Gk+RHlVEnO/boSvg4qeDAZGiQOP5kOrHnTDTFrssS+JK8Zd+unLw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GW9GPyek; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1739977986;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YEDFkhBYjRhP5Z93Fy/FXNH8qcO0tYdixMhBiEsACWQ=;
+	b=GW9GPyekQTHonsiuL57zD47+u+pvv3Zl7lMu41Z4O6mg0ReVmlHevyBl3eQBcru2N3jwZu
+	k9R27JRRiNS53QWSMhSBaGNB9Ms8uh7mZTmLrVdVRZfz0VvxIJoPta3YcWzLr6/O0bp4GK
+	9E3HzKLwpohKweKhoeD8s1HfvoR3VBA=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-685-B_L20IqxOkSzMZO1F29ahg-1; Wed, 19 Feb 2025 10:13:05 -0500
+X-MC-Unique: B_L20IqxOkSzMZO1F29ahg-1
+X-Mimecast-MFC-AGG-ID: B_L20IqxOkSzMZO1F29ahg_1739977984
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4393b6763a3so34884935e9.2
+        for <bpf@vger.kernel.org>; Wed, 19 Feb 2025 07:13:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739977974; x=1740582774;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=VpO+if+/loa3bPP+te0IoE6zBxpb8bPH3QpUBm0ETo8=;
-        b=ieJU69Wu6Q/309+E61ZSsyMHha9sgOmfurdkPieyITN7ZsYHiCVJWWjs7OSEGYixb0
-         bTVKSnXZinYFMKT4POw8fxfbY1lAqC/UfKhPxga7Ld0tPdPz+OggNkPxRzKciJ9e9qYf
-         mEvKDdBsuUSDCoZMCbw3I4nKrep0DMPIDzn6N/EHM4ufoP/b9k4hDWhTuwGt8JHEUMNs
-         K9AITEXeSe4865dMSwKl5Jw/zjBVOvY5Fbq4v9lSBD8Tci0zDkm9UdvyYmnJcAmiczHR
-         VfH/4Ui8x8C+rjvrwWLwlySKG3Rbgx9D+DdD5W3aX1ij7jjMnj62/wyxgjhEHuJ6OPjW
-         d/Xg==
-X-Forwarded-Encrypted: i=1; AJvYcCVQpGml5XRmgJA9MR1Tj2k87vgIfnJunv4NXupE3xqN4iq8DtT15Py2/3LHwqhQQ3LIoHVKEcKz@vger.kernel.org, AJvYcCVk1Mrhyr1/nUjyUoUfby/rpKawk7pmbLdwhi6xsXSRzD1dKNbUNbVvCjWiZ+yY9Mfujuc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyTUGz4llru6J70Ri4X4mboP7JbUecyXBm2I9gmcDBnm+1UzAGs
-	G2X0Fue4apJI2H9qOwjW0z4UcdyTgHt2UN53cn+2lLIVIIjd4g4J
-X-Gm-Gg: ASbGncu/ekpsuOh5dwkUFFk8CtUISk+q0MVg02EkW0eMccqoG2OMwvqLNXGmbiLlhMC
-	cL9DgsncB70u8IXKcLjyC61JMSCTM8rQqyqBeNM3+muPysweTTUr816cq+XsTfhm/sqcC6z+rqk
-	6lEEONADIiBVdoJm03fvs76Em61oyzwTYVMKrQDRuKItbiwOz+FGh4y0OL+VAxyOUtlXOQFfUxI
-	8dZn5KhT+Us60U+4c/yvrGlMJHJf1RguvWzS558HHBWBKgFvgGBswip9r38Ib3wGJ6ovdKRDBIb
-	aDjDjtlRaaFI7hjlXMkEVgIn17Xa7wkold3bWzcVIsPQzCQtoVsI7UdHWTBs2KU=
-X-Google-Smtp-Source: AGHT+IEG6q6j15oHjc7R3Q4dcdP7o54pbY5LZO0IvcuMoglpeak4Fu/Pk1fOCobAvKLW9TyPKO2y5Q==
-X-Received: by 2002:a05:620a:2a0f:b0:7c0:6976:cea3 with SMTP id af79cd13be357-7c08a9aa3f3mr2492020185a.21.1739977974469;
-        Wed, 19 Feb 2025 07:12:54 -0800 (PST)
-Received: from localhost (15.60.86.34.bc.googleusercontent.com. [34.86.60.15])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c09f00e355sm366804285a.38.2025.02.19.07.12.53
+        d=1e100.net; s=20230601; t=1739977984; x=1740582784;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YEDFkhBYjRhP5Z93Fy/FXNH8qcO0tYdixMhBiEsACWQ=;
+        b=lFqXRDLB6OifOueAFae+391cwlbOijVa/nWFXDyDFa0Dm2p2gtjLWeCzuOrTcrZxTP
+         og0JASnAar3/EosIkmeg2ELVEKd7vBpv4Gqv3U2ftjgaM/DS6JPxXuOz1/FDlqCnHEdy
+         CsqUdYwWcWR6POP90kMwfyu6DUSWWCqQ4T7rH6cttg7CkYGrAFEHF9O2pRNRiX3DpeIn
+         9t/OAdE+pZJraYpiB+2ga6GOrZnkC3+9NN/jRHDA9WWnbW88Ym3Y/2V/rg/Q3hPeXccg
+         +tX7zz2P7NfItS/bFO+oGL1noN88ol7w1ScvEBwibYY0gYNOMQoAU6Qrk3UiLtBmCm/d
+         jX4A==
+X-Forwarded-Encrypted: i=1; AJvYcCWXFXoNA3Nh3bVNiUaBm6tz3MA4sDKQfQExnG2uJP2la2H8GPZU99HsD1TdAPTwBHltL1w=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxjoV92DHIUZp4y3V/1UBuKqk+jegHaRoKWwgHWUhHZFTf5abdY
+	HPRfn6O9k0e4At98xO1qcqQfAr301i1OxjtCe8dRwDG7k8y54x4UzdZ99y+GVhvkczp45qUDNLU
+	jcGRXI4m/Hgxqfa+qk0wqW+NM0RaA41SXPGEuoP0NuiLapmXahQ==
+X-Gm-Gg: ASbGnctjHjBIeOLc0FSgafxrkDrLbbldYWsVj/Q90eZ9UEJTvJ6LtqiqKSykmpa0uBd
+	j9MlFANxhhdYCrHUvtodN4H1kX5v9B/JeCB2hxjZO/VbP4DnYq8r+juNHQ++AZSs9Hndu0U2SAX
+	ukL+WtARRFHYUBZnq1IWkrJoljyKaSSxeeH69Ws9roCYPncWT1nS8UI+7fTp/k5n/VKsOO8VFL1
+	ETEJ9gol9r5yFyHid98rTevCjQ91VjcNv8G2KRScvnT+gtWSRqr96uMjCUvxbx6NwtGOH2NV1Hn
+	xmbcNnTKSEovFeRra+jXhFbTnN//HuppMde1OZW/2zNH7cujq1iW95AsDO4ddCf7lw==
+X-Received: by 2002:a05:600c:3d0b:b0:439:88bb:d02d with SMTP id 5b1f17b1804b1-43988bbd322mr97619475e9.2.1739977984093;
+        Wed, 19 Feb 2025 07:13:04 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHqXB0SvUjV4zwF8A6smqwc0vRSLTkn6r2mJurV/wBBuDlOIkQeOJi/olfCVvoVfIVGXKI8cw==
+X-Received: by 2002:a05:600c:3d0b:b0:439:88bb:d02d with SMTP id 5b1f17b1804b1-43988bbd322mr97618455e9.2.1739977983617;
+        Wed, 19 Feb 2025 07:13:03 -0800 (PST)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-439858ec5fasm88121225e9.29.2025.02.19.07.13.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Feb 2025 07:12:53 -0800 (PST)
-Date: Wed, 19 Feb 2025 10:12:53 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Jason Xing <kerneljasonxing@gmail.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, 
- davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- dsahern@kernel.org, 
- willemb@google.com, 
- ast@kernel.org, 
- daniel@iogearbox.net, 
- andrii@kernel.org, 
- eddyz87@gmail.com, 
- song@kernel.org, 
- yonghong.song@linux.dev, 
- john.fastabend@gmail.com, 
- kpsingh@kernel.org, 
- sdf@fomichev.me, 
- haoluo@google.com, 
- jolsa@kernel.org, 
- shuah@kernel.org, 
- ykolal@fb.com, 
- bpf@vger.kernel.org, 
- netdev@vger.kernel.org
-Message-ID: <67b5f4f5990b0_1b78d829412@willemb.c.googlers.com.notmuch>
-In-Reply-To: <CAL+tcoCHsJ9KQf5w6TLHmQy9DrkhPHChRPQb=+9L_WKTTd8FQA@mail.gmail.com>
-References: <20250218050125.73676-1-kerneljasonxing@gmail.com>
- <20250218050125.73676-2-kerneljasonxing@gmail.com>
- <67b497b974fc3_10d6a32948b@willemb.c.googlers.com.notmuch>
- <03553725-648d-467f-9076-0d5c22b3cfb3@linux.dev>
- <CAL+tcoA==aPOmBjDTOi2WgZ7HEE4OJiZ+4Z-OD_yGn_XN2Onqw@mail.gmail.com>
- <67b542b9c4e3d_1692112944@willemb.c.googlers.com.notmuch>
- <CAL+tcoCHsJ9KQf5w6TLHmQy9DrkhPHChRPQb=+9L_WKTTd8FQA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v12 01/12] bpf: add networking timestamping
- support to bpf_get/setsockopt()
+        Wed, 19 Feb 2025 07:13:02 -0800 (PST)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Dave Hansen <dave.hansen@intel.com>, Jann Horn <jannh@google.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+ virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
+ linux-perf-users@vger.kernel.org, xen-devel@lists.xenproject.org,
+ kvm@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org,
+ linux-hardening@vger.kernel.org, linux-mm@kvack.org,
+ linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+ bcm-kernel-feedback-list@broadcom.com, Juergen Gross <jgross@suse.com>,
+ Ajay Kaher <ajay.kaher@broadcom.com>, Alexey Makhalov
+ <alexey.amakhalov@broadcom.com>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Paul
+ Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
+ Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo
+ <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Alexander Shishkin
+ <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian
+ Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ "Liang, Kan" <kan.liang@linux.intel.com>, Boris Ostrovsky
+ <boris.ostrovsky@oracle.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Pawan
+ Gupta <pawan.kumar.gupta@linux.intel.com>, Sean Christopherson
+ <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski
+ <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Frederic Weisbecker
+ <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, Jason
+ Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, Ard
+ Biesheuvel <ardb@kernel.org>, Neeraj Upadhyay
+ <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Uladzislau Rezki <urezki@gmail.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
+ Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli <juri.lelli@redhat.com>,
+ Clark Williams <williams@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>,
+ Tomas Glozar <tglozar@redhat.com>, Vincent Guittot
+ <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Kees Cook
+ <kees@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Christoph
+ Hellwig <hch@infradead.org>, Shuah Khan <shuah@kernel.org>, Sami Tolvanen
+ <samitolvanen@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl
+ <aliceryhl@google.com>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>,
+ Samuel Holland <samuel.holland@sifive.com>, Rong Xu <xur@google.com>,
+ Nicolas Saenz Julienne <nsaenzju@redhat.com>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Yosry Ahmed <yosryahmed@google.com>, "Kirill A.
+ Shutemov" <kirill.shutemov@linux.intel.com>, "Masami Hiramatsu (Google)"
+ <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, Luis
+ Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
+ Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: Re: [PATCH v4 29/30] x86/mm, mm/vmalloc: Defer
+ flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
+In-Reply-To: <d0450bc8-6585-49ca-9cad-49e65934bd5c@intel.com>
+References: <20250114175143.81438-1-vschneid@redhat.com>
+ <20250114175143.81438-30-vschneid@redhat.com>
+ <CAG48ez1Mh+DOy0ysOo7Qioxh1W7xWQyK9CLGNU9TGOsLXbg=gQ@mail.gmail.com>
+ <xhsmh34hhh37q.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <CAG48ez3H8OVP1GxBLdmFgusvT1gQhwu2SiXbgi8T9uuCYVK52w@mail.gmail.com>
+ <xhsmh5xlhk5p2.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <CAG48ez1EAATYcX520Nnw=P8XtUDSr5pe+qGH1YVNk3xN2LE05g@mail.gmail.com>
+ <xhsmh34gkk3ls.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <352317e3-c7dc-43b4-b4cb-9644489318d0@intel.com>
+ <xhsmhjz9mj2qo.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <d0450bc8-6585-49ca-9cad-49e65934bd5c@intel.com>
+Date: Wed, 19 Feb 2025 16:13:00 +0100
+Message-ID: <xhsmhh64qhssj.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain
 
-> > > Now I wonder if I should use the u8 sk_bpf_cb_flags in V13 or just
-> > > keep it as-is? Either way is fine with me :) bpf_sock_ops_cb_flags
-> > > uses u8 as an example, thus I think we prefer the former?
-> >
-> > If it fits in a u8 and that in practice also results in less memory
-> > and cache pressure (i.e., does not just add a 24b hole), then it is a
-> > net improvement.
-> 
-> Probably I didn't state it clearly. I agree with you on saving memory:)
-> 
-> In the previous response, I was trying to keep the sk_bpf_cb_flags
-> flag and use a u8 instead. I admit u32 is too large after you noticed
-> this.
-> 
-> Would the following diff on top of this series be acceptable for you?
-> And would it be a proper place to put the u8 sk_bpf_cb_flags in struct
-> sock?
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index 6f4d54faba92..e85d6fb3a2ba 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -447,7 +447,7 @@ struct sock {
->         int                     sk_forward_alloc;
->         u32                     sk_tsflags;
->  #define SK_BPF_CB_FLAG_TEST(SK, FLAG) ((SK)->sk_bpf_cb_flags & (FLAG))
-> -       u32                     sk_bpf_cb_flags;
-> +       u8                      sk_bpf_cb_flags;
->         __cacheline_group_end(sock_write_rxtx);
-> 
->         __cacheline_group_begin(sock_write_tx);
-> 
-> The following output is the result of running 'pahole --hex -C sock vmlinux'.
-> Before this series:
->         u32                        sk_tsflags;           /* 0x168   0x4 */
->         __u8
-> __cacheline_group_end__sock_write_rxtx[0]; /* 0x16c     0 */
->         __u8
-> __cacheline_group_begin__sock_write_tx[0]; /* 0x16c     0 */
->         int                        sk_write_pending;     /* 0x16c   0x4 */
->         atomic_t                   sk_omem_alloc;        /* 0x170   0x4 */
->         int                        sk_sndbuf;            /* 0x174   0x4 */
->         int                        sk_wmem_queued;       /* 0x178   0x4 */
->         refcount_t                 sk_wmem_alloc;        /* 0x17c   0x4 */
->         /* --- cacheline 6 boundary (384 bytes) --- */
->         long unsigned int          sk_tsq_flags;         /* 0x180   0x8 */
-> ...
-> /* sum members: 773, holes: 1, sum holes: 1 */
-> 
-> After this diff patch:
->         u32                        sk_tsflags;           /* 0x168   0x4 */
->         u8                         sk_bpf_cb_flags;      /* 0x16c   0x1 */
->         __u8
-> __cacheline_group_end__sock_write_rxtx[0]; /* 0x16d     0 */
->         __u8
-> __cacheline_group_begin__sock_write_tx[0]; /* 0x16d     0 */
-> 
->         /* XXX 3 bytes hole, try to pack */
-> 
->         int                        sk_write_pending;     /* 0x170   0x4 */
->         atomic_t                   sk_omem_alloc;        /* 0x174   0x4 */
->         int                        sk_sndbuf;            /* 0x178   0x4 */
->         int                        sk_wmem_queued;       /* 0x17c   0x4 */
->         /* --- cacheline 6 boundary (384 bytes) --- */
->         refcount_t                 sk_wmem_alloc;        /* 0x180   0x4 */
-> 
->         /* XXX 4 bytes hole, try to pack */
-> 
->         long unsigned int          sk_tsq_flags;         /* 0x188   0x8 */
-> ...
-> /* sum members: 774, holes: 3, sum holes: 8 */
-> 
-> It will introduce 7 extra sum holes if this series with this u8 change
-> gets applied. I think it's a proper position because this new
-> sk_bpf_cb_flags will be used in the tx and rx path just like
-> sk_tsflags, aligned with rules introduced by the commit[1].
+On 18/02/25 16:39, Dave Hansen wrote:
+> On 2/18/25 14:40, Valentin Schneider wrote:
+>>> In practice, it's mostly limited like that.
+>>>
+>>> Architecturally, there are no promises from the CPU. It is within its
+>>> rights to cache anything from the page tables at any time. If it's in
+>>> the CR3 tree, it's fair game.
+>>>
+>> So what if the VMEMMAP range *isn't* in the CR3 tree when a CPU is
+>> executing in userspace?
+>>
+>> AIUI that's the case with kPTI - the remaining kernel pages should mostly
+>> be .entry.text and cpu_entry_area, at least for x86.
+>
+> Having part of VMEMMAP not in the CR3 tree should be harmless while
+> running userspace. VMEMMAP is a purely software structure; the hardware
+> doesn't do implicit supervisor accesses to it. It's also not needed in
+> super early entry.
+>
+> Maybe I missed part of the discussion though. Is VMEMMAP your only
+> concern? I would have guessed that the more generic vmalloc()
+> functionality would be harder to pin down.
 
-Reducing a u64 to u8 can leave 7b of holes, but that is not great,
-of course.
+Urgh, that'll teach me to send emails that late - I did indeed mean the
+vmalloc() range, not at all VMEMMAP. IIUC *neither* are present in the user
+kPTI page table and AFAICT the page table swap is done before the actual vmap'd
+stack (CONFIG_VMAP_STACK=y) gets used.
 
-Since this bitmap is only touched if a BPF program is loaded, arguably
-it need not be in the hot path cacheline groups.
-
-Can you find a hole further down to place this in, or at least a spot
-that does not result in 7b of wasted space (in the hotpath cacheline
-groups of all places).
 
