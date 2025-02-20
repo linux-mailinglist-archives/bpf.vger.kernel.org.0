@@ -1,120 +1,205 @@
-Return-Path: <bpf+bounces-52029-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52030-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7954DA3CF62
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 03:31:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E43DDA3CF74
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 03:46:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93142189C809
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 02:31:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89404189CAE4
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 02:46:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48F251D63CA;
-	Thu, 20 Feb 2025 02:31:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC7D91D7E57;
+	Thu, 20 Feb 2025 02:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kXVsIdSq"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59F942F5E;
-	Thu, 20 Feb 2025 02:31:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C304563A9;
+	Thu, 20 Feb 2025 02:46:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740018699; cv=none; b=qAzZPwnQAikWc8f8cExFc7Y2Ia/+evt/nz+zerBO3NYUi0hnF7h+35vpBfOVO6X6mJRMwugob7Z6UkMKvuY6euXe1gstguZ57z27c5eEgSxIcMEZmTPh3YwvKGUd9ufoAU+XPHc1tdzuQtLrI6LSLAg1fyVG3YrwC/CTyd24PDc=
+	t=1740019565; cv=none; b=WfN6ZKFeh/mC1saQ3WfQQ34hg9Z7sEPwHsS/haY9fzwLfUZCCOf+iHNc5UPsLOIh5zaqNd11JwNCoGcFtwAe7yd9Titn3Re55H2stCQ1cvXszh29mn1vFbbWWs6WUUSXh5UEHyo3o6f1xLqNxL9P33lYsX3Omq4v8HbpuRJ2j20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740018699; c=relaxed/simple;
-	bh=hTsNSbikiqFbBAoA46AmZ15cdx/rCAA4hup/c0bL4XU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ISAiu5ECp0YDQfOm0evy7niaxCqXPubC/I01ruVwDGwqmQ4X1lM7rA0ueCy0p1zX6WIKzrDyXVSYPbgOgdU1sI7xApA/r/2eMl1FA0xGyQy6l+j3FN4ffyI5x9YocnVOuj2R9kVYw0T/sIu4UczlF8Ti//m3iIRTd6ReS6ZmEEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Yyy2X1Gc4zpk6Z;
-	Thu, 20 Feb 2025 10:32:04 +0800 (CST)
-Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 32F151A016C;
-	Thu, 20 Feb 2025 10:31:33 +0800 (CST)
-Received: from [10.174.179.234] (10.174.179.234) by
- kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 20 Feb 2025 10:31:31 +0800
-Message-ID: <2fe4c4d1-c480-c250-1ba2-1a82caf5d7fa@huawei.com>
-Date: Thu, 20 Feb 2025 10:31:30 +0800
+	s=arc-20240116; t=1740019565; c=relaxed/simple;
+	bh=73uLvuaiLscksGhZc+hY2cupAUVy2zHkoE90LdSw12E=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=ZisWYPUUmw4+OUXAIJtqEEw6TAropugqERFogUK7EQ/iH9YCpU9jrnv11AOHWzAwUgj5sXDILtTbVyPKtBCKKpP0LUj8MLbgczPqiemQ/b9O/r/ovfEs0IY0Mi/CGDgCn4Z9R+emSdXZflfY6ynadMSp+NXyQZz2asXepNCzt1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kXVsIdSq; arc=none smtp.client-ip=209.85.160.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-46c8474d8f6so4276951cf.3;
+        Wed, 19 Feb 2025 18:46:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740019562; x=1740624362; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z/D3678QYRZKxPCIowYLLtnEL0WC8u1sCf7aliAuVuE=;
+        b=kXVsIdSqib3fZ9M4SQx1yh2bQXptUMTWi75eYfu9iU+AmAo9enZxR6zon9WRrLcR62
+         ZPVlVaj4eV7Xqgz2US6aA/s1KNwZrhqMx3/Y/T/x4Q+MHFB05P+H5dqmlLRLO/w0CE4U
+         gazSM/Oyj4LY7Z4Y4Gfu+nEVEvXSZS8ncG5QgtocvMcmexEtYsxlBohYPJtl0Nn3PKpR
+         XNaafEMw+X6l6GqARqmJrIGNk1gCuSTk3x/AmDM3wHl+g22RmfHErHbnSMgkFInx5C7y
+         rhDTpauxkTcysCTZA70MciEHELiQYlqgOqv/vsK9pgZGxgbDQ8TxtqtuXiN6Rp+d7L3q
+         SX4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740019562; x=1740624362;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Z/D3678QYRZKxPCIowYLLtnEL0WC8u1sCf7aliAuVuE=;
+        b=Wejy5vA1dLyntxn960tiIwDl7l7nYURcY2+ZeeO4AxXP+5Lh9j6QiUyQhb5a/X9wRf
+         80ZGYEaLl8wopN/Ciick6a9rWmPMtpNPStqDU9b82qbcwNUebPTw2xi2Dl/C+6118AW7
+         XlgCfoZt13ps7yieEzPbZfODVE/XJRIrJ9NO2RdQZDjLfcJhpXgm1UyKcc0Rg3liAt4n
+         Vl6UN4U5YbeVDJ8r6idjoJ3hT1zRetAz4WYEBvT2AbIZ8k6D2/Wj9YU2SkodjSdXDVap
+         YZq7Iq+qTlrzfwsVqLaCnFVyh04LeWRxx+uW3X8ghxcQSNZ/wrTaFRBZKHapsMf/Q3Qt
+         lS4A==
+X-Forwarded-Encrypted: i=1; AJvYcCVQDteKADtOxNI4XqqUVfJsDj/tspoJ5W7qCK8cHa3VEpLmuaF5WglilFX3v68DsLVzN8A=@vger.kernel.org, AJvYcCXlkdpyD1ny1Z+6y+TAv7PtqCyi5tHmHwePyQX+yNM1jpkiOdNUfVOMqCnzHd3TkxNWBvBxoRZW@vger.kernel.org
+X-Gm-Message-State: AOJu0YyRvynN3NIcluLB96OcBnPZW6yZoqMNxQvxVMxz5abuBL1HWv7t
+	gQsrc3YYYtDb7nwQaN8fvbJ1vt9NDns26FIBZr4qOcSmjnMvJdCYJHOUnQ==
+X-Gm-Gg: ASbGncu1ujSGcFGHLOGPUedLs0IgFyLmcUtx+hpyUMA36+g6Q1wTBA8EEDTqoun4P5T
+	wL6cLtPdPyYFXw8ZmZeVX5LvZ/44yKrJ+kgK5XVsppXupCdo2QLdxVIzhJsOypmKp6RnUTOnnw9
+	OBy0Vj2AeMrbXB4/XcHJ8/tESiJJHwLLya/LUIZn57sotgBO2tAY/5BTvA5j52EG4THtFfx5gyn
+	phaJLPg2uWbIWXFEBMmK07aWDe7FCSLgvaxrDdnKCiZjerDASbPOMupWvgL9Ys7a2r0e+vMzvec
+	zSbccWtEa1hQ0+awmOvQAFc+3UI1UGIJyLRuYOPQpN0h6rhA69WASCp2lN7c7T8=
+X-Google-Smtp-Source: AGHT+IEG9YapflJf2cUv8UVoSRBdPpMklvTrO3BRiqvzN12JeBtxzTYK7SAEFKyyNJwNn4PZ61++XQ==
+X-Received: by 2002:ac8:5e0a:0:b0:472:1040:10b2 with SMTP id d75a77b69052e-472173e1c5amr14212311cf.39.1740019562567;
+        Wed, 19 Feb 2025 18:46:02 -0800 (PST)
+Received: from localhost (15.60.86.34.bc.googleusercontent.com. [34.86.60.15])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-47209a1b133sm14864501cf.70.2025.02.19.18.46.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Feb 2025 18:46:01 -0800 (PST)
+Date: Wed, 19 Feb 2025 21:46:01 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Jason Xing <kerneljasonxing@gmail.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, 
+ davem@davemloft.net, 
+ edumazet@google.com, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ dsahern@kernel.org, 
+ willemb@google.com, 
+ ast@kernel.org, 
+ daniel@iogearbox.net, 
+ andrii@kernel.org, 
+ eddyz87@gmail.com, 
+ song@kernel.org, 
+ yonghong.song@linux.dev, 
+ john.fastabend@gmail.com, 
+ kpsingh@kernel.org, 
+ sdf@fomichev.me, 
+ haoluo@google.com, 
+ jolsa@kernel.org, 
+ shuah@kernel.org, 
+ ykolal@fb.com, 
+ bpf@vger.kernel.org, 
+ netdev@vger.kernel.org
+Message-ID: <67b697697bdf8_20efb0294b4@willemb.c.googlers.com.notmuch>
+In-Reply-To: <CAL+tcoCJNM3YyLQpFCCUtHPN7dU+o721yBYE71+hs9-1r937Xg@mail.gmail.com>
+References: <20250218050125.73676-1-kerneljasonxing@gmail.com>
+ <20250218050125.73676-2-kerneljasonxing@gmail.com>
+ <67b497b974fc3_10d6a32948b@willemb.c.googlers.com.notmuch>
+ <03553725-648d-467f-9076-0d5c22b3cfb3@linux.dev>
+ <CAL+tcoA==aPOmBjDTOi2WgZ7HEE4OJiZ+4Z-OD_yGn_XN2Onqw@mail.gmail.com>
+ <67b542b9c4e3d_1692112944@willemb.c.googlers.com.notmuch>
+ <CAL+tcoCHsJ9KQf5w6TLHmQy9DrkhPHChRPQb=+9L_WKTTd8FQA@mail.gmail.com>
+ <67b5f4f5990b0_1b78d829412@willemb.c.googlers.com.notmuch>
+ <CAL+tcoCJNM3YyLQpFCCUtHPN7dU+o721yBYE71+hs9-1r937Xg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v12 01/12] bpf: add networking timestamping
+ support to bpf_get/setsockopt()
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: Add Morton,Peter and David for discussion//Re: [PATCH -next]
- uprobes: fix two zero old_folio bugs in __replace_page()
-To: David Hildenbrand <david@redhat.com>, Oleg Nesterov <oleg@redhat.com>
-CC: Masami Hiramatsu <mhiramat@kernel.org>, Peter Zijlstra
-	<peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de
- Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland
-	<mark.rutland@arm.com>, Alexander Shishkin
-	<alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian
- Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, "Liang,
- Kan" <kan.liang@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>,
-	Peter Xu <peterx@redhat.com>, <linux-kernel@vger.kernel.org>,
-	<linux-trace-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
-	<bpf@vger.kernel.org>, <wangkefeng.wang@huawei.com>, linux-mm
-	<linux-mm@kvack.org>
-References: <20250217123826.88503-1-tongtiangen@huawei.com>
- <c2924e9e-1a42-a4f6-5066-ea2e15477c11@huawei.com>
- <3b893634-5453-42d0-b8dc-e9d07988e9e9@redhat.com>
- <24a61833-f389-b074-0d9c-d5ad9efc2046@huawei.com>
- <20250219152237.GB5948@redhat.com>
- <34e18c47-e536-48e4-80ca-7c7bbc75ecce@redhat.com>
-From: Tong Tiangen <tongtiangen@huawei.com>
-In-Reply-To: <34e18c47-e536-48e4-80ca-7c7bbc75ecce@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemk500005.china.huawei.com (7.202.194.90)
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-
-
-在 2025/2/20 0:12, David Hildenbrand 写道:
-> On 19.02.25 16:22, Oleg Nesterov wrote:
->> On 02/18, Tong Tiangen wrote:
->>>
->>> OK, Before your rewrite last merged, How about i change the solution to
->>> just reject them immediately after get_user_page_vma_remote()？
->>
->> I agree, uprobe_write_opcode() should simply fail if 
->> is_zero_page(old_page).
+> > Can you find a hole further down to place this in, or at least a spot
+> > that does not result in 7b of wasted space (in the hotpath cacheline
+> > groups of all places).
 > 
-> Yes. That's currently only syzkaller that triggers it, not some sane use 
-> case.
-
-OK, change as follows:
-
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -506,6 +506,12 @@ int uprobe_write_opcode(struct arch_uprobe 
-*auprobe, struct mm_struct *mm,
-         if (ret <= 0)
-                 goto put_old;
-
-+       if (WARN(is_zero_page(old_page),
-+                "uprobe should never work on zero page\n")) {
-+               ret = -EINVAL;
-+               goto put_old;
-+       }
-+
-         if (WARN(!is_register && PageCompound(old_page),
-                  "uprobe unregister should never work on compound 
-page\n")) {
-                 ret = -EINVAL;
-
-If ok, i will send v2 soon.
-
-Thanks,
-Tong.
-
+> There is one place where I can simply insert the flag.
 > 
+> The diff patch on top of this series is:
+> diff --git a/include/net/sock.h b/include/net/sock.h
+> index e85d6fb3a2ba..9fa27693fb02 100644
+> --- a/include/net/sock.h
+> +++ b/include/net/sock.h
+> @@ -446,8 +446,6 @@ struct sock {
+>         u32                     sk_reserved_mem;
+>         int                     sk_forward_alloc;
+>         u32                     sk_tsflags;
+> -#define SK_BPF_CB_FLAG_TEST(SK, FLAG) ((SK)->sk_bpf_cb_flags & (FLAG))
+> -       u8                      sk_bpf_cb_flags;
+>         __cacheline_group_end(sock_write_rxtx);
+> 
+>         __cacheline_group_begin(sock_write_tx);
+> @@ -528,6 +526,8 @@ struct sock {
+>         u8                      sk_txtime_deadline_mode : 1,
+>                                 sk_txtime_report_errors : 1,
+>                                 sk_txtime_unused : 6;
+> +#define SK_BPF_CB_FLAG_TEST(SK, FLAG) ((SK)->sk_bpf_cb_flags & (FLAG))
+> +       u8                      sk_bpf_cb_flags;
+> 
+>         void                    *sk_user_data;
+>  #ifdef CONFIG_SECURITY
+> 
+> 
+> 1) before applying the whole series:
+> ...
+>         /* --- cacheline 10 boundary (640 bytes) --- */
+>         ktime_t                    sk_stamp;             /* 0x280   0x8 */
+>         int                        sk_disconnects;       /* 0x288   0x4 */
+>         u8                         sk_txrehash;          /* 0x28c   0x1 */
+>         u8                         sk_clockid;           /* 0x28d   0x1 */
+>         u8                         sk_txtime_deadline_mode:1; /* 0x28e: 0 0x1 */
+>         u8                         sk_txtime_report_errors:1; /*
+> 0x28e:0x1 0x1 */
+>         u8                         sk_txtime_unused:6;   /* 0x28e:0x2 0x1 */
+> 
+>         /* XXX 1 byte hole, try to pack */
+> 
+>         void *                     sk_user_data;         /* 0x290   0x8 */
+>         void *                     sk_security;          /* 0x298   0x8 */
+>         struct sock_cgroup_data    sk_cgrp_data;         /* 0x2a0  0x10 */
+> ...
+> /* sum members: 773, holes: 1, sum holes: 1 */
+> 
+> 
+> 2) after applying the series with the above diff patch:
+> ...
+>         /* --- cacheline 10 boundary (640 bytes) --- */
+>         ktime_t                    sk_stamp;             /* 0x280   0x8 */
+>         int                        sk_disconnects;       /* 0x288   0x4 */
+>         u8                         sk_txrehash;          /* 0x28c   0x1 */
+>         u8                         sk_clockid;           /* 0x28d   0x1 */
+>         u8                         sk_txtime_deadline_mode:1; /* 0x28e: 0 0x1 */
+>         u8                         sk_txtime_report_errors:1; /*
+> 0x28e:0x1 0x1 */
+>         u8                         sk_txtime_unused:6;   /* 0x28e:0x2 0x1 */
+>         u8                         sk_bpf_cb_flags;      /* 0x28f   0x1 */
+>         void *                     sk_user_data;         /* 0x290
+> 0x8 */
+>         void *                     sk_security;          /* 0x298   0x8 */
+>         struct sock_cgroup_data    sk_cgrp_data;         /* 0x2a0  0x10 */
+> ...
+> /* sum members: 774 */
+> 
+> It turns out that the new sk_bpf_cb_flags fills the hole exactly. The
+> new field and some of its nearby fields are quite similar because they
+> are only/nearly written during the creation or setsockopt phase.
+> 
+> I think now it's a good place to insert the new flag?
+
+Thanks. This seems fine to me.
+ 
+
+
 
