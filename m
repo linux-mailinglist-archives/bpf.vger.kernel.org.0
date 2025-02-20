@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-52066-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52067-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8B32A3D43E
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 10:11:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 076AFA3D43C
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 10:10:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA7833B727C
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 09:10:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2119A7A8EAA
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 09:09:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75BA61EF09A;
-	Thu, 20 Feb 2025 09:10:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A34801EC01E;
+	Thu, 20 Feb 2025 09:10:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AvRTnhTa"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fp5i5WSN"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31A471EEA57;
-	Thu, 20 Feb 2025 09:10:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F7901EE7C4;
+	Thu, 20 Feb 2025 09:10:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740042610; cv=none; b=ciYyIIXz9KWHbGqpPfAQozXHJNtS667Qin8A3rGwjhBLihrcL8R7G7frYkyzFxKSpSMZAfttL8a6As7fNIp0SOPi5/oAaXHlkxOo9h6Fhyc1vN08soEwvV2HdRe5jdlLb0BwD6N7BxKGnL/3G22HU0vYOlut+FQhlYHrssDXNNQ=
+	t=1740042613; cv=none; b=Ki7hCI/EUIwwzi5tBnYaxN0RCWvddpAqMXlRgrO8uTaFP/OKM/zQFBL9pdb0ouSAeoL7P0szMqVWjvq1Hhj1XKkcK98l9rw2t0GvOZE5IG6a/utoPdwrXYyvyCNm1lWV6+CUEAEdlJwkvl2e3UXUxjMD4horaTMy5FoARZVFOLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740042610; c=relaxed/simple;
-	bh=lum8LUwQY8cn20WEhhkEiPaz8vRPQuWHKH2mHyC2354=;
+	s=arc-20240116; t=1740042613; c=relaxed/simple;
+	bh=ap06RU9lK+93Lg6AqAUmYtxQbCvi2WxR1WXqtk+05uc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gLl7+Rncljgu/f+IL/r9MX68v5RCc6GMApdj+jaF+hwnObedPhepXtZFnsZn2ZgjAZmY3WJAdlSp4BQFkAyOPJv6P1alQwDuabwAWzDPV3aQfyaNn+NZisr2pPFVobIpVThcduWcy1ec4FbSTqgE0Wd1pKhW7WDFJz2DtpIuZSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AvRTnhTa; arc=none smtp.client-ip=198.175.65.21
+	 MIME-Version; b=tNOoz1o2xAp1f3x1pH75+EBfp8W3dQyENXnT9nXg3xej8A5pW++2XDQm+W8OQKud5moCK7CBAXZ5n8vUKO4Nv4OZZKGRadCDjphb1Vm+8VD7SUcRw+fO3+8QgUVm98pXybhDsnwXrQMB5vp1HQGIV6wUJ4LqHKVx+p2gZYO0WlM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fp5i5WSN; arc=none smtp.client-ip=198.175.65.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1740042609; x=1771578609;
+  t=1740042612; x=1771578612;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=lum8LUwQY8cn20WEhhkEiPaz8vRPQuWHKH2mHyC2354=;
-  b=AvRTnhTamsHk4kNyvjjLLh/rVoKZtswiwObm4mAZOu5nKy1u+4OBHGUk
-   9Gk1ZPTXvaElZVJJJ9p2yIUszzmNcD84m6IVAhW5RqyrENqg4X+1ghJKk
-   olPEr3RMryD5fOi44cKBuyqcIG4x4vczWvyTZFZpVzQZNq3b4R/RCpaPx
-   mKY2N+yfRs8u+cRN8zSH2JXVqkGYmeiBG/+jnD/9JDuHp7t82Vruqm/sv
-   i7PFYxYCx5b662eJCwPWmDADV761tDbFMrxAwRpMpUrouIpDx0MyTipeQ
-   iJBvb8fC9SKH4bxRc9vtGLLi/TXLlIBns1UVypNR08p2sTiun2OZkFFJ+
-   A==;
-X-CSE-ConnectionGUID: sLTtBWd7S6Wg2G2T2XOKWA==
-X-CSE-MsgGUID: 19s7sW6TTMq/lHoA4JB3Kw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11350"; a="40733491"
+  bh=ap06RU9lK+93Lg6AqAUmYtxQbCvi2WxR1WXqtk+05uc=;
+  b=fp5i5WSNM61f11f/nPVwqJAQ74IKg9gcxJTa8Z65bztuhCUiz/b94pvh
+   9Qsbf/JuCvyj75kV2wz7uDxxGO8lyTtNm8zzI3hx6HyLN8I6JQ8ba769V
+   Zo07o4VV+oMLUGuCjln6cLV9z6CjcqUGl8mtIQHdmVUAg3hJw2xIrt0GT
+   VQVqcXk3MkU8xtX8pIYHKeSwYYy62P8nI+xlRIAN/NcLzM5GS+s0L74Bb
+   ORfezw0/I0rISFVyVSPTLm/eP66Jm5bBVUUxyKrXIuWrzIcHrEEZQZW+T
+   ufxoBXXytwiHQvqulJ16uYesV7yP2WcNKckKZPODozZhJgIe1Tj7B8V4J
+   Q==;
+X-CSE-ConnectionGUID: /VvubdtVRp6DPz2rb4VAEg==
+X-CSE-MsgGUID: 38JcGGoZQXmbFeUwEvEaBQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11350"; a="40733518"
 X-IronPort-AV: E=Sophos;i="6.13,301,1732608000"; 
-   d="scan'208";a="40733491"
+   d="scan'208";a="40733518"
 Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2025 01:10:08 -0800
-X-CSE-ConnectionGUID: UsZkltYqRACt6a15BunG6w==
-X-CSE-MsgGUID: +jFibForRq+CwCHc67c3Mw==
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2025 01:10:12 -0800
+X-CSE-ConnectionGUID: LZK3BoBqRy2EHG8UiAlviA==
+X-CSE-MsgGUID: gjLrkeyTRreDuiUtlW6hYQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.13,301,1732608000"; 
-   d="scan'208";a="120084560"
+   d="scan'208";a="120084570"
 Received: from brc05.iind.intel.com (HELO brc05..) ([10.190.162.156])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2025 01:10:04 -0800
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2025 01:10:08 -0800
 From: Tushar Vyavahare <tushar.vyavahare@intel.com>
 To: bpf@vger.kernel.org
 Cc: netdev@vger.kernel.org,
@@ -71,9 +71,9 @@ Cc: netdev@vger.kernel.org,
 	ast@kernel.org,
 	daniel@iogearbox.net,
 	tushar.vyavahare@intel.com
-Subject: [PATCH bpf-next 2/6] selftests/xsk: Add tail adjustment functionality to XDP
-Date: Thu, 20 Feb 2025 08:41:43 +0000
-Message-Id: <20250220084147.94494-3-tushar.vyavahare@intel.com>
+Subject: [PATCH bpf-next 3/6] selftests/xsk: Add testapp_xdp_adjust_tail function to userspace for packet tail adjustment
+Date: Thu, 20 Feb 2025 08:41:44 +0000
+Message-Id: <20250220084147.94494-4-tushar.vyavahare@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250220084147.94494-1-tushar.vyavahare@intel.com>
 References: <20250220084147.94494-1-tushar.vyavahare@intel.com>
@@ -85,95 +85,65 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Introduce a new function, xsk_xdp_adjust_tail, within the XDP program to
-adjust the tail of packets. This function utilizes bpf_xdp_adjust_tail to
-modify the packet size dynamically based on the 'count' variable.
+This commit adds the testapp_xdp_adjust_tail function in the userspace
+code. The function is responsible for adjusting the tail of packets using
+the xsk_xdp_adjust_tail XDP program.
 
-If the adjustment fails, the packet is dropped using XDP_DROP to ensure
-processing of only correctly modified packets.
+The function performs the following tasks:
+1. Retrieves the XDP program objects (skel_rx and skel_tx) from the
+   test_spec structure.
+2. Finds the bpf_map for the XDP program's bss section.
+3. Updates the 'count' variable in the XDP program's bss section with the
+   provided adjust_value.
+4. Sets the XDP program (xsk_xdp_adjust_tail) for both RX and TX
+   interfaces using test_spec_set_xdp_prog.
+5. Calls testapp_validate_traffic to validate the traffic after adjusting
+   the packet tail.
+
+This function allows testing and validating the XDP program's behavior when
+adjusting the packet tail using the bpf_xdp_adjust_tail helper function.
 
 Signed-off-by: Tushar Vyavahare <tushar.vyavahare@intel.com>
 ---
- .../selftests/bpf/progs/xsk_xdp_progs.c       | 48 +++++++++++++++++++
- tools/testing/selftests/bpf/xsk_xdp_common.h  |  1 +
- 2 files changed, 49 insertions(+)
+ tools/testing/selftests/bpf/xskxceiver.c | 25 ++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/progs/xsk_xdp_progs.c b/tools/testing/selftests/bpf/progs/xsk_xdp_progs.c
-index ccde6a4c6319..2e8e2faf17e0 100644
---- a/tools/testing/selftests/bpf/progs/xsk_xdp_progs.c
-+++ b/tools/testing/selftests/bpf/progs/xsk_xdp_progs.c
-@@ -4,6 +4,8 @@
- #include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
- #include <linux/if_ether.h>
-+#include <linux/ip.h>
-+#include <linux/errno.h>
- #include "xsk_xdp_common.h"
- 
- struct {
-@@ -70,4 +72,50 @@ SEC("xdp") int xsk_xdp_shared_umem(struct xdp_md *xdp)
- 	return bpf_redirect_map(&xsk, idx, XDP_DROP);
+diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
+index 1d9b03666ee6..ff3316f6174e 100644
+--- a/tools/testing/selftests/bpf/xskxceiver.c
++++ b/tools/testing/selftests/bpf/xskxceiver.c
+@@ -2518,6 +2518,31 @@ static int testapp_hw_sw_max_ring_size(struct test_spec *test)
+ 	return testapp_validate_traffic(test);
  }
  
-+SEC("xdp.frags") int xsk_xdp_adjust_tail(struct xdp_md *xdp)
++static int testapp_xdp_adjust_tail(struct test_spec *test, int count)
 +{
-+	__u32 buff_len, curr_buff_len;
-+	int ret;
++	struct xsk_xdp_progs *skel_rx = test->ifobj_rx->xdp_progs;
++	struct xsk_xdp_progs *skel_tx = test->ifobj_tx->xdp_progs;
++	struct bpf_map *data_map;
++	int key = 0;
 +
-+	buff_len = bpf_xdp_get_buff_len(xdp);
-+	if (buff_len == 0)
-+		return XDP_DROP;
++	test_spec_set_xdp_prog(test, skel_rx->progs.xsk_xdp_adjust_tail,
++			       skel_tx->progs.xsk_xdp_adjust_tail,
++			       skel_rx->maps.xsk, skel_tx->maps.xsk);
 +
-+	ret = bpf_xdp_adjust_tail(xdp, count);
-+	if (ret < 0) {
-+		/* Handle unsupported cases */
-+		if (ret == -EOPNOTSUPP) {
-+			/* Set count to -EOPNOTSUPP to indicate to userspace that this case is
-+			 * unsupported
-+			 */
-+			count = -EOPNOTSUPP;
-+			return bpf_redirect_map(&xsk, 0, XDP_DROP);
-+		}
-+
-+		return XDP_DROP;
++	data_map = bpf_object__find_map_by_name(skel_rx->obj, "xsk_xdp_.bss");
++	if (!data_map || !bpf_map__is_internal(data_map)) {
++		ksft_print_msg("Error: could not find bss section of XDP program\n");
++		return TEST_FAILURE;
 +	}
 +
-+	curr_buff_len = bpf_xdp_get_buff_len(xdp);
-+	if (curr_buff_len != buff_len + count)
-+		return XDP_DROP;
-+
-+	if (curr_buff_len > buff_len) {
-+		__u32 *pkt_data = (void *)(long)xdp->data;
-+		__u32 len, words_to_end, seq_num;
-+
-+		len = curr_buff_len - PKT_HDR_ALIGN;
-+		words_to_end = len / sizeof(*pkt_data) - 1;
-+		seq_num = words_to_end;
-+
-+		/* Convert sequence number to network byte order. Store this in the last 4 bytes of
-+		 * the packet. Use 'count' to determine the position at the end of the packet for
-+		 * storing the sequence number.
-+		 */
-+		seq_num = __constant_htonl(words_to_end);
-+		bpf_xdp_store_bytes(xdp, curr_buff_len - count, &seq_num, sizeof(seq_num));
++	if (bpf_map_update_elem(bpf_map__fd(data_map), &key, &count, BPF_ANY)) {
++		ksft_print_msg("Error: could not update count element\n");
++		return TEST_FAILURE;
 +	}
 +
-+	return bpf_redirect_map(&xsk, 0, XDP_DROP);
++	return testapp_validate_traffic(test);
 +}
 +
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/xsk_xdp_common.h b/tools/testing/selftests/bpf/xsk_xdp_common.h
-index 5a6f36f07383..45810ff552da 100644
---- a/tools/testing/selftests/bpf/xsk_xdp_common.h
-+++ b/tools/testing/selftests/bpf/xsk_xdp_common.h
-@@ -4,6 +4,7 @@
- #define XSK_XDP_COMMON_H_
- 
- #define MAX_SOCKETS 2
-+#define PKT_HDR_ALIGN (sizeof(struct ethhdr) + 2) /* Just to align the data in the packet */
- 
- struct xdp_info {
- 	__u64 count;
+ static void run_pkt_test(struct test_spec *test)
+ {
+ 	int ret;
 -- 
 2.34.1
 
