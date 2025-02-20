@@ -1,99 +1,210 @@
-Return-Path: <bpf+bounces-52019-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52020-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FD5AA3CE87
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 02:20:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F35B3A3CE8A
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 02:21:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73C613B3C97
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 01:20:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6BD53B324A
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 01:20:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 350BC1A8F94;
-	Thu, 20 Feb 2025 01:20:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ED1B18E764;
+	Thu, 20 Feb 2025 01:20:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QbCVRDCb"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tD9ic9Vy"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A53192B82
-	for <bpf@vger.kernel.org>; Thu, 20 Feb 2025 01:20:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 168892AD16
+	for <bpf@vger.kernel.org>; Thu, 20 Feb 2025 01:20:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740014400; cv=none; b=koUyI7FRB7aTF6MxC6f06CguIWVPrV2BanjE++DJWovt0zWjhw6hlamzcjM/ssf9paCrOS2I+lb4Sgv/lHBP+525mv+wq2+2Xjfpwod/2S8ye8InxOiE39k0eswkDLyBVqjhxPGSimUkeXxS2Pexd5acgEOYfOjncBOKfrbp9fU=
+	t=1740014453; cv=none; b=CNTYfToSIWgs5WR3HxE46FhfzvmXTMPFSR5xPRgPCVYtwOgn+lmmVIsMm3IbBVrndlyAhl2BQVny9izyMVyNLwH67LAOUH8g9BtXrqIPZM0PpR07POk9nxQkqwKg1usW+EkxacKhQIgj92j0531ZLI2zsh65LzqKhqBOOJ3JHd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740014400; c=relaxed/simple;
-	bh=UuOHqAdq3MHY72I6D8OD0O+fPWvQWR3ZtBa7hbj8Mhg=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=m0CVWjfkLxuMihiouAfY+5ALL/yrIvsBG/G9ZPLsezHZj/Xa+Heyb/QIrxcnxv49nu7GjsPzAv55bK4V4Exf0JA1mnwW/U2tieI+1jq82JX/o1tD2FsqJt91poKZZmu/Zl6ep9M000H6DJJQTzwF7e0MTcKsHKS0X2v7KDmqsYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QbCVRDCb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B3BEC4CEEA;
-	Thu, 20 Feb 2025 01:20:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740014400;
-	bh=UuOHqAdq3MHY72I6D8OD0O+fPWvQWR3ZtBa7hbj8Mhg=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=QbCVRDCbrqf/TJBmpwh5xNDxmPkybFJjRmKon4NgdAfEKpiNd/fXH62ZTWj93/vqx
-	 3V8vhcKAa8R0d8s6GejRytOVL8khkY+s3q4vnXf1tACgs0WHA+GzvKlhaunGRBwxhd
-	 tznamr8wTbi+Ycn+S03uNrCalHFF0L1RtZCmI6USXU/101U8yzBdLzOMkd/JanVlhp
-	 iUnHnk6LOmi0KGJZvV1cTfL4k7b+HimWAeu8CpziWdoYxqYtFebMHPfLMFdciShpEq
-	 fWcS53RwPV80VrXI+qcsbOKSnyNI1UBBtwPuZObtUaMSO6DRGjjklpHzsf8zQsZU/k
-	 G141UFmlXWP9Q==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB585380AAEC;
-	Thu, 20 Feb 2025 01:20:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1740014453; c=relaxed/simple;
+	bh=8BEtdyFL+la1SWhGjdvnuHQmk94dfd7pWP8oR4rmWzA=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=T5fgwqP4Xy5eysyNpQRKQjVde7i+6Uv/YFE7CdBTS87TChOZgAkLzO0YXAHNCQLPE1BzWJdD/hkU5OF2ebDC2J6nu/3Do8osdpZ/8qgag4W34yumvRqhKrn1tswScZuTTXeapqI05FdrH0jkw3fv/yr94RQFAA9OjcI8SzHVsNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tD9ic9Vy; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-220e62c4fc2so7510805ad.3
+        for <bpf@vger.kernel.org>; Wed, 19 Feb 2025 17:20:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1740014451; x=1740619251; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AVw9FAeQI7lCZwFZLEeeKDcfx7NZFxNIup/gnaKUq1Q=;
+        b=tD9ic9VyzQSbZsr3+usJdbzn6jBeZGgu62yH2EqklfdWkTkPsRPQvU9WJ0GnUuaU/t
+         YIJZrjSlHixsEPcaqMkZ7PdmVcy5n1aWH/H5byfayecgwZhnpU8YlLcH/IJYAlk32Cve
+         LcaYSBdZszb4PEMuMKSPf7IcSPVQu64siQEe6uyZhwQN6aT+850cHyJfpfb4cQ9IeLBz
+         R19/ZcEBiLje0LrbIm1s6bOTngS3AJuWVhunr9mHFCDiggzNarqt4Xx2oGuQqdavTRzp
+         /K//8E8KmaIER3D35J5ZWAx7jsh7b2B52/Drja7uy1iB5X00d+yDYTmmsmbXgmlwkP/j
+         LG6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740014451; x=1740619251;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AVw9FAeQI7lCZwFZLEeeKDcfx7NZFxNIup/gnaKUq1Q=;
+        b=f8cus9o3/Mw9Jx7fdkoJsq2Q3e+3b96iCcmCSMYNIWQ1+pGFBAH8ExMQ1/NNx/n3Ku
+         l/OeWXf83eoju2bVH+e9yLHqKpi5cCRvl5CHyZbPhLVSuaGcKFn9R215VZExibCKJ2xN
+         daUaTqt5W5Kq/4OP944b+P2LukyNliAtwhKfB9x+oCoGuh2WZH17j+8Q47c51GqeOJjv
+         Esw9oex5i/gt3TXBqNktZCN118olBui44fc1WTFlnhqTCPu1w/SQPAwUZ6xnTYF+8lZc
+         wsX0yrOxGzcMmWbBodnYXRGGWxo3BzqVNvjAXFWtQgaVhOws0rpCbjnhpB9NGD8+HfVS
+         /zGA==
+X-Gm-Message-State: AOJu0YwF7dSp4nm3Sgg+IIuIXTYmLhrpFUx0Pdnc/3oXu0qxu7gKlXSO
+	vlqKQIF3B4FnFm35fUffGljd3WTjg/DrRnWWRZXoQAPxWx+GBtGXTvHOVYA1zGnLFUJUtutqrPN
+	p1FOUcAQNT4Tc7r4ndMZr2qr+1djof8Ap1kVq4AEjv3c2bxEog6UG1+T+aHtZiS+mo7Gf2Y0CvU
+	ePauYd7jI9I1Bj89nCH/278O/IAcY9Bcq/rsEdJy0=
+X-Google-Smtp-Source: AGHT+IELkZhp3dnu1j1hrZyZSNzylf6/SsN58EX3cCnB9zawb1C1aTd09ns9uhXgPWFn3IcwfNEV46XMOLhkTw==
+X-Received: from plbbj7.prod.google.com ([2002:a17:902:8507:b0:221:7c80:aeff])
+ (user=yepeilin job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:903:41c3:b0:220:ef79:aca9 with SMTP id d9443c01a7336-221711c8dd8mr102260065ad.53.1740014451316;
+ Wed, 19 Feb 2025 17:20:51 -0800 (PST)
+Date: Thu, 20 Feb 2025 01:20:41 +0000
+In-Reply-To: <cover.1740009184.git.yepeilin@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [bpf-next v8 1/3] mm: add copy_remote_vm_str
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174001443079.803988.12953607627468709110.git-patchwork-notify@kernel.org>
-Date: Thu, 20 Feb 2025 01:20:30 +0000
-References: <20250213152125.1837400-1-linux@jordanrome.com>
-In-Reply-To: <20250213152125.1837400-1-linux@jordanrome.com>
-To: Jordan Rome <linux@jordanrome.com>
-Cc: bpf@vger.kernel.org, linux-mm@kvack.org, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, kernel-team@fb.com,
- akpm@linux-foundation.org, shakeel.butt@linux.dev, glider@google.com
+Mime-Version: 1.0
+References: <cover.1740009184.git.yepeilin@google.com>
+X-Mailer: git-send-email 2.48.1.601.g30ceb7b040-goog
+Message-ID: <91e99076cf23e75e4831c75b38f8cfa84d7da34b.1740009184.git.yepeilin@google.com>
+Subject: [PATCH bpf-next v3 2/9] bpf/verifier: Factor out check_atomic_rmw()
+From: Peilin Ye <yepeilin@google.com>
+To: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: Peilin Ye <yepeilin@google.com>, bpf@ietf.org, Xu Kuohai <xukuohai@huaweicloud.com>, 
+	Eduard Zingerman <eddyz87@gmail.com>, David Vernet <void@manifault.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
+	Ilya Leoshkevich <iii@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Quentin Monnet <qmo@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>, Yingchi Long <longyingchi24s@ict.ac.cn>, 
+	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>, Neel Natu <neelnatu@google.com>, 
+	Benjamin Segall <bsegall@google.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hello:
+Currently, check_atomic() only handles atomic read-modify-write (RMW)
+instructions.  Since we are planning to introduce other types of atomic
+instructions (i.e., atomic load/store), extract the existing RMW
+handling logic into its own function named check_atomic_rmw().
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+Remove the @insn_idx parameter as it is not really necessary.  Use
+'env->insn_idx' instead, as in other places in verifier.c.
 
-On Thu, 13 Feb 2025 07:21:23 -0800 you wrote:
-> Similar to `access_process_vm` but specific to strings.
-> Also chunks reads by page and utilizes `strscpy`
-> for handling null termination.
-> 
-> The primary motivation for this change is to copy
-> strings from a non-current task/process in BPF.
-> There is already a helper `bpf_copy_from_user_task`,
-> which uses `access_process_vm` but one to handle
-> strings would be very helpful.
-> 
-> [...]
+Signed-off-by: Peilin Ye <yepeilin@google.com>
+---
+ kernel/bpf/verifier.c | 53 +++++++++++++++++++++++--------------------
+ 1 file changed, 29 insertions(+), 24 deletions(-)
 
-Here is the summary with links:
-  - [bpf-next,v8,1/3] mm: add copy_remote_vm_str
-    https://git.kernel.org/bpf/bpf-next/c/f0b79944e6f4
-  - [bpf-next,v8,2/3] bpf: Add bpf_copy_from_user_task_str kfunc
-    https://git.kernel.org/bpf/bpf-next/c/f0f8a5b58f78
-  - [bpf-next,v8,3/3] selftests/bpf: Add tests for bpf_copy_from_user_task_str
-    https://git.kernel.org/bpf/bpf-next/c/7042882abc04
-
-You are awesome, thank you!
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 21658bd5e6d8..63d810bbc26e 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7615,28 +7615,12 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ static int save_aux_ptr_type(struct bpf_verifier_env *env, enum bpf_reg_type type,
+ 			     bool allow_trust_mismatch);
+ 
+-static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_insn *insn)
++static int check_atomic_rmw(struct bpf_verifier_env *env,
++			    struct bpf_insn *insn)
+ {
+ 	int load_reg;
+ 	int err;
+ 
+-	switch (insn->imm) {
+-	case BPF_ADD:
+-	case BPF_ADD | BPF_FETCH:
+-	case BPF_AND:
+-	case BPF_AND | BPF_FETCH:
+-	case BPF_OR:
+-	case BPF_OR | BPF_FETCH:
+-	case BPF_XOR:
+-	case BPF_XOR | BPF_FETCH:
+-	case BPF_XCHG:
+-	case BPF_CMPXCHG:
+-		break;
+-	default:
+-		verbose(env, "BPF_ATOMIC uses invalid atomic opcode %02x\n", insn->imm);
+-		return -EINVAL;
+-	}
+-
+ 	if (BPF_SIZE(insn->code) != BPF_W && BPF_SIZE(insn->code) != BPF_DW) {
+ 		verbose(env, "invalid atomic operand size\n");
+ 		return -EINVAL;
+@@ -7698,12 +7682,12 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
+ 	/* Check whether we can read the memory, with second call for fetch
+ 	 * case to simulate the register fill.
+ 	 */
+-	err = check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
++	err = check_mem_access(env, env->insn_idx, insn->dst_reg, insn->off,
+ 			       BPF_SIZE(insn->code), BPF_READ, -1, true, false);
+ 	if (!err && load_reg >= 0)
+-		err = check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
+-				       BPF_SIZE(insn->code), BPF_READ, load_reg,
+-				       true, false);
++		err = check_mem_access(env, env->insn_idx, insn->dst_reg,
++				       insn->off, BPF_SIZE(insn->code),
++				       BPF_READ, load_reg, true, false);
+ 	if (err)
+ 		return err;
+ 
+@@ -7713,13 +7697,34 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
+ 			return err;
+ 	}
+ 	/* Check whether we can write into the same memory. */
+-	err = check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
++	err = check_mem_access(env, env->insn_idx, insn->dst_reg, insn->off,
+ 			       BPF_SIZE(insn->code), BPF_WRITE, -1, true, false);
+ 	if (err)
+ 		return err;
+ 	return 0;
+ }
+ 
++static int check_atomic(struct bpf_verifier_env *env, struct bpf_insn *insn)
++{
++	switch (insn->imm) {
++	case BPF_ADD:
++	case BPF_ADD | BPF_FETCH:
++	case BPF_AND:
++	case BPF_AND | BPF_FETCH:
++	case BPF_OR:
++	case BPF_OR | BPF_FETCH:
++	case BPF_XOR:
++	case BPF_XOR | BPF_FETCH:
++	case BPF_XCHG:
++	case BPF_CMPXCHG:
++		return check_atomic_rmw(env, insn);
++	default:
++		verbose(env, "BPF_ATOMIC uses invalid atomic opcode %02x\n",
++			insn->imm);
++		return -EINVAL;
++	}
++}
++
+ /* When register 'regno' is used to read the stack (either directly or through
+  * a helper function) make sure that it's within stack boundary and, depending
+  * on the access type and privileges, that all elements of the stack are
+@@ -19187,7 +19192,7 @@ static int do_check(struct bpf_verifier_env *env)
+ 			enum bpf_reg_type dst_reg_type;
+ 
+ 			if (BPF_MODE(insn->code) == BPF_ATOMIC) {
+-				err = check_atomic(env, env->insn_idx, insn);
++				err = check_atomic(env, insn);
+ 				if (err)
+ 					return err;
+ 				env->insn_idx++;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.48.1.601.g30ceb7b040-goog
 
 
