@@ -1,172 +1,285 @@
-Return-Path: <bpf+bounces-52007-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52008-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 371D0A3CDB1
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 00:34:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF387A3CDFD
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 01:05:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B5BB188AD7E
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2025 23:34:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39C281897C2F
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 00:05:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C31F1CAA65;
-	Wed, 19 Feb 2025 23:34:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC4D323A0;
+	Thu, 20 Feb 2025 00:04:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fL0mtecd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ck4uHcUR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 390111B87EB
-	for <bpf@vger.kernel.org>; Wed, 19 Feb 2025 23:34:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF5936B;
+	Thu, 20 Feb 2025 00:04:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740008050; cv=none; b=tZDUe+53oDzHQU5eA1So34x6FJ7uE8fkegHh4ogSOiIvcFFyy/vomeLEn07/jRMvTWaI2bYATYpeLR5apNfjIPp+jCi06QLEwxs4REzCo4D/2/9wFw++unt20ofe1rJP1ZnMNiYjoR1O0nW+AvJgzBt3oj8Q6u7X0+A1a1HN4Wc=
+	t=1740009890; cv=none; b=onHVxfBkFwVpF55ISZOJ7NG+BQbX10P52NGLG26LAqdU2wrCRuCmx+VjmcIc9LaqFrNsY1dNil1EBCtYc/WK/A+6O+Lv301KhN4Bci+5tXPouh9zO+uU8fGxo37p7p9vlpIVNkOr+xhV1Isqr+YEGphe+6HuoSrw8iiIXuWlLZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740008050; c=relaxed/simple;
-	bh=xd6f1qKSB5QBMp8KDvMF9PJ3260kWdGVl2ULSJg3OX8=;
+	s=arc-20240116; t=1740009890; c=relaxed/simple;
+	bh=Vl8tWInZJseNtInJuez3V99KpCeOMUIfeG0NOtne1GI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qWI/HLiAv4XEebYHqxGM9/KIvlbijZDXFWLMgJarGzeNIi+lHfjZWal7c0ySh/ctSKVMHutXqzZyKilFPi+Xv2isNbXW4WTWgiWbsw+FPO7buG8Eivysia9QgRGSRMpNayQkNCtnNp0L8KD6qSmgd98uBVD8qRwOpXrjmIXrJAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fL0mtecd; arc=none smtp.client-ip=209.85.166.173
+	 To:Cc:Content-Type; b=hYPAAnhlLrK/M0FP74hmHXv2hWi7T/ALK0prDusoMulDB8U/dGx5coe9SuN56bQv1gRc9oCJOlFIQSKLoUU18yfqDpRyPtvjNQL0eU6Wn0doELGnO5KlhDgA92WUrWzxfWqy9uy2ByLNDRyKX/UMIcByhdJQ6Efzp1IQf78wRdc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ck4uHcUR; arc=none smtp.client-ip=209.85.166.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-3d0465a8d34so2643425ab.0
-        for <bpf@vger.kernel.org>; Wed, 19 Feb 2025 15:34:08 -0800 (PST)
+Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-3d19e40a891so1065175ab.3;
+        Wed, 19 Feb 2025 16:04:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740008048; x=1740612848; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740009887; x=1740614687; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Mpkptc13Zmsm+5wusis0SYzmeBQfgNQsBZDD70bd9co=;
-        b=fL0mtecdpYu5pgRygrQ8UYVmi9cXMd7qNN488bF4/poG6+ijdhpKwlbLZsC4qPwM9x
-         Sk5aDSsu/8aA0vu2Me36cqY8kEnOOKGpeWuscKmKmVuSyWCnMCmWVKoUd/qBugbW6cYA
-         np4Tw5wBs/rjh4rMq3jAP51/x1TfRC8AreIPxSY3zLS1V+aEpPYlHdjTVebLNcSyFrAZ
-         dKyh6HZtBgIXEbPPuS1clEFTQzPCwb72xp2xrgqJctACIIg5Kz/UTBrhU47Eg1/3dRs0
-         kiAUHdNzTpZbUi8QEAYZ5b9+ZWLiOqBqKsoSe971FboI8rXlskEKw1GIVRvb7P4aS4WH
-         IF3Q==
+        bh=MKsDdYIRIIUwFa6KIwVsLiipV07cDi3c32LHexL5qS8=;
+        b=Ck4uHcUR/lXE/x9Qfosc6kI+iwiY+KwKe+shToS/pAA4D4G3aWP1+bpF1nsX/adAne
+         GOVB/rInfRqcyDkvuSEb0RgiptALNMzrcGTBR6NSiwgsMGSZjfOjA422Tbo2cSNTmIlu
+         Vu+gHfyXJMG85XWSi1t+Y099drYsZr7SMi9AU/3auW2V4BR+aMUtuza2JT1hIOdqs9yC
+         DKw1KLHvhWA9KPSRQCqom6lRahKuBAlXo3/umLd8+UAH6awrsaap1w3oMVGk9F0F1yDS
+         /bK+F39HUTFWL6GsucG5JMgLZMrS6moGpa3ktRKw5i2+7PuZGFgbwWUEM+VuOykHru3N
+         izhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740008048; x=1740612848;
+        d=1e100.net; s=20230601; t=1740009887; x=1740614687;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Mpkptc13Zmsm+5wusis0SYzmeBQfgNQsBZDD70bd9co=;
-        b=mzk8nX/i9n28soURTpTXZl/PXhMG/NMdAz5tJ3E6HXllaFsFWx7ZnCms3aQSa9p+Kr
-         HhcKvLwo1NEBzwdUz+ssrP6FHJPD4Odf8M+ci80vpAEBUjyBw02HpM9PErI8NK51dFQO
-         j2+wvzolJmRxTO+oXua1TYh5WHtvfS/42ZYFoRQ6u9+CKPaPk3v0Cm/wjkBYyrYfA1rv
-         En13badr2YdRxOH51bh9oNpdQw3xjzEvCwzPok9Brj7KJfolc0WCIKan/zdDrxGljixE
-         7cCpT5wnbF1e/U8iKheWSmyq24EhETa1fF4BZXlnuZs5HQOlqcJ9ukG9Iuev7XtGgXW4
-         W/pw==
-X-Forwarded-Encrypted: i=1; AJvYcCVg8QwGLCpMd13n//aAbWUb65cFpO1RX9JhRRL1rq/MtLT/KHZ25KWehc7lgmlvWyYfELc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyTnc9cjhm02Jm8mpBigMlJXzjOg+0+jTVg7S4jYfdgHSJKwHZ3
-	xCg2D2nchVCEDDF9kScCplbey2BjYpSYf8rNWjiLFUVZsbnlW+V1zZMhEPLbUOZFrV8oJu8HsnA
-	h34UrqpC4YdZo96lnF5DvxlzqBUU=
-X-Gm-Gg: ASbGncujoYqS3lmEWqNE4YV7vvpJFSCiLkt33I2Qq3YXh9Nu/5TuqZoBGdr2sEsn5Bn
-	fa8kiJyNzc7B18LYpsvBbJsrCU/sSYUmRujNedOjVGWd+aErUdxQMAyYP5D6IzxxRG9D/wXMx
-X-Google-Smtp-Source: AGHT+IHqMBuWyrVcJMElsg62GHDMu9Yhl7c5Qr3ICHXnsDJ6Dz00vCLmDbL/He/grwOyD68/Rjg3AniUHlciqqwpoRU=
-X-Received: by 2002:a05:6e02:20ee:b0:3a7:88f2:cfa9 with SMTP id
- e9e14a558f8ab-3d2c2530138mr2866505ab.11.1740008048117; Wed, 19 Feb 2025
- 15:34:08 -0800 (PST)
+        bh=MKsDdYIRIIUwFa6KIwVsLiipV07cDi3c32LHexL5qS8=;
+        b=RJmk1pLpIJf6/wjSEPCZKmvzNemFMbFvIhdzfDPFbXRAYU1rivfLZ3fAv+paC9QtQK
+         IakSdgx3dS1LYvpOjePsVF9Tj3UjvI43l5Cjq9ssy2LJ/CVc5oPwhhkCCu1HP+DcF+QY
+         CldxQajyJpcIpv3MITutpThraIt13WASTcVjhuwxPIiiCoCYDkCwqZZOAeJvqr9zCkqw
+         /LwDOKmgQfcby+Fwwjo1hjKp5WyTGoF8Zfy5gQ2QqrNX+7YUfLsv16x7Ap+SXXTyqjbF
+         FJcpQBqz9m/8DrHF/pKGw4anbnHcrf+58JCofvyHHOlLY5TqC9Cem/SQQ1f4BAMahO8i
+         Dnag==
+X-Forwarded-Encrypted: i=1; AJvYcCVd6y5vmg1RlJB3o96c5kDuSNu/E2sKVARtDw8O3Vy4d+p3zCic3laosUeCsxmvNCM68e5nxb+y@vger.kernel.org, AJvYcCW+ALp077V5IyIdGTck+ZovbT0Ha8HMBoqXu5JgW0myfW0RMzl0uqpKmUdKHHvU2xd33y8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw2+o2yTJCQEVs+ZWbaGgCJqKjUSYD4HZlk9K8c/7dmTupABe5y
+	BLvTfWZQyjvXrICwgiI/Obkw9WqDougPDATz/rm4SlLO4OX9hJZi+EAJrPeGFgOmPhcU/mDVQFg
+	n9+3RN+lS4D2lNoYK/2AkpFrg2yg=
+X-Gm-Gg: ASbGnctOn9wm48tEru02Llrrmoxcqhr65gF6B7135DlNU3AB9OJnmDxJsVp6+Pig/Ol
+	AJgp9ibY6HY1X2JFYQKoFE0NLpSWoE3n2vGDXDk2/xgUkcF5A9qBBKIlLFWEt04TYy7ReWVgt
+X-Google-Smtp-Source: AGHT+IHA2tXemJRjuNQbYmgSAohhUwBEzASDc7dzU31eACLRCvja67vIaHl62RdmIK/ezd7BySOhrIDwrMYkTH6wvLk=
+X-Received: by 2002:a05:6e02:19c8:b0:3d0:1db8:e824 with SMTP id
+ e9e14a558f8ab-3d2807fd1e2mr177358335ab.10.1740009887496; Wed, 19 Feb 2025
+ 16:04:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250219081333.56378-1-kerneljasonxing@gmail.com>
- <38bb5556f4c90c7d4fbe9933ba3984136f5f3d5cf8d95e4f4bc6cbfb02e1e019@mail.kernel.org>
- <CAL+tcoDZAwZojcMQZ_bc71bxDpdfSE=q5_6eXirZLEWXFnY33w@mail.gmail.com>
- <bfc930d1-4a96-47c1-a250-e53dfe7a153f@meta.com> <44e56c1a-3445-4cae-abdb-76ada1084193@linux.dev>
-In-Reply-To: <44e56c1a-3445-4cae-abdb-76ada1084193@linux.dev>
+References: <20250218050125.73676-1-kerneljasonxing@gmail.com>
+ <20250218050125.73676-2-kerneljasonxing@gmail.com> <67b497b974fc3_10d6a32948b@willemb.c.googlers.com.notmuch>
+ <03553725-648d-467f-9076-0d5c22b3cfb3@linux.dev> <CAL+tcoA==aPOmBjDTOi2WgZ7HEE4OJiZ+4Z-OD_yGn_XN2Onqw@mail.gmail.com>
+ <67b542b9c4e3d_1692112944@willemb.c.googlers.com.notmuch> <CAL+tcoCHsJ9KQf5w6TLHmQy9DrkhPHChRPQb=+9L_WKTTd8FQA@mail.gmail.com>
+ <67b5f4f5990b0_1b78d829412@willemb.c.googlers.com.notmuch>
+In-Reply-To: <67b5f4f5990b0_1b78d829412@willemb.c.googlers.com.notmuch>
 From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Thu, 20 Feb 2025 07:33:31 +0800
-X-Gm-Features: AWEUYZncChLYkdxI-DfS8s6fKln0sT7Q6B0_illPQT838zYmwDmn-2fWJJMI1A8
-Message-ID: <CAL+tcoDMXDwmLQ-h_FKhjgn1ecOzbjZTFMJSkwCf0QoCkO0hhA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 0/2] bpf: support setting max RTO for bpf_setsockopt
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Daniel Xu <dlxu@meta.com>, Ihor Solodrai <ihor.solodrai@linux.dev>, 
-	kernel-ci <kernel-ci@meta.com>, "andrii@kernel.org" <andrii@kernel.org>, 
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>, 
-	"bot+bpf-ci@kernel.org" <bot+bpf-ci@kernel.org>
+Date: Thu, 20 Feb 2025 08:04:11 +0800
+X-Gm-Features: AWEUYZm6MA2i2P9HrhrdvmIXWmJOf8zA28Hh35NE8BQaIBtKRKUYnEecU6yC94k
+Message-ID: <CAL+tcoCJNM3YyLQpFCCUtHPN7dU+o721yBYE71+hs9-1r937Xg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v12 01/12] bpf: add networking timestamping
+ support to bpf_get/setsockopt()
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org, willemb@google.com, 
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, 
+	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
+	shuah@kernel.org, ykolal@fb.com, bpf@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 20, 2025 at 5:12=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
+On Wed, Feb 19, 2025 at 11:12=E2=80=AFPM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
 >
-> On 2/19/25 8:33 AM, Daniel Xu wrote:
-> > Hi Jason,
+> > > > Now I wonder if I should use the u8 sk_bpf_cb_flags in V13 or just
+> > > > keep it as-is? Either way is fine with me :) bpf_sock_ops_cb_flags
+> > > > uses u8 as an example, thus I think we prefer the former?
+> > >
+> > > If it fits in a u8 and that in practice also results in less memory
+> > > and cache pressure (i.e., does not just add a 24b hole), then it is a
+> > > net improvement.
 > >
-> > On 2/19/25 12:44 AM, Jason Xing wrote:
-> >> On Wed, Feb 19, 2025 at 4:27=E2=80=AFPM <bot+bpf-ci@kernel.org> wrote:
-> >>> Dear patch submitter,
-> >>>
-> >>> CI has tested the following submission:
-> >>> Status:     FAILURE
-> >>> Name:       [bpf-next,v3,0/2] bpf: support setting max RTO for bpf_se=
-tsockopt
-> >>> Patchwork:  https://patchwork.kernel.org/project/netdevbpf/list/?seri=
-es=3D935463&state=3D*
-> >>> Matrix:     https://github.com/kernel-patches/bpf/actions/runs/134082=
-35954
-> >>>
-> >>> Failed jobs:
-> >>> build-aarch64-gcc: https://github.com/kernel-patches/bpf/actions/runs=
-/13408235954/job/37452248960
-> >>> build-s390x-gcc: https://github.com/kernel-patches/bpf/actions/runs/1=
-3408235954/job/37452248633
-> >>> build-x86_64-gcc: https://github.com/kernel-patches/bpf/actions/runs/=
-13408235954/job/37452249287
-> >>> build-x86_64-llvm-17: https://github.com/kernel-patches/bpf/actions/r=
-uns/13408235954/job/37452250339
-> >>> build-x86_64-llvm-17-O2: https://github.com/kernel-patches/bpf/action=
-s/runs/13408235954/job/37452250688
-> >>> build-x86_64-llvm-18: https://github.com/kernel-patches/bpf/actions/r=
-uns/13408235954/job/37452251018
-> >>> build-x86_64-llvm-18-O2: https://github.com/kernel-patches/bpf/action=
-s/runs/13408235954/job/37452251311
-> >>>
-> >>>
-> >>> Please note: this email is coming from an unmonitored mailbox. If you=
- have
-> >>> questions or feedback, please reach out to the Meta Kernel CI team at
-> >>> kernel-ci@meta.com.
-> >> I think the only diff I made is that I removed the change in
-> >> tools/include/uapi/linux/bpf.h from V2.
-> >> diff --git a/tools/include/uapi/linux/tcp.h b/tools/include/uapi/linux=
-/tcp.h
-> >> index 13ceeb395eb8..7989e3f34a58 100644
-> >> --- a/tools/include/uapi/linux/tcp.h
-> >> +++ b/tools/include/uapi/linux/tcp.h
-> >> @@ -128,6 +128,7 @@ enum {
-> >>    #define TCP_CM_INQ             TCP_INQ
-> >>
-> >>    #define TCP_TX_DELAY           37      /* delay outgoing packets by=
- XX usec */
-> >> +#define TCP_RTO_MAX_MS         44      /* max rto time in ms */
-> >>
-> >> Last time everything was fine. I doubt it has something to do with the
-> >> failure :S
+> > Probably I didn't state it clearly. I agree with you on saving memory:)
+> >
+> > In the previous response, I was trying to keep the sk_bpf_cb_flags
+> > flag and use a u8 instead. I admit u32 is too large after you noticed
+> > this.
+> >
+> > Would the following diff on top of this series be acceptable for you?
+> > And would it be a proper place to put the u8 sk_bpf_cb_flags in struct
+> > sock?
+> > diff --git a/include/net/sock.h b/include/net/sock.h
+> > index 6f4d54faba92..e85d6fb3a2ba 100644
+> > --- a/include/net/sock.h
+> > +++ b/include/net/sock.h
+> > @@ -447,7 +447,7 @@ struct sock {
+> >         int                     sk_forward_alloc;
+> >         u32                     sk_tsflags;
+> >  #define SK_BPF_CB_FLAG_TEST(SK, FLAG) ((SK)->sk_bpf_cb_flags & (FLAG))
+> > -       u32                     sk_bpf_cb_flags;
+> > +       u8                      sk_bpf_cb_flags;
+> >         __cacheline_group_end(sock_write_rxtx);
+> >
+> >         __cacheline_group_begin(sock_write_tx);
+> >
+> > The following output is the result of running 'pahole --hex -C sock vml=
+inux'.
+> > Before this series:
+> >         u32                        sk_tsflags;           /* 0x168   0x4=
+ */
+> >         __u8
+> > __cacheline_group_end__sock_write_rxtx[0]; /* 0x16c     0 */
+> >         __u8
+> > __cacheline_group_begin__sock_write_tx[0]; /* 0x16c     0 */
+> >         int                        sk_write_pending;     /* 0x16c   0x4=
+ */
+> >         atomic_t                   sk_omem_alloc;        /* 0x170   0x4=
+ */
+> >         int                        sk_sndbuf;            /* 0x174   0x4=
+ */
+> >         int                        sk_wmem_queued;       /* 0x178   0x4=
+ */
+> >         refcount_t                 sk_wmem_alloc;        /* 0x17c   0x4=
+ */
+> >         /* --- cacheline 6 boundary (384 bytes) --- */
+> >         long unsigned int          sk_tsq_flags;         /* 0x180   0x8=
+ */
+> > ...
+> > /* sum members: 773, holes: 1, sum holes: 1 */
+> >
+> > After this diff patch:
+> >         u32                        sk_tsflags;           /* 0x168   0x4=
+ */
+> >         u8                         sk_bpf_cb_flags;      /* 0x16c   0x1=
+ */
+> >         __u8
+> > __cacheline_group_end__sock_write_rxtx[0]; /* 0x16d     0 */
+> >         __u8
+> > __cacheline_group_begin__sock_write_tx[0]; /* 0x16d     0 */
+> >
+> >         /* XXX 3 bytes hole, try to pack */
+> >
+> >         int                        sk_write_pending;     /* 0x170   0x4=
+ */
+> >         atomic_t                   sk_omem_alloc;        /* 0x174   0x4=
+ */
+> >         int                        sk_sndbuf;            /* 0x178   0x4=
+ */
+> >         int                        sk_wmem_queued;       /* 0x17c   0x4=
+ */
+> >         /* --- cacheline 6 boundary (384 bytes) --- */
+> >         refcount_t                 sk_wmem_alloc;        /* 0x180   0x4=
+ */
+> >
+> >         /* XXX 4 bytes hole, try to pack */
+> >
+> >         long unsigned int          sk_tsq_flags;         /* 0x188   0x8=
+ */
+> > ...
+> > /* sum members: 774, holes: 3, sum holes: 8 */
+> >
+> > It will introduce 7 extra sum holes if this series with this u8 change
+> > gets applied. I think it's a proper position because this new
+> > sk_bpf_cb_flags will be used in the tx and rx path just like
+> > sk_tsflags, aligned with rules introduced by the commit[1].
 >
-> kernel should not need tools/include, so no.
+> Reducing a u64 to u8 can leave 7b of holes, but that is not great,
+> of course.
 >
-> >>
-> >> But I tested it locally and could not reproduce it. Could it be caused
-> >> because of applying to a wrong branch? I'm afraid not, right?
->
-> Right, in v2, the patch 1 cannot be applied to bpf-next/master, so the bp=
-f CI
-> retried with bpf-next/net. It is the current bpf CI setup.
->
-> That v2's patch 1 is removed in v3, so the v3 applied cleanly to bpf-next=
-/master
-> and the bpf CI moved forward to test it.
->
-> I tested locally and I have applied v3 to bpf-next/net. Thanks.
->
-> May be the bpf CI can retry with bpf-next/net also there is kernel compil=
-ation
-> error.
+> Since this bitmap is only touched if a BPF program is loaded, arguably
+> it need not be in the hot path cacheline groups.
 
-Oh, I got it, thanks!
+Point taken.
+
+>
+> Can you find a hole further down to place this in, or at least a spot
+> that does not result in 7b of wasted space (in the hotpath cacheline
+> groups of all places).
+
+There is one place where I can simply insert the flag.
+
+The diff patch on top of this series is:
+diff --git a/include/net/sock.h b/include/net/sock.h
+index e85d6fb3a2ba..9fa27693fb02 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -446,8 +446,6 @@ struct sock {
+        u32                     sk_reserved_mem;
+        int                     sk_forward_alloc;
+        u32                     sk_tsflags;
+-#define SK_BPF_CB_FLAG_TEST(SK, FLAG) ((SK)->sk_bpf_cb_flags & (FLAG))
+-       u8                      sk_bpf_cb_flags;
+        __cacheline_group_end(sock_write_rxtx);
+
+        __cacheline_group_begin(sock_write_tx);
+@@ -528,6 +526,8 @@ struct sock {
+        u8                      sk_txtime_deadline_mode : 1,
+                                sk_txtime_report_errors : 1,
+                                sk_txtime_unused : 6;
++#define SK_BPF_CB_FLAG_TEST(SK, FLAG) ((SK)->sk_bpf_cb_flags & (FLAG))
++       u8                      sk_bpf_cb_flags;
+
+        void                    *sk_user_data;
+ #ifdef CONFIG_SECURITY
+
+
+1) before applying the whole series:
+...
+        /* --- cacheline 10 boundary (640 bytes) --- */
+        ktime_t                    sk_stamp;             /* 0x280   0x8 */
+        int                        sk_disconnects;       /* 0x288   0x4 */
+        u8                         sk_txrehash;          /* 0x28c   0x1 */
+        u8                         sk_clockid;           /* 0x28d   0x1 */
+        u8                         sk_txtime_deadline_mode:1; /* 0x28e: 0 0=
+x1 */
+        u8                         sk_txtime_report_errors:1; /*
+0x28e:0x1 0x1 */
+        u8                         sk_txtime_unused:6;   /* 0x28e:0x2 0x1 *=
+/
+
+        /* XXX 1 byte hole, try to pack */
+
+        void *                     sk_user_data;         /* 0x290   0x8 */
+        void *                     sk_security;          /* 0x298   0x8 */
+        struct sock_cgroup_data    sk_cgrp_data;         /* 0x2a0  0x10 */
+...
+/* sum members: 773, holes: 1, sum holes: 1 */
+
+
+2) after applying the series with the above diff patch:
+...
+        /* --- cacheline 10 boundary (640 bytes) --- */
+        ktime_t                    sk_stamp;             /* 0x280   0x8 */
+        int                        sk_disconnects;       /* 0x288   0x4 */
+        u8                         sk_txrehash;          /* 0x28c   0x1 */
+        u8                         sk_clockid;           /* 0x28d   0x1 */
+        u8                         sk_txtime_deadline_mode:1; /* 0x28e: 0 0=
+x1 */
+        u8                         sk_txtime_report_errors:1; /*
+0x28e:0x1 0x1 */
+        u8                         sk_txtime_unused:6;   /* 0x28e:0x2 0x1 *=
+/
+        u8                         sk_bpf_cb_flags;      /* 0x28f   0x1 */
+        void *                     sk_user_data;         /* 0x290
+0x8 */
+        void *                     sk_security;          /* 0x298   0x8 */
+        struct sock_cgroup_data    sk_cgrp_data;         /* 0x2a0  0x10 */
+...
+/* sum members: 774 */
+
+It turns out that the new sk_bpf_cb_flags fills the hole exactly. The
+new field and some of its nearby fields are quite similar because they
+are only/nearly written during the creation or setsockopt phase.
+
+I think now it's a good place to insert the new flag?
+
+Thanks,
+Jason
 
