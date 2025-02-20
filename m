@@ -1,84 +1,75 @@
-Return-Path: <bpf+bounces-52090-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52091-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DB35A3E22C
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 18:21:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C6B6A3E2B6
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 18:40:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0012703538
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 17:15:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 094014216F3
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 17:39:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A25382147E7;
-	Thu, 20 Feb 2025 17:10:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 526922139C9;
+	Thu, 20 Feb 2025 17:38:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FAYLnv3k"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Qtu12ke8"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5344D2135A2
-	for <bpf@vger.kernel.org>; Thu, 20 Feb 2025 17:10:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E734120485B;
+	Thu, 20 Feb 2025 17:38:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740071425; cv=none; b=rorBvDlXvbmo3YTY7DIIAmmTG5juL62lDpluKCJmD4citAa6v0h6/DD1mpaMTNUl1igB2/hEXOA/PJ3SjYh6n4pOczpV33yLQQEQh6J87obYXFuQZckEhlYYkm1MRCICgMN8wp3zO4A+UiFrAduMkw5Pv9UgGpCEFS3VeupDhVg=
+	t=1740073126; cv=none; b=ju/VjpgINs0xX7gtuFqiQlLwhjKrUU7soeobDGrsRw9aJrc3xArOXOLdNkjl3tEELK6Q/HykMfXyw3wdsTpeUeCXwgCEucKwDEVUOxkHo75KRnBcuQreQj0rqHfUqg2E2pWn8lGWy1eiC0NWb9y87DkrMAYdHJM6Wko1rKL4B2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740071425; c=relaxed/simple;
-	bh=kg7PYKt74NmqPx2oKNRGx3rLvGEcdQR61JIV5w6PyfE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Ete71UIzIZDMa8THtgDhZ8s0kw2Go3I5ysLVjvB0+/2Of0OyXyzesXb7taRJ5t/guQCTbeFzwsi10YVJq9FFUBu33hP68lIkD2GndhL4DVM8EniTsBxNcYGKh+1sF0rt5BaaGYoFeoSEp2eLqGc9PDmeCXcbb2Gf4XZXuC8tMNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FAYLnv3k; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1740071422;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kg7PYKt74NmqPx2oKNRGx3rLvGEcdQR61JIV5w6PyfE=;
-	b=FAYLnv3k01FlIi2F1YeCJ3tXVndpMzOw4X6OofWUa5hN9FcP+Rde/hf1/PPR6K/yuPIuLw
-	ILboncMTc/5qmRsoGpL3alNawfd3guw5PGa3MuCY/GIsjxxCfv1efqf1PChvldWYvAw60k
-	c4VDY1zMQ0KZ0ZU3p2/zzKl3S6PXyJE=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-301-Xix6FYuBN7-vNpKD8re2xA-1; Thu, 20 Feb 2025 12:10:21 -0500
-X-MC-Unique: Xix6FYuBN7-vNpKD8re2xA-1
-X-Mimecast-MFC-AGG-ID: Xix6FYuBN7-vNpKD8re2xA_1740071419
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4394c0a58e7so8905215e9.0
-        for <bpf@vger.kernel.org>; Thu, 20 Feb 2025 09:10:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740071419; x=1740676219;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kg7PYKt74NmqPx2oKNRGx3rLvGEcdQR61JIV5w6PyfE=;
-        b=OYKjJS3665EYcNRahQwLP03yM8jrBGjU44wwj4wi0MaznP1XtPPPBehWTWwDkZVkWL
-         BdcxyGNjxFG1AU1ASi7M7jzWkoBlv3IpXbMhFMau+0CW/Ib1tCLk6ukFOGsyG3YAMuBm
-         Uuoam2FCGDLHkvA/CXUBHg/eEYWZjNMfdznopcjEBfAlC7K9v+K+DD6lwjm8Ri0HlFBc
-         VRNJ7PFM1q2Um01u07sFnaPPABlIWFNDbnVuv7qZuypAuyKYNDH1pcOEZV7MOx2kpKzy
-         YokLQXhTNrzLyHVV2uNnCuMpZiF/3JiOV6bufwTUcnc2EvMJZAmpKpBYZ6C38m2D3UOg
-         A2ag==
-X-Forwarded-Encrypted: i=1; AJvYcCVF2fctU18EwSex8j4SAl1tPYSIoL74wUslnys68aX/cnadPhPLrAzMhCSD20qsNpPr8Ek=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyiqdDYNDZUwKEfGRA5xAlJr3bja0RxLo9SCeNFr6nObLAI/Lf1
-	ekQUBHRFBrXVEaNAcycz4JERmvObZQiYyFhV4/ArFSS5lNRtUfkDqG439ne5sJhzCCFTYZ3NQFi
-	ztpSLwRZRRl9yfJgMNUOXsPQuOHaowVE1MUitkBbOgqpLmXJUHA==
-X-Gm-Gg: ASbGncviUIZqb6D6ecwKAIpu6vdRtGkI2resynM3k6rOtczW3dlg4eAoFDspIvHKGfn
-	6Bmr/t15x4pjcass3h2V+shPzG5aqYqldx5/yeRKZ1hkNmQgaQaBg1fzzzYkQNfiCHLlM9jw6mp
-	J3GqLsnwekWHrfBRIJ6G9mELzY0wHkuPAzeiqOBqbEvYwzOaizK7W/nAUZGzeXKiNCae5nX8EwW
-	veEU7XKs/fUBohZTeiUpTfqqu1F/JT7UEScEI6B316BnNDXveFUvjx2Ym2QBDBFLMRBdSXRdbJ8
-	WxHC1KqWAANxEgyI3Ks3U79eNm2K0MOIQWrPLgrSFU4sAUSDcnpi4xucrN3fXU1nQA==
-X-Received: by 2002:a05:600c:4fc2:b0:439:985b:17be with SMTP id 5b1f17b1804b1-439ae1eaa78mr176235e9.9.1740071418833;
-        Thu, 20 Feb 2025 09:10:18 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFqI8Joi794bN8Kdq45efIzQ+6oEZ5Dcj9tQjLghCqHxxqvkD27DzVgOIJ2kmb/SIiCpoKjvg==
-X-Received: by 2002:a05:600c:4fc2:b0:439:985b:17be with SMTP id 5b1f17b1804b1-439ae1eaa78mr175145e9.9.1740071418347;
-        Thu, 20 Feb 2025 09:10:18 -0800 (PST)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4395a0558e2sm247191865e9.11.2025.02.20.09.10.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Feb 2025 09:10:17 -0800 (PST)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Dave Hansen <dave.hansen@intel.com>, Jann Horn <jannh@google.com>
+	s=arc-20240116; t=1740073126; c=relaxed/simple;
+	bh=h8NKvwjpysRTbl1wf+xhpS9HjAsxrObYQPAQ0+Zk+cQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WESf3rfzvaa+4p2dKrR/o2NdnXp+2jNBQv0GckFYIvQtzytDP6AmCOqQihuAWKJL7vHGQal68U1OYD8Pz6kjhQ5E0EheLgVQsEDqFjolG2KbA/Bl2GDSHUfTmSVOJUJHI3jEiFgNjq+8Rms0VTKmH90ARkVbar4vvZqK2vRFQyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Qtu12ke8; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1740073125; x=1771609125;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=h8NKvwjpysRTbl1wf+xhpS9HjAsxrObYQPAQ0+Zk+cQ=;
+  b=Qtu12ke8lqWUTlRyhD+j/bHk8jmzFTZbCcTC1aw+UFkf0Ri9GwsfzOH/
+   KEygZZJU2fSgGyr/l9EZgpSEfCwKxoab3wctUZGRPmCXuTXNfjEUJvtiO
+   HEC5V0rwZHy+08+JAe9pZDRcQHKC5QFRX4DYhViixUK5TD9hfropfBdRE
+   wemaEPk/GZzlXc2xUk6LJgHcDqGSt0GPXwwLnXeDg8VZGbbIZgLQp+vBZ
+   eRlaAqhWnUwLH8dKH+aSkfvYFxI1I5sErym+xl1thNJJOUwzIm1O4s4tG
+   SjUeG+ojJdIbjpV5S5c7aK8McP9Ein6gIrbmBa4vy7irKxO2/KAaDJqeP
+   g==;
+X-CSE-ConnectionGUID: ybxDS3cLQmyiavFeh8xEOA==
+X-CSE-MsgGUID: UVFyrk1DT5KT7XAUqcuM/g==
+X-IronPort-AV: E=McAfee;i="6700,10204,11351"; a="40789726"
+X-IronPort-AV: E=Sophos;i="6.13,302,1732608000"; 
+   d="scan'208";a="40789726"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2025 09:38:44 -0800
+X-CSE-ConnectionGUID: 2FkR9i9lRM+HImYsnGvcUw==
+X-CSE-MsgGUID: a8l0c6TSTG6oJVnuvZESCg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,302,1732608000"; 
+   d="scan'208";a="115637960"
+Received: from puneetse-mobl.amr.corp.intel.com (HELO [10.125.110.82]) ([10.125.110.82])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2025 09:38:39 -0800
+Message-ID: <408ebd8b-4bfb-4c4f-b118-7fe853c6e897@intel.com>
+Date: Thu, 20 Feb 2025 09:38:39 -0800
+Precedence: bulk
+X-Mailing-List: bpf@vger.kernel.org
+List-Id: <bpf.vger.kernel.org>
+List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 29/30] x86/mm, mm/vmalloc: Defer
+ flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
+To: Valentin Schneider <vschneid@redhat.com>, Jann Horn <jannh@google.com>
 Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
  virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
  loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
@@ -87,50 +78,54 @@ Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
  linux-hardening@vger.kernel.org, linux-mm@kvack.org,
  linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
  bcm-kernel-feedback-list@broadcom.com, Juergen Gross <jgross@suse.com>,
- Ajay Kaher <ajay.kaher@broadcom.com>, Alexey Makhalov
- <alexey.amakhalov@broadcom.com>, Russell King <linux@armlinux.org.uk>,
+ Ajay Kaher <ajay.kaher@broadcom.com>,
+ Alexey Makhalov <alexey.amakhalov@broadcom.com>,
+ Russell King <linux@armlinux.org.uk>,
  Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Paul
- Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
- Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
- Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo
- <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Alexander Shishkin
- <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian
- Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
- "Liang, Kan" <kan.liang@linux.intel.com>, Boris Ostrovsky
- <boris.ostrovsky@oracle.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Pawan
- Gupta <pawan.kumar.gupta@linux.intel.com>, Sean Christopherson
- <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski
- <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Frederic Weisbecker
- <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, Jason
- Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, Ard
- Biesheuvel <ardb@kernel.org>, Neeraj Upadhyay
- <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>,
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ "Liang, Kan" <kan.liang@linux.intel.com>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Josh Poimboeuf <jpoimboe@kernel.org>,
+ Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+ Sean Christopherson <seanjc@google.com>, Paolo Bonzini
+ <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Frederic Weisbecker <frederic@kernel.org>,
+ "Paul E. McKenney" <paulmck@kernel.org>, Jason Baron <jbaron@akamai.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ard Biesheuvel <ardb@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joel@joelfernandes.org>,
  Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Uladzislau Rezki <urezki@gmail.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli <juri.lelli@redhat.com>,
- Clark Williams <williams@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>,
- Tomas Glozar <tglozar@redhat.com>, Vincent Guittot
- <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Kees Cook
- <kees@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Christoph
- Hellwig <hch@infradead.org>, Shuah Khan <shuah@kernel.org>, Sami Tolvanen
- <samitolvanen@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl
- <aliceryhl@google.com>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Juri Lelli <juri.lelli@redhat.com>, Clark Williams <williams@redhat.com>,
+ Yair Podemsky <ypodemsk@redhat.com>, Tomas Glozar <tglozar@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall
+ <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+ Kees Cook <kees@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+ Christoph Hellwig <hch@infradead.org>, Shuah Khan <shuah@kernel.org>,
+ Sami Tolvanen <samitolvanen@google.com>, Miguel Ojeda <ojeda@kernel.org>,
+ Alice Ryhl <aliceryhl@google.com>,
+ "Mike Rapoport (Microsoft)" <rppt@kernel.org>,
  Samuel Holland <samuel.holland@sifive.com>, Rong Xu <xur@google.com>,
- Nicolas Saenz Julienne <nsaenzju@redhat.com>, Geert Uytterhoeven
- <geert@linux-m68k.org>, Yosry Ahmed <yosryahmed@google.com>, "Kirill A.
- Shutemov" <kirill.shutemov@linux.intel.com>, "Masami Hiramatsu (Google)"
- <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, Luis
- Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
- Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH v4 29/30] x86/mm, mm/vmalloc: Defer
- flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
-In-Reply-To: <eef09bdc-7546-462b-9ac0-661a44d2ceae@intel.com>
+ Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Yosry Ahmed <yosryahmed@google.com>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+ Jinghao Jia <jinghao7@illinois.edu>, Luis Chamberlain <mcgrof@kernel.org>,
+ Randy Dunlap <rdunlap@infradead.org>, Tiezhu Yang <yangtiezhu@loongson.cn>
 References: <20250114175143.81438-1-vschneid@redhat.com>
  <20250114175143.81438-30-vschneid@redhat.com>
  <CAG48ez1Mh+DOy0ysOo7Qioxh1W7xWQyK9CLGNU9TGOsLXbg=gQ@mail.gmail.com>
@@ -144,51 +139,88 @@ References: <20250114175143.81438-1-vschneid@redhat.com>
  <d0450bc8-6585-49ca-9cad-49e65934bd5c@intel.com>
  <xhsmhh64qhssj.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
  <eef09bdc-7546-462b-9ac0-661a44d2ceae@intel.com>
-Date: Thu, 20 Feb 2025 18:10:15 +0100
-Message-ID: <xhsmhfrk84k5k.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-Precedence: bulk
-X-Mailing-List: bpf@vger.kernel.org
-List-Id: <bpf.vger.kernel.org>
-List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
+ <xhsmhfrk84k5k.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+From: Dave Hansen <dave.hansen@intel.com>
+Content-Language: en-US
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <xhsmhfrk84k5k.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 19/02/25 12:25, Dave Hansen wrote:
-> On 2/19/25 07:13, Valentin Schneider wrote:
->>> Maybe I missed part of the discussion though. Is VMEMMAP your only
->>> concern? I would have guessed that the more generic vmalloc()
->>> functionality would be harder to pin down.
->> Urgh, that'll teach me to send emails that late - I did indeed mean the
->> vmalloc() range, not at all VMEMMAP. IIUC *neither* are present in the user
->> kPTI page table and AFAICT the page table swap is done before the actual vmap'd
->> stack (CONFIG_VMAP_STACK=y) gets used.
->
-> OK, so rewriting your question... ;)
->
->> So what if the vmalloc() range *isn't* in the CR3 tree when a CPU is
->> executing in userspace?
->
-> The LDT and maybe the PEBS buffers are the only implicit supervisor
-> accesses to vmalloc()'d memory that I can think of. But those are both
-> handled specially and shouldn't ever get zapped while in use. The LDT
-> replacement has its own IPIs separate from TLB flushing.
->
-> But I'm actually not all that worried about accesses while actually
-> running userspace. It's that "danger zone" in the kernel between entry
-> and when the TLB might have dangerous garbage in it.
->
+On 2/20/25 09:10, Valentin Schneider wrote:
+>> The LDT and maybe the PEBS buffers are the only implicit supervisor
+>> accesses to vmalloc()'d memory that I can think of. But those are both
+>> handled specially and shouldn't ever get zapped while in use. The LDT
+>> replacement has its own IPIs separate from TLB flushing.
+>>
+>> But I'm actually not all that worried about accesses while actually
+>> running userspace. It's that "danger zone" in the kernel between entry
+>> and when the TLB might have dangerous garbage in it.
+>>
+> So say we have kPTI, thus no vmalloc() mapped in CR3 when running
+> userspace, and do a full TLB flush right before switching to userspace -
+> could the TLB still end up with vmalloc()-range-related entries when we're
+> back in the kernel and going through the danger zone?
 
-So say we have kPTI, thus no vmalloc() mapped in CR3 when running
-userspace, and do a full TLB flush right before switching to userspace -
-could the TLB still end up with vmalloc()-range-related entries when we're
-back in the kernel and going through the danger zone?
+Yes, because the danger zone includes the switch back to the kernel CR3
+with vmalloc() fully mapped. All bets are off about what's in the TLB
+the moment that CR3 write occurs.
 
-> BTW, I hope this whole thing is turned off on 32-bit. There, we can
-> actually take and handle faults on the vmalloc() area. If you get one of
-> those faults in your "danger zone", it'll start running page fault code
-> which will branch out to god-knows-where and certainly isn't noinstr.
+Actually, you could probably use that.
 
-Sounds... Fun. Thanks for pointing out the landmines.
+If a mapping is in the PTI user page table, you can't defer the flushes
+for it. Basically the same rule for text poking in the danger zone.
 
+If there's a deferred flush pending, make sure that all of the
+SWITCH_TO_KERNEL_CR3's fully flush the TLB. You'd need something similar
+to user_pcid_flush_mask.
+
+But, honestly, I'm still not sure this is worth all the trouble. If
+folks want to avoid IPIs for TLB flushes, there are hardware features
+that *DO* that. Just get new hardware instead of adding this complicated
+pile of software that we have to maintain forever. In 10 years, we'll
+still have this software *and* 95% of our hardware has the hardware
+feature too.
 
