@@ -1,180 +1,181 @@
-Return-Path: <bpf+bounces-52009-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52010-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D437A3CDFF
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 01:06:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 014A5A3CE03
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 01:13:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E17117A7E6
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 00:06:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C085B1898071
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 00:13:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB07223A0;
-	Thu, 20 Feb 2025 00:05:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAB0A257D;
+	Thu, 20 Feb 2025 00:13:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TLiZrsa4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V5Nbs7yZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F200636B;
-	Thu, 20 Feb 2025 00:05:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6D29635
+	for <bpf@vger.kernel.org>; Thu, 20 Feb 2025 00:13:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740009959; cv=none; b=PJqBnvnV9kSA4pu9k6hbrbBsxr02HJan2BWmzbZQusEzv4HS9E+IZibMW6aJGZ3Lvt3qN0+Q7izfq8WzH5s9AH34hfKBHzUELvWKIbDRAW6Z+5SAzcHg7J3aSIaUk87kibSm2TvSGxlZzC5icDTT4GZgI6AgBcSBDTa5WQeXfD4=
+	t=1740010387; cv=none; b=A1r0A2tOFMtRQdae3UhjlfOwXtCKYD591tplDTSwXzZKBrRgmTVIXJ+iuO3l3FgXzvZ6V+aHJa+IG8RN2HrjvhuaeeB/149qSVy7CLOv7xSNjOSv7YFTxDaBu6USzLQB3F/sgwHckCRgLGU0T6nhTbBOdQtIKcJ5G3h5J/LTucM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740009959; c=relaxed/simple;
-	bh=GvlkiejnY1IbVPFVnvsT5ANQLUweKyrSCXZd2DegGos=;
+	s=arc-20240116; t=1740010387; c=relaxed/simple;
+	bh=hxMgYtMOZvBbp3ehF1uZi3vSQPptrh7ijXvXde7ZR4Y=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BJp/jM5z5u/kLo+i3/Vh2kiq7r54+LOvNlLhQCU5AypR1CjMfurv6jItQp2RvC2kp6nRZE8V6evhwTbtYxMOUMGWvhPAb//zrDw6wPkoAsUsoRxVMAHj8AkqetiNbvedeH8TO2+Cm1M9e1+Jri1niNgXP8bg7cvr/08yyrIVyzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TLiZrsa4; arc=none smtp.client-ip=209.85.166.45
+	 To:Cc:Content-Type; b=gZyX3xMlnIn3GyZuzT4MFcnS4FpHtPB6BgF/3Tx9sS150a0y8Eyf8a449quTngsUei6gPsqz3mX1dNzASdgclKNe5dgSLH8WmjlDBJ+ylWdrcCGQTXUSUE3sGgjahmvBTdPrwuDSsicYHbqmjnawMzUxMvP9MFYYi+lEEiutne4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V5Nbs7yZ; arc=none smtp.client-ip=209.85.216.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-84a012f7232so45703839f.0;
-        Wed, 19 Feb 2025 16:05:57 -0800 (PST)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2fbf5c2f72dso590108a91.1
+        for <bpf@vger.kernel.org>; Wed, 19 Feb 2025 16:13:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740009957; x=1740614757; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740010385; x=1740615185; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RZyBvGX+Fxc2+2++nM3FlpG422+YGWcgDgREgyUJHoQ=;
-        b=TLiZrsa4zBkAl+Lc1HkczQNXGbHgLXQMYQY+MmIt3QrBew0ef2CmN0e7y9xhjQEbTQ
-         7H1NAmVI9vaaGE83xiitrjzHNAWe3L2akGK2WW9phZYy0tL0TQvEUS6iHYgUPEwOKUqY
-         hCGb4wAeK1glUMi6Ykt+1LxxIgpb3wdLp3YdVV8sZiEIE2yuSy4yi3U1jtNgUhfp4ChH
-         tRAu5FmdO8DiCLzFctHlvOgCz11zvIehY91B+6HUyJe24iAoXGPLFWr2gYN74jwIQZU6
-         khQxMFuNHwXCFAh/iA2qV7FzUKKAxEw6+nnA7lrfIy9L53KnUDOR1xagLFwXdinw4fip
-         jH6g==
+        bh=dAjDFbqjH3I72q32ke/XvkeB+bDWUKwLi/wDsrgT/Tw=;
+        b=V5Nbs7yZa1YROhr5+skNHEp0bRf+AktqsnCzYbNil59N3NxHCDrNo2KgbUboWinYBO
+         pWS/RV5VwR1gFLr8eO4Gp8h1IlY5k0uV/b2Zx4V9UtvuioJJBqsAKMktxs4cpeFzDO8d
+         +UlrB+L1zgsvt14x46AEVloc7PgwS/HQAQSRxVbNTnKPE6CPgoHI5+vhoYCKHfWcdkDt
+         cSmrL6ASI7HkvTJSockLFxmTOH+mFmSajfYJHsloXv9xzbr2pdd1YuBCgeYy+YzZIhHj
+         kh/7+Nd8naXPUk/iA/18E/sIwutOnYA4aCCR6nlI4wyFP5ShKFjeh1fEIrA5SadE/uks
+         LfHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740009957; x=1740614757;
+        d=1e100.net; s=20230601; t=1740010385; x=1740615185;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RZyBvGX+Fxc2+2++nM3FlpG422+YGWcgDgREgyUJHoQ=;
-        b=MakIN5I+b0qtuo3w0x/aqFRv3Y6gq42V1oijkKXSl0VUlmSS/SoUIpxn4RwDBs1FpL
-         fzmEH4xlm7QC0OHuaKI0lvqEWnDHdFT0OX9XX37ReNumgDiwdSHlUGcSeC8BZYKea1nC
-         EAYYKkqO9Bq5RpO/yxu5nKuBSz0B2BGuNztXfZUrV2BQ4zOqa5qfthx2NCrlKsuMHpNl
-         qDPwluwU04O58uuugWZwS+srQNliuSkYgWfrC0uD3CMq6ldLC3489hq9tTrS2cxypsc4
-         6v4BVxdXWq9yULopb2VMwZClGpn3IydVu8BieUdialNArDWjbo+dJRDJy037M35yVZaM
-         27Sg==
-X-Forwarded-Encrypted: i=1; AJvYcCUDhGF/Io8BA3C0CpLbPHM4C6ivU0iUwWu6nlSatK+fw9PDAyERepeLUTJhXAHg/nAvAOU=@vger.kernel.org, AJvYcCUIkbjW6bgmEPtsbogHd7wbHmpKJlFQEHIIYdXh6tlm91T4WJ619Lz/D+u6krulV9ie3q4KwlsK@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyj8N6ixZ0Z6MT5JYGYMLdHkm0EXfv1QxabG6FpycRn6PWvACL9
-	2uPTYDIRI7ySC/LiZymRcNY/ogrN+SV8NyVrWQqm3TtYp9Wx9KQAwQC49Kf/GtcXAStVr9/eEtP
-	LN9QxlzwAyC2t869hNa89PoZmt28=
-X-Gm-Gg: ASbGnct+6N++Bob8Vi/c7oSJt4ELQx9yi4oShkDQJUThxUiJIUxSu9V41UVrCp6GdCI
-	6aOh06XoFNGH0450i741xV3UcxGvw0XlLxvvWqbQRs5j/K/59rYeQN1R1CuOJWBNZjXsrTzk=
-X-Google-Smtp-Source: AGHT+IFCEvn/rMVlTewJTitX06Qt2DvxVvXTTWfcqlAdgTOdtN2+vvo3KCKNokpDMQbLHNdc9tW02wmKbjcQmKFpl9Q=
-X-Received: by 2002:a05:6e02:388a:b0:3cf:c7bc:4523 with SMTP id
- e9e14a558f8ab-3d2c019994fmr13998615ab.6.1740009956916; Wed, 19 Feb 2025
- 16:05:56 -0800 (PST)
+        bh=dAjDFbqjH3I72q32ke/XvkeB+bDWUKwLi/wDsrgT/Tw=;
+        b=j5V2ckfKsB44nDkrP/J+6ymH9gL8EX12mZ+B5kAwKF4dnhiJkxLhxtrpLcNGBUQpNm
+         cHXytjxRNPo2zcC2n8yhGQWMjipYkahGTUFLX8EXR/d+W2z4A3/zB2wi0IYHnAyPfjM0
+         XXtYmFUYcNB1oilK5JwWGVhAC82zxqTmtWqBmHrVlzGb540yPW2g1Bg4Xrjcjaa8iIfE
+         qH+hXEF+6Jwm0rNG0L0XTdAoRjYEy7jhXAXeYwS1dYgsSKvq5A9pmUWdq7G0FD2OuNSI
+         3/2L9zPvyILgzSZRQpzYSm8XtS+lhhx62hms0jdohQ3yOBDy80sc/90hSMPEMupSEwcK
+         gKnQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVeftiH77WJPG/gCUpstTmX1b6aPiC7dgGKKpY9q8b9mOBGaHxlUhbsumatvdP82zZnwZA=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxk4AwS83J5J2JkQ22wsr1EwB4ZRe/eMgAnQAJ9bV53Vfo1juxT
+	m71rM+jETX/juF5RMqn9KUm9BiC0LPk4LzZsPuJJJKD8Q8a4UkB/XuNlCnp4Z3jo+6ZbVKEG7GC
+	dt2lWMPrFR429kb0f5j763u0hcLUr5g==
+X-Gm-Gg: ASbGnctBZCu/Bs6O6IDm/xcobLwQeETQmNLLPB+qYH8rc8UAjQDPuR51+LLepKlL94v
+	DOqiqaLHEy7qjfCmiotN08nHLVH0yiMmYOY3AJFxEyDiAZZHMG+aAlstsv/GL+FWnF1DnWLVBKE
+	oFi2OaqLRg+Snm
+X-Google-Smtp-Source: AGHT+IGqCj8Q7o+5s4UB3O2RoT2AD3st0RjvRm9AaoDH5/vrpQDeaWQPsCxVigVFTEju5HwI7bNAdozr04xRM5E1Ly0=
+X-Received: by 2002:a17:90b:2788:b0:2fa:228d:5b03 with SMTP id
+ 98e67ed59e1d1-2fcb5a344c1mr8403623a91.19.1740010384950; Wed, 19 Feb 2025
+ 16:13:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250218050125.73676-1-kerneljasonxing@gmail.com>
- <20250218050125.73676-2-kerneljasonxing@gmail.com> <CAL+tcoBtd1V-dP_ShDNOVKTyfPvcaLy9ZHz2aEDZr5vOpgwdjA@mail.gmail.com>
- <24e9b1d8-ed6c-4053-8d27-185bcb840f87@linux.dev>
-In-Reply-To: <24e9b1d8-ed6c-4053-8d27-185bcb840f87@linux.dev>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Thu, 20 Feb 2025 08:05:19 +0800
-X-Gm-Features: AWEUYZmsblFsdvKJvOrolK7wvJhRxGYQEicDu4DCQsCimqJ5qXDtFOEPLjuuF40
-Message-ID: <CAL+tcoA8R8p28fwtxZx_few+iywY8myEX41ft1+5-FjjQ0DGFw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v12 01/12] bpf: add networking timestamping
- support to bpf_get/setsockopt()
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com, 
-	willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, ykolal@fb.com, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20250219125117.1956939-1-memxor@gmail.com> <20250219125117.1956939-2-memxor@gmail.com>
+ <CAADnVQ+TBG+yAxtY1Q5D6HnhbvgusUVrzyRm7-8oF7wYw+Nqfw@mail.gmail.com> <CAP01T74tZudfS8huoz=sP4UkEgs5ipkz9Qjf=6XNVzJvGOFLgQ@mail.gmail.com>
+In-Reply-To: <CAP01T74tZudfS8huoz=sP4UkEgs5ipkz9Qjf=6XNVzJvGOFLgQ@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 19 Feb 2025 16:12:53 -0800
+X-Gm-Features: AWEUYZnsakgT1hZZ2E6DEBQP0cImdiNPvKva_lfUdxIeUEPHpJE8EzBOYnbnmyY
+Message-ID: <CAEf4BzbyF3aWdE0Uk0KtdeYwmEYSahfpZk=vK-JhhZ-Bgb55ZQ@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next v1 1/2] bpf: Explore PTR_TO_STACK as R0 for bpf_dynptr_slice_rdwr
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, kkd@meta.com, Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 20, 2025 at 3:48=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
+On Wed, Feb 19, 2025 at 10:10=E2=80=AFAM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> On 2/18/25 11:03 PM, Jason Xing wrote:
-> > On Tue, Feb 18, 2025 at 1:02=E2=80=AFPM Jason Xing <kerneljasonxing@gma=
-il.com> wrote:
-> >>
-> >> The new SK_BPF_CB_FLAGS and new SK_BPF_CB_TX_TIMESTAMPING are
-> >> added to bpf_get/setsockopt. The later patches will implement the
-> >> BPF networking timestamping. The BPF program will use
-> >> bpf_setsockopt(SK_BPF_CB_FLAGS, SK_BPF_CB_TX_TIMESTAMPING) to
-> >> enable the BPF networking timestamping on a socket.
-> >>
-> >> Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
-> >> ---
-> >>   include/net/sock.h             |  3 +++
-> >>   include/uapi/linux/bpf.h       |  8 ++++++++
-> >>   net/core/filter.c              | 23 +++++++++++++++++++++++
-> >>   tools/include/uapi/linux/bpf.h |  1 +
-> >>   4 files changed, 35 insertions(+)
-> >>
-> >> diff --git a/include/net/sock.h b/include/net/sock.h
-> >> index 8036b3b79cd8..7916982343c6 100644
-> >> --- a/include/net/sock.h
-> >> +++ b/include/net/sock.h
-> >> @@ -303,6 +303,7 @@ struct sk_filter;
-> >>     *    @sk_stamp: time stamp of last packet received
-> >>     *    @sk_stamp_seq: lock for accessing sk_stamp on 32 bit architec=
-tures only
-> >>     *    @sk_tsflags: SO_TIMESTAMPING flags
-> >> +  *    @sk_bpf_cb_flags: used in bpf_setsockopt()
-> >>     *    @sk_use_task_frag: allow sk_page_frag() to use current->task_=
-frag.
-> >>     *                       Sockets that can be used under memory recl=
-aim should
-> >>     *                       set this to false.
-> >> @@ -445,6 +446,8 @@ struct sock {
-> >>          u32                     sk_reserved_mem;
-> >>          int                     sk_forward_alloc;
-> >>          u32                     sk_tsflags;
-> >> +#define SK_BPF_CB_FLAG_TEST(SK, FLAG) ((SK)->sk_bpf_cb_flags & (FLAG)=
-)
-> >> +       u32                     sk_bpf_cb_flags;
-> >>          __cacheline_group_end(sock_write_rxtx);
-> >>
-> >>          __cacheline_group_begin(sock_write_tx);
-> >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> >> index fff6cdb8d11a..fa666d51dffe 100644
-> >> --- a/include/uapi/linux/bpf.h
-> >> +++ b/include/uapi/linux/bpf.h
-> >> @@ -6916,6 +6916,13 @@ enum {
-> >>          BPF_SOCK_OPS_ALL_CB_FLAGS       =3D 0x7F,
-> >>   };
-> >>
-> >> +/* Definitions for bpf_sk_cb_flags */
+> On Wed, 19 Feb 2025 at 18:41, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > nit: s/bpf_sk_cb_flags/sk_bpf_cb_flags
+> > On Wed, Feb 19, 2025 at 4:51=E2=80=AFAM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > >
+> > > For the bpf_dynptr_slice_rdwr kfunc, the verifier may return a pointe=
+r
+> > > to the underlying packet (if the requested slice is linear), or copy =
+out
+> > > the data to the buffer passed into the kfunc. The verifier performs
+> > > symbolic execution assuming the returned value is a PTR_TO_MEM of a
+> > > certain size (passed into the kfunc), and ensures reads and writes ar=
+e
+> > > within bounds.
 > >
-> > I will correct it.
+> > sounds like
+> > check_kfunc_mem_size_reg() -> check_mem_size_reg() ->
+> > check_helper_mem_access()
+> >    case PTR_TO_STACK:
+> >       check_stack_range_initialized()
+> >          clobber =3D true
+> >              if (clobber) {
+> >                   __mark_reg_unknown(env, &state->stack[spi].spilled_pt=
+r);
 > >
-> >> +enum {
-> >> +       SK_BPF_CB_TX_TIMESTAMPING       =3D 1<<0,
-> >> +       SK_BPF_CB_MASK                  =3D (SK_BPF_CB_TX_TIMESTAMPING=
- - 1) |
-> >> +                                          SK_BPF_CB_TX_TIMESTAMPING
-> >> +};
+> > is somehow broken?
 > >
-> > Martin, I would like to know if it's necessary to update the above new
-> > enum in tools/include/uapi/linux/bpf.h as well?
+> > ohh. It might be:
+> > || !is_kfunc_arg_optional(meta->btf, buff_arg)
+> >
+> > This bit is wrong then.
+> > When arg is not-null check_kfunc_mem_size_reg() should be called.
+> > The PTR_TO_STACK abuse is a small subset of issues
+> > if check_kfunc_mem_size_reg() is indeed not called.
 >
-> Yes, the tools/include/uapi/linux/bpf.h should be updated. If you diff th=
-em, two
-> of them should be exactly the same. This patch should do the same to keep=
- the
-> tools bpf.h up-to-date.
+> The condition looks ok to me.
 >
-> For other headers in tools/include/uapi, I guess it depends. e.g. the tcp=
-.h in
-> your another RTO patch, the two tcp.h files are very different already an=
-d the
-> selftest does not need the new macro either.
+> The condition to do check_mem_size_reg is !null || !opt.
+> So when it's null, and it's opt, it will be skipped.
+> When it's null, and it's not opt, the check will happen.
+> When arg is not-null, the said function is called, opt does not matter th=
+en.
+> So the stack slots are marked misc.
+>
+> In our case we're not passing a NULL pointer in the selftest.
+>
+> The problem occurs once we spill to that slot _after_ the call, and
+> then do a write through returned mem pointer.
+>
+> The final few lines from the selftest do the dirty thing, where r0 is
+> aliasing fp-8, and r1 =3D 0.
+>
+> + *(u64 *)(r10 - 8) =3D r8; \
+> + *(u64 *)(r0 + 0) =3D r1; \
+> + r8 =3D *(u64 *)(r10 - 8); \
+> + r0 =3D *(u64 *)(r8 + 0); \
+>
+> The write through r0 must re-mark the stack, but the verifier doesn't
+> know it's pointing to the stack.
+> push_stack was the conceptually cleaner/simpler fix, but it apparently
+> isn't good enough.
+>
+> Remarking the stack on write to PTR_TO_MEM, or invalidating PTR_TO_MEM
+> when r8 is spilled to fp-8 first time after the call are two options.
+> Both have some concerns (first, the misaligned stack access is not
+> caught, second PTR_TO_MEM may outlive stack frame).
 
-I learned. Thanks.
+Reading the description of the problem my first instinct was to have
+stack slots with associated obj_ref_id for such cases and when
+something writes into that stack slot, invalidate everything with that
+obj_ref_id. So that's probably what you mean by invalidating
+PTR_TO_MEM, right?
+
+Not sure I understand what "PTR_TO_STACK with mem_size" (that Alexei
+mentioned in another email) means, though, so hard to compare.
+
+>
+> I don't recall if there was a hardware/JIT specific reason to care
+> about stack access alignment or not (on some architectures), but
+> otherwise we can over approximately mark at 8-byte granularity for any
+> slot(s) that overlap with the buffer to cover such a case. The second
+> problem is slightly trickier, which makes me lean towards invalidating
+> returned PTR_TO_MEM when stack slot is overwritten or frame is
+> destroyed.
 
