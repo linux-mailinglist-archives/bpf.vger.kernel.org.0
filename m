@@ -1,171 +1,218 @@
-Return-Path: <bpf+bounces-52016-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52017-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A177AA3CE6E
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 02:09:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FFBDA3CE84
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 02:19:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E583A1893D3D
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 01:09:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45ED11893A77
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 01:19:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5367E135A53;
-	Thu, 20 Feb 2025 01:08:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FBEF1581F0;
+	Thu, 20 Feb 2025 01:19:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ejkXvjZg"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jxWF3k/d"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D1D723A0
-	for <bpf@vger.kernel.org>; Thu, 20 Feb 2025 01:08:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CB7222F19
+	for <bpf@vger.kernel.org>; Thu, 20 Feb 2025 01:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740013729; cv=none; b=lbeBDHp/7vxue3aNqafyYDAEPH6mDHKBzaPpkc9e51HSMVjRPbxhASqxTp9O+O5idomHOt3XgBI0OfESkolz6xb0u1e1EJGMYARtzLC5CjTl+MMEK2B5jShzvAaZQKqGFkn6twHrnwKOlnb0d9a7jS0X9g9DkIA93OILV5mW5D4=
+	t=1740014381; cv=none; b=UmwxEAp+gyZn8cprqRWHpcgL9A2McYxEWM6VRScQNRlmJRfJAPnAA/DnKX8rZYtMHOHAzR+P1MixK1YVVbrgXdvZ2RuAXPyUr5HwlHWnIpazjJ/U20BiRHsvJRilZWqwFLTVeZvb1JvdvHg0agECRfmKItUqHgmTGdaCQBUnFN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740013729; c=relaxed/simple;
-	bh=eyw0JcW/CqNobLrXjUl4G9RFciMPmuTS7MsI0U8C2Qk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HU9+wM1QiFs31xV1vziPI8waoTF9l90l8toVDjDxceWTu+glvuuk2PDq8LPNk6EXR7XDIGNOdbO1ssD5oE/jiFCElROIst6hKTmqBVgiS08v7iPqK8Q4393R1fTk5apXe+ilJWdeRLWKzhtNtNHVFcBTNTE81s96ugU7BZbSQa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ejkXvjZg; arc=none smtp.client-ip=209.85.214.176
+	s=arc-20240116; t=1740014381; c=relaxed/simple;
+	bh=68PALQCn4GZXaMAk1aLisnfmMzWgQ+ys526kWmI63g0=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Ii2WuKue7jsapXwLWeHcMYJv6aSvvJaOsiHHBdJswaLfnOgYl1KqW+a42pNXbKLNTL1W+wCLqJkcxCILG+g/TZ95UItI8eAAkUAUXIampUpwNTTIisjV3MZYvW2UFQj96HZZ88yeki6el1pLbroB4AvkD6OafNZB1MeCSZjUWnY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jxWF3k/d; arc=none smtp.client-ip=209.85.216.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2212222d4cdso69085ad.0
-        for <bpf@vger.kernel.org>; Wed, 19 Feb 2025 17:08:48 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2fc1e7efe00so1058162a91.2
+        for <bpf@vger.kernel.org>; Wed, 19 Feb 2025 17:19:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1740013728; x=1740618528; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rqlTouY13+ElHVb0g8qWT8IbN9r+Hv7TBtx53gmJZ+A=;
-        b=ejkXvjZgzJokc4agSufBGJTq/KnMWOvB9oQ3huu5drwnlj2tOqmTIIg7l+N2Ob2/vx
-         HyItYJmURw9rEmbR5/Tyt7cKGdezicphyH0wqHC3gei+YmAebhXAMjUmJfw9Wrkls9Ik
-         +H6wRbcqZVSukWFCvPK0jVZy+nVmB8/6uP74msbQhkdtzt+uB0h2+8g2hXFzD0wRZqRD
-         QvjDsPcLENFeN3ueWP+PNLljh12/yk75SIV0X66XYx3h14B287gIIw9peVzCiX19b/rV
-         4iHPbbtR+58cXRRhPOJfMcUcuOaXGd2Eam6xJ1/ea2ftJr/PqoF08rPcrUQJQJXkyQxi
-         i3Bw==
+        d=google.com; s=20230601; t=1740014379; x=1740619179; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=90DsHdVzBzjp5RPvlkSTbOgHqDCYIc4EKhmpQ2T52VA=;
+        b=jxWF3k/dx7RYp+Gz7MuzQy2gRYXQaR79d3X2v+rrYLssejTtuayarnzfx6UikRt2Qt
+         6i7VfEnLTkNyDTXtMnDXqJ0SIieTaY0EebKq9J82pzsLG6Zop+Rfd4SeI9fN/HT97MGp
+         uXLERB02YfJj4L94M8GawnYTja4bMJrvhgUrlX/2gH+IH1mMQcL7QMohCE84D3wEp1YV
+         3gmdVci+w2n0co0TujjLgVOk5yYxsy4SD2wPzgA6uO7xLUro2t05sm/NiTAqD9zFrbOU
+         ujDb4mMgSYenSB1a4qBsHkh/ATdWVu66yDLYo8awcLjpglIu8Ov0HkXrXpa10roeX+Ai
+         AeqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740013728; x=1740618528;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rqlTouY13+ElHVb0g8qWT8IbN9r+Hv7TBtx53gmJZ+A=;
-        b=YNUwlf0i8XMTzR2Wmw47m9f/uMR0OVYjaYaFEkwkQSpEooBwD6TnRzkoyCe86QFA2N
-         DUWy0LMfdnq79qEh6vemXlZc4CXlBnUxZvZ0MgmfChLYN/C0ONwEGCnreeioRsOS8WSS
-         IhpzuVuu7N+4jyiMrOYvX9+fb+GhkJp2SZQwAWsDEJb5r5bOJyrcStAZBPKNdroHlASy
-         uDwaqee3uiHa4/qsjDJGtNVQOrF8cXyU/d5La1py93mJO5o1NvjB4PTb8FTqcFUTtraf
-         94CWkO4LGfBIGCGxywlOAQxxyHpDUpkeiZZO4JHsBwpDsMArHP6lZN5G9SdNvB0u4af6
-         LtkA==
-X-Gm-Message-State: AOJu0YzsYib0rD1/5gQ+QdTXu0nSBl0fj48tnJtBAqFIbIP/N9x/eRoh
-	uPbT08rGd0unpLEaKFTRkBkovREkuisciA1MVkLru4F2BT/mpfI1O+VMiEAYsQ==
-X-Gm-Gg: ASbGnctgRtZb+tpY2D/o3ecYRcsZQ88dXjDFn6LziPzJUuBEIMRYoc+wXndyY0vAYpZ
-	bSydlFxOik4SXK3kMxTkiNh4n+4If/9of6yVSsvo6oDO3/IKxs7V5w3592TFPts57lbr80UK1Xd
-	93w0RWYxgi/gJx3z29i0a8jV4w+2+3mbrwUDwZsz6LktyTKpR+ChGAx44WmnLKmTsoSPQcmWBL5
-	18DVKC+d4HaK6u26qLgaO2RtocF4yfpPyT280wK6NKbD5n7Z54fTsujegwsJJW+byiCSWMm5hlM
-	TkruBcdoXfCCDlW+haS3ndMPFSslGe6MELQsXBrLjfFrV3UQ8w9orA==
-X-Google-Smtp-Source: AGHT+IHBCZai8rbFA4Rqq1UVJMpTYpXlGgtVYKfEUQXi147oPGSC9aAN6/e5rjvXREapJcLK8L3TrQ==
-X-Received: by 2002:a17:902:d4cc:b0:21a:87e8:3897 with SMTP id d9443c01a7336-2218db4ed75mr1293055ad.4.1740013727466;
-        Wed, 19 Feb 2025 17:08:47 -0800 (PST)
-Received: from google.com (147.141.16.34.bc.googleusercontent.com. [34.16.141.147])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-220d5366882sm111350425ad.95.2025.02.19.17.08.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Feb 2025 17:08:46 -0800 (PST)
-Date: Thu, 20 Feb 2025 01:08:41 +0000
-From: Peilin Ye <yepeilin@google.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org, bpf@ietf.org,
-	Xu Kuohai <xukuohai@huaweicloud.com>,
-	David Vernet <void@manifault.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Ilya Leoshkevich <iii@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Quentin Monnet <qmo@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Ihor Solodrai <ihor.solodrai@linux.dev>,
-	Yingchi Long <longyingchi24s@ict.ac.cn>,
-	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>,
-	Neel Natu <neelnatu@google.com>,
-	Benjamin Segall <bsegall@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 8/9] selftests/bpf: Add selftests for
- load-acquire and store-release instructions
-Message-ID: <Z7aAmYi5zaVIgRKR@google.com>
-References: <cover.1738888641.git.yepeilin@google.com>
- <3ac854ac5cc62e78fadd2a7f1af9087ec3fc7a9c.1738888641.git.yepeilin@google.com>
- <6976077bc2d417169a437bc582a72defd1dec3d4.camel@gmail.com>
- <Z6ugQ1bd0opoGRYg@google.com>
- <1d2d919ae6848e2cf80b81ffe5f94fd31b8ea6ae.camel@gmail.com>
- <Z6u4O930eIbAVVMZ@google.com>
+        d=1e100.net; s=20230601; t=1740014379; x=1740619179;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=90DsHdVzBzjp5RPvlkSTbOgHqDCYIc4EKhmpQ2T52VA=;
+        b=PIWXjfONr7ebODaZWy5Do7zzgFkP6cqaGxDuWjYy0+p8GpL+33ypF5q1ABvenUz000
+         zh+rJDhk8pKT/KSgsF3UXJl3j23SimRpxggCYs6wA0stiuxInEfxvKlWzpZNCWvJyehn
+         mF6Fc0aenLvQSsr9tX+b9eOWBmKPaS4l6IQCvgHEYLeBJ0B494WyZgzIBsDa4FZ8WmHk
+         J+1oFtBhxNWiPLcL75LOLgX9OMGA3cqWebOTyWVgfdwQur+p/UPJPq5fz7h3GjGG3rvW
+         mcONnhzNJnd3/0Mdezzo2TwhLBDraOmHRwZlcf8/t/WO55VkoCMjJevDIjB7KIJ9KErz
+         f3XQ==
+X-Gm-Message-State: AOJu0YzgvY57p14YS/HiWvTeqrTJZszZNPyiV5KMGuPSJcsbexm7Rsb1
+	YOWkOB5eQiAPj2wkIQZ4WnloZrG0DVB5747waphUiAbz4cCMiD38USR+Cs+FWaaFz9ZpRDPhnt/
+	/O1LwOHJdbAJv+PmsSYYNdQFN4ISqf10/ENioSyZI5QCDHdW3u0qj3Hm8HWLgGOvqqlEPt/3NUa
+	9bIX7ip6sM25dMh8GCKBHko4201wZkHpv/CbGnoZU=
+X-Google-Smtp-Source: AGHT+IHTZJIfwdAPmaRcC/AMICF8Oev4ATVZBir52JFY3k0h8M5BqldtCyuNDkfc9kCd9Vz6uKu+/MDd0uXK1g==
+X-Received: from pjbpv10.prod.google.com ([2002:a17:90b:3c8a:b0:2d8:8340:8e46])
+ (user=yepeilin job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:90b:2887:b0:2f9:bcd8:da33 with SMTP id 98e67ed59e1d1-2fc40f23246mr28257178a91.21.1740014378820;
+ Wed, 19 Feb 2025 17:19:38 -0800 (PST)
+Date: Thu, 20 Feb 2025 01:19:27 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z6u4O930eIbAVVMZ@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.48.1.601.g30ceb7b040-goog
+Message-ID: <cover.1740009184.git.yepeilin@google.com>
+Subject: [PATCH bpf-next v3 0/9] Introduce load-acquire and store-release BPF instructions
+From: Peilin Ye <yepeilin@google.com>
+To: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: Peilin Ye <yepeilin@google.com>, bpf@ietf.org, Xu Kuohai <xukuohai@huaweicloud.com>, 
+	Eduard Zingerman <eddyz87@gmail.com>, David Vernet <void@manifault.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
+	Ilya Leoshkevich <iii@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Quentin Monnet <qmo@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>, Yingchi Long <longyingchi24s@ict.ac.cn>, 
+	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>, Neel Natu <neelnatu@google.com>, 
+	Benjamin Segall <bsegall@google.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Feb 11, 2025 at 08:51:07PM +0000, Peilin Ye wrote:
-> > > > Nit: why is dummy_test() necessary?
-> > > 
-> > > It's just to make it clear when these tests are (effectively) skipped.
+Hi all!
 
-<...>
+This patchset adds kernel support for BPF load-acquire and store-release
+instructions (for background, please see [1]), mainly including
+core/verifier, arm64 JIT compiler, and Documentation/ changes.  x86-64
+and riscv64 are also planned to be supported.  The corresponding LLVM
+changes can be found at:
 
-> > > Commit 147c8f4470ee ("selftests/bpf: Add unit tests for new
-> > > sign-extension load insns") did similar thing in verifier_ldsx.c.
-> > 
-> > I see, thank you for explaining.
-> > We do have a concept of skipped tests in the test-suite,
-> > but it is implemented by calling test__skip() from the prog_tests/<smth>.c.
-> > This would translate as something like below in prog_tests/verifier.c:
-> > 
-> > 	void test_verifier_store_release(void) {
-> > 	#if defined(ENABLE_ATOMICS_TESTS) && defined(__TARGET_ARCH_arm64)
-> > 		RUN(verifier_store_release);
-> > 	#else
-> > 		test__skip()
-> > 	#endif
-> > 	}
-> 
-> > The number of tests skipped is printed after tests execution.
+  [2] https://github.com/llvm/llvm-project/pull/108636
 
-I tried:
+Tested using PLATFORM=aarch64 CROSS_COMPILE=aarch64-linux-gnu-
+vmtest.sh, with llvm-17, llvm-18 and [2].
 
-  void test_verifier_load_acquire(void)
-  {
-  #if __clang_major__ >= 18 && defined(ENABLE_ATOMICS_TESTS) && defined(__aarch64__)
-          RUN(verifier_load_acquire);
-  #else
-          printf("%s:SKIP: Clang version < 18, ENABLE_ATOMICS_TESTS not defined, and/or JIT doesn't support load-acquire\n",
-                 __func__);
-          test__skip();
-  #endif
-  }
+Please refer to the LLVM PR and individual kernel patches for details.
+Feedback is much appreciated!
 
-Then realized that I can't check __clang_major__ in .../prog_tests/*
-files (e.g. I was building prog_tests/verifier.c using GCC).  I think
-ideally we should do something similar to prog{,_test}s/arena_atomics.c,
-i.e. use a global bool in BPF source to indicate if we should skip this
-test, but that seems to require non-trivial changes to
-prog_tests/verifier.c?
+v2: https://lore.kernel.org/bpf/cover.1738888641.git.yepeilin@google.com/
+v2..v3 notable changes:
 
-For the purpose of this patchset, let me keep dummy_test(), like what we
-have now in verifier_ldsx.c.
+  o (Alexei) change encoding to BPF_LOAD_ACQ=0x100, BPF_STORE_REL=0x110
+  o add Acked-by: tags from Ilya and Eduard
+  o make new selftests depend on:
+    * __clang_major__ >= 18, and
+    * ENABLE_ATOMICS_TESTS is defined (currently this means -mcpu=v3 or
+      v4), and
+    * JIT supports load_acq/store_rel (currenty only arm64)
+  o work around llvm-17 CI job failure by conditionally define
+    __arena_global variables as 64-bit if __clang_major__ < 18, to make
+    sure .addr_space.1 has no holes
+  o add Google copyright notice in new files
+
+v1: https://lore.kernel.org/all/cover.1737763916.git.yepeilin@google.com/
+v1..v2 notable changes:
+
+  o (Eduard) for x86 and s390, make
+             bpf_jit_supports_insn(..., /*in_arena=*/true) return false
+	     for load_acq/store_rel
+  o add Eduard's Acked-by: tag
+  o (Eduard) extract LDX and non-ATOMIC STX handling into helpers, see
+             PATCH v2 3/9
+  o allow unpriv programs to store-release pointers to stack
+  o (Alexei) make it clearer in the interpreter code (PATCH v2 4/9) that
+             only W and DW are supported for atomic RMW
+  o test misaligned load_acq/store_rel
+  o (Eduard) other selftests/ changes:
+    * test load_acq/store_rel with !atomic_ptr_type_ok() pointers:
+      - PTR_TO_CTX, for is_ctx_reg()
+      - PTR_TO_PACKET, for is_pkt_reg()
+      - PTR_TO_FLOW_KEYS, for is_flow_key_reg()
+      - PTR_TO_SOCKET, for is_sk_reg()
+    * drop atomics/ tests
+    * delete unnecessary 'pid' checks from arena_atomics/ tests
+    * avoid depending on __BPF_FEATURE_LOAD_ACQ_STORE_REL, use
+      __imm_insn() and inline asm macros instead
+
+RFC v1: https://lore.kernel.org/all/cover.1734742802.git.yepeilin@google.com
+RFC v1..v1 notable changes:
+
+  o 1-2/8: minor verifier.c refactoring patches
+  o   3/8: core/verifier changes
+         * (Eduard) handle load-acquire properly in backtrack_insn()
+         * (Eduard) avoid skipping checks (e.g.,
+                    bpf_jit_supports_insn()) for load-acquires
+         * track the value stored by store-releases, just like how
+           non-atomic STX instructions are handled
+         * (Eduard) add missing link in commit message
+         * (Eduard) always print 'r' for disasm.c changes
+  o   4/8: arm64/insn: avoid treating load_acq/store_rel as
+           load_ex/store_ex
+  o   5/8: arm64/insn: add load_acq/store_rel
+         * (Xu) include Should-Be-One (SBO) bits in "mask" and "value",
+                to avoid setting fixed bits during runtime (JIT-compile
+                time)
+  o   6/8: arm64 JIT compiler changes
+         * (Xu) use emit_a64_add_i() for "pointer + offset" to optimize
+                code emission
+  o   7/8: selftests
+         * (Eduard) avoid adding new tests to the 'test_verifier' runner
+         * add more tests, e.g., checking mark_precise logic
+  o   8/8: instruction-set.rst changes
+
+[1] https://lore.kernel.org/all/20240729183246.4110549-1-yepeilin@google.com/
 
 Thanks,
-Peilin Ye
+Peilin Ye (9):
+  bpf/verifier: Factor out atomic_ptr_type_ok()
+  bpf/verifier: Factor out check_atomic_rmw()
+  bpf/verifier: Factor out check_load_mem() and check_store_reg()
+  bpf: Introduce load-acquire and store-release instructions
+  arm64: insn: Add BIT(23) to {load,store}_ex's mask
+  arm64: insn: Add load-acquire and store-release instructions
+  bpf, arm64: Support load-acquire and store-release instructions
+  selftests/bpf: Add selftests for load-acquire and store-release
+    instructions
+  bpf, docs: Update instruction-set.rst for load-acquire and
+    store-release instructions
+
+ .../bpf/standardization/instruction-set.rst   |  78 ++++--
+ arch/arm64/include/asm/insn.h                 |  12 +-
+ arch/arm64/lib/insn.c                         |  29 ++
+ arch/arm64/net/bpf_jit.h                      |  20 ++
+ arch/arm64/net/bpf_jit_comp.c                 |  87 +++++-
+ arch/s390/net/bpf_jit_comp.c                  |  14 +-
+ arch/x86/net/bpf_jit_comp.c                   |   4 +
+ include/linux/bpf.h                           |  15 +
+ include/linux/filter.h                        |   2 +
+ include/uapi/linux/bpf.h                      |   3 +
+ kernel/bpf/core.c                             |  63 ++++-
+ kernel/bpf/disasm.c                           |  12 +
+ kernel/bpf/verifier.c                         | 234 +++++++++++-----
+ tools/include/uapi/linux/bpf.h                |   3 +
+ .../selftests/bpf/prog_tests/arena_atomics.c  |  66 ++++-
+ .../selftests/bpf/prog_tests/verifier.c       |   4 +
+ .../selftests/bpf/progs/arena_atomics.c       | 118 +++++++-
+ .../bpf/progs/verifier_load_acquire.c         | 197 +++++++++++++
+ .../selftests/bpf/progs/verifier_precision.c  |  48 ++++
+ .../bpf/progs/verifier_store_release.c        | 264 ++++++++++++++++++
+ 20 files changed, 1165 insertions(+), 108 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_load_acquire.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_store_release.c
+
+-- 
+2.48.1.601.g30ceb7b040-goog
 
 
