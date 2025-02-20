@@ -1,204 +1,132 @@
-Return-Path: <bpf+bounces-52024-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52025-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7238A3CE92
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 02:22:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EB0CA3CE93
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 02:22:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EC8718997D9
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 01:22:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F15016B95B
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 01:22:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA7CC15624D;
-	Thu, 20 Feb 2025 01:21:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B17491C6FFC;
+	Thu, 20 Feb 2025 01:21:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="k9D3XmE5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jutKlRmR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C081B4F17
-	for <bpf@vger.kernel.org>; Thu, 20 Feb 2025 01:21:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAE521B4F17;
+	Thu, 20 Feb 2025 01:21:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740014494; cv=none; b=sq9jNFyWcaCLtq4jR7uKCfSlTNufymNOzfF/uyrTe0/VwWxcSZJVbKaNw1l+hQLJsvXLpAYPkeWq5pkUFZ2tZiHBVPhEu81ZC/3TEMklO80CtmIY8fhuAja8UbWpKR0mmFuzN0a0h94Fay2HpuCwTf3oWVDqonOFWbsI7nZk2dw=
+	t=1740014499; cv=none; b=M5OMiLf+0Wozes7ItFTpJT+bNQwEYju9sbb221391ZMaIdLMmQu/slmNhXTFqF1jEtOaZo0WXiWgOM1UNAmKY8zeW08p9wsCJ5nFhN3skuVs1d4y3f79c4MJ6boKWs8neqjPEwIpXijqzIePLPuXVzPHxZ6MYxj6i9CtJFxwPzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740014494; c=relaxed/simple;
-	bh=gF7uoug7KIdG4iVdYIiLh1+x0bJcYmr2AWleOtXDkqo=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=R39So0nUqVcsFgiqjtCCR8/iO6HlWVPHCG8PeU9PcOfItl2fnXNEp8lgiV3OoJv1UShynRE3YGZas09jCbtnBywK+eDwsMOXjfh3ZwoYljWwOcTWb2TClaMb0t7sYKgtKMF+EB7w9uTr2OGuBFQk5y6914Ipk1G8LBTHUjgrDTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=k9D3XmE5; arc=none smtp.client-ip=209.85.216.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2f816a85facso1058575a91.3
-        for <bpf@vger.kernel.org>; Wed, 19 Feb 2025 17:21:32 -0800 (PST)
+	s=arc-20240116; t=1740014499; c=relaxed/simple;
+	bh=A80EzCl/Rc6HH6mpjmLMlEM1dLPhHLf7W0jhdWpqpW0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=saSu0ORX315cWsomlv3LFN7JT0nC8jK6a+Bs934H/gHjPpYXu5lRvItbmOUcRZJFlFDadBS8Ozp2LVZw85j/+fJqsMWJUk//7Z3Bcsn51IOLz71/rFGRj4gRAxby9JU6iqKypfLtLlJ/iCdtgVYlEwzmTOb4A9ho9Xr551DTr8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jutKlRmR; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2fbffe0254fso800124a91.3;
+        Wed, 19 Feb 2025 17:21:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1740014492; x=1740619292; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OkZLa2X4XrqPLAsbeivrvq2/n6STf/0Lx6m+57nkDis=;
-        b=k9D3XmE5Om1s6MteEcCvhchR6B808b3aGlt+zPdFuZRU2xhjlXR2rGRAcChUkBUpzM
-         BKU2qq9ktXXecgPYv2e57UXMvaaUOr4z83J80VZUnhblkKEPbvKDGk1zVh18iCqa68Qk
-         ohbw8efw4IB9rFNUtDqi/pklN6XL2C3fTiIDlgGAO3ozk1yEcSbbLDpNBMwelqU9MD3s
-         cg0xZiaQ/p+gB7cKmeu69mnvAGJ/F+GA6VQyfJJvydl53BV/mxM4GO5GTW36Xxjrmol6
-         owE6zM1DNTh50oD//nbUHUIah2k833L/01STWPtgQPkf9Zc5a3A06nKGIhM3OKrEZaku
-         YIkA==
+        d=gmail.com; s=20230601; t=1740014497; x=1740619297; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=IDsLjtFBj3deI+dVxQXARgpzZU1fDZVAfCzc3BIDOTU=;
+        b=jutKlRmR8wcwMmS6aUIOcNt9OGQ7LDMTeJTSPx25b7uYZLxNKi2f6Uu2HqLiYaQ7mm
+         tLVBGD1WFPCcnRvsxfxsNEdNW/tTABjeXbs2AYew2KuRiL9m2ogB+yJa3iATfa2uoTUT
+         Ualm/KdlEmQ0xQcCsgC3XNxpOlPHKNbYimO184/+5KzweFBO978U8DSdztApNZ/aEBvL
+         EyfMGJqL4hWD8ZgWuCFqvDyLInqoUCO+CN+c/ymK6XQ67Db2IkbwZYJSQeBJA9prUL58
+         4eTxgKNR6gpqaa5YefSDz3qeFCa8DsNEasB+GBX3ny3dw3pTn7cdp3FU2jSaKgt5pR+H
+         r5vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740014492; x=1740619292;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OkZLa2X4XrqPLAsbeivrvq2/n6STf/0Lx6m+57nkDis=;
-        b=CCenUrZYP8uDMZlfv1AaIraUKcIO8JrgN8ln/v1MUAZWenCIXtLN68Q84CdrnP+yr6
-         ZxRx+ihbVycSlvYL2NGKmazUjWfs1gXrWFxOJPJw2yFVVAZUHMvcs/4lQhrarmbNB6yz
-         ErPq6IcDdlgbOikiJowl5s+EYVws/UHlAJHe5IJOT7BoE62Otf0qqXXUZQfC7d3U+L2C
-         VAf5gxBF4TwSIuiS/cAvRIyoBy4jcn3fVM/GP0zVhmyp+J4k6l1e2BQKfKycpPkPsPL1
-         Ar6/v0Vw7dpqSaGKXGGjA1rx9MtbaByHBStAxDmBbsdcSsh29yjRF8/Xy2nlWiUZqNEy
-         Pmnw==
-X-Gm-Message-State: AOJu0Yz6GWn8HYvzZ0m5z3lsJ2MSEB+rYwOHU9WtK6/kPiRfxGEMev4q
-	Ri7y9ZkUaCYUyTr3r1FVnDQyL4zjrWa0DDtjIOiGkm/4B3tG2iYAzv6DHqZTvSVt6cXYSxNqn6W
-	sEG8zubWZ8OzUMG0PIDGCLiAu4jiMHetAfoU72RspNzt5yaA1MoDEdb1J4F+s+AuQEft89rMIpA
-	CAJbP5O0POoa8ZA8XRqhlBWwyMGn1QfkEqOVHLXlg=
-X-Google-Smtp-Source: AGHT+IFBxisbnr8xuVdH6zyqBX5cRFTXzSlnuc/uizTOJqWix9sLLV310uViRu8QUCqCKsN5Tzuuv6azaPxpIg==
-X-Received: from pjbhl4.prod.google.com ([2002:a17:90b:1344:b0:2fa:a101:755])
- (user=yepeilin job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:90b:2d8d:b0:2ee:f076:20fb with SMTP id 98e67ed59e1d1-2fc40f22db2mr35640374a91.17.1740014492129;
- Wed, 19 Feb 2025 17:21:32 -0800 (PST)
-Date: Thu, 20 Feb 2025 01:21:28 +0000
-In-Reply-To: <cover.1740009184.git.yepeilin@google.com>
+        d=1e100.net; s=20230601; t=1740014497; x=1740619297;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IDsLjtFBj3deI+dVxQXARgpzZU1fDZVAfCzc3BIDOTU=;
+        b=Z2a0bfOyB1i2zd6dtWCoCf6/YxbSu5KA9A6HlYrwNZFRuiWBe+bxvxCqlnllDiVtt6
+         t3omjF+glNP301TZAe0eV5sbNvGei29SV/el8xklhDIp1T44sCR8zqJL87JiFzM9ZLOH
+         lu23yf9GcaxtL3+f+YCBrZOfT6tcWHwN1bWzTPMof14usvt7q8ILtB7+TEgpJjd/BO2F
+         n+eaW2grURYQDz1c6ltUwhkzaptm53El2604xVKBrCPO7kx48ZV+2xwZ4U+tmwDu/xsH
+         ibGm506MIhgTdvAuEDL160TdrbiXEmiO23qes6zSnc+7LLpjkwkiknnGrD0HajQmQhu4
+         kiZA==
+X-Forwarded-Encrypted: i=1; AJvYcCUd2ChCEdsAbfXMrQ778xpWayvdYFXglBLBv/IZGg3Y5Qeo5NEsKVvtt5I9omC7B28P5OwOQk9EYbCxbo0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyLhTLWpWSvWas6oEZKnJWkmqYKyVvznrJE1INsgxFzemb/E8T8
+	IYFWmKWzGAr839zDT7A55gOVvGkuphawOzVYwFwayv0kELFKr8dt
+X-Gm-Gg: ASbGncuxUGaMlhAKY0BycSe+exTFT4pscN8r/0b5tVy5s5gwggQUo5VTP7AF8j57nbQ
+	d9vMkbLI0r/qzYfTo9HpqwSprs8Ly6VrzfxqYGBnWFswmkkkxR2zae1zp/hGo9qMIRhpUntp8sA
+	9vhddqdN/Y3wTNaV4eq1PZJ3Z96zVnFnh8lAgGKWvbBiXl2y4LQwJrRcxMgU91bfJqUfJJRTMi+
+	rE9cED/f4Xt78ZHjilhMjTMimsbsEaKGJaQ08FWcZYMn6Zl7MrSfxGi1ueyJtbpz8at0KEHmrAS
+	6cR6SPxaQUpv
+X-Google-Smtp-Source: AGHT+IHk9GIHf8OOYIkBRVhPLEFoCcWI13PAFtnrMzZXve0ebZLem5ph7p/HYu2/e3qv9LJ51Ex82A==
+X-Received: by 2002:a17:90b:1646:b0:2fa:137f:5c61 with SMTP id 98e67ed59e1d1-2fcb5a15a04mr10720243a91.12.1740014497002;
+        Wed, 19 Feb 2025 17:21:37 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-220d536457esm110713175ad.85.2025.02.19.17.21.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Feb 2025 17:21:36 -0800 (PST)
+Message-ID: <137eabdcb1494debd9f321ad6dc39443c084ad34.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 8/9] selftests/bpf: Add selftests for
+ load-acquire and store-release instructions
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Peilin Ye <yepeilin@google.com>
+Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org, bpf@ietf.org,
+  Xu Kuohai <xukuohai@huaweicloud.com>, David Vernet <void@manifault.com>,
+ Alexei Starovoitov	 <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko	 <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Song Liu	 <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, John Fastabend	 <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev	 <sdf@fomichev.me>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Jonathan Corbet	
+ <corbet@lwn.net>, "Paul E. McKenney" <paulmck@kernel.org>, Puranjay Mohan	
+ <puranjay@kernel.org>, Ilya Leoshkevich <iii@linux.ibm.com>, Heiko Carstens
+	 <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Catalin Marinas	
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Quentin Monnet	
+ <qmo@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan
+ <shuah@kernel.org>,  Ihor Solodrai <ihor.solodrai@linux.dev>, Yingchi Long
+ <longyingchi24s@ict.ac.cn>, Josh Don <joshdon@google.com>,  Barret Rhoden
+ <brho@google.com>, Neel Natu <neelnatu@google.com>, Benjamin Segall
+ <bsegall@google.com>, 	linux-kernel@vger.kernel.org
+Date: Wed, 19 Feb 2025 17:21:31 -0800
+In-Reply-To: <Z7aAmYi5zaVIgRKR@google.com>
+References: <cover.1738888641.git.yepeilin@google.com>
+	 <3ac854ac5cc62e78fadd2a7f1af9087ec3fc7a9c.1738888641.git.yepeilin@google.com>
+	 <6976077bc2d417169a437bc582a72defd1dec3d4.camel@gmail.com>
+	 <Z6ugQ1bd0opoGRYg@google.com>
+	 <1d2d919ae6848e2cf80b81ffe5f94fd31b8ea6ae.camel@gmail.com>
+	 <Z6u4O930eIbAVVMZ@google.com> <Z7aAmYi5zaVIgRKR@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <cover.1740009184.git.yepeilin@google.com>
-X-Mailer: git-send-email 2.48.1.601.g30ceb7b040-goog
-Message-ID: <e2eb5c6912f292ed229aa4fb14e42d7f4c2f8571.1740009184.git.yepeilin@google.com>
-Subject: [PATCH bpf-next v3 6/9] arm64: insn: Add load-acquire and
- store-release instructions
-From: Peilin Ye <yepeilin@google.com>
-To: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: Peilin Ye <yepeilin@google.com>, bpf@ietf.org, Xu Kuohai <xukuohai@huaweicloud.com>, 
-	Eduard Zingerman <eddyz87@gmail.com>, David Vernet <void@manifault.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
-	Ilya Leoshkevich <iii@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Quentin Monnet <qmo@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Ihor Solodrai <ihor.solodrai@linux.dev>, Yingchi Long <longyingchi24s@ict.ac.cn>, 
-	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>, Neel Natu <neelnatu@google.com>, 
-	Benjamin Segall <bsegall@google.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
 
-Add load-acquire ("load_acq", LDAR{,B,H}) and store-release
-("store_rel", STLR{,B,H}) instructions.  Breakdown of encoding:
+On Thu, 2025-02-20 at 01:08 +0000, Peilin Ye wrote:
 
-                                size        L   (Rs)  o0 (Rt2) Rn    Rt
-             mask (0x3fdffc00): 00 111111 1 1 0 11111 1  11111 00000 00000
-  value, load_acq (0x08dffc00): 00 001000 1 1 0 11111 1  11111 00000 00000
- value, store_rel (0x089ffc00): 00 001000 1 0 0 11111 1  11111 00000 00000
+[...]
 
-As suggested by Xu [1], include all Should-Be-One (SBO) bits ("Rs" and
-"Rt2" fields) in the "mask" and "value" numbers.
+> Then realized that I can't check __clang_major__ in .../prog_tests/*
+> files (e.g. I was building prog_tests/verifier.c using GCC).  I think
+> ideally we should do something similar to prog{,_test}s/arena_atomics.c,
+> i.e. use a global bool in BPF source to indicate if we should skip this
+> test, but that seems to require non-trivial changes to
+> prog_tests/verifier.c?
+>=20
+> For the purpose of this patchset, let me keep dummy_test(), like what we
+> have now in verifier_ldsx.c.
 
-It is worth noting that we are adding the "no offset" variant of STLR
-instead of the "pre-index" variant, which has a different encoding.
-
-Reference: Arm Architecture Reference Manual (ARM DDI 0487K.a,
-           ID032224),
-
-  * C6.2.161 LDAR
-  * C6.2.353 STLR
-
-[1] https://lore.kernel.org/bpf/4e6641ce-3f1e-4251-8daf-4dd4b77d08c4@huaweicloud.com/
-
-Signed-off-by: Peilin Ye <yepeilin@google.com>
----
- arch/arm64/include/asm/insn.h |  8 ++++++++
- arch/arm64/lib/insn.c         | 29 +++++++++++++++++++++++++++++
- 2 files changed, 37 insertions(+)
-
-diff --git a/arch/arm64/include/asm/insn.h b/arch/arm64/include/asm/insn.h
-index 2d8316b3abaf..39577f1d079a 100644
---- a/arch/arm64/include/asm/insn.h
-+++ b/arch/arm64/include/asm/insn.h
-@@ -188,8 +188,10 @@ enum aarch64_insn_ldst_type {
- 	AARCH64_INSN_LDST_STORE_PAIR_PRE_INDEX,
- 	AARCH64_INSN_LDST_LOAD_PAIR_POST_INDEX,
- 	AARCH64_INSN_LDST_STORE_PAIR_POST_INDEX,
-+	AARCH64_INSN_LDST_LOAD_ACQ,
- 	AARCH64_INSN_LDST_LOAD_EX,
- 	AARCH64_INSN_LDST_LOAD_ACQ_EX,
-+	AARCH64_INSN_LDST_STORE_REL,
- 	AARCH64_INSN_LDST_STORE_EX,
- 	AARCH64_INSN_LDST_STORE_REL_EX,
- 	AARCH64_INSN_LDST_SIGNED_LOAD_IMM_OFFSET,
-@@ -351,6 +353,8 @@ __AARCH64_INSN_FUNCS(ldr_imm,	0x3FC00000, 0x39400000)
- __AARCH64_INSN_FUNCS(ldr_lit,	0xBF000000, 0x18000000)
- __AARCH64_INSN_FUNCS(ldrsw_lit,	0xFF000000, 0x98000000)
- __AARCH64_INSN_FUNCS(exclusive,	0x3F800000, 0x08000000)
-+__AARCH64_INSN_FUNCS(load_acq,  0x3FDFFC00, 0x08DFFC00)
-+__AARCH64_INSN_FUNCS(store_rel, 0x3FDFFC00, 0x089FFC00)
- __AARCH64_INSN_FUNCS(load_ex,	0x3FC00000, 0x08400000)
- __AARCH64_INSN_FUNCS(store_ex,	0x3FC00000, 0x08000000)
- __AARCH64_INSN_FUNCS(mops,	0x3B200C00, 0x19000400)
-@@ -602,6 +606,10 @@ u32 aarch64_insn_gen_load_store_pair(enum aarch64_insn_register reg1,
- 				     int offset,
- 				     enum aarch64_insn_variant variant,
- 				     enum aarch64_insn_ldst_type type);
-+u32 aarch64_insn_gen_load_acq_store_rel(enum aarch64_insn_register reg,
-+					enum aarch64_insn_register base,
-+					enum aarch64_insn_size_type size,
-+					enum aarch64_insn_ldst_type type);
- u32 aarch64_insn_gen_load_store_ex(enum aarch64_insn_register reg,
- 				   enum aarch64_insn_register base,
- 				   enum aarch64_insn_register state,
-diff --git a/arch/arm64/lib/insn.c b/arch/arm64/lib/insn.c
-index b008a9b46a7f..9bef696e2230 100644
---- a/arch/arm64/lib/insn.c
-+++ b/arch/arm64/lib/insn.c
-@@ -540,6 +540,35 @@ u32 aarch64_insn_gen_load_store_pair(enum aarch64_insn_register reg1,
- 					     offset >> shift);
- }
- 
-+u32 aarch64_insn_gen_load_acq_store_rel(enum aarch64_insn_register reg,
-+					enum aarch64_insn_register base,
-+					enum aarch64_insn_size_type size,
-+					enum aarch64_insn_ldst_type type)
-+{
-+	u32 insn;
-+
-+	switch (type) {
-+	case AARCH64_INSN_LDST_LOAD_ACQ:
-+		insn = aarch64_insn_get_load_acq_value();
-+		break;
-+	case AARCH64_INSN_LDST_STORE_REL:
-+		insn = aarch64_insn_get_store_rel_value();
-+		break;
-+	default:
-+		pr_err("%s: unknown load-acquire/store-release encoding %d\n",
-+		       __func__, type);
-+		return AARCH64_BREAK_FAULT;
-+	}
-+
-+	insn = aarch64_insn_encode_ldst_size(size, insn);
-+
-+	insn = aarch64_insn_encode_register(AARCH64_INSN_REGTYPE_RT, insn,
-+					    reg);
-+
-+	return aarch64_insn_encode_register(AARCH64_INSN_REGTYPE_RN, insn,
-+					    base);
-+}
-+
- u32 aarch64_insn_gen_load_store_ex(enum aarch64_insn_register reg,
- 				   enum aarch64_insn_register base,
- 				   enum aarch64_insn_register state,
--- 
-2.48.1.601.g30ceb7b040-goog
+Well, that's unfortunate.
+Thank you for trying.
 
 
