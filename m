@@ -1,272 +1,107 @@
-Return-Path: <bpf+bounces-52083-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52084-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05CD3A3DB9D
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 14:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A3E66A3DD96
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 16:02:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D00021764E7
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 13:45:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE45217B737
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 15:00:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFE4B1F6679;
-	Thu, 20 Feb 2025 13:45:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA8531D61A3;
+	Thu, 20 Feb 2025 15:00:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FBUR3bPa"
+	dkim=pass (2048-bit key) header.d=ethancedwards.com header.i=@ethancedwards.com header.b="G1mAi/io"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [80.241.56.161])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB3BB1FBC89;
-	Thu, 20 Feb 2025 13:45:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF1341C7F;
+	Thu, 20 Feb 2025 15:00:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.161
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740059129; cv=none; b=Wdi5Mx5zJKjwXFPBfAjYGfLDwyNy4/pHLFtrLKKRXA10hjMIAj/A/qM+Z7lQ54F9OP8nBhexrZ3LurFGGviUsWN3zwwAzHUaWb2fI+9+ydOnQ22Z+L8Wd02n0KPboI6T4I7aY464pIFIE2GmMZLbsQ44nZGLnyTM6OuLBleUpjs=
+	t=1740063619; cv=none; b=LJGLcCtaG0EtLQr90h7zHWFbsrEdV8ocVgjAyhUyRsmDTvbFxdlMdtSvw1OjmuJ7Vg7gOUKHfVFMBqU1BYNGld3S/C6+utOIusHr3OxlJSZ0CPm2YWdiLSygcH+UWR+JyDthjlDQlV5pj88pCMiUhHv58fmpxU/+xA5j5Q8ubYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740059129; c=relaxed/simple;
-	bh=5fj7mFPrfSNstxUkY6VTZHCkWduWWJVFcL0TwY04dWQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TrOKK8h91vS/SzyCE1HiTyo8AhO6d0wy1Fg9ukm85YI2u9N1nPSruO9Q6lukX2bO2XA8uXiLUNHq3zI4Y8idD1JgB10dwF4piunQTwtsRRaoMTsRKa1mMiD4GZatuXZUQ8hyLi9WLkXWbqzEltwg03W8oLJXKBzIJKHvrzqrLsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FBUR3bPa; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1740059128; x=1771595128;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=5fj7mFPrfSNstxUkY6VTZHCkWduWWJVFcL0TwY04dWQ=;
-  b=FBUR3bPagA0WuWDDEW4bUhuq9UtA5JsZqaTpHEE1LTyDCxI1RjoKLAni
-   9zrAGgX/lumdsMAepD0z1ujPj4cXllAkePGCgZpTyRx3RzDTMPtNZDl7F
-   ffngAzrRxh2FYJuyXC/FZvWvXiLgcXW/CQIAGZRv6DulhONdwVep0+DC8
-   O1mbcsfEA/bDKH4+ujFeh7NGcvqwCohCM1llxGA384N71Tp9HGe7X1VjO
-   IOGDTgQ7LliLvzDw457GdPpK1LcRSRAE/2ykXm9zEbiJSwZ1zStmmdji2
-   9zEex0ep+UEAet0hARG/4RfTwC/1ywWYPPfoeYS0JqwBdnMy/ehzd2tne
-   Q==;
-X-CSE-ConnectionGUID: uTZmziaLTwKO2+IgRZxrHQ==
-X-CSE-MsgGUID: vPjVxNRnTR2uRgvQht3ItA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11351"; a="51479231"
-X-IronPort-AV: E=Sophos;i="6.13,301,1732608000"; 
-   d="scan'208";a="51479231"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2025 05:45:27 -0800
-X-CSE-ConnectionGUID: zRbntPTvT+2KVa7fQY7hXQ==
-X-CSE-MsgGUID: SFDwJGMrRx2dGwkvxBahVg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="119146274"
-Received: from boxer.igk.intel.com ([10.102.20.173])
-  by fmviesa003.fm.intel.com with ESMTP; 20 Feb 2025 05:45:25 -0800
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org
-Cc: netdev@vger.kernel.org,
-	magnus.karlsson@intel.com,
-	martin.lau@linux.dev,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH bpf-next 3/3] selftests: bpf: implement test case for skb kptr map storage
-Date: Thu, 20 Feb 2025 14:45:03 +0100
-Message-Id: <20250220134503.835224-4-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20250220134503.835224-1-maciej.fijalkowski@intel.com>
-References: <20250220134503.835224-1-maciej.fijalkowski@intel.com>
+	s=arc-20240116; t=1740063619; c=relaxed/simple;
+	bh=5Rg9aQx5SAJd2GvpGKDyvHWzOMlS7BIa+3iz31itNHM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Paw1XYfNJ+zAzrabwLIjt4fD1ubsS3L8u0Zh0XcLzuRttMEcedEqtZU3aMBijjHtkmfhp9nPDHq9pX25CQrw75nbD8/xJcs+VnoDSWCak1kPtO6FyvM4CGFJYgLwEfK0YXMEk5r6mhY0Pi/Em8vSItNLPJGZHfI+stcX3fiSRd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ethancedwards.com; spf=pass smtp.mailfrom=ethancedwards.com; dkim=pass (2048-bit key) header.d=ethancedwards.com header.i=@ethancedwards.com header.b=G1mAi/io; arc=none smtp.client-ip=80.241.56.161
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ethancedwards.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ethancedwards.com
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4YzGdd6FJpz9t1r;
+	Thu, 20 Feb 2025 16:00:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ethancedwards.com;
+	s=MBO0001; t=1740063606;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zQv/p8LzF7Z9WyGzYQQMo/D3FUK2j9qiT5sUMHm7YZU=;
+	b=G1mAi/ionHBKxJX7ekixjsAsofzCvn3p0Nfl+JbuPgR3H66Th6LXg+ivpObjFjwHsxBcJT
+	HUD26KNGF94RkYHLiYIEwlBCtJHyLGPBnWKHbpbnoDujeA5vwgw+xiJ+hLLpFpzYvoB735
+	rD3NjcBTDik9fwxceaANulCABOwqKROw3qGjx4aTwaas1/+5bs1TCERYYWeHqv45X9SOkX
+	EUI6j9hleGCU5i+xZjMZeL7FKelO/XBeS8Hq07mOm71f50C2+Y9Zx5ANAtqopHXrB2pKsU
+	46buYpi1QXe9ad/iT19m8TK87yi69M/kmf/ZcKZVGZ9j7lsfV4XZXW3QqEGitA==
+Date: Thu, 20 Feb 2025 10:00:00 -0500
+From: Ethan Carter Edwards <ethan@ethancedwards.com>
+To: Pu Lehui <pulehui@huawei.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] btf: move kern_type_id to goto cand_cache_unlock
+Message-ID: <nw73mlf4p4qpjeoc6jie76xxmvl2iuj2f6p44sq2p5x2dzdrcv@iekulfikhdc4>
+References: <20250220-bpf-uninit-v1-1-af07a5a57e5b@ethancedwards.com>
+ <c6a25b61-6545-4a03-b2f1-a38c07037d29@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c6a25b61-6545-4a03-b2f1-a38c07037d29@huawei.com>
 
-Add a test case to exercise kptrs behavior against sk_buff structs
-stored in eBPF map.
+On 25/02/20 08:24PM, Pu Lehui wrote:
+> On 2025/2/20 13:50, Ethan Carter Edwards wrote:
+> > In most code paths variable move_kern_type_id remains uninitialized upon
+> > return. By moving it to the goto, it is initialized in these code paths.
+> > As well as others. Caught by Coverity.
+> > 
+> > Closes: https://scan5.scan.coverity.com/#/project-view/63874/10063?selectedIssue=1595567
+> > Fixes: e2b3c4ff5d183d ("bpf: add __arg_trusted global func arg tag")
+> > Signed-off-by: Ethan Carter Edwards <ethan@ethancedwards.com>
+> > ---
+> >   kernel/bpf/btf.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index 9de6acddd479b4f5e32a5e6ba43cf369de4cee29..8c82ced7da299ad1ad769024fe097898c269013b 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -7496,9 +7496,9 @@ static int btf_get_ptr_to_btf_id(struct bpf_verifier_log *log, int arg_idx,
+> >   		err = -EOPNOTSUPP;
+> >   		goto cand_cache_unlock;
+> >   	}
+> > -	kern_type_id = cc->cands[0].id;
+> >   cand_cache_unlock:
+> > +	kern_type_id = cc->cands[0].id;
+> 
+> Hi, for goto's branches, it will always `return err`, no need to make this
+> move.
 
-Let us have two programs, one for store and other for retrieving
-sk_buffs from pinned map. Load first prog and run as many times as size
-of map so that second program will see the map full and will be able to
-retrieve each of sk_buff that bpf_prog_test_run_skb() created for us.
+You are right. My apologies. I should probably do less coding at 2AM.
 
-Reason for running the progs MAX_ENTRIES times from user space instead
-of utilizing @repeat argument of is that we would like to have unique
-skbs handled in map. With @repeat usage it would result in storing the
-same skb.
-
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
----
- .../selftests/bpf/prog_tests/skb_map_kptrs.c  | 75 ++++++++++++++++++
- .../selftests/bpf/progs/skb_map_kptrs.c       | 77 +++++++++++++++++++
- 2 files changed, 152 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/skb_map_kptrs.c
- create mode 100644 tools/testing/selftests/bpf/progs/skb_map_kptrs.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/skb_map_kptrs.c b/tools/testing/selftests/bpf/prog_tests/skb_map_kptrs.c
-new file mode 100644
-index 000000000000..993beac6c344
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/skb_map_kptrs.c
-@@ -0,0 +1,75 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+
-+#define SKB_KPTR_MAP_PATH "/sys/fs/bpf/skb_kptr_map"
-+
-+static void skb_map_kptrs(void)
-+{
-+	int err, prog_fd, store_fd, get_fd, map_fd;
-+	struct bpf_program *prog;
-+	struct bpf_object *obj;
-+	char buff[128] = {};
-+	struct bpf_map *map;
-+	int i;
-+	LIBBPF_OPTS(bpf_test_run_opts, topts,
-+		.data_in = buff,
-+		.data_size_in = sizeof(buff),
-+		.repeat = 1,
-+	);
-+
-+	err = bpf_prog_test_load("skb_map_kptrs.bpf.o", BPF_PROG_TYPE_SCHED_CLS, &obj,
-+				 &prog_fd);
-+	if (CHECK_FAIL(err))
-+		return;
-+
-+	map = bpf_object__find_map_by_name(obj, "skb_map");
-+	if (CHECK_FAIL(!map))
-+		goto map_err;
-+
-+	map_fd = bpf_map__fd(map);
-+	if (map_fd < 0)
-+		goto map_err;
-+
-+	err = bpf_obj_pin(map_fd, SKB_KPTR_MAP_PATH);
-+	if (err < 0)
-+		goto map_err;
-+
-+	prog = bpf_object__find_program_by_name(obj, "tc_skb_map_store");
-+	if (CHECK_FAIL(!prog))
-+		goto out;
-+
-+	store_fd = bpf_program__fd(prog);
-+	if (CHECK_FAIL(store_fd < 0))
-+		goto out;
-+
-+	// store skbs
-+	for (i = 0; i < bpf_map__max_entries(map); i++) {
-+		err = bpf_prog_test_run_opts(store_fd, &topts);
-+		ASSERT_OK(err, "skb kptr store");
-+	}
-+
-+	prog = bpf_object__find_program_by_name(obj, "tc_skb_map_get");
-+	if (CHECK_FAIL(!prog))
-+		goto out;
-+
-+	get_fd = bpf_program__fd(prog);
-+	if (CHECK_FAIL(get_fd < 0))
-+		goto out;
-+
-+	// get skbs
-+	for (i = 0; i < bpf_map__max_entries(map); i++) {
-+		err = bpf_prog_test_run_opts(get_fd, &topts);
-+		ASSERT_OK(err, "skb kptr get");
-+	}
-+
-+out:
-+	unlink(SKB_KPTR_MAP_PATH);
-+map_err:
-+	bpf_object__close(obj);
-+}
-+
-+void test_skb_map_kptrs(void)
-+{
-+	skb_map_kptrs();
-+}
-+
-diff --git a/tools/testing/selftests/bpf/progs/skb_map_kptrs.c b/tools/testing/selftests/bpf/progs/skb_map_kptrs.c
-new file mode 100644
-index 000000000000..f4972978cb04
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/skb_map_kptrs.c
-@@ -0,0 +1,77 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+void *bpf_cast_to_kern_ctx(void *) __ksym;
-+struct sk_buff *bpf_skb_acquire(struct sk_buff *skb) __ksym;
-+void bpf_skb_release(struct sk_buff *skb) __ksym;
-+
-+struct skb_map_val {
-+	struct sk_buff __kptr * skb;
-+};
-+
-+static __u32 get_idx;
-+static __u32 store_idx;
-+
-+#define MAX_ENTRIES 100
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, __u32);
-+	__type(value, struct skb_map_val);
-+	__uint(max_entries, MAX_ENTRIES);
-+} skb_map SEC(".maps");
-+
-+static __always_inline __u32 idx_bump(__u32 idx)
-+{
-+	return idx >= MAX_ENTRIES ? 0 : idx + 1;
-+}
-+
-+SEC("tc") int tc_skb_map_store(struct __sk_buff *ctx)
-+{
-+	struct sk_buff *skbk = bpf_cast_to_kern_ctx(ctx);
-+	struct skb_map_val *map_entry, tmp_entry;
-+	struct sk_buff *tmp;
-+
-+	tmp_entry.skb = NULL;
-+	bpf_map_update_elem(&skb_map, &store_idx, &tmp_entry, BPF_ANY);
-+	map_entry = bpf_map_lookup_elem(&skb_map, &store_idx);
-+	if (!map_entry)
-+		return -1;
-+
-+	skbk = bpf_skb_acquire(skbk);
-+	if (!skbk)
-+		return -2;
-+
-+	tmp = bpf_kptr_xchg(&map_entry->skb, skbk);
-+	if (tmp)
-+		bpf_skb_release(tmp);
-+
-+	store_idx = idx_bump(store_idx);
-+
-+	return 0;
-+}
-+
-+SEC("tc") int tc_skb_map_get(struct __sk_buff *ctx)
-+{
-+	struct sk_buff *stored_skb = NULL;
-+	struct skb_map_val *map_entry;
-+	struct sk_buff *tmp = NULL;
-+
-+	(void)ctx;
-+
-+	map_entry = bpf_map_lookup_elem(&skb_map, &get_idx);
-+	if (!map_entry)
-+		return -1;
-+
-+	stored_skb = bpf_kptr_xchg(&map_entry->skb, tmp);
-+	if (!stored_skb)
-+		return -2;
-+
-+	bpf_skb_release(stored_skb);
-+	get_idx = idx_bump(get_idx);
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.43.0
-
+Thanks,
+Ethan
 
